@@ -1,0 +1,12 @@
+name,source_url,license,status,planned_use,local_path,notes
+Kenney Car Kit,https://kenney.nl/assets/car-kit,CC0,downloaded,player and traffic vehicles,assets/raw/kenney_car-kit.zip,License.txt inspected; selected GLB and texture copied to assets/game
+Kenney Racing Kit,https://kenney.nl/assets/racing-kit,CC0,downloaded,roadside props and track parts,assets/raw/kenney_racing-kit.zip,License.txt inspected; use only selected consistent props
+Kenney Nature Kit,https://kenney.nl/assets/nature-kit,CC0,downloaded,trees rocks and foliage,assets/raw/kenney_nature-kit.zip,License.txt inspected; use a small consistent subset
+Kenney Nature Kit H1 selection,https://kenney.nl/assets/nature-kit,CC0,integrated,test field trees and rocks,assets/game/nature,tree_pineTallA.glb and rock_largeA.glb with License.txt; reproducible via tools/prepare_h1_assets.py
+Microsoft YaHei,Windows system font,Microsoft Windows font license,local-system,Chinese UI,C:/Windows/Fonts/msyh.ttc,Loaded from the installed Windows system; font file is not copied or redistributed
+Poly Haven,https://polyhaven.com/license,CC0,planned,sky and ground materials,assets/raw/polyhaven,Record each downloaded asset page
+Panda3D,https://github.com/panda3d/panda3d,Modified BSD,dependency,engine,Python environment,Runtime dependency
+panda3d-simplepbr,https://github.com/Moguri/panda3d-simplepbr,BSD-3-Clause,dependency,PBR rendering,Python environment,Runtime dependency
+panda3d-gltf,https://github.com/Moguri/panda3d-gltf,BSD-3-Clause,dependency,GLB and glTF loading,Python environment,Runtime dependency
+CoastalDrive asphalt grain,project-generated,project source,integrated,road texture,src/scene.py,Deterministic procedural texture; no external image download
+CoastalDrive H3 paint palettes,project-generated on Kenney CC0 models,CC0 base models; project code,integrated,five paint colors and seeded traffic appearances,src/skins.py,No texture files altered; body paint geometry split at runtime; existing model licenses retained
