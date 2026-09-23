@@ -325,7 +325,8 @@ class ImpactAudio:
                        "raw_impulse": contact.raw_impulse if contact else None,
                        "volume": round(self.scrape_level * scale, 4)})
 
-    def update(self, impacts, contacts, dt, scale, *, epoch, driving=True):
+    def update(self, impacts, contacts, dt, scale, *, epoch, driving=True,
+               accept_new_impacts=None, maintain_impact_tails=False):
         self.time += max(0.0, min(dt, 0.1))
         if epoch is not None and self.epoch is not None and epoch != self.epoch:
             self.stop()
@@ -333,19 +334,31 @@ class ImpactAudio:
             self.bags.clear()
             self.last_variants.clear()
         self.epoch = epoch
-        if not driving or scale <= 0:
+        if accept_new_impacts is None:
+            accept_new_impacts = driving
+        if (not driving and not accept_new_impacts and not maintain_impact_tails) or scale <= 0:
             self.seen.update(event.event_id for event in impacts)
             self.stop()
             return 1.0
+        if not accept_new_impacts:
+            self.seen.update(event.event_id for event in impacts)
         for voice in self.voices[:]:
             if self.time >= voice.ends:
                 voice.sound.stop()
                 self.voices.remove(voice)
             else:
                 voice.sound.setVolume(voice.gain * scale)
-        for event in self._events_this_frame(impacts):
-            self._start_impact(event, scale)
-        self._update_scrape(contacts, dt, scale)
+        if accept_new_impacts:
+            for event in self._events_this_frame(impacts):
+                self._start_impact(event, scale)
+        if driving:
+            self._update_scrape(contacts, dt, scale)
+        elif self.scrape_sound is not None:
+            self.scrape_sound.stop()
+            self.scrape_sound = None
+            self.scrape_source = None
+            self.scrape_level = self.scrape_target = 0.0
+            self.scrape_state = "off"
         target = 0.71 if self.time < self.duck_until else 1.0
         blend = min(1.0, dt / (0.01 if target < self.duck else 0.18))
         self.duck += (target - self.duck) * blend

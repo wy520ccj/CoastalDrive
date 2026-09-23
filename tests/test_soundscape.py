@@ -132,6 +132,30 @@ def test_pause_resume_reset_and_close_stop_all_voices():
     assert not soundscape.loops_playing
 
 
+def test_countdown_rejects_impacts_without_starting_scrape():
+    soundscape, sounds = make_soundscape()
+    soundscape.update(frame(0, (event(),), (contact(),)), phase("countdown"), None)
+
+    assert impact_plays(sounds) == 0
+    assert not soundscape.impact_audio.voices
+    assert soundscape.impact_audio.scrape_sound is None
+
+
+def test_results_accepts_final_impact_once_then_rejects_new_impacts():
+    soundscape, sounds = make_soundscape()
+    soundscape.update(frame(0), phase("driving"), None)
+    soundscape.update(frame(.1, (event(),), (contact(),)), phase("results"), None)
+    assert impact_plays(sounds) >= 2
+    assert soundscape.impact_audio.voices
+    assert soundscape.impact_audio.scrape_sound is None
+    assert not soundscape.loops_playing
+
+    soundscape.update(frame(.2, (event(2),)), phase("results"), None)
+    assert all(voice.event_id != "1:2:0" for voice in soundscape.impact_audio.voices)
+    assert soundscape.impact_audio.voices
+    assert not soundscape.loops_playing
+
+
 def test_only_physical_event_triggers_sound_and_scrape_is_loop():
     soundscape, sounds = make_soundscape()
     soundscape.update(frame(0), phase("driving"), None)

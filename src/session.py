@@ -183,7 +183,9 @@ class Session:
 
         if self.phase in (Phase.DRIVING, Phase.COUNTDOWN):
             self.stepper.advance(elapsed, tick_and_collect)
-        if self.phase != Phase.DRIVING or frame_phase in (Phase.PAUSED, Phase.MENU, Phase.RESULTS):
+        # 保留导致驾驶结束的最后一批事件；结果页后续帧自然没有新 tick。
+        if (self.phase not in (Phase.DRIVING, Phase.RESULTS)
+                or frame_phase in (Phase.PAUSED, Phase.MENU, Phase.RESULTS)):
             collected = []
         current = interpolate(self.previous, self.current, self.stepper.remainder / FIXED_DT)
         return replace(current, impacts=tuple(collected), contacts=self.current.contacts)

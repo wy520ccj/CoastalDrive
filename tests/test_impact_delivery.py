@@ -1,12 +1,15 @@
 import sys
 from pathlib import Path
 
+from panda3d.core import Vec3
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from highway_segments import REBASE_DISTANCE
 from impact_events import ImpactEvent
-from session import Session
+from race import GameMode
+from session import Phase, Session
 from simulation import FIXED_DT
 
 
@@ -83,5 +86,24 @@ def test_rebase_preserves_contact_epoch():
         session.simulation.player.shift(REBASE_DISTANCE * 2)
         session.simulation._rebase()
         assert session.simulation.contact_epoch == epoch
+    finally:
+        session.close()
+
+
+def test_real_challenge_impact_failure_frame_is_delivered_once():
+    session = Session(track="endless")
+    session.start(seed=11, countdown=False, mode=GameMode.DISTANCE_CHALLENGE,
+                  track="endless")
+    session._skip_frame = False
+    session.simulation.player.reset((7.2, 30, .55))
+    session.simulation.player._chassis.setLinearVelocity(Vec3(8, 0, 0))
+    try:
+        frame = session.frame(FIXED_DT)
+        assert session.phase == Phase.RESULTS
+        assert frame.collisions == 1
+        assert len(frame.impacts) == 1
+        assert frame.impacts[0].tick == 1
+        assert frame.impacts[0].material == "metal_barrier"
+        assert session.frame(FIXED_DT).impacts == ()
     finally:
         session.close()

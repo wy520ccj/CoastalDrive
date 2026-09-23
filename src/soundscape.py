@@ -37,6 +37,14 @@ class Soundscape:
         dt = max(0.0, min(0.1, dt))
         self.last_time = now
         driving_loop = phase.value in ("driving", "countdown")
+        impacts = getattr(state, "impacts", ())
+        if driving_loop:
+            self._results_impacts_consumed = False
+        accept_new_impacts = phase.value == "driving"
+        if phase.value == "results" and not getattr(self, "_results_impacts_consumed", False):
+            # 只接收进入结果页时交付的终止帧批次，包含空批次。
+            accept_new_impacts = bool(impacts)
+            self._results_impacts_consumed = True
         if driving_loop:
             throttle = state.player.throttle if control is None else max(
                 control.throttle, state.player.throttle
@@ -55,8 +63,10 @@ class Soundscape:
         self.road_level += (road_target - self.road_level) * blend
         volume = self.master_volume * self.effects_volume
         duck = self.impact_audio.update(
-            getattr(state, "impacts", ()), getattr(state, "contacts", ()), dt, volume,
+            impacts, getattr(state, "contacts", ()), dt, volume,
             epoch=getattr(state, "contact_epoch", 0), driving=phase.value == "driving",
+            accept_new_impacts=accept_new_impacts,
+            maintain_impact_tails=phase.value == "results",
         )
         if driving_loop and volume > 0:
             if not self.loops_playing:
