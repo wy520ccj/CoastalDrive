@@ -166,9 +166,12 @@ def test_oblique_guardrail_impact_does_not_tunnel(sim, speed_kmh):
         sim.step(Control())
     direction = sim._chassis.getTransform().getQuat().getForward()
     sim._chassis.setLinearVelocity(direction * speed_kmh / 3.6)
+    collision_events = []
     for _ in range(360):
         sim.step(Control())
         car = sim.snapshot().player
         assert project(*car.position[:2])[1] < 6
         assert abs(car.roll) < 45
-        assert not sim.snapshot().events
+        collision_events.extend(sim.snapshot().events)
+    # 撞上实体护栏应记录一次事故，持续接触不能逐 tick 重复计数。
+    assert collision_events == ["player_collision"]

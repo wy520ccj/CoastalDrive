@@ -31,7 +31,7 @@ class CoastalDrive(ShowBase):
             "coastaldrive",
             "\n".join(
                 [
-                    "window-title CoastalDrive 0.8.1 Atmosphere",
+                    "window-title CoastalDrive 0.8.3 Impact Audio",
                     "win-size 1280 720",
                     "sync-video 1",
                     "window-type offscreen" if smoke and not onscreen else "window-type onscreen",
@@ -515,7 +515,8 @@ class CoastalDrive(ShowBase):
     def update(self, task):
         if self.garage is not None:
             if self.soundscape is not None:
-                self.soundscape.update(self.session.current, self.session.phase, None)
+                self.soundscape.update(self.session.current, self.session.phase, None,
+                                       self.clock.getDt())
             self.garage.update(self.clock.getDt())
             self.refresh_panel()
             return task.cont
@@ -524,7 +525,7 @@ class CoastalDrive(ShowBase):
         dropped = self.session.stepper.dropped_time
         state = self.session.frame(self.clock.getDt())
         if self.soundscape is not None:
-            self.soundscape.update(state, self.session.phase, None)
+            self.soundscape.update(state, self.session.phase, None, self.clock.getDt())
         if self.session.stepper.dropped_time > dropped:
             logging.getLogger(__name__).warning(
                 "Simulation catch-up dropped %.6f seconds",

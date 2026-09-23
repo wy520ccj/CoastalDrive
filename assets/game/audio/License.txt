@@ -19,28 +19,47 @@ https://freesound.org/people/priesjensen/sounds/495795/
 CC0: https://creativecommons.org/publicdomain/zero/1.0/
 Changes: used the public high-quality preview; selected 3-10 s, filtered to emphasize road texture, raised gain, converted to mono PCM, and crossfaded the loop seam.
 
-impact_light.wav
-"S022 Plastic Impact Mono" by Pól
-https://freesound.org/people/P%C3%B3l/sounds/385940/
-CC0: https://creativecommons.org/publicdomain/zero/1.0/
-Changes: used the public high-quality preview; converted to mono, 44.1 kHz 16-bit PCM, and limited peaks.
+impact/ layered collision clips (22 files)
+All eight source recordings below are marked Creative Commons 0 on their Freesound pages:
+https://creativecommons.org/publicdomain/zero/1.0/
 
-impact_side.wav
-"S021 Metal Impact Mono" by Pól
-https://freesound.org/people/P%C3%B3l/sounds/385937/
-CC0: https://creativecommons.org/publicdomain/zero/1.0/
-Changes: used the public high-quality preview; reduced gain and converted to mono, 44.1 kHz 16-bit PCM.
+"MTLimpt_Metal Impact Medium Bang Resonate x17" by harrisonlace (recorded on an empty car body)
+https://freesound.org/people/harrisonlace/sounds/798843/
+Used for transient and car-body light/heavy variants.
 
-impact_scrape.wav
-"S023 Metal Rail Scrape Mono" by Pól
-https://freesound.org/people/P%C3%B3l/sounds/385939/
-CC0: https://creativecommons.org/publicdomain/zero/1.0/
-Changes: used the public high-quality preview; selected a 1.45 s excerpt, adjusted gain, faded the ends, limited peaks, and converted to mono, 44.1 kHz 16-bit PCM.
+"Car Crash (with Glass)" by magnuswaker
+https://freesound.org/people/magnuswaker/sounds/592388/
+Used for short crash transient variants. Original sound was constructed from metal panels and glass.
 
-impact_heavy.wav
-"S020 Rock Impact Mono" by Pól
-https://freesound.org/people/P%C3%B3l/sounds/385938/
-CC0: https://creativecommons.org/publicdomain/zero/1.0/
-Changes: used the public high-quality preview; selected the 0.75 s clip, adjusted gain, limited peaks, and converted to mono, 44.1 kHz 16-bit PCM.
+"S36-09 Metal foley for car crash; much crunching.wav" by craigsmith
+https://freesound.org/people/craigsmith/sounds/675475/
+Used for metal deformation and light debris variants; vintage recording.
 
-The reproducible source URLs and SHA-256 checks are in tools/prepare_audio.py.
+"Metal Scraping/Scratching" by JSilverSound
+https://freesound.org/people/JSilverSound/sounds/615837/
+Used as metallic scrape texture; source author describes processing of a field recording.
+
+"metallic crash.wav" by BehanSean
+https://freesound.org/people/BehanSean/sounds/422438/
+Used for a short metallic transient.
+
+"Glass Breaking" by AlterKartoffelsack
+https://freesound.org/people/AlterKartoffelsack/sounds/465946/
+Used for a quiet glass-detail tail.
+
+"Hard Plastic Crack" by Doshke
+https://freesound.org/people/Doshke/sounds/825839/
+Used for a quiet plastic-detail tail.
+
+"cinderblock scrape 6 and a thud.wav" by patchytherat
+https://freesound.org/people/patchytherat/sounds/530989/
+Used for the hard-surface scrape texture.
+
+Changes to all impact sources: high-quality previews were selected as independent short excerpts,
+downmixed to mono, filtered for their layer, cut near transient onset or crossfaded into loops,
+and saved as 44.1 kHz 16-bit PCM with controlled peak headroom. Exact excerpt times,
+source URLs/SHA-256 hashes and derived output hashes are in tools/prepare_impact_audio.py
+and assets/game/audio/impact-bank.json. The previews are derivatives of the licensed
+recordings, not the downloadable original full-resolution files.
+
+The engine/road source URLs and SHA-256 checks remain in tools/prepare_audio.py.

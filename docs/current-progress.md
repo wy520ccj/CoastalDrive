@@ -1,6 +1,6 @@
 # 当前进度
 
-更新：2026-09-23。游戏版本 **0.8.1 / 6B 环境与声音增量**；6B尚未通过。开工时 `main` 与 GitHub `origin/main` 同步；6B-01 已提交并推送，提交 `0c8377c`。
+更新：2026-09-23。开发版本 **0.8.3 / Vehicle Impact Audio System v1**；6B 仍未通过人工体验 Gate。6B-01 已提交并推送，提交 `0c8377c`；本轮设计基线 HEAD 为 `34cec49231391c769ef38db1ee2e22363863c20b`，本轮成果已本地提交，未推送。
 
 ## 已有能力
 
@@ -8,11 +8,11 @@
 - 无限高速：直路/弯坡、分段加载、实体接缝、坐标重定位、交通生成回收；稀疏/普通/繁忙为6/12/18车。NPC有驾驶风格、变速跟车、打灯变道、超车回归与后方逼近让行。见 [traffic-v2-review.md](traffic-v2-review.md)。
 - 5C自由驾驶统计与5公里无碰撞挑战已接入；倒车不重复累计里程，碰撞/复位使挑战失败；持续接触去重，暂停/倒计时不计时。见 [phase5c-gameplay.md](phase5c-gameplay.md)。
 - 有限事故恢复只接入无限高速 `HighwayDriver`：刹停、观察间隙、低速物理回正与双闪；受阻重新等待。复杂翻车救援/事故抢道待做，详见 [traffic-recovery.md](traffic-recovery.md)。
-- 6A车库完成两款车型、五种车漆预览与保存，见 [phase6a-garage.md](phase6a-garage.md)。6B已接入天空、路面/草地、植被、路边标杆和HUD底板；驾驶声音换成许可明确的录音。碰撞声已替换为四类录音并按速度变化估算分型，但用户最新试听结论为不通过：通常只触发一种类似盒子落地、软弱且不像撞车的声音，情形区分和播放时机仍不合格。按要求暂停继续修改，见 [6B-01任务包](tasks/6B-01-audio-settings.md)。
+- 6A车库完成两款车型、五种车漆预览与保存，见 [phase6a-garage.md](phase6a-garage.md)。6B已接入天空、路面/草地、植被、路边标杆和HUD底板；驾驶声音换成许可明确的录音。用户试听判定 6B-01 旧碰撞声不合格；0.8.3 已用真实 Bullet 接触事件与 22 个新素材重建分层撞击和持续擦碰，新系统的实际听感仍待确认。
 
 ## 当前缺口
 
-- 6B：6B-01音量设置自动检查通过；碰撞声音人工试听不通过。当前速度变化估算未能满足及时、明显区分撞击类型的要求，后续重做时须先检查碰撞事件可用信息及接口范围。其他车灯/环境层次、正式HUD/小地图、实际画面/录像、1080p帧耗时及整体体验验收仍待完成。
+- 6B：6B-01 音量设置语义保持不变，旧碰撞声人工不通过。[6B-02](tasks/6B-02-impact-events.md) Bullet 事件与帧传递、[6B-03](tasks/6B-03-impact-assets.md) 分层素材池、[6B-04](tasks/6B-04-impact-mixer.md) 播放/擦碰/诊断已实现；轻/中/重 Bullet 夹具、NPC 事故、持续护栏接触和玩法碰撞去重集成测试通过。severity 曲线与音色仍是 provisional，[6B-05](tasks/6B-05-impact-calibration.md) 八项实驾试听待完成。其他车灯/环境层次、正式HUD/小地图、实际画面/录像、1080p帧耗时和整体体验验收仍待完成。
 - H4B/H4C：严格连续可见窗口、内存平台、人工驾驶、繁忙交通长程、复杂恢复未完整验收。历史30分钟记录因中途最小化未通过严格可见要求，见 [H4B-endurance-review.md](H4B-endurance-review.md)。长测集中到7B交付批次。
 - 三圈/幽灵回放延后4R；进一步物理7A和学习AI尚未开始。长期路线与各Gate阈值见 [development-plan.md](development-plan.md)。
 
@@ -24,8 +24,10 @@
 - 碰撞分型修改后，T0通过Ruff和12项音频测试；T1通过Ruff、49项音频/外观/核心测试及3种子headless检查；7段WAV经真实Panda3D/OpenAL加载。命令和日志见 [6B-01任务包](tasks/6B-01-audio-settings.md)。未运行T2/T3、全套游戏回归或长测。
 - 较早工作流验证基线为 `1e1bddec6ea16f01e02520566cd39a5a39be7d28`，其日志只代表当时版本。本轮6B-01以实际 HEAD `ee6a1d567f6e883c304ef28896146d0a8dbb6531` 为基底，开工时工作区干净；T0/T1记录了对应测试时未提交的源码差异。
 - 历史175项回归、10种子各600秒与100公里结果属于当时H4B版本，见 [H4B-stability-review.md](H4B-stability-review.md)，不是本轮重跑结论。旧review按需查阅。
+- 0.8.3 音频专项 T0、音频+核心+玩法 T1、全量 T2 均通过；T2 含 243 项 pytest、3 种子 headless 和直路/弯坡长程检查，摘要位于 `logs/validation/20260923-094112-766203Z-T2/summary.json`。原护栏回归测试期待碰实体护栏时无事故，修改前 Simulation 原样复现失败；现断言事故只计一次，保持物理轨迹/翻滚约束。
 
 ## 下一入口
 
-- 当前施工包：[6B-01 音量设置与声音生命周期](tasks/6B-01-audio-settings.md)，音量功能自动验收通过，碰撞音效人工验收不通过且本轮已暂停修改。T0/T1结果、问题记录和修改文件见任务包；未运行T2/T3。
-- 游戏独立版：`builds/0.8.1/win_amd64/coastaldrive.exe`，仍是替换前的声音；试听新声音须运行当前源码 `src/main.py`，解释器 `.venv/Scripts/python.exe`。本次没有重新打包。
+- 下一工作：[6B-05 实驾校准](tasks/6B-05-impact-calibration.md)。使用 `.venv\Scripts\python.exe tools\impact_audio_check.py --drive --output logs\impact-manual-<日期>`，点击 Start driving、聚焦游戏窗口并确认 DRIVING 后逐项驾驶；JSONL 连通 Bullet 脉冲与音频决策。离线轻/中/重和 10 秒擦碰样本在 `logs/impact-audition-20260923/`，仅供选材，不代替游戏混音验收。设计与数据证据见 [设计](vehicle-impact-audio.md)、[证据](vehicle-impact-audio-evidence.md)。
+- [6B-01](tasks/6B-01-audio-settings.md) 保留为历史任务：音量自动验收通过，旧碰撞声人工不通过；旧速度差分型与 700 ms 全局冷却已退出代码。0.8.2 独立版是旧声音基线，不用于新系统试听。
+- 0.8.3 独立版：`builds/0.8.3/win_amd64/coastaldrive.exe`，随包核查 `impact-bank.json` 与 22 条新 WAV 均存在、旧四个碰撞 WAV 不在包内；最终包外离屏 highway 启动报告 `logs/package-0.8.3-final-smoke/h0-render-smoke.json` 显示通过、8 辆 NPC、20 次重启节点/任务稳定。该 smoke 使用 null 音频后端，声音本身另用开发环境真 OpenAL 核验；本机打包仍报告系统 DLL 查找警告，未在干净 Windows 安装环境验收。

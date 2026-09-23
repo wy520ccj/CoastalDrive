@@ -1,8 +1,10 @@
 """Fixed-step world, shared vehicles, traffic lifecycle and read-only snapshots."""
 
+import json
 import math
 import random
-from dataclasses import dataclass, replace
+import time
+from dataclasses import dataclass, field, replace
 
 from panda3d.bullet import (
     BulletBoxShape,
@@ -21,6 +23,7 @@ from highway_map import HIGHWAY_LENGTH, collision_boxes, traffic_spawns
 from highway_map import SPAWN as HIGHWAY_SPAWN
 from highway_map import on_road as highway_on_road
 from highway_segments import REBASE_DISTANCE, SEGMENT_LENGTH
+from impact_events import ContactSample, ImpactTracker, aggregate_contacts, new_contact_epoch
 from streamed_road import StreamedRoad
 from test_track import OBSTACLES, SPAWN, on_asphalt
 from traffic import Driver, Road, extents
@@ -51,6 +54,9 @@ class Snapshot:
     events: tuple[str, ...] = ()
     origin_y: float = 0.0
     collisions: int = 0
+    contact_epoch: int = field(default=0, compare=False)
+    impacts: tuple = ()
+    contacts: tuple = ()
 
 
 class Simulation:
@@ -77,6 +83,15 @@ class Simulation:
         self._world = None
         self.player = None
         self.npcs = []
+        self.contact_epoch = 0
+        self.impact_tracker = ImpactTracker()
+        self._body_source_ids = {}
+        self._next_body_source_id = 1
+        self._impact_events = ()
+        self._contact_states = ()
+        self._impact_diagnostic = None
+        self._impact_scenario = None
+        self._diagnostic_contact_keys = set()
         self.reset(seed)
 
     @property
@@ -87,6 +102,7 @@ class Simulation:
         if self.closed:
             raise RuntimeError("Simulation is closed")
         self._destroy_physics()
+        self._reset_contact_history()
         self.seed = seed
         self.origin_y = 0.0
         self.road = Road(self.track, seed=seed, shape=self.road_shape)
@@ -116,6 +132,201 @@ class Simulation:
         self.props = []
         self._build_world()
         self._build_traffic()
+
+    def _reset_contact_history(self):
+        old_epoch = self.contact_epoch
+        self.contact_epoch = new_contact_epoch()
+        self.impact_tracker.clear()
+        self._body_source_ids.clear()
+        self._next_body_source_id = 1
+        self._impact_events = ()
+        self._contact_states = ()
+        self._diagnostic_contact_keys.clear()
+        if old_epoch and self._impact_diagnostic is not None:
+            self._impact_diagnostic.write(json.dumps({
+                "type": "epoch_change", "scenario": self._impact_scenario,
+                "old_epoch": old_epoch, "epoch": self.contact_epoch,
+            }, ensure_ascii=False) + "\n")
+
+    def set_impact_diagnostic(self, sink=None, *, scenario=None):
+        """设置可选的 JSONL 诊断输出；None 关闭文件写入。"""
+        self._impact_diagnostic = sink
+        self._impact_scenario = scenario
+
+    def _source_id(self, body):
+        generation = 0
+        if body in self._traffic_bodies:
+            generation = self._generations[self._traffic_bodies.index(body)]
+        key = (body, generation)
+        source = self._body_source_ids.get(key)
+        if source is None:
+            source = self._next_body_source_id
+            self._next_body_source_id += 1
+            self._body_source_ids[key] = source
+        return source
+
+    def _prune_contact_sources(self):
+        active = set(self._world.getRigidBodies())
+        generations = {body: self._generations[index]
+                       for index, body in enumerate(self._traffic_bodies)}
+        for body, generation in tuple(self._body_source_ids):
+            if body not in active or generation != generations.get(body, generation):
+                del self._body_source_ids[(body, generation)]
+
+    @staticmethod
+    def _contact_material(name):
+        if name.startswith("traffic-"):
+            return "vehicle", None
+        if name in ("inner-rail", "outer-rail"):
+            return "metal_barrier", name.removesuffix("-rail")
+        if name in ("highway-rail-1", "highway-rail--1"):
+            return "metal_barrier", "right" if name == "highway-rail-1" else "left"
+        if name.startswith("segment-") and "-rail-" in name:
+            return "metal_barrier", name.rsplit("-", 1)[-1]
+        return "hard_solid", None
+
+    @staticmethod
+    def _tuple(vector):
+        return (float(vector.x), float(vector.y), float(vector.z))
+
+    @staticmethod
+    def _contact_zone(position, normal):
+        x, y, z = position
+        nx, ny, nz = normal
+        # Bullet 法线指向玩家，受撞的车身面位于反方向。
+        by_normal = max((abs(nx), "right" if nx < 0 else "left"),
+                        (abs(ny), "front" if ny < 0 else "rear"),
+                        (abs(nz), "roof" if nz < 0 else "underbody"))
+        by_position = max((abs(x) / 0.78, "left" if x < 0 else "right"),
+                          (abs(y) / 2.05, "rear" if y < 0 else "front"),
+                          (abs(z - 0.42) / 0.42, "underbody" if z < 0.42 else "roof"))
+        return by_normal[1] if abs(by_position[0] - by_normal[0]) < 0.3 else by_position[1]
+
+    @staticmethod
+    def _contact_velocity(body, point, saved):
+        values = saved.get(body)
+        if values is None:
+            values = (Vec3(body.getLinearVelocity()), Vec3(body.getAngularVelocity()),
+                      Vec3(body.getTransform().getPos()))
+        linear, angular, origin = values
+        return linear + angular.cross(point - origin)
+
+    def _read_impact_contacts(self, before):
+        sampled_at_ns = time.perf_counter_ns() if self._impact_diagnostic is not None else None
+        samples = []
+        post_motion = {}
+        player_mat = self._chassis.getTransform().getMat()
+        inverse = type(player_mat)(player_mat)
+        inverse.invertInPlace()
+        for manifold in self._world.getManifolds():
+            node0, node1 = manifold.getNode0(), manifold.getNode1()
+            if node0 != self._chassis and node1 != self._chassis:
+                continue
+            player_is_a = node0 == self._chassis
+            other = node1 if player_is_a else node0
+            material, barrier_side = self._contact_material(other.getName())
+            source_id = self._source_id(other)
+            for point in manifold.getManifoldPoints():
+                impulse = max(0.0, float(point.getAppliedImpulse()))
+                distance = float(point.getDistance())
+                if distance > 0 and impulse <= 0:
+                    continue
+                point_a = Vec3(point.getPositionWorldOnA())
+                point_b = Vec3(point.getPositionWorldOnB())
+                player_point, other_point = ((point_a, point_b) if player_is_a
+                                              else (point_b, point_a))
+                normal = Vec3(point.getNormalWorldOnB())
+                if not player_is_a:
+                    normal = -normal
+                normal.normalize()
+                relative = (self._contact_velocity(self._chassis, player_point, before)
+                            - self._contact_velocity(other, other_point, before))
+                normal_velocity = relative.dot(normal)
+                normal_speed = max(0.0, -normal_velocity)
+                tangent_speed = (relative - normal * normal_velocity).length()
+                post_relative = (self._contact_velocity(self._chassis, player_point, {})
+                                 - self._contact_velocity(other, other_point, {}))
+                post_nv = post_relative.dot(normal)
+                local_position = inverse.xformPoint((player_point + other_point) * 0.5)
+                local_normal = inverse.xformVec(normal)
+                local_normal.normalize()
+                local_position = self._tuple(local_position)
+                local_normal = self._tuple(local_normal)
+                sample = ContactSample(
+                    (source_id,), material, barrier_side, impulse, distance,
+                    int(point.getLifeTime()), normal_speed, tangent_speed,
+                    local_position, local_normal,
+                    self._contact_zone(local_position, local_normal),
+                )
+                samples.append(sample)
+                key = ImpactTracker.key(sample)
+                motion = (max(0.0, -post_nv),
+                          (post_relative - normal * post_nv).length())
+                weight = impulse if impulse > 0 else 1.0
+                old = post_motion.get(key, (0.0, 0.0, 0.0))
+                post_motion[key] = (
+                    old[0] + weight,
+                    old[1] + motion[0] * weight,
+                    old[2] + motion[1] * weight,
+                )
+        clusters = aggregate_contacts(samples)
+        motion = {key: (values[1] / values[0], values[2] / values[0])
+                  for key, values in post_motion.items()}
+        events, contacts = self.impact_tracker.update(
+            clusters, self._tick + 1, self.contact_epoch, motion
+        )
+        self._impact_events = events
+        self._contact_states = contacts
+        if self._impact_diagnostic is not None:
+            current_keys = {ImpactTracker.key(cluster) for cluster in clusters}
+            diagnostic_tick = self._tick + 1
+            for cluster_index, cluster in enumerate(clusters):
+                key = ImpactTracker.key(cluster)
+                event = next((impact for impact in events if impact.index == cluster_index), None)
+                if event is None and diagnostic_tick % 6 and key in self._diagnostic_contact_keys:
+                    continue
+                age = (event.contact_age_ticks if event else next(
+                    (contact.contact_age_ticks for contact in contacts
+                     if contact.sources == cluster.sources and contact.material == cluster.material), 1
+                ))
+                row = {
+                    "type": "pulse" if event else "contact",
+                    "scenario": self._impact_scenario,
+                    "epoch": self.contact_epoch,
+                    "tick": diagnostic_tick,
+                    "event_id": event.event_id if event else None,
+                    "sample_monotonic_ns": sampled_at_ns,
+                    "group": f"{self.contact_epoch}:{key}",
+                    "sources": cluster.sources,
+                    "material": cluster.material,
+                    "raw_impulse_ns": cluster.raw_impulse,
+                    "excess_impulse_ns": event.excess_impulse if event else None,
+                    "normal_component_m_s": cluster.normal_speed,
+                    "tangential_component_m_s": cluster.tangential_speed,
+                    "zone": cluster.zone,
+                    "contact_age_ticks": age,
+                    "new_impact": event is not None,
+                    "continuing_contact": age > 1,
+                    "point_count": cluster.point_count,
+                    "max_bullet_lifetime": cluster.max_lifetime,
+                    "min_distance_m": cluster.min_distance,
+                    "contact_points": [
+                        {"raw_impulse_ns": sample.impulse, "distance_m": sample.distance,
+                         "bullet_lifetime": sample.lifetime}
+                        for sample in samples
+                        if ImpactTracker.key(sample) == key
+                    ],
+                }
+                self._impact_diagnostic.write(json.dumps(row, ensure_ascii=False) + "\n")
+            for key in self._diagnostic_contact_keys - current_keys:
+                self._impact_diagnostic.write(json.dumps({
+                    "type": "contact_end", "scenario": self._impact_scenario,
+                    "epoch": self.contact_epoch, "tick": diagnostic_tick,
+                    "group": f"{self.contact_epoch}:{key}",
+                    "new_impact": False, "continuing_contact": False,
+                }, ensure_ascii=False) + "\n")
+            self._diagnostic_contact_keys = current_keys
+        return samples, clusters, events, contacts
 
     def set_checkpoint_frames_enabled(self, enabled):
         # Hidden frames must not remain under wheel rays or ground-height queries.
@@ -442,6 +653,7 @@ class Simulation:
         self.player.reset(
             self.spawn if position is None else position, 0 if heading is None else heading, pitch
         )
+        self._reset_contact_history()
         if at_spawn and self.stream:
             self._update_stream()
         self._events = ("player_reset",)
@@ -465,6 +677,7 @@ class Simulation:
             if self.stream:
                 self._update_stream()
             self._recycle_traffic()
+            self._prune_contact_sources()
             self._drive_traffic()
         cars = [
             (self.player, control),
@@ -475,9 +688,18 @@ class Simulation:
             ],
         ]
         velocities = [Vec3(car._chassis.getLinearVelocity()) for car, _ in cars]
+        before = {
+            car._chassis: (
+                Vec3(car._chassis.getLinearVelocity()),
+                Vec3(car._chassis.getAngularVelocity()),
+                Vec3(car._chassis.getTransform().getPos()),
+            )
+            for car, _ in cars
+        }
         for car, action in cars:
             car.apply_control(action)
         self._world.doPhysics(FIXED_DT, 4, FIXED_DT)
+        self._read_impact_contacts(before)
         for (car, _), velocity in zip(cars, velocities):
             car.after_step(velocity)
         self.collision_count += sum(
@@ -529,6 +751,9 @@ class Simulation:
             self._events,
             self.origin_y,
             self.player_collisions,
+            self.contact_epoch,
+            self._impact_events,
+            self._contact_states,
         )
 
     def close(self):

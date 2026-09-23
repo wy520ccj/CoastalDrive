@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="coastaldrive",
-    version="0.8.1",
+    version="0.8.3",
     options={
         "build_apps": {
             "gui_apps": {"coastaldrive": "src/main.py"},
@@ -16,6 +16,7 @@ setup(
                 "assets/game/**/*.png",
                 "assets/game/**/*.jpg",
                 "assets/game/**/*.wav",
+                "assets/game/**/*.json",
                 "assets/game/**/License.txt",
             ],
             "plugins": ["pandagl", "p3openal_audio"],

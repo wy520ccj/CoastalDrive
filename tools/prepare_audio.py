@@ -25,22 +25,6 @@ SOURCES = {
         "https://cdn.freesound.org/previews/495/495795_8972317-hq.mp3",
         "95864b36654fa08fcca505d0b6bc835055930408e683ac0b2b40fb86f7534c72",
     ),
-    "impact-light-hq.mp3": (
-        "https://cdn.freesound.org/previews/385/385940_7097737-hq.mp3",
-        "76a11562089a88c6334f0b99845033c1b7aab54c3fda57e09840684543abac7f",
-    ),
-    "impact-metal-hq.mp3": (
-        "https://cdn.freesound.org/previews/385/385937_7097737-hq.mp3",
-        "8dea59e14dacc8cf60d5ad966a51ecf9282e951997eeb883c156d58bf139dbf0",
-    ),
-    "impact-scrape-hq.mp3": (
-        "https://cdn.freesound.org/previews/385/385939_7097737-hq.mp3",
-        "35cee69262957589433ba055d6e270c65400bb543b52827c4333829d5abac291",
-    ),
-    "impact-heavy-hq.mp3": (
-        "https://cdn.freesound.org/previews/385/385938_7097737-hq.mp3",
-        "5acf613452f0c78b9a8cfcd91b18b8efc76b8c5c6f3d714595b9e63d8030630c",
-    ),
 }
 
 
@@ -116,31 +100,6 @@ def main():
         filters="highpass=f=160,lowpass=f=4500,volume=26dB",
     )
     loop_crossfade(SOURCE / "road-cut.wav", OUTPUT / "road.wav", 0.4)
-    convert(
-        SOURCE / "impact-light-hq.mp3",
-        OUTPUT / "impact_light.wav",
-        duration=1.0,
-        filters="alimiter=limit=0.95",
-    )
-    convert(
-        SOURCE / "impact-metal-hq.mp3",
-        OUTPUT / "impact_side.wav",
-        duration=1.5,
-        filters="volume=-5dB",
-    )
-    convert(
-        SOURCE / "impact-scrape-hq.mp3",
-        OUTPUT / "impact_scrape.wav",
-        start=0.2,
-        duration=1.45,
-        filters="volume=4dB,afade=t=in:st=0:d=0.03,afade=t=out:st=1.2:d=0.25,alimiter=limit=0.95",
-    )
-    convert(
-        SOURCE / "impact-heavy-hq.mp3",
-        OUTPUT / "impact_heavy.wav",
-        duration=0.75,
-        filters="volume=2dB,alimiter=limit=0.95",
-    )
 
 
 if __name__ == "__main__":

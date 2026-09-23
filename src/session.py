@@ -1,4 +1,5 @@
 import math
+from dataclasses import replace
 from enum import Enum
 
 from controls import Controller, KeyboardController
@@ -165,9 +166,27 @@ class Session:
         if self._skip_frame:
             elapsed = 0.0
             self._skip_frame = False
+        collected = []
+        epoch = self.current.contact_epoch
+        frame_phase = self.phase
+
+        def tick_and_collect():
+            nonlocal epoch, collected
+            before_tick = self.current.tick
+            self.tick()
+            latest = self.current
+            if latest.contact_epoch != epoch:
+                epoch = latest.contact_epoch
+                collected = []
+            if latest.tick > before_tick and latest.contact_epoch == epoch:
+                collected.extend(latest.impacts)
+
         if self.phase in (Phase.DRIVING, Phase.COUNTDOWN):
-            self.stepper.advance(elapsed, self.tick)
-        return interpolate(self.previous, self.current, self.stepper.remainder / FIXED_DT)
+            self.stepper.advance(elapsed, tick_and_collect)
+        if self.phase != Phase.DRIVING or frame_phase in (Phase.PAUSED, Phase.MENU, Phase.RESULTS):
+            collected = []
+        current = interpolate(self.previous, self.current, self.stepper.remainder / FIXED_DT)
+        return replace(current, impacts=tuple(collected), contacts=self.current.contacts)
 
     def pause(self):
         if self.phase in (Phase.DRIVING, Phase.COUNTDOWN):

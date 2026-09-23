@@ -1,8 +1,13 @@
+"""驾驶循环音量与真实碰撞事件的集成检查。"""
+
+import json
 import wave
+from io import StringIO
 from types import SimpleNamespace
 
+from impact_events import ContactState, ImpactEvent
 from paths import resource_root
-from soundscape import Soundscape, collision_sound_kind
+from soundscape import Soundscape
 
 
 class FakeSound:
@@ -10,6 +15,8 @@ class FakeSound:
         self.volumes = []
         self.play_count = 0
         self.stop_count = 0
+        self.rate = 1.0
+        self.position = None
 
     def setLoop(self, value):
         self.loop = value
@@ -19,6 +26,9 @@ class FakeSound:
 
     def setPlayRate(self, value):
         self.rate = value
+
+    def set3dAttributes(self, *values):
+        self.position = values
 
     def play(self):
         self.play_count += 1
@@ -38,28 +48,20 @@ class FakeBase:
         return sound
 
 
-def frame(
-    time,
-    collisions=0,
-    *,
-    throttle=0.5,
-    speed=18,
-    rpm=3500,
-    surface="asphalt",
-    velocity=None,
-    heading=0,
-):
-    if velocity is None:
-        velocity = (0.0, speed, 0.0)
-    player = SimpleNamespace(
-        throttle=throttle,
-        speed=speed,
-        rpm=rpm,
-        surface=surface,
-        velocity=velocity,
-        heading=heading,
-    )
-    return SimpleNamespace(time=time, collisions=collisions, player=player)
+def event(tick=1, impulse=6000, *, epoch=1, source=1, material="metal_barrier", zone="front"):
+    return ImpactEvent(epoch, tick, source - 1, (source,), material, impulse, impulse,
+                       8.0, 0.3, (0, 2, 0.4), (0, -1, 0), zone, 1)
+
+
+def contact(tick=1, *, tangent=8.0, impulse=150, source=1):
+    return ContactState((source,), "metal_barrier", tick, impulse, 0.0, tangent,
+                        (0.8, 0, 0.4), (-1, 0, 0), "right", tick)
+
+
+def frame(time, impacts=(), contacts=(), *, epoch=1, rpm=3500, speed=18):
+    player = SimpleNamespace(throttle=0.5, speed=speed, rpm=rpm, surface="asphalt")
+    return SimpleNamespace(time=time, impacts=impacts, contacts=contacts,
+                           contact_epoch=epoch, player=player, collisions=0)
 
 
 def phase(value):
@@ -72,124 +74,104 @@ def make_soundscape(master=100, effects=100):
     return soundscape, base.sounds
 
 
-def test_both_volume_levels_multiply_engine_road_and_collision_audio():
-    full, full_sounds = make_soundscape()
-    reduced, reduced_sounds = make_soundscape(50, 20)
+def impact_plays(sounds):
+    return sum(sound.play_count for sound in sounds[3:])
+
+
+def test_volume_levels_multiply_loops_and_all_impact_layers():
+    full, a = make_soundscape()
+    reduced, b = make_soundscape(50, 20)
     for soundscape in (full, reduced):
-        soundscape.update(frame(0, 0), phase("driving"), None)
-        soundscape.update(frame(0.1, 1), phase("driving"), None)
-    for index in range(3):
-        assert abs(reduced_sounds[index].volumes[-1] - full_sounds[index].volumes[-1] * 0.1) < 1e-9
-    assert full_sounds[3].play_count == reduced_sounds[3].play_count == 1
-    assert abs(reduced_sounds[3].volumes[-1] - full_sounds[3].volumes[-1] * 0.1) < 1e-9
+        soundscape.update(frame(0), phase("driving"), None)
+        soundscape.update(frame(.1, (event(),)), phase("driving"), None)
+    for i in range(3):
+        assert abs(b[i].volumes[-1] - a[i].volumes[-1] * .1) < 1e-9
+    assert len(full.impact_audio.voices) >= 2
+    assert len(reduced.impact_audio.voices) == len(full.impact_audio.voices)
+    for left, right in zip(full.impact_audio.voices, reduced.impact_audio.voices):
+        assert abs(right.sound.volumes[-1] - left.sound.volumes[-1] * .1) < 1e-9
 
 
-def test_real_idle_and_revs_mix_by_rpm_with_subtle_road_level():
+def test_idle_and_revs_preserve_existing_mix():
     soundscape, sounds = make_soundscape()
     soundscape.update(frame(0, rpm=900), phase("driving"), None)
     assert sounds[1].volumes[-1] > 0 and sounds[0].volumes[-1] == 0
-    soundscape.update(frame(0.1, rpm=8000, speed=36), phase("driving"), None)
+    soundscape.update(frame(.1, rpm=8000, speed=36), phase("driving"), None)
     assert sounds[0].volumes[-1] > 0 and sounds[1].volumes[-1] == 0
     assert sounds[2].volumes[-1] < sounds[0].volumes[-1]
 
 
-def test_mute_consumes_collisions_and_does_not_replay_them_after_unmute():
+def test_mute_consumes_impact_without_replay():
     soundscape, sounds = make_soundscape(0, 100)
-    soundscape.update(frame(0, 0), phase("driving"), None)
-    soundscape.update(frame(0.1, 1), phase("driving"), None)
-    assert not soundscape.loops_playing
-    assert all(sound.play_count == 0 for sound in sounds)
+    soundscape.update(frame(0, (event(),)), phase("driving"), None)
+    assert impact_plays(sounds) == 0
     soundscape.set_volumes(100, 100)
-    soundscape.update(frame(0.2, 1), phase("driving"), None)
-    assert sum(sound.play_count for sound in sounds[3:]) == 0
-    soundscape.update(frame(0.3, 2), phase("driving"), None)
-    assert sum(sound.play_count for sound in sounds[3:]) == 1
+    soundscape.update(frame(.1, (event(),)), phase("driving"), None)
+    assert impact_plays(sounds) == 0
+    soundscape.update(frame(.2, (event(25),)), phase("driving"), None)
+    assert impact_plays(sounds) >= 2
     soundscape.set_volumes(100, 0)
-    soundscape.update(frame(0.4, 3), phase("driving"), None)
+    assert soundscape.impact_audio.voices == []
     assert all(sound.volumes[-1] == 0 for sound in sounds[:3])
-    assert sounds[3].play_count == 1
 
 
-def test_recorded_crash_has_time_to_ring_out_between_collisions():
+def test_pause_resume_reset_and_close_stop_all_voices():
     soundscape, sounds = make_soundscape()
-    soundscape.update(frame(0, 0), phase("driving"), None)
-    soundscape.update(frame(0.1, 1), phase("driving"), None)
-    soundscape.update(frame(0.4, 2), phase("driving"), None)
-    assert sum(sound.play_count for sound in sounds[3:]) == 1
-    soundscape.update(frame(0.9, 3), phase("driving"), None)
-    assert sum(sound.play_count for sound in sounds[3:]) == 2
-
-
-def test_collision_sound_selection_covers_light_side_scrape_and_heavy_impacts():
-    assert collision_sound_kind((0, 18, 0), (0, 17.5, 0), 0, 18) == "light"
-    assert collision_sound_kind((4, 18, 0), (1, 18, 0), 0, 18) == "side"
-    assert collision_sound_kind((5.2, 18, 0), (4.0, 18, 0), 0, 18) == "scrape"
-    assert collision_sound_kind((0, 22, 0), (0, 18, 0), 0, 18) == "heavy"
-
-
-def test_collision_classes_play_different_recordings():
-    cases = (
-        ("light", (0, 18, 0), (0, 17.5, 0), 18),
-        ("side", (4, 18, 0), (1, 18, 0), 18),
-        ("scrape", (5.2, 18, 0), (4.0, 18, 0), 18),
-        ("heavy", (0, 22, 0), (0, 18, 0), 18),
-    )
-    for kind, previous, current, speed in cases:
-        soundscape, sounds = make_soundscape()
-        soundscape.previous_velocity = previous
-        soundscape.update(frame(1, 1, velocity=current, speed=speed), phase("driving"), None)
-        expected = 3 + ("light", "side", "scrape", "heavy").index(kind)
-        assert sounds[expected].play_count == 1
-        assert sum(sound.play_count for sound in sounds[3:]) == 1
-        for sound in sounds[3:]:
-            if sound is not sounds[expected]:
-                assert sound.play_count == 0
-
-
-def test_pause_resume_reuses_one_loop_instance_and_close_stops_every_sound():
-    soundscape, sounds = make_soundscape()
-    soundscape.update(frame(0, 0), phase("driving"), None)
-    soundscape.update(frame(0.1, 0), phase("driving"), None)
-    assert [sound.play_count for sound in sounds[:3]] == [1, 1, 1]
-    assert sum(sound.play_count for sound in sounds[3:]) == 0
-
-    soundscape.update(frame(0.2, 0), phase("paused"), None)
+    soundscape.update(frame(0, (event(),)), phase("driving"), None)
+    assert soundscape.impact_audio.voices
+    soundscape.update(frame(.1), phase("paused"), None)
+    assert soundscape.impact_audio.voices == []
     assert not soundscape.loops_playing
-    assert all(sound.stop_count == 1 for sound in sounds[:3])
-    soundscape.update(frame(0.3, 0), phase("driving"), None)
-    assert [sound.play_count for sound in sounds[:3]] == [2, 2, 2]
-    assert sum(sound.play_count for sound in sounds[3:]) == 0
-
+    soundscape.update(frame(.2), phase("driving"), None)
+    assert [s.play_count for s in sounds[:3]] == [2, 2, 2]
+    soundscape.update(frame(.3, (event(1, epoch=2),), epoch=2), phase("driving"), None)
+    assert all(v.event_id.startswith("2:") for v in soundscape.impact_audio.voices)
     soundscape.close()
     soundscape.close()
+    assert soundscape.impact_audio.voices == []
     assert not soundscape.loops_playing
-    assert [sound.stop_count for sound in sounds] == [2, 2, 2, 1, 1, 1, 1]
 
 
-def test_menu_results_and_countdown_loop_lifecycle():
+def test_only_physical_event_triggers_sound_and_scrape_is_loop():
     soundscape, sounds = make_soundscape()
-    soundscape.update(frame(0, 0), phase("menu"), None)
-    soundscape.update(frame(0.1, 0), phase("countdown"), None)
-    soundscape.update(frame(0.2, 0), phase("results"), None)
-    soundscape.update(frame(0.3, 0), phase("driving"), None)
-    assert [sound.play_count for sound in sounds[:3]] == [2, 2, 2]
-    assert sum(sound.play_count for sound in sounds[3:]) == 0
-    assert all(sound.stop_count == 1 for sound in sounds[:3])
+    soundscape.update(frame(0), phase("driving"), None)
+    for tick in range(1, 15):
+        soundscape.update(frame(tick / 120, contacts=(contact(tick),)),
+                          phase("driving"), None, 1 / 120)
+    assert impact_plays(sounds) == 1
+    assert soundscape.impact_audio.scrape_sound is not None
+    scrape_sound = soundscape.impact_audio.scrape_sound
+    assert scrape_sound.play_count == 1 and scrape_sound.loop
+    assert soundscape.impact_audio.scrape_state == "sustain"
+    for tick in range(15, 34):
+        soundscape.update(frame(tick / 120), phase("driving"), None, 1 / 120)
+    assert scrape_sound.stop_count == 1
+    assert soundscape.impact_audio.scrape_state == "off"
 
 
-def test_recorded_clips_have_runtime_pcm_format():
+def test_audio_log_reports_severity_layers_and_scrape():
+    soundscape, _ = make_soundscape()
+    log = StringIO()
+    soundscape.set_impact_diagnostic(log)
+    soundscape.update(frame(0, (event(zone="left"),)), phase("driving"), None)
+    decisions = [json.loads(line) for line in log.getvalue().splitlines()
+                 if json.loads(line)["type"] == "decision"]
+    assert decisions[0]["material"] == "metal_barrier"
+    assert decisions[0]["zone"] == "left"
+    assert decisions[0]["raw_impulse"] == 6000
+    assert 0 < decisions[0]["severity"] < 1
+    assert {name for name, _ in decisions[0]["layers"]} >= {"transient", "body"}
+    assert all(v.sound.position[0] == -0.16 for v in soundscape.impact_audio.voices)
+
+
+def test_new_impact_clips_are_playable_mono_pcm():
     audio_dir = resource_root() / "assets" / "game" / "audio"
-    for name in (
-        "engine.wav",
-        "engine_idle.wav",
-        "road.wav",
-        "impact_light.wav",
-        "impact_side.wav",
-        "impact_scrape.wav",
-        "impact_heavy.wav",
-    ):
-        with wave.open(str(audio_dir / name), "rb") as clip:
-            assert clip.getnchannels() == 1
-            assert clip.getsampwidth() == 2
-            assert clip.getframerate() == 44100
-            assert clip.getnframes() > 8000
+    bank = json.loads((audio_dir / "impact-bank.json").read_text(encoding="utf-8"))
+    assert sum(map(len, bank["pools"].values())) == 22
+    for pool in bank["pools"].values():
+        for entry in pool:
+            with wave.open(str(audio_dir / entry["path"]), "rb") as clip:
+                assert clip.getnchannels() == 1
+                assert clip.getsampwidth() == 2
+                assert clip.getframerate() == 44100
+                assert clip.getnframes() > 8000

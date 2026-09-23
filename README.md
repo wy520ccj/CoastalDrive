@@ -1,6 +1,6 @@
 # CoastalDrive
 
-本地开发版本：**0.8.1**。阶段 6A 的菜单车库、车型/车漆选择与本地保存已完成；阶段 6B 正在逐步加入环境画面和声音，正常游戏音频试听及完整画面、性能验收仍待进行。进度见[当前进度](docs/current-progress.md)，6B 当前增量见[环境与声音记录](docs/phase6b-atmosphere.md)，分阶段路线见[开发计划](docs/development-plan.md)。
+本地开发版本：**0.8.3**。阶段 6B 已接入真实 Bullet 碰撞事件、分层汽车撞击声与持续擦碰；实际驾驶音色校准、完整画面和性能验收仍待进行。进度见[当前进度](docs/current-progress.md)，环境增量见[环境与声音记录](docs/phase6b-atmosphere.md)，分阶段路线见[开发计划](docs/development-plan.md)。
 
 CoastalDrive 是使用 Python 和 Panda3D 开发的驾驶游戏，包含滨海计时挑战、滨海自由驾驶，以及可选直路/弯坡和三档车流的无限高速。玩家可在高速自由驾驶或 5 公里无碰撞挑战中驾驶；倒车可用于调整姿态。
 
@@ -35,11 +35,11 @@ PyCharm 打开本项目，解释器选择 `.venv\Scripts\python.exe`，入口为
 
 ## 当前画面与声音
 
-当前 6B 增量包括 Poly Haven 天空、路面和草地贴图，滨海程序生成的海面纹理、路边标杆、弯坡路边松树/灌木、HUD 半透明底板，以及项目生成的发动机、路噪和碰撞声音。它们仍属原型增量；正常游戏中的音频试听、完整视觉验收和性能测量尚未完成。截图和边界记录见 [docs/phase6b-atmosphere.md](docs/phase6b-atmosphere.md)。
+当前 6B 增量包括 Poly Haven 天空、路面和草地贴图，滨海程序生成的海面纹理、路边标杆、弯坡路边松树/灌木、HUD 半透明底板、发动机与路噪录音，以及新的汽车撞击素材池。撞击声按真实物理事件分层播放，护栏持续摩擦使用独立循环。音色与动态仍需实际驾驶试听，完整视觉验收和性能测量尚未完成。音频设计与诊断入口见 [docs/vehicle-impact-audio.md](docs/vehicle-impact-audio.md)。
 
 ## 检查
 
-开发默认按范围执行短检查，避免每次都跑全套。工作规则见 [AGENTS.md](AGENTS.md)，任务包、T0–T3及人工Gate见 [任务入口](docs/tasks/README.md)。下一任务是 [6B-01 音量设置](docs/tasks/6B-01-audio-settings.md)，尚未实施。
+开发默认按范围执行短检查。工作规则见 [AGENTS.md](AGENTS.md)，任务包、T0–T3及人工Gate见 [任务入口](docs/tasks/README.md)。碰撞音频的下一步是 [6B-05 实驾校准](docs/tasks/6B-05-impact-calibration.md)。
 
 ```powershell
 .\.venv\Scripts\python.exe tools/validate.py T0 --area traffic
@@ -74,11 +74,11 @@ headless 不创建窗口或加载渲染模块；offscreen smoke 创建实际离�
 .\.venv\Scripts\python.exe setup.py build_apps
 ```
 
-打包命令默认输出 `build/win_amd64/coastaldrive.exe` 和同目录资源。本地 0.8.1 独立版位于 `builds/0.8.1/win_amd64/coastaldrive.exe`；运行时请保留并启动完整文件夹，不要只复制 exe。应用设置和日志保存在 `%LOCALAPPDATA%\CoastalDrive`。
+打包命令默认输出 `build/win_amd64/coastaldrive.exe` 和同目录资源。当前 0.8.3 独立版位于 `builds/0.8.3/win_amd64/coastaldrive.exe`；运行时请保留并启动完整文件夹，不要只复制 exe。应用设置和日志保存在 `%LOCALAPPDATA%\CoastalDrive`。
 
 ## 素材准备
 
-素材来源、许可和本地路径登记在 [docs/asset-register.csv](docs/asset-register.csv)。当前车辆与自然资源来自 Kenney CC0 素材包；天空、路面和草地贴图来自 Poly Haven CC0 资源。滨海海面纹理与三段驾驶声音由项目脚本生成。相关准备入口包括 `tools/prepare_vehicle_paint.py`、`tools/prepare_phase6b_sky.py`、`tools/prepare_phase6b_materials.py`、`tools/prepare_phase6b_nature.py` 和 `tools/prepare_audio.py`。原始素材压缩包、虚拟环境和构建目录不一定随源码目录分发；处理许可与原始资源时以素材登记表和随资源保留的许可证文件为准。
+素材来源、许可和本地路径登记在 [docs/asset-register.csv](docs/asset-register.csv)。当前车辆与自然资源来自 Kenney CC0 素材包；天空、路面和草地贴图来自 Poly Haven CC0 资源。滨海海面纹理由项目脚本生成；驾驶循环声和新碰撞层的录音来源及加工方法分别见 `tools/prepare_audio.py`、`tools/prepare_impact_audio.py` 与 `assets/game/audio/License.txt`。原始素材压缩包、虚拟环境和构建目录不一定随源码目录分发；处理许可与原始资源时以素材登记表和随资源保留的许可证文件为准。
 
 ## 代码边界
 
