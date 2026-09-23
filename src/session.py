@@ -3,6 +3,7 @@ from enum import Enum
 
 from controls import Controller, KeyboardController
 from highway_map import HIGHWAY_LENGTH
+from highway_run import TRAFFIC_DENSITIES, HighwayRun
 from race import GameMode, RaceTracker
 from simulation import FIXED_DT, Control, Simulation, interpolate
 from tracks import get_track
@@ -41,6 +42,7 @@ class FixedStepper:
 class Session:
     def __init__(self, seed=0, *, track="coastal", scores=None, road_shape="straight"):
         self.road_shape = road_shape
+        self.traffic_density = "normal"
         self.simulation = Simulation(seed, track=track, road_shape=road_shape)
         self.track = get_track(track)
         self.keyboard = KeyboardController()
@@ -55,6 +57,7 @@ class Session:
         self.mode = GameMode.FREE_DRIVE
         self.notice = ""
         self.race = RaceTracker(self.mode, scores=scores)
+        self.highway = HighwayRun()
         self.sync_snapshots()
 
     def sync_snapshots(self):
@@ -67,32 +70,40 @@ class Session:
         chosen_mode = self.mode if mode is None else mode
         if chosen_mode == GameMode.TIME_TRIAL and chosen_track.circuit is None:
             raise ValueError("Time trial requires a circuit")
+        if chosen_mode == GameMode.DISTANCE_CHALLENGE and chosen_track.id.value != "endless":
+            raise ValueError("Distance challenge requires the endless highway")
         track = chosen_track.id.value
         self.phase = Phase.LOADING
         self.notice = ""
         traffic_count = 8 if chosen_mode == GameMode.FREE_DRIVE and track != "test" else 0
-        if chosen_mode == GameMode.FREE_DRIVE and track == "endless":
-            traffic_count = 12
+        density = TRAFFIC_DENSITIES[self.traffic_density]
+        if track == "endless":
+            traffic_count = density.cars
         if seed is not None:
             self.seed = seed
         if track is not None and track != self.simulation.track:
             self.simulation.close()
-            self.simulation = Simulation(self.seed, track=track, traffic_count=traffic_count, road_shape=self.road_shape)
+            self.simulation = Simulation(
+                self.seed, track=track, traffic_count=traffic_count,
+                road_shape=self.road_shape, traffic_span=density.spawn_span,
+            )
             self.track = get_track(track)
         else:
             self.simulation.road_shape = self.road_shape
             self.simulation.traffic_count = traffic_count
+            self.simulation.traffic_span = density.spawn_span
             self.simulation.reset(self.seed)
         self.mode = chosen_mode
         self.simulation.set_checkpoint_frames_enabled(self.mode == GameMode.TIME_TRIAL)
         self.race.start(self.mode, circuit=self.track.circuit)
+        self.highway = HighwayRun(challenge=self.mode == GameMode.DISTANCE_CHALLENGE)
         self.keyboard.clear()
         self.controller = self.keyboard
         self.stepper.reset()
         self.countdown_ticks = 360 if countdown else 0
         self.phase = Phase.COUNTDOWN if countdown else Phase.DRIVING
         if not countdown:
-            self.race.begin()
+            self.begin_driving()
         self._skip_frame = True
         self.sync_snapshots()
 
@@ -101,13 +112,27 @@ class Session:
         self.last_control = Control()
         self.controller = controller
 
+    def highway_progress(self, state=None):
+        if state is None:
+            state = self.simulation.snapshot()
+        distance, _ = self.simulation.road.locate(state.player)
+        return distance if self.simulation.road.curve else distance + state.origin_y
+
+    def begin_driving(self):
+        if self.simulation.track == "endless":
+            self.highway.start(
+                self.highway_progress(), challenge=self.mode == GameMode.DISTANCE_CHALLENGE
+            )
+        else:
+            self.race.begin()
+
     def tick(self):
         if self.phase == Phase.COUNTDOWN:
             self.countdown_ticks -= 1
             if self.countdown_ticks == 0:
                 self.phase = Phase.DRIVING
                 self.keyboard.clear()
-                self.race.begin()
+                self.begin_driving()
         elif self.phase == Phase.DRIVING:
             self.previous = self.current
             self.last_control = self.controller.sample(self.current, FIXED_DT)
@@ -121,7 +146,12 @@ class Session:
                 self.race.update(self.current, FIXED_DT, reset=True)
             else:
                 self.race.update(self.current, FIXED_DT)
-            if self.race.snapshot.finished:
+            if self.simulation.track == "endless":
+                self.highway.update(
+                    self.highway_progress(self.current), self.current.collisions, FIXED_DT,
+                    reset="player_reset" in self.current.events,
+                )
+            if self.race.snapshot.finished or self.highway.snapshot.finished:
                 self.phase = Phase.RESULTS
                 self.keyboard.clear()
                 self.previous = self.current
@@ -163,6 +193,12 @@ class Session:
             return
         self.notice = ""
         self.race.reset_player(self.simulation.snapshot())
+        if self.simulation.track == "endless":
+            self.highway.update(
+                self.highway_progress(), self.simulation.player_collisions, 0, reset=True
+            )
+            if self.highway.snapshot.finished:
+                self.phase = Phase.RESULTS
         self.keyboard.clear()
         self.stepper.remainder = 0.0
         self.sync_snapshots()
@@ -172,12 +208,14 @@ class Session:
         self.mode = GameMode.FREE_DRIVE
         self.simulation.set_checkpoint_frames_enabled(False)
         self.race.start(self.mode)
+        self.highway = HighwayRun()
         self.keyboard.clear()
         self.stepper.remainder = 0.0
         self.sync_snapshots()
 
     def finish(self):
         self.race.stop()
+        self.highway.stop("挑战提前结束" if self.mode == GameMode.DISTANCE_CHALLENGE else "自由驾驶结束")
         self.phase = Phase.RESULTS
         self.keyboard.clear()
         self.stepper.remainder = 0.0

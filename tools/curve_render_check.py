@@ -1,5 +1,6 @@
 """Render genuine physics frames on bends, crests and across an origin shift."""
 
+import argparse
 import json
 import math
 import sys
@@ -14,7 +15,9 @@ from application import CoastalDrive
 
 
 def main():
-    output = Path("logs/h4b/curves/ui")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=Path("logs/h4b/curves/ui"))
+    output = parser.parse_args().output
     output.mkdir(parents=True, exist_ok=True)
     app = CoastalDrive(smoke=True, output=output, track="endless", road_shape="hills")
     app.taskMgr.remove("finish-smoke")

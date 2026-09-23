@@ -4,7 +4,11 @@ Kenney Racing Kit,https://kenney.nl/assets/racing-kit,CC0,downloaded,roadside pr
 Kenney Nature Kit,https://kenney.nl/assets/nature-kit,CC0,downloaded,trees rocks and foliage,assets/raw/kenney_nature-kit.zip,License.txt inspected; use a small consistent subset
 Kenney Nature Kit H1 selection,https://kenney.nl/assets/nature-kit,CC0,integrated,test field trees and rocks,assets/game/nature,tree_pineTallA.glb and rock_largeA.glb with License.txt; reproducible via tools/prepare_h1_assets.py
 Microsoft YaHei,Windows system font,Microsoft Windows font license,local-system,Chinese UI,C:/Windows/Fonts/msyh.ttc,Loaded from the installed Windows system; font file is not copied or redistributed
-Poly Haven,https://polyhaven.com/license,CC0,planned,sky and ground materials,assets/raw/polyhaven,Record each downloaded asset page
+Poly Haven Industrial Sunset Pure Sky,https://polyhaven.com/a/industrial_sunset_puresky,CC0,integrated,sky dome,assets/game/sky/industrial_sunset_puresky.jpg,Tonemapped 8K JPG; 16038282 bytes; source MD5 be98161b9ba68820ae9cd80a41d37d97
+Poly Haven Asphalt Floor,https://polyhaven.com/a/asphalt_floor,CC0,integrated,road diffuse material,assets/game/materials/asphalt_floor_diff_2k.jpg,2K JPG; source MD5 7862881b57c46b192ddeb2925e4c1fe3; fetched by tools/prepare_phase6b_materials.py
+Poly Haven Grass Ground,https://polyhaven.com/a/grass_ground,CC0,integrated,terrain diffuse material,assets/game/materials/grass_ground_diff_2k.jpg,2K JPG; source MD5 fd97f2402677e6686b2d9159fc3a4256; fetched by tools/prepare_phase6b_materials.py
+Kenney Nature Kit 6B selection,https://kenney.nl/assets/nature-kit,CC0,integrated,alternate pine and roadside bushes,assets/game/nature,tree_pineTallB.glb and plant_bushLargeTriangle.glb copied from existing archive by tools/prepare_phase6b_nature.py
+CoastalDrive driving sounds,project-generated,project source,integrated,engine road and impact clips,assets/game/audio,Deterministic WAV clips from tools/prepare_audio.py; no downloaded audio files
 Panda3D,https://github.com/panda3d/panda3d,Modified BSD,dependency,engine,Python environment,Runtime dependency
 panda3d-simplepbr,https://github.com/Moguri/panda3d-simplepbr,BSD-3-Clause,dependency,PBR rendering,Python environment,Runtime dependency
 panda3d-gltf,https://github.com/Moguri/panda3d-gltf,BSD-3-Clause,dependency,GLB and glTF loading,Python environment,Runtime dependency

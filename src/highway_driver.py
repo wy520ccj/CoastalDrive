@@ -7,6 +7,7 @@ import math
 import random
 
 from traffic import Driver, Road, extents
+from traffic_recovery import TrafficRecovery
 from vehicle_state import Control
 
 FLAT_ROAD = Road("endless")
@@ -66,6 +67,8 @@ class HighwayDriver(Driver):
         self.change_length = 60.0
         self.pedal = 0.0
         self.lane_changes = 0
+        self.recovery = TrafficRecovery()
+        self.recovery_action = None
 
     def neighbors(self, car, traffic, road, lane):
         front, rear = (math.inf, None), (math.inf, None)
@@ -181,12 +184,28 @@ class HighwayDriver(Driver):
         self.avoid_offset += max(-0.03, min(0.03, offset - self.avoid_offset))
         self.hazard_brake = braking
 
-    def plan(self, car, traffic, road, reservations):
+    def plan(self, car, traffic, road, reservations, *, lane_states=None):
         if road.curve:
-            self.plan(road.lane_frame(car), [road.lane_frame(c) for c in traffic],
-                      FLAT_ROAD, reservations)
+            if lane_states is None:
+                lane_states = [road.lane_frame(c) for c in [car, *traffic]]
+            self.plan(lane_states[0], lane_states[1:], FLAT_ROAD, reservations)
             return
         dt = 0.05
+        was_recovering = self.recovering
+        self.recovery_action = self.recovery.update(
+            car, traffic, road, self.lane, self.target_lateral
+        )
+        self.recovering = bool(self.recovery.phase)
+        if self.recovering:
+            if not was_recovering:
+                self.cancel()
+                self.pedal = self.avoid_offset = 0.0
+            self.phase = "recovering"
+            self.reason = self.recovery.phase
+            return
+        if was_recovering:
+            self.lane = self.recovery.lane
+            self.cancel()
         self.speed_clock -= dt
         self.decision_clock -= dt
         self.cooldown = max(0, self.cooldown - dt)
@@ -263,10 +282,13 @@ class HighwayDriver(Driver):
         self.clear_time = self.waiting = 0.0
         self.reason = "cruise"
 
-    def control(self, car, traffic, road, locations):
+    def control(self, car, traffic, road, locations, *, lane_states=None):
+        if self.recovery_action is not None:
+            return self.recovery_action
         if road.curve:
-            local_car = road.lane_frame(car)
-            local_traffic = [road.lane_frame(c) for c in traffic]
+            if lane_states is None:
+                lane_states = [road.lane_frame(c, p) for c, p in zip([car, *traffic], locations)]
+            local_car, *local_traffic = lane_states
             action = self.control(local_car, local_traffic, FLAT_ROAD,
                                   [FLAT_ROAD.locate(c) for c in [local_car, *local_traffic]])
             steering = super().control(car, traffic, road, locations)

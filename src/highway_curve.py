@@ -59,14 +59,24 @@ class HighwayCurve:
             math.degrees(math.atan2(dz, horizontal)),
         )
 
-    def project(self, position):
-        """Nearest centreline in plan view, returning arc distance and lateral offset."""
-        x, y = position[:2]
+    def distance_at_y(self, y):
         index = math.floor(y / self.advance)
         local_y = y - index * self.advance
         row = max(0, min(CELL_LENGTH - 1, bisect_right(self.y_table, local_y) - 1))
         fraction = (local_y - self.y_table[row]) / (self.y_table[row + 1] - self.y_table[row])
-        distance = index * CELL_LENGTH + row + fraction
+        return index * CELL_LENGTH + row + fraction
+
+    def on_asphalt(self, x, y):
+        p = self.sample(self.distance_at_y(y))
+        # This centreline point has the same y. Its inner 6.5 m lies inside the road.
+        if abs(x - p.x) < 6.5:
+            return True
+        return abs(self.project((x, y))[1]) <= 6.75
+
+    def project(self, position):
+        """Nearest centreline in plan view, returning arc distance and lateral offset."""
+        x, y = position[:2]
+        distance = self.distance_at_y(y)
         for _ in range(8):
             p = self.sample(distance)
             heading, grade = math.radians(p.heading), math.radians(p.grade)

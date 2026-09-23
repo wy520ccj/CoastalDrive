@@ -12,13 +12,17 @@ from panda3d.core import Filename, TextNode, Vec3, loadPrcFileData
 
 from chase_camera import ChaseCamera
 from controls import ConstantController
+from garage import GaragePreview
 from highway_map import HIGHWAY_LENGTH
+from highway_run import TRAFFIC_DENSITIES
 from paths import user_data
 from race import BestTimes, GameMode
 from scene import Scene
 from session import Phase, Session
+from settings import AppearanceStore
 from simulation import Control
-from skins import SKINS, apply_skin
+from skins import MODELS, SKINS, apply_skin
+from soundscape import Soundscape
 
 
 class CoastalDrive(ShowBase):
@@ -27,7 +31,7 @@ class CoastalDrive(ShowBase):
             "coastaldrive",
             "\n".join(
                 [
-                    "window-title CoastalDrive - Endless Traffic Preview 0.6.2",
+                    "window-title CoastalDrive 0.8.1 Atmosphere",
                     "win-size 1280 720",
                     "sync-video 1",
                     "window-type offscreen" if smoke and not onscreen else "window-type onscreen",
@@ -44,18 +48,31 @@ class CoastalDrive(ShowBase):
         self.smoke = smoke
         self.onscreen = onscreen
         self.output = output or user_data()
+        appearance_path = self.output / "test-appearance.json" if smoke else None
+        self.appearance = AppearanceStore(appearance_path)
         self.session = Session(
             seed,
             track=track,
             road_shape=road_shape,
             scores=BestTimes(self.output / "test-best-times.json") if smoke else None,
         )
-        self.skin_index = 0
+        self.skin_index = next(
+            (i for i, skin in enumerate(SKINS) if skin.id == self.appearance.skin_id), 0
+        )
+        self.vehicle_model_id = self.appearance.model_id
         self.scene = Scene(self)
+        self.soundscape = None if smoke else Soundscape(self)
         self._scene_track = self.session.simulation.track
         self._scene_mode = self.session.mode
         self._scene_shape = self.session.road_shape
         self.highway_menu = False
+        self.highway_shape = "hills"
+        self.highway_density_keys = tuple(TRAFFIC_DENSITIES)
+        self.highway_density_index = self.highway_density_keys.index(self.session.traffic_density)
+        self.garage = None
+        self.garage_model_id = self.vehicle_model_id
+        self.garage_skin_index = self.skin_index
+        self._diagnostics_was_visible = False
         self._camera_origin = 0.0
         self.chase_camera = ChaseCamera()
         self.commands_held = set()
@@ -72,6 +89,8 @@ class CoastalDrive(ShowBase):
 
     def start_game(self, *, mode, track="coastal"):
         self.driving_keys_held.clear()
+        if track == "endless":
+            self.session.traffic_density = self.highway_density_keys[self.highway_density_index]
         self.session.start(mode=mode, track=track)
         self.sync_scene()
         self.chase_camera.position = None
@@ -116,9 +135,21 @@ class CoastalDrive(ShowBase):
         self.accept("f3", self.toggle_diagnostics)
 
     def key_down(self, key):
+        if self.garage is not None:
+            if key in ("enter", "escape") and key not in self.commands_held:
+                self.commands_held.add(key)
+                self.apply_garage() if key == "enter" else self.cancel_garage()
+            return
         if key in ("r", "c", "escape", "enter"):
             if key not in self.commands_held:
                 self.commands_held.add(key)
+                if self.session.phase == Phase.MENU and self.highway_menu:
+                    if key == "enter":
+                        self.start_highway(self.highway_shape)
+                        return
+                    if key == "escape":
+                        self.back_to_modes()
+                        return
                 self.session.command(key)
                 if key in ("r", "escape", "enter"):
                     self.driving_keys_held.clear()
@@ -147,19 +178,31 @@ class CoastalDrive(ShowBase):
         self.ui_font = self.loader.loadFont(Filename.fromOsSpecific(str(font_path)).getFullpath())
         self.ui_font.setPixelsPerUnit(48)
         text_style = {"fg": (0.94, 0.97, 1, 1), "shadow": (0, 0, 0, 0.6), "font": self.ui_font}
+        self.status_frame = DirectFrame(
+            frameColor=(0.015, 0.025, 0.035, 0.74),
+            frameSize=(0, 0.91, -0.43, 0),
+            pos=(-1.72, 0, 0.91),
+        )
         self.status = OnscreenText(
             **text_style,
+            parent=self.status_frame,
             text="",
-            pos=(-1.62, 0.85),
-            scale=0.052,
+            pos=(0.06, -0.04),
+            scale=0.046,
             align=TextNode.ALeft,
             mayChange=True,
         )
+        self.help_frame = DirectFrame(
+            frameColor=(0.015, 0.025, 0.035, 0.68),
+            frameSize=(-0.89, 0.89, -0.06, 0.04),
+            pos=(0, 0, -0.9),
+        )
         self.help = OnscreenText(
             **text_style,
+            parent=self.help_frame,
             text="W / ↑ 油门    S / ↓ 刹车·倒车    A D / ← → 转向    R 复位    C 视角    Esc 暂停",
-            pos=(0, -0.94),
-            scale=0.04,
+            pos=(0, -0.018),
+            scale=0.036,
         )
         self.diagnostics = OnscreenText(
             **text_style,
@@ -194,11 +237,68 @@ class CoastalDrive(ShowBase):
             for i in range(5)
         ]
 
-    def cycle_skin(self):
+    def choose_garage(self):
         if self.session.phase != Phase.MENU:
             return
-        self.skin_index = (self.skin_index + 1) % len(SKINS)
-        apply_skin(self.scene.player.getChild(0), self.skin_index)
+        self.garage_model_id = self.vehicle_model_id
+        self.garage_skin_index = self.skin_index
+        self._diagnostics_was_visible = not self.diagnostics.isHidden()
+        self.diagnostics.hide()
+        self.scene.render.hide()
+        self.help_frame.hide()
+        self.panel.setPos(0.72, 0, 0)
+        self.panel_note.setPos(0, 0.35)
+        self.panel["frameSize"] = (-0.55, 0.55, -0.68, 0.68)
+        self.garage = GaragePreview(self, self.garage_model_id, self.garage_skin_index)
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def cycle_garage_model(self):
+        index = next(i for i, model in enumerate(MODELS) if model.id == self.garage_model_id)
+        self.garage_model_id = MODELS[(index + 1) % len(MODELS)].id
+        self.garage.set_vehicle(self.garage_model_id, self.garage_skin_index)
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def cycle_garage_skin(self, step):
+        self.garage_skin_index = (self.garage_skin_index + step) % len(SKINS)
+        apply_skin(self.garage.body.getChild(0), self.garage_skin_index)
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def apply_garage(self):
+        model_id = self.garage_model_id
+        skin_id = SKINS[self.garage_skin_index].id
+        if not self.appearance.save(model_id, skin_id):
+            self._shown_phase = None
+            self.refresh_panel()
+            return
+        self.vehicle_model_id = model_id
+        self.skin_index = self.garage_skin_index
+        self.close_garage()
+        self.scene.close()
+        self.scene = Scene(self)
+        self._scene_track = self.session.simulation.track
+        self._scene_mode = self.session.mode
+        self._scene_shape = self.session.road_shape
+
+    def cancel_garage(self):
+        self.close_garage()
+
+    def close_garage(self):
+        if self.garage is None:
+            return
+        self.garage.close()
+        self.garage = None
+        self.scene.render.show()
+        self.setBackgroundColor(0.55, 0.73, 0.82)
+        self.help_frame.show()
+        if self._diagnostics_was_visible:
+            self.diagnostics.show()
+        self.panel.setPos(0, 0, 0)
+        self.panel_note.setPos(0, 0.29)
+        self.panel["frameSize"] = (-0.8, 0.8, -0.68, 0.68)
+        self.chase_camera.position = None
         self._shown_phase = None
         self.refresh_panel()
 
@@ -207,10 +307,22 @@ class CoastalDrive(ShowBase):
         self._shown_phase = None
         self.refresh_panel()
 
-    def start_highway(self, shape):
+    def start_highway(self, shape, mode=GameMode.FREE_DRIVE):
         self.highway_menu = False
+        self.highway_shape = shape
         self.session.road_shape = shape
-        self.start_game(mode=GameMode.FREE_DRIVE, track="endless")
+        self.start_game(mode=mode, track="endless")
+
+    def cycle_highway_shape(self):
+        self.highway_shape = "straight" if self.highway_shape == "hills" else "hills"
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def cycle_highway_density(self):
+        self.highway_density_index = (self.highway_density_index + 1) % len(self.highway_density_keys)
+        self.session.traffic_density = self.highway_density_keys[self.highway_density_index]
+        self._shown_phase = None
+        self.refresh_panel()
 
     def back_to_modes(self):
         self.highway_menu = False
@@ -218,6 +330,8 @@ class CoastalDrive(ShowBase):
         self.refresh_panel()
 
     def toggle_diagnostics(self):
+        if self.garage is not None:
+            return
         self.diagnostics.show() if self.diagnostics.isHidden() else self.diagnostics.hide()
 
     def refresh_panel(self):
@@ -225,17 +339,52 @@ class CoastalDrive(ShowBase):
         if phase == self._shown_phase:
             return
         self._shown_phase = phase
+        if phase in (Phase.MENU, Phase.RESULTS):
+            self.status_frame.hide()
+            self.help_frame.hide()
+        else:
+            self.status_frame.show()
+            self.help_frame.show()
         for button in self.buttons:
             button.hide()
         self.panel.show()
         self.panel_title.setText("COASTAL DRIVE")
         self.panel_note.setText("滨海环路 · 4 个检查点\n按 Enter 开始计时挑战")
-        if phase == Phase.MENU and self.highway_menu:
-            self.panel_title.setText("无限高速")
-            self.panel_note.setText("选择道路\n两种道路均有连续车流")
+        if phase == Phase.MENU and self.garage is None and not self.highway_menu and self.appearance.notice:
+            self.panel_note.setText(f"滨海环路 · 4 个检查点\n按 Enter 开始计时挑战\n{self.appearance.notice}")
+            self.appearance.notice = ""
+        if self.garage is not None:
+            model = next(model for model in MODELS if model.id == self.garage_model_id)
+            skin = SKINS[self.garage_skin_index]
+            self.panel_title.setText("车库")
+            note = f"车型：{model.name}\n车漆：{skin.name}\nEnter 应用并返回 · Esc 取消"
+            if self.appearance.notice:
+                note += f"\n{self.appearance.notice}"
+            self.panel_note.setText(note)
             options = [
-                ("弯坡高速 · 预览", lambda: self.start_highway("hills")),
-                ("直线高速", lambda: self.start_highway("straight")),
+                ("车型下一款", self.cycle_garage_model),
+                ("下一种颜色", lambda: self.cycle_garage_skin(1)),
+                ("上一种颜色", lambda: self.cycle_garage_skin(-1)),
+                ("应用并返回  Enter", self.apply_garage),
+                ("取消返回  Esc", self.cancel_garage),
+            ]
+        elif phase == Phase.MENU and self.highway_menu:
+            self.panel_title.setText("无限高速")
+            density = self.highway_density_keys[self.highway_density_index]
+            density_label = TRAFFIC_DENSITIES[density].label
+            shape_label = "弯坡高速" if self.highway_shape == "hills" else "直线高速"
+            self.panel_note.setText(
+                f"{shape_label} · {density_label}\nEnter 启动自由驾驶 · Esc 返回\n"
+                "挑战可倒车调整，复位会结束挑战"
+            )
+            options = [
+                (f"道路：{shape_label}  >", self.cycle_highway_shape),
+                (f"车流：{density_label}  >", self.cycle_highway_density),
+                ("自由驾驶  Enter", lambda: self.start_highway(self.highway_shape)),
+                (
+                    "5公里无碰撞挑战",
+                    lambda: self.start_highway(self.highway_shape, mode=GameMode.DISTANCE_CHALLENGE),
+                ),
                 ("返回", self.back_to_modes),
             ]
         elif phase == Phase.MENU:
@@ -246,7 +395,7 @@ class CoastalDrive(ShowBase):
                     "无限高速",
                     self.choose_highway,
                 ),
-                (f"车漆：{SKINS[self.skin_index].name}  ›", self.cycle_skin),
+                ("车库", self.choose_garage),
                 ("退出", self.userExit),
             ]
         elif phase == Phase.PAUSED:
@@ -261,18 +410,34 @@ class CoastalDrive(ShowBase):
             ]
         elif phase == Phase.RESULTS:
             self.panel_title.setText("驾驶结束")
-            race = self.session.race.snapshot
-            if race.finished and race.last_lap is not None:
-                result = "有效圈" if not race.invalidated else f"本圈无效：{race.invalid_reason}"
-                best = f"最佳 {race.best_lap:.3f} 秒" if race.best_lap else "暂无最佳成绩"
+            if self.session.simulation.track == "endless":
+                highway_snapshot = self.session.highway.snapshot
+                if highway_snapshot.challenge:
+                    result = "挑战成功" if highway_snapshot.succeeded else "挑战失败"
+                    reason = highway_snapshot.reason
+                else:
+                    result = "自由驾驶结束"
+                    reason = highway_snapshot.reason or "自由驾驶结束"
+                result_line = f"{result}：{reason}\n" if highway_snapshot.challenge else f"{result}\n"
                 self.panel_note.setText(
-                    f"{result}\n本圈 {race.last_lap:.3f} 秒    {best}"
-                    + (f"\n{race.save_error}" if race.save_error else "")
+                    result_line
+                    + f"距离 {highway_snapshot.distance:.0f} m    "
+                    f"用时 {highway_snapshot.elapsed:.2f} s    "
+                    f"碰撞 {highway_snapshot.collisions}"
                 )
-            elif self.session.mode == GameMode.FREE_DRIVE:
-                self.panel_note.setText("自由驾驶结束\n可重新出发或返回菜单")
             else:
-                self.panel_note.setText("挑战提前结束，本次不记录圈速")
+                race = self.session.race.snapshot
+                if race.finished and race.last_lap is not None:
+                    result = "有效圈" if not race.invalidated else f"本圈无效：{race.invalid_reason}"
+                    best = f"最佳 {race.best_lap:.3f} 秒" if race.best_lap else "暂无最佳成绩"
+                    self.panel_note.setText(
+                        f"{result}\n本圈 {race.last_lap:.3f} 秒    {best}"
+                        + (f"\n{race.save_error}" if race.save_error else "")
+                    )
+                elif self.session.mode == GameMode.FREE_DRIVE:
+                    self.panel_note.setText("自由驾驶结束\n可重新出发或返回菜单")
+                else:
+                    self.panel_note.setText("挑战提前结束，本次不记录圈速")
             options = [
                 (
                     "重新挑战  Enter",
@@ -292,10 +457,18 @@ class CoastalDrive(ShowBase):
             button.show()
 
     def update(self, task):
+        if self.garage is not None:
+            if self.soundscape is not None:
+                self.soundscape.update(self.session.current, self.session.phase, None)
+            self.garage.update(self.clock.getDt())
+            self.refresh_panel()
+            return task.cont
         if self.session.phase == Phase.DRIVING and self.session.controller is self.session.keyboard:
             self.session.keyboard.pressed = self.driving_keys_held.copy()
         dropped = self.session.stepper.dropped_time
         state = self.session.frame(self.clock.getDt())
+        if self.soundscape is not None:
+            self.soundscape.update(state, self.session.phase, None)
         if self.session.stepper.dropped_time > dropped:
             logging.getLogger(__name__).warning(
                 "Simulation catch-up dropped %.6f seconds",
@@ -341,9 +514,17 @@ class CoastalDrive(ShowBase):
             if self.session.simulation.track == "highway":
                 race_line += f"   距路段终点 {max(0, HIGHWAY_LENGTH - position.y):.0f} m\n交通车辆 · 基础跟车 / 实体碰撞"
             elif self.session.simulation.track == "endless":
-                road = self.session.simulation.road
-                distance = road.locate(state.player)[0] if road.curve else state.origin_y + position.y
-                race_line += f"   里程 {(distance - 8) / 1000:.2f} km\n无限高速 · 连续车流"
+                highway_snapshot = self.session.highway.snapshot
+                density_label = TRAFFIC_DENSITIES[self.session.traffic_density].label
+                title = "5公里无碰撞挑战" if highway_snapshot.challenge else "自由驾驶"
+                distance = (
+                    f"{highway_snapshot.distance:.0f} / {highway_snapshot.target:.0f} m"
+                    if highway_snapshot.challenge else f"{highway_snapshot.distance / 1000:.2f} km"
+                )
+                race_line = (
+                    f"{title}   {distance}   用时 {highway_snapshot.elapsed:.1f} s\n"
+                    f"车流 {density_label}   碰撞 {highway_snapshot.collisions}"
+                )
         self.status.setText(
             f"{abs(state.player.speed) * 3.6:03.0f} km/h   {gear}   {state.player.rpm:4.0f} rpm{countdown}\n"
             f"油门 {state.player.throttle:.0%}    刹车 {state.player.brake:.0%}    {surface}\n"
@@ -404,14 +585,20 @@ class CoastalDrive(ShowBase):
     def close_game(self):
         if self._shutdown:
             return
+        if self.garage is not None:
+            self.close_garage()
         self.taskMgr.remove("drive-update")
         self.taskMgr.remove("finish-smoke")
         self.ignoreAll()
         self.session.close()
+        if self.soundscape is not None:
+            self.soundscape.close()
         self.scene.close()
         for widget in (
             self.status,
+            self.status_frame,
             self.help,
+            self.help_frame,
             self.diagnostics,
             self.panel_title,
             self.panel_note,

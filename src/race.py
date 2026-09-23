@@ -13,6 +13,7 @@ from tracks import COASTAL_CIRCUIT
 class GameMode(Enum):
     FREE_DRIVE = "free_drive"
     TIME_TRIAL = "time_trial"
+    DISTANCE_CHALLENGE = "distance_challenge"
 
 
 @dataclass(frozen=True)

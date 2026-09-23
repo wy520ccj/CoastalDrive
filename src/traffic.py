@@ -51,9 +51,9 @@ class Road:
         value = ahead - behind
         return (value + self.length / 2) % self.length - self.length / 2 if self.closed else value
 
-    def lane_frame(self, car):
+    def lane_frame(self, car, location=None):
         """Express sensing in road coordinates; never write this pose into physics."""
-        distance, lateral = self.locate(car)
+        distance, lateral = self.locate(car) if location is None else location
         p = self.sample_lateral(distance, 0)
         angle = math.radians(p.heading)
         velocity = car.velocity

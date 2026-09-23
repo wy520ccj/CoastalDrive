@@ -42,3 +42,14 @@ def test_samples_are_independent_of_query_order():
     expected = {s: road.sample(s) for s in distances}
     for s in reversed(distances):
         assert road.sample(s) == expected[s]
+
+
+@pytest.mark.parametrize("hills", [False, True])
+def test_asphalt_query_matches_projection_at_inner_lane_and_edges(hills):
+    for seed in range(4):
+        road = HighwayCurve(seed, hills=hills)
+        for s in range(-1200, 2201, 47):
+            for d in (-12, -6.76, -6.75, -6.74, -4.5, 0, 4.5, 6.74, 6.75, 6.76, 12):
+                p = road.sample(s, d)
+                expected = abs(road.project((p.x, p.y))[1]) <= 6.75
+                assert road.on_asphalt(p.x, p.y) == expected

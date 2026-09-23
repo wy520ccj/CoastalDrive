@@ -24,6 +24,7 @@ from highway_segments import REBASE_DISTANCE, SEGMENT_LENGTH
 from streamed_road import StreamedRoad
 from test_track import OBSTACLES, SPAWN, on_asphalt
 from traffic import Driver, Road, extents
+from traffic_recovery import TrafficRecovery
 from vehicle import Vehicle
 from vehicle_state import FIXED_DT, CarState, Control, WheelState, forward, heading_for
 from world_props import collision_box, props_for
@@ -49,13 +50,16 @@ class Snapshot:
     traffic: tuple[CarState, ...]
     events: tuple[str, ...] = ()
     origin_y: float = 0.0
+    collisions: int = 0
 
 
 class Simulation:
-    def __init__(self, seed=0, *, track="coastal", wind=(0, 0, 0), traffic_count=None, road_shape="straight"):
+    def __init__(self, seed=0, *, track="coastal", wind=(0, 0, 0), traffic_count=None,
+                 road_shape="straight", traffic_span=540):
         self.wind = Vec3(*wind)
         self.track = track
         self.road_shape = road_shape
+        self.traffic_span = traffic_span
         self.traffic_count = (
             (12 if track == "endless" else 8 if track == "highway" else 0)
             if traffic_count is None
@@ -90,7 +94,7 @@ class Simulation:
             self.on_asphalt = lambda x, y: abs(x) <= 6.75
             self.spawn = HIGHWAY_SPAWN
         if self.road.curve:
-            self.on_asphalt = lambda x, y: abs(self.road.curve.project((x, y + self.origin_y))[1]) <= 6.75
+            self.on_asphalt = lambda x, y: self.road.curve.on_asphalt(x, y + self.origin_y)
             p = self.road.sample(8, 1)
             self.spawn = (p.x, p.y, p.z + 0.55)
         self.rebases = 0
@@ -107,6 +111,8 @@ class Simulation:
         self.traffic_cycles = 0
         self._prop_bodies = []
         self.collision_count = 0
+        self.player_collisions = 0
+        self._last_contact_tick = -120
         self.props = []
         self._build_world()
         self._build_traffic()
@@ -208,7 +214,7 @@ class Simulation:
                 initial = spawns[i % len(spawns)]
                 lane, distance, speed = (
                     initial.lane,
-                    90 + i * (540 if self.track == "endless" else 1200) / self.traffic_count,
+                    90 + i * (self.traffic_span if self.track == "endless" else 1200) / self.traffic_count,
                     initial.speed,
                 )
             else:
@@ -240,6 +246,10 @@ class Simulation:
     def _drive_traffic(self):
         states = [self.player.snapshot(), *[n.snapshot() for n in self.npcs]]
         locations = [self.road.locate(state) for state in states]
+        lane_states = (
+            [self.road.lane_frame(state, p) for state, p in zip(states, locations)]
+            if self.road.curve else None
+        )
         reservations = {
             i: (d.target_lane, locations[i + 1][0], states[i + 1].speed)
             for i, d in enumerate(self.drivers)
@@ -250,19 +260,19 @@ class Simulation:
         for i, (car, driver) in enumerate(zip(self.npcs, self.drivers)):
             if car._chassis in self._retired_traffic:
                 continue
-            others = [
-                state
-                for j, state in enumerate(states)
+            neighbors = [
+                j for j in range(len(states))
                 if j != i + 1 and (j == 0 or self.npcs[j - 1]._chassis not in self._retired_traffic)
             ]
-            positions = [
-                locations[j]
-                for j in range(len(states))
-                if j != i + 1 and (j == 0 or self.npcs[j - 1]._chassis not in self._retired_traffic)
-            ]
+            others = [states[j] for j in neighbors]
+            positions = [locations[i + 1], *[locations[j] for j in neighbors]]
             if isinstance(driver, HighwayDriver):
+                sensed = (
+                    [lane_states[i + 1], *[lane_states[j] for j in neighbors]]
+                    if lane_states is not None else None
+                )
                 occupied = [value for key, value in reservations.items() if key != i]
-                driver.plan(states[i + 1], others, self.road, occupied)
+                driver.plan(states[i + 1], others, self.road, occupied, lane_states=sensed)
                 if driver.phase in ("signal", "changing"):
                     reservations[i] = (
                         driver.target_lane,
@@ -271,9 +281,13 @@ class Simulation:
                     )
                 else:
                     reservations.pop(i, None)
-            self._traffic_controls[i] = driver.control(
-                states[i + 1], others, self.road, [locations[i + 1], *positions]
-            )
+                self._traffic_controls[i] = driver.control(
+                    states[i + 1], others, self.road, positions, lane_states=sensed
+                )
+            else:
+                self._traffic_controls[i] = driver.control(
+                    states[i + 1], others, self.road, positions
+                )
 
     def _position_clear(self, point, heading, *, ignore=None, speed=0):
         candidate = CarState(tuple(point), heading, speed)
@@ -365,6 +379,8 @@ class Simulation:
                 self._retired_traffic.remove(body)
                 self.drivers[i].recovering = False
                 self.drivers[i].cancel()
+                self.drivers[i].recovery = TrafficRecovery()
+                self.drivers[i].recovery_action = None
                 self._traffic_controls[i] = Control()
                 self._generations[i] += 1
                 self.traffic_cycles += 1
@@ -416,9 +432,18 @@ class Simulation:
     def reset_player(self, position=None, heading=None, pitch=0):
         if self.closed:
             raise RuntimeError("Simulation is closed")
+        at_spawn = position is None
+        if at_spawn and self.stream:
+            distance = 8 if self.road.curve else 8 - self.origin_y
+            p = self.road.sample(distance, 1)
+            position = (p.x, p.y, p.z + 0.55)
+            heading = p.heading if heading is None else heading
+            pitch = p.grade
         self.player.reset(
             self.spawn if position is None else position, 0 if heading is None else heading, pitch
         )
+        if at_spawn and self.stream:
+            self._update_stream()
         self._events = ("player_reset",)
 
     def _destroy_physics(self):
@@ -460,6 +485,7 @@ class Simulation:
             for body in self._traffic_bodies
             if body not in self._retired_traffic
         )
+        self._count_player_collisions()
         self._tick += 1
         if self.stream:
             self._rebase()
@@ -469,6 +495,21 @@ class Simulation:
             # Headless runs have no render loop to collect Panda's cached transforms.
             TransformState.garbageCollect()
 
+    def _count_player_collisions(self):
+        # Count an impact episode, not every physics step spent rubbing a barrier.
+        for contact in self._world.contactTest(self._chassis).getContacts():
+            other = contact.getNode1() if contact.getNode0() == self._chassis else contact.getNode0()
+            name = other.getName()
+            if not any(kind in name for kind in ("traffic", "rail", "tree", "rock", "checkpoint", "wall")):
+                continue
+            if contact.getManifoldPoint().getDistance() > 0:
+                continue
+            if self._tick - self._last_contact_tick >= 120:
+                self.player_collisions += 1
+                self._events += ("player_collision",)
+            self._last_contact_tick = self._tick
+            break
+
     def snapshot(self):
         traffic = tuple(
             replace(
@@ -476,6 +517,7 @@ class Simulation:
                 active=car._chassis not in self._retired_traffic,
                 generation=self._generations[i],
                 signal=self.drivers[i].signal if isinstance(self.drivers[i], HighwayDriver) else 0,
+                hazards=self.drivers[i].recovering,
             )
             for i, car in enumerate(self.npcs)
         )
@@ -486,6 +528,7 @@ class Simulation:
             traffic,
             self._events,
             self.origin_y,
+            self.player_collisions,
         )
 
     def close(self):
@@ -558,6 +601,7 @@ def interpolate(previous: Snapshot, current: Snapshot, alpha: float):
             b.generation,
             b.signal,
             vector(a.velocity, b.velocity) if a.velocity and b.velocity else b.velocity,
+            b.hazards,
         )
 
     return replace(

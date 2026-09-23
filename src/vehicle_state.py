@@ -47,6 +47,7 @@ class CarState:
     generation: int = 0
     signal: int = 0
     velocity: tuple[float, float, float] | None = None
+    hazards: bool = False
 
 
 def forward(heading):

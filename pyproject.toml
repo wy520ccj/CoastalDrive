@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "coastaldrive"
-version = "0.6.2"
+version = "0.8.1"
 description = "A stylized-realistic Python coastal road driving game"
 requires-python = ">=3.14,<3.15"
 dependencies = [
