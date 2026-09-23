@@ -48,4 +48,4 @@
 - 修改文件：`src/application.py`、`src/settings.py`、`src/soundscape.py`、`tests/test_audio_settings.py`、`tests/test_soundscape.py`、`tests/test_validation_runner.py`、`tools/validate.py`、`tools/prepare_audio.py`、`assets/game/audio/engine.wav`、`engine_idle.wav`、`road.wav`、`impact.wav`（删除）、`impact_light.wav`、`impact_side.wav`、`impact_scrape.wav`、`impact_heavy.wav`、`License.txt`、`docs/asset-register.csv`、`docs/phase6b-atmosphere.md`、本任务包、`docs/current-progress.md`。
 - T0 首轮发现的导入排序和保存失败测试夹具问题均已修复；录音替换及碰撞分型后的最终 T0/T1 均通过。
 - 未解决问题：用户实际试听不接受碰撞音效；当前声音仍过弱且缺少及时、可靠的情形区分。暂停本轮碰撞声音迭代，等待后续重新设计。其他人工试听项也未全部确认。
-- 本任务包及相关代码/素材将按用户要求提交并推送至公开仓库；本次不运行 T2/T3。6B整体仍未通过。
+- 本任务包及相关代码/素材已按用户要求提交并推送至公开仓库，提交 `0c8377c`；本次不运行 T2/T3。6B整体仍未通过。
