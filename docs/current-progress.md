@@ -1,6 +1,6 @@
 # 当前进度
 
-更新：2026-09-23。开发版本 **0.8.3 / Vehicle Impact Audio System v1**；碰撞音效已获玩家实驾试听通过，6B 整体画面与性能 Gate 仍未通过。0.8.3 碰撞音频系统及玩家验收记录已推送，远端 `main` HEAD 为 `6f546fe0b82a5646fff7e2e39e13c2121f40284c`。
+更新：2026-09-24。开发版本 **0.8.3 / Vehicle Impact Audio System v1**；碰撞音效已获玩家实驾试听通过，6B 整体画面与性能 Gate 仍未通过。0.8.3 碰撞音频系统及玩家验收记录已推送，远端 `main` HEAD 为 `6f546fe0b82a5646fff7e2e39e13c2121f40284c`。
 
 ## 已有能力
 
@@ -12,6 +12,7 @@
 
 ## 当前缺口
 
+- [6B-06 繁忙车流空档诊断](tasks/6B-06-busy-traffic-gap-diagnostic.md)：在基线 `51ba3b2` 上以 seed 0/23 完成各 5 km 弯坡 18 车只读采样，保留实际画面重放。最长前后 150 m 合计至多 2 车区间为 seed 0 的 139–155 s；seed 23 的 186–192 s 前方 150 m 无车，但前方约 288 m 有车、后方 150 m 有 3 车。未见回收等待或生成异常；只增加诊断工具、测试和证据，不修改交通。详见 [证据](6B-06-traffic-gap-evidence.md)。
 - 6B：6B-01 音量设置语义保持不变，旧碰撞声人工不通过。[6B-02](tasks/6B-02-impact-events.md) Bullet 事件与帧传递、[6B-03](tasks/6B-03-impact-assets.md) 分层素材池、[6B-04](tasks/6B-04-impact-mixer.md) 播放/擦碰/诊断已实现；轻/中/重 Bullet 夹具、NPC 事故、持续护栏接触和玩法碰撞去重集成测试通过。[6B-05](tasks/6B-05-impact-calibration.md) 的 v1 主观验收已由用户实驾判定通过；八项场景未逐项留证、severity 曲线未定量校准。其他车灯/环境层次、正式 HUD/小地图、实际画面/录像、1080p 帧耗时和整体体验验收仍待完成。
 - H4B/H4C：严格连续可见窗口、内存平台、人工驾驶、繁忙交通长程、复杂恢复未完整验收。历史30分钟记录因中途最小化未通过严格可见要求，见 [H4B-endurance-review.md](H4B-endurance-review.md)。长测集中到7B交付批次。
 - 三圈/幽灵回放延后4R；进一步物理7A和学习AI尚未开始。长期路线与各Gate阈值见 [development-plan.md](development-plan.md)。
