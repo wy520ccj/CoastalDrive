@@ -19,7 +19,7 @@ from paths import user_data
 from race import BestTimes, GameMode
 from scene import Scene
 from session import Phase, Session
-from settings import AppearanceStore
+from settings import AppearanceStore, AudioSettingsStore
 from simulation import Control
 from skins import MODELS, SKINS, apply_skin
 from soundscape import Soundscape
@@ -50,6 +50,8 @@ class CoastalDrive(ShowBase):
         self.output = output or user_data()
         appearance_path = self.output / "test-appearance.json" if smoke else None
         self.appearance = AppearanceStore(appearance_path)
+        audio_path = self.output / "test-audio.json" if smoke else None
+        self.audio_settings = AudioSettingsStore(audio_path)
         self.session = Session(
             seed,
             track=track,
@@ -61,11 +63,18 @@ class CoastalDrive(ShowBase):
         )
         self.vehicle_model_id = self.appearance.model_id
         self.scene = Scene(self)
-        self.soundscape = None if smoke else Soundscape(self)
+        self.soundscape = (
+            None
+            if smoke
+            else Soundscape(
+                self, self.audio_settings.master_volume, self.audio_settings.effects_volume
+            )
+        )
         self._scene_track = self.session.simulation.track
         self._scene_mode = self.session.mode
         self._scene_shape = self.session.road_shape
         self.highway_menu = False
+        self.audio_settings_page = False
         self.highway_shape = "hills"
         self.highway_density_keys = tuple(TRAFFIC_DENSITIES)
         self.highway_density_index = self.highway_density_keys.index(self.session.traffic_density)
@@ -139,6 +148,11 @@ class CoastalDrive(ShowBase):
             if key in ("enter", "escape") and key not in self.commands_held:
                 self.commands_held.add(key)
                 self.apply_garage() if key == "enter" else self.cancel_garage()
+            return
+        if self.audio_settings_page and self.session.phase == Phase.MENU:
+            if key == "escape" and key not in self.commands_held:
+                self.commands_held.add(key)
+                self.back_from_audio_settings()
             return
         if key in ("r", "c", "escape", "enter"):
             if key not in self.commands_held:
@@ -227,15 +241,38 @@ class CoastalDrive(ShowBase):
                 parent=self.panel,
                 text="",
                 scale=0.055,
-                pos=(0, 0, 0.08 - i * 0.16),
+                pos=(0, 0, 0.12 - i * 0.145),
                 frameSize=(-5, 5, -0.5, 1),
                 frameColor=(0.18, 0.27, 0.37, 1),
                 text_fg=(0.96, 0.98, 1, 1),
                 text_font=self.ui_font,
                 relief=DGG.FLAT,
             )
-            for i in range(5)
+            for i in range(6)
         ]
+
+    def choose_audio_settings(self):
+        self.audio_settings_page = True
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def adjust_audio_volume(self, setting, step):
+        master = self.audio_settings.master_volume
+        effects = self.audio_settings.effects_volume
+        if setting == "master":
+            master = max(0, min(100, master + step))
+        else:
+            effects = max(0, min(100, effects + step))
+        self.audio_settings.save(master, effects)
+        if self.soundscape is not None:
+            self.soundscape.set_volumes(master, effects)
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def back_from_audio_settings(self):
+        self.audio_settings_page = False
+        self._shown_phase = None
+        self.refresh_panel()
 
     def choose_garage(self):
         if self.session.phase != Phase.MENU:
@@ -336,9 +373,10 @@ class CoastalDrive(ShowBase):
 
     def refresh_panel(self):
         phase = self.session.phase
-        if phase == self._shown_phase:
+        panel_state = (phase, self.garage is not None, self.highway_menu, self.audio_settings_page)
+        if panel_state == self._shown_phase:
             return
-        self._shown_phase = phase
+        self._shown_phase = panel_state
         if phase in (Phase.MENU, Phase.RESULTS):
             self.status_frame.hide()
             self.help_frame.hide()
@@ -368,6 +406,23 @@ class CoastalDrive(ShowBase):
                 ("应用并返回  Enter", self.apply_garage),
                 ("取消返回  Esc", self.cancel_garage),
             ]
+        elif phase == Phase.MENU and self.audio_settings_page:
+            self.panel_title.setText("声音设置")
+            note = (
+                f"主音量：{self.audio_settings.master_volume}%    "
+                f"效果音量：{self.audio_settings.effects_volume}%\n"
+                "发动机、路噪和碰撞声使用效果音量 · Esc 返回"
+            )
+            if self.audio_settings.notice:
+                note += f"\n{self.audio_settings.notice}"
+            self.panel_note.setText(note)
+            options = [
+                ("主音量 -10%", lambda: self.adjust_audio_volume("master", -10)),
+                ("主音量 +10%", lambda: self.adjust_audio_volume("master", 10)),
+                ("效果音量 -10%", lambda: self.adjust_audio_volume("effects", -10)),
+                ("效果音量 +10%", lambda: self.adjust_audio_volume("effects", 10)),
+                ("返回", self.back_from_audio_settings),
+            ]
         elif phase == Phase.MENU and self.highway_menu:
             self.panel_title.setText("无限高速")
             density = self.highway_density_keys[self.highway_density_index]
@@ -396,6 +451,7 @@ class CoastalDrive(ShowBase):
                     self.choose_highway,
                 ),
                 ("车库", self.choose_garage),
+                ("声音设置", self.choose_audio_settings),
                 ("退出", self.userExit),
             ]
         elif phase == Phase.PAUSED:

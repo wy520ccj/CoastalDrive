@@ -19,6 +19,7 @@ def test_small_tiers_require_scope_and_cannot_silently_run_the_full_suite(tmp_pa
     assert [check.name for check in plan] == ["ruff", "pytest"]
     assert "tests/test_traffic_recovery.py" in plan[1].args
     assert "tests/test_appearance.py" not in plan[1].args
+    assert "tests/test_audio_settings.py" in make_plan("T0", ["audio"], [], tmp_path)[1].args
     plan = make_plan("T1", ["traffic"], [], tmp_path)
     drives = [check for check in plan if check.name.startswith("hills-")]
     assert len(drives) == 2

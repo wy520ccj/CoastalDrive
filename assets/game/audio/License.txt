@@ -1,0 +1,46 @@
+CoastalDrive driving audio credits
+
+engine.wav
+"Car Engine Loop 96kHz, 4s" by qubodup
+https://opengameart.org/content/car-engine-loop-96khz-4s
+Licensed under Creative Commons Attribution 3.0:
+https://creativecommons.org/licenses/by/3.0/
+Changes: used the author's normalized loop; downmixed to mono, converted to 44.1 kHz 16-bit PCM, and reduced gain by 8 dB.
+
+engine_idle.wav
+"Engine Idle" by microman502
+https://freesound.org/people/microman502/sounds/818291/
+CC0: https://creativecommons.org/publicdomain/zero/1.0/
+Changes: used the public high-quality preview; selected 0.75-5.75 s, raised gain, converted to mono PCM, and crossfaded the loop seam.
+
+road.wav
+"Car driving ambience" by priesjensen
+https://freesound.org/people/priesjensen/sounds/495795/
+CC0: https://creativecommons.org/publicdomain/zero/1.0/
+Changes: used the public high-quality preview; selected 3-10 s, filtered to emphasize road texture, raised gain, converted to mono PCM, and crossfaded the loop seam.
+
+impact_light.wav
+"S022 Plastic Impact Mono" by Pól
+https://freesound.org/people/P%C3%B3l/sounds/385940/
+CC0: https://creativecommons.org/publicdomain/zero/1.0/
+Changes: used the public high-quality preview; converted to mono, 44.1 kHz 16-bit PCM, and limited peaks.
+
+impact_side.wav
+"S021 Metal Impact Mono" by Pól
+https://freesound.org/people/P%C3%B3l/sounds/385937/
+CC0: https://creativecommons.org/publicdomain/zero/1.0/
+Changes: used the public high-quality preview; reduced gain and converted to mono, 44.1 kHz 16-bit PCM.
+
+impact_scrape.wav
+"S023 Metal Rail Scrape Mono" by Pól
+https://freesound.org/people/P%C3%B3l/sounds/385939/
+CC0: https://creativecommons.org/publicdomain/zero/1.0/
+Changes: used the public high-quality preview; selected a 1.45 s excerpt, adjusted gain, faded the ends, limited peaks, and converted to mono, 44.1 kHz 16-bit PCM.
+
+impact_heavy.wav
+"S020 Rock Impact Mono" by Pól
+https://freesound.org/people/P%C3%B3l/sounds/385938/
+CC0: https://creativecommons.org/publicdomain/zero/1.0/
+Changes: used the public high-quality preview; selected the 0.75 s clip, adjusted gain, limited peaks, and converted to mono, 44.1 kHz 16-bit PCM.
+
+The reproducible source URLs and SHA-256 checks are in tools/prepare_audio.py.
