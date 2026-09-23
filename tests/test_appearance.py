@@ -1,7 +1,15 @@
 import json
 
-from panda3d.core import NodePath
+from panda3d.core import (
+    AmbientLight,
+    DirectionalLight,
+    GeomVertexReader,
+    LightAttrib,
+    NodePath,
+    Vec4,
+)
 
+from scene import Scene, make_mesh
 from settings import AppearanceStore
 from skins import MODELS, SKINS, apply_skin, traffic_models, traffic_skins
 from vehicle_visual import load_vehicle
@@ -59,3 +67,33 @@ def test_appearance_choices_do_not_advance_traffic_randomness(tmp_path):
         for skin in SKINS:
             store.save(model.id, skin.id)
     assert before == (traffic_models(17, 18), traffic_skins(17, 18))
+
+
+def test_start_grid_uses_depth_priority_without_lifting_geometry():
+    scene = Scene.__new__(Scene)
+    scene.render = NodePath("grid-test")
+    scene.add_start_grid()
+    tiles = scene.render.findAllMatches("**/start-grid")
+    assert tiles.getNumPaths() == 24
+    for tile in tiles:
+        assert tile.getDepthOffset() == 2
+        data = tile.node().getGeom(0).getVertexData()
+        reader = GeomVertexReader(data, "vertex")
+        while not reader.isAtEnd():
+            assert abs(reader.getData3f().z) < 0.05
+
+
+def test_rail_receives_local_unshadowed_sun():
+    scene = Scene.__new__(Scene)
+    scene.render = NodePath("rail-test")
+    scene.ambient_path = scene.render.attachNewNode(AmbientLight("ambient"))
+    scene.sun_path = scene.render.attachNewNode(DirectionalLight("shadow-sun"))
+    scene.rail_sun_path = scene.render.attachNewNode(DirectionalLight("rail-sun"))
+    rail = make_mesh("rail", [(0, 0, 0), (1, 0, 0), (0, 1, 0)],
+                     [(0, 1, 2)], Vec4(1, 1, 1, 1))
+    scene.stabilize_rail(rail)
+    lights = rail.getState().getAttrib(LightAttrib)
+    assert rail.hasLightOff()
+    assert lights.getNumOnLights() == 2
+    assert lights.hasOnLight(scene.ambient_path)
+    assert lights.hasOnLight(scene.rail_sun_path)

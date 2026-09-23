@@ -260,7 +260,8 @@ class Scene:
     def setup_lighting(self) -> None:
         ambient = AmbientLight("coastal-ambient")
         ambient.setColor((0.18, 0.22, 0.28, 1))
-        self.render.setLight(self.render.attachNewNode(ambient))
+        self.ambient_path = self.render.attachNewNode(ambient)
+        self.render.setLight(self.ambient_path)
 
         sun = DirectionalLight("coastal-sun")
         sun.setColor((2.6, 2.35, 1.9, 1))
@@ -269,6 +270,9 @@ class Scene:
         sun.getLens().setNearFar(10, 300)
         self.sun_path = self.render.attachNewNode(sun)
         self.render.setLight(self.sun_path)
+        rail_sun = DirectionalLight("rail-sun")
+        rail_sun.setColor((2.6, 2.35, 1.9, 1))
+        self.rail_sun_path = self.render.attachNewNode(rail_sun)
         self.update_lighting(Vec3(TRACK_X, 0, 0))
         self.base.setBackgroundColor(0.55, 0.73, 0.82)
         fog = Fog("coastal-haze")
@@ -279,6 +283,14 @@ class Scene:
     def update_lighting(self, position):
         self.sun_path.setPos(position + Vec3(-55, -75, 125))
         self.sun_path.lookAt(position)
+        self.rail_sun_path.setPos(self.sun_path.getPos())
+        self.rail_sun_path.setHpr(self.sun_path.getHpr())
+
+    def stabilize_rail(self, node):
+        # 护栏保留太阳光照，但不接收低分辨率阴影图在细边缘上的自阴影。
+        node.setLightOff(1)
+        node.setLight(self.ambient_path, 1)
+        node.setLight(self.rail_sun_path, 1)
 
     def setup_scene(self) -> None:
         self.ocean = make_quad(
@@ -312,6 +324,8 @@ class Scene:
                     mesh.setTexture(asphalt_texture())
                 elif name in ("island", "cliff"):
                     mesh.setTexture(ground_texture())
+                elif "rail" in name:
+                    self.stabilize_rail(mesh)
                 mesh.reparentTo(self.render)
             self.add_map_details()
             self.add_start_grid()
@@ -358,6 +372,8 @@ class Scene:
                 node.setTexture(asphalt_texture())
             elif name == "highway-ground":
                 node.setTexture(ground_texture())
+            elif "rail" in name:
+                self.stabilize_rail(node)
             node.reparentTo(self.render)
         for x in (-HIGHWAY_ROAD_WIDTH / 6, HIGHWAY_ROAD_WIDTH / 6):
             for y in range(0, int(HIGHWAY_LENGTH), 8):
@@ -415,6 +431,8 @@ class Scene:
                 node.setTexture(asphalt_texture())
             elif name == "ground":
                 node.setTexture(ground_texture())
+            elif name.startswith("rail"):
+                self.stabilize_rail(node)
             node.reparentTo(self.endless_templates)
             self.endless_surface_templates[name] = node
         for side in (-1, 1):
@@ -457,6 +475,8 @@ class Scene:
                             node.setTexture(asphalt_texture())
                         elif name == "ground":
                             node.setTexture(ground_texture())
+                        elif name.startswith("rail"):
+                            self.stabilize_rail(node)
                         node.reparentTo(root)
                     for vertices, triangles in curve_mesh.markings(stream.curve, index):
                         make_mesh("lane-mark", vertices, triangles, Vec4(0.94, 0.82, 0.35, 1)).reparentTo(root)
@@ -558,9 +578,11 @@ class Scene:
                     offset_point(b, inner, 0.025),
                 ]
                 shade = 0.92 if (row + column) % 2 else 0.045
-                make_mesh(
+                tile = make_mesh(
                     "start-grid", vertices, [(0, 1, 2), (0, 2, 3)], Vec4(shade, shade, shade, 1)
-                ).reparentTo(self.render)
+                )
+                tile.setDepthOffset(2)
+                tile.reparentTo(self.render)
 
     def add_map_details(self):
         for side in (-1, 1):

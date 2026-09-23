@@ -26,13 +26,13 @@ from soundscape import Soundscape
 
 
 class CoastalDrive(ShowBase):
-    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight"):
+    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720)):
         loadPrcFileData(
             "coastaldrive",
             "\n".join(
                 [
                     "window-title CoastalDrive 0.8.3 Impact Audio",
-                    "win-size 1280 720",
+                    f"win-size {render_size[0]} {render_size[1]}",
                     "sync-video 1",
                     "window-type offscreen" if smoke and not onscreen else "window-type onscreen",
                     "audio-library-name null" if smoke else "audio-library-name p3openal_audio",
