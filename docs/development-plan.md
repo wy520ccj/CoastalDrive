@@ -1,6 +1,6 @@
 # CoastalDrive 更新版开发计划（V2）
 
-修订日期：2026-09-23。当前基线：0.8.1 / 6B 环境与声音增量。面向 Luna 的分阶段实施及高能力模型复核。
+修订日期：2026-09-23。当前基线：0.8.3 / 6B 碰撞声音已获玩家实驾验收，画面与正式界面仍待完成。面向后续分阶段实施及高能力模型复核。
 
 本文件保存长期方向及阶段验收。实施会话从根 `AGENTS.md`、`current-progress.md` 和指定 `docs/tasks/` 任务包开始，只按需读取本文相关章节；规划/阶段复核再读总体路线。默认单条施工线，确定性功能块由 Luna 完成，Astra 用于阶段规划、核心接口、两轮实质修复仍失败及阶段复核。任务包与 T0–T3 入口见 [tasks/README.md](tasks/README.md)。已有反馈以 `H3-feedback.md` 为准；旧计划在 `development-plan-v1.md`，旧阶段准备清单不再作为每次启动要求。
 
@@ -209,4 +209,4 @@ Luna：完整场景30分钟、20次重开/换图、失焦/恢复、多键、音�
 
 0.6.1已加入超车后回归、后车逼近让行、切入预测及车道内有限避让，具体见 traffic-v2-review.md。5C密度与挑战规则见 [phase5c-gameplay.md](phase5c-gameplay.md)，事故恢复边界见 [traffic-recovery.md](traffic-recovery.md)。6A车库与皮肤已完成，见 [phase6a-garage.md](phase6a-garage.md)；当前进入6B画面与声音，尚未完成。复杂翻车救援和事故抢道继续保留在H4C待办，长测合并至7B交付批次。保持用户认可的手感、倒车规则、检查点相机和主菜单车库入口。
 
-0.8.1已接入6B第一批天空、道路/草地、植被、路边标杆、基础驾驶声音和HUD底板，资源来源与渲染证据见 [phase6b-atmosphere.md](phase6b-atmosphere.md)。继续完成音量设置和真实试听、车灯与环境层次、正式HUD/小地图及可见窗口帧耗时；在这些完成前不把6B记为通过。
+0.8.1接入6B第一批天空、道路/草地、植被、路边标杆、基础驾驶声音和HUD底板，资源来源与渲染证据见 [phase6b-atmosphere.md](phase6b-atmosphere.md)。0.8.3 的分层碰撞音效已获玩家实驾试听通过，见 [6B-05](tasks/6B-05-impact-calibration.md)；继续完成车灯与环境层次、正式HUD/小地图及可见窗口帧耗时，在这些完成前不把6B整体记为通过。
