@@ -39,6 +39,16 @@ PyCharm 打开本项目，解释器选择 `.venv\Scripts\python.exe`，入口为
 
 ## 检查
 
+开发默认按范围执行短检查，避免每次都跑全套。工作规则见 [AGENTS.md](AGENTS.md)，任务包、T0–T3及人工Gate见 [任务入口](docs/tasks/README.md)。下一任务是 [6B-01 音量设置](docs/tasks/6B-01-audio-settings.md)，尚未实施。
+
+```powershell
+.\.venv\Scripts\python.exe tools/validate.py T0 --area traffic
+.\.venv\Scripts\python.exe tools/validate.py T1 --area traffic
+.\.venv\Scripts\python.exe tools/validate.py T2 --dry-run
+```
+
+验证入口将详细输出和JSON摘要放到独立的 `logs/validation/` 目录；失败即停。完整回归留给小阶段收口，长测留给阶段Gate；画面、声音和驾驶体验仍需实际验收。下面是按需使用的原有专项入口，不是每次修改都要执行的清单。
+
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -q
 .\.venv\Scripts\python.exe -m ruff check src tests tools
