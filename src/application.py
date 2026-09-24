@@ -15,7 +15,7 @@ from controls import ConstantController
 from garage import GaragePreview
 from highway_map import HIGHWAY_LENGTH
 from highway_run import TRAFFIC_DENSITIES
-from paths import user_data
+from paths import resource_root, user_data
 from race import BestTimes, GameMode
 from scene import Scene
 from session import Phase, Session
@@ -192,19 +192,36 @@ class CoastalDrive(ShowBase):
         self.ui_font = self.loader.loadFont(Filename.fromOsSpecific(str(font_path)).getFullpath())
         self.ui_font.setPixelsPerUnit(48)
         text_style = {"fg": (0.94, 0.97, 1, 1), "shadow": (0, 0, 0, 0.6), "font": self.ui_font}
+        ui_assets = resource_root() / "assets/game/ui"
+        self.panel_texture = self.loader.loadTexture(
+            Filename.fromOsSpecific(str(ui_assets / "panel.png"))
+        )
+        self.button_texture = self.loader.loadTexture(
+            Filename.fromOsSpecific(str(ui_assets / "button.png"))
+        )
         self.status_frame = DirectFrame(
-            frameColor=(0.015, 0.025, 0.035, 0.74),
-            frameSize=(0, 0.91, -0.43, 0),
-            pos=(-1.72, 0, 0.91),
+            frameColor=(0.72, 0.80, 0.88, 0.85), frameTexture=self.panel_texture,
+            frameSize=(0, 1.16, -0.52, 0), pos=(-1.72, 0, 0.91),
+        )
+        self.status_accent = DirectFrame(
+            parent=self.status_frame, frameColor=(0.27, 0.72, 0.84, 0.92),
+            frameSize=(0, 1.16, -0.006, 0),
+        )
+        self.speed = OnscreenText(
+            **text_style, parent=self.status_frame, text="", pos=(0.06, -0.13),
+            scale=0.105, align=TextNode.ALeft, mayChange=True,
+        )
+        self.gear_rpm = OnscreenText(
+            **text_style, parent=self.status_frame, text="", pos=(0.64, -0.12),
+            scale=0.040, align=TextNode.ALeft, mayChange=True,
         )
         self.status = OnscreenText(
-            **text_style,
-            parent=self.status_frame,
-            text="",
-            pos=(0.06, -0.04),
-            scale=0.046,
-            align=TextNode.ALeft,
-            mayChange=True,
+            **text_style, parent=self.status_frame, text="", pos=(0.06, -0.25),
+            scale=0.040, align=TextNode.ALeft, mayChange=True,
+        )
+        self.status_notice = OnscreenText(
+            **text_style, parent=self.status_frame, text="", pos=(0.06, -0.43),
+            scale=0.037, align=TextNode.ALeft, mayChange=True,
         )
         self.help_frame = DirectFrame(
             frameColor=(0.015, 0.025, 0.035, 0.68),
@@ -228,13 +245,34 @@ class CoastalDrive(ShowBase):
         )
         self.diagnostics.hide()
         self.panel = DirectFrame(
-            frameColor=(0.02, 0.04, 0.065, 0.96), frameSize=(-0.8, 0.8, -0.68, 0.68)
+            frameColor=(0.77, 0.86, 0.96, 0.98), frameTexture=self.panel_texture,
+            frameSize=(-0.8, 0.8, -0.80, 0.68)
+        )
+        self.panel_accent = DirectFrame(
+            parent=self.panel, frameColor=(0.30, 0.72, 0.83, 0.95),
+            frameSize=(-0.55, 0.55, -0.005, 0.005), pos=(0, 0, 0.61),
         )
         self.panel_title = OnscreenText(
             **text_style, parent=self.panel, text="", pos=(0, 0.46), scale=0.07, mayChange=True
         )
         self.panel_note = OnscreenText(
-            **text_style, parent=self.panel, text="", pos=(0, 0.29), scale=0.043, mayChange=True
+            **text_style, parent=self.panel, text="", pos=(0, 0.29), scale=0.040, mayChange=True
+        )
+        self.panel_detail = OnscreenText(
+            **text_style, parent=self.panel, text="", pos=(0, 0.12),
+            scale=0.041, mayChange=True,
+        )
+        self.menu_divider = OnscreenText(
+            **text_style, parent=self.panel, text="其他", pos=(0, -0.255), scale=0.028,
+        )
+        self.menu_divider["fg"] = (0.62, 0.75, 0.82, 1)
+        self.menu_rule_left = DirectFrame(
+            parent=self.panel, frameColor=(0.25, 0.45, 0.56, 0.65),
+            frameSize=(-0.36, -0.07, -0.002, 0.002), pos=(0, 0, -0.26),
+        )
+        self.menu_rule_right = DirectFrame(
+            parent=self.panel, frameColor=(0.25, 0.45, 0.56, 0.65),
+            frameSize=(0.07, 0.36, -0.002, 0.002), pos=(0, 0, -0.26),
         )
         self.buttons = [
             DirectButton(
@@ -243,13 +281,33 @@ class CoastalDrive(ShowBase):
                 scale=0.055,
                 pos=(0, 0, 0.12 - i * 0.145),
                 frameSize=(-5, 5, -0.5, 1),
-                frameColor=(0.18, 0.27, 0.37, 1),
+                frameColor=(1, 1, 1, 1),
+                frameTexture=self.button_texture,
                 text_fg=(0.96, 0.98, 1, 1),
                 text_font=self.ui_font,
                 relief=DGG.FLAT,
             )
             for i in range(6)
         ]
+
+    def fit_lines(self, value, width, scale, max_lines=None):
+        """按实际字体宽度换行，避免中文 notice 超出底板。"""
+        probe = TextNode("ui-line-measure")
+        probe.setFont(self.ui_font)
+        lines = []
+        for source in value.split("\n"):
+            line = ""
+            for char in source:
+                probe.setText(line + char)
+                if line and probe.getWidth() * scale > width:
+                    lines.append(line)
+                    line = char
+                else:
+                    line += char
+            lines.append(line)
+        if max_lines is not None:
+            lines = lines[:max_lines]
+        return "\n".join(lines)
 
     def choose_audio_settings(self):
         self.audio_settings_page = True
@@ -285,7 +343,7 @@ class CoastalDrive(ShowBase):
         self.help_frame.hide()
         self.panel.setPos(0.72, 0, 0)
         self.panel_note.setPos(0, 0.35)
-        self.panel["frameSize"] = (-0.55, 0.55, -0.68, 0.68)
+        self.panel["frameSize"] = (-0.61, 0.61, -0.80, 0.68)
         self.garage = GaragePreview(self, self.garage_model_id, self.garage_skin_index)
         self._shown_phase = None
         self.refresh_panel()
@@ -334,7 +392,7 @@ class CoastalDrive(ShowBase):
             self.diagnostics.show()
         self.panel.setPos(0, 0, 0)
         self.panel_note.setPos(0, 0.29)
-        self.panel["frameSize"] = (-0.8, 0.8, -0.68, 0.68)
+        self.panel["frameSize"] = (-0.8, 0.8, -0.80, 0.68)
         self.chase_camera.position = None
         self._shown_phase = None
         self.refresh_panel()
@@ -377,7 +435,7 @@ class CoastalDrive(ShowBase):
         if panel_state == self._shown_phase:
             return
         self._shown_phase = panel_state
-        if phase in (Phase.MENU, Phase.RESULTS):
+        if phase in (Phase.MENU, Phase.PAUSED, Phase.RESULTS):
             self.status_frame.hide()
             self.help_frame.hide()
         else:
@@ -388,6 +446,15 @@ class CoastalDrive(ShowBase):
         self.panel.show()
         self.panel_title.setText("COASTAL DRIVE")
         self.panel_note.setText("滨海环路 · 4 个检查点\n按 Enter 开始计时挑战")
+        self.panel_detail.setText("")
+        self.panel_title["fg"] = (0.94, 0.97, 1, 1)
+        self.panel_title.setScale(0.07)
+        self.panel_note.setScale(0.040)
+        self.panel_note.setPos(0, 0.29)
+        self.panel_detail.setPos(0, 0.10)
+        self.panel["frameColor"] = (0.77, 0.86, 0.96, 0.98)
+        for item in (self.menu_divider, self.menu_rule_left, self.menu_rule_right):
+            item.hide()
         if phase == Phase.MENU and self.garage is None and not self.highway_menu and self.appearance.notice:
             self.panel_note.setText(f"滨海环路 · 4 个检查点\n按 Enter 开始计时挑战\n{self.appearance.notice}")
             self.appearance.notice = ""
@@ -443,6 +510,8 @@ class CoastalDrive(ShowBase):
                 ("返回", self.back_to_modes),
             ]
         elif phase == Phase.MENU:
+            for item in (self.menu_divider, self.menu_rule_left, self.menu_rule_right):
+                item.show()
             options = [
                 ("计时挑战  Enter", lambda: self.start_game(mode=GameMode.TIME_TRIAL)),
                 ("滨海自由驾驶", lambda: self.start_game(mode=GameMode.FREE_DRIVE)),
@@ -465,38 +534,50 @@ class CoastalDrive(ShowBase):
                 ("返回主菜单", self.session.menu),
             ]
         elif phase == Phase.RESULTS:
-            self.panel_title.setText("驾驶结束")
             if self.session.simulation.track == "endless":
                 highway_snapshot = self.session.highway.snapshot
                 if highway_snapshot.challenge:
-                    result = "挑战成功" if highway_snapshot.succeeded else "挑战失败"
-                    reason = highway_snapshot.reason
+                    self.panel_title.setText("挑战成功" if highway_snapshot.succeeded else "挑战失败")
+                    self.panel_note.setText(highway_snapshot.reason)
                 else:
-                    result = "自由驾驶结束"
-                    reason = highway_snapshot.reason or "自由驾驶结束"
-                result_line = f"{result}：{reason}\n" if highway_snapshot.challenge else f"{result}\n"
-                self.panel_note.setText(
-                    result_line
-                    + f"距离 {highway_snapshot.distance:.0f} m    "
-                    f"用时 {highway_snapshot.elapsed:.2f} s    "
-                    f"碰撞 {highway_snapshot.collisions}"
+                    self.panel_title.setText("驾驶结束")
+                    self.panel_note.setText("无限高速自由驾驶")
+                self.panel_detail.setText(
+                    f"距离 {highway_snapshot.distance:.0f} m   用时 {highway_snapshot.elapsed:.2f} s\n"
+                    f"碰撞 {highway_snapshot.collisions} 次"
                 )
             else:
                 race = self.session.race.snapshot
                 if race.finished and race.last_lap is not None:
-                    result = "有效圈" if not race.invalidated else f"本圈无效：{race.invalid_reason}"
-                    best = f"最佳 {race.best_lap:.3f} 秒" if race.best_lap else "暂无最佳成绩"
+                    self.panel_title.setText("挑战失败" if race.invalidated else "挑战成功")
                     self.panel_note.setText(
-                        f"{result}\n本圈 {race.last_lap:.3f} 秒    {best}"
-                        + (f"\n{race.save_error}" if race.save_error else "")
+                        f"圈速无效：{race.invalid_reason}" if race.invalidated else "有效完成计时挑战"
                     )
+                    best = f"最佳 {race.best_lap:.3f} 秒" if race.best_lap else "暂无最佳成绩"
+                    self.panel_detail.setText(
+                        f"本圈 {race.last_lap:.3f} 秒\n{best}"
+                    )
+                    if race.save_error:
+                        self.panel_note.setText(f"{self.panel_note.getText()}\n{race.save_error}")
                 elif self.session.mode == GameMode.FREE_DRIVE:
-                    self.panel_note.setText("自由驾驶结束\n可重新出发或返回菜单")
+                    self.panel_title.setText("驾驶结束")
+                    self.panel_note.setText("滨海自由驾驶")
+                    self.panel_detail.setText("可重新出发或返回菜单")
                 else:
+                    self.panel_title.setText("挑战失败")
                     self.panel_note.setText("挑战提前结束，本次不记录圈速")
+            self.panel_title.setScale(0.10)
+            if self.panel_title.getText() == "挑战成功":
+                self.panel_title["fg"] = (0.48, 0.90, 0.74, 1)
+            elif self.panel_title.getText() == "挑战失败":
+                self.panel_title["fg"] = (1, 0.59, 0.56, 1)
+            else:
+                self.panel_title["fg"] = (0.87, 0.92, 0.98, 1)
+            self.panel_note.setPos(0, 0.24)
+            self.panel_detail.setPos(0, 0.04)
             options = [
                 (
-                    "重新挑战  Enter",
+                    "重新出发  Enter" if self.session.mode == GameMode.FREE_DRIVE else "重新挑战  Enter",
                     lambda: self.start_game(
                         mode=self.session.mode, track=self.session.simulation.track
                     ),
@@ -507,6 +588,25 @@ class CoastalDrive(ShowBase):
         else:
             self.panel.hide()
             return
+        note_width = 0.99 if self.garage is not None else 1.37
+        self.panel_note.setText(self.fit_lines(self.panel_note.getText(), note_width, 0.040))
+        self.panel_detail.setText(self.fit_lines(self.panel_detail.getText(), 1.36, 0.041))
+        note_lines = self.panel_note.getText().count("\n") + 1
+        if phase == Phase.RESULTS:
+            self.panel_detail.setPos(0, 0.19 - 0.060 * note_lines)
+        if phase == Phase.RESULTS:
+            button_top = -0.16 if note_lines <= 2 else -0.23
+        elif self.garage is not None or self.audio_settings_page:
+            button_top = -0.03
+        else:
+            button_top = 0.02 if note_lines > 2 else 0.10
+        for index, button in enumerate(self.buttons):
+            button.setPos(0, 0, button_top - index * 0.145)
+            button["frameColor"] = (
+                (0.64, 0.78, 0.88, 1) if phase == Phase.MENU and self.garage is None
+                and not self.highway_menu and not self.audio_settings_page and index >= 3
+                else (0.83, 0.93, 1, 1)
+            )
         for button, (label, action) in zip(self.buttons, options):
             button["text"] = label
             button["command"] = action
@@ -550,47 +650,50 @@ class CoastalDrive(ShowBase):
         self.camLens.setFov(self.chase_camera.fov)
         self.scene.update_lighting(position)
         phase = self.session.phase
-        countdown = (
-            f"   {math.ceil(self.session.countdown_ticks / 120)} 秒后开始"
-            if phase == Phase.COUNTDOWN
-            else ""
-        )
+        countdown = f"{math.ceil(self.session.countdown_ticks / 120)} 秒后开始" if phase == Phase.COUNTDOWN else ""
         gear = "R" if state.player.gear < 0 else f"D{state.player.gear}"
         surface = "柏油" if state.player.surface == "asphalt" else "路肩 / 草地"
         race = self.session.race.snapshot
         if race.mode == GameMode.TIME_TRIAL:
-            race_line = f"计时挑战   {race.elapsed:06.3f} s   检查点 {race.checkpoints}/4"
+            race_line = f"计时挑战   {race.elapsed:06.3f} s\n检查点 {race.checkpoints}/4"
             if race.invalidated:
-                race_line += f"\n本次无效：{race.invalid_reason} · 重新开始可再次挑战"
+                notice = f"圈速无效：{race.invalid_reason}"
             else:
                 target = "终点" if race.checkpoints == 4 else f"检查点 {race.next_checkpoint}"
-                best = f"最佳 {race.best_lap:.3f} s" if race.best_lap else "暂无最佳成绩"
-                race_line += f"\n下一处：{target}    {best}"
+                race_line += f"   下一目标 {target}"
+                notice = ""
         else:
-            race_line = "自由驾驶   不计时"
+            race_line = "滨海自由驾驶"
+            notice = ""
             if self.session.simulation.track == "highway":
-                race_line += f"   距路段终点 {max(0, HIGHWAY_LENGTH - position.y):.0f} m\n交通车辆 · 基础跟车 / 实体碰撞"
+                race_line += f"\n距终点 {max(0, HIGHWAY_LENGTH - position.y):.0f} m"
             elif self.session.simulation.track == "endless":
                 highway_snapshot = self.session.highway.snapshot
-                density_label = TRAFFIC_DENSITIES[self.session.traffic_density].label
-                title = "5公里无碰撞挑战" if highway_snapshot.challenge else "自由驾驶"
+                title = "5公里无碰撞挑战" if highway_snapshot.challenge else "无限高速自由驾驶"
                 distance = (
                     f"{highway_snapshot.distance:.0f} / {highway_snapshot.target:.0f} m"
                     if highway_snapshot.challenge else f"{highway_snapshot.distance / 1000:.2f} km"
                 )
-                race_line = (
-                    f"{title}   {distance}   用时 {highway_snapshot.elapsed:.1f} s\n"
-                    f"车流 {density_label}   碰撞 {highway_snapshot.collisions}"
-                )
-        self.status.setText(
-            f"{abs(state.player.speed) * 3.6:03.0f} km/h   {gear}   {state.player.rpm:4.0f} rpm{countdown}\n"
-            f"油门 {state.player.throttle:.0%}    刹车 {state.player.brake:.0%}    {surface}\n"
-            f"加速度 {self.chase_camera.acceleration:+.1f} m/s²\n{race_line}"
-            + (f"\n{self.session.notice}" if self.session.notice else "")
+                race_line = f"{title}\n距离 {distance}   用时 {highway_snapshot.elapsed:.1f} s"
+                notice = f"碰撞 {highway_snapshot.collisions} 次"
+        self.speed.setText(f"{abs(state.player.speed) * 3.6:03.0f}")
+        self.gear_rpm.setText(f"km/h   {gear}\n{state.player.rpm:4.0f} rpm")
+        task_text = self.fit_lines(race_line, 1.04, 0.040)
+        notice_text = self.fit_lines(
+            " · ".join(item for item in (countdown, notice, self.session.notice) if item),
+            1.04, 0.037,
         )
+        self.status.setText(task_text)
+        notice_y = -0.28 - 0.055 * task_text.count("\n") - 0.075
+        self.status_notice.setPos(0.06, notice_y)
+        self.status_notice.setText(notice_text)
+        bottom = min(-0.52, notice_y - 0.055 * (notice_text.count("\n") + 1) - 0.025)
+        self.status_frame["frameSize"] = (0, 1.16, bottom, 0)
         self.diagnostics.setText(
             f"Tick {self.session.current.tick}   Simulation 120 Hz\n"
             f"Dropped time {self.session.stepper.dropped_time:.3f} s\n"
+            f"油门 {state.player.throttle:.0%}   刹车 {state.player.brake:.0%}   {surface}\n"
+            f"加速度 {self.chase_camera.acceleration:+.1f} m/s²\n"
             f"转向 {state.player.steering:+.1f}°    横向 {state.player.lateral_acceleration / 9.81:+.2f} g\n"
             f"风阻 {state.player.dynamics.aerodynamic_force:.0f} N    滚阻 {state.player.dynamics.rolling_force:.0f} N\n"
             f"前/后轴载荷 {state.player.dynamics.front_load:.0f} / {state.player.dynamics.rear_load:.0f} N\n"
@@ -652,13 +755,22 @@ class CoastalDrive(ShowBase):
             self.soundscape.close()
         self.scene.close()
         for widget in (
+            self.speed,
+            self.gear_rpm,
             self.status,
+            self.status_notice,
             self.status_frame,
+            self.status_accent,
             self.help,
             self.help_frame,
             self.diagnostics,
             self.panel_title,
             self.panel_note,
+            self.panel_detail,
+            self.menu_divider,
+            self.menu_rule_left,
+            self.menu_rule_right,
+            self.panel_accent,
             *self.buttons,
             self.panel,
         ):

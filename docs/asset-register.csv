@@ -29,3 +29,4 @@ panda3d-simplepbr,https://github.com/Moguri/panda3d-simplepbr,BSD-3-Clause,depen
 panda3d-gltf,https://github.com/Moguri/panda3d-gltf,BSD-3-Clause,dependency,GLB and glTF loading,Python environment,Runtime dependency
 CoastalDrive asphalt grain,project-generated,project source,integrated,road texture,src/scene.py,Deterministic procedural texture; no external image download
 CoastalDrive H3 paint palettes,project-generated on Kenney CC0 models,CC0 base models; project code,integrated,five paint colors and seeded traffic appearances,src/skins.py,No texture files altered; body paint geometry split at runtime; existing model licenses retained
+CoastalDrive 6B-08 UI gradients,project-generated,project source,integrated,blue-gray panel and button textures,assets/game/ui/,Generated deterministically by tools/make_ui_textures.py; no external image download
