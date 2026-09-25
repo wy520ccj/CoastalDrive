@@ -1,0 +1,65 @@
+CoastalDrive driving audio credits
+
+engine.wav
+"Car Engine Loop 96kHz, 4s" by qubodup
+https://opengameart.org/content/car-engine-loop-96khz-4s
+Licensed under Creative Commons Attribution 3.0:
+https://creativecommons.org/licenses/by/3.0/
+Changes: used the author's normalized loop; downmixed to mono, converted to 44.1 kHz 16-bit PCM, and reduced gain by 8 dB.
+
+engine_idle.wav
+"Engine Idle" by microman502
+https://freesound.org/people/microman502/sounds/818291/
+CC0: https://creativecommons.org/publicdomain/zero/1.0/
+Changes: used the public high-quality preview; selected 0.75-5.75 s, raised gain, converted to mono PCM, and crossfaded the loop seam.
+
+road.wav
+"Car driving ambience" by priesjensen
+https://freesound.org/people/priesjensen/sounds/495795/
+CC0: https://creativecommons.org/publicdomain/zero/1.0/
+Changes: used the public high-quality preview; selected 3-10 s, filtered to emphasize road texture, raised gain, converted to mono PCM, and crossfaded the loop seam.
+
+impact/ layered collision clips (22 files)
+All eight source recordings below are marked Creative Commons 0 on their Freesound pages:
+https://creativecommons.org/publicdomain/zero/1.0/
+
+"MTLimpt_Metal Impact Medium Bang Resonate x17" by harrisonlace (recorded on an empty car body)
+https://freesound.org/people/harrisonlace/sounds/798843/
+Used for transient and car-body light/heavy variants.
+
+"Car Crash (with Glass)" by magnuswaker
+https://freesound.org/people/magnuswaker/sounds/592388/
+Used for short crash transient variants. Original sound was constructed from metal panels and glass.
+
+"S36-09 Metal foley for car crash; much crunching.wav" by craigsmith
+https://freesound.org/people/craigsmith/sounds/675475/
+Used for metal deformation and light debris variants; vintage recording.
+
+"Metal Scraping/Scratching" by JSilverSound
+https://freesound.org/people/JSilverSound/sounds/615837/
+Used as metallic scrape texture; source author describes processing of a field recording.
+
+"metallic crash.wav" by BehanSean
+https://freesound.org/people/BehanSean/sounds/422438/
+Used for a short metallic transient.
+
+"Glass Breaking" by AlterKartoffelsack
+https://freesound.org/people/AlterKartoffelsack/sounds/465946/
+Used for a quiet glass-detail tail.
+
+"Hard Plastic Crack" by Doshke
+https://freesound.org/people/Doshke/sounds/825839/
+Used for a quiet plastic-detail tail.
+
+"cinderblock scrape 6 and a thud.wav" by patchytherat
+https://freesound.org/people/patchytherat/sounds/530989/
+Used for the hard-surface scrape texture.
+
+Changes to all impact sources: high-quality previews were selected as independent short excerpts,
+downmixed to mono, filtered for their layer, cut near transient onset or crossfaded into loops,
+and saved as 44.1 kHz 16-bit PCM with controlled peak headroom. Exact excerpt times,
+source URLs/SHA-256 hashes and derived output hashes are in tools/prepare_impact_audio.py
+and assets/game/audio/impact-bank.json. The previews are derivatives of the licensed
+recordings, not the downloadable original full-resolution files.
+
+The engine/road source URLs and SHA-256 checks remain in tools/prepare_audio.py.

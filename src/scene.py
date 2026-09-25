@@ -36,6 +36,7 @@ from coastal_map import (
     point_at,
     strip_mesh,
 )
+from coastal_visuals import _add_ridge, add_city, add_coastal_backdrop, add_streetlight
 from highway_map import HIGHWAY_LENGTH
 from highway_map import ROAD_WIDTH as HIGHWAY_ROAD_WIDTH
 from highway_map import meshes as highway_meshes
@@ -195,14 +196,43 @@ def water_texture():
     pixels = PNMImage(256, 256, 3)
     for y in range(256):
         for x in range(256):
-            ripple = math.sin(x * 0.19 + math.sin(y * 0.09) * 2) * 0.035
-            shade = 0.9 + ripple + math.sin(y * 0.23) * 0.025
-            pixels.setXel(x, y, shade * 0.82, shade * 0.98, shade)
+            u, v = x / 256, y / 256
+            long_wave = math.sin(math.tau * (u * 3 + math.sin(math.tau * v * 2) * 0.22))
+            cross_wave = math.sin(math.tau * (v * 5 + u * 0.14))
+            glint = max(0.0, math.sin(math.tau * (u * 11 + v * 7)) - 0.96)
+            tone = 0.82 + long_wave * 0.055 + cross_wave * 0.018
+            pixels.setXel(
+                x,
+                y,
+                min(1, tone * 0.70 + glint * 0.18),
+                min(1, tone * 0.87 + glint * 0.13),
+                min(1, tone * 0.98 + glint * 0.04),
+            )
     texture = Texture("water-ripples")
     texture.load(pixels)
     texture.setWrapU(Texture.WMRepeat)
     texture.setWrapV(Texture.WMRepeat)
     texture.setMinfilter(Texture.FTLinearMipmapLinear)
+    return texture
+
+
+@lru_cache(maxsize=1)
+def cliff_texture():
+    """Small tileable hand-made limestone texture, separate from grass and asphalt."""
+    pixels = PNMImage(256, 256, 3)
+    for y in range(256):
+        for x in range(256):
+            u, v = x / 256, y / 256
+            strata = math.sin(math.tau * (v * 6 + math.sin(math.tau * u * 2) * 0.12))
+            grain = math.sin(math.tau * (u * 17 + v * 13)) * math.sin(math.tau * (v * 19 - u * 7))
+            value = 0.71 + strata * 0.055 + grain * 0.025
+            pixels.setXel(x, y, value, value * 0.83, value * 0.65)
+    texture = Texture("warm-limestone")
+    texture.load(pixels)
+    texture.setWrapU(Texture.WMRepeat)
+    texture.setWrapV(Texture.WMRepeat)
+    texture.setMinfilter(Texture.FTLinearMipmapLinear)
+    texture.setAnisotropicDegree(4)
     return texture
 
 
@@ -258,26 +288,29 @@ class Scene:
         self.sky = make_sky(base, self.render)
 
     def setup_lighting(self) -> None:
+        coastal = self.base.session.simulation.track == "coastal"
         ambient = AmbientLight("coastal-ambient")
-        ambient.setColor((0.18, 0.22, 0.28, 1))
+        ambient.setColor((0.29, 0.35, 0.40, 1) if coastal else (0.18, 0.22, 0.28, 1))
         self.ambient_path = self.render.attachNewNode(ambient)
         self.render.setLight(self.ambient_path)
 
         sun = DirectionalLight("coastal-sun")
-        sun.setColor((2.6, 2.35, 1.9, 1))
+        sun_color = (1.78, 1.52, 1.27, 1) if coastal else (2.6, 2.35, 1.9, 1)
+        sun.setColor(sun_color)
         sun.setShadowCaster(True, 2048, 2048)
         sun.getLens().setFilmSize(95, 95)
         sun.getLens().setNearFar(10, 300)
         self.sun_path = self.render.attachNewNode(sun)
         self.render.setLight(self.sun_path)
         rail_sun = DirectionalLight("rail-sun")
-        rail_sun.setColor((2.6, 2.35, 1.9, 1))
+        rail_sun.setColor(sun_color)
         self.rail_sun_path = self.render.attachNewNode(rail_sun)
         self.update_lighting(Vec3(TRACK_X, 0, 0))
-        self.base.setBackgroundColor(0.55, 0.73, 0.82)
+        sky_color = (0.55, 0.76, 0.84) if coastal else (0.55, 0.73, 0.82)
+        self.base.setBackgroundColor(*sky_color)
         fog = Fog("coastal-haze")
-        fog.setColor(0.55, 0.73, 0.82)
-        fog.setExpDensity(0.0025)
+        fog.setColor(*sky_color)
+        fog.setExpDensity(0.0008 if coastal else 0.0015)
         self.render.setFog(fog)
 
     def update_lighting(self, position):
@@ -294,9 +327,10 @@ class Scene:
 
     def setup_scene(self) -> None:
         self.ocean = make_quad(
-            "ocean", Vec3(0, 0, 0), 1800, 1800, Vec4(0.025, 0.24, 0.36, 1), SEA_LEVEL
+            "ocean", Vec3(0, 0, 0), 1800, 1800, Vec4(0.045, 0.42, 0.61, 1), SEA_LEVEL
         )
         self.ocean.setTexture(water_texture())
+        self.ocean.setLightOff(1)
         self.ocean.reparentTo(self.render)
         track = self.base.session.simulation.track
         if track == "endless":
@@ -322,14 +356,17 @@ class Scene:
                 mesh = make_mesh(name, vertices, triangles, Vec4(*colors[name]))
                 if name == "road":
                     mesh.setTexture(asphalt_texture())
-                elif name in ("island", "cliff"):
+                elif name == "island":
                     mesh.setTexture(ground_texture())
+                elif name == "cliff":
+                    mesh.setTexture(cliff_texture())
                 elif "rail" in name:
                     self.stabilize_rail(mesh)
                 mesh.reparentTo(self.render)
             self.add_map_details()
             self.add_start_grid()
             self.add_environment()
+            add_coastal_backdrop(self.render, make_mesh, make_box, make_cylinder, make_cone)
         # Batch static road markings and barriers before adding the moving car.
         if track != "endless":
             self.render.flattenStrong()
@@ -389,6 +426,9 @@ class Scene:
             for x in (-8.35, 8.35):
                 self.add_road_post(self.render, (x, y, 0.46))
         self.add_environment()
+        add_city(self.render, make_box, (-95, 210))
+        for i in range(5):
+            _add_ridge(self.render, make_mesh, (-260, i * 220, -3), 160, 65 + i * 5, i + 70, True)
 
     def add_road_post(self, parent, position):
         post = make_box("roadside-post", (0.09, 0.09, 0.46), Vec4(0.89, 0.88, 0.8, 1))
@@ -402,6 +442,19 @@ class Scene:
         """Build reusable endless-road templates and the initially streamed segments."""
         from highway_segments import SEGMENT_LENGTH, surface_meshes
 
+        self.highway_scenery = self.render.attachNewNode("highway-scenery")
+        add_city(self.highway_scenery, make_box, (-95, 240))
+        for i in range(5):
+            _add_ridge(
+                self.highway_scenery,
+                make_mesh,
+                (-310, i * 230 - 200, -3),
+                160,
+                65 + i * 5,
+                i + 70,
+                True,
+            )
+        self.highway_scenery.flattenStrong()
         self.endless_templates = self.render.attachNewNode("endless-templates")
         self.endless_templates.hide()
         self.endless_tree_templates = [
@@ -466,10 +519,17 @@ class Scene:
             if root is None:
                 root = self.render.attachNewNode(f"endless-segment-{index}")
                 if stream.curve:
-                    colors = {"road": Vec4(0.075, 0.09, 0.11, 1),
-                              "ground": Vec4(0.20, 0.31, 0.13, 1)}
+                    colors = {
+                        "road": Vec4(0.075, 0.09, 0.11, 1),
+                        "ground": Vec4(0.20, 0.31, 0.13, 1),
+                    }
                     for name, (vertices, triangles) in stream.meshes[index].items():
-                        color = colors.get(name, Vec4(0.62, 0.66, 0.68, 1) if name.startswith("rail") else Vec4(0.45, 0.42, 0.34, 1))
+                        color = colors.get(
+                            name,
+                            Vec4(0.62, 0.66, 0.68, 1)
+                            if name.startswith("rail")
+                            else Vec4(0.45, 0.42, 0.34, 1),
+                        )
                         node = make_mesh(name, vertices, triangles, color)
                         if name == "road":
                             node.setTexture(asphalt_texture())
@@ -479,11 +539,21 @@ class Scene:
                             self.stabilize_rail(node)
                         node.reparentTo(root)
                     for vertices, triangles in curve_mesh.markings(stream.curve, index):
-                        make_mesh("lane-mark", vertices, triangles, Vec4(0.94, 0.82, 0.35, 1)).reparentTo(root)
+                        make_mesh(
+                            "lane-mark", vertices, triangles, Vec4(0.94, 0.82, 0.35, 1)
+                        ).reparentTo(root)
                     for local_y in range(20, SEGMENT_LENGTH, 40):
                         for lateral in (-8.35, 8.35):
-                            self.add_road_post(root, curve_mesh.point(stream.curve, index, local_y, lateral, 0.46))
-                    for number, (position, scale, heading) in enumerate(curve_mesh.trees(stream.curve, simulation.seed, index)):
+                            self.add_road_post(
+                                root, curve_mesh.point(stream.curve, index, local_y, lateral, 0.46)
+                            )
+                    for local_y in range(20, SEGMENT_LENGTH, 40):
+                        add_streetlight(
+                            root, make_box, curve_mesh.point(stream.curve, index, local_y, 9, 0)
+                        )
+                    for number, (position, scale, heading) in enumerate(
+                        curve_mesh.trees(stream.curve, simulation.seed, index)
+                    ):
                         tree = self.endless_tree_templates[(index + number) % 2].copyTo(root)
                         tree.show()
                         tree.setPos(*position)
@@ -506,6 +576,7 @@ class Scene:
                 for local_y in range(20, SEGMENT_LENGTH, 40):
                     for lateral in (-8.35, 8.35):
                         self.add_road_post(root, (lateral, local_y, 0.46))
+                    add_streetlight(root, make_box, (9, local_y, 0))
                 trees = segment(simulation.seed, index).trees
                 for number, (x, local_y, scale, heading) in enumerate(trees):
                     tree = self.endless_tree_templates[(index + number) % 2].copyTo(root)
@@ -635,7 +706,8 @@ class Scene:
                 filename = "nature/rock_largeA.glb"
                 if prop.kind == "tree":
                     filename = (
-                        "nature/tree_pineTallB.glb" if number % 3 == 0
+                        "nature/tree_pineTallB.glb"
+                        if number % 3 == 0
                         else "nature/tree_pineTallA.glb"
                     )
                 node = self.load_model(filename)
@@ -654,7 +726,6 @@ class Scene:
         return root
 
     def apply(self, state):
-        self.sky.setPos(*state.player.position)
         if self.base.session.simulation.track == "endless":
             self.sync_segments()
             if self.ocean is not None:
@@ -679,10 +750,15 @@ class Scene:
                     wheel_node.hide()
         for lights, car in zip(self.traffic_signals, state.traffic):
             for side, lamp in zip((-1, 1), lights):
-                if car.active and (car.hazards or car.signal == side) and int(state.time * 2.5) % 2 == 0:
+                if (
+                    car.active
+                    and (car.hazards or car.signal == side)
+                    and int(state.time * 2.5) % 2 == 0
+                ):
                     lamp.show()
                 else:
                     lamp.hide()
 
     def close(self):
+        self.sky.removeNode()
         self.render.removeNode()

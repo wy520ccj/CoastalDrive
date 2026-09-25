@@ -1,8 +1,10 @@
 # 当前进度
 
-更新：2026-09-24。开发版本 **0.8.3 / Vehicle Impact Audio System v1**；碰撞音效已获玩家实驾试听通过，6B 整体画面与性能 Gate 仍未通过。0.8.3 碰撞音频系统及玩家验收记录已推送，远端 `main` HEAD 为 `6f546fe0b82a5646fff7e2e39e13c2121f40284c`。
+更新：2026-09-25。稳定开发基线 **0.8.3 / Vehicle Impact Audio System v1**；碰撞音效已获玩家实驾试听通过，6B 整体画面与性能 Gate 仍未通过。另归档并推送了 DS 新工作目录及本轮界面/车辆展示实验增量；画面略有提升，但已知 bug 很多，**实验性、未验收，不代表稳定版**，详见 [归档任务包](tasks/DS-visual-upgrade-archive.md) 与 [`visual-upgrade/EXPERIMENTAL-STATUS.md`](../visual-upgrade/EXPERIMENTAL-STATUS.md)。不应将 6B-08 旧验证结果套用到这批改动。本次发布包含其前 4 个本地提交，发布前共同基线为 `6f546fe0b82a5646fff7e2e39e13c2121f40284c`。
 
 ## 本轮 6B-08
+
+- 后续视觉实验增量与独立 DS 工作目录已单独标注和归档；该项没有新的自动化或人工验收记录。修复入口见 [`DS-visual-upgrade-archive.md`](tasks/DS-visual-upgrade-archive.md)。
 
 - 基线 `7379291a8eefbd5e061555ce3857bc74ded663cf`，开工工作区干净。[任务包](tasks/6B-08-hud-menu-results.md)记录 HUD、菜单、暂停、结算与车库侧栏的界面收敛。速度成为 HUD 主位；模式任务、无效说明、通知按字体宽度换行并扩展底板，开发信息转入 F3。成功/失败/自由驾驶结束由主标题直接区分。
 - 加入项目自产蓝灰细纹理与菜单入口分组；没有引入外部素材或修改车库场景、车辆材料、比赛/Session 状态、输入语义、声音语义、小地图。720p/1080p 各 14 个真实离屏状态及 720p 完整流程录像在 `logs/6B-08/ui/`；关键页面人工目视未见溢出。T0/T1 结果见任务包，玩家可见窗口主观确认待做。

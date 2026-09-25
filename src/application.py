@@ -1,14 +1,13 @@
 import json
 import logging
 import math
-import os
-from pathlib import Path
 
 import simplepbr
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectButton, DirectFrame, OnscreenText
+from direct.gui.OnscreenImage import OnscreenImage
 from direct.showbase.ShowBase import ShowBase
-from panda3d.core import Filename, TextNode, Vec3, loadPrcFileData
+from panda3d.core import Filename, SamplerState, TextNode, Vec3, WindowProperties, loadPrcFileData
 
 from chase_camera import ChaseCamera
 from controls import ConstantController
@@ -40,6 +39,11 @@ class CoastalDrive(ShowBase):
             ),
         )
         super().__init__()
+        icon = resource_root() / "assets/game/ui/coastal-drive.ico"
+        properties = WindowProperties()
+        properties.setIconFilename(Filename.fromOsSpecific(str(icon)))
+        if hasattr(self.win, "requestProperties"):
+            self.win.requestProperties(properties)
         self.disableMouse()
         # The default bias detaches contact shadows at our light's depth range.
         self.pipeline = simplepbr.init(enable_shadows=True, msaa_samples=4, shadow_bias=0.0007)
@@ -187,40 +191,91 @@ class CoastalDrive(ShowBase):
                 self.driving_keys_held.clear()
 
     def setup_hud(self):
-        # Windows supplies this font. It is used locally, never copied into the assets.
-        font_path = (Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts/msyh.ttc").resolve()
-        self.ui_font = self.loader.loadFont(Filename.fromOsSpecific(str(font_path)).getFullpath())
-        self.ui_font.setPixelsPerUnit(48)
-        text_style = {"fg": (0.94, 0.97, 1, 1), "shadow": (0, 0, 0, 0.6), "font": self.ui_font}
         ui_assets = resource_root() / "assets/game/ui"
+        font_path = ui_assets / "fonts/fusion-pixel-12px-proportional-zh_hans.ttf"
+        self.ui_font = self.loader.loadFont(Filename.fromOsSpecific(str(font_path)).getFullpath())
+        self.ui_font.setPixelsPerUnit(32)
+        self.ui_font.setMinfilter(SamplerState.FTNearest)
+        self.ui_font.setMagfilter(SamplerState.FTNearest)
+        text_style = {"fg": (0.07, 0.17, 0.23, 1), "font": self.ui_font}
         self.panel_texture = self.loader.loadTexture(
             Filename.fromOsSpecific(str(ui_assets / "panel.png"))
+        )
+        self.wide_texture = self.loader.loadTexture(
+            Filename.fromOsSpecific(str(ui_assets / "panel-wide.png"))
         )
         self.button_texture = self.loader.loadTexture(
             Filename.fromOsSpecific(str(ui_assets / "button.png"))
         )
-        self.status_frame = DirectFrame(
-            frameColor=(0.72, 0.80, 0.88, 0.85), frameTexture=self.panel_texture,
-            frameSize=(0, 1.16, -0.52, 0), pos=(-1.72, 0, 0.91),
+        self.button_hover_texture = self.loader.loadTexture(
+            Filename.fromOsSpecific(str(ui_assets / "button-hover.png"))
         )
-        self.status_accent = DirectFrame(
-            parent=self.status_frame, frameColor=(0.27, 0.72, 0.84, 0.92),
-            frameSize=(0, 1.16, -0.006, 0),
+        self.button_pressed_texture = self.loader.loadTexture(
+            Filename.fromOsSpecific(str(ui_assets / "button-pressed.png"))
+        )
+        self.button_primary_texture = self.loader.loadTexture(
+            Filename.fromOsSpecific(str(ui_assets / "button-primary.png"))
+        )
+        for texture in (
+            self.panel_texture, self.wide_texture, self.button_texture,
+            self.button_hover_texture, self.button_pressed_texture,
+            self.button_primary_texture,
+        ):
+            texture.setMinfilter(SamplerState.FTNearest)
+            texture.setMagfilter(SamplerState.FTNearest)
+        self.menu_art = OnscreenImage(
+            image=self.loader.loadTexture(Filename.fromOsSpecific(str(ui_assets / "coastal-drive-icon.png"))),
+            pos=(0.94, 0, -0.10), scale=0.67,
+        )
+        self.menu_art.setTransparency(True)
+        self.speed_frame = DirectFrame(
+            frameColor=(0.055, 0.13, 0.18, 0.94),
+            frameSize=(0, 0.62, -0.35, 0), pos=(1.08, 0, -0.54),
+        )
+        self.telemetry_frame = DirectFrame(
+            frameColor=(1, 0.74, 0.21, 1),
+            frameSize=(0, 0.17, -0.16, 0), pos=(1.49, 0, -0.60),
+        )
+        self.speed_accent = DirectFrame(
+            parent=self.speed_frame, frameColor=(1, 0.65, 0.15, 1),
+            frameSize=(0.03, 0.58, -0.02, -0.012),
         )
         self.speed = OnscreenText(
-            **text_style, parent=self.status_frame, text="", pos=(0.06, -0.13),
-            scale=0.105, align=TextNode.ALeft, mayChange=True,
+            **text_style, parent=self.speed_frame, text="", pos=(0.24, -0.245),
+            scale=0.16, align=TextNode.ACenter, mayChange=True,
         )
+        self.speed["fg"] = (0.99, 0.98, 0.93, 1)
+        self.speed_unit = OnscreenText(
+            **text_style, parent=self.speed_frame, text="km/h", pos=(0.48, -0.24),
+            scale=0.033, align=TextNode.ACenter,
+        )
+        self.speed_unit["fg"] = (0.95, 0.95, 0.91, 1)
         self.gear_rpm = OnscreenText(
-            **text_style, parent=self.status_frame, text="", pos=(0.64, -0.12),
-            scale=0.040, align=TextNode.ALeft, mayChange=True,
+            **text_style, parent=self.telemetry_frame, text="", pos=(0.085, -0.11),
+            scale=0.065, align=TextNode.ACenter, mayChange=True,
+        )
+        self.rpm_track = DirectFrame(
+            parent=self.speed_frame, frameColor=(0.36, 0.43, 0.48, 1),
+            frameSize=(0.04, 0.58, -0.32, -0.29),
+        )
+        self.rpm_bar = DirectFrame(
+            parent=self.speed_frame, frameColor=(1, 0.71, 0.18, 1),
+            frameSize=(0.04, 0.04, -0.32, -0.29),
+        )
+        self.status_frame = DirectFrame(
+            frameColor=(1, 1, 1, 1), frameTexture=self.wide_texture,
+            frameSize=(0, 0.83, -0.27, 0), pos=(-1.71, 0, 0.91),
+        )
+        self.status_accent = DirectFrame(
+            parent=self.status_frame, frameColor=(0.96, 0.49, 0.14, 1),
+            frameSize=(0, 0.008, -0.27, 0),
         )
         self.status = OnscreenText(
-            **text_style, parent=self.status_frame, text="", pos=(0.06, -0.25),
-            scale=0.040, align=TextNode.ALeft, mayChange=True,
+            **text_style, parent=self.status_frame, text="", pos=(0.05, -0.085),
+            scale=0.041, align=TextNode.ALeft, mayChange=True,
         )
         self.status_notice = OnscreenText(
-            **text_style, parent=self.status_frame, text="", pos=(0.06, -0.43),
+            **text_style, parent=self.status_frame, text="", pos=(0.05, -0.21),
             scale=0.037, align=TextNode.ALeft, mayChange=True,
         )
         self.help_frame = DirectFrame(
@@ -235,6 +290,7 @@ class CoastalDrive(ShowBase):
             pos=(0, -0.018),
             scale=0.036,
         )
+        self.help["fg"] = (0.99, 0.98, 0.93, 1)
         self.diagnostics = OnscreenText(
             **text_style,
             text="",
@@ -245,11 +301,11 @@ class CoastalDrive(ShowBase):
         )
         self.diagnostics.hide()
         self.panel = DirectFrame(
-            frameColor=(0.77, 0.86, 0.96, 0.98), frameTexture=self.panel_texture,
+            frameColor=(1, 1, 1, 1), frameTexture=self.wide_texture,
             frameSize=(-0.8, 0.8, -0.80, 0.68)
         )
         self.panel_accent = DirectFrame(
-            parent=self.panel, frameColor=(0.30, 0.72, 0.83, 0.95),
+            parent=self.panel, frameColor=(0.96, 0.49, 0.14, 1),
             frameSize=(-0.55, 0.55, -0.005, 0.005), pos=(0, 0, 0.61),
         )
         self.panel_title = OnscreenText(
@@ -258,20 +314,41 @@ class CoastalDrive(ShowBase):
         self.panel_note = OnscreenText(
             **text_style, parent=self.panel, text="", pos=(0, 0.29), scale=0.040, mayChange=True
         )
+        self.result_card = DirectFrame(
+            parent=self.panel, frameColor=(1, 1, 1, 0.95),
+            frameTexture=self.wide_texture,
+            frameSize=(-0.79, 0.79, -0.16, 0.16), pos=(0, 0, -0.18),
+        )
         self.panel_detail = OnscreenText(
             **text_style, parent=self.panel, text="", pos=(0, 0.12),
-            scale=0.041, mayChange=True,
+            scale=0.055, mayChange=True,
+        )
+        self.hero_label = OnscreenText(
+            **text_style, text="COASTAL DRIVE", pos=(0.28, 0.71),
+            scale=0.074, align=TextNode.ALeft,
+        )
+        self.hero_title = OnscreenText(
+            **text_style, text="沿着海岸\n驶向远方", pos=(0.25, 0.19),
+            scale=0.125, align=TextNode.ALeft,
+        )
+        self.hero_note = OnscreenText(
+            **text_style, text="竞速 · 巡航 · 无限高速", pos=(0.28, -0.29),
+            scale=0.042, align=TextNode.ALeft,
+        )
+        self.hero_line = DirectFrame(
+            frameColor=(0.96, 0.49, 0.14, 1),
+            frameSize=(0, 0.85, -0.005, 0.005), pos=(0.28, 0, -0.20),
         )
         self.menu_divider = OnscreenText(
             **text_style, parent=self.panel, text="其他", pos=(0, -0.255), scale=0.028,
         )
-        self.menu_divider["fg"] = (0.62, 0.75, 0.82, 1)
+        self.menu_divider["fg"] = (0.37, 0.46, 0.49, 1)
         self.menu_rule_left = DirectFrame(
-            parent=self.panel, frameColor=(0.25, 0.45, 0.56, 0.65),
+            parent=self.panel, frameColor=(0.38, 0.47, 0.50, 0.65),
             frameSize=(-0.36, -0.07, -0.002, 0.002), pos=(0, 0, -0.26),
         )
         self.menu_rule_right = DirectFrame(
-            parent=self.panel, frameColor=(0.25, 0.45, 0.56, 0.65),
+            parent=self.panel, frameColor=(0.38, 0.47, 0.50, 0.65),
             frameSize=(0.07, 0.36, -0.002, 0.002), pos=(0, 0, -0.26),
         )
         self.buttons = [
@@ -280,10 +357,13 @@ class CoastalDrive(ShowBase):
                 text="",
                 scale=0.055,
                 pos=(0, 0, 0.12 - i * 0.145),
-                frameSize=(-5, 5, -0.5, 1),
+                frameSize=(-6.5, 6.5, -0.7, 1.25),
                 frameColor=(1, 1, 1, 1),
-                frameTexture=self.button_texture,
-                text_fg=(0.96, 0.98, 1, 1),
+                frameTexture=(
+                    self.button_texture, self.button_hover_texture,
+                    self.button_pressed_texture, self.button_texture,
+                ),
+                text_fg=(0.07, 0.17, 0.23, 1),
                 text_font=self.ui_font,
                 relief=DGG.FLAT,
             )
@@ -436,9 +516,13 @@ class CoastalDrive(ShowBase):
             return
         self._shown_phase = panel_state
         if phase in (Phase.MENU, Phase.PAUSED, Phase.RESULTS):
+            self.speed_frame.hide()
+            self.telemetry_frame.hide()
             self.status_frame.hide()
             self.help_frame.hide()
         else:
+            self.speed_frame.show()
+            self.telemetry_frame.show()
             self.status_frame.show()
             self.help_frame.show()
         for button in self.buttons:
@@ -447,16 +531,22 @@ class CoastalDrive(ShowBase):
         self.panel_title.setText("COASTAL DRIVE")
         self.panel_note.setText("滨海环路 · 4 个检查点\n按 Enter 开始计时挑战")
         self.panel_detail.setText("")
-        self.panel_title["fg"] = (0.94, 0.97, 1, 1)
+        self.result_card.hide()
+        self.menu_art.hide()
+        for item in (self.hero_label, self.hero_title, self.hero_note, self.hero_line):
+            item.hide()
+        self.panel_title["fg"] = (0.07, 0.17, 0.23, 1)
         self.panel_title.setScale(0.07)
         self.panel_note.setScale(0.040)
         self.panel_note.setPos(0, 0.29)
         self.panel_detail.setPos(0, 0.10)
-        self.panel["frameColor"] = (0.77, 0.86, 0.96, 0.98)
+        self.panel["frameColor"] = (1, 1, 1, 1)
+        self.panel_accent.hide()
         for item in (self.menu_divider, self.menu_rule_left, self.menu_rule_right):
             item.hide()
+        appearance_notice = ""
         if phase == Phase.MENU and self.garage is None and not self.highway_menu and self.appearance.notice:
-            self.panel_note.setText(f"滨海环路 · 4 个检查点\n按 Enter 开始计时挑战\n{self.appearance.notice}")
+            appearance_notice = self.appearance.notice
             self.appearance.notice = ""
         if self.garage is not None:
             model = next(model for model in MODELS if model.id == self.garage_model_id)
@@ -510,8 +600,13 @@ class CoastalDrive(ShowBase):
                 ("返回", self.back_to_modes),
             ]
         elif phase == Phase.MENU:
+            self.hero_label.show()
+            self.hero_label.setPos(-1.43, 0.84)
+            self.hero_label.setScale(0.066)
             for item in (self.menu_divider, self.menu_rule_left, self.menu_rule_right):
                 item.show()
+            self.panel_title.setText("选择驾驶")
+            self.panel_note.setText("选择模式，出发上路" + (f"\n{appearance_notice}" if appearance_notice else ""))
             options = [
                 ("计时挑战  Enter", lambda: self.start_game(mode=GameMode.TIME_TRIAL)),
                 ("滨海自由驾驶", lambda: self.start_game(mode=GameMode.FREE_DRIVE)),
@@ -534,6 +629,7 @@ class CoastalDrive(ShowBase):
                 ("返回主菜单", self.session.menu),
             ]
         elif phase == Phase.RESULTS:
+            self.result_card.show()
             if self.session.simulation.track == "endless":
                 highway_snapshot = self.session.highway.snapshot
                 if highway_snapshot.challenge:
@@ -568,11 +664,11 @@ class CoastalDrive(ShowBase):
                     self.panel_note.setText("挑战提前结束，本次不记录圈速")
             self.panel_title.setScale(0.10)
             if self.panel_title.getText() == "挑战成功":
-                self.panel_title["fg"] = (0.48, 0.90, 0.74, 1)
+                self.panel_title["fg"] = (0.13, 0.40, 0.29, 1)
             elif self.panel_title.getText() == "挑战失败":
-                self.panel_title["fg"] = (1, 0.59, 0.56, 1)
+                self.panel_title["fg"] = (0.58, 0.17, 0.08, 1)
             else:
-                self.panel_title["fg"] = (0.87, 0.92, 0.98, 1)
+                self.panel_title["fg"] = (0.07, 0.17, 0.23, 1)
             self.panel_note.setPos(0, 0.24)
             self.panel_detail.setPos(0, 0.04)
             options = [
@@ -588,9 +684,9 @@ class CoastalDrive(ShowBase):
         else:
             self.panel.hide()
             return
-        note_width = 0.99 if self.garage is not None else 1.37
+        note_width = 0.92 if self.garage is not None else 1.80 if phase == Phase.RESULTS else 1.37
         self.panel_note.setText(self.fit_lines(self.panel_note.getText(), note_width, 0.040))
-        self.panel_detail.setText(self.fit_lines(self.panel_detail.getText(), 1.36, 0.041))
+        self.panel_detail.setText(self.fit_lines(self.panel_detail.getText(), 1.50, 0.055))
         note_lines = self.panel_note.getText().count("\n") + 1
         if phase == Phase.RESULTS:
             self.panel_detail.setPos(0, 0.19 - 0.060 * note_lines)
@@ -602,15 +698,75 @@ class CoastalDrive(ShowBase):
             button_top = 0.02 if note_lines > 2 else 0.10
         for index, button in enumerate(self.buttons):
             button.setPos(0, 0, button_top - index * 0.145)
-            button["frameColor"] = (
-                (0.64, 0.78, 0.88, 1) if phase == Phase.MENU and self.garage is None
-                and not self.highway_menu and not self.audio_settings_page and index >= 3
-                else (0.83, 0.93, 1, 1)
-            )
+            button["frameColor"] = (1, 1, 1, 1)
+            if index == 0 and self.garage is None and not self.audio_settings_page:
+                button["frameTexture"] = (
+                    self.button_primary_texture, self.button_hover_texture,
+                    self.button_pressed_texture, self.button_primary_texture,
+                )
+                button["text_fg"] = (1, 1, 0.97, 1)
+            else:
+                button["frameTexture"] = (
+                    self.button_texture, self.button_hover_texture,
+                    self.button_pressed_texture, self.button_texture,
+                )
+                button["text_fg"] = (0.07, 0.17, 0.23, 1)
         for button, (label, action) in zip(self.buttons, options):
             button["text"] = label
             button["command"] = action
             button.show()
+        self.layout_panel(phase, len(options))
+
+    def layout_panel(self, phase, option_count):
+        """每个页面复用按钮与文字，但使用独立的游戏界面构图。"""
+        if phase == Phase.MENU and self.garage is None and not self.highway_menu and not self.audio_settings_page:
+            self.panel.setPos(-0.91, 0, 0)
+            self.panel["frameSize"] = (-0.67, 0.67, -0.89, 0.89)
+            self.panel["frameTexture"] = self.panel_texture
+            self.panel_title.setPos(0, 0.67)
+            self.panel_title.setScale(0.092)
+            self.panel_note.setPos(0, 0.51)
+            self.panel_accent.setPos(0, 0, 0.83)
+            self.menu_divider.setPos(0, -0.21)
+            self.menu_rule_left.setPos(0, 0, -0.215)
+            self.menu_rule_right.setPos(0, 0, -0.215)
+            for i in range(option_count):
+                self.buttons[i].setPos(0, 0, 0.30 - i * 0.18 if i < 3 else -0.36 - (i - 3) * 0.18)
+        elif self.garage is not None:
+            self.panel.setPos(0.98, 0, 0)
+            self.panel["frameSize"] = (-0.66, 0.66, -0.89, 0.89)
+            self.panel["frameTexture"] = self.panel_texture
+            self.panel_title.setPos(0, 0.67)
+            self.panel_title.setScale(0.10)
+            self.panel_note.setPos(0, 0.47)
+            self.panel_accent.setPos(0, 0, 0.83)
+            for i in range(option_count):
+                self.buttons[i].setPos(0, 0, -0.02 - i * 0.16)
+        elif phase == Phase.RESULTS:
+            self.panel.setPos(0, 0, 0)
+            self.panel["frameSize"] = (-1.03, 1.03, -0.63, 0.63)
+            self.panel["frameTexture"] = self.wide_texture
+            self.panel_accent.setPos(0, 0, 0.57)
+            self.panel_accent["frameSize"] = (-0.88, 0.88, -0.005, 0.005)
+            self.panel_title.setPos(0, 0.35)
+            self.panel_title.setScale(0.145)
+            self.panel_note.setPos(0, 0.16)
+            self.result_card.setPos(0, 0, -0.12)
+            self.result_card["frameSize"] = (-0.78, 0.78, -0.125, 0.125)
+            self.panel_detail.setPos(0, -0.072)
+            for i in range(option_count):
+                self.buttons[i].setPos(-0.64 + i * 0.64, 0, -0.42)
+        else:
+            self.panel.setPos(0, 0, 0)
+            self.panel["frameSize"] = (-0.85, 0.85, -0.80, 0.80)
+            self.panel["frameTexture"] = self.wide_texture
+            self.panel_accent.setPos(0, 0, 0.74)
+            self.panel_accent["frameSize"] = (-0.62, 0.62, -0.005, 0.005)
+            self.panel_title.setPos(0, 0.57)
+            self.panel_title.setScale(0.10)
+            self.panel_note.setPos(0, 0.39)
+            for i in range(option_count):
+                self.buttons[i].setPos(0, 0, -0.02 - i * 0.155)
 
     def update(self, task):
         if self.garage is not None:
@@ -677,20 +833,25 @@ class CoastalDrive(ShowBase):
                 race_line = f"{title}\n距离 {distance}   用时 {highway_snapshot.elapsed:.1f} s"
                 notice = f"碰撞 {highway_snapshot.collisions} 次"
         self.speed.setText(f"{abs(state.player.speed) * 3.6:03.0f}")
-        self.gear_rpm.setText(f"km/h   {gear}\n{state.player.rpm:4.0f} rpm")
-        task_text = self.fit_lines(race_line, 1.04, 0.040)
+        self.gear_rpm.setText(gear)
+        self.rpm_bar["frameSize"] = (
+            0.04, 0.04 + 0.54 * min(state.player.rpm / 6500, 1), -0.32, -0.29,
+        )
+        task_text = self.fit_lines(race_line, 0.68, 0.040)
         notice_text = self.fit_lines(
             " · ".join(item for item in (countdown, notice, self.session.notice) if item),
-            1.04, 0.037,
+            0.68, 0.037,
         )
         self.status.setText(task_text)
-        notice_y = -0.28 - 0.055 * task_text.count("\n") - 0.075
-        self.status_notice.setPos(0.06, notice_y)
+        notice_y = -0.10 - 0.055 * (task_text.count("\n") + 1) - 0.03
+        self.status_notice.setPos(0.05, notice_y)
         self.status_notice.setText(notice_text)
-        bottom = min(-0.52, notice_y - 0.055 * (notice_text.count("\n") + 1) - 0.025)
-        self.status_frame["frameSize"] = (0, 1.16, bottom, 0)
+        bottom = min(-0.27, notice_y - 0.055 * (notice_text.count("\n") + 1) - 0.025)
+        self.status_frame["frameSize"] = (0, 0.83, bottom, 0)
+        self.status_accent["frameSize"] = (0, 0.008, bottom, 0)
         self.diagnostics.setText(
             f"Tick {self.session.current.tick}   Simulation 120 Hz\n"
+            f"转速 {state.player.rpm:.0f} rpm\n"
             f"Dropped time {self.session.stepper.dropped_time:.3f} s\n"
             f"油门 {state.player.throttle:.0%}   刹车 {state.player.brake:.0%}   {surface}\n"
             f"加速度 {self.chase_camera.acceleration:+.1f} m/s²\n"
@@ -755,8 +916,14 @@ class CoastalDrive(ShowBase):
             self.soundscape.close()
         self.scene.close()
         for widget in (
+            self.speed_unit,
             self.speed,
             self.gear_rpm,
+            self.rpm_track,
+            self.rpm_bar,
+            self.speed_accent,
+            self.speed_frame,
+            self.telemetry_frame,
             self.status,
             self.status_notice,
             self.status_frame,
@@ -767,6 +934,12 @@ class CoastalDrive(ShowBase):
             self.panel_title,
             self.panel_note,
             self.panel_detail,
+            self.result_card,
+            self.hero_label,
+            self.hero_title,
+            self.hero_note,
+            self.hero_line,
+            self.menu_art,
             self.menu_divider,
             self.menu_rule_left,
             self.menu_rule_right,
