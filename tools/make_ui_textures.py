@@ -1,10 +1,15 @@
-"""生成 6B-08 界面底板和按钮的蓝灰渐变纹理。"""
+"""以正式主题色生成既有尺寸的底板与按钮，不改变页面布局。"""
 
+import sys
 from pathlib import Path
 
 from panda3d.core import Filename, PNMImage
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+
+from ui import theme
+
 DEST = ROOT / "assets/game/ui"
 
 
@@ -26,8 +31,8 @@ def gradient(name, width, height, top, bottom):
 
 def main():
     DEST.mkdir(parents=True, exist_ok=True)
-    gradient("panel.png", 128, 256, (0.075, 0.105, 0.145), (0.018, 0.032, 0.052))
-    gradient("button.png", 128, 64, (0.26, 0.39, 0.51), (0.12, 0.21, 0.30))
+    gradient("panel.png", 128, 256, theme.PAPER_LIGHT, theme.PAPER)
+    gradient("button.png", 128, 64, theme.PAPER_LIGHT, theme.PAPER)
 
 
 if __name__ == "__main__":

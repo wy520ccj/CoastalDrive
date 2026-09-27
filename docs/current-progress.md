@@ -1,12 +1,12 @@
 # 当前进度
 
-更新：2026-09-26。当前工作树是 **Visual Identity v1 独立开发线**，分支 `visual-identity-v1`，起点 `2185410ec1db1b390c4e89eac820e768ca88c5b9`。原仓库 main/DS 实验档案保留，只读参考；本分支没有迁入实验增量。
+更新：2026-09-27。当前工作树是 **Visual Identity v1 独立开发线**，分支 `visual-identity-v1`，起点 `2185410ec1db1b390c4e89eac820e768ca88c5b9`。原仓库 main/DS 实验档案保留，只读参考；本分支没有迁入实验增量。
 
 ## 当前阶段
 
 - [VI-00](tasks/VI-00.md) 已完成工程冻结、78项测试与三种子启动验证；720p/1080p各14状态重新留证。产品行为没有修改。
 - 长期约定：[Visual Identity v1](visual-identity-v1.md)。代表图和来源清单在 `docs/evidence/VI-00/`；旧6B-08截图目录不能继续代表稳定提交。
-- 下一包 VI-01：Font / Palette / Brand。只提取 theme，之后停止，不进入 VI-02。
+- [VI-01](tasks/VI-01.md) 实施与自动验证完成：独立 theme、Fusion Pixel、奶白/深海蓝/橙色主题和项目 Icon；T0 12项、T1 83项、双分辨率各14状态及窗口20次重启通过。证据位于 docs/evidence/VI-01/。人工视觉确认 pending。本轮停止，未执行 VI-02。
 
 ## 继承的能力与未完成门槛
 

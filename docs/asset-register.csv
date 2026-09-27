@@ -3,7 +3,7 @@ Kenney Car Kit,https://kenney.nl/assets/car-kit,CC0,downloaded,player and traffi
 Kenney Racing Kit,https://kenney.nl/assets/racing-kit,CC0,downloaded,roadside props and track parts,assets/raw/kenney_racing-kit.zip,License.txt inspected; use only selected consistent props
 Kenney Nature Kit,https://kenney.nl/assets/nature-kit,CC0,downloaded,trees rocks and foliage,assets/raw/kenney_nature-kit.zip,License.txt inspected; use a small consistent subset
 Kenney Nature Kit H1 selection,https://kenney.nl/assets/nature-kit,CC0,integrated,test field trees and rocks,assets/game/nature,tree_pineTallA.glb and rock_largeA.glb with License.txt; reproducible via tools/prepare_h1_assets.py
-Microsoft YaHei,Windows system font,Microsoft Windows font license,local-system,Chinese UI,C:/Windows/Fonts/msyh.ttc,Loaded from the installed Windows system; font file is not copied or redistributed
+Microsoft YaHei,Windows system font,Microsoft Windows font license,historical-baseline,VI-00 baseline only,C:/Windows/Fonts/msyh.ttc,VI-01 replaces runtime use with bundled Fusion Pixel; never redistributed
 Poly Haven Industrial Sunset Pure Sky,https://polyhaven.com/a/industrial_sunset_puresky,CC0,integrated,sky dome,assets/game/sky/industrial_sunset_puresky.jpg,Tonemapped 8K JPG; 16038282 bytes; source MD5 be98161b9ba68820ae9cd80a41d37d97
 Poly Haven Asphalt Floor,https://polyhaven.com/a/asphalt_floor,CC0,integrated,road diffuse material,assets/game/materials/asphalt_floor_diff_2k.jpg,2K JPG; source MD5 7862881b57c46b192ddeb2925e4c1fe3; fetched by tools/prepare_phase6b_materials.py
 Poly Haven Grass Ground,https://polyhaven.com/a/grass_ground,CC0,integrated,terrain diffuse material,assets/game/materials/grass_ground_diff_2k.jpg,2K JPG; source MD5 fd97f2402677e6686b2d9159fc3a4256; fetched by tools/prepare_phase6b_materials.py
@@ -29,4 +29,6 @@ panda3d-simplepbr,https://github.com/Moguri/panda3d-simplepbr,BSD-3-Clause,depen
 panda3d-gltf,https://github.com/Moguri/panda3d-gltf,BSD-3-Clause,dependency,GLB and glTF loading,Python environment,Runtime dependency
 CoastalDrive asphalt grain,project-generated,project source,integrated,road texture,src/scene.py,Deterministic procedural texture; no external image download
 CoastalDrive H3 paint palettes,project-generated on Kenney CC0 models,CC0 base models; project code,integrated,five paint colors and seeded traffic appearances,src/skins.py,No texture files altered; body paint geometry split at runtime; existing model licenses retained
-CoastalDrive 6B-08 UI gradients,project-generated,project source,integrated,blue-gray panel and button textures,assets/game/ui/,Generated deterministically by tools/make_ui_textures.py; no external image download
+CoastalDrive VI-01 UI textures,project-generated,project source,integrated,paper panel and button textures,assets/game/ui/,Stable geometry regenerated from ui/theme.py by tools/make_ui_textures.py
+Fusion Pixel 12px zh_hans,https://github.com/TakWolf/fusion-pixel-font,SIL OFL 1.1,integrated,single UI and wordmark font,assets/game/ui/fonts/,Exact archived bytes pinned in font-source.json; OFL.txt included; no fallback
+CoastalDrive VI-01 coast-road icon,project-generated,project source,integrated,window icon,assets/game/ui/coastal-drive.ico,tools/make_ui_brand.py; 16 to 256 px PNG sizes embedded; no DS illustration

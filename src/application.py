@@ -1,8 +1,6 @@
 import json
 import logging
 import math
-import os
-from pathlib import Path
 
 import simplepbr
 from direct.gui import DirectGuiGlobals as DGG
@@ -15,7 +13,7 @@ from controls import ConstantController
 from garage import GaragePreview
 from highway_map import HIGHWAY_LENGTH
 from highway_run import TRAFFIC_DENSITIES
-from paths import resource_root, user_data
+from paths import user_data
 from race import BestTimes, GameMode
 from scene import Scene
 from session import Phase, Session
@@ -23,6 +21,7 @@ from settings import AppearanceStore, AudioSettingsStore
 from simulation import Control
 from skins import MODELS, SKINS, apply_skin
 from soundscape import Soundscape
+from ui import theme
 
 
 class CoastalDrive(ShowBase):
@@ -32,6 +31,7 @@ class CoastalDrive(ShowBase):
             "\n".join(
                 [
                     "window-title CoastalDrive 0.8.3 Impact Audio",
+                    f"icon-filename {theme.asset_filename('coastal-drive.ico').getFullpath()}",
                     f"win-size {render_size[0]} {render_size[1]}",
                     "sync-video 1",
                     "window-type offscreen" if smoke and not onscreen else "window-type onscreen",
@@ -187,24 +187,16 @@ class CoastalDrive(ShowBase):
                 self.driving_keys_held.clear()
 
     def setup_hud(self):
-        # Windows supplies this font. It is used locally, never copied into the assets.
-        font_path = (Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts/msyh.ttc").resolve()
-        self.ui_font = self.loader.loadFont(Filename.fromOsSpecific(str(font_path)).getFullpath())
-        self.ui_font.setPixelsPerUnit(48)
-        text_style = {"fg": (0.94, 0.97, 1, 1), "shadow": (0, 0, 0, 0.6), "font": self.ui_font}
-        ui_assets = resource_root() / "assets/game/ui"
-        self.panel_texture = self.loader.loadTexture(
-            Filename.fromOsSpecific(str(ui_assets / "panel.png"))
-        )
-        self.button_texture = self.loader.loadTexture(
-            Filename.fromOsSpecific(str(ui_assets / "button.png"))
-        )
+        self.ui_font = theme.load_font()
+        text_style = theme.text_style(self.ui_font)
+        self.panel_texture = self.loader.loadTexture(theme.asset_filename("panel.png"))
+        self.button_texture = self.loader.loadTexture(theme.asset_filename("button.png"))
         self.status_frame = DirectFrame(
-            frameColor=(0.72, 0.80, 0.88, 0.85), frameTexture=self.panel_texture,
+            frameColor=theme.HUD_TINT, frameTexture=self.panel_texture,
             frameSize=(0, 1.16, -0.52, 0), pos=(-1.72, 0, 0.91),
         )
         self.status_accent = DirectFrame(
-            parent=self.status_frame, frameColor=(0.27, 0.72, 0.84, 0.92),
+            parent=self.status_frame, frameColor=theme.ORANGE,
             frameSize=(0, 1.16, -0.006, 0),
         )
         self.speed = OnscreenText(
@@ -224,7 +216,7 @@ class CoastalDrive(ShowBase):
             scale=0.037, align=TextNode.ALeft, mayChange=True,
         )
         self.help_frame = DirectFrame(
-            frameColor=(0.015, 0.025, 0.035, 0.68),
+            frameColor=theme.PAPER,
             frameSize=(-0.89, 0.89, -0.06, 0.04),
             pos=(0, 0, -0.9),
         )
@@ -236,7 +228,7 @@ class CoastalDrive(ShowBase):
             scale=0.036,
         )
         self.diagnostics = OnscreenText(
-            **text_style,
+            **{**text_style, "fg": theme.DIAGNOSTIC_TEXT, "shadow": theme.DIAGNOSTIC_SHADOW},
             text="",
             pos=(-1.62, 0.37),
             scale=0.035,
@@ -245,11 +237,11 @@ class CoastalDrive(ShowBase):
         )
         self.diagnostics.hide()
         self.panel = DirectFrame(
-            frameColor=(0.77, 0.86, 0.96, 0.98), frameTexture=self.panel_texture,
+            frameColor=theme.PANEL_TINT, frameTexture=self.panel_texture,
             frameSize=(-0.8, 0.8, -0.80, 0.68)
         )
         self.panel_accent = DirectFrame(
-            parent=self.panel, frameColor=(0.30, 0.72, 0.83, 0.95),
+            parent=self.panel, frameColor=theme.ORANGE,
             frameSize=(-0.55, 0.55, -0.005, 0.005), pos=(0, 0, 0.61),
         )
         self.panel_title = OnscreenText(
@@ -265,13 +257,13 @@ class CoastalDrive(ShowBase):
         self.menu_divider = OnscreenText(
             **text_style, parent=self.panel, text="其他", pos=(0, -0.255), scale=0.028,
         )
-        self.menu_divider["fg"] = (0.62, 0.75, 0.82, 1)
+        self.menu_divider["fg"] = theme.MUTED
         self.menu_rule_left = DirectFrame(
-            parent=self.panel, frameColor=(0.25, 0.45, 0.56, 0.65),
+            parent=self.panel, frameColor=theme.MUTED,
             frameSize=(-0.36, -0.07, -0.002, 0.002), pos=(0, 0, -0.26),
         )
         self.menu_rule_right = DirectFrame(
-            parent=self.panel, frameColor=(0.25, 0.45, 0.56, 0.65),
+            parent=self.panel, frameColor=theme.MUTED,
             frameSize=(0.07, 0.36, -0.002, 0.002), pos=(0, 0, -0.26),
         )
         self.buttons = [
@@ -281,9 +273,9 @@ class CoastalDrive(ShowBase):
                 scale=0.055,
                 pos=(0, 0, 0.12 - i * 0.145),
                 frameSize=(-5, 5, -0.5, 1),
-                frameColor=(1, 1, 1, 1),
+                frameColor=theme.BUTTON_TINT,
                 frameTexture=self.button_texture,
-                text_fg=(0.96, 0.98, 1, 1),
+                text_fg=theme.INK,
                 text_font=self.ui_font,
                 relief=DGG.FLAT,
             )
@@ -444,15 +436,15 @@ class CoastalDrive(ShowBase):
         for button in self.buttons:
             button.hide()
         self.panel.show()
-        self.panel_title.setText("COASTAL DRIVE")
+        self.panel_title.setText(theme.BRAND_NAME)
         self.panel_note.setText("滨海环路 · 4 个检查点\n按 Enter 开始计时挑战")
         self.panel_detail.setText("")
-        self.panel_title["fg"] = (0.94, 0.97, 1, 1)
+        self.panel_title["fg"] = theme.INK
         self.panel_title.setScale(0.07)
         self.panel_note.setScale(0.040)
         self.panel_note.setPos(0, 0.29)
         self.panel_detail.setPos(0, 0.10)
-        self.panel["frameColor"] = (0.77, 0.86, 0.96, 0.98)
+        self.panel["frameColor"] = theme.PANEL_TINT
         for item in (self.menu_divider, self.menu_rule_left, self.menu_rule_right):
             item.hide()
         if phase == Phase.MENU and self.garage is None and not self.highway_menu and self.appearance.notice:
@@ -568,11 +560,11 @@ class CoastalDrive(ShowBase):
                     self.panel_note.setText("挑战提前结束，本次不记录圈速")
             self.panel_title.setScale(0.10)
             if self.panel_title.getText() == "挑战成功":
-                self.panel_title["fg"] = (0.48, 0.90, 0.74, 1)
+                self.panel_title["fg"] = theme.SUCCESS
             elif self.panel_title.getText() == "挑战失败":
-                self.panel_title["fg"] = (1, 0.59, 0.56, 1)
+                self.panel_title["fg"] = theme.FAILURE
             else:
-                self.panel_title["fg"] = (0.87, 0.92, 0.98, 1)
+                self.panel_title["fg"] = theme.INK
             self.panel_note.setPos(0, 0.24)
             self.panel_detail.setPos(0, 0.04)
             options = [
@@ -603,9 +595,9 @@ class CoastalDrive(ShowBase):
         for index, button in enumerate(self.buttons):
             button.setPos(0, 0, button_top - index * 0.145)
             button["frameColor"] = (
-                (0.64, 0.78, 0.88, 1) if phase == Phase.MENU and self.garage is None
+                theme.SECONDARY_BUTTON_TINT if phase == Phase.MENU and self.garage is None
                 and not self.highway_menu and not self.audio_settings_page and index >= 3
-                else (0.83, 0.93, 1, 1)
+                else theme.BUTTON_TINT
             )
         for button, (label, action) in zip(self.buttons, options):
             button["text"] = label

@@ -48,3 +48,7 @@ VI-00 新证据：`logs/VI-00/`；代表图、报告与源/资产 SHA-256 清单
 T0/T1、真实离屏画面、用户实际体验分别记账。VI-00 只确认起点和方向，不将旧画面评价为最终合格。6B-07 远景护栏残余沿用此前阶段接受决定，整体可见窗口/性能 Gate 仍未通过。
 
 后续 VI-GATE 沿用 1080p 中档、8车、预热30秒后采样5分钟，平均≥60 FPS、P95≤25ms，以及至少3分钟正常驾驶录像。VI-00/01 不执行此整体 Gate。
+
+## VI-01 已固定的主题
+
+单一主字体为 Fusion Pixel 12px proportional zh_hans；字体及 OFL 许可按 assets/game/ui/fonts/font-source.json 固定哈希。Ark 因当前文案缺字未采用。主色为 PAPER #F3EFE3、INK #102B3A、ORANGE #F47C24，辅色 SEA #247E96；成功/失败采用独立语义颜色。品牌保持同字体的 COASTAL DRIVE 文本；窗口图标由 tools/make_ui_brand.py 生成，不采用 DS 插画。ui/theme.py 不持有页面或游戏状态。具体证据和人工待验项见 tasks/VI-01.md。
