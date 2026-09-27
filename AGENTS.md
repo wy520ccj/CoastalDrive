@@ -30,3 +30,4 @@
 | 玩法/界面 | `src/session.py`、`src/race.py`、`src/highway_run.py`、`src/application.py`；`docs/phase5c-gameplay.md` |
 | 画面/车库/声音 | `src/scene.py`、`src/garage.py`、`src/settings.py`、`src/soundscape.py`；`docs/phase6a-garage.md`、`docs/phase6b-atmosphere.md` |
 | 素材 | `docs/asset-register.csv`；新增资源记录真实来源、许可及加工过程 |
+| 海岸环境/美术源文件 | `docs/environment-art.md`；表现、运行资产、Blender 源文件和制作/验证工具按功能分区 |

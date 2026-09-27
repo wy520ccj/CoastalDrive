@@ -10,12 +10,13 @@ from panda3d.core import (
     GeomVertexData,
     GeomVertexFormat,
     GeomVertexWriter,
+    Shader,
 )
 
 from paths import resource_root
 
 
-def make_sky(base, parent):
+def make_sky(base, parent, *, coastal=False):
     rows = 24
     columns = 48
     radius = 650
@@ -44,7 +45,8 @@ def make_sky(base, parent):
     node = GeomNode("sky-dome")
     node.addGeom(geometry)
     sky = parent.attachNewNode(node)
-    path = resource_root() / "assets/game/sky/industrial_sunset_puresky.jpg"
+    relative = "environment/sky/coastal-clouds.png" if coastal else "sky/industrial_sunset_puresky.jpg"
+    path = resource_root() / "assets/game" / relative
     sky.setTexture(base.loader.loadTexture(Filename.fromOsSpecific(str(path))), 1)
     sky.setH(-120)
     sky.setTwoSided(True)
@@ -54,4 +56,9 @@ def make_sky(base, parent):
     sky.setLightOff(1)
     sky.setFogOff(1)
     sky.setShaderOff(1)
+    if coastal:
+        from environment.foundation import asset_path
+
+        sky.setShader(Shader.load(Shader.SLGLSL, asset_path("shaders/sky.vert"),
+                                 asset_path("shaders/sky.frag")), 2)
     return sky

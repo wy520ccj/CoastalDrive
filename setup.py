@@ -22,6 +22,8 @@ setup(
                 "assets/game/**/*.jpg",
                 "assets/game/**/*.wav",
                 "assets/game/**/*.json",
+                "assets/game/environment/shaders/*.vert",
+                "assets/game/environment/shaders/*.frag",
                 "assets/game/**/License.txt",
             ],
             "plugins": ["pandagl", "p3openal_audio"],

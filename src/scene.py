@@ -36,6 +36,9 @@ from coastal_map import (
     point_at,
     strip_mesh,
 )
+from environment import foundation
+from environment.coastal_slice import build_slice
+from environment.water import style_water
 from highway_map import HIGHWAY_LENGTH
 from highway_map import ROAD_WIDTH as HIGHWAY_ROAD_WIDTH
 from highway_map import meshes as highway_meshes
@@ -255,7 +258,7 @@ class Scene:
         self.track_points = [Vec3(point.x, point.y, point.z) for point in MAP_POINTS]
         self.setup_lighting()
         self.setup_scene()
-        self.sky = make_sky(base, self.render)
+        self.sky = make_sky(base, self.render, coastal=base.session.simulation.track == "coastal")
 
     def setup_lighting(self) -> None:
         ambient = AmbientLight("coastal-ambient")
@@ -279,6 +282,13 @@ class Scene:
         fog.setColor(0.55, 0.73, 0.82)
         fog.setExpDensity(0.0025)
         self.render.setFog(fog)
+        if self.base.session.simulation.track == "coastal":
+            ambient.setColor(foundation.AMBIENT)
+            sun.setColor(foundation.SUN)
+            rail_sun.setColor(foundation.SUN)
+            fog.setColor(*foundation.HAZE)
+            fog.setExpDensity(foundation.FOG_DENSITY)
+            self.base.setBackgroundColor(*foundation.HAZE)
 
     def update_lighting(self, position):
         self.sun_path.setPos(position + Vec3(-55, -75, 125))
@@ -293,12 +303,15 @@ class Scene:
         node.setLight(self.rail_sun_path, 1)
 
     def setup_scene(self) -> None:
+        track = self.base.session.simulation.track
+        sea_size = 12000 if track == "coastal" else 1800
         self.ocean = make_quad(
-            "ocean", Vec3(0, 0, 0), 1800, 1800, Vec4(0.025, 0.24, 0.36, 1), SEA_LEVEL
+            "ocean", Vec3(0, 0, 0), sea_size, sea_size, Vec4(0.025, 0.24, 0.36, 1), SEA_LEVEL
         )
         self.ocean.setTexture(water_texture())
         self.ocean.reparentTo(self.render)
-        track = self.base.session.simulation.track
+        if track == "coastal":
+            style_water(self.ocean)
         if track == "endless":
             self.setup_endless()
         elif track == "test":
@@ -309,27 +322,16 @@ class Scene:
         elif self.base.session.simulation.track == "highway":
             self.setup_highway()
         else:
-            colors = {
-                "road": (0.075, 0.09, 0.11, 1),
-                "inner-shoulder": (0.44, 0.41, 0.33, 1),
-                "outer-shoulder": (0.44, 0.41, 0.33, 1),
-                "island": (0.19, 0.32, 0.13, 1),
-                "cliff": (0.32, 0.29, 0.23, 1),
-                "inner-rail": (0.60, 0.64, 0.66, 1),
-                "outer-rail": (0.60, 0.64, 0.66, 1),
-            }
             for name, (vertices, triangles) in map_meshes().items():
-                mesh = make_mesh(name, vertices, triangles, Vec4(*colors[name]))
-                if name == "road":
-                    mesh.setTexture(asphalt_texture())
-                elif name in ("island", "cliff"):
-                    mesh.setTexture(ground_texture())
-                elif "rail" in name:
+                mesh = make_mesh(name, vertices, triangles, Vec4(*foundation.SURFACES[name]))
+                foundation.apply_surface(mesh, name)
+                if "rail" in name:
                     self.stabilize_rail(mesh)
                 mesh.reparentTo(self.render)
             self.add_map_details()
             self.add_start_grid()
             self.add_environment()
+            build_slice(self.render)
         # Batch static road markings and barriers before adding the moving car.
         if track != "endless":
             self.render.flattenStrong()
@@ -639,6 +641,8 @@ class Scene:
                         else "nature/tree_pineTallA.glb"
                     )
                 node = self.load_model(filename)
+                if self.base.session.simulation.track == "coastal":
+                    foundation.style_existing_prop(node)
                 node.setScale(prop.scale)
                 node.setPos(prop.x, prop.y, z)
                 node.setH(prop.heading)
@@ -655,6 +659,8 @@ class Scene:
 
     def apply(self, state):
         self.sky.setPos(*state.player.position)
+        if self.base.session.simulation.track == "coastal":
+            self.ocean.setShaderInput("sea_time", state.time)
         if self.base.session.simulation.track == "endless":
             self.sync_segments()
             if self.ocean is not None:

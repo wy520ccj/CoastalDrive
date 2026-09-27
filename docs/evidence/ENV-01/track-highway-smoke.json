@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "tick": 252,
+  "player_position": [
+    0.0,
+    12.939119338989258,
+    0.4188082814216614
+  ],
+  "traffic_count": 8,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "screenshot": "logs\\ENV-01\\track-highway\\h0-offscreen.png",
+  "restart_20_nodes_stable": true,
+  "restart_20_tasks_stable": true,
+  "restart_20_events_stable": true
+}

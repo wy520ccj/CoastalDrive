@@ -1,0 +1,48 @@
+{
+  "reference": {
+    "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\graphic_design\\Codex 图像 2026年9月24日 11_15_03-4.png",
+    "sha256": "ffd7edc4a7f1986ec4cc3992534db711c2cf56a35e25b960a780a5bafc83a270",
+    "role": "user supplied visual direction; original read-only"
+  },
+  "sky": {
+    "file": "sky/coastal-clouds.png",
+    "sha256": "ac27481bd5389c7da314c541c371ac420aca9457cf107730384bfe2349aac818",
+    "source": "imagegen; generated during ENV-01 from user coastal design reference",
+    "license_note": "AI-generated project artwork; not a stock CC0 claim",
+    "prompt_summary": "2:1 sky-only panoramic stylized coastal sky; warm cream cumulus, clear azure blue, golden sun; no land, roads, objects, text or UI; plain lower sky",
+    "dimensions": [
+      1774,
+      887
+    ]
+  },
+  "models": {
+    "source": "original Blender geometry; no new third-party meshes",
+    "manifest": "kit-manifest.json",
+    "editable_source": "art/coastal/coastal_kit.blend",
+    "blender": "5.2.2 LTS"
+  },
+  "files": {
+    "kit-manifest.json": "47a902cc585cb5e34480a6f0783f41abfea6f0f5d4ce7156e9f09ee697ca6e68",
+    "materials/asphalt.png": "f22b73e561c4f5e998fd6cb85550b15246bc55228a5a08dc0254bffe7c2feb36",
+    "materials/limestone.png": "edb30376ec1cd2e1b834c2f23d777dc87441cf3a50100a850b89b770057cdbf1",
+    "materials/meadow.png": "75c04e82a427b89a840adde1cd8a34a3c9261afc584473a0f7e430ad5f533b4d",
+    "models/bush_round_a.glb": "b4bc69a659673d813fd255c686aaa7bfbaa4874eef406a9388f185803e7b5734",
+    "models/bush_round_b.glb": "629c32b505662664c941316967832e76185b2d6748f2acceb94101dd2cbb95e3",
+    "models/cliff_coastal_a.glb": "d78532e004fedb43f4f66c1012616eff0cb2bbb871ae613711403b8926091672",
+    "models/coastal_house_a.glb": "dad8706ccc0c9a0213d81a3365847054bcb65655c556ec70aed1eb69192684aa",
+    "models/coastal_lamp_a.glb": "8fdbf681f943dbb28cb932105548d3dcf23bd537c48fc62c6c8d26f1259afee6",
+    "models/flowers_coastal_a.glb": "e5451ba2d462d949dffdfd2e267c313c82d6c008eda1cbb560c22fb49c23c6bb",
+    "models/lighthouse_coastal_a.glb": "3768345ce6dcd3e07e2328f1bfb739759e3d75820cdc4f52459a6e205a0b5147",
+    "models/pine_tall_a.glb": "c5acaa82fb83328f8b7e53c32f303daa5c912f181b7efa63d4a1514c3baaa863",
+    "models/pine_tall_b.glb": "c309c0509830e221bcbe125119f68df8e4fc2b64a5e3838824c1909bcdda3869",
+    "models/road_chevron_sign_a.glb": "9f46afc0b4013902de1ffdf347dee83f06e540df5ae8cc1bb3c0f8ee7fd63752",
+    "models/rock_coastal_a.glb": "831350fc23d788404040083c8b76eaa4addfdb24895ce90aca57d5f03802c4a9",
+    "models/rock_coastal_b.glb": "316a14cf2e9ece17f3e80a49c16c03ca8fdc9a350dfb8aafd90d062d02a7039e",
+    "README.md": "4d34e84f51b1a722b21572f5b76382630360cf6ae274a6b2613e38fd8e84b448",
+    "shaders/sky.frag": "597c0dd91e4df989a6231f15b2ac99052068581407a96f64b81579047cc0580c",
+    "shaders/sky.vert": "08acdf52289b6c9cb12f8931112277efcb66f1ee6b6feccab6b131e6fab4f881",
+    "shaders/water.frag": "9460f0175ff29d3c3cfb7a1af7ad09e269556460021cf7561fbf6f025726a562",
+    "shaders/water.vert": "81ad457c2b4314517244b87b6f972946d06d414571626f6877809a4c2bb7095e",
+    "sky/coastal-clouds.png": "ac27481bd5389c7da314c541c371ac420aca9457cf107730384bfe2349aac818"
+  }
+}

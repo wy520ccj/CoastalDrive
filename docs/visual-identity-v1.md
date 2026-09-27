@@ -10,6 +10,8 @@
 
 ## 数据流与业务边界
 
+2026-09-27：UI v1 按用户确认暂时冻结；当前环境任务的功能分区与运行/美术源文件边界见 [environment-art.md](environment-art.md)。旧 VI 编号不要求机械顺延；目前只实施 ENV-01 基底与小段示范。
+
 Controller → Control → Simulation → Snapshot → Game / Presentation / UI / 后续 AI。
 
 Simulation 唯一维护物理世界；Session 调度固定步、暂停与流程；RaceTracker/HighwayRun 权威维护规则和结果。渲染插值仅供表现，后续 AI 读取固定步原始快照，不另建物理、不模拟 KeyboardController。
