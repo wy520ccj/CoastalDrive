@@ -142,7 +142,7 @@ def placements():
                 "road_chevron_sign_a", (x, y, z - 0.10), (-1 if turn > 0 else 1, 1, 1), p.heading
             )
         )
-    items.append(Placement("lighthouse_coastal_a", LIGHTHOUSE_POSITION, (1, 1, 1), -30))
+    items.append(Placement("lighthouse_coastal_a", LIGHTHOUSE_POSITION, (1.2, 1.2, 1.2), -30))
     return tuple(items)
 
 
