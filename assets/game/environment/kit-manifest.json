@@ -4,37 +4,37 @@
   "blender": "5.2.2",
   "units": "meters; Blender Z-up source; GLB exported through Blender glTF Y-up conversion",
   "asset_count": 12,
-  "triangle_budget": 50000,
+  "triangle_budget": 30000,
   "assets": [
     {
       "name": "pine_tall_a",
       "file": "models/pine_tall_a.glb",
-      "description": "Broad irregular tiered pine with exposed boughs, approximately 7.5 m tall.",
+      "description": "Five broad overlapping pine whorls with an exposed lower trunk, approximately 7.5 m tall.",
       "source": "Created for CoastalDrive VI asset kit; original Blender geometry and materials.",
       "license": "Project-generated geometry using CoastalDrive coastal palette.",
       "origin": "ground-centered, Z=0 in editable Blender source",
       "bounds_m": {
-        "x": 4.005,
-        "y": 3.651,
+        "x": 5.173,
+        "y": 5.448,
         "z": 7.5
       },
-      "triangles": 2592,
-      "vertices": 1512
+      "triangles": 3512,
+      "vertices": 1890
     },
     {
       "name": "pine_tall_b",
       "file": "models/pine_tall_b.glb",
-      "description": "Wind-shaped irregular tiered pine variant, approximately 8.3 m tall.",
+      "description": "Wind-shaped variant with five broad overlapping pine whorls, approximately 8.3 m tall.",
       "source": "Created for CoastalDrive VI asset kit; original Blender geometry and materials.",
       "license": "Project-generated geometry using CoastalDrive coastal palette.",
       "origin": "ground-centered, Z=0 in editable Blender source",
       "bounds_m": {
-        "x": 3.702,
-        "y": 3.661,
+        "x": 4.995,
+        "y": 5.025,
         "z": 8.3
       },
-      "triangles": 2952,
-      "vertices": 1722
+      "triangles": 3512,
+      "vertices": 1890
     },
     {
       "name": "bush_round_a",
@@ -74,12 +74,12 @@
       "license": "Project-generated; no external source assets.",
       "origin": "ground-centered, Z=0 in editable Blender source",
       "bounds_m": {
-        "x": 2.176,
-        "y": 1.716,
+        "x": 2.938,
+        "y": 2.252,
         "z": 1.8
       },
-      "triangles": 220,
-      "vertices": 130
+      "triangles": 108,
+      "vertices": 56
     },
     {
       "name": "rock_coastal_b",
@@ -89,12 +89,12 @@
       "license": "Project-generated; no external source assets.",
       "origin": "ground-centered, Z=0 in editable Blender source",
       "bounds_m": {
-        "x": 2.097,
-        "y": 1.655,
+        "x": 3.002,
+        "y": 2.135,
         "z": 1.65
       },
-      "triangles": 220,
-      "vertices": 130
+      "triangles": 108,
+      "vertices": 56
     },
     {
       "name": "flowers_coastal_a",
@@ -138,8 +138,8 @@
         "y": 2.7,
         "z": 14.0
       },
-      "triangles": 760,
-      "vertices": 440
+      "triangles": 1372,
+      "vertices": 788
     },
     {
       "name": "coastal_house_a",
@@ -187,5 +187,5 @@
       "vertices": 104
     }
   ],
-  "total_triangles": 9410
+  "total_triangles": 11278
 }

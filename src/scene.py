@@ -34,10 +34,11 @@ from coastal_map import (
     map_meshes,
     offset_point,
     point_at,
+    project,
     strip_mesh,
 )
 from environment import foundation
-from environment.coastal_slice import build_slice
+from environment.coastal_slice import build_slice, build_terrain, dress_existing_tree
 from environment.water import style_water
 from highway_map import HIGHWAY_LENGTH
 from highway_map import ROAD_WIDTH as HIGHWAY_ROAD_WIDTH
@@ -323,6 +324,8 @@ class Scene:
             self.setup_highway()
         else:
             for name, (vertices, triangles) in map_meshes().items():
+                if name in ("island", "cliff"):
+                    continue
                 mesh = make_mesh(name, vertices, triangles, Vec4(*foundation.SURFACES[name]))
                 foundation.apply_surface(mesh, name)
                 if "rail" in name:
@@ -330,6 +333,7 @@ class Scene:
                 mesh.reparentTo(self.render)
             self.add_map_details()
             self.add_start_grid()
+            build_terrain(self.render)
             self.add_environment()
             build_slice(self.render)
         # Batch static road markings and barriers before adding the moving car.
@@ -643,6 +647,8 @@ class Scene:
                 node = self.load_model(filename)
                 if self.base.session.simulation.track == "coastal":
                     foundation.style_existing_prop(node)
+                    if prop.kind == "tree" and project(prop.x, prop.y)[2] < 360:
+                        dress_existing_tree(node, "b" if number % 3 == 0 else "a")
                 node.setScale(prop.scale)
                 node.setPos(prop.x, prop.y, z)
                 node.setH(prop.heading)

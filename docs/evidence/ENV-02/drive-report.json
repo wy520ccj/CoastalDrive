@@ -1,0 +1,84 @@
+{
+  "passed": true,
+  "onscreen": true,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "note": "Short automated route sample; not a long-run gate.",
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "seed": 23,
+  "traffic_count": 8,
+  "distance_m": 365.0991813521265,
+  "simulation_seconds": 27.041666666666668,
+  "wall_seconds": 29.297635899999996,
+  "average_fps": 58.08888243620342,
+  "p95_frame_ms": 20.235800002410542,
+  "p99_frame_ms": 23.000000001047738,
+  "dropped_simulation_seconds": 2.2333333333333334,
+  "sample_dropped_seconds": 2.2333333333333334,
+  "sample_frames": 1568,
+  "sample_seconds": 26.99311700000544,
+  "scene_graph_totals": {
+    "nodes": 545,
+    "geom_nodes": 270,
+    "geoms": 1457,
+    "triangles": 266410
+  },
+  "geometry_note": "Whole scene counts; not visible triangles or GPU draw calls.",
+  "update_cpu_mean_ms": null,
+  "update_cpu_p95_ms": null,
+  "gpu_timing": "not measured",
+  "captures": [
+    {
+      "screenshot": "drive-000.png",
+      "time": 0.0,
+      "distance_m": 0.0,
+      "position": [
+        95.0,
+        0.0,
+        0.550000011920929
+      ]
+    },
+    {
+      "screenshot": "drive-070.png",
+      "time": 7.508333333333333,
+      "distance_m": 70.0128168024645,
+      "position": [
+        91.65514373779297,
+        69.1065444946289,
+        1.6917617321014404
+      ]
+    },
+    {
+      "screenshot": "drive-140.png",
+      "time": 12.516666666666666,
+      "distance_m": 140.12932763106483,
+      "position": [
+        43.792625427246094,
+        116.16224670410156,
+        5.358508110046387
+      ]
+    },
+    {
+      "screenshot": "drive-225.png",
+      "time": 17.275,
+      "distance_m": 225.20279548095942,
+      "position": [
+        -39.116615295410156,
+        110.11682891845703,
+        8.444239616394043
+      ]
+    },
+    {
+      "screenshot": "drive-315.png",
+      "time": 22.78333333333333,
+      "distance_m": 315.0640161428071,
+      "position": [
+        -92.14572143554688,
+        44.01500701904297,
+        6.227071285247803
+      ]
+    }
+  ]
+}

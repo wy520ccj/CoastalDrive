@@ -14,14 +14,15 @@ random.seed(71824)
 
 # 统一颜色与粗糙度，匹配明亮的海岸场景。
 COLORS = {
-    "pine": (0.11, 0.27, 0.19, 1),
-    "pine_light": (0.19, 0.37, 0.27, 1),
-    "sage": (0.38, 0.49, 0.34, 1),
-    "leaf": (0.28, 0.43, 0.27, 1),
+    "pine": (0.13, 0.23, 0.09, 1),
+    "pine_light": (0.25, 0.34, 0.13, 1),
+    "sage": (0.42, 0.47, 0.25, 1),
+    "leaf": (0.27, 0.35, 0.12, 1),
     "bark": (0.30, 0.20, 0.13, 1),
-    "stone": (0.48, 0.48, 0.42, 1),
-    "stone_light": (0.64, 0.62, 0.53, 1),
-    "sand": (0.79, 0.72, 0.57, 1),
+    "stone": (0.36, 0.37, 0.28, 1),
+    "stone_dark": (0.24, 0.25, 0.19, 1),
+    "stone_light": (0.48, 0.48, 0.36, 1),
+    "sand": (0.53, 0.49, 0.32, 1),
     "cream": (0.88, 0.83, 0.71, 1),
     "white": (0.91, 0.87, 0.77, 1),
     "terra": (0.64, 0.22, 0.13, 1),
@@ -118,6 +119,28 @@ def mesh_object(name, verts, faces, color):
     return o
 
 
+def ring_rail(name, radius, z, tube_radius, color, sides=16, tube_sides=5):
+    """创建不遮挡灯笼玻璃的圆形栏杆管。"""
+    verts = []
+    faces = []
+    for i in range(sides):
+        a = math.tau * i / sides
+        center = Vector((radius * math.cos(a), radius * math.sin(a), z))
+        radial = Vector((math.cos(a), math.sin(a), 0))
+        for j in range(tube_sides):
+            b = math.tau * j / tube_sides
+            p = center + tube_radius * (math.cos(b) * radial + Vector((0, 0, math.sin(b))))
+            verts.append(tuple(p))
+    for i in range(sides):
+        for j in range(tube_sides):
+            a = i * tube_sides + j
+            b = i * tube_sides + (j + 1) % tube_sides
+            c = ((i + 1) % sides) * tube_sides + (j + 1) % tube_sides
+            d = ((i + 1) % sides) * tube_sides + j
+            faces.append((a, b, c, d))
+    return mesh_object(name, verts, faces, color)
+
+
 def build_asset(name, description, source, license_text, target_height, builder, variant=0):
     bpy.ops.object.select_all(action="DESELECT")
     collection = bpy.data.collections.new(name)
@@ -181,47 +204,39 @@ def build_asset(name, description, source, license_text, target_height, builder,
 
 # 使用低模几何，并通过错位轮廓和建筑细节形成差异。
 def pine_builder(v):
-    # 以错层枝簇形成宽阔、不规则的树冠。
+    # 枝冠向侧面伸展并互相搭接，保留树干与林缘空隙。
     height = 7.5 + v * 0.8
-    cylinder("tapered trunk", (0, 0, height * 0.49), 0.26, height * 0.98, "bark", 9, 0.055)
     rng = random.Random(510 + v)
-    tier_count = 7 if v == 0 else 8
-    for tier in range(tier_count):
-        z = 0.68 + tier * (height - 1.35) / (tier_count - 1)
-        ring = 2.60 * (1 - tier / (tier_count + 1))
-        phase = rng.uniform(-0.25, 0.25)
-        for j in range(7):
-            a = phase + math.tau * j / 7 + tier * 0.17
-            r = ring * rng.uniform(0.72, 1.0)
-            x, y = math.cos(a) * r * 0.48, math.sin(a) * r * 0.48
-            tip = (x * 1.14, y * 1.14, z + rng.uniform(0.22, 0.48))
-            branch_between(
-                "outward bough",
-                (x * 0.12, y * 0.12, z - 0.10),
-                tip,
-                0.12 if tier < 3 else 0.075,
-                "bark",
-            )
-            # 低模叶簇相互叠合，形成受海风影响的轮廓。
-            sphere(
-                "bough foliage",
-                (x, y, z + rng.uniform(0.05, 0.28)),
-                (ring * 0.36, ring * 0.30, rng.uniform(0.72, 0.92)),
-                ["pine", "pine_light"][((tier + j + v) % 5 == 0)],
-                610 + v * 200 + tier * 9 + j,
-                1,
-            )
+    cylinder("tapered trunk", (0, 0, height / 2), 0.25, height, "bark", 9, 0.045)
+    for tier in range(6):
+        t = tier / 5
+        z = 2.1 + t * (height - 2.6)
+        reach = 1.65 * (1 - 0.76 * t)
+        phase = tier * 1.73 + v * 0.4
         sphere(
-            "crown core",
-            (0, 0, z + 0.10),
-            (ring * 0.34, ring * 0.32, 1.02 if tier < 4 else 0.78),
-            "pine" if tier % 2 == 0 else "pine_light",
-            810 + v * 100 + tier,
+            "central needle crown",
+            (0, 0, z + 0.35),
+            (reach * 0.88, reach * 0.88, 0.85 - 0.25 * t),
+            "pine",
+            820 + tier,
             2,
         )
-    # 顶梢略微弯曲，避免形成过于规整的尖点。
-    branch_between("crown leader", (0, 0, height - 1.6), (0.05, 0, height), 0.11, "bark")
-    sphere("top foliage", (0.04, 0, height - 0.22), (0.25, 0.24, 0.48), "pine_light", 910 + v, 1)
+        for j in range(5):
+            angle = phase + math.tau * j / 5 + rng.uniform(-0.15, 0.15)
+            length = reach * rng.uniform(0.8, 1.12)
+            x, y = math.cos(angle) * length, math.sin(angle) * length
+            branch_between(
+                "spreading bough", (0, 0, z - 0.38), (x, y, z), 0.08 * (1 - t * 0.6), "bark"
+            )
+            crown = sphere(
+                "overlapping needle spray",
+                (x, y, z + rng.uniform(-0.14, 0.18)),
+                (1.1 * (1 - t * 0.65), 0.78 * (1 - t * 0.6), 0.58 - 0.17 * t),
+                "pine_light" if j == 1 else "pine",
+                910 + tier * 5 + j + v * 100,
+                2,
+            )
+            crown.rotation_euler.z = angle
 
 
 def bush_builder(v):
@@ -246,24 +261,52 @@ def bush_builder(v):
 
 
 def rock_builder(v):
-    # 不对称岩块以错层浅色石灰岩面呈现。
-    h = 1.65 if v else 1.8
-    sphere("fractured stone core", (0, 0, h * 0.46), (1.02, 0.86, h * 0.48), "stone", 201 + v, 2)
-    sphere(
-        "raised broken shoulder",
-        (0.23, -0.02, h * 0.70),
-        (0.62, 0.64, h * 0.28),
-        "stone_light",
-        208 + v,
-        1,
-    )
-    for i in range(5):
-        x = -0.72 + i * 0.34
-        z = 0.44 + (i % 2) * 0.16
-        cube("limestone stratum", (x, -0.72, z), (0.66, 0.10, 0.085), "sand")
-    # 几处碎岩打破椭圆外轮廓。
-    for i, (x, y, z) in enumerate([(-0.72, -0.31, 0.72), (0.64, 0.22, 0.94), (-0.18, 0.51, 0.82)]):
-        sphere("fracture facet", (x, y, z), (0.39, 0.32, 0.32), "stone_light", 230 + i + v, 1)
+    # 連續錯位環層形成破碎石灰岩質量，材質隨高度由暗岩過渡到苔色頂面。
+    h = 1.80 if v == 0 else 1.65
+    sides = 11
+    levels = [(0.02, 0.85), (0.28, 1.00), (0.76, 0.98), (1.22, 0.86), (h, 0.64)]
+    rng = random.Random(201 + v)
+    phase = rng.uniform(-0.1, 0.1)
+    radial = [rng.uniform(0.82, 1.15) for _ in range(sides)]
+    verts = []
+    for level, (z, scale) in enumerate(levels):
+        for i in range(sides):
+            a = math.tau * i / sides + phase + 0.035 * level
+            wobble = radial[i] * rng.uniform(0.96, 1.04)
+            zz = z + (0 if level in (0, len(levels) - 1) else rng.uniform(-0.10, 0.10))
+            verts.append(
+                (1.48 * scale * wobble * math.cos(a), 1.06 * scale * wobble * math.sin(a), zz)
+            )
+    faces, indices = [], []
+    for level in range(len(levels) - 1):
+        for i in range(sides):
+            a = level * sides + i
+            b = level * sides + (i + 1) % sides
+            c = (level + 1) * sides + (i + 1) % sides
+            d = (level + 1) * sides + i
+            faces.extend(((a, b, c), (a, c, d)))
+            if level == 0:
+                indices.extend((0, 0 if i % 3 else 1))
+            elif level == 1:
+                indices.extend((1, 1))
+            elif level == 2:
+                indices.extend((2 if i % 3 else 1, 2))
+            else:
+                indices.extend((3, 3 if i % 2 else 2))
+    faces.append(tuple(reversed(range(sides))))
+    indices.append(0)
+    top = len(verts)
+    verts.append((rng.uniform(-0.12, 0.12), rng.uniform(-0.1, 0.1), h))
+    for i in range(sides):
+        faces.append(
+            ((len(levels) - 1) * sides + i, (len(levels) - 1) * sides + (i + 1) % sides, top)
+        )
+        indices.append(4)
+    rock = mesh_object("connected fractured limestone mass", verts, faces, "stone_dark")
+    for name in ("stone", "stone_light", "sand", "sage"):
+        rock.data.materials.append(material(name))
+    for poly, index in zip(rock.data.polygons, indices):
+        poly.material_index = index
 
 
 def flowers_builder(v):
@@ -351,28 +394,29 @@ def lighthouse_builder(v):
     cylinder("lantern roof", (0, 0, 13.28), 0.84, 0.78, "terra_light", 12, 0.10)
     cylinder("finial", (0, 0, 13.77), 0.11, 0.20, "gold", 8, 0.04)
     # 塔身窗格与灯廊护栏采用重复构件。
-    for i in range(8):
-        a = math.tau * i / 8
-        bpy.ops.mesh.primitive_cube_add(
-            size=1, location=(math.cos(a) * 0.72, math.sin(a) * 0.72, 4.8 + (i % 2) * 2.0)
-        )
-        o = bpy.context.object
-        o.name = "narrow tower window"
-        o.dimensions = (0.11, 0.10, 0.62)
-        o.rotation_euler[2] = a
-        bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
-        mat(o, "sea")
-    for i in range(12):
+    # 門和窗緊貼錐形塔面，向外微凸以免被牆體遮住。
+    cube("tower entry door", (0, -1.00, 1.18), (0.54, 0.04, 1.55), "navy", 0.025)
+    for z in (4.7, 6.9, 9.1):
+        radius = 1.03 - (z - 0.5) * (0.36 / 11.2) - 0.018
+        for i in range(8):
+            a = math.tau * i / 8
+            x, y = radius * math.cos(a), radius * math.sin(a)
+            # 窄矩形窗依塔身切線方向旋轉，材質面朝外。
+            o = cube("flush tower window", (x, y, z), (0.16, 0.04, 0.58), "sea")
+            o.rotation_euler[2] = a - math.pi / 2
+    sphere("door handle", (0.17, -1.025, 1.14), (0.035, 0.025, 0.035), "gold", 942)
+    for i in range(16):
         a = math.tau * i / 12
         cylinder(
             "lantern rail post",
-            (math.cos(a) * 0.89, math.sin(a) * 0.89, 12.03),
+            (math.cos(a) * 0.91, math.sin(a) * 0.91, 12.12),
             0.035,
-            0.65,
+            0.58,
             "navy",
             6,
         )
-    cylinder("lantern rail top", (0, 0, 12.35), 0.91, 0.05, "navy", 12)
+    ring_rail("gallery upper handrail", 0.91, 12.42, 0.035, "navy")
+    ring_rail("gallery lower rail", 0.91, 11.96, 0.026, "navy")
 
 
 def house_builder(v):
@@ -472,7 +516,7 @@ project = "Created for CoastalDrive VI asset kit; original Blender geometry and 
 license_project = "Project-generated; no external source assets."
 build_asset(
     "pine_tall_a",
-    "Broad irregular tiered pine with exposed boughs, approximately 7.5 m tall.",
+    "Five broad overlapping pine whorls with an exposed lower trunk, approximately 7.5 m tall.",
     project,
     "Project-generated geometry using CoastalDrive coastal palette.",
     7.5,
@@ -481,7 +525,7 @@ build_asset(
 )
 build_asset(
     "pine_tall_b",
-    "Wind-shaped irregular tiered pine variant, approximately 8.3 m tall.",
+    "Wind-shaped variant with five broad overlapping pine whorls, approximately 8.3 m tall.",
     project,
     "Project-generated geometry using CoastalDrive coastal palette.",
     8.3,
@@ -595,7 +639,7 @@ manifest = {
     "blender": "5.2.2",
     "units": "meters; Blender Z-up source; GLB exported through Blender glTF Y-up conversion",
     "asset_count": len(assets),
-    "triangle_budget": 50000,
+    "triangle_budget": 30000,
     "assets": [],
 }
 for i, a in enumerate(assets):

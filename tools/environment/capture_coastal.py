@@ -23,7 +23,9 @@ def main():
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     os.environ["LOCALAPPDATA"] = str(args.output.resolve() / "user-data")
-    app = CoastalDrive(smoke=True, output=args.output, render_size=(args.width, args.width * 9 // 16))
+    app = CoastalDrive(
+        smoke=True, output=args.output, render_size=(args.width, args.width * 9 // 16)
+    )
     app.taskMgr.remove("finish-smoke")
     app.taskMgr.remove("drive-update")
     app.aspect2d.hide()
@@ -49,11 +51,20 @@ def main():
                 app.graphicsEngine.renderFrame()
                 app.graphicsEngine.syncFrame()
                 samples.append((time.perf_counter() - start) * 1000)
-            records.append({"distance_m": distance, "eye": list(eye), "screenshot": path.name,
-                            "render_mean_ms": sum(samples) / len(samples),
-                            "render_p95_ms": sorted(samples)[int(len(samples) * 0.95)]})
-        report = {"kind": "static camera rendering, not full gameplay performance gate",
-                  "renderer": app.win.getGsg().getDriverRenderer(), "views": records}
+            records.append(
+                {
+                    "distance_m": distance,
+                    "eye": list(eye),
+                    "screenshot": path.name,
+                    "render_mean_ms": sum(samples) / len(samples),
+                    "render_p95_ms": sorted(samples)[int(len(samples) * 0.95)],
+                }
+            )
+        report = {
+            "kind": "static camera rendering, not full gameplay performance gate",
+            "renderer": app.win.getGsg().getDriverRenderer(),
+            "views": records,
+        }
         (args.output / "report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     finally:
         app.close_game()

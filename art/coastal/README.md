@@ -24,14 +24,30 @@ All 12 exported models are original CoastalDrive geometry. They contain no bundl
 
 | GLB | Contents | Source / license |
 |---|---|---|
-| `pine_tall_a.glb`, `pine_tall_b.glb` | Two broad, irregular layered pines with exposed branches | Project-generated; no external source assets |
+| `pine_tall_a.glb`, `pine_tall_b.glb` | Six spreading levels of overlapping needle sprays with an exposed lower trunk and spreading boughs | Project-generated; no external source assets |
 | `bush_round_a.glb`, `bush_round_b.glb` | Two asymmetric shrub clusters | Project-generated; no external source assets |
-| `rock_coastal_a.glb`, `rock_coastal_b.glb` | Faceted limestone boulders with broken pale seams | Project-generated; no external source assets |
+| `rock_coastal_a.glb`, `rock_coastal_b.glb` | Connected angular limestone masses with darker lower faces and moss-tinted upper facets | Project-generated; no external source assets |
 | `flowers_coastal_a.glb` | Four-stem coastal flowers | Project-generated; no external source assets |
 | `cliff_coastal_a.glb` | Continuous tapered limestone mass with subtle strata and a flat grassy cap | Project-generated; no external source assets |
-| `lighthouse_coastal_a.glb` | Tapered masonry tower, lantern, glazing and gallery | Project-generated; no external source assets |
+| `lighthouse_coastal_a.glb` | 14 m tapered masonry tower with surface door and windows, lantern glazing and open ring gallery rails | Project-generated; no external source assets |
 | `coastal_house_a.glb` | Limewashed cottage, terracotta roof, shutters, porch and chimney | Project-generated; no external source assets |
 | `road_chevron_sign_a.glb` | Reflective chevron road sign | Project-generated; no external source assets |
 | `coastal_lamp_a.glb` | Coastal lamp with glass lantern | Project-generated; no external source assets |
 
-The manifest lists measured bounds and triangle counts for every export. The complete set is kept below a 50,000-triangle budget. The kit props are visual-only and create no collision bodies. Simulation remains the existing authority for collision and physical behavior; this kit does not change it.
+The manifest lists measured bounds and triangle counts for every export. The complete set stays below a 30,000-triangle budget. The kit props are visual-only and create no collision bodies. Simulation remains the existing authority for collision and physical behavior; this kit does not change it.
+
+## ENV-02 terrain source
+
+`coastal_terrain.blend` contains separate inland, coast, lighthouse-reef and ground-cover objects. The GLB uses vertex colors and world-scaled UVs; production terrain has 24,790 triangles (including 1,800 two-sided grass blades). Kit models total 11,278 triangles; this is the library total, not the scene total.
+
+Regenerate from the repository root, in order:
+
+```powershell
+..\CoastalDrive\.venv\Scripts\python.exe tools/environment/export_terrain_data.py --output logs/ENV-02/terrain-input.json
+& 'B:\steam\steamapps\common\Blender\blender.exe' -b --python tools/blender/build_coastal_terrain.py -- logs/ENV-02/terrain-input.json
+..\CoastalDrive\.venv\Scripts\python.exe tools/environment/make_ground_detail.py
+# Use an offline Python with NumPy and Pillow; these are NOT game runtime dependencies.
+python tools/environment/bake_shore_distance.py
+```
+
+The terrain recipe lives in `src/environment/terrain.py` so placement and offline export share exactly the same visual surface. It does not define the Simulation surface. Preserve original road-edge vertices and collidable prop contact points when editing. Re-export terrain and rebake shoreline together. Local `.blend1` undo backups are ignored, not shipped.
