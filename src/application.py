@@ -82,6 +82,8 @@ class CoastalDrive(ShowBase):
         self.garage = None
         self.garage_model_id = self.vehicle_model_id
         self.garage_skin_index = self.skin_index
+        self.panel_selection = 0
+        self.panel_option_count = 0
         self._diagnostics_was_visible = False
         self._camera_origin = 0.0
         self.chase_camera = ChaseCamera()
@@ -147,23 +149,18 @@ class CoastalDrive(ShowBase):
     def key_down(self, key):
         if (self.session.phase == Phase.MENU and self.garage is None
                 and not self.audio_settings_page and not self.highway_menu
-                and key in ("arrow_up", "arrow_down", "enter")):
+                and key in ("arrow_up", "arrow_down", "w", "s", "enter")):
             if key not in self.commands_held:
                 self.commands_held.add(key)
                 if key == "enter":
                     self.main_menu.activate()
                 else:
-                    self.main_menu.move(-1 if key == "arrow_up" else 1)
+                    self.main_menu.move(-1 if key in ("arrow_up", "w") else 1)
             return
-        if self.garage is not None:
-            if key in ("enter", "escape") and key not in self.commands_held:
+        if self.has_panel_navigation():
+            if key not in self.commands_held:
                 self.commands_held.add(key)
-                self.apply_garage() if key == "enter" else self.cancel_garage()
-            return
-        if self.audio_settings_page and self.session.phase == Phase.MENU:
-            if key == "escape" and key not in self.commands_held:
-                self.commands_held.add(key)
-                self.back_from_audio_settings()
+                self.handle_panel_key(key)
             return
         if key in ("r", "c", "escape", "enter"):
             if key not in self.commands_held:
@@ -187,6 +184,63 @@ class CoastalDrive(ShowBase):
         self.commands_held.discard(key)
         self.driving_keys_held.discard(key)
         self.session.keyboard.release(key)
+
+    def has_panel_navigation(self):
+        return (
+            self.garage is not None
+            or self.audio_settings_page
+            or self.highway_menu
+            or self.session.phase in (Phase.PAUSED, Phase.RESULTS)
+        )
+
+    def handle_panel_key(self, key):
+        if key in ("arrow_up", "w"):
+            self.select_panel_option(self.panel_selection - 1)
+        elif key in ("arrow_down", "s"):
+            self.select_panel_option(self.panel_selection + 1)
+        elif key in ("arrow_left", "a"):
+            self.adjust_panel_option(-1)
+        elif key in ("arrow_right", "d"):
+            self.adjust_panel_option(1)
+        elif key == "enter":
+            self.buttons[self.panel_selection]["command"]()
+        elif key == "escape":
+            if self.garage is not None:
+                self.cancel_garage()
+            elif self.audio_settings_page:
+                self.back_from_audio_settings()
+            elif self.highway_menu:
+                self.back_to_modes()
+            elif self.session.phase == Phase.PAUSED:
+                self.session.resume()
+                self._shown_phase = None
+                self.refresh_panel()
+
+    def select_panel_option(self, index):
+        self.panel_selection = index % self.panel_option_count
+        for option_index, button in enumerate(self.buttons[:self.panel_option_count]):
+            states = self.primary_states if option_index == 0 else self.button_states
+            button["frameTexture"] = (
+                (states[2], states[1], states[2], states[3])
+                if option_index == self.panel_selection else states
+            )
+
+    def adjust_panel_option(self, direction):
+        if self.garage is not None:
+            if self.panel_selection == 0:
+                self.cycle_garage_model(direction)
+            elif self.panel_selection in (1, 2):
+                self.cycle_garage_skin(direction)
+        elif self.audio_settings_page:
+            if self.panel_selection in (0, 1):
+                self.adjust_audio_volume("master", direction * 10)
+            elif self.panel_selection in (2, 3):
+                self.adjust_audio_volume("effects", direction * 10)
+        elif self.highway_menu:
+            if self.panel_selection == 0:
+                self.cycle_highway_shape()
+            elif self.panel_selection == 1:
+                self.cycle_highway_density(direction)
 
     def windowEvent(self, win):
         super().windowEvent(win)
@@ -269,6 +323,8 @@ class CoastalDrive(ShowBase):
             )
             for i in range(6)
         ]
+        for index, button in enumerate(self.buttons):
+            button.bind(DGG.ENTER, lambda event, i=index: self.select_panel_option(i))
 
     def fit_lines(self, value, width, scale, max_lines=None):
         """按实际字体宽度换行，避免中文 notice 超出底板。"""
@@ -290,6 +346,7 @@ class CoastalDrive(ShowBase):
         return "\n".join(lines)
 
     def choose_audio_settings(self):
+        self.panel_selection = 0
         self.audio_settings_page = True
         self._shown_phase = None
         self.refresh_panel()
@@ -315,6 +372,7 @@ class CoastalDrive(ShowBase):
     def choose_garage(self):
         if self.session.phase != Phase.MENU:
             return
+        self.panel_selection = 3
         self.garage_model_id = self.vehicle_model_id
         self.garage_skin_index = self.skin_index
         self._diagnostics_was_visible = not self.diagnostics.isHidden()
@@ -328,9 +386,9 @@ class CoastalDrive(ShowBase):
         self._shown_phase = None
         self.refresh_panel()
 
-    def cycle_garage_model(self):
+    def cycle_garage_model(self, step=1):
         index = next(i for i, model in enumerate(MODELS) if model.id == self.garage_model_id)
-        self.garage_model_id = MODELS[(index + 1) % len(MODELS)].id
+        self.garage_model_id = MODELS[(index + step) % len(MODELS)].id
         self.garage.set_vehicle(self.garage_model_id, self.garage_skin_index)
         self._shown_phase = None
         self.refresh_panel()
@@ -378,6 +436,7 @@ class CoastalDrive(ShowBase):
         self.refresh_panel()
 
     def choose_highway(self):
+        self.panel_selection = 2
         self.highway_menu = True
         self._shown_phase = None
         self.refresh_panel()
@@ -393,8 +452,8 @@ class CoastalDrive(ShowBase):
         self._shown_phase = None
         self.refresh_panel()
 
-    def cycle_highway_density(self):
-        self.highway_density_index = (self.highway_density_index + 1) % len(self.highway_density_keys)
+    def cycle_highway_density(self, step=1):
+        self.highway_density_index = (self.highway_density_index + step) % len(self.highway_density_keys)
         self.session.traffic_density = self.highway_density_keys[self.highway_density_index]
         self._shown_phase = None
         self.refresh_panel()
@@ -414,6 +473,8 @@ class CoastalDrive(ShowBase):
         panel_state = (phase, self.garage is not None, self.highway_menu, self.audio_settings_page)
         if panel_state == self._shown_phase:
             return
+        if not (self.garage is not None or self.highway_menu or self.audio_settings_page):
+            self.panel_selection = 0
         self._shown_phase = panel_state
         self.main_menu.root.hide()
         if phase in (Phase.MENU, Phase.PAUSED, Phase.RESULTS):
@@ -582,6 +643,8 @@ class CoastalDrive(ShowBase):
             button["text"] = label
             button["command"] = action
             button.show()
+        self.panel_option_count = len(options)
+        self.panel_selection %= self.panel_option_count
         # 页面只安排现有动作，不在这里计算或改写比赛结果。
         for index, button in enumerate(self.buttons[:len(options)]):
             button.setScale(1)
@@ -591,6 +654,9 @@ class CoastalDrive(ShowBase):
             button["frameColor"] = (1, 1, 1, 1)
             button["frameTexture"] = self.primary_states if index == 0 else self.button_states
             button["text_fg"] = theme.INK
+            if index == self.panel_selection:
+                states = self.primary_states if index == 0 else self.button_states
+                button["frameTexture"] = (states[2], states[1], states[2], states[3])
             button.setZ(button_top - index * 0.17)
         if phase == Phase.PAUSED:
             self.panel_title.setScale(0.14)
