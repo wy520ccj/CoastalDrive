@@ -50,7 +50,8 @@ class Vehicle:
         chassis.setDeactivationEnabled(False)
         chassis.setAngularDamping(0.2)
         chassis.addShape(
-            BulletBoxShape(Vec3(0.78, 2.05, 0.42)), TransformState.makePos(Vec3(0, 0, 0.42))
+            BulletBoxShape(Vec3(CAR.collision_half_width, CAR.collision_half_length, 0.42)),
+            TransformState.makePos(Vec3(0, 0, 0.42)),
         )
         chassis.setTransform(TransformState.makePosHpr(Vec3(*self.spawn), Vec3(heading, pitch, 0)))
         chassis.setCcdMotionThreshold(0.5)

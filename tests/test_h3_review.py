@@ -272,6 +272,52 @@ def test_traffic_reacts_to_player_and_has_real_collision():
         sim.close()
 
 
+@pytest.mark.parametrize(
+    ("player_heading", "traffic_heading"),
+    ((0, 0), (30, 30), (90, 90), (0, 30), (0, -30)),
+)
+def test_side_collision_covers_visible_vehicle_footprint(player_heading, traffic_heading):
+    sim = Simulation(track="highway", traffic_count=1)
+    try:
+        angle = math.radians(player_heading)
+        side_gap = 1.0325 * 2 - 0.10
+        sim.player.reset((0, 200, 0.55), player_heading)
+        sim.npcs[0].reset(
+            (side_gap * math.cos(angle), 200 + side_gap * math.sin(angle), 0.55),
+            traffic_heading,
+        )
+
+        contacts = sim._world.contactTestPair(
+            sim.player._chassis, sim.npcs[0]._chassis
+        ).getNumContacts()
+
+        assert contacts > 0, (player_heading, traffic_heading, side_gap)
+    finally:
+        sim.close()
+
+
+def test_side_approach_resolves_before_visible_bodies_cross():
+    sim = Simulation(track="highway", traffic_count=1)
+    try:
+        npc = sim.npcs[0]
+        sim.player.reset((-2.3, 200, 0.55), 0)
+        npc.reset((0, 200, 0.55), 0)
+        sim.player._chassis.setLinearVelocity(Vec3(8, 0, 0))
+        minimum_gap = math.inf
+
+        for _ in range(12):
+            sim.step(Control())
+            player = sim.player.snapshot().position
+            traffic = npc.snapshot().position
+            gap = math.hypot(player[0] - traffic[0], player[1] - traffic[1])
+            minimum_gap = min(minimum_gap, gap)
+
+        assert sim.player_collisions == 1
+        assert minimum_gap >= 2.0, minimum_gap
+    finally:
+        sim.close()
+
+
 def test_highway_traffic_stays_grounded_and_retires_beyond_finish():
     sim = Simulation(track="highway")
     generations = [0] * len(sim.npcs)

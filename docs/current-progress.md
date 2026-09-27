@@ -4,6 +4,8 @@
 
 ## 当前阶段
 
+- [COLLISION-01](tasks/COLLISION-01-side-contact.md) 侧向碰撞盒已按两车型和车轮的实测共同外廓加宽并加长；五种侧碰姿态、动态侧擦、追尾回归与交通 T1 通过。更新后的 Windows 包启动 smoke 通过，位于 `builds/0.8.3-collision01/win_amd64/`；人工侧向驾驶体验待确认。
+
 - [VI-00](tasks/VI-00.md) 已完成工程冻结、78项测试与三种子启动验证；720p/1080p各14状态重新留证。产品行为没有修改。
 - 长期约定：[Visual Identity v1](visual-identity-v1.md)。代表图和来源清单在 `docs/evidence/VI-00/`；旧6B-08截图目录不能继续代表稳定提交。
 - [VI-01](tasks/VI-01.md) 实施与自动验证完成：独立 theme、VI-01 初选 Fusion Pixel（UI-02 已改为思源黑体 Heavy + Chakra Petch）、奶白/深海蓝/橙色主题和项目 Icon；T0 12项、T1 83项、双分辨率各14状态及窗口20次重启通过。证据位于 docs/evidence/VI-01/。人工视觉确认 pending。该任务已独立提交。
