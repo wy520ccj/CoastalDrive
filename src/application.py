@@ -160,7 +160,10 @@ class CoastalDrive(ShowBase):
         if self.has_panel_navigation():
             if key not in self.commands_held:
                 self.commands_held.add(key)
+                # 状态可能刚从驾驶切到暂停/结算，先绑定当前页动作再处理按键。
+                self.refresh_panel()
                 self.handle_panel_key(key)
+                self.refresh_panel()
             return
         if key in ("r", "c", "escape", "enter"):
             if key not in self.commands_held:
@@ -226,7 +229,10 @@ class CoastalDrive(ShowBase):
             )
 
     def adjust_panel_option(self, direction):
-        if self.garage is not None:
+        if self.session.phase == Phase.RESULTS:
+            # 结算按钮横排，左右键与A/D移动焦点；设置页仍按原逻辑调值。
+            self.select_panel_option(self.panel_selection + direction)
+        elif self.garage is not None:
             if self.panel_selection == 0:
                 self.cycle_garage_model(direction)
             elif self.panel_selection in (1, 2):
