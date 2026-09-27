@@ -1,0 +1,47 @@
+{
+  "asset": "classic_coupe_v1",
+  "source": "original CoastalDrive Blender geometry; user supplied classic American coupe photo is design reference only",
+  "units": "metres; Blender and Panda3D Z-up, +Y forward",
+  "blender": "5.2.2 LTS",
+  "triangles": 31760,
+  "triangle_budget": 32000,
+  "wheel_radius_m": 0.33,
+  "wheel_centres_body_m": [
+    [
+      -0.84,
+      1.1,
+      -0.12
+    ],
+    [
+      0.84,
+      1.1,
+      -0.12
+    ],
+    [
+      -0.84,
+      -1.1,
+      -0.12
+    ],
+    [
+      0.84,
+      -1.1,
+      -0.12
+    ]
+  ],
+  "materials": [
+    "Amber Lens",
+    "Blue Grey Glass",
+    "Body Paint",
+    "Brushed Wheel Metal",
+    "Dots Stroke",
+    "Graphite Metal",
+    "Head Light",
+    "Material",
+    "Reversing Glass",
+    "Satin Black Plastic",
+    "Tail Light",
+    "Tire Rubber",
+    "Whitewall Rubber"
+  ],
+  "editable_source": "art/vehicles/classic_coupe_v1.blend"
+}

@@ -13,6 +13,7 @@ setup(
             "include_patterns": [
                 "assets/game/**/*.glb",
                 "assets/game/**/*.bam",
+                "assets/game/**/*.env",
                 "assets/game/**/*.png",
                 "assets/game/**/*.ico",
                 "assets/game/**/*.ttf",

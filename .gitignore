@@ -21,3 +21,5 @@ assets/source/*
 
 # Blender local undo backups; editable .blend sources remain tracked.
 art/coastal/*.blend1
+
+art/vehicles/*.blend1

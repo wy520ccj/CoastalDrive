@@ -350,7 +350,7 @@ class Scene:
             traffic_models(self.base.session.seed, traffic_count),
             traffic_skins(self.base.session.seed, traffic_count),
         ):
-            car, wheels = load_vehicle(self.render, model_id)
+            car, wheels = load_vehicle(self.render, model_id, hero=False)
             apply_skin(car.getChild(0), skin)
             self.traffic.append(car)
             self.traffic_wheels.append(wheels)

@@ -41,3 +41,9 @@ F3 显示风阻、滚阻、轴荷估计、横摆角速度与侧偏角。固定�
 - [Bullet btRaycastVehicle 实现](https://pybullet.org/Bullet/BulletFull/btRaycastVehicle_8cpp_source.html)：车轮制动值用于滚动摩擦的最大冲量；与游戏固定步长对应。
 
 本轮基准与回归证据见 `H3-review.md`。采用这些公式不等于已经达到工程车辆仿真的精度。
+
+## 车型差异的边界（2026-09-28确认）
+
+用户允许不同车型使用不同物理性能参数。车型参数归 vehicle_config，Vehicle、VehicleResponse 与 Simulation 仍共用一套实现；不能通过不同 Scene、显示缩放或按键控制分支伪造性能差异。接入时由游戏在创建/重建 Simulation 时明确传入车型配置，车库预览不推进或偷偷修改当前世界。
+
+VEH-01 本次仅确认这一许可，未接入按车型选物理参数，也未臆测真实经典车的质量、扭矩或操控。当前车型仍使用既有已验证参数。下一参数任务应贯通 VehicleConfig → Vehicle/VehicleResponse（包括 reset 和轮心），保留默认配置回归，并单独验证各车型加速/制动/转向/外廓；不复制第二套物理、不预建车型框架。

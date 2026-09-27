@@ -11,7 +11,7 @@ from panda3d.core import (
 
 from scene import Scene, make_mesh
 from settings import AppearanceStore
-from skins import MODELS, SKINS, apply_skin, traffic_models, traffic_skins
+from skins import MODELS, SKINS, apply_skin, paint_color, traffic_models, traffic_skins
 from vehicle_visual import load_vehicle
 
 
@@ -53,11 +53,11 @@ def test_paint_slots_change_without_touching_trim_or_adding_geometry():
             apply_skin(body, index)
             assert parent.findAllMatches("**").getNumPaths() == count
             assert all(part.getState() == state for part, state in trim)
-            assert all(abs(slot.getMaterial().getBaseColor()[0] - skin.color[0]) < 1e-6 for slot in slots)
+            assert all(abs(slot.getMaterial().getBaseColor()[0] - paint_color(index, hero=definition.id == "sports")[0]) < 1e-6 for slot in slots)
         # Two copies must retain their wheels and independent paint state.
         duplicate, _ = load_vehicle(parent, definition.id)
         apply_skin(duplicate.getChild(0), 1)
-        assert abs(slots[0].getMaterial().getBaseColor()[0] - SKINS[-1].color[0]) < 1e-6
+        assert abs(slots[0].getMaterial().getBaseColor()[0] - paint_color(len(SKINS)-1, hero=definition.id == "sports")[0]) < 1e-6
 
 
 def test_appearance_choices_do_not_advance_traffic_randomness(tmp_path):
