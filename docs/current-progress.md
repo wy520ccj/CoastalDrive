@@ -6,7 +6,9 @@
 
 - [VI-00](tasks/VI-00.md) 已完成工程冻结、78项测试与三种子启动验证；720p/1080p各14状态重新留证。产品行为没有修改。
 - 长期约定：[Visual Identity v1](visual-identity-v1.md)。代表图和来源清单在 `docs/evidence/VI-00/`；旧6B-08截图目录不能继续代表稳定提交。
-- [VI-01](tasks/VI-01.md) 实施与自动验证完成：独立 theme、Fusion Pixel、奶白/深海蓝/橙色主题和项目 Icon；T0 12项、T1 83项、双分辨率各14状态及窗口20次重启通过。证据位于 docs/evidence/VI-01/。人工视觉确认 pending。本轮停止，未执行 VI-02。
+- [VI-01](tasks/VI-01.md) 实施与自动验证完成：独立 theme、VI-01 初选 Fusion Pixel（UI-02 已改为思源黑体 Heavy + Chakra Petch）、奶白/深海蓝/橙色主题和项目 Icon；T0 12项、T1 83项、双分辨率各14状态及窗口20次重启通过。证据位于 docs/evidence/VI-01/。人工视觉确认 pending。该任务已独立提交。
+
+- [UI-02](tasks/UI-02.md) 完成并验证参考图驱动的资产化 UI：重点重做字体、字标、主菜单，提取 HUD 并统一现有面板。原 Scene/车辆/Session/交通/音频逻辑不变；环境包 VI-02 未执行。最终证据见 docs/evidence/UI-02/。
 
 ## 继承的能力与未完成门槛
 

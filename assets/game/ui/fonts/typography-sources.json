@@ -1,0 +1,36 @@
+{
+  "assets": [
+    {
+      "family": "Source Han Sans SC",
+      "style": "Heavy",
+      "role": "Chinese UI headings and primary buttons",
+      "file": "SourceHanSansSC-Heavy.otf",
+      "source_repository": "https://github.com/adobe-fonts/source-han-sans",
+      "source_commit": "a4f7cf94edfb9d7ffbdfc4841de276358bd7e0f2",
+      "source_path": "OTF/SimplifiedChinese/SourceHanSansSC-Heavy.otf",
+      "source_url": "https://raw.githubusercontent.com/adobe-fonts/source-han-sans/a4f7cf94edfb9d7ffbdfc4841de276358bd7e0f2/OTF/SimplifiedChinese/SourceHanSansSC-Heavy.otf",
+      "sha256": "6374b11bc4c2cd4bd7be1a1d64cf5047906c8a6a025c64e023c6792e50ba985e",
+      "size_bytes": 17614484,
+      "license": "SIL Open Font License 1.1",
+      "license_file": "OFL-SourceHanSans.txt",
+      "license_url": "https://raw.githubusercontent.com/adobe-fonts/source-han-sans/a4f7cf94edfb9d7ffbdfc4841de276358bd7e0f2/LICENSE.txt",
+      "license_sha256": "fcac737e761ec63dbfbdce11030a1780161920d80315edba9c8beff1c2bac5a2"
+    },
+    {
+      "family": "Chakra Petch",
+      "style": "Bold Italic",
+      "role": "Latin wordmark and racing numerals",
+      "file": "ChakraPetch-BoldItalic.ttf",
+      "source_repository": "https://github.com/google/fonts",
+      "source_commit": "23e54b51ddffbc7713c583748e3bd86f62b1fa4a",
+      "source_path": "ofl/chakrapetch/ChakraPetch-BoldItalic.ttf",
+      "source_url": "https://raw.githubusercontent.com/google/fonts/23e54b51ddffbc7713c583748e3bd86f62b1fa4a/ofl/chakrapetch/ChakraPetch-BoldItalic.ttf",
+      "sha256": "bf012ce1894ffcf7d32d3e6548b90df7c40f30161b5cc295eb54ff61c21fab19",
+      "size_bytes": 80828,
+      "license": "SIL Open Font License 1.1",
+      "license_file": "OFL-ChakraPetch.txt",
+      "license_url": "https://raw.githubusercontent.com/google/fonts/23e54b51ddffbc7713c583748e3bd86f62b1fa4a/ofl/chakrapetch/OFL.txt",
+      "license_sha256": "13831d02389d917d22fcfa6c79f98f8acbf61d230add0e73a4d4dc5f3bfb9e56"
+    }
+  ]
+}

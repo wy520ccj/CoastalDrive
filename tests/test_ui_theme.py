@@ -18,8 +18,11 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_font_covers_current_interface_and_matches_pinned_source():
     font = theme.load_font()
     characters = set()
-    for name in ("application", "session", "race", "highway_run", "settings", "skins"):
-        tree = ast.parse((ROOT / f"src/{name}.py").read_text(encoding="utf-8"))
+    files = [ROOT / f"src/{name}.py" for name in
+             ("application", "session", "race", "highway_run", "settings", "skins")]
+    files.extend((ROOT / "src/ui").glob("*.py"))
+    for path in files:
+        tree = ast.parse(path.read_text(encoding="utf-8"))
         for node in ast.walk(tree):
             if isinstance(node, ast.Constant) and isinstance(node.value, str):
                 characters.update(c for c in node.value if not c.isspace())
@@ -27,9 +30,13 @@ def test_font_covers_current_interface_and_matches_pinned_source():
                if not isinstance(font.getGlyph(ord(c)), DynamicTextGlyph)]
     assert not missing, f"当前界面字体缺字：{missing}"
     fonts = ROOT / "assets/game/ui/fonts"
-    source = json.loads((fonts / "font-source.json").read_text(encoding="utf-8"))
-    assert hashlib.sha256((ROOT / "assets/game/ui" / theme.FONT_FILE).read_bytes()).hexdigest() == source["sha256"]
-    assert hashlib.sha256((ROOT / "assets/game/ui" / theme.FONT_LICENSE).read_bytes()).hexdigest() == source["license_sha256"]
+    sources = json.loads((fonts / "typography-sources.json").read_text(encoding="utf-8"))
+    for source in sources["assets"]:
+        assert hashlib.sha256((fonts / source["file"]).read_bytes()).hexdigest() == source["sha256"]
+        assert hashlib.sha256((fonts / source["license_file"]).read_bytes()).hexdigest() == source["license_sha256"]
+    numbers = theme.load_font(theme.DISPLAY_FONT_FILE)
+    for char in "0123456789DRrpmkh/COASTALCRUISE.s":
+        assert isinstance(numbers.getGlyph(ord(char)), DynamicTextGlyph), char
 
 
 def test_frozen_resource_location_and_missing_font_are_explicit(tmp_path, monkeypatch):
@@ -52,8 +59,10 @@ def test_distribution_includes_font_license_and_icon(monkeypatch):
     monkeypatch.setattr(setuptools, "setup", lambda **kwargs: config.update(kwargs))
     runpy.run_path(str(ROOT / "setup.py"))
     patterns = config["options"]["build_apps"]["include_patterns"]
-    for name in (theme.FONT_FILE, theme.FONT_LICENSE, "fonts/font-source.json",
-                 "coastal-drive.ico", "panel.png", "button.png"):
+    for name in (theme.FONT_FILE, theme.FONT_LICENSE, theme.DISPLAY_FONT_FILE,
+                 "fonts/OFL-ChakraPetch.txt", "fonts/typography-sources.json",
+                 "coastal-drive.ico", "wordmark.png", "backgrounds/coastal-menu.png",
+                 "components/button-normal.png", "components/speed-panel.png"):
         relative = "assets/game/ui/" + name
         assert (ROOT / relative).is_file()
         assert any(fnmatch.fnmatchcase(relative, pattern) for pattern in patterns), relative

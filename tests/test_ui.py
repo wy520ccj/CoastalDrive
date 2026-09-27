@@ -13,9 +13,10 @@ def test_ui_modes_results_and_existing_keys(tmp_path):
     try:
         app.session.menu()
         app.refresh_panel()
-        assert app.panel_title.getText() == "COASTAL DRIVE"
-        assert [button["text"] for button in app.buttons] == [
-            "计时挑战  Enter", "滨海自由驾驶", "无限高速", "车库", "声音设置", "退出",
+        assert not app.main_menu.root.isHidden()
+        assert app.panel.isHidden()
+        assert [button["text"] for button in app.main_menu.buttons] == [
+            "计时挑战", "滨海自由驾驶", "无限高速", "车库", "声音设置", "退出",
         ]
         app.key_down("enter")
         assert app.session.mode == GameMode.TIME_TRIAL

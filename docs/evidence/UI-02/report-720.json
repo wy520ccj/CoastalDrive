@@ -1,0 +1,76 @@
+{
+  "passed": true,
+  "states": {
+    "01-main-menu": {
+      "screenshot": "logs\\UI-02\\release-720\\1280x720\\01-main-menu.png",
+      "title": "COASTAL DRIVE",
+      "text_fits": true
+    },
+    "02-time-trial-hud": {
+      "screenshot": "logs\\UI-02\\release-720\\1280x720\\02-time-trial-hud.png",
+      "title": "",
+      "text_fits": true
+    },
+    "06-paused": {
+      "screenshot": "logs\\UI-02\\release-720\\1280x720\\06-paused.png",
+      "title": "已暂停",
+      "text_fits": true
+    },
+    "07-challenge-success": {
+      "screenshot": "logs\\UI-02\\release-720\\1280x720\\07-challenge-success.png",
+      "title": "挑战成功",
+      "text_fits": true
+    },
+    "08-challenge-failure": {
+      "screenshot": "logs\\UI-02\\release-720\\1280x720\\08-challenge-failure.png",
+      "title": "挑战失败",
+      "text_fits": true
+    },
+    "03-coastal-free-hud": {
+      "screenshot": "logs\\UI-02\\release-720\\1280x720\\03-coastal-free-hud.png",
+      "title": "",
+      "text_fits": true
+    },
+    "09-free-drive-results": {
+      "screenshot": "logs\\UI-02\\release-720\\1280x720\\09-free-drive-results.png",
+      "title": "驾驶结束",
+      "text_fits": true
+    },
+    "04-endless-free-hud": {
+      "screenshot": "logs\\UI-02\\release-720\\1280x720\\04-endless-free-hud.png",
+      "title": "",
+      "text_fits": true
+    },
+    "05-distance-challenge-hud": {
+      "screenshot": "logs\\UI-02\\release-720\\1280x720\\05-distance-challenge-hud.png",
+      "title": "",
+      "text_fits": true
+    },
+    "12-distance-challenge-failure-long": {
+      "screenshot": "logs\\UI-02\\release-720\\1280x720\\12-distance-challenge-failure-long.png",
+      "title": "挑战失败",
+      "text_fits": true
+    },
+    "13-distance-challenge-success": {
+      "screenshot": "logs\\UI-02\\release-720\\1280x720\\13-distance-challenge-success.png",
+      "title": "挑战成功",
+      "text_fits": true
+    },
+    "14-endless-free-results": {
+      "screenshot": "logs\\UI-02\\release-720\\1280x720\\14-endless-free-results.png",
+      "title": "驾驶结束",
+      "text_fits": true
+    },
+    "10-garage": {
+      "screenshot": "logs\\UI-02\\release-720\\1280x720\\10-garage.png",
+      "title": "车库",
+      "text_fits": true
+    },
+    "11-audio-settings": {
+      "screenshot": "logs\\UI-02\\release-720\\1280x720\\11-audio-settings.png",
+      "title": "声音设置",
+      "text_fits": true
+    }
+  },
+  "kind": "real Panda3D render; fixture result states; human visual gate pending"
+}

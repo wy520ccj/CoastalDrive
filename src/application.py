@@ -6,12 +6,11 @@ import simplepbr
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectButton, DirectFrame, OnscreenText
 from direct.showbase.ShowBase import ShowBase
-from panda3d.core import Filename, TextNode, Vec3, loadPrcFileData
+from panda3d.core import Filename, TextNode, TransparencyAttrib, Vec3, loadPrcFileData
 
 from chase_camera import ChaseCamera
 from controls import ConstantController
 from garage import GaragePreview
-from highway_map import HIGHWAY_LENGTH
 from highway_run import TRAFFIC_DENSITIES
 from paths import user_data
 from race import BestTimes, GameMode
@@ -22,6 +21,8 @@ from simulation import Control
 from skins import MODELS, SKINS, apply_skin
 from soundscape import Soundscape
 from ui import theme
+from ui.hud import DrivingHUD
+from ui.main_menu import MainMenu
 
 
 class CoastalDrive(ShowBase):
@@ -31,7 +32,7 @@ class CoastalDrive(ShowBase):
             "\n".join(
                 [
                     "window-title CoastalDrive 0.8.3 Impact Audio",
-                    f"icon-filename {theme.asset_filename('coastal-drive.ico').getFullpath()}",
+                    'icon-filename assets/game/ui/coastal-drive.ico',
                     f"win-size {render_size[0]} {render_size[1]}",
                     "sync-video 1",
                     "window-type offscreen" if smoke and not onscreen else "window-type onscreen",
@@ -144,6 +145,16 @@ class CoastalDrive(ShowBase):
         self.accept("f3", self.toggle_diagnostics)
 
     def key_down(self, key):
+        if (self.session.phase == Phase.MENU and self.garage is None
+                and not self.audio_settings_page and not self.highway_menu
+                and key in ("arrow_up", "arrow_down", "enter")):
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                if key == "enter":
+                    self.main_menu.activate()
+                else:
+                    self.main_menu.move(-1 if key == "arrow_up" else 1)
+            return
         if self.garage is not None:
             if key in ("enter", "escape") and key not in self.commands_held:
                 self.commands_held.add(key)
@@ -189,44 +200,22 @@ class CoastalDrive(ShowBase):
     def setup_hud(self):
         self.ui_font = theme.load_font()
         text_style = theme.text_style(self.ui_font)
-        self.panel_texture = self.loader.loadTexture(theme.asset_filename("panel.png"))
-        self.button_texture = self.loader.loadTexture(theme.asset_filename("button.png"))
-        self.status_frame = DirectFrame(
-            frameColor=theme.HUD_TINT, frameTexture=self.panel_texture,
-            frameSize=(0, 1.16, -0.52, 0), pos=(-1.72, 0, 0.91),
-        )
-        self.status_accent = DirectFrame(
-            parent=self.status_frame, frameColor=theme.ORANGE,
-            frameSize=(0, 1.16, -0.006, 0),
-        )
-        self.speed = OnscreenText(
-            **text_style, parent=self.status_frame, text="", pos=(0.06, -0.13),
-            scale=0.105, align=TextNode.ALeft, mayChange=True,
-        )
-        self.gear_rpm = OnscreenText(
-            **text_style, parent=self.status_frame, text="", pos=(0.64, -0.12),
-            scale=0.040, align=TextNode.ALeft, mayChange=True,
-        )
-        self.status = OnscreenText(
-            **text_style, parent=self.status_frame, text="", pos=(0.06, -0.25),
-            scale=0.040, align=TextNode.ALeft, mayChange=True,
-        )
-        self.status_notice = OnscreenText(
-            **text_style, parent=self.status_frame, text="", pos=(0.06, -0.43),
-            scale=0.037, align=TextNode.ALeft, mayChange=True,
-        )
-        self.help_frame = DirectFrame(
-            frameColor=theme.PAPER,
-            frameSize=(-0.89, 0.89, -0.06, 0.04),
-            pos=(0, 0, -0.9),
-        )
-        self.help = OnscreenText(
-            **text_style,
-            parent=self.help_frame,
-            text="W / ↑ 油门    S / ↓ 刹车·倒车    A D / ← → 转向    R 复位    C 视角    Esc 暂停",
-            pos=(0, -0.018),
-            scale=0.036,
-        )
+        self.panel_texture = self.loader.loadTexture(theme.asset_filename("components/panel.png"))
+        self.button_texture = self.loader.loadTexture(theme.asset_filename("components/button-normal.png"))
+        self.display_font = theme.load_font(theme.DISPLAY_FONT_FILE)
+        self.hud = DrivingHUD(self.aspect2d, self.loader, self.ui_font, self.display_font)
+        self.status_frame = self.hud.status_frame
+        self.status = self.hud.status
+        self.status_notice = self.hud.status_notice
+        self.speed = self.hud.speed
+        self.gear_rpm = self.hud.gear_rpm
+        self.help_frame = self.hud.help_frame
+        self.help = self.hud.help
+        self.main_menu = MainMenu(self.aspect2d, self.loader, self.ui_font, self.display_font, (
+            lambda: self.start_game(mode=GameMode.TIME_TRIAL),
+            lambda: self.start_game(mode=GameMode.FREE_DRIVE),
+            self.choose_highway, self.choose_garage, self.choose_audio_settings, self.userExit,
+        ))
         self.diagnostics = OnscreenText(
             **{**text_style, "fg": theme.DIAGNOSTIC_TEXT, "shadow": theme.DIAGNOSTIC_SHADOW},
             text="",
@@ -237,9 +226,20 @@ class CoastalDrive(ShowBase):
         )
         self.diagnostics.hide()
         self.panel = DirectFrame(
-            frameColor=theme.PANEL_TINT, frameTexture=self.panel_texture,
+            frameColor=(1, 1, 1, 1), frameTexture=self.panel_texture,
             frameSize=(-0.8, 0.8, -0.80, 0.68)
         )
+        self.panel.setTransparency(TransparencyAttrib.MAlpha)
+        self.result_icon = DirectFrame(
+            parent=self.panel, frameColor=(1, 1, 1, 1),
+            frameTexture=self.loader.loadTexture(theme.asset_filename("components/icon-trophy.png")),
+            frameSize=(-0.09, 0.09, -0.09, 0.09), pos=(0, 0, 0.56),
+        )
+        self.result_icon.hide()
+        self.button_states = tuple(self.loader.loadTexture(theme.asset_filename(f"components/button-{state}.png"))
+                                   for state in ("normal", "pressed", "hover", "disabled"))
+        self.primary_states = tuple(self.loader.loadTexture(theme.asset_filename(f"components/primary-{state}.png"))
+                                    for state in ("normal", "pressed", "hover", "normal"))
         self.panel_accent = DirectFrame(
             parent=self.panel, frameColor=theme.ORANGE,
             frameSize=(-0.55, 0.55, -0.005, 0.005), pos=(0, 0, 0.61),
@@ -253,18 +253,6 @@ class CoastalDrive(ShowBase):
         self.panel_detail = OnscreenText(
             **text_style, parent=self.panel, text="", pos=(0, 0.12),
             scale=0.041, mayChange=True,
-        )
-        self.menu_divider = OnscreenText(
-            **text_style, parent=self.panel, text="其他", pos=(0, -0.255), scale=0.028,
-        )
-        self.menu_divider["fg"] = theme.MUTED
-        self.menu_rule_left = DirectFrame(
-            parent=self.panel, frameColor=theme.MUTED,
-            frameSize=(-0.36, -0.07, -0.002, 0.002), pos=(0, 0, -0.26),
-        )
-        self.menu_rule_right = DirectFrame(
-            parent=self.panel, frameColor=theme.MUTED,
-            frameSize=(0.07, 0.36, -0.002, 0.002), pos=(0, 0, -0.26),
         )
         self.buttons = [
             DirectButton(
@@ -427,15 +415,25 @@ class CoastalDrive(ShowBase):
         if panel_state == self._shown_phase:
             return
         self._shown_phase = panel_state
+        self.main_menu.root.hide()
         if phase in (Phase.MENU, Phase.PAUSED, Phase.RESULTS):
-            self.status_frame.hide()
-            self.help_frame.hide()
+            self.hud.root.hide()
         else:
-            self.status_frame.show()
-            self.help_frame.show()
+            self.hud.root.show()
+        if phase == Phase.MENU and self.garage is None and not self.highway_menu and not self.audio_settings_page:
+            self.panel.hide()
+            self.main_menu.notice.setText(self.fit_lines(self.appearance.notice, 1.0, 0.028))
+            self.main_menu.root.show()
+            return
         for button in self.buttons:
             button.hide()
         self.panel.show()
+        self.panel_accent.show()
+        self.result_icon.hide()
+        self.panel_title.setPos(0, 0.46)
+        self.panel_title.textNode.setSlant(0.14)
+        self.panel_detail.setScale(0.041)
+        self.panel["frameSize"] = (-0.61, 0.61, -0.80, 0.68) if self.garage is not None else (-0.8, 0.8, -0.80, 0.68)
         self.panel_title.setText(theme.BRAND_NAME)
         self.panel_note.setText("滨海环路 · 4 个检查点\n按 Enter 开始计时挑战")
         self.panel_detail.setText("")
@@ -444,12 +442,7 @@ class CoastalDrive(ShowBase):
         self.panel_note.setScale(0.040)
         self.panel_note.setPos(0, 0.29)
         self.panel_detail.setPos(0, 0.10)
-        self.panel["frameColor"] = theme.PANEL_TINT
-        for item in (self.menu_divider, self.menu_rule_left, self.menu_rule_right):
-            item.hide()
-        if phase == Phase.MENU and self.garage is None and not self.highway_menu and self.appearance.notice:
-            self.panel_note.setText(f"滨海环路 · 4 个检查点\n按 Enter 开始计时挑战\n{self.appearance.notice}")
-            self.appearance.notice = ""
+        self.panel["frameColor"] = (1, 1, 1, 1)
         if self.garage is not None:
             model = next(model for model in MODELS if model.id == self.garage_model_id)
             skin = SKINS[self.garage_skin_index]
@@ -500,20 +493,6 @@ class CoastalDrive(ShowBase):
                     lambda: self.start_highway(self.highway_shape, mode=GameMode.DISTANCE_CHALLENGE),
                 ),
                 ("返回", self.back_to_modes),
-            ]
-        elif phase == Phase.MENU:
-            for item in (self.menu_divider, self.menu_rule_left, self.menu_rule_right):
-                item.show()
-            options = [
-                ("计时挑战  Enter", lambda: self.start_game(mode=GameMode.TIME_TRIAL)),
-                ("滨海自由驾驶", lambda: self.start_game(mode=GameMode.FREE_DRIVE)),
-                (
-                    "无限高速",
-                    self.choose_highway,
-                ),
-                ("车库", self.choose_garage),
-                ("声音设置", self.choose_audio_settings),
-                ("退出", self.userExit),
             ]
         elif phase == Phase.PAUSED:
             self.driving_keys_held.clear()
@@ -603,8 +582,40 @@ class CoastalDrive(ShowBase):
             button["text"] = label
             button["command"] = action
             button.show()
+        # 页面只安排现有动作，不在这里计算或改写比赛结果。
+        for index, button in enumerate(self.buttons[:len(options)]):
+            button.setScale(1)
+            button["frameSize"] = (-0.51, 0.51, -0.073, 0.073)
+            button["text_scale"] = 0.055
+            button["text_pos"] = (0, -0.018)
+            button["frameColor"] = (1, 1, 1, 1)
+            button["frameTexture"] = self.primary_states if index == 0 else self.button_states
+            button["text_fg"] = theme.INK
+            button.setZ(button_top - index * 0.17)
+        if phase == Phase.PAUSED:
+            self.panel_title.setScale(0.14)
+            self.panel_note.setPos(0, 0.27)
+        elif phase == Phase.RESULTS:
+            self.panel["frameSize"] = (-0.94, 0.94, -0.62, 0.75)
+            self.panel_accent.hide()
+            self.result_icon.show()
+            icon = "trophy" if self.panel_title.getText() == "挑战成功" else "car"
+            self.result_icon["frameTexture"] = self.loader.loadTexture(theme.asset_filename(f"components/icon-{icon}.png"))
+            self.panel_title.setScale(0.18)
+            self.panel_title.setPos(0, 0.32)
+            self.panel_note.setPos(0, 0.18)
+            self.panel_detail.setScale(0.058)
+            self.panel_detail.setPos(0, 0.09 - 0.065 * note_lines)
+            for button, x, width in zip(self.buttons, (-0.56, 0.12, 0.69), (0.64, 0.64, 0.40)):
+                button.setPos(x, 0, -0.47)
+                button["frameSize"] = (-width / 2, width / 2, -0.085, 0.085)
+                button["text_scale"] = 0.047
+        else:
+            self.panel_accent.show()
 
     def update(self, task):
+        self.main_menu.resize(self.getAspectRatio())
+        self.hud.resize(self.getAspectRatio())
         if self.garage is not None:
             if self.soundscape is not None:
                 self.soundscape.update(self.session.current, self.session.phase, None,
@@ -643,44 +654,12 @@ class CoastalDrive(ShowBase):
         self.scene.update_lighting(position)
         phase = self.session.phase
         countdown = f"{math.ceil(self.session.countdown_ticks / 120)} 秒后开始" if phase == Phase.COUNTDOWN else ""
-        gear = "R" if state.player.gear < 0 else f"D{state.player.gear}"
-        surface = "柏油" if state.player.surface == "asphalt" else "路肩 / 草地"
-        race = self.session.race.snapshot
-        if race.mode == GameMode.TIME_TRIAL:
-            race_line = f"计时挑战   {race.elapsed:06.3f} s\n检查点 {race.checkpoints}/4"
-            if race.invalidated:
-                notice = f"圈速无效：{race.invalid_reason}"
-            else:
-                target = "终点" if race.checkpoints == 4 else f"检查点 {race.next_checkpoint}"
-                race_line += f"   下一目标 {target}"
-                notice = ""
-        else:
-            race_line = "滨海自由驾驶"
-            notice = ""
-            if self.session.simulation.track == "highway":
-                race_line += f"\n距终点 {max(0, HIGHWAY_LENGTH - position.y):.0f} m"
-            elif self.session.simulation.track == "endless":
-                highway_snapshot = self.session.highway.snapshot
-                title = "5公里无碰撞挑战" if highway_snapshot.challenge else "无限高速自由驾驶"
-                distance = (
-                    f"{highway_snapshot.distance:.0f} / {highway_snapshot.target:.0f} m"
-                    if highway_snapshot.challenge else f"{highway_snapshot.distance / 1000:.2f} km"
-                )
-                race_line = f"{title}\n距离 {distance}   用时 {highway_snapshot.elapsed:.1f} s"
-                notice = f"碰撞 {highway_snapshot.collisions} 次"
-        self.speed.setText(f"{abs(state.player.speed) * 3.6:03.0f}")
-        self.gear_rpm.setText(f"km/h   {gear}\n{state.player.rpm:4.0f} rpm")
-        task_text = self.fit_lines(race_line, 1.04, 0.040)
-        notice_text = self.fit_lines(
-            " · ".join(item for item in (countdown, notice, self.session.notice) if item),
-            1.04, 0.037,
+        surface = "asphalt" if state.player.surface == "asphalt" else "off-road"
+        self.hud.update(
+            state, self.session.race.snapshot, self.session.highway.snapshot,
+            track=self.session.simulation.track, countdown=countdown,
+            notice=self.session.notice, fit_lines=self.fit_lines,
         )
-        self.status.setText(task_text)
-        notice_y = -0.28 - 0.055 * task_text.count("\n") - 0.075
-        self.status_notice.setPos(0.06, notice_y)
-        self.status_notice.setText(notice_text)
-        bottom = min(-0.52, notice_y - 0.055 * (notice_text.count("\n") + 1) - 0.025)
-        self.status_frame["frameSize"] = (0, 1.16, bottom, 0)
         self.diagnostics.setText(
             f"Tick {self.session.current.tick}   Simulation 120 Hz\n"
             f"Dropped time {self.session.stepper.dropped_time:.3f} s\n"
@@ -746,22 +725,14 @@ class CoastalDrive(ShowBase):
         if self.soundscape is not None:
             self.soundscape.close()
         self.scene.close()
+        self.main_menu.destroy()
+        self.hud.destroy()
         for widget in (
-            self.speed,
-            self.gear_rpm,
-            self.status,
-            self.status_notice,
-            self.status_frame,
-            self.status_accent,
-            self.help,
-            self.help_frame,
             self.diagnostics,
+            self.result_icon,
             self.panel_title,
             self.panel_note,
             self.panel_detail,
-            self.menu_divider,
-            self.menu_rule_left,
-            self.menu_rule_right,
             self.panel_accent,
             *self.buttons,
             self.panel,

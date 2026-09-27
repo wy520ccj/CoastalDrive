@@ -1,9 +1,11 @@
-# Visual Identity v1 基础资产
+# CoastalDrive UI 资产
 
-- 主字体：Fusion Pixel 12px proportional zh_hans；固定文件哈希与来源见 fonts/font-source.json，原样携带 fonts/OFL.txt。整个界面和品牌字使用同一字体，不依赖系统字体、不静默回退。
-- DS Ark 2026.09.01 在当前文案中缺「刹、滚、窗、避」，不采用；Fusion 覆盖检查的283个字符。像素字在非整数缩放下仍需真实窗口确认，小字号的布局优化留给页面任务。
-- Logo：现有菜单标题位置使用实时字标 COASTAL DRIVE（theme.BRAND_NAME），不插入新图层、不引入独立系统字体。正式字标采用深海蓝、原有细线改橙色；不使用 DS 插画或 Impact/微软雅黑生成的 PNG。
-- Icon：本项目 tools/make_ui_brand.py 用海面、道路、太阳几何绘制；16/32/48/64/128/256各尺寸原生绘制，ICO内嵌这些PNG。窗口通过 icon-filename 加载；不是DS复杂插画的缩小版本。现有打包任务没有添加exe资源编辑流程。
-- panel.png/button.png：保持稳定版尺寸，用 tools/make_ui_textures.py 和 ui/theme.py 的主题色重生成。不是DS九宫格/控件库。
-- 配色：奶白 #F3EFE3、浅纸白 #FEFCF5、深海蓝 #102B3A、橙 #F47C24、海蓝 #247E96；成功深绿、失败砖红是独立语义色。
-- 本目录图标与纹理由项目程序生成，无外部图像。字体保留自身许可；新增几何图案与生成代码按项目源代码方式提供。
+当前实现：UI-02，参考原仓库 graphic_design。主菜单为独立插画背景加真实文字、按钮和回调；驾驶过程仍是实时 3D。
+
+- 字体：思源黑体 SC Heavy 用于中文标题、按钮、说明；Chakra Petch Bold Italic 用于速度、转速、计时及拉丁读数。精确版本、SHA-256、官方来源和 OFL 许可见 fonts/typography-sources.json。标题用轻微斜体处理，按钮保持正体。无需系统字体。
+- 字标：wordmark.png 是按用户设计图单独生成的透明品牌资产；中文副标题仍是实时文字，不把操作文案烘焙进图片。
+- 背景：backgrounds/coastal-menu.png 为同一参考图生成的无文字菜单插画。仅用于主菜单，不在驾驶和车库中假扮实时场景。
+- 控件：components/ 下 22 张无文字 PNG，含按钮状态、面板、速度框和图标；tools/make_menu_assets.py 可重生成。当前菜单有三主三次入口；悬停/选择/按下有明确状态。
+- 历史：Fusion Pixel 和原 panel.png/button.png 保留为 VI-01 资产，不再作为这轮正文/控件。Ark 仍未采用。Icon 继续使用 VI-01 项目生成的道路海岸图标。
+- 来源：插画与字标见 asset-sources.json；控件由项目生成；字体按自身 OFL 许可。没有整包复制 DS 实现。
+- 视觉仍需用户在实际窗口/DPI 下确认；未实现参考图中的小地图、车辆性能条和插画级实时环境。

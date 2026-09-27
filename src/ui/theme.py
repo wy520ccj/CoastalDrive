@@ -5,9 +5,11 @@ from panda3d.core import DynamicTextFont, Filename, SamplerState
 from paths import resource_root
 
 BRAND_NAME = "COASTAL DRIVE"
-FONT_FILE = "fonts/fusion-pixel-12px-proportional-zh_hans.ttf"
-FONT_LICENSE = "fonts/OFL.txt"
-FONT_PIXELS_PER_UNIT = 48
+FONT_FILE = "fonts/SourceHanSansSC-Heavy.otf"
+FONT_LICENSE = "fonts/OFL-SourceHanSans.txt"
+DISPLAY_FONT_FILE = "fonts/ChakraPetch-BoldItalic.ttf"
+# 覆盖 1080p 大标题的实际像素高度，避免放大低分辨率字形。
+FONT_PIXELS_PER_UNIT = 160
 
 # 奶白底与深海蓝字；橙色仅用于强调，不承担成功/失败语义。
 INK = (16 / 255, 43 / 255, 58 / 255, 1)
@@ -35,14 +37,14 @@ def asset_filename(name):
     return Filename.fromOsSpecific(str(path))
 
 
-def load_font():
+def load_font(filename=FONT_FILE):
     # 独立字体实例避免重复启动时修改 FontPool 中已生成字形的字体。
-    font = DynamicTextFont(asset_filename(FONT_FILE))
+    font = DynamicTextFont(asset_filename(filename))
     if not font.isValid():
-        raise OSError(f"无法读取界面字体：{FONT_FILE}")
+        raise OSError(f"无法读取界面字体：{filename}")
     font.setPixelsPerUnit(FONT_PIXELS_PER_UNIT)
-    font.setMinfilter(SamplerState.FTNearest)
-    font.setMagfilter(SamplerState.FTNearest)
+    font.setMinfilter(SamplerState.FTLinear)
+    font.setMagfilter(SamplerState.FTLinear)
     return font
 
 

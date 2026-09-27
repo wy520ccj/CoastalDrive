@@ -1,0 +1,58 @@
+{
+  "started_utc": "2026-09-27T06:01:44.258070+00:00",
+  "git_head": "9b05a1b40cc5cfd27a065cb8d0fec914a9b930e0",
+  "git_status": "M .gitattributes\n M setup.py\n M src/application.py\n M src/ui/theme.py\n M tests/test_ui.py\n M tests/test_ui_theme.py\n?? assets/game/ui/backgrounds/\n?? assets/game/ui/components/\n?? assets/game/ui/fonts/ChakraPetch-BoldItalic.ttf\n?? assets/game/ui/fonts/OFL-ChakraPetch.txt\n?? assets/game/ui/fonts/OFL-SourceHanSans.txt\n?? assets/game/ui/fonts/README-typography.md\n?? assets/game/ui/fonts/SourceHanSansSC-Heavy.otf\n?? assets/game/ui/fonts/typography-sources.json\n?? assets/game/ui/wordmark.png\n?? docs/tasks/UI-02.md\n?? src/ui/hud.py\n?? src/ui/main_menu.py\n?? tests/test_ui_assets.py\n?? tools/make_menu_assets.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [
+    "appearance"
+  ],
+  "tests": [
+    "tests/test_ui.py",
+    "tests/test_ui_theme.py",
+    "tests/test_ui_assets.py"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive-VI-v1\\logs\\UI-02\\T0-review\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.093
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_appearance.py",
+        "tests/test_ui.py",
+        "tests/test_ui_theme.py",
+        "tests/test_ui_assets.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive-VI-v1\\logs\\UI-02\\T0-review\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 8.213
+    }
+  ]
+}
