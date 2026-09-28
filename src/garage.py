@@ -3,7 +3,7 @@
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import AmbientLight, CardMaker, DirectionalLight
 
-from skins import apply_skin
+from skins import apply_skin, vehicle_definition
 from vehicle_visual import load_vehicle
 
 
@@ -46,7 +46,7 @@ class GaragePreview:
     def set_vehicle(self, model_id: str, skin_index: int):
         for child in self.car_root.getChildren():
             child.removeNode()
-        self.body, self.wheels = load_vehicle(self.car_root, model_id)
+        self.body, self.wheels = load_vehicle(self.car_root, vehicle_definition(model_id))
         self.car_root.setZ(0.45)
         apply_skin(self.body.getChild(0), skin_index)
 

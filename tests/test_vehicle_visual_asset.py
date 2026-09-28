@@ -10,6 +10,7 @@ from panda3d.core import GeomVertexReader, MaterialAttrib, NodePath, Quat
 from paths import resource_root
 from scene import Scene
 from simulation import Control, Simulation
+from skins import vehicle_definition
 from vehicle_config import CAR
 from vehicle_visual import WHEEL_NAMES, load_vehicle
 
@@ -25,7 +26,7 @@ def vertices_relative_to(root):
 
 def test_hero_body_and_steered_rolling_wheels_fit_frozen_collision_envelope():
     parent = NodePath("visual-contract")
-    body, wheels = load_vehicle(parent, "sports")
+    body, wheels = load_vehicle(parent, vehicle_definition("sports"))
     for vertex in vertices_relative_to(body):
         assert abs(vertex.x) <= CAR.collision_half_width
         assert abs(vertex.y) <= CAR.collision_half_length
@@ -54,7 +55,7 @@ def test_hero_body_and_steered_rolling_wheels_fit_frozen_collision_envelope():
 
 def test_export_has_distinct_materials_and_bounded_geometry():
     parent = NodePath("asset-materials")
-    load_vehicle(parent, "sports")
+    load_vehicle(parent, vehicle_definition("sports"))
     materials = set()
     triangles = 0
     for path in parent.findAllMatches("**/+GeomNode"):
@@ -84,19 +85,16 @@ def test_export_has_distinct_materials_and_bounded_geometry():
     assert triangles <= manifest["triangle_budget"]
 
 
-def test_sedan_and_npc_sports_keep_legacy_body_and_wheel_geometry():
+def test_legacy_sedan_keeps_body_and_wheel_geometry():
     parent = NodePath("legacy-vehicles")
-    for model_id in ("sports", "sedan"):
-        body, wheels = load_vehicle(parent, model_id, hero=False)
-        assert body.getChild(0).getName() != "classic-coupe-v1"
-        assert len(wheels) == 4
-        assert not body.findAllMatches("**/paint").isEmpty()
-        if model_id == "sedan":
-            other, other_wheels = load_vehicle(parent, model_id)
-            assert other.getTightBounds() == body.getTightBounds()
-            assert [w.getTightBounds() for w in wheels] == [
-                w.getTightBounds() for w in other_wheels
-            ]
+    definition = vehicle_definition("sedan")
+    body, wheels = load_vehicle(parent, definition)
+    assert body.getChild(0).getName() != "classic-coupe-v1"
+    assert len(wheels) == 4
+    assert not body.findAllMatches("**/paint").isEmpty()
+    other, other_wheels = load_vehicle(parent, definition)
+    assert other.getTightBounds() == body.getTightBounds()
+    assert [w.getTightBounds() for w in wheels] == [w.getTightBounds() for w in other_wheels]
 
 
 def test_traffic_family_fits_existing_collision_and_snapshot_wheels():
@@ -114,7 +112,7 @@ def test_traffic_family_fits_existing_collision_and_snapshot_wheels():
     parent = NodePath("traffic-family")
     for item in manifest["vehicles"]:
         assert item["triangles"] <= item["budget"]
-        body, wheels = load_vehicle(parent, f"traffic-{item['model']}", hero=False)
+        body, wheels = load_vehicle(parent, vehicle_definition(f"traffic-{item['model']}"))
         assert not body.find(f"**/traffic-{item['model']}-v1").isEmpty()
         assert len(body.findAllMatches("**/paint")) == 1
         for index in range(len(SKINS)):
@@ -154,12 +152,12 @@ def test_traffic_family_wheels_follow_frozen_snapshot():
     scene.sky = scene.render.attachNewNode("sky")
     scene.ocean = scene.render.attachNewNode("ocean")
     scene.base = SimpleNamespace(session=SimpleNamespace(simulation=simulation))
-    scene.player, scene.wheels = load_vehicle(scene.render, "sports")
+    scene.player, scene.wheels = load_vehicle(scene.render, vehicle_definition("sports"))
     scene.traffic = []
     scene.traffic_wheels = []
     scene.traffic_signals = [[], [], []]
     for model in traffic_models(23, 3):
-        car, wheels = load_vehicle(scene.render, model, hero=False)
+        car, wheels = load_vehicle(scene.render, vehicle_definition(model))
         scene.traffic.append(car)
         scene.traffic_wheels.append(wheels)
     try:
@@ -181,7 +179,7 @@ def test_scene_applies_actual_bullet_wheel_positions_and_quaternions():
     scene.render = NodePath("wheel-sync")
     scene.sky = scene.render.attachNewNode("sky")
     scene.base = SimpleNamespace(session=SimpleNamespace(simulation=simulation))
-    scene.player, scene.wheels = load_vehicle(scene.render, "sports")
+    scene.player, scene.wheels = load_vehicle(scene.render, vehicle_definition("sports"))
     scene.traffic, scene.traffic_wheels, scene.traffic_signals = [], [], []
     try:
         for tick in range(360):
@@ -201,7 +199,7 @@ def test_scene_applies_actual_bullet_wheel_positions_and_quaternions():
         simulation.close()
 
 
-def test_hero_color_space_and_local_ambient_do_not_change_scene_or_npcs():
+def test_hero_color_space_and_local_ambient_do_not_change_scene():
     from panda3d.core import AmbientLight, DirectionalLight, LightAttrib
 
     from skins import SKINS, paint_color
@@ -213,15 +211,13 @@ def test_hero_color_space_and_local_ambient_do_not_change_scene_or_npcs():
     parent.setLight(ambient)
     parent.setLight(sun)
     before = parent.getState()
-    body, wheels = load_vehicle(parent, "sports")
+    body, wheels = load_vehicle(parent, vehicle_definition("sports"))
     for node in (body, *wheels):
         lights = node.getNetState().getAttrib(LightAttrib)
         assert not lights.hasOnLight(ambient)
         assert lights.hasOnLight(sun)
         assert lights.getNumOnLights() == 2
-    npc, _ = load_vehicle(parent, "sports", hero=False)
-    assert npc.getNetState().getAttrib(LightAttrib).hasOnLight(ambient)
     assert parent.getState() == before
     # 已知sRGB参考值，防止把测试写成转换实现的复制品。
-    assert paint_color(0, hero=True) == pytest.approx((0.7874123, 0.1548725, 0.0100228), abs=1e-6)
+    assert paint_color(0, quality="hero") == pytest.approx((0.7874123, 0.1548725, 0.0100228), abs=1e-6)
     assert paint_color(0) == SKINS[0].color

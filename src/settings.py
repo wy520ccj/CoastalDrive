@@ -3,13 +3,13 @@
 import json
 
 from paths import user_data
-from skins import MODELS, SKINS
+from skins import PLAYER_VEHICLES, SKINS
 
 
 class AppearanceStore:
     def __init__(self, path=None):
         self.path = path if path is not None else user_data() / "appearance.json"
-        self.model_id = MODELS[0].id
+        self.model_id = PLAYER_VEHICLES[0].id
         self.skin_id = SKINS[0].id
         self.notice = ""
         try:
@@ -23,13 +23,13 @@ class AppearanceStore:
             self.notice = "外观设置无效，已使用默认外观"
             return
         model, skin = data.get("model_id"), data.get("skin_id")
-        if model in [item.id for item in MODELS] and skin in [item.id for item in SKINS]:
+        if model in [item.id for item in PLAYER_VEHICLES] and skin in [item.id for item in SKINS]:
             self.model_id, self.skin_id = model, skin
         else:
             self.notice = "原外观已不可用，已使用默认外观"
 
     def save(self, model_id, skin_id):
-        if model_id not in [item.id for item in MODELS] or skin_id not in [item.id for item in SKINS]:
+        if model_id not in [item.id for item in PLAYER_VEHICLES] or skin_id not in [item.id for item in SKINS]:
             raise ValueError("Unknown garage appearance")
         try:
             self.path.parent.mkdir(parents=True, exist_ok=True)

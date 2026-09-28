@@ -18,7 +18,7 @@ from scene import Scene
 from session import Phase, Session
 from settings import AppearanceStore, AudioSettingsStore
 from simulation import Control
-from skins import MODELS, SKINS, apply_skin
+from skins import PLAYER_VEHICLES, SKINS, apply_skin
 from soundscape import Soundscape
 from ui import theme
 from ui.hud import DrivingHUD
@@ -444,8 +444,8 @@ class CoastalDrive(ShowBase):
         self.refresh_panel()
 
     def cycle_garage_model(self, step=1):
-        index = next(i for i, model in enumerate(MODELS) if model.id == self.garage_model_id)
-        self.garage_model_id = MODELS[(index + step) % len(MODELS)].id
+        index = next(i for i, model in enumerate(PLAYER_VEHICLES) if model.id == self.garage_model_id)
+        self.garage_model_id = PLAYER_VEHICLES[(index + step) % len(PLAYER_VEHICLES)].id
         self.garage.set_vehicle(self.garage_model_id, self.garage_skin_index)
         self._shown_phase = None
         self.refresh_panel()
@@ -558,7 +558,7 @@ class CoastalDrive(ShowBase):
         self.panel_detail.setPos(0, 0.10)
         self.panel["frameColor"] = (1, 1, 1, 1)
         if self.garage is not None:
-            model = next(model for model in MODELS if model.id == self.garage_model_id)
+            model = next(model for model in PLAYER_VEHICLES if model.id == self.garage_model_id)
             skin = SKINS[self.garage_skin_index]
             self.panel_title.setText("车库")
             note = f"车型：{model.name}\n车漆：{skin.name}\nEnter 应用并返回 · Esc 取消"

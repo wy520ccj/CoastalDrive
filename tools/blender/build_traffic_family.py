@@ -105,13 +105,13 @@ def build(kind, spec):
     bpy.context.scene.unit_settings.scale_length = 1
 
     paint_mat = material("Body Paint", (0.38, 0.12, 0.025), 0.36)
-    glass = material("Blue Grey Glass", (0.012, 0.029, 0.042), 0.22)
-    trim = material("Satin Black Plastic", (0.025, 0.029, 0.031), 0.68)
+    glass = material("Blue Grey Glass", (0.006, 0.012, 0.019), 0.17)
+    trim = material("Satin Black Plastic", (0.019, 0.025, 0.029), 0.65)
     rubber = material("Tire Rubber", (0.009, 0.011, 0.013), 0.94)
-    metal = material("Brushed Wheel Metal", (0.46, 0.49, 0.52), 0.32, 0.65)
-    head = material("Head Light", (0.49, 0.57, 0.56), 0.27)
-    tail = material("Tail Light", (0.45, 0.014, 0.015), 0.28)
-    amber = material("Amber Lens", (0.71, 0.27, 0.018), 0.3)
+    metal = material("Brushed Wheel Metal", (0.48, 0.51, 0.54), 0.18, 0.90)
+    head = material("Head Light", (0.53, 0.61, 0.60), 0.22)
+    tail = material("Tail Light", (0.48, 0.012, 0.014), 0.25)
+    amber = material("Amber Lens", (0.74, 0.29, 0.018), 0.24)
 
     root = empty(f"traffic-{kind}-v1")
     paint = empty("paint", root)
@@ -144,7 +144,10 @@ def build(kind, spec):
                       (index + 1) * ring_size + (j + 1) % ring_size,
                       (index + 1) * ring_size + j) for j in range(ring_size))
     faces.append(tuple((len(stations) - 1) * ring_size + j for j in range(ring_size)))
-    mesh("sculpted body and wheel arches", vertices, faces, paint_mat, paint)
+    body_shell = mesh("sculpted body and wheel arches", vertices, faces, paint_mat, paint)
+    normals = body_shell.modifiers.new("Body panel normals", "WEIGHTED_NORMAL")
+    bpy.context.view_layer.objects.active = body_shell
+    bpy.ops.object.modifier_apply(modifier=normals.name)
     for side in (-1, 1):
         box("shoulder crease", (side * (half + 0.002), 0, shoulder + 0.055),
             (0.008, length - 0.24, 0.012), metal, root)

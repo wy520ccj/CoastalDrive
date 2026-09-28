@@ -44,7 +44,7 @@ from highway_map import HIGHWAY_LENGTH
 from highway_map import ROAD_WIDTH as HIGHWAY_ROAD_WIDTH
 from highway_map import meshes as highway_meshes
 from paths import resource_root
-from skins import apply_skin, traffic_models, traffic_skins
+from skins import apply_skin, traffic_models, traffic_skins, vehicle_definition
 from sky_dome import make_sky
 from test_track import OBSTACLES, TRACK_X
 from vehicle_visual import load_vehicle
@@ -344,7 +344,7 @@ class Scene:
         if trace is not None:
             trace.mark("environment_assets_loaded")
         self.player, self.wheels = load_vehicle(
-            self.render, self.base.vehicle_model_id, trace=trace
+            self.render, vehicle_definition(self.base.vehicle_model_id), trace=trace
         )
         model = self.player.getChild(0)
         apply_skin(model, self.base.skin_index)
@@ -358,7 +358,7 @@ class Scene:
             traffic_models(self.base.session.seed, traffic_count),
             traffic_skins(self.base.session.seed, traffic_count),
         ):
-            car, wheels = load_vehicle(self.render, model_id, hero=False)
+            car, wheels = load_vehicle(self.render, vehicle_definition(model_id))
             apply_skin(car.getChild(0), skin)
             self.traffic.append(car)
             self.traffic_wheels.append(wheels)

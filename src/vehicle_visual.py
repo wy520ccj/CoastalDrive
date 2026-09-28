@@ -7,19 +7,18 @@ from panda3d.core import AmbientLight, Filename, LightAttrib, Loader, NodePath
 from simplepbr.envmap import EnvMap
 
 from paths import resource_root
-from skins import MODELS
+from skins import VehicleDefinition
 from vehicle_config import WHEEL_HUBS
 
 WHEEL_NAMES = ("wheel-front-left", "wheel-front-right", "wheel-back-left", "wheel-back-right")
 
 
-def load_vehicle(parent, model_id, *, hero=True, trace=None):
-    if model_id == "sports" and hero:
-        return load_classic_coupe(parent, trace=trace)
-    if model_id.startswith("traffic-"):
-        return load_traffic_vehicle(parent, model_id)
-    definition = next(model for model in MODELS if model.id == model_id)
-    path = resource_root() / "assets/game" / definition.filename
+def load_vehicle(parent, definition: VehicleDefinition, *, trace=None):
+    """按统一车型定义装配显示车；调用方身份不参与资产选择。"""
+    path = resource_root() / "assets/game" / definition.visual
+    if path.suffix == ".glb":
+        return load_gltf_vehicle(parent, definition, path, trace=trace)
+
     root = parent.attachNewNode(definition.id)
     body = NodePath(Loader.getGlobalPtr().loadSync(Filename.fromOsSpecific(str(path))))
     body.reparentTo(root)
@@ -42,45 +41,33 @@ def load_vehicle(parent, model_id, *, hero=True, trace=None):
     return root, wheels
 
 
-def load_traffic_vehicle(parent, model_id):
-    """交通车沿用 Snapshot 的四个世界轮姿，车身网格保持米制原点。"""
-    kind = model_id.removeprefix("traffic-")
-    path = resource_root() / f"assets/game/vehicles/traffic_{kind}_v1.glb"
-    root = parent.attachNewNode(model_id)
+def load_gltf_vehicle(parent, definition, path, *, trace=None):
+    """米制 GLB 共用 Snapshot 的四个世界轮姿。"""
+    root = parent.attachNewNode(definition.id)
     body = NodePath(gltf.load_model(Filename.fromOsSpecific(str(path))))
+    body.setPythonTag("vehicle-quality", definition.quality)
+    if definition.quality == "hero":
+        body.setName("classic-coupe-v1")
+        if trace is not None:
+            trace.mark("hero_mesh_loaded")
     body.reparentTo(root)
+    environment = None
+    if definition.quality == "hero":
+        environment = vehicle_reflection()
+        if trace is not None:
+            trace.mark("reflection_resource_loaded")
+        set_vehicle_reflection(root, environment)
     wheels = []
     for name in WHEEL_NAMES:
         wheel = body.find(f"**/{name}")
         if wheel.isEmpty():
-            raise ValueError(f"交通车GLB缺少轮根：{model_id}/{name}")
+            raise ValueError(f"车辆GLB缺少轮根：{definition.id}/{name}")
         wheel.reparentTo(parent)
+        if environment is not None:
+            set_vehicle_reflection(wheel, environment)
         wheels.append(wheel)
-    return root, wheels
-
-
-def load_classic_coupe(parent, *, trace=None):
-    """新主车按最终米制建模；轮根直接接受Snapshot的世界轮姿。"""
-    path = resource_root() / "assets/game/vehicles/classic_coupe_v1.glb"
-    root = parent.attachNewNode("sports")
-    body = NodePath(gltf.load_model(Filename.fromOsSpecific(str(path))))
-    if trace is not None:
-        trace.mark("hero_mesh_loaded")
-    body.setName("classic-coupe-v1")
-    body.reparentTo(root)
-    environment = vehicle_reflection()
-    if trace is not None:
-        trace.mark("reflection_resource_loaded")
-    set_vehicle_reflection(root, environment)
-    wheels = []
-    for name in WHEEL_NAMES:
-        wheel = body.find(f"**/{name}")
-        if wheel.isEmpty():
-            raise ValueError(f"主车GLB缺少轮根：{name}")
-        wheel.reparentTo(parent)
-        set_vehicle_reflection(wheel, environment)
-        wheels.append(wheel)
-    balance_vehicle_ambient(parent, root, wheels)
+    if definition.quality == "hero":
+        balance_vehicle_ambient(parent, root, wheels)
     return root, wheels
 
 

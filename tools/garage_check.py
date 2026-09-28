@@ -15,7 +15,7 @@ from race import GameMode
 from session import Phase
 from settings import AppearanceStore
 from simulation import Control
-from skins import MODELS, SKINS
+from skins import PLAYER_VEHICLES, SKINS
 
 
 def main():
@@ -42,7 +42,7 @@ def main():
         app.session.menu()
         before = app.session.simulation.snapshot()
         app.choose_garage()
-        for model in MODELS:
+        for model in PLAYER_VEHICLES:
             assert app.garage_model_id == model.id
             for skin in SKINS:
                 assert SKINS[app.garage_skin_index].id == skin.id
