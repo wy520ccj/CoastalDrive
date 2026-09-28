@@ -26,7 +26,8 @@ from ui.main_menu import MainMenu
 
 
 class CoastalDrive(ShowBase):
-    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720)):
+    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None):
+        self.startup_trace = startup_trace
         loadPrcFileData(
             "coastaldrive",
             "\n".join(
@@ -41,9 +42,13 @@ class CoastalDrive(ShowBase):
             ),
         )
         super().__init__()
+        if startup_trace is not None:
+            startup_trace.mark("window_initialized")
         self.disableMouse()
         # The default bias detaches contact shadows at our light's depth range.
         self.pipeline = simplepbr.init(enable_shadows=True, msaa_samples=4, shadow_bias=0.0007)
+        if startup_trace is not None:
+            startup_trace.mark("renderer_initialized")
         self.camLens.setFov(68)
         self.camLens.setNearFar(0.15, 1500)
         self.smoke = smoke
@@ -59,10 +64,14 @@ class CoastalDrive(ShowBase):
             road_shape=road_shape,
             scores=BestTimes(self.output / "test-best-times.json") if smoke else None,
         )
+        if startup_trace is not None:
+            startup_trace.mark("simulation_initialized")
         self.skin_index = next(
             (i for i, skin in enumerate(SKINS) if skin.id == self.appearance.skin_id), 0
         )
         self.vehicle_model_id = self.appearance.model_id
+        if startup_trace is not None:
+            startup_trace.mark("environment_load_started")
         self.scene = Scene(self)
         self.soundscape = (
             None
@@ -93,6 +102,8 @@ class CoastalDrive(ShowBase):
         self._shown_phase = None
         self.setup_controls()
         self.setup_hud()
+        if startup_trace is not None:
+            startup_trace.mark("ui_ready")
         self.taskMgr.add(self.update, "drive-update")
         if smoke:
             self.session.start(countdown=False)
@@ -259,10 +270,14 @@ class CoastalDrive(ShowBase):
 
     def setup_hud(self):
         self.ui_font = theme.load_font()
+        if self.startup_trace is not None:
+            self.startup_trace.mark("primary_font_loaded")
         text_style = theme.text_style(self.ui_font)
         self.panel_texture = self.loader.loadTexture(theme.asset_filename("components/panel.png"))
         self.button_texture = self.loader.loadTexture(theme.asset_filename("components/button-normal.png"))
         self.display_font = theme.load_font(theme.DISPLAY_FONT_FILE)
+        if self.startup_trace is not None:
+            self.startup_trace.mark("display_font_loaded")
         self.hud = DrivingHUD(self.aspect2d, self.loader, self.ui_font, self.display_font)
         self.status_frame = self.hud.status_frame
         self.status = self.hud.status

@@ -31,14 +31,6 @@ def main():
     )
     app.taskMgr.remove("finish-smoke")
     app.session.set_controller(RouteDriver(70))
-    graph = SceneGraphAnalyzer()
-    graph.addNode(app.render.node())
-    geometry = {
-        "nodes": graph.getNumNodes(),
-        "geom_nodes": graph.getNumGeomNodes(),
-        "geoms": graph.getNumGeoms(),
-        "triangles": graph.getNumTris(),
-    }
     update_samples = []
     original_update = app.update
 
@@ -88,6 +80,15 @@ def main():
             )
         finished = task.time >= 330 if args.benchmark else total >= 365 or task.time >= args.seconds
         if finished:
+            # 场景首次 update 后才有八辆交通车；在采样结束时统计实际运行图。
+            graph = SceneGraphAnalyzer()
+            graph.addNode(app.render.node())
+            geometry = {
+                "nodes": graph.getNumNodes(),
+                "geom_nodes": graph.getNumGeomNodes(),
+                "geoms": graph.getNumGeoms(),
+                "triangles": graph.getNumTris(),
+            }
             ordered = sorted(durations)
             passed = total >= 365 and len(state.traffic) == 8 and bool(durations)
             report = {
@@ -114,6 +115,7 @@ def main():
                 "sample_frames": len(durations),
                 "sample_seconds": sum(durations),
                 "scene_graph_totals": geometry,
+                "geometry_capture_phase": "end of sample, after eight traffic vehicles loaded",
                 "geometry_note": "Whole scene counts; not visible triangles or GPU draw calls.",
                 "update_cpu_mean_ms": sum(update_samples) / len(update_samples) * 1000
                 if update_samples

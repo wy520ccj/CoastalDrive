@@ -339,9 +339,16 @@ class Scene:
         # Batch static road markings and barriers before adding the moving car.
         if track != "endless":
             self.render.flattenStrong()
-        self.player, self.wheels = load_vehicle(self.render, self.base.vehicle_model_id)
+        trace = self.base.startup_trace
+        if trace is not None:
+            trace.mark("environment_assets_loaded")
+        self.player, self.wheels = load_vehicle(
+            self.render, self.base.vehicle_model_id, trace=trace
+        )
         model = self.player.getChild(0)
         apply_skin(model, self.base.skin_index)
+        if trace is not None:
+            trace.mark("hero_vehicle_loaded")
         self.traffic = []
         self.traffic_wheels = []
         self.traffic_signals = []
@@ -363,6 +370,8 @@ class Scene:
                 lamp.hide()
                 lights.append(lamp)
             self.traffic_signals.append(lights)
+        if trace is not None:
+            trace.mark("traffic_vehicles_loaded")
 
     def setup_highway(self):
         for name, (vertices, triangles) in highway_meshes().items():

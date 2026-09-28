@@ -13,9 +13,9 @@ from vehicle_config import WHEEL_HUBS
 WHEEL_NAMES = ("wheel-front-left", "wheel-front-right", "wheel-back-left", "wheel-back-right")
 
 
-def load_vehicle(parent, model_id, *, hero=True):
+def load_vehicle(parent, model_id, *, hero=True, trace=None):
     if model_id == "sports" and hero:
-        return load_classic_coupe(parent)
+        return load_classic_coupe(parent, trace=trace)
     definition = next(model for model in MODELS if model.id == model_id)
     path = resource_root() / "assets/game" / definition.filename
     root = parent.attachNewNode(definition.id)
@@ -40,14 +40,18 @@ def load_vehicle(parent, model_id, *, hero=True):
     return root, wheels
 
 
-def load_classic_coupe(parent):
+def load_classic_coupe(parent, *, trace=None):
     """新主车按最终米制建模；轮根直接接受Snapshot的世界轮姿。"""
     path = resource_root() / "assets/game/vehicles/classic_coupe_v1.glb"
     root = parent.attachNewNode("sports")
     body = NodePath(gltf.load_model(Filename.fromOsSpecific(str(path))))
+    if trace is not None:
+        trace.mark("hero_mesh_loaded")
     body.setName("classic-coupe-v1")
     body.reparentTo(root)
     environment = vehicle_reflection()
+    if trace is not None:
+        trace.mark("reflection_resource_loaded")
     set_vehicle_reflection(root, environment)
     wheels = []
     for name in WHEEL_NAMES:
