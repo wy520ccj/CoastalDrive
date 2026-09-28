@@ -203,6 +203,8 @@ Luna：完整场景30分钟、20次重开/换图、失焦/恢复、多键、音�
 
 ## 13. 当前交接与后续执行
 
+2026-09-28 Visual v1当前顺序以本条和current-progress为准：SCENE-01 → VEH-02（accepted with known visual debt）→ HWY-01（800m高速Golden Slice，人工接受后再扩）→ HWY-02（straight/hills/curves完整视觉）→ FX-01 → PERF-02 → Visual v1 Gate → PHYS-01。HWY-01不重写streaming、不动交通/物理/UI/Scene生命周期，不插入第二Hero；开发短smoke、收尾30–60秒sanity，不跑300秒或顺手性能优化。
+
 5A/H4A 已完成；0.6.0 已实现5B直线分段流式道路及5C驾驶员差异、纵向跟驰、提前打灯、安全间隙筛选和连续变道核心。详细证据与缺口以 `5BC-preview-review.md` 和 `current-progress.md` 为准，不再执行旧5A任务包。
 
 0.7.0已接入5C可玩内容：高速直路/弯坡菜单、三档车流、自由驾驶统计和5 km无碰撞挑战。0.7.1在此基础上加入范围有限的高速事故恢复，见 [traffic-recovery.md](traffic-recovery.md)。相关短检查、双闪实际渲染和独立版启动已通过，本批不再执行长测。H4B历史证据见 [H4B-stability-review.md](H4B-stability-review.md)，其中的175项回归及弯坡长程结果不等同于5C/H4C完整验收。

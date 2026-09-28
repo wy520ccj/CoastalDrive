@@ -4,6 +4,8 @@ UI v1 已获用户观感认可并暂时冻结。环境开发从保留侧碰修�
 
 ## 按功能分区
 
+2026-09-28补充：海岸继续冻结。HWY-01建立独立 `src/environment/expressway.py`、`assets/game/expressway/` 和 `art/expressway/README.md`；尺寸源和运行模块分离，详见[HWY-01](tasks/HWY-01.md)。高速0–800m采用规则里程布置，不沿用海岸松林/灯塔素材。本轮只做短程sanity，下一性能Gate留到Visual v1尾声。
+
 | 位置 | 唯一职责 |
 |---|---|
 | `src/environment/foundation.py` | 海岸配色、光照参数、表面纹理和既有景物材质 |

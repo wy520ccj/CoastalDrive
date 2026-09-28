@@ -1,6 +1,6 @@
 # VEH-02 — 统一车型目录与交通车辆视觉族
 
-- 状态：自动实施与验证完成；人工视觉评审待用户确认。
+- 状态：accepted with known visual debt（用户于2026-09-28接受）。
 - 基线：`7906dd3bfe1a4eb44ccfa0cb24bb7e05e5c3e66e`（SCENE-01 后的 `visual-identity-v1`）。
 
 ## 目标与边界
@@ -20,7 +20,7 @@ Blender 5.2.2 LTS 生成的三款资产分别为 4234、4138、4354 三角形，
 | 滨海窗口 | 1920×1080、种子 23、八车短程实际驾驶通过，驶过 365 m；报告在 `logs/VEH-02-drive/`。短程样本采集于车身壳最终精修前，只作流程 sanity，不当成最终性能结论 |
 | 高速装配 | `src/main.py --smoke --track endless` 离屏运行通过；12 车、20 次重开节点/任务/事件稳定 |
 | 最终实景渲染 | `docs/evidence/VEH-02/traffic-in-game.png` 使用当前种子下真实交通 Snapshot 和滨海场景；另外两张为滨海场景内的三车摆拍，用于对比轮廓和轮位 |
-| 人工视觉 | 待用户审图/试玩；自动检查不代替接受 |
+| 人工视觉 | 用户已接受现阶段Traffic质量；交通车比Hero更方、更高、细节等级较低，后续Vehicle Polish再统一 |
 | 独立包 | `builds/0.8.3-veh02-catalog/win_amd64/coastaldrive.exe` 从仓库外启动 smoke 通过；8 辆交通车正常，20 次重开节点、任务和事件稳定。SHA-256：`94AD885928A9E917F456890581D62C8AC029520DB21F0EF7EBA2E5DB96967E67` |
 
 没有运行 300 秒基准，也不宣称满足 60 FPS Gate。短程 sanity 的平均帧率约 47.4 FPS，仅证明没有启动或渲染灾难，采样窗口和中途资产版本都不足以用于性能比较。本任务到此停止，不扩展性能分析。
@@ -30,4 +30,4 @@ Blender 5.2.2 LTS 生成的三款资产分别为 4234、4138、4354 三角形，
 - 制作入口：`tools/blender/build_traffic_family.py`；源文件与尺寸约定见 `art/vehicles/README.md`。
 - 渲染入口：`tools/vehicles/capture_traffic_family.py --output <新目录>`。
 - 证据：`assets/game/vehicles/traffic-family-manifest.json`、`docs/evidence/VEH-02/`、本机 Git 忽略的 `logs/VEH-02-drive/`、`logs/VEH-02-highway-smoke/` 与 `logs/VEH-02-catalog-package-smoke/`。
-- 下一步：等待人工视觉评审；通过后按既定顺序进入 HWY-01。
+- 下一步：进入 HWY-01；停止继续精修这三辆NPC，不插入第二Hero。已知视觉债务：交通车比Hero更方、更高、细节等级较低，后续Vehicle Polish再统一。

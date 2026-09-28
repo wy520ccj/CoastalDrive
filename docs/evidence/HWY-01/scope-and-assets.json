@@ -1,0 +1,102 @@
+{
+  "baseline": "329e5332231d7b54a231146e003f569bc482b482",
+  "status": "local implementation; human acceptance pending",
+  "frozen_paths_unchanged": [
+    "src/simulation.py",
+    "src/vehicle.py",
+    "src/vehicle_dynamics.py",
+    "src/vehicle_response.py",
+    "src/traffic.py",
+    "src/highway_driver.py",
+    "src/highway_segments.py",
+    "src/highway_curve.py",
+    "src/streamed_road.py",
+    "src/curve_mesh.py",
+    "src/skins.py",
+    "src/application.py",
+    "src/session.py",
+    "src/sky_dome.py",
+    "src/environment/coastal_slice.py",
+    "src/environment/terrain.py",
+    "src/environment/foundation.py",
+    "src/environment/water.py"
+  ],
+  "runtime_assets": [
+    {
+      "file": "assets\\game\\expressway\\advance-sign.bam",
+      "sha256": "837ce48b27b412028180a274e9e7da027f1fc33fce1ef79ad5ed8cc2c67f2edc",
+      "packaged_identical": true
+    },
+    {
+      "file": "assets\\game\\expressway\\aggregate.png",
+      "sha256": "9f92aab0ff82a920b73d54c1fdcec13c7131709508dfee3d32d389b95edb0599",
+      "packaged_identical": true
+    },
+    {
+      "file": "assets\\game\\expressway\\broadleaf-crown.bam",
+      "sha256": "159d283c1990401749ced886dc3c6aba48dcc5b12510a95963b21f94cfe2110a",
+      "packaged_identical": true
+    },
+    {
+      "file": "assets\\game\\expressway\\crash-cushion.bam",
+      "sha256": "cafa9d08b84edbe68fc05ac565062b749df0649d06bdbe4d4ddb11064e05bd81",
+      "packaged_identical": true
+    },
+    {
+      "file": "assets\\game\\expressway\\drain-grate.bam",
+      "sha256": "457b9472f5f9aa6940740d3fc30815144530f8320cf97c967d2be4e12357b2b5",
+      "packaged_identical": true
+    },
+    {
+      "file": "assets\\game\\expressway\\equipment.bam",
+      "sha256": "86e0e259b2986b7b68f30316eb9188f9d7c64637bc1236f6078aa9c26ff8330b",
+      "packaged_identical": true
+    },
+    {
+      "file": "assets\\game\\expressway\\expressway-sky.png",
+      "sha256": "0f4748ee74503b46905b1e91d0a03b2fa040ec010997f14be3fb61759423d659",
+      "packaged_identical": true
+    },
+    {
+      "file": "assets\\game\\expressway\\gantry.bam",
+      "sha256": "7340e5992c241245467211b09ecdcbba832fa719a0b3f709384fb1599237b2ba",
+      "packaged_identical": true
+    },
+    {
+      "file": "assets\\game\\expressway\\kilometer.bam",
+      "sha256": "457de9c877740f87e9846598ea1f39a2572762371f2521439df5e8df5f0bd155",
+      "packaged_identical": true
+    },
+    {
+      "file": "assets\\game\\expressway\\lamp.bam",
+      "sha256": "705b70c868c71cf08336e8a87425865b30dfc997ae50b7df6871df92852b5b7a",
+      "packaged_identical": true
+    },
+    {
+      "file": "assets\\game\\expressway\\overpass.bam",
+      "sha256": "2d3c9af68402139d5f0f94f17dab9d0d019bd98077363c9e1fabaeaf660682b3",
+      "packaged_identical": true
+    },
+    {
+      "file": "assets\\game\\expressway\\reflector.bam",
+      "sha256": "141d3185169d04767540ecc4f68f254825bf2e9247debac5a58b2adf9a83b912",
+      "packaged_identical": true
+    },
+    {
+      "file": "assets\\game\\expressway\\shrub-bank.bam",
+      "sha256": "2cc428841c8695a1d2172399986faaa27133d2720491385672ce22165d4383d7",
+      "packaged_identical": true
+    },
+    {
+      "file": "assets\\game\\expressway\\soundwall.bam",
+      "sha256": "1a9e661bdc67dd0884d80b947e5d9d4dbf2a142a7575b9b0e8ccfa3fae843103",
+      "packaged_identical": true
+    },
+    {
+      "file": "assets\\game\\expressway\\source-manifest.json",
+      "sha256": "1c5d188d02e34cc1b7b1fa0c733f6011a607a78049742bafb69779b4e54fb784",
+      "packaged_identical": true
+    }
+  ],
+  "executable_sha256": "a72f41d0c2cc40291af470e1eb91c644383d81d34a307c218f083b9a39587cec"
+}

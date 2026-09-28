@@ -1,0 +1,68 @@
+{
+  "source": "Original dimensioned meshes authored for CoastalDrive HWY-01",
+  "editable_source": "tools/environment/build_expressway_kit.py",
+  "rights": "Project-authored; no third-party assets added",
+  "units": "metres; +Y forward; +Z up",
+  "assets": [
+    {
+      "name": "lamp",
+      "file": "lamp.bam",
+      "sha256": "705b70c868c71cf08336e8a87425865b30dfc997ae50b7df6871df92852b5b7a"
+    },
+    {
+      "name": "reflector",
+      "file": "reflector.bam",
+      "sha256": "141d3185169d04767540ecc4f68f254825bf2e9247debac5a58b2adf9a83b912"
+    },
+    {
+      "name": "gantry",
+      "file": "gantry.bam",
+      "sha256": "7340e5992c241245467211b09ecdcbba832fa719a0b3f709384fb1599237b2ba"
+    },
+    {
+      "name": "advance-sign",
+      "file": "advance-sign.bam",
+      "sha256": "837ce48b27b412028180a274e9e7da027f1fc33fce1ef79ad5ed8cc2c67f2edc"
+    },
+    {
+      "name": "soundwall",
+      "file": "soundwall.bam",
+      "sha256": "1a9e661bdc67dd0884d80b947e5d9d4dbf2a142a7575b9b0e8ccfa3fae843103"
+    },
+    {
+      "name": "crash-cushion",
+      "file": "crash-cushion.bam",
+      "sha256": "cafa9d08b84edbe68fc05ac565062b749df0649d06bdbe4d4ddb11064e05bd81"
+    },
+    {
+      "name": "drain-grate",
+      "file": "drain-grate.bam",
+      "sha256": "457b9472f5f9aa6940740d3fc30815144530f8320cf97c967d2be4e12357b2b5"
+    },
+    {
+      "name": "kilometer",
+      "file": "kilometer.bam",
+      "sha256": "457de9c877740f87e9846598ea1f39a2572762371f2521439df5e8df5f0bd155"
+    },
+    {
+      "name": "equipment",
+      "file": "equipment.bam",
+      "sha256": "86e0e259b2986b7b68f30316eb9188f9d7c64637bc1236f6078aa9c26ff8330b"
+    },
+    {
+      "name": "overpass",
+      "file": "overpass.bam",
+      "sha256": "2d3c9af68402139d5f0f94f17dab9d0d019bd98077363c9e1fabaeaf660682b3"
+    },
+    {
+      "name": "broadleaf-crown",
+      "file": "broadleaf-crown.bam",
+      "sha256": "159d283c1990401749ced886dc3c6aba48dcc5b12510a95963b21f94cfe2110a"
+    },
+    {
+      "name": "shrub-bank",
+      "file": "shrub-bank.bam",
+      "sha256": "2cc428841c8695a1d2172399986faaa27133d2720491385672ce22165d4383d7"
+    }
+  ]
+}

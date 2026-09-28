@@ -261,6 +261,8 @@ class Scene:
         self.setup_lighting()
         self.setup_scene()
         self.sky = make_sky(base, self.render, coastal=base.session.simulation.track == "coastal")
+        if base.session.simulation.track == "endless" and base.session.simulation.road.curve is None:
+            self.sky.setTexture(self.expressway_kit["sky"], 2)
 
     def setup_lighting(self) -> None:
         ambient = AmbientLight("coastal-ambient")
@@ -435,6 +437,11 @@ class Scene:
         if self.base.session.simulation.road.curve:
             self.sync_segments()
             return
+        from environment.expressway import load_kit
+
+        self.expressway_kit = load_kit(
+            self.base.loader, self.endless_templates, self.endless_tree_templates
+        )
         colors = {
             "road": Vec4(0.075, 0.09, 0.11, 1),
             "ground": Vec4(0.20, 0.31, 0.13, 1),
@@ -475,6 +482,7 @@ class Scene:
         if stream is None:
             return
         import curve_mesh
+        from environment.expressway import build_segment, includes
         from highway_segments import SEGMENT_LENGTH, segment
 
         segments = stream.segments
@@ -485,6 +493,12 @@ class Scene:
             root = self.segment_nodes.get(index)
             if root is None:
                 root = self.render.attachNewNode(f"endless-segment-{index}")
+                if includes(index, stream.curve):
+                    build_segment(root, index, simulation.seed, self.expressway_kit,
+                                  self.stabilize_rail)
+                    self.segment_nodes[index] = root
+                    root.setY(index * SEGMENT_LENGTH - simulation.origin_y)
+                    continue
                 if stream.curve:
                     colors = {"road": Vec4(0.075, 0.09, 0.11, 1),
                               "ground": Vec4(0.20, 0.31, 0.13, 1)}

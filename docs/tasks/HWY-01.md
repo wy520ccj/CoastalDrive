@@ -1,0 +1,59 @@
+# HWY-01 — Coastal Expressway Golden Slice
+
+状态：实施与自动回归完成；人工视觉接受pending，短测性能保留待确认项。基线 `329e533`，工作树 `CoastalDrive-VI-v1`，分支 `visual-identity-v1`。
+
+## 施工合同
+
+在现有 straight 无限高速 0–800 m（四个200m segment）建立山海城市快速路样板：0–240m开阔入口，240–500m工程设施/挖方/跨线桥，500–800m打开山海城市远景。明确里程布置，非随机撒设施；不扩展到其他路形/全图，不重写streaming。
+
+允许：`src/environment/expressway.py`、Scene 中最小装配、原创工程资产及离线制作/留证工具、针对测试、任务文档。冻结：Simulation、Vehicle physics、Traffic behavior、Vehicle catalog、Hero、Coastal environment、UI、Scene 生命周期、性能优化和AI。物理三条同向车道保留；不凭视觉增加中央碰撞设施。既有带碰撞树的树干与位置保留，仅换冠。新装饰在护栏外，跨线桥净空超过6m。
+
+资产采用可编辑Python尺寸源离线生成Panda原生BAM；运行时只加载模块，地貌按全局里程计算。无新框架、外部素材或依赖。
+
+## 验证预算
+
+- 定向T0：地貌边界/接缝、树根、工程净空、资产加载。
+- T1：environment/appearance及Scene生命周期、分段回收与重定位定向检查，三种子1200步。
+- 固定驾驶高度截图：A/B/C及800m出口；离屏图不代表人工驾驶。
+- 最终一次30–60秒1080p可见窗口sanity，真实Control驾驶，不瞬移/改物理；不跑300秒、不做性能优化，不把短采样写成Performance Gate。
+- 完成自动部分后提供固定起点试驾入口，用户确认味道后才进入HWY-02。
+
+## 前置接受与后续顺序
+
+VEH-02 accepted with known visual debt：交通车比Hero更方、更高、细节等级较低，后续Vehicle Polish再统一。本轮不继续磨三辆NPC，不插入第二Hero。
+
+HWY-01 → HWY-02 → FX-01 → PERF-02 → Visual v1 Gate → PHYS-01。
+
+## 实际交付
+
+- straight无限高速0–800m接入四个既有segment。0–240m开阔入口与桥梁预告，240–500m路堑/门架/隔音墙/跨线桥，500–800m打开远山海湾与城市轮廓。路灯40m、反光桩20m、排水篦24m；300m门架、410m跨线桥、248–496m连续隔音墙。
+- 10件工程模块和2件植被模块、原创颗粒贴图和天空色板，共15个运行资源文件（含来源清单），包内逐文件SHA-256一致。工程资产为离线BAM，尺寸化Python源可编辑，说明在 `art/expressway/README.md`。未新增框架或第三方下载资产。
+- 三条同向车道保留，白色虚线/右边线、左侧黄色边线、路肩接缝/减速纹/排水沟、铺装细微色差。护栏保留原实体形状以对应冻结碰撞。
+- 既有树干原网格/原位置/原变换保留，阔叶树冠在原树干顶端接合；林带保持原地面高度。左侧挖方/草土石带、右侧填方落向海湾；路堤只在护栏外。近树带也保留少量平缓区域，不以地貌盖住原碰撞树。
+- Scene仅新增14行装配，原segment卸载、回收、全局编号和origin_y更新路径保留。Simulation、物理、交通、车型目录/Hero、海岸、UI、Application和Session相对329e533无差异。
+- 直线高速共用新天空色板；道路和设施只有0–800m改变。远山/城市是背景，位置可超出800m，由第2号segment持有；不是把远处道路也铺成新样式。弯路/坡路保持原画面。
+
+## 验证结果
+
+Python均为 `../CoastalDrive/.venv/Scripts/python.exe`。
+
+| 项目 | 命令/结果 |
+|---|---|
+| 定向检查 | `tests/test_expressway.py` 最终5项通过：BAM三角面净空、树干逐顶点保留/树根、地貌边界、规则间距、卸载/重载/rebase、无物理副作用 |
+| T1 | `tools/validate.py T1 --area environment --area appearance --tests tests/test_scene_lifecycle.py tests/test_highway_segments.py tests/test_endless.py --output logs/HWY-01/T1`：Ruff、59项测试、0/17/23三种子各1200步通过 |
+| 固定视点 | `tools/environment/check_expressway.py --output logs/HWY-01/views-final`：8个1080p视点，覆盖8/170/285/390/510/665/790/830m；已查看道路、标牌、桥下和样板边界实景 |
+| 可见短程 | `tools/environment/check_expressway.py --drive --onscreen --seconds 55 --output logs/HWY-01/sanity`：55.005s，12车，驶过1245.01m，零碰撞；全程前台且未最小化；3秒后采52.016s/1649帧，31.70FPS、P95 39.02ms。全程仿真丢时0.35s，日志出现在启动阶段，未单独计量采样期丢时 |
+| 独立包 | `setup.py build_apps --build-base builds/0.8.3-hwy01` 完成；从系统TEMP目录启动 `coastaldrive.exe --smoke --track endless --seed 23 --output <本仓库logs/HWY-01/package-smoke>` 通过，12车，20次重开节点/任务/事件稳定 |
+| 冻结核对 | `docs/evidence/HWY-01/scope-and-assets.json` 记录源码冻结清单、资源哈希、包内一致性和exe哈希 |
+
+T0早期失败记录保留在日志：路灯挑臂被最初的整包包围盒断言误判，改成低处净空与跨越三角面检查；树带边缘起伏与公里牌占位确有偏差，已调整。首次固定截图未运行PBR更新任务，缺camera_world_position；留证工具补一帧正常任务更新。最初BAM漏导TextNode，改成离线字形几何；树冠悬空修为与保留树干相接。最终T1覆盖全部修改，不抹掉失败记录。
+
+## 体验入口与停止线
+
+- 固定起点直接试玩：仓库根目录 `试玩-HWY-01.cmd`。它调用现有虚拟环境，独立用户设置目录，种子23、straight、普通12车、自由驾驶；W/S/A/D、C视角、Esc暂停，物理起点保持原8m。
+- 独立包：`builds/0.8.3-hwy01/win_amd64/试玩-HWY-01.cmd`，菜单选择“无限高速 → 直线 → 自由驾驶”。保留旧包，没有覆盖旧版本。
+- 代表截图/短报告：`docs/evidence/HWY-01/`。Sanity的`passed`仅代表驶过窗口且有效采样，**不表示性能通过**。
+- 短测31.70FPS没有同场景、同12车基线可作归因，不能证明没有性能退化，更不能引用海岸8车历史50多FPS当作直接对照。本轮按冻结范围停止性能工作；没有300秒、没有性能优化、没有交通修改。
+- 800m出口会看到旧沥青/黄色虚线/测试树，这是样板边界，尚未扩展。远景建筑与山体保持轻量轮廓，近处草地、坡面和树冠仍需用户审美评审；不宣称高质量人工验收通过。
+- 构建沿用既有缺DLL依赖警告；本机独立包通过，不代替干净机器验证。窗口Icon路径警告仍在，未扩展修改UI。
+- 本地提交本任务成果，未推送；等待人工驾驶反馈，不自动进入HWY-02。
