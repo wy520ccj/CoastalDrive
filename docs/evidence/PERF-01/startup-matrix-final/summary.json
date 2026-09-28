@@ -1,0 +1,72 @@
+{
+  "kind": "startup",
+  "runs_per_case": 2,
+  "warmup_s": null,
+  "sample_s": null,
+  "cases": [
+    {
+      "label": "baseline",
+      "menu_median_s": 7.28525,
+      "drive_median_s": 2.1872,
+      "reports": [
+        "01-baseline/run-01/startup.json",
+        "01-baseline/run-02/startup.json"
+      ]
+    },
+    {
+      "label": "no_coastal_art",
+      "menu_median_s": 1.52965,
+      "drive_median_s": 0.37185,
+      "reports": [
+        "02-no_coastal_art/run-01/startup.json",
+        "02-no_coastal_art/run-02/startup.json"
+      ]
+    },
+    {
+      "label": "old_hero",
+      "menu_median_s": 6.93535,
+      "drive_median_s": 2.10245,
+      "reports": [
+        "03-old_hero/run-01/startup.json",
+        "03-old_hero/run-02/startup.json"
+      ]
+    },
+    {
+      "label": "no_reflection",
+      "menu_median_s": 6.98355,
+      "drive_median_s": 2.17055,
+      "reports": [
+        "04-no_reflection/run-01/startup.json",
+        "04-no_reflection/run-02/startup.json"
+      ]
+    },
+    {
+      "label": "no_water_shader",
+      "menu_median_s": 6.9112,
+      "drive_median_s": 2.1759500000000003,
+      "reports": [
+        "05-no_water_shader/run-01/startup.json",
+        "05-no_water_shader/run-02/startup.json"
+      ]
+    },
+    {
+      "label": "no_shadows",
+      "menu_median_s": 6.94825,
+      "drive_median_s": 2.18975,
+      "reports": [
+        "06-no_shadows/run-01/startup.json",
+        "06-no_shadows/run-02/startup.json"
+      ]
+    },
+    {
+      "label": "zero_traffic",
+      "menu_median_s": 7.14495,
+      "drive_median_s": 0.09584999999999999,
+      "reports": [
+        "07-zero_traffic/run-01/startup.json",
+        "07-zero_traffic/run-02/startup.json"
+      ]
+    }
+  ],
+  "method": "sequential fresh processes; one visual factor changed per case"
+}

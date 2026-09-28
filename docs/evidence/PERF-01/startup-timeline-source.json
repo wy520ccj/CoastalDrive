@@ -1,0 +1,99 @@
+{
+  "runs": 3,
+  "menu_usable_median_s": 7.3722,
+  "drive_transition_median_s": 2.3664,
+  "startup_stages": [
+    {
+      "stage": "environment_assets_loaded",
+      "median_s": 5.7528
+    },
+    {
+      "stage": "window_initialized",
+      "median_s": 0.4584
+    },
+    {
+      "stage": "first_rendered_frame",
+      "median_s": 0.4089
+    },
+    {
+      "stage": "primary_font_loaded",
+      "median_s": 0.1545
+    },
+    {
+      "stage": "ui_ready",
+      "median_s": 0.1156
+    },
+    {
+      "stage": "application_imported",
+      "median_s": 0.1118
+    },
+    {
+      "stage": "hero_mesh_loaded",
+      "median_s": 0.1051
+    },
+    {
+      "stage": "entrypoint_ready",
+      "median_s": 0.1026
+    },
+    {
+      "stage": "simulation_initialized",
+      "median_s": 0.0173
+    },
+    {
+      "stage": "display_font_loaded",
+      "median_s": 0.0114
+    },
+    {
+      "stage": "reflection_resource_loaded",
+      "median_s": 0.0032
+    },
+    {
+      "stage": "renderer_initialized",
+      "median_s": 0.001
+    },
+    {
+      "stage": "hero_vehicle_loaded",
+      "median_s": 0.0003
+    },
+    {
+      "stage": "traffic_vehicles_loaded",
+      "median_s": 0.0001
+    },
+    {
+      "stage": "environment_load_started",
+      "median_s": 0.0
+    },
+    {
+      "stage": "main_menu_usable",
+      "median_s": 0.0
+    }
+  ],
+  "drive_stages": [
+    {
+      "stage": "environment_assets_loaded",
+      "median_s": 2.0678
+    },
+    {
+      "stage": "first_drive_frame",
+      "median_s": 0.1868
+    },
+    {
+      "stage": "hero_mesh_loaded",
+      "median_s": 0.0986
+    },
+    {
+      "stage": "traffic_vehicles_loaded",
+      "median_s": 0.0309
+    },
+    {
+      "stage": "hero_vehicle_loaded",
+      "median_s": 0.0002
+    },
+    {
+      "stage": "reflection_resource_loaded",
+      "median_s": 0.0
+    }
+  ],
+  "scene_substages": {},
+  "note": "Adjacent mark intervals; scene substages are nested and must not be summed with their parent."
+}

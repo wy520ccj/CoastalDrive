@@ -1,0 +1,28 @@
+{
+  "kind": "runtime",
+  "runs_per_case": 1,
+  "onscreen": false,
+  "warmup_s": 30.0,
+  "sample_s": 300.0,
+  "cases": [
+    {
+      "label": "baseline",
+      "average_fps_median": 55.436675370224755,
+      "p95_ms_median": 22.039000000404485,
+      "p99_ms_median": 24.655100000018138,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 730,
+        "geom_nodes": 359,
+        "geoms": 1546,
+        "triangles": 312642
+      },
+      "reports": [
+        "01-baseline/run-01/report.json"
+      ]
+    }
+  ],
+  "method": "sequential fresh processes; one visual factor changed per case"
+}

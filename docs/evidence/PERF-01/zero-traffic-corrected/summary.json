@@ -1,0 +1,18 @@
+{
+  "kind": "startup",
+  "runs_per_case": 2,
+  "warmup_s": null,
+  "sample_s": null,
+  "cases": [
+    {
+      "label": "zero_traffic",
+      "menu_median_s": 7.2127,
+      "drive_median_s": 2.14395,
+      "reports": [
+        "01-zero_traffic/run-01/startup.json",
+        "01-zero_traffic/run-02/startup.json"
+      ]
+    }
+  ],
+  "method": "sequential fresh processes; one visual factor changed per case"
+}

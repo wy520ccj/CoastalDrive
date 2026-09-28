@@ -1,0 +1,111 @@
+{
+  "passed": true,
+  "onscreen": false,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "note": "30s warmup + 300s capture-free automated driving; not human acceptance.",
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "seed": 23,
+  "traffic_count": 8,
+  "update_timer_enabled": true,
+  "distance_m": 4714.295372601803,
+  "simulation_seconds": 327.56666666666666,
+  "wall_seconds": 330.0099261,
+  "average_fps": 55.436675370224755,
+  "p95_frame_ms": 22.039000000404485,
+  "p99_frame_ms": 24.655100000018138,
+  "dropped_simulation_seconds": 2.4166666666666665,
+  "sample_dropped_seconds": 0.0,
+  "sample_frames": 16631,
+  "sample_seconds": 299.9999528999997,
+  "sample_30s_buckets": [
+    {
+      "sample_start_s": 0,
+      "sample_end_s": 30,
+      "average_fps": 56.714269020849784,
+      "p95_frame_ms": 21.92049999939627,
+      "dropped_simulation_s": 0.0
+    },
+    {
+      "sample_start_s": 30,
+      "sample_end_s": 60,
+      "average_fps": 55.07999749486043,
+      "p95_frame_ms": 22.222499999770662,
+      "dropped_simulation_s": 0.0
+    },
+    {
+      "sample_start_s": 60,
+      "sample_end_s": 90,
+      "average_fps": 55.05561856309562,
+      "p95_frame_ms": 21.66860000033921,
+      "dropped_simulation_s": 0.0
+    },
+    {
+      "sample_start_s": 90,
+      "sample_end_s": 120,
+      "average_fps": 58.292898953360414,
+      "p95_frame_ms": 20.72240000052261,
+      "dropped_simulation_s": 0.0
+    },
+    {
+      "sample_start_s": 120,
+      "sample_end_s": 150,
+      "average_fps": 52.98241460676667,
+      "p95_frame_ms": 22.402300000067044,
+      "dropped_simulation_s": 0.0
+    },
+    {
+      "sample_start_s": 150,
+      "sample_end_s": 180,
+      "average_fps": 56.819382606591795,
+      "p95_frame_ms": 21.5914000000339,
+      "dropped_simulation_s": 0.0
+    },
+    {
+      "sample_start_s": 180,
+      "sample_end_s": 210,
+      "average_fps": 56.36897328505305,
+      "p95_frame_ms": 21.38840000043274,
+      "dropped_simulation_s": 0.0
+    },
+    {
+      "sample_start_s": 210,
+      "sample_end_s": 240,
+      "average_fps": 55.94426415904587,
+      "p95_frame_ms": 21.867899999961082,
+      "dropped_simulation_s": 0.0
+    },
+    {
+      "sample_start_s": 240,
+      "sample_end_s": 270,
+      "average_fps": 56.22382550961421,
+      "p95_frame_ms": 22.126699999716948,
+      "dropped_simulation_s": 0.0
+    },
+    {
+      "sample_start_s": 270,
+      "sample_end_s": 300,
+      "average_fps": 50.883567304323556,
+      "p95_frame_ms": 23.300400000152877,
+      "dropped_simulation_s": 0.0
+    }
+  ],
+  "scene_graph_totals": {
+    "nodes": 730,
+    "geom_nodes": 359,
+    "geoms": 1546,
+    "triangles": 312642
+  },
+  "geometry_capture_phase": "end of sample, after scene synchronization",
+  "geometry_note": "Whole scene counts; not visible triangles or GPU draw calls.",
+  "window_focus_samples": [],
+  "onscreen_sampling_valid": null,
+  "window_foreground_fraction": null,
+  "update_cpu_mean_ms": 4.866185033969928,
+  "update_cpu_p95_ms": 6.731699999363627,
+  "gpu_timing": "not measured",
+  "captures": [],
+  "performance_gate_passed": false
+}

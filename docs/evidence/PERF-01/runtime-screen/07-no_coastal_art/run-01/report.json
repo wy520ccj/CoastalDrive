@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "onscreen": true,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "note": "10s warmup + 30s capture-free automated driving; not human acceptance.",
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "seed": 23,
+  "traffic_count": 8,
+  "update_timer_enabled": true,
+  "distance_m": 530.1326635892492,
+  "simulation_seconds": 39.44166666666666,
+  "wall_seconds": 40.0113037,
+  "average_fps": 66.45627290558328,
+  "p95_frame_ms": 17.890399999487272,
+  "p99_frame_ms": 20.45749999979307,
+  "dropped_simulation_seconds": 0.55,
+  "sample_dropped_seconds": 0.0,
+  "sample_frames": 1994,
+  "sample_seconds": 30.004692000000432,
+  "scene_graph_totals": {
+    "nodes": 210,
+    "geom_nodes": 99,
+    "geoms": 861,
+    "triangles": 59228
+  },
+  "geometry_capture_phase": "end of sample, after eight traffic vehicles loaded",
+  "geometry_note": "Whole scene counts; not visible triangles or GPU draw calls.",
+  "update_cpu_mean_ms": 4.228356820447884,
+  "update_cpu_p95_ms": 5.728299999645969,
+  "gpu_timing": "not measured",
+  "captures": [],
+  "performance_gate_passed": null
+}

@@ -1,0 +1,100 @@
+{
+  "kind": "runtime",
+  "runs_per_case": 1,
+  "onscreen": false,
+  "warmup_s": 10.0,
+  "sample_s": 30.0,
+  "cases": [
+    {
+      "label": "baseline",
+      "average_fps_median": 58.83417426979758,
+      "p95_ms_median": 20.385499999974854,
+      "p99_ms_median": 23.037200000544544,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 730,
+        "geom_nodes": 359,
+        "geoms": 1546,
+        "triangles": 312642
+      },
+      "reports": [
+        "01-baseline/run-01/report.json"
+      ]
+    },
+    {
+      "label": "no_slice",
+      "average_fps_median": 60.61308454655989,
+      "p95_ms_median": 19.70459999938612,
+      "p99_ms_median": 22.298099999716214,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 492,
+        "geom_nodes": 240,
+        "geoms": 1109,
+        "triangles": 193426
+      },
+      "reports": [
+        "02-no_slice/run-01/report.json"
+      ]
+    },
+    {
+      "label": "no_props",
+      "average_fps_median": 61.712474148108114,
+      "p95_ms_median": 19.493400000101246,
+      "p99_ms_median": 22.80570000039006,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 450,
+        "geom_nodes": 219,
+        "geoms": 1302,
+        "triangles": 203234
+      },
+      "reports": [
+        "03-no_props/run-01/report.json"
+      ]
+    },
+    {
+      "label": "no_terrain",
+      "average_fps_median": 57.13290521743011,
+      "p95_ms_median": 21.08700000007957,
+      "p99_ms_median": 23.156299999754992,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 728,
+        "geom_nodes": 358,
+        "geoms": 1542,
+        "triangles": 287852
+      },
+      "reports": [
+        "04-no_terrain/run-01/report.json"
+      ]
+    },
+    {
+      "label": "baseline",
+      "average_fps_median": 56.048971743770934,
+      "p95_ms_median": 21.233200000096986,
+      "p99_ms_median": 23.76079999976355,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 730,
+        "geom_nodes": 359,
+        "geoms": 1546,
+        "triangles": 312642
+      },
+      "reports": [
+        "05-baseline/run-01/report.json"
+      ]
+    }
+  ],
+  "method": "sequential fresh processes; one visual factor changed per case"
+}

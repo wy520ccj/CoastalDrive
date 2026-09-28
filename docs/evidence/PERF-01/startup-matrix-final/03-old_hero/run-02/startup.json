@@ -1,0 +1,143 @@
+{
+  "timeline": [
+    {
+      "event": "process_start",
+      "since_process_start_s": 0.0,
+      "since_previous_s": null
+    },
+    {
+      "event": "entrypoint_ready",
+      "since_process_start_s": 0.0795,
+      "since_previous_s": 0.0795
+    },
+    {
+      "event": "application_imported",
+      "since_process_start_s": 0.1936,
+      "since_previous_s": 0.1141
+    },
+    {
+      "event": "window_initialized",
+      "since_process_start_s": 0.6212,
+      "since_previous_s": 0.4276
+    },
+    {
+      "event": "renderer_initialized",
+      "since_process_start_s": 0.622,
+      "since_previous_s": 0.0008
+    },
+    {
+      "event": "simulation_initialized",
+      "since_process_start_s": 0.6418,
+      "since_previous_s": 0.0198
+    },
+    {
+      "event": "environment_load_started",
+      "since_process_start_s": 0.6418,
+      "since_previous_s": 0.0
+    },
+    {
+      "event": "environment_assets_loaded",
+      "since_process_start_s": 6.2884,
+      "since_previous_s": 5.6466
+    },
+    {
+      "event": "hero_vehicle_loaded",
+      "since_process_start_s": 6.2998,
+      "since_previous_s": 0.0114
+    },
+    {
+      "event": "traffic_vehicles_loaded",
+      "since_process_start_s": 6.2999,
+      "since_previous_s": 0.0001
+    },
+    {
+      "event": "primary_font_loaded",
+      "since_process_start_s": 6.4754,
+      "since_previous_s": 0.1755
+    },
+    {
+      "event": "display_font_loaded",
+      "since_process_start_s": 6.4878,
+      "since_previous_s": 0.0124
+    },
+    {
+      "event": "ui_ready",
+      "since_process_start_s": 6.6049,
+      "since_previous_s": 0.1171
+    },
+    {
+      "event": "first_rendered_frame",
+      "since_process_start_s": 7.0763,
+      "since_previous_s": 0.4714
+    },
+    {
+      "event": "main_menu_usable",
+      "since_process_start_s": 7.0763,
+      "since_previous_s": 0.0
+    }
+  ],
+  "time_to_first_frame_s": 7.0763,
+  "time_to_menu_usable_s": 7.0763,
+  "clock": "time.perf_counter_ns; process origin supplied before Popen",
+  "case": "old_hero",
+  "scene_stage_seconds": {
+    "menu": {
+      "setup_lighting": 0.0001,
+      "style_water": 0.0234,
+      "map_meshes": 0.0,
+      "add_map_details": 0.056,
+      "add_start_grid": 0.001,
+      "build_terrain": 0.1705,
+      "add_environment": 1.3809,
+      "build_slice": 3.8052,
+      "make_sky": 0.0503
+    },
+    "drive": {
+      "setup_lighting": 0.0001,
+      "style_water": 0.0034,
+      "map_meshes": 0.0,
+      "add_map_details": 0.0504,
+      "add_start_grid": 0.0009,
+      "build_terrain": 0.1575,
+      "add_environment": 1.4094,
+      "build_slice": 0.1523,
+      "make_sky": 0.0073
+    }
+  },
+  "startup_traffic_count": 0,
+  "drive_transition": {
+    "timeline": [
+      {
+        "event": "drive_transition_started",
+        "since_process_start_s": null,
+        "since_previous_s": null
+      },
+      {
+        "event": "environment_assets_loaded",
+        "since_process_start_s": null,
+        "since_previous_s": 1.9663
+      },
+      {
+        "event": "hero_vehicle_loaded",
+        "since_process_start_s": null,
+        "since_previous_s": 0.0015
+      },
+      {
+        "event": "traffic_vehicles_loaded",
+        "since_process_start_s": null,
+        "since_previous_s": 0.0195
+      },
+      {
+        "event": "first_drive_frame",
+        "since_process_start_s": null,
+        "since_previous_s": 0.1186
+      }
+    ],
+    "time_to_first_frame_s": null,
+    "time_to_menu_usable_s": null,
+    "clock": "time.perf_counter_ns; relative transition"
+  },
+  "drive_transition_s": 2.1059,
+  "drive_traffic_count": 8,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2"
+}
