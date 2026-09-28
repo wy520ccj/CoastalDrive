@@ -256,6 +256,7 @@ class Scene:
         self.endless_bush_template = None
         self.endless_templates = None
         self.ocean = None
+        self.checkpoint_nodes = []
         self.track_points = [Vec3(point.x, point.y, point.z) for point in MAP_POINTS]
         self.setup_lighting()
         self.setup_scene()
@@ -640,12 +641,11 @@ class Scene:
     def add_environment(self):
         for number, (prop, z) in enumerate(self.base.session.simulation.props):
             if prop.kind.startswith("checkpoint"):
-                if self.base.session.mode.value == "free_drive":
-                    continue
                 half, height = collision_box(prop)
                 node = make_box(prop.kind, half, Vec4(0.15, 0.76, 0.86, 1))
                 node.setPos(prop.x, prop.y, z + height)
                 node.setH(prop.heading)
+                self.checkpoint_nodes.append(node)
             else:
                 filename = "nature/rock_largeA.glb"
                 if prop.kind == "tree":
@@ -662,6 +662,11 @@ class Scene:
                 node.setPos(prop.x, prop.y, z)
                 node.setH(prop.heading)
             node.reparentTo(self.render)
+        self.set_checkpoint_visible(self.base.session.mode.value != "free_drive")
+
+    def set_checkpoint_visible(self, visible):
+        for node in self.checkpoint_nodes:
+            node.show() if visible else node.hide()
 
     def load_model(self, filename: str) -> NodePath:
         path = resource_root() / "assets" / "game" / filename

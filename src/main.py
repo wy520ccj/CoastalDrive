@@ -64,7 +64,10 @@ def main():
             startup.mark("main_menu_usable")
             report = startup.finish()
             report["scenario"] = "visible coastal main menu, then 8-car free drive"
-            report["startup_traffic_count"] = len(app.scene.traffic)
+            report["startup_scene_created"] = app.scene is not None
+            report["startup_traffic_count"] = 0
+            if report["startup_scene_created"]:
+                raise RuntimeError("主菜单启动时不应创建 Gameplay Scene")
             report["resolution"] = [app.win.getXSize(), app.win.getYSize()]
             report["renderer"] = app.win.getGsg().getDriverRenderer()
             from panda3d.core import Filename

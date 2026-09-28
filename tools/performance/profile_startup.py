@@ -70,9 +70,6 @@ def main():
         ("Python entry", "entrypoint_ready"),
         ("Panda3D / window", "window_initialized"),
         ("Renderer / simplepbr", "renderer_initialized"),
-        ("Environment assets", "environment_assets_loaded"),
-        ("Hero mesh", "hero_mesh_loaded"),
-        ("Reflection resource", "reflection_resource_loaded"),
         ("Primary font", "primary_font_loaded"),
         ("Display font / UI assets", "display_font_loaded"),
         ("UI completion", "ui_ready"),
@@ -83,12 +80,7 @@ def main():
             for report in reports
         )
         print(f"  {label:<27} {duration:>7.3f} s")
-    traffic_load = statistics.median(
-        next(item["since_previous_s"] for item in report["drive_transition"]["timeline"]
-             if item["event"] == "traffic_vehicles_loaded")
-        for report in reports
-    )
-    print(f"  {'Traffic vehicles (drive)':<27} {traffic_load:>7.3f} s")
+    print("  Gameplay Scene at menu:      none")
     print(f"  {'First rendered frame':<27} {summary['first_frame_median_s']:>7.3f} s from process")
     print(f"  {'Main menu usable':<27} {summary['menu_usable_median_s']:>7.3f} s from process")
     print(json.dumps(summary, indent=2))

@@ -70,9 +70,7 @@ class CoastalDrive(ShowBase):
             (i for i, skin in enumerate(SKINS) if skin.id == self.appearance.skin_id), 0
         )
         self.vehicle_model_id = self.appearance.model_id
-        if startup_trace is not None:
-            startup_trace.mark("environment_load_started")
-        self.scene = Scene(self)
+        self.scene = None
         self.soundscape = (
             None
             if smoke
@@ -80,9 +78,8 @@ class CoastalDrive(ShowBase):
                 self, self.audio_settings.master_volume, self.audio_settings.effects_volume
             )
         )
-        self._scene_track = self.session.simulation.track
-        self._scene_mode = self.session.mode
-        self._scene_shape = self.session.road_shape
+        self._scene_track = None
+        self._scene_shape = None
         self.highway_menu = False
         self.audio_settings_page = False
         self.highway_shape = "hills"
@@ -102,15 +99,43 @@ class CoastalDrive(ShowBase):
         self._shown_phase = None
         self.setup_controls()
         self.setup_hud()
+        self.loading = DirectFrame(
+            parent=self.aspect2d, frameColor=(1, 1, 1, 0.94),
+            frameSize=(-0.62, 0.62, -0.13, 0.13), relief=DGG.FLAT,
+        )
+        self.loading.setTransparency(TransparencyAttrib.MAlpha)
+        self.loading_text = OnscreenText(
+            parent=self.loading, text="", font=self.ui_font, fg=theme.INK,
+            pos=(0, -0.026), scale=0.075, mayChange=True,
+        )
+        self.loading.hide()
         if startup_trace is not None:
             startup_trace.mark("ui_ready")
         self.taskMgr.add(self.update, "drive-update")
         if smoke:
             self.session.start(countdown=False)
+            self.sync_scene()
             self.session.set_controller(ConstantController(Control(throttle=1)))
             self.taskMgr.doMethodLater(1.2, self.finish_smoke, "finish-smoke")
 
     def start_game(self, *, mode, track="coastal"):
+        if not self.loading.isHidden():
+            return
+        if self.smoke or self.startup_trace is not None:
+            self._enter_game(mode, track)
+            return
+        self.loading_text.setText("正在加载滨海公路…" if track == "coastal" else "正在加载无限高速…")
+        self.loading.show()
+        self.taskMgr.add(lambda task: self._load_game(task, mode, track), "load-game")
+
+    def _load_game(self, task, mode, track):
+        if task.frame == 0:
+            return task.cont
+        self._enter_game(mode, track)
+        self.loading.hide()
+        return task.done
+
+    def _enter_game(self, mode, track):
         self.driving_keys_held.clear()
         if track == "endless":
             self.session.traffic_density = self.highway_density_keys[self.highway_density_index]
@@ -121,19 +146,27 @@ class CoastalDrive(ShowBase):
 
     def sync_scene(self):
         track = self.session.simulation.track
-        mode = self.session.mode
         if (
-            track != self._scene_track
-            or mode != self._scene_mode
+            self.scene is None
+            or track != self._scene_track
             or self.session.road_shape != self._scene_shape
             or len(self.scene.traffic) != len(self.session.current.traffic)
         ):
-            self.scene.close()
+            if self.scene is not None:
+                self.scene.close()
             self.scene = Scene(self)
             self._scene_track = track
-            self._scene_mode = mode
             self._scene_shape = self.session.road_shape
             self.chase_camera.position = None
+        self.scene.set_checkpoint_visible(self.session.mode == GameMode.TIME_TRIAL)
+
+    def back_to_menu(self):
+        self.session.menu()
+        if self.scene is not None:
+            self.scene.close()
+            self.scene = None
+            self._scene_track = None
+            self._scene_shape = None
 
     def setup_controls(self):
         for key in (
@@ -158,6 +191,8 @@ class CoastalDrive(ShowBase):
         self.accept("f3", self.toggle_diagnostics)
 
     def key_down(self, key):
+        if not self.loading.isHidden():
+            return
         if (self.session.phase == Phase.MENU and self.garage is None
                 and not self.audio_settings_page and not self.highway_menu
                 and key in ("arrow_up", "arrow_down", "w", "s", "enter")):
@@ -398,7 +433,8 @@ class CoastalDrive(ShowBase):
         self.garage_skin_index = self.skin_index
         self._diagnostics_was_visible = not self.diagnostics.isHidden()
         self.diagnostics.hide()
-        self.scene.render.hide()
+        if self.scene is not None:
+            self.scene.render.hide()
         self.help_frame.hide()
         self.panel.setPos(0.72, 0, 0)
         self.panel_note.setPos(0, 0.35)
@@ -430,11 +466,6 @@ class CoastalDrive(ShowBase):
         self.vehicle_model_id = model_id
         self.skin_index = self.garage_skin_index
         self.close_garage()
-        self.scene.close()
-        self.scene = Scene(self)
-        self._scene_track = self.session.simulation.track
-        self._scene_mode = self.session.mode
-        self._scene_shape = self.session.road_shape
 
     def cancel_garage(self):
         self.close_garage()
@@ -444,7 +475,8 @@ class CoastalDrive(ShowBase):
             return
         self.garage.close()
         self.garage = None
-        self.scene.render.show()
+        if self.scene is not None:
+            self.scene.render.show()
         self.setBackgroundColor(0.55, 0.73, 0.82)
         self.help_frame.show()
         if self._diagnostics_was_visible:
@@ -584,7 +616,7 @@ class CoastalDrive(ShowBase):
                 ("继续驾驶  Enter", self.session.resume),
                 ("重新开始", self.session.start),
                 ("结束驾驶", self.session.finish),
-                ("返回主菜单", self.session.menu),
+                ("返回主菜单", self.back_to_menu),
             ]
         elif phase == Phase.RESULTS:
             if self.session.simulation.track == "endless":
@@ -635,7 +667,7 @@ class CoastalDrive(ShowBase):
                         mode=self.session.mode, track=self.session.simulation.track
                     ),
                 ),
-                ("返回主菜单", self.session.menu),
+                ("返回主菜单", self.back_to_menu),
                 ("退出", self.userExit),
             ]
         else:
@@ -703,6 +735,11 @@ class CoastalDrive(ShowBase):
     def update(self, task):
         self.main_menu.resize(self.getAspectRatio())
         self.hud.resize(self.getAspectRatio())
+        if self.session.phase == Phase.MENU and self.scene is not None:
+            self.scene.close()
+            self.scene = None
+            self._scene_track = None
+            self._scene_shape = None
         if self.garage is not None:
             if self.soundscape is not None:
                 self.soundscape.update(self.session.current, self.session.phase, None,
@@ -716,6 +753,9 @@ class CoastalDrive(ShowBase):
         state = self.session.frame(self.clock.getDt())
         if self.soundscape is not None:
             self.soundscape.update(state, self.session.phase, None, self.clock.getDt())
+        if self.session.phase == Phase.MENU:
+            self.refresh_panel()
+            return task.cont
         if self.session.stepper.dropped_time > dropped:
             logging.getLogger(__name__).warning(
                 "Simulation catch-up dropped %.6f seconds",
@@ -807,13 +847,17 @@ class CoastalDrive(ShowBase):
             self.close_garage()
         self.taskMgr.remove("drive-update")
         self.taskMgr.remove("finish-smoke")
+        self.taskMgr.remove("load-game")
         self.ignoreAll()
         self.session.close()
         if self.soundscape is not None:
             self.soundscape.close()
-        self.scene.close()
+        if self.scene is not None:
+            self.scene.close()
+            self.scene = None
         self.main_menu.destroy()
         self.hud.destroy()
+        self.loading.destroy()
         for widget in (
             self.diagnostics,
             self.result_icon,
