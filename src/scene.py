@@ -363,10 +363,14 @@ class Scene:
             self.traffic.append(car)
             self.traffic_wheels.append(wheels)
             lights = []
+            rear = {"traffic-compact": -1.79, "traffic-sedan": -2.085,
+                    "traffic-wagon": -2.06}[model_id]
+            width = {"traffic-compact": 0.85, "traffic-sedan": 0.915,
+                     "traffic-wagon": 0.95}[model_id]
             for side in (-1, 1):
                 lamp = make_box("turn-signal", (0.12, 0.025, 0.055), Vec4(1, 0.55, 0.02, 1))
                 lamp.reparentTo(car)
-                lamp.setPos(side * 0.58, -2.07, 0.35)
+                lamp.setPos(side * width * 0.72, rear - 0.025, 0.35)
                 lamp.setLightOff()
                 lamp.hide()
                 lights.append(lamp)

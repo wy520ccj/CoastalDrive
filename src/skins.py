@@ -27,7 +27,7 @@ SKINS = (
     Skin("white", "珍珠白", (0.86, 0.89, 0.91)),
 )
 
-# Both bodies fit the existing 0.95 m by 2.15 m traffic-clearance half extents.
+# 车库两车型保持既有设置 ID；交通车使用独立的轻量 GLB。
 MODELS = (
     VehicleModel("sports", "经典双门", "player-car.bam", (1.4, 1.65, 1.3)),
     VehicleModel("sedan", "经典轿车", "traffic-sedan.bam", (0.91 / 0.75, 2.145 / 1.3, 1.3)),
@@ -35,7 +35,13 @@ MODELS = (
 
 
 def traffic_models(seed, count):
-    return tuple(random.Random(seed + 141).choices(("sedan", "sports"), k=count))
+    rng = random.Random(seed + 141)
+    models = []
+    while len(models) < count:
+        group = ["traffic-compact", "traffic-sedan", "traffic-wagon"]
+        rng.shuffle(group)
+        models.extend(group)
+    return tuple(models[:count])
 
 
 def traffic_skins(seed, count):

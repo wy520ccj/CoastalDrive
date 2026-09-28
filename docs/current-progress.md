@@ -4,6 +4,8 @@
 
 ## 当前阶段
 
+- [VEH-02](tasks/VEH-02.md) 三款轻量原创交通车（compact/hatch、sedan、SUV/wagon）已替换旧 NPC 显示资产；Blender 源文件、GLB、五色车漆和 Snapshot 四轮装配完成。定向 22 项、滨海短程窗口和高速离屏装配通过；最终滨海实景与三车对比图已留证。物理、交通、Hero、UI、环境及 Scene 生命周期未改。人工视觉评审待确认；不据短样本判断性能 Gate，下一步为 HWY-01。
+
 - [SCENE-01](tasks/SCENE-01.md) 已将 Gameplay Scene 从程序启动移至用户选定模式后创建；菜单前不建 Scene，返回菜单释放 Scene，相同视觉配置重赛复用。首次进入前渲染一帧加载提示。三次可见窗口启动菜单首帧中位数 1.140 秒，首次八车滨海切换中位数 6.017 秒；短程窗口驾驶和定向/T1 自动验证通过，人工体验待确认。本轮到此停止性能相关工作。
 
 - [PERF-01](tasks/PERF-01.md) 已完成诊断收尾：启动主要时间位于 coastal environment 创建（菜单场景 `build_slice` 中位数 3.626 s、既有 props `add_environment` 1.359 s；驾驶切换重建 props 1.375 s）；运行期最强单因素信号为交通更新/仿真链、阴影、整组海岸视觉。约8 FPS最小化窗口样本无效；PERF-00 47.62 FPS缺少窗口状态，保留历史且根因未确认。无性能优化、无 `src/` 行为修改；可见窗口300秒复测未执行，性能 Gate 未确认。原始报告和结论见 `docs/evidence/PERF-01/`。

@@ -99,6 +99,82 @@ def test_sedan_and_npc_sports_keep_legacy_body_and_wheel_geometry():
             ]
 
 
+def test_traffic_family_fits_existing_collision_and_snapshot_wheels():
+    from skins import SKINS, apply_skin, traffic_models, traffic_skins
+
+    models = traffic_models(23, 8)
+    assert set(models) == {"traffic-compact", "traffic-sedan", "traffic-wagon"}
+    assert models == traffic_models(23, 8)
+    assert len(set(traffic_skins(23, 8))) >= 3
+    assert set(traffic_skins(23, 100)) == set(range(len(SKINS)))
+    manifest = json.loads(
+        (resource_root() / "assets/game/vehicles/traffic-family-manifest.json").read_text()
+    )
+    assert len(manifest["vehicles"]) == 3
+    parent = NodePath("traffic-family")
+    for item in manifest["vehicles"]:
+        assert item["triangles"] <= item["budget"]
+        body, wheels = load_vehicle(parent, f"traffic-{item['model']}", hero=False)
+        assert not body.find(f"**/traffic-{item['model']}-v1").isEmpty()
+        assert len(body.findAllMatches("**/paint")) == 1
+        for index in range(len(SKINS)):
+            apply_skin(body.getChild(0), index)
+            assert body.find("**/paint").getMaterial().getName() == "vehicle-paint"
+        assert tuple(w.getName() for w in wheels) == WHEEL_NAMES
+        for vertex in vertices_relative_to(body):
+            assert abs(vertex.x) <= CAR.collision_half_width + 1e-3
+            assert abs(vertex.y) <= CAR.collision_half_length + 1e-3
+        for wheel in wheels:
+            hub = wheel.getPos()
+            assert abs(hub.x) == pytest.approx(CAR.track_width / 2)
+            assert abs(hub.y) == pytest.approx(CAR.wheelbase / 2)
+            assert hub.z == pytest.approx(-0.12)
+            points = tuple(vertices_relative_to(wheel))
+            assert max(math.hypot(point.y, point.z) for point in points) == pytest.approx(
+                CAR.wheel_radius, abs=0.005
+            )
+            for steering in (-CAR.steering_degrees, 0, CAR.steering_degrees):
+                angle = math.radians(steering if hub.y > 0 else 0)
+                for roll in range(0, 360, 30):
+                    rotation = math.radians(roll)
+                    for point in points:
+                        spun_y = point.y * math.cos(rotation) - point.z * math.sin(rotation)
+                        x = hub.x + point.x * math.cos(angle) - spun_y * math.sin(angle)
+                        y = hub.y + point.x * math.sin(angle) + spun_y * math.cos(angle)
+                        assert abs(x) <= CAR.collision_half_width
+                        assert abs(y) <= CAR.collision_half_length
+
+
+def test_traffic_family_wheels_follow_frozen_snapshot():
+    from skins import traffic_models
+
+    simulation = Simulation(seed=23, track="coastal", traffic_count=3)
+    scene = Scene.__new__(Scene)
+    scene.render = NodePath("traffic-wheel-sync")
+    scene.sky = scene.render.attachNewNode("sky")
+    scene.ocean = scene.render.attachNewNode("ocean")
+    scene.base = SimpleNamespace(session=SimpleNamespace(simulation=simulation))
+    scene.player, scene.wheels = load_vehicle(scene.render, "sports")
+    scene.traffic = []
+    scene.traffic_wheels = []
+    scene.traffic_signals = [[], [], []]
+    for model in traffic_models(23, 3):
+        car, wheels = load_vehicle(scene.render, model, hero=False)
+        scene.traffic.append(car)
+        scene.traffic_wheels.append(wheels)
+    try:
+        state = simulation.snapshot()
+        scene.apply(state)
+        for wheels, car in zip(scene.traffic_wheels, state.traffic):
+            for node, wheel in zip(wheels, car.wheels):
+                assert tuple(node.getPos()) == pytest.approx(wheel.position)
+                assert abs(node.getQuat().dot(Quat(*wheel.orientation))) == pytest.approx(
+                    1, abs=1e-5
+                )
+    finally:
+        simulation.close()
+
+
 def test_scene_applies_actual_bullet_wheel_positions_and_quaternions():
     simulation = Simulation(track="test", traffic_count=0)
     scene = Scene.__new__(Scene)

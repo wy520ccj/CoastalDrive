@@ -16,6 +16,8 @@ WHEEL_NAMES = ("wheel-front-left", "wheel-front-right", "wheel-back-left", "whee
 def load_vehicle(parent, model_id, *, hero=True, trace=None):
     if model_id == "sports" and hero:
         return load_classic_coupe(parent, trace=trace)
+    if model_id.startswith("traffic-"):
+        return load_traffic_vehicle(parent, model_id)
     definition = next(model for model in MODELS if model.id == model_id)
     path = resource_root() / "assets/game" / definition.filename
     root = parent.attachNewNode(definition.id)
@@ -37,6 +39,23 @@ def load_vehicle(parent, model_id, *, hero=True, trace=None):
         wheel.removeNode()
     body.setScale(*definition.body_scale)
     body.setZ(-0.48)
+    return root, wheels
+
+
+def load_traffic_vehicle(parent, model_id):
+    """交通车沿用 Snapshot 的四个世界轮姿，车身网格保持米制原点。"""
+    kind = model_id.removeprefix("traffic-")
+    path = resource_root() / f"assets/game/vehicles/traffic_{kind}_v1.glb"
+    root = parent.attachNewNode(model_id)
+    body = NodePath(gltf.load_model(Filename.fromOsSpecific(str(path))))
+    body.reparentTo(root)
+    wheels = []
+    for name in WHEEL_NAMES:
+        wheel = body.find(f"**/{name}")
+        if wheel.isEmpty():
+            raise ValueError(f"交通车GLB缺少轮根：{model_id}/{name}")
+        wheel.reparentTo(parent)
+        wheels.append(wheel)
     return root, wheels
 
 

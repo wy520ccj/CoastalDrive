@@ -1,0 +1,94 @@
+{
+  "source": "original editable CoastalDrive Blender geometry",
+  "units": "metres; +Y forward; Z up",
+  "blender": "5.2.2 LTS",
+  "vehicles": [
+    {
+      "model": "compact",
+      "triangles": 4234,
+      "budget": 8500,
+      "body_length_m": 3.58,
+      "body_width_m": 1.7,
+      "wheel_centres_m": [
+        [
+          -0.84,
+          1.1,
+          -0.12
+        ],
+        [
+          0.84,
+          1.1,
+          -0.12
+        ],
+        [
+          -0.84,
+          -1.1,
+          -0.12
+        ],
+        [
+          0.84,
+          -1.1,
+          -0.12
+        ]
+      ]
+    },
+    {
+      "model": "sedan",
+      "triangles": 4138,
+      "budget": 8500,
+      "body_length_m": 4.17,
+      "body_width_m": 1.83,
+      "wheel_centres_m": [
+        [
+          -0.84,
+          1.1,
+          -0.12
+        ],
+        [
+          0.84,
+          1.1,
+          -0.12
+        ],
+        [
+          -0.84,
+          -1.1,
+          -0.12
+        ],
+        [
+          0.84,
+          -1.1,
+          -0.12
+        ]
+      ]
+    },
+    {
+      "model": "wagon",
+      "triangles": 4354,
+      "budget": 8500,
+      "body_length_m": 4.12,
+      "body_width_m": 1.9,
+      "wheel_centres_m": [
+        [
+          -0.84,
+          1.1,
+          -0.12
+        ],
+        [
+          0.84,
+          1.1,
+          -0.12
+        ],
+        [
+          -0.84,
+          -1.1,
+          -0.12
+        ],
+        [
+          0.84,
+          -1.1,
+          -0.12
+        ]
+      ]
+    }
+  ]
+}
