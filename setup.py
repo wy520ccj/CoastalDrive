@@ -25,6 +25,8 @@ setup(
                 "assets/game/**/*.json",
                 "assets/game/environment/shaders/*.vert",
                 "assets/game/environment/shaders/*.frag",
+                "assets/game/expressway/shaders/*.frag",
+                "assets/game/expressway/shaders/*.vert",
                 "assets/game/**/License.txt",
             ],
             "plugins": ["pandagl", "p3openal_audio"],

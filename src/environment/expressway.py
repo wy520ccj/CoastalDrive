@@ -3,7 +3,16 @@
 import math
 from itertools import pairwise
 
-from panda3d.core import Filename, MaterialAttrib, Texture, Vec4
+import gltf
+from panda3d.core import (
+    Filename,
+    GeomVertexWriter,
+    MaterialAttrib,
+    NodePath,
+    Texture,
+    Vec3,
+    Vec4,
+)
 
 from highway_segments import SEGMENT_LENGTH, segment, surface_meshes
 from paths import resource_root
@@ -13,10 +22,29 @@ END = 800
 KIT_NAMES = ("lamp", "reflector", "gantry", "advance-sign", "soundwall",
              "crash-cushion", "drain-grate", "kilometer", "equipment", "overpass",
              "broadleaf-crown", "shrub-bank")
+LANDSCAPE_NAMES = ("broadleaf-a", "broadleaf-b", "fine-crown", "fine-shrubs", "strata-shelf")
 GRASS = (0.25, 0.34, 0.13, 1)
 ROCK = (0.49, 0.46, 0.34, 1)
 SOIL = (0.36, 0.30, 0.18, 1)
 WHITE = (0.88, 0.87, 0.75, 1)
+
+
+def stabilize_sun(sun_path, position, origin_y):
+    """正交阴影按世界空间的光平面纹素对齐，消除随车移动产生的采样游走。"""
+    # 先用固定向量定朝向，避免大坐标相减让旋转矩阵每帧产生舍入扰动。
+    offset = Vec3(-55, -75, 125)
+    sun_path.setPos(offset)
+    sun_path.lookAt(0, 0, 0)
+    sun_path.setPos(position + offset)
+    rotation = sun_path.getQuat()
+    inverse = rotation.conjugate()
+    light_position = inverse.xform(sun_path.getPos() + Vec3(0, origin_y, 0))
+    lens = sun_path.node().getLens()
+    resolution = sun_path.node().getShadowBufferSize()
+    for axis, step in ((0, lens.getFilmSize().x / resolution.x),
+                       (2, lens.getFilmSize().y / resolution.y)):
+        light_position[axis] = round(light_position[axis] / step) * step
+    sun_path.setPos(rotation.xform(light_position) - Vec3(0, origin_y, 0))
 
 
 def includes(index, curve):
@@ -39,6 +67,16 @@ def load_kit(loader, parent, old_trees):
     kit["aggregate"].setMinfilter(Texture.FTLinearMipmapLinear)
     kit["aggregate"].setAnisotropicDegree(8)
     kit["sky"] = loader.loadTexture(Filename.fromOsSpecific(str(folder / "expressway-sky.png")))
+    from environment.expressway_materials import surface_textures, terrain_shader
+
+    kit.update(surface_textures())
+    kit["terrain-shader"] = terrain_shader()
+    for name in LANDSCAPE_NAMES:
+        path = folder / f"{name}.glb"
+        if not path.is_file():
+            raise FileNotFoundError(f"缺少高速Blender资产：{path}")
+        kit[name] = NodePath(gltf.load_model(Filename.fromOsSpecific(str(path))))
+        kit[name].reparentTo(parent)
     for variant, source in enumerate(old_trees):
         # 深拷贝几何节点后只移除叶片，保留碰撞树干的网格和导入变换。
         tree = source.copyTo(parent)
@@ -49,7 +87,7 @@ def load_kit(loader, parent, old_trees):
                 if mat.getName() == "leafsDark":
                     node.removeGeom(i)
         _, trunk_top = tree.getTightBounds()
-        crown = kit["broadleaf-crown"].copyTo(tree)
+        crown = kit["fine-crown"].copyTo(tree)
         crown.setScale(0.58, 0.62, 0.65)
         crown_low, _ = crown.getTightBounds(tree)
         crown.setZ(trunk_top.z - 0.12 - crown_low.z)
@@ -75,10 +113,53 @@ def terrain_height(x, s):
         hill = smooth(35, 72, d) * (9 + 18 * cut)
         hill += smooth(72, 120, d) * (8 + 5 * math.sin(s / 83))
         hill *= 0.85 + 0.15 * math.sin(s / 39)
+        hill += smooth(35, 45, d) * (1 - smooth(108, 120, d)) * (
+            0.65 * math.sin(s * .15 + d * .31) + 0.35 * math.sin(s * .31 - d * .42))
         return -0.32 + envelope * hill
     # 湾侧填方下放至海面；工程段的桥台与道路平顺相接。
-    descent = smooth(36, 95, d) * 3.9
+    shoreline_edge = 73 + 5 * math.sin(s * 0.027) + 3 * math.sin(s * 0.067)
+    descent = smooth(36, shoreline_edge, d) * 4.5
     return -0.32 - envelope * descent
+
+
+def terrain_color(x, s):
+    """草土石用连续权重过渡；低频斑块提供大尺度色差，细节交给纹理。"""
+    def mix(a, b, t):
+        return tuple(u * (1 - t) + v * t for u, v in zip(a, b))
+
+    variation = (0.5 + 0.20 * math.sin(x * 0.27 + s * 0.17)
+                 + 0.17 * math.sin(x * 0.61 - s * 0.31))
+    grass = mix((0.12, 0.22, 0.042), (0.32, 0.39, 0.10), variation)
+    slope = abs(terrain_height(x + 0.25, s) - terrain_height(x - 0.25, s)) * 2
+    rock_weight = smooth(0.30, 0.69, slope) if x < 0 else 0
+    strata = 0.5 + 0.5 * math.sin(terrain_height(x, s) * 2.1 + math.sin(s * 0.035))
+    rock = mix((0.34, 0.30, 0.22), (0.61, 0.53, 0.36), strata)
+    bare = (1 - smooth(9, 14.5, abs(x))) * 0.8
+    color = mix(grass, (0.38, 0.30, 0.16), bare)
+    color = mix(color, rock, rock_weight)
+    if x > 0:
+        height = terrain_height(x, s)
+        shore = 1 - smooth(-2.4, -1.2, height)
+        color = mix(color, (0.53, 0.45, 0.29), shore)
+        wet = 1 - smooth(-3.4, -2.7, height)
+        color = mix(color, (0.18, 0.24, 0.18), wet)
+    return (*color, 1)
+
+
+def terrain_columns(side):
+    cross = (8.5, 11, 14, 17, 19, 20, 23, 26, 29, 32, 35, *range(38, 120, 3), 120)
+    return sorted(side * x for x in cross)
+
+
+def support_height(x, s):
+    """从实际规则网格三角面取接地点，避免解析坡面与低模三角面之间的缝隙。"""
+    columns = terrain_columns(-1 if x < 0 else 1)
+    left, right = next((a, b) for a, b in pairwise(columns) if a <= x <= b)
+    y0 = math.floor(s / 4) * 4
+    u, v = (x - left) / (right - left), (s - y0) / 4
+    a, b, c, d = (terrain_height(px, py) for px, py in
+                  ((left, y0), (right, y0), (right, y0 + 4), (left, y0 + 4)))
+    return a * (1 - u) + b * (u - v) + c * v if u >= v else a * (1 - v) + c * u + d * (v - u)
 
 
 def placements(index):
@@ -127,33 +208,98 @@ def build_terrain(root, index, kit):
     from scene import make_mesh
 
     start = index * SEGMENT_LENGTH
-    # 分层而非整块绿色平面；全局高度使相邻segment共享完全一致的边界。
-    cross = (8.5, 11, 19, 20, 35, 44, 55, 72, 95, 120)
+    # 地貌与连续色权重使用同一张网格，不再用硬边分色的长条带。
     for side in (-1, 1):
-        for band, (a, b) in enumerate(pairwise(cross)):
-            vertices, faces = [], []
-            left, right = sorted((side * a, side * b))
-            for local_s in range(0, 201, 10):
-                for x in (left, right):
-                    vertices.append((x, local_s, terrain_height(x, start + local_s)))
-            for row in range(20):
-                j = row * 2
-                faces.extend(((j, j + 1, j + 3), (j, j + 3, j + 2)))
-            cut = side < 0 and 35 <= a < 72 and index in (1, 2)
-            color = ROCK if cut else SOIL if band == 0 or (side > 0 and band > 5) else GRASS
-            node = make_mesh("cut-rock" if cut else "embankment", vertices, faces, Vec4(*color))
-            node.setTexture(kit["aggregate"])
-            node.reparentTo(root)
-    # 连续灌木群布置在林带边缘，不在坡面上随机撒独立树。
-    for center_s, center_x in ((65, -16), (135, 18), (195, -37), (260, -38),
-                               (350, -37), (465, -38), (575, -37), (645, -17), (720, 20)):
-        for n, (ds, dx) in enumerate(((-9, 2), (-4, -1), (0, 1), (5, -2), (10, 0))):
-            s, x = center_s + ds, center_x + dx
+        vertices, faces, colors, normals = [], [], [], []
+        columns = terrain_columns(side)
+        for local_s in range(0, 201, 4):
+            s = start + local_s
+            for x in columns:
+                vertices.append((x, local_s, terrain_height(x, s)))
+                colors.append(terrain_color(x, s))
+                dx = (terrain_height(x + 0.1, s) - terrain_height(x - 0.1, s)) / 0.2
+                dy = (terrain_height(x, s + 0.1) - terrain_height(x, s - 0.1)) / 0.2
+                normals.append(Vec3(-dx, -dy, 1).normalized())
+        width = len(columns)
+        for row in range(50):
+            for col in range(width - 1):
+                j = row * width + col
+                faces.extend(((j, j + 1, j + width + 1), (j, j + width + 1, j + width)))
+        node = make_mesh("expressway-landscape", vertices, faces, Vec4(1))
+        data = node.node().modifyGeom(0).modifyVertexData()
+        color_writer = GeomVertexWriter(data, "color")
+        normal_writer = GeomVertexWriter(data, "normal")
+        uv_writer = GeomVertexWriter(data, "texcoord")
+        for face in faces:
+            for i in face:
+                color_writer.setData4f(*colors[i])
+                normal_writer.setData3f(normals[i])
+                # UV携带全局米制坐标，origin重定位不会拖动地表纹理。
+                uv_writer.setData2f(vertices[i][0], start + vertices[i][1])
+        node.setTexture(kit["ground"])
+        node.setShader(kit["terrain-shader"], 1)
+        node.setShaderInput("expressway_rock", kit["rock"])
+        node.reparentTo(root)
+    # 分段式连续灌木带：工程段较密，海湾段留出看海开口。
+    beds = ((45, 228, -15), (250, 395, -17), (445, 610, -16), (650, 748, -15),
+            (70, 205, 16), (265, 388, 18), (465, 550, 17), (635, 726, 17))
+    for first, last, cx in beds:
+        for n, s in enumerate(range(first, last, 9)):
             if start <= s < start + 200:
-                bush = kit["shrub-bank"].copyTo(root)
-                bush.setPos(x, s - start, terrain_height(x, s) - 0.25)
-                bush.setScale(1.0 + n * 0.17, 1.8, 1.3)
-                bush.setH(n * 37)
+                x = cx + 1.7 * math.sin(n * 1.9)
+                bush = kit["fine-shrubs"].copyTo(root)
+                bush.setPos(x, s - start, support_height(x, s) - .16)
+                bush.setScale(.72 + n % 3 * .1, 1.15, .85 + n % 4 * .08)
+                bush.setH(70 + n % 3 * 17)
+    # 两层山脚林缘形成成片轮廓；右侧只保留三组，释放海湾视线。
+    groves = ((60, 225, -39), (245, 370, -40), (440, 610, -40), (640, 735, -40),
+              (65, 190, -57), (250, 365, -66), (475, 600, -60),
+              (105, 178, 40), (510, 554, 40), (660, 705, 41))
+    for first, last, cx in groves:
+        for n, s in enumerate(range(first, last, 17)):
+            x = cx + 3.5 * math.sin(n * 2.2)
+            if start <= s < start + 200:
+                tree = kit["broadleaf-a" if n % 2 else "broadleaf-b"].copyTo(root)
+                scale = .92 + n % 4 * .17
+                tree.setScale(scale)
+                tree.setPos(x, s - start, support_height(x, s) - .10)
+                tree.setH(n * 71)
+    # 护栏外成片短草与坡脚碎岩，尺度低于灌木，不靠加高树木填空。
+    grass_vertices, grass_faces = [], []
+    grass_beds = [(s, side * (11.6 + (s // 20) % 3 * .55))
+                  for s in range(38, 756, 20) for side in (-1, 1)]
+    grass_beds += [(65, -15), (135, 17), (195, -36), (260, -36),
+                   (350, -36), (465, -36), (575, -36), (645, -15), (720, 18)]
+    for cs, cx in grass_beds:
+        for n in range(95):
+            s = cs + math.sin(n * 2.4) * (7 + n % 7)
+            x = cx + math.cos(n * 2.4) * (.4 + (n % 4) * .25)
+            if not start <= s < start + 200:
+                continue
+            z = support_height(x, s) - 0.035
+            size = 0.25 + 0.10 * (n % 4)
+            for angle in (n * 0.8, n * 0.8 + 1.9):
+                dx, dy = math.cos(angle) * 0.07, math.sin(angle) * 0.07
+                base = len(grass_vertices)
+                grass_vertices.extend(((x - dx, s - start - dy, z),
+                                       (x + dx, s - start + dy, z),
+                                       (x + dx * 0.8, s - start + dy, z + size)))
+                grass_faces.append((base, base + 1, base + 2))
+    grass = make_mesh("expressway-grass-clumps", grass_vertices, grass_faces,
+                      Vec4(0.30, 0.37, 0.078, 1))
+    grass.setTwoSided(True)
+    grass.reparentTo(root)
+    for cs, cx, length in ((108, -39, 6), (212, -42, 8), (276, -39, 7),
+                           (348, -46, 9), (477, -39, 6), (565, -43, 7),
+                           (125, 55, 5), (540, 58, 6), (690, 56, 5)):
+        if not start <= cs < start + 200:
+            continue
+        for n, (dx, ds, size) in enumerate(((0, 0, 1), (4, -6, .55), (3, 5, .7))):
+            x, s = cx + dx, cs + ds
+            rock = kit["strata-shelf"].copyTo(root)
+            rock.setScale(size, length / 4 * size, size)
+            rock.setPos(x, s - start, support_height(x, s) - .35 * size)
+            rock.setH(20 + n * 37)
     # 桥面两端用土坡承接，桥梁不是空中横放的独立板。
     if index == 2:
         for side in (-1, 1):
@@ -175,19 +321,44 @@ def build_vista(root):
 
     # 只由第三段持有这组背景，卸载/重定位仍沿用segment根节点。
     for layer, (x, width, height, color) in enumerate((
-        (-215, 145, 62, (0.22, 0.35, 0.34, 1)),
-        (-340, 210, 98, (0.33, 0.47, 0.48, 1)),
-        (435, 135, 58, (0.39, 0.52, 0.53, 1)),
+        (-215, 145, 62, (0.10, 0.24, 0.23, 1)),
+        (-370, 190, 98, (0.20, 0.33, 0.38, 1)),
+        (275, 85, 27, (0.12, 0.29, 0.27, 1)),
+        (470, 160, 63, (0.19, 0.32, 0.38, 1)),
+        (720, 220, 112, (0.29, 0.40, 0.48, 1)),
     )):
-        vertices, faces = [], []
-        for row, y in enumerate(range(-340, 601, 80)):
-            ridge = height * (0.67 + 0.21 * math.sin(row * 1.75 + layer))
-            vertices.extend(((x - width, y, -3), (x, y, ridge), (x + width, y, -3)))
-        for row in range(11):
-            for col in range(2):
-                j = row * 3 + col
-                faces.extend(((j, j + 1, j + 4), (j, j + 4, j + 3)))
-        make_mesh("distant-ridge", vertices, faces, Vec4(*color)).reparentTo(root)
+        vertices, faces, colors = [], [], []
+        for row, y in enumerate(range(-420, 841, 20)):
+            ridge = height * (0.66 + 0.17 * math.sin(y * 0.013 + layer)
+                              + 0.10 * math.sin(y * 0.037 + layer * 2)
+                              + 0.035 * math.sin(y * 0.10))
+            for col in range(9):
+                u = col / 8
+                profile = math.sin(u * math.pi) ** 1.35
+                z = -4 + ridge * profile
+                vertices.append((x - width + 2 * width * u, y, z))
+                tint = 0.72 + 0.28 * profile + 0.07 * math.sin(y * 0.034 + col)
+                colors.append(tuple(c * tint for c in color[:3]) + (1,))
+        for row in range(63):
+            for col in range(8):
+                j = row * 9 + col
+                faces.extend(((j, j + 1, j + 10), (j, j + 10, j + 9)))
+        ridge = make_mesh("distant-ridge", vertices, faces, Vec4(*color))
+        ridge.reparentTo(root)
+        data = ridge.node().modifyGeom(0).modifyVertexData()
+        writer = GeomVertexWriter(data, "color")
+        normal_writer = GeomVertexWriter(data, "normal")
+        # 平滑法线压住大三角明暗，层次来自多个真实山脊而非一面高墙。
+        normals = [Vec3(0) for _ in vertices]
+        for a, b, c in faces:
+            normal = (Vec3(*vertices[b]) - Vec3(*vertices[a])).cross(
+                Vec3(*vertices[c]) - Vec3(*vertices[a]))
+            for i in (a, b, c):
+                normals[i] += normal
+        for face in faces:
+            for i in face:
+                writer.setData4f(*colors[i])
+                normal_writer.setData3f(normals[i].normalized())
     for number, (x, s, width, height) in enumerate((
         (82, 990, 17, 29), (109, 1005, 16, 47), (135, 1030, 21, 34),
         (163, 1045, 15, 57), (190, 1065, 24, 27), (215, 1078, 18, 43),
@@ -200,6 +371,13 @@ def build_vista(root):
         cap = make_box("roofline", (width / 2 + 0.4, 11.4, 0.65), Vec4(0.51, 0.56, 0.51, 1))
         cap.setPos(x, s - 400, height - 0.4)
         cap.reparentTo(root)
+        for floor in range(5, height - 2, 5):
+            glazing = make_box("city-glazing-band", (width / 2 - 1.5, 0.035, 0.85),
+                               Vec4(0.23, 0.37, 0.39, 1))
+            glazing.setPos(x, s - 411.06, floor)
+            # 远距离窗带接近立面，使用深度偏移避免透视精度不足时竞争深度。
+            glazing.setDepthOffset(2)
+            glazing.reparentTo(root)
     # 海湾保留低频水平线，轻量栈桥为城市提供共同岸线。
     add_strip(root, "bay-shore", 70, 330, -0.28, (0.52, 0.51, 0.39, 1), 570, 760)
 
@@ -234,9 +412,7 @@ def build_segment(root, index, seed, kit, stabilize_rail):
         for s in range(0, 200, 12):
             add_strip(root, "shoulder-joint", side * 7.2 - 0.38, side * 7.2 + 0.38,
                       0.020, (0.065, 0.077, 0.074, 1), s, s + 0.025)
-    for x in (-4.5, 0, 4.5):
-        add_strip(root, "asphalt-laying-tone", x - 1.9, x + 1.9, 0.006,
-                  (0.115, 0.133, 0.140, 1), texture=kit["aggregate"])
+    # 铺装色差直接写在道路唯一底面，避免毫米级重复大面竞争深度。
     build_terrain(root, index, kit)
     for model, x, y, z, heading in placements(index):
         node = kit[model].copyTo(root)

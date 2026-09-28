@@ -1,0 +1,50 @@
+{
+  "kind": "static renderer views; not driving",
+  "views": [
+    {
+      "distance_m": 8,
+      "file": "highway-008.png",
+      "camera_height_m": 3.4
+    },
+    {
+      "distance_m": 170,
+      "file": "highway-170.png",
+      "camera_height_m": 3.4
+    },
+    {
+      "distance_m": 285,
+      "file": "highway-285.png",
+      "camera_height_m": 3.4
+    },
+    {
+      "distance_m": 390,
+      "file": "highway-390.png",
+      "camera_height_m": 3.4
+    },
+    {
+      "distance_m": 510,
+      "file": "highway-510.png",
+      "camera_height_m": 3.4
+    },
+    {
+      "distance_m": 665,
+      "file": "highway-665.png",
+      "camera_height_m": 3.4
+    },
+    {
+      "distance_m": 790,
+      "file": "highway-790.png",
+      "camera_height_m": 3.4
+    },
+    {
+      "distance_m": 830,
+      "file": "highway-830.png",
+      "camera_height_m": 3.4
+    },
+    {
+      "distance_m": 510,
+      "file": "bay-side.png",
+      "camera_height_m": 3.6
+    }
+  ]
+}

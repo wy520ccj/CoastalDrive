@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from panda3d.core import Filename, NodePath, PNMImage, TextNode, Vec4
+from panda3d.core import Filename, NodePath, TextNode, Vec4
 
 from scene import make_box, make_mesh
 
@@ -185,29 +185,9 @@ def build():
         root.writeBamFile(Filename.fromOsSpecific(str(path)))
         files.append({"name": name, "file": path.name,
                       "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
-    pixels = PNMImage(256, 256, 3)
-    for y in range(256):
-        for x in range(256):
-            # 无缝颗粒只改变明度，避免写实道路贴图的大块补丁。
-            grain = ((x * 1973 + y * 9277 + x * y * 13) % 101) / 100
-            value = 0.72 + 0.23 * grain
-            pixels.setXel(x, y, value, value, value)
-    pixels.write(Filename.fromOsSpecific(str(OUT / "aggregate.png")))
-    sky = PNMImage(1024, 512, 3)
-    for y in range(512):
-        latitude = 1 - y / 511
-        elevation = max(0, (latitude - 0.5) * 2)
-        blend = elevation ** 0.48
-        horizon, zenith = (0.57, 0.74, 0.84), (0.08, 0.32, 0.57)
-        for x in range(1024):
-            angle = x / 1024 * 2 * math.pi
-            cloud = (math.sin(angle * 7 + latitude * 15)
-                     + 0.5 * math.sin(angle * 13 - latitude * 33))
-            veil = max(0, min(1, (cloud - 0.10) * 1.5))
-            veil *= math.exp(-((elevation - 0.15) / 0.07) ** 2) * 0.65
-            color = [a * (1 - blend) + b * blend for a, b in zip(horizon, zenith)]
-            sky.setXel(x, y, *(c * (1 - veil) + 0.92 * veil for c in color))
-    sky.write(Filename.fromOsSpecific(str(OUT / "expressway-sky.png")))
+    from make_expressway_surfaces import build as build_surfaces
+
+    build_surfaces()
     (OUT / "source-manifest.json").write_text(json.dumps({
         "source": "Original dimensioned meshes authored for CoastalDrive HWY-01",
         "editable_source": "tools/environment/build_expressway_kit.py",

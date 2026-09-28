@@ -165,3 +165,53 @@ def test_build_is_presentation_only(kit):
     assert random.getstate() == rng
     assert root.findAllMatches("**/+BulletRigidBodyNode").getNumPaths() == 0
     assert root.getTightBounds()[0].z > -5
+
+
+def test_shadow_grid_stays_world_aligned_across_rebase():
+    from panda3d.core import DirectionalLight, Vec3
+
+    from environment.expressway import stabilize_sun
+
+    light = DirectionalLight("probe")
+    light.setShadowCaster(True, 2048, 2048)
+    light.getLens().setFilmSize(95, 95)
+    light.getLens().setNearFar(10, 300)
+    sun = NodePath(light)
+    for y in (130.0, 130.08, 130.16, 2007.5):
+        stabilize_sun(sun, Vec3(-3.5, y, 0.5), 0)
+        position = sun.getPos()
+        local = sun.getQuat().conjugate().xform(position)
+        for axis in (0, 2):
+            # Panda的节点存储为float32；2km处来回投影误差上界取1mm。
+            step = 95 / 2048
+            assert local[axis] == pytest.approx(round(local[axis] / step) * step, abs=0.001)
+        stabilize_sun(sun, Vec3(-3.5, y - 2000, 0.5), 2000)
+        assert tuple(sun.getPos() + Vec3(0, 2000, 0)) == pytest.approx(tuple(position), abs=0.001)
+    assert light.isShadowCaster()
+    assert light.getLens().getFilmSize() == (95, 95)
+    assert light.getShadowBufferSize() == (2048, 2048)
+
+
+def test_landscape_has_real_color_detail_and_matching_shore(kit):
+    from panda3d.core import Filename, PNMImage
+
+    from environment.expressway import build_terrain, support_height
+    from paths import resource_root
+
+    assets, _ = kit
+    root = NodePath("landscape")
+    build_terrain(root, 2, assets)
+    surfaces = root.findAllMatches("**/expressway-landscape")
+    assert len(surfaces) == 2
+    for surface in surfaces:
+        assert surface.getTexture() == assets["ground"]
+        reader = GeomVertexReader(surface.node().getGeom(0).getVertexData(), "color")
+        colors = set()
+        while not reader.isAtEnd():
+            colors.add(tuple(round(c, 3) for c in reader.getData4f()))
+        assert len(colors) > 256
+    profile = PNMImage()
+    assert profile.read(Filename.fromOsSpecific(str(resource_root() / "assets/game/expressway/shore-profile.png")))
+    for s in (100, 250, 400, 510, 600, 700):
+        x = profile.getGray(s, 0) * 160
+        assert abs(support_height(x, s) + 3) < 0.005

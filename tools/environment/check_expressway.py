@@ -33,6 +33,15 @@ def capture(app, output):
         path = output / f"highway-{s:03d}.png"
         assert app.win.saveScreenshot(Filename.fromOsSpecific(str(path)))
         views.append({"distance_m": s, "file": path.name, "camera_height_m": 3.4})
+    app.camera.setPos(-1.5, 510, 3.6)
+    app.camera.lookAt(Vec3(75, 540, -1.8))
+    app.scene.sky.setPos(app.camera.getPos())
+    app.scene.update_lighting(app.camera.getPos())
+    app.taskMgr.step()
+    for _ in range(8):
+        app.graphicsEngine.renderFrame()
+    assert app.win.saveScreenshot(Filename.fromOsSpecific(str(output / "bay-side.png")))
+    views.append({"distance_m": 510, "file": "bay-side.png", "camera_height_m": 3.6})
     (output / "views.json").write_text(json.dumps({"kind": "static renderer views; not driving",
                                                   "views": views}, indent=2), encoding="utf-8")
 

@@ -262,7 +262,9 @@ class Scene:
         self.setup_scene()
         self.sky = make_sky(base, self.render, coastal=base.session.simulation.track == "coastal")
         if base.session.simulation.track == "endless" and base.session.simulation.road.curve is None:
-            self.sky.setTexture(self.expressway_kit["sky"], 2)
+            from environment.expressway_materials import style_sky
+
+            style_sky(self.sky, base.loader)
 
     def setup_lighting(self) -> None:
         ambient = AmbientLight("coastal-ambient")
@@ -293,10 +295,21 @@ class Scene:
             fog.setColor(*foundation.HAZE)
             fog.setExpDensity(foundation.FOG_DENSITY)
             self.base.setBackgroundColor(*foundation.HAZE)
+        elif (self.base.session.simulation.track == "endless"
+              and self.base.session.simulation.road.curve is None):
+            ambient.setColor((0.18, 0.24, 0.30, 1))
+            sun.setColor((2.15, 2.18, 2.20, 1))
+            rail_sun.setColor((2.15, 2.18, 2.20, 1))
+            fog.setExpDensity(0.0015)
 
     def update_lighting(self, position):
         self.sun_path.setPos(position + Vec3(-55, -75, 125))
         self.sun_path.lookAt(position)
+        simulation = self.base.session.simulation
+        if simulation.track == "endless" and simulation.road.curve is None:
+            from environment.expressway import stabilize_sun
+
+            stabilize_sun(self.sun_path, position, simulation.origin_y)
         self.rail_sun_path.setPos(self.sun_path.getPos())
         self.rail_sun_path.setHpr(self.sun_path.getHpr())
 
@@ -318,6 +331,10 @@ class Scene:
             style_water(self.ocean)
         if track == "endless":
             self.setup_endless()
+            if self.base.session.simulation.road.curve is None:
+                from environment.expressway_materials import style_water as style_bay
+
+                style_bay(self.ocean)
         elif track == "test":
             make_quad(
                 "test-ground", Vec3(0), 3000, 3000, Vec4(0.2, 0.31, 0.13, 1), -0.01
@@ -703,6 +720,9 @@ class Scene:
             self.sync_segments()
             if self.ocean is not None:
                 self.ocean.setY(state.player.position[1])
+                if self.base.session.simulation.road.curve is None:
+                    self.ocean.setShaderInput("sea_time", state.time)
+                    self.ocean.setShaderInput("origin_y", state.origin_y)
         self.player.setPos(*state.player.position)
         self.player.setHpr(state.player.heading, state.player.pitch, state.player.roll)
         for node, wheel in zip(self.wheels, state.player.wheels):
