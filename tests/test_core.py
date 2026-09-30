@@ -10,6 +10,7 @@ import pytest
 from controls import ConstantController, KeyboardController
 from session import FixedStepper, Phase, Session
 from simulation import FIXED_DT, CarState, Control, Simulation, forward, heading_for, interpolate
+from vehicle_config import CAR
 
 
 def driving():
@@ -156,7 +157,18 @@ def test_brake_stops_before_reverse_and_beats_throttle():
     for _ in range(240):
         s.step(Control(throttle=1))
     previous = s.snapshot().player.speed
+    wheel_energy = sum(.5 * CAR.wheel_inertia * wheel.omega**2
+                       for wheel in s.snapshot().player.wheel_dynamics)
     s.step(Control(throttle=1, brake=1))
+    assert s.player.powertrain.drive_torque == 0
+    assert s.snapshot().player.throttle == 0
+    assert s.snapshot().player.brake > 0
+    # 首tick踏板仅到5%，储存的轮转动能仍可传给车体；优先级检验执行器而非强制降速。
+    assert sum(.5 * CAR.wheel_inertia * wheel.omega**2
+               for wheel in s.snapshot().player.wheel_dynamics) < wheel_energy
+    for _ in range(round(1 / CAR.brake_rise / FIXED_DT) - 1):
+        s.step(Control(throttle=1, brake=1))
+    assert s.snapshot().player.brake == pytest.approx(1)
     assert 0 < s.snapshot().player.speed < previous
     for _ in range(1200):
         if abs(s.snapshot().player.speed) < 0.15:

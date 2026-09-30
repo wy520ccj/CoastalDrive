@@ -1,0 +1,75 @@
+--- main/traffic.py
++++ research/traffic.py
+@@ -7,6 +7,7 @@
+ from driver_assist import steering_limit
+ from highway_curve import HighwayCurve
+ from highway_map import HIGHWAY_LENGTH, lane_x
++from vehicle_config import CAR
+ from vehicle_state import Control
+ 
+ # Include the accepted player body and exposed tyres in clearance queries.
+@@ -82,6 +83,7 @@
+     cruise: float
+     recovering: bool = False
+     target_lateral: float | None = None
++    preview_lateral: float | None = None
+ 
+     def control(self, car, traffic, road, locations):
+         distance, lateral = locations[0]
+@@ -103,10 +105,11 @@
+                 self.recovering = False
+             else:
+                 return Control(brake=1)
+-        lookahead = 5 + abs(car.speed) * 0.65
++        lookahead = 5 + abs(car.speed) * (0.65 + 2 / CAR.steering_response)
+         target = road.sample(distance + lookahead, self.lane)
+-        if self.target_lateral is not None:
+-            target = road.sample_lateral(distance + lookahead, self.target_lateral)
++        preview = self.preview_lateral if self.preview_lateral is not None else self.target_lateral
++        if preview is not None:
++            target = road.sample_lateral(distance + lookahead, preview)
+         dx, dy = target.x - car.position[0], target.y - car.position[1]
+         error = math.atan2(-dx, dy) - math.radians(car.heading)
+         angle = math.degrees(math.atan2(4.4 * math.sin(error), math.hypot(dx, dy)))
+--- main/highway_driver.py
++++ research/highway_driver.py
+@@ -8,6 +8,7 @@
+ 
+ from traffic import Driver, Road, extents
+ from traffic_recovery import TrafficRecovery
++from vehicle_config import CAR
+ from vehicle_state import Control
+ 
+ FLAT_ROAD = Road("endless")
+@@ -277,6 +278,7 @@
+         self.phase, self.signal = "cruise", 0
+         self.target_lane = self.lane
+         self.target_lateral = None
++        self.preview_lateral = None
+         self.cooldown = self.rng.uniform(5, 9)
+         self.decision_clock = self.rng.uniform(0.6, 1.2)
+         self.clear_time = self.waiting = 0.0
+@@ -304,15 +306,16 @@
+                 return Control(steering.steering, 0, max(action.brake, min(1, (car.speed - speed_limit) * 0.2)))
+             return Control(steering.steering, action.throttle, action.brake)
+         if self.phase == "changing":
+-            lookahead = 5 + abs(car.speed) * 0.65
+-            t = max(0, min(1, (car.position[1] + lookahead - self.start_y) / self.change_length))
+-            smooth = t * t * t * (10 - 15 * t + 6 * t * t)
+-            self.target_lateral = (
+-                road.lanes[self.lane]
+-                + (road.lanes[self.target_lane] - road.lanes[self.lane]) * smooth
+-            )
++            lookahead = 5 + abs(car.speed) * (0.65 + 2 / CAR.steering_response)
++            for name, y in (("target_lateral", car.position[1]),
++                            ("preview_lateral", car.position[1] + lookahead)):
++                t = max(0, min(1, (y - self.start_y) / self.change_length))
++                smooth = t * t * t * (10 - 15 * t + 6 * t * t)
++                setattr(self, name, road.lanes[self.lane]
++                        + (road.lanes[self.target_lane] - road.lanes[self.lane]) * smooth)
+         else:
+             self.target_lateral = road.lanes[self.lane] + self.avoid_offset
++            self.preview_lateral = self.target_lateral
+         steering_action = super().control(car, traffic, road, locations)
+         if self.recovering:
+             self.cancel()

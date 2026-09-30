@@ -1,0 +1,52 @@
+{
+  "started_utc": "2026-09-30T19:33:34.216598+00:00",
+  "git_head": "0208dfa3a956fb36907f9a668ade07dafa39185c",
+  "git_status": "M docs/current-progress.md\n M docs/development-plan.md\n M docs/evidence/PHYS-TIRE-01/README.md\n M docs/physics-roadmap.md\n M docs/tasks/PHYS-TIRE-01.md\n M docs/vehicle-physics.md\n M src/highway_driver.py\n M src/powertrain.py\n M src/simulation.py\n M src/traffic.py\n M src/vehicle.py\n M src/vehicle_config.py\n M src/vehicle_contacts.py\n M src/vehicle_state.py\n M tests/test_core.py\n M tests/test_curved_boundaries.py\n M tests/test_driving_response.py\n M tests/test_endless.py\n M tests/test_h1_vehicle.py\n M tests/test_h2_map.py\n M tests/test_h3_review.py\n M tests/test_h4a_traffic.py\n M tests/test_highway_surface.py\n M tests/test_impact_events.py\n M tests/test_impact_integration.py\n M tests/test_physics_testbed.py\n M tests/test_road_loads.py\n M tests/test_vehicle_commands.py\n M tests/test_vehicle_contacts.py\n M tools/physics/guardrail_probe.py\n M tools/physics/steering_geometry_probe.py\n M tools/physics/testbed.py\n M tools/traffic_interaction_check.py\n M tools/validate.py\n?? docs/evidence/PHYS-TIRE-01/comparison-A-B.json\n?? docs/evidence/PHYS-TIRE-01/comparison-B-C.json\n?? docs/evidence/PHYS-TIRE-01/comparison.json\n?? docs/evidence/PHYS-TIRE-01/coupling-probe-final/\n?? docs/evidence/PHYS-TIRE-01/coupling-probe-static/\n?? docs/evidence/PHYS-TIRE-01/coupling-probe-synchronized/\n?? docs/evidence/PHYS-TIRE-01/coupling-probe/\n?? docs/evidence/PHYS-TIRE-01/course-feedback-research/\n?? docs/evidence/PHYS-TIRE-01/guardrail-A-synchronized-vs-C-calibrated.json\n?? docs/evidence/PHYS-TIRE-01/guardrail-A-synchronized/\n?? docs/evidence/PHYS-TIRE-01/guardrail-C-calibrated/\n?? docs/evidence/PHYS-TIRE-01/guardrail-episode-accounting.json\n?? docs/evidence/PHYS-TIRE-01/h1-calibration-trial.txt\n?? docs/evidence/PHYS-TIRE-01/h1-static-raw.txt\n?? docs/evidence/PHYS-TIRE-01/impact-fixtures/\n?? docs/evidence/PHYS-TIRE-01/lookahead-delay-research/\n?? docs/evidence/PHYS-TIRE-01/model-observations.json\n?? docs/evidence/PHYS-TIRE-01/preview-linear-analysis.json\n?? docs/evidence/PHYS-TIRE-01/rear-yield-original.json\n?? docs/evidence/PHYS-TIRE-01/split-preview-delay/\n?? docs/evidence/PHYS-TIRE-01/split-preview-original/\n?? docs/evidence/PHYS-TIRE-01/split-preview-yaw-tracking/\n?? docs/evidence/PHYS-TIRE-01/standard-A-synchronized/\n?? docs/evidence/PHYS-TIRE-01/standard-A/\n?? docs/evidence/PHYS-TIRE-01/standard-B-no-electronics/\n?? docs/evidence/PHYS-TIRE-01/standard-B-static/\n?? docs/evidence/PHYS-TIRE-01/standard-B-v2/\n?? docs/evidence/PHYS-TIRE-01/standard-B/\n?? docs/evidence/PHYS-TIRE-01/standard-C-calibrated/\n?? docs/evidence/PHYS-TIRE-01/t0-coupling/\n?? docs/evidence/PHYS-TIRE-01/t0-final/\n?? docs/evidence/PHYS-TIRE-01/t1-final/\n?? docs/evidence/PHYS-TIRE-01/t1-trial/\n?? docs/evidence/PHYS-TIRE-01/t1-verified/\n?? docs/evidence/PHYS-TIRE-01/t2-final/\n?? docs/evidence/PHYS-TIRE-01/t2-remaining/\n?? docs/evidence/PHYS-TIRE-01/tight-A-synchronized/\n?? docs/evidence/PHYS-TIRE-01/tight-B-static/\n?? docs/evidence/PHYS-TIRE-01/tight-B/\n?? docs/evidence/PHYS-TIRE-01/tight-C-calibrated/\n?? docs/evidence/PHYS-TIRE-01/yaw-lead-research/\n?? docs/tasks/PHYS-MODES-01.md\n?? docs/vehicle-reference.md\n?? src/tire_forces.py\n?? src/vehicle_tires.py\n?? src/wheel_dynamics.py\n?? tests/test_tire_forces.py\n?? tests/test_vehicle_tires.py\n?? tests/test_wheel_dynamics.py\n?? tools/physics/lane_change_probe.py\n?? tools/physics/tire_dynamics_probe.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_endless.py",
+    "tests/test_h3_traffic.py",
+    "tests/test_recovery.py"
+  ],
+  "tier": "T0",
+  "status": "failed",
+  "passed": false,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t0-controller\\ruff.log",
+      "status": "failed",
+      "returncode": 1,
+      "error": "process exited 1",
+      "seconds": 0.177
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_endless.py",
+        "tests/test_h3_traffic.py",
+        "tests/test_recovery.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t0-controller\\pytest.log",
+      "status": "not_run"
+    }
+  ]
+}

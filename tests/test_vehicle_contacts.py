@@ -9,8 +9,36 @@ from panda3d.core import Vec3
 from simulation import Control, Simulation, interpolate, shift_snapshot
 from vehicle import Vehicle
 from vehicle_config import CAR
-from vehicle_contacts import read_wheel_contacts, shift_contacts
+from vehicle_contacts import read_wheel_contacts, road_support, shift_contacts
 from vehicle_state import FIXED_DT, CarState
+
+
+@pytest.mark.parametrize("normal, expected", [
+    ((0, 0, 1), True),
+    ((.8660254037844386, 0, .5), True),
+    ((0, .8660254037844386, .5), True),
+    ((.8661, 0, .4999), False),
+    ((1, 0, 0), False),
+    ((0, 0, -1), False),
+])
+def test_road_support_definition(normal, expected):
+    assert road_support(normal) is expected
+
+
+def test_support_classification_preserves_raw_contact(rig):
+    world, car = rig
+    advance(world)
+    for wheel in car._vehicle.getWheels():
+        wheel.setMaxSuspensionForce(1000)
+    advance(world, 1)
+    contacts = read_wheel_contacts(car._vehicle, car.on_asphalt)
+    for contact in contacts:
+        unsupported = replace(contact, contact_normal=(1, 0, 0))
+        assert not road_support(unsupported.contact_normal)
+        assert unsupported.in_contact
+        assert unsupported.suspension_force == contact.suspension_force > 1000
+        assert unsupported.normal_load == contact.normal_load == 1000
+    assert read_wheel_contacts(car._vehicle, car.on_asphalt) == contacts
 
 
 @pytest.fixture
@@ -27,7 +55,7 @@ def rig():
 
 def advance(world, count=240):
     for _ in range(count):
-        world.doPhysics(FIXED_DT, 4, FIXED_DT)
+        world.doPhysics(FIXED_DT, 0, FIXED_DT)
 
 
 def test_static_load_lengths_and_surface(rig):

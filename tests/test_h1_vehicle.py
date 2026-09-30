@@ -138,7 +138,9 @@ def test_grass_slows_coasting_more_than_asphalt(simulation):
     for x in (95, 155):
         simulation.reset_player((x, 200, SPAWN[2]))
         drive(simulation, 2)
-        drive(simulation, 3, Control(throttle=1))
+        # 同一自由滚动初速隔离路面阻力，避免草地空转把不同轮胎动能带入滑行比较。
+        simulation._chassis.setLinearVelocity(simulation._chassis.getTransform().getQuat().getForward() * 10)
+        simulation.player.tires.initialize_rolling(10)
         before = simulation.snapshot().player.speed
         after = drive(simulation, 4).speed
         losses.append(before - after)

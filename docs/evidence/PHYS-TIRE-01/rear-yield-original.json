@@ -1,0 +1,282 @@
+{
+  "source_run": "t2-final/interactions.json",
+  "status": "failed",
+  "scope": "Original tire migration response with unchanged traffic controller and gates",
+  "failure": [
+    "NPC did not yield into the available gap"
+  ],
+  "metrics": {
+    "duration_s": 8,
+    "ticks": 960,
+    "wall_seconds": 2.4899,
+    "player_start_position": [
+      0.0,
+      38.26664352416992,
+      0.549318790435791
+    ],
+    "player_end_position": [
+      -0.0006727907457388937,
+      297.1311340332031,
+      0.41868889331817627
+    ],
+    "player_min_speed_mps": 31.407,
+    "player_max_brake": 0.0,
+    "player_lateral_span_m": 0.0007,
+    "contacts": [],
+    "contact_count": 0,
+    "traffic": [
+      {
+        "index": 0,
+        "start_position": [
+          0.0,
+          98.16665649414062,
+          0.549318790435791
+        ],
+        "end_position": [
+          3.481402635574341,
+          266.82000732421875,
+          0.41937991976737976
+        ],
+        "min_speed_mps": 18.5513,
+        "max_brake": 1.0,
+        "max_steering": 2.4556,
+        "lateral_span_m": 5.2751,
+        "lane_changes": 0,
+        "phase_end": "changing"
+      }
+    ],
+    "rear_approach": {
+      "occurred": true,
+      "ticks": 691,
+      "max_npc_brake_while_player_behind": 0.0,
+      "contact_during_approach": false
+    }
+  },
+  "sampled_frames": [
+    {
+      "tick": 180,
+      "time_s": 1.5,
+      "position": [
+        -0.0,
+        107.9764,
+        0.4212
+      ],
+      "speed_mps": 19.9747,
+      "steering": -0.0,
+      "brake": 0.0,
+      "reason": "cruise",
+      "signal": 0
+    },
+    {
+      "tick": 240,
+      "time_s": 2.0,
+      "position": [
+        -0.0,
+        118.0556,
+        0.4187
+      ],
+      "speed_mps": 20.2982,
+      "steering": -0.0,
+      "brake": 0.0,
+      "reason": "cruise",
+      "signal": 0
+    },
+    {
+      "tick": 300,
+      "time_s": 2.5,
+      "position": [
+        -0.0,
+        128.2393,
+        0.4189
+      ],
+      "speed_mps": 20.5125,
+      "steering": 0.0,
+      "brake": 0.0,
+      "reason": "yield_rear",
+      "signal": 1
+    },
+    {
+      "tick": 360,
+      "time_s": 3.0,
+      "position": [
+        -0.0,
+        138.6,
+        0.4187
+      ],
+      "speed_mps": 20.9299,
+      "steering": 0.0,
+      "brake": 0.0,
+      "reason": "yield_rear",
+      "signal": 1
+    },
+    {
+      "tick": 420,
+      "time_s": 3.5,
+      "position": [
+        0.0116,
+        149.1761,
+        0.4188
+      ],
+      "speed_mps": 21.3688,
+      "steering": 0.3495,
+      "brake": 0.0,
+      "reason": "yield_rear",
+      "signal": 1
+    },
+    {
+      "tick": 480,
+      "time_s": 4.0,
+      "position": [
+        0.1776,
+        159.9707,
+        0.4189
+      ],
+      "speed_mps": 21.8068,
+      "steering": 0.7011,
+      "brake": 0.0,
+      "reason": "yield_rear",
+      "signal": 1
+    },
+    {
+      "tick": 540,
+      "time_s": 4.5,
+      "position": [
+        0.7688,
+        170.9656,
+        0.4187
+      ],
+      "speed_mps": 22.2296,
+      "steering": 0.6255,
+      "brake": 0.0,
+      "reason": "yield_rear",
+      "signal": 1
+    },
+    {
+      "tick": 600,
+      "time_s": 5.0,
+      "position": [
+        1.8985,
+        182.128,
+        0.4189
+      ],
+      "speed_mps": 22.6415,
+      "steering": 0.069,
+      "brake": 0.0,
+      "reason": "yield_rear",
+      "signal": 1
+    },
+    {
+      "tick": 660,
+      "time_s": 5.5,
+      "position": [
+        3.3316,
+        193.4606,
+        0.419
+      ],
+      "speed_mps": 23.039,
+      "steering": -0.5149,
+      "brake": 0.0,
+      "reason": "yield_rear",
+      "signal": 1
+    },
+    {
+      "tick": 720,
+      "time_s": 6.0,
+      "position": [
+        4.6014,
+        205.003,
+        0.419
+      ],
+      "speed_mps": 23.3971,
+      "steering": -0.9727,
+      "brake": 0.0,
+      "reason": "yield_rear",
+      "signal": 1
+    },
+    {
+      "tick": 780,
+      "time_s": 6.5,
+      "position": [
+        5.2424,
+        216.7627,
+        0.4187
+      ],
+      "speed_mps": 23.7047,
+      "steering": -0.7985,
+      "brake": 0.0,
+      "reason": "yield_rear",
+      "signal": 1
+    },
+    {
+      "tick": 840,
+      "time_s": 7.0,
+      "position": [
+        5.1023,
+        228.5969,
+        0.4205
+      ],
+      "speed_mps": 22.8305,
+      "steering": -0.0949,
+      "brake": 1.0,
+      "reason": "yield_rear",
+      "signal": 1
+    },
+    {
+      "tick": 900,
+      "time_s": 7.5,
+      "position": [
+        4.5481,
+        238.9376,
+        0.4197
+      ],
+      "speed_mps": 19.0228,
+      "steering": 0.772,
+      "brake": 0.1099,
+      "reason": "yield_rear",
+      "signal": 1
+    },
+    {
+      "tick": 960,
+      "time_s": 8.0,
+      "position": [
+        3.3902,
+        248.2719,
+        0.4206
+      ],
+      "speed_mps": 18.7135,
+      "steering": 2.2884,
+      "brake": 0.0,
+      "reason": "yield_rear",
+      "signal": 1
+    },
+    {
+      "tick": 1020,
+      "time_s": 8.5,
+      "position": [
+        2.8263,
+        257.5662,
+        0.4187
+      ],
+      "speed_mps": 18.5712,
+      "steering": 1.8698,
+      "brake": 0.0,
+      "reason": "yield_rear",
+      "signal": 1
+    },
+    {
+      "tick": 1080,
+      "time_s": 9.0,
+      "position": [
+        3.4814,
+        266.82,
+        0.4194
+      ],
+      "speed_mps": 18.5814,
+      "steering": -0.0839,
+      "brake": 0.0,
+      "reason": "yield_rear",
+      "signal": 1
+    }
+  ],
+  "diagnosis": "Yield triggered normally; target lateral window missed heading completion criterion, then old-lane IDM reacted to passing player. Requires controller compatibility repair; no gate change."
+}

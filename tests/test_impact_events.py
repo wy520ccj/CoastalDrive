@@ -15,6 +15,7 @@ from impact_events import (
     aggregate_contacts,
 )
 from simulation import Control, Simulation
+from vehicle_state import VehicleCommand
 
 
 def sample(source=1, *, impulse=100, vn=2, vt=0, side="right", x=0.0,
@@ -30,6 +31,7 @@ def test_bullet_post_solve_four_point_rail_contact_is_one_real_event():
     try:
         simulation.reset_player((5.8, 30, 0.55))
         simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+        simulation.player.tires.initialize_rolling(12)
         for _ in range(30):
             simulation.step(Control())
             if simulation.snapshot().impacts:
@@ -68,17 +70,19 @@ def test_moving_npc_contact_emits_audio_events_without_changing_episode_count():
     try:
         simulation.reset_player((0, -8, 0.55), heading=0)
         simulation.player._chassis.setLinearVelocity(Vec3(0, 8, 0))
-        simulation.npcs[0].reset((0, 0, 0.55), heading=180)
-        simulation.npcs[0]._chassis.setLinearVelocity(Vec3(0, -2, 0))
+        simulation.player.tires.initialize_rolling(8)
+        # 斜向来车先撞角再旋转重撞，两个真实音频脉冲属于同一事故窗口。
+        simulation.npcs[0].reset((.5, 0, 0.55), heading=165, speed=2)
         simulation._tick = 1
         vehicle_impacts = []
         for _ in range(110):
-            simulation.step(Control())
+            simulation.step(Control(throttle=1))
             vehicle_impacts.extend(
                 impact for impact in simulation.snapshot().impacts
                 if impact.material == "vehicle"
             )
         assert len(vehicle_impacts) >= 2
+        assert vehicle_impacts[0].tick < vehicle_impacts[1].tick
         assert vehicle_impacts[0].sources != ()
         assert simulation.player_collisions == 1
     finally:
@@ -90,11 +94,13 @@ def test_five_second_rail_scrape_stays_contact_without_repeated_impacts():
     try:
         # 新碰撞盒半宽1.05m；旧7.2m摆位会深陷护栏并触发地面撞击。
         simulation.reset_player((6.9, 30, 0.55))
-        simulation.player._chassis.setLinearVelocity(Vec3(0, 8, 0))
+        simulation.player._chassis.setLinearVelocity(Vec3(.5, 8, 0))
+        simulation.player.tires.initialize_rolling(8)
         contact_ticks = []
         impacts = []
         for tick in range(840):
-            simulation.step(Control(throttle=0.15, steering=0.2))
+            # 固定2°轮角/半油门维持沿栏摩擦；输入辅助包络不是恒定轮角工况。
+            simulation.step(VehicleCommand(throttle=.5, steering=2, direction=1))
             if any(contact.material == "metal_barrier"
                    for contact in simulation.snapshot().contacts):
                 contact_ticks.append(tick + 1)

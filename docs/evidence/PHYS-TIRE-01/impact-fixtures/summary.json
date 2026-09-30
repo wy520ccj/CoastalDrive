@@ -1,0 +1,180 @@
+[
+  {
+    "case": "rail-original",
+    "longest_rail_contact_ticks": 239,
+    "events": [
+      {
+        "epoch": 2,
+        "tick": 91,
+        "index": 0,
+        "sources": [
+          1
+        ],
+        "material": "metal_barrier",
+        "raw_impulse": 334.1991653442383,
+        "excess_impulse": 334.1991653442383,
+        "normal_speed": 0.7582643378198968,
+        "tangential_speed": 6.888672186577737,
+        "local_position": [
+          1.052224448634321,
+          2.090690212025778,
+          0.0669765692456316
+        ],
+        "local_normal": [
+          -0.9988218291884227,
+          -0.04842598240595762,
+          0.003142891138952908
+        ],
+        "zone": "right",
+        "contact_age_ticks": 1
+      }
+    ],
+    "collisions": 1
+  },
+  {
+    "case": "rail-command",
+    "longest_rail_contact_ticks": 726,
+    "events": [
+      {
+        "epoch": 4,
+        "tick": 81,
+        "index": 0,
+        "sources": [
+          1
+        ],
+        "material": "metal_barrier",
+        "raw_impulse": 292.92083740234375,
+        "excess_impulse": 292.92083740234375,
+        "normal_speed": 0.6541682303306798,
+        "tangential_speed": 8.337818907863362,
+        "local_position": [
+          1.0520714969482536,
+          2.0787214689184723,
+          0.1081281022693874
+        ],
+        "local_normal": [
+          -0.9992208837481091,
+          -0.03945501054171645,
+          0.0009631328053986365
+        ],
+        "zone": "right",
+        "contact_age_ticks": 1
+      }
+    ],
+    "collisions": 1
+  },
+  {
+    "case": "npc-correct-rolling",
+    "longest_rail_contact_ticks": 0,
+    "events": [
+      {
+        "epoch": 6,
+        "tick": 52,
+        "index": 0,
+        "sources": [
+          2
+        ],
+        "material": "vehicle",
+        "raw_impulse": 4696.2650146484375,
+        "excess_impulse": 4696.2650146484375,
+        "normal_speed": 7.478525595678727,
+        "tangential_speed": 0.07857411899707709,
+        "local_position": [
+          -0.001774749794818132,
+          2.112617018251564,
+          0.07484883687446098
+        ],
+        "local_normal": [
+          -3.146016059839819e-05,
+          -0.9999985247199202,
+          0.001717430709421064
+        ],
+        "zone": "front",
+        "contact_age_ticks": 1
+      }
+    ],
+    "collisions": 1
+  },
+  {
+    "case": "npc-oblique",
+    "longest_rail_contact_ticks": 0,
+    "events": [
+      {
+        "epoch": 8,
+        "tick": 48,
+        "index": 0,
+        "sources": [
+          2
+        ],
+        "material": "vehicle",
+        "raw_impulse": 2906.031494140625,
+        "excess_impulse": 2906.031494140625,
+        "normal_speed": 8.017561912536621,
+        "tangential_speed": 0.07193182408809662,
+        "local_position": [
+          0.8161623477935791,
+          2.1192827224731445,
+          0.777554452419281
+        ],
+        "local_normal": [
+          0.0075498600177776026,
+          -0.9999085602667667,
+          0.011219212046927999
+        ],
+        "zone": "front",
+        "contact_age_ticks": 1
+      },
+      {
+        "epoch": 8,
+        "tick": 64,
+        "index": 0,
+        "sources": [
+          2
+        ],
+        "material": "vehicle",
+        "raw_impulse": 1752.793701171875,
+        "excess_impulse": 1752.793701171875,
+        "normal_speed": 3.8009800910949707,
+        "tangential_speed": 0.5302737951278687,
+        "local_position": [
+          -1.0487616062164307,
+          2.1076622009277344,
+          -0.008254826068878174
+        ],
+        "local_normal": [
+          0.028363165828794015,
+          -0.9722389348486488,
+          0.2322649013271986
+        ],
+        "zone": "front",
+        "contact_age_ticks": 1
+      },
+      {
+        "epoch": 8,
+        "tick": 72,
+        "index": 0,
+        "sources": [
+          1
+        ],
+        "material": "hard_solid",
+        "raw_impulse": 65.5575942993164,
+        "excess_impulse": 65.5575942993164,
+        "normal_speed": 0.7627714276313782,
+        "tangential_speed": 3.9545109272003174,
+        "local_position": [
+          -1.0425195693969727,
+          -2.1809122562408447,
+          0.00705564022064209
+        ],
+        "local_normal": [
+          0.0757909650993756,
+          0.17334671340699537,
+          0.9819402459214605
+        ],
+        "zone": "underbody",
+        "contact_age_ticks": 1
+      }
+    ],
+    "collisions": 1
+  }
+]

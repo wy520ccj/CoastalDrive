@@ -32,10 +32,12 @@ forward = None
 steering_limit = None
 _loaded_source = None
 _response_modules = ()
+_tire_modules = ()
 
 
 def _load_source(source_dir=None):
-    global CAR, Control, FIXED_DT, Vehicle, forward, steering_limit, _loaded_source, _response_modules
+    global CAR, Control, FIXED_DT, Vehicle, forward, steering_limit
+    global _loaded_source, _response_modules, _tire_modules
     if source_dir is None and _loaded_source is not None:
         return
     selected = Path(source_dir or Path(__file__).resolve().parents[2] / "src").resolve()
@@ -52,6 +54,11 @@ def _load_source(source_dir=None):
         _response_modules = ("driver_assist", "powertrain", "vehicle_steering")
     else:
         _response_modules = ("vehicle_response",)
+    _tire_modules = (
+        ("tire_forces", "wheel_dynamics", "vehicle_tires")
+        if (selected / "vehicle_tires.py").is_file()
+        else ()
+    )
     response_modules = [importlib.import_module(name) for name in _response_modules]
     CAR = vehicle_config.CAR
     Control = vehicle_state.Control
@@ -151,11 +158,13 @@ def _run_case(case, directory, stride=6):
         for _ in range(240):
             previous = vehicle._chassis.getLinearVelocity()
             vehicle.apply_control(Control())
-            world.doPhysics(FIXED_DT, 4, FIXED_DT)
+            world.doPhysics(FIXED_DT, 0, FIXED_DT)
             vehicle.after_step(previous)
         wheel_surfaces = _wheel_surface_types(vehicle) if case == "split_mu_braking" else ()
         velocity = Vec3(*forward(0)) * _initial_speed(case)
         vehicle._chassis.setLinearVelocity(velocity)
+        if _tire_modules:
+            vehicle.tires.initialize_rolling(_initial_speed(case))
         duration = _duration(case)
         total_ticks = round(duration / FIXED_DT)
         path_length = 0.0
@@ -186,14 +195,15 @@ def _run_case(case, directory, stride=6):
                 control = _command(case, tick, state_before.speed)
                 previous = vehicle._chassis.getLinearVelocity()
                 vehicle.apply_control(control)
-                world.doPhysics(FIXED_DT, 4, FIXED_DT)
+                world.doPhysics(FIXED_DT, 0, FIXED_DT)
                 vehicle.after_step(previous)
                 state = vehicle.snapshot()
                 state_data = asdict(state)
                 wheel_data = [asdict(wheel) for wheel in state.wheels]
                 _finite(state_data)
                 _finite(wheel_data)
-                speed = abs(state.speed)
+                # 大侧滑时车身前向速度可过零，但车仍在滑行；停车取水平速度模长。
+                speed = math.hypot(*state.velocity[:2])
                 path_length += math.dist(state_before.position[:2], state.position[:2])
                 heading_delta = (state.heading - previous_heading + 180) % 360 - 180
                 yaw_change += heading_delta
@@ -230,6 +240,7 @@ def _run_case(case, directory, stride=6):
             "target_radius_m": float(case.removeprefix("circle_").removesuffix("m")) if case.startswith("circle_") else None,
             "target_speed_mps": 20 / 3.6 if case.startswith("circle_") else None,
             "final_speed_mps": state.speed,
+            "final_horizontal_speed_mps": math.hypot(*state.velocity[:2]),
             "max_speed_mps": max_speed,
             "min_speed_mps": min_speed,
             "path_length_m": path_length,
@@ -261,14 +272,31 @@ def run(output, cases=CASES, source_dir=None, label=None):
         "environment": {"gravity_mps2": [0, 0, -9.81], "plane": "infinite_horizontal", "split_mu_boundary_x_m": 0,
                         "collision_mask_bits": [0, 1], "surface_assignment": {"x<0": "asphalt", "x>=0": "grass"}},
         "physics_hz": 1 / FIXED_DT,
+        "measurement": {
+            "bullet_stepping": "exactly one supplied fixed 1/120 s step; max_substeps=0",
+            "speed_extrema_and_stop": "horizontal velocity norm; stop <0.1 m/s",
+            "final_speed_mps": "signed body longitudinal velocity",
+        },
         "fixed_dt_s": FIXED_DT,
         "source_version": label or ("current-src" if source_dir is None else str(source_dir)),
         "git_sha": _git_sha(),
         "source_sha256": {
             name: hashlib.sha256((_loaded_source / f"{name}.py").read_bytes()).hexdigest()
             for name in ("vehicle", "vehicle_config", "vehicle_state", "vehicle_dynamics",
-                         "vehicle_contacts", *_response_modules)
-            if name != "vehicle_contacts" or (_loaded_source / "vehicle_contacts.py").is_file()
+                         "vehicle_contacts", *_response_modules, *_tire_modules)
+            if (_loaded_source / f"{name}.py").is_file()
+        },
+        "rolling_initialization": (
+            "after setting chassis initial velocity, call vehicle.tires.initialize_rolling(speed) once; no runtime realignment"
+            if _tire_modules
+            else "legacy layout has no separate wheel spin state; no explicit rolling initialization"
+        ),
+        "sampling": {
+            "physics_hz": 1 / FIXED_DT,
+            "csv_every_completed_ticks": 6,
+            "csv_hz": 1 / (6 * FIXED_DT),
+            "state_fields": "asdict(snapshot), recursively flattened; wheel pose fields expanded separately",
+            "finite_check": "every physics tick",
         },
         "commands": {
             "flat_acceleration": "throttle=1 for 12 s",
@@ -296,6 +324,8 @@ def compare(baseline, candidate, output=None):
     for key in ("environment", "physics_hz", "fixed_dt_s", "commands"):
         if base[key] != cand[key]:
             raise ValueError(f"A/B试验条件不同：{key}")
+    if base.get("measurement") != cand.get("measurement"):
+        raise ValueError("A/B测量定义不同：measurement")
     for case in base_rows:
         for key in ("initial_speed_mps", "target_radius_m", "target_speed_mps"):
             if base_rows[case][key] != cand_rows[case][key]:
@@ -309,7 +339,10 @@ def compare(baseline, candidate, output=None):
                     and cand_config[key] != base_config[key]}
     result = {"baseline": str(baseline), "candidate": str(candidate),
               "baseline_source_version": base["source_version"], "candidate_source_version": cand["source_version"],
-              "config_delta_candidate_minus_baseline": config_delta, "cases": {}}
+              "config_delta_candidate_minus_baseline": config_delta,
+              "config_added_candidate": {key: cand_config[key] for key in cand_config.keys() - base_config.keys()},
+              "config_removed_candidate": {key: base_config[key] for key in base_config.keys() - cand_config.keys()},
+              "cases": {}}
     for case in sorted(base_rows.keys() & cand_rows.keys()):
         delta = {field: cand_rows[case][field] - base_rows[case][field]
                  for field in fields if isinstance(base_rows[case][field], (int, float)) and isinstance(cand_rows[case][field], (int, float))}

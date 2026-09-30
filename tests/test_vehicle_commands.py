@@ -23,7 +23,7 @@ def test_direct_throttle_bypasses_keyboard_ramp_but_keeps_torque_response(sim):
     sim.step(VehicleCommand(throttle=1, direction=1))
     assert sim.snapshot().player.throttle == 1
     assert sim.player.assist.throttle == 0
-    assert 0 < sim.player.powertrain.force < 1000
+    assert 0 < sim.player.powertrain.drive_torque < 1000 * .33
     assert 0 < sim.snapshot().player.speed < .1
 
 
@@ -62,4 +62,4 @@ def test_direct_reverse_requests_real_reverse_gear_and_resets_all_actuators(sim)
     car = sim.snapshot().player
     assert car.steering == car.throttle == car.brake == car.speed == 0
     assert car.gear == 1
-    assert sim.player.powertrain.force == 0
+    assert sim.player.powertrain.drive_torque == 0

@@ -6,13 +6,13 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class VehicleConfig:
     mass: float = 1200.0
-    # Approximate 2-litre petrol engine, five-speed automatic. These are game tuning data.
+    # 游戏发动机曲线；引入四轮转动惯量后整体提高5.5%，保留既有动力性目标。
     torque_curve: tuple = (
-        (900, 110),
-        (1800, 165),
-        (3200, 200),
-        (4500, 190),
-        (6000, 150),
+        (900, 116.05),
+        (1800, 174.075),
+        (3200, 211),
+        (4500, 200.45),
+        (6000, 158.25),
         (6500, 0),
     )
     gear_ratios: tuple = (3.25, 2.05, 1.45, 1.10, 0.88)
@@ -38,6 +38,15 @@ class VehicleConfig:
     steering_return: float = 10.0
     assisted_lateral_acceleration: float = 7.5  # Keyboard steering envelope, m/s².
     wheel_radius: float = 0.33
+    wheel_inertia: float = 1.8  # 单轮轴向转动惯量，kg·m²。
+    longitudinal_stiffness: float = 60000.0  # 静态单轮载荷下，N/单位滑转率。
+    lateral_stiffness: float = 50000.0  # 静态单轮载荷下，N/rad。
+    rear_lateral_stiffness: float = 50000.0  # 后轮可独立定义侧偏刚度，N/rad。
+    tire_shape: float = 1.9
+    tire_curvature: float = 0.97
+    slip_speed: float = 1.0  # 低速滑移分母的模型尺度，m/s。
+    static_contact_speed: float = .25  # 低速无滑移接触的切换尺度，m/s。
+    tire_substeps: int = 2
     suspension_stiffness: float = 40.0
     suspension_compression: float = 4.4
     suspension_relaxation: float = 2.3

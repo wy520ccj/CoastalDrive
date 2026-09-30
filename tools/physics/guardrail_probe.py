@@ -2,6 +2,7 @@
 
 import argparse
 import hashlib
+import importlib
 import itertools
 import json
 import subprocess
@@ -9,13 +10,32 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
-
 from panda3d.core import Vec3
 
-from coastal_map import project
-from simulation import Control, Simulation
-from vehicle_config import CAR
+ROOT = Path(__file__).resolve().parents[2]
+CAR = None
+Control = None
+Simulation = None
+project = None
+_loaded_source = None
+_has_tires = False
+
+
+def _load_source(source_dir=None):
+    global CAR, Control, Simulation, project, _loaded_source, _has_tires
+    selected = Path(source_dir or ROOT / "src").resolve()
+    if _loaded_source == selected:
+        return
+    if _loaded_source is not None:
+        raise RuntimeError("不同 --source-dir 请在独立进程运行，避免复用已导入模块")
+    sys.path.insert(0, str(selected))
+    project = importlib.import_module("coastal_map").project
+    simulation = importlib.import_module("simulation")
+    CAR = importlib.import_module("vehicle_config").CAR
+    Control = simulation.Control
+    Simulation = simulation.Simulation
+    _has_tires = (selected / "vehicle_tires.py").is_file()
+    _loaded_source = selected
 
 
 def body_contacts(sim):
@@ -72,7 +92,8 @@ def record(sim, sample):
     }
 
 
-def run(speed, output):
+def run(speed, output, source_dir=None):
+    _load_source(source_dir)
     sim = Simulation(seed=31, track="coastal")
     try:
         sim.reset_player((95, 0, .55), heading=-15)
@@ -80,6 +101,8 @@ def run(speed, output):
             sim.step(Control())
         sim._chassis.setLinearVelocity(sim._chassis.getTransform().getQuat().getForward()
                                        * speed / 3.6)
+        if _has_tires:
+            sim.player.tires.initialize_rolling(speed / 3.6)
         rows = []
         with (output / f"{speed}kmh.jsonl").open("w", encoding="utf-8") as stream:
             for sample in range(360):
@@ -114,19 +137,29 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--speeds", nargs="+", type=int, choices=(60, 120), default=[60, 120])
+    parser.add_argument("--source-dir", type=Path)
+    parser.add_argument("--label")
     args = parser.parse_args()
+    source_dir = (args.source_dir or ROOT / "src").resolve()
+    _load_source(source_dir)
     args.output.mkdir(parents=True, exist_ok=False)
     summary = {
         "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
         "source_sha256": {
-            name: hashlib.sha256((Path(__file__).resolve().parents[2] / "src" / name).read_bytes()).hexdigest()
-            for name in ("simulation.py", "coastal_collision.py", "coastal_map.py", "vehicle.py",
-                         "vehicle_config.py", "vehicle_dynamics.py", "vehicle_contacts.py")
+            path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in sorted(_loaded_source.glob("*.py"))
         },
+        "source_version": args.label or str(source_dir),
+        "source_dir": str(source_dir),
+        "rolling_initialization": (
+            "after setting chassis initial velocity, call tires.initialize_rolling(speed/3.6) once"
+            if _has_tires else "legacy source has no independent tire spin state; no initialization call"
+        ),
         "seed": 31, "track": "coastal", "settle_ticks": 120, "dt": 1 / 120,
+        "bullet_stepping": "Simulation.step fixed 1/120 s; source protocol recorded by simulation.py hash",
         "sampling": "Simulation.step后：wheel cache来自after_step；body为真实persistent manifold",
         "vertex_columns": ["x", "y", "z", "road_height", "height_above_road", "lateral"],
-        "cases": [run(speed, args.output) for speed in args.speeds],
+        "cases": [run(speed, args.output, source_dir) for speed in args.speeds],
     }
     text = json.dumps(summary, ensure_ascii=False, allow_nan=False, indent=2)
     (args.output / "summary.json").write_text(text, encoding="utf-8")

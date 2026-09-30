@@ -263,6 +263,7 @@ def test_traffic_reacts_to_player_and_has_real_collision():
         assert sim._chassis.getTransform().getPos().y - body.getTransform().getPos().y - 4.1 >= 2
         sim.reset_player((pos.x, body.getTransform().getPos().y - 1, 0.55))
         sim._chassis.setLinearVelocity(Vec3(0, 30, 0))
+        sim.player.tires.initialize_rolling(30)
         collided = False
         for _ in range(60):
             sim.step(Control())
@@ -358,6 +359,7 @@ def test_rear_end_crash_transfers_momentum_without_passing_through():
         for _ in range(60):
             sim.step(Control())
         sim._chassis.setLinearVelocity(Vec3(0, 30, 0))
+        sim.player.tires.initialize_rolling(30)
         collided = False
         first_contact_gap = None
         for _ in range(480):
@@ -390,6 +392,9 @@ def test_car_hits_solid_roadside_objects(kind):
         for _ in range(120):
             sim.step(Control())
         sim._chassis.setLinearVelocity(direction * 15)
+        sim.player.tires.initialize_rolling(
+            sim._chassis.getLinearVelocity().dot(sim._chassis.getTransform().getQuat().getForward())
+        )
         collided = False
         for _ in range(150):
             sim.step(Control())

@@ -1,0 +1,79 @@
+FFF                                                                      [100%]
+================================== FAILURES ===================================
+____________ test_idle_car_has_four_ground_contacts_and_can_start _____________
+
+simulation = <simulation.Simulation object at 0x000001DA7367DE80>
+
+    def test_idle_car_has_four_ground_contacts_and_can_start(simulation):
+        on_test_straight(simulation)
+        idle = drive(simulation, 15)
+        assert idle.position == pytest.approx((TEST_SPAWN[0], TEST_SPAWN[1], 0.419), abs=0.01)
+        for wheel in simulation._vehicle.getWheels():
+            ray = wheel.getRaycastInfo()
+            assert ray.isInContact()
+            assert tuple(ray.getContactPointWs())[2] == pytest.approx(0, abs=0.001)
+            assert 0.2 < ray.getSuspensionLength() < 0.4
+        car = drive(simulation, 3, Control(throttle=1))
+        assert car.speed > 9
+>       assert car.position[1] > TEST_SPAWN[1] + 12
+E       assert 11.693933486938477 > (0.0 + 12)
+
+tests\test_h1_vehicle.py:41: AssertionError
+______________ test_speed_limit_and_high_speed_turn_stay_upright ______________
+
+simulation = <simulation.Simulation object at 0x000001DA7367E270>
+
+    def test_speed_limit_and_high_speed_turn_stay_upright(simulation):
+        on_test_straight(simulation)
+        drive(simulation, 2)
+        car = drive(simulation, 22, Control(throttle=1))
+>       assert 150 <= car.speed * 3.6 <= 161
+E       AssertionError: assert 150 <= (41.64211654663086 * 3.6)
+E        +  where 41.64211654663086 = CarState(position=(180.09910583496094, 580.6900024414062, 0.418687105178833), heading=-0.009880400262773037, speed=41....c-formula', longitudinal_impulse=7.926750126099166, lateral_impulse=-0.008232989135732902, brake_angular_impulse=0.0))).speed
+
+tests\test_h1_vehicle.py:96: AssertionError
+______________ test_shallow_ramp_has_real_height_and_body_pitch _______________
+
+simulation = <simulation.Simulation object at 0x000001DA7367EF90>
+
+    def test_shallow_ramp_has_real_height_and_body_pitch(simulation):
+        simulation.reset_player((70, 25, SPAWN[2]))
+        drive(simulation, 2)
+        heights = []
+        pitches = []
+        for _ in range(1080):
+            simulation.step(Control(throttle=0.4))
+            car = simulation.snapshot().player
+            heights.append(car.position[2])
+            pitches.append(car.pitch)
+            assert abs(car.roll) < 10
+            assert car.position[2] > 0.25
+        assert max(heights) > 1.1
+        assert max(pitches) > 3
+>       assert car.position[1] > 55
+E       assert 54.87196350097656 > 55
+
+tests\test_h1_vehicle.py:133: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_h1_vehicle.py::test_idle_car_has_four_ground_contacts_and_can_start
+FAILED tests/test_h1_vehicle.py::test_speed_limit_and_high_speed_turn_stay_upright
+FAILED tests/test_h1_vehicle.py::test_shallow_ramp_has_real_height_and_body_pitch
+3 failed in 5.30s
+
+MEASUREMENTS
+{
+  "engine_torque_scale": 1.0,
+  "pytest_exit": 1,
+  "startup": {
+    "speed_m_s": 9.700028419494629,
+    "travel_m": 11.693933486938477
+  },
+  "speed_22s_kmh": 149.9116195678711,
+  "ramp": {
+    "max_height": 1.2766057252883911,
+    "max_pitch": 6.730905532836914,
+    "final_y": 54.87196350097656
+  },
+  "zero_to_100_s": 10.041666666666666,
+  "braking_distance_m": 46.292510986328125
+}

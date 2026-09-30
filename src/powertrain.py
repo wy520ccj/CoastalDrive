@@ -1,4 +1,4 @@
-"""发动机转速、自动变速箱与纵向驱动力响应。"""
+"""发动机转速、自动变速箱与驱动轴轮端转矩。"""
 
 import math
 from itertools import pairwise
@@ -23,9 +23,9 @@ class Powertrain:
         self.gear = 1
         self.shift_remaining = 0.0
         self.shift_cooldown = 0.0
-        self.force = 0.0
+        self.drive_torque = 0.0
 
-    def advance(self, speed, pedal, direction, braking, dt):
+    def advance(self, speed, driven_omega, pedal, direction, braking, dt):
         if direction < 0 and self.gear != -1:
             self.gear = -1
             self.shift_remaining = 0.0
@@ -36,7 +36,7 @@ class Powertrain:
         self.shift_remaining = max(0.0, self.shift_remaining - dt)
         self.shift_cooldown = max(0.0, self.shift_cooldown - dt)
         ratio = (3.0 if self.gear < 0 else CAR.gear_ratios[self.gear - 1]) * CAR.final_drive
-        wheel_rpm = abs(speed) / (math.tau * CAR.wheel_radius) * 60
+        wheel_rpm = abs(driven_omega) / math.tau * 60
         coupled_rpm = wheel_rpm * ratio
         if self.gear > 0 and self.shift_cooldown == 0:
             upshift = 3000 + 2300 * pedal
@@ -57,20 +57,22 @@ class Powertrain:
         target_rpm = max(launch_rpm, coupled_rpm)
         self.rpm += (target_rpm - self.rpm) * (1 - math.exp(-dt / 0.10))
         torque = engine_torque(self.rpm) * pedal
-        force = torque * ratio * CAR.drivetrain_efficiency / CAR.wheel_radius
+        wheel_torque = torque * ratio * CAR.drivetrain_efficiency
         if direction < 0:
-            force = min(force, CAR.reverse_force)
-            force *= min(1, max(0, CAR.reverse_speed - abs(speed)))
+            wheel_torque = min(wheel_torque, CAR.reverse_force * CAR.wheel_radius)
+            wheel_torque *= min(1, max(0, CAR.reverse_speed - abs(speed)))
         else:
-            force *= min(1, max(0, (CAR.max_speed - abs(speed)) / 2))
+            wheel_torque *= min(1, max(0, (CAR.max_speed - abs(speed)) / 2))
         if self.shift_remaining > 0:
-            force *= 0.15
-        target_force = direction * force
-        self.force += (target_force - self.force) * (1 - math.exp(-dt / CAR.torque_response))
+            wheel_torque *= 0.15
+        target_torque = direction * wheel_torque
+        self.drive_torque += (target_torque - self.drive_torque) * (
+            1 - math.exp(-dt / CAR.torque_response)
+        )
         if braking:
-            self.force = 0.0
-        engine_drag = CAR.engine_braking * ratio / CAR.wheel_radius
-        engine_drag *= (1 - pedal) * min(abs(speed) / 2, 1)
+            self.drive_torque = 0.0
+        engine_drag = CAR.engine_braking * ratio
+        engine_drag *= (1 - pedal) * min(abs(driven_omega) * CAR.wheel_radius / 2, 1)
         if self.shift_remaining > 0:
             engine_drag *= 0.15
-        return self.force, engine_drag
+        return self.drive_torque, engine_drag

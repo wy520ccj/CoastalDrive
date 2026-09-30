@@ -159,22 +159,53 @@ def test_water_recovery_is_not_interpolated_through_the_scenery():
         session.close()
 
 
-@pytest.mark.parametrize("speed_kmh, expected_episodes", [(60, 1), (120, 2)])
-def test_oblique_guardrail_impact_does_not_tunnel(sim, speed_kmh, expected_episodes):
+@pytest.mark.parametrize("speed_kmh", [60, 120])
+def test_oblique_guardrail_impact_does_not_tunnel(sim, speed_kmh):
     sim.reset_player((95, 0, 0.55), -15)
     for _ in range(120):
         sim.step(Control())
     direction = sim._chassis.getTransform().getQuat().getForward()
     sim._chassis.setLinearVelocity(direction * speed_kmh / 3.6)
+    sim.player.tires.initialize_rolling(speed_kmh / 3.6)
     collision_events = []
+    manifold_contact_ticks = []
+    solved_contact_ticks = []
     for _ in range(360):
         sim.step(Control())
-        car = sim.snapshot().player
+        snapshot = sim.snapshot()
+        car = snapshot.player
         assert project(*car.position[:2])[1] < 6
         assert abs(car.roll) < 45
-        collision_events.extend(sim.snapshot().events)
-    # 120km/h弹离后真实回撞；每次事故只计一次，持续擦碰不重复计数。
-    assert collision_events == ["player_collision"] * expected_episodes
+        rail_contacts = []
+        for manifold in sim._world.getManifolds():
+            node0, node1 = manifold.getNode0(), manifold.getNode1()
+            if sim._chassis not in (node0, node1):
+                continue
+            other = node1 if node0 == sim._chassis else node0
+            if "rail" not in other.getName():
+                continue
+            rail_contacts.extend(manifold.getManifoldPoints())
+        tick = snapshot.tick
+        if any(point.getDistance() <= 0 or point.getAppliedImpulse() > 0
+               for point in rail_contacts):
+            manifold_contact_ticks.append(tick)
+        if any(point.getAppliedImpulse() > 0 for point in rail_contacts):
+            solved_contact_ticks.append(tick)
+        if "player_collision" in snapshot.events:
+            collision_events.append(tick)
+
+    # 一次事故episode须有120个tick的无护栏manifold间隔，和游戏事故重计时一致。
+    episode_starts = []
+    previous_contact_tick = None
+    for tick in manifold_contact_ticks:
+        if previous_contact_tick is None or tick - previous_contact_tick >= 120:
+            episode_starts.append(tick)
+        previous_contact_tick = tick
+    assert episode_starts
+    assert all(tick in solved_contact_ticks for tick in episode_starts)
+    assert len(solved_contact_ticks) > len(episode_starts)
+    assert collision_events == episode_starts
+    assert sim.player_collisions == len(episode_starts)
 
 
 def test_guardrail_side_contact_has_horizontal_normal_and_counts_solver_contact(sim):
@@ -182,6 +213,7 @@ def test_guardrail_side_contact_has_horizontal_normal_and_counts_solver_contact(
     for _ in range(120):
         sim.step(Control())
     sim._chassis.setLinearVelocity(sim._chassis.getTransform().getQuat().getForward() * 120 / 3.6)
+    sim.player.tires.initialize_rolling(120 / 3.6)
     side_impulses = 0
     for _ in range(110):
         sim.step(Control())

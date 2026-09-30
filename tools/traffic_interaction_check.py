@@ -28,9 +28,11 @@ def _place(sim, player_lane, player_y, player_speed, npcs):
 
     sim.reset_player((LANE_X[player_lane], player_y, 0.55), 0)
     sim.player._chassis.setLinearVelocity(Vec3(0, player_speed, 0))
+    sim.player.tires.initialize_rolling(player_speed)
     for index, (car, (lane, y, speed)) in enumerate(zip(sim.npcs, npcs)):
         car.reset((LANE_X[lane], y, 0.55), 0)
         car._chassis.setLinearVelocity(Vec3(0, speed, 0))
+        car.tires.initialize_rolling(speed)
         sim.drivers[index].lane = lane
         sim.drivers[index].target_lane = lane
         sim.drivers[index].recovering = False

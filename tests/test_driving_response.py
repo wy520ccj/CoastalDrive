@@ -26,7 +26,7 @@ def test_short_throttle_tap_does_not_leave_power_latched():
             peak = max(peak, sim.snapshot().player.speed)
         assert 0 < peak * 3.6 < 1
         assert sim.snapshot().player.throttle == 0
-        assert abs(sim.player.powertrain.force) < 0.01
+        assert abs(sim.player.powertrain.drive_torque) < 0.01 * .33
     finally:
         sim.close()
 

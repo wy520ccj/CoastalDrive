@@ -5,6 +5,11 @@ from dataclasses import replace
 from vehicle_state import WheelContactState
 
 
+def road_support(normal):
+    """模型将朝上且坡度不超过60°的单位法线定义为可用路面支撑。"""
+    return normal[2] >= 0.5
+
+
 def read_wheel_contacts(bullet_vehicle, on_asphalt):
     """仅在物理积分后调用；初建和重置后的原生缓存尚未有效。"""
     contacts = []

@@ -7,6 +7,7 @@ from coastal_map import MapPoint, map_length, offset_point, point_at, project
 from driver_assist import steering_limit
 from highway_curve import HighwayCurve
 from highway_map import HIGHWAY_LENGTH, lane_x
+from vehicle_config import CAR
 from vehicle_state import Control
 
 # Include the accepted player body and exposed tyres in clearance queries.
@@ -82,6 +83,7 @@ class Driver:
     cruise: float
     recovering: bool = False
     target_lateral: float | None = None
+    preview_lateral: float | None = None
 
     def control(self, car, traffic, road, locations):
         distance, lateral = locations[0]
@@ -105,11 +107,20 @@ class Driver:
                 return Control(brake=1)
         lookahead = 5 + abs(car.speed) * 0.65
         target = road.sample(distance + lookahead, self.lane)
-        if self.target_lateral is not None:
-            target = road.sample_lateral(distance + lookahead, self.target_lateral)
+        preview = self.preview_lateral if self.preview_lateral is not None else self.target_lateral
+        if preview is not None:
+            target = road.sample_lateral(distance + lookahead, preview)
         dx, dy = target.x - car.position[0], target.y - car.position[1]
         error = math.atan2(-dx, dy) - math.radians(car.heading)
-        angle = math.degrees(math.atan2(4.4 * math.sin(error), math.hypot(dx, dy)))
+        distance_to_target = math.hypot(dx, dy)
+        nominal_yaw_rate = 2 * car.speed * math.sin(error) / distance_to_target
+        # 跟踪期望横摆，补偿临界阻尼齿条的2/ω迟滞；弯道参考不能设为零。
+        tracking_error = error + (2 / CAR.steering_response) * (
+            nominal_yaw_rate - car.dynamics.yaw_rate
+        )
+        angle = math.degrees(math.atan2(
+            2 * CAR.wheelbase * math.sin(tracking_error), distance_to_target
+        ))
         steering = max(-1, min(1, -angle / steering_limit(car.speed)))
         desired = self.cruise
         if not road.closed and not road.endless:

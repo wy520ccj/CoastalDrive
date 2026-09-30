@@ -1,0 +1,22 @@
+--- main/Driver.control
++++ research/Driver.control
+@@ -18,7 +18,7 @@
+                 self.recovering = False
+             else:
+                 return Control(brake=1)
+-        lookahead = 5 + abs(car.speed) * 0.65
++        lookahead = 5 + abs(car.speed) * (0.65 + 2 / CAR.steering_response)
+         target = road.sample(distance + lookahead, self.lane)
+         if self.target_lateral is not None:
+             target = road.sample_lateral(distance + lookahead, self.target_lateral)
+--- main/HighwayDriver.control
++++ research/HighwayDriver.control
+@@ -20,7 +20,7 @@
+                 return Control(steering.steering, 0, max(action.brake, min(1, (car.speed - speed_limit) * 0.2)))
+             return Control(steering.steering, action.throttle, action.brake)
+         if self.phase == "changing":
+-            lookahead = 5 + abs(car.speed) * 0.65
++            lookahead = 5 + abs(car.speed) * (0.65 + 2 / CAR.steering_response)
+             t = max(0, min(1, (car.position[1] + lookahead - self.start_y) / self.change_length))
+             smooth = t * t * t * (10 - 15 * t + 6 * t * t)
+             self.target_lateral = (

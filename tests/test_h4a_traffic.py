@@ -85,6 +85,7 @@ def test_position_clear_uses_rotated_width_and_high_speed_stopping_distance():
         assert sim._position_clear((0, 180, 0.55), 0, speed=0)
         sim.npcs[0].reset((0, 160, 0.55), 0)
         sim.npcs[0]._chassis.setLinearVelocity((0, 30, 0))
+        sim.npcs[0].tires.initialize_rolling(30)
         sim.step(Control())
         assert not sim._position_clear((0, 180, 0.55), 0, speed=0)
     finally:

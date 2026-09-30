@@ -8,6 +8,7 @@ from test_soundscape import FakeBase, phase
 
 from simulation import Control, Simulation
 from soundscape import Soundscape
+from vehicle_state import VehicleCommand
 
 
 def run_wall(speed):
@@ -18,6 +19,7 @@ def run_wall(speed):
     try:
         simulation.reset_player((95, 716.8, .55))
         simulation._chassis.setLinearVelocity(Vec3(0, speed, 0))
+        simulation.player.tires.initialize_rolling(speed)
         for _ in range(100):
             simulation.step(Control())
             sound.update(simulation.snapshot(), phase("driving"), None, 1 / 120)
@@ -51,11 +53,11 @@ def test_moving_npc_uses_vehicle_recipe_while_gameplay_counts_one_episode():
     try:
         simulation.reset_player((0, -8, .55))
         simulation._chassis.setLinearVelocity(Vec3(0, 8, 0))
-        simulation.npcs[0].reset((0, 0, .55), heading=180)
-        simulation.npcs[0]._chassis.setLinearVelocity(Vec3(0, -2, 0))
+        simulation.player.tires.initialize_rolling(8)
+        simulation.npcs[0].reset((.5, 0, .55), heading=165, speed=2)
         simulation._tick = 1
         for _ in range(110):
-            simulation.step(Control())
+            simulation.step(Control(throttle=1))
             sound.update(simulation.snapshot(), phase("driving"), None, 1 / 120)
         decisions = [json.loads(line) for line in log.getvalue().splitlines()
                      if '"type": "decision"' in line]
@@ -73,9 +75,10 @@ def test_sustained_real_rail_contact_plays_one_hit_and_one_scrape_loop():
     sound.set_impact_diagnostic(log)
     try:
         simulation.reset_player((6.9, 30, .55))
-        simulation._chassis.setLinearVelocity(Vec3(0, 8, 0))
+        simulation._chassis.setLinearVelocity(Vec3(.5, 8, 0))
+        simulation.player.tires.initialize_rolling(8)
         for _ in range(840):
-            simulation.step(Control(throttle=.15, steering=.2))
+            simulation.step(VehicleCommand(throttle=.5, steering=2, direction=1))
             sound.update(simulation.snapshot(), phase("driving"), None, 1 / 120)
         rows = [json.loads(line) for line in log.getvalue().splitlines()]
         assert sum(bool(row.get("layers")) for row in rows if row["type"] == "decision") == 1

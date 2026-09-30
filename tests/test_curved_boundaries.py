@@ -94,6 +94,9 @@ def test_high_speed_pedals_cross_hilly_segment_seam_without_jump():
                 math.sin(grade) * speed,
             )
         )
+        sim.player.tires.initialize_rolling(
+            sim._chassis.getLinearVelocity().dot(sim._chassis.getTransform().getQuat().getForward())
+        )
 
         previous = sim.snapshot().player
         seam_samples = []

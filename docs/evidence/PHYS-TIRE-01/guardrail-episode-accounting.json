@@ -1,0 +1,123 @@
+{
+  "contact_episode_definition": {
+    "source": "player chassis manifold points against nodes with rail in their name",
+    "contact_tick": "at least one point has distance <= 0 or applied solver impulse > 0",
+    "solved_contact_tick": "at least one point has applied solver impulse > 0",
+    "new_episode": "first contact tick, or current contact tick minus previous contact tick >= 120 ticks",
+    "minimum_gap_ticks": 120,
+    "rationale": "Simulation collision event re-arms after 120 ticks without a counted body manifold contact; raw persistent point count is not treated as number of accidents."
+  },
+  "cases": [
+    {
+      "source_version": "558d218-maxsub0-protocol",
+      "raw_jsonl": "guardrail-A-synchronized/60kmh.jsonl",
+      "speed_kmh": 60,
+      "solved_contact_tick_count": 15,
+      "manifold_contact_tick_count": 15,
+      "episodes": [
+        {
+          "start_tick": 242,
+          "end_tick": 256,
+          "contact_ticks": 15
+        }
+      ],
+      "episode_start_ticks": [
+        242
+      ],
+      "business_event_ticks": [
+        242
+      ],
+      "player_collision_count": 1,
+      "event_ticks_match_measured_episodes": true,
+      "collision_count_matches_measured_episodes": true,
+      "original_6m_pass": true,
+      "original_45deg_pass": true
+    },
+    {
+      "source_version": "558d218-maxsub0-protocol",
+      "raw_jsonl": "guardrail-A-synchronized/120kmh.jsonl",
+      "speed_kmh": 120,
+      "solved_contact_tick_count": 148,
+      "manifold_contact_tick_count": 150,
+      "episodes": [
+        {
+          "start_tick": 181,
+          "end_tick": 222,
+          "contact_ticks": 38
+        },
+        {
+          "start_tick": 361,
+          "end_tick": 480,
+          "contact_ticks": 112
+        }
+      ],
+      "episode_start_ticks": [
+        181,
+        361
+      ],
+      "business_event_ticks": [
+        181,
+        361
+      ],
+      "player_collision_count": 2,
+      "event_ticks_match_measured_episodes": true,
+      "collision_count_matches_measured_episodes": true,
+      "original_6m_pass": true,
+      "original_45deg_pass": true
+    },
+    {
+      "source_version": "current-C-calibrated-maxsub0",
+      "raw_jsonl": "guardrail-C-calibrated/60kmh.jsonl",
+      "speed_kmh": 60,
+      "solved_contact_tick_count": 17,
+      "manifold_contact_tick_count": 18,
+      "episodes": [
+        {
+          "start_tick": 242,
+          "end_tick": 271,
+          "contact_ticks": 18
+        }
+      ],
+      "episode_start_ticks": [
+        242
+      ],
+      "business_event_ticks": [
+        242
+      ],
+      "player_collision_count": 1,
+      "event_ticks_match_measured_episodes": true,
+      "collision_count_matches_measured_episodes": true,
+      "original_6m_pass": true,
+      "original_45deg_pass": true
+    },
+    {
+      "source_version": "current-C-calibrated-maxsub0",
+      "raw_jsonl": "guardrail-C-calibrated/120kmh.jsonl",
+      "speed_kmh": 120,
+      "solved_contact_tick_count": 7,
+      "manifold_contact_tick_count": 15,
+      "episodes": [
+        {
+          "start_tick": 181,
+          "end_tick": 336,
+          "contact_ticks": 15
+        }
+      ],
+      "episode_start_ticks": [
+        181
+      ],
+      "business_event_ticks": [
+        181
+      ],
+      "player_collision_count": 1,
+      "event_ticks_match_measured_episodes": true,
+      "collision_count_matches_measured_episodes": true,
+      "original_6m_pass": true,
+      "original_45deg_pass": true
+    }
+  ],
+  "test_run": {
+    "command": "pytest tests/test_h2_map.py::test_oblique_guardrail_impact_does_not_tunnel tests/test_h2_map.py::test_guardrail_side_contact_has_horizontal_normal_and_counts_solver_contact -q",
+    "result": "3 passed"
+  }
+}

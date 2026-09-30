@@ -1,0 +1,22 @@
+{
+  "original_complete_run": [
+    "t2-final/summary.json",
+    "t2-remaining/summary.json"
+  ],
+  "modified_paths": {
+    "src/highway_driver.py": {
+      "original": "7a80e7e92dfaf68444f9944a825ea49eb09f5e5620a69714cc1e9cfb66fab37d",
+      "current": "5c7faec77cca339aebd044b4bb1dadcb146f34d1f4acb419ef61cb421d680584"
+    },
+    "src/traffic.py": {
+      "original": "d456a2e6965a898702476847a68ee19385d76bfc177f73c5da0b20fb047ba64c",
+      "current": "d05904a2f287116e8cf3380c6ced3d6bfdfe84aed8b81e05ba13e319d2b257b8"
+    },
+    "tests/test_endless.py": {
+      "original": "928762d543d129e7bd113e67575800d37b46725274bc05017afcc7f43145138a",
+      "current": "8476159882dd6f588c4b8accd872bf1b294c47b509aeed86ec2a02afc5d1e43d"
+    }
+  },
+  "vehicle_mechanism_unchanged": true,
+  "description": "Current path/preview separation plus nominal-versus-measured yaw-rate tracking, with original physical model, preview distance, IDM and gates."
+}

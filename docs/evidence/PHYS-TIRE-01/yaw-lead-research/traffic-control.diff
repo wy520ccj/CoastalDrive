@@ -1,0 +1,12 @@
+--- main/Driver.control
++++ research/yaw-lead-Driver.control
+@@ -23,7 +23,8 @@
+         if self.target_lateral is not None:
+             target = road.sample_lateral(distance + lookahead, self.target_lateral)
+         dx, dy = target.x - car.position[0], target.y - car.position[1]
+-        error = math.atan2(-dx, dy) - math.radians(car.heading)
++        lead_heading = math.radians(car.heading) + car.dynamics.yaw_rate * (2 / CAR.steering_response)
++        error = math.atan2(-dx, dy) - lead_heading
+         angle = math.degrees(math.atan2(4.4 * math.sin(error), math.hypot(dx, dy)))
+         steering = max(-1, min(1, -angle / steering_limit(car.speed)))
+         desired = self.cruise

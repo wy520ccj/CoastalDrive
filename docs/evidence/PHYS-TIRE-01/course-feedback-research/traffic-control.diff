@@ -1,0 +1,14 @@
+--- main/Driver.control
++++ research/course-Driver.control
+@@ -23,7 +23,10 @@
+         if self.target_lateral is not None:
+             target = road.sample_lateral(distance + lookahead, self.target_lateral)
+         dx, dy = target.x - car.position[0], target.y - car.position[1]
+-        error = math.atan2(-dx, dy) - math.radians(car.heading)
++        course = math.radians(car.heading)
++        if car.velocity is not None and math.hypot(*car.velocity[:2]) > 1:
++            course = math.atan2(-car.velocity[0], car.velocity[1])
++        error = math.atan2(-dx, dy) - course
+         angle = math.degrees(math.atan2(4.4 * math.sin(error), math.hypot(dx, dy)))
+         steering = max(-1, min(1, -angle / steering_limit(car.speed)))
+         desired = self.cruise

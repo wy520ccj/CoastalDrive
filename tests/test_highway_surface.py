@@ -29,6 +29,7 @@ def test_high_speed_crosses_short_slab_seams_without_bouncing():
         for _ in range(240):
             sim.step(Control())
         sim._chassis.setLinearVelocity(Vec3(0, 44, 0))
+        sim.player.tires.initialize_rolling(44)
         for _ in range(2400):
             sim.step(Control(throttle=1))
             car = sim.snapshot().player

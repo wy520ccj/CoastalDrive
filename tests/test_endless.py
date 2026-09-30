@@ -2,11 +2,12 @@ import math
 
 import pytest
 from panda3d.core import Vec3
+from traffic_interaction_check import _run_case
 
 from highway_driver import HighwayDriver, acceleration
 from session import Phase, Session
 from simulation import Control, Simulation, interpolate
-from traffic import Road
+from traffic import Driver, Road
 from vehicle_state import CarState
 
 
@@ -38,6 +39,33 @@ def test_two_drivers_do_not_reserve_the_same_middle_gap():
     right.plan(b, [a, *slow], road, reservations)
     assert left.phase == "signal" and left.target_lane == 1
     assert right.phase == "cruise"
+
+
+def test_forward_preview_is_not_current_path_deviation():
+    road = Road("endless")
+    driver = Driver(1, 20, target_lateral=0.2, preview_lateral=4.5)
+    car = CarState((0, 100, .42), speed=20)
+    action = driver.control(car, [], road, [road.locate(car)])
+    assert not driver.recovering
+    assert action.steering > 0
+    assert action.brake == 0
+
+
+def test_rear_yield_finishes_physically_without_rear_braking_or_contact():
+    def target(sim):
+        driver = sim.drivers[0]
+        driver.preferred_speed = driver.cruise = driver.target_speed = 25.0
+        driver.speed_clock = 100.0
+
+    def hold_player_speed(sim, elapsed):
+        error = 32 - sim.player.snapshot().speed
+        return Control(throttle=max(0, min(1, .55 + error * .08)))
+
+    result = _run_case("rear_approach", 23, 1, 38, 32, [(1, 98, 20)], 8,
+                       configure=target, control_for=hold_player_speed)
+    assert result["passed"], result["failures"]
+    assert result["metrics"]["traffic"][0]["lane_changes"] == 1
+    assert abs(result["metrics"]["traffic"][0]["end_position"][0] - 4.5) < .25
 
 
 def test_cut_in_cancels_before_leaving_original_lane():
@@ -108,6 +136,8 @@ def test_lane_change_uses_vehicle_steering_and_finishes():
     try:
         driver = sim.drivers[0]
         driver.lane = driver.target_lane = 1
+        # 先完成直行准备；避免自动决策在准备期开始换道，又被测试强制重置信号。
+        driver.decision_clock = 1000
         sim.npcs[0].reset((0, 150, 0.55))
         for _ in range(1000):
             sim.step(Control())

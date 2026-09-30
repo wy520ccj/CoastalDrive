@@ -3,15 +3,16 @@
 import math
 
 from panda3d.bullet import BulletBoxShape, BulletRigidBodyNode, BulletVehicle, ZUp
-from panda3d.core import BitMask32, Quat, TransformState, Vec3
+from panda3d.core import BitMask32, TransformState, Vec3
 
 from driver_assist import DriverAssist
 from powertrain import Powertrain
 from vehicle_config import CAR, WHEEL_HUBS
-from vehicle_contacts import read_wheel_contacts, shift_contacts
+from vehicle_contacts import read_wheel_contacts, road_support, shift_contacts
 from vehicle_dynamics import DynamicsState, aerodynamic_force, axle_loads, contact_grade
-from vehicle_state import FIXED_DT, CarState, Control, VehicleCommand, WheelState, forward
+from vehicle_state import FIXED_DT, CarState, Control, VehicleCommand, forward
 from vehicle_steering import SteeringRack, wheel_angles
+from vehicle_tires import Tires
 
 
 class Vehicle:
@@ -39,6 +40,7 @@ class Vehicle:
         self.assist = DriverAssist()
         self.powertrain = Powertrain()
         self.steering = SteeringRack()
+        self.tires = Tires()
         self._drive_pedal = 0.0
         self._brake_pedal = 0.0
         self._acceleration = 0.0
@@ -79,7 +81,7 @@ class Vehicle:
             wheel.setSuspensionStiffness(CAR.suspension_stiffness)
             wheel.setWheelsDampingRelaxation(CAR.suspension_relaxation)
             wheel.setWheelsDampingCompression(CAR.suspension_compression)
-            wheel.setFrictionSlip(CAR.road_grip)
+            wheel.setFrictionSlip(0)
             wheel.setRollInfluence(0.1)
 
         self._chassis = chassis
@@ -92,11 +94,11 @@ class Vehicle:
             position = pose.getMat().xformPoint(Vec3(*hub) - Vec3(0, 0, 0.4))
             wheel.setWorldTransform(TransformState.makePosHpr(position, pose.getHpr()).getMat())
 
-    def reset(self, position, heading=0, pitch=0):
+    def reset(self, position, heading=0, pitch=0, *, speed=0.0):
         self._chassis.setTransform(
             TransformState.makePosHpr(Vec3(*position), Vec3(heading, pitch, 0))
         )
-        self._chassis.setLinearVelocity(Vec3(0, 0, 0))
+        self._chassis.setLinearVelocity(Vec3(*forward(heading)) * speed)
         self._chassis.setAngularVelocity(Vec3(0, 0, 0))
         self._chassis.clearForces()
         self._chassis.setActive(True)
@@ -104,6 +106,8 @@ class Vehicle:
         self.assist = DriverAssist()
         self.powertrain = Powertrain()
         self.steering = SteeringRack()
+        self.tires = Tires()
+        self.tires.initialize_rolling(speed)
         self._drive_pedal = 0.0
         self._brake_pedal = 0.0
         self._acceleration = 0.0
@@ -160,8 +164,8 @@ class Vehicle:
         pedal, brake, direction = command.throttle, command.brake, command.direction
         self._drive_pedal = pedal if direction != 0 and brake == 0 else 0.0
         self._brake_pedal = brake
-        engine_force, engine_drag = self.powertrain.advance(
-            speed, pedal, direction, brake > 0, FIXED_DT
+        drive_torque, engine_drag = self.powertrain.advance(
+            speed, self.tires.driven_omega(self._chassis), pedal, direction, brake > 0, FIXED_DT
         )
         position = pose.getPos()
         road = self.on_asphalt(position.x, position.y)
@@ -169,28 +173,15 @@ class Vehicle:
         front_load, rear_load = (
             axle_loads(self._load_acceleration, grade) if grade is not None else (0.0, 0.0)
         )
-        traction_limited = False
-        touching = False
+        # 自定义轮胎独占切向受力；原生车辆只保留射线悬架和轮心位置。
         for index, wheel in enumerate(self._vehicle.getWheels()):
-            contact = wheel.getRaycastInfo()
-            # Bullet 在重置后仍保留旧接触；第一次世界积分前不使用这些缓存。
-            in_contact = self._contact_ready and contact.isInContact()
-            point = (
-                contact.getContactPointWs() if in_contact
-                else pose.getMat().xformPoint(Vec3(*WHEEL_HUBS[index]))
-            )
-            wheel_road = self.on_asphalt(point.x, point.y)
-            wheel.setFrictionSlip(CAR.road_grip if wheel_road else CAR.grass_grip)
-            mu = CAR.road_friction if wheel_road else CAR.grass_friction
-            touching |= in_contact
-            load = (front_load if index < 2 else rear_load) / 2 if in_contact else 0
-            requested = engine_force / 2 if index >= 2 else 0
-            applied = max(-mu * load, min(mu * load, requested))
-            traction_limited |= abs(applied - requested) > 1
-            self._vehicle.applyEngineForce(applied, index)
-            share = CAR.front_brake_share if index < 2 else 1 - CAR.front_brake_share
-            braking_force = min(CAR.brake_torque * share / 2 / CAR.wheel_radius, mu * load)
-            self._vehicle.setBrake(braking_force * brake * FIXED_DT, index)
+            wheel.setFrictionSlip(0)
+            self._vehicle.applyEngineForce(0, index)
+            self._vehicle.setBrake(0, index)
+        normal_load = sum(
+            contact.normal_load for contact in self._wheel_contacts
+            if contact.in_contact and road_support(contact.contact_normal)
+        )
         horizontal = Vec3(velocity.x, velocity.y, 0)
         horizontal_speed = horizontal.length()
         air_velocity = horizontal - self.wind
@@ -199,13 +190,24 @@ class Vehicle:
         if air_speed > 0.01:
             self._chassis.applyCentralForce(-air_velocity * (aero / air_speed))
         rolling = 0.0
-        if horizontal_speed > 0.01 and touching:
+        if horizontal_speed > 0.01 and normal_load > 0:
             coefficient = CAR.rolling_coefficient if road else CAR.grass_rolling_coefficient
-            rolling = coefficient * (front_load + rear_load) * min(horizontal_speed, 1)
+            rolling = coefficient * normal_load * min(horizontal_speed, 1)
             self._chassis.applyCentralForce(-horizontal * (rolling / horizontal_speed))
-            self._chassis.applyCentralForce(
-                -Vec3(*forward(hpr.x)) * math.copysign(engine_drag, speed)
-            )
+        external_velocity = (
+            self._chassis.getGravity() + self._chassis.getTotalForce() / CAR.mass
+        ) * FIXED_DT
+        external_angular = self._chassis.getInvInertiaTensorWorld().xform(
+            self._chassis.getTotalTorque()
+        ) * FIXED_DT
+        self.tires.advance(
+            self._chassis, self._wheel_contacts, wheel_angles(self.steering.angle),
+            drive_torque, engine_drag, brake, self._contact_tick, FIXED_DT,
+            tuple(external_velocity), tuple(external_angular),
+        )
+        traction_limited = any(
+            state.kappa is not None and abs(state.kappa) > 0.1 for state in self.tires.states
+        )
         local = pose.getQuat().conjugate().xform(velocity)
         sideslip = math.degrees(math.atan2(local.x, abs(local.y))) if horizontal_speed > 1 else 0
         self.dynamics = DynamicsState(
@@ -225,7 +227,7 @@ class Vehicle:
         if self._contact_ready:
             for wheel in self._vehicle.getWheels():
                 contact = wheel.getRaycastInfo()
-                if contact.isInContact():
+                if contact.isInContact() and road_support(tuple(contact.getContactNormalWs())):
                     normals.append(tuple(contact.getContactNormalWs()))
         return contact_grade(heading, normals)
 
@@ -233,6 +235,7 @@ class Vehicle:
         self._contact_ready = True
         self._contact_tick += 1
         self._wheel_contacts = read_wheel_contacts(self._vehicle, self.on_asphalt)
+        self.tires.observe(self._chassis, self._wheel_contacts, self._contact_tick)
         velocity = self._chassis.getLinearVelocity()
         acceleration = (velocity - Vec3(previous_velocity)) / FIXED_DT
         axes = self._chassis.getTransform().getQuat()
@@ -254,15 +257,8 @@ class Vehicle:
         position = transform.getPos()
         hpr = transform.getHpr()
         velocity = self._chassis.getLinearVelocity()
-        wheels = []
         # 交通感知只读取车身状态；四轮姿态仍完整提供给正式Snapshot。
-        if include_wheels:
-            for wheel in self._vehicle.getWheels():
-                # Bullet四轮是刚体矩阵；直接读取，避免每tick创建临时TransformState进入全局缓存。
-                matrix = wheel.getWorldTransform()
-                orientation = Quat()
-                orientation.setFromMatrix(matrix.getUpper3())
-                wheels.append(WheelState(tuple(matrix.getRow3(3)), tuple(orientation)))
+        wheels = self.tires.wheel_poses(self._chassis, self._vehicle) if include_wheels else ()
         return CarState(
             (float(position.x), float(position.y), float(position.z)),
             float(hpr.x),
@@ -282,6 +278,7 @@ class Vehicle:
             velocity=tuple(velocity),
             wheel_contacts=self._wheel_contacts if include_wheels else (),
             contact_tick=self._contact_tick if include_wheels else 0,
+            wheel_dynamics=self.tires.states if include_wheels else (),
         )
 
     def close(self):

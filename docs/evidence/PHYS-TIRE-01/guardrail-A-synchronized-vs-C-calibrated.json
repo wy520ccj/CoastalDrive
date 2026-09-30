@@ -1,0 +1,73 @@
+{
+  "baseline": {
+    "label": "558d218-maxsub0-protocol",
+    "commit": "558d218",
+    "protocol_overlay": "guardrail-A-synchronized/protocol-overlay.json",
+    "simulation_sha256": "da4548ba34b4cafc66d76d2b81389fe8df64f2806a8f2e848942b92fc3f871b6"
+  },
+  "candidate": {
+    "label": "current-C-calibrated-maxsub0",
+    "checkout_commit": "0208dfa3a956fb36907f9a668ade07dafa39185c",
+    "simulation_sha256": "6ed13fe5dc159bb4ee9f5109cd9937601b7889bafedbaa3d81f50a83e3483c99"
+  },
+  "shared_protocol": {
+    "seed": 31,
+    "track": "coastal",
+    "settle_ticks": 120,
+    "initial_speeds_kmh": [
+      60,
+      120
+    ],
+    "sample_ticks": 360,
+    "dt_s": 0.008333333333333333,
+    "bullet_max_substeps": 0,
+    "thresholds": "original 6 m lateral / 45 degree absolute roll"
+  },
+  "cases": [
+    {
+      "speed_kmh": 60,
+      "candidate_minus_baseline": {
+        "peak_upward_velocity": 0.14341706037521362,
+        "peak_lateral": 0.07361602783203125,
+        "peak_abs_roll": -0.36354172229766846
+      },
+      "first_body_collision": {
+        "baseline_sample": 121,
+        "candidate_sample": 121
+      },
+      "collision_count": {
+        "baseline": 1,
+        "candidate": 1
+      },
+      "thresholds": {
+        "baseline_6m": true,
+        "candidate_6m": true,
+        "baseline_45deg": true,
+        "candidate_45deg": true
+      }
+    },
+    {
+      "speed_kmh": 120,
+      "candidate_minus_baseline": {
+        "peak_upward_velocity": -0.8521130084991455,
+        "peak_lateral": 0.007598876953125,
+        "peak_abs_roll": 1.1374273300170898
+      },
+      "first_body_collision": {
+        "baseline_sample": 60,
+        "candidate_sample": 60
+      },
+      "collision_count": {
+        "baseline": 2,
+        "candidate": 1
+      },
+      "thresholds": {
+        "baseline_6m": true,
+        "candidate_6m": true,
+        "baseline_45deg": true,
+        "candidate_45deg": true
+      }
+    }
+  ],
+  "interpretation": "协议统一后的历史A与当前C源码记录；车辆/轮胎模型及扭矩标定亦跨版本变化，差值不单独归因于扭矩曲线。"
+}

@@ -37,7 +37,7 @@ def advance(world, car, control, ticks):
     for _ in range(ticks):
         velocity = Vec3(car._chassis.getLinearVelocity())
         car.apply_control(control)
-        world.doPhysics(FIXED_DT, 4, FIXED_DT)
+        world.doPhysics(FIXED_DT, 0, FIXED_DT)
         car.after_step(velocity)
 
 

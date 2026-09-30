@@ -1,0 +1,314 @@
+{
+  "started_utc": "2026-09-30T18:43:13.684156+00:00",
+  "git_head": "0208dfa3a956fb36907f9a668ade07dafa39185c",
+  "git_status": "M docs/current-progress.md\n M docs/evidence/PHYS-TIRE-01/README.md\n M docs/physics-roadmap.md\n M docs/tasks/PHYS-TIRE-01.md\n M src/powertrain.py\n M src/simulation.py\n M src/vehicle.py\n M src/vehicle_config.py\n M src/vehicle_contacts.py\n M src/vehicle_state.py\n M tests/test_core.py\n M tests/test_curved_boundaries.py\n M tests/test_driving_response.py\n M tests/test_endless.py\n M tests/test_h1_vehicle.py\n M tests/test_h2_map.py\n M tests/test_h3_review.py\n M tests/test_h4a_traffic.py\n M tests/test_highway_surface.py\n M tests/test_impact_events.py\n M tests/test_impact_integration.py\n M tests/test_physics_testbed.py\n M tests/test_road_loads.py\n M tests/test_vehicle_commands.py\n M tests/test_vehicle_contacts.py\n M tools/physics/guardrail_probe.py\n M tools/physics/steering_geometry_probe.py\n M tools/physics/testbed.py\n M tools/traffic_interaction_check.py\n M tools/validate.py\n?? docs/evidence/PHYS-TIRE-01/comparison-A-B.json\n?? docs/evidence/PHYS-TIRE-01/comparison-B-C.json\n?? docs/evidence/PHYS-TIRE-01/comparison.json\n?? docs/evidence/PHYS-TIRE-01/coupling-probe-final/\n?? docs/evidence/PHYS-TIRE-01/coupling-probe-static/\n?? docs/evidence/PHYS-TIRE-01/coupling-probe-synchronized/\n?? docs/evidence/PHYS-TIRE-01/coupling-probe/\n?? docs/evidence/PHYS-TIRE-01/guardrail-A-synchronized-vs-C-calibrated.json\n?? docs/evidence/PHYS-TIRE-01/guardrail-A-synchronized/\n?? docs/evidence/PHYS-TIRE-01/guardrail-C-calibrated/\n?? docs/evidence/PHYS-TIRE-01/guardrail-episode-accounting.json\n?? docs/evidence/PHYS-TIRE-01/h1-calibration-trial.txt\n?? docs/evidence/PHYS-TIRE-01/h1-static-raw.txt\n?? docs/evidence/PHYS-TIRE-01/impact-fixtures/\n?? docs/evidence/PHYS-TIRE-01/model-observations.json\n?? docs/evidence/PHYS-TIRE-01/standard-A-synchronized/\n?? docs/evidence/PHYS-TIRE-01/standard-A/\n?? docs/evidence/PHYS-TIRE-01/standard-B-no-electronics/\n?? docs/evidence/PHYS-TIRE-01/standard-B-static/\n?? docs/evidence/PHYS-TIRE-01/standard-B-v2/\n?? docs/evidence/PHYS-TIRE-01/standard-B/\n?? docs/evidence/PHYS-TIRE-01/standard-C-calibrated/\n?? docs/evidence/PHYS-TIRE-01/t0-coupling/\n?? docs/evidence/PHYS-TIRE-01/t0-final/\n?? docs/evidence/PHYS-TIRE-01/t1-final/\n?? docs/evidence/PHYS-TIRE-01/t1-trial/\n?? docs/evidence/PHYS-TIRE-01/t1-verified/\n?? docs/evidence/PHYS-TIRE-01/tight-A-synchronized/\n?? docs/evidence/PHYS-TIRE-01/tight-B-static/\n?? docs/evidence/PHYS-TIRE-01/tight-B/\n?? docs/evidence/PHYS-TIRE-01/tight-C-calibrated/\n?? docs/tasks/PHYS-MODES-01.md\n?? src/tire_forces.py\n?? src/vehicle_tires.py\n?? src/wheel_dynamics.py\n?? tests/test_tire_forces.py\n?? tests/test_vehicle_tires.py\n?? tests/test_wheel_dynamics.py\n?? tools/physics/lane_change_probe.py\n?? tools/physics/tire_dynamics_probe.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [],
+  "tier": "T2",
+  "status": "failed",
+  "passed": false,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.191
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 603.865
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.269
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.123
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.239
+    },
+    {
+      "name": "handling",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/h1_benchmark.py",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\handling"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\handling\\handling.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\handling.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 6.133
+    },
+    {
+      "name": "surface",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/curve_surface_check.py",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\surface.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\surface.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\surface.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 6.508
+    },
+    {
+      "name": "interactions",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/traffic_interaction_check.py",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\interactions.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\interactions.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\interactions.log",
+      "status": "failed",
+      "returncode": 1,
+      "error": "process exited 1",
+      "seconds": 15.034
+    },
+    {
+      "name": "finite-coastal",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/h4a_traffic_check.py",
+        "--track",
+        "coastal",
+        "--seconds",
+        "30",
+        "--seed",
+        "23",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\finite-coastal.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\finite-coastal.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\finite-coastal.log",
+      "status": "not_run"
+    },
+    {
+      "name": "finite-highway",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/h4a_traffic_check.py",
+        "--track",
+        "highway",
+        "--seconds",
+        "30",
+        "--seed",
+        "23",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\finite-highway.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\finite-highway.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\finite-highway.log",
+      "status": "not_run"
+    },
+    {
+      "name": "straight-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/endless_check.py",
+        "--seconds",
+        "120",
+        "--seed",
+        "0",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\straight-0"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\straight-0\\seed-0.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\straight-0.log",
+      "status": "not_run"
+    },
+    {
+      "name": "hills-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/curve_drive_check.py",
+        "--shape",
+        "hills",
+        "--seconds",
+        "120",
+        "--seed",
+        "0",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\hills-0.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\hills-0.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\hills-0.log",
+      "status": "not_run"
+    },
+    {
+      "name": "straight-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/endless_check.py",
+        "--seconds",
+        "120",
+        "--seed",
+        "17",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\straight-17"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\straight-17\\seed-17.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\straight-17.log",
+      "status": "not_run"
+    },
+    {
+      "name": "hills-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/curve_drive_check.py",
+        "--shape",
+        "hills",
+        "--seconds",
+        "120",
+        "--seed",
+        "17",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\hills-17.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\hills-17.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\hills-17.log",
+      "status": "not_run"
+    },
+    {
+      "name": "straight-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/endless_check.py",
+        "--seconds",
+        "120",
+        "--seed",
+        "23",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\straight-23"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\straight-23\\seed-23.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\straight-23.log",
+      "status": "not_run"
+    },
+    {
+      "name": "hills-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/curve_drive_check.py",
+        "--shape",
+        "hills",
+        "--seconds",
+        "120",
+        "--seed",
+        "23",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\hills-23.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\hills-23.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t2-final\\hills-23.log",
+      "status": "not_run"
+    }
+  ]
+}

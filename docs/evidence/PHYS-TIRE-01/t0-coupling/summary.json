@@ -1,0 +1,61 @@
+{
+  "started_utc": "2026-09-30T17:26:56.279373+00:00",
+  "git_head": "0208dfa3a956fb36907f9a668ade07dafa39185c",
+  "git_status": "M src/powertrain.py\n M src/simulation.py\n M src/vehicle.py\n M src/vehicle_config.py\n M src/vehicle_contacts.py\n M src/vehicle_state.py\n M tests/test_driving_response.py\n M tests/test_physics_testbed.py\n M tests/test_vehicle_contacts.py\n M tools/physics/steering_geometry_probe.py\n M tools/physics/testbed.py\n M tools/validate.py\n?? docs/evidence/PHYS-TIRE-01/standard-B-no-electronics/\n?? docs/evidence/PHYS-TIRE-01/standard-B-v2/\n?? src/tire_forces.py\n?? src/vehicle_tires.py\n?? src/wheel_dynamics.py\n?? tests/test_tire_forces.py\n?? tests/test_vehicle_tires.py\n?? tests/test_wheel_dynamics.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_tire_forces.py",
+    "tests/test_wheel_dynamics.py",
+    "tests/test_vehicle_tires.py",
+    "tests/test_vehicle_contacts.py",
+    "tests/test_physics_testbed.py",
+    "tests/test_driving_response.py"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t0-coupling\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.112
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_tire_forces.py",
+        "tests/test_wheel_dynamics.py",
+        "tests/test_vehicle_tires.py",
+        "tests/test_vehicle_contacts.py",
+        "tests/test_physics_testbed.py",
+        "tests/test_driving_response.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-TIRE-01\\t0-coupling\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 8.557
+    }
+  ]
+}

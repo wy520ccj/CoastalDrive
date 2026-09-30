@@ -83,10 +83,12 @@ def _run_case(case, radius, sign, output_dir):
         for _ in range(240):
             previous = vehicle._chassis.getLinearVelocity()
             vehicle.apply_control(testbed.Control())
-            world.doPhysics(testbed.FIXED_DT, 4, testbed.FIXED_DT)
+            world.doPhysics(testbed.FIXED_DT, 0, testbed.FIXED_DT)
             vehicle.after_step(previous)
 
         vehicle._chassis.setLinearVelocity(Vec3(*testbed.forward(0)) * INITIAL_SPEED_MPS)
+        if testbed._tire_modules:
+            vehicle.tires.initialize_rolling(INITIAL_SPEED_MPS)
         csv_path = output_dir / f"{case}.csv"
         fieldnames = [
             "time_s",
@@ -131,7 +133,7 @@ def _run_case(case, radius, sign, output_dir):
                 control = _control(center_angle, before.speed)
                 previous = vehicle._chassis.getLinearVelocity()
                 vehicle.apply_control(control)
-                world.doPhysics(testbed.FIXED_DT, 4, testbed.FIXED_DT)
+                world.doPhysics(testbed.FIXED_DT, 0, testbed.FIXED_DT)
                 vehicle.after_step(previous)
                 state = vehicle.snapshot()
                 actual_angles, contact_points, lateral_velocities = _sample(vehicle, state)
@@ -225,6 +227,7 @@ def _source_sha256():
         "vehicle_dynamics",
         "vehicle_contacts",
         *testbed._response_modules,
+        *testbed._tire_modules,
     )
     return {
         name: hashlib.sha256((source_dir / f"{name}.py").read_bytes()).hexdigest()
@@ -266,6 +269,17 @@ def run(output, source_dir=None, label=None):
             },
             "steering": "center_angle / steering_limit(abs(speed)); no path correction",
             "summary_window_s": [WINDOW_START_S, WINDOW_END_S],
+        },
+        "rolling_initialization": (
+            "after setting chassis initial velocity, call vehicle.tires.initialize_rolling(speed) once; no runtime realignment"
+            if testbed._tire_modules
+            else "legacy layout has no separate wheel spin state; no explicit rolling initialization"
+        ),
+        "sampling": {
+            "physics_hz": 1 / testbed.FIXED_DT,
+            "csv_every_completed_ticks": SAMPLE_EVERY_TICKS,
+            "csv_hz": 1 / (SAMPLE_EVERY_TICKS * testbed.FIXED_DT),
+            "summary_window_accumulation": "every physics tick with timestamp in [8, 12] seconds",
         },
         "wheel_lateral_velocity_definition": (
             "rigid-body contact-point velocity projected onto each wheel-plane lateral axis; "

@@ -1,0 +1,26 @@
+--- main/traffic.py
++++ research/traffic.py
+@@ -7,6 +7,7 @@
+ from driver_assist import steering_limit
+ from highway_curve import HighwayCurve
+ from highway_map import HIGHWAY_LENGTH, lane_x
++from vehicle_config import CAR
+ from vehicle_state import Control
+ 
+ # Include the accepted player body and exposed tyres in clearance queries.
+@@ -111,7 +112,14 @@
+             target = road.sample_lateral(distance + lookahead, preview)
+         dx, dy = target.x - car.position[0], target.y - car.position[1]
+         error = math.atan2(-dx, dy) - math.radians(car.heading)
+-        angle = math.degrees(math.atan2(4.4 * math.sin(error), math.hypot(dx, dy)))
++        distance_to_target = math.hypot(dx, dy)
++        nominal_yaw_rate = 2 * car.speed * math.sin(error) / distance_to_target
++        augmented_error = error + (2 / CAR.steering_response) * (nominal_yaw_rate - car.dynamics.yaw_rate)
++        self.probe_yaw_reference = nominal_yaw_rate
++        self.probe_yaw_actual = car.dynamics.yaw_rate
++        self.probe_error = error
++        self.probe_augmented_error = augmented_error
++        angle = math.degrees(math.atan2(4.4 * math.sin(augmented_error), distance_to_target))
+         steering = max(-1, min(1, -angle / steering_limit(car.speed)))
+         desired = self.cruise
+         if not road.closed and not road.endless:

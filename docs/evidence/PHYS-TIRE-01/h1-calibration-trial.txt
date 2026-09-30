@@ -1,0 +1,20 @@
+...                                                                      [100%]
+3 passed in 5.32s
+
+MEASUREMENTS
+{
+  "engine_torque_scale": 1.055,
+  "pytest_exit": 0,
+  "startup": {
+    "speed_m_s": 10.386799812316895,
+    "travel_m": 12.44400405883789
+  },
+  "speed_22s_kmh": 154.13663177490236,
+  "ramp": {
+    "max_height": 1.2792637348175049,
+    "max_pitch": 7.896228790283203,
+    "final_y": 57.43492126464844
+  },
+  "zero_to_100_s": 9.525,
+  "braking_distance_m": 46.26103210449219
+}

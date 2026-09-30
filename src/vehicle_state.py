@@ -50,6 +50,37 @@ class WheelContactState:
 
 
 @dataclass(frozen=True)
+class WheelDynamicsState:
+    """采样轮速/滑移与施力阶段分别记账；force_contact_tick指向采用的轮荷。"""
+
+    omega: float = 0.0
+    rotation: float = 0.0
+    relative_omega: float = 0.0
+    longitudinal_speed: float = 0.0
+    lateral_speed: float = 0.0
+    kappa: float | None = None
+    alpha: float | None = None
+    fx: float = 0.0
+    fy: float = 0.0
+    drive_torque: float = 0.0
+    brake_capacity: float = 0.0
+    brake_torque: float = 0.0
+    normal_load: float = 0.0
+    road_support: bool = False
+    steering: float = 0.0
+    force_contact_tick: int = 0
+    force_residual: float = 0.0
+    force_kappa: float | None = None
+    force_alpha: float | None = None
+    sample_support: bool = False
+    sample_tick: int = 0
+    force_mode: str = "uninitialized"
+    longitudinal_impulse: float = 0.0
+    lateral_impulse: float = 0.0
+    brake_angular_impulse: float = 0.0
+
+
+@dataclass(frozen=True)
 class CarState:
     position: tuple[float, float, float]
     heading: float = 0.0
@@ -73,6 +104,7 @@ class CarState:
     hazards: bool = False
     wheel_contacts: tuple[WheelContactState, ...] = ()
     contact_tick: int = 0
+    wheel_dynamics: tuple[WheelDynamicsState, ...] = ()
 
 
 def forward(heading):

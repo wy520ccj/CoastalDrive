@@ -1,0 +1,162 @@
+{
+  "baseline": "docs\\evidence\\PHYS-TIRE-01\\standard-A-synchronized\\summary.json",
+  "candidate": "docs\\evidence\\PHYS-TIRE-01\\standard-B-static\\summary.json",
+  "baseline_source_version": "PHYS04-558d218-common-120Hz-step",
+  "candidate_source_version": "PHYS-TIRE-01-raw-B-wheel-inertia",
+  "config_delta_candidate_minus_baseline": {},
+  "config_added_candidate": {
+    "wheel_inertia": 1.8,
+    "rear_lateral_stiffness": 50000.0,
+    "static_contact_speed": 0.25,
+    "longitudinal_stiffness": 60000.0,
+    "tire_curvature": 0.97,
+    "lateral_stiffness": 50000.0,
+    "slip_speed": 1.0,
+    "tire_shape": 1.9,
+    "tire_substeps": 2
+  },
+  "config_removed_candidate": {},
+  "cases": {
+    "circle_20m": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_horizontal_speed_mps": -0.0036490589656983374,
+        "final_speed_mps": -0.0019288063049316406,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": -0.02999025583267212,
+        "max_abs_sideslip_deg": -0.36852913618693117,
+        "max_abs_yaw_rate_rad_s": -0.001665353775024414,
+        "max_lateral_acceleration_mps2": -0.009641528129577637,
+        "max_speed_mps": 0.0012788748926695348,
+        "min_speed_mps": 0.0020515217937235875,
+        "path_length_m": 0.0329352254958053,
+        "sample_stride_ticks": 0,
+        "target_radius_m": 0.0,
+        "target_speed_mps": 0.0,
+        "ticks": 0,
+        "yaw_change_deg": 1.3707427978515625
+      }
+    },
+    "circle_40m": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_horizontal_speed_mps": -0.0008303341890751881,
+        "final_speed_mps": -0.0004048347473144531,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": -0.02999013662338257,
+        "max_abs_sideslip_deg": -0.18226768952885153,
+        "max_abs_yaw_rate_rad_s": -0.0006854385137557983,
+        "max_lateral_acceleration_mps2": -0.0038289427757263184,
+        "max_speed_mps": 0.0012798303654655285,
+        "min_speed_mps": 0.0029637142499900904,
+        "path_length_m": 0.06584687543605128,
+        "sample_stride_ticks": 0,
+        "target_radius_m": 0.0,
+        "target_speed_mps": 0.0,
+        "ticks": 0,
+        "yaw_change_deg": 0.5833587646484375
+      }
+    },
+    "circle_60m": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_horizontal_speed_mps": -0.00031700577777638017,
+        "final_speed_mps": -0.00012826919555664062,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": -0.029932856559753418,
+        "max_abs_sideslip_deg": -0.1212675233405176,
+        "max_abs_yaw_rate_rad_s": -0.0004390627145767212,
+        "max_lateral_acceleration_mps2": -0.0024397969245910645,
+        "max_speed_mps": 0.0012798306932841896,
+        "min_speed_mps": 0.003096061159341801,
+        "path_length_m": 0.07178990877319791,
+        "sample_stride_ticks": 0,
+        "target_radius_m": 0.0,
+        "target_speed_mps": 0.0,
+        "ticks": 0,
+        "yaw_change_deg": 0.3763236999511719
+      }
+    },
+    "corner_braking": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_horizontal_speed_mps": -0.025478643972293543,
+        "final_speed_mps": 0.02545546763576567,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": -0.36783266067504883,
+        "max_abs_sideslip_deg": 0.14492352405488207,
+        "max_abs_yaw_rate_rad_s": 0.016806304454803467,
+        "max_lateral_acceleration_mps2": -0.0015805959701538086,
+        "max_speed_mps": 0.00024604773947700664,
+        "min_speed_mps": -0.000481399236022788,
+        "path_length_m": 0.3983936079271402,
+        "sample_stride_ticks": 0,
+        "stopped_at_s": 0.08333333333333304,
+        "ticks": 0,
+        "yaw_change_deg": -0.6794004440307617
+      }
+    },
+    "flat_acceleration": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_horizontal_speed_mps": -1.293256297708627,
+        "final_speed_mps": -1.2932567596435547,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": -0.2717757225036621,
+        "max_abs_sideslip_deg": 0.013497962755369693,
+        "max_abs_yaw_rate_rad_s": 0.00016213826893363148,
+        "max_lateral_acceleration_mps2": 0.007479817606508732,
+        "max_speed_mps": -1.293256297708627,
+        "min_speed_mps": -1.1363495323628657e-06,
+        "path_length_m": -9.690045307842325,
+        "sample_stride_ticks": 0,
+        "ticks": 0,
+        "yaw_change_deg": -0.009890928864535908
+      }
+    },
+    "split_mu_braking": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 15,
+        "duration_s": 0.7666666666666666,
+        "final_horizontal_speed_mps": 0.007162688440522855,
+        "final_speed_mps": -0.02315080538392067,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": -0.8364953994750977,
+        "max_abs_sideslip_deg": 89.72490776251534,
+        "max_abs_yaw_rate_rad_s": 2.192884251475334,
+        "max_lateral_acceleration_mps2": 6.221428096294403,
+        "max_speed_mps": 0.0016326904296875,
+        "min_speed_mps": 0.007162688440522855,
+        "path_length_m": 6.122342129675445,
+        "sample_stride_ticks": 0,
+        "stopped_at_s": 0.7666666666666666,
+        "ticks": 92,
+        "yaw_change_deg": 316.78602266311646
+      }
+    },
+    "steering_step": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_horizontal_speed_mps": 0.01835450275118866,
+        "final_speed_mps": 0.01880645751953125,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": -0.033391594886779785,
+        "max_abs_sideslip_deg": -0.33616549085499525,
+        "max_abs_yaw_rate_rad_s": -0.0020275115966796875,
+        "max_lateral_acceleration_mps2": -0.01974344253540039,
+        "max_speed_mps": 0.00024890899658558396,
+        "min_speed_mps": 0.01835450275118866,
+        "path_length_m": 0.06281373648798905,
+        "sample_stride_ticks": 0,
+        "ticks": 0,
+        "yaw_change_deg": 0.7147388458251953
+      }
+    }
+  }
+}

@@ -1,0 +1,1210 @@
+{
+  "seed": 0,
+  "seconds": 120.0,
+  "mileage": 0.0,
+  "wall_seconds": 159.93032800000037,
+  "passed": true,
+  "failures": [],
+  "trace": [
+    {
+      "time": 1.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 0,
+      "transform_states": 182
+    },
+    {
+      "time": 2.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 0,
+      "transform_states": 182
+    },
+    {
+      "time": 3.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 0,
+      "transform_states": 182
+    },
+    {
+      "time": 4.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 0,
+      "transform_states": 182
+    },
+    {
+      "time": 5.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 0,
+      "transform_states": 182
+    },
+    {
+      "time": 6.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 0,
+      "transform_states": 182
+    },
+    {
+      "time": 7.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 0,
+      "transform_states": 182
+    },
+    {
+      "time": 8.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 0,
+      "transform_states": 182
+    },
+    {
+      "time": 9.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 0,
+      "transform_states": 182
+    },
+    {
+      "time": 10.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 1,
+      "transform_states": 182
+    },
+    {
+      "time": 11.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 7,
+      "transform_states": 182
+    },
+    {
+      "time": 12.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 7,
+      "transform_states": 182
+    },
+    {
+      "time": 13.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 7,
+      "transform_states": 182
+    },
+    {
+      "time": 14.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 7,
+      "transform_states": 182
+    },
+    {
+      "time": 15.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 7,
+      "transform_states": 182
+    },
+    {
+      "time": 16.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 7,
+      "transform_states": 182
+    },
+    {
+      "time": 17.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 7,
+      "transform_states": 182
+    },
+    {
+      "time": 18.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 8,
+      "transform_states": 182
+    },
+    {
+      "time": 19.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 8,
+      "transform_states": 182
+    },
+    {
+      "time": 20.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 8,
+      "transform_states": 182
+    },
+    {
+      "time": 21.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 8,
+      "transform_states": 182
+    },
+    {
+      "time": 22.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 9,
+      "transform_states": 182
+    },
+    {
+      "time": 23.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 11,
+      "transform_states": 182
+    },
+    {
+      "time": 24.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 12,
+      "transform_states": 182
+    },
+    {
+      "time": 25.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 13,
+      "transform_states": 182
+    },
+    {
+      "time": 26.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 13,
+      "transform_states": 182
+    },
+    {
+      "time": 27.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 13,
+      "transform_states": 182
+    },
+    {
+      "time": 28.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 14,
+      "transform_states": 182
+    },
+    {
+      "time": 29.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 14,
+      "transform_states": 182
+    },
+    {
+      "time": 30.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 0,
+      "lane_changes": 14,
+      "transform_states": 182
+    },
+    {
+      "time": 31.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 1,
+      "lane_changes": 15,
+      "transform_states": 182
+    },
+    {
+      "time": 32.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 1,
+      "lane_changes": 15,
+      "transform_states": 182
+    },
+    {
+      "time": 33.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 1,
+      "lane_changes": 15,
+      "transform_states": 182
+    },
+    {
+      "time": 34.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 1,
+      "lane_changes": 15,
+      "transform_states": 182
+    },
+    {
+      "time": 35.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 1,
+      "lane_changes": 15,
+      "transform_states": 182
+    },
+    {
+      "time": 36.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 194,
+      "rebases": 0,
+      "cycles": 1,
+      "lane_changes": 15,
+      "transform_states": 182
+    },
+    {
+      "time": 37.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 2,
+      "lane_changes": 16,
+      "transform_states": 182
+    },
+    {
+      "time": 38.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 2,
+      "lane_changes": 16,
+      "transform_states": 182
+    },
+    {
+      "time": 39.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 4,
+      "lane_changes": 16,
+      "transform_states": 182
+    },
+    {
+      "time": 40.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 4,
+      "lane_changes": 16,
+      "transform_states": 182
+    },
+    {
+      "time": 41.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 5,
+      "lane_changes": 16,
+      "transform_states": 182
+    },
+    {
+      "time": 42.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 6,
+      "lane_changes": 16,
+      "transform_states": 182
+    },
+    {
+      "time": 43.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 6,
+      "lane_changes": 17,
+      "transform_states": 182
+    },
+    {
+      "time": 44.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 7,
+      "lane_changes": 17,
+      "transform_states": 182
+    },
+    {
+      "time": 45.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 7,
+      "lane_changes": 17,
+      "transform_states": 182
+    },
+    {
+      "time": 46.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 8,
+      "lane_changes": 18,
+      "transform_states": 182
+    },
+    {
+      "time": 47.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 8,
+      "lane_changes": 18,
+      "transform_states": 182
+    },
+    {
+      "time": 48.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 8,
+      "lane_changes": 18,
+      "transform_states": 182
+    },
+    {
+      "time": 49.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 8,
+      "lane_changes": 18,
+      "transform_states": 182
+    },
+    {
+      "time": 50.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 9,
+      "lane_changes": 19,
+      "transform_states": 182
+    },
+    {
+      "time": 51.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 9,
+      "lane_changes": 20,
+      "transform_states": 182
+    },
+    {
+      "time": 52.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 9,
+      "lane_changes": 20,
+      "transform_states": 182
+    },
+    {
+      "time": 53.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 10,
+      "lane_changes": 21,
+      "transform_states": 182
+    },
+    {
+      "time": 54.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 11,
+      "lane_changes": 21,
+      "transform_states": 182
+    },
+    {
+      "time": 55.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 12,
+      "lane_changes": 21,
+      "transform_states": 182
+    },
+    {
+      "time": 56.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 12,
+      "lane_changes": 21,
+      "transform_states": 182
+    },
+    {
+      "time": 57.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 12,
+      "lane_changes": 21,
+      "transform_states": 182
+    },
+    {
+      "time": 58.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 15,
+      "lane_changes": 22,
+      "transform_states": 182
+    },
+    {
+      "time": 59.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 15,
+      "lane_changes": 22,
+      "transform_states": 182
+    },
+    {
+      "time": 60.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 15,
+      "lane_changes": 22,
+      "transform_states": 182
+    },
+    {
+      "time": 61.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 16,
+      "lane_changes": 24,
+      "transform_states": 182
+    },
+    {
+      "time": 62.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 16,
+      "lane_changes": 24,
+      "transform_states": 182
+    },
+    {
+      "time": 63.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 16,
+      "lane_changes": 24,
+      "transform_states": 182
+    },
+    {
+      "time": 64.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 16,
+      "lane_changes": 24,
+      "transform_states": 182
+    },
+    {
+      "time": 65.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 17,
+      "lane_changes": 24,
+      "transform_states": 182
+    },
+    {
+      "time": 66.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 17,
+      "lane_changes": 24,
+      "transform_states": 182
+    },
+    {
+      "time": 67.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 17,
+      "lane_changes": 24,
+      "transform_states": 182
+    },
+    {
+      "time": 68.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 17,
+      "lane_changes": 24,
+      "transform_states": 182
+    },
+    {
+      "time": 69.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 17,
+      "lane_changes": 25,
+      "transform_states": 182
+    },
+    {
+      "time": 70.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 17,
+      "lane_changes": 25,
+      "transform_states": 182
+    },
+    {
+      "time": 71.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 25,
+      "transform_states": 182
+    },
+    {
+      "time": 72.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 25,
+      "transform_states": 182
+    },
+    {
+      "time": 73.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 26,
+      "transform_states": 182
+    },
+    {
+      "time": 74.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 26,
+      "transform_states": 182
+    },
+    {
+      "time": 75.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 26,
+      "transform_states": 182
+    },
+    {
+      "time": 76.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 26,
+      "transform_states": 182
+    },
+    {
+      "time": 77.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 26,
+      "transform_states": 182
+    },
+    {
+      "time": 78.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 27,
+      "transform_states": 182
+    },
+    {
+      "time": 79.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 27,
+      "transform_states": 182
+    },
+    {
+      "time": 80.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 27,
+      "transform_states": 182
+    },
+    {
+      "time": 81.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 27,
+      "transform_states": 182
+    },
+    {
+      "time": 82.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 28,
+      "transform_states": 182
+    },
+    {
+      "time": 83.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 29,
+      "transform_states": 182
+    },
+    {
+      "time": 84.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 29,
+      "transform_states": 182
+    },
+    {
+      "time": 85.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 30,
+      "transform_states": 182
+    },
+    {
+      "time": 86.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 30,
+      "transform_states": 182
+    },
+    {
+      "time": 87.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 30,
+      "transform_states": 182
+    },
+    {
+      "time": 88.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 32,
+      "transform_states": 182
+    },
+    {
+      "time": 89.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 32,
+      "transform_states": 182
+    },
+    {
+      "time": 90.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 32,
+      "transform_states": 182
+    },
+    {
+      "time": 91.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 33,
+      "transform_states": 182
+    },
+    {
+      "time": 92.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 33,
+      "transform_states": 182
+    },
+    {
+      "time": 93.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 33,
+      "transform_states": 182
+    },
+    {
+      "time": 94.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 33,
+      "transform_states": 182
+    },
+    {
+      "time": 95.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 33,
+      "transform_states": 182
+    },
+    {
+      "time": 96.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 34,
+      "transform_states": 182
+    },
+    {
+      "time": 97.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 34,
+      "transform_states": 182
+    },
+    {
+      "time": 98.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 34,
+      "transform_states": 182
+    },
+    {
+      "time": 99.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 34,
+      "transform_states": 182
+    },
+    {
+      "time": 100.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 35,
+      "transform_states": 182
+    },
+    {
+      "time": 101.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 36,
+      "transform_states": 182
+    },
+    {
+      "time": 102.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 36,
+      "transform_states": 182
+    },
+    {
+      "time": 103.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 36,
+      "transform_states": 182
+    },
+    {
+      "time": 104.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 37,
+      "transform_states": 182
+    },
+    {
+      "time": 105.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 37,
+      "transform_states": 182
+    },
+    {
+      "time": 106.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 37,
+      "transform_states": 182
+    },
+    {
+      "time": 107.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 37,
+      "transform_states": 182
+    },
+    {
+      "time": 108.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 37,
+      "transform_states": 182
+    },
+    {
+      "time": 109.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 37,
+      "transform_states": 182
+    },
+    {
+      "time": 110.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 37,
+      "transform_states": 182
+    },
+    {
+      "time": 111.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 37,
+      "transform_states": 182
+    },
+    {
+      "time": 112.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 38,
+      "transform_states": 182
+    },
+    {
+      "time": 113.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 38,
+      "transform_states": 182
+    },
+    {
+      "time": 114.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 39,
+      "transform_states": 182
+    },
+    {
+      "time": 115.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 40,
+      "transform_states": 182
+    },
+    {
+      "time": 116.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 40,
+      "transform_states": 182
+    },
+    {
+      "time": 117.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 40,
+      "transform_states": 182
+    },
+    {
+      "time": 118.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 40,
+      "transform_states": 182
+    },
+    {
+      "time": 119.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 40,
+      "transform_states": 182
+    },
+    {
+      "time": 120.0,
+      "mileage": 0.0,
+      "segments": 13,
+      "bodies": 195,
+      "rebases": 0,
+      "cycles": 18,
+      "lane_changes": 40,
+      "transform_states": 182
+    }
+  ]
+}

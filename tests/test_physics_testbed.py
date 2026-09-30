@@ -31,14 +31,14 @@ def test_split_mu_assigns_different_surfaces_to_each_side():
         for _ in range(240):
             previous = vehicle._chassis.getLinearVelocity()
             vehicle.apply_control(Control())
-            world.doPhysics(FIXED_DT, 4, FIXED_DT)
+            world.doPhysics(FIXED_DT, 0, FIXED_DT)
             vehicle.after_step(previous)
         surfaces = _wheel_surface_types(vehicle)
         assert surfaces.count("asphalt") == 2
         assert surfaces.count("grass") == 2
-        for wheel in vehicle._vehicle.getWheels():
-            x = wheel.getRaycastInfo().getContactPointWs().x
-            assert wheel.getFrictionSlip() == pytest.approx(1.4 if x < 0 else 0.8)
+        contact_surfaces = tuple(contact.surface for contact in vehicle.snapshot().wheel_contacts)
+        assert contact_surfaces.count("asphalt") == 2
+        assert contact_surfaces.count("grass") == 2
     finally:
         vehicle.close()
 
@@ -49,6 +49,10 @@ def test_report_records_exact_tick_rate_inputs_and_split_mu(tmp_path):
     assert report["fixed_dt_s"] == 1 / 120
     assert report["commands"]["steering_step"].startswith("40 km/h initial; coast 0.5 s")
     assert report["environment"]["split_mu_boundary_x_m"] == 0
+    assert "initialize_rolling" in report["rolling_initialization"]
+    assert {"tire_forces", "wheel_dynamics", "vehicle_tires"} <= report["source_sha256"].keys()
+    assert report["sampling"]["physics_hz"] == 120
+    assert report["sampling"]["csv_hz"] == 20
     assert len(report["summaries"]) == 7
     saved = json.loads((tmp_path / "trial" / "summary.json").read_text(encoding="utf-8"))
     assert saved["physics_hz"] == 120
@@ -62,6 +66,8 @@ def test_report_records_exact_tick_rate_inputs_and_split_mu(tmp_path):
     assert float(samples[0]["time_s"]) == int(samples[0]["tick"]) * FIXED_DT
     assert "wheel0.position.0" in samples[0]
     assert "state.dynamics.yaw_rate" in samples[0]
+    assert "state.wheel_dynamics.0.omega" in samples[0]
+    assert "state.wheel_dynamics.0.force_residual" in samples[0]
     assert "input.steering" in samples[0]
 
 

@@ -713,7 +713,8 @@ class Simulation:
                 car.apply_command(action)
             else:
                 car.apply_control(action)
-        self._world.doPhysics(FIXED_DT, 4, FIXED_DT)
+        # 外层已固定120Hz；禁用Bullet二次累积/显示插值，接触与车体保持同一物理时刻。
+        self._world.doPhysics(FIXED_DT, 0, FIXED_DT)
         self._read_impact_contacts(before)
         for (car, _), velocity in zip(cars, velocities):
             car.after_step(velocity)
@@ -848,6 +849,7 @@ def interpolate(previous: Snapshot, current: Snapshot, alpha: float):
             b.hazards,
             b.wheel_contacts,
             b.contact_tick,
+            b.wheel_dynamics,
         )
 
     return replace(

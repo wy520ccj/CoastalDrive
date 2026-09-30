@@ -277,6 +277,7 @@ class HighwayDriver(Driver):
         self.phase, self.signal = "cruise", 0
         self.target_lane = self.lane
         self.target_lateral = None
+        self.preview_lateral = None
         self.cooldown = self.rng.uniform(5, 9)
         self.decision_clock = self.rng.uniform(0.6, 1.2)
         self.clear_time = self.waiting = 0.0
@@ -305,14 +306,12 @@ class HighwayDriver(Driver):
             return Control(steering.steering, action.throttle, action.brake)
         if self.phase == "changing":
             lookahead = 5 + abs(car.speed) * 0.65
-            t = max(0, min(1, (car.position[1] + lookahead - self.start_y) / self.change_length))
-            smooth = t * t * t * (10 - 15 * t + 6 * t * t)
-            self.target_lateral = (
-                road.lanes[self.lane]
-                + (road.lanes[self.target_lane] - road.lanes[self.lane]) * smooth
-            )
+            # 恢复判据比较当前位置的计划路径，纯追踪读取前方预瞄点。
+            self.target_lateral = self.change_lateral(road, car.position[1])
+            self.preview_lateral = self.change_lateral(road, car.position[1] + lookahead)
         else:
             self.target_lateral = road.lanes[self.lane] + self.avoid_offset
+            self.preview_lateral = self.target_lateral
         steering_action = super().control(car, traffic, road, locations)
         if self.recovering:
             self.cancel()
@@ -333,3 +332,9 @@ class HighwayDriver(Driver):
         if car.speed < 0.3 and desired_acc < 0:
             brake = 1
         return Control(steering_action.steering, self.pedal, brake)
+
+    def change_lateral(self, road, distance):
+        t = max(0, min(1, (distance - self.start_y) / self.change_length))
+        smooth = t * t * t * (10 - 15 * t + 6 * t * t)
+        return (road.lanes[self.lane]
+                + (road.lanes[self.target_lane] - road.lanes[self.lane]) * smooth)
