@@ -1,4 +1,4 @@
-"""经典美式V8的转速、负载与换挡表现。"""
+"""车辆实录的转速、机械负载与换挡表现。"""
 
 import math
 from bisect import bisect_right
@@ -60,8 +60,9 @@ class EngineAudio:
             mix = left if i == lower else right if i == upper else 0.0
             coast.setPlayRate(self.rpm / RPM_BANDS[i])
             loaded.setPlayRate(self.rpm / RPM_BANDS[i])
-            coast.setVolume(self.level * mix * math.sqrt(1 - self.load) * scale)
-            loaded.setVolume(self.level * mix * math.sqrt(self.load) * scale)
+            # 两层取自同段录音的不同麦克风混合，线性淡化避免半油门时同源叠加增响。
+            coast.setVolume(self.level * mix * (1 - self.load) * scale)
+            loaded.setVolume(self.level * mix * self.load * scale)
 
     def stop(self):
         if self.playing:

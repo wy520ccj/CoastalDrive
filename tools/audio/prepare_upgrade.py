@@ -1,4 +1,4 @@
-"""离线制作V8声库、重制碰撞和原创双电台；运行游戏无需DSP或下载。"""
+"""离线制作车辆实录声库、重制碰撞和原创双电台；运行游戏无需DSP或下载。"""
 
 import argparse
 import hashlib
@@ -9,11 +9,10 @@ import sys
 import wave
 from array import array
 from pathlib import Path
-from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
-import prepare_impact_audio as recordings
+from prepare_recorded import collisions, engines
 
 RATE = 44100
 OUTPUT = ROOT / "assets/game/audio"
@@ -33,38 +32,6 @@ def write(path, samples, peak=0.72, stereo=False):
     return {"path": path.relative_to(OUTPUT).as_posix(),
             "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
             "duration": len(pcm) / RATE / (2 if stereo else 1)}
-
-
-def engine(rpm, loaded):
-    # 每720°八次点火，两排交替不等间距共振形成V8低沉脉冲。
-    cycles = round(3.6 * rpm / 120)
-    count = round(cycles * 120 / rpm * RATE)
-    samples = array("f")
-    positions = (0, .125, .25, .375, .50, .625, .75, .875)
-    strengths = (1.0, .68, .82, .92, .73, 1.0, .88, .65)
-    noise = random.Random(8 + rpm + loaded)
-    smooth_noise = 0.0
-    for i in range(count):
-        t = i / RATE
-        phase = t * rpm / 120
-        pulse = 0.0
-        for start, strength in zip(positions, strengths):
-            age = ((phase - start) % 1) * 120 / rpm
-            pulse += strength * math.exp(-age * (240 if loaded else 340)) * (
-                math.sin(age * math.tau * 112) + .42 * math.sin(age * math.tau * 235))
-        smooth_noise += .18 * (noise.uniform(-1, 1) - smooth_noise)
-        induction = smooth_noise * (.055 + .12 * loaded) * (
-            .6 + .4 * math.sin(phase * math.tau * 4) ** 2)
-        rumble = .1 * math.sin(phase * math.tau * 2)
-        samples.append(math.tanh((pulse + rumble + induction) * (2 if loaded else 1.2)))
-    mean = sum(samples) / len(samples)
-    samples = array("f", (value - mean for value in samples))
-    # 小幅环缝淡化，燃烧周期本身在首尾整周期闭合。
-    edge = round(RATE * .003)
-    for i in range(edge):
-        samples[i] *= i / edge
-        samples[-1-i] *= i / edge
-    return samples
 
 
 def texture(name):
@@ -177,87 +144,6 @@ def music(night):
     return stereo
 
 
-def collisions():
-    recordings.SOURCE.mkdir(parents=True, exist_ok=True)
-    new_path = SOURCE / "squareal-car-crash.mp3"
-    url = "https://cdn.freesound.org/previews/237/237375_1502374-hq.mp3"
-    if not new_path.exists():
-        new_path.write_bytes(urlopen(Request(url, headers={"User-Agent": "CoastalDrive"}),
-                                    timeout=45).read())
-    source_hash = hashlib.sha256(new_path.read_bytes()).hexdigest()
-    manifest_path = SOURCE / "sources.json"
-    expected = "6587ffc83281ecea17bf41a37e461c93d73424b478759e78dad35d71310823da"
-    if source_hash != expected:
-        raise ValueError("New crash source hash changed")
-    source_manifest = {"squareal": {"page": "https://freesound.org/people/squareal/sounds/237375/",
-                                   "url": url, "license": "CC0", "sha256": source_hash}}
-    manifest_path.write_text(json.dumps(source_manifest, indent=2), encoding="utf-8")
-    pools = {}
-    catalog = {
-        "transient_vehicle": ("new", (.418, .422, .426), .20, "highpass=f=65,lowpass=f=1600"),
-        "transient_metal": ("metal_hit", (0, .006, .012), .23, "highpass=f=100,lowpass=f=3000"),
-        "transient_hard": ("new", (.418, .422, .426), .18, "lowpass=f=1200"),
-        "body_light": ("new", (.418, .422, .426), .24, "lowpass=f=550"),
-        "body_heavy": ("new", (.418, .422, .426), .36, "lowpass=f=350,bass=g=4:f=90"),
-        "body_metal": ("new", (.418, .422, .426), .34, "lowpass=f=450"),
-        "body_hard": ("new", (.418, .422, .426), .30, "lowpass=f=300,bass=g=5:f=80"),
-        "crunch": ("car_crunch", (.05, 3.76, 6.79), .18, "highpass=f=380,lowpass=f=4000"),
-        "debris": ("plastic", (.15, .16, .17), .14, "highpass=f=1200,lowpass=f=5000"),
-        "scrape_metal": ("metal_scrape", (3, 9), 3.4, "highpass=f=130,lowpass=f=6000"),
-        "scrape_hard": ("hard_scrape", (6, 18), 3.4, "highpass=f=80,lowpass=f=3800"),
-    }
-    for pool, (source, starts, duration, filters) in catalog.items():
-        origin = new_path if source == "new" else recordings.source_file(source)
-        entries = []
-        for index, start in enumerate(starts):
-            rate = (1.0, .93, 1.06)[index]
-            raw = recordings.cut(origin, start, duration,
-                                 f"{filters},asetrate={round(RATE * rate)},aresample={RATE},"
-                                 "acompressor=threshold=0.16:ratio=3:attack=1:release=100")
-            if pool.startswith("scrape"):
-                samples = recordings.finish_loop(raw, -6)
-            else:
-                raw = raw[:round(duration * RATE)]
-                samples = recordings.finish_one_shot(raw, -4.5, max_gain=16)
-                # 保留起音和短促共振，剔除源录音中后续滑动/摩擦，不叠加人工低频正弦。
-                decay = 9 if pool.startswith("body") else 14
-                samples = [x * math.exp(-max(0, i / RATE - .025) * decay)
-                           for i, x in enumerate(samples)]
-            path = OUTPUT / "impact" / f"{pool}_{index+1}.wav"
-            peak = .78 if pool.startswith("transient") else .84 if pool.startswith("body") else .48 if pool == "crunch" else .35 if pool == "debris" else .62
-            info = write(path, samples, peak)
-            info.update(id=f"{pool}_{index+1}", source=source, start=start,
-                        peak_dbfs=20 * math.log10(peak))
-            entries.append(info)
-        if pool.startswith("transient"):
-            # 起音响度按前80ms校齐，随机variant不会突然变得软弱。
-            windows = []
-            clips = []
-            for entry in entries:
-                with wave.open(str(OUTPUT / entry["path"]), "rb") as clip:
-                    pcm = array("h", clip.readframes(clip.getnframes()))
-                clips.append(pcm)
-                window = pcm[:round(.08 * RATE)]
-                windows.append(math.sqrt(sum(x*x for x in window) / len(window)))
-            target = min(windows)
-            for entry, pcm, rms in zip(entries, clips, windows):
-                pcm = array("h", (round(x * target / rms) for x in pcm))
-                recordings.write_wave(OUTPUT / entry["path"], pcm)
-                entry["peak_dbfs"] = 20 * math.log10(max(abs(x) for x in pcm) / 32768)
-                entry["sha256"] = hashlib.sha256((OUTPUT / entry["path"]).read_bytes()).hexdigest()
-        pools[pool] = entries
-    bank = {"version": 2, "severity_curve": [[0, 0], [.6, .13], [2, .36],
-                                              [5, .65], [10, .9], [20, 1]],
-            "pools": pools, "source_manifest": source_manifest,
-            "materials": {
-                "vehicle": {"transient": "transient_vehicle", "body": "body_heavy", "scrape": "scrape_metal"},
-                "metal_barrier": {"transient": "transient_metal", "body": "body_metal", "scrape": "scrape_metal"},
-                "hard_solid": {"transient": "transient_hard", "body": "body_hard", "scrape": "scrape_hard"}},
-            "mix": {"audible_floor": .04, "retrigger_ticks": 12, "upgrade_severity": .15,
-                    "upgrade_impulse_ratio": 1.6, "duck_start": .6}}
-    (OUTPUT / "impact-bank.json").write_text(json.dumps(bank, indent=2), encoding="utf-8")
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--section", choices=("all", "music", "impact"), default="all")
@@ -275,10 +161,7 @@ def main():
                               if not entry["path"].startswith("music/")] + entries
         manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         return
-    assets = []
-    for rpm in (900, 1800, 3200, 4700, 6500):
-        for loaded, name in enumerate(("coast", "load")):
-            assets.append(write(OUTPUT / "engine" / f"v8-{rpm}-{name}.wav", engine(rpm, loaded)))
+    assets = engines()
     for name in ("asphalt", "gravel", "wind", "tire"):
         assets.append(write(OUTPUT / "driving" / f"{name}.wav", texture(name), .5))
     cues = {"select": ((650,), .075), "confirm": ((550, 825), .16),
@@ -292,7 +175,7 @@ def main():
         assets.append(write(OUTPUT / "music" / f"{name}.wav", music(night), .65, stereo=True))
     collisions()
     (OUTPUT / "upgrade-manifest.json").write_text(json.dumps({"version": 1, "assets": assets,
-        "authorship": "Original offline procedural V8, textures, cues and instrumental compositions",
+        "authorship": "Recorded engine CC0 derivatives; original textures, cues and music",
         "generator": "tools/audio/prepare_upgrade.py"}, indent=2), encoding="utf-8")
     print(f"Prepared {len(assets)} engine/driving/music/cue assets and v2 collision bank")
 

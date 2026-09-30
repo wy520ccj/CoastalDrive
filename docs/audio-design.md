@@ -4,7 +4,7 @@ AUDIO-01以PERF-04-FIX为基线，声音按功能直接消费Snapshot和真实Im
 
 | 功能 | 代码 | 运行素材 | 表现 |
 |---|---|---|---|
-| 引擎 | src/audio/engine.py | assets/game/audio/engine | 原创程序化V8音色，900/1800/3200/4700/6500rpm，滑行/负载双层、相邻转速等功率交叉、换挡短暂卸载 |
+| 引擎 | src/audio/engine.py | assets/game/audio/engine | Mini Cooper S双接触麦克风实录，频谱估计900/1800/3200/4700/6500rpm，车身/缸体不同混合双层、相邻转速等功率交叉、换挡短暂卸载 |
 | 行驶 | src/audio/driving.py | assets/game/audio/driving | 沥青/非铺装、随速度平方增加的风噪，按物理侧偏/横向载荷/制动调节轮胎声 |
 | 碰撞 | src/audio/impact.py | assets/game/audio/impact | 31个重制变体；车车/护栏/硬物独立瞬态和主体，形变与碎屑、左右持续刮擦，重撞压低背景 |
 | 音乐 | src/audio/music.py | assets/game/audio/music | 两首原创32小节双声道配乐，菜单BGM、驾驶电台交叉切换、暂停保留播放位置 |
@@ -36,3 +36,11 @@ PLAY-01-FIX进一步把碰撞主体调为车身钝感：轻撞/车车/护栏/硬
 tools/audio/check_radio_output.py用真实OpenAL与WASAPI回录，将实际输出分别与两首曲目的波形相关匹配，覆盖菜单双台、驾驶夜驰及暂停设置试听。开发环境可用tools/audio/requirements-verification.txt复现；游戏不需要NumPy/SoundCard。素材READY与FakeSound控制测试不能替代实际曲目输出验证。
 
 验收工具tools/audio/check_upgrade.py直接载入OpenAL，检查104个句柄及声音生命周期、峰值和DC。tools/audio/make_audition.py使用生产Soundscape离线混出44秒试听：0–12秒引擎加速换挡，14/17/20/23秒轻车撞/护栏/硬物/重车撞，25–28秒右侧刮擦，28–36秒海岸FM，36–44秒夜驰FM。
+
+## AUDIO-02：车辆实录音色
+
+用户否定PLAY-01-FIX的真实感。撤除合成点火引擎和squareal文件柜/糖果盒碰撞主体，避免把现成影视Foley误当实车。引擎采用[TheLittleCrow的Mini Cooper S车身/缸体接触麦克风实录](https://freesound.org/people/TheLittleCrow/sounds/669618/)（CC0）；不同转速片段在离线根据点火谐波校稳音高，再做循环接缝。900/1800/3200/4700/6500只是游戏音高锚点，非现场转速表读数。负载控制麦克风混合比例，同源层采用线性淡化防止中油门叠加增响。保留0.19满载内部音量与换挡卸载。
+
+车身采用[harrisonlace的空车身敲击](https://freesound.org/people/harrisonlace/sounds/798843/)前十次独立实录片段，以及[LPA134的真实机盖撞击](https://freesound.org/people/LPA134/sounds/329516/)（均CC0）。这是车身/机盖实物录音，非道路事故实录。车身宽频细节保留到3.2–4.8kHz，取消全段指数衰减和300–550Hz过窄低通；机盖仅收短车库回声。主层维持峰值0.84与0.50+0.48s增益，起音降至0.10+0.14s，护栏起音乘1.4；形变/碎屑再降低一半，运行时随机变调限制±1.5%，不再随严重度刻意降调。27个单次素材持续时间不超过0.36秒，4个实际接触刮擦循环逐字节保持。
+
+制作入口tools/audio/prepare_recorded.py，离线依赖tools/audio/requirements-preparation.txt和ffmpeg，运行包仍仅依赖Panda3D。旧prepare_upgrade.py的all/impact入口委托实录制作，避免未来重建声库恢复旧合成音色。来源、制作和交付证据见evidence/AUDIO-02/README.md。

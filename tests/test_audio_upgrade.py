@@ -4,6 +4,7 @@ import hashlib
 import json
 import math
 from dataclasses import replace
+from itertools import pairwise
 
 from test_soundscape import event, frame, make_soundscape, phase
 
@@ -191,3 +192,19 @@ def test_upgrade_manifest_matches_actual_assets():
         assert hashlib.sha256((root / entry["path"]).read_bytes()).hexdigest() == entry["sha256"]
     assert all(entry["duration"] > 60 for entry in manifest["assets"]
                if entry["path"].startswith("music/"))
+
+
+def test_recorded_engine_loops_have_signal_and_no_seam_spike():
+    import wave
+    from array import array
+
+    root = resource_root() / "assets/game/audio"
+    for path in (root / "engine").glob("*.wav"):
+        with wave.open(str(path), "rb") as clip:
+            samples = array("h", clip.readframes(clip.getnframes()))
+        assert len(samples) >= .3 * 44100
+        # 环缝跳变须落在实录正常相邻采样差值内，避免每圈固定出现一次爆音。
+        derivative_rms = math.sqrt(sum((b-a)**2 for a, b in pairwise(samples))
+                                   / (len(samples)-1))
+        assert derivative_rms > 1
+        assert abs(samples[0]-samples[-1]) < derivative_rms * 4

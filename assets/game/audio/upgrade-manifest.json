@@ -2,56 +2,6 @@
   "version": 1,
   "assets": [
     {
-      "path": "engine/v8-900-coast.wav",
-      "sha256": "2b5b8c1fc31aa996338dfa84ab12e2d87bdc48f0f15671e27eb6f01a71f47093",
-      "duration": 3.6
-    },
-    {
-      "path": "engine/v8-900-load.wav",
-      "sha256": "82884bcbfaa291c224203c6f30ceb7703af5da681c1b6f682b78ccfc9e4c5fdf",
-      "duration": 3.6
-    },
-    {
-      "path": "engine/v8-1800-coast.wav",
-      "sha256": "8b1467233b2ac0c6c52855c8c55011e58030d50ac41954eeb1ec9a443d5ec84b",
-      "duration": 3.6
-    },
-    {
-      "path": "engine/v8-1800-load.wav",
-      "sha256": "6d78493a409f7285488d1ae70144e6f6d253d3daf9a180f4b83cba20186235b0",
-      "duration": 3.6
-    },
-    {
-      "path": "engine/v8-3200-coast.wav",
-      "sha256": "4233533629372abf5fd81a34bc74e13514cdd96eb6750dd2ec5120f2c6c93c2e",
-      "duration": 3.6
-    },
-    {
-      "path": "engine/v8-3200-load.wav",
-      "sha256": "fa571dd95bdf5ac648f8b099c28721f939624552c577705adce7fd8b195509d5",
-      "duration": 3.6
-    },
-    {
-      "path": "engine/v8-4700-coast.wav",
-      "sha256": "b8afb19b60ad7f3308b2e0a09203d9e127696abe4b33d42202927566a8632f9f",
-      "duration": 3.6
-    },
-    {
-      "path": "engine/v8-4700-load.wav",
-      "sha256": "da721eefe59316f420ea2ad018a696257b84ed2d7272ab4bef3534365f062ebc",
-      "duration": 3.6
-    },
-    {
-      "path": "engine/v8-6500-coast.wav",
-      "sha256": "b10ad342b47072696a1d94f8b3225a58b7836308e2e2cb4f5795ed4d95f58d20",
-      "duration": 3.6
-    },
-    {
-      "path": "engine/v8-6500-load.wav",
-      "sha256": "6f44018ca98c59469d382dce7bfa53365b44ab1f11815e5e31cd79902c96e312",
-      "duration": 3.6
-    },
-    {
       "path": "driving/asphalt.wav",
       "sha256": "5fc210e869ed44b17b585f2633d994a9963038e5a13d1f5d24da61c8d1b939a2",
       "duration": 4.0
@@ -125,8 +75,176 @@
       "path": "music/midnight-circuit.wav",
       "sha256": "72470e16fee2ebab271a089908630c020782a9770ce68c887191623d13d1f04c",
       "duration": 68.57142857142857
+    },
+    {
+      "path": "engine/v8-900-coast.wav",
+      "sha256": "cac0b5573f3f063fc66834055d7bc0467162411dd4b6d2b25a72a1025513b25b",
+      "duration": 1.0940816326530611,
+      "peak_dbfs": -2.8533500713746314,
+      "source": "mini-cooper",
+      "start": 0.15,
+      "input_seconds": 1.2,
+      "estimated_firing_hz": 30,
+      "target_firing_hz": 30.0,
+      "stabilization": "offline harmonic tracking and variable resampling",
+      "chassis_mix": 0.65,
+      "engine_block_mix": 0.35,
+      "note": "Legacy v8 filename only; recording is a Mini Cooper S"
+    },
+    {
+      "path": "engine/v8-900-load.wav",
+      "sha256": "7e1053c8aaa925a00161e914fa8263fe02b520f1a5b20b92987db1a52b9394ad",
+      "duration": 1.0940816326530611,
+      "peak_dbfs": -2.8533500713746314,
+      "source": "mini-cooper",
+      "start": 0.15,
+      "input_seconds": 1.2,
+      "estimated_firing_hz": 30,
+      "target_firing_hz": 30.0,
+      "stabilization": "offline harmonic tracking and variable resampling",
+      "chassis_mix": 0.25,
+      "engine_block_mix": 0.75,
+      "note": "Legacy v8 filename only; recording is a Mini Cooper S"
+    },
+    {
+      "path": "engine/v8-1800-coast.wav",
+      "sha256": "b0695db31a40a7ffcfba0f7d25718ad1ba8bb6092d8eff0e30a4ba90908689c2",
+      "duration": 0.38961451247165535,
+      "peak_dbfs": -2.8533500713746314,
+      "source": "mini-cooper",
+      "start": 3.05,
+      "input_seconds": 0.55,
+      "estimated_firing_hz": 62,
+      "target_firing_hz": 60.0,
+      "stabilization": "offline harmonic tracking and variable resampling",
+      "chassis_mix": 0.65,
+      "engine_block_mix": 0.35,
+      "note": "Legacy v8 filename only; recording is a Mini Cooper S"
+    },
+    {
+      "path": "engine/v8-1800-load.wav",
+      "sha256": "9f1398dc4c09dca313adb05328282716303c8215a46eb8dce4285f7afce69603",
+      "duration": 0.38961451247165535,
+      "peak_dbfs": -2.8533500713746314,
+      "source": "mini-cooper",
+      "start": 3.05,
+      "input_seconds": 0.55,
+      "estimated_firing_hz": 62,
+      "target_firing_hz": 60.0,
+      "stabilization": "offline harmonic tracking and variable resampling",
+      "chassis_mix": 0.25,
+      "engine_block_mix": 0.75,
+      "note": "Legacy v8 filename only; recording is a Mini Cooper S"
+    },
+    {
+      "path": "engine/v8-3200-coast.wav",
+      "sha256": "d3bc0039bf148811154ccbbbc8ea9fdd3b92ff4fd3962edce5e1f03cf9bc42c6",
+      "duration": 1.7555102040816326,
+      "peak_dbfs": -2.8533500713746314,
+      "source": "mini-cooper",
+      "start": 9.3,
+      "input_seconds": 2.0,
+      "estimated_firing_hz": 100,
+      "target_firing_hz": 106.66666666666667,
+      "stabilization": "offline harmonic tracking and variable resampling",
+      "chassis_mix": 0.65,
+      "engine_block_mix": 0.35,
+      "note": "Legacy v8 filename only; recording is a Mini Cooper S"
+    },
+    {
+      "path": "engine/v8-3200-load.wav",
+      "sha256": "795ad7fae433d4f1e449c625b738cfccce9312e34e2e76a61fda19965de5ba18",
+      "duration": 1.7555102040816326,
+      "peak_dbfs": -2.8533500713746314,
+      "source": "mini-cooper",
+      "start": 9.3,
+      "input_seconds": 2.0,
+      "estimated_firing_hz": 100,
+      "target_firing_hz": 106.66666666666667,
+      "stabilization": "offline harmonic tracking and variable resampling",
+      "chassis_mix": 0.25,
+      "engine_block_mix": 0.75,
+      "note": "Legacy v8 filename only; recording is a Mini Cooper S"
+    },
+    {
+      "path": "engine/v8-4700-coast.wav",
+      "sha256": "72a8e1c6f80cd4b1f9c3c1570424e6845281ad1d1f36c857da8502a310def0f9",
+      "duration": 3.5475056689342406,
+      "peak_dbfs": -2.8533500713746314,
+      "source": "mini-cooper",
+      "start": 30.0,
+      "input_seconds": 4.0,
+      "estimated_firing_hz": 144,
+      "target_firing_hz": 156.66666666666666,
+      "stabilization": "offline harmonic tracking and variable resampling",
+      "chassis_mix": 0.65,
+      "engine_block_mix": 0.35,
+      "note": "Legacy v8 filename only; recording is a Mini Cooper S"
+    },
+    {
+      "path": "engine/v8-4700-load.wav",
+      "sha256": "ecc0b2567614a1306cf6fe79fd57db60ffcbadb0fcb3dd9d9b879127351e3ffa",
+      "duration": 3.5475056689342406,
+      "peak_dbfs": -2.8533500713746314,
+      "source": "mini-cooper",
+      "start": 30.0,
+      "input_seconds": 4.0,
+      "estimated_firing_hz": 144,
+      "target_firing_hz": 156.66666666666666,
+      "stabilization": "offline harmonic tracking and variable resampling",
+      "chassis_mix": 0.25,
+      "engine_block_mix": 0.75,
+      "note": "Legacy v8 filename only; recording is a Mini Cooper S"
+    },
+    {
+      "path": "engine/v8-6500-coast.wav",
+      "sha256": "e7d01b9fe72937d4e4458ca1a2150e0991b50fbe6b369e2801c6443edd98fc5a",
+      "duration": 0.7836054421768708,
+      "peak_dbfs": -2.8533500713746314,
+      "source": "mini-cooper",
+      "start": 67.3,
+      "input_seconds": 1.0,
+      "estimated_firing_hz": 202,
+      "target_firing_hz": 216.66666666666666,
+      "stabilization": "offline harmonic tracking and variable resampling",
+      "chassis_mix": 0.65,
+      "engine_block_mix": 0.35,
+      "note": "Legacy v8 filename only; recording is a Mini Cooper S"
+    },
+    {
+      "path": "engine/v8-6500-load.wav",
+      "sha256": "d105f7cf8ced5398714dd98921e8b5b3f13559dbceddcdd827dd364b27480c36",
+      "duration": 0.7836054421768708,
+      "peak_dbfs": -2.8533500713746314,
+      "source": "mini-cooper",
+      "start": 67.3,
+      "input_seconds": 1.0,
+      "estimated_firing_hz": 202,
+      "target_firing_hz": 216.66666666666666,
+      "stabilization": "offline harmonic tracking and variable resampling",
+      "chassis_mix": 0.25,
+      "engine_block_mix": 0.75,
+      "note": "Legacy v8 filename only; recording is a Mini Cooper S"
     }
   ],
-  "authorship": "Original offline procedural V8, textures, cues and instrumental compositions",
-  "generator": "tools/audio/prepare_upgrade.py"
+  "authorship": "Recorded engine CC0 derivatives; original textures, cues and music",
+  "generator": "tools/audio/prepare_upgrade.py",
+  "engine_sources": {
+    "mini-cooper": {
+      "page": "https://freesound.org/people/TheLittleCrow/sounds/669618/",
+      "url": "https://cdn.freesound.org/previews/669/669618_5672786-hq.mp3",
+      "sha256": "5f487dd82d5c4a75e44e651dcaa9c48617d36c0e475cb167987ebc57dba9f07d",
+      "license": "CC0",
+      "author": "TheLittleCrow",
+      "recording": "2019 Mini Cooper S; chassis left, engine block right contact microphones"
+    },
+    "hood-impact": {
+      "page": "https://freesound.org/people/LPA134/sounds/329516/",
+      "url": "https://cdn.freesound.org/previews/329/329516_424694-hq.mp3",
+      "sha256": "6157ca24e7794bd1dc4a38791e8a044aa05af9372068c97d7001baa82d55a249",
+      "license": "CC0",
+      "author": "LPA134",
+      "recording": "Car hood slammed in underground garage; Rode NT4; not an accident recording"
+    }
+  }
 }

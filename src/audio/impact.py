@@ -142,7 +142,8 @@ class ImpactAudio:
                 self.voices.remove(victim)
                 sound = victim.sound
         variation = self.random.uniform(-0.5, 0.5)
-        rate = self.random.uniform(0.97, 1.03) * (1.03 - 0.13 * severity)
+        # 撞击强弱来自冲量和响度，不把实录刻意拉慢成影视低音。
+        rate = self.random.uniform(0.985, 1.015)
         volume = gain * 10 ** (variation / 20) * scale
         sound.setPlayRate(rate)
         sound.setVolume(volume)
@@ -210,7 +211,9 @@ class ImpactAudio:
             return
         pools = self.bank["materials"][event.material]
         layers = []
-        transient_gain = 0.30 + 0.42 * severity
+        transient_gain = 0.10 + 0.14 * severity
+        if event.material == "metal_barrier":
+            transient_gain *= 1.4
         if event.zone in ("left", "right"):
             transient_gain *= 1.05
         variant = self._play_layer(pools["transient"], "transient", event, severity,
@@ -224,11 +227,11 @@ class ImpactAudio:
             layers.append(("body", variant))
         if severity > 0.42:
             variant = self._play_layer("crunch", "crunch", event, severity,
-                                       (severity - 0.42) * 0.36, scale)
+                                       (severity - 0.42) * 0.18, scale)
             if variant:
                 layers.append(("crunch", variant))
         if severity > 0.68:
-            variant = self._play_layer("debris", "debris", event, severity, 0.07, scale)
+            variant = self._play_layer("debris", "debris", event, severity, 0.035, scale)
             if variant:
                 layers.append(("debris", variant))
         if severity >= self.bank["mix"]["duck_start"]:

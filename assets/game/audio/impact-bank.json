@@ -30,262 +30,262 @@
     "transient_vehicle": [
       {
         "path": "impact/transient_vehicle_1.wav",
-        "sha256": "0cd6ff60a8d16baf8052c67f41073c5219bd22b1804c7df8bc71212387083cec",
-        "duration": 0.19133786848072562,
+        "sha256": "343c99844c508c58aa8bb50b979f929c01d9f990446e70dd962de0e7e3c8eff5",
+        "duration": 0.1400453514739229,
+        "peak_dbfs": -5.171277808031844,
         "id": "transient_vehicle_1",
-        "source": "new",
-        "start": 0.418,
-        "peak_dbfs": -2.219508584397289
+        "source": "car_body",
+        "start": 0
       },
       {
         "path": "impact/transient_vehicle_2.wav",
-        "sha256": "214ee30b1eee900fb547573bc9f2e1934f33704cdebdf8d397fd1222ee49937d",
-        "duration": 0.19521541950113377,
+        "sha256": "e30d26176f7997df8b6bd634334dfa464f1d578c1ef0925a78ed1b207b939056",
+        "duration": 0.07621315192743765,
+        "peak_dbfs": -3.2038005886467897,
         "id": "transient_vehicle_2",
-        "source": "new",
-        "start": 0.422,
-        "peak_dbfs": -2.2369807488287448
+        "source": "car_body",
+        "start": 1.36
       },
       {
         "path": "impact/transient_vehicle_3.wav",
-        "sha256": "2f9cf627247fce1b323d659920f1a4f4a3f6b34e6e0040cd7222a9c53138aa55",
-        "duration": 0.2,
+        "sha256": "598eb53ef8393281c52a82ee09d93521604d58cf07c89236730a59fa63f5503a",
+        "duration": 0.05922902494331066,
+        "peak_dbfs": -2.1584613831352866,
         "id": "transient_vehicle_3",
-        "source": "new",
-        "start": 0.426,
-        "peak_dbfs": -2.1584613831352866
+        "source": "car_body",
+        "start": 2.75
       }
     ],
     "transient_metal": [
       {
         "path": "impact/transient_metal_1.wav",
-        "sha256": "a3906d7107aecb5a03948597491a7e931e64152786967853bc6d75f2eb98bb90",
-        "duration": 0.1907482993197279,
+        "sha256": "1a5d3fadd3c33f202e1faf1867f674d54cd97c879be0c70d6277fafb62aa34fc",
+        "duration": 0.19045351473922903,
+        "peak_dbfs": -2.1584613831352866,
         "id": "transient_metal_1",
         "source": "metal_hit",
-        "start": 0,
-        "peak_dbfs": -2.418214071750271
+        "start": 0
       },
       {
         "path": "impact/transient_metal_2.wav",
-        "sha256": "e7af1bb467efb868bd4b5ed586c47e6b117dff9a7b9475ff3013ff624d2f30a3",
-        "duration": 0.19467120181405895,
+        "sha256": "16f8a234f4b8d06f909c374803a667e9456b2ce1ef945690d357be6bd4365f6c",
+        "duration": 0.1964625850340136,
+        "peak_dbfs": -2.1887608309450126,
         "id": "transient_metal_2",
         "source": "metal_hit",
-        "start": 0.006,
-        "peak_dbfs": -2.7210751953110752
+        "start": 0.006
       },
       {
         "path": "impact/transient_metal_3.wav",
-        "sha256": "bbfa2b31cb28eab3401d46b3b83f19c408012a8138d7dbd71622663e8c0a50f4",
-        "duration": 0.20539682539682538,
+        "sha256": "9e09c121f04a96732d81a189cbf90cf593e4a9d55c9442208d6fbeccdc62f901",
+        "duration": 0.20394557823129253,
+        "peak_dbfs": -2.186373894921886,
         "id": "transient_metal_3",
         "source": "metal_hit",
-        "start": 0.012,
-        "peak_dbfs": -2.1584613831352866
+        "start": 0.012
       }
     ],
     "transient_hard": [
       {
         "path": "impact/transient_hard_1.wav",
-        "sha256": "9d8d81b9bfa4f262e80c795e0fe266c698ede41d4b8f26e13f05c6f91d30a9cc",
-        "duration": 0.1712018140589569,
+        "sha256": "d1631a5d5dc0ea8c49f05013028c9522153d3dce5b81ff7621715e536fab84a9",
+        "duration": 0.05891156462585034,
+        "peak_dbfs": -2.1584613831352866,
         "id": "transient_hard_1",
-        "source": "new",
-        "start": 0.418,
-        "peak_dbfs": -2.178876363478314
+        "source": "car_body",
+        "start": 4.82
       },
       {
         "path": "impact/transient_hard_2.wav",
-        "sha256": "d33438be2924e97966bf333d3d0c39e78b45e96c66a60e4f4b22b72e0c4228cc",
-        "duration": 0.17505668934240362,
+        "sha256": "789c2bcb6e2497baf11c469a1bbd3829bd1ba1c4fa45c767c81592cc479a8469",
+        "duration": 0.025895691609977324,
+        "peak_dbfs": -5.258734170868871,
         "id": "transient_hard_2",
-        "source": "new",
-        "start": 0.422,
-        "peak_dbfs": -2.1584613831352866
+        "source": "car_body",
+        "start": 7.8
       },
       {
         "path": "impact/transient_hard_3.wav",
-        "sha256": "6f7158b2ccea40c39ec6c5d0ec4cf02fc4a5832c81f760138a542784d465f172",
-        "duration": 0.18,
+        "sha256": "311de1a98c7888e0526b7ee9d8140029730b3520c54d968c05a48ff64ca6872b",
+        "duration": 0.048866213151927435,
+        "peak_dbfs": -2.617271469483986,
         "id": "transient_hard_3",
-        "source": "new",
-        "start": 0.426,
-        "peak_dbfs": -2.200022372962841
+        "source": "car_body",
+        "start": 9.35
       }
     ],
     "body_light": [
       {
         "path": "impact/body_light_1.wav",
-        "sha256": "119222b79550edaf1ef5380abbfb6c105143910f68707663149ddab8b359304d",
-        "duration": 0.23099773242630386,
+        "sha256": "73d855ba8289c95d636d072cf4d67be432727fbf3678676cc56b09dbb58de5ed",
+        "duration": 0.22736961451247165,
+        "peak_dbfs": -1.5144142787623671,
         "id": "body_light_1",
-        "source": "new",
-        "start": 0.418,
-        "peak_dbfs": -1.5144142787623671
+        "source": "car_body",
+        "start": 0
       },
       {
         "path": "impact/body_light_2.wav",
-        "sha256": "d5566d4dff85c8989e0af6444af62362ba7a4508d589908c13dd1537ed234ec0",
-        "duration": 0.23485260770975055,
+        "sha256": "834853f7399be2372bdcc403f9e4703c11350b2758eeb96be9f60ce7c3eb3316",
+        "duration": 0.16290249433106577,
+        "peak_dbfs": -1.5144142787623671,
         "id": "body_light_2",
-        "source": "new",
-        "start": 0.422,
-        "peak_dbfs": -1.5144142787623671
+        "source": "car_body",
+        "start": 1.36
       },
       {
         "path": "impact/body_light_3.wav",
-        "sha256": "0ea37194238cab41f18de28e99503584bb7d7a0942f359d8244ba3f51869fcd6",
-        "duration": 0.2398185941043084,
+        "sha256": "aa9b56208d383610a67ac664d2347b9d9b9f34f3148fa4514eaf666327b13c48",
+        "duration": 0.1462358276643991,
+        "peak_dbfs": -1.5144142787623671,
         "id": "body_light_3",
-        "source": "new",
-        "start": 0.426,
-        "peak_dbfs": -1.5144142787623671
+        "source": "car_body",
+        "start": 2.75
       }
     ],
     "body_heavy": [
       {
         "path": "impact/body_heavy_1.wav",
-        "sha256": "8e3d278f7ef4429e0602c53118e5f78718198822f482ab3d0d511946b006fe00",
-        "duration": 0.35070294784580497,
+        "sha256": "d4426787a8efbb65c67076c2fa8f493b62e245289bf48db8c133888ec308c9fc",
+        "duration": 0.33301587301587304,
+        "peak_dbfs": -1.5144142787623671,
         "id": "body_heavy_1",
-        "source": "new",
-        "start": 0.418,
-        "peak_dbfs": -1.5144142787623671
+        "source": "hood-impact",
+        "start": 0.13
       },
       {
         "path": "impact/body_heavy_2.wav",
-        "sha256": "03c051225354a0657a1f31ca2fe86ac8e9dbf53ae659e8eb41873543e1e24987",
-        "duration": 0.35453514739229025,
+        "sha256": "d040060354e67da6e733fbf042e7601c40132d4847f3403bb7cadc5bc55ab7e7",
+        "duration": 0.3380952380952381,
+        "peak_dbfs": -1.5144142787623671,
         "id": "body_heavy_2",
-        "source": "new",
-        "start": 0.422,
-        "peak_dbfs": -1.5144142787623671
+        "source": "hood-impact",
+        "start": 0.135
       },
       {
         "path": "impact/body_heavy_3.wav",
-        "sha256": "feea01edf30e4cb071bd48c65003b0a361da2a3a10c4642b551563199e3ff5ae",
-        "duration": 0.359546485260771,
+        "sha256": "f1e83c728caf79bfa3af96c78bac0ed1e9d0466c1f3f5f04170d28429912ca2a",
+        "duration": 0.3441496598639456,
+        "peak_dbfs": -1.5144142787623671,
         "id": "body_heavy_3",
-        "source": "new",
-        "start": 0.426,
-        "peak_dbfs": -1.5144142787623671
+        "source": "hood-impact",
+        "start": 0.14
       }
     ],
     "body_metal": [
       {
         "path": "impact/body_metal_1.wav",
-        "sha256": "6a5670c0611d096ff5afe432588168046c9eb56cb50d84e9f7844e95afab70f7",
-        "duration": 0.3308843537414966,
+        "sha256": "9730cb583e689eb5c76e122379c34b2589a9119db7b3c813c7f58ba8f974a647",
+        "duration": 0.23877551020408164,
+        "peak_dbfs": -1.5144142787623671,
         "id": "body_metal_1",
-        "source": "new",
-        "start": 0.418,
-        "peak_dbfs": -1.5144142787623671
+        "source": "car_body",
+        "start": 4.82
       },
       {
         "path": "impact/body_metal_2.wav",
-        "sha256": "2bf94f9f782ec0c0a968bffc99e84cb755d04e70455080491021bf138af6d8b2",
-        "duration": 0.3347392290249433,
+        "sha256": "6c1fc800321af9df1dbf7c1f0749f063cea17682a28faf59f8bb682bb3244fc1",
+        "duration": 0.20192743764172336,
+        "peak_dbfs": -1.5144142787623671,
         "id": "body_metal_2",
-        "source": "new",
-        "start": 0.422,
-        "peak_dbfs": -1.5144142787623671
+        "source": "car_body",
+        "start": 7.8
       },
       {
         "path": "impact/body_metal_3.wav",
-        "sha256": "da5483d29e03ca4abf4bac05d9b0e2a0067e86750926d7f272857dd2e56144f5",
-        "duration": 0.33972789115646257,
+        "sha256": "9ca122ba81671a90dcc2fc86f4cbf287879583e8d2065cde1700055ca6a401c5",
+        "duration": 0.22848072562358276,
+        "peak_dbfs": -1.5144142787623671,
         "id": "body_metal_3",
-        "source": "new",
-        "start": 0.426,
-        "peak_dbfs": -1.5144142787623671
+        "source": "car_body",
+        "start": 9.35
       }
     ],
     "body_hard": [
       {
         "path": "impact/body_hard_1.wav",
-        "sha256": "07a6778ff8c774ec64b7f0dd14be07bc7726968dd13ed3c1c5bfa2a4de8d14cd",
-        "duration": 0.29061224489795917,
+        "sha256": "c41427ccf0ee138bde5260455ca48a58931b189e61a42fcf2c1372511cfb2dbd",
+        "duration": 0.27276643990929705,
+        "peak_dbfs": -1.5144142787623671,
         "id": "body_hard_1",
-        "source": "new",
-        "start": 0.418,
-        "peak_dbfs": -1.5144142787623671
+        "source": "hood-impact",
+        "start": 0.13
       },
       {
         "path": "impact/body_hard_2.wav",
-        "sha256": "a2daf56ceaa1d191c8ceaf8a8013efccedbfa99830fc721f8aa153cefc950713",
-        "duration": 0.294421768707483,
+        "sha256": "891f3906b23d50827b3aaa18c6a2e9c6d1d3fb1f6c6a48cc27c250086c0af009",
+        "duration": 0.2778458049886621,
+        "peak_dbfs": -1.5144142787623671,
         "id": "body_hard_2",
-        "source": "new",
-        "start": 0.422,
-        "peak_dbfs": -1.5144142787623671
+        "source": "hood-impact",
+        "start": 0.135
       },
       {
         "path": "impact/body_hard_3.wav",
-        "sha256": "212143db72bb0b1af4ea725cde75e969c914b89ac617fbe58fdff8dc37a33ab2",
-        "duration": 0.2994557823129252,
+        "sha256": "580d00a969f50018118485af29439027b0d0f0b9a1aab7951e295862c42ee3da",
+        "duration": 0.28392290249433105,
+        "peak_dbfs": -1.5144142787623671,
         "id": "body_hard_3",
-        "source": "new",
-        "start": 0.426,
-        "peak_dbfs": -1.5144142787623671
+        "source": "hood-impact",
+        "start": 0.14
       }
     ],
     "crunch": [
       {
         "path": "impact/crunch_1.wav",
-        "sha256": "205896cd66f5119dc037a08124a4c7fab6f2138acde127a9bfb54fc17e224f25",
-        "duration": 0.08156462585034013,
+        "sha256": "3cf33645c7ae65d8d02ae2c90ea8b8f185092224e1c08f637fa2d70f6b26785b",
+        "duration": 0.07986394557823129,
+        "peak_dbfs": -6.375175252488256,
         "id": "crunch_1",
         "source": "car_crunch",
-        "start": 0.05,
-        "peak_dbfs": -6.375175252488256
+        "start": 0.05
       },
       {
         "path": "impact/crunch_2.wav",
-        "sha256": "18a7dee53c3d36136e5cbff53ecfd0864f95bdf49fe726d4a8f8f9a4fb48c402",
-        "duration": 0.17396825396825397,
+        "sha256": "c6c6c89a7a26a8ca78f5de259bb8f3b587651c8fa807840c8b791f73e98b8cee",
+        "duration": 0.16673469387755102,
+        "peak_dbfs": -6.375175252488256,
         "id": "crunch_2",
         "source": "car_crunch",
-        "start": 3.76,
-        "peak_dbfs": -6.375175252488256
+        "start": 3.76
       },
       {
         "path": "impact/crunch_3.wav",
-        "sha256": "466ec196381459e59afe5ae4ca44e1927e318fbda8f29c706a3ca37b8bbbc2fd",
+        "sha256": "e15c7b45b0400cd76aaae7c5df93dce1d5250ebddd80c2ac4c0167f1523cabf2",
         "duration": 0.18,
+        "peak_dbfs": -6.375175252488256,
         "id": "crunch_3",
         "source": "car_crunch",
-        "start": 6.79,
-        "peak_dbfs": -6.375175252488256
+        "start": 6.79
       }
     ],
     "debris": [
       {
         "path": "impact/debris_1.wav",
-        "sha256": "1a13587cd0a30583aa224d6709bf05ce7027f2afa066319d4bb957849199e347",
+        "sha256": "c95572a878018b930571cedf6702c5fd9c07f6830e0f18aa3dda482f3a112ad0",
         "duration": 0.04904761904761905,
+        "peak_dbfs": -9.118639112994488,
         "id": "debris_1",
         "source": "plastic",
-        "start": 0.15,
-        "peak_dbfs": -9.118639112994488
+        "start": 0.15
       },
       {
         "path": "impact/debris_2.wav",
-        "sha256": "282dd4e9cf13b1cdd5b0bcdb6aa4c8968893532c3610147bb6185adaac6a5790",
-        "duration": 0.05376417233560091,
+        "sha256": "e1c476eec6c6ad79a422bc12a8fc0269a0e25e71f587d97111b6e373469003ac",
+        "duration": 0.05868480725623583,
+        "peak_dbfs": -9.118639112994488,
         "id": "debris_2",
         "source": "plastic",
-        "start": 0.16,
-        "peak_dbfs": -9.118639112994488
+        "start": 0.16
       },
       {
         "path": "impact/debris_3.wav",
-        "sha256": "252a34dac6dd651706d5a0a48abedf12a481289e090bdab261445b8a8c6ea45b",
-        "duration": 0.07485260770975057,
+        "sha256": "dd10c58883f3285b173c8dd8e4e445bff1899439446e2357725691f2e51b04fd",
+        "duration": 0.071859410430839,
+        "peak_dbfs": -9.118639112994488,
         "id": "debris_3",
         "source": "plastic",
-        "start": 0.17,
-        "peak_dbfs": -9.118639112994488
+        "start": 0.17
       }
     ],
     "scrape_metal": [
@@ -293,19 +293,19 @@
         "path": "impact/scrape_metal_1.wav",
         "sha256": "5eefa8c7704061eafd78c387c08c43ed74a51dccd7c4185a04262a2d033acde5",
         "duration": 3.4606802721088434,
+        "peak_dbfs": -4.152166210034923,
         "id": "scrape_metal_1",
         "source": "metal_scrape",
-        "start": 3,
-        "peak_dbfs": -4.152166210034923
+        "start": 3
       },
       {
         "path": "impact/scrape_metal_2.wav",
         "sha256": "9ad29cc82aa3e92f0010292aab2d64e13f77ef49806b199bf227541b490dc3a1",
         "duration": 3.7392290249433104,
+        "peak_dbfs": -4.152166210034923,
         "id": "scrape_metal_2",
         "source": "metal_scrape",
-        "start": 9,
-        "peak_dbfs": -4.152166210034923
+        "start": 9
       }
     ],
     "scrape_hard": [
@@ -313,28 +313,44 @@
         "path": "impact/scrape_hard_1.wav",
         "sha256": "397c44ad964c0ab600fede1c364fd0aac12fc721a4d3d60785106c7d44afca07",
         "duration": 3.4606802721088434,
+        "peak_dbfs": -4.152166210034923,
         "id": "scrape_hard_1",
         "source": "hard_scrape",
-        "start": 6,
-        "peak_dbfs": -4.152166210034923
+        "start": 6
       },
       {
         "path": "impact/scrape_hard_2.wav",
         "sha256": "52259a4b9e7fd265ed90d793ef0aaf07c29ccc1a4183d5dccad9e30bd5c0e347",
         "duration": 3.7392290249433104,
+        "peak_dbfs": -4.152166210034923,
         "id": "scrape_hard_2",
         "source": "hard_scrape",
-        "start": 18,
-        "peak_dbfs": -4.152166210034923
+        "start": 18
       }
     ]
   },
   "source_manifest": {
-    "squareal": {
-      "page": "https://freesound.org/people/squareal/sounds/237375/",
-      "url": "https://cdn.freesound.org/previews/237/237375_1502374-hq.mp3",
+    "mini-cooper": {
+      "page": "https://freesound.org/people/TheLittleCrow/sounds/669618/",
+      "url": "https://cdn.freesound.org/previews/669/669618_5672786-hq.mp3",
+      "sha256": "5f487dd82d5c4a75e44e651dcaa9c48617d36c0e475cb167987ebc57dba9f07d",
       "license": "CC0",
-      "sha256": "6587ffc83281ecea17bf41a37e461c93d73424b478759e78dad35d71310823da"
+      "author": "TheLittleCrow",
+      "recording": "2019 Mini Cooper S; chassis left, engine block right contact microphones"
+    },
+    "hood-impact": {
+      "page": "https://freesound.org/people/LPA134/sounds/329516/",
+      "url": "https://cdn.freesound.org/previews/329/329516_424694-hq.mp3",
+      "sha256": "6157ca24e7794bd1dc4a38791e8a044aa05af9372068c97d7001baa82d55a249",
+      "license": "CC0",
+      "author": "LPA134",
+      "recording": "Car hood slammed in underground garage; Rode NT4; not an accident recording"
+    },
+    "car_body": {
+      "page": "https://freesound.org/people/harrisonlace/sounds/798843/",
+      "license": "CC0",
+      "sha256": "4b19e0e78a8cfab8246d7a2bfcb47b17295500b569a221fb00da17beb4d847f5",
+      "recording": "Hand strikes on an empty car body; not an accident recording"
     }
   },
   "materials": {
@@ -360,5 +376,6 @@
     "upgrade_severity": 0.15,
     "upgrade_impulse_ratio": 1.6,
     "duck_start": 0.6
-  }
+  },
+  "revision": "AUDIO-02 physical car body/hood recordings; wideband, reduced layering"
 }
