@@ -25,7 +25,7 @@
 | 涉及内容 | 从这里开始 |
 |---|---|
 | 交通/恢复 | `src/highway_driver.py`、`src/traffic_recovery.py`；设计依据 `docs/traffic-research.md`、`docs/traffic-recovery.md` |
-| 车辆物理/操控 | `src/vehicle.py`、`src/vehicle_dynamics.py`、`src/vehicle_response.py`；`docs/vehicle-physics.md`、`docs/handling-v2.md` |
+| 车辆物理/操控 | `src/vehicle.py`、`src/vehicle_dynamics.py`、`src/driver_assist.py`、`src/powertrain.py`、`src/vehicle_steering.py`；`docs/vehicle-physics.md`、`docs/physics-roadmap.md` |
 | 无限道路/重定位 | `src/highway_segments.py`、`src/highway_curve.py`、`src/streamed_road.py`；`docs/H4B-curves-design.md` |
 | 玩法/界面 | `src/session.py`、`src/race.py`、`src/highway_run.py`、`src/application.py`；`docs/phase5c-gameplay.md` |
 | 画面/车库/声音 | `src/scene.py`、`src/garage.py`、`src/settings.py`、`src/soundscape.py`；`docs/phase6a-garage.md`、`docs/phase6b-atmosphere.md` |

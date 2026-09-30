@@ -4,9 +4,9 @@ import math
 from dataclasses import dataclass, replace
 
 from coastal_map import MapPoint, map_length, offset_point, point_at, project
+from driver_assist import steering_limit
 from highway_curve import HighwayCurve
 from highway_map import HIGHWAY_LENGTH, lane_x
-from vehicle_response import steering_limit
 from vehicle_state import Control
 
 # Include the accepted player body and exposed tyres in clearance queries.

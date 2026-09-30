@@ -3,9 +3,10 @@
 import pytest
 
 from chase_camera import ChaseCamera
+from driver_assist import steering_limit
 from simulation import FIXED_DT, CarState, Control, Simulation
 from test_track import TEST_SPAWN
-from vehicle_response import VehicleResponse
+from vehicle_steering import SteeringRack
 
 
 def straight_simulation():
@@ -25,7 +26,7 @@ def test_short_throttle_tap_does_not_leave_power_latched():
             peak = max(peak, sim.snapshot().player.speed)
         assert 0 < peak * 3.6 < 1
         assert sim.snapshot().player.throttle == 0
-        assert abs(sim.response.force) < 0.01
+        assert abs(sim.player.powertrain.force) < 0.01
     finally:
         sim.close()
 
@@ -58,21 +59,21 @@ def test_held_throttle_builds_speed_and_changes_gears():
 
 @pytest.mark.parametrize("speed", [0, 100 / 3.6])
 def test_steering_tap_and_reversal_are_continuous(speed):
-    response = VehicleResponse()
+    rack = SteeringRack()
     positions = []
     for _ in range(120):
-        response.pedals_and_steering(Control(steering=1), speed, FIXED_DT)
-        positions.append(response.steering)
+        rack.advance(steering_limit(speed), FIXED_DT)
+        positions.append(rack.angle)
     # A tenth-second tap must not already be at full lock, even at speed.
     assert positions[11] < positions[-1] * 0.25
     assert 0 < positions[0] < 0.1
-    before = response.steering
-    response.pedals_and_steering(Control(steering=-1), speed, FIXED_DT)
-    assert abs(response.steering - before) < 0.5
-    assert response.steering > 0
+    before = rack.angle
+    rack.advance(-steering_limit(speed), FIXED_DT)
+    assert abs(rack.angle - before) < 0.5
+    assert rack.angle > 0
     for _ in range(240):
-        response.pedals_and_steering(Control(), speed, FIXED_DT)
-    assert abs(response.steering) < 0.001
+        rack.advance(0, FIXED_DT)
+    assert abs(rack.angle) < 0.001
 
 
 def test_light_pedal_is_distinct_from_full_pedal():

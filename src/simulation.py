@@ -32,7 +32,15 @@ from traffic_recovery import TrafficRecovery
 from vehicle import Vehicle
 from vehicle_config import CAR
 from vehicle_contacts import shift_contacts
-from vehicle_state import FIXED_DT, CarState, Control, WheelState, forward, heading_for
+from vehicle_state import (
+    FIXED_DT,
+    CarState,
+    Control,
+    VehicleCommand,
+    WheelState,
+    forward,
+    heading_for,
+)
 from world_props import collision_box, props_for
 
 __all__ = [
@@ -96,10 +104,6 @@ class Simulation:
         self._impact_scenario = None
         self._diagnostic_contact_keys = set()
         self.reset(seed)
-
-    @property
-    def response(self):
-        return self.player.response
 
     def reset(self, seed=0):
         if self.closed:
@@ -675,7 +679,7 @@ class Simulation:
         self.player = None
         self._chassis = self._vehicle = None
 
-    def step(self, control: Control, dt=FIXED_DT):
+    def step(self, control: Control | VehicleCommand, dt=FIXED_DT):
         if self.closed:
             raise RuntimeError("Simulation is closed")
         if not math.isclose(dt, FIXED_DT, rel_tol=0, abs_tol=1e-12):
@@ -705,7 +709,10 @@ class Simulation:
             for car, _ in cars
         }
         for car, action in cars:
-            car.apply_control(action)
+            if isinstance(action, VehicleCommand):
+                car.apply_command(action)
+            else:
+                car.apply_control(action)
         self._world.doPhysics(FIXED_DT, 4, FIXED_DT)
         self._read_impact_contacts(before)
         for (car, _), velocity in zip(cars, velocities):

@@ -57,3 +57,9 @@ A/B、定圆、阶跃、弯中制动和split-μ数据见 [测量基础报告](ev
 用户允许不同车型使用不同物理性能参数。车型参数归 vehicle_config，Vehicle、VehicleResponse 与 Simulation 仍共用一套实现；不能通过不同 Scene、显示缩放或按键控制分支伪造性能差异。接入时由游戏在创建/重建 Simulation 时明确传入车型配置，车库预览不推进或偷偷修改当前世界。
 
 VEH-01 本次仅确认这一许可，未接入按车型选物理参数，也未臆测真实经典车的质量、扭矩或操控。当前车型仍使用既有已验证参数。下一参数任务应贯通 VehicleConfig → Vehicle/VehicleResponse（包括 reset 和轮心），保留默认配置回归，并单独验证各车型加速/制动/转向/外廓；不复制第二套物理、不预建车型框架。
+
+## 2026-10-01 输入与执行器
+
+当前VehicleResponse已按功能拆为driver_assist、powertrain、vehicle_steering。DriverAssist处理驾驶输入便利行为，SteeringRack保存实际虚拟前轴中心转角/角速度与机械限制，Powertrain保存发动机、自动换挡和转矩响应。Vehicle.apply_command是统一受力入口，apply_control先做辅助再调用它。
+
+研究控制使用`vehicle_state.VehicleCommand`，steering为度、throttle/brake为0～1、direction为−1/0/1。`Simulation.step`接收Control或VehicleCommand，仍只有一个120Hz世界；模式改变输入辅助，不改变质量、附着或动力参数。默认七标准工况1168×117列完全一致，见[ARCH-01](evidence/ARCH-01/README.md)。上节车型配置授权在这些新职责间贯通，旧模块名只记录当时背景。

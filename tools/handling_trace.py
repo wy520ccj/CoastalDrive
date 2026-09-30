@@ -9,8 +9,9 @@ from pathlib import Path
 def main():
     root = Path(__file__).resolve().parents[1]
     sys.path.insert(0, str(root / "src"))
+    from driver_assist import steering_limit
     from simulation import FIXED_DT, Control, Simulation
-    from vehicle_response import VehicleResponse
+    from vehicle_steering import SteeringRack
 
     output = root / "logs/handling-v2"
     output.mkdir(parents=True, exist_ok=True)
@@ -70,11 +71,11 @@ def main():
 
     rows = []
     for speed in (0, 100 / 3.6):
-        response = VehicleResponse()
+        rack = SteeringRack()
         for tick in range(360):
             control = Control(steering=1 if tick < 12 or 120 <= tick < 240 else 0)
-            response.pedals_and_steering(control, speed, FIXED_DT)
-            rows.append(((tick + 1) * FIXED_DT, speed * 3.6, control.steering, response.steering))
+            rack.advance(control.steering * steering_limit(speed), FIXED_DT)
+            rows.append(((tick + 1) * FIXED_DT, speed * 3.6, control.steering, rack.angle))
     with (output / "steering.csv").open("w", newline="", encoding="utf-8") as stream:
         writer = csv.writer(stream)
         writer.writerow(("time", "speed_kmh", "request", "road_wheel_degrees"))

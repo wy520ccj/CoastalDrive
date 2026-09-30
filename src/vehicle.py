@@ -5,11 +5,13 @@ import math
 from panda3d.bullet import BulletBoxShape, BulletRigidBodyNode, BulletVehicle, ZUp
 from panda3d.core import BitMask32, Quat, TransformState, Vec3
 
+from driver_assist import DriverAssist
+from powertrain import Powertrain
 from vehicle_config import CAR, WHEEL_HUBS
 from vehicle_contacts import read_wheel_contacts, shift_contacts
 from vehicle_dynamics import DynamicsState, aerodynamic_force, axle_loads, contact_grade
-from vehicle_response import VehicleResponse
-from vehicle_state import FIXED_DT, CarState, Control, WheelState, forward
+from vehicle_state import FIXED_DT, CarState, Control, VehicleCommand, WheelState, forward
+from vehicle_steering import SteeringRack
 
 
 class Vehicle:
@@ -34,8 +36,9 @@ class Vehicle:
         self._chassis = None
         self._vehicle = None
         self.closed = False
-        self._reverse_wait = 0.0
-        self.response = VehicleResponse()
+        self.assist = DriverAssist()
+        self.powertrain = Powertrain()
+        self.steering = SteeringRack()
         self._drive_pedal = 0.0
         self._brake_pedal = 0.0
         self._acceleration = 0.0
@@ -98,8 +101,9 @@ class Vehicle:
         self._chassis.clearForces()
         self._chassis.setActive(True)
         self._vehicle.resetSuspension()
-        self._reverse_wait = 0.0
-        self.response = VehicleResponse()
+        self.assist = DriverAssist()
+        self.powertrain = Powertrain()
+        self.steering = SteeringRack()
         self._drive_pedal = 0.0
         self._brake_pedal = 0.0
         self._acceleration = 0.0
@@ -138,42 +142,25 @@ class Vehicle:
         self._wheel_contacts = shift_contacts(self._wheel_contacts, amount)
 
     def apply_control(self, control: Control):
+        command = self.assist.command(
+            control, self.signed_speed(), self.powertrain.gear, self.reverse_enabled, FIXED_DT
+        )
+        self.apply_command(command)
+
+    def apply_command(self, command: VehicleCommand):
+        """驾驶辅助和研究控制共用同一执行器与轮胎受力路径。"""
         pose = self._chassis.getTransform()
         hpr = pose.getHpr()
         velocity = self._chassis.getLinearVelocity()
         speed = velocity.dot(Vec3(*forward(hpr.x)))
-        response = self.response
-        response.pedals_and_steering(control, speed, FIXED_DT)
+        self.steering.advance(command.steering, FIXED_DT)
         for wheel_index in (0, 1):
-            self._vehicle.setSteeringValue(-response.steering, wheel_index)
+            self._vehicle.setSteeringValue(-self.steering.angle, wheel_index)
 
-        direction = 1 if response.throttle > 0 else 0
-        pedal = response.throttle
-        brake = response.brake if response.gear > 0 else 0.0
-        if control.brake > 0:
-            direction = 0
-            if speed > 0.15:
-                brake = response.brake
-                self._reverse_wait = 0.0
-            else:
-                self._reverse_wait += FIXED_DT
-                if self.reverse_enabled and self._reverse_wait >= CAR.reverse_delay:
-                    direction = -1
-                    pedal = response.brake
-                    brake = 0.0
-                else:
-                    brake = response.brake
-        elif control.throttle > 0:
-            self._reverse_wait = 0.0
-            if speed < -0.15:
-                direction = 0
-                brake = response.throttle
-        else:
-            self._reverse_wait = 0.0
-
+        pedal, brake, direction = command.throttle, command.brake, command.direction
         self._drive_pedal = pedal if direction != 0 and brake == 0 else 0.0
         self._brake_pedal = brake
-        engine_force, engine_drag = response.drivetrain(
+        engine_force, engine_drag = self.powertrain.advance(
             speed, pedal, direction, brake > 0, FIXED_DT
         )
         position = pose.getPos()
@@ -284,11 +271,11 @@ class Vehicle:
             float(hpr.z),
             tuple(wheels),
             "asphalt" if self.on_asphalt(position.x, position.y) else "grass",
-            self.response.steering,
+            self.steering.angle,
             self._drive_pedal,
             self._brake_pedal,
-            self.response.rpm,
-            self.response.gear,
+            self.powertrain.rpm,
+            self.powertrain.gear,
             self._acceleration,
             self._lateral_acceleration,
             self.dynamics,

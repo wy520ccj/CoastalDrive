@@ -1,0 +1,44 @@
+{
+  "circle_20m": {
+    "a_rows": 240,
+    "b_rows": 240,
+    "common_columns": 117,
+    "different_cells": 0
+  },
+  "circle_40m": {
+    "a_rows": 240,
+    "b_rows": 240,
+    "common_columns": 117,
+    "different_cells": 0
+  },
+  "circle_60m": {
+    "a_rows": 240,
+    "b_rows": 240,
+    "common_columns": 117,
+    "different_cells": 0
+  },
+  "corner_braking": {
+    "a_rows": 70,
+    "b_rows": 70,
+    "common_columns": 117,
+    "different_cells": 0
+  },
+  "flat_acceleration": {
+    "a_rows": 240,
+    "b_rows": 240,
+    "common_columns": 117,
+    "different_cells": 0
+  },
+  "split_mu_braking": {
+    "a_rows": 68,
+    "b_rows": 68,
+    "common_columns": 117,
+    "different_cells": 0
+  },
+  "steering_step": {
+    "a_rows": 70,
+    "b_rows": 70,
+    "common_columns": 117,
+    "different_cells": 0
+  }
+}

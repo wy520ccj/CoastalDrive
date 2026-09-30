@@ -21,6 +21,16 @@ class Control:
 
 
 @dataclass(frozen=True)
+class VehicleCommand:
+    """执行器请求：转向角为度，踏板为0～1，方向为−1/0/1；绕过输入辅助。"""
+
+    steering: float = 0.0
+    throttle: float = 0.0
+    brake: float = 0.0
+    direction: int = 0
+
+
+@dataclass(frozen=True)
 class WheelState:
     position: tuple[float, float, float]
     orientation: tuple[float, float, float, float]

@@ -2,9 +2,9 @@
 
 import math
 
+from driver_assist import steering_limit
 from traffic import extents
 from vehicle_config import CAR
-from vehicle_response import steering_limit
 from vehicle_state import Control
 
 

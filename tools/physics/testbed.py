@@ -31,10 +31,11 @@ Vehicle = None
 forward = None
 steering_limit = None
 _loaded_source = None
+_response_modules = ()
 
 
 def _load_source(source_dir=None):
-    global CAR, Control, FIXED_DT, Vehicle, forward, steering_limit, _loaded_source
+    global CAR, Control, FIXED_DT, Vehicle, forward, steering_limit, _loaded_source, _response_modules
     if source_dir is None and _loaded_source is not None:
         return
     selected = Path(source_dir or Path(__file__).resolve().parents[2] / "src").resolve()
@@ -46,13 +47,18 @@ def _load_source(source_dir=None):
     vehicle_config = importlib.import_module("vehicle_config")
     vehicle_state = importlib.import_module("vehicle_state")
     vehicle = importlib.import_module("vehicle")
-    vehicle_response = importlib.import_module("vehicle_response")
+    # 历史源码边界：ARCH-01前后的模块布局明确不同，分别在独立进程中加载。
+    if (selected / "driver_assist.py").is_file():
+        _response_modules = ("driver_assist", "powertrain", "vehicle_steering")
+    else:
+        _response_modules = ("vehicle_response",)
+    response_modules = [importlib.import_module(name) for name in _response_modules]
     CAR = vehicle_config.CAR
     Control = vehicle_state.Control
     FIXED_DT = vehicle_state.FIXED_DT
     forward = vehicle_state.forward
     Vehicle = vehicle.Vehicle
-    steering_limit = vehicle_response.steering_limit
+    steering_limit = response_modules[0].steering_limit
     _loaded_source = selected
 
 
@@ -259,9 +265,10 @@ def run(output, cases=CASES, source_dir=None, label=None):
         "source_version": label or ("current-src" if source_dir is None else str(source_dir)),
         "git_sha": _git_sha(),
         "source_sha256": {
-            name: hashlib.sha256(Path(sys.modules[name].__file__).read_bytes()).hexdigest()
+            name: hashlib.sha256((_loaded_source / f"{name}.py").read_bytes()).hexdigest()
             for name in ("vehicle", "vehicle_config", "vehicle_state", "vehicle_dynamics",
-                         "vehicle_response")
+                         "vehicle_contacts", *_response_modules)
+            if name != "vehicle_contacts" or (_loaded_source / "vehicle_contacts.py").is_file()
         },
         "commands": {
             "flat_acceleration": "throttle=1 for 12 s",

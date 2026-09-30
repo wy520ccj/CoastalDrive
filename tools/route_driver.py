@@ -3,8 +3,8 @@
 import math
 
 from coastal_map import point_at, project
+from driver_assist import steering_limit
 from simulation import Control
-from vehicle_response import steering_limit
 
 
 class RouteDriver:
