@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "baseline": false,
+  "device": "耳机 (2- Realtek(R) Audio)",
+  "cases": [
+    {
+      "station": 1,
+      "resume_seconds": 0.1234567,
+      "waveform_correlation": 0.8320238936303084,
+      "hiss_energy_ratio": 6.76454437780194e-05,
+      "passed": true
+    },
+    {
+      "station": 2,
+      "resume_seconds": 0.2345678,
+      "waveform_correlation": 0.8076656791033493,
+      "hiss_energy_ratio": 0.0007308205240406096,
+      "passed": true
+    },
+    {
+      "station": 1,
+      "resume_seconds": 3.407991886138916,
+      "waveform_correlation": 0.8049548098618095,
+      "hiss_energy_ratio": 1.4003337128087878e-05,
+      "passed": true
+    },
+    {
+      "station": 2,
+      "resume_seconds": 3.4386417865753174,
+      "waveform_correlation": 0.8159101988420182,
+      "hiss_energy_ratio": 8.366636757273227e-05,
+      "passed": true
+    }
+  ],
+  "overlap_updates": 0,
+  "music_update_max_ms": 0.35140000545652583,
+  "music_update_p95_ms": 0.062330001310328925
+}

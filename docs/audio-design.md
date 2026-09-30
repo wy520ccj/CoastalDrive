@@ -7,8 +7,8 @@ AUDIO-01以PERF-04-FIX为基线，声音按功能直接消费Snapshot和真实Im
 | 引擎 | src/audio/engine.py | assets/game/audio/engine | Mini Cooper S双接触麦克风实录，频谱估计900/1800/3200/4700/6500rpm，车身/缸体不同混合双层、相邻转速等功率交叉、换挡短暂卸载 |
 | 行驶 | src/audio/driving.py | assets/game/audio/driving | 沥青/非铺装、随速度平方增加的风噪，按物理侧偏/横向载荷/制动调节轮胎声 |
 | 碰撞 | src/audio/impact.py | assets/game/audio/impact | 31个重制变体；车车/护栏/硬物独立瞬态和主体，形变与碎屑、左右持续刮擦，重撞压低背景 |
-| 音乐 | src/audio/music.py | assets/game/audio/music | 两首原创32小节双声道配乐，菜单BGM、驾驶电台交叉切换、暂停保留播放位置 |
-| 提示 | src/audio/cues.py | assets/game/audio/cues | 导航/确认、倒计时/发车、检查点、成功/失败/结束和切台短音 |
+| 音乐 | src/audio/music.py | assets/game/audio/music | 两首原创32小节双声道配乐，菜单BGM、先淡出旧台再淡入新台、暂停保留播放位置 |
+| 提示 | src/audio/cues.py | assets/game/audio/cues | 导航/确认、倒计时/发车、检查点、成功/失败/结束；切台不叠加提示音 |
 
 入口src/soundscape.py只负责音量乘积、阶段和事件分发；不增加事件总线或通用声音管理框架。重开清理驾驶声和撞击尾音；结算接收最后一次真实撞击并保留尾音。效果静音不影响音乐，主音量控制所有声音。
 
@@ -44,3 +44,13 @@ tools/audio/check_radio_output.py用真实OpenAL与WASAPI回录，将实际输�
 车身采用[harrisonlace的空车身敲击](https://freesound.org/people/harrisonlace/sounds/798843/)前十次独立实录片段，以及[LPA134的真实机盖撞击](https://freesound.org/people/LPA134/sounds/329516/)（均CC0）。这是车身/机盖实物录音，非道路事故实录。车身宽频细节保留到3.2–4.8kHz，取消全段指数衰减和300–550Hz过窄低通；机盖仅收短车库回声。主层维持峰值0.84与0.50+0.48s增益，起音降至0.10+0.14s，护栏起音乘1.4；形变/碎屑再降低一半，运行时随机变调限制±1.5%，不再随严重度刻意降调。27个单次素材持续时间不超过0.36秒，4个实际接触刮擦循环逐字节保持。
 
 制作入口tools/audio/prepare_recorded.py，离线依赖tools/audio/requirements-preparation.txt和ffmpeg，运行包仍仅依赖Panda3D。旧prepare_upgrade.py的all/impact入口委托实录制作，避免未来重建声库恢复旧合成音色。来源、制作和交付证据见evidence/AUDIO-02/README.md。
+
+## RADIO-01：续播噪声、混台与切台帧耗时
+
+Panda3D 1.10.16把两首大于1MB的WAV默认当作流式声音。其WavAudioCursor.seek按时间乘字节率取整，没有对齐16bit双声道的4字节采样帧。续播0.1234567秒落在21777字节，余数1，读出的PCM与该奇数字节起点逐字节匹配，RMS由1201变为19030；这是沙沙噪声的来源。参考实际版本源码：https://raw.githubusercontent.com/panda3d/panda3d/v1.10.16/panda/src/movies/wavAudioCursor.cxx 。
+
+两首短曲改用musicManager独立缓存与SM_sample，预载约25MB PCM，规避流式seek与切台现场读盘。切台先短淡出旧曲至停止再启动新曲，任何时刻最多一首，快速切换/暂停/恢复也保持该约束。暂停位置继续保留。
+
+N/M驾驶路径仅修改所选电台、音乐目标和HUD提示，不立即写audio.json、不重排整个页面；进入暂停/菜单/结算或退出时保存。HUD提示改用TextNode一次自动换行，避免逐字重排每个前缀产生约11ms阻塞；底板仅在行数改变时更新尺寸，现有风格、关键驾驶提示保留。
+
+tools/audio/check_radio_switch.py用真实OpenAL/WASAPI连续往返切台，固定非整采样续播位置，旧版噪声/混台复现，修复版输出与原曲匹配且零混台。tools/audio/check_radio_driving.py在同一可见驾驶窗口对照新旧按键业务路径，独立记录按键和随后的真实任务帧；两组共用新版预载音乐后端，不能把此对照误称完整旧版性能。证据与新包见evidence/RADIO-01/README.md。

@@ -1,0 +1,43 @@
+         6066 function calls in 0.031 seconds
+
+   Ordered by: cumulative time
+   List reduced from 237 to 35 due to restriction <35>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    0.031    0.031 B:\AI agent\暑期计算机程序设计\CoastalDrive\.venv\Lib\site-packages\direct\task\Task.py:486(step)
+        1    0.000    0.000    0.030    0.030 {method 'poll' of 'panda3d.core.AsyncTaskManager' objects}
+        1    0.000    0.000    0.018    0.018 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\application.py:812(update)
+        1    0.000    0.000    0.012    0.012 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\ui\hud.py:73(update)
+        1    0.000    0.000    0.011    0.011 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\application.py:445(fit_lines)
+       13    0.011    0.001    0.011    0.001 {method 'getWidth' of 'panda3d.core.TextNode' objects}
+        1    0.000    0.000    0.009    0.009 B:\AI agent\暑期计算机程序设计\CoastalDrive\.venv\Lib\site-packages\direct\showbase\ShowBase.py:2148(__igLoop)
+        1    0.009    0.009    0.009    0.009 {method 'renderFrame' of 'panda3d.core.GraphicsEngine' objects}
+        1    0.000    0.000    0.006    0.006 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\session.py:165(frame)
+        1    0.000    0.000    0.005    0.005 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\session.py:30(advance)
+        2    0.000    0.000    0.005    0.003 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\session.py:173(tick_and_collect)
+        2    0.000    0.000    0.005    0.003 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\session.py:130(tick)
+        2    0.000    0.000    0.004    0.002 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:673(step)
+        1    0.000    0.000    0.003    0.003 B:\AI agent\暑期计算机程序设计\CoastalDrive\.venv\Lib\site-packages\direct\showbase\ShowBase.py:2137(__garbageCollectStates)
+       18    0.001    0.000    0.002    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\vehicle.py:132(apply_control)
+        1    0.002    0.002    0.002    0.002 {built-in method garbageCollect}
+        2    0.000    0.000    0.001    0.001 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:738(snapshot)
+      108    0.001    0.000    0.001    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\coastal_map.py:165(on_road)
+       18    0.000    0.000    0.001    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:739(<genexpr>)
+       18    0.000    0.000    0.001    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\vehicle.py:230(snapshot)
+        1    0.000    0.000    0.001    0.001 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:788(interpolate)
+        9    0.000    0.000    0.001    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:804(car)
+        2    0.001    0.000    0.001    0.000 {method 'doPhysics' of 'panda3d.bullet.BulletWorld' objects}
+        9    0.000    0.000    0.001    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:838(<genexpr>)
+       45    0.000    0.000    0.001    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:813(<genexpr>)
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+       36    0.000    0.000    0.000    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:798(orientation)
+        1    0.000    0.000    0.000    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\scene.py:654(apply)
+       18    0.000    0.000    0.000    0.000 C:\Users\15120\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1754(replace)
+        2    0.000    0.000    0.000    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:215(_read_impact_contacts)
+       18    0.000    0.000    0.000    0.000 C:\Users\15120\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1773(_replace)
+       74    0.000    0.000    0.000    0.000 {built-in method builtins.sum}
+        2    0.000    0.000    0.000    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\.venv\Lib\site-packages\direct\gui\DirectGuiBase.py:450(__setitem__)
+       90    0.000    0.000    0.000    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:795(vector)
+       18    0.000    0.000    0.000    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\vehicle_response.py:44(pedals_and_steering)
+
+

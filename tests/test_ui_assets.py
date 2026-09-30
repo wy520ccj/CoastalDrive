@@ -69,13 +69,15 @@ def test_hud_consumes_snapshots_and_keeps_critical_notices(tmp_path):
                        elapsed=123.456, checkpoints=2, next_checkpoint=3,
                        invalidated=True, invalid_reason="错过检查点")
         app.hud.update(state, race, app.session.highway.snapshot, track="coastal",
-                       countdown="3 秒后开始", notice="请返回赛道", fit_lines=app.fit_lines)
+                       countdown="3 秒后开始", notice="电台：夜驰 FM · Midnight Circuit · 请返回赛道")
         assert app.speed.getText() == "036"
         assert app.hud.gear.getText() == "R"
         assert "123.456" in app.status.getText()
         assert "2 / 4" in app.hud.detail.getText()
         assert "检查点 3" in app.hud.detail.getText()
         assert all(t in app.status_notice.getText() for t in ("3 秒后开始", "请返回赛道", "错过检查点"))
+        assert app.status_notice.textNode.getWidth() * .034 <= .801
+        assert "\n" in app.status_notice.textNode.getWordwrappedText()
         assert state.player.speed == -10 and race.elapsed == 123.456
         app.session.menu()
         app.update(SimpleNamespace(cont=None))

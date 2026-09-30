@@ -1,0 +1,43 @@
+         12715 function calls in 0.021 seconds
+
+   Ordered by: cumulative time
+   List reduced from 249 to 35 due to restriction <35>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    0.022    0.022 B:\AI agent\暑期计算机程序设计\CoastalDrive\.venv\Lib\site-packages\direct\task\Task.py:486(step)
+        1    0.000    0.000    0.022    0.022 {method 'poll' of 'panda3d.core.AsyncTaskManager' objects}
+        1    0.000    0.000    0.010    0.010 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\application.py:813(update)
+        1    0.000    0.000    0.009    0.009 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\session.py:165(frame)
+        1    0.000    0.000    0.008    0.008 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\session.py:30(advance)
+        2    0.000    0.000    0.008    0.004 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\session.py:173(tick_and_collect)
+        2    0.000    0.000    0.008    0.004 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\session.py:130(tick)
+        1    0.000    0.000    0.008    0.008 B:\AI agent\暑期计算机程序设计\CoastalDrive\.venv\Lib\site-packages\direct\showbase\ShowBase.py:2148(__igLoop)
+        1    0.008    0.008    0.008    0.008 {method 'renderFrame' of 'panda3d.core.GraphicsEngine' objects}
+        2    0.000    0.000    0.007    0.004 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:673(step)
+        1    0.000    0.000    0.003    0.003 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:458(_drive_traffic)
+        1    0.000    0.000    0.003    0.003 B:\AI agent\暑期计算机程序设计\CoastalDrive\.venv\Lib\site-packages\direct\showbase\ShowBase.py:2137(__garbageCollectStates)
+        1    0.002    0.002    0.002    0.002 {built-in method garbageCollect}
+       18    0.001    0.000    0.002    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\vehicle.py:132(apply_control)
+        9    0.000    0.000    0.002    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\traffic.py:39(locate)
+        9    0.002    0.000    0.002    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\coastal_map.py:124(project)
+      117    0.001    0.000    0.001    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\coastal_map.py:165(on_road)
+        2    0.000    0.000    0.001    0.001 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:738(snapshot)
+       18    0.000    0.000    0.001    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:739(<genexpr>)
+       27    0.000    0.000    0.001    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\vehicle.py:230(snapshot)
+        8    0.000    0.000    0.001    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\traffic.py:86(control)
+        1    0.000    0.000    0.001    0.001 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:788(interpolate)
+        2    0.001    0.000    0.001    0.000 {method 'doPhysics' of 'panda3d.bullet.BulletWorld' objects}
+        9    0.000    0.000    0.001    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:804(car)
+       80    0.000    0.000    0.001    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\traffic.py:27(sample)
+        9    0.000    0.000    0.001    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:838(<genexpr>)
+       45    0.000    0.000    0.001    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:813(<genexpr>)
+       80    0.000    0.000    0.001    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\traffic.py:30(sample_lateral)
+       36    0.000    0.000    0.000    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py:798(orientation)
+     2864    0.000    0.000    0.000    0.000 {built-in method builtins.min}
+     2854    0.000    0.000    0.000    0.000 {built-in method builtins.max}
+        1    0.000    0.000    0.000    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\scene.py:654(apply)
+       18    0.000    0.000    0.000    0.000 C:\Users\15120\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1754(replace)
+       80    0.000    0.000    0.000    0.000 B:\AI agent\暑期计算机程序设计\CoastalDrive\src\coastal_map.py:116(point_at)
+       18    0.000    0.000    0.000    0.000 C:\Users\15120\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1773(_replace)
+
+

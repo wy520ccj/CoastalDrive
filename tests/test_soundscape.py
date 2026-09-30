@@ -49,6 +49,12 @@ class FakeBase:
     def __init__(self):
         self.sounds = []
         self.loader = SimpleNamespace(loadSfx=self.load_sound)
+        self.musicManager = SimpleNamespace(getSound=self.load_music)
+
+    def load_music(self, path, positional, mode):
+        sound = self.load_sound(path, positional=positional)
+        sound.mode = mode
+        return sound
 
     def load_sound(self, _path, *, positional=False):
         sound = FakeSound()

@@ -6,6 +6,7 @@ import math
 from dataclasses import replace
 from itertools import pairwise
 
+from panda3d.core import AudioManager
 from test_soundscape import event, frame, make_soundscape, phase
 
 from audio.engine import RPM_BANDS, band_mix
@@ -97,7 +98,7 @@ def test_surface_and_braking_are_speed_gated():
     assert sound.driving_audio.levels["tire"] < .001
 
 
-def test_radio_crossfade_pause_resume_and_independent_volume():
+def test_radio_switch_pause_resume_and_independent_volume():
     sound, _ = make_soundscape()
     for _ in range(12):
         sound.update(frame(0), phase("driving"), None, .1)
@@ -111,7 +112,7 @@ def test_radio_crossfade_pause_resume_and_independent_volume():
         sound.update(frame(0), phase("driving"), None, .1)
     sound.music.select(2)
     sound.update(frame(0), phase("driving"), None, .1)
-    assert sound.music.playing == [True, True]
+    assert sound.music.playing == [False, True]
     for _ in range(10):
         sound.update(frame(0), phase("driving"), None, .1)
     assert sound.music.playing == [False, True]
@@ -192,6 +193,22 @@ def test_upgrade_manifest_matches_actual_assets():
         assert hashlib.sha256((root / entry["path"]).read_bytes()).hexdigest() == entry["sha256"]
     assert all(entry["duration"] > 60 for entry in manifest["assets"]
                if entry["path"].startswith("music/"))
+
+
+def test_radio_preloads_samples_and_never_overlaps_during_rapid_switches():
+    sound, _ = make_soundscape()
+    assert all(track.mode == AudioManager.SM_sample for track in sound.music.tracks)
+    for tick in range(300):
+        if tick % 7 == 0:
+            sound.music.select((tick // 7) % 3)
+        state = phase("paused" if tick % 31 == 0 else "driving")
+        sound.update(frame(tick/120), state, None, 1/120)
+        assert sum(sound.music.playing) <= 1
+    sound.music.select(2)
+    for _ in range(24):
+        sound.update(frame(0), phase("driving"), None, 1/120)
+    assert sound.music.playing == [False, True]
+    sound.close()
 
 
 def test_recorded_engine_loops_have_signal_and_no_seam_spike():

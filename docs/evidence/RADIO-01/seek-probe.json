@@ -1,0 +1,72 @@
+{
+  "wav_seek": {
+    "time": 0.1234567,
+    "byte_offset": 21777,
+    "frame_remainder": 1,
+    "rms_bad": 19030.392693147976,
+    "rms_expected": 1201.2793576911424,
+    "exact_shifted_byte_match": true
+  },
+  "timings": [
+    {
+      "mode": 0,
+      "play_ms": 6.099,
+      "stop_ms": 0.203
+    },
+    {
+      "mode": 0,
+      "play_ms": 4.487,
+      "stop_ms": 0.2
+    },
+    {
+      "mode": 0,
+      "play_ms": 3.468,
+      "stop_ms": 0.24
+    },
+    {
+      "mode": 0,
+      "play_ms": 4.166,
+      "stop_ms": 0.289
+    },
+    {
+      "mode": 0,
+      "play_ms": 4.023,
+      "stop_ms": 0.206
+    },
+    {
+      "mode": 0,
+      "play_ms": 3.655,
+      "stop_ms": 0.215
+    },
+    {
+      "mode": 1,
+      "play_ms": 0.026,
+      "stop_ms": 0.027
+    },
+    {
+      "mode": 1,
+      "play_ms": 0.02,
+      "stop_ms": 0.023
+    },
+    {
+      "mode": 1,
+      "play_ms": 0.024,
+      "stop_ms": 0.025
+    },
+    {
+      "mode": 1,
+      "play_ms": 0.02,
+      "stop_ms": 0.026
+    },
+    {
+      "mode": 1,
+      "play_ms": 0.022,
+      "stop_ms": 0.048
+    },
+    {
+      "mode": 1,
+      "play_ms": 0.025,
+      "stop_ms": 0.028
+    }
+  ]
+}

@@ -60,8 +60,12 @@ class Clip:
 class Mixer:
     def __init__(self):
         self.loader = self
+        self.musicManager = self
         self.clips = []
         self.cache = {}
+
+    def getSound(self, filename, positional, mode):
+        return self.loadSfx(filename, positional=positional)
 
     def loadSfx(self, filename, positional=False):
         path = filename.toOsSpecific()

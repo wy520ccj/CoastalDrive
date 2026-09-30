@@ -7,6 +7,41 @@ from race import GameMode
 from session import Phase
 
 
+def test_driving_radio_keys_defer_disk_save_and_leave_panel_intact(tmp_path, monkeypatch):
+    import json
+
+    app = CoastalDrive(smoke=True, output=tmp_path)
+    app.taskMgr.remove("finish-smoke")
+    saved, refreshed = [], []
+    save, refresh = app.audio_settings.save, app.refresh_panel
+    try:
+        app.session.start(countdown=False)
+        app.refresh_panel()
+        shown = app._shown_phase
+        def record_save(*args):
+            saved.append(args)
+            return save(*args)
+        def record_refresh():
+            refreshed.append(True)
+            return refresh()
+        monkeypatch.setattr(app.audio_settings, "save", record_save)
+        monkeypatch.setattr(app, "refresh_panel", record_refresh)
+        app.session.notice = "附近暂时没有安全空位，请稍后再试"
+        for _ in range(8):
+            app.key_down("n")
+            app.key_up("n")
+        assert saved == [] and refreshed == []
+        assert app.session.notice == "附近暂时没有安全空位，请稍后再试"
+        assert [label.isHidden() for label in app.hud.radio_labels] == [False, True, True]
+        assert app._shown_phase == shown and app._radio_dirty
+        app.session.pause()
+        app.taskMgr.step()
+        assert len(saved) == 1 and not app._radio_dirty
+        assert json.loads(app.audio_settings.path.read_text())["radio_station"] == 0
+    finally:
+        app.close_game()
+
+
 def test_ui_modes_results_and_existing_keys(tmp_path):
     app = CoastalDrive(smoke=True, output=tmp_path)
     app.taskMgr.remove("finish-smoke")

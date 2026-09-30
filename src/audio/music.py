@@ -1,16 +1,17 @@
-"""双电台交叉淡化、菜单BGM及暂停续播。"""
+"""双电台单曲切换、菜单BGM及暂停续播。"""
 
 import math
 
-from panda3d.core import Filename
+from panda3d.core import AudioManager, Filename
 
 STATIONS = ("关闭", "海岸 FM · Sunset Run", "夜驰 FM · Midnight Circuit")
 
 
 class MusicAudio:
     def __init__(self, base, directory, station=1):
-        self.tracks = tuple(base.loader.loadSfx(Filename.fromOsSpecific(
-            str(directory / "music" / f"{name}.wav")))
+        # 两首短曲预载到独立音乐缓存，避免流式WAV续播字节错位和切台时读盘填缓冲。
+        self.tracks = tuple(base.musicManager.getSound(Filename.fromOsSpecific(
+            str(directory / "music" / f"{name}.wav")), False, AudioManager.SM_sample)
                             for name in ("sunset-run", "midnight-circuit"))
         for sound in self.tracks:
             sound.setLoop(True)
@@ -32,18 +33,25 @@ class MusicAudio:
         gain = 0.36 if phase in ("driving", "countdown") else 0.20
         self.duck += (duck - self.duck) * (1 - math.exp(-dt / (
             .03 if duck < self.duck else .24)))
+        # 先淡出并停止旧台，再允许新台起播；快速往返切台也不能两首同时响。
         for i, sound in enumerate(self.tracks):
-            desired = gain if i == target else 0.0
-            self.levels[i] += max(-dt * 0.55, min(dt * 0.55, desired - self.levels[i]))
-            if self.levels[i] > 0 and not self.playing[i]:
-                sound.setTime(self.positions[i])
-                sound.play()
-                self.playing[i] = True
+            if i == target:
+                continue
+            self.levels[i] = max(0, self.levels[i] - dt * 6)
             sound.setVolume(self.levels[i] * scale * self.duck)
             if self.levels[i] == 0 and self.playing[i]:
                 self.positions[i] = sound.getTime()
                 sound.stop()
                 self.playing[i] = False
+        if target < 0 or any(active for i, active in enumerate(self.playing) if i != target):
+            return
+        sound = self.tracks[target]
+        self.levels[target] += max(-dt * 4, min(dt * 4, gain - self.levels[target]))
+        if self.levels[target] > 0 and not self.playing[target]:
+            sound.setTime(self.positions[target])
+            sound.play()
+            self.playing[target] = True
+        sound.setVolume(self.levels[target] * scale * self.duck)
 
     def stop(self, preserve=False):
         for i, sound in enumerate(self.tracks):

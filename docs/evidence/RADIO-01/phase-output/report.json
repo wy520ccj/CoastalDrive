@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "device": "耳机 (2- Realtek(R) Audio)",
+  "kind": "real OpenAL WASAPI loopback matched against both song waveforms",
+  "cases": [
+    {
+      "phase": "menu",
+      "preview": false,
+      "station": 1,
+      "playing": [
+        true,
+        false
+      ],
+      "waveform_match": 1,
+      "correlations": [
+        0.844007406995442,
+        0.31390342660435705
+      ],
+      "passed": true
+    },
+    {
+      "phase": "menu",
+      "preview": false,
+      "station": 2,
+      "playing": [
+        false,
+        true
+      ],
+      "waveform_match": 2,
+      "correlations": [
+        0.3202522531643251,
+        0.8391031198189783
+      ],
+      "passed": true
+    },
+    {
+      "phase": "driving",
+      "preview": false,
+      "station": 2,
+      "playing": [
+        false,
+        true
+      ],
+      "waveform_match": 2,
+      "correlations": [
+        0.3276679415299255,
+        0.8564011789281845
+      ],
+      "passed": true
+    },
+    {
+      "phase": "paused",
+      "preview": true,
+      "station": 1,
+      "playing": [
+        true,
+        false
+      ],
+      "waveform_match": 1,
+      "correlations": [
+        0.7973943241344039,
+        0.30174684886709663
+      ],
+      "passed": true
+    }
+  ]
+}

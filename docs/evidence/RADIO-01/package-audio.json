@@ -1,0 +1,300 @@
+{
+  "passed": true,
+  "files": [
+    {
+      "path": "assets/game/audio/cues/checkpoint.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/cues/confirm.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/cues/countdown.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/cues/failure.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/cues/finish.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/cues/go.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/cues/radio.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/cues/select.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/cues/success.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/driving/asphalt.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/driving/gravel.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/driving/tire.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/driving/wind.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-1800-coast.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-1800-load.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-3200-coast.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-3200-load.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-4700-coast.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-4700-load.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-6500-coast.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-6500-load.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-900-coast.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-900-load.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_hard_1.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_hard_2.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_hard_3.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_heavy_1.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_heavy_2.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_heavy_3.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_light_1.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_light_2.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_light_3.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_metal_1.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_metal_2.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_metal_3.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/crunch_1.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/crunch_2.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/crunch_3.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/debris_1.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/debris_2.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/debris_3.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/scrape_hard_1.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/scrape_hard_2.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/scrape_metal_1.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/scrape_metal_2.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_hard_1.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_hard_2.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_hard_3.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_metal_1.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_metal_2.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_metal_3.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_vehicle_1.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_vehicle_2.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_vehicle_3.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/impact-bank.json",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/License.txt",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/music/midnight-circuit.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/music/sunset-run.wav",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    },
+    {
+      "path": "assets/game/audio/upgrade-manifest.json",
+      "same_package": true,
+      "unchanged_from_AUDIO02": true
+    }
+  ]
+}

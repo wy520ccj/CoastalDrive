@@ -59,7 +59,7 @@ def main():
         app.scene.apply(current)
         app.hud.update(current, app.session.race.snapshot,
                        HighwayResult(running=True, elapsed=task.time), track="endless",
-                       countdown="", notice="", fit_lines=app.fit_lines)
+                       countdown="", notice="")
         if task.time >= 3 and recording is None:
             log = (capture / "ffmpeg.log").open("w", encoding="utf-8")
             recording = subprocess.Popen([

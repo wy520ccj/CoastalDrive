@@ -3,6 +3,7 @@
 from direct.gui.DirectGui import DirectFrame, OnscreenText
 from panda3d.core import TextNode, TransparencyAttrib
 
+from audio.music import STATIONS
 from highway_map import HIGHWAY_LENGTH
 from race import GameMode
 from ui import theme
@@ -17,6 +18,9 @@ class DrivingHUD:
     def __init__(self, parent, loader, body_font, number_font):
         self._active_rpm = None
         self._notice_source = None
+        self._notice_height = None
+        self._notice_lines = 1
+        self._radio_station = None
         self._aspect = None
         self.root = parent.attachNewNode("driving-hud")
         self.root.setTransparency(TransparencyAttrib.MAlpha)
@@ -44,6 +48,16 @@ class DrivingHUD:
             parent=self.notice_frame, text="", font=body_font, fg=theme.PAPER_LIGHT,
             pos=(0.035, -0.050), scale=0.034, align=TextNode.ALeft, mayChange=True,
         )
+        # 提示一次排版即可；逐字测量每个增长前缀会让切台后的驾驶帧卡顿。
+        self.status_notice.textNode.setWordwrap(0.80 / 0.034)
+        # 三个固定电台标签在加载HUD时生成几何；切台只切换可见性。
+        self.radio_labels = tuple(OnscreenText(
+            parent=self.notice_frame, text=f"电台：{name}", font=body_font,
+            fg=theme.PAPER_LIGHT, pos=(0.035, -0.050), scale=0.034,
+            align=TextNode.ALeft, mayChange=False,
+        ) for name in STATIONS)
+        for label in self.radio_labels:
+            label.hide()
         self.speed_frame = DirectFrame(
             parent=self.root, frameColor=(1, 1, 1, 1),
             frameTexture=loader.loadTexture(theme.asset_filename("components/speed-panel.png")),
@@ -70,7 +84,7 @@ class DrivingHUD:
                                 text="W / ↑ 油门    S / ↓ 刹车·倒车    A D 转向    R 复位    C 视角    N 切台    M 音乐    Esc 暂停",
                                 font=body_font, fg=theme.PAPER_LIGHT, pos=(0, -0.009), scale=0.027)
 
-    def update(self, state, race, highway, *, track, countdown, notice, fit_lines):
+    def update(self, state, race, highway, *, track, countdown, notice):
         set_text(self.speed, f"{abs(state.player.speed) * 3.6:03.0f}")
         set_text(self.gear, "R" if state.player.gear < 0 else f"D{state.player.gear}")
         set_text(self.gear_rpm, f"{state.player.rpm:4.0f} rpm")
@@ -105,11 +119,21 @@ class DrivingHUD:
         value = " · ".join(item for item in (countdown, notice, message) if item)
         if value != self._notice_source:
             self._notice_source = value
-            value = fit_lines(value, 0.80, 0.034)
             self.status_notice.setText(value)
-            self.notice_frame["frameSize"] = (
-                0, 0.88, -max(0.09, 0.046 * (value.count("\n") + 1) + 0.025), 0,
-            )
+            wrapped = self.status_notice.textNode.getWordwrappedText()
+            self._notice_lines = wrapped.count("\n") + 1
+        height = max(0.09, 0.046 * (self._notice_lines + (self._radio_station is not None)) + 0.025)
+        if height != self._notice_height:
+            self.notice_frame["frameSize"] = (0, 0.88, -height, 0)
+            self._notice_height = height
+
+    def select_radio(self, station):
+        if station == self._radio_station:
+            return
+        self._radio_station = station
+        for i, label in enumerate(self.radio_labels):
+            label.show() if i == station else label.hide()
+        self.status_notice.setPos(0.035, -0.096 if station is not None else -0.050)
 
     def resize(self, aspect):
         if aspect == self._aspect:

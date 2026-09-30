@@ -104,6 +104,7 @@ class CoastalDrive(ShowBase):
         self._audio_checkpoints = 0
         self._audio_phase = Phase.MENU
         self._radio_last_station = self.audio_settings.radio_station or 1
+        self._radio_dirty = False
         self._shown_phase = None
         self.setup_controls()
         self.setup_hud()
@@ -145,6 +146,7 @@ class CoastalDrive(ShowBase):
 
     def _enter_game(self, mode, track):
         self.driving_keys_held.clear()
+        self.hud.select_radio(None)
         if track == "endless":
             self.session.traffic_density = self.highway_density_keys[self.highway_density_index]
         self.session.start(mode=mode, track=track)
@@ -211,16 +213,24 @@ class CoastalDrive(ShowBase):
         station = (self.audio_settings.radio_station + direction) % len(STATIONS)
         if station:
             self._radio_last_station = station
-        self.audio_settings.save(self.audio_settings.master_volume,
-                                 self.audio_settings.effects_volume,
-                                 self.audio_settings.music_volume, station)
+        self.audio_settings.radio_station = station
+        self._radio_dirty = True
         if self.soundscape is not None:
             self.soundscape.music.select(station)
-        self.audio_cue("radio")
         if self.session.phase in (Phase.DRIVING, Phase.COUNTDOWN):
-            self.session.notice = f"电台：{STATIONS[station]}"
-        self._shown_phase = None
-        self.refresh_panel()
+            self.hud.select_radio(station)
+        else:
+            self.save_audio_settings()
+        if self.audio_settings_page:
+            self._shown_phase = None
+            self.refresh_panel()
+
+    def save_audio_settings(self):
+        self.audio_settings.save(self.audio_settings.master_volume,
+                                 self.audio_settings.effects_volume,
+                                 self.audio_settings.music_volume,
+                                 self.audio_settings.radio_station)
+        self._radio_dirty = False
 
     def toggle_radio(self):
         self.cycle_radio(-self.audio_settings.radio_station
@@ -801,6 +811,9 @@ class CoastalDrive(ShowBase):
             self.panel_accent.show()
 
     def update(self, task):
+        # 驾驶切台只改内存状态，进入暂停/菜单/结算再保存选择。
+        if self._radio_dirty and self.session.phase not in (Phase.DRIVING, Phase.COUNTDOWN):
+            self.save_audio_settings()
         self.main_menu.resize(self.getAspectRatio())
         self.hud.resize(self.getAspectRatio())
         if self.session.phase == Phase.MENU and self.scene is not None:
@@ -865,7 +878,7 @@ class CoastalDrive(ShowBase):
         self.hud.update(
             state, self.session.race.snapshot, self.session.highway.snapshot,
             track=self.session.simulation.track, countdown=countdown,
-            notice=self.session.notice, fit_lines=self.fit_lines,
+            notice=self.session.notice,
         )
         if not self.diagnostics.isHidden():
             self.update_diagnostics(state, surface)
@@ -926,6 +939,8 @@ class CoastalDrive(ShowBase):
     def close_game(self):
         if self._shutdown:
             return
+        if self._radio_dirty:
+            self.save_audio_settings()
         if self.garage is not None:
             self.close_garage()
         self.taskMgr.remove("drive-update")
