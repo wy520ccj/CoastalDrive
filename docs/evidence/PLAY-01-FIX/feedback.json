@@ -1,0 +1,320 @@
+{
+  "passed": true,
+  "music_second_difference_energy_ratio": [
+    {
+      "track": "sunset-run",
+      "before": 7.949228235171581e-06,
+      "after": 7.949228235171581e-06,
+      "change_db": 0.0
+    },
+    {
+      "track": "midnight-circuit",
+      "before": 1.812919124833305e-05,
+      "after": 1.812919124833305e-05,
+      "change_db": 0.0
+    }
+  ],
+  "single_impact_samples": 27,
+  "max_seconds": 0.359546485260771,
+  "continuous_contact_scrapes_unchanged": true,
+  "audition_peak": 0.82470703125,
+  "audition_saturated_samples": 0,
+  "package_audio_files": [
+    {
+      "path": "assets/game/audio/cues/checkpoint.wav",
+      "sha256": "4dc1f0ac6df57d298936917060c1b3565fb2049ab7d4ce62c3a3faf9d60993da",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/cues/confirm.wav",
+      "sha256": "24a1e1c0e71229c9719707bf770088f1784dd845b8e95fc8ab9e9518c12d354c",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/cues/countdown.wav",
+      "sha256": "586dfc525f75b90cf3c8a6fe4e1a0890eeb79ab751210692ae8d17589aa15279",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/cues/failure.wav",
+      "sha256": "11be92b5affb852e89a1e9470ce27e8c2ef7b4b84debab33f257890fc3ea112f",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/cues/finish.wav",
+      "sha256": "93bc58082fb1c666324f5d45c80d567aeef4d6ef0f44b4c47558e0a8c081ae32",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/cues/go.wav",
+      "sha256": "3e5f9a1af473327303bf533350bfa2938d661bc7934040661e011e6468a3f64f",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/cues/radio.wav",
+      "sha256": "72c5c69934d42bdb391be7ba01f529ccef93a52099dcd553de903e6099c2cbb3",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/cues/select.wav",
+      "sha256": "81467371acbd82d3cf6562d38468231d26ba16e304a0036f6a2dd6c98e596c77",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/cues/success.wav",
+      "sha256": "3c4ce52eeee3fcb488d5950bbb025765eb75e4eeeaee8e80eb59bda42d6b71b7",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/driving/asphalt.wav",
+      "sha256": "5fc210e869ed44b17b585f2633d994a9963038e5a13d1f5d24da61c8d1b939a2",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/driving/gravel.wav",
+      "sha256": "849cd2a3de012f3f5d8e60ff5d375e966b13109a992c2bb65830c18672747dd8",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/driving/tire.wav",
+      "sha256": "de4b19ac4a29cdc0f17f2f9aec42e402e190de8e7e37686db9af814a6c7d9bbe",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/driving/wind.wav",
+      "sha256": "ffd83c34c79ba9ae645d6d31ae01b6f0d6ebaba6b33da0715d23c5804d4804ce",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-1800-coast.wav",
+      "sha256": "8b1467233b2ac0c6c52855c8c55011e58030d50ac41954eeb1ec9a443d5ec84b",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-1800-load.wav",
+      "sha256": "6d78493a409f7285488d1ae70144e6f6d253d3daf9a180f4b83cba20186235b0",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-3200-coast.wav",
+      "sha256": "4233533629372abf5fd81a34bc74e13514cdd96eb6750dd2ec5120f2c6c93c2e",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-3200-load.wav",
+      "sha256": "fa571dd95bdf5ac648f8b099c28721f939624552c577705adce7fd8b195509d5",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-4700-coast.wav",
+      "sha256": "b8afb19b60ad7f3308b2e0a09203d9e127696abe4b33d42202927566a8632f9f",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-4700-load.wav",
+      "sha256": "da721eefe59316f420ea2ad018a696257b84ed2d7272ab4bef3534365f062ebc",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-6500-coast.wav",
+      "sha256": "b10ad342b47072696a1d94f8b3225a58b7836308e2e2cb4f5795ed4d95f58d20",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-6500-load.wav",
+      "sha256": "6f44018ca98c59469d382dce7bfa53365b44ab1f11815e5e31cd79902c96e312",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-900-coast.wav",
+      "sha256": "2b5b8c1fc31aa996338dfa84ab12e2d87bdc48f0f15671e27eb6f01a71f47093",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/engine/v8-900-load.wav",
+      "sha256": "82884bcbfaa291c224203c6f30ceb7703af5da681c1b6f682b78ccfc9e4c5fdf",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_hard_1.wav",
+      "sha256": "07a6778ff8c774ec64b7f0dd14be07bc7726968dd13ed3c1c5bfa2a4de8d14cd",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_hard_2.wav",
+      "sha256": "a2daf56ceaa1d191c8ceaf8a8013efccedbfa99830fc721f8aa153cefc950713",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_hard_3.wav",
+      "sha256": "212143db72bb0b1af4ea725cde75e969c914b89ac617fbe58fdff8dc37a33ab2",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_heavy_1.wav",
+      "sha256": "8e3d278f7ef4429e0602c53118e5f78718198822f482ab3d0d511946b006fe00",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_heavy_2.wav",
+      "sha256": "03c051225354a0657a1f31ca2fe86ac8e9dbf53ae659e8eb41873543e1e24987",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_heavy_3.wav",
+      "sha256": "feea01edf30e4cb071bd48c65003b0a361da2a3a10c4642b551563199e3ff5ae",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_light_1.wav",
+      "sha256": "119222b79550edaf1ef5380abbfb6c105143910f68707663149ddab8b359304d",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_light_2.wav",
+      "sha256": "d5566d4dff85c8989e0af6444af62362ba7a4508d589908c13dd1537ed234ec0",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_light_3.wav",
+      "sha256": "0ea37194238cab41f18de28e99503584bb7d7a0942f359d8244ba3f51869fcd6",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_metal_1.wav",
+      "sha256": "6a5670c0611d096ff5afe432588168046c9eb56cb50d84e9f7844e95afab70f7",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_metal_2.wav",
+      "sha256": "2bf94f9f782ec0c0a968bffc99e84cb755d04e70455080491021bf138af6d8b2",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_metal_3.wav",
+      "sha256": "da5483d29e03ca4abf4bac05d9b0e2a0067e86750926d7f272857dd2e56144f5",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/crunch_1.wav",
+      "sha256": "205896cd66f5119dc037a08124a4c7fab6f2138acde127a9bfb54fc17e224f25",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/crunch_2.wav",
+      "sha256": "18a7dee53c3d36136e5cbff53ecfd0864f95bdf49fe726d4a8f8f9a4fb48c402",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/crunch_3.wav",
+      "sha256": "466ec196381459e59afe5ae4ca44e1927e318fbda8f29c706a3ca37b8bbbc2fd",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/debris_1.wav",
+      "sha256": "1a13587cd0a30583aa224d6709bf05ce7027f2afa066319d4bb957849199e347",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/debris_2.wav",
+      "sha256": "282dd4e9cf13b1cdd5b0bcdb6aa4c8968893532c3610147bb6185adaac6a5790",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/debris_3.wav",
+      "sha256": "252a34dac6dd651706d5a0a48abedf12a481289e090bdab261445b8a8c6ea45b",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/scrape_hard_1.wav",
+      "sha256": "397c44ad964c0ab600fede1c364fd0aac12fc721a4d3d60785106c7d44afca07",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/scrape_hard_2.wav",
+      "sha256": "52259a4b9e7fd265ed90d793ef0aaf07c29ccc1a4183d5dccad9e30bd5c0e347",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/scrape_metal_1.wav",
+      "sha256": "5eefa8c7704061eafd78c387c08c43ed74a51dccd7c4185a04262a2d033acde5",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/scrape_metal_2.wav",
+      "sha256": "9ad29cc82aa3e92f0010292aab2d64e13f77ef49806b199bf227541b490dc3a1",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_hard_1.wav",
+      "sha256": "9d8d81b9bfa4f262e80c795e0fe266c698ede41d4b8f26e13f05c6f91d30a9cc",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_hard_2.wav",
+      "sha256": "d33438be2924e97966bf333d3d0c39e78b45e96c66a60e4f4b22b72e0c4228cc",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_hard_3.wav",
+      "sha256": "6f7158b2ccea40c39ec6c5d0ec4cf02fc4a5832c81f760138a542784d465f172",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_metal_1.wav",
+      "sha256": "a3906d7107aecb5a03948597491a7e931e64152786967853bc6d75f2eb98bb90",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_metal_2.wav",
+      "sha256": "e7af1bb467efb868bd4b5ed586c47e6b117dff9a7b9475ff3013ff624d2f30a3",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_metal_3.wav",
+      "sha256": "bbfa2b31cb28eab3401d46b3b83f19c408012a8138d7dbd71622663e8c0a50f4",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_vehicle_1.wav",
+      "sha256": "0cd6ff60a8d16baf8052c67f41073c5219bd22b1804c7df8bc71212387083cec",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_vehicle_2.wav",
+      "sha256": "214ee30b1eee900fb547573bc9f2e1934f33704cdebdf8d397fd1222ee49937d",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_vehicle_3.wav",
+      "sha256": "2f9cf627247fce1b323d659920f1a4f4a3f6b34e6e0040cd7222a9c53138aa55",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact-bank.json",
+      "sha256": "5c92694306cc6d63a060505311d95940372bb1dcce11b86e2b933eb4d0a1279e",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/License.txt",
+      "sha256": "11da4500b514cb25bbec8f84b38dbece97c1fabf690bb8e1e20a04e366000cdd",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/music/midnight-circuit.wav",
+      "sha256": "72470e16fee2ebab271a089908630c020782a9770ce68c887191623d13d1f04c",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/music/sunset-run.wav",
+      "sha256": "c0a3a3cf5a528286bad98fea1104d5a68279e0f2c14e0db765d54703e44fbf0f",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/upgrade-manifest.json",
+      "sha256": "bd2eafbd337cec2d18d70c3cc92803bfb71fa77850d9fc5aa394f4c4bb75b113",
+      "same": true
+    }
+  ],
+  "kind": "PCM/no-clipping/package evidence; subjective audition pending"
+}

@@ -30,55 +30,55 @@
     "transient_vehicle": [
       {
         "path": "impact/transient_vehicle_1.wav",
-        "sha256": "4186a30aca76aecfba9196f9d31951517ce0f8612d0e2b9920d529aefb939c08",
-        "duration": 0.19201814058956915,
+        "sha256": "0cd6ff60a8d16baf8052c67f41073c5219bd22b1804c7df8bc71212387083cec",
+        "duration": 0.19133786848072562,
         "id": "transient_vehicle_1",
         "source": "new",
         "start": 0.418,
-        "peak_dbfs": -2.1584613831352866
+        "peak_dbfs": -2.219508584397289
       },
       {
         "path": "impact/transient_vehicle_2.wav",
-        "sha256": "a2d69e431a8d206b160126fe3c7578b99b17bf9b014ef016df1c8020df9a979a",
-        "duration": 0.19594104308390023,
+        "sha256": "214ee30b1eee900fb547573bc9f2e1934f33704cdebdf8d397fd1222ee49937d",
+        "duration": 0.19521541950113377,
         "id": "transient_vehicle_2",
         "source": "new",
         "start": 0.422,
-        "peak_dbfs": -2.2565501442238074
+        "peak_dbfs": -2.2369807488287448
       },
       {
         "path": "impact/transient_vehicle_3.wav",
-        "sha256": "c1b5e09a61df400d6d7409b2d9840e3de91393e829548d2da1d672e2525b8d00",
+        "sha256": "2f9cf627247fce1b323d659920f1a4f4a3f6b34e6e0040cd7222a9c53138aa55",
         "duration": 0.2,
         "id": "transient_vehicle_3",
         "source": "new",
         "start": 0.426,
-        "peak_dbfs": -2.1669617944908155
+        "peak_dbfs": -2.1584613831352866
       }
     ],
     "transient_metal": [
       {
         "path": "impact/transient_metal_1.wav",
-        "sha256": "cee9dd9647a79a7034d408b38bae1755bd519f55aeeb01e32ca193eb50811c67",
-        "duration": 0.19077097505668933,
+        "sha256": "a3906d7107aecb5a03948597491a7e931e64152786967853bc6d75f2eb98bb90",
+        "duration": 0.1907482993197279,
         "id": "transient_metal_1",
         "source": "metal_hit",
         "start": 0,
-        "peak_dbfs": -2.487119373781688
+        "peak_dbfs": -2.418214071750271
       },
       {
         "path": "impact/transient_metal_2.wav",
-        "sha256": "0f76d3697af08d4f117bdb750fab55e063d8c62b00c4ca6ba92204d7c6693e9d",
+        "sha256": "e7af1bb467efb868bd4b5ed586c47e6b117dff9a7b9475ff3013ff624d2f30a3",
         "duration": 0.19467120181405895,
         "id": "transient_metal_2",
         "source": "metal_hit",
         "start": 0.006,
-        "peak_dbfs": -2.65821223075027
+        "peak_dbfs": -2.7210751953110752
       },
       {
         "path": "impact/transient_metal_3.wav",
-        "sha256": "d04446b4cd27853bf522586596e70fe88c8bc6cb77c4970dcabe3f0c82e84b8f",
-        "duration": 0.20541950113378685,
+        "sha256": "bbfa2b31cb28eab3401d46b3b83f19c408012a8138d7dbd71622663e8c0a50f4",
+        "duration": 0.20539682539682538,
         "id": "transient_metal_3",
         "source": "metal_hit",
         "start": 0.012,
@@ -88,17 +88,17 @@
     "transient_hard": [
       {
         "path": "impact/transient_hard_1.wav",
-        "sha256": "a220c6acf76e87a5684def31f7549435e040b9e516a38b465e8d7011ec134e21",
-        "duration": 0.1719501133786848,
+        "sha256": "9d8d81b9bfa4f262e80c795e0fe266c698ede41d4b8f26e13f05c6f91d30a9cc",
+        "duration": 0.1712018140589569,
         "id": "transient_hard_1",
         "source": "new",
         "start": 0.418,
-        "peak_dbfs": -2.176492141850244
+        "peak_dbfs": -2.178876363478314
       },
       {
         "path": "impact/transient_hard_2.wav",
-        "sha256": "70a09d3d422025750ebbd59b7d2624cba0ae890270a8a286940f661ded8ebf9e",
-        "duration": 0.1758956916099773,
+        "sha256": "d33438be2924e97966bf333d3d0c39e78b45e96c66a60e4f4b22b72e0c4228cc",
+        "duration": 0.17505668934240362,
         "id": "transient_hard_2",
         "source": "new",
         "start": 0.422,
@@ -106,128 +106,128 @@
       },
       {
         "path": "impact/transient_hard_3.wav",
-        "sha256": "14482f6b7a0d2fab046bebb9bbbe83e48ef42b2a790bf26803787447549de4bc",
+        "sha256": "6f7158b2ccea40c39ec6c5d0ec4cf02fc4a5832c81f760138a542784d465f172",
         "duration": 0.18,
         "id": "transient_hard_3",
         "source": "new",
         "start": 0.426,
-        "peak_dbfs": -2.237323691860595
+        "peak_dbfs": -2.200022372962841
       }
     ],
     "body_light": [
       {
         "path": "impact/body_light_1.wav",
-        "sha256": "9148afa9c0141d3636513e17b1a291a3f8a35719f5a2350af7851aef13a3fba8",
-        "duration": 0.19124716553287982,
+        "sha256": "119222b79550edaf1ef5380abbfb6c105143910f68707663149ddab8b359304d",
+        "duration": 0.23099773242630386,
         "id": "body_light_1",
         "source": "new",
         "start": 0.418,
-        "peak_dbfs": -3.0980391997148637
+        "peak_dbfs": -1.5144142787623671
       },
       {
         "path": "impact/body_light_2.wav",
-        "sha256": "78d57b4265e97d3475f2f5472660f0f006f703c79b45eb23217f6091cc6579d5",
-        "duration": 0.19512471655328797,
+        "sha256": "d5566d4dff85c8989e0af6444af62362ba7a4508d589908c13dd1537ed234ec0",
+        "duration": 0.23485260770975055,
         "id": "body_light_2",
         "source": "new",
         "start": 0.422,
-        "peak_dbfs": -3.0980391997148637
+        "peak_dbfs": -1.5144142787623671
       },
       {
         "path": "impact/body_light_3.wav",
-        "sha256": "09e45759b9c1ab4bd5660cb7a6a57e790aa2c026044536b6d9b89666c913e98d",
-        "duration": 0.2,
+        "sha256": "0ea37194238cab41f18de28e99503584bb7d7a0942f359d8244ba3f51869fcd6",
+        "duration": 0.2398185941043084,
         "id": "body_light_3",
         "source": "new",
         "start": 0.426,
-        "peak_dbfs": -3.0980391997148637
+        "peak_dbfs": -1.5144142787623671
       }
     ],
     "body_heavy": [
       {
         "path": "impact/body_heavy_1.wav",
-        "sha256": "aa08e5b769502b30be6ba8f80249bad81db2cba7445504efeb85f92c75fc1552",
-        "duration": 0.35113378684807256,
+        "sha256": "8e3d278f7ef4429e0602c53118e5f78718198822f482ab3d0d511946b006fe00",
+        "duration": 0.35070294784580497,
         "id": "body_heavy_1",
         "source": "new",
         "start": 0.418,
-        "peak_dbfs": -3.0980391997148637
+        "peak_dbfs": -1.5144142787623671
       },
       {
         "path": "impact/body_heavy_2.wav",
-        "sha256": "67fd664e1a68711ab725752676a41654b2b5082f445c9966d307a1b613ed1b7b",
-        "duration": 0.35498866213151925,
+        "sha256": "03c051225354a0657a1f31ca2fe86ac8e9dbf53ae659e8eb41873543e1e24987",
+        "duration": 0.35453514739229025,
         "id": "body_heavy_2",
         "source": "new",
         "start": 0.422,
-        "peak_dbfs": -3.0980391997148637
+        "peak_dbfs": -1.5144142787623671
       },
       {
         "path": "impact/body_heavy_3.wav",
-        "sha256": "ada7c5584b47e87b81bbc049e4cca1d256196968e204934a38cf69e950d9b14c",
-        "duration": 0.3599546485260771,
+        "sha256": "feea01edf30e4cb071bd48c65003b0a361da2a3a10c4642b551563199e3ff5ae",
+        "duration": 0.359546485260771,
         "id": "body_heavy_3",
         "source": "new",
         "start": 0.426,
-        "peak_dbfs": -3.0980391997148637
+        "peak_dbfs": -1.5144142787623671
       }
     ],
     "body_metal": [
       {
         "path": "impact/body_metal_1.wav",
-        "sha256": "b97b68183375ce8e81d8b935278c19dc9fa569320ff60beb4b8571b27c93da10",
-        "duration": 0.3008390022675737,
+        "sha256": "6a5670c0611d096ff5afe432588168046c9eb56cb50d84e9f7844e95afab70f7",
+        "duration": 0.3308843537414966,
         "id": "body_metal_1",
-        "source": "metal_hit",
-        "start": 0,
-        "peak_dbfs": -3.0980391997148637
+        "source": "new",
+        "start": 0.418,
+        "peak_dbfs": -1.5144142787623671
       },
       {
         "path": "impact/body_metal_2.wav",
-        "sha256": "b2166881e214e5c02f76603f37674e546ac3689871d2555ee6c85f32011eb2c9",
-        "duration": 0.3047845804988662,
+        "sha256": "2bf94f9f782ec0c0a968bffc99e84cb755d04e70455080491021bf138af6d8b2",
+        "duration": 0.3347392290249433,
         "id": "body_metal_2",
-        "source": "metal_hit",
-        "start": 0.006,
-        "peak_dbfs": -3.0980391997148637
+        "source": "new",
+        "start": 0.422,
+        "peak_dbfs": -1.5144142787623671
       },
       {
         "path": "impact/body_metal_3.wav",
-        "sha256": "baa7da4832557719da2981ff09b62e15608ad007b153be4e0a2fd4087236b4ea",
-        "duration": 0.3154875283446712,
+        "sha256": "da5483d29e03ca4abf4bac05d9b0e2a0067e86750926d7f272857dd2e56144f5",
+        "duration": 0.33972789115646257,
         "id": "body_metal_3",
-        "source": "metal_hit",
-        "start": 0.012,
-        "peak_dbfs": -3.0980391997148637
+        "source": "new",
+        "start": 0.426,
+        "peak_dbfs": -1.5144142787623671
       }
     ],
     "body_hard": [
       {
         "path": "impact/body_hard_1.wav",
-        "sha256": "d9a052b2d5a669d30caf228bf60621f6580003e3367ecd674e2fa7c685587af4",
-        "duration": 0.2910204081632653,
+        "sha256": "07a6778ff8c774ec64b7f0dd14be07bc7726968dd13ed3c1c5bfa2a4de8d14cd",
+        "duration": 0.29061224489795917,
         "id": "body_hard_1",
         "source": "new",
         "start": 0.418,
-        "peak_dbfs": -3.0980391997148637
+        "peak_dbfs": -1.5144142787623671
       },
       {
         "path": "impact/body_hard_2.wav",
-        "sha256": "29464aa552fc4a1f5663fbe29ed8e0fe853395605db121b64e5142fc3154230a",
-        "duration": 0.29487528344671204,
+        "sha256": "a2daf56ceaa1d191c8ceaf8a8013efccedbfa99830fc721f8aa153cefc950713",
+        "duration": 0.294421768707483,
         "id": "body_hard_2",
         "source": "new",
         "start": 0.422,
-        "peak_dbfs": -3.0980391997148637
+        "peak_dbfs": -1.5144142787623671
       },
       {
         "path": "impact/body_hard_3.wav",
-        "sha256": "ab597ae43dcd48a7fd35c70670992d9cb1e85b1b72c75c61a35d730df8f44a5c",
-        "duration": 0.2998639455782313,
+        "sha256": "212143db72bb0b1af4ea725cde75e969c914b89ac617fbe58fdff8dc37a33ab2",
+        "duration": 0.2994557823129252,
         "id": "body_hard_3",
         "source": "new",
         "start": 0.426,
-        "peak_dbfs": -3.0980391997148637
+        "peak_dbfs": -1.5144142787623671
       }
     ],
     "crunch": [

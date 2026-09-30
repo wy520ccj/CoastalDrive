@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "seed": 0,
+  "before": [
+    [
+      "speed-limit",
+      10.3,
+      1100,
+      0
+    ],
+    [
+      "wind-warning",
+      10.4,
+      1100,
+      0
+    ]
+  ],
+  "after": [
+    [
+      "speed-limit",
+      10.3,
+      1100,
+      0
+    ],
+    [
+      "wind-warning",
+      10.4,
+      1250,
+      0
+    ]
+  ],
+  "separation_m": 150,
+  "kind": "production sign models and placements; isolated rendered comparison"
+}

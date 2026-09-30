@@ -1,5 +1,6 @@
 """全路形、原物理表面、全局设施与山体接缝的针对性检查。"""
 
+from itertools import pairwise
 from types import SimpleNamespace
 
 import pytest
@@ -14,6 +15,18 @@ from highway_segments import surface_meshes
 from scene import Scene
 
 kit = test_expressway.kit
+
+
+def test_speed_limit_and_triangle_warnings_have_separate_mileage_slots():
+    signs = {"speed-limit", "curve-left", "curve-right", "hill-warning", "wind-warning"}
+    for seed in range(25):
+        curve = HighwayCurve(seed, hills=True)
+        placements = [item for index in range(-2, 90) for item in positions(index, seed, curve)
+                      if item[0] in signs]
+        placements.sort(key=lambda item: item[2])
+        assert any(item[0] == "wind-warning" for item in placements)
+        for left, right in pairwise(placements):
+            assert right[2] - left[2] >= 50, (seed, left, right)
 
 
 def test_static_rail_coordinates_preserve_existing_geometry_and_material_channels():

@@ -28,9 +28,7 @@ class MusicAudio:
         if phase == "paused" or scale <= 0:
             self.stop(preserve=True)
             return
-        target = self.station - 1 if phase in ("driving", "countdown") else 0
-        if phase == "results":
-            target = self.station - 1
+        target = self.station - 1
         gain = 0.36 if phase in ("driving", "countdown") else 0.20
         self.duck += (duck - self.duck) * (1 - math.exp(-dt / (
             .03 if duck < self.duck else .24)))

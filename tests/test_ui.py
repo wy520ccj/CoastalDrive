@@ -79,7 +79,7 @@ def test_ui_modes_results_and_existing_keys(tmp_path):
         app.audio_settings.notice = "声音设置保存失败，请检查当前目录的写入权限后重试。"
         app._shown_phase = None
         app.refresh_panel()
-        assert app.panel_title.getText() == "声音设置"
+        assert app.panel_title.getText() == "设置"
         assert "声音设置保存失败" in app.panel_note.getText()
         app.back_from_audio_settings()
         app.choose_garage()
@@ -174,6 +174,26 @@ def test_keyboard_navigation_for_secondary_menus(tmp_path):
         app.key_up("s")
         assert app.panel_selection == 1
         app.key_down("enter")
+        assert app.audio_settings_page
+        assert app.panel_title.getText() == "设置"
+        assert app.session.phase == Phase.PAUSED
+        app.key_up("enter")
+        tick = app.session.current.tick
+        for _ in range(10):
+            app.session.frame(.1)
+        assert app.session.current.tick == tick
+        before = app.audio_settings.music_volume
+        app.select_panel_option(4)
+        app.key_down("a")
+        app.key_up("a")
+        assert app.audio_settings.music_volume == max(0, before - 10)
+        app.key_down("escape")
+        app.key_up("escape")
+        assert not app.audio_settings_page and app.session.phase == Phase.PAUSED
+        assert app.panel_selection == 1
+        app.key_down("s")
+        app.key_up("s")
+        app.key_down("enter")
         assert app.session.phase == Phase.COUNTDOWN
         app.key_up("enter")
         app.session.finish()
@@ -185,5 +205,25 @@ def test_keyboard_navigation_for_secondary_menus(tmp_path):
         app.key_down("enter")
         assert app.session.phase == Phase.MENU
         app.key_up("enter")
+    finally:
+        app.close_game()
+
+
+def test_radio_key_repeat_does_not_skip_station_or_desync_label(tmp_path):
+    from test_soundscape import make_soundscape
+
+    app = CoastalDrive(smoke=True, output=tmp_path)
+    app.taskMgr.remove("finish-smoke")
+    app.soundscape, _ = make_soundscape()
+    try:
+        app.back_to_menu()
+        app.key_down("n")
+        app.key_down("n")
+        assert app.audio_settings.radio_station == 2
+        assert app.soundscape.music.station == 2
+        app.key_up("n")
+        app.key_down("n")
+        assert app.audio_settings.radio_station == 0
+        assert app.soundscape.music.station == 0
     finally:
         app.close_game()

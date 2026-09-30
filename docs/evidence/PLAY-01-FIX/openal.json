@@ -1,0 +1,658 @@
+{
+  "passed": true,
+  "backend": "OpenALAudioManager",
+  "ready_handles": 104,
+  "total_handles": 104,
+  "all_stopped": true,
+  "assets": [
+    {
+      "path": "assets/game/audio/cues/checkpoint.wav",
+      "seconds": 0.26,
+      "channels": 1,
+      "peak": 0.449981689453125,
+      "dc_rms_ratio": 5.564065919855767e-05
+    },
+    {
+      "path": "assets/game/audio/cues/confirm.wav",
+      "seconds": 0.16,
+      "channels": 1,
+      "peak": 0.449981689453125,
+      "dc_rms_ratio": 6.716510775833345e-05
+    },
+    {
+      "path": "assets/game/audio/cues/countdown.wav",
+      "seconds": 0.16,
+      "channels": 1,
+      "peak": 0.449981689453125,
+      "dc_rms_ratio": 0.0001327658860092937
+    },
+    {
+      "path": "assets/game/audio/cues/failure.wav",
+      "seconds": 0.55,
+      "channels": 1,
+      "peak": 0.449981689453125,
+      "dc_rms_ratio": 0.00013503080341568672
+    },
+    {
+      "path": "assets/game/audio/cues/finish.wav",
+      "seconds": 0.4,
+      "channels": 1,
+      "peak": 0.449981689453125,
+      "dc_rms_ratio": 9.392840027514465e-05
+    },
+    {
+      "path": "assets/game/audio/cues/go.wav",
+      "seconds": 0.3,
+      "channels": 1,
+      "peak": 0.449981689453125,
+      "dc_rms_ratio": 4.846702155736207e-06
+    },
+    {
+      "path": "assets/game/audio/cues/radio.wav",
+      "seconds": 0.12,
+      "channels": 1,
+      "peak": 0.449981689453125,
+      "dc_rms_ratio": 0.00014618663044153212
+    },
+    {
+      "path": "assets/game/audio/cues/select.wav",
+      "seconds": 0.07501133786848073,
+      "channels": 1,
+      "peak": 0.449981689453125,
+      "dc_rms_ratio": 0.0002929986467729042
+    },
+    {
+      "path": "assets/game/audio/cues/success.wav",
+      "seconds": 0.85,
+      "channels": 1,
+      "peak": 0.449981689453125,
+      "dc_rms_ratio": 9.149816312956302e-05
+    },
+    {
+      "path": "assets/game/audio/driving/asphalt.wav",
+      "seconds": 4.0,
+      "channels": 1,
+      "peak": 0.5,
+      "dc_rms_ratio": 0.012109676227000505
+    },
+    {
+      "path": "assets/game/audio/driving/gravel.wav",
+      "seconds": 4.0,
+      "channels": 1,
+      "peak": 0.5,
+      "dc_rms_ratio": 0.0002179139792925884
+    },
+    {
+      "path": "assets/game/audio/driving/tire.wav",
+      "seconds": 4.0,
+      "channels": 1,
+      "peak": 0.5,
+      "dc_rms_ratio": 8.24352537685934e-05
+    },
+    {
+      "path": "assets/game/audio/driving/wind.wav",
+      "seconds": 4.0,
+      "channels": 1,
+      "peak": 0.5,
+      "dc_rms_ratio": 0.0035098062480269448
+    },
+    {
+      "path": "assets/game/audio/engine/v8-1800-coast.wav",
+      "seconds": 3.6,
+      "channels": 1,
+      "peak": 0.719970703125,
+      "dc_rms_ratio": 0.00024345694207809186
+    },
+    {
+      "path": "assets/game/audio/engine/v8-1800-load.wav",
+      "seconds": 3.6,
+      "channels": 1,
+      "peak": 0.719970703125,
+      "dc_rms_ratio": 7.103525500878992e-05
+    },
+    {
+      "path": "assets/game/audio/engine/v8-3200-coast.wav",
+      "seconds": 3.6,
+      "channels": 1,
+      "peak": 0.719970703125,
+      "dc_rms_ratio": 4.6151730227145454e-05
+    },
+    {
+      "path": "assets/game/audio/engine/v8-3200-load.wav",
+      "seconds": 3.6,
+      "channels": 1,
+      "peak": 0.719970703125,
+      "dc_rms_ratio": 5.916910046935638e-08
+    },
+    {
+      "path": "assets/game/audio/engine/v8-4700-coast.wav",
+      "seconds": 3.6,
+      "channels": 1,
+      "peak": 0.719970703125,
+      "dc_rms_ratio": 5.954423291401578e-05
+    },
+    {
+      "path": "assets/game/audio/engine/v8-4700-load.wav",
+      "seconds": 3.6,
+      "channels": 1,
+      "peak": 0.719970703125,
+      "dc_rms_ratio": 0.00011930557619298387
+    },
+    {
+      "path": "assets/game/audio/engine/v8-6500-coast.wav",
+      "seconds": 3.6,
+      "channels": 1,
+      "peak": 0.719970703125,
+      "dc_rms_ratio": 0.0002524101577498989
+    },
+    {
+      "path": "assets/game/audio/engine/v8-6500-load.wav",
+      "seconds": 3.6,
+      "channels": 1,
+      "peak": 0.719970703125,
+      "dc_rms_ratio": 0.00039009906593474966
+    },
+    {
+      "path": "assets/game/audio/engine/v8-900-coast.wav",
+      "seconds": 3.6,
+      "channels": 1,
+      "peak": 0.719970703125,
+      "dc_rms_ratio": 0.0007566242058286793
+    },
+    {
+      "path": "assets/game/audio/engine/v8-900-load.wav",
+      "seconds": 3.6,
+      "channels": 1,
+      "peak": 0.719970703125,
+      "dc_rms_ratio": 0.0005888641675783826
+    },
+    {
+      "path": "assets/game/audio/impact/body_hard_1.wav",
+      "seconds": 0.29061224489795917,
+      "channels": 1,
+      "peak": 0.8399658203125,
+      "dc_rms_ratio": 0.037671721767962255
+    },
+    {
+      "path": "assets/game/audio/impact/body_hard_2.wav",
+      "seconds": 0.294421768707483,
+      "channels": 1,
+      "peak": 0.8399658203125,
+      "dc_rms_ratio": 0.03939276382417377
+    },
+    {
+      "path": "assets/game/audio/impact/body_hard_3.wav",
+      "seconds": 0.2994557823129252,
+      "channels": 1,
+      "peak": 0.8399658203125,
+      "dc_rms_ratio": 0.035918355151507875
+    },
+    {
+      "path": "assets/game/audio/impact/body_heavy_1.wav",
+      "seconds": 0.35070294784580497,
+      "channels": 1,
+      "peak": 0.8399658203125,
+      "dc_rms_ratio": 0.031094407869928384
+    },
+    {
+      "path": "assets/game/audio/impact/body_heavy_2.wav",
+      "seconds": 0.35453514739229025,
+      "channels": 1,
+      "peak": 0.8399658203125,
+      "dc_rms_ratio": 0.03243679069662531
+    },
+    {
+      "path": "assets/game/audio/impact/body_heavy_3.wav",
+      "seconds": 0.359546485260771,
+      "channels": 1,
+      "peak": 0.8399658203125,
+      "dc_rms_ratio": 0.029596895818556648
+    },
+    {
+      "path": "assets/game/audio/impact/body_light_1.wav",
+      "seconds": 0.23099773242630386,
+      "channels": 1,
+      "peak": 0.8399658203125,
+      "dc_rms_ratio": 0.02785472467713211
+    },
+    {
+      "path": "assets/game/audio/impact/body_light_2.wav",
+      "seconds": 0.23485260770975055,
+      "channels": 1,
+      "peak": 0.8399658203125,
+      "dc_rms_ratio": 0.02957402448894841
+    },
+    {
+      "path": "assets/game/audio/impact/body_light_3.wav",
+      "seconds": 0.2398185941043084,
+      "channels": 1,
+      "peak": 0.8399658203125,
+      "dc_rms_ratio": 0.025983105449664493
+    },
+    {
+      "path": "assets/game/audio/impact/body_metal_1.wav",
+      "seconds": 0.3308843537414966,
+      "channels": 1,
+      "peak": 0.8399658203125,
+      "dc_rms_ratio": 0.02453815190586412
+    },
+    {
+      "path": "assets/game/audio/impact/body_metal_2.wav",
+      "seconds": 0.3347392290249433,
+      "channels": 1,
+      "peak": 0.8399658203125,
+      "dc_rms_ratio": 0.025882966384659443
+    },
+    {
+      "path": "assets/game/audio/impact/body_metal_3.wav",
+      "seconds": 0.33972789115646257,
+      "channels": 1,
+      "peak": 0.8399658203125,
+      "dc_rms_ratio": 0.023150968727265242
+    },
+    {
+      "path": "assets/game/audio/impact/crunch_1.wav",
+      "seconds": 0.08156462585034013,
+      "channels": 1,
+      "peak": 0.47998046875,
+      "dc_rms_ratio": 0.00024076794004771547
+    },
+    {
+      "path": "assets/game/audio/impact/crunch_2.wav",
+      "seconds": 0.17396825396825397,
+      "channels": 1,
+      "peak": 0.47998046875,
+      "dc_rms_ratio": 0.00034282624111868065
+    },
+    {
+      "path": "assets/game/audio/impact/crunch_3.wav",
+      "seconds": 0.18,
+      "channels": 1,
+      "peak": 0.47998046875,
+      "dc_rms_ratio": 0.0001434368863980424
+    },
+    {
+      "path": "assets/game/audio/impact/debris_1.wav",
+      "seconds": 0.04904761904761905,
+      "channels": 1,
+      "peak": 0.3499755859375,
+      "dc_rms_ratio": 1.980867597532064e-05
+    },
+    {
+      "path": "assets/game/audio/impact/debris_2.wav",
+      "seconds": 0.05376417233560091,
+      "channels": 1,
+      "peak": 0.3499755859375,
+      "dc_rms_ratio": 4.539392181739328e-05
+    },
+    {
+      "path": "assets/game/audio/impact/debris_3.wav",
+      "seconds": 0.07485260770975057,
+      "channels": 1,
+      "peak": 0.3499755859375,
+      "dc_rms_ratio": 9.541275765562638e-05
+    },
+    {
+      "path": "assets/game/audio/impact/scrape_hard_1.wav",
+      "seconds": 3.4606802721088434,
+      "channels": 1,
+      "peak": 0.6199951171875,
+      "dc_rms_ratio": 0.00034056314775637674
+    },
+    {
+      "path": "assets/game/audio/impact/scrape_hard_2.wav",
+      "seconds": 3.7392290249433104,
+      "channels": 1,
+      "peak": 0.6199951171875,
+      "dc_rms_ratio": 6.595018740356018e-05
+    },
+    {
+      "path": "assets/game/audio/impact/scrape_metal_1.wav",
+      "seconds": 3.4606802721088434,
+      "channels": 1,
+      "peak": 0.6199951171875,
+      "dc_rms_ratio": 0.0006016233856524979
+    },
+    {
+      "path": "assets/game/audio/impact/scrape_metal_2.wav",
+      "seconds": 3.7392290249433104,
+      "channels": 1,
+      "peak": 0.6199951171875,
+      "dc_rms_ratio": 0.00041658068710945256
+    },
+    {
+      "path": "assets/game/audio/impact/transient_hard_1.wav",
+      "seconds": 0.1712018140589569,
+      "channels": 1,
+      "peak": 0.77813720703125,
+      "dc_rms_ratio": 0.03488140532981846
+    },
+    {
+      "path": "assets/game/audio/impact/transient_hard_2.wav",
+      "seconds": 0.17505668934240362,
+      "channels": 1,
+      "peak": 0.77996826171875,
+      "dc_rms_ratio": 0.03677554407766377
+    },
+    {
+      "path": "assets/game/audio/impact/transient_hard_3.wav",
+      "seconds": 0.18,
+      "channels": 1,
+      "peak": 0.7762451171875,
+      "dc_rms_ratio": 0.032506812556268964
+    },
+    {
+      "path": "assets/game/audio/impact/transient_metal_1.wav",
+      "seconds": 0.1907482993197279,
+      "channels": 1,
+      "peak": 0.756988525390625,
+      "dc_rms_ratio": 0.0014728196306328652
+    },
+    {
+      "path": "assets/game/audio/impact/transient_metal_2.wav",
+      "seconds": 0.19467120181405895,
+      "channels": 1,
+      "peak": 0.731048583984375,
+      "dc_rms_ratio": 0.0014604530991372655
+    },
+    {
+      "path": "assets/game/audio/impact/transient_metal_3.wav",
+      "seconds": 0.20539682539682538,
+      "channels": 1,
+      "peak": 0.77996826171875,
+      "dc_rms_ratio": 0.0014297890761412687
+    },
+    {
+      "path": "assets/game/audio/impact/transient_vehicle_1.wav",
+      "seconds": 0.19133786848072562,
+      "channels": 1,
+      "peak": 0.774505615234375,
+      "dc_rms_ratio": 0.007649001210372987
+    },
+    {
+      "path": "assets/game/audio/impact/transient_vehicle_2.wav",
+      "seconds": 0.19521541950113377,
+      "channels": 1,
+      "peak": 0.77294921875,
+      "dc_rms_ratio": 0.008218541130250778
+    },
+    {
+      "path": "assets/game/audio/impact/transient_vehicle_3.wav",
+      "seconds": 0.2,
+      "channels": 1,
+      "peak": 0.77996826171875,
+      "dc_rms_ratio": 0.006833988272086913
+    },
+    {
+      "path": "assets/game/audio/music/midnight-circuit.wav",
+      "seconds": 68.57142857142857,
+      "channels": 2,
+      "peak": 0.649993896484375,
+      "dc_rms_ratio": 0.007871863879106177
+    },
+    {
+      "path": "assets/game/audio/music/sunset-run.wav",
+      "seconds": 73.84614512471656,
+      "channels": 2,
+      "peak": 0.649993896484375,
+      "dc_rms_ratio": 0.003886826339956595
+    }
+  ],
+  "update_mean_ms": 0.38328924999999997,
+  "update_p95_ms": 0.0691,
+  "decisions": [
+    {
+      "type": "decision",
+      "event_id": "1:60:0",
+      "tick": 60,
+      "sources": [
+        1
+      ],
+      "material": "vehicle",
+      "raw_impulse": 12000,
+      "excess_impulse": 12000,
+      "normal": 10,
+      "tangential": 3,
+      "severity": 0.9,
+      "zone": "front",
+      "layers": [
+        [
+          "transient",
+          "transient_vehicle_1"
+        ],
+        [
+          "body",
+          "body_heavy_2"
+        ],
+        [
+          "crunch",
+          "crunch_3"
+        ],
+        [
+          "debris",
+          "debris_3"
+        ]
+      ],
+      "layer_mix": [
+        {
+          "layer": "transient",
+          "variant": "transient_vehicle_1",
+          "gain": 0.6887,
+          "pitch": 0.9272
+        },
+        {
+          "layer": "body",
+          "variant": "body_heavy_2",
+          "gain": 0.943,
+          "pitch": 0.8868
+        },
+        {
+          "layer": "crunch",
+          "variant": "crunch_3",
+          "gain": 0.1753,
+          "pitch": 0.9167
+        },
+        {
+          "layer": "debris",
+          "variant": "debris_3",
+          "gain": 0.0711,
+          "pitch": 0.892
+        }
+      ],
+      "voices": 4,
+      "scrape": "off",
+      "duck": 1.0,
+      "play_monotonic_ns": 38543825210200
+    },
+    {
+      "type": "decision",
+      "event_id": "1:120:0",
+      "tick": 120,
+      "sources": [
+        1
+      ],
+      "material": "metal_barrier",
+      "raw_impulse": 12000,
+      "excess_impulse": 12000,
+      "normal": 10,
+      "tangential": 3,
+      "severity": 0.9,
+      "zone": "front",
+      "layers": [
+        [
+          "transient",
+          "transient_metal_1"
+        ],
+        [
+          "body",
+          "body_metal_1"
+        ],
+        [
+          "crunch",
+          "crunch_1"
+        ],
+        [
+          "debris",
+          "debris_1"
+        ]
+      ],
+      "layer_mix": [
+        {
+          "layer": "transient",
+          "variant": "transient_metal_1",
+          "gain": 0.6432,
+          "pitch": 0.8998
+        },
+        {
+          "layer": "body",
+          "variant": "body_metal_1",
+          "gain": 0.9481,
+          "pitch": 0.9219
+        },
+        {
+          "layer": "crunch",
+          "variant": "crunch_1",
+          "gain": 0.1685,
+          "pitch": 0.9357
+        },
+        {
+          "layer": "debris",
+          "variant": "debris_1",
+          "gain": 0.0681,
+          "pitch": 0.8976
+        }
+      ],
+      "voices": 4,
+      "scrape": "off",
+      "duck": 0.998,
+      "play_monotonic_ns": 38543842812300
+    },
+    {
+      "type": "decision",
+      "event_id": "1:200:0",
+      "tick": 200,
+      "sources": [
+        1
+      ],
+      "material": "hard_solid",
+      "raw_impulse": 12000,
+      "excess_impulse": 12000,
+      "normal": 10,
+      "tangential": 3,
+      "severity": 0.9,
+      "zone": "front",
+      "layers": [
+        [
+          "transient",
+          "transient_hard_1"
+        ],
+        [
+          "body",
+          "body_hard_3"
+        ],
+        [
+          "crunch",
+          "crunch_2"
+        ],
+        [
+          "debris",
+          "debris_2"
+        ]
+      ],
+      "layer_mix": [
+        {
+          "layer": "transient",
+          "variant": "transient_hard_1",
+          "gain": 0.7025,
+          "pitch": 0.9014
+        },
+        {
+          "layer": "body",
+          "variant": "body_hard_3",
+          "gain": 0.9037,
+          "pitch": 0.913
+        },
+        {
+          "layer": "crunch",
+          "variant": "crunch_2",
+          "gain": 0.1719,
+          "pitch": 0.8994
+        },
+        {
+          "layer": "debris",
+          "variant": "debris_2",
+          "gain": 0.0681,
+          "pitch": 0.9083
+        }
+      ],
+      "voices": 4,
+      "scrape": "off",
+      "duck": 1.0,
+      "play_monotonic_ns": 38543869848000
+    },
+    {
+      "type": "decision",
+      "event_id": "1:350:0",
+      "tick": 350,
+      "sources": [
+        1
+      ],
+      "material": "vehicle",
+      "raw_impulse": 12000,
+      "excess_impulse": 12000,
+      "normal": 10,
+      "tangential": 3,
+      "severity": 0.9,
+      "zone": "front",
+      "layers": [
+        [
+          "transient",
+          "transient_vehicle_2"
+        ],
+        [
+          "body",
+          "body_heavy_1"
+        ],
+        [
+          "crunch",
+          "crunch_1"
+        ],
+        [
+          "debris",
+          "debris_3"
+        ]
+      ],
+      "layer_mix": [
+        {
+          "layer": "transient",
+          "variant": "transient_vehicle_2",
+          "gain": 0.679,
+          "pitch": 0.8867
+        },
+        {
+          "layer": "body",
+          "variant": "body_heavy_1",
+          "gain": 0.9851,
+          "pitch": 0.8875
+        },
+        {
+          "layer": "crunch",
+          "variant": "crunch_1",
+          "gain": 0.1734,
+          "pitch": 0.909
+        },
+        {
+          "layer": "debris",
+          "variant": "debris_3",
+          "gain": 0.0697,
+          "pitch": 0.9334
+        }
+      ],
+      "voices": 4,
+      "scrape": "off",
+      "duck": 1.0,
+      "play_monotonic_ns": 38543908337500
+    }
+  ],
+  "kind": "real OpenAL load/control probe; not subjective sound acceptance"
+}

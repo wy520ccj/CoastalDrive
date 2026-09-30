@@ -55,7 +55,9 @@ def test_default_engine_leaves_headroom_for_collision_and_radio():
     assert sound.engine_audio.level <= .191
     sound.update(frame(0, (event(1, 12000),)), phase("driving"), None, .016)
     attack = next(voice for voice in sound.impact_audio.voices if voice.layer == "transient")
-    assert attack.gain > .8
+    body = next(voice for voice in sound.impact_audio.voices if voice.layer == "body")
+    assert body.gain > .90
+    assert body.gain > attack.gain * 1.3
 
 
 def test_station_audio_has_no_broadband_hiss_floor():
@@ -121,6 +123,25 @@ def test_radio_crossfade_pause_resume_and_independent_volume():
     assert not any(sound.music.playing)
     sound.close()
     assert all(not active for active in sound.music.playing)
+
+
+def test_menu_station_and_paused_settings_preview_match_selected_track():
+    sound, _ = make_soundscape()
+    sound.music.select(2)
+    for _ in range(10):
+        sound.update(frame(0), phase("menu"), None, .1)
+    assert sound.music.playing == [False, True]
+    sound.update(frame(0), phase("paused"), None, .1)
+    assert sound.music.playing == [False, False]
+    sound.music.select(1)
+    for _ in range(10):
+        sound.update(frame(0), phase("paused"), None, .1, music_preview=True)
+    assert sound.music.playing == [True, False]
+    assert not sound.loops_playing
+    sound.music.select(0)
+    for _ in range(10):
+        sound.update(frame(0), phase("menu"), None, .1)
+    assert sound.music.playing == [False, False]
 
 
 def test_collision_materials_choose_different_weight_and_attack_layers():

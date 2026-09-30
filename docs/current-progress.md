@@ -4,6 +4,8 @@
 
 ## 当前阶段
 
+- [PLAY-01-FIX](tasks/PLAY-01-FIX.md) 修复菜单固定播放Sunset的切台bug，N/M按住不连跳，WASAPI真实输出确认菜单双台/驾驶/暂停试听分别匹配所选曲目。暂停页新增设置，复用现有音量/电台页，返回仍保持暂停；720p/1080p实际页面检查通过。碰撞强化300–550Hz车身主体、提高主体响度并降低铁皮形变占比，代表混音短时RMS提升1.7–3.9dB且无削波；声音修订待实际试听。横风牌移到公里250m独立槽，原seed0的限速/横风1100m叠放改为相隔150m，25种子跨分段间距回归与模型对照通过。106项T1、三种子、OpenAL104/104通过；新包builds/0.8.3-play01-fix/win_amd64、试玩-PLAY-01-FIX.cmd和默认试玩入口，主项目与VI副本同步。[证据](evidence/PLAY-01-FIX/README.md)。
+
 - [AUDIO-01-FIX](tasks/AUDIO-01-FIX.md) 按实际试听反馈重制全部27个单次碰撞样本：围绕真正强撞击裁剪，取消前置杂声/长摩擦尾音/额外62Hz正弦，提升瞬态与主体响度；4个真实接触刮擦循环保留。Sunset取消白噪鼓和高通嘶声、夜驰采用轻滤波打击，旋律提早进入；引擎默认混音约降低8.3dB。50项音频T1、三种子、OpenAL104/104、试听无削波与独立包检查通过。新入口试玩.cmd / 试玩-AUDIO-01-FIX.cmd，包builds/0.8.3-audio01-fix/win_amd64，主项目与VI副本同步。旧AUDIO-01音色未获认可，修订版待实际试听；[证据](evidence/AUDIO-01-FIX/README.md)。
 
 - [AUDIO-01](tasks/AUDIO-01.md) 完成驾驶音频升级：原创五转速/双负载V8、31个重制碰撞素材与三材质配方、轮胎/非铺装/风噪、比赛/界面提示和原创双电台；音乐独立音量，N切台、M开关。保留PERF-04-FIX画面修复；接触分区改用当前碰撞盒尺寸，三组1200tick物理快照逐帧一致。52项T1、三种子、OpenAL104/104、双分辨率页面与独立包三场景/59音频资产哈希通过。新包builds/0.8.3-audio01/win_amd64；试玩.cmd、试玩-AUDIO-01.cmd及两个最新HWY/PERF入口统一。按用户授权覆盖CoastalDrive主项目，原main73a466f已备份到上级backups/CoastalDrive-before-AUDIO-01-20260930并核对16420个文件。试听与证据见[报告](evidence/AUDIO-01/README.md)，主观音色待实际试玩。

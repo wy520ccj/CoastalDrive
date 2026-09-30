@@ -82,7 +82,8 @@ def positions(index, seed, curve=None):
             items.append(("speed-limit", 10.3, s, 0))
         if local == 802 and zone in (1, 3):
             items.append(("bridge-advance", 12.8, s, 0))
-        if local == 1100 and zone == 0:
+        # 横风牌用独立里程槽，避免区域1100m恰好与周期限速牌重合。
+        if s % 1000 == 250 and zone == 0:
             items.append(("wind-warning", 10.4, s, 0))
         if curve and s % 1000 == 50:
             turn = curve.sample(s+200).heading-curve.sample(s+80).heading

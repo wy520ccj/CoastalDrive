@@ -17,13 +17,23 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--size", choices=("1280x720", "1920x1080"), required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--context", choices=("menu", "pause"), default="menu")
     args = parser.parse_args()
     size = tuple(map(int, args.size.split("x")))
     args.output.mkdir(parents=True, exist_ok=True)
     app = CoastalDrive(smoke=True, output=args.output, render_size=size)
     app.taskMgr.remove("finish-smoke")
     try:
-        app.back_to_menu()
+        if args.context == "pause":
+            app.session.pause()
+            app.refresh_panel()
+            assert app.panel_option_count == 5 and app.buttons[1]["text"] == "设置"
+            app.taskMgr.step()
+            app.graphicsEngine.renderFrame()
+            app.graphicsEngine.renderFrame()
+            app.win.saveScreenshot(Filename.fromOsSpecific(str(args.output / "pause.png")))
+        else:
+            app.back_to_menu()
         app.audio_settings.radio_station = 2
         app.choose_audio_settings()
         widths, bottoms = [], []
@@ -39,7 +49,11 @@ def main():
         report = {"passed": app.panel_option_count == 7 and max(widths) <= .941
                   and min(bottoms) >= -.78,
                   "resolution": size, "text_widths": widths, "button_bottoms": bottoms,
-                  "station": app.audio_settings.radio_station}
+                  "station": app.audio_settings.radio_station, "context": args.context}
+        if args.context == "pause":
+            app.back_from_audio_settings()
+            report["returned_to_pause"] = app.session.phase.value == "paused"
+            report["passed"] &= report["returned_to_pause"]
         (args.output / "report.json").write_text(json.dumps(report, indent=2))
         print(json.dumps(report))
         return 0 if report["passed"] else 1

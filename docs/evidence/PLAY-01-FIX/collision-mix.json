@@ -1,0 +1,68 @@
+{
+  "body_spectrum": [
+    {
+      "sample": "body_light_1",
+      "before": {
+        "below500_hz_energy_ratio": 0.6355680073024911,
+        "rms": 0.15654395137920377
+      },
+      "after": {
+        "below500_hz_energy_ratio": 0.890715740773648,
+        "rms": 0.2098006005190461
+      }
+    },
+    {
+      "sample": "body_heavy_1",
+      "before": {
+        "below500_hz_energy_ratio": 0.7900933221083336,
+        "rms": 0.12520686534042572
+      },
+      "after": {
+        "below500_hz_energy_ratio": 0.977308251501082,
+        "rms": 0.176571104828501
+      }
+    },
+    {
+      "sample": "body_metal_1",
+      "before": {
+        "below500_hz_energy_ratio": 0.5674873082791777,
+        "rms": 0.10711022746895127
+      },
+      "after": {
+        "below500_hz_energy_ratio": 0.9346106424296365,
+        "rms": 0.17955850618453362
+      }
+    },
+    {
+      "sample": "body_hard_1",
+      "before": {
+        "below500_hz_energy_ratio": 0.8897020017667856,
+        "rms": 0.15345478098893492
+      },
+      "after": {
+        "below500_hz_energy_ratio": 0.9865477745203294,
+        "rms": 0.19270415954174067
+      }
+    }
+  ],
+  "collision_mix_rms_change": [
+    {
+      "second": 14,
+      "rms_gain_db": 3.3168713426270813
+    },
+    {
+      "second": 17,
+      "rms_gain_db": 3.936585060405255
+    },
+    {
+      "second": 20,
+      "rms_gain_db": 1.6741089584870106
+    },
+    {
+      "second": 23,
+      "rms_gain_db": 2.5905675905673142
+    }
+  ],
+  "peak": 0.82470703125,
+  "saturated_samples": 0
+}

@@ -194,13 +194,13 @@ def collisions():
     manifest_path.write_text(json.dumps(source_manifest, indent=2), encoding="utf-8")
     pools = {}
     catalog = {
-        "transient_vehicle": ("new", (.418, .422, .426), .20, "highpass=f=75,lowpass=f=5800"),
-        "transient_metal": ("metal_hit", (0, .006, .012), .23, "highpass=f=120,lowpass=f=6500"),
-        "transient_hard": ("new", (.418, .422, .426), .18, "lowpass=f=3000"),
-        "body_light": ("new", (.418, .422, .426), .20, "lowpass=f=1400"),
-        "body_heavy": ("new", (.418, .422, .426), .36, "lowpass=f=1000,bass=g=4:f=130"),
-        "body_metal": ("metal_hit", (0, .006, .012), .34, "lowpass=f=2200"),
-        "body_hard": ("new", (.418, .422, .426), .30, "lowpass=f=650,bass=g=5:f=100"),
+        "transient_vehicle": ("new", (.418, .422, .426), .20, "highpass=f=65,lowpass=f=1600"),
+        "transient_metal": ("metal_hit", (0, .006, .012), .23, "highpass=f=100,lowpass=f=3000"),
+        "transient_hard": ("new", (.418, .422, .426), .18, "lowpass=f=1200"),
+        "body_light": ("new", (.418, .422, .426), .24, "lowpass=f=550"),
+        "body_heavy": ("new", (.418, .422, .426), .36, "lowpass=f=350,bass=g=4:f=90"),
+        "body_metal": ("new", (.418, .422, .426), .34, "lowpass=f=450"),
+        "body_hard": ("new", (.418, .422, .426), .30, "lowpass=f=300,bass=g=5:f=80"),
         "crunch": ("car_crunch", (.05, 3.76, 6.79), .18, "highpass=f=380,lowpass=f=4000"),
         "debris": ("plastic", (.15, .16, .17), .14, "highpass=f=1200,lowpass=f=5000"),
         "scrape_metal": ("metal_scrape", (3, 9), 3.4, "highpass=f=130,lowpass=f=6000"),
@@ -224,7 +224,7 @@ def collisions():
                 samples = [x * math.exp(-max(0, i / RATE - .025) * decay)
                            for i, x in enumerate(samples)]
             path = OUTPUT / "impact" / f"{pool}_{index+1}.wav"
-            peak = .78 if pool.startswith("transient") else .70 if pool.startswith("body") else .48 if pool == "crunch" else .35 if pool == "debris" else .62
+            peak = .78 if pool.startswith("transient") else .84 if pool.startswith("body") else .48 if pool == "crunch" else .35 if pool == "debris" else .62
             info = write(path, samples, peak)
             info.update(id=f"{pool}_{index+1}", source=source, start=start,
                         peak_dbfs=20 * math.log10(peak))

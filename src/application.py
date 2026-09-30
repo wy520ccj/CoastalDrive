@@ -193,6 +193,8 @@ class CoastalDrive(ShowBase):
             "c",
             "escape",
             "enter",
+            "n",
+            "m",
         ):
             self.accept(key, self.key_down, [key])
             self.accept(f"{key}-up", self.key_up, [key])
@@ -200,8 +202,6 @@ class CoastalDrive(ShowBase):
                 self.accept(f"raw-{key}", self.key_down, [key])
                 self.accept(f"raw-{key}-up", self.key_up, [key])
         self.accept("f3", self.toggle_diagnostics)
-        self.accept("n", self.cycle_radio)
-        self.accept("m", self.toggle_radio)
 
     def audio_cue(self, name):
         if self.soundscape is not None:
@@ -228,6 +228,11 @@ class CoastalDrive(ShowBase):
 
     def key_down(self, key):
         if not self.loading.isHidden():
+            return
+        if key in ("n", "m"):
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.cycle_radio() if key == "n" else self.toggle_radio()
             return
         if (self.session.phase == Phase.MENU and self.garage is None
                 and not self.audio_settings_page and not self.highway_menu
@@ -471,6 +476,7 @@ class CoastalDrive(ShowBase):
 
     def back_from_audio_settings(self):
         self.audio_settings_page = False
+        self.panel_selection = 1 if self.session.phase == Phase.PAUSED else 0
         self._shown_phase = None
         self.refresh_panel()
 
@@ -575,7 +581,8 @@ class CoastalDrive(ShowBase):
         panel_state = (phase, self.garage is not None, self.highway_menu, self.audio_settings_page)
         if panel_state == self._shown_phase:
             return
-        if not (self.garage is not None or self.highway_menu or self.audio_settings_page):
+        if (phase != Phase.PAUSED and
+                not (self.garage is not None or self.highway_menu or self.audio_settings_page)):
             self.panel_selection = 0
         self._shown_phase = panel_state
         self.main_menu.root.hide()
@@ -621,8 +628,8 @@ class CoastalDrive(ShowBase):
                 ("应用并返回  Enter", self.apply_garage),
                 ("取消返回  Esc", self.cancel_garage),
             ]
-        elif phase == Phase.MENU and self.audio_settings_page:
-            self.panel_title.setText("声音设置")
+        elif self.audio_settings_page:
+            self.panel_title.setText("设置")
             note = (
                 f"主音量：{self.audio_settings.master_volume}%    "
                 f"效果音量：{self.audio_settings.effects_volume}%\n"
@@ -667,6 +674,7 @@ class CoastalDrive(ShowBase):
             self.panel_note.setText("切出窗口会自动暂停\n按 Enter 或 Esc 继续驾驶")
             options = [
                 ("继续驾驶  Enter", self.session.resume),
+                ("设置", self.choose_audio_settings),
                 ("重新开始", self.session.start),
                 ("结束驾驶", self.session.finish),
                 ("返回主菜单", self.back_to_menu),
@@ -813,7 +821,8 @@ class CoastalDrive(ShowBase):
         state = self.session.frame(self.clock.getDt())
         if self.soundscape is not None:
             self.soundscape.update(state, self.session.phase, None, self.clock.getDt(),
-                                   countdown_ticks=self.session.countdown_ticks)
+                                   countdown_ticks=self.session.countdown_ticks,
+                                   music_preview=self.audio_settings_page)
             checkpoints = self.session.race.snapshot.checkpoints
             if checkpoints > self._audio_checkpoints:
                 self.audio_cue("checkpoint")

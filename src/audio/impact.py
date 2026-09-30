@@ -210,7 +210,7 @@ class ImpactAudio:
             return
         pools = self.bank["materials"][event.material]
         layers = []
-        transient_gain = 0.40 + 0.54 * severity
+        transient_gain = 0.30 + 0.42 * severity
         if event.zone in ("left", "right"):
             transient_gain *= 1.05
         variant = self._play_layer(pools["transient"], "transient", event, severity,
@@ -218,17 +218,17 @@ class ImpactAudio:
         if variant:
             layers.append(("transient", variant))
         body_pool = pools["body"] if severity >= 0.45 else "body_light"
-        body_gain = (0.28 + 0.58 * severity) * (1.06 if event.zone == "front" else 1.0)
+        body_gain = (0.50 + 0.48 * severity) * (1.02 if event.zone == "front" else 1.0)
         variant = self._play_layer(body_pool, "body", event, severity, body_gain, scale)
         if variant:
             layers.append(("body", variant))
         if severity > 0.42:
             variant = self._play_layer("crunch", "crunch", event, severity,
-                                       (severity - 0.42) * 0.65, scale)
+                                       (severity - 0.42) * 0.36, scale)
             if variant:
                 layers.append(("crunch", variant))
         if severity > 0.68:
-            variant = self._play_layer("debris", "debris", event, severity, 0.12, scale)
+            variant = self._play_layer("debris", "debris", event, severity, 0.07, scale)
             if variant:
                 layers.append(("debris", variant))
         if severity >= self.bank["mix"]["duck_start"]:
