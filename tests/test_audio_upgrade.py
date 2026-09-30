@@ -46,6 +46,37 @@ def test_load_changes_timbre_and_shift_releases_after_short_cut():
     assert coast.volumes[-1] > loaded.volumes[-1] * 10
 
 
+def test_default_engine_leaves_headroom_for_collision_and_radio():
+    sound, _ = make_soundscape()
+    state = frame(0, rpm=6500)
+    state.player = replace(state.player, throttle=1)
+    for _ in range(20):
+        sound.update(state, phase("driving"), None, .1)
+    assert sound.engine_audio.level <= .191
+    sound.update(frame(0, (event(1, 12000),)), phase("driving"), None, .016)
+    attack = next(voice for voice in sound.impact_audio.voices if voice.layer == "transient")
+    assert attack.gain > .8
+
+
+def test_station_audio_has_no_broadband_hiss_floor():
+    import wave
+    from array import array
+
+    root = resource_root() / "assets/game/audio/music"
+    for path in root.glob("*.wav"):
+        with wave.open(str(path), "rb") as clip:
+            rate = clip.getframerate()
+            channels = clip.getnchannels()
+            pcm = array("h", clip.readframes(clip.getnframes()))
+        # 二阶差分突出宽带嘶声；旋律与低频鼓保持，不能靠整曲降音量过关。
+        samples = pcm[::channels]
+        energy = sum(x*x for x in samples)
+        hiss = sum((samples[i] - 2*samples[i-1] + samples[i-2])**2
+                   for i in range(2, len(samples)))
+        assert rate == 44100 and channels == 2
+        assert hiss / energy < .0005
+
+
 def test_surface_and_braking_are_speed_gated():
     sound, _ = make_soundscape()
     state = frame(0, speed=0)
@@ -103,6 +134,17 @@ def test_collision_materials_choose_different_weight_and_attack_layers():
     assert len({s["body"] for s in selections}) == 3
     assert len({s["transient"] for s in selections}) == 3
     assert all("crunch" in s and "debris" in s for s in selections)
+
+
+def test_standalone_collision_finishes_without_baked_in_sliding_tail():
+    for material in ("vehicle", "metal_barrier", "hard_solid"):
+        sound, _ = make_soundscape()
+        sound.update(frame(0, (event(1, 22000, material=material),)), phase("driving"), None)
+        assert sound.impact_audio.voices
+        for tick in range(1, 34):
+            sound.update(frame(tick/60), phase("driving"), None, 1/60)
+        assert sound.impact_audio.voices == []
+        assert sound.impact_audio.scrape_sound is None
 
 
 def test_wider_current_chassis_corner_keeps_head_on_contact_zone():

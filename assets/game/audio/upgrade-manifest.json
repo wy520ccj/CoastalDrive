@@ -118,12 +118,12 @@
     },
     {
       "path": "music/sunset-run.wav",
-      "sha256": "5818114eff6f6c4feed22e391f41aec8c845cd5f12b10cb930e5ac67a20d99dc",
+      "sha256": "c0a3a3cf5a528286bad98fea1104d5a68279e0f2c14e0db765d54703e44fbf0f",
       "duration": 73.84614512471656
     },
     {
       "path": "music/midnight-circuit.wav",
-      "sha256": "09e58e713a7ba1f5d60029fb06aec32ef639466e96573a9cc6e84098ac9e1350",
+      "sha256": "72470e16fee2ebab271a089908630c020782a9770ce68c887191623d13d1f04c",
       "duration": 68.57142857142857
     }
   ],

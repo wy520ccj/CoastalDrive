@@ -30,262 +30,262 @@
     "transient_vehicle": [
       {
         "path": "impact/transient_vehicle_1.wav",
-        "sha256": "8594108c740eac6b295a1a865b40fd6eeb017428bcaa91e2a8f97388ae811690",
-        "duration": 0.6748299319727891,
+        "sha256": "4186a30aca76aecfba9196f9d31951517ce0f8612d0e2b9920d529aefb939c08",
+        "duration": 0.19201814058956915,
         "id": "transient_vehicle_1",
         "source": "new",
-        "start": 0,
-        "peak_dbfs": -3.0982664075284743
+        "start": 0.418,
+        "peak_dbfs": -2.1584613831352866
       },
       {
         "path": "impact/transient_vehicle_2.wav",
-        "sha256": "e8f1fa8263101f0acf9873b7e1de6232a59a5a112f9b761904fbc0932c5bda15",
-        "duration": 0.7197278911564626,
+        "sha256": "a2d69e431a8d206b160126fe3c7578b99b17bf9b014ef016df1c8020df9a979a",
+        "duration": 0.19594104308390023,
         "id": "transient_vehicle_2",
         "source": "new",
-        "start": 0.018,
-        "peak_dbfs": -5.569189406131406
+        "start": 0.422,
+        "peak_dbfs": -2.2565501442238074
       },
       {
         "path": "impact/transient_vehicle_3.wav",
-        "sha256": "cfc2cdce98cc867599de068e7a8dc3af681dd6d9cb940e31594d43a4588f5432",
-        "duration": 0.6366439909297053,
+        "sha256": "c1b5e09a61df400d6d7409b2d9840e3de91393e829548d2da1d672e2525b8d00",
+        "duration": 0.2,
         "id": "transient_vehicle_3",
         "source": "new",
-        "start": 0.04,
-        "peak_dbfs": -6.412054306565475
+        "start": 0.426,
+        "peak_dbfs": -2.1669617944908155
       }
     ],
     "transient_metal": [
       {
         "path": "impact/transient_metal_1.wav",
-        "sha256": "a2842a2d360ac2ca76a5130a14f8a372c043c96d22b24894684dfd26e4c2364c",
-        "duration": 0.7009070294784581,
+        "sha256": "cee9dd9647a79a7034d408b38bae1755bd519f55aeeb01e32ca193eb50811c67",
+        "duration": 0.19077097505668933,
         "id": "transient_metal_1",
         "source": "metal_hit",
         "start": 0,
-        "peak_dbfs": -4.5140989960920335
+        "peak_dbfs": -2.487119373781688
       },
       {
         "path": "impact/transient_metal_2.wav",
-        "sha256": "01b56028e61bc46de66f12235c9e8445646971c3d5cef04b3cca42095a73551d",
-        "duration": 0.7724036281179139,
+        "sha256": "0f76d3697af08d4f117bdb750fab55e063d8c62b00c4ca6ba92204d7c6693e9d",
+        "duration": 0.19467120181405895,
         "id": "transient_metal_2",
         "source": "metal_hit",
-        "start": 0.025,
-        "peak_dbfs": -4.717028501103002
+        "start": 0.006,
+        "peak_dbfs": -2.65821223075027
       },
       {
         "path": "impact/transient_metal_3.wav",
-        "sha256": "803cb5453af532e53647d0e6bd257cee9fb16c5ceccc5e5c64a9787ace17ec83",
-        "duration": 0.6924716553287982,
+        "sha256": "d04446b4cd27853bf522586596e70fe88c8bc6cb77c4970dcabe3f0c82e84b8f",
+        "duration": 0.20541950113378685,
         "id": "transient_metal_3",
         "source": "metal_hit",
-        "start": 0.06,
-        "peak_dbfs": -3.0982664075284743
+        "start": 0.012,
+        "peak_dbfs": -2.1584613831352866
       }
     ],
     "transient_hard": [
       {
         "path": "impact/transient_hard_1.wav",
-        "sha256": "5da4e02e45e4e2d63793a1525229d5092bb02feb48b84fd09549df65bb118559",
-        "duration": 0.5659863945578232,
+        "sha256": "a220c6acf76e87a5684def31f7549435e040b9e516a38b465e8d7011ec134e21",
+        "duration": 0.1719501133786848,
         "id": "transient_hard_1",
         "source": "new",
-        "start": 0,
-        "peak_dbfs": -3.0982664075284743
+        "start": 0.418,
+        "peak_dbfs": -2.176492141850244
       },
       {
         "path": "impact/transient_hard_2.wav",
-        "sha256": "1c442e0051c1beb5cddaf244436e014a2ca2ffff13ccd6a8fd8b4745b18f3d90",
-        "duration": 0.60859410430839,
+        "sha256": "70a09d3d422025750ebbd59b7d2624cba0ae890270a8a286940f661ded8ebf9e",
+        "duration": 0.1758956916099773,
         "id": "transient_hard_2",
         "source": "new",
-        "start": 0.035,
-        "peak_dbfs": -6.109588365007488
+        "start": 0.422,
+        "peak_dbfs": -2.1584613831352866
       },
       {
         "path": "impact/transient_hard_3.wav",
-        "sha256": "90b5cbe18ab015e6fde437db0e0e57169af7df8c7a4540d604ca10e748ea67ce",
-        "duration": 0.5327891156462585,
+        "sha256": "14482f6b7a0d2fab046bebb9bbbe83e48ef42b2a790bf26803787447549de4bc",
+        "duration": 0.18,
         "id": "transient_hard_3",
         "source": "new",
-        "start": 0.065,
-        "peak_dbfs": -7.429352854714817
+        "start": 0.426,
+        "peak_dbfs": -2.237323691860595
       }
     ],
     "body_light": [
       {
         "path": "impact/body_light_1.wav",
-        "sha256": "44e5a591f87672417db736b7ab18fdf5579af199a21202e23da57bdfe99f5cbc",
-        "duration": 0.523015873015873,
+        "sha256": "9148afa9c0141d3636513e17b1a291a3f8a35719f5a2350af7851aef13a3fba8",
+        "duration": 0.19124716553287982,
         "id": "body_light_1",
-        "source": "car_body",
-        "start": 1.36,
-        "peak_dbfs": -4.152166210034923
+        "source": "new",
+        "start": 0.418,
+        "peak_dbfs": -3.0980391997148637
       },
       {
         "path": "impact/body_light_2.wav",
-        "sha256": "31663f19e09979ab0519cf003cb762fc13e6ec84572266664a4e217d77c6ea74",
-        "duration": 0.5348072562358277,
+        "sha256": "78d57b4265e97d3475f2f5472660f0f006f703c79b45eb23217f6091cc6579d5",
+        "duration": 0.19512471655328797,
         "id": "body_light_2",
-        "source": "car_body",
-        "start": 4.82,
-        "peak_dbfs": -4.152166210034923
+        "source": "new",
+        "start": 0.422,
+        "peak_dbfs": -3.0980391997148637
       },
       {
         "path": "impact/body_light_3.wav",
-        "sha256": "4332542a4aed7f50fca8db834d312782c59010f31486dfdd00f855b930b6cba0",
-        "duration": 0.4826984126984127,
+        "sha256": "09e45759b9c1ab4bd5660cb7a6a57e790aa2c026044536b6d9b89666c913e98d",
+        "duration": 0.2,
         "id": "body_light_3",
-        "source": "car_body",
-        "start": 17.57,
-        "peak_dbfs": -4.152166210034923
+        "source": "new",
+        "start": 0.426,
+        "peak_dbfs": -3.0980391997148637
       }
     ],
     "body_heavy": [
       {
         "path": "impact/body_heavy_1.wav",
-        "sha256": "31172653b5be14d1c89f0cbfdacee10141d618c9d8a62e47064618f80844c726",
-        "duration": 1.4692063492063492,
+        "sha256": "aa08e5b769502b30be6ba8f80249bad81db2cba7445504efeb85f92c75fc1552",
+        "duration": 0.35113378684807256,
         "id": "body_heavy_1",
         "source": "new",
-        "start": 0,
-        "peak_dbfs": -4.152166210034923
+        "start": 0.418,
+        "peak_dbfs": -3.0980391997148637
       },
       {
         "path": "impact/body_heavy_2.wav",
-        "sha256": "bee5ac7d6a49db47f2b16aef7f4894db2239a1306ca4e7d35836784549759463",
-        "duration": 1.58,
+        "sha256": "67fd664e1a68711ab725752676a41654b2b5082f445c9966d307a1b613ed1b7b",
+        "duration": 0.35498866213151925,
         "id": "body_heavy_2",
         "source": "new",
-        "start": 0.045,
-        "peak_dbfs": -4.152166210034923
+        "start": 0.422,
+        "peak_dbfs": -3.0980391997148637
       },
       {
         "path": "impact/body_heavy_3.wav",
-        "sha256": "e472b9083323c8b84680b570483c357949df366f99926541bf8a395f61cf1179",
-        "duration": 1.3807936507936507,
+        "sha256": "ada7c5584b47e87b81bbc049e4cca1d256196968e204934a38cf69e950d9b14c",
+        "duration": 0.3599546485260771,
         "id": "body_heavy_3",
         "source": "new",
-        "start": 0.09,
-        "peak_dbfs": -4.152166210034923
+        "start": 0.426,
+        "peak_dbfs": -3.0980391997148637
       }
     ],
     "body_metal": [
       {
         "path": "impact/body_metal_1.wav",
-        "sha256": "46df53edbae93ca65c6b2124c0385980645624631d089e3afe44a78f6bc509fa",
-        "duration": 1.163673469387755,
+        "sha256": "b97b68183375ce8e81d8b935278c19dc9fa569320ff60beb4b8571b27c93da10",
+        "duration": 0.3008390022675737,
         "id": "body_metal_1",
-        "source": "car_body",
-        "start": 15.33,
-        "peak_dbfs": -4.152166210034923
+        "source": "metal_hit",
+        "start": 0,
+        "peak_dbfs": -3.0980391997148637
       },
       {
         "path": "impact/body_metal_2.wav",
-        "sha256": "93eda136fdfb8a4f511cd61b2349f5ac520bc9ef46f3a9514d14220d4cec0141",
-        "duration": 1.2442176870748298,
+        "sha256": "b2166881e214e5c02f76603f37674e546ac3689871d2555ee6c85f32011eb2c9",
+        "duration": 0.3047845804988662,
         "id": "body_metal_2",
-        "source": "car_body",
-        "start": 20.08,
-        "peak_dbfs": -4.152166210034923
+        "source": "metal_hit",
+        "start": 0.006,
+        "peak_dbfs": -3.0980391997148637
       },
       {
         "path": "impact/body_metal_3.wav",
-        "sha256": "016307164f283c096294b11777227ebaa51bc3a9526c84eef2474c3c0c3651f5",
-        "duration": 1.1221768707482993,
+        "sha256": "baa7da4832557719da2981ff09b62e15608ad007b153be4e0a2fd4087236b4ea",
+        "duration": 0.3154875283446712,
         "id": "body_metal_3",
-        "source": "car_body",
-        "start": 23.28,
-        "peak_dbfs": -4.152166210034923
+        "source": "metal_hit",
+        "start": 0.012,
+        "peak_dbfs": -3.0980391997148637
       }
     ],
     "body_hard": [
       {
         "path": "impact/body_hard_1.wav",
-        "sha256": "78ed309f719a9da557fff0eb53ea929fb3b045d40eddde8de00caba6b26704d7",
-        "duration": 1.0334920634920635,
+        "sha256": "d9a052b2d5a669d30caf228bf60621f6580003e3367ecd674e2fa7c685587af4",
+        "duration": 0.2910204081632653,
         "id": "body_hard_1",
         "source": "new",
-        "start": 0,
-        "peak_dbfs": -4.152166210034923
+        "start": 0.418,
+        "peak_dbfs": -3.0980391997148637
       },
       {
         "path": "impact/body_hard_2.wav",
-        "sha256": "b56fab008e4374eb740a339ed014a1a56594012ab029625443593bca8534cc69",
-        "duration": 1.0978004535147392,
+        "sha256": "29464aa552fc4a1f5663fbe29ed8e0fe853395605db121b64e5142fc3154230a",
+        "duration": 0.29487528344671204,
         "id": "body_hard_2",
         "source": "new",
-        "start": 0.025,
-        "peak_dbfs": -4.152166210034923
+        "start": 0.422,
+        "peak_dbfs": -3.0980391997148637
       },
       {
         "path": "impact/body_hard_3.wav",
-        "sha256": "a53ec9896a18b31e2e7284b1f9cc903b414d5fff8bc856d10ef41515ecfc007b",
-        "duration": 0.9562358276643991,
+        "sha256": "ab597ae43dcd48a7fd35c70670992d9cb1e85b1b72c75c61a35d730df8f44a5c",
+        "duration": 0.2998639455782313,
         "id": "body_hard_3",
         "source": "new",
-        "start": 0.05,
-        "peak_dbfs": -4.152166210034923
+        "start": 0.426,
+        "peak_dbfs": -3.0980391997148637
       }
     ],
     "crunch": [
       {
         "path": "impact/crunch_1.wav",
-        "sha256": "3b6b0b22a9be0754e424bda728268013c8f37aed0657818a95f0aad4e4f1bfa3",
-        "duration": 0.8267573696145125,
+        "sha256": "205896cd66f5119dc037a08124a4c7fab6f2138acde127a9bfb54fc17e224f25",
+        "duration": 0.08156462585034013,
         "id": "crunch_1",
         "source": "car_crunch",
         "start": 0.05,
-        "peak_dbfs": -4.152166210034923
+        "peak_dbfs": -6.375175252488256
       },
       {
         "path": "impact/crunch_2.wav",
-        "sha256": "996151d7283ba7a370a331190523971cddee1066df6d4f19b055270b8824ffa8",
-        "duration": 0.9887981859410431,
+        "sha256": "18a7dee53c3d36136e5cbff53ecfd0864f95bdf49fe726d4a8f8f9a4fb48c402",
+        "duration": 0.17396825396825397,
         "id": "crunch_2",
         "source": "car_crunch",
         "start": 3.76,
-        "peak_dbfs": -4.152166210034923
+        "peak_dbfs": -6.375175252488256
       },
       {
         "path": "impact/crunch_3.wav",
-        "sha256": "582cda62617b21fb59681634a241e8f9d1c522015f7b611fd588770612d01acb",
-        "duration": 0.87281179138322,
+        "sha256": "466ec196381459e59afe5ae4ca44e1927e318fbda8f29c706a3ca37b8bbbc2fd",
+        "duration": 0.18,
         "id": "crunch_3",
         "source": "car_crunch",
         "start": 6.79,
-        "peak_dbfs": -4.152166210034923
+        "peak_dbfs": -6.375175252488256
       }
     ],
     "debris": [
       {
         "path": "impact/debris_1.wav",
-        "sha256": "2931d94bdfd5f427af447a9d6605194e97249993544629e0014b14d45775a09b",
-        "duration": 0.8163265306122449,
+        "sha256": "1a13587cd0a30583aa224d6709bf05ce7027f2afa066319d4bb957849199e347",
+        "duration": 0.04904761904761905,
         "id": "debris_1",
-        "source": "new",
-        "start": 0.45,
-        "peak_dbfs": -4.152166210034923
+        "source": "plastic",
+        "start": 0.15,
+        "peak_dbfs": -9.118639112994488
       },
       {
         "path": "impact/debris_2.wav",
-        "sha256": "0f5461acb26cb8056f43d24f818dbc01b27136aad28ff016fbba2c0f917e7cfd",
-        "duration": 0.8569614512471655,
+        "sha256": "282dd4e9cf13b1cdd5b0bcdb6aa4c8968893532c3610147bb6185adaac6a5790",
+        "duration": 0.05376417233560091,
         "id": "debris_2",
-        "source": "new",
-        "start": 0.65,
-        "peak_dbfs": -4.152166210034923
+        "source": "plastic",
+        "start": 0.16,
+        "peak_dbfs": -9.118639112994488
       },
       {
         "path": "impact/debris_3.wav",
-        "sha256": "698a81040a029437b22b321b61a0755cf6b1e42da0adb51033b8fffa7277d5aa",
-        "duration": 0.7600680272108844,
+        "sha256": "252a34dac6dd651706d5a0a48abedf12a481289e090bdab261445b8a8c6ea45b",
+        "duration": 0.07485260770975057,
         "id": "debris_3",
-        "source": "new",
-        "start": 0.8,
-        "peak_dbfs": -4.152166210034923
+        "source": "plastic",
+        "start": 0.17,
+        "peak_dbfs": -9.118639112994488
       }
     ],
     "scrape_metal": [

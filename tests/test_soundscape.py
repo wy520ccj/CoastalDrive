@@ -212,4 +212,5 @@ def test_new_impact_clips_are_playable_mono_pcm():
                 assert clip.getnchannels() == 1
                 assert clip.getsampwidth() == 2
                 assert clip.getframerate() == 44100
-                assert clip.getnframes() > 8000
+                # 短碎屑可以小于50ms，不要求它带有原来的摩擦长尾。
+                assert clip.getnframes() >= round(.025 * clip.getframerate())

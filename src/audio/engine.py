@@ -53,7 +53,7 @@ class EngineAudio:
         self.rpm += (player.rpm - self.rpm) * (1 - math.exp(-dt / 0.045))
         self.load += (throttle - self.load) * (1 - math.exp(-dt / 0.085))
         lower, upper, left, right = band_mix(self.rpm)
-        target = (0.27 + 0.18 * self.load + 0.045 * min(1, self.rpm / 6500))
+        target = (0.10 + 0.075 * self.load + 0.015 * min(1, self.rpm / 6500))
         target *= 0.62 if self.shift_time > 0 else 1
         self.level += (target - self.level) * (1 - math.exp(-dt / 0.035))
         for i, (coast, loaded) in enumerate(self.layers):

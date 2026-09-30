@@ -19,12 +19,14 @@ N循环切换关闭/海岸FM/夜驰FM，M开关车载音乐。音乐默认55%；
 - [GTA V Self Radio](https://www.rockstargames.com/newswire/article/25o2411812a799/self-radio-create-your-own-custom-radio-station-in-gtav-pc)：借鉴驾驶中切换音乐与音乐单独控制。本轮内置双电台，本地歌曲导入未实现。
 - [Cyberpunk 2077 2.1官方说明](https://www.cyberpunk.net/en/news/49597/update-2-1-patch-notes)：借鉴音乐随游戏状态连续切换和让位给关键提示的设计。本轮采用菜单/驾驶/暂停生命周期与重撞压低音乐。
 - [ange-yaghi/engine-sim](https://github.com/ange-yaghi/engine-sim)（MIT）和[DasEtwas/enginesound](https://github.com/DasEtwas/enginesound)（MIT）：参考燃烧脉冲、排气/共振层、转速控制及离线闭合循环。项目使用原创简化声库生成器，未集成其物理求解或复制源码。
-- [squareal / Car Crash](https://freesound.org/people/squareal/sounds/237375/)（CC0）：新增碰撞主体来源，作者以金属柜、砂砾、玻璃等分层制作；截取完整撞击及尾音，再滤波、轻微变速、压缩、校齐起音。其他金属形变/刮擦录音来源见音频License.txt。
+- [squareal / Car Crash](https://freesound.org/people/squareal/sounds/237375/)（CC0）：碰撞主体来源，作者以金属柜、砂砾、玻璃等分层制作；AUDIO-01-FIX从0.418–0.426秒真实强撞击附近截取0.18–0.36秒，剔除前置杂声和后续滑动/摩擦。护栏瞬态/主体采用短金属撞击，碎屑改用独立塑料落击。其他录音来源见音频License.txt。
 
 ## 素材制作与验证
 
 制作工具：tools/audio/prepare_upgrade.py。运行仅需Panda3D；离线碰撞加工需ffmpeg。源录音预览及首次下载哈希保存在assets/source/audio-upgrade/sources.json，已核对的历史录音哈希在tools/prepare_impact_audio.py。新录音哈希也写入发布的impact-bank.json。资源哈希记录在impact-bank.json和upgrade-manifest.json，真实署名与加工方式记录在assets/game/audio/License.txt和docs/asset-register.csv。
 
 引擎采用八次点火周期/排气共振/进气噪声，并移除DC、淡化环缝；这是符合当前美式双门车形象的声音表现，现有驾驶扭矩参数保持。轮胎摩擦是物理状态驱动的表现估计。
+
+AUDIO-01-FIX按实际试听反馈重制全部27个单次碰撞样本：同一强撞击起音、短衰减和材质滤波形成统一声音，取消额外62Hz正弦层；提高轻撞/重撞增益，单次撞击在0.55秒内结束。4个真实连续接触擦碰循环保留，引擎满载内部混音0.495→0.19（约-8.3dB），不修改用户保存的音量设置。Sunset取消白噪军鼓和高通嘶声，改为轻音高打击；夜驰军鼓改为低音量滤波噪声，两台从开头加入琶音、第二小节后进入旋律。
 
 验收工具tools/audio/check_upgrade.py直接载入OpenAL，检查104个句柄及声音生命周期、峰值和DC。tools/audio/make_audition.py使用生产Soundscape离线混出44秒试听：0–12秒引擎加速换挡，14/17/20/23秒轻车撞/护栏/硬物/重车撞，25–28秒右侧刮擦，28–36秒海岸FM，36–44秒夜驰FM。

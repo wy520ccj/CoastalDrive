@@ -36,5 +36,14 @@ def test_impact_bank_has_distinct_verified_variants_and_fast_transients():
                 assert len(samples) / 44100 >= 2.4
                 rms = math.sqrt(sum(value * value for value in samples) / len(samples)) / 32768
                 assert rms > .025
+            else:
+                # 单次撞击不携带持续滑动尾音；真正擦碰只由独立接触循环产生。
+                assert len(samples) / 44100 <= .40
+                if len(samples) > round(.24 * 44100):
+                    head = samples[:round(.08 * 44100)]
+                    tail = samples[round(.24 * 44100):]
+                    head_rms = math.sqrt(sum(x*x for x in head) / len(head))
+                    tail_rms = math.sqrt(sum(x*x for x in tail) / len(tail))
+                    assert tail_rms / head_rms < .20
         if early_rms:
             assert 20 * math.log10(max(early_rms) / min(early_rms)) < 4.0

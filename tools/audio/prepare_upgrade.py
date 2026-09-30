@@ -1,5 +1,6 @@
 """离线制作V8声库、重制碰撞和原创双电台；运行游戏无需DSP或下载。"""
 
+import argparse
 import hashlib
 import json
 import math
@@ -135,34 +136,37 @@ def music(night):
         chord = chords[(bar // 2) % 4]
         start = bar * beat * 4
         for j, midi in enumerate(chord):
-            note(midi + 12, start, beat * 4.1, .085, (j - 1.5) * .32)
+            note(midi + 12, start, beat * 4.1, .10, (j - 1.5) * .32)
         for b in range(4):
             note(chord[0] - 12, start + beat * b, beat * .72, .21, pluck=True)
-        if bar >= 4:
-            for b in range(8):
-                note(chord[(b + bar) % 4] + (24 if night else 12),
-                     start + beat * b / 2, beat * .85, .065, math.sin(b) * .55, True)
-        if bar >= 12:
+        for b in range(8):
+            note(chord[(b + bar) % 4] + (24 if night else 12),
+                 start + beat * b / 2, beat * .85, .065, math.sin(b) * .55, True)
+        if bar >= 2:
             for b, midi in enumerate((chord[2]+24, chord[1]+24, chord[0]+24, chord[3]+12)):
                 note(midi, start + b * beat + beat * .25, beat * 1.1, .09, -.1, True)
     for b in range(128):
         start = round(b * beat * RATE)
-        # Kick、snare和偏侧hi-hat；鼓击不压过和声。
+        # 海岸台使用有音高的轻打击乐，取消白噪军鼓和高通嘶声。
+        smooth = 0.0
         for i in range(round(RATE * .22)):
             index = (start + i) % count
             t = i / RATE
             kick = .26 * math.exp(-t * 24) * math.sin(math.tau * (
                 49 * t + 60 * (1 - math.exp(-t * 36)) / 36)) if (night or b % 2 == 0) else 0
-            snare = rng.uniform(-1, 1) * .15 * math.exp(-t * 24) if b % 2 else 0
+            smooth += .12 * (rng.uniform(-1, 1) - smooth)
+            snare = 0.0
+            if b % 2:
+                snare = (.045 * math.sin(math.tau * 185 * t) * math.exp(-t * 48) +
+                         (.022 * smooth * math.exp(-t * 55) if night else 0))
             left[index] += kick + snare
             right[index] += kick + snare
         for subdivision in range(2):
             offset = start + round(subdivision * beat * RATE / 2)
-            last = 0.0
             for i in range(round(RATE * .04)):
-                noise = rng.uniform(-1, 1)
-                value = (noise - last) * .035 * math.exp(-i / RATE * 90)
-                last = noise
+                t = i / RATE
+                value = .009 * math.sin(math.tau * 1600 * t) * math.exp(-t * 210)
+                value *= min(1, t / .001)
                 left[(offset + i) % count] += value * .7
                 right[(offset + i) % count] += value
     stereo = array("f")
@@ -190,15 +194,15 @@ def collisions():
     manifest_path.write_text(json.dumps(source_manifest, indent=2), encoding="utf-8")
     pools = {}
     catalog = {
-        "transient_vehicle": ("new", (0, .018, .04), .62, "highpass=f=75,lowpass=f=6200"),
-        "transient_metal": ("metal_hit", (0, .025, .06), .68, "highpass=f=120,lowpass=f=8000"),
-        "transient_hard": ("new", (0, .035, .065), .52, "lowpass=f=3600"),
-        "body_light": ("car_body", (1.36, 4.82, 17.57), .55, "lowpass=f=1500"),
-        "body_heavy": ("new", (0, .045, .09), 1.35, "lowpass=f=850,bass=g=6:f=110"),
-        "body_metal": ("car_body", (15.33, 20.08, 23.28), 1.18, "lowpass=f=2600"),
-        "body_hard": ("new", (0, .025, .05), .95, "lowpass=f=550,bass=g=8:f=90"),
-        "crunch": ("car_crunch", (.05, 3.76, 6.79), .85, "highpass=f=380,lowpass=f=5200"),
-        "debris": ("new", (.45, .65, .8), .75, "highpass=f=1700,lowpass=f=7000"),
+        "transient_vehicle": ("new", (.418, .422, .426), .20, "highpass=f=75,lowpass=f=5800"),
+        "transient_metal": ("metal_hit", (0, .006, .012), .23, "highpass=f=120,lowpass=f=6500"),
+        "transient_hard": ("new", (.418, .422, .426), .18, "lowpass=f=3000"),
+        "body_light": ("new", (.418, .422, .426), .20, "lowpass=f=1400"),
+        "body_heavy": ("new", (.418, .422, .426), .36, "lowpass=f=1000,bass=g=4:f=130"),
+        "body_metal": ("metal_hit", (0, .006, .012), .34, "lowpass=f=2200"),
+        "body_hard": ("new", (.418, .422, .426), .30, "lowpass=f=650,bass=g=5:f=100"),
+        "crunch": ("car_crunch", (.05, 3.76, 6.79), .18, "highpass=f=380,lowpass=f=4000"),
+        "debris": ("plastic", (.15, .16, .17), .14, "highpass=f=1200,lowpass=f=5000"),
         "scrape_metal": ("metal_scrape", (3, 9), 3.4, "highpass=f=130,lowpass=f=6000"),
         "scrape_hard": ("hard_scrape", (6, 18), 3.4, "highpass=f=80,lowpass=f=3800"),
     }
@@ -213,17 +217,17 @@ def collisions():
             if pool.startswith("scrape"):
                 samples = recordings.finish_loop(raw, -6)
             else:
+                raw = raw[:round(duration * RATE)]
                 samples = recordings.finish_one_shot(raw, -4.5, max_gain=16)
-                if pool.startswith("body"):
-                    # 短促低频压力层补足车身重量，和录音保留相同起音。
-                    peak = max(abs(x) for x in samples)
-                    weighted = [x + peak * .28 * math.sin(math.tau * 62 * i / RATE) *
-                                math.exp(-i / RATE * 16) for i, x in enumerate(samples)]
-                    samples = weighted
+                # 保留起音和短促共振，剔除源录音中后续滑动/摩擦，不叠加人工低频正弦。
+                decay = 9 if pool.startswith("body") else 14
+                samples = [x * math.exp(-max(0, i / RATE - .025) * decay)
+                           for i, x in enumerate(samples)]
             path = OUTPUT / "impact" / f"{pool}_{index+1}.wav"
-            info = write(path, samples, .70 if pool.startswith("transient") else .62)
+            peak = .78 if pool.startswith("transient") else .70 if pool.startswith("body") else .48 if pool == "crunch" else .35 if pool == "debris" else .62
+            info = write(path, samples, peak)
             info.update(id=f"{pool}_{index+1}", source=source, start=start,
-                        peak_dbfs=20 * math.log10(.70 if pool.startswith("transient") else .62))
+                        peak_dbfs=20 * math.log10(peak))
             entries.append(info)
         if pool.startswith("transient"):
             # 起音响度按前80ms校齐，随机variant不会突然变得软弱。
@@ -255,7 +259,22 @@ def collisions():
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--section", choices=("all", "music", "impact"), default="all")
+    args = parser.parse_args()
     SOURCE.mkdir(parents=True, exist_ok=True)
+    if args.section == "impact":
+        collisions()
+        return
+    if args.section == "music":
+        manifest_path = OUTPUT / "upgrade-manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        entries = [write(OUTPUT / "music" / f"{name}.wav", music(night), .65, stereo=True)
+                   for night, name in enumerate(("sunset-run", "midnight-circuit"))]
+        manifest["assets"] = [entry for entry in manifest["assets"]
+                              if not entry["path"].startswith("music/")] + entries
+        manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+        return
     assets = []
     for rpm in (900, 1800, 3200, 4700, 6500):
         for loaded, name in enumerate(("coast", "load")):

@@ -1,0 +1,1590 @@
+{
+  "passed": true,
+  "files": [
+    {
+      "path": "assets/game/audio/License.txt",
+      "sha256": "1e1fca1b7a796439230c9b51fd3f020fec7173a778a8af290f928c1ad10b3613",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact-bank.json",
+      "sha256": "9e38588ac3090bb036f07bce2fbd1045e30478a13c688b88623502467b8ae87c",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_hard_1.wav",
+      "sha256": "d9a052b2d5a669d30caf228bf60621f6580003e3367ecd674e2fa7c685587af4",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_hard_2.wav",
+      "sha256": "29464aa552fc4a1f5663fbe29ed8e0fe853395605db121b64e5142fc3154230a",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_hard_3.wav",
+      "sha256": "ab597ae43dcd48a7fd35c70670992d9cb1e85b1b72c75c61a35d730df8f44a5c",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_heavy_1.wav",
+      "sha256": "aa08e5b769502b30be6ba8f80249bad81db2cba7445504efeb85f92c75fc1552",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_heavy_2.wav",
+      "sha256": "67fd664e1a68711ab725752676a41654b2b5082f445c9966d307a1b613ed1b7b",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_heavy_3.wav",
+      "sha256": "ada7c5584b47e87b81bbc049e4cca1d256196968e204934a38cf69e950d9b14c",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_light_1.wav",
+      "sha256": "9148afa9c0141d3636513e17b1a291a3f8a35719f5a2350af7851aef13a3fba8",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_light_2.wav",
+      "sha256": "78d57b4265e97d3475f2f5472660f0f006f703c79b45eb23217f6091cc6579d5",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_light_3.wav",
+      "sha256": "09e45759b9c1ab4bd5660cb7a6a57e790aa2c026044536b6d9b89666c913e98d",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_metal_1.wav",
+      "sha256": "b97b68183375ce8e81d8b935278c19dc9fa569320ff60beb4b8571b27c93da10",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_metal_2.wav",
+      "sha256": "b2166881e214e5c02f76603f37674e546ac3689871d2555ee6c85f32011eb2c9",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/body_metal_3.wav",
+      "sha256": "baa7da4832557719da2981ff09b62e15608ad007b153be4e0a2fd4087236b4ea",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/crunch_1.wav",
+      "sha256": "205896cd66f5119dc037a08124a4c7fab6f2138acde127a9bfb54fc17e224f25",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/crunch_2.wav",
+      "sha256": "18a7dee53c3d36136e5cbff53ecfd0864f95bdf49fe726d4a8f8f9a4fb48c402",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/crunch_3.wav",
+      "sha256": "466ec196381459e59afe5ae4ca44e1927e318fbda8f29c706a3ca37b8bbbc2fd",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/debris_1.wav",
+      "sha256": "1a13587cd0a30583aa224d6709bf05ce7027f2afa066319d4bb957849199e347",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/debris_2.wav",
+      "sha256": "282dd4e9cf13b1cdd5b0bcdb6aa4c8968893532c3610147bb6185adaac6a5790",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/debris_3.wav",
+      "sha256": "252a34dac6dd651706d5a0a48abedf12a481289e090bdab261445b8a8c6ea45b",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_hard_1.wav",
+      "sha256": "a220c6acf76e87a5684def31f7549435e040b9e516a38b465e8d7011ec134e21",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_hard_2.wav",
+      "sha256": "70a09d3d422025750ebbd59b7d2624cba0ae890270a8a286940f661ded8ebf9e",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_hard_3.wav",
+      "sha256": "14482f6b7a0d2fab046bebb9bbbe83e48ef42b2a790bf26803787447549de4bc",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_metal_1.wav",
+      "sha256": "cee9dd9647a79a7034d408b38bae1755bd519f55aeeb01e32ca193eb50811c67",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_metal_2.wav",
+      "sha256": "0f76d3697af08d4f117bdb750fab55e063d8c62b00c4ca6ba92204d7c6693e9d",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_metal_3.wav",
+      "sha256": "d04446b4cd27853bf522586596e70fe88c8bc6cb77c4970dcabe3f0c82e84b8f",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_vehicle_1.wav",
+      "sha256": "4186a30aca76aecfba9196f9d31951517ce0f8612d0e2b9920d529aefb939c08",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_vehicle_2.wav",
+      "sha256": "a2d69e431a8d206b160126fe3c7578b99b17bf9b014ef016df1c8020df9a979a",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/impact/transient_vehicle_3.wav",
+      "sha256": "c1b5e09a61df400d6d7409b2d9840e3de91393e829548d2da1d672e2525b8d00",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/music/midnight-circuit.wav",
+      "sha256": "72470e16fee2ebab271a089908630c020782a9770ce68c887191623d13d1f04c",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/music/sunset-run.wav",
+      "sha256": "c0a3a3cf5a528286bad98fea1104d5a68279e0f2c14e0db765d54703e44fbf0f",
+      "same": true
+    },
+    {
+      "path": "assets/game/audio/upgrade-manifest.json",
+      "sha256": "bd2eafbd337cec2d18d70c3cc92803bfb71fa77850d9fc5aa394f4c4bb75b113",
+      "same": true
+    },
+    {
+      "path": "docs/asset-register.csv",
+      "sha256": "43c6f7aec0589a3f9fc8b3634daf1883b098fbfd97d6c398e3e71fe7ef0f66e2",
+      "same": true
+    },
+    {
+      "path": "docs/audio-design.md",
+      "sha256": "1437fb1aa5b0e49dc89317b5f886e3269ea0e42d829c104517b5d7309814f9f1",
+      "same": true
+    },
+    {
+      "path": "docs/current-progress.md",
+      "sha256": "c6a0ef6f78f841cc5f5de0fff4b771050a4813881f6d45ac18968bb12292a4b7",
+      "same": true
+    },
+    {
+      "path": "docs/evidence/AUDIO-01/README.md",
+      "sha256": "9c74a9e48d9b35f96aa25567dff2d1dab3f3d26f2e3260d9380e3166def4a379",
+      "same": true
+    },
+    {
+      "path": "docs/tasks/AUDIO-01.md",
+      "sha256": "f0b2b5b8d52ac2758943a3a947aac0914dfd0daa234d767ffefd0fbd349c0123",
+      "same": true
+    },
+    {
+      "path": "src/audio/engine.py",
+      "sha256": "680896b775bff3bde43de10bd16f2b45041caa664d2272e4ddecacbe1505b2f0",
+      "same": true
+    },
+    {
+      "path": "src/audio/impact.py",
+      "sha256": "4b0ac448c233594660e5cf3e01e7c553c1243593e3ec16a9383618b741f24b1e",
+      "same": true
+    },
+    {
+      "path": "tests/test_audio_upgrade.py",
+      "sha256": "52590d37ebb9bb9cbf459f36028686344e6a2924704e239ee605bc6b64fa7c15",
+      "same": true
+    },
+    {
+      "path": "tests/test_impact_assets.py",
+      "sha256": "817185d17d091f064ca8aa8af8b4ac31f58045e60501e483c0380354dda2b59f",
+      "same": true
+    },
+    {
+      "path": "tests/test_soundscape.py",
+      "sha256": "ed3f048c5eb36404ff2da1fc5ba21fa0472d69e833ab163960d1a74c2a547b9a",
+      "same": true
+    },
+    {
+      "path": "tools/audio/prepare_upgrade.py",
+      "sha256": "fb000eab39f198fe94092ca36989721110e842aa95d649eb023b5b7b146ad9fe",
+      "same": true
+    },
+    {
+      "path": "试玩-AUDIO-01.cmd",
+      "sha256": "c42bd805556527dfdb4959753e4a8ed30359d6b13b571337835e01f0e3237f6f",
+      "same": true
+    },
+    {
+      "path": "试玩-HWY-04.cmd",
+      "sha256": "c42bd805556527dfdb4959753e4a8ed30359d6b13b571337835e01f0e3237f6f",
+      "same": true
+    },
+    {
+      "path": "试玩-PERF-04.cmd",
+      "sha256": "c42bd805556527dfdb4959753e4a8ed30359d6b13b571337835e01f0e3237f6f",
+      "same": true
+    },
+    {
+      "path": "试玩.cmd",
+      "sha256": "c42bd805556527dfdb4959753e4a8ed30359d6b13b571337835e01f0e3237f6f",
+      "same": true
+    },
+    {
+      "path": "docs/evidence/AUDIO-01-FIX/README.md",
+      "sha256": "3bdcafe99f06f10f91cd21f927f8c72052d22afb14d1e5f1fa9daf0f9eabd327",
+      "same": true
+    },
+    {
+      "path": "docs/evidence/AUDIO-01-FIX/audition.wav",
+      "sha256": "d2dd262e2ecf8263e2a73182d0df0716b62b6c1424f482f2ee0c2d049405da4a",
+      "same": true
+    },
+    {
+      "path": "docs/evidence/AUDIO-01-FIX/feedback.json",
+      "sha256": "52ddb88abf489eec3c132e8f653e0cf9d52503a3a5f0d37c76f6e4af1bc726f3",
+      "same": true
+    },
+    {
+      "path": "docs/evidence/AUDIO-01-FIX/openal.json",
+      "sha256": "1d61600d9c13109cb3d083da08bcae8b66900ad65b8843d73641cf54dcda4439",
+      "same": true
+    },
+    {
+      "path": "docs/evidence/AUDIO-01-FIX/package.json",
+      "sha256": "d3e499d9402b37f9875151d129cdb9848ef834dd3031e4b5cfae50f29c22529b",
+      "same": true
+    },
+    {
+      "path": "docs/tasks/AUDIO-01-FIX.md",
+      "sha256": "f7ddbbe229db5f51f8b8aba139552e32269276ef3d3777e887c02ca5ce6d73e7",
+      "same": true
+    },
+    {
+      "path": "tools/audio/check_feedback.py",
+      "sha256": "fd59cd41ca5a74b6202f8582d24f18e4a514abe31398492d0869937886186bf8",
+      "same": true
+    },
+    {
+      "path": "试玩-AUDIO-01-FIX.cmd",
+      "sha256": "c42bd805556527dfdb4959753e4a8ed30359d6b13b571337835e01f0e3237f6f",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/api-ms-win-crt-conio-l1-1-0.dll",
+      "sha256": "3067981026fad83882f211bfe32210ce17f89c6a15916c13e62069e00d5a19e3",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/api-ms-win-crt-convert-l1-1-0.dll",
+      "sha256": "cd5256b2fb46deaa440950e4a68466b2b0ff61f28888383094182561738d10a9",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/api-ms-win-crt-environment-l1-1-0.dll",
+      "sha256": "c4ed8f65c5a0dbf325482a69ab9f8cbd8c97d6120b87ce90ac4cba54ac7d377a",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/api-ms-win-crt-filesystem-l1-1-0.dll",
+      "sha256": "6c86e40c956eb6a77313fa8dd9c46579c5421fa890043f724c004a66796d37a6",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/api-ms-win-crt-heap-l1-1-0.dll",
+      "sha256": "7050043b0362c928aa63dd7800e5b123c775425eba21a5c57cbc052ebc1b0ba2",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/api-ms-win-crt-locale-l1-1-0.dll",
+      "sha256": "fab41a942f623590402e4150a29d0f6f918ee096dba1e8b320ade3ec286c7475",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/api-ms-win-crt-math-l1-1-0.dll",
+      "sha256": "9b05a43fdc185497e8c2cea3c6b9eb0d74327bd70913a298a6e8af64514190e8",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/api-ms-win-crt-multibyte-l1-1-0.dll",
+      "sha256": "d7e676b9f1e162957d0549ab0b91e2cd754643490b0654bf9a86aa1e77cb3c37",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/api-ms-win-crt-process-l1-1-0.dll",
+      "sha256": "b06b2d8c944bff73bd5a4aad1cad6a4d724633e7bd6c6b9e236e35a99b1d35f2",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/api-ms-win-crt-runtime-l1-1-0.dll",
+      "sha256": "bf55134f17b93d8ac4d8159a952bee17cb0c925f5256aa7f747c13e5f2d00661",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/api-ms-win-crt-stdio-l1-1-0.dll",
+      "sha256": "293c76a26fbc0c86dcf5906dd9d9ddc77a5609ea8c191e88bdc907c03b80a3a5",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/api-ms-win-crt-string-l1-1-0.dll",
+      "sha256": "01e3c0aa24ce9f8d62753702df5d7a827c390af5e2b76d1f1a5b96c777fd1a4e",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/api-ms-win-crt-time-l1-1-0.dll",
+      "sha256": "f4163cbc464a82fce47442447351265a287561c8d64ecc2f2f97f5e73bcb4347",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/api-ms-win-crt-utility-l1-1-0.dll",
+      "sha256": "bba068f29609630e8c6547f1e9219e11077426c4f1e4a93b712bfba11a149358",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/cg.dll",
+      "sha256": "124c758001dd52bd6ef04db670fe93b2107c7d4c9930eed805b766f30418e8fd",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/cgGL.dll",
+      "sha256": "4966d2f0eb64cd2802c22ede9ee73f3ae053eb24b47a9babe3bd41dbdf005caf",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/coastaldrive.exe",
+      "sha256": "67e9e4b89f1450e8ee8c8b118a840995ad3fe8dd56f14bbc5d6c68f67b5afdc7",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/libcrypto-3.dll",
+      "sha256": "e03dd02fdcfb791981c9962827cfcf495f2a47a514c1526efb57f847a9df514a",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/libffi-8.dll",
+      "sha256": "eff52743773eb550fcc6ce3efc37c85724502233b6b002a35496d828bd7b280a",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/libp3direct.dll",
+      "sha256": "0b09abf64d293e885e2bae1b8f3f66e45ba57afa22faef1d3593f8d558475933",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/libp3dtool.dll",
+      "sha256": "d44139a3805b640b000d44c9ec17cc2f84daae13f8e92d915d4c9e759546d598",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/libp3dtoolconfig.dll",
+      "sha256": "6ef8c6e6dfa4765d080ab1943c783d77b05bf13cb3a89eb43e58097e93a8f9fc",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/libp3interrogatedb.dll",
+      "sha256": "32ef30d97669c101de3c85ece3af944fe160003a1ac24e2a8b1bc872618235ee",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/libp3openal_audio.dll",
+      "sha256": "1a57cb9bea38606b80bf4aa8c754200c165653e746898368380c216ec2b767c8",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/libp3windisplay.dll",
+      "sha256": "ab7f6de572e1a822bca0a660466c8fd297383686f7eec186096762e7e79263f8",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/libpanda.dll",
+      "sha256": "d66c766cf7806c9ac0f5c9ec4cc70aeac2d2252a621deeb9edf04e60e9a047e5",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/libpandabullet.dll",
+      "sha256": "c380b7f958b52d3bab809fdf1e27b0297da48d4f02264bace9402e05de7be173",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/libpandaexpress.dll",
+      "sha256": "feeabb6ad24ebbf102d474135dabbcd6790e52624ff43a878aaec9bc34618f4a",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/libpandagl.dll",
+      "sha256": "d1697c95f95e143f1877152caa3804645c5e722d8595671810af7eb000df414f",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/libssl-3.dll",
+      "sha256": "1e4bc0638682bfcbb36f4465d6a2e9944d917a60f05ecc8ddf9e96847e05e13f",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/MSVCP140.dll",
+      "sha256": "d9fb383b33651cbbb9cf407f69dcaca6288e995555e02a9a7c9e81f8b9d5b1d3",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/panda3d.bullet.pyd",
+      "sha256": "e547c56df54cf84540c30370343d42ed4fd34dd3e4837076fceb38558dadad5e",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/panda3d.core.pyd",
+      "sha256": "8c485c17aff46baff9d55b9e45aaf43676184adc30beb7766768e630eea9bad7",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/panda3d.direct.pyd",
+      "sha256": "23ea2fac7660a5d3f61199008c5fa95a688487dab744489d781110c2e639e2b6",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/pyexpat.pyd",
+      "sha256": "85673f29fa2f16e70fb95c1da0e53e819033a19b43964662d1e487b307d8c400",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/python314.dll",
+      "sha256": "7ffe3ab11342db03cc18b026f27485c0f74f5bf10f239f1f6573394900596394",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/select.pyd",
+      "sha256": "a0f7b2e00144794e497d11fffc14e7a968f59e207c702ca7b262b7037065b5ba",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/unicodedata.pyd",
+      "sha256": "64844c24f67e7eafb77142b4cbe4a430f4db3b16f59191586ba6596ca19fc775",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/VCRUNTIME140.dll",
+      "sha256": "3646d73ebc95ffb2883c61a10664be1bec052e9a0dbc730dfd5f7f84efe98007",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/VCRUNTIME140_1.dll",
+      "sha256": "6a99bc0128e0c7d6cbbf615fcc26909565e17d4ca3451b97f8987f9c6acbc6c8",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/_asyncio.pyd",
+      "sha256": "f9dc3b563e0b313e3fa5364c2f14b1fe08d004d70126a6de5d78826db77c6318",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/_bz2.pyd",
+      "sha256": "082a761a280b08afecf6fb0509050ffbf7e87d1638ca49466b8b3eb4c85009b4",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/_ctypes.pyd",
+      "sha256": "a11d680d89f054584e6a5b2a03103d8731def86e367aff2f70cce8c6367f9025",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/_decimal.pyd",
+      "sha256": "dcc9555eaf911af7997777b94beea78f802a10f1e4f3c3d4df2f254d44c71797",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/_hashlib.pyd",
+      "sha256": "0c11671a2c572b4c016be263789f238125419df5711e281acdce8da50d9badda",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/_lzma.pyd",
+      "sha256": "2376cd374ce8c2c5ecf573226e563a96975599533f86a5f5eba5bdb705e341bb",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/_multiprocessing.pyd",
+      "sha256": "95d858739bfff9b9116cc790596be9774b5c2c7ae509a0fc3e235a5d370b06ab",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/_overlapped.pyd",
+      "sha256": "03b191b897be7f98e177a8ccffd5df76305720d3ce16a979abfca3f6223f4d13",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/_queue.pyd",
+      "sha256": "8e75c8667f938c3e9b2e9739c09b08517b487437757f125ac400c70c7eadf270",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/_socket.pyd",
+      "sha256": "42b84410269af5a5578679a3fe7b17d75d28f77a0c3c09d589adadd9d2d3e5f6",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/_ssl.pyd",
+      "sha256": "bc17486f149f7311839c70b1cda5a22e4546a9670d3136d665df95ff3cc43abd",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/_uuid.pyd",
+      "sha256": "d75d04aa989f8be9666505ac11339416719e38fc0701047388b061b4e576030a",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/_wmi.pyd",
+      "sha256": "a299a6caf7241cebb0081c3ed9e98f815c61feee3e4813c1fd32369bd3fe6f5e",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/_zstd.pyd",
+      "sha256": "8f04a54778d4f21202f1bb9cfd5d080c5c5022158016dcaaf5908f7e2350270c",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/__whl_cache__/win_amd64_cp314/panda3d-1.10.16-cp314-cp314-win_amd64.whl",
+      "sha256": "0978ca7d2953d37ed3ed8d99abd1ee77bbfc75fe6ea47019d0f5f5dad830d853",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/__whl_cache__/win_amd64_cp314/panda3d_gltf-1.3.0-py3-none-any.whl",
+      "sha256": "2512500ee7e2fc13431dc47e9510efff2c29b9dd82714bd2c36165be2c82ef97",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/__whl_cache__/win_amd64_cp314/panda3d_simplepbr-0.13.1-py3-none-any.whl",
+      "sha256": "cda41cb57cff035b851646956cfbdcc408bee42511dabd4f2d7bd4fbf48c57a9",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/__whl_cache__/win_amd64_cp314/typing_extensions-4.16.0-py3-none-any.whl",
+      "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/License.txt",
+      "sha256": "5885daa0fab071cfb7bbfb6155da2c239fe843af42f5bbe55eb3b2192922e62b",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/player-car.bam",
+      "sha256": "5cec97bd1b019aba9e8771638034fb069c87338ab45641b730607cb6b432630d",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/player-car.glb",
+      "sha256": "2889c428ca1dd9c975c3ff760eb8757883490410555ab60b818f712f583826d6",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/traffic-sedan.bam",
+      "sha256": "119782e197e2b67464542804bfe5fe512543d8baf8c6e0228964142effb5d0e0",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/traffic-sedan.glb",
+      "sha256": "b532ea7d2c59f7f6b22b138cf1955218a2c1898f1cea932af4d3fd563c3959b7",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact-bank.json",
+      "sha256": "9e38588ac3090bb036f07bce2fbd1045e30478a13c688b88623502467b8ae87c",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/License.txt",
+      "sha256": "1e1fca1b7a796439230c9b51fd3f020fec7173a778a8af290f928c1ad10b3613",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/upgrade-manifest.json",
+      "sha256": "bd2eafbd337cec2d18d70c3cc92803bfb71fa77850d9fc5aa394f4c4bb75b113",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/kit-manifest.json",
+      "sha256": "aea4203a4a6fbebeafdd7866f905fd7a44f09daeb13ad7bbe40f8b0924e8528d",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/source-manifest.json",
+      "sha256": "60fa0610b04c6079ac2a54936c1c165a0d8fe50fd27808d8e9c14d8ee56d5459",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/advance-sign.bam",
+      "sha256": "db549046d5f61c9cd50789753358ab9c3404d3e0de532c817843ec723306669d",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/aggregate.png",
+      "sha256": "3bc95445cefefad7d747808cdc090799efcdf3c5c79dbc816e1e87724e88f4ce",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/bridge-advance.bam",
+      "sha256": "7d7bcf24ae9cea1777f2e4303d6f36b1ba35de1ca6387b1974cc80c05dc9225d",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/broadleaf-a.glb",
+      "sha256": "8c1ad5c6a95f12d8f8d3eb7923937b35f460bee18b697073909124821d209030",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/broadleaf-b.glb",
+      "sha256": "825a8a433544dedcd5bf6f8bc19aa9902a1a8ff8bc768abe8779a3d30afc4421",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/broadleaf-crown.bam",
+      "sha256": "159d283c1990401749ced886dc3c6aba48dcc5b12510a95963b21f94cfe2110a",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/crash-cushion.bam",
+      "sha256": "cafa9d08b84edbe68fc05ac565062b749df0649d06bdbe4d4ddb11064e05bd81",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/curve-left.bam",
+      "sha256": "a309fc18233cca6fce7878b09f99e3e08aa61e7b7340260457dc35d4dc032038",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/curve-right.bam",
+      "sha256": "835cfb8852ae054db10349d35c7ad5d548546e6a93de6ee30defd77da947e546",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/drain-grate.bam",
+      "sha256": "457b9472f5f9aa6940740d3fc30815144530f8320cf97c967d2be4e12357b2b5",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/equipment.bam",
+      "sha256": "86e0e259b2986b7b68f30316eb9188f9d7c64637bc1236f6078aa9c26ff8330b",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/expressway-sky.png",
+      "sha256": "cc6eb00db52f92889211f0d3aeea6013782d62d6df850bf0ded3a6f28ac2fbe1",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/fine-crown.glb",
+      "sha256": "4d2097db2f389fd6149467c5afd01b67651d11d8f9dbede56b1893300bec334e",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/fine-shrubs.glb",
+      "sha256": "443ba86d8491b5c7b7c2bf32c2561567365767b9096e76b7f00c6e6022d2c5a2",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/gantry.bam",
+      "sha256": "d296297ce44a17c9dc9ef463eb67ec815abf930d7bbaa3d49d9e80ba448bf2cb",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/grass-albedo.png",
+      "sha256": "31629fdf71af0c938ffdeb47fd43066ed2eac745c217008cf6ec0f6e838333a0",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/hill-warning.bam",
+      "sha256": "66a85e098bf919b3efb44cb7ff0e571a088e19b118b05bee879bbd42bd0c903c",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/kilometer.bam",
+      "sha256": "75706f04787cea2513f451de6a9d0980cbea524173a4e2bf8d15d18b907103bc",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/lamp.bam",
+      "sha256": "705b70c868c71cf08336e8a87425865b30dfc997ae50b7df6871df92852b5b7a",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/landscape-manifest.json",
+      "sha256": "b9665ceb6cb08a1b2123849981cf3348cffc001aecfd658e39d135e03f19af8c",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/overpass.bam",
+      "sha256": "c8364c884adb1b1af1b3d4e6f5a94a494a89044e393668d036ef635832c96b94",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/reflector.bam",
+      "sha256": "141d3185169d04767540ecc4f68f254825bf2e9247debac5a58b2adf9a83b912",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/route-direction.bam",
+      "sha256": "925f8afddbadf4ce0a14da8ed61d3a69e8262e7fab2feb98ddead668c8c76ac5",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/shore-profile.png",
+      "sha256": "a072fc990a2346c57b215993108f135c6d7822dd418b141da49224d9f38a8336",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/shrub-bank.bam",
+      "sha256": "2cc428841c8695a1d2172399986faaa27133d2720491385672ce22165d4383d7",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/sign-manifest.json",
+      "sha256": "fbb94315838838c99f1ab21f81290b98f37f6ade633f947ddb504b1a9672c4b9",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/soundwall.bam",
+      "sha256": "1a9e661bdc67dd0884d80b947e5d9d4dbf2a142a7575b9b0e8ccfa3fae843103",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/source-manifest.json",
+      "sha256": "e4931068baeafe7477d3dbaa0dd1bddf287be3631333bcd847cf0b06bc5992b5",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/speed-limit.bam",
+      "sha256": "9b3ac99ca744b40c95a1e34710d1d79094e8ffac4f81d76aeabd3cb00247b699",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/strata-albedo.png",
+      "sha256": "dce32b53f23e05df82ffd608e56eabcbc0c8d279a79a534498a456ef1f832f3b",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/strata-shelf.glb",
+      "sha256": "415cf9c9b2930a1c04bf426f566c2bf3827c0eb39b8a1b0207bbd3e0bc1f53a7",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/surface-manifest.json",
+      "sha256": "a223b3b253ce606ea2bd8a678ccc79ebf76046ab1e9e43f69cb18c516c1dd89e",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/wind-warning.bam",
+      "sha256": "e9ccbf4a85080c874d816a1d352e357c7cf1219543b4eb3e2889854ae9ccf570",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/materials/asphalt_floor_diff_2k.jpg",
+      "sha256": "bdba2751c9e6ea3b9822438ad60b638f53bf1de7743ac8f396c2d9f19e8b0916",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/materials/grass_ground_diff_2k.jpg",
+      "sha256": "4272bddc71a7fa659d1deeb13a9df8c42e68a5ac8cde7523187e4a081e028258",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/nature/License.txt",
+      "sha256": "0c2d8ad7fb874bb91abe075322bc006ee5885997e39144155d57070f483d5eb6",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/nature/plant_bushLargeTriangle.glb",
+      "sha256": "098af3618e20e5a2cb5f6e24a7c67c0a80663f989137d86430bc9e2b1b2d52e4",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/nature/rock_largeA.glb",
+      "sha256": "6dd15390fd96501dcd1454765a17ba61dbbd8d47705dfe5149c8dd92b353ce25",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/nature/tree_pineTallA.glb",
+      "sha256": "e0a56eb196d8a64ba86c7304d607136e17e6f9ad748dffcf86bd53b18b91b196",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/nature/tree_pineTallB.glb",
+      "sha256": "49b54146351e1e009e97ee592f997a90a16b10c5467baf734d352df1cddec5d1",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/sky/industrial_sunset_puresky.jpg",
+      "sha256": "8908d7626a47b234bec5e5435061d0cf08fa5276eb19df16a62ba22137cbcae2",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/Textures/colormap.png",
+      "sha256": "f3622a03a20c6696065cae9cbe391351be873508af190c2ebd1d420c055787a5",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/asset-sources.json",
+      "sha256": "f7df68a1f7c1d709f685a83cdecae0fa1d33eca7fe9b2f778481a03a9a09c92f",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/button.png",
+      "sha256": "01a87bdfb709d174175dedb48c74d9e2c0456677335689207a3dfae2a85efba6",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/coastal-drive-icon-128.png",
+      "sha256": "f8c91c44e27ed7a13c5fd8a195605da26d1809cd857877fa06462bf896029bc2",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/coastal-drive-icon-16.png",
+      "sha256": "cef64be9d4bcad1f664dd8314948844d6d834c1c9a69cbfdf402a3d7c1b89556",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/coastal-drive-icon-256.png",
+      "sha256": "2ee4b28f8d952c970041bbdf267fb5f065b63eae66e5488d0332528b060bfe6b",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/coastal-drive-icon-32.png",
+      "sha256": "99b171b582d091b3b500687cc067dbf816813eccfdb9c00d8e22e9d7958a7dc0",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/coastal-drive-icon-48.png",
+      "sha256": "87049136d1fac84176e58554d57860fd90a923415891bd3bdf5399a53f5efee8",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/coastal-drive-icon-64.png",
+      "sha256": "9648ab556a0c3617d8d237becdd5cbd81c8889fd010b60203d01750e799adefe",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/coastal-drive.ico",
+      "sha256": "8e7a69c18b3f95e8f83a891488e4d09420ad5d712d292cc42696b940db5acb75",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/panel.png",
+      "sha256": "ac9af82a874dab75bb98a2d4e5f0644d1fd9d5f1754ecda5a93ee5022501344f",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/wordmark.png",
+      "sha256": "5b2e94911e3736fd4ce475fd00aa2bc76ed99b33b1d30891b9e7e77cee966f9c",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/vehicles/classic-coupe-manifest.json",
+      "sha256": "53fe37e4d0b5780d3a561d345f392d3859f72701b4dd1bd200ed3e239911d930",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/vehicles/classic_coupe_v1.glb",
+      "sha256": "e3c117b0cb289bcf69112b197821c84431db5d715ee2f19f62a425b46bb23d8e",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/vehicles/reflection-probe.env",
+      "sha256": "6065b70a0f8599b6a9f891dfa4fb5d55140b8c4dc5c8895d9789f9b5ab85ec13",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/vehicles/traffic-family-manifest.json",
+      "sha256": "8eaf7e46bd00ca6b916e1e6a783b3448060fbe9c498fa4fc5d8d53883c86e129",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/vehicles/traffic_compact_v1.glb",
+      "sha256": "ee0cd3ae66f3e37aab1e01b9e458ce97d70bf7724f1c73bd39b092a11409a96e",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/vehicles/traffic_sedan_v1.glb",
+      "sha256": "f2341cd66db9c7598d99348282c46ff1ce8660b0802c5ea0c3113a0a18122a0f",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/vehicles/traffic_wagon_v1.glb",
+      "sha256": "a94a16542150349466cd8e54f856452eb968a91765d046341c7385e0ac1bd78d",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/backgrounds/coastal-menu.png",
+      "sha256": "00924e807400438461a5550db3a6377b6f5717666f968bf736dc625cbf74d5c3",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/button-disabled.png",
+      "sha256": "acfbb1a2cfcaa206dad8062a48112650380c9468df70da86215451dbe29dd743",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/button-hover.png",
+      "sha256": "e96fc23086d4188ac738d72ccccdaa109a34833b8f2f6aea14bbb2802b23d46d",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/button-normal.png",
+      "sha256": "b909868e25810b9e47245d4e72a1e86b6983541d30ad45e5f755cd35f39c29c3",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/button-pressed.png",
+      "sha256": "01ce43653c846b78ba5b860851a0ca69ea6ffe865956fed2b105783ea2649775",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/button-small-normal.png",
+      "sha256": "3c8e171146f81f8f226bcaba44c9075e4a5122409a6b78896cc610f3164801d9",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/icon-car.png",
+      "sha256": "b94f6dbf3b42c00f7e5bd8d30395efecb34984bbe3027e177ac2d0beb149d408",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/icon-exit.png",
+      "sha256": "090ed5673098873a7c8c3339bccfe3d021378448694c114d841b17a7c02b3fa6",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/icon-garage.png",
+      "sha256": "8d334d34b5266123d41386be5bae5f13dbdf74815de931e706139d888d7e66f6",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/icon-highway.png",
+      "sha256": "110d8d6be4d18d85d51c1f258979cc42cfc809a00efa6ef75a48f271eb8f2a10",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/icon-home.png",
+      "sha256": "767d248b160c7c19328a1cc53353d00d6ac97cf108e9e00dc8a9fc4d4c397327",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/icon-palm.png",
+      "sha256": "77719f3bef0e1264203745de2d83bfe7a0db5f78dd79b63b2a83bc0b867921df",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/icon-pin.png",
+      "sha256": "b71a096fd1e5af58c0924679ea2dc804943160bbfdade733660b94a2dda00848",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/icon-retry.png",
+      "sha256": "d50a51a5b926caf35912b2015c9acf6116c99f2f7b2d642284cec47fcc5e0d4f",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/icon-speaker.png",
+      "sha256": "b89944147797562634a763691ca6c46888db1a2be73e7a0e1307a1f91a756ae6",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/icon-stopwatch.png",
+      "sha256": "a6ff096184c85f98f2bbc2fc321b81589e7a08ebdb610d042be19bf87a734f1f",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/icon-trophy.png",
+      "sha256": "4a9b0561fd3e71c8bc2aa0c05338c0ad988d23c61270a84419b06cd42e24d993",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/icon-wheel.png",
+      "sha256": "96259dffdf27b884370a201034bfbcdd415c9e92fd13d06c8bc5b591650cd071",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/panel.png",
+      "sha256": "015c02fc902a663751a2908532197e1df5c49b3931a782f61ada95d3c87740cf",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/primary-hover.png",
+      "sha256": "911fb0e458e28a9ce630189a45b985ef86f6205416aa1786ebf858be97bca14c",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/primary-normal.png",
+      "sha256": "1b9190d4aff415d05d45a9b45de767b243069846443e1ae87c4231c0d262999c",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/primary-pressed.png",
+      "sha256": "5d9bccd1edd1973b4da42890dcd3a592a3308af9687b05d1a4e317601686cb3b",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/components/speed-panel.png",
+      "sha256": "dfaf31916872e754cb3f3ac49eacf24bd81dd204fc3a63eb46c04386a64906c1",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/fonts/ChakraPetch-BoldItalic.ttf",
+      "sha256": "bf012ce1894ffcf7d32d3e6548b90df7c40f30161b5cc295eb54ff61c21fab19",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/fonts/font-source.json",
+      "sha256": "33403f6da4612f81bea5a78668a32e3c26b6eb5de065a60d722794b94588df16",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/fonts/fusion-pixel-12px-proportional-zh_hans.ttf",
+      "sha256": "1b423de0be589d159ef71af7d00530a7176e16af768a26adbc2e524e8817aad9",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/fonts/OFL-ChakraPetch.txt",
+      "sha256": "13831d02389d917d22fcfa6c79f98f8acbf61d230add0e73a4d4dc5f3bfb9e56",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/fonts/OFL-SourceHanSans.txt",
+      "sha256": "fcac737e761ec63dbfbdce11030a1780161920d80315edba9c8beff1c2bac5a2",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/fonts/OFL.txt",
+      "sha256": "bc518cf64b8032c07690f33cc270c35c179255a6ac8efa7c165ebae7e8f76a63",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/fonts/SourceHanSansSC-Heavy.otf",
+      "sha256": "6374b11bc4c2cd4bd7be1a1d64cf5047906c8a6a025c64e023c6792e50ba985e",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/ui/fonts/typography-sources.json",
+      "sha256": "e7f915464815b3c8b884f9f73a6890a675d86d2547240d806b7a8968a672c95b",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/shaders/bay.frag",
+      "sha256": "7d6238dc84b5d65810afd6bd93c30770115ed6c8bcb798725c36600e7a8e56a0",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/shaders/distance-haze.glsl",
+      "sha256": "234d6d0b39ce4b999879e1458764817c520714da4921e40029b5ddc6bac3cb46",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/shaders/road-shadow.frag",
+      "sha256": "3a2d70509b02e0a35161058176f85880e4a32d7350a825d680cc2a11f75710e4",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/shaders/route-mountain.frag",
+      "sha256": "a772e8dfe71cc255791615b555a4159b42d1acd798e84a80cb8edf1459ba2bdd",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/shaders/route-terrain.frag",
+      "sha256": "6d983727f459e25545a466802fb08ea4de00eb24de04c777a428031bc4f2ee60",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/shaders/route-water.frag",
+      "sha256": "5ae9cc29ae481e15c6ec04c4022d6a0fc83927c7d9ac8b8854d40654b0593ffa",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/shaders/route-water.vert",
+      "sha256": "aaa9cf416c23f33c95316dcd71140d13f62852090a78bf484eb7d04b5e97d028",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/shaders/shadow-transition.glsl",
+      "sha256": "82a5558bc70a3e9dc3932427f6ddaeb93e85f80610b77beb24e84dfa8c9fc785",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/shaders/sky.frag",
+      "sha256": "913697d4235b1756f06c35b0b31c3b7c58a3da980bf9aaadb1a59045f7deb1b2",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/shaders/sky.vert",
+      "sha256": "08acdf52289b6c9cb12f8931112277efcb66f1ee6b6feccab6b131e6fab4f881",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/shaders/terrain-material.frag",
+      "sha256": "b55c61f3376720c32932bd5e39fa94510b1e4a7987dfba6aabcd01c658a4464e",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/shaders/water.vert",
+      "sha256": "81ad457c2b4314517244b87b6f972946d06d414571626f6877809a4c2bb7095e",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/signs/advance-sign.png",
+      "sha256": "eff7eb5c8330b43ee6ba74e23f9bb1956529ef369fd53dacf42eb05dbed94149",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/signs/bridge-advance.png",
+      "sha256": "fb9415f72a18ec8c35c6366af7135ed3e5342fbbf6ddcb321a39571562cab9e1",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/signs/curve-left.png",
+      "sha256": "52c71314dce19b8f89c88a40c83002c8013206e2cb6d0ec102581480016ab441",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/signs/curve-right.png",
+      "sha256": "1eded4a20f36223e976a72143b1e30a272c3d79496d1aca8fb6e1be3bc64de27",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/signs/digits.png",
+      "sha256": "1f67320f765009caead68c71d4fd5d6f86019f9a810596befc77b3236537007f",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/signs/gantry.png",
+      "sha256": "cf57b2f601d63075b9e9ca26eab0acad7541b38c69b11ad2e03f13b608479efd",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/signs/hill-warning.png",
+      "sha256": "e9e3ec4bc82f9c11804cf04f81f2bd52649fe07a73d2f7bcf9881f79bdb8f7a5",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/signs/kilometer-base.png",
+      "sha256": "6d079de51e3722e6ec8ae8604fe073bd0d7523c569d186ff32f78a752c249959",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/signs/route-direction.png",
+      "sha256": "eff7eb5c8330b43ee6ba74e23f9bb1956529ef369fd53dacf42eb05dbed94149",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/signs/speed-limit.png",
+      "sha256": "dfa71b36adb1d06502af426a72e262a2bf9b07508d40891b424e4a53d98b0b11",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/expressway/signs/wind-warning.png",
+      "sha256": "2347b7e40e2be1e54b4907612dcb7a91aec297c7e4a100d25abfd32830223dcc",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/materials/asphalt.png",
+      "sha256": "f22b73e561c4f5e998fd6cb85550b15246bc55228a5a08dc0254bffe7c2feb36",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/materials/ground-detail.png",
+      "sha256": "15e674306d7c9f763d40469dd327d7858d52167cb5095b229a6a807ba1d27afa",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/materials/limestone.png",
+      "sha256": "edb30376ec1cd2e1b834c2f23d777dc87441cf3a50100a850b89b770057cdbf1",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/materials/meadow.png",
+      "sha256": "75c04e82a427b89a840adde1cd8a34a3c9261afc584473a0f7e430ad5f533b4d",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/materials/shore-distance.json",
+      "sha256": "9424f71a5358da57487586e59d34617c7dc5bf34fbb37d6bcc6106c4b25c3962",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/materials/shore-distance.png",
+      "sha256": "a4634ab1a2afde0075dcc86e3b8cf4f7f09d81d492ee96da9fa02f122ee340dd",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/models/bush_round_a.glb",
+      "sha256": "70964c9adadc6d93bb5fe1e07b7be54aefafc2b277e3310da76ca0fdf7bd4859",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/models/bush_round_b.glb",
+      "sha256": "da07f9c7ffeb6c91a7c93c03e1d62782817665a183f25daa5170d8b81e1e303e",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/models/cliff_coastal_a.glb",
+      "sha256": "7294458712c15071aa1cc56ddb2edc692a2bb86ab0122a317a9207f459212f21",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/models/coastal_house_a.glb",
+      "sha256": "c14b4cfc1c0ea07b2582ed958abf7ee0af965e8ad7138df6dc549ffa74600ba3",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/models/coastal_lamp_a.glb",
+      "sha256": "f58741eed66fc854c7f985386fb487969cc6d045344dfc0b0b7fa78be62b4df3",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/models/flowers_coastal_a.glb",
+      "sha256": "2bb943abc78810da39c2b68356bdb2dade06f1145ebe6f52e831f780c38af3b8",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/models/lighthouse_coastal_a.glb",
+      "sha256": "2288509454c1fab69e5bbf10819458ddea986d9c79c26eba5d3fa80d167dd768",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/models/pine_tall_a.glb",
+      "sha256": "a2b515c6f8b7c00cb1ffc19eb412920909fc7245ecd8f8b0f7c81945d3d9793d",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/models/pine_tall_b.glb",
+      "sha256": "ec81875a0ab5866fdbd993a60d4a612bd49404456f198fe7acb497950505b72b",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/models/road_chevron_sign_a.glb",
+      "sha256": "9f46afc0b4013902de1ffdf347dee83f06e540df5ae8cc1bb3c0f8ee7fd63752",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/models/rock_coastal_a.glb",
+      "sha256": "67c73520f62630c9c95656ff2913aa71806734cee05947c4044eeba2f031ec00",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/models/rock_coastal_b.glb",
+      "sha256": "51b3b03a3db1456464671bdc7ed2a7cd597ab667f6e65f7217544d708a4ecc51",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/shaders/sky.frag",
+      "sha256": "597c0dd91e4df989a6231f15b2ac99052068581407a96f64b81579047cc0580c",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/shaders/sky.vert",
+      "sha256": "08acdf52289b6c9cb12f8931112277efcb66f1ee6b6feccab6b131e6fab4f881",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/shaders/water.frag",
+      "sha256": "ee5d07f05d57e027ce9525685befdecdcfc077f014fbedcc83c020d0689e8ac0",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/shaders/water.vert",
+      "sha256": "81ad457c2b4314517244b87b6f972946d06d414571626f6877809a4c2bb7095e",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/sky/coastal-clouds.png",
+      "sha256": "ac27481bd5389c7da314c541c371ac420aca9457cf107730384bfe2349aac818",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/environment/terrain/coastal-terrain.glb",
+      "sha256": "24c72d28713b9d3b651b6c89b35b17882a11a3a7f895be835f007c74aa98b475",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/cues/checkpoint.wav",
+      "sha256": "4dc1f0ac6df57d298936917060c1b3565fb2049ab7d4ce62c3a3faf9d60993da",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/cues/confirm.wav",
+      "sha256": "24a1e1c0e71229c9719707bf770088f1784dd845b8e95fc8ab9e9518c12d354c",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/cues/countdown.wav",
+      "sha256": "586dfc525f75b90cf3c8a6fe4e1a0890eeb79ab751210692ae8d17589aa15279",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/cues/failure.wav",
+      "sha256": "11be92b5affb852e89a1e9470ce27e8c2ef7b4b84debab33f257890fc3ea112f",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/cues/finish.wav",
+      "sha256": "93bc58082fb1c666324f5d45c80d567aeef4d6ef0f44b4c47558e0a8c081ae32",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/cues/go.wav",
+      "sha256": "3e5f9a1af473327303bf533350bfa2938d661bc7934040661e011e6468a3f64f",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/cues/radio.wav",
+      "sha256": "72c5c69934d42bdb391be7ba01f529ccef93a52099dcd553de903e6099c2cbb3",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/cues/select.wav",
+      "sha256": "81467371acbd82d3cf6562d38468231d26ba16e304a0036f6a2dd6c98e596c77",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/cues/success.wav",
+      "sha256": "3c4ce52eeee3fcb488d5950bbb025765eb75e4eeeaee8e80eb59bda42d6b71b7",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/driving/asphalt.wav",
+      "sha256": "5fc210e869ed44b17b585f2633d994a9963038e5a13d1f5d24da61c8d1b939a2",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/driving/gravel.wav",
+      "sha256": "849cd2a3de012f3f5d8e60ff5d375e966b13109a992c2bb65830c18672747dd8",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/driving/tire.wav",
+      "sha256": "de4b19ac4a29cdc0f17f2f9aec42e402e190de8e7e37686db9af814a6c7d9bbe",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/driving/wind.wav",
+      "sha256": "ffd83c34c79ba9ae645d6d31ae01b6f0d6ebaba6b33da0715d23c5804d4804ce",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/engine/v8-1800-coast.wav",
+      "sha256": "8b1467233b2ac0c6c52855c8c55011e58030d50ac41954eeb1ec9a443d5ec84b",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/engine/v8-1800-load.wav",
+      "sha256": "6d78493a409f7285488d1ae70144e6f6d253d3daf9a180f4b83cba20186235b0",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/engine/v8-3200-coast.wav",
+      "sha256": "4233533629372abf5fd81a34bc74e13514cdd96eb6750dd2ec5120f2c6c93c2e",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/engine/v8-3200-load.wav",
+      "sha256": "fa571dd95bdf5ac648f8b099c28721f939624552c577705adce7fd8b195509d5",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/engine/v8-4700-coast.wav",
+      "sha256": "b8afb19b60ad7f3308b2e0a09203d9e127696abe4b33d42202927566a8632f9f",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/engine/v8-4700-load.wav",
+      "sha256": "da721eefe59316f420ea2ad018a696257b84ed2d7272ab4bef3534365f062ebc",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/engine/v8-6500-coast.wav",
+      "sha256": "b10ad342b47072696a1d94f8b3225a58b7836308e2e2cb4f5795ed4d95f58d20",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/engine/v8-6500-load.wav",
+      "sha256": "6f44018ca98c59469d382dce7bfa53365b44ab1f11815e5e31cd79902c96e312",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/engine/v8-900-coast.wav",
+      "sha256": "2b5b8c1fc31aa996338dfa84ab12e2d87bdc48f0f15671e27eb6f01a71f47093",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/engine/v8-900-load.wav",
+      "sha256": "82884bcbfaa291c224203c6f30ceb7703af5da681c1b6f682b78ccfc9e4c5fdf",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/body_hard_1.wav",
+      "sha256": "d9a052b2d5a669d30caf228bf60621f6580003e3367ecd674e2fa7c685587af4",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/body_hard_2.wav",
+      "sha256": "29464aa552fc4a1f5663fbe29ed8e0fe853395605db121b64e5142fc3154230a",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/body_hard_3.wav",
+      "sha256": "ab597ae43dcd48a7fd35c70670992d9cb1e85b1b72c75c61a35d730df8f44a5c",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/body_heavy_1.wav",
+      "sha256": "aa08e5b769502b30be6ba8f80249bad81db2cba7445504efeb85f92c75fc1552",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/body_heavy_2.wav",
+      "sha256": "67fd664e1a68711ab725752676a41654b2b5082f445c9966d307a1b613ed1b7b",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/body_heavy_3.wav",
+      "sha256": "ada7c5584b47e87b81bbc049e4cca1d256196968e204934a38cf69e950d9b14c",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/body_light_1.wav",
+      "sha256": "9148afa9c0141d3636513e17b1a291a3f8a35719f5a2350af7851aef13a3fba8",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/body_light_2.wav",
+      "sha256": "78d57b4265e97d3475f2f5472660f0f006f703c79b45eb23217f6091cc6579d5",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/body_light_3.wav",
+      "sha256": "09e45759b9c1ab4bd5660cb7a6a57e790aa2c026044536b6d9b89666c913e98d",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/body_metal_1.wav",
+      "sha256": "b97b68183375ce8e81d8b935278c19dc9fa569320ff60beb4b8571b27c93da10",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/body_metal_2.wav",
+      "sha256": "b2166881e214e5c02f76603f37674e546ac3689871d2555ee6c85f32011eb2c9",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/body_metal_3.wav",
+      "sha256": "baa7da4832557719da2981ff09b62e15608ad007b153be4e0a2fd4087236b4ea",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/crunch_1.wav",
+      "sha256": "205896cd66f5119dc037a08124a4c7fab6f2138acde127a9bfb54fc17e224f25",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/crunch_2.wav",
+      "sha256": "18a7dee53c3d36136e5cbff53ecfd0864f95bdf49fe726d4a8f8f9a4fb48c402",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/crunch_3.wav",
+      "sha256": "466ec196381459e59afe5ae4ca44e1927e318fbda8f29c706a3ca37b8bbbc2fd",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/debris_1.wav",
+      "sha256": "1a13587cd0a30583aa224d6709bf05ce7027f2afa066319d4bb957849199e347",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/debris_2.wav",
+      "sha256": "282dd4e9cf13b1cdd5b0bcdb6aa4c8968893532c3610147bb6185adaac6a5790",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/debris_3.wav",
+      "sha256": "252a34dac6dd651706d5a0a48abedf12a481289e090bdab261445b8a8c6ea45b",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/scrape_hard_1.wav",
+      "sha256": "397c44ad964c0ab600fede1c364fd0aac12fc721a4d3d60785106c7d44afca07",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/scrape_hard_2.wav",
+      "sha256": "52259a4b9e7fd265ed90d793ef0aaf07c29ccc1a4183d5dccad9e30bd5c0e347",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/scrape_metal_1.wav",
+      "sha256": "5eefa8c7704061eafd78c387c08c43ed74a51dccd7c4185a04262a2d033acde5",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/scrape_metal_2.wav",
+      "sha256": "9ad29cc82aa3e92f0010292aab2d64e13f77ef49806b199bf227541b490dc3a1",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/transient_hard_1.wav",
+      "sha256": "a220c6acf76e87a5684def31f7549435e040b9e516a38b465e8d7011ec134e21",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/transient_hard_2.wav",
+      "sha256": "70a09d3d422025750ebbd59b7d2624cba0ae890270a8a286940f661ded8ebf9e",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/transient_hard_3.wav",
+      "sha256": "14482f6b7a0d2fab046bebb9bbbe83e48ef42b2a790bf26803787447549de4bc",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/transient_metal_1.wav",
+      "sha256": "cee9dd9647a79a7034d408b38bae1755bd519f55aeeb01e32ca193eb50811c67",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/transient_metal_2.wav",
+      "sha256": "0f76d3697af08d4f117bdb750fab55e063d8c62b00c4ca6ba92204d7c6693e9d",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/transient_metal_3.wav",
+      "sha256": "d04446b4cd27853bf522586596e70fe88c8bc6cb77c4970dcabe3f0c82e84b8f",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/transient_vehicle_1.wav",
+      "sha256": "4186a30aca76aecfba9196f9d31951517ce0f8612d0e2b9920d529aefb939c08",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/transient_vehicle_2.wav",
+      "sha256": "a2d69e431a8d206b160126fe3c7578b99b17bf9b014ef016df1c8020df9a979a",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/impact/transient_vehicle_3.wav",
+      "sha256": "c1b5e09a61df400d6d7409b2d9840e3de91393e829548d2da1d672e2525b8d00",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/music/midnight-circuit.wav",
+      "sha256": "72470e16fee2ebab271a089908630c020782a9770ce68c887191623d13d1f04c",
+      "same": true
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/win_amd64/assets/game/audio/music/sunset-run.wav",
+      "sha256": "c0a3a3cf5a528286bad98fea1104d5a68279e0f2c14e0db765d54703e44fbf0f",
+      "same": true
+    }
+  ]
+}
