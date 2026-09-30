@@ -6,7 +6,7 @@
 
 确认的现象是底板alpha=0.86，会显示场景明暗。采用稳定2D背景交替深浅的同条件窗口对照：原版底色单步最大变化35.43/255、117帧偏离颜色中位超过15/255；底板改为alpha=1且MNone后最大0.99/255、异常0/240。两次全部渲染观测均前景/未最小化；[原版](background-before.json)、[修订](background-after.json)。此对照证明背景透色变化消除，不证明所有可能的间歇缺失原因。
 
-![修订后的实际游戏HUD](<B:/AI agent/暑期计算机程序设计/CoastalDrive/docs/evidence/UI-NOTICE-FIX/after-game.png>)
+![修订后的实际游戏HUD](after-game.png)
 
 修订保留字号、位置、长提示高度和电台标签，只固定底板实色。真实海岸场景再录240帧，零异常、最大变化0.33/255，全部前景/未最小化；[场景复测](after-game.json)。窗口录像在logs/UI-NOTICE-FIX/{repro,background-before-visible,background-after-visible,after-game}/window.mp4；截图和读取不用于FPS结论。
 

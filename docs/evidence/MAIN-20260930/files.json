@@ -1,0 +1,157 @@
+{
+  "passed": true,
+  "source_files_equal": 978,
+  "package_files_equal": 260,
+  "root_launcher": "试玩.cmd",
+  "current_exe_sha256": "2ec5bc01e8f25ae0e91bef767ebdf466b71671a240ec303d77137dd3c68177a1",
+  "game_implementation_unchanged": true,
+  "launchers": [
+    {
+      "project": "CoastalDrive",
+      "launcher": "试玩.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive",
+      "launcher": "launchers/archive/试玩-AUDIO-01-FIX.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive",
+      "launcher": "launchers/archive/试玩-AUDIO-01.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive",
+      "launcher": "launchers/archive/试玩-AUDIO-02.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive",
+      "launcher": "launchers/archive/试玩-HWY-01.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive",
+      "launcher": "launchers/archive/试玩-HWY-02.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive",
+      "launcher": "launchers/archive/试玩-HWY-04.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive",
+      "launcher": "launchers/archive/试玩-PERF-03.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive",
+      "launcher": "launchers/archive/试玩-PERF-04.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive",
+      "launcher": "launchers/archive/试玩-PLAY-01-FIX.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive",
+      "launcher": "launchers/archive/试玩-RADIO-01.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive",
+      "launcher": "launchers/archive/试玩-RADIO-02.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive-VI-v1",
+      "launcher": "试玩.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive-VI-v1",
+      "launcher": "launchers/archive/试玩-AUDIO-01-FIX.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive-VI-v1",
+      "launcher": "launchers/archive/试玩-AUDIO-01.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive-VI-v1",
+      "launcher": "launchers/archive/试玩-AUDIO-02.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive-VI-v1",
+      "launcher": "launchers/archive/试玩-HWY-01.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive-VI-v1",
+      "launcher": "launchers/archive/试玩-HWY-02.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive-VI-v1",
+      "launcher": "launchers/archive/试玩-HWY-04.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive-VI-v1",
+      "launcher": "launchers/archive/试玩-PERF-03.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive-VI-v1",
+      "launcher": "launchers/archive/试玩-PERF-04.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive-VI-v1",
+      "launcher": "launchers/archive/试玩-PLAY-01-FIX.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive-VI-v1",
+      "launcher": "launchers/archive/试玩-RADIO-01.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "project": "CoastalDrive-VI-v1",
+      "launcher": "launchers/archive/试玩-RADIO-02.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    }
+  ],
+  "remote_default_branch": "main",
+  "baseline_remote_main": "73a466f0b7e60c204bd893c6ad194ce487779f5c",
+  "archive_behavior": "compatibility aliases point to current standalone package"
+}

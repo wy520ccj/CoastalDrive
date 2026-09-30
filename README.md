@@ -1,97 +1,74 @@
 # CoastalDrive
 
-当前版本：**0.8.3 AUDIO-01**，包含PERF-04-FIX的UI闪烁修复与新版环境、车辆、界面。双击 **试玩.cmd** 启动最新独立包。引擎、碰撞、轮胎/风噪、界面提示和车载双电台已升级；**N切台、M开关音乐**，声音设置分别调整效果与音乐音量。[音频设计与来源](docs/audio-design.md) · [本轮证据和试听](docs/evidence/AUDIO-01/README.md) · [当前进度](docs/current-progress.md)。
+当前主版本：**0.8.3 RADIO-02**，以 `main` 为发布源码。包含新版海岸/无限高速、经典双门主车、Visual Identity v1 界面、实录引擎与车体碰撞、双电台，以及动态UI和提示底板修订。当前独立包位于 `builds/0.8.3-radio02/win_amd64/`，本地双击根目录 **试玩.cmd** 启动。
 
-CoastalDrive 是使用 Python 和 Panda3D 开发的驾驶游戏，包含滨海计时挑战、滨海自由驾驶，以及可选直路/弯坡和三档车流的无限高速。玩家可在高速自由驾驶或 5 公里无碰撞挑战中驾驶；倒车可用于调整姿态。
+[当前进度](docs/current-progress.md) · [音频设计与素材许可](docs/audio-design.md) · [电台试听与验证](docs/evidence/RADIO-02/README.md) · [提示底板检查](docs/evidence/UI-NOTICE-FIX/README.md)
 
 ## 运行
 
-使用项目 `.venv` 中的 Python 3.14.2。原本的 `B:\python.exe`（3.12）无法正常启动，原因记录在 [docs/phase0-environment.md](docs/phase0-environment.md)。不要安装到全局 Python。
+开发使用 Python 3.14 和项目虚拟环境。首次从源码克隆后：
 
 ```powershell
+py -3.14 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
 .\.venv\Scripts\python.exe src/main.py
 ```
 
-PyCharm 打开本项目，解释器选择 `.venv\Scripts\python.exe`，入口为 `src/main.py`。资源路径不依赖启动时的工作目录。
+PyCharm 选择 `.venv/Scripts/python.exe`，入口 `src/main.py`。Git仓库包含运行素材；虚拟环境、构建包和离线原始素材不纳入Git。仅克隆源码时先按下文构建独立包，再使用试玩入口。
 
-## 菜单与操作
+## 玩法与操作
 
-主菜单可进入计时挑战、滨海自由驾驶、无限高速或车库。无限高速可选道路类型与稀疏/普通/繁忙车流；挑战模式目标为无碰撞行驶 5 公里。
-
-车库可预览两款车型和五种车漆。点击车型/颜色按钮切换，按 Enter 应用并返回，按 Esc 取消；应用的选择会保存到 `%LOCALAPPDATA%\CoastalDrive\appearance.json`。外观选择不改变车辆性能。
+支持滨海计时挑战、滨海自由驾驶，以及直路/弯坡、三档车流的无限高速；高速可选自由驾驶或5公里无碰撞挑战。车库提供两款可选车型与五种车漆，Enter应用、Esc取消。
 
 | 操作 | 按键 |
 |---|---|
-| 开始/继续驾驶 | Enter |
+| 开始/确认 | Enter |
 | 油门 | W / 上方向键 |
-| 刹车，停车后保持进入倒车 | S / 下方向键 |
+| 刹车、停车后保持进入倒车 | S / 下方向键 |
 | 左右转向 | A / D / 左右方向键 |
 | 回到当前路段中心并扶正 | R |
 | 切换远近摄像机 | C |
+| 切换驾驶电台 | N |
+| 开关驾驶电台 | M |
 | 暂停/继续 | Esc |
 | 诊断信息 | F3 |
 
-窗口失焦会自动暂停。检查点不切换相机；倒车可用于调姿。界面使用本机 Windows 微软雅黑，不把系统字体复制进素材包。
+窗口失焦自动暂停。暂停页可进入设置，调整主音量、效果音量、音乐音量及电台；返回设置后仍保持暂停。首页播放保留的原创海岸曲，驾驶两台分别播放吉他Bossa Nova《Bossa Antigua》和暗色电子《Future Gladiator》，设置页可试听所选电台。作者Kevin MacLeod，CC BY 4.0，完整署名见 [音频许可证](assets/game/audio/License.txt)。
 
-## 当前画面与声音
+设置、成绩和运行日志保存在 `%LOCALAPPDATA%/CoastalDrive`。资源路径不依赖启动时的工作目录。
 
-当前 6B 增量包括 Poly Haven 天空、路面和草地贴图，滨海程序生成的海面纹理、路边标杆、弯坡路边松树/灌木、HUD 半透明底板、发动机与路噪录音，以及新的汽车撞击素材池。撞击声按真实物理事件分层播放，护栏持续摩擦使用独立循环。音色与动态仍需实际驾驶试听，完整视觉验收和性能测量尚未完成。音频设计与诊断入口见 [docs/vehicle-impact-audio.md](docs/vehicle-impact-audio.md)。
+## 文件分区
 
-## 检查
+| 路径 | 内容 |
+|---|---|
+| `src/` | 物理、玩法、表现；`audio/`声音分区、`ui/`界面、`environment/`环境 |
+| `assets/game/` | 随游戏运行的模型、贴图、字体、声音与许可 |
+| `art/` | 可编辑Blender美术源文件 |
+| `tools/` | 按音频、环境、车辆、性能等职责组织的制作和验证工具 |
+| `tests/` | 行为回归 |
+| `docs/` | 当前状态、设计、任务包与验证证据 |
+| `launchers/archive/` | 阶段试玩入口，根目录仅保留当前试玩入口 |
+| `builds/` | 本地独立包；历史默认构建移至 `builds/archive/` |
+| `logs/` | 本地日志与临时验证输出，早期smoke目录归入 `logs/archive/` |
+| `assets/source/` | 离线原始素材与缓存，不随Git提交 |
+| `legacy/` | 只读旧工程 |
 
-开发默认按范围执行短检查。工作规则见 [AGENTS.md](AGENTS.md)，任务包、T0–T3及人工Gate见 [任务入口](docs/tasks/README.md)。碰撞音频的下一步是 [6B-05 实驾校准](docs/tasks/6B-05-impact-calibration.md)。
+`CoastalDrive` 为主工作目录；相邻 `CoastalDrive-VI-v1` 保留开发线工作树，同步本次主版本内容。旧main另有本地备份和Git历史。
 
-```powershell
-.\.venv\Scripts\python.exe tools/validate.py T0 --area traffic
-.\.venv\Scripts\python.exe tools/validate.py T1 --area traffic
-.\.venv\Scripts\python.exe tools/validate.py T2 --dry-run
-```
+## 检查与构建
 
-验证入口将详细输出和JSON摘要放到独立的 `logs/validation/` 目录；失败即停。完整回归留给小阶段收口，长测留给阶段Gate；画面、声音和驾驶体验仍需实际验收。下面是按需使用的原有专项入口，不是每次修改都要执行的清单。
-
-```powershell
-.\.venv\Scripts\python.exe -m pytest -q
-.\.venv\Scripts\python.exe -m ruff check src tests tools
-.\.venv\Scripts\python.exe src/main.py --headless --steps 10000 --seed 17
-.\.venv\Scripts\python.exe src/main.py --smoke --output logs/h0-offscreen
-.\.venv\Scripts\python.exe src/main.py --smoke --track highway --output logs/stage4-highway-smoke
-.\.venv\Scripts\python.exe src/main.py --window-smoke --output logs/h0-window
-.\.venv\Scripts\python.exe tools/h0_ui_check.py
-.\.venv\Scripts\python.exe tools/h1_ui_check.py
-.\.venv\Scripts\python.exe tools/h1_benchmark.py
-.\.venv\Scripts\python.exe tools/phase3_route_check.py
-.\.venv\Scripts\python.exe tools/h2_render_check.py
-.\.venv\Scripts\python.exe tools/stage4_ui_check.py
-.\.venv\Scripts\python.exe tools/h3_ui_check.py
-.\.venv\Scripts\python.exe tools/h2_render_check.py --output logs/h3-review/render
-```
-
-headless 不创建窗口或加载渲染模块；offscreen smoke 创建实际离屏渲染上下文，两者用途不同。
-
-## 打包
+按修改范围执行相关短检查，任务与等级说明见 [验证入口](docs/tasks/README.md)。当前游戏版本已完成音频/UI相关T1、三种子、真实OpenAL和切台回录、连续窗口帧检查及独立包smoke，记录在上述证据目录；听感、驾驶和完整性能结果以各任务记录为准。
 
 ```powershell
-.\.venv\Scripts\python.exe setup.py build_apps
+.\.venv\Scripts\python.exe tools/validate.py T0 --area audio
+.\.venv\Scripts\python.exe tools/validate.py T1 --area audio
+.\.venv\Scripts\python.exe setup.py build_apps --build-base builds/0.8.3-radio02
 ```
 
-打包命令默认输出 `build/win_amd64/coastaldrive.exe` 和同目录资源。当前 0.8.3 独立版位于 `builds/0.8.3/win_amd64/coastaldrive.exe`；运行时请保留并启动完整文件夹，不要只复制 exe。应用设置和日志保存在 `%LOCALAPPDATA%\CoastalDrive`。
+运行时保留完整 `win_amd64` 文件夹。旧阶段入口归档说明见 [launchers/archive/README.md](launchers/archive/README.md)。
 
-## 素材准备
+## 素材与实现
 
-素材来源、许可和本地路径登记在 [docs/asset-register.csv](docs/asset-register.csv)。当前车辆与自然资源来自 Kenney CC0 素材包；天空、路面和草地贴图来自 Poly Haven CC0 资源。滨海海面纹理由项目脚本生成；驾驶循环声和新碰撞层的录音来源及加工方法分别见 `tools/prepare_audio.py`、`tools/prepare_impact_audio.py` 与 `assets/game/audio/License.txt`。原始素材压缩包、虚拟环境和构建目录不一定随源码目录分发；处理许可与原始资源时以素材登记表和随资源保留的许可证文件为准。
+素材来源登记在 [素材表](docs/asset-register.csv)。Kenney、Poly Haven与实录声源许可随资源保留；当前车型与植被还有项目原创Blender资源。当前引擎/碰撞离线制作见 `tools/audio/prepare_recorded.py`，授权电台见 `tools/audio/prepare_music.py`，首页原创曲与提示见 `tools/audio/prepare_upgrade.py`。
 
-## 代码边界
-
-- `simulation`：唯一权威状态、固定步长运动、种子、只读快照。
-- `controls`：统一 Control 的键盘与脚本来源。
-- `session`：120 Hz 调度、插值与菜单/暂停/重开生命周期。
-- `tracks`：地图目录、玩法可切换入口、车道中心和行驶方向。
-- `coastal_map` / `highway_map`：路线、路面/路肩/护栏/道路分段信息，供物理和显示共用。
-- `race`：计时挑战、检查点、逆行/复位判定和分地图版本的最佳成绩保存。
-- `world_props`：树、岩石、检查点框架的共同摆放与碰撞尺寸。
-- `vehicle_config` / `vehicle_dynamics`：车辆参数、道路阻力、轴载荷估计和动力学诊断。
-- `skins` / `garage` / `settings`：车型、外观预览与本地选择保存；外观不参与车辆受力。
-- `scene` / `application` / `soundscape`：模型、界面、相机、窗口与声音；渲染和声音消费仿真状态。
-- `tests`：正式实现的行为检查。
-
-原 MFC 工程保持只读，旧工程说明见 [legacy/README.md](legacy/README.md)。
+Controller → Control → Simulation → Snapshot → 玩法/表现/UI。Simulation是唯一物理权威，120Hz固定步；声音、界面和相机消费快照，不维护第二套物理状态。按功能职责直接组织模块，工作规则见 [AGENTS.md](AGENTS.md)。

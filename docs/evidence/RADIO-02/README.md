@@ -14,15 +14,15 @@
 
 海岸FM（原曲12–24秒片段）：
 
-![Bossa Antigua - Kevin MacLeod](<B:/AI agent/暑期计算机程序设计/CoastalDrive/docs/evidence/RADIO-02/sunset-run-preview.wav>)
+![Bossa Antigua - Kevin MacLeod](sunset-run-preview.wav)
 
 夜驰FM（原曲12–24秒片段）：
 
-![Future Gladiator - Kevin MacLeod](<B:/AI agent/暑期计算机程序设计/CoastalDrive/docs/evidence/RADIO-02/midnight-circuit-preview.wav>)
+![Future Gladiator - Kevin MacLeod](midnight-circuit-preview.wav)
 
 首页原曲（12–24秒）：
 
-![Home Coast](<B:/AI agent/暑期计算机程序设计/CoastalDrive/docs/evidence/RADIO-02/home-coast-preview.wav>)
+![Home Coast](home-coast-preview.wav)
 
 ## 路由与验证
 

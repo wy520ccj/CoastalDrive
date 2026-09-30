@@ -1,6 +1,6 @@
 # 当前进度
 
-更新：2026-09-30。当前版本来自 **Visual Identity v1 开发线**（`visual-identity-v1`），起点 `2185410ec1db1b390c4e89eac820e768ca88c5b9`。DS实验档案保留为只读参考；本分支没有迁入实验增量。2026-09-30用户授权本版本同步为CoastalDrive主项目，原main保留于备份和Git历史。
+更新：2026-09-30。**main为当前主版本：0.8.3 RADIO-02，包含UI-NOTICE-FIX。** 源码来自Visual Identity v1开发线，本轮用户明确确认其作为主版本并授权整理/提交/推送。根目录保留试玩.cmd，阶段入口归档到launchers/archive，原默认build与早期smoke目录分别集中到builds/archive和logs/archive。CoastalDrive-VI-v1工作树同步当前主版本内容；旧main保留于上级备份与Git历史。DS实验档案仍为只读参考。
 
 ## 当前阶段
 
