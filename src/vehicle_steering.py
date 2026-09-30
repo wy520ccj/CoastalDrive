@@ -5,6 +5,15 @@ import math
 from vehicle_config import CAR
 
 
+def wheel_angles(center_angle, config=CAR):
+    """虚拟前轴中心角转为左、右前轮角；正角右转，后轴中心是共同圆心的基准。"""
+    if center_angle == 0:
+        return 0.0, 0.0
+    radius = config.wheelbase / math.tan(math.radians(center_angle))
+    return tuple(math.degrees(math.atan(config.wheelbase / (radius + offset)))
+                 for offset in (config.track_width / 2, -config.track_width / 2))
+
+
 class SteeringRack:
     def __init__(self):
         self.angle = 0.0

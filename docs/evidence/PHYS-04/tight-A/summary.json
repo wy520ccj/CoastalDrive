@@ -1,0 +1,231 @@
+{
+  "label": "3337fad-parallel-steering",
+  "git_sha": "3337fad9aa068d67c6e4b06c597625497edb1d1d",
+  "source_sha256": {
+    "vehicle": "f6b61d27efa57df652e8cb3476e8a466e4feff1fba5ee8020a2e7213273a09b1",
+    "vehicle_config": "f5b3675e72d3ba553fad5f77c53d6be224dbef590e50e2759086520f3d5b49aa",
+    "vehicle_state": "9dab7ff60d1debe6f2c35edb9e7e1370c6e3deaff03068dce2b0ce43e8c0de1c",
+    "vehicle_dynamics": "49c1164cb3577ef36dab848afffe01dd04f378808c23dd87db5969243c4c1425",
+    "vehicle_contacts": "36a5aa6083fa4a4b8ba467ad3a0c64dd783817773badfd9b1eeda2b87d4d498c",
+    "driver_assist": "bc2469c0343971cf75f7c573659fcb147fddd4a5d002598d194550404fe237fb",
+    "powertrain": "6f7ebb77fb324b8ffa462648f6da45095fb471fbb65236375b6f47609eb32885",
+    "vehicle_steering": "5cd16e9d107363b28e1afa315b85d8cb638a3addf6c0228381b5065c0af87277"
+  },
+  "config": {
+    "mass": 1200.0,
+    "torque_curve": [
+      [
+        900,
+        110
+      ],
+      [
+        1800,
+        165
+      ],
+      [
+        3200,
+        200
+      ],
+      [
+        4500,
+        190
+      ],
+      [
+        6000,
+        150
+      ],
+      [
+        6500,
+        0
+      ]
+    ],
+    "gear_ratios": [
+      3.25,
+      2.05,
+      1.45,
+      1.1,
+      0.88
+    ],
+    "final_drive": 3.7,
+    "drivetrain_efficiency": 0.88,
+    "idle_rpm": 900.0,
+    "shift_time": 0.28,
+    "throttle_rise": 1.6,
+    "throttle_release": 5.0,
+    "brake_rise": 6.0,
+    "brake_release": 10.0,
+    "torque_response": 0.12,
+    "engine_braking": 24.0,
+    "max_speed": 44.44444444444444,
+    "reverse_speed": 6.111111111111111,
+    "reverse_force": 2200.0,
+    "brake_torque": 3643.2,
+    "front_brake_share": 0.6,
+    "reverse_delay": 0.4,
+    "steering_degrees": 26.0,
+    "steering_rate": 50.0,
+    "steering_response": 7.0,
+    "steering_return": 10.0,
+    "assisted_lateral_acceleration": 7.5,
+    "wheel_radius": 0.33,
+    "suspension_stiffness": 40.0,
+    "suspension_compression": 4.4,
+    "suspension_relaxation": 2.3,
+    "road_grip": 1.4,
+    "grass_grip": 0.8,
+    "air_density": 1.225,
+    "drag_coefficient": 0.32,
+    "frontal_area": 2.142857142857143,
+    "rolling_coefficient": 0.013591573224600747,
+    "grass_rolling_coefficient": 0.0764525993883792,
+    "road_friction": 1.1,
+    "grass_friction": 0.45,
+    "wheelbase": 2.2,
+    "track_width": 1.68,
+    "collision_half_width": 1.05,
+    "collision_half_length": 2.15,
+    "center_of_mass_height": 0.42,
+    "front_weight_share": 0.5
+  },
+  "physics_hz": 120.0,
+  "fixed_dt_s": 0.008333333333333333,
+  "environment": {
+    "world": "independent BulletWorld",
+    "ground": "infinite horizontal plane",
+    "gravity_mps2": [
+      0,
+      0,
+      -9.81
+    ],
+    "collision_mask_bits": [
+      0,
+      1
+    ]
+  },
+  "inputs": {
+    "wheelbase_m": 2.2,
+    "radii_at_rear_axle_m": [
+      6.0,
+      20.0
+    ],
+    "turn_signs": {
+      "positive": 1,
+      "negative": -1
+    },
+    "initial_speed_mps": 2.77778,
+    "target_speed_mps": 2.7777777777777777,
+    "settle_ticks": 240,
+    "duration_s": 12.0,
+    "sample_every_ticks": 6,
+    "proportional_speed_control": {
+      "throttle_bias": 0.12,
+      "throttle_gain": 0.6,
+      "brake_deadband_mps": 0.2,
+      "brake_gain": 0.8
+    },
+    "steering": "center_angle / steering_limit(abs(speed)); no path correction",
+    "summary_window_s": [
+      8.0,
+      12.0
+    ]
+  },
+  "wheel_lateral_velocity_definition": "rigid-body contact-point velocity projected onto each wheel-plane lateral axis; kinematic lateral velocity only, not tire alpha or wheel speed",
+  "summaries": [
+    {
+      "case": "radius_6m_positive",
+      "target_radius_rear_axle_m": 6.0,
+      "turn_sign": 1,
+      "target_speed_mps": 2.7777777777777777,
+      "initial_speed_mps": 2.77778,
+      "center_angle_deg": 20.136303428248137,
+      "window_s": [
+        8.0,
+        12.0
+      ],
+      "window_ticks": 481,
+      "mean_speed_mps": 2.567432899420491,
+      "mean_longitudinal_speed_mps": 2.5248365253519864,
+      "mean_yaw_rate_rad_s": -0.4101761704670912,
+      "mean_abs_yaw_rate_rad_s": 0.4101761704670912,
+      "effective_cg_radius_m": 6.259341922512972,
+      "mean_instantaneous_cg_radius_m": 6.259341922513624,
+      "expected_cg_radius_m": 6.1,
+      "mean_front_lateral_velocity_abs_mps": 0.11750792682542623,
+      "front_lateral_velocity_samples": 962,
+      "mean_front_left_angle_deg": 20.136302947998047,
+      "mean_front_right_angle_deg": 20.136302947998047
+    },
+    {
+      "case": "radius_6m_negative",
+      "target_radius_rear_axle_m": 6.0,
+      "turn_sign": -1,
+      "target_speed_mps": 2.7777777777777777,
+      "initial_speed_mps": 2.77778,
+      "center_angle_deg": -20.136303428248137,
+      "window_s": [
+        8.0,
+        12.0
+      ],
+      "window_ticks": 481,
+      "mean_speed_mps": 2.5674329475018243,
+      "mean_longitudinal_speed_mps": 2.5248365724408948,
+      "mean_yaw_rate_rad_s": 0.410176189550491,
+      "mean_abs_yaw_rate_rad_s": 0.410176189550491,
+      "effective_cg_radius_m": 6.259341748518983,
+      "mean_instantaneous_cg_radius_m": 6.2593417485196925,
+      "expected_cg_radius_m": 6.1,
+      "mean_front_lateral_velocity_abs_mps": 0.1175079299388705,
+      "front_lateral_velocity_samples": 962,
+      "mean_front_left_angle_deg": -20.136302947998047,
+      "mean_front_right_angle_deg": -20.136302947998047
+    },
+    {
+      "case": "radius_20m_positive",
+      "target_radius_rear_axle_m": 20.0,
+      "turn_sign": 1,
+      "target_speed_mps": 2.7777777777777777,
+      "initial_speed_mps": 2.77778,
+      "center_angle_deg": 6.277298489597555,
+      "window_s": [
+        8.0,
+        12.0
+      ],
+      "window_ticks": 481,
+      "mean_speed_mps": 2.601871185487146,
+      "mean_longitudinal_speed_mps": 2.598034875060813,
+      "mean_yaw_rate_rad_s": -0.12864623486747861,
+      "mean_abs_yaw_rate_rad_s": 0.12864623486747861,
+      "effective_cg_radius_m": 20.225008436254605,
+      "mean_instantaneous_cg_radius_m": 20.22500843625687,
+      "expected_cg_radius_m": 20.030227157973023,
+      "mean_front_lateral_velocity_abs_mps": 0.01170071038338133,
+      "front_lateral_velocity_samples": 962,
+      "mean_front_left_angle_deg": 6.277298450469971,
+      "mean_front_right_angle_deg": 6.277298450469971
+    },
+    {
+      "case": "radius_20m_negative",
+      "target_radius_rear_axle_m": 20.0,
+      "turn_sign": -1,
+      "target_speed_mps": 2.7777777777777777,
+      "initial_speed_mps": 2.77778,
+      "center_angle_deg": -6.277298489597555,
+      "window_s": [
+        8.0,
+        12.0
+      ],
+      "window_ticks": 481,
+      "mean_speed_mps": 2.6018711658420313,
+      "mean_longitudinal_speed_mps": 2.598034857216595,
+      "mean_yaw_rate_rad_s": 0.1286462295080173,
+      "mean_abs_yaw_rate_rad_s": 0.1286462295080173,
+      "effective_cg_radius_m": 20.225009126131297,
+      "mean_instantaneous_cg_radius_m": 20.22500912613388,
+      "expected_cg_radius_m": 20.030227157973023,
+      "mean_front_lateral_velocity_abs_mps": 0.011700708910884828,
+      "front_lateral_velocity_samples": 962,
+      "mean_front_left_angle_deg": -6.277298450469971,
+      "mean_front_right_angle_deg": -6.277298450469971
+    }
+  ]
+}

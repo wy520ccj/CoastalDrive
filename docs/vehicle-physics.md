@@ -63,3 +63,5 @@ VEH-01 本次仅确认这一许可，未接入按车型选物理参数，也未�
 当前VehicleResponse已按功能拆为driver_assist、powertrain、vehicle_steering。DriverAssist处理驾驶输入便利行为，SteeringRack保存实际虚拟前轴中心转角/角速度与机械限制，Powertrain保存发动机、自动换挡和转矩响应。Vehicle.apply_command是统一受力入口，apply_control先做辅助再调用它。
 
 研究控制使用`vehicle_state.VehicleCommand`，steering为度、throttle/brake为0～1、direction为−1/0/1。`Simulation.step`接收Control或VehicleCommand，仍只有一个120Hz世界；模式改变输入辅助，不改变质量、附着或动力参数。默认七标准工况1168×117列完全一致，见[ARCH-01](evidence/ARCH-01/README.md)。上节车型配置授权在这些新职责间贯通，旧模块名只记录当时背景。
+
+PHYS-04实际前轮已使用Ackermann，steering表示虚拟前轴中心角，左右真实角分别由轴距/轮距计算。中心角限制与输入包络保持，内轮角高于中心角、外轮低于中心角。低速定圆与真实前进/倒车方向见[转向报告](evidence/PHYS-04/README.md)。

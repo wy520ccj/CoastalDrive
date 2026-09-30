@@ -6,7 +6,7 @@
 
 - **物理完善目标 active**：按用户授权采用汽车理论与游戏机制的标准A/B，不要求一次只改一个参数。[PHYS-01/02/03](physics-roadmap.md)已建立坡度/四轮诊断与标准工况，综合T1 253项通过。[PHYS-COLL-01](tasks/PHYS-COLL-01.md)已消除海岸护栏竖侧面内部三角接缝的假上向法线，120km/h最大侧距10.627→4.834m、roll19.929→10.299°；6m/45°保持。新轨迹真实分离后回撞，明确记录2次事故，计数修为实际求解接触。标准操稳1168×117单元读数完全相同，T1 183项/三种子/双弯坡通过。[证据](evidence/PHYS-COLL-01/README.md)。后续ARCH-01→Ackermann→轮胎核心，下一批收口统一T2；历史T2的护栏失败保留记录，不当作新版本结论。源码试玩入口`试玩-物理开发.cmd`，独立包仍为RADIO-02，未推送/发布。整个目标及人工驾驶/阶段Gate仍未完成。
 
-- [ARCH-01](tasks/ARCH-01.md) 输入辅助/转向齿条/动力总成已按职责拆分，研究VehicleCommand绕过输入便利逻辑、保持实际执行器与同一120Hz核心。默认七工况1168×117列逐格相同；T0 10项、T1 111项/三种子/双弯坡通过，旧源码加载保留。[证据](evidence/ARCH-01/README.md)。下一包PHYS-04 Ackermann。
+- [ARCH-01](tasks/ARCH-01.md) 输入辅助/转向齿条/动力总成已按职责拆分，研究VehicleCommand绕过输入便利逻辑、保持实际执行器与同一120Hz核心。默认七工况1168×117列逐格相同；T0 10项、T1 111项/三种子/双弯坡通过，旧源码加载保留。[证据](evidence/ARCH-01/README.md)。PHYS-04 Ackermann已接入：6m紧弯前轮接点横向速度0.1175→0.00222m/s，左右对称，直线加速/split-μ读数保持；T1 143项/三种子/双弯坡通过。[证据](evidence/PHYS-04/README.md)。本批统一T2收口，下一功能块为轮速与唯一轮胎力迁移。
 
 - [RADIO-02](tasks/RADIO-02.md) 按“两台像同一首歌”反馈换为独立授权完整曲：海岸70BPM吉他Bossa Antigua、夜驰132BPM暗色Future Gladiator；原Sunset逐字节保留为独立首页BGM，设置页试听电台。统一响度差0.05LU，真实阶段/续播匹配、零混台、59项音频/UI T1与三种子、OpenAL105/105、包SHA通过。追加[UI-NOTICE-FIX](tasks/UI-NOTICE-FIX.md)：深蓝提示底板改实色，背景变化对照240帧最大跳变35.43→0.99/255，场景复测0.33/255；未复现整块消失。最终包builds/0.8.3-radio02/win_amd64、试玩.cmd和试玩-RADIO-02.cmd，主/VI同步；[试听与证据](evidence/RADIO-02/README.md)。
 

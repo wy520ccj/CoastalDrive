@@ -11,7 +11,7 @@ from vehicle_config import CAR, WHEEL_HUBS
 from vehicle_contacts import read_wheel_contacts, shift_contacts
 from vehicle_dynamics import DynamicsState, aerodynamic_force, axle_loads, contact_grade
 from vehicle_state import FIXED_DT, CarState, Control, VehicleCommand, WheelState, forward
-from vehicle_steering import SteeringRack
+from vehicle_steering import SteeringRack, wheel_angles
 
 
 class Vehicle:
@@ -154,8 +154,8 @@ class Vehicle:
         velocity = self._chassis.getLinearVelocity()
         speed = velocity.dot(Vec3(*forward(hpr.x)))
         self.steering.advance(command.steering, FIXED_DT)
-        for wheel_index in (0, 1):
-            self._vehicle.setSteeringValue(-self.steering.angle, wheel_index)
+        for wheel_index, angle in enumerate(wheel_angles(self.steering.angle)):
+            self._vehicle.setSteeringValue(-angle, wheel_index)
 
         pedal, brake, direction = command.throttle, command.brake, command.direction
         self._drive_pedal = pedal if direction != 0 and brake == 0 else 0.0
