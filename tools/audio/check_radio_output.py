@@ -51,15 +51,16 @@ def main():
     sound = Soundscape(base, effects_volume=0, music_volume=100)
     speaker = sc.default_speaker()
     loopback = sc.get_microphone(speaker.id, include_loopback=True)
-    names = ("sunset-run", "midnight-circuit")
+    names = ("sunset-run", "midnight-circuit", "home-coast")
     refs = [reference(name) for name in names]
     rows = []
     state = Snapshot(0, 0, CarState((0, 0, 1)), (), contact_epoch=1)
     try:
         with ThreadPoolExecutor(max_workers=1) as pool, loopback.recorder(
                 samplerate=RATE, channels=2, blocksize=480) as recorder:
-            for station, phase, preview in ((1, "menu", False), (2, "menu", False),
-                                             (2, "driving", False), (1, "paused", True)):
+            for station, phase, preview in ((1, "menu", False), (2, "menu", True),
+                                             (1, "driving", False), (2, "paused", True)):
+                expected_track = 3 if phase == "menu" and not preview else station
                 sound.music.stop()
                 sound.music.select(station)
                 future = pool.submit(recorder.record, RATE*4)
@@ -76,8 +77,9 @@ def main():
                 # 与起始4秒素材相关；第5秒仅供补偿缓冲延迟。
                 scores = [correlation(captured.mean(axis=1), ref) for ref in refs]
                 matched = int(np.argmax(scores)) + 1
-                passed = matched == station and scores[station-1] > .35
+                passed = matched == expected_track and scores[expected_track-1] > .35
                 row = {"phase": phase, "preview": preview, "station": station,
+                       "expected_track": expected_track,
                        "playing": sound.music.playing[:], "waveform_match": matched,
                        "correlations": scores, "passed": passed}
                 rows.append(row)
@@ -89,7 +91,7 @@ def main():
                     clip.writeframes((np.clip(captured, -1, 1) * 32767).astype("<i2").tobytes())
                 sound.music.stop()
         report = {"passed": all(row["passed"] for row in rows), "device": speaker.name,
-                  "kind": "real OpenAL WASAPI loopback matched against both song waveforms",
+                  "kind": "real OpenAL WASAPI loopback matched against radio and home song waveforms",
                   "cases": rows}
         (args.output / "report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2),
                                                   encoding="utf-8")

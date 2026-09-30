@@ -1,0 +1,14 @@
+[
+  {
+    "track": "sunset-run",
+    "integrated_lufs": -18.04,
+    "true_peak_db": -4.48,
+    "range_lu": 3.8
+  },
+  {
+    "track": "midnight-circuit",
+    "integrated_lufs": -17.99,
+    "true_peak_db": -6.54,
+    "range_lu": 10.9
+  }
+]

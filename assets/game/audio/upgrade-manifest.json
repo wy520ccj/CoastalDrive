@@ -67,16 +67,6 @@
       "duration": 0.12
     },
     {
-      "path": "music/sunset-run.wav",
-      "sha256": "c0a3a3cf5a528286bad98fea1104d5a68279e0f2c14e0db765d54703e44fbf0f",
-      "duration": 73.84614512471656
-    },
-    {
-      "path": "music/midnight-circuit.wav",
-      "sha256": "72470e16fee2ebab271a089908630c020782a9770ce68c887191623d13d1f04c",
-      "duration": 68.57142857142857
-    },
-    {
       "path": "engine/v8-900-coast.wav",
       "sha256": "cac0b5573f3f063fc66834055d7bc0467162411dd4b6d2b25a72a1025513b25b",
       "duration": 1.0940816326530611,
@@ -225,9 +215,24 @@
       "chassis_mix": 0.25,
       "engine_block_mix": 0.75,
       "note": "Legacy v8 filename only; recording is a Mini Cooper S"
+    },
+    {
+      "path": "music/sunset-run.wav",
+      "sha256": "3e24ed636cdd354dd5687bef67abc0e56c21132888dabc0cae19817e11b5fe38",
+      "duration": 283.3502040816326
+    },
+    {
+      "path": "music/midnight-circuit.wav",
+      "sha256": "abe4e2f76e8667ae8b7f34b2db7c98e1f1a67d32322958a7734186e33c7bf949",
+      "duration": 217.02530612244897
+    },
+    {
+      "path": "music/home-coast.wav",
+      "sha256": "c0a3a3cf5a528286bad98fea1104d5a68279e0f2c14e0db765d54703e44fbf0f",
+      "duration": 73.84614512471656
     }
   ],
-  "authorship": "Recorded engine CC0 derivatives; original textures, cues and music",
+  "authorship": "Recorded engine CC0 derivatives; original textures, cues and home BGM; CC BY 4.0 radio music",
   "generator": "tools/audio/prepare_upgrade.py",
   "engine_sources": {
     "mini-cooper": {

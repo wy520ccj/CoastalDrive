@@ -1,0 +1,23 @@
+[
+  {
+    "name": "home-coast",
+    "duration": 73.84614512471656,
+    "peak": 0.649993896484375,
+    "second_diff_ratio": 7.949228235171581e-06,
+    "sha256": "c0a3a3cf5a528286bad98fea1104d5a68279e0f2c14e0db765d54703e44fbf0f"
+  },
+  {
+    "name": "sunset-run",
+    "duration": 283.3502040816326,
+    "peak": 0.59686279296875,
+    "second_diff_ratio": 0.001914642585653597,
+    "sha256": "3e24ed636cdd354dd5687bef67abc0e56c21132888dabc0cae19817e11b5fe38"
+  },
+  {
+    "name": "midnight-circuit",
+    "duration": 217.02530612244897,
+    "peak": 0.45635986328125,
+    "second_diff_ratio": 0.015839032355551175,
+    "sha256": "abe4e2f76e8667ae8b7f34b2db7c98e1f1a67d32322958a7734186e33c7bf949"
+  }
+]

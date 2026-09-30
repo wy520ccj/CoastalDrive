@@ -58,7 +58,7 @@ def main():
     directory = ROOT / "assets/game/audio"
     music = music_class(base, directory)
     # 可重复触发旧WAV流式seek的奇数字节错位，不依赖偶然的暂停时机。
-    music.positions = [.1234567, .2345678]
+    music.positions[:2] = [.1234567, .2345678]
     speaker = sc.default_speaker()
     loopback = sc.get_microphone(speaker.id, include_loopback=True)
     rows, updates, overlaps = [], [], 0
@@ -84,13 +84,15 @@ def main():
                     time.sleep(.008)
                 captured = future.result()
                 mono = captured.mean(axis=1)
-                # 切换瞬间不参与底噪指标，防止把正常短淡出误判成噪声。
+                # 正常鼓镲允许高频；与原曲比较高频比例并匹配完整波形，检测解码错位。
                 steady = mono[RATE//2:]
                 hiss = float(np.sum(np.diff(steady, n=2)**2)/np.sum(steady**2))
+                expected_hf = float(np.sum(np.diff(expected, n=2)**2)/np.sum(expected**2))
                 match = correlation(mono, expected)
                 row = {"station": station, "resume_seconds": position,
                        "waveform_correlation": match, "hiss_energy_ratio": hiss,
-                       "passed": match > .5 and hiss < .003}
+                       "reference_high_frequency_ratio": expected_hf,
+                       "passed": match > .5 and hiss < expected_hf * 4 + .003}
                 rows.append(row)
                 with wave.open(str(args.output / f"switch-{len(rows)}-{station}.wav"), "wb") as clip:
                     clip.setparams((2, 2, RATE, 0, "NONE", "not compressed"))

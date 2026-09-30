@@ -1,0 +1,32 @@
+[
+  {
+    "station_asset": "sunset-run",
+    "title": "Bossa Antigua",
+    "author": "Kevin MacLeod",
+    "source_url": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1700069",
+    "download_url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Bossa%20Antigua.mp3",
+    "source_file": "Bossa Antigua.mp3",
+    "source_sha256": "322103dd6ac5fae4872122f91d32cccd4d964b86d300585a5a0cdfaf7048af5d",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "isrc": "USUAN1700069",
+    "bpm": 70,
+    "instruments": "Guitar, Bass, Drums",
+    "feel": "Bright, Grooving, Relaxed"
+  },
+  {
+    "station_asset": "midnight-circuit",
+    "title": "Future Gladiator",
+    "author": "Kevin MacLeod",
+    "source_url": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1200051",
+    "download_url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Future%20Gladiator.mp3",
+    "source_file": "Future Gladiator.mp3",
+    "source_sha256": "b4894f98d8df121b5194fbea8c23dc238b140a56b7933b2b0134808a8e6878ca",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "isrc": "USUAN1200051",
+    "bpm": 132,
+    "instruments": "Percussion, Clapping, Synths, Bass",
+    "feel": "Aggressive, Dark, Driving, Epic, Mysterious, Unnerving"
+  }
+]

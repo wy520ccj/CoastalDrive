@@ -1,0 +1,123 @@
+{
+  "started_utc": "2026-09-30T13:11:06.581255+00:00",
+  "git_head": "c4ff5ecdd244d0bec8529ecac4b0aa607f710b07",
+  "git_status": "M assets/game/audio/License.txt\n M assets/game/audio/music/midnight-circuit.wav\n M assets/game/audio/music/sunset-run.wav\n M assets/game/audio/upgrade-manifest.json\n M docs/asset-register.csv\n M docs/audio-design.md\n M src/audio/music.py\n M src/soundscape.py\n M tests/test_audio_upgrade.py\n M tools/audio/check_radio_output.py\n M tools/audio/check_radio_switch.py\n M tools/audio/prepare_upgrade.py\n?? assets/game/audio/music-sources.json\n?? assets/game/audio/music/home-coast.wav\n?? docs/evidence/RADIO-02/\n?? docs/tasks/RADIO-02.md\n?? tools/audio/music_sources.json\n?? tools/audio/prepare_music.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [
+    "audio"
+  ],
+  "tests": [
+    "tests/test_ui.py",
+    "tests/test_ui_assets.py"
+  ],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\RADIO-02-T1\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.179
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_audio_settings.py",
+        "tests/test_soundscape.py",
+        "tests/test_impact_audio.py",
+        "tests/test_impact_assets.py",
+        "tests/test_impact_events.py",
+        "tests/test_impact_delivery.py",
+        "tests/test_impact_integration.py",
+        "tests/test_audio_upgrade.py",
+        "tests/test_ui.py",
+        "tests/test_ui_assets.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\RADIO-02-T1\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 60.949
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\RADIO-02-T1\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.477
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\RADIO-02-T1\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.404
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\RADIO-02-T1\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.417
+    }
+  ]
+}

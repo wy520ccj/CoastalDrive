@@ -4,6 +4,9 @@
 
 ## 当前阶段
 
+- [RADIO-02](tasks/RADIO-02.md) 按“两台像同一首歌”反馈换为独立授权完整曲：海岸70BPM吉他Bossa Antigua、夜驰132BPM暗色Future Gladiator；原Sunset逐字节保留为独立首页BGM，设置页试听电台。统一响度差0.05LU，真实阶段/续播匹配、零混台、59项音频/UI T1与三种子、OpenAL105/105、包SHA通过。追加[UI-NOTICE-FIX](tasks/UI-NOTICE-FIX.md)：深蓝提示底板改实色，背景变化对照240帧最大跳变35.43→0.99/255，场景复测0.33/255；未复现整块消失。最终包builds/0.8.3-radio02/win_amd64、试玩.cmd和试玩-RADIO-02.cmd，主/VI同步；[试听与证据](evidence/RADIO-02/README.md)。
+
+
 - [RADIO-01](tasks/RADIO-01.md) 已复现并修复流式WAV非整采样续播的字节错位噪声，两曲改用独立音乐缓存预载；先停旧曲再启动新曲，真实连续切台双曲更新231→0。驾驶N/M移除即时存盘/整页刷新，HUD预生成三个电台标签，按键业务中位2.10ms→0.068ms、当帧提示生成约11ms阻塞消除。真实WASAPI连续/阶段输出、可见窗口、音频/UI回归与三种子验证见[证据](evidence/RADIO-01/README.md)。新包builds/0.8.3-radio01/win_amd64、试玩-RADIO-01.cmd与默认入口，主/VI同步。
 
 - [AUDIO-02](tasks/AUDIO-02.md) 按真实感反馈撤除合成引擎和文件柜/糖果盒碰撞主体，改用Mini Cooper S双接触麦克风实录与空车身/机盖实物录音；五频谱锚点离线校稳音高，保留车体宽频共振，减少叠层与刻意降调。52项音频T1、三种子、OpenAL104/104、试听无削波与包SHA核对通过；新包builds/0.8.3-audio02/win_amd64、试玩-AUDIO-02.cmd及默认试玩入口，主/VI同步。[分项试听与证据](evidence/AUDIO-02/README.md)。此前音色未获认可，新版听感待实际试听。

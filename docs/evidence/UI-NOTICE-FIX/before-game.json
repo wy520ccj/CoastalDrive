@@ -1,0 +1,22 @@
+{
+  "frames": 240,
+  "outlier_frames": 0,
+  "max_rgb_change": 0.5185185185185226,
+  "rgb_min": [
+    31.564814814814813,
+    57.870370370370374,
+    60.611111111111114
+  ],
+  "rgb_max": [
+    32.592592592592595,
+    58.48148148148148,
+    60.81481481481482
+  ],
+  "foreground_frames": 1148,
+  "observed_frames": 1148,
+  "minimized_frames": 0,
+  "passed": true,
+  "roi": "crop=6:18:30:185",
+  "kind": "real window; frozen scenery; steady text, dynamic text and alternating height",
+  "capture_visible": true
+}

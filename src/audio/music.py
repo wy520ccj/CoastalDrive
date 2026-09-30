@@ -4,32 +4,33 @@ import math
 
 from panda3d.core import AudioManager, Filename
 
-STATIONS = ("关闭", "海岸 FM · Sunset Run", "夜驰 FM · Midnight Circuit")
+STATIONS = ("关闭", "海岸 FM · Bossa Antigua", "夜驰 FM · Future Gladiator")
 
 
 class MusicAudio:
     def __init__(self, base, directory, station=1):
-        # 两首短曲预载到独立音乐缓存，避免流式WAV续播字节错位和切台时读盘填缓冲。
+        # 电台与首页曲预载，避免流式WAV续播字节错位和切台时读盘填缓冲。
         self.tracks = tuple(base.musicManager.getSound(Filename.fromOsSpecific(
             str(directory / "music" / f"{name}.wav")), False, AudioManager.SM_sample)
-                            for name in ("sunset-run", "midnight-circuit"))
+                            for name in ("sunset-run", "midnight-circuit", "home-coast"))
         for sound in self.tracks:
             sound.setLoop(True)
             sound.setVolume(0)
         self.station = station
-        self.levels = [0.0, 0.0]
-        self.playing = [False, False]
-        self.positions = [0.0, 0.0]
+        self.levels = [0.0] * len(self.tracks)
+        self.playing = [False] * len(self.tracks)
+        self.positions = [0.0] * len(self.tracks)
         self.duck = 1.0
 
     def select(self, station):
         self.station = station
 
-    def update(self, phase, dt, scale, duck):
-        if phase == "paused" or scale <= 0:
+    def update(self, phase, dt, scale, duck, *, preview=False):
+        if (phase == "paused" and not preview) or scale <= 0:
             self.stop(preserve=True)
             return
-        target = self.station - 1
+        # 首页独立BGM；设置页试听和驾驶消费所选电台，统一单曲切换避免叠播。
+        target = 2 if phase == "menu" and not preview else self.station - 1
         gain = 0.36 if phase in ("driving", "countdown") else 0.20
         self.duck += (duck - self.duck) * (1 - math.exp(-dt / (
             .03 if duck < self.duck else .24)))
@@ -63,4 +64,4 @@ class MusicAudio:
             self.playing[i] = False
             self.levels[i] = 0.0
         if not preserve:
-            self.positions = [0.0, 0.0]
+            self.positions = [0.0] * len(self.tracks)

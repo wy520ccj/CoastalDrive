@@ -42,8 +42,10 @@ class DrivingHUD:
         self.detail = OnscreenText(parent=self.status_frame, text="", font=body_font,
                                   fg=theme.INK, pos=(0.055, -0.302), scale=0.041,
                                   align=TextNode.ALeft, mayChange=True)
-        self.notice_frame = DirectFrame(parent=self.root, frameColor=(*theme.INK[:3], 0.86),
+        self.notice_frame = DirectFrame(parent=self.root, frameColor=(*theme.INK[:3], 1),
                                         frameSize=(0, 0.88, -0.18, 0), pos=(-1.70, 0, 0.50))
+        # 底板固定实色，避免移动的树影/天空透进来形成明暗跳动。
+        self.notice_frame.setTransparency(TransparencyAttrib.MNone)
         self.status_notice = OnscreenText(
             parent=self.notice_frame, text="", font=body_font, fg=theme.PAPER_LIGHT,
             pos=(0.035, -0.050), scale=0.034, align=TextNode.ALeft, mayChange=True,

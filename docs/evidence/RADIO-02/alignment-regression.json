@@ -1,0 +1,20 @@
+[
+  {
+    "track": "sunset-run",
+    "old_byte_offset": 21777,
+    "frame_remainder": 1,
+    "aligned_ratio": 0.0010191233693116748,
+    "misaligned_ratio": 5.052782400615641,
+    "current_limit": 0.007076493477246699,
+    "old_bug_rejected": true
+  },
+  {
+    "track": "midnight-circuit",
+    "old_byte_offset": 41377,
+    "frame_remainder": 1,
+    "aligned_ratio": 0.004462892715665983,
+    "misaligned_ratio": 6.011476049724257,
+    "current_limit": 0.02085157086266393,
+    "old_bug_rejected": true
+  }
+]

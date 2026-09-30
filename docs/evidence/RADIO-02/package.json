@@ -1,0 +1,374 @@
+{
+  "kind": "offscreen independent package smoke outside repository; not FPS or human gate",
+  "passed": true,
+  "package": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\builds\\0.8.3-radio02\\win_amd64\\coastaldrive.exe",
+  "package_sha256": "9ca0936fd349b551d14af9917cf72f86d2848a6a13ea8bc9a57b0d125a237c08",
+  "assets": [
+    {
+      "path": "assets/game/expressway/advance-sign.bam",
+      "sha256": "db549046d5f61c9cd50789753358ab9c3404d3e0de532c817843ec723306669d",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/aggregate.png",
+      "sha256": "3bc95445cefefad7d747808cdc090799efcdf3c5c79dbc816e1e87724e88f4ce",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/bridge-advance.bam",
+      "sha256": "7d7bcf24ae9cea1777f2e4303d6f36b1ba35de1ca6387b1974cc80c05dc9225d",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/broadleaf-a.glb",
+      "sha256": "8c1ad5c6a95f12d8f8d3eb7923937b35f460bee18b697073909124821d209030",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/broadleaf-b.glb",
+      "sha256": "825a8a433544dedcd5bf6f8bc19aa9902a1a8ff8bc768abe8779a3d30afc4421",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/broadleaf-crown.bam",
+      "sha256": "159d283c1990401749ced886dc3c6aba48dcc5b12510a95963b21f94cfe2110a",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/crash-cushion.bam",
+      "sha256": "cafa9d08b84edbe68fc05ac565062b749df0649d06bdbe4d4ddb11064e05bd81",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/curve-left.bam",
+      "sha256": "a309fc18233cca6fce7878b09f99e3e08aa61e7b7340260457dc35d4dc032038",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/curve-right.bam",
+      "sha256": "835cfb8852ae054db10349d35c7ad5d548546e6a93de6ee30defd77da947e546",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/drain-grate.bam",
+      "sha256": "457b9472f5f9aa6940740d3fc30815144530f8320cf97c967d2be4e12357b2b5",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/equipment.bam",
+      "sha256": "86e0e259b2986b7b68f30316eb9188f9d7c64637bc1236f6078aa9c26ff8330b",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/expressway-sky.png",
+      "sha256": "cc6eb00db52f92889211f0d3aeea6013782d62d6df850bf0ded3a6f28ac2fbe1",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/fine-crown.glb",
+      "sha256": "4d2097db2f389fd6149467c5afd01b67651d11d8f9dbede56b1893300bec334e",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/fine-shrubs.glb",
+      "sha256": "443ba86d8491b5c7b7c2bf32c2561567365767b9096e76b7f00c6e6022d2c5a2",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/gantry.bam",
+      "sha256": "d296297ce44a17c9dc9ef463eb67ec815abf930d7bbaa3d49d9e80ba448bf2cb",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/grass-albedo.png",
+      "sha256": "31629fdf71af0c938ffdeb47fd43066ed2eac745c217008cf6ec0f6e838333a0",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/hill-warning.bam",
+      "sha256": "66a85e098bf919b3efb44cb7ff0e571a088e19b118b05bee879bbd42bd0c903c",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/kilometer.bam",
+      "sha256": "75706f04787cea2513f451de6a9d0980cbea524173a4e2bf8d15d18b907103bc",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/lamp.bam",
+      "sha256": "705b70c868c71cf08336e8a87425865b30dfc997ae50b7df6871df92852b5b7a",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/landscape-manifest.json",
+      "sha256": "b9665ceb6cb08a1b2123849981cf3348cffc001aecfd658e39d135e03f19af8c",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/overpass.bam",
+      "sha256": "c8364c884adb1b1af1b3d4e6f5a94a494a89044e393668d036ef635832c96b94",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/reflector.bam",
+      "sha256": "141d3185169d04767540ecc4f68f254825bf2e9247debac5a58b2adf9a83b912",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/route-direction.bam",
+      "sha256": "925f8afddbadf4ce0a14da8ed61d3a69e8262e7fab2feb98ddead668c8c76ac5",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/shaders/bay.frag",
+      "sha256": "7d6238dc84b5d65810afd6bd93c30770115ed6c8bcb798725c36600e7a8e56a0",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/shaders/distance-haze.glsl",
+      "sha256": "234d6d0b39ce4b999879e1458764817c520714da4921e40029b5ddc6bac3cb46",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/shaders/road-shadow.frag",
+      "sha256": "3a2d70509b02e0a35161058176f85880e4a32d7350a825d680cc2a11f75710e4",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/shaders/route-mountain.frag",
+      "sha256": "a772e8dfe71cc255791615b555a4159b42d1acd798e84a80cb8edf1459ba2bdd",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/shaders/route-terrain.frag",
+      "sha256": "6d983727f459e25545a466802fb08ea4de00eb24de04c777a428031bc4f2ee60",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/shaders/route-water.frag",
+      "sha256": "5ae9cc29ae481e15c6ec04c4022d6a0fc83927c7d9ac8b8854d40654b0593ffa",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/shaders/route-water.vert",
+      "sha256": "aaa9cf416c23f33c95316dcd71140d13f62852090a78bf484eb7d04b5e97d028",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/shaders/shadow-transition.glsl",
+      "sha256": "82a5558bc70a3e9dc3932427f6ddaeb93e85f80610b77beb24e84dfa8c9fc785",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/shaders/sky.frag",
+      "sha256": "913697d4235b1756f06c35b0b31c3b7c58a3da980bf9aaadb1a59045f7deb1b2",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/shaders/sky.vert",
+      "sha256": "08acdf52289b6c9cb12f8931112277efcb66f1ee6b6feccab6b131e6fab4f881",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/shaders/terrain-material.frag",
+      "sha256": "b55c61f3376720c32932bd5e39fa94510b1e4a7987dfba6aabcd01c658a4464e",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/shaders/water.vert",
+      "sha256": "81ad457c2b4314517244b87b6f972946d06d414571626f6877809a4c2bb7095e",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/shore-profile.png",
+      "sha256": "a072fc990a2346c57b215993108f135c6d7822dd418b141da49224d9f38a8336",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/shrub-bank.bam",
+      "sha256": "2cc428841c8695a1d2172399986faaa27133d2720491385672ce22165d4383d7",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/sign-manifest.json",
+      "sha256": "fbb94315838838c99f1ab21f81290b98f37f6ade633f947ddb504b1a9672c4b9",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/signs/advance-sign.png",
+      "sha256": "eff7eb5c8330b43ee6ba74e23f9bb1956529ef369fd53dacf42eb05dbed94149",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/signs/bridge-advance.png",
+      "sha256": "fb9415f72a18ec8c35c6366af7135ed3e5342fbbf6ddcb321a39571562cab9e1",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/signs/curve-left.png",
+      "sha256": "52c71314dce19b8f89c88a40c83002c8013206e2cb6d0ec102581480016ab441",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/signs/curve-right.png",
+      "sha256": "1eded4a20f36223e976a72143b1e30a272c3d79496d1aca8fb6e1be3bc64de27",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/signs/digits.png",
+      "sha256": "1f67320f765009caead68c71d4fd5d6f86019f9a810596befc77b3236537007f",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/signs/gantry.png",
+      "sha256": "cf57b2f601d63075b9e9ca26eab0acad7541b38c69b11ad2e03f13b608479efd",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/signs/hill-warning.png",
+      "sha256": "e9e3ec4bc82f9c11804cf04f81f2bd52649fe07a73d2f7bcf9881f79bdb8f7a5",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/signs/kilometer-base.png",
+      "sha256": "6d079de51e3722e6ec8ae8604fe073bd0d7523c569d186ff32f78a752c249959",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/signs/route-direction.png",
+      "sha256": "eff7eb5c8330b43ee6ba74e23f9bb1956529ef369fd53dacf42eb05dbed94149",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/signs/speed-limit.png",
+      "sha256": "dfa71b36adb1d06502af426a72e262a2bf9b07508d40891b424e4a53d98b0b11",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/signs/wind-warning.png",
+      "sha256": "2347b7e40e2be1e54b4907612dcb7a91aec297c7e4a100d25abfd32830223dcc",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/soundwall.bam",
+      "sha256": "1a9e661bdc67dd0884d80b947e5d9d4dbf2a142a7575b9b0e8ccfa3fae843103",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/source-manifest.json",
+      "sha256": "e4931068baeafe7477d3dbaa0dd1bddf287be3631333bcd847cf0b06bc5992b5",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/speed-limit.bam",
+      "sha256": "9b3ac99ca744b40c95a1e34710d1d79094e8ffac4f81d76aeabd3cb00247b699",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/strata-albedo.png",
+      "sha256": "dce32b53f23e05df82ffd608e56eabcbc0c8d279a79a534498a456ef1f832f3b",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/strata-shelf.glb",
+      "sha256": "415cf9c9b2930a1c04bf426f566c2bf3827c0eb39b8a1b0207bbd3e0bc1f53a7",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/surface-manifest.json",
+      "sha256": "a223b3b253ce606ea2bd8a678ccc79ebf76046ab1e9e43f69cb18c516c1dd89e",
+      "same": true
+    },
+    {
+      "path": "assets/game/expressway/wind-warning.bam",
+      "sha256": "e9ccbf4a85080c874d816a1d352e357c7cf1219543b4eb3e2889854ae9ccf570",
+      "same": true
+    }
+  ],
+  "smokes": [
+    {
+      "track": "endless",
+      "shape": "hills",
+      "returncode": 0,
+      "seconds": 12.413981899997452,
+      "output": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-PERF03-final-28eay8rr\\endless-hills",
+      "files": [
+        "h0-offscreen.png",
+        "h0-render-smoke.json",
+        "process.log"
+      ],
+      "rendered": true,
+      "report": {
+        "passed": true,
+        "tick": 243,
+        "player_position": [
+          0.005131594371050596,
+          12.499839782714844,
+          16.420408248901367
+        ],
+        "traffic_count": 12,
+        "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+        "screenshot": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-PERF03-final-28eay8rr\\endless-hills\\h0-offscreen.png",
+        "restart_20_nodes_stable": true,
+        "restart_20_tasks_stable": true,
+        "restart_20_events_stable": true
+      }
+    },
+    {
+      "track": "endless",
+      "shape": "curves",
+      "returncode": 0,
+      "seconds": 13.077957300003618,
+      "output": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-PERF03-final-28eay8rr\\endless-curves",
+      "files": [
+        "h0-offscreen.png",
+        "h0-render-smoke.json",
+        "process.log"
+      ],
+      "rendered": true,
+      "report": {
+        "passed": true,
+        "tick": 381,
+        "player_position": [
+          0.01192083302885294,
+          22.009132385253906,
+          0.4187004864215851
+        ],
+        "traffic_count": 12,
+        "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+        "screenshot": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-PERF03-final-28eay8rr\\endless-curves\\h0-offscreen.png",
+        "restart_20_nodes_stable": true,
+        "restart_20_tasks_stable": true,
+        "restart_20_events_stable": true
+      }
+    },
+    {
+      "track": "coastal",
+      "shape": "straight",
+      "returncode": 0,
+      "seconds": 12.13714049999544,
+      "output": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-PERF03-final-28eay8rr\\coastal-straight",
+      "files": [
+        "h0-offscreen.png",
+        "h0-render-smoke.json",
+        "process.log"
+      ],
+      "rendered": true,
+      "report": {
+        "passed": true,
+        "tick": 250,
+        "player_position": [
+          95.0,
+          4.854918479919434,
+          0.40969318151474
+        ],
+        "traffic_count": 8,
+        "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+        "screenshot": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-PERF03-final-28eay8rr\\coastal-straight\\h0-offscreen.png",
+        "restart_20_nodes_stable": true,
+        "restart_20_tasks_stable": true,
+        "restart_20_events_stable": true
+      }
+    }
+  ]
+}

@@ -67,9 +67,8 @@ class Soundscape:
         throttle = state.player.throttle if control is None else control.throttle
         self.engine_audio.update(state.player, throttle, dt, scale * duck, driving)
         self.driving_audio.update(state.player, dt, scale * duck, driving)
-        music_phase = "menu" if value == "paused" and music_preview else value
-        self.music.update(music_phase, dt, self.master_volume * self.music_volume,
-                          0.55 if duck < 0.96 else 1.0)
+        self.music.update(value, dt, self.master_volume * self.music_volume,
+                          0.55 if duck < 0.96 else 1.0, preview=music_preview)
         if value == "countdown":
             second = math.ceil(countdown_ticks / 120)
             if second > 0 and second != self.countdown_second:

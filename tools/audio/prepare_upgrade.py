@@ -1,4 +1,4 @@
-"""离线制作车辆实录声库、重制碰撞和原创双电台；运行游戏无需DSP或下载。"""
+"""离线制作实录声库、授权电台与原创首页曲；运行游戏无需DSP或下载。"""
 
 import argparse
 import hashlib
@@ -12,6 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
+from prepare_music import prepare as prepare_music
 from prepare_recorded import collisions, engines
 
 RATE = 44100
@@ -73,8 +74,9 @@ def cue(notes, duration):
     return samples
 
 
-def music(night):
-    # 32小节，和弦/低音/旋律/鼓组；整段原创，无商业游戏音轨。
+def home_music():
+    # 保留原海岸曲作为首页BGM，固定原编曲以便逐字节复现。
+    night = False
     bpm = 112 if night else 104
     beat = 60 / bpm
     duration = beat * 128
@@ -155,10 +157,12 @@ def main():
     if args.section == "music":
         manifest_path = OUTPUT / "upgrade-manifest.json"
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        entries = [write(OUTPUT / "music" / f"{name}.wav", music(night), .65, stereo=True)
-                   for night, name in enumerate(("sunset-run", "midnight-circuit"))]
+        entries = prepare_music()
+        entries.append(write(OUTPUT / "music/home-coast.wav", home_music(), .65, stereo=True))
         manifest["assets"] = [entry for entry in manifest["assets"]
                               if not entry["path"].startswith("music/")] + entries
+        manifest["authorship"] = ("Recorded engine CC0 derivatives; original textures, cues "
+                                  "and home BGM; CC BY 4.0 radio music")
         manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         return
     assets = engines()
@@ -171,11 +175,11 @@ def main():
             "radio": ((1000, 720), .12)}
     for name, (notes, duration) in cues.items():
         assets.append(write(OUTPUT / "cues" / f"{name}.wav", cue(notes, duration), .45))
-    for night, name in enumerate(("sunset-run", "midnight-circuit")):
-        assets.append(write(OUTPUT / "music" / f"{name}.wav", music(night), .65, stereo=True))
+    assets.extend(prepare_music())
+    assets.append(write(OUTPUT / "music/home-coast.wav", home_music(), .65, stereo=True))
     collisions()
     (OUTPUT / "upgrade-manifest.json").write_text(json.dumps({"version": 1, "assets": assets,
-        "authorship": "Recorded engine CC0 derivatives; original textures, cues and music",
+        "authorship": "Recorded engine CC0 derivatives; original textures, cues and home BGM; CC BY 4.0 radio music",
         "generator": "tools/audio/prepare_upgrade.py"}, indent=2), encoding="utf-8")
     print(f"Prepared {len(assets)} engine/driving/music/cue assets and v2 collision bank")
 

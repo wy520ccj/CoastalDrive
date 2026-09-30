@@ -62,23 +62,24 @@ def test_default_engine_leaves_headroom_for_collision_and_radio():
     assert body.gain > attack.gain * 1.3
 
 
-def test_station_audio_has_no_broadband_hiss_floor():
+def test_music_format_headroom_and_distinct_licensed_sources():
     import wave
     from array import array
 
-    root = resource_root() / "assets/game/audio/music"
-    for path in root.glob("*.wav"):
+    root = resource_root() / "assets/game/audio"
+    credits = json.loads((root / "music-sources.json").read_text(encoding="utf-8"))
+    tracks = credits["tracks"]
+    assert {t["isrc"] for t in tracks} == {"USUAN1700069", "USUAN1200051"}
+    assert len({t["source_sha256"] for t in tracks}) == 2
+    assert all(t["author"] == "Kevin MacLeod" and t["license"] == "CC BY 4.0" for t in tracks)
+    for path in (root / "music").glob("*.wav"):
         with wave.open(str(path), "rb") as clip:
-            rate = clip.getframerate()
-            channels = clip.getnchannels()
+            assert (clip.getframerate(), clip.getnchannels(), clip.getsampwidth()) == (44100, 2, 2)
             pcm = array("h", clip.readframes(clip.getnframes()))
-        # 二阶差分突出宽带嘶声；旋律与低频鼓保持，不能靠整曲降音量过关。
-        samples = pcm[::channels]
-        energy = sum(x*x for x in samples)
-        hiss = sum((samples[i] - 2*samples[i-1] + samples[i-2])**2
-                   for i in range(2, len(samples)))
-        assert rate == 44100 and channels == 2
-        assert hiss / energy < .0005
+        assert 0 < max(abs(x) for x in pcm) / 32768 < .7
+    # 首页完整保留已交付的原海岸曲，而不是重新生成一首近似曲。
+    assert hashlib.sha256((root / "music/home-coast.wav").read_bytes()).hexdigest() == (
+        "c0a3a3cf5a528286bad98fea1104d5a68279e0f2c14e0db765d54703e44fbf0f")
 
 
 def test_surface_and_braking_are_speed_gated():
@@ -112,10 +113,10 @@ def test_radio_switch_pause_resume_and_independent_volume():
         sound.update(frame(0), phase("driving"), None, .1)
     sound.music.select(2)
     sound.update(frame(0), phase("driving"), None, .1)
-    assert sound.music.playing == [False, True]
+    assert sound.music.playing == [False, True, False]
     for _ in range(10):
         sound.update(frame(0), phase("driving"), None, .1)
-    assert sound.music.playing == [False, True]
+    assert sound.music.playing == [False, True, False]
     sound.set_volumes(100, 0, 60)
     sound.update(frame(0), phase("driving"), None, .1)
     assert not sound.loops_playing and sound.music.playing[1]
@@ -127,23 +128,33 @@ def test_radio_switch_pause_resume_and_independent_volume():
     assert all(not active for active in sound.music.playing)
 
 
-def test_menu_station_and_paused_settings_preview_match_selected_track():
+def test_home_bgm_radio_preview_pause_and_driving_use_separate_tracks():
     sound, _ = make_soundscape()
     sound.music.select(2)
     for _ in range(10):
         sound.update(frame(0), phase("menu"), None, .1)
-    assert sound.music.playing == [False, True]
+    assert sound.music.playing == [False, False, True]
+    assert sound.music.tracks[2].path.endswith("home-coast.wav")
     sound.update(frame(0), phase("paused"), None, .1)
-    assert sound.music.playing == [False, False]
+    assert sound.music.playing == [False, False, False]
     sound.music.select(1)
     for _ in range(10):
         sound.update(frame(0), phase("paused"), None, .1, music_preview=True)
-    assert sound.music.playing == [True, False]
+    assert sound.music.playing == [True, False, False]
     assert not sound.loops_playing
     sound.music.select(0)
     for _ in range(10):
+        sound.update(frame(0), phase("menu"), None, .1, music_preview=True)
+    assert sound.music.playing == [False, False, False]
+    for _ in range(10):
         sound.update(frame(0), phase("menu"), None, .1)
-    assert sound.music.playing == [False, False]
+    assert sound.music.playing == [False, False, True]
+    sound.music.select(2)
+    for _ in range(10):
+        sound.update(frame(0), phase("driving"), None, .1)
+        assert sum(sound.music.playing) <= 1
+    assert sound.music.playing == [False, True, False]
+    sound.close()
 
 
 def test_collision_materials_choose_different_weight_and_attack_layers():
@@ -188,7 +199,7 @@ def test_audio_settings_migrate_old_file_and_save_radio(tmp_path):
 def test_upgrade_manifest_matches_actual_assets():
     root = resource_root() / "assets/game/audio"
     manifest = json.loads((root / "upgrade-manifest.json").read_text())
-    assert len(manifest["assets"]) == 25
+    assert len(manifest["assets"]) == 26
     for entry in manifest["assets"]:
         assert hashlib.sha256((root / entry["path"]).read_bytes()).hexdigest() == entry["sha256"]
     assert all(entry["duration"] > 60 for entry in manifest["assets"]
@@ -207,7 +218,7 @@ def test_radio_preloads_samples_and_never_overlaps_during_rapid_switches():
     sound.music.select(2)
     for _ in range(24):
         sound.update(frame(0), phase("driving"), None, 1/120)
-    assert sound.music.playing == [False, True]
+    assert sound.music.playing == [False, True, False]
     sound.close()
 
 

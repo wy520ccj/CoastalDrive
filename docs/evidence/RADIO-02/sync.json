@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "tracked_files_checked": 974,
+  "package_files_checked": 260,
+  "source_mismatches": [],
+  "package_mismatches": [],
+  "package": "0.8.3-radio02",
+  "scope": "all tracked project files plus full latest package; this report copied identically after comparison"
+}
