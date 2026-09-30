@@ -15,7 +15,7 @@ AREAS = {
     "workflow": ["test_validation_runner"],
     "core": ["test_core", "test_stage4"],
     "vehicle": ["test_h1_vehicle", "test_driving_response", "test_curved_driving",
-                "test_road_loads", "test_vehicle_contacts", "test_physics_testbed"],
+                "test_road_loads", "test_vehicle_contacts", "test_physics_testbed", "test_h2_map"],
     "traffic": ["test_h4a_traffic", "test_traffic_behavior", "test_traffic_impacts",
                 "test_traffic_recovery"],
     "road": ["test_endless", "test_highway_segments", "test_highway_curve",

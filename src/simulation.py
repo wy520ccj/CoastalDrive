@@ -17,6 +17,7 @@ from panda3d.bullet import (
 )
 from panda3d.core import BitMask32, TransformState, Vec3
 
+from coastal_collision import add_rail_shapes
 from coastal_map import SEA_LEVEL, map_meshes, on_road
 from highway_driver import HighwayDriver
 from highway_map import HIGHWAY_LENGTH, collision_boxes, traffic_spawns
@@ -392,13 +393,16 @@ class Simulation:
 
     def _build_road(self, meshes):
         for name, (vertices, triangles) in meshes.items():
-            mesh = BulletTriangleMesh()
-            for triangle in triangles:
-                mesh.addTriangle(*(Vec3(*vertices[i]) for i in triangle))
-            shape = BulletTriangleMeshShape(mesh, dynamic=False)
-            shape.setMargin(0.01)
             body = BulletRigidBodyNode(name)
-            body.addShape(shape)
+            if name in ("inner-rail", "outer-rail"):
+                add_rail_shapes(body, vertices)
+            else:
+                mesh = BulletTriangleMesh()
+                for triangle in triangles:
+                    mesh.addTriangle(*(Vec3(*vertices[i]) for i in triangle))
+                shape = BulletTriangleMeshShape(mesh, dynamic=False)
+                shape.setMargin(0.01)
+                body.addShape(shape)
             # Bits 0/1/2 are surface queries, vehicle collision and camera obstruction.
             body.setIntoCollideMask(BitMask32(7))
             self._world.attachRigidBody(body)
@@ -722,13 +726,17 @@ class Simulation:
             TransformState.garbageCollect()
 
     def _count_player_collisions(self):
-        # Count an impact episode, not every physics step spent rubbing a barrier.
-        for contact in self._world.contactTest(self._chassis).getContacts():
-            other = contact.getNode1() if contact.getNode0() == self._chassis else contact.getNode0()
+        # 与动力学使用同一批完成步接触；重新contactTest会漏掉有求解冲量的margin接触。
+        for manifold in self._world.getManifolds():
+            a, b = manifold.getNode0(), manifold.getNode1()
+            if self._chassis not in (a, b):
+                continue
+            other = b if a == self._chassis else a
             name = other.getName()
             if not any(kind in name for kind in ("traffic", "rail", "tree", "rock", "checkpoint", "wall")):
                 continue
-            if contact.getManifoldPoint().getDistance() > 0:
+            if not any(point.getDistance() <= 0 or point.getAppliedImpulse() > 0
+                       for point in manifold.getManifoldPoints()):
                 continue
             if self._tick - self._last_contact_tick >= 120:
                 self.player_collisions += 1

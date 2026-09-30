@@ -159,8 +159,8 @@ def test_water_recovery_is_not_interpolated_through_the_scenery():
         session.close()
 
 
-@pytest.mark.parametrize("speed_kmh", [60, 120])
-def test_oblique_guardrail_impact_does_not_tunnel(sim, speed_kmh):
+@pytest.mark.parametrize("speed_kmh, expected_episodes", [(60, 1), (120, 2)])
+def test_oblique_guardrail_impact_does_not_tunnel(sim, speed_kmh, expected_episodes):
     sim.reset_player((95, 0, 0.55), -15)
     for _ in range(120):
         sim.step(Control())
@@ -173,5 +173,33 @@ def test_oblique_guardrail_impact_does_not_tunnel(sim, speed_kmh):
         assert project(*car.position[:2])[1] < 6
         assert abs(car.roll) < 45
         collision_events.extend(sim.snapshot().events)
-    # 撞上实体护栏应记录一次事故，持续接触不能逐 tick 重复计数。
-    assert collision_events == ["player_collision"]
+    # 120km/h弹离后真实回撞；每次事故只计一次，持续擦碰不重复计数。
+    assert collision_events == ["player_collision"] * expected_episodes
+
+
+def test_guardrail_side_contact_has_horizontal_normal_and_counts_solver_contact(sim):
+    sim.reset_player((95, 0, .55), -15)
+    for _ in range(120):
+        sim.step(Control())
+    sim._chassis.setLinearVelocity(sim._chassis.getTransform().getQuat().getForward() * 120 / 3.6)
+    side_impulses = 0
+    for _ in range(110):
+        sim.step(Control())
+        for manifold in sim._world.getManifolds():
+            a, b = manifold.getNode0(), manifold.getNode1()
+            if sim._chassis not in (a, b):
+                continue
+            rail = b if a == sim._chassis else a
+            if rail.getName() != "outer-rail":
+                continue
+            for contact in manifold.getManifoldPoints():
+                if contact.getAppliedImpulse() <= 0:
+                    continue
+                point = (contact.getPositionWorldOnB() if b == rail
+                         else contact.getPositionWorldOnA())
+                height = point.z - project(point.x, point.y)[0].z
+                if .1 < height < .65:
+                    side_impulses += 1
+                    assert abs(contact.getNormalWorldOnB().z) < .01
+                assert sim.player_collisions == 1
+    assert side_impulses > 0

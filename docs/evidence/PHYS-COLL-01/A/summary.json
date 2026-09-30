@@ -1,0 +1,46 @@
+{
+  "commit": "b16834557279c504dcd43999617e0018ad23afb4",
+  "seed": 31,
+  "track": "coastal",
+  "settle_ticks": 120,
+  "dt": 0.008333333333333333,
+  "sampling": "Simulation.step后：wheel cache来自after_step；body为真实persistent manifold",
+  "vertex_columns": [
+    "x",
+    "y",
+    "z",
+    "road_height",
+    "height_above_road",
+    "lateral"
+  ],
+  "cases": [
+    {
+      "speed_kmh": 60,
+      "samples": 360,
+      "first_body_collision": 122,
+      "first_over_6m": null,
+      "first_vertex_over_rail": null,
+      "first_all_vertices_over_rail": null,
+      "peak_upward_velocity": 0.6506572365760803,
+      "peak_lateral": 4.772743225097656,
+      "peak_abs_roll": 9.729354858398438,
+      "original_6m_pass": true,
+      "original_45deg_pass": true,
+      "collisions": 1
+    },
+    {
+      "speed_kmh": 120,
+      "samples": 360,
+      "first_body_collision": 61,
+      "first_over_6m": 283,
+      "first_vertex_over_rail": 243,
+      "first_all_vertices_over_rail": 318,
+      "peak_upward_velocity": 4.088586330413818,
+      "peak_lateral": 10.627088835137386,
+      "peak_abs_roll": 19.928985595703125,
+      "original_6m_pass": false,
+      "original_45deg_pass": true,
+      "collisions": 1
+    }
+  ]
+}
