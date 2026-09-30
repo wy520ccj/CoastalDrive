@@ -1,0 +1,71 @@
+{
+  "passed": true,
+  "onscreen": true,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "note": "Short automated route sample; not human acceptance or a long-run gate.",
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "seed": 23,
+  "traffic_count": 8,
+  "distance_m": 365.01639647602286,
+  "simulation_seconds": 27.03333333333333,
+  "wall_seconds": 27.979611199999997,
+  "average_fps": 58.73615649221386,
+  "p95_frame_ms": 20.339700000477023,
+  "p99_frame_ms": 22.379300000466174,
+  "dropped_simulation_seconds": 0.9249999999999999,
+  "captures": [
+    {
+      "screenshot": "drive-000.png",
+      "time": 0.0,
+      "distance_m": 0.0,
+      "position": [
+        95.0,
+        0.0,
+        0.550000011920929
+      ]
+    },
+    {
+      "screenshot": "drive-070.png",
+      "time": 7.508333333333333,
+      "distance_m": 70.01281680246427,
+      "position": [
+        91.65514373779297,
+        69.1065444946289,
+        1.6917617321014404
+      ]
+    },
+    {
+      "screenshot": "drive-140.png",
+      "time": 12.525,
+      "distance_m": 140.25918627147837,
+      "position": [
+        43.668701171875,
+        116.20105743408203,
+        5.364419460296631
+      ]
+    },
+    {
+      "screenshot": "drive-225.png",
+      "time": 17.275,
+      "distance_m": 225.20279548095908,
+      "position": [
+        -39.116615295410156,
+        110.11682891845703,
+        8.444239616394043
+      ]
+    },
+    {
+      "screenshot": "drive-315.png",
+      "time": 22.791666666666668,
+      "distance_m": 315.16996073394,
+      "position": [
+        -92.14906311035156,
+        43.90911102294922,
+        6.223389148712158
+      ]
+    }
+  ]
+}

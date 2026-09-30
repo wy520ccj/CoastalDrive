@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "path": "engine/v8-900-coast.wav",
+      "sha256": "2b5b8c1fc31aa996338dfa84ab12e2d87bdc48f0f15671e27eb6f01a71f47093",
+      "duration": 3.6
+    },
+    {
+      "path": "engine/v8-900-load.wav",
+      "sha256": "82884bcbfaa291c224203c6f30ceb7703af5da681c1b6f682b78ccfc9e4c5fdf",
+      "duration": 3.6
+    },
+    {
+      "path": "engine/v8-1800-coast.wav",
+      "sha256": "8b1467233b2ac0c6c52855c8c55011e58030d50ac41954eeb1ec9a443d5ec84b",
+      "duration": 3.6
+    },
+    {
+      "path": "engine/v8-1800-load.wav",
+      "sha256": "6d78493a409f7285488d1ae70144e6f6d253d3daf9a180f4b83cba20186235b0",
+      "duration": 3.6
+    },
+    {
+      "path": "engine/v8-3200-coast.wav",
+      "sha256": "4233533629372abf5fd81a34bc74e13514cdd96eb6750dd2ec5120f2c6c93c2e",
+      "duration": 3.6
+    },
+    {
+      "path": "engine/v8-3200-load.wav",
+      "sha256": "fa571dd95bdf5ac648f8b099c28721f939624552c577705adce7fd8b195509d5",
+      "duration": 3.6
+    },
+    {
+      "path": "engine/v8-4700-coast.wav",
+      "sha256": "b8afb19b60ad7f3308b2e0a09203d9e127696abe4b33d42202927566a8632f9f",
+      "duration": 3.6
+    },
+    {
+      "path": "engine/v8-4700-load.wav",
+      "sha256": "da721eefe59316f420ea2ad018a696257b84ed2d7272ab4bef3534365f062ebc",
+      "duration": 3.6
+    },
+    {
+      "path": "engine/v8-6500-coast.wav",
+      "sha256": "b10ad342b47072696a1d94f8b3225a58b7836308e2e2cb4f5795ed4d95f58d20",
+      "duration": 3.6
+    },
+    {
+      "path": "engine/v8-6500-load.wav",
+      "sha256": "6f44018ca98c59469d382dce7bfa53365b44ab1f11815e5e31cd79902c96e312",
+      "duration": 3.6
+    },
+    {
+      "path": "driving/asphalt.wav",
+      "sha256": "5fc210e869ed44b17b585f2633d994a9963038e5a13d1f5d24da61c8d1b939a2",
+      "duration": 4.0
+    },
+    {
+      "path": "driving/gravel.wav",
+      "sha256": "849cd2a3de012f3f5d8e60ff5d375e966b13109a992c2bb65830c18672747dd8",
+      "duration": 4.0
+    },
+    {
+      "path": "driving/wind.wav",
+      "sha256": "ffd83c34c79ba9ae645d6d31ae01b6f0d6ebaba6b33da0715d23c5804d4804ce",
+      "duration": 4.0
+    },
+    {
+      "path": "driving/tire.wav",
+      "sha256": "de4b19ac4a29cdc0f17f2f9aec42e402e190de8e7e37686db9af814a6c7d9bbe",
+      "duration": 4.0
+    },
+    {
+      "path": "cues/select.wav",
+      "sha256": "81467371acbd82d3cf6562d38468231d26ba16e304a0036f6a2dd6c98e596c77",
+      "duration": 0.07501133786848073
+    },
+    {
+      "path": "cues/confirm.wav",
+      "sha256": "24a1e1c0e71229c9719707bf770088f1784dd845b8e95fc8ab9e9518c12d354c",
+      "duration": 0.16
+    },
+    {
+      "path": "cues/countdown.wav",
+      "sha256": "586dfc525f75b90cf3c8a6fe4e1a0890eeb79ab751210692ae8d17589aa15279",
+      "duration": 0.16
+    },
+    {
+      "path": "cues/go.wav",
+      "sha256": "3e5f9a1af473327303bf533350bfa2938d661bc7934040661e011e6468a3f64f",
+      "duration": 0.3
+    },
+    {
+      "path": "cues/checkpoint.wav",
+      "sha256": "4dc1f0ac6df57d298936917060c1b3565fb2049ab7d4ce62c3a3faf9d60993da",
+      "duration": 0.26
+    },
+    {
+      "path": "cues/success.wav",
+      "sha256": "3c4ce52eeee3fcb488d5950bbb025765eb75e4eeeaee8e80eb59bda42d6b71b7",
+      "duration": 0.85
+    },
+    {
+      "path": "cues/finish.wav",
+      "sha256": "93bc58082fb1c666324f5d45c80d567aeef4d6ef0f44b4c47558e0a8c081ae32",
+      "duration": 0.4
+    },
+    {
+      "path": "cues/failure.wav",
+      "sha256": "11be92b5affb852e89a1e9470ce27e8c2ef7b4b84debab33f257890fc3ea112f",
+      "duration": 0.55
+    },
+    {
+      "path": "cues/radio.wav",
+      "sha256": "72c5c69934d42bdb391be7ba01f529ccef93a52099dcd553de903e6099c2cbb3",
+      "duration": 0.12
+    },
+    {
+      "path": "music/sunset-run.wav",
+      "sha256": "5818114eff6f6c4feed22e391f41aec8c845cd5f12b10cb930e5ac67a20d99dc",
+      "duration": 73.84614512471656
+    },
+    {
+      "path": "music/midnight-circuit.wav",
+      "sha256": "09e58e713a7ba1f5d60029fb06aec32ef639466e96573a9cc6e84098ac9e1350",
+      "duration": 68.57142857142857
+    }
+  ],
+  "authorship": "Original offline procedural V8, textures, cues and instrumental compositions",
+  "generator": "tools/audio/prepare_upgrade.py"
+}

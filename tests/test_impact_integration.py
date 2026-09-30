@@ -72,7 +72,7 @@ def test_sustained_real_rail_contact_plays_one_hit_and_one_scrape_loop():
     log = StringIO()
     sound.set_impact_diagnostic(log)
     try:
-        simulation.reset_player((7.2, 30, .55))
+        simulation.reset_player((6.9, 30, .55))
         simulation._chassis.setLinearVelocity(Vec3(0, 8, 0))
         for _ in range(840):
             simulation.step(Control(throttle=.15, steering=.2))

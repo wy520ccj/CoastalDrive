@@ -1,0 +1,421 @@
+{
+  "kind": "45-second comparison; not final performance or human gate",
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 12,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "streaming_phases": {},
+  "wall_seconds": 45.004615799999996,
+  "sample_seconds": 42.016977499999484,
+  "frames": 2348,
+  "average_fps": 55.882172866909066,
+  "display_draw_frames": 2346,
+  "display_draw_fps": 55.87594032169298,
+  "display_draw_p95_ms": 24.408100001892308,
+  "display_draw_p99_ms": 32.37330000047223,
+  "display_draw_max_ms": 50.838900002418086,
+  "display_draw_over_50ms": 1,
+  "p95_ms": 24.926599999162136,
+  "p99_ms": 32.87880000061705,
+  "max_ms": 46.12489999999525,
+  "frames_over_50ms": 0,
+  "frames_over_100ms": 0,
+  "dropped_simulation_seconds": 0.0,
+  "warmup_dropped_seconds": 0.5833333333333333,
+  "distance_m": 984.1149913226728,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 32.5416723,
+      "ms": 46.12489999999525
+    },
+    {
+      "second": 32.5856376,
+      "ms": 43.95270000168239
+    },
+    {
+      "second": 5.4938134,
+      "ms": 41.2188000009337
+    },
+    {
+      "second": 39.8975992,
+      "ms": 40.85260000283597
+    },
+    {
+      "second": 32.6259103,
+      "ms": 40.27319999659085
+    },
+    {
+      "second": 32.4598452,
+      "ms": 38.85710000031395
+    },
+    {
+      "second": 39.8206523,
+      "ms": 37.609799997881055
+    },
+    {
+      "second": 5.9949457,
+      "ms": 37.16519999943557
+    },
+    {
+      "second": 39.934502,
+      "ms": 36.90369999821996
+    },
+    {
+      "second": 41.445458699999996,
+      "ms": 36.44419999909587
+    },
+    {
+      "second": 39.8567473,
+      "ms": 36.09169999981532
+    },
+    {
+      "second": 40.0527437,
+      "ms": 35.94190000148956
+    }
+  ],
+  "segment_work_max_ms": 19.01940000243485,
+  "segment_step_max_ms": 16.484400002809707,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 19.01940000243485,
+      "max_step_ms": 16.484400002809707,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 18.73909999994794,
+      "max_step_ms": 16.484400002809707,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 17.03320000160602,
+      "max_step_ms": 15.537600000243401,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 16.990100000839448,
+      "max_step_ms": 15.537600000243401,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 15.916399999696296,
+      "max_step_ms": 16.484400002809707,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 15.647499996703118,
+      "max_step_ms": 16.484400002809707,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 13.975100002426188,
+      "max_step_ms": 16.484400002809707,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 11.252000000240514,
+      "max_step_ms": 16.484400002809707,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 10.971600000630133,
+      "max_step_ms": 16.484400002809707,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 10.825199999089818,
+      "max_step_ms": 16.484400002809707,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 10.155399999348447,
+      "max_step_ms": 16.484400002809707,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 9.949800001777476,
+      "max_step_ms": 15.537600000243401,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 31,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 32,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 33,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 34,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 35,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 36,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 37,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 38,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 39,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 40,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 41,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 42,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 43,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 44,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 45,
+      "minimized": false,
+      "foreground": true
+    }
+  ],
+  "passed": true,
+  "short_performance_passed": false,
+  "git_head": "93275ed8fccc92fad587ddbcb9ef92c19f7b300a",
+  "git_status": "M src/application.py\n M src/environment/expressway_materials.py\n M tools/performance/benchmark_runtime.py\n M tools/performance/verify_streaming.py\n?? assets/game/expressway/shaders/shadow-transition.glsl\n?? docs/tasks/PERF-04-FIX.md\n?? tools/environment/check_tree_shadow.py\n?? tools/performance/check_dynamic_hud.py"
+}

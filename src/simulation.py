@@ -29,6 +29,7 @@ from test_track import OBSTACLES, SPAWN, on_asphalt
 from traffic import Driver, Road, extents
 from traffic_recovery import TrafficRecovery
 from vehicle import Vehicle
+from vehicle_config import CAR
 from vehicle_state import FIXED_DT, CarState, Control, WheelState, forward, heading_for
 from world_props import collision_box, props_for
 
@@ -197,8 +198,8 @@ class Simulation:
         by_normal = max((abs(nx), "right" if nx < 0 else "left"),
                         (abs(ny), "front" if ny < 0 else "rear"),
                         (abs(nz), "roof" if nz < 0 else "underbody"))
-        by_position = max((abs(x) / 0.78, "left" if x < 0 else "right"),
-                          (abs(y) / 2.05, "rear" if y < 0 else "front"),
+        by_position = max((abs(x) / CAR.collision_half_width, "left" if x < 0 else "right"),
+                          (abs(y) / CAR.collision_half_length, "rear" if y < 0 else "front"),
                           (abs(z - 0.42) / 0.42, "underbody" if z < 0.42 else "roof"))
         return by_normal[1] if abs(by_position[0] - by_normal[0]) < 0.3 else by_position[1]
 
@@ -455,7 +456,8 @@ class Simulation:
             self._generations.append(0)
 
     def _drive_traffic(self):
-        states = [self.player.snapshot(), *[n.snapshot() for n in self.npcs]]
+        states = [self.player.snapshot(include_wheels=False),
+                  *[n.snapshot(include_wheels=False) for n in self.npcs]]
         locations = [self.road.locate(state) for state in states]
         lane_states = (
             [self.road.lane_frame(state, p) for state, p in zip(states, locations)]
@@ -508,7 +510,7 @@ class Simulation:
         for car in [self.player, *self.npcs]:
             if car is ignore or car._chassis in self._retired_traffic:
                 continue
-            state = car.snapshot()
+            state = car.snapshot(include_wheels=False)
             other_s, other_lateral = self.road.locate(state)
             other_width, other_length = extents(state.heading, road_heading)
             if abs(other_lateral - lateral) > width + other_width + 0.4:
@@ -523,7 +525,7 @@ class Simulation:
         return True
 
     def _outside_player_view(self, position):
-        player = self.player.snapshot()
+        player = self.player.snapshot(include_wheels=False)
         delta = Vec3(*position) - Vec3(*player.position)
         distance = delta.length()
         # Beyond the fog, or well behind the broad chase-camera view.
@@ -567,11 +569,11 @@ class Simulation:
                 break
 
     def _update_stream(self):
-        player_y = self.road.locate(self.player.snapshot())[0]
+        player_y = self.road.locate(self.player.snapshot(include_wheels=False))[0]
         for i, car in enumerate(self.npcs):
             body = car._chassis
             if body not in self._retired_traffic:
-                if abs(self.road.locate(car.snapshot())[0] - player_y) < 1100:
+                if abs(self.road.locate(car.snapshot(include_wheels=False))[0] - player_y) < 1100:
                     continue
                 self._world.removeVehicle(car._vehicle)
                 self._retired_traffic.add(body)
@@ -598,14 +600,15 @@ class Simulation:
                 self._events += (f"traffic_recycled:{i}",)
                 break
         occupied = [
-            self.road.locate(car.snapshot())[0] + (0 if self.road.curve else self.origin_y)
+            self.road.locate(car.snapshot(include_wheels=False))[0]
+            + (0 if self.road.curve else self.origin_y)
             for car in [self.player, *self.npcs]
             if car._chassis not in self._retired_traffic
         ]
         self.stream.update(player_y + (0 if self.road.curve else self.origin_y), self.origin_y, occupied)
 
     def _rebase(self):
-        local_y = self.player.snapshot().position[1]
+        local_y = self.player._chassis.getTransform().getPos().y
         if abs(local_y) < REBASE_DISTANCE:
             return
         amount = math.trunc(local_y / SEGMENT_LENGTH) * SEGMENT_LENGTH

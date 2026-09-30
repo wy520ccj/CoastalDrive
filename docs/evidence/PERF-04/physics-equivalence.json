@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "routes": [
+    {
+      "shape": "straight",
+      "passed": true,
+      "quaternions": 2132,
+      "sign_flips": 482,
+      "max_aligned_quaternion_delta": 1.7881393432617188e-07,
+      "unequal_fields": []
+    },
+    {
+      "shape": "curves",
+      "passed": true,
+      "quaternions": 2132,
+      "sign_flips": 508,
+      "max_aligned_quaternion_delta": 2.384185791015625e-07,
+      "unequal_fields": []
+    },
+    {
+      "shape": "hills",
+      "passed": true,
+      "quaternions": 2132,
+      "sign_flips": 417,
+      "max_aligned_quaternion_delta": 1.7881393432617188e-07,
+      "unequal_fields": []
+    }
+  ]
+}

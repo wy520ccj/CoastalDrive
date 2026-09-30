@@ -37,13 +37,13 @@ def test_bullet_post_solve_four_point_rail_contact_is_one_real_event():
         snapshot = simulation.snapshot()
         assert len(snapshot.impacts) == 1
         impact = snapshot.impacts[0]
-        assert impact.tick == snapshot.tick == 21
+        assert impact.tick == snapshot.tick == 17
         assert impact.material == "metal_barrier"
         assert impact.raw_impulse > 8_000
         assert impact.normal_speed > 6
         assert impact.tangential_speed > 10
         assert impact.zone == "right"
-        assert impact.event_id == f"{snapshot.contact_epoch}:21:0"
+        assert impact.event_id == f"{snapshot.contact_epoch}:17:0"
         row = json.loads(diagnostic.getvalue().splitlines()[-1])
         assert row["type"] == "pulse"
         assert row["new_impact"] is True
@@ -88,7 +88,8 @@ def test_moving_npc_contact_emits_audio_events_without_changing_episode_count():
 def test_five_second_rail_scrape_stays_contact_without_repeated_impacts():
     simulation = Simulation(track="highway", traffic_count=0)
     try:
-        simulation.reset_player((7.2, 30, 0.55))
+        # 新碰撞盒半宽1.05m；旧7.2m摆位会深陷护栏并触发地面撞击。
+        simulation.reset_player((6.9, 30, 0.55))
         simulation.player._chassis.setLinearVelocity(Vec3(0, 8, 0))
         contact_ticks = []
         impacts = []

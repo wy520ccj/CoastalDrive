@@ -1,6 +1,6 @@
 # CoastalDrive
 
-本地开发版本：**0.8.3**。阶段 6B 已接入真实 Bullet 碰撞事件、分层汽车撞击声与持续擦碰；实际驾驶音色校准、完整画面和性能验收仍待进行。进度见[当前进度](docs/current-progress.md)，环境增量见[环境与声音记录](docs/phase6b-atmosphere.md)，分阶段路线见[开发计划](docs/development-plan.md)。
+当前版本：**0.8.3 AUDIO-01**，包含PERF-04-FIX的UI闪烁修复与新版环境、车辆、界面。双击 **试玩.cmd** 启动最新独立包。引擎、碰撞、轮胎/风噪、界面提示和车载双电台已升级；**N切台、M开关音乐**，声音设置分别调整效果与音乐音量。[音频设计与来源](docs/audio-design.md) · [本轮证据和试听](docs/evidence/AUDIO-01/README.md) · [当前进度](docs/current-progress.md)。
 
 CoastalDrive 是使用 Python 和 Panda3D 开发的驾驶游戏，包含滨海计时挑战、滨海自由驾驶，以及可选直路/弯坡和三档车流的无限高速。玩家可在高速自由驾驶或 5 公里无碰撞挑战中驾驶；倒车可用于调整姿态。
 

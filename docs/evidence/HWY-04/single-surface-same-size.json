@@ -1,0 +1,74 @@
+[
+  {
+    "model": "gantry",
+    "distance": 80,
+    "white_coverage_range": [
+      0.23557600153344835,
+      0.25244393329499715
+    ],
+    "white_coverage_swing": 0.0168679317615488
+  },
+  {
+    "model": "gantry",
+    "distance": 200,
+    "white_coverage_range": [
+      0.35268505079825835,
+      0.3570391872278665
+    ],
+    "white_coverage_swing": 0.004354136429608135
+  },
+  {
+    "model": "gantry",
+    "distance": 350,
+    "white_coverage_range": [
+      0.5310344827586206,
+      0.5310344827586206
+    ],
+    "white_coverage_swing": 0.0
+  },
+  {
+    "model": "gantry",
+    "distance": 480,
+    "white_coverage_range": [
+      0.6666666666666666,
+      0.6666666666666666
+    ],
+    "white_coverage_swing": 0.0
+  },
+  {
+    "model": "route-direction",
+    "distance": 80,
+    "white_coverage_range": [
+      0.34840579710144925,
+      0.3663768115942029
+    ],
+    "white_coverage_swing": 0.017971014492753623
+  },
+  {
+    "model": "route-direction",
+    "distance": 200,
+    "white_coverage_range": [
+      0.6243386243386243,
+      0.6243386243386243
+    ],
+    "white_coverage_swing": 0.0
+  },
+  {
+    "model": "route-direction",
+    "distance": 350,
+    "white_coverage_range": [
+      0.7435897435897436,
+      0.7435897435897436
+    ],
+    "white_coverage_swing": 0.0
+  },
+  {
+    "model": "route-direction",
+    "distance": 480,
+    "white_coverage_range": [
+      0.7777777777777778,
+      0.7777777777777778
+    ],
+    "white_coverage_swing": 0.0
+  }
+]

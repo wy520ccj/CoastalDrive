@@ -1,0 +1,419 @@
+{
+  "kind": "45-second comparison; not final performance or human gate",
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 12,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "wall_seconds": 45.050657,
+  "sample_seconds": 42.05695700000069,
+  "frames": 892,
+  "average_fps": 21.209332857819106,
+  "display_draw_frames": 890,
+  "display_draw_fps": 21.225211501780063,
+  "display_draw_p95_ms": 78.78770000024815,
+  "display_draw_p99_ms": 108.07410000052187,
+  "display_draw_max_ms": 139.97469999958412,
+  "display_draw_over_50ms": 268,
+  "p95_ms": 80.86829999956535,
+  "p99_ms": 106.61640000034822,
+  "max_ms": 127.62429999929736,
+  "frames_over_50ms": 285,
+  "frames_over_100ms": 17,
+  "dropped_simulation_seconds": 1.641666666666664,
+  "warmup_dropped_seconds": 0.8666666666666667,
+  "distance_m": 933.8938096684489,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 35.350430700000004,
+      "ms": 127.62429999929736
+    },
+    {
+      "second": 35.9985145,
+      "ms": 117.08559999897261
+    },
+    {
+      "second": 36.33205579999999,
+      "ms": 113.46819999744184
+    },
+    {
+      "second": 35.6764924,
+      "ms": 112.4244999991788
+    },
+    {
+      "second": 35.462829299999996,
+      "ms": 112.39080000086688
+    },
+    {
+      "second": 36.2185834,
+      "ms": 110.05940000177361
+    },
+    {
+      "second": 36.108526999999995,
+      "ms": 110.00720000083675
+    },
+    {
+      "second": 20.0484385,
+      "ms": 107.46210000070278
+    },
+    {
+      "second": 35.2228145,
+      "ms": 106.61640000034822
+    },
+    {
+      "second": 36.6090822,
+      "ms": 105.42930000156048
+    },
+    {
+      "second": 35.781206499999996,
+      "ms": 104.70720000012079
+    },
+    {
+      "second": 44.950193799999994,
+      "ms": 104.3762000008428
+    }
+  ],
+  "segment_work_max_ms": 46.01629999888246,
+  "segment_step_max_ms": 45.02180000054068,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 46.01629999888246,
+      "max_step_ms": 44.967599998926744,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 45.5048000003444,
+      "max_step_ms": 45.02180000054068,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 45.15499999979511,
+      "max_step_ms": 45.02180000054068,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 44.40650000105961,
+      "max_step_ms": 45.02180000054068,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 43.663099997502286,
+      "max_step_ms": 43.515600002137944,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 43.16889999972773,
+      "max_step_ms": 45.02180000054068,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 42.30289999759407,
+      "max_step_ms": 45.02180000054068,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 41.93960000338848,
+      "max_step_ms": 45.02180000054068,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 41.76519999964512,
+      "max_step_ms": 41.41749999689637,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 41.5988999993715,
+      "max_step_ms": 45.02180000054068,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 40.24639999988722,
+      "max_step_ms": 41.41749999689637,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 40.178899998863926,
+      "max_step_ms": 41.41749999689637,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 31,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 32,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 33,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 34,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 35,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 36,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 37,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 38,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 39,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 40,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 41,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 42,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 43,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 44,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 45,
+      "minimized": false,
+      "foreground": true
+    }
+  ],
+  "passed": true,
+  "short_performance_passed": false,
+  "git_head": "c42704155162629cbbba73307b106e192d7a983b",
+  "git_status": "M art/expressway/expressway_landscape.blend\n M assets/game/expressway/advance-sign.bam\n M assets/game/expressway/bridge-advance.bam\n M assets/game/expressway/broadleaf-a.glb\n M assets/game/expressway/broadleaf-b.glb\n M assets/game/expressway/curve-left.bam\n M assets/game/expressway/curve-right.bam\n M assets/game/expressway/fine-crown.glb\n M assets/game/expressway/fine-shrubs.glb\n M assets/game/expressway/gantry.bam\n M assets/game/expressway/hill-warning.bam\n M assets/game/expressway/kilometer.bam\n M assets/game/expressway/landscape-manifest.json\n M assets/game/expressway/overpass.bam\n M assets/game/expressway/route-direction.bam\n M assets/game/expressway/sign-manifest.json\n M assets/game/expressway/source-manifest.json\n M assets/game/expressway/speed-limit.bam\n M assets/game/expressway/wind-warning.bam\n M src/environment/expressway.py\n M src/environment/expressway_mountains.py\n M src/environment/expressway_route.py\n M tools/blender/build_expressway_landscape.py\n M tools/environment/build_expressway_kit.py\n M tools/environment/build_expressway_signs.py\n?? assets/game/expressway/signs/\n?? src/environment/expressway_signs.py\n?? src/environment/expressway_vegetation.py\n?? tools/environment/check_sign_faces.py\n?? tools/environment/make_expressway_sign_faces.py"
+}

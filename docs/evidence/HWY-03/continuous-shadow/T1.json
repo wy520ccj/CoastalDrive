@@ -1,0 +1,113 @@
+{
+  "started_utc": "2026-09-30T03:40:04.551911+00:00",
+  "git_head": "75413c076034ec50838529e8f8f6d8628d47e31a",
+  "git_status": "M assets/game/expressway/shaders/road-shadow.frag\n M assets/game/expressway/shaders/route-water.frag\n M assets/game/expressway/shaders/route-water.vert\n M docs/current-progress.md\n M setup.py\n M src/application.py\n M src/environment/expressway.py\n M src/environment/expressway_materials.py\n M src/environment/expressway_mountains.py\n M src/environment/expressway_route.py\n M src/highway_curve.py\n M src/scene.py\n M src/simulation.py\n M src/ui/hud.py\n M src/vehicle.py\n M tests/test_expressway.py\n M tests/test_expressway_route.py\n M tests/test_highway_curve.py\n M tools/environment/check_expressway.py\n M tools/environment/check_expressway_motion.py\n M \"\\350\\257\\225\\347\\216\\251-HWY-02.cmd\"\n?? assets/game/expressway/shaders/distance-haze.glsl\n?? docs/evidence/PERF-03/\n?? docs/performance-research.md\n?? docs/tasks/PERF-02.md\n?? docs/tasks/PERF-03.md\n?? src/environment/surface_mesh.py\n?? tools/environment/verify_shoulder_shadow.py\n?? tools/performance/benchmark_runtime.py\n?? tools/performance/check_distance_transition.py\n?? tools/performance/check_highway.py\n?? tools/performance/compare_simulation.py\n?? tools/performance/probe_batching.py\n?? tools/performance/profile_highway.py\n?? tools/performance/verify_streaming.py\n?? \"\\350\\257\\225\\347\\216\\251-PERF-03.cmd\"",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [
+    "environment"
+  ],
+  "tests": [],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive-VI-v1\\logs\\HWY-03\\T1-continuous-shadow\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.129
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_environment.py",
+        "tests/test_expressway.py",
+        "tests/test_expressway_route.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive-VI-v1\\logs\\HWY-03\\T1-continuous-shadow\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 16.454
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive-VI-v1\\logs\\HWY-03\\T1-continuous-shadow\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.237
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive-VI-v1\\logs\\HWY-03\\T1-continuous-shadow\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.23
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive-VI-v1\\logs\\HWY-03\\T1-continuous-shadow\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.23
+    }
+  ]
+}

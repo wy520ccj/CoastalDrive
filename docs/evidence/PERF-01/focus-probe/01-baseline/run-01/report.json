@@ -1,0 +1,234 @@
+{
+  "passed": false,
+  "onscreen": true,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "note": "10s warmup + 30s capture-free automated driving; not human acceptance.",
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "seed": 23,
+  "traffic_count": 8,
+  "update_timer_enabled": true,
+  "distance_m": 299.3643341539223,
+  "simulation_seconds": 21.675,
+  "wall_seconds": 40.1169659,
+  "average_fps": 11.172518212119263,
+  "p95_frame_ms": 131.16640000043844,
+  "p99_frame_ms": 134.31709999986197,
+  "dropped_simulation_seconds": 18.308333333333355,
+  "sample_dropped_seconds": 13.366666666666688,
+  "sample_frames": 336,
+  "sample_seconds": 30.07379299999957,
+  "scene_graph_totals": {
+    "nodes": 730,
+    "geom_nodes": 359,
+    "geoms": 1546,
+    "triangles": 312642
+  },
+  "geometry_capture_phase": "end of sample, after eight traffic vehicles loaded",
+  "geometry_note": "Whole scene counts; not visible triangles or GPU draw calls.",
+  "window_focus_samples": [
+    {
+      "second": 2,
+      "foreground": true,
+      "minimized": false
+    },
+    {
+      "second": 3,
+      "foreground": true,
+      "minimized": false
+    },
+    {
+      "second": 4,
+      "foreground": true,
+      "minimized": false
+    },
+    {
+      "second": 5,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 6,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 7,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 8,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 9,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 10,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 11,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 12,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 13,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 14,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 15,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 16,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 17,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 18,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 19,
+      "foreground": true,
+      "minimized": true
+    },
+    {
+      "second": 20,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 21,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 22,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 23,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 24,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 25,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 26,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 27,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 28,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 29,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 30,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 31,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 32,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 33,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 34,
+      "foreground": true,
+      "minimized": false
+    },
+    {
+      "second": 35,
+      "foreground": true,
+      "minimized": false
+    },
+    {
+      "second": 36,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 37,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 38,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 39,
+      "foreground": false,
+      "minimized": true
+    },
+    {
+      "second": 40,
+      "foreground": false,
+      "minimized": true
+    }
+  ],
+  "window_foreground_fraction": 0.15384615384615385,
+  "update_cpu_mean_ms": 10.311661607147471,
+  "update_cpu_p95_ms": 15.509599999859347,
+  "gpu_timing": "not measured",
+  "captures": [],
+  "performance_gate_passed": null
+}

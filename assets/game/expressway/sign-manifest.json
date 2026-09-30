@@ -1,0 +1,19 @@
+{
+  "source": "tools/environment/build_expressway_signs.py",
+  "face_source": "tools/environment/make_expressway_sign_faces.py",
+  "reference": "GB 5768.2-2022; Hubei expressway traffic sign guidelines 2023",
+  "route": "S18 / 海滨高速: game fictional route, no real-world route survey claim",
+  "font": "Source Han Sans SC Heavy, SIL OFL; game approximation of sign lettering",
+  "sha256": {
+    "speed-limit": "9b3ac99ca744b40c95a1e34710d1d79094e8ffac4f81d76aeabd3cb00247b699",
+    "curve-left": "a309fc18233cca6fce7878b09f99e3e08aa61e7b7340260457dc35d4dc032038",
+    "curve-right": "835cfb8852ae054db10349d35c7ad5d548546e6a93de6ee30defd77da947e546",
+    "hill-warning": "66a85e098bf919b3efb44cb7ff0e571a088e19b118b05bee879bbd42bd0c903c",
+    "wind-warning": "e9ccbf4a85080c874d816a1d352e357c7cf1219543b4eb3e2889854ae9ccf570",
+    "route-direction": "925f8afddbadf4ce0a14da8ed61d3a69e8262e7fab2feb98ddead668c8c76ac5",
+    "bridge-advance": "7d7bcf24ae9cea1777f2e4303d6f36b1ba35de1ca6387b1974cc80c05dc9225d",
+    "advance-sign": "db549046d5f61c9cd50789753358ab9c3404d3e0de532c817843ec723306669d",
+    "gantry": "d296297ce44a17c9dc9ef463eb67ec815abf930d7bbaa3d49d9e80ba448bf2cb",
+    "kilometer": "75706f04787cea2513f451de6a9d0980cbea524173a4e2bf8d15d18b907103bc"
+  }
+}

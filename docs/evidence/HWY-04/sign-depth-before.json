@@ -1,0 +1,74 @@
+[
+  {
+    "model": "gantry",
+    "distance": 80,
+    "white_coverage_range": [
+      0.05385961501069415,
+      0.06057120950737972
+    ],
+    "white_coverage_swing": 0.006711594496685576
+  },
+  {
+    "model": "gantry",
+    "distance": 200,
+    "white_coverage_range": [
+      0.01451378809869376,
+      0.07256894049346879
+    ],
+    "white_coverage_swing": 0.05805515239477503
+  },
+  {
+    "model": "gantry",
+    "distance": 350,
+    "white_coverage_range": [
+      0.0,
+      1.0
+    ],
+    "white_coverage_swing": 1.0
+  },
+  {
+    "model": "gantry",
+    "distance": 480,
+    "white_coverage_range": [
+      0.0,
+      1.0
+    ],
+    "white_coverage_swing": 1.0
+  },
+  {
+    "model": "route-direction",
+    "distance": 80,
+    "white_coverage_range": [
+      0.11188405797101449,
+      0.12057971014492753
+    ],
+    "white_coverage_swing": 0.008695652173913049
+  },
+  {
+    "model": "route-direction",
+    "distance": 200,
+    "white_coverage_range": [
+      0.0,
+      0.15343915343915343
+    ],
+    "white_coverage_swing": 0.15343915343915343
+  },
+  {
+    "model": "route-direction",
+    "distance": 350,
+    "white_coverage_range": [
+      0.0,
+      1.0
+    ],
+    "white_coverage_swing": 1.0
+  },
+  {
+    "model": "route-direction",
+    "distance": 480,
+    "white_coverage_range": [
+      0.0,
+      1.0
+    ],
+    "white_coverage_swing": 1.0
+  }
+]

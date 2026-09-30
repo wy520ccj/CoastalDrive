@@ -1,0 +1,13 @@
+{
+  "source": "Original deterministic expressway surface and daylight artwork",
+  "editable_source": "tools/environment/make_expressway_surfaces.py",
+  "rights": "Original procedural sky and aggregate; grass/strata albedos generated with OpenAI imagegen; photographs are reference only",
+  "reference": "https://www.w-nexco.co.jp/drive_porter/photo_contest/contest23/",
+  "reference_use": "Daylight sky, airy ridge layers and coastal motorway earthworks; no copied pixels",
+  "files": {
+    "expressway-sky.png": "cc6eb00db52f92889211f0d3aeea6013782d62d6df850bf0ded3a6f28ac2fbe1",
+    "aggregate.png": "3bc95445cefefad7d747808cdc090799efcdf3c5c79dbc816e1e87724e88f4ce",
+    "grass-albedo.png": "31629fdf71af0c938ffdeb47fd43066ed2eac745c217008cf6ec0f6e838333a0",
+    "strata-albedo.png": "dce32b53f23e05df82ffd608e56eabcbc0c8d279a79a534498a456ef1f832f3b"
+  }
+}

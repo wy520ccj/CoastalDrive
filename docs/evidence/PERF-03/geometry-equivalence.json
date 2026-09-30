@@ -1,0 +1,89 @@
+{
+  "passed": true,
+  "views": [
+    {
+      "shape": "straight",
+      "distance": -2300,
+      "triangles": 2427538,
+      "before_geoms": 942,
+      "after_geoms": 1813
+    },
+    {
+      "shape": "straight",
+      "distance": 170,
+      "triangles": 2036280,
+      "before_geoms": 675,
+      "after_geoms": 1684
+    },
+    {
+      "shape": "straight",
+      "distance": 830,
+      "triangles": 2177316,
+      "before_geoms": 723,
+      "after_geoms": 1698
+    },
+    {
+      "shape": "straight",
+      "distance": 8400,
+      "triangles": 2103876,
+      "before_geoms": 692,
+      "after_geoms": 1675
+    },
+    {
+      "shape": "curves",
+      "distance": -2300,
+      "triangles": 2438422,
+      "before_geoms": 942,
+      "after_geoms": 1813
+    },
+    {
+      "shape": "curves",
+      "distance": 170,
+      "triangles": 2047185,
+      "before_geoms": 675,
+      "after_geoms": 1684
+    },
+    {
+      "shape": "curves",
+      "distance": 830,
+      "triangles": 2188221,
+      "before_geoms": 723,
+      "after_geoms": 1698
+    },
+    {
+      "shape": "curves",
+      "distance": 8400,
+      "triangles": 2114760,
+      "before_geoms": 692,
+      "after_geoms": 1675
+    },
+    {
+      "shape": "hills",
+      "distance": -2300,
+      "triangles": 2438437,
+      "before_geoms": 942,
+      "after_geoms": 1813
+    },
+    {
+      "shape": "hills",
+      "distance": 170,
+      "triangles": 2047215,
+      "before_geoms": 675,
+      "after_geoms": 1684
+    },
+    {
+      "shape": "hills",
+      "distance": 830,
+      "triangles": 2188236,
+      "before_geoms": 723,
+      "after_geoms": 1698
+    },
+    {
+      "shape": "hills",
+      "distance": 8400,
+      "triangles": 2114790,
+      "before_geoms": 692,
+      "after_geoms": 1675
+    }
+  ]
+}

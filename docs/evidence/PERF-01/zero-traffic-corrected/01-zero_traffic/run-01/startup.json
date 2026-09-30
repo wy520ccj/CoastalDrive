@@ -1,0 +1,163 @@
+{
+  "timeline": [
+    {
+      "event": "process_start",
+      "since_process_start_s": 0.0,
+      "since_previous_s": null
+    },
+    {
+      "event": "entrypoint_ready",
+      "since_process_start_s": 0.0836,
+      "since_previous_s": 0.0836
+    },
+    {
+      "event": "application_imported",
+      "since_process_start_s": 0.2006,
+      "since_previous_s": 0.117
+    },
+    {
+      "event": "window_initialized",
+      "since_process_start_s": 1.1242,
+      "since_previous_s": 0.9236
+    },
+    {
+      "event": "renderer_initialized",
+      "since_process_start_s": 1.1251,
+      "since_previous_s": 0.0009
+    },
+    {
+      "event": "simulation_initialized",
+      "since_process_start_s": 1.1457,
+      "since_previous_s": 0.0206
+    },
+    {
+      "event": "environment_load_started",
+      "since_process_start_s": 1.1457,
+      "since_previous_s": 0.0
+    },
+    {
+      "event": "environment_assets_loaded",
+      "since_process_start_s": 6.6198,
+      "since_previous_s": 5.4741
+    },
+    {
+      "event": "hero_mesh_loaded",
+      "since_process_start_s": 6.7177,
+      "since_previous_s": 0.0979
+    },
+    {
+      "event": "reflection_resource_loaded",
+      "since_process_start_s": 6.7203,
+      "since_previous_s": 0.0026
+    },
+    {
+      "event": "hero_vehicle_loaded",
+      "since_process_start_s": 6.7205,
+      "since_previous_s": 0.0002
+    },
+    {
+      "event": "traffic_vehicles_loaded",
+      "since_process_start_s": 6.7206,
+      "since_previous_s": 0.0001
+    },
+    {
+      "event": "primary_font_loaded",
+      "since_process_start_s": 6.8672,
+      "since_previous_s": 0.1466
+    },
+    {
+      "event": "display_font_loaded",
+      "since_process_start_s": 6.8771,
+      "since_previous_s": 0.0099
+    },
+    {
+      "event": "ui_ready",
+      "since_process_start_s": 6.982,
+      "since_previous_s": 0.1048
+    },
+    {
+      "event": "first_rendered_frame",
+      "since_process_start_s": 7.3576,
+      "since_previous_s": 0.3756
+    },
+    {
+      "event": "main_menu_usable",
+      "since_process_start_s": 7.3576,
+      "since_previous_s": 0.0
+    }
+  ],
+  "time_to_first_frame_s": 7.3576,
+  "time_to_menu_usable_s": 7.3576,
+  "clock": "time.perf_counter_ns; process origin supplied before Popen",
+  "case": "zero_traffic",
+  "scene_stage_seconds": {
+    "menu": {
+      "setup_lighting": 0.0001,
+      "style_water": 0.0239,
+      "map_meshes": 0.0,
+      "add_map_details": 0.0473,
+      "add_start_grid": 0.0012,
+      "build_terrain": 0.1579,
+      "add_environment": 1.3763,
+      "build_slice": 3.6822,
+      "make_sky": 0.0432
+    },
+    "drive": {
+      "setup_lighting": 0.0001,
+      "style_water": 0.0025,
+      "map_meshes": 0.0,
+      "add_map_details": 0.049,
+      "add_start_grid": 0.0008,
+      "build_terrain": 0.1523,
+      "add_environment": 1.3439,
+      "build_slice": 0.1463,
+      "make_sky": 0.0084
+    }
+  },
+  "startup_traffic_count": 0,
+  "drive_transition": {
+    "timeline": [
+      {
+        "event": "drive_transition_started",
+        "since_process_start_s": null,
+        "since_previous_s": null
+      },
+      {
+        "event": "environment_assets_loaded",
+        "since_process_start_s": null,
+        "since_previous_s": 1.8737
+      },
+      {
+        "event": "hero_mesh_loaded",
+        "since_process_start_s": null,
+        "since_previous_s": 0.0928
+      },
+      {
+        "event": "reflection_resource_loaded",
+        "since_process_start_s": null,
+        "since_previous_s": 0.0
+      },
+      {
+        "event": "hero_vehicle_loaded",
+        "since_process_start_s": null,
+        "since_previous_s": 0.0002
+      },
+      {
+        "event": "traffic_vehicles_loaded",
+        "since_process_start_s": null,
+        "since_previous_s": 0.0001
+      },
+      {
+        "event": "first_drive_frame",
+        "since_process_start_s": null,
+        "since_previous_s": 0.1276
+      }
+    ],
+    "time_to_first_frame_s": null,
+    "time_to_menu_usable_s": null,
+    "clock": "time.perf_counter_ns; relative transition"
+  },
+  "drive_transition_s": 2.0944,
+  "drive_traffic_count": 0,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2"
+}

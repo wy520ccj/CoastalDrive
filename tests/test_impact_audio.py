@@ -6,7 +6,7 @@ from itertools import pairwise
 
 from test_soundscape import FakeBase, contact, event
 
-from impact_audio import ImpactAudio, severity_for
+from audio.impact import ImpactAudio, severity_for
 from paths import resource_root
 
 

@@ -21,9 +21,10 @@ AREAS = {
              "test_highway_surface", "test_curve_mesh", "test_curved_boundaries"],
     "gameplay": ["test_race", "test_highway_run", "test_stage4", "test_h3_review"],
     "appearance": ["test_appearance"],
+    "environment": ["test_environment", "test_expressway", "test_expressway_route"],
     "audio": ["test_audio_settings", "test_soundscape", "test_impact_audio",
               "test_impact_assets", "test_impact_events", "test_impact_delivery",
-              "test_impact_integration"],
+              "test_impact_integration", "test_audio_upgrade"],
 }
 
 

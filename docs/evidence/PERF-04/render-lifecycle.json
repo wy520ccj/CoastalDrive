@@ -1,0 +1,92 @@
+{
+  "passed": true,
+  "kind": "static views and scene lifecycle; not FPS or human acceptance",
+  "pipeline": "cull-draw",
+  "original": "None",
+  "views": [
+    {
+      "shape": "straight",
+      "distance_m": -2300,
+      "file": "straight--2300.png",
+      "triangles": 976618,
+      "geoms": 1423
+    },
+    {
+      "shape": "straight",
+      "distance_m": 170,
+      "file": "straight-170.png",
+      "triangles": 854806,
+      "geoms": 1245
+    },
+    {
+      "shape": "straight",
+      "distance_m": 830,
+      "file": "straight-830.png",
+      "triangles": 872190,
+      "geoms": 1241
+    },
+    {
+      "shape": "straight",
+      "distance_m": 8400,
+      "file": "straight-8400.png",
+      "triangles": 853934,
+      "geoms": 1182
+    },
+    {
+      "shape": "curves",
+      "distance_m": -2300,
+      "file": "curves--2300.png",
+      "triangles": 987500,
+      "geoms": 1425
+    },
+    {
+      "shape": "curves",
+      "distance_m": 170,
+      "file": "curves-170.png",
+      "triangles": 865708,
+      "geoms": 1248
+    },
+    {
+      "shape": "curves",
+      "distance_m": 830,
+      "file": "curves-830.png",
+      "triangles": 883092,
+      "geoms": 1244
+    },
+    {
+      "shape": "curves",
+      "distance_m": 8400,
+      "file": "curves-8400.png",
+      "triangles": 864816,
+      "geoms": 1184
+    },
+    {
+      "shape": "hills",
+      "distance_m": -2300,
+      "file": "hills--2300.png",
+      "triangles": 994484,
+      "geoms": 1429
+    },
+    {
+      "shape": "hills",
+      "distance_m": 170,
+      "file": "hills-170.png",
+      "triangles": 879344,
+      "geoms": 1248
+    },
+    {
+      "shape": "hills",
+      "distance_m": 830,
+      "file": "hills-830.png",
+      "triangles": 900348,
+      "geoms": 1244
+    },
+    {
+      "shape": "hills",
+      "distance_m": 8400,
+      "file": "hills-8400.png",
+      "triangles": 876116,
+      "geoms": 1180
+    }
+  ]
+}

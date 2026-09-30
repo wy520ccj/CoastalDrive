@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "tick": 375,
+  "player_position": [
+    0.011517674662172794,
+    21.450740814208984,
+    16.425983428955078
+  ],
+  "traffic_count": 12,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "screenshot": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive-VI-v1\\logs\\HWY-03\\package\\h0-offscreen.png",
+  "restart_20_nodes_stable": true,
+  "restart_20_tasks_stable": true,
+  "restart_20_events_stable": true
+}

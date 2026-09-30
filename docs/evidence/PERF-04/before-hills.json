@@ -1,0 +1,419 @@
+{
+  "kind": "45-second comparison; not final performance or human gate",
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 12,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "wall_seconds": 45.0342376,
+  "sample_seconds": 42.07098880000194,
+  "frames": 1039,
+  "average_fps": 24.69635322666702,
+  "display_draw_frames": 1037,
+  "display_draw_fps": 24.69516197986627,
+  "display_draw_p95_ms": 70.51060000230791,
+  "display_draw_p99_ms": 81.48090000031516,
+  "display_draw_max_ms": 108.35950000182493,
+  "display_draw_over_50ms": 177,
+  "p95_ms": 68.1509999994887,
+  "p99_ms": 83.83450000110315,
+  "max_ms": 103.17800000120769,
+  "frames_over_50ms": 205,
+  "frames_over_100ms": 1,
+  "dropped_simulation_seconds": 0.6083333333333326,
+  "warmup_dropped_seconds": 0.7416666666666666,
+  "distance_m": 964.501716108373,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 41.7829457,
+      "ms": 103.17800000120769
+    },
+    {
+      "second": 28.990156199999998,
+      "ms": 95.2292000001762
+    },
+    {
+      "second": 29.078207699999997,
+      "ms": 88.04420000160462
+    },
+    {
+      "second": 34.6731137,
+      "ms": 87.5590000032389
+    },
+    {
+      "second": 35.8147713,
+      "ms": 87.53629999773693
+    },
+    {
+      "second": 20.4628318,
+      "ms": 87.04779999970924
+    },
+    {
+      "second": 41.9524742,
+      "ms": 86.47669999845675
+    },
+    {
+      "second": 20.549143999999995,
+      "ms": 86.301999999705
+    },
+    {
+      "second": 20.3015686,
+      "ms": 85.17470000151661
+    },
+    {
+      "second": 35.2342608,
+      "ms": 84.5740000004298
+    },
+    {
+      "second": 34.839276,
+      "ms": 83.83450000110315
+    },
+    {
+      "second": 28.047966999999996,
+      "ms": 83.15399999992223
+    }
+  ],
+  "segment_work_max_ms": 42.34899999937625,
+  "segment_step_max_ms": 42.21990000223741,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 42.34899999937625,
+      "max_step_ms": 42.21990000223741,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 41.151600002194755,
+      "max_step_ms": 41.02509999938775,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 37.33740000097896,
+      "max_step_ms": 37.27199999775621,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 36.78650000074413,
+      "max_step_ms": 41.02509999938775,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 36.62770000300952,
+      "max_step_ms": 37.27199999775621,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 35.383300000830786,
+      "max_step_ms": 41.02509999938775,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 35.0657000017236,
+      "max_step_ms": 34.93059999891557,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 34.212999998999294,
+      "max_step_ms": 37.27199999775621,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 33.64290000172332,
+      "max_step_ms": 41.02509999938775,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 32.38069999861182,
+      "max_step_ms": 41.02509999938775,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 31.722399999125628,
+      "max_step_ms": 42.21990000223741,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 30.063700000027893,
+      "max_step_ms": 34.93059999891557,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 31,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 32,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 33,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 34,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 35,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 36,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 37,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 38,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 39,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 40,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 41,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 42,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 43,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 44,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 45,
+      "minimized": false,
+      "foreground": true
+    }
+  ],
+  "passed": true,
+  "short_performance_passed": false,
+  "git_head": "e1f6e3f975ac9342e1ca401c7d3c7d022341c38a",
+  "git_status": ""
+}

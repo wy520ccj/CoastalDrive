@@ -5,9 +5,11 @@
 - 默认单条施工线：规划模型定范围，实施模型完成一个可独立验收的功能块；不默认创建并行 agent 或新任务。
 - 阶段规划、核心接口变更、同一问题两轮实质修复仍失败、阶段复核时使用高能力模型；普通测试失败先复现和修复。
 - Python + Panda3D/Bullet；使用 `.venv/Scripts/python.exe`，不安装到全局环境。
-- `Simulation` 唯一推进物理；120 Hz 固定步，渲染/UI/声音只消费状态。保持 Control、快照和生命周期接口清晰。
+- 保持 Controller → Control → Simulation → Snapshot → 游戏规则/表现/UI/后续 AI；Simulation 是唯一权威物理世界，120 Hz 固定步。物理不得依赖 UI、Scene 或 Audio；UI 不维护第二套车辆状态，AI 不模拟键盘。
 - 代码简洁直白、按作用分块，可读性优先；注释和文档字符串用中文，只解释必要的意图与边界。
-- 小模块、直接数据流；只在文件/设备/外部进程等真实边界处理错误，不写层层防御，不引入大型 ECS 或通用事件总线。
+- 按业务职责组织，架构先确定、重构随功能发生；不按行数拆文件。禁止 ECS、事件总线、DI、Service Locator、多层 Manager、Factory/Repository 堆叠、BasePage/PageManager/页面注册器及预建抽象。
+- 文件、字体、配置、资源、设备、外部进程边界正常处理错误；内部明确接口直接访问，不用 hasattr/getattr 默认值、宽泛异常或 silent fallback 掩盖错误，不顺手清理无关旧代码。
+- Visual Identity v1 以 `2185410` 为起点；DS/visual-upgrade 为只读参考，禁止整包迁移。2026-09-30用户授权新版含PERF-04-FIX/AUDIO-01覆盖主项目，原main在备份和Git历史中保留。具体职责与冻结范围见 `docs/visual-identity-v1.md`。
 - 不靠瞬移、关闭碰撞或放宽阈值掩盖交通问题；先保留固定种子复现。
 - 保留玩家认可的驾驶参数、倒车调姿规则、检查点相机行为；外观不得暗改物理性能。
 - `legacy/`、相邻 `../ADAS` 和原 ZIP 只读；保留已有未提交工作，不覆盖或重置他人成果。
@@ -28,3 +30,4 @@
 | 玩法/界面 | `src/session.py`、`src/race.py`、`src/highway_run.py`、`src/application.py`；`docs/phase5c-gameplay.md` |
 | 画面/车库/声音 | `src/scene.py`、`src/garage.py`、`src/settings.py`、`src/soundscape.py`；`docs/phase6a-garage.md`、`docs/phase6b-atmosphere.md` |
 | 素材 | `docs/asset-register.csv`；新增资源记录真实来源、许可及加工过程 |
+| 海岸环境/美术源文件 | `docs/environment-art.md`；表现、运行资产、Blender 源文件和制作/验证工具按功能分区 |

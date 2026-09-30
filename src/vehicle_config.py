@@ -52,6 +52,9 @@ class VehicleConfig:
     grass_friction: float = 0.45
     wheelbase: float = 2.2
     track_width: float = 1.68
+    # 同时覆盖当前车型的车身和外露车轮，玩家与交通车共用这组尺寸。
+    collision_half_width: float = 1.05
+    collision_half_length: float = 2.15
     center_of_mass_height: float = 0.42
     front_weight_share: float = 0.5
 

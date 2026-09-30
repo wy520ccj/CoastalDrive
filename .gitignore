@@ -18,3 +18,10 @@ assets/source/*
 *.aps
 *.user
 *.log
+
+# Blender local undo backups; editable .blend sources remain tracked.
+art/coastal/*.blend1
+
+art/vehicles/*.blend1
+
+art/expressway/*.blend1

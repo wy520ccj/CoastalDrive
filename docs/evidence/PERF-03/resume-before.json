@@ -1,0 +1,311 @@
+{
+  "kind": "45-second comparison; not final performance or human gate",
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 12,
+  "pipeline": "single",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "wall_seconds": 45.005470499999994,
+  "sample_seconds": 42.01218880000124,
+  "frames": 2464,
+  "average_fps": 58.64964598083324,
+  "p95_ms": 20.98919999843929,
+  "p99_ms": 23.773299999447772,
+  "max_ms": 334.07769999939774,
+  "frames_over_50ms": 4,
+  "frames_over_100ms": 4,
+  "dropped_simulation_seconds": 0.8916666666666666,
+  "warmup_dropped_seconds": 0.425,
+  "distance_m": 965.3553125852711,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 31.157705,
+      "ms": 334.07769999939774
+    },
+    {
+      "second": 24.2803637,
+      "ms": 315.12389999988955
+    },
+    {
+      "second": 38.5480026,
+      "ms": 270.2169000003778
+    },
+    {
+      "second": 16.8276267,
+      "ms": 240.18600000090373
+    },
+    {
+      "second": 31.217976999999998,
+      "ms": 32.06569999929343
+    },
+    {
+      "second": 27.5459377,
+      "ms": 29.525800000556046
+    },
+    {
+      "second": 18.638448399999998,
+      "ms": 29.409599999780767
+    },
+    {
+      "second": 31.185915900000005,
+      "ms": 28.207400000610505
+    },
+    {
+      "second": 44.5727085,
+      "ms": 28.137899998910143
+    },
+    {
+      "second": 43.2645695,
+      "ms": 28.079499999876134
+    },
+    {
+      "second": 38.575944400000004,
+      "ms": 27.9355000002397
+    },
+    {
+      "second": 41.5645417,
+      "ms": 27.827800000522984
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 31,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 32,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 33,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 34,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 35,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 36,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 37,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 38,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 39,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 40,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 41,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 42,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 43,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 44,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 45,
+      "minimized": false,
+      "foreground": true
+    }
+  ],
+  "passed": true,
+  "git_head": "75413c076034ec50838529e8f8f6d8628d47e31a",
+  "git_status": "M docs/current-progress.md\n M src/application.py\n M src/environment/expressway_mountains.py\n M src/environment/expressway_route.py\n M src/highway_curve.py\n M src/simulation.py\n M src/ui/hud.py\n M src/vehicle.py\n M tests/test_expressway_route.py\n M tests/test_highway_curve.py\n M tools/environment/check_expressway.py\n?? docs/evidence/PERF-03/\n?? docs/performance-research.md\n?? docs/tasks/PERF-02.md\n?? docs/tasks/PERF-03.md\n?? src/environment/surface_mesh.py\n?? tools/performance/benchmark_runtime.py\n?? tools/performance/check_highway.py\n?? tools/performance/compare_simulation.py\n?? tools/performance/probe_batching.py\n?? tools/performance/profile_highway.py"
+}

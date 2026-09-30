@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "onscreen": true,
+  "input": "registered Panda3D messenger keyboard events",
+  "fixture": "completed race snapshot through Session.tick; not a human lap",
+  "captures": [
+    {
+      "image": "right-select-menu.png",
+      "selection": 1
+    },
+    {
+      "image": "right-select-exit.png",
+      "selection": 2
+    },
+    {
+      "image": "enter-return-menu.png",
+      "selection": 0
+    }
+  ]
+}

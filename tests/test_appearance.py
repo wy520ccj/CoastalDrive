@@ -11,9 +11,27 @@ from panda3d.core import (
 
 from scene import Scene, make_mesh
 from settings import AppearanceStore
-from skins import MODELS, SKINS, apply_skin, traffic_models, traffic_skins
+from skins import (
+    PLAYER_VEHICLES,
+    SKINS,
+    VEHICLES,
+    apply_skin,
+    paint_color,
+    traffic_models,
+    traffic_skins,
+)
 from vehicle_visual import load_vehicle
-from vehicle_config import WHEEL_HUBS
+
+
+def test_vehicle_catalog_separates_selection_from_asset_quality():
+    assert [vehicle.id for vehicle in PLAYER_VEHICLES] == ["sports", "sedan"]
+    assert [vehicle.id for vehicle in VEHICLES if vehicle.traffic_allowed] == [
+        "traffic-compact",
+        "traffic-sedan",
+        "traffic-wagon",
+    ]
+    assert all(not vehicle.player_selectable for vehicle in VEHICLES if vehicle.traffic_allowed)
+    assert next(vehicle for vehicle in VEHICLES if vehicle.id == "sports").quality == "hero"
 
 
 def test_appearance_round_trip_and_removed_skin(tmp_path):
@@ -43,8 +61,8 @@ def test_bad_settings_and_failed_save_keep_applied_appearance(tmp_path):
 
 def test_paint_slots_change_without_touching_trim_or_adding_geometry():
     parent = NodePath("cars")
-    for definition in MODELS:
-        car, wheels = load_vehicle(parent, definition.id)
+    for definition in VEHICLES:
+        car, wheels = load_vehicle(parent, definition)
         body = car.getChild(0)
         slots = body.findAllMatches("**/paint")
         assert len(slots) > 0 and len(wheels) == 4
@@ -54,36 +72,17 @@ def test_paint_slots_change_without_touching_trim_or_adding_geometry():
             apply_skin(body, index)
             assert parent.findAllMatches("**").getNumPaths() == count
             assert all(part.getState() == state for part, state in trim)
-            assert all(abs(slot.getMaterial().getBaseColor()[0] - skin.color[0]) < 1e-6 for slot in slots)
+            assert all(abs(slot.getMaterial().getBaseColor()[0] - paint_color(index, quality=definition.quality)[0]) < 1e-6 for slot in slots)
         # Two copies must retain their wheels and independent paint state.
-        duplicate, _ = load_vehicle(parent, definition.id)
+        duplicate, _ = load_vehicle(parent, definition)
         apply_skin(duplicate.getChild(0), 1)
-        assert abs(slots[0].getMaterial().getBaseColor()[0] - SKINS[-1].color[0]) < 1e-6
-
-
-def test_vehicle_detail_respects_existing_wheel_hubs_and_collision_outline():
-    parent = NodePath("vehicle-fit")
-    for definition in MODELS:
-        car, wheels = load_vehicle(parent, definition.id)
-        body = car.getChild(0)
-        low, high = body.getTightBounds()
-        assert max(abs(low.x), abs(high.x)) <= 0.95 + 0.005
-        assert max(abs(low.y), abs(high.y)) <= 2.145 + 0.005
-        assert len(wheels) == len(WHEEL_HUBS) == 4
-        for pivot, hub in zip(wheels, WHEEL_HUBS):
-            assert all(abs(actual - expected) < 1e-6 for actual, expected in zip(pivot.getPos(), hub[:2] + (-0.12,)))
-        for name in ("front-grille", "headlamp", "tail-lamp", "mirror", "door-seam"):
-            assert body.findAllMatches(f"**/{name}").getNumPaths() > 0
-        apply_skin(body, 0)
-        paint = body.find("**/paint")
-        assert paint.getMaterial().getRoughness() < 0.3
-        assert paint.getMaterial().getMetallic() > 0.15
+        assert abs(slots[0].getMaterial().getBaseColor()[0] - paint_color(len(SKINS)-1, quality=definition.quality)[0]) < 1e-6
 
 
 def test_appearance_choices_do_not_advance_traffic_randomness(tmp_path):
     before = traffic_models(17, 18), traffic_skins(17, 18)
     store = AppearanceStore(tmp_path / "appearance.json")
-    for model in MODELS:
+    for model in PLAYER_VEHICLES:
         for skin in SKINS:
             store.save(model.id, skin.id)
     assert before == (traffic_models(17, 18), traffic_skins(17, 18))

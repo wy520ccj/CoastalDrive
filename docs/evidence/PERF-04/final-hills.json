@@ -1,0 +1,421 @@
+{
+  "kind": "45-second comparison; not final performance or human gate",
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 12,
+  "pipeline": "cull-draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "streaming_phases": {},
+  "wall_seconds": 45.0183819,
+  "sample_seconds": 42.025776399997994,
+  "frames": 2066,
+  "average_fps": 49.16030534060755,
+  "display_draw_frames": 2064,
+  "display_draw_fps": 49.1505864236488,
+  "display_draw_p95_ms": 31.16319999753614,
+  "display_draw_p99_ms": 39.52170000047772,
+  "display_draw_max_ms": 66.0701999986486,
+  "display_draw_over_50ms": 6,
+  "p95_ms": 30.972900000051595,
+  "p99_ms": 38.93210000023828,
+  "max_ms": 50.43929999737884,
+  "frames_over_50ms": 1,
+  "frames_over_100ms": 0,
+  "dropped_simulation_seconds": 0.0,
+  "warmup_dropped_seconds": 0.575,
+  "distance_m": 984.5410596885005,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 42.0141649,
+      "ms": 50.43929999737884
+    },
+    {
+      "second": 41.7986548,
+      "ms": 48.65870000139694
+    },
+    {
+      "second": 33.2473689,
+      "ms": 47.289600002841325
+    },
+    {
+      "second": 41.7499738,
+      "ms": 46.890699999494245
+    },
+    {
+      "second": 19.9449108,
+      "ms": 46.890500001609325
+    },
+    {
+      "second": 19.9912697,
+      "ms": 46.45840000011958
+    },
+    {
+      "second": 42.1856718,
+      "ms": 46.3820000004489
+    },
+    {
+      "second": 41.844817899999995,
+      "ms": 46.162499998899875
+    },
+    {
+      "second": 42.1392837,
+      "ms": 44.643000001087785
+    },
+    {
+      "second": 19.898052,
+      "ms": 44.642900000326335
+    },
+    {
+      "second": 41.9266651,
+      "ms": 42.903300000034506
+    },
+    {
+      "second": 20.2986344,
+      "ms": 42.1505000012985
+    }
+  ],
+  "segment_work_max_ms": 26.053900000988506,
+  "segment_step_max_ms": 23.634100001800107,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 26.053900000988506,
+      "max_step_ms": 23.634100001800107,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 21.113800001330674,
+      "max_step_ms": 20.05490000010468,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 20.678100001532584,
+      "max_step_ms": 23.634100001800107,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 20.033900000271387,
+      "max_step_ms": 18.118699998012744,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 18.722300002991688,
+      "max_step_ms": 18.118699998012744,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 16.45039999857545,
+      "max_step_ms": 23.634100001800107,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 16.31239999915124,
+      "max_step_ms": 20.05490000010468,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 15.571200001431862,
+      "max_step_ms": 23.634100001800107,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 14.711100000567967,
+      "max_step_ms": 18.118699998012744,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 14.447699999436736,
+      "max_step_ms": 23.634100001800107,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 14.020000002346933,
+      "max_step_ms": 18.118699998012744,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 13.73310000053607,
+      "max_step_ms": 18.118699998012744,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 31,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 32,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 33,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 34,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 35,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 36,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 37,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 38,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 39,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 40,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 41,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 42,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 43,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 44,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 45,
+      "minimized": false,
+      "foreground": true
+    }
+  ],
+  "passed": true,
+  "short_performance_passed": false,
+  "git_head": "e1f6e3f975ac9342e1ca401c7d3c7d022341c38a",
+  "git_status": "M src/application.py\n M src/environment/expressway_materials.py\n M src/environment/expressway_route.py\n M src/environment/expressway_vegetation.py\n M src/vehicle.py\n M tools/performance/benchmark_runtime.py\n M tools/performance/verify_streaming.py\n?? docs/tasks/PERF-04.md\n?? tools/performance/verify_physics_equivalence.py"
+}

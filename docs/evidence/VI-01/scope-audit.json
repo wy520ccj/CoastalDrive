@@ -1,0 +1,23 @@
+{
+  "baseline": "2185410ec1db1b390c4e89eac820e768ca88c5b9",
+  "changed_existing_src": [
+    "src/application.py"
+  ],
+  "changed_application_methods": [
+    "__init__",
+    "setup_hud",
+    "refresh_panel"
+  ],
+  "geometry_keywords_and_setters_unchanged": true,
+  "final_capture_source_hashes_match": true,
+  "protected_modules_unchanged": true,
+  "human_visual_gate": "pending",
+  "ark_rejection_missing_glyphs": [
+    "刹",
+    "滚",
+    "窗",
+    "避"
+  ],
+  "adopted_font": "Fusion Pixel 12px proportional zh_hans",
+  "note": "Existing src diff excludes untracked new ui package; ui package reviewed separately. No Scene/Session/physics/traffic/audio edits."
+}

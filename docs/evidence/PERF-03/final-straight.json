@@ -1,0 +1,419 @@
+{
+  "kind": "45-second comparison; not final performance or human gate",
+  "shape": "straight",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 12,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "wall_seconds": 45.0034967,
+  "sample_seconds": 42.008306199999424,
+  "frames": 3868,
+  "average_fps": 92.0770283282703,
+  "display_draw_frames": 3866,
+  "display_draw_fps": 92.07494733043978,
+  "display_draw_p95_ms": 12.94170000073791,
+  "display_draw_p99_ms": 18.31809999930556,
+  "display_draw_max_ms": 32.87180000006629,
+  "display_draw_over_50ms": 0,
+  "p95_ms": 12.797500001397566,
+  "p99_ms": 18.60820000001695,
+  "max_ms": 29.43039999991015,
+  "frames_over_50ms": 0,
+  "frames_over_100ms": 0,
+  "dropped_simulation_seconds": 0.0,
+  "warmup_dropped_seconds": 0.3416666666666667,
+  "distance_m": 983.4365234375,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 30.700975399999997,
+      "ms": 29.43039999991015
+    },
+    {
+      "second": 38.1134444,
+      "ms": 28.238200000487268
+    },
+    {
+      "second": 23.885330699999997,
+      "ms": 27.75169999949867
+    },
+    {
+      "second": 16.738413,
+      "ms": 26.89710000049672
+    },
+    {
+      "second": 38.2526747,
+      "ms": 26.184199999988778
+    },
+    {
+      "second": 23.9710642,
+      "ms": 25.78480000011041
+    },
+    {
+      "second": 30.8376321,
+      "ms": 25.757200000953162
+    },
+    {
+      "second": 38.349828699999996,
+      "ms": 25.106299999606563
+    },
+    {
+      "second": 38.181973,
+      "ms": 24.71779999905266
+    },
+    {
+      "second": 23.995786199999998,
+      "ms": 24.71530000002531
+    },
+    {
+      "second": 16.9433408,
+      "ms": 24.616900000182795
+    },
+    {
+      "second": 30.788691800000002,
+      "ms": 23.738699999739765
+    }
+  ],
+  "segment_work_max_ms": 15.099300000656513,
+  "segment_step_max_ms": 12.558500000523054,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 15.099300000656513,
+      "max_step_ms": 12.558500000523054,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 14.094399999521556,
+      "max_step_ms": 11.658800000077463,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 13.734300000578514,
+      "max_step_ms": 12.558500000523054,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 12.668199999097851,
+      "max_step_ms": 11.0450000011042,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 12.613299999429728,
+      "max_step_ms": 12.558500000523054,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 11.670500000036554,
+      "max_step_ms": 12.558500000523054,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 10.668700000678655,
+      "max_step_ms": 11.658800000077463,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 10.350100001232931,
+      "max_step_ms": 12.558500000523054,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 10.312599999451777,
+      "max_step_ms": 12.558500000523054,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 9.774300000572111,
+      "max_step_ms": 12.558500000523054,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 9.762300000147661,
+      "max_step_ms": 12.558500000523054,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 9.71899999967718,
+      "max_step_ms": 12.558500000523054,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 31,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 32,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 33,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 34,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 35,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 36,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 37,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 38,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 39,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 40,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 41,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 42,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 43,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 44,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 45,
+      "minimized": false,
+      "foreground": true
+    }
+  ],
+  "passed": true,
+  "short_performance_passed": true,
+  "git_head": "75413c076034ec50838529e8f8f6d8628d47e31a",
+  "git_status": "M assets/game/expressway/shaders/route-water.frag\n M assets/game/expressway/shaders/route-water.vert\n M docs/current-progress.md\n M setup.py\n M src/application.py\n M src/environment/expressway.py\n M src/environment/expressway_materials.py\n M src/environment/expressway_mountains.py\n M src/environment/expressway_route.py\n M src/highway_curve.py\n M src/scene.py\n M src/simulation.py\n M src/ui/hud.py\n M src/vehicle.py\n M tests/test_expressway.py\n M tests/test_expressway_route.py\n M tests/test_highway_curve.py\n M tools/environment/check_expressway.py\n?? assets/game/expressway/shaders/distance-haze.glsl\n?? docs/evidence/PERF-03/\n?? docs/performance-research.md\n?? docs/tasks/PERF-02.md\n?? docs/tasks/PERF-03.md\n?? src/environment/surface_mesh.py\n?? tools/performance/benchmark_runtime.py\n?? tools/performance/check_distance_transition.py\n?? tools/performance/check_highway.py\n?? tools/performance/compare_simulation.py\n?? tools/performance/probe_batching.py\n?? tools/performance/profile_highway.py\n?? tools/performance/verify_streaming.py"
+}

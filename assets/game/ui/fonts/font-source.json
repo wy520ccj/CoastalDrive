@@ -1,0 +1,19 @@
+{
+  "font": "Fusion Pixel 12px proportional zh_hans",
+  "upstream": "https://github.com/TakWolf/fusion-pixel-font",
+  "source": "DS archive at 702f956; assets/game/ui/fonts/fusion-pixel-12px-proportional-zh_hans.ttf",
+  "version_policy": "Existing archive contains no release tag; pin exact SHA-256, never download latest during build.",
+  "sha256": "1b423de0be589d159ef71af7d00530a7176e16af768a26adbc2e524e8817aad9",
+  "license": "OFL.txt",
+  "license_sha256": "bc518cf64b8032c07690f33cc270c35c179255a6ac8efa7c165ebae7e8f76a63",
+  "rejected_candidate": {
+    "name": "Ark Pixel 2026.09.01 from DS",
+    "missing_current_text": [
+      "刹",
+      "滚",
+      "窗",
+      "避"
+    ],
+    "evidence": "logs/VI-01/ark-candidate/"
+  }
+}

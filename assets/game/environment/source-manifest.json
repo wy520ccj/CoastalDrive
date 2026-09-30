@@ -1,0 +1,60 @@
+{
+  "reference": {
+    "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\graphic_design\\Codex 图像 2026年9月24日 11_15_03-4.png",
+    "sha256": "ffd7edc4a7f1986ec4cc3992534db711c2cf56a35e25b960a780a5bafc83a270",
+    "role": "user supplied visual direction; original read-only"
+  },
+  "sky": {
+    "file": "sky/coastal-clouds.png",
+    "sha256": "ac27481bd5389c7da314c541c371ac420aca9457cf107730384bfe2349aac818",
+    "source": "imagegen; generated during ENV-01 from user coastal design reference",
+    "license_note": "AI-generated project artwork; not a stock CC0 claim",
+    "prompt_summary": "2:1 sky-only panoramic stylized coastal sky; warm cream cumulus, clear azure blue, golden sun; no land, roads, objects, text or UI; plain lower sky",
+    "dimensions": [
+      1774,
+      887
+    ]
+  },
+  "models": {
+    "source": "original Blender geometry; no new third-party meshes",
+    "manifest": "kit-manifest.json",
+    "editable_source": "art/coastal/coastal_kit.blend",
+    "blender": "5.2.2 LTS"
+  },
+  "files": {
+    "kit-manifest.json": "aea4203a4a6fbebeafdd7866f905fd7a44f09daeb13ad7bbe40f8b0924e8528d",
+    "materials/asphalt.png": "f22b73e561c4f5e998fd6cb85550b15246bc55228a5a08dc0254bffe7c2feb36",
+    "materials/ground-detail.png": "15e674306d7c9f763d40469dd327d7858d52167cb5095b229a6a807ba1d27afa",
+    "materials/limestone.png": "edb30376ec1cd2e1b834c2f23d777dc87441cf3a50100a850b89b770057cdbf1",
+    "materials/meadow.png": "75c04e82a427b89a840adde1cd8a34a3c9261afc584473a0f7e430ad5f533b4d",
+    "materials/shore-distance.json": "9424f71a5358da57487586e59d34617c7dc5bf34fbb37d6bcc6106c4b25c3962",
+    "materials/shore-distance.png": "a4634ab1a2afde0075dcc86e3b8cf4f7f09d81d492ee96da9fa02f122ee340dd",
+    "models/bush_round_a.glb": "70964c9adadc6d93bb5fe1e07b7be54aefafc2b277e3310da76ca0fdf7bd4859",
+    "models/bush_round_b.glb": "da07f9c7ffeb6c91a7c93c03e1d62782817665a183f25daa5170d8b81e1e303e",
+    "models/cliff_coastal_a.glb": "7294458712c15071aa1cc56ddb2edc692a2bb86ab0122a317a9207f459212f21",
+    "models/coastal_house_a.glb": "c14b4cfc1c0ea07b2582ed958abf7ee0af965e8ad7138df6dc549ffa74600ba3",
+    "models/coastal_lamp_a.glb": "f58741eed66fc854c7f985386fb487969cc6d045344dfc0b0b7fa78be62b4df3",
+    "models/flowers_coastal_a.glb": "2bb943abc78810da39c2b68356bdb2dade06f1145ebe6f52e831f780c38af3b8",
+    "models/lighthouse_coastal_a.glb": "2288509454c1fab69e5bbf10819458ddea986d9c79c26eba5d3fa80d167dd768",
+    "models/pine_tall_a.glb": "a2b515c6f8b7c00cb1ffc19eb412920909fc7245ecd8f8b0f7c81945d3d9793d",
+    "models/pine_tall_b.glb": "ec81875a0ab5866fdbd993a60d4a612bd49404456f198fe7acb497950505b72b",
+    "models/road_chevron_sign_a.glb": "9f46afc0b4013902de1ffdf347dee83f06e540df5ae8cc1bb3c0f8ee7fd63752",
+    "models/rock_coastal_a.glb": "67c73520f62630c9c95656ff2913aa71806734cee05947c4044eeba2f031ec00",
+    "models/rock_coastal_b.glb": "51b3b03a3db1456464671bdc7ed2a7cd597ab667f6e65f7217544d708a4ecc51",
+    "README.md": "93afd43eab63efe928798c6413877a061bbf199d6ee22eaa4fd5906c24e76190",
+    "shaders/sky.frag": "597c0dd91e4df989a6231f15b2ac99052068581407a96f64b81579047cc0580c",
+    "shaders/sky.vert": "08acdf52289b6c9cb12f8931112277efcb66f1ee6b6feccab6b131e6fab4f881",
+    "shaders/water.frag": "ee5d07f05d57e027ce9525685befdecdcfc077f014fbedcc83c020d0689e8ac0",
+    "shaders/water.vert": "81ad457c2b4314517244b87b6f972946d06d414571626f6877809a4c2bb7095e",
+    "sky/coastal-clouds.png": "ac27481bd5389c7da314c541c371ac420aca9457cf107730384bfe2349aac818",
+    "terrain/coastal-terrain.glb": "24c72d28713b9d3b651b6c89b35b17882a11a3a7f895be835f007c74aa98b475"
+  },
+  "revision": "ENV-02 grounded coastal slice",
+  "terrain": {
+    "source": "project-generated visual-only mesh from stable coastal map; no new third-party asset",
+    "editable_source": "art/coastal/coastal_terrain.blend",
+    "triangles": 24790,
+    "recipe": "src/environment/terrain.py + tools/environment/export_terrain_data.py",
+    "water_contact": "actual triangle intersections at SEA_LEVEL, baked with NumPy/Pillow offline"
+  }
+}

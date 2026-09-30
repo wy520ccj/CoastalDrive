@@ -1,0 +1,257 @@
+{
+  "kind": "short sanity; not Performance Gate or human acceptance",
+  "seed": 23,
+  "shape": "hills",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "onscreen": true,
+  "window_sampling_valid": true,
+  "wall_seconds": 45.0076088,
+  "distance_m": 939.0460649397701,
+  "simulation_seconds": 42.641666666666666,
+  "traffic_count": 12,
+  "average_fps": 28.844623878313662,
+  "p95_ms": 40.30899999997928,
+  "sample_seconds": 42.01822859999993,
+  "frames": 1212,
+  "collisions": 0,
+  "dropped_simulation_seconds": 2.3333333333333335,
+  "nodes": 1752,
+  "geoms": 1642,
+  "triangles": 2303763,
+  "window": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 31,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 32,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 33,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 34,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 35,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 36,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 37,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 38,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 39,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 40,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 41,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 42,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 43,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 44,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 45,
+      "minimized": false,
+      "foreground": false
+    }
+  ],
+  "passed": true
+}

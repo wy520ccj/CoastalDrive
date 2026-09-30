@@ -1,0 +1,54 @@
+{
+  "region": "x350:800 y730:1060 step2; fixed camera road shoulder",
+  "method": "compare frame16 to32/47 after shader/shadow warmup; frozen physics, moving light; final artwork differs so final is not a controlled before-after image pair",
+  "results": {
+    "before-static": [
+      {
+        "mean_absolute_luma_change": 0.0012169804195763688,
+        "changed_pixels_over_0_025": 706,
+        "samples": 37125
+      },
+      {
+        "mean_absolute_luma_change": 0.0005847759816783045,
+        "changed_pixels_over_0_025": 314,
+        "samples": 37125
+      }
+    ],
+    "before-no-shadow": [
+      {
+        "mean_absolute_luma_change": 0.0,
+        "changed_pixels_over_0_025": 0,
+        "samples": 37125
+      },
+      {
+        "mean_absolute_luma_change": 0.0,
+        "changed_pixels_over_0_025": 0,
+        "samples": 37125
+      }
+    ],
+    "snapped-static": [
+      {
+        "mean_absolute_luma_change": 0.0,
+        "changed_pixels_over_0_025": 0,
+        "samples": 37125
+      },
+      {
+        "mean_absolute_luma_change": 0.0,
+        "changed_pixels_over_0_025": 0,
+        "samples": 37125
+      }
+    ],
+    "locked-static": [
+      {
+        "mean_absolute_luma_change": 8.45052577831127e-07,
+        "changed_pixels_over_0_025": 0,
+        "samples": 37125
+      },
+      {
+        "mean_absolute_luma_change": 6.337888313062263e-07,
+        "changed_pixels_over_0_025": 0,
+        "samples": 37125
+      }
+    ]
+  }
+}

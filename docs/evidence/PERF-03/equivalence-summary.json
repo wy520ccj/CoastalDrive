@@ -1,0 +1,26 @@
+[
+  {
+    "shape": "straight",
+    "different_fields": 0,
+    "all_differences_in_first_sample_wheels": true,
+    "max_absolute_difference": 0,
+    "before_cpu_seconds": 1.536584700000276,
+    "after_cpu_seconds": 1.257650300000023
+  },
+  {
+    "shape": "curves",
+    "different_fields": 17,
+    "all_differences_in_first_sample_wheels": true,
+    "max_absolute_difference": 1.043081283569336e-07,
+    "before_cpu_seconds": 2.735651500000131,
+    "after_cpu_seconds": 2.4638503000005585
+  },
+  {
+    "shape": "hills",
+    "different_fields": 27,
+    "all_differences_in_first_sample_wheels": true,
+    "max_absolute_difference": 9.5367431640625e-07,
+    "before_cpu_seconds": 2.8757613999996465,
+    "after_cpu_seconds": 2.574242300000151
+  }
+]

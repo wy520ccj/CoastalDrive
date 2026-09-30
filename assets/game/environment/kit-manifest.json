@@ -1,0 +1,191 @@
+{
+  "kit": "CoastalDrive Coastal Environment Kit",
+  "version": 1,
+  "blender": "5.2.2",
+  "units": "meters; Blender Z-up source; GLB exported through Blender glTF Y-up conversion",
+  "asset_count": 12,
+  "triangle_budget": 30000,
+  "assets": [
+    {
+      "name": "pine_tall_a",
+      "file": "models/pine_tall_a.glb",
+      "description": "Five broad overlapping pine whorls with an exposed lower trunk, approximately 7.5 m tall.",
+      "source": "Created for CoastalDrive VI asset kit; original Blender geometry and materials.",
+      "license": "Project-generated geometry using CoastalDrive coastal palette.",
+      "origin": "ground-centered, Z=0 in editable Blender source",
+      "bounds_m": {
+        "x": 5.173,
+        "y": 5.448,
+        "z": 7.5
+      },
+      "triangles": 3512,
+      "vertices": 1890
+    },
+    {
+      "name": "pine_tall_b",
+      "file": "models/pine_tall_b.glb",
+      "description": "Wind-shaped variant with five broad overlapping pine whorls, approximately 8.3 m tall.",
+      "source": "Created for CoastalDrive VI asset kit; original Blender geometry and materials.",
+      "license": "Project-generated geometry using CoastalDrive coastal palette.",
+      "origin": "ground-centered, Z=0 in editable Blender source",
+      "bounds_m": {
+        "x": 4.995,
+        "y": 5.025,
+        "z": 8.3
+      },
+      "triangles": 3512,
+      "vertices": 1890
+    },
+    {
+      "name": "bush_round_a",
+      "file": "models/bush_round_a.glb",
+      "description": "Irregular leafy roadside shrub variant, approximately 1.1 m tall.",
+      "source": "Created for CoastalDrive VI asset kit; original Blender geometry and materials.",
+      "license": "Project-generated; no external source assets.",
+      "origin": "ground-centered, Z=0 in editable Blender source",
+      "bounds_m": {
+        "x": 1.743,
+        "y": 1.258,
+        "z": 1.1
+      },
+      "triangles": 560,
+      "vertices": 294
+    },
+    {
+      "name": "bush_round_b",
+      "file": "models/bush_round_b.glb",
+      "description": "Asymmetric leafy roadside shrub variant, approximately 1.25 m tall.",
+      "source": "Created for CoastalDrive VI asset kit; original Blender geometry and materials.",
+      "license": "Project-generated; no external source assets.",
+      "origin": "ground-centered, Z=0 in editable Blender source",
+      "bounds_m": {
+        "x": 1.767,
+        "y": 1.169,
+        "z": 1.25
+      },
+      "triangles": 560,
+      "vertices": 294
+    },
+    {
+      "name": "rock_coastal_a",
+      "file": "models/rock_coastal_a.glb",
+      "description": "Large stratified asymmetric limestone boulder, approximately 1.8 m tall.",
+      "source": "Created for CoastalDrive VI asset kit; original Blender geometry and materials.",
+      "license": "Project-generated; no external source assets.",
+      "origin": "ground-centered, Z=0 in editable Blender source",
+      "bounds_m": {
+        "x": 2.938,
+        "y": 2.252,
+        "z": 1.8
+      },
+      "triangles": 108,
+      "vertices": 56
+    },
+    {
+      "name": "rock_coastal_b",
+      "file": "models/rock_coastal_b.glb",
+      "description": "Broad broken limestone boulder variant, approximately 1.65 m tall.",
+      "source": "Created for CoastalDrive VI asset kit; original Blender geometry and materials.",
+      "license": "Project-generated; no external source assets.",
+      "origin": "ground-centered, Z=0 in editable Blender source",
+      "bounds_m": {
+        "x": 3.002,
+        "y": 2.135,
+        "z": 1.65
+      },
+      "triangles": 108,
+      "vertices": 56
+    },
+    {
+      "name": "flowers_coastal_a",
+      "file": "models/flowers_coastal_a.glb",
+      "description": "Four-stem coastal flower clump, approximately 0.8 m tall.",
+      "source": "Created for CoastalDrive VI asset kit; original Blender geometry and materials.",
+      "license": "Project-generated; no external source assets.",
+      "origin": "ground-centered, Z=0 in editable Blender source",
+      "bounds_m": {
+        "x": 1.018,
+        "y": 0.619,
+        "z": 0.8
+      },
+      "triangles": 640,
+      "vertices": 384
+    },
+    {
+      "name": "cliff_coastal_a",
+      "file": "models/cliff_coastal_a.glb",
+      "description": "Single tapered limestone mass with subtle strata and a flat grassy cap, approximately 3.4 m tall.",
+      "source": "Created for CoastalDrive VI asset kit; original Blender geometry and materials.",
+      "license": "Project-generated; no external source assets.",
+      "origin": "ground-centered, Z=0 in editable Blender source",
+      "bounds_m": {
+        "x": 6.131,
+        "y": 4.389,
+        "z": 3.4
+      },
+      "triangles": 118,
+      "vertices": 61
+    },
+    {
+      "name": "lighthouse_coastal_a",
+      "file": "models/lighthouse_coastal_a.glb",
+      "description": "Tapered 14 m coastal lighthouse with lantern glazing, cornices and gallery rail.",
+      "source": "Created for CoastalDrive VI asset kit; original Blender geometry and materials.",
+      "license": "Project-generated; no external source assets.",
+      "origin": "ground-centered, Z=0 in editable Blender source",
+      "bounds_m": {
+        "x": 2.7,
+        "y": 2.7,
+        "z": 14.0
+      },
+      "triangles": 1372,
+      "vertices": 788
+    },
+    {
+      "name": "coastal_house_a",
+      "file": "models/coastal_house_a.glb",
+      "description": "Limewashed 5.6 m coastal cottage with tile roof, shutters, porch and chimney.",
+      "source": "Created for CoastalDrive VI asset kit; original Blender geometry and materials.",
+      "license": "Project-generated; no external source assets.",
+      "origin": "ground-centered, Z=0 in editable Blender source",
+      "bounds_m": {
+        "x": 5.9,
+        "y": 6.4,
+        "z": 5.5
+      },
+      "triangles": 502,
+      "vertices": 304
+    },
+    {
+      "name": "road_chevron_sign_a",
+      "file": "models/road_chevron_sign_a.glb",
+      "description": "Reflective coastal route chevron sign, approximately 2.1 m tall.",
+      "source": "Created for CoastalDrive VI asset kit; original Blender geometry and materials.",
+      "license": "Project-generated; no external source assets.",
+      "origin": "ground-centered, Z=0 in editable Blender source",
+      "bounds_m": {
+        "x": 1.28,
+        "y": 0.275,
+        "z": 2.1
+      },
+      "triangles": 106,
+      "vertices": 70
+    },
+    {
+      "name": "coastal_lamp_a",
+      "file": "models/coastal_lamp_a.glb",
+      "description": "Coastal street lamp with glass lantern, approximately 3.8 m tall.",
+      "source": "Created for CoastalDrive VI asset kit; original Blender geometry and materials.",
+      "license": "Project-generated; no external source assets.",
+      "origin": "ground-centered, Z=0 in editable Blender source",
+      "bounds_m": {
+        "x": 0.8,
+        "y": 0.8,
+        "z": 3.8
+      },
+      "triangles": 180,
+      "vertices": 104
+    }
+  ],
+  "total_triangles": 11278
+}

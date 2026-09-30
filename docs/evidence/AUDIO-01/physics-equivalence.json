@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "kind": "1200 tick full physical Snapshot equality; only contact metadata excluded",
+  "baseline": {
+    "0": "362227f816deac2b162915c364a375ffa12699baf7dd1c1762cb0626ca7b82f7",
+    "17": "362227f816deac2b162915c364a375ffa12699baf7dd1c1762cb0626ca7b82f7",
+    "23": "362227f816deac2b162915c364a375ffa12699baf7dd1c1762cb0626ca7b82f7"
+  },
+  "upgrade": {
+    "0": "362227f816deac2b162915c364a375ffa12699baf7dd1c1762cb0626ca7b82f7",
+    "17": "362227f816deac2b162915c364a375ffa12699baf7dd1c1762cb0626ca7b82f7",
+    "23": "362227f816deac2b162915c364a375ffa12699baf7dd1c1762cb0626ca7b82f7"
+  }
+}

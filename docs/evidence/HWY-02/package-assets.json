@@ -1,0 +1,173 @@
+{
+  "all_match": true,
+  "files": [
+    {
+      "file": "advance-sign.bam",
+      "sha256": "837ce48b27b412028180a274e9e7da027f1fc33fce1ef79ad5ed8cc2c67f2edc"
+    },
+    {
+      "file": "aggregate.png",
+      "sha256": "3bc95445cefefad7d747808cdc090799efcdf3c5c79dbc816e1e87724e88f4ce"
+    },
+    {
+      "file": "bridge-advance.bam",
+      "sha256": "7b3be56d531a8de23e840b46795b517fc038b8fda645159c87dd7deb48a7685a"
+    },
+    {
+      "file": "broadleaf-a.glb",
+      "sha256": "f633f06b1e53ba0356b0818b041ed0ea55d4b1bd9ae5bf4f9df864433abfe4da"
+    },
+    {
+      "file": "broadleaf-b.glb",
+      "sha256": "7603af6bf8bef371a36210f8cd7df3790521b0446b99824d23519e521e88fbd6"
+    },
+    {
+      "file": "broadleaf-crown.bam",
+      "sha256": "159d283c1990401749ced886dc3c6aba48dcc5b12510a95963b21f94cfe2110a"
+    },
+    {
+      "file": "crash-cushion.bam",
+      "sha256": "cafa9d08b84edbe68fc05ac565062b749df0649d06bdbe4d4ddb11064e05bd81"
+    },
+    {
+      "file": "curve-left.bam",
+      "sha256": "c4825a953e4cc94e007209a628b8a9fe8621e1e9b643009fcc1690dda5907d76"
+    },
+    {
+      "file": "curve-right.bam",
+      "sha256": "c7022bc719c194dbc12af6fa811c68bf5c5dd0c91b7f5a5ad3887afc8e504d66"
+    },
+    {
+      "file": "drain-grate.bam",
+      "sha256": "457b9472f5f9aa6940740d3fc30815144530f8320cf97c967d2be4e12357b2b5"
+    },
+    {
+      "file": "equipment.bam",
+      "sha256": "86e0e259b2986b7b68f30316eb9188f9d7c64637bc1236f6078aa9c26ff8330b"
+    },
+    {
+      "file": "expressway-sky.png",
+      "sha256": "cc6eb00db52f92889211f0d3aeea6013782d62d6df850bf0ded3a6f28ac2fbe1"
+    },
+    {
+      "file": "fine-crown.glb",
+      "sha256": "c9dbd963a55f64aa4d6de006908b751b5322b53d425258f19404e188a1dbb8ca"
+    },
+    {
+      "file": "fine-shrubs.glb",
+      "sha256": "7ce220203549cf77013e1a4be5816abefbae0203c1f2f217ca6c49c74d022f60"
+    },
+    {
+      "file": "gantry.bam",
+      "sha256": "7340e5992c241245467211b09ecdcbba832fa719a0b3f709384fb1599237b2ba"
+    },
+    {
+      "file": "grass-albedo.png",
+      "sha256": "31629fdf71af0c938ffdeb47fd43066ed2eac745c217008cf6ec0f6e838333a0"
+    },
+    {
+      "file": "hill-warning.bam",
+      "sha256": "a44c6006e51d601549d48dbdbce4c2a69ab87e2030e1c71f5a9a787708fad6be"
+    },
+    {
+      "file": "kilometer.bam",
+      "sha256": "457de9c877740f87e9846598ea1f39a2572762371f2521439df5e8df5f0bd155"
+    },
+    {
+      "file": "lamp.bam",
+      "sha256": "705b70c868c71cf08336e8a87425865b30dfc997ae50b7df6871df92852b5b7a"
+    },
+    {
+      "file": "landscape-manifest.json",
+      "sha256": "d8b0c34f13779755e6cb65a7675c5796aa5ea23ec74300d3b01b5a6710e27bfd"
+    },
+    {
+      "file": "overpass.bam",
+      "sha256": "2d3c9af68402139d5f0f94f17dab9d0d019bd98077363c9e1fabaeaf660682b3"
+    },
+    {
+      "file": "reflector.bam",
+      "sha256": "141d3185169d04767540ecc4f68f254825bf2e9247debac5a58b2adf9a83b912"
+    },
+    {
+      "file": "route-direction.bam",
+      "sha256": "8cce66334c7b0b31489542abef7b0cdaa5ed4faafc3c3b5145a6fd1d0c8cf58a"
+    },
+    {
+      "file": "shore-profile.png",
+      "sha256": "a072fc990a2346c57b215993108f135c6d7822dd418b141da49224d9f38a8336"
+    },
+    {
+      "file": "shrub-bank.bam",
+      "sha256": "2cc428841c8695a1d2172399986faaa27133d2720491385672ce22165d4383d7"
+    },
+    {
+      "file": "sign-manifest.json",
+      "sha256": "f5d83e4435414c8ae0f2239cff43ab4e9d2b532a2e5680af3891ecf0e3689449"
+    },
+    {
+      "file": "soundwall.bam",
+      "sha256": "1a9e661bdc67dd0884d80b947e5d9d4dbf2a142a7575b9b0e8ccfa3fae843103"
+    },
+    {
+      "file": "source-manifest.json",
+      "sha256": "1c5d188d02e34cc1b7b1fa0c733f6011a607a78049742bafb69779b4e54fb784"
+    },
+    {
+      "file": "speed-limit.bam",
+      "sha256": "e0af831f9fda94767c93dbcdac9970b7ce09a57ef66003aad91a97adf5af2ac3"
+    },
+    {
+      "file": "strata-albedo.png",
+      "sha256": "dce32b53f23e05df82ffd608e56eabcbc0c8d279a79a534498a456ef1f832f3b"
+    },
+    {
+      "file": "strata-shelf.glb",
+      "sha256": "415cf9c9b2930a1c04bf426f566c2bf3827c0eb39b8a1b0207bbd3e0bc1f53a7"
+    },
+    {
+      "file": "surface-manifest.json",
+      "sha256": "a223b3b253ce606ea2bd8a678ccc79ebf76046ab1e9e43f69cb18c516c1dd89e"
+    },
+    {
+      "file": "wind-warning.bam",
+      "sha256": "88a965e834b10d8ac5909364ba62331038f909b76e1dacfbeb415df81c5c34d3"
+    },
+    {
+      "file": "shaders/bay.frag",
+      "sha256": "7d6238dc84b5d65810afd6bd93c30770115ed6c8bcb798725c36600e7a8e56a0"
+    },
+    {
+      "file": "shaders/route-mountain.frag",
+      "sha256": "a772e8dfe71cc255791615b555a4159b42d1acd798e84a80cb8edf1459ba2bdd"
+    },
+    {
+      "file": "shaders/route-terrain.frag",
+      "sha256": "6d983727f459e25545a466802fb08ea4de00eb24de04c777a428031bc4f2ee60"
+    },
+    {
+      "file": "shaders/route-water.frag",
+      "sha256": "b277f93c3bf81d440cc16dffd11e5ef52f906a7704c8d3498275efb9557d2bac"
+    },
+    {
+      "file": "shaders/route-water.vert",
+      "sha256": "1567c7cd26cc22dfe17e932a6e661f6c6bcdbf04be2b77ec9477b4e75984dd55"
+    },
+    {
+      "file": "shaders/sky.frag",
+      "sha256": "913697d4235b1756f06c35b0b31c3b7c58a3da980bf9aaadb1a59045f7deb1b2"
+    },
+    {
+      "file": "shaders/sky.vert",
+      "sha256": "08acdf52289b6c9cb12f8931112277efcb66f1ee6b6feccab6b131e6fab4f881"
+    },
+    {
+      "file": "shaders/terrain-material.frag",
+      "sha256": "b55c61f3376720c32932bd5e39fa94510b1e4a7987dfba6aabcd01c658a4464e"
+    },
+    {
+      "file": "shaders/water.vert",
+      "sha256": "81ad457c2b4314517244b87b6f972946d06d414571626f6877809a4c2bb7095e"
+    }
+  ]
+}

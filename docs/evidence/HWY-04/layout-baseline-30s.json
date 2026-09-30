@@ -1,0 +1,344 @@
+{
+  "kind": "45-second comparison; not final performance or human gate",
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 12,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "wall_seconds": 30.0099037,
+  "sample_seconds": 27.020054799999343,
+  "frames": 1073,
+  "average_fps": 39.71124440502712,
+  "display_draw_frames": 1071,
+  "display_draw_fps": 39.71422724850543,
+  "display_draw_p95_ms": 38.197599998966325,
+  "display_draw_p99_ms": 62.08639999749721,
+  "display_draw_max_ms": 84.73630000298726,
+  "display_draw_over_50ms": 17,
+  "p95_ms": 38.24140000142506,
+  "p99_ms": 57.03440000070259,
+  "max_ms": 90.25599999949918,
+  "frames_over_50ms": 24,
+  "frames_over_100ms": 0,
+  "dropped_simulation_seconds": 0.050000000000000044,
+  "warmup_dropped_seconds": 0.4166666666666667,
+  "distance_m": 579.4235676745799,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 18.4802368,
+      "ms": 90.25599999949918
+    },
+    {
+      "second": 26.042573,
+      "ms": 85.46930000011344
+    },
+    {
+      "second": 18.3899742,
+      "ms": 68.05769999846234
+    },
+    {
+      "second": 18.3219168,
+      "ms": 65.9369000022707
+    },
+    {
+      "second": 25.5704721,
+      "ms": 61.709900001005735
+    },
+    {
+      "second": 25.7958716,
+      "ms": 61.199899999337504
+    },
+    {
+      "second": 18.9366676,
+      "ms": 60.11199999920791
+    },
+    {
+      "second": 18.996018300000003,
+      "ms": 59.33949999962351
+    },
+    {
+      "second": 25.9570964,
+      "ms": 59.06669999967562
+    },
+    {
+      "second": 19.0543058,
+      "ms": 58.3212999990792
+    },
+    {
+      "second": 25.6275004,
+      "ms": 57.03440000070259
+    },
+    {
+      "second": 26.0986875,
+      "ms": 56.1121999999159
+    }
+  ],
+  "segment_work_max_ms": 36.19569999864325,
+  "segment_step_max_ms": 36.082800001167925,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 36.19569999864325,
+      "max_step_ms": 36.082800001167925,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 35.37789999973029,
+      "max_step_ms": 36.082800001167925,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 28.965099998458754,
+      "max_step_ms": 28.899499997351086,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 25.534299998980714,
+      "max_step_ms": 28.899499997351086,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 23.190100000647362,
+      "max_step_ms": 36.082800001167925,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 22.505100001581013,
+      "max_step_ms": 36.082800001167925,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 21.86710000023595,
+      "max_step_ms": 21.807500001159497,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 21.573199999693315,
+      "max_step_ms": 36.082800001167925,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 20.95569999801228,
+      "max_step_ms": 21.807500001159497,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 20.925699998770142,
+      "max_step_ms": 36.082800001167925,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 20.80260000002454,
+      "max_step_ms": 36.082800001167925,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 20.610300001862925,
+      "max_step_ms": 36.082800001167925,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "facilities",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true
+    }
+  ],
+  "passed": false,
+  "short_performance_passed": false,
+  "git_head": "c42704155162629cbbba73307b106e192d7a983b",
+  "git_status": "M art/expressway/expressway_landscape.blend\n M assets/game/expressway/advance-sign.bam\n M assets/game/expressway/bridge-advance.bam\n M assets/game/expressway/broadleaf-a.glb\n M assets/game/expressway/broadleaf-b.glb\n M assets/game/expressway/curve-left.bam\n M assets/game/expressway/curve-right.bam\n M assets/game/expressway/fine-crown.glb\n M assets/game/expressway/fine-shrubs.glb\n M assets/game/expressway/gantry.bam\n M assets/game/expressway/hill-warning.bam\n M assets/game/expressway/kilometer.bam\n M assets/game/expressway/landscape-manifest.json\n M assets/game/expressway/overpass.bam\n M assets/game/expressway/route-direction.bam\n M assets/game/expressway/sign-manifest.json\n M assets/game/expressway/source-manifest.json\n M assets/game/expressway/speed-limit.bam\n M assets/game/expressway/wind-warning.bam\n M src/environment/expressway.py\n M src/environment/expressway_mountains.py\n M src/environment/expressway_route.py\n M tools/blender/build_expressway_landscape.py\n M tools/environment/build_expressway_kit.py\n M tools/environment/build_expressway_signs.py\n?? assets/game/expressway/signs/\n?? src/environment/expressway_signs.py\n?? src/environment/expressway_vegetation.py\n?? tools/environment/check_sign_faces.py\n?? tools/environment/make_expressway_sign_faces.py"
+}

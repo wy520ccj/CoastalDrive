@@ -1,0 +1,38 @@
+{
+  "source": "tools/blender/build_expressway_landscape.py",
+  "editable_blend": "art/expressway/expressway_landscape.blend",
+  "blender": "5.2.2 LTS",
+  "rights": "Original project geometry; AI-generated grass and strata albedo artwork",
+  "assets": [
+    {
+      "name": "broadleaf-a",
+      "file": "broadleaf-a.glb",
+      "triangles": 1220,
+      "sha256": "8c1ad5c6a95f12d8f8d3eb7923937b35f460bee18b697073909124821d209030"
+    },
+    {
+      "name": "broadleaf-b",
+      "file": "broadleaf-b.glb",
+      "triangles": 1220,
+      "sha256": "825a8a433544dedcd5bf6f8bc19aa9902a1a8ff8bc768abe8779a3d30afc4421"
+    },
+    {
+      "name": "fine-crown",
+      "file": "fine-crown.glb",
+      "triangles": 540,
+      "sha256": "4d2097db2f389fd6149467c5afd01b67651d11d8f9dbede56b1893300bec334e"
+    },
+    {
+      "name": "fine-shrubs",
+      "file": "fine-shrubs.glb",
+      "triangles": 400,
+      "sha256": "443ba86d8491b5c7b7c2bf32c2561567365767b9096e76b7f00c6e6022d2c5a2"
+    },
+    {
+      "name": "strata-shelf",
+      "file": "strata-shelf.glb",
+      "triangles": 400,
+      "sha256": "415cf9c9b2930a1c04bf426f566c2bf3827c0eb39b8a1b0207bbd3e0bc1f53a7"
+    }
+  ]
+}

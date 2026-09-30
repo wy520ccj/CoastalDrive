@@ -1,0 +1,11 @@
+{
+  "reference": "codex-clipboard-6702eae5-e48b-444e-a0e3-50bf16d8a9e0.png",
+  "reference_sha256": "38ee6443c3ddfd8347de692856626076ebed3792ff15731b11af80df60da85ef",
+  "use": "User supplied design reference only; photo is not distributed in runtime assets",
+  "geometry": "Original editable Blender meshes produced within this project; no downloaded Ford mesh or brand emblem",
+  "files": {
+    "art/vehicles/classic_coupe_v1.blend": "ac8d25acd26910fcdaed77597e6af6bcd4997e854812f73c818493c7168e765d",
+    "assets/game/vehicles/classic_coupe_v1.glb": "e3c117b0cb289bcf69112b197821c84431db5d715ee2f19f62a425b46bb23d8e",
+    "assets/game/vehicles/reflection-probe.env": "6065b70a0f8599b6a9f891dfa4fb5d55140b8c4dc5c8895d9789f9b5ab85ec13"
+  }
+}

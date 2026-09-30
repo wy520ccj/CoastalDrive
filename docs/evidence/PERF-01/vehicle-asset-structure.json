@@ -1,0 +1,44 @@
+{
+  "new_hero": {
+    "asset": "assets\\game\\vehicles\\classic_coupe_v1.glb",
+    "file_bytes": 779396,
+    "gltf_materials": 11,
+    "gltf_meshes": 29,
+    "gltf_primitives": 29,
+    "gltf_nodes": 44,
+    "graph": {
+      "nodes": 74,
+      "geom_nodes": 29,
+      "geoms": 29,
+      "triangles": 31760,
+      "material_names": [
+        "Amber Lens",
+        "Blue Grey Glass",
+        "Body Paint",
+        "Brushed Wheel Metal",
+        "Graphite Metal",
+        "Head Light",
+        "Reversing Glass",
+        "Satin Black Plastic",
+        "Tail Light",
+        "Tire Rubber",
+        "Whitewall Rubber"
+      ]
+    }
+  },
+  "old_hero": {
+    "asset": "assets\\game\\player-car.bam",
+    "file_bytes": 1221625,
+    "graph": {
+      "nodes": 15,
+      "geom_nodes": 8,
+      "geoms": 8,
+      "triangles": 2088,
+      "material_names": [
+        "<none>",
+        "colormap"
+      ]
+    }
+  },
+  "note": "源资产的三角/材质分区统计；运行时车轮会单独挂载，不能将其等同于 draw calls。"
+}

@@ -1,0 +1,154 @@
+{
+  "kind": "runtime",
+  "runs_per_case": 1,
+  "onscreen": false,
+  "warmup_s": 10.0,
+  "sample_s": 30.0,
+  "cases": [
+    {
+      "label": "baseline",
+      "average_fps_median": 56.982681253686394,
+      "p95_ms_median": 21.271100000376464,
+      "p99_ms_median": 23.960999999872,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 730,
+        "geom_nodes": 359,
+        "geoms": 1546,
+        "triangles": 312642
+      },
+      "reports": [
+        "01-baseline/run-01/report.json"
+      ]
+    },
+    {
+      "label": "no_shadows",
+      "average_fps_median": 66.98367808716092,
+      "p95_ms_median": 18.013599999903818,
+      "p99_ms_median": 20.4239000004236,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 730,
+        "geom_nodes": 359,
+        "geoms": 1546,
+        "triangles": 312642
+      },
+      "reports": [
+        "02-no_shadows/run-01/report.json"
+      ]
+    },
+    {
+      "label": "no_coastal_art",
+      "average_fps_median": 65.36871292527566,
+      "p95_ms_median": 18.253199999890057,
+      "p99_ms_median": 20.82810000047175,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 210,
+        "geom_nodes": 99,
+        "geoms": 861,
+        "triangles": 59228
+      },
+      "reports": [
+        "03-no_coastal_art/run-01/report.json"
+      ]
+    },
+    {
+      "label": "old_hero",
+      "average_fps_median": 57.9239697305466,
+      "p95_ms_median": 20.91779999955179,
+      "p99_ms_median": 23.752300000523974,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 671,
+        "geom_nodes": 338,
+        "geoms": 1525,
+        "triangles": 282970
+      },
+      "reports": [
+        "04-old_hero/run-01/report.json"
+      ]
+    },
+    {
+      "label": "no_reflection",
+      "average_fps_median": 55.81841381556677,
+      "p95_ms_median": 21.573799999714538,
+      "p99_ms_median": 23.509399999966263,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 730,
+        "geom_nodes": 359,
+        "geoms": 1546,
+        "triangles": 312642
+      },
+      "reports": [
+        "05-no_reflection/run-01/report.json"
+      ]
+    },
+    {
+      "label": "no_water_shader",
+      "average_fps_median": 55.796585248983774,
+      "p95_ms_median": 21.344300000237126,
+      "p99_ms_median": 23.913200000606594,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 730,
+        "geom_nodes": 359,
+        "geoms": 1546,
+        "triangles": 312642
+      },
+      "reports": [
+        "06-no_water_shader/run-01/report.json"
+      ]
+    },
+    {
+      "label": "zero_traffic",
+      "average_fps_median": 69.66105012839677,
+      "p95_ms_median": 16.832399999657355,
+      "p99_ms_median": 18.44410000012431,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 604,
+        "geom_nodes": 291,
+        "geoms": 1478,
+        "triangles": 296082
+      },
+      "reports": [
+        "07-zero_traffic/run-01/report.json"
+      ]
+    },
+    {
+      "label": "baseline",
+      "average_fps_median": 56.73225504227277,
+      "p95_ms_median": 21.123000000443426,
+      "p99_ms_median": 23.38030000009894,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 730,
+        "geom_nodes": 359,
+        "geoms": 1546,
+        "triangles": 312642
+      },
+      "reports": [
+        "08-baseline/run-01/report.json"
+      ]
+    }
+  ],
+  "method": "sequential fresh processes; one visual factor changed per case"
+}

@@ -1,0 +1,10 @@
+{
+  "kind": "201 real rendered frames, 256 ground samples; not FPS",
+  "step_m": 0.5,
+  "before_peak_step_255": 64.33333456516266,
+  "after_peak_step_255": 2.333333194255829,
+  "threshold_255": 5.1,
+  "before_point_255_range": 64.33333456516266,
+  "after_point_255_range": 64.33333456516266,
+  "passed": true
+}

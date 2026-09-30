@@ -53,3 +53,25 @@ def test_asphalt_query_matches_projection_at_inner_lane_and_edges(hills):
                 p = road.sample(s, d)
                 expected = abs(road.project((p.x, p.y))[1]) <= 6.75
                 assert road.on_asphalt(p.x, p.y) == expected
+
+
+def test_cached_samples_are_exact_and_bounded():
+    curve = HighwayCurve(23,hills=True)
+    for s in (-1400,0,40.125,999.99,8400,100000):
+        for lateral in (-8.5,0,8.5):
+            assert curve.sample(s,lateral) == curve.sample.__wrapped__(s,lateral)
+    for s in range(8300):
+        curve.sample(s+.125)
+    assert curve.sample.cache_info().currsize <= 8192
+
+
+def test_sample_cache_does_not_retain_closed_road():
+    import gc
+    import weakref
+
+    curve = HighwayCurve(23,hills=True)
+    curve.sample(123)
+    reference = weakref.ref(curve)
+    del curve
+    gc.collect()
+    assert reference() is None

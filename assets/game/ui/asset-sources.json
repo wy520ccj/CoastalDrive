@@ -1,0 +1,20 @@
+{
+  "backgrounds/coastal-menu.png": {
+    "sha256": "00924e807400438461a5550db3a6377b6f5717666f968bf736dc625cbf74d5c3",
+    "generator": "built-in imagegen",
+    "source_output": "exec-edfbfe3b-b37a-4af2-9d93-70c5c3a6d9f2.png",
+    "reference": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\graphic_design\\exec-2876b849-d842-4b68-a14a-905bbfd7cc20.png",
+    "reference_sha256": "f92e3775bc679252b3416eb5c801f1d65382466eaa5da8560f3a9c6e0c0a851a",
+    "status": "AI generated from user supplied design reference; not a third party stock asset",
+    "use": "menu only; no gameplay replacement"
+  },
+  "wordmark.png": {
+    "sha256": "5b2e94911e3736fd4ce475fd00aa2bc76ed99b33b1d30891b9e7e77cee966f9c",
+    "generator": "built-in imagegen",
+    "source_output": "exec-9002cfc1-9d12-4172-ad48-83b91374d6a3.png",
+    "reference": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\graphic_design\\exec-2876b849-d842-4b68-a14a-905bbfd7cc20.png",
+    "reference_sha256": "f92e3775bc679252b3416eb5c801f1d65382466eaa5da8560f3a9c6e0c0a851a",
+    "status": "AI generated from user supplied design reference; not a third party stock asset",
+    "use": "menu only; no gameplay replacement"
+  }
+}

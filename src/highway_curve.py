@@ -2,6 +2,7 @@
 
 import math
 from bisect import bisect_right
+from functools import lru_cache
 
 from coastal_map import MapPoint
 from highway_segments import _mix
@@ -29,6 +30,8 @@ class HighwayCurve:
             self.y_table.append(self.y_table[-1] + (previous + current) / 2)
             previous = current
         self.advance = self.y_table[-1]
+        # 缓存随道路实例释放，避免类级缓存保留历史场景。
+        self.sample = lru_cache(maxsize=8192)(self.sample)
 
     def forward_slope(self, t):
         d = slope(t)
@@ -38,6 +41,7 @@ class HighwayCurve:
         bits = _mix(self.seed ^ _mix(index))
         return (-1 if bits & 1 else 1), (-1 if bits & 2 else 1)
 
+    # 道路参数在实例生命周期内固定，复用完全相同的采样；缓存有上限，不近似位置。
     def sample(self, distance, lateral=0):
         index = math.floor(distance / CELL_LENGTH)
         local = distance - index * CELL_LENGTH
@@ -67,9 +71,12 @@ class HighwayCurve:
         return index * CELL_LENGTH + row + fraction
 
     def on_asphalt(self, x, y):
-        p = self.sample(self.distance_at_y(y))
+        distance = self.distance_at_y(y)
+        index = math.floor(distance / CELL_LENGTH)
+        side, _ = self.signs(index)
+        center_x = side * 60 * bump((distance - index * CELL_LENGTH) / CELL_LENGTH)
         # This centreline point has the same y. Its inner 6.5 m lies inside the road.
-        if abs(x - p.x) < 6.5:
+        if abs(x - center_x) < 6.5:
             return True
         return abs(self.project((x, y))[1]) <= 6.75
 

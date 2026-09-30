@@ -1,0 +1,50 @@
+{
+  "kind": "rendered transitions; not performance or human acceptance",
+  "horizon_attach_changed_pixels_over_2_percent": 0,
+  "near_field_changed_pixels": 0,
+  "passed": true,
+  "details": [
+    {
+      "distance_m": 400,
+      "opaque_pixels": 1337,
+      "visible_pixels": 1337,
+      "coverage": 1.0
+    },
+    {
+      "distance_m": 430,
+      "opaque_pixels": 1174,
+      "visible_pixels": 1174,
+      "coverage": 1.0
+    },
+    {
+      "distance_m": 470,
+      "opaque_pixels": 1000,
+      "visible_pixels": 786,
+      "coverage": 0.786
+    },
+    {
+      "distance_m": 500,
+      "opaque_pixels": 892,
+      "visible_pixels": 412,
+      "coverage": 0.4618834080717489
+    },
+    {
+      "distance_m": 530,
+      "opaque_pixels": 796,
+      "visible_pixels": 117,
+      "coverage": 0.14698492462311558
+    },
+    {
+      "distance_m": 560,
+      "opaque_pixels": 712,
+      "visible_pixels": 0,
+      "coverage": 0.0
+    },
+    {
+      "distance_m": 590,
+      "opaque_pixels": 623,
+      "visible_pixels": 0,
+      "coverage": 0.0
+    }
+  ]
+}

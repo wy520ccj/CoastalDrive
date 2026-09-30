@@ -1,0 +1,61 @@
+{
+  "kind": "static camera rendering, not full gameplay performance gate",
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "views": [
+    {
+      "distance_m": 0,
+      "eye": [
+        94.0,
+        0.0,
+        3.799999952316284
+      ],
+      "screenshot": "coast-000.png",
+      "render_mean_ms": 2.8555800002423997,
+      "render_p95_ms": 3.384600000572391
+    },
+    {
+      "distance_m": 65,
+      "eye": [
+        92.48999786376953,
+        64.0711669921875,
+        4.821702003479004
+      ],
+      "screenshot": "coast-065.png",
+      "render_mean_ms": 2.6144333334135204,
+      "render_p95_ms": 3.119599998171907
+    },
+    {
+      "distance_m": 140,
+      "eye": [
+        43.64202117919922,
+        115.25570678710938,
+        8.733466148376465
+      ],
+      "screenshot": "coast-140.png",
+      "render_mean_ms": 2.8225777775029806,
+      "render_p95_ms": 3.283099998952821
+    },
+    {
+      "distance_m": 225,
+      "eye": [
+        -38.55491638183594,
+        109.36780548095703,
+        11.821248054504395
+      ],
+      "screenshot": "coast-225.png",
+      "render_mean_ms": 2.592368888791599,
+      "render_p95_ms": 2.889600000344217
+    },
+    {
+      "distance_m": 315,
+      "eye": [
+        -91.34793090820312,
+        44.04946517944336,
+        9.608202934265137
+      ],
+      "screenshot": "coast-315.png",
+      "render_mean_ms": 2.971222222226465,
+      "render_p95_ms": 3.247600001486717
+    }
+  ]
+}

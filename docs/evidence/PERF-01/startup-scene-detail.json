@@ -1,0 +1,176 @@
+{
+  "runs": 4,
+  "menu_usable_median_s": 6.7894000000000005,
+  "drive_transition_median_s": 2.15305,
+  "startup_stages": [
+    {
+      "stage": "environment_assets_loaded",
+      "median_s": 5.4061
+    },
+    {
+      "stage": "window_initialized",
+      "median_s": 0.41064999999999996
+    },
+    {
+      "stage": "first_rendered_frame",
+      "median_s": 0.37239999999999995
+    },
+    {
+      "stage": "primary_font_loaded",
+      "median_s": 0.1417
+    },
+    {
+      "stage": "application_imported",
+      "median_s": 0.11055
+    },
+    {
+      "stage": "ui_ready",
+      "median_s": 0.10830000000000001
+    },
+    {
+      "stage": "hero_mesh_loaded",
+      "median_s": 0.09805
+    },
+    {
+      "stage": "entrypoint_ready",
+      "median_s": 0.08554999999999999
+    },
+    {
+      "stage": "simulation_initialized",
+      "median_s": 0.016550000000000002
+    },
+    {
+      "stage": "display_font_loaded",
+      "median_s": 0.0106
+    },
+    {
+      "stage": "reflection_resource_loaded",
+      "median_s": 0.00285
+    },
+    {
+      "stage": "renderer_initialized",
+      "median_s": 0.0009
+    },
+    {
+      "stage": "hero_vehicle_loaded",
+      "median_s": 0.0002
+    },
+    {
+      "stage": "traffic_vehicles_loaded",
+      "median_s": 0.0001
+    },
+    {
+      "stage": "environment_load_started",
+      "median_s": 0.0
+    },
+    {
+      "stage": "main_menu_usable",
+      "median_s": 0.0
+    }
+  ],
+  "drive_stages": [
+    {
+      "stage": "environment_assets_loaded",
+      "median_s": 1.9108
+    },
+    {
+      "stage": "first_drive_frame",
+      "median_s": 0.122
+    },
+    {
+      "stage": "hero_mesh_loaded",
+      "median_s": 0.0902
+    },
+    {
+      "stage": "traffic_vehicles_loaded",
+      "median_s": 0.0262
+    },
+    {
+      "stage": "hero_vehicle_loaded",
+      "median_s": 0.0002
+    },
+    {
+      "stage": "reflection_resource_loaded",
+      "median_s": 0.0
+    }
+  ],
+  "scene_substages": {
+    "menu": [
+      {
+        "stage": "build_slice",
+        "median_s": 3.6261
+      },
+      {
+        "stage": "add_environment",
+        "median_s": 1.3586
+      },
+      {
+        "stage": "build_terrain",
+        "median_s": 0.1563
+      },
+      {
+        "stage": "add_map_details",
+        "median_s": 0.047549999999999995
+      },
+      {
+        "stage": "make_sky",
+        "median_s": 0.040749999999999995
+      },
+      {
+        "stage": "style_water",
+        "median_s": 0.0214
+      },
+      {
+        "stage": "add_start_grid",
+        "median_s": 0.00095
+      },
+      {
+        "stage": "setup_lighting",
+        "median_s": 0.0001
+      },
+      {
+        "stage": "map_meshes",
+        "median_s": 0.0
+      }
+    ],
+    "drive": [
+      {
+        "stage": "add_environment",
+        "median_s": 1.3755
+      },
+      {
+        "stage": "build_terrain",
+        "median_s": 0.15425
+      },
+      {
+        "stage": "build_slice",
+        "median_s": 0.1481
+      },
+      {
+        "stage": "add_map_details",
+        "median_s": 0.0471
+      },
+      {
+        "stage": "make_sky",
+        "median_s": 0.00695
+      },
+      {
+        "stage": "style_water",
+        "median_s": 0.00245
+      },
+      {
+        "stage": "add_start_grid",
+        "median_s": 0.001
+      },
+      {
+        "stage": "setup_lighting",
+        "median_s": 0.0001
+      },
+      {
+        "stage": "map_meshes",
+        "median_s": 0.0
+      }
+    ]
+  },
+  "note": "Adjacent mark intervals; scene substages are nested and must not be summed with their parent."
+}

@@ -1,0 +1,103 @@
+{
+  "source": "Original dimensioned meshes authored for CoastalDrive HWY-01",
+  "editable_source": "tools/environment/build_expressway_kit.py",
+  "rights": "Project-authored; no third-party assets added",
+  "units": "metres; +Y forward; +Z up",
+  "assets": [
+    {
+      "name": "lamp",
+      "file": "lamp.bam",
+      "sha256": "705b70c868c71cf08336e8a87425865b30dfc997ae50b7df6871df92852b5b7a"
+    },
+    {
+      "name": "reflector",
+      "file": "reflector.bam",
+      "sha256": "141d3185169d04767540ecc4f68f254825bf2e9247debac5a58b2adf9a83b912"
+    },
+    {
+      "name": "soundwall",
+      "file": "soundwall.bam",
+      "sha256": "1a9e661bdc67dd0884d80b947e5d9d4dbf2a142a7575b9b0e8ccfa3fae843103"
+    },
+    {
+      "name": "crash-cushion",
+      "file": "crash-cushion.bam",
+      "sha256": "cafa9d08b84edbe68fc05ac565062b749df0649d06bdbe4d4ddb11064e05bd81"
+    },
+    {
+      "name": "drain-grate",
+      "file": "drain-grate.bam",
+      "sha256": "457b9472f5f9aa6940740d3fc30815144530f8320cf97c967d2be4e12357b2b5"
+    },
+    {
+      "name": "equipment",
+      "file": "equipment.bam",
+      "sha256": "86e0e259b2986b7b68f30316eb9188f9d7c64637bc1236f6078aa9c26ff8330b"
+    },
+    {
+      "name": "overpass",
+      "file": "overpass.bam",
+      "sha256": "c8364c884adb1b1af1b3d4e6f5a94a494a89044e393668d036ef635832c96b94"
+    },
+    {
+      "name": "broadleaf-crown",
+      "file": "broadleaf-crown.bam",
+      "sha256": "159d283c1990401749ced886dc3c6aba48dcc5b12510a95963b21f94cfe2110a"
+    },
+    {
+      "name": "shrub-bank",
+      "file": "shrub-bank.bam",
+      "sha256": "2cc428841c8695a1d2172399986faaa27133d2720491385672ce22165d4383d7"
+    },
+    {
+      "name": "speed-limit",
+      "file": "speed-limit.bam",
+      "sha256": "9b3ac99ca744b40c95a1e34710d1d79094e8ffac4f81d76aeabd3cb00247b699"
+    },
+    {
+      "name": "curve-left",
+      "file": "curve-left.bam",
+      "sha256": "a309fc18233cca6fce7878b09f99e3e08aa61e7b7340260457dc35d4dc032038"
+    },
+    {
+      "name": "curve-right",
+      "file": "curve-right.bam",
+      "sha256": "835cfb8852ae054db10349d35c7ad5d548546e6a93de6ee30defd77da947e546"
+    },
+    {
+      "name": "hill-warning",
+      "file": "hill-warning.bam",
+      "sha256": "66a85e098bf919b3efb44cb7ff0e571a088e19b118b05bee879bbd42bd0c903c"
+    },
+    {
+      "name": "wind-warning",
+      "file": "wind-warning.bam",
+      "sha256": "e9ccbf4a85080c874d816a1d352e357c7cf1219543b4eb3e2889854ae9ccf570"
+    },
+    {
+      "name": "route-direction",
+      "file": "route-direction.bam",
+      "sha256": "925f8afddbadf4ce0a14da8ed61d3a69e8262e7fab2feb98ddead668c8c76ac5"
+    },
+    {
+      "name": "bridge-advance",
+      "file": "bridge-advance.bam",
+      "sha256": "7d7bcf24ae9cea1777f2e4303d6f36b1ba35de1ca6387b1974cc80c05dc9225d"
+    },
+    {
+      "name": "advance-sign",
+      "file": "advance-sign.bam",
+      "sha256": "db549046d5f61c9cd50789753358ab9c3404d3e0de532c817843ec723306669d"
+    },
+    {
+      "name": "gantry",
+      "file": "gantry.bam",
+      "sha256": "d296297ce44a17c9dc9ef463eb67ec815abf930d7bbaa3d49d9e80ba448bf2cb"
+    },
+    {
+      "name": "kilometer",
+      "file": "kilometer.bam",
+      "sha256": "75706f04787cea2513f451de6a9d0980cbea524173a4e2bf8d15d18b907103bc"
+    }
+  ]
+}

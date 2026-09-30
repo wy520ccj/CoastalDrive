@@ -1,0 +1,78 @@
+{
+  "kind": "fixed-view lights8 versus lights1; same geometry and illumination",
+  "passed": false,
+  "views": [
+    {
+      "file": "curves--2300.png",
+      "max_channel_delta": 46,
+      "mean_channel_delta": 0.0006182484567901235,
+      "pixels_over_2percent": 135
+    },
+    {
+      "file": "curves-170.png",
+      "max_channel_delta": 53,
+      "mean_channel_delta": 0.0005560378086419753,
+      "pixels_over_2percent": 109
+    },
+    {
+      "file": "curves-830.png",
+      "max_channel_delta": 28,
+      "mean_channel_delta": 0.000464891975308642,
+      "pixels_over_2percent": 106
+    },
+    {
+      "file": "curves-8400.png",
+      "max_channel_delta": 47,
+      "mean_channel_delta": 0.0006113361625514404,
+      "pixels_over_2percent": 138
+    },
+    {
+      "file": "hills--2300.png",
+      "max_channel_delta": 41,
+      "mean_channel_delta": 0.0010739776234567901,
+      "pixels_over_2percent": 230
+    },
+    {
+      "file": "hills-170.png",
+      "max_channel_delta": 53,
+      "mean_channel_delta": 0.0006608474794238683,
+      "pixels_over_2percent": 144
+    },
+    {
+      "file": "hills-830.png",
+      "max_channel_delta": 36,
+      "mean_channel_delta": 0.0007100372942386832,
+      "pixels_over_2percent": 164
+    },
+    {
+      "file": "hills-8400.png",
+      "max_channel_delta": 35,
+      "mean_channel_delta": 0.0005565200617283951,
+      "pixels_over_2percent": 120
+    },
+    {
+      "file": "straight--2300.png",
+      "max_channel_delta": 43,
+      "mean_channel_delta": 0.00098315329218107,
+      "pixels_over_2percent": 221
+    },
+    {
+      "file": "straight-170.png",
+      "max_channel_delta": 32,
+      "mean_channel_delta": 0.0006917116769547325,
+      "pixels_over_2percent": 167
+    },
+    {
+      "file": "straight-830.png",
+      "max_channel_delta": 32,
+      "mean_channel_delta": 0.0008949009773662551,
+      "pixels_over_2percent": 197
+    },
+    {
+      "file": "straight-8400.png",
+      "max_channel_delta": 40,
+      "mean_channel_delta": 0.0005661651234567901,
+      "pixels_over_2percent": 105
+    }
+  ]
+}

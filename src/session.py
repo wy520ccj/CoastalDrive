@@ -1,5 +1,5 @@
 import math
-from dataclasses import dataclass, replace
+from dataclasses import replace
 from enum import Enum
 
 from controls import Controller, KeyboardController
@@ -40,25 +40,6 @@ class FixedStepper:
         return count
 
 
-@dataclass
-class TripSummary:
-    """滨海自由驾驶的只读展示统计，由固定步更新。"""
-
-    elapsed: float = 0.0
-    distance: float = 0.0
-
-    def reset(self):
-        self.elapsed = 0.0
-        self.distance = 0.0
-
-    def update(self, previous, current, dt, *, reset=False):
-        self.elapsed += dt
-        if not reset:
-            dx = current.player.position[0] - previous.player.position[0]
-            dy = current.player.position[1] - previous.player.position[1]
-            self.distance += math.hypot(dx, dy)
-
-
 class Session:
     def __init__(self, seed=0, *, track="coastal", scores=None, road_shape="straight"):
         self.road_shape = road_shape
@@ -78,7 +59,6 @@ class Session:
         self.notice = ""
         self.race = RaceTracker(self.mode, scores=scores)
         self.highway = HighwayRun()
-        self.trip_summary = TripSummary()
         self.sync_snapshots()
 
     def sync_snapshots(self):
@@ -115,7 +95,6 @@ class Session:
             self.simulation.traffic_span = density.spawn_span
             self.simulation.reset(self.seed)
         self.mode = chosen_mode
-        self.trip_summary.reset()
         self.simulation.set_checkpoint_frames_enabled(self.mode == GameMode.TIME_TRIAL)
         self.race.start(self.mode, circuit=self.track.circuit)
         self.highway = HighwayRun(challenge=self.mode == GameMode.DISTANCE_CHALLENGE)
@@ -160,11 +139,6 @@ class Session:
             self.last_control = self.controller.sample(self.current, FIXED_DT)
             self.simulation.step(self.last_control, FIXED_DT)
             self.current = self.simulation.snapshot()
-            if self.mode == GameMode.FREE_DRIVE and self.simulation.track == "coastal":
-                self.trip_summary.update(
-                    self.previous, self.current, FIXED_DT,
-                    reset="player_reset" in self.current.events,
-                )
             if "reset_blocked" in self.current.events:
                 self.notice = "附近暂时没有安全空位，请稍后再试"
             if "player_reset" in self.current.events:

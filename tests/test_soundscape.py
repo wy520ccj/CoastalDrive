@@ -8,6 +8,7 @@ from types import SimpleNamespace
 from impact_events import ContactState, ImpactEvent
 from paths import resource_root
 from soundscape import Soundscape
+from vehicle_state import CarState
 
 
 class FakeSound:
@@ -17,6 +18,13 @@ class FakeSound:
         self.stop_count = 0
         self.rate = 1.0
         self.position = None
+        self.time = 0.0
+
+    def setTime(self, value):
+        self.time = value
+
+    def getTime(self):
+        return self.time
 
     def setLoop(self, value):
         self.loop = value
@@ -42,8 +50,10 @@ class FakeBase:
         self.sounds = []
         self.loader = SimpleNamespace(loadSfx=self.load_sound)
 
-    def load_sound(self, _path):
+    def load_sound(self, _path, *, positional=False):
         sound = FakeSound()
+        sound.path = str(_path)
+        sound.positional = positional
         self.sounds.append(sound)
         return sound
 
@@ -59,7 +69,7 @@ def contact(tick=1, *, tangent=8.0, impulse=150, source=1):
 
 
 def frame(time, impacts=(), contacts=(), *, epoch=1, rpm=3500, speed=18):
-    player = SimpleNamespace(throttle=0.5, speed=speed, rpm=rpm, surface="asphalt")
+    player = CarState((0, 0, 1), throttle=0.5, speed=speed, rpm=rpm)
     return SimpleNamespace(time=time, impacts=impacts, contacts=contacts,
                            contact_epoch=epoch, player=player, collisions=0)
 
@@ -75,7 +85,7 @@ def make_soundscape(master=100, effects=100):
 
 
 def impact_plays(sounds):
-    return sum(sound.play_count for sound in sounds[3:])
+    return sum(sound.play_count for sound in sounds if "/impact/" in sound.path)
 
 
 def test_volume_levels_multiply_loops_and_all_impact_layers():
@@ -84,7 +94,7 @@ def test_volume_levels_multiply_loops_and_all_impact_layers():
     for soundscape in (full, reduced):
         soundscape.update(frame(0), phase("driving"), None)
         soundscape.update(frame(.1, (event(),)), phase("driving"), None)
-    for i in range(3):
+    for i in range(14):
         assert abs(b[i].volumes[-1] - a[i].volumes[-1] * .1) < 1e-9
     assert len(full.impact_audio.voices) >= 2
     assert len(reduced.impact_audio.voices) == len(full.impact_audio.voices)
@@ -92,13 +102,16 @@ def test_volume_levels_multiply_loops_and_all_impact_layers():
         assert abs(right.sound.volumes[-1] - left.sound.volumes[-1] * .1) < 1e-9
 
 
-def test_idle_and_revs_preserve_existing_mix():
+def test_idle_and_revs_select_neighboring_rpm_bands():
     soundscape, sounds = make_soundscape()
     soundscape.update(frame(0, rpm=900), phase("driving"), None)
-    assert sounds[1].volumes[-1] > 0 and sounds[0].volumes[-1] == 0
-    soundscape.update(frame(.1, rpm=8000, speed=36), phase("driving"), None)
-    assert sounds[0].volumes[-1] > 0 and sounds[1].volumes[-1] == 0
-    assert sounds[2].volumes[-1] < sounds[0].volumes[-1]
+    assert sounds[0].volumes[-1] > 0
+    assert all(s.volumes[-1] == 0 for s in sounds[2:10])
+    for i in range(1, 12):
+        soundscape.update(frame(i / 10, rpm=7000, speed=36), phase("driving"), None)
+    assert sounds[8].volumes[-1] > 0 and sounds[9].volumes[-1] > 0
+    assert sounds[0].volumes[-1] == 0
+    assert sounds[10].volumes[-1] < sounds[9].volumes[-1]
 
 
 def test_mute_consumes_impact_without_replay():
@@ -112,7 +125,7 @@ def test_mute_consumes_impact_without_replay():
     assert impact_plays(sounds) >= 2
     soundscape.set_volumes(100, 0)
     assert soundscape.impact_audio.voices == []
-    assert all(sound.volumes[-1] == 0 for sound in sounds[:3])
+    assert all(sound.volumes[-1] == 0 for sound in sounds[:14])
 
 
 def test_pause_resume_reset_and_close_stop_all_voices():
@@ -123,7 +136,7 @@ def test_pause_resume_reset_and_close_stop_all_voices():
     assert soundscape.impact_audio.voices == []
     assert not soundscape.loops_playing
     soundscape.update(frame(.2), phase("driving"), None)
-    assert [s.play_count for s in sounds[:3]] == [2, 2, 2]
+    assert all(s.play_count == 2 for s in sounds[:14])
     soundscape.update(frame(.3, (event(1, epoch=2),), epoch=2), phase("driving"), None)
     assert all(v.event_id.startswith("2:") for v in soundscape.impact_audio.voices)
     soundscape.close()
@@ -185,13 +198,14 @@ def test_audio_log_reports_severity_layers_and_scrape():
     assert decisions[0]["raw_impulse"] == 6000
     assert 0 < decisions[0]["severity"] < 1
     assert {name for name, _ in decisions[0]["layers"]} >= {"transient", "body"}
-    assert all(v.sound.position[0] == -0.16 for v in soundscape.impact_audio.voices)
+    assert all(v.sound.position[0] == -0.65 and v.sound.positional
+               for v in soundscape.impact_audio.voices)
 
 
 def test_new_impact_clips_are_playable_mono_pcm():
     audio_dir = resource_root() / "assets" / "game" / "audio"
     bank = json.loads((audio_dir / "impact-bank.json").read_text(encoding="utf-8"))
-    assert sum(map(len, bank["pools"].values())) == 22
+    assert sum(map(len, bank["pools"].values())) == 31
     for pool in bank["pools"].values():
         for entry in pool:
             with wave.open(str(audio_dir / entry["path"]), "rb") as clip:

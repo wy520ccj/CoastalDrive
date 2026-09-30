@@ -1,0 +1,19 @@
+{
+  "runs": 3,
+  "method": "fresh process per run; OS file cache and GPU shader cache not cleared",
+  "target": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive-VI-v1\\builds\\0.8.3-perf00\\win_amd64\\coastaldrive.exe",
+  "scenario": "visible coastal main menu, then 8-car free drive",
+  "resolution": [
+    1280,
+    720
+  ],
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "first_frame_median_s": 7.2819,
+  "menu_usable_median_s": 7.2819,
+  "drive_transition_median_s": 2.3371,
+  "individual_reports": [
+    "run-01/startup.json",
+    "run-02/startup.json",
+    "run-03/startup.json"
+  ]
+}

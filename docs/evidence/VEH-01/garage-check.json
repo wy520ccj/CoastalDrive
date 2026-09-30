@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "appearances": 10,
+  "checks": [
+    "frozen_simulation",
+    "apply",
+    "cancel",
+    "key_repeat",
+    "save_error",
+    "driving"
+  ]
+}

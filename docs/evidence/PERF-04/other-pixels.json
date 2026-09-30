@@ -1,0 +1,19 @@
+{
+  "kind": "8 versus 1 actual light slot, same frozen coastal and garage views",
+  "views": [
+    {
+      "view": "coastal",
+      "max_channel_delta": 29,
+      "mean_channel_delta": 0.000264917695473251,
+      "pixels_over_2percent": 52,
+      "pixels": 2073600
+    },
+    {
+      "view": "garage",
+      "max_channel_delta": 51,
+      "mean_channel_delta": 4.758230452674897e-05,
+      "pixels_over_2percent": 5,
+      "pixels": 2073600
+    }
+  ]
+}

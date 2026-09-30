@@ -2,6 +2,7 @@
 
 import math
 from functools import lru_cache
+from time import perf_counter
 
 import gltf
 from panda3d.core import (
@@ -15,6 +16,7 @@ from panda3d.core import (
     GeomVertexData,
     GeomVertexFormat,
     GeomVertexWriter,
+    Mat4,
     Material,
     NodePath,
     PNMImage,
@@ -34,14 +36,17 @@ from coastal_map import (
     map_meshes,
     offset_point,
     point_at,
+    project,
     strip_mesh,
 )
-from coastal_visuals import _add_ridge, add_city, add_coastal_backdrop, add_streetlight
+from environment import foundation
+from environment.coastal_slice import build_slice, build_terrain, dress_existing_tree
+from environment.water import style_water
 from highway_map import HIGHWAY_LENGTH
 from highway_map import ROAD_WIDTH as HIGHWAY_ROAD_WIDTH
 from highway_map import meshes as highway_meshes
 from paths import resource_root
-from skins import apply_skin, traffic_models, traffic_skins
+from skins import apply_skin, traffic_models, traffic_skins, vehicle_definition
 from sky_dome import make_sky
 from test_track import OBSTACLES, TRACK_X
 from vehicle_visual import load_vehicle
@@ -196,43 +201,14 @@ def water_texture():
     pixels = PNMImage(256, 256, 3)
     for y in range(256):
         for x in range(256):
-            u, v = x / 256, y / 256
-            long_wave = math.sin(math.tau * (u * 3 + math.sin(math.tau * v * 2) * 0.22))
-            cross_wave = math.sin(math.tau * (v * 5 + u * 0.14))
-            glint = max(0.0, math.sin(math.tau * (u * 11 + v * 7)) - 0.96)
-            tone = 0.82 + long_wave * 0.055 + cross_wave * 0.018
-            pixels.setXel(
-                x,
-                y,
-                min(1, tone * 0.70 + glint * 0.18),
-                min(1, tone * 0.87 + glint * 0.13),
-                min(1, tone * 0.98 + glint * 0.04),
-            )
+            ripple = math.sin(x * 0.19 + math.sin(y * 0.09) * 2) * 0.035
+            shade = 0.9 + ripple + math.sin(y * 0.23) * 0.025
+            pixels.setXel(x, y, shade * 0.82, shade * 0.98, shade)
     texture = Texture("water-ripples")
     texture.load(pixels)
     texture.setWrapU(Texture.WMRepeat)
     texture.setWrapV(Texture.WMRepeat)
     texture.setMinfilter(Texture.FTLinearMipmapLinear)
-    return texture
-
-
-@lru_cache(maxsize=1)
-def cliff_texture():
-    """Small tileable hand-made limestone texture, separate from grass and asphalt."""
-    pixels = PNMImage(256, 256, 3)
-    for y in range(256):
-        for x in range(256):
-            u, v = x / 256, y / 256
-            strata = math.sin(math.tau * (v * 6 + math.sin(math.tau * u * 2) * 0.12))
-            grain = math.sin(math.tau * (u * 17 + v * 13)) * math.sin(math.tau * (v * 19 - u * 7))
-            value = 0.71 + strata * 0.055 + grain * 0.025
-            pixels.setXel(x, y, value, value * 0.83, value * 0.65)
-    texture = Texture("warm-limestone")
-    texture.load(pixels)
-    texture.setWrapU(Texture.WMRepeat)
-    texture.setWrapV(Texture.WMRepeat)
-    texture.setMinfilter(Texture.FTLinearMipmapLinear)
-    texture.setAnisotropicDegree(4)
     return texture
 
 
@@ -277,45 +253,72 @@ class Scene:
         self.base = base
         self.render = base.render.attachNewNode("coastal-scene")
         self.segment_nodes = {}
+        self.segment_builds = {}
+        self.segment_work = {"frame_ms": 0, "max_step_ms": 0, "completed": 0,
+                             "cancelled": 0, "phase": "", "near_pending": 0}
         self.endless_surface_templates = {}
         self.endless_tree_templates = []
         self.endless_bush_template = None
         self.endless_templates = None
         self.ocean = None
+        self.checkpoint_nodes = []
         self.track_points = [Vec3(point.x, point.y, point.z) for point in MAP_POINTS]
         self.setup_lighting()
         self.setup_scene()
-        self.sky = make_sky(base, self.render)
+        self.sky = make_sky(base, self.render, coastal=base.session.simulation.track == "coastal")
+        if base.session.simulation.track == "endless":
+            from environment.expressway_materials import style_sky
+
+            style_sky(self.sky, base.loader)
+            rotation = Mat4()
+            self.sky.getQuat().conjugate().extractToMatrix(rotation)
+            self.render.setShaderInput("expressway_sky", self.expressway_kit["sky"])
+            self.render.setShaderInput("expressway_sky_inverse", rotation)
+            self.render.setShader(self.expressway_kit["distance-shader"])
 
     def setup_lighting(self) -> None:
-        coastal = self.base.session.simulation.track == "coastal"
         ambient = AmbientLight("coastal-ambient")
-        ambient.setColor((0.29, 0.35, 0.40, 1) if coastal else (0.18, 0.22, 0.28, 1))
+        ambient.setColor((0.18, 0.22, 0.28, 1))
         self.ambient_path = self.render.attachNewNode(ambient)
         self.render.setLight(self.ambient_path)
 
         sun = DirectionalLight("coastal-sun")
-        sun_color = (1.78, 1.52, 1.27, 1) if coastal else (2.6, 2.35, 1.9, 1)
-        sun.setColor(sun_color)
+        sun.setColor((2.6, 2.35, 1.9, 1))
         sun.setShadowCaster(True, 2048, 2048)
         sun.getLens().setFilmSize(95, 95)
         sun.getLens().setNearFar(10, 300)
         self.sun_path = self.render.attachNewNode(sun)
         self.render.setLight(self.sun_path)
         rail_sun = DirectionalLight("rail-sun")
-        rail_sun.setColor(sun_color)
+        rail_sun.setColor((2.6, 2.35, 1.9, 1))
         self.rail_sun_path = self.render.attachNewNode(rail_sun)
         self.update_lighting(Vec3(TRACK_X, 0, 0))
-        sky_color = (0.55, 0.76, 0.84) if coastal else (0.55, 0.73, 0.82)
-        self.base.setBackgroundColor(*sky_color)
+        self.base.setBackgroundColor(0.55, 0.73, 0.82)
         fog = Fog("coastal-haze")
-        fog.setColor(*sky_color)
-        fog.setExpDensity(0.0008 if coastal else 0.0015)
+        fog.setColor(0.55, 0.73, 0.82)
+        fog.setExpDensity(0.0025)
         self.render.setFog(fog)
+        if self.base.session.simulation.track == "coastal":
+            ambient.setColor(foundation.AMBIENT)
+            sun.setColor(foundation.SUN)
+            rail_sun.setColor(foundation.SUN)
+            fog.setColor(*foundation.HAZE)
+            fog.setExpDensity(foundation.FOG_DENSITY)
+            self.base.setBackgroundColor(*foundation.HAZE)
+        elif self.base.session.simulation.track == "endless":
+            ambient.setColor((0.18, 0.24, 0.30, 1))
+            sun.setColor((2.15, 2.18, 2.20, 1))
+            rail_sun.setColor((2.15, 2.18, 2.20, 1))
+            fog.setExpDensity(0.0015)
 
     def update_lighting(self, position):
         self.sun_path.setPos(position + Vec3(-55, -75, 125))
         self.sun_path.lookAt(position)
+        simulation = self.base.session.simulation
+        if simulation.track == "endless":
+            from environment.expressway import stabilize_sun
+
+            stabilize_sun(self.sun_path, position, simulation.origin_y)
         self.rail_sun_path.setPos(self.sun_path.getPos())
         self.rail_sun_path.setHpr(self.sun_path.getHpr())
 
@@ -326,15 +329,18 @@ class Scene:
         node.setLight(self.rail_sun_path, 1)
 
     def setup_scene(self) -> None:
+        track = self.base.session.simulation.track
+        sea_size = 12000 if track == "coastal" else 1800
         self.ocean = make_quad(
-            "ocean", Vec3(0, 0, 0), 1800, 1800, Vec4(0.045, 0.42, 0.61, 1), SEA_LEVEL
+            "ocean", Vec3(0, 0, 0), sea_size, sea_size, Vec4(0.025, 0.24, 0.36, 1), SEA_LEVEL
         )
         self.ocean.setTexture(water_texture())
-        self.ocean.setLightOff(1)
         self.ocean.reparentTo(self.render)
-        track = self.base.session.simulation.track
+        if track == "coastal":
+            style_water(self.ocean)
         if track == "endless":
             self.setup_endless()
+            self.ocean.hide()
         elif track == "test":
             make_quad(
                 "test-ground", Vec3(0), 3000, 3000, Vec4(0.2, 0.31, 0.13, 1), -0.01
@@ -343,36 +349,32 @@ class Scene:
         elif self.base.session.simulation.track == "highway":
             self.setup_highway()
         else:
-            colors = {
-                "road": (0.075, 0.09, 0.11, 1),
-                "inner-shoulder": (0.44, 0.41, 0.33, 1),
-                "outer-shoulder": (0.44, 0.41, 0.33, 1),
-                "island": (0.19, 0.32, 0.13, 1),
-                "cliff": (0.32, 0.29, 0.23, 1),
-                "inner-rail": (0.60, 0.64, 0.66, 1),
-                "outer-rail": (0.60, 0.64, 0.66, 1),
-            }
             for name, (vertices, triangles) in map_meshes().items():
-                mesh = make_mesh(name, vertices, triangles, Vec4(*colors[name]))
-                if name == "road":
-                    mesh.setTexture(asphalt_texture())
-                elif name == "island":
-                    mesh.setTexture(ground_texture())
-                elif name == "cliff":
-                    mesh.setTexture(cliff_texture())
-                elif "rail" in name:
+                if name in ("island", "cliff"):
+                    continue
+                mesh = make_mesh(name, vertices, triangles, Vec4(*foundation.SURFACES[name]))
+                foundation.apply_surface(mesh, name)
+                if "rail" in name:
                     self.stabilize_rail(mesh)
                 mesh.reparentTo(self.render)
             self.add_map_details()
             self.add_start_grid()
+            build_terrain(self.render)
             self.add_environment()
-            add_coastal_backdrop(self.render, make_mesh, make_box, make_cylinder, make_cone)
+            build_slice(self.render)
         # Batch static road markings and barriers before adding the moving car.
         if track != "endless":
             self.render.flattenStrong()
-        self.player, self.wheels = load_vehicle(self.render, self.base.vehicle_model_id)
+        trace = self.base.startup_trace
+        if trace is not None:
+            trace.mark("environment_assets_loaded")
+        self.player, self.wheels = load_vehicle(
+            self.render, vehicle_definition(self.base.vehicle_model_id), trace=trace
+        )
         model = self.player.getChild(0)
         apply_skin(model, self.base.skin_index)
+        if trace is not None:
+            trace.mark("hero_vehicle_loaded")
         self.traffic = []
         self.traffic_wheels = []
         self.traffic_signals = []
@@ -381,19 +383,25 @@ class Scene:
             traffic_models(self.base.session.seed, traffic_count),
             traffic_skins(self.base.session.seed, traffic_count),
         ):
-            car, wheels = load_vehicle(self.render, model_id)
+            car, wheels = load_vehicle(self.render, vehicle_definition(model_id))
             apply_skin(car.getChild(0), skin)
             self.traffic.append(car)
             self.traffic_wheels.append(wheels)
             lights = []
+            rear = {"traffic-compact": -1.79, "traffic-sedan": -2.085,
+                    "traffic-wagon": -2.06}[model_id]
+            width = {"traffic-compact": 0.85, "traffic-sedan": 0.915,
+                     "traffic-wagon": 0.95}[model_id]
             for side in (-1, 1):
                 lamp = make_box("turn-signal", (0.12, 0.025, 0.055), Vec4(1, 0.55, 0.02, 1))
                 lamp.reparentTo(car)
-                lamp.setPos(side * 0.58, -2.07, 0.35)
+                lamp.setPos(side * width * 0.72, rear - 0.025, 0.35)
                 lamp.setLightOff()
                 lamp.hide()
                 lights.append(lamp)
             self.traffic_signals.append(lights)
+        if trace is not None:
+            trace.mark("traffic_vehicles_loaded")
 
     def setup_highway(self):
         for name, (vertices, triangles) in highway_meshes().items():
@@ -426,9 +434,6 @@ class Scene:
             for x in (-8.35, 8.35):
                 self.add_road_post(self.render, (x, y, 0.46))
         self.add_environment()
-        add_city(self.render, make_box, (-95, 210))
-        for i in range(5):
-            _add_ridge(self.render, make_mesh, (-260, i * 220, -3), 160, 65 + i * 5, i + 70, True)
 
     def add_road_post(self, parent, position):
         post = make_box("roadside-post", (0.09, 0.09, 0.46), Vec4(0.89, 0.88, 0.8, 1))
@@ -440,21 +445,6 @@ class Scene:
 
     def setup_endless(self):
         """Build reusable endless-road templates and the initially streamed segments."""
-        from highway_segments import SEGMENT_LENGTH, surface_meshes
-
-        self.highway_scenery = self.render.attachNewNode("highway-scenery")
-        add_city(self.highway_scenery, make_box, (-95, 240))
-        for i in range(5):
-            _add_ridge(
-                self.highway_scenery,
-                make_mesh,
-                (-310, i * 230 - 200, -3),
-                160,
-                65 + i * 5,
-                i + 70,
-                True,
-            )
-        self.highway_scenery.flattenStrong()
         self.endless_templates = self.render.attachNewNode("endless-templates")
         self.endless_templates.hide()
         self.endless_tree_templates = [
@@ -465,137 +455,66 @@ class Scene:
             template.reparentTo(self.endless_templates)
         self.endless_bush_template = self.load_model("nature/plant_bushLargeTriangle.glb")
         self.endless_bush_template.reparentTo(self.endless_templates)
-        if self.base.session.simulation.road.curve:
-            self.sync_segments()
-            return
-        colors = {
-            "road": Vec4(0.075, 0.09, 0.11, 1),
-            "ground": Vec4(0.20, 0.31, 0.13, 1),
-            "shoulder": Vec4(0.45, 0.42, 0.34, 1),
-        }
-        for name, (vertices, triangles) in surface_meshes().items():
-            color = colors.get(name, colors["ground"])
-            if name.startswith("shoulder"):
-                color = colors["shoulder"]
-            elif name.startswith("rail"):
-                color = Vec4(0.62, 0.66, 0.68, 1)
-            node = make_mesh(f"endless-template-{name}", vertices, triangles, color)
-            if name == "road":
-                node.setTexture(asphalt_texture())
-            elif name == "ground":
-                node.setTexture(ground_texture())
-            elif name.startswith("rail"):
-                self.stabilize_rail(node)
-            node.reparentTo(self.endless_templates)
-            self.endless_surface_templates[name] = node
-        for side in (-1, 1):
-            for local_y in range(0, SEGMENT_LENGTH, 8):
-                marker = make_quad(
-                    "endless-lane-mark",
-                    Vec3(side * 2.25, local_y, 0.035),
-                    0.12,
-                    4,
-                    Vec4(0.94, 0.82, 0.35, 1),
-                    0.035,
-                )
-                marker.reparentTo(self.endless_templates)
+        from environment.expressway import load_kit
+
+        self.expressway_kit = load_kit(
+            self.base.loader, self.endless_templates, self.endless_tree_templates
+        )
         self.sync_segments()
 
-    def sync_segments(self):
-        """Mirror the simulation's currently visible global segment window."""
+    def sync_segments(self, budget_ms=None, distance=None):
+        """装卸窗口不变；驾驶中分摊远端美术，完整节点才挂入场景。"""
+        from environment.expressway_route import anchor, segment_steps
+
         simulation = self.base.session.simulation
-        stream = getattr(simulation, "stream", None)
+        stream = simulation.stream
         if stream is None:
             return
-        import curve_mesh
-        from highway_segments import SEGMENT_LENGTH, segment
-
-        segments = stream.segments
+        started = perf_counter()
         for index in tuple(self.segment_nodes):
-            if index not in segments:
+            if index not in stream.segments:
                 self.segment_nodes.pop(index).removeNode()
-        for index in segments:
-            root = self.segment_nodes.get(index)
-            if root is None:
-                root = self.render.attachNewNode(f"endless-segment-{index}")
-                if stream.curve:
-                    colors = {
-                        "road": Vec4(0.075, 0.09, 0.11, 1),
-                        "ground": Vec4(0.20, 0.31, 0.13, 1),
-                    }
-                    for name, (vertices, triangles) in stream.meshes[index].items():
-                        color = colors.get(
-                            name,
-                            Vec4(0.62, 0.66, 0.68, 1)
-                            if name.startswith("rail")
-                            else Vec4(0.45, 0.42, 0.34, 1),
-                        )
-                        node = make_mesh(name, vertices, triangles, color)
-                        if name == "road":
-                            node.setTexture(asphalt_texture())
-                        elif name == "ground":
-                            node.setTexture(ground_texture())
-                        elif name.startswith("rail"):
-                            self.stabilize_rail(node)
-                        node.reparentTo(root)
-                    for vertices, triangles in curve_mesh.markings(stream.curve, index):
-                        make_mesh(
-                            "lane-mark", vertices, triangles, Vec4(0.94, 0.82, 0.35, 1)
-                        ).reparentTo(root)
-                    for local_y in range(20, SEGMENT_LENGTH, 40):
-                        for lateral in (-8.35, 8.35):
-                            self.add_road_post(
-                                root, curve_mesh.point(stream.curve, index, local_y, lateral, 0.46)
-                            )
-                    for local_y in range(20, SEGMENT_LENGTH, 40):
-                        add_streetlight(
-                            root, make_box, curve_mesh.point(stream.curve, index, local_y, 9, 0)
-                        )
-                    for number, (position, scale, heading) in enumerate(
-                        curve_mesh.trees(stream.curve, simulation.seed, index)
-                    ):
-                        tree = self.endless_tree_templates[(index + number) % 2].copyTo(root)
-                        tree.show()
-                        tree.setPos(*position)
-                        tree.setScale(scale)
-                        tree.setH(heading)
-                        if number % 2 == 0:
-                            bush = self.endless_bush_template.copyTo(root)
-                            bush.show()
-                            bush.setPos(position[0] + 1.8, position[1] + 2, position[2])
-                            bush.setScale(4)
-                    root.flattenStrong()
+        for index in tuple(self.segment_builds):
+            if index not in stream.segments:
+                root, steps = self.segment_builds.pop(index)
+                steps.close()
+                root.removeNode()
+                self.segment_work["cancelled"] += 1
+        deadline = started + budget_ms / 1000 if budget_ms is not None else math.inf
+        # 物理窗口提前1200m加载；优先准备距玩家最近的缺失段，支持反向行驶。
+        center = sum(stream.segments) / len(stream.segments) if stream.segments else 0
+        if distance is not None:
+            center = distance / 200
+        missing = sorted(stream.segments.keys() - self.segment_nodes.keys(),
+                         key=lambda i: abs(i - center))
+        for index in missing:
+            if perf_counter() >= deadline:
+                break
+            if index not in self.segment_builds:
+                root = NodePath(f"endless-segment-{index}")
+                steps = segment_steps(root, index, simulation.seed, self.expressway_kit,
+                                      self.stabilize_rail, stream.curve)
+                self.segment_builds[index] = (root, steps)
+            root, steps = self.segment_builds[index]
+            while perf_counter() < deadline:
+                step_start = perf_counter()
+                try:
+                    phase = next(steps)
+                except StopIteration:
+                    root.reparentTo(self.render)
                     self.segment_nodes[index] = root
-                    x, y, z = curve_mesh.anchor(stream.curve, index)
-                    root.setPos(x, y - simulation.origin_y, z)
-                    continue
-                for template in self.endless_surface_templates.values():
-                    template.copyTo(root).show()
-                for template in self.render.findAllMatches("endless-templates/endless-lane-mark"):
-                    template.copyTo(root).show()
-                for local_y in range(20, SEGMENT_LENGTH, 40):
-                    for lateral in (-8.35, 8.35):
-                        self.add_road_post(root, (lateral, local_y, 0.46))
-                    add_streetlight(root, make_box, (9, local_y, 0))
-                trees = segment(simulation.seed, index).trees
-                for number, (x, local_y, scale, heading) in enumerate(trees):
-                    tree = self.endless_tree_templates[(index + number) % 2].copyTo(root)
-                    tree.show()
-                    tree.setPos(x, local_y, -0.32 + 0.05 * scale)
-                    tree.setScale(scale)
-                    tree.setH(heading)
-                    if number % 2 == 0:
-                        bush = self.endless_bush_template.copyTo(root)
-                        bush.show()
-                        bush.setPos(x + 1.8, local_y + 2, -0.32)
-                        bush.setScale(4)
-                root.flattenStrong()
-                self.segment_nodes[index] = root
-            if stream.curve:
-                x, y, z = curve_mesh.anchor(stream.curve, index)
-                root.setPos(x, y - simulation.origin_y, z)
-            else:
-                root.setY(index * SEGMENT_LENGTH - simulation.origin_y)
+                    del self.segment_builds[index]
+                    self.segment_work["completed"] += 1
+                    break
+                elapsed = (perf_counter() - step_start) * 1000
+                self.segment_work["max_step_ms"] = max(self.segment_work["max_step_ms"], elapsed)
+                self.segment_work["phase"] = phase
+        for index, root in self.segment_nodes.items():
+            x, y, z = anchor(stream.curve, index)
+            root.setPos(x, y - simulation.origin_y, z)
+        self.segment_work["near_pending"] = sum(abs(i - center) <= 3 for i in missing
+                                                if i not in self.segment_nodes)
+        self.segment_work["frame_ms"] = (perf_counter() - started) * 1000
 
     def add_test_field(self):
         asphalt = Vec4(0.075, 0.085, 0.095, 1)
@@ -696,25 +615,32 @@ class Scene:
     def add_environment(self):
         for number, (prop, z) in enumerate(self.base.session.simulation.props):
             if prop.kind.startswith("checkpoint"):
-                if self.base.session.mode.value == "free_drive":
-                    continue
                 half, height = collision_box(prop)
                 node = make_box(prop.kind, half, Vec4(0.15, 0.76, 0.86, 1))
                 node.setPos(prop.x, prop.y, z + height)
                 node.setH(prop.heading)
+                self.checkpoint_nodes.append(node)
             else:
                 filename = "nature/rock_largeA.glb"
                 if prop.kind == "tree":
                     filename = (
-                        "nature/tree_pineTallB.glb"
-                        if number % 3 == 0
+                        "nature/tree_pineTallB.glb" if number % 3 == 0
                         else "nature/tree_pineTallA.glb"
                     )
                 node = self.load_model(filename)
+                if self.base.session.simulation.track == "coastal":
+                    foundation.style_existing_prop(node)
+                    if prop.kind == "tree" and project(prop.x, prop.y)[2] < 360:
+                        dress_existing_tree(node, "b" if number % 3 == 0 else "a")
                 node.setScale(prop.scale)
                 node.setPos(prop.x, prop.y, z)
                 node.setH(prop.heading)
             node.reparentTo(self.render)
+        self.set_checkpoint_visible(self.base.session.mode.value != "free_drive")
+
+    def set_checkpoint_visible(self, visible):
+        for node in self.checkpoint_nodes:
+            node.show() if visible else node.hide()
 
     def load_model(self, filename: str) -> NodePath:
         path = resource_root() / "assets" / "game" / filename
@@ -726,10 +652,20 @@ class Scene:
         return root
 
     def apply(self, state):
+        self.sky.setPos(*state.player.position)
+        if self.base.session.simulation.track == "coastal":
+            self.ocean.setShaderInput("sea_time", state.time)
         if self.base.session.simulation.track == "endless":
-            self.sync_segments()
+            simulation = self.base.session.simulation
+            curve = simulation.stream.curve
+            global_y = state.player.position[1] + state.origin_y
+            distance = curve.distance_at_y(global_y) if curve else global_y
+            self.sync_segments(budget_ms=3, distance=distance)
             if self.ocean is not None:
                 self.ocean.setY(state.player.position[1])
+                if self.base.session.simulation.road.curve is None:
+                    self.ocean.setShaderInput("sea_time", state.time)
+                    self.ocean.setShaderInput("origin_y", state.origin_y)
         self.player.setPos(*state.player.position)
         self.player.setHpr(state.player.heading, state.player.pitch, state.player.roll)
         for node, wheel in zip(self.wheels, state.player.wheels):
@@ -750,15 +686,14 @@ class Scene:
                     wheel_node.hide()
         for lights, car in zip(self.traffic_signals, state.traffic):
             for side, lamp in zip((-1, 1), lights):
-                if (
-                    car.active
-                    and (car.hazards or car.signal == side)
-                    and int(state.time * 2.5) % 2 == 0
-                ):
+                if car.active and (car.hazards or car.signal == side) and int(state.time * 2.5) % 2 == 0:
                     lamp.show()
                 else:
                     lamp.hide()
 
     def close(self):
-        self.sky.removeNode()
+        for root, steps in self.segment_builds.values():
+            steps.close()
+            root.removeNode()
+        self.segment_builds.clear()
         self.render.removeNode()

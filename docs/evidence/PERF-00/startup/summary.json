@@ -1,0 +1,18 @@
+{
+  "runs": 3,
+  "method": "fresh Python process per run; OS file cache and GPU shader cache not cleared",
+  "scenario": "visible coastal main menu, then 8-car free drive",
+  "resolution": [
+    1280,
+    720
+  ],
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "first_frame_median_s": 7.3722,
+  "menu_usable_median_s": 7.3722,
+  "drive_transition_median_s": 2.3664,
+  "individual_reports": [
+    "run-01/startup.json",
+    "run-02/startup.json",
+    "run-03/startup.json"
+  ]
+}

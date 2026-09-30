@@ -1,0 +1,55 @@
+{
+  "kind": "startup",
+  "runs_per_case": 2,
+  "onscreen": null,
+  "warmup_s": null,
+  "sample_s": null,
+  "cases": [
+    {
+      "label": "baseline",
+      "menu_median_s": 7.2044999999999995,
+      "drive_median_s": 2.161,
+      "reports": [
+        "01-baseline/run-01/startup.json",
+        "01-baseline/run-02/startup.json"
+      ]
+    },
+    {
+      "label": "no_slice",
+      "menu_median_s": 3.1385,
+      "drive_median_s": 2.0646500000000003,
+      "reports": [
+        "02-no_slice/run-01/startup.json",
+        "02-no_slice/run-02/startup.json"
+      ]
+    },
+    {
+      "label": "no_props",
+      "menu_median_s": 5.58225,
+      "drive_median_s": 0.7777499999999999,
+      "reports": [
+        "03-no_props/run-01/startup.json",
+        "03-no_props/run-02/startup.json"
+      ]
+    },
+    {
+      "label": "no_terrain",
+      "menu_median_s": 6.736599999999999,
+      "drive_median_s": 2.1624,
+      "reports": [
+        "04-no_terrain/run-01/startup.json",
+        "04-no_terrain/run-02/startup.json"
+      ]
+    },
+    {
+      "label": "baseline",
+      "menu_median_s": 6.7282,
+      "drive_median_s": 2.1433,
+      "reports": [
+        "05-baseline/run-01/startup.json",
+        "05-baseline/run-02/startup.json"
+      ]
+    }
+  ],
+  "method": "sequential fresh processes; one visual factor changed per case"
+}

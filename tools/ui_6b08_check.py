@@ -35,10 +35,10 @@ def capture(app, name, folder):
 def bounds(app):
     checks = []
     for widget, width, scale in (
-        (app.status, 0.98, 0.040),
-        (app.status_notice, 0.98, 0.037),
-        (app.panel_note, 0.92 if app.garage is not None else 1.80 if app.session.phase == Phase.RESULTS else 1.37, 0.040),
-        (app.panel_detail, 1.50, 0.055),
+        (app.status, 1.04, 0.040),
+        (app.status_notice, 1.04, 0.037),
+        (app.panel_note, 0.99 if app.garage is not None else 1.37, 0.040),
+        (app.panel_detail, 1.36, 0.041),
     ):
         for line in widget.getText().split("\n"):
             measured = app.fit_lines(line, width, scale)

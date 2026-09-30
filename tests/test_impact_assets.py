@@ -12,7 +12,7 @@ from paths import resource_root
 def test_impact_bank_has_distinct_verified_variants_and_fast_transients():
     root = resource_root() / "assets" / "game" / "audio"
     bank = json.loads((root / "impact-bank.json").read_text(encoding="utf-8"))
-    assert bank["version"] == 1
+    assert bank["version"] == 2
     for name, variants in bank["pools"].items():
         assert len(variants) >= (2 if name.startswith("scrape") else 3)
         assert len({entry["sha256"] for entry in variants}) == len(variants)

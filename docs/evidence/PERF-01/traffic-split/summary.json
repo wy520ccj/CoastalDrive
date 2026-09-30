@@ -1,0 +1,64 @@
+{
+  "kind": "runtime",
+  "runs_per_case": 1,
+  "onscreen": false,
+  "warmup_s": 10.0,
+  "sample_s": 30.0,
+  "cases": [
+    {
+      "label": "baseline",
+      "average_fps_median": 57.170814981001094,
+      "p95_ms_median": 21.037699999396864,
+      "p99_ms_median": 23.889600000075006,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 730,
+        "geom_nodes": 359,
+        "geoms": 1546,
+        "triangles": 312642
+      },
+      "reports": [
+        "01-baseline/run-01/report.json"
+      ]
+    },
+    {
+      "label": "traffic_hidden",
+      "average_fps_median": 58.35385093634804,
+      "p95_ms_median": 20.618300000023737,
+      "p99_ms_median": 23.49469999990106,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 730,
+        "geom_nodes": 359,
+        "geoms": 1546,
+        "triangles": 312642
+      },
+      "reports": [
+        "02-traffic_hidden/run-01/report.json"
+      ]
+    },
+    {
+      "label": "baseline",
+      "average_fps_median": 56.81946938057996,
+      "p95_ms_median": 21.374400000240712,
+      "p99_ms_median": 23.948800000653137,
+      "sample_dropped_s": [
+        0.0
+      ],
+      "geometry": {
+        "nodes": 730,
+        "geom_nodes": 359,
+        "geoms": 1546,
+        "triangles": 312642
+      },
+      "reports": [
+        "03-baseline/run-01/report.json"
+      ]
+    }
+  ],
+  "method": "sequential fresh processes; one visual factor changed per case"
+}

@@ -1,0 +1,110 @@
+{
+  "timeline": [
+    {
+      "event": "entrypoint_ready",
+      "since_process_start_s": null,
+      "since_previous_s": null
+    },
+    {
+      "event": "application_imported",
+      "since_process_start_s": null,
+      "since_previous_s": 0.0748
+    },
+    {
+      "event": "window_initialized",
+      "since_process_start_s": null,
+      "since_previous_s": 0.4301
+    },
+    {
+      "event": "renderer_initialized",
+      "since_process_start_s": null,
+      "since_previous_s": 0.001
+    },
+    {
+      "event": "simulation_initialized",
+      "since_process_start_s": null,
+      "since_previous_s": 0.0217
+    },
+    {
+      "event": "primary_font_loaded",
+      "since_process_start_s": null,
+      "since_previous_s": 0.3211
+    },
+    {
+      "event": "display_font_loaded",
+      "since_process_start_s": null,
+      "since_previous_s": 0.0346
+    },
+    {
+      "event": "ui_ready",
+      "since_process_start_s": null,
+      "since_previous_s": 0.1416
+    },
+    {
+      "event": "first_rendered_frame",
+      "since_process_start_s": null,
+      "since_previous_s": 0.1825
+    },
+    {
+      "event": "main_menu_usable",
+      "since_process_start_s": null,
+      "since_previous_s": 0.0
+    }
+  ],
+  "time_to_first_frame_s": null,
+  "time_to_menu_usable_s": null,
+  "clock": "time.perf_counter_ns; relative transition",
+  "scenario": "visible coastal main menu, then 8-car free drive",
+  "startup_scene_created": false,
+  "startup_traffic_count": 0,
+  "resolution": [
+    1280,
+    720
+  ],
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "first_frame_capture": "package-startup.png",
+  "drive_transition": {
+    "timeline": [
+      {
+        "event": "drive_transition_started",
+        "since_process_start_s": null,
+        "since_previous_s": null
+      },
+      {
+        "event": "environment_assets_loaded",
+        "since_process_start_s": null,
+        "since_previous_s": 5.7086
+      },
+      {
+        "event": "hero_mesh_loaded",
+        "since_process_start_s": null,
+        "since_previous_s": 0.1061
+      },
+      {
+        "event": "reflection_resource_loaded",
+        "since_process_start_s": null,
+        "since_previous_s": 0.0042
+      },
+      {
+        "event": "hero_vehicle_loaded",
+        "since_process_start_s": null,
+        "since_previous_s": 0.0003
+      },
+      {
+        "event": "traffic_vehicles_loaded",
+        "since_process_start_s": null,
+        "since_previous_s": 0.2527
+      },
+      {
+        "event": "first_drive_frame",
+        "since_process_start_s": null,
+        "since_previous_s": 0.2229
+      }
+    ],
+    "time_to_first_frame_s": null,
+    "time_to_menu_usable_s": null,
+    "clock": "time.perf_counter_ns; relative transition"
+  },
+  "drive_traffic_count": 8,
+  "drive_transition_s": 6.2947
+}

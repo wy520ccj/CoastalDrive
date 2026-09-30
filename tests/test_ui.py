@@ -13,9 +13,10 @@ def test_ui_modes_results_and_existing_keys(tmp_path):
     try:
         app.session.menu()
         app.refresh_panel()
-        assert app.panel_title.getText() == "COASTAL DRIVE"
-        assert [button["text"] for button in app.buttons] == [
-            "计时挑战  Enter", "滨海自由驾驶", "无限高速", "车库", "声音设置", "退出",
+        assert not app.main_menu.root.isHidden()
+        assert app.panel.isHidden()
+        assert [button["text"] for button in app.main_menu.buttons] == [
+            "计时挑战", "滨海自由驾驶", "无限高速", "车库", "声音设置", "退出",
         ]
         app.key_down("enter")
         assert app.session.mode == GameMode.TIME_TRIAL
@@ -71,7 +72,7 @@ def test_ui_modes_results_and_existing_keys(tmp_path):
         probe.setFont(app.ui_font)
         for line in app.panel_note.getText().split("\n"):
             probe.setText(line)
-            assert probe.getWidth() * 0.040 <= 1.80
+            assert probe.getWidth() * 0.040 <= 1.37
 
         app.session.menu()
         app.choose_audio_settings()
@@ -87,5 +88,102 @@ def test_ui_modes_results_and_existing_keys(tmp_path):
         app.refresh_panel()
         assert app.panel_title.getText() == "车库"
         assert "车辆外观设置保存失败" in app.panel_note.getText()
+    finally:
+        app.close_game()
+
+
+def test_keyboard_navigation_for_secondary_menus(tmp_path):
+    app = CoastalDrive(smoke=True, output=tmp_path)
+    app.taskMgr.remove("finish-smoke")
+    try:
+        app.session.menu()
+        app.refresh_panel()
+        app.key_down("s")
+        assert app.main_menu.selected == 1
+        app.key_up("s")
+
+        app.choose_garage()
+        original_model = app.garage_model_id
+        original_skin = app.garage_skin_index
+        app.key_down("w")
+        assert app.panel_selection == 2
+        app.key_up("w")
+        app.key_down("d")
+        assert app.garage_skin_index != original_skin
+        app.key_up("d")
+        app.key_down("w")
+        app.key_up("w")
+        app.key_down("w")
+        app.key_up("w")
+        app.key_down("a")
+        assert app.garage_model_id != original_model
+        app.key_up("a")
+        app.key_down("escape")
+        assert app.garage is None
+        app.key_up("escape")
+
+        app.choose_audio_settings()
+        master = app.audio_settings.master_volume
+        app.key_down("arrow_right")
+        assert app.audio_settings.master_volume == min(100, master + 10)
+        app.key_up("arrow_right")
+        app.key_down("s")
+        app.key_up("s")
+        app.key_down("arrow_left")
+        assert app.audio_settings.master_volume == max(0, min(100, master + 10) - 10)
+        app.key_up("arrow_left")
+        app.key_down("s")
+        app.key_up("s")
+        effects = app.audio_settings.effects_volume
+        app.key_down("d")
+        assert app.audio_settings.effects_volume == min(100, effects + 10)
+        app.key_up("d")
+        app.select_panel_option(4)
+        music = app.audio_settings.music_volume
+        app.key_down("a")
+        app.key_up("a")
+        assert app.audio_settings.music_volume == max(0, music - 10)
+        app.select_panel_option(5)
+        app.key_down("d")
+        app.key_up("d")
+        assert app.audio_settings.radio_station == 2
+        app.toggle_radio()
+        assert app.audio_settings.radio_station == 0
+        app.toggle_radio()
+        assert app.audio_settings.radio_station == 2
+        app.key_down("escape")
+        assert not app.audio_settings_page
+        app.key_up("escape")
+
+        app.choose_highway()
+        app.key_down("w")
+        app.key_up("w")
+        density = app.highway_density_index
+        app.key_down("a")
+        assert app.highway_density_index == (density - 1) % len(app.highway_density_keys)
+        app.key_up("a")
+        app.key_down("escape")
+        assert not app.highway_menu
+        app.key_up("escape")
+
+        app.session.start(mode=GameMode.FREE_DRIVE)
+        app.session.pause()
+        app._shown_phase = None
+        app.refresh_panel()
+        app.key_down("s")
+        app.key_up("s")
+        assert app.panel_selection == 1
+        app.key_down("enter")
+        assert app.session.phase == Phase.COUNTDOWN
+        app.key_up("enter")
+        app.session.finish()
+        app._shown_phase = None
+        app.refresh_panel()
+        app.key_down("s")
+        app.key_up("s")
+        assert app.panel_selection == 1
+        app.key_down("enter")
+        assert app.session.phase == Phase.MENU
+        app.key_up("enter")
     finally:
         app.close_game()
