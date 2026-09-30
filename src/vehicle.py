@@ -6,7 +6,8 @@ from panda3d.bullet import BulletBoxShape, BulletRigidBodyNode, BulletVehicle, Z
 from panda3d.core import BitMask32, Quat, TransformState, Vec3
 
 from vehicle_config import CAR, WHEEL_HUBS
-from vehicle_dynamics import DynamicsState, aerodynamic_force, axle_loads
+from vehicle_contacts import read_wheel_contacts, shift_contacts
+from vehicle_dynamics import DynamicsState, aerodynamic_force, axle_loads, contact_grade
 from vehicle_response import VehicleResponse
 from vehicle_state import FIXED_DT, CarState, Control, WheelState, forward
 
@@ -40,6 +41,9 @@ class Vehicle:
         self._acceleration = 0.0
         self._lateral_acceleration = 0.0
         self._load_acceleration = 0.0
+        self._contact_ready = False
+        self._wheel_contacts = ()
+        self._contact_tick = 0
         self.dynamics = DynamicsState()
         self._build_physics(heading, pitch)
 
@@ -101,6 +105,9 @@ class Vehicle:
         self._acceleration = 0.0
         self._lateral_acceleration = 0.0
         self._load_acceleration = 0.0
+        self._contact_ready = False
+        self._wheel_contacts = ()
+        self._contact_tick = 0
         self.dynamics = DynamicsState()
         for index, wheel in enumerate(self._vehicle.getWheels()):
             self._vehicle.applyEngineForce(0, index)
@@ -128,6 +135,7 @@ class Vehicle:
                     pose.getPos() - Vec3(0, amount, 0), pose.getQuat(), Vec3(1)
                 ).getMat()
             )
+        self._wheel_contacts = shift_contacts(self._wheel_contacts, amount)
 
     def apply_control(self, control: Control):
         pose = self._chassis.getTransform()
@@ -170,16 +178,23 @@ class Vehicle:
         )
         position = pose.getPos()
         road = self.on_asphalt(position.x, position.y)
-        front_load, rear_load = axle_loads(self._load_acceleration, hpr.y)
+        grade = self._road_grade(hpr.x)
+        front_load, rear_load = (
+            axle_loads(self._load_acceleration, grade) if grade is not None else (0.0, 0.0)
+        )
         traction_limited = False
         touching = False
         for index, wheel in enumerate(self._vehicle.getWheels()):
             contact = wheel.getRaycastInfo()
-            point = contact.getContactPointWs()
+            # Bullet 在重置后仍保留旧接触；第一次世界积分前不使用这些缓存。
+            in_contact = self._contact_ready and contact.isInContact()
+            point = (
+                contact.getContactPointWs() if in_contact
+                else pose.getMat().xformPoint(Vec3(*WHEEL_HUBS[index]))
+            )
             wheel_road = self.on_asphalt(point.x, point.y)
             wheel.setFrictionSlip(CAR.road_grip if wheel_road else CAR.grass_grip)
             mu = CAR.road_friction if wheel_road else CAR.grass_friction
-            in_contact = contact.isInContact()
             touching |= in_contact
             load = (front_load if index < 2 else rear_load) / 2 if in_contact else 0
             requested = engine_force / 2 if index >= 2 else 0
@@ -209,22 +224,42 @@ class Vehicle:
         self.dynamics = DynamicsState(
             aero,
             rolling,
-            CAR.mass * 9.81 * math.sin(math.radians(hpr.y)),
+            CAR.mass * 9.81 * math.sin(math.radians(grade)) if grade is not None else 0.0,
             front_load,
             rear_load,
             self._chassis.getAngularVelocity().z,
             sideslip,
             traction_limited,
+            grade,
         )
 
+    def _road_grade(self, heading):
+        normals = []
+        if self._contact_ready:
+            for wheel in self._vehicle.getWheels():
+                contact = wheel.getRaycastInfo()
+                if contact.isInContact():
+                    normals.append(tuple(contact.getContactNormalWs()))
+        return contact_grade(heading, normals)
+
     def after_step(self, previous_velocity):
+        self._contact_ready = True
+        self._contact_tick += 1
+        self._wheel_contacts = read_wheel_contacts(self._vehicle, self.on_asphalt)
         velocity = self._chassis.getLinearVelocity()
         acceleration = (velocity - Vec3(previous_velocity)) / FIXED_DT
         axes = self._chassis.getTransform().getQuat()
         self._acceleration = acceleration.dot(axes.getForward())
         self._lateral_acceleration = acceleration.dot(axes.getRight())
+        grade = self._road_grade(self._chassis.getTransform().getHpr().x)
+        road_acceleration = 0.0
+        if grade is not None:
+            angle = math.radians(grade)
+            direction = Vec3(*forward(self._chassis.getTransform().getHpr().x))
+            tangent = direction * math.cos(angle) + Vec3(0, 0, math.sin(angle))
+            road_acceleration = acceleration.dot(tangent)
         self._load_acceleration += (
-            max(-12, min(12, self._acceleration)) - self._load_acceleration
+            max(-12, min(12, road_acceleration)) - self._load_acceleration
         ) * (1 - math.exp(-FIXED_DT / 0.15))
 
     def snapshot(self, *, include_wheels=True):
@@ -258,6 +293,8 @@ class Vehicle:
             self._lateral_acceleration,
             self.dynamics,
             velocity=tuple(velocity),
+            wheel_contacts=self._wheel_contacts if include_wheels else (),
+            contact_tick=self._contact_tick if include_wheels else 0,
         )
 
     def close(self):

@@ -1,0 +1,144 @@
+{
+  "baseline": "docs\\evidence\\PHYS-01\\standard-B\\summary.json",
+  "candidate": "docs\\evidence\\PHYS-02\\standard-diagnostics\\summary.json",
+  "baseline_source_version": "B-PHYS01",
+  "candidate_source_version": "B-PHYS01-PHYS02",
+  "config_delta_candidate_minus_baseline": {},
+  "cases": {
+    "circle_20m": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_speed_mps": 0.0,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": 0.0,
+        "max_abs_sideslip_deg": 0.0,
+        "max_abs_yaw_rate_rad_s": 0.0,
+        "max_lateral_acceleration_mps2": 0.0,
+        "max_speed_mps": 0.0,
+        "min_speed_mps": 0.0,
+        "path_length_m": 0.0,
+        "sample_stride_ticks": 0,
+        "target_radius_m": 0.0,
+        "target_speed_mps": 0.0,
+        "ticks": 0,
+        "yaw_change_deg": 0.0
+      }
+    },
+    "circle_40m": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_speed_mps": 0.0,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": 0.0,
+        "max_abs_sideslip_deg": 0.0,
+        "max_abs_yaw_rate_rad_s": 0.0,
+        "max_lateral_acceleration_mps2": 0.0,
+        "max_speed_mps": 0.0,
+        "min_speed_mps": 0.0,
+        "path_length_m": 0.0,
+        "sample_stride_ticks": 0,
+        "target_radius_m": 0.0,
+        "target_speed_mps": 0.0,
+        "ticks": 0,
+        "yaw_change_deg": 0.0
+      }
+    },
+    "circle_60m": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_speed_mps": 0.0,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": 0.0,
+        "max_abs_sideslip_deg": 0.0,
+        "max_abs_yaw_rate_rad_s": 0.0,
+        "max_lateral_acceleration_mps2": 0.0,
+        "max_speed_mps": 0.0,
+        "min_speed_mps": 0.0,
+        "path_length_m": 0.0,
+        "sample_stride_ticks": 0,
+        "target_radius_m": 0.0,
+        "target_speed_mps": 0.0,
+        "ticks": 0,
+        "yaw_change_deg": 0.0
+      }
+    },
+    "corner_braking": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_speed_mps": 0.0,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": 0.0,
+        "max_abs_sideslip_deg": 0.0,
+        "max_abs_yaw_rate_rad_s": 0.0,
+        "max_lateral_acceleration_mps2": 0.0,
+        "max_speed_mps": 0.0,
+        "min_speed_mps": 0.0,
+        "path_length_m": 0.0,
+        "sample_stride_ticks": 0,
+        "stopped_at_s": 0.0,
+        "ticks": 0,
+        "yaw_change_deg": 0.0
+      }
+    },
+    "flat_acceleration": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_speed_mps": 0.0,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": 0.0,
+        "max_abs_sideslip_deg": 0.0,
+        "max_abs_yaw_rate_rad_s": 0.0,
+        "max_lateral_acceleration_mps2": 0.0,
+        "max_speed_mps": 0.0,
+        "min_speed_mps": 0.0,
+        "path_length_m": 0.0,
+        "sample_stride_ticks": 0,
+        "stopped_at_s": 0.0,
+        "ticks": 0,
+        "yaw_change_deg": 0.0
+      }
+    },
+    "split_mu_braking": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_speed_mps": 0.0,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": 0.0,
+        "max_abs_sideslip_deg": 0.0,
+        "max_abs_yaw_rate_rad_s": 0.0,
+        "max_lateral_acceleration_mps2": 0.0,
+        "max_speed_mps": 0.0,
+        "min_speed_mps": 0.0,
+        "path_length_m": 0.0,
+        "sample_stride_ticks": 0,
+        "stopped_at_s": 0.0,
+        "ticks": 0,
+        "yaw_change_deg": 0.0
+      }
+    },
+    "steering_step": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_speed_mps": 0.0,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": 0.0,
+        "max_abs_sideslip_deg": 0.0,
+        "max_abs_yaw_rate_rad_s": 0.0,
+        "max_lateral_acceleration_mps2": 0.0,
+        "max_speed_mps": 0.0,
+        "min_speed_mps": 0.0,
+        "path_length_m": 0.0,
+        "sample_stride_ticks": 0,
+        "ticks": 0,
+        "yaw_change_deg": 0.0
+      }
+    }
+  }
+}

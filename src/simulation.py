@@ -30,6 +30,7 @@ from traffic import Driver, Road, extents
 from traffic_recovery import TrafficRecovery
 from vehicle import Vehicle
 from vehicle_config import CAR
+from vehicle_contacts import shift_contacts
 from vehicle_state import FIXED_DT, CarState, Control, WheelState, forward, heading_for
 from world_props import collision_box, props_for
 
@@ -830,6 +831,8 @@ def interpolate(previous: Snapshot, current: Snapshot, alpha: float):
             b.signal,
             vector(a.velocity, b.velocity) if a.velocity and b.velocity else b.velocity,
             b.hazards,
+            b.wheel_contacts,
+            b.contact_tick,
         )
 
     return replace(
@@ -851,6 +854,7 @@ def shift_snapshot(state, origin):
                 replace(w, position=(w.position[0], w.position[1] + offset, w.position[2]))
                 for w in car.wheels
             ),
+            wheel_contacts=shift_contacts(car.wheel_contacts, -offset),
         )
 
     return replace(

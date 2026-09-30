@@ -27,6 +27,19 @@ class WheelState:
 
 
 @dataclass(frozen=True)
+class WheelContactState:
+    in_contact: bool
+    contact_point: tuple[float, float, float] | None
+    contact_normal: tuple[float, float, float] | None
+    suspension_force: float
+    normal_load: float
+    suspension_length: float
+    compression: float
+    skid: float | None
+    surface: str | None
+
+
+@dataclass(frozen=True)
 class CarState:
     position: tuple[float, float, float]
     heading: float = 0.0
@@ -48,6 +61,8 @@ class CarState:
     signal: int = 0
     velocity: tuple[float, float, float] | None = None
     hazards: bool = False
+    wheel_contacts: tuple[WheelContactState, ...] = ()
+    contact_tick: int = 0
 
 
 def forward(heading):

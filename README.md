@@ -4,6 +4,8 @@
 
 [当前进度](docs/current-progress.md) · [音频设计与素材许可](docs/audio-design.md) · [电台试听与验证](docs/evidence/RADIO-02/README.md) · [提示底板检查](docs/evidence/UI-NOTICE-FIX/README.md)
 
+2026-09-30物理开发已接入道路坡度修正、四轮诊断与七工况A/B试验；源码体验双击 **试玩-物理开发.cmd**，记录见 [物理试验报告](docs/evidence/PHYS-03/README.md)。整体物理阶段仍进行中，独立包暂未更新。
+
 ## 运行
 
 开发使用 Python 3.14 和项目虚拟环境。首次从源码克隆后：

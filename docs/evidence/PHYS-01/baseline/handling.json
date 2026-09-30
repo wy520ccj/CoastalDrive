@@ -1,0 +1,187 @@
+{
+  "config": {
+    "mass": 1200.0,
+    "torque_curve": [
+      [
+        900,
+        110
+      ],
+      [
+        1800,
+        165
+      ],
+      [
+        3200,
+        200
+      ],
+      [
+        4500,
+        190
+      ],
+      [
+        6000,
+        150
+      ],
+      [
+        6500,
+        0
+      ]
+    ],
+    "gear_ratios": [
+      3.25,
+      2.05,
+      1.45,
+      1.1,
+      0.88
+    ],
+    "final_drive": 3.7,
+    "drivetrain_efficiency": 0.88,
+    "idle_rpm": 900.0,
+    "shift_time": 0.28,
+    "throttle_rise": 1.6,
+    "throttle_release": 5.0,
+    "brake_rise": 6.0,
+    "brake_release": 10.0,
+    "torque_response": 0.12,
+    "engine_braking": 24.0,
+    "max_speed": 44.44444444444444,
+    "reverse_speed": 6.111111111111111,
+    "reverse_force": 2200.0,
+    "brake_torque": 3643.2,
+    "front_brake_share": 0.6,
+    "reverse_delay": 0.4,
+    "steering_degrees": 26.0,
+    "steering_rate": 50.0,
+    "steering_response": 7.0,
+    "steering_return": 10.0,
+    "assisted_lateral_acceleration": 7.5,
+    "wheel_radius": 0.33,
+    "suspension_stiffness": 40.0,
+    "suspension_compression": 4.4,
+    "suspension_relaxation": 2.3,
+    "road_grip": 1.4,
+    "grass_grip": 0.8,
+    "air_density": 1.225,
+    "drag_coefficient": 0.32,
+    "frontal_area": 2.142857142857143,
+    "rolling_coefficient": 0.013591573224600747,
+    "grass_rolling_coefficient": 0.0764525993883792,
+    "road_friction": 1.1,
+    "grass_friction": 0.45,
+    "wheelbase": 2.2,
+    "track_width": 1.68,
+    "collision_half_width": 1.05,
+    "collision_half_length": 2.15,
+    "center_of_mass_height": 0.42,
+    "front_weight_share": 0.5
+  },
+  "physics_hz": 120,
+  "idle_15s_position": [
+    180.0,
+    0.0,
+    0.4186876118183136
+  ],
+  "idle_wheel_contacts": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "zero_to_100_seconds": 9.383333333333333,
+  "braking_100_to_stop_metres": 43.29011535644531,
+  "braking_seconds": 3.025,
+  "speed_after_22_seconds_kmh": 154.24370727539062,
+  "after_wall_impact": {
+    "position": [
+      94.97647094726562,
+      717.2501220703125,
+      0.41848433017730713
+    ],
+    "heading": 0.002603127621114254,
+    "speed": 0.032504867762327194,
+    "pitch": 0.5201826691627502,
+    "roll": -0.27471038699150085,
+    "wheels": [
+      {
+        "position": [
+          94.13687896728516,
+          718.3508911132812,
+          0.32998502254486084
+        ],
+        "orientation": [
+          0.975511372089386,
+          0.21993590891361237,
+          -0.0023382920771837234,
+          0.000528160308022052
+        ]
+      },
+      {
+        "position": [
+          95.81690979003906,
+          718.3509521484375,
+          0.3299800157546997
+        ],
+        "orientation": [
+          0.9992932677268982,
+          0.037513550370931625,
+          -0.0023954762145876884,
+          9.087890794035047e-05
+        ]
+      },
+      {
+        "position": [
+          94.13688659667969,
+          716.1508178710938,
+          0.3299851715564728
+        ],
+        "orientation": [
+          0.9991917014122009,
+          0.04012845829129219,
+          -0.0023952294141054153,
+          9.714721818454564e-05
+        ]
+      },
+      {
+        "position": [
+          95.81690979003906,
+          716.15087890625,
+          0.32998016476631165
+        ],
+        "orientation": [
+          0.9993748664855957,
+          0.03527200594544411,
+          -0.002395673654973507,
+          8.550554775865749e-05
+        ]
+      }
+    ],
+    "surface": "asphalt",
+    "steering": 0.0,
+    "throttle": 1.0,
+    "brake": 0.0,
+    "rpm": 1596.207766084166,
+    "gear": 1,
+    "acceleration": -4.077535464830362e-08,
+    "lateral_acceleration": 0.0001953225873876363,
+    "dynamics": {
+      "aerodynamic_force": 0.0004465144915329911,
+      "rolling_force": 5.216692260383092,
+      "grade_force": 106.87494184506106,
+      "front_load": 5865.354032100365,
+      "rear_load": 5906.160812931502,
+      "yaw_rate": 9.648672130424529e-05,
+      "sideslip": 0,
+      "traction_limited": false
+    },
+    "active": true,
+    "generation": 0,
+    "signal": 0,
+    "velocity": [
+      0.002562096109613776,
+      0.03250498324632645,
+      0.08200791478157043
+    ],
+    "hazards": false
+  },
+  "passed": true
+}

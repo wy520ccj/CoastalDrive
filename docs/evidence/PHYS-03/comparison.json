@@ -1,0 +1,143 @@
+{
+  "baseline": "docs\\evidence\\PHYS-03\\standard-A\\summary.json",
+  "candidate": "docs\\evidence\\PHYS-03\\standard-B\\summary.json",
+  "baseline_source_version": "A-6fbcd36-final-protocol",
+  "candidate_source_version": "B-PHYS01-PHYS02-final-protocol",
+  "config_delta_candidate_minus_baseline": {},
+  "cases": {
+    "circle_20m": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_speed_mps": 0.0,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": 0.0,
+        "max_abs_sideslip_deg": -2.6806798958389777e-07,
+        "max_abs_yaw_rate_rad_s": 0.0,
+        "max_lateral_acceleration_mps2": 0.0,
+        "max_speed_mps": 0.0,
+        "min_speed_mps": 0.0,
+        "path_length_m": -3.1628805032823948e-06,
+        "sample_stride_ticks": 0,
+        "target_radius_m": 0.0,
+        "target_speed_mps": 0.0,
+        "ticks": 0,
+        "yaw_change_deg": 0.0
+      }
+    },
+    "circle_40m": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_speed_mps": 0.0,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": 0.0,
+        "max_abs_sideslip_deg": 7.3234220179241305e-06,
+        "max_abs_yaw_rate_rad_s": 2.9802322387695312e-08,
+        "max_lateral_acceleration_mps2": 1.4603137969970703e-05,
+        "max_speed_mps": 0.0,
+        "min_speed_mps": 0.0,
+        "path_length_m": 5.017381738525728e-06,
+        "sample_stride_ticks": 0,
+        "target_radius_m": 0.0,
+        "target_speed_mps": 0.0,
+        "ticks": 0,
+        "yaw_change_deg": 0.0
+      }
+    },
+    "circle_60m": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_speed_mps": 4.76837158203125e-07,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": 0.0,
+        "max_abs_sideslip_deg": -9.143136479039526e-07,
+        "max_abs_yaw_rate_rad_s": -5.21540641784668e-08,
+        "max_lateral_acceleration_mps2": -1.4543533325195312e-05,
+        "max_speed_mps": 0.0,
+        "min_speed_mps": 0.0,
+        "path_length_m": 1.9543802949328892e-06,
+        "sample_stride_ticks": 0,
+        "target_radius_m": 0.0,
+        "target_speed_mps": 0.0,
+        "ticks": 0,
+        "yaw_change_deg": 0.000102996826171875
+      }
+    },
+    "corner_braking": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_speed_mps": -2.0101666450500488e-05,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": -6.198883056640625e-06,
+        "max_abs_sideslip_deg": 4.834193683578292e-06,
+        "max_abs_yaw_rate_rad_s": 0.0,
+        "max_lateral_acceleration_mps2": 0.0,
+        "max_speed_mps": 0.0,
+        "min_speed_mps": 2.236221916973591e-06,
+        "path_length_m": -6.31584511587846e-05,
+        "sample_stride_ticks": 0,
+        "stopped_at_s": 0.0,
+        "ticks": 0,
+        "yaw_change_deg": 1.52587890625e-05
+      }
+    },
+    "flat_acceleration": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_speed_mps": -2.288818359375e-05,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": 0.0,
+        "max_abs_sideslip_deg": 0.0,
+        "max_abs_yaw_rate_rad_s": 0.0,
+        "max_lateral_acceleration_mps2": 0.0,
+        "max_speed_mps": -2.288818359375e-05,
+        "min_speed_mps": 0.0,
+        "path_length_m": -0.0001983642578125,
+        "sample_stride_ticks": 0,
+        "ticks": 0,
+        "yaw_change_deg": 0.0
+      }
+    },
+    "split_mu_braking": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": -0.008333333333333304,
+        "final_speed_mps": 0.02089349925518036,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": 0.03280830383300781,
+        "max_abs_sideslip_deg": 4.06662523281566e-06,
+        "max_abs_yaw_rate_rad_s": -4.697591066360474e-06,
+        "max_lateral_acceleration_mps2": -4.982948303222656e-05,
+        "max_speed_mps": 0.0,
+        "min_speed_mps": 0.02089349925518036,
+        "path_length_m": -0.047808259804497766,
+        "sample_stride_ticks": 0,
+        "stopped_at_s": -0.008333333333333304,
+        "ticks": -1,
+        "yaw_change_deg": -0.000865936279296875
+      }
+    },
+    "steering_step": {
+      "delta_candidate_minus_baseline": {
+        "csv_rows": 0,
+        "duration_s": 0.0,
+        "final_speed_mps": 0.0,
+        "initial_speed_mps": 0.0,
+        "max_abs_acceleration_mps2": 0.0,
+        "max_abs_sideslip_deg": 0.0,
+        "max_abs_yaw_rate_rad_s": 0.0,
+        "max_lateral_acceleration_mps2": 0.0,
+        "max_speed_mps": 0.0,
+        "min_speed_mps": 0.0,
+        "path_length_m": 0.0,
+        "sample_stride_ticks": 0,
+        "ticks": 0,
+        "yaw_change_deg": 0.0
+      }
+    }
+  }
+}

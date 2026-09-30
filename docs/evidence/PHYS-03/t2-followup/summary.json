@@ -1,0 +1,300 @@
+{
+  "git_head": "6fbcd36f24c92e267428c1076f6e8fbd2a4af1db",
+  "scope": "T2 supplementary checks; full pytest failed on inherited guardrail issue, not a full T2 pass",
+  "tier": "T2-followup",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.753
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.645
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.582
+    },
+    {
+      "name": "handling",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/h1_benchmark.py",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\handling"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\handling\\handling.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\handling.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.568
+    },
+    {
+      "name": "surface",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/curve_surface_check.py",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\surface.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\surface.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\surface.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 5.673
+    },
+    {
+      "name": "interactions",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/traffic_interaction_check.py",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\interactions.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\interactions.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\interactions.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 3.297
+    },
+    {
+      "name": "finite-coastal",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/h4a_traffic_check.py",
+        "--track",
+        "coastal",
+        "--seconds",
+        "30",
+        "--seed",
+        "23",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\finite-coastal.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\finite-coastal.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\finite-coastal.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 19.709
+    },
+    {
+      "name": "finite-highway",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/h4a_traffic_check.py",
+        "--track",
+        "highway",
+        "--seconds",
+        "30",
+        "--seed",
+        "23",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\finite-highway.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\finite-highway.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\finite-highway.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 6.23
+    },
+    {
+      "name": "straight-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/endless_check.py",
+        "--seconds",
+        "120",
+        "--seed",
+        "0",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\straight-0"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\straight-0\\seed-0.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\straight-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 42.037
+    },
+    {
+      "name": "hills-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/curve_drive_check.py",
+        "--shape",
+        "hills",
+        "--seconds",
+        "120",
+        "--seed",
+        "0",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\hills-0.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\hills-0.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\hills-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 69.941
+    },
+    {
+      "name": "straight-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/endless_check.py",
+        "--seconds",
+        "120",
+        "--seed",
+        "17",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\straight-17"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\straight-17\\seed-17.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\straight-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 39.676
+    },
+    {
+      "name": "hills-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/curve_drive_check.py",
+        "--shape",
+        "hills",
+        "--seconds",
+        "120",
+        "--seed",
+        "17",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\hills-17.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\hills-17.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\hills-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 71.233
+    },
+    {
+      "name": "straight-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/endless_check.py",
+        "--seconds",
+        "120",
+        "--seed",
+        "23",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\straight-23"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\straight-23\\seed-23.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\straight-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 44.441
+    },
+    {
+      "name": "hills-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/curve_drive_check.py",
+        "--shape",
+        "hills",
+        "--seconds",
+        "120",
+        "--seed",
+        "23",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\hills-23.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\hills-23.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-03\\t2-followup\\hills-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 71.699
+    }
+  ]
+}

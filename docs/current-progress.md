@@ -4,6 +4,8 @@
 
 ## 当前阶段
 
+- **物理完善目标 active**：按用户2026-09-30授权进入物理研究与游戏结合路线，[PHYS-01/02/03](physics-roadmap.md)已实施：道路坡度与车身俯仰分离、四轮只读诊断、七项标准工况与旧车A/新车B对照。0–100保持9.3833s，100–0为43.2901→43.1653m；诊断加入后的1167个采样时刻共同物理字段相同。综合T1 253项/三种子/双弯坡通过。小阶段T2 369通过、1项120km/h护栏越顶失败，旧6fbcd36同样复现；原阈值保留，先进入[PHYS-COLL-01](tasks/PHYS-COLL-01.md)，再ARCH-01→Ackermann→轮胎核心。T2其他专项见t2-followup，不宣称完整阶段通过。源码试玩入口`试玩-物理开发.cmd`，独立包仍为RADIO-02，未推送/发布。[试验报告](evidence/PHYS-03/README.md)。
+
 - [RADIO-02](tasks/RADIO-02.md) 按“两台像同一首歌”反馈换为独立授权完整曲：海岸70BPM吉他Bossa Antigua、夜驰132BPM暗色Future Gladiator；原Sunset逐字节保留为独立首页BGM，设置页试听电台。统一响度差0.05LU，真实阶段/续播匹配、零混台、59项音频/UI T1与三种子、OpenAL105/105、包SHA通过。追加[UI-NOTICE-FIX](tasks/UI-NOTICE-FIX.md)：深蓝提示底板改实色，背景变化对照240帧最大跳变35.43→0.99/255，场景复测0.33/255；未复现整块消失。最终包builds/0.8.3-radio02/win_amd64、试玩.cmd和试玩-RADIO-02.cmd，主/VI同步；[试听与证据](evidence/RADIO-02/README.md)。
 
 

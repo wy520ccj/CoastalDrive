@@ -1,0 +1,54 @@
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests\test_physics_testbed.py:1:1
+  |
+1 | / import json
+2 | |
+3 | | from physics.testbed import CASES, _run_case, _wheel_surface_types, _world, run
+4 | | from panda3d.core import Vec3
+5 | | from vehicle import Vehicle
+6 | | from vehicle_state import FIXED_DT, Control
+  | |___________________________________________^
+help: Organize imports
+  |
+2 |
+3 + from panda3d.core import Vec3
+4 | from physics.testbed import CASES, _run_case, _wheel_surface_types, _world, run
+  - from panda3d.core import Vec3
+5 +
+6 | from vehicle import Vehicle
+  |
+
+F401 [*] `panda3d.core.Vec3` imported but unused
+ --> tests\test_physics_testbed.py:4:26
+  |
+3 | from physics.testbed import CASES, _run_case, _wheel_surface_types, _world, run
+4 | from panda3d.core import Vec3
+  |                          ^^^^
+5 | from vehicle import Vehicle
+6 | from vehicle_state import FIXED_DT, Control
+  |
+help: Remove unused import: `panda3d.core.Vec3`
+  |
+3 | from physics.testbed import CASES, _run_case, _wheel_surface_types, _world, run
+  - from panda3d.core import Vec3
+4 | from vehicle import Vehicle
+  |
+
+F401 [*] `vehicle_response.steering_limit` imported but unused
+  --> tools\physics\testbed.py:19:30
+   |
+17 | from vehicle import Vehicle
+18 | from vehicle_config import CAR
+19 | from vehicle_response import steering_limit
+   |                              ^^^^^^^^^^^^^^
+20 | from vehicle_state import FIXED_DT, Control, forward
+   |
+help: Remove unused import: `vehicle_response.steering_limit`
+   |
+18 | from vehicle_config import CAR
+   - from vehicle_response import steering_limit
+19 | from vehicle_state import FIXED_DT, Control, forward
+   |
+
+Found 3 errors.
+[*] 3 fixable with the `--fix` option.

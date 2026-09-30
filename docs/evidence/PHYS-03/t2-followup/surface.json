@@ -1,0 +1,226 @@
+{
+  "checks": [
+    {
+      "seed": 0,
+      "hills": false,
+      "max_error_m": 0.0,
+      "max_marking_error_m": 2.121925354037213e-07,
+      "min_tree_clearance_m": 20.23698097229719,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 0,
+      "hills": true,
+      "max_error_m": 0.001166087072622446,
+      "max_marking_error_m": 0.0005762003780596103,
+      "min_tree_clearance_m": 20.236980972297186,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 1,
+      "hills": false,
+      "max_error_m": 0.0,
+      "max_marking_error_m": 2.121925354037213e-07,
+      "min_tree_clearance_m": 20.13538698353032,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642812728881836,
+      "passed": true
+    },
+    {
+      "seed": 1,
+      "hills": true,
+      "max_error_m": 0.0011679852375472421,
+      "max_marking_error_m": 0.0005762003780596103,
+      "min_tree_clearance_m": 20.13538698353031,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642812728881836,
+      "passed": true
+    },
+    {
+      "seed": 2,
+      "hills": false,
+      "max_error_m": 0.0,
+      "max_marking_error_m": 2.121925354037213e-07,
+      "min_tree_clearance_m": 20.076119265277526,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 2,
+      "hills": true,
+      "max_error_m": 0.001167031563230836,
+      "max_marking_error_m": 0.0005758952022780761,
+      "min_tree_clearance_m": 20.076119265277526,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 3,
+      "hills": false,
+      "max_error_m": 0.0,
+      "max_marking_error_m": 2.121925354037213e-07,
+      "min_tree_clearance_m": 20.131644710017657,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 3,
+      "hills": true,
+      "max_error_m": 0.001166087072622446,
+      "max_marking_error_m": 0.0005762003780596103,
+      "min_tree_clearance_m": 20.13164471001766,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 4,
+      "hills": false,
+      "max_error_m": 0.0,
+      "max_marking_error_m": 2.121925354037213e-07,
+      "min_tree_clearance_m": 20.327504312235632,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 4,
+      "hills": true,
+      "max_error_m": 0.001166087072622446,
+      "max_marking_error_m": 0.0005762003780596103,
+      "min_tree_clearance_m": 20.32750431223563,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 5,
+      "hills": false,
+      "max_error_m": 0.0,
+      "max_marking_error_m": 2.121925354037213e-07,
+      "min_tree_clearance_m": 20.38178821121001,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 5,
+      "hills": true,
+      "max_error_m": 0.001166087072622446,
+      "max_marking_error_m": 0.0005762003780596103,
+      "min_tree_clearance_m": 20.38178821121002,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 6,
+      "hills": false,
+      "max_error_m": 0.0,
+      "max_marking_error_m": 2.121925354037213e-07,
+      "min_tree_clearance_m": 20.11998845070387,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 6,
+      "hills": true,
+      "max_error_m": 0.001166087072622446,
+      "max_marking_error_m": 0.0005762003780596103,
+      "min_tree_clearance_m": 20.11998845070388,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 7,
+      "hills": false,
+      "max_error_m": 0.0,
+      "max_marking_error_m": 2.121925354037213e-07,
+      "min_tree_clearance_m": 20.06536137525363,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 7,
+      "hills": true,
+      "max_error_m": 0.001166087072622446,
+      "max_marking_error_m": 0.0005762003780596103,
+      "min_tree_clearance_m": 20.065361375253627,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 8,
+      "hills": false,
+      "max_error_m": 0.0,
+      "max_marking_error_m": 2.121925354037213e-07,
+      "min_tree_clearance_m": 20.336080505939332,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 8,
+      "hills": true,
+      "max_error_m": 0.001166087072622446,
+      "max_marking_error_m": 0.0005762003780596103,
+      "min_tree_clearance_m": 20.336080505939318,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642814636230469,
+      "passed": true
+    },
+    {
+      "seed": 9,
+      "hills": false,
+      "max_error_m": 0.0,
+      "max_marking_error_m": 2.121925354037213e-07,
+      "min_tree_clearance_m": 20.123946792029503,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642812728881836,
+      "passed": true
+    },
+    {
+      "seed": 9,
+      "hills": true,
+      "max_error_m": 0.0011679852375472421,
+      "max_marking_error_m": 0.0005758952022780761,
+      "min_tree_clearance_m": 20.123946792029503,
+      "max_join_gap_m": 1.4210854715202004e-14,
+      "join_comparisons": 112,
+      "min_winding_z": 8.642812728881836,
+      "passed": true
+    }
+  ],
+  "max_error_m": 0.0011679852375472421,
+  "passed": true
+}

@@ -1,0 +1,24 @@
+.F                                                                       [100%]
+================================== FAILURES ===================================
+_____________ test_oblique_guardrail_impact_does_not_tunnel[120] ______________
+
+sim = <simulation.Simulation object at 0x000002490F2CF0E0>, speed_kmh = 120
+
+    @pytest.mark.parametrize("speed_kmh", [60, 120])
+    def test_oblique_guardrail_impact_does_not_tunnel(sim, speed_kmh):
+        sim.reset_player((95, 0, 0.55), -15)
+        for _ in range(120):
+            sim.step(Control())
+        direction = sim._chassis.getTransform().getQuat().getForward()
+        sim._chassis.setLinearVelocity(direction * speed_kmh / 3.6)
+        collision_events = []
+        for _ in range(360):
+            sim.step(Control())
+            car = sim.snapshot().player
+>           assert project(*car.position[:2])[1] < 6
+E           assert 6.056643963798163 < 6
+
+tests\test_h2_map.py:173: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_h2_map.py::test_oblique_guardrail_impact_does_not_tunnel[120]
+1 failed, 1 passed in 0.63s
