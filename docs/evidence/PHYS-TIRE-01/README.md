@@ -1,6 +1,6 @@
 # 轮速、唯一轮胎力与标准试验
 
-2026-10-01。PHYS-04基线`558d218`已保存；当前工作区已接入四轮独立转动与唯一切向力。Bullet保留重力、碰撞、射线悬架和刚体积分。当前正在完成迁移回归；两模式入口、参考车参数化、ABS/TCS/ESC为后续功能，整项物理goal仍active。
+2026-10-01。PHYS-04基线`558d218`已保存；当前工作区已接入四轮独立转动与唯一切向力。Bullet保留重力、碰撞、射线悬架和刚体积分。本功能块迁移回归已完成；两模式入口、参考车参数化、ABS/TCS/ESC为后续功能，整项物理goal仍active。
 
 ## 实际机制
 
@@ -70,7 +70,7 @@ Bullet车辆action的悬架冲量在位姿积分后施加，静止坡面完成�
 
 ## 验证及模型范围
 
-T0最终：Ruff及72项相关测试通过，见[t0-final](t0-final/summary.json)。首次整车T1失败8项，扩大T1失败5项且后续smoke/弯坡未运行，分别保留[t1-trial](t1-trial/summary.json)、[t1-final](t1-final/summary.json)。修复后的[扩大T1](t1-verified/summary.json)：248项、三种子启动、双种子30s弯坡全部通过。本迁移块[t2-final](t2-final/summary.json)中427测试、三种子启动、操控和地表通过；交通七工况的rear_approach失败，其余六项通过，后续专项在原报告标为not_run。[原版剩余专项](t2-remaining/summary.json)全部通过，不能覆盖原交通失败。上述控制修正已接入主线，T0 32项通过；[控制T1](t1-controller/summary.json)155项、三种子启动、两种子30s弯坡通过，新版本完整T2待执行。额外碰撞/跨接缝试验的自由滚动初条件已补齐并短测6项通过。人工驾驶、可见窗口性能、完整阶段T3未执行。
+T0最终：Ruff及72项相关测试通过，见[t0-final](t0-final/summary.json)。首次整车T1失败8项，扩大T1失败5项且后续smoke/弯坡未运行，分别保留[t1-trial](t1-trial/summary.json)、[t1-final](t1-final/summary.json)。修复后的[扩大T1](t1-verified/summary.json)：248项、三种子启动、双种子30s弯坡全部通过。本迁移块[t2-final](t2-final/summary.json)中427测试、三种子启动、操控和地表通过；交通七工况的rear_approach失败，其余六项通过，后续专项在原报告标为not_run。[原版剩余专项](t2-remaining/summary.json)全部通过，不能覆盖原交通失败。上述控制修正已接入主线，T0 32项通过；[控制T1](t1-controller/summary.json)155项、三种子启动、两种子30s弯坡通过，实施已本地提交`30c7909`，[新版本完整T2](t2-controller/summary.json)全部通过：429测试、三种子启动、操控、20地表条件、七交通工况、两有限赛道、三种子120s直路与弯坡；运行前后214个Python文件哈希一致。原失败/未跑记录保持原状。额外碰撞/跨接缝试验的自由滚动初条件已补齐并短测6项通过。人工驾驶、可见窗口性能、完整阶段T3未执行。
 
 复核命令：`.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_tire_forces.py tests/test_wheel_dynamics.py tests/test_vehicle_tires.py tests/test_driving_response.py tests/test_road_loads.py tests/test_vehicle_commands.py tests/test_vehicle_contacts.py tests/test_physics_testbed.py --output <新目录>`；扩大T1使用`--area vehicle --area road --area traffic --area core --tests tests/test_race.py tests/test_highway_run.py tests/test_impact_events.py tests/test_impact_integration.py`，T2不带模块限制。标准试验和探针分别为`testbed.py`、`steering_geometry_probe.py`、`tire_dynamics_probe.py`、`guardrail_probe.py`，均要求新输出目录，历史源码用`--source-dir`在独立进程加载。
 
