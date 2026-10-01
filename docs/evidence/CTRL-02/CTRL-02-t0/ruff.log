@@ -1,0 +1,63 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\test_physics_config_io.py:3:1
+   |
+ 1 |   """真实JSON边界与完整参数导出；临时目录不覆盖历史证据。"""
+ 2 |
+ 3 | / import json
+ 4 | | from dataclasses import asdict, replace
+ 5 | |
+ 6 | | import pytest
+ 7 | | from physics.export_reference import export
+ 8 | | from physics.reference_ab import _create_vehicle, _step
+ 9 | | from physics.testbed import load_vehicle_config
+10 | |
+11 | | from driving_modes import REFERENCE_CAR
+12 | | from vehicle_brakes import BrakeConfig
+13 | | from vehicle_traction import TractionConfig
+14 | | from vehicle_state import VehicleCommand
+   | |________________________________________^
+help: Organize imports
+   |
+12 | from vehicle_brakes import BrakeConfig
+13 + from vehicle_state import VehicleCommand
+14 | from vehicle_traction import TractionConfig
+   - from vehicle_state import VehicleCommand
+15 |
+   |
+
+F401 [*] `race.GameMode` imported but unused
+  --> tests\test_traction_lifecycle.py:8:29
+   |
+ 7 | from driving_modes import DrivingMode
+ 8 | from race import BestTimes, GameMode
+   |                             ^^^^^^^^
+ 9 | from session import Phase, Session
+10 | from settings import DrivingModeStore
+   |
+help: Remove unused import: `race.GameMode`
+  |
+7 | from driving_modes import DrivingMode
+  - from race import BestTimes, GameMode
+8 + from race import BestTimes
+9 | from session import Phase, Session
+  |
+
+F401 [*] `session.Phase` imported but unused
+  --> tests\test_traction_lifecycle.py:9:21
+   |
+ 7 | from driving_modes import DrivingMode
+ 8 | from race import BestTimes, GameMode
+ 9 | from session import Phase, Session
+   |                     ^^^^^
+10 | from settings import DrivingModeStore
+   |
+help: Remove unused import: `session.Phase`
+   |
+8  | from race import BestTimes, GameMode
+   - from session import Phase, Session
+9  + from session import Session
+10 | from settings import DrivingModeStore
+   |
+
+Found 3 errors.
+[*] 3 fixable with the `--fix` option.
