@@ -866,6 +866,8 @@ def interpolate(previous: Snapshot, current: Snapshot, alpha: float):
             abs_enabled=b.abs_enabled,
             tcs_enabled=b.tcs_enabled,
             traction_state=b.traction_state,
+            esc_enabled=b.esc_enabled,
+            stability_state=b.stability_state,
         )
 
     return replace(

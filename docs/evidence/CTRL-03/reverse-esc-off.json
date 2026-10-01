@@ -1,0 +1,1310 @@
+{
+  "source": "src",
+  "tcs_off": false,
+  "esc_off": true,
+  "initial_brake_speed": 5.69230842590332,
+  "stop_tick": 572,
+  "final_speed": -0.4964844584465027,
+  "rows": [
+    {
+      "tick": 573,
+      "speed": 0.03859801962971687,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.008333333333333333
+    },
+    {
+      "tick": 574,
+      "speed": -0.003413186874240637,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.016666666666666666
+    },
+    {
+      "tick": 575,
+      "speed": -0.009272766299545765,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.025
+    },
+    {
+      "tick": 576,
+      "speed": -0.015781722962856293,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.03333333333333333
+    },
+    {
+      "tick": 577,
+      "speed": -0.021670347079634666,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.041666666666666664
+    },
+    {
+      "tick": 578,
+      "speed": -0.02694772370159626,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.049999999999999996
+    },
+    {
+      "tick": 579,
+      "speed": -0.031627219170331955,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.05833333333333333
+    },
+    {
+      "tick": 580,
+      "speed": -0.03572449833154678,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.06666666666666667
+    },
+    {
+      "tick": 581,
+      "speed": -0.039257243275642395,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.075
+    },
+    {
+      "tick": 582,
+      "speed": -0.04224489629268646,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.08333333333333333
+    },
+    {
+      "tick": 583,
+      "speed": -0.044708456844091415,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.09166666666666666
+    },
+    {
+      "tick": 584,
+      "speed": -0.04667031019926071,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.09999999999999999
+    },
+    {
+      "tick": 585,
+      "speed": -0.048154011368751526,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.10833333333333332
+    },
+    {
+      "tick": 586,
+      "speed": -0.049184128642082214,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.11666666666666665
+    },
+    {
+      "tick": 587,
+      "speed": -0.04978608340024948,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.12499999999999999
+    },
+    {
+      "tick": 588,
+      "speed": -0.049986060708761215,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.0,
+        -0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.13333333333333333
+    },
+    {
+      "tick": 589,
+      "speed": -0.04981078952550888,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.14166666666666666
+    },
+    {
+      "tick": 590,
+      "speed": -0.04928739368915558,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.15
+    },
+    {
+      "tick": 591,
+      "speed": -0.048443831503391266,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.15833333333333333
+    },
+    {
+      "tick": 592,
+      "speed": -0.04730731621384621,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.16666666666666666
+    },
+    {
+      "tick": 593,
+      "speed": -0.04590577259659767,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.175
+    },
+    {
+      "tick": 594,
+      "speed": -0.044266898185014725,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.18333333333333332
+    },
+    {
+      "tick": 595,
+      "speed": -0.04241813346743584,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.19166666666666665
+    },
+    {
+      "tick": 596,
+      "speed": -0.04038657993078232,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.19999999999999998
+    },
+    {
+      "tick": 597,
+      "speed": -0.03819887340068817,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.20833333333333331
+    },
+    {
+      "tick": 598,
+      "speed": -0.03588102385401726,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.21666666666666665
+    },
+    {
+      "tick": 599,
+      "speed": -0.033458322286605835,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.22499999999999998
+    },
+    {
+      "tick": 600,
+      "speed": -0.03095521777868271,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.2333333333333333
+    },
+    {
+      "tick": 601,
+      "speed": -0.028395209461450577,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.24166666666666664
+    },
+    {
+      "tick": 602,
+      "speed": -0.025800742208957672,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.24999999999999997
+    },
+    {
+      "tick": 603,
+      "speed": -0.02319308929145336,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.2583333333333333
+    },
+    {
+      "tick": 604,
+      "speed": -0.020592311397194862,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.26666666666666666
+    },
+    {
+      "tick": 605,
+      "speed": -0.018017172813415527,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.275
+    },
+    {
+      "tick": 606,
+      "speed": -0.015485036186873913,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.2833333333333334
+    },
+    {
+      "tick": 607,
+      "speed": -0.013011920265853405,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.29166666666666674
+    },
+    {
+      "tick": 608,
+      "speed": -0.010612334124743938,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.3000000000000001
+    },
+    {
+      "tick": 609,
+      "speed": -0.008299341425299644,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.30833333333333346
+    },
+    {
+      "tick": 610,
+      "speed": -0.006085420027375221,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.3166666666666668
+    },
+    {
+      "tick": 611,
+      "speed": -0.003978940192610025,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.3250000000000002
+    },
+    {
+      "tick": 612,
+      "speed": -0.002020741580054164,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.33333333333333354
+    },
+    {
+      "tick": 613,
+      "speed": -0.00024349038721993566,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.3416666666666669
+    },
+    {
+      "tick": 614,
+      "speed": 0.0013578605139628053,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.35000000000000026
+    },
+    {
+      "tick": 615,
+      "speed": 0.002789210993796587,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.3583333333333336
+    },
+    {
+      "tick": 616,
+      "speed": 0.004057146143168211,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.366666666666667
+    },
+    {
+      "tick": 617,
+      "speed": 0.005168867763131857,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.37500000000000033
+    },
+    {
+      "tick": 618,
+      "speed": 0.006131964270025492,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.3833333333333337
+    },
+    {
+      "tick": 619,
+      "speed": 0.006954436656087637,
+      "gear": 1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0,
+        0.0
+      ],
+      "drive_torque": 0.0,
+      "reverse_wait": 0.39166666666666705
+    },
+    {
+      "tick": 620,
+      "speed": 0.007645155768841505,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.00015500747145911088,
+        -0.00015486679990850405
+      ],
+      "drive_torque": -48.70591675893098,
+      "reverse_wait": 0.4000000000000004
+    },
+    {
+      "tick": 621,
+      "speed": 0.008233552798628807,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.00013005506329564175,
+        -0.0001299534925842576
+      ],
+      "drive_torque": -94.14424904495851,
+      "reverse_wait": 0.40833333333333377
+    },
+    {
+      "tick": 622,
+      "speed": 0.008725113235414028,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -0.00010654495998377398,
+        -0.00010647194495902023
+      ],
+      "drive_torque": -136.53421269463905,
+      "reverse_wait": 0.41666666666666713
+    },
+    {
+      "tick": 623,
+      "speed": 0.009124629199504852,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -8.421174314224029e-05,
+        -8.425800108200019e-05
+      ],
+      "drive_torque": -176.08031678380246,
+      "reverse_wait": 0.4250000000000005
+    },
+    {
+      "tick": 624,
+      "speed": 0.009437608532607555,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -6.361642629387852e-05,
+        -6.363697349037224e-05
+      ],
+      "drive_torque": -212.97335027529806,
+      "reverse_wait": 0.43333333333333385
+    },
+    {
+      "tick": 625,
+      "speed": 0.009794563986361027,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        -4.435075261002494e-05,
+        -4.434844464185593e-05
+      ],
+      "drive_torque": -247.39130247447792,
+      "reverse_wait": 0.4416666666666672
+    },
+    {
+      "tick": 626,
+      "speed": 0.009130910038948059,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0010395071323539562,
+        0.00110893488107045
+      ],
+      "drive_torque": -279.50022173312595,
+      "reverse_wait": 0.45000000000000057
+    },
+    {
+      "tick": 627,
+      "speed": 0.007284880615770817,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.00232819024304898,
+        0.0017476162428186276
+      ],
+      "drive_torque": -309.4550165446239,
+      "reverse_wait": 0.4583333333333339
+    },
+    {
+      "tick": 628,
+      "speed": 0.004477411042898893,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0017169168647646242,
+        0.0009357028734118464
+      ],
+      "drive_torque": -337.4002028952132,
+      "reverse_wait": 0.4666666666666673
+    },
+    {
+      "tick": 629,
+      "speed": 0.0001298188290093094,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0013204401700439394,
+        0.0003016733331168671
+      ],
+      "drive_torque": -363.47060147692565,
+      "reverse_wait": 0.47500000000000064
+    },
+    {
+      "tick": 630,
+      "speed": -0.005434304475784302,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.001048611978489464,
+        -0.0001570375767247158
+      ],
+      "drive_torque": -387.79198812586526,
+      "reverse_wait": 0.483333333333334
+    },
+    {
+      "tick": 631,
+      "speed": -0.011975406669080257,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0008638326228876583,
+        -0.0004956904687933366
+      ],
+      "drive_torque": -410.48170062386134,
+      "reverse_wait": 0.49166666666666736
+    },
+    {
+      "tick": 632,
+      "speed": -0.01930202543735504,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0007418252406734219,
+        -0.0007481737945195348
+      ],
+      "drive_torque": -431.6492047909876,
+      "reverse_wait": 0.5000000000000007
+    },
+    {
+      "tick": 633,
+      "speed": -0.027284543961286545,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0006644723353840809,
+        -0.0009381056275296409
+      ],
+      "drive_torque": -451.39662260004445,
+      "reverse_wait": 0.508333333333334
+    },
+    {
+      "tick": 634,
+      "speed": -0.03581970930099487,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0006186676801400968,
+        -0.0010824508282425357
+      ],
+      "drive_torque": -469.8192248608758,
+      "reverse_wait": 0.5166666666666673
+    },
+    {
+      "tick": 635,
+      "speed": -0.04482773318886757,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.00059500396830095,
+        -0.001193446380899063
+      ],
+      "drive_torque": -487.00589085146066,
+      "reverse_wait": 0.5250000000000006
+    },
+    {
+      "tick": 636,
+      "speed": -0.054246049374341965,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0005867163818689819,
+        -0.0012798218093892089
+      ],
+      "drive_torque": -503.0395371132563,
+      "reverse_wait": 0.5333333333333339
+    },
+    {
+      "tick": 637,
+      "speed": -0.06402474641799927,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0005889572103511959,
+        -0.0013480966475182474
+      ],
+      "drive_torque": -517.9975174795021,
+      "reverse_wait": 0.5416666666666672
+    },
+    {
+      "tick": 638,
+      "speed": -0.07412337511777878,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0005982981408288596,
+        -0.0014028220325088409
+      ],
+      "drive_torque": -531.951996266409,
+      "reverse_wait": 0.5500000000000005
+    },
+    {
+      "tick": 639,
+      "speed": -0.08450853824615479,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0006121867098874689,
+        -0.0014475213518710117
+      ],
+      "drive_torque": -544.9702964276831,
+      "reverse_wait": 0.5583333333333338
+    },
+    {
+      "tick": 640,
+      "speed": -0.09515217691659927,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0006288702348400121,
+        -0.0014846341601460061
+      ],
+      "drive_torque": -557.1152243520457,
+      "reverse_wait": 0.5666666666666671
+    },
+    {
+      "tick": 641,
+      "speed": -0.10603038221597672,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0006471087513540003,
+        -0.0015159663364918696
+      ],
+      "drive_torque": -568.4453728707234,
+      "reverse_wait": 0.5750000000000004
+    },
+    {
+      "tick": 642,
+      "speed": -0.11712242662906647,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0006659136005425503,
+        -0.0015429918636393897
+      ],
+      "drive_torque": -579.0154039367605,
+      "reverse_wait": 0.5833333333333337
+    },
+    {
+      "tick": 643,
+      "speed": -0.12841011583805084,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0006847068933176353,
+        -0.0015666280197507432
+      ],
+      "drive_torque": -588.8763123399303,
+      "reverse_wait": 0.591666666666667
+    },
+    {
+      "tick": 644,
+      "speed": -0.1398772895336151,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0007029510961752694,
+        -0.0015877734798230292
+      ],
+      "drive_torque": -598.0756717295295,
+      "reverse_wait": 0.6000000000000003
+    },
+    {
+      "tick": 645,
+      "speed": -0.15150943398475647,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0007203804802855263,
+        -0.001606916942855613
+      ],
+      "drive_torque": -606.6578641319863,
+      "reverse_wait": 0.6083333333333336
+    },
+    {
+      "tick": 646,
+      "speed": -0.16329342126846313,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0007367504873697917,
+        -0.0016245847834259752
+      ],
+      "drive_torque": -614.6642940705821,
+      "reverse_wait": 0.6166666666666669
+    },
+    {
+      "tick": 647,
+      "speed": -0.17521733045578003,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0007519702079743507,
+        -0.0016410410373703943
+      ],
+      "drive_torque": -622.1335883202997,
+      "reverse_wait": 0.6250000000000002
+    },
+    {
+      "tick": 648,
+      "speed": -0.18727025389671326,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0007658489038819272,
+        -0.0016566621874171406
+      ],
+      "drive_torque": -629.1017822615123,
+      "reverse_wait": 0.6333333333333335
+    },
+    {
+      "tick": 649,
+      "speed": -0.1994420737028122,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0007784349081945419,
+        -0.0016715745320801112
+      ],
+      "drive_torque": -635.6024937315668,
+      "reverse_wait": 0.6416666666666668
+    },
+    {
+      "tick": 650,
+      "speed": -0.21172359585762024,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0007896444606492747,
+        -0.001686004978322636
+      ],
+      "drive_torque": -641.6670852130065,
+      "reverse_wait": 0.6500000000000001
+    },
+    {
+      "tick": 651,
+      "speed": -0.22410619258880615,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0007994619548920834,
+        -0.0017000847489780369
+      ],
+      "drive_torque": -647.3248151409036,
+      "reverse_wait": 0.6583333333333334
+    },
+    {
+      "tick": 652,
+      "speed": -0.2365819364786148,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0008078972332240253,
+        -0.0017139034223130345
+      ],
+      "drive_torque": -652.6029790592792,
+      "reverse_wait": 0.6666666666666667
+    },
+    {
+      "tick": 653,
+      "speed": -0.2491646111011505,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0008150169774346072,
+        -0.00172752591433889
+      ],
+      "drive_torque": -657.5270413076156,
+      "reverse_wait": 0.675
+    },
+    {
+      "tick": 654,
+      "speed": -0.26131340861320496,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0008036182225180655,
+        -0.0017663303306533207
+      ],
+      "drive_torque": -662.1207578727796,
+      "reverse_wait": 0.6833333333333333
+    },
+    {
+      "tick": 655,
+      "speed": -0.2740047872066498,
+      "gear": -1,
+      "torque_scale": 0.9826918526667576,
+      "tcs_active": true,
+      "rear_slips": [
+        0.01926105861124694,
+        0.017379630946169844
+      ],
+      "drive_torque": -665.5632818157853,
+      "reverse_wait": 0.6916666666666667
+    },
+    {
+      "tick": 656,
+      "speed": -0.2867584824562073,
+      "gear": -1,
+      "torque_scale": 0.9924160187649972,
+      "tcs_active": true,
+      "rear_slips": [
+        0.019488154741529873,
+        0.01759911841479339
+      ],
+      "drive_torque": -669.2484780006654,
+      "reverse_wait": 0.7
+    },
+    {
+      "tick": 657,
+      "speed": -0.2995747923851013,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.019613918817373177,
+        0.01771170940728678
+      ],
+      "drive_torque": -673.0558263566464,
+      "reverse_wait": 0.7083333333333333
+    },
+    {
+      "tick": 658,
+      "speed": -0.31244876980781555,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.01973570057849,
+        0.017821336166970514
+      ],
+      "drive_torque": -676.6077471753015,
+      "reverse_wait": 0.7166666666666666
+    },
+    {
+      "tick": 659,
+      "speed": -0.32537537813186646,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.019842732866033663,
+        0.017917547328907657
+      ],
+      "drive_torque": -679.9213765893729,
+      "reverse_wait": 0.7249999999999999
+    },
+    {
+      "tick": 660,
+      "speed": -0.3383501470088959,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.01993636952970057,
+        0.018001430486578485
+      ],
+      "drive_torque": -683.0127011020508,
+      "reverse_wait": 0.7333333333333332
+    },
+    {
+      "tick": 661,
+      "speed": -0.3513686954975128,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.02001722646860221,
+        0.018073301410972187
+      ],
+      "drive_torque": -685.8966347133659,
+      "reverse_wait": 0.7416666666666665
+    },
+    {
+      "tick": 662,
+      "speed": -0.36442700028419495,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.020086570017916472,
+        0.018134228344599934
+      ],
+      "drive_torque": -688.5870908723243,
+      "reverse_wait": 0.7499999999999998
+    },
+    {
+      "tick": 663,
+      "speed": -0.3775213658809662,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.020145305791808787,
+        0.01818510155140307
+      ],
+      "drive_torque": -691.0970496019139,
+      "reverse_wait": 0.7583333333333331
+    },
+    {
+      "tick": 664,
+      "speed": -0.39064839482307434,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.0201943270139624,
+        0.018226727976934642
+      ],
+      "drive_torque": -693.4386201208262,
+      "reverse_wait": 0.7666666666666664
+    },
+    {
+      "tick": 665,
+      "speed": -0.4038046896457672,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.020234603744298696,
+        0.018259937635473178
+      ],
+      "drive_torque": -695.6230992640093,
+      "reverse_wait": 0.7749999999999997
+    },
+    {
+      "tick": 666,
+      "speed": -0.41698724031448364,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.020265385773036215,
+        0.018284131132917547
+      ],
+      "drive_torque": -697.6610259839011,
+      "reverse_wait": 0.783333333333333
+    },
+    {
+      "tick": 667,
+      "speed": -0.43019309639930725,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.02027338800086187,
+        0.018285544369751383
+      ],
+      "drive_torque": -699.5622321952808,
+      "reverse_wait": 0.7916666666666663
+    },
+    {
+      "tick": 668,
+      "speed": -0.4434193968772888,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.020267435104531717,
+        0.018273091272617947
+      ],
+      "drive_torque": -701.3358902090392,
+      "reverse_wait": 0.7999999999999996
+    },
+    {
+      "tick": 669,
+      "speed": -0.45666372776031494,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.02026232744551476,
+        0.01826191511239883
+      ],
+      "drive_torque": -702.9905569837109,
+      "reverse_wait": 0.8083333333333329
+    },
+    {
+      "tick": 670,
+      "speed": -0.4699239730834961,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.020258266319077678,
+        0.01825236611582204
+      ],
+      "drive_torque": -704.5342154082574,
+      "reverse_wait": 0.8166666666666662
+    },
+    {
+      "tick": 671,
+      "speed": -0.4831981956958771,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.02025536747150003,
+        0.018244333558877224
+      ],
+      "drive_torque": -705.9743128152692,
+      "reverse_wait": 0.8249999999999995
+    },
+    {
+      "tick": 672,
+      "speed": -0.4964844584465027,
+      "gear": -1,
+      "torque_scale": 1.0,
+      "tcs_active": false,
+      "rear_slips": [
+        0.020253717806049454,
+        0.018237849663650718
+      ],
+      "drive_torque": -707.317796910393,
+      "reverse_wait": 0.8333333333333328
+    }
+  ]
+}

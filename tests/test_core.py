@@ -181,9 +181,20 @@ def test_brake_stops_before_reverse_and_beats_throttle():
     for _ in range(40):
         s.step(Control(brake=1))
     assert abs(s.snapshot().player.speed) < 0.2
+    assert s.snapshot().player.gear > 0
+    # 先独立核对0.4s等待，随后从真正挂入倒挡开始计半秒起步。
+    # 有限制动响应会影响释放瞬态，不能把剩余等待混进倒挡加速时间。
+    wait_ticks = round(GAME_INPUT.reverse_delay / FIXED_DT)
+    for tick in range(40, wait_ticks):
+        s.step(Control(brake=1))
+        if tick < wait_ticks - 1:
+            assert s.snapshot().player.gear > 0
+    assert s.snapshot().player.gear == -1
+    initial_reverse_pressure = s.player.brakes.states[0].pressure
     for _ in range(60):
         s.step(Control(brake=1))
     assert s.snapshot().player.speed < -0.5
+    assert s.player.brakes.states[0].pressure < initial_reverse_pressure
 
 
 def test_aliases_opposed_directions_and_priority():

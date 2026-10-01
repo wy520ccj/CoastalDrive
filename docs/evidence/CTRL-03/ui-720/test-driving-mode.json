@@ -1,0 +1,6 @@
+{
+  "mode": "simulation",
+  "abs_enabled": true,
+  "tcs_enabled": true,
+  "esc_enabled": true
+}

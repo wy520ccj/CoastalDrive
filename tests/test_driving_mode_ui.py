@@ -59,9 +59,9 @@ def test_menu_mode_selection_and_hud_text(tmp_path, height):
             "计时挑战", "滨海自由驾驶", "无限高速", "车库", "声音设置", "退出"]
         old_world = app.session.simulation
         app.messenger.send("f2")
-        assert app.driving_mode_page and app.panel_option_count == 5
-        assert [b["text"] for b in app.buttons[:5]] == [
-            "正常游戏", "困难仿真", "车辆 ABS：开启", "驱动防滑 TCS：开启", "返回"]
+        assert app.driving_mode_page and app.panel_option_count == 6
+        assert [b["text"] for b in app.buttons[:6]] == [
+            "正常游戏", "困难仿真", "车辆 ABS：开启", "驱动防滑 TCS：开启", "横摆稳定 ESC：开启", "返回"]
         note_bottom = app.panel_note.getTightBounds(app.panel)[0].z
         assert note_bottom > app.buttons[0].getZ() + app.buttons[0]["frameSize"][3]
         app.key_down("arrow_down")
@@ -79,6 +79,10 @@ def test_menu_mode_selection_and_hud_text(tmp_path, height):
         assert not app.session.tcs_enabled and app.session.simulation is old_world
         assert not DrivingModeStore(tmp_path / "test-driving-mode.json").tcs_enabled
         assert app.buttons[3]["text"] == "驱动防滑 TCS：关闭"
+        app.toggle_esc()
+        assert not app.session.esc_enabled and app.session.simulation is old_world
+        assert not DrivingModeStore(tmp_path / "test-driving-mode.json").esc_enabled
+        assert app.buttons[4]["text"] == "横摆稳定 ESC：关闭"
         app.toggle_abs()
         blocked = tmp_path / "blocked-settings"
         blocked.write_text("not a directory", encoding="utf-8")
@@ -110,7 +114,7 @@ def test_menu_mode_selection_and_hud_text(tmp_path, height):
                        driving_mode=app.session.driving_mode)
         assert "Q 倒挡 / E 前进挡" in app.hud.help.getText()
         assert "刹车·倒车" not in app.hud.help.getText()
-        assert "ABS待命 TCS关闭" in app.hud.help.getText()
+        assert "ABS待命 TCS关闭 ESC关闭" in app.hud.help.getText()
         app.toggle_abs()
         assert app.session.abs_enabled
         # 按实际字体宽度检验两行提示及角落入口落在既有底板内。

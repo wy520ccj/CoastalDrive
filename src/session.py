@@ -43,11 +43,11 @@ class FixedStepper:
 
 class Session:
     def __init__(self, seed=0, *, track="coastal", scores=None, road_shape="straight",
-                 driving_mode=DrivingMode.GAME, abs_enabled=None, tcs_enabled=None):
+                 driving_mode=DrivingMode.GAME, abs_enabled=None, tcs_enabled=None, esc_enabled=None):
         self.road_shape = road_shape
         self.traffic_density = "normal"
         self.driving_mode = driving_mode
-        self.vehicle_config = driving_mode.configured_vehicle(abs_enabled, tcs_enabled)
+        self.vehicle_config = driving_mode.configured_vehicle(abs_enabled, tcs_enabled, esc_enabled)
         self.simulation = Simulation(
             seed, track=track, road_shape=road_shape,
             config=self.vehicle_config, input_config=driving_mode.input_config,
@@ -78,7 +78,7 @@ class Session:
         if self.phase != Phase.MENU:
             raise ValueError("驾驶模式只能在主菜单选择")
         self.driving_mode = mode
-        self.vehicle_config = mode.configured_vehicle(self.abs_enabled, self.tcs_enabled)
+        self.vehicle_config = mode.configured_vehicle(self.abs_enabled, self.tcs_enabled, self.esc_enabled)
 
     @property
     def abs_enabled(self):
@@ -88,7 +88,7 @@ class Session:
         """菜单选择车辆电子配置；不替换正在运行的刚体参数。"""
         if self.phase != Phase.MENU:
             raise ValueError("车辆电子配置只能在主菜单选择")
-        self.vehicle_config = self.driving_mode.configured_vehicle(enabled, self.tcs_enabled)
+        self.vehicle_config = self.driving_mode.configured_vehicle(enabled, self.tcs_enabled, self.esc_enabled)
 
     @property
     def tcs_enabled(self):
@@ -98,7 +98,18 @@ class Session:
         """菜单选择驱动防滑配置；不替换正在运行的刚体参数。"""
         if self.phase != Phase.MENU:
             raise ValueError("车辆电子配置只能在主菜单选择")
-        self.vehicle_config = self.driving_mode.configured_vehicle(self.abs_enabled, enabled)
+        self.vehicle_config = self.driving_mode.configured_vehicle(self.abs_enabled, enabled, self.esc_enabled)
+
+    @property
+    def esc_enabled(self):
+        return self.vehicle_config.stability.esc_enabled
+
+    def set_esc_enabled(self, enabled):
+        """菜单选择横摆稳定配置；下一场起步应用。"""
+        if self.phase != Phase.MENU:
+            raise ValueError("车辆电子配置只能在主菜单选择")
+        self.vehicle_config = self.driving_mode.configured_vehicle(
+            self.abs_enabled, self.tcs_enabled, enabled)
 
     def start(self, seed=None, *, countdown=True, mode=None, track=None):
         chosen_track = get_track(track) if track is not None else self.track
@@ -135,7 +146,7 @@ class Session:
         self.simulation.set_checkpoint_frames_enabled(self.mode == GameMode.TIME_TRIAL)
         self.race.start(
             self.mode, circuit=self.track.circuit,
-            score_variant=self.driving_mode.score_variant(self.abs_enabled, self.tcs_enabled),
+            score_variant=self.driving_mode.score_variant(self.abs_enabled, self.tcs_enabled, self.esc_enabled),
         )
         self.highway = HighwayRun(challenge=self.mode == GameMode.DISTANCE_CHALLENGE)
         self.keyboard.direction = 1

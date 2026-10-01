@@ -1,0 +1,110 @@
+{
+  "resolution": [
+    1280,
+    720
+  ],
+  "screenshots": [
+    "game-menu.png",
+    "simulation-settings.png",
+    "simulation-abs-off-settings.png",
+    "simulation-tcs-off-settings.png",
+    "simulation-esc-off-settings.png",
+    "simulation-menu.png",
+    "simulation-reverse-hud.png",
+    "simulation-abs-active-hud.png",
+    "simulation-tcs-active-hud.png",
+    "simulation-esc-active-hud.png"
+  ],
+  "simulation_reverse_speed_mps": -4.297220230102539,
+  "driving_mode": "simulation",
+  "abs_active_trial_tick": 25,
+  "brake_states": [
+    {
+      "requested": 1,
+      "commanded": 1,
+      "pressure": 0.9999366392939255,
+      "braking_slip": 0.045650397307992266,
+      "abs_active": false,
+      "phase": "normal",
+      "feedback_tick": 268,
+      "predicted_slip": 0.04541490175468271
+    },
+    {
+      "requested": 1,
+      "commanded": 1,
+      "pressure": 0.9999366392939255,
+      "braking_slip": 0.045602395564994284,
+      "abs_active": false,
+      "phase": "normal",
+      "feedback_tick": 268,
+      "predicted_slip": 0.04536587483755073
+    },
+    {
+      "requested": 1,
+      "commanded": 0.9493514027515805,
+      "pressure": 0.9735219167379696,
+      "braking_slip": 0.15191363694747465,
+      "abs_active": true,
+      "phase": "release",
+      "feedback_tick": 268,
+      "predicted_slip": 0.1816278603580697
+    },
+    {
+      "requested": 1,
+      "commanded": 0.9493608230813345,
+      "pressure": 0.9735272325406519,
+      "braking_slip": 0.15190617545216523,
+      "abs_active": true,
+      "phase": "release",
+      "feedback_tick": 268,
+      "predicted_slip": 0.18161893428781403
+    }
+  ],
+  "tcs_active_trial_tick": 21,
+  "traction_state": {
+    "requested_throttle": 1,
+    "torque_scale": 0.9731970767139086,
+    "active": true,
+    "wheel_slips": [
+      -0.0009899097197252904,
+      -0.0008000229577043716,
+      0.025190394237038505,
+      0.022348526913495426
+    ],
+    "brake_requests": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "feedback_ticks": [
+      260,
+      260,
+      260,
+      260
+    ]
+  },
+  "esc_active_trial_tick": 1,
+  "stability_state": {
+    "reference_yaw_rate": 0.0,
+    "unlimited_yaw_rate": -0.0,
+    "observed_yaw_rate": 0.5,
+    "sideslip": 0.0,
+    "yaw_error": -0.5,
+    "desired_brake_moment": -5496.000000000001,
+    "baseline_brake_moment": 0.0,
+    "allocated_brake_moment": -4574.032961055636,
+    "residual_moment": -921.9670389443645,
+    "brake_requests": [
+      0.0,
+      0.9774459765153234,
+      0.0,
+      1.0
+    ],
+    "torque_scale": 0.0,
+    "active": true,
+    "feedback_tick": 240
+  },
+  "human_acceptance": "pending",
+  "passed": true
+}

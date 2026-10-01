@@ -1,0 +1,501 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "mode": "game",
+      "switches": [
+        "off",
+        "off",
+        "off"
+      ],
+      "actual": [
+        false,
+        false,
+        false
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "game",
+        "--abs",
+        "off",
+        "--tcs",
+        "off",
+        "--esc",
+        "off"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "game",
+      "switches": [
+        "off",
+        "off",
+        "on"
+      ],
+      "actual": [
+        false,
+        false,
+        true
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "game",
+        "--abs",
+        "off",
+        "--tcs",
+        "off",
+        "--esc",
+        "on"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "game",
+      "switches": [
+        "off",
+        "on",
+        "off"
+      ],
+      "actual": [
+        false,
+        true,
+        false
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "game",
+        "--abs",
+        "off",
+        "--tcs",
+        "on",
+        "--esc",
+        "off"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "game",
+      "switches": [
+        "off",
+        "on",
+        "on"
+      ],
+      "actual": [
+        false,
+        true,
+        true
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "game",
+        "--abs",
+        "off",
+        "--tcs",
+        "on",
+        "--esc",
+        "on"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "game",
+      "switches": [
+        "on",
+        "off",
+        "off"
+      ],
+      "actual": [
+        true,
+        false,
+        false
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "game",
+        "--abs",
+        "on",
+        "--tcs",
+        "off",
+        "--esc",
+        "off"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "game",
+      "switches": [
+        "on",
+        "off",
+        "on"
+      ],
+      "actual": [
+        true,
+        false,
+        true
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "game",
+        "--abs",
+        "on",
+        "--tcs",
+        "off",
+        "--esc",
+        "on"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "game",
+      "switches": [
+        "on",
+        "on",
+        "off"
+      ],
+      "actual": [
+        true,
+        true,
+        false
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "game",
+        "--abs",
+        "on",
+        "--tcs",
+        "on",
+        "--esc",
+        "off"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "game",
+      "switches": [
+        "on",
+        "on",
+        "on"
+      ],
+      "actual": [
+        true,
+        true,
+        true
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "game",
+        "--abs",
+        "on",
+        "--tcs",
+        "on",
+        "--esc",
+        "on"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "simulation",
+      "switches": [
+        "off",
+        "off",
+        "off"
+      ],
+      "actual": [
+        false,
+        false,
+        false
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "simulation",
+        "--abs",
+        "off",
+        "--tcs",
+        "off",
+        "--esc",
+        "off"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "simulation",
+      "switches": [
+        "off",
+        "off",
+        "on"
+      ],
+      "actual": [
+        false,
+        false,
+        true
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "simulation",
+        "--abs",
+        "off",
+        "--tcs",
+        "off",
+        "--esc",
+        "on"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "simulation",
+      "switches": [
+        "off",
+        "on",
+        "off"
+      ],
+      "actual": [
+        false,
+        true,
+        false
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "simulation",
+        "--abs",
+        "off",
+        "--tcs",
+        "on",
+        "--esc",
+        "off"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "simulation",
+      "switches": [
+        "off",
+        "on",
+        "on"
+      ],
+      "actual": [
+        false,
+        true,
+        true
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "simulation",
+        "--abs",
+        "off",
+        "--tcs",
+        "on",
+        "--esc",
+        "on"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "simulation",
+      "switches": [
+        "on",
+        "off",
+        "off"
+      ],
+      "actual": [
+        true,
+        false,
+        false
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "simulation",
+        "--abs",
+        "on",
+        "--tcs",
+        "off",
+        "--esc",
+        "off"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "simulation",
+      "switches": [
+        "on",
+        "off",
+        "on"
+      ],
+      "actual": [
+        true,
+        false,
+        true
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "simulation",
+        "--abs",
+        "on",
+        "--tcs",
+        "off",
+        "--esc",
+        "on"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "simulation",
+      "switches": [
+        "on",
+        "on",
+        "off"
+      ],
+      "actual": [
+        true,
+        true,
+        false
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "simulation",
+        "--abs",
+        "on",
+        "--tcs",
+        "on",
+        "--esc",
+        "off"
+      ],
+      "passed": true
+    },
+    {
+      "mode": "simulation",
+      "switches": [
+        "on",
+        "on",
+        "on"
+      ],
+      "actual": [
+        true,
+        true,
+        true
+      ],
+      "command": [
+        "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "240",
+        "--driving-mode",
+        "simulation",
+        "--abs",
+        "on",
+        "--tcs",
+        "on",
+        "--esc",
+        "on"
+      ],
+      "passed": true
+    }
+  ]
+}

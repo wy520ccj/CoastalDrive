@@ -28,7 +28,7 @@ from ui.main_menu import MainMenu
 
 
 class CoastalDrive(ShowBase):
-    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", driving_mode=None, abs_enabled=None, tcs_enabled=None):
+    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", driving_mode=None, abs_enabled=None, tcs_enabled=None, esc_enabled=None):
         self.startup_trace = startup_trace
         loadPrcFileData(
             "coastaldrive",
@@ -71,6 +71,7 @@ class CoastalDrive(ShowBase):
             driving_mode=driving_mode if driving_mode is not None else self.driving_mode_settings.mode,
             abs_enabled=abs_enabled if abs_enabled is not None else self.driving_mode_settings.abs_enabled,
             tcs_enabled=tcs_enabled if tcs_enabled is not None else self.driving_mode_settings.tcs_enabled,
+            esc_enabled=esc_enabled if esc_enabled is not None else self.driving_mode_settings.esc_enabled,
             road_shape=road_shape,
             scores=BestTimes(self.output / "test-best-times.json") if smoke else None,
         )
@@ -488,7 +489,7 @@ class CoastalDrive(ShowBase):
         if self.session.phase != Phase.MENU:
             return
         self.session.set_driving_mode(mode)
-        self.driving_mode_settings.save(mode, self.session.abs_enabled, self.session.tcs_enabled)
+        self.driving_mode_settings.save(mode, self.session.abs_enabled, self.session.tcs_enabled, self.session.esc_enabled)
         self._shown_phase = None
         self.refresh_panel()
 
@@ -496,7 +497,7 @@ class CoastalDrive(ShowBase):
         if self.session.phase != Phase.MENU:
             return
         self.session.set_abs_enabled(not self.session.abs_enabled)
-        self.driving_mode_settings.save(self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled)
+        self.driving_mode_settings.save(self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled, self.session.esc_enabled)
         self._shown_phase = None
         self.refresh_panel()
 
@@ -504,7 +505,17 @@ class CoastalDrive(ShowBase):
         if self.session.phase != Phase.MENU:
             return
         self.session.set_tcs_enabled(not self.session.tcs_enabled)
-        self.driving_mode_settings.save(self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled)
+        self.driving_mode_settings.save(self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled, self.session.esc_enabled)
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def toggle_esc(self):
+        if self.session.phase != Phase.MENU:
+            return
+        self.session.set_esc_enabled(not self.session.esc_enabled)
+        self.driving_mode_settings.save(
+            self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled,
+            self.session.esc_enabled)
         self._shown_phase = None
         self.refresh_panel()
 
@@ -696,7 +707,7 @@ class CoastalDrive(ShowBase):
             self.panel_note.setText(
                 f"当前：{self.session.driving_mode.label} · 下次起步应用\n"
                 "困难仿真：Q 倒挡 · E 前进挡\n"
-                "自动前进换挡 · ABS与TCS独立开关"
+                "自动前进换挡 · ABS/TCS/ESC独立开关"
                 + (f"\n{self.driving_mode_settings.notice}" if self.driving_mode_settings.notice else "")
             )
             options = [
@@ -704,6 +715,7 @@ class CoastalDrive(ShowBase):
                 ("困难仿真", lambda: self.set_driving_mode(DrivingMode.SIMULATION)),
                 (f"车辆 ABS：{'开启' if self.session.abs_enabled else '关闭'}", self.toggle_abs),
                 (f"驱动防滑 TCS：{'开启' if self.session.tcs_enabled else '关闭'}", self.toggle_tcs),
+                (f"横摆稳定 ESC：{'开启' if self.session.esc_enabled else '关闭'}", self.toggle_esc),
                 ("返回", self.back_from_driving_mode),
             ]
         elif self.audio_settings_page:
@@ -842,7 +854,7 @@ class CoastalDrive(ShowBase):
         # 页面只安排现有动作，不在这里计算或改写比赛结果。
         for index, button in enumerate(self.buttons[:len(options)]):
             button.setScale(1)
-            half_height = 0.055 if self.audio_settings_page else 0.073
+            half_height = 0.055 if self.audio_settings_page or self.driving_mode_page else 0.073
             button["frameSize"] = (-0.51, 0.51, -half_height, half_height)
             button["text_scale"] = 0.055
             button["text_pos"] = (0, -0.018)
@@ -856,7 +868,7 @@ class CoastalDrive(ShowBase):
                 label = TextNode("audio-button-width")
                 label.setFont(self.ui_font)
                 button["text_scale"] = min(0.055, 0.94 / label.calcWidth(button["text"]))
-            button.setZ(button_top - index * (0.115 if self.audio_settings_page else 0.17))
+            button.setZ(button_top - index * (0.115 if self.audio_settings_page or self.driving_mode_page else 0.17))
         if phase == Phase.PAUSED:
             self.panel_title.setScale(0.14)
             self.panel_note.setPos(0, 0.27)

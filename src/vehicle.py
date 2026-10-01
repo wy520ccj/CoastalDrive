@@ -11,6 +11,7 @@ from vehicle_brakes import Brakes
 from vehicle_config import CAR, body_center, wheel_hubs
 from vehicle_contacts import read_wheel_contacts, road_support, shift_contacts
 from vehicle_dynamics import DynamicsState, aerodynamic_force, axle_loads, contact_grade
+from vehicle_stability import StabilityControl
 from vehicle_state import FIXED_DT, CarState, Control, VehicleCommand, forward
 from vehicle_steering import SteeringRack, wheel_angles
 from vehicle_tires import Tires
@@ -50,6 +51,7 @@ class Vehicle:
         self.tires = Tires(self.config)
         self.brakes = Brakes(self.config.braking)
         self.traction = TractionControl(self.config.traction)
+        self.stability = StabilityControl(self.config)
         self._drive_pedal = 0.0
         self._brake_pedal = 0.0
         self._acceleration = 0.0
@@ -121,6 +123,7 @@ class Vehicle:
         self.tires = Tires(self.config)
         self.brakes = Brakes(self.config.braking)
         self.traction = TractionControl(self.config.traction)
+        self.stability = StabilityControl(self.config)
         self.tires.initialize_rolling(speed)
         self._drive_pedal = 0.0
         self._brake_pedal = 0.0
@@ -183,12 +186,17 @@ class Vehicle:
             pedal, direction, brake > 0 or any(requests), self.tires.states,
             self.config.wheel_radius, FIXED_DT,
         )
-        drive_torque, engine_drag = self.powertrain.advance(
-            speed, self.tires.driven_omega(self._chassis), pedal, direction, brake > 0, FIXED_DT,
-            drive_scale=traction.torque_scale,
-        )
         requests = tuple(max(driver, electronic) for driver, electronic in
                          zip(requests, traction.brake_requests))
+        stability = self.stability.advance(
+            self._chassis, self.tires.states, self._wheel_contacts, requests,
+            self.steering.angle, FIXED_DT,
+        )
+        drive_torque, engine_drag = self.powertrain.advance(
+            speed, self.tires.driven_omega(self._chassis), pedal, direction, brake > 0, FIXED_DT,
+            drive_scale=min(traction.torque_scale, stability.torque_scale),
+        )
+        requests = stability.brake_requests
         pressures = self.brakes.advance(requests, self.tires.states, self.config.wheel_radius, FIXED_DT)
         position = pose.getPos()
         road = self.on_asphalt(position.x, position.y)
@@ -306,6 +314,8 @@ class Vehicle:
             abs_enabled=self.config.braking.abs_enabled,
             tcs_enabled=self.config.traction.tcs_enabled,
             traction_state=self.traction.state,
+            esc_enabled=self.config.stability.esc_enabled,
+            stability_state=self.stability.state,
         )
 
     def close(self):

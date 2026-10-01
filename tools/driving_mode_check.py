@@ -290,7 +290,8 @@ def main():
     if old_metadata["fixed_dt"] != FIXED_DT:
         raise RuntimeError("baseline and current fixed step differ")
     config = replace(CAR, braking=BrakeConfig(response_time=0, abs_enabled=False),
-                     traction=replace(CAR.traction, tcs_enabled=False)) if args.legacy_actuator else CAR
+                     traction=replace(CAR.traction, tcs_enabled=False),
+                     stability=replace(CAR.stability, esc_enabled=False)) if args.legacy_actuator else CAR
     current_config, config_differences = _config_comparison(old_metadata["config"], config)
     output.mkdir(parents=True)
     results = [run_case(case, old_metadata, output, config) for case in (args.case or list(CASES))]

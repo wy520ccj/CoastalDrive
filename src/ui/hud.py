@@ -15,7 +15,7 @@ def set_text(widget, value):
         widget.setText(value)
 
 
-def driving_help(mode, abs_label=None, tcs_label=None):
+def driving_help(mode, abs_label=None, tcs_label=None, esc_label=None):
     """输入说明只表达已有模式行为。"""
     direction = " · Q 倒挡 / E 前进挡" if mode == DrivingMode.SIMULATION else ""
     brake = "刹车" if mode == DrivingMode.SIMULATION else "刹车·倒车"
@@ -24,6 +24,8 @@ def driving_help(mode, abs_label=None, tcs_label=None):
         electronics = f" · ABS{abs_label}"
     if tcs_label is not None:
         electronics += f" TCS{tcs_label}"
+    if esc_label is not None:
+        electronics += f" ESC{esc_label}"
     return (f"驾驶模式：{mode.label}{direction}{electronics}\n"
             f"W / ↑ 油门   S / ↓ {brake}   A D 转向   R 复位   C 视角   N 切台   M 音乐   Esc 暂停")
 
@@ -109,7 +111,10 @@ class DrivingHUD:
         tcs_label = "关闭" if not player.tcs_enabled else (
             "介入" if player.traction_state.active else "待命"
         )
-        set_text(self.help, driving_help(driving_mode, abs_label, tcs_label))
+        esc_label = "关闭" if not player.esc_enabled else (
+            "介入" if player.stability_state.active else "待命"
+        )
+        set_text(self.help, driving_help(driving_mode, abs_label, tcs_label, esc_label))
         set_text(self.speed, f"{abs(state.player.speed) * 3.6:03.0f}")
         set_text(self.gear, "R" if state.player.gear < 0 else f"D{state.player.gear}")
         set_text(self.gear_rpm, f"{state.player.rpm:4.0f} rpm")

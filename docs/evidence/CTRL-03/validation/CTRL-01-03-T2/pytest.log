@@ -1,0 +1,55 @@
+.................................................F...................... [ 12%]
+........................................................................ [ 25%]
+........................................................................ [ 38%]
+........................................................................ [ 50%]
+........................................................................ [ 63%]
+........................................................................ [ 76%]
+........................................................................ [ 88%]
+...............................................................          [100%]
+================================== FAILURES ===================================
+_____________ test_brake_stops_before_reverse_and_beats_throttle ______________
+
+    def test_brake_stops_before_reverse_and_beats_throttle():
+        s = Simulation()
+        for _ in range(240):
+            s.step(Control())
+        for _ in range(240):
+            s.step(Control(throttle=1))
+        previous = s.snapshot().player.speed
+        wheel_energy = sum(.5 * CAR.wheel_inertia * wheel.omega**2
+                           for wheel in s.snapshot().player.wheel_dynamics)
+        s.step(Control(throttle=1, brake=1))
+        assert s.player.powertrain.drive_torque == 0
+        assert s.snapshot().player.throttle == 0
+        assert s.snapshot().player.brake > 0
+        # 首tick踏板仅到5%，储存的轮转动能仍可传给车体；优先级检验执行器而非强制降速。
+        assert sum(.5 * CAR.wheel_inertia * wheel.omega**2
+                   for wheel in s.snapshot().player.wheel_dynamics) < wheel_energy
+        from driver_assist import GAME_INPUT
+    
+        for _ in range(round(1 / GAME_INPUT.brake_rise / FIXED_DT) - 1):
+            s.step(Control(throttle=1, brake=1))
+        assert s.snapshot().player.brake == pytest.approx(1)
+        assert 0 < s.snapshot().player.speed < previous
+        for _ in range(1200):
+            if abs(s.snapshot().player.speed) < 0.15:
+                break
+            s.step(Control(brake=1))
+        else:
+            pytest.fail("Car did not stop within ten seconds")
+        for _ in range(40):
+            s.step(Control(brake=1))
+        assert abs(s.snapshot().player.speed) < 0.2
+        for _ in range(60):
+            s.step(Control(brake=1))
+>       assert s.snapshot().player.speed < -0.5
+E       assert -0.4964844584465027 < -0.5
+E        +  where -0.4964844584465027 = CarState(position=(95.00035095214844, 6.893429279327393, 0.40249642729759216), heading=-0.006951333023607731, speed=-0...0.0), torque_scale=1.0, active=False, feedback_tick=671, reference_sideslip=0.0, sideslip_error=0.0002383399172603612)).speed
+E        +    where CarState(position=(95.00035095214844, 6.893429279327393, 0.40249642729759216), heading=-0.006951333023607731, speed=-0...0.0), torque_scale=1.0, active=False, feedback_tick=671, reference_sideslip=0.0, sideslip_error=0.0002383399172603612)) = Snapshot(tick=672, time=5.6, player=CarState(position=(95.00035095214844, 6.893429279327393, 0.40249642729759216), hea...=0.0002383399172603612)), traffic=(), events=(), origin_y=0.0, collisions=0, contact_epoch=28, impacts=(), contacts=()).player
+E        +      where Snapshot(tick=672, time=5.6, player=CarState(position=(95.00035095214844, 6.893429279327393, 0.40249642729759216), hea...=0.0002383399172603612)), traffic=(), events=(), origin_y=0.0, collisions=0, contact_epoch=28, impacts=(), contacts=()) = snapshot()
+E        +        where snapshot = <simulation.Simulation object at 0x00000200FEBE3E00>.snapshot
+
+tests\test_core.py:186: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_core.py::test_brake_stops_before_reverse_and_beats_throttle
+1 failed, 566 passed in 425.19s (0:07:05)

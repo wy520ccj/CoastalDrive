@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from vehicle_brakes import BrakeState
 from vehicle_config import CAR
 from vehicle_dynamics import DynamicsState
+from vehicle_stability import StabilityState
 from vehicle_traction import TractionState
 
 FIXED_DT = 1 / 120
@@ -121,6 +122,8 @@ class CarState:
     abs_enabled: bool = False
     tcs_enabled: bool = False
     traction_state: TractionState = field(default_factory=TractionState)
+    esc_enabled: bool = False
+    stability_state: StabilityState = field(default_factory=StabilityState)
 
 
 def forward(heading):

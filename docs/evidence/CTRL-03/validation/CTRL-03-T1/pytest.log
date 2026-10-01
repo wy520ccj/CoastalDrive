@@ -1,0 +1,37 @@
+...FF................................................................... [ 18%]
+........................................................................ [ 37%]
+........................................................................ [ 56%]
+........................................................................ [ 75%]
+........................................................................ [ 94%]
+.....................                                                    [100%]
+================================== FAILURES ===================================
+________ test_low_speed_turn_is_substantial_and_returns_to_center[-1] _________
+
+simulation = <simulation.Simulation object at 0x00000213E29F6900>, steering = -1
+
+    @pytest.mark.parametrize("steering", [-1, 1])
+    def test_low_speed_turn_is_substantial_and_returns_to_center(simulation, steering):
+        on_test_straight(simulation)
+        drive(simulation, 2)
+        car = drive(simulation, 3, Control(steering=steering, throttle=0.5))
+>       assert steering * (car.position[0] - TEST_SPAWN[0]) > 2
+E       assert (-1 * (178.19212341308594 - 180.0)) > 2
+
+tests\test_h1_vehicle.py:85: AssertionError
+_________ test_low_speed_turn_is_substantial_and_returns_to_center[1] _________
+
+simulation = <simulation.Simulation object at 0x00000213930C81A0>, steering = 1
+
+    @pytest.mark.parametrize("steering", [-1, 1])
+    def test_low_speed_turn_is_substantial_and_returns_to_center(simulation, steering):
+        on_test_straight(simulation)
+        drive(simulation, 2)
+        car = drive(simulation, 3, Control(steering=steering, throttle=0.5))
+>       assert steering * (car.position[0] - TEST_SPAWN[0]) > 2
+E       assert (1 * (181.80921936035156 - 180.0)) > 2
+
+tests\test_h1_vehicle.py:85: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_h1_vehicle.py::test_low_speed_turn_is_substantial_and_returns_to_center[-1]
+FAILED tests/test_h1_vehicle.py::test_low_speed_turn_is_substantial_and_returns_to_center[1]
+2 failed, 379 passed in 365.05s (0:06:05)

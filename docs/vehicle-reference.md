@@ -2,15 +2,15 @@
 
 本文同步当前 `VehicleConfig`、`InputConfig` 与 `DrivingMode`。所有参数均为程序设计值或设计推导值；本机 Bullet 读回证明实际装入的配置，不是实车测量或标定。困难仿真使用通用设计参考车，保留自动前进换挡、简化虚拟离合、射线悬架及简化轮胎模型，不称完整车辆仿真软件。
 
-当前参考车为reference-v3，两模式均采用25ms设计制动器、默认开启ABS与TCS。冻结数据见 [当前reference-parameters.json](evidence/CTRL-02/reference-parameters.json)，逐项保存55个车辆字段、8个制动子字段、10个驱动防滑子字段、9个输入字段、实际几何与两模式各240tick静置读数，以及源码SHA-256。Git HEAD仅为历史上下文；[reference-v2历史文件](evidence/CTRL-01/reference-parameters-final.json)与[reference-v1历史文件](evidence/PHYS-MODES-01/reference-parameters.json)保留不覆盖。
+当前参考车为reference-v4，两模式均采用25ms设计制动器、默认开启ABS/TCS/ESC。冻结数据见 [当前参考参数](evidence/CTRL-03/reference-parameters-final.json)，逐项保存56个车辆字段、8个制动子字段、10个驱动防滑子字段、9个横摆稳定子字段、9个输入字段、实际几何与两模式各240tick静置读数，以及源码SHA-256。Git HEAD仅为历史上下文；[reference-v3历史文件](evidence/CTRL-02/reference-parameters.json)、[reference-v2历史文件](evidence/CTRL-01/reference-parameters-final.json)与[reference-v1历史文件](evidence/PHYS-MODES-01/reference-parameters.json)保留不覆盖。
 
-本次 `src/vehicle_config.py` SHA-256：`c40a31e590f99b5ba5f2a3838e34f5c1497a1479cdfa5dae72f8666aad894d1b`。Panda3D 1.10.16，Bullet 2.84。
+本次 `src/vehicle_config.py` SHA-256：`3f725e91134323e4d78d8dfea8415217993112d6c8d7d6e09f43a5d0f1be3f6f`。Panda3D 1.10.16，Bullet 2.84。
 
 ## 模式与实例边界
 
 `DrivingMode.GAME`（正常游戏）选择 `CAR` 与 `GAME_INPUT`；`DrivingMode.SIMULATION`（困难仿真）选择 `REFERENCE_CAR` 与 `SIMULATION_INPUT`。模式与计时/自由驾驶/高速玩法正交。Vehicle → Simulation → Session直接传入冻结配置实例，部件创建、reset与跨赛道重建沿用配置；主菜单切换选择后，起步按配置重建世界。不得对存活Bullet车身替换参数对象。
 
-参考车与游戏车共用力学核心；明确差异是曲轴转矩曲线、游戏速度/倒挡力渐退、刚体角阻尼与惯量来源，以及三个输入辅助开关。Q/E只请求R/D方向，S为制动；并未新增手动前进挡或离合踏板。ABS与TCS是独立车辆配置，菜单及CLI可在任一模式关闭；Session缓存选定配置，开始时创建实际世界，重开同配置复用世界。新成绩按game-controls-v2/reference-v3及ABS/TCS两个开关分区，旧成绩不覆盖。
+参考车与游戏车共用力学核心；明确差异是曲轴转矩曲线、游戏速度/倒挡力渐退、刚体角阻尼与惯量来源，以及三个输入辅助开关。Q/E只请求R/D方向，S为制动；并未新增手动前进挡或离合踏板。ABS/TCS/ESC是独立车辆配置，菜单及CLI可在任一模式关闭；Session缓存选定配置，开始时创建实际世界，重开同配置复用世界。新成绩按game-controls-v3/reference-v4及ABS/TCS/ESC三个开关分区，旧成绩不覆盖。
 
 ## VehicleConfig完整字段
 
@@ -36,6 +36,7 @@
 | front_brake_share | 0.6 | — | 1 | 前轴制动容量份额 |
 | braking | BrakeConfig，见下表 | — | 配置对象 | 四轮液压响应与ABS反馈配置 |
 | traction | TractionConfig，见下表 | — | 配置对象 | 后驱滑转反馈、发动机削矩与单轮制动请求 |
+| stability | StabilityConfig，见下表 | — | 配置对象 | 横摆/侧偏参考与分轮制动ESC请求 |
 | steering_degrees | 26 | — | ° | 虚拟前轴中心角机械限位 |
 | steering_rate | 50 | — | °/s | 齿条角速度限位 |
 | steering_response | 7 | — | s⁻¹ | 齿条输入临界阻尼响应系数 |
@@ -73,6 +74,22 @@
 | angular_damping | 0.2 | 0 | 1 | Bullet刚体角阻尼 |
 | suspension_travel | 0.2 | — | m | 射线悬架最大行程，传API时×100cm |
 | suspension_force_limit | 6000 | — | N | 每轮实际施加悬架力上限 |
+
+## StabilityConfig完整字段
+
+两模式采用相同设计参数，真值反馈；正常转弯参考侧偏由当前标称后轴刚度与几何推导。削矩与分轮压力均经原实际执行器作用，实际力与理想分配分开记录，详见[CTRL-03证据](evidence/CTRL-03/README.md)。
+
+| 字段 | 默认值 | 单位 | 计算职责 |
+|---|---:|---|---|
+| esc_enabled | true | bool | 独立横摆稳定开关 |
+| minimum_speed | 1.5 | m/s | 车身纵速绝对值介入下限 |
+| reference_response | 0.15 | s | 可达横摆参考一阶响应时间 |
+| yaw_gain | 6 | s⁻¹ | 超阈值横摆率误差到横摆加速度 |
+| sideslip_gain | 6 | s⁻² | 超阈值侧偏参考误差到横摆加速度 |
+| yaw_threshold | 0.10 | rad/s | 横摆误差死区 |
+| sideslip_threshold | 0.06 | rad | 侧偏参考误差死区 |
+| moment_threshold | 150 | N·m | 期望与原请求制动力矩差的介入下限 |
+| engine_cut_gain | 0.4 | 1 | 按各自误差阈值归一化的发动机削矩增益 |
 
 ## BrakeConfig完整字段
 

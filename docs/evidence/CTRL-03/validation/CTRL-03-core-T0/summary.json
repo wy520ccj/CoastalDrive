@@ -1,0 +1,51 @@
+{
+  "started_utc": "2026-10-01T09:15:23.219686+00:00",
+  "git_head": "e1f1c0f744df571757422563d02c6860a6d2c49e",
+  "git_status": "M docs/tasks/CTRL-03.md\n M docs/vehicle-reference.md\n M src/application.py\n M src/driving_modes.py\n M src/main.py\n M src/session.py\n M src/settings.py\n M src/simulation.py\n M src/ui/hud.py\n M src/vehicle.py\n M src/vehicle_config.py\n M src/vehicle_state.py\n M tests/test_core.py\n M tests/test_driving_mode_ui.py\n M tests/test_physics_config_io.py\n M tests/test_traction_lifecycle.py\n M tools/driving_mode_check.py\n M tools/driving_mode_ui_check.py\n M tools/physics/export_reference.py\n M tools/physics/tcs_mechanical_check.py\n M tools/physics/testbed.py\n M tools/validate.py\n?? docs/evidence/CTRL-03/\n?? src/vehicle_stability.py\n?? tests/test_esc_integration.py\n?? tests/test_esc_probe.py\n?? tests/test_esc_settings.py\n?? tests/test_vehicle_stability.py\n?? tools/physics/esc_probe.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_core.py"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-03-core-T0\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.124
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_core.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-03-core-T0\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 37.866
+    }
+  ]
+}

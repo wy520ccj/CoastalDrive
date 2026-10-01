@@ -1,4 +1,4 @@
-"""导出冻结源码并逐tick核对关闭TCS时既有机械状态，新增诊断另列。"""
+"""导出冻结源码并逐tick核对关闭指定电子功能时的既有机械状态。"""
 
 import argparse
 import gzip
@@ -14,14 +14,18 @@ ROOT = Path(__file__).resolve().parents[2]
 CASES = (("test", "straight", 0), ("coastal", "straight", 2), ("endless", "hills", 2))
 
 
-def capture(source, destination, current):
+def capture(source, destination, current, feature="tcs"):
     sys.path.insert(0, str(source))
     from dataclasses import replace
 
     from simulation import Control, Simulation
     from vehicle_config import CAR
 
-    config = replace(CAR, traction=replace(CAR.traction, tcs_enabled=False)) if current else CAR
+    config = CAR
+    if current:
+        config = replace(CAR, stability=replace(CAR.stability, esc_enabled=False))
+        if feature == "tcs":
+            config = replace(config, traction=replace(config.traction, tcs_enabled=False))
     for track, shape, count in CASES:
         sim = Simulation(23, track=track, road_shape=shape, traffic_count=count, config=config)
         try:
@@ -36,7 +40,7 @@ def capture(source, destination, current):
             sim.close()
 
 
-def run(output, baseline):
+def run(output, baseline, feature="tcs"):
     output.mkdir(parents=True, exist_ok=False)
     before = {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
               for p in (ROOT / "src").rglob("*.py")}
@@ -49,7 +53,8 @@ def run(output, baseline):
         folder = output / label
         folder.mkdir()
         subprocess.run([sys.executable, str(Path(__file__).resolve()), "--capture", str(source),
-                        "--output", str(folder), *( ["--current"] if label == "B" else [])],
+                        "--output", str(folder), "--feature", feature,
+                        *( ["--current"] if label == "B" else [])],
                        cwd=ROOT, check=True)
     sys.path.insert(0, str(ROOT / "tools"))
     from driving_mode_check import compare_record
@@ -72,7 +77,7 @@ def run(output, baseline):
                         "added_diagnostics": sorted(added)})
     after = {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
              for p in (ROOT / "src").rglob("*.py")}
-    report = {"baseline_ref": baseline,
+    report = {"feature_disabled": feature, "baseline_ref": baseline,
               "baseline_commit": subprocess.check_output(["git", "rev-parse", baseline], cwd=ROOT, text=True).strip(),
               "baseline_archive_sha256": hashlib.sha256(archive.read_bytes()).hexdigest(),
               "cases": results, "source_before": before, "source_after": after,
@@ -87,13 +92,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--baseline", default="bd0f9e4")
+    parser.add_argument("--feature", choices=("tcs", "esc"), default="tcs")
     parser.add_argument("--capture", type=Path)
     parser.add_argument("--current", action="store_true")
     args = parser.parse_args()
     if args.capture:
-        capture(args.capture, args.output, args.current)
+        capture(args.capture, args.output, args.current, args.feature)
         return 0
-    return 0 if run(args.output.resolve(), args.baseline) else 1
+    return 0 if run(args.output.resolve(), args.baseline, args.feature) else 1
 
 
 if __name__ == "__main__":

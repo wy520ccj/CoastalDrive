@@ -283,6 +283,8 @@ def load_vehicle_config(path, selected):
     values = json.loads(Path(path).read_text(encoding="utf-8"))
     if "braking" in values:
         values["braking"] = replace(selected.braking, **values["braking"])
+    if "stability" in values:
+        values["stability"] = replace(selected.stability, **values["stability"])
     if "traction" in values:
         values["traction"] = replace(selected.traction, **values["traction"])
     if "torque_curve" in values:

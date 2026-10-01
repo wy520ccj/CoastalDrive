@@ -48,6 +48,10 @@ def run(output, height):
         capture("simulation-tcs-off-settings")
         assert not app.session.tcs_enabled
         app.toggle_tcs()
+        app.toggle_esc()
+        capture("simulation-esc-off-settings")
+        assert not app.session.esc_enabled
+        app.toggle_esc()
         app.back_from_driving_mode()
         capture("simulation-menu")
         app.start_game(mode=GameMode.FREE_DRIVE, track="test")
@@ -100,14 +104,36 @@ def run(output, height):
         app.session.set_controller(ConstantController(Control(throttle=1)))
         capture("simulation-tcs-active-hud")
         assert "TCS介入" in app.hud.help.getText()
+        tcs_tick = tick + 1
+        traction_state = asdict(app.session.current.player.traction_state)
+        simulation.reset_player((95, 0, .55))
+        for _ in range(240):
+            simulation.step(VehicleCommand())
+        simulation.player._chassis.setLinearVelocity(Vec3(0, 80 / 3.6, 0))
+        simulation.player._chassis.setAngularVelocity(Vec3(0, 0, .5))
+        simulation.player.tires.initialize_rolling(80 / 3.6)
+        for tick in range(120):
+            simulation.step(VehicleCommand())
+            state = simulation.snapshot()
+            if state.player.stability_state.active:
+                break
+        else:
+            raise RuntimeError("截图工况未产生真实ESC介入")
+        app.session.current = state
+        app.session.previous = state
+        app.session.set_controller(ConstantController(Control()))
+        capture("simulation-esc-active-hud")
+        assert "ESC介入" in app.hud.help.getText()
         state = app.session.current
         report = {"resolution": [app.win.getXSize(), app.win.getYSize()],
                   "screenshots": captures, "simulation_reverse_speed_mps": reverse_speed,
                   "driving_mode": app.session.driving_mode.value,
                   "abs_active_trial_tick": abs_tick,
                   "brake_states": abs_states,
-                  "tcs_active_trial_tick": tick + 1,
-                  "traction_state": asdict(state.player.traction_state),
+                  "tcs_active_trial_tick": tcs_tick,
+                  "traction_state": traction_state,
+                  "esc_active_trial_tick": tick + 1,
+                  "stability_state": asdict(state.player.stability_state),
                   "human_acceptance": "pending", "passed": True}
         (output / "summary.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
         return report

@@ -117,13 +117,14 @@ class AudioSettingsStore:
 
 
 class DrivingModeStore:
-    """驾驶模式及独立ABS/TCS开关；损坏文件明确回到默认值并提示。"""
+    """驾驶模式及独立ABS/TCS/ESC开关；损坏文件明确回到默认值并提示。"""
 
     def __init__(self, path=None):
         self.path = path if path is not None else user_data() / "driving-mode.json"
         self.mode = DrivingMode.GAME
         self.abs_enabled = True
         self.tcs_enabled = True
+        self.esc_enabled = True
         self.notice = ""
         try:
             data = json.loads(self.path.read_text(encoding="utf-8"))
@@ -138,6 +139,7 @@ class DrivingModeStore:
         self.mode = DrivingMode(data["mode"])
         enabled = data.get("abs_enabled", True)
         tcs_enabled = data.get("tcs_enabled", True)
+        esc_enabled = data.get("esc_enabled", True)
         invalid = []
         if type(enabled) is bool:
             self.abs_enabled = enabled
@@ -147,17 +149,22 @@ class DrivingModeStore:
             self.tcs_enabled = tcs_enabled
         else:
             invalid.append("TCS")
+        if type(esc_enabled) is bool:
+            self.esc_enabled = esc_enabled
+        else:
+            invalid.append("ESC")
         if invalid:
-            label = "ABS/TCS" if len(invalid) == 2 else invalid[0]
+            label = "/".join(invalid)
             self.notice = f"{label}设置无效，已启用{label}"
 
-    def save(self, mode, abs_enabled=None, tcs_enabled=None):
+    def save(self, mode, abs_enabled=None, tcs_enabled=None, esc_enabled=None):
         if not isinstance(mode, DrivingMode):
             raise TypeError("Expected DrivingMode")
         abs_enabled = self.abs_enabled if abs_enabled is None else abs_enabled
         tcs_enabled = self.tcs_enabled if tcs_enabled is None else tcs_enabled
-        if type(abs_enabled) is not bool or type(tcs_enabled) is not bool:
-            raise TypeError("ABS/TCS开关须为bool")
+        esc_enabled = self.esc_enabled if esc_enabled is None else esc_enabled
+        if any(type(value) is not bool for value in (abs_enabled, tcs_enabled, esc_enabled)):
+            raise TypeError("ABS/TCS/ESC开关须为bool")
         try:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             temporary = self.path.with_suffix(".tmp")
@@ -165,6 +172,7 @@ class DrivingModeStore:
                 "mode": mode.value,
                 "abs_enabled": abs_enabled,
                 "tcs_enabled": tcs_enabled,
+                "esc_enabled": esc_enabled,
             }, indent=2), encoding="utf-8")
             temporary.replace(self.path)
         except OSError:
@@ -173,5 +181,6 @@ class DrivingModeStore:
         self.mode = mode
         self.abs_enabled = abs_enabled
         self.tcs_enabled = tcs_enabled
+        self.esc_enabled = esc_enabled
         self.notice = ""
         return True

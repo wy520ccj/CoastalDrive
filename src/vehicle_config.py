@@ -3,6 +3,7 @@
 from dataclasses import dataclass, field
 
 from vehicle_brakes import BrakeConfig
+from vehicle_stability import StabilityConfig
 from vehicle_traction import TractionConfig
 
 
@@ -34,6 +35,7 @@ class VehicleConfig:
     front_brake_share: float = 0.60
     braking: BrakeConfig = field(default_factory=BrakeConfig)
     traction: TractionConfig = field(default_factory=TractionConfig)
+    stability: StabilityConfig = field(default_factory=StabilityConfig)
     steering_degrees: float = 26.0
     steering_rate: float = 50.0
     steering_response: float = 7.0
