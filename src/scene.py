@@ -369,7 +369,8 @@ class Scene:
         if trace is not None:
             trace.mark("environment_assets_loaded")
         self.player, self.wheels = load_vehicle(
-            self.render, vehicle_definition(self.base.vehicle_model_id), trace=trace
+            self.render, vehicle_definition(self.base.vehicle_model_id), trace=trace,
+            config=self.base.session.simulation.config,
         )
         model = self.player.getChild(0)
         apply_skin(model, self.base.skin_index)
@@ -383,7 +384,9 @@ class Scene:
             traffic_models(self.base.session.seed, traffic_count),
             traffic_skins(self.base.session.seed, traffic_count),
         ):
-            car, wheels = load_vehicle(self.render, vehicle_definition(model_id))
+            car, wheels = load_vehicle(
+                self.render, vehicle_definition(model_id), config=self.base.session.simulation.config
+            )
             apply_skin(car.getChild(0), skin)
             self.traffic.append(car)
             self.traffic_wheels.append(wheels)

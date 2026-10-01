@@ -5,9 +5,9 @@ import math
 from panda3d.bullet import BulletBoxShape, BulletRigidBodyNode, BulletVehicle, ZUp
 from panda3d.core import BitMask32, TransformState, Vec3
 
-from driver_assist import DriverAssist
+from driver_assist import GAME_INPUT, DriverAssist
 from powertrain import Powertrain
-from vehicle_config import CAR, WHEEL_HUBS
+from vehicle_config import CAR, body_center, wheel_hubs
 from vehicle_contacts import read_wheel_contacts, road_support, shift_contacts
 from vehicle_dynamics import DynamicsState, aerodynamic_force, axle_loads, contact_grade
 from vehicle_state import FIXED_DT, CarState, Control, VehicleCommand, forward
@@ -27,7 +27,12 @@ class Vehicle:
         heading=0,
         pitch=0,
         reverse_enabled=True,
+        config=CAR,
+        input_config=GAME_INPUT,
     ):
+        self.config = config
+        self.input_config = input_config
+        self.hubs = wheel_hubs(config)
         self._world = world
         self.on_asphalt = on_asphalt
         self.spawn = tuple(spawn)
@@ -37,10 +42,10 @@ class Vehicle:
         self._chassis = None
         self._vehicle = None
         self.closed = False
-        self.assist = DriverAssist()
-        self.powertrain = Powertrain()
-        self.steering = SteeringRack()
-        self.tires = Tires()
+        self.assist = DriverAssist(self.config, self.input_config)
+        self.powertrain = Powertrain(self.config)
+        self.steering = SteeringRack(self.config)
+        self.tires = Tires(self.config)
         self._drive_pedal = 0.0
         self._brake_pedal = 0.0
         self._acceleration = 0.0
@@ -55,13 +60,15 @@ class Vehicle:
     def _build_physics(self, heading, pitch):
         chassis = BulletRigidBodyNode(self.name)
         chassis.setIntoCollideMask(BitMask32.bit(1))
-        chassis.setMass(CAR.mass)
+        chassis.setMass(self.config.mass)
         chassis.setDeactivationEnabled(False)
-        chassis.setAngularDamping(0.2)
+        chassis.setAngularDamping(self.config.angular_damping)
         chassis.addShape(
-            BulletBoxShape(Vec3(CAR.collision_half_width, CAR.collision_half_length, 0.42)),
-            TransformState.makePos(Vec3(0, 0, 0.42)),
+            BulletBoxShape(Vec3(self.config.collision_half_width, self.config.collision_half_length, self.config.collision_half_height)),
+            TransformState.makePos(Vec3(*body_center(self.config))),
         )
+        if self.config.body_inertia is not None:
+            chassis.setInertia(Vec3(*self.config.body_inertia))
         chassis.setTransform(TransformState.makePosHpr(Vec3(*self.spawn), Vec3(heading, pitch, 0)))
         chassis.setCcdMotionThreshold(0.5)
         chassis.setCcdSweptSphereRadius(0.35)
@@ -70,17 +77,18 @@ class Vehicle:
         vehicle = BulletVehicle(self._world, chassis)
         vehicle.setCoordinateSystem(ZUp)
         self._world.attachVehicle(vehicle)
-        for x, y, z in WHEEL_HUBS:
+        for x, y, z in self.hubs:
             wheel = vehicle.createWheel()
             wheel.setChassisConnectionPointCs(Vec3(x, y, z))
             wheel.setWheelDirectionCs(Vec3(0, 0, -1))
             wheel.setWheelAxleCs(Vec3(1, 0, 0))
-            wheel.setWheelRadius(CAR.wheel_radius)
+            wheel.setWheelRadius(self.config.wheel_radius)
             wheel.setFrontWheel(y > 0)
-            wheel.setMaxSuspensionTravelCm(20)
-            wheel.setSuspensionStiffness(CAR.suspension_stiffness)
-            wheel.setWheelsDampingRelaxation(CAR.suspension_relaxation)
-            wheel.setWheelsDampingCompression(CAR.suspension_compression)
+            wheel.setMaxSuspensionTravelCm(self.config.suspension_travel * 100)
+            wheel.setMaxSuspensionForce(self.config.suspension_force_limit)
+            wheel.setSuspensionStiffness(self.config.suspension_stiffness)
+            wheel.setWheelsDampingRelaxation(self.config.suspension_relaxation)
+            wheel.setWheelsDampingCompression(self.config.suspension_compression)
             wheel.setFrictionSlip(0)
             wheel.setRollInfluence(0.1)
 
@@ -90,7 +98,7 @@ class Vehicle:
 
     def _initialize_wheel_poses(self):
         pose = self._chassis.getTransform()
-        for wheel, hub in zip(self._vehicle.getWheels(), WHEEL_HUBS):
+        for wheel, hub in zip(self._vehicle.getWheels(), self.hubs):
             position = pose.getMat().xformPoint(Vec3(*hub) - Vec3(0, 0, 0.4))
             wheel.setWorldTransform(TransformState.makePosHpr(position, pose.getHpr()).getMat())
 
@@ -103,10 +111,10 @@ class Vehicle:
         self._chassis.clearForces()
         self._chassis.setActive(True)
         self._vehicle.resetSuspension()
-        self.assist = DriverAssist()
-        self.powertrain = Powertrain()
-        self.steering = SteeringRack()
-        self.tires = Tires()
+        self.assist = DriverAssist(self.config, self.input_config)
+        self.powertrain = Powertrain(self.config)
+        self.steering = SteeringRack(self.config)
+        self.tires = Tires(self.config)
         self.tires.initialize_rolling(speed)
         self._drive_pedal = 0.0
         self._brake_pedal = 0.0
@@ -158,7 +166,7 @@ class Vehicle:
         velocity = self._chassis.getLinearVelocity()
         speed = velocity.dot(Vec3(*forward(hpr.x)))
         self.steering.advance(command.steering, FIXED_DT)
-        for wheel_index, angle in enumerate(wheel_angles(self.steering.angle)):
+        for wheel_index, angle in enumerate(wheel_angles(self.steering.angle, self.config)):
             self._vehicle.setSteeringValue(-angle, wheel_index)
 
         pedal, brake, direction = command.throttle, command.brake, command.direction
@@ -171,7 +179,7 @@ class Vehicle:
         road = self.on_asphalt(position.x, position.y)
         grade = self._road_grade(hpr.x)
         front_load, rear_load = (
-            axle_loads(self._load_acceleration, grade) if grade is not None else (0.0, 0.0)
+            axle_loads(self._load_acceleration, grade, self.config) if grade is not None else (0.0, 0.0)
         )
         # 自定义轮胎独占切向受力；原生车辆只保留射线悬架和轮心位置。
         for index, wheel in enumerate(self._vehicle.getWheels()):
@@ -186,22 +194,22 @@ class Vehicle:
         horizontal_speed = horizontal.length()
         air_velocity = horizontal - self.wind
         air_speed = air_velocity.length()
-        aero = aerodynamic_force(air_speed)
+        aero = aerodynamic_force(air_speed, self.config)
         if air_speed > 0.01:
             self._chassis.applyCentralForce(-air_velocity * (aero / air_speed))
         rolling = 0.0
         if horizontal_speed > 0.01 and normal_load > 0:
-            coefficient = CAR.rolling_coefficient if road else CAR.grass_rolling_coefficient
+            coefficient = self.config.rolling_coefficient if road else self.config.grass_rolling_coefficient
             rolling = coefficient * normal_load * min(horizontal_speed, 1)
             self._chassis.applyCentralForce(-horizontal * (rolling / horizontal_speed))
         external_velocity = (
-            self._chassis.getGravity() + self._chassis.getTotalForce() / CAR.mass
+            self._chassis.getGravity() + self._chassis.getTotalForce() / self.config.mass
         ) * FIXED_DT
         external_angular = self._chassis.getInvInertiaTensorWorld().xform(
             self._chassis.getTotalTorque()
         ) * FIXED_DT
         self.tires.advance(
-            self._chassis, self._wheel_contacts, wheel_angles(self.steering.angle),
+            self._chassis, self._wheel_contacts, wheel_angles(self.steering.angle, self.config),
             drive_torque, engine_drag, brake, self._contact_tick, FIXED_DT,
             tuple(external_velocity), tuple(external_angular),
         )
@@ -213,7 +221,7 @@ class Vehicle:
         self.dynamics = DynamicsState(
             aero,
             rolling,
-            CAR.mass * 9.81 * math.sin(math.radians(grade)) if grade is not None else 0.0,
+            self.config.mass * 9.81 * math.sin(math.radians(grade)) if grade is not None else 0.0,
             front_load,
             rear_load,
             self._chassis.getAngularVelocity().z,

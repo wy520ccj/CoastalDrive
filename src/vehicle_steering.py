@@ -15,19 +15,27 @@ def wheel_angles(center_angle, config=CAR):
 
 
 class SteeringRack:
-    def __init__(self):
+    def __init__(self, config=CAR):
+        self.config = config
         self.angle = 0.0
         self.velocity = 0.0
 
     def advance(self, target_degrees, dt):
-        target_degrees = max(-CAR.steering_degrees, min(CAR.steering_degrees, target_degrees))
-        omega = CAR.steering_return if abs(target_degrees) < abs(self.angle) else CAR.steering_response
+        config = self.config
+        target_degrees = max(
+            -config.steering_degrees, min(config.steering_degrees, target_degrees)
+        )
+        omega = (
+            config.steering_return
+            if abs(target_degrees) < abs(self.angle)
+            else config.steering_response
+        )
         error = self.angle - target_degrees
         transient = self.velocity + omega * error
         decay = math.exp(-omega * dt)
         next_angle = target_degrees + (error + transient * dt) * decay
         self.velocity = (self.velocity - omega * transient * dt) * decay
-        self.velocity = max(-CAR.steering_rate, min(CAR.steering_rate, self.velocity))
-        rate = CAR.steering_rate
+        self.velocity = max(-config.steering_rate, min(config.steering_rate, self.velocity))
+        rate = config.steering_rate
         self.angle += max(-rate * dt, min(rate * dt, next_angle - self.angle))
         return self.angle

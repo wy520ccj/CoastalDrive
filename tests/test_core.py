@@ -166,7 +166,9 @@ def test_brake_stops_before_reverse_and_beats_throttle():
     # 首tick踏板仅到5%，储存的轮转动能仍可传给车体；优先级检验执行器而非强制降速。
     assert sum(.5 * CAR.wheel_inertia * wheel.omega**2
                for wheel in s.snapshot().player.wheel_dynamics) < wheel_energy
-    for _ in range(round(1 / CAR.brake_rise / FIXED_DT) - 1):
+    from driver_assist import GAME_INPUT
+
+    for _ in range(round(1 / GAME_INPUT.brake_rise / FIXED_DT) - 1):
         s.step(Control(throttle=1, brake=1))
     assert s.snapshot().player.brake == pytest.approx(1)
     assert 0 < s.snapshot().player.speed < previous

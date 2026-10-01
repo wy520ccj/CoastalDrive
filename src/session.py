@@ -3,6 +3,7 @@ from dataclasses import replace
 from enum import Enum
 
 from controls import Controller, KeyboardController
+from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
 from highway_run import TRAFFIC_DENSITIES, HighwayRun
 from race import GameMode, RaceTracker
@@ -41,10 +42,15 @@ class FixedStepper:
 
 
 class Session:
-    def __init__(self, seed=0, *, track="coastal", scores=None, road_shape="straight"):
+    def __init__(self, seed=0, *, track="coastal", scores=None, road_shape="straight",
+                 driving_mode=DrivingMode.GAME):
         self.road_shape = road_shape
         self.traffic_density = "normal"
-        self.simulation = Simulation(seed, track=track, road_shape=road_shape)
+        self.driving_mode = driving_mode
+        self.simulation = Simulation(
+            seed, track=track, road_shape=road_shape,
+            config=driving_mode.vehicle_config, input_config=driving_mode.input_config,
+        )
         self.track = get_track(track)
         self.keyboard = KeyboardController()
         self.controller = self.keyboard
@@ -66,6 +72,12 @@ class Session:
         self.current = self.simulation.snapshot()
         self.previous = self.current
 
+    def set_driving_mode(self, mode):
+        """菜单选择下一场驾驶配置；开始时重建权威物理世界。"""
+        if self.phase != Phase.MENU:
+            raise ValueError("驾驶模式只能在主菜单选择")
+        self.driving_mode = mode
+
     def start(self, seed=None, *, countdown=True, mode=None, track=None):
         chosen_track = get_track(track) if track is not None else self.track
         chosen_mode = self.mode if mode is None else mode
@@ -82,11 +94,14 @@ class Session:
             traffic_count = density.cars
         if seed is not None:
             self.seed = seed
-        if track is not None and track != self.simulation.track:
+        if (track != self.simulation.track
+                or self.simulation.config is not self.driving_mode.vehicle_config
+                or self.simulation.input_config is not self.driving_mode.input_config):
             self.simulation.close()
             self.simulation = Simulation(
                 self.seed, track=track, traffic_count=traffic_count,
                 road_shape=self.road_shape, traffic_span=density.spawn_span,
+                config=self.driving_mode.vehicle_config, input_config=self.driving_mode.input_config,
             )
             self.track = get_track(track)
         else:
@@ -96,8 +111,12 @@ class Session:
             self.simulation.reset(self.seed)
         self.mode = chosen_mode
         self.simulation.set_checkpoint_frames_enabled(self.mode == GameMode.TIME_TRIAL)
-        self.race.start(self.mode, circuit=self.track.circuit)
+        self.race.start(
+            self.mode, circuit=self.track.circuit,
+            score_variant="reference-v1" if self.driving_mode == DrivingMode.SIMULATION else "",
+        )
         self.highway = HighwayRun(challenge=self.mode == GameMode.DISTANCE_CHALLENGE)
+        self.keyboard.direction = 1
         self.keyboard.clear()
         self.controller = self.keyboard
         self.stepper.reset()

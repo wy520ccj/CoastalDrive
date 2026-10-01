@@ -11,13 +11,14 @@ from panda3d.core import Filename, TextNode, TransparencyAttrib, Vec3, loadPrcFi
 from audio.music import STATIONS
 from chase_camera import ChaseCamera
 from controls import ConstantController
+from driving_modes import DrivingMode
 from garage import GaragePreview
 from highway_run import TRAFFIC_DENSITIES
 from paths import user_data
 from race import BestTimes, GameMode
 from scene import Scene
 from session import Phase, Session
-from settings import AppearanceStore, AudioSettingsStore
+from settings import AppearanceStore, AudioSettingsStore, DrivingModeStore
 from simulation import Control
 from skins import PLAYER_VEHICLES, SKINS, apply_skin
 from soundscape import Soundscape
@@ -27,7 +28,7 @@ from ui.main_menu import MainMenu
 
 
 class CoastalDrive(ShowBase):
-    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw"):
+    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", driving_mode=None):
         self.startup_trace = startup_trace
         loadPrcFileData(
             "coastaldrive",
@@ -62,9 +63,12 @@ class CoastalDrive(ShowBase):
         self.appearance = AppearanceStore(appearance_path)
         audio_path = self.output / "test-audio.json" if smoke else None
         self.audio_settings = AudioSettingsStore(audio_path)
+        mode_path = self.output / "test-driving-mode.json" if smoke else None
+        self.driving_mode_settings = DrivingModeStore(mode_path)
         self.session = Session(
             seed,
             track=track,
+            driving_mode=driving_mode if driving_mode is not None else self.driving_mode_settings.mode,
             road_shape=road_shape,
             scores=BestTimes(self.output / "test-best-times.json") if smoke else None,
         )
@@ -87,6 +91,7 @@ class CoastalDrive(ShowBase):
         self._scene_shape = None
         self.highway_menu = False
         self.audio_settings_page = False
+        self.driving_mode_page = False
         self.highway_shape = "hills"
         self.highway_density_keys = tuple(TRAFFIC_DENSITIES)
         self.highway_density_index = self.highway_density_keys.index(self.session.traffic_density)
@@ -187,6 +192,8 @@ class CoastalDrive(ShowBase):
             "a",
             "s",
             "d",
+            "q",
+            "e",
             "arrow_up",
             "arrow_down",
             "arrow_left",
@@ -203,6 +210,7 @@ class CoastalDrive(ShowBase):
             if len(key) == 1:
                 self.accept(f"raw-{key}", self.key_down, [key])
                 self.accept(f"raw-{key}-up", self.key_up, [key])
+        self.accept("f2", self.choose_driving_mode)
         self.accept("f3", self.toggle_diagnostics)
 
     def audio_cue(self, name):
@@ -245,7 +253,7 @@ class CoastalDrive(ShowBase):
                 self.cycle_radio() if key == "n" else self.toggle_radio()
             return
         if (self.session.phase == Phase.MENU and self.garage is None
-                and not self.audio_settings_page and not self.highway_menu
+                and not self.audio_settings_page and not self.driving_mode_page and not self.highway_menu
                 and key in ("arrow_up", "arrow_down", "w", "s", "enter")):
             if key not in self.commands_held:
                 self.commands_held.add(key)
@@ -290,6 +298,7 @@ class CoastalDrive(ShowBase):
     def has_panel_navigation(self):
         return (
             self.garage is not None
+            or self.driving_mode_page
             or self.audio_settings_page
             or self.highway_menu
             or self.session.phase in (Phase.PAUSED, Phase.RESULTS)
@@ -310,6 +319,8 @@ class CoastalDrive(ShowBase):
         elif key == "escape":
             if self.garage is not None:
                 self.cancel_garage()
+            elif self.driving_mode_page:
+                self.back_from_driving_mode()
             elif self.audio_settings_page:
                 self.back_from_audio_settings()
             elif self.highway_menu:
@@ -383,7 +394,7 @@ class CoastalDrive(ShowBase):
             lambda: self.start_game(mode=GameMode.TIME_TRIAL),
             lambda: self.start_game(mode=GameMode.FREE_DRIVE),
             self.choose_highway, self.choose_garage, self.choose_audio_settings, self.userExit,
-        ))
+        ), driving_mode_action=self.choose_driving_mode)
         self.diagnostics = OnscreenText(
             **{**text_style, "fg": theme.DIAGNOSTIC_TEXT, "shadow": theme.DIAGNOSTIC_SHADOW},
             text="",
@@ -461,6 +472,28 @@ class CoastalDrive(ShowBase):
         if max_lines is not None:
             lines = lines[:max_lines]
         return "\n".join(lines)
+
+    def choose_driving_mode(self):
+        if (self.session.phase != Phase.MENU or self.garage is not None
+                or self.audio_settings_page or self.highway_menu):
+            return
+        self.driving_mode_page = True
+        self.panel_selection = 0
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def set_driving_mode(self, mode):
+        if self.session.phase != Phase.MENU:
+            return
+        self.session.set_driving_mode(mode)
+        self.driving_mode_settings.save(mode)
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def back_from_driving_mode(self):
+        self.driving_mode_page = False
+        self._shown_phase = None
+        self.refresh_panel()
 
     def choose_audio_settings(self):
         self.panel_selection = 0
@@ -588,11 +621,11 @@ class CoastalDrive(ShowBase):
 
     def refresh_panel(self):
         phase = self.session.phase
-        panel_state = (phase, self.garage is not None, self.highway_menu, self.audio_settings_page)
+        panel_state = (phase, self.garage is not None, self.highway_menu, self.audio_settings_page, self.driving_mode_page)
         if panel_state == self._shown_phase:
             return
         if (phase != Phase.PAUSED and
-                not (self.garage is not None or self.highway_menu or self.audio_settings_page)):
+                not (self.garage is not None or self.highway_menu or self.audio_settings_page or self.driving_mode_page)):
             self.panel_selection = 0
         self._shown_phase = panel_state
         self.main_menu.root.hide()
@@ -600,9 +633,11 @@ class CoastalDrive(ShowBase):
             self.hud.root.hide()
         else:
             self.hud.root.show()
-        if phase == Phase.MENU and self.garage is None and not self.highway_menu and not self.audio_settings_page:
+        if phase == Phase.MENU and self.garage is None and not self.highway_menu and not self.audio_settings_page and not self.driving_mode_page:
             self.panel.hide()
-            self.main_menu.notice.setText(self.fit_lines(self.appearance.notice, 1.0, 0.028))
+            self.main_menu.set_driving_mode(self.session.driving_mode)
+            notice = self.appearance.notice or self.driving_mode_settings.notice
+            self.main_menu.notice.setText(self.fit_lines(notice, 1.0, 0.028))
             self.main_menu.root.show()
             return
         for button in self.buttons:
@@ -637,6 +672,20 @@ class CoastalDrive(ShowBase):
                 ("上一种颜色", lambda: self.cycle_garage_skin(-1)),
                 ("应用并返回  Enter", self.apply_garage),
                 ("取消返回  Esc", self.cancel_garage),
+            ]
+        elif self.driving_mode_page:
+            self.panel_title.setText("驾驶模式")
+            self.panel_note.setText(
+                f"当前：{self.session.driving_mode.label}\n"
+                "仅在主菜单选择，下次起步使用所选模式\n"
+                "困难仿真：Q 倒挡 · E 前进挡\n"
+                "自动前进换挡 · 简化离合模型"
+                + (f"\n{self.driving_mode_settings.notice}" if self.driving_mode_settings.notice else "")
+            )
+            options = [
+                ("正常游戏", lambda: self.set_driving_mode(DrivingMode.GAME)),
+                ("困难仿真", lambda: self.set_driving_mode(DrivingMode.SIMULATION)),
+                ("返回", self.back_from_driving_mode),
             ]
         elif self.audio_settings_page:
             self.panel_title.setText("设置")
@@ -879,6 +928,7 @@ class CoastalDrive(ShowBase):
             state, self.session.race.snapshot, self.session.highway.snapshot,
             track=self.session.simulation.track, countdown=countdown,
             notice=self.session.notice,
+            driving_mode=self.session.driving_mode,
         )
         if not self.diagnostics.isHidden():
             self.update_diagnostics(state, surface)

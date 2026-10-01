@@ -8,23 +8,23 @@ from simplepbr.envmap import EnvMap
 
 from paths import resource_root
 from skins import VehicleDefinition
-from vehicle_config import WHEEL_HUBS
+from vehicle_config import CAR, body_center, wheel_hubs
 
 WHEEL_NAMES = ("wheel-front-left", "wheel-front-right", "wheel-back-left", "wheel-back-right")
 
 
-def load_vehicle(parent, definition: VehicleDefinition, *, trace=None):
+def load_vehicle(parent, definition: VehicleDefinition, *, trace=None, config=CAR):
     """按统一车型定义装配显示车；调用方身份不参与资产选择。"""
     path = resource_root() / "assets/game" / definition.visual
     if path.suffix == ".glb":
-        return load_gltf_vehicle(parent, definition, path, trace=trace)
+        return load_gltf_vehicle(parent, definition, path, trace=trace, config=config)
 
     root = parent.attachNewNode(definition.id)
     body = NodePath(Loader.getGlobalPtr().loadSync(Filename.fromOsSpecific(str(path))))
     body.reparentTo(root)
     body.setH(180)
     wheels = []
-    for name, hub in zip(WHEEL_NAMES, WHEEL_HUBS):
+    for name, hub in zip(WHEEL_NAMES, wheel_hubs(config)):
         wheel = body.find(f"**/{name}")
         mesh = wheel.getChild(0)
         pivot = parent.attachNewNode(name)
@@ -38,10 +38,11 @@ def load_vehicle(parent, definition: VehicleDefinition, *, trace=None):
         wheel.removeNode()
     body.setScale(*definition.body_scale)
     body.setZ(-0.48)
+    body.setPos(body.getPos() + body_offset(config))
     return root, wheels
 
 
-def load_gltf_vehicle(parent, definition, path, *, trace=None):
+def load_gltf_vehicle(parent, definition, path, *, trace=None, config=CAR):
     """米制 GLB 共用 Snapshot 的四个世界轮姿。"""
     root = parent.attachNewNode(definition.id)
     body = NodePath(gltf.load_model(Filename.fromOsSpecific(str(path))))
@@ -66,9 +67,17 @@ def load_gltf_vehicle(parent, definition, path, *, trace=None):
         if environment is not None:
             set_vehicle_reflection(wheel, environment)
         wheels.append(wheel)
+    body.setPos(body_offset(config))
     if definition.quality == "hero":
         balance_vehicle_ambient(parent, root, wheels)
     return root, wheels
+
+
+def body_offset(config):
+    """外壳位置随刚体质心改变；四轮继续使用权威世界轮姿。"""
+    from panda3d.core import Vec3
+
+    return Vec3(*(a - b for a, b in zip(body_center(config), body_center(CAR))))
 
 
 @lru_cache(maxsize=1)

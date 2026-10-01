@@ -2,14 +2,16 @@
 
 import math
 
-from driver_assist import steering_limit
+from driver_assist import GAME_INPUT, steering_limit
 from traffic import extents
 from vehicle_config import CAR
 from vehicle_state import Control
 
 
 class TrafficRecovery:
-    def __init__(self):
+    def __init__(self, config=CAR, input_config=GAME_INPUT):
+        self.config = config
+        self.input_config = input_config
         self.phase = ""
         self.lane = 0
         self.settled = 0.0
@@ -42,8 +44,8 @@ class TrafficRecovery:
         lateral_error = road.lanes[self.lane] - car.position[0]
         lookahead = 5 + speed * 0.65
         error = math.atan2(-lateral_error, lookahead) - math.radians(car.heading)
-        angle = math.degrees(math.atan2(2 * CAR.wheelbase * math.sin(error), math.hypot(lateral_error, lookahead)))
-        steering = max(-1, min(1, -angle / steering_limit(car.speed)))
+        angle = math.degrees(math.atan2(2 * self.config.wheelbase * math.sin(error), math.hypot(lateral_error, lookahead)))
+        steering = max(-1, min(1, -angle / steering_limit(car.speed, self.config, self.input_config)))
         desired_speed = 2.0 if abs(car.heading) > 35 else 3.0
         if not self.path_clear(car, traffic, steering, desired_speed):
             self.phase = "waiting"
@@ -78,7 +80,7 @@ class TrafficRecovery:
         speed = max(0, car.speed)
         for step in range(11):
             t = step * 0.25
-            width, length = extents(math.degrees(heading), 0)
+            width, length = extents(math.degrees(heading), 0, self.config)
             if abs(x) + width > 7.65:
                 return False
             for other in traffic:
@@ -86,12 +88,12 @@ class TrafficRecovery:
                     continue
                 vx, vy = self.velocity(other)
                 ox, oy = other.position[0] + vx * t, other.position[1] + vy * t
-                ow, ol = extents(other.heading, 0)
+                ow, ol = extents(other.heading, 0, self.config)
                 if abs(ox - x) < width + ow + 0.35 and abs(oy - y) < length + ol + 1.0:
                     return False
             speed += max(-0.5, min(0.25, desired_speed - speed))
-            rack = car.steering if step == 0 else steering * steering_limit(speed)
-            heading -= speed / CAR.wheelbase * math.tan(math.radians(rack)) * 0.25
+            rack = car.steering if step == 0 else steering * steering_limit(speed, self.config, self.input_config)
+            heading -= speed / self.config.wheelbase * math.tan(math.radians(rack)) * 0.25
             x -= math.sin(heading) * speed * 0.25
             y += math.cos(heading) * speed * 0.25
         return True

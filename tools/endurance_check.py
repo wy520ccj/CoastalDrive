@@ -48,7 +48,9 @@ class EnduranceDriver:
 
     def __init__(self, simulation, seed):
         self.simulation = simulation
-        self.driver = HighwayDriver(1, seed)
+        self.driver = HighwayDriver(
+            1, seed, config=simulation.config, input_config=simulation.input_config
+        )
         self.last_origin = simulation.origin_y
         self.reset_pending = True
         self.cached_control = Control()

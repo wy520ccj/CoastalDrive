@@ -8,7 +8,7 @@ import json
 import math
 import subprocess
 import sys
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 
 from panda3d.bullet import BulletPlaneShape, BulletRigidBodyNode, BulletWorld
@@ -80,7 +80,7 @@ def _world():
     return world
 
 
-def _command(case, tick, speed):
+def _command(case, tick, speed, config=None, input_config=None):
     seconds = tick * FIXED_DT
     if case == "flat_acceleration":
         return Control(throttle=1.0 if seconds < 12 else 0.0)
@@ -93,8 +93,11 @@ def _command(case, tick, speed):
         speed_error = 20 / 3.6 - abs(speed)
         throttle = max(0.0, min(1.0, 0.12 + speed_error * 0.6))
         brake = max(0.0, min(1.0, (-speed_error - 0.2) * 0.8))
-        wheel_angle = math.degrees(math.atan(CAR.wheelbase / radius))
-        return Control(steering=wheel_angle / steering_limit(abs(speed)), throttle=throttle, brake=brake)
+        selected = CAR if config is None else config
+        wheel_angle = math.degrees(math.atan(selected.wheelbase / radius))
+        limit = (steering_limit(abs(speed)) if input_config is None
+                 else steering_limit(abs(speed), selected, input_config))
+        return Control(steering=wheel_angle / limit, throttle=throttle, brake=brake)
     return Control(brake=1.0)
 
 
@@ -148,12 +151,14 @@ def _flatten(value, prefix):
     return {prefix: value}
 
 
-def _run_case(case, directory, stride=6):
+def _run_case(case, directory, stride=6, *, config=None, input_config=None, actuator_input=False):
     _load_source()
     if case not in CASES:
         raise ValueError(f"未知工况：{case}")
     world = _world()
-    vehicle = Vehicle(world, lambda x, y: _surface(case, x, y), (0, 0, 0.55), reverse_enabled=False)
+    parameters = {} if config is None else {"config": config, "input_config": input_config}
+    vehicle = Vehicle(world, lambda x, y: _surface(case, x, y), (0, 0, 0.55),
+                      reverse_enabled=False, **parameters)
     try:
         for _ in range(240):
             previous = vehicle._chassis.getLinearVelocity()
@@ -187,14 +192,25 @@ def _run_case(case, directory, stride=6):
             wheel_columns.update(_flatten(asdict(wheel), f"wheel{index}"))
         fieldnames = ["time_s", "tick", "input.steering", "input.throttle", "input.brake",
                       *state_columns, *wheel_columns]
+        command_type = importlib.import_module("vehicle_state").VehicleCommand if actuator_input else None
         with csv_path.open("w", newline="", encoding="utf-8") as stream:
             writer = csv.DictWriter(stream, fieldnames=fieldnames)
             writer.writeheader()
             for tick in range(total_ticks):
                 state_before = vehicle.snapshot(include_wheels=False)
-                control = _command(case, tick, state_before.speed)
+                control = _command(case, tick, state_before.speed, config, input_config)
                 previous = vehicle._chassis.getLinearVelocity()
-                vehicle.apply_control(control)
+                if actuator_input:
+                    angle = 0.0
+                    if case.startswith("circle_"):
+                        radius = float(case.removeprefix("circle_").removesuffix("m"))
+                        angle = math.degrees(math.atan(config.wheelbase / radius))
+                    elif control.steering:
+                        angle = 2.0
+                    control = command_type(angle, control.throttle, control.brake, 1)
+                    vehicle.apply_command(control)
+                else:
+                    vehicle.apply_control(control)
                 world.doPhysics(FIXED_DT, 0, FIXED_DT)
                 vehicle.after_step(previous)
                 state = vehicle.snapshot()
@@ -262,13 +278,26 @@ def _git_sha():
     return subprocess.run(["git", "rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip()
 
 
-def run(output, cases=CASES, source_dir=None, label=None):
+def run(output, cases=CASES, source_dir=None, label=None, *, driving_mode=None,
+        vehicle_config=None, actuator_input=False):
     _load_source(source_dir)
+    config = input_config = None
+    if driving_mode is not None or vehicle_config is not None or actuator_input:
+        if not (_loaded_source / "driving_modes.py").is_file():
+            raise ValueError("选定的历史源码不提供模式/实例配置接口")
+        selected = importlib.import_module("driving_modes").DrivingMode(driving_mode or "game")
+        config, input_config = selected.vehicle_config, selected.input_config
+        if vehicle_config is not None:
+            config = replace(config, **json.loads(Path(vehicle_config).read_text(encoding="utf-8")))
     output = Path(output)
     output.mkdir(parents=True, exist_ok=False)
-    results = [_run_case(case, output) for case in cases]
+    results = [_run_case(case, output, config=config, input_config=input_config,
+                         actuator_input=actuator_input) for case in cases]
     metadata = {
-        "config": asdict(CAR),
+        "config": asdict(CAR if config is None else config),
+        "driving_mode": driving_mode or "game",
+        "input_config": None if input_config is None else asdict(input_config),
+        "input_path": "actuator" if actuator_input else "driver",
         "environment": {"gravity_mps2": [0, 0, -9.81], "plane": "infinite_horizontal", "split_mu_boundary_x_m": 0,
                         "collision_mask_bits": [0, 1], "surface_assignment": {"x<0": "asphalt", "x>=0": "grass"}},
         "physics_hz": 1 / FIXED_DT,
@@ -309,6 +338,13 @@ def run(output, cases=CASES, source_dir=None, label=None):
         },
         "summaries": results,
     }
+    if actuator_input:
+        metadata["commands"].update(
+            steering_step="40 km/h initial; coast 0.5 s; center rack request=2 deg, throttle=0.15 for 3 s",
+            corner_braking="40 km/h initial; rack request=2 deg, throttle=0.15 for 1.5 s; rack=2 deg, brake=0.7 for 2 s",
+        )
+        metadata["measurement"]["input"] = "VehicleCommand, direct pedals and center rack degrees; direction=D"
+        metadata["measurement"]["csv_input_steering_unit"] = "degrees"
     _finite(metadata)
     (output / "summary.json").write_text(json.dumps(metadata, indent=2, allow_nan=False), encoding="utf-8")
     return metadata
@@ -342,6 +378,10 @@ def compare(baseline, candidate, output=None):
               "config_delta_candidate_minus_baseline": config_delta,
               "config_added_candidate": {key: cand_config[key] for key in cand_config.keys() - base_config.keys()},
               "config_removed_candidate": {key: base_config[key] for key in base_config.keys() - cand_config.keys()},
+              "baseline_input_config": base.get("input_config"),
+              "candidate_input_config": cand.get("input_config"),
+              "baseline_input_path": base.get("input_path", "driver"),
+              "candidate_input_path": cand.get("input_path", "driver"),
               "cases": {}}
     for case in sorted(base_rows.keys() & cand_rows.keys()):
         delta = {field: cand_rows[case][field] - base_rows[case][field]
@@ -360,6 +400,9 @@ def main():
     parser.add_argument("--cases", nargs="+", choices=CASES, default=CASES)
     parser.add_argument("--source-dir", type=Path)
     parser.add_argument("--label")
+    parser.add_argument("--driving-mode", choices=("game", "simulation"))
+    parser.add_argument("--vehicle-config", type=Path, help="覆盖车辆设计值的JSON对象")
+    parser.add_argument("--actuator-input", action="store_true", help="直接踏板和齿条角标准试验")
     parser.add_argument("--baseline", type=Path)
     parser.add_argument("--candidate", type=Path)
     args = parser.parse_args()
@@ -373,7 +416,8 @@ def main():
         parser.error("运行试验必须指定 --output 新目录")
     source_dir = (args.source_dir or Path(__file__).resolve().parents[2] / "src").resolve()
     sys.path.insert(0, str(source_dir))
-    result = run(args.output, args.cases, source_dir, args.label)
+    result = run(args.output, args.cases, source_dir, args.label, driving_mode=args.driving_mode,
+                 vehicle_config=args.vehicle_config, actuator_input=args.actuator_input)
     print(json.dumps(result["summaries"], indent=2, allow_nan=False))
     return 0
 

@@ -8,7 +8,7 @@ from ui import theme
 
 
 class MainMenu:
-    def __init__(self, parent, loader, body_font, display_font, actions):
+    def __init__(self, parent, loader, body_font, display_font, actions, *, driving_mode_action=None):
         self.root = parent.attachNewNode("main-menu")
         self.root.setTransparency(TransparencyAttrib.MAlpha)
         self.background = DirectFrame(
@@ -63,8 +63,18 @@ class MainMenu:
                                 fg=theme.INK, pos=(-1.08, -0.89), scale=0.032)
         self.notice = OnscreenText(parent=self.content, text="", font=body_font, fg=theme.FAILURE,
                                   pos=(-1.08, -0.95), scale=0.028, mayChange=True)
+        self.driving_mode_button = DirectButton(
+            parent=self.content, text="驾驶模式：正常游戏  F2", text_font=body_font,
+            text_fg=theme.INK, text_scale=0.040, text_pos=(0, -0.013),
+            frameSize=(-.38, .38, -.045, .045), frameTexture=self.textures,
+            frameColor=(1, 1, 1, 1), pos=(1.25, 0, -.88), relief=DGG.FLAT,
+            command=driving_mode_action, pressEffect=False,
+        )
         self.select(0)
         self.root.hide()
+
+    def set_driving_mode(self, mode):
+        self.driving_mode_button["text"] = f"驾驶模式：{mode.label}  F2"
 
     def select(self, index):
         self.selected = index % len(self.buttons)
@@ -87,5 +97,6 @@ class MainMenu:
     def destroy(self):
         for button in self.buttons:
             button.destroy()
+        self.driving_mode_button.destroy()
         self.background.destroy()
         self.root.removeNode()

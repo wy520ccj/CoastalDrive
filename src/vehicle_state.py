@@ -14,10 +14,13 @@ class Control:
     steering: float = 0.0
     throttle: float = 0.0
     brake: float = 0.0
+    direction: int = 1
 
     def __post_init__(self):
         if not (-1 <= self.steering <= 1 and 0 <= self.throttle <= 1 and 0 <= self.brake <= 1):
             raise ValueError("Control values outside steering/throttle/brake ranges")
+        if self.direction not in (-1, 1):
+            raise ValueError("Control direction must select D or R")
 
 
 @dataclass(frozen=True)

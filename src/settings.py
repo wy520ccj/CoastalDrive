@@ -2,6 +2,7 @@
 
 import json
 
+from driving_modes import DrivingMode
 from paths import user_data
 from skins import PLAYER_VEHICLES, SKINS
 
@@ -111,5 +112,40 @@ class AudioSettingsStore:
         except OSError:
             self.notice = "声音设置未能保存，请检查存储空间或目录权限"
             return False
+        self.notice = ""
+        return True
+
+
+class DrivingModeStore:
+    """驾驶模式独立保存，损坏的用户文件明确回到正常游戏。"""
+
+    def __init__(self, path=None):
+        self.path = path if path is not None else user_data() / "driving-mode.json"
+        self.mode = DrivingMode.GAME
+        self.notice = ""
+        try:
+            data = json.loads(self.path.read_text(encoding="utf-8"))
+        except FileNotFoundError:
+            return
+        except (OSError, ValueError):
+            self.notice = "驾驶模式无法读取，已使用正常游戏"
+            return
+        if not isinstance(data, dict) or data.get("mode") not in {m.value for m in DrivingMode}:
+            self.notice = "驾驶模式无效，已使用正常游戏"
+            return
+        self.mode = DrivingMode(data["mode"])
+
+    def save(self, mode):
+        if not isinstance(mode, DrivingMode):
+            raise TypeError("Expected DrivingMode")
+        try:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            temporary = self.path.with_suffix(".tmp")
+            temporary.write_text(json.dumps({"mode": mode.value}, indent=2), encoding="utf-8")
+            temporary.replace(self.path)
+        except OSError:
+            self.notice = "驾驶模式未能保存，请检查存储空间或目录权限"
+            return False
+        self.mode = mode
         self.notice = ""
         return True

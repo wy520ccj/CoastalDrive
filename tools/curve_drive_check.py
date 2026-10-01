@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from endurance_check import EnduranceDriver, working_set_bytes
 from panda3d.core import TransformState
 
+from driving_modes import DrivingMode
 from simulation import FIXED_DT, Simulation
 
 
@@ -41,8 +42,10 @@ def _progress(path, *, seed, state, start_s, started, sim, trace, status):
     }, indent=2), encoding="utf-8")
 
 
-def run(shape, seconds, seed, count, distance=0.0, progress_path=None):
-    sim = Simulation(seed, track="endless", road_shape=shape, traffic_count=count)
+def run(shape, seconds, seed, count, distance=0.0, progress_path=None,
+        driving_mode=DrivingMode.GAME):
+    sim = Simulation(seed, track="endless", road_shape=shape, traffic_count=count,
+                     config=driving_mode.vehicle_config, input_config=driving_mode.input_config)
     controller = EnduranceDriver(sim, seed + 701)
     trace, failures = [], []
     started = time.perf_counter()
@@ -105,6 +108,7 @@ def run(shape, seconds, seed, count, distance=0.0, progress_path=None):
                     failures.append({"tick": state.tick, "type": "distance_timeout"})
                 break
         result = {
+            "driving_mode": driving_mode.value,
             "shape": shape, "seed": seed, "traffic_count": count,
             "requested_seconds": seconds, "requested_distance_m": distance,
             "simulation_seconds": state.time, "wall_seconds": time.perf_counter() - started,
@@ -145,6 +149,7 @@ if __name__ == "__main__":
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--seeds", type=int, default=1)
     parser.add_argument("--traffic-count", type=int, default=12)
+    parser.add_argument("--driving-mode", choices=("game", "simulation"), default="game")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.seconds <= 0 or args.seeds <= 0 or args.distance < 0:
@@ -154,7 +159,8 @@ if __name__ == "__main__":
         progress_path = args.output.with_name(args.output.stem + ".progress.json")
         if result_path.exists():
             parser.error(f"refusing to overwrite existing result: {result_path}")
-        result = run(args.shape, args.seconds, args.seed, args.traffic_count, args.distance, progress_path)
+        result = run(args.shape, args.seconds, args.seed, args.traffic_count, args.distance,
+                     progress_path, DrivingMode(args.driving_mode))
         result_path.parent.mkdir(parents=True, exist_ok=True)
         result_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
         print({k: v for k, v in result.items() if k != "trace"})
@@ -165,7 +171,7 @@ if __name__ == "__main__":
         if result_path.exists():
             parser.error(f"refusing to overwrite existing result: {result_path}")
         result = run(args.shape, args.seconds, seed, args.traffic_count, args.distance,
-                     args.output / "progress.json")
+                     args.output / "progress.json", DrivingMode(args.driving_mode))
         result_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
         print({k: v for k, v in result.items() if k != "trace"}, flush=True)
         if not result["passed"]:

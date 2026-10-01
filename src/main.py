@@ -16,6 +16,7 @@ def main():
     parser.add_argument("--headless", action="store_true")
     parser.add_argument("--steps", type=int, default=10000)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--driving-mode", choices=("game", "simulation"))
     parser.add_argument("--road-shape", choices=("straight", "curves", "hills"), default="straight")
     parser.add_argument("--smoke", action="store_true")
     parser.add_argument("--window-smoke", action="store_true")
@@ -25,6 +26,9 @@ def main():
         "--track", choices=("coastal", "highway", "endless", "test"), default="coastal"
     )
     args = parser.parse_args()
+    from driving_modes import DrivingMode
+
+    driving_mode = DrivingMode(args.driving_mode) if args.driving_mode else None
     if args.steps <= 0:
         parser.error("--steps must be positive")
     if args.profile_startup and (args.headless or args.smoke or args.window_smoke):
@@ -33,12 +37,19 @@ def main():
         from controls import ConstantController
         from simulation import FIXED_DT, Control, Simulation
 
-        simulation = Simulation(args.seed, track=args.track, road_shape=args.road_shape)
+        selected = driving_mode or DrivingMode.GAME
+        simulation = Simulation(
+            args.seed, track=args.track, road_shape=args.road_shape,
+            config=selected.vehicle_config, input_config=selected.input_config,
+        )
         controller = ConstantController(Control(throttle=0.5))
         try:
             for _ in range(args.steps):
                 simulation.step(controller.sample(simulation.snapshot(), FIXED_DT))
-            print(json.dumps(asdict(simulation.snapshot()), indent=2))
+            report = asdict(simulation.snapshot())
+            report["driving_mode"] = selected.value
+            report["vehicle_config"] = asdict(selected.vehicle_config)
+            print(json.dumps(report, indent=2))
         finally:
             simulation.close()
         return 0
@@ -55,7 +66,8 @@ def main():
     if startup is not None:
         startup.mark("application_imported")
         app = CoastalDrive(onscreen=True, output=args.output, seed=args.seed, track=args.track,
-                           road_shape=args.road_shape, startup_trace=startup)
+                           road_shape=args.road_shape, startup_trace=startup,
+                           driving_mode=driving_mode)
         try:
             app.taskMgr.step()
             startup.mark("first_rendered_frame")
@@ -106,6 +118,7 @@ def main():
         seed=args.seed,
         track=args.track,
         road_shape=args.road_shape,
+        driving_mode=driving_mode,
     )
     try:
         app.run()

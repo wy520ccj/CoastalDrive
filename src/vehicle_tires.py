@@ -6,7 +6,7 @@ from dataclasses import replace
 from panda3d.core import Mat3, Quat, Vec3
 
 from tire_forces import slip_state
-from vehicle_config import CAR, WHEEL_HUBS
+from vehicle_config import CAR, wheel_hubs
 from vehicle_contacts import road_support
 from vehicle_state import WheelDynamicsState, WheelState
 from wheel_dynamics import Mobility, advance_wheel
@@ -15,6 +15,7 @@ from wheel_dynamics import Mobility, advance_wheel
 class Tires:
     def __init__(self, config=CAR):
         self.config = config
+        self.hubs = wheel_hubs(config)
         self.rear_config = replace(config, lateral_stiffness=config.rear_lateral_stiffness)
         self.omega = [0.0] * 4
         self.rotation = [0.0] * 4
@@ -56,7 +57,7 @@ class Tires:
                 normal = orientation.getUp()
                 tangent = heading
                 axle = tangent.cross(normal)
-                point = orientation.xform(Vec3(*WHEEL_HUBS[index])) - normal * config.wheel_radius
+                point = orientation.xform(Vec3(*self.hubs[index])) - normal * config.wheel_radius
                 load, mu = 0.0, config.road_friction
             hub = point + normal * config.wheel_radius
             # Fx在接点的力矩减去轮轴的r*Fx反力矩，等效于轮心力与内部驱动反力。
@@ -146,7 +147,7 @@ class Tires:
             else:
                 normal = pose.getQuat().getUp()
                 tangent = heading
-                point = pose.getQuat().xform(Vec3(*WHEEL_HUBS[index]))
+                point = pose.getQuat().xform(Vec3(*self.hubs[index]))
                 point -= normal * self.config.wheel_radius
             axle = tangent.cross(normal)
             hub = point + normal * self.config.wheel_radius

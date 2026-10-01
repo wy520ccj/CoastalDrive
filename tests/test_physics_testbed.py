@@ -76,13 +76,32 @@ def test_compare_allows_parameter_changes_and_rejects_condition_changes(tmp_path
     baseline = json.loads((tmp_path / "base" / "summary.json").read_text(encoding="utf-8"))
     candidate = json.loads(json.dumps(baseline))
     candidate["source_version"] = "B"
-    candidate["config"]["road_grip"] += 0.1
+    candidate["config"]["road_friction"] += 0.1
     candidate_path = tmp_path / "candidate.json"
     candidate_path.write_text(json.dumps(candidate), encoding="utf-8")
     result = compare(tmp_path / "base" / "summary.json", candidate_path)
-    assert result["config_delta_candidate_minus_baseline"]["road_grip"] == pytest.approx(0.1)
+    assert result["config_delta_candidate_minus_baseline"]["road_friction"] == pytest.approx(0.1)
 
     candidate["environment"]["gravity_mps2"][2] = -9.8
     candidate_path.write_text(json.dumps(candidate), encoding="utf-8")
     with pytest.raises(ValueError, match="environment"):
         compare(tmp_path / "base" / "summary.json", candidate_path)
+
+
+def test_reference_actuator_testbed_records_real_config_and_commands(tmp_path):
+    from driving_modes import REFERENCE_CAR
+
+    overrides = tmp_path / "vehicle.json"
+    overrides.write_text(json.dumps({"mass": 1400, "wheel_inertia": 2.0}), encoding="utf-8")
+    result = run(tmp_path / "reference", ("steering_step",), driving_mode="simulation",
+                 vehicle_config=overrides, actuator_input=True)
+    assert result["config"]["mass"] == 1400
+    assert result["config"]["wheel_inertia"] == 2
+    assert result["config"]["torque_curve"] == REFERENCE_CAR.torque_curve
+    assert result["config"]["game_speed_limits"] is False
+    assert result["input_path"] == "actuator"
+    assert result["measurement"]["csv_input_steering_unit"] == "degrees"
+    with (tmp_path / "reference" / "steering_step.csv").open(newline="", encoding="utf-8") as stream:
+        samples = list(csv.DictReader(stream))
+    assert float(samples[-1]["input.steering"]) == 2
+    assert float(samples[-1]["state.throttle"]) == .15

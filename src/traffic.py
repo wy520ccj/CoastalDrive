@@ -4,10 +4,10 @@ import math
 from dataclasses import dataclass, replace
 
 from coastal_map import MapPoint, map_length, offset_point, point_at, project
-from driver_assist import steering_limit
+from driver_assist import GAME_INPUT, InputConfig, steering_limit
 from highway_curve import HighwayCurve
 from highway_map import HIGHWAY_LENGTH, lane_x
-from vehicle_config import CAR
+from vehicle_config import CAR, VehicleConfig
 from vehicle_state import Control
 
 # Include the accepted player body and exposed tyres in clearance queries.
@@ -71,10 +71,13 @@ class Road:
                        heading=(car.heading - p.heading + 180) % 360 - 180, velocity=velocity)
 
 
-def extents(heading, road_heading):
+def extents(heading, road_heading, config=CAR):
     angle = math.radians(heading - road_heading)
     sine, cosine = abs(math.sin(angle)), abs(math.cos(angle))
-    return HALF_WIDTH * cosine + HALF_LENGTH * sine, HALF_LENGTH * cosine + HALF_WIDTH * sine
+    # 沿用交通感知的0.1m内收量，几何尺寸随车辆配置变化。
+    width = config.collision_half_width - (CAR.collision_half_width - HALF_WIDTH)
+    length = config.collision_half_length
+    return width * cosine + length * sine, length * cosine + width * sine
 
 
 @dataclass
@@ -84,6 +87,8 @@ class Driver:
     recovering: bool = False
     target_lateral: float | None = None
     preview_lateral: float | None = None
+    config: VehicleConfig = CAR
+    input_config: InputConfig = GAME_INPUT
 
     def control(self, car, traffic, road, locations):
         distance, lateral = locations[0]
@@ -115,13 +120,13 @@ class Driver:
         distance_to_target = math.hypot(dx, dy)
         nominal_yaw_rate = 2 * car.speed * math.sin(error) / distance_to_target
         # 跟踪期望横摆，补偿临界阻尼齿条的2/ω迟滞；弯道参考不能设为零。
-        tracking_error = error + (2 / CAR.steering_response) * (
+        tracking_error = error + (2 / self.config.steering_response) * (
             nominal_yaw_rate - car.dynamics.yaw_rate
         )
         angle = math.degrees(math.atan2(
-            2 * CAR.wheelbase * math.sin(tracking_error), distance_to_target
+            2 * self.config.wheelbase * math.sin(tracking_error), distance_to_target
         ))
-        steering = max(-1, min(1, -angle / steering_limit(car.speed)))
+        steering = max(-1, min(1, -angle / steering_limit(car.speed, self.config, self.input_config)))
         desired = self.cruise
         if not road.closed and not road.endless:
             # The finite preview ends here. Wait on the road until safe to recycle.
@@ -134,14 +139,14 @@ class Driver:
             curvature = abs(math.radians((b.heading - a.heading + 180) % 360 - 180)) / 8
             bend_speed = math.sqrt(2.5 / max(curvature, 0.001))
             desired = min(desired, math.sqrt(bend_speed**2 + 5 * ahead))
-        own_width, own_length = extents(car.heading, p.heading)
+        own_width, own_length = extents(car.heading, p.heading, self.config)
         nearest_gap = math.inf
         lead_speed = desired
         for other, (other_distance, other_lateral) in zip(traffic, locations[1:]):
             if not other.active:
                 continue
             delta = road.delta(other_distance, distance)
-            other_width, other_length = extents(other.heading, p.heading)
+            other_width, other_length = extents(other.heading, p.heading, self.config)
             if delta <= 0 or abs(other_lateral - lateral) > own_width + other_width + 0.2:
                 continue
             gap = delta - own_length - other_length

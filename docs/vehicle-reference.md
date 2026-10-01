@@ -1,172 +1,175 @@
 # 车辆参数参考表
 
-本文记录当前 VehicleConfig 设计值、计算关系与 Bullet 本机读数，作为 PHYS-MODES-01 的配置基线。表内参数均为程序设计值或由设计值计算出的数值；Bullet 读回值只证明当前程序实际装入什么，不代表实车测量或标定。
+本文同步当前 `VehicleConfig`、`InputConfig` 与 `DrivingMode`。所有参数均为程序设计值或设计推导值；本机 Bullet 读回证明实际装入的配置，不是实车测量或标定。困难仿真使用通用设计参考车，保留自动前进换挡、简化虚拟离合、射线悬架及简化轮胎模型，不称完整车辆仿真软件。
 
-本表建立时的工作区Git基线为 HEAD 0208dfa3a956fb36907f9a668ade07dafa39185c；src/vehicle_config.py 本机 SHA-256 为 9b087e5eeacde9d42a23af85059ad8a3f21e43dc0ae99b0e7f8a66eb4f20e9a6。参数定义在 src/vehicle_config.py，车辆建模在 src/vehicle.py、src/powertrain.py、src/vehicle_steering.py、src/driver_assist.py、src/vehicle_dynamics.py、src/vehicle_tires.py 与 src/wheel_dynamics.py。
+当前冻结数据见 [reference-parameters.json](evidence/PHYS-MODES-01/reference-parameters.json)。该文件逐项保存配置、单位与职责、实际几何、两模式各240tick静置读数，以及相关源码的 SHA-256。Git HEAD 仅为工作区历史上下文，不能代表未提交源码；旧参考表的 HEAD/hash 已不用于指认当前实现。
 
-## 当前配置字段
+本次 `src/vehicle_config.py` SHA-256：`e37beb7a53a75ef3fed21bd74d5732f0807e822953c68de0f0a77bda0eef0ee2`。Panda3D 1.10.16，Bullet 2.84。
 
-“来源”栏中，**设计**表示直接写入的模型/调校值；**推导**表示由同表设计值按所列关系算出；**未使用**表示字段目前没有运行期读取点。没有字段来自真实车辆数据。
+## 模式与实例边界
 
-### 动力与制动
+`DrivingMode.GAME`（正常游戏）选择 `CAR` 与 `GAME_INPUT`；`DrivingMode.SIMULATION`（困难仿真）选择 `REFERENCE_CAR` 与 `SIMULATION_INPUT`。模式与计时/自由驾驶/高速玩法正交。Vehicle → Simulation → Session直接传入冻结配置实例，部件创建、reset与跨赛道重建沿用配置；主菜单切换选择后，起步按配置重建世界。不得对存活Bullet车身替换参数对象。
 
-| 字段 | 当前值 | 单位 | 计算职责 | 来源 |
-|---|---:|---|---|---|
-| mass | 1200 | kg | Bullet 车身质量；轮胎标称载荷和道路载荷计算也用此值 | 设计 |
-| torque_curve | C：(900,116.05),(1800,174.075),(3200,211),(4500,200.45),(6000,158.25),(6500,0) | rpm, N·m | 发动机曲轴转矩，节点间线性插值 | C 为游戏补偿设计；由 B 曲线非零节点 ×1.055 推导 |
-| gear_ratios | (3.25,2.05,1.45,1.10,0.88) | 无量纲 | 五个前进挡的传动比 | 设计 |
-| final_drive | 3.7 | 无量纲 | 主减速比；与挡位比相乘 | 设计 |
-| drivetrain_efficiency | 0.88 | 比例 | 曲轴转矩传至驱动轮的效率系数 | 设计 |
-| idle_rpm | 900 | rpm | 发动机转速下限/起始转速 | 设计 |
-| shift_time | 0.28 | s | 换挡期间驱动转矩衰减时长 | 设计 |
-| torque_response | 0.12 | s | 轮端目标转矩的一阶响应时间常数 | 设计 |
-| engine_braking | 24 | N·m | 闭油门曲轴拖曳转矩估计，再乘当前传动比 | 设计 |
-| max_speed | 44.444…（160/3.6） | m/s | 前进挡的游戏最高速度限幅；达到上限前 2 m/s 线性减小驱动转矩 | 推导：160 km/h 换算 |
-| reverse_speed | 6.111…（22/3.6） | m/s | 倒挡速度渐退范围 | 推导：22 km/h 换算 |
-| reverse_force | 2200 | N | 倒挡轮端力上限；按轮半径换算为扭矩上限 | 设计 |
-| brake_torque | 3643.2 | N·m | 四轮制动总转矩容量 | 设计；当前按 front_brake_share 分配 |
-| front_brake_share | 0.60 | 比例 | 前轴占制动总容量比例；后轴使用剩余部分 | 设计 |
+参考车与游戏车共用力学核心；明确差异是曲轴转矩曲线、游戏速度/倒挡力渐退、刚体角阻尼与惯量来源，以及三个输入辅助开关。Q/E只请求R/D方向，S为制动；并未新增手动前进挡或离合踏板。
 
-### 车身、车轮与悬架
+## VehicleConfig完整字段
 
-| 字段 | 当前值 | 单位 | 计算职责 | 来源 |
-|---|---:|---|---|---|
-| wheel_radius | 0.33 | m | Bullet 车轮半径；轮速、轮胎滑移与力臂 | 设计 |
-| wheel_inertia | 1.8 | kg·m² | 每个独立轮速状态的轴向转动惯量 | 设计 |
-| wheelbase | 2.2 | m | 前后轴距；Ackermann 几何、输入转向包络与载荷转移 | 设计 |
-| track_width | 1.68 | m | 左右轮距；由轴距、轮距推导四轮横向位置 | 设计 |
-| collision_half_width | 1.05 | m | 车身碰撞盒半宽 | 设计 |
-| collision_half_length | 2.15 | m | 车身碰撞盒半长 | 设计 |
-| center_of_mass_height | 0.42 | m | 轴荷转移计算的质心高度 | 设计；同时与当前碰撞形状中心偏移相同 |
-| front_weight_share | 0.50 | 比例 | 静态法向载荷的前轴分配比例 | 设计 |
-| suspension_stiffness | 40 | s⁻²（质量归一化系数） | Bullet悬架弹性力乘完整车身质量；平路垂直单轮等效48kN/m | 设计；单位和SI映射由本机对应2.84源码推导，见下文 |
-| suspension_compression | 4.4 | s⁻¹（质量归一化系数） | 压缩阶段阻尼；平路垂直单轮等效5280N·s/m | 设计；源码推导 |
-| suspension_relaxation | 2.3 | s⁻¹（质量归一化系数） | 伸张阶段阻尼；平路垂直单轮等效2760N·s/m | 设计；源码推导 |
+每个字段单独一行。值均为设计；职责中注明换算或设计推导。`—`表示与正常游戏相同，`null`表示自动惯量，不代表零惯量。
 
-四个配置轮毂位置由 WHEEL_HUBS 推导，顺序为前左、前右、后左、后右：
+| 字段 | 正常游戏 | 困难仿真参考车 | 单位 | 设计/推导与计算职责 |
+|---|---|---|---|---|
+| mass | 1200 | — | kg | Bullet车身质量；轮胎标称载荷与道路载荷 |
+| torque_curve | [[900,116.05],[1800,174.075],[3200,211],[4500,200.45],[6000,158.25],[6500,0]] | [[900,110],[1800,165],[3200,200],[4500,190],[6000,150],[6500,0]] | rpm,N·m | 曲轴转矩节点线性插值；game为raw非零节点×1.055 |
+| gear_ratios | [3.25,2.05,1.45,1.1,0.88] | — | 1 | 五个自动前进挡传动比 |
+| final_drive | 3.7 | — | 1 | 主减速比 |
+| drivetrain_efficiency | 0.88 | — | 1 | 驱动转矩效率 |
+| idle_rpm | 900 | — | rpm | 发动机转速下限 |
+| shift_time | 0.28 | — | s | 换挡驱动转矩衰减时长 |
+| torque_response | 0.12 | — | s | 轮端转矩一阶响应时间常数 |
+| engine_braking | 24 | — | N·m | 闭油门曲轴拖曳转矩估计 |
+| max_speed | 44.44444444 | — | m/s | game前进驱动转矩渐退速度；160/3.6 |
+| reverse_speed | 6.111111111 | — | m/s | game倒车驱动转矩渐退速度；22/3.6 |
+| reverse_force | 2200 | — | N | game倒车轮端力上限，按半径换算转矩 |
+| reverse_gear_ratio | 3 | — | 1 | 倒挡机械传动比 |
+| game_speed_limits | true | false | bool | 启用游戏速度渐退/倒车力上限；不是车身速度钳制 |
+| brake_torque | 3643.2 | — | N·m | 四轮制动总容量 |
+| front_brake_share | 0.6 | — | 1 | 前轴制动容量份额 |
+| steering_degrees | 26 | — | ° | 虚拟前轴中心角机械限位 |
+| steering_rate | 50 | — | °/s | 齿条角速度限位 |
+| steering_response | 7 | — | s⁻¹ | 齿条输入临界阻尼响应系数 |
+| steering_return | 10 | — | s⁻¹ | 齿条回正临界阻尼响应系数 |
+| wheel_radius | 0.33 | — | m | 原生射线轮半径、独立轮速/滑移/力臂 |
+| wheel_inertia | 1.8 | — | kg·m² | 独立单轮轴向转动惯量 |
+| longitudinal_stiffness | 60000 | — | N/κ | 标称单轮载荷下纵向滑移刚度 |
+| lateral_stiffness | 50000 | — | N/rad | 标称载荷下前轮侧偏刚度 |
+| rear_lateral_stiffness | 50000 | — | N/rad | 标称载荷下后轮侧偏刚度 |
+| tire_shape | 1.9 | — | 1 | 简化联合Magic Formula形状 |
+| tire_curvature | 0.97 | — | 1 | 简化联合Magic Formula曲率 |
+| slip_speed | 1 | — | m/s | 低速滑移分母尺度 |
+| static_contact_speed | 0.25 | — | m/s | 低速静摩擦约束尝试尺度 |
+| tire_substeps | 2 | — | 次/tick | 轮胎车体耦合子步数 |
+| suspension_stiffness | 40 | — | s⁻² | Bullet质量归一化悬架刚度；平路k=mass×值 |
+| suspension_compression | 4.4 | — | s⁻¹ | 质量归一化压缩阻尼；平路c=mass×值 |
+| suspension_relaxation | 2.3 | — | s⁻¹ | 质量归一化伸张阻尼；平路c=mass×值 |
+| air_density | 1.225 | — | kg/m³ | 环境空气密度 |
+| drag_coefficient | 0.32 | — | 1 | 气动阻力Cd |
+| frontal_area | 2.142857143 | — | m² | 迎风面积；保持旧CdA乘积的推导设计值 |
+| rolling_coefficient | 0.01359157322 | — | 1 | 铺装滚阻160/(1200×9.81)，乘实际Fn及低速线性项 |
+| grass_rolling_coefficient | 0.07645259939 | — | 1 | 草地滚阻900/(1200×9.81) |
+| road_friction | 1.1 | — | 1 | 铺装摩擦预算μFn |
+| grass_friction | 0.45 | — | 1 | 草地摩擦预算μFn |
+| wheelbase | 2.2 | — | m | 轴距、Ackermann和轴荷诊断 |
+| track_width | 1.68 | — | m | 轮距、实际轮连接点横坐标 |
+| collision_half_width | 1.05 | — | m | 真实车身碰撞盒半宽 |
+| collision_half_length | 2.15 | — | m | 真实车身碰撞盒半长 |
+| collision_half_height | 0.42 | — | m | 真实车身碰撞盒半高 |
+| body_center_height | 0.84 | — | m | 设计地面基准下碰撞盒中心高度 |
+| wheel_connection_height | 0.67 | — | m | 设计地面基准下射线悬架连接点高度 |
+| center_of_mass_height | 0.42 | — | m | 真实几何相对CG偏移与轴荷诊断高度 |
+| front_weight_share | 0.5 | — | 1 | 通过真实轴连接点相对CG纵向距离实现静态前载份额 |
+| body_inertia | null | [1919.56,511.56,2290.0] | kg·m² | null由Bullet碰撞盒生成；reference显式设计惯量 |
+| angular_damping | 0.2 | 0 | 1 | Bullet刚体角阻尼 |
+| suspension_travel | 0.2 | — | m | 射线悬架最大行程，传API时×100cm |
+| suspension_force_limit | 6000 | — | N | 每轮实际施加悬架力上限 |
 
-| 车轮 | 车身局部 x (m) | 局部 y (m) | 局部 z (m) | 来源 |
-|---|---:|---:|---:|---|
-| 前左 | −0.84 | +1.10 | 0.25 | 由轮距/轴距推导；z 为源码硬编码设计值 |
-| 前右 | +0.84 | +1.10 | 0.25 | 由轮距/轴距推导；z 为源码硬编码设计值 |
-| 后左 | −0.84 | −1.10 | 0.25 | 由轮距/轴距推导；z 为源码硬编码设计值 |
-| 后右 | +0.84 | −1.10 | 0.25 | 由轮距/轴距推导；z 为源码硬编码设计值 |
+## InputConfig完整字段
 
-### 轮胎与路面
+原输入字段已从VehicleConfig迁至InputConfig。仿真开关关闭后对应速率/等待/包络数值仍保留在冻结配置中，但该输入分支不使用。
 
-| 字段 | 当前值 | 单位 | 计算职责 | 来源 |
-|---|---:|---|---|---|
-| longitudinal_stiffness | 60000 | N/κ | 纵向滑移刚度；κ 为无量纲滑转率 | 设计，标称参考载荷下的曲线斜率 |
-| lateral_stiffness | 50000 | N/rad | 前轮侧偏角初段刚度 | 设计，标称参考载荷下的曲线斜率 |
-| rear_lateral_stiffness | 50000 | N/rad | 后轮独立侧偏刚度 | 设计 |
-| tire_shape | 1.9 | 无量纲 | 简化联合滑移曲线的形状系数 | 设计 |
-| tire_curvature | 0.97 | 无量纲 | 简化联合滑移曲线的曲率系数 | 设计 |
-| slip_speed | 1.0 | m/s | 滑移状态分母低速尺度，避免速度趋零时比值奇异 | 设计 |
-| static_contact_speed | 0.25 | m/s | 接点速度低于该值时尝试无滑移静摩擦约束；所需力超出 μFn 后转入滑动曲线 | 设计切换尺度 |
-| tire_substeps | 2 | 次/120 Hz tick | 每轮轮胎—车体隐式耦合积分的子步数 | 设计数值设置 |
-| road_friction | 1.1 | 无量纲 μ | 柏油表面摩擦预算系数，力预算为 μFn | 设计 |
-| grass_friction | 0.45 | 无量纲 μ | 草地表面摩擦预算系数 | 设计 |
-| road_grip | 1.4 | 未定义 | 当前源码没有运行期读取；不是 road_friction 的别名 | 未使用设计字段 |
-| grass_grip | 0.8 | 未定义 | 当前源码没有运行期读取；不是 grass_friction 的别名 | 未使用设计字段 |
+| 字段 | 正常游戏 | 困难仿真参考车 | 单位 | 设计职责 |
+|---|---|---|---|---|
+| progressive_pedals | true | false | bool | 启用键盘踏板渐变 |
+| speed_sensitive_steering | true | false | bool | 启用速度相关键盘转向包络 |
+| automatic_reverse | true | false | bool | 低速S持续制动后辅助切倒挡；false用Q/E显式R/D |
+| throttle_rise | 1.6 | — | 比例/s | 游戏油门上升速率；仿真渐变关闭时不使用 |
+| throttle_release | 5 | — | 比例/s | 游戏油门释放速率；仿真渐变关闭时不使用 |
+| brake_rise | 6 | — | 比例/s | 游戏制动上升速率；仿真渐变关闭时不使用 |
+| brake_release | 10 | — | 比例/s | 游戏制动释放速率；仿真渐变关闭时不使用 |
+| assisted_lateral_acceleration | 7.5 | — | m/s² | 游戏速度转向包络目标；仿真包络关闭时不使用 |
+| reverse_delay | 0.4 | — | s | 游戏辅助倒挡等待；仿真自动倒挡关闭时不使用 |
 
-轮胎力模型按法向载荷相对 mass × 9.81 / 4 缩放纵横向刚度，先构成纵向/侧向试算力，再以 μFn 为幅值尺度，沿试算力方向使用简化 Magic Formula 平滑饱和，包含峰值及高滑移衰减。静摩擦分支只在所需合力处于 μFn 圆内时成立。动态法向力来自 Bullet 射线悬架接触；不是用轴荷估算替代实际轮载。每个子步解车体接点运动与轮速，施加唯一的轮胎 Fx/Fy 和相反轮轴反力矩；不另叠加 Bullet 原生轮胎摩擦力。
+## CG与实际几何
 
-### 空气与滚动阻力
+车身设计以地面为高度基准，刚体原点是CG。连接点顺序为前左、前右、后左、后右。`wheel_hubs(config)`定义x=±track_width/2；前轴y=wheelbase×(1−front_weight_share)，后轴y=−wheelbase×front_weight_share；z=wheel_connection_height−center_of_mass_height。`body_center(config)`定义y=wheelbase×(.5−front_weight_share)，z=body_center_height−center_of_mass_height。改变CG高度/前载份额同时改变真实悬架连接点与碰撞盒相对CG的力臂；不是只改诊断轴荷。
 
-| 字段 | 当前值 | 单位 | 计算职责 | 来源 |
-|---|---:|---|---|---|
-| air_density | 1.225 | kg/m³ | 空气阻力计算的密度 | 设计环境值 |
-| drag_coefficient | 0.32 | 无量纲 Cd | 气动阻力系数 | 设计 |
-| frontal_area | 2.142857… | m² | 气动迎风面积；与 Cd 相乘形成旧模型的 CdA | 推导：保持原 CdA 乘积 |
-| rolling_coefficient | 160/(1200×9.81) ≈ 0.013594 | 无量纲 Crr | 铺装路滚阻；Crr × 实际法向力 × min(水平速度,1m/s) | 推导：设计的 160 N 低速滚阻标称量除以设计车重 |
-| grass_rolling_coefficient | 900/(1200×9.81) ≈ 0.076453 | 无量纲 Crr | 草地滚阻，同样使用实际法向力与速度线性项 | 推导：设计的 900 N 标称量除以设计车重 |
+默认两模式hubs均为(±.84,前+1.10/后−1.10,.25)m，碰撞盒中心(0,0,.42)m，半尺寸(1.05,2.15,.42)m。游戏惯量由Bullet盒形生成；参考惯量显式设置为设计值(1919.56,511.56,2290)kg·m²，沿用同设计车身尺度，非实车惯量。显式惯量与后续几何修改不会自动联动，使用者需提供一致设计。
 
-### 输入辅助参数
+## 当前保留的模型常数与职责
 
-以下数值服务于正常游戏键盘输入与倒车便利，不代表机械车辆参数，也不用于定义通用参考车的物理标定。
-
-| 字段 | 当前值 | 单位 | 用途 | 来源 |
-|---|---:|---|---|---|
-| throttle_rise | 1.6 | 踏板比例/s | 键盘持续按下时油门上升速率 | 游戏输入设计 |
-| throttle_release | 5.0 | 踏板比例/s | 松开油门时释放速率 | 游戏输入设计 |
-| brake_rise | 6.0 | 制动比例/s | 键盘制动上升速率 | 游戏输入设计 |
-| brake_release | 10.0 | 制动比例/s | 松开制动时释放速率 | 游戏输入设计 |
-| reverse_delay | 0.4 | s | 低速持续按制动后允许键盘辅助切入倒挡的等待时间 | 游戏输入设计 |
-| assisted_lateral_acceleration | 7.5 | m/s² | 速度相关的键盘转向包络目标；限制用户的归一化转向输入 | 游戏输入设计 |
-
-### 转向执行器模型
-
-这些值描述虚拟齿条的角度/速率响应；键盘便利包络已单独列在输入辅助表。
-
-| 字段 | 当前值 | 单位 | 用途 | 来源 |
-|---|---:|---|---|---|
-| steering_degrees | 26 | ° | 虚拟前轴中心角机械限位 | 设计 |
-| steering_rate | 50 | °/s | 中心齿条角速度限位 | 设计 |
-| steering_response | 7 | s⁻¹ | 输入方向的临界阻尼响应系数 | 设计 |
-| steering_return | 10 | s⁻¹ | 回正方向的临界阻尼响应系数 | 设计 |
-
-实际前轮角按 Ackermann 几何生成。键盘包络另有源码常数 +16（速度平方分母的低速平滑尺度，等效 4 m/s）；它不是 VehicleConfig 字段。
-
-## 当前模型中的源码硬编码
-
-这些硬编码会影响未来参数表完整度；当前值仍只是模型设计值。
-
-| 源码位置 | 硬编码值或关系 | 当前作用 |
+| 项目 | 数值/关系 | 作用 |
 |---|---|---|
-| src/vehicle.py:60–67 | 角阻尼 0.2；碰撞盒垂向半高 0.42 m、中心偏移 0.42 m；CCD threshold 0.5、swept sphere radius 0.35 m | 刚体阻尼、车身碰撞形状及连续碰撞检测 |
-| src/vehicle_config.py:72–75 | 四个轮毂的局部 z=0.25 m | 当前横向/纵向 hub 由轮距、轴距算出；z 尚未参数化 |
-| src/vehicle.py:74–85 | Bullet 轮子默认 rest length 0.4 m；最大行程 20 cm；roll influence 0.1；最大悬架力由 Bullet 默认给出 | 射线悬架几何与侧倾力缩放；当前没有独立簧下质量/弹簧体 |
-| src/powertrain.py:38–75 | 倒挡比 3.0；升挡点 3000+2300×pedal rpm；降挡点 1500 rpm；换挡冷却 0.8 s；起步转速增量 700 rpm、速度尺度 6 m/s；极速最后 2 m/s 线性收油 | 简化自动变速、起步离合/转矩退让，非完整发动机、离合器或液力变矩器模型 |
-| src/driver_assist.py:14–17,37–48 | 转向包络速度平方平滑常数 16；前进/倒车方向判断速度 0.15 m/s | 键盘转向与停车换向辅助 |
-| src/vehicle.py:174–216 | 重力常量 9.81 m/s²；滚阻速度线性封顶 1 m/s；轴荷诊断低通常数 0.15 s、纵向加速度限幅 ±12 m/s² | 坡度、滚阻、载荷诊断 |
-| src/wheel_dynamics.py:64 | 低速接触是否尝试静摩擦的阈值从配置读 0.25 m/s；静摩擦数值迭代次数/容差在求解器内部固定 | 轮胎低速约束求解 |
+| native suspension rest length | .4 m | Panda创建轮默认值；初始化轮姿按同长度，尚未独立配置 |
+| rollInfluence | .1 | 原生轮侧倾影响参数；原生切向摩擦已关闭，该值保留读回 |
+| CCD | threshold .5 m，swept sphere radius .35 m | 车身连续碰撞检测设计 |
+| 重力 | 9.81 m/s² | 默认世界重力与标称载荷 |
+| 游戏转向包络低速尺度 | speed²+16 | 输入包络的设计平滑尺度 |
+| 游戏方向辅助低速判据 | .15 m/s | 制动/倒车输入分支 |
+| 滚阻低速线性尺度 | min(horizontal_speed,1 m/s) | 滚阻随实际Fn与低速变化 |
+| 自动变速与起步 | 自动升降挡、换挡冷却及虚拟起步离合规则 | 简化传动；参考模式仍保留 |
+| 诊断轴荷滤波 | .15 s，纵加速度±12 m/s² | 仅诊断，不替代真实四轮Fn或钳制车身速度 |
+| fixed step | 1/120 s，world max_substeps=0 | 权威物理步；显示插值独立 |
 
-本机Panda1.10.16/Bullet2.84悬架映射由[对应版本updateSuspension源码](https://github.com/bulletphysics/bullet3/blob/2.84/src/BulletDynamics/Vehicle/btRaycastVehicle.cpp#L379)推导：`Fn_raw=m_chassis*(S*δ*a−C*v_rel)`，δ为rest length−当前长度，a为接触法线/悬架方向的投影逆数，v_rel为同一投影修正后的接点法向速度，C按压缩/回弹选择。结果截负为零，施加时再受6000N单轮上限限制。
+`road_grip`、`grass_grip`未使用字段已删除，不能当作现参数或摩擦系数别名。真实摩擦预算来自road_friction/grass_friction×动态Fn。原生每轮frictionSlip、EngineForce、Brake均置零，仅保留Bullet悬架与碰撞；自定义轮胎独占Fx/Fy与独立轮速积分。低速静摩擦约束只有所需力位于μFn圆内时成立，超预算转入简化联合Magic Formula。
 
-在平路且悬架轴垂直路面时a=1，故每轮等效`k=m_chassis*S=1200*40=48000N/m`、压缩`c=1200*4.4=5280N·s/m`、回弹`c=1200*2.3=2760N·s/m`。此处乘**完整车身质量**，不乘静态单轮等效300kg。名义静态单轮2943N对应压缩`2943/48000=.0613125m`，与下表本机读数吻合。改变车身质量且希望保持同一SI弹簧/阻尼时，须同步调整这些归一化输入；坡面/倾斜支撑还须使用投影关系，不能直接套平路系数。[Panda1.10 BulletWheel API](https://docs.panda3d.org/1.10/python/reference/panda3d.bullet.BulletWheel)说明长度/行程接口，当前仍是质量为零的射线轮心，没有独立簧下振动自由度。
+本机对应 [Bullet2.84 updateSuspension源码](https://github.com/bulletphysics/bullet3/blob/2.84/src/BulletDynamics/Vehicle/btRaycastVehicle.cpp#L379)给出 `Fn_raw=mass×(S×compression×projection−C×relative_normal_speed)`；负力截零、施加时受每轮悬架力上限限制。平路每轮k=1200×40=48000N/m，压缩c=5280N·s/m，回弹c=2760N·s/m，乘的是完整车身质量。名义静态2943N/轮对应压缩.0613125m。坡面须使用法线投影，不能套平路系数。
 
-## 本机 Bullet 实际读数
+## 本次真实Bullet读回
 
-读数方法：本机 .venv/Scripts/python.exe 创建真实 Vehicle，放在无限平面、重力 (0,0,-9.81) 下静置 240 个 1/120 s tick，再直接读 BulletRigidBodyNode、BulletWheel、wheel raycast 与车辆快照。下面是当前 config C 的实现读数；B/C 仅发动机曲线不同，其车身与悬架构造代码相同。读数是程序/Bullet 实际值，不是现实车辆实测。
+两模式各创建真实Vehicle，在水平无限平面、重力(0,0,−9.81)下用VehicleCommand()静置240tick；每步严格1/120s、max_substeps=0。完整四轮接点/法线/raw与cappedFn/长度存于JSON。
 
-| 项目 | VehicleConfig/源码值 | Bullet/车辆读数 | 对照说明 |
-|---|---:|---:|---|
-| 车身质量 | 1200 kg | 1200 kg | 直接调用 setMass(1200) |
-| 刚体惯量 (x,y,z) | 未单独配置 | (1919.5603, 511.5599, 2290.0002) kg·m² | Bullet 依据当前碰撞盒自动生成；车身形状为半尺寸 (1.05, 2.15, 0.42) m、局部 z 偏移 0.42 m，非实车惯量输入 |
-| 单轮半径 | 0.33 m | 0.330000013 m | Bullet 浮点读回，与配置一致 |
-| 轮位 (x,y,z) | ±0.84, ±1.10, 0.25 m | (±0.839999974, 前 +1.100000024 / 后 −1.100000024, 0.25) m | getChassisConnectionPointCs() 单精度读回配置 hubs |
-| 悬架刚度 | 40 | 40 | getSuspensionStiffness() |
-| 压缩/伸张阻尼 | 4.4 / 2.3 | 4.400000095 / 2.299999952 | Bullet 单精度读回 |
-| 最大行程 | 源码固定 20 cm | 20 cm | Bullet wheel getter |
-| 静止长度 | createWheel() 未传值 | 0.400000006 m | Panda/Bullet 默认值 |
-| 最大悬架力 | 源码未显式设置 | 6000 N | 本机 Bullet 默认读数 |
-| 静置悬架长度 | — | 0.338687569 m | 240 tick 后射线读数；名义 rest length 压缩约 0.0613124 m |
-| 静态单轮支撑力 | 设计车重/4 = 2943 N | 2943.000977 N ×4 | 水平平面静置读数，合计约 11772 N；与设计质量重力相符 |
+| 项目 | 正常游戏实际值 | 困难仿真实际值 | 单位 |
+|---|---|---|---|
+| mass | 1200 | 1200 | kg |
+| inertia | [1919.560302734375,511.55987548828125,2290.000244140625] | [1919.56005859375,511.55999755859375,2290.0] | kg·m² |
+| angular_damping | 0.200000003 | 0 | 1 |
+| shape_half_extents | [1.0499999523162842,2.1500000953674316,0.41999998688697815] | [1.0499999523162842,2.1500000953674316,0.41999998688697815] | m |
+| shape_center | [0.0,0.0,0.41999998688697815] | [0.0,0.0,0.41999998688697815] | m |
+| 单轮radius | 0.3300000131 | 0.3300000131 | m |
+| 单轮rest_length | 0.400000006 | 0.400000006 | m |
+| 单轮travel_cm | 20 | 20 | cm |
+| 单轮force_limit | 6000 | 6000 | N |
+| 单轮stiffness | 40 | 40 | s⁻² |
+| 单轮compression_damping | 4.400000095 | 4.400000095 | s⁻¹ |
+| 单轮relaxation_damping | 2.299999952 | 2.299999952 | s⁻¹ |
+| 单轮roll_influence | 0.1000000015 | 0.1000000015 | 1 |
+| 静置前左normal_load | 2943.000977 | 2943.000977 | N |
+| 静置前左suspension_length | 0.3386875689 | 0.3386875689 | m |
 
-wheel local direction 为 (0,0,-1)，axle 为 (1,0,0)，前轮标记由 hub 的 y>0 确定。轮胎受力模型使用这些 raycast 的动态接点/法线/法向载荷；并未模拟分离的轮胎、轮毂或簧下刚体。
+## PHYS-TIRE历史B/C动力性证据
 
-## B 未补偿曲线与 C 游戏曲线
+下面保留PHYS-TIRE-01历史试验数字。B为未补偿曲线，C为非零节点×1.055的游戏候选；当时通过独立研究进程改变曲线。它们是历史软件/Bullet试验，不是当前困难仿真模式的重新测量，旧模块级CAR monkeypatch也不是当前配置接口。对应原始记录：[h1-static-raw.txt](evidence/PHYS-TIRE-01/h1-static-raw.txt)、[h1-calibration-trial.txt](evidence/PHYS-TIRE-01/h1-calibration-trial.txt)。
 
-B 曲线来自 git show 558d218:src/vehicle_config.py 原始五挡通用汽油机设计曲线；C 是当前源码 torque_curve，每个非零节点为 B×1.055。两者均为程序设计曲线，不是厂家台架数据。C 的 5.5% 提升用于补偿加入独立轮转动惯量后的游戏动力性变化，**仅供正常游戏模式**。拟建的通用仿真参考车从 B 曲线起步；在获得统一参考参数与实车型依据前，不称作真实车型。
+| 历史测量 | B | C |
+|---|---|---|
+| 0–100km/h | 10.0417 s | 9.5250 s |
+| 制动距离 | 46.2925 m | 46.2610 m |
+| 起步样本末速度 | 9.70003 m/s | 10.38680 m/s |
+| 起步样本位移 | 11.69393 m | 12.44400 m |
+| 22s末速度 | 149.91162 km/h | 154.13663 km/h |
+| 浅坡最大高度 | 1.27661 m | 1.27926 m |
+| 浅坡最大pitch | 6.73091° | 7.89623° |
 
-| 转速 rpm | B 未补偿曲轴转矩 N·m | C 游戏曲轴转矩 N·m | 差值 N·m |
-|---:|---:|---:|---:|
-| 900 | 110 | 116.05 | 6.05 |
-| 1800 | 165 | 174.075 | 9.075 |
-| 3200 | 200 | 211 | 11 |
-| 4500 | 190 | 200.45 | 10.45 |
-| 6000 | 150 | 158.25 | 8.25 |
-| 6500 | 0 | 0 | 0 |
+原参考表另记录同平路条件12s末速度B=31.1048m/s、C=32.1601m/s，末3挡转速分别4900.61/5070.15rpm。这组保留为历史记录，当前冻结JSON没有重新跑该动力工况。
 
-为检查 C/B 曲线分离，使用相同当前 Vehicle/Bullet 车身、轮胎、控制输入及 1/120 s 步进，在 Vehicle 实例创建前仅将 powertrain 模块运行期使用的 torque curve 分别设为 B 或 C；没有改写项目源码或其他车辆参数。无限水平平面、静置 240 tick，然后 Control(throttle=1) 连续 12 s。输入仍经过现有键盘踏板辅助，故这是当前整车游戏输入路径的比较，不是困难仿真控制验收。
+## 当前实例用法与重现
 
-| 曲线 | 达到 100 km/h 时间 | 12 s 末速度 | 12 s 末档位 / rpm |
-|---|---:|---:|---|
-| B 未补偿 | 10.0417 s | 31.1048 m/s（111.98 km/h） | 3 档 / 4900.61 rpm |
-| C 游戏补偿 | 9.5250 s | 32.1601 m/s（115.78 km/h） | 3 档 / 5070.15 rpm |
+```python
+from driving_modes import DrivingMode
+from simulation import Simulation
+sim = Simulation(driving_mode=DrivingMode.SIMULATION)
+```
 
-这是一次固定条件的 Bullet 对照读数，用来说明 C 的游戏补偿幅度及用途；不将单次试验当成通用参考车性能标定。B 与 C 的曲线本身可从上表逐项复算，未来模式实现应让正常游戏选 C、拟仿真参考车选 B，并把输入辅助另行显式配置。
+配置研究使用dataclasses.replace(mode.vehicle_config, ...)生成新冻结对象，并在创建Simulation/Vehicle时传入vehicle_config/config；Control走所选InputConfig，VehicleCommand是明确的执行器请求。JSON导出：
 
-## 参数使用边界
+```powershell
+.venv/Scripts/python.exe tools/physics/export_reference.py
+```
 
-当前实现通过模块级 CAR 与静态 WHEEL_HUBS 贯通车辆参数；VehicleConfig 实例尚未贯通 Vehicle → Simulation → Session。轮位、可视经典车轮点、交通恢复轴距与影响严重度质量也存在默认全局依赖。PHYS-MODES-01 应在创建时向每辆车及整场 Simulation 直接传入同一个冻结配置，reset、NPC recycle 与 Session 跨赛道重建都保留该实例；不要在存活的 Bullet 车身上替换参数对象。正常游戏与困难仿真共享物理核心，模式差异由明确的车辆参数与输入辅助选择表达。
+标准试验入口已提供以下参数；一次选择一个明确工况并写新证据目录，不对存活实例做全局参数替换：
+
+```powershell
+.venv/Scripts/python.exe tools/physics/testbed.py --driving-mode simulation --actuator-input --cases flat_acceleration --output logs/reference-flat
+.venv/Scripts/python.exe tools/physics/testbed.py --driving-mode simulation --vehicle-config config.json --actuator-input --cases steering_step --output logs/reference-steering
+```
+
+`--vehicle-config`接收车辆字段覆盖的JSON对象；`--actuator-input`绕过键盘辅助，仍使用同一真实齿条、动力总成、轮胎和Bullet世界。此表只冻结参数与一次静置读回，不据此宣称全部动力性、驾驶手感或视觉验收通过。

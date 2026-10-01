@@ -6,8 +6,10 @@ IDM/MOBIL references and our physical-controller differences: docs/traffic-resea
 import math
 import random
 
+from driver_assist import GAME_INPUT
 from traffic import Driver, Road, extents
 from traffic_recovery import TrafficRecovery
+from vehicle_config import CAR
 from vehicle_state import Control
 
 FLAT_ROAD = Road("endless")
@@ -31,8 +33,8 @@ def acceleration(speed, desired, gap=math.inf, lead_speed=0, *, headway=1.6, com
 
 
 class HighwayDriver(Driver):
-    def __init__(self, lane, seed):
-        super().__init__(lane, 25)
+    def __init__(self, lane, seed, *, config=CAR, input_config=GAME_INPUT):
+        super().__init__(lane, 25, config=config, input_config=input_config)
         self.rng = random.Random(seed)
         self.style = self.rng.choices(("relaxed", "regular", "brisk"), (2, 5, 3))[0]
         low, high, headway = {
@@ -67,7 +69,7 @@ class HighwayDriver(Driver):
         self.change_length = 60.0
         self.pedal = 0.0
         self.lane_changes = 0
-        self.recovery = TrafficRecovery()
+        self.recovery = TrafficRecovery(self.config, self.input_config)
         self.recovery_action = None
 
     def neighbors(self, car, traffic, road, lane):
@@ -76,11 +78,11 @@ class HighwayDriver(Driver):
         for other in traffic:
             if not other.active:
                 continue
-            width, length = extents(other.heading, 0)
+            width, length = extents(other.heading, 0, self.config)
             if abs(other.position[0] - lateral) > width + 0.95 + 0.25:
                 continue
             delta = other.position[1] - car.position[1]
-            gap = abs(delta) - length - extents(car.heading, 0)[1]
+            gap = abs(delta) - length - extents(car.heading, 0, self.config)[1]
             if delta >= 0 and gap < front[0]:
                 front = gap, other
             elif delta < 0 and gap < rear[0]:
@@ -130,7 +132,7 @@ class HighwayDriver(Driver):
     def anticipate(self, car, traffic, road):
         """Notice encroachment early; yield inside the lane before considering a lane change."""
         vx, vy = motion(car)
-        width, length = extents(car.heading, 0)
+        width, length = extents(car.heading, 0, self.config)
         offset, braking = 0.0, 0.0
         danger = False
         approaching = False
@@ -142,7 +144,7 @@ class HighwayDriver(Driver):
             if abs(dy) > 12 + abs(vy) * 2:
                 continue
             ox, oy = motion(other)
-            ow, ol = extents(other.heading, 0)
+            ow, ol = extents(other.heading, 0, self.config)
             if (
                 dy < -length - ol and abs(dx) < width + ow + 0.5
                 and oy - vy > 2 and -dy - length - ol < max(20, (oy - vy) * 5)
@@ -173,7 +175,7 @@ class HighwayDriver(Driver):
         target = road.lanes[self.lane] + offset
         # Never dodge into a car on the other side. Braking remains available.
         for other in traffic:
-            ow, ol = extents(other.heading, 0)
+            ow, ol = extents(other.heading, 0, self.config)
             if (
                 other.active
                 and abs(other.position[1] - car.position[1]) < length + ol + 5

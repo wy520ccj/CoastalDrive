@@ -4,6 +4,7 @@ from direct.gui.DirectGui import DirectFrame, OnscreenText
 from panda3d.core import TextNode, TransparencyAttrib
 
 from audio.music import STATIONS
+from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
 from race import GameMode
 from ui import theme
@@ -12,6 +13,14 @@ from ui import theme
 def set_text(widget, value):
     if widget.getText() != value:
         widget.setText(value)
+
+
+def driving_help(mode):
+    """输入说明只表达已有模式行为。"""
+    direction = " · Q 倒挡 / E 前进挡" if mode == DrivingMode.SIMULATION else ""
+    brake = "刹车" if mode == DrivingMode.SIMULATION else "刹车·倒车"
+    return (f"驾驶模式：{mode.label}{direction}\n"
+            f"W / ↑ 油门   S / ↓ {brake}   A D 转向   R 复位   C 视角   N 切台   M 音乐   Esc 暂停")
 
 
 class DrivingHUD:
@@ -81,12 +90,14 @@ class DrivingHUD:
                                         frameSize=(-0.89 + i * 0.039, -0.86 + i * 0.039, 0.033, 0.064))
                              for i in range(21)]
         self.help_frame = DirectFrame(parent=self.root, frameColor=(*theme.INK[:3], 0.70),
-                                      frameSize=(-0.75, 0.75, -0.025, 0.025), pos=(0, 0, -0.965))
+                                      frameSize=(-0.75, 0.75, -0.045, 0.045), pos=(0, 0, -0.94))
         self.help = OnscreenText(parent=self.help_frame,
                                 text="W / ↑ 油门    S / ↓ 刹车·倒车    A D 转向    R 复位    C 视角    N 切台    M 音乐    Esc 暂停",
-                                font=body_font, fg=theme.PAPER_LIGHT, pos=(0, -0.009), scale=0.027)
+                                font=body_font, fg=theme.PAPER_LIGHT, pos=(0, 0.009), scale=0.027, mayChange=True)
 
-    def update(self, state, race, highway, *, track, countdown, notice):
+    def update(self, state, race, highway, *, track, countdown, notice,
+               driving_mode=DrivingMode.GAME):
+        set_text(self.help, driving_help(driving_mode))
         set_text(self.speed, f"{abs(state.player.speed) * 3.6:03.0f}")
         set_text(self.gear, "R" if state.player.gear < 0 else f"D{state.player.gear}")
         set_text(self.gear_rpm, f"{state.player.rpm:4.0f} rpm")

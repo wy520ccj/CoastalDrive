@@ -1,0 +1,187 @@
+{
+  "started_utc": "2026-09-30T20:23:52.993106+00:00",
+  "git_head": "38f2a86d44f27e00fec59fe7607b2dbcd964e50c",
+  "git_status": "M docs/tasks/PHYS-MODES-01.md\n M src/application.py\n M src/controls.py\n M src/driver_assist.py\n M src/highway_driver.py\n M src/main.py\n M src/powertrain.py\n M src/race.py\n M src/scene.py\n M src/session.py\n M src/settings.py\n M src/simulation.py\n M src/traffic.py\n M src/traffic_recovery.py\n M src/ui/hud.py\n M src/ui/main_menu.py\n M src/vehicle.py\n M src/vehicle_config.py\n M src/vehicle_state.py\n M src/vehicle_steering.py\n M src/vehicle_tires.py\n M src/vehicle_visual.py\n M tests/test_core.py\n M tests/test_physics_testbed.py\n M tools/physics/testbed.py\n M tools/validate.py\n?? docs/evidence/PHYS-MODES-01/\n?? src/driving_modes.py\n?? tests/test_driving_mode_ui.py\n?? tests/test_driving_modes.py\n?? tests/test_mode_lifecycle.py\n?? tests/test_powertrain_config.py\n?? tests/test_vehicle_config.py\n?? tools/driving_mode_check.py\n?? tools/physics/export_reference.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [
+    "core",
+    "vehicle",
+    "traffic",
+    "gameplay",
+    "appearance"
+  ],
+  "tests": [],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-MODES-01\\t1\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.105
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_core.py",
+        "tests/test_stage4.py",
+        "tests/test_h1_vehicle.py",
+        "tests/test_driving_response.py",
+        "tests/test_curved_driving.py",
+        "tests/test_road_loads.py",
+        "tests/test_vehicle_contacts.py",
+        "tests/test_physics_testbed.py",
+        "tests/test_h2_map.py",
+        "tests/test_vehicle_commands.py",
+        "tests/test_steering_geometry.py",
+        "tests/test_tire_forces.py",
+        "tests/test_wheel_dynamics.py",
+        "tests/test_vehicle_tires.py",
+        "tests/test_vehicle_config.py",
+        "tests/test_powertrain_config.py",
+        "tests/test_driving_modes.py",
+        "tests/test_h4a_traffic.py",
+        "tests/test_traffic_behavior.py",
+        "tests/test_traffic_impacts.py",
+        "tests/test_traffic_recovery.py",
+        "tests/test_race.py",
+        "tests/test_highway_run.py",
+        "tests/test_h3_review.py",
+        "tests/test_mode_lifecycle.py",
+        "tests/test_appearance.py",
+        "tests/test_driving_mode_ui.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-MODES-01\\t1\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 168.997
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-MODES-01\\t1\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.738
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-MODES-01\\t1\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.736
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-MODES-01\\t1\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.725
+    },
+    {
+      "name": "hills-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/curve_drive_check.py",
+        "--shape",
+        "hills",
+        "--seconds",
+        "30",
+        "--seed",
+        "0",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-MODES-01\\t1\\hills-0.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-MODES-01\\t1\\hills-0.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-MODES-01\\t1\\hills-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 23.453
+    },
+    {
+      "name": "hills-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/curve_drive_check.py",
+        "--shape",
+        "hills",
+        "--seconds",
+        "30",
+        "--seed",
+        "23",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-MODES-01\\t1\\hills-23.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-MODES-01\\t1\\hills-23.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-MODES-01\\t1\\hills-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 24.172
+    }
+  ]
+}

@@ -10,10 +10,15 @@ class Controller(Protocol):
 class KeyboardController:
     def __init__(self):
         self.pressed = set()
+        self.direction = 1
 
     def press(self, key):
         fresh = key not in self.pressed
         self.pressed.add(key)
+        if key == "q":
+            self.direction = -1
+        elif key == "e":
+            self.direction = 1
         return fresh
 
     def release(self, key):
@@ -27,7 +32,7 @@ class KeyboardController:
         left = bool(self.pressed & {"a", "arrow_left"})
         brake = bool(self.pressed & {"s", "arrow_down"})
         throttle = bool(self.pressed & {"w", "arrow_up"}) and not brake
-        return Control(float(right - left), float(throttle), float(brake))
+        return Control(float(right - left), float(throttle), float(brake), self.direction)
 
 
 class ConstantController:

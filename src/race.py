@@ -80,12 +80,13 @@ class RaceTracker:
         self.snapshot = RaceSnapshot(mode=mode)
         self.start(mode)
 
-    def start(self, mode=None, circuit=None):
+    def start(self, mode=None, circuit=None, *, score_variant=""):
         if circuit is not None:
             self.circuit = circuit
         mode = self.snapshot.mode if mode is None else mode
+        self.score_id = self.circuit.score_id + (":" + score_variant if score_variant else "")
         self.snapshot = RaceSnapshot(
-            mode=mode, best_lap=self.scores.get(mode, self.circuit.score_id)
+            mode=mode, best_lap=self.scores.get(mode, self.score_id)
         )
         self._distance = self._furthest = 0.0
         self._previous_progress = 0.0
@@ -164,7 +165,7 @@ class RaceTracker:
             lap_time = self.snapshot.elapsed + dt * finish
             best = self.snapshot.best_lap
             if not self.snapshot.invalidated:
-                best, _ = self.scores.record(self.snapshot.mode, lap_time, self.circuit.score_id)
+                best, _ = self.scores.record(self.snapshot.mode, lap_time, self.score_id)
             self.snapshot = replace(
                 self.snapshot,
                 running=False,

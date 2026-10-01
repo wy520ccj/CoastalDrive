@@ -1,0 +1,16 @@
+{
+  "resolution": [
+    1920,
+    1080
+  ],
+  "screenshots": [
+    "game-menu.png",
+    "simulation-settings.png",
+    "simulation-menu.png",
+    "simulation-reverse-hud.png"
+  ],
+  "simulation_reverse_speed_mps": -4.323133945465088,
+  "driving_mode": "simulation",
+  "human_acceptance": "pending",
+  "passed": true
+}

@@ -19,6 +19,7 @@ from panda3d.core import BitMask32, TransformState, Vec3
 
 from coastal_collision import add_rail_shapes
 from coastal_map import SEA_LEVEL, map_meshes, on_road
+from driver_assist import GAME_INPUT
 from highway_driver import HighwayDriver
 from highway_map import HIGHWAY_LENGTH, collision_boxes, traffic_spawns
 from highway_map import SPAWN as HIGHWAY_SPAWN
@@ -30,7 +31,7 @@ from test_track import OBSTACLES, SPAWN, on_asphalt
 from traffic import Driver, Road, extents
 from traffic_recovery import TrafficRecovery
 from vehicle import Vehicle
-from vehicle_config import CAR
+from vehicle_config import CAR, body_center
 from vehicle_contacts import shift_contacts
 from vehicle_state import (
     FIXED_DT,
@@ -72,7 +73,11 @@ class Snapshot:
 
 class Simulation:
     def __init__(self, seed=0, *, track="coastal", wind=(0, 0, 0), traffic_count=None,
-                 road_shape="straight", traffic_span=540):
+                 road_shape="straight", traffic_span=540, config=CAR,
+                 input_config=GAME_INPUT, traffic_input_config=GAME_INPUT):
+        self.config = config
+        self.input_config = input_config
+        self.traffic_input_config = traffic_input_config
         self.wind = Vec3(*wind)
         self.track = track
         self.road_shape = road_shape
@@ -197,16 +202,16 @@ class Simulation:
         return (float(vector.x), float(vector.y), float(vector.z))
 
     @staticmethod
-    def _contact_zone(position, normal):
-        x, y, z = position
+    def _contact_zone(position, normal, config=CAR):
+        x, y, z = (a - b for a, b in zip(position, body_center(config)))
         nx, ny, nz = normal
         # Bullet 法线指向玩家，受撞的车身面位于反方向。
         by_normal = max((abs(nx), "right" if nx < 0 else "left"),
                         (abs(ny), "front" if ny < 0 else "rear"),
                         (abs(nz), "roof" if nz < 0 else "underbody"))
-        by_position = max((abs(x) / CAR.collision_half_width, "left" if x < 0 else "right"),
-                          (abs(y) / CAR.collision_half_length, "rear" if y < 0 else "front"),
-                          (abs(z - 0.42) / 0.42, "underbody" if z < 0.42 else "roof"))
+        by_position = max((abs(x) / config.collision_half_width, "left" if x < 0 else "right"),
+                          (abs(y) / config.collision_half_length, "rear" if y < 0 else "front"),
+                          (abs(z) / config.collision_half_height, "underbody" if z < 0 else "roof"))
         return by_normal[1] if abs(by_position[0] - by_normal[0]) < 0.3 else by_position[1]
 
     @staticmethod
@@ -263,7 +268,7 @@ class Simulation:
                     (source_id,), material, barrier_side, impulse, distance,
                     int(point.getLifeTime()), normal_speed, tangent_speed,
                     local_position, local_normal,
-                    self._contact_zone(local_position, local_normal),
+                    self._contact_zone(local_position, local_normal, self.config),
                 )
                 samples.append(sample)
                 key = ImpactTracker.key(sample)
@@ -388,7 +393,10 @@ class Simulation:
                 self._world.attachRigidBody(body)
 
         self._build_props()
-        self.player = Vehicle(self._world, self.on_asphalt, self.spawn, wind=self.wind)
+        self.player = Vehicle(
+            self._world, self.on_asphalt, self.spawn, wind=self.wind,
+            config=self.config, input_config=self.input_config,
+        )
         if self.road.curve:
             p = self.road.sample(8, 1)
             self.player.reset(self.spawn, p.heading, p.grade)
@@ -454,11 +462,15 @@ class Simulation:
                 heading=p.heading,
                 pitch=p.grade,
                 reverse_enabled=False,
+                config=self.config, input_config=self.traffic_input_config,
             )
             self.npcs.append(car)
-            self.drivers.append(Driver(lane, speed))
+            self.drivers.append(Driver(lane, speed, config=self.config, input_config=self.traffic_input_config))
             if self.track == "endless":
-                self.drivers[-1] = HighwayDriver(lane, self.seed * 1009 + i * 9176 + 41)
+                self.drivers[-1] = HighwayDriver(
+                    lane, self.seed * 1009 + i * 9176 + 41,
+                    config=self.config, input_config=self.traffic_input_config,
+                )
             self._traffic_bodies.append(car._chassis)
             self._traffic.append([lane, distance, speed])
             self._traffic_controls.append(Control())
@@ -515,13 +527,13 @@ class Simulation:
         candidate = CarState(tuple(point), heading, speed)
         distance, lateral = self.road.locate(candidate)
         road_heading = self.road.sample(distance, 0).heading
-        width, length = extents(heading, road_heading)
+        width, length = extents(heading, road_heading, self.config)
         for car in [self.player, *self.npcs]:
             if car is ignore or car._chassis in self._retired_traffic:
                 continue
             state = car.snapshot(include_wheels=False)
             other_s, other_lateral = self.road.locate(state)
-            other_width, other_length = extents(state.heading, road_heading)
+            other_width, other_length = extents(state.heading, road_heading, self.config)
             if abs(other_lateral - lateral) > width + other_width + 0.4:
                 continue
             delta = self.road.delta(other_s, distance)
@@ -601,7 +613,7 @@ class Simulation:
                 self._retired_traffic.remove(body)
                 self.drivers[i].recovering = False
                 self.drivers[i].cancel()
-                self.drivers[i].recovery = TrafficRecovery()
+                self.drivers[i].recovery = TrafficRecovery(self.config, self.traffic_input_config)
                 self.drivers[i].recovery_action = None
                 self._traffic_controls[i] = Control()
                 self._generations[i] += 1
