@@ -5,6 +5,8 @@ from dataclasses import replace
 
 from panda3d.core import Mat3, Quat, Vec3
 
+from tire_compliance import deformation_frame, project_deformation, world_deformation
+from tire_coupling import ContactFrame, advance_coupled, cross, dot
 from tire_forces import slip_state
 from tire_properties import tire_grip, tire_stiffness
 from vehicle_config import CAR, wheel_hubs
@@ -20,6 +22,7 @@ class Tires:
         self.rear_config = replace(config, lateral_stiffness=config.rear_lateral_stiffness)
         self.omega = [0.0] * 4
         self.rotation = [0.0] * 4
+        self.deformation = [(0.0, 0.0, 0.0)] * 4
         self.states = tuple(WheelDynamicsState() for _ in range(4))
 
     def initialize_rolling(self, speed):
@@ -67,14 +70,33 @@ class Tires:
             response_x = inv_inertia.xform(moment_x)
             response_y = inv_inertia.xform(moment_y)
             response_t = inv_inertia.xform(axle)
-            mobility = Mobility(
-                1 / config.mass + moment_x.dot(response_x),
-                moment_x.dot(response_y), moment_x.dot(response_t),
-                1 / config.mass + moment_y.dot(response_y),
-                moment_y.dot(response_t), axle.dot(response_t),
-            )
-            wheel_frames.append((
+            elastic_frame = None
+            if config.tire_compliance:
+                elastic_frame = deformation_frame(tuple(tangent), tuple(normal))
+                tangent, axle, normal = elastic_frame
+                point = tuple(point)
+                hub = tuple(point[a] + normal[a] * config.wheel_radius for a in range(3))
+                moment_x, moment_y = cross(hub, tangent), cross(point, axle)
+                # 同一对称惯量与双精度正交基用于所有轮的速度、作用与反作用。
+                tensor = tuple(tuple((inv_inertia.getCell(a, b) + inv_inertia.getCell(b, a)) / 2
+                                     for b in range(3)) for a in range(3))
+                response_x, response_y, response_t = tuple(
+                    tuple(dot(row, vector) for row in tensor) for vector in (moment_x, moment_y, axle))
+                mobility = Mobility(
+                    1 / config.mass + dot(moment_x, response_x),
+                    dot(moment_x, response_y), dot(moment_x, response_t),
+                    1 / config.mass + dot(moment_y, response_y),
+                    dot(moment_y, response_t), dot(axle, response_t))
+            else:
+                mobility = Mobility(
+                    1 / config.mass + moment_x.dot(response_x),
+                    moment_x.dot(response_y), moment_x.dot(response_t),
+                    1 / config.mass + moment_y.dot(response_y),
+                    moment_y.dot(response_t), axle.dot(response_t))
+            wheel_frames.append(ContactFrame(
                 angle, supported, load, mu, tangent, axle, point, hub, mobility,
+                elastic_frame,
+                tuple(response_x), tuple(response_y), tuple(response_t),
             ))
 
         sub_dt = dt / config.tire_substeps
@@ -82,34 +104,61 @@ class Tires:
         longitudinal_impulses = [0.0] * 4
         lateral_impulses = [0.0] * 4
         brake_angular_impulses = [0.0] * 4
+        material_dissipation = [0.0] * 4
+        road_dissipation = [0.0] * 4
+        elastic_numerical_dissipation = [0.0] * 4
+        frame_dissipation = [0.0] * 4
+        drives = (0.0, 0.0, drive / 2, drive / 2)
+        capacities = tuple(config.brake_torque * pressures[i] * (
+            config.front_brake_share if i < 2 else 1 - config.front_brake_share) / 2
+            + (engine_drag / 2 if i >= 2 else 0.0) for i in range(4))
         for substep in range(config.tire_substeps):
+            steps = None
+            if config.tire_compliance:
+                projected = []
+                for i, frame in enumerate(wheel_frames):
+                    elastic, loss = project_deformation(self.deformation[i], frame.elastic_frame,
+                                                       config.tire_contact_stiffness)
+                    projected.append(elastic)
+                    frame_dissipation[i] += loss
+                fraction = (substep + 1) / config.tire_substeps
+                free_velocity = tuple(chassis.getLinearVelocity()[a] + external_velocity[a] * fraction for a in range(3))
+                free_angular = tuple(chassis.getAngularVelocity()[a] + external_angular[a] * fraction for a in range(3))
+                steps = advance_coupled(free_velocity, free_angular, self.omega, wheel_frames,
+                                        projected, drives, capacities, config, self.rear_config, sub_dt)
             # 正反次序成对，避免固定左轮先积分产生持续偏航偏置。
             order = range(4) if substep % 2 == 0 else range(3, -1, -1)
             for index in order:
                 frame = wheel_frames[index]
-                angle, supported, load, mu, tangent, axle, point, hub, mobility = frame
-                # 预报Bullet随后推进的已知外力增量；冲量只施加轮胎部分，不重复推进外力。
-                velocity = chassis.getLinearVelocity() + Vec3(*external_velocity)
-                angular = chassis.getAngularVelocity() + Vec3(*external_angular)
-                vx = (velocity + angular.cross(hub)).dot(tangent)
-                vy = (velocity + angular.cross(point)).dot(axle)
-                requested_drive = drive / 2 if index >= 2 else 0.0
-                share = config.front_brake_share if index < 2 else 1 - config.front_brake_share
-                capacity = config.brake_torque * pressures[index] * share / 2
-                if index >= 2:
-                    capacity += engine_drag / 2
-                step = advance_wheel(
-                    self.omega[index], float(vx), float(vy), float(angular.dot(axle)),
-                    requested_drive, capacity, load, mu, mobility, sub_dt,
-                    config if index < 2 else self.rear_config,
-                )
-                force = tangent * step.fx + axle * step.fy
-                chassis.applyImpulse(force * sub_dt, point)
+                angle, supported, load, mu = frame.steering, frame.supported, frame.load, frame.mu
+                tangent, axle, point, hub = frame.tangent, frame.axle, frame.point, frame.hub
+                mobility, elastic_frame = frame.mobility, frame.elastic_frame
+                requested_drive, capacity = drives[index], capacities[index]
+                if config.tire_compliance:
+                    step = steps[index]
+                    self.deformation[index] = world_deformation(
+                        (step.deformation_x, step.deformation_y), elastic_frame)
+                else:
+                    # 原刚性分支的外力预报时序保留，用于冻结机械对照。
+                    velocity = chassis.getLinearVelocity() + Vec3(*external_velocity)
+                    angular = chassis.getAngularVelocity() + Vec3(*external_angular)
+                    vx = (velocity + angular.cross(hub)).dot(tangent)
+                    vy = (velocity + angular.cross(point)).dot(axle)
+                    step = advance_wheel(
+                        self.omega[index], float(vx), float(vy), float(angular.dot(axle)),
+                        requested_drive, capacity, load, mu, mobility, sub_dt,
+                        config if index < 2 else self.rear_config,
+                    )
+                force = Vec3(*tangent) * step.fx + Vec3(*axle) * step.fy
+                chassis.applyImpulse(force * sub_dt, Vec3(*point))
                 reaction = requested_drive - step.brake_torque - config.wheel_radius * step.fx
-                chassis.applyTorqueImpulse(axle * (sub_dt * reaction))
+                chassis.applyTorqueImpulse(Vec3(*axle) * (sub_dt * reaction))
                 longitudinal_impulses[index] += sub_dt * step.fx
                 lateral_impulses[index] += sub_dt * step.fy
                 brake_angular_impulses[index] += sub_dt * step.brake_torque
+                material_dissipation[index] += step.material_dissipation
+                road_dissipation[index] += step.road_dissipation
+                elastic_numerical_dissipation[index] += step.elastic_numerical_dissipation
                 self.omega[index] = step.omega
                 self.rotation[index] += sub_dt * step.relative_omega
                 wheel_config = config if index < 2 else self.rear_config
@@ -132,6 +181,15 @@ class Tires:
                     brake_angular_impulse=brake_angular_impulses[index],
                     force_grip=tire_grip(load, mu, config),
                     force_longitudinal_stiffness=cx, force_lateral_stiffness=cy,
+                    deformation_x=step.deformation_x, deformation_y=step.deformation_y,
+                    force_patch_kappa=step.patch_kappa if supported else None,
+                    force_patch_alpha=step.patch_alpha if supported else None,
+                    elastic_energy=step.elastic_energy,
+                    material_dissipation=material_dissipation[index],
+                    road_dissipation=road_dissipation[index],
+                    elastic_numerical_dissipation=elastic_numerical_dissipation[index],
+                    frame_dissipation=frame_dissipation[index],
+                    deformation_rate_x=step.deformation_rate_x, deformation_rate_y=step.deformation_rate_y,
                 )
         self.states = tuple(states)
 

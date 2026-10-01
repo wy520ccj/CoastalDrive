@@ -23,9 +23,11 @@ def capture(source, destination, current, feature="tcs"):
 
     config = CAR
     if current:
-        config = replace(CAR, tire_peak_load_exponent=1, longitudinal_load_exponent=1,
-                         lateral_load_exponent=1)
-        if feature != "load":
+        config = replace(CAR, tire_compliance=False)
+        if feature != "compliance":
+            config = replace(config, tire_peak_load_exponent=1, longitudinal_load_exponent=1,
+                             lateral_load_exponent=1)
+        if feature not in ("load", "compliance"):
             config = replace(config, stability=replace(CAR.stability, esc_enabled=False))
         if feature == "tcs":
             config = replace(config, traction=replace(config.traction, tcs_enabled=False))
@@ -95,7 +97,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--baseline", default="bd0f9e4")
-    parser.add_argument("--feature", choices=("tcs", "esc", "load"), default="tcs")
+    parser.add_argument("--feature", choices=("tcs", "esc", "load", "compliance"), default="tcs")
     parser.add_argument("--capture", type=Path)
     parser.add_argument("--current", action="store_true")
     args = parser.parse_args()

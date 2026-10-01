@@ -1,0 +1,96 @@
+{
+  "seconds": 30.0,
+  "ticks": 3600,
+  "track": "highway",
+  "seed": 23,
+  "traffic_count": 8,
+  "physics_seconds": 98.6877,
+  "player_collision_steps": 0,
+  "npc_collision_steps": 0,
+  "npc_collision_pairs": [],
+  "traffic_cycles": 2,
+  "failures": [],
+  "passed": true,
+  "npcs": [
+    {
+      "index": 0,
+      "active": true,
+      "generation": 0,
+      "cumulative_m": 359.735,
+      "max_route_error_m": 0.0,
+      "laps": 0.257,
+      "stopped": false,
+      "stopped_fraction": 0.018
+    },
+    {
+      "index": 1,
+      "active": true,
+      "generation": 0,
+      "cumulative_m": 406.237,
+      "max_route_error_m": 0.0,
+      "laps": 0.29,
+      "stopped": false,
+      "stopped_fraction": 0.018
+    },
+    {
+      "index": 2,
+      "active": true,
+      "generation": 0,
+      "cumulative_m": 376.689,
+      "max_route_error_m": 0.0,
+      "laps": 0.269,
+      "stopped": false,
+      "stopped_fraction": 0.018
+    },
+    {
+      "index": 3,
+      "active": true,
+      "generation": 0,
+      "cumulative_m": 443.484,
+      "max_route_error_m": 0.0,
+      "laps": 0.317,
+      "stopped": false,
+      "stopped_fraction": 0.018
+    },
+    {
+      "index": 4,
+      "active": true,
+      "generation": 0,
+      "cumulative_m": 497.554,
+      "max_route_error_m": 0.0,
+      "laps": 0.355,
+      "stopped": false,
+      "stopped_fraction": 0.018
+    },
+    {
+      "index": 5,
+      "active": true,
+      "generation": 0,
+      "cumulative_m": 426.932,
+      "max_route_error_m": 0.0,
+      "laps": 0.305,
+      "stopped": false,
+      "stopped_fraction": 0.018
+    },
+    {
+      "index": 6,
+      "active": true,
+      "generation": 2,
+      "cumulative_m": 398.993,
+      "max_route_error_m": 0.0,
+      "laps": 0.285,
+      "stopped": false,
+      "stopped_fraction": 0.036
+    },
+    {
+      "index": 7,
+      "active": true,
+      "generation": 2,
+      "cumulative_m": 366.138,
+      "max_route_error_m": 0.0,
+      "laps": 0.262,
+      "stopped": false,
+      "stopped_fraction": 0.036
+    }
+  ]
+}

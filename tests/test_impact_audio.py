@@ -1,9 +1,11 @@
 """用真实事件合同检查重触发、分层和声音预算。"""
 
 import json
+from dataclasses import replace
 from io import StringIO
 from itertools import pairwise
 
+import pytest
 from test_soundscape import FakeBase, contact, event
 
 from audio.impact import ImpactAudio, severity_for
@@ -97,3 +99,71 @@ def test_mute_and_epoch_change_do_not_queue_old_hit():
     sound.update((event(1, epoch=2),), (), .016, 1, epoch=2)
     assert len(decisions(log)) == 1
     assert all(voice.event_id.startswith("2:") for voice in sound.voices)
+
+
+def test_low_impulse_contact_cannot_start_scrape():
+    sound, log = mixer()
+    for tick in range(1, 30):
+        sound.update((), (contact(tick, impulse=24.9),), 1 / 120, 1, epoch=1)
+    assert sound.scrape_sound is None
+    assert not any(json.loads(line).get("state") == "attack" for line in log.getvalue().splitlines())
+
+
+def test_same_source_low_impulse_contact_maintains_one_loop_at_real_load():
+    sound, log = mixer()
+    for tick in (1, 2):
+        sound.update((), (contact(tick),), 1 / 120, 1, epoch=1)
+    handle = sound.scrape_sound
+    for tick in range(3, 123):
+        sound.update((), (contact(tick, impulse=0 if tick < 60 else 10),), 1 / 120, 1, epoch=1)
+        assert sound.scrape_sound is handle
+        assert sound.scrape_misses == 0
+        assert sound.scrape_state == "sustain"
+    assert handle.play_count == 1
+    assert sound.scrape_target == pytest.approx((.10 + .25 * (8 - 1.6) / 9) * 10 / 170)
+    assert sum(json.loads(line).get("state") == "attack" for line in log.getvalue().splitlines()) == 1
+
+
+def test_new_low_impulse_source_cannot_borrow_playing_loop_qualification():
+    sound, _ = mixer()
+    for tick in (1, 2):
+        sound.update((), (contact(tick),), 1 / 120, 1, epoch=1)
+    handle = sound.scrape_sound
+    for tick in range(3, 33):
+        sound.update((), (contact(tick, impulse=10, source=2),), 1 / 120, 1, epoch=1)
+    assert sound.scrape_state == "off" and sound.scrape_sound is None
+    assert handle.play_count == 1
+    assert sound.scrape_source is None
+
+
+@pytest.mark.parametrize("low_speed", [False, True])
+def test_same_source_scrape_ends_on_missing_contact_or_actual_speed_exit(low_speed):
+    sound, _ = mixer()
+    for tick in (1, 2):
+        sound.update((), (contact(tick),), 1 / 120, 1, epoch=1)
+    handle = sound.scrape_sound
+    for tick in range(3, 33):
+        contacts = (contact(tick, tangent=1.59),) if low_speed else ()
+        sound.update((), contacts, 1 / 120, 1, epoch=1)
+        if tick < 5:
+            assert sound.scrape_misses < 3
+            assert sound.scrape_sound is handle
+    assert sound.scrape_state == "off" and sound.scrape_sound is None
+
+
+def test_overlapping_rail_source_sets_continue_single_scrape_but_material_must_match():
+    sound, _ = mixer()
+    for tick in (1, 2):
+        sound.update((), (contact(tick),), 1 / 120, 1, epoch=1)
+    handle = sound.scrape_sound
+    for tick, sources in ((3, (1, 2)), (4, (2,)), (5, (2,))):
+        state = replace(contact(tick, impulse=10), sources=sources)
+        sound.update((), (state,), 1 / 120, 1, epoch=1)
+        assert sound.scrape_sound is handle
+        assert sound.scrape_source == ("metal_barrier", sources)
+        assert sound.scrape_state == "sustain"
+    assert handle.play_count == 1
+    for tick in range(6, 36):
+        state = replace(contact(tick, impulse=10, source=2), material="vehicle")
+        sound.update((), (state,), 1 / 120, 1, epoch=1)
+    assert sound.scrape_sound is None and sound.scrape_state == "off"

@@ -1,0 +1,24 @@
+{
+  "status": "completed",
+  "fixed_grid_rows": 2025,
+  "continuous_sequences": {
+    "rolling": {
+      "ticks_written": 240,
+      "aborted_on_exception": false,
+      "failed_check_count": 0
+    },
+    "braking": {
+      "ticks_written": 240,
+      "aborted_on_exception": false,
+      "failed_check_count": 0
+    },
+    "reverse": {
+      "ticks_written": 240,
+      "aborted_on_exception": false,
+      "failed_check_count": 0
+    }
+  },
+  "failure_count": 0,
+  "minimum_failure_parameters": null,
+  "source_unchanged": true
+}

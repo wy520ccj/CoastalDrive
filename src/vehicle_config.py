@@ -48,6 +48,9 @@ class VehicleConfig:
     tire_peak_load_exponent: float = .90  # 峰值力随轮荷次线性增长；1恢复原线性模型。
     longitudinal_load_exponent: float = .90
     lateral_load_exponent: float = .85
+    tire_compliance: bool = True
+    tire_contact_stiffness: float = 150000.0  # 二维各向同性接触区弹性，N/m。
+    tire_contact_damping: float = 1000.0  # N·s/m。
     tire_shape: float = 1.9
     tire_curvature: float = 0.97
     slip_speed: float = 1.0  # 低速滑移分母的模型尺度，m/s。

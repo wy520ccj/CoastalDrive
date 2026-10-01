@@ -95,6 +95,17 @@ class WheelDynamicsState:
     sample_grip: float = 0.0
     force_longitudinal_stiffness: float = 0.0
     force_lateral_stiffness: float = 0.0
+    deformation_x: float = 0.0
+    deformation_y: float = 0.0
+    force_patch_kappa: float | None = None
+    force_patch_alpha: float | None = None
+    elastic_energy: float = 0.0
+    material_dissipation: float = 0.0
+    road_dissipation: float = 0.0
+    elastic_numerical_dissipation: float = 0.0
+    frame_dissipation: float = 0.0
+    deformation_rate_x: float = 0.0
+    deformation_rate_y: float = 0.0
 
 
 @dataclass(frozen=True)

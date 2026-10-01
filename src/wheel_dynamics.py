@@ -3,6 +3,7 @@
 import math
 from dataclasses import dataclass
 
+from tire_compliance import contact_force, energy_terms
 from tire_forces import combined_force, slip_state
 from tire_properties import tire_grip, tire_stiffness
 from vehicle_config import CAR
@@ -34,10 +35,20 @@ class WheelStep:
     brake_torque: float
     residual: float
     mode: str
+    deformation_x: float = 0.0
+    deformation_y: float = 0.0
+    patch_kappa: float | None = None
+    patch_alpha: float | None = None
+    elastic_energy: float = 0.0
+    material_dissipation: float = 0.0
+    road_dissipation: float = 0.0
+    elastic_numerical_dissipation: float = 0.0
+    deformation_rate_x: float = 0.0
+    deformation_rate_y: float = 0.0
 
 
 def advance_wheel(omega, vx, vy, body_omega, drive, brake, load, mu, mobility, dt,
-                  config=CAR):
+                  config=CAR, deformation=(0.0, 0.0), force_tolerance=.001, rolling_contact=None):
     """同时求解接地力、轮速和干式制动反力；车体由调用方施加同一冲量。"""
     radius, inertia = config.wheel_radius, config.wheel_inertia
     m = mobility
@@ -60,9 +71,34 @@ def advance_wheel(omega, vx, vy, body_omega, drive, brake, load, mu, mobility, d
 
     def residual(fx, fy):
         values = state(fx, fy)
-        target_x, target_y = combined_force(values[4], values[5], grip, cx, cy,
-                                          config.tire_shape, config.tire_curvature)
+        if config.tire_compliance:
+            target, *_rest = compliant_state(fx, fy, values)
+            target_x, target_y = target
+        else:
+            target_x, target_y = combined_force(values[4], values[5], grip, cx, cy,
+                                              config.tire_shape, config.tire_curvature)
         return fx - target_x, fy - target_y
+
+    def compliant_state(fx, fy, values):
+        return contact_force((fx, fy), deformation, (radius * values[0] - values[1], -values[2]),
+                             max(abs(values[1]), config.slip_speed),
+                             (max(abs(vx), abs(radius * omega)) >= config.static_contact_speed
+                              if rolling_contact is None else rolling_contact),
+                             grip, cx, cy, dt, config.tire_contact_stiffness,
+                             config.tire_contact_damping, config.tire_shape, config.tire_curvature)
+
+    if config.tire_compliance:
+        fx, fy, error = _solve_force(residual, tolerance=force_tolerance)
+        values = state(fx, fy)
+        _target, elastic, rate, patch, kappa, alpha, mode = compliant_state(fx, fy, values)
+        if load == 0:
+            mode = "airborne"
+        energy, material, road, numerical = energy_terms(
+            (fx, fy), deformation, elastic, rate, patch, dt,
+            config.tire_contact_stiffness, config.tire_contact_damping)
+        return WheelStep(values[0], values[0] + values[3], values[1], values[2], values[3],
+                         values[4], values[5], fx, fy, values[6], error, mode,
+                         *elastic, kappa, alpha, energy, material, road, numerical, *rate)
 
     mode = "magic-formula" if load > 0 else "airborne"
     if load > 0 and max(abs(vx), abs(vy), abs(radius * omega)) < config.static_contact_speed:
@@ -88,14 +124,14 @@ def advance_wheel(omega, vx, vy, body_omega, drive, brake, load, mu, mobility, d
     )
 
 
-def _solve_force(residual):
+def _solve_force(residual, tolerance=.001):
     """双精度牛顿求解Fx/Fy；不收敛明确报错，不切换到另一套隐含物理。"""
     fx, fy = 0.0, 0.0
     epsilon = 0.01
     for _ in range(20):
         rx, ry = residual(fx, fy)
         error = math.hypot(rx, ry)
-        if error < 0.001:
+        if error < tolerance:
             return fx, fy, error
         px, py = residual(fx + epsilon, fy)
         nx, ny = residual(fx - epsilon, fy)

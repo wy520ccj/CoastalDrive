@@ -1,0 +1,26 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_____ test_sustained_real_rail_contact_plays_one_hit_and_one_scrape_loop ______
+
+    def test_sustained_real_rail_contact_plays_one_hit_and_one_scrape_loop():
+        simulation = Simulation(track="highway", traffic_count=0)
+        sound = Soundscape(FakeBase())
+        log = StringIO()
+        sound.set_impact_diagnostic(log)
+        try:
+            simulation.reset_player((6.9, 30, .55))
+            simulation._chassis.setLinearVelocity(Vec3(.5, 8, 0))
+            simulation.player.tires.initialize_rolling(8)
+            for _ in range(840):
+                simulation.step(VehicleCommand(throttle=.5, steering=2, direction=1))
+                sound.update(simulation.snapshot(), phase("driving"), None, 1 / 120)
+            rows = [json.loads(line) for line in log.getvalue().splitlines()]
+            assert sum(bool(row.get("layers")) for row in rows if row["type"] == "decision") == 1
+>           assert sum(row.get("state") == "attack" for row in rows if row["type"] == "scrape") == 1
+E           assert 4 == 1
+E            +  where 4 = sum(<generator object test_sustained_real_rail_contact_plays_one_hit_and_one_scrape_loop.<locals>.<genexpr> at 0x000002B07C1D67A0>)
+
+tests\test_impact_integration.py:85: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_impact_integration.py::test_sustained_real_rail_contact_plays_one_hit_and_one_scrape_loop
+1 failed in 7.85s

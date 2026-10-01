@@ -1,0 +1,73 @@
+{
+  "preflight_only": true,
+  "branch": "main",
+  "head": "0362ee637b9703326be1e0a8d6b88158d60c419d",
+  "remote_main": "6fbcd36f24c92e267428c1076f6e8fbd2a4af1db\trefs/heads/main",
+  "files_excluding_source_user_cache": 174,
+  "total_bytes": 136483724,
+  "largest": [
+    {
+      "path": "docs/evidence/PHYS-TIRE-03/mechanical-rigid/B/coastal.jsonl.gz",
+      "bytes": 6642910
+    },
+    {
+      "path": "docs/evidence/PHYS-TIRE-03/mechanical-rigid/A/coastal.jsonl.gz",
+      "bytes": 6531969
+    },
+    {
+      "path": "docs/evidence/PHYS-TIRE-03/mechanical-rigid/B/endless.jsonl.gz",
+      "bytes": 6445943
+    },
+    {
+      "path": "docs/evidence/PHYS-TIRE-03/mechanical-rigid/A/endless.jsonl.gz",
+      "bytes": 6343698
+    },
+    {
+      "path": "docs/evidence/PHYS-TIRE-03/t2-final/interactions.json",
+      "bytes": 4238256
+    }
+  ],
+  "evidence_untracked_count": 136,
+  "ignored_log_files": [
+    "docs/evidence/PHYS-TIRE-03/audio-contact-t0.log",
+    "docs/evidence/PHYS-TIRE-03/audio-t1/headless-0.log",
+    "docs/evidence/PHYS-TIRE-03/audio-t1/headless-17.log",
+    "docs/evidence/PHYS-TIRE-03/audio-t1/headless-23.log",
+    "docs/evidence/PHYS-TIRE-03/audio-t1/pytest.log",
+    "docs/evidence/PHYS-TIRE-03/audio-t1/ruff.log",
+    "docs/evidence/PHYS-TIRE-03/braking-command-t0.log",
+    "docs/evidence/PHYS-TIRE-03/component-t0.log",
+    "docs/evidence/PHYS-TIRE-03/mechanical-run.log",
+    "docs/evidence/PHYS-TIRE-03/rail-contact-t0.log",
+    "docs/evidence/PHYS-TIRE-03/substeps-run.log",
+    "docs/evidence/PHYS-TIRE-03/t1/headless-0.log",
+    "docs/evidence/PHYS-TIRE-03/t1/headless-17.log",
+    "docs/evidence/PHYS-TIRE-03/t1/headless-23.log",
+    "docs/evidence/PHYS-TIRE-03/t1/hills-0.log",
+    "docs/evidence/PHYS-TIRE-03/t1/hills-23.log",
+    "docs/evidence/PHYS-TIRE-03/t1/pytest.log",
+    "docs/evidence/PHYS-TIRE-03/t1/ruff.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/finite-coastal.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/finite-highway.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/handling.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/headless-0.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/headless-17.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/headless-23.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/hills-0.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/hills-17.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/hills-23.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/interactions.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/pytest.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/ruff.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/straight-0.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/straight-17.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/straight-23.log",
+    "docs/evidence/PHYS-TIRE-03/t2-final/surface.log",
+    "docs/evidence/PHYS-TIRE-03/t2/pytest.log",
+    "docs/evidence/PHYS-TIRE-03/t2/ruff.log",
+    "docs/evidence/PHYS-TIRE-03/vehicle-ab-run.log",
+    "docs/evidence/PHYS-TIRE-03/vehicle-t0-initial.log"
+  ],
+  "excluded_baseline_source_count": 100,
+  "excluded_user_data_count": 0
+}

@@ -293,7 +293,7 @@ def main():
                      traction=replace(CAR.traction, tcs_enabled=False),
                      stability=replace(CAR.stability, esc_enabled=False),
                      tire_peak_load_exponent=1, longitudinal_load_exponent=1,
-                     lateral_load_exponent=1) if args.legacy_actuator else CAR
+                     lateral_load_exponent=1, tire_compliance=False) if args.legacy_actuator else CAR
     current_config, config_differences = _config_comparison(old_metadata["config"], config)
     output.mkdir(parents=True)
     results = [run_case(case, old_metadata, output, config) for case in (args.case or list(CASES))]

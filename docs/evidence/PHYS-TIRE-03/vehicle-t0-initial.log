@@ -1,0 +1,54 @@
+.......................FF..............................................  [100%]
+================================== FAILURES ===================================
+_______ test_real_low_speed_braking_settles_after_elastic_recoil[-0.1] ________
+
+speed = -0.1
+
+    @pytest.mark.parametrize("speed", [-.1, .1])
+    def test_real_low_speed_braking_settles_after_elastic_recoil(speed):
+        sim = Simulation(track="test", traffic_count=0, config=CONFIG)
+        try:
+            for _ in range(240):
+                sim.step(Control())
+            car = sim.player
+            car._chassis.setLinearVelocity(Vec3(0, speed, 0))
+            car._chassis.setAngularVelocity(Vec3(0))
+            car.tires.initialize_rolling(speed)
+            for _ in range(120):
+                sim.step(Control(brake=1))
+            state = car.snapshot()
+>           assert abs(car.signed_speed()) < .01
+E           assert 0.7853796482086182 < 0.01
+E            +  where 0.7853796482086182 = abs(-0.7853796482086182)
+E            +    where -0.7853796482086182 = signed_speed()
+E            +      where signed_speed = <vehicle.Vehicle object at 0x0000024B2E83D950>.signed_speed
+
+tests\test_tire_compliance_integration.py:123: AssertionError
+________ test_real_low_speed_braking_settles_after_elastic_recoil[0.1] ________
+
+speed = 0.1
+
+    @pytest.mark.parametrize("speed", [-.1, .1])
+    def test_real_low_speed_braking_settles_after_elastic_recoil(speed):
+        sim = Simulation(track="test", traffic_count=0, config=CONFIG)
+        try:
+            for _ in range(240):
+                sim.step(Control())
+            car = sim.player
+            car._chassis.setLinearVelocity(Vec3(0, speed, 0))
+            car._chassis.setAngularVelocity(Vec3(0))
+            car.tires.initialize_rolling(speed)
+            for _ in range(120):
+                sim.step(Control(brake=1))
+            state = car.snapshot()
+>           assert abs(car.signed_speed()) < .01
+E           assert 0.7912917733192444 < 0.01
+E            +  where 0.7912917733192444 = abs(-0.7912917733192444)
+E            +    where -0.7912917733192444 = signed_speed()
+E            +      where signed_speed = <vehicle.Vehicle object at 0x0000024B315F4A50>.signed_speed
+
+tests\test_tire_compliance_integration.py:123: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tire_compliance_integration.py::test_real_low_speed_braking_settles_after_elastic_recoil[-0.1]
+FAILED tests/test_tire_compliance_integration.py::test_real_low_speed_braking_settles_after_elastic_recoil[0.1]
+2 failed, 69 passed in 341.48s (0:05:41)

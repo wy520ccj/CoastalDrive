@@ -6,6 +6,9 @@ import pytest
 from vehicle_config import CAR
 from wheel_dynamics import Mobility, advance_wheel
 
+# 本文件冻结零柔性的刚性约束；柔性储能与四轮共同末速度在专门测试验证。
+RIGID = replace(CAR, tire_compliance=False)
+
 
 def _mass_and_mobility():
     # 平移质量与非零质心耦合构成正定广义质量矩阵。
@@ -64,7 +67,7 @@ def test_mobility_is_symmetric_positive_definite():
 
 def test_static_contact_transmits_drive_without_slip():
     _mass, mobility, _matrix = _mass_and_mobility()
-    step = advance_wheel(0, 0, 0, 0, 20, 0, 3000, 1.1, mobility, 1 / 120)
+    step = advance_wheel(0, 0, 0, 0, 20, 0, 3000, 1.1, mobility, 1 / 120, RIGID)
     assert step.mode == "sticking"
     assert step.fx > 0
     assert step.vx == pytest.approx(CAR.wheel_radius * step.omega, abs=1e-8)
@@ -76,7 +79,7 @@ def test_static_contact_transmits_drive_without_slip():
 
 def test_static_contact_exhausted_budget_enters_actual_sliding():
     _mass, mobility, _matrix = _mass_and_mobility()
-    step = advance_wheel(0, 0, 0, 0, 100, 0, 10, .5, mobility, 1 / 120)
+    step = advance_wheel(0, 0, 0, 0, 100, 0, 10, .5, mobility, 1 / 120, RIGID)
     assert step.mode == "magic-formula"
     assert abs(CAR.wheel_radius * step.omega - step.vx) > .01
     capacity = .5 * 10 * (10 / (CAR.mass * 9.81 / 4)) ** (CAR.tire_peak_load_exponent - 1)
@@ -85,9 +88,9 @@ def test_static_contact_exhausted_budget_enters_actual_sliding():
 
 def test_low_load_static_feasibility_uses_same_nonlinear_capacity():
     _mass, mobility, _matrix = _mass_and_mobility()
-    linear = replace(CAR, tire_peak_load_exponent=1, longitudinal_load_exponent=1,
+    linear = replace(RIGID, tire_peak_load_exponent=1, longitudinal_load_exponent=1,
                      lateral_load_exponent=1)
-    candidate = advance_wheel(0, 0, 0, 0, 2.5, 0, 10, .5, mobility, 1 / 120)
+    candidate = advance_wheel(0, 0, 0, 0, 2.5, 0, 10, .5, mobility, 1 / 120, RIGID)
     old = advance_wheel(0, 0, 0, 0, 2.5, 0, 10, .5, mobility, 1 / 120, linear)
     assert candidate.mode == "sticking"
     assert old.mode == "magic-formula"
@@ -101,7 +104,7 @@ def test_static_external_force_predictor_is_balanced_with_closed_energy_ledger()
     external_force = np.array((30.0, -20.0, 0.0))
     speed = dt * matrix @ external_force
     before = np.array((*speed, 0.0))
-    step = advance_wheel(0, *speed, 0, 1500, 3000, 1.1, mobility, dt)
+    step = advance_wheel(0, *speed, 0, 1500, 3000, 1.1, mobility, dt, RIGID)
     assert step.mode == "sticking"
     assert step.fx < 0 and step.fy > 0
     assert step.vx == pytest.approx(CAR.wheel_radius * step.omega, abs=1e-8)
@@ -137,6 +140,7 @@ def test_implicit_step_closes_energy_and_generalized_momentum_ledger(
         1.1,
         mobility,
         dt,
+        RIGID,
     )
 
     assert step.residual < 0.001
@@ -170,6 +174,7 @@ def test_drive_accelerates_in_forward_and_reverse(direction, drive):
         1.1,
         mobility,
         1 / 120,
+        RIGID,
     )
 
     assert direction * (step.vx - speed) > 0
@@ -194,6 +199,7 @@ def test_dry_braking_stops_without_reversing_vehicle_or_wheel():
             1.1,
             mobility,
             1 / 120,
+            RIGID,
         )
         speed, omega = step.vx, step.omega
         body_omega = step.body_omega
@@ -222,6 +228,7 @@ def test_airborne_drive_torque_has_equal_opposite_angular_impulses():
         1.1,
         mobility,
         dt,
+        RIGID,
     )
 
     assert step.fx == 0.0
@@ -238,8 +245,8 @@ def test_smaller_steps_preserve_drive_and_brake_directions():
     _mass, mobility, _matrix = _mass_and_mobility()
     for dt in (1 / 120, 1 / 480):
         driven = advance_wheel(0.0, 0.0, 0.0, 0.0, 120.0, 0.0,
-                               CAR.mass * 9.81 / 4, 1.1, mobility, dt)
+                               CAR.mass * 9.81 / 4, 1.1, mobility, dt, RIGID)
         braked = advance_wheel(10 / CAR.wheel_radius, 10.0, 0.0, 0.0, 0.0, 120.0,
-                               CAR.mass * 9.81 / 4, 1.1, mobility, dt)
+                               CAR.mass * 9.81 / 4, 1.1, mobility, dt, RIGID)
         assert driven.vx > 0 and driven.omega > 0
         assert braked.vx < 10.0 and braked.omega < 10 / CAR.wheel_radius

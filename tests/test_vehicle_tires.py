@@ -1,6 +1,7 @@
 """真实刚体与四轮独立转动的受力、能量及快照边界。"""
 
 import math
+from dataclasses import replace
 
 import pytest
 from panda3d.bullet import BulletPlaneShape, BulletRigidBodyNode, BulletWorld
@@ -82,14 +83,36 @@ def test_isolated_tire_impulses_do_not_add_energy(sim, velocity, angular, omega)
 
 
 @pytest.mark.parametrize("speed", [-.1, .1])
-def test_low_speed_braking_does_not_reverse(sim, speed):
+def test_rigid_low_speed_braking_does_not_reverse(speed):
+    # 原刚性分支的单调停车门槛保留；柔性轮胎可用储能产生真实短暂回弹。
+    simulation = Simulation(track="test", traffic_count=0, config=replace(CAR, tire_compliance=False))
+    try:
+        for _ in range(240):
+            simulation.step(Control())
+        car = simulation.player
+        car._chassis.setLinearVelocity(Vec3(0, speed, 0))
+        car._chassis.setAngularVelocity(Vec3(0))
+        car.tires.initialize_rolling(speed)
+        for _ in range(120):
+            tire_step(car, brake=1)
+            assert car.signed_speed() * speed >= -1e-6
+    finally:
+        simulation.close()
+
+
+@pytest.mark.parametrize("speed", [-.1, .1])
+def test_compliant_low_speed_brake_rebound_does_not_create_energy(sim, speed):
     car = sim.player
     car._chassis.setLinearVelocity(Vec3(0, speed, 0))
     car._chassis.setAngularVelocity(Vec3(0))
     car.tires.initialize_rolling(speed)
+    previous = kinetic_energy(car) + sum(w.elastic_energy for w in car.tires.states)
     for _ in range(120):
         tire_step(car, brake=1)
-        assert car.signed_speed() * speed >= -1e-6
+        energy = kinetic_energy(car) + sum(w.elastic_energy for w in car.tires.states)
+        assert energy <= previous + 1e-5
+        assert all(w.brake_torque * w.relative_omega >= -1e-7 for w in car.tires.states)
+        previous = energy
     assert abs(car.signed_speed()) < abs(speed)
 
 
@@ -170,8 +193,17 @@ def test_post_bullet_slip_matches_current_snapshot_velocity_and_contact(sim):
         # 力采用上一接触阶段的求解滑移，不拿完成Bullet后的κ重新解释该力。
         old_contact = previous.wheel_contacts[index]
         mu = config.road_friction if old_contact.surface == "asphalt" else config.grass_friction
-        expected = tire_force(wheel.force_kappa, wheel.force_alpha, wheel.normal_load, mu, config)
-        assert (wheel.fx, wheel.fy) == pytest.approx(expected, abs=.002)
+        if config.tire_compliance:
+            elastic_force = tuple(config.tire_contact_stiffness * strain + config.tire_contact_damping * rate
+                                  for strain, rate in ((wheel.deformation_x, wheel.deformation_rate_x),
+                                                       (wheel.deformation_y, wheel.deformation_rate_y)))
+            assert (wheel.fx, wheel.fy) == pytest.approx(elastic_force, abs=1e-9)
+            if wheel.force_mode == "compliant-rolling":
+                expected = tire_force(wheel.force_patch_kappa, wheel.force_patch_alpha, wheel.normal_load, mu, config)
+                assert (wheel.fx, wheel.fy) == pytest.approx(expected, abs=.002)
+        else:
+            expected = tire_force(wheel.force_kappa, wheel.force_alpha, wheel.normal_load, mu, config)
+            assert (wheel.fx, wheel.fy) == pytest.approx(expected, abs=.002)
 
 
 def test_high_speed_contact_levers_use_current_body_pose(sim):
@@ -244,7 +276,8 @@ def test_five_degree_slope_parking_does_not_creep():
             )
             previous = state.position
         assert math.dist(start, car.snapshot().position) < .01
-        assert all(w.force_mode == "sticking" for w in car.snapshot().wheel_dynamics)
+        assert all(w.force_mode == ("compliant-sticking" if CAR.tire_compliance else "sticking")
+                   for w in car.snapshot().wheel_dynamics)
         mean_longitudinal_force = sum(longitudinal_forces) / len(longitudinal_forces)
         expected_grade_force = CAR.mass * 9.81 * math.sin(slope)
         assert mean_longitudinal_force == pytest.approx(expected_grade_force, rel=.01)

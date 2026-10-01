@@ -252,12 +252,21 @@ class ImpactAudio:
 
     def _update_scrape(self, contacts, dt, scale):
         previous_state = self.scrape_state
+
+        def continues(contact):
+            return (self.scrape_source is not None and
+                    contact.material == self.scrape_source[0] and
+                    bool(set(contact.sources).intersection(self.scrape_source[1])))
+
         candidates = [contact for contact in contacts
-                      if contact.tangential_speed >= 1.6 and contact.raw_impulse >= 25]
+                      if contact.tangential_speed >= 1.6
+                      and (contact.raw_impulse >= 25 or
+                           (self.scrape_sound is not None and
+                            continues(contact)))]
         contact = max(candidates, key=lambda item: item.tangential_speed * item.raw_impulse,
                       default=None)
         current = next((item for item in candidates
-                        if (item.material, item.sources) == self.scrape_source), None)
+                        if continues(item)), None)
         if (current is not None and contact is not None and
                 contact.tangential_speed * contact.raw_impulse <
                 current.tangential_speed * current.raw_impulse * 1.2):
@@ -265,7 +274,7 @@ class ImpactAudio:
         source = (contact.material, contact.sources) if contact else None
         if contact is not None:
             self.scrape_misses = 0
-            self.scrape_age = self.scrape_age + 1 if source == self.scrape_source else 1
+            self.scrape_age = self.scrape_age + 1 if continues(contact) else 1
             if self.scrape_sound is None and self.scrape_age >= 2:
                 pool = self.bank["materials"][contact.material]["scrape"]
                 variant, handles, _ = self._variant(pool)
@@ -277,7 +286,7 @@ class ImpactAudio:
                 self.scrape_state = "attack"
                 self._log({"type": "scrape", "state": "attack", "tick": contact.tick,
                            "material": contact.material, "variant": variant})
-            elif self.scrape_sound is not None and source != self.scrape_source:
+            elif self.scrape_sound is not None and not continues(contact):
                 self.scrape_sound.stop()
                 self.scrape_sound = None
                 self.scrape_level = 0.0
@@ -311,14 +320,14 @@ class ImpactAudio:
             self.scrape_level += (self.scrape_target - self.scrape_level) * blend
         if self.scrape_sound is not None:
             self.scrape_sound.setVolume(self.scrape_level * scale)
-            if self.scrape_target == 0 and self.scrape_level < 0.005:
+            if contact is None and self.scrape_misses >= 3 and self.scrape_level < 0.005:
                 self.scrape_sound.stop()
                 self.scrape_sound = None
                 self.scrape_level = 0.0
                 self.scrape_source = None
                 self.scrape_state = "off"
                 self._log({"type": "scrape", "state": "off"})
-            elif self.scrape_target == 0:
+            elif contact is None and self.scrape_misses >= 3:
                 self.scrape_state = "release"
             else:
                 self.scrape_state = "sustain"

@@ -61,6 +61,10 @@ def _load_source(source_dir=None):
     )
     if (selected / "tire_properties.py").is_file():
         _tire_modules = ("tire_properties", *_tire_modules)
+    if (selected / "tire_compliance.py").is_file():
+        _tire_modules = ("tire_compliance", *_tire_modules)
+    if (selected / "tire_coupling.py").is_file():
+        _tire_modules = ("tire_coupling", *_tire_modules)
     response_modules = [importlib.import_module(name) for name in _response_modules]
     CAR = vehicle_config.CAR
     Control = vehicle_state.Control

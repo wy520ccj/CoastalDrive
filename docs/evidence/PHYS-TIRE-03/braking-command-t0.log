@@ -1,0 +1,5 @@
+..                                                                       [100%]
+============================= slowest 2 durations =============================
+0.54s call     tests/test_tire_compliance_integration.py::test_real_low_speed_braking_settles_after_elastic_recoil[-0.1]
+0.53s call     tests/test_tire_compliance_integration.py::test_real_low_speed_braking_settles_after_elastic_recoil[0.1]
+2 passed in 1.16s

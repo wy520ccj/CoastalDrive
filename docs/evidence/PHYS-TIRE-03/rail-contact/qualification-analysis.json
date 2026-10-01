@@ -1,0 +1,394 @@
+{
+  "rigid-steering-2": {
+    "after_hit_reason_counts": {
+      "no_contact": 4,
+      "impulse_only": 733,
+      "speed_only": 0,
+      "both": 0,
+      "eligible": 9
+    },
+    "physical_gaps_after_hit": [
+      {
+        "first_tick": 130,
+        "last_tick": 130,
+        "ticks": 1
+      },
+      {
+        "first_tick": 161,
+        "last_tick": 161,
+        "ticks": 1
+      },
+      {
+        "first_tick": 195,
+        "last_tick": 195,
+        "ticks": 1
+      },
+      {
+        "first_tick": 415,
+        "last_tick": 415,
+        "ticks": 1
+      }
+    ],
+    "candidate_gaps_after_hit": [
+      {
+        "first_tick": 96,
+        "last_tick": 130,
+        "ticks": 35
+      },
+      {
+        "first_tick": 132,
+        "last_tick": 161,
+        "ticks": 30
+      },
+      {
+        "first_tick": 163,
+        "last_tick": 195,
+        "ticks": 33
+      },
+      {
+        "first_tick": 197,
+        "last_tick": 226,
+        "ticks": 30
+      },
+      {
+        "first_tick": 228,
+        "last_tick": 233,
+        "ticks": 6
+      },
+      {
+        "first_tick": 236,
+        "last_tick": 415,
+        "ticks": 180
+      },
+      {
+        "first_tick": 418,
+        "last_tick": 840,
+        "ticks": 423
+      }
+    ]
+  },
+  "flexible-steering-2": {
+    "after_hit_reason_counts": {
+      "no_contact": 2,
+      "impulse_only": 734,
+      "speed_only": 0,
+      "both": 0,
+      "eligible": 12
+    },
+    "physical_gaps_after_hit": [
+      {
+        "first_tick": 132,
+        "last_tick": 132,
+        "ticks": 1
+      },
+      {
+        "first_tick": 161,
+        "last_tick": 161,
+        "ticks": 1
+      }
+    ],
+    "candidate_gaps_after_hit": [
+      {
+        "first_tick": 94,
+        "last_tick": 132,
+        "ticks": 39
+      },
+      {
+        "first_tick": 134,
+        "last_tick": 161,
+        "ticks": 28
+      },
+      {
+        "first_tick": 163,
+        "last_tick": 192,
+        "ticks": 30
+      },
+      {
+        "first_tick": 194,
+        "last_tick": 208,
+        "ticks": 15
+      },
+      {
+        "first_tick": 211,
+        "last_tick": 541,
+        "ticks": 331
+      },
+      {
+        "first_tick": 544,
+        "last_tick": 575,
+        "ticks": 32
+      },
+      {
+        "first_tick": 578,
+        "last_tick": 692,
+        "ticks": 115
+      },
+      {
+        "first_tick": 695,
+        "last_tick": 840,
+        "ticks": 146
+      }
+    ]
+  },
+  "flexible-steering-4": {
+    "after_hit_reason_counts": {
+      "no_contact": 6,
+      "impulse_only": 152,
+      "speed_only": 0,
+      "both": 0,
+      "eligible": 612
+    },
+    "physical_gaps_after_hit": [
+      {
+        "first_tick": 112,
+        "last_tick": 112,
+        "ticks": 1
+      },
+      {
+        "first_tick": 149,
+        "last_tick": 149,
+        "ticks": 1
+      },
+      {
+        "first_tick": 186,
+        "last_tick": 186,
+        "ticks": 1
+      },
+      {
+        "first_tick": 334,
+        "last_tick": 334,
+        "ticks": 1
+      },
+      {
+        "first_tick": 382,
+        "last_tick": 382,
+        "ticks": 1
+      },
+      {
+        "first_tick": 470,
+        "last_tick": 470,
+        "ticks": 1
+      }
+    ],
+    "candidate_gaps_after_hit": [
+      {
+        "first_tick": 73,
+        "last_tick": 81,
+        "ticks": 9
+      },
+      {
+        "first_tick": 112,
+        "last_tick": 112,
+        "ticks": 1
+      },
+      {
+        "first_tick": 145,
+        "last_tick": 149,
+        "ticks": 5
+      },
+      {
+        "first_tick": 151,
+        "last_tick": 153,
+        "ticks": 3
+      },
+      {
+        "first_tick": 161,
+        "last_tick": 186,
+        "ticks": 26
+      },
+      {
+        "first_tick": 188,
+        "last_tick": 190,
+        "ticks": 3
+      },
+      {
+        "first_tick": 225,
+        "last_tick": 225,
+        "ticks": 1
+      },
+      {
+        "first_tick": 238,
+        "last_tick": 238,
+        "ticks": 1
+      },
+      {
+        "first_tick": 261,
+        "last_tick": 261,
+        "ticks": 1
+      },
+      {
+        "first_tick": 290,
+        "last_tick": 290,
+        "ticks": 1
+      },
+      {
+        "first_tick": 299,
+        "last_tick": 299,
+        "ticks": 1
+      },
+      {
+        "first_tick": 310,
+        "last_tick": 310,
+        "ticks": 1
+      },
+      {
+        "first_tick": 334,
+        "last_tick": 334,
+        "ticks": 1
+      },
+      {
+        "first_tick": 382,
+        "last_tick": 382,
+        "ticks": 1
+      },
+      {
+        "first_tick": 470,
+        "last_tick": 470,
+        "ticks": 1
+      },
+      {
+        "first_tick": 726,
+        "last_tick": 729,
+        "ticks": 4
+      },
+      {
+        "first_tick": 732,
+        "last_tick": 749,
+        "ticks": 18
+      },
+      {
+        "first_tick": 751,
+        "last_tick": 756,
+        "ticks": 6
+      },
+      {
+        "first_tick": 758,
+        "last_tick": 767,
+        "ticks": 10
+      },
+      {
+        "first_tick": 769,
+        "last_tick": 769,
+        "ticks": 1
+      },
+      {
+        "first_tick": 771,
+        "last_tick": 781,
+        "ticks": 11
+      },
+      {
+        "first_tick": 783,
+        "last_tick": 786,
+        "ticks": 4
+      },
+      {
+        "first_tick": 788,
+        "last_tick": 788,
+        "ticks": 1
+      },
+      {
+        "first_tick": 790,
+        "last_tick": 790,
+        "ticks": 1
+      },
+      {
+        "first_tick": 792,
+        "last_tick": 801,
+        "ticks": 10
+      },
+      {
+        "first_tick": 803,
+        "last_tick": 804,
+        "ticks": 2
+      },
+      {
+        "first_tick": 806,
+        "last_tick": 836,
+        "ticks": 31
+      },
+      {
+        "first_tick": 838,
+        "last_tick": 840,
+        "ticks": 3
+      }
+    ]
+  },
+  "flexible-steering-6": {
+    "after_hit_reason_counts": {
+      "no_contact": 5,
+      "impulse_only": 9,
+      "speed_only": 370,
+      "both": 0,
+      "eligible": 392
+    },
+    "physical_gaps_after_hit": [
+      {
+        "first_tick": 104,
+        "last_tick": 104,
+        "ticks": 1
+      },
+      {
+        "first_tick": 141,
+        "last_tick": 141,
+        "ticks": 1
+      },
+      {
+        "first_tick": 184,
+        "last_tick": 184,
+        "ticks": 1
+      },
+      {
+        "first_tick": 258,
+        "last_tick": 258,
+        "ticks": 1
+      },
+      {
+        "first_tick": 312,
+        "last_tick": 312,
+        "ticks": 1
+      }
+    ],
+    "candidate_gaps_after_hit": [
+      {
+        "first_tick": 66,
+        "last_tick": 73,
+        "ticks": 8
+      },
+      {
+        "first_tick": 104,
+        "last_tick": 104,
+        "ticks": 1
+      },
+      {
+        "first_tick": 141,
+        "last_tick": 141,
+        "ticks": 1
+      },
+      {
+        "first_tick": 184,
+        "last_tick": 184,
+        "ticks": 1
+      },
+      {
+        "first_tick": 223,
+        "last_tick": 223,
+        "ticks": 1
+      },
+      {
+        "first_tick": 258,
+        "last_tick": 258,
+        "ticks": 1
+      },
+      {
+        "first_tick": 312,
+        "last_tick": 312,
+        "ticks": 1
+      },
+      {
+        "first_tick": 471,
+        "last_tick": 840,
+        "ticks": 370
+      }
+    ]
+  }
+}

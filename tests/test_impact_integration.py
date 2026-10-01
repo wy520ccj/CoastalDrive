@@ -82,9 +82,23 @@ def test_sustained_real_rail_contact_plays_one_hit_and_one_scrape_loop():
             sound.update(simulation.snapshot(), phase("driving"), None, 1 / 120)
         rows = [json.loads(line) for line in log.getvalue().splitlines()]
         assert sum(bool(row.get("layers")) for row in rows if row["type"] == "decision") == 1
-        assert sum(row.get("state") == "attack" for row in rows if row["type"] == "scrape") == 1
+        assert sum(row.get("state") == "attack" for row in rows if row["type"] == "scrape") == 1, [r for r in rows if r["type"] == "scrape"]
         assert any(row.get("state") == "sustain" for row in rows)
-        assert any(row.get("state") == "off" for row in rows)
+        assert sound.impact_audio.scrape_sound is not None
+        # 原840tick擦碰结束后只施加真实制动，保持原转角，不改写车辆状态。
+        for _ in range(360):
+            previous_scrape = sound.impact_audio.scrape_state
+            simulation.step(VehicleCommand(brake=1, steering=2, direction=1))
+            sound.update(simulation.snapshot(), phase("driving"), None, 1 / 120)
+            if previous_scrape == "sustain" and sound.impact_audio.scrape_state == "release":
+                contacts = simulation.snapshot().contacts
+                assert not contacts or all(c.tangential_speed < 1.6 for c in contacts)
+        stopped = simulation.snapshot()
+        assert abs(stopped.player.speed) < 1.6
+        assert not stopped.contacts or all(c.tangential_speed < 1.6 for c in stopped.contacts)
+        assert sound.impact_audio.scrape_state == "off"
+        stop_rows = [json.loads(line) for line in log.getvalue().splitlines()][len(rows):]
+        assert any(row.get("state") == "off" for row in stop_rows)
     finally:
         sound.close()
         simulation.close()

@@ -1,0 +1,12 @@
+初轮 fixture 失败保留：13 audio unit passed；原840tick rail未通过1attack，实际2attack。
+先前将第二attack推断为停止阶段是不正确的，按原840tick独立分段复测已纠正。
+原840tick source诊断：
+tick210 sustain sources=(1,), raw=28.983306884765625, tangent=7.799922361340293
+tick426 release 实际ContactState sources=(1,2), raw=19.650714546442032, tangent=8.331582607614852
+tick432 off 实际ContactState sources=(1,2), raw=19.664937019348145, tangent=8.343127486155534
+tick543 sustain/new attack sources=(2,), raw=29.22702980041504, tangent=8.530221295678151
+严格同source tuple下，真实连续护栏跨body集合变化导致第二attack；未降低25/1.6阈值或改物理。
+失败运行记录：首轮1 failed/13 passed in15.68s；保留转角fixture1 failed in15.89s；原协议分段1 failed in11.16s；零冲量loop修正后1 failed/13 passed in10.38s；source诊断1 failed in9.00s。
+.................                                                        [100%]
+17 passed in 17.17s
+{"fixture": "840tickԭЭ��+360tick��ʵ�ƶ�", "transitions": [{"tick": 210, "state": "sustain", "contacts": [[[1], 28.983306884765625, 7.799922361340293]]}, {"tick": 1019, "state": "release", "contacts": [[[2], 15.081244230270386, 1.4712859823619773]]}, {"tick": 1022, "state": "off", "contacts": [[[2], 12.737172603607178, 1.3223337929303998]]}], "attack_ticks": [210], "audible_decision_ticks": [93], "final_speed": 0.00039708754047751427, "final_scrape": "off"}

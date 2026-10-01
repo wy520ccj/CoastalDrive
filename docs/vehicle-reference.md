@@ -2,15 +2,15 @@
 
 本文同步当前 `VehicleConfig`、`InputConfig` 与 `DrivingMode`。所有参数均为程序设计值或设计推导值；本机 Bullet 读回证明实际装入的配置，不是实车测量或标定。困难仿真使用通用设计参考车，保留自动前进换挡、简化虚拟离合、射线悬架及简化轮胎模型，不称完整车辆仿真软件。
 
-当前参考车为reference-v5，两模式均采用25ms设计制动器、默认开启ABS/TCS/ESC，轮荷敏感性指数为0.90/0.90/0.85。冻结数据见 [当前参考参数](evidence/PHYS-TIRE-02/reference-parameters.json)，逐项保存59个车辆字段、8个制动子字段、10个驱动防滑子字段、9个横摆稳定子字段、9个输入字段、实际几何与两模式各240tick静置读数，以及源码SHA-256。Git HEAD仅为历史上下文；[reference-v4历史文件](evidence/CTRL-03/reference-parameters-final.json)、[reference-v3历史文件](evidence/CTRL-02/reference-parameters.json)、[reference-v2历史文件](evidence/CTRL-01/reference-parameters-final.json)与[reference-v1历史文件](evidence/PHYS-MODES-01/reference-parameters.json)保留不覆盖。
+当前参考车为reference-v6，两模式均采用25ms设计制动器、默认开启ABS/TCS/ESC及接触区柔性，轮荷敏感性指数为0.90/0.90/0.85。冻结数据见 [当前参考参数](evidence/PHYS-TIRE-03/reference-parameters.json)，逐项保存62个车辆字段、8个制动子字段、10个驱动防滑子字段、9个横摆稳定子字段、9个输入字段、实际几何与两模式各240tick静置读数，以及源码SHA-256。Git HEAD仅为历史上下文；[reference-v5历史文件](evidence/PHYS-TIRE-02/reference-parameters.json)、[reference-v4历史文件](evidence/CTRL-03/reference-parameters-final.json)、[reference-v3历史文件](evidence/CTRL-02/reference-parameters.json)、[reference-v2历史文件](evidence/CTRL-01/reference-parameters-final.json)与[reference-v1历史文件](evidence/PHYS-MODES-01/reference-parameters.json)保留不覆盖。
 
-本次 `src/vehicle_config.py` SHA-256：`3af0b0f1843aad5ff17fa667e5aeb7fdc89fc7f80d12db32e05e7b539587597d`。Panda3D 1.10.16，Bullet 2.84。
+本次 `src/vehicle_config.py` SHA-256：`c13cc43d77e8948a9d5f843c5aa3ed3517b601737b598b407cbc52c1e409e174`。Panda3D 1.10.16，Bullet 2.84。
 
 ## 模式与实例边界
 
 `DrivingMode.GAME`（正常游戏）选择 `CAR` 与 `GAME_INPUT`；`DrivingMode.SIMULATION`（困难仿真）选择 `REFERENCE_CAR` 与 `SIMULATION_INPUT`。模式与计时/自由驾驶/高速玩法正交。Vehicle → Simulation → Session直接传入冻结配置实例，部件创建、reset与跨赛道重建沿用配置；主菜单切换选择后，起步按配置重建世界。不得对存活Bullet车身替换参数对象。
 
-参考车与游戏车共用力学核心；明确差异是曲轴转矩曲线、游戏速度/倒挡力渐退、刚体角阻尼与惯量来源，以及三个输入辅助开关。Q/E只请求R/D方向，S为制动；并未新增手动前进挡或离合踏板。ABS/TCS/ESC是独立车辆配置，菜单及CLI可在任一模式关闭；Session缓存选定配置，开始时创建实际世界，重开同配置复用世界。新成绩按game-controls-v4/reference-v5及ABS/TCS/ESC三个开关分区，旧成绩不覆盖。
+参考车与游戏车共用力学核心；明确差异是曲轴转矩曲线、游戏速度/倒挡力渐退、刚体角阻尼与惯量来源，以及三个输入辅助开关。Q/E只请求R/D方向，S为制动；并未新增手动前进挡或离合踏板。ABS/TCS/ESC是独立车辆配置，菜单及CLI可在任一模式关闭；Session缓存选定配置，开始时创建实际世界，重开同配置复用世界。新成绩按game-controls-v5/reference-v6及ABS/TCS/ESC三个开关分区，旧成绩不覆盖。
 
 ## VehicleConfig完整字段
 
@@ -54,6 +54,9 @@
 | slip_speed | 1 | — | m/s | 低速滑移分母尺度 |
 | static_contact_speed | 0.25 | — | m/s | 低速静摩擦约束尝试尺度 |
 | tire_substeps | 2 | — | 次/tick | 轮胎车体耦合子步数 |
+| tire_compliance | true | — | bool | 开启接触区弹性与路面滑移串联；false为历史刚性受力分支 |
+| tire_contact_stiffness | 150000 | — | N/m | 纵横各向同性接触区设计刚度K；储能K\|z\|²/2 |
+| tire_contact_damping | 1000 | — | N·s/m | 接触区设计阻尼b；F=Kz+b zdot |
 | suspension_stiffness | 40 | — | s⁻² | Bullet质量归一化悬架刚度；平路k=mass×值 |
 | suspension_compression | 4.4 | — | s⁻¹ | 质量归一化压缩阻尼；平路c=mass×值 |
 | suspension_relaxation | 2.3 | — | s⁻¹ | 质量归一化伸张阻尼；平路c=mass×值 |
@@ -167,7 +170,9 @@ TCS按滑转及增长趋势调节发动机可用驱动比例，动力总成保�
 | 诊断轴荷滤波 | .15 s，纵加速度±12 m/s² | 仅诊断，不替代真实四轮Fn或钳制车身速度 |
 | fixed step | 1/120 s，world max_substeps=0 | 权威物理步；显示插值独立 |
 
-`road_grip`、`grass_grip`未使用字段已删除，不能当作现参数或摩擦系数别名。真实摩擦预算D由road_friction/grass_friction、动态Fn与峰值轮荷指数共同确定。原生每轮frictionSlip、EngineForce、Brake均置零，仅保留Bullet悬架与碰撞；自定义轮胎独占Fx/Fy与独立轮速积分。低速静摩擦约束只有所需力位于D圆内时成立，超预算转入简化联合Magic Formula。
+`road_grip`、`grass_grip`未使用字段已删除，不能当作现参数或摩擦系数别名。真实摩擦预算D由road_friction/grass_friction、动态Fn与峰值轮荷指数共同确定。原生每轮frictionSlip、EngineForce、Brake均置零，仅保留Bullet悬架与碰撞；自定义轮胎独占Fx/Fy与独立轮速积分。
+
+柔性分支保存世界坐标变形，转向切平面投影能量损失单列；四轮接触力与干式制动在同一车体末速度收敛后提交冲量/变形。接触区滑移与轮滑移分开：小滑移时间常数τ=C/(K\|V\|)+b/K，空间长度σ=C/K+b\|V\|/K；C为该轮当前纵/横刚度。低滚动速度在D圆内保持接触区无滑移，预算外按Coulomb滑动；滚动时使用原联合Magic Formula路面元件。离地时接触力为零，已有变形按b/(b+Kh)自由松弛。各向同性K/b是设计参数，后续实车型标定。刚性分支保留原低速约束和Magic Formula，并以关闭柔性的严格旧轨迹对照验证。
 
 本机对应 [Bullet2.84 updateSuspension源码](https://github.com/bulletphysics/bullet3/blob/2.84/src/BulletDynamics/Vehicle/btRaycastVehicle.cpp#L379)给出 `Fn_raw=mass×(S×compression×projection−C×relative_normal_speed)`；负力截零、施加时受每轮悬架力上限限制。平路每轮k=1200×40=48000N/m，压缩c=5280N·s/m，回弹c=2760N·s/m，乘的是完整车身质量。名义静态2943N/轮对应压缩.0613125m。坡面须使用法线投影，不能套平路系数。
 
