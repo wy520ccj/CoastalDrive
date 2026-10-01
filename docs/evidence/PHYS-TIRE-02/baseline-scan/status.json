@@ -1,0 +1,11 @@
+{
+  "status": "completed",
+  "grid_rows": 1100,
+  "short_scan_self_check": {
+    "rows": 108,
+    "expected_rows": 108,
+    "maximum_force_budget_excess_N": 0,
+    "maximum_force_odd_symmetry_error_N": 0.0,
+    "result": "passed"
+  }
+}

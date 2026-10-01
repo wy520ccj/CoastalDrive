@@ -38,6 +38,8 @@
 
 [reference-parameters-final.json](reference-parameters-final.json)：reference-v4，56车辆字段、8制动、10驱动防滑、9稳定与9输入字段；两模式真实240tick读回。两模式电子开关独立存储，省略save参数保留既有选择；开始时重建配置、NPC共用实例、reset清除控制记忆，重定位保留状态，插值采用最近真实反馈。成绩按game-controls-v3/reference-v4及ABS/TCS/ESC八组合隔离。
 
+[lifecycle.json](lifecycle.json)另外验证真实NPC横摆/轮速反馈使ESC介入，Vehicle.shift保持记忆，实际1100m流式回收分支清空ESC/压力与反馈tick，模式重建关闭旧世界且新玩家/NPC状态清空。边界触发的重定位仅为生命周期夹具，不作为运动或交通恢复性能证据。
+
 [cli/summary.json](cli/summary.json)经真实main入口验证两模式共16开关组合、每组240tick；完整stdout/stderr保存。[720p](ui-720/summary.json)和[1080p](ui-1080/summary.json)共20张实际渲染，已查看两分辨率六项模式/电子菜单与真实ESC介入HUD，无越界；脚本另核对ABS/TCS介入文字。渲染时控制器为首轮模型，后续侧偏参考修正不改菜单/HUD代码或排版；渲染证明显示与入口，最终机制由matrix-final验证。
 
 ## 验证账目
@@ -46,7 +48,7 @@
 - 修正短测53项通过；最终T0 56项通过，包括原低速转向门槛。
 - 最终T1：381测试、Ruff、0/17/23种子各1200tick、0/23种子十二车弯坡30s全部通过；244个Python文件验证期间SHA一致。原始日志与JSON见[validation/CTRL-03-T1-final](validation/CTRL-03-T1-final/summary.json)。
 - 首轮功能组T2：566通过、1失败，后续专项not_run。原制动转倒车测试把0.4s等待的剩余时间也计入60tick起步：实际只加速约0.433s，速度−0.49648m/s略未到原−0.5门槛。独立冻结CTRL-02、当前ESC关闭与当前开启三侧均完全相同，TCS关闭也为−0.49674，证据见`reverse-*.json`。该边界来自此前ABS有限压力执行器，不归因于ESC。
-- core测试现分别严格验证原0.4s等待、真实倒挡半秒起步与实际制动压力释放，保留−0.5m/s门槛；29项core T0通过，生产物理/输入/参数未因此修改。最终功能组T2待执行。
+- core测试现分别严格验证原0.4s等待、真实倒挡半秒起步与实际制动压力释放，保留−0.5m/s门槛；29项core T0通过，生产物理/输入/参数未因此修改。实现本地提交`92edbf5`，最终功能组T2正在运行：完整567测试与已完成专项通过，长道路专项未结束前不记整个T2通过。
 - `matrix/`、`mechanical/`、初次reference文件保留首轮模型证据；开发01轨迹在`logs/physics/esc-development-01`，首轮命令字符串转义导致的只读摘要SyntaxError已改用结构化读取，不影响物理试验。
 
 本任务未打包、推送或发布；源码入口仍为`试玩-物理开发.cmd`。轮胎瞬态/轮荷敏感性、传动耦合与差速器、悬架和惯量标定、估计器、真实车型及全阶段Gate继续按功能块展开。

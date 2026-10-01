@@ -1,0 +1,558 @@
+{
+  "task": "PHYS-TIRE-02 baseline scan",
+  "status": "completed",
+  "timestamp_utc": "2026-10-01T09:26:21.112313+00:00",
+  "source_sha256_before": {
+    "src\\tire_forces.py": "5e5d9389106e126330ef97e83b13561fb1fa6dc7732396982e533d121745226d",
+    "src\\vehicle_config.py": "3f725e91134323e4d78d8dfea8415217993112d6c8d7d6e09f43a5d0f1be3f6f",
+    "src\\driving_modes.py": "25fa9ae1b0d0f446be65686a89678802fe11452b559546302bfeaa6bedf37ad1"
+  },
+  "source_sha256_after": {
+    "src\\tire_forces.py": "5e5d9389106e126330ef97e83b13561fb1fa6dc7732396982e533d121745226d",
+    "src\\vehicle_config.py": "3f725e91134323e4d78d8dfea8415217993112d6c8d7d6e09f43a5d0f1be3f6f",
+    "src\\driving_modes.py": "25fa9ae1b0d0f446be65686a89678802fe11452b559546302bfeaa6bedf37ad1"
+  },
+  "source_unchanged": true,
+  "evidence_boundary": "production tire_force called read-only with REFERENCE_CAR; no candidate power law and no vehicle runtime claim",
+  "units": {
+    "force": "N",
+    "normal_load": "N",
+    "kappa": "dimensionless slip ratio",
+    "alpha": "rad",
+    "stiffness": "N/rad",
+    "mu": "dimensionless"
+  },
+  "reference_vehicle": {
+    "mass_kg": 1200.0,
+    "Fn0_N": 2943.0,
+    "longitudinal_stiffness_N_per_slip": 60000.0,
+    "front_lateral_stiffness_N_per_rad": 50000.0,
+    "rear_lateral_stiffness_N_per_rad": 50000.0,
+    "tire_shape": 1.9,
+    "tire_curvature": 0.97
+  },
+  "road_surfaces": {
+    "asphalt": {
+      "mu": 1.1,
+      "config_field": "road_friction"
+    },
+    "grass": {
+      "mu": 0.45,
+      "config_field": "grass_friction"
+    }
+  },
+  "grid_definition": {
+    "load_multipliers_Fn0": [
+      0,
+      0.5,
+      1,
+      1.5,
+      2
+    ],
+    "kappa": [
+      -1,
+      -0.3,
+      -0.15,
+      -0.12,
+      -0.06,
+      0,
+      0.06,
+      0.12,
+      0.15,
+      0.3,
+      1
+    ],
+    "alpha_rad": [
+      -0.3,
+      -0.12,
+      0,
+      0.12,
+      0.3
+    ]
+  },
+  "short_scan_self_check": {
+    "rows": 108,
+    "expected_rows": 108,
+    "maximum_force_budget_excess_N": 0,
+    "maximum_force_odd_symmetry_error_N": 0.0,
+    "result": "passed"
+  },
+  "grid_csv": {
+    "file": "tire-force-grid.csv.gz",
+    "rows": 1100,
+    "expected_rows": 1100,
+    "columns": [
+      "road_surface",
+      "mu",
+      "axle",
+      "normal_load_N",
+      "load_multiple_Fn0",
+      "kappa",
+      "alpha_rad",
+      "fx_N",
+      "fy_N",
+      "force_magnitude_N",
+      "budget_mu_Fn_N"
+    ]
+  },
+  "peak_scan": {
+    "samples_per_curve": 40001,
+    "kappa_range": [
+      0,
+      3
+    ],
+    "alpha_range_rad": [
+      0,
+      1.55
+    ],
+    "small_slip_stiffness_epsilon_rad": 1e-05,
+    "results_by_surface_and_axle": {
+      "asphalt/front": {
+        "mu": 1.1,
+        "longitudinal_stiffness_N_per_slip": 60000.0,
+        "lateral_stiffness_config_N_per_rad": 50000.0,
+        "loads": {
+          "0": {
+            "normal_load_N": 0.0,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 0.0,
+              "peak_slip": 0.0
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 0.0,
+              "peak_slip": 0.0
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 0.0
+          },
+          "0.5": {
+            "normal_load_N": 1471.5,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 1618.6499999994132,
+              "peak_slip": 0.184725
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 1618.649998882886,
+              "peak_slip": 0.21812375
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 24999.999792958155
+          },
+          "1": {
+            "normal_load_N": 2943.0,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 3237.2999999988265,
+              "peak_slip": 0.184725
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 3237.299997765772,
+              "peak_slip": 0.21812375
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 49999.99958591631
+          },
+          "1.5": {
+            "normal_load_N": 4414.5,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 4855.949999998241,
+              "peak_slip": 0.184725
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 4855.949996648658,
+              "peak_slip": 0.21812375
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 74999.99937887448
+          },
+          "2": {
+            "normal_load_N": 5886.0,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 6474.599999997653,
+              "peak_slip": 0.184725
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 6474.599995531544,
+              "peak_slip": 0.21812375
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 99999.99917183262
+          }
+        }
+      },
+      "asphalt/rear": {
+        "mu": 1.1,
+        "longitudinal_stiffness_N_per_slip": 60000.0,
+        "lateral_stiffness_config_N_per_rad": 50000.0,
+        "loads": {
+          "0": {
+            "normal_load_N": 0.0,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 0.0,
+              "peak_slip": 0.0
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 0.0,
+              "peak_slip": 0.0
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 0.0
+          },
+          "0.5": {
+            "normal_load_N": 1471.5,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 1618.6499999994132,
+              "peak_slip": 0.184725
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 1618.649998882886,
+              "peak_slip": 0.21812375
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 24999.999792958155
+          },
+          "1": {
+            "normal_load_N": 2943.0,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 3237.2999999988265,
+              "peak_slip": 0.184725
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 3237.299997765772,
+              "peak_slip": 0.21812375
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 49999.99958591631
+          },
+          "1.5": {
+            "normal_load_N": 4414.5,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 4855.949999998241,
+              "peak_slip": 0.184725
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 4855.949996648658,
+              "peak_slip": 0.21812375
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 74999.99937887448
+          },
+          "2": {
+            "normal_load_N": 5886.0,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 6474.599999997653,
+              "peak_slip": 0.184725
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 6474.599995531544,
+              "peak_slip": 0.21812375
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 99999.99917183262
+          }
+        }
+      },
+      "grass/front": {
+        "mu": 0.45,
+        "longitudinal_stiffness_N_per_slip": 60000.0,
+        "lateral_stiffness_config_N_per_rad": 50000.0,
+        "loads": {
+          "0": {
+            "normal_load_N": 0.0,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 0.0,
+              "peak_slip": 0.0
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 0.0,
+              "peak_slip": 0.0
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 0.0
+          },
+          "0.5": {
+            "normal_load_N": 1471.5,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 662.1749911113877,
+              "peak_slip": 0.0756
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 662.1749997165049,
+              "peak_slip": 0.09044250000000001
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 24999.998758715094
+          },
+          "1": {
+            "normal_load_N": 2943.0,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 1324.3499822227755,
+              "peak_slip": 0.0756
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 1324.3499994330098,
+              "peak_slip": 0.09044250000000001
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 49999.99751743019
+          },
+          "1.5": {
+            "normal_load_N": 4414.5,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 1986.524973334163,
+              "peak_slip": 0.0756
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 1986.5249991495145,
+              "peak_slip": 0.09044250000000001
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 74999.99627614529
+          },
+          "2": {
+            "normal_load_N": 5886.0,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 2648.699964445551,
+              "peak_slip": 0.0756
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 2648.6999988660195,
+              "peak_slip": 0.09044250000000001
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 99999.99503486037
+          }
+        }
+      },
+      "grass/rear": {
+        "mu": 0.45,
+        "longitudinal_stiffness_N_per_slip": 60000.0,
+        "lateral_stiffness_config_N_per_rad": 50000.0,
+        "loads": {
+          "0": {
+            "normal_load_N": 0.0,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 0.0,
+              "peak_slip": 0.0
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 0.0,
+              "peak_slip": 0.0
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 0.0
+          },
+          "0.5": {
+            "normal_load_N": 1471.5,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 662.1749911113877,
+              "peak_slip": 0.0756
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 662.1749997165049,
+              "peak_slip": 0.09044250000000001
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 24999.998758715094
+          },
+          "1": {
+            "normal_load_N": 2943.0,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 1324.3499822227755,
+              "peak_slip": 0.0756
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 1324.3499994330098,
+              "peak_slip": 0.09044250000000001
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 49999.99751743019
+          },
+          "1.5": {
+            "normal_load_N": 4414.5,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 1986.524973334163,
+              "peak_slip": 0.0756
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 1986.5249991495145,
+              "peak_slip": 0.09044250000000001
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 74999.99627614529
+          },
+          "2": {
+            "normal_load_N": 5886.0,
+            "pure_longitudinal_peak": {
+              "peak_force_N": 2648.699964445551,
+              "peak_slip": 0.0756
+            },
+            "pure_lateral_peak": {
+              "peak_force_N": 2648.6999988660195,
+              "peak_slip": 0.09044250000000001
+            },
+            "small_slip_lateral_stiffness_N_per_rad": 99999.99503486037
+          }
+        }
+      }
+    }
+  },
+  "fixed_axle_load_redistribution": {
+    "asphalt/front": {
+      "total_axle_load_N": 5886.0,
+      "allocations": [
+        {
+          "left_share": 0.5,
+          "right_share": 0.5,
+          "left_load_N": 2943.0,
+          "right_load_N": 2943.0,
+          "longitudinal_axle_peak_N": 6474.599999997653,
+          "lateral_axle_peak_N": 6474.599995531544,
+          "axle_small_slip_lateral_stiffness_N_per_rad": 99999.99917183262,
+          "longitudinal_peak_delta_from_50_50_N": 0.0,
+          "lateral_peak_delta_from_50_50_N": 0.0
+        },
+        {
+          "left_share": 0.3,
+          "right_share": 0.7,
+          "left_load_N": 1765.8,
+          "right_load_N": 4120.2,
+          "longitudinal_axle_peak_N": 6474.599999997654,
+          "lateral_axle_peak_N": 6474.599995531544,
+          "axle_small_slip_lateral_stiffness_N_per_rad": 99999.99917183262,
+          "longitudinal_peak_delta_from_50_50_N": 9.094947017729282e-13,
+          "lateral_peak_delta_from_50_50_N": 0.0
+        },
+        {
+          "left_share": 0.1,
+          "right_share": 0.9,
+          "left_load_N": 588.6,
+          "right_load_N": 5297.400000000001,
+          "longitudinal_axle_peak_N": 6474.599999997655,
+          "lateral_axle_peak_N": 6474.599995531545,
+          "axle_small_slip_lateral_stiffness_N_per_rad": 99999.99917183263,
+          "longitudinal_peak_delta_from_50_50_N": 1.8189894035458565e-12,
+          "lateral_peak_delta_from_50_50_N": 9.094947017729282e-13
+        }
+      ],
+      "maximum_longitudinal_peak_spread_N": 1.8189894035458565e-12,
+      "maximum_lateral_peak_spread_N": 9.094947017729282e-13,
+      "interpretation": "linear Fn scaling; aggregate peak invariant within sampled numerical error"
+    },
+    "asphalt/rear": {
+      "total_axle_load_N": 5886.0,
+      "allocations": [
+        {
+          "left_share": 0.5,
+          "right_share": 0.5,
+          "left_load_N": 2943.0,
+          "right_load_N": 2943.0,
+          "longitudinal_axle_peak_N": 6474.599999997653,
+          "lateral_axle_peak_N": 6474.599995531544,
+          "axle_small_slip_lateral_stiffness_N_per_rad": 99999.99917183262,
+          "longitudinal_peak_delta_from_50_50_N": 0.0,
+          "lateral_peak_delta_from_50_50_N": 0.0
+        },
+        {
+          "left_share": 0.3,
+          "right_share": 0.7,
+          "left_load_N": 1765.8,
+          "right_load_N": 4120.2,
+          "longitudinal_axle_peak_N": 6474.599999997654,
+          "lateral_axle_peak_N": 6474.599995531544,
+          "axle_small_slip_lateral_stiffness_N_per_rad": 99999.99917183262,
+          "longitudinal_peak_delta_from_50_50_N": 9.094947017729282e-13,
+          "lateral_peak_delta_from_50_50_N": 0.0
+        },
+        {
+          "left_share": 0.1,
+          "right_share": 0.9,
+          "left_load_N": 588.6,
+          "right_load_N": 5297.400000000001,
+          "longitudinal_axle_peak_N": 6474.599999997655,
+          "lateral_axle_peak_N": 6474.599995531545,
+          "axle_small_slip_lateral_stiffness_N_per_rad": 99999.99917183263,
+          "longitudinal_peak_delta_from_50_50_N": 1.8189894035458565e-12,
+          "lateral_peak_delta_from_50_50_N": 9.094947017729282e-13
+        }
+      ],
+      "maximum_longitudinal_peak_spread_N": 1.8189894035458565e-12,
+      "maximum_lateral_peak_spread_N": 9.094947017729282e-13,
+      "interpretation": "linear Fn scaling; aggregate peak invariant within sampled numerical error"
+    },
+    "grass/front": {
+      "total_axle_load_N": 5886.0,
+      "allocations": [
+        {
+          "left_share": 0.5,
+          "right_share": 0.5,
+          "left_load_N": 2943.0,
+          "right_load_N": 2943.0,
+          "longitudinal_axle_peak_N": 2648.699964445551,
+          "lateral_axle_peak_N": 2648.6999988660195,
+          "axle_small_slip_lateral_stiffness_N_per_rad": 99999.99503486037,
+          "longitudinal_peak_delta_from_50_50_N": 0.0,
+          "lateral_peak_delta_from_50_50_N": 0.0
+        },
+        {
+          "left_share": 0.3,
+          "right_share": 0.7,
+          "left_load_N": 1765.8,
+          "right_load_N": 4120.2,
+          "longitudinal_axle_peak_N": 2648.6999644455504,
+          "lateral_axle_peak_N": 2648.699998866019,
+          "axle_small_slip_lateral_stiffness_N_per_rad": 99999.99503486039,
+          "longitudinal_peak_delta_from_50_50_N": -4.547473508864641e-13,
+          "lateral_peak_delta_from_50_50_N": -4.547473508864641e-13
+        },
+        {
+          "left_share": 0.1,
+          "right_share": 0.9,
+          "left_load_N": 588.6,
+          "right_load_N": 5297.400000000001,
+          "longitudinal_axle_peak_N": 2648.699964445551,
+          "lateral_axle_peak_N": 2648.6999988660195,
+          "axle_small_slip_lateral_stiffness_N_per_rad": 99999.99503486037,
+          "longitudinal_peak_delta_from_50_50_N": 0.0,
+          "lateral_peak_delta_from_50_50_N": 0.0
+        }
+      ],
+      "maximum_longitudinal_peak_spread_N": 4.547473508864641e-13,
+      "maximum_lateral_peak_spread_N": 4.547473508864641e-13,
+      "interpretation": "linear Fn scaling; aggregate peak invariant within sampled numerical error"
+    },
+    "grass/rear": {
+      "total_axle_load_N": 5886.0,
+      "allocations": [
+        {
+          "left_share": 0.5,
+          "right_share": 0.5,
+          "left_load_N": 2943.0,
+          "right_load_N": 2943.0,
+          "longitudinal_axle_peak_N": 2648.699964445551,
+          "lateral_axle_peak_N": 2648.6999988660195,
+          "axle_small_slip_lateral_stiffness_N_per_rad": 99999.99503486037,
+          "longitudinal_peak_delta_from_50_50_N": 0.0,
+          "lateral_peak_delta_from_50_50_N": 0.0
+        },
+        {
+          "left_share": 0.3,
+          "right_share": 0.7,
+          "left_load_N": 1765.8,
+          "right_load_N": 4120.2,
+          "longitudinal_axle_peak_N": 2648.6999644455504,
+          "lateral_axle_peak_N": 2648.699998866019,
+          "axle_small_slip_lateral_stiffness_N_per_rad": 99999.99503486039,
+          "longitudinal_peak_delta_from_50_50_N": -4.547473508864641e-13,
+          "lateral_peak_delta_from_50_50_N": -4.547473508864641e-13
+        },
+        {
+          "left_share": 0.1,
+          "right_share": 0.9,
+          "left_load_N": 588.6,
+          "right_load_N": 5297.400000000001,
+          "longitudinal_axle_peak_N": 2648.699964445551,
+          "lateral_axle_peak_N": 2648.6999988660195,
+          "axle_small_slip_lateral_stiffness_N_per_rad": 99999.99503486037,
+          "longitudinal_peak_delta_from_50_50_N": 0.0,
+          "lateral_peak_delta_from_50_50_N": 0.0
+        }
+      ],
+      "maximum_longitudinal_peak_spread_N": 4.547473508864641e-13,
+      "maximum_lateral_peak_spread_N": 4.547473508864641e-13,
+      "interpretation": "linear Fn scaling; aggregate peak invariant within sampled numerical error"
+    }
+  },
+  "numerical_error_accounting": {
+    "peak_scan": "finite 40001-point positive-slip scans; allocation spreads are explicitly reported",
+    "stiffness": "central finite difference at stated epsilon",
+    "budget_and_symmetry": {
+      "rows": 108,
+      "expected_rows": 108,
+      "maximum_force_budget_excess_N": 0,
+      "maximum_force_odd_symmetry_error_N": 0.0,
+      "result": "passed"
+    },
+    "source_sha_match": true
+  }
+}
