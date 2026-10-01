@@ -37,3 +37,5 @@
 T1 `tools/validate.py T1 --area vehicle --area gameplay --area appearance --area traffic --area road`：292项、Ruff、0/17/23启动与0/23十二车弯坡30s全部通过；231个Python文件在该验证/渲染区间起止SHA一致。其后仅压缩菜单说明以容纳真实保存失败提示、修改导出工具默认路径并补其测试，相关补充T0 15项及两分辨率重新渲染通过，最终源码差异单独记录。完整失败/轨迹/版本界限见[证据](../evidence/CTRL-01/README.md)。
 
 当前参数表升级为reference-v2：54车辆字段、8制动子字段、9输入字段，[车辆参考](../vehicle-reference.md)已同步实际构造接口。历史MODE文件不覆盖。T2待ABS/TCS/ESC功能组统一执行，人工驾驶/可见性能待完整阶段；下一入口[CTRL-02](CTRL-02.md)。
+
+实现提交：`f729e95`（四轮制动/ABS、菜单/CLI/成绩/测试与全部原始证据），随后文档/文件末空行收口另提交。未推送。

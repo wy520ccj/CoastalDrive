@@ -201,7 +201,7 @@
     "tools/phase0_smoke.py": "572e619a56d9e0173df42b9d317afd313583419fddf71f54ae7edd272b94fd0e",
     "tools/phase3_route_check.py": "db0a83bf76f07f6747eb19a6c18f6155ce0091561d57dfd322628f169723878b",
     "tools/phase5a_traffic_check.py": "149b43e47202c82437a6289b55cbc3f4d359f853413767c08d648a3adbc56741",
-    "tools/physics/abs_probe.py": "9384485f2ac74965fade93b46344f1fe2b96d4c306672818f61c7f8875d28329",
+    "tools/physics/abs_probe.py": "0825bf713e27681f7a02211d4b27733ddf7132997828f83eff3683d028a8d608",
     "tools/physics/export_reference.py": "b04a42416c519e2825bf603183e0b7a0c7efda0c12447d8adc6a9aa1f5685e58",
     "tools/physics/guardrail_probe.py": "1f7ec53da7c76e7daedef2b1b6568948eb04bf77395f5a20b09bbebe33c54d0f",
     "tools/physics/lane_change_probe.py": "98bd72d28f5c3511141d6b009c2e92921fdfeb953c51fcf28627907408eb762a",
@@ -235,8 +235,14 @@
   "changes_since_T1": [
     "src/application.py",
     "tests/test_driving_mode_ui.py",
+    "tools/physics/abs_probe.py",
     "tools/physics/export_reference.py"
   ],
   "reason": "shorter menu note for save-failure notice; explicit blocked-save UI regression; safe current-log export default",
-  "supplemental_validation": "final-output-t0-v2 and ui-final-720-v2/ui-final-1080-v2"
+  "supplemental_validation": "final-output-t0-v2 and ui-final-720-v2/ui-final-1080-v2",
+  "formatting_only_after_implementation_commit": {
+    "file": "tools/physics/abs_probe.py",
+    "change": "remove extra blank line at EOF; program tokens unchanged",
+    "implementation_commit": "f729e95"
+  }
 }

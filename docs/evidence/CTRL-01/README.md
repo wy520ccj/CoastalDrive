@@ -39,6 +39,6 @@
 
 相关机械/生命周期/配置/ABS短测50项通过，游戏动力与UI等29项通过。`interpolation-t0`实际只跑圈速1项；最初重复给`--tests`选项会覆盖之前的目标，不能算原计划10项。最终相关T1 `t1-v2`：292项pytest、Ruff、三种子启动、两种子十二车弯坡30s全部通过，覆盖实际插值反馈与圈速；`source-integrity.json`确认231个Python文件在该区间起止SHA一致。
 
-T1后仅缩短菜单说明以容纳保存失败提示、将参数导出默认改到`logs/physics`并补相关测试。`final-output-t0`同样只跑最后的4项，重新用单个`--tests`列出全部目标，`final-output-t0-v2`实际15项（UI/配置I/O/真实ABS/圈速）及Ruff通过；`ui-final-720-v2` / `ui-final-1080-v2`再次实际渲染核对。`final-source.json`记录这三处源文件差异，不将其伪称T1期间无变化。四种CLI模式/ABS组合启动通过见`cli/summary.json`。当前完整表为`reference-parameters-final.json`；历史MODE表不覆盖。
+T1后仅缩短菜单说明以容纳保存失败提示、将参数导出默认改到`logs/physics`并补相关测试。`final-output-t0`同样只跑最后的4项，重新用单个`--tests`列出全部目标，`final-output-t0-v2`实际15项（UI/配置I/O/真实ABS/圈速）及Ruff通过；`ui-final-720-v2` / `ui-final-1080-v2`再次实际渲染核对。`final-source.json`记录这三处源文件差异及随后试验工具仅删除文件末多余空行的格式改动，不将其伪称T1期间无变化。四种CLI模式/ABS组合启动通过见`cli/summary.json`。当前完整表为`reference-parameters-final.json`；历史MODE表不覆盖。
 
 T2在ABS/TCS/ESC功能组收口时执行；可见窗口性能和用户驾驶结论属于完整物理阶段。
