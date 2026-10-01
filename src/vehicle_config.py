@@ -3,6 +3,7 @@
 from dataclasses import dataclass, field
 
 from vehicle_brakes import BrakeConfig
+from vehicle_traction import TractionConfig
 
 
 @dataclass(frozen=True)
@@ -32,6 +33,7 @@ class VehicleConfig:
     brake_torque: float = 3643.2  # Total wheel braking torque, Nm.
     front_brake_share: float = 0.60
     braking: BrakeConfig = field(default_factory=BrakeConfig)
+    traction: TractionConfig = field(default_factory=TractionConfig)
     steering_degrees: float = 26.0
     steering_rate: float = 50.0
     steering_response: float = 7.0

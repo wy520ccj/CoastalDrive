@@ -36,6 +36,7 @@ VEHICLE_FIELDS = {
     "brake_torque": ("N·m", "四轮制动总容量"),
     "front_brake_share": ("1", "前轴制动容量份额"),
     "braking": ("配置对象", "四轮液压响应与独立ABS压力反馈；详见brake_fields"),
+    "traction": ("配置对象", "驱动请求削减及必要的单轮制动TCS；详见traction_fields"),
     "steering_degrees": ("°", "虚拟前轴中心角机械限位"),
     "steering_rate": ("°/s", "齿条角速度限位"),
     "steering_response": ("s⁻¹", "齿条输入临界阻尼响应系数"),
@@ -83,6 +84,18 @@ BRAKE_FIELDS = {
     "release_rate": ("比例/s", "压力请求最大减压速率"),
     "apply_rate": ("比例/s", "压力请求最大增压速率"),
     "slip_rate_gain": ("s⁻¹", "滑移误差到压力请求变化率的比例增益"),
+}
+TRACTION_FIELDS = {
+    "tcs_enabled": ("bool", "启用驱动轮滑转反馈控制"),
+    "target_slip": ("1", "驱动滑转目标"),
+    "slip_hysteresis": ("1", "滑转达到目标并加该余量后触发介入"),
+    "slip_speed": ("m/s", "低速滑转分母尺度"),
+    "prediction_time": ("s", "用于抑制驱动滑转增长的预测时域"),
+    "release_rate": ("比例/s", "可用驱动比例最大削减速率"),
+    "apply_rate": ("比例/s", "可用驱动比例最大恢复速率"),
+    "slip_rate_gain": ("s⁻¹", "滑转误差到驱动比例变化率的增益"),
+    "brake_gain": ("比例", "单轮TCS制动请求增益"),
+    "maximum_brake": ("比例", "单轮TCS制动请求上限"),
 }
 INPUT_FIELDS = {
     "progressive_pedals": ("bool", "启用键盘踏板渐变"),
@@ -141,6 +154,7 @@ def export(output):
         config, inputs = asdict(mode.vehicle_config), asdict(mode.input_config)
         assert set(config) == set(VEHICLE_FIELDS), "VehicleConfig字段表必须完整"
         assert set(config["braking"]) == set(BRAKE_FIELDS), "BrakeConfig字段表必须完整"
+        assert set(config["traction"]) == set(TRACTION_FIELDS), "TractionConfig字段表必须完整"
         assert set(inputs) == set(INPUT_FIELDS), "InputConfig字段表必须完整"
         modes[mode.value] = {
             "label": mode.label, "vehicle_config": config, "input_config": inputs,
@@ -149,7 +163,7 @@ def export(output):
             "native_bullet": measure(mode),
         }
     source_names = ("vehicle_config.py", "driver_assist.py", "driving_modes.py", "vehicle.py",
-                    "vehicle_tires.py", "powertrain.py", "vehicle_steering.py", "vehicle_dynamics.py",
+                    "vehicle_tires.py", "vehicle_traction.py", "powertrain.py", "vehicle_steering.py", "vehicle_dynamics.py",
                     "wheel_dynamics.py", "tire_forces.py", "vehicle_contacts.py", "vehicle_state.py",
                     "vehicle_brakes.py")
     hashes = {f"src/{name}": hashlib.sha256((ROOT / "src" / name).read_bytes()).hexdigest()
@@ -162,7 +176,9 @@ def export(output):
         "panda_version": PandaSystem.getVersionString(), "bullet_version": getBulletVersion(),
         "measurement": {"ticks": 240, "dt": FIXED_DT, "max_substeps": 0,
                         "ground": "水平无限平面", "gravity": [0, 0, -9.81], "input": "VehicleCommand()"},
+        "schema_version": "reference-v3",
         "vehicle_fields": VEHICLE_FIELDS, "brake_fields": BRAKE_FIELDS,
+        "traction_fields": TRACTION_FIELDS,
         "input_fields": INPUT_FIELDS, "modes": modes,
         "remaining_constants": {"suspension_rest_length_m": .4, "roll_influence": .1,
                                 "ccd_motion_threshold_m": .5, "ccd_swept_sphere_radius_m": .35},
@@ -175,5 +191,5 @@ def export(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path,
-                        default=ROOT / "logs/physics/reference-parameters.json")
+                        default=ROOT / "logs/physics/reference-v3/parameters.json")
     export(parser.parse_args().output)

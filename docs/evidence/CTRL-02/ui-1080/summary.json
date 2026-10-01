@@ -1,0 +1,87 @@
+{
+  "resolution": [
+    1920,
+    1080
+  ],
+  "screenshots": [
+    "game-menu.png",
+    "simulation-settings.png",
+    "simulation-abs-off-settings.png",
+    "simulation-tcs-off-settings.png",
+    "simulation-menu.png",
+    "simulation-reverse-hud.png",
+    "simulation-abs-active-hud.png",
+    "simulation-tcs-active-hud.png"
+  ],
+  "simulation_reverse_speed_mps": -4.297220230102539,
+  "driving_mode": "simulation",
+  "abs_active_trial_tick": 25,
+  "brake_states": [
+    {
+      "requested": 1,
+      "commanded": 1,
+      "pressure": 0.9998765901959134,
+      "braking_slip": 0.04583783683660509,
+      "abs_active": false,
+      "phase": "normal",
+      "feedback_tick": 266,
+      "predicted_slip": 0.04541420187624388
+    },
+    {
+      "requested": 1,
+      "commanded": 1,
+      "pressure": 0.9998765901959134,
+      "braking_slip": 0.045790612789936645,
+      "abs_active": false,
+      "phase": "normal",
+      "feedback_tick": 266,
+      "predicted_slip": 0.04536560752148991
+    },
+    {
+      "requested": 1,
+      "commanded": 0.9775833615691355,
+      "pressure": 0.990333948810378,
+      "braking_slip": 0.1322452027767627,
+      "abs_active": true,
+      "phase": "release",
+      "feedback_tick": 266,
+      "predicted_slip": 0.16062840623871927
+    },
+    {
+      "requested": 1,
+      "commanded": 0.9775884594391667,
+      "pressure": 0.990336257429107,
+      "braking_slip": 0.13223869296142696,
+      "abs_active": true,
+      "phase": "release",
+      "feedback_tick": 266,
+      "predicted_slip": 0.16062087934664465
+    }
+  ],
+  "tcs_active_trial_tick": 21,
+  "traction_state": {
+    "requested_throttle": 1,
+    "torque_scale": 0.9731970767139086,
+    "active": true,
+    "wheel_slips": [
+      -0.0009899097197252904,
+      -0.0008000229577043716,
+      0.025190394237038505,
+      0.022348526913495426
+    ],
+    "brake_requests": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "feedback_ticks": [
+      260,
+      260,
+      260,
+      260
+    ]
+  },
+  "human_acceptance": "pending",
+  "passed": true
+}

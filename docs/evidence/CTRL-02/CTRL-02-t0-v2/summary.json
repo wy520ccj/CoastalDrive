@@ -1,0 +1,61 @@
+{
+  "started_utc": "2026-10-01T04:04:27.796026+00:00",
+  "git_head": "bd0f9e4213a10e0eecdfe9bb21446410996d34ad",
+  "git_status": "M src/application.py\n M src/driving_modes.py\n M src/main.py\n M src/powertrain.py\n M src/session.py\n M src/settings.py\n M src/simulation.py\n M src/ui/hud.py\n M src/vehicle.py\n M src/vehicle_config.py\n M src/vehicle_state.py\n M tests/test_brake_lifecycle.py\n M tests/test_driving_mode_ui.py\n M tests/test_physics_config_io.py\n M tools/driving_mode_check.py\n M tools/driving_mode_ui_check.py\n M tools/physics/export_reference.py\n M tools/physics/testbed.py\n M tools/validate.py\n?? docs/tasks/CTRL-03.md\n?? src/vehicle_traction.py\n?? tests/test_tcs_integration.py\n?? tests/test_tcs_probe.py\n?? tests/test_traction_lifecycle.py\n?? tests/test_vehicle_traction.py\n?? tools/physics/tcs_mechanical_check.py\n?? tools/physics/tcs_probe.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_vehicle_traction.py",
+    "tests/test_tcs_integration.py",
+    "tests/test_tcs_probe.py",
+    "tests/test_traction_lifecycle.py",
+    "tests/test_driving_mode_ui.py",
+    "tests/test_physics_config_io.py"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\CTRL-02-t0-v2\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.164
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_vehicle_traction.py",
+        "tests/test_tcs_integration.py",
+        "tests/test_tcs_probe.py",
+        "tests/test_traction_lifecycle.py",
+        "tests/test_driving_mode_ui.py",
+        "tests/test_physics_config_io.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\CTRL-02-t0-v2\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 25.785
+    }
+  ]
+}

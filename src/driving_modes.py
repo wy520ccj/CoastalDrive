@@ -23,16 +23,24 @@ class DrivingMode(Enum):
     def input_config(self):
         return GAME_INPUT if self == DrivingMode.GAME else SIMULATION_INPUT
 
-    def configured_vehicle(self, abs_enabled=None):
+    def configured_vehicle(self, abs_enabled=None, tcs_enabled=None):
         """车辆电子开关独立于输入模式；同配置沿用同一不可变实例。"""
         config = self.vehicle_config
-        if abs_enabled is None or abs_enabled == config.braking.abs_enabled:
+        braking = config.braking
+        traction = config.traction
+        if abs_enabled is not None and abs_enabled != braking.abs_enabled:
+            braking = replace(braking, abs_enabled=abs_enabled)
+        if tcs_enabled is not None and tcs_enabled != traction.tcs_enabled:
+            traction = replace(traction, tcs_enabled=tcs_enabled)
+        if braking is config.braking and traction is config.traction:
             return config
-        return replace(config, braking=replace(config.braking, abs_enabled=abs_enabled))
+        return replace(config, braking=braking, traction=traction)
 
-    def score_variant(self, abs_enabled):
-        version = "game-controls-v1" if self == DrivingMode.GAME else "reference-v2"
-        return f"{version}:abs-{'on' if abs_enabled else 'off'}"
+    def score_variant(self, abs_enabled, tcs_enabled=True):
+        version = "game-controls-v2" if self == DrivingMode.GAME else "reference-v3"
+        abs_variant = "on" if abs_enabled else "off"
+        tcs_variant = "on" if tcs_enabled else "off"
+        return f"{version}:abs-{abs_variant}:tcs-{tcs_variant}"
 
 
 # 通用设计参考车，惯量显式取原设计车身值；曲线不包含游戏轮惯量补偿。

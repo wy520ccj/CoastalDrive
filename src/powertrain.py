@@ -26,7 +26,7 @@ class Powertrain:
         self.shift_cooldown = 0.0
         self.drive_torque = 0.0
 
-    def advance(self, speed, driven_omega, pedal, direction, braking, dt):
+    def advance(self, speed, driven_omega, pedal, direction, braking, dt, *, drive_scale=1.0):
         config = self.config
         if direction < 0 and self.gear != -1:
             self.gear = -1
@@ -70,7 +70,7 @@ class Powertrain:
                 wheel_torque *= min(1, max(0, (config.max_speed - abs(speed)) / 2))
         if self.shift_remaining > 0:
             wheel_torque *= 0.15
-        target_torque = direction * wheel_torque
+        target_torque = direction * wheel_torque * drive_scale
         self.drive_torque += (target_torque - self.drive_torque) * (
             1 - math.exp(-dt / config.torque_response)
         )

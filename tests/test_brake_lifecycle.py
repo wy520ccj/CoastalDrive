@@ -67,15 +67,17 @@ def test_both_modes_and_abs_variants_isolate_previous_scores(tmp_path):
         scores.record(GameMode.TIME_TRIAL, 90, legacy + ":reference-v1")
         ids = []
         for mode in DrivingMode:
-            for enabled in (False, True):
-                session.menu()
-                session.set_driving_mode(mode)
-                session.set_abs_enabled(enabled)
-                session.start(countdown=False, mode=GameMode.TIME_TRIAL, track="coastal")
-                ids.append(session.race.score_id)
-                assert session.race.snapshot.best_lap is None
-                scores.record(GameMode.TIME_TRIAL, 100 + len(ids), ids[-1])
-        assert len(set(ids)) == 4
+            for abs_enabled in (False, True):
+                for tcs_enabled in (False, True):
+                    session.menu()
+                    session.set_driving_mode(mode)
+                    session.set_abs_enabled(abs_enabled)
+                    session.set_tcs_enabled(tcs_enabled)
+                    session.start(countdown=False, mode=GameMode.TIME_TRIAL, track="coastal")
+                    ids.append(session.race.score_id)
+                    assert session.race.snapshot.best_lap is None
+                    scores.record(GameMode.TIME_TRIAL, 100 + len(ids), ids[-1])
+        assert len(set(ids)) == 8
         assert legacy not in ids and legacy + ":reference-v1" not in ids
     finally:
         session.close()

@@ -279,10 +279,12 @@ def _git_sha():
 
 
 def load_vehicle_config(path, selected):
-    """JSON文件边界恢复不可变配置；部分制动覆盖继承选定车型。"""
+    """JSON文件边界恢复不可变配置；嵌套电子配置继承选定车型。"""
     values = json.loads(Path(path).read_text(encoding="utf-8"))
     if "braking" in values:
         values["braking"] = replace(selected.braking, **values["braking"])
+    if "traction" in values:
+        values["traction"] = replace(selected.traction, **values["traction"])
     if "torque_curve" in values:
         values["torque_curve"] = tuple(tuple(node) for node in values["torque_curve"])
     if "gear_ratios" in values:

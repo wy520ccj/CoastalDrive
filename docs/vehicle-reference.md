@@ -2,15 +2,15 @@
 
 本文同步当前 `VehicleConfig`、`InputConfig` 与 `DrivingMode`。所有参数均为程序设计值或设计推导值；本机 Bullet 读回证明实际装入的配置，不是实车测量或标定。困难仿真使用通用设计参考车，保留自动前进换挡、简化虚拟离合、射线悬架及简化轮胎模型，不称完整车辆仿真软件。
 
-当前参考车为reference-v2，两模式均采用25ms设计制动器、默认开启ABS。冻结数据见 [当前reference-parameters-final.json](evidence/CTRL-01/reference-parameters-final.json)，逐项保存54个车辆字段、8个制动子字段、9个输入字段、实际几何与两模式各240tick静置读数，以及源码SHA-256。Git HEAD仅为历史上下文；[reference-v1历史文件](evidence/PHYS-MODES-01/reference-parameters.json)保留不覆盖。
+当前参考车为reference-v3，两模式均采用25ms设计制动器、默认开启ABS与TCS。冻结数据见 [当前reference-parameters.json](evidence/CTRL-02/reference-parameters.json)，逐项保存55个车辆字段、8个制动子字段、10个驱动防滑子字段、9个输入字段、实际几何与两模式各240tick静置读数，以及源码SHA-256。Git HEAD仅为历史上下文；[reference-v2历史文件](evidence/CTRL-01/reference-parameters-final.json)与[reference-v1历史文件](evidence/PHYS-MODES-01/reference-parameters.json)保留不覆盖。
 
-本次 `src/vehicle_config.py` SHA-256：`b0ad41314cfd9761a3c3f70099455df41ff99db09343e52f5f7861ec0060a84c`。Panda3D 1.10.16，Bullet 2.84。
+本次 `src/vehicle_config.py` SHA-256：`c40a31e590f99b5ba5f2a3838e34f5c1497a1479cdfa5dae72f8666aad894d1b`。Panda3D 1.10.16，Bullet 2.84。
 
 ## 模式与实例边界
 
 `DrivingMode.GAME`（正常游戏）选择 `CAR` 与 `GAME_INPUT`；`DrivingMode.SIMULATION`（困难仿真）选择 `REFERENCE_CAR` 与 `SIMULATION_INPUT`。模式与计时/自由驾驶/高速玩法正交。Vehicle → Simulation → Session直接传入冻结配置实例，部件创建、reset与跨赛道重建沿用配置；主菜单切换选择后，起步按配置重建世界。不得对存活Bullet车身替换参数对象。
 
-参考车与游戏车共用力学核心；明确差异是曲轴转矩曲线、游戏速度/倒挡力渐退、刚体角阻尼与惯量来源，以及三个输入辅助开关。Q/E只请求R/D方向，S为制动；并未新增手动前进挡或离合踏板。ABS是独立车辆配置，菜单及CLI可在任一模式关闭；Session缓存选定配置，开始时创建实际世界，重开同配置复用世界。新成绩按game-controls-v1/reference-v2及ABS开关分区，旧成绩不覆盖。
+参考车与游戏车共用力学核心；明确差异是曲轴转矩曲线、游戏速度/倒挡力渐退、刚体角阻尼与惯量来源，以及三个输入辅助开关。Q/E只请求R/D方向，S为制动；并未新增手动前进挡或离合踏板。ABS与TCS是独立车辆配置，菜单及CLI可在任一模式关闭；Session缓存选定配置，开始时创建实际世界，重开同配置复用世界。新成绩按game-controls-v2/reference-v3及ABS/TCS两个开关分区，旧成绩不覆盖。
 
 ## VehicleConfig完整字段
 
@@ -35,6 +35,7 @@
 | brake_torque | 3643.2 | — | N·m | 四轮制动总容量 |
 | front_brake_share | 0.6 | — | 1 | 前轴制动容量份额 |
 | braking | BrakeConfig，见下表 | — | 配置对象 | 四轮液压响应与ABS反馈配置 |
+| traction | TractionConfig，见下表 | — | 配置对象 | 后驱滑转反馈、发动机削矩与单轮制动请求 |
 | steering_degrees | 26 | — | ° | 虚拟前轴中心角机械限位 |
 | steering_rate | 50 | — | °/s | 齿条角速度限位 |
 | steering_response | 7 | — | s⁻¹ | 齿条输入临界阻尼响应系数 |
@@ -89,6 +90,25 @@
 | slip_rate_gain | 30 | s⁻¹ | 预测滑移误差到压力请求变化率的增益 |
 
 控制读上一完成物理步真值，预测`λ + response_time × dλ/dt`，再由误差调节有限压力变化率。执行器实际压力换算`brake_torque × 前/后轴份额 / 2`的单轮制动容量；后轮另有简化发动机拖曳。不得把拖曳并入ABS可释放的液压转矩，传动/MSR仍待后续。四轮真实反馈、压力、制动转矩与力保存到快照/CSV，显示插值沿用最新完整步的电子状态。
+
+## TractionConfig完整字段
+
+两模式默认相同，均为通用设计值。控制读取上一完成步轮速和轮心速度真值，以`direction × (rω−vx) / max(|vx|, slip_speed)`定义驱动方向滑转。无支撑的轮不参与路面控制；转矩和轮转动方程继续运行。
+
+| 字段 | 默认值 | 单位 | 计算职责 |
+|---|---:|---|---|
+| tcs_enabled | true | bool | 启用驱动轮滑转反馈控制 |
+| target_slip | 0.12 | 1 | 驱动滑转目标 |
+| slip_hysteresis | 0.015 | 1 | 滑转达到目标并加该余量后触发介入 |
+| slip_speed | 1.0 | m/s | 低速滑转分母尺度 |
+| prediction_time | 0.12 | s | 用于抑制驱动滑转增长的预测时域 |
+| release_rate | 12.0 | 比例/s | 可用驱动比例最大削减速率 |
+| apply_rate | 1.5 | 比例/s | 可用驱动比例最大恢复速率 |
+| slip_rate_gain | 12.0 | s⁻¹ | 滑转误差到驱动比例变化率的增益 |
+| brake_gain | 0.2 | 比例 | 单轮TCS制动请求增益 |
+| maximum_brake | 0.25 | 比例 | 单轮TCS制动请求上限 |
+
+TCS按滑转及增长趋势调节发动机可用驱动比例，动力总成保留0.12s实际转矩响应；过度空转轮请求有限制动，与驾驶者请求取较大值后通过同一压力执行器和ABS。松油、驾驶者制动、空挡或驱动轮全部离地时撤销电子请求，已有实际压力和转矩按执行器衰减。前轴不施加TCS制动。当前后驱仍等分转矩，制动没有额外转移另一轮的驱动转矩；差速器留待后续。
 
 ## InputConfig完整字段
 
@@ -175,7 +195,7 @@
 from driving_modes import DrivingMode
 from simulation import Simulation
 mode = DrivingMode.SIMULATION
-config = mode.configured_vehicle(abs_enabled=True)
+config = mode.configured_vehicle(abs_enabled=True, tcs_enabled=True)
 sim = Simulation(config=config, input_config=mode.input_config)
 ```
 
@@ -192,4 +212,4 @@ sim = Simulation(config=config, input_config=mode.input_config)
 .venv/Scripts/python.exe tools/physics/testbed.py --driving-mode simulation --vehicle-config config.json --actuator-input --cases steering_step --output logs/reference-steering
 ```
 
-`--vehicle-config`接收车辆字段覆盖的JSON对象，例如`{"braking":{"abs_enabled":false}}`，部分制动覆盖继承其余字段，序列恢复为tuple。`--actuator-input`绕过键盘辅助，仍使用同一真实齿条、动力总成、轮胎和Bullet世界。主程序`--abs on/off`独立于`--driving-mode game/simulation`。此表冻结参数与静置读回，动力/制动验证见相应任务证据。
+`--vehicle-config`接收车辆字段覆盖的JSON对象，例如`{"braking":{"abs_enabled":false},"traction":{"tcs_enabled":false}}`，部分制动/驱动防滑覆盖继承其余字段，序列恢复为tuple。`--actuator-input`绕过键盘辅助，仍使用同一真实齿条、动力总成、轮胎和Bullet世界。主程序`--abs on/off`与`--tcs on/off`独立于`--driving-mode game/simulation`。此表冻结参数与静置读回，动力/制动验证见相应任务证据。

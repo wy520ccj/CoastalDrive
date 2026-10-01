@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from vehicle_brakes import BrakeState
 from vehicle_config import CAR
 from vehicle_dynamics import DynamicsState
+from vehicle_traction import TractionState
 
 FIXED_DT = 1 / 120
 
@@ -118,6 +119,8 @@ class CarState:
     wheel_dynamics: tuple[WheelDynamicsState, ...] = ()
     brake_states: tuple[BrakeState, ...] = ()
     abs_enabled: bool = False
+    tcs_enabled: bool = False
+    traction_state: TractionState = field(default_factory=TractionState)
 
 
 def forward(heading):

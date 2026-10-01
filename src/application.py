@@ -28,7 +28,7 @@ from ui.main_menu import MainMenu
 
 
 class CoastalDrive(ShowBase):
-    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", driving_mode=None, abs_enabled=None):
+    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", driving_mode=None, abs_enabled=None, tcs_enabled=None):
         self.startup_trace = startup_trace
         loadPrcFileData(
             "coastaldrive",
@@ -70,6 +70,7 @@ class CoastalDrive(ShowBase):
             track=track,
             driving_mode=driving_mode if driving_mode is not None else self.driving_mode_settings.mode,
             abs_enabled=abs_enabled if abs_enabled is not None else self.driving_mode_settings.abs_enabled,
+            tcs_enabled=tcs_enabled if tcs_enabled is not None else self.driving_mode_settings.tcs_enabled,
             road_shape=road_shape,
             scores=BestTimes(self.output / "test-best-times.json") if smoke else None,
         )
@@ -487,7 +488,7 @@ class CoastalDrive(ShowBase):
         if self.session.phase != Phase.MENU:
             return
         self.session.set_driving_mode(mode)
-        self.driving_mode_settings.save(mode, self.session.abs_enabled)
+        self.driving_mode_settings.save(mode, self.session.abs_enabled, self.session.tcs_enabled)
         self._shown_phase = None
         self.refresh_panel()
 
@@ -495,7 +496,15 @@ class CoastalDrive(ShowBase):
         if self.session.phase != Phase.MENU:
             return
         self.session.set_abs_enabled(not self.session.abs_enabled)
-        self.driving_mode_settings.save(self.session.driving_mode, self.session.abs_enabled)
+        self.driving_mode_settings.save(self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled)
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def toggle_tcs(self):
+        if self.session.phase != Phase.MENU:
+            return
+        self.session.set_tcs_enabled(not self.session.tcs_enabled)
+        self.driving_mode_settings.save(self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled)
         self._shown_phase = None
         self.refresh_panel()
 
@@ -687,13 +696,14 @@ class CoastalDrive(ShowBase):
             self.panel_note.setText(
                 f"当前：{self.session.driving_mode.label} · 下次起步应用\n"
                 "困难仿真：Q 倒挡 · E 前进挡\n"
-                "自动前进换挡 · 车辆ABS独立开关"
+                "自动前进换挡 · ABS与TCS独立开关"
                 + (f"\n{self.driving_mode_settings.notice}" if self.driving_mode_settings.notice else "")
             )
             options = [
                 ("正常游戏", lambda: self.set_driving_mode(DrivingMode.GAME)),
                 ("困难仿真", lambda: self.set_driving_mode(DrivingMode.SIMULATION)),
                 (f"车辆 ABS：{'开启' if self.session.abs_enabled else '关闭'}", self.toggle_abs),
+                (f"驱动防滑 TCS：{'开启' if self.session.tcs_enabled else '关闭'}", self.toggle_tcs),
                 ("返回", self.back_from_driving_mode),
             ]
         elif self.audio_settings_page:

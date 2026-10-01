@@ -18,6 +18,7 @@ def main():
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--driving-mode", choices=("game", "simulation"))
     parser.add_argument("--abs", dest="abs_selection", choices=("on", "off"))
+    parser.add_argument("--tcs", dest="tcs_selection", choices=("on", "off"))
     parser.add_argument("--road-shape", choices=("straight", "curves", "hills"), default="straight")
     parser.add_argument("--smoke", action="store_true")
     parser.add_argument("--window-smoke", action="store_true")
@@ -31,6 +32,7 @@ def main():
 
     driving_mode = DrivingMode(args.driving_mode) if args.driving_mode else None
     abs_enabled = None if args.abs_selection is None else args.abs_selection == "on"
+    tcs_enabled = None if args.tcs_selection is None else args.tcs_selection == "on"
     if args.steps <= 0:
         parser.error("--steps must be positive")
     if args.profile_startup and (args.headless or args.smoke or args.window_smoke):
@@ -40,7 +42,7 @@ def main():
         from simulation import FIXED_DT, Control, Simulation
 
         selected = driving_mode or DrivingMode.GAME
-        config = selected.configured_vehicle(abs_enabled)
+        config = selected.configured_vehicle(abs_enabled, tcs_enabled)
         simulation = Simulation(
             args.seed, track=args.track, road_shape=args.road_shape,
             config=config, input_config=selected.input_config,
@@ -70,7 +72,7 @@ def main():
         startup.mark("application_imported")
         app = CoastalDrive(onscreen=True, output=args.output, seed=args.seed, track=args.track,
                            road_shape=args.road_shape, startup_trace=startup,
-                           driving_mode=driving_mode, abs_enabled=abs_enabled)
+                           driving_mode=driving_mode, abs_enabled=abs_enabled, tcs_enabled=tcs_enabled)
         try:
             app.taskMgr.step()
             startup.mark("first_rendered_frame")
@@ -123,6 +125,7 @@ def main():
         road_shape=args.road_shape,
         driving_mode=driving_mode,
         abs_enabled=abs_enabled,
+        tcs_enabled=tcs_enabled,
     )
     try:
         app.run()
