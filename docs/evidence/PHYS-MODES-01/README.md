@@ -31,6 +31,6 @@
 - [T1](t1/summary.json)：236项pytest、Ruff、三种子headless和0/23种子弯坡30s全部通过。新增参数方向与研究驾驶器配置反解在其后完成，完整T2将覆盖最终源码。
 - [参考车弯坡seed0](reference-hills-0.json)、[seed23](reference-hills-23.json)：各30s、12车，无碰撞/驶离道路，原6.9m/15°等检查不放宽。研究驾驶器按玩家当前配置及输入包络反解请求。
 - [720p实际渲染](ui-720-v2/summary.json)与[1080p实际渲染](ui-1080/summary.json)检查主菜单、模式设置及仿真倒挡HUD；Q/R真实运行速度−4.323m/s，模式/倒挡/制动说明可见，文字未溢出。`ui-720`保留首轮截图脚本错误：误向应用启动接口传countdown参数，修正为实际启动与倒计时后在新目录完成；未改产品接口。
-- `source-start.json`记录完整T2启动时src/tests/tools所有Python文件SHA；T2运行期间不修改这些文件。T2当前运行中，结束后保存完整结果与结束哈希。
+- `source-start.json`记录完整T2启动时src/tests/tools所有Python文件SHA；T2运行期间不修改这些文件。完整T2已通过：454项pytest、Ruff、三种子headless、动力学、20路面、7交通交互、有限滨海/高速及三种子直路/弯坡120s全部通过；225文件运行前后SHA完全相同，见`t2/summary.json`及`source-integrity.json`。
 
 本批未运行T3、可见窗口性能Gate或人工驾驶验收，尚未新增ABS/TCS/ESC。下一功能先在同样试验条件下增加单轮制动执行器与ABS反馈，观察真实轮速/滑移/横摆响应。

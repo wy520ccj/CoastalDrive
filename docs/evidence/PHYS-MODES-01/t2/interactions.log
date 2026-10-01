@@ -1,0 +1,433 @@
+{
+  "output": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-MODES-01\\t2\\interactions.json",
+  "passed": true,
+  "cases": [
+    {
+      "name": "stationary_block",
+      "passed": true,
+      "failures": [],
+      "metrics": {
+        "duration_s": 8,
+        "ticks": 960,
+        "wall_seconds": 1.0583,
+        "player_start_position": [
+          0.0,
+          108.0,
+          0.549318790435791
+        ],
+        "player_end_position": [
+          -4.359345523452518e-11,
+          108.0,
+          0.4186876118183136
+        ],
+        "player_min_speed_mps": -0.0,
+        "player_max_brake": 0.0,
+        "player_lateral_span_m": 0.0,
+        "contacts": [],
+        "contact_count": 0,
+        "traffic": [
+          {
+            "index": 0,
+            "start_position": [
+              0.0,
+              8.166656494140625,
+              0.549318790435791
+            ],
+            "end_position": [
+              1.1295090913772583,
+              93.5103530883789,
+              0.4187173843383789
+            ],
+            "min_speed_mps": 3.3624,
+            "max_brake": 0.3385,
+            "max_steering": 1.4805,
+            "lateral_span_m": 1.1295,
+            "lane_changes": 0,
+            "phase_end": "changing"
+          }
+        ]
+      }
+    },
+    {
+      "name": "slow_lead",
+      "passed": true,
+      "failures": [],
+      "metrics": {
+        "duration_s": 6,
+        "ticks": 720,
+        "wall_seconds": 0.8986,
+        "player_start_position": [
+          0.0,
+          98.08332824707031,
+          0.549318790435791
+        ],
+        "player_end_position": [
+          -0.0002517312241252512,
+          148.03817749023438,
+          0.4188807010650635
+        ],
+        "player_min_speed_mps": 6.6406,
+        "player_max_brake": 0.0,
+        "player_lateral_span_m": 0.0003,
+        "contacts": [],
+        "contact_count": 0,
+        "traffic": [
+          {
+            "index": 0,
+            "start_position": [
+              0.0,
+              58.208316802978516,
+              0.549318790435791
+            ],
+            "end_position": [
+              0.14691489934921265,
+              128.8079376220703,
+              0.4187011122703552
+            ],
+            "min_speed_mps": 7.691,
+            "max_brake": 1.0,
+            "max_steering": 1.535,
+            "lateral_span_m": 0.1472,
+            "lane_changes": 0,
+            "phase_end": "changing"
+          }
+        ]
+      }
+    },
+    {
+      "name": "both_sides_blocked",
+      "passed": true,
+      "failures": [],
+      "metrics": {
+        "duration_s": 6,
+        "ticks": 720,
+        "wall_seconds": 1.6253,
+        "player_start_position": [
+          -4.5,
+          108.08332824707031,
+          0.549318790435791
+        ],
+        "player_end_position": [
+          -4.500242710113525,
+          158.03814697265625,
+          0.4188807010650635
+        ],
+        "player_min_speed_mps": 6.6406,
+        "player_max_brake": 0.0,
+        "player_lateral_span_m": 0.0002,
+        "contacts": [],
+        "contact_count": 0,
+        "traffic": [
+          {
+            "index": 0,
+            "start_position": [
+              -4.5,
+              58.208316802978516,
+              0.549318790435791
+            ],
+            "end_position": [
+              -4.499999046325684,
+              135.48455810546875,
+              0.41880977153778076
+            ],
+            "min_speed_mps": 8.6036,
+            "max_brake": 1.0,
+            "max_steering": 0.0014,
+            "lateral_span_m": 0.0003,
+            "lane_changes": 0,
+            "phase_end": "cruise"
+          },
+          {
+            "index": 1,
+            "start_position": [
+              0.0,
+              78.08332824707031,
+              0.549318790435791
+            ],
+            "end_position": [
+              9.144944669969846e-06,
+              113.63335418701172,
+              0.418700248003006
+            ],
+            "min_speed_mps": 3.1305,
+            "max_brake": 1.0,
+            "max_steering": 0.001,
+            "lateral_span_m": 0.0001,
+            "lane_changes": 0,
+            "phase_end": "cruise"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rear_approach",
+      "passed": true,
+      "failures": [],
+      "metrics": {
+        "duration_s": 8,
+        "ticks": 960,
+        "wall_seconds": 1.6858,
+        "player_start_position": [
+          0.0,
+          38.26664352416992,
+          0.549318790435791
+        ],
+        "player_end_position": [
+          -0.0006727907457388937,
+          297.1311340332031,
+          0.41868889331817627
+        ],
+        "player_min_speed_mps": 31.407,
+        "player_max_brake": 0.0,
+        "player_lateral_span_m": 0.0007,
+        "contacts": [],
+        "contact_count": 0,
+        "traffic": [
+          {
+            "index": 0,
+            "start_position": [
+              0.0,
+              98.16665649414062,
+              0.549318790435791
+            ],
+            "end_position": [
+              4.468568801879883,
+              277.72857666015625,
+              0.41877031326293945
+            ],
+            "min_speed_mps": 19.9179,
+            "max_brake": 0.0,
+            "max_steering": 0.7105,
+            "lateral_span_m": 4.8369,
+            "lane_changes": 1,
+            "phase_end": "cruise"
+          }
+        ],
+        "rear_approach": {
+          "occurred": true,
+          "ticks": 692,
+          "max_npc_brake_while_player_behind": 0.0,
+          "contact_during_approach": false
+        }
+      }
+    },
+    {
+      "name": "rear_blocked",
+      "passed": true,
+      "failures": [],
+      "metrics": {
+        "duration_s": 3,
+        "ticks": 360,
+        "wall_seconds": 1.1256,
+        "player_start_position": [
+          0.0,
+          38.26664352416992,
+          0.549318790435791
+        ],
+        "player_end_position": [
+          -9.25182830542326e-05,
+          133.13046264648438,
+          0.41868752241134644
+        ],
+        "player_min_speed_mps": 31.407,
+        "player_max_brake": 0.0,
+        "player_lateral_span_m": 0.0001,
+        "contacts": [],
+        "contact_count": 0,
+        "traffic": [
+          {
+            "index": 0,
+            "start_position": [
+              0.0,
+              98.16665649414062,
+              0.549318790435791
+            ],
+            "end_position": [
+              9.072065586224198e-05,
+              159.97332763671875,
+              0.4186896085739136
+            ],
+            "min_speed_mps": 19.9179,
+            "max_brake": 0.0,
+            "max_steering": 0.0621,
+            "lateral_span_m": 0.0001,
+            "lane_changes": 0,
+            "phase_end": "changing"
+          },
+          {
+            "index": 1,
+            "start_position": [
+              -4.5,
+              98.16665649414062,
+              0.549318790435791
+            ],
+            "end_position": [
+              -4.50003719329834,
+              136.98526000976562,
+              0.4187229573726654
+            ],
+            "min_speed_mps": 10.7591,
+            "max_brake": 1.0,
+            "max_steering": 0.001,
+            "lateral_span_m": 0.0002,
+            "lane_changes": 0,
+            "phase_end": "cruise"
+          },
+          {
+            "index": 2,
+            "start_position": [
+              4.5,
+              98.16665649414062,
+              0.549318790435791
+            ],
+            "end_position": [
+              4.499963283538818,
+              136.98526000976562,
+              0.4187229573726654
+            ],
+            "min_speed_mps": 10.7591,
+            "max_brake": 1.0,
+            "max_steering": 0.001,
+            "lateral_span_m": 0.0002,
+            "lane_changes": 0,
+            "phase_end": "cruise"
+          }
+        ],
+        "rear_approach": {
+          "occurred": true,
+          "ticks": 360,
+          "max_npc_brake_while_player_behind": 0.0,
+          "contact_during_approach": false
+        }
+      }
+    },
+    {
+      "name": "rear_too_close",
+      "passed": true,
+      "failures": [],
+      "metrics": {
+        "duration_s": 1,
+        "ticks": 120,
+        "wall_seconds": 0.3186,
+        "player_start_position": [
+          0.0,
+          90.26663970947266,
+          0.549318790435791
+        ],
+        "player_end_position": [
+          -7.774738332955167e-05,
+          117.48237609863281,
+          0.418846994638443
+        ],
+        "player_min_speed_mps": 24.813,
+        "player_max_brake": 0.0,
+        "player_lateral_span_m": 0.0001,
+        "contacts": [
+          {
+            "tick": 158,
+            "npc": 0
+          },
+          {
+            "tick": 159,
+            "npc": 0
+          },
+          {
+            "tick": 160,
+            "npc": 0
+          },
+          {
+            "tick": 161,
+            "npc": 0
+          },
+          {
+            "tick": 162,
+            "npc": 0
+          },
+          {
+            "tick": 163,
+            "npc": 0
+          },
+          {
+            "tick": 164,
+            "npc": 0
+          }
+        ],
+        "contact_count": 7,
+        "traffic": [
+          {
+            "index": 0,
+            "start_position": [
+              0.0,
+              98.16665649414062,
+              0.549318790435791
+            ],
+            "end_position": [
+              -2.223927185696084e-05,
+              122.12347412109375,
+              0.4186219573020935
+            ],
+            "min_speed_mps": 19.9195,
+            "max_brake": 0.1378,
+            "max_steering": 0.0001,
+            "lateral_span_m": 0.0,
+            "lane_changes": 0,
+            "phase_end": "cruise"
+          }
+        ],
+        "rear_approach": {
+          "occurred": true,
+          "ticks": 120,
+          "max_npc_brake_while_player_behind": 0.1378,
+          "contact_during_approach": true
+        },
+        "brake_before_contact": 0.0
+      }
+    },
+    {
+      "name": "real_control_cut_in",
+      "passed": true,
+      "failures": [],
+      "metrics": {
+        "duration_s": 8,
+        "ticks": 960,
+        "wall_seconds": 1.7297,
+        "player_start_position": [
+          -4.5,
+          70.14999389648438,
+          0.549318790435791
+        ],
+        "player_end_position": [
+          0.003382152644917369,
+          217.5735321044922,
+          0.4186907410621643
+        ],
+        "player_min_speed_mps": 17.9258,
+        "player_max_brake": 0.0,
+        "player_lateral_span_m": 4.7281,
+        "contacts": [],
+        "contact_count": 0,
+        "traffic": [
+          {
+            "index": 0,
+            "start_position": [
+              0.0,
+              40.208316802978516,
+              0.549318790435791
+            ],
+            "end_position": [
+              4.027531623840332,
+              188.72116088867188,
+              0.4188685119152069
+            ],
+            "min_speed_mps": 14.1947,
+            "max_brake": 1.0,
+            "max_steering": 1.2608,
+            "lateral_span_m": 4.0275,
+            "lane_changes": 0,
+            "phase_end": "changing"
+          }
+        ]
+      }
+    }
+  ]
+}
