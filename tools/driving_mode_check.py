@@ -291,7 +291,9 @@ def main():
         raise RuntimeError("baseline and current fixed step differ")
     config = replace(CAR, braking=BrakeConfig(response_time=0, abs_enabled=False),
                      traction=replace(CAR.traction, tcs_enabled=False),
-                     stability=replace(CAR.stability, esc_enabled=False)) if args.legacy_actuator else CAR
+                     stability=replace(CAR.stability, esc_enabled=False),
+                     tire_peak_load_exponent=1, longitudinal_load_exponent=1,
+                     lateral_load_exponent=1) if args.legacy_actuator else CAR
     current_config, config_differences = _config_comparison(old_metadata["config"], config)
     output.mkdir(parents=True)
     results = [run_case(case, old_metadata, output, config) for case in (args.case or list(CASES))]

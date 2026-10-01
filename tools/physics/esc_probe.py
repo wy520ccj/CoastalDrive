@@ -24,6 +24,7 @@ from vehicle_state import FIXED_DT, VehicleCommand
 CASES = ("asphalt-brake", "low-mu-brake", "split-mu-brake", "corner-brake",
          "steering-step", "steering-saturation", "reverse", "airborne-recontact", "coast-disturbance")
 MODES = ("game", "simulation")
+EXTRA_CASES = ("acceleration", "constant-turn")
 
 
 def trial_config(case, enabled, mode="simulation"):
@@ -39,6 +40,10 @@ def trial_config(case, enabled, mode="simulation"):
 
 
 def command_at(case, time_s):
+    if case == "acceleration":
+        return "acceleration", VehicleCommand(throttle=1, direction=1)
+    if case == "constant-turn":
+        return "constant-turn", VehicleCommand(steering=3, throttle=.15, direction=1)
     if case == "corner-brake":
         return ("corner-entry", VehicleCommand(steering=2, throttle=.15, direction=1)) if time_s < 1.5 else (
             "corner-brake", VehicleCommand(steering=2, brake=.7, direction=1))
@@ -51,7 +56,8 @@ def command_at(case, time_s):
 
 
 def initial_speed(case):
-    return (-30 if case == "reverse" else 40 if case == "corner-brake" else
+    return (0 if case == "acceleration" else -30 if case == "reverse" else
+            40 if case in ("corner-brake", "constant-turn") else
             80 if case in ("steering-step", "steering-saturation", "coast-disturbance") else 100) / 3.6
 
 
@@ -91,12 +97,15 @@ def tire_contact_moments(pose, contacts, contact_tick, wheels):
     return moments
 
 
-def run_trial(case, enabled, duration=6.0, mode="simulation"):
-    if case not in CASES:
+def run_trial(case, enabled, duration=6.0, mode="simulation", vehicle_config=None):
+    if case not in CASES+EXTRA_CASES:
         raise ValueError(f"未知ESC工况：{case}")
     if not math.isfinite(duration) or duration < FIXED_DT:
         raise ValueError("试验时长须至少一个有限固定步")
-    config = trial_config(case, enabled, mode)
+    # 覆盖为完整明确配置，调用者负责其电子开关与工况附着；默认ESC入口不变。
+    config = trial_config(case, enabled, mode) if vehicle_config is None else vehicle_config
+    if config.stability.esc_enabled != enabled:
+        raise ValueError("明确配置ESC开关须与试验标签一致")
     world, vehicle = _create_vehicle(config)
     if case == "split-mu-brake":
         vehicle.on_asphalt = lambda x, _y: x < 0
@@ -182,7 +191,7 @@ def run_trial(case, enabled, duration=6.0, mode="simulation"):
                 airborne[index] += int(not wheel.sample_support)
                 recontacts[index] += int(wheel.sample_support and not supported[index])
                 supported[index] = wheel.sample_support
-            if stopped_tick is None and rows[-1]["horizontal_speed_mps"] < .1:
+            if command.brake > 0 and stopped_tick is None and rows[-1]["horizontal_speed_mps"] < .1:
                 stopped_tick, stopped_distance = tick, distance
         return {"case": case, "mode": mode, "esc_enabled": enabled, "config": asdict(config),
                 "ticks": tick, "elapsed_s": tick*FIXED_DT, "initial_speed_mps": speed,
@@ -261,7 +270,7 @@ def run_matrix(output, duration=6.0, cases=CASES, modes=MODES):
                   "allocation_residual": "active allocation residual >1 Nm duration is diagnostic; full desired/baseline/allocated/residual moments retained every tick",
                   "tire_contact_moment": "pre-force pose and previous contacts; force_contact_tick verified; tangent/lateral match Tires.advance; projected on body up axis; last_substep from fx/fy, mean from cumulative impulses/dt at fixed sampled contact; excludes axle reaction, suspension, collision and other torques; not net body moment",
                   "scope": "mechanism evidence; all non-improvements retained; shorter stopping distance not required; not high fidelity acceptance",
-                  "duration_s": duration, "stop": "first horizontal speed <0.1m/s recorded; all ticks continue"}}
+                  "duration_s": duration, "stop": "first horizontal speed <0.1m/s while driver brake >0 recorded; all ticks continue"}}
     (output / "summary.json").write_text(json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False)+"\n", encoding="utf-8")
     return report
 

@@ -5,6 +5,8 @@ from dataclasses import dataclass
 
 from panda3d.core import Vec3
 
+from tire_properties import tire_grip
+
 
 @dataclass(frozen=True)
 class StabilityConfig:
@@ -89,8 +91,9 @@ class StabilityControl:
                 continue
             contact = contacts[index]
             mu = vehicle.road_friction if contact.surface == "asphalt" else vehicle.grass_friction
-            grip_budget += mu * contact.normal_load
-            limits.append(min(capacity, mu * contact.normal_load))
+            grip = tire_grip(contact.normal_load, mu, vehicle)
+            grip_budget += grip
+            limits.append(min(capacity, grip))
             angle = math.radians(wheel.steering)
             heading = orientation.xform(Vec3(math.sin(angle), math.cos(angle), 0))
             normal = Vec3(*contact.contact_normal)

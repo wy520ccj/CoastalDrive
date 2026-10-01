@@ -1,0 +1,17 @@
+{
+  "wheel_samples": 126720,
+  "maximum_force_over_capacity_n": 0.0003345303593960125,
+  "maximum_force_residual_n": 0.0009999526889483278,
+  "maximum_property_error": 0.0,
+  "input_mismatches": 0,
+  "config_mismatches_except_three_exponents": 0,
+  "source_unchanged_matrix": true,
+  "substeps_trials": 16,
+  "maximum_substeps_force_residual_n": 0.0009999526889483278,
+  "source_unchanged_substeps": true,
+  "maximum_2_8_path_difference_m": 0.09626266555250851,
+  "maximum_2_8_heading_difference_deg": 0.06037902832028408,
+  "budget_tolerance_n": 0.001,
+  "tolerance_basis": "existing implicit force solve residual target .001N",
+  "passed": true
+}

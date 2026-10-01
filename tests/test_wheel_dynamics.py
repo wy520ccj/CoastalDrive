@@ -1,3 +1,5 @@
+from dataclasses import replace
+
 import numpy as np
 import pytest
 
@@ -77,7 +79,19 @@ def test_static_contact_exhausted_budget_enters_actual_sliding():
     step = advance_wheel(0, 0, 0, 0, 100, 0, 10, .5, mobility, 1 / 120)
     assert step.mode == "magic-formula"
     assert abs(CAR.wheel_radius * step.omega - step.vx) > .01
-    assert step.fx**2 + step.fy**2 <= 25 + 1e-6
+    capacity = .5 * 10 * (10 / (CAR.mass * 9.81 / 4)) ** (CAR.tire_peak_load_exponent - 1)
+    assert step.fx**2 + step.fy**2 <= capacity**2 + 1e-6
+
+
+def test_low_load_static_feasibility_uses_same_nonlinear_capacity():
+    _mass, mobility, _matrix = _mass_and_mobility()
+    linear = replace(CAR, tire_peak_load_exponent=1, longitudinal_load_exponent=1,
+                     lateral_load_exponent=1)
+    candidate = advance_wheel(0, 0, 0, 0, 2.5, 0, 10, .5, mobility, 1 / 120)
+    old = advance_wheel(0, 0, 0, 0, 2.5, 0, 10, .5, mobility, 1 / 120, linear)
+    assert candidate.mode == "sticking"
+    assert old.mode == "magic-formula"
+    assert candidate.fx**2 + candidate.fy**2 > (.5 * 10)**2
 
 
 def test_static_external_force_predictor_is_balanced_with_closed_energy_ledger():
@@ -105,8 +119,9 @@ def test_static_external_force_predictor_is_balanced_with_closed_energy_ledger()
         (-10.0, -3.0, 0.5, 0.06, -90.0, 0.0),
     ),
 )
+@pytest.mark.parametrize("load_ratio", [.01, .5, 1, 2])
 def test_implicit_step_closes_energy_and_generalized_momentum_ledger(
-    omega, vx, vy, body_omega, drive, brake
+    omega, vx, vy, body_omega, drive, brake, load_ratio
 ):
     mass, mobility, matrix = _mass_and_mobility()
     dt = 1 / 120
@@ -118,7 +133,7 @@ def test_implicit_step_closes_energy_and_generalized_momentum_ledger(
         body_omega,
         drive,
         brake,
-        CAR.mass * 9.81 / 4,
+        load_ratio * CAR.mass * 9.81 / 4,
         1.1,
         mobility,
         dt,
@@ -136,7 +151,8 @@ def test_implicit_step_closes_energy_and_generalized_momentum_ledger(
     assert actual_change == pytest.approx(expected_change, abs=1e-9)
     if brake > 0:
         assert step.brake_torque * step.relative_omega >= 0
-    assert step.fx**2 + step.fy**2 <= (1.1 * CAR.mass * 9.81 / 4) ** 2
+    capacity = 1.1 * CAR.mass * 9.81 / 4 * load_ratio ** CAR.tire_peak_load_exponent
+    assert step.fx**2 + step.fy**2 <= capacity**2
 
 
 @pytest.mark.parametrize(("direction", "drive"), ((1, 120.0), (-1, -120.0)))

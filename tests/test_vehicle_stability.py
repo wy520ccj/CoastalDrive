@@ -102,4 +102,5 @@ def test_reference_uses_tire_grip_not_brake_hardware_capacity():
             state = control.advance(body, wheels, contacts, (0,) * 4, 20, FIXED_DT)
         outputs.append(state.reference_yaw_rate)
     assert outputs[0] == pytest.approx(outputs[1])
-    assert abs(outputs[0]) == pytest.approx(13200 / (config.mass * 20), rel=1e-5)
+    capacity = 13200 * (3000 / (config.mass * 9.81 / 4)) ** (config.tire_peak_load_exponent - 1)
+    assert abs(outputs[0]) == pytest.approx(capacity / (config.mass * 20), rel=1e-5)

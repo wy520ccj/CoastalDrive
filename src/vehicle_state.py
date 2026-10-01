@@ -91,6 +91,10 @@ class WheelDynamicsState:
     longitudinal_impulse: float = 0.0
     lateral_impulse: float = 0.0
     brake_angular_impulse: float = 0.0
+    force_grip: float = 0.0
+    sample_grip: float = 0.0
+    force_longitudinal_stiffness: float = 0.0
+    force_lateral_stiffness: float = 0.0
 
 
 @dataclass(frozen=True)

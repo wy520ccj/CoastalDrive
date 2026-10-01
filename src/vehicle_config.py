@@ -45,6 +45,9 @@ class VehicleConfig:
     longitudinal_stiffness: float = 60000.0  # 静态单轮载荷下，N/单位滑转率。
     lateral_stiffness: float = 50000.0  # 静态单轮载荷下，N/rad。
     rear_lateral_stiffness: float = 50000.0  # 后轮可独立定义侧偏刚度，N/rad。
+    tire_peak_load_exponent: float = .90  # 峰值力随轮荷次线性增长；1恢复原线性模型。
+    longitudinal_load_exponent: float = .90
+    lateral_load_exponent: float = .85
     tire_shape: float = 1.9
     tire_curvature: float = 0.97
     slip_speed: float = 1.0  # 低速滑移分母的模型尺度，m/s。

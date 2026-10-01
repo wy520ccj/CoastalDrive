@@ -6,6 +6,7 @@ from dataclasses import replace
 from panda3d.core import Mat3, Quat, Vec3
 
 from tire_forces import slip_state
+from tire_properties import tire_grip, tire_stiffness
 from vehicle_config import CAR, wheel_hubs
 from vehicle_contacts import road_support
 from vehicle_state import WheelDynamicsState, WheelState
@@ -111,6 +112,8 @@ class Tires:
                 brake_angular_impulses[index] += sub_dt * step.brake_torque
                 self.omega[index] = step.omega
                 self.rotation[index] += sub_dt * step.relative_omega
+                wheel_config = config if index < 2 else self.rear_config
+                cx, cy = tire_stiffness(load, wheel_config)
                 states[index] = WheelDynamicsState(
                     omega=step.omega, rotation=self.rotation[index],
                     relative_omega=step.relative_omega,
@@ -127,6 +130,8 @@ class Tires:
                     longitudinal_impulse=longitudinal_impulses[index],
                     lateral_impulse=lateral_impulses[index],
                     brake_angular_impulse=brake_angular_impulses[index],
+                    force_grip=tire_grip(load, mu, config),
+                    force_longitudinal_stiffness=cx, force_lateral_stiffness=cy,
                 )
         self.states = tuple(states)
 
@@ -155,11 +160,13 @@ class Tires:
             vy = (velocity + angular.cross(point)).dot(axle)
             kappa, alpha = slip_state(vx, vy, self.omega[index],
                                       self.config.wheel_radius, self.config)
+            mu = self.config.road_friction if contact.surface == "asphalt" else self.config.grass_friction
             states.append(replace(
                 state, relative_omega=self.omega[index] + angular.dot(axle),
                 longitudinal_speed=float(vx), lateral_speed=float(vy),
                 kappa=kappa if supported else None, alpha=alpha if supported else None,
                 sample_support=supported, sample_tick=tick,
+                sample_grip=tire_grip(contact.normal_load, mu, self.config) if supported else 0.0,
             ))
         self.states = tuple(states)
 

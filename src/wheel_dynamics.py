@@ -3,7 +3,8 @@
 import math
 from dataclasses import dataclass
 
-from tire_forces import slip_state, tire_force
+from tire_forces import combined_force, slip_state
+from tire_properties import tire_grip, tire_stiffness
 from vehicle_config import CAR
 
 
@@ -40,6 +41,8 @@ def advance_wheel(omega, vx, vy, body_omega, drive, brake, load, mu, mobility, d
     """同时求解接地力、轮速和干式制动反力；车体由调用方施加同一冲量。"""
     radius, inertia = config.wheel_radius, config.wheel_inertia
     m = mobility
+    grip = tire_grip(load, mu, config)
+    cx, cy = tire_stiffness(load, config)
 
     def state(fx, fy):
         free_omega = omega + dt * (drive - radius * fx) / inertia
@@ -57,7 +60,8 @@ def advance_wheel(omega, vx, vy, body_omega, drive, brake, load, mu, mobility, d
 
     def residual(fx, fy):
         values = state(fx, fy)
-        target_x, target_y = tire_force(values[4], values[5], load, mu, config)
+        target_x, target_y = combined_force(values[4], values[5], grip, cx, cy,
+                                          config.tire_shape, config.tire_curvature)
         return fx - target_x, fy - target_y
 
     mode = "magic-formula" if load > 0 else "airborne"
@@ -70,7 +74,7 @@ def advance_wheel(omega, vx, vy, body_omega, drive, brake, load, mu, mobility, d
 
         fx, fy, error = _solve_force(sticking_residual)
         # 静摩擦只在摩擦圆内成立；所需力超出预算时进入实际滑动曲线。
-        if math.hypot(fx, fy) <= mu * load:
+        if math.hypot(fx, fy) <= grip:
             values = state(fx, fy)
             return WheelStep(
                 values[0], values[0] + values[3], values[1], values[2], values[3],

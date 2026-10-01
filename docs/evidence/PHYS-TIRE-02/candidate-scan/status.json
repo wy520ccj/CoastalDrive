@@ -1,0 +1,16 @@
+{
+  "status": "completed",
+  "grid_rows": 1320,
+  "baseline_comparisons": {
+    "baseline_rows_read": 1100,
+    "baseline_expected_rows": 1100,
+    "nominal_point_rows_compared": 220,
+    "nominal_load_force_mismatch_count": 0,
+    "nominal_load_forces_strictly_equal": true,
+    "linear_exponents_force_mismatch_count": 0,
+    "linear_exponents_all_grid_points_strictly_equal": true,
+    "first_nominal_mismatches": [],
+    "first_linear_mismatches": []
+  },
+  "source_unchanged": true
+}

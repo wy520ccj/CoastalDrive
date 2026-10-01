@@ -1,0 +1,24 @@
+{
+  "status": "completed",
+  "seed": 23,
+  "simulation_seconds": 30.0,
+  "wall_seconds": 50.46301519999906,
+  "player_distance_m": 593.801563903803,
+  "last_sample": {
+    "time": 30.0,
+    "wall_seconds": 50.46160279999822,
+    "sample_period_seconds": 1.0,
+    "player_distance_m": 593.801563903803,
+    "s": 601.8015638664854,
+    "d": 4.387953771391853,
+    "rebases": 0,
+    "origin_y": 0.0,
+    "contacts": 0,
+    "segments": 13,
+    "rigid_bodies": 195,
+    "transform_states": 183,
+    "working_set_bytes": 79589376,
+    "changes": 8,
+    "errors": []
+  }
+}
