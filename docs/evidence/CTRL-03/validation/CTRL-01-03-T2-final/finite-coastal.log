@@ -1,0 +1,96 @@
+{
+  "seconds": 30.0,
+  "ticks": 3600,
+  "track": "coastal",
+  "seed": 23,
+  "traffic_count": 8,
+  "physics_seconds": 22.8451,
+  "player_collision_steps": 0,
+  "npc_collision_steps": 0,
+  "npc_collision_pairs": [],
+  "traffic_cycles": 0,
+  "failures": [],
+  "passed": true,
+  "npcs": [
+    {
+      "index": 0,
+      "active": true,
+      "generation": 0,
+      "cumulative_m": 344.381,
+      "max_route_error_m": 0.65,
+      "laps": 0.476,
+      "stopped": false,
+      "stopped_fraction": 0.021
+    },
+    {
+      "index": 1,
+      "active": true,
+      "generation": 0,
+      "cumulative_m": 325.541,
+      "max_route_error_m": 0.58,
+      "laps": 0.45,
+      "stopped": false,
+      "stopped_fraction": 0.021
+    },
+    {
+      "index": 2,
+      "active": true,
+      "generation": 0,
+      "cumulative_m": 338.426,
+      "max_route_error_m": 0.65,
+      "laps": 0.468,
+      "stopped": false,
+      "stopped_fraction": 0.017
+    },
+    {
+      "index": 3,
+      "active": true,
+      "generation": 0,
+      "cumulative_m": 319.911,
+      "max_route_error_m": 0.58,
+      "laps": 0.443,
+      "stopped": false,
+      "stopped_fraction": 0.016
+    },
+    {
+      "index": 4,
+      "active": true,
+      "generation": 0,
+      "cumulative_m": 376.595,
+      "max_route_error_m": 0.364,
+      "laps": 0.521,
+      "stopped": false,
+      "stopped_fraction": 0.016
+    },
+    {
+      "index": 5,
+      "active": true,
+      "generation": 0,
+      "cumulative_m": 354.481,
+      "max_route_error_m": 0.402,
+      "laps": 0.49,
+      "stopped": false,
+      "stopped_fraction": 0.016
+    },
+    {
+      "index": 6,
+      "active": true,
+      "generation": 0,
+      "cumulative_m": 368.459,
+      "max_route_error_m": 0.365,
+      "laps": 0.51,
+      "stopped": false,
+      "stopped_fraction": 0.017
+    },
+    {
+      "index": 7,
+      "active": true,
+      "generation": 0,
+      "cumulative_m": 334.872,
+      "max_route_error_m": 0.409,
+      "laps": 0.463,
+      "stopped": false,
+      "stopped_fraction": 0.018
+    }
+  ]
+}

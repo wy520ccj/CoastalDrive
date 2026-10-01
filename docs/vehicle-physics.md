@@ -64,7 +64,7 @@ VEH-01 本次仅确认这一许可，未接入按车型选物理参数，也未�
 
 当前VehicleResponse已按功能拆为driver_assist、powertrain、vehicle_steering。DriverAssist处理驾驶输入便利行为，SteeringRack保存实际虚拟前轴中心转角/角速度与机械限制，Powertrain保存发动机、自动换挡和转矩响应。Vehicle.apply_command是统一受力入口，apply_control先做辅助再调用它。
 
-研究控制使用`vehicle_state.VehicleCommand`，steering为度、throttle/brake为0～1、direction为−1/0/1。`Simulation.step`接收Control或VehicleCommand，仍只有一个120Hz世界；模式改变输入辅助，不改变质量、附着或动力参数。默认七标准工况1168×117列完全一致，见[ARCH-01](evidence/ARCH-01/README.md)。上节车型配置授权在这些新职责间贯通，旧模块名只记录当时背景。
+研究控制使用`vehicle_state.VehicleCommand`，steering为度、throttle/brake为0～1、direction为−1/0/1。`Simulation.step`接收Control或VehicleCommand，仍只有一个120Hz世界；输入策略与车辆参数分别配置，两模式在共享核心上选择各自配置。ARCH-01当时默认七标准工况1168×117列完全一致，见[ARCH-01](evidence/ARCH-01/README.md)。上节车型配置授权在这些新职责间贯通，旧模块名只记录当时背景。
 
 PHYS-04实际前轮已使用Ackermann，steering表示虚拟前轴中心角，左右真实角分别由轴距/轮距计算。中心角限制与输入包络保持，内轮角高于中心角、外轮低于中心角。低速定圆与真实前进/倒车方向见[转向报告](evidence/PHYS-04/README.md)。
 
@@ -76,6 +76,8 @@ PHYS-04实际前轮已使用Ackermann，steering表示虚拟前轴中心角，�
 
 轮胎采用简化径向Magic Formula联合滑移，默认Cκ60000N、前后Cα50000N/rad，shape1.9、curvature.97；低速分母尺度1m/s，.25m/s以下在摩擦圆内求静摩擦无滑移约束。两轮胎子步正/反次序推进，唯一Bullet刚体步为1/120s，max_substeps=0。既有能量/动量、摩擦所有权与静态坡面受力试验见[迁移报告](evidence/PHYS-TIRE-01/README.md)。
 
-用户要求正常游戏/困难仿真两模式，困难仿真像仿真软件一样主打真实，以完整参数表通用参考车起步，再接实车型。正常游戏动力曲线在迁移B基础上×1.055补偿新增轮转动惯量，使既有动力目标保持；未补偿B完整保存，不能把此补偿视为实车标定。下一[PHYS-MODES-01](tasks/PHYS-MODES-01.md)贯通每车配置、明确输入辅助/执行器与模式选择，仿真参考车独立使用参数。两个模式不复制物理世界，不靠减抓地制造难度。
+用户要求正常游戏/困难仿真两模式，困难仿真像仿真软件一样主打真实，以完整参数表通用参考车起步，再接实车型。正常游戏动力曲线在迁移B基础上×1.055补偿新增轮转动惯量，使既有动力目标保持；未补偿B完整保存，不能把此补偿视为实车标定。[PHYS-MODES-01](tasks/PHYS-MODES-01.md)已贯通每车配置、明确输入辅助/执行器与模式选择，仿真参考车独立使用参数。两个模式不复制物理世界，不靠减抓地制造难度。
 
-当前尚无ABS/TCS/ESC，已经能由转矩、轮惯量和附着自然产生空转/抱死；随后通过明确车型电子控制开关A/B验证。射线悬架、上一tick接触几何、简化无松弛长度轮胎、尚无完整发动机/离合动态和动态支撑体等计算边界进入参考车说明，后续按功能完善。
+当前ABS/TCS/ESC均已接入同一真实执行器与唯一轮胎力路径，独立开关A/B与完整功能组T2通过：[电子控制证据](evidence/CTRL-03/README.md)。ESC制动分配能够释放一侧驾驶者制动请求，以实现满踏板对开附着纠偏；驾驶者制动仍禁止发动机驱动。横摆、侧偏、轮速、轮荷与路面μ取上一完整步仿真真值，未用估计器冒充传感器。
+
+下一[PHYS-TIRE-02](tasks/PHYS-TIRE-02.md)补轮荷敏感性，随后做胎体瞬态。射线悬架、上一tick接触几何、简化无松弛长度轮胎、尚无完整发动机/离合动态与差速器、动态支撑体等计算边界进入参考车说明，继续按功能完善。

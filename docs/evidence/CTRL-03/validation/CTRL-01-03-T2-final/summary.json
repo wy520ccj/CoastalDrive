@@ -1,0 +1,338 @@
+{
+  "started_utc": "2026-10-01T09:19:12.103100+00:00",
+  "git_head": "92edbf5721eda0f09ab6a0a77045e6486d65acdc",
+  "git_status": "",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [],
+  "tier": "T2",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.1
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 379.211
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.827
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.833
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.855
+    },
+    {
+      "name": "handling",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/h1_benchmark.py",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\handling"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\handling\\handling.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\handling.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 3.68
+    },
+    {
+      "name": "surface",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/curve_surface_check.py",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\surface.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\surface.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\surface.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 2.643
+    },
+    {
+      "name": "interactions",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/traffic_interaction_check.py",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\interactions.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\interactions.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\interactions.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 7.17
+    },
+    {
+      "name": "finite-coastal",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/h4a_traffic_check.py",
+        "--track",
+        "coastal",
+        "--seconds",
+        "30",
+        "--seed",
+        "23",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\finite-coastal.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\finite-coastal.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\finite-coastal.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 23.044
+    },
+    {
+      "name": "finite-highway",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/h4a_traffic_check.py",
+        "--track",
+        "highway",
+        "--seconds",
+        "30",
+        "--seed",
+        "23",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\finite-highway.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\finite-highway.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\finite-highway.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 15.664
+    },
+    {
+      "name": "straight-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/endless_check.py",
+        "--seconds",
+        "120",
+        "--seed",
+        "0",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\straight-0"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\straight-0\\seed-0.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\straight-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 102.624
+    },
+    {
+      "name": "hills-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/curve_drive_check.py",
+        "--shape",
+        "hills",
+        "--seconds",
+        "120",
+        "--seed",
+        "0",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\hills-0.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\hills-0.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\hills-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 115.475
+    },
+    {
+      "name": "straight-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/endless_check.py",
+        "--seconds",
+        "120",
+        "--seed",
+        "17",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\straight-17"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\straight-17\\seed-17.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\straight-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 88.918
+    },
+    {
+      "name": "hills-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/curve_drive_check.py",
+        "--shape",
+        "hills",
+        "--seconds",
+        "120",
+        "--seed",
+        "17",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\hills-17.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\hills-17.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\hills-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 103.256
+    },
+    {
+      "name": "straight-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/endless_check.py",
+        "--seconds",
+        "120",
+        "--seed",
+        "23",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\straight-23"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\straight-23\\seed-23.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\straight-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 82.099
+    },
+    {
+      "name": "hills-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "tools/curve_drive_check.py",
+        "--shape",
+        "hills",
+        "--seconds",
+        "120",
+        "--seed",
+        "23",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\hills-23.json"
+      ],
+      "reports": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\hills-23.json"
+      ],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\CTRL-01-03-T2-final\\hills-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 116.165
+    }
+  ]
+}
