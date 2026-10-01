@@ -1,0 +1,51 @@
+{
+  "started_utc": "2026-10-01T03:23:06.434600+00:00",
+  "git_head": "5bd5f88383d00c3fdd6eedf2777646ef4e3bb8bb",
+  "git_status": "M docs/current-progress.md\n M docs/tasks/CTRL-01.md\n M src/application.py\n M src/driving_modes.py\n M src/main.py\n M src/session.py\n M src/settings.py\n M src/simulation.py\n M src/ui/hud.py\n M src/vehicle.py\n M src/vehicle_config.py\n M src/vehicle_state.py\n M src/vehicle_tires.py\n M tests/test_driving_mode_ui.py\n M tests/test_h3_review.py\n M tests/test_vehicle_tires.py\n M tools/driving_mode_check.py\n M tools/driving_mode_ui_check.py\n M tools/physics/export_reference.py\n M tools/physics/testbed.py\n M tools/validate.py\n?? docs/evidence/CTRL-01/\n?? docs/tasks/CTRL-02.md\n?? src/vehicle_brakes.py\n?? tests/test_abs_integration.py\n?? tests/test_brake_lifecycle.py\n?? tests/test_physics_config_io.py\n?? tests/test_vehicle_brakes.py\n?? tools/physics/abs_probe.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_h3_review.py::test_actual_physics_lap_records_and_reloads"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\CTRL-01\\interpolation-t0\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.165
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_h3_review.py::test_actual_physics_lap_records_and_reloads"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\CTRL-01\\interpolation-t0\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 10.815
+    }
+  ]
+}

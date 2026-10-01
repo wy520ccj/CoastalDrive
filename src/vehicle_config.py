@@ -1,6 +1,8 @@
 """Vehicle dimensions are metres; steering angles are degrees."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+from vehicle_brakes import BrakeConfig
 
 
 @dataclass(frozen=True)
@@ -29,6 +31,7 @@ class VehicleConfig:
     game_speed_limits: bool = True
     brake_torque: float = 3643.2  # Total wheel braking torque, Nm.
     front_brake_share: float = 0.60
+    braking: BrakeConfig = field(default_factory=BrakeConfig)
     steering_degrees: float = 26.0
     steering_rate: float = 50.0
     steering_response: float = 7.0

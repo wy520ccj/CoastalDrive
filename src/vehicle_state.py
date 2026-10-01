@@ -3,6 +3,7 @@
 import math
 from dataclasses import dataclass, field
 
+from vehicle_brakes import BrakeState
 from vehicle_config import CAR
 from vehicle_dynamics import DynamicsState
 
@@ -31,6 +32,13 @@ class VehicleCommand:
     throttle: float = 0.0
     brake: float = 0.0
     direction: int = 0
+    wheel_brakes: tuple[float, float, float, float] | None = None
+
+    def __post_init__(self):
+        if self.wheel_brakes is not None and (
+            len(self.wheel_brakes) != 4 or any(not 0 <= value <= 1 for value in self.wheel_brakes)
+        ):
+            raise ValueError("分轮制动请求须为四个0～1比例")
 
 
 @dataclass(frozen=True)
@@ -108,6 +116,8 @@ class CarState:
     wheel_contacts: tuple[WheelContactState, ...] = ()
     contact_tick: int = 0
     wheel_dynamics: tuple[WheelDynamicsState, ...] = ()
+    brake_states: tuple[BrakeState, ...] = ()
+    abs_enabled: bool = False
 
 
 def forward(heading):

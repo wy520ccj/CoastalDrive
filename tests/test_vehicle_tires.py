@@ -24,7 +24,7 @@ def sim():
 
 def tire_step(car, *, drive=0, brake=0):
     car.tires.advance(car._chassis, car.snapshot().wheel_contacts, (0, 0),
-                      drive, 0, brake, car.snapshot().contact_tick, FIXED_DT)
+                      drive, 0, (brake,) * 4, car.snapshot().contact_tick, FIXED_DT)
 
 
 def kinetic_energy(car):

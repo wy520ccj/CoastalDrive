@@ -35,6 +35,7 @@ VEHICLE_FIELDS = {
     "game_speed_limits": ("bool", "启用游戏速度渐退/倒车力上限；不是车身速度钳制"),
     "brake_torque": ("N·m", "四轮制动总容量"),
     "front_brake_share": ("1", "前轴制动容量份额"),
+    "braking": ("配置对象", "四轮液压响应与独立ABS压力反馈；详见brake_fields"),
     "steering_degrees": ("°", "虚拟前轴中心角机械限位"),
     "steering_rate": ("°/s", "齿条角速度限位"),
     "steering_response": ("s⁻¹", "齿条输入临界阻尼响应系数"),
@@ -72,6 +73,16 @@ VEHICLE_FIELDS = {
     "angular_damping": ("1", "Bullet刚体角阻尼"),
     "suspension_travel": ("m", "射线悬架最大行程，传API时×100cm"),
     "suspension_force_limit": ("N", "每轮实际施加悬架力上限"),
+}
+BRAKE_FIELDS = {
+    "response_time": ("s", "实际压力一阶响应时间常数；0为理想执行器"),
+    "abs_enabled": ("bool", "启用各轮滑移反馈压力调节"),
+    "target_slip": ("1", "制动滑移目标"),
+    "slip_hysteresis": ("1", "目标两侧压力增减的滑移死区"),
+    "minimum_speed": ("m/s", "ABS轮心纵向真值速度介入下限"),
+    "release_rate": ("比例/s", "压力请求最大减压速率"),
+    "apply_rate": ("比例/s", "压力请求最大增压速率"),
+    "slip_rate_gain": ("s⁻¹", "滑移误差到压力请求变化率的比例增益"),
 }
 INPUT_FIELDS = {
     "progressive_pedals": ("bool", "启用键盘踏板渐变"),
@@ -129,6 +140,7 @@ def export(output):
     for mode in DrivingMode:
         config, inputs = asdict(mode.vehicle_config), asdict(mode.input_config)
         assert set(config) == set(VEHICLE_FIELDS), "VehicleConfig字段表必须完整"
+        assert set(config["braking"]) == set(BRAKE_FIELDS), "BrakeConfig字段表必须完整"
         assert set(inputs) == set(INPUT_FIELDS), "InputConfig字段表必须完整"
         modes[mode.value] = {
             "label": mode.label, "vehicle_config": config, "input_config": inputs,
@@ -138,7 +150,8 @@ def export(output):
         }
     source_names = ("vehicle_config.py", "driver_assist.py", "driving_modes.py", "vehicle.py",
                     "vehicle_tires.py", "powertrain.py", "vehicle_steering.py", "vehicle_dynamics.py",
-                    "wheel_dynamics.py", "tire_forces.py", "vehicle_contacts.py", "vehicle_state.py")
+                    "wheel_dynamics.py", "tire_forces.py", "vehicle_contacts.py", "vehicle_state.py",
+                    "vehicle_brakes.py")
     hashes = {f"src/{name}": hashlib.sha256((ROOT / "src" / name).read_bytes()).hexdigest()
               for name in source_names}
     hashes["tools/physics/export_reference.py"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
@@ -149,7 +162,8 @@ def export(output):
         "panda_version": PandaSystem.getVersionString(), "bullet_version": getBulletVersion(),
         "measurement": {"ticks": 240, "dt": FIXED_DT, "max_substeps": 0,
                         "ground": "水平无限平面", "gravity": [0, 0, -9.81], "input": "VehicleCommand()"},
-        "vehicle_fields": VEHICLE_FIELDS, "input_fields": INPUT_FIELDS, "modes": modes,
+        "vehicle_fields": VEHICLE_FIELDS, "brake_fields": BRAKE_FIELDS,
+        "input_fields": INPUT_FIELDS, "modes": modes,
         "remaining_constants": {"suspension_rest_length_m": .4, "roll_influence": .1,
                                 "ccd_motion_threshold_m": .5, "ccd_swept_sphere_radius_m": .35},
     }
@@ -161,5 +175,5 @@ def export(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path,
-                        default=ROOT / "docs/evidence/PHYS-MODES-01/reference-parameters.json")
+                        default=ROOT / "logs/physics/reference-parameters.json")
     export(parser.parse_args().output)

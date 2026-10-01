@@ -1,0 +1,8 @@
+{
+  "status": "failed",
+  "tool": "tools/driving_mode_ui_check.py",
+  "exception": "AssertionError",
+  "assertion": "ABS介入 in app.hud.help.getText()",
+  "observed": "rendered HUD showed ABS关闭 despite physical ABS intervention",
+  "record": "Tool stderr observed in session; stdout-only redirection did not archive traceback. Screenshot retained."
+}

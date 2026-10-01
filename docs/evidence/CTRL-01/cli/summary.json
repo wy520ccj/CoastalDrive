@@ -1,0 +1,34 @@
+{
+  "profiles": [
+    {
+      "mode": "game",
+      "abs": "on",
+      "tick": 120,
+      "file": "game-abs-on.json",
+      "passed": true
+    },
+    {
+      "mode": "game",
+      "abs": "off",
+      "tick": 120,
+      "file": "game-abs-off.json",
+      "passed": true
+    },
+    {
+      "mode": "simulation",
+      "abs": "on",
+      "tick": 120,
+      "file": "simulation-abs-on.json",
+      "passed": true
+    },
+    {
+      "mode": "simulation",
+      "abs": "off",
+      "tick": 120,
+      "file": "simulation-abs-off.json",
+      "passed": true
+    }
+  ],
+  "source_sha256": "90f6fa54a065e0341911da664ba78649f3168503b3293c62e3cf340cce186eda",
+  "passed": true
+}

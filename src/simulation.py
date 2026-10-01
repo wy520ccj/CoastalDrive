@@ -862,6 +862,8 @@ def interpolate(previous: Snapshot, current: Snapshot, alpha: float):
             b.wheel_contacts,
             b.contact_tick,
             b.wheel_dynamics,
+            brake_states=b.brake_states,
+            abs_enabled=b.abs_enabled,
         )
 
     return replace(

@@ -28,7 +28,7 @@ from ui.main_menu import MainMenu
 
 
 class CoastalDrive(ShowBase):
-    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", driving_mode=None):
+    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", driving_mode=None, abs_enabled=None):
         self.startup_trace = startup_trace
         loadPrcFileData(
             "coastaldrive",
@@ -69,6 +69,7 @@ class CoastalDrive(ShowBase):
             seed,
             track=track,
             driving_mode=driving_mode if driving_mode is not None else self.driving_mode_settings.mode,
+            abs_enabled=abs_enabled if abs_enabled is not None else self.driving_mode_settings.abs_enabled,
             road_shape=road_shape,
             scores=BestTimes(self.output / "test-best-times.json") if smoke else None,
         )
@@ -486,7 +487,15 @@ class CoastalDrive(ShowBase):
         if self.session.phase != Phase.MENU:
             return
         self.session.set_driving_mode(mode)
-        self.driving_mode_settings.save(mode)
+        self.driving_mode_settings.save(mode, self.session.abs_enabled)
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def toggle_abs(self):
+        if self.session.phase != Phase.MENU:
+            return
+        self.session.set_abs_enabled(not self.session.abs_enabled)
+        self.driving_mode_settings.save(self.session.driving_mode, self.session.abs_enabled)
         self._shown_phase = None
         self.refresh_panel()
 
@@ -676,15 +685,15 @@ class CoastalDrive(ShowBase):
         elif self.driving_mode_page:
             self.panel_title.setText("驾驶模式")
             self.panel_note.setText(
-                f"当前：{self.session.driving_mode.label}\n"
-                "仅在主菜单选择，下次起步使用所选模式\n"
+                f"当前：{self.session.driving_mode.label} · 下次起步应用\n"
                 "困难仿真：Q 倒挡 · E 前进挡\n"
-                "自动前进换挡 · 简化离合模型"
+                "自动前进换挡 · 车辆ABS独立开关"
                 + (f"\n{self.driving_mode_settings.notice}" if self.driving_mode_settings.notice else "")
             )
             options = [
                 ("正常游戏", lambda: self.set_driving_mode(DrivingMode.GAME)),
                 ("困难仿真", lambda: self.set_driving_mode(DrivingMode.SIMULATION)),
+                (f"车辆 ABS：{'开启' if self.session.abs_enabled else '关闭'}", self.toggle_abs),
                 ("返回", self.back_from_driving_mode),
             ]
         elif self.audio_settings_page:

@@ -8,7 +8,7 @@ import math
 import struct
 import subprocess
 import sys
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,6 +17,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from driver_assist import GAME_INPUT
 from simulation import FIXED_DT, Control, Simulation
+from vehicle_brakes import BrakeConfig
 from vehicle_config import CAR
 
 GEOMETRY_FIELDS = {
@@ -143,8 +144,8 @@ def compare_record(baseline, current):
     return stats
 
 
-def _config_comparison(old_config):
-    current_config = {**asdict(CAR), **asdict(GAME_INPUT)}
+def _config_comparison(old_config, config=CAR):
+    current_config = {**asdict(config), **asdict(GAME_INPUT)}
     old_normalized = _json_value(old_config)
     current_normalized = _json_value(current_config)
     differences = []
@@ -183,7 +184,7 @@ def _record(snapshot, control):
     })
 
 
-def run_case(case, old_metadata, output):
+def run_case(case, old_metadata, output, config=CAR):
     track, road_shape, traffic_count = CASES[case]
     case_metadata = next(item for item in old_metadata["cases"] if item["file"] == f"{case}.jsonl.gz")
     baseline_path = BASELINE / case_metadata["file"]
@@ -196,7 +197,7 @@ def run_case(case, old_metadata, output):
         track=track,
         road_shape=road_shape,
         traffic_count=traffic_count,
-        config=CAR,
+        config=config,
         input_config=GAME_INPUT,
         traffic_input_config=GAME_INPUT,
     )
@@ -277,6 +278,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True, help="必须是尚不存在的新证据目录")
     parser.add_argument("--case", choices=tuple(CASES), action="append", help="默认运行全部旧基线工况")
+    parser.add_argument("--legacy-actuator", action="store_true", help="显式使用旧零迟滞/无ABS制动器，检验接口迁移")
     args = parser.parse_args()
     output = args.output if args.output.is_absolute() else ROOT / args.output
     if output.exists():
@@ -287,15 +289,17 @@ def main():
     old_metadata = json.loads((BASELINE / "metadata.json").read_text(encoding="utf-8"))
     if old_metadata["fixed_dt"] != FIXED_DT:
         raise RuntimeError("baseline and current fixed step differ")
-    current_config, config_differences = _config_comparison(old_metadata["config"])
+    config = replace(CAR, braking=BrakeConfig(response_time=0, abs_enabled=False)) if args.legacy_actuator else CAR
+    current_config, config_differences = _config_comparison(old_metadata["config"], config)
     output.mkdir(parents=True)
-    results = [run_case(case, old_metadata, output) for case in (args.case or list(CASES))]
+    results = [run_case(case, old_metadata, output, config) for case in (args.case or list(CASES))]
     report = {
         "baseline_git_head": old_metadata["git_head"],
         "current_git_head": subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
         ).strip(),
         "driving_mode": "GAME",
+        "legacy_actuator": args.legacy_actuator,
         "fixed_dt": FIXED_DT,
         "ticks_per_case": old_metadata["ticks"],
         "seed": 23,

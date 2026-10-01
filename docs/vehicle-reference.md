@@ -2,15 +2,15 @@
 
 本文同步当前 `VehicleConfig`、`InputConfig` 与 `DrivingMode`。所有参数均为程序设计值或设计推导值；本机 Bullet 读回证明实际装入的配置，不是实车测量或标定。困难仿真使用通用设计参考车，保留自动前进换挡、简化虚拟离合、射线悬架及简化轮胎模型，不称完整车辆仿真软件。
 
-当前冻结数据见 [reference-parameters.json](evidence/PHYS-MODES-01/reference-parameters.json)。该文件逐项保存配置、单位与职责、实际几何、两模式各240tick静置读数，以及相关源码的 SHA-256。Git HEAD 仅为工作区历史上下文，不能代表未提交源码；旧参考表的 HEAD/hash 已不用于指认当前实现。
+当前参考车为reference-v2，两模式均采用25ms设计制动器、默认开启ABS。冻结数据见 [当前reference-parameters-final.json](evidence/CTRL-01/reference-parameters-final.json)，逐项保存54个车辆字段、8个制动子字段、9个输入字段、实际几何与两模式各240tick静置读数，以及源码SHA-256。Git HEAD仅为历史上下文；[reference-v1历史文件](evidence/PHYS-MODES-01/reference-parameters.json)保留不覆盖。
 
-本次 `src/vehicle_config.py` SHA-256：`e37beb7a53a75ef3fed21bd74d5732f0807e822953c68de0f0a77bda0eef0ee2`。Panda3D 1.10.16，Bullet 2.84。
+本次 `src/vehicle_config.py` SHA-256：`b0ad41314cfd9761a3c3f70099455df41ff99db09343e52f5f7861ec0060a84c`。Panda3D 1.10.16，Bullet 2.84。
 
 ## 模式与实例边界
 
 `DrivingMode.GAME`（正常游戏）选择 `CAR` 与 `GAME_INPUT`；`DrivingMode.SIMULATION`（困难仿真）选择 `REFERENCE_CAR` 与 `SIMULATION_INPUT`。模式与计时/自由驾驶/高速玩法正交。Vehicle → Simulation → Session直接传入冻结配置实例，部件创建、reset与跨赛道重建沿用配置；主菜单切换选择后，起步按配置重建世界。不得对存活Bullet车身替换参数对象。
 
-参考车与游戏车共用力学核心；明确差异是曲轴转矩曲线、游戏速度/倒挡力渐退、刚体角阻尼与惯量来源，以及三个输入辅助开关。Q/E只请求R/D方向，S为制动；并未新增手动前进挡或离合踏板。
+参考车与游戏车共用力学核心；明确差异是曲轴转矩曲线、游戏速度/倒挡力渐退、刚体角阻尼与惯量来源，以及三个输入辅助开关。Q/E只请求R/D方向，S为制动；并未新增手动前进挡或离合踏板。ABS是独立车辆配置，菜单及CLI可在任一模式关闭；Session缓存选定配置，开始时创建实际世界，重开同配置复用世界。新成绩按game-controls-v1/reference-v2及ABS开关分区，旧成绩不覆盖。
 
 ## VehicleConfig完整字段
 
@@ -34,6 +34,7 @@
 | game_speed_limits | true | false | bool | 启用游戏速度渐退/倒车力上限；不是车身速度钳制 |
 | brake_torque | 3643.2 | — | N·m | 四轮制动总容量 |
 | front_brake_share | 0.6 | — | 1 | 前轴制动容量份额 |
+| braking | BrakeConfig，见下表 | — | 配置对象 | 四轮液压响应与ABS反馈配置 |
 | steering_degrees | 26 | — | ° | 虚拟前轴中心角机械限位 |
 | steering_rate | 50 | — | °/s | 齿条角速度限位 |
 | steering_response | 7 | — | s⁻¹ | 齿条输入临界阻尼响应系数 |
@@ -71,6 +72,23 @@
 | angular_damping | 0.2 | 0 | 1 | Bullet刚体角阻尼 |
 | suspension_travel | 0.2 | — | m | 射线悬架最大行程，传API时×100cm |
 | suspension_force_limit | 6000 | — | N | 每轮实际施加悬架力上限 |
+
+## BrakeConfig完整字段
+
+以下两模式默认相同。参数为通用设计值，非实车测量。请求与压力为0～1比例，不等同于压力传感器的Pa读数。
+
+| 字段 | 默认值 | 单位 | 计算职责 |
+|---|---:|---|---|
+| response_time | 0.025 | s | 液压压力一阶时间常数；0仅用于历史理想执行器对照 |
+| abs_enabled | true | bool | 单轮ABS开关，独立于输入策略 |
+| target_slip | 0.12 | 1 | 正制动滑移目标 |
+| slip_hysteresis | 0.015 | 1 | 压力调节的滑移死区 |
+| minimum_speed | 1.5 | m/s | 轮心纵向速度的ABS退出/介入下限 |
+| release_rate | 25 | 比例/s | 请求最大减压速率 |
+| apply_rate | 5 | 比例/s | 请求最大增压速率 |
+| slip_rate_gain | 30 | s⁻¹ | 预测滑移误差到压力请求变化率的增益 |
+
+控制读上一完成物理步真值，预测`λ + response_time × dλ/dt`，再由误差调节有限压力变化率。执行器实际压力换算`brake_torque × 前/后轴份额 / 2`的单轮制动容量；后轮另有简化发动机拖曳。不得把拖曳并入ABS可释放的液压转矩，传动/MSR仍待后续。四轮真实反馈、压力、制动转矩与力保存到快照/CSV，显示插值沿用最新完整步的电子状态。
 
 ## InputConfig完整字段
 
@@ -156,13 +174,15 @@
 ```python
 from driving_modes import DrivingMode
 from simulation import Simulation
-sim = Simulation(driving_mode=DrivingMode.SIMULATION)
+mode = DrivingMode.SIMULATION
+config = mode.configured_vehicle(abs_enabled=True)
+sim = Simulation(config=config, input_config=mode.input_config)
 ```
 
-配置研究使用dataclasses.replace(mode.vehicle_config, ...)生成新冻结对象，并在创建Simulation/Vehicle时传入vehicle_config/config；Control走所选InputConfig，VehicleCommand是明确的执行器请求。JSON导出：
+配置研究使用dataclasses.replace(mode.vehicle_config, ...)生成新冻结对象，在创建Simulation/Vehicle时传入config；Control走所选InputConfig，VehicleCommand是明确的执行器请求。JSON导出显式指定新路径，保留历史证据：
 
 ```powershell
-.venv/Scripts/python.exe tools/physics/export_reference.py
+.venv/Scripts/python.exe tools/physics/export_reference.py --output logs/reference-current.json
 ```
 
 标准试验入口已提供以下参数；一次选择一个明确工况并写新证据目录，不对存活实例做全局参数替换：
@@ -172,4 +192,4 @@ sim = Simulation(driving_mode=DrivingMode.SIMULATION)
 .venv/Scripts/python.exe tools/physics/testbed.py --driving-mode simulation --vehicle-config config.json --actuator-input --cases steering_step --output logs/reference-steering
 ```
 
-`--vehicle-config`接收车辆字段覆盖的JSON对象；`--actuator-input`绕过键盘辅助，仍使用同一真实齿条、动力总成、轮胎和Bullet世界。此表只冻结参数与一次静置读回，不据此宣称全部动力性、驾驶手感或视觉验收通过。
+`--vehicle-config`接收车辆字段覆盖的JSON对象，例如`{"braking":{"abs_enabled":false}}`，部分制动覆盖继承其余字段，序列恢复为tuple。`--actuator-input`绕过键盘辅助，仍使用同一真实齿条、动力总成、轮胎和Bullet世界。主程序`--abs on/off`独立于`--driving-mode game/simulation`。此表冻结参数与静置读回，动力/制动验证见相应任务证据。

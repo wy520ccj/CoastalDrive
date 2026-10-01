@@ -7,6 +7,7 @@ from panda3d.core import BitMask32, TransformState, Vec3
 
 from driver_assist import GAME_INPUT, DriverAssist
 from powertrain import Powertrain
+from vehicle_brakes import Brakes
 from vehicle_config import CAR, body_center, wheel_hubs
 from vehicle_contacts import read_wheel_contacts, road_support, shift_contacts
 from vehicle_dynamics import DynamicsState, aerodynamic_force, axle_loads, contact_grade
@@ -46,6 +47,7 @@ class Vehicle:
         self.powertrain = Powertrain(self.config)
         self.steering = SteeringRack(self.config)
         self.tires = Tires(self.config)
+        self.brakes = Brakes(self.config.braking)
         self._drive_pedal = 0.0
         self._brake_pedal = 0.0
         self._acceleration = 0.0
@@ -115,6 +117,7 @@ class Vehicle:
         self.powertrain = Powertrain(self.config)
         self.steering = SteeringRack(self.config)
         self.tires = Tires(self.config)
+        self.brakes = Brakes(self.config.braking)
         self.tires.initialize_rolling(speed)
         self._drive_pedal = 0.0
         self._brake_pedal = 0.0
@@ -175,6 +178,8 @@ class Vehicle:
         drive_torque, engine_drag = self.powertrain.advance(
             speed, self.tires.driven_omega(self._chassis), pedal, direction, brake > 0, FIXED_DT
         )
+        requests = ((brake,) * 4 if command.wheel_brakes is None else command.wheel_brakes)
+        pressures = self.brakes.advance(requests, self.tires.states, self.config.wheel_radius, FIXED_DT)
         position = pose.getPos()
         road = self.on_asphalt(position.x, position.y)
         grade = self._road_grade(hpr.x)
@@ -210,7 +215,7 @@ class Vehicle:
         ) * FIXED_DT
         self.tires.advance(
             self._chassis, self._wheel_contacts, wheel_angles(self.steering.angle, self.config),
-            drive_torque, engine_drag, brake, self._contact_tick, FIXED_DT,
+            drive_torque, engine_drag, pressures, self._contact_tick, FIXED_DT,
             tuple(external_velocity), tuple(external_angular),
         )
         traction_limited = any(
@@ -287,6 +292,8 @@ class Vehicle:
             wheel_contacts=self._wheel_contacts if include_wheels else (),
             contact_tick=self._contact_tick if include_wheels else 0,
             wheel_dynamics=self.tires.states if include_wheels else (),
+            brake_states=self.brakes.states if include_wheels else (),
+            abs_enabled=self.config.braking.abs_enabled,
         )
 
     def close(self):

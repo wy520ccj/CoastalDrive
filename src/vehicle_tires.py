@@ -29,7 +29,7 @@ class Tires:
         axle = chassis.getTransform().getQuat().getRight()
         return (self.omega[2] + self.omega[3]) / 2 + chassis.getAngularVelocity().dot(axle)
 
-    def advance(self, chassis, contacts, angles, drive, engine_drag, brake, tick, dt,
+    def advance(self, chassis, contacts, angles, drive, engine_drag, pressures, tick, dt,
                 external_velocity=(0.0, 0.0, 0.0), external_angular=(0.0, 0.0, 0.0)):
         pose = chassis.getTransform()
         origin = pose.getPos()
@@ -94,7 +94,7 @@ class Tires:
                 vy = (velocity + angular.cross(point)).dot(axle)
                 requested_drive = drive / 2 if index >= 2 else 0.0
                 share = config.front_brake_share if index < 2 else 1 - config.front_brake_share
-                capacity = config.brake_torque * brake * share / 2
+                capacity = config.brake_torque * pressures[index] * share / 2
                 if index >= 2:
                     capacity += engine_drag / 2
                 step = advance_wheel(

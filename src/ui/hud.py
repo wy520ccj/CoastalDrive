@@ -15,11 +15,12 @@ def set_text(widget, value):
         widget.setText(value)
 
 
-def driving_help(mode):
+def driving_help(mode, abs_label=None):
     """输入说明只表达已有模式行为。"""
     direction = " · Q 倒挡 / E 前进挡" if mode == DrivingMode.SIMULATION else ""
     brake = "刹车" if mode == DrivingMode.SIMULATION else "刹车·倒车"
-    return (f"驾驶模式：{mode.label}{direction}\n"
+    electronics = f" · ABS{abs_label}" if abs_label is not None else ""
+    return (f"驾驶模式：{mode.label}{direction}{electronics}\n"
             f"W / ↑ 油门   S / ↓ {brake}   A D 转向   R 复位   C 视角   N 切台   M 音乐   Esc 暂停")
 
 
@@ -97,7 +98,11 @@ class DrivingHUD:
 
     def update(self, state, race, highway, *, track, countdown, notice,
                driving_mode=DrivingMode.GAME):
-        set_text(self.help, driving_help(driving_mode))
+        player = state.player
+        abs_label = "关闭" if not player.abs_enabled else (
+            "介入" if any(brake.abs_active for brake in player.brake_states) else "待命"
+        )
+        set_text(self.help, driving_help(driving_mode, abs_label))
         set_text(self.speed, f"{abs(state.player.speed) * 3.6:03.0f}")
         set_text(self.gear, "R" if state.player.gear < 0 else f"D{state.player.gear}")
         set_text(self.gear_rpm, f"{state.player.rpm:4.0f} rpm")

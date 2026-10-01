@@ -109,7 +109,8 @@ def test_actual_physics_lap_records_and_reloads(tmp_path):
         result = session.race.snapshot
         assert not result.invalidated and result.checkpoints == 4
         assert 45 < result.last_lap < 65
-        assert BestTimes(path).get(GameMode.TIME_TRIAL) == result.last_lap
+        assert BestTimes(path).get(GameMode.TIME_TRIAL, session.race.score_id) == result.last_lap
+        assert BestTimes(path).get(GameMode.TIME_TRIAL) is None
         frozen = session.current
         for _ in range(100):
             session.tick()

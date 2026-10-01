@@ -122,6 +122,7 @@ class DrivingModeStore:
     def __init__(self, path=None):
         self.path = path if path is not None else user_data() / "driving-mode.json"
         self.mode = DrivingMode.GAME
+        self.abs_enabled = True
         self.notice = ""
         try:
             data = json.loads(self.path.read_text(encoding="utf-8"))
@@ -134,18 +135,27 @@ class DrivingModeStore:
             self.notice = "驾驶模式无效，已使用正常游戏"
             return
         self.mode = DrivingMode(data["mode"])
+        enabled = data.get("abs_enabled", True)
+        if type(enabled) is bool:
+            self.abs_enabled = enabled
+        else:
+            self.notice = "ABS设置无效，已启用ABS"
 
-    def save(self, mode):
+    def save(self, mode, abs_enabled=None):
         if not isinstance(mode, DrivingMode):
             raise TypeError("Expected DrivingMode")
+        enabled = self.abs_enabled if abs_enabled is None else abs_enabled
+        if type(enabled) is not bool:
+            raise TypeError("ABS开关须为bool")
         try:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             temporary = self.path.with_suffix(".tmp")
-            temporary.write_text(json.dumps({"mode": mode.value}, indent=2), encoding="utf-8")
+            temporary.write_text(json.dumps({"mode": mode.value, "abs_enabled": enabled}, indent=2), encoding="utf-8")
             temporary.replace(self.path)
         except OSError:
             self.notice = "驾驶模式未能保存，请检查存储空间或目录权限"
             return False
         self.mode = mode
+        self.abs_enabled = enabled
         self.notice = ""
         return True

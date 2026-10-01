@@ -278,6 +278,20 @@ def _git_sha():
     return subprocess.run(["git", "rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip()
 
 
+def load_vehicle_config(path, selected):
+    """JSON文件边界恢复不可变配置；部分制动覆盖继承选定车型。"""
+    values = json.loads(Path(path).read_text(encoding="utf-8"))
+    if "braking" in values:
+        values["braking"] = replace(selected.braking, **values["braking"])
+    if "torque_curve" in values:
+        values["torque_curve"] = tuple(tuple(node) for node in values["torque_curve"])
+    if "gear_ratios" in values:
+        values["gear_ratios"] = tuple(values["gear_ratios"])
+    if "body_inertia" in values and values["body_inertia"] is not None:
+        values["body_inertia"] = tuple(values["body_inertia"])
+    return replace(selected, **values)
+
+
 def run(output, cases=CASES, source_dir=None, label=None, *, driving_mode=None,
         vehicle_config=None, actuator_input=False):
     _load_source(source_dir)
@@ -288,7 +302,7 @@ def run(output, cases=CASES, source_dir=None, label=None, *, driving_mode=None,
         selected = importlib.import_module("driving_modes").DrivingMode(driving_mode or "game")
         config, input_config = selected.vehicle_config, selected.input_config
         if vehicle_config is not None:
-            config = replace(config, **json.loads(Path(vehicle_config).read_text(encoding="utf-8")))
+            config = load_vehicle_config(vehicle_config, config)
     output = Path(output)
     output.mkdir(parents=True, exist_ok=False)
     results = [_run_case(case, output, config=config, input_config=input_config,
@@ -312,7 +326,7 @@ def run(output, cases=CASES, source_dir=None, label=None, *, driving_mode=None,
         "source_sha256": {
             name: hashlib.sha256((_loaded_source / f"{name}.py").read_bytes()).hexdigest()
             for name in ("vehicle", "vehicle_config", "vehicle_state", "vehicle_dynamics",
-                         "vehicle_contacts", *_response_modules, *_tire_modules)
+                         "vehicle_contacts", "vehicle_brakes", *_response_modules, *_tire_modules)
             if (_loaded_source / f"{name}.py").is_file()
         },
         "rolling_initialization": (

@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "output": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\CTRL-01\\legacy-actuator-migration",
+  "config_matches_baseline": true,
+  "cases": [
+    {
+      "case": "test-straight",
+      "passed": true,
+      "ticks": 1200,
+      "mismatch_count": 0,
+      "max_geometry_abs_delta": 0.0,
+      "max_geometry_path": null,
+      "max_other_numeric_abs_delta": 0.0
+    },
+    {
+      "case": "coastal-straight",
+      "passed": true,
+      "ticks": 1200,
+      "mismatch_count": 0,
+      "max_geometry_abs_delta": 0.0,
+      "max_geometry_path": null,
+      "max_other_numeric_abs_delta": 0.0
+    },
+    {
+      "case": "endless-hills",
+      "passed": true,
+      "ticks": 1200,
+      "mismatch_count": 0,
+      "max_geometry_abs_delta": 0.0,
+      "max_geometry_path": null,
+      "max_other_numeric_abs_delta": 0.0
+    }
+  ]
+}

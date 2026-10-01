@@ -1,0 +1,61 @@
+{
+  "resolution": [
+    1280,
+    720
+  ],
+  "screenshots": [
+    "game-menu.png",
+    "simulation-settings.png",
+    "simulation-abs-off-settings.png",
+    "simulation-menu.png",
+    "simulation-reverse-hud.png",
+    "simulation-abs-active-hud.png"
+  ],
+  "simulation_reverse_speed_mps": -4.323133945465088,
+  "driving_mode": "simulation",
+  "abs_active_trial_tick": 25,
+  "brake_states": [
+    {
+      "requested": 1,
+      "commanded": 1,
+      "pressure": 0.9999366392939255,
+      "braking_slip": 0.045650397307992266,
+      "abs_active": false,
+      "phase": "normal",
+      "feedback_tick": 268,
+      "predicted_slip": 0.04541490175468271
+    },
+    {
+      "requested": 1,
+      "commanded": 1,
+      "pressure": 0.9999366392939255,
+      "braking_slip": 0.045602395564994284,
+      "abs_active": false,
+      "phase": "normal",
+      "feedback_tick": 268,
+      "predicted_slip": 0.04536587483755073
+    },
+    {
+      "requested": 1,
+      "commanded": 0.9493514027515805,
+      "pressure": 0.9735219167379696,
+      "braking_slip": 0.15191363694747465,
+      "abs_active": true,
+      "phase": "release",
+      "feedback_tick": 268,
+      "predicted_slip": 0.1816278603580697
+    },
+    {
+      "requested": 1,
+      "commanded": 0.9493608230813345,
+      "pressure": 0.9735272325406519,
+      "braking_slip": 0.15190617545216523,
+      "abs_active": true,
+      "phase": "release",
+      "feedback_tick": 268,
+      "predicted_slip": 0.18161893428781403
+    }
+  ],
+  "human_acceptance": "pending",
+  "passed": true
+}

@@ -43,13 +43,14 @@ class FixedStepper:
 
 class Session:
     def __init__(self, seed=0, *, track="coastal", scores=None, road_shape="straight",
-                 driving_mode=DrivingMode.GAME):
+                 driving_mode=DrivingMode.GAME, abs_enabled=None):
         self.road_shape = road_shape
         self.traffic_density = "normal"
         self.driving_mode = driving_mode
+        self.vehicle_config = driving_mode.configured_vehicle(abs_enabled)
         self.simulation = Simulation(
             seed, track=track, road_shape=road_shape,
-            config=driving_mode.vehicle_config, input_config=driving_mode.input_config,
+            config=self.vehicle_config, input_config=driving_mode.input_config,
         )
         self.track = get_track(track)
         self.keyboard = KeyboardController()
@@ -77,6 +78,17 @@ class Session:
         if self.phase != Phase.MENU:
             raise ValueError("驾驶模式只能在主菜单选择")
         self.driving_mode = mode
+        self.vehicle_config = mode.configured_vehicle(self.abs_enabled)
+
+    @property
+    def abs_enabled(self):
+        return self.vehicle_config.braking.abs_enabled
+
+    def set_abs_enabled(self, enabled):
+        """菜单选择车辆电子配置；不替换正在运行的刚体参数。"""
+        if self.phase != Phase.MENU:
+            raise ValueError("车辆电子配置只能在主菜单选择")
+        self.vehicle_config = self.driving_mode.configured_vehicle(enabled)
 
     def start(self, seed=None, *, countdown=True, mode=None, track=None):
         chosen_track = get_track(track) if track is not None else self.track
@@ -95,13 +107,13 @@ class Session:
         if seed is not None:
             self.seed = seed
         if (track != self.simulation.track
-                or self.simulation.config is not self.driving_mode.vehicle_config
+                or self.simulation.config is not self.vehicle_config
                 or self.simulation.input_config is not self.driving_mode.input_config):
             self.simulation.close()
             self.simulation = Simulation(
                 self.seed, track=track, traffic_count=traffic_count,
                 road_shape=self.road_shape, traffic_span=density.spawn_span,
-                config=self.driving_mode.vehicle_config, input_config=self.driving_mode.input_config,
+                config=self.vehicle_config, input_config=self.driving_mode.input_config,
             )
             self.track = get_track(track)
         else:
@@ -113,7 +125,7 @@ class Session:
         self.simulation.set_checkpoint_frames_enabled(self.mode == GameMode.TIME_TRIAL)
         self.race.start(
             self.mode, circuit=self.track.circuit,
-            score_variant="reference-v1" if self.driving_mode == DrivingMode.SIMULATION else "",
+            score_variant=self.driving_mode.score_variant(self.abs_enabled),
         )
         self.highway = HighwayRun(challenge=self.mode == GameMode.DISTANCE_CHALLENGE)
         self.keyboard.direction = 1
