@@ -1,8 +1,8 @@
 # PHYS-DRIVE-01 真实曲轴、有限离合与开放差速器
 
-- 状态：ready（范围准备完成）；[PHYS-ROT-01](PHYS-ROT-01.md)完整T1尚未收口，生产接入未开始。该包先记录可独立验收的下一块范围。
+- 状态：in_progress；[PHYS-ROT-01](PHYS-ROT-01.md)完整T1与源码归档已收口，开始机械端口模块施工；尚未接入连续驾驶。
 - 用户目标：[全目标核对](../physics-goal-audit.md)；正常游戏与困难仿真共用机械核心，先完整参数通用参考车，再实车型和驱动布局。
-- 上游基线：ROT最终验证版本，reference-v9；收口后填实际提交和源码归档。当前不得把未通过完整T1的候选标为冻结基线。
+- 上游基线：ROT最终验证版本2b7f908df29176ce99ccb1fb0d848ce318474b02，reference-v9；[273文件源码归档](../evidence/PHYS-ROT-01/final-validation-source.zip)，SHA-256为e5c348ea856e14fbbfe81f81866c333cfa9a488817f3dc64a4c87b793238eac5。
 - 设计入口：[共同末状态、双向损失、432组活动集及联合轮胎原型](../evidence/PHYS-ROT-01/next-drive-design.md)。上述为预研，不是本任务生产验收。
 
 ## 施工范围
