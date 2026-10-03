@@ -1,0 +1,395 @@
+{
+  "case": "reverse",
+  "h_s": 0.004166666666666667,
+  "ratio": -12.0,
+  "engine_torque_nm": 160.0,
+  "capacity_nm": 300.0,
+  "initial_velocity": [
+    0.15,
+    -5.0,
+    0.0
+  ],
+  "initial_angular": [
+    0.03,
+    -0.02,
+    0.01
+  ],
+  "initial_wheel_omega": [
+    -15.15151515151515,
+    -15.15151515151515,
+    -15.15151515151515,
+    -15.15151515151515
+  ],
+  "initial_engine_omega": 220.0,
+  "initial_deformations": [
+    [
+      0.005,
+      -0.003
+    ],
+    [
+      -0.006,
+      0.004
+    ],
+    [
+      0.007,
+      0.002
+    ],
+    [
+      -0.004,
+      -0.006
+    ]
+  ],
+  "loads_n": [
+    2943.0,
+    2943.0,
+    2943.0,
+    2943.0
+  ],
+  "brake_capacities_nm": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "clutch_mode": "locked",
+  "clutch_torque_nm": 265.71120741091363,
+  "end_slip_radps": 8.15703060652595e-12,
+  "end_velocity": [
+    0.14711802500528504,
+    -5.006382884126637,
+    0.0
+  ],
+  "end_angular": [
+    0.022719731680060782,
+    -0.016299595821509742,
+    0.006915764631216457
+  ],
+  "end_engine_omega": 217.7976831789393,
+  "wheel_steps": [
+    {
+      "omega": -15.525668422373993,
+      "relative_omega": -15.502948690693932,
+      "vx": -5.010147350565654,
+      "vy": 0.14635651415598103,
+      "body_omega": 0.022719731680060782,
+      "kappa": -0.022618741703269416,
+      "alpha": 0.029203712885193654,
+      "fx": 489.8006454879406,
+      "fy": -579.801567996744,
+      "brake_torque": -0.0,
+      "residual": 9.610797543183105e-10,
+      "mode": "compliant-rolling",
+      "deformation_x": 0.004332822167917796,
+      "deformation_y": -0.0033328245333249847,
+      "patch_kappa": 0.009340933031975798,
+      "patch_alpha": 0.013268017981994127,
+      "elastic_energy": 2.241080048154958,
+      "material_dissipation": 0.1334156231051767,
+      "road_dissipation": 0.25611172056306836,
+      "elastic_numerical_dissipation": 0.041692382220367766,
+      "deformation_rate_x": -0.16012267969972888,
+      "deformation_rate_y": -0.07987788799799629
+    },
+    {
+      "omega": -14.709254622532862,
+      "relative_omega": -14.686534890852801,
+      "vx": -4.99852886598521,
+      "vy": 0.14635651415598103,
+      "body_omega": 0.022719731680060782,
+      "kappa": 0.02890347228611813,
+      "alpha": 0.029271554712142305,
+      "fx": -578.9592379404512,
+      "fy": 307.2344564200157,
+      "brake_torque": -0.0,
+      "residual": 6.019481333756172e-06,
+      "mode": "compliant-rolling",
+      "deformation_x": -0.00517681855882167,
+      "deformation_y": 0.0032493191190256813,
+      "patch_kappa": -0.010620866010137661,
+      "patch_alpha": -0.006763266296986589,
+      "elastic_energy": 2.8018143846169727,
+      "material_dissipation": 0.29787587283859496,
+      "road_dissipation": 0.17134516704791458,
+      "elastic_numerical_dissipation": 0.09308621026206089,
+      "deformation_rate_x": 0.19756354588279926,
+      "deformation_rate_y": -0.1801634114338365
+    },
+    {
+      "omega": -18.393946539513845,
+      "relative_omega": -18.371226807833786,
+      "vx": -5.010147350565654,
+      "vy": 0.16157119634465722,
+      "body_omega": 0.022719731680060782,
+      "kappa": -0.21154168396948567,
+      "alpha": 0.03223761886664519,
+      "fx": -586.475408636502,
+      "fy": 31.855126257133183,
+      "brake_torque": -0.0,
+      "residual": 8.91423775385415e-06,
+      "mode": "compliant-rolling",
+      "deformation_x": 0.002803909208624354,
+      "deformation_y": 0.001312449041684957,
+      "patch_kappa": -0.010537258457637975,
+      "patch_alpha": -0.0006868127560172332,
+      "elastic_energy": 0.7188322002921159,
+      "material_dissipation": 4.339177019939384,
+      "road_dissipation": 0.129464743306745,
+      "elastic_numerical_dissipation": 1.355992818731057,
+      "deformation_rate_x": -1.007061789930155,
+      "deformation_rate_y": -0.16501222999561035
+    },
+    {
+      "omega": -17.95382338630505,
+      "relative_omega": -17.93110365462499,
+      "vx": -4.99852886598521,
+      "vy": 0.16157119634465722,
+      "body_omega": 0.022719731680060782,
+      "kappa": -0.18530109084663582,
+      "alpha": 0.03231249928272794,
+      "fx": -1162.636627382563,
+      "fy": -589.2968131583112,
+      "brake_torque": -0.0,
+      "residual": 6.201282972640475e-07,
+      "mode": "compliant-rolling",
+      "deformation_x": -0.005442658018929649,
+      "deformation_y": -0.005203325161944388,
+      "patch_kappa": -0.11603312544600547,
+      "patch_alpha": 0.07045856959592539,
+      "elastic_energy": 4.252283928895711,
+      "material_dissipation": 0.651828709721509,
+      "road_dissipation": 3.6758810135018707,
+      "elastic_numerical_dissipation": 0.2036964717879716,
+      "deformation_rate_x": -0.34623792454311564,
+      "deformation_rate_y": 0.19120196113334692
+    }
+  ],
+  "evaluations": [
+    {
+      "clutch_torque_nm": -300.0,
+      "end_slip_radps": 88.02874928567144,
+      "maximum_force_residual_n": 2.293154502991707e-05
+    },
+    {
+      "clutch_torque_nm": 300.0,
+      "end_slip_radps": -5.644487625614573,
+      "maximum_force_residual_n": 9.803451975901622e-06
+    },
+    {
+      "clutch_torque_nm": 0.0,
+      "end_slip_radps": 40.566276899018305,
+      "maximum_force_residual_n": 4.4584482873311085e-05
+    },
+    {
+      "clutch_torque_nm": 150.0,
+      "end_slip_radps": 18.451433632477347,
+      "maximum_force_residual_n": 8.251799532571952e-06
+    },
+    {
+      "clutch_torque_nm": 225.0,
+      "end_slip_radps": 6.630617236532231,
+      "maximum_force_residual_n": 7.771068528740966e-06
+    },
+    {
+      "clutch_torque_nm": 262.5,
+      "end_slip_radps": 0.5261355693916983,
+      "maximum_force_residual_n": 8.777412406716847e-06
+    },
+    {
+      "clutch_torque_nm": 281.25,
+      "end_slip_radps": -2.55216221915947,
+      "maximum_force_residual_n": 9.459412377407138e-06
+    },
+    {
+      "clutch_torque_nm": 271.875,
+      "end_slip_radps": -1.011162988816153,
+      "maximum_force_residual_n": 9.15518937438741e-06
+    },
+    {
+      "clutch_torque_nm": 267.1875,
+      "end_slip_radps": -0.24203452527908098,
+      "maximum_force_residual_n": 8.974657434457893e-06
+    },
+    {
+      "clutch_torque_nm": 264.84375,
+      "end_slip_radps": 0.14217270366884804,
+      "maximum_force_residual_n": 8.877990462733828e-06
+    },
+    {
+      "clutch_torque_nm": 266.015625,
+      "end_slip_radps": -0.049900678175333724,
+      "maximum_force_residual_n": 8.92682143998931e-06
+    },
+    {
+      "clutch_torque_nm": 265.4296875,
+      "end_slip_radps": 0.04614360906813886,
+      "maximum_force_residual_n": 8.902543553633093e-06
+    },
+    {
+      "clutch_torque_nm": 265.72265625,
+      "end_slip_radps": -0.0018766403013330546,
+      "maximum_force_residual_n": 8.914704411135665e-06
+    },
+    {
+      "clutch_torque_nm": 265.576171875,
+      "end_slip_radps": 0.022133958546362464,
+      "maximum_force_residual_n": 8.908628625955408e-06
+    },
+    {
+      "clutch_torque_nm": 265.6494140625,
+      "end_slip_radps": 0.010128777588079174,
+      "maximum_force_residual_n": 8.911665737498842e-06
+    },
+    {
+      "clutch_torque_nm": 265.68603515625,
+      "end_slip_radps": 0.004126098250367249,
+      "maximum_force_residual_n": 8.913195984372796e-06
+    },
+    {
+      "clutch_torque_nm": 265.704345703125,
+      "end_slip_radps": 0.0011247363750896966,
+      "maximum_force_residual_n": 8.913961519575597e-06
+    },
+    {
+      "clutch_torque_nm": 265.7135009765625,
+      "end_slip_radps": -0.00037595011309576876,
+      "maximum_force_residual_n": 8.914344621982425e-06
+    },
+    {
+      "clutch_torque_nm": 265.70892333984375,
+      "end_slip_radps": 0.00037439359351765233,
+      "maximum_force_residual_n": 8.914146370475917e-06
+    },
+    {
+      "clutch_torque_nm": 265.7112121582031,
+      "end_slip_radps": -7.781441695442481e-07,
+      "maximum_force_residual_n": 8.914248372055371e-06
+    },
+    {
+      "clutch_torque_nm": 265.71006774902344,
+      "end_slip_radps": 0.00018680775355051082,
+      "maximum_force_residual_n": 8.914186830575263e-06
+    },
+    {
+      "clutch_torque_nm": 265.7106399536133,
+      "end_slip_radps": 9.301481190959748e-05,
+      "maximum_force_residual_n": 8.914210086590261e-06
+    },
+    {
+      "clutch_torque_nm": 265.7109260559082,
+      "end_slip_radps": 4.611833568901602e-05,
+      "maximum_force_residual_n": 8.914218722457109e-06
+    },
+    {
+      "clutch_torque_nm": 265.71106910705566,
+      "end_slip_radps": 2.2670096200272383e-05,
+      "maximum_force_residual_n": 8.914234300076712e-06
+    },
+    {
+      "clutch_torque_nm": 265.7111406326294,
+      "end_slip_radps": 1.0945976100629196e-05,
+      "maximum_force_residual_n": 8.914241966029346e-06
+    },
+    {
+      "clutch_torque_nm": 265.71117639541626,
+      "end_slip_radps": 5.0839160223858926e-06,
+      "maximum_force_residual_n": 8.91423463917965e-06
+    },
+    {
+      "clutch_torque_nm": 265.7111942768097,
+      "end_slip_radps": 2.152885940631677e-06,
+      "maximum_force_residual_n": 8.914249893444697e-06
+    },
+    {
+      "clutch_torque_nm": 265.7112032175064,
+      "end_slip_radps": 6.87370857122005e-07,
+      "maximum_force_residual_n": 8.914252466484631e-06
+    },
+    {
+      "clutch_torque_nm": 265.71120768785477,
+      "end_slip_radps": -4.538668463283102e-08,
+      "maximum_force_residual_n": 8.914240051048934e-06
+    },
+    {
+      "clutch_torque_nm": 265.7112054526806,
+      "end_slip_radps": 3.2099214308800583e-07,
+      "maximum_force_residual_n": 8.914234956698933e-06
+    },
+    {
+      "clutch_torque_nm": 265.7112065702677,
+      "end_slip_radps": 1.3780274343844212e-07,
+      "maximum_force_residual_n": 8.91422860962273e-06
+    },
+    {
+      "clutch_torque_nm": 265.7112071290612,
+      "end_slip_radps": 4.6208015191950835e-08,
+      "maximum_force_residual_n": 8.91423549617931e-06
+    },
+    {
+      "clutch_torque_nm": 265.711207408458,
+      "end_slip_radps": 4.107221229787683e-10,
+      "maximum_force_residual_n": 8.91423288938447e-06
+    },
+    {
+      "clutch_torque_nm": 265.7112075481564,
+      "end_slip_radps": -2.248796704407141e-08,
+      "maximum_force_residual_n": 8.914225376464803e-06
+    },
+    {
+      "clutch_torque_nm": 265.7112074783072,
+      "end_slip_radps": -1.1038650882255752e-08,
+      "maximum_force_residual_n": 8.914234771384982e-06
+    },
+    {
+      "clutch_torque_nm": 265.7112074433826,
+      "end_slip_radps": -5.3139501687837765e-09,
+      "maximum_force_residual_n": 8.914250199473139e-06
+    },
+    {
+      "clutch_torque_nm": 265.7112074259203,
+      "end_slip_radps": -2.4516566554666497e-09,
+      "maximum_force_residual_n": 8.914241628476738e-06
+    },
+    {
+      "clutch_torque_nm": 265.71120741718914,
+      "end_slip_radps": -1.0204814770986559e-09,
+      "maximum_force_residual_n": 8.914245700622616e-06
+    },
+    {
+      "clutch_torque_nm": 265.71120741282357,
+      "end_slip_radps": -3.048796770599438e-10,
+      "maximum_force_residual_n": 8.914236432841839e-06
+    },
+    {
+      "clutch_torque_nm": 265.7112074106408,
+      "end_slip_radps": 5.2949644668842666e-11,
+      "maximum_force_residual_n": 8.914233226994303e-06
+    },
+    {
+      "clutch_torque_nm": 265.7112074117322,
+      "end_slip_radps": -1.2599343790498096e-10,
+      "maximum_force_residual_n": 8.914239411720009e-06
+    },
+    {
+      "clutch_torque_nm": 265.7112074111865,
+      "end_slip_radps": -3.652189661806915e-11,
+      "maximum_force_residual_n": 8.914227033631405e-06
+    },
+    {
+      "clutch_torque_nm": 265.71120741091363,
+      "end_slip_radps": 8.15703060652595e-12,
+      "maximum_force_residual_n": 8.91423775385415e-06
+    }
+  ],
+  "energy_terms_j": {
+    "kinetic_change": 120.7593406194759,
+    "elastic_change": -4.310989438040243,
+    "mechanical_BE": 17.411402915368097,
+    "contact_loss": 11.349567753025719,
+    "brake_work": 0.0,
+    "clutch_work": 9.030893547282447e-12,
+    "combustion_work": 145.20932184984053,
+    "balance_error": -2.0179413695586845e-12
+  },
+  "angular_momentum_error_nms": 2.4424906541753444e-15,
+  "shared_body_omega_error_radps": 0.0
+}

@@ -1,0 +1,92 @@
+{
+  "interrupted_utc": "2026-10-03T03:29:45.908295+00:00",
+  "reason": "New non-default CG plane-impact counterexample requires CG-projected chassis partition before final stage acceptance",
+  "session_id": 50484,
+  "verified_validation_root_pid": 3252,
+  "terminal_exit_code": 1,
+  "summary_sha256": "2aecebbdb63374bee9281e0db8820741656469387199e41ca171b1b0478901f1",
+  "checks": [
+    {
+      "name": "ruff",
+      "status": "passed",
+      "seconds": 0.124
+    },
+    {
+      "name": "pytest",
+      "status": "passed",
+      "seconds": 1125.697
+    },
+    {
+      "name": "headless-0",
+      "status": "passed",
+      "seconds": 3.232
+    },
+    {
+      "name": "headless-17",
+      "status": "passed",
+      "seconds": 3.265
+    },
+    {
+      "name": "headless-23",
+      "status": "passed",
+      "seconds": 3.241
+    },
+    {
+      "name": "handling",
+      "status": "passed",
+      "seconds": 14.405
+    },
+    {
+      "name": "surface",
+      "status": "passed",
+      "seconds": 2.292
+    },
+    {
+      "name": "interactions",
+      "status": "passed",
+      "seconds": 26.27
+    },
+    {
+      "name": "finite-coastal",
+      "status": "passed",
+      "seconds": 88.468
+    },
+    {
+      "name": "finite-highway",
+      "status": "passed",
+      "seconds": 61.425
+    },
+    {
+      "name": "straight-0",
+      "status": "passed",
+      "seconds": 369.842
+    },
+    {
+      "name": "hills-0",
+      "status": "passed",
+      "seconds": 409.465
+    },
+    {
+      "name": "straight-17",
+      "status": "passed",
+      "seconds": 373.144
+    },
+    {
+      "name": "hills-17",
+      "status": "running",
+      "seconds": null
+    },
+    {
+      "name": "straight-23",
+      "status": "not_run",
+      "seconds": null
+    },
+    {
+      "name": "hills-23",
+      "status": "not_run",
+      "seconds": null
+    }
+  ],
+  "source_snapshot": "validation-source-box-before.json",
+  "final_stage_accepted": false
+}

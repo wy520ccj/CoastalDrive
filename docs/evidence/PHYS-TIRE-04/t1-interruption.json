@@ -1,0 +1,7 @@
+{
+  "status": "interrupted",
+  "directory": "logs/validation/PHYS-TIRE-04-T1",
+  "reason": "Stopped before completion to correct automatically computed game-car Hull inertia. Existing summary retained as running because terminating the process did not reach the runner finalizer. No pass claim; all downstream checks not_run.",
+  "replaced_by": "logs/validation/PHYS-TIRE-04-T1-final",
+  "changes_after_stop": "Native original Box inertia preserved at chassis creation; three exact inertia checks added."
+}

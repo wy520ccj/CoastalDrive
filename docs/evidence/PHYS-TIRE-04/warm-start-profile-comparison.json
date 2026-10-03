@@ -1,0 +1,303 @@
+{
+  "captured_utc": "2026-10-01T16:03:30.797599+00:00",
+  "baseline_git_head": "f2c145090d7c2342b0ba242bca8a066732748b0c",
+  "comparison_note": "Profile source SHA sets intentionally differ: the after run includes the implementation change. Both profiles report source_unchanged=true within each individual run.",
+  "before_profile": "docs/evidence/PHYS-TIRE-04/solver-call-profile-warm-start/summary.json",
+  "after_profile": "docs/evidence/PHYS-TIRE-04/solver-call-profile-warm-start-after/summary.json",
+  "before_sha": {
+    "src/wheel_dynamics.py": "691d382dbe64521b640d4cd323723ea6e87890910fafeb8a2bd4a58617c235eb",
+    "src/tire_coupling.py": "5af2e68054e1647974870fa8a03064d2e988f9fc60e136ccd611e0c3865c3a95"
+  },
+  "after_sha": {
+    "src/wheel_dynamics.py": "c3dd6b286d96510b6c90de5a32c0948c1fd2bc12bb106f1006d3985762c94036",
+    "src/tire_coupling.py": "73a7e4b645a9a7db24632409090d6822e05cbc3b32caa96dad21b1b574b0a8c3"
+  },
+  "source_sha_equal_between_runs": false,
+  "source_unchanged_within_runs": {
+    "before": true,
+    "after": true
+  },
+  "protocol": "Three existing 120-tick cases, 2 substeps, same fixed commands and profile tool; ncalls comparison only, not elapsed time/FPS. Force equation, .0001 N local solve tolerance, .001 N outer acceptance, brake checks and 20-iteration limits unchanged.",
+  "solver_nonconvergence": false,
+  "trials": [
+    {
+      "case": "acceleration",
+      "profile_ticks": 120,
+      "counts": {
+        "advance_coupled": {
+          "calls_before": 240,
+          "calls_after": 240,
+          "change_percent": 0.0,
+          "average_per_car_substep_before": 1.0,
+          "average_per_car_substep_after": 1.0
+        },
+        "advance_wheel": {
+          "calls_before": 3740,
+          "calls_after": 3740,
+          "change_percent": 0.0,
+          "average_per_car_substep_before": 15.583333333333334,
+          "average_per_car_substep_after": 15.583333333333334
+        },
+        "_solve_force": {
+          "calls_before": 3740,
+          "calls_after": 3740,
+          "change_percent": 0.0,
+          "average_per_car_substep_before": 15.583333333333334,
+          "average_per_car_substep_after": 15.583333333333334
+        },
+        "residual": {
+          "calls_before": 103968,
+          "calls_after": 49882,
+          "change_percent": -52.02177593105571,
+          "average_per_car_substep_before": 433.2,
+          "average_per_car_substep_after": 207.84166666666667
+        },
+        "contact_force": {
+          "calls_before": 111448,
+          "calls_after": 57362,
+          "change_percent": -48.53025626301055,
+          "average_per_car_substep_before": 464.3666666666667,
+          "average_per_car_substep_after": 239.00833333333333
+        },
+        "body_state": {
+          "calls_before": 4675,
+          "calls_after": 4675,
+          "change_percent": 0.0,
+          "average_per_car_substep_before": 19.479166666666668,
+          "average_per_car_substep_after": 19.479166666666668
+        },
+        "completed_steps": {
+          "calls_before": 935,
+          "calls_after": 935,
+          "change_percent": 0.0,
+          "average_per_car_substep_before": 3.8958333333333335,
+          "average_per_car_substep_after": 3.8958333333333335
+        }
+      },
+      "final_state_numeric_difference_count": 9,
+      "max_final_state_absolute_difference": 2.498051988200861e-10,
+      "largest_final_state_differences": [
+        {
+          "field": "dynamics.sideslip",
+          "before": -6.19648742319601e-08,
+          "after": -6.171506903314001e-08,
+          "absolute_difference": 2.498051988200861e-10
+        },
+        {
+          "field": "lateral_acceleration",
+          "before": 3.2846894093552237e-09,
+          "after": 3.0434219588926226e-09,
+          "absolute_difference": 2.412674504626011e-10
+        },
+        {
+          "field": "heading",
+          "before": 4.569530531739474e-08,
+          "after": 4.576476442252897e-08,
+          "absolute_difference": 6.94591051342286e-11
+        },
+        {
+          "field": "roll",
+          "before": 4.788748286799205e-10,
+          "after": 4.877753756460379e-10,
+          "absolute_difference": 8.900546966117417e-12
+        },
+        {
+          "field": "dynamics.yaw_rate",
+          "before": 1.8189888484343442e-10,
+          "after": 1.8917484245761784e-10,
+          "absolute_difference": 7.275957614183426e-12
+        }
+      ]
+    },
+    {
+      "case": "constant-turn",
+      "profile_ticks": 120,
+      "counts": {
+        "advance_coupled": {
+          "calls_before": 240,
+          "calls_after": 240,
+          "change_percent": 0.0,
+          "average_per_car_substep_before": 1.0,
+          "average_per_car_substep_after": 1.0
+        },
+        "advance_wheel": {
+          "calls_before": 3720,
+          "calls_after": 3720,
+          "change_percent": 0.0,
+          "average_per_car_substep_before": 15.5,
+          "average_per_car_substep_after": 15.5
+        },
+        "_solve_force": {
+          "calls_before": 3720,
+          "calls_after": 3720,
+          "change_percent": 0.0,
+          "average_per_car_substep_before": 15.5,
+          "average_per_car_substep_after": 15.5
+        },
+        "residual": {
+          "calls_before": 81702,
+          "calls_after": 39438,
+          "change_percent": -51.72945582727473,
+          "average_per_car_substep_before": 340.425,
+          "average_per_car_substep_after": 164.325
+        },
+        "contact_force": {
+          "calls_before": 89142,
+          "calls_after": 46878,
+          "change_percent": -47.41199434609948,
+          "average_per_car_substep_before": 371.425,
+          "average_per_car_substep_after": 195.325
+        },
+        "body_state": {
+          "calls_before": 4650,
+          "calls_after": 4650,
+          "change_percent": 0.0,
+          "average_per_car_substep_before": 19.375,
+          "average_per_car_substep_after": 19.375
+        },
+        "completed_steps": {
+          "calls_before": 930,
+          "calls_after": 930,
+          "change_percent": 0.0,
+          "average_per_car_substep_before": 3.875,
+          "average_per_car_substep_after": 3.875
+        }
+      },
+      "final_state_numeric_difference_count": 6,
+      "max_final_state_absolute_difference": 3.337067937536631e-07,
+      "largest_final_state_differences": [
+        {
+          "field": "rpm",
+          "before": 2397.774777344818,
+          "after": 2397.7747770111114,
+          "absolute_difference": 3.337067937536631e-07
+        },
+        {
+          "field": "roll",
+          "before": -0.6095532178878784,
+          "after": -0.6095532774925232,
+          "absolute_difference": 5.960464477539063e-08
+        },
+        {
+          "field": "dynamics.yaw_rate",
+          "before": -0.25526589155197144,
+          "after": -0.25526586174964905,
+          "absolute_difference": 2.9802322387695312e-08
+        },
+        {
+          "field": "stability_state.yaw_error",
+          "before": 0.0029997173329679994,
+          "after": 0.0029996875306456117,
+          "absolute_difference": 2.9802322387695312e-08
+        },
+        {
+          "field": "stability_state.observed_yaw_rate",
+          "before": -0.25505614280700684,
+          "after": -0.25505611300468445,
+          "absolute_difference": 2.9802322387695312e-08
+        }
+      ]
+    },
+    {
+      "case": "100kmh-brake",
+      "profile_ticks": 120,
+      "counts": {
+        "advance_coupled": {
+          "calls_before": 240,
+          "calls_after": 240,
+          "change_percent": 0.0,
+          "average_per_car_substep_before": 1.0,
+          "average_per_car_substep_after": 1.0
+        },
+        "advance_wheel": {
+          "calls_before": 2880,
+          "calls_after": 2880,
+          "change_percent": 0.0,
+          "average_per_car_substep_before": 12.0,
+          "average_per_car_substep_after": 12.0
+        },
+        "_solve_force": {
+          "calls_before": 2880,
+          "calls_after": 2880,
+          "change_percent": 0.0,
+          "average_per_car_substep_before": 12.0,
+          "average_per_car_substep_after": 12.0
+        },
+        "residual": {
+          "calls_before": 75132,
+          "calls_after": 39432,
+          "change_percent": -47.51637118671139,
+          "average_per_car_substep_before": 313.05,
+          "average_per_car_substep_after": 164.3
+        },
+        "contact_force": {
+          "calls_before": 80892,
+          "calls_after": 45192,
+          "change_percent": -44.13291796469367,
+          "average_per_car_substep_before": 337.05,
+          "average_per_car_substep_after": 188.3
+        },
+        "body_state": {
+          "calls_before": 3600,
+          "calls_after": 3600,
+          "change_percent": 0.0,
+          "average_per_car_substep_before": 15.0,
+          "average_per_car_substep_after": 15.0
+        },
+        "completed_steps": {
+          "calls_before": 720,
+          "calls_after": 720,
+          "change_percent": 0.0,
+          "average_per_car_substep_before": 3.0,
+          "average_per_car_substep_after": 3.0
+        }
+      },
+      "final_state_numeric_difference_count": 15,
+      "max_final_state_absolute_difference": 0.0005299043684772187,
+      "largest_final_state_differences": [
+        {
+          "field": "stability_state.residual_moment",
+          "before": 0.0002119617479365843,
+          "after": -0.0003179426205406344,
+          "absolute_difference": 0.0005299043684772187
+        },
+        {
+          "field": "stability_state.allocated_brake_moment",
+          "before": -0.0002119617479365843,
+          "after": 0.0003179426205406344,
+          "absolute_difference": 0.0005299043684772187
+        },
+        {
+          "field": "stability_state.baseline_brake_moment",
+          "before": -0.0002119617479365843,
+          "after": 0.0003179426205406344,
+          "absolute_difference": 0.0005299043684772187
+        },
+        {
+          "field": "rpm",
+          "before": 2982.6541992817424,
+          "after": 2982.6542689840608,
+          "absolute_difference": 6.970231834202423e-05
+        },
+        {
+          "field": "dynamics.rolling_force",
+          "before": 160.09557238574584,
+          "after": 160.0955242710457,
+          "absolute_difference": 4.8114700149426426e-05
+        }
+      ]
+    }
+  ],
+  "test_validation": {
+    "command": ".venv/Scripts/python.exe -m pytest -q tests/test_tire_warm_start.py tests/test_tire_coupling.py tests/test_wheel_dynamics.py tests/test_tire_compliance*.py",
+    "status": "passed",
+    "summary": "150 passed in 41.09s",
+    "log": "docs/evidence/PHYS-TIRE-04/warm-start-verified-t0.log",
+    "ruff": "passed: src/wheel_dynamics.py src/tire_coupling.py tests/test_tire_warm_start.py"
+  },
+  "initial_baseline_t0": {
+    "status": "passed",
+    "summary": "144 passed in 48.09s",
+    "log": "docs/evidence/PHYS-TIRE-04/warm-start-t0.log"
+  }
+}

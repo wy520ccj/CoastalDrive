@@ -5,6 +5,7 @@ import json
 import subprocess
 import sys
 from dataclasses import asdict
+from itertools import product
 from pathlib import Path
 
 from panda3d.bullet import BulletPlaneShape, BulletRigidBodyNode, BulletWorld, getBulletVersion
@@ -73,11 +74,12 @@ VEHICLE_FIELDS = {
     "collision_half_width": ("m", "真实车身碰撞盒半宽"),
     "collision_half_length": ("m", "真实车身碰撞盒半长"),
     "collision_half_height": ("m", "真实车身碰撞盒半高"),
+    "centered_collision_support": ("bool", "沿CG投影切分零margin原生Box，完整覆盖名义外廓；默认四块；false为历史Box"),
     "body_center_height": ("m", "设计地面基准下碰撞盒中心高度"),
     "wheel_connection_height": ("m", "设计地面基准下射线悬架连接点高度"),
     "center_of_mass_height": ("m", "真实几何相对CG偏移与轴荷诊断高度"),
     "front_weight_share": ("1", "通过真实轴连接点相对CG纵向距离实现静态前载份额"),
-    "body_inertia": ("kg·m²", "null由Bullet碰撞盒生成；reference显式设计惯量"),
+    "body_inertia": ("kg·m²", "null沿用原Bullet Box生成的惯量；reference显式设计惯量"),
     "angular_damping": ("1", "Bullet刚体角阻尼"),
     "suspension_travel": ("m", "射线悬架最大行程，传API时×100cm"),
     "suspension_force_limit": ("N", "每轮实际施加悬架力上限"),
@@ -128,6 +130,28 @@ INPUT_FIELDS = {
 }
 
 
+def shape_volume_center(body):
+    """读取原生Box体积加权中心，适用于偏置CG造成的不等体积分区。"""
+    volumes = [8*body.getShape(i).getHalfExtentsWithMargin().x
+               *body.getShape(i).getHalfExtentsWithMargin().y
+               *body.getShape(i).getHalfExtentsWithMargin().z for i in range(body.getNumShapes())]
+    return Vec3(*(sum(body.getShapeTransform(i).getPos()[axis]*volume
+                      for i, volume in enumerate(volumes))/sum(volumes) for axis in range(3)))
+
+
+def shape_axis_limits(body):
+    """从原生Box角点读取整体边界，相对体积中心；不使用迭代射线的近似交点。"""
+    center = shape_volume_center(body)
+    points = []
+    for index in range(body.getNumShapes()):
+        half = body.getShape(index).getHalfExtentsWithMargin()
+        pose = body.getShapeTransform(index).getMat()
+        points.extend(pose.xformPoint(Vec3(*(half[axis]*sign[axis] for axis in range(3))))
+                      for sign in product((-1, 1), repeat=3))
+    return tuple((min(p[axis] for p in points)-center[axis], max(p[axis] for p in points)-center[axis])
+                 for axis in range(3))
+
+
 def measure(mode):
     world = BulletWorld()
     world.setGravity(Vec3(0, 0, -9.81))
@@ -143,11 +167,23 @@ def measure(mode):
             world.doPhysics(FIXED_DT, 0, FIXED_DT)
             car.after_step(previous)
         body = car._chassis
+        limits = shape_axis_limits(body)
+        shape_center = shape_volume_center(body)
         return {
             "mass": body.getMass(), "inertia": tuple(body.getInertia()),
             "angular_damping": body.getAngularDamping(),
-            "shape_half_extents": tuple(body.getShape(0).getHalfExtentsWithMargin()),
-            "shape_center": tuple(body.getShapeTransform(0).getPos()),
+            "shape_half_extents": tuple((high-low)/2 for low, high in limits),
+            "shape_axis_limits": limits,
+            "shape_type": body.getShape(0).getType().getName(),
+            "shape_count": body.getNumShapes(),
+            "shape_margin": body.getShape(0).getMargin(),
+            "shape_center": tuple(shape_center),
+            "shapes": [{"type": body.getShape(i).getType().getName(),
+                        "half_extents": tuple(body.getShape(i).getHalfExtentsWithMargin()),
+                        "margin": body.getShape(i).getMargin(),
+                        "transform": [[body.getShapeTransform(i).getMat().getCell(a, b)
+                                       for b in range(4)] for a in range(4)]}
+                       for i in range(body.getNumShapes())],
             "position": tuple(body.getTransform().getPos()),
             "wheels": [{
                 "hub": tuple(w.getChassisConnectionPointCs()), "radius": w.getWheelRadius(),
@@ -184,7 +220,7 @@ def export(output):
     source_names = ("vehicle_config.py", "driver_assist.py", "driving_modes.py", "vehicle.py",
                     "vehicle_tires.py", "vehicle_traction.py", "powertrain.py", "vehicle_steering.py", "vehicle_dynamics.py",
                     "wheel_dynamics.py", "tire_forces.py", "vehicle_contacts.py", "vehicle_state.py",
-                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py")
+                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py")
     hashes = {f"src/{name}": hashlib.sha256((ROOT / "src" / name).read_bytes()).hexdigest()
               for name in source_names}
     hashes["tools/physics/export_reference.py"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
@@ -195,7 +231,7 @@ def export(output):
         "panda_version": PandaSystem.getVersionString(), "bullet_version": getBulletVersion(),
         "measurement": {"ticks": 240, "dt": FIXED_DT, "max_substeps": 0,
                         "ground": "水平无限平面", "gravity": [0, 0, -9.81], "input": "VehicleCommand()"},
-        "schema_version": "reference-v6",
+        "schema_version": "reference-v8",
         "vehicle_fields": VEHICLE_FIELDS, "brake_fields": BRAKE_FIELDS,
         "traction_fields": TRACTION_FIELDS, "stability_fields": STABILITY_FIELDS,
         "input_fields": INPUT_FIELDS, "modes": modes,
@@ -210,5 +246,5 @@ def export(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path,
-                        default=ROOT / "logs/physics/reference-v6/parameters.json")
+                        default=ROOT / "logs/physics/reference-v8/parameters.json")
     export(parser.parse_args().output)

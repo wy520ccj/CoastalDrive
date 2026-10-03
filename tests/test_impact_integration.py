@@ -1,13 +1,17 @@
 """真实 Bullet 接触经 Snapshot 到分层播放器的完整路径。"""
 
 import json
+from dataclasses import replace
 from io import StringIO
+from itertools import pairwise
 
+import pytest
 from panda3d.core import Vec3
 from test_soundscape import FakeBase, phase
 
 from simulation import Control, Simulation
 from soundscape import Soundscape
+from vehicle_config import CAR
 from vehicle_state import VehicleCommand
 
 
@@ -68,18 +72,26 @@ def test_moving_npc_uses_vehicle_recipe_while_gameplay_counts_one_episode():
         simulation.close()
 
 
-def test_sustained_real_rail_contact_plays_one_hit_and_one_scrape_loop():
-    simulation = Simulation(track="highway", traffic_count=0)
+@pytest.mark.parametrize("centered,speed", [(False, 8), (True, 16)])
+def test_sustained_real_rail_contact_plays_one_hit_and_one_scrape_loop(centered, speed):
+    simulation = Simulation(track="highway", traffic_count=0,
+                            config=replace(CAR, centered_collision_support=centered))
     sound = Soundscape(FakeBase())
     log = StringIO()
     sound.set_impact_diagnostic(log)
     try:
         simulation.reset_player((6.9, 30, .55))
-        simulation._chassis.setLinearVelocity(Vec3(.5, 8, 0))
-        simulation.player.tires.initialize_rolling(8)
+        simulation._chassis.setLinearVelocity(Vec3(.5, speed, 0))
+        simulation.player.tires.initialize_rolling(speed)
+        qualifying_pressure_ticks = []
         for _ in range(840):
             simulation.step(VehicleCommand(throttle=.5, steering=2, direction=1))
+            if any(c.material == "metal_barrier" and c.raw_impulse >= 25 and c.tangential_speed >= 1.6
+                   for c in simulation.snapshot().contacts):
+                qualifying_pressure_ticks.append(simulation.snapshot().tick)
             sound.update(simulation.snapshot(), phase("driving"), None, 1 / 120)
+        # 启动循环前要求真实压力连续达到原25Ns门槛；两种表示均经过实际受力。
+        assert any(b == a+1 for a, b in pairwise(qualifying_pressure_ticks))
         rows = [json.loads(line) for line in log.getvalue().splitlines()]
         assert sum(bool(row.get("layers")) for row in rows if row["type"] == "decision") == 1
         assert sum(row.get("state") == "attack" for row in rows if row["type"] == "scrape") == 1, [r for r in rows if r["type"] == "scrape"]

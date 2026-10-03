@@ -2,15 +2,15 @@
 
 本文同步当前 `VehicleConfig`、`InputConfig` 与 `DrivingMode`。所有参数均为程序设计值或设计推导值；本机 Bullet 读回证明实际装入的配置，不是实车测量或标定。困难仿真使用通用设计参考车，保留自动前进换挡、简化虚拟离合、射线悬架及简化轮胎模型，不称完整车辆仿真软件。
 
-当前参考车为reference-v6，两模式均采用25ms设计制动器、默认开启ABS/TCS/ESC及接触区柔性，轮荷敏感性指数为0.90/0.90/0.85。冻结数据见 [当前参考参数](evidence/PHYS-TIRE-03/reference-parameters.json)，逐项保存62个车辆字段、8个制动子字段、10个驱动防滑子字段、9个横摆稳定子字段、9个输入字段、实际几何与两模式各240tick静置读数，以及源码SHA-256。Git HEAD仅为历史上下文；[reference-v5历史文件](evidence/PHYS-TIRE-02/reference-parameters.json)、[reference-v4历史文件](evidence/CTRL-03/reference-parameters-final.json)、[reference-v3历史文件](evidence/CTRL-02/reference-parameters.json)、[reference-v2历史文件](evidence/CTRL-01/reference-parameters-final.json)与[reference-v1历史文件](evidence/PHYS-MODES-01/reference-parameters.json)保留不覆盖。
+当前参考车为reference-v8，正常游戏成绩规则为game-controls-v7。两模式均采用25ms设计制动器、默认开启ABS/TCS/ESC及接触区柔性，轮荷敏感性指数为0.90/0.90/0.85。冻结数据见[当前CG分区参数](evidence/PHYS-TIRE-04/reference-parameters-cg-partition.json)：63车辆字段、8制动/10驱动防滑/9横摆稳定/9输入字段、原生几何与两模式各240tick静置读数及源码SHA。沿CG投影生成不等体积Box，整体中心按原生体积加权、边界按原生角点读回；默认两模式配置/形状/惯量/轮读数与[旧四Box记录](evidence/PHYS-TIRE-04/reference-parameters-box-partition.json)逐项严格相同，见[兼容回执](evidence/PHYS-TIRE-04/cg-default-native-equivalence.json)，因此保持成绩版本。54项相关T0通过，新完整T1的7项检查全部通过（696项pytest），新完整T2的16项检查全部通过（811项pytest），266文件SHA一致；旧T1的682项pytest及旧T2中断结果只属于对应历史源码。Hull的674通过/4失败为已拒绝历史，旧参数JSON不覆盖。
 
-本次 `src/vehicle_config.py` SHA-256：`c13cc43d77e8948a9d5f843c5aa3ed3517b601737b598b407cbc52c1e409e174`。Panda3D 1.10.16，Bullet 2.84。
+本次源码SHA-256：`src/vehicle_config.py`：`7a78a8eac0f65fcd964f7b49be925c32f5e5d8ed85491105a7d584316ac9d9ff`；`src/driving_modes.py`：`4200080f5d9c26b6cf3a468913c6a1e958f2addd0a5f98a64f81f73bfeab7b2b`；`src/vehicle_collision.py`：`3b10a6b5bf79d9c4e7439810d51aac653e98721f8b82c9ee1bf43f0dabff5874`；`src/vehicle.py`：`23ff55921cf2a51de50102a86594d95fcbf7635530f0bd793e8c7de502150911`。Panda3D 1.10.16，Bullet 2.84。
 
 ## 模式与实例边界
 
 `DrivingMode.GAME`（正常游戏）选择 `CAR` 与 `GAME_INPUT`；`DrivingMode.SIMULATION`（困难仿真）选择 `REFERENCE_CAR` 与 `SIMULATION_INPUT`。模式与计时/自由驾驶/高速玩法正交。Vehicle → Simulation → Session直接传入冻结配置实例，部件创建、reset与跨赛道重建沿用配置；主菜单切换选择后，起步按配置重建世界。不得对存活Bullet车身替换参数对象。
 
-参考车与游戏车共用力学核心；明确差异是曲轴转矩曲线、游戏速度/倒挡力渐退、刚体角阻尼与惯量来源，以及三个输入辅助开关。Q/E只请求R/D方向，S为制动；并未新增手动前进挡或离合踏板。ABS/TCS/ESC是独立车辆配置，菜单及CLI可在任一模式关闭；Session缓存选定配置，开始时创建实际世界，重开同配置复用世界。新成绩按game-controls-v5/reference-v6及ABS/TCS/ESC三个开关分区，旧成绩不覆盖。
+参考车与游戏车共用力学核心；明确差异是曲轴转矩曲线、游戏速度/倒挡力渐退、刚体角阻尼与惯量来源，以及三个输入辅助开关。Q/E只请求R/D方向，S为制动；并未新增手动前进挡或离合踏板。ABS/TCS/ESC是独立车辆配置，菜单及CLI可在任一模式关闭；Session缓存选定配置，开始时创建实际世界，重开同配置复用世界。新成绩按game-controls-v7/reference-v8及ABS/TCS/ESC三个开关分区，旧成绩不覆盖。
 
 ## VehicleConfig完整字段
 
@@ -72,11 +72,12 @@
 | collision_half_width | 1.05 | — | m | 真实车身碰撞盒半宽 |
 | collision_half_length | 2.15 | — | m | 真实车身碰撞盒半长 |
 | collision_half_height | 0.42 | — | m | 真实车身碰撞盒半高 |
+| centered_collision_support | true | — | bool | 沿CG投影切分零margin原生Box，完整覆盖名义外廓；默认四块，外CG仅切实际内轴 |
 | body_center_height | 0.84 | — | m | 设计地面基准下碰撞盒中心高度 |
 | wheel_connection_height | 0.67 | — | m | 设计地面基准下射线悬架连接点高度 |
 | center_of_mass_height | 0.42 | — | m | 真实几何相对CG偏移与轴荷诊断高度 |
 | front_weight_share | 0.5 | — | 1 | 通过真实轴连接点相对CG纵向距离实现静态前载份额 |
-| body_inertia | null | [1919.56,511.56,2290.0] | kg·m² | null由Bullet碰撞盒生成；reference显式设计惯量 |
+| body_inertia | null | [1919.56,511.56,2290.0] | kg·m² | null沿用安装前读取的原Bullet Box惯量；reference显式设计惯量 |
 | angular_damping | 0.2 | 0 | 1 | Bullet刚体角阻尼 |
 | suspension_travel | 0.2 | — | m | 射线悬架最大行程，传API时×100cm |
 | suspension_force_limit | 6000 | — | N | 每轮实际施加悬架力上限 |
@@ -153,7 +154,7 @@ TCS按滑转及增长趋势调节发动机可用驱动比例，动力总成保�
 
 车身设计以地面为高度基准，刚体原点是CG。连接点顺序为前左、前右、后左、后右。`wheel_hubs(config)`定义x=±track_width/2；前轴y=wheelbase×(1−front_weight_share)，后轴y=−wheelbase×front_weight_share；z=wheel_connection_height−center_of_mass_height。`body_center(config)`定义y=wheelbase×(.5−front_weight_share)，z=body_center_height−center_of_mass_height。改变CG高度/前载份额同时改变真实悬架连接点与碰撞盒相对CG的力臂；不是只改诊断轴荷。
 
-默认两模式hubs均为(±.84,前+1.10/后−1.10,.25)m，碰撞盒中心(0,0,.42)m，半尺寸(1.05,2.15,.42)m。游戏惯量由Bullet盒形生成；参考惯量显式设置为设计值(1919.56,511.56,2290)kg·m²，沿用同设计车身尺度，非实车惯量。显式惯量与后续几何修改不会自动联动，使用者需提供一致设计。
+默认两模式hubs均为(±.84,前+1.10/后−1.10,.25)m，碰撞支撑中心(0,0,.42)m，名义外廓半尺寸(1.05,2.15,.42)m保持完整。当前同一刚体由4个margin=0的原生Box组成；每个子体半尺寸约(.525,1.075,.42)m，中心位于(x=±.525,y=±1.075,z=.42)m，各自准确transform见当前reference-v8 JSON。分区完整覆盖原外廓体积，没有额外体积。相对旧单Box的通用GJK路径，.04m margin形成的圆角边缘现在变为尖角；Bullet原有Box-Box与Box-plane专用算法本来就按外廓处理。当前几何核对使用外侧Sphere的native contact，位置误差阈值仍为2e−5m。安装分区前先读取原Box惯量再回设；四子体共享同一刚体，实际质心位置与惯量读回保持不变。参考车显式惯量仍为设计值(1919.56,511.56,2290)kg·m²，非实车惯量。显式惯量与后续几何修改不会自动联动，使用者需提供一致设计。
 
 ## 当前保留的模型常数与职责
 
@@ -185,8 +186,13 @@ TCS按滑转及增长趋势调节发动机可用驱动比例，动力总成保�
 | mass | 1200 | 1200 | kg |
 | inertia | [1919.560302734375,511.55987548828125,2290.000244140625] | [1919.56005859375,511.55999755859375,2290.0] | kg·m² |
 | angular_damping | 0.200000003 | 0 | 1 |
-| shape_half_extents | [1.0499999523162842,2.1500000953674316,0.41999998688697815] | [1.0499999523162842,2.1500000953674316,0.41999998688697815] | m |
+| shape_type / shape_count | BulletBoxShape / 4 | BulletBoxShape / 4 | — |
+| 单个原生Box半尺寸 | [0.5249999761581421,1.0750000476837158,0.41999998688697815] | [0.5249999761581421,1.0750000476837158,0.41999998688697815] | m |
+| shape_half_extents（完整外廓） | [1.0500000715255737,2.150000810623169,0.4199996292591095] | [1.0500000715255737,2.150000810623169,0.4199996292591095] | m |
+| shape_margin（各子体） | 0 | 0 | m |
+| 4个子体相对中心 | (±0.5249999762,±1.0750000477,0.4199999869)，矩阵逐项见JSON | 同左 | m |
 | shape_center | [0.0,0.0,0.41999998688697815] | [0.0,0.0,0.41999998688697815] | m |
+| 静置车身position | [0.0,0.0,0.4186876118183136] | [0.0,0.0,0.4186876118183136] | m |
 | 单轮radius | 0.3300000131 | 0.3300000131 | m |
 | 单轮rest_length | 0.400000006 | 0.400000006 | m |
 | 单轮travel_cm | 20 | 20 | cm |
@@ -197,6 +203,9 @@ TCS按滑转及增长趋势调节发动机可用驱动比例，动力总成保�
 | 单轮roll_influence | 0.1000000015 | 0.1000000015 | 1 |
 | 静置前左normal_load | 2943.000977 | 2943.000977 | N |
 | 静置前左suspension_length | 0.3386875689 | 0.3386875689 | m |
+| 静置前左compression | 0.0613124371 | 0.0613124371 | m |
+
+当前原生Box子体沿CG投影划分完整名义外廓；外侧Sphere原生接触沿用2e−5m几何阈值，完整体积与边界按同一精度核对。Panda浮点transform读回含微小旋转，接缝误差保存，不把理论区间无交叠写成浮点严格无交叠。整体读回按体积加权中心和原生角点边界。54项相关T0通过，新完整T1的7项检查全部通过（696项pytest），新完整T2的16项检查全部通过（811项pytest），266文件SHA一致；旧T1与中断T2只记录旧源码，本功能块自动验收已收口；整体阶段Gate仍待完成。
 
 ## PHYS-TIRE历史B/C动力性证据
 

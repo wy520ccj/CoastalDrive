@@ -2,13 +2,14 @@
 
 import math
 
-from panda3d.bullet import BulletBoxShape, BulletRigidBodyNode, BulletVehicle, ZUp
+from panda3d.bullet import BulletRigidBodyNode, BulletVehicle, ZUp
 from panda3d.core import BitMask32, TransformState, Vec3
 
 from driver_assist import GAME_INPUT, DriverAssist
 from powertrain import Powertrain
 from vehicle_brakes import Brakes
-from vehicle_config import CAR, body_center, wheel_hubs
+from vehicle_collision import install_chassis_shape
+from vehicle_config import CAR, wheel_hubs
 from vehicle_contacts import read_wheel_contacts, road_support, shift_contacts
 from vehicle_dynamics import DynamicsState, aerodynamic_force, axle_loads, contact_grade
 from vehicle_stability import StabilityControl
@@ -69,12 +70,7 @@ class Vehicle:
         chassis.setMass(self.config.mass)
         chassis.setDeactivationEnabled(False)
         chassis.setAngularDamping(self.config.angular_damping)
-        chassis.addShape(
-            BulletBoxShape(Vec3(self.config.collision_half_width, self.config.collision_half_length, self.config.collision_half_height)),
-            TransformState.makePos(Vec3(*body_center(self.config))),
-        )
-        if self.config.body_inertia is not None:
-            chassis.setInertia(Vec3(*self.config.body_inertia))
+        install_chassis_shape(chassis, self.config)
         chassis.setTransform(TransformState.makePosHpr(Vec3(*self.spawn), Vec3(heading, pitch, 0)))
         chassis.setCcdMotionThreshold(0.5)
         chassis.setCcdSweptSphereRadius(0.35)

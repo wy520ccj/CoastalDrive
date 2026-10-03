@@ -72,6 +72,7 @@ class VehicleConfig:
     collision_half_width: float = 1.05
     collision_half_length: float = 2.15
     collision_half_height: float = 0.42
+    centered_collision_support: bool = True  # 沿CG投影切分原生Box，完整覆盖名义外廓；默认四块。
     # 车身/轮连接点以车辆设计地面为基准；创建刚体时转换到质心坐标。
     body_center_height: float = 0.84
     wheel_connection_height: float = 0.67

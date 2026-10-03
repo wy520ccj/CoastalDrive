@@ -1,0 +1,50 @@
+{
+  "verified_utc": "2026-10-03T03:53:53.294581+00:00",
+  "summary_sha256": "5aec3c7a3f999c9ce99911e26df54a0a06932effb9bf7b0b3388073d090fb05e",
+  "pytest_passed": 696,
+  "checks": [
+    {
+      "name": "ruff",
+      "status": "passed",
+      "seconds": 0.108
+    },
+    {
+      "name": "pytest",
+      "status": "passed",
+      "seconds": 939.04
+    },
+    {
+      "name": "headless-0",
+      "status": "passed",
+      "seconds": 3.274
+    },
+    {
+      "name": "headless-17",
+      "status": "passed",
+      "seconds": 3.287
+    },
+    {
+      "name": "headless-23",
+      "status": "passed",
+      "seconds": 3.293
+    },
+    {
+      "name": "hills-0",
+      "status": "passed",
+      "seconds": 111.016
+    },
+    {
+      "name": "hills-23",
+      "status": "passed",
+      "seconds": 111.093
+    }
+  ],
+  "source_stable": true,
+  "source_file_count": 266,
+  "source_manifest": "validation-source-cg-before.json",
+  "T1_complete": true,
+  "T2_complete": false,
+  "visible_performance_gate": "pending",
+  "human_gate": "pending",
+  "whole_goal_complete": false
+}

@@ -1,0 +1,38 @@
+{
+  "verified_utc": "2026-10-03T03:54:48.087552+00:00",
+  "source_stable": true,
+  "file_count": 266,
+  "current_T1_session_id": 99174,
+  "current_T1_started_utc": "2026-10-03T03:33:48.584875+00:00",
+  "T0_summary": "logs/validation/PHYS-TIRE-04-cg-partition-T0-v2/summary.json",
+  "T0_pytest_count": 54,
+  "new_T1_complete": true,
+  "new_T2_started": true,
+  "prior_T2_interruption": "validation-T2-box-interruption-receipt.json",
+  "publication_remote_main": "f2c145090d7c2342b0ba242bca8a066732748b0c",
+  "new_cg_work_committed": false,
+  "whole_goal_complete": false,
+  "T1_pytest_passed": true,
+  "remaining_T1_checks": [],
+  "mechanical_clutch_bench": {
+    "trials": 96,
+    "steps": 34560,
+    "integrated_into_production": false
+  },
+  "T1_pytest_count": 696,
+  "T1_hills0_passed": true,
+  "current_T2_session_id": 99178,
+  "T1_receipt": "validation-T1-cg-receipt.json",
+  "current_T2_summary": "logs/validation/PHYS-TIRE-04-cg-partition-T2/summary.json",
+  "T2_pytest_count": 811,
+  "T2_pytest_passed": true,
+  "new_T2_complete": false,
+  "next_mechanism_preparation": {
+    "fixed_axis_mechanical_trials": 96,
+    "joint_contact_trials": 16,
+    "root_evaluations_bisection": 272,
+    "root_evaluations_brent": 52,
+    "rotor_axis_transport_production_defect_verified": true,
+    "production_drivetrain_or_gyro_implemented": false
+  }
+}

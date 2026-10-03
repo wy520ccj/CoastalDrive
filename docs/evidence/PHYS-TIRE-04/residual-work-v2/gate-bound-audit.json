@@ -1,0 +1,124 @@
+{
+  "status": "completed",
+  "gate_n": 0.001,
+  "trials": [
+    {
+      "case": "acceleration",
+      "label": "A",
+      "source_unchanged": true,
+      "same_timed_trace": true,
+      "raw_sha256": "ba4ec2b31285f399896f6bde9b06a0cb99a81bc3429dc296f7db10483557e438",
+      "records": 5760,
+      "substep_gate_bound_violations": 0,
+      "macro_gate_bound_violations": 0,
+      "original_force_gate_failures": 0,
+      "actual_residual_tighter_bound_violations": 0,
+      "maximum_negative_fraction_of_gate_bound": 0.07216090152497237,
+      "worst_fraction_record": {
+        "tick": 13,
+        "substep": 1,
+        "wheel": 2,
+        "road_j": -6.440455947439229e-07,
+        "gate_bound_j": 8.925132324199707e-06,
+        "actual_residual_n": 0.0005832232113625759,
+        "mode": "compliant-sticking"
+      }
+    },
+    {
+      "case": "acceleration",
+      "label": "B",
+      "source_unchanged": true,
+      "same_timed_trace": true,
+      "raw_sha256": "3a9161deefa5475f2a1b2420bf44772a84ac5509723fcf8e1cf4610524dae1cd",
+      "records": 5760,
+      "substep_gate_bound_violations": 0,
+      "macro_gate_bound_violations": 0,
+      "original_force_gate_failures": 0,
+      "actual_residual_tighter_bound_violations": 4,
+      "maximum_negative_fraction_of_gate_bound": 0.07215972258659022,
+      "worst_fraction_record": {
+        "tick": 13,
+        "substep": 1,
+        "wheel": 2,
+        "road_j": -6.440350725625967e-07,
+        "gate_bound_j": 8.925132324196058e-06,
+        "actual_residual_n": 0.0005832217886692505,
+        "mode": "compliant-sticking"
+      }
+    },
+    {
+      "case": "asphalt-brake",
+      "label": "A",
+      "source_unchanged": true,
+      "same_timed_trace": true,
+      "raw_sha256": "660ccabec2b51edb164be696fc999a29792e44da73e432c4b60e45376147f589",
+      "records": 5760,
+      "substep_gate_bound_violations": 0,
+      "macro_gate_bound_violations": 0,
+      "original_force_gate_failures": 0,
+      "actual_residual_tighter_bound_violations": 0,
+      "maximum_negative_fraction_of_gate_bound": 1.3433524654704554e-05,
+      "worst_fraction_record": {
+        "tick": 375,
+        "substep": 1,
+        "wheel": 0,
+        "road_j": -1.4732900816944417e-10,
+        "gate_bound_j": 1.0967263764082057e-05,
+        "actual_residual_n": 1.296955391602241e-07,
+        "mode": "compliant-sticking"
+      }
+    },
+    {
+      "case": "asphalt-brake",
+      "label": "B",
+      "source_unchanged": true,
+      "same_timed_trace": true,
+      "raw_sha256": "4f7245bc1eb1d5b55bd58dfde53c9bc61d7f30fc87a13f5b505598d4ce33f3c1",
+      "records": 5760,
+      "substep_gate_bound_violations": 0,
+      "macro_gate_bound_violations": 0,
+      "original_force_gate_failures": 0,
+      "actual_residual_tighter_bound_violations": 0,
+      "maximum_negative_fraction_of_gate_bound": 0.0005166304395314255,
+      "worst_fraction_record": {
+        "tick": 401,
+        "substep": 2,
+        "wheel": 1,
+        "road_j": -3.2993855325775687e-09,
+        "gate_bound_j": 6.3863552747105875e-06,
+        "actual_residual_n": 8.122098161864553e-06,
+        "mode": "compliant-sticking"
+      }
+    },
+    {
+      "case": "constant-turn",
+      "label": "A",
+      "source_unchanged": true,
+      "same_timed_trace": true,
+      "raw_sha256": "fba75fa2da94a6dcc6d2e6da12b00129cf02016d977a9f4ef2c64757609282b0",
+      "records": 5760,
+      "substep_gate_bound_violations": 0,
+      "macro_gate_bound_violations": 0,
+      "original_force_gate_failures": 0,
+      "actual_residual_tighter_bound_violations": 0,
+      "maximum_negative_fraction_of_gate_bound": 0.0,
+      "worst_fraction_record": null
+    },
+    {
+      "case": "constant-turn",
+      "label": "B",
+      "source_unchanged": true,
+      "same_timed_trace": true,
+      "raw_sha256": "d41b5dc0af1b2fb09298361d11cbd352c127bd08dfcab55ca8e506ab1b4849ad",
+      "records": 5760,
+      "substep_gate_bound_violations": 0,
+      "macro_gate_bound_violations": 0,
+      "original_force_gate_failures": 0,
+      "actual_residual_tighter_bound_violations": 0,
+      "maximum_negative_fraction_of_gate_bound": 0.0,
+      "worst_fraction_record": null
+    }
+  ],
+  "scope": "原0.001N门槛上界；保留实际残差更紧界的浮点负违例。静摩擦不能用末子步patch速度乘残差替代完整界。",
+  "explanation": "B加速有4个约2.5e-17至6.4e-17J负功超出按近机器精度实际残差计算的紧界；F与目标的浮点相减可给近零残差，而slip-rate的独立运算仍有舍入差。原0.001N门槛功界未放宽，逐子步及总和均需明确核对；不钳负路面功。初轮residual-work的same_timed_trace=False来自tuple与JSON list直接比较，修正观察器表示后v2所有既有物理字段与计时轨迹严格相同。"
+}

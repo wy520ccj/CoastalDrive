@@ -1,0 +1,12 @@
+{
+  "audited_utc": "2026-10-03T03:48:45.526362+00:00",
+  "trial_count": 96,
+  "rows": 34560,
+  "finite_numerical_values": 552960,
+  "csv_hashes_match": true,
+  "min_signed_clutch_work_j": -3.7534847009113215e-14,
+  "summary_sha256": "b2a30c0006be57efbd1c32d0664adcf5c3025f8685c3d4ad01a5c8db19fe615d",
+  "script_sha256": "56754f53e307274a148fcf54ce6ae825c4a8a0adeead05e3b42dd9dfdffe9f92",
+  "source_stable": true,
+  "production_integration_complete": false
+}

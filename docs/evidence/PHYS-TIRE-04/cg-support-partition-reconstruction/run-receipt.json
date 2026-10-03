@@ -1,0 +1,326 @@
+{
+  "receipt_type": "evidence-only reconstruction rerun, not the original first-run raw summary",
+  "completed_at_local": "2026-10-03T11:36:55.3975129+08:00",
+  "command": ".venv/Scripts/python.exe docs/evidence/PHYS-TIRE-04/cg-support-partition-reconstruction/cg-support-partition-reconstruction.py",
+  "python": ".venv Python 3.14.2",
+  "fixture": "same detached reference-car rigid body, infinite horizontal plane, gravity -9.81m/s^2, initial CG (0,0,2.5)m, 240 fixed steps",
+  "trial_count": 8,
+  "tick_rows_total": 1920.0,
+  "source_stable": true,
+  "source_sha256_before": {
+    "src/vehicle_collision.py": "3b10a6b5bf79d9c4e7439810d51aac653e98721f8b82c9ee1bf43f0dabff5874",
+    "src/vehicle_config.py": "7a78a8eac0f65fcd964f7b49be925c32f5e5d8ed85491105a7d584316ac9d9ff",
+    "src/driving_modes.py": "4200080f5d9c26b6cf3a468913c6a1e958f2addd0a5f98a64f81f73bfeab7b2b",
+    "src/vehicle_state.py": "3551a679279e0e01346faaf0b6f5ff1a055ecd4b36ff203e3d1f3619212c947d",
+    "docs/evidence/PHYS-TIRE-04/cg-plane-impact-probe.py": "85dcad322e229278c2b6ffd292b23887ed53184f36db33540a0366ce52ab8440"
+  },
+  "source_sha256_after": {
+    "src/vehicle_collision.py": "3b10a6b5bf79d9c4e7439810d51aac653e98721f8b82c9ee1bf43f0dabff5874",
+    "src/vehicle_config.py": "7a78a8eac0f65fcd964f7b49be925c32f5e5d8ed85491105a7d584316ac9d9ff",
+    "src/driving_modes.py": "4200080f5d9c26b6cf3a468913c6a1e958f2addd0a5f98a64f81f73bfeab7b2b",
+    "src/vehicle_state.py": "3551a679279e0e01346faaf0b6f5ff1a055ecd4b36ff203e3d1f3619212c947d",
+    "docs/evidence/PHYS-TIRE-04/cg-plane-impact-probe.py": "85dcad322e229278c2b6ffd292b23887ed53184f36db33540a0366ce52ab8440"
+  },
+  "captured_pre_change_collision_source_sha256": "2e6d2438f825be5884199dda21b02e6858cfac666642a60a9af7411d396a1a59",
+  "reconstruction_note": "This is a rerun/reconstruction from the previously recorded centered-four-Box formula and SHA, not recovery of the overwritten first-run raw summary. The original pre-change comparison summary was replaced by a later run after the shared production source had changed to CG projection.",
+  "default_native_equivalence": {
+    "same_shape_count": true,
+    "same_shape_type_half_margin_and_exact_matrix": true,
+    "same_final_body_inertia": true,
+    "current_signature": [
+      {
+        "shape_type": "BulletBoxShape",
+        "half_extents": [
+          0.5249999761581421,
+          1.0750000476837158,
+          0.41999998688697815
+        ],
+        "margin": 0.0,
+        "transform_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            -0.5249999761581421,
+            -1.0750000476837158,
+            0.41999998688697815,
+            1.0
+          ]
+        ]
+      },
+      {
+        "shape_type": "BulletBoxShape",
+        "half_extents": [
+          0.5249999761581421,
+          1.0750000476837158,
+          0.41999998688697815
+        ],
+        "margin": 0.0,
+        "transform_matrix": [
+          [
+            1.0,
+            8.742277657347586E-08,
+            8.742277657347586E-08,
+            0.0
+          ],
+          [
+            8.742277657347586E-08,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            8.742277657347586E-08,
+            7.64274186065882E-15,
+            -1.0,
+            0.0
+          ],
+          [
+            -0.5249999761581421,
+            1.0750000476837158,
+            0.41999998688697815,
+            1.0
+          ]
+        ]
+      },
+      {
+        "shape_type": "BulletBoxShape",
+        "half_extents": [
+          0.5249999761581421,
+          1.0750000476837158,
+          0.41999998688697815
+        ],
+        "margin": 0.0,
+        "transform_matrix": [
+          [
+            -1.0,
+            0.0,
+            8.742277657347586E-08,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            -8.742277657347586E-08,
+            0.0,
+            -1.0,
+            0.0
+          ],
+          [
+            0.5249999761581421,
+            -1.0750000476837158,
+            0.41999998688697815,
+            1.0
+          ]
+        ]
+      },
+      {
+        "shape_type": "BulletBoxShape",
+        "half_extents": [
+          0.5249999761581421,
+          1.0750000476837158,
+          0.41999998688697815
+        ],
+        "margin": 0.0,
+        "transform_matrix": [
+          [
+            -1.0,
+            -8.742277657347586E-08,
+            0.0,
+            0.0
+          ],
+          [
+            8.742277657347586E-08,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.5249999761581421,
+            1.0750000476837158,
+            0.41999998688697815,
+            1.0
+          ]
+        ]
+      }
+    ],
+    "prototype_signature": [
+      {
+        "shape_type": "BulletBoxShape",
+        "half_extents": [
+          0.5249999761581421,
+          1.0750000476837158,
+          0.41999998688697815
+        ],
+        "margin": 0.0,
+        "transform_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            -0.5249999761581421,
+            -1.0750000476837158,
+            0.41999998688697815,
+            1.0
+          ]
+        ]
+      },
+      {
+        "shape_type": "BulletBoxShape",
+        "half_extents": [
+          0.5249999761581421,
+          1.0750000476837158,
+          0.41999998688697815
+        ],
+        "margin": 0.0,
+        "transform_matrix": [
+          [
+            1.0,
+            8.742277657347586E-08,
+            8.742277657347586E-08,
+            0.0
+          ],
+          [
+            8.742277657347586E-08,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            8.742277657347586E-08,
+            7.64274186065882E-15,
+            -1.0,
+            0.0
+          ],
+          [
+            -0.5249999761581421,
+            1.0750000476837158,
+            0.41999998688697815,
+            1.0
+          ]
+        ]
+      },
+      {
+        "shape_type": "BulletBoxShape",
+        "half_extents": [
+          0.5249999761581421,
+          1.0750000476837158,
+          0.41999998688697815
+        ],
+        "margin": 0.0,
+        "transform_matrix": [
+          [
+            -1.0,
+            0.0,
+            8.742277657347586E-08,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            -8.742277657347586E-08,
+            0.0,
+            -1.0,
+            0.0
+          ],
+          [
+            0.5249999761581421,
+            -1.0750000476837158,
+            0.41999998688697815,
+            1.0
+          ]
+        ]
+      },
+      {
+        "shape_type": "BulletBoxShape",
+        "half_extents": [
+          0.5249999761581421,
+          1.0750000476837158,
+          0.41999998688697815
+        ],
+        "margin": 0.0,
+        "transform_matrix": [
+          [
+            -1.0,
+            -8.742277657347586E-08,
+            0.0,
+            0.0
+          ],
+          [
+            8.742277657347586E-08,
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.5249999761581421,
+            1.0750000476837158,
+            0.41999998688697815,
+            1.0
+          ]
+        ]
+      }
+    ]
+  },
+  "geometry_precision_note": "Intervals are mathematically disjoint. Read-back TransformState matrices show tiny float-quaternion seam deviations: maximum SAT positive penetration 4.59e-8m, conservative AABB intersection candidate volume 4.75e-7m^3, maximum overall-AABB error 1.91e-7m, and maximum summed-volume error 8.76e-7m^3. These are below the existing 2e-5m geometry tolerance; the evidence does not claim exact zero overlap after float transform round-trip.",
+  "reconstructed_summary_sha256": "97dcbeb5fca5dcb08eda8d882bc169f327a40257727cf46efab153c34805566e",
+  "reconstruction_script_sha256": "9bcc5d6ee219de6592b79c461657c568ec1d48f58e0ae759c22e8057d1d327f6",
+  "preserved_post_source_change_rerun_sha256": "e9f4e521edc9c9f1770f5d824bcdae96350e653826ed8bf80178465bd98296d1",
+  "overwritten_original_raw_available": false,
+  "scope": "Only specified vertical plane-impact cases. No tests, production/source edits, submissions, or T1/T2 conclusions.",
+  "related_parent_evidence": [
+    "../cg-production-impact/summary.json",
+    "../cg-default-native-equivalence.json",
+    "../reference-parameters-box-partition.json"
+  ]
+}

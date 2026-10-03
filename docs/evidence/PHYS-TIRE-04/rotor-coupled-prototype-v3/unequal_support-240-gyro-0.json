@@ -1,0 +1,183 @@
+{
+  "name": "unequal_support",
+  "h_s": 0.004166666666666667,
+  "gyro": false,
+  "initial_velocity": [
+    0.3,
+    20.0,
+    0.0
+  ],
+  "initial_angular": [
+    0.03,
+    -0.02,
+    0.1
+  ],
+  "initial_spins": [
+    60.0,
+    62.0,
+    58.0,
+    75.0
+  ],
+  "drives_nm": [
+    0.0,
+    0.0,
+    150.0,
+    150.0
+  ],
+  "brakes_nm": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "loads_n": [
+    0.0,
+    300.0,
+    5500.0,
+    5886.0
+  ],
+  "deformation": [
+    [
+      0.005,
+      -0.003
+    ],
+    [
+      -0.006,
+      0.004
+    ],
+    [
+      0.007,
+      0.002
+    ],
+    [
+      -0.004,
+      -0.006
+    ]
+  ],
+  "steps": [
+    {
+      "omega": 60.0,
+      "relative_omega": 60.03111361827266,
+      "vx": 19.92516191841906,
+      "vy": 0.19252479128565614,
+      "body_omega": 0.031113618272662263,
+      "kappa": -0.006281601069618361,
+      "alpha": 0.009662094637781869,
+      "fx": 0.0,
+      "fy": 0.0,
+      "brake_torque": -0.0,
+      "residual": 0.0,
+      "mode": "airborne",
+      "deformation_x": 0.003076923076923077,
+      "deformation_y": -0.0018461538461538461,
+      "patch_kappa": 0.016881997973047878,
+      "patch_alpha": 0.023556196711803232,
+      "elastic_energy": 0.965680473372781,
+      "material_dissipation": 1.2071005917159765,
+      "road_dissipation": 0.0,
+      "elastic_numerical_dissipation": 0.3772189349112426,
+      "deformation_rate_x": -0.46153846153846156,
+      "deformation_rate_y": 0.27692307692307694
+    },
+    {
+      "omega": 62.03968255003067,
+      "relative_omega": 62.07079616830333,
+      "vx": 20.096473249871096,
+      "vy": 0.19252479128565614,
+      "body_omega": 0.031113618272662263,
+      "kappa": 0.01874070076656076,
+      "alpha": 0.009579735679830047,
+      "fx": -51.94806549469626,
+      "fy": 48.96569010682556,
+      "brake_torque": -0.0,
+      "residual": 3.432991962236019e-06,
+      "mode": "compliant-rolling",
+      "deformation_x": -0.0038255078602428107,
+      "deformation_y": 0.0025870915130944247,
+      "patch_kappa": -0.007227940947480929,
+      "patch_alpha": -0.00729335166677752,
+      "elastic_energy": 1.5995664664428546,
+      "material_dissipation": 1.6139343499765446,
+      "road_dissipation": 0.06134514439467326,
+      "elastic_numerical_dissipation": 0.5043544843676703,
+      "deformation_rate_x": 0.5218781135417254,
+      "deformation_rate_y": -0.3390980368573381
+    },
+    {
+      "omega": 58.36486462268402,
+      "relative_omega": 58.39597824095668,
+      "vx": 19.92516191841906,
+      "vy": 0.4168610586633204,
+      "body_omega": 0.031113618272662263,
+      "kappa": -0.03336266955596603,
+      "alpha": 0.020918286936616327,
+      "fx": -23.095506059075312,
+      "fy": -272.99500111883214,
+      "brake_torque": -0.0,
+      "residual": 2.8624787031625153e-05,
+      "mode": "compliant-rolling",
+      "deformation_x": 0.004248473061386987,
+      "deformation_y": 0.0005307820484132511,
+      "patch_kappa": -0.00022033084018011247,
+      "patch_alpha": 0.003224492120724918,
+      "elastic_energy": 1.3748439702186512,
+      "material_dissipation": 2.3350804519626873,
+      "road_dissipation": 0.07350408281404126,
+      "elastic_numerical_dissipation": 0.7297126412383398,
+      "deformation_rate_x": -0.6603664652671232,
+      "deformation_rate_y": -0.35261230838081975
+    },
+    {
+      "omega": 73.526078401611,
+      "relative_omega": 73.55719201988366,
+      "vx": 20.096473249871096,
+      "vy": 0.4168610586633204,
+      "body_omega": 0.031113618272662263,
+      "kappa": 0.20735641377709219,
+      "alpha": 0.020740021447974395,
+      "fx": 2384.0428197092388,
+      "fy": -530.4535342201764,
+      "brake_torque": -0.0,
+      "residual": 1.0090986143921172e-10,
+      "mode": "compliant-rolling",
+      "deformation_x": 0.0036513918454083045,
+      "deformation_y": -0.005052444959538914,
+      "patch_kappa": 0.11598047830494301,
+      "patch_alpha": 0.03204809477969389,
+      "elastic_energy": 2.914489685841333,
+      "material_dissipation": 14.265997854404139,
+      "road_dissipation": 24.577004920572815,
+      "elastic_numerical_dissipation": 4.458124329501294,
+      "deformation_rate_x": 1.836334042897993,
+      "deformation_rate_y": 0.2274132097106607
+    }
+  ],
+  "end_velocity": [
+    0.29738026789849936,
+    20.00801735850054,
+    0.0
+  ],
+  "end_angular": [
+    0.031113618272662263,
+    -0.01741108827616408,
+    0.10197103062621103
+  ],
+  "end_spin_momentum_nms": [
+    -457.07512603378626,
+    -0.0,
+    -0.0
+  ],
+  "gyro_torque_nm": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "iterations": 3,
+  "energy_error_j": -3.501554601825774e-11,
+  "euler_transport_balance_nms": [
+    -3.552713678800501e-15,
+    -0.19420175698029385,
+    -0.03315906403422009
+  ],
+  "maximum_force_residual_n": 2.8624787031625153e-05
+}

@@ -25,7 +25,7 @@ AREAS = {
                 "test_tire_loads", "test_tire_load_config", "test_tire_load_probe",
                 "test_tire_compliance", "test_tire_coupling", "test_tire_compliance_config",
                 "test_tire_compliance_integration", "test_tire_compliance_probe",
-                "test_tire_compliance_substeps"],
+                "test_tire_compliance_substeps", "test_tire_warm_start", "test_tire_jacobian", "test_vehicle_collision"],
     "traffic": ["test_h4a_traffic", "test_traffic_behavior", "test_traffic_impacts",
                 "test_traffic_recovery"],
     "road": ["test_endless", "test_highway_segments", "test_highway_curve",

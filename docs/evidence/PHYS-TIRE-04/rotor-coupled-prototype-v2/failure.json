@@ -1,0 +1,9 @@
+{
+  "status": "failed",
+  "command": ".venv/Scripts/python.exe -X utf8 docs/evidence/PHYS-TIRE-04/rotor-coupled-prototype.py",
+  "completed_trials": 20,
+  "failure": "Final negative-control assertion required >0.1 Nms at every h; the 1/960 second impulse is about 0.09 Nms.",
+  "source_snapshot": "source.py",
+  "correction": "Compare each missing reaction impulse directly with h*(Omega_end cross S_end), rather than using a step-independent arbitrary magnitude threshold.",
+  "production_source_changed": false
+}

@@ -1,0 +1,55 @@
+{
+  "created_utc": "2026-10-03T03:34:25.490037+00:00",
+  "old_reference_sha256": "9820d0e59cff0e0d4295fccb700b816ccb967ae86553d284f124980b79459dfa",
+  "new_reference_sha256": "0ccfc41e01568a18f9cf5ff59cff4bfa962f46b9adeb195f385d5732d1d66d15",
+  "native_checks": {
+    "game": {
+      "vehicle_config_exact": true,
+      "input_config_exact": true,
+      "native_field_exact": {
+        "mass": true,
+        "inertia": true,
+        "angular_damping": true,
+        "shape_type": true,
+        "shape_count": true,
+        "shape_margin": true,
+        "shape_center": true,
+        "shapes": true,
+        "position": true,
+        "wheels": true
+      },
+      "geometry_hubs_exact": true,
+      "geometry_center_exact": true
+    },
+    "simulation": {
+      "vehicle_config_exact": true,
+      "input_config_exact": true,
+      "native_field_exact": {
+        "mass": true,
+        "inertia": true,
+        "angular_damping": true,
+        "shape_type": true,
+        "shape_count": true,
+        "shape_margin": true,
+        "shape_center": true,
+        "shapes": true,
+        "position": true,
+        "wheels": true
+      },
+      "geometry_hubs_exact": true,
+      "geometry_center_exact": true
+    }
+  },
+  "excluded_derived_fields": {
+    "shape_axis_limits": "actual native corner limits replace approximate iterative ray limits",
+    "shape_half_extents": "computed from changed measurement method; native shape half_extents checked exactly in shapes"
+  },
+  "source_files_changed_from_prior_frozen_candidate": [
+    "src/vehicle_collision.py",
+    "src/vehicle_config.py",
+    "tests/test_vehicle_collision.py",
+    "tests/test_vehicle_config.py",
+    "tools/physics/export_reference.py"
+  ],
+  "claim": "Exact equality only for the two default-mode configuration/native fields listed; not acceptance of general-CG trajectories or whole goal"
+}

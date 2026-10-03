@@ -1,0 +1,1454 @@
+{
+  "scope": "integration prototype observation only; numeric first differences not acceptance cutoff; micro indices never used as physical divergence",
+  "micro1_gate": {
+    "reference": "docs/evidence/PHYS-TIRE-03/substeps/simulation-airborne-recontact-2.csv.gz",
+    "reference_sha256": "ee1fc6df25a50225617f780c83be3f140f7c84e12027a3b3eb64a3f271379ed3",
+    "new_rows": 721,
+    "old_rows": 721,
+    "shared_fields": 393,
+    "different_cells": 0,
+    "first_differences": [],
+    "strict_equal": true
+  },
+  "source_unchanged": true,
+  "column_phases": {
+    "macro_completed": "state.position/heading/velocity/speed and completed_yaw/sideslip are true end of lastmicro=end macro; stop/path/heading in trial use macro samples",
+    "lastmicro_force": "state.dynamics, fx/fy, force_kappa/alpha, force_patch_kappa/alpha, strain/energy/dissipation and tire_moment reflect lastmicro force phase; tire mean moment uses lastmicro impulse/microdt",
+    "lastmicro_acceleration": "state.acceleration/lateral_acceleration use lastmicro pre/post velocity difference divided microdt; not macro-average acceleration; load filter evolves everymicro",
+    "controller_macro_start": "five controller results sampled/advanced at macro firstmicro with macrodt, then held; ABS pressure and engine output held within macro, feedback_tick labels firstmicro previous completed micro",
+    "macro_energy": "macro_micro_sum columns sum intrinsic dissipation for everymicro; original dissipation columns are lastmicro only; elastic_energy is stored energy at lastmicro end, not summed",
+    "index_units": "CarState contact/sample/feedback_tick are micro indices while CSV tick/time are externalmacro indices/time"
+  },
+  "trials": {
+    "1": {
+      "heading_change_deg": 0.42931926250457764,
+      "peak_abs_unwrapped_heading_deg": 0.42935991287231445,
+      "path_distance_m": 63.49359337552761,
+      "time_to_stop_s": 3.9,
+      "stopping_path_distance_m": 63.43247994410568,
+      "final_horizontal_speed_mps": 0.00013204843392922665,
+      "esc_active_seconds": 0.26666666666666666,
+      "abs_active_seconds": 2.908333333333333,
+      "final_macro_body": {
+        "position": [
+          -0.18805040419101715,
+          63.405399322509766,
+          0.4186887741088867
+        ],
+        "orientation": [
+          0.9999929666519165,
+          -5.180397124604497e-07,
+          -2.2784560904653972e-09,
+          0.0037465079221874475
+        ],
+        "hpr": [
+          0.42931926250457764,
+          -5.9363545005908236e-05,
+          -3.868613163149348e-08
+        ],
+        "velocity": [
+          -1.013501787383575e-06,
+          0.00013204454444348812,
+          0.08175342530012131
+        ],
+        "angular_world": [
+          5.996227264404297e-05,
+          4.3958425521850586e-07,
+          2.6426265620216327e-08
+        ],
+        "yaw_world_z": 2.6426265620216327e-08,
+        "yaw_body_up": 2.6426212329511145e-08
+      },
+      "micro_peak_abs_world_yaw_radps": 0.20014610886573792,
+      "micro_peak_abs_body_up_yaw_radps": 0.15742357075214386,
+      "micro_abs_world_yaw_integral_rad": 0.03303348606152536,
+      "micro_abs_body_up_yaw_integral_rad": 0.03837078330089889,
+      "first_body_impulse": {
+        "macro_tick": 80,
+        "micro_index": 0,
+        "time_s": 0.6666666666666666,
+        "positive_point_count": 1,
+        "points": [
+          {
+            "distance": 0.03466367721557617,
+            "normal_b": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "point_a": [
+              1.0499999523162842,
+              20.33933448791504,
+              0.03466367721557617
+            ],
+            "point_b": [
+              1.0499999523162842,
+              20.33933448791504,
+              0.0
+            ],
+            "normal_impulse_ns": 436.77325439453125,
+            "lateral_direction_1": [
+              -3.433437252025229e-15,
+              0.9999999403953552,
+              0.0
+            ],
+            "lateral_direction_2": [
+              1.0,
+              -0.0,
+              -0.0
+            ],
+            "lateral_impulse_1_ns": -109.19331359863281,
+            "lateral_impulse_2_ns": 0.0
+          }
+        ],
+        "pre_body": {
+          "position": [
+            -1.3312698247383223e-15,
+            18.221328735351562,
+            0.404195100069046
+          ],
+          "orientation": [
+            0.9962727427482605,
+            -0.08625905960798264,
+            0.0,
+            0.0
+          ],
+          "hpr": [
+            0.0,
+            -9.896860122680664,
+            0.0
+          ],
+          "velocity": [
+            -9.322403959899361e-14,
+            27.199058532714844,
+            -6.041581153869629
+          ],
+          "angular_world": [
+            -0.12524622678756714,
+            0.0,
+            0.0
+          ],
+          "yaw_world_z": 0.0,
+          "yaw_body_up": 0.0
+        },
+        "post_body": {
+          "position": [
+            -2.1054664088582253e-15,
+            18.447202682495117,
+            0.3562004864215851
+          ],
+          "orientation": [
+            0.9963861703872681,
+            -0.08486507087945938,
+            -0.003536282107234001,
+            -4.4054795580450445e-05
+          ],
+          "hpr": [
+            -0.03999588266015053,
+            -9.736452102661133,
+            -0.41010263562202454
+          ],
+          "velocity": [
+            -9.290359009438837e-14,
+            27.104761123657227,
+            -5.67602014541626
+          ],
+          "angular_world": [
+            0.39061808586120605,
+            -0.8467222452163696,
+            0.06276912987232208
+          ],
+          "yaw_world_z": 0.06276912987232208,
+          "yaw_body_up": -0.08408153802156448
+        }
+      },
+      "first_micro_supported_sample": [
+        {
+          "time_s": 0.625,
+          "macro_tick": 75,
+          "micro_index": 0
+        },
+        {
+          "time_s": 0.625,
+          "macro_tick": 75,
+          "micro_index": 0
+        },
+        {
+          "time_s": 0.6833333333333333,
+          "macro_tick": 82,
+          "micro_index": 0
+        },
+        {
+          "time_s": 0.6833333333333333,
+          "macro_tick": 82,
+          "micro_index": 0
+        }
+      ],
+      "micro_true_recontact_counts": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "micro_airborne_seconds": [
+        0.7749999999999997,
+        0.8333333333333328,
+        0.9833333333333323,
+        0.9833333333333323
+      ],
+      "controller_actual_calls": {
+        "steering": 720,
+        "traction": 720,
+        "stability": 720,
+        "powertrain": 720,
+        "brakes": 720
+      },
+      "micro_dissipation_sum_j": [
+        {
+          "material_dissipation": 253.11084689902853,
+          "road_dissipation": 18229.663104125677,
+          "elastic_numerical_dissipation": 79.0971396559464,
+          "frame_dissipation": 3.203978718439062e-12
+        },
+        {
+          "material_dissipation": 263.1744714125453,
+          "road_dissipation": 18335.015629530997,
+          "elastic_numerical_dissipation": 82.2420223164204,
+          "frame_dissipation": 2.613346635718657e-13
+        },
+        {
+          "material_dissipation": 204.98642685096817,
+          "road_dissipation": 17464.92137745596,
+          "elastic_numerical_dissipation": 64.05825839092755,
+          "frame_dissipation": 2.5301037161911994e-12
+        },
+        {
+          "material_dissipation": 242.23818974432288,
+          "road_dissipation": 17555.205645069564,
+          "elastic_numerical_dissipation": 75.6994342951009,
+          "frame_dissipation": 5.13979803046436e-14
+        }
+      ],
+      "macro_residual_max_n": 0.0009829896699814532,
+      "raw_sha256": {
+        "esc-macro.csv.gz": "190862a4766037ca2c91502c3e5ba951b693569199696e3fff5d636b9940954f",
+        "micro.jsonl.gz": "ddb207d376280c636ce3582507760f274c1901a3c243cc90f00e35167c49aca9",
+        "summary.json": "cb29059ea3edf1b48d0be91b64a3710bc87462cf27042b7a7100eb5a96465692"
+      }
+    },
+    "2": {
+      "heading_change_deg": 2.212810754776001,
+      "peak_abs_unwrapped_heading_deg": 2.2132205963134766,
+      "path_distance_m": 64.23624143182691,
+      "time_to_stop_s": 3.9416666666666664,
+      "stopping_path_distance_m": 64.16559648964838,
+      "final_horizontal_speed_mps": 0.00033705199730581193,
+      "esc_active_seconds": 0.18333333333333332,
+      "abs_active_seconds": 3.033333333333333,
+      "final_macro_body": {
+        "position": [
+          -0.5805004835128784,
+          64.13130187988281,
+          0.418691486120224
+        ],
+        "orientation": [
+          0.9998135566711426,
+          -3.3080782486649696e-06,
+          -6.382546757777163e-08,
+          0.019309217110276222
+        ],
+        "hpr": [
+          2.212810754776001,
+          -0.00037914837594144046,
+          7.2001653528275256e-09
+        ],
+        "velocity": [
+          -1.303098542848602e-05,
+          0.00033680000342428684,
+          0.04086938127875328
+        ],
+        "angular_world": [
+          0.0001739244908094406,
+          6.6943466663360596e-06,
+          4.124014765238826e-07
+        ],
+        "yaw_world_z": 4.124014765238826e-07,
+        "yaw_body_up": 4.12401305993626e-07
+      },
+      "micro_peak_abs_world_yaw_radps": 0.24097710847854614,
+      "micro_peak_abs_body_up_yaw_radps": 0.21565203368663788,
+      "micro_abs_world_yaw_integral_rad": 0.047756564194794876,
+      "micro_abs_body_up_yaw_integral_rad": 0.05103384367635526,
+      "first_body_impulse": {
+        "macro_tick": 80,
+        "micro_index": 1,
+        "time_s": 0.6666666666666666,
+        "positive_point_count": 1,
+        "points": [
+          {
+            "distance": 0.024263352155685425,
+            "normal_b": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "point_a": [
+              1.0499999523162842,
+              20.452301025390625,
+              0.024263352155685425
+            ],
+            "point_b": [
+              1.0499999523162842,
+              20.452301025390625,
+              0.0
+            ],
+            "normal_impulse_ns": 97.14757537841797,
+            "lateral_direction_1": [
+              -2.2416854004027147e-16,
+              0.9999999403953552,
+              0.0
+            ],
+            "lateral_direction_2": [
+              1.0,
+              -0.0,
+              -0.0
+            ],
+            "lateral_impulse_1_ns": -24.286893844604492,
+            "lateral_impulse_2_ns": 0.0
+          }
+        ],
+        "pre_body": {
+          "position": [
+            -1.102290891946365e-16,
+            18.334186553955078,
+            0.3931747078895569
+          ],
+          "orientation": [
+            0.9962853789329529,
+            -0.08611321449279785,
+            0.0,
+            0.0
+          ],
+          "hpr": [
+            0.0,
+            -9.880084991455078,
+            0.0
+          ],
+          "velocity": [
+            -6.078471059822732e-15,
+            27.15721893310547,
+            -6.040782928466797
+          ],
+          "angular_world": [
+            -0.1120719313621521,
+            0.0,
+            0.0
+          ],
+          "yaw_world_z": 0.0,
+          "yaw_body_up": 0.0
+        },
+        "post_body": {
+          "position": [
+            -1.3553584623763893e-16,
+            18.447250366210938,
+            0.3681717813014984
+          ],
+          "orientation": [
+            0.9962835907936096,
+            -0.08613300323486328,
+            -0.00039332054439000785,
+            -4.9270724957750645e-06
+          ],
+          "hpr": [
+            -0.004511563573032618,
+            -9.882360458374023,
+            -0.045629385858774185
+          ],
+          "velocity": [
+            -6.07362052565028e-15,
+            27.13533592224121,
+            -5.959034442901611
+          ],
+          "angular_world": [
+            0.0178699754178524,
+            -0.1883116364479065,
+            0.013906778767704964
+          ],
+          "yaw_world_z": 0.013906778767704964,
+          "yaw_body_up": -0.01863269694149494
+        }
+      },
+      "first_micro_supported_sample": [
+        {
+          "time_s": 0.6208333333333333,
+          "macro_tick": 75,
+          "micro_index": 0
+        },
+        {
+          "time_s": 0.6208333333333333,
+          "macro_tick": 75,
+          "micro_index": 0
+        },
+        {
+          "time_s": 0.6833333333333333,
+          "macro_tick": 82,
+          "micro_index": 1
+        },
+        {
+          "time_s": 0.6791666666666667,
+          "macro_tick": 82,
+          "micro_index": 0
+        }
+      ],
+      "micro_true_recontact_counts": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "micro_airborne_seconds": [
+        0.6708333333333322,
+        0.7416666666666653,
+        1.0666666666666642,
+        1.0416666666666643
+      ],
+      "controller_actual_calls": {
+        "steering": 720,
+        "traction": 720,
+        "stability": 720,
+        "powertrain": 720,
+        "brakes": 720
+      },
+      "micro_dissipation_sum_j": [
+        {
+          "material_dissipation": 211.67612857737754,
+          "road_dissipation": 18953.34978125175,
+          "elastic_numerical_dissipation": 33.07439509021524,
+          "frame_dissipation": 1.3689615171093648e-14
+        },
+        {
+          "material_dissipation": 241.26229145953994,
+          "road_dissipation": 19390.202709802892,
+          "elastic_numerical_dissipation": 37.697233040553115,
+          "frame_dissipation": 2.814384693558894e-13
+        },
+        {
+          "material_dissipation": 291.19886429536797,
+          "road_dissipation": 17602.10732511134,
+          "elastic_numerical_dissipation": 45.49982254615124,
+          "frame_dissipation": 3.007306188674131e-11
+        },
+        {
+          "material_dissipation": 287.97767014367963,
+          "road_dissipation": 17892.9712645113,
+          "elastic_numerical_dissipation": 44.99651095994994,
+          "frame_dissipation": 2.4619592219145085e-10
+        }
+      ],
+      "macro_residual_max_n": 0.000986853135998514,
+      "raw_sha256": {
+        "esc-macro.csv.gz": "62c3c0b377271d3efd842f3a7764d8f27548ae7b04be3404c1e5cdbd54fcc5cb",
+        "micro.jsonl.gz": "37cc84aad9369fa3febe971939d658b79db002692b788cbc663b2e025d8aa2bc",
+        "summary.json": "3ad39306d4cc9996c443ec9cd642c0e9b593b92ba933a63d49bf4811e4868b37"
+      }
+    },
+    "4": {
+      "heading_change_deg": -7.780037879943848,
+      "peak_abs_unwrapped_heading_deg": 7.7834649085998535,
+      "path_distance_m": 57.11365162808223,
+      "time_to_stop_s": 3.683333333333333,
+      "stopping_path_distance_m": 57.03606970553267,
+      "final_horizontal_speed_mps": 0.00026920682505123645,
+      "esc_active_seconds": 0.7583333333333333,
+      "abs_active_seconds": 2.75,
+      "final_macro_body": {
+        "position": [
+          2.3531277179718018,
+          56.89597702026367,
+          0.4186908006668091
+        ],
+        "orientation": [
+          0.9976961016654968,
+          -1.3424343023871188e-06,
+          9.357292185541155e-08,
+          -0.06784149259328842
+        ],
+        "hpr": [
+          -7.780037879943848,
+          -0.00015420466661453247,
+          2.6179435508311144e-07
+        ],
+        "velocity": [
+          3.645893593784422e-05,
+          0.0002667265653144568,
+          0.02042187564074993
+        ],
+        "angular_world": [
+          0.00013338960707187653,
+          -1.8238089978694916e-05,
+          -6.865592894200745e-08
+        ],
+        "yaw_world_z": -6.865592894200745e-08,
+        "yaw_body_up": -6.865534629696413e-08
+      },
+      "micro_peak_abs_world_yaw_radps": 0.6600750684738159,
+      "micro_peak_abs_body_up_yaw_radps": 0.6271582245826721,
+      "micro_abs_world_yaw_integral_rad": 0.14118400967380287,
+      "micro_abs_body_up_yaw_integral_rad": 0.14334554803629776,
+      "first_body_impulse": {
+        "macro_tick": 81,
+        "micro_index": 0,
+        "time_s": 0.66875,
+        "positive_point_count": 1,
+        "points": [
+          {
+            "distance": 0.002903461456298828,
+            "normal_b": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "point_a": [
+              1.0499999523162842,
+              20.566774368286133,
+              0.002903461456298828
+            ],
+            "point_b": [
+              1.0499999523162842,
+              20.566774368286133,
+              0.0
+            ],
+            "normal_impulse_ns": 966.9542846679688,
+            "lateral_direction_1": [
+              -1.2970594014609175e-17,
+              1.0,
+              0.0
+            ],
+            "lateral_direction_2": [
+              1.0,
+              -0.0,
+              -0.0
+            ],
+            "lateral_impulse_1_ns": -241.7385711669922,
+            "lateral_impulse_2_ns": 0.0
+          }
+        ],
+        "pre_body": {
+          "position": [
+            -6.724129279157329e-18,
+            18.448904037475586,
+            0.3732108473777771
+          ],
+          "orientation": [
+            0.9962568879127502,
+            -0.08644156903028488,
+            0.0,
+            0.0
+          ],
+          "hpr": [
+            0.0,
+            -9.917852401733398,
+            0.0
+          ],
+          "velocity": [
+            -3.5171518475429764e-16,
+            27.155813217163086,
+            -6.081697463989258
+          ],
+          "angular_world": [
+            -0.10638223588466644,
+            0.0,
+            0.0
+          ],
+          "yaw_world_z": 0.0,
+          "yaw_body_up": 0.0
+        },
+        "post_body": {
+          "position": [
+            -7.451405085277734e-18,
+            18.505056381225586,
+            0.3621768057346344
+          ],
+          "orientation": [
+            0.996336817741394,
+            -0.08549303561449051,
+            -0.001956913387402892,
+            -2.4210539777413942e-05
+          ],
+          "hpr": [
+            -0.022261030972003937,
+            -9.808731079101562,
+            -0.22698013484477997
+          ],
+          "velocity": [
+            -3.490924795820227e-16,
+            26.953542709350586,
+            -5.275506973266602
+          ],
+          "angular_world": [
+            0.9275572896003723,
+            -1.8736521005630493,
+            0.13925039768218994
+          ],
+          "yaw_world_z": 0.13925039768218994,
+          "yaw_body_up": -0.18559443950653076
+        }
+      },
+      "first_micro_supported_sample": [
+        {
+          "time_s": 0.6229166666666667,
+          "macro_tick": 75,
+          "micro_index": 2
+        },
+        {
+          "time_s": 0.6229166666666667,
+          "macro_tick": 75,
+          "micro_index": 2
+        },
+        {
+          "time_s": 0.68125,
+          "macro_tick": 82,
+          "micro_index": 2
+        },
+        {
+          "time_s": 0.68125,
+          "macro_tick": 82,
+          "micro_index": 2
+        }
+      ],
+      "micro_true_recontact_counts": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "micro_airborne_seconds": [
+        0.7458333333333313,
+        0.7749999999999979,
+        1.0312499999999987,
+        1.0416666666666659
+      ],
+      "controller_actual_calls": {
+        "steering": 720,
+        "traction": 720,
+        "stability": 720,
+        "powertrain": 720,
+        "brakes": 720
+      },
+      "micro_dissipation_sum_j": [
+        {
+          "material_dissipation": 272.5181456559714,
+          "road_dissipation": 16356.013453808195,
+          "elastic_numerical_dissipation": 21.29048012937276,
+          "frame_dissipation": 3.11199676894222e-14
+        },
+        {
+          "material_dissipation": 295.8708033893785,
+          "road_dissipation": 18015.937814779023,
+          "elastic_numerical_dissipation": 23.114906514795194,
+          "frame_dissipation": 5.4349104734545106e-14
+        },
+        {
+          "material_dissipation": 326.76510640383424,
+          "road_dissipation": 16234.181429384433,
+          "elastic_numerical_dissipation": 25.528523937799545,
+          "frame_dissipation": 1.0853177480890155e-12
+        },
+        {
+          "material_dissipation": 298.1458497951483,
+          "road_dissipation": 15982.843638489207,
+          "elastic_numerical_dissipation": 23.292644515245954,
+          "frame_dissipation": 1.1313198957661593e-12
+        }
+      ],
+      "macro_residual_max_n": 0.0008954303368087701,
+      "raw_sha256": {
+        "esc-macro.csv.gz": "22b224ebdd0a20a31a079de813f5aef96c70ac18f2b60b7a6a452223f7888f75",
+        "micro.jsonl.gz": "cb8e0583c4267009d5712493b587bc7f2c37dad075684fc015d6dca393d3710f",
+        "summary.json": "930b4a8cefae80566e3582b15080fdc1a45b12c27391336f4fb552496cf06bd4"
+      }
+    },
+    "8": {
+      "heading_change_deg": 3.911886692047119,
+      "peak_abs_unwrapped_heading_deg": 4.610429763793945,
+      "path_distance_m": 49.953324096682486,
+      "time_to_stop_s": 3.375,
+      "stopping_path_distance_m": 49.872406018142364,
+      "final_horizontal_speed_mps": 0.00030753691546667433,
+      "esc_active_seconds": 0.24166666666666667,
+      "abs_active_seconds": 2.425,
+      "final_macro_body": {
+        "position": [
+          -1.9866946935653687,
+          49.77658462524414,
+          0.4186902940273285
+        ],
+        "orientation": [
+          0.9994173645973206,
+          5.85895804761094e-07,
+          2.1136235872631914e-08,
+          0.034131020307540894
+        ],
+        "hpr": [
+          3.911886692047119,
+          6.71822635922581e-05,
+          1.2911016256111907e-07
+        ],
+        "velocity": [
+          -2.0953037164872512e-05,
+          0.00030682230135425925,
+          0.010210791602730751
+        ],
+        "angular_world": [
+          8.196895942091942e-05,
+          5.610287189483643e-06,
+          -6.201807991601527e-07
+        ],
+        "yaw_world_z": -6.201807991601527e-07,
+        "yaw_body_up": -6.201806286298961e-07
+      },
+      "micro_peak_abs_world_yaw_radps": 1.2142536640167236,
+      "micro_peak_abs_body_up_yaw_radps": 1.180557370185852,
+      "micro_abs_world_yaw_integral_rad": 0.11118113244607532,
+      "micro_abs_body_up_yaw_integral_rad": 0.10725485066163241,
+      "first_body_impulse": {
+        "macro_tick": 81,
+        "micro_index": 1,
+        "time_s": 0.66875,
+        "positive_point_count": 1,
+        "points": [
+          {
+            "distance": 0.000410616397857666,
+            "normal_b": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "point_a": [
+              1.0499999523162842,
+              20.595008850097656,
+              0.000410616397857666
+            ],
+            "point_b": [
+              1.0499999523162842,
+              20.595008850097656,
+              0.0
+            ],
+            "normal_impulse_ns": 1159.380859375,
+            "lateral_direction_1": [
+              -8.159340064508153e-19,
+              1.0,
+              0.0
+            ],
+            "lateral_direction_2": [
+              1.0,
+              -0.0,
+              -0.0
+            ],
+            "lateral_impulse_1_ns": -289.84521484375,
+            "lateral_impulse_2_ns": 0.0
+          }
+        ],
+        "pre_body": {
+          "position": [
+            -4.436695401798741e-19,
+            18.477102279663086,
+            0.3705102801322937
+          ],
+          "orientation": [
+            0.9962611794471741,
+            -0.08639267832040787,
+            0.0,
+            0.0
+          ],
+          "hpr": [
+            0.0,
+            -9.912227630615234,
+            0.0
+          ],
+          "velocity": [
+            -2.211772431870429e-17,
+            27.145429611206055,
+            -6.081441879272461
+          ],
+          "angular_world": [
+            -0.10312455892562866,
+            0.0,
+            0.0
+          ],
+          "yaw_world_z": 0.0,
+          "yaw_body_up": 0.0
+        },
+        "post_body": {
+          "position": [
+            -4.665031889051528e-19,
+            18.505126953125,
+            0.3651711940765381
+          ],
+          "orientation": [
+            0.9963107109069824,
+            -0.08581138402223587,
+            -0.0011732205748558044,
+            -1.4541922610078473e-05
+          ],
+          "hpr": [
+            -0.013394072651863098,
+            -9.845358848571777,
+            -0.13609255850315094
+          ],
+          "velocity": [
+            -2.192032428296341e-17,
+            26.90348243713379,
+            -5.115092754364014
+          ],
+          "angular_world": [
+            1.1270278692245483,
+            -2.2465851306915283,
+            0.16679459810256958
+          ],
+          "yaw_world_z": 0.16679459810256958,
+          "yaw_body_up": -0.22243699431419373
+        }
+      },
+      "first_micro_supported_sample": [
+        {
+          "time_s": 0.6218750000000001,
+          "macro_tick": 75,
+          "micro_index": 4
+        },
+        {
+          "time_s": 0.6218750000000001,
+          "macro_tick": 75,
+          "micro_index": 4
+        },
+        {
+          "time_s": 0.6802083333333334,
+          "macro_tick": 82,
+          "micro_index": 4
+        },
+        {
+          "time_s": 0.68125,
+          "macro_tick": 82,
+          "micro_index": 5
+        }
+      ],
+      "micro_true_recontact_counts": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "micro_airborne_seconds": [
+        0.790625000000013,
+        0.742708333333344,
+        1.025000000000022,
+        1.0291666666666883
+      ],
+      "controller_actual_calls": {
+        "steering": 720,
+        "traction": 720,
+        "stability": 720,
+        "powertrain": 720,
+        "brakes": 720
+      },
+      "micro_dissipation_sum_j": [
+        {
+          "material_dissipation": 337.13411077897865,
+          "road_dissipation": 15393.757619156748,
+          "elastic_numerical_dissipation": 13.169301202303851,
+          "frame_dissipation": 2.820777761251204e-14
+        },
+        {
+          "material_dissipation": 256.4106708017402,
+          "road_dissipation": 16063.509983868056,
+          "elastic_numerical_dissipation": 10.016041828192973,
+          "frame_dissipation": 3.519928744973406e-15
+        },
+        {
+          "material_dissipation": 355.0024874829307,
+          "road_dissipation": 12838.039539921196,
+          "elastic_numerical_dissipation": 13.867284667301979,
+          "frame_dissipation": 3.5711600251516626e-13
+        },
+        {
+          "material_dissipation": 344.3049034656475,
+          "road_dissipation": 13943.068038838072,
+          "elastic_numerical_dissipation": 13.449410291626856,
+          "frame_dissipation": 8.425052560317096e-14
+        }
+      ],
+      "macro_residual_max_n": 0.000999391902948159,
+      "raw_sha256": {
+        "esc-macro.csv.gz": "f9b9e3e947af56bdc18fd8fa88b6c963cf99a767d48ed4e91428474840f48ebf",
+        "micro.jsonl.gz": "9fc004b98600623633300eafba055dbf37c23b82be8056f9b6f428c308bd56c4",
+        "summary.json": "6a24afcfe2df069925d9b102f695a8e5cae4aa4c4665c9a62d0cfe519c33ee4f"
+      }
+    }
+  },
+  "comparisons": {
+    "2_minus_1": {
+      "deltas": {
+        "heading_change_deg": 1.7834914922714233,
+        "path_distance_m": 0.7426480562993021,
+        "time_to_stop_s": 0.04166666666666652,
+        "stopping_path_distance_m": 0.7331165455426998,
+        "esc_active_seconds": -0.08333333333333334,
+        "abs_active_seconds": 0.125
+      },
+      "first_exact_actual_value_difference": {
+        "completed_world_yaw": {
+          "macro_tick": 80,
+          "time_s": 0.6666666666666666,
+          "A": [
+            "0.06276912987232208"
+          ],
+          "B": [
+            "0.013906778767704964"
+          ]
+        },
+        "macro_position": {
+          "macro_tick": 1,
+          "time_s": 0.008333333333333333,
+          "A": [
+            "0.0",
+            "0.2314627468585968",
+            "2.549318790435791"
+          ],
+          "B": [
+            "0.0",
+            "0.23146742582321167",
+            "2.5494890213012695"
+          ]
+        },
+        "macro_velocity": {
+          "macro_tick": 3,
+          "time_s": 0.025,
+          "A": [
+            "0.0",
+            "27.771026611328125",
+            "-0.24525004625320435"
+          ],
+          "B": [
+            "0.0",
+            "27.771026611328125",
+            "-0.24525003135204315"
+          ]
+        },
+        "ABS_command": {
+          "macro_tick": 77,
+          "time_s": 0.6416666666666666,
+          "A": [
+            "0.6200373933614849",
+            "0.6200373933615017",
+            "1",
+            "1"
+          ],
+          "B": [
+            "0.6254506181786059",
+            "0.6254506181785995",
+            "1",
+            "1"
+          ]
+        },
+        "ABS_pressure": {
+          "macro_tick": 77,
+          "time_s": 0.6416666666666666,
+          "A": [
+            "0.8499770412870002",
+            "0.849977041287005",
+            "0.9999999999928697",
+            "0.9999999999928697"
+          ],
+          "B": [
+            "0.851511521031479",
+            "0.8515115210314772",
+            "0.9999999999928697",
+            "0.9999999999928697"
+          ]
+        },
+        "ABS_active": {
+          "macro_tick": 122,
+          "time_s": 1.0166666666666666,
+          "A": [
+            "True",
+            "False",
+            "True",
+            "True"
+          ],
+          "B": [
+            "True",
+            "True",
+            "True",
+            "True"
+          ]
+        },
+        "ESC_active": {
+          "macro_tick": 82,
+          "time_s": 0.6833333333333333,
+          "A": [
+            "True"
+          ],
+          "B": [
+            "False"
+          ]
+        },
+        "ESC_request": {
+          "macro_tick": 82,
+          "time_s": 0.6833333333333333,
+          "A": [
+            "0.8028778772203485",
+            "1",
+            "1",
+            "1"
+          ],
+          "B": [
+            "1",
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        "powertrain_actual_torque": null,
+        "macro_sample_support": {
+          "macro_tick": 131,
+          "time_s": 1.0916666666666666,
+          "A": [
+            "False",
+            "True",
+            "True",
+            "True"
+          ],
+          "B": [
+            "True",
+            "True",
+            "False",
+            "True"
+          ]
+        }
+      }
+    },
+    "4_minus_2": {
+      "deltas": {
+        "heading_change_deg": -9.992848634719849,
+        "path_distance_m": -7.122589803744681,
+        "time_to_stop_s": -0.2583333333333333,
+        "stopping_path_distance_m": -7.129526784115711,
+        "esc_active_seconds": 0.575,
+        "abs_active_seconds": -0.2833333333333332
+      },
+      "first_exact_actual_value_difference": {
+        "completed_world_yaw": {
+          "macro_tick": 80,
+          "time_s": 0.6666666666666666,
+          "A": [
+            "0.013906778767704964"
+          ],
+          "B": [
+            "0.0"
+          ]
+        },
+        "macro_position": {
+          "macro_tick": 1,
+          "time_s": 0.008333333333333333,
+          "A": [
+            "0.0",
+            "0.23146742582321167",
+            "2.5494890213012695"
+          ],
+          "B": [
+            "0.0",
+            "0.2314697802066803",
+            "2.549574136734009"
+          ]
+        },
+        "macro_velocity": {
+          "macro_tick": 3,
+          "time_s": 0.025,
+          "A": [
+            "0.0",
+            "27.771026611328125",
+            "-0.24525003135204315"
+          ],
+          "B": [
+            "0.0",
+            "27.771026611328125",
+            "-0.24525006115436554"
+          ]
+        },
+        "ABS_command": {
+          "macro_tick": 77,
+          "time_s": 0.6416666666666666,
+          "A": [
+            "0.6254506181786059",
+            "0.6254506181785995",
+            "1",
+            "1"
+          ],
+          "B": [
+            "0.6227321017085371",
+            "0.6227321017085402",
+            "1",
+            "1"
+          ]
+        },
+        "ABS_pressure": {
+          "macro_tick": 77,
+          "time_s": 0.6416666666666666,
+          "A": [
+            "0.851511521031479",
+            "0.8515115210314772",
+            "0.9999999999928697",
+            "0.9999999999928697"
+          ],
+          "B": [
+            "0.850740906730525",
+            "0.8507409067305259",
+            "0.9999999999928697",
+            "0.9999999999928697"
+          ]
+        },
+        "ABS_active": {
+          "macro_tick": 92,
+          "time_s": 0.7666666666666666,
+          "A": [
+            "True",
+            "True",
+            "True",
+            "True"
+          ],
+          "B": [
+            "True",
+            "False",
+            "True",
+            "False"
+          ]
+        },
+        "ESC_active": {
+          "macro_tick": 92,
+          "time_s": 0.7666666666666666,
+          "A": [
+            "False"
+          ],
+          "B": [
+            "True"
+          ]
+        },
+        "ESC_request": {
+          "macro_tick": 91,
+          "time_s": 0.7583333333333333,
+          "A": [
+            "1",
+            "0.8076088858500439",
+            "1",
+            "1"
+          ],
+          "B": [
+            "1",
+            "0.7246884750716382",
+            "1",
+            "1"
+          ]
+        },
+        "powertrain_actual_torque": null,
+        "macro_sample_support": {
+          "macro_tick": 131,
+          "time_s": 1.0916666666666666,
+          "A": [
+            "True",
+            "True",
+            "False",
+            "True"
+          ],
+          "B": [
+            "True",
+            "True",
+            "True",
+            "True"
+          ]
+        }
+      }
+    },
+    "8_minus_4": {
+      "deltas": {
+        "heading_change_deg": 11.691924571990967,
+        "path_distance_m": -7.160327531399744,
+        "time_to_stop_s": -0.3083333333333331,
+        "stopping_path_distance_m": -7.163663687390304,
+        "esc_active_seconds": -0.5166666666666666,
+        "abs_active_seconds": -0.3250000000000002
+      },
+      "first_exact_actual_value_difference": {
+        "completed_world_yaw": {
+          "macro_tick": 81,
+          "time_s": 0.675,
+          "A": [
+            "-0.0243530310690403"
+          ],
+          "B": [
+            "0.4450621008872986"
+          ]
+        },
+        "macro_position": {
+          "macro_tick": 1,
+          "time_s": 0.008333333333333333,
+          "A": [
+            "0.0",
+            "0.2314697802066803",
+            "2.549574136734009"
+          ],
+          "B": [
+            "0.0",
+            "0.231470987200737",
+            "2.549616575241089"
+          ]
+        },
+        "macro_velocity": {
+          "macro_tick": 1,
+          "time_s": 0.008333333333333333,
+          "A": [
+            "0.0",
+            "27.775527954101562",
+            "-0.08175001293420792"
+          ],
+          "B": [
+            "0.0",
+            "27.775535583496094",
+            "-0.08175001293420792"
+          ]
+        },
+        "ABS_command": {
+          "macro_tick": 77,
+          "time_s": 0.6416666666666666,
+          "A": [
+            "0.6227321017085371",
+            "0.6227321017085402",
+            "1",
+            "1"
+          ],
+          "B": [
+            "0.6240738956661178",
+            "0.6240738956661172",
+            "1",
+            "1"
+          ]
+        },
+        "ABS_pressure": {
+          "macro_tick": 77,
+          "time_s": 0.6416666666666666,
+          "A": [
+            "0.850740906730525",
+            "0.8507409067305259",
+            "0.9999999999928697",
+            "0.9999999999928697"
+          ],
+          "B": [
+            "0.8511212633051605",
+            "0.8511212633051602",
+            "0.9999999999928697",
+            "0.9999999999928697"
+          ]
+        },
+        "ABS_active": {
+          "macro_tick": 82,
+          "time_s": 0.6833333333333333,
+          "A": [
+            "True",
+            "True",
+            "False",
+            "False"
+          ],
+          "B": [
+            "False",
+            "True",
+            "False",
+            "False"
+          ]
+        },
+        "ESC_active": {
+          "macro_tick": 82,
+          "time_s": 0.6833333333333333,
+          "A": [
+            "False"
+          ],
+          "B": [
+            "True"
+          ]
+        },
+        "ESC_request": {
+          "macro_tick": 82,
+          "time_s": 0.6833333333333333,
+          "A": [
+            "1",
+            "1",
+            "1",
+            "1"
+          ],
+          "B": [
+            "0.0",
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        "powertrain_actual_torque": null,
+        "macro_sample_support": {
+          "macro_tick": 137,
+          "time_s": 1.1416666666666666,
+          "A": [
+            "True",
+            "True",
+            "False",
+            "False"
+          ],
+          "B": [
+            "True",
+            "True",
+            "True",
+            "True"
+          ]
+        }
+      }
+    },
+    "8_minus_1": {
+      "deltas": {
+        "heading_change_deg": 3.4825674295425415,
+        "path_distance_m": -13.540269278845123,
+        "time_to_stop_s": -0.5249999999999999,
+        "stopping_path_distance_m": -13.560073925963316,
+        "esc_active_seconds": -0.024999999999999994,
+        "abs_active_seconds": -0.4833333333333334
+      },
+      "first_exact_actual_value_difference": {
+        "completed_world_yaw": {
+          "macro_tick": 80,
+          "time_s": 0.6666666666666666,
+          "A": [
+            "0.06276912987232208"
+          ],
+          "B": [
+            "0.0"
+          ]
+        },
+        "macro_position": {
+          "macro_tick": 1,
+          "time_s": 0.008333333333333333,
+          "A": [
+            "0.0",
+            "0.2314627468585968",
+            "2.549318790435791"
+          ],
+          "B": [
+            "0.0",
+            "0.231470987200737",
+            "2.549616575241089"
+          ]
+        },
+        "macro_velocity": {
+          "macro_tick": 1,
+          "time_s": 0.008333333333333333,
+          "A": [
+            "0.0",
+            "27.775527954101562",
+            "-0.08175001293420792"
+          ],
+          "B": [
+            "0.0",
+            "27.775535583496094",
+            "-0.08175001293420792"
+          ]
+        },
+        "ABS_command": {
+          "macro_tick": 77,
+          "time_s": 0.6416666666666666,
+          "A": [
+            "0.6200373933614849",
+            "0.6200373933615017",
+            "1",
+            "1"
+          ],
+          "B": [
+            "0.6240738956661178",
+            "0.6240738956661172",
+            "1",
+            "1"
+          ]
+        },
+        "ABS_pressure": {
+          "macro_tick": 77,
+          "time_s": 0.6416666666666666,
+          "A": [
+            "0.8499770412870002",
+            "0.849977041287005",
+            "0.9999999999928697",
+            "0.9999999999928697"
+          ],
+          "B": [
+            "0.8511212633051605",
+            "0.8511212633051602",
+            "0.9999999999928697",
+            "0.9999999999928697"
+          ]
+        },
+        "ABS_active": {
+          "macro_tick": 82,
+          "time_s": 0.6833333333333333,
+          "A": [
+            "True",
+            "True",
+            "False",
+            "False"
+          ],
+          "B": [
+            "False",
+            "True",
+            "False",
+            "False"
+          ]
+        },
+        "ESC_active": {
+          "macro_tick": 83,
+          "time_s": 0.6916666666666667,
+          "A": [
+            "False"
+          ],
+          "B": [
+            "True"
+          ]
+        },
+        "ESC_request": {
+          "macro_tick": 82,
+          "time_s": 0.6833333333333333,
+          "A": [
+            "0.8028778772203485",
+            "1",
+            "1",
+            "1"
+          ],
+          "B": [
+            "0.0",
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        "powertrain_actual_torque": null,
+        "macro_sample_support": {
+          "macro_tick": 131,
+          "time_s": 1.0916666666666666,
+          "A": [
+            "False",
+            "True",
+            "True",
+            "True"
+          ],
+          "B": [
+            "True",
+            "True",
+            "True",
+            "True"
+          ]
+        }
+      }
+    }
+  }
+}

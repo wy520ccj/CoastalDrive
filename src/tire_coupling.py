@@ -110,7 +110,8 @@ def advance_coupled(velocity, angular, omega, frames, deformations, drives, brak
             step = advance_wheel(omega[i], dot(hub_speed, frame.tangent), dot(point_speed, frame.axle),
                                  dot(known_angular, frame.axle), drives[i], brakes[i], frame.load,
                                  frame.mu, frame.mobility, dt, configurations[i], deformations[i],
-                                 force_tolerance=.0001, rolling_contact=rolling_contacts[i])
+                                 force_tolerance=.0001, rolling_contact=rolling_contacts[i],
+                                 force_initial=forces[i][:2])
             forces[i] = (step.fx, step.fy, step.brake_torque)
             local_steps[i] = step
         completed, error, brake_error = completed_steps()

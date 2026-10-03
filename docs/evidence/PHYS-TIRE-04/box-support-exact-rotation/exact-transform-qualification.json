@@ -1,0 +1,18 @@
+{
+  "qualified": false,
+  "requested_quaternion_wxyz": [
+    0,
+    0,
+    0,
+    1
+  ],
+  "quaternion_axis_transform_diagonal": [
+    -1,
+    -1,
+    1
+  ],
+  "observed_makePosQuatScale_matrix_offdiagonal_abs": 8.742277657347586e-08,
+  "observed_child_quaternion_w": -4.371138828673793e-08,
+  "reason": "Panda TransformState matrix conversion introduces off-diagonal rotation residue; completed physical traces are not a qualified exact-diagonal isolation. No desired flip claimed.",
+  "supplement": "fresh-process API inspection after physical run, no additional physics"
+}

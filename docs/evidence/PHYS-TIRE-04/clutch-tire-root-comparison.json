@@ -1,0 +1,135 @@
+{
+  "audited_utc": "2026-10-03T04:05:44.235347+00:00",
+  "same_source": true,
+  "source_stable_both": true,
+  "trial_pairs": [
+    {
+      "case": "accelerating",
+      "h_s": 0.004166666666666667,
+      "mode": "locked",
+      "bisection_evaluations": 43,
+      "brent_evaluations": 6
+    },
+    {
+      "case": "accelerating",
+      "h_s": 0.0010416666666666667,
+      "mode": "positive-slip",
+      "bisection_evaluations": 2,
+      "brent_evaluations": 2
+    },
+    {
+      "case": "backdriving",
+      "h_s": 0.004166666666666667,
+      "mode": "negative-slip",
+      "bisection_evaluations": 2,
+      "brent_evaluations": 2
+    },
+    {
+      "case": "backdriving",
+      "h_s": 0.0010416666666666667,
+      "mode": "negative-slip",
+      "bisection_evaluations": 2,
+      "brent_evaluations": 2
+    },
+    {
+      "case": "reverse",
+      "h_s": 0.004166666666666667,
+      "mode": "locked",
+      "bisection_evaluations": 43,
+      "brent_evaluations": 6
+    },
+    {
+      "case": "reverse",
+      "h_s": 0.0010416666666666667,
+      "mode": "positive-slip",
+      "bisection_evaluations": 2,
+      "brent_evaluations": 2
+    },
+    {
+      "case": "braking",
+      "h_s": 0.004166666666666667,
+      "mode": "locked",
+      "bisection_evaluations": 37,
+      "brent_evaluations": 7
+    },
+    {
+      "case": "braking",
+      "h_s": 0.0010416666666666667,
+      "mode": "locked",
+      "bisection_evaluations": 42,
+      "brent_evaluations": 5
+    },
+    {
+      "case": "stationary_launch",
+      "h_s": 0.004166666666666667,
+      "mode": "positive-slip",
+      "bisection_evaluations": 2,
+      "brent_evaluations": 2
+    },
+    {
+      "case": "stationary_launch",
+      "h_s": 0.0010416666666666667,
+      "mode": "positive-slip",
+      "bisection_evaluations": 2,
+      "brent_evaluations": 2
+    },
+    {
+      "case": "airborne",
+      "h_s": 0.004166666666666667,
+      "mode": "locked",
+      "bisection_evaluations": 45,
+      "brent_evaluations": 3
+    },
+    {
+      "case": "airborne",
+      "h_s": 0.0010416666666666667,
+      "mode": "positive-slip",
+      "bisection_evaluations": 2,
+      "brent_evaluations": 2
+    },
+    {
+      "case": "unequal_support",
+      "h_s": 0.004166666666666667,
+      "mode": "locked",
+      "bisection_evaluations": 42,
+      "brent_evaluations": 5
+    },
+    {
+      "case": "unequal_support",
+      "h_s": 0.0010416666666666667,
+      "mode": "positive-slip",
+      "bisection_evaluations": 2,
+      "brent_evaluations": 2
+    },
+    {
+      "case": "disengaged",
+      "h_s": 0.004166666666666667,
+      "mode": "positive-slip",
+      "bisection_evaluations": 2,
+      "brent_evaluations": 2
+    },
+    {
+      "case": "disengaged",
+      "h_s": 0.0010416666666666667,
+      "mode": "positive-slip",
+      "bisection_evaluations": 2,
+      "brent_evaluations": 2
+    }
+  ],
+  "maximum_state_differences": {
+    "clutch_torque_nm": 1.6649437384330668e-10,
+    "end_slip_radps": 8.15703060652595e-12,
+    "wheel_force_n": 2.335127646801993e-10,
+    "wheel_omega_radps": 6.714628852932947e-13,
+    "body_angular_radps": 1.349614864309956e-15,
+    "velocity_mps": 1.7763568394002505e-15
+  },
+  "bisection_evaluations": 272,
+  "brent_evaluations": 52,
+  "evaluation_reduction_fraction": 0.8088235294117647,
+  "claim": "same fixed-axis joint equation and all original prototype energy/momentum/contact/slide gates; evaluation counts only, not FPS",
+  "script_sha256": {
+    "clutch-tire-coupled-prototype.py": "29f1d16cbf43256cc673145c586eee91189961aa6b4c05669ee012b73d9ed951",
+    "clutch-tire-coupled-brent.py": "01447078167326eb9588a7b8c99c94b24cf7763ad2b61fa430a9e93d252ced97"
+  }
+}

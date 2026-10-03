@@ -4,6 +4,7 @@ from dataclasses import replace
 import pytest
 from panda3d.bullet import BulletPlaneShape, BulletRigidBodyNode, BulletWorld
 from panda3d.core import Vec3
+from physics.export_reference import shape_axis_limits, shape_volume_center
 
 from driver_assist import GAME_INPUT
 from vehicle import Vehicle
@@ -47,12 +48,14 @@ def test_custom_bullet_geometry_and_reset_keep_instance_configuration():
     _other_world, other = make_vehicle()
     try:
         body = car._chassis
-        assert tuple(body.getShape(0).getHalfExtentsWithMargin()) == pytest.approx(
-            (cfg.collision_half_width, cfg.collision_half_length, cfg.collision_half_height))
+        limits = shape_axis_limits(body)
+        assert tuple((high-low)/2 for low, high in limits) == pytest.approx(
+            (cfg.collision_half_width, cfg.collision_half_length, cfg.collision_half_height), abs=1e-6)
         assert body.getMass() == pytest.approx(cfg.mass)
         assert tuple(body.getInertia()) == pytest.approx(cfg.body_inertia)
         assert body.getAngularDamping() == pytest.approx(cfg.angular_damping)
-        assert tuple(body.getShapeTransform(0).getPos()) == pytest.approx(body_center(cfg))
+        center = shape_volume_center(body)
+        assert tuple(center) == pytest.approx(body_center(cfg))
         for wheel, hub in zip(car._vehicle.getWheels(), wheel_hubs(cfg)):
             assert tuple(wheel.getChassisConnectionPointCs()) == pytest.approx(hub)
             assert wheel.getWheelRadius() == pytest.approx(cfg.wheel_radius)

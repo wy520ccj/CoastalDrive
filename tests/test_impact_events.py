@@ -1,8 +1,10 @@
 import io
 import json
 import sys
+from dataclasses import replace
 from pathlib import Path
 
+import pytest
 from panda3d.core import Vec3
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +17,7 @@ from impact_events import (
     aggregate_contacts,
 )
 from simulation import Control, Simulation
+from vehicle_config import CAR
 from vehicle_state import VehicleCommand
 
 
@@ -24,8 +27,10 @@ def sample(source=1, *, impulse=100, vn=2, vt=0, side="right", x=0.0,
                          vn, vt, (x, 0.0, 0.0), normal, "left")
 
 
-def test_bullet_post_solve_four_point_rail_contact_is_one_real_event():
-    simulation = Simulation(track="highway", traffic_count=0)
+@pytest.mark.parametrize("centered,point_count", [(False, 4), (True, 8)])
+def test_bullet_post_solve_rail_manifold_is_one_real_event(centered, point_count):
+    simulation = Simulation(track="highway", traffic_count=0,
+                            config=replace(CAR, centered_collision_support=centered))
     diagnostic = io.StringIO()
     simulation.set_impact_diagnostic(diagnostic, scenario="test-rail")
     try:
@@ -50,7 +55,8 @@ def test_bullet_post_solve_four_point_rail_contact_is_one_real_event():
         assert row["type"] == "pulse"
         assert row["new_impact"] is True
         assert row["continuing_contact"] is False
-        assert row["point_count"] == 4
+        # 原Box的4点与分区Box的8点均按真实manifold聚合，冲量/时点门槛相同。
+        assert row["point_count"] == point_count
         assert row["max_bullet_lifetime"] == 1
     finally:
         simulation.close()

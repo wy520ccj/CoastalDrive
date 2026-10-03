@@ -1,0 +1,12 @@
+{
+  "verified_utc": "2026-10-03T04:21:52.225247+00:00",
+  "chassis_pose_angular_axis_and_momentum_every_cell_exact_between_controls": true,
+  "spinning_wheel_abs_omega_all_ticks_exact_60": true,
+  "rotor_vector_direction_change_nms": 86.25613876413942,
+  "transport_source_stable": true,
+  "gyro_source_stable": true,
+  "gyro_error_decreases_120_240_480_960": true,
+  "summary_sha256": "01fe185a51ee356fa51253b096055d8f69c8a9766349ed0f36f380d7dc717b4c",
+  "prototype_summary_sha256": "6486fd2249bb8338e370e352d9dd293bb8c6163d605b52089e3bf82f6f899056",
+  "production_corrected": false
+}

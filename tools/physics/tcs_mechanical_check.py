@@ -21,9 +21,12 @@ def capture(source, destination, current, feature="tcs"):
     from simulation import Control, Simulation
     from vehicle_config import CAR
 
-    config = CAR
+    # 柔性已成为默认后，关闭分支的冻结车和当前车必须显式使用同一False配置。
+    config = replace(CAR, tire_compliance=False) if feature == "compliance" else CAR
     if current:
         config = replace(CAR, tire_compliance=False)
+        # 历史机械分支显式使用原Box，接触表示迁移另作同输入A/B。
+        config = replace(config, centered_collision_support=False)
         if feature != "compliance":
             config = replace(config, tire_peak_load_exponent=1, longitudinal_load_exponent=1,
                              lateral_load_exponent=1)

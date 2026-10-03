@@ -1,0 +1,572 @@
+{
+  "status": "completed",
+  "collision_trials": 44,
+  "recontact_trials": 8,
+  "csv_rows": 49028,
+  "standard_substep_trials": 16,
+  "finite_numeric_values": 16745574,
+  "pairs": [
+    {
+      "mode": "game",
+      "case": "asphalt-brake",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 43.89965057798213,
+        "peak_abs_unwrapped_heading_deg": 1.1465594980109017e-05,
+        "time_to_stop_s": 3.125,
+        "esc_active_seconds": 0.0
+      },
+      "B": {
+        "path_distance_m": 43.89965057798213,
+        "peak_abs_unwrapped_heading_deg": 1.1465594980109017e-05,
+        "time_to_stop_s": 3.125,
+        "esc_active_seconds": 0.0
+      }
+    },
+    {
+      "mode": "game",
+      "case": "low-mu-brake",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 64.96503448524561,
+        "peak_abs_unwrapped_heading_deg": 3.632366508554696e-05,
+        "time_to_stop_s": 4.683333333333334,
+        "esc_active_seconds": 0.0
+      },
+      "B": {
+        "path_distance_m": 64.96503448524561,
+        "peak_abs_unwrapped_heading_deg": 3.632366508554696e-05,
+        "time_to_stop_s": 4.683333333333334,
+        "esc_active_seconds": 0.0
+      }
+    },
+    {
+      "mode": "game",
+      "case": "split-mu-brake",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 66.57380764990297,
+        "peak_abs_unwrapped_heading_deg": 13.080536842346191,
+        "time_to_stop_s": 4.208333333333333,
+        "esc_active_seconds": 2.9416666666666664
+      },
+      "B": {
+        "path_distance_m": 66.57380764990297,
+        "peak_abs_unwrapped_heading_deg": 13.080536842346191,
+        "time_to_stop_s": 4.208333333333333,
+        "esc_active_seconds": 2.9416666666666664
+      }
+    },
+    {
+      "mode": "game",
+      "case": "corner-brake",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 25.77256168955818,
+        "peak_abs_unwrapped_heading_deg": 20.91365623474121,
+        "time_to_stop_s": 3.175,
+        "esc_active_seconds": 1.4583333333333333
+      },
+      "B": {
+        "path_distance_m": 25.77256168955818,
+        "peak_abs_unwrapped_heading_deg": 20.91365623474121,
+        "time_to_stop_s": 3.175,
+        "esc_active_seconds": 1.4583333333333333
+      }
+    },
+    {
+      "mode": "game",
+      "case": "steering-step",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 128.48038461284162,
+        "peak_abs_unwrapped_heading_deg": 117.54850006103513,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.0
+      },
+      "B": {
+        "path_distance_m": 128.48038461284162,
+        "peak_abs_unwrapped_heading_deg": 117.54850006103513,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.0
+      }
+    },
+    {
+      "mode": "game",
+      "case": "steering-saturation",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 109.36115159445694,
+        "peak_abs_unwrapped_heading_deg": 175.4160003662109,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 1.4333333333333333
+      },
+      "B": {
+        "path_distance_m": 109.36115159445694,
+        "peak_abs_unwrapped_heading_deg": 175.4160003662109,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 1.4333333333333333
+      }
+    },
+    {
+      "mode": "game",
+      "case": "reverse",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 4.588598739855518,
+        "peak_abs_unwrapped_heading_deg": 4.6803137365714065e-08,
+        "time_to_stop_s": 1.075,
+        "esc_active_seconds": 0.0
+      },
+      "B": {
+        "path_distance_m": 4.588598739855518,
+        "peak_abs_unwrapped_heading_deg": 4.6803137365714065e-08,
+        "time_to_stop_s": 1.075,
+        "esc_active_seconds": 0.0
+      }
+    },
+    {
+      "mode": "game",
+      "case": "airborne-recontact",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 155381,
+      "first_differences": [
+        {
+          "tick": "81",
+          "field": "completed_yaw_rate_radps",
+          "A": "0.13312071561813354",
+          "B": "2.7008354663848877e-08"
+        },
+        {
+          "tick": "81",
+          "field": "completed_sideslip_rad",
+          "A": "-0.0022263688208689378",
+          "B": "-3.628791548253553e-10"
+        },
+        {
+          "tick": "81",
+          "field": "completed_yaw_error_radps",
+          "A": "-0.13312071561813354",
+          "B": "-2.7008354663848877e-08"
+        },
+        {
+          "tick": "81",
+          "field": "horizontal_speed_mps",
+          "A": "26.8828067779541",
+          "B": "26.73106575012207"
+        },
+        {
+          "tick": "81",
+          "field": "path_distance_m",
+          "A": "18.67198371887207",
+          "B": "18.670719146728516"
+        },
+        {
+          "tick": "81",
+          "field": "unwrapped_heading_change_deg",
+          "A": "-0.0945834070444107",
+          "B": "-1.7218326320289634e-08"
+        },
+        {
+          "tick": "81",
+          "field": "state.position.0",
+          "A": "2.2466878617927177e-12",
+          "B": "2.2427979612382742e-12"
+        },
+        {
+          "tick": "81",
+          "field": "state.position.1",
+          "A": "18.67198371887207",
+          "B": "18.670719146728516"
+        }
+      ],
+      "A": {
+        "path_distance_m": 64.12257310379742,
+        "peak_abs_unwrapped_heading_deg": 0.8021544218063354,
+        "time_to_stop_s": 3.933333333333333,
+        "esc_active_seconds": 0.10833333333333334
+      },
+      "B": {
+        "path_distance_m": 64.32015991403873,
+        "peak_abs_unwrapped_heading_deg": 2.6501947729684616e-06,
+        "time_to_stop_s": 3.9416666666666664,
+        "esc_active_seconds": 0.0
+      }
+    },
+    {
+      "mode": "game",
+      "case": "coast-disturbance",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 121.76650116351499,
+        "peak_abs_unwrapped_heading_deg": 4.108129501342773,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.19166666666666665
+      },
+      "B": {
+        "path_distance_m": 121.76650116351499,
+        "peak_abs_unwrapped_heading_deg": 4.108129501342773,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.19166666666666665
+      }
+    },
+    {
+      "mode": "game",
+      "case": "acceleration",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 67.07255554199219,
+        "peak_abs_unwrapped_heading_deg": 3.165548889683123e-07,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.0
+      },
+      "B": {
+        "path_distance_m": 67.07255554199219,
+        "peak_abs_unwrapped_heading_deg": 3.165548889683123e-07,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.0
+      }
+    },
+    {
+      "mode": "game",
+      "case": "constant-turn",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 64.01163537927184,
+        "peak_abs_unwrapped_heading_deg": 79.42241668701172,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.0
+      },
+      "B": {
+        "path_distance_m": 64.01163537927184,
+        "peak_abs_unwrapped_heading_deg": 79.42241668701172,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.0
+      }
+    },
+    {
+      "mode": "simulation",
+      "case": "asphalt-brake",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 43.91802978992088,
+        "peak_abs_unwrapped_heading_deg": 1.383423116863014e-05,
+        "time_to_stop_s": 3.1333333333333333,
+        "esc_active_seconds": 0.0
+      },
+      "B": {
+        "path_distance_m": 43.91802978992088,
+        "peak_abs_unwrapped_heading_deg": 1.383423116863014e-05,
+        "time_to_stop_s": 3.1333333333333333,
+        "esc_active_seconds": 0.0
+      }
+    },
+    {
+      "mode": "simulation",
+      "case": "low-mu-brake",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 64.98384094280729,
+        "peak_abs_unwrapped_heading_deg": 9.125587538960644e-05,
+        "time_to_stop_s": 4.683333333333334,
+        "esc_active_seconds": 0.0
+      },
+      "B": {
+        "path_distance_m": 64.98384094280729,
+        "peak_abs_unwrapped_heading_deg": 9.125587538960644e-05,
+        "time_to_stop_s": 4.683333333333334,
+        "esc_active_seconds": 0.0
+      }
+    },
+    {
+      "mode": "simulation",
+      "case": "split-mu-brake",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 66.53244976325236,
+        "peak_abs_unwrapped_heading_deg": 14.545465469360352,
+        "time_to_stop_s": 4.2,
+        "esc_active_seconds": 2.8916666666666666
+      },
+      "B": {
+        "path_distance_m": 66.53244976325236,
+        "peak_abs_unwrapped_heading_deg": 14.545465469360352,
+        "time_to_stop_s": 4.2,
+        "esc_active_seconds": 2.8916666666666666
+      }
+    },
+    {
+      "mode": "simulation",
+      "case": "corner-brake",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 25.712328902198056,
+        "peak_abs_unwrapped_heading_deg": 21.390310287475586,
+        "time_to_stop_s": 3.1666666666666665,
+        "esc_active_seconds": 1.45
+      },
+      "B": {
+        "path_distance_m": 25.712328902198056,
+        "peak_abs_unwrapped_heading_deg": 21.390310287475586,
+        "time_to_stop_s": 3.1666666666666665,
+        "esc_active_seconds": 1.45
+      }
+    },
+    {
+      "mode": "simulation",
+      "case": "steering-step",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 126.57828063465527,
+        "peak_abs_unwrapped_heading_deg": 126.15203857421878,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.0
+      },
+      "B": {
+        "path_distance_m": 126.57828063465527,
+        "peak_abs_unwrapped_heading_deg": 126.15203857421878,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.0
+      }
+    },
+    {
+      "mode": "simulation",
+      "case": "steering-saturation",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 104.48644093611553,
+        "peak_abs_unwrapped_heading_deg": 189.13581848144534,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 2.275
+      },
+      "B": {
+        "path_distance_m": 104.48644093611553,
+        "peak_abs_unwrapped_heading_deg": 189.13581848144534,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 2.275
+      }
+    },
+    {
+      "mode": "simulation",
+      "case": "reverse",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 4.594457631472164,
+        "peak_abs_unwrapped_heading_deg": 1.4193122410688375e-07,
+        "time_to_stop_s": 1.075,
+        "esc_active_seconds": 0.0
+      },
+      "B": {
+        "path_distance_m": 4.594457631472164,
+        "peak_abs_unwrapped_heading_deg": 1.4193122410688375e-07,
+        "time_to_stop_s": 1.075,
+        "esc_active_seconds": 0.0
+      }
+    },
+    {
+      "mode": "simulation",
+      "case": "airborne-recontact",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 157143,
+      "first_differences": [
+        {
+          "tick": "80",
+          "field": "completed_yaw_rate_radps",
+          "A": "0.06276912987232208",
+          "B": "1.210719347000122e-08"
+        },
+        {
+          "tick": "80",
+          "field": "completed_sideslip_rad",
+          "A": "-0.0009450044839850651",
+          "B": "-1.6704684282058652e-10"
+        },
+        {
+          "tick": "80",
+          "field": "completed_yaw_error_radps",
+          "A": "-0.06276912987232208",
+          "B": "-1.210719347000122e-08"
+        },
+        {
+          "tick": "80",
+          "field": "horizontal_speed_mps",
+          "A": "27.104761123657227",
+          "B": "27.044414520263672"
+        },
+        {
+          "tick": "80",
+          "field": "path_distance_m",
+          "A": "18.447202682495117",
+          "B": "18.446699142456055"
+        },
+        {
+          "tick": "80",
+          "field": "unwrapped_heading_change_deg",
+          "A": "-0.03999588266015053",
+          "B": "-7.450410066667246e-09"
+        },
+        {
+          "tick": "80",
+          "field": "state.position.0",
+          "A": "1.5103647499348227e-12",
+          "B": "1.5091878484765897e-12"
+        },
+        {
+          "tick": "80",
+          "field": "state.position.1",
+          "A": "18.447202682495117",
+          "B": "18.446699142456055"
+        }
+      ],
+      "A": {
+        "path_distance_m": 63.49358573220023,
+        "peak_abs_unwrapped_heading_deg": 0.42936205863952637,
+        "time_to_stop_s": 3.9,
+        "esc_active_seconds": 0.26666666666666666
+      },
+      "B": {
+        "path_distance_m": 64.4239196849569,
+        "peak_abs_unwrapped_heading_deg": 8.731908508252673e-06,
+        "time_to_stop_s": 3.9583333333333335,
+        "esc_active_seconds": 0.0
+      }
+    },
+    {
+      "mode": "simulation",
+      "case": "coast-disturbance",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 121.69219896842384,
+        "peak_abs_unwrapped_heading_deg": 4.279272079467773,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.2
+      },
+      "B": {
+        "path_distance_m": 121.69219896842384,
+        "peak_abs_unwrapped_heading_deg": 4.279272079467773,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.2
+      }
+    },
+    {
+      "mode": "simulation",
+      "case": "acceleration",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 64.04581451416016,
+        "peak_abs_unwrapped_heading_deg": 1.1958516665799834e-07,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.0
+      },
+      "B": {
+        "path_distance_m": 64.04581451416016,
+        "peak_abs_unwrapped_heading_deg": 1.1958516665799834e-07,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.0
+      }
+    },
+    {
+      "mode": "simulation",
+      "case": "constant-turn",
+      "rows_each": 721,
+      "same_config_except_support": true,
+      "same_every_tick_command": true,
+      "different_csv_cells": 0,
+      "first_differences": [],
+      "A": {
+        "path_distance_m": 63.64455722391607,
+        "peak_abs_unwrapped_heading_deg": 80.97309875488281,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.0
+      },
+      "B": {
+        "path_distance_m": 63.64455722391607,
+        "peak_abs_unwrapped_heading_deg": 80.97309875488281,
+        "time_to_stop_s": null,
+        "esc_active_seconds": 0.0
+      }
+    }
+  ],
+  "maximum_recorded_force_residual_n": 0.000999143808107144,
+  "scope": "all saved numeric values and every command; signed work retained, no substep-work inference from final-substep fields"
+}

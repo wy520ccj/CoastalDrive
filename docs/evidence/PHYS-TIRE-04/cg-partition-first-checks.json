@@ -1,0 +1,27 @@
+{
+  "checks": [
+    {
+      "command": "ruff check src tests tools",
+      "status": "failed",
+      "error": "RUF007 zip over consecutive boundaries; changed to itertools.pairwise"
+    },
+    {
+      "command": "pytest -q tests/test_vehicle_collision.py tests/test_vehicle_config.py",
+      "status": "failed",
+      "passed": 29,
+      "failed": 1,
+      "seconds": 21.89,
+      "error": "Iterative native ray produced 2.9325485229e-6 m width error against unchanged 1e-6 m gate; replaced ray approximation with actual native Box corner bounds"
+    },
+    {
+      "command": "validate T0 with repeated --tests arguments",
+      "status": "scope_incomplete",
+      "actual_tests": [
+        "tests/test_impact_integration.py"
+      ],
+      "passed": 4,
+      "seconds": 8.19,
+      "reason": "nargs parser keeps last --tests argument; corrected one argument followed by all paths"
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 import math
 from dataclasses import dataclass
 
-from tire_compliance import contact_force, energy_terms
+from tire_compliance import contact_force, contact_jacobian, energy_terms
 from tire_forces import combined_force, slip_state
 from tire_properties import tire_grip, tire_stiffness
 from vehicle_config import CAR
@@ -48,7 +48,8 @@ class WheelStep:
 
 
 def advance_wheel(omega, vx, vy, body_omega, drive, brake, load, mu, mobility, dt,
-                  config=CAR, deformation=(0.0, 0.0), force_tolerance=.001, rolling_contact=None):
+                  config=CAR, deformation=(0.0, 0.0), force_tolerance=.001, rolling_contact=None,
+                  force_initial=(0.0, 0.0)):
     """同时求解接地力、轮速和干式制动反力；车体由调用方施加同一冲量。"""
     radius, inertia = config.wheel_radius, config.wheel_inertia
     m = mobility
@@ -87,8 +88,34 @@ def advance_wheel(omega, vx, vy, body_omega, drive, brake, load, mu, mobility, d
                              grip, cx, cy, dt, config.tire_contact_stiffness,
                              config.tire_contact_damping, config.tire_shape, config.tire_curvature)
 
+    def compliant_jacobian(fx, fy):
+        values = state(fx, fy)
+        brake_gradient = (((m.xt - radius / inertia) / (1 / inertia + m.tt),
+                           m.yt / (1 / inertia + m.tt))
+                          if abs(values[6]) < brake else (0.0, 0.0))
+        bx, by = brake_gradient
+        slip_jacobian = (
+            (-dt * (radius**2 / inertia + m.xx) + dt * (m.xt - radius / inertia) * bx,
+             -dt * m.xy + dt * (m.xt - radius / inertia) * by),
+            (-dt * m.xy + dt * m.yt * bx, -dt * m.yy + dt * m.yt * by),
+        )
+        denominator_gradient = (0.0, 0.0)
+        if abs(values[1]) > config.slip_speed:
+            direction = math.copysign(1.0, values[1])
+            denominator_gradient = (direction * dt * (m.xx - m.xt * bx),
+                                    direction * dt * (m.xy - m.xt * by))
+        target = contact_jacobian(
+            (fx, fy), deformation, (radius * values[0] - values[1], -values[2]),
+            slip_jacobian, max(abs(values[1]), config.slip_speed), denominator_gradient,
+            (max(abs(vx), abs(radius * omega)) >= config.static_contact_speed
+             if rolling_contact is None else rolling_contact),
+            grip, cx, cy, dt, config.tire_contact_stiffness, config.tire_contact_damping,
+            config.tire_shape, config.tire_curvature)
+        return (1 - target[0][0], -target[0][1], -target[1][0], 1 - target[1][1])
+
     if config.tire_compliance:
-        fx, fy, error = _solve_force(residual, tolerance=force_tolerance)
+        fx, fy, error = _solve_force(residual, tolerance=force_tolerance, initial=force_initial,
+                                    jacobian=compliant_jacobian)
         values = state(fx, fy)
         _target, elastic, rate, patch, kappa, alpha, mode = compliant_state(fx, fy, values)
         if load == 0:
@@ -124,21 +151,24 @@ def advance_wheel(omega, vx, vy, body_omega, drive, brake, load, mu, mobility, d
     )
 
 
-def _solve_force(residual, tolerance=.001):
+def _solve_force(residual, tolerance=.001, initial=(0.0, 0.0), jacobian=None):
     """双精度牛顿求解Fx/Fy；不收敛明确报错，不切换到另一套隐含物理。"""
-    fx, fy = 0.0, 0.0
+    fx, fy = initial
     epsilon = 0.01
     for _ in range(20):
         rx, ry = residual(fx, fy)
         error = math.hypot(rx, ry)
         if error < tolerance:
             return fx, fy, error
-        px, py = residual(fx + epsilon, fy)
-        nx, ny = residual(fx - epsilon, fy)
-        a, c = (px - nx) / (2 * epsilon), (py - ny) / (2 * epsilon)
-        px, py = residual(fx, fy + epsilon)
-        nx, ny = residual(fx, fy - epsilon)
-        b, d = (px - nx) / (2 * epsilon), (py - ny) / (2 * epsilon)
+        if jacobian is None:
+            px, py = residual(fx + epsilon, fy)
+            nx, ny = residual(fx - epsilon, fy)
+            a, c = (px - nx) / (2 * epsilon), (py - ny) / (2 * epsilon)
+            px, py = residual(fx, fy + epsilon)
+            nx, ny = residual(fx, fy - epsilon)
+            b, d = (px - nx) / (2 * epsilon), (py - ny) / (2 * epsilon)
+        else:
+            a, b, c, d = jacobian(fx, fy)
         determinant = a * d - b * c
         dx, dy = (d * rx - b * ry) / determinant, (a * ry - c * rx) / determinant
         for exponent in range(12):

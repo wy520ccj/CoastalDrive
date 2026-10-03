@@ -1,8 +1,10 @@
 # 当前进度
 
-更新：2026-10-01。**独立包/公开基线：0.8.3 RADIO-02，包含UI-NOTICE-FIX；当前main源码在物理开发中。** 源码来自Visual Identity v1开发线，本轮用户明确确认其作为主版本并授权整理/提交/推送。根目录保留试玩.cmd，阶段入口归档到launchers/archive，原默认build与早期smoke目录分别集中到builds/archive和logs/archive。CoastalDrive-VI-v1工作树同步当前主版本内容；旧main保留于上级备份与Git历史。DS实验档案仍为只读参考。
+更新：2026-10-03。**独立包/公开基线：0.8.3 RADIO-02，包含UI-NOTICE-FIX；当前main源码在物理开发中。** 源码来自Visual Identity v1开发线，本轮用户明确确认其作为主版本并授权整理/提交/推送。根目录保留试玩.cmd，阶段入口归档到launchers/archive，原默认build与早期smoke目录分别集中到builds/archive和logs/archive。CoastalDrive-VI-v1工作树同步当前主版本内容；旧main保留于上级备份与Git历史。DS实验档案仍为只读参考。
 
 ## 当前阶段
+
+- [PHYS-TIRE-04](tasks/PHYS-TIRE-04.md)自动部分完成：同方程暖初值/解析导数使原Box对照物理步耗时降27.75–35.41%；沿CG投影分区原生Box，修复再接触假偏航及60%前载假俯仰，完整外廓/惯量与默认原生读数保持。54项相关T0、696项pytest的完整T1、811项pytest及全部16项T2检查通过，266Python文件SHA一致；旧Hull回归与中断T2原样保留。reference-v8完整63字段。下一[PHYS-ROT-01](tasks/PHYS-ROT-01.md)先接机械轮轴/轴承反力，已完成20组平面/54组倾斜联合台架、45组独立虚功与12条原生轨迹准备，尚未接入驾驶。本块本地提交待生成，未推送；整个goal、T3、可见性能与人工驾驶仍待完成。[证据](evidence/PHYS-TIRE-04/README.md)。
 
 - [PHYS-TIRE-03](tasks/PHYS-TIRE-03.md)实现与功能组自动验收完成：默认接触区弹性/阻尼与路面滑移串联，四轮共末速度后提交冲量及变形，分列储能与耗散；reference-v6完整62字段。关闭柔性三场景2,501,449既有值零差异，44条A/B、16条子步与4条再接触隔离、真实坡停/总能量/NPC生命周期通过。T1为575测试及全部专项；护栏音频按实际连续接触修复，补59项音频T1。最终T2的752测试与全部16项检查通过，261源码/测试/工具哈希一致；首轮1800s超时和失败记录保留。用户授权由Luna一次提交正常推送，含此前17个本地物理提交；实际发布记录见本地`logs/publication/PHYS-TIRE-03.json`。落地制动2/4与8/16仍出现闭环结果分支，下一[PHYS-TIRE-04](tasks/PHYS-TIRE-04.md)优先处理再接触精度与求解效率。整体goal、T3/可见性能/人工驾驶未完成。[证据](evidence/PHYS-TIRE-03/README.md)；下列旧阶段的本地/未推送描述保留其实施时历史状态。
 
