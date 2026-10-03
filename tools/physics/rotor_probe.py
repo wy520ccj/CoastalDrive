@@ -44,7 +44,8 @@ def mechanical_state(vehicle):
 
 
 def run_free_trial(rate, spin, enabled, duration=1., steering=0.):
-    config = replace(REFERENCE_CAR, wheel_rotor_transport=enabled, angular_damping=0.)
+    # 该台架只隔离轮轴输运；曲轴机械账由传动台架独立验证。
+    config = replace(REFERENCE_CAR, wheel_rotor_transport=enabled, angular_damping=0., finite_drivetrain=False)
     world = BulletWorld()
     world.setGravity(Vec3(0))
     vehicle = Vehicle(world, lambda _x, _y: True, (0, 0, 20), config=config)

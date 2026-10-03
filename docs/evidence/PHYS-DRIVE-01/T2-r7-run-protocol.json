@@ -1,0 +1,82 @@
+{
+  "recorded_utc": "2026-10-03T16:57:28.118611+00:00",
+  "status": "running",
+  "validator_launcher_pid": 38148,
+  "validator_runtime_pid": 50624,
+  "source_files": 280,
+  "source_stable": true,
+  "archive_sha256": "19169bd9502cdda8d5c9ec90fe5270fe66a1dfa7249b35447223d702e02f8bc4",
+  "process_local_env": {
+    "PYTEST_ADDOPTS": "-x"
+  },
+  "full_pytest_selected": 1561,
+  "current_T1_related_selected": 1385,
+  "planned_checks": 16,
+  "source_context": "uncommitted r7; no complete T2 claim",
+  "checks": [
+    [
+      "ruff",
+      "passed"
+    ],
+    [
+      "pytest",
+      "running"
+    ],
+    [
+      "headless-0",
+      "not_run"
+    ],
+    [
+      "headless-17",
+      "not_run"
+    ],
+    [
+      "headless-23",
+      "not_run"
+    ],
+    [
+      "handling",
+      "not_run"
+    ],
+    [
+      "surface",
+      "not_run"
+    ],
+    [
+      "interactions",
+      "not_run"
+    ],
+    [
+      "finite-coastal",
+      "not_run"
+    ],
+    [
+      "finite-highway",
+      "not_run"
+    ],
+    [
+      "straight-0",
+      "not_run"
+    ],
+    [
+      "hills-0",
+      "not_run"
+    ],
+    [
+      "straight-17",
+      "not_run"
+    ],
+    [
+      "hills-17",
+      "not_run"
+    ],
+    [
+      "straight-23",
+      "not_run"
+    ],
+    [
+      "hills-23",
+      "not_run"
+    ]
+  ]
+}

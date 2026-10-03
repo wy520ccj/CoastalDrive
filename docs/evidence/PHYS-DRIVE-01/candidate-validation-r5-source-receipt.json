@@ -1,0 +1,7 @@
+{
+  "files": 280,
+  "sha256": "2d4c92f167ebcde4d9b1e701464dbea6cf4e03732adda931ec157d37b584e715",
+  "T1_collected": 1377,
+  "status": "ready_for_full_T1",
+  "source_context": "uncommitted; no complete T1 claim"
+}

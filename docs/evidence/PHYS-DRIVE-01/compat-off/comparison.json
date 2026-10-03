@@ -1,0 +1,45 @@
+{
+  "comparison": "exact value equality on every A snapshot leaf at every tick; B-only leaves allowed",
+  "a_snapshot_leaf_fields": 356,
+  "b_snapshot_leaf_fields": 357,
+  "b_only_snapshot_leaf_fields": [
+    "powertrain_state"
+  ],
+  "a_only_snapshot_leaf_fields": [],
+  "a_config_fields_missing_in_b": [],
+  "common_config_fields_changed": [],
+  "b_explicit_finite_drivetrain": false,
+  "cases": {
+    "acceleration": {
+      "a_snapshots": 121,
+      "b_snapshots": 121,
+      "compared_old_field_cells": 49100,
+      "mismatch_cells": 0,
+      "mismatch_count_by_field": {},
+      "first_mismatch": null,
+      "missing_old_fields": []
+    },
+    "steering": {
+      "a_snapshots": 121,
+      "b_snapshots": 121,
+      "compared_old_field_cells": 49108,
+      "mismatch_cells": 0,
+      "mismatch_count_by_field": {},
+      "first_mismatch": null,
+      "missing_old_fields": []
+    },
+    "reverse": {
+      "a_snapshots": 121,
+      "b_snapshots": 121,
+      "compared_old_field_cells": 49108,
+      "mismatch_cells": 0,
+      "mismatch_count_by_field": {},
+      "first_mismatch": null,
+      "missing_old_fields": []
+    }
+  },
+  "total_compared_old_field_cells": 147316,
+  "all_old_fields_present": true,
+  "all_common_config_equal": true,
+  "all_old_field_values_exactly_equal": true
+}

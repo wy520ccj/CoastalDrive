@@ -1,0 +1,100 @@
+FFFF                                                                     [100%]
+================================== FAILURES ===================================
+_ test_manual_neutral_does_not_apply_tcs_to_unloaded_engine[-1-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, direction = -1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("direction", (-1, 1))
+    def test_manual_neutral_does_not_apply_tcs_to_unloaded_engine(mode, direction):
+        world, vehicle = _create_vehicle(mode.vehicle_config)
+        try:
+            for _ in range(240):
+                _step(world, vehicle, VehicleCommand(gear=0, clutch=0., brake=1.))
+            assert vehicle.snapshot().gear == 0
+            # 真空挡落定后只初始化一次残余轮转，不能由自动方向重新制造驱动请求。
+            vehicle.tires.initialize_rolling(8.)
+            for _ in range(120):
+                _step(world, vehicle, VehicleCommand(throttle=1., gear=0, clutch=0., direction=direction))
+                state = vehicle.snapshot()
+>               assert not state.traction_state.active
+E               assert not True
+E                +  where True = TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(-3.397851961043132, -3.39836527555815, -4.195496864340374, -4.195769396511897), brake_requests=(0.0, 0.0, 0.0, 0.0), feedback_ticks=(242, 242, 242, 242)).active
+E                +    where TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(-3.397851961043132, -3.39836527555815, -4.195496864340374, -4.195769396511897), brake_requests=(0.0, 0.0, 0.0, 0.0), feedback_ticks=(242, 242, 242, 242)) = CarState(position=(-6.941805708038373e-08, 0.0033293920569121838, 0.4186960458755493), heading=-1.1306234227959067e-05...048893638665788), engine_work=33.425450856284016, engine_drag_heat=18.478112676376732, clutch_heat=0.0, gear_heat=0.0)).traction_state
+
+tests\test_finite_powertrain.py:132: AssertionError
+_ test_manual_neutral_does_not_apply_tcs_to_unloaded_engine[-1-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, direction = -1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("direction", (-1, 1))
+    def test_manual_neutral_does_not_apply_tcs_to_unloaded_engine(mode, direction):
+        world, vehicle = _create_vehicle(mode.vehicle_config)
+        try:
+            for _ in range(240):
+                _step(world, vehicle, VehicleCommand(gear=0, clutch=0., brake=1.))
+            assert vehicle.snapshot().gear == 0
+            # 真空挡落定后只初始化一次残余轮转，不能由自动方向重新制造驱动请求。
+            vehicle.tires.initialize_rolling(8.)
+            for _ in range(120):
+                _step(world, vehicle, VehicleCommand(throttle=1., gear=0, clutch=0., direction=direction))
+                state = vehicle.snapshot()
+>               assert not state.traction_state.active
+E               assert not True
+E                +  where True = TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(-3.3978096959834345, -3.398327420880753, -4.195520941481726, -4.195792443726199), brake_requests=(0.0, 0.0, 0.0, 0.0), feedback_ticks=(242, 242, 242, 242)).active
+E                +    where TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(-3.3978096959834345, -3.398327420880753, -4.195520941481726, -4.195792443726199), brake_requests=(0.0, 0.0, 0.0, 0.0), feedback_ticks=(242, 242, 242, 242)) = CarState(position=(-6.816952691224287e-08, 0.00332941603846848, 0.4186960458755493), heading=-9.908349056786392e-06, s...8638171871911717), engine_work=28.03708159719742, engine_drag_heat=15.606475674613286, clutch_heat=0.0, gear_heat=0.0)).traction_state
+
+tests\test_finite_powertrain.py:132: AssertionError
+_ test_manual_neutral_does_not_apply_tcs_to_unloaded_engine[1-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, direction = 1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("direction", (-1, 1))
+    def test_manual_neutral_does_not_apply_tcs_to_unloaded_engine(mode, direction):
+        world, vehicle = _create_vehicle(mode.vehicle_config)
+        try:
+            for _ in range(240):
+                _step(world, vehicle, VehicleCommand(gear=0, clutch=0., brake=1.))
+            assert vehicle.snapshot().gear == 0
+            # 真空挡落定后只初始化一次残余轮转，不能由自动方向重新制造驱动请求。
+            vehicle.tires.initialize_rolling(8.)
+            for _ in range(120):
+                _step(world, vehicle, VehicleCommand(throttle=1., gear=0, clutch=0., direction=direction))
+                state = vehicle.snapshot()
+>               assert not state.traction_state.active
+E               assert not True
+E                +  where True = TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(5.605437589832038, 5.605437426400366, 6.026496173123461, 6.026495994154267), brake_requests=(0.0, 0.0, 0.25, 0.25), feedback_ticks=(241, 241, 241, 241)).active
+E                +    where TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(5.605437589832038, 5.605437426400366, 6.026496173123461, 6.026495994154267), brake_requests=(0.0, 0.0, 0.25, 0.25), feedback_ticks=(241, 241, 241, 241)) = CarState(position=(-1.5062651570474372e-08, 0.0016021158080548048, 0.41869014501571655), heading=-2.0274649159546243e-...18647775021558204), engine_work=26.9925583019438, engine_drag_heat=18.113530170936755, clutch_heat=0.0, gear_heat=0.0)).traction_state
+
+tests\test_finite_powertrain.py:132: AssertionError
+_ test_manual_neutral_does_not_apply_tcs_to_unloaded_engine[1-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, direction = 1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("direction", (-1, 1))
+    def test_manual_neutral_does_not_apply_tcs_to_unloaded_engine(mode, direction):
+        world, vehicle = _create_vehicle(mode.vehicle_config)
+        try:
+            for _ in range(240):
+                _step(world, vehicle, VehicleCommand(gear=0, clutch=0., brake=1.))
+            assert vehicle.snapshot().gear == 0
+            # 真空挡落定后只初始化一次残余轮转，不能由自动方向重新制造驱动请求。
+            vehicle.tires.initialize_rolling(8.)
+            for _ in range(120):
+                _step(world, vehicle, VehicleCommand(throttle=1., gear=0, clutch=0., direction=direction))
+                state = vehicle.snapshot()
+>               assert not state.traction_state.active
+E               assert not True
+E                +  where True = TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(5.605439091673577, 5.605438282778639, 6.026497674076314, 6.026496851573202), brake_requests=(0.0, 0.0, 0.25, 0.25), feedback_ticks=(241, 241, 241, 241)).active
+E                +    where TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(5.605439091673577, 5.605438282778639, 6.026497674076314, 6.026496851573202), brake_requests=(0.0, 0.0, 0.25, 0.25), feedback_ticks=(241, 241, 241, 241)) = CarState(position=(-1.496483292839912e-08, 0.0016021204646676779, 0.41869014501571655), heading=-1.3878685649615363e-0...099868676978872), engine_work=24.740021908942822, engine_drag_heat=16.571125603392954, clutch_heat=0.0, gear_heat=0.0)).traction_state
+
+tests\test_finite_powertrain.py:132: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_finite_powertrain.py::test_manual_neutral_does_not_apply_tcs_to_unloaded_engine[-1-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_manual_neutral_does_not_apply_tcs_to_unloaded_engine[-1-DrivingMode.SIMULATION]
+FAILED tests/test_finite_powertrain.py::test_manual_neutral_does_not_apply_tcs_to_unloaded_engine[1-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_manual_neutral_does_not_apply_tcs_to_unloaded_engine[1-DrivingMode.SIMULATION]
+4 failed in 3.10s

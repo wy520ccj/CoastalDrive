@@ -1,0 +1,61 @@
+{
+  "status": "failed_export",
+  "completed_trials_before_failure": 8,
+  "failure": "CSV fieldnames取首行，空中初始无接触而后续出现接触字段；第9条空中试验已计算但导出失败，无完整summary。",
+  "default_asphalt_lock_seconds_A_B": [
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "strong_brake_design_lock_seconds_A_B": [
+    [
+      1.75,
+      1.75,
+      2.35,
+      2.35
+    ],
+    [
+      0,
+      0,
+      0.016666666666666666,
+      0.016666666666666666
+    ]
+  ],
+  "strong_brake_design_factor": 1.5,
+  "legacy_asphalt_lock_seconds_A_B": [
+    [
+      0,
+      0,
+      1.925,
+      1.925
+    ],
+    [
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "source_manifest": "../validation-T1-r2-source-before.json",
+  "remaining_airborne_trials": "另以airborne-diagnosis-r3取新目录，仅重跑受影响工况；未重跑已完成ABS/TCS。",
+  "raw_csv_sha256": {
+    "abs-current-False.csv": "be3aa08782d9d76a10c3f755ed33e1ef8969148ccf02b2a5eb6735a4c65b81f2",
+    "abs-current-True.csv": "d11155b187b8355e4bd35f6bfae061fe96c300fc4a28f7e33f5871f8fa565160",
+    "abs-legacy-False.csv": "95713e95e3ee24c4451aa6b551e6eee6e1e5a492f1a5f5249826412183e97b33",
+    "abs-legacy-True.csv": "5440c290dcf60aba0a8ae8cea4f6e62dd9070da289d01027546da2c7b606318b",
+    "abs-strong-brake-design-False.csv": "d21bcefd06211a0c892e44bc03857f92e984ca9a273fa2474e031397c54345dc",
+    "abs-strong-brake-design-True.csv": "01edc57c942bcd6a9f4d4f9c5f5ea1586a40438aa827ad76a76dce37a443497d",
+    "airborne-current-2.csv": "de4732e2c52842a3f8490de9a6ace4f88fb3d9dff93f2913fa2560eaed2546d2",
+    "tcs-release-False.csv": "0493b1c19f09d916017c7dfd0306dd4d6241de56103d5e72e4400fa4a249bdf3",
+    "tcs-release-True.csv": "59d4afc68faf2f869bf76fdee2af4b47f4173e8de2db9f693eaf144aa7348b36"
+  }
+}

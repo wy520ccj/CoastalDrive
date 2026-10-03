@@ -1,0 +1,118 @@
+{
+  "scope": "original traces kept; only TCS wheel_slips observations removed for supplementary bit comparison",
+  "cases": [
+    {
+      "file": "game-interrupted-shift.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "8bb784ffae6af8924a04aeeab89b99fbb073031dbaacb552efd1c73757037003",
+      "after_sha256": "8bb784ffae6af8924a04aeeab89b99fbb073031dbaacb552efd1c73757037003",
+      "full_trace_bytes_equal": true
+    },
+    {
+      "file": "game-launch.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "2ea8f518a2e1b92b17555ffb7ab63cdaee93d81f9177c60af235b19d27c80d7d",
+      "after_sha256": "2ea8f518a2e1b92b17555ffb7ab63cdaee93d81f9177c60af235b19d27c80d7d",
+      "full_trace_bytes_equal": true
+    },
+    {
+      "file": "game-manual-shift.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "a8ed86317ce1a8e009bb055bbab88aae85d104f717e3fc2528660611b2dabdda",
+      "after_sha256": "a8ed86317ce1a8e009bb055bbab88aae85d104f717e3fc2528660611b2dabdda",
+      "full_trace_bytes_equal": true
+    },
+    {
+      "file": "game-neutral.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "f374f421b5a34825fb70077152b56c9f42b1ff6bf2bc9dd67a14ee00c11a37ad",
+      "after_sha256": "f374f421b5a34825fb70077152b56c9f42b1ff6bf2bc9dd67a14ee00c11a37ad",
+      "full_trace_bytes_equal": true
+    },
+    {
+      "file": "game-release-brake.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "09047ab6ce23cec664a3c96919c6d264c3f5b2001936a1205ea76478ccfe030b",
+      "after_sha256": "09047ab6ce23cec664a3c96919c6d264c3f5b2001936a1205ea76478ccfe030b",
+      "full_trace_bytes_equal": true
+    },
+    {
+      "file": "game-reverse.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "f65f54a5f6bfa2b7d8584f5353e2c881e8cac46099f4120bb93edc314fdb6acc",
+      "after_sha256": "f65f54a5f6bfa2b7d8584f5353e2c881e8cac46099f4120bb93edc314fdb6acc",
+      "full_trace_bytes_equal": false
+    },
+    {
+      "file": "simulation-interrupted-shift.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "333c439e698e650ccfcd7c206a4b569d28db241b56c75108a18f500047e71993",
+      "after_sha256": "333c439e698e650ccfcd7c206a4b569d28db241b56c75108a18f500047e71993",
+      "full_trace_bytes_equal": true
+    },
+    {
+      "file": "simulation-launch.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "ae4a8ae8e76c3e7a02b201db9e7cdf42964acb127c031fd35e8b5f8b04446769",
+      "after_sha256": "ae4a8ae8e76c3e7a02b201db9e7cdf42964acb127c031fd35e8b5f8b04446769",
+      "full_trace_bytes_equal": true
+    },
+    {
+      "file": "simulation-manual-shift.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "e51f85291358e7b9306250a700e0de3cd05c82cba38b0182189922bf3fc293ad",
+      "after_sha256": "e51f85291358e7b9306250a700e0de3cd05c82cba38b0182189922bf3fc293ad",
+      "full_trace_bytes_equal": true
+    },
+    {
+      "file": "simulation-neutral.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "ec85f3157f86fa98f60794c0ec16ce1a85355dae357539752211b4b143aa1071",
+      "after_sha256": "ec85f3157f86fa98f60794c0ec16ce1a85355dae357539752211b4b143aa1071",
+      "full_trace_bytes_equal": true
+    },
+    {
+      "file": "simulation-release-brake.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "64d4eef804459c78a1594f0c4953f6fa61326b13ea548f96e1bb0df4ba9ce9a6",
+      "after_sha256": "64d4eef804459c78a1594f0c4953f6fa61326b13ea548f96e1bb0df4ba9ce9a6",
+      "full_trace_bytes_equal": true
+    },
+    {
+      "file": "simulation-reverse.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "471f444c5002489fc765af420ecc2fc68f95787826e8d7cacd295ec89fd8071b",
+      "after_sha256": "471f444c5002489fc765af420ecc2fc68f95787826e8d7cacd295ec89fd8071b",
+      "full_trace_bytes_equal": false
+    },
+    {
+      "file": "game-manual-shift.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "a0449591c1c24d8ff67d8274e6fd4b346d0b211574340859425266dde9a784a5",
+      "after_sha256": "a0449591c1c24d8ff67d8274e6fd4b346d0b211574340859425266dde9a784a5",
+      "full_trace_bytes_equal": true
+    },
+    {
+      "file": "game-reverse.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "5f977b98de9aa41e3d05ebf81c37ea7041202bea6ce751c4bff3af0eeed99dce",
+      "after_sha256": "5f977b98de9aa41e3d05ebf81c37ea7041202bea6ce751c4bff3af0eeed99dce",
+      "full_trace_bytes_equal": false
+    },
+    {
+      "file": "simulation-manual-shift.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "b92ed075db714e289f67bca5f2f3f3a19287fef7c898ca9ea0554ba606b05508",
+      "after_sha256": "b92ed075db714e289f67bca5f2f3f3a19287fef7c898ca9ea0554ba606b05508",
+      "full_trace_bytes_equal": true
+    },
+    {
+      "file": "simulation-reverse.jsonl.gz",
+      "remaining_fields_bytes_equal": true,
+      "before_sha256": "7305cfb721d9608f67a0b780bf6a93ae50ae9818d87a73181921395af17ade25",
+      "after_sha256": "7305cfb721d9608f67a0b780bf6a93ae50ae9818d87a73181921395af17ade25",
+      "full_trace_bytes_equal": false
+    }
+  ],
+  "ticks": 10560
+}

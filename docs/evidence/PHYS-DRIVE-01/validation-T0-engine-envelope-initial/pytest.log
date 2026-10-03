@@ -1,0 +1,355 @@
+.............................F.F..........FFFF.F........FFFFFFFF......FF [100%]
+================================== FAILURES ===================================
+_ test_idle_and_driver_requests_share_available_engine_curve[0.5--600.0-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, rpm = -600.0, pedal = 0.5
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+    @pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+    def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.rpm = rpm
+        train.engine_omega = train.relative_omega = rpm * math.tau / 60
+        train.throttle = pedal
+        train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+>       assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+E       assert 120.0 <= 110
+E        +  where 120.0 = <powertrain.Powertrain object at 0x000001AD36CBEE00>.engine_torque_request
+E        +  and   110 = engine_torque(-600.0, VehicleConfig(mass=1200.0, torque_curve=((900, 110), (1800, 165), (3200, 200), (4500, 190), (6000, 150), (6500, 0)), g...0.5, body_inertia=(1919.56, 511.56, 2290.0), angular_damping=0.0, suspension_travel=0.2, suspension_force_limit=6000.0))
+
+tests\test_finite_powertrain.py:26: AssertionError
+_ test_idle_and_driver_requests_share_available_engine_curve[0.5-0.0-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, rpm = 0.0, pedal = 0.5
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+    @pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+    def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.rpm = rpm
+        train.engine_omega = train.relative_omega = rpm * math.tau / 60
+        train.throttle = pedal
+        train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+>       assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+E       assert 120.0 <= 110
+E        +  where 120.0 = <powertrain.Powertrain object at 0x000001AD3771D370>.engine_torque_request
+E        +  and   110 = engine_torque(0.0, VehicleConfig(mass=1200.0, torque_curve=((900, 110), (1800, 165), (3200, 200), (4500, 190), (6000, 150), (6500, 0)), g...0.5, body_inertia=(1919.56, 511.56, 2290.0), angular_damping=0.0, suspension_travel=0.2, suspension_force_limit=6000.0))
+
+tests\test_finite_powertrain.py:26: AssertionError
+_ test_idle_and_driver_requests_share_available_engine_curve[0.9--600.0-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, rpm = -600.0, pedal = 0.9
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+    @pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+    def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.rpm = rpm
+        train.engine_omega = train.relative_omega = rpm * math.tau / 60
+        train.throttle = pedal
+        train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+>       assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+E       assert 123.78895102393194 <= 116.05
+E        +  where 123.78895102393194 = <powertrain.Powertrain object at 0x000001AD3771D7B0>.engine_torque_request
+E        +  and   116.05 = engine_torque(-600.0, VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0))
+
+tests\test_finite_powertrain.py:26: AssertionError
+_ test_idle_and_driver_requests_share_available_engine_curve[0.9--600.0-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, rpm = -600.0, pedal = 0.9
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+    @pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+    def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.rpm = rpm
+        train.engine_omega = train.relative_omega = rpm * math.tau / 60
+        train.throttle = pedal
+        train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+>       assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+E       assert 164.0 <= 110
+E        +  where 164.0 = <powertrain.Powertrain object at 0x000001AD36CBEBE0>.engine_torque_request
+E        +  and   110 = engine_torque(-600.0, VehicleConfig(mass=1200.0, torque_curve=((900, 110), (1800, 165), (3200, 200), (4500, 190), (6000, 150), (6500, 0)), g...0.5, body_inertia=(1919.56, 511.56, 2290.0), angular_damping=0.0, suspension_travel=0.2, suspension_force_limit=6000.0))
+
+tests\test_finite_powertrain.py:26: AssertionError
+_ test_idle_and_driver_requests_share_available_engine_curve[0.9-0.0-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, rpm = 0.0, pedal = 0.9
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+    @pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+    def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.rpm = rpm
+        train.engine_omega = train.relative_omega = rpm * math.tau / 60
+        train.throttle = pedal
+        train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+>       assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+E       assert 117.01137061435917 <= 116.05
+E        +  where 117.01137061435917 = <powertrain.Powertrain object at 0x000001AD3771DAE0>.engine_torque_request
+E        +  and   116.05 = engine_torque(0.0, VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0))
+
+tests\test_finite_powertrain.py:26: AssertionError
+_ test_idle_and_driver_requests_share_available_engine_curve[0.9-0.0-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, rpm = 0.0, pedal = 0.9
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+    @pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+    def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.rpm = rpm
+        train.engine_omega = train.relative_omega = rpm * math.tau / 60
+        train.throttle = pedal
+        train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+>       assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+E       assert 164.0 <= 110
+E        +  where 164.0 = <powertrain.Powertrain object at 0x000001AD3771DD00>.engine_torque_request
+E        +  and   110 = engine_torque(0.0, VehicleConfig(mass=1200.0, torque_curve=((900, 110), (1800, 165), (3200, 200), (4500, 190), (6000, 150), (6500, 0)), g...0.5, body_inertia=(1919.56, 511.56, 2290.0), angular_damping=0.0, suspension_travel=0.2, suspension_force_limit=6000.0))
+
+tests\test_finite_powertrain.py:26: AssertionError
+_ test_idle_and_driver_requests_share_available_engine_curve[0.9-600.0-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, rpm = 600.0, pedal = 0.9
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+    @pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+    def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.rpm = rpm
+        train.engine_omega = train.relative_omega = rpm * math.tau / 60
+        train.throttle = pedal
+        train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+>       assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+E       assert 142.4879020478639 <= 110
+E        +  where 142.4879020478639 = <powertrain.Powertrain object at 0x000001AD3771DF20>.engine_torque_request
+E        +  and   110 = engine_torque(600.0, VehicleConfig(mass=1200.0, torque_curve=((900, 110), (1800, 165), (3200, 200), (4500, 190), (6000, 150), (6500, 0)), g...0.5, body_inertia=(1919.56, 511.56, 2290.0), angular_damping=0.0, suspension_travel=0.2, suspension_force_limit=6000.0))
+
+tests\test_finite_powertrain.py:26: AssertionError
+_ test_idle_and_driver_requests_share_available_engine_curve[1.0--600.0-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, rpm = -600.0, pedal = 1.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+    @pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+    def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.rpm = rpm
+        train.engine_omega = train.relative_omega = rpm * math.tau / 60
+        train.throttle = pedal
+        train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+>       assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+E       assert 136.99395102393194 <= 116.05
+E        +  where 136.99395102393194 = <powertrain.Powertrain object at 0x000001AD3771DAE0>.engine_torque_request
+E        +  and   116.05 = engine_torque(-600.0, VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0))
+
+tests\test_finite_powertrain.py:26: AssertionError
+_ test_idle_and_driver_requests_share_available_engine_curve[1.0--600.0-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, rpm = -600.0, pedal = 1.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+    @pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+    def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.rpm = rpm
+        train.engine_omega = train.relative_omega = rpm * math.tau / 60
+        train.throttle = pedal
+        train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+>       assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+E       assert 175.0 <= 110
+E        +  where 175.0 = <powertrain.Powertrain object at 0x000001AD3771E690>.engine_torque_request
+E        +  and   110 = engine_torque(-600.0, VehicleConfig(mass=1200.0, torque_curve=((900, 110), (1800, 165), (3200, 200), (4500, 190), (6000, 150), (6500, 0)), g...0.5, body_inertia=(1919.56, 511.56, 2290.0), angular_damping=0.0, suspension_travel=0.2, suspension_force_limit=6000.0))
+
+tests\test_finite_powertrain.py:26: AssertionError
+_ test_idle_and_driver_requests_share_available_engine_curve[1.0-0.0-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, rpm = 0.0, pedal = 1.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+    @pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+    def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.rpm = rpm
+        train.engine_omega = train.relative_omega = rpm * math.tau / 60
+        train.throttle = pedal
+        train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+>       assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+E       assert 128.61637061435917 <= 116.05
+E        +  where 128.61637061435917 = <powertrain.Powertrain object at 0x000001AD3771E8B0>.engine_torque_request
+E        +  and   116.05 = engine_torque(0.0, VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0))
+
+tests\test_finite_powertrain.py:26: AssertionError
+_ test_idle_and_driver_requests_share_available_engine_curve[1.0-0.0-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, rpm = 0.0, pedal = 1.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+    @pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+    def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.rpm = rpm
+        train.engine_omega = train.relative_omega = rpm * math.tau / 60
+        train.throttle = pedal
+        train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+>       assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+E       assert 175.0 <= 110
+E        +  where 175.0 = <powertrain.Powertrain object at 0x000001AD3771EAD0>.engine_torque_request
+E        +  and   110 = engine_torque(0.0, VehicleConfig(mass=1200.0, torque_curve=((900, 110), (1800, 165), (3200, 200), (4500, 190), (6000, 150), (6500, 0)), g...0.5, body_inertia=(1919.56, 511.56, 2290.0), angular_damping=0.0, suspension_travel=0.2, suspension_force_limit=6000.0))
+
+tests\test_finite_powertrain.py:26: AssertionError
+_ test_idle_and_driver_requests_share_available_engine_curve[1.0-600.0-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, rpm = 600.0, pedal = 1.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+    @pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+    def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.rpm = rpm
+        train.engine_omega = train.relative_omega = rpm * math.tau / 60
+        train.throttle = pedal
+        train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+>       assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+E       assert 120.23879020478638 <= 116.05
+E        +  where 120.23879020478638 = <powertrain.Powertrain object at 0x000001AD3771ECF0>.engine_torque_request
+E        +  and   116.05 = engine_torque(600.0, VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0))
+
+tests\test_finite_powertrain.py:26: AssertionError
+_ test_idle_and_driver_requests_share_available_engine_curve[1.0-600.0-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, rpm = 600.0, pedal = 1.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+    @pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+    def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.rpm = rpm
+        train.engine_omega = train.relative_omega = rpm * math.tau / 60
+        train.throttle = pedal
+        train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+>       assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+E       assert 151.88790204786392 <= 110
+E        +  where 151.88790204786392 = <powertrain.Powertrain object at 0x000001AD3771EF10>.engine_torque_request
+E        +  and   110 = engine_torque(600.0, VehicleConfig(mass=1200.0, torque_curve=((900, 110), (1800, 165), (3200, 200), (4500, 190), (6000, 150), (6500, 0)), g...0.5, body_inertia=(1919.56, 511.56, 2290.0), angular_damping=0.0, suspension_travel=0.2, suspension_force_limit=6000.0))
+
+tests\test_finite_powertrain.py:26: AssertionError
+_ test_idle_and_driver_requests_share_available_engine_curve[1.0-899.0-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, rpm = 899.0, pedal = 1.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+    @pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+    def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.rpm = rpm
+        train.engine_omega = train.relative_omega = rpm * math.tau / 60
+        train.throttle = pedal
+        train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+>       assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+E       assert 116.06396263401595 <= 116.05
+E        +  where 116.06396263401595 = <powertrain.Powertrain object at 0x000001AD3771F130>.engine_torque_request
+E        +  and   116.05 = engine_torque(899.0, VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0))
+
+tests\test_finite_powertrain.py:26: AssertionError
+_ test_idle_and_driver_requests_share_available_engine_curve[1.0-899.0-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, rpm = 899.0, pedal = 1.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+    @pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+    def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.rpm = rpm
+        train.engine_omega = train.relative_omega = rpm * math.tau / 60
+        train.throttle = pedal
+        train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+>       assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+E       assert 110.13962634015952 <= 110
+E        +  where 110.13962634015952 = <powertrain.Powertrain object at 0x000001AD3771F350>.engine_torque_request
+E        +  and   110 = engine_torque(899.0, VehicleConfig(mass=1200.0, torque_curve=((900, 110), (1800, 165), (3200, 200), (4500, 190), (6000, 150), (6500, 0)), g...0.5, body_inertia=(1919.56, 511.56, 2290.0), angular_damping=0.0, suspension_travel=0.2, suspension_force_limit=6000.0))
+
+tests\test_finite_powertrain.py:26: AssertionError
+_ test_native_insufficient_engine_torque_cannot_manufacture_idle_speed[DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    def test_native_insufficient_engine_torque_cannot_manufacture_idle_speed(mode):
+        config = replace(mode.vehicle_config, torque_curve=((900., 20.), (6500., 20.)))
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(120):
+                _step(world, vehicle, VehicleCommand(gear=0, clutch=0.))
+                engine = vehicle.snapshot().powertrain_state
+>               assert 0 <= engine.engine_torque <= 20
+E               assert 23.999999999999996 <= 20
+E                +  where 23.999999999999996 = PowertrainState(engine_omega=94.24777960769379, engine_relative_omega=94.24777960769379, gear=1, ratio=12.025, throttl...lse=(0.0, 0.0, 0.0), engine_work=18.84955592153875, engine_drag_heat=18.84955592153875, clutch_heat=0.0, gear_heat=0.0).engine_torque
+
+tests\test_finite_powertrain.py:40: AssertionError
+_ test_native_insufficient_engine_torque_cannot_manufacture_idle_speed[DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    def test_native_insufficient_engine_torque_cannot_manufacture_idle_speed(mode):
+        config = replace(mode.vehicle_config, torque_curve=((900., 20.), (6500., 20.)))
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(120):
+                _step(world, vehicle, VehicleCommand(gear=0, clutch=0.))
+                engine = vehicle.snapshot().powertrain_state
+>               assert 0 <= engine.engine_torque <= 20
+E               assert 23.999999999999996 <= 20
+E                +  where 23.999999999999996 = PowertrainState(engine_omega=94.24777960769379, engine_relative_omega=94.24777960769379, gear=1, ratio=12.025, throttl...lse=(0.0, 0.0, 0.0), engine_work=18.84955592153875, engine_drag_heat=18.84955592153875, clutch_heat=0.0, gear_heat=0.0).engine_torque
+
+tests\test_finite_powertrain.py:40: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_finite_powertrain.py::test_idle_and_driver_requests_share_available_engine_curve[0.5--600.0-DrivingMode.SIMULATION]
+FAILED tests/test_finite_powertrain.py::test_idle_and_driver_requests_share_available_engine_curve[0.5-0.0-DrivingMode.SIMULATION]
+FAILED tests/test_finite_powertrain.py::test_idle_and_driver_requests_share_available_engine_curve[0.9--600.0-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_idle_and_driver_requests_share_available_engine_curve[0.9--600.0-DrivingMode.SIMULATION]
+FAILED tests/test_finite_powertrain.py::test_idle_and_driver_requests_share_available_engine_curve[0.9-0.0-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_idle_and_driver_requests_share_available_engine_curve[0.9-0.0-DrivingMode.SIMULATION]
+FAILED tests/test_finite_powertrain.py::test_idle_and_driver_requests_share_available_engine_curve[0.9-600.0-DrivingMode.SIMULATION]
+FAILED tests/test_finite_powertrain.py::test_idle_and_driver_requests_share_available_engine_curve[1.0--600.0-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_idle_and_driver_requests_share_available_engine_curve[1.0--600.0-DrivingMode.SIMULATION]
+FAILED tests/test_finite_powertrain.py::test_idle_and_driver_requests_share_available_engine_curve[1.0-0.0-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_idle_and_driver_requests_share_available_engine_curve[1.0-0.0-DrivingMode.SIMULATION]
+FAILED tests/test_finite_powertrain.py::test_idle_and_driver_requests_share_available_engine_curve[1.0-600.0-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_idle_and_driver_requests_share_available_engine_curve[1.0-600.0-DrivingMode.SIMULATION]
+FAILED tests/test_finite_powertrain.py::test_idle_and_driver_requests_share_available_engine_curve[1.0-899.0-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_idle_and_driver_requests_share_available_engine_curve[1.0-899.0-DrivingMode.SIMULATION]
+FAILED tests/test_finite_powertrain.py::test_native_insufficient_engine_torque_cannot_manufacture_idle_speed[DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_native_insufficient_engine_torque_cannot_manufacture_idle_speed[DrivingMode.SIMULATION]
+17 failed, 55 passed in 0.63s

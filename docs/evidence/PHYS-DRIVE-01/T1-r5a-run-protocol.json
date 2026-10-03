@@ -1,0 +1,12 @@
+{
+  "files": 280,
+  "sha256": "2d4c92f167ebcde4d9b1e701464dbea6cf4e03732adda931ec157d37b584e715",
+  "T1_collected": 1377,
+  "status": "running_full_T1_r5a",
+  "source_context": "uncommitted; no complete T1 claim",
+  "validator_pid": 37488,
+  "process_local_env": {
+    "PYTEST_ADDOPTS": "-x"
+  },
+  "previous_run": "validation-T1-r5/interruption.json"
+}

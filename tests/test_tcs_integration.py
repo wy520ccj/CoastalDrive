@@ -1,6 +1,8 @@
 """真实轮端转矩、制动压力与TCS采样反馈，不以标志代替机械效果。"""
 
+import math
 from dataclasses import replace
+from itertools import pairwise
 
 import pytest
 from physics.reference_ab import _create_vehicle, _step
@@ -8,7 +10,7 @@ from physics.tcs_probe import run_trial
 
 from driving_modes import REFERENCE_CAR
 from simulation import Snapshot, interpolate
-from vehicle_state import VehicleCommand
+from vehicle_state import FIXED_DT, VehicleCommand
 
 
 @pytest.mark.parametrize("case", ["low-mu", "split-mu"])
@@ -33,10 +35,22 @@ def test_tcs_reduces_real_excess_drive_slip_with_torque_and_pressure(case):
 def test_disabled_controller_and_releasing_driver_requests_reach_actuators():
     for enabled in (False, True):
         _, rows = run_trial("driver-brake", enabled, duration=3)
-        for row in rows[241:]:
+        for previous, row in pairwise(rows[240:]):
+            assert row["state.throttle"] == row["command.throttle"] == 1
+            assert row["state.brake"] == row["command.brake"] == 1
             assert not row["state.traction_state.active"]
             assert row["state.traction_state.torque_scale"] == 1
-            assert row["state.wheel_dynamics.2.drive_torque"] == 0
+            capacity = row["state.powertrain_state.clutch_capacity"]
+            expected = max(0., previous["state.powertrain_state.clutch_capacity"]
+                           - REFERENCE_CAR.clutch_capacity * FIXED_DT / REFERENCE_CAR.clutch_release_time)
+            assert capacity == pytest.approx(expected, rel=0, abs=1e-11)
+            ratio = abs(row["state.powertrain_state.ratio"])
+            torque = row["state.wheel_dynamics.2.drive_torque"]
+            assert abs(torque) <= ratio * capacity / (2 * REFERENCE_CAR.drivetrain_efficiency) + 1e-9
+            if capacity == 0:
+                assert torque == 0
+        release_ticks = math.ceil(REFERENCE_CAR.clutch_release_time / FIXED_DT)
+        assert rows[240 + release_ticks]["state.powertrain_state.clutch_capacity"] == 0
         if not enabled:
             assert all(row["state.traction_state.torque_scale"] == 1 for row in rows)
     _, rows = run_trial("lift-off", True, duration=3)

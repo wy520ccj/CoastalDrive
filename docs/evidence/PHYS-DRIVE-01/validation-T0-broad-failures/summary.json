@@ -1,0 +1,55 @@
+{
+  "started_utc": "2026-10-03T09:36:04.158098+00:00",
+  "git_head": "771ddd0f059fc67719e6217a610162b7ab3e1748",
+  "git_status": "M docs/current-progress.md\n M docs/evidence/PHYS-DRIVE-01/README.md\n M docs/physics-goal-audit.md\n M docs/tasks/PHYS-DRIVE-01.md\n M src/driving_modes.py\n M src/powertrain.py\n M src/vehicle.py\n M src/vehicle_config.py\n M src/vehicle_state.py\n M src/vehicle_tires.py\n M tests/test_physics_config_io.py\n M tests/test_traction_lifecycle.py\n M tests/test_vehicle_commands.py\n M tests/test_vehicle_tires.py\n M tools/physics/export_reference.py\n M tools/physics/rotor_probe.py\n M tools/physics/testbed.py\n M tools/validate.py\n?? docs/evidence/PHYS-DRIVE-01/ab-calibrated/\n?? docs/evidence/PHYS-DRIVE-01/candidate-validation-source.zip\n?? docs/evidence/PHYS-DRIVE-01/coast-initial/\n?? docs/evidence/PHYS-DRIVE-01/compat-off/\n?? docs/evidence/PHYS-DRIVE-01/default-source-before.json\n?? docs/evidence/PHYS-DRIVE-01/default-source.zip\n?? docs/evidence/PHYS-DRIVE-01/drivetrain-ab.py\n?? docs/evidence/PHYS-DRIVE-01/free-native-initial/\n?? docs/evidence/PHYS-DRIVE-01/launch-calibrated-source-before.json\n?? docs/evidence/PHYS-DRIVE-01/launch-diagnosis-r1/\n?? docs/evidence/PHYS-DRIVE-01/launch-diagnosis.py\n?? docs/evidence/PHYS-DRIVE-01/native-calibrated/\n?? docs/evidence/PHYS-DRIVE-01/native-initial/\n?? docs/evidence/PHYS-DRIVE-01/native-r1/\n?? docs/evidence/PHYS-DRIVE-01/native-rigid-shifts/\n?? docs/evidence/PHYS-DRIVE-01/native-shifts-r2/\n?? docs/evidence/PHYS-DRIVE-01/reference-v10-candidate.json\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-causal-launch/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-coast-pumping/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-coast-shift-cut/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-default/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-idle-additive/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-integrated-core/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-isolation/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-joint-r1/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-joint-r2/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-joint/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-launch-calibrated/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-native-branches/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-native-controls-r1/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-native-controls-r2/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-native-controls/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-world-warm-r1/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-world-warm/\n?? docs/evidence/PHYS-DRIVE-01/validation-T1-source-before.json\n?? src/tire_drivetrain.py\n?? tests/test_finite_powertrain.py\n?? tests/test_tire_drivetrain.py\n?? tools/physics/drivetrain_free_probe.py\n?? tools/physics/drivetrain_probe.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_h1_vehicle.py::test_idle_car_has_four_ground_contacts_and_can_start",
+    "tests/test_h1_vehicle.py::test_low_speed_turn_is_substantial_and_returns_to_center",
+    "tests/test_h1_vehicle.py::test_shallow_ramp_has_real_height_and_body_pitch"
+  ],
+  "tier": "T0",
+  "status": "failed",
+  "passed": false,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DRIVE-01-T0-broad-failures\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.202
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_h1_vehicle.py::test_idle_car_has_four_ground_contacts_and_can_start",
+        "tests/test_h1_vehicle.py::test_low_speed_turn_is_substantial_and_returns_to_center",
+        "tests/test_h1_vehicle.py::test_shallow_ramp_has_real_height_and_body_pitch"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DRIVE-01-T0-broad-failures\\pytest.log",
+      "status": "failed",
+      "returncode": 1,
+      "error": "process exited 1",
+      "seconds": 45.087
+    }
+  ]
+}

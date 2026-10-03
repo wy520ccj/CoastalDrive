@@ -1,0 +1,19 @@
+{
+  "status": "interrupted",
+  "reason": "Independent native audit proves explicit gear still uses automatic direction for TCS; zero disables TCS and conflicting direction reverses slip sign",
+  "pytest_seconds": 442.652,
+  "observed_progress_marks": {
+    "passed": 126,
+    "failed": 0
+  },
+  "terminal_pytest_count": null,
+  "source_files": 280,
+  "source_stable": true,
+  "not_run": [
+    "headless-0",
+    "headless-17",
+    "headless-23",
+    "hills-0",
+    "hills-23"
+  ]
+}

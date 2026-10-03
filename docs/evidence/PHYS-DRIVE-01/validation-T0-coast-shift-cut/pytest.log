@@ -1,0 +1,27 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+________ test_lifting_off_coasts_and_slows_without_stopping_instantly _________
+
+    def test_lifting_off_coasts_and_slows_without_stopping_instantly():
+        sim = straight_simulation()
+        try:
+            for _ in range(240):
+                sim.step(Control())
+            for _ in range(480):
+                sim.step(Control(throttle=1))
+            before = sim.snapshot().player.speed
+            sim.step(Control())
+            assert abs(sim.snapshot().player.speed - before) < 0.1
+            for _ in range(480):
+                sim.step(Control())
+>           assert 0 < sim.snapshot().player.speed < before - 1
+E           assert 12.722785949707031 < (13.355660438537598 - 1)
+E            +  where 12.722785949707031 = CarState(position=(179.99899291992188, 76.32563781738281, 0.41868799924850464), heading=0.0025108063127845526, speed=1...593808988544e-12, engine_drag_heat=27.12402051655389, clutch_heat=2.5379109705570763e-15, gear_heat=3.401385060835092)).speed
+E            +    where CarState(position=(179.99899291992188, 76.32563781738281, 0.41868799924850464), heading=0.0025108063127845526, speed=1...593808988544e-12, engine_drag_heat=27.12402051655389, clutch_heat=2.5379109705570763e-15, gear_heat=3.401385060835092)) = Snapshot(tick=1201, time=10.008333333333333, player=CarState(position=(179.99899291992188, 76.32563781738281, 0.418687..._heat=3.401385060835092)), traffic=(), events=(), origin_y=0.0, collisions=0, contact_epoch=2, impacts=(), contacts=()).player
+E            +      where Snapshot(tick=1201, time=10.008333333333333, player=CarState(position=(179.99899291992188, 76.32563781738281, 0.418687..._heat=3.401385060835092)), traffic=(), events=(), origin_y=0.0, collisions=0, contact_epoch=2, impacts=(), contacts=()) = snapshot()
+E            +        where snapshot = <simulation.Simulation object at 0x0000027133F5ECF0>.snapshot
+
+tests\test_driving_response.py:107: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_driving_response.py::test_lifting_off_coasts_and_slows_without_stopping_instantly
+1 failed in 17.72s

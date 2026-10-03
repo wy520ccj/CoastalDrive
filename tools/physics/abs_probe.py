@@ -22,14 +22,14 @@ from physics.reference_ab import (
 )
 
 from driving_modes import REFERENCE_CAR
-from vehicle_brakes import BrakeConfig
 from vehicle_state import FIXED_DT, VehicleCommand
 
 CASES = ("asphalt", "low-mu", "split-mu", "steering", "reverse")
 
 
-def run_trial(case, enabled, duration=6.0, wheel_brakes=None):
-    config = replace(REFERENCE_CAR, braking=BrakeConfig(response_time=.025, abs_enabled=enabled))
+def run_trial(case, enabled, duration=6.0, wheel_brakes=None, *, vehicle_config=None):
+    base = REFERENCE_CAR if vehicle_config is None else vehicle_config
+    config = replace(base, braking=replace(base.braking, abs_enabled=enabled))
     if case == "low-mu":
         config = replace(config, road_friction=.6)
     world, vehicle = _create_vehicle(config)

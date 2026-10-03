@@ -23,8 +23,11 @@ def test_direct_throttle_bypasses_keyboard_ramp_but_keeps_torque_response(sim):
     sim.step(VehicleCommand(throttle=1, direction=1))
     assert sim.snapshot().player.throttle == 1
     assert sim.player.assist.throttle == 0
-    assert 0 < sim.player.powertrain.drive_torque < 1000 * .33
-    assert 0 < sim.snapshot().player.speed < .1
+    assert sim.player.powertrain.throttle > 0
+    assert 0 < sim.player.powertrain.engine_torque_request < 1000 * .33
+    # 首拍可以传递真实小转矩，但容量受从全开开始的有限执行器速率约束。
+    assert 0 <= sim.player.powertrain.capacity <= CAR.clutch_capacity * FIXED_DT / CAR.clutch_engage_time
+    assert abs(sim.snapshot().player.speed) < .1
 
 
 def test_direct_steering_bypasses_speed_envelope_but_keeps_rack_motion(sim):

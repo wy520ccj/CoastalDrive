@@ -1,5 +1,7 @@
 """真实Bullet制动集成：验证锁止恢复与单轮压力的机械影响。"""
 
+from dataclasses import replace
+
 import pytest
 from panda3d.core import Vec3
 from physics.abs_probe import run_trial
@@ -10,18 +12,31 @@ from simulation import Snapshot, interpolate
 from vehicle_state import VehicleCommand
 
 
-@pytest.mark.parametrize("case", ["asphalt", "low-mu", "split-mu"])
-def test_abs_reduces_observed_wheel_lock(case):
-    baseline, _ = run_trial(case, False)
-    candidate, rows = run_trial(case, True)
-    assert sum(baseline["locked_wheel_seconds"]) > 0
-    assert sum(candidate["locked_wheel_seconds"]) < sum(baseline["locked_wheel_seconds"])
+@pytest.mark.parametrize("case,brake_multiplier", [
+    pytest.param("asphalt", 1, id="asphalt"),
+    pytest.param("asphalt", 1.5, id="asphalt-strong-brake"),
+    pytest.param("low-mu", 1, id="low-mu"),
+    pytest.param("split-mu", 1, id="split-mu"),
+])
+def test_abs_reduces_observed_wheel_lock(case, brake_multiplier):
+    config = replace(REFERENCE_CAR, brake_torque=REFERENCE_CAR.brake_torque * brake_multiplier)
+    baseline, _ = run_trial(case, False, vehicle_config=config)
+    candidate, rows = run_trial(case, True, vehicle_config=config)
+    if case == "asphalt" and brake_multiplier == 1:
+        # 真实离合释放后默认柏油硬件不抱死，ABS仍须实际降低后轮过量制动滑移。
+        assert sum(baseline["locked_wheel_seconds"]) == sum(candidate["locked_wheel_seconds"]) == 0
+        for index in (2, 3):
+            assert candidate["wheel_extrema_each_tick"][index]["kappa"][0] > (
+                baseline["wheel_extrema_each_tick"][index]["kappa"][0])
+    else:
+        assert sum(baseline["locked_wheel_seconds"]) > 0
+        assert sum(candidate["locked_wheel_seconds"]) < sum(baseline["locked_wheel_seconds"])
     assert rows[0]["horizontal_speed_mps"] == pytest.approx(100 / 3.6)
     assert any(row["state.brake_states.2.phase"] == "release" for row in rows[1:])
     assert any(abs(row["state.wheel_dynamics.2.fx"]) > 0 for row in rows[1:])
     assert candidate["final_horizontal_speed_mps"] < baseline["initial_speed_mps"]
-    if case == "low-mu":
-        # 当前光滑MF低附着模型中，恢复滚动应比持续抱死更充分利用纵向附着。
+    if case == "low-mu" or brake_multiplier > 1:
+        # 附着受限时，恢复滚动应比持续抱死更充分利用纵向附着。
         assert baseline["stopped"] and candidate["stopped"]
         assert candidate["path_distance_m"] < baseline["path_distance_m"]
 
@@ -31,7 +46,7 @@ def test_independent_requests_reach_physical_brake_torque():
     state = rows[-1]
     pressures = [state[f"state.brake_states.{i}.pressure"] for i in range(4)]
     assert pressures[2] > pressures[1] > pressures[3] > pressures[0] == 0
-    # 后轴另有发动机制动，零请求用前轮验证机械转矩。
+    # 零请求轮没有制动容量；其它轮独立压力仍生成真实机械转矩。
     assert state["state.wheel_dynamics.0.brake_capacity"] == 0
     assert state["state.wheel_dynamics.0.brake_torque"] == 0
     assert abs(state["state.wheel_dynamics.2.brake_torque"]) > 0

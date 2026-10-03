@@ -1,6 +1,7 @@
 """A single Bullet vehicle, detached from world and traffic management."""
 
 import math
+from dataclasses import replace
 
 from panda3d.bullet import BulletRigidBodyNode, BulletVehicle, ZUp
 from panda3d.core import BitMask32, TransformState, Vec3
@@ -162,6 +163,10 @@ class Vehicle:
         command = self.assist.command(
             control, self.signed_speed(), self.powertrain.gear, self.reverse_enabled, FIXED_DT
         )
+        # 玩家制动优先形成零油门请求；显式研究请求仍允许同时油门/制动。
+        # 历史传动在advance内执行此优先级，冻结分支保留其原请求口径。
+        if self.config.finite_drivetrain and command.brake > 0:
+            command = replace(command, throttle=0.)
         self.apply_command(command)
 
     def apply_command(self, command: VehicleCommand):
@@ -175,11 +180,16 @@ class Vehicle:
             self._vehicle.setSteeringValue(-angle, wheel_index)
 
         pedal, brake, direction = command.throttle, command.brake, command.direction
-        self._drive_pedal = pedal if direction != 0 and brake == 0 else 0.0
+        self._drive_pedal = (pedal if self.config.finite_drivetrain
+                             else pedal if direction != 0 and brake == 0 else 0.0)
         self._brake_pedal = brake
         requests = ((brake,) * 4 if command.wheel_brakes is None else command.wheel_brakes)
+        traction_direction = direction
+        if self.config.finite_drivetrain:
+            # TCS读取上一完整机械步的实际挡位；方向只请求换挡，空挡没有驱动资格。
+            traction_direction = (self.powertrain.gear > 0) - (self.powertrain.gear < 0)
         traction = self.traction.advance(
-            pedal, direction, brake > 0 or any(requests), self.tires.states,
+            pedal, traction_direction, brake > 0 or any(requests), self.tires.states,
             self.config.wheel_radius, FIXED_DT,
         )
         requests = tuple(max(driver, electronic) for driver, electronic in
@@ -188,10 +198,17 @@ class Vehicle:
             self._chassis, self.tires.states, self._wheel_contacts, requests,
             self.steering.angle, FIXED_DT,
         )
-        drive_torque, engine_drag = self.powertrain.advance(
-            speed, self.tires.driven_omega(self._chassis), pedal, direction, brake > 0, FIXED_DT,
-            drive_scale=min(traction.torque_scale, stability.torque_scale),
-        )
+        if self.config.finite_drivetrain:
+            self.powertrain.observe(self._chassis)
+            self.powertrain.prepare(speed, self.tires.driven_omega(self._chassis), pedal, direction,
+                brake > 0, FIXED_DT, drive_scale=min(traction.torque_scale, stability.torque_scale),
+                gear=command.gear, clutch=command.clutch)
+            drive_torque = engine_drag = 0.
+        else:
+            drive_torque, engine_drag = self.powertrain.advance(
+                speed, self.tires.driven_omega(self._chassis), pedal, direction, brake > 0, FIXED_DT,
+                drive_scale=min(traction.torque_scale, stability.torque_scale),
+            )
         requests = stability.brake_requests
         pressures = self.brakes.advance(requests, self.tires.states, self.config.wheel_radius, FIXED_DT)
         position = pose.getPos()
@@ -231,6 +248,7 @@ class Vehicle:
             self._chassis, self._wheel_contacts, wheel_angles(self.steering.angle, self.config),
             drive_torque, engine_drag, pressures, self._contact_tick, FIXED_DT,
             tuple(external_velocity), tuple(external_angular),
+            powertrain=self.powertrain if self.config.finite_drivetrain else None,
         )
         traction_limited = any(
             state.kappa is not None and abs(state.kappa) > 0.1 for state in self.tires.states
@@ -263,6 +281,8 @@ class Vehicle:
         self._contact_tick += 1
         self._wheel_contacts = read_wheel_contacts(self._vehicle, self.on_asphalt)
         self.tires.observe(self._chassis, self._wheel_contacts, self._contact_tick)
+        if self.config.finite_drivetrain:
+            self.powertrain.observe(self._chassis)
         velocity = self._chassis.getLinearVelocity()
         acceleration = (velocity - Vec3(previous_velocity)) / FIXED_DT
         axes = self._chassis.getTransform().getQuat()
@@ -312,6 +332,7 @@ class Vehicle:
             traction_state=self.traction.state,
             esc_enabled=self.config.stability.esc_enabled,
             stability_state=self.stability.state,
+            powertrain_state=self.powertrain.snapshot() if self.config.finite_drivetrain else None,
         )
 
     def close(self):

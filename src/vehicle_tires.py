@@ -8,6 +8,7 @@ from panda3d.core import Mat3, Quat, Vec3
 from rotor_dynamics import steering_torque
 from tire_compliance import deformation_frame, project_deformation, world_deformation
 from tire_coupling import ContactFrame, advance_coupled, cross, dot
+from tire_drivetrain import advance_drivetrain
 from tire_forces import slip_state
 from tire_properties import tire_grip, tire_stiffness
 from vehicle_config import CAR, wheel_hubs
@@ -36,7 +37,7 @@ class Tires:
         return (self.omega[2] + self.omega[3]) / 2 + chassis.getAngularVelocity().dot(axle)
 
     def advance(self, chassis, contacts, angles, drive, engine_drag, pressures, tick, dt,
-                external_velocity=(0.0, 0.0, 0.0), external_angular=(0.0, 0.0, 0.0)):
+                external_velocity=(0.0, 0.0, 0.0), external_angular=(0.0, 0.0, 0.0), *, powertrain=None):
         pose = chassis.getTransform()
         origin = pose.getPos()
         orientation = pose.getQuat()
@@ -146,13 +147,14 @@ class Tires:
         capacities = tuple(config.brake_torque * pressures[i] * (
             config.front_brake_share if i < 2 else 1 - config.front_brake_share) / 2
             + (engine_drag / 2 if i >= 2 else 0.0) for i in range(4))
+        force_initial = tuple((state.fx, state.fy, state.brake_torque) for state in self.states)
         for substep in range(config.tire_substeps):
             steps = None
             fraction = (substep + 1) / config.tire_substeps
             torques = ((0.0, 0.0, 0.0),) * 4
             if config.wheel_rotor_transport:
                 wheel_frames, torques = rotor_frames(fraction, substep / config.tire_substeps)
-            if config.tire_compliance or config.wheel_rotor_transport:
+            if config.tire_compliance or config.wheel_rotor_transport or config.finite_drivetrain:
                 projected = []
                 for i, frame in enumerate(wheel_frames):
                     elastic, loss = (project_deformation(self.deformation[i], frame.elastic_frame,
@@ -162,10 +164,26 @@ class Tires:
                     frame_dissipation[i] += loss
                 free_velocity = tuple(chassis.getLinearVelocity()[a] + external_velocity[a] * fraction for a in range(3))
                 free_angular = tuple(chassis.getAngularVelocity()[a] + external_angular[a] * fraction for a in range(3))
-                steps = advance_coupled(free_velocity, free_angular, self.omega, wheel_frames,
-                                        projected, drives, capacities, config, self.rear_config, sub_dt,
-                                        inverse_inertia=tensor, steering_torques=torques)
-                if config.wheel_rotor_transport:
+                if config.finite_drivetrain:
+                    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+                        wheel_frames, projected, powertrain.engine_torque_request, powertrain.capacity,
+                        powertrain.ratio, capacities, config, self.rear_config, sub_dt,
+                        inverse_inertia=tensor, engine_inertia=config.engine_inertia,
+                        engine_axis=tuple(orientation.xform(Vec3(*config.engine_axis))),
+                        engine_drag=powertrain.engine_drag_coefficient, efficiency=config.drivetrain_efficiency,
+                        steering_torques=torques,
+                        force_initial=force_initial)
+                    steps = result.wheels
+                    force_initial = tuple((step.fx, step.fy, step.brake_torque) for step in steps)
+                    drives = (0., 0., result.drive_torque / 2, result.drive_torque / 2)
+                    end_angular = result.angular
+                    powertrain.accept_step(result, sub_dt)
+                    chassis.applyTorqueImpulse(Vec3(*result.engine_body_torque) * sub_dt)
+                else:
+                    steps = advance_coupled(free_velocity, free_angular, self.omega, wheel_frames,
+                                            projected, drives, capacities, config, self.rear_config, sub_dt,
+                                            inverse_inertia=tensor, steering_torques=torques)
+                if config.wheel_rotor_transport and not config.finite_drivetrain:
                     angular_increment = tuple(sum(
                         frame.response_x[a] * step.fx + frame.response_y[a] * step.fy
                         + frame.response_t[a] * (drives[i] - step.brake_torque)
@@ -180,10 +198,11 @@ class Tires:
                 tangent, axle, point, hub = frame.tangent, frame.axle, frame.point, frame.hub
                 mobility, elastic_frame = frame.mobility, frame.elastic_frame
                 requested_drive, capacity = drives[index], capacities[index]
-                if config.tire_compliance or config.wheel_rotor_transport:
+                if config.tire_compliance or config.wheel_rotor_transport or config.finite_drivetrain:
                     step = steps[index]
-                    self.deformation[index] = world_deformation(
-                        (step.deformation_x, step.deformation_y), elastic_frame)
+                    if config.tire_compliance or config.wheel_rotor_transport:
+                        self.deformation[index] = world_deformation(
+                            (step.deformation_x, step.deformation_y), elastic_frame)
                 else:
                     # 原刚性分支的外力预报时序保留，用于冻结机械对照。
                     velocity = chassis.getLinearVelocity() + Vec3(*external_velocity)

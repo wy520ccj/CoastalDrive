@@ -1,0 +1,13 @@
+{
+  "status": "completed_native_only",
+  "source_files": 280,
+  "trials": [
+    "native-mode-control-r5",
+    "native-rigid-control-r5"
+  ],
+  "source_stable": true,
+  "T0": "131 passed",
+  "T1": "running",
+  "T2": "not_run",
+  "human_gate": "pending"
+}

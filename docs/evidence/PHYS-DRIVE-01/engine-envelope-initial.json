@@ -1,0 +1,325 @@
+{
+  "source_manifest": "validation-T1-r3-source-before.json",
+  "source_frozen": true,
+  "counterexamples": [
+    {
+      "mode": "game",
+      "rpm": 0,
+      "pedal": 0.05,
+      "curve_max_nm": 116.05,
+      "request_nm": 18.368870614359174,
+      "excess_nm": -97.68112938564082
+    },
+    {
+      "mode": "game",
+      "rpm": 0,
+      "pedal": 0.5,
+      "curve_max_nm": 116.05,
+      "request_nm": 70.59137061435916,
+      "excess_nm": -45.45862938564083
+    },
+    {
+      "mode": "game",
+      "rpm": 0,
+      "pedal": 0.9,
+      "curve_max_nm": 116.05,
+      "request_nm": 117.01137061435917,
+      "excess_nm": 0.9613706143591685
+    },
+    {
+      "mode": "game",
+      "rpm": 0,
+      "pedal": 1,
+      "curve_max_nm": 116.05,
+      "request_nm": 128.61637061435917,
+      "excess_nm": 12.566370614359172
+    },
+    {
+      "mode": "game",
+      "rpm": 600,
+      "pedal": 0.05,
+      "curve_max_nm": 116.05,
+      "request_nm": 25.19129020478639,
+      "excess_nm": -90.8587097952136
+    },
+    {
+      "mode": "game",
+      "rpm": 600,
+      "pedal": 0.5,
+      "curve_max_nm": 116.05,
+      "request_nm": 70.21379020478639,
+      "excess_nm": -45.836209795213605
+    },
+    {
+      "mode": "game",
+      "rpm": 600,
+      "pedal": 0.9,
+      "curve_max_nm": 116.05,
+      "request_nm": 110.23379020478639,
+      "excess_nm": -5.816209795213609
+    },
+    {
+      "mode": "game",
+      "rpm": 600,
+      "pedal": 1,
+      "curve_max_nm": 116.05,
+      "request_nm": 120.23879020478638,
+      "excess_nm": 4.188790204786386
+    },
+    {
+      "mode": "game",
+      "rpm": 899,
+      "pedal": 0.05,
+      "curve_max_nm": 116.05,
+      "request_nm": 28.591129300682624,
+      "excess_nm": -87.45887069931737
+    },
+    {
+      "mode": "game",
+      "rpm": 899,
+      "pedal": 0.5,
+      "curve_max_nm": 116.05,
+      "request_nm": 70.02562930068262,
+      "excess_nm": -46.02437069931737
+    },
+    {
+      "mode": "game",
+      "rpm": 899,
+      "pedal": 0.9,
+      "curve_max_nm": 116.05,
+      "request_nm": 106.85629596734928,
+      "excess_nm": -9.193704032650714
+    },
+    {
+      "mode": "game",
+      "rpm": 899,
+      "pedal": 1,
+      "curve_max_nm": 116.05,
+      "request_nm": 116.06396263401595,
+      "excess_nm": 0.013962634015953768
+    },
+    {
+      "mode": "game",
+      "rpm": 900,
+      "pedal": 0.05,
+      "curve_max_nm": 116.05,
+      "request_nm": 28.6025,
+      "excess_nm": -87.44749999999999
+    },
+    {
+      "mode": "game",
+      "rpm": 900,
+      "pedal": 0.5,
+      "curve_max_nm": 116.05,
+      "request_nm": 70.02499999999999,
+      "excess_nm": -46.025000000000006
+    },
+    {
+      "mode": "game",
+      "rpm": 900,
+      "pedal": 0.9,
+      "curve_max_nm": 116.05,
+      "request_nm": 106.845,
+      "excess_nm": -9.204999999999998
+    },
+    {
+      "mode": "game",
+      "rpm": 900,
+      "pedal": 1,
+      "curve_max_nm": 116.05,
+      "request_nm": 116.05,
+      "excess_nm": 0.0
+    },
+    {
+      "mode": "simulation",
+      "rpm": 0,
+      "pedal": 0.05,
+      "curve_max_nm": 110,
+      "request_nm": 70.5,
+      "excess_nm": -39.5
+    },
+    {
+      "mode": "simulation",
+      "rpm": 0,
+      "pedal": 0.5,
+      "curve_max_nm": 110,
+      "request_nm": 120.0,
+      "excess_nm": 10.0
+    },
+    {
+      "mode": "simulation",
+      "rpm": 0,
+      "pedal": 0.9,
+      "curve_max_nm": 110,
+      "request_nm": 164.0,
+      "excess_nm": 54.0
+    },
+    {
+      "mode": "simulation",
+      "rpm": 0,
+      "pedal": 1,
+      "curve_max_nm": 110,
+      "request_nm": 175.0,
+      "excess_nm": 65.0
+    },
+    {
+      "mode": "simulation",
+      "rpm": 600,
+      "pedal": 0.05,
+      "curve_max_nm": 110,
+      "request_nm": 62.587902047863906,
+      "excess_nm": -47.412097952136094
+    },
+    {
+      "mode": "simulation",
+      "rpm": 600,
+      "pedal": 0.5,
+      "curve_max_nm": 110,
+      "request_nm": 104.8879020478639,
+      "excess_nm": -5.1120979521360965
+    },
+    {
+      "mode": "simulation",
+      "rpm": 600,
+      "pedal": 0.9,
+      "curve_max_nm": 110,
+      "request_nm": 142.4879020478639,
+      "excess_nm": 32.48790204786391
+    },
+    {
+      "mode": "simulation",
+      "rpm": 600,
+      "pedal": 1,
+      "curve_max_nm": 110,
+      "request_nm": 151.88790204786392,
+      "excess_nm": 41.88790204786392
+    },
+    {
+      "mode": "simulation",
+      "rpm": 899,
+      "pedal": 0.05,
+      "curve_max_nm": 110,
+      "request_nm": 28.414293006826195,
+      "excess_nm": -81.5857069931738
+    },
+    {
+      "mode": "simulation",
+      "rpm": 899,
+      "pedal": 0.5,
+      "curve_max_nm": 110,
+      "request_nm": 67.1262930068262,
+      "excess_nm": -42.8737069931738
+    },
+    {
+      "mode": "simulation",
+      "rpm": 899,
+      "pedal": 0.9,
+      "curve_max_nm": 110,
+      "request_nm": 101.53695967349286,
+      "excess_nm": -8.46304032650714
+    },
+    {
+      "mode": "simulation",
+      "rpm": 899,
+      "pedal": 1,
+      "curve_max_nm": 110,
+      "request_nm": 110.13962634015952,
+      "excess_nm": 0.13962634015952347
+    },
+    {
+      "mode": "simulation",
+      "rpm": 900,
+      "pedal": 0.05,
+      "curve_max_nm": 110,
+      "request_nm": 28.299999999999997,
+      "excess_nm": -81.7
+    },
+    {
+      "mode": "simulation",
+      "rpm": 900,
+      "pedal": 0.5,
+      "curve_max_nm": 110,
+      "request_nm": 67.0,
+      "excess_nm": -43.0
+    },
+    {
+      "mode": "simulation",
+      "rpm": 900,
+      "pedal": 0.9,
+      "curve_max_nm": 110,
+      "request_nm": 101.4,
+      "excess_nm": -8.599999999999994
+    },
+    {
+      "mode": "simulation",
+      "rpm": 900,
+      "pedal": 1,
+      "curve_max_nm": 110,
+      "request_nm": 110.0,
+      "excess_nm": 0.0
+    }
+  ],
+  "trace_audit": [
+    {
+      "trace": "native-mode-calibrated/game-interrupted-shift.jsonl.gz",
+      "maximum_request_excess_over_previous_completed_rpm_curve_nm": -39.199837272566626,
+      "count_excess": 0
+    },
+    {
+      "trace": "native-mode-calibrated/game-launch.jsonl.gz",
+      "maximum_request_excess_over_previous_completed_rpm_curve_nm": -1.4210854715202004e-13,
+      "count_excess": 0
+    },
+    {
+      "trace": "native-mode-calibrated/game-manual-shift.jsonl.gz",
+      "maximum_request_excess_over_previous_completed_rpm_curve_nm": -83.90174316365042,
+      "count_excess": 0
+    },
+    {
+      "trace": "native-mode-calibrated/game-neutral.jsonl.gz",
+      "maximum_request_excess_over_previous_completed_rpm_curve_nm": 0.0,
+      "count_excess": 0
+    },
+    {
+      "trace": "native-mode-calibrated/game-release-brake.jsonl.gz",
+      "maximum_request_excess_over_previous_completed_rpm_curve_nm": -1.1191863535486846e-05,
+      "count_excess": 0
+    },
+    {
+      "trace": "native-mode-calibrated/game-reverse.jsonl.gz",
+      "maximum_request_excess_over_previous_completed_rpm_curve_nm": -60.58862013185865,
+      "count_excess": 0
+    },
+    {
+      "trace": "native-mode-calibrated/simulation-interrupted-shift.jsonl.gz",
+      "maximum_request_excess_over_previous_completed_rpm_curve_nm": -39.200007506798045,
+      "count_excess": 0
+    },
+    {
+      "trace": "native-mode-calibrated/simulation-launch.jsonl.gz",
+      "maximum_request_excess_over_previous_completed_rpm_curve_nm": -1.4210854715202004e-13,
+      "count_excess": 0
+    },
+    {
+      "trace": "native-mode-calibrated/simulation-manual-shift.jsonl.gz",
+      "maximum_request_excess_over_previous_completed_rpm_curve_nm": -81.92523697596852,
+      "count_excess": 0
+    },
+    {
+      "trace": "native-mode-calibrated/simulation-neutral.jsonl.gz",
+      "maximum_request_excess_over_previous_completed_rpm_curve_nm": -1.6477718741553238e-08,
+      "count_excess": 0
+    },
+    {
+      "trace": "native-mode-calibrated/simulation-release-brake.jsonl.gz",
+      "maximum_request_excess_over_previous_completed_rpm_curve_nm": -9.976787936238907e-06,
+      "count_excess": 0
+    },
+    {
+      "trace": "native-mode-calibrated/simulation-reverse.jsonl.gz",
+      "maximum_request_excess_over_previous_completed_rpm_curve_nm": -7.105427357601002e-14,
+      "count_excess": 0
+    }
+  ],
+  "scope": "曲线已声明为全负荷有效转矩，当前全开损失为0；怠速调节不能增加超出发动机最大能力的主动转矩。仅限制真实主动请求，不钳曲轴RPM或轮端转矩。"
+}

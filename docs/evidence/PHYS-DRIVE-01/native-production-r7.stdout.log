@@ -1,0 +1,17 @@
+PASS game/launch speed=21.0339 rpm=4762.5 gear=2
+PASS game/reverse speed=-6.0220 rpm=1937.4 gear=-1
+PASS game/neutral speed=0.0000 rpm=900.0 gear=0
+PASS game/release-brake speed=-0.0001 rpm=900.0 gear=1
+PASS game/manual-shift speed=19.6934 rpm=3089.3 gear=3
+PASS game/interrupted-shift speed=14.1762 rpm=6323.1 gear=0
+PASS simulation/launch speed=19.1700 rpm=4330.6 gear=2
+PASS simulation/reverse speed=-18.7254 rpm=6168.3 gear=-1
+PASS simulation/neutral speed=0.0000 rpm=1575.1 gear=0
+PASS simulation/release-brake speed=0.0000 rpm=900.0 gear=1
+PASS simulation/manual-shift speed=17.8589 rpm=2798.1 gear=3
+PASS simulation/interrupted-shift speed=12.2826 rpm=6313.3 gear=0
+PASS game/reverse speed=-5.7481 rpm=1858.4 gear=-1
+PASS game/manual-shift speed=18.2229 rpm=2857.7 gear=3
+PASS simulation/reverse speed=-12.4743 rpm=4293.5 gear=-1
+PASS simulation/manual-shift speed=16.5344 rpm=2589.8 gear=3
+COMPLETE 16 production traces / 10560 ticks

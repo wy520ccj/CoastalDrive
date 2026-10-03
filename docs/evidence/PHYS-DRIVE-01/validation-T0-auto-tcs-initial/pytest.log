@@ -1,0 +1,264 @@
+FFFFFFFF                                                                 [100%]
+================================== FAILURES ===================================
+_ test_automatic_held_gear_uses_actual_direction_for_native_tcs[-1-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, gear = -1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_automatic_held_gear_uses_actual_direction_for_native_tcs(mode, gear):
+        config = replace(mode.vehicle_config, road_friction=.12)
+        worlds_and_cars = [_create_vehicle(config) for _ in range(2)]
+        active_ticks = 0
+        try:
+            for world, vehicle in worlds_and_cars:
+                for _ in range(240):
+                    _step(world, vehicle, VehicleCommand(brake=1., gear=gear))
+                assert vehicle.powertrain.gear == gear
+            for _ in range(120):
+                states = []
+                for (world, vehicle), selector in zip(worlds_and_cars, (0, gear)):
+                    _step(world, vehicle, VehicleCommand(throttle=1., direction=selector))
+                    states.append(vehicle.snapshot())
+                # 不请求换挡和再次选择同挡位具有相同机械作用，TCS应读实际传动。
+>               assert states[0] == states[1]
+E               AssertionError: assert CarState(posi...20587404e-18)) == CarState(posi...20587404e-18))
+E                 
+E                 Omitting 29 identical items, use -vv to show
+E                 Differing attributes:
+E                 ['traction_state']
+E                 
+E                 Drill down into differing attribute traction_state:
+E                   traction_state: TractionState(requested_throttle=1.0, torque_scale=1.0, active=False, wheel_slips=(-0.0, -0.0, -0.0, -0.0), brake_requests=(0.0, 0.0, 0.0, 0.0), feedback_ticks=(241, 241, 241, 241)) != TractionState(requested_throttle=1.0, torque_scale=1.0, active=False, wheel_slips=(2.3224528859307004e-10, 2.7901516518272606e-10, 2.3224528371629242e-10, 2.7902188359819356e-10), brake_requests=(0.0, 0.0, 0.0, 0.0), feedback_ticks=(241, 241, 241, 241))...
+E                 
+E                 ...Full output truncated (9 lines hidden), use '-vv' to show
+
+tests\test_finite_powertrain.py:157: AssertionError
+_ test_automatic_held_gear_uses_actual_direction_for_native_tcs[-1-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, gear = -1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_automatic_held_gear_uses_actual_direction_for_native_tcs(mode, gear):
+        config = replace(mode.vehicle_config, road_friction=.12)
+        worlds_and_cars = [_create_vehicle(config) for _ in range(2)]
+        active_ticks = 0
+        try:
+            for world, vehicle in worlds_and_cars:
+                for _ in range(240):
+                    _step(world, vehicle, VehicleCommand(brake=1., gear=gear))
+                assert vehicle.powertrain.gear == gear
+            for _ in range(120):
+                states = []
+                for (world, vehicle), selector in zip(worlds_and_cars, (0, gear)):
+                    _step(world, vehicle, VehicleCommand(throttle=1., direction=selector))
+                    states.append(vehicle.snapshot())
+                # 不请求换挡和再次选择同挡位具有相同机械作用，TCS应读实际传动。
+>               assert states[0] == states[1]
+E               AssertionError: assert CarState(posi...25418035e-18)) == CarState(posi...25418035e-18))
+E                 
+E                 Omitting 29 identical items, use -vv to show
+E                 Differing attributes:
+E                 ['traction_state']
+E                 
+E                 Drill down into differing attribute traction_state:
+E                   traction_state: TractionState(requested_throttle=1.0, torque_scale=1.0, active=False, wheel_slips=(-0.0, -0.0, -0.0, -0.0), brake_requests=(0.0, 0.0, 0.0, 0.0), feedback_ticks=(241, 241, 241, 241)) != TractionState(requested_throttle=1.0, torque_scale=1.0, active=False, wheel_slips=(2.2455918070439e-10, 2.2048305582084114e-10, 2.2457727793928446e-10, 2.2048305629994265e-10), brake_requests=(0.0, 0.0, 0.0, 0.0), feedback_ticks=(241, 241, 241, 241))...
+E                 
+E                 ...Full output truncated (9 lines hidden), use '-vv' to show
+
+tests\test_finite_powertrain.py:157: AssertionError
+_ test_automatic_held_gear_uses_actual_direction_for_native_tcs[1-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, gear = 1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_automatic_held_gear_uses_actual_direction_for_native_tcs(mode, gear):
+        config = replace(mode.vehicle_config, road_friction=.12)
+        worlds_and_cars = [_create_vehicle(config) for _ in range(2)]
+        active_ticks = 0
+        try:
+            for world, vehicle in worlds_and_cars:
+                for _ in range(240):
+                    _step(world, vehicle, VehicleCommand(brake=1., gear=gear))
+                assert vehicle.powertrain.gear == gear
+            for _ in range(120):
+                states = []
+                for (world, vehicle), selector in zip(worlds_and_cars, (0, gear)):
+                    _step(world, vehicle, VehicleCommand(throttle=1., direction=selector))
+                    states.append(vehicle.snapshot())
+                # 不请求换挡和再次选择同挡位具有相同机械作用，TCS应读实际传动。
+>               assert states[0] == states[1]
+E               AssertionError: assert CarState(posi...89286889e-18)) == CarState(posi...89286889e-18))
+E                 
+E                 Omitting 29 identical items, use -vv to show
+E                 Differing attributes:
+E                 ['traction_state']
+E                 
+E                 Drill down into differing attribute traction_state:
+E                   traction_state: TractionState(requested_throttle=1.0, torque_scale=1.0, active=False, wheel_slips=(0.0, 0.0, 0.0, 0.0), brake_requests=(0.0, 0.0, 0.0, 0.0), feedback_ticks=(241, 241, 241, 241)) != TractionState(requested_throttle=1.0, torque_scale=1.0, active=False, wheel_slips=(3.212066302779162e-10, 2.330919122054291e-10, 3.2120662393731546e-10, 2.330956581669215e-10), brake_requests=(0.0, 0.0, 0.0, 0.0), feedback_ticks=(241, 241, 241, 241))...
+E                 
+E                 ...Full output truncated (9 lines hidden), use '-vv' to show
+
+tests\test_finite_powertrain.py:157: AssertionError
+_ test_automatic_held_gear_uses_actual_direction_for_native_tcs[1-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, gear = 1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_automatic_held_gear_uses_actual_direction_for_native_tcs(mode, gear):
+        config = replace(mode.vehicle_config, road_friction=.12)
+        worlds_and_cars = [_create_vehicle(config) for _ in range(2)]
+        active_ticks = 0
+        try:
+            for world, vehicle in worlds_and_cars:
+                for _ in range(240):
+                    _step(world, vehicle, VehicleCommand(brake=1., gear=gear))
+                assert vehicle.powertrain.gear == gear
+            for _ in range(120):
+                states = []
+                for (world, vehicle), selector in zip(worlds_and_cars, (0, gear)):
+                    _step(world, vehicle, VehicleCommand(throttle=1., direction=selector))
+                    states.append(vehicle.snapshot())
+                # 不请求换挡和再次选择同挡位具有相同机械作用，TCS应读实际传动。
+>               assert states[0] == states[1]
+E               AssertionError: assert CarState(posi...20893015e-18)) == CarState(posi...20893015e-18))
+E                 
+E                 Omitting 29 identical items, use -vv to show
+E                 Differing attributes:
+E                 ['traction_state']
+E                 
+E                 Drill down into differing attribute traction_state:
+E                   traction_state: TractionState(requested_throttle=1.0, torque_scale=1.0, active=False, wheel_slips=(0.0, 0.0, 0.0, 0.0), brake_requests=(0.0, 0.0, 0.0, 0.0), feedback_ticks=(241, 241, 241, 241)) != TractionState(requested_throttle=1.0, torque_scale=1.0, active=False, wheel_slips=(8.033082126189836e-11, 6.235942952967557e-11, 8.031269006840102e-11, 6.235942855749272e-11), brake_requests=(0.0, 0.0, 0.0, 0.0), feedback_ticks=(241, 241, 241, 241))...
+E                 
+E                 ...Full output truncated (9 lines hidden), use '-vv' to show
+
+tests\test_finite_powertrain.py:157: AssertionError
+_ test_automatic_shift_from_neutral_waits_for_actual_gear_before_tcs[-1-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, direction = -1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("direction", (-1, 1))
+    def test_automatic_shift_from_neutral_waits_for_actual_gear_before_tcs(mode, direction):
+        config = replace(mode.vehicle_config, road_friction=.12)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(240):
+                _step(world, vehicle, VehicleCommand(gear=0, brake=1.))
+            for _ in range(60):
+                _step(world, vehicle, VehicleCommand(gear=0))
+            # 仅设置一次试验初态，再采样真实残余轮转；运行中不重设轮速。
+            vehicle.tires.initialize_rolling(direction * 8.)
+            _step(world, vehicle, VehicleCommand(gear=0))
+            assert any(w.sample_support and direction * w.kappa > .2
+                       for w in vehicle.snapshot().wheel_dynamics[2:])
+            for _ in range(40):
+                assert vehicle.powertrain.gear == 0
+                _step(world, vehicle, VehicleCommand(throttle=1., direction=direction))
+                state = vehicle.snapshot()
+>               assert not state.traction_state.active
+E               assert not True
+E                +  where True = TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(7.955255838059374, 7.955255839170611, 7.955255838845604, 7.955255839948059), brake_requests=(0.0, 0.0, 0.25, 0.25), feedback_ticks=(301, 301, 301, 301)).active
+E                +    where TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(7.955255838059374, 7.955255839170611, 7.955255838845604, 7.955255839948059), brake_requests=(0.0, 0.0, 0.25, 0.25), feedback_ticks=(301, 301, 301, 301)) = CarState(position=(1.1607223862619698e-11, -5.843830149387941e-05, 0.418687641620636), heading=4.3258059356787726e-09,...7206961842534e-06), engine_work=16.59045573702703, engine_drag_heat=17.45531409474473, clutch_heat=0.0, gear_heat=0.0)).traction_state
+
+tests\test_finite_powertrain.py:184: AssertionError
+_ test_automatic_shift_from_neutral_waits_for_actual_gear_before_tcs[-1-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, direction = -1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("direction", (-1, 1))
+    def test_automatic_shift_from_neutral_waits_for_actual_gear_before_tcs(mode, direction):
+        config = replace(mode.vehicle_config, road_friction=.12)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(240):
+                _step(world, vehicle, VehicleCommand(gear=0, brake=1.))
+            for _ in range(60):
+                _step(world, vehicle, VehicleCommand(gear=0))
+            # 仅设置一次试验初态，再采样真实残余轮转；运行中不重设轮速。
+            vehicle.tires.initialize_rolling(direction * 8.)
+            _step(world, vehicle, VehicleCommand(gear=0))
+            assert any(w.sample_support and direction * w.kappa > .2
+                       for w in vehicle.snapshot().wheel_dynamics[2:])
+            for _ in range(40):
+                assert vehicle.powertrain.gear == 0
+                _step(world, vehicle, VehicleCommand(throttle=1., direction=direction))
+                state = vehicle.snapshot()
+>               assert not state.traction_state.active
+E               assert not True
+E                +  where True = TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(7.955255813028073, 7.9552558242250875, 7.955255813814297, 7.9552558250011), brake_requests=(0.0, 0.0, 0.25, 0.25), feedback_ticks=(301, 301, 301, 301)).active
+E                +    where TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(7.955255813028073, 7.9552558242250875, 7.955255813814297, 7.9552558250011), brake_requests=(0.0, 0.0, 0.25, 0.25), feedback_ticks=(301, 301, 301, 301)) = CarState(position=(1.2876103828995955e-11, -5.843830149387941e-05, 0.418687641620636), heading=6.9217920284359025e-09,...68995953661e-05), engine_work=16.602135706962237, engine_drag_heat=17.570576908541497, clutch_heat=0.0, gear_heat=0.0)).traction_state
+
+tests\test_finite_powertrain.py:184: AssertionError
+_ test_automatic_shift_from_neutral_waits_for_actual_gear_before_tcs[1-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, direction = 1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("direction", (-1, 1))
+    def test_automatic_shift_from_neutral_waits_for_actual_gear_before_tcs(mode, direction):
+        config = replace(mode.vehicle_config, road_friction=.12)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(240):
+                _step(world, vehicle, VehicleCommand(gear=0, brake=1.))
+            for _ in range(60):
+                _step(world, vehicle, VehicleCommand(gear=0))
+            # 仅设置一次试验初态，再采样真实残余轮转；运行中不重设轮速。
+            vehicle.tires.initialize_rolling(direction * 8.)
+            _step(world, vehicle, VehicleCommand(gear=0))
+            assert any(w.sample_support and direction * w.kappa > .2
+                       for w in vehicle.snapshot().wheel_dynamics[2:])
+            for _ in range(40):
+                assert vehicle.powertrain.gear == 0
+                _step(world, vehicle, VehicleCommand(throttle=1., direction=direction))
+                state = vehicle.snapshot()
+>               assert not state.traction_state.active
+E               assert not True
+E                +  where True = TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(7.955255838055879, 7.955255839167117, 7.955255838849099, 7.955255839951553), brake_requests=(0.0, 0.0, 0.25, 0.25), feedback_ticks=(301, 301, 301, 301)).active
+E                +    where TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(7.955255838055879, 7.955255839167117, 7.955255838849099, 7.955255839951553), brake_requests=(0.0, 0.0, 0.25, 0.25), feedback_ticks=(301, 301, 301, 301)) = CarState(position=(1.1850499748167209e-11, 5.843830876983702e-05, 0.418687641620636), heading=-4.311936585565945e-09, ...201068189413e-06), engine_work=16.590455737030524, engine_drag_heat=17.45531409475208, clutch_heat=0.0, gear_heat=0.0)).traction_state
+
+tests\test_finite_powertrain.py:184: AssertionError
+_ test_automatic_shift_from_neutral_waits_for_actual_gear_before_tcs[1-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, direction = 1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("direction", (-1, 1))
+    def test_automatic_shift_from_neutral_waits_for_actual_gear_before_tcs(mode, direction):
+        config = replace(mode.vehicle_config, road_friction=.12)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(240):
+                _step(world, vehicle, VehicleCommand(gear=0, brake=1.))
+            for _ in range(60):
+                _step(world, vehicle, VehicleCommand(gear=0))
+            # 仅设置一次试验初态，再采样真实残余轮转；运行中不重设轮速。
+            vehicle.tires.initialize_rolling(direction * 8.)
+            _step(world, vehicle, VehicleCommand(gear=0))
+            assert any(w.sample_support and direction * w.kappa > .2
+                       for w in vehicle.snapshot().wheel_dynamics[2:])
+            for _ in range(40):
+                assert vehicle.powertrain.gear == 0
+                _step(world, vehicle, VehicleCommand(throttle=1., direction=direction))
+                state = vehicle.snapshot()
+>               assert not state.traction_state.active
+E               assert not True
+E                +  where True = TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(7.955255813024571, 7.955255824221585, 7.955255813817798, 7.955255825004602), brake_requests=(0.0, 0.0, 0.25, 0.25), feedback_ticks=(301, 301, 301, 301)).active
+E                +    where TractionState(requested_throttle=1.0, torque_scale=0.9, active=True, wheel_slips=(7.955255813024571, 7.955255824221585, 7.955255813817798, 7.955255825004602), brake_requests=(0.0, 0.0, 0.25, 0.25), feedback_ticks=(301, 301, 301, 301)) = CarState(position=(1.3117221718539351e-11, 5.843830876983702e-05, 0.418687641620636), heading=-6.914843808658588e-09, ...81751504698e-05), engine_work=16.602135706965854, engine_drag_heat=17.570576908549164, clutch_heat=0.0, gear_heat=0.0)).traction_state
+
+tests\test_finite_powertrain.py:184: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_finite_powertrain.py::test_automatic_held_gear_uses_actual_direction_for_native_tcs[-1-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_automatic_held_gear_uses_actual_direction_for_native_tcs[-1-DrivingMode.SIMULATION]
+FAILED tests/test_finite_powertrain.py::test_automatic_held_gear_uses_actual_direction_for_native_tcs[1-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_automatic_held_gear_uses_actual_direction_for_native_tcs[1-DrivingMode.SIMULATION]
+FAILED tests/test_finite_powertrain.py::test_automatic_shift_from_neutral_waits_for_actual_gear_before_tcs[-1-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_automatic_shift_from_neutral_waits_for_actual_gear_before_tcs[-1-DrivingMode.SIMULATION]
+FAILED tests/test_finite_powertrain.py::test_automatic_shift_from_neutral_waits_for_actual_gear_before_tcs[1-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_automatic_shift_from_neutral_waits_for_actual_gear_before_tcs[1-DrivingMode.SIMULATION]
+8 failed in 6.63s

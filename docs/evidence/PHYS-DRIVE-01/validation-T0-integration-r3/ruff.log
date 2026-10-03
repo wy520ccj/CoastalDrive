@@ -1,0 +1,14 @@
+RUF007 Prefer `itertools.pairwise()` over `zip()` when iterating over successive pairs
+  --> tests\test_tcs_integration.py:37:30
+   |
+35 |     for enabled in (False, True):
+36 |         _, rows = run_trial("driver-brake", enabled, duration=3)
+37 |         for previous, row in zip(rows[240:-1], rows[241:]):
+   |                              ^^^
+38 |             assert not row["state.traction_state.active"]
+39 |             assert row["state.traction_state.torque_scale"] == 1
+   |
+help: Replace `zip()` with `itertools.pairwise()`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).

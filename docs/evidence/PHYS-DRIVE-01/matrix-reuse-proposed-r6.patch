@@ -1,0 +1,36 @@
+--- a/src/transmission_ports.py
++++ b/src/transmission_ports.py
+@@ -70,15 +70,16 @@
+     raise ArithmeticError("离合/齿轮共同末状态无可行解")
+ 
+ 
+-def _solve_three(rows, rhs):
+-    columns = cross(rows[1], rows[2]), cross(rows[2], rows[0]), cross(rows[0], rows[1])
+-    determinant = dot(rows[0], columns[0])
+-    return tuple(sum(columns[j][i] * rhs[j] for j in range(3)) / determinant for i in range(3))
++def _inverse_three(rows):
++    cofactors = cross(rows[1], rows[2]), cross(rows[2], rows[0]), cross(rows[0], rows[1])
++    determinant = dot(rows[0], cofactors[0])
++    return tuple(tuple(sum(cofactors[j][i] * float(j == k) for j in range(3)) / determinant
++                       for i in range(3)) for k in range(3))
+ 
+ 
+ def clutch_brake_plans(response, capacity, brake_capacity, efficiency):
+     """缓存当前轮胎子步的三个机械约束；迭代只改变自由速度和活动模式。"""
+-    plans = []
++    plans, inverse_by_rows = [], {}
+     clutch_modes = ("locked", "positive-slip", "negative-slip") if capacity else ("positive-slip", "negative-slip")
+     brake_modes = ("locked", "positive-slip", "negative-slip") if brake_capacity else ("positive-slip", "negative-slip")
+     for clutch_mode in clutch_modes:
+@@ -90,7 +91,10 @@
+                     rows = (response[0] if clutch_mode == "locked" else (1., 0., 0.),
+                             response[1] if gear_mode == "static" else (-slope, 1., 0.),
+                             response[2] if brake_mode == "locked" else (0., 0., 1.))
+-                    columns = tuple(_solve_three(rows, tuple(float(i == j) for i in range(3))) for j in range(3))
++                    # 相同约束行只算一次；缓存仅属于当前子步，不近似响应系数。
++                    if rows not in inverse_by_rows:
++                        inverse_by_rows[rows] = _inverse_three(rows)
++                    columns = inverse_by_rows[rows]
+                     plans.append(((clutch_mode, gear_mode, brake_mode), sign, columns))
+     return tuple(plans)
+ 

@@ -1,0 +1,21 @@
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests\test_transmission_ports.py:3:1
+  |
+1 |   """传动端口：独立区间消元对照、定向模式覆盖和耗散符号。"""
+2 |
+3 | / import itertools
+4 | | import random
+5 | |
+6 | | import pytest
+7 | |
+8 | | from transmission_ports import clutch_brake_plans, clutch_brake_state, transmission_state
+  | |_________________________________________________________________________________________^
+help: Organize imports
+   |
+9  |
+   -
+10 | RESPONSE = ((7., -2., .4), (-2., 4., -.7), (.4, -.7, 1.5))
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

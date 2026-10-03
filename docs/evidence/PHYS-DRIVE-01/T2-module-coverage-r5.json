@@ -1,0 +1,7 @@
+{
+  "scope": "collection only, not test execution",
+  "T1_nodes": 1377,
+  "T2_nodes": 1553,
+  "missing_T1_nodes": [],
+  "T1_subset_of_full_T2_selection": true
+}

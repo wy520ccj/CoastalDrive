@@ -1,0 +1,65 @@
+{
+  "rows": [
+    {
+      "mode": "game",
+      "gear": -1,
+      "direction": 0,
+      "speed_mps": 0,
+      "request_nm": 179.35,
+      "curve_limit_nm": 179.35,
+      "reverse_request_limit_nm": 74.32432432432432,
+      "game_speed_limits": true
+    },
+    {
+      "mode": "game",
+      "gear": -1,
+      "direction": 0,
+      "speed_mps": -7,
+      "request_nm": 179.35,
+      "curve_limit_nm": 179.35,
+      "reverse_request_limit_nm": 74.32432432432432,
+      "game_speed_limits": true
+    },
+    {
+      "mode": "game",
+      "gear": 0,
+      "direction": 0,
+      "speed_mps": 60,
+      "request_nm": 0.0,
+      "curve_limit_nm": 179.35,
+      "reverse_request_limit_nm": 74.32432432432432,
+      "game_speed_limits": true
+    },
+    {
+      "mode": "simulation",
+      "gear": -1,
+      "direction": 0,
+      "speed_mps": 0,
+      "request_nm": 170.0,
+      "curve_limit_nm": 170.0,
+      "reverse_request_limit_nm": 74.32432432432432,
+      "game_speed_limits": false
+    },
+    {
+      "mode": "simulation",
+      "gear": -1,
+      "direction": 0,
+      "speed_mps": -7,
+      "request_nm": 170.0,
+      "curve_limit_nm": 170.0,
+      "reverse_request_limit_nm": 74.32432432432432,
+      "game_speed_limits": false
+    },
+    {
+      "mode": "simulation",
+      "gear": 0,
+      "direction": 0,
+      "speed_mps": 60,
+      "request_nm": 170.0,
+      "curve_limit_nm": 170.0,
+      "reverse_request_limit_nm": 74.32432432432432,
+      "game_speed_limits": false
+    }
+  ],
+  "scope": "显式gear绕过自动方向请求；游戏驱动请求限速/倒车软能力必须读取实际挡位，困难参考保持无游戏限速。"
+}

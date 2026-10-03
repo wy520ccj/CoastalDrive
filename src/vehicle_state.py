@@ -3,6 +3,7 @@
 import math
 from dataclasses import dataclass, field
 
+from powertrain import PowertrainState
 from vehicle_brakes import BrakeState
 from vehicle_config import CAR
 from vehicle_dynamics import DynamicsState
@@ -28,19 +29,23 @@ class Control:
 
 @dataclass(frozen=True)
 class VehicleCommand:
-    """执行器请求：转向角为度，踏板为0～1，方向为−1/0/1；绕过输入辅助。"""
+    """执行器请求绕过输入辅助；gear覆盖自动direction，有限传动反馈读取实际挡位。"""
 
     steering: float = 0.0
     throttle: float = 0.0
     brake: float = 0.0
     direction: int = 0
     wheel_brakes: tuple[float, float, float, float] | None = None
+    gear: int | None = None
+    clutch: float | None = None  # 0分离/1结合；None采用自动策略，仍经过有限执行器。
 
     def __post_init__(self):
         if self.wheel_brakes is not None and (
             len(self.wheel_brakes) != 4 or any(not 0 <= value <= 1 for value in self.wheel_brakes)
         ):
             raise ValueError("分轮制动请求须为四个0～1比例")
+        if self.clutch is not None and not 0 <= self.clutch <= 1:
+            raise ValueError("离合请求须为0～1比例")
 
 
 @dataclass(frozen=True)
@@ -146,6 +151,7 @@ class CarState:
     traction_state: TractionState = field(default_factory=TractionState)
     esc_enabled: bool = False
     stability_state: StabilityState = field(default_factory=StabilityState)
+    powertrain_state: PowertrainState | None = None
 
 
 def forward(heading):

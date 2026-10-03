@@ -1,0 +1,153 @@
+{
+  "status": "completed_identical_native_traces",
+  "scope": "isolated process prototype, production source unchanged; not full T1 or performance gate",
+  "algorithm_script_sha256": "767bc86c661b6be93627a429a28d754552158bbaf2cc31b255ecbef1b0a8aceb",
+  "runner_script_sha256": "87b5dde38203bb9cc981fd001837a33246abe5f3cccf488b08261c14f11a7409",
+  "cases": [
+    {
+      "baseline": "native-mode-control-r5",
+      "candidate": "cofactor-native-flexible-r5",
+      "file": "game-interrupted-shift.jsonl.gz",
+      "ticks": 720,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "367fc5782f90bf53c80e6802a4b5d362b56265859970f2423820ce3a7daceacc",
+      "candidate_sha256": "367fc5782f90bf53c80e6802a4b5d362b56265859970f2423820ce3a7daceacc"
+    },
+    {
+      "baseline": "native-mode-control-r5",
+      "candidate": "cofactor-native-flexible-r5",
+      "file": "game-launch.jsonl.gz",
+      "ticks": 720,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "495efdecdc8c230c26adb3884b8e93eac9d8fd360a5d7c31b23deb04774815d8",
+      "candidate_sha256": "495efdecdc8c230c26adb3884b8e93eac9d8fd360a5d7c31b23deb04774815d8"
+    },
+    {
+      "baseline": "native-mode-control-r5",
+      "candidate": "cofactor-native-flexible-r5",
+      "file": "game-manual-shift.jsonl.gz",
+      "ticks": 720,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "b52d326454f4898e7af21971c6bffb13e61b52bcf1c409730bc2a9b784e12d03",
+      "candidate_sha256": "b52d326454f4898e7af21971c6bffb13e61b52bcf1c409730bc2a9b784e12d03"
+    },
+    {
+      "baseline": "native-mode-control-r5",
+      "candidate": "cofactor-native-flexible-r5",
+      "file": "game-neutral.jsonl.gz",
+      "ticks": 720,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "b8d5d3f0307ae8f0cfd26ba36ca2cd19c1ef2ed21fdfcd4bad06d51f5ec07988",
+      "candidate_sha256": "b8d5d3f0307ae8f0cfd26ba36ca2cd19c1ef2ed21fdfcd4bad06d51f5ec07988"
+    },
+    {
+      "baseline": "native-mode-control-r5",
+      "candidate": "cofactor-native-flexible-r5",
+      "file": "game-release-brake.jsonl.gz",
+      "ticks": 720,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "7941b1280f214e5df3fd0ac78d92536f6aa1bda6e8e318af878d572dbaa893d1",
+      "candidate_sha256": "7941b1280f214e5df3fd0ac78d92536f6aa1bda6e8e318af878d572dbaa893d1"
+    },
+    {
+      "baseline": "native-mode-control-r5",
+      "candidate": "cofactor-native-flexible-r5",
+      "file": "game-reverse.jsonl.gz",
+      "ticks": 720,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "fdf44f0a39742323196c9ea99f43b5b435c42400e62ce6f40f0a92a9048350c3",
+      "candidate_sha256": "fdf44f0a39742323196c9ea99f43b5b435c42400e62ce6f40f0a92a9048350c3"
+    },
+    {
+      "baseline": "native-mode-control-r5",
+      "candidate": "cofactor-native-flexible-r5",
+      "file": "simulation-interrupted-shift.jsonl.gz",
+      "ticks": 720,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "031dad88b07b6e61b274c218b4bbb3bfa9ccdf5b1e235350dbe899b0e7790a20",
+      "candidate_sha256": "031dad88b07b6e61b274c218b4bbb3bfa9ccdf5b1e235350dbe899b0e7790a20"
+    },
+    {
+      "baseline": "native-mode-control-r5",
+      "candidate": "cofactor-native-flexible-r5",
+      "file": "simulation-launch.jsonl.gz",
+      "ticks": 720,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "2ea04851328f013fb295980f5fefe08803c5d7fc6f3a2238508b84667b0e5b64",
+      "candidate_sha256": "2ea04851328f013fb295980f5fefe08803c5d7fc6f3a2238508b84667b0e5b64"
+    },
+    {
+      "baseline": "native-mode-control-r5",
+      "candidate": "cofactor-native-flexible-r5",
+      "file": "simulation-manual-shift.jsonl.gz",
+      "ticks": 720,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "dfaf9e160f79804fb24e005bd3e1e4c00aa108623a1b10fe378f527ddbc83e47",
+      "candidate_sha256": "dfaf9e160f79804fb24e005bd3e1e4c00aa108623a1b10fe378f527ddbc83e47"
+    },
+    {
+      "baseline": "native-mode-control-r5",
+      "candidate": "cofactor-native-flexible-r5",
+      "file": "simulation-neutral.jsonl.gz",
+      "ticks": 720,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "802cb8e739751d2d339afab018d5498d0bac84a1c81fb970b6cd8633a6eeb399",
+      "candidate_sha256": "802cb8e739751d2d339afab018d5498d0bac84a1c81fb970b6cd8633a6eeb399"
+    },
+    {
+      "baseline": "native-mode-control-r5",
+      "candidate": "cofactor-native-flexible-r5",
+      "file": "simulation-release-brake.jsonl.gz",
+      "ticks": 720,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "45f8bee263a26f6d270f8aa69fdc5b7b952f79fde37f9241c3b9136aab771aeb",
+      "candidate_sha256": "45f8bee263a26f6d270f8aa69fdc5b7b952f79fde37f9241c3b9136aab771aeb"
+    },
+    {
+      "baseline": "native-mode-control-r5",
+      "candidate": "cofactor-native-flexible-r5",
+      "file": "simulation-reverse.jsonl.gz",
+      "ticks": 720,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "a87f644c49b4215d7f9008a5ee2ff794cebe68f7927e35f1324a10c385f738dd",
+      "candidate_sha256": "a87f644c49b4215d7f9008a5ee2ff794cebe68f7927e35f1324a10c385f738dd"
+    },
+    {
+      "baseline": "native-rigid-control-r5",
+      "candidate": "cofactor-native-rigid-r5",
+      "file": "game-manual-shift.jsonl.gz",
+      "ticks": 480,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "1e45c95b1dcc7bb3a23fdbe066a42c9e4722f74696fa8fee0d7cd25650858450",
+      "candidate_sha256": "1e45c95b1dcc7bb3a23fdbe066a42c9e4722f74696fa8fee0d7cd25650858450"
+    },
+    {
+      "baseline": "native-rigid-control-r5",
+      "candidate": "cofactor-native-rigid-r5",
+      "file": "game-reverse.jsonl.gz",
+      "ticks": 480,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "ca5eaa1e13bc09f9478261a0cd2e1e5a9b43841f746eeefec20dd082b2a1d106",
+      "candidate_sha256": "ca5eaa1e13bc09f9478261a0cd2e1e5a9b43841f746eeefec20dd082b2a1d106"
+    },
+    {
+      "baseline": "native-rigid-control-r5",
+      "candidate": "cofactor-native-rigid-r5",
+      "file": "simulation-manual-shift.jsonl.gz",
+      "ticks": 480,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "9f608828df7e76fa3e9b5574b10970cf7a09243902b113837d3629706efd1e01",
+      "candidate_sha256": "9f608828df7e76fa3e9b5574b10970cf7a09243902b113837d3629706efd1e01"
+    },
+    {
+      "baseline": "native-rigid-control-r5",
+      "candidate": "cofactor-native-rigid-r5",
+      "file": "simulation-reverse.jsonl.gz",
+      "ticks": 480,
+      "decompressed_bytes_equal": true,
+      "baseline_sha256": "3197003d209a9cbd057ed136fa2701be2732f944b7e4c529b4fa475919c7aa64",
+      "candidate_sha256": "3197003d209a9cbd057ed136fa2701be2732f944b7e4c529b4fa475919c7aa64"
+    }
+  ],
+  "total_ticks": 10560
+}

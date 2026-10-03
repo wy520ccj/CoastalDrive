@@ -1,0 +1,944 @@
+{
+  "scope": "instrumented one-car native world, 240 settle + 120 launch ticks; concurrent full T1; not a visible-window or frame-rate gate",
+  "source_stable": true,
+  "total_calls": 16701027,
+  "total_instrumented_seconds": 13.483849199999993,
+  "functions": [
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 41,
+      "function": "advance_drivetrain",
+      "primitive_calls": 720,
+      "calls": 720,
+      "self_seconds": 0.2067284,
+      "cumulative_seconds": 12.8318723
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 83,
+      "function": "<genexpr>",
+      "primitive_calls": 3600,
+      "calls": 3600,
+      "self_seconds": 0.0083354,
+      "cumulative_seconds": 7.012942600000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\transmission_ports.py",
+      "line": 79,
+      "function": "clutch_brake_plans",
+      "primitive_calls": 2880,
+      "calls": 2880,
+      "self_seconds": 0.3336489,
+      "cumulative_seconds": 7.004607200000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\transmission_ports.py",
+      "line": 73,
+      "function": "_solve_three",
+      "primitive_calls": 302400,
+      "calls": 302400,
+      "self_seconds": 1.1380605000000001,
+      "cumulative_seconds": 5.468313200000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 151,
+      "function": "solve_wheel",
+      "primitive_calls": 4676,
+      "calls": 4676,
+      "self_seconds": 0.0530628,
+      "cumulative_seconds": 3.6947963
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\wheel_dynamics.py",
+      "line": 157,
+      "function": "_solve_force",
+      "primitive_calls": 4676,
+      "calls": 4676,
+      "self_seconds": 0.040009100000000006,
+      "cumulative_seconds": 2.7994513000000003
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 158,
+      "function": "local_state",
+      "primitive_calls": 19276,
+      "calls": 19276,
+      "self_seconds": 0.25915920000000003,
+      "cumulative_seconds": 1.9211778000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 175,
+      "function": "residual",
+      "primitive_calls": 11292,
+      "calls": 11292,
+      "self_seconds": 0.0342283,
+      "cumulative_seconds": 1.8798332000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 14,
+      "function": "dot",
+      "primitive_calls": 333840,
+      "calls": 333840,
+      "self_seconds": 0.37565390000000004,
+      "cumulative_seconds": 1.4011711
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\transmission_ports.py",
+      "line": 98,
+      "function": "clutch_brake_state",
+      "primitive_calls": 19276,
+      "calls": 19276,
+      "self_seconds": 0.36077050000000005,
+      "cumulative_seconds": 1.2026799000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 200,
+      "function": "jacobian",
+      "primitive_calls": 3308,
+      "calls": 3308,
+      "self_seconds": 0.049667800000000005,
+      "cumulative_seconds": 0.8750296000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 105,
+      "function": "known",
+      "primitive_calls": 8719,
+      "calls": 8719,
+      "self_seconds": 0.07219060000000001,
+      "cumulative_seconds": 0.8599688000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 138,
+      "function": "contact",
+      "primitive_calls": 18848,
+      "calls": 18848,
+      "self_seconds": 0.1182045,
+      "cumulative_seconds": 0.8360544000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 115,
+      "function": "shared",
+      "primitive_calls": 2338,
+      "calls": 2338,
+      "self_seconds": 0.0600199,
+      "cumulative_seconds": 0.7532986
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\transmission_ports.py",
+      "line": 76,
+      "function": "<genexpr>",
+      "primitive_calls": 3628800,
+      "calls": 3628800,
+      "self_seconds": 0.6387039,
+      "cumulative_seconds": 0.6387039
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 180,
+      "function": "derivatives",
+      "primitive_calls": 3308,
+      "calls": 3308,
+      "self_seconds": 0.099929,
+      "cumulative_seconds": 0.6059417
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 70,
+      "function": "mobility",
+      "primitive_calls": 18799,
+      "calls": 18799,
+      "self_seconds": 0.09074900000000001,
+      "cumulative_seconds": 0.5802203
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\transmission_ports.py",
+      "line": 108,
+      "function": "<genexpr>",
+      "primitive_calls": 152008,
+      "calls": 152008,
+      "self_seconds": 0.1263351,
+      "cumulative_seconds": 0.42640880000000003
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 132,
+      "function": "velocities",
+      "primitive_calls": 25036,
+      "calls": 25036,
+      "self_seconds": 0.0746388,
+      "cumulative_seconds": 0.41963740000000005
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 16,
+      "function": "<genexpr>",
+      "primitive_calls": 1969375,
+      "calls": 1969375,
+      "self_seconds": 0.38430410000000004,
+      "cumulative_seconds": 0.38430410000000004
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\transmission_ports.py",
+      "line": 113,
+      "function": "<genexpr>",
+      "primitive_calls": 116560,
+      "calls": 116560,
+      "self_seconds": 0.07722190000000001,
+      "cumulative_seconds": 0.3691457
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 63,
+      "function": "inverse_mass",
+      "primitive_calls": 19519,
+      "calls": 19519,
+      "self_seconds": 0.09255790000000001,
+      "cumulative_seconds": 0.36836240000000003
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 107,
+      "function": "<genexpr>",
+      "primitive_calls": 78471,
+      "calls": 78471,
+      "self_seconds": 0.0917563,
+      "cumulative_seconds": 0.3675333
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\transmission_ports.py",
+      "line": 93,
+      "function": "<genexpr>",
+      "primitive_calls": 1209600,
+      "calls": 1209600,
+      "self_seconds": 0.34024210000000005,
+      "cumulative_seconds": 0.34024210000000005
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 39,
+      "function": "contact_force",
+      "primitive_calls": 18848,
+      "calls": 18848,
+      "self_seconds": 0.1087742,
+      "cumulative_seconds": 0.3280651
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 64,
+      "function": "<genexpr>",
+      "primitive_calls": 78076,
+      "calls": 78076,
+      "self_seconds": 0.0492188,
+      "cumulative_seconds": 0.25495460000000003
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 77,
+      "function": "<genexpr>",
+      "primitive_calls": 3600,
+      "calls": 3600,
+      "self_seconds": 0.0078729,
+      "cumulative_seconds": 0.2502107
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 68,
+      "function": "contact_jacobian",
+      "primitive_calls": 3308,
+      "calls": 3308,
+      "self_seconds": 0.052749000000000004,
+      "cumulative_seconds": 0.1828056
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 110,
+      "function": "<genexpr>",
+      "primitive_calls": 34876,
+      "calls": 34876,
+      "self_seconds": 0.034791,
+      "cumulative_seconds": 0.1280182
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 32,
+      "function": "deformation_state",
+      "primitive_calls": 18848,
+      "calls": 18848,
+      "self_seconds": 0.08752760000000001,
+      "cumulative_seconds": 0.1241695
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 101,
+      "function": "spin",
+      "primitive_calls": 5212,
+      "calls": 5212,
+      "self_seconds": 0.0159455,
+      "cumulative_seconds": 0.0944712
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\transmission_ports.py",
+      "line": 15,
+      "function": "transmission_state",
+      "primitive_calls": 4043,
+      "calls": 4043,
+      "self_seconds": 0.036355200000000004,
+      "cumulative_seconds": 0.09160850000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 78,
+      "function": "<genexpr>",
+      "primitive_calls": 3600,
+      "calls": 3600,
+      "self_seconds": 0.008642,
+      "cumulative_seconds": 0.0753562
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 189,
+      "function": "<genexpr>",
+      "primitive_calls": 26464,
+      "calls": 26464,
+      "self_seconds": 0.022674,
+      "cumulative_seconds": 0.07120660000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 171,
+      "function": "<genexpr>",
+      "primitive_calls": 173484,
+      "calls": 173484,
+      "self_seconds": 0.0649701,
+      "cumulative_seconds": 0.0649701
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\transmission_ports.py",
+      "line": 22,
+      "function": "feasible",
+      "primitive_calls": 21681,
+      "calls": 21681,
+      "self_seconds": 0.038299400000000004,
+      "cumulative_seconds": 0.055253300000000005
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 159,
+      "function": "<genexpr>",
+      "primitive_calls": 173484,
+      "calls": 173484,
+      "self_seconds": 0.0542938,
+      "cumulative_seconds": 0.0542938
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 91,
+      "function": "<genexpr>",
+      "primitive_calls": 3600,
+      "calls": 3600,
+      "self_seconds": 0.0137105,
+      "cumulative_seconds": 0.052894800000000006
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 89,
+      "function": "<genexpr>",
+      "primitive_calls": 3600,
+      "calls": 3600,
+      "self_seconds": 0.0159684,
+      "cumulative_seconds": 0.047461300000000005
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 22,
+      "function": "project_deformation",
+      "primitive_calls": 2880,
+      "calls": 2880,
+      "self_seconds": 0.013212000000000002,
+      "cumulative_seconds": 0.0441855
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 60,
+      "function": "energy_terms",
+      "primitive_calls": 2880,
+      "calls": 2880,
+      "self_seconds": 0.013755700000000001,
+      "cumulative_seconds": 0.0437839
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 103,
+      "function": "<genexpr>",
+      "primitive_calls": 17124,
+      "calls": 17124,
+      "self_seconds": 0.016222200000000003,
+      "cumulative_seconds": 0.0422442
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 73,
+      "function": "<genexpr>",
+      "primitive_calls": 169191,
+      "calls": 169191,
+      "self_seconds": 0.0407726,
+      "cumulative_seconds": 0.0407726
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 8,
+      "function": "deformation_frame",
+      "primitive_calls": 1440,
+      "calls": 1440,
+      "self_seconds": 0.0197501,
+      "cumulative_seconds": 0.040683000000000004
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\transmission_ports.py",
+      "line": 8,
+      "function": "gear_loss_limits",
+      "primitive_calls": 50821,
+      "calls": 50821,
+      "self_seconds": 0.034624100000000005,
+      "cumulative_seconds": 0.034624100000000005
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 172,
+      "function": "<genexpr>",
+      "primitive_calls": 77104,
+      "calls": 77104,
+      "self_seconds": 0.0294149,
+      "cumulative_seconds": 0.0294149
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 23,
+      "function": "<genexpr>",
+      "primitive_calls": 8640,
+      "calls": 8640,
+      "self_seconds": 0.0083075,
+      "cumulative_seconds": 0.023479
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 194,
+      "function": "<genexpr>",
+      "primitive_calls": 59544,
+      "calls": 59544,
+      "self_seconds": 0.022277400000000003,
+      "cumulative_seconds": 0.022277400000000003
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 33,
+      "function": "<genexpr>",
+      "primitive_calls": 56544,
+      "calls": 56544,
+      "self_seconds": 0.0222636,
+      "cumulative_seconds": 0.0222636
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 102,
+      "function": "<genexpr>",
+      "primitive_calls": 78180,
+      "calls": 78180,
+      "self_seconds": 0.020940900000000002,
+      "cumulative_seconds": 0.020940900000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 65,
+      "function": "<genexpr>",
+      "primitive_calls": 97595,
+      "calls": 97595,
+      "self_seconds": 0.0208499,
+      "cumulative_seconds": 0.0208499
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 101,
+      "function": "<genexpr>",
+      "primitive_calls": 8562,
+      "calls": 8562,
+      "self_seconds": 0.0115759,
+      "cumulative_seconds": 0.0205452
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 126,
+      "function": "<genexpr>",
+      "primitive_calls": 36387,
+      "calls": 36387,
+      "self_seconds": 0.015307900000000001,
+      "cumulative_seconds": 0.020542300000000003
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 86,
+      "function": "<genexpr>",
+      "primitive_calls": 8562,
+      "calls": 8562,
+      "self_seconds": 0.0120008,
+      "cumulative_seconds": 0.0202499
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 95,
+      "function": "<genexpr>",
+      "primitive_calls": 6480,
+      "calls": 6480,
+      "self_seconds": 0.0064113,
+      "cumulative_seconds": 0.014883500000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 28,
+      "function": "world_deformation",
+      "primitive_calls": 2880,
+      "calls": 2880,
+      "self_seconds": 0.0100478,
+      "cumulative_seconds": 0.014629900000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 35,
+      "function": "<genexpr>",
+      "primitive_calls": 56544,
+      "calls": 56544,
+      "self_seconds": 0.0143783,
+      "cumulative_seconds": 0.0143783
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 125,
+      "function": "<genexpr>",
+      "primitive_calls": 36387,
+      "calls": 36387,
+      "self_seconds": 0.0139234,
+      "cumulative_seconds": 0.0139234
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 42,
+      "function": "<genexpr>",
+      "primitive_calls": 56544,
+      "calls": 56544,
+      "self_seconds": 0.0129838,
+      "cumulative_seconds": 0.0129838
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 187,
+      "function": "<genexpr>",
+      "primitive_calls": 26464,
+      "calls": 26464,
+      "self_seconds": 0.0101773,
+      "cumulative_seconds": 0.012024400000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 94,
+      "function": "<genexpr>",
+      "primitive_calls": 2880,
+      "calls": 2880,
+      "self_seconds": 0.0030534000000000004,
+      "cumulative_seconds": 0.0118849
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 48,
+      "function": "<genexpr>",
+      "primitive_calls": 24606,
+      "calls": 24606,
+      "self_seconds": 0.007964,
+      "cumulative_seconds": 0.007964
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 90,
+      "function": "<genexpr>",
+      "primitive_calls": 17124,
+      "calls": 17124,
+      "self_seconds": 0.006383000000000001,
+      "cumulative_seconds": 0.006383000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 59,
+      "function": "<genexpr>",
+      "primitive_calls": 14400,
+      "calls": 14400,
+      "self_seconds": 0.0058328,
+      "cumulative_seconds": 0.0058328
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\wheel_dynamics.py",
+      "line": 1,
+      "function": "<module>",
+      "primitive_calls": 1,
+      "calls": 1,
+      "self_seconds": 3.0200000000000002e-05,
+      "cumulative_seconds": 0.0052369
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 203,
+      "function": "<genexpr>",
+      "primitive_calls": 5220,
+      "calls": 5220,
+      "self_seconds": 0.0031421,
+      "cumulative_seconds": 0.0050777
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 202,
+      "function": "<genexpr>",
+      "primitive_calls": 19848,
+      "calls": 19848,
+      "self_seconds": 0.0045983000000000005,
+      "cumulative_seconds": 0.0045983000000000005
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 29,
+      "function": "<genexpr>",
+      "primitive_calls": 11520,
+      "calls": 11520,
+      "self_seconds": 0.0045821,
+      "cumulative_seconds": 0.0045821
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 54,
+      "function": "<genexpr>",
+      "primitive_calls": 3600,
+      "calls": 3600,
+      "self_seconds": 0.0023339000000000003,
+      "cumulative_seconds": 0.0044761
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 64,
+      "function": "<genexpr>",
+      "primitive_calls": 8640,
+      "calls": 8640,
+      "self_seconds": 0.0044115000000000005,
+      "cumulative_seconds": 0.0044115000000000005
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 1,
+      "function": "<module>",
+      "primitive_calls": 1,
+      "calls": 1,
+      "self_seconds": 4.3700000000000005e-05,
+      "cumulative_seconds": 0.0035831
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 60,
+      "function": "<genexpr>",
+      "primitive_calls": 14400,
+      "calls": 14400,
+      "self_seconds": 0.0033618000000000003,
+      "cumulative_seconds": 0.0033618000000000003
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 85,
+      "function": "<genexpr>",
+      "primitive_calls": 8562,
+      "calls": 8562,
+      "self_seconds": 0.0033068000000000004,
+      "cumulative_seconds": 0.0033068000000000004
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 24,
+      "function": "<genexpr>",
+      "primitive_calls": 11520,
+      "calls": 11520,
+      "self_seconds": 0.0026336000000000003,
+      "cumulative_seconds": 0.0026336000000000003
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 89,
+      "function": "<genexpr>",
+      "primitive_calls": 8562,
+      "calls": 8562,
+      "self_seconds": 0.0024884,
+      "cumulative_seconds": 0.0024884
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 61,
+      "function": "<genexpr>",
+      "primitive_calls": 8640,
+      "calls": 8640,
+      "self_seconds": 0.0022281000000000002,
+      "cumulative_seconds": 0.0022281000000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 63,
+      "function": "<genexpr>",
+      "primitive_calls": 8640,
+      "calls": 8640,
+      "self_seconds": 0.00214,
+      "cumulative_seconds": 0.00214
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 99,
+      "function": "<genexpr>",
+      "primitive_calls": 6480,
+      "calls": 6480,
+      "self_seconds": 0.0019762,
+      "cumulative_seconds": 0.0019762
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 49,
+      "function": "<genexpr>",
+      "primitive_calls": 3600,
+      "calls": 3600,
+      "self_seconds": 0.0019106000000000001,
+      "cumulative_seconds": 0.0019106000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 62,
+      "function": "<genexpr>",
+      "primitive_calls": 8640,
+      "calls": 8640,
+      "self_seconds": 0.0017542,
+      "cumulative_seconds": 0.0017542
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 10,
+      "function": "<genexpr>",
+      "primitive_calls": 5760,
+      "calls": 5760,
+      "self_seconds": 0.0017317,
+      "cumulative_seconds": 0.0017317
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 13,
+      "function": "<genexpr>",
+      "primitive_calls": 5760,
+      "calls": 5760,
+      "self_seconds": 0.0016938,
+      "cumulative_seconds": 0.0016938
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 11,
+      "function": "<genexpr>",
+      "primitive_calls": 5760,
+      "calls": 5760,
+      "self_seconds": 0.0016687000000000002,
+      "cumulative_seconds": 0.0016687000000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 56,
+      "function": "<genexpr>",
+      "primitive_calls": 2880,
+      "calls": 2880,
+      "self_seconds": 0.0016668000000000002,
+      "cumulative_seconds": 0.0016668000000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 51,
+      "function": "<genexpr>",
+      "primitive_calls": 3600,
+      "calls": 3600,
+      "self_seconds": 0.0015947000000000001,
+      "cumulative_seconds": 0.0015947000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 12,
+      "function": "<genexpr>",
+      "primitive_calls": 5760,
+      "calls": 5760,
+      "self_seconds": 0.0015868000000000002,
+      "cumulative_seconds": 0.0015868000000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 61,
+      "function": "<genexpr>",
+      "primitive_calls": 3600,
+      "calls": 3600,
+      "self_seconds": 0.0014002,
+      "cumulative_seconds": 0.0014002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 287,
+      "function": "<genexpr>",
+      "primitive_calls": 2880,
+      "calls": 2880,
+      "self_seconds": 0.0013880000000000001,
+      "cumulative_seconds": 0.0013880000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 15,
+      "function": "<genexpr>",
+      "primitive_calls": 5760,
+      "calls": 5760,
+      "self_seconds": 0.0013818,
+      "cumulative_seconds": 0.0013818
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 14,
+      "function": "<genexpr>",
+      "primitive_calls": 5760,
+      "calls": 5760,
+      "self_seconds": 0.0012576,
+      "cumulative_seconds": 0.0012576
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 286,
+      "function": "<genexpr>",
+      "primitive_calls": 2880,
+      "calls": 2880,
+      "self_seconds": 0.0011062000000000001,
+      "cumulative_seconds": 0.0011062000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 50,
+      "function": "<genexpr>",
+      "primitive_calls": 3600,
+      "calls": 3600,
+      "self_seconds": 0.0010403,
+      "cumulative_seconds": 0.0010403
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 57,
+      "function": "<genexpr>",
+      "primitive_calls": 2880,
+      "calls": 2880,
+      "self_seconds": 0.0009139,
+      "cumulative_seconds": 0.0009139
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 1,
+      "function": "<module>",
+      "primitive_calls": 1,
+      "calls": 1,
+      "self_seconds": 9.9e-06,
+      "cumulative_seconds": 0.000854
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 55,
+      "function": "<genexpr>",
+      "primitive_calls": 2880,
+      "calls": 2880,
+      "self_seconds": 0.0008357000000000001,
+      "cumulative_seconds": 0.0008357000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 77,
+      "function": "<genexpr>",
+      "primitive_calls": 2724,
+      "calls": 2724,
+      "self_seconds": 0.0006712,
+      "cumulative_seconds": 0.0006712
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+      "line": 75,
+      "function": "<genexpr>",
+      "primitive_calls": 1362,
+      "calls": 1362,
+      "self_seconds": 0.0004131,
+      "cumulative_seconds": 0.0004131
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\wheel_dynamics.py",
+      "line": 24,
+      "function": "__annotate__",
+      "primitive_calls": 1,
+      "calls": 1,
+      "self_seconds": 9.4e-06,
+      "cumulative_seconds": 9.4e-06
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\transmission_ports.py",
+      "line": 1,
+      "function": "<module>",
+      "primitive_calls": 1,
+      "calls": 1,
+      "self_seconds": 5.500000000000001e-06,
+      "cumulative_seconds": 5.500000000000001e-06
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 19,
+      "function": "__annotate__",
+      "primitive_calls": 1,
+      "calls": 1,
+      "self_seconds": 5.3e-06,
+      "cumulative_seconds": 5.3e-06
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\wheel_dynamics.py",
+      "line": 12,
+      "function": "__annotate__",
+      "primitive_calls": 1,
+      "calls": 1,
+      "self_seconds": 3.4e-06,
+      "cumulative_seconds": 3.4e-06
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\wheel_dynamics.py",
+      "line": 24,
+      "function": "WheelStep",
+      "primitive_calls": 1,
+      "calls": 1,
+      "self_seconds": 3.2000000000000003e-06,
+      "cumulative_seconds": 3.2000000000000003e-06
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+      "line": 19,
+      "function": "DrivetrainStep",
+      "primitive_calls": 1,
+      "calls": 1,
+      "self_seconds": 2.1000000000000002e-06,
+      "cumulative_seconds": 2.1000000000000002e-06
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\wheel_dynamics.py",
+      "line": 12,
+      "function": "Mobility",
+      "primitive_calls": 1,
+      "calls": 1,
+      "self_seconds": 2.0000000000000003e-06,
+      "cumulative_seconds": 2.0000000000000003e-06
+    }
+  ]
+}

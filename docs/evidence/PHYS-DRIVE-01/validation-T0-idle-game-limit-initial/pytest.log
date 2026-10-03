@@ -1,0 +1,88 @@
+F.F.FF                                                                   [100%]
+================================== FAILURES ===================================
+_ test_game_speed_cut_only_reduces_drive_request_and_keeps_idle_losses_supplied[-1--7.0-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, gear = -1, speed = -7.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("gear,speed", ((-1, -7.), (1, 60.)))
+    def test_game_speed_cut_only_reduces_drive_request_and_keeps_idle_losses_supplied(mode, gear, speed):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.gear = train.pending_gear = gear
+        train.prepare(speed, 0., 0., 0, True, FIXED_DT, gear=gear, clutch=0.)
+>       assert train.engine_torque_request == pytest.approx(config.engine_braking, rel=0, abs=1e-10)
+E       assert 0.0 == 24.0 ± 1.0e-10
+E         
+E         comparison failed
+E         Obtained: 0.0
+E         Expected: 24.0 ± 1.0e-10
+
+tests\test_finite_powertrain.py:76: AssertionError
+_ test_game_speed_cut_only_reduces_drive_request_and_keeps_idle_losses_supplied[1-60.0-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, gear = 1, speed = 60.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("gear,speed", ((-1, -7.), (1, 60.)))
+    def test_game_speed_cut_only_reduces_drive_request_and_keeps_idle_losses_supplied(mode, gear, speed):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.gear = train.pending_gear = gear
+        train.prepare(speed, 0., 0., 0, True, FIXED_DT, gear=gear, clutch=0.)
+>       assert train.engine_torque_request == pytest.approx(config.engine_braking, rel=0, abs=1e-10)
+E       assert 0.0 == 24.0 ± 1.0e-10
+E         
+E         comparison failed
+E         Obtained: 0.0
+E         Expected: 24.0 ± 1.0e-10
+
+tests\test_finite_powertrain.py:76: AssertionError
+______ test_native_game_speed_cut_does_not_starve_unloaded_idle[-1--7.0] ______
+
+gear = -1, speed = -7.0
+
+    @pytest.mark.parametrize("gear,speed", ((-1, -7.), (1, 60.)))
+    def test_native_game_speed_cut_does_not_starve_unloaded_idle(gear, speed):
+        world, vehicle = _create_vehicle(CAR)
+        try:
+            # 超过游戏驱动限速仅在试验开始设置；自由曲轴仍须以真实怠速请求平衡损失。
+            vehicle._chassis.setLinearVelocity(Vec3(0., speed, 0.))
+            vehicle.tires.initialize_rolling(speed)
+            for _ in range(120):
+                _step(world, vehicle, VehicleCommand(gear=gear, clutch=0.))
+>               assert vehicle.snapshot().rpm > .9 * CAR.idle_rpm
+E               assert 731.8833403747967 > (0.9 * 900.0)
+E                +  where 731.8833403747967 = CarState(position=(1.9869852962983714e-07, -1.049619436264038, 0.4473815858364105), heading=2.6426317845107405e-07, sp...674434, 4.4959728283347326e-07), engine_work=0.0, engine_drag_heat=13.144030546809217, clutch_heat=0.0, gear_heat=0.0)).rpm
+E                +    where CarState(position=(1.9869852962983714e-07, -1.049619436264038, 0.4473815858364105), heading=2.6426317845107405e-07, sp...674434, 4.4959728283347326e-07), engine_work=0.0, engine_drag_heat=13.144030546809217, clutch_heat=0.0, gear_heat=0.0)) = snapshot()
+E                +      where snapshot = <vehicle.Vehicle object at 0x000001D8C2CE7CB0>.snapshot
+E                +  and   900.0 = VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0).idle_rpm
+
+tests\test_finite_powertrain.py:89: AssertionError
+______ test_native_game_speed_cut_does_not_starve_unloaded_idle[1-60.0] _______
+
+gear = 1, speed = 60.0
+
+    @pytest.mark.parametrize("gear,speed", ((-1, -7.), (1, 60.)))
+    def test_native_game_speed_cut_does_not_starve_unloaded_idle(gear, speed):
+        world, vehicle = _create_vehicle(CAR)
+        try:
+            # 超过游戏驱动限速仅在试验开始设置；自由曲轴仍须以真实怠速请求平衡损失。
+            vehicle._chassis.setLinearVelocity(Vec3(0., speed, 0.))
+            vehicle.tires.initialize_rolling(speed)
+            for _ in range(120):
+                _step(world, vehicle, VehicleCommand(gear=gear, clutch=0.))
+>               assert vehicle.snapshot().rpm > .9 * CAR.idle_rpm
+E               assert 731.8808958417924 > (0.9 * 900.0)
+E                +  where 731.8808958417924 = CarState(position=(0.0, 0.9997375011444092, 0.5479562878608704), heading=-2.622364490889595e-06, speed=59.979000091552...8476186, 3.705507063708785e-13), engine_work=0.0, engine_drag_heat=13.143997329105364, clutch_heat=0.0, gear_heat=0.0)).rpm
+E                +    where CarState(position=(0.0, 0.9997375011444092, 0.5479562878608704), heading=-2.622364490889595e-06, speed=59.979000091552...8476186, 3.705507063708785e-13), engine_work=0.0, engine_drag_heat=13.143997329105364, clutch_heat=0.0, gear_heat=0.0)) = snapshot()
+E                +      where snapshot = <vehicle.Vehicle object at 0x000001D8C2E91810>.snapshot
+E                +  and   900.0 = VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0).idle_rpm
+
+tests\test_finite_powertrain.py:89: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_finite_powertrain.py::test_game_speed_cut_only_reduces_drive_request_and_keeps_idle_losses_supplied[-1--7.0-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_game_speed_cut_only_reduces_drive_request_and_keeps_idle_losses_supplied[1-60.0-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_native_game_speed_cut_does_not_starve_unloaded_idle[-1--7.0]
+FAILED tests/test_finite_powertrain.py::test_native_game_speed_cut_does_not_starve_unloaded_idle[1-60.0]
+4 failed, 2 passed in 0.69s

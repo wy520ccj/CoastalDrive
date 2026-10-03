@@ -19,6 +19,7 @@ class StabilityConfig:
     sideslip_threshold: float = .06
     moment_threshold: float = 150.0
     engine_cut_gain: float = .4  # 按各自误差阈值归一化后的削矩比例，无量纲。
+    continuous_reference: bool = True  # 低于介入速度仍跟踪有支撑的参考，false隔离旧控制A/B。
 
 
 @dataclass(frozen=True)
@@ -105,9 +106,10 @@ class StabilityControl:
                      for request, capacity, limit in zip(requests, capacities, limits))
         baseline = sum(force * arm for force, arm in zip(base, arms))
         unlimited = -speed * math.tan(math.radians(steering)) / vehicle.wheelbase
-        eligible = abs(speed) >= config.minimum_speed and any(w.sample_support for w in wheels)
+        supported = any(w.sample_support for w in wheels)
+        eligible = abs(speed) >= config.minimum_speed and supported
         reference, reference_beta, target = 0.0, 0.0, 0.0
-        if eligible:
+        if eligible or config.continuous_reference and supported and speed != 0:
             # 附着上界只约束期望横摆，不截断实际轮胎力或车辆状态。
             yaw_limit = grip_budget / (vehicle.mass * abs(speed))
             achievable = max(-yaw_limit, min(yaw_limit, unlimited))
@@ -119,6 +121,7 @@ class StabilityControl:
             rear_stiffness = 2 * vehicle.rear_lateral_stiffness
             rear_slip = vehicle.mass * vehicle.front_weight_share * speed * reference / rear_stiffness
             reference_beta = math.atan(-rear_distance * reference / abs(speed) + rear_slip)
+        if eligible:
             target = chassis.getInertia().z * (
                 config.yaw_gain * excess(reference - yaw, config.yaw_threshold)
                 - direction * config.sideslip_gain * excess(beta - reference_beta, config.sideslip_threshold)

@@ -1,0 +1,5 @@
+{
+  "completed": 0,
+  "error": "probe helper arity TypeError; _create_vehicle accepts config only",
+  "scope": "before native world creation"
+}

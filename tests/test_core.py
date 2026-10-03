@@ -159,19 +159,26 @@ def test_brake_stops_before_reverse_and_beats_throttle():
     previous = s.snapshot().player.speed
     wheel_energy = sum(.5 * CAR.wheel_inertia * wheel.omega**2
                        for wheel in s.snapshot().player.wheel_dynamics)
+    previous_capacity = s.player.powertrain.capacity
+    previous_throttle = s.player.powertrain.throttle
     s.step(Control(throttle=1, brake=1))
-    assert s.player.powertrain.drive_torque == 0
     assert s.snapshot().player.throttle == 0
     assert s.snapshot().player.brake > 0
-    # 首tick踏板仅到5%，储存的轮转动能仍可传给车体；优先级检验执行器而非强制降速。
-    assert sum(.5 * CAR.wheel_inertia * wheel.omega**2
-               for wheel in s.snapshot().player.wheel_dynamics) < wheel_energy
+    assert s.player.powertrain.throttle < previous_throttle
+    expected = max(0., previous_capacity - CAR.clutch_capacity * FIXED_DT / CAR.clutch_release_time)
+    assert s.player.powertrain.capacity == pytest.approx(expected, rel=0, abs=1e-11)
+    # 首拍发动机/转子可继续传能；制动优先核对请求和真实有限释放，不强清轴速或转矩。
+    assert abs(s.player.powertrain.drive_torque) <= (
+        abs(s.player.powertrain.ratio) * s.player.powertrain.capacity / CAR.drivetrain_efficiency + 1e-9)
     from driver_assist import GAME_INPUT
 
     for _ in range(round(1 / GAME_INPUT.brake_rise / FIXED_DT) - 1):
         s.step(Control(throttle=1, brake=1))
     assert s.snapshot().player.brake == pytest.approx(1)
     assert 0 < s.snapshot().player.speed < previous
+    assert s.player.powertrain.capacity == s.player.powertrain.drive_torque == 0
+    assert sum(.5 * CAR.wheel_inertia * wheel.omega**2
+               for wheel in s.snapshot().player.wheel_dynamics) < wheel_energy
     for _ in range(1200):
         if abs(s.snapshot().player.speed) < 0.15:
             break
@@ -189,6 +196,14 @@ def test_brake_stops_before_reverse_and_beats_throttle():
         s.step(Control(brake=1))
         if tick < wait_ticks - 1:
             assert s.snapshot().player.gear > 0
+    assert s.player.powertrain.pending_gear == -1
+    # 输入等待已完成；实际零容量挡位按现有卸载/停留时间切换，再计半秒倒车。
+    dwell_ticks = math.ceil((CAR.shift_time-CAR.clutch_engage_time) / FIXED_DT)
+    for _ in range(dwell_ticks):
+        if s.snapshot().player.gear == -1:
+            break
+        assert s.player.powertrain.capacity == 0
+        s.step(Control(brake=1))
     assert s.snapshot().player.gear == -1
     initial_reverse_pressure = s.player.brakes.states[0].pressure
     for _ in range(60):

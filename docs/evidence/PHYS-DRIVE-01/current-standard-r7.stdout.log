@@ -1,0 +1,47 @@
+DONE game/asphalt-brake/A speed=1.72691e-06
+DONE game/asphalt-brake/B speed=3.68928e-07
+DONE game/low-mu-brake/A speed=0.00176372
+DONE game/low-mu-brake/B speed=0.00141081
+DONE game/split-mu-brake/A speed=0.000210401
+DONE game/split-mu-brake/B speed=0.00486452
+DONE game/corner-brake/A speed=5.72142e-06
+DONE game/corner-brake/B speed=1.55861e-06
+DONE game/steering-step/A speed=20.3557
+DONE game/steering-step/B speed=20.2052
+DONE game/steering-saturation/A speed=13.8951
+DONE game/steering-saturation/B speed=13.6695
+DONE game/reverse/A speed=9.22378e-09
+DONE game/reverse/B speed=5.22646e-08
+DONE game/airborne-recontact/A speed=2.89595e-05
+DONE game/airborne-recontact/B speed=0.000164434
+DONE game/coast-disturbance/A speed=18.8288
+DONE game/coast-disturbance/B speed=18.0914
+DONE game/acceleration/A speed=21.4054
+DONE game/acceleration/B speed=21.0643
+DONE game/constant-turn/A speed=10.2897
+DONE game/constant-turn/B speed=10.3676
+DONE simulation/asphalt-brake/A speed=1.87595e-06
+DONE simulation/asphalt-brake/B speed=2.04851e-08
+DONE simulation/low-mu-brake/A speed=0.00178972
+DONE simulation/low-mu-brake/B speed=0.00141877
+DONE simulation/split-mu-brake/A speed=0.000266918
+DONE simulation/split-mu-brake/B speed=0.00410982
+DONE simulation/corner-brake/A speed=4.99581e-06
+DONE simulation/corner-brake/B speed=4.85301e-06
+DONE simulation/steering-step/A speed=19.6275
+DONE simulation/steering-step/B speed=18.7313
+DONE simulation/steering-saturation/A speed=12.3569
+DONE simulation/steering-saturation/B speed=11.4639
+DONE simulation/reverse/A speed=2.36526e-09
+DONE simulation/reverse/B speed=3.13152e-08
+DONE simulation/airborne-recontact/A speed=9.33313e-06
+DONE simulation/airborne-recontact/B speed=3.10337e-05
+DONE simulation/coast-disturbance/A speed=18.8167
+DONE simulation/coast-disturbance/B speed=14.9805
+DONE simulation/acceleration/A speed=20.5455
+DONE simulation/acceleration/B speed=19.1909
+DONE simulation/constant-turn/A speed=10.1618
+DONE simulation/constant-turn/B speed=9.78856
+game drift=0.00192839 force=1026 passed=True
+simulation drift=0.00192758 force=1026 passed=True
+COMPLETE 44 standard AB trials and 2 grade trials

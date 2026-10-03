@@ -1,0 +1,14 @@
+{
+  "status": "interrupted_process_disappeared",
+  "reason": "exec10078 unknown; no Python validator or pytest process remains; raw summary still running and pytest log has no terminal result. Cause unconfirmed.",
+  "started_utc": "2026-10-03T13:13:43.431964+00:00",
+  "discovery_utc": "2026-10-03T13:37:44.072545+00:00",
+  "observed_progress_marks": {
+    "passed": 45,
+    "failed": 0
+  },
+  "terminal_pytest_count": null,
+  "source_files": 280,
+  "source_stable": true,
+  "later_checks": "not_run"
+}

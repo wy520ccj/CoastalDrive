@@ -1,0 +1,141 @@
+"""有限控制请求与原生驾驶反馈；曲轴不由目标RPM或挡位切换重设。"""
+
+import math
+from dataclasses import replace
+
+import pytest
+from panda3d.core import Vec3
+from physics.reference_ab import _create_vehicle, _step
+
+from driving_modes import DrivingMode
+from powertrain import Powertrain, engine_torque
+from vehicle_config import CAR
+from vehicle_state import FIXED_DT, VehicleCommand
+
+
+@pytest.mark.parametrize("mode", list(DrivingMode))
+@pytest.mark.parametrize("rpm", (-600., 0., 600., 899., 900., 3200., 6500.))
+@pytest.mark.parametrize("pedal", (0., .05, .5, .9, 1.))
+def test_idle_and_driver_requests_share_available_engine_curve(mode, rpm, pedal):
+    config = mode.vehicle_config
+    train = Powertrain(config)
+    train.rpm = rpm
+    train.engine_omega = train.relative_omega = rpm * math.tau / 60
+    train.throttle = pedal
+    train.prepare(0., 0., pedal, 1, False, FIXED_DT, clutch=1.)
+    assert 0 <= train.engine_torque_request <= engine_torque(rpm, config)
+    # 受限的是实体主动转矩能力；低速/反转机械轴速与RPM都保持真实状态。
+    assert train.rpm == rpm
+    assert train.engine_omega == rpm * math.tau / 60
+
+
+@pytest.mark.parametrize("mode", list(DrivingMode))
+def test_native_insufficient_engine_torque_cannot_manufacture_idle_speed(mode):
+    config = replace(mode.vehicle_config, torque_curve=((900., 20.), (6500., 20.)))
+    world, vehicle = _create_vehicle(config)
+    try:
+        for _ in range(120):
+            _step(world, vehicle, VehicleCommand(gear=0, clutch=0.))
+            engine = vehicle.snapshot().powertrain_state
+            assert 0 <= engine.engine_torque <= 20
+            assert engine.clutch_capacity == engine.drive_torque == 0
+        # 可用20Nm不足以克服怠速处24Nm损失；控制器不能凭空保持900RPM。
+        assert vehicle.snapshot().rpm < config.idle_rpm
+    finally:
+        vehicle.close()
+
+
+@pytest.mark.parametrize("next_gear", (-1, 0, 2, 4))
+def test_shifting_releases_to_zero_before_ratio_change_without_resetting_engine(next_gear):
+    train = Powertrain(CAR)
+    train.clutch_position = 1.
+    train.engine_omega, train.relative_omega, train.rpm = 250., 250., 250. * 60 / math.tau
+    previous = train.clutch_position
+    changed = False
+    for _ in range(40):
+        train.prepare(15., 45., .5, 0, False, FIXED_DT, gear=next_gear, clutch=1.)
+        assert train.engine_omega == 250.
+        assert abs(train.clutch_position - previous) <= FIXED_DT / min(CAR.clutch_release_time, CAR.clutch_engage_time) + 1e-12
+        if not changed and train.gear == next_gear:
+            assert train.capacity == 0.
+            changed = True
+        previous = train.clutch_position
+    assert changed
+    assert train.gear == next_gear
+    assert train.clutch_position == 1.
+
+
+def test_interrupted_forward_reverse_request_uses_latest_direction():
+    train = Powertrain(CAR)
+    train.clutch_position = 1.
+    train.prepare(0., 0., .5, -1, False, FIXED_DT)
+    assert train.pending_gear == -1 and train.gear == 1
+    for _ in range(30):
+        train.prepare(0., 0., .5, 1, False, FIXED_DT)
+        assert train.gear == 1
+    assert train.pending_gear == 1
+
+
+@pytest.mark.parametrize("gear", (-2, 6, 1.5))
+def test_gear_request_boundary_rejects_nonexistent_ratios(gear):
+    train = Powertrain(CAR)
+    with pytest.raises(ValueError):
+        train.prepare(0., 0., 0., 0, False, FIXED_DT, gear=gear)
+
+
+def test_redline_cuts_request_without_clamping_true_omega():
+    train = Powertrain(CAR)
+    train.rpm = 7000.
+    train.engine_omega = train.relative_omega = 7000 * math.tau / 60
+    train.prepare(0., 0., 1., 0, False, FIXED_DT, gear=0)
+    assert train.engine_torque_request == 0.
+    assert train.engine_omega == 7000 * math.tau / 60
+    assert train.rpm == 7000.
+
+
+@pytest.mark.parametrize("mode", list(DrivingMode))
+@pytest.mark.parametrize("compliance", (True, False))
+@pytest.mark.parametrize("rotor", (True, False))
+def test_native_start_neutral_shift_and_snapshot_report_one_true_engine(mode, compliance, rotor):
+    config = replace(mode.vehicle_config, finite_drivetrain=True, tire_compliance=compliance,
+                     wheel_rotor_transport=rotor)
+    world, vehicle = _create_vehicle(config)
+    try:
+        for _ in range(60):
+            _step(world, vehicle, VehicleCommand(brake=1.))
+        for _ in range(180):
+            _step(world, vehicle, VehicleCommand(throttle=1., direction=1))
+        car = vehicle.snapshot()
+        assert car.speed > 3.
+        assert car.powertrain_state.clutch_capacity > 0.
+        assert car.powertrain_state.engine_omega != car.wheel_dynamics[2].omega * vehicle.powertrain.ratio
+        assert car.powertrain_state.clutch_heat >= -1e-7
+        assert car.powertrain_state.gear_heat >= -1e-7
+        axis = vehicle._chassis.getTransform().getQuat().xform(Vec3(*config.engine_axis))
+        relative = vehicle.powertrain.engine_omega - vehicle._chassis.getAngularVelocity().dot(axis)
+        assert car.rpm == pytest.approx(relative * 60 / math.tau, abs=1e-10)
+        assert car.powertrain_state.engine_relative_omega == relative
+        # 保存真正曲轴，空挡请求只能先卸载容量，不能立即重设转速。
+        before_gear = car.gear
+        for _ in range(30):
+            _step(world, vehicle, VehicleCommand(throttle=0., gear=0))
+            car = vehicle.snapshot()
+            if car.gear != before_gear:
+                assert car.powertrain_state.clutch_capacity == 0.
+            before_gear = car.gear
+        assert car.gear == 0 and car.powertrain_state.drive_torque == 0.
+        assert all(w.force_residual < .001 for w in car.wheel_dynamics)
+        for i, wheel in enumerate(car.wheel_dynamics):
+            share = config.front_brake_share if i < 2 else 1 - config.front_brake_share
+            assert wheel.brake_capacity == pytest.approx(
+                config.brake_torque * vehicle.brakes.states[i].pressure * share / 2, abs=1e-12)
+        engine = car.powertrain_state.engine_omega
+        vehicle.shift(100.)
+        assert vehicle.powertrain.engine_omega == engine
+        vehicle.reset(vehicle.spawn)
+        reset = vehicle.snapshot()
+        assert reset.powertrain_state.engine_omega == config.idle_rpm * math.tau / 60
+        assert reset.powertrain_state.clutch_capacity == 0.
+        assert reset.powertrain_state.engine_work == 0.
+    finally:
+        vehicle.close()

@@ -26,6 +26,16 @@ class VehicleConfig:
     shift_time: float = 0.28
     torque_response: float = 0.12
     engine_braking: float = 24.0  # Approximate closed-throttle torque at the crank, Nm.
+    finite_drivetrain: bool = True  # 两模式共用真实曲轴/有限离合；false用于冻结旧机制A/B。
+    engine_inertia: float = .02  # 正常游戏起步响应标定的设计惯量，kg·m²；困难参考车取0.2，非实测。
+    engine_axis: tuple = (0., 1., 0.)  # 车身局部曲轴正转方向。
+    engine_idle_response: float = .15
+    engine_idle_torque_limit: float = 65.
+    engine_redline_rpm: float = 6500.
+    clutch_capacity: float = 300.  # Nm；有限干式离合容量。
+    clutch_release_time: float = .08
+    clutch_engage_time: float = .16
+    clutch_launch_response: float = .30  # 起步曲轴反馈设计值；兼顾升速与早期有限传矩。
     max_speed: float = 160 / 3.6
     reverse_speed: float = 22 / 3.6
     reverse_force: float = 2200.0

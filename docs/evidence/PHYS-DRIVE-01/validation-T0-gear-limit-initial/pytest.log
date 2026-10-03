@@ -1,0 +1,94 @@
+F.F.F.                                                                   [100%]
+================================== FAILURES ===================================
+_ test_explicit_gear_uses_actual_game_limits_without_direction_signal[-1-0.0-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, gear = -1, speed = 0.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("gear,speed", ((-1, 0.), (-1, -7.), (0, 60.)))
+    def test_explicit_gear_uses_actual_game_limits_without_direction_signal(mode, gear, speed):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.gear = train.pending_gear = gear
+        train.rpm = 2000.
+        train.engine_omega = train.relative_omega = train.rpm * math.tau / 60
+        train.throttle = 1.
+        train.prepare(speed, 0., 1., 0, False, FIXED_DT, gear=gear, clutch=0.)
+        if config.game_speed_limits and gear < 0:
+            expected = (config.reverse_force * config.wheel_radius
+                        / (config.reverse_gear_ratio * config.final_drive * config.drivetrain_efficiency))
+            expected *= min(1., max(0., config.reverse_speed-abs(speed)))
+        else:
+            # 空挡不向道路传递动力；困难模式也没有游戏倒车软限制。
+            expected = engine_torque(2000., config)
+>       assert train.engine_torque_request == pytest.approx(expected, rel=0, abs=1e-10)
+E       assert 179.35 == 74.32432432432432 ± 1.0e-10
+E         
+E         comparison failed
+E         Obtained: 179.35
+E         Expected: 74.32432432432432 ± 1.0e-10
+
+tests\test_finite_powertrain.py:65: AssertionError
+_ test_explicit_gear_uses_actual_game_limits_without_direction_signal[-1--7.0-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, gear = -1, speed = -7.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("gear,speed", ((-1, 0.), (-1, -7.), (0, 60.)))
+    def test_explicit_gear_uses_actual_game_limits_without_direction_signal(mode, gear, speed):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.gear = train.pending_gear = gear
+        train.rpm = 2000.
+        train.engine_omega = train.relative_omega = train.rpm * math.tau / 60
+        train.throttle = 1.
+        train.prepare(speed, 0., 1., 0, False, FIXED_DT, gear=gear, clutch=0.)
+        if config.game_speed_limits and gear < 0:
+            expected = (config.reverse_force * config.wheel_radius
+                        / (config.reverse_gear_ratio * config.final_drive * config.drivetrain_efficiency))
+            expected *= min(1., max(0., config.reverse_speed-abs(speed)))
+        else:
+            # 空挡不向道路传递动力；困难模式也没有游戏倒车软限制。
+            expected = engine_torque(2000., config)
+>       assert train.engine_torque_request == pytest.approx(expected, rel=0, abs=1e-10)
+E       assert 179.35 == 0.0 ± 1.0e-10
+E         
+E         comparison failed
+E         Obtained: 179.35
+E         Expected: 0.0 ± 1.0e-10
+
+tests\test_finite_powertrain.py:65: AssertionError
+_ test_explicit_gear_uses_actual_game_limits_without_direction_signal[0-60.0-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, gear = 0, speed = 60.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("gear,speed", ((-1, 0.), (-1, -7.), (0, 60.)))
+    def test_explicit_gear_uses_actual_game_limits_without_direction_signal(mode, gear, speed):
+        config = mode.vehicle_config
+        train = Powertrain(config)
+        train.gear = train.pending_gear = gear
+        train.rpm = 2000.
+        train.engine_omega = train.relative_omega = train.rpm * math.tau / 60
+        train.throttle = 1.
+        train.prepare(speed, 0., 1., 0, False, FIXED_DT, gear=gear, clutch=0.)
+        if config.game_speed_limits and gear < 0:
+            expected = (config.reverse_force * config.wheel_radius
+                        / (config.reverse_gear_ratio * config.final_drive * config.drivetrain_efficiency))
+            expected *= min(1., max(0., config.reverse_speed-abs(speed)))
+        else:
+            # 空挡不向道路传递动力；困难模式也没有游戏倒车软限制。
+            expected = engine_torque(2000., config)
+>       assert train.engine_torque_request == pytest.approx(expected, rel=0, abs=1e-10)
+E       assert 0.0 == 179.35 ± 1.0e-10
+E         
+E         comparison failed
+E         Obtained: 0.0
+E         Expected: 179.35 ± 1.0e-10
+
+tests\test_finite_powertrain.py:65: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_finite_powertrain.py::test_explicit_gear_uses_actual_game_limits_without_direction_signal[-1-0.0-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_explicit_gear_uses_actual_game_limits_without_direction_signal[-1--7.0-DrivingMode.GAME]
+FAILED tests/test_finite_powertrain.py::test_explicit_gear_uses_actual_game_limits_without_direction_signal[0-60.0-DrivingMode.GAME]
+3 failed, 3 passed in 0.44s

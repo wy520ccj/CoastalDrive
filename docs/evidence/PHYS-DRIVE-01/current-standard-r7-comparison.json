@@ -1,0 +1,475 @@
+{
+  "scope": "current r7 vs archived r4 standard AB, every raw CSV field; no metric improvement requirement",
+  "files": 44,
+  "rows": 31724,
+  "comparison": [
+    {
+      "file": "game-acceleration-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "aa8e8076e141d7c163a66bc107d529c41e26a66716fe4625edffa3a3d5b61bf8",
+      "after_sha256": "aa8e8076e141d7c163a66bc107d529c41e26a66716fe4625edffa3a3d5b61bf8",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-acceleration-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "ffacac695735aed23fab47eab02760c26b11747b4396938d43758d34f6b01692",
+      "after_sha256": "ffacac695735aed23fab47eab02760c26b11747b4396938d43758d34f6b01692",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-airborne-recontact-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "41c7caab087ba6d9d0201c6bd316ce8f209d331cd239d615e8cb743a04b3a2c7",
+      "after_sha256": "41c7caab087ba6d9d0201c6bd316ce8f209d331cd239d615e8cb743a04b3a2c7",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-airborne-recontact-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "069d5b1792a464bd6d547356dd5155c4dc7ece73766d6b0555b0a96ef32410ce",
+      "after_sha256": "069d5b1792a464bd6d547356dd5155c4dc7ece73766d6b0555b0a96ef32410ce",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-asphalt-brake-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "35113fa61747c637497bb6ed09b3a631ea7ad0615a7b1a51933ecce56ddbc403",
+      "after_sha256": "35113fa61747c637497bb6ed09b3a631ea7ad0615a7b1a51933ecce56ddbc403",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-asphalt-brake-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "949fab75da2395b5abea616dac7f24b26e0f63efacbbc1a3c38c9435a69b1ccf",
+      "after_sha256": "949fab75da2395b5abea616dac7f24b26e0f63efacbbc1a3c38c9435a69b1ccf",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-coast-disturbance-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "9e13cc020c05d6ed08701342db14610653f7ddf0189b8e003c75dc57f1e9c4d2",
+      "after_sha256": "9e13cc020c05d6ed08701342db14610653f7ddf0189b8e003c75dc57f1e9c4d2",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-coast-disturbance-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": false,
+      "before_sha256": "79567ca40822da2a244edca7b12b60995a348248e57ce8f6677ed8b08a70a9a1",
+      "after_sha256": "5727e103d10f6f1fea5b006d36e63b490ef393404ba69d7992e79bb509c423f7",
+      "differing_fields": {
+        "state.traction_state.wheel_slips.0": {
+          "count": 719,
+          "first_row": 2,
+          "first_old": "0.0",
+          "first_new": "0.01127354035831116"
+        },
+        "state.traction_state.wheel_slips.1": {
+          "count": 719,
+          "first_row": 2,
+          "first_old": "-0.0",
+          "first_new": "-0.024805359223772225"
+        },
+        "state.traction_state.wheel_slips.2": {
+          "count": 719,
+          "first_row": 2,
+          "first_old": "0.0",
+          "first_new": "0.00606895366131364"
+        },
+        "state.traction_state.wheel_slips.3": {
+          "count": 719,
+          "first_row": 2,
+          "first_old": "-0.0",
+          "first_new": "-0.025301576745860116"
+        }
+      }
+    },
+    {
+      "file": "game-constant-turn-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "91cb2b67933a7a7488f7df562100c2d8a307a040f910fccde7a617de51e2bd8f",
+      "after_sha256": "91cb2b67933a7a7488f7df562100c2d8a307a040f910fccde7a617de51e2bd8f",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-constant-turn-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "cfdc503d09f8f958ff1170e08c11f574966fa3c69c3a0c43652f1b1e64fd3664",
+      "after_sha256": "cfdc503d09f8f958ff1170e08c11f574966fa3c69c3a0c43652f1b1e64fd3664",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-corner-brake-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "d3c06f14e20415b4857fe7bd69604017c39444bbe0c6e0941c6f7e7f6894cefb",
+      "after_sha256": "d3c06f14e20415b4857fe7bd69604017c39444bbe0c6e0941c6f7e7f6894cefb",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-corner-brake-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "a6302c8ae9042ba206061e9258f6eb1e704d68ed47ab9fd0769770aa8f1b4654",
+      "after_sha256": "a6302c8ae9042ba206061e9258f6eb1e704d68ed47ab9fd0769770aa8f1b4654",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-low-mu-brake-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "7702350018ade66a2567ea7cacf6c035ee2258f38b0707a01e72c9fde1cea74b",
+      "after_sha256": "7702350018ade66a2567ea7cacf6c035ee2258f38b0707a01e72c9fde1cea74b",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-low-mu-brake-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "b7b84e8bb8db1a32abecd5a3ca45b8280a029ad091c810fb85b130e7fca353a3",
+      "after_sha256": "b7b84e8bb8db1a32abecd5a3ca45b8280a029ad091c810fb85b130e7fca353a3",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-reverse-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "ed018f8a048aac4e8778dea02174ab9ae5fde4437caf03f2e861cdd3ba5a932b",
+      "after_sha256": "ed018f8a048aac4e8778dea02174ab9ae5fde4437caf03f2e861cdd3ba5a932b",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-reverse-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": false,
+      "before_sha256": "23eda058d324a4e3ac48147e9ca8be741690af58bcad25ca6de4677623e6c99a",
+      "after_sha256": "aaebfad92ee80b135060f7e7f7496908b1145a4ab22dfb5e209b462a2f60d313",
+      "differing_fields": {
+        "state.traction_state.wheel_slips.0": {
+          "count": 16,
+          "first_row": 1,
+          "first_old": "-0.0",
+          "first_new": "0.0"
+        },
+        "state.traction_state.wheel_slips.1": {
+          "count": 16,
+          "first_row": 1,
+          "first_old": "-0.0",
+          "first_new": "0.0"
+        },
+        "state.traction_state.wheel_slips.2": {
+          "count": 16,
+          "first_row": 1,
+          "first_old": "-0.0",
+          "first_new": "0.0"
+        },
+        "state.traction_state.wheel_slips.3": {
+          "count": 16,
+          "first_row": 1,
+          "first_old": "-0.0",
+          "first_new": "0.0"
+        }
+      }
+    },
+    {
+      "file": "game-split-mu-brake-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "d76ddd254e30b565a7d3737c1d69f86b6b70a25f0e45c25ab28ebb999f08fc3b",
+      "after_sha256": "d76ddd254e30b565a7d3737c1d69f86b6b70a25f0e45c25ab28ebb999f08fc3b",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-split-mu-brake-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "383c5aec42aad7c842fc7ff317f6d911355ec9f648faf74b6f2c13070f8c0524",
+      "after_sha256": "383c5aec42aad7c842fc7ff317f6d911355ec9f648faf74b6f2c13070f8c0524",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-steering-saturation-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "ebb3b39e8f13e620115a617af1838c200b1903edd0f877bfd46afde1d596fd72",
+      "after_sha256": "ebb3b39e8f13e620115a617af1838c200b1903edd0f877bfd46afde1d596fd72",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-steering-saturation-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "539b8a0b43419ce0346bff4cb0819d5b19c752d8d8b0713c480a7088eaa9e8d6",
+      "after_sha256": "539b8a0b43419ce0346bff4cb0819d5b19c752d8d8b0713c480a7088eaa9e8d6",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-steering-step-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "ddf46d3ab164c3d895c75408daca18569e3db121b737c18f9d6cffcbac206eba",
+      "after_sha256": "ddf46d3ab164c3d895c75408daca18569e3db121b737c18f9d6cffcbac206eba",
+      "differing_fields": {}
+    },
+    {
+      "file": "game-steering-step-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "05745bf8148c6efc30b5a481520161a403abf8395cb6e0b902bfbd0d93347885",
+      "after_sha256": "05745bf8148c6efc30b5a481520161a403abf8395cb6e0b902bfbd0d93347885",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-acceleration-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "0ffcf97bf641ca577d8f779763f21ca7fa4a77a77815dcda38d1c7f0fa20e929",
+      "after_sha256": "0ffcf97bf641ca577d8f779763f21ca7fa4a77a77815dcda38d1c7f0fa20e929",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-acceleration-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "a9b6787786cd4d3ebe2eefb249eba4b1df674c2905d405f8b558e3a5a11474d3",
+      "after_sha256": "a9b6787786cd4d3ebe2eefb249eba4b1df674c2905d405f8b558e3a5a11474d3",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-airborne-recontact-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "9f552e1a69c7f0858a39e96ece72010d741c6dca52f52a6f3c386d8a083f7bf3",
+      "after_sha256": "9f552e1a69c7f0858a39e96ece72010d741c6dca52f52a6f3c386d8a083f7bf3",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-airborne-recontact-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "0c9eb7b25280d999b71963dbdb122ad7bd293ab8755009694f17c8e51d34cdb9",
+      "after_sha256": "0c9eb7b25280d999b71963dbdb122ad7bd293ab8755009694f17c8e51d34cdb9",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-asphalt-brake-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "7e14af7ff7e2a47ba72c148cc2abd52fe2a9bd5349dc889ee0eeb8209e71cac5",
+      "after_sha256": "7e14af7ff7e2a47ba72c148cc2abd52fe2a9bd5349dc889ee0eeb8209e71cac5",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-asphalt-brake-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "8e3143cf77f575da1f820d8389b4a640c1d81173d09bb454879091811704315e",
+      "after_sha256": "8e3143cf77f575da1f820d8389b4a640c1d81173d09bb454879091811704315e",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-coast-disturbance-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "6d176250ac5b252039ea0eb70a3f3d5b05f24b99d342db0d2d9816f83d01b9f2",
+      "after_sha256": "6d176250ac5b252039ea0eb70a3f3d5b05f24b99d342db0d2d9816f83d01b9f2",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-coast-disturbance-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": false,
+      "before_sha256": "c0eba7f9ee06b3cd68feb4ce8fbd0a729fbb889f5c1af63773ac9f420273d8fd",
+      "after_sha256": "346cc38f803a4acfd7f973ad56ddd4b656ef44cc2d52c0779cde30d0b380981c",
+      "differing_fields": {
+        "state.traction_state.wheel_slips.0": {
+          "count": 719,
+          "first_row": 2,
+          "first_old": "0.0",
+          "first_new": "0.01130865749131726"
+        },
+        "state.traction_state.wheel_slips.1": {
+          "count": 719,
+          "first_row": 2,
+          "first_old": "-0.0",
+          "first_new": "-0.02483805661659037"
+        },
+        "state.traction_state.wheel_slips.2": {
+          "count": 719,
+          "first_row": 2,
+          "first_old": "0.0",
+          "first_new": "0.006103889295187181"
+        },
+        "state.traction_state.wheel_slips.3": {
+          "count": 719,
+          "first_row": 2,
+          "first_old": "-0.0",
+          "first_new": "-0.025334257189392806"
+        }
+      }
+    },
+    {
+      "file": "simulation-constant-turn-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "6783f297bf7a7b69ba4266ed453e8938b5d0499c7036911487fe5023b5bd2142",
+      "after_sha256": "6783f297bf7a7b69ba4266ed453e8938b5d0499c7036911487fe5023b5bd2142",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-constant-turn-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "212ded2c1377425a0397633b78269e43cfa00505e7f0ebf3a6f62f995ac1f8b9",
+      "after_sha256": "212ded2c1377425a0397633b78269e43cfa00505e7f0ebf3a6f62f995ac1f8b9",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-corner-brake-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "c2329bfc3dcde8cb6cb0892268a74c5ba3664c8f4e4f65505df75d5858cf1a99",
+      "after_sha256": "c2329bfc3dcde8cb6cb0892268a74c5ba3664c8f4e4f65505df75d5858cf1a99",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-corner-brake-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "e3f0ab36cfc7463768ff01eed620f0feccfa7f73ed07d0cc2934b73ad53bd4d9",
+      "after_sha256": "e3f0ab36cfc7463768ff01eed620f0feccfa7f73ed07d0cc2934b73ad53bd4d9",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-low-mu-brake-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "5fb6cbd55fe025cadab9c539bb0437755e42bf3fc0ea00346843169fdb983a27",
+      "after_sha256": "5fb6cbd55fe025cadab9c539bb0437755e42bf3fc0ea00346843169fdb983a27",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-low-mu-brake-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "d69d8df71a4cef5b58582f5d73ccf6de376170e384b37a68942f2a79bb46fe70",
+      "after_sha256": "d69d8df71a4cef5b58582f5d73ccf6de376170e384b37a68942f2a79bb46fe70",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-reverse-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "eb1af0daa8b451048bab0e1c9d1d8a179ca04ec5b9aa101fdf4c865f66bbdad2",
+      "after_sha256": "eb1af0daa8b451048bab0e1c9d1d8a179ca04ec5b9aa101fdf4c865f66bbdad2",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-reverse-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": false,
+      "before_sha256": "1cad2149cb5e79daeeb4e1187a638fe83426a3821c780e460cdec44513b79940",
+      "after_sha256": "0b081e7692a31729da76e8abfccafb83bbc5b888bac4bfd36d4515b128245915",
+      "differing_fields": {
+        "state.traction_state.wheel_slips.0": {
+          "count": 16,
+          "first_row": 1,
+          "first_old": "-0.0",
+          "first_new": "0.0"
+        },
+        "state.traction_state.wheel_slips.1": {
+          "count": 16,
+          "first_row": 1,
+          "first_old": "-0.0",
+          "first_new": "0.0"
+        },
+        "state.traction_state.wheel_slips.2": {
+          "count": 16,
+          "first_row": 1,
+          "first_old": "-0.0",
+          "first_new": "0.0"
+        },
+        "state.traction_state.wheel_slips.3": {
+          "count": 16,
+          "first_row": 1,
+          "first_old": "-0.0",
+          "first_new": "0.0"
+        }
+      }
+    },
+    {
+      "file": "simulation-split-mu-brake-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "37f6950d8384274b08a15f7339b94b1c5295fcdcd63f558224377980561b05da",
+      "after_sha256": "37f6950d8384274b08a15f7339b94b1c5295fcdcd63f558224377980561b05da",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-split-mu-brake-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "494d873768e71883773103833500076f9dd600b98b4dceeab8f53a449866db4b",
+      "after_sha256": "494d873768e71883773103833500076f9dd600b98b4dceeab8f53a449866db4b",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-steering-saturation-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "6541740bd5faef80740222420f6c8749448d8ea86444d27e1e0f76ccefb1d41c",
+      "after_sha256": "6541740bd5faef80740222420f6c8749448d8ea86444d27e1e0f76ccefb1d41c",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-steering-saturation-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "1c89916197b1a1e8181f769d9bdb44243065e6733b87c8e9f537f8843359bdd1",
+      "after_sha256": "1c89916197b1a1e8181f769d9bdb44243065e6733b87c8e9f537f8843359bdd1",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-steering-step-A.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "5ab95ca2f5225053c1c79cc0df81b3c508a66cb9db3e3c64f09a911035e2f51d",
+      "after_sha256": "5ab95ca2f5225053c1c79cc0df81b3c508a66cb9db3e3c64f09a911035e2f51d",
+      "differing_fields": {}
+    },
+    {
+      "file": "simulation-steering-step-B.csv.gz",
+      "rows": 721,
+      "bytes_equal": true,
+      "before_sha256": "11335d1384bc2ae535378cf27fbfb21dff6e8c415b3e72a2a61e38251837689c",
+      "after_sha256": "11335d1384bc2ae535378cf27fbfb21dff6e8c415b3e72a2a61e38251837689c",
+      "differing_fields": {}
+    }
+  ],
+  "max_force_residual": 0.000999783986641156,
+  "min_heat_tick_j": -1.2216662948314105e-13,
+  "grade": [
+    {
+      "mode": "game",
+      "displacement_m": 0.0019283895643483252,
+      "mean_longitudinal_force_n": 1025.9973807587064,
+      "passed": true
+    },
+    {
+      "mode": "simulation",
+      "displacement_m": 0.0019275830462207413,
+      "mean_longitudinal_force_n": 1025.9972765646837,
+      "passed": true
+    }
+  ]
+}

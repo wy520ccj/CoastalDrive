@@ -1,0 +1,46 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\test_tire_drivetrain.py:3:1
+   |
+ 1 |   """完整机械账独立展开；柔性/刚性、正反挡、空挡与转向指定功。"""
+ 2 |
+ 3 | / import math
+ 4 | | from dataclasses import replace
+ 5 | |
+ 6 | | import pytest
+ 7 | |
+ 8 | | from rotor_dynamics import cross, dot, steering_torque
+ 9 | | from test_rotor_transport import CONFIG, INERTIA, TENSOR, frames
+10 | | from tire_drivetrain import advance_drivetrain
+11 | | from wheel_geometry import mechanical_axis
+   | |__________________________________________^
+12 |
+13 |   ENGINE_INERTIA = .2
+   |
+help: Organize imports
+   |
+6  | import pytest
+7  + from test_rotor_transport import CONFIG, INERTIA, TENSOR, frames
+8  |
+9  | from rotor_dynamics import cross, dot, steering_torque
+   - from test_rotor_transport import CONFIG, INERTIA, TENSOR, frames
+10 | from tire_drivetrain import advance_drivetrain
+   |
+
+F401 [*] `math` imported but unused
+ --> tests\test_tire_drivetrain.py:3:8
+  |
+1 | """完整机械账独立展开；柔性/刚性、正反挡、空挡与转向指定功。"""
+2 |
+3 | import math
+  |        ^^^^
+4 | from dataclasses import replace
+  |
+help: Remove unused import: `math`
+  |
+2 |
+  - import math
+3 | from dataclasses import replace
+  |
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.

@@ -1,30 +1,45 @@
-# PHYS-DRIVE-01 真实曲轴、有限离合与开放差速器
+# PHYS-DRIVE-01 真实曲轴、有限离合与后驱开放差速
 
-- 状态：in_progress；[PHYS-ROT-01](PHYS-ROT-01.md)完整T1与源码归档已收口，开始机械端口模块施工；尚未接入连续驾驶。
-- 用户目标：[全目标核对](../physics-goal-audit.md)；正常游戏与困难仿真共用机械核心，先完整参数通用参考车，再实车型和驱动布局。
-- 上游基线：ROT最终验证版本2b7f908df29176ce99ccb1fb0d848ce318474b02，reference-v9；[273文件源码归档](../evidence/PHYS-ROT-01/final-validation-source.zip)，SHA-256为e5c348ea856e14fbbfe81f81866c333cfa9a488817f3dc64a4c87b793238eac5。
-- 设计入口：[共同末状态、双向损失、432组活动集及联合轮胎原型](../evidence/PHYS-ROT-01/next-drive-design.md)。上述为预研，不是本任务生产验收。
+- 状态：in_progress。r5完整T1-r5a全部7项通过：1377项pytest、三种子启动、双种子十二车/30s弯坡。当前r7相关T0完整671项通过（78.94s）、16条原生完成；完整T2-r7已失败终止：439项pytest通过、1项护栏连续刮擦失败（330拍＜600拍）；后续14项检查未跑。280源前后一致，原始日志已归档。
+- 上游基线：ROT自动验收提交`2b7f908df29176ce99ccb1fb0d848ce318474b02`；端口子块`7745282cc00ba1d58da2a997597a999882e68363`。当前HEAD `771ddd0f059fc67719e6217a610162b7ab3e1748`；整车联合改动尚未提交、未推送。
+- 用户完整要求与剩余项：[物理目标核对](../physics-goal-audit.md)。本任务只完成当前后驱传动闭环，FWD/AWD、限滑/轴惯量、悬架、估计器、实车型与总Gate仍须继续。
+- 当前源：280份Python文件冻结于[candidate-validation-r7-source.zip](../evidence/PHYS-DRIVE-01/candidate-validation-r7-source.zip)，SHA-256 `19169bd9502cdda8d5c9ec90fe5270fe66a1dfa7249b35447223d702e02f8bc4`，清单validation-r7-source-before.json。该版本运行前后280源SHA一致；r5/r6/r7源ZIP与原日志各自保留，后续实质修复使用新版本验证。
 
-## 施工范围
+## 行为与职责
 
-1. 曲轴绝对转速及独立惯量，真正相对壳体RPM；燃烧请求、曲轴摩擦、怠速/红线和有限离合执行器明确分开。发动机状态由转矩积分，不跟随轮速目标或在积分后钳RPM。
-2. 有限容量离合、带符号固定齿比和后驱开放差速器，正反功流一致。左右输出转矩相等且轮速差自由；既有发动机制动不再作为后轮干式制动容量。
-3. 曲轴/轮胎/制动/转子陀螺在同一轮胎子步求共同末状态，再一次提交原生冲量。保留原轮胎0.001N残差、制动互补和独立能量门槛，不用顺序末速度修正掩盖耦合误差。
-4. 自动起步/换挡以实际曲轴和离合状态反馈；有限卸载至真实容量0后改齿比、再结合，保存轴速连续。VehicleCommand允许显式gear/clutch请求，None明确采用自动策略，不增加键盘模拟或第二物理世界。
-5. 正常游戏/困难仿真、玩家/NPC、reset/rebase/回收/模式重建贯通；Snapshot、音频/现有HUD和完整参数导出只读真实状态，成绩版本隔离。
+1. `powertrain.py`：真实曲轴轴速/相对RPM、节气门/怠速/红线请求、有限离合与卸载换挡；prepare只推进控制，accept_step只接受共同积分。不用目标RPM或轮速重设机械状态。
+2. `transmission_ports.py`：离合/双向效率/制动活动约束；`tire_drivetrain.py`：车身角速、曲轴及四轮的八维共同末状态，真实壳体反力和陀螺、符号明确的功/热。空挡无虚构输入轴惯量。
+3. `vehicle_tires.py`：同一接触子步内联立胎体、轮转、制动与传动，向唯一Bullet车身提交真实冲量；原0.001N力残差、容量、能量与迭代门槛保持。
+4. `vehicle.py`：玩家Control保留制动优先；显式研究VehicleCommand可双踏板、gear/clutch经有限执行器。显式gear覆盖自动direction，direction=0可保持实际挡位。有限传动的TCS统一读上一完整机械步实际gear，空挡无驱动资格；关闭有限机制保留原方向语义。
+5. 两模式共用120Hz机械核心。游戏Je=0.02、困难参考Je=0.2kg·m²均为设计值；原动力曲线、驾驶辅助、制动硬件与电子控制增益保持。低速ESC只修参考连续性，原介入门槛不改。
+6. 主动发动机请求共享原全负荷曲线能力；游戏道路软限速按实际挡位只削驾驶请求，有限怠速补偿仍受能力约束。绝不钳RPM、清轮矩、瞬移或关闭碰撞掩盖响应。
 
-按功能修改`powertrain.py`、`tire_coupling.py`、`vehicle_tires.py`、`vehicle.py`及必要配置/观测/研究工具。机械约束可以单独功能文件，不建立通用动力学框架、Manager、Registry或内部防御性fallback。零容量/空挡是明确机械工况；数值无可行解显式失败。
+不建Manager/Registry/DI/通用动力学框架；内部明确接口直接访问，设备/文件/配置边界正常处理错误。legacy、ADAS、DS及旧证据只读。
 
-不顺带改变轮胎曲线、峰值、三电子增益、悬架、碰撞或交通策略。原发动机曲线保留，新增惯量产生的自然变化在A/B记录；先解释有效转矩曲线和闭节气门损失的参数口径，再落实设计值，不称作实车测量。前驱/四驱、限滑、传动轴惯量、悬架SI和估计器随后另包。
+## 当前证据
 
-## 验收与收尾
+| 项目 | 已确认事实与边界 | 原始入口 |
+|---|---|---|
+| 当前相关T0-r7 | Ruff及671项pytest完整通过，78.94s；覆盖发动机能力/换挡、原生TCS/研究请求、端口与联合守恒。8项自动挡保持/空挡待挂挡反例初测全失败，修复后完整通过；T0源码清单在执行后取样，不宣称前后哈希 | validation-T0-r7；validation-T0-auto-tcs-initial；[当前控制边界](../evidence/PHYS-DRIVE-01/automatic-gear-tcs-r7.md) |
+| 发动机/原玩家集成T0-r4c | 当时141项完整通过，1086.69s；r5手动/r7自动TCS扩展各有独立反例和回归，旧结果保留原版本 | [能力与怠速](../evidence/PHYS-DRIVE-01/engine-control-boundaries-r4.md) |
+| 当前标准两模式A/B（r7） | 44条完整完成、280源与r7冻结版一致；31724行全部字段与r4核对，仅两模式滑行扰动/倒车的TCS wheel_slips观测改变，其余字段精确相同。开放差速等矩、力残差0.000999784N、最小热−1.22e−13J仍在原门槛内 | ab-mode-control-r7；[全部字段对照](../evidence/PHYS-DRIVE-01/current-standard-r7-comparison.json)，旧r4源结果独立保留 |
+| 当前原生（r7） | 两模式12柔性/4刚性/10560拍完成，真实换挡容量0，最大力残差0.000999822542N。12条完整字节一致；4条倒车仅前15拍TCS wheel_slips观测改变，其余全部字段字节一致；280源稳定 | [完整轨迹回执](../evidence/PHYS-DRIVE-01/native-production-r7-receipt.json)及native-production-r7-comparison.json |
+| 当前坡停（r7） | 两模式5°/10s原门槛通过，位移0.001928389564/0.001927583046m、平均Fx1025.997381/1025.997277N；280源前后与r7冻结版相同 | grade-control-r7；[当前标准回执](../evidence/PHYS-DRIVE-01/current-standard-r7-receipt.json) |
+| 参数与读回 | r5 reference-v10真实240tick，两模式74车辆/8制动/10TCS/10稳定/9输入字段；通用设计参考，非实车测量 | [当前参数](../evidence/PHYS-DRIVE-01/reference-v10-control-r5.json) |
+| 独立机械/关闭分支 | 原机械台架/负对照、147316旧单元零差异、无外力原生细化已有冻结证据；原生单精度误差回升与游戏小正能量漂移原样保留 | [证据总入口](../evidence/PHYS-DRIVE-01/README.md)与control-calibration.md，不能当作当前完整T1 |
+| 完整T1（r5）/当前T2 | T1-r5a全部7项通过、280源哈希一致，原始日志已归档。当前T2-r7失败：439通过、1失败，余14检查未跑；1561全套选择未完成，不拼接不同runner结果 | [T1完整回执](../evidence/PHYS-DRIVE-01/validation-T1-r5a/receipt.json)；logs/validation/PHYS-DRIVE-01-T2-r7 |
+| 矩阵复用（r6） | 已正式接入，模式顺序/门槛/接口保持；532项正式T0通过，16条正式原生/10560拍与r5完整字节一致。原型单车短起步CPU下降27.1%/29.4%，非可见FPS | [开销与等价核对](../evidence/PHYS-DRIVE-01/solve-cost-diagnosis-r5.md)；native-production-r6-receipt.json |
 
-- 固定轴向及三维机械台架：有限容量/锁止、正负滑差、双向损失/静止、开放差速、零容量、惯量和完整功/动量账。负对照必须实际检出省略壳体反力/曲轴陀螺的缺项。
-- 原生世界连续轨迹：120Hz生产与时间细化诊断，起步/松油/离地/再接触/坡停/制动/倒车、连续及中断换挡；保存真正曲轴ω、挡位、容量/反力/滑差/热与原始符号。
-- 两模式同完整A配置与输入，对比新B全过程；单侧附着/制动通过机械反馈影响等分传递能力，TCS仍驱动实际发动机/制动执行器。关闭新机制与冻结ROT的既有读数一致。
-- 相关T0之后完整vehicle/core/gameplay/traffic/road T1；传动功能组完成再T2。首次失败、超时、中断和未跑原样保留，同一有效版本不重复跑无关检查。
-- 自动通过后记录实际本地提交与证据、更新精简进度页；本轮未授权推送/发布。整个goal、T3/可见性能/用户两模式实际驾驶仍单独验收。
+## 完整验证与收口
 
-当前`transmission_ports.py`已落地，230项相关T0通过；正式端口置入冻结四轮联合台架的48组状态与预研精确相同，原力/能量门槛保持。模块尚未接Vehicle驾驶路径，整车T1/A/B与空挡/刚性轮胎/连续换挡未完成。[本任务原始记录与失败](../evidence/PHYS-DRIVE-01/README.md)；不得用冻结台架替代生产驾驶验收。
+当前T2命令：`.venv/Scripts/python.exe tools/validate.py T2 --output logs/validation/PHYS-DRIVE-01-T2-r7 --timeout 9000`。进程已退出；进程局部PYTEST_ADDOPTS=-x在真实失败时终止，本次439项通过、1项失败，pytest耗时2438.27s，Ruff通过，其余14项检查未跑。stdout/stderr与协议在T2-r7-*。T2同版包含全部T1模块、三种子启动、更长弯坡与功能组专项，记录为真实T2，不另重复同版长T1或改名r5a结果。
 
-端口模块及其T0/联合台架证据本地提交：7745282cc00ba1d58da2a997597a999882e68363。仅是施工子块，Vehicle尚未引用；本任务完整T1/A/B未跑，不计任务完成。源码基线仍为ROT的2b7f908。
+完整T2终态已核对280源SHA相同，原始日志与[失败回执](../evidence/PHYS-DRIVE-01/validation-T2-r7/receipt.json)已归档。失败为护栏连续刮擦最长330拍、要求600拍，根因尚待独立复现。失败先复现、保留原门槛；必要修复按新版本重新完整验证。当前原生与T0只证明对应范围，不代表完整T2/阶段通过。
+
+必要修复后按实际新版本完整验证，独立runner不拼接通过。T2/本地提交后再按[下一布局范围](../evidence/PHYS-DRIVE-01/next-layout-scope.md)建立下一任务。实际前台性能、T3和用户两模式驾驶结论仍独立待验。
+
+## 失败与中断档案
+
+r1/r2完整T1见集成失败后主动中断；r3因独立发动机主动能力反例中断，r4因手动挡TCS反例中断。r5 exec10078/实际进程消失，raw summary停在running、45个通过标记，无终态数量，原因未确认；当前r5a以相同冻结源完整新跑，不拼接。各轮interruption.json、原日志/配置/源ZIP及初始失败均在[证据目录](../evidence/PHYS-DRIVE-01/README.md)。
+
+旧施工与各轮当时状态完整保留于[早期任务历史](../evidence/PHYS-DRIVE-01/task-history-before-r5a.md)与[r7前任务历史](../evidence/PHYS-DRIVE-01/task-history-before-r7.md)；当前事实以本页及当前实际源码/进程/终态报告为准。

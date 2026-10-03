@@ -1,0 +1,28 @@
+F.                                                                       [100%]
+================================== FAILURES ===================================
+______________ test_held_throttle_builds_speed_and_changes_gears ______________
+
+    def test_held_throttle_builds_speed_and_changes_gears():
+        sim = straight_simulation()
+        try:
+            for _ in range(240):
+                sim.step(Control())
+            checkpoints = {}
+            gear_changes = []
+            last_gear = 1
+            for tick in range(1, 1201):
+                sim.step(Control(throttle=1))
+                car = sim.snapshot().player
+                if tick in (60, 120, 360, 600, 1200):
+                    checkpoints[tick] = car.speed * 3.6
+                if car.gear != last_gear:
+                    gear_changes.append((last_gear, car.gear))
+                    last_gear = car.gear
+                assert 800 < car.rpm < 6500
+>           assert 0.5 < checkpoints[60] < 3
+E           assert 0.5 < 0.4871686577796936
+
+tests\test_driving_response.py:51: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_driving_response.py::test_held_throttle_builds_speed_and_changes_gears
+1 failed, 1 passed in 37.32s

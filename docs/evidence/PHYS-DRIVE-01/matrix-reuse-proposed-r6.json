@@ -1,0 +1,6 @@
+{
+  "status": "prepared_not_applied",
+  "base_file_sha256": "6b398014f5305993afd09003373b54c467dd4243fd1918ce8d3ef32eb220e169",
+  "patch_sha256": "5fd2d0a678344180d8445a30697619ed0de25aaff52ca77432b770d94a15d42b",
+  "scope": "same interfaces, local exact matrix reuse; production T1 source freeze remains"
+}

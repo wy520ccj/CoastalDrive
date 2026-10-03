@@ -1,0 +1,15 @@
+RUN ruff
+PASSED ruff (0.3s)
+RUN pytest
+PASSED pytest (8015.6s)
+RUN headless-0
+PASSED headless-0 (13.0s)
+RUN headless-17
+PASSED headless-17 (12.6s)
+RUN headless-23
+PASSED headless-23 (13.3s)
+RUN hills-0
+PASSED hills-0 (745.1s)
+RUN hills-23
+PASSED hills-23 (1125.3s)
+Summary: B:\AI agent\暑期计算机程序设计\CoastalDrive\logs\validation\PHYS-DRIVE-01-T1-r5a\summary.json

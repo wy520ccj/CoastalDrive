@@ -1,0 +1,24 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_____________ test_brake_stops_before_reverse_and_beats_throttle ______________
+
+    def test_brake_stops_before_reverse_and_beats_throttle():
+        s = Simulation()
+        for _ in range(240):
+            s.step(Control())
+        for _ in range(240):
+            s.step(Control(throttle=1))
+        previous = s.snapshot().player.speed
+        wheel_energy = sum(.5 * CAR.wheel_inertia * wheel.omega**2
+                           for wheel in s.snapshot().player.wheel_dynamics)
+        s.step(Control(throttle=1, brake=1))
+>       assert s.player.powertrain.drive_torque == 0
+E       assert 1875.9765529446743 == 0
+E        +  where 1875.9765529446743 = <powertrain.Powertrain object at 0x000001C67799DBE0>.drive_torque
+E        +    where <powertrain.Powertrain object at 0x000001C67799DBE0> = <vehicle.Vehicle object at 0x000001C67799D940>.powertrain
+E        +      where <vehicle.Vehicle object at 0x000001C67799D940> = <simulation.Simulation object at 0x000001C676F1ECF0>.player
+
+tests\test_core.py:163: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_core.py::test_brake_stops_before_reverse_and_beats_throttle
+1 failed in 7.27s

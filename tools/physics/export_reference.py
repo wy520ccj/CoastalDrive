@@ -24,11 +24,21 @@ VEHICLE_FIELDS = {
     "torque_curve": ("rpm,N·m", "曲轴转矩节点线性插值；game为raw非零节点×1.055"),
     "gear_ratios": ("1", "五个自动前进挡传动比"),
     "final_drive": ("1", "主减速比"),
-    "drivetrain_efficiency": ("1", "驱动转矩效率"),
-    "idle_rpm": ("rpm", "发动机转速下限"),
-    "shift_time": ("s", "换挡驱动转矩衰减时长"),
-    "torque_response": ("s", "轮端转矩一阶响应时间常数"),
-    "engine_braking": ("N·m", "闭油门曲轴拖曳转矩估计"),
+    "drivetrain_efficiency": ("1", "传动双向功流效率；旧分支为驱动转矩乘率"),
+    "idle_rpm": ("rpm", "实际曲轴怠速控制目标；不钳末转速"),
+    "shift_time": ("s", "换挡释放/选择/结合总时长；旧分支为驱动衰减时长"),
+    "torque_response": ("s", "实际节气门一阶响应时间常数；旧分支为轮端转矩响应"),
+    "engine_braking": ("N·m", "闭节气门近似曲轴损失转矩；怠速以下连续趋零，隐式同末速度耗散"),
+    "finite_drivetrain": ("bool", "真实曲轴/有限离合/双向损失与开放差速器共同末状态"),
+    "engine_inertia": ("kg·m²", "曲轴独立轴向惯量，通用设计值"),
+    "engine_axis": ("单位向量", "车身局部曲轴正转方向"),
+    "engine_idle_response": ("s", "实际相对曲轴速度反馈的怠速控制响应"),
+    "engine_idle_torque_limit": ("N·m", "怠速控制正转矩容量"),
+    "engine_redline_rpm": ("rpm", "请求转矩切断阈值；不钳积分末RPM"),
+    "clutch_capacity": ("N·m", "完全结合干式离合容量"),
+    "clutch_release_time": ("s", "离合由完全结合至分离的行程时间"),
+    "clutch_engage_time": ("s", "离合由分离至完全结合的行程时间"),
+    "clutch_launch_response": ("s", "自动起步离合实际曲轴速度反馈时域"),
     "max_speed": ("m/s", "game前进驱动转矩渐退速度；160/3.6"),
     "reverse_speed": ("m/s", "game倒车驱动转矩渐退速度；22/3.6"),
     "reverse_force": ("N", "game倒车轮端力上限，按半径换算转矩"),
@@ -117,6 +127,7 @@ STABILITY_FIELDS = {
     "sideslip_threshold": ("rad", "侧偏角介入阈值"),
     "moment_threshold": ("N·m", "制动力矩请求介入阈值"),
     "engine_cut_gain": ("1", "归一化横摆及侧偏误差到发动机削矩比例增益"),
+    "continuous_reference": ("bool", "低于ESC介入速度仍跟踪有支撑的参考；关闭用于冻结旧控制A/B"),
 }
 INPUT_FIELDS = {
     "progressive_pedals": ("bool", "启用键盘踏板渐变"),
@@ -221,7 +232,7 @@ def export(output):
     source_names = ("vehicle_config.py", "driver_assist.py", "driving_modes.py", "vehicle.py",
                     "vehicle_tires.py", "vehicle_traction.py", "powertrain.py", "vehicle_steering.py", "vehicle_dynamics.py",
                     "wheel_dynamics.py", "tire_forces.py", "vehicle_contacts.py", "vehicle_state.py",
-                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py", "rotor_dynamics.py", "wheel_geometry.py")
+                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py", "rotor_dynamics.py", "wheel_geometry.py", "transmission_ports.py", "tire_drivetrain.py")
     hashes = {f"src/{name}": hashlib.sha256((ROOT / "src" / name).read_bytes()).hexdigest()
               for name in source_names}
     hashes["tools/physics/export_reference.py"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
@@ -232,7 +243,7 @@ def export(output):
         "panda_version": PandaSystem.getVersionString(), "bullet_version": getBulletVersion(),
         "measurement": {"ticks": 240, "dt": FIXED_DT, "max_substeps": 0,
                         "ground": "水平无限平面", "gravity": [0, 0, -9.81], "input": "VehicleCommand()"},
-        "schema_version": "reference-v9",
+        "schema_version": "reference-v10",
         "vehicle_fields": VEHICLE_FIELDS, "brake_fields": BRAKE_FIELDS,
         "traction_fields": TRACTION_FIELDS, "stability_fields": STABILITY_FIELDS,
         "input_fields": INPUT_FIELDS, "modes": modes,
@@ -247,5 +258,5 @@ def export(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path,
-                        default=ROOT / "logs/physics/reference-v9/parameters.json")
+                        default=ROOT / "logs/physics/reference-v10/parameters.json")
     export(parser.parse_args().output)

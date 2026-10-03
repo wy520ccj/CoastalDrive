@@ -1,0 +1,25 @@
+{
+  "status": "completed_native_only",
+  "source_files": 280,
+  "trials": [
+    {
+      "directory": "native-mode-control-r4",
+      "count": 12,
+      "source_stable": true
+    },
+    {
+      "directory": "native-rigid-control-r4",
+      "count": 4,
+      "source_stable": true
+    },
+    {
+      "directory": "grade-control-r4",
+      "count": 2,
+      "source_stable": true
+    }
+  ],
+  "T0": "passed: 141 tests and ruff",
+  "T1": "running: full 1365 nodes plus startup/hills",
+  "T2": "not_run",
+  "human_gate": "pending"
+}

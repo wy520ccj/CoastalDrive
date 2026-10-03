@@ -1,0 +1,15 @@
+{
+  "status": "completed_r6_T0_native",
+  "recorded_utc": "2026-10-03T16:27:18.285800+00:00",
+  "source_files": 280,
+  "changed_from_r5": [
+    "src/transmission_ports.py"
+  ],
+  "source_archive_sha256": "02bfa95cf2d0cfaa7682483c8a4e284b94d505f880f5667b2d2c102e4297864a",
+  "T0_source_capture": "after T0 only; not a before/after T0 hash claim",
+  "T0_summary": "validation-T0-r6/summary.json",
+  "T1_r5a": "complete_T1_passed",
+  "initial_status": "applied_T0_passed_native_T2_pending",
+  "native_receipt": "native-production-r6-receipt.json",
+  "T2_r6": "not_run; current r7 T2 is a separate runner after automatic TCS correction"
+}

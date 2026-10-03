@@ -1,0 +1,72 @@
+{
+  "status": "complete_T1_passed",
+  "completed_receipt_utc": "2026-10-03T16:25:32.608322+00:00",
+  "pytest_count": 1377,
+  "pytest_seconds": 8014.01,
+  "source_files": 280,
+  "source_stable": true,
+  "source_archive_sha256": "2d4c92f167ebcde4d9b1e701464dbea6cf4e03732adda931ec157d37b584e715",
+  "checks": [
+    {
+      "name": "ruff",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 0.314
+    },
+    {
+      "name": "pytest",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 8015.551
+    },
+    {
+      "name": "headless-0",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 12.981
+    },
+    {
+      "name": "headless-17",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 12.56
+    },
+    {
+      "name": "headless-23",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 13.346
+    },
+    {
+      "name": "hills-0",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 745.068
+    },
+    {
+      "name": "hills-23",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 1125.327
+    }
+  ],
+  "hills": [
+    {
+      "seed": 0,
+      "passed": true,
+      "traffic_count": 12,
+      "simulation_seconds": 30.0,
+      "wall_seconds": 744.2017279000138,
+      "failures": []
+    },
+    {
+      "seed": 23,
+      "passed": true,
+      "traffic_count": 12,
+      "simulation_seconds": 30.0,
+      "wall_seconds": 1123.4802645000163,
+      "failures": []
+    }
+  ],
+  "scope": "uncommitted r5 source, full T1 only; T2/stage/visible/human pending"
+}

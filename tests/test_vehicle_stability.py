@@ -1,5 +1,6 @@
 """横摆制动力矩分配的几何符号、可达边界与真值反馈。"""
 
+import math
 from dataclasses import replace
 
 import pytest
@@ -90,6 +91,29 @@ def test_disabled_esc_keeps_incoming_pressure_and_drive_request():
     state = StabilityControl(config).advance(body, wheels, contacts, requests, 10, FIXED_DT)
     assert state.brake_requests == requests and state.torque_scale == 1
     assert not state.active
+
+
+def test_supported_reference_tracks_below_intervention_speed_without_activation_spike():
+    config, body, wheels, contacts = feedback(speed=1.49)
+    warm = StabilityControl(config)
+    old = StabilityControl(replace(config, stability=replace(config.stability, continuous_reference=False)))
+    for _ in range(240):
+        state = warm.advance(body, wheels, contacts, (0.,) * 4, 26., FIXED_DT)
+        old_state = old.advance(body, wheels, contacts, (0.,) * 4, 26., FIXED_DT)
+        assert not state.active and state.torque_scale == 1. and state.brake_requests == (0.,) * 4
+        assert old_state.reference_yaw_rate == old_state.reference_sideslip == 0.
+    speed = 1.51
+    yaw = -speed * math.tan(math.radians(26.)) / config.wheelbase
+    rear_slip = config.mass * config.front_weight_share * speed * yaw / (2 * config.rear_lateral_stiffness)
+    beta = math.atan(-config.wheelbase * config.front_weight_share * yaw / speed + rear_slip)
+    body.setLinearVelocity(Vec3(speed * math.tan(beta), speed, 0.))
+    body.setAngularVelocity(Vec3(0., 0., yaw))
+    state = warm.advance(body, wheels, contacts, (0.,) * 4, 26., FIXED_DT)
+    old_state = old.advance(body, wheels, contacts, (0.,) * 4, 26., FIXED_DT)
+    assert abs(state.yaw_error) < config.stability.yaw_threshold
+    assert abs(state.sideslip_error) < config.stability.sideslip_threshold
+    assert not state.active and state.torque_scale == 1.
+    assert old_state.active and old_state.torque_scale == 0.
 
 
 def test_reference_uses_tire_grip_not_brake_hardware_capacity():

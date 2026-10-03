@@ -1,0 +1,28 @@
+........................................................................ [ 19%]
+........................................................................ [ 39%]
+........................................................................ [ 59%]
+........................................................................ [ 78%]
+......................................................................F. [ 98%]
+......                                                                   [100%]
+================================== FAILURES ===================================
+____ test_direct_throttle_bypasses_keyboard_ramp_but_keeps_torque_response ____
+
+sim = <simulation.Simulation object at 0x00000212F46863C0>
+
+    def test_direct_throttle_bypasses_keyboard_ramp_but_keeps_torque_response(sim):
+        sim.step(VehicleCommand(throttle=1, direction=1))
+        assert sim.snapshot().player.throttle == 1
+        assert sim.player.assist.throttle == 0
+        assert sim.player.powertrain.throttle > 0
+        assert 0 < sim.player.powertrain.engine_torque_request < 1000 * .33
+        # 有限离合在曲轴尚未达到起步速度前保持分离，轮端不立即出现虚构转矩。
+>       assert sim.player.powertrain.capacity == 0.
+E       assert 7.457712986684795 == 0.0
+E        +  where 7.457712986684795 = <powertrain.Powertrain object at 0x00000212F4721590>.capacity
+E        +    where <powertrain.Powertrain object at 0x00000212F4721590> = <vehicle.Vehicle object at 0x00000212F3C3D590>.powertrain
+E        +      where <vehicle.Vehicle object at 0x00000212F3C3D590> = <simulation.Simulation object at 0x00000212F46863C0>.player
+
+tests\test_vehicle_commands.py:29: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_vehicle_commands.py::test_direct_throttle_bypasses_keyboard_ramp_but_keeps_torque_response
+1 failed, 365 passed in 312.27s (0:05:12)

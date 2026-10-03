@@ -1,0 +1,41 @@
+{
+  "scope": "independent finite SPD/constraint matrices; no production changes; concurrent T1, not native/frame-rate evidence",
+  "matrix_count": 9600,
+  "double_values": 86400,
+  "byte_different_matrices": 0,
+  "old_sha256": "60cb602de8f41c269a9316c8b28111d15068983297f4487da4bebc532730f6b0",
+  "reuse_sha256": "60cb602de8f41c269a9316c8b28111d15068983297f4487da4bebc532730f6b0",
+  "timing_sample_matrices": 1200,
+  "alternating_timing_seconds": [
+    {
+      "old": 0.017398900003172457,
+      "reuse": 0.0123922000057064
+    },
+    {
+      "reuse": 0.01230099999520462,
+      "old": 0.017081599988159724
+    },
+    {
+      "old": 0.019743200013181195,
+      "reuse": 0.014633800004958175
+    },
+    {
+      "reuse": 0.014204599996446632,
+      "old": 0.020413400008692406
+    },
+    {
+      "old": 0.01940889999968931,
+      "reuse": 0.013000000006286427
+    },
+    {
+      "reuse": 0.01230760000180453,
+      "old": 0.018543500002124347
+    }
+  ],
+  "plan_cases": 3216,
+  "byte_or_order_different_plan_cases": 0,
+  "nonzero_capacities_eta088": {
+    "plans": 45,
+    "unique_matrices": 12
+  }
+}

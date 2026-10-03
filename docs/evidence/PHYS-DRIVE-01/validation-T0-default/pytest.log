@@ -1,0 +1,32 @@
+........................................................................ [ 17%]
+........................................................................ [ 34%]
+........................................................................ [ 51%]
+........................................................................ [ 68%]
+........................................................................ [ 85%]
+........................................................F.....           [100%]
+================================== FAILURES ===================================
+________ test_lifting_off_coasts_and_slows_without_stopping_instantly _________
+
+    def test_lifting_off_coasts_and_slows_without_stopping_instantly():
+        sim = straight_simulation()
+        try:
+            for _ in range(240):
+                sim.step(Control())
+            for _ in range(480):
+                sim.step(Control(throttle=1))
+            before = sim.snapshot().player.speed
+            sim.step(Control())
+            assert abs(sim.snapshot().player.speed - before) < 0.1
+            for _ in range(480):
+                sim.step(Control())
+>           assert 0 < sim.snapshot().player.speed < before - 1
+E           assert 13.06554126739502 < (13.355660438537598 - 1)
+E            +  where 13.06554126739502 = CarState(position=(179.99951171875, 77.64958953857422, 0.418688029050827), heading=-1.5879333659540862e-05, speed=13.0...7109182185935e-12, engine_drag_heat=28.60173663433486, clutch_heat=8.842461493313928e-16, gear_heat=3.587997711410811)).speed
+E            +    where CarState(position=(179.99951171875, 77.64958953857422, 0.418688029050827), heading=-1.5879333659540862e-05, speed=13.0...7109182185935e-12, engine_drag_heat=28.60173663433486, clutch_heat=8.842461493313928e-16, gear_heat=3.587997711410811)) = Snapshot(tick=1201, time=10.008333333333333, player=CarState(position=(179.99951171875, 77.64958953857422, 0.418688029...heat=3.587997711410811)), traffic=(), events=(), origin_y=0.0, collisions=0, contact_epoch=26, impacts=(), contacts=()).player
+E            +      where Snapshot(tick=1201, time=10.008333333333333, player=CarState(position=(179.99951171875, 77.64958953857422, 0.418688029...heat=3.587997711410811)), traffic=(), events=(), origin_y=0.0, collisions=0, contact_epoch=26, impacts=(), contacts=()) = snapshot()
+E            +        where snapshot = <simulation.Simulation object at 0x0000011C7F416CF0>.snapshot
+
+tests\test_driving_response.py:107: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_driving_response.py::test_lifting_off_coasts_and_slows_without_stopping_instantly
+1 failed, 421 passed in 108.19s (0:01:48)

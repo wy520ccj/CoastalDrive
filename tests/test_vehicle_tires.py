@@ -23,6 +23,16 @@ def sim():
     simulation.close()
 
 
+@pytest.fixture
+def tire_only_sim():
+    # 直接施加指定轮端转矩的隔离试验，明确断开发动机/离合闭环。
+    simulation = Simulation(track="test", traffic_count=0, config=replace(CAR, finite_drivetrain=False))
+    for _ in range(240):
+        simulation.step(Control())
+    yield simulation
+    simulation.close()
+
+
 def tire_step(car, *, drive=0, brake=0):
     car.tires.advance(car._chassis, car.snapshot().wheel_contacts, (0, 0),
                       drive, 0, (brake,) * 4, car.snapshot().contact_tick, FIXED_DT)
@@ -52,8 +62,8 @@ def test_native_tangent_forces_disabled_with_suspension_and_collision(sim):
 
 
 @pytest.mark.parametrize("drive", [-200, 200])
-def test_airborne_drive_reaction_conserves_angular_momentum(sim, drive):
-    car = sim.player
+def test_airborne_drive_reaction_conserves_angular_momentum(tire_only_sim, drive):
+    car = tire_only_sim.player
     car.reset((95, 0, 20))
     axis = car._chassis.getTransform().getQuat().getRight()
     tire_step(car, drive=drive)
@@ -71,8 +81,8 @@ def test_airborne_drive_reaction_conserves_angular_momentum(sim, drive):
     ((-2, -4, 0), (-.3, .5, -.2), (12, -15, 18, -20)),
     ((0, .02, 0), (0, 0, .1), (.1, .2, -.3, .4)),
 ])
-def test_isolated_tire_impulses_do_not_add_energy(sim, velocity, angular, omega):
-    car = sim.player
+def test_isolated_tire_impulses_do_not_add_energy(tire_only_sim, velocity, angular, omega):
+    car = tire_only_sim.player
     car._chassis.setLinearVelocity(Vec3(*velocity))
     car._chassis.setAngularVelocity(Vec3(*angular))
     car.tires.omega = list(omega)
@@ -85,7 +95,8 @@ def test_isolated_tire_impulses_do_not_add_energy(sim, velocity, angular, omega)
 @pytest.mark.parametrize("speed", [-.1, .1])
 def test_rigid_low_speed_braking_does_not_reverse(speed):
     # 原刚性分支的单调停车门槛保留；柔性轮胎可用储能产生真实短暂回弹。
-    simulation = Simulation(track="test", traffic_count=0, config=replace(CAR, tire_compliance=False))
+    simulation = Simulation(track="test", traffic_count=0,
+                            config=replace(CAR, tire_compliance=False, finite_drivetrain=False))
     try:
         for _ in range(240):
             simulation.step(Control())
@@ -101,8 +112,8 @@ def test_rigid_low_speed_braking_does_not_reverse(speed):
 
 
 @pytest.mark.parametrize("speed", [-.1, .1])
-def test_compliant_low_speed_brake_rebound_does_not_create_energy(sim, speed):
-    car = sim.player
+def test_compliant_low_speed_brake_rebound_does_not_create_energy(tire_only_sim, speed):
+    car = tire_only_sim.player
     car._chassis.setLinearVelocity(Vec3(0, speed, 0))
     car._chassis.setAngularVelocity(Vec3(0))
     car.tires.initialize_rolling(speed)
@@ -117,8 +128,8 @@ def test_compliant_low_speed_brake_rebound_does_not_create_energy(sim, speed):
 
 
 @pytest.mark.parametrize(("drive", "brake"), [(0, 0), (200, 0), (0, 1), (200, .4)])
-def test_wheel_angular_momentum_uses_full_tick_impulses(sim, drive, brake):
-    car = sim.player
+def test_wheel_angular_momentum_uses_full_tick_impulses(tire_only_sim, drive, brake):
+    car = tire_only_sim.player
     old_omega = list(car.tires.omega)
     tire_step(car, drive=drive, brake=brake)
     for index, state in enumerate(car.snapshot().wheel_dynamics):

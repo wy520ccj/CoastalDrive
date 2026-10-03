@@ -1,0 +1,31 @@
+FF                                                                       [100%]
+================================== FAILURES ===================================
+________________ test_abs_reduces_observed_wheel_lock[asphalt] ________________
+
+case = 'asphalt'
+
+    @pytest.mark.parametrize("case", ["asphalt", "low-mu", "split-mu"])
+    def test_abs_reduces_observed_wheel_lock(case):
+        baseline, _ = run_trial(case, False)
+        candidate, rows = run_trial(case, True)
+>       assert sum(baseline["locked_wheel_seconds"]) > 0
+E       assert 0.0 > 0
+E        +  where 0.0 = sum([0.0, 0.0, 0.0, 0.0])
+
+tests\test_abs_integration.py:17: AssertionError
+___ test_disabled_controller_and_releasing_driver_requests_reach_actuators ____
+
+    def test_disabled_controller_and_releasing_driver_requests_reach_actuators():
+        for enabled in (False, True):
+            _, rows = run_trial("driver-brake", enabled, duration=3)
+            for row in rows[241:]:
+                assert not row["state.traction_state.active"]
+                assert row["state.traction_state.torque_scale"] == 1
+>               assert row["state.wheel_dynamics.2.drive_torque"] == 0
+E               assert 140.24407555129875 == 0
+
+tests\test_tcs_integration.py:39: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_abs_integration.py::test_abs_reduces_observed_wheel_lock[asphalt]
+FAILED tests/test_tcs_integration.py::test_disabled_controller_and_releasing_driver_requests_reach_actuators
+2 failed in 37.20s

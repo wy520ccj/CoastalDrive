@@ -172,15 +172,18 @@ def test_support_representation_preserves_the_original_native_inertia(config):
 
 
 def test_symmetric_airborne_braking_preserves_symmetry_as_tire_step_refines():
+    # 旋转曲轴是轴向矢量；横向轴在左右镜像下不变，纵向旋向车不满足此前提。
     trials = [esc_probe.run_trial("airborne-recontact", True, 6, "simulation",
-              vehicle_config=replace(REFERENCE_CAR, tire_substeps=steps))[0] for steps in (2, 4, 8, 16)]
+              vehicle_config=replace(REFERENCE_CAR, engine_axis=(1., 0., 0.), tire_substeps=steps))[0]
+              for steps in (2, 4, 8, 16)]
     for trial in trials:
         assert trial["peak_abs_unwrapped_heading_deg"] < .001
         assert trial["esc_active_seconds"] == 0
         assert trial["stopped"]
     differences = [abs(b["path_distance_m"]-a["path_distance_m"]) for a, b in pairwise(trials)]
     assert differences[2] < differences[1] < differences[0]
-    assert abs(trials[-1]["time_to_stop_s"]-trials[-2]["time_to_stop_s"]) <= FIXED_DT
+    stop_ticks = [round(trial["time_to_stop_s"] / FIXED_DT) for trial in trials]
+    assert abs(stop_ticks[-1]-stop_ticks[-2]) <= 1
 
 
 @pytest.mark.parametrize("roll", [-5, 5])

@@ -1,0 +1,11 @@
+{
+  "command": ".venv/Scripts/python.exe tools/validate.py T1 --area vehicle --area core --area gameplay --area traffic --area road --output logs/validation/PHYS-DRIVE-01-T1-r4 --timeout 9000",
+  "process_local_env": {
+    "PYTEST_ADDOPTS": "-x"
+  },
+  "collected_nodes": 1365,
+  "source_files": 280,
+  "status": "running",
+  "scope": "complete selected T1; -x stops on first actual failure; no success without terminal all checks",
+  "exec_session": 93821
+}

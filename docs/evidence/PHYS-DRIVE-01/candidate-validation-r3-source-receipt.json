@@ -1,0 +1,6 @@
+{
+  "source_count": 280,
+  "zip_sha256": "63223cea9fc5f64dbc2baaa5092a2127cdccfd8451402b542ae0955f58b1be55",
+  "pytest_addopts": "-x: stop on first failure; all selected tests run when passing",
+  "reason": "Frozen source after player brake priority and physical integration expectations; T1-r2 interrupted with four observed failures, not completed."
+}

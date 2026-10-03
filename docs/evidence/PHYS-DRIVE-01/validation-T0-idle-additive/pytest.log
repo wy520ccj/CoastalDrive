@@ -1,0 +1,51 @@
+.F...F..................                                                 [100%]
+================================== FAILURES ===================================
+______________ test_held_throttle_builds_speed_and_changes_gears ______________
+
+    def test_held_throttle_builds_speed_and_changes_gears():
+        sim = straight_simulation()
+        try:
+            for _ in range(240):
+                sim.step(Control())
+            checkpoints = {}
+            gear_changes = []
+            last_gear = 1
+            for tick in range(1, 1201):
+                sim.step(Control(throttle=1))
+                car = sim.snapshot().player
+                if tick in (60, 120, 360, 600, 1200):
+                    checkpoints[tick] = car.speed * 3.6
+                if car.gear != last_gear:
+                    gear_changes.append((last_gear, car.gear))
+                    last_gear = car.gear
+                assert 800 < car.rpm < 6500
+>           assert 0.5 < checkpoints[60] < 3
+E           assert 0.5 < 0.4633208692073822
+
+tests\test_driving_response.py:51: AssertionError
+________ test_lifting_off_coasts_and_slows_without_stopping_instantly _________
+
+    def test_lifting_off_coasts_and_slows_without_stopping_instantly():
+        sim = straight_simulation()
+        try:
+            for _ in range(240):
+                sim.step(Control())
+            for _ in range(480):
+                sim.step(Control(throttle=1))
+            before = sim.snapshot().player.speed
+            sim.step(Control())
+            assert abs(sim.snapshot().player.speed - before) < 0.1
+            for _ in range(480):
+                sim.step(Control())
+>           assert 0 < sim.snapshot().player.speed < before - 1
+E           assert 12.398038864135742 < (13.29721450805664 - 1)
+E            +  where 12.398038864135742 = CarState(position=(179.99896240234375, 75.57487487792969, 0.4186875522136688), heading=0.00245920242741704, speed=12.3...12796984537e-12, engine_drag_heat=40.17092128688782, clutch_heat=-1.3254386757896761e-15, gear_heat=5.104996390120606)).speed
+E            +    where CarState(position=(179.99896240234375, 75.57487487792969, 0.4186875522136688), heading=0.00245920242741704, speed=12.3...12796984537e-12, engine_drag_heat=40.17092128688782, clutch_heat=-1.3254386757896761e-15, gear_heat=5.104996390120606)) = Snapshot(tick=1201, time=10.008333333333333, player=CarState(position=(179.99896240234375, 75.57487487792969, 0.418687...heat=5.104996390120606)), traffic=(), events=(), origin_y=0.0, collisions=0, contact_epoch=12, impacts=(), contacts=()).player
+E            +      where Snapshot(tick=1201, time=10.008333333333333, player=CarState(position=(179.99896240234375, 75.57487487792969, 0.418687...heat=5.104996390120606)), traffic=(), events=(), origin_y=0.0, collisions=0, contact_epoch=12, impacts=(), contacts=()) = snapshot()
+E            +        where snapshot = <simulation.Simulation object at 0x000001CF144157F0>.snapshot
+
+tests\test_driving_response.py:107: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_driving_response.py::test_held_throttle_builds_speed_and_changes_gears
+FAILED tests/test_driving_response.py::test_lifting_off_coasts_and_slows_without_stopping_instantly
+2 failed, 22 passed in 78.85s (0:01:18)

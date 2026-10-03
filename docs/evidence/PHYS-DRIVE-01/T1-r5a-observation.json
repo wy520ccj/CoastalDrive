@@ -1,0 +1,73 @@
+{
+  "observed_utc": "2026-10-03T16:15:53.920717+00:00",
+  "validator_pid": 37488,
+  "active_runtime_pid": 7224,
+  "pytest_pid": null,
+  "T1_status": "running",
+  "terminal_pytest_count": 1377,
+  "terminal_pytest_status": "passed",
+  "pytest_seconds": 8014.01,
+  "source_files": 280,
+  "source_stable": true,
+  "checks": [
+    [
+      "ruff",
+      "passed"
+    ],
+    [
+      "pytest",
+      "passed"
+    ],
+    [
+      "headless-0",
+      "passed"
+    ],
+    [
+      "headless-17",
+      "passed"
+    ],
+    [
+      "headless-23",
+      "passed"
+    ],
+    [
+      "hills-0",
+      "passed"
+    ],
+    [
+      "hills-23",
+      "running"
+    ]
+  ],
+  "hills0": {
+    "passed": true,
+    "traffic_count": 12,
+    "simulation_seconds": 30.0,
+    "wall_seconds": 744.2017279000138,
+    "failures": []
+  },
+  "hills23_latest_progress": {
+    "status": "running",
+    "seed": 23,
+    "simulation_seconds": 10.0,
+    "wall_seconds": 377.8588330000057,
+    "player_distance_m": 70.35732396206905,
+    "last_sample": {
+      "time": 10.0,
+      "wall_seconds": 377.8559277000022,
+      "sample_period_seconds": 1.0,
+      "player_distance_m": 70.35732396206905,
+      "s": 78.35732392475143,
+      "d": 1.0085309244741105,
+      "rebases": 0,
+      "origin_y": 0.0,
+      "contacts": 0,
+      "segments": 13,
+      "rigid_bodies": 195,
+      "transform_states": 183,
+      "working_set_bytes": 60944384,
+      "changes": 2,
+      "errors": []
+    }
+  }
+}

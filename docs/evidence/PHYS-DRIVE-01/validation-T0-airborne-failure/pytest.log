@@ -1,0 +1,15 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+___ test_symmetric_airborne_braking_preserves_symmetry_as_tire_step_refines ___
+
+    def test_symmetric_airborne_braking_preserves_symmetry_as_tire_step_refines():
+        trials = [esc_probe.run_trial("airborne-recontact", True, 6, "simulation",
+                  vehicle_config=replace(REFERENCE_CAR, tire_substeps=steps))[0] for steps in (2, 4, 8, 16)]
+        for trial in trials:
+>           assert trial["peak_abs_unwrapped_heading_deg"] < .001
+E           assert 0.2517050802707672 < 0.001
+
+tests\test_vehicle_collision.py:178: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_vehicle_collision.py::test_symmetric_airborne_braking_preserves_symmetry_as_tire_step_refines
+1 failed in 192.24s (0:03:12)

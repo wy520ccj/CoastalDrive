@@ -1,0 +1,25 @@
+F821 Undefined name `steps_previous`
+   --> src\vehicle_tires.py:175:106
+    |
+173 |                         steering_torques=torques,
+174 |                         force_initial=tuple((state.fx, state.fy, state.brake_torque) for state in self.states)
+175 |                             if substep == 0 else tuple((step.fx, step.fy, step.brake_torque) for step in steps_previous))
+    |                                                                                                          ^^^^^^^^^^^^^^
+176 |                     steps = result.wheels
+177 |                     steps_previous = steps
+    |
+
+F841 Local variable `steps_previous` is assigned to but never used
+   --> src\vehicle_tires.py:177:21
+    |
+175 |                             if substep == 0 else tuple((step.fx, step.fy, step.brake_torque) for step in steps_previous))
+176 |                     steps = result.wheels
+177 |                     steps_previous = steps
+    |                     ^^^^^^^^^^^^^^
+178 |                     drives = (0., 0., result.drive_torque / 2, result.drive_torque / 2)
+179 |                     end_angular = result.angular
+    |
+help: Remove assignment to unused variable `steps_previous`
+
+Found 2 errors.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).

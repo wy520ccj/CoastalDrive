@@ -1,0 +1,16 @@
+C408 Unnecessary `dict()` call (rewrite as a literal)
+   --> tests\test_tire_drivetrain.py:153:16
+    |
+151 |       arguments = (velocity, angular, spins, engine, contact_frames, deformation, 150., 300., ratio,
+152 |                    (0.,) * 4, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), 1 / 240)
+153 |       keywords = dict(inverse_inertia=TENSOR, engine_inertia=ENGINE_INERTIA, engine_axis=ENGINE_AXIS,
+    |  ________________^
+154 | |                     engine_drag=.12, efficiency=.88)
+    | |____________________________________________________^
+155 |       cold = advance_drivetrain(*arguments, **keywords)
+156 |       warm = advance_drivetrain(*arguments, **keywords, force_initial=tuple((w.fx, w.fy, w.brake_torque) for w in cold.wheels))
+    |
+help: Rewrite as a literal
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
