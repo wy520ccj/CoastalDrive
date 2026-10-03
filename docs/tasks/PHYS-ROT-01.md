@@ -1,7 +1,7 @@
 # PHYS-ROT-01 机械轮轴、转子输运与车身反力
 
-- 状态：ready；PHYS-TIRE-04新CG分区T2已收口，待填写其本地提交基线；尚未修改生产源码。
-- 上游：PHYS-TIRE-04当前生产版本，reference-v8。基线提交在上游收口后填写；不用早期Hull候选或独立陀螺冲量原型作生产基线。
+- 状态：ready；PHYS-TIRE-04新CG分区T2已收口并本地提交；本任务尚未修改生产源码。
+- 上游：PHYS-TIRE-04当前生产版本，reference-v8。基线提交为`e63512486dd93a68badbe925d8e44de0943b1e4a`；不用早期Hull候选或独立陀螺冲量原型作生产基线。
 - 原始A源码：[最终CG分区验证源码归档](../evidence/PHYS-TIRE-04/final-validation-source-cg.zip)，266文件逐项校验通过，ZIP SHA-256为`05e4947a55580d6f20949cc490903a9bb76e2a22fd709e16eb50a2666d1891d6`；其中manifest保留实际验证时原始文件哈希。
 - 目标：补齐旋转轮轴的轴承反力，机械轴与路面接触坐标分离，保持四轮轮胎/制动/车身共同末状态。发动机/离合/差速器随后另包接入。
 

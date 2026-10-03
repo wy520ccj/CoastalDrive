@@ -52,3 +52,9 @@ PHYS-TIRE-03的12车30s弯坡自动检查墙钟约164s。它是整脚本时间�
 最终矩阵以`box-partition-*`为准，旧带`production-*-final`的文件属于被拒绝Hull候选。综合审计涵盖44条碰撞A/B、8条两模式再接触、16条常规子步；22对碰撞中20对常规轨迹逐CSV单元0差，两对再接触在游戏tick81、困难仿真tick80出现几何分叉。总计68条CSV、49,028行、16,745,574个有限数值，最大记录力残差0.000999143808N。功审计核对172,800轮胎子步，逐子步/macro功界均0越界，保留负功；8条观察器轨迹均与既有CSV每单元完全一致。冻结`f2c1450`刚性关闭对照合计2,871,049值严格0差。
 
 修正前四Box T1的7项检查已通过：[回执](../evidence/PHYS-TIRE-04/validation-T1-receipt.json)确认682 pytest（951.94s）、Ruff、3条headless与2条hills。旧T2通过13项检查后为CG修正中止，[中断回执](../evidence/PHYS-TIRE-04/validation-T2-box-interruption-receipt.json)保留hills-17中断与末两项未跑。新CG分区54项T0通过、完整T1的7项检查全部通过（696项pytest）；新完整T2的16项检查全部通过（811项pytest），266文件SHA一致；总阶段Gate待完成。
+
+## 收口与提交
+
+实现/证据范围：`f2c145090d7c2342b0ba242bca8a066732748b0c..e63512486dd93a68badbe925d8e44de0943b1e4a`，仅本地未推送。最终命令为`.venv/Scripts/python.exe -X utf8 tools/validate.py T2 --output logs/validation/PHYS-TIRE-04-cg-partition-T2 --timeout 7200`，16项检查全部通过（811项pytest），源码266文件SHA一致。当前T1为7项检查/696项pytest；历史682/797项属于旧分区版本，不替代本次结论。
+
+下一任务为[PHYS-ROT-01](PHYS-ROT-01.md)，本包归档。后续发动机/离合/差速器、实车型、研究接口以及完整T3/可见性能/人工驾驶尚未完成，整体goal继续active。
