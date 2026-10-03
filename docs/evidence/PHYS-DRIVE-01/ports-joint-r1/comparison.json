@@ -1,0 +1,8 @@
+{
+  "cases": 48,
+  "maximum_state_difference": 0.0,
+  "maximum_energy_error_j": 1.5009327114512416e-11,
+  "maximum_momentum_error_nms": 4.085620730620576e-13,
+  "production_port_sha256": "6b398014f5305993afd09003373b54c467dd4243fd1918ce8d3ef32eb220e169",
+  "claim": "live production port functions inside frozen compliant joint bench; native driving not connected"
+}

@@ -1,0 +1,5 @@
+{
+  "completed": 0,
+  "error": "FileExistsError: wrapper created output directory before frozen main mkdir",
+  "scope": "evidence harness only, no mechanical case ran"
+}
