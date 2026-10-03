@@ -10,7 +10,8 @@ from tire_coupling import ContactFrame, advance_coupled, cross, dot
 from vehicle_config import CAR
 from wheel_dynamics import Mobility
 
-CONFIG = replace(CAR, tire_compliance=True)
+# 此包保留上游固定轴无输运对照；真实机械轴守恒由test_rotor_transport独立覆盖。
+CONFIG = replace(CAR, tire_compliance=True, wheel_rotor_transport=False)
 INERTIA = (1900., 510., 2200.)
 
 

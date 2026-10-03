@@ -1,0 +1,7 @@
+{
+  "observed_node_index": 646,
+  "collection_line_zero_based": 645,
+  "collection_node": "tests/test_traction_lifecycle.py::test_mode_abs_tcs_variants_get_distinct_score_keys",
+  "pytest_excerpt": "FAILED tests/test_traction_lifecycle.py::test_mode_abs_tcs_variants_get_distinct_score_keys",
+  "reason": "陈旧的game-controls-v7版本预期；实际模式键为game-controls-v8，根线程单节点复现确认是成绩版本预期过期。"
+}

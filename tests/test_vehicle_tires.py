@@ -184,11 +184,24 @@ def test_post_bullet_slip_matches_current_snapshot_velocity_and_contact(sim):
         lever = Vec3(*contact.contact_point) - Vec3(*state.position)
         vx = (velocity + angular.cross(lever + normal * config.wheel_radius)).dot(tangent)
         vy = (velocity + angular.cross(lever)).dot(axle)
+        radius = config.wheel_radius
+        if config.wheel_rotor_transport:
+            # 从完整表面点运动独立核对广义纵速；omega为绝对轴向分量。
+            mechanical = orientation.xform(steer.xform(Vec3(1, 0, 0))).normalized()
+            tangent = normal.cross(mechanical).normalized()
+            lateral = tangent.cross(normal)
+            offset = -normal * config.wheel_radius
+            radius = mechanical.dot(offset.cross(tangent))
+            relative_spin = -(wheel.omega + angular.dot(mechanical))
+            surface = (velocity + angular.cross(lever)
+                       + (mechanical * relative_spin).cross(offset))
+            vx = surface.dot(tangent) + radius * wheel.omega
+            vy = surface.dot(lateral)
         denominator = max(abs(vx), config.slip_speed)
         assert wheel.longitudinal_speed == pytest.approx(vx, abs=1e-6)
         assert wheel.lateral_speed == pytest.approx(vy, abs=1e-6)
         assert wheel.kappa == pytest.approx(
-            (config.wheel_radius * wheel.omega - vx) / denominator, abs=1e-6)
+            (radius * wheel.omega - vx) / denominator, abs=1e-6)
         assert wheel.alpha == pytest.approx(math.atan2(vy, denominator), abs=1e-6)
         # 力采用上一接触阶段的求解滑移，不拿完成Bullet后的κ重新解释该力。
         old_contact = previous.wheel_contacts[index]

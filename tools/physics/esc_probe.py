@@ -20,6 +20,7 @@ from physics.reference_ab import SETTLE_TICKS, _create_vehicle, _flatten, _sourc
 from driving_modes import DrivingMode
 from vehicle_contacts import road_support
 from vehicle_state import FIXED_DT, VehicleCommand
+from wheel_geometry import contact_geometry, mechanical_axis
 
 CASES = ("asphalt-brake", "low-mu-brake", "split-mu-brake", "corner-brake",
          "steering-step", "steering-saturation", "reverse", "airborne-recontact", "coast-disturbance")
@@ -84,12 +85,19 @@ def tire_contact_moments(pose, contacts, contact_tick, wheels):
             tangent = (heading-normal*heading.dot(normal)).normalized()
             lateral = tangent.cross(normal)
             point = Vec3(*contact.contact_point)-origin
+            if wheel.rolling_radius is not None:
+                axis = mechanical_axis(orientation.getRight(), orientation.getForward(), wheel.steering)
+                _axis, frame, _radius, _moment = contact_geometry(axis, tuple(normal), tuple(point), 1.)
+                tangent, lateral = Vec3(*frame[0]), Vec3(*frame[1])
             longitudinal_arm = float(point.cross(tangent).dot(up))
             lateral_arm = float(point.cross(lateral).dot(up))
             values["last_substep_fx_contact_yaw_nm"] = longitudinal_arm*wheel.fx
             values["last_substep_fy_contact_yaw_nm"] = lateral_arm*wheel.fy
             values["mean_fx_contact_yaw_nm"] = longitudinal_arm*wheel.longitudinal_impulse/FIXED_DT
             values["mean_fy_contact_yaw_nm"] = lateral_arm*wheel.lateral_impulse/FIXED_DT
+            if wheel.rolling_radius is not None:
+                values["mean_fx_contact_yaw_nm"] = Vec3(*wheel.longitudinal_angular_impulse).dot(up) / FIXED_DT
+                values["mean_fy_contact_yaw_nm"] = Vec3(*wheel.lateral_angular_impulse).dot(up) / FIXED_DT
             for prefix in ("last_substep", "mean"):
                 values[f"{prefix}_total_contact_yaw_nm"] = (
                     values[f"{prefix}_fx_contact_yaw_nm"]+values[f"{prefix}_fy_contact_yaw_nm"])

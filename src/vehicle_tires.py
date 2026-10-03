@@ -5,6 +5,7 @@ from dataclasses import replace
 
 from panda3d.core import Mat3, Quat, Vec3
 
+from rotor_dynamics import steering_torque
 from tire_compliance import deformation_frame, project_deformation, world_deformation
 from tire_coupling import ContactFrame, advance_coupled, cross, dot
 from tire_forces import slip_state
@@ -13,6 +14,7 @@ from vehicle_config import CAR, wheel_hubs
 from vehicle_contacts import road_support
 from vehicle_state import WheelDynamicsState, WheelState
 from wheel_dynamics import Mobility, advance_wheel
+from wheel_geometry import contact_geometry, mechanical_axis
 
 
 class Tires:
@@ -100,6 +102,33 @@ class Tires:
             ))
 
         sub_dt = dt / config.tire_substeps
+        tensor = tuple(tuple((inv_inertia.getCell(a, b) + inv_inertia.getCell(b, a)) / 2
+                             for b in range(3)) for a in range(3))
+        initial_angles = tuple(state.steering for state in self.states)
+        base_frames = tuple(wheel_frames)
+
+        def rotor_frames(fraction, previous_fraction):
+            frames, torques = [], []
+            for i, base in enumerate(base_frames):
+                angle = initial_angles[i] + (base.steering - initial_angles[i]) * fraction
+                previous_angle = initial_angles[i] + (base.steering - initial_angles[i]) * previous_fraction
+                axis = mechanical_axis(orientation.getRight(), orientation.getForward(), angle)
+                previous_axis = mechanical_axis(orientation.getRight(), orientation.getForward(), previous_angle)
+                normal = base.elastic_frame[2] if config.tire_compliance else tuple(Vec3(*base.hub) - Vec3(*base.point))
+                axis, elastic_frame, radius, moment_x = contact_geometry(axis, normal, tuple(base.point), config.wheel_radius)
+                tangent, lateral, _normal = elastic_frame
+                moment_y = cross(base.point, lateral)
+                rx, ry, rt = tuple(tuple(dot(row, vector) for row in tensor)
+                                   for vector in (moment_x, moment_y, axis))
+                mobility = Mobility(1 / config.mass + dot(moment_x, rx), dot(moment_x, ry), dot(moment_x, rt),
+                                    1 / config.mass + dot(moment_y, ry), dot(moment_y, rt), dot(axis, rt))
+                frames.append(replace(base, steering=angle, tangent=tangent, axle=lateral,
+                                      elastic_frame=elastic_frame, mobility=mobility,
+                                      response_x=rx, response_y=ry, response_t=rt,
+                                      spin_axis=axis, rolling_radius=radius, moment_x=moment_x))
+                torques.append(steering_torque(previous_axis, axis, self.omega[i], config.wheel_inertia, sub_dt))
+            return frames, tuple(torques)
+
         states = [None] * 4
         longitudinal_impulses = [0.0] * 4
         lateral_impulses = [0.0] * 4
@@ -108,24 +137,41 @@ class Tires:
         road_dissipation = [0.0] * 4
         elastic_numerical_dissipation = [0.0] * 4
         frame_dissipation = [0.0] * 4
+        gyro_impulses = [[0.0] * 3 for _ in range(4)]
+        steering_impulses = [[0.0] * 3 for _ in range(4)]
+        steering_work = [0.0] * 4
+        longitudinal_angular_impulses = [[0.0] * 3 for _ in range(4)]
+        lateral_angular_impulses = [[0.0] * 3 for _ in range(4)]
         drives = (0.0, 0.0, drive / 2, drive / 2)
         capacities = tuple(config.brake_torque * pressures[i] * (
             config.front_brake_share if i < 2 else 1 - config.front_brake_share) / 2
             + (engine_drag / 2 if i >= 2 else 0.0) for i in range(4))
         for substep in range(config.tire_substeps):
             steps = None
-            if config.tire_compliance:
+            fraction = (substep + 1) / config.tire_substeps
+            torques = ((0.0, 0.0, 0.0),) * 4
+            if config.wheel_rotor_transport:
+                wheel_frames, torques = rotor_frames(fraction, substep / config.tire_substeps)
+            if config.tire_compliance or config.wheel_rotor_transport:
                 projected = []
                 for i, frame in enumerate(wheel_frames):
-                    elastic, loss = project_deformation(self.deformation[i], frame.elastic_frame,
-                                                       config.tire_contact_stiffness)
+                    elastic, loss = (project_deformation(self.deformation[i], frame.elastic_frame,
+                                                        config.tire_contact_stiffness)
+                                     if config.tire_compliance else ((0.0, 0.0), 0.0))
                     projected.append(elastic)
                     frame_dissipation[i] += loss
-                fraction = (substep + 1) / config.tire_substeps
                 free_velocity = tuple(chassis.getLinearVelocity()[a] + external_velocity[a] * fraction for a in range(3))
                 free_angular = tuple(chassis.getAngularVelocity()[a] + external_angular[a] * fraction for a in range(3))
                 steps = advance_coupled(free_velocity, free_angular, self.omega, wheel_frames,
-                                        projected, drives, capacities, config, self.rear_config, sub_dt)
+                                        projected, drives, capacities, config, self.rear_config, sub_dt,
+                                        inverse_inertia=tensor, steering_torques=torques)
+                if config.wheel_rotor_transport:
+                    angular_increment = tuple(sum(
+                        frame.response_x[a] * step.fx + frame.response_y[a] * step.fy
+                        + frame.response_t[a] * (drives[i] - step.brake_torque)
+                        + dot(tensor[a], tuple(step.gyro_torque[b] + step.steering_torque[b] for b in range(3)))
+                        for i, (frame, step) in enumerate(zip(wheel_frames, steps))) for a in range(3))
+                    end_angular = tuple(free_angular[a] + sub_dt * angular_increment[a] for a in range(3))
             # 正反次序成对，避免固定左轮先积分产生持续偏航偏置。
             order = range(4) if substep % 2 == 0 else range(3, -1, -1)
             for index in order:
@@ -134,7 +180,7 @@ class Tires:
                 tangent, axle, point, hub = frame.tangent, frame.axle, frame.point, frame.hub
                 mobility, elastic_frame = frame.mobility, frame.elastic_frame
                 requested_drive, capacity = drives[index], capacities[index]
-                if config.tire_compliance:
+                if config.tire_compliance or config.wheel_rotor_transport:
                     step = steps[index]
                     self.deformation[index] = world_deformation(
                         (step.deformation_x, step.deformation_y), elastic_frame)
@@ -151,8 +197,19 @@ class Tires:
                     )
                 force = Vec3(*tangent) * step.fx + Vec3(*axle) * step.fy
                 chassis.applyImpulse(force * sub_dt, Vec3(*point))
-                reaction = requested_drive - step.brake_torque - config.wheel_radius * step.fx
-                chassis.applyTorqueImpulse(Vec3(*axle) * (sub_dt * reaction))
+                radius = frame.rolling_radius if config.wheel_rotor_transport else config.wheel_radius
+                spin_axis = frame.spin_axis if config.wheel_rotor_transport else axle
+                reaction = requested_drive - step.brake_torque - radius * step.fx
+                chassis.applyTorqueImpulse(Vec3(*spin_axis) * (sub_dt * reaction))
+                if config.wheel_rotor_transport:
+                    chassis.applyTorqueImpulse(Vec3(*(sub_dt * (step.gyro_torque[a] + step.steering_torque[a])
+                                                     for a in range(3))))
+                    for a in range(3):
+                        gyro_impulses[index][a] += sub_dt * step.gyro_torque[a]
+                        steering_impulses[index][a] += sub_dt * step.steering_torque[a]
+                        longitudinal_angular_impulses[index][a] += sub_dt * step.fx * cross(point, tangent)[a]
+                        lateral_angular_impulses[index][a] += sub_dt * step.fy * cross(point, axle)[a]
+                    steering_work[index] += sub_dt * dot(end_angular, step.steering_torque)
                 longitudinal_impulses[index] += sub_dt * step.fx
                 lateral_impulses[index] += sub_dt * step.fy
                 brake_angular_impulses[index] += sub_dt * step.brake_torque
@@ -190,6 +247,13 @@ class Tires:
                     elastic_numerical_dissipation=elastic_numerical_dissipation[index],
                     frame_dissipation=frame_dissipation[index],
                     deformation_rate_x=step.deformation_rate_x, deformation_rate_y=step.deformation_rate_y,
+                    mechanical_axis=tuple(spin_axis) if config.wheel_rotor_transport else (0.0, 0.0, 0.0),
+                    rolling_radius=radius if config.wheel_rotor_transport else None,
+                    gyro_angular_impulse=tuple(gyro_impulses[index]),
+                    steering_angular_impulse=tuple(steering_impulses[index]),
+                    steering_work=steering_work[index],
+                    longitudinal_angular_impulse=tuple(longitudinal_angular_impulses[index]),
+                    lateral_angular_impulse=tuple(lateral_angular_impulses[index]),
                 )
         self.states = tuple(states)
 
@@ -216,15 +280,25 @@ class Tires:
             hub = point + normal * self.config.wheel_radius
             vx = (velocity + angular.cross(hub)).dot(tangent)
             vy = (velocity + angular.cross(point)).dot(axle)
+            radius, spin_axis = self.config.wheel_radius, tuple(axle)
+            if self.config.wheel_rotor_transport:
+                spin_axis = mechanical_axis(pose.getQuat().getRight(), pose.getQuat().getForward(), state.steering)
+                spin_axis, frame, radius, moment_x = contact_geometry(spin_axis, tuple(normal), tuple(point), radius)
+                tangent, axle, _normal = frame
+                vx = dot(velocity, tangent) + dot(angular, moment_x)
+                vy = dot(tuple(velocity[a] + cross(angular, point)[a] for a in range(3)), axle)
             kappa, alpha = slip_state(vx, vy, self.omega[index],
-                                      self.config.wheel_radius, self.config)
+                                      radius, self.config)
             mu = self.config.road_friction if contact.surface == "asphalt" else self.config.grass_friction
             states.append(replace(
-                state, relative_omega=self.omega[index] + angular.dot(axle),
+                state, relative_omega=self.omega[index] + (dot(angular, spin_axis)
+                    if self.config.wheel_rotor_transport else angular.dot(axle)),
                 longitudinal_speed=float(vx), lateral_speed=float(vy),
                 kappa=kappa if supported else None, alpha=alpha if supported else None,
                 sample_support=supported, sample_tick=tick,
                 sample_grip=tire_grip(contact.normal_load, mu, self.config) if supported else 0.0,
+                mechanical_axis=spin_axis if self.config.wheel_rotor_transport else (0.0, 0.0, 0.0),
+                rolling_radius=radius if self.config.wheel_rotor_transport else None,
             ))
         self.states = tuple(states)
 

@@ -1,0 +1,7 @@
+{
+  "error": "TypeError: can only concatenate list (not tuple) to list",
+  "stage": "first case: JSON vector lists not restored at input boundary",
+  "completed": 0,
+  "production_mutation": false,
+  "correction": "explicit vector-field tuple conversion in r1 input reader; original script retained"
+}

@@ -39,12 +39,13 @@ class Brakes:
         config = self.config
         states = []
         for requested, wheel, previous in zip(requests, wheels, self.states):
+            wheel_radius = radius if wheel.rolling_radius is None else wheel.rolling_radius
             speed = abs(wheel.longitudinal_speed)
             eligible = config.abs_enabled and requested > 0 and wheel.sample_support and speed >= config.minimum_speed
             slip = None
             if wheel.sample_support and speed >= config.minimum_speed:
                 direction = math.copysign(1.0, wheel.longitudinal_speed)
-                slip = (speed - direction * radius * wheel.omega) / speed
+                slip = (speed - direction * wheel_radius * wheel.omega) / speed
             predicted = slip
             if slip is not None and previous.braking_slip is not None:
                 # 用液压响应期内的滑移趋势提前减压，避免等压力落下时车轮已经恢复。

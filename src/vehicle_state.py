@@ -106,6 +106,13 @@ class WheelDynamicsState:
     frame_dissipation: float = 0.0
     deformation_rate_x: float = 0.0
     deformation_rate_y: float = 0.0
+    mechanical_axis: tuple = (0.0, 0.0, 0.0)
+    rolling_radius: float | None = None
+    gyro_angular_impulse: tuple = (0.0, 0.0, 0.0)
+    steering_angular_impulse: tuple = (0.0, 0.0, 0.0)
+    steering_work: float = 0.0
+    longitudinal_angular_impulse: tuple = (0.0, 0.0, 0.0)
+    lateral_angular_impulse: tuple = (0.0, 0.0, 0.0)
 
 
 @dataclass(frozen=True)

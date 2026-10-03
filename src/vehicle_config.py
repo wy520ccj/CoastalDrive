@@ -49,6 +49,7 @@ class VehicleConfig:
     longitudinal_load_exponent: float = .90
     lateral_load_exponent: float = .85
     tire_compliance: bool = True
+    wheel_rotor_transport: bool = True  # 机械轮轴、有效力臂及同末状态轴承反力；false冻结旧机制。
     tire_contact_stiffness: float = 150000.0  # 二维各向同性接触区弹性，N/m。
     tire_contact_damping: float = 1000.0  # N·s/m。
     tire_shape: float = 1.9

@@ -36,7 +36,8 @@ class TractionControl:
         """反馈取上一完整步真值；离地轮不用于路面滑转调节。"""
         config, previous = self.config, self.state
         slips = tuple(
-            direction * (radius * wheel.omega - wheel.longitudinal_speed)
+            direction * ((radius if wheel.rolling_radius is None else wheel.rolling_radius) * wheel.omega
+                         - wheel.longitudinal_speed)
             / max(abs(wheel.longitudinal_speed), config.slip_speed)
             if wheel.sample_support else None
             for wheel in wheels

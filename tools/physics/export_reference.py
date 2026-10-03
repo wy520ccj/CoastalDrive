@@ -46,6 +46,7 @@ VEHICLE_FIELDS = {
     "wheel_radius": ("m", "原生射线轮半径、独立轮速/滑移/力臂"),
     "wheel_inertia": ("kg·m²", "独立单轮轴向转动惯量"),
     "tire_compliance": ("bool", "启用隐式接触胎体弹性与阻尼"),
+    "wheel_rotor_transport": ("bool", "机械轮轴/有效滚动力臂与同末状态轴承反力；false冻结旧机制"),
     "tire_contact_stiffness": ("N/m", "接触胎体纵横弹性刚度"),
     "tire_contact_damping": ("N·s/m", "接触胎体纵横耗散阻尼"),
     "tire_peak_load_exponent": ("1", "峰值能力轮荷指数pD；D∝Fn^pD，标称轮荷能力保持μFn0"),
@@ -220,7 +221,7 @@ def export(output):
     source_names = ("vehicle_config.py", "driver_assist.py", "driving_modes.py", "vehicle.py",
                     "vehicle_tires.py", "vehicle_traction.py", "powertrain.py", "vehicle_steering.py", "vehicle_dynamics.py",
                     "wheel_dynamics.py", "tire_forces.py", "vehicle_contacts.py", "vehicle_state.py",
-                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py")
+                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py", "rotor_dynamics.py", "wheel_geometry.py")
     hashes = {f"src/{name}": hashlib.sha256((ROOT / "src" / name).read_bytes()).hexdigest()
               for name in source_names}
     hashes["tools/physics/export_reference.py"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
@@ -231,7 +232,7 @@ def export(output):
         "panda_version": PandaSystem.getVersionString(), "bullet_version": getBulletVersion(),
         "measurement": {"ticks": 240, "dt": FIXED_DT, "max_substeps": 0,
                         "ground": "水平无限平面", "gravity": [0, 0, -9.81], "input": "VehicleCommand()"},
-        "schema_version": "reference-v8",
+        "schema_version": "reference-v9",
         "vehicle_fields": VEHICLE_FIELDS, "brake_fields": BRAKE_FIELDS,
         "traction_fields": TRACTION_FIELDS, "stability_fields": STABILITY_FIELDS,
         "input_fields": INPUT_FIELDS, "modes": modes,
@@ -246,5 +247,5 @@ def export(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path,
-                        default=ROOT / "logs/physics/reference-v8/parameters.json")
+                        default=ROOT / "logs/physics/reference-v9/parameters.json")
     export(parser.parse_args().output)

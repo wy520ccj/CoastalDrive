@@ -45,13 +45,16 @@ class WheelStep:
     elastic_numerical_dissipation: float = 0.0
     deformation_rate_x: float = 0.0
     deformation_rate_y: float = 0.0
+    gyro_torque: tuple = (0.0, 0.0, 0.0)
+    steering_torque: tuple = (0.0, 0.0, 0.0)
 
 
 def advance_wheel(omega, vx, vy, body_omega, drive, brake, load, mu, mobility, dt,
                   config=CAR, deformation=(0.0, 0.0), force_tolerance=.001, rolling_contact=None,
-                  force_initial=(0.0, 0.0)):
+                  force_initial=(0.0, 0.0), rolling_radius=None):
     """同时求解接地力、轮速和干式制动反力；车体由调用方施加同一冲量。"""
-    radius, inertia = config.wheel_radius, config.wheel_inertia
+    radius = config.wheel_radius if rolling_radius is None else rolling_radius
+    inertia = config.wheel_inertia
     m = mobility
     grip = tire_grip(load, mu, config)
     cx, cy = tire_stiffness(load, config)

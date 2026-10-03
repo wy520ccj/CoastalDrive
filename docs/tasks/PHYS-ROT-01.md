@@ -1,6 +1,6 @@
 # PHYS-ROT-01 机械轮轴、转子输运与车身反力
 
-- 状态：ready；PHYS-TIRE-04新CG分区T2已收口并本地提交；本任务尚未修改生产源码。
+- 状态：自动部分完成；机械轴/有效力臂/共同末状态轴承反力已接入两模式默认，111项相关T0、完整730项T1及全部三种子启动/双种子弯坡通过。验证期间273个Python文件哈希一致；本地提交收尾中，未推送。详见[当前证据](../evidence/PHYS-ROT-01/README.md)。
 - 上游：PHYS-TIRE-04当前生产版本，reference-v8。基线提交为`e63512486dd93a68badbe925d8e44de0943b1e4a`；不用早期Hull候选或独立陀螺冲量原型作生产基线。
 - 原始A源码：[最终CG分区验证源码归档](../evidence/PHYS-TIRE-04/final-validation-source-cg.zip)，266文件逐项校验通过，ZIP SHA-256为`05e4947a55580d6f20949cc490903a9bb76e2a22fd709e16eb50a2666d1891d6`；其中manifest保留实际验证时原始文件哈希。
 - 目标：补齐旋转轮轴的轴承反力，机械轴与路面接触坐标分离，保持四轮轮胎/制动/车身共同末状态。发动机/离合/差速器随后另包接入。
@@ -30,8 +30,14 @@
 
 ## 验证记录
 
-生产T0/T1未跑；基线A、生产B、时间细分和人工体验均待执行。上游04的T2不能当作本功能验收。新任务完成后归档此包，不重读无关历史。
+生产T0最终默认开启111项通过；44条两模式A/B、4条5°坡停、20条原生世界/转向诊断已完成，最终关闭分支122,632既有单元零差异。上游04的T2不能当作本功能验收。初轮完整T1第120节点仍断言旧轮心投影速度，独立复现后主动停止pytest，失败及未跑保留；改用独立表面点速度期望，原1e−6门槛不变，单节点T0通过。完整T1-r1自然结束：729 passed/1 failed，pytest日志3247.26s、runner3248.271s；273哈希完全一致，后续五项not_run。唯一第646节点`test_mode_abs_tcs_variants_get_distinct_score_keys`漏改成绩版本期望，两行v7/v8→v8/v9已修正，单节点T0通过；生产物理无改动。新完整T1-r2在`logs/validation/PHYS-ROT-01-T1-r2`运行（会话29394，开始UTC2026-10-03T06:41:23.492705+00:00），273源码重新冻结，差异仅该测试；未标T1通过。[原始数据、失败与门槛](../evidence/PHYS-ROT-01/README.md)；人工体验仍待执行。新任务完成后归档此包，不重读无关历史。
 
-实现后T0入口：`.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_rotor_transport.py --tests tests/test_tire_coupling.py`，先新增覆盖真实轴向输运的`test_rotor_transport.py`并注册相关完整模块，不用只断言新字段存在的测试。每项必要集成变化补其真实风险节点。
+T0入口：`.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_rotor_transport.py tests/test_rotor_lifecycle.py tests/test_tire_coupling.py tests/test_physics_config_io.py`。`--tests`是单个nargs列表，不能重复，否则只保留最后一次。两个转子测试已注册完整vehicle/gameplay模块，覆盖真实功/动量与生命周期。
 
 完整T1入口：`.venv/Scripts/python.exe tools/validate.py T1 --area vehicle --area core --area gameplay --area traffic --area road --output logs/validation/PHYS-ROT-01-T1 --timeout 7200`；输出目录首次使用，已存在时另取新目录。机械专项及精度A/B另保留独立轨迹，不拿T1 headless替代。
+
+## 最终自动回执
+
+完整T1-r2原执行会话29394正常退出0，runner状态passed、七项检查全部通过；pytest为730 passed/2937.19s（runner2938.150s），三种子headless各1200步，双种子弯坡各30s。验证前后273个源码/测试/工具Python文件哈希一致。[原始完整回执](../evidence/PHYS-ROT-01/validation-T1-r2/receipt.json)与此前失败/中断分别保存，不拼接结果。
+
+[最终源码归档](../evidence/PHYS-ROT-01/final-validation-source.zip)包含273文件及manifest；ZIP SHA-256为`e5c348ea856e14fbbfe81f81866c333cfa9a488817f3dc64a4c87b793238eac5`。这只完成该功能块的自动部分；整体goal、T3/真实可见性能/两模式用户驾驶未完成。下一块为[PHYS-DRIVE-01](PHYS-DRIVE-01.md)，预研证据不能当作生产接入。

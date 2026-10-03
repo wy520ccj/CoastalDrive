@@ -1,0 +1,36 @@
+--- frozen
++++ extended
+@@ -32,7 +32,7 @@
+ 
+ def advance_coupled(velocity, angular, omega, frames, deformations, drives, brakes,
+                     config, rear_config, dt, *, inverse_inertia=None,
+-                    steering_torques=((0.0, 0.0, 0.0),) * 4):
++                    steering_torques=((0.0, 0.0, 0.0),) * 4, extra_spin=(0.0, 0.0, 0.0)):
+     """块Gauss-Seidel解同一隐式四轮系统，不把中间迭代当真实运动或变形。"""
+     configurations = (config, config, rear_config, rear_config)
+     forces = [(0.0, 0.0, 0.0)] * 4
+@@ -71,7 +71,7 @@
+             else:
+                 speeds = tuple(omega[i] + dt * (drives[i] - forces[i][2] - radii[i] * forces[i][0]) / inertia
+                                for i in range(4))
+-                spin = tuple(-inertia * sum(speeds[i] * axes[i][a] for i in range(4)) for a in range(3))
++                spin = tuple(extra_spin[a] - inertia * sum(speeds[i] * axes[i][a] for i in range(4)) for a in range(3))
+                 end_angular = solve_transport(known, inverse_inertia, spin, dt)
+         else:
+             end_angular = tuple(angular[axis] + dt * total_angular[axis] for axis in range(3))
+@@ -141,7 +141,7 @@
+             speeds = tuple(omega[i] + dt * (drives[i] - forces[i][2] - radii[i] * forces[i][0]) / inertia
+                            for i in range(4))
+             torques = bearing_torques(axes, speeds, inertia, shared_angular)
+-            bearing = tuple(sum(torque[a] for torque in torques) for a in range(3))
++            bearing = tuple(cross(extra_spin, shared_angular)[a] + sum(torque[a] for torque in torques) for a in range(3))
+         order = range(4) if iteration % 2 == 0 else range(3, -1, -1)
+         for i in order:
+             frame = frames[i]
+@@ -156,5 +156,5 @@
+             local_steps[i] = step
+         completed, error, brake_error = completed_steps()
+         if error < .001 and brake_error < 1e-9:
+-            return completed
++            return completed, *body_state()
+     raise ArithmeticError(f"四轮共同末速度积分超过20次迭代：接点 {error:.6g} N，制动等效 {brake_error:.6g} N")
