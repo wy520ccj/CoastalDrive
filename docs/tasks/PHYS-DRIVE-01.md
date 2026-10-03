@@ -1,7 +1,7 @@
 # PHYS-DRIVE-01 真实曲轴、有限离合与后驱开放差速
 
 - 状态：in_progress。r5完整T1-r5a全部7项通过：1377项pytest、三种子启动、双种子十二车/30s弯坡。当前r7相关T0完整671项通过（78.94s）、16条原生完成；完整T2-r7已失败终止：439项pytest通过、1项护栏连续刮擦失败（330拍＜600拍）；后续14项检查未跑。280源前后一致，原始日志已归档。
-- 上游基线：ROT自动验收提交`2b7f908df29176ce99ccb1fb0d848ce318474b02`；端口子块`7745282cc00ba1d58da2a997597a999882e68363`。当前HEAD `771ddd0f059fc67719e6217a610162b7ab3e1748`；整车联合改动尚未提交、未推送。
+- 上游基线：ROT自动验收提交`2b7f908df29176ce99ccb1fb0d848ce318474b02`；端口子块`7745282cc00ba1d58da2a997597a999882e68363`。验证时HEAD `771ddd0f059fc67719e6217a610162b7ab3e1748`；整车联合实现已本地提交开发检查点`87712e364b2c2c929155f0058d92ffdc540b77d8`，用户授权本轮结束后推送。该提交保留T2失败，不能记为自动验收完成。
 - 用户完整要求与剩余项：[物理目标核对](../physics-goal-audit.md)。本任务只完成当前后驱传动闭环，FWD/AWD、限滑/轴惯量、悬架、估计器、实车型与总Gate仍须继续。
 - 当前源：280份Python文件冻结于[candidate-validation-r7-source.zip](../evidence/PHYS-DRIVE-01/candidate-validation-r7-source.zip)，SHA-256 `19169bd9502cdda8d5c9ec90fe5270fe66a1dfa7249b35447223d702e02f8bc4`，清单validation-r7-source-before.json。该版本运行前后280源SHA一致；r5/r6/r7源ZIP与原日志各自保留，后续实质修复使用新版本验证。
 
