@@ -180,7 +180,7 @@ class Tires:
                         force_initial=force_initial)
                     steps = result.wheels
                     force_initial = tuple((step.fx, step.fy, step.brake_torque) for step in steps)
-                    drives = tuple(result.drive_torque * weight if weight else 0. for weight in config.drive_weights)
+                    drives = result.wheel_drive_torques
                     end_angular = result.angular
                     powertrain.accept_step(result, sub_dt)
                     chassis.applyTorqueImpulse(Vec3(*result.engine_body_torque) * sub_dt)

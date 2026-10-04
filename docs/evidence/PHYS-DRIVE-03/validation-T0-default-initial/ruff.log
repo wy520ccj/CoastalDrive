@@ -1,0 +1,43 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> src\tire_drivetrain.py:3:1
+   |
+ 1 |   """四轮接触、曲轴、有限离合与制动的共同末状态；不持有原生世界。"""
+ 2 |
+ 3 | / import math
+ 4 | | from dataclasses import dataclass
+ 5 | |
+ 6 | | from differential import differential_branches, differential_gradients, differential_torques, viscous_projection
+ 7 | | from rotor_dynamics import bearing_torques, cross
+ 8 | | from tire_compliance import contact_force, contact_jacobian, energy_terms
+ 9 | | from tire_forces import combined_force, slip_state
+10 | | from tire_properties import tire_grip, tire_stiffness
+11 | | from transmission_ports import clutch_brake_plans, clutch_brake_state, transmission_state
+12 | | from wheel_dynamics import WheelStep, _solve_force
+   | |__________________________________________________^
+help: Organize imports
+   |
+5  |
+   - from differential import differential_branches, differential_gradients, differential_torques, viscous_projection
+6  + from differential import (
+7  +     differential_branches,
+8  +     differential_gradients,
+9  +     differential_torques,
+10 +     viscous_projection,
+11 + )
+12 | from rotor_dynamics import bearing_torques, cross
+   |
+
+RUF059 Unpacked variable `rb` is never used
+   --> src\tire_drivetrain.py:192:17
+    |
+190 |         free_base_wheel, velocity_base = known(gyro, exclude=i)
+191 |         frame, car = frames[i], configurations[i]
+192 |         rx, ry, rb = responses[i]
+    |                 ^^
+193 |         scale_x = dt * (1 / mass + dot(longitudinal[i], rx))
+194 |         scale_y = dt * (1 / mass + dot(lateral[i], ry))
+    |
+help: Prefix it with an underscore or any other dummy variable pattern
+
+Found 2 errors.
+[*] 1 fixable with the `--fix` option (1 hidden fix can be enabled with the `--unsafe-fixes` option).

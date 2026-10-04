@@ -1,5 +1,6 @@
 """Vehicle dimensions are metres; steering angles are degrees."""
 
+import math
 from dataclasses import dataclass, field
 
 from vehicle_brakes import BrakeConfig
@@ -28,6 +29,8 @@ class VehicleConfig:
     engine_braking: float = 24.0  # Approximate closed-throttle torque at the crank, Nm.
     finite_drivetrain: bool = True  # 两模式共用真实曲轴/有限离合；false用于冻结旧机制A/B。
     front_drive_share: float = 0.0  # 0后驱、1前驱；中间值为开放中差的固定几何份额。
+    differential_damping: tuple = (0., 0., 0.)  # 前轴/后轴/中差粘性系数，N·m·s/rad；默认开放。
+    differential_capacity: tuple = (0., 0., 0.)  # 对应有限耦合容量，N·m；容量为0关闭端口。
     engine_inertia: float = .02  # 正常游戏起步响应标定的设计惯量，kg·m²；困难参考车取0.2，非实测。
     engine_axis: tuple = (0., 1., 0.)  # 车身局部曲轴正转方向。
     engine_idle_response: float = .15
@@ -100,6 +103,17 @@ class VehicleConfig:
             raise ValueError("前轴驱动份额须在0到1之间")
         if self.front_drive_share != 0 and not self.finite_drivetrain:
             raise ValueError("前驱/四驱需要有限机械传动，旧对照分支仅支持后驱")
+        if len(self.differential_damping) != 3 or len(self.differential_capacity) != 3:
+            raise ValueError("限滑参数依次为前轴、后轴、中差的三项")
+        if any(not math.isfinite(v) or v < 0 for v in (*self.differential_damping, *self.differential_capacity)):
+            raise ValueError("限滑系数/容量须为有限非负值")
+        enabled = tuple(c > 0 and limit > 0 for c, limit in zip(self.differential_damping, self.differential_capacity))
+        if any(enabled) and not self.finite_drivetrain:
+            raise ValueError("有限限滑需要有限机械传动")
+        if enabled[0] and self.front_drive_share == 0 or enabled[1] and self.front_drive_share == 1:
+            raise ValueError("未驱动轴不配置传动限滑")
+        if enabled[2] and self.front_drive_share in (0, 1):
+            raise ValueError("中差限滑仅用于四驱")
 
     @property
     def drive_weights(self):

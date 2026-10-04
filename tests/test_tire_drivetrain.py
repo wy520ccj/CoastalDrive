@@ -26,9 +26,19 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
           old_axes, steering, inertia=tuple(tuple(INERTIA[a] if a == b else 0. for b in range(3)) for a in range(3)),
           engine_axis=ENGINE_AXIS, drag=.12, engine_inertia=ENGINE_INERTIA):
     wheels, end_angular, end_velocity = result.wheels, result.angular, result.velocity
+    relative_wheels = tuple(w.omega + dot(end_angular, f.spin_axis) for w, f in zip(wheels, contact_frames))
+    slips = (relative_wheels[0] - relative_wheels[1], relative_wheels[2] - relative_wheels[3],
+             (relative_wheels[0] + relative_wheels[1] - relative_wheels[2] - relative_wheels[3]) / 2)
+    torques = tuple(max(-limit, min(limit, c * s)) for c, limit, s in
+                    zip(config.differential_damping, config.differential_capacity, slips))
+    transfers = (-torques[0] - torques[2] / 2, torques[0] - torques[2] / 2,
+                 -torques[1] + torques[2] / 2, torques[1] + torques[2] / 2)
+    assert result.differential_torques == pytest.approx(torques, abs=1e-11)
+    assert result.differential_slips == pytest.approx(slips, abs=1e-12)
     force, body_torque, external = [0.] * 3, list(result.engine_body_torque), [0.] * 3
     for i, (frame, wheel) in enumerate(zip(contact_frames, wheels)):
-        drive = result.drive_torque * (config.front_drive_share if i < 2 else 1 - config.front_drive_share) / 2
+        drive = result.drive_torque * (config.front_drive_share if i < 2 else 1 - config.front_drive_share) / 2 + transfers[i]
+        assert result.wheel_drive_torques[i] == pytest.approx(drive, abs=1e-11)
         f = tuple(frame.tangent[a] * wheel.fx + frame.axle[a] * wheel.fy for a in range(3))
         moment = cross(frame.point, f)
         for a in range(3):
@@ -70,7 +80,8 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
     brake_heat = dt * sum(w.brake_torque * w.relative_omega for w in wheels)
     steering_work = dt * sum(dot(end_angular, value) for value in steering)
     energy_error = (kinetic + numerical + elastic + contact_loss + brake_heat + result.engine_drag_heat
-                    + result.clutch_heat + result.gear_heat - result.engine_work - steering_work)
+                    + result.clutch_heat + result.gear_heat + dt * sum(t * s for t, s in zip(torques, slips))
+                    - result.engine_work - steering_work)
     assert energy_error == pytest.approx(0., abs=3e-9)
     assert result.clutch_heat >= -1e-9 and result.gear_heat >= -1e-9
     old_spin = tuple(engine_inertia * engine * engine_axis[a] - config.wheel_inertia * sum(

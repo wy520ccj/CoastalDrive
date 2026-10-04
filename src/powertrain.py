@@ -29,6 +29,9 @@ class PowertrainState:
     engine_drag_heat: float
     clutch_heat: float
     gear_heat: float
+    differential_torques: tuple
+    differential_slips: tuple
+    differential_heat: tuple
 
 
 def engine_torque(rpm, config=CAR):
@@ -58,6 +61,7 @@ class Powertrain:
         self.clutch_slip = 0.0
         self.gear_loss_torque = 0.0
         self.gear_input_speed = 0.0
+        self.differential_torques = self.differential_slips = self.differential_heat = (0., 0., 0.)
         self.clutch_heat = self.gear_heat = self.engine_drag_heat = self.engine_work = 0.0
         self.engine_body_impulse = (0., 0., 0.)
         self.shift_phase = "engaged"
@@ -168,6 +172,7 @@ class Powertrain:
             self.shift_phase = "engaged"
 
         self.clutch_heat = self.gear_heat = self.engine_drag_heat = self.engine_work = 0.
+        self.differential_heat = (0., 0., 0.)
         self.engine_body_impulse = (0., 0., 0.)
 
     def accept_step(self, result, dt):
@@ -178,6 +183,8 @@ class Powertrain:
         self.drive_torque = result.drive_torque
         self.clutch_torque, self.clutch_slip = result.clutch_torque, result.clutch_slip
         self.gear_loss_torque, self.gear_input_speed = result.gear_loss_torque, result.gear_input_speed
+        self.differential_torques, self.differential_slips = result.differential_torques, result.differential_slips
+        self.differential_heat = tuple(self.differential_heat[i] + result.differential_heat[i] for i in range(3))
         self.clutch_heat += result.clutch_heat
         self.gear_heat += result.gear_heat
         self.engine_drag_heat += result.engine_drag_heat
@@ -189,7 +196,8 @@ class Powertrain:
             self.throttle, self.engine_torque_request, self.engine_drag_coefficient, self.shift_phase,
             self.clutch_position, self.capacity, self.clutch_torque, self.clutch_slip, self.drive_torque,
             self.gear_loss_torque, self.gear_input_speed, self.engine_body_impulse, self.engine_work,
-            self.engine_drag_heat, self.clutch_heat, self.gear_heat)
+            self.engine_drag_heat, self.clutch_heat, self.gear_heat,
+            self.differential_torques, self.differential_slips, self.differential_heat)
 
     def advance(self, speed, driven_omega, pedal, direction, braking, dt, *, drive_scale=1.0):
         config = self.config

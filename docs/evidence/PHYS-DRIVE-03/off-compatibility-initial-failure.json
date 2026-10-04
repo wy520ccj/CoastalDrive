@@ -1,0 +1,7 @@
+{
+  "status": "comparison_failed",
+  "production_difference_found": false,
+  "cause": "projected current JSONL used LF, Windows gzip text writer used CRLF in baseline",
+  "subsequent_inspection": "both modes all 120 rows had zero existing field value or signed-zero differences",
+  "repair": "restore observed baseline line ending when serializing explicit common-field projection"
+}

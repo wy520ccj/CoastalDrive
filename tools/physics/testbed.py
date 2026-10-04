@@ -299,6 +299,9 @@ def load_vehicle_config(path, selected):
         values["gear_ratios"] = tuple(values["gear_ratios"])
     if "engine_axis" in values:
         values["engine_axis"] = tuple(values["engine_axis"])
+    for name in ("differential_damping", "differential_capacity"):
+        if name in values:
+            values[name] = tuple(values[name])
     if "body_inertia" in values and values["body_inertia"] is not None:
         values["body_inertia"] = tuple(values["body_inertia"])
     return replace(selected, **values)

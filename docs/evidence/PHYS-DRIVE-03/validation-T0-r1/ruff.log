@@ -1,0 +1,14 @@
+RUF059 Unpacked variable `rb` is never used
+   --> src\tire_drivetrain.py:197:17
+    |
+195 |         free_base_wheel, velocity_base = known(gyro, exclude=i)
+196 |         frame, car = frames[i], configurations[i]
+197 |         rx, ry, rb = responses[i]
+    |                 ^^
+198 |         scale_x = dt * (1 / mass + dot(longitudinal[i], rx))
+199 |         scale_y = dt * (1 / mass + dot(lateral[i], ry))
+    |
+help: Prefix it with an underscore or any other dummy variable pattern
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).

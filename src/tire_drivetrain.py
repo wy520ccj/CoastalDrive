@@ -3,6 +3,12 @@
 import math
 from dataclasses import dataclass
 
+from differential import (
+    differential_branches,
+    differential_gradients,
+    differential_torques,
+    viscous_projection,
+)
 from rotor_dynamics import bearing_torques, cross
 from tire_compliance import contact_force, contact_jacobian, energy_terms
 from tire_forces import combined_force, slip_state
@@ -36,6 +42,10 @@ class DrivetrainStep:
     clutch_heat: float
     gear_heat: float
     sweeps: int
+    wheel_drive_torques: tuple
+    differential_torques: tuple
+    differential_slips: tuple
+    differential_heat: tuple
 
 
 def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformations,
@@ -78,17 +88,35 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         projection = drag_factor * dot(engine_response, vector)
         return tuple(base[a] - projection * engine_response[a] for a in range(8))
 
-    mc, ml = mobility(clutch_gradient), mobility(gear_gradient)
-    dcc, dcl, dll = dot(clutch_gradient, mc), dot(clutch_gradient, ml), dot(gear_gradient, ml)
     responses = tuple((mobility(longitudinal[i]), mobility(lateral[i]), mobility(brake_gradients[i])) for i in range(4))
-    local_response = tuple(((dcc, dcl, dot(clutch_gradient, responses[i][2])),
-                            (dcl, dll, dot(gear_gradient, responses[i][2])),
-                            (dot(clutch_gradient, responses[i][2]), dot(gear_gradient, responses[i][2]),
-                             dot(brake_gradients[i], responses[i][2]))) for i in range(4))
-    # 空挡没有已建模的输入轴惯量，因而离合无负载，不锁到虚构的静止轴。
-    plans = (tuple(clutch_brake_plans(local_response[i], capacity, brakes[i], efficiency) for i in range(4))
-             if ratio else ((),) * 4)
-    warm_modes = [None] * 4
+    differential = differential_gradients(axes)
+    damping, limits = config.differential_damping, config.differential_capacity
+    limited = any(c and limit for c, limit in zip(damping, limits))
+    branches = []
+    for branch in differential_branches(differential, damping, limits, mobility, dt):
+        projections = branch[0]
+        mc = viscous_projection(mobility(clutch_gradient), projections)
+        ml = viscous_projection(mobility(gear_gradient), projections)
+        dcc, dcl, dll = dot(clutch_gradient, mc), dot(clutch_gradient, ml), dot(gear_gradient, ml)
+        wheel_responses = tuple(tuple(viscous_projection(r, projections) for r in wheel) for wheel in responses)
+        local_response = tuple(((dcc, dcl, dot(clutch_gradient, wheel_responses[i][2])),
+                               (dcl, dll, dot(gear_gradient, wheel_responses[i][2])),
+                               (dot(clutch_gradient, wheel_responses[i][2]), dot(gear_gradient, wheel_responses[i][2]),
+                                dot(brake_gradients[i], wheel_responses[i][2]))) for i in range(4))
+        # 空挡仍没有已建模输入轴，但实体差速器内部耦合继续消耗轮间差速能。
+        plans = (tuple(clutch_brake_plans(local_response[i], capacity, brakes[i], efficiency) for i in range(4))
+                 if ratio else ((),) * 4)
+        branches.append((branch, mc, ml, ((dcc, dcl), (dcl, dll)), wheel_responses, local_response, plans))
+    warm_modes = [[None] * 4 for _ in branches]
+    warm_branches = [0] * 4
+    shared_branch = 0
+
+    def branch_free(free, branch):
+        if not limited:
+            return free
+        projected = viscous_projection(free, branch[0])
+        return tuple(projected[a] + branch[1][a] for a in range(8))
+
     forces = list(force_initial)
     modes = [None] * 4
     configurations = (config, config, rear_config, rear_config)
@@ -119,16 +147,26 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         return free, end_velocity
 
     def shared(guess):
+        nonlocal shared_branch
         state = guess
         for _ in range(30):
             free, end_velocity = known(cross(spin(state), state[:3]))
-            if ratio:
-                (clutch, loss), _speeds = transmission_state(
-                    (dot(clutch_gradient, free), dot(gear_gradient, free)),
-                    ((dcc, dcl), (dcl, dll)), dt, capacity, efficiency)
+            order = [shared_branch] + [i for i in range(len(branches)) if i != shared_branch]
+            for branch_index in order:
+                branch, mc, ml, response, _wheels, _local, _plans = branches[branch_index]
+                projected = branch_free(free, branch)
+                if ratio:
+                    (clutch, loss), _speeds = transmission_state(
+                        (dot(clutch_gradient, projected), dot(gear_gradient, projected)),
+                        response, dt, capacity, efficiency)
+                else:
+                    clutch = loss = 0.
+                end = tuple(projected[a] - dt * (clutch * mc[a] + loss * ml[a]) for a in range(8))
+                if differential_torques(end, branch, differential, damping, limits) is not None:
+                    shared_branch = branch_index
+                    break
             else:
-                clutch = loss = 0.
-            end = tuple(free[a] - dt * (clutch * mc[a] + loss * ml[a]) for a in range(8))
+                raise ArithmeticError("限滑/离合共同末状态无可行分区")
             error = max(abs(end[a] - state[a]) for a in range(8))
             state = end
             if error < 1e-12:
@@ -157,26 +195,37 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     def solve_wheel(i, gyro):
         free_base_wheel, velocity_base = known(gyro, exclude=i)
         frame, car = frames[i], configurations[i]
-        rx, ry, rb = responses[i]
+        rx, ry, _rb = responses[i]
         scale_x = dt * (1 / mass + dot(longitudinal[i], rx))
         scale_y = dt * (1 / mass + dot(lateral[i], ry))
 
         def local_state(fx, fy):
             free = tuple(free_base_wheel[a] + dt * (rx[a] * fx + ry[a] * fy) for a in range(8))
-            if ratio:
-                value, _speeds, index = clutch_brake_state(
-                    (dot(clutch_gradient, free), dot(gear_gradient, free), dot(brake_gradients[i], free)),
-                    local_response[i], dt, capacity, brakes[i], efficiency, plans[i], warm_modes[i])
-                warm_modes[i] = index
-                local_clutch, local_loss, brake = value
+            order = [warm_branches[i]] + [j for j in range(len(branches)) if j != warm_branches[i]]
+            for branch_index in order:
+                branch, mc, ml, _response, wheel_responses, local_response, plans = branches[branch_index]
+                projected = branch_free(free, branch)
+                local_rb = wheel_responses[i][2]
+                if ratio:
+                    value, _speeds, index = clutch_brake_state(
+                        (dot(clutch_gradient, projected), dot(gear_gradient, projected), dot(brake_gradients[i], projected)),
+                        local_response[i], dt, capacity, brakes[i], efficiency, plans[i], warm_modes[branch_index][i])
+                    warm_modes[branch_index][i] = index
+                    local_clutch, local_loss, brake = value
+                else:
+                    local_clutch = local_loss = 0.
+                    brake = max(-brakes[i], min(brakes[i], dot(brake_gradients[i], projected)
+                                                / (dt * dot(brake_gradients[i], local_rb))))
+                    index = None
+                end = tuple(projected[a] - dt * (local_clutch * mc[a] + local_loss * ml[a]
+                                                + brake * local_rb[a]) for a in range(8))
+                if differential_torques(end, branch, differential, damping, limits) is not None:
+                    warm_branches[i] = branch_index
+                    break
             else:
-                local_clutch = local_loss = 0.
-                brake = max(-brakes[i], min(brakes[i], dot(brake_gradients[i], free)
-                                            / (dt * dot(brake_gradients[i], rb))))
-                index = None
-            end = tuple(free[a] - dt * (local_clutch * mc[a] + local_loss * ml[a] + brake * rb[a]) for a in range(8))
+                raise ArithmeticError("限滑/离合/制动共同末状态无可行分区")
             velocity_end = tuple(velocity_base[a] + dt / mass * (fx * frame.tangent[a] + fy * frame.axle[a]) for a in range(3))
-            return end, velocity_end, brake, index
+            return end, velocity_end, brake, (branch_index, index)
 
         def residual(fx, fy):
             end, velocity_end, _brake, _index = local_state(fx, fy)
@@ -184,10 +233,12 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             return fx - target[0], fy - target[1]
 
         def derivatives(fx, fy):
-            end, velocity_end, brake, index = local_state(fx, fy)
+            end, velocity_end, brake, (branch_index, index) = local_state(fx, fy)
+            _branch, mc, ml, _response, wheel_responses, _local_response, plans = branches[branch_index]
+            local_rx, local_ry, local_rb = wheel_responses[i]
             vx, vy, slip = velocities(i, end, velocity_end)
             gradients = []
-            for response, direction in ((rx, frame.tangent), (ry, frame.axle)):
+            for response, direction in ((local_rx, frame.tangent), (local_ry, frame.axle)):
                 if ratio:
                     active, _sign, columns = plans[i][index]
                     rhs = tuple(dot(g, response) if mode in ("locked", "static") else 0.
@@ -195,9 +246,9 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                     dc, dl, db = tuple(sum(columns[j][a] * rhs[j] for j in range(3)) for a in range(3))
                 else:
                     dc = dl = 0.
-                    db = (dot(brake_gradients[i], response) / dot(brake_gradients[i], rb)
+                    db = (dot(brake_gradients[i], response) / dot(brake_gradients[i], local_rb)
                           if abs(brake) < brakes[i] else 0.)
-                dq = tuple(dt * (response[a] - dc * mc[a] - dl * ml[a] - db * rb[a]) for a in range(8))
+                dq = tuple(dt * (response[a] - dc * mc[a] - dl * ml[a] - db * local_rb[a]) for a in range(8))
                 dx = dt / mass * dot(direction, frame.tangent) + dot(dq[:3], moments_x[i])
                 dy = dt / mass * dot(direction, frame.axle) + dot(dq[:3], moments_y[i])
                 gradients.append((radii[i] * dq[i + 4] - dx, -dy, dx))
@@ -291,6 +342,14 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     clutch_slip, gear_speed = dot(clutch_gradient, state), dot(gear_gradient, state)
     engine_gyro = cross(tuple(engine_inertia * state[3] * value for value in engine_axis), state[:3])
     engine_body = tuple((clutch + engine_drag * engine_speed - engine_torque) * engine_axis[a] + engine_gyro[a] for a in range(3))
+    differential_slips = tuple(dot(g, state) for g in differential)
+    limited_torques = differential_torques(state, branches[shared_branch][0], differential, damping, limits)
+    drive_torque = ratio * (clutch - loss)
+    wheel_drives = tuple((drive_torque * weight if weight else 0.)
+                        - sum(g[i + 4] * torque for g, torque in zip(differential, limited_torques))
+                        for i, weight in enumerate(config.drive_weights))
     return DrivetrainStep(tuple(wheels), end_velocity, state[:3], state[3], engine_speed, ratio * (clutch - loss),
         clutch, clutch_slip, loss, gear_speed, engine_body, dt * engine_torque * engine_speed,
-        dt * engine_drag * engine_speed**2, dt * clutch * clutch_slip, dt * loss * gear_speed, sweep + 1)
+        dt * engine_drag * engine_speed**2, dt * clutch * clutch_slip, dt * loss * gear_speed, sweep + 1,
+        wheel_drives, limited_torques, differential_slips,
+        tuple(dt * torque * slip for torque, slip in zip(limited_torques, differential_slips)))
