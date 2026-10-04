@@ -14,15 +14,20 @@ from vehicle_state import FIXED_DT, VehicleCommand
 
 
 @pytest.mark.parametrize("case", ["low-mu", "split-mu"])
-def test_tcs_reduces_real_excess_drive_slip_with_torque_and_pressure(case):
-    baseline, _ = run_trial(case, False, duration=3)
-    candidate, rows = run_trial(case, True, duration=3)
+@pytest.mark.parametrize("input_shaft_enabled", [False, True])
+def test_tcs_reduces_real_excess_drive_slip_with_actual_actuators(case, input_shaft_enabled):
+    baseline, _ = run_trial(case, False, duration=3, input_shaft_enabled=input_shaft_enabled)
+    candidate, rows = run_trial(case, True, duration=3, input_shaft_enabled=input_shaft_enabled)
     assert sum(candidate["supported_excess_slip_integral_s"][2:]) < sum(
         baseline["supported_excess_slip_integral_s"][2:])
     assert any(row["state.traction_state.torque_scale"] < .9 for row in rows)
-    slipping_wheel = 3 if case == "split-mu" else 2
-    assert any(row[f"state.brake_states.{slipping_wheel}.pressure"] > 0 for row in rows)
-    assert any(abs(row[f"state.wheel_dynamics.{slipping_wheel}.brake_torque"]) > 0 for row in rows)
+    # 均匀路面的左右轮也可能因真实车身响应分化，验证实际受控驱动轮。
+    braking_wheels = (3,) if case == "split-mu" else (2, 3)
+    assert any(row[f"state.brake_states.{i}.pressure"] > 0
+               and abs(row[f"state.wheel_dynamics.{i}.brake_torque"]) > 0
+               for row in rows for i in braking_wheels)
+    if not input_shaft_enabled and case == "low-mu":
+        assert any(row["state.brake_states.2.pressure"] > 0 for row in rows)
     if case == "split-mu":
         assert all(row["state.brake_states.2.pressure"] == 0 for row in rows)
     assert any(abs(row["state.wheel_dynamics.2.fx"]) > 0 for row in rows)
@@ -44,11 +49,16 @@ def test_disabled_controller_and_releasing_driver_requests_reach_actuators():
             expected = max(0., previous["state.powertrain_state.clutch_capacity"]
                            - REFERENCE_CAR.clutch_capacity * FIXED_DT / REFERENCE_CAR.clutch_release_time)
             assert capacity == pytest.approx(expected, rel=0, abs=1e-11)
-            ratio = abs(row["state.powertrain_state.ratio"])
+            ratio = row["state.powertrain_state.ratio"]
             torque = row["state.wheel_dynamics.2.drive_torque"]
-            assert abs(torque) <= ratio * capacity / (2 * REFERENCE_CAR.drivetrain_efficiency) + 1e-9
+            clutch = row["state.powertrain_state.clutch_torque"]
+            assert abs(clutch) <= capacity + 1e-11
+            gear = row["state.powertrain_state.gear_reaction"]
+            loss = row["state.powertrain_state.gear_loss_torque"]
+            assert row["state.powertrain_state.drive_torque"] == pytest.approx(ratio * (gear - loss), abs=1e-9)
+            assert torque == pytest.approx(ratio * (gear - loss) / 2, abs=1e-9)
             if capacity == 0:
-                assert torque == 0
+                assert clutch == 0
         release_ticks = math.ceil(REFERENCE_CAR.clutch_release_time / FIXED_DT)
         assert rows[240 + release_ticks]["state.powertrain_state.clutch_capacity"] == 0
         if not enabled:

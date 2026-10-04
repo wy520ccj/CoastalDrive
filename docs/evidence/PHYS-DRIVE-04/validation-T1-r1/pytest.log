@@ -1,0 +1,58 @@
+........................................................................ [  7%]
+........................................................................ [ 14%]
+........................................................................ [ 22%]
+........................................................................ [ 29%]
+........................................................................ [ 37%]
+........................................................................ [ 44%]
+........................................................................ [ 52%]
+........................................................................ [ 59%]
+........................................................................ [ 67%]
+........................................................................ [ 74%]
+........................................................................ [ 82%]
+........................................................................ [ 89%]
+........................................................................ [ 97%]
+.......F.F..................                                             [100%]
+================================== FAILURES ===================================
+__ test_tcs_reduces_real_excess_drive_slip_with_torque_and_pressure[low-mu] ___
+
+case = 'low-mu'
+
+    @pytest.mark.parametrize("case", ["low-mu", "split-mu"])
+    def test_tcs_reduces_real_excess_drive_slip_with_torque_and_pressure(case):
+        baseline, _ = run_trial(case, False, duration=3)
+        candidate, rows = run_trial(case, True, duration=3)
+        assert sum(candidate["supported_excess_slip_integral_s"][2:]) < sum(
+            baseline["supported_excess_slip_integral_s"][2:])
+        assert any(row["state.traction_state.torque_scale"] < .9 for row in rows)
+        slipping_wheel = 3 if case == "split-mu" else 2
+>       assert any(row[f"state.brake_states.{slipping_wheel}.pressure"] > 0 for row in rows)
+E       assert False
+E        +  where False = any(<generator object test_tcs_reduces_real_excess_drive_slip_with_torque_and_pressure.<locals>.<genexpr> at 0x0000026BA1FA7C40>)
+
+tests\test_tcs_integration.py:24: AssertionError
+___ test_disabled_controller_and_releasing_driver_requests_reach_actuators ____
+
+    def test_disabled_controller_and_releasing_driver_requests_reach_actuators():
+        for enabled in (False, True):
+            _, rows = run_trial("driver-brake", enabled, duration=3)
+            for previous, row in pairwise(rows[240:]):
+                assert row["state.throttle"] == row["command.throttle"] == 1
+                assert row["state.brake"] == row["command.brake"] == 1
+                assert not row["state.traction_state.active"]
+                assert row["state.traction_state.torque_scale"] == 1
+                capacity = row["state.powertrain_state.clutch_capacity"]
+                expected = max(0., previous["state.powertrain_state.clutch_capacity"]
+                               - REFERENCE_CAR.clutch_capacity * FIXED_DT / REFERENCE_CAR.clutch_release_time)
+                assert capacity == pytest.approx(expected, rel=0, abs=1e-11)
+                ratio = abs(row["state.powertrain_state.ratio"])
+                torque = row["state.wheel_dynamics.2.drive_torque"]
+>               assert abs(torque) <= ratio * capacity / (2 * REFERENCE_CAR.drivetrain_efficiency) + 1e-9
+E               assert 489.7518871274504 <= (((7.585 * 112.50000000000003) / (2 * 0.88)) + 1e-09)
+E                +  where 489.7518871274504 = abs(489.7518871274504)
+E                +  and   0.88 = VehicleConfig(mass=1200.0, torque_curve=((900, 110), (1800, 165), (3200, 200), (4500, 190), (6000, 150), (6500, 0)), g...0.5, body_inertia=(1919.56, 511.56, 2290.0), angular_damping=0.0, suspension_travel=0.2, suspension_force_limit=6000.0).drivetrain_efficiency
+
+tests\test_tcs_integration.py:49: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tcs_integration.py::test_tcs_reduces_real_excess_drive_slip_with_torque_and_pressure[low-mu]
+FAILED tests/test_tcs_integration.py::test_disabled_controller_and_releasing_driver_requests_reach_actuators
+2 failed, 962 passed in 233.77s (0:03:53)

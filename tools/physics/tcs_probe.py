@@ -42,12 +42,12 @@ def command_at(case, time_s):
     return "acceleration", VehicleCommand(throttle=1, direction=direction)
 
 
-def run_trial(case, enabled, duration=6.0):
+def run_trial(case, enabled, duration=6.0, *, input_shaft_enabled=True):
     if case not in CASES:
         raise ValueError(f"未知TCS工况：{case}")
     if not math.isfinite(duration) or duration < FIXED_DT:
         raise ValueError("试验时长须至少一个有限固定步")
-    config = trial_config(case, enabled)
+    config = replace(trial_config(case, enabled), input_shaft_enabled=input_shaft_enabled)
     world, vehicle = _create_vehicle(config)
     if case == "split-mu":
         vehicle.on_asphalt = lambda x, _y: x < 0
