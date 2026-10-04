@@ -4,7 +4,7 @@
 
 ## 当前阶段
 
-- [PHYS-DRIVE-03](tasks/PHYS-DRIVE-03.md)施工中：前/后轴及中差有限粘性限滑已接共同接触/离合/制动末状态，逐轮矩/壳体反力、滑差/容量与热同步读回，默认关闭。389项机械/原功能、164项控制/配置、45项原生/限滑T0通过，默认后驱240拍全部既有字段字节一致；reference-v12完整77字段。完整开关A/B、单轮再接触/NPC生命周期及T1待收口；仅本地开发、未推送，不重复全套T2。[当前证据](evidence/PHYS-DRIVE-03/README.md)。
+- [PHYS-DRIVE-03](tasks/PHYS-DRIVE-03.md)自动功能块完成：前/后轴及中差有限粘性限滑接共同接触/离合/制动末状态，逐轮矩/壳体反力与热同步读回，默认关闭。60条开关A/B、12条单轮再接触与6项NPC生命周期通过；相关完整T1为790项及三种子启动通过，287源码前后相同。默认后驱240拍既有字段字节一致，reference-v12完整77字段；不利响应原样保留。核心b3a446e及收口仅本地提交，未作新推送。下一[PHYS-DRIVE-04](tasks/PHYS-DRIVE-04.md)实体输入轴/有限换挡同步，不重复全套T2；原音频失败、悬架/估计器/实车型与整体Gate仍待完成。[证据](evidence/PHYS-DRIVE-03/completion-receipt.json)。
 
 - [PHYS-DRIVE-02](tasks/PHYS-DRIVE-02.md)自动功能块完成：前驱/后驱/开放中差四驱共用真实机械端口、逐轮矩和TCS驱动集合，默认RWD保持。66条标准对照、12条低附着TCS开关、6条真实单轮异步落地完成；相关完整T1为739项及三种子启动通过，源稳定。reference-v11完整75字段，默认后驱240拍与55279cb完整字节一致。核心ebb1111及收口仅本地未推送。下一[PHYS-DRIVE-03](tasks/PHYS-DRIVE-03.md)接有限限滑；轴惯量、悬架/估计器/实车型及整体Gate仍待完成；DRIVE-01音频失败保留。[证据](evidence/PHYS-DRIVE-02/completion-receipt.json)。
 

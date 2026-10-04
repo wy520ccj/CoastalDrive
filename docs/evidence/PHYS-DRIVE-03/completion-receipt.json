@@ -1,0 +1,101 @@
+{
+  "scope": "PHYS-DRIVE-03 automatic functional block only",
+  "baseline": "39b3f52",
+  "implementation_checkpoint": "b3a446e",
+  "mechanism": "bounded viscous front/rear/center coupling; jointly solved tire/clutch/brake end state",
+  "default": "off; original engine/control parameters retained",
+  "ab_pairs": 30,
+  "ab_traces": 60,
+  "ticks_each": 480,
+  "frequency_hz": 120,
+  "cases": [
+    "engine-braking",
+    "reverse",
+    "single-wheel-recontact",
+    "split-mu-launch",
+    "steering-step"
+  ],
+  "modes": [
+    "game",
+    "simulation"
+  ],
+  "layouts": [
+    "RWD",
+    "FWD",
+    "AWD"
+  ],
+  "source_stable": true,
+  "source_files": 287,
+  "max_force_residual": 0.0009995774457379541,
+  "single_wheel_recontact_traces": 12,
+  "NPC_lifecycle_T0_passed": 6,
+  "NPC_lifecycle_pytest_seconds": 5.17,
+  "T1_pytest_passed": 790,
+  "T1_pytest_seconds": 143.44,
+  "T1_checks": [
+    {
+      "name": "ruff",
+      "status": "passed",
+      "seconds": 0.13
+    },
+    {
+      "name": "pytest",
+      "status": "passed",
+      "seconds": 143.901
+    },
+    {
+      "name": "headless-0",
+      "status": "passed",
+      "seconds": 8.508
+    },
+    {
+      "name": "headless-17",
+      "status": "passed",
+      "seconds": 8.561
+    },
+    {
+      "name": "headless-23",
+      "status": "passed",
+      "seconds": 8.531
+    }
+  ],
+  "reference_version": "reference-v12",
+  "vehicle_fields": 77,
+  "adverse_steering_or_recontact_speed_changes": [
+    {
+      "mode": "game",
+      "layout": "RWD",
+      "case": "single-wheel-recontact",
+      "speed_on_minus_off": -0.06431913375854492
+    },
+    {
+      "mode": "game",
+      "layout": "AWD",
+      "case": "steering-step",
+      "speed_on_minus_off": -0.17763519287109375
+    },
+    {
+      "mode": "simulation",
+      "layout": "RWD",
+      "case": "single-wheel-recontact",
+      "speed_on_minus_off": -0.18377399444580078
+    }
+  ],
+  "retained_failures": [
+    "initial two Ruff failures: pytest not run",
+    "initial OFF trace text packaging LF/CRLF comparison; physical fields identical",
+    "DRIVE-01 audio integration failure and incomplete T2"
+  ],
+  "not_completed": [
+    "shaft inertia and finite shift synchronization",
+    "SI suspension and antiroll",
+    "estimator",
+    "real vehicle calibration",
+    "full research protocol",
+    "DRIVE-01 audio fixture",
+    "T2/T3",
+    "foreground performance",
+    "human two-mode driving"
+  ],
+  "publication": "local checkpoint; no new push in this functional block"
+}

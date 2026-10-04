@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "tools"))
 from physics.reference_ab import _create_vehicle, _step
+from physics.testbed import load_vehicle_config
 
 from driving_modes import DrivingMode
 from vehicle_state import VehicleCommand
@@ -45,6 +46,7 @@ def main():
     parser.add_argument("--modes", nargs="+", default=["game", "simulation"])
     parser.add_argument("--rigid", action="store_true")
     parser.add_argument("--front-drive-share", type=float, default=0., help="0后驱、1前驱、中间值开放中差")
+    parser.add_argument("--vehicle-config", type=Path, help="车辆设计JSON，含限滑等明确配置")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     hashes = lambda: {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
@@ -55,6 +57,8 @@ def main():
         selected = DrivingMode(mode)
         config = replace(selected.vehicle_config, finite_drivetrain=True, tire_compliance=not args.rigid,
                          front_drive_share=args.front_drive_share)
+        if args.vehicle_config is not None:
+            config = load_vehicle_config(args.vehicle_config, config)
         for case in args.cases:
             world, vehicle = _create_vehicle(config)
             records = []
