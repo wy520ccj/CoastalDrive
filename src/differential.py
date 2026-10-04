@@ -20,7 +20,7 @@ def viscous_projection(vector, projections):
     """逐个消去未饱和粘性端口；投影来自同一机械逆惯量。"""
     for gradient, response, factor in projections:
         scale = factor * dot(gradient, vector)
-        vector = tuple(vector[a] - scale * response[a] for a in range(8))
+        vector = tuple(vector[a] - scale * response[a] for a in range(len(vector)))
     return vector
 
 
@@ -30,13 +30,13 @@ def differential_branches(gradients, damping, capacities, mobility, dt):
     choices = [(0, 1, -1) if c and limit else (0,) for c, limit in zip(damping, capacities)]
     for modes in product(*choices):
         projections = []
-        offset = (0.,) * 8
+        offset = (0.,) * len(gradients[0])
         for g, c, limit, mode in zip(gradients, damping, capacities, modes):
             if not c or not limit:
                 continue
             if mode:
                 response = mobility(g)
-                offset = tuple(offset[a] - dt * mode * limit * response[a] for a in range(8))
+                offset = tuple(offset[a] - dt * mode * limit * response[a] for a in range(len(offset)))
             else:
                 response = viscous_projection(mobility(g), projections)
                 factor = dt * c / (1 + dt * c * dot(g, response))

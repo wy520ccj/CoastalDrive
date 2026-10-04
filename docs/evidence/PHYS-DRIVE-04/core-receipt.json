@@ -1,0 +1,53 @@
+{
+  "scope": "PHYS-DRIVE-04 mechanical core checkpoint; driving lifecycle and mode defaults not connected yet",
+  "baseline": "b7b6ff01defde0849b8c1979545fc3e0a35b215a",
+  "T0_passed": 729,
+  "pytest_seconds": 20.94,
+  "checks": [
+    {
+      "name": "ruff",
+      "status": "passed",
+      "seconds": 0.106
+    },
+    {
+      "name": "pytest",
+      "status": "passed",
+      "seconds": 21.357
+    }
+  ],
+  "source_sha256": {
+    "src/shaft_transmission.py": "cb26efca9a4c61186b1e777b6fb690fdf797424281c37f42e26ee1e7b362ac69",
+    "src/tire_drivetrain.py": "0fa8537620d4540bb46826c8602b855123420080ea11d1697ce9552c79efb3c9",
+    "src/differential.py": "954677fe7c20e40d04c0956465eb544a83646eccd86f45210ea045ccc49cc5fd",
+    "tests/test_shaft_transmission.py": "84f0ab12ff476acbb6379939bec3761b504cb9f7c873328f595c3252907f815d",
+    "tests/test_tire_shaft.py": "325e819226c58821c40a95127edeed37637a82a943062cd49d49bc9f60d63a3d",
+    "tests/test_tire_drivetrain.py": "2bcec0a289b964a9b6647b6e68e8ae144ecf9aec12ddcf16fa4d9bdfe8586746"
+  },
+  "new_direct_port_tests": 115,
+  "new_joint_tire_tests": 37,
+  "mechanism": [
+    "real input shaft absolute and shell-relative speed, inertia and stored energy",
+    "actual gear reaction used in efficiency law",
+    "finite synchronizer torque, end-state slip and heat",
+    "same implicit tire/brake/LSD/engine/shaft state with exact contact derivative",
+    "shaft bearing reaction and gyro torque returned for single Bullet chassis"
+  ],
+  "initial_failure": {
+    "command": ".venv/Scripts/python.exe -m pytest -q tests/test_shaft_transmission.py",
+    "passed": 7,
+    "failed": 108,
+    "seconds": 1.13,
+    "reason": "independent test body balance used positive brake shell reaction; existing wheel sign convention requires negative reaction",
+    "correction": "test audit sign corrected; production port values already matched directed expected values"
+  },
+  "lint_initial": "I001 import format in tire_drivetrain; fixed before recorded T0",
+  "not_completed": [
+    "Powertrain shaft state and observed snapshot",
+    "VehicleTires shaft input and Bullet shaft torque submission",
+    "finite synchronization driven shift state machine",
+    "new mode defaults and complete config export",
+    "native lifecycle and standard old/new A/B",
+    "functional T1/T2 and full goal gates"
+  ],
+  "notes": "Only docstrings changed after recorded T0; no further behavior edits. No claim of whole-world integration or source interval freeze."
+}

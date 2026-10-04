@@ -24,7 +24,8 @@ def solve(velocity, angular, spins, engine, contact_frames, deformation, torque,
 
 def audit(result, velocity, angular, spins, engine, contact_frames, deformation, torque, brakes, config, dt,
           old_axes, steering, inertia=tuple(tuple(INERTIA[a] if a == b else 0. for b in range(3)) for a in range(3)),
-          engine_axis=ENGINE_AXIS, drag=.12, engine_inertia=ENGINE_INERTIA):
+          engine_axis=ENGINE_AXIS, drag=.12, engine_inertia=ENGINE_INERTIA,
+          shaft=None, shaft_inertia=.04, shaft_axis=(0., 1., 0.)):
     wheels, end_angular, end_velocity = result.wheels, result.angular, result.velocity
     relative_wheels = tuple(w.omega + dot(end_angular, f.spin_axis) for w, f in zip(wheels, contact_frames))
     slips = (relative_wheels[0] - relative_wheels[1], relative_wheels[2] - relative_wheels[3],
@@ -36,6 +37,14 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
     assert result.differential_torques == pytest.approx(torques, abs=1e-11)
     assert result.differential_slips == pytest.approx(slips, abs=1e-12)
     force, body_torque, external = [0.] * 3, list(result.engine_body_torque), [0.] * 3
+    if shaft is not None:
+        for a in range(3):
+            body_torque[a] += result.shaft_body_torque[a]
+        assert shaft_inertia * (result.shaft_omega - shaft) == pytest.approx(
+            dt * (result.clutch_torque - result.gear_reaction), abs=1e-11)
+        assert result.shaft_relative_omega == pytest.approx(
+            result.shaft_omega - dot(end_angular, shaft_axis), abs=1e-12)
+        assert result.clutch_slip == pytest.approx(result.engine_relative_omega - result.shaft_relative_omega, abs=1e-11)
     for i, (frame, wheel) in enumerate(zip(contact_frames, wheels)):
         drive = result.drive_torque * (config.front_drive_share if i < 2 else 1 - config.front_drive_share) / 2 + transfers[i]
         assert result.wheel_drive_torques[i] == pytest.approx(drive, abs=1e-11)
@@ -65,11 +74,15 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
                         - sum(angular[a] * dot(inertia[a], angular) for a in range(3)))
                + .5 * engine_inertia * (result.engine_omega**2 - engine**2)
                + .5 * config.wheel_inertia * sum(wheel.omega**2 - spins[i]**2 for i, wheel in enumerate(wheels)))
+    if shaft is not None:
+        kinetic += .5 * shaft_inertia * (result.shaft_omega**2 - shaft**2)
     delta_angular = tuple(end_angular[a] - angular[a] for a in range(3))
     numerical = (.5 * config.mass * sum((end_velocity[a] - velocity[a])**2 for a in range(3))
                  + .5 * sum(delta_angular[a] * dot(inertia[a], delta_angular) for a in range(3))
                  + .5 * engine_inertia * (result.engine_omega - engine)**2
                  + .5 * config.wheel_inertia * sum((wheel.omega - spins[i])**2 for i, wheel in enumerate(wheels)))
+    if shaft is not None:
+        numerical += .5 * shaft_inertia * (result.shaft_omega - shaft)**2
     if config.tire_compliance:
         elastic = sum(wheel.elastic_energy for wheel in wheels) - .5 * config.tire_contact_stiffness * sum(
             value**2 for previous in deformation for value in previous)
@@ -80,7 +93,7 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
     brake_heat = dt * sum(w.brake_torque * w.relative_omega for w in wheels)
     steering_work = dt * sum(dot(end_angular, value) for value in steering)
     energy_error = (kinetic + numerical + elastic + contact_loss + brake_heat + result.engine_drag_heat
-                    + result.clutch_heat + result.gear_heat + dt * sum(t * s for t, s in zip(torques, slips))
+                    + result.clutch_heat + result.gear_heat + result.synchronizer_heat + dt * sum(t * s for t, s in zip(torques, slips))
                     - result.engine_work - steering_work)
     assert energy_error == pytest.approx(0., abs=3e-9)
     assert result.clutch_heat >= -1e-9 and result.gear_heat >= -1e-9
@@ -88,6 +101,9 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
         spins[i] * old_axes[i][a] for i in range(4)) for a in range(3))
     new_spin = tuple(engine_inertia * result.engine_omega * engine_axis[a] - config.wheel_inertia * sum(
         w.omega * contact_frames[i].spin_axis[a] for i, w in enumerate(wheels)) for a in range(3))
+    if shaft is not None:
+        old_spin = tuple(old_spin[a] + shaft_inertia * shaft * shaft_axis[a] for a in range(3))
+        new_spin = tuple(new_spin[a] + shaft_inertia * result.shaft_omega * shaft_axis[a] for a in range(3))
     for a in range(3):
         balance = dot(inertia[a], delta_angular) + new_spin[a] - old_spin[a] + dt * cross(end_angular, new_spin)[a]
         assert balance == pytest.approx(external[a], abs=1e-10)
