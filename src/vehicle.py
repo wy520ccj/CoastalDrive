@@ -52,7 +52,7 @@ class Vehicle:
         self.steering = SteeringRack(self.config)
         self.tires = Tires(self.config)
         self.brakes = Brakes(self.config.braking)
-        self.traction = TractionControl(self.config.traction)
+        self.traction = TractionControl(self.config.traction, self.config.driven_wheels)
         self.stability = StabilityControl(self.config)
         self._drive_pedal = 0.0
         self._brake_pedal = 0.0
@@ -119,7 +119,7 @@ class Vehicle:
         self.steering = SteeringRack(self.config)
         self.tires = Tires(self.config)
         self.brakes = Brakes(self.config.braking)
-        self.traction = TractionControl(self.config.traction)
+        self.traction = TractionControl(self.config.traction, self.config.driven_wheels)
         self.stability = StabilityControl(self.config)
         self.tires.initialize_rolling(speed)
         self._drive_pedal = 0.0
@@ -200,7 +200,8 @@ class Vehicle:
         )
         if self.config.finite_drivetrain:
             self.powertrain.observe(self._chassis)
-            self.powertrain.prepare(speed, self.tires.driven_omega(self._chassis), pedal, direction,
+            self.powertrain.prepare(speed, self.tires.driven_omega(
+                self._chassis, wheel_angles(self.steering.angle, self.config)), pedal, direction,
                 brake > 0, FIXED_DT, drive_scale=min(traction.torque_scale, stability.torque_scale),
                 gear=command.gear, clutch=command.clutch)
             drive_torque = engine_drag = 0.

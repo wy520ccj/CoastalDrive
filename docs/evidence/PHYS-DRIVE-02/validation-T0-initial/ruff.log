@@ -1,0 +1,35 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\test_drive_layout.py:3:1
+   |
+ 1 |   """布局共用真实机械端口；独立守恒账与原生逐轮输出核对。"""
+ 2 |
+ 3 | / import json
+ 4 | | import math
+ 5 | | from dataclasses import replace
+ 6 | |
+ 7 | | import pytest
+ 8 | | from panda3d.bullet import BulletRigidBodyNode
+ 9 | | from panda3d.core import TransformState, Vec3
+10 | | from physics.reference_ab import _create_vehicle, _step
+11 | | from physics.testbed import load_vehicle_config
+12 | | from test_tire_drivetrain import audit, solve
+13 | | from test_rotor_transport import CONFIG, frames
+14 | | from test_vehicle_traction import wheels
+15 | |
+16 | | from driving_modes import DrivingMode
+17 | | from vehicle_config import CAR
+18 | | from vehicle_state import VehicleCommand
+19 | | from vehicle_tires import Tires
+20 | | from vehicle_traction import TractionControl
+   | |____________________________________________^
+help: Organize imports
+   |
+11 | from physics.testbed import load_vehicle_config
+12 + from test_rotor_transport import CONFIG, frames
+13 | from test_tire_drivetrain import audit, solve
+   - from test_rotor_transport import CONFIG, frames
+14 | from test_vehicle_traction import wheels
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

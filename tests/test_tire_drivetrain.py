@@ -28,7 +28,7 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
     wheels, end_angular, end_velocity = result.wheels, result.angular, result.velocity
     force, body_torque, external = [0.] * 3, list(result.engine_body_torque), [0.] * 3
     for i, (frame, wheel) in enumerate(zip(contact_frames, wheels)):
-        drive = result.drive_torque / 2 if i >= 2 else 0.
+        drive = result.drive_torque * (config.front_drive_share if i < 2 else 1 - config.front_drive_share) / 2
         f = tuple(frame.tangent[a] * wheel.fx + frame.axle[a] * wheel.fy for a in range(3))
         moment = cross(frame.point, f)
         for a in range(3):

@@ -1,0 +1,54 @@
+{
+  "started_utc": "2026-10-04T15:39:56.730313+00:00",
+  "git_head": "55279cba133660fad439d6a3c5ac74e19d6c3c97",
+  "git_status": "M src/tire_drivetrain.py\n M src/vehicle.py\n M src/vehicle_config.py\n M src/vehicle_tires.py\n M src/vehicle_traction.py\n M tests/test_physics_config_io.py\n M tests/test_tire_drivetrain.py\n M tools/physics/export_reference.py\n M tools/validate.py\n?? docs/tasks/PHYS-DRIVE-02.md\n?? tests/test_drive_layout.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_drive_layout.py",
+    "tests/test_vehicle_traction.py",
+    "tests/test_tire_drivetrain.py",
+    "tests/test_physics_config_io.py"
+  ],
+  "tier": "T0",
+  "status": "failed",
+  "passed": false,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DRIVE-02-T0-initial\\ruff.log",
+      "status": "failed",
+      "returncode": 1,
+      "error": "process exited 1",
+      "seconds": 0.125
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_drive_layout.py",
+        "tests/test_vehicle_traction.py",
+        "tests/test_tire_drivetrain.py",
+        "tests/test_physics_config_io.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DRIVE-02-T0-initial\\pytest.log",
+      "status": "not_run"
+    }
+  ]
+}

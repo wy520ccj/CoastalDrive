@@ -1,4 +1,4 @@
-"""后驱轮滑转反馈TCS；发动机削矩与制动请求均由实际执行器落实。"""
+"""驱动轮滑转反馈TCS；发动机削矩与制动请求均由实际执行器落实。"""
 
 from dataclasses import dataclass
 
@@ -28,8 +28,9 @@ class TractionState:
 
 
 class TractionControl:
-    def __init__(self, config):
+    def __init__(self, config, driven_wheels=(2, 3)):
         self.config = config
+        self.driven_wheels = driven_wheels
         self.state = TractionState()
 
     def advance(self, pedal, direction, braking, wheels, radius, dt):
@@ -45,10 +46,10 @@ class TractionControl:
         requests = [0.0] * 4
         scale, active = 1.0, False
         eligible = config.tcs_enabled and pedal > 0 and direction != 0 and not braking
-        driven = [slips[index] for index in (2, 3) if slips[index] is not None]
+        driven = [slips[index] for index in self.driven_wheels if slips[index] is not None]
         if eligible and driven:
             predicted = []
-            for index in (2, 3):
+            for index in self.driven_wheels:
                 slip = slips[index]
                 if slip is None:
                     continue

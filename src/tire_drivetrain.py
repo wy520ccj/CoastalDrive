@@ -53,9 +53,15 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         for i, frame in enumerate(frames))
     moments_y = tuple(cross(frame.point, frame.axle) for frame in frames)
     engine_gradient = tuple(-value for value in engine_axis) + (1., 0., 0., 0., 0.)
-    rear = tuple(ratio / 2 * (axes[2][a] + axes[3][a]) for a in range(3))
-    clutch_gradient = tuple(-engine_axis[a] - rear[a] for a in range(3)) + (1., 0., 0., -ratio / 2, -ratio / 2)
-    gear_gradient = rear + (0., 0., 0., ratio / 2, ratio / 2)
+    # 默认后驱保留原运算次序；前轮转向后的真实机械轴也参与壳体反力。
+    if config.front_drive_share == 0:
+        drive_axis = tuple(ratio / 2 * (axes[2][a] + axes[3][a]) for a in range(3))
+    else:
+        drive_axis = tuple(ratio * sum(weight * axes[i][a]
+                           for i, weight in enumerate(config.drive_weights)) for a in range(3))
+    wheel_ratios = tuple(ratio * weight for weight in config.drive_weights)
+    clutch_gradient = tuple(-engine_axis[a] - drive_axis[a] for a in range(3)) + (1.,) + tuple(-r for r in wheel_ratios)
+    gear_gradient = drive_axis + (0.,) + wheel_ratios
     brake_gradients = tuple(axes[i] + (0.,) + tuple(float(j == i) for j in range(4)) for i in range(4))
     longitudinal = tuple(moments_x[i] + (0.,) + tuple(-radii[i] if j == i else 0. for j in range(4)) for i in range(4))
     lateral = tuple(moment + (0., 0., 0., 0., 0.) for moment in moments_y)

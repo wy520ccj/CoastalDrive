@@ -27,6 +27,7 @@ class VehicleConfig:
     torque_response: float = 0.12
     engine_braking: float = 24.0  # Approximate closed-throttle torque at the crank, Nm.
     finite_drivetrain: bool = True  # 两模式共用真实曲轴/有限离合；false用于冻结旧机制A/B。
+    front_drive_share: float = 0.0  # 0后驱、1前驱；中间值为开放中差的固定几何份额。
     engine_inertia: float = .02  # 正常游戏起步响应标定的设计惯量，kg·m²；困难参考车取0.2，非实测。
     engine_axis: tuple = (0., 1., 0.)  # 车身局部曲轴正转方向。
     engine_idle_response: float = .15
@@ -93,6 +94,22 @@ class VehicleConfig:
     angular_damping: float = 0.2
     suspension_travel: float = 0.2
     suspension_force_limit: float = 6000.0
+
+    def __post_init__(self):
+        if not 0 <= self.front_drive_share <= 1:
+            raise ValueError("前轴驱动份额须在0到1之间")
+        if self.front_drive_share != 0 and not self.finite_drivetrain:
+            raise ValueError("前驱/四驱需要有限机械传动，旧对照分支仅支持后驱")
+
+    @property
+    def drive_weights(self):
+        front = self.front_drive_share / 2
+        rear = (1 - self.front_drive_share) / 2
+        return front, front, rear, rear
+
+    @property
+    def driven_wheels(self):
+        return tuple(i for i, weight in enumerate(self.drive_weights) if weight > 0)
 
 
 CAR = VehicleConfig()

@@ -30,6 +30,7 @@ VEHICLE_FIELDS = {
     "torque_response": ("s", "实际节气门一阶响应时间常数；旧分支为轮端转矩响应"),
     "engine_braking": ("N·m", "闭节气门近似曲轴损失转矩；怠速以下连续趋零，隐式同末速度耗散"),
     "finite_drivetrain": ("bool", "真实曲轴/有限离合/双向损失与开放差速器共同末状态"),
+    "front_drive_share": ("1", "前轴驱动份额；0后驱、1前驱、中间值为固定几何开放中差"),
     "engine_inertia": ("kg·m²", "曲轴独立轴向惯量，通用设计值"),
     "engine_axis": ("单位向量", "车身局部曲轴正转方向"),
     "engine_idle_response": ("s", "实际相对曲轴速度反馈的怠速控制响应"),
@@ -243,7 +244,7 @@ def export(output):
         "panda_version": PandaSystem.getVersionString(), "bullet_version": getBulletVersion(),
         "measurement": {"ticks": 240, "dt": FIXED_DT, "max_substeps": 0,
                         "ground": "水平无限平面", "gravity": [0, 0, -9.81], "input": "VehicleCommand()"},
-        "schema_version": "reference-v10",
+        "schema_version": "reference-v11",
         "vehicle_fields": VEHICLE_FIELDS, "brake_fields": BRAKE_FIELDS,
         "traction_fields": TRACTION_FIELDS, "stability_fields": STABILITY_FIELDS,
         "input_fields": INPUT_FIELDS, "modes": modes,
@@ -258,5 +259,5 @@ def export(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path,
-                        default=ROOT / "logs/physics/reference-v10/parameters.json")
+                        default=ROOT / "logs/physics/reference-v11/parameters.json")
     export(parser.parse_args().output)

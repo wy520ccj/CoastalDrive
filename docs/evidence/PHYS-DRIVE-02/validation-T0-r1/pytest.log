@@ -1,0 +1,372 @@
+................................FFFFFFFFFFFF............................ [ 20%]
+........................................................................ [ 40%]
+........................................................................ [ 60%]
+........................................................................ [ 80%]
+........................................................................ [100%]
+================================== FAILURES ===================================
+____ test_native_layout_launch_outputs_and_reset[-1-0.0-DrivingMode.GAME] _____
+
+mode = <DrivingMode.GAME: 'game'>, share = 0.0, gear = -1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_native_layout_launch_outputs_and_reset(mode, share, gear):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(180):
+                _step(world, vehicle, VehicleCommand(throttle=.7, direction=gear, gear=gear, steering=3.))
+                snapshot = vehicle.snapshot()
+                for i, wheel in enumerate(snapshot.wheel_dynamics):
+                    assert wheel.drive_torque == pytest.approx(snapshot.powertrain_state.drive_torque
+                        * (share if i < 2 else 1 - share) / 2, abs=1e-10)
+>                   assert wheel.residual < .001
+                           ^^^^^^^^^^^^^^
+E                   AttributeError: 'WheelDynamicsState' object has no attribute 'residual'
+
+tests\test_drive_layout.py:116: AttributeError
+_ test_native_layout_launch_outputs_and_reset[-1-0.0-DrivingMode.SIMULATION] __
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, share = 0.0, gear = -1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_native_layout_launch_outputs_and_reset(mode, share, gear):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(180):
+                _step(world, vehicle, VehicleCommand(throttle=.7, direction=gear, gear=gear, steering=3.))
+                snapshot = vehicle.snapshot()
+                for i, wheel in enumerate(snapshot.wheel_dynamics):
+                    assert wheel.drive_torque == pytest.approx(snapshot.powertrain_state.drive_torque
+                        * (share if i < 2 else 1 - share) / 2, abs=1e-10)
+>                   assert wheel.residual < .001
+                           ^^^^^^^^^^^^^^
+E                   AttributeError: 'WheelDynamicsState' object has no attribute 'residual'
+
+tests\test_drive_layout.py:116: AttributeError
+____ test_native_layout_launch_outputs_and_reset[-1-0.5-DrivingMode.GAME] _____
+
+mode = <DrivingMode.GAME: 'game'>, share = 0.5, gear = -1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_native_layout_launch_outputs_and_reset(mode, share, gear):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(180):
+>               _step(world, vehicle, VehicleCommand(throttle=.7, direction=gear, gear=gear, steering=3.))
+
+tests\test_drive_layout.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\physics\reference_ab.py:63: in _step
+    vehicle.apply_command(command)
+src\vehicle.py:203: in apply_command
+    self.powertrain.prepare(speed, self.tires.driven_omega(
+src\vehicle_tires.py:40: in driven_omega
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <enumerate object at 0x000002A94E522D40>
+
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+>       orientation.getRight(), orientation.getForward(), angles[i])))
+                                                          ^^^^^^^^^
+        for i, weight in enumerate(self.config.drive_weights))
+E   IndexError: tuple index out of range
+
+src\vehicle_tires.py:41: IndexError
+_ test_native_layout_launch_outputs_and_reset[-1-0.5-DrivingMode.SIMULATION] __
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, share = 0.5, gear = -1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_native_layout_launch_outputs_and_reset(mode, share, gear):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(180):
+>               _step(world, vehicle, VehicleCommand(throttle=.7, direction=gear, gear=gear, steering=3.))
+
+tests\test_drive_layout.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\physics\reference_ab.py:63: in _step
+    vehicle.apply_command(command)
+src\vehicle.py:203: in apply_command
+    self.powertrain.prepare(speed, self.tires.driven_omega(
+src\vehicle_tires.py:40: in driven_omega
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <enumerate object at 0x000002A94E522ED0>
+
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+>       orientation.getRight(), orientation.getForward(), angles[i])))
+                                                          ^^^^^^^^^
+        for i, weight in enumerate(self.config.drive_weights))
+E   IndexError: tuple index out of range
+
+src\vehicle_tires.py:41: IndexError
+____ test_native_layout_launch_outputs_and_reset[-1-1.0-DrivingMode.GAME] _____
+
+mode = <DrivingMode.GAME: 'game'>, share = 1.0, gear = -1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_native_layout_launch_outputs_and_reset(mode, share, gear):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(180):
+>               _step(world, vehicle, VehicleCommand(throttle=.7, direction=gear, gear=gear, steering=3.))
+
+tests\test_drive_layout.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\physics\reference_ab.py:63: in _step
+    vehicle.apply_command(command)
+src\vehicle.py:203: in apply_command
+    self.powertrain.prepare(speed, self.tires.driven_omega(
+src\vehicle_tires.py:40: in driven_omega
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <enumerate object at 0x000002A94E522CF0>
+
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+>       orientation.getRight(), orientation.getForward(), angles[i])))
+                                                          ^^^^^^^^^
+        for i, weight in enumerate(self.config.drive_weights))
+E   IndexError: tuple index out of range
+
+src\vehicle_tires.py:41: IndexError
+_ test_native_layout_launch_outputs_and_reset[-1-1.0-DrivingMode.SIMULATION] __
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, share = 1.0, gear = -1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_native_layout_launch_outputs_and_reset(mode, share, gear):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(180):
+>               _step(world, vehicle, VehicleCommand(throttle=.7, direction=gear, gear=gear, steering=3.))
+
+tests\test_drive_layout.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\physics\reference_ab.py:63: in _step
+    vehicle.apply_command(command)
+src\vehicle.py:203: in apply_command
+    self.powertrain.prepare(speed, self.tires.driven_omega(
+src\vehicle_tires.py:40: in driven_omega
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <enumerate object at 0x000002A94E879E40>
+
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+>       orientation.getRight(), orientation.getForward(), angles[i])))
+                                                          ^^^^^^^^^
+        for i, weight in enumerate(self.config.drive_weights))
+E   IndexError: tuple index out of range
+
+src\vehicle_tires.py:41: IndexError
+_____ test_native_layout_launch_outputs_and_reset[1-0.0-DrivingMode.GAME] _____
+
+mode = <DrivingMode.GAME: 'game'>, share = 0.0, gear = 1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_native_layout_launch_outputs_and_reset(mode, share, gear):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(180):
+                _step(world, vehicle, VehicleCommand(throttle=.7, direction=gear, gear=gear, steering=3.))
+                snapshot = vehicle.snapshot()
+                for i, wheel in enumerate(snapshot.wheel_dynamics):
+                    assert wheel.drive_torque == pytest.approx(snapshot.powertrain_state.drive_torque
+                        * (share if i < 2 else 1 - share) / 2, abs=1e-10)
+>                   assert wheel.residual < .001
+                           ^^^^^^^^^^^^^^
+E                   AttributeError: 'WheelDynamicsState' object has no attribute 'residual'
+
+tests\test_drive_layout.py:116: AttributeError
+__ test_native_layout_launch_outputs_and_reset[1-0.0-DrivingMode.SIMULATION] __
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, share = 0.0, gear = 1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_native_layout_launch_outputs_and_reset(mode, share, gear):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(180):
+                _step(world, vehicle, VehicleCommand(throttle=.7, direction=gear, gear=gear, steering=3.))
+                snapshot = vehicle.snapshot()
+                for i, wheel in enumerate(snapshot.wheel_dynamics):
+                    assert wheel.drive_torque == pytest.approx(snapshot.powertrain_state.drive_torque
+                        * (share if i < 2 else 1 - share) / 2, abs=1e-10)
+>                   assert wheel.residual < .001
+                           ^^^^^^^^^^^^^^
+E                   AttributeError: 'WheelDynamicsState' object has no attribute 'residual'
+
+tests\test_drive_layout.py:116: AttributeError
+_____ test_native_layout_launch_outputs_and_reset[1-0.5-DrivingMode.GAME] _____
+
+mode = <DrivingMode.GAME: 'game'>, share = 0.5, gear = 1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_native_layout_launch_outputs_and_reset(mode, share, gear):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(180):
+>               _step(world, vehicle, VehicleCommand(throttle=.7, direction=gear, gear=gear, steering=3.))
+
+tests\test_drive_layout.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\physics\reference_ab.py:63: in _step
+    vehicle.apply_command(command)
+src\vehicle.py:203: in apply_command
+    self.powertrain.prepare(speed, self.tires.driven_omega(
+src\vehicle_tires.py:40: in driven_omega
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <enumerate object at 0x000002A94E8EBDD0>
+
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+>       orientation.getRight(), orientation.getForward(), angles[i])))
+                                                          ^^^^^^^^^
+        for i, weight in enumerate(self.config.drive_weights))
+E   IndexError: tuple index out of range
+
+src\vehicle_tires.py:41: IndexError
+__ test_native_layout_launch_outputs_and_reset[1-0.5-DrivingMode.SIMULATION] __
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, share = 0.5, gear = 1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_native_layout_launch_outputs_and_reset(mode, share, gear):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(180):
+>               _step(world, vehicle, VehicleCommand(throttle=.7, direction=gear, gear=gear, steering=3.))
+
+tests\test_drive_layout.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\physics\reference_ab.py:63: in _step
+    vehicle.apply_command(command)
+src\vehicle.py:203: in apply_command
+    self.powertrain.prepare(speed, self.tires.driven_omega(
+src\vehicle_tires.py:40: in driven_omega
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <enumerate object at 0x000002A94E8D8FE0>
+
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+>       orientation.getRight(), orientation.getForward(), angles[i])))
+                                                          ^^^^^^^^^
+        for i, weight in enumerate(self.config.drive_weights))
+E   IndexError: tuple index out of range
+
+src\vehicle_tires.py:41: IndexError
+_____ test_native_layout_launch_outputs_and_reset[1-1.0-DrivingMode.GAME] _____
+
+mode = <DrivingMode.GAME: 'game'>, share = 1.0, gear = 1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_native_layout_launch_outputs_and_reset(mode, share, gear):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(180):
+>               _step(world, vehicle, VehicleCommand(throttle=.7, direction=gear, gear=gear, steering=3.))
+
+tests\test_drive_layout.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\physics\reference_ab.py:63: in _step
+    vehicle.apply_command(command)
+src\vehicle.py:203: in apply_command
+    self.powertrain.prepare(speed, self.tires.driven_omega(
+src\vehicle_tires.py:40: in driven_omega
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <enumerate object at 0x000002A94E8EB060>
+
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+>       orientation.getRight(), orientation.getForward(), angles[i])))
+                                                          ^^^^^^^^^
+        for i, weight in enumerate(self.config.drive_weights))
+E   IndexError: tuple index out of range
+
+src\vehicle_tires.py:41: IndexError
+__ test_native_layout_launch_outputs_and_reset[1-1.0-DrivingMode.SIMULATION] __
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, share = 1.0, gear = 1
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("gear", (-1, 1))
+    def test_native_layout_launch_outputs_and_reset(mode, share, gear):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        world, vehicle = _create_vehicle(config)
+        try:
+            for _ in range(180):
+>               _step(world, vehicle, VehicleCommand(throttle=.7, direction=gear, gear=gear, steering=3.))
+
+tests\test_drive_layout.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\physics\reference_ab.py:63: in _step
+    vehicle.apply_command(command)
+src\vehicle.py:203: in apply_command
+    self.powertrain.prepare(speed, self.tires.driven_omega(
+src\vehicle_tires.py:40: in driven_omega
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = <enumerate object at 0x000002A94E522D90>
+
+    return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+>       orientation.getRight(), orientation.getForward(), angles[i])))
+                                                          ^^^^^^^^^
+        for i, weight in enumerate(self.config.drive_weights))
+E   IndexError: tuple index out of range
+
+src\vehicle_tires.py:41: IndexError
+=========================== short test summary info ===========================
+FAILED tests/test_drive_layout.py::test_native_layout_launch_outputs_and_reset[-1-0.0-DrivingMode.GAME]
+FAILED tests/test_drive_layout.py::test_native_layout_launch_outputs_and_reset[-1-0.0-DrivingMode.SIMULATION]
+FAILED tests/test_drive_layout.py::test_native_layout_launch_outputs_and_reset[-1-0.5-DrivingMode.GAME]
+FAILED tests/test_drive_layout.py::test_native_layout_launch_outputs_and_reset[-1-0.5-DrivingMode.SIMULATION]
+FAILED tests/test_drive_layout.py::test_native_layout_launch_outputs_and_reset[-1-1.0-DrivingMode.GAME]
+FAILED tests/test_drive_layout.py::test_native_layout_launch_outputs_and_reset[-1-1.0-DrivingMode.SIMULATION]
+FAILED tests/test_drive_layout.py::test_native_layout_launch_outputs_and_reset[1-0.0-DrivingMode.GAME]
+FAILED tests/test_drive_layout.py::test_native_layout_launch_outputs_and_reset[1-0.0-DrivingMode.SIMULATION]
+FAILED tests/test_drive_layout.py::test_native_layout_launch_outputs_and_reset[1-0.5-DrivingMode.GAME]
+FAILED tests/test_drive_layout.py::test_native_layout_launch_outputs_and_reset[1-0.5-DrivingMode.SIMULATION]
+FAILED tests/test_drive_layout.py::test_native_layout_launch_outputs_and_reset[1-1.0-DrivingMode.GAME]
+FAILED tests/test_drive_layout.py::test_native_layout_launch_outputs_and_reset[1-1.0-DrivingMode.SIMULATION]
+12 failed, 348 passed in 3.38s

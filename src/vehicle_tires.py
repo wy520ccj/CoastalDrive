@@ -32,9 +32,14 @@ class Tires:
         """仅用于试验初始条件；运行中轮速始终由转矩方程积分。"""
         self.omega = [speed / self.config.wheel_radius] * 4
 
-    def driven_omega(self, chassis):
-        axle = chassis.getTransform().getQuat().getRight()
-        return (self.omega[2] + self.omega[3]) / 2 + chassis.getAngularVelocity().dot(axle)
+    def driven_omega(self, chassis, angles=(0., 0.)):
+        orientation = chassis.getTransform().getQuat()
+        if self.config.front_drive_share == 0:
+            return (self.omega[2] + self.omega[3]) / 2 + chassis.getAngularVelocity().dot(orientation.getRight())
+        angular = tuple(chassis.getAngularVelocity())
+        return sum(weight * (self.omega[i] + dot(angular, mechanical_axis(
+            orientation.getRight(), orientation.getForward(), angles[i] if i < 2 else 0.)))
+            for i, weight in enumerate(self.config.drive_weights))
 
     def advance(self, chassis, contacts, angles, drive, engine_drag, pressures, tick, dt,
                 external_velocity=(0.0, 0.0, 0.0), external_angular=(0.0, 0.0, 0.0), *, powertrain=None):
@@ -175,7 +180,7 @@ class Tires:
                         force_initial=force_initial)
                     steps = result.wheels
                     force_initial = tuple((step.fx, step.fy, step.brake_torque) for step in steps)
-                    drives = (0., 0., result.drive_torque / 2, result.drive_torque / 2)
+                    drives = tuple(result.drive_torque * weight if weight else 0. for weight in config.drive_weights)
                     end_angular = result.angular
                     powertrain.accept_step(result, sub_dt)
                     chassis.applyTorqueImpulse(Vec3(*result.engine_body_torque) * sub_dt)
