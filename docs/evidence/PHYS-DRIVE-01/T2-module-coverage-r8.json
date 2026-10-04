@@ -1,0 +1,15 @@
+{
+  "scope": "collection and live-run observation only; no terminal pass claim",
+  "r7_node_count": 1561,
+  "r8_node_count": 1562,
+  "added_nodes": [
+    "tests/test_impact_events.py::test_five_second_rail_scrape_stays_contact_without_repeated_impacts[False]",
+    "tests/test_impact_events.py::test_five_second_rail_scrape_stays_contact_without_repeated_impacts[True]"
+  ],
+  "removed_nodes": [
+    "tests/test_impact_events.py::test_five_second_rail_scrape_stays_contact_without_repeated_impacts"
+  ],
+  "source_matches_frozen_r8": true,
+  "source_count": 280,
+  "recorded_utc": "2026-10-04T15:08:00.036839+00:00"
+}

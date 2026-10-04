@@ -1,0 +1,45 @@
+[
+  {
+    "type": "decision",
+    "event_id": "8:76:0",
+    "tick": 76,
+    "sources": [
+      1
+    ],
+    "material": "metal_barrier",
+    "raw_impulse": 578.4407958984375,
+    "excess_impulse": 578.4407958984375,
+    "normal": 1.218037724494934,
+    "tangential": 15.107582092285156,
+    "severity": 0.1088,
+    "zone": "right",
+    "layers": [
+      [
+        "transient",
+        "transient_metal_1"
+      ],
+      [
+        "body",
+        "body_light_2"
+      ]
+    ],
+    "layer_mix": [
+      {
+        "layer": "transient",
+        "variant": "transient_metal_1",
+        "gain": 0.1721,
+        "pitch": 1.0078
+      },
+      {
+        "layer": "body",
+        "variant": "body_light_2",
+        "gain": 0.5478,
+        "pitch": 0.9856
+      }
+    ],
+    "voices": 2,
+    "scrape": "off",
+    "duck": 1.0,
+    "play_monotonic_ns": 45553006611600
+  }
+]

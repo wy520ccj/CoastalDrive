@@ -1,0 +1,23 @@
+--- a/src/tire_drivetrain.py
++++ b/src/tire_drivetrain.py
+@@ -80,8 +80,18 @@
+                             (dot(clutch_gradient, responses[i][2]), dot(gear_gradient, responses[i][2]),
+                              dot(brake_gradients[i], responses[i][2]))) for i in range(4))
+     # 空挡没有已建模的输入轴惯量，因而离合无负载，不锁到虚构的静止轴。
+-    plans = (tuple(clutch_brake_plans(local_response[i], capacity, brakes[i], efficiency) for i in range(4))
+-             if ratio else ((),) * 4)
++    if ratio:
++        plans_by_response = {}
++        wheel_plans = []
++        for response, brake in zip(local_response, brakes):
++            key = response, brake
++            # 同一子步内相同端口共用不可变候选；各轮暖模式仍分别保存。
++            if key not in plans_by_response:
++                plans_by_response[key] = clutch_brake_plans(response, capacity, brake, efficiency)
++            wheel_plans.append(plans_by_response[key])
++        plans = tuple(wheel_plans)
++    else:
++        plans = ((),) * 4
+     warm_modes = [None] * 4
+     forces = list(force_initial)
+     modes = [None] * 4

@@ -1,9 +1,9 @@
 # PHYS-DRIVE-01 真实曲轴、有限离合与后驱开放差速
 
-- 状态：in_progress。r5完整T1-r5a全部7项通过：1377项pytest、三种子启动、双种子十二车/30s弯坡。当前r7相关T0完整671项通过（78.94s）、16条原生完成；完整T2-r7已失败终止：439项pytest通过、1项护栏连续刮擦失败（330拍＜600拍）；后续14项检查未跑。280源前后一致，原始日志已归档。r8观察窗口7→12s，原600拍真实连续接触/1撞击保持、旧/有限两分支覆盖；相关22项T0通过。完整T2-r8已失败结束：450通过/1音频集成失败，pytest2416.45s；其余14检查未跑，280源前后一致。失败为护栏工况预期1次有声撞击、实际0次。
-- 上游基线：ROT自动验收提交`2b7f908df29176ce99ccb1fb0d848ce318474b02`；端口子块`7745282cc00ba1d58da2a997597a999882e68363`。验证时HEAD `771ddd0f059fc67719e6217a610162b7ab3e1748`；整车联合实现已本地提交开发检查点`87712e364b2c2c929155f0058d92ffdc540b77d8`，已按用户授权正常推送、远端最后`ac23809b5636c01cbd7fa00202f59b0e57be4ac5`已核对。该提交保留T2失败，不能记为自动验收完成；当前r8测试/证据按用户本轮授权提交推送；实际提交号由Git历史及本地发布回执核对。
+- 状态：in_progress。r5完整T1-r5a全部7项通过：1377项pytest、三种子启动、双种子十二车/30s弯坡。当前r7相关T0完整671项通过（78.94s）、16条原生完成；完整T2-r7已失败终止：439项pytest通过、1项护栏连续刮擦失败（330拍＜600拍）；后续14项检查未跑。280源前后一致，原始日志已归档。
+- 上游基线：ROT自动验收提交`2b7f908df29176ce99ccb1fb0d848ce318474b02`；端口子块`7745282cc00ba1d58da2a997597a999882e68363`。验证时HEAD `771ddd0f059fc67719e6217a610162b7ab3e1748`；整车联合实现已本地提交开发检查点`87712e364b2c2c929155f0058d92ffdc540b77d8`，用户授权本轮结束后推送。该提交保留T2失败，不能记为自动验收完成。
 - 用户完整要求与剩余项：[物理目标核对](../physics-goal-audit.md)。本任务只完成当前后驱传动闭环，FWD/AWD、限滑/轴惯量、悬架、估计器、实车型与总Gate仍须继续。
-- 当前源：280份Python文件冻结于[candidate-validation-r8-source.zip](../evidence/PHYS-DRIVE-01/candidate-validation-r8-source.zip)，SHA-256 `2f550a65b34be5c1e9470bc4a1869fa4eed45a972c9b3cec16c2097dc1d2ee48`，清单validation-r8-source-before.json。与r7仅刮擦测试不同，生产物理完全相同；T2-r8运行期间src/tests/tools未改，终态已归档并解除冻结。r5/r6/r7源ZIP与原日志各自保留。
+- 当前源：280份Python文件冻结于[candidate-validation-r7-source.zip](../evidence/PHYS-DRIVE-01/candidate-validation-r7-source.zip)，SHA-256 `19169bd9502cdda8d5c9ec90fe5270fe66a1dfa7249b35447223d702e02f8bc4`，清单validation-r7-source-before.json。该版本运行前后280源SHA一致；r5/r6/r7源ZIP与原日志各自保留，后续实质修复使用新版本验证。
 
 ## 行为与职责
 
@@ -20,7 +20,6 @@
 
 | 项目 | 已确认事实与边界 | 原始入口 |
 |---|---|---|
-| 当前刮擦T0-r8 | Ruff及22项完整通过（pytest20.34s）；12s真实固定输入包含930拍连续接触/1撞击，未降低600拍要求。首次命令只选到声音9项，独立保留；源码在T0后取样 | [当前工况与证据](../evidence/PHYS-DRIVE-01/rail-regression-r8.md)；validation-T0-rail-r8 |
 | 当前相关T0-r7 | Ruff及671项pytest完整通过，78.94s；覆盖发动机能力/换挡、原生TCS/研究请求、端口与联合守恒。8项自动挡保持/空挡待挂挡反例初测全失败，修复后完整通过；T0源码清单在执行后取样，不宣称前后哈希 | validation-T0-r7；validation-T0-auto-tcs-initial；[当前控制边界](../evidence/PHYS-DRIVE-01/automatic-gear-tcs-r7.md) |
 | 发动机/原玩家集成T0-r4c | 当时141项完整通过，1086.69s；r5手动/r7自动TCS扩展各有独立反例和回归，旧结果保留原版本 | [能力与怠速](../evidence/PHYS-DRIVE-01/engine-control-boundaries-r4.md) |
 | 当前标准两模式A/B（r7） | 44条完整完成、280源与r7冻结版一致；31724行全部字段与r4核对，仅两模式滑行扰动/倒车的TCS wheel_slips观测改变，其余字段精确相同。开放差速等矩、力残差0.000999784N、最小热−1.22e−13J仍在原门槛内 | ab-mode-control-r7；[全部字段对照](../evidence/PHYS-DRIVE-01/current-standard-r7-comparison.json)，旧r4源结果独立保留 |
@@ -33,22 +32,14 @@
 
 ## 完整验证与收口
 
-旧T2-r7命令：`.venv/Scripts/python.exe tools/validate.py T2 --output logs/validation/PHYS-DRIVE-01-T2-r7 --timeout 9000`。进程已退出；进程局部PYTEST_ADDOPTS=-x在真实失败时终止，本次439项通过、1项失败，pytest耗时2438.27s，Ruff通过，其余14项检查未跑。stdout/stderr与协议在T2-r7-*。T2同版包含全部T1模块、三种子启动、更长弯坡与功能组专项，记录为真实T2，不另重复同版长T1或改名r5a结果。
+当前T2命令：`.venv/Scripts/python.exe tools/validate.py T2 --output logs/validation/PHYS-DRIVE-01-T2-r7 --timeout 9000`。进程已退出；进程局部PYTEST_ADDOPTS=-x在真实失败时终止，本次439项通过、1项失败，pytest耗时2438.27s，Ruff通过，其余14项检查未跑。stdout/stderr与协议在T2-r7-*。T2同版包含全部T1模块、三种子启动、更长弯坡与功能组专项，记录为真实T2，不另重复同版长T1或改名r5a结果。
 
-旧T2-r7终态已核对280源SHA相同，原始日志与[失败回执](../evidence/PHYS-DRIVE-01/validation-T2-r7/receipt.json)已归档。失败为护栏连续刮擦最长330拍、要求600拍，当前原生复现和明确观察窗口调整见[r8工况证据](../evidence/PHYS-DRIVE-01/rail-regression-r8.md)。失败先复现、保留原门槛；必要修复按新版本重新完整验证。当前原生与T0只证明对应范围，不代表完整T2/阶段通过。
+完整T2终态已核对280源SHA相同，原始日志与[失败回执](../evidence/PHYS-DRIVE-01/validation-T2-r7/receipt.json)已归档。失败为护栏连续刮擦最长330拍、要求600拍，根因尚待独立复现。失败先复现、保留原门槛；必要修复按新版本重新完整验证。当前原生与T0只证明对应范围，不代表完整T2/阶段通过。
 
-当前新T2-r8：`.venv/Scripts/python.exe tools/validate.py T2 --output logs/validation/PHYS-DRIVE-01-T2-r8 --timeout 9000`，隐藏PID676，进程局部PYTEST_ADDOPTS=-x。完整T2-r8已失败结束：450通过/1音频集成失败，pytest2416.45s；其余14检查未跑，280源前后一致。失败为护栏工况预期1次有声撞击、实际0次。原始日志及receipt已归档；不拼接r7/r8结果。
-
-必要修复后按实际新版本完整验证，独立runner不拼接通过。本轮开发检查点提交后按[下一布局范围](../evidence/PHYS-DRIVE-01/next-layout-scope.md)建立下一任务。实际前台性能、T3和用户两模式驾驶结论仍独立待验。
-
-## 冻结期间的后续准备
-
-[320组布局机械端口台架](../evidence/PHYS-DRIVE-01/layout-mechanical-preflight.json)核对FWD/RWD/开放中差AWD的虚功、角动量和功热；240个缺前轴壳体反力负对照检出。尚未接入生产轮胎/TCS。
-
-[悬架SI映射](../evidence/PHYS-DRIVE-01/suspension-si-preflight.md)完成两模式/两质量/两配置方案8条4800拍原生，最大力公式残差.001142N、静载符合原1%门槛，280源前后与r8相同。揭示当前归一化参数保持时硬件随质量同步变化，后续实物SI配置须反向换算；SI配置、防倾及动态专项尚未实施。
+必要修复后按实际新版本完整验证，独立runner不拼接通过。T2/本地提交后再按[下一布局范围](../evidence/PHYS-DRIVE-01/next-layout-scope.md)建立下一任务。实际前台性能、T3和用户两模式驾驶结论仍独立待验。
 
 ## 失败与中断档案
 
 r1/r2完整T1见集成失败后主动中断；r3因独立发动机主动能力反例中断，r4因手动挡TCS反例中断。r5 exec10078/实际进程消失，raw summary停在running、45个通过标记，无终态数量，原因未确认；当前r5a以相同冻结源完整新跑，不拼接。各轮interruption.json、原日志/配置/源ZIP及初始失败均在[证据目录](../evidence/PHYS-DRIVE-01/README.md)。
 
-旧施工与各轮当时状态完整保留于[早期任务历史](../evidence/PHYS-DRIVE-01/task-history-before-r5a.md)、[r7前任务历史](../evidence/PHYS-DRIVE-01/task-history-before-r7.md)与[r8前任务历史](../evidence/PHYS-DRIVE-01/task-history-before-r8.md)；当前事实以本页及当前实际源码/进程/终态报告为准。
+旧施工与各轮当时状态完整保留于[早期任务历史](../evidence/PHYS-DRIVE-01/task-history-before-r5a.md)与[r7前任务历史](../evidence/PHYS-DRIVE-01/task-history-before-r7.md)；当前事实以本页及当前实际源码/进程/终态报告为准。

@@ -1,0 +1,14 @@
+{
+  "scope": "r8 test fixture observation window only; production source unchanged",
+  "source_count": 280,
+  "changed_from_r7": [
+    "tests/test_impact_events.py"
+  ],
+  "source_zip_sha256": "2f550a65b34be5c1e9470bc4a1869fa4eed45a972c9b3cec16c2097dc1d2ee48",
+  "r7_expected_min_consecutive_ticks": 600,
+  "r8_expected_min_consecutive_ticks": 600,
+  "r7_observation_ticks": 840,
+  "r8_observation_ticks": 1440,
+  "fixture_inputs_unchanged": true,
+  "added_legacy_finite_parametrization": true
+}

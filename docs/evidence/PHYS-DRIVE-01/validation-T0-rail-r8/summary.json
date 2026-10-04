@@ -1,0 +1,53 @@
+{
+  "started_utc": "2026-10-04T14:38:40.696686+00:00",
+  "git_head": "ac23809b5636c01cbd7fa00202f59b0e57be4ac5",
+  "git_status": "M tests/test_impact_events.py\n?? docs/evidence/PHYS-DRIVE-01/rail-drive-audit-r7.json\n?? docs/evidence/PHYS-DRIVE-01/rail-drive-audit-r7.py\n?? docs/evidence/PHYS-DRIVE-01/rail-drive-r7-finite-False-throttle-1.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-drive-r7-finite-True-throttle-1.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-duration-audit-r7.json\n?? docs/evidence/PHYS-DRIVE-01/rail-duration-audit-r7.py\n?? docs/evidence/PHYS-DRIVE-01/rail-duration-r7-finite-True.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-fixture-audit-r7.json\n?? docs/evidence/PHYS-DRIVE-01/rail-fixture-audit-r7.py\n?? docs/evidence/PHYS-DRIVE-01/rail-fixture-r7-finite-False-angle-3.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-fixture-r7-finite-False-angle-4.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-fixture-r7-finite-True-angle-3.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-fixture-r7-finite-True-angle-4.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-margin-audit-r7.json\n?? docs/evidence/PHYS-DRIVE-01/rail-margin-audit-r7.py\n?? docs/evidence/PHYS-DRIVE-01/rail-scrape-diagnosis-r7.json\n?? docs/evidence/PHYS-DRIVE-01/rail-scrape-diagnosis-r7.py\n?? docs/evidence/PHYS-DRIVE-01/rail-scrape-manifold-r7.json\n?? docs/evidence/PHYS-DRIVE-01/rail-scrape-manifold-r7.py\n?? docs/evidence/PHYS-DRIVE-01/rail-scrape-r7-finite-False.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-scrape-r7-finite-True.jsonl.gz",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_impact_events.py",
+    "tests/test_soundscape.py"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DRIVE-01-T0-rail-r8-complete\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.106
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_impact_events.py",
+        "tests/test_soundscape.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DRIVE-01-T0-rail-r8-complete\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 20.717
+    }
+  ]
+}

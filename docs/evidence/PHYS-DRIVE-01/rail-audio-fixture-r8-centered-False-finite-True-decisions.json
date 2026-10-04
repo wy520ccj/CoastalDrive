@@ -1,0 +1,129 @@
+[
+  {
+    "type": "decision",
+    "event_id": "2:1:0",
+    "tick": 1,
+    "sources": [
+      1
+    ],
+    "material": "metal_barrier",
+    "raw_impulse": 3179.7484016418457,
+    "excess_impulse": 3179.7484016418457,
+    "normal": 1.0,
+    "tangential": 8.0,
+    "severity": 0.442,
+    "zone": "right",
+    "layers": [
+      [
+        "transient",
+        "transient_metal_1"
+      ],
+      [
+        "body",
+        "body_light_2"
+      ],
+      [
+        "crunch",
+        "crunch_3"
+      ]
+    ],
+    "layer_mix": [
+      {
+        "layer": "transient",
+        "variant": "transient_metal_1",
+        "gain": 0.2417,
+        "pitch": 1.0078
+      },
+      {
+        "layer": "body",
+        "variant": "body_light_2",
+        "gain": 0.7064,
+        "pitch": 0.9856
+      },
+      {
+        "layer": "crunch",
+        "variant": "crunch_3",
+        "gain": 0.004,
+        "pitch": 1.002
+      }
+    ],
+    "voices": 3,
+    "scrape": "off",
+    "duck": 1.0,
+    "play_monotonic_ns": 45696135853400
+  },
+  {
+    "type": "decision",
+    "event_id": "2:77:0",
+    "tick": 77,
+    "sources": [
+      1
+    ],
+    "material": "metal_barrier",
+    "raw_impulse": 268.1305236816406,
+    "excess_impulse": 268.1305236816406,
+    "normal": 0.7223759293556213,
+    "tangential": 7.527730464935303,
+    "severity": 0.0558,
+    "zone": "right",
+    "layers": [
+      [
+        "transient",
+        "transient_metal_2"
+      ],
+      [
+        "body",
+        "body_light_1"
+      ]
+    ],
+    "layer_mix": [
+      {
+        "layer": "transient",
+        "variant": "transient_metal_2",
+        "gain": 0.1603,
+        "pitch": 1.0041
+      },
+      {
+        "layer": "body",
+        "variant": "body_light_1",
+        "gain": 0.5041,
+        "pitch": 0.9907
+      }
+    ],
+    "voices": 2,
+    "scrape": "off",
+    "duck": 1.0,
+    "play_monotonic_ns": 45696788380200
+  },
+  {
+    "type": "scrape",
+    "state": "attack",
+    "tick": 78,
+    "material": "metal_barrier",
+    "variant": "scrape_metal_1"
+  },
+  {
+    "type": "scrape",
+    "state": "sustain",
+    "tick": 78,
+    "material": "metal_barrier",
+    "normal": 0.0,
+    "tangential": 7.768027236877363,
+    "raw_impulse": 52.87480926513672,
+    "volume": 0.0281
+  },
+  {
+    "type": "scrape",
+    "state": "release",
+    "tick": null,
+    "material": null,
+    "normal": null,
+    "tangential": null,
+    "raw_impulse": null,
+    "volume": 0.0121
+  },
+  {
+    "type": "scrape",
+    "state": "off"
+  }
+]

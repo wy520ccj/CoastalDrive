@@ -1,0 +1,7 @@
+RUN ruff
+PASSED ruff (0.1s)
+RUN pytest
+FAILED pytest (2417.3s)
+  process exited 1
+  Log: B:\AI agent\暑期计算机程序设计\CoastalDrive\logs\validation\PHYS-DRIVE-01-T2-r8\pytest.log
+Summary: B:\AI agent\暑期计算机程序设计\CoastalDrive\logs\validation\PHYS-DRIVE-01-T2-r8\summary.json

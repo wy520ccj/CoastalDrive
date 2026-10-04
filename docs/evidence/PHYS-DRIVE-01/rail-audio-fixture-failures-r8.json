@@ -1,0 +1,30 @@
+[
+  {
+    "script": "rail-audio-fixture-r8.py",
+    "status": "failed",
+    "failure": "audible hit count expected 1",
+    "actual_hits": 2,
+    "completed_case": {
+      "centered": false,
+      "speed": 8,
+      "finite": true
+    },
+    "remaining_case": "not_run",
+    "source_manifest": "validation-r8-source-before.json",
+    "terminal_source_check_reached": false
+  },
+  {
+    "script": "rail-audio-fixture-no-overlap-r8.py",
+    "status": "failed",
+    "failure": "audible hit count expected 1",
+    "actual_hits": 0,
+    "completed_case": {
+      "centered": false,
+      "speed": 8,
+      "finite": true
+    },
+    "remaining_case": "not_run",
+    "source_manifest": "validation-r8-source-before.json",
+    "terminal_source_check_reached": false
+  }
+]

@@ -1,0 +1,42 @@
+........................................................................ [  4%]
+........................................................................ [  9%]
+........................................................................ [ 13%]
+........................................................................ [ 18%]
+........................................................................ [ 23%]
+........................................................................ [ 27%]
+..................F
+================================== FAILURES ===================================
+_ test_sustained_real_rail_contact_plays_one_hit_and_one_scrape_loop[False-8] _
+
+centered = False, speed = 8
+
+    @pytest.mark.parametrize("centered,speed", [(False, 8), (True, 16)])
+    def test_sustained_real_rail_contact_plays_one_hit_and_one_scrape_loop(centered, speed):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(CAR, centered_collision_support=centered))
+        sound = Soundscape(FakeBase())
+        log = StringIO()
+        sound.set_impact_diagnostic(log)
+        try:
+            simulation.reset_player((6.9, 30, .55))
+            simulation._chassis.setLinearVelocity(Vec3(.5, speed, 0))
+            simulation.player.tires.initialize_rolling(speed)
+            qualifying_pressure_ticks = []
+            for _ in range(840):
+                simulation.step(VehicleCommand(throttle=.5, steering=2, direction=1))
+                if any(c.material == "metal_barrier" and c.raw_impulse >= 25 and c.tangential_speed >= 1.6
+                       for c in simulation.snapshot().contacts):
+                    qualifying_pressure_ticks.append(simulation.snapshot().tick)
+                sound.update(simulation.snapshot(), phase("driving"), None, 1 / 120)
+            # 启动循环前要求真实压力连续达到原25Ns门槛；两种表示均经过实际受力。
+            assert any(b == a+1 for a, b in pairwise(qualifying_pressure_ticks))
+            rows = [json.loads(line) for line in log.getvalue().splitlines()]
+>           assert sum(bool(row.get("layers")) for row in rows if row["type"] == "decision") == 1
+E           assert 0 == 1
+E            +  where 0 = sum(<generator object test_sustained_real_rail_contact_plays_one_hit_and_one_scrape_loop.<locals>.<genexpr> at 0x000001DCDAEDAC50>)
+
+tests\test_impact_integration.py:96: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_impact_integration.py::test_sustained_real_rail_contact_plays_one_hit_and_one_scrape_loop[False-8]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 450 passed in 2416.45s (0:40:16)

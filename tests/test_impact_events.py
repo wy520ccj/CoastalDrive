@@ -95,8 +95,10 @@ def test_moving_npc_contact_emits_audio_events_without_changing_episode_count():
         simulation.close()
 
 
-def test_five_second_rail_scrape_stays_contact_without_repeated_impacts():
-    simulation = Simulation(track="highway", traffic_count=0)
+@pytest.mark.parametrize("finite", [False, True])
+def test_five_second_rail_scrape_stays_contact_without_repeated_impacts(finite):
+    simulation = Simulation(track="highway", traffic_count=0,
+                            config=replace(CAR, finite_drivetrain=finite))
     try:
         # 新碰撞盒半宽1.05m；旧7.2m摆位会深陷护栏并触发地面撞击。
         simulation.reset_player((6.9, 30, 0.55))
@@ -104,7 +106,8 @@ def test_five_second_rail_scrape_stays_contact_without_repeated_impacts():
         simulation.player.tires.initialize_rolling(8)
         contact_ticks = []
         impacts = []
-        for tick in range(840):
+        # 接近和传动/车身收敛也占时间；随后仍须有完整5秒逐拍真实接触。
+        for tick in range(1440):
             # 固定2°轮角/半油门维持沿栏摩擦；输入辅助包络不是恒定轮角工况。
             simulation.step(VehicleCommand(throttle=.5, steering=2, direction=1))
             if any(contact.material == "metal_barrier"

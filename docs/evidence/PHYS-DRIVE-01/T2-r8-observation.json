@@ -1,0 +1,8 @@
+{
+  "observed_utc": "2026-10-04T14:58:13.220725+00:00",
+  "summary_status": "running",
+  "source_count": 280,
+  "source_matches_frozen_r8": true,
+  "scope": "live observation; progress marks are not terminal pass counts",
+  "pytest_log_bytes": 416
+}

@@ -1,0 +1,19 @@
+[
+  {
+    "type": "scrape",
+    "state": "attack",
+    "tick": 195,
+    "material": "metal_barrier",
+    "variant": "scrape_metal_1"
+  },
+  {
+    "type": "scrape",
+    "state": "sustain",
+    "tick": 195,
+    "material": "metal_barrier",
+    "normal": 0.0,
+    "tangential": 7.55899751470446,
+    "raw_impulse": 36.30848252773285,
+    "volume": 0.0189
+  }
+]

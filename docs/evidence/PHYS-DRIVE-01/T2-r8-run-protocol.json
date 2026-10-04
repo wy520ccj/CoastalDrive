@@ -1,0 +1,21 @@
+{
+  "started_utc": "2026-10-04T14:40:04.775579+00:00",
+  "pid": 676,
+  "command": [
+    "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+    "tools/validate.py",
+    "T2",
+    "--output",
+    "logs/validation/PHYS-DRIVE-01-T2-r8",
+    "--timeout",
+    "9000"
+  ],
+  "process_local_environment": {
+    "PYTEST_ADDOPTS": "-x",
+    "PYTHONUTF8": "1"
+  },
+  "source_manifest": "validation-r8-source-before.json",
+  "source_frozen_until_terminal": true,
+  "success_requires_full_suite_and_all_16_checks": true,
+  "previous_r7_terminal": "failed 439 passed / 1 failed; 14 not run; preserved separately"
+}

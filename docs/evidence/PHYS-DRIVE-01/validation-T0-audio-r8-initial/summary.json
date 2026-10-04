@@ -1,0 +1,51 @@
+{
+  "started_utc": "2026-10-04T15:22:08.337002+00:00",
+  "git_head": "ac23809b5636c01cbd7fa00202f59b0e57be4ac5",
+  "git_status": "M docs/current-progress.md\n M docs/evidence/PHYS-DRIVE-01/README.md\n M docs/evidence/PHYS-DRIVE-01/next-layout-scope.md\n M docs/physics-goal-audit.md\n M docs/tasks/PHYS-DRIVE-01.md\n M tests/test_impact_events.py\n?? docs/evidence/PHYS-DRIVE-01/T2-module-coverage-r8.json\n?? docs/evidence/PHYS-DRIVE-01/T2-r8-collected-nodes.json\n?? docs/evidence/PHYS-DRIVE-01/T2-r8-observation.json\n?? docs/evidence/PHYS-DRIVE-01/T2-r8-pid.txt\n?? docs/evidence/PHYS-DRIVE-01/T2-r8-run-protocol.json\n?? docs/evidence/PHYS-DRIVE-01/candidate-validation-r8-source-receipt.json\n?? docs/evidence/PHYS-DRIVE-01/candidate-validation-r8-source.zip\n?? docs/evidence/PHYS-DRIVE-01/cross-wheel-native-flexible-r8/\n?? docs/evidence/PHYS-DRIVE-01/cross-wheel-native-rigid-r8/\n?? docs/evidence/PHYS-DRIVE-01/cross-wheel-reuse-experiment.py\n?? docs/evidence/PHYS-DRIVE-01/cross-wheel-reuse-native-r8.json\n?? docs/evidence/PHYS-DRIVE-01/cross-wheel-reuse-native-r8.py\n?? docs/evidence/PHYS-DRIVE-01/cross-wheel-reuse-proposed-r8.patch\n?? docs/evidence/PHYS-DRIVE-01/cross-wheel-reuse-tests-r8.json\n?? docs/evidence/PHYS-DRIVE-01/cross-wheel-reuse-tests-r8.junit.xml\n?? docs/evidence/PHYS-DRIVE-01/cross-wheel-reuse-tests-r8.py\n?? docs/evidence/PHYS-DRIVE-01/layout-mechanical-preflight.json\n?? docs/evidence/PHYS-DRIVE-01/layout-mechanical-preflight.py\n?? docs/evidence/PHYS-DRIVE-01/rail-drive-audit-r7.json\n?? docs/evidence/PHYS-DRIVE-01/rail-drive-audit-r7.py\n?? docs/evidence/PHYS-DRIVE-01/rail-drive-r7-finite-False-throttle-1.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-drive-r7-finite-True-throttle-1.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-duration-audit-r7.json\n?? docs/evidence/PHYS-DRIVE-01/rail-duration-audit-r7.py\n?? docs/evidence/PHYS-DRIVE-01/rail-duration-r7-finite-True.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-fixture-audit-r7.json\n?? docs/evidence/PHYS-DRIVE-01/rail-fixture-audit-r7.py\n?? docs/evidence/PHYS-DRIVE-01/rail-fixture-r7-finite-False-angle-3.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-fixture-r7-finite-False-angle-4.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-fixture-r7-finite-True-angle-3.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-fixture-r7-finite-True-angle-4.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-margin-audit-r7.json\n?? docs/evidence/PHYS-DRIVE-01/rail-margin-audit-r7.py\n?? docs/evidence/PHYS-DRIVE-01/rail-regression-r8.md\n?? docs/evidence/PHYS-DRIVE-01/rail-scrape-diagnosis-r7.json\n?? docs/evidence/PHYS-DRIVE-01/rail-scrape-diagnosis-r7.py\n?? docs/evidence/PHYS-DRIVE-01/rail-scrape-manifold-r7.json\n?? docs/evidence/PHYS-DRIVE-01/rail-scrape-manifold-r7.py\n?? docs/evidence/PHYS-DRIVE-01/rail-scrape-r7-finite-False.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/rail-scrape-r7-finite-True.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/suspension-si-game-1200-fixed-si.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/suspension-si-game-1200-normalized.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/suspension-si-game-1800-fixed-si.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/suspension-si-game-1800-normalized.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/suspension-si-preflight.json\n?? docs/evidence/PHYS-DRIVE-01/suspension-si-preflight.md\n?? docs/evidence/PHYS-DRIVE-01/suspension-si-preflight.py\n?? docs/evidence/PHYS-DRIVE-01/suspension-si-simulation-1200-fixed-si.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/suspension-si-simulation-1200-normalized.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/suspension-si-simulation-1800-fixed-si.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/suspension-si-simulation-1800-normalized.jsonl.gz\n?? docs/evidence/PHYS-DRIVE-01/task-history-before-r8.md\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-rail-r8-sound-only/\n?? docs/evidence/PHYS-DRIVE-01/validation-T0-rail-r8/\n?? docs/evidence/PHYS-DRIVE-01/validation-T2-r8/\n?? docs/evidence/PHYS-DRIVE-01/validation-r8-source-before.json",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_impact_integration.py::test_sustained_real_rail_contact_plays_one_hit_and_one_scrape_loop"
+  ],
+  "tier": "T0",
+  "status": "failed",
+  "passed": false,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DRIVE-01-T0-audio-r8-initial\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.13
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_impact_integration.py::test_sustained_real_rail_contact_plays_one_hit_and_one_scrape_loop"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DRIVE-01-T0-audio-r8-initial\\pytest.log",
+      "status": "failed",
+      "returncode": 1,
+      "error": "process exited 1",
+      "seconds": 15.912
+    }
+  ]
+}
