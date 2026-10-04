@@ -38,6 +38,7 @@ def run_trial(config, case, duration, output):
         speed = 80 / 3.6 if case == "steering-step" else 12. if case == "engine-braking" else 0.
         car._chassis.setLinearVelocity(Vec3(0., speed, 0.))
         car.tires.initialize_rolling(speed)
+        car.powertrain.initialize_rolling(speed)
         previous_support = tuple(w.sample_support for w in car.snapshot().wheel_dynamics)
         maximum = 0.
         for tick in range(round(duration / FIXED_DT)):

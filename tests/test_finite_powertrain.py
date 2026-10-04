@@ -184,7 +184,13 @@ def test_automatic_shift_from_neutral_waits_for_actual_gear_before_tcs(mode, dir
             assert not state.traction_state.active
             assert state.traction_state.torque_scale == 1.
             assert state.traction_state.brake_requests == (0.,) * 4
-            assert state.powertrain_state.drive_torque == 0.
+            train = state.powertrain_state
+            assert train.clutch_capacity == train.clutch_torque == 0.
+            if train.gear == 0:
+                pending_ratio = vehicle.powertrain.gear_ratio(train.pending_gear)
+                assert train.drive_torque == pytest.approx(pending_ratio * train.synchronizer_torque, abs=1e-9)
+            else:
+                assert train.drive_torque == pytest.approx(train.ratio * (train.gear_reaction - train.gear_loss_torque), abs=1e-9)
             if state.gear != 0:
                 break
         assert state.gear == direction
@@ -194,7 +200,8 @@ def test_automatic_shift_from_neutral_waits_for_actual_gear_before_tcs(mode, dir
 
 @pytest.mark.parametrize("next_gear", (-1, 0, 2, 4))
 def test_shifting_releases_to_zero_before_ratio_change_without_resetting_engine(next_gear):
-    train = Powertrain(CAR)
+    # 冻结八维控制器只推进执行器；实体轴同步另由原生共同积分验证。
+    train = Powertrain(replace(CAR, input_shaft_enabled=False))
     train.clutch_position = 1.
     train.engine_omega, train.relative_omega, train.rpm = 250., 250., 250. * 60 / math.tau
     previous = train.clutch_position
@@ -213,7 +220,8 @@ def test_shifting_releases_to_zero_before_ratio_change_without_resetting_engine(
 
 
 def test_interrupted_forward_reverse_request_uses_latest_direction():
-    train = Powertrain(CAR)
+    # 冻结八维控制器只推进执行器；实体轴同步另由原生共同积分验证。
+    train = Powertrain(replace(CAR, input_shaft_enabled=False))
     train.clutch_position = 1.
     train.prepare(0., 0., .5, -1, False, FIXED_DT)
     assert train.pending_gear == -1 and train.gear == 1

@@ -172,18 +172,25 @@ class Tires:
                 if config.finite_drivetrain:
                     result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
                         wheel_frames, projected, powertrain.engine_torque_request, powertrain.capacity,
-                        powertrain.ratio, capacities, config, self.rear_config, sub_dt,
+                        powertrain.mechanical_ratio, capacities, config, self.rear_config, sub_dt,
                         inverse_inertia=tensor, engine_inertia=config.engine_inertia,
                         engine_axis=tuple(orientation.xform(Vec3(*config.engine_axis))),
                         engine_drag=powertrain.engine_drag_coefficient, efficiency=config.drivetrain_efficiency,
                         steering_torques=torques,
-                        force_initial=force_initial)
+                        force_initial=force_initial,
+                        shaft_omega=powertrain.shaft_omega if powertrain.input_shaft_active else None,
+                        shaft_inertia=config.input_shaft_inertia,
+                        shaft_axis=tuple(orientation.xform(Vec3(*config.input_shaft_axis))),
+                        synchronizing=powertrain.synchronizing,
+                        synchronizer_capacity=config.synchronizer_capacity if powertrain.synchronizing else 0.)
                     steps = result.wheels
                     force_initial = tuple((step.fx, step.fy, step.brake_torque) for step in steps)
                     drives = result.wheel_drive_torques
                     end_angular = result.angular
                     powertrain.accept_step(result, sub_dt)
                     chassis.applyTorqueImpulse(Vec3(*result.engine_body_torque) * sub_dt)
+                    if powertrain.input_shaft_active:
+                        chassis.applyTorqueImpulse(Vec3(*result.shaft_body_torque) * sub_dt)
                 else:
                     steps = advance_coupled(free_velocity, free_angular, self.omega, wheel_frames,
                                             projected, drives, capacities, config, self.rear_config, sub_dt,

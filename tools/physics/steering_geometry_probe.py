@@ -89,6 +89,8 @@ def _run_case(case, radius, sign, output_dir):
         vehicle._chassis.setLinearVelocity(Vec3(*testbed.forward(0)) * INITIAL_SPEED_MPS)
         if testbed._tire_modules:
             vehicle.tires.initialize_rolling(INITIAL_SPEED_MPS)
+            if "input_shaft_enabled" in asdict(vehicle.config):
+                vehicle.powertrain.initialize_rolling(INITIAL_SPEED_MPS)
         csv_path = output_dir / f"{case}.csv"
         fieldnames = [
             "time_s",
@@ -271,7 +273,7 @@ def run(output, source_dir=None, label=None):
             "summary_window_s": [WINDOW_START_S, WINDOW_END_S],
         },
         "rolling_initialization": (
-            "after setting chassis initial velocity, call vehicle.tires.initialize_rolling(speed) once; no runtime realignment"
+            "set initial velocity and tire rolling once; initialize real input shaft if defined by source config; no runtime realignment"
             if testbed._tire_modules
             else "legacy layout has no separate wheel spin state; no explicit rolling initialization"
         ),

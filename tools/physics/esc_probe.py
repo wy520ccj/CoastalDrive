@@ -128,6 +128,7 @@ def run_trial(case, enabled, duration=6.0, mode="simulation", vehicle_config=Non
         speed = initial_speed(case)
         vehicle._chassis.setLinearVelocity(Vec3(0, speed, 0))
         vehicle.tires.initialize_rolling(speed)
+        vehicle.powertrain.initialize_rolling(speed)
         if case == "coast-disturbance":
             vehicle._chassis.setAngularVelocity(Vec3(0, 0, .5))
         state = vehicle.snapshot()

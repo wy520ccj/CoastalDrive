@@ -11,11 +11,13 @@ from differential import (
 )
 from rotor_dynamics import bearing_torques, cross
 from shaft_transmission import (
+    brake_increment,
     shaft_brake_plans,
     shaft_brake_response,
     shaft_brake_state,
     shaft_gradients,
     synchronizer_brake_plans,
+    synchronizer_brake_response,
     synchronizer_brake_state,
 )
 from tire_compliance import contact_force, contact_jacobian, energy_terms
@@ -152,6 +154,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     warm_modes = [[None] * 4 for _ in branches]
     warm_branches = [0] * 4
     shared_branch = 0
+    shared_port_index = None
 
     def branch_free(free, branch):
         if not limited:
@@ -190,7 +193,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         return free, end_velocity
 
     def shared(guess):
-        nonlocal shared_branch
+        nonlocal shared_branch, shared_port_index
         state = guess
         for _ in range(30):
             free, end_velocity = known(cross(spin(state), state[:3]))
@@ -222,6 +225,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                             + (gear_reaction * mg[a] if shaft else 0.)) for a in range(dimensions))
                 if differential_torques(end, branch, differential, damping, limits) is not None:
                     shared_branch = branch_index
+                    if shaft:
+                        shared_port_index = _index
                     break
             else:
                 raise ArithmeticError("限滑/离合共同末状态无可行分区")
@@ -320,10 +325,9 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                             tuple(dot(g, response) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[i])),
                             local_response[i], plans[i][index])
                     else:
-                        active, columns = plans[i][index]
-                        rhs = tuple(dot(g, response) if mode == 0 else 0.
-                                    for g, mode in zip((clutch_gradient, shaft_gear_gradient, brake_gradients[i]), active))
-                        dc, dg, db = tuple(sum(columns[j][a] * rhs[j] for j in range(3)) for a in range(3))
+                        dc, dg, db = synchronizer_brake_response(
+                            tuple(dot(g, response) for g in (clutch_gradient, shaft_gear_gradient, brake_gradients[i])),
+                            plans[i][index])
                         dl = 0.
                 elif ratio:
                     active, _sign, columns = plans[i][index]
@@ -377,6 +381,94 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         _end, _velocity, brake, _index = local_state(fx, fy)
         return (fx, fy, brake), mode
 
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+                dc, dg, dl, _db = shaft_brake_response(
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+            else:
+                dc, dg, _db = synchronizer_brake_response(
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, brake_gradients[0])),
+                    shared_plans[shared_port_index])
+                dl = 0.
+            corrections.append(tuple(rb[a] - dc * mc[a] - dg * mg[a] - dl * ml[a] for a in range(dimensions)))
+        matrix = tuple(tuple(dot(g, response) for response in corrections) for g in brake_gradients)
+        delta = brake_increment(matrix, tuple(dot(g, state) for g in brake_gradients),
+                                tuple(f[2] for f in forces), brakes, dt,
+                                tuple(dot(brake_gradients[i], responses[i][2]) for i in range(4)))
+        for i, value in enumerate(delta):
+            fx, fy, brake = forces[i]
+            forces[i] = fx, fy, brake + value
+
+    def correct_contacts(guess):
+        """强耦合时联合修正八个接触力；仍解同一末状态，不改力/制动门槛。"""
+        original = tuple(forces)
+        values = tuple(value for force in forces for value in force[:2])
+
+        def residual(values):
+            for i in range(4):
+                forces[i] = values[2 * i], values[2 * i + 1], original[i][2]
+            state, end_velocity, _clutch, _loss, _gear = shared(guess)
+            correct_brakes(state)
+            state, end_velocity, _clutch, _loss, _gear = shared(state)
+            errors = []
+            for i in range(4):
+                fx, fy, _brake = forces[i]
+                if modes[i] == "sticking":
+                    _vx, _vy, slip = velocities(i, state, end_velocity)
+                    errors.extend((-slip[0] / (dt * (1 / mass + dot(longitudinal[i], responses[i][0]))),
+                                   -slip[1] / (dt * (1 / mass + dot(lateral[i], responses[i][1])))))
+                else:
+                    target, _details = contact(i, state, end_velocity, fx, fy)
+                    errors.extend((fx - target[0], fy - target[1]))
+            return tuple(errors)
+
+        errors = residual(values)
+        columns = []
+        for j in range(8):
+            plus, minus = list(values), list(values)
+            plus[j] += .01
+            minus[j] -= .01
+            high, low = residual(plus), residual(minus)
+            columns.append(tuple((high[i] - low[i]) / .02 for i in range(8)))
+        rows = [[columns[j][i] for j in range(8)] + [-errors[i]] for i in range(8)]
+        # 静摩擦接触可存在相关约束；增量仅解独立行，旧力的零空间分量保持。
+        pivots, row = [], 0
+        rounding = 32 * math.ulp(max(abs(value) for line in rows for value in line[:8]))
+        for column in range(8):
+            pivot = max(range(row, 8), key=lambda i: abs(rows[i][column]))
+            if abs(rows[pivot][column]) <= rounding:
+                continue
+            rows[row], rows[pivot] = rows[pivot], rows[row]
+            scale = rows[row][column]
+            rows[row] = [value / scale for value in rows[row]]
+            for i in range(8):
+                if i != row:
+                    factor = rows[i][column]
+                    rows[i] = [rows[i][j] - factor * rows[row][j] for j in range(9)]
+            pivots.append((row, column))
+            row += 1
+            if row == 8:
+                break
+        delta = [0.] * 8
+        for row, column in pivots:
+            delta[column] = rows[row][8]
+        before = max(math.hypot(*errors[2 * i:2 * i + 2]) for i in range(4))
+        for attempt in range(8):
+            scale = 2.**-attempt
+            candidate = tuple(values[i] + scale * delta[i] for i in range(8))
+            if any(modes[i] == "sticking" and math.hypot(*candidate[2 * i:2 * i + 2])
+                   > tire_grip(frames[i].load, frames[i].mu, configurations[i]) for i in range(4)):
+                continue
+            after = residual(candidate)
+            if max(math.hypot(*after[2 * i:2 * i + 2]) for i in range(4)) < before:
+                return
+        forces[:] = original
+
     state = initial
     for sweep in range(20):
         state, end_velocity, clutch, loss, gear_reaction = shared(state)
@@ -384,7 +476,11 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         for i in (range(4) if sweep % 2 == 0 else range(3, -1, -1)):
             forces[i], modes[i] = solve_wheel(i, gyro)
 
+
         state, end_velocity, clutch, loss, gear_reaction = shared(state)
+        if shaft:
+            correct_brakes(state)
+            state, end_velocity, clutch, loss, gear_reaction = shared(state)
         maximum, brake_error = 0., 0.
         for i in range(4):
             fx, fy, brake = forces[i]
@@ -401,6 +497,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             brake_error = max(brake_error, abs(brake - target_brake))
         if maximum < .001 and brake_error < 1e-9:
             break
+        if shaft and maximum >= .001 and sweep >= 8:
+            correct_contacts(state)
     else:
         raise ArithmeticError(f"传动/四轮共同求解超过20轮：{maximum:g}N，制动{brake_error:g}Nm")
 

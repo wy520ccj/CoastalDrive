@@ -92,6 +92,7 @@ def run_trial(case, config, ticks=None):
         if initial_speed:
             vehicle._chassis.setLinearVelocity(Vec3(0, initial_speed, 0))
             vehicle.tires.initialize_rolling(initial_speed)
+            vehicle.powertrain.initialize_rolling(initial_speed)
 
         initial_position = vehicle._chassis.getTransform().getPos()
         initial_front, initial_rear = _contact_loads(vehicle.snapshot())

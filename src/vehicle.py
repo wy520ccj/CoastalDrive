@@ -122,6 +122,7 @@ class Vehicle:
         self.traction = TractionControl(self.config.traction, self.config.driven_wheels)
         self.stability = StabilityControl(self.config)
         self.tires.initialize_rolling(speed)
+        self.powertrain.initialize_rolling(speed)
         self._drive_pedal = 0.0
         self._brake_pedal = 0.0
         self._acceleration = 0.0

@@ -119,6 +119,7 @@ def _run_trial(case, config_values, output):
         vehicle._chassis.setLinearVelocity(velocity)
         vehicle._chassis.setAngularVelocity(Vec3(0, 0, settings["yaw_rate_rad_s"]))
         vehicle.tires.initialize_rolling(settings["speed_mps"])
+        vehicle.powertrain.initialize_rolling(settings["speed_mps"])
 
         total_ticks = round(settings["duration_s"] / DT)
         stop_tick = None

@@ -176,6 +176,9 @@ def _run_case(case, directory, stride=6, *, config=None, input_config=None, actu
         vehicle._chassis.setLinearVelocity(velocity)
         if _tire_modules:
             vehicle.tires.initialize_rolling(_initial_speed(case))
+            # 历史外部源码仍可能使用无实体轴的配置；其初值协议保持原版。
+            if "input_shaft_enabled" in asdict(vehicle.config):
+                vehicle.powertrain.initialize_rolling(_initial_speed(case))
         duration = _duration(case)
         total_ticks = round(duration / FIXED_DT)
         path_length = 0.0
@@ -297,8 +300,9 @@ def load_vehicle_config(path, selected):
         values["torque_curve"] = tuple(tuple(node) for node in values["torque_curve"])
     if "gear_ratios" in values:
         values["gear_ratios"] = tuple(values["gear_ratios"])
-    if "engine_axis" in values:
-        values["engine_axis"] = tuple(values["engine_axis"])
+    for name in ("engine_axis", "input_shaft_axis"):
+        if name in values:
+            values[name] = tuple(values[name])
     for name in ("differential_damping", "differential_capacity"):
         if name in values:
             values[name] = tuple(values[name])

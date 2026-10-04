@@ -33,6 +33,10 @@ class VehicleConfig:
     differential_capacity: tuple = (0., 0., 0.)  # 对应有限耦合容量，N·m；容量为0关闭端口。
     engine_inertia: float = .02  # 正常游戏起步响应标定的设计惯量，kg·m²；困难参考车取0.2，非实测。
     engine_axis: tuple = (0., 1., 0.)  # 车身局部曲轴正转方向。
+    input_shaft_enabled: bool = True  # false冻结八维传动，仅供同机制旧/新对照。
+    input_shaft_inertia: float = .005  # 游戏输入轴设计惯量kg·m²；参考车取.04，均非实测。
+    input_shaft_axis: tuple = (0., 1., 0.)  # 壳体局部输入轴正转方向。
+    synchronizer_capacity: float = 80.  # 输入轴侧有限同步锥容量N·m，设计值。
     engine_idle_response: float = .15
     engine_idle_torque_limit: float = 65.
     engine_redline_rpm: float = 6500.
@@ -99,6 +103,13 @@ class VehicleConfig:
     suspension_force_limit: float = 6000.0
 
     def __post_init__(self):
+        if not math.isfinite(self.input_shaft_inertia) or self.input_shaft_inertia <= 0:
+            raise ValueError("输入轴惯量须为有限正值")
+        if not math.isfinite(self.synchronizer_capacity) or self.synchronizer_capacity < 0:
+            raise ValueError("同步器容量须为有限非负值")
+        if (len(self.input_shaft_axis) != 3 or any(not math.isfinite(v) for v in self.input_shaft_axis)
+                or abs(sum(v * v for v in self.input_shaft_axis) - 1.) > 1e-12):
+            raise ValueError("输入轴方向须为三维单位向量")
         if not 0 <= self.front_drive_share <= 1:
             raise ValueError("前轴驱动份额须在0到1之间")
         if self.front_drive_share != 0 and not self.finite_drivetrain:

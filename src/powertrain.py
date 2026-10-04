@@ -4,6 +4,7 @@ import math
 from dataclasses import dataclass
 from itertools import pairwise
 
+from transmission_ports import PORT_TOLERANCE
 from vehicle_config import CAR
 
 
@@ -32,6 +33,14 @@ class PowertrainState:
     differential_torques: tuple
     differential_slips: tuple
     differential_heat: tuple
+    shaft_omega: float | None
+    shaft_relative_omega: float | None
+    gear_reaction: float
+    synchronizer_torque: float
+    synchronizer_slip: float
+    synchronizer_heat: float
+    shaft_body_impulse: tuple
+    pending_gear: int
 
 
 def engine_torque(rpm, config=CAR):
@@ -68,6 +77,32 @@ class Powertrain:
         self.pending_gear = 1
         self.engine_torque_request = 0.0
         self.engine_drag_coefficient = 0.0
+        self.shaft_omega = self.shaft_relative_omega = 0.
+        self.gear_reaction = self.synchronizer_torque = self.synchronizer_slip = self.synchronizer_heat = 0.
+        self.shaft_body_impulse = (0., 0., 0.)
+
+    @property
+    def input_shaft_active(self):
+        return self.config.finite_drivetrain and self.config.input_shaft_enabled
+
+    def gear_ratio(self, gear):
+        if gear == 0:
+            return 0.
+        ratio = -self.config.reverse_gear_ratio if gear < 0 else self.config.gear_ratios[gear - 1]
+        return ratio * self.config.final_drive
+
+    @property
+    def mechanical_ratio(self):
+        return self.gear_ratio(self.pending_gear) if self.synchronizing else self.ratio
+
+    @property
+    def synchronizing(self):
+        return self.input_shaft_active and self.shift_phase == "synchronizing"
+
+    def initialize_rolling(self, speed):
+        """仅供初值/reset；运行中轴速只由共同机械积分更新。"""
+        if self.input_shaft_active:
+            self.shaft_omega = self.shaft_relative_omega = self.ratio * speed / self.config.wheel_radius
 
     @property
     def ratio(self):
@@ -88,6 +123,9 @@ class Powertrain:
         axis = chassis.getTransform().getQuat().xform(Vec3(*self.config.engine_axis))
         self.relative_omega = self.engine_omega - chassis.getAngularVelocity().dot(axis)
         self.rpm = self.relative_omega * 60 / math.tau
+        if self.input_shaft_active:
+            shaft_axis = chassis.getTransform().getQuat().xform(Vec3(*self.config.input_shaft_axis))
+            self.shaft_relative_omega = self.shaft_omega - chassis.getAngularVelocity().dot(shaft_axis)
 
     def prepare(self, speed, driven_omega, pedal, direction, braking, dt, *,
                 drive_scale=1., gear=None, clutch=None):
@@ -97,21 +135,28 @@ class Powertrain:
             raise ValueError("挡位请求超出当前变速箱范围")
         self.shift_cooldown = max(0., self.shift_cooldown - dt)
         self.shift_remaining = max(0., self.shift_remaining - dt)
-        requested_gear = self.gear
+        requested_gear = (self.pending_gear if self.input_shaft_active
+                          and self.shift_phase in ("releasing", "synchronizing") else self.gear)
         if gear is not None:
             requested_gear = gear
         elif direction < 0:
             requested_gear = -1
-        elif direction > 0 and (self.gear <= 0 or self.pending_gear <= 0):
+        elif direction > 0 and (requested_gear <= 0 if self.input_shaft_active
+                                else self.gear <= 0 or self.pending_gear <= 0):
             requested_gear = 1
         elif self.gear > 0 and self.shift_phase == "engaged" and self.shift_cooldown == 0:
             if self.rpm > 3000 + 2300 * pedal and abs(self.clutch_slip) < 2. and self.gear < len(config.gear_ratios):
                 requested_gear += 1
             elif self.rpm < 1500 and self.gear > 1:
                 requested_gear -= 1
-        interrupted = self.shift_phase == "releasing" and (
+        interrupted = not self.input_shaft_active and self.shift_phase == "releasing" and (
             gear is not None or direction < 0 or direction > 0 and self.pending_gear <= 0)
-        if requested_gear != self.gear or interrupted:
+        if self.input_shaft_active:
+            if (requested_gear != self.pending_gear
+                    or requested_gear != self.gear and self.shift_phase in ("engaged", "engaging")):
+                self.pending_gear = requested_gear
+                self.shift_phase = "releasing"
+        elif requested_gear != self.gear or interrupted:
             if self.shift_phase != "releasing" or self.pending_gear != requested_gear:
                 self.shift_remaining = config.shift_time
             self.pending_gear = requested_gear
@@ -144,7 +189,7 @@ class Powertrain:
         self.engine_torque_request = torque * drive_scale
         self.engine_drag_coefficient = drag
 
-        if self.shift_phase == "releasing":
+        if self.shift_phase in ("releasing", "synchronizing"):
             target = 0.
         elif clutch is not None:
             target = clutch
@@ -163,7 +208,10 @@ class Powertrain:
             target = 1. if self.ratio * driven_omega > config.idle_rpm * math.tau / 60 else 0.
         rate = 1 / (config.clutch_release_time if target < self.clutch_position else config.clutch_engage_time)
         self.clutch_position += max(-rate * dt, min(rate * dt, target - self.clutch_position))
-        if (self.shift_phase == "releasing" and self.clutch_position == 0
+        if self.input_shaft_active and self.shift_phase == "releasing" and self.clutch_position == 0:
+            self.gear = 0
+            self.shift_phase = "synchronizing" if self.pending_gear else "engaged"
+        elif (not self.input_shaft_active and self.shift_phase == "releasing" and self.clutch_position == 0
                 and self.shift_remaining <= config.clutch_engage_time):
             self.gear = self.pending_gear
             self.shift_phase = "engaging"
@@ -174,6 +222,8 @@ class Powertrain:
         self.clutch_heat = self.gear_heat = self.engine_drag_heat = self.engine_work = 0.
         self.differential_heat = (0., 0., 0.)
         self.engine_body_impulse = (0., 0., 0.)
+        self.synchronizer_heat = 0.
+        self.shaft_body_impulse = (0., 0., 0.)
 
     def accept_step(self, result, dt):
         """接受共同积分结果，热/功按本120Hz步累加，不另推进曲轴。"""
@@ -190,6 +240,17 @@ class Powertrain:
         self.engine_drag_heat += result.engine_drag_heat
         self.engine_work += result.engine_work
         self.engine_body_impulse = tuple(self.engine_body_impulse[a] + dt * result.engine_body_torque[a] for a in range(3))
+        if self.input_shaft_active:
+            self.shaft_omega, self.shaft_relative_omega = result.shaft_omega, result.shaft_relative_omega
+            self.gear_reaction = result.gear_reaction
+            self.synchronizer_torque = result.gear_reaction if self.synchronizing else 0.
+            self.synchronizer_slip = result.synchronizer_slip
+            self.synchronizer_heat += result.synchronizer_heat
+            self.shaft_body_impulse = tuple(self.shaft_body_impulse[a] + dt * result.shaft_body_torque[a] for a in range(3))
+            if self.synchronizing and abs(result.synchronizer_slip) <= PORT_TOLERANCE:
+                self.gear = self.pending_gear
+                self.shift_phase = "engaging"
+                self.shift_cooldown = .8
 
     def snapshot(self):
         return PowertrainState(self.engine_omega, self.relative_omega, self.gear, self.ratio,
@@ -197,7 +258,11 @@ class Powertrain:
             self.clutch_position, self.capacity, self.clutch_torque, self.clutch_slip, self.drive_torque,
             self.gear_loss_torque, self.gear_input_speed, self.engine_body_impulse, self.engine_work,
             self.engine_drag_heat, self.clutch_heat, self.gear_heat,
-            self.differential_torques, self.differential_slips, self.differential_heat)
+            self.differential_torques, self.differential_slips, self.differential_heat,
+            self.shaft_omega if self.input_shaft_active else None,
+            self.shaft_relative_omega if self.input_shaft_active else None,
+            self.gear_reaction, self.synchronizer_torque, self.synchronizer_slip, self.synchronizer_heat,
+            self.shaft_body_impulse, self.pending_gear)
 
     def advance(self, speed, driven_omega, pedal, direction, braking, dt, *, drive_scale=1.0):
         config = self.config

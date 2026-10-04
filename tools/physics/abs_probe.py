@@ -41,6 +41,7 @@ def run_trial(case, enabled, duration=6.0, wheel_brakes=None, *, vehicle_config=
         initial_speed = -30 / 3.6 if case == "reverse" else 100 / 3.6
         vehicle._chassis.setLinearVelocity(Vec3(0, initial_speed, 0))
         vehicle.tires.initialize_rolling(initial_speed)
+        vehicle.powertrain.initialize_rolling(initial_speed)
         start = vehicle.snapshot().position
         command = VehicleCommand(
             steering=2 if case == "steering" else 0, brake=1,

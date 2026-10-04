@@ -103,6 +103,8 @@ def run(speed, output, source_dir=None):
                                        * speed / 3.6)
         if _has_tires:
             sim.player.tires.initialize_rolling(speed / 3.6)
+            if "input_shaft_enabled" in asdict(sim.player.config):
+                sim.player.powertrain.initialize_rolling(speed / 3.6)
         rows = []
         with (output / f"{speed}kmh.jsonl").open("w", encoding="utf-8") as stream:
             for sample in range(360):

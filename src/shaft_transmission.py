@@ -1,5 +1,6 @@
 """实体输入轴的离合、齿轮反力/效率、同步器与单轮制动端口。"""
 
+import math
 from itertools import product
 
 from transmission_ports import PORT_TOLERANCE, _inverse_three, gear_loss_limits
@@ -123,3 +124,44 @@ def synchronizer_brake_state(free, response, dt, capacities, plans, warm=None):
             continue
         return values, speeds, index
     raise ArithmeticError("实体输入轴/离合/同步器/制动共同末状态无可行解")
+
+
+def synchronizer_brake_response(direction, plan):
+    """有限同步活动分区的转矩导数。"""
+    modes, columns = plan
+    rhs = tuple(direction[i] if mode == 0 else 0. for i, mode in enumerate(modes))
+    return tuple(sum(columns[j][i] * rhs[j] for j in range(3)) for i in range(3))
+
+
+def brake_increment(response, speeds, torques, capacities, dt, diagonal):
+    """联合修正四轮制动；饱和行指定容量，锁合行指定末相对速为零。"""
+    rows = []
+    for i in range(4):
+        demand = torques[i] + speeds[i] / (dt * diagonal[i])
+        if abs(demand) < capacities[i]:
+            rows.append(list(response[i]) + [speeds[i] / dt])
+        else:
+            target = max(-capacities[i], min(capacities[i], demand))
+            rows.append([float(i == j) for j in range(4)] + [target - torques[i]])
+    pivots, row = [], 0
+    rounding = 16 * math.ulp(max(abs(value) for line in rows for value in line[:4]))
+    for column in range(4):
+        pivot = max(range(row, 4), key=lambda i: abs(rows[i][column]))
+        if abs(rows[pivot][column]) <= rounding:
+            # 全轮锁合与齿轮静止可能具有相关约束；保留旧转矩的零空间分量。
+            continue
+        rows[row], rows[pivot] = rows[pivot], rows[row]
+        scale = rows[row][column]
+        rows[row] = [value / scale for value in rows[row]]
+        for i in range(4):
+            if i != row:
+                factor = rows[i][column]
+                rows[i] = [rows[i][j] - factor * rows[row][j] for j in range(5)]
+        pivots.append((row, column))
+        row += 1
+        if row == 4:
+            break
+    result = [0.] * 4
+    for row, column in pivots:
+        result[column] = rows[row][4]
+    return tuple(result)
