@@ -1,0 +1,55 @@
+{
+  "scope": "PHYS-DRIVE-02 automatic functional block only; not full T2/T3/foreground/human completion",
+  "baseline": "55279cba133660fad439d6a3c5ac74e19d6c3c97",
+  "implementation_checkpoint": "ebb1111",
+  "standard_traces": 66,
+  "standard_ticks_each": 720,
+  "standard_source_stable": true,
+  "max_force_residual": 0.0009997929564019032,
+  "tcs_pairs_traces": 12,
+  "tcs_ticks_each": 240,
+  "single_wheel_traces": 6,
+  "single_wheel_ticks_each": 300,
+  "T1_pytest_passed": 739,
+  "T1_pytest_seconds": 113.75,
+  "T1_checks": [
+    {
+      "name": "ruff",
+      "status": "passed",
+      "seconds": 0.118
+    },
+    {
+      "name": "pytest",
+      "status": "passed",
+      "seconds": 114.223
+    },
+    {
+      "name": "headless-0",
+      "status": "passed",
+      "seconds": 8.269
+    },
+    {
+      "name": "headless-17",
+      "status": "passed",
+      "seconds": 8.272
+    },
+    {
+      "name": "headless-23",
+      "status": "passed",
+      "seconds": 8.283
+    }
+  ],
+  "source_frozen_across_standard_T1_controls_and_single_wheel": true,
+  "not_completed": [
+    "DRIVE-01 audio fixture regression",
+    "LSD",
+    "shaft inertia",
+    "SI suspension and antiroll",
+    "estimator",
+    "real vehicle calibration",
+    "research protocol",
+    "T2/T3",
+    "foreground performance",
+    "human driving"
+  ]
+}

@@ -31,7 +31,7 @@ AREAS = {
     "road": ["test_endless", "test_highway_segments", "test_highway_curve",
              "test_highway_surface", "test_curve_mesh", "test_curved_boundaries"],
     "gameplay": ["test_race", "test_highway_run", "test_stage4", "test_h3_review", "test_mode_lifecycle",
-                 "test_brake_lifecycle", "test_traction_lifecycle", "test_tire_compliance_lifecycle", "test_rotor_lifecycle"],
+                 "test_brake_lifecycle", "test_traction_lifecycle", "test_drive_layout_lifecycle", "test_tire_compliance_lifecycle", "test_rotor_lifecycle"],
     "appearance": ["test_appearance", "test_driving_mode_ui"],
     "environment": ["test_environment", "test_expressway", "test_expressway_route"],
     "audio": ["test_audio_settings", "test_soundscape", "test_impact_audio",

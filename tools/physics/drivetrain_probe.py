@@ -44,6 +44,7 @@ def main():
     parser.add_argument("--cases", nargs="+", default=["launch", "reverse", "neutral", "release-brake", "manual-shift", "interrupted-shift"])
     parser.add_argument("--modes", nargs="+", default=["game", "simulation"])
     parser.add_argument("--rigid", action="store_true")
+    parser.add_argument("--front-drive-share", type=float, default=0., help="0后驱、1前驱、中间值开放中差")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     hashes = lambda: {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
@@ -52,7 +53,8 @@ def main():
     results = []
     for mode in args.modes:
         selected = DrivingMode(mode)
-        config = replace(selected.vehicle_config, finite_drivetrain=True, tire_compliance=not args.rigid)
+        config = replace(selected.vehicle_config, finite_drivetrain=True, tire_compliance=not args.rigid,
+                         front_drive_share=args.front_drive_share)
         for case in args.cases:
             world, vehicle = _create_vehicle(config)
             records = []
