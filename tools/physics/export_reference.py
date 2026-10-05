@@ -81,9 +81,12 @@ VEHICLE_FIELDS = {
     "static_contact_speed": ("m/s", "低速静摩擦约束尝试尺度"),
     "tire_substeps": ("次/tick", "轮胎车体耦合子步数"),
     "suspension_si_enabled": ("bool", "按SI硬件换算原生参数；false沿用旧归一化硬件"),
+    "suspension_coupled_enabled": ("bool", "SI法向弹簧/轴向阻尼/防倾共同末状态；false原生SI对照"),
+    "suspension_antiroll_rates": ("N/m", "前/后防倾杆行程差刚度；设计值，非实车标定"),
+    "suspension_stop_rates": ("N/m", "四轮行程边界外渐进止挡刚度；设计值"),
     "suspension_spring_rates": ("N/m", "四轮真实弹簧设计值；质量变化时不自动改变硬件"),
-    "suspension_compression_damping": ("N·s/m", "四轮原生法向力对射线压缩速率系数；平路等于轴向阻尼，斜接触待共轭修正"),
-    "suspension_extension_damping": ("N·s/m", "四轮原生法向力对射线伸张速率系数；非实测轴向硬件"),
+    "suspension_compression_damping": ("N·s/m", "四轮轴向压缩阻尼；关闭共同求解时为原生法向/射线速率系数"),
+    "suspension_extension_damping": ("N·s/m", "四轮轴向伸张阻尼；非实车标定"),
     "suspension_stiffness": ("s⁻²", "si_enabled=false的旧归一化刚度；平路k=mass×值"),
     "suspension_compression": ("s⁻¹", "si_enabled=false的旧归一化压缩阻尼"),
     "suspension_relaxation": ("s⁻¹", "si_enabled=false的旧归一化伸张阻尼"),
@@ -211,6 +214,8 @@ def measure(mode):
                                        for b in range(4)] for a in range(4)]}
                        for i in range(body.getNumShapes())],
             "position": tuple(body.getTransform().getPos()),
+            "suspension_authority": "coupled-SI" if car.coupled_suspension else "native-Bullet",
+            "suspension_state": asdict(car.suspension.state) if car.coupled_suspension else None,
             "wheels": [{
                 "hub": tuple(w.getChassisConnectionPointCs()), "radius": w.getWheelRadius(),
                 "rest_length": w.getSuspensionRestLength(),
@@ -246,7 +251,7 @@ def export(output):
     source_names = ("vehicle_config.py", "driver_assist.py", "driving_modes.py", "vehicle.py",
                     "vehicle_tires.py", "vehicle_traction.py", "powertrain.py", "vehicle_steering.py", "vehicle_dynamics.py",
                     "wheel_dynamics.py", "tire_forces.py", "vehicle_contacts.py", "vehicle_state.py",
-                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py", "rotor_dynamics.py", "wheel_geometry.py", "transmission_ports.py", "tire_drivetrain.py", "differential.py", "shaft_transmission.py", "driveline_inertia.py", "suspension.py")
+                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py", "rotor_dynamics.py", "wheel_geometry.py", "transmission_ports.py", "tire_drivetrain.py", "differential.py", "shaft_transmission.py", "driveline_inertia.py", "suspension.py", "vehicle_suspension.py")
     hashes = {f"src/{name}": hashlib.sha256((ROOT / "src" / name).read_bytes()).hexdigest()
               for name in source_names}
     hashes["tools/physics/export_reference.py"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
@@ -257,7 +262,7 @@ def export(output):
         "panda_version": PandaSystem.getVersionString(), "bullet_version": getBulletVersion(),
         "measurement": {"ticks": 240, "dt": FIXED_DT, "max_substeps": 0,
                         "ground": "水平无限平面", "gravity": [0, 0, -9.81], "input": "VehicleCommand()"},
-        "schema_version": "reference-v15",
+        "schema_version": "reference-v16",
         "vehicle_fields": VEHICLE_FIELDS, "brake_fields": BRAKE_FIELDS,
         "traction_fields": TRACTION_FIELDS, "stability_fields": STABILITY_FIELDS,
         "input_fields": INPUT_FIELDS, "modes": modes,
@@ -272,5 +277,5 @@ def export(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path,
-                        default=ROOT / "logs/physics/reference-v15/parameters.json")
+                        default=ROOT / "logs/physics/reference-v16/parameters.json")
     export(parser.parse_args().output)

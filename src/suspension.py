@@ -1,5 +1,9 @@
 """射线悬架的真实硬件单位与原生参数边界。"""
 
+from dataclasses import dataclass
+
+from rotor_dynamics import cross
+
 
 def native_coefficients(config, wheel_index, mass):
     """Bullet最终乘实际车身质量；SI硬件在质量变化时保持自身数值。"""
@@ -8,3 +12,153 @@ def native_coefficients(config, wheel_index, mass):
                 config.suspension_compression_damping[wheel_index] / mass,
                 config.suspension_extension_damping[wheel_index] / mass)
     return config.suspension_stiffness, config.suspension_compression, config.suspension_relaxation
+
+
+def dot(a, b):
+    return sum(x * y for x, y in zip(a, b))
+
+
+def contact_gradient(normal, direction, arm):
+    """实际射线长度的速度雅可比；近掠射线不伪造放大的共轭支撑。"""
+    alignment = -dot(normal, direction)
+    if alignment <= .1:
+        return None
+    return tuple(n / alignment for n in normal) + tuple(v / alignment for v in cross(arm, normal))
+
+
+def stiffness_matrix(rates, bars):
+    """U=Σk*x²/2+Σkb*(x左−x右)²/2，x为实际悬架压缩量。"""
+    matrix = [[rates[i] if i == j else 0. for j in range(4)] for i in range(4)]
+    for left, bar in zip((0, 2), bars):
+        matrix[left][left] += bar
+        matrix[left + 1][left + 1] += bar
+        matrix[left][left + 1] -= bar
+        matrix[left + 1][left] -= bar
+    return matrix
+
+
+def elastic_terms(compression, rates, bars, stops, travel):
+    spring = sum(k * x * x / 2 for k, x in zip(rates, compression))
+    bar = tuple(k * (compression[i] - compression[i + 1]) ** 2 / 2
+                for i, k in zip((0, 2), bars))
+    excess = tuple(x - max(-travel, min(travel, x)) for x in compression)
+    stop = sum(k * e * e / 2 for k, e in zip(stops, excess))
+    matrix = stiffness_matrix(rates, bars)
+    force = tuple(dot(row, compression) + k * e for row, k, e in zip(matrix, stops, excess))
+    return spring, bar, stop, force
+
+
+def _solve(matrix, rhs):
+    """四轮接触/自由行程方程的小型稠密消元，不引入额外数值依赖。"""
+    rows = [list(row) + [value] for row, value in zip(matrix, rhs)]
+    n = len(rows)
+    for col in range(n):
+        pivot = max(range(col, n), key=lambda i: abs(rows[i][col]))
+        rows[col], rows[pivot] = rows[pivot], rows[col]
+        scale = rows[col][col]
+        rows[col] = [v / scale for v in rows[col]]
+        for i in range(n):
+            if i != col:
+                scale = rows[i][col]
+                rows[i] = [v - scale * p for v, p in zip(rows[i], rows[col])]
+    return tuple(row[-1] for row in rows)
+
+
+@dataclass(frozen=True)
+class SuspensionStep:
+    compression: tuple
+    compression_rate: tuple
+    axial_force: tuple
+    raw_axial_force: tuple
+    spring_energy: float
+    bar_energy: tuple
+    stop_energy: float
+    damping_dissipation: float
+    elastic_numerical_dissipation: float
+    body_numerical_dissipation: float
+    force_limit_work: float
+    energy_residual: float
+
+
+@dataclass(frozen=True)
+class SuspensionState:
+    step: SuspensionStep | None = None
+    normal_force: tuple = (0.,) * 4
+    contact_dot: tuple = (None,) * 4
+    candidate_contact: tuple = (False,) * 4
+    sampled_compression: tuple = (0.,) * 4
+    geometry_work: float = 0.
+    linear_impulse: tuple = (0., 0., 0.)
+    angular_impulse: tuple = (0., 0., 0.)
+    force_tick: int = 0
+
+
+def advance_suspension(compression, extension_speed, mobility, touching, limits,
+                       rates, compression_damping, extension_damping, bars,
+                       stops, travel, dt):
+    """四轮共用一个车身末速度；离地的无质量轮由弹簧/阻尼平衡释放行程。
+
+    mobility=A M⁻¹ Aᵀ，A将车身速度映射为轴向伸张速率。
+    接地轴向力非负；显式力限另记有符号边界功，不能冒充被动耗散。
+    """
+    stiffness = stiffness_matrix(rates, bars)
+    modes = [1 if contact else 0 for contact in touching]  # 0自由，1弹性接触，2力限。
+    damping = [compression_damping[i] if extension_speed[i] < 0 else extension_damping[i]
+               for i in range(4)]
+    stop_bounds = [travel if x > travel else -travel if x < -travel else None for x in compression]
+    for _iteration in range(64):
+        system = [row[:] for row in stiffness]
+        rhs = []
+        for i in range(4):
+            system[i][i] += damping[i] / dt + (stops[i] if stop_bounds[i] is not None else 0.)
+            rhs.append(damping[i] * compression[i] / dt
+                       + (stops[i] * stop_bounds[i] if stop_bounds[i] is not None else 0.))
+        equations, values = [], []
+        for i, mode in enumerate(modes):
+            if mode == 0:
+                equations.append(system[i] + [0.] * 4)
+                values.append(rhs[i])
+                equations.append([0.] * 4 + [1. if i == j else 0. for j in range(4)])
+                values.append(0.)
+            else:
+                equations.append([1. if i == j else 0. for j in range(4)]
+                                 + [dt * dt * value for value in mobility[i]])
+                values.append(compression[i] - dt * extension_speed[i])
+                equations.append(([-v for v in system[i]] if mode == 1 else [0.] * 4)
+                                 + [1. if i == j else 0. for j in range(4)])
+                values.append(-rhs[i] if mode == 1 else limits[i])
+        solution = _solve(equations, values)
+        end, forces = solution[:4], solution[4:]
+        raw = tuple(dot(system[i], end) - rhs[i] for i in range(4))
+        next_modes = modes[:]
+        for i, mode in enumerate(modes):
+            target = compression[i] - dt * extension_speed[i] - dt * dt * dot(mobility[i], forces)
+            if mode == 0 and touching[i] and end[i] < target - 1e-10:
+                next_modes[i] = 1
+            elif mode == 1:
+                if forces[i] < -1e-7:
+                    next_modes[i] = 0
+                elif forces[i] > limits[i] + 1e-7:
+                    next_modes[i] = 2
+            elif mode == 2 and raw[i] < limits[i] - 1e-7:
+                next_modes[i] = 1
+        next_damping = [compression_damping[i] if end[i] >= compression[i] else extension_damping[i]
+                        for i in range(4)]
+        next_stops = [travel if x > travel else -travel if x < -travel else None for x in end]
+        if next_modes == modes and next_damping == damping and next_stops == stop_bounds:
+            break
+        modes, damping, stop_bounds = next_modes, next_damping, next_stops
+    else:
+        raise ArithmeticError("悬架接触/阻尼/止挡活动集未收敛")
+    delta = tuple(end[i] - compression[i] for i in range(4))
+    initial = elastic_terms(compression, rates, bars, stops, travel)
+    spring, bar, stop, elastic_force = elastic_terms(end, rates, bars, stops, travel)
+    energy_change = spring + sum(bar) + stop - initial[0] - sum(initial[1]) - initial[2]
+    damping_loss = sum(c * dx * dx / dt for c, dx in zip(damping, delta))
+    elastic_loss = dot(elastic_force, delta) - energy_change
+    body_loss = dt * dt * sum(forces[i] * dot(mobility[i], forces) for i in range(4)) / 2
+    limit_work = dot(tuple(raw[i] - forces[i] for i in range(4)), delta)
+    kinetic_change = -dot(forces, delta) - body_loss
+    residual = kinetic_change + energy_change + damping_loss + elastic_loss + body_loss - limit_work
+    return SuspensionStep(end, tuple(dx / dt for dx in delta), forces, raw, spring, bar, stop,
+                          damping_loss, elastic_loss, body_loss, limit_work, residual)

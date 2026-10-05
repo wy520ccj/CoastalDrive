@@ -1,0 +1,57 @@
+{
+  "started_utc": "2026-10-05T06:57:33.770336+00:00",
+  "git_head": "6be5f54bf2bd50f7c098442c9f42e3377fbcda21",
+  "git_status": "M src/driving_modes.py\n M src/suspension.py\n M src/vehicle.py\n M src/vehicle_config.py\n M src/vehicle_state.py\n M tests/test_physics_config_io.py\n M tests/test_rotor_lifecycle.py\n M tests/test_suspension_si.py\n M tests/test_traction_lifecycle.py\n M tests/test_vehicle_contacts.py\n M tools/physics/export_reference.py\n M tools/physics/suspension_probe.py\n M tools/physics/testbed.py\n M tools/validate.py\n?? docs/evidence/PHYS-SUSP-01/coupled-native-r1/\n?? docs/evidence/PHYS-SUSP-01/coupled-native-r2/\n?? docs/evidence/PHYS-SUSP-01/coupled-off-compatibility.py\n?? docs/evidence/PHYS-SUSP-01/coupled-off-r1/\n?? docs/evidence/PHYS-SUSP-01/reference-v16.json\n?? docs/evidence/PHYS-SUSP-01/validation-T0-coupled-r1/\n?? docs/evidence/PHYS-SUSP-01/validation-T0-coupled-r2/\n?? src/vehicle_suspension.py\n?? tests/test_suspension_coupling.py\n?? tests/test_suspension_native.py\n?? tools/physics/suspension_coupled_probe.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_vehicle_contacts.py",
+    "tests/test_vehicle_config.py",
+    "tests/test_rotor_lifecycle.py",
+    "tests/test_validation_runner.py"
+  ],
+  "tier": "T0",
+  "status": "failed",
+  "passed": false,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-SUSP-01\\validation-T0-coupled-r3\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.093
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_vehicle_contacts.py",
+        "tests/test_vehicle_config.py",
+        "tests/test_rotor_lifecycle.py",
+        "tests/test_validation_runner.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-SUSP-01\\validation-T0-coupled-r3\\pytest.log",
+      "status": "failed",
+      "returncode": 1,
+      "error": "process exited 1",
+      "seconds": 47.09
+    }
+  ]
+}

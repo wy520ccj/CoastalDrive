@@ -1,0 +1,50 @@
+.................FF...............                                       [100%]
+================================== FAILURES ===================================
+______ test_front_weight_share_changes_real_static_suspension_load[0.4] _______
+
+share = 0.4
+
+    @pytest.mark.parametrize("share", [.4, .6])
+    def test_front_weight_share_changes_real_static_suspension_load(share):
+        cfg = replace(CAR, front_weight_share=share)
+        world, car = make_vehicle(cfg, ground=True)
+        try:
+            step(world, car, 600)
+            contacts = car.snapshot().wheel_contacts
+            assert all(c.in_contact and c.normal_load > 0 for c in contacts)
+            total = sum(c.normal_load for c in contacts)
+            assert total == pytest.approx(cfg.mass * 9.81, rel=.01)
+>           assert sum(c.normal_load for c in contacts[:2]) / total == pytest.approx(share, abs=.025)
+E           assert 0.3556617600079874 == 0.4 ± 0.025
+E             
+E             comparison failed
+E             Obtained: 0.3556617600079874
+E             Expected: 0.4 ± 0.025
+
+tests\test_vehicle_config.py:99: AssertionError
+______ test_front_weight_share_changes_real_static_suspension_load[0.6] _______
+
+share = 0.6
+
+    @pytest.mark.parametrize("share", [.4, .6])
+    def test_front_weight_share_changes_real_static_suspension_load(share):
+        cfg = replace(CAR, front_weight_share=share)
+        world, car = make_vehicle(cfg, ground=True)
+        try:
+            step(world, car, 600)
+            contacts = car.snapshot().wheel_contacts
+            assert all(c.in_contact and c.normal_load > 0 for c in contacts)
+            total = sum(c.normal_load for c in contacts)
+            assert total == pytest.approx(cfg.mass * 9.81, rel=.01)
+>           assert sum(c.normal_load for c in contacts[:2]) / total == pytest.approx(share, abs=.025)
+E           assert 0.6443387100138388 == 0.6 ± 0.025
+E             
+E             comparison failed
+E             Obtained: 0.6443387100138388
+E             Expected: 0.6 ± 0.025
+
+tests\test_vehicle_config.py:99: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_vehicle_config.py::test_front_weight_share_changes_real_static_suspension_load[0.4]
+FAILED tests/test_vehicle_config.py::test_front_weight_share_changes_real_static_suspension_load[0.6]
+2 failed, 32 passed in 46.71s

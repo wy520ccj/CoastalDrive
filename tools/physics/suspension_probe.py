@@ -20,7 +20,8 @@ from vehicle_state import VehicleCommand
 def run_trial(mode, mass, enabled, ticks=240):
     base = DrivingMode(mode).vehicle_config
     inertia = tuple(value * mass / base.mass for value in base.body_inertia) if base.body_inertia else None
-    config = replace(base, mass=mass, body_inertia=inertia, suspension_si_enabled=enabled)
+    config = replace(base, mass=mass, body_inertia=inertia, suspension_si_enabled=enabled,
+                     suspension_coupled_enabled=False)
     world, car = _create_vehicle(config)
     rows = []
     try:

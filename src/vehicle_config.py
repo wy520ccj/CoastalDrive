@@ -79,9 +79,12 @@ class VehicleConfig:
     static_contact_speed: float = .25  # 低速无滑移接触的切换尺度，m/s。
     tire_substeps: int = 2
     suspension_si_enabled: bool = True  # false沿用质量归一化旧硬件，供明确旧/新对照。
+    suspension_coupled_enabled: bool = True  # SI分支共同求法向力；false保留首增量的原生SI对照。
+    suspension_antiroll_rates: tuple = (6000., 4000.)  # N/m；前/后左右行程差的设计刚度，非实测标定。
+    suspension_stop_rates: tuple = (480000.,) * 4  # N/m；行程边界外的渐进止挡设计刚度。
     suspension_spring_rates: tuple = (48000.,) * 4  # N/m；四轮实际弹簧设计值，平路与旧1200kg参数相同。
-    suspension_compression_damping: tuple = (5280.,) * 4  # N·s/m；原生法向力对射线压缩速率的系数。
-    suspension_extension_damping: tuple = (2760.,) * 4  # N·s/m；原生法向力对射线伸张速率的系数。
+    suspension_compression_damping: tuple = (5280.,) * 4  # N·s/m；耦合分支的轴向压缩阻尼，原生对照为法向/射线速率。
+    suspension_extension_damping: tuple = (2760.,) * 4  # N·s/m；耦合分支的轴向伸张阻尼。
     suspension_stiffness: float = 40.0
     suspension_compression: float = 4.4
     suspension_relaxation: float = 2.3
@@ -110,6 +113,10 @@ class VehicleConfig:
     suspension_force_limit: float = 6000.0
 
     def __post_init__(self):
+        if len(self.suspension_antiroll_rates) != 2 or any(not math.isfinite(k) or k < 0 for k in self.suspension_antiroll_rates):
+            raise ValueError("前/后防倾刚度须为两个有限非负值N/m")
+        if len(self.suspension_stop_rates) != 4 or any(not math.isfinite(k) or k < 0 for k in self.suspension_stop_rates):
+            raise ValueError("四轮止挡刚度须为有限非负值N/m")
         if len(self.suspension_spring_rates) != 4 or any(not math.isfinite(k) or k <= 0 for k in self.suspension_spring_rates):
             raise ValueError("四轮弹簧刚度须为有限正值N/m")
         for coefficients in (self.suspension_compression_damping, self.suspension_extension_damping):

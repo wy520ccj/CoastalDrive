@@ -1,0 +1,46 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\test_vehicle_contacts.py:3:1
+   |
+ 1 |   """通过真实 Bullet 积分验证轮接触诊断的单位和失效边界。"""
+ 2 |
+ 3 | / from dataclasses import replace
+ 4 | |
+ 5 | | import pytest
+ 6 | | from panda3d.bullet import BulletPlaneShape, BulletRigidBodyNode, BulletWorld
+ 7 | | from panda3d.core import Vec3
+ 8 | |
+ 9 | | from simulation import Control, Simulation, interpolate, shift_snapshot
+10 | | from vehicle import Vehicle
+11 | | from vehicle_config import CAR
+12 | | from vehicle_config import CAR
+13 | | from vehicle_contacts import read_wheel_contacts, road_support, shift_contacts
+14 | | from vehicle_state import FIXED_DT, CarState
+   | |____________________________________________^
+help: Organize imports
+   |
+11 | from vehicle_config import CAR
+   - from vehicle_config import CAR
+12 | from vehicle_contacts import read_wheel_contacts, road_support, shift_contacts
+   |
+
+F811 [*] Redefinition of unused `CAR` from line 11
+  --> tests\test_vehicle_contacts.py:12:28
+   |
+ 9 | from simulation import Control, Simulation, interpolate, shift_snapshot
+10 | from vehicle import Vehicle
+11 | from vehicle_config import CAR
+   |                            --- previous definition of `CAR` here
+12 | from vehicle_config import CAR
+   |                            ^^^ `CAR` redefined here
+13 | from vehicle_contacts import read_wheel_contacts, road_support, shift_contacts
+14 | from vehicle_state import FIXED_DT, CarState
+   |
+help: Remove definition: `CAR`
+   |
+11 | from vehicle_config import CAR
+   - from vehicle_config import CAR
+12 | from vehicle_contacts import read_wheel_contacts, road_support, shift_contacts
+   |
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.

@@ -17,6 +17,7 @@ from vehicle_dynamics import DynamicsState, aerodynamic_force, axle_loads, conta
 from vehicle_stability import StabilityControl
 from vehicle_state import FIXED_DT, CarState, Control, VehicleCommand, forward
 from vehicle_steering import SteeringRack, wheel_angles
+from vehicle_suspension import Suspension
 from vehicle_tires import Tires
 from vehicle_traction import TractionControl
 
@@ -52,6 +53,7 @@ class Vehicle:
         self.powertrain = Powertrain(self.config)
         self.steering = SteeringRack(self.config)
         self.tires = Tires(self.config)
+        self.suspension = Suspension(self.config, self.hubs)
         self.brakes = Brakes(self.config.braking)
         self.traction = TractionControl(self.config.traction, self.config.driven_wheels)
         self.stability = StabilityControl(self.config)
@@ -91,6 +93,8 @@ class Vehicle:
             wheel.setMaxSuspensionTravelCm(self.config.suspension_travel * 100)
             wheel.setMaxSuspensionForce(self.config.suspension_force_limit)
             stiffness, compression, extension = native_coefficients(self.config, index, chassis.getMass())
+            if self.coupled_suspension:
+                stiffness = compression = extension = 0.
             wheel.setSuspensionStiffness(stiffness)
             wheel.setWheelsDampingRelaxation(extension)
             wheel.setWheelsDampingCompression(compression)
@@ -107,6 +111,10 @@ class Vehicle:
             position = pose.getMat().xformPoint(Vec3(*hub) - Vec3(0, 0, 0.4))
             wheel.setWorldTransform(TransformState.makePosHpr(position, pose.getHpr()).getMat())
 
+    @property
+    def coupled_suspension(self):
+        return self.config.suspension_si_enabled and self.config.suspension_coupled_enabled
+
     def reset(self, position, heading=0, pitch=0, *, speed=0.0):
         self._chassis.setTransform(
             TransformState.makePosHpr(Vec3(*position), Vec3(heading, pitch, 0))
@@ -120,6 +128,7 @@ class Vehicle:
         self.powertrain = Powertrain(self.config)
         self.steering = SteeringRack(self.config)
         self.tires = Tires(self.config)
+        self.suspension = Suspension(self.config, self.hubs)
         self.brakes = Brakes(self.config.braking)
         self.traction = TractionControl(self.config.traction, self.config.driven_wheels)
         self.stability = StabilityControl(self.config)
@@ -248,9 +257,15 @@ class Vehicle:
         external_angular = self._chassis.getInvInertiaTensorWorld().xform(
             self._chassis.getTotalTorque()
         ) * FIXED_DT
+        tire_contact_tick = self._contact_tick
+        if self.coupled_suspension:
+            tire_contact_tick += 1
+            self._wheel_contacts = self.suspension.advance(
+                self._world, self._chassis, self._vehicle.getWheels(), self.on_asphalt,
+                tire_contact_tick, FIXED_DT, tuple(external_velocity), tuple(external_angular))
         self.tires.advance(
             self._chassis, self._wheel_contacts, wheel_angles(self.steering.angle, self.config),
-            drive_torque, engine_drag, pressures, self._contact_tick, FIXED_DT,
+            drive_torque, engine_drag, pressures, tire_contact_tick, FIXED_DT,
             tuple(external_velocity), tuple(external_angular),
             powertrain=self.powertrain if self.config.finite_drivetrain else None,
         )
@@ -272,6 +287,9 @@ class Vehicle:
         )
 
     def _road_grade(self, heading):
+        if self.coupled_suspension:
+            return contact_grade(heading, [contact.contact_normal for contact in self._wheel_contacts
+                                          if contact.in_contact and road_support(contact.contact_normal)])
         normals = []
         if self._contact_ready:
             for wheel in self._vehicle.getWheels():
@@ -283,7 +301,8 @@ class Vehicle:
     def after_step(self, previous_velocity):
         self._contact_ready = True
         self._contact_tick += 1
-        self._wheel_contacts = read_wheel_contacts(self._vehicle, self.on_asphalt)
+        if not self.coupled_suspension:
+            self._wheel_contacts = read_wheel_contacts(self._vehicle, self.on_asphalt)
         self.tires.observe(self._chassis, self._wheel_contacts, self._contact_tick)
         if self.config.finite_drivetrain:
             self.powertrain.observe(self._chassis)
@@ -310,6 +329,9 @@ class Vehicle:
         velocity = self._chassis.getLinearVelocity()
         # 交通感知只读取车身状态；四轮姿态仍完整提供给正式Snapshot。
         wheels = self.tires.wheel_poses(self._chassis, self._vehicle) if include_wheels else ()
+        if include_wheels and self.coupled_suspension:
+            positions = self.suspension.wheel_positions(self._chassis, self._vehicle.getWheels())
+            wheels = tuple(replace(wheel, position=position) for wheel, position in zip(wheels, positions))
         return CarState(
             (float(position.x), float(position.y), float(position.z)),
             float(hpr.x),
@@ -337,6 +359,7 @@ class Vehicle:
             esc_enabled=self.config.stability.esc_enabled,
             stability_state=self.stability.state,
             powertrain_state=self.powertrain.snapshot() if self.config.finite_drivetrain else None,
+            suspension_state=self.suspension.state if self.coupled_suspension and include_wheels else None,
         )
 
     def close(self):

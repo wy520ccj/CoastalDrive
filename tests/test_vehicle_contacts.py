@@ -48,7 +48,8 @@ def rig():
     ground = BulletRigidBodyNode("diagnostic-ground")
     ground.addShape(BulletPlaneShape(Vec3(0, 0, 1), 0))
     world.attachRigidBody(ground)
-    car = Vehicle(world, lambda x, y: x < 0, (0, 0, .55))
+    car = Vehicle(world, lambda x, y: x < 0, (0, 0, .55),
+                  config=replace(CAR, suspension_coupled_enabled=False))
     yield world, car
     car.close()
 
@@ -106,7 +107,8 @@ def test_cross_slope_produces_asymmetric_wheel_loads():
     ground = BulletRigidBodyNode("cross-slope")
     ground.addShape(BulletPlaneShape(normal, 0))
     world.attachRigidBody(ground)
-    car = Vehicle(world, lambda x, y: True, (0, 0, .55))
+    car = Vehicle(world, lambda x, y: True, (0, 0, .55),
+                  config=replace(CAR, suspension_coupled_enabled=False))
     try:
         advance(world, 8)
         contacts = read_wheel_contacts(car._vehicle, car.on_asphalt)

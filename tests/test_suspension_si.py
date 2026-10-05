@@ -22,7 +22,7 @@ def test_hardware_units_reject_invalid_configuration(field, value):
 
 
 def test_four_independent_hardware_rates_reach_native_vehicle():
-    config = replace(DrivingMode.GAME.vehicle_config, mass=1800.,
+    config = replace(DrivingMode.GAME.vehicle_config, mass=1800., suspension_coupled_enabled=False,
                      suspension_spring_rates=(32000., 40000., 48000., 56000.),
                      suspension_compression_damping=(3000., 4000., 5000., 6000.),
                      suspension_extension_damping=(0., 1000., 2000., 3000.))

@@ -4,6 +4,7 @@ import math
 from dataclasses import dataclass, field
 
 from powertrain import PowertrainState
+from suspension import SuspensionState
 from vehicle_brakes import BrakeState
 from vehicle_config import CAR
 from vehicle_dynamics import DynamicsState
@@ -152,6 +153,7 @@ class CarState:
     esc_enabled: bool = False
     stability_state: StabilityState = field(default_factory=StabilityState)
     powertrain_state: PowertrainState | None = None
+    suspension_state: SuspensionState | None = None
 
 
 def forward(heading):

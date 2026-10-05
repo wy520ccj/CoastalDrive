@@ -308,7 +308,8 @@ def load_vehicle_config(path, selected):
             values[name] = tuple(values[name])
     if "downstream_axes" in values:
         values["downstream_axes"] = tuple(tuple(axis) for axis in values["downstream_axes"])
-    si_fields = ("suspension_spring_rates", "suspension_compression_damping", "suspension_extension_damping")
+    si_fields = ("suspension_spring_rates", "suspension_compression_damping", "suspension_extension_damping",
+                 "suspension_antiroll_rates", "suspension_stop_rates")
     if "suspension_si_enabled" not in values:
         # 配置文件的单位版本边界：旧归一化字段仍选旧单位，显式硬件字段选SI。
         if any(name in values for name in si_fields):
