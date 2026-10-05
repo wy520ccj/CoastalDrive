@@ -1,4 +1,4 @@
-"""同一Bullet世界的有限轮半径支撑包络；Box/Plane精确求交，网格用原生扫掠。"""
+"""同一Bullet世界的轮胎支撑包络；Box/Plane/道路三角面求交，其他凸体原生扫掠。"""
 
 import math
 from dataclasses import dataclass
@@ -8,7 +8,9 @@ from panda3d.bullet import (
     BulletConvexHullShape,
     BulletCylinderShape,
     BulletPlaneShape,
+    BulletRigidBodyNode,
     BulletSphereShape,
+    BulletTriangleMeshShape,
     XUp,
 )
 from panda3d.core import BitMask32, Mat4, NodePath, Quat, TransformState, Vec3
@@ -104,13 +106,29 @@ def wheel_sweep_shape(radius, width, shoulder, crown):
 def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder, crown=0., *, envelope=None):
     """轮轴和有限胎宽进入真实表面查询；不会创建第二个物理世界。"""
     mask = BitMask32.bit(0)
+    # 未加入世界的保守查询盒使用Bullet broadphase筛选实际相交静态物体。
+    # 查询盒含整条轮心路径与轮胎外廓，不施力、不生成第二个物理世界。
+    points = tuple(point for ray in rays for point in ray)
+    padding = radius + width / 2 + 1e-5
+    low = tuple(min(p[a] for p in points) - padding for a in range(3))
+    high = tuple(max(p[a] for p in points) + padding for a in range(3))
+    probe = BulletRigidBodyNode("suspension-query")
+    shape = BulletBoxShape(Vec3(*( (b-a)/2 for a,b in zip(low,high))))
+    shape.setMargin(0.)
+    probe.addShape(shape)
+    probe.setTransform(TransformState.makePos(Vec3(*((a+b)/2 for a,b in zip(low,high)))))
+    bodies = set()
+    for contact in world.contactTest(probe).getContacts():
+        other = contact.getNode1() if contact.getNode0() == probe else contact.getNode0()
+        if other != chassis and other.isStatic() and not (other.getIntoCollideMask() & mask).isZero():
+            bodies.add(other)
     surfaces = []
     exact = set()
-    for body in world.getRigidBodies():
-        if body == chassis or not body.isStatic() or (body.getIntoCollideMask() & mask).isZero():
-            continue
+    for body in sorted(bodies,key=lambda node: (node.getName(),tuple(node.getTransform().getPos()))):
         shapes = body.getShapes()
-        if shapes and all(isinstance(shape, (BulletBoxShape, BulletPlaneShape)) for shape in shapes):
+        mesh = body.getPythonTag("suspension_mesh") if body.hasPythonTag("suspension_mesh") else None
+        if shapes and all(isinstance(shape, (BulletBoxShape, BulletPlaneShape)) or (
+                isinstance(shape, BulletTriangleMeshShape) and mesh is not None and len(shapes) == 1) for shape in shapes):
             exact.add(body)
             body_mat = NodePath(body).getNetTransform().getMat()
             for i, shape in enumerate(shapes):
@@ -118,10 +136,12 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
                 inverse.invertFrom(body.getShapeTransform(i).getMat() * body_mat)
                 frame = tuple(tuple(inverse.getCell(b, a) for b in range(3)) for a in range(3))
                 plane = (tuple(shape.getPlaneNormal()), shape.getPlaneConstant()) if isinstance(shape, BulletPlaneShape) else None
-                half = tuple(shape.getHalfExtentsWithoutMargin()) if plane is None else ()
-                surfaces.append((body, inverse, frame, half, shape.getMargin() if plane is None else 0., plane))
+                half = tuple(shape.getHalfExtentsWithoutMargin()) if isinstance(shape, BulletBoxShape) else ()
+                triangles = mesh if isinstance(shape,BulletTriangleMeshShape) else None
+                surfaces.append((body, inverse, frame, half, shape.getMargin() if plane is None else 0., plane, triangles))
     if envelope is None:
         envelope = wheel_sweep_shape(radius, width, shoulder, crown)
+    native_needed = any(body not in exact for body in bodies)
     results = []
     for (start, end), axis in zip(rays, axes):
         axis = tuple(axis)
@@ -132,16 +152,20 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
             rotation.setFromAxisAngleRad(math.atan2(transverse, axis[0]), rotation_axis)
         elif axis[0] < 0.:
             rotation.setFromAxisAngle(180., Vec3(0., 0., 1.))
-        native = world.sweepTestClosest(envelope, TransformState.makePosQuatScale(start, rotation, Vec3(1)),
-                                       TransformState.makePosQuatScale(end, rotation, Vec3(1)), mask, 0.)
         hits = []
-        if native.hasHit() and native.getNode() != chassis and native.getNode() not in exact:
-            hits.append(RayContact(native.getNode(), native.getHitFraction(), tuple(native.getHitPos()), tuple(native.getHitNormal())))
-        for body, inverse, frame, half, margin, plane in surfaces:
-            reach = (end - start).length() - radius
-            surface = CylinderSurface(half, margin, frame, tuple(inverse.xformPoint(chassis.getTransform().getPos())),
-                                      radius, reach, width, shoulder, axis, plane, crown)
-            found = surface.entry(tuple(inverse.xformPoint(start)), tuple(inverse.xformPoint(end)), axis)
+        if native_needed:
+            native = world.sweepTestClosest(envelope, TransformState.makePosQuatScale(start, rotation, Vec3(1)),
+                                           TransformState.makePosQuatScale(end, rotation, Vec3(1)), mask, 0.)
+            if native.hasHit() and native.getNode() != chassis and native.getNode() not in exact:
+                hits.append(RayContact(native.getNode(), native.getHitFraction(), tuple(native.getHitPos()), tuple(native.getHitNormal())))
+        for body, inverse, frame, half, margin, plane, triangles in surfaces:
+            reach = math.sqrt(sum((end[a] - start[a])**2 for a in range(3))) - radius
+            origin = chassis.getTransform().getPos()
+            offset = tuple(inverse.getCell(3, a) + sum(frame[a][b] * origin[b] for b in range(3)) for a in range(3))
+            surface = CylinderSurface(half, margin, frame, offset,
+                                      radius, reach, width, shoulder, axis, plane, crown, triangles)
+            found = surface.entry(surface.local(tuple(start[a] - origin[a] for a in range(3))),
+                                  surface.local(tuple(end[a] - origin[a] for a in range(3))), axis)
             if found is None:
                 continue
             fraction, local_normal, local_point = found

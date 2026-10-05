@@ -27,7 +27,7 @@ AREAS = {
                 "test_tire_compliance", "test_tire_coupling", "test_tire_compliance_config",
                 "test_tire_compliance_integration", "test_tire_compliance_probe", "test_rotor_transport",
                 "test_tire_compliance_substeps", "test_tire_warm_start", "test_tire_jacobian", "test_vehicle_collision",
-                "test_guardrail_suspension", "test_cylinder_suspension"],
+                "test_guardrail_suspension", "test_cylinder_suspension", "test_triangle_support"],
     "traffic": ["test_h4a_traffic", "test_traffic_behavior", "test_traffic_impacts",
                 "test_traffic_recovery"],
     "road": ["test_endless", "test_highway_segments", "test_highway_curve",

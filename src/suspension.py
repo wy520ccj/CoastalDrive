@@ -19,10 +19,10 @@ def dot(a, b):
     return sum(x * y for x, y in zip(a, b))
 
 
-def contact_gradient(normal, direction, arm):
+def contact_gradient(normal, direction, arm, *, minimum_alignment=.1):
     """实际射线长度的速度雅可比；近掠射线不伪造放大的共轭支撑。"""
     alignment = -dot(normal, direction)
-    if alignment <= .1:
+    if alignment <= minimum_alignment:
         return None
     return tuple(n / alignment for n in normal) + tuple(v / alignment for v in cross(arm, normal))
 
@@ -176,7 +176,10 @@ def advance_suspension(compression, extension_speed, mobility, touching,
                 values.append(-rhs[i])
         solution = _solve(equations, values)
         end, forces = solution[:4], solution[4:]
-        raw = tuple(dot(system[i], end) - rhs[i] for i in range(4))
+        raw = tuple(math.fsum([*(value*x for value,x in zip(stiffness[i],end)),
+                              damping[i] * (end[i] - compression[i]) / dt,
+                              stops[i] * (end[i] - stop_bounds[i]) if stop_bounds[i] is not None else 0.])
+                    for i in range(4))
         next_modes = modes[:]
         for i, mode in enumerate(modes):
             target = geometry[i] - dt * extension_speed[i] - dt * dt * dot(mobility[i], forces)
@@ -188,6 +191,17 @@ def advance_suspension(compression, extension_speed, mobility, touching,
                         for i in range(4)]
         next_stops = [travel if x > travel else -travel if x < -travel else None for x in end]
         if next_modes == modes and next_damping == damping and next_stops == stop_bounds:
+            if all(value == 0. for row in mobility for value in row):
+                # 末速度直接给定时，在未舍入行程上求本构力；大止挡刚度不放大行程末位量化。
+                raw = tuple(math.fsum([*((math.fma(-k*dt, extension_speed[j], k*geometry[j])
+                                          if modes[j] else k*end[j]) for j,k in enumerate(stiffness[i])),
+                                       math.fma(-damping[i], extension_speed[i],
+                                                damping[i] * (geometry[i] - compression[i]) / dt),
+                                       math.fma(-stops[i]*dt, extension_speed[i],
+                                                stops[i] * (geometry[i] - stop_bounds[i]))
+                                           if stop_bounds[i] is not None else 0.])
+                            if modes[i] else raw[i] for i in range(4))
+                forces = tuple(raw[i] if modes[i] else 0. for i in range(4))
             break
         modes, damping, stop_bounds = next_modes, next_damping, next_stops
     else:

@@ -5,12 +5,12 @@ from dataclasses import dataclass, replace
 
 from rotor_dynamics import cross, dot
 from suspension_geometry import BoxSurface, CylinderSurface, sphere_box_entry
-from wheel_envelope import crown_extent_secant
+from wheel_envelope import crown_extent_secant, subtract
 
 
 @dataclass(frozen=True)
 class SupportPlane:
-    """本子步接点及可用的真实曲面；向量均在起点世界坐标中，不持有Bullet对象。"""
+    """本子步接点及可用的真实曲面；向量均相对起点车身原点。"""
     hub: tuple
     direction: tuple
     normal: tuple
@@ -34,9 +34,12 @@ def cylinder_endpoint(contact, hub_end, hub_average, direction_end, direction_av
     normal = surface.world_vector(local_normal)
     length = -surface.wheel_radius + fraction * (surface.wheel_radius + surface.reach)
     alignment = -dot(normal, direction_end)
-    if alignment <= .1:
+    if alignment <= 0.:
         return None
-    if normal == contact.normal:
+    endpoint = surface.world_vector(tuple(local_point[a] - surface.offset[a] for a in range(3)))
+    # 只有同一支持平面才可化简高度差；同法线的另一层路面仍需完整末接点。
+    same_plane = normal == contact.normal and abs(dot(normal, subtract(endpoint, contact.point))) <= 1e-10
+    if same_plane:
         a0 = -dot(normal, contact.direction)
         reciprocal = (1 / a0 + 1 / alignment) / 2
         wheel_average = rotated_path(surface.wheel_axis, rotation_axis, angle, scale)[1]
@@ -49,7 +52,6 @@ def cylinder_endpoint(contact, hub_end, hub_average, direction_end, direction_av
         arm = tuple(reciprocal * (hub_average[a] - extent_secant * wheel_average[a])
                     + (p0 + p1) / (2 * a0 * alignment) * direction_average[a] for a in range(3))
         return tuple(reciprocal * n for n in normal) + cross(arm, normal), 1 / reciprocal
-    endpoint = surface.world_vector(tuple(local_point[a] - surface.offset[a] for a in range(3)))
     endpoint_arm = tuple(endpoint[a] - dt * velocity[a] for a in range(3))
     start_arm = contact.point
     # 中点梯度取两端实际见证点；Gonzalez离散梯度修正使有限步行程与机械功严格相等。

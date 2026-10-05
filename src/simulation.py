@@ -30,6 +30,7 @@ from streamed_road import StreamedRoad
 from test_track import OBSTACLES, SPAWN, on_asphalt
 from traffic import Driver, Road, extents
 from traffic_recovery import TrafficRecovery
+from triangle_support import TriangleSupport
 from vehicle import Vehicle
 from vehicle_config import CAR, body_center
 from vehicle_contacts import shift_contacts
@@ -382,6 +383,7 @@ class Simulation:
                         d = Vec3(-half[0], length / 2, half[2])
                         mesh.addTriangle(a, b, c)
                         mesh.addTriangle(a, c, d)
+                        body.setPythonTag("suspension_mesh", TriangleSupport.build(((a,b,c),(a,c,d))))
                         shape = BulletTriangleMeshShape(mesh, dynamic=False)
                         shape.setMargin(0.01)
                     body.addShape(shape)
@@ -424,6 +426,7 @@ class Simulation:
                 shape = BulletTriangleMeshShape(mesh, dynamic=False)
                 shape.setMargin(0.01)
                 body.addShape(shape)
+                body.setPythonTag("suspension_mesh", TriangleSupport.build(tuple(tuple(vertices[i] for i in triangle) for triangle in triangles)))
             # Bits 0/1/2 are surface queries, vehicle collision and camera obstruction.
             body.setIntoCollideMask(BitMask32(7))
             self._world.attachRigidBody(body)

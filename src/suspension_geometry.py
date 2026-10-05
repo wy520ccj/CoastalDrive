@@ -1,4 +1,4 @@
-"""支撑包络的纯几何；实际世界查询和机械末姿态共用同一球/Box内核。"""
+"""支撑包络的纯几何；实际世界查询和机械末姿态共用有限表面。"""
 
 import math
 from dataclasses import dataclass
@@ -30,10 +30,13 @@ class CylinderSurface(BoxSurface):
     wheel_axis: tuple
     plane: tuple | None = None
     crown: float = 0.
+    triangles: object | None = None
 
     def entry(self, start, end, axis):
         from wheel_envelope import cylinder_box_entry, cylinder_support
         local_axis = tuple(sum(self.axes[a][b] * axis[b] for b in range(3)) for a in range(3))
+        if self.triangles is not None:
+            return self.triangles.entry(start,end,self.radius,local_axis,self.wheel_radius,self.width,self.shoulder,self.crown)
         if self.plane is None:
             return cylinder_box_entry(start, end, self.half, self.radius, local_axis,
                                       self.wheel_radius, self.width / 2, self.shoulder, self.crown)

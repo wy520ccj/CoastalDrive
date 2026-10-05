@@ -2,6 +2,8 @@
 
 import math
 
+import numpy as np
+
 from rotor_dynamics import cross, dot
 
 
@@ -52,14 +54,15 @@ def _segment(a, b):
 
 def _triangle(a, b, c):
     ab, ac = subtract(b, a), subtract(c, a)
-    normal = cross(ab, ac)
-    norm = dot(normal, normal)
-    if norm:
-        v = dot(cross(tuple(-x for x in a), ac), normal) / norm
-        w = dot(cross(ab, tuple(-x for x in a)), normal) / norm
-        if v >= 0. and w >= 0. and v + w <= 1.:
-            weights = (1 - v - w, v, w)
-            return tuple(sum(weights[j] * p[i] for j, p in enumerate((a, b, c))) for i in range(3)), weights
+    # 瘦长道路边的单纯形会同时包含40m和微米级边；SVD投影避免行列式相消。
+    coordinates, _residual, rank, _singular = np.linalg.lstsq(np.asarray((ab,ac)).T, -np.asarray(a), rcond=None)
+    v, w = coordinates
+    if rank == 2 and v >= 0. and w >= 0. and v + w <= 1.:
+        weights = (1 - v - w, v, w)
+        normal = cross(ab, ac)
+        height = math.fsum(x*y for x,y in zip(normal,a)) / dot(normal,normal)
+        # 投影点直接由平面法线生成，避免把40m顶点的重心和当作微米级距离。
+        return tuple(height*x for x in normal), weights
     choices = []
     for i, j in ((0, 1), (0, 2), (1, 2)):
         p, weights = _segment((a, b, c)[i], (a, b, c)[j])
@@ -79,12 +82,11 @@ def _closest(vertices):
         return _triangle(*points)
     a, b, c, d = points
     ab, ac, ad = subtract(b, a), subtract(c, a), subtract(d, a)
-    det = dot(ab, cross(ac, ad))
-    if det:
-        rhs = tuple(-x for x in a)
-        u, v, w = dot(rhs, cross(ac, ad)) / det, dot(ab, cross(rhs, ad)) / det, dot(ab, cross(ac, rhs)) / det
-        if u >= 0. and v >= 0. and w >= 0. and u + v + w <= 1.:
-            return (0.,) * 3, (1 - u - v - w, u, v, w)
+    coordinates, _residual, rank, _singular = np.linalg.lstsq(np.asarray((ab,ac,ad)).T, -np.asarray(a), rcond=None)
+    u, v, w = coordinates
+    if rank == 3 and u >= 0. and v >= 0. and w >= 0. and u + v + w <= 1.:
+        weights = (1 - u - v - w, u, v, w)
+        return (0.,) * 3, weights
     choices = []
     for face in ((0, 1, 2), (0, 1, 3), (0, 2, 3), (1, 2, 3)):
         p, weights = _triangle(*(points[i] for i in face))
@@ -97,15 +99,23 @@ def _closest(vertices):
 
 def cylinder_box_distance(center, axis, half, radius, half_width, shoulder, crown=0.):
     """GJK给出圆柱内核与Box内核距离、法线和Box见证点；肩部在扫掠时合并。"""
+    def support_body(direction):
+        return tuple(math.copysign(h, x) if x else 0. for h, x in zip(half, direction))
+
+    return convex_distance(center, axis, support_body, radius, half_width, shoulder, crown)
+
+
+def convex_distance(center, axis, support_body, radius, half_width, shoulder, crown):
+    """轮胎内核对任意固定凸体的最近见证点；不持有物理世界。"""
     def support(direction):
         offset = cylinder_support(tuple(-x for x in direction), axis, radius - shoulder,
                                   half_width - shoulder, 0., crown)
-        box = tuple(math.copysign(h, x) if x else 0. for h, x in zip(half, direction))
+        box = support_body(direction)
         return subtract(tuple(center[i] + offset[i] for i in range(3)), box), box
 
-    direction = subtract(center, tuple(max(-h, min(h, x)) for h, x in zip(half, center)))
+    direction = subtract(center, support_body(center))
     if not dot(direction, direction):
-        return 0., (0., 0., 1.), center
+        direction = (0., 0., 1.)
     vertices = [support(direction)]
     point, weights = _closest(vertices)
     for _ in range(96):
@@ -120,7 +130,7 @@ def cylinder_box_distance(center, axis, half, radius, half_width, shoulder, crow
         vertices = [vertex for vertex, weight in zip(vertices, weights) if weight > 1e-15]
         vertices.append(candidate)
         point, weights = _closest(vertices)
-    raise ArithmeticError("圆柱/Box凸体距离未收敛")
+    raise ArithmeticError(f"圆柱/固定凸体距离未收敛：center={center}, axis={axis}, point={point}, gap={squared - dot(point,candidate[0]):g}, vertices={vertices}")
 
 
 def cylinder_box_entry(start, end, half, margin, axis, radius, half_width, shoulder, crown=0.):

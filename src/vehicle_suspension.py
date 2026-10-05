@@ -1,6 +1,6 @@
 """同一Bullet世界中的SI悬架射线、共轭法向冲量与施力阶段观测。"""
 
-from dataclasses import replace
+from dataclasses import dataclass, replace
 
 from panda3d.core import Vec3
 
@@ -13,9 +13,23 @@ from suspension import (
     elastic_terms,
 )
 from suspension_contacts import cylinder_suspension_rays, wheel_sweep_shape
+from suspension_geometry import CylinderSurface
 from suspension_kinematics import SupportPlane
 from vehicle_state import WheelContactState
 from wheel_geometry import mechanical_axis
+
+
+@dataclass(frozen=True)
+class WorldSurface(CylinderSurface):
+    """机械求解期间重新查询同一冻结世界，允许接点跨静态物体切换。"""
+    world: object = None
+    chassis: object = None
+    envelope: object = None
+
+    def entry(self, start, end, axis):
+        hit, = cylinder_suspension_rays(self.world,self.chassis,((start,end),),(axis,),
+            self.wheel_radius,self.width,self.shoulder,self.crown,envelope=self.envelope)
+        return (hit.fraction,hit.normal,hit.point) if hit is not None else None
 
 
 class Suspension:
@@ -37,10 +51,12 @@ class Suspension:
         constraint_compression = list(self.compression)
         lengths = tuple(w.getSuspensionRestLength() + config.suspension_travel + config.wheel_radius for w in wheels)
         # 路径描述轮心；向上退一个半径，保留原查询的压缩行程覆盖范围。
-        starts = tuple(pose.getMat().xformPoint(Vec3(*hub)) - direction * config.wheel_radius for hub in self.hubs)
+        hub_arms = tuple(tuple(orientation.xform(Vec3(*hub))) for hub in self.hubs)
+        starts = tuple(tuple(origin[a] + hub[a] - direction[a] * config.wheel_radius for a in range(3))
+                       for hub in hub_arms)
         axes = tuple(mechanical_axis(orientation.getRight(), orientation.getForward(), -wheel.getSteering()) for wheel in wheels)
         hits = cylinder_suspension_rays(world, chassis,
-            tuple((start, start + direction * length) for start, length in zip(starts, lengths)), axes,
+            tuple((start, tuple(start[a] + direction[a] * length for a in range(3))) for start, length in zip(starts, lengths)), axes,
             config.wheel_radius, config.wheel_width, config.wheel_shoulder_radius, config.wheel_crown_height,
             envelope=self.envelope)
         for i, (wheel, ray_length, hit) in enumerate(zip(wheels, lengths, hits)):
@@ -49,7 +65,7 @@ class Suspension:
             normal = hit.normal if hit else None
             alignment = -dot(normal, tuple(direction)) if hit else None
             # 当前路面是固定刚体；保留动态物体碰撞，射线法向模型不承诺移动支撑。
-            eligible = hit is not None and hit.node.isStatic() and alignment > .1
+            eligible = hit is not None and hit.node.isStatic() and alignment > 0.
             gradient = (0.,) * 6
             if eligible:
                 constraint_compression[i] = rest - (ray_length * hit.fraction - config.wheel_radius)
@@ -59,9 +75,14 @@ class Suspension:
                 elif self.state.normal_force[i] > 0.:
                     initial[i] = constraint_compression[i]
                 arm = tuple(point[a] - origin[a] for a in range(3))
-                gradient = contact_gradient(normal, tuple(direction), arm)
-            surface = replace(hit.surface, reach=rest + config.suspension_travel) if eligible and hit.surface is not None else None
-            planes.append(SupportPlane(tuple(orientation.xform(Vec3(*self.hubs[i]))), tuple(direction),
+                gradient = contact_gradient(normal, tuple(direction), arm, minimum_alignment=0.)
+            surface = (WorldSurface(half=(), radius=0., axes=((1.,0.,0.),(0.,1.,0.),(0.,0.,1.)),
+                                   offset=tuple(origin), wheel_radius=config.wheel_radius,
+                                   reach=rest+config.suspension_travel, width=config.wheel_width,
+                                   shoulder=config.wheel_shoulder_radius, wheel_axis=axes[i],
+                                   crown=config.wheel_crown_height, world=world, chassis=chassis,
+                                   envelope=self.envelope) if eligible else None)
+            planes.append(SupportPlane(hub_arms[i], tuple(direction),
                                        tuple(normal), rest - constraint_compression[i], surface,
                                        arm) if eligible else None)
             geometry.append((point, normal, alignment, rest))

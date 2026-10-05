@@ -10,6 +10,7 @@ from panda3d.core import BitMask32, TransformState, Vec3
 
 import curve_mesh
 from highway_segments import SEGMENT_LENGTH, indices_around, segment, segment_index, surface_meshes
+from triangle_support import TriangleSupport
 
 
 class StreamedRoad:
@@ -20,6 +21,7 @@ class StreamedRoad:
         self.curve = curve
         self.meshes = {}
         self.shapes = {}
+        self.supports = {}
         for name, (vertices, triangles) in surface_meshes().items():
             mesh = BulletTriangleMesh()
             for triangle in triangles:
@@ -27,6 +29,7 @@ class StreamedRoad:
             shape = BulletTriangleMeshShape(mesh, dynamic=False)
             shape.setMargin(0.01)
             self.shapes[name] = shape
+            self.supports[name] = TriangleSupport.build(tuple(tuple(vertices[i] for i in triangle) for triangle in triangles))
 
     def update(self, global_y, origin, occupied):
         wanted = set(indices_around(global_y))
@@ -44,12 +47,14 @@ class StreamedRoad:
         start = index * SEGMENT_LENGTH - origin
         bodies = []
         shapes = self.shapes
+        supports = self.supports
         base = (0, start, 0)
         if self.curve:
             x, y, z = curve_mesh.anchor(self.curve, index)
             base = (x, y - origin, z)
             self.meshes[index] = curve_mesh.surfaces(self.curve, index)
             shapes = {}
+            supports = {}
             for name, (vertices, triangles) in self.meshes[index].items():
                 mesh = BulletTriangleMesh()
                 for triangle in triangles:
@@ -57,9 +62,11 @@ class StreamedRoad:
                 shape = BulletTriangleMeshShape(mesh, dynamic=False)
                 shape.setMargin(0.01)
                 shapes[name] = shape
+                supports[name] = TriangleSupport.build(tuple(tuple(vertices[i] for i in triangle) for triangle in triangles))
         for name, shape in shapes.items():
             body = BulletRigidBodyNode(f"segment-{index}-{name}")
             body.addShape(shape)
+            body.setPythonTag("suspension_mesh", supports[name])
             body.setTransform(TransformState.makePos(Vec3(*base)))
             body.setIntoCollideMask(BitMask32(7))
             self.world.attachRigidBody(body)

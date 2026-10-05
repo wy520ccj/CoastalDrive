@@ -290,7 +290,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 raise ArithmeticError("限滑/离合共同末状态无可行分区")
             error = max(abs(end[a] - state[a]) for a in range(dimensions))
             state = end
-            if error < 1e-12:
+            if error < 1e-14:
                 return state, end_velocity, clutch, loss, gear_reaction
         raise ArithmeticError("曲轴/四轮转子共同末状态超过30次迭代")
 
@@ -579,7 +579,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     state = initial
     normal_error = 0.
     geometry_error = 0.
-    normal_tolerance = 1e-10 if suspension is not None and suspension.kinematics is not None else 1e-8
+    normal_tolerance = 1e-10
     for sweep in range(20):
         state, end_velocity, clutch, loss, gear_reaction = shared(state)
         if suspension is not None:
@@ -598,6 +598,12 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         state, end_velocity, clutch, loss, gear_reaction = shared(state)
         if shaft:
             correct_brakes(state)
+            state, end_velocity, clutch, loss, gear_reaction = shared(state)
+        if suspension is not None:
+            # 接触块之后用实际末速度刷新硬件反力，再同步机械速度。
+            # 预条件块的力与直接本构式可能相差一个舍入位，不能把它留作收敛残差。
+            normal_forces = shared_suspension(suspension, end_velocity, state[:3], dt).axial_force
+            normal_loads()
             state, end_velocity, clutch, loss, gear_reaction = shared(state)
         maximum, brake_error = 0., 0.
         for i in range(4):
