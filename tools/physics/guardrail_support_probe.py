@@ -18,11 +18,17 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--coupled-off", action="store_true")
     parser.add_argument("--steps", type=int, default=30)
+    parser.add_argument("--vehicle-config", type=Path, help="两输入模式使用同一完整工程硬件")
     args = parser.parse_args()
     source = args.source.resolve()
     sys.path.insert(0, str(source))
     import simulation
     from driving_modes import DrivingMode
+
+    if args.vehicle_config is not None:
+        # 工程文件入口来自当前工具；旧外部源码默认工况无需此新模块。
+        sys.path.append(str(ROOT/"src"))
+        from vehicle_parameters import load_vehicle_config
 
     assert Path(simulation.__file__).resolve() == source / "simulation.py"
     args.output.mkdir(parents=True, exist_ok=False)
@@ -31,9 +37,11 @@ def main():
     for mode in DrivingMode:
         for centered in (False, True):
             name = f"{mode.value}-{'partitioned' if centered else 'box'}"
-            config = replace(mode.vehicle_config, centered_collision_support=centered,
+            hardware = mode.vehicle_config if args.vehicle_config is None else load_vehicle_config(args.vehicle_config, mode.vehicle_config)
+            config = replace(hardware, centered_collision_support=centered,
                              suspension_coupled_enabled=not args.coupled_off)
-            world = simulation.Simulation(track="highway", traffic_count=0, config=config)
+            world = simulation.Simulation(track="highway", traffic_count=0, config=config,
+                                          input_config=mode.input_config)
             peak_load = peak_residual = 0.
             events = []
             completed, error = 0, None
@@ -65,6 +73,7 @@ def main():
     after = {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(source.glob("*.py"))}
     passed = all(row["error"] is None and row["completed"] == args.steps for row in results) and hashes == after
     report = {"source": str(source), "coupled_off": args.coupled_off, "passed": passed,
+              "vehicle_config_file": None if args.vehicle_config is None else str(args.vehicle_config),
               "source_stable": hashes == after, "source_sha256": hashes, "results": results}
     (args.output / "summary.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"passed": passed, "cases": results}, ensure_ascii=False))

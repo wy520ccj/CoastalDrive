@@ -15,7 +15,7 @@ AREAS = {
     "workflow": ["test_validation_runner"],
     "core": ["test_core", "test_stage4"],
     "vehicle": ["test_h1_vehicle", "test_driving_response", "test_curved_driving",
-                "test_road_loads", "test_rolling_resistance", "test_vehicle_parameters", "test_vehicle_designs", "test_vehicle_contacts", "test_physics_testbed", "test_h2_map",
+                "test_road_loads", "test_rolling_resistance", "test_vehicle_parameters", "test_vehicle_designs", "test_design_spawn", "test_vehicle_contacts", "test_physics_testbed", "test_h2_map",
                 "test_vehicle_commands", "test_steering_geometry", "test_tire_forces",
                 "test_wheel_dynamics", "test_vehicle_tires", "test_vehicle_config",
                 "test_suspension_si", "test_suspension_coupling", "test_suspension_native", "test_suspension_contacts", "test_suspension_envelope", "test_joint_suspension", "test_finite_suspension", "test_curved_suspension", "test_world_substeps",

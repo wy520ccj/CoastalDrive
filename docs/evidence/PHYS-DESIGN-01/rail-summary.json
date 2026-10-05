@@ -1,0 +1,294 @@
+{
+  "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src",
+  "coupled_off": false,
+  "passed": true,
+  "vehicle_config_file": "docs\\evidence\\PHYS-DESIGN-01\\designs\\reference-rwd.json",
+  "source_stable": true,
+  "source_sha256": {
+    "application.py": "651a05d0174c981cf6ba658cfef862cc309922d52ea21a693ea5150ce03b3e6c",
+    "chase_camera.py": "4a8273238e7b49f1c8fb72e78c37e518c8b1aa863510f01c7a4f561b09f11146",
+    "coastal_collision.py": "46ac5830de691b08a1acc47f19d7fb2e0accd21ece1acab8cf34666867760b41",
+    "coastal_map.py": "038288a510d2db1b6de136b8e7408c72999eef979145bd454cfaeeffe7b62ade",
+    "controls.py": "1ffceba7d5c14f4fa2945d0e35c4e137b45443f989539f0d7aa22ca269436cad",
+    "curve_mesh.py": "105d779c136301731934b22530bb30ce1c4aa3235edb04d8ed472a13ec9e2ff2",
+    "differential.py": "954677fe7c20e40d04c0956465eb544a83646eccd86f45210ea045ccc49cc5fd",
+    "driveline_inertia.py": "95c71537b1b810443596ae7ea1568573182208534d2e9a03d9020e13cda70196",
+    "driver_assist.py": "09e33431cdd3adee4ec22366bdeccaa7877272a6a1a9d65d49d232b96bfdfe83",
+    "driving_modes.py": "8ea92ef9f8840c930d12769612540aa6983c965103d5922a2e526f90f1882907",
+    "garage.py": "54d20cd8e175ed2fe75bf5da0f70b9f997d5215b2ce197be0a4f21dc831c05fd",
+    "highway_curve.py": "30b2a7c6d75a38bbce538198e1e53295d1afa6dd14d05760d085d3d150a4e64e",
+    "highway_driver.py": "ca6c8c2155b48b9130d1008b74e0fab904e10e16d860f6d55f39259ae610c226",
+    "highway_map.py": "fc426d2d95134851304c49885f6d0c6caf728e118f3da939878b38721f11592b",
+    "highway_run.py": "6b0520d5ab68e46919a99cbb953b98c5f0e806222bfe4e55d5ee03dd731b6d6b",
+    "highway_segments.py": "ba5494eb325e107d1a40477272db799d4fd26f8cfb7ec8b265c038ff39b1da40",
+    "impact_events.py": "d84747f93b1cafa8b33ee9322f8870ed0bbdd7bf149d4daff281ea7430d6dd5b",
+    "main.py": "c5914c6500beed6a17849f6cf4c574b0cdf4c7ced8b75818692c3d88e7c7c18a",
+    "paths.py": "6c9e79bf75ebad3ff0eb509ca8e910fb5a90ca7a89077acd90f844a57078699c",
+    "performance_baseline.py": "c961ebbbca5714f6fd219322e6f4067cdc2730727d64434fbc7f74afbc4d3bdd",
+    "phase0_app.py": "8ec41455706e637735c1419b836cd9b88f15d2f3a6072438b08c83b129dc9e2c",
+    "powertrain.py": "a421003c7370b278f61677cc77b29af07d950ccc281ed57bed90689686883f85",
+    "race.py": "7804a9591ec7dcc979637f5b3f4f4bf758285762b37f0664bd5cfb995a7d1981",
+    "rolling_resistance.py": "11d4f1828ea302a99a8d50875149fb84849aa807a13fb4752ab1173d209b3faf",
+    "rotor_dynamics.py": "c4077261f5c4baba6455d622211b7e8f79360c75c6b7e2566eca42755b1103be",
+    "scene.py": "68ce959ee496ac68dd28c837c8702959a1cbc06754329e9af0ef95bdcf48879f",
+    "session.py": "75db5eae528f03494d74e442b33c3958c9309b23cb56ca5f627f930b2f24a0e6",
+    "settings.py": "1b869c80d8e12bb82aa0425e3a5e8f9540e27c9def65aae78e76edc0c2dd6f4f",
+    "shaft_transmission.py": "13595a9a20d3a533e92f163cbc72acc10b63444cd8bf2c2fc04c413735569105",
+    "simulation.py": "c2fc6bf8e19d633c31646013121230f98df1ddb2480f1d81103d3df691029ba0",
+    "skins.py": "7e08946d3c59c24f5d33ed268e7be60be964d5a1b637b2a55844af6185439200",
+    "sky_dome.py": "45437938b4e2c47cf68fcb84da16553143957bd2d0c1696a44781c1d0fb83a4b",
+    "soundscape.py": "1671c176b8ec8e26eaabd3ab143d51e1ee6e6dafea52b305682a54c5ea4e3415",
+    "streamed_road.py": "8c9d2279c34e5e5e280166ef19187f4a454917981a9f6af0dca00d9542eecd9a",
+    "suspension.py": "8cf590a40782cdba19d85e1bce7b6f68cfec62e81ecbab83c247d4afcbb23c05",
+    "suspension_contacts.py": "9b9cef9a679d52ece578159388ca2927d1185bc5d0100fccbe3edd0ff32be7d4",
+    "suspension_geometry.py": "384973822550e3add000af8e2f205dde62d7f7a8e496f7a7ab7a60b2c949e1f1",
+    "suspension_kinematics.py": "d2a9762e89cd2db3217110330b394ba4105869a56d20100f4d751537d56bf9c6",
+    "test_track.py": "ae90f12ab8647ec859ad7931f501b3183371a1fa11936c9edeb59c882db72cfa",
+    "tire_compliance.py": "4f5bbf29a86c5a84d5cb12b415ce07027e3949683d10583cd6c7f15228a392c6",
+    "tire_coupling.py": "c29a5913f48c00c000c7c6973a58d10cf9d7e019b028934e4a8be9a2207430cf",
+    "tire_drivetrain.py": "c81f3ac1864313c710bd4e96229004d1da1419518ae0fc8ab22976ac334b67ac",
+    "tire_forces.py": "81503a0b30fb6aef3ca467a1255128ba95176a0d0ece7ba4a255cd941ab6306e",
+    "tire_properties.py": "ec722554e2173ebd7705c080249ca8ebd7c1509542bc8ffdf0877dd03286c329",
+    "tracks.py": "f9d5fef1c7b9f4d808fdcb3074f6e1adbf92a6ee57bcdd04e60fc4637580f42d",
+    "traffic.py": "3e3d4bd44b16226962436bde66ea5bc11559cb59d1475c1df2905a61759a96d0",
+    "traffic_recovery.py": "b455ff05ae1f8dbd524662a831f808f67986699378d54840416c308216072d9a",
+    "transmission_ports.py": "e211605de2c8dd0935dd8fd271880a3c0fd11e256ce2a960f3a7a4f30d68433f",
+    "triangle_support.py": "dd0e7c635e4be92880f4679d0c3ed710e38bcd0392da0bb5d444abb698ae4861",
+    "vehicle.py": "a5c7c07c72b7066b369e3df4783f6ae2dffc7625638581959d9707bc062301c5",
+    "vehicle_brakes.py": "edc2a07b63e0c8470141abe149ca8dd0db379959c9715341337e1746e82f703a",
+    "vehicle_collision.py": "3b10a6b5bf79d9c4e7439810d51aac653e98721f8b82c9ee1bf43f0dabff5874",
+    "vehicle_config.py": "cbccc47ba361be80a9d4ed9eb80e187378637a1d6df9b5281570076c4cce18f9",
+    "vehicle_contacts.py": "263f782cb50462972f7626722aec27273fac70a92a335c64a4ba3392e3483eaf",
+    "vehicle_designs.py": "44014cdc8d56f408b17fc671cf02b4307eaf04f1924db14c9c9a8dd0b1846c32",
+    "vehicle_dynamics.py": "56564b31ed5e8c29a2063d95cb28c17c5b13cc41d1b9c15ca4e12a23a288c140",
+    "vehicle_parameters.py": "f3d60755a718d0d5ad4288f2873202279f5162b07d45eecaf1f7341a871cd1ae",
+    "vehicle_stability.py": "3d90276b5e311e303c6ce27f6982e7b0cd27a4f547bc6a597a1898d847d229b6",
+    "vehicle_state.py": "5a745653a92bae753f39756ebe64061f821ceb9ce1adfa0a2245d44a042faebe",
+    "vehicle_steering.py": "e6841e5206685fe76281bbd84c1ac0a0c5c2cf0a225a5814dc4cca4c91769a6f",
+    "vehicle_suspension.py": "765748dd546a83d30820224f07f171a450b7e24dafb3de9fa7283cce27b7bd2f",
+    "vehicle_tires.py": "10cdc460c0e68b4a8437ce169f817b5cfe37e64dc3d67e8c32ab952bece9f76d",
+    "vehicle_traction.py": "3290939ea56d16d33287d9591e163f073f21fe2654c7f0ba3031456dec00492d",
+    "vehicle_visual.py": "93caa52efbfb5fa03e68f1d2358f9ade5160f276c3eb59f975eaf2bd45cbdc46",
+    "wheel_dynamics.py": "87f9d94a8dc9291f8f3002669113fc068035e6c91515c04188a605e5224ef7bc",
+    "wheel_envelope.py": "f0b0b5d0a66a6117aa360892c3c870c66b4b41f3e64216c479ea20cceee3422b",
+    "wheel_geometry.py": "9f859bba46ca9f8514aa3f6183543557a6e3d1db827ed24a1792def905d639ed",
+    "world_props.py": "20bdad65716f9d63ffd22cf5138439f761408c95830fc36696298c694405291f",
+    "world_step.py": "f79b377c2e315e12e1ad60f92f565ec291fe004cf4b79e1ca8837a64228bc7bc"
+  },
+  "results": [
+    {
+      "case": "game-box",
+      "completed": 30,
+      "requested": 30,
+      "error": null,
+      "peak_load_n": 14214.73801069766,
+      "peak_local_energy_residual_j": 9.947598300641403e-14,
+      "final_position": [
+        6.706397533416748,
+        32.30303192138672,
+        0.4219714105129242
+      ],
+      "final_roll_deg": -0.2942742705345154,
+      "impacts": [
+        {
+          "epoch": 2,
+          "tick": 17,
+          "index": 0,
+          "sources": [
+            1
+          ],
+          "material": "metal_barrier",
+          "raw_impulse": 2635.939208984375,
+          "excess_impulse": 2635.939208984375,
+          "normal_speed": 7.962913990020752,
+          "tangential_speed": 12.009227752685547,
+          "local_position": [
+            0.990323543548584,
+            -2.164276123046875,
+            0.32557880878448486
+          ],
+          "local_normal": [
+            -0.9999386790350286,
+            -0.008912383687584718,
+            0.006573247803575259
+          ],
+          "zone": "right",
+          "contact_age_ticks": 1
+        },
+        {
+          "epoch": 2,
+          "tick": 18,
+          "index": 0,
+          "sources": [
+            1
+          ],
+          "material": "metal_barrier",
+          "raw_impulse": 8552.383514404297,
+          "excess_impulse": 8291.623506830412,
+          "normal_speed": 8.218570470072232,
+          "tangential_speed": 8.755139879088507,
+          "local_position": [
+            0.9822453215562428,
+            1.0802485397440016,
+            -0.06832050013925527
+          ],
+          "local_normal": [
+            -0.9999692942816539,
+            -0.007125516817256272,
+            0.0032615186551985683
+          ],
+          "zone": "right",
+          "contact_age_ticks": 2
+        }
+      ]
+    },
+    {
+      "case": "game-partitioned",
+      "completed": 30,
+      "requested": 30,
+      "error": null,
+      "peak_load_n": 15391.630368679671,
+      "peak_local_energy_residual_j": 2.7000623958883807e-13,
+      "final_position": [
+        6.753027439117432,
+        32.57681655883789,
+        0.41487860679626465
+      ],
+      "final_roll_deg": -2.746096134185791,
+      "impacts": [
+        {
+          "epoch": 4,
+          "tick": 17,
+          "index": 0,
+          "sources": [
+            1
+          ],
+          "material": "metal_barrier",
+          "raw_impulse": 7629.91796875,
+          "excess_impulse": 7629.91796875,
+          "normal_speed": 7.769336223602295,
+          "tangential_speed": 12.008920669555664,
+          "local_position": [
+            0.991124153137207,
+            -0.0386810302734375,
+            0.3207013010978699
+          ],
+          "local_normal": [
+            -0.9997690458059905,
+            -0.0011554842983959263,
+            0.021459727496299597
+          ],
+          "zone": "right",
+          "contact_age_ticks": 1
+        }
+      ]
+    },
+    {
+      "case": "simulation-box",
+      "completed": 30,
+      "requested": 30,
+      "error": null,
+      "peak_load_n": 14214.73801069766,
+      "peak_local_energy_residual_j": 9.947598300641403e-14,
+      "final_position": [
+        6.706397533416748,
+        32.30303192138672,
+        0.4219714105129242
+      ],
+      "final_roll_deg": -0.2942742705345154,
+      "impacts": [
+        {
+          "epoch": 6,
+          "tick": 17,
+          "index": 0,
+          "sources": [
+            1
+          ],
+          "material": "metal_barrier",
+          "raw_impulse": 2635.939208984375,
+          "excess_impulse": 2635.939208984375,
+          "normal_speed": 7.962913990020752,
+          "tangential_speed": 12.009227752685547,
+          "local_position": [
+            0.990323543548584,
+            -2.164276123046875,
+            0.32557880878448486
+          ],
+          "local_normal": [
+            -0.9999386790350286,
+            -0.008912383687584718,
+            0.006573247803575259
+          ],
+          "zone": "right",
+          "contact_age_ticks": 1
+        },
+        {
+          "epoch": 6,
+          "tick": 18,
+          "index": 0,
+          "sources": [
+            1
+          ],
+          "material": "metal_barrier",
+          "raw_impulse": 8552.383514404297,
+          "excess_impulse": 8291.623506830412,
+          "normal_speed": 8.218570470072232,
+          "tangential_speed": 8.755139879088507,
+          "local_position": [
+            0.9822453215562428,
+            1.0802485397440016,
+            -0.06832050013925527
+          ],
+          "local_normal": [
+            -0.9999692942816539,
+            -0.007125516817256272,
+            0.0032615186551985683
+          ],
+          "zone": "right",
+          "contact_age_ticks": 2
+        }
+      ]
+    },
+    {
+      "case": "simulation-partitioned",
+      "completed": 30,
+      "requested": 30,
+      "error": null,
+      "peak_load_n": 15391.630368679671,
+      "peak_local_energy_residual_j": 2.7000623958883807e-13,
+      "final_position": [
+        6.753027439117432,
+        32.57681655883789,
+        0.41487860679626465
+      ],
+      "final_roll_deg": -2.746096134185791,
+      "impacts": [
+        {
+          "epoch": 8,
+          "tick": 17,
+          "index": 0,
+          "sources": [
+            1
+          ],
+          "material": "metal_barrier",
+          "raw_impulse": 7629.91796875,
+          "excess_impulse": 7629.91796875,
+          "normal_speed": 7.769336223602295,
+          "tangential_speed": 12.008920669555664,
+          "local_position": [
+            0.991124153137207,
+            -0.0386810302734375,
+            0.3207013010978699
+          ],
+          "local_normal": [
+            -0.9997690458059905,
+            -0.0011554842983959263,
+            0.021459727496299597
+          ],
+          "zone": "right",
+          "contact_age_ticks": 1
+        }
+      ]
+    }
+  ]
+}

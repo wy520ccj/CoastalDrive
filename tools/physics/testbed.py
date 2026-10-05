@@ -199,7 +199,12 @@ def _run_case(case, directory, stride=6, *, config=None, input_config=None, actu
         if _advance_world is None:
             raise ValueError("坡路标准制动需要当前世界子步/车身俯仰接口")
         parameters["pitch"] = grade
-    vehicle = Vehicle(world, lambda x, y: _surface(case, x, y), (0, 0, 0.55),
+    # 标准试验出生点转换到当前CG；改变CG高度不改变初始车身/轮连接点的世界几何。
+    # 历史源码无需提供新的地图入口，明确配置中的原有CG字段足够定义此几何转换。
+    delta = 0. if config is None else config.center_of_mass_height-.42
+    slope = math.radians(grade)
+    spawn = (0, 0, .55) if delta == 0. else (0, -delta*math.sin(slope), .55+delta*math.cos(slope))
+    vehicle = Vehicle(world, lambda x, y: _surface(case, x, y), spawn,
                       reverse_enabled=False, **parameters)
     try:
         for _ in range(240):

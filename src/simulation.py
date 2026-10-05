@@ -32,7 +32,7 @@ from traffic import Driver, Road, extents
 from traffic_recovery import TrafficRecovery
 from triangle_support import TriangleSupport
 from vehicle import Vehicle
-from vehicle_config import CAR, body_center
+from vehicle_config import CAR, body_center, design_spawn
 from vehicle_contacts import shift_contacts
 from vehicle_state import (
     FIXED_DT,
@@ -119,14 +119,16 @@ class Simulation:
         self._reset_contact_history()
         self.seed = seed
         self.origin_y = 0.0
+        self.spawn = HIGHWAY_SPAWN if self.track in ("highway", "endless") else SPAWN
         self.road = Road(self.track, seed=seed, shape=self.road_shape)
         if self.track == "endless" and not self.road.curve:
             self.on_asphalt = lambda x, y: abs(x) <= 6.75
-            self.spawn = HIGHWAY_SPAWN
         if self.road.curve:
             self.on_asphalt = lambda x, y: self.road.curve.on_asphalt(x, y + self.origin_y)
             p = self.road.sample(8, 1)
-            self.spawn = (p.x, p.y, p.z + 0.55)
+            self.spawn = design_spawn((p.x, p.y, p.z + 0.55), self.config, p.heading, p.grade)
+        else:
+            self.spawn = design_spawn(self.spawn, self.config)
         self.rebases = 0
         self.stream = None
         self._tick = 0
@@ -468,7 +470,7 @@ class Simulation:
             car = Vehicle(
                 self._world,
                 self.on_asphalt,
-                (p.x, p.y, p.z + 0.55),
+                design_spawn((p.x, p.y, p.z + 0.55), self.config, p.heading, p.grade),
                 name=f"traffic-{i}",
                 wind=self.wind,
                 heading=p.heading,
@@ -585,7 +587,7 @@ class Simulation:
             lane = self.drivers[i].lane
             for distance in range(30, 1250, 40):
                 p = self.road.sample(distance, lane)
-                position = (p.x, p.y, p.z + 0.55)
+                position = design_spawn((p.x, p.y, p.z + 0.55), self.config, p.heading, p.grade)
                 if not self._outside_player_view(position):
                     continue
                 if not self._position_clear(position, p.heading, ignore=car):
@@ -616,7 +618,7 @@ class Simulation:
             lane = self.drivers[i].lane
             for offset in (960, 1000, 1040):
                 p = self.road.sample(player_y + direction * offset, lane)
-                point = (p.x, p.y, p.z + 0.55)
+                point = design_spawn((p.x, p.y, p.z + 0.55), self.config, p.heading, p.grade)
                 if not self._position_clear(point, p.heading, ignore=car):
                     continue
                 car.reset(point, p.heading, p.grade)
@@ -669,7 +671,7 @@ class Simulation:
                 target_s = max(8, min(HIGHWAY_LENGTH - 10, target_s))
             for lane in lanes:
                 p = self.road.sample(target_s, lane)
-                position = (p.x, p.y, p.z + 0.55)
+                position = design_spawn((p.x, p.y, p.z + 0.55), self.config, p.heading, p.grade)
                 if self._position_clear(position, p.heading, ignore=self.player):
                     self.reset_player(position, p.heading, p.grade)
                     return True
@@ -683,9 +685,9 @@ class Simulation:
         if at_spawn and self.stream:
             distance = 8 if self.road.curve else 8 - self.origin_y
             p = self.road.sample(distance, 1)
-            position = (p.x, p.y, p.z + 0.55)
             heading = p.heading if heading is None else heading
             pitch = p.grade
+            position = design_spawn((p.x, p.y, p.z + 0.55), self.config, heading, pitch)
         self.player.reset(
             self.spawn if position is None else position, 0 if heading is None else heading, pitch
         )

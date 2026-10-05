@@ -194,4 +194,14 @@ def body_center(config=CAR):
             config.body_center_height - config.center_of_mass_height)
 
 
+def design_spawn(position, config=CAR, heading=0., pitch=0.):
+    """地图出生点沿车身上轴从原设计CG高度转换到所选硬件CG；显式世界坐标不调用它。"""
+    delta = config.center_of_mass_height-CAR.center_of_mass_height
+    if delta == 0.:
+        return position
+    h, p = math.radians(heading), math.radians(pitch)
+    up = math.sin(h)*math.sin(p), -math.cos(h)*math.sin(p), math.cos(p)
+    return tuple(value+delta*axis for value, axis in zip(position, up))
+
+
 WHEEL_HUBS = wheel_hubs()

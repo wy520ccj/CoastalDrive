@@ -71,7 +71,7 @@ def _contact_loads(snapshot):
     return front, rear
 
 
-def run_trial(case, config, ticks=None):
+def run_trial(case, config, ticks=None, *, sample_stride=SAMPLE_STRIDE):
     if case not in CASES:
         raise ValueError(f"unknown reference comparison: {case}")
     default_ticks, scenario = CASES[case]
@@ -126,7 +126,7 @@ def run_trial(case, config, ticks=None):
                         wheel.longitudinal_speed
                     ) > 1.0:
                         locked_wheel_ticks += 1
-            if tick % SAMPLE_STRIDE == 0 or tick == 1:
+            if tick % sample_stride == 0 or tick == 1:
                 row = {"tick": tick, "time_s": tick * FIXED_DT}
                 _flatten("command", asdict(command), row)
                 _flatten("state", asdict(snapshot), row)
@@ -159,6 +159,7 @@ def run_trial(case, config, ticks=None):
             "mean_rear_normal_load_n": statistics.fmean(all_rear),
             "static_front_normal_load_n": static_front_load,
             "static_rear_normal_load_n": static_rear_load,
+            "settled_snapshot": asdict(static_snapshot),
             "initial_front_normal_load_n": initial_front,
             "initial_rear_normal_load_n": initial_rear,
             "late_front_normal_load_n": tail_front,
