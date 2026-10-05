@@ -8,11 +8,15 @@ import json
 import math
 import subprocess
 import sys
-from dataclasses import asdict, replace
+from dataclasses import asdict
 from pathlib import Path
 
 from panda3d.bullet import BulletPlaneShape, BulletRigidBodyNode, BulletWorld
 from panda3d.core import BitMask32, Plane, Vec3
+
+# 工程文件恢复仅依赖标准库；历史物理源码仍在_load_source中显式选择。
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+from vehicle_parameters import load_vehicle_config
 
 MASK = BitMask32.bit(0) | BitMask32.bit(1)
 CASES = (
@@ -327,42 +331,6 @@ def _run_case(case, directory, stride=6, *, config=None, input_config=None, actu
 def _git_sha():
     return subprocess.run(["git", "rev-parse", "HEAD"], check=True, capture_output=True, text=True).stdout.strip()
 
-
-def load_vehicle_config(path, selected):
-    """JSON文件边界恢复不可变配置；嵌套电子配置继承选定车型。"""
-    values = json.loads(Path(path).read_text(encoding="utf-8"))
-    if "braking" in values:
-        values["braking"] = replace(selected.braking, **values["braking"])
-    if "stability" in values:
-        values["stability"] = replace(selected.stability, **values["stability"])
-    if "traction" in values:
-        values["traction"] = replace(selected.traction, **values["traction"])
-    if "torque_curve" in values:
-        values["torque_curve"] = tuple(tuple(node) for node in values["torque_curve"])
-    if "gear_ratios" in values:
-        values["gear_ratios"] = tuple(values["gear_ratios"])
-    for name in ("engine_axis", "input_shaft_axis"):
-        if name in values:
-            values[name] = tuple(values[name])
-    for name in ("differential_damping", "differential_capacity", "downstream_inertias"):
-        if name in values:
-            values[name] = tuple(values[name])
-    if "downstream_axes" in values:
-        values["downstream_axes"] = tuple(tuple(axis) for axis in values["downstream_axes"])
-    si_fields = ("suspension_spring_rates", "suspension_compression_damping", "suspension_extension_damping",
-                 "suspension_antiroll_rates", "suspension_stop_rates")
-    if "suspension_si_enabled" not in values:
-        # 配置文件的单位版本边界：旧归一化字段仍选旧单位，显式硬件字段选SI。
-        if any(name in values for name in si_fields):
-            values["suspension_si_enabled"] = True
-        elif any(name in values for name in ("suspension_stiffness", "suspension_compression", "suspension_relaxation")):
-            values["suspension_si_enabled"] = False
-    for name in si_fields:
-        if name in values:
-            values[name] = tuple(values[name])
-    if "body_inertia" in values and values["body_inertia"] is not None:
-        values["body_inertia"] = tuple(values["body_inertia"])
-    return replace(selected, **values)
 
 
 def run(output, cases=CASES, source_dir=None, label=None, *, driving_mode=None,
