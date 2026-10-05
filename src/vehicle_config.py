@@ -78,6 +78,10 @@ class VehicleConfig:
     slip_speed: float = 1.0  # 低速滑移分母的模型尺度，m/s。
     static_contact_speed: float = .25  # 低速无滑移接触的切换尺度，m/s。
     tire_substeps: int = 2
+    suspension_si_enabled: bool = True  # false沿用质量归一化旧硬件，供明确旧/新对照。
+    suspension_spring_rates: tuple = (48000.,) * 4  # N/m；四轮实际弹簧设计值，平路与旧1200kg参数相同。
+    suspension_compression_damping: tuple = (5280.,) * 4  # N·s/m；原生法向力对射线压缩速率的系数。
+    suspension_extension_damping: tuple = (2760.,) * 4  # N·s/m；原生法向力对射线伸张速率的系数。
     suspension_stiffness: float = 40.0
     suspension_compression: float = 4.4
     suspension_relaxation: float = 2.3
@@ -106,6 +110,11 @@ class VehicleConfig:
     suspension_force_limit: float = 6000.0
 
     def __post_init__(self):
+        if len(self.suspension_spring_rates) != 4 or any(not math.isfinite(k) or k <= 0 for k in self.suspension_spring_rates):
+            raise ValueError("四轮弹簧刚度须为有限正值N/m")
+        for coefficients in (self.suspension_compression_damping, self.suspension_extension_damping):
+            if len(coefficients) != 4 or any(not math.isfinite(c) or c < 0 for c in coefficients):
+                raise ValueError("四轮悬架阻尼须为有限非负值N·s/m")
         if len(self.downstream_inertias) != 3 or any(not math.isfinite(j) or j <= 0 for j in self.downstream_inertias):
             raise ValueError("输出/前/后轴惯量须为三个有限正值")
         if len(self.downstream_axes) != 3 or any(len(axis) != 3 or any(not math.isfinite(v) for v in axis)

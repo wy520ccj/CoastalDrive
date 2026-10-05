@@ -1,6 +1,6 @@
 # PHYS-SUSP-01 悬架工程单位与防倾耦合
 
-- 状态：planned；前置PHYS-DRIVE-05收口后实施，当前未改悬架生产行为。
+- 状态：in_progress；基线c95b5f1。第一增量已将逐轮SI硬件接入两模式原生车辆，完整悬架功能块尚未完成；本轮仅本地提交。
 - 目标：弹簧/压缩阻尼/伸张阻尼采用真实N/m与N·s/m，车身质量改变时保持同一硬件参数；前/后防倾耦合进入实际轮荷与车身反力。仍使用唯一Bullet世界及原生射线支撑，不宣称新增完整簧下刚体。
 - SI接入：在Vehicle原生轮配置边界将实际k、c除以真实车身质量传给Bullet；逐轮硬件、单位与原生有效参数进入完整参考表。配置文件的旧归一化参数按明确版本/字段语义处理，不在内部机械接口静默猜测。标称车先保持原有效硬件，质量A/B才显示真实下沉/频率变化。
 - 斜接触：平路质量映射已有原生证据；法线与悬架方向不平行时，原生弹簧几何项和相对速度定义还须核对虚功/耗散，不能只换单位标签就宣称真实轴向硬件。近掠接触的原生截断、力上限与离地状态须进入实际观测。
@@ -8,4 +8,13 @@
 - 验证：沿用[已有SI预检](../evidence/PHYS-DRIVE-01/suspension-si-preflight.md)，结合当前基线核对原生单位。独立虚功/能量、质量变化静态下沉与自由振动、左右对称/单侧起伏、离地再接触，以及两模式定圆/阶跃对照。相关短T0、一次功能T1；保留原轮胎/传动残差和真实碰撞，不追加整套长实验。
 - 后续：参数标定及完整实车型仍依据有来源的质量、几何和硬件；原护栏音频失败、功能组T2/T3、前台性能及用户两模式驾驶继续单列。
 
-核对依据：[Bullet updateSuspension源码](https://github.com/bulletphysics/bullet3/blob/master/src/BulletDynamics/Vehicle/btRaycastVehicle.cpp)将弹簧/阻尼表达式乘车身质量，并保留接触法线几何项及原生力上限；[Panda3D射线车辆接口](https://docs.panda3d.org/1.10/python/programming/physics/bullet/vehicles)。实现前核对本地实际Bullet版本与已有原生试验，不把上游master直接当本机二进制证据。
+## 当前增量与证据
+
+- `src/suspension.py`直接换算四轮k、压缩c和伸张c；Vehicle配置原生轮时除以实际刚体质量。默认48,000N/m、5,280/2,760N·s/m保持1200kg旧有效参数；质量变化时硬件数值保持。显式关闭开关沿用旧质量归一化分支。
+- JSON外部单位边界：有显式SI字段选SI，有旧归一化字段且无显式开关选旧单位；开关优先。完整reference-v15已真实导出88车辆/8制动/10TCS/10稳定/9输入字段，成绩版本同步区分。
+- 当前阻尼定义为原生法向力对射线行程速率的系数，平路等于轴向硬件。斜接触共轭修正与防倾杆均未实施，也未新增悬架能量账或完整簧下刚体。
+- 短T0：11项通过，pytest1.80s；全源码Ruff通过。首次Ruff发现工具未使用的math导入，删除后进入本次有效T0。八组两模式1200/1800kg、旧/SI对照全部完成，共1920原生拍；298Python文件前后相同。1800kg旧末段压缩61.291mm，SI为91.748mm，理论静态值91.969mm；末段仍有衰减瞬态，不当作精确静态平衡。
+- 关闭新机制两模式共240拍与c95b5f1的全部CarState字节一致，无字段投影；reference-v15导出成功。命令、原始轨迹、哈希及未跑项见[本增量证据](../evidence/PHYS-SUSP-01/README.md)与[硬件回执](../evidence/PHYS-SUSP-01/hardware-receipt.json)。本轮未追加T1/T2/T3或人工驾驶，未宣称任务收口。
+- 下一施工：斜接触阻尼的轴向功率共轭，以及左右行程差防倾储能/反力；实际施加的法向冲量、轮胎轮荷与Snapshot须一致，继而一次功能T1及所列短对照。
+
+核对依据：本机Bullet版本284；[Bullet 2.84 updateSuspension源码](https://github.com/bulletphysics/bullet3/blob/2.84/src/BulletDynamics/Vehicle/btRaycastVehicle.cpp)将弹簧/阻尼表达式乘车身质量，保留接触法线几何项及原生力上限；[Panda3D射线车辆接口](https://docs.panda3d.org/1.10/python/programming/physics/bullet/vehicles)。八组原生结果独立核对平路实际公式；上游版本源码不替代本机运行证据。

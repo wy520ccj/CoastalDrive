@@ -8,6 +8,7 @@ from panda3d.core import BitMask32, TransformState, Vec3
 
 from driver_assist import GAME_INPUT, DriverAssist
 from powertrain import Powertrain
+from suspension import native_coefficients
 from vehicle_brakes import Brakes
 from vehicle_collision import install_chassis_shape
 from vehicle_config import CAR, wheel_hubs
@@ -80,7 +81,7 @@ class Vehicle:
         vehicle = BulletVehicle(self._world, chassis)
         vehicle.setCoordinateSystem(ZUp)
         self._world.attachVehicle(vehicle)
-        for x, y, z in self.hubs:
+        for index, (x, y, z) in enumerate(self.hubs):
             wheel = vehicle.createWheel()
             wheel.setChassisConnectionPointCs(Vec3(x, y, z))
             wheel.setWheelDirectionCs(Vec3(0, 0, -1))
@@ -89,9 +90,10 @@ class Vehicle:
             wheel.setFrontWheel(y > 0)
             wheel.setMaxSuspensionTravelCm(self.config.suspension_travel * 100)
             wheel.setMaxSuspensionForce(self.config.suspension_force_limit)
-            wheel.setSuspensionStiffness(self.config.suspension_stiffness)
-            wheel.setWheelsDampingRelaxation(self.config.suspension_relaxation)
-            wheel.setWheelsDampingCompression(self.config.suspension_compression)
+            stiffness, compression, extension = native_coefficients(self.config, index, chassis.getMass())
+            wheel.setSuspensionStiffness(stiffness)
+            wheel.setWheelsDampingRelaxation(extension)
+            wheel.setWheelsDampingCompression(compression)
             wheel.setFrictionSlip(0)
             wheel.setRollInfluence(0.1)
 
