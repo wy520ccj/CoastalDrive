@@ -1,0 +1,62 @@
+RUF007 Prefer `itertools.pairwise()` over `zip()` when iterating over successive pairs
+  --> src\suspension_contacts.py:57:24
+   |
+55 |                                 for bound in (-half[a], half[a])
+56 |                                 if low < (t := (bound - start[a]) / speed[a]) < high)})
+57 |     for left, right in zip(knots, knots[1:]):
+   |                        ^^^
+58 |         middle = tuple(start[a] + (left + right) * speed[a] / 2 for a in range(3))
+59 |         axes = [a for a in range(3) if abs(middle[a]) > half[a]]
+   |
+help: Replace `zip()` with `itertools.pairwise()`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\test_suspension_envelope.py:3:1
+   |
+ 1 |   """有限轮半径的面/棱/角几何与虚功；独立解析期望，不复用生产求交作期望。"""
+ 2 |
+ 3 | / import math
+ 4 | |
+ 5 | | import numpy as np
+ 6 | | import pytest
+ 7 | | from panda3d.bullet import BulletBoxShape, BulletPlaneShape, BulletRigidBodyNode, BulletTriangleMesh, BulletTriangleMeshShape, Bulle…
+ 8 | | from panda3d.core import BitMask32, TransformState, Vec3
+ 9 | |
+10 | | from suspension import contact_gradient
+11 | | from suspension_contacts import sphere_box_entry, suspension_rays
+   | |_________________________________________________________________^
+help: Organize imports
+   |
+6  | import pytest
+   - from panda3d.bullet import BulletBoxShape, BulletPlaneShape, BulletRigidBodyNode, BulletTriangleMesh, BulletTriangleMeshShape, BulletWorld
+7  + from panda3d.bullet import (
+8  +     BulletBoxShape,
+9  +     BulletPlaneShape,
+10 +     BulletRigidBodyNode,
+11 +     BulletTriangleMesh,
+12 +     BulletTriangleMeshShape,
+13 +     BulletWorld,
+14 + )
+15 | from panda3d.core import BitMask32, TransformState, Vec3
+   |
+
+F401 [*] `panda3d.core.TransformState` imported but unused
+  --> tests\test_suspension_envelope.py:8:37
+   |
+ 6 | import pytest
+ 7 | from panda3d.bullet import BulletBoxShape, BulletPlaneShape, BulletRigidBodyNode, BulletTriangleMesh, BulletTriangleMeshShape, BulletW…
+ 8 | from panda3d.core import BitMask32, TransformState, Vec3
+   |                                     ^^^^^^^^^^^^^^
+ 9 |
+10 | from suspension import contact_gradient
+   |
+help: Remove unused import: `panda3d.core.TransformState`
+  |
+7 | from panda3d.bullet import BulletBoxShape, BulletPlaneShape, BulletRigidBodyNode, BulletTriangleMesh, BulletTriangleMeshShape, BulletWorld
+  - from panda3d.core import BitMask32, TransformState, Vec3
+8 + from panda3d.core import BitMask32, Vec3
+9 |
+  |
+
+Found 3 errors.
+[*] 2 fixable with the `--fix` option (1 hidden fix can be enabled with the `--unsafe-fixes` option).

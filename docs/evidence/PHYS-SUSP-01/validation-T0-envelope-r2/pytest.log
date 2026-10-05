@@ -1,0 +1,88 @@
+.....FF.F..........................                                      [100%]
+================================== FAILURES ===================================
+_ test_box_sphere_uses_native_core_and_margin_instead_of_expanded_sharp_corner _
+
+    def test_box_sphere_uses_native_core_and_margin_instead_of_expanded_sharp_corner():
+        world = BulletWorld()
+        body = BulletRigidBodyNode("box")
+        shape = BulletBoxShape(Vec3(1., 1., 1.))
+        shape.setMargin(.04)
+        body.addShape(shape)
+        world.attachRigidBody(body)
+        start, end = Vec3(1.8, 0., 1.8), Vec3(.8, 0., .8)
+        hit, = suspension_rays(world, BulletRigidBodyNode("chassis"), ((start, end),), .33)
+        expected_center = .96 + (.33 + .04) / math.sqrt(2)
+        expected_point = .96 + .04 / math.sqrt(2)
+>       assert hit.fraction == pytest.approx((start.x - expected_center) / (start.x - end.x), abs=2e-8)
+E       assert 0.5783704998407047 == 0.5783704777508285 ± 2.0e-08
+E         
+E         comparison failed
+E         Obtained: 0.5783704998407047
+E         Expected: 0.5783704777508285 ± 2.0e-08
+
+tests\test_suspension_envelope.py:83: AssertionError
+_ test_surface_query_mask_excludes_chassis_without_disabling_rigid_collision __
+
+    def test_surface_query_mask_excludes_chassis_without_disabling_rigid_collision():
+        world = BulletWorld()
+        chassis = BulletRigidBodyNode("chassis")
+        chassis.setMass(1200.)
+        chassis.addShape(BulletBoxShape(Vec3(1.)))
+        chassis.setIntoCollideMask(BitMask32.bit(1))
+        world.attachRigidBody(chassis)
+        body = BulletRigidBodyNode("ground")
+        body.addShape(BulletPlaneShape(Vec3(0., 0., 1.), -1.))
+        body.setIntoCollideMask(BitMask32(7))
+        world.attachRigidBody(body)
+        mask_before = chassis.getIntoCollideMask()
+        hit, = suspension_rays(world, chassis, ((Vec3(0., 0., 2.), Vec3(0., 0., -2.)),), .33)
+        assert hit.node == body
+>       assert hit.point[2] == pytest.approx(-1., abs=1e-7)
+E       assert -1.0000001192092896 == -1.0 ± 1.0e-07
+E         
+E         comparison failed
+E         Obtained: -1.0000001192092896
+E         Expected: -1.0 ± 1.0e-07
+
+tests\test_suspension_envelope.py:102: AssertionError
+___ test_spherical_edge_extension_gradient_matches_independent_virtual_work ___
+
+    def test_spherical_edge_extension_gradient_matches_independent_virtual_work():
+        origin = np.array([0., 0., .5])
+        hub = np.array([1.5, .2, 1.5])
+        direction = np.array([-1., 0., -1.]) / math.sqrt(2)
+        edge = np.array([1., .2, 1.])
+        radius = .33
+        distance = np.linalg.norm(hub - edge) - radius
+        center = hub + distance * direction
+        normal = (center - edge) / radius
+        gradient = np.array(contact_gradient(normal, direction, edge - origin))
+        epsilon = 1e-7
+        numerical = []
+        for a in range(6):
+            delta = np.eye(6)[a] * epsilon
+            rotation = delta[3:]
+            moved_hub = hub + delta[:3] + np.cross(rotation, hub - origin)
+            moved_direction = direction + np.cross(rotation, direction)
+            difference = moved_hub - edge
+            qa = moved_direction @ moved_direction
+            qb = difference @ moved_direction
+            qc = difference @ difference - radius * radius
+            moved_distance = (-qb - math.sqrt(qb * qb - qa * qc)) / qa
+            numerical.append((moved_distance - distance) / epsilon)
+>       assert gradient == pytest.approx(numerical, abs=2e-7)
+E       assert array([ 0.707... -0.14142136]) == approx([0.707...76 ± 2.0e-07])
+E         
+E         comparison failed. Mismatched elements: 2 / 6:
+E         Max absolute difference: 2.943493100926453e-07
+E         Max relative difference: 1.6364329115839538e-06
+E         Index | Obtained            | Expected                      
+E         4     | -0.3535533905932738 | -0.3535530962439637 ± 2.0e-07 
+E         5     | -0.1414213562373095 | -0.14142112481074776 ± 2.0e-07
+
+tests\test_suspension_envelope.py:151: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_suspension_envelope.py::test_box_sphere_uses_native_core_and_margin_instead_of_expanded_sharp_corner
+FAILED tests/test_suspension_envelope.py::test_surface_query_mask_excludes_chassis_without_disabling_rigid_collision
+FAILED tests/test_suspension_envelope.py::test_spherical_edge_extension_gradient_matches_independent_virtual_work
+3 failed, 32 passed in 5.83s

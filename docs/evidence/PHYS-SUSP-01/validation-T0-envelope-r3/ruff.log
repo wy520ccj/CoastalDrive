@@ -1,0 +1,16 @@
+F401 [*] `panda3d.core.Vec3` imported but unused
+ --> src\suspension_contacts.py:8:69
+  |
+7 | from panda3d.bullet import BulletBoxShape, BulletPlaneShape, BulletSphereShape
+8 | from panda3d.core import BitMask32, Mat4, NodePath, TransformState, Vec3
+  |                                                                     ^^^^
+help: Remove unused import: `panda3d.core.Vec3`
+  |
+7 | from panda3d.bullet import BulletBoxShape, BulletPlaneShape, BulletSphereShape
+  - from panda3d.core import BitMask32, Mat4, NodePath, TransformState, Vec3
+8 + from panda3d.core import BitMask32, Mat4, NodePath, TransformState
+9 |
+  |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

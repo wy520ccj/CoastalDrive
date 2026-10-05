@@ -4,12 +4,15 @@ import argparse
 import gzip
 import hashlib
 import json
+import math
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT / "src"), str(ROOT / "tools")]
 
+from panda3d.bullet import BulletBoxShape
+from panda3d.core import Vec3
 from physics.suspension_coupled_probe import trial
 
 
@@ -20,12 +23,23 @@ def box_surface_error(point):
     return max(max(distances), 0.) + min(abs(value) for value in distances)
 
 
-def run(output):
+def rounded_box_surface_error(point):
+    """凸体扫掠使用原生Box内核与margin；独立SDF检查棱角和面。"""
+    shape = BulletBoxShape(Vec3(.4, 40., .05))
+    half, margin = shape.getHalfExtentsWithoutMargin(), shape.getMargin()
+    center = tuple(Vec3(-.84, 0., -.05))
+    local = tuple(point[a] - center[a] for a in range(3))
+    delta = tuple(abs(local[a]) - half[a] for a in range(3))
+    distance = math.sqrt(sum(max(d, 0.) ** 2 for d in delta)) + min(max(delta), 0.)
+    return abs(distance - margin)
+
+
+def run(output, prior):
     output.mkdir(parents=True, exist_ok=False)
     hashes = lambda: {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                      for group in ("src", "tests", "tools") for p in sorted((ROOT / group).rglob("*.py"))}
-    report = {"status": "running", "source_before": hashes(), "baseline": "f7c971f",
-              "protocol": "unchanged one-side fixture/initial conditions/commands; 360 native 120Hz steps per mode; true Box faces checked independently", "results": []}
+    report = {"status": "running", "source_before": hashes(), "baseline": "d0f64dd",
+              "protocol": "unchanged one-side fixture/initial conditions/commands; 360 native 120Hz steps per mode; finite-radius sphere envelope, native core+margin Box SDF independently checked; point-ray baseline reused", "results": []}
     pending = ["game", "simulation"]
     try:
         for mode in pending[:]:
@@ -37,18 +51,20 @@ def run(output):
                 with gzip.open(output / name, "wt", encoding="utf-8") as stream:
                     for row in rows:
                         stream.write(json.dumps(row, ensure_ascii=False, allow_nan=False) + "\n")
-            error = max(box_surface_error(c["contact_point"]) for row in rows
+            error = max(rounded_box_surface_error(c["contact_point"]) for row in rows
                         for c in row["car"]["wheel_contacts"] if c["in_contact"])
             assert error < 1e-6
-            prior = ROOT / "docs/evidence/PHYS-SUSP-01/passive-native-r2" / f"{mode}-one-side-coupled.jsonl.gz"
-            with gzip.open(prior, "rt", encoding="utf-8") as stream:
+            old_trace = prior / f"{mode}-one-side.jsonl.gz"
+            with gzip.open(old_trace, "rt", encoding="utf-8") as stream:
                 old_rows = [json.loads(line) for line in stream]
             old_error = max(box_surface_error(c["contact_point"]) for row in old_rows
                             for c in row["car"]["wheel_contacts"] if c["in_contact"])
             report["results"].append({**result, "trace": name, "max_box_surface_error_m": error,
-                                      "baseline_trace": prior.relative_to(ROOT).as_posix(),
-                                      "baseline_trace_sha256": hashlib.sha256(prior.read_bytes()).hexdigest(),
-                                      "baseline_max_box_surface_error_m": old_error})
+                                      "baseline_trace": old_trace.relative_to(ROOT).as_posix(),
+                                      "baseline_trace_sha256": hashlib.sha256(old_trace.read_bytes()).hexdigest(),
+                                      "baseline_max_nominal_box_surface_error_m": old_error,
+                                      "baseline_sum_signed_contact_offset_work_j": sum(row["car"]["suspension_state"]["step"]["contact_offset_work"] for row in old_rows),
+                                      "side_contact_ticks": [row["tick"] for row in rows if any(c["in_contact"] and c["contact_normal"][2] < .5 for c in row["car"]["wheel_contacts"])]})
             pending.remove(mode)
             print(f"DONE {mode}: surface error {old_error:.6g} -> {error:.6g}m; offset {result['sum_signed_contact_offset_work_j']:.6g}J", flush=True)
     except (ArithmeticError, AssertionError, ValueError, OSError) as error:
@@ -66,4 +82,6 @@ def run(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
-    run(parser.parse_args().output)
+    parser.add_argument("--prior", type=Path, default=ROOT / "docs/evidence/PHYS-SUSP-01/contact-native-r1")
+    args = parser.parse_args()
+    run(args.output, args.prior.resolve())

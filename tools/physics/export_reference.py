@@ -215,6 +215,7 @@ def measure(mode):
                        for i in range(body.getNumShapes())],
             "position": tuple(body.getTransform().getPos()),
             "suspension_authority": "coupled-SI" if car.coupled_suspension else "native-Bullet",
+            "suspension_contact_model": "finite-radius-sphere-envelope" if car.coupled_suspension else "native-point-ray",
             "suspension_state": asdict(car.suspension.state) if car.coupled_suspension else None,
             "wheels": [{
                 "hub": tuple(w.getChassisConnectionPointCs()), "radius": w.getWheelRadius(),
@@ -262,7 +263,7 @@ def export(output):
         "panda_version": PandaSystem.getVersionString(), "bullet_version": getBulletVersion(),
         "measurement": {"ticks": 240, "dt": FIXED_DT, "max_substeps": 0,
                         "ground": "水平无限平面", "gravity": [0, 0, -9.81], "input": "VehicleCommand()"},
-        "schema_version": "reference-v18",
+        "schema_version": "reference-v19",
         "vehicle_fields": VEHICLE_FIELDS, "brake_fields": BRAKE_FIELDS,
         "traction_fields": TRACTION_FIELDS, "stability_fields": STABILITY_FIELDS,
         "input_fields": INPUT_FIELDS, "modes": modes,
@@ -277,5 +278,5 @@ def export(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path,
-                        default=ROOT / "logs/physics/reference-v18/parameters.json")
+                        default=ROOT / "logs/physics/reference-v19/parameters.json")
     export(parser.parse_args().output)

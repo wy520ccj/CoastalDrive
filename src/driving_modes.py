@@ -40,7 +40,7 @@ class DrivingMode(Enum):
         return replace(config, braking=braking, traction=traction, stability=stability)
 
     def score_variant(self, abs_enabled, tcs_enabled=True, esc_enabled=True):
-        version = "game-controls-v15" if self == DrivingMode.GAME else "reference-v18"
+        version = "game-controls-v16" if self == DrivingMode.GAME else "reference-v19"
         abs_variant = "on" if abs_enabled else "off"
         tcs_variant = "on" if tcs_enabled else "off"
         esc_variant = "on" if esc_enabled else "off"

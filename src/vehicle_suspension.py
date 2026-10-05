@@ -29,8 +29,9 @@ class Suspension:
         geometry, gradients, contacts, initial = [], [], [], list(self.compression)
         constraint_compression = list(self.compression)
         lengths = tuple(w.getSuspensionRestLength() + config.suspension_travel + config.wheel_radius for w in wheels)
-        starts = tuple(pose.getMat().xformPoint(Vec3(*hub)) for hub in self.hubs)
-        hits = suspension_rays(world, chassis, tuple((start, start + direction * length) for start, length in zip(starts, lengths)))
+        # 路径描述轮心；向上退一个半径，保留原查询的压缩行程覆盖范围。
+        starts = tuple(pose.getMat().xformPoint(Vec3(*hub)) - direction * config.wheel_radius for hub in self.hubs)
+        hits = suspension_rays(world, chassis, tuple((start, start + direction * length) for start, length in zip(starts, lengths)), config.wheel_radius)
         for i, (wheel, ray_length, hit) in enumerate(zip(wheels, lengths, hits)):
             rest = wheel.getSuspensionRestLength()
             point = hit.point if hit else None

@@ -1,0 +1,39 @@
+{
+  "claim": "independent post-native-step actual wheel-center SDF; existing completed raw reused, no additional Simulation run",
+  "results": [
+    {
+      "mode": "game",
+      "samples": 1440,
+      "minimum_gap": {
+        "gap_m": -0.0007322909496724761,
+        "tick": 62,
+        "wheel": 2,
+        "supported": true
+      },
+      "minimum_unsupported_gap": {
+        "gap_m": 0.0011173691509828165,
+        "tick": 83,
+        "wheel": 2,
+        "supported": false
+      },
+      "trace": "game-one-side.jsonl.gz"
+    },
+    {
+      "mode": "simulation",
+      "samples": 1440,
+      "minimum_gap": {
+        "gap_m": -0.0006911637447774566,
+        "tick": 61,
+        "wheel": 2,
+        "supported": true
+      },
+      "minimum_unsupported_gap": {
+        "gap_m": 0.0015687976001041992,
+        "tick": 80,
+        "wheel": 2,
+        "supported": false
+      },
+      "trace": "simulation-one-side.jsonl.gz"
+    }
+  ]
+}

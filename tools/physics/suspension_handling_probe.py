@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import os
 import sys
 from dataclasses import replace
 from pathlib import Path
@@ -12,7 +13,7 @@ sys.path[:0] = [str(ROOT / "src"), str(ROOT / "tools")]
 from physics.esc_probe import run_trial, trial_config, write_csv
 
 
-def run(output):
+def run(output, prior=None):
     output.mkdir(parents=True, exist_ok=False)
     hashes = lambda: {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                      for group in ("src", "tests", "tools") for p in sorted((ROOT / group).rglob("*.py"))}
@@ -20,6 +21,26 @@ def run(output):
                for case in ("constant-turn", "steering-step") for enabled in (False, True)]
     report = {"status": "running", "source_before": hashes(), "results": [],
               "protocol": "standard ESC probe initial conditions/commands; 240 settling + 720 recorded native 120Hz steps; same ABS/TCS/ESC enabled in each mode; only suspension_coupled_enabled differs; no runtime state resets; full per-tick state and actual force-phase moments retained"}
+    if prior is not None:
+        previous = json.loads((prior / "summary.json").read_text(encoding="utf-8"))
+        assert previous["status"] == "completed" and previous["source_stable"]
+        changed = [name for name, digest in previous["source_after"].items() if report["source_before"][name] != digest]
+        # 原生分支不执行SI接点/悬架；其余变化只为版本、哈希及验证工具。
+        assert set(changed) <= {"src/driving_modes.py", "src/vehicle_suspension.py", "src/suspension_contacts.py",
+                                "tests/test_esc_probe.py", "tests/test_physics_config_io.py", "tests/test_traction_lifecycle.py",
+                                "tests/test_suspension_contacts.py", "tests/test_suspension_envelope.py",
+                                "tools/physics/esc_probe.py", "tools/physics/export_reference.py", "tools/validate.py",
+                                "tools/physics/suspension_contact_probe.py", Path(__file__).relative_to(ROOT).as_posix()}
+        for result in previous["results"]:
+            if result["coupled"]:
+                continue
+            trace = prior / result["trace"]
+            report["results"].append({**result, "trace": Path(os.path.relpath(trace, output)).as_posix(),
+                                      "reused_from": str(prior / "summary.json"),
+                                      "trace_sha256": hashlib.sha256(trace.read_bytes()).hexdigest()})
+            pending.remove((result["mode"], result["case"], False))
+        report["reuse"] = {"native_cases": 4, "changed_sources": changed,
+                          "reason": "native case setup, controller/tire/transmission and Bullet force path unchanged; SI query code does not execute"}
     try:
         for mode, case, enabled in list(pending):
             config = replace(trial_config(case, True, mode), suspension_coupled_enabled=enabled)
@@ -47,4 +68,6 @@ def run(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
-    run(parser.parse_args().output)
+    parser.add_argument("--prior", type=Path)
+    args = parser.parse_args()
+    run(args.output, args.prior)

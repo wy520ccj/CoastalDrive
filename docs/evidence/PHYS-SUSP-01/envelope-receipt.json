@@ -1,0 +1,710 @@
+{
+  "task": "PHYS-SUSP-01",
+  "task_status": "in_progress",
+  "date": "2026-10-05",
+  "baseline": "d0f64dd",
+  "publication": "user-authorized commit and push; actual publication verified against Git; overall physics goal remains active",
+  "implementation": [
+    "finite-radius spherical support envelope from existing wheel_radius in both modes",
+    "same BulletWorld, no new rigid body/support world",
+    "Box kernel+margin Minkowski sphere exact face/edge/corner piecewise quadratic entry",
+    "Plane analytic signed-distance radius, triangle mesh native convex sweep",
+    "existing surface bit0 and vehicle collision bit1 preserved; no collision masks changed by query",
+    "true surface point and lever arm, same-tick normal/tire/Snapshot load",
+    "double precision final contact point and normalized normal; six-dimensional virtual work checked",
+    "reference-v19 and game-controls-v16 separate changed results; 91 vehicle parameters unchanged"
+  ],
+  "tests": {
+    "rounds": {
+      "r1": {
+        "status": "failed",
+        "commands": [
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_envelope.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_suspension_native.py",
+            "tests/test_physics_config_io.py",
+            "tests/test_traction_lifecycle.py::test_mode_abs_tcs_variants_get_distinct_score_keys"
+          ]
+        ],
+        "summary": "validation-T0-envelope-r1/summary.json"
+      },
+      "r2": {
+        "status": "failed",
+        "commands": [
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_envelope.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_suspension_native.py",
+            "tests/test_physics_config_io.py",
+            "tests/test_traction_lifecycle.py::test_mode_abs_tcs_variants_get_distinct_score_keys"
+          ]
+        ],
+        "summary": "validation-T0-envelope-r2/summary.json"
+      },
+      "r3": {
+        "status": "failed",
+        "commands": [
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_envelope.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_suspension_native.py"
+          ]
+        ],
+        "summary": "validation-T0-envelope-r3/summary.json"
+      },
+      "r4": {
+        "status": "passed",
+        "commands": [
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_envelope.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_suspension_native.py"
+          ]
+        ],
+        "summary": "validation-T0-envelope-r4/summary.json"
+      }
+    },
+    "r1": "Ruff failed; pytest not_run",
+    "r2": "32 passed/3 failed in5.83s; actual native float32 extent vs literal double expectation, float32 point rounding, one-sided finite difference truncation",
+    "repair": "actual native extent used in independent analytic expected geometry, point/normal computed double, independent central difference; no geometry/2e-7 virtual-work gate widened",
+    "r3": "unused old Vec3 Ruff failure; pytest not_run",
+    "r4": "30 full contact/envelope/native tests passed in3.90s; unaffected config4/score1 passing nodes reused fromr2",
+    "probe_lint": "one later I001 diagnostic import sorting failure observed; import reordered; final Ruff passed",
+    "final_ruff": "envelope-final-ruff.log"
+  },
+  "source_verification": {
+    "count": 307,
+    "final_source_manifest": "envelope-handling-r1/summary.json",
+    "all_final_source_hashes_match": true,
+    "native_post_run_changes": [
+      "tools/physics/suspension_contact_probe.py",
+      "tools/physics/suspension_handling_probe.py"
+    ],
+    "native_post_run_change_scope": "diagnostic SDF formatting/extra baseline field, handling cached-native reuse; all production and tests unchanged",
+    "reference_declared_sources_match": true
+  },
+  "native_cases": {
+    "command": ".venv/Scripts/python.exe tools/physics/suspension_contact_probe.py --output docs/evidence/PHYS-SUSP-01/envelope-native-r1",
+    "ticks": 720,
+    "protocol": "unchanged one-side fixture/initial conditions/commands; 360 native 120Hz steps per mode; finite-radius sphere envelope, native core+margin Box SDF independently checked; point-ray baseline reused",
+    "results": [
+      {
+        "mode": "game",
+        "coupled": true,
+        "case": "one-side",
+        "ticks": 360,
+        "max_abs_roll_deg": 179.52044677734375,
+        "max_compression_m": 0.08029473837731399,
+        "final_position": [
+          -4.170796871185303,
+          6.261398084461689e-05,
+          -32.4109992980957
+        ],
+        "max_tire_residual_n": 0.000997911257172444,
+        "max_suspension_energy_residual_j": 1.1191048088221578e-13,
+        "sum_signed_contact_offset_work_j": 0.0,
+        "max_normal_force_n": 8972.980000161553,
+        "sum_initialization_energy_j": 339.2000534371402,
+        "max_normal_energy_step_increase_j": 0.5608473596921613,
+        "sum_signed_geometry_work_j": 134.6909148722174,
+        "trace": "game-one-side.jsonl.gz",
+        "max_box_surface_error_m": 1.7184404066394876e-08,
+        "baseline_trace": "docs/evidence/PHYS-SUSP-01/contact-native-r1/game-one-side.jsonl.gz",
+        "baseline_trace_sha256": "f4caf44ff0e10fff23e925571ce40740c019cd49eec624eb189fdba2de17f980",
+        "baseline_max_nominal_box_surface_error_m": 1.239776610262311e-07,
+        "side_contact_ticks": []
+      },
+      {
+        "mode": "simulation",
+        "coupled": true,
+        "case": "one-side",
+        "ticks": 360,
+        "max_abs_roll_deg": 179.92880249023438,
+        "max_compression_m": 0.0800000063015493,
+        "final_position": [
+          -3.7516136169433594,
+          -0.0025610243901610374,
+          -33.50589370727539
+        ],
+        "max_tire_residual_n": 0.0009558993449820823,
+        "max_suspension_energy_residual_j": 9.414691248821327e-14,
+        "sum_signed_contact_offset_work_j": 0.0,
+        "max_normal_force_n": 8455.287685644418,
+        "sum_initialization_energy_j": 339.2000534371402,
+        "max_normal_energy_step_increase_j": 1.9592590312495304,
+        "sum_signed_geometry_work_j": 94.65719047256361,
+        "trace": "simulation-one-side.jsonl.gz",
+        "max_box_surface_error_m": 1.861549903028198e-08,
+        "baseline_trace": "docs/evidence/PHYS-SUSP-01/contact-native-r1/simulation-one-side.jsonl.gz",
+        "baseline_trace_sha256": "8d07ddea6f8f19ff726cb480437fa45b71f4eca8b373cf7219c20865b09f8e7e",
+        "baseline_max_nominal_box_surface_error_m": 1.239776610262311e-07,
+        "side_contact_ticks": []
+      }
+    ]
+  },
+  "wheel_gap": {
+    "claim": "independent post-native-step actual wheel-center SDF; existing completed raw reused, no additional Simulation run",
+    "results": [
+      {
+        "mode": "game",
+        "samples": 1440,
+        "minimum_gap": {
+          "gap_m": -0.0007322909496724761,
+          "tick": 62,
+          "wheel": 2,
+          "supported": true
+        },
+        "minimum_unsupported_gap": {
+          "gap_m": 0.0011173691509828165,
+          "tick": 83,
+          "wheel": 2,
+          "supported": false
+        },
+        "trace": "game-one-side.jsonl.gz"
+      },
+      {
+        "mode": "simulation",
+        "samples": 1440,
+        "minimum_gap": {
+          "gap_m": -0.0006911637447774566,
+          "tick": 61,
+          "wheel": 2,
+          "supported": true
+        },
+        "minimum_unsupported_gap": {
+          "gap_m": 0.0015687976001041992,
+          "tick": 80,
+          "wheel": 2,
+          "supported": false
+        },
+        "trace": "simulation-one-side.jsonl.gz"
+      }
+    ]
+  },
+  "handling": {
+    "command": ".venv/Scripts/python.exe tools/physics/suspension_handling_probe.py --output docs/evidence/PHYS-SUSP-01/envelope-handling-r1 --prior docs/evidence/PHYS-SUSP-01/passive-handling-r1",
+    "new_cases": 4,
+    "reused_native_cases": 4,
+    "new_recorded_ticks": 2880,
+    "new_conditioning_ticks": 960,
+    "reuse": {
+      "native_cases": 4,
+      "changed_sources": [
+        "src/driving_modes.py",
+        "src/vehicle_suspension.py",
+        "tests/test_esc_probe.py",
+        "tests/test_physics_config_io.py",
+        "tests/test_traction_lifecycle.py",
+        "tools/physics/esc_probe.py",
+        "tools/physics/export_reference.py",
+        "tools/physics/suspension_handling_probe.py",
+        "tools/validate.py"
+      ],
+      "reason": "native case setup, controller/tire/transmission and Bullet force path unchanged; SI query code does not execute"
+    },
+    "source_stable": true,
+    "results": [
+      {
+        "case": "constant-turn",
+        "mode": "game",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 11.11111111111111,
+        "final_horizontal_speed_mps": 10.402562689315742,
+        "path_distance_m": 63.702172423538165,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 46.20967102050781,
+        "lateral_displacement_m": 35.40214920043945,
+        "heading_change_deg": -79.00735473632812,
+        "peak_abs_unwrapped_heading_deg": 79.00735473632812,
+        "peak_abs_yaw_rate_radps": 0.24833661317825317,
+        "abs_sideslip_integral_rad_s": 0.05130529191098082,
+        "abs_yaw_error_integral_rad": 0.040337156104062126,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 0.0,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": false,
+        "trace": "../passive-handling-r1/game-constant-turn-native.csv.gz",
+        "max_tire_residual_n": 0.000901938850045722,
+        "max_abs_roll_deg": 0.6138884425163269,
+        "reused_from": "docs\\evidence\\PHYS-SUSP-01\\passive-handling-r1\\summary.json",
+        "trace_sha256": "f3433da394a6b653bbbc8f434e156a9dd5c829cfd805799d0112eef6badf5d2a"
+      },
+      {
+        "case": "steering-step",
+        "mode": "game",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 22.22222222222222,
+        "final_horizontal_speed_mps": 20.274306400642658,
+        "path_distance_m": 127.1066256138968,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 70.62796020507812,
+        "lateral_displacement_m": 73.94222259521484,
+        "heading_change_deg": -117.4308853149414,
+        "peak_abs_unwrapped_heading_deg": 117.4308853149414,
+        "peak_abs_yaw_rate_radps": 0.4103761315345764,
+        "abs_sideslip_integral_rad_s": 0.2289725692860726,
+        "abs_yaw_error_integral_rad": 0.4743952179194964,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 38.711488407807245,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": false,
+        "trace": "../passive-handling-r1/game-steering-step-native.csv.gz",
+        "max_tire_residual_n": 0.0009911303955161392,
+        "max_abs_roll_deg": 1.9989742040634155,
+        "reused_from": "docs\\evidence\\PHYS-SUSP-01\\passive-handling-r1\\summary.json",
+        "trace_sha256": "afeb8db65fad4e60d61aae81f891741b88fe838209ce027c158606faeda6c1ba"
+      },
+      {
+        "case": "constant-turn",
+        "mode": "simulation",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 11.11111111111111,
+        "final_horizontal_speed_mps": 9.71984924219753,
+        "path_distance_m": 58.21795647350281,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 43.922794342041016,
+        "lateral_displacement_m": 31.089414596557617,
+        "heading_change_deg": -74.03581237792969,
+        "peak_abs_unwrapped_heading_deg": 74.03581237792969,
+        "peak_abs_yaw_rate_radps": 0.23745422065258026,
+        "abs_sideslip_integral_rad_s": 0.06548024871249566,
+        "abs_yaw_error_integral_rad": 0.016767479024613938,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 0.0,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": false,
+        "trace": "../passive-handling-r1/simulation-constant-turn-native.csv.gz",
+        "max_tire_residual_n": 0.0009968455144383978,
+        "max_abs_roll_deg": 0.5406700968742371,
+        "reused_from": "docs\\evidence\\PHYS-SUSP-01\\passive-handling-r1\\summary.json",
+        "trace_sha256": "d06191cb1dc4560cbd68964453cee05bc16a541d79ea2f19908325d76baa367b"
+      },
+      {
+        "case": "steering-step",
+        "mode": "simulation",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 22.22222222222222,
+        "final_horizontal_speed_mps": 19.008874511090532,
+        "path_distance_m": 120.06161394778127,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 62.126705169677734,
+        "lateral_displacement_m": 69.99421691894531,
+        "heading_change_deg": -124.78863525390625,
+        "peak_abs_unwrapped_heading_deg": 124.78863525390625,
+        "peak_abs_yaw_rate_radps": 0.4396078586578369,
+        "abs_sideslip_integral_rad_s": 0.23431672623003602,
+        "abs_yaw_error_integral_rad": 0.2232368394105933,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 0.0,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": false,
+        "trace": "../passive-handling-r1/simulation-steering-step-native.csv.gz",
+        "max_tire_residual_n": 0.0009887120800926832,
+        "max_abs_roll_deg": 2.0278897285461426,
+        "reused_from": "docs\\evidence\\PHYS-SUSP-01\\passive-handling-r1\\summary.json",
+        "trace_sha256": "c76883a0b011774b12a9265bd2586f86fc1efb25132c7e1f7ef23c916323bf9e"
+      },
+      {
+        "case": "constant-turn",
+        "mode": "game",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 11.11111111111111,
+        "final_horizontal_speed_mps": 10.40366337226223,
+        "path_distance_m": 63.71045433966234,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 46.21083450317383,
+        "lateral_displacement_m": 35.410919189453125,
+        "heading_change_deg": -79.01866149902344,
+        "peak_abs_unwrapped_heading_deg": 79.01866149902344,
+        "peak_abs_yaw_rate_radps": 0.24836058914661407,
+        "abs_sideslip_integral_rad_s": 0.0508713971713914,
+        "abs_yaw_error_integral_rad": 0.04043979666314533,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 0.0,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": true,
+        "trace": "game-constant-turn-coupled.csv.gz",
+        "max_tire_residual_n": 0.000979714190004479,
+        "max_abs_roll_deg": 0.5958130359649658
+      },
+      {
+        "case": "steering-step",
+        "mode": "game",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 22.22222222222222,
+        "final_horizontal_speed_mps": 20.296558301151233,
+        "path_distance_m": 127.17038033424743,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 70.84845733642578,
+        "lateral_displacement_m": 73.96749877929688,
+        "heading_change_deg": -117.13091278076172,
+        "peak_abs_unwrapped_heading_deg": 117.13091278076172,
+        "peak_abs_yaw_rate_radps": 0.40903642773628235,
+        "abs_sideslip_integral_rad_s": 0.22772185192582725,
+        "abs_yaw_error_integral_rad": 0.4808313882647617,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 57.046507288455715,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": true,
+        "trace": "game-steering-step-coupled.csv.gz",
+        "max_tire_residual_n": 0.0009861675847497148,
+        "max_abs_roll_deg": 1.9416698217391968
+      },
+      {
+        "case": "constant-turn",
+        "mode": "simulation",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 11.11111111111111,
+        "final_horizontal_speed_mps": 9.718857203364678,
+        "path_distance_m": 58.213510249455545,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 43.923439025878906,
+        "lateral_displacement_m": 31.081430435180664,
+        "heading_change_deg": -74.02763366699219,
+        "peak_abs_unwrapped_heading_deg": 74.02763366699219,
+        "peak_abs_yaw_rate_radps": 0.2372608631849289,
+        "abs_sideslip_integral_rad_s": 0.0651113092399183,
+        "abs_yaw_error_integral_rad": 0.01678999444004651,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 0.0,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": true,
+        "trace": "simulation-constant-turn-coupled.csv.gz",
+        "max_tire_residual_n": 0.0009960539401386401,
+        "max_abs_roll_deg": 0.5249531269073486
+      },
+      {
+        "case": "steering-step",
+        "mode": "simulation",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 22.22222222222222,
+        "final_horizontal_speed_mps": 19.0367446114814,
+        "path_distance_m": 120.12522512143443,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 62.387184143066406,
+        "lateral_displacement_m": 70.0494155883789,
+        "heading_change_deg": -124.35845947265625,
+        "peak_abs_unwrapped_heading_deg": 124.35845947265625,
+        "peak_abs_yaw_rate_radps": 0.4382037818431854,
+        "abs_sideslip_integral_rad_s": 0.23237221254616292,
+        "abs_yaw_error_integral_rad": 0.23201820551405183,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 0.0,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": true,
+        "trace": "simulation-steering-step-coupled.csv.gz",
+        "max_tire_residual_n": 0.0009782000099009243,
+        "max_abs_roll_deg": 1.96830153465271
+      }
+    ]
+  },
+  "coastal": {
+    "summary": "envelope-coastal-r1/summary.json",
+    "native_ticks": 240,
+    "source_stable": true,
+    "all_final_snapshot_numbers_finite": true,
+    "checks": [
+      {
+        "mode": "game",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "coastal",
+          "--steps",
+          "120",
+          "--seed",
+          "0",
+          "--driving-mode",
+          "game"
+        ],
+        "returncode": 0,
+        "wall_seconds_includes_setup": 1.7343894000005093,
+        "output": "game.json",
+        "stderr": "game-stderr.log"
+      },
+      {
+        "mode": "simulation",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "coastal",
+          "--steps",
+          "120",
+          "--seed",
+          "0",
+          "--driving-mode",
+          "simulation"
+        ],
+        "returncode": 0,
+        "wall_seconds_includes_setup": 2.1827197999991768,
+        "output": "simulation.json",
+        "stderr": "simulation-stderr.log"
+      }
+    ],
+    "scope": "short integrated actual coastal Simulation, not performance/human/T1 gate"
+  },
+  "compatibility": {
+    "summary": "envelope-off-r1/compatibility.json",
+    "native_current_ticks": 240,
+    "baseline_raw_reused": "6be5f54 actual historical independent Git source run",
+    "all_prior_snapshot_fields_byte_identical": true,
+    "projection": [
+      "suspension_state=None"
+    ],
+    "current_full_and_baseline_full_raw_saved": true,
+    "verification_command": ".venv/Scripts/python.exe docs/evidence/PHYS-SUSP-01/envelope-off-compatibility.py --verify-existing"
+  },
+  "reference": {
+    "schema": "reference-v19",
+    "vehicle_fields": 91,
+    "ticks_per_mode": 240,
+    "contact_model": "finite-radius-sphere-envelope",
+    "command": ".venv/Scripts/python.exe tools/physics/export_reference.py --output docs/evidence/PHYS-SUSP-01/reference-v19.json"
+  },
+  "remaining": [
+    "normal/tire/transmission common body end state not yet implemented",
+    "signed geometry refresh remains134.69J game/94.66J simulation in one-side run; complete energy ledger unclosed",
+    "normal mechanical subtotal omits complete engine/rotor/actuator energy; maxima of step increase0.56085/1.95926J are retained",
+    "post-native integration penetration0.732/0.691mm retained",
+    "sphere envelope is a design model; finite tire width/real profile and real-car data not completed",
+    "grazing alignment >.1 axial projection boundary remains existing model limitation",
+    "yaw errors still slightly worse than old native branch; no gain retune",
+    "remaining full standard scenarios, functional T1, estimator/real-car/audio/performance/human gates remain"
+  ],
+  "not_run": [
+    "functional T1",
+    "T2",
+    "T3",
+    "full handling matrix beyond circle/step",
+    "foreground performance",
+    "human driving"
+  ],
+  "artifact_sha256": {
+    "envelope-coastal-r1/game-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "envelope-coastal-r1/game.json": "a2e6a67f4430d3589eaf3a30e22db11098cb98575499508feaa6780a36444b25",
+    "envelope-coastal-r1/simulation-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "envelope-coastal-r1/simulation.json": "2adb5df17d074addbb37c037b7a36d1a6588f904ad5cab5e777c60e269dd8b7d",
+    "envelope-coastal-r1/summary.json": "865bc2815c3737ebf87aaddca268a36587012b825be20a2b0940981c2ebb4367",
+    "envelope-final-ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "envelope-handling-r1/game-constant-turn-coupled.csv.gz": "75ae473f4c9ee1f5ec02bd631d5b729d7838d4ec1cd0a954c2328bd33b7ea719",
+    "envelope-handling-r1/game-steering-step-coupled.csv.gz": "47b425c282e330b29c0613eb12955791d14bacc8a047ac35ffca39753319eb81",
+    "envelope-handling-r1/simulation-constant-turn-coupled.csv.gz": "f46bfe66551d3a6b949f704d7ddd92f572d9a33827b2cc5465b1f7479363e4f3",
+    "envelope-handling-r1/simulation-steering-step-coupled.csv.gz": "ce3edafd306dd69e49f6a2e50bc5ef4c45cd92bd51fba28c156dac5cd3f450c3",
+    "envelope-handling-r1/summary.json": "ea0848915024977b39721cea566fa6a546c197556bf879e6f24d977398419145",
+    "envelope-native-r1/game-one-side.jsonl.gz": "3fd21bc284a7f65299f4da8a4e9c5ad06d02bf244ffa3be87c2021d6061b2075",
+    "envelope-native-r1/simulation-one-side.jsonl.gz": "80914faba7d46a134cbb5008922e20df83c514de644acc53edbabb252944892f",
+    "envelope-native-r1/summary.json": "ed90ee0b1a20c7b01d6fc8e48f169425b6fcc84a0468a4004c09ed5fcf9b1b6d",
+    "envelope-off-compatibility.py": "f6d2a5a95fd328f16e704bca128f34b4e83d1ac9871544c8b46fd0174d24c953",
+    "envelope-off-r1/baseline/game.jsonl.gz": "4f96bcfbfc2a3a5b2b5dd884913d807f7c0886ba5c38724fff728f04d215aa89",
+    "envelope-off-r1/baseline/simulation.jsonl.gz": "206980278af93b4bfd9069257b9b102cdab3daf0014eb7a672aae3577cd800c4",
+    "envelope-off-r1/compatibility.json": "0b0a7ba3cd1456782fa301c675e7177159335dd647de6a0218ec6f9fe2e4d9c2",
+    "envelope-off-r1/current/game.jsonl.gz": "a900af74a9fdb3250f211d1d9aed52acd5fe0106f8af1d60b42f07f0206842dc",
+    "envelope-off-r1/current/simulation.jsonl.gz": "96c252eaf827e70db4b49e65d4cef03396ac64fc59395774593b46d8f5dc37b5",
+    "envelope-wheel-gap.json": "5e35fc1fc3587b13eb241a2c674af49c2f2e177954aa58a1ecaa8e2e2b6e2b16",
+    "envelope.md": "c41c7f12bde4f160c1f926190bfd55664db66f286d95cb4db00af13bee1d2731",
+    "reference-v19.json": "8405f30adb0db92220f58b4d8ccbdfcf27a4fdbaa3c5b274dcc1af6a3e5bdfae",
+    "validation-T0-envelope-r1/ruff.log": "2c7291985e13fb188c87fc6ad64376c2df7307bf1042e2149159f603d4c26cfb",
+    "validation-T0-envelope-r1/summary.json": "959bfddd4698786f85c9c811aa6ea91abc00c73c740a02ced5e7febbb7cd155b",
+    "validation-T0-envelope-r2/pytest.log": "7a01699b75bbadca8c2c15e52b36e94df151506495cd11f69dcb549d34d6e212",
+    "validation-T0-envelope-r2/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation-T0-envelope-r2/summary.json": "5d1bf08e2b31031e0ee18ef8b39a5056289fa804ddfbdb6b32de681261dbf1f9",
+    "validation-T0-envelope-r3/ruff.log": "74afe08eadd370eedd100da8991b8494b24bad26720e9137b9ac6fc7ecf022d5",
+    "validation-T0-envelope-r3/summary.json": "0e401e2a00e5913b0383e698960a6be9d941cf7b9bfb9a068ea14285ce1f952e",
+    "validation-T0-envelope-r4/pytest.log": "fbd6a6344511e82d3dcf36e3b106c8c81ff29802b450ab3df2eec7a5c6003e39",
+    "validation-T0-envelope-r4/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation-T0-envelope-r4/summary.json": "d2806241d9c443fe72428fa5571a4438bbdb899307669773ff4eec86a955f674"
+  }
+}
