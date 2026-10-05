@@ -4,7 +4,7 @@
 
 ## 当前阶段
 
-- [PHYS-DESIGN-01](tasks/PHYS-DESIGN-01.md)施工线③功能及相关T1完成：96字段工程IO，游戏调校/RWD/FWD/AWD及车型/无窗口加载；同车型两模式硬件一致，外廓/轮位宽径同步、地图CG出生坐标接通。10条质量/CG/弹簧/附着/布局120Hz实验、四条新外廓护栏及54项不同pytest/Ruff/三种子启动通过，实际渲染证据复用。任务仍in_progress：旧音频3项失败已按原生/Snapshot/播放事实收口，18项音频T0及Ruff通过，生产未改；下一机械/参数化T2。[音频事实](evidence/PHYS-DESIGN-01/impact-facts.md)。实车型/估计/研究及总体Gate继续。[当前证据](evidence/PHYS-DESIGN-01/design-experiments.md)。
+- [PHYS-DESIGN-01](tasks/PHYS-DESIGN-01.md)施工线③功能及相关T1完成：96字段工程IO，游戏调校/RWD/FWD/AWD及车型/无窗口加载；同车型两模式硬件一致，外廓/轮位宽径同步、地图CG出生坐标接通。10条质量/CG/弹簧/附着/布局120Hz实验、四条新外廓护栏及54项不同pytest/Ruff/三种子启动通过，实际渲染证据复用。任务仍in_progress：旧音频3项失败已按原生/Snapshot/播放事实收口，18项音频T0及Ruff通过，生产未改；959acda的阶段T2首败后主动中断，余项未跑；原生ABS六条对照已核对，柏油无介入/空中完整转动账验证收口，7项ABS及13项入口合同有效通过，原机械门槛和生产未改。下一恢复阶段T2，[ABS事实](evidence/PHYS-DESIGN-01/abs-facts.md)。[音频事实](evidence/PHYS-DESIGN-01/impact-facts.md)。实车型/估计/研究及总体Gate继续。[当前证据](evidence/PHYS-DESIGN-01/design-experiments.md)。
 
 - [PHYS-LOAD-01](tasks/PHYS-LOAD-01.md)施工线②自动功能块完成：三维气动与共同轮端滚阻，完整96字段reference-v28及12条120Hz标准基准保存。0–100为10.483s；平路/+5°/−5°停车45.549/41.261/49.481m；对开附着6.5s停车，静载与滑行理论吻合。391项机械T0复用，23项相关T1/全Ruff/三种子各1200步通过。机械T2/旧音频断言收口及整体Gate保持未完成；下一施工线③工程参数化。[证据与命令](evidence/PHYS-LOAD-01/reference-calibration.md)。
 

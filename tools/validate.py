@@ -57,8 +57,11 @@ def make_plan(tier, areas, tests, output):
         raise ValueError("T0/T1 require --area or --tests; no implicit full suite")
     if tier in ("T2", "T3") and (areas or tests):
         raise ValueError("T2/T3 always use the full suite; omit --area and --tests")
+    # 阶段长测遇到首个失败即收集报告，修复后再继续，避免无效长跑。
+    stop_on_failure = ["-x"] if tier in ("T2", "T3") else []
     checks = [Check("ruff", ["-m", "ruff", "check", "src", "tests", "tools"]),
-              Check("pytest", ["-m", "pytest", "-q", *(targets or ["tests"])])]
+              Check("pytest", ["-m", "pytest", "-q", *stop_on_failure,
+                               *(targets or ["tests"])])]
     if tier == "T0" or (tier == "T1" and areas == ["workflow"] and not tests):
         return checks
     for seed in (0, 17, 23):

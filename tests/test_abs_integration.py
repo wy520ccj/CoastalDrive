@@ -1,5 +1,6 @@
 """真实Bullet制动集成：验证锁止恢复与单轮压力的机械影响。"""
 
+import math
 from dataclasses import replace
 
 import pytest
@@ -7,9 +8,38 @@ from panda3d.core import Vec3
 from physics.abs_probe import run_trial
 from physics.reference_ab import _create_vehicle, _step
 
+from driveline_inertia import active_inertias
 from driving_modes import REFERENCE_CAR
 from simulation import Snapshot, interpolate
 from vehicle_state import VehicleCommand
+from wheel_geometry import mechanical_axis
+
+
+def rotational_account(car):
+    """世界坐标下车身、四轮、曲轴与实体传动轴的完整转动账。"""
+    body, config = car._chassis, car.config
+    orientation = body.getTransform().getQuat()
+    basis = (orientation.getRight(), orientation.getForward(), orientation.getUp())
+    angular, inertia = body.getAngularVelocity(), body.getInertia()
+    local = tuple(sum(angular[a] * axis[a] for a in range(3)) for axis in basis)
+    momentum = [sum(inertia[i] * local[i] * basis[i][a] for i in range(3))
+                for a in range(3)]
+    energy = .5 * sum(inertia[i] * local[i]**2 for i in range(3))
+    rotors = [(config.wheel_inertia, omega, tuple(-a for a in mechanical_axis(
+        basis[0], basis[1], state.steering)))
+        for omega, state in zip(car.tires.omega, car.tires.states)]
+    train = car.powertrain
+    rotors.extend((j, omega, tuple(orientation.xform(Vec3(*axis))))
+                  for j, omega, axis in (
+                      (config.engine_inertia, train.engine_omega, config.engine_axis),
+                      (config.input_shaft_inertia, train.shaft_omega, config.input_shaft_axis),
+                      *zip(active_inertias(config.downstream_inertias, config.front_drive_share),
+                           train.downstream_omega, config.downstream_axes)))
+    for j, omega, axis in rotors:
+        energy += .5 * j * omega**2
+        for a in range(3):
+            momentum[a] += j * omega * axis[a]
+    return tuple(momentum), energy
 
 
 @pytest.mark.parametrize("case,brake_multiplier", [
@@ -20,19 +50,22 @@ from vehicle_state import VehicleCommand
 ])
 def test_abs_reduces_observed_wheel_lock(case, brake_multiplier):
     config = replace(REFERENCE_CAR, brake_torque=REFERENCE_CAR.brake_torque * brake_multiplier)
-    baseline, _ = run_trial(case, False, vehicle_config=config)
+    baseline, baseline_rows = run_trial(case, False, vehicle_config=config)
     candidate, rows = run_trial(case, True, vehicle_config=config)
     if case == "asphalt" and brake_multiplier == 1:
-        # 真实离合释放后默认柏油硬件不抱死，ABS仍须实际降低后轮过量制动滑移。
+        # 默认柏油制动未达到ABS介入门槛；开关不应改变机械轨迹或强制减压。
         assert sum(baseline["locked_wheel_seconds"]) == sum(candidate["locked_wheel_seconds"]) == 0
-        for index in (2, 3):
-            assert candidate["wheel_extrema_each_tick"][index]["kappa"][0] > (
-                baseline["wheel_extrema_each_tick"][index]["kappa"][0])
+        assert all(row[f"state.brake_states.{index}.phase"] == "normal"
+                   for row in rows[1:] for index in range(4))
+        assert [{k: v for k, v in row.items() if k != "state.abs_enabled"}
+                for row in rows] == [
+                    {k: v for k, v in row.items() if k != "state.abs_enabled"}
+                    for row in baseline_rows]
     else:
         assert sum(baseline["locked_wheel_seconds"]) > 0
         assert sum(candidate["locked_wheel_seconds"]) < sum(baseline["locked_wheel_seconds"])
+        assert any(row["state.brake_states.2.phase"] == "release" for row in rows[1:])
     assert rows[0]["horizontal_speed_mps"] == pytest.approx(100 / 3.6)
-    assert any(row["state.brake_states.2.phase"] == "release" for row in rows[1:])
     assert any(abs(row["state.wheel_dynamics.2.fx"]) > 0 for row in rows[1:])
     assert candidate["final_horizontal_speed_mps"] < baseline["initial_speed_mps"]
     if case == "low-mu" or brake_multiplier > 1:
@@ -87,6 +120,7 @@ def test_airborne_brakes_slow_real_wheels_without_ground_force_or_abs():
         car._chassis.setLinearVelocity(Vec3(0, 20, 0))
         car.tires.initialize_rolling(20)
         initial = 20 / car.config.wheel_radius
+        before_momentum, before_energy = rotational_account(car)
         for _ in range(24):
             _step(world, car, VehicleCommand(brake=1))
         state = car.snapshot()
@@ -94,19 +128,9 @@ def test_airborne_brakes_slow_real_wheels_without_ground_force_or_abs():
         assert all(not wheel.sample_support and wheel.fx == wheel.fy == 0
                    for wheel in state.wheel_dynamics)
         assert all(abs(wheel.relative_omega) < initial for wheel in state.wheel_dynamics)
-        body = car._chassis
-        body_omega = body.getAngularVelocity().dot(body.getTransform().getQuat().getRight())
-        inertia = body.getInertia().x
-        wheel_inertia = car.config.wheel_inertia
-        before_energy = .5 * wheel_inertia * 4 * initial ** 2
-        after_energy = .5 * inertia * body_omega ** 2 + .5 * wheel_inertia * sum(
-            wheel.omega ** 2 for wheel in state.wheel_dynamics
-        )
+        after_momentum, after_energy = rotational_account(car)
         assert after_energy < before_energy
-        # 空中制动是内部反力矩；能量耗散而车轮/车身总轴向角动量守恒。
-        after_momentum = inertia * body_omega - wheel_inertia * sum(
-            wheel.omega for wheel in state.wheel_dynamics
-        )
-        assert after_momentum == pytest.approx(-wheel_inertia * 4 * initial, abs=1e-3)
+        # 制动为内部转矩；计入轴储能/壳体反力后，完整世界向量保持原门槛。
+        assert math.dist(after_momentum, before_momentum) < 1e-3
     finally:
         car.close()

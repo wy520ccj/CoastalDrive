@@ -15,8 +15,11 @@ def test_small_tiers_require_scope_and_cannot_silently_run_the_full_suite(tmp_pa
     for tier in ("T2", "T3"):
         with pytest.raises(ValueError, match="full suite"):
             make_plan(tier, ["traffic"], [], tmp_path)
+        args = make_plan(tier, [], [], tmp_path)[1].args
+        assert "-x" in args and args[-1] == "tests"
     plan = make_plan("T0", ["traffic"], [], tmp_path)
     assert [check.name for check in plan] == ["ruff", "pytest"]
+    assert "-x" not in plan[1].args
     assert "tests/test_traffic_recovery.py" in plan[1].args
     assert "tests/test_appearance.py" not in plan[1].args
     assert "tests/test_audio_settings.py" in make_plan("T0", ["audio"], [], tmp_path)[1].args
