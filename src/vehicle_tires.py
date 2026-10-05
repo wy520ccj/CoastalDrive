@@ -50,6 +50,9 @@ class Tires:
         orientation = pose.getQuat()
         inv_inertia = chassis.getInvInertiaTensorWorld()
         config = self.config
+        envelope_geometry = ({"width": config.wheel_width, "shoulder": config.wheel_shoulder_radius,
+                              "crown": config.wheel_crown_height}
+                             if config.suspension_si_enabled and config.suspension_coupled_enabled else {})
         normal_steps = []
         normal_impulses = []
         if suspension is not None:
@@ -129,7 +132,8 @@ class Tires:
                 axis = mechanical_axis(orientation.getRight(), orientation.getForward(), angle)
                 previous_axis = mechanical_axis(orientation.getRight(), orientation.getForward(), previous_angle)
                 normal = base.elastic_frame[2] if config.tire_compliance else tuple(Vec3(*base.hub) - Vec3(*base.point))
-                axis, elastic_frame, radius, moment_x = contact_geometry(axis, normal, tuple(base.point), config.wheel_radius)
+                axis, elastic_frame, radius, moment_x = contact_geometry(axis, normal, tuple(base.point), config.wheel_radius,
+                                                                        **envelope_geometry)
                 tangent, lateral, _normal = elastic_frame
                 moment_y = cross(base.point, lateral)
                 rx, ry, rt = tuple(tuple(dot(row, vector) for row in tensor)
@@ -350,7 +354,11 @@ class Tires:
             radius, spin_axis = self.config.wheel_radius, tuple(axle)
             if self.config.wheel_rotor_transport:
                 spin_axis = mechanical_axis(pose.getQuat().getRight(), pose.getQuat().getForward(), state.steering)
-                spin_axis, frame, radius, moment_x = contact_geometry(spin_axis, tuple(normal), tuple(point), radius)
+                config = self.config
+                geometry = ({"width": config.wheel_width, "shoulder": config.wheel_shoulder_radius,
+                             "crown": config.wheel_crown_height}
+                            if config.suspension_si_enabled and config.suspension_coupled_enabled else {})
+                spin_axis, frame, radius, moment_x = contact_geometry(spin_axis, tuple(normal), tuple(point), radius, **geometry)
                 tangent, axle, _normal = frame
                 vx = dot(velocity, tangent) + dot(angular, moment_x)
                 vy = dot(tuple(velocity[a] + cross(angular, point)[a] for a in range(3)), axle)

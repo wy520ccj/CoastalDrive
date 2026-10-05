@@ -33,7 +33,8 @@ def test_high_load_curved_rail_support_converges_and_reaches_snapshot(mode, cent
                 assert tire.normal_load == expected
                 assert abs(tire.force_residual) < .001
                 peak_load = max(peak_load, load)
-        # 保留球形包络先于车身碰到栏顶的真实大反力，不裁轮荷来获得收敛。
-        assert peak_load > 100_000.
+        # 此固定摆位原球体横向多占空间产生约35万N；有限胎宽须消除该假支撑。
+        # 独立胎宽/距离几何见test_cylinder_suspension，生产轮荷仍不作裁剪。
+        assert 0. < peak_load < 100_000.
     finally:
         simulation.close()

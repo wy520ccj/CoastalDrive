@@ -3,10 +3,17 @@
 import math
 from dataclasses import dataclass
 
-from panda3d.bullet import BulletBoxShape, BulletPlaneShape, BulletSphereShape
-from panda3d.core import BitMask32, Mat4, NodePath, TransformState
+from panda3d.bullet import (
+    BulletBoxShape,
+    BulletConvexHullShape,
+    BulletCylinderShape,
+    BulletPlaneShape,
+    BulletSphereShape,
+    XUp,
+)
+from panda3d.core import BitMask32, Mat4, NodePath, Quat, TransformState, Vec3
 
-from suspension_geometry import BoxSurface, box_entry, sphere_box_entry
+from suspension_geometry import BoxSurface, CylinderSurface, box_entry, sphere_box_entry
 
 
 @dataclass(frozen=True)
@@ -73,5 +80,74 @@ def suspension_rays(world, chassis, rays, radius=0.):
                     surface = BoxSurface(tuple(shape.getHalfExtentsWithoutMargin()), radius + shape.getMargin(),
                                          axes, tuple(inverse.xformPoint(chassis.getTransform().getPos())), radius, reach)
                 hits.append(RayContact(body, fraction, point, normal, surface))
+        results.append(min(hits, key=lambda hit: hit.fraction) if hits else None)
+    return tuple(results)
+
+
+def wheel_sweep_shape(radius, width, shoulder, crown):
+    """创建一次网格扫掠外廓；车辆重建时才随硬件参数重建。"""
+    envelope = BulletCylinderShape(radius, width, XUp)
+    if crown:
+        envelope = BulletConvexHullShape()
+        half = width / 2 - shoulder
+        # 17轴向截面、64圆周点；内接多边形最大径向偏差约0.39mm。
+        for ring in range(17):
+            x = half * (ring / 8 - 1)
+            r = radius - shoulder - crown * (x / half)**2
+            for segment in range(64):
+                theta = 2 * math.pi * segment / 64
+                envelope.addPoint(Vec3(x, r * math.cos(theta), r * math.sin(theta)))
+    envelope.setMargin(shoulder)
+    return envelope
+
+
+def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder, crown=0., *, envelope=None):
+    """轮轴和有限胎宽进入真实表面查询；不会创建第二个物理世界。"""
+    mask = BitMask32.bit(0)
+    surfaces = []
+    exact = set()
+    for body in world.getRigidBodies():
+        if body == chassis or not body.isStatic() or (body.getIntoCollideMask() & mask).isZero():
+            continue
+        shapes = body.getShapes()
+        if shapes and all(isinstance(shape, (BulletBoxShape, BulletPlaneShape)) for shape in shapes):
+            exact.add(body)
+            body_mat = NodePath(body).getNetTransform().getMat()
+            for i, shape in enumerate(shapes):
+                inverse = Mat4()
+                inverse.invertFrom(body.getShapeTransform(i).getMat() * body_mat)
+                frame = tuple(tuple(inverse.getCell(b, a) for b in range(3)) for a in range(3))
+                plane = (tuple(shape.getPlaneNormal()), shape.getPlaneConstant()) if isinstance(shape, BulletPlaneShape) else None
+                half = tuple(shape.getHalfExtentsWithoutMargin()) if plane is None else ()
+                surfaces.append((body, inverse, frame, half, shape.getMargin() if plane is None else 0., plane))
+    if envelope is None:
+        envelope = wheel_sweep_shape(radius, width, shoulder, crown)
+    results = []
+    for (start, end), axis in zip(rays, axes):
+        axis = tuple(axis)
+        transverse = math.hypot(axis[1], axis[2])
+        rotation = Quat()
+        if transverse:
+            rotation_axis = Vec3(0., -axis[2] / transverse, axis[1] / transverse)
+            rotation.setFromAxisAngleRad(math.atan2(transverse, axis[0]), rotation_axis)
+        elif axis[0] < 0.:
+            rotation.setFromAxisAngle(180., Vec3(0., 0., 1.))
+        native = world.sweepTestClosest(envelope, TransformState.makePosQuatScale(start, rotation, Vec3(1)),
+                                       TransformState.makePosQuatScale(end, rotation, Vec3(1)), mask, 0.)
+        hits = []
+        if native.hasHit() and native.getNode() != chassis and native.getNode() not in exact:
+            hits.append(RayContact(native.getNode(), native.getHitFraction(), tuple(native.getHitPos()), tuple(native.getHitNormal())))
+        for body, inverse, frame, half, margin, plane in surfaces:
+            reach = (end - start).length() - radius
+            surface = CylinderSurface(half, margin, frame, tuple(inverse.xformPoint(chassis.getTransform().getPos())),
+                                      radius, reach, width, shoulder, axis, plane, crown)
+            found = surface.entry(tuple(inverse.xformPoint(start)), tuple(inverse.xformPoint(end)), axis)
+            if found is None:
+                continue
+            fraction, local_normal, local_point = found
+            normal = surface.world_vector(local_normal)
+            point = tuple(surface.world_vector(tuple(local_point[a] - surface.offset[a] for a in range(3)))[b]
+                          + chassis.getTransform().getPos()[b] for b in range(3))
+            hits.append(RayContact(body, fraction, point, normal, surface))
         results.append(min(hits, key=lambda hit: hit.fraction) if hits else None)
     return tuple(results)

@@ -3,6 +3,7 @@
 import math
 from dataclasses import replace
 
+import numpy as np
 import pytest
 from panda3d.bullet import BulletPlaneShape, BulletRigidBodyNode, BulletWorld
 from panda3d.core import Quat, Vec3
@@ -149,7 +150,7 @@ def test_reset_shift_and_interpolation_preserve_tire_lifecycle(sim):
     previous = sim.snapshot()
     sim.step(Control(throttle=1))
     current = sim.snapshot()
-    assert all(w.force_contact_tick == current.player.contact_tick - 1
+    assert all(w.force_contact_tick == current.player.contact_tick
                for w in current.player.wheel_dynamics)
     assert all(w.sample_tick == current.player.contact_tick
                for w in current.player.wheel_dynamics)
@@ -164,7 +165,7 @@ def test_reset_shift_and_interpolation_preserve_tire_lifecycle(sim):
     assert all(w.sample_tick == 0 and not w.sample_support
                for w in sim.player.snapshot().wheel_dynamics)
     sim.step(Control())
-    assert all(w.force_contact_tick == 0 for w in sim.snapshot().player.wheel_dynamics)
+    assert all(w.force_contact_tick == 1 for w in sim.snapshot().player.wheel_dynamics)
     assert sim.snapshot().player.contact_tick == 1
     assert all(w.sample_tick == 1 and not w.sample_support
                for w in sim.snapshot().player.wheel_dynamics)
@@ -184,7 +185,7 @@ def test_post_bullet_slip_matches_current_snapshot_velocity_and_contact(sim):
     config = car.tires.config
     for index, (wheel, contact) in enumerate(zip(state.wheel_dynamics, state.wheel_contacts)):
         assert wheel.sample_tick == state.contact_tick
-        assert wheel.force_contact_tick == previous.contact_tick
+        assert wheel.force_contact_tick == state.contact_tick
         assert wheel.sample_support and contact.in_contact
         steer = Quat()
         steer.setHpr(Vec3(-wheel.steering, 0, 0))
@@ -198,23 +199,35 @@ def test_post_bullet_slip_matches_current_snapshot_velocity_and_contact(sim):
         radius = config.wheel_radius
         if config.wheel_rotor_transport:
             # 从完整表面点运动独立核对广义纵速；omega为绝对轴向分量。
-            mechanical = orientation.xform(steer.xform(Vec3(1, 0, 0))).normalized()
-            tangent = normal.cross(mechanical).normalized()
-            lateral = tangent.cross(normal)
-            offset = -normal * config.wheel_radius
-            radius = mechanical.dot(offset.cross(tangent))
-            relative_spin = -(wheel.omega + angular.dot(mechanical))
-            surface = (velocity + angular.cross(lever)
-                       + (mechanical * relative_spin).cross(offset))
-            vx = surface.dot(tangent) + radius * wheel.omega
-            vy = surface.dot(lateral)
+            theta = math.radians(wheel.steering)
+            mechanical = math.cos(theta) * np.asarray(tuple(orientation.getRight())) - math.sin(theta) * np.asarray(tuple(orientation.getForward()))
+            mechanical /= np.linalg.norm(mechanical)
+            normal = np.asarray(tuple(normal))
+            normal /= np.linalg.norm(normal)
+            tangent = np.cross(normal, mechanical)
+            tangent /= np.linalg.norm(tangent)
+            lateral = np.cross(tangent, normal)
+            # 按胎冠截面独立求实际接点偏移；平直半径不能替代有限胎宽几何。
+            axial = normal @ mechanical
+            radial = normal - mechanical * axial
+            radial_length = np.linalg.norm(radial)
+            half = config.wheel_width / 2 - config.wheel_shoulder_radius
+            x = max(-half, min(half, axial * half**2 / (2 * config.wheel_crown_height * radial_length)))
+            tread_radius = config.wheel_radius - config.wheel_shoulder_radius - config.wheel_crown_height * (x / half)**2
+            offset = -(mechanical * x + radial * (tread_radius / radial_length) + normal * config.wheel_shoulder_radius)
+            radius = mechanical @ np.cross(offset, tangent)
+            relative_spin = -(wheel.omega + np.asarray(tuple(angular)) @ mechanical)
+            surface = (np.asarray(tuple(velocity)) + np.cross(np.asarray(tuple(angular)), np.asarray(tuple(lever)))
+                       + np.cross(mechanical * relative_spin, offset))
+            vx = surface @ tangent + radius * wheel.omega
+            vy = surface @ lateral
         denominator = max(abs(vx), config.slip_speed)
         assert wheel.longitudinal_speed == pytest.approx(vx, abs=1e-6)
         assert wheel.lateral_speed == pytest.approx(vy, abs=1e-6)
         assert wheel.kappa == pytest.approx(
             (radius * wheel.omega - vx) / denominator, abs=1e-6)
         assert wheel.alpha == pytest.approx(math.atan2(vy, denominator), abs=1e-6)
-        # 力采用上一接触阶段的求解滑移，不拿完成Bullet后的κ重新解释该力。
+        # 力采用本拍施力阶段滑移，不拿完成Bullet后的κ重新解释该力。
         old_contact = previous.wheel_contacts[index]
         mu = config.road_friction if old_contact.surface == "asphalt" else config.grass_friction
         if config.tire_compliance:
@@ -230,8 +243,16 @@ def test_post_bullet_slip_matches_current_snapshot_velocity_and_contact(sim):
             assert (wheel.fx, wheel.fy) == pytest.approx(expected, abs=.002)
 
 
-def test_high_speed_contact_levers_use_current_body_pose(sim):
+def test_high_speed_contact_levers_use_current_body_pose(sim, monkeypatch):
     car = sim.player
+    poses = []
+    prepare = car.suspension.prepare
+
+    def capture(world, chassis, wheels):
+        poses.append(chassis.getTransform())
+        return prepare(world, chassis, wheels)
+
+    monkeypatch.setattr(car.suspension, "prepare", capture)
     car._chassis.setLinearVelocity(Vec3(0, 40, 0))
     car._chassis.setAngularVelocity(Vec3(0))
     car.tires.initialize_rolling(40)
@@ -240,18 +261,20 @@ def test_high_speed_contact_levers_use_current_body_pose(sim):
         state = sim.snapshot().player
         assert all(contact.in_contact for contact in state.wheel_contacts)
         points = [Vec3(*contact.contact_point) for contact in state.wheel_contacts]
-        origin = Vec3(*state.position)
-        forward = car._chassis.getTransform().getQuat().getForward()
+        # Snapshot保留最后施力子步的真实接点；其姿态应匹配最后prepare，而非完成世界步。
+        origin = poses[-1].getPos()
+        forward = poses[-1].getQuat().getForward()
         levers = [(point - origin).dot(forward) for point in points]
         front, rear = sum(levers[:2]) / 2, sum(levers[2:]) / 2
-        # 40m/s的一tick旧姿态会产生约.333m共同偏移；允许单精度及微小俯仰。
-        assert front == pytest.approx(-rear, abs=1e-4)
-        assert front == pytest.approx(CAR.wheelbase / 2, abs=1e-4)
-        assert rear == pytest.approx(-CAR.wheelbase / 2, abs=1e-4)
+        # 平路轮胎接点比轮心低R，真实俯仰会产生-R*n·forward的共同投影偏移。
+        shift = -CAR.wheel_radius * Vec3(0, 0, 1).dot(forward)
+        assert front - rear == pytest.approx(CAR.wheelbase, abs=1e-4)
+        assert front == pytest.approx(CAR.wheelbase / 2 + shift, abs=1e-4)
+        assert rear == pytest.approx(-CAR.wheelbase / 2 + shift, abs=1e-4)
         center = sum(points, Vec3(0)) / 4
-        assert center.y == pytest.approx(origin.y, abs=1e-4)
+        assert (center - origin).dot(forward) == pytest.approx(shift, abs=1e-4)
         assert all(w.sample_tick == state.contact_tick
-                   and w.force_contact_tick == state.contact_tick - 1
+                   and w.force_contact_tick == state.contact_tick
                    for w in state.wheel_dynamics)
 
 

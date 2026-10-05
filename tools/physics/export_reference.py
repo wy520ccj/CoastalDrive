@@ -65,6 +65,9 @@ VEHICLE_FIELDS = {
     "steering_response": ("s⁻¹", "齿条输入临界阻尼响应系数"),
     "steering_return": ("s⁻¹", "齿条回正临界阻尼响应系数"),
     "wheel_radius": ("m", "原生射线轮半径、独立轮速/滑移/力臂"),
+    "wheel_width": ("m", "圆角圆柱轮胎实际胎宽；通用设计值，非实测"),
+    "wheel_shoulder_radius": ("m", "胎肩圆角半径；轮半径和胎宽均包含肩部外廓"),
+    "wheel_crown_height": ("m", "抛物线胎冠中心到肩部落差，设计值；避免平直胎面接点跳变"),
     "wheel_inertia": ("kg·m²", "独立单轮轴向转动惯量"),
     "tire_compliance": ("bool", "启用隐式接触胎体弹性与阻尼"),
     "wheel_rotor_transport": ("bool", "机械轮轴/有效滚动力臂与同末状态轴承反力；false冻结旧机制"),
@@ -213,7 +216,7 @@ def measure(mode):
                        for i in range(body.getNumShapes())],
             "position": tuple(body.getTransform().getPos()),
             "suspension_authority": "coupled-SI" if car.coupled_suspension else "native-Bullet",
-            "suspension_contact_model": "finite-radius-sphere-envelope" if car.coupled_suspension else "native-point-ray",
+            "suspension_contact_model": "finite-width-crowned-cylinder" if car.coupled_suspension else "native-point-ray",
             "suspension_velocity_model": "shared-tire-drivetrain-end" if car.coupled_suspension and car.config.finite_drivetrain else "separate-normal-stage",
             "world_substeps": physical_substeps(car.config),
             "world_substep_dt_s": FIXED_DT / physical_substeps(car.config),
@@ -253,7 +256,7 @@ def export(output):
     source_names = ("vehicle_config.py", "driver_assist.py", "driving_modes.py", "vehicle.py",
                     "vehicle_tires.py", "vehicle_traction.py", "powertrain.py", "vehicle_steering.py", "vehicle_dynamics.py",
                     "wheel_dynamics.py", "tire_forces.py", "vehicle_contacts.py", "vehicle_state.py",
-                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py", "rotor_dynamics.py", "wheel_geometry.py", "transmission_ports.py", "tire_drivetrain.py", "differential.py", "shaft_transmission.py", "driveline_inertia.py", "suspension.py", "vehicle_suspension.py", "suspension_contacts.py", "suspension_geometry.py", "suspension_kinematics.py", "world_step.py")
+                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py", "rotor_dynamics.py", "wheel_geometry.py", "transmission_ports.py", "tire_drivetrain.py", "differential.py", "shaft_transmission.py", "driveline_inertia.py", "suspension.py", "vehicle_suspension.py", "suspension_contacts.py", "suspension_geometry.py", "suspension_kinematics.py", "wheel_envelope.py", "world_step.py")
     hashes = {f"src/{name}": hashlib.sha256((ROOT / "src" / name).read_bytes()).hexdigest()
               for name in source_names}
     hashes["tools/physics/export_reference.py"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
@@ -266,7 +269,7 @@ def export(output):
                         "world_substeps_per_tick": {mode.value: physical_substeps(mode.vehicle_config) for mode in DrivingMode},
                         "native_dt_s": {mode.value: FIXED_DT / physical_substeps(mode.vehicle_config) for mode in DrivingMode},
                         "ground": "水平无限平面", "gravity": [0, 0, -9.81], "input": "VehicleCommand()"},
-        "schema_version": "reference-v23",
+        "schema_version": "reference-v25",
         "vehicle_fields": VEHICLE_FIELDS, "brake_fields": BRAKE_FIELDS,
         "traction_fields": TRACTION_FIELDS, "stability_fields": STABILITY_FIELDS,
         "input_fields": INPUT_FIELDS, "modes": modes,

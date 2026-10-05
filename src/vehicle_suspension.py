@@ -12,15 +12,18 @@ from suspension import (
     dot,
     elastic_terms,
 )
-from suspension_contacts import suspension_rays
+from suspension_contacts import cylinder_suspension_rays, wheel_sweep_shape
 from suspension_kinematics import SupportPlane
 from vehicle_state import WheelContactState
+from wheel_geometry import mechanical_axis
 
 
 class Suspension:
     def __init__(self, config, hubs):
         self.config = config
         self.hubs = hubs
+        self.envelope = wheel_sweep_shape(config.wheel_radius, config.wheel_width,
+                                         config.wheel_shoulder_radius, config.wheel_crown_height)
         self.compression = (0.,) * 4
         self.state = SuspensionState()
 
@@ -35,7 +38,11 @@ class Suspension:
         lengths = tuple(w.getSuspensionRestLength() + config.suspension_travel + config.wheel_radius for w in wheels)
         # 路径描述轮心；向上退一个半径，保留原查询的压缩行程覆盖范围。
         starts = tuple(pose.getMat().xformPoint(Vec3(*hub)) - direction * config.wheel_radius for hub in self.hubs)
-        hits = suspension_rays(world, chassis, tuple((start, start + direction * length) for start, length in zip(starts, lengths)), config.wheel_radius)
+        axes = tuple(mechanical_axis(orientation.getRight(), orientation.getForward(), -wheel.getSteering()) for wheel in wheels)
+        hits = cylinder_suspension_rays(world, chassis,
+            tuple((start, start + direction * length) for start, length in zip(starts, lengths)), axes,
+            config.wheel_radius, config.wheel_width, config.wheel_shoulder_radius, config.wheel_crown_height,
+            envelope=self.envelope)
         for i, (wheel, ray_length, hit) in enumerate(zip(wheels, lengths, hits)):
             rest = wheel.getSuspensionRestLength()
             point = hit.point if hit else None
@@ -55,7 +62,8 @@ class Suspension:
                 gradient = contact_gradient(normal, tuple(direction), arm)
             surface = replace(hit.surface, reach=rest + config.suspension_travel) if eligible and hit.surface is not None else None
             planes.append(SupportPlane(tuple(orientation.xform(Vec3(*self.hubs[i]))), tuple(direction),
-                                       tuple(normal), rest - constraint_compression[i], surface) if eligible else None)
+                                       tuple(normal), rest - constraint_compression[i], surface,
+                                       arm) if eligible else None)
             geometry.append((point, normal, alignment, rest))
             gradients.append(gradient)
             contacts.append(eligible)

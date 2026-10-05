@@ -4,7 +4,8 @@ import math
 from dataclasses import dataclass, replace
 
 from rotor_dynamics import cross, dot
-from suspension_geometry import BoxSurface, sphere_box_entry
+from suspension_geometry import BoxSurface, CylinderSurface, sphere_box_entry
+from wheel_envelope import crown_extent_secant
 
 
 @dataclass(frozen=True)
@@ -15,6 +16,53 @@ class SupportPlane:
     normal: tuple
     length: float
     surface: BoxSurface | None = None
+    point: tuple | None = None
+
+
+def cylinder_endpoint(contact, hub_end, hub_average, direction_end, direction_average,
+                      rotation_axis, angle, scale, velocity, angular, dt):
+    """真实圆柱末接点与离散行程梯度；功恒等式包含胎肩随车身转动的位移。"""
+    surface = contact.surface
+    wheel_axis, _average = rotated_path(surface.wheel_axis, rotation_axis, angle, scale)
+    hub = tuple(hub_end[a] + dt * velocity[a] for a in range(3))
+    start = surface.local(tuple(hub[a] - surface.wheel_radius * direction_end[a] for a in range(3)))
+    end = surface.local(tuple(hub[a] + surface.reach * direction_end[a] for a in range(3)))
+    found = surface.entry(start, end, wheel_axis)
+    if found is None:
+        return None
+    fraction, local_normal, local_point = found
+    normal = surface.world_vector(local_normal)
+    length = -surface.wheel_radius + fraction * (surface.wheel_radius + surface.reach)
+    alignment = -dot(normal, direction_end)
+    if alignment <= .1:
+        return None
+    if normal == contact.normal:
+        a0 = -dot(normal, contact.direction)
+        reciprocal = (1 / a0 + 1 / alignment) / 2
+        wheel_average = rotated_path(surface.wheel_axis, rotation_axis, angle, scale)[1]
+        extent_secant = crown_extent_secant(dot(normal, surface.wheel_axis), dot(normal, wheel_axis),
+                                           surface.wheel_radius, surface.width / 2, surface.shoulder, surface.crown)
+        p0 = a0 * contact.length
+        # 由真实平面几何直接计算p1，避免把扫掠分数的舍入放大到静止末速度。
+        axis_change = dot(normal, tuple(wheel_axis[a] - surface.wheel_axis[a] for a in range(3)))
+        p1 = p0 + dot(normal, tuple(dt * velocity[a] + hub_end[a] - contact.hub[a] for a in range(3))) - extent_secant * axis_change
+        arm = tuple(reciprocal * (hub_average[a] - extent_secant * wheel_average[a])
+                    + (p0 + p1) / (2 * a0 * alignment) * direction_average[a] for a in range(3))
+        return tuple(reciprocal * n for n in normal) + cross(arm, normal), 1 / reciprocal
+    endpoint = surface.world_vector(tuple(local_point[a] - surface.offset[a] for a in range(3)))
+    endpoint_arm = tuple(endpoint[a] - dt * velocity[a] for a in range(3))
+    start_arm = contact.point
+    # 中点梯度取两端实际见证点；Gonzalez离散梯度修正使有限步行程与机械功严格相等。
+    old_alignment = -dot(contact.normal, contact.direction)
+    translation = tuple((contact.normal[a] / old_alignment + normal[a] / alignment) / 2 for a in range(3))
+    old_moment, new_moment = cross(start_arm, contact.normal), cross(endpoint_arm, normal)
+    gradient = translation + tuple(scale * (old_moment[a] / old_alignment + new_moment[a] / alignment) / 2 for a in range(3))
+    speed = tuple(velocity) + tuple(angular)
+    squared = sum(value * value for value in speed)
+    if squared:
+        correction = ((length - contact.length) / dt - sum(g * v for g, v in zip(gradient, speed))) / squared
+        gradient = tuple(g + correction * v for g, v in zip(gradient, speed))
+    return gradient, alignment
 
 
 def curved_endpoint(contact, hub_end, direction_end, velocity, dt):
@@ -89,6 +137,13 @@ def finite_contact_system(system, velocity, angular, dt):
             continue
         hub_end, hub_average = rotated_path(plane.hub, axis, angle, scale)
         direction_end, direction_average = rotated_path(plane.direction, axis, angle, scale)
+        if isinstance(plane.surface, CylinderSurface):
+            endpoint = cylinder_endpoint(plane, hub_end, hub_average, direction_end, direction_average,
+                                         axis, angle, scale, velocity, angular, dt)
+            gradients.append(endpoint[0] if endpoint else (0.,) * 6)
+            alignment.append(endpoint[1] if endpoint else None)
+            touching.append(endpoint is not None)
+            continue
         if plane.surface is not None:
             endpoint = curved_endpoint(plane, hub_end, direction_end, velocity, dt)
             if endpoint is None:
@@ -142,5 +197,9 @@ def advance_contact_geometry(system, compression, velocity, angular, dt):
         length = plane.length + dt * sum(a * b for a, b in zip(gradient, tuple(velocity) + tuple(angular)))
         surface = (replace(plane.surface, offset=plane.surface.local(tuple(dt * value for value in velocity)))
                    if plane.surface is not None else None)
-        planes.append(replace(plane, hub=hub, direction=direction, length=length, surface=surface))
+        if isinstance(surface, CylinderSurface):
+            wheel_axis, _average = rotated_path(surface.wheel_axis, axis, angle, scale)
+            surface = replace(surface, wheel_axis=wheel_axis)
+        point = tuple(plane.point[a] - dt * velocity[a] for a in range(3)) if plane.point is not None else None
+        planes.append(replace(plane, hub=hub, direction=direction, length=length, surface=surface, point=point))
     return replace(system, compression=compression, geometry=geometry, kinematics=tuple(planes))

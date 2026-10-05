@@ -62,6 +62,9 @@ class VehicleConfig:
     steering_response: float = 7.0
     steering_return: float = 10.0
     wheel_radius: float = 0.33
+    wheel_width: float = .205  # m，通用设计胎宽；不作为实车测量数据。
+    wheel_shoulder_radius: float = .01  # m，圆角肩部；半径与胎宽均定义含肩部外廓。
+    wheel_crown_height: float = .003  # m，胎面中心到肩部的抛物线胎冠落差，通用设计值。
     wheel_inertia: float = 1.8  # 单轮轴向转动惯量，kg·m²。
     longitudinal_stiffness: float = 60000.0  # 静态单轮载荷下，N/单位滑转率。
     lateral_stiffness: float = 50000.0  # 静态单轮载荷下，N/rad。
@@ -113,6 +116,12 @@ class VehicleConfig:
     suspension_force_limit: float = 6000.0  # N；仅原生对照分支的数值力限，SI势能反力不作硬裁剪。
 
     def __post_init__(self):
+        if not (math.isfinite(self.wheel_width) and self.wheel_width > 0.
+                and math.isfinite(self.wheel_shoulder_radius)
+                and 0. < self.wheel_shoulder_radius < min(self.wheel_radius, self.wheel_width / 2)):
+            raise ValueError("胎宽须为正值，肩部圆角须小于轮半径与半胎宽")
+        if not math.isfinite(self.wheel_crown_height) or not 0. <= self.wheel_crown_height < self.wheel_radius - self.wheel_shoulder_radius:
+            raise ValueError("胎冠落差须为有限非负值且小于胎面内核半径")
         if len(self.suspension_antiroll_rates) != 2 or any(not math.isfinite(k) or k < 0 for k in self.suspension_antiroll_rates):
             raise ValueError("前/后防倾刚度须为两个有限非负值N/m")
         if len(self.suspension_stop_rates) != 4 or any(not math.isfinite(k) or k < 0 for k in self.suspension_stop_rates):
