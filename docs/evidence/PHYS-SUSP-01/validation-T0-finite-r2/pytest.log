@@ -1,0 +1,1366 @@
+...................FF..............FFFFFF.F.F.F......                    [100%]
+================================== FAILURES ===================================
+_____ test_rotation_path_matches_actual_native_bullet_transform[angular1] _____
+
+angular = (0.0001, -0.0002, 0.0003)
+
+    @pytest.mark.parametrize("angular", ((0., 0., 0.), (.0001, -.0002, .0003), (4., -.7, .3), (300., 90., -30.)))
+    def test_rotation_path_matches_actual_native_bullet_transform(angular):
+        world = BulletWorld()
+        world.setGravity(Vec3(0))
+        body = BulletRigidBodyNode("isotropic-rotation-test")
+        body.setMass(1.)
+        body.addShape(BulletSphereShape(.1))
+        body.setAngularVelocity(Vec3(*angular))
+        world.attachRigidBody(body)
+        dt, vector = 1/120, (.3, -.7, .2)
+        axis, theta, scale = rotation_path(tuple(body.getAngularVelocity()), dt)
+        expected, average = rotated_path(vector, axis, theta, scale)
+        world.doPhysics(dt, 0, dt)
+        actual = tuple(body.getTransform().getQuat().xform(Vec3(*vector)))
+        assert actual == pytest.approx(expected, abs=3e-7)
+        transport = np.asarray(expected) - vector
+>       assert transport == pytest.approx(dt * np.cross(angular, average), abs=2e-15)
+E       assert array([ 1.416...33319077e-08]) == approx([1.416...08 ± 2.0e-15])
+E         
+E         comparison failed. Mismatched elements: 3 / 3:
+E         Max absolute difference: 9.148840005688435e-14
+E         Max relative difference: 6.82772171266069e-08
+E         Index | Obtained               | Expected                        
+E         (0,)  | 1.4166660984304968e-06 | 1.4166660069420968e-06 ± 2.0e-15
+E         (1,)  | 5.833351787165597e-07  | 5.833351388880571e-07 ± 2.0e-15 
+E         (2,)  | -8.333190765208442e-08 | -8.333190972199426e-08 ± 2.0e-15
+
+tests\test_finite_suspension.py:64: AssertionError
+_____ test_rotation_path_matches_actual_native_bullet_transform[angular2] _____
+
+angular = (4.0, -0.7, 0.3)
+
+    @pytest.mark.parametrize("angular", ((0., 0., 0.), (.0001, -.0002, .0003), (4., -.7, .3), (300., 90., -30.)))
+    def test_rotation_path_matches_actual_native_bullet_transform(angular):
+        world = BulletWorld()
+        world.setGravity(Vec3(0))
+        body = BulletRigidBodyNode("isotropic-rotation-test")
+        body.setMass(1.)
+        body.addShape(BulletSphereShape(.1))
+        body.setAngularVelocity(Vec3(*angular))
+        world.attachRigidBody(body)
+        dt, vector = 1/120, (.3, -.7, .2)
+        axis, theta, scale = rotation_path(tuple(body.getAngularVelocity()), dt)
+        expected, average = rotated_path(vector, axis, theta, scale)
+        world.doPhysics(dt, 0, dt)
+        actual = tuple(body.getTransform().getQuat().xform(Vec3(*vector)))
+        assert actual == pytest.approx(expected, abs=3e-7)
+        transport = np.asarray(expected) - vector
+>       assert transport == pytest.approx(dt * np.cross(angular, average), abs=2e-15)
+E       assert array([ 0.000... -0.02167609]) == approx([0.000...93 ± 2.0e-15])
+E         
+E         comparison failed. Mismatched elements: 3 / 3:
+E         Max absolute difference: 8.861372096172215e-11
+E         Max relative difference: 1.3558579952033858e-07
+E         Index | Obtained              | Expected                       
+E         (0,)  | 0.0006535619605829712 | 0.0006535618719692503 ± 2.0e-15
+E         (1,)  | -0.005555114498979941 | -0.005555114528813596 ± 2.0e-15
+E         (2,)  | -0.021676092223322008 | -0.021676092193488393 ± 2.0e-15
+
+tests\test_finite_suspension.py:64: AssertionError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.0--20.0] _
+
+bank = -20.0, share = 0.0, dt = 0.008333333333333333, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+        result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+        step = result.suspension
+        # 从实际表面点的六维速度展开，不用生产的悬架速度雅可比求期望。
+        for i, frame in enumerate(contact_frames):
+            point_velocity = tuple(result.velocity[a] + cross(result.angular, frame.point)[a] for a in range(3))
+            expected = initial[i] - dt * dot(point_velocity, normal) / alignment
+            if finite_rotation:
+                expected = .4 - endpoint_length(planes[i], result.velocity, result.angular, dt)
+            assert step.compression[i] == pytest.approx(expected, abs=1e-13)
+            dx = expected - initial[i]
+            damping = config.suspension_compression_damping[i] if dx >= 0 else config.suspension_extension_damping[i]
+            other = i ^ 1
+            force = (config.suspension_spring_rates[i] * expected
+                     + config.suspension_antiroll_rates[i // 2] * (expected - step.compression[other])
+                     + damping * dx / dt)
+            assert step.axial_force[i] == pytest.approx(force, abs=1e-8)
+        effective = result.suspension_system
+        loaded = tuple(replace(frame, load=force / a) for frame, force, a in zip(contact_frames, step.axial_force, effective.alignment))
+        assert result.normal_residual < 1e-8
+        assert step.body_numerical_dissipation == 0.
+>       audit(result, velocity, angular, spins, engine, loaded, deformation, 85., brakes, config, dt,
+              tuple(frame.spin_axis for frame in loaded), ((0.,) * 3,) * 4, shaft=180., normal=(effective, step))
+
+tests\test_joint_suspension.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = DrivetrainStep(wheels=(WheelStep(omega=60.0881598183373, relative_omega=60.11415561833925, vx=18.901319223309326, vy=-...983), direction=(0.0, 0.0, -1.0), normal=(-0.3420201433256687, 0.0, 0.9396926207859084), length=0.35000000000000003))))
+velocity = (0.3, 20.0, -0.2), angular = (0.04, -0.06, 0.17)
+spins = (61.0, 60.0, 62.0, 59.0), engine = 175.0
+contact_frames = (ContactFrame(steering=17.0, supported=True, load=4012.5235024552153, mu=0.45, tangent=(0.2907302145650209, 0.95093568...42, 0.0, 0.0), spin_axis=(1.0, 0.0, 0.0), rolling_radius=0.3100985648593498, moment_x=(0.1099014351406502, 0.0, 0.84)))
+deformation = ((0.002, -0.001), (0.002, -0.001), (0.002, -0.001), (0.002, -0.001))
+torque = 85.0, brakes = (200.0, 300.0, 120.0, 150.0)
+config = VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0)
+dt = 0.008333333333333333
+old_axes = ((0.9563047559630354, -0.29237170472273677, 0.0), (0.9563047559630354, -0.29237170472273677, 0.0), (1.0, 0.0, 0.0), (1.0, 0.0, 0.0))
+steering = ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
+inertia = ((1900.0, 0.0, 0.0), (0.0, 510.0, 0.0), (0.0, 0.0, 2200.0))
+engine_axis = (0.0, 1.0, 0.0), drag = 0.12, engine_inertia = 0.2, shaft = 180.0
+shaft_inertia = 0.04, shaft_axis = (0.0, 1.0, 0.0), downstream = None
+normal = (SuspensionInput(compression=(0.064, 0.047, 0.067, 0.05), geometry=(0.064, 0.047, 0.067, 0.05), gradients=((-0.3639679...rical_dissipation=0.0, contact_offset_work=0.0, energy_residual=-1.509903313490213e-14, body_work=-25.893389994051887))
+
+    def audit(result, velocity, angular, spins, engine, contact_frames, deformation, torque, brakes, config, dt,
+              old_axes, steering, inertia=tuple(tuple(INERTIA[a] if a == b else 0. for b in range(3)) for a in range(3)),
+              engine_axis=ENGINE_AXIS, drag=.12, engine_inertia=ENGINE_INERTIA,
+              shaft=None, shaft_inertia=.04, shaft_axis=(0., 1., 0.), downstream=None, normal=None):
+        wheels, end_angular, end_velocity = result.wheels, result.angular, result.velocity
+        relative_wheels = tuple(w.omega + dot(end_angular, f.spin_axis) for w, f in zip(wheels, contact_frames))
+        slips = (relative_wheels[0] - relative_wheels[1], relative_wheels[2] - relative_wheels[3],
+                 (relative_wheels[0] + relative_wheels[1] - relative_wheels[2] - relative_wheels[3]) / 2)
+        torques = tuple(max(-limit, min(limit, c * s)) for c, limit, s in
+                        zip(config.differential_damping, config.differential_capacity, slips))
+        transfers = (-torques[0] - torques[2] / 2, torques[0] - torques[2] / 2,
+                     -torques[1] + torques[2] / 2, torques[1] + torques[2] / 2)
+        rotor_weights = ((config.front_drive_share / 2,) * 2 + ((1 - config.front_drive_share) / 2,) * 2,
+                         (.5, .5, 0., 0.), (0., 0., .5, .5))
+        extra_drives = (0.,) * 4
+        if downstream is not None:
+            speeds = tuple(dot(end_angular, axis) + config.final_drive * sum(w * s for w, s in zip(weights, relative_wheels))
+                           if j else 0. for (_old, j, axis), weights in zip(downstream, rotor_weights))
+            assert result.downstream_omega == pytest.approx(speeds, abs=1e-11)
+            extra_drives = tuple(-config.final_drive * sum(weights[i] * j * (new - old) / dt
+                                 for (old, j, _axis), new, weights in zip(downstream, speeds, rotor_weights)) for i in range(4))
+            assert result.downstream_wheel_torques == pytest.approx(extra_drives, abs=1e-10)
+            assert result.downstream_kinetic_energy == pytest.approx(tuple(.5 * j * s**2
+                   for (_old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+            assert result.downstream_numerical_dissipation == pytest.approx(tuple(.5 * j * (s - old)**2
+                   for (old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+        assert result.differential_torques == pytest.approx(torques, abs=1e-11)
+        assert result.differential_slips == pytest.approx(slips, abs=1e-12)
+        force, body_torque, external = [0.] * 3, list(result.engine_body_torque), [0.] * 3
+        if normal is not None:
+            system, step = normal
+            for gradient, axial in zip(system.gradients, step.axial_force):
+                for a in range(3):
+                    force[a] += gradient[a] * axial
+                    body_torque[a] += gradient[a + 3] * axial
+                    external[a] += dt * gradient[a + 3] * axial
+        if shaft is not None:
+            for a in range(3):
+                body_torque[a] += result.shaft_body_torque[a]
+            assert shaft_inertia * (result.shaft_omega - shaft) == pytest.approx(
+                dt * (result.clutch_torque - result.gear_reaction), abs=1e-11)
+            assert result.shaft_relative_omega == pytest.approx(
+                result.shaft_omega - dot(end_angular, shaft_axis), abs=1e-12)
+            assert result.clutch_slip == pytest.approx(result.engine_relative_omega - result.shaft_relative_omega, abs=1e-11)
+        if downstream is not None:
+            for a in range(3):
+                body_torque[a] += result.downstream_body_torque[a]
+        for i, (frame, wheel) in enumerate(zip(contact_frames, wheels)):
+            drive = result.drive_torque * (config.front_drive_share if i < 2 else 1 - config.front_drive_share) / 2 + transfers[i] + extra_drives[i]
+            assert result.wheel_drive_torques[i] == pytest.approx(drive, abs=1e-11)
+            f = tuple(frame.tangent[a] * wheel.fx + frame.axle[a] * wheel.fy for a in range(3))
+            moment = cross(frame.point, f)
+            for a in range(3):
+                force[a] += f[a]
+                body_torque[a] += moment[a] + frame.spin_axis[a] * (
+                    drive - wheel.brake_torque - frame.rolling_radius * wheel.fx) + wheel.gyro_torque[a] + steering[i][a]
+                external[a] += dt * moment[a]
+            assert config.wheel_inertia * (wheel.omega - spins[i]) == pytest.approx(
+                dt * (drive - wheel.brake_torque - frame.rolling_radius * wheel.fx), abs=1e-11)
+            assert wheel.relative_omega == pytest.approx(wheel.omega + dot(end_angular, frame.spin_axis), abs=1e-12)
+            assert wheel.residual < .001
+            assert abs(wheel.brake_torque) <= brakes[i] + 1e-10
+            assert wheel.brake_torque * wheel.relative_omega >= -1e-7
+        for a in range(3):
+>           assert config.mass * (end_velocity[a] - velocity[a]) == pytest.approx(dt * force[a], abs=1e-11)
+E           assert -33.0908609460147 == -33.09086094597062 ± 1.0e-11
+E             
+E             comparison failed
+E             Obtained: -33.0908609460147
+E             Expected: -33.09086094597062 ± 1.0e-11
+
+tests\test_tire_drivetrain.py:89: AssertionError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.0-20.0] _
+
+bank = 20.0, share = 0.0, dt = 0.008333333333333333, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+        result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+        step = result.suspension
+        # 从实际表面点的六维速度展开，不用生产的悬架速度雅可比求期望。
+        for i, frame in enumerate(contact_frames):
+            point_velocity = tuple(result.velocity[a] + cross(result.angular, frame.point)[a] for a in range(3))
+            expected = initial[i] - dt * dot(point_velocity, normal) / alignment
+            if finite_rotation:
+                expected = .4 - endpoint_length(planes[i], result.velocity, result.angular, dt)
+            assert step.compression[i] == pytest.approx(expected, abs=1e-13)
+            dx = expected - initial[i]
+            damping = config.suspension_compression_damping[i] if dx >= 0 else config.suspension_extension_damping[i]
+            other = i ^ 1
+            force = (config.suspension_spring_rates[i] * expected
+                     + config.suspension_antiroll_rates[i // 2] * (expected - step.compression[other])
+                     + damping * dx / dt)
+            assert step.axial_force[i] == pytest.approx(force, abs=1e-8)
+        effective = result.suspension_system
+        loaded = tuple(replace(frame, load=force / a) for frame, force, a in zip(contact_frames, step.axial_force, effective.alignment))
+        assert result.normal_residual < 1e-8
+        assert step.body_numerical_dissipation == 0.
+>       audit(result, velocity, angular, spins, engine, loaded, deformation, 85., brakes, config, dt,
+              tuple(frame.spin_axis for frame in loaded), ((0.,) * 3,) * 4, shaft=180., normal=(effective, step))
+
+tests\test_joint_suspension.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = DrivetrainStep(wheels=(WheelStep(omega=60.105185813097634, relative_omega=60.14869247209131, vx=18.943259045160772, vy...4983), direction=(0.0, 0.0, -1.0), normal=(0.3420201433256687, 0.0, 0.9396926207859084), length=0.35000000000000003))))
+velocity = (0.3, 20.0, -0.2), angular = (0.04, -0.06, 0.17)
+spins = (61.0, 60.0, 62.0, 59.0), engine = 175.0
+contact_frames = (ContactFrame(steering=17.0, supported=True, load=3847.8394763859997, mu=0.45, tangent=(0.2907302145650209, 0.95093568...2, 0.0, 0.0), spin_axis=(1.0, 0.0, 0.0), rolling_radius=0.3100985648593498, moment_x=(0.1099014351406502, -0.0, 0.84)))
+deformation = ((0.002, -0.001), (0.002, -0.001), (0.002, -0.001), (0.002, -0.001))
+torque = 85.0, brakes = (200.0, 300.0, 120.0, 150.0)
+config = VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0)
+dt = 0.008333333333333333
+old_axes = ((0.9563047559630354, -0.29237170472273677, 0.0), (0.9563047559630354, -0.29237170472273677, 0.0), (1.0, 0.0, 0.0), (1.0, 0.0, 0.0))
+steering = ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
+inertia = ((1900.0, 0.0, 0.0), (0.0, 510.0, 0.0), (0.0, 0.0, 2200.0))
+engine_axis = (0.0, 1.0, 0.0), drag = 0.12, engine_inertia = 0.2, shaft = 180.0
+shaft_inertia = 0.04, shaft_axis = (0.0, 1.0, 0.0), downstream = None
+normal = (SuspensionInput(compression=(0.064, 0.047, 0.067, 0.05), geometry=(0.064, 0.047, 0.067, 0.05), gradients=((0.36400299...erical_dissipation=0.0, contact_offset_work=0.0, energy_residual=1.0547118733938987e-14, body_work=-0.745456261347833))
+
+    def audit(result, velocity, angular, spins, engine, contact_frames, deformation, torque, brakes, config, dt,
+              old_axes, steering, inertia=tuple(tuple(INERTIA[a] if a == b else 0. for b in range(3)) for a in range(3)),
+              engine_axis=ENGINE_AXIS, drag=.12, engine_inertia=ENGINE_INERTIA,
+              shaft=None, shaft_inertia=.04, shaft_axis=(0., 1., 0.), downstream=None, normal=None):
+        wheels, end_angular, end_velocity = result.wheels, result.angular, result.velocity
+        relative_wheels = tuple(w.omega + dot(end_angular, f.spin_axis) for w, f in zip(wheels, contact_frames))
+        slips = (relative_wheels[0] - relative_wheels[1], relative_wheels[2] - relative_wheels[3],
+                 (relative_wheels[0] + relative_wheels[1] - relative_wheels[2] - relative_wheels[3]) / 2)
+        torques = tuple(max(-limit, min(limit, c * s)) for c, limit, s in
+                        zip(config.differential_damping, config.differential_capacity, slips))
+        transfers = (-torques[0] - torques[2] / 2, torques[0] - torques[2] / 2,
+                     -torques[1] + torques[2] / 2, torques[1] + torques[2] / 2)
+        rotor_weights = ((config.front_drive_share / 2,) * 2 + ((1 - config.front_drive_share) / 2,) * 2,
+                         (.5, .5, 0., 0.), (0., 0., .5, .5))
+        extra_drives = (0.,) * 4
+        if downstream is not None:
+            speeds = tuple(dot(end_angular, axis) + config.final_drive * sum(w * s for w, s in zip(weights, relative_wheels))
+                           if j else 0. for (_old, j, axis), weights in zip(downstream, rotor_weights))
+            assert result.downstream_omega == pytest.approx(speeds, abs=1e-11)
+            extra_drives = tuple(-config.final_drive * sum(weights[i] * j * (new - old) / dt
+                                 for (old, j, _axis), new, weights in zip(downstream, speeds, rotor_weights)) for i in range(4))
+            assert result.downstream_wheel_torques == pytest.approx(extra_drives, abs=1e-10)
+            assert result.downstream_kinetic_energy == pytest.approx(tuple(.5 * j * s**2
+                   for (_old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+            assert result.downstream_numerical_dissipation == pytest.approx(tuple(.5 * j * (s - old)**2
+                   for (old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+        assert result.differential_torques == pytest.approx(torques, abs=1e-11)
+        assert result.differential_slips == pytest.approx(slips, abs=1e-12)
+        force, body_torque, external = [0.] * 3, list(result.engine_body_torque), [0.] * 3
+        if normal is not None:
+            system, step = normal
+            for gradient, axial in zip(system.gradients, step.axial_force):
+                for a in range(3):
+                    force[a] += gradient[a] * axial
+                    body_torque[a] += gradient[a + 3] * axial
+                    external[a] += dt * gradient[a + 3] * axial
+        if shaft is not None:
+            for a in range(3):
+                body_torque[a] += result.shaft_body_torque[a]
+            assert shaft_inertia * (result.shaft_omega - shaft) == pytest.approx(
+                dt * (result.clutch_torque - result.gear_reaction), abs=1e-11)
+            assert result.shaft_relative_omega == pytest.approx(
+                result.shaft_omega - dot(end_angular, shaft_axis), abs=1e-12)
+            assert result.clutch_slip == pytest.approx(result.engine_relative_omega - result.shaft_relative_omega, abs=1e-11)
+        if downstream is not None:
+            for a in range(3):
+                body_torque[a] += result.downstream_body_torque[a]
+        for i, (frame, wheel) in enumerate(zip(contact_frames, wheels)):
+            drive = result.drive_torque * (config.front_drive_share if i < 2 else 1 - config.front_drive_share) / 2 + transfers[i] + extra_drives[i]
+            assert result.wheel_drive_torques[i] == pytest.approx(drive, abs=1e-11)
+            f = tuple(frame.tangent[a] * wheel.fx + frame.axle[a] * wheel.fy for a in range(3))
+            moment = cross(frame.point, f)
+            for a in range(3):
+                force[a] += f[a]
+                body_torque[a] += moment[a] + frame.spin_axis[a] * (
+                    drive - wheel.brake_torque - frame.rolling_radius * wheel.fx) + wheel.gyro_torque[a] + steering[i][a]
+                external[a] += dt * moment[a]
+            assert config.wheel_inertia * (wheel.omega - spins[i]) == pytest.approx(
+                dt * (drive - wheel.brake_torque - frame.rolling_radius * wheel.fx), abs=1e-11)
+            assert wheel.relative_omega == pytest.approx(wheel.omega + dot(end_angular, frame.spin_axis), abs=1e-12)
+            assert wheel.residual < .001
+            assert abs(wheel.brake_torque) <= brakes[i] + 1e-10
+            assert wheel.brake_torque * wheel.relative_omega >= -1e-7
+        for a in range(3):
+>           assert config.mass * (end_velocity[a] - velocity[a]) == pytest.approx(dt * force[a], abs=1e-11)
+E           assert 44.648035971179965 == 44.648035971194794 ± 1.0e-11
+E             
+E             comparison failed
+E             Obtained: 44.648035971179965
+E             Expected: 44.648035971194794 ± 1.0e-11
+
+tests\test_tire_drivetrain.py:89: AssertionError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.5--20.0] _
+
+bank = -20.0, share = 0.5, dt = 0.008333333333333333, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+        result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+        step = result.suspension
+        # 从实际表面点的六维速度展开，不用生产的悬架速度雅可比求期望。
+        for i, frame in enumerate(contact_frames):
+            point_velocity = tuple(result.velocity[a] + cross(result.angular, frame.point)[a] for a in range(3))
+            expected = initial[i] - dt * dot(point_velocity, normal) / alignment
+            if finite_rotation:
+                expected = .4 - endpoint_length(planes[i], result.velocity, result.angular, dt)
+            assert step.compression[i] == pytest.approx(expected, abs=1e-13)
+            dx = expected - initial[i]
+            damping = config.suspension_compression_damping[i] if dx >= 0 else config.suspension_extension_damping[i]
+            other = i ^ 1
+            force = (config.suspension_spring_rates[i] * expected
+                     + config.suspension_antiroll_rates[i // 2] * (expected - step.compression[other])
+                     + damping * dx / dt)
+            assert step.axial_force[i] == pytest.approx(force, abs=1e-8)
+        effective = result.suspension_system
+        loaded = tuple(replace(frame, load=force / a) for frame, force, a in zip(contact_frames, step.axial_force, effective.alignment))
+        assert result.normal_residual < 1e-8
+        assert step.body_numerical_dissipation == 0.
+>       audit(result, velocity, angular, spins, engine, loaded, deformation, 85., brakes, config, dt,
+              tuple(frame.spin_axis for frame in loaded), ((0.,) * 3,) * 4, shaft=180., normal=(effective, step))
+
+tests\test_joint_suspension.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = DrivetrainStep(wheels=(WheelStep(omega=59.44552505040448, relative_omega=59.47126408859334, vx=18.90296526173148, vy=-...983), direction=(0.0, 0.0, -1.0), normal=(-0.3420201433256687, 0.0, 0.9396926207859084), length=0.35000000000000003))))
+velocity = (0.3, 20.0, -0.2), angular = (0.04, -0.06, 0.17)
+spins = (61.0, 60.0, 62.0, 59.0), engine = 175.0
+contact_frames = (ContactFrame(steering=17.0, supported=True, load=4001.578052583513, mu=0.45, tangent=(0.2907302145650209, 0.950935683...42, 0.0, 0.0), spin_axis=(1.0, 0.0, 0.0), rolling_radius=0.3100985648593498, moment_x=(0.1099014351406502, 0.0, 0.84)))
+deformation = ((0.002, -0.001), (0.002, -0.001), (0.002, -0.001), (0.002, -0.001))
+torque = 85.0, brakes = (200.0, 300.0, 120.0, 150.0)
+config = VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0)
+dt = 0.008333333333333333
+old_axes = ((0.9563047559630354, -0.29237170472273677, 0.0), (0.9563047559630354, -0.29237170472273677, 0.0), (1.0, 0.0, 0.0), (1.0, 0.0, 0.0))
+steering = ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
+inertia = ((1900.0, 0.0, 0.0), (0.0, 510.0, 0.0), (0.0, 0.0, 2200.0))
+engine_axis = (0.0, 1.0, 0.0), drag = 0.12, engine_inertia = 0.2, shaft = 180.0
+shaft_inertia = 0.04, shaft_axis = (0.0, 1.0, 0.0), downstream = None
+normal = (SuspensionInput(compression=(0.064, 0.047, 0.067, 0.05), geometry=(0.064, 0.047, 0.067, 0.05), gradients=((-0.3639688...rical_dissipation=0.0, contact_offset_work=0.0, energy_residual=-3.907985046680551e-14, body_work=-25.837177207065082))
+
+    def audit(result, velocity, angular, spins, engine, contact_frames, deformation, torque, brakes, config, dt,
+              old_axes, steering, inertia=tuple(tuple(INERTIA[a] if a == b else 0. for b in range(3)) for a in range(3)),
+              engine_axis=ENGINE_AXIS, drag=.12, engine_inertia=ENGINE_INERTIA,
+              shaft=None, shaft_inertia=.04, shaft_axis=(0., 1., 0.), downstream=None, normal=None):
+        wheels, end_angular, end_velocity = result.wheels, result.angular, result.velocity
+        relative_wheels = tuple(w.omega + dot(end_angular, f.spin_axis) for w, f in zip(wheels, contact_frames))
+        slips = (relative_wheels[0] - relative_wheels[1], relative_wheels[2] - relative_wheels[3],
+                 (relative_wheels[0] + relative_wheels[1] - relative_wheels[2] - relative_wheels[3]) / 2)
+        torques = tuple(max(-limit, min(limit, c * s)) for c, limit, s in
+                        zip(config.differential_damping, config.differential_capacity, slips))
+        transfers = (-torques[0] - torques[2] / 2, torques[0] - torques[2] / 2,
+                     -torques[1] + torques[2] / 2, torques[1] + torques[2] / 2)
+        rotor_weights = ((config.front_drive_share / 2,) * 2 + ((1 - config.front_drive_share) / 2,) * 2,
+                         (.5, .5, 0., 0.), (0., 0., .5, .5))
+        extra_drives = (0.,) * 4
+        if downstream is not None:
+            speeds = tuple(dot(end_angular, axis) + config.final_drive * sum(w * s for w, s in zip(weights, relative_wheels))
+                           if j else 0. for (_old, j, axis), weights in zip(downstream, rotor_weights))
+            assert result.downstream_omega == pytest.approx(speeds, abs=1e-11)
+            extra_drives = tuple(-config.final_drive * sum(weights[i] * j * (new - old) / dt
+                                 for (old, j, _axis), new, weights in zip(downstream, speeds, rotor_weights)) for i in range(4))
+            assert result.downstream_wheel_torques == pytest.approx(extra_drives, abs=1e-10)
+            assert result.downstream_kinetic_energy == pytest.approx(tuple(.5 * j * s**2
+                   for (_old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+            assert result.downstream_numerical_dissipation == pytest.approx(tuple(.5 * j * (s - old)**2
+                   for (old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+        assert result.differential_torques == pytest.approx(torques, abs=1e-11)
+        assert result.differential_slips == pytest.approx(slips, abs=1e-12)
+        force, body_torque, external = [0.] * 3, list(result.engine_body_torque), [0.] * 3
+        if normal is not None:
+            system, step = normal
+            for gradient, axial in zip(system.gradients, step.axial_force):
+                for a in range(3):
+                    force[a] += gradient[a] * axial
+                    body_torque[a] += gradient[a + 3] * axial
+                    external[a] += dt * gradient[a + 3] * axial
+        if shaft is not None:
+            for a in range(3):
+                body_torque[a] += result.shaft_body_torque[a]
+            assert shaft_inertia * (result.shaft_omega - shaft) == pytest.approx(
+                dt * (result.clutch_torque - result.gear_reaction), abs=1e-11)
+            assert result.shaft_relative_omega == pytest.approx(
+                result.shaft_omega - dot(end_angular, shaft_axis), abs=1e-12)
+            assert result.clutch_slip == pytest.approx(result.engine_relative_omega - result.shaft_relative_omega, abs=1e-11)
+        if downstream is not None:
+            for a in range(3):
+                body_torque[a] += result.downstream_body_torque[a]
+        for i, (frame, wheel) in enumerate(zip(contact_frames, wheels)):
+            drive = result.drive_torque * (config.front_drive_share if i < 2 else 1 - config.front_drive_share) / 2 + transfers[i] + extra_drives[i]
+            assert result.wheel_drive_torques[i] == pytest.approx(drive, abs=1e-11)
+            f = tuple(frame.tangent[a] * wheel.fx + frame.axle[a] * wheel.fy for a in range(3))
+            moment = cross(frame.point, f)
+            for a in range(3):
+                force[a] += f[a]
+                body_torque[a] += moment[a] + frame.spin_axis[a] * (
+                    drive - wheel.brake_torque - frame.rolling_radius * wheel.fx) + wheel.gyro_torque[a] + steering[i][a]
+                external[a] += dt * moment[a]
+            assert config.wheel_inertia * (wheel.omega - spins[i]) == pytest.approx(
+                dt * (drive - wheel.brake_torque - frame.rolling_radius * wheel.fx), abs=1e-11)
+            assert wheel.relative_omega == pytest.approx(wheel.omega + dot(end_angular, frame.spin_axis), abs=1e-12)
+            assert wheel.residual < .001
+            assert abs(wheel.brake_torque) <= brakes[i] + 1e-10
+            assert wheel.brake_torque * wheel.relative_omega >= -1e-7
+        for a in range(3):
+>           assert config.mass * (end_velocity[a] - velocity[a]) == pytest.approx(dt * force[a], abs=1e-11)
+E           assert -33.78548177444085 == -33.78548177442068 ± 1.0e-11
+E             
+E             comparison failed
+E             Obtained: -33.78548177444085
+E             Expected: -33.78548177442068 ± 1.0e-11
+
+tests\test_tire_drivetrain.py:89: AssertionError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.5-20.0] _
+
+bank = 20.0, share = 0.5, dt = 0.008333333333333333, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+        result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+        step = result.suspension
+        # 从实际表面点的六维速度展开，不用生产的悬架速度雅可比求期望。
+        for i, frame in enumerate(contact_frames):
+            point_velocity = tuple(result.velocity[a] + cross(result.angular, frame.point)[a] for a in range(3))
+            expected = initial[i] - dt * dot(point_velocity, normal) / alignment
+            if finite_rotation:
+                expected = .4 - endpoint_length(planes[i], result.velocity, result.angular, dt)
+            assert step.compression[i] == pytest.approx(expected, abs=1e-13)
+            dx = expected - initial[i]
+            damping = config.suspension_compression_damping[i] if dx >= 0 else config.suspension_extension_damping[i]
+            other = i ^ 1
+            force = (config.suspension_spring_rates[i] * expected
+                     + config.suspension_antiroll_rates[i // 2] * (expected - step.compression[other])
+                     + damping * dx / dt)
+            assert step.axial_force[i] == pytest.approx(force, abs=1e-8)
+        effective = result.suspension_system
+        loaded = tuple(replace(frame, load=force / a) for frame, force, a in zip(contact_frames, step.axial_force, effective.alignment))
+        assert result.normal_residual < 1e-8
+        assert step.body_numerical_dissipation == 0.
+>       audit(result, velocity, angular, spins, engine, loaded, deformation, 85., brakes, config, dt,
+              tuple(frame.spin_axis for frame in loaded), ((0.,) * 3,) * 4, shaft=180., normal=(effective, step))
+
+tests\test_joint_suspension.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = DrivetrainStep(wheels=(WheelStep(omega=59.475500486086574, relative_omega=59.51862513863882, vx=18.943967299955702, vy...4983), direction=(0.0, 0.0, -1.0), normal=(0.3420201433256687, 0.0, 0.9396926207859084), length=0.35000000000000003))))
+velocity = (0.3, 20.0, -0.2), angular = (0.04, -0.06, 0.17)
+spins = (61.0, 60.0, 62.0, 59.0), engine = 175.0
+contact_frames = (ContactFrame(steering=17.0, supported=True, load=3839.14900053414, mu=0.45, tangent=(0.2907302145650209, 0.9509356835...2, 0.0, 0.0), spin_axis=(1.0, 0.0, 0.0), rolling_radius=0.3100985648593498, moment_x=(0.1099014351406502, -0.0, 0.84)))
+deformation = ((0.002, -0.001), (0.002, -0.001), (0.002, -0.001), (0.002, -0.001))
+torque = 85.0, brakes = (200.0, 300.0, 120.0, 150.0)
+config = VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0)
+dt = 0.008333333333333333
+old_axes = ((0.9563047559630354, -0.29237170472273677, 0.0), (0.9563047559630354, -0.29237170472273677, 0.0), (1.0, 0.0, 0.0), (1.0, 0.0, 0.0))
+steering = ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
+inertia = ((1900.0, 0.0, 0.0), (0.0, 510.0, 0.0), (0.0, 0.0, 2200.0))
+engine_axis = (0.0, 1.0, 0.0), drag = 0.12, engine_inertia = 0.2, shaft = 180.0
+shaft_inertia = 0.04, shaft_axis = (0.0, 1.0, 0.0), downstream = None
+normal = (SuspensionInput(compression=(0.064, 0.047, 0.067, 0.05), geometry=(0.064, 0.047, 0.067, 0.05), gradients=((0.36400209...rical_dissipation=0.0, contact_offset_work=0.0, energy_residual=4.3298697960381105e-15, body_work=-0.7261305982336734))
+
+    def audit(result, velocity, angular, spins, engine, contact_frames, deformation, torque, brakes, config, dt,
+              old_axes, steering, inertia=tuple(tuple(INERTIA[a] if a == b else 0. for b in range(3)) for a in range(3)),
+              engine_axis=ENGINE_AXIS, drag=.12, engine_inertia=ENGINE_INERTIA,
+              shaft=None, shaft_inertia=.04, shaft_axis=(0., 1., 0.), downstream=None, normal=None):
+        wheels, end_angular, end_velocity = result.wheels, result.angular, result.velocity
+        relative_wheels = tuple(w.omega + dot(end_angular, f.spin_axis) for w, f in zip(wheels, contact_frames))
+        slips = (relative_wheels[0] - relative_wheels[1], relative_wheels[2] - relative_wheels[3],
+                 (relative_wheels[0] + relative_wheels[1] - relative_wheels[2] - relative_wheels[3]) / 2)
+        torques = tuple(max(-limit, min(limit, c * s)) for c, limit, s in
+                        zip(config.differential_damping, config.differential_capacity, slips))
+        transfers = (-torques[0] - torques[2] / 2, torques[0] - torques[2] / 2,
+                     -torques[1] + torques[2] / 2, torques[1] + torques[2] / 2)
+        rotor_weights = ((config.front_drive_share / 2,) * 2 + ((1 - config.front_drive_share) / 2,) * 2,
+                         (.5, .5, 0., 0.), (0., 0., .5, .5))
+        extra_drives = (0.,) * 4
+        if downstream is not None:
+            speeds = tuple(dot(end_angular, axis) + config.final_drive * sum(w * s for w, s in zip(weights, relative_wheels))
+                           if j else 0. for (_old, j, axis), weights in zip(downstream, rotor_weights))
+            assert result.downstream_omega == pytest.approx(speeds, abs=1e-11)
+            extra_drives = tuple(-config.final_drive * sum(weights[i] * j * (new - old) / dt
+                                 for (old, j, _axis), new, weights in zip(downstream, speeds, rotor_weights)) for i in range(4))
+            assert result.downstream_wheel_torques == pytest.approx(extra_drives, abs=1e-10)
+            assert result.downstream_kinetic_energy == pytest.approx(tuple(.5 * j * s**2
+                   for (_old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+            assert result.downstream_numerical_dissipation == pytest.approx(tuple(.5 * j * (s - old)**2
+                   for (old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+        assert result.differential_torques == pytest.approx(torques, abs=1e-11)
+        assert result.differential_slips == pytest.approx(slips, abs=1e-12)
+        force, body_torque, external = [0.] * 3, list(result.engine_body_torque), [0.] * 3
+        if normal is not None:
+            system, step = normal
+            for gradient, axial in zip(system.gradients, step.axial_force):
+                for a in range(3):
+                    force[a] += gradient[a] * axial
+                    body_torque[a] += gradient[a + 3] * axial
+                    external[a] += dt * gradient[a + 3] * axial
+        if shaft is not None:
+            for a in range(3):
+                body_torque[a] += result.shaft_body_torque[a]
+            assert shaft_inertia * (result.shaft_omega - shaft) == pytest.approx(
+                dt * (result.clutch_torque - result.gear_reaction), abs=1e-11)
+            assert result.shaft_relative_omega == pytest.approx(
+                result.shaft_omega - dot(end_angular, shaft_axis), abs=1e-12)
+            assert result.clutch_slip == pytest.approx(result.engine_relative_omega - result.shaft_relative_omega, abs=1e-11)
+        if downstream is not None:
+            for a in range(3):
+                body_torque[a] += result.downstream_body_torque[a]
+        for i, (frame, wheel) in enumerate(zip(contact_frames, wheels)):
+            drive = result.drive_torque * (config.front_drive_share if i < 2 else 1 - config.front_drive_share) / 2 + transfers[i] + extra_drives[i]
+            assert result.wheel_drive_torques[i] == pytest.approx(drive, abs=1e-11)
+            f = tuple(frame.tangent[a] * wheel.fx + frame.axle[a] * wheel.fy for a in range(3))
+            moment = cross(frame.point, f)
+            for a in range(3):
+                force[a] += f[a]
+                body_torque[a] += moment[a] + frame.spin_axis[a] * (
+                    drive - wheel.brake_torque - frame.rolling_radius * wheel.fx) + wheel.gyro_torque[a] + steering[i][a]
+                external[a] += dt * moment[a]
+            assert config.wheel_inertia * (wheel.omega - spins[i]) == pytest.approx(
+                dt * (drive - wheel.brake_torque - frame.rolling_radius * wheel.fx), abs=1e-11)
+            assert wheel.relative_omega == pytest.approx(wheel.omega + dot(end_angular, frame.spin_axis), abs=1e-12)
+            assert wheel.residual < .001
+            assert abs(wheel.brake_torque) <= brakes[i] + 1e-10
+            assert wheel.brake_torque * wheel.relative_omega >= -1e-7
+        for a in range(3):
+>           assert config.mass * (end_velocity[a] - velocity[a]) == pytest.approx(dt * force[a], abs=1e-11)
+E           assert 43.90430509115046 == 43.904305091177335 ± 1.0e-11
+E             
+E             comparison failed
+E             Obtained: 43.90430509115046
+E             Expected: 43.904305091177335 ± 1.0e-11
+
+tests\test_tire_drivetrain.py:89: AssertionError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-1.0--20.0] _
+
+bank = -20.0, share = 1.0, dt = 0.008333333333333333, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+        result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+        step = result.suspension
+        # 从实际表面点的六维速度展开，不用生产的悬架速度雅可比求期望。
+        for i, frame in enumerate(contact_frames):
+            point_velocity = tuple(result.velocity[a] + cross(result.angular, frame.point)[a] for a in range(3))
+            expected = initial[i] - dt * dot(point_velocity, normal) / alignment
+            if finite_rotation:
+                expected = .4 - endpoint_length(planes[i], result.velocity, result.angular, dt)
+            assert step.compression[i] == pytest.approx(expected, abs=1e-13)
+            dx = expected - initial[i]
+            damping = config.suspension_compression_damping[i] if dx >= 0 else config.suspension_extension_damping[i]
+            other = i ^ 1
+            force = (config.suspension_spring_rates[i] * expected
+                     + config.suspension_antiroll_rates[i // 2] * (expected - step.compression[other])
+                     + damping * dx / dt)
+            assert step.axial_force[i] == pytest.approx(force, abs=1e-8)
+        effective = result.suspension_system
+        loaded = tuple(replace(frame, load=force / a) for frame, force, a in zip(contact_frames, step.axial_force, effective.alignment))
+        assert result.normal_residual < 1e-8
+        assert step.body_numerical_dissipation == 0.
+>       audit(result, velocity, angular, spins, engine, loaded, deformation, 85., brakes, config, dt,
+              tuple(frame.spin_axis for frame in loaded), ((0.,) * 3,) * 4, shaft=180., normal=(effective, step))
+
+tests\test_joint_suspension.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = DrivetrainStep(wheels=(WheelStep(omega=58.97258808423019, relative_omega=58.99834315539795, vx=18.90486062371262, vy=-...983), direction=(0.0, 0.0, -1.0), normal=(-0.3420201433256687, 0.0, 0.9396926207859084), length=0.35000000000000003))))
+velocity = (0.3, 20.0, -0.2), angular = (0.04, -0.06, 0.17)
+spins = (61.0, 60.0, 62.0, 59.0), engine = 175.0
+contact_frames = (ContactFrame(steering=17.0, supported=True, load=3989.9303824024023, mu=0.45, tangent=(0.2907302145650209, 0.95093568...42, 0.0, 0.0), spin_axis=(1.0, 0.0, 0.0), rolling_radius=0.3100985648593498, moment_x=(0.1099014351406502, 0.0, 0.84)))
+deformation = ((0.002, -0.001), (0.002, -0.001), (0.002, -0.001), (0.002, -0.001))
+torque = 85.0, brakes = (200.0, 300.0, 120.0, 150.0)
+config = VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0)
+dt = 0.008333333333333333
+old_axes = ((0.9563047559630354, -0.29237170472273677, 0.0), (0.9563047559630354, -0.29237170472273677, 0.0), (1.0, 0.0, 0.0), (1.0, 0.0, 0.0))
+steering = ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
+inertia = ((1900.0, 0.0, 0.0), (0.0, 510.0, 0.0), (0.0, 0.0, 2200.0))
+engine_axis = (0.0, 1.0, 0.0), drag = 0.12, engine_inertia = 0.2, shaft = 180.0
+shaft_inertia = 0.04, shaft_axis = (0.0, 1.0, 0.0), downstream = None
+normal = (SuspensionInput(compression=(0.064, 0.047, 0.067, 0.05), geometry=(0.064, 0.047, 0.067, 0.05), gradients=((-0.3639697...erical_dissipation=0.0, contact_offset_work=0.0, energy_residual=5.329070518200751e-15, body_work=-25.798788775541755))
+
+    def audit(result, velocity, angular, spins, engine, contact_frames, deformation, torque, brakes, config, dt,
+              old_axes, steering, inertia=tuple(tuple(INERTIA[a] if a == b else 0. for b in range(3)) for a in range(3)),
+              engine_axis=ENGINE_AXIS, drag=.12, engine_inertia=ENGINE_INERTIA,
+              shaft=None, shaft_inertia=.04, shaft_axis=(0., 1., 0.), downstream=None, normal=None):
+        wheels, end_angular, end_velocity = result.wheels, result.angular, result.velocity
+        relative_wheels = tuple(w.omega + dot(end_angular, f.spin_axis) for w, f in zip(wheels, contact_frames))
+        slips = (relative_wheels[0] - relative_wheels[1], relative_wheels[2] - relative_wheels[3],
+                 (relative_wheels[0] + relative_wheels[1] - relative_wheels[2] - relative_wheels[3]) / 2)
+        torques = tuple(max(-limit, min(limit, c * s)) for c, limit, s in
+                        zip(config.differential_damping, config.differential_capacity, slips))
+        transfers = (-torques[0] - torques[2] / 2, torques[0] - torques[2] / 2,
+                     -torques[1] + torques[2] / 2, torques[1] + torques[2] / 2)
+        rotor_weights = ((config.front_drive_share / 2,) * 2 + ((1 - config.front_drive_share) / 2,) * 2,
+                         (.5, .5, 0., 0.), (0., 0., .5, .5))
+        extra_drives = (0.,) * 4
+        if downstream is not None:
+            speeds = tuple(dot(end_angular, axis) + config.final_drive * sum(w * s for w, s in zip(weights, relative_wheels))
+                           if j else 0. for (_old, j, axis), weights in zip(downstream, rotor_weights))
+            assert result.downstream_omega == pytest.approx(speeds, abs=1e-11)
+            extra_drives = tuple(-config.final_drive * sum(weights[i] * j * (new - old) / dt
+                                 for (old, j, _axis), new, weights in zip(downstream, speeds, rotor_weights)) for i in range(4))
+            assert result.downstream_wheel_torques == pytest.approx(extra_drives, abs=1e-10)
+            assert result.downstream_kinetic_energy == pytest.approx(tuple(.5 * j * s**2
+                   for (_old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+            assert result.downstream_numerical_dissipation == pytest.approx(tuple(.5 * j * (s - old)**2
+                   for (old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+        assert result.differential_torques == pytest.approx(torques, abs=1e-11)
+        assert result.differential_slips == pytest.approx(slips, abs=1e-12)
+        force, body_torque, external = [0.] * 3, list(result.engine_body_torque), [0.] * 3
+        if normal is not None:
+            system, step = normal
+            for gradient, axial in zip(system.gradients, step.axial_force):
+                for a in range(3):
+                    force[a] += gradient[a] * axial
+                    body_torque[a] += gradient[a + 3] * axial
+                    external[a] += dt * gradient[a + 3] * axial
+        if shaft is not None:
+            for a in range(3):
+                body_torque[a] += result.shaft_body_torque[a]
+            assert shaft_inertia * (result.shaft_omega - shaft) == pytest.approx(
+                dt * (result.clutch_torque - result.gear_reaction), abs=1e-11)
+            assert result.shaft_relative_omega == pytest.approx(
+                result.shaft_omega - dot(end_angular, shaft_axis), abs=1e-12)
+            assert result.clutch_slip == pytest.approx(result.engine_relative_omega - result.shaft_relative_omega, abs=1e-11)
+        if downstream is not None:
+            for a in range(3):
+                body_torque[a] += result.downstream_body_torque[a]
+        for i, (frame, wheel) in enumerate(zip(contact_frames, wheels)):
+            drive = result.drive_torque * (config.front_drive_share if i < 2 else 1 - config.front_drive_share) / 2 + transfers[i] + extra_drives[i]
+            assert result.wheel_drive_torques[i] == pytest.approx(drive, abs=1e-11)
+            f = tuple(frame.tangent[a] * wheel.fx + frame.axle[a] * wheel.fy for a in range(3))
+            moment = cross(frame.point, f)
+            for a in range(3):
+                force[a] += f[a]
+                body_torque[a] += moment[a] + frame.spin_axis[a] * (
+                    drive - wheel.brake_torque - frame.rolling_radius * wheel.fx) + wheel.gyro_torque[a] + steering[i][a]
+                external[a] += dt * moment[a]
+            assert config.wheel_inertia * (wheel.omega - spins[i]) == pytest.approx(
+                dt * (drive - wheel.brake_torque - frame.rolling_radius * wheel.fx), abs=1e-11)
+            assert wheel.relative_omega == pytest.approx(wheel.omega + dot(end_angular, frame.spin_axis), abs=1e-12)
+            assert wheel.residual < .001
+            assert abs(wheel.brake_torque) <= brakes[i] + 1e-10
+            assert wheel.brake_torque * wheel.relative_omega >= -1e-7
+        for a in range(3):
+>           assert config.mass * (end_velocity[a] - velocity[a]) == pytest.approx(dt * force[a], abs=1e-11)
+E           assert -34.33975047970752 == -34.33975047968723 ± 1.0e-11
+E             
+E             comparison failed
+E             Obtained: -34.33975047970752
+E             Expected: -34.33975047968723 ± 1.0e-11
+
+tests\test_tire_drivetrain.py:89: AssertionError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-1.0-20.0] _
+
+bank = 20.0, share = 1.0, dt = 0.008333333333333333, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+        result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+        step = result.suspension
+        # 从实际表面点的六维速度展开，不用生产的悬架速度雅可比求期望。
+        for i, frame in enumerate(contact_frames):
+            point_velocity = tuple(result.velocity[a] + cross(result.angular, frame.point)[a] for a in range(3))
+            expected = initial[i] - dt * dot(point_velocity, normal) / alignment
+            if finite_rotation:
+                expected = .4 - endpoint_length(planes[i], result.velocity, result.angular, dt)
+            assert step.compression[i] == pytest.approx(expected, abs=1e-13)
+            dx = expected - initial[i]
+            damping = config.suspension_compression_damping[i] if dx >= 0 else config.suspension_extension_damping[i]
+            other = i ^ 1
+            force = (config.suspension_spring_rates[i] * expected
+                     + config.suspension_antiroll_rates[i // 2] * (expected - step.compression[other])
+                     + damping * dx / dt)
+            assert step.axial_force[i] == pytest.approx(force, abs=1e-8)
+        effective = result.suspension_system
+        loaded = tuple(replace(frame, load=force / a) for frame, force, a in zip(contact_frames, step.axial_force, effective.alignment))
+        assert result.normal_residual < 1e-8
+        assert step.body_numerical_dissipation == 0.
+>       audit(result, velocity, angular, spins, engine, loaded, deformation, 85., brakes, config, dt,
+              tuple(frame.spin_axis for frame in loaded), ((0.,) * 3,) * 4, shaft=180., normal=(effective, step))
+
+tests\test_joint_suspension.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = DrivetrainStep(wheels=(WheelStep(omega=58.98882114857624, relative_omega=59.03182851674764, vx=18.94494963042167, vy=-...4983), direction=(0.0, 0.0, -1.0), normal=(0.3420201433256687, 0.0, 0.9396926207859084), length=0.35000000000000003))))
+velocity = (0.3, 20.0, -0.2), angular = (0.04, -0.06, 0.17)
+spins = (61.0, 60.0, 62.0, 59.0), engine = 175.0
+contact_frames = (ContactFrame(steering=17.0, supported=True, load=3829.213245918234, mu=0.45, tangent=(0.2907302145650209, 0.950935683...2, 0.0, 0.0), spin_axis=(1.0, 0.0, 0.0), rolling_radius=0.3100985648593498, moment_x=(0.1099014351406502, -0.0, 0.84)))
+deformation = ((0.002, -0.001), (0.002, -0.001), (0.002, -0.001), (0.002, -0.001))
+torque = 85.0, brakes = (200.0, 300.0, 120.0, 150.0)
+config = VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0)
+dt = 0.008333333333333333
+old_axes = ((0.9563047559630354, -0.29237170472273677, 0.0), (0.9563047559630354, -0.29237170472273677, 0.0), (1.0, 0.0, 0.0), (1.0, 0.0, 0.0))
+steering = ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
+inertia = ((1900.0, 0.0, 0.0), (0.0, 510.0, 0.0), (0.0, 0.0, 2200.0))
+engine_axis = (0.0, 1.0, 0.0), drag = 0.12, engine_inertia = 0.2, shaft = 180.0
+shaft_inertia = 0.04, shaft_axis = (0.0, 1.0, 0.0), downstream = None
+normal = (SuspensionInput(compression=(0.064, 0.047, 0.067, 0.05), geometry=(0.064, 0.047, 0.067, 0.05), gradients=((0.36400124...rical_dissipation=0.0, contact_offset_work=0.0, energy_residual=3.1030733538273125e-14, body_work=-0.7064386508790321))
+
+    def audit(result, velocity, angular, spins, engine, contact_frames, deformation, torque, brakes, config, dt,
+              old_axes, steering, inertia=tuple(tuple(INERTIA[a] if a == b else 0. for b in range(3)) for a in range(3)),
+              engine_axis=ENGINE_AXIS, drag=.12, engine_inertia=ENGINE_INERTIA,
+              shaft=None, shaft_inertia=.04, shaft_axis=(0., 1., 0.), downstream=None, normal=None):
+        wheels, end_angular, end_velocity = result.wheels, result.angular, result.velocity
+        relative_wheels = tuple(w.omega + dot(end_angular, f.spin_axis) for w, f in zip(wheels, contact_frames))
+        slips = (relative_wheels[0] - relative_wheels[1], relative_wheels[2] - relative_wheels[3],
+                 (relative_wheels[0] + relative_wheels[1] - relative_wheels[2] - relative_wheels[3]) / 2)
+        torques = tuple(max(-limit, min(limit, c * s)) for c, limit, s in
+                        zip(config.differential_damping, config.differential_capacity, slips))
+        transfers = (-torques[0] - torques[2] / 2, torques[0] - torques[2] / 2,
+                     -torques[1] + torques[2] / 2, torques[1] + torques[2] / 2)
+        rotor_weights = ((config.front_drive_share / 2,) * 2 + ((1 - config.front_drive_share) / 2,) * 2,
+                         (.5, .5, 0., 0.), (0., 0., .5, .5))
+        extra_drives = (0.,) * 4
+        if downstream is not None:
+            speeds = tuple(dot(end_angular, axis) + config.final_drive * sum(w * s for w, s in zip(weights, relative_wheels))
+                           if j else 0. for (_old, j, axis), weights in zip(downstream, rotor_weights))
+            assert result.downstream_omega == pytest.approx(speeds, abs=1e-11)
+            extra_drives = tuple(-config.final_drive * sum(weights[i] * j * (new - old) / dt
+                                 for (old, j, _axis), new, weights in zip(downstream, speeds, rotor_weights)) for i in range(4))
+            assert result.downstream_wheel_torques == pytest.approx(extra_drives, abs=1e-10)
+            assert result.downstream_kinetic_energy == pytest.approx(tuple(.5 * j * s**2
+                   for (_old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+            assert result.downstream_numerical_dissipation == pytest.approx(tuple(.5 * j * (s - old)**2
+                   for (old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+        assert result.differential_torques == pytest.approx(torques, abs=1e-11)
+        assert result.differential_slips == pytest.approx(slips, abs=1e-12)
+        force, body_torque, external = [0.] * 3, list(result.engine_body_torque), [0.] * 3
+        if normal is not None:
+            system, step = normal
+            for gradient, axial in zip(system.gradients, step.axial_force):
+                for a in range(3):
+                    force[a] += gradient[a] * axial
+                    body_torque[a] += gradient[a + 3] * axial
+                    external[a] += dt * gradient[a + 3] * axial
+        if shaft is not None:
+            for a in range(3):
+                body_torque[a] += result.shaft_body_torque[a]
+            assert shaft_inertia * (result.shaft_omega - shaft) == pytest.approx(
+                dt * (result.clutch_torque - result.gear_reaction), abs=1e-11)
+            assert result.shaft_relative_omega == pytest.approx(
+                result.shaft_omega - dot(end_angular, shaft_axis), abs=1e-12)
+            assert result.clutch_slip == pytest.approx(result.engine_relative_omega - result.shaft_relative_omega, abs=1e-11)
+        if downstream is not None:
+            for a in range(3):
+                body_torque[a] += result.downstream_body_torque[a]
+        for i, (frame, wheel) in enumerate(zip(contact_frames, wheels)):
+            drive = result.drive_torque * (config.front_drive_share if i < 2 else 1 - config.front_drive_share) / 2 + transfers[i] + extra_drives[i]
+            assert result.wheel_drive_torques[i] == pytest.approx(drive, abs=1e-11)
+            f = tuple(frame.tangent[a] * wheel.fx + frame.axle[a] * wheel.fy for a in range(3))
+            moment = cross(frame.point, f)
+            for a in range(3):
+                force[a] += f[a]
+                body_torque[a] += moment[a] + frame.spin_axis[a] * (
+                    drive - wheel.brake_torque - frame.rolling_radius * wheel.fx) + wheel.gyro_torque[a] + steering[i][a]
+                external[a] += dt * moment[a]
+            assert config.wheel_inertia * (wheel.omega - spins[i]) == pytest.approx(
+                dt * (drive - wheel.brake_torque - frame.rolling_radius * wheel.fx), abs=1e-11)
+            assert wheel.relative_omega == pytest.approx(wheel.omega + dot(end_angular, frame.spin_axis), abs=1e-12)
+            assert wheel.residual < .001
+            assert abs(wheel.brake_torque) <= brakes[i] + 1e-10
+            assert wheel.brake_torque * wheel.relative_omega >= -1e-7
+        for a in range(3):
+>           assert config.mass * (end_velocity[a] - velocity[a]) == pytest.approx(dt * force[a], abs=1e-11)
+E           assert 43.21474019508402 == 43.214740195108035 ± 1.0e-11
+E             
+E             comparison failed
+E             Obtained: 43.21474019508402
+E             Expected: 43.214740195108035 ± 1.0e-11
+
+tests\test_tire_drivetrain.py:89: AssertionError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-0.0-20.0] _
+
+bank = 20.0, share = 0.0, dt = 0.004166666666666667, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+        result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+        step = result.suspension
+        # 从实际表面点的六维速度展开，不用生产的悬架速度雅可比求期望。
+        for i, frame in enumerate(contact_frames):
+            point_velocity = tuple(result.velocity[a] + cross(result.angular, frame.point)[a] for a in range(3))
+            expected = initial[i] - dt * dot(point_velocity, normal) / alignment
+            if finite_rotation:
+                expected = .4 - endpoint_length(planes[i], result.velocity, result.angular, dt)
+            assert step.compression[i] == pytest.approx(expected, abs=1e-13)
+            dx = expected - initial[i]
+            damping = config.suspension_compression_damping[i] if dx >= 0 else config.suspension_extension_damping[i]
+            other = i ^ 1
+            force = (config.suspension_spring_rates[i] * expected
+                     + config.suspension_antiroll_rates[i // 2] * (expected - step.compression[other])
+                     + damping * dx / dt)
+            assert step.axial_force[i] == pytest.approx(force, abs=1e-8)
+        effective = result.suspension_system
+        loaded = tuple(replace(frame, load=force / a) for frame, force, a in zip(contact_frames, step.axial_force, effective.alignment))
+        assert result.normal_residual < 1e-8
+        assert step.body_numerical_dissipation == 0.
+>       audit(result, velocity, angular, spins, engine, loaded, deformation, 85., brakes, config, dt,
+              tuple(frame.spin_axis for frame in loaded), ((0.,) * 3,) * 4, shaft=180., normal=(effective, step))
+
+tests\test_joint_suspension.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = DrivetrainStep(wheels=(WheelStep(omega=60.51012469151667, relative_omega=60.559405198693625, vx=18.94498417420616, vy=...4983), direction=(0.0, 0.0, -1.0), normal=(0.3420201433256687, 0.0, 0.9396926207859084), length=0.35000000000000003))))
+velocity = (0.3, 20.0, -0.2), angular = (0.04, -0.06, 0.17)
+spins = (61.0, 60.0, 62.0, 59.0), engine = 175.0
+contact_frames = (ContactFrame(steering=17.0, supported=True, load=4050.746442939778, mu=0.45, tangent=(0.2907302145650209, 0.950935683...2, 0.0, 0.0), spin_axis=(1.0, 0.0, 0.0), rolling_radius=0.3100985648593498, moment_x=(0.1099014351406502, -0.0, 0.84)))
+deformation = ((0.002, -0.001), (0.002, -0.001), (0.002, -0.001), (0.002, -0.001))
+torque = 85.0, brakes = (200.0, 300.0, 120.0, 150.0)
+config = VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0)
+dt = 0.004166666666666667
+old_axes = ((0.9563047559630354, -0.29237170472273677, 0.0), (0.9563047559630354, -0.29237170472273677, 0.0), (1.0, 0.0, 0.0), (1.0, 0.0, 0.0))
+steering = ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
+inertia = ((1900.0, 0.0, 0.0), (0.0, 510.0, 0.0), (0.0, 0.0, 2200.0))
+engine_axis = (0.0, 1.0, 0.0), drag = 0.12, engine_inertia = 0.2, shaft = 180.0
+shaft_inertia = 0.04, shaft_axis = (0.0, 1.0, 0.0), downstream = None
+normal = (SuspensionInput(compression=(0.064, 0.047, 0.067, 0.05), geometry=(0.064, 0.047, 0.067, 0.05), gradients=((0.36398701...erical_dissipation=0.0, contact_offset_work=0.0, energy_residual=3.524958103184872e-14, body_work=-2.3885059675326445))
+
+    def audit(result, velocity, angular, spins, engine, contact_frames, deformation, torque, brakes, config, dt,
+              old_axes, steering, inertia=tuple(tuple(INERTIA[a] if a == b else 0. for b in range(3)) for a in range(3)),
+              engine_axis=ENGINE_AXIS, drag=.12, engine_inertia=ENGINE_INERTIA,
+              shaft=None, shaft_inertia=.04, shaft_axis=(0., 1., 0.), downstream=None, normal=None):
+        wheels, end_angular, end_velocity = result.wheels, result.angular, result.velocity
+        relative_wheels = tuple(w.omega + dot(end_angular, f.spin_axis) for w, f in zip(wheels, contact_frames))
+        slips = (relative_wheels[0] - relative_wheels[1], relative_wheels[2] - relative_wheels[3],
+                 (relative_wheels[0] + relative_wheels[1] - relative_wheels[2] - relative_wheels[3]) / 2)
+        torques = tuple(max(-limit, min(limit, c * s)) for c, limit, s in
+                        zip(config.differential_damping, config.differential_capacity, slips))
+        transfers = (-torques[0] - torques[2] / 2, torques[0] - torques[2] / 2,
+                     -torques[1] + torques[2] / 2, torques[1] + torques[2] / 2)
+        rotor_weights = ((config.front_drive_share / 2,) * 2 + ((1 - config.front_drive_share) / 2,) * 2,
+                         (.5, .5, 0., 0.), (0., 0., .5, .5))
+        extra_drives = (0.,) * 4
+        if downstream is not None:
+            speeds = tuple(dot(end_angular, axis) + config.final_drive * sum(w * s for w, s in zip(weights, relative_wheels))
+                           if j else 0. for (_old, j, axis), weights in zip(downstream, rotor_weights))
+            assert result.downstream_omega == pytest.approx(speeds, abs=1e-11)
+            extra_drives = tuple(-config.final_drive * sum(weights[i] * j * (new - old) / dt
+                                 for (old, j, _axis), new, weights in zip(downstream, speeds, rotor_weights)) for i in range(4))
+            assert result.downstream_wheel_torques == pytest.approx(extra_drives, abs=1e-10)
+            assert result.downstream_kinetic_energy == pytest.approx(tuple(.5 * j * s**2
+                   for (_old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+            assert result.downstream_numerical_dissipation == pytest.approx(tuple(.5 * j * (s - old)**2
+                   for (old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+        assert result.differential_torques == pytest.approx(torques, abs=1e-11)
+        assert result.differential_slips == pytest.approx(slips, abs=1e-12)
+        force, body_torque, external = [0.] * 3, list(result.engine_body_torque), [0.] * 3
+        if normal is not None:
+            system, step = normal
+            for gradient, axial in zip(system.gradients, step.axial_force):
+                for a in range(3):
+                    force[a] += gradient[a] * axial
+                    body_torque[a] += gradient[a + 3] * axial
+                    external[a] += dt * gradient[a + 3] * axial
+        if shaft is not None:
+            for a in range(3):
+                body_torque[a] += result.shaft_body_torque[a]
+            assert shaft_inertia * (result.shaft_omega - shaft) == pytest.approx(
+                dt * (result.clutch_torque - result.gear_reaction), abs=1e-11)
+            assert result.shaft_relative_omega == pytest.approx(
+                result.shaft_omega - dot(end_angular, shaft_axis), abs=1e-12)
+            assert result.clutch_slip == pytest.approx(result.engine_relative_omega - result.shaft_relative_omega, abs=1e-11)
+        if downstream is not None:
+            for a in range(3):
+                body_torque[a] += result.downstream_body_torque[a]
+        for i, (frame, wheel) in enumerate(zip(contact_frames, wheels)):
+            drive = result.drive_torque * (config.front_drive_share if i < 2 else 1 - config.front_drive_share) / 2 + transfers[i] + extra_drives[i]
+            assert result.wheel_drive_torques[i] == pytest.approx(drive, abs=1e-11)
+            f = tuple(frame.tangent[a] * wheel.fx + frame.axle[a] * wheel.fy for a in range(3))
+            moment = cross(frame.point, f)
+            for a in range(3):
+                force[a] += f[a]
+                body_torque[a] += moment[a] + frame.spin_axis[a] * (
+                    drive - wheel.brake_torque - frame.rolling_radius * wheel.fx) + wheel.gyro_torque[a] + steering[i][a]
+                external[a] += dt * moment[a]
+            assert config.wheel_inertia * (wheel.omega - spins[i]) == pytest.approx(
+                dt * (drive - wheel.brake_torque - frame.rolling_radius * wheel.fx), abs=1e-11)
+            assert wheel.relative_omega == pytest.approx(wheel.omega + dot(end_angular, frame.spin_axis), abs=1e-12)
+            assert wheel.residual < .001
+            assert abs(wheel.brake_torque) <= brakes[i] + 1e-10
+            assert wheel.brake_torque * wheel.relative_omega >= -1e-7
+        for a in range(3):
+>           assert config.mass * (end_velocity[a] - velocity[a]) == pytest.approx(dt * force[a], abs=1e-11)
+E           assert 24.099184965366426 == 24.099184965396656 ± 1.0e-11
+E             
+E             comparison failed
+E             Obtained: 24.099184965366426
+E             Expected: 24.099184965396656 ± 1.0e-11
+
+tests\test_tire_drivetrain.py:89: AssertionError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-0.5-20.0] _
+
+bank = 20.0, share = 0.5, dt = 0.004166666666666667, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+        result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+        step = result.suspension
+        # 从实际表面点的六维速度展开，不用生产的悬架速度雅可比求期望。
+        for i, frame in enumerate(contact_frames):
+            point_velocity = tuple(result.velocity[a] + cross(result.angular, frame.point)[a] for a in range(3))
+            expected = initial[i] - dt * dot(point_velocity, normal) / alignment
+            if finite_rotation:
+                expected = .4 - endpoint_length(planes[i], result.velocity, result.angular, dt)
+            assert step.compression[i] == pytest.approx(expected, abs=1e-13)
+            dx = expected - initial[i]
+            damping = config.suspension_compression_damping[i] if dx >= 0 else config.suspension_extension_damping[i]
+            other = i ^ 1
+            force = (config.suspension_spring_rates[i] * expected
+                     + config.suspension_antiroll_rates[i // 2] * (expected - step.compression[other])
+                     + damping * dx / dt)
+            assert step.axial_force[i] == pytest.approx(force, abs=1e-8)
+        effective = result.suspension_system
+        loaded = tuple(replace(frame, load=force / a) for frame, force, a in zip(contact_frames, step.axial_force, effective.alignment))
+        assert result.normal_residual < 1e-8
+        assert step.body_numerical_dissipation == 0.
+>       audit(result, velocity, angular, spins, engine, loaded, deformation, 85., brakes, config, dt,
+              tuple(frame.spin_axis for frame in loaded), ((0.,) * 3,) * 4, shaft=180., normal=(effective, step))
+
+tests\test_joint_suspension.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = DrivetrainStep(wheels=(WheelStep(omega=60.05620751992799, relative_omega=60.10524287678955, vx=18.94520548984035, vy=-...4983), direction=(0.0, 0.0, -1.0), normal=(0.3420201433256687, 0.0, 0.9396926207859084), length=0.35000000000000003))))
+velocity = (0.3, 20.0, -0.2), angular = (0.04, -0.06, 0.17)
+spins = (61.0, 60.0, 62.0, 59.0), engine = 175.0
+contact_frames = (ContactFrame(steering=17.0, supported=True, load=4046.07569772055, mu=0.45, tangent=(0.2907302145650209, 0.9509356835...2, 0.0, 0.0), spin_axis=(1.0, 0.0, 0.0), rolling_radius=0.3100985648593498, moment_x=(0.1099014351406502, -0.0, 0.84)))
+deformation = ((0.002, -0.001), (0.002, -0.001), (0.002, -0.001), (0.002, -0.001))
+torque = 85.0, brakes = (200.0, 300.0, 120.0, 150.0)
+config = VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0)
+dt = 0.004166666666666667
+old_axes = ((0.9563047559630354, -0.29237170472273677, 0.0), (0.9563047559630354, -0.29237170472273677, 0.0), (1.0, 0.0, 0.0), (1.0, 0.0, 0.0))
+steering = ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
+inertia = ((1900.0, 0.0, 0.0), (0.0, 510.0, 0.0), (0.0, 0.0, 2200.0))
+engine_axis = (0.0, 1.0, 0.0), drag = 0.12, engine_inertia = 0.2, shaft = 180.0
+shaft_inertia = 0.04, shaft_axis = (0.0, 1.0, 0.0), downstream = None
+normal = (SuspensionInput(compression=(0.064, 0.047, 0.067, 0.05), geometry=(0.064, 0.047, 0.067, 0.05), gradients=((0.36398673...erical_dissipation=0.0, contact_offset_work=0.0, energy_residual=1.8485213360008856e-14, body_work=-2.382274627293471))
+
+    def audit(result, velocity, angular, spins, engine, contact_frames, deformation, torque, brakes, config, dt,
+              old_axes, steering, inertia=tuple(tuple(INERTIA[a] if a == b else 0. for b in range(3)) for a in range(3)),
+              engine_axis=ENGINE_AXIS, drag=.12, engine_inertia=ENGINE_INERTIA,
+              shaft=None, shaft_inertia=.04, shaft_axis=(0., 1., 0.), downstream=None, normal=None):
+        wheels, end_angular, end_velocity = result.wheels, result.angular, result.velocity
+        relative_wheels = tuple(w.omega + dot(end_angular, f.spin_axis) for w, f in zip(wheels, contact_frames))
+        slips = (relative_wheels[0] - relative_wheels[1], relative_wheels[2] - relative_wheels[3],
+                 (relative_wheels[0] + relative_wheels[1] - relative_wheels[2] - relative_wheels[3]) / 2)
+        torques = tuple(max(-limit, min(limit, c * s)) for c, limit, s in
+                        zip(config.differential_damping, config.differential_capacity, slips))
+        transfers = (-torques[0] - torques[2] / 2, torques[0] - torques[2] / 2,
+                     -torques[1] + torques[2] / 2, torques[1] + torques[2] / 2)
+        rotor_weights = ((config.front_drive_share / 2,) * 2 + ((1 - config.front_drive_share) / 2,) * 2,
+                         (.5, .5, 0., 0.), (0., 0., .5, .5))
+        extra_drives = (0.,) * 4
+        if downstream is not None:
+            speeds = tuple(dot(end_angular, axis) + config.final_drive * sum(w * s for w, s in zip(weights, relative_wheels))
+                           if j else 0. for (_old, j, axis), weights in zip(downstream, rotor_weights))
+            assert result.downstream_omega == pytest.approx(speeds, abs=1e-11)
+            extra_drives = tuple(-config.final_drive * sum(weights[i] * j * (new - old) / dt
+                                 for (old, j, _axis), new, weights in zip(downstream, speeds, rotor_weights)) for i in range(4))
+            assert result.downstream_wheel_torques == pytest.approx(extra_drives, abs=1e-10)
+            assert result.downstream_kinetic_energy == pytest.approx(tuple(.5 * j * s**2
+                   for (_old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+            assert result.downstream_numerical_dissipation == pytest.approx(tuple(.5 * j * (s - old)**2
+                   for (old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+        assert result.differential_torques == pytest.approx(torques, abs=1e-11)
+        assert result.differential_slips == pytest.approx(slips, abs=1e-12)
+        force, body_torque, external = [0.] * 3, list(result.engine_body_torque), [0.] * 3
+        if normal is not None:
+            system, step = normal
+            for gradient, axial in zip(system.gradients, step.axial_force):
+                for a in range(3):
+                    force[a] += gradient[a] * axial
+                    body_torque[a] += gradient[a + 3] * axial
+                    external[a] += dt * gradient[a + 3] * axial
+        if shaft is not None:
+            for a in range(3):
+                body_torque[a] += result.shaft_body_torque[a]
+            assert shaft_inertia * (result.shaft_omega - shaft) == pytest.approx(
+                dt * (result.clutch_torque - result.gear_reaction), abs=1e-11)
+            assert result.shaft_relative_omega == pytest.approx(
+                result.shaft_omega - dot(end_angular, shaft_axis), abs=1e-12)
+            assert result.clutch_slip == pytest.approx(result.engine_relative_omega - result.shaft_relative_omega, abs=1e-11)
+        if downstream is not None:
+            for a in range(3):
+                body_torque[a] += result.downstream_body_torque[a]
+        for i, (frame, wheel) in enumerate(zip(contact_frames, wheels)):
+            drive = result.drive_torque * (config.front_drive_share if i < 2 else 1 - config.front_drive_share) / 2 + transfers[i] + extra_drives[i]
+            assert result.wheel_drive_torques[i] == pytest.approx(drive, abs=1e-11)
+            f = tuple(frame.tangent[a] * wheel.fx + frame.axle[a] * wheel.fy for a in range(3))
+            moment = cross(frame.point, f)
+            for a in range(3):
+                force[a] += f[a]
+                body_torque[a] += moment[a] + frame.spin_axis[a] * (
+                    drive - wheel.brake_torque - frame.rolling_radius * wheel.fx) + wheel.gyro_torque[a] + steering[i][a]
+                external[a] += dt * moment[a]
+            assert config.wheel_inertia * (wheel.omega - spins[i]) == pytest.approx(
+                dt * (drive - wheel.brake_torque - frame.rolling_radius * wheel.fx), abs=1e-11)
+            assert wheel.relative_omega == pytest.approx(wheel.omega + dot(end_angular, frame.spin_axis), abs=1e-12)
+            assert wheel.residual < .001
+            assert abs(wheel.brake_torque) <= brakes[i] + 1e-10
+            assert wheel.brake_torque * wheel.relative_omega >= -1e-7
+        for a in range(3):
+>           assert config.mass * (end_velocity[a] - velocity[a]) == pytest.approx(dt * force[a], abs=1e-11)
+E           assert 23.878111199032205 == 23.87811119905478 ± 1.0e-11
+E             
+E             comparison failed
+E             Obtained: 23.878111199032205
+E             Expected: 23.87811119905478 ± 1.0e-11
+
+tests\test_tire_drivetrain.py:89: AssertionError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-1.0-20.0] _
+
+bank = 20.0, share = 1.0, dt = 0.004166666666666667, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+        result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+        step = result.suspension
+        # 从实际表面点的六维速度展开，不用生产的悬架速度雅可比求期望。
+        for i, frame in enumerate(contact_frames):
+            point_velocity = tuple(result.velocity[a] + cross(result.angular, frame.point)[a] for a in range(3))
+            expected = initial[i] - dt * dot(point_velocity, normal) / alignment
+            if finite_rotation:
+                expected = .4 - endpoint_length(planes[i], result.velocity, result.angular, dt)
+            assert step.compression[i] == pytest.approx(expected, abs=1e-13)
+            dx = expected - initial[i]
+            damping = config.suspension_compression_damping[i] if dx >= 0 else config.suspension_extension_damping[i]
+            other = i ^ 1
+            force = (config.suspension_spring_rates[i] * expected
+                     + config.suspension_antiroll_rates[i // 2] * (expected - step.compression[other])
+                     + damping * dx / dt)
+            assert step.axial_force[i] == pytest.approx(force, abs=1e-8)
+        effective = result.suspension_system
+        loaded = tuple(replace(frame, load=force / a) for frame, force, a in zip(contact_frames, step.axial_force, effective.alignment))
+        assert result.normal_residual < 1e-8
+        assert step.body_numerical_dissipation == 0.
+>       audit(result, velocity, angular, spins, engine, loaded, deformation, 85., brakes, config, dt,
+              tuple(frame.spin_axis for frame in loaded), ((0.,) * 3,) * 4, shaft=180., normal=(effective, step))
+
+tests\test_joint_suspension.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+result = DrivetrainStep(wheels=(WheelStep(omega=59.693300162752315, relative_omega=59.74226496526106, vx=18.9455209458168, vy=-...4983), direction=(0.0, 0.0, -1.0), normal=(0.3420201433256687, 0.0, 0.9396926207859084), length=0.35000000000000003))))
+velocity = (0.3, 20.0, -0.2), angular = (0.04, -0.06, 0.17)
+spins = (61.0, 60.0, 62.0, 59.0), engine = 175.0
+contact_frames = (ContactFrame(steering=17.0, supported=True, load=4040.235268562599, mu=0.45, tangent=(0.2907302145650209, 0.950935683...2, 0.0, 0.0), spin_axis=(1.0, 0.0, 0.0), rolling_radius=0.3100985648593498, moment_x=(0.1099014351406502, -0.0, 0.84)))
+deformation = ((0.002, -0.001), (0.002, -0.001), (0.002, -0.001), (0.002, -0.001))
+torque = 85.0, brakes = (200.0, 300.0, 120.0, 150.0)
+config = VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0)
+dt = 0.004166666666666667
+old_axes = ((0.9563047559630354, -0.29237170472273677, 0.0), (0.9563047559630354, -0.29237170472273677, 0.0), (1.0, 0.0, 0.0), (1.0, 0.0, 0.0))
+steering = ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
+inertia = ((1900.0, 0.0, 0.0), (0.0, 510.0, 0.0), (0.0, 0.0, 2200.0))
+engine_axis = (0.0, 1.0, 0.0), drag = 0.12, engine_inertia = 0.2, shaft = 180.0
+shaft_inertia = 0.04, shaft_axis = (0.0, 1.0, 0.0), downstream = None
+normal = (SuspensionInput(compression=(0.064, 0.047, 0.067, 0.05), geometry=(0.064, 0.047, 0.067, 0.05), gradients=((0.36398646...merical_dissipation=0.0, contact_offset_work=0.0, energy_residual=2.864375403532904e-14, body_work=-2.375621276978437))
+
+    def audit(result, velocity, angular, spins, engine, contact_frames, deformation, torque, brakes, config, dt,
+              old_axes, steering, inertia=tuple(tuple(INERTIA[a] if a == b else 0. for b in range(3)) for a in range(3)),
+              engine_axis=ENGINE_AXIS, drag=.12, engine_inertia=ENGINE_INERTIA,
+              shaft=None, shaft_inertia=.04, shaft_axis=(0., 1., 0.), downstream=None, normal=None):
+        wheels, end_angular, end_velocity = result.wheels, result.angular, result.velocity
+        relative_wheels = tuple(w.omega + dot(end_angular, f.spin_axis) for w, f in zip(wheels, contact_frames))
+        slips = (relative_wheels[0] - relative_wheels[1], relative_wheels[2] - relative_wheels[3],
+                 (relative_wheels[0] + relative_wheels[1] - relative_wheels[2] - relative_wheels[3]) / 2)
+        torques = tuple(max(-limit, min(limit, c * s)) for c, limit, s in
+                        zip(config.differential_damping, config.differential_capacity, slips))
+        transfers = (-torques[0] - torques[2] / 2, torques[0] - torques[2] / 2,
+                     -torques[1] + torques[2] / 2, torques[1] + torques[2] / 2)
+        rotor_weights = ((config.front_drive_share / 2,) * 2 + ((1 - config.front_drive_share) / 2,) * 2,
+                         (.5, .5, 0., 0.), (0., 0., .5, .5))
+        extra_drives = (0.,) * 4
+        if downstream is not None:
+            speeds = tuple(dot(end_angular, axis) + config.final_drive * sum(w * s for w, s in zip(weights, relative_wheels))
+                           if j else 0. for (_old, j, axis), weights in zip(downstream, rotor_weights))
+            assert result.downstream_omega == pytest.approx(speeds, abs=1e-11)
+            extra_drives = tuple(-config.final_drive * sum(weights[i] * j * (new - old) / dt
+                                 for (old, j, _axis), new, weights in zip(downstream, speeds, rotor_weights)) for i in range(4))
+            assert result.downstream_wheel_torques == pytest.approx(extra_drives, abs=1e-10)
+            assert result.downstream_kinetic_energy == pytest.approx(tuple(.5 * j * s**2
+                   for (_old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+            assert result.downstream_numerical_dissipation == pytest.approx(tuple(.5 * j * (s - old)**2
+                   for (old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+        assert result.differential_torques == pytest.approx(torques, abs=1e-11)
+        assert result.differential_slips == pytest.approx(slips, abs=1e-12)
+        force, body_torque, external = [0.] * 3, list(result.engine_body_torque), [0.] * 3
+        if normal is not None:
+            system, step = normal
+            for gradient, axial in zip(system.gradients, step.axial_force):
+                for a in range(3):
+                    force[a] += gradient[a] * axial
+                    body_torque[a] += gradient[a + 3] * axial
+                    external[a] += dt * gradient[a + 3] * axial
+        if shaft is not None:
+            for a in range(3):
+                body_torque[a] += result.shaft_body_torque[a]
+            assert shaft_inertia * (result.shaft_omega - shaft) == pytest.approx(
+                dt * (result.clutch_torque - result.gear_reaction), abs=1e-11)
+            assert result.shaft_relative_omega == pytest.approx(
+                result.shaft_omega - dot(end_angular, shaft_axis), abs=1e-12)
+            assert result.clutch_slip == pytest.approx(result.engine_relative_omega - result.shaft_relative_omega, abs=1e-11)
+        if downstream is not None:
+            for a in range(3):
+                body_torque[a] += result.downstream_body_torque[a]
+        for i, (frame, wheel) in enumerate(zip(contact_frames, wheels)):
+            drive = result.drive_torque * (config.front_drive_share if i < 2 else 1 - config.front_drive_share) / 2 + transfers[i] + extra_drives[i]
+            assert result.wheel_drive_torques[i] == pytest.approx(drive, abs=1e-11)
+            f = tuple(frame.tangent[a] * wheel.fx + frame.axle[a] * wheel.fy for a in range(3))
+            moment = cross(frame.point, f)
+            for a in range(3):
+                force[a] += f[a]
+                body_torque[a] += moment[a] + frame.spin_axis[a] * (
+                    drive - wheel.brake_torque - frame.rolling_radius * wheel.fx) + wheel.gyro_torque[a] + steering[i][a]
+                external[a] += dt * moment[a]
+            assert config.wheel_inertia * (wheel.omega - spins[i]) == pytest.approx(
+                dt * (drive - wheel.brake_torque - frame.rolling_radius * wheel.fx), abs=1e-11)
+            assert wheel.relative_omega == pytest.approx(wheel.omega + dot(end_angular, frame.spin_axis), abs=1e-12)
+            assert wheel.residual < .001
+            assert abs(wheel.brake_torque) <= brakes[i] + 1e-10
+            assert wheel.brake_torque * wheel.relative_omega >= -1e-7
+        for a in range(3):
+>           assert config.mass * (end_velocity[a] - velocity[a]) == pytest.approx(dt * force[a], abs=1e-11)
+E           assert 23.665202652603522 == 23.665202652621787 ± 1.0e-11
+E             
+E             comparison failed
+E             Obtained: 23.665202652603522
+E             Expected: 23.665202652621787 ± 1.0e-11
+
+tests\test_tire_drivetrain.py:89: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_finite_suspension.py::test_rotation_path_matches_actual_native_bullet_transform[angular1]
+FAILED tests/test_finite_suspension.py::test_rotation_path_matches_actual_native_bullet_transform[angular2]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.0--20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.0-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.5--20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.5-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-1.0--20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-1.0-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-0.0-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-0.5-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-1.0-20.0]
+11 failed, 42 passed in 1.11s

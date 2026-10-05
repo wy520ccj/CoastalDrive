@@ -1,0 +1,34 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\test_joint_suspension.py:3:1
+   |
+ 1 |   """从接点速度、硬件及完整机械账核对法向/切向共同末状态。"""
+ 2 |
+ 3 | / import math
+ 4 | | from dataclasses import replace
+ 5 | |
+ 6 | | import pytest
+ 7 | | from panda3d.core import TransformState, Vec3
+ 8 | | from physics.reference_ab import _create_vehicle
+ 9 | | from test_finite_suspension import endpoint_length
+10 | | from test_driveline_inertia import AXES, INERTIAS, explicit_axes
+11 | | from test_rotor_transport import CONFIG, TENSOR, frames
+12 | | from test_tire_drivetrain import audit
+13 | |
+14 | | from driving_modes import DrivingMode
+15 | | from rotor_dynamics import cross, dot
+16 | | from suspension import SuspensionInput
+17 | | from suspension_kinematics import SupportPlane
+18 | | from tire_drivetrain import advance_drivetrain
+19 | | from vehicle_state import FIXED_DT, VehicleCommand
+   | |__________________________________________________^
+help: Organize imports
+   |
+8  | from physics.reference_ab import _create_vehicle
+9  + from test_driveline_inertia import AXES, INERTIAS, explicit_axes
+10 | from test_finite_suspension import endpoint_length
+   - from test_driveline_inertia import AXES, INERTIAS, explicit_axes
+11 | from test_rotor_transport import CONFIG, TENSOR, frames
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

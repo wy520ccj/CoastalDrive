@@ -13,6 +13,7 @@ from suspension import (
     elastic_terms,
 )
 from suspension_contacts import suspension_rays
+from suspension_kinematics import SupportPlane
 from vehicle_state import WheelContactState
 
 
@@ -24,12 +25,12 @@ class Suspension:
         self.state = SuspensionState()
 
     def prepare(self, world, chassis, wheels):
-        """只读取当拍接点和材料初值；求解期间不向Bullet提交中间冲量。"""
+        """读取本子步真实接点、切平面和材料初值；求解期间不提交中间冲量。"""
         config = self.config
         pose = chassis.getTransform()
         origin, orientation = pose.getPos(), pose.getQuat()
         direction = orientation.xform(Vec3(0, 0, -1))
-        geometry, gradients, contacts, initial = [], [], [], list(self.compression)
+        geometry, gradients, contacts, planes, initial = [], [], [], [], list(self.compression)
         constraint_compression = list(self.compression)
         lengths = tuple(w.getSuspensionRestLength() + config.suspension_travel + config.wheel_radius for w in wheels)
         # 路径描述轮心；向上退一个半径，保留原查询的压缩行程覆盖范围。
@@ -52,12 +53,14 @@ class Suspension:
                     initial[i] = constraint_compression[i]
                 arm = tuple(point[a] - origin[a] for a in range(3))
                 gradient = contact_gradient(normal, tuple(direction), arm)
+            planes.append(SupportPlane(tuple(orientation.xform(Vec3(*self.hubs[i]))), tuple(direction),
+                                       tuple(normal), rest - constraint_compression[i]) if eligible else None)
             geometry.append((point, normal, alignment, rest))
             gradients.append(gradient)
             contacts.append(eligible)
         self.geometry = tuple(geometry)
         return SuspensionInput(tuple(initial), tuple(constraint_compression), tuple(gradients),
-                               tuple(contacts), tuple(g[2] for g in geometry), config)
+                               tuple(contacts), tuple(g[2] for g in geometry), config, tuple(planes), chassis.getAngularDamping())
 
     def advance(self, world, chassis, wheels, on_asphalt, tick, dt,
                 external_velocity, external_angular):
@@ -79,8 +82,8 @@ class Suspension:
                                   config.suspension_extension_damping, config.suspension_antiroll_rates,
                                   config.suspension_stop_rates, config.suspension_travel, dt,
                                   geometry=system.geometry)
-        self.apply_step(chassis, system, step, dt)
-        return self.publish(system, system, ((dt, step),), on_asphalt, tick)
+        impulses = self.apply_step(chassis, system, step, dt)
+        return self.publish(system, system, ((dt, step),), on_asphalt, tick, impulses)
 
     def apply_step(self, chassis, system, step, dt):
         """共同求解收敛后，仅向唯一车身提交本子步真实法向冲量。"""
@@ -89,11 +92,13 @@ class Suspension:
         angular_impulse = tuple(dt * sum(g[a + 3] * force for g, force in zip(gradients, step.axial_force)) for a in range(3))
         chassis.applyCentralImpulse(Vec3(*linear))
         chassis.applyTorqueImpulse(Vec3(*angular_impulse))
+        return linear, angular_impulse
 
     def contacts(self, system, step, on_asphalt):
         states = []
-        for i, (point, normal, alignment, rest) in enumerate(self.geometry):
+        for i, (point, normal, _alignment, rest) in enumerate(self.geometry):
             supported = system.touching[i] and step.axial_force[i] > 0.
+            alignment = system.alignment[i]
             force = step.axial_force[i] / alignment if supported else 0.
             raw = step.raw_axial_force[i] / alignment if supported else 0.
             states.append(WheelContactState(
@@ -112,7 +117,7 @@ class Suspension:
             for (point, normal, _alignment, rest), eligible, compression in
             zip(self.geometry, system.touching, system.geometry))
 
-    def publish(self, initial_system, final_system, substeps, on_asphalt, tick):
+    def publish(self, initial_system, final_system, substeps, on_asphalt, tick, impulses):
         """损耗/功累加全拍，力与接触标签保留最后实际施力子步；子步明细同时保存。"""
         config = self.config
         initial = initial_system.compression
@@ -120,10 +125,7 @@ class Suspension:
         losses = ("damping_dissipation", "elastic_numerical_dissipation", "body_numerical_dissipation",
                   "contact_offset_work", "energy_residual", "body_work")
         step = replace(step, **{name: sum(getattr(part, name) for _dt, part in substeps) for name in losses})
-        linear = tuple(sum(dt * sum(g[a] * force for g, force in zip(initial_system.gradients, part.axial_force))
-                           for dt, part in substeps) for a in range(3))
-        angular_impulse = tuple(sum(dt * sum(g[a + 3] * force for g, force in zip(initial_system.gradients, part.axial_force))
-                                    for dt, part in substeps) for a in range(3))
+        linear, angular_impulse = impulses
         states = self.contacts(final_system, step, on_asphalt)
         loads = tuple(contact.normal_load for contact in states)
         old_energy = elastic_terms(self.compression, config.suspension_spring_rates,
@@ -136,7 +138,7 @@ class Suspension:
         initialization_energy = initial_energy[0] + sum(initial_energy[1]) + initial_energy[2] if self.state.force_tick == 0 else 0.
         geometry_work -= initialization_energy
         self.compression = step.compression
-        self.state = SuspensionState(step, loads, initial_system.alignment, initial_system.touching,
+        self.state = SuspensionState(step, loads, final_system.alignment, final_system.touching,
                                      tuple(initial), geometry_work, linear, angular_impulse, tick,
                                      final_system.geometry, initialization_energy, substeps)
         return states

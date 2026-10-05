@@ -6,6 +6,7 @@ from dataclasses import replace
 from panda3d.core import Mat3, Quat, Vec3
 
 from rotor_dynamics import steering_torque
+from suspension_kinematics import advance_contact_geometry
 from tire_compliance import deformation_frame, project_deformation, world_deformation
 from tire_coupling import ContactFrame, advance_coupled, cross, dot
 from tire_drivetrain import advance_drivetrain
@@ -50,6 +51,7 @@ class Tires:
         inv_inertia = chassis.getInvInertiaTensorWorld()
         config = self.config
         normal_steps = []
+        normal_impulses = []
         if suspension is not None:
             normal_adapter, normal_system, on_asphalt = suspension
             initial_normal_system = normal_system
@@ -202,17 +204,16 @@ class Tires:
                     drives = result.wheel_drive_torques
                     end_angular = result.angular
                     if suspension is not None:
-                        normal_adapter.apply_step(chassis, normal_system, result.suspension, sub_dt)
+                        normal_system = result.suspension_system
+                        impulses = normal_adapter.apply_step(chassis, normal_system, result.suspension, sub_dt)
+                        normal_impulses.append(impulses)
                         normal_steps.append((sub_dt, result.suspension))
                         actual_contacts = normal_adapter.contacts(normal_system, result.suspension, on_asphalt)
                         wheel_frames = tuple(replace(frame, load=contact.normal_load if base.supported else 0.,
                                                      supported=contact.in_contact and base.supported)
                                              for frame, contact, base in zip(wheel_frames, actual_contacts, base_frames))
-                        # 子步冻结同一接点雅可比；用真实共同末速度推进其约束坐标。
-                        next_normal_system = replace(normal_system,
-                            compression=result.suspension.compression,
-                            geometry=tuple(x - sub_dt * sum(a * b for a, b in zip(g, result.velocity + result.angular))
-                                           for x, g in zip(normal_system.geometry, normal_system.gradients)))
+                        next_normal_system = advance_contact_geometry(normal_system, result.suspension.compression,
+                                                                      result.velocity, result.angular, sub_dt)
                     powertrain.accept_step(result, sub_dt)
                     chassis.applyTorqueImpulse(Vec3(*result.engine_body_torque) * sub_dt)
                     if powertrain.input_shaft_active:
@@ -320,7 +321,8 @@ class Tires:
         self.states = tuple(states)
         if suspension is not None:
             return normal_adapter.publish(initial_normal_system, final_normal_system,
-                                          tuple(normal_steps), on_asphalt, tick)
+                                          tuple(normal_steps), on_asphalt, tick,
+                                          tuple(tuple(sum(part[k][a] for part in normal_impulses) for a in range(3)) for k in range(2)))
 
     def observe(self, chassis, contacts, tick):
         """完成Bullet步后采样当前滑移；保留前一施力阶段的力与求解滑移。"""

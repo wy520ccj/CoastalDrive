@@ -83,13 +83,15 @@ class SuspensionStep:
 
 @dataclass(frozen=True)
 class SuspensionInput:
-    """同拍固定接触几何及真实材料初值；不持有物理世界或车身。"""
+    """接触切平面/材料初值；kinematics=None明确指定台架的线性雅可比。"""
     compression: tuple
     geometry: tuple
     gradients: tuple
     touching: tuple
     alignment: tuple
     config: object
+    kinematics: tuple | None = None
+    angular_damping: float = 0.
 
 
 def shared_suspension(system, velocity, angular, dt, *, mobility=None, forces=(0.,) * 4):

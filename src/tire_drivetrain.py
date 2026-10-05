@@ -21,7 +21,8 @@ from shaft_transmission import (
     synchronizer_brake_response,
     synchronizer_brake_state,
 )
-from suspension import SuspensionStep, shared_suspension
+from suspension import SuspensionInput, SuspensionStep, shared_suspension
+from suspension_kinematics import finite_contact_system
 from tire_compliance import contact_force, contact_jacobian, energy_terms
 from tire_forces import combined_force, slip_state
 from tire_properties import tire_grip, tire_stiffness
@@ -71,6 +72,7 @@ class DrivetrainStep:
     downstream_numerical_dissipation: tuple = ()
     suspension: SuspensionStep | None = None
     normal_residual: float = 0.
+    suspension_system: SuspensionInput | None = None
 
 
 def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformations,
@@ -139,11 +141,17 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
 
     normal_forces = (0.,) * 4
     normal_responses, normal_mobility = (), ()
-    if suspension is not None:
+    reference_suspension = suspension
+
+    def normal_projection():
+        nonlocal normal_responses, normal_mobility
         normal_responses = tuple(mobility(g[3:] + (0.,) * (dimensions - 3)) for g in suspension.gradients)
         bare = tuple(tuple(value / mass for value in g[:3])
                      + tuple(dot(row, g[3:]) for row in inverse_inertia) for g in suspension.gradients)
         normal_mobility = tuple(tuple(dot(g, r) for r in bare) for g in suspension.gradients)
+
+    if suspension is not None:
+        normal_projection()
 
     def normal_loads():
         nonlocal frames
@@ -536,9 +544,13 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
 
     state = initial
     normal_error = 0.
+    geometry_error = 0.
+    normal_tolerance = 1e-10 if suspension is not None and suspension.kinematics is not None else 1e-8
     for sweep in range(20):
         state, end_velocity, clutch, loss, gear_reaction = shared(state)
         if suspension is not None:
+            suspension = finite_contact_system(reference_suspension, end_velocity, state[:3], dt)
+            normal_projection()
             normal_step = shared_suspension(suspension, end_velocity, state[:3], dt,
                                             mobility=normal_mobility, forces=normal_forces)
             normal_forces = normal_step.axial_force
@@ -570,12 +582,15 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         if suspension is not None:
             normal_step = shared_suspension(suspension, end_velocity, state[:3], dt)
             normal_error = max(abs(a - b) for a, b in zip(normal_forces, normal_step.axial_force))
-        if maximum < .001 and brake_error < 1e-9 and normal_error < 1e-8:
+            target_system = finite_contact_system(reference_suspension, end_velocity, state[:3], dt)
+            geometry_error = dt * max(abs(sum(force * (new[a] - old[a]) for force, new, old in
+                                             zip(normal_forces, target_system.gradients, suspension.gradients))) for a in range(6))
+        if maximum < .001 and brake_error < 1e-9 and normal_error < normal_tolerance and geometry_error < 1e-12:
             break
         if shaft and maximum >= .001 and sweep >= 8:
             correct_contacts(state)
     else:
-        raise ArithmeticError(f"传动/四轮共同求解超过20轮：{maximum:g}N，制动{brake_error:g}Nm，法向{normal_error:g}N")
+        raise ArithmeticError(f"传动/四轮共同求解超过20轮：{maximum:g}N，制动{brake_error:g}Nm，法向{normal_error:g}N，几何共轭冲量{geometry_error:g}Ns/Nms")
 
     gyro_torques = bearing_torques(axes, state[wheel_start:], wheel_inertia, state[:3]) if rotor else ((0., 0., 0.),) * 4
     wheels = []
@@ -633,4 +648,4 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         downstream_speeds, downstream_body, downstream_wheels,
         tuple(.5 * j * speed**2 for j, speed in zip(inertias, downstream_speeds)),
         tuple(.5 * j * (new - old)**2 for j, new, old in zip(inertias, downstream_speeds, downstream_omega)),
-        normal_step if suspension is not None else None, normal_error)
+        normal_step if suspension is not None else None, normal_error, suspension)

@@ -1,0 +1,53 @@
+{
+  "started_utc": "2026-10-05T10:18:29.197817+00:00",
+  "git_head": "f0ed868f778e8a9afeadc10647a84dbe1928c04d",
+  "git_status": "M src/driving_modes.py\n M src/suspension.py\n M src/tire_drivetrain.py\n M src/vehicle_suspension.py\n M src/vehicle_tires.py\n M tests/test_joint_suspension.py\n M tests/test_physics_config_io.py\n M tests/test_traction_lifecycle.py\n M tools/physics/export_reference.py\n M tools/validate.py\n?? docs/evidence/PHYS-SUSP-01/validation-T0-finite-r1/\n?? docs/evidence/PHYS-SUSP-01/validation-T0-finite-r2/\n?? docs/evidence/PHYS-SUSP-01/validation-T0-finite-r3/\n?? docs/evidence/PHYS-SUSP-01/validation-T0-finite-r4/\n?? src/suspension_kinematics.py\n?? tests/test_finite_suspension.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_impact_delivery.py::test_real_challenge_impact_failure_frame_is_delivered_once",
+    "tests/test_joint_suspension.py"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-SUSP-01\\validation-T0-finite-r5\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.111
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_impact_delivery.py::test_real_challenge_impact_failure_frame_is_delivered_once",
+        "tests/test_joint_suspension.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-SUSP-01\\validation-T0-finite-r5\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.407
+    }
+  ]
+}

@@ -7,12 +7,14 @@ import pytest
 from panda3d.core import TransformState, Vec3
 from physics.reference_ab import _create_vehicle
 from test_driveline_inertia import AXES, INERTIAS, explicit_axes
+from test_finite_suspension import endpoint_length
 from test_rotor_transport import CONFIG, TENSOR, frames
 from test_tire_drivetrain import audit
 
 from driving_modes import DrivingMode
 from rotor_dynamics import cross, dot
 from suspension import SuspensionInput
+from suspension_kinematics import SupportPlane
 from tire_drivetrain import advance_drivetrain
 from vehicle_state import FIXED_DT, VehicleCommand
 
@@ -20,7 +22,8 @@ from vehicle_state import FIXED_DT, VehicleCommand
 @pytest.mark.parametrize("bank", (-20., 20.))
 @pytest.mark.parametrize("share", (0., .5, 1.))
 @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
-def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt):
+@pytest.mark.parametrize("finite_rotation", (False, True))
+def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
     config = replace(CONFIG, front_drive_share=share)
     contact_frames = frames(bank, 17.)
     normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
@@ -30,6 +33,12 @@ def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt):
                       for frame in contact_frames)
     initial = (.064, .047, .067, .05)
     system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+    if finite_rotation:
+        direction = (0., 0., -1.)
+        planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                         + config.wheel_radius * normal[a] for a in range(3)),
+                                    direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+        system = replace(system, kinematics=planes, angular_damping=.2)
     velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
     deformation = ((.002, -.001),) * 4
     brakes = (200., 300., 120., 150.)
@@ -42,6 +51,8 @@ def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt):
     for i, frame in enumerate(contact_frames):
         point_velocity = tuple(result.velocity[a] + cross(result.angular, frame.point)[a] for a in range(3))
         expected = initial[i] - dt * dot(point_velocity, normal) / alignment
+        if finite_rotation:
+            expected = .4 - endpoint_length(planes[i], result.velocity, result.angular, dt, system.angular_damping)
         assert step.compression[i] == pytest.approx(expected, abs=1e-13)
         dx = expected - initial[i]
         damping = config.suspension_compression_damping[i] if dx >= 0 else config.suspension_extension_damping[i]
@@ -50,11 +61,12 @@ def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt):
                  + config.suspension_antiroll_rates[i // 2] * (expected - step.compression[other])
                  + damping * dx / dt)
         assert step.axial_force[i] == pytest.approx(force, abs=1e-8)
-    loaded = tuple(replace(frame, load=force / alignment) for frame, force in zip(contact_frames, step.axial_force))
+    effective = result.suspension_system
+    loaded = tuple(replace(frame, load=force / a) for frame, force, a in zip(contact_frames, step.axial_force, effective.alignment))
     assert result.normal_residual < 1e-8
     assert step.body_numerical_dissipation == 0.
     audit(result, velocity, angular, spins, engine, loaded, deformation, 85., brakes, config, dt,
-          tuple(frame.spin_axis for frame in loaded), ((0.,) * 3,) * 4, shaft=180., normal=(system, step))
+          tuple(frame.spin_axis for frame in loaded), ((0.,) * 3,) * 4, shaft=180., normal=(effective, step))
 
 
 @pytest.mark.parametrize("mode", list(DrivingMode))
@@ -66,7 +78,7 @@ def test_actual_bullet_submission_matches_joint_six_dimensional_end(mode, monkey
 
     def capture(*args, **kwargs):
         result = original(*args, **kwargs)
-        observed.append((kwargs["suspension"], result))
+        observed.append((result.suspension_system, result))
         return result
 
     monkeypatch.setattr(vehicle_tires, "advance_drivetrain", capture)
