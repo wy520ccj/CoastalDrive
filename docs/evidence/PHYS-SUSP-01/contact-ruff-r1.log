@@ -1,0 +1,12 @@
+SIM115 Use a context manager for opening files
+  --> tools\physics\suspension_contact_probe.py:44:54
+   |
+42 |             assert error < 1e-6
+43 |             prior = ROOT / "docs/evidence/PHYS-SUSP-01/passive-native-r2" / f"{mode}-one-side-coupled.jsonl.gz"
+44 |             old_rows = [json.loads(line) for line in gzip.open(prior, "rt", encoding="utf-8")]
+   |                                                      ^^^^^^^^^
+45 |             old_error = max(box_surface_error(c["contact_point"]) for row in old_rows
+46 |                             for c in row["car"]["wheel_contacts"] if c["in_contact"])
+   |
+
+Found 1 error.

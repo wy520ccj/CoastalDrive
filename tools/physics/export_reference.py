@@ -251,7 +251,7 @@ def export(output):
     source_names = ("vehicle_config.py", "driver_assist.py", "driving_modes.py", "vehicle.py",
                     "vehicle_tires.py", "vehicle_traction.py", "powertrain.py", "vehicle_steering.py", "vehicle_dynamics.py",
                     "wheel_dynamics.py", "tire_forces.py", "vehicle_contacts.py", "vehicle_state.py",
-                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py", "rotor_dynamics.py", "wheel_geometry.py", "transmission_ports.py", "tire_drivetrain.py", "differential.py", "shaft_transmission.py", "driveline_inertia.py", "suspension.py", "vehicle_suspension.py")
+                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py", "rotor_dynamics.py", "wheel_geometry.py", "transmission_ports.py", "tire_drivetrain.py", "differential.py", "shaft_transmission.py", "driveline_inertia.py", "suspension.py", "vehicle_suspension.py", "suspension_contacts.py")
     hashes = {f"src/{name}": hashlib.sha256((ROOT / "src" / name).read_bytes()).hexdigest()
               for name in source_names}
     hashes["tools/physics/export_reference.py"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
@@ -262,7 +262,7 @@ def export(output):
         "panda_version": PandaSystem.getVersionString(), "bullet_version": getBulletVersion(),
         "measurement": {"ticks": 240, "dt": FIXED_DT, "max_substeps": 0,
                         "ground": "水平无限平面", "gravity": [0, 0, -9.81], "input": "VehicleCommand()"},
-        "schema_version": "reference-v17",
+        "schema_version": "reference-v18",
         "vehicle_fields": VEHICLE_FIELDS, "brake_fields": BRAKE_FIELDS,
         "traction_fields": TRACTION_FIELDS, "stability_fields": STABILITY_FIELDS,
         "input_fields": INPUT_FIELDS, "modes": modes,
@@ -277,5 +277,5 @@ def export(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path,
-                        default=ROOT / "logs/physics/reference-v17/parameters.json")
+                        default=ROOT / "logs/physics/reference-v18/parameters.json")
     export(parser.parse_args().output)

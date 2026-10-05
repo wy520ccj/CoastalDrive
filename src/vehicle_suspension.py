@@ -3,6 +3,7 @@
 from panda3d.core import Vec3
 
 from suspension import SuspensionState, advance_suspension, contact_gradient, dot, elastic_terms
+from suspension_contacts import suspension_rays
 from vehicle_state import WheelContactState
 
 
@@ -27,21 +28,19 @@ class Suspension:
         angular = tuple(chassis.getAngularVelocity()[a] + external_angular[a] for a in range(3))
         geometry, gradients, contacts, initial = [], [], [], list(self.compression)
         constraint_compression = list(self.compression)
-        for i, (wheel, hub) in enumerate(zip(wheels, self.hubs)):
-            start = pose.getMat().xformPoint(Vec3(*hub))
+        lengths = tuple(w.getSuspensionRestLength() + config.suspension_travel + config.wheel_radius for w in wheels)
+        starts = tuple(pose.getMat().xformPoint(Vec3(*hub)) for hub in self.hubs)
+        hits = suspension_rays(world, chassis, tuple((start, start + direction * length) for start, length in zip(starts, lengths)))
+        for i, (wheel, ray_length, hit) in enumerate(zip(wheels, lengths, hits)):
             rest = wheel.getSuspensionRestLength()
-            ray_length = rest + config.suspension_travel + config.wheel_radius
-            hits = world.rayTestAll(start, start + direction * ray_length).getHits()
-            hits = sorted((hit for hit in hits if hit.getNode() != chassis), key=lambda h: h.getHitFraction())
-            hit = hits[0] if hits else None
-            point = tuple(hit.getHitPos()) if hit else None
-            normal = tuple(hit.getHitNormal()) if hit else None
+            point = hit.point if hit else None
+            normal = hit.normal if hit else None
             alignment = -dot(normal, tuple(direction)) if hit else None
             # 当前路面是固定刚体；保留动态物体碰撞，射线法向模型不承诺移动支撑。
-            eligible = hit is not None and hit.getNode().isStatic() and alignment > .1
+            eligible = hit is not None and hit.node.isStatic() and alignment > .1
             gradient = (0.,) * 6
             if eligible:
-                constraint_compression[i] = rest - (ray_length * hit.getHitFraction() - config.wheel_radius)
+                constraint_compression[i] = rest - (ray_length * hit.fraction - config.wheel_radius)
                 if self.state.force_tick == 0:
                     # 初始姿态可以带真实预压；候选射线中的离地间隙不是弹簧伸长。
                     initial[i] = max(0., constraint_compression[i])

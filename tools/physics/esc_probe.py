@@ -229,7 +229,7 @@ def run_trial(case, enabled, duration=6.0, mode="simulation", vehicle_config=Non
 def source_hashes():
     hashes = _source_hashes()
     for path in (Path(__file__), ROOT / "tools/physics/reference_ab.py",
-                 ROOT / "src/suspension.py", ROOT / "src/vehicle_suspension.py"):
+                 ROOT / "src/suspension.py", ROOT / "src/vehicle_suspension.py", ROOT / "src/suspension_contacts.py"):
         hashes[path.relative_to(ROOT).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
     return hashes
 

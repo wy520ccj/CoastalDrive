@@ -92,6 +92,7 @@ def test_stability_source_is_in_hash_account():
     assert "src/vehicle_stability.py" in source_hashes()
     assert "src/suspension.py" in source_hashes()
     assert "src/vehicle_suspension.py" in source_hashes()
+    assert "src/suspension_contacts.py" in source_hashes()
 
 
 def test_dynamic_contact_gzip_after_real_landing(tmp_path):
