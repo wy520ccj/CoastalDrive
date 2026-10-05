@@ -1,0 +1,589 @@
+{
+  "baseline": "17fcb7572d5dc2a7e98b852727aaa6c19263b855",
+  "production_matches_baseline": true,
+  "production_python_files": 91,
+  "production_digest_sha256": "960e0bc256d50cf9d10d54d794d0e7acb500fc67fd80e3364c666f9ab7574de8",
+  "test_sha256": "69d7f78857d97bba5760dfc941b34ca6814bdacd62c17e1bd86ccb09e81cfebe",
+  "failed_preflight": "logs/validation/PHYS-DESIGN-01-impact-preflight",
+  "failed_fact_reproduction": {
+    "path": "logs/validation/PHYS-DESIGN-01-impact-facts",
+    "failed": 3,
+    "seconds": 284.59
+  },
+  "validation": {
+    "started_utc": "2026-10-05T17:51:57.317292+00:00",
+    "git_head": "17fcb7572d5dc2a7e98b852727aaa6c19263b855",
+    "git_status": "M tests/test_impact_integration.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_impact_integration.py",
+      "tests/test_impact_audio.py"
+    ],
+    "tier": "T0",
+    "status": "passed",
+    "passed": true,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-impact-T0\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.131
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_impact_integration.py",
+          "tests/test_impact_audio.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-impact-T0\\pytest.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 369.973
+      }
+    ]
+  },
+  "cases": [
+    {
+      "path": "logs/validation/PHYS-DESIGN-01-impact-T0/facts/test_real_rail_contact_plays_a0-rail.jsonl",
+      "sha256": "774fc5c6c6f4093faeccce34fe3d29dbb9dab09060d6d6282d9fc2fa59170c8c",
+      "frames": 1200,
+      "pulses": [],
+      "decisions": [],
+      "scrape_attacks": [
+        {
+          "type": "scrape",
+          "state": "attack",
+          "tick": 2,
+          "material": "metal_barrier",
+          "variant": "scrape_metal_1"
+        }
+      ],
+      "attack_contacts": [
+        {
+          "tick": 2,
+          "previous": [
+            {
+              "sources": [
+                1
+              ],
+              "material": "metal_barrier",
+              "tick": 1,
+              "raw_impulse": 4647.092460632324,
+              "normal_speed": 0.0,
+              "tangential_speed": 7.052473572554815,
+              "local_position": [
+                1.029134303678241,
+                0.2503366934931916,
+                0.08141999015688024
+              ],
+              "local_normal": [
+                -0.9999945373931289,
+                -0.00010427254914714472,
+                0.003303681452219113
+              ],
+              "zone": "right",
+              "contact_age_ticks": 1
+            }
+          ],
+          "current": [
+            {
+              "sources": [
+                1
+              ],
+              "material": "metal_barrier",
+              "tick": 2,
+              "raw_impulse": 73.34669876098633,
+              "normal_speed": 0.0,
+              "tangential_speed": 4.894238264249029,
+              "local_position": [
+                1.0380122028338385,
+                2.129614246961322,
+                -0.0019562447982564685
+              ],
+              "local_normal": [
+                -0.9999436344217508,
+                -0.0055453253399366164,
+                0.009054134210090813
+              ],
+              "zone": "right",
+              "contact_age_ticks": 2
+            }
+          ]
+        }
+      ],
+      "scrape_transitions": [
+        {
+          "tick": 2,
+          "from": "off",
+          "to": "sustain",
+          "contact_tangential_speed": [
+            4.894238264249029
+          ]
+        },
+        {
+          "tick": 10,
+          "from": "sustain",
+          "to": "release",
+          "contact_tangential_speed": []
+        },
+        {
+          "tick": 16,
+          "from": "release",
+          "to": "off",
+          "contact_tangential_speed": []
+        }
+      ],
+      "final_velocity_m_s": [
+        8.734245784580708e-05,
+        6.31498041911982e-05,
+        -0.00013216957449913025
+      ],
+      "final_speed_norm_m_s": 0.000170544419830185,
+      "final_scrape_state": "off"
+    },
+    {
+      "path": "logs/validation/PHYS-DESIGN-01-impact-T0/facts/test_real_rail_contact_plays_a1-rail.jsonl",
+      "sha256": "8533f5f649c5eb1d747b6bbc6954d727d8e742a39e80a6146bda8eddf6167727",
+      "frames": 1200,
+      "pulses": [
+        {
+          "event_id": "12:122:0",
+          "tick": 122,
+          "sources": [
+            1
+          ],
+          "material": "metal_barrier",
+          "raw_impulse_ns": 1086.3653564453125,
+          "excess_impulse_ns": 1086.3653564453125,
+          "normal_component_m_s": 2.240403652191162,
+          "zone": "right"
+        },
+        {
+          "event_id": "12:157:0",
+          "tick": 157,
+          "sources": [
+            1
+          ],
+          "material": "metal_barrier",
+          "raw_impulse_ns": 783.0927542448044,
+          "excess_impulse_ns": 760.5147761894527,
+          "normal_component_m_s": 0.7110403256066093,
+          "zone": "right"
+        }
+      ],
+      "decisions": [
+        {
+          "event_id": "12:122:0",
+          "tick": 122,
+          "sources": [
+            1
+          ],
+          "raw_impulse": 1086.3653564453125,
+          "excess_impulse": 1086.3653564453125,
+          "severity": 0.1939,
+          "layers": [
+            [
+              "transient",
+              "transient_metal_1"
+            ],
+            [
+              "body",
+              "body_light_2"
+            ]
+          ],
+          "zone": "right"
+        },
+        {
+          "event_id": "12:157:0",
+          "tick": 157,
+          "sources": [
+            1
+          ],
+          "raw_impulse": 783.0927542448044,
+          "excess_impulse": 760.5147761894527,
+          "severity": 0.1376,
+          "layers": [
+            [
+              "transient",
+              "transient_metal_2"
+            ],
+            [
+              "body",
+              "body_light_1"
+            ]
+          ],
+          "zone": "right"
+        }
+      ],
+      "scrape_attacks": [
+        {
+          "type": "scrape",
+          "state": "attack",
+          "tick": 129,
+          "material": "metal_barrier",
+          "variant": "scrape_metal_1"
+        }
+      ],
+      "attack_contacts": [
+        {
+          "tick": 129,
+          "previous": [
+            {
+              "sources": [
+                1
+              ],
+              "material": "metal_barrier",
+              "tick": 128,
+              "raw_impulse": 25.452651977539062,
+              "normal_speed": 0.014803134333249687,
+              "tangential_speed": 15.159535308185987,
+              "local_position": [
+                1.0561316235402713,
+                2.0871262209523054,
+                0.00016674409155984814
+              ],
+              "local_normal": [
+                -0.9950654844541406,
+                -0.09860420421320756,
+                0.011040496344213715
+              ],
+              "zone": "right",
+              "contact_age_ticks": 7
+            }
+          ],
+          "current": [
+            {
+              "sources": [
+                1
+              ],
+              "material": "metal_barrier",
+              "tick": 129,
+              "raw_impulse": 26.621137619018555,
+              "normal_speed": 0.020733081319855944,
+              "tangential_speed": 15.126690392629477,
+              "local_position": [
+                1.0558897716794904,
+                2.087244319336692,
+                0.00023237749002857282
+              ],
+              "local_normal": [
+                -0.9954770051826513,
+                -0.09434582692348437,
+                0.011153344552355213
+              ],
+              "zone": "right",
+              "contact_age_ticks": 8
+            }
+          ]
+        }
+      ],
+      "scrape_transitions": [
+        {
+          "tick": 129,
+          "from": "off",
+          "to": "sustain",
+          "contact_tangential_speed": [
+            15.126690392629477
+          ]
+        },
+        {
+          "tick": 1047,
+          "from": "sustain",
+          "to": "release",
+          "contact_tangential_speed": [
+            1.491598733454872
+          ]
+        },
+        {
+          "tick": 1051,
+          "from": "release",
+          "to": "off",
+          "contact_tangential_speed": [
+            1.3213534238148135
+          ]
+        }
+      ],
+      "final_velocity_m_s": [
+        -4.7085341066122055e-05,
+        6.98859803378582e-05,
+        -3.7398189306259155e-05
+      ],
+      "final_speed_norm_m_s": 9.219384011138347e-05,
+      "final_scrape_state": "off"
+    },
+    {
+      "path": "logs/validation/PHYS-DESIGN-01-impact-T0/facts/test_real_wall_severity_and_la0-wall-2.jsonl",
+      "sha256": "c8df91aa71b8bbb32c8c87b9fd3c803d12f7fe38c7cce1bff439880a0d7ab041",
+      "frames": 100,
+      "pulses": [
+        {
+          "event_id": "2:28:0",
+          "tick": 28,
+          "sources": [
+            2
+          ],
+          "material": "hard_solid",
+          "raw_impulse_ns": 2707.00385466218,
+          "excess_impulse_ns": 2707.00385466218,
+          "normal_component_m_s": 1.9607426475101792,
+          "zone": "front"
+        }
+      ],
+      "decisions": [
+        {
+          "event_id": "2:28:0",
+          "tick": 28,
+          "sources": [
+            2
+          ],
+          "raw_impulse": 2707.00385466218,
+          "excess_impulse": 2707.00385466218,
+          "severity": 0.3942,
+          "layers": [
+            [
+              "transient",
+              "transient_hard_1"
+            ],
+            [
+              "body",
+              "body_light_2"
+            ]
+          ],
+          "zone": "front"
+        }
+      ],
+      "scrape_attacks": [],
+      "attack_contacts": [],
+      "scrape_transitions": [],
+      "final_velocity_m_s": [
+        -2.3337848688242957e-05,
+        -0.15313689410686493,
+        -0.004143271595239639
+      ],
+      "final_speed_norm_m_s": 0.15319293580600987,
+      "final_scrape_state": "off"
+    },
+    {
+      "path": "logs/validation/PHYS-DESIGN-01-impact-T0/facts/test_real_wall_severity_and_la0-wall-20.jsonl",
+      "sha256": "e586d76073eebb2a8d3b429263fe8056def50ce4901b8967a64b8cd618740877",
+      "frames": 100,
+      "pulses": [
+        {
+          "event_id": "6:4:0",
+          "tick": 4,
+          "sources": [
+            2
+          ],
+          "material": "hard_solid",
+          "raw_impulse_ns": 26931.367546081543,
+          "excess_impulse_ns": 26931.367546081543,
+          "normal_component_m_s": 19.954114582361104,
+          "zone": "front"
+        }
+      ],
+      "decisions": [
+        {
+          "event_id": "6:4:0",
+          "tick": 4,
+          "sources": [
+            2
+          ],
+          "raw_impulse": 26931.367546081543,
+          "excess_impulse": 26931.367546081543,
+          "severity": 1,
+          "layers": [
+            [
+              "transient",
+              "transient_hard_1"
+            ],
+            [
+              "body",
+              "body_hard_2"
+            ],
+            [
+              "crunch",
+              "crunch_3"
+            ],
+            [
+              "debris",
+              "debris_3"
+            ]
+          ],
+          "zone": "front"
+        }
+      ],
+      "scrape_attacks": [
+        {
+          "type": "scrape",
+          "state": "attack",
+          "tick": 6,
+          "material": "hard_solid",
+          "variant": "scrape_hard_1"
+        }
+      ],
+      "attack_contacts": [
+        {
+          "tick": 6,
+          "previous": [
+            {
+              "sources": [
+                2
+              ],
+              "material": "hard_solid",
+              "tick": 5,
+              "raw_impulse": 110.8831672668457,
+              "normal_speed": 0.0,
+              "tangential_speed": 4.893995134611227,
+              "local_position": [
+                1.0643280028317326,
+                2.141098545866093,
+                -0.014055623285484745
+              ],
+              "local_normal": [
+                -0.00840087011313707,
+                -0.999921181316575,
+                0.009330409198288928
+              ],
+              "zone": "front",
+              "contact_age_ticks": 2
+            }
+          ],
+          "current": [
+            {
+              "sources": [
+                2
+              ],
+              "material": "hard_solid",
+              "tick": 6,
+              "raw_impulse": 45.325042724609375,
+              "normal_speed": 0.0,
+              "tangential_speed": 6.806476029775226,
+              "local_position": [
+                1.0708084106445312,
+                2.143310546875,
+                -0.01874256134033203
+              ],
+              "local_normal": [
+                -0.017773058557706084,
+                -0.9997435520877741,
+                0.01403383227862708
+              ],
+              "zone": "front",
+              "contact_age_ticks": 3
+            }
+          ]
+        }
+      ],
+      "scrape_transitions": [
+        {
+          "tick": 6,
+          "from": "off",
+          "to": "sustain",
+          "contact_tangential_speed": [
+            6.806476029775226
+          ]
+        },
+        {
+          "tick": 11,
+          "from": "sustain",
+          "to": "release",
+          "contact_tangential_speed": []
+        },
+        {
+          "tick": 16,
+          "from": "release",
+          "to": "off",
+          "contact_tangential_speed": []
+        }
+      ],
+      "final_velocity_m_s": [
+        0.3306927978992462,
+        -0.6279237866401672,
+        -0.0011609457433223724
+      ],
+      "final_speed_norm_m_s": 0.7096811651762902,
+      "final_scrape_state": "off"
+    },
+    {
+      "path": "logs/validation/PHYS-DESIGN-01-impact-T0/facts/test_real_wall_severity_and_la0-wall-8.jsonl",
+      "sha256": "d1f316d4b00aaa12bb194a5dc563771aef23a708f760495be25b97fd7e1c3130",
+      "frames": 100,
+      "pulses": [
+        {
+          "event_id": "4:8:0",
+          "tick": 8,
+          "sources": [
+            2
+          ],
+          "material": "hard_solid",
+          "raw_impulse_ns": 10551.924407958984,
+          "excess_impulse_ns": 10551.924407958984,
+          "normal_component_m_s": 7.999523555476319,
+          "zone": "front"
+        }
+      ],
+      "decisions": [
+        {
+          "event_id": "4:8:0",
+          "tick": 8,
+          "sources": [
+            2
+          ],
+          "raw_impulse": 10551.924407958984,
+          "excess_impulse": 10551.924407958984,
+          "severity": 0.8521,
+          "layers": [
+            [
+              "transient",
+              "transient_hard_1"
+            ],
+            [
+              "body",
+              "body_hard_2"
+            ],
+            [
+              "crunch",
+              "crunch_3"
+            ],
+            [
+              "debris",
+              "debris_3"
+            ]
+          ],
+          "zone": "front"
+        }
+      ],
+      "scrape_attacks": [],
+      "attack_contacts": [],
+      "scrape_transitions": [],
+      "final_velocity_m_s": [
+        -0.00020587434119079262,
+        -0.23500174283981323,
+        -0.0059027522802352905
+      ],
+      "final_speed_norm_m_s": 0.23507595369683368,
+      "final_scrape_state": "off"
+    }
+  ]
+}
