@@ -23,9 +23,9 @@ class DrivingMode(Enum):
     def input_config(self):
         return GAME_INPUT if self == DrivingMode.GAME else SIMULATION_INPUT
 
-    def configured_vehicle(self, abs_enabled=None, tcs_enabled=None, esc_enabled=None):
+    def configured_vehicle(self, abs_enabled=None, tcs_enabled=None, esc_enabled=None, *, base_config=None):
         """车辆电子开关独立于输入模式；同配置沿用同一不可变实例。"""
-        config = self.vehicle_config
+        config = self.vehicle_config if base_config is None else base_config
         braking = config.braking
         traction = config.traction
         stability = config.stability

@@ -20,11 +20,12 @@ from scene import Scene
 from session import Phase, Session
 from settings import AppearanceStore, AudioSettingsStore, DrivingModeStore
 from simulation import Control
-from skins import PLAYER_VEHICLES, SKINS, apply_skin
+from skins import PLAYER_VEHICLES, SKINS, apply_skin, vehicle_definition
 from soundscape import Soundscape
 from ui import theme
 from ui.hud import DrivingHUD
 from ui.main_menu import MainMenu
+from vehicle_designs import vehicle_design
 
 
 class CoastalDrive(ShowBase):
@@ -74,6 +75,7 @@ class CoastalDrive(ShowBase):
             esc_enabled=esc_enabled if esc_enabled is not None else self.driving_mode_settings.esc_enabled,
             road_shape=road_shape,
             scores=BestTimes(self.output / "test-best-times.json") if smoke else None,
+            vehicle_config=vehicle_design(vehicle_definition(self.appearance.model_id).physics_id).config,
         )
         if startup_trace is not None:
             startup_trace.mark("simulation_initialized")
@@ -92,6 +94,7 @@ class CoastalDrive(ShowBase):
         )
         self._scene_track = None
         self._scene_shape = None
+        self._scene_vehicle = None
         self.highway_menu = False
         self.audio_settings_page = False
         self.driving_mode_page = False
@@ -172,12 +175,14 @@ class CoastalDrive(ShowBase):
             or track != self._scene_track
             or self.session.road_shape != self._scene_shape
             or len(self.scene.traffic) != len(self.session.current.traffic)
+            or self._scene_vehicle != (self.vehicle_model_id, self.session.simulation.config)
         ):
             if self.scene is not None:
                 self.scene.close()
             self.scene = Scene(self)
             self._scene_track = track
             self._scene_shape = self.session.road_shape
+            self._scene_vehicle = (self.vehicle_model_id, self.session.simulation.config)
             self.chase_camera.position = None
         self.scene.set_checkpoint_visible(self.session.mode == GameMode.TIME_TRIAL)
 
@@ -591,6 +596,7 @@ class CoastalDrive(ShowBase):
             self.refresh_panel()
             return
         self.vehicle_model_id = model_id
+        self.session.set_vehicle_config(vehicle_design(vehicle_definition(model_id).physics_id).config)
         self.skin_index = self.garage_skin_index
         self.close_garage()
 

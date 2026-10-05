@@ -9,6 +9,7 @@ from driving_modes import DrivingMode
 from session import Phase
 from settings import DrivingModeStore
 from ui.hud import driving_help
+from vehicle_designs import vehicle_design
 
 
 def test_mode_store_roundtrip_and_invalid_user_data(tmp_path):
@@ -102,8 +103,17 @@ def test_menu_mode_selection_and_hud_text(tmp_path, height):
         corner = TextNode("mode-corner-width")
         corner.setFont(app.ui_font)
         assert corner.calcWidth(app.main_menu.driving_mode_button["text"]) * .04 <= .76
+        app.choose_garage()
+        for _ in range(3):
+            app.cycle_garage_model()
+        assert app.garage_model_id == "reference-fwd"
+        app.apply_garage()
+        assert app.vehicle_model_id == "reference-fwd"
+        assert app.session.base_vehicle_config is vehicle_design("reference-fwd").config
+        assert app.session.simulation is old_world
         app.session.start(countdown=False)
         assert app.session.simulation is not old_world
+        assert app.session.simulation.config.front_drive_share == 1.
         app.session.phase = Phase.DRIVING
         app.choose_driving_mode()
         assert not app.driving_mode_page

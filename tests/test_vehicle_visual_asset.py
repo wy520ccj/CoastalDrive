@@ -24,18 +24,18 @@ def vertices_relative_to(root):
                 yield matrix.xformPoint(reader.getData3f())
 
 
-def test_hero_body_and_steered_rolling_wheels_fit_frozen_collision_envelope():
+def test_hero_body_and_steered_rolling_wheels_follow_declared_dimensions():
     parent = NodePath("visual-contract")
-    body, wheels = load_vehicle(parent, vehicle_definition("sports"))
+    body, wheels = load_vehicle(parent, vehicle_definition("sports"), config=CAR)
     for vertex in vertices_relative_to(body):
-        assert abs(vertex.x) <= CAR.collision_half_width
-        assert abs(vertex.y) <= CAR.collision_half_length
+        assert abs(vertex.x) <= CAR.collision_half_width + 1e-6
+        assert abs(vertex.y) <= CAR.collision_half_length + 1e-6
     assert tuple(w.getName() for w in wheels) == WHEEL_NAMES
     for wheel in wheels:
         hub = wheel.getPos()
         assert abs(hub.x) == pytest.approx(CAR.track_width / 2)
         assert abs(hub.y) == pytest.approx(CAR.wheelbase / 2)
-        assert hub.z == pytest.approx(-0.12)
+        assert hub.z == pytest.approx(CAR.wheel_radius-CAR.center_of_mass_height)
         # 逐顶点扫过完整转动和满舵，不能用轮胎包围盒角点代替圆肩胎面。
         points = tuple(vertices_relative_to(wheel))
         assert max(math.hypot(p.y, p.z) for p in points) == pytest.approx(
@@ -49,8 +49,9 @@ def test_hero_body_and_steered_rolling_wheels_fit_frozen_collision_envelope():
                     y = point.y * math.cos(rotation) - point.z * math.sin(rotation)
                     x = hub.x + point.x * math.cos(angle) - y * math.sin(angle)
                     y = hub.y + point.x * math.sin(angle) + y * math.cos(angle)
-                    assert abs(x) <= CAR.collision_half_width
-                    assert abs(y) <= CAR.collision_half_length
+                    # 有限胎宽独立于车身盒；满舵扫掠使用轮柱几何外廓。
+                    assert abs(x-hub.x) <= CAR.wheel_width/2*abs(math.cos(angle)) + (CAR.wheel_radius+.004)*abs(math.sin(angle)) + 1e-6
+                    assert abs(y-hub.y) <= CAR.wheel_width/2*abs(math.sin(angle)) + (CAR.wheel_radius+.004)*abs(math.cos(angle)) + 1e-6
 
 
 def test_export_has_distinct_materials_and_bounded_geometry():
@@ -112,7 +113,7 @@ def test_traffic_family_fits_existing_collision_and_snapshot_wheels():
     parent = NodePath("traffic-family")
     for item in manifest["vehicles"]:
         assert item["triangles"] <= item["budget"]
-        body, wheels = load_vehicle(parent, vehicle_definition(f"traffic-{item['model']}"))
+        body, wheels = load_vehicle(parent, vehicle_definition(f"traffic-{item['model']}"), config=CAR)
         assert not body.find(f"**/traffic-{item['model']}-v1").isEmpty()
         assert len(body.findAllMatches("**/paint")) == 1
         for index in range(len(SKINS)):
@@ -126,7 +127,7 @@ def test_traffic_family_fits_existing_collision_and_snapshot_wheels():
             hub = wheel.getPos()
             assert abs(hub.x) == pytest.approx(CAR.track_width / 2)
             assert abs(hub.y) == pytest.approx(CAR.wheelbase / 2)
-            assert hub.z == pytest.approx(-0.12)
+            assert hub.z == pytest.approx(CAR.wheel_radius-CAR.center_of_mass_height)
             points = tuple(vertices_relative_to(wheel))
             assert max(math.hypot(point.y, point.z) for point in points) == pytest.approx(
                 CAR.wheel_radius, abs=0.005
@@ -139,8 +140,8 @@ def test_traffic_family_fits_existing_collision_and_snapshot_wheels():
                         spun_y = point.y * math.cos(rotation) - point.z * math.sin(rotation)
                         x = hub.x + point.x * math.cos(angle) - spun_y * math.sin(angle)
                         y = hub.y + point.x * math.sin(angle) + spun_y * math.cos(angle)
-                        assert abs(x) <= CAR.collision_half_width
-                        assert abs(y) <= CAR.collision_half_length
+                        assert abs(x-hub.x) <= CAR.wheel_width/2*abs(math.cos(angle)) + (CAR.wheel_radius+.005)*abs(math.sin(angle)) + 1e-6
+                        assert abs(y-hub.y) <= CAR.wheel_width/2*abs(math.sin(angle)) + (CAR.wheel_radius+.005)*abs(math.cos(angle)) + 1e-6
 
 
 def test_traffic_family_wheels_follow_frozen_snapshot():

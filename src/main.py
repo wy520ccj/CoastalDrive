@@ -12,11 +12,16 @@ from paths import user_data
 
 
 def main():
+    from vehicle_designs import DESIGN_VEHICLES, vehicle_design
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--headless", action="store_true")
     parser.add_argument("--steps", type=int, default=10000)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--driving-mode", choices=("game", "simulation"))
+    parser.add_argument("--vehicle-design", choices=tuple(v.id for v in DESIGN_VEHICLES),
+                        help="明确选择工程硬件；输入模式只改变辅助")
+    parser.add_argument("--vehicle-config", type=Path, help="无窗口入口：重建前加载工程JSON")
     parser.add_argument("--abs", dest="abs_selection", choices=("on", "off"))
     parser.add_argument("--tcs", dest="tcs_selection", choices=("on", "off"))
     parser.add_argument("--esc", dest="esc_selection", choices=("on", "off"))
@@ -44,7 +49,12 @@ def main():
         from simulation import FIXED_DT, Control, Simulation
 
         selected = driving_mode or DrivingMode.GAME
-        config = selected.configured_vehicle(abs_enabled, tcs_enabled, esc_enabled)
+        base_config = vehicle_design(args.vehicle_design or "game-tuned").config
+        if args.vehicle_config is not None:
+            from vehicle_parameters import load_vehicle_config
+
+            base_config = load_vehicle_config(args.vehicle_config, base_config)
+        config = selected.configured_vehicle(abs_enabled, tcs_enabled, esc_enabled, base_config=base_config)
         simulation = Simulation(
             args.seed, track=args.track, road_shape=args.road_shape,
             config=config, input_config=selected.input_config,
@@ -60,6 +70,8 @@ def main():
         finally:
             simulation.close()
         return 0
+    if args.vehicle_design is not None or args.vehicle_config is not None:
+        parser.error("车辆工程CLI参数当前用于无窗口入口；窗口车型在车库选择")
     startup = None
     if args.profile_startup:
         from performance_baseline import StartupTrace

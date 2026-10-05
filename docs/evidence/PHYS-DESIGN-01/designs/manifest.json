@@ -1,0 +1,15 @@
+{
+  "designs": [
+    "game-tuned",
+    "reference-rwd",
+    "reference-fwd",
+    "reference-awd"
+  ],
+  "source_sha256": {
+    "src/vehicle_config.py": "0ae563b9348f47146b64965938e8c4455615a75cd90124e8a3ebfdeafdf2585b",
+    "src/driving_modes.py": "8ea92ef9f8840c930d12769612540aa6983c965103d5922a2e526f90f1882907",
+    "src/vehicle_designs.py": "44014cdc8d56f408b17fc671cf02b4307eaf04f1924db14c9c9a8dd0b1846c32",
+    "src/vehicle_parameters.py": "f3d60755a718d0d5ad4288f2873202279f5162b07d45eecaf1f7341a871cd1ae",
+    "assets/game/vehicles/classic_coupe_v1.glb": "e3c117b0cb289bcf69112b197821c84431db5d715ee2f19f62a425b46bb23d8e"
+  }
+}

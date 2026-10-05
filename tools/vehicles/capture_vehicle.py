@@ -12,12 +12,14 @@ sys.path.insert(0, str(ROOT / "src"))
 from panda3d.core import Filename
 
 from application import CoastalDrive
-from skins import SKINS
+from skins import PLAYER_VEHICLES, SKINS
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--models", nargs="+", choices=tuple(v.id for v in PLAYER_VEHICLES),
+                        help="只记录指定工程车型的真实车库界面和车轮近景")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     os.environ["LOCALAPPDATA"] = str(args.output.resolve() / "user-data")
@@ -38,6 +40,29 @@ def main():
         captures.append(path.name)
 
     try:
+        if args.models:
+            for model_id in args.models:
+                app.garage_model_id = model_id
+                app.garage_skin_index = 2
+                app.garage.set_vehicle(model_id, 2)
+                app._shown_phase = None
+                app.refresh_panel()
+                app.garage.update(0)
+                capture(model_id+"-garage")
+                app.aspect2d.hide()
+                app.garage.car_root.setH(0)
+                app.camLens.setFov(44)
+                app.camera.setPos(2.25, 2.50, 1.1)
+                app.camera.lookAt(.78, 1.1, .43)
+                capture(model_id+"-wheel")
+                app.aspect2d.show()
+            assert app.session.simulation.snapshot() == before
+            (args.output/"report.json").write_text(json.dumps({
+                "resolution": [1920, 1080], "models": args.models,
+                "kind": "actual offscreen garage render", "simulation_unchanged": True,
+                "captures": captures,
+            }, indent=2), encoding="utf-8")
+            return
         app.garage.update(0)
         capture("garage-ui")
         app.aspect2d.hide()

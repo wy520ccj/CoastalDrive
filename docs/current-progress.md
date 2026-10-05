@@ -4,7 +4,7 @@
 
 ## 当前阶段
 
-- [PHYS-DESIGN-01](tasks/PHYS-DESIGN-01.md)施工线③已开始，基线`2c40cdf`：五分区工程JSON读写从试验工具移到vehicle_parameters，完整96字段及单位/定义/设计来源保存，旧平面JSON兼容。9项相关T0/全Ruff通过；设计布局、车型关联及显示轮径/胎宽仍待接通，本块未T1/T2。机械阶段T2/旧音频及总体Gate继续。
+- [PHYS-DESIGN-01](tasks/PHYS-DESIGN-01.md)施工线③：完整96字段五分区IO，明确游戏调校/RWD/FWD/AWD设计、车库/无窗口加载及成绩硬件隔离已接通。两模式所选硬件一致，车身外廓/轮宽轮径轮位与物理同步；合并40项不同pytest及全Ruff、三种子各1200步通过，显式工程文件CLI/实际离屏车库8张已保存核对。设计参数A/B、新外廓侧撞短验及参数化T2仍待完成，本块in_progress；机械T2/旧音频与总体Gate继续。[当前证据](evidence/PHYS-DESIGN-01/geometry-integration.md)。
 
 - [PHYS-LOAD-01](tasks/PHYS-LOAD-01.md)施工线②自动功能块完成：三维气动与共同轮端滚阻，完整96字段reference-v28及12条120Hz标准基准保存。0–100为10.483s；平路/+5°/−5°停车45.549/41.261/49.481m；对开附着6.5s停车，静载与滑行理论吻合。391项机械T0复用，23项相关T1/全Ruff/三种子各1200步通过。机械T2/旧音频断言收口及整体Gate保持未完成；下一施工线③工程参数化。[证据与命令](evidence/PHYS-LOAD-01/reference-calibration.md)。
 

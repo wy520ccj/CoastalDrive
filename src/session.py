@@ -1,5 +1,7 @@
+import hashlib
+import json
 import math
-from dataclasses import replace
+from dataclasses import asdict, replace
 from enum import Enum
 
 from controls import Controller, KeyboardController
@@ -43,11 +45,14 @@ class FixedStepper:
 
 class Session:
     def __init__(self, seed=0, *, track="coastal", scores=None, road_shape="straight",
-                 driving_mode=DrivingMode.GAME, abs_enabled=None, tcs_enabled=None, esc_enabled=None):
+                 driving_mode=DrivingMode.GAME, abs_enabled=None, tcs_enabled=None, esc_enabled=None,
+                 vehicle_config=None):
         self.road_shape = road_shape
         self.traffic_density = "normal"
         self.driving_mode = driving_mode
-        self.vehicle_config = driving_mode.configured_vehicle(abs_enabled, tcs_enabled, esc_enabled)
+        self.base_vehicle_config = vehicle_config
+        self.vehicle_config = driving_mode.configured_vehicle(abs_enabled, tcs_enabled, esc_enabled,
+                                                              base_config=vehicle_config)
         self.simulation = Simulation(
             seed, track=track, road_shape=road_shape,
             config=self.vehicle_config, input_config=driving_mode.input_config,
@@ -78,7 +83,16 @@ class Session:
         if self.phase != Phase.MENU:
             raise ValueError("驾驶模式只能在主菜单选择")
         self.driving_mode = mode
-        self.vehicle_config = mode.configured_vehicle(self.abs_enabled, self.tcs_enabled, self.esc_enabled)
+        self.vehicle_config = mode.configured_vehicle(self.abs_enabled, self.tcs_enabled, self.esc_enabled,
+                                                      base_config=self.base_vehicle_config)
+
+    def set_vehicle_config(self, config):
+        """菜单确认硬件设计；保持电子开关，下一场重建唯一物理世界。"""
+        if self.phase != Phase.MENU:
+            raise ValueError("车辆硬件只能在主菜单选择")
+        self.base_vehicle_config = config
+        self.vehicle_config = self.driving_mode.configured_vehicle(
+            self.abs_enabled, self.tcs_enabled, self.esc_enabled, base_config=config)
 
     @property
     def abs_enabled(self):
@@ -88,7 +102,8 @@ class Session:
         """菜单选择车辆电子配置；不替换正在运行的刚体参数。"""
         if self.phase != Phase.MENU:
             raise ValueError("车辆电子配置只能在主菜单选择")
-        self.vehicle_config = self.driving_mode.configured_vehicle(enabled, self.tcs_enabled, self.esc_enabled)
+        self.vehicle_config = self.driving_mode.configured_vehicle(enabled, self.tcs_enabled, self.esc_enabled,
+                                                                   base_config=self.base_vehicle_config)
 
     @property
     def tcs_enabled(self):
@@ -98,7 +113,8 @@ class Session:
         """菜单选择驱动防滑配置；不替换正在运行的刚体参数。"""
         if self.phase != Phase.MENU:
             raise ValueError("车辆电子配置只能在主菜单选择")
-        self.vehicle_config = self.driving_mode.configured_vehicle(self.abs_enabled, enabled, self.esc_enabled)
+        self.vehicle_config = self.driving_mode.configured_vehicle(self.abs_enabled, enabled, self.esc_enabled,
+                                                                   base_config=self.base_vehicle_config)
 
     @property
     def esc_enabled(self):
@@ -109,7 +125,7 @@ class Session:
         if self.phase != Phase.MENU:
             raise ValueError("车辆电子配置只能在主菜单选择")
         self.vehicle_config = self.driving_mode.configured_vehicle(
-            self.abs_enabled, self.tcs_enabled, enabled)
+            self.abs_enabled, self.tcs_enabled, enabled, base_config=self.base_vehicle_config)
 
     def start(self, seed=None, *, countdown=True, mode=None, track=None):
         chosen_track = get_track(track) if track is not None else self.track
@@ -146,7 +162,7 @@ class Session:
         self.simulation.set_checkpoint_frames_enabled(self.mode == GameMode.TIME_TRIAL)
         self.race.start(
             self.mode, circuit=self.track.circuit,
-            score_variant=self.driving_mode.score_variant(self.abs_enabled, self.tcs_enabled, self.esc_enabled),
+            score_variant=self.score_variant(),
         )
         self.highway = HighwayRun(challenge=self.mode == GameMode.DISTANCE_CHALLENGE)
         self.keyboard.direction = 1
@@ -159,6 +175,14 @@ class Session:
             self.begin_driving()
         self._skip_frame = True
         self.sync_snapshots()
+
+    def score_variant(self):
+        """工程硬件与输入模式/电子开关共同隔离成绩。"""
+        variant = self.driving_mode.score_variant(self.abs_enabled, self.tcs_enabled, self.esc_enabled)
+        if self.base_vehicle_config is not None:
+            data = json.dumps(asdict(self.vehicle_config), sort_keys=True, separators=(",", ":"))
+            variant += ":hardware-"+hashlib.sha256(data.encode()).hexdigest()[:16]
+        return variant
 
     def set_controller(self, controller: Controller):
         self.keyboard.clear()

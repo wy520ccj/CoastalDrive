@@ -1,20 +1,23 @@
-"""Shared car-body fitting and wheel placement for the road and garage."""
+"""道路与车库共用的车身外廓、轮宽轮径及轮位装配。"""
 
 from functools import lru_cache
 
 import gltf
-from panda3d.core import AmbientLight, Filename, LightAttrib, Loader, NodePath
+from panda3d.core import AmbientLight, Filename, LightAttrib, Loader, NodePath, Vec3
 from simplepbr.envmap import EnvMap
 
 from paths import resource_root
 from skins import VehicleDefinition
-from vehicle_config import CAR, body_center, wheel_hubs
+from vehicle_config import body_center, wheel_hubs
+from vehicle_designs import vehicle_design
 
 WHEEL_NAMES = ("wheel-front-left", "wheel-front-right", "wheel-back-left", "wheel-back-right")
 
 
-def load_vehicle(parent, definition: VehicleDefinition, *, trace=None, config=CAR):
+def load_vehicle(parent, definition: VehicleDefinition, *, trace=None, config=None):
     """按统一车型定义装配显示车；调用方身份不参与资产选择。"""
+    if config is None:
+        config = vehicle_design(definition.physics_id).config
     path = resource_root() / "assets/game" / definition.visual
     if path.suffix == ".glb":
         return load_gltf_vehicle(parent, definition, path, trace=trace, config=config)
@@ -27,22 +30,17 @@ def load_vehicle(parent, definition: VehicleDefinition, *, trace=None, config=CA
     for name, hub in zip(WHEEL_NAMES, wheel_hubs(config)):
         wheel = body.find(f"**/{name}")
         mesh = wheel.getChild(0)
-        pivot = parent.attachNewNode(name)
-        mesh.reparentTo(pivot)
         mesh.setH(180)
-        mesh.setScale(1.1)
-        low, high = mesh.getTightBounds()
-        mesh.setPos(-(low + high) / 2)
-        pivot.setPos(hub[0], hub[1], -0.12)
+        pivot = fit_wheel(parent, mesh, name, hub, config)
         wheels.append(pivot)
         wheel.removeNode()
     body.setScale(*definition.body_scale)
     body.setZ(-0.48)
-    body.setPos(body.getPos() + body_offset(config))
+    fit_body(body, root, config)
     return root, wheels
 
 
-def load_gltf_vehicle(parent, definition, path, *, trace=None, config=CAR):
+def load_gltf_vehicle(parent, definition, path, *, trace=None, config):
     """米制 GLB 共用 Snapshot 的四个世界轮姿。"""
     root = parent.attachNewNode(definition.id)
     body = NodePath(gltf.load_model(Filename.fromOsSpecific(str(path))))
@@ -59,25 +57,43 @@ def load_gltf_vehicle(parent, definition, path, *, trace=None, config=CAR):
             trace.mark("reflection_resource_loaded")
         set_vehicle_reflection(root, environment)
     wheels = []
-    for name in WHEEL_NAMES:
+    for name, hub in zip(WHEEL_NAMES, wheel_hubs(config)):
         wheel = body.find(f"**/{name}")
         if wheel.isEmpty():
             raise ValueError(f"车辆GLB缺少轮根：{definition.id}/{name}")
-        wheel.reparentTo(parent)
+        pivot = fit_wheel(parent, wheel, name, hub, config)
         if environment is not None:
             set_vehicle_reflection(wheel, environment)
-        wheels.append(wheel)
-    body.setPos(body_offset(config))
+        wheels.append(pivot)
+    fit_body(body, root, config)
     if definition.quality == "hero":
         balance_vehicle_ambient(parent, root, wheels)
     return root, wheels
 
 
-def body_offset(config):
-    """外壳位置随刚体质心改变；四轮继续使用权威世界轮姿。"""
-    from panda3d.core import Vec3
+def fit_wheel(parent, mesh, name, hub, config):
+    """轮姿由Snapshot写到无缩放枢轴，宽径缩放留在它的网格子节点。"""
+    pivot = parent.attachNewNode(name)
+    mesh.reparentTo(pivot)
+    low, high = mesh.getTightBounds(pivot)
+    size = high-low
+    scale = Vec3(config.wheel_width/size.x, 2*config.wheel_radius/size.y, 2*config.wheel_radius/size.z)
+    mesh.setScale(*(mesh.getScale()[a]*scale[a] for a in range(3)))
+    low, high = mesh.getTightBounds(pivot)
+    mesh.setPos(mesh.getPos()-(low+high)/2)
+    # 静态预览为设计地面坐标；驾驶中由唯一物理世界四轮姿态替换。
+    pivot.setPos(hub[0], hub[1], config.wheel_radius-config.center_of_mass_height)
+    return pivot
 
-    return Vec3(*(a - b for a, b in zip(body_center(config), body_center(CAR))))
+
+def fit_body(body, root, config):
+    """车身网格外廓与声明碰撞盒同步，不从显示节点反写物理参数。"""
+    low, high = body.getTightBounds(root)
+    size = high-low
+    half = Vec3(config.collision_half_width, config.collision_half_length, config.collision_half_height)
+    body.setScale(*(body.getScale()[a]*2*half[a]/size[a] for a in range(3)))
+    low, high = body.getTightBounds(root)
+    body.setPos(body.getPos()+Vec3(*body_center(config))-(low+high)/2)
 
 
 @lru_cache(maxsize=1)

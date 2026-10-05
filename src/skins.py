@@ -1,4 +1,4 @@
-"""Stable appearance IDs; choosing a body or paint never changes driving physics."""
+"""车型外观与明确的物理设计关联；车漆仅改变材质。"""
 
 import random
 from dataclasses import dataclass
@@ -20,6 +20,7 @@ class VehicleDefinition:
     player_selectable: bool
     traffic_allowed: bool
     body_scale: tuple[float, float, float] = (1, 1, 1)
+    physics_id: str = "game-tuned"
 
 
 SKINS = (
@@ -33,17 +34,23 @@ SKINS = (
 # 全部车型集中描述；质量等级只决定资产表现，不改变车辆物理。
 VEHICLES = (
     VehicleDefinition(
-        "sports", "经典双门", "vehicles/classic_coupe_v1.glb", "hero", True, False
+        "sports", "经典双门 · 游戏调校", "vehicles/classic_coupe_v1.glb", "hero", True, False
     ),
     VehicleDefinition(
         "sedan",
-        "经典轿车",
+        "经典轿车 · 游戏调校",
         "traffic-sedan.bam",
         "legacy",
         True,
         False,
         (0.91 / 0.75, 2.145 / 1.3, 1.3),
     ),
+    VehicleDefinition("reference-rwd", "设计参考车 RWD", "vehicles/classic_coupe_v1.glb", "hero",
+                      True, False, physics_id="reference-rwd"),
+    VehicleDefinition("reference-fwd", "设计参考车 FWD", "vehicles/classic_coupe_v1.glb", "hero",
+                      True, False, physics_id="reference-fwd"),
+    VehicleDefinition("reference-awd", "设计参考车 AWD", "vehicles/classic_coupe_v1.glb", "hero",
+                      True, False, physics_id="reference-awd"),
     VehicleDefinition(
         "traffic-compact",
         "轻巧掀背",

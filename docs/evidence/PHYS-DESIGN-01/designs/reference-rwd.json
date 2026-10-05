@@ -1,0 +1,760 @@
+{
+  "schema": "vehicle-engineering-v1",
+  "parameters": {
+    "chassis": {
+      "mass": 1200.0,
+      "wheelbase": 2.2,
+      "track_width": 1.68,
+      "collision_half_width": 0.994,
+      "collision_half_length": 2.128,
+      "collision_half_height": 0.671692818403244,
+      "centered_collision_support": true,
+      "body_center_height": 0.7716928255558014,
+      "wheel_connection_height": 0.67,
+      "center_of_mass_height": 0.42,
+      "front_weight_share": 0.5,
+      "body_inertia": [
+        1919.56,
+        511.56,
+        2290.0
+      ],
+      "angular_damping": 0.0,
+      "steering_degrees": 26.0,
+      "steering_rate": 50.0,
+      "steering_response": 7.0,
+      "steering_return": 10.0,
+      "air_density": 1.225,
+      "drag_coefficient": 0.32,
+      "frontal_area": 2.142857142857143
+    },
+    "powertrain": {
+      "torque_curve": [
+        [
+          900,
+          110
+        ],
+        [
+          1800,
+          165
+        ],
+        [
+          3200,
+          200
+        ],
+        [
+          4500,
+          190
+        ],
+        [
+          6000,
+          150
+        ],
+        [
+          6500,
+          0
+        ]
+      ],
+      "gear_ratios": [
+        3.25,
+        2.05,
+        1.45,
+        1.1,
+        0.88
+      ],
+      "final_drive": 3.7,
+      "drivetrain_efficiency": 0.88,
+      "idle_rpm": 900.0,
+      "shift_time": 0.28,
+      "torque_response": 0.12,
+      "engine_braking": 24.0,
+      "finite_drivetrain": true,
+      "front_drive_share": 0.0,
+      "differential_damping": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "differential_capacity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "engine_inertia": 0.2,
+      "engine_axis": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "input_shaft_enabled": true,
+      "input_shaft_inertia": 0.04,
+      "input_shaft_axis": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "synchronizer_capacity": 80.0,
+      "downstream_inertia_enabled": true,
+      "downstream_inertias": [
+        0.03,
+        0.015,
+        0.02
+      ],
+      "downstream_axes": [
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "engine_idle_response": 0.15,
+      "engine_idle_torque_limit": 65.0,
+      "engine_redline_rpm": 6500.0,
+      "clutch_capacity": 300.0,
+      "clutch_release_time": 0.08,
+      "clutch_engage_time": 0.16,
+      "clutch_launch_response": 0.3,
+      "max_speed": 44.44444444444444,
+      "reverse_speed": 6.111111111111111,
+      "reverse_force": 2200.0,
+      "reverse_gear_ratio": 3.0,
+      "game_speed_limits": false
+    },
+    "tires": {
+      "wheel_radius": 0.33,
+      "wheel_width": 0.205,
+      "wheel_shoulder_radius": 0.01,
+      "wheel_crown_height": 0.003,
+      "wheel_inertia": 1.8,
+      "longitudinal_stiffness": 60000.0,
+      "lateral_stiffness": 50000.0,
+      "rear_lateral_stiffness": 50000.0,
+      "tire_peak_load_exponent": 0.9,
+      "longitudinal_load_exponent": 0.9,
+      "lateral_load_exponent": 0.85,
+      "tire_compliance": true,
+      "wheel_rotor_transport": true,
+      "tire_contact_stiffness": 150000.0,
+      "tire_contact_damping": 1000.0,
+      "tire_shape": 1.9,
+      "tire_curvature": 0.97,
+      "slip_speed": 1.0,
+      "static_contact_speed": 0.25,
+      "tire_substeps": 2,
+      "rolling_coefficient": 0.013591573224600747,
+      "grass_rolling_coefficient": 0.0764525993883792,
+      "wheel_rolling_resistance": true,
+      "rolling_transition_speed": 1.0,
+      "road_friction": 1.1,
+      "grass_friction": 0.45
+    },
+    "suspension": {
+      "suspension_si_enabled": true,
+      "suspension_coupled_enabled": true,
+      "suspension_antiroll_rates": [
+        6000.0,
+        4000.0
+      ],
+      "suspension_stop_rates": [
+        480000.0,
+        480000.0,
+        480000.0,
+        480000.0
+      ],
+      "suspension_spring_rates": [
+        48000.0,
+        48000.0,
+        48000.0,
+        48000.0
+      ],
+      "suspension_compression_damping": [
+        5280.0,
+        5280.0,
+        5280.0,
+        5280.0
+      ],
+      "suspension_extension_damping": [
+        2760.0,
+        2760.0,
+        2760.0,
+        2760.0
+      ],
+      "suspension_stiffness": 40.0,
+      "suspension_compression": 4.4,
+      "suspension_relaxation": 2.3,
+      "suspension_travel": 0.2,
+      "suspension_force_limit": 6000.0
+    },
+    "electronics": {
+      "brake_torque": 3643.2,
+      "front_brake_share": 0.6,
+      "braking": {
+        "response_time": 0.025,
+        "abs_enabled": true,
+        "target_slip": 0.12,
+        "slip_hysteresis": 0.015,
+        "minimum_speed": 1.5,
+        "release_rate": 25.0,
+        "apply_rate": 5.0,
+        "slip_rate_gain": 30.0
+      },
+      "traction": {
+        "tcs_enabled": true,
+        "target_slip": 0.12,
+        "slip_hysteresis": 0.015,
+        "slip_speed": 1.0,
+        "prediction_time": 0.12,
+        "release_rate": 12.0,
+        "apply_rate": 1.5,
+        "slip_rate_gain": 12.0,
+        "brake_gain": 0.2,
+        "maximum_brake": 0.25
+      },
+      "stability": {
+        "esc_enabled": true,
+        "minimum_speed": 1.5,
+        "reference_response": 0.15,
+        "yaw_gain": 6.0,
+        "sideslip_gain": 6.0,
+        "yaw_threshold": 0.1,
+        "sideslip_threshold": 0.06,
+        "moment_threshold": 150.0,
+        "engine_cut_gain": 0.4,
+        "continuous_reference": true
+      }
+    }
+  },
+  "metadata": {
+    "design_id": "reference-rwd",
+    "name": "设计参考车 RWD",
+    "basis": "reference-v28完整设计，模型外廓同步",
+    "kind": "generic_design",
+    "git_head_at_export": "07145e7aa386218bc68fa4d100ac4624d5071407",
+    "source_sha256": {
+      "src/vehicle_config.py": "0ae563b9348f47146b64965938e8c4455615a75cd90124e8a3ebfdeafdf2585b",
+      "src/driving_modes.py": "8ea92ef9f8840c930d12769612540aa6983c965103d5922a2e526f90f1882907",
+      "src/vehicle_designs.py": "44014cdc8d56f408b17fc671cf02b4307eaf04f1924db14c9c9a8dd0b1846c32",
+      "src/vehicle_parameters.py": "f3d60755a718d0d5ad4288f2873202279f5162b07d45eecaf1f7341a871cd1ae",
+      "assets/game/vehicles/classic_coupe_v1.glb": "e3c117b0cb289bcf69112b197821c84431db5d715ee2f19f62a425b46bb23d8e"
+    },
+    "vehicle_fields": {
+      "mass": {
+        "unit": "kg",
+        "definition": "Bullet车身质量；轮胎标称载荷与道路载荷"
+      },
+      "torque_curve": {
+        "unit": "rpm,N·m",
+        "definition": "曲轴转矩节点线性插值；game为raw非零节点×1.055"
+      },
+      "gear_ratios": {
+        "unit": "1",
+        "definition": "五个自动前进挡传动比"
+      },
+      "final_drive": {
+        "unit": "1",
+        "definition": "主减速比"
+      },
+      "drivetrain_efficiency": {
+        "unit": "1",
+        "definition": "传动双向功流效率；旧分支为驱动转矩乘率"
+      },
+      "idle_rpm": {
+        "unit": "rpm",
+        "definition": "实际曲轴怠速控制目标；不钳末转速"
+      },
+      "shift_time": {
+        "unit": "s",
+        "definition": "八维旧分支选择等待/驱动衰减时长；实体轴以真实速差决定同步完成"
+      },
+      "torque_response": {
+        "unit": "s",
+        "definition": "实际节气门一阶响应时间常数；旧分支为轮端转矩响应"
+      },
+      "engine_braking": {
+        "unit": "N·m",
+        "definition": "闭节气门近似曲轴损失转矩；怠速以下连续趋零，隐式同末速度耗散"
+      },
+      "finite_drivetrain": {
+        "unit": "bool",
+        "definition": "真实曲轴/有限离合/双向损失与开放差速器共同末状态"
+      },
+      "front_drive_share": {
+        "unit": "1",
+        "definition": "前轴驱动份额；0后驱、1前驱、中间值为固定几何开放中差"
+      },
+      "differential_damping": {
+        "unit": "N·m·s/rad",
+        "definition": "前轴/后轴/中差末状态速差的粘性耦合系数，设计值"
+      },
+      "differential_capacity": {
+        "unit": "N·m",
+        "definition": "对应限滑转矩上限；有限粘性容量，不是静摩擦锁死"
+      },
+      "engine_inertia": {
+        "unit": "kg·m²",
+        "definition": "曲轴独立轴向惯量，通用设计值"
+      },
+      "engine_axis": {
+        "unit": "单位向量",
+        "definition": "车身局部曲轴正转方向"
+      },
+      "input_shaft_enabled": {
+        "unit": "bool",
+        "definition": "实体输入轴/有限同步；false冻结八维传动A/B"
+      },
+      "input_shaft_inertia": {
+        "unit": "kg·m²",
+        "definition": "输入轴独立轴向惯量，游戏.005/参考.04设计值，非实测"
+      },
+      "input_shaft_axis": {
+        "unit": "单位向量",
+        "definition": "壳体局部输入轴正转方向"
+      },
+      "synchronizer_capacity": {
+        "unit": "N·m",
+        "definition": "输入轴侧有限同步摩擦锥容量，设计值"
+      },
+      "downstream_inertia_enabled": {
+        "unit": "bool",
+        "definition": "实体轴分支的输出/前/后驱动轴储能与反力；false为机制A/B"
+      },
+      "downstream_inertias": {
+        "unit": "kg·m²",
+        "definition": "输出/前/后轴实体设计惯量；非驱动轴不安装对应转子，非实测"
+      },
+      "downstream_axes": {
+        "unit": "单位向量",
+        "definition": "车身局部三轴正转方向；当前通用模型为纵置轴系"
+      },
+      "engine_idle_response": {
+        "unit": "s",
+        "definition": "实际相对曲轴速度反馈的怠速控制响应"
+      },
+      "engine_idle_torque_limit": {
+        "unit": "N·m",
+        "definition": "怠速控制正转矩容量"
+      },
+      "engine_redline_rpm": {
+        "unit": "rpm",
+        "definition": "请求转矩切断阈值；不钳积分末RPM"
+      },
+      "clutch_capacity": {
+        "unit": "N·m",
+        "definition": "完全结合干式离合容量"
+      },
+      "clutch_release_time": {
+        "unit": "s",
+        "definition": "离合由完全结合至分离的行程时间"
+      },
+      "clutch_engage_time": {
+        "unit": "s",
+        "definition": "离合由分离至完全结合的行程时间"
+      },
+      "clutch_launch_response": {
+        "unit": "s",
+        "definition": "自动起步离合实际曲轴速度反馈时域"
+      },
+      "max_speed": {
+        "unit": "m/s",
+        "definition": "game前进驱动转矩渐退速度；160/3.6"
+      },
+      "reverse_speed": {
+        "unit": "m/s",
+        "definition": "game倒车驱动转矩渐退速度；22/3.6"
+      },
+      "reverse_force": {
+        "unit": "N",
+        "definition": "game倒车轮端力上限，按半径换算转矩"
+      },
+      "reverse_gear_ratio": {
+        "unit": "1",
+        "definition": "倒挡机械传动比"
+      },
+      "game_speed_limits": {
+        "unit": "bool",
+        "definition": "启用游戏速度渐退/倒车力上限；不是车身速度钳制"
+      },
+      "brake_torque": {
+        "unit": "N·m",
+        "definition": "四轮制动总容量"
+      },
+      "front_brake_share": {
+        "unit": "1",
+        "definition": "前轴制动容量份额"
+      },
+      "braking": {
+        "unit": "配置对象",
+        "definition": "四轮液压响应与独立ABS压力反馈；详见brake_fields"
+      },
+      "stability": {
+        "unit": "配置对象",
+        "definition": "横摆参考与分轮制动ESC；详见stability_fields"
+      },
+      "traction": {
+        "unit": "配置对象",
+        "definition": "驱动请求削减及必要的单轮制动TCS；详见traction_fields"
+      },
+      "steering_degrees": {
+        "unit": "°",
+        "definition": "虚拟前轴中心角机械限位"
+      },
+      "steering_rate": {
+        "unit": "°/s",
+        "definition": "齿条角速度限位"
+      },
+      "steering_response": {
+        "unit": "s⁻¹",
+        "definition": "齿条输入临界阻尼响应系数"
+      },
+      "steering_return": {
+        "unit": "s⁻¹",
+        "definition": "齿条回正临界阻尼响应系数"
+      },
+      "wheel_radius": {
+        "unit": "m",
+        "definition": "原生射线轮半径、独立轮速/滑移/力臂"
+      },
+      "wheel_width": {
+        "unit": "m",
+        "definition": "圆角圆柱轮胎实际胎宽；通用设计值，非实测"
+      },
+      "wheel_shoulder_radius": {
+        "unit": "m",
+        "definition": "胎肩圆角半径；轮半径和胎宽均包含肩部外廓"
+      },
+      "wheel_crown_height": {
+        "unit": "m",
+        "definition": "抛物线胎冠中心到肩部落差，设计值；避免平直胎面接点跳变"
+      },
+      "wheel_inertia": {
+        "unit": "kg·m²",
+        "definition": "独立单轮轴向转动惯量"
+      },
+      "tire_compliance": {
+        "unit": "bool",
+        "definition": "启用隐式接触胎体弹性与阻尼"
+      },
+      "wheel_rotor_transport": {
+        "unit": "bool",
+        "definition": "机械轮轴/有效滚动力臂与同末状态轴承反力；false冻结旧机制"
+      },
+      "tire_contact_stiffness": {
+        "unit": "N/m",
+        "definition": "接触胎体纵横弹性刚度"
+      },
+      "tire_contact_damping": {
+        "unit": "N·s/m",
+        "definition": "接触胎体纵横耗散阻尼"
+      },
+      "tire_peak_load_exponent": {
+        "unit": "1",
+        "definition": "峰值能力轮荷指数pD；D∝Fn^pD，标称轮荷能力保持μFn0"
+      },
+      "longitudinal_load_exponent": {
+        "unit": "1",
+        "definition": "纵向滑移刚度轮荷指数pX；Cx∝Fn^pX，标称刚度保持Cx0"
+      },
+      "lateral_load_exponent": {
+        "unit": "1",
+        "definition": "侧偏刚度轮荷指数pY；Cy∝Fn^pY，标称刚度保持Cy0"
+      },
+      "longitudinal_stiffness": {
+        "unit": "N/κ",
+        "definition": "标称单轮载荷下纵向滑移刚度"
+      },
+      "lateral_stiffness": {
+        "unit": "N/rad",
+        "definition": "标称载荷下前轮侧偏刚度"
+      },
+      "rear_lateral_stiffness": {
+        "unit": "N/rad",
+        "definition": "标称载荷下后轮侧偏刚度"
+      },
+      "tire_shape": {
+        "unit": "1",
+        "definition": "简化联合Magic Formula形状"
+      },
+      "tire_curvature": {
+        "unit": "1",
+        "definition": "简化联合Magic Formula曲率"
+      },
+      "slip_speed": {
+        "unit": "m/s",
+        "definition": "低速滑移分母尺度"
+      },
+      "static_contact_speed": {
+        "unit": "m/s",
+        "definition": "低速静摩擦约束尝试尺度"
+      },
+      "tire_substeps": {
+        "unit": "次/tick",
+        "definition": "SI有限传动分支的机械/Bullet世界共用子步；控制/快照固定120Hz；冻结分支仅细分轮胎"
+      },
+      "suspension_si_enabled": {
+        "unit": "bool",
+        "definition": "按SI硬件换算原生参数；false沿用旧归一化硬件"
+      },
+      "suspension_coupled_enabled": {
+        "unit": "bool",
+        "definition": "SI法向弹簧/轴向阻尼/防倾共同末状态；false原生SI对照"
+      },
+      "suspension_antiroll_rates": {
+        "unit": "N/m",
+        "definition": "前/后防倾杆行程差刚度；设计值，非实车标定"
+      },
+      "suspension_stop_rates": {
+        "unit": "N/m",
+        "definition": "四轮行程边界外渐进止挡刚度；设计值"
+      },
+      "suspension_spring_rates": {
+        "unit": "N/m",
+        "definition": "四轮真实弹簧设计值；质量变化时不自动改变硬件"
+      },
+      "suspension_compression_damping": {
+        "unit": "N·s/m",
+        "definition": "四轮轴向压缩阻尼；关闭共同求解时为原生法向/射线速率系数"
+      },
+      "suspension_extension_damping": {
+        "unit": "N·s/m",
+        "definition": "四轮轴向伸张阻尼；非实车标定"
+      },
+      "suspension_stiffness": {
+        "unit": "s⁻²",
+        "definition": "si_enabled=false的旧归一化刚度；平路k=mass×值"
+      },
+      "suspension_compression": {
+        "unit": "s⁻¹",
+        "definition": "si_enabled=false的旧归一化压缩阻尼"
+      },
+      "suspension_relaxation": {
+        "unit": "s⁻¹",
+        "definition": "si_enabled=false的旧归一化伸张阻尼"
+      },
+      "air_density": {
+        "unit": "kg/m³",
+        "definition": "环境空气密度"
+      },
+      "drag_coefficient": {
+        "unit": "1",
+        "definition": "气动阻力Cd"
+      },
+      "frontal_area": {
+        "unit": "m²",
+        "definition": "迎风面积；保持旧CdA乘积的推导设计值"
+      },
+      "rolling_coefficient": {
+        "unit": "1",
+        "definition": "铺装滚阻160/(1200×9.81)；轮端矩Crr*实际Fn*有效半径及低速连续项"
+      },
+      "grass_rolling_coefficient": {
+        "unit": "1",
+        "definition": "草地滚阻900/(1200×9.81)"
+      },
+      "wheel_rolling_resistance": {
+        "unit": "bool",
+        "definition": "有限传动采用独立路面轮端阻力矩；false冻结旧车身中央阻力A/B"
+      },
+      "rolling_transition_speed": {
+        "unit": "m/s",
+        "definition": "滚阻从零线性增长至Crr*Fn*r的实际轮缘速度；通用设计尺度"
+      },
+      "road_friction": {
+        "unit": "1",
+        "definition": "铺装摩擦预算μFn"
+      },
+      "grass_friction": {
+        "unit": "1",
+        "definition": "草地摩擦预算μFn"
+      },
+      "wheelbase": {
+        "unit": "m",
+        "definition": "轴距、Ackermann和轴荷诊断"
+      },
+      "track_width": {
+        "unit": "m",
+        "definition": "轮距、实际轮连接点横坐标"
+      },
+      "collision_half_width": {
+        "unit": "m",
+        "definition": "真实车身碰撞盒半宽"
+      },
+      "collision_half_length": {
+        "unit": "m",
+        "definition": "真实车身碰撞盒半长"
+      },
+      "collision_half_height": {
+        "unit": "m",
+        "definition": "真实车身碰撞盒半高"
+      },
+      "centered_collision_support": {
+        "unit": "bool",
+        "definition": "沿CG投影切分零margin原生Box，完整覆盖名义外廓；默认四块；false为历史Box"
+      },
+      "body_center_height": {
+        "unit": "m",
+        "definition": "设计地面基准下碰撞盒中心高度"
+      },
+      "wheel_connection_height": {
+        "unit": "m",
+        "definition": "设计地面基准下射线悬架连接点高度"
+      },
+      "center_of_mass_height": {
+        "unit": "m",
+        "definition": "真实几何相对CG偏移与轴荷诊断高度"
+      },
+      "front_weight_share": {
+        "unit": "1",
+        "definition": "通过真实轴连接点相对CG纵向距离实现静态前载份额"
+      },
+      "body_inertia": {
+        "unit": "kg·m²",
+        "definition": "null沿用原Bullet Box生成的惯量；reference显式设计惯量"
+      },
+      "angular_damping": {
+        "unit": "1",
+        "definition": "Bullet刚体角阻尼"
+      },
+      "suspension_travel": {
+        "unit": "m",
+        "definition": "射线悬架最大行程，传API时×100cm"
+      },
+      "suspension_force_limit": {
+        "unit": "N",
+        "definition": "仅原生对照分支的每轮数值力限；SI势能反力不作硬裁剪"
+      }
+    },
+    "geometry_source": "2026-10-06实读既有classic_coupe_v1.glb车身米制外廓",
+    "inertia_source": "沿用reference-v28显式设计惯量，非实车测量；不根据显示网格推断",
+    "layout_source": "三个参考车仅改变前轴驱动份额；共用纵置轴系与其余硬件",
+    "input_mode": "游戏/仿真输入辅助独立；选择同一文件不改变硬件",
+    "nested_field_metadata": {
+      "braking": {
+        "response_time": {
+          "unit": "s",
+          "definition": "实际压力一阶响应时间常数；0为理想执行器"
+        },
+        "abs_enabled": {
+          "unit": "bool",
+          "definition": "启用各轮滑移反馈压力调节"
+        },
+        "target_slip": {
+          "unit": "1",
+          "definition": "制动滑移目标"
+        },
+        "slip_hysteresis": {
+          "unit": "1",
+          "definition": "目标两侧压力增减的滑移死区"
+        },
+        "minimum_speed": {
+          "unit": "m/s",
+          "definition": "ABS轮心纵向真值速度介入下限"
+        },
+        "release_rate": {
+          "unit": "比例/s",
+          "definition": "压力请求最大减压速率"
+        },
+        "apply_rate": {
+          "unit": "比例/s",
+          "definition": "压力请求最大增压速率"
+        },
+        "slip_rate_gain": {
+          "unit": "s⁻¹",
+          "definition": "滑移误差到压力请求变化率的比例增益"
+        }
+      },
+      "traction": {
+        "tcs_enabled": {
+          "unit": "bool",
+          "definition": "启用驱动轮滑转反馈控制"
+        },
+        "target_slip": {
+          "unit": "1",
+          "definition": "驱动滑转目标"
+        },
+        "slip_hysteresis": {
+          "unit": "1",
+          "definition": "滑转达到目标并加该余量后触发介入"
+        },
+        "slip_speed": {
+          "unit": "m/s",
+          "definition": "低速滑转分母尺度"
+        },
+        "prediction_time": {
+          "unit": "s",
+          "definition": "用于抑制驱动滑转增长的预测时域"
+        },
+        "release_rate": {
+          "unit": "比例/s",
+          "definition": "可用驱动比例最大削减速率"
+        },
+        "apply_rate": {
+          "unit": "比例/s",
+          "definition": "可用驱动比例最大恢复速率"
+        },
+        "slip_rate_gain": {
+          "unit": "s⁻¹",
+          "definition": "滑转误差到驱动比例变化率的增益"
+        },
+        "brake_gain": {
+          "unit": "比例",
+          "definition": "单轮TCS制动请求增益"
+        },
+        "maximum_brake": {
+          "unit": "比例",
+          "definition": "单轮TCS制动请求上限"
+        }
+      },
+      "stability": {
+        "esc_enabled": {
+          "unit": "bool",
+          "definition": "启用横摆稳定控制"
+        },
+        "minimum_speed": {
+          "unit": "m/s",
+          "definition": "稳定控制最低前进速度"
+        },
+        "reference_response": {
+          "unit": "s",
+          "definition": "参考横摆一阶响应时间"
+        },
+        "yaw_gain": {
+          "unit": "s⁻¹",
+          "definition": "横摆率误差到期望横摆加速度增益"
+        },
+        "sideslip_gain": {
+          "unit": "s⁻²",
+          "definition": "侧偏角超限到期望横摆加速度增益"
+        },
+        "yaw_threshold": {
+          "unit": "rad/s",
+          "definition": "横摆率误差介入阈值"
+        },
+        "sideslip_threshold": {
+          "unit": "rad",
+          "definition": "侧偏角介入阈值"
+        },
+        "moment_threshold": {
+          "unit": "N·m",
+          "definition": "制动力矩请求介入阈值"
+        },
+        "engine_cut_gain": {
+          "unit": "1",
+          "definition": "归一化横摆及侧偏误差到发动机削矩比例增益"
+        },
+        "continuous_reference": {
+          "unit": "bool",
+          "definition": "低于ESC介入速度仍跟踪有支撑的参考；关闭用于冻结旧控制A/B"
+        }
+      }
+    }
+  }
+}
