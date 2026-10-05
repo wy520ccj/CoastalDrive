@@ -4,6 +4,7 @@ import math
 from dataclasses import dataclass
 from itertools import pairwise
 
+from driveline_inertia import active_inertias
 from transmission_ports import PORT_TOLERANCE
 from vehicle_config import CAR
 
@@ -41,6 +42,12 @@ class PowertrainState:
     synchronizer_heat: float
     shaft_body_impulse: tuple
     pending_gear: int
+    downstream_omega: tuple
+    downstream_relative_omega: tuple
+    downstream_kinetic_energy: tuple
+    downstream_numerical_dissipation: tuple
+    downstream_body_impulse: tuple
+    downstream_wheel_torques: tuple
 
 
 def engine_torque(rpm, config=CAR):
@@ -80,10 +87,18 @@ class Powertrain:
         self.shaft_omega = self.shaft_relative_omega = 0.
         self.gear_reaction = self.synchronizer_torque = self.synchronizer_slip = self.synchronizer_heat = 0.
         self.shaft_body_impulse = (0., 0., 0.)
+        self.downstream_omega = self.downstream_relative_omega = (0.,) * 3 if self.downstream_active else ()
+        self.downstream_kinetic_energy = self.downstream_numerical_dissipation = self.downstream_omega
+        self.downstream_body_impulse = (0.,) * 3
+        self.downstream_wheel_torques = (0.,) * 4
 
     @property
     def input_shaft_active(self):
         return self.config.finite_drivetrain and self.config.input_shaft_enabled
+
+    @property
+    def downstream_active(self):
+        return self.input_shaft_active and self.config.downstream_inertia_enabled
 
     def gear_ratio(self, gear):
         if gear == 0:
@@ -103,6 +118,11 @@ class Powertrain:
         """仅供初值/reset；运行中轴速只由共同机械积分更新。"""
         if self.input_shaft_active:
             self.shaft_omega = self.shaft_relative_omega = self.ratio * speed / self.config.wheel_radius
+        if self.downstream_active:
+            inertias = active_inertias(self.config.downstream_inertias, self.config.front_drive_share)
+            self.downstream_omega = self.downstream_relative_omega = tuple(
+                self.config.final_drive * speed / self.config.wheel_radius if j else 0. for j in inertias)
+            self.downstream_kinetic_energy = tuple(.5 * j * w**2 for j, w in zip(inertias, self.downstream_omega))
 
     @property
     def ratio(self):
@@ -126,6 +146,11 @@ class Powertrain:
         if self.input_shaft_active:
             shaft_axis = chassis.getTransform().getQuat().xform(Vec3(*self.config.input_shaft_axis))
             self.shaft_relative_omega = self.shaft_omega - chassis.getAngularVelocity().dot(shaft_axis)
+        if self.downstream_active:
+            inertias = active_inertias(self.config.downstream_inertias, self.config.front_drive_share)
+            self.downstream_relative_omega = tuple(w - chassis.getAngularVelocity().dot(
+                chassis.getTransform().getQuat().xform(Vec3(*axis))) if j else 0.
+                for w, j, axis in zip(self.downstream_omega, inertias, self.config.downstream_axes))
 
     def prepare(self, speed, driven_omega, pedal, direction, braking, dt, *,
                 drive_scale=1., gear=None, clutch=None):
@@ -224,6 +249,8 @@ class Powertrain:
         self.engine_body_impulse = (0., 0., 0.)
         self.synchronizer_heat = 0.
         self.shaft_body_impulse = (0., 0., 0.)
+        self.downstream_numerical_dissipation = (0.,) * 3 if self.downstream_active else ()
+        self.downstream_body_impulse = (0.,) * 3
 
     def accept_step(self, result, dt):
         """接受共同积分结果，热/功按本120Hz步累加，不另推进曲轴。"""
@@ -240,6 +267,14 @@ class Powertrain:
         self.engine_drag_heat += result.engine_drag_heat
         self.engine_work += result.engine_work
         self.engine_body_impulse = tuple(self.engine_body_impulse[a] + dt * result.engine_body_torque[a] for a in range(3))
+        if self.downstream_active:
+            self.downstream_omega = result.downstream_omega
+            self.downstream_kinetic_energy = result.downstream_kinetic_energy
+            self.downstream_wheel_torques = result.downstream_wheel_torques
+            self.downstream_numerical_dissipation = tuple(self.downstream_numerical_dissipation[i]
+                + result.downstream_numerical_dissipation[i] for i in range(3))
+            self.downstream_body_impulse = tuple(self.downstream_body_impulse[a]
+                + dt * result.downstream_body_torque[a] for a in range(3))
         if self.input_shaft_active:
             self.shaft_omega, self.shaft_relative_omega = result.shaft_omega, result.shaft_relative_omega
             self.gear_reaction = result.gear_reaction
@@ -262,7 +297,9 @@ class Powertrain:
             self.shaft_omega if self.input_shaft_active else None,
             self.shaft_relative_omega if self.input_shaft_active else None,
             self.gear_reaction, self.synchronizer_torque, self.synchronizer_slip, self.synchronizer_heat,
-            self.shaft_body_impulse, self.pending_gear)
+            self.shaft_body_impulse, self.pending_gear, self.downstream_omega, self.downstream_relative_omega,
+            self.downstream_kinetic_energy, self.downstream_numerical_dissipation, self.downstream_body_impulse,
+            self.downstream_wheel_torques)
 
     def advance(self, speed, driven_omega, pedal, direction, braking, dt, *, drive_scale=1.0):
         config = self.config

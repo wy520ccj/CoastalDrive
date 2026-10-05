@@ -25,7 +25,7 @@ def solve(velocity, angular, spins, engine, contact_frames, deformation, torque,
 def audit(result, velocity, angular, spins, engine, contact_frames, deformation, torque, brakes, config, dt,
           old_axes, steering, inertia=tuple(tuple(INERTIA[a] if a == b else 0. for b in range(3)) for a in range(3)),
           engine_axis=ENGINE_AXIS, drag=.12, engine_inertia=ENGINE_INERTIA,
-          shaft=None, shaft_inertia=.04, shaft_axis=(0., 1., 0.)):
+          shaft=None, shaft_inertia=.04, shaft_axis=(0., 1., 0.), downstream=None):
     wheels, end_angular, end_velocity = result.wheels, result.angular, result.velocity
     relative_wheels = tuple(w.omega + dot(end_angular, f.spin_axis) for w, f in zip(wheels, contact_frames))
     slips = (relative_wheels[0] - relative_wheels[1], relative_wheels[2] - relative_wheels[3],
@@ -34,6 +34,20 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
                     zip(config.differential_damping, config.differential_capacity, slips))
     transfers = (-torques[0] - torques[2] / 2, torques[0] - torques[2] / 2,
                  -torques[1] + torques[2] / 2, torques[1] + torques[2] / 2)
+    rotor_weights = ((config.front_drive_share / 2,) * 2 + ((1 - config.front_drive_share) / 2,) * 2,
+                     (.5, .5, 0., 0.), (0., 0., .5, .5))
+    extra_drives = (0.,) * 4
+    if downstream is not None:
+        speeds = tuple(dot(end_angular, axis) + config.final_drive * sum(w * s for w, s in zip(weights, relative_wheels))
+                       if j else 0. for (_old, j, axis), weights in zip(downstream, rotor_weights))
+        assert result.downstream_omega == pytest.approx(speeds, abs=1e-11)
+        extra_drives = tuple(-config.final_drive * sum(weights[i] * j * (new - old) / dt
+                             for (old, j, _axis), new, weights in zip(downstream, speeds, rotor_weights)) for i in range(4))
+        assert result.downstream_wheel_torques == pytest.approx(extra_drives, abs=1e-10)
+        assert result.downstream_kinetic_energy == pytest.approx(tuple(.5 * j * s**2
+               for (_old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
+        assert result.downstream_numerical_dissipation == pytest.approx(tuple(.5 * j * (s - old)**2
+               for (old, j, _axis), s in zip(downstream, speeds)), abs=1e-10)
     assert result.differential_torques == pytest.approx(torques, abs=1e-11)
     assert result.differential_slips == pytest.approx(slips, abs=1e-12)
     force, body_torque, external = [0.] * 3, list(result.engine_body_torque), [0.] * 3
@@ -45,8 +59,11 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
         assert result.shaft_relative_omega == pytest.approx(
             result.shaft_omega - dot(end_angular, shaft_axis), abs=1e-12)
         assert result.clutch_slip == pytest.approx(result.engine_relative_omega - result.shaft_relative_omega, abs=1e-11)
+    if downstream is not None:
+        for a in range(3):
+            body_torque[a] += result.downstream_body_torque[a]
     for i, (frame, wheel) in enumerate(zip(contact_frames, wheels)):
-        drive = result.drive_torque * (config.front_drive_share if i < 2 else 1 - config.front_drive_share) / 2 + transfers[i]
+        drive = result.drive_torque * (config.front_drive_share if i < 2 else 1 - config.front_drive_share) / 2 + transfers[i] + extra_drives[i]
         assert result.wheel_drive_torques[i] == pytest.approx(drive, abs=1e-11)
         f = tuple(frame.tangent[a] * wheel.fx + frame.axle[a] * wheel.fy for a in range(3))
         moment = cross(frame.point, f)
@@ -76,6 +93,8 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
                + .5 * config.wheel_inertia * sum(wheel.omega**2 - spins[i]**2 for i, wheel in enumerate(wheels)))
     if shaft is not None:
         kinetic += .5 * shaft_inertia * (result.shaft_omega**2 - shaft**2)
+    if downstream is not None:
+        kinetic += .5 * sum(j * (s**2 - old**2) for (old, j, _axis), s in zip(downstream, speeds))
     delta_angular = tuple(end_angular[a] - angular[a] for a in range(3))
     numerical = (.5 * config.mass * sum((end_velocity[a] - velocity[a])**2 for a in range(3))
                  + .5 * sum(delta_angular[a] * dot(inertia[a], delta_angular) for a in range(3))
@@ -83,6 +102,8 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
                  + .5 * config.wheel_inertia * sum((wheel.omega - spins[i])**2 for i, wheel in enumerate(wheels)))
     if shaft is not None:
         numerical += .5 * shaft_inertia * (result.shaft_omega - shaft)**2
+    if downstream is not None:
+        numerical += .5 * sum(j * (s - old)**2 for (old, j, _axis), s in zip(downstream, speeds))
     if config.tire_compliance:
         elastic = sum(wheel.elastic_energy for wheel in wheels) - .5 * config.tire_contact_stiffness * sum(
             value**2 for previous in deformation for value in previous)
@@ -104,6 +125,9 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
     if shaft is not None:
         old_spin = tuple(old_spin[a] + shaft_inertia * shaft * shaft_axis[a] for a in range(3))
         new_spin = tuple(new_spin[a] + shaft_inertia * result.shaft_omega * shaft_axis[a] for a in range(3))
+    if downstream is not None:
+        old_spin = tuple(old_spin[a] + sum(j * old * axis[a] for old, j, axis in downstream) for a in range(3))
+        new_spin = tuple(new_spin[a] + sum(j * s * axis[a] for (_old, j, axis), s in zip(downstream, speeds)) for a in range(3))
     for a in range(3):
         balance = dot(inertia[a], delta_angular) + new_spin[a] - old_spin[a] + dt * cross(end_angular, new_spin)[a]
         assert balance == pytest.approx(external[a], abs=1e-10)

@@ -26,7 +26,8 @@ def test_layout_survives_player_npc_rebase_and_recycle(mode, share):
             snapshot = car.snapshot()
             for i, wheel in enumerate(snapshot.wheel_dynamics):
                 assert wheel.drive_torque == pytest.approx(snapshot.powertrain_state.drive_torque
-                    * (share if i < 2 else 1 - share) / 2, abs=1e-10)
+                    * (share if i < 2 else 1 - share) / 2
+                    + snapshot.powertrain_state.downstream_wheel_torques[i], abs=1e-10)
         mechanical = npc.powertrain.snapshot(), tuple(npc.tires.omega)
         for car in (sim.player, npc):
             car.shift(-(REBASE_DISTANCE + SEGMENT_LENGTH))
@@ -47,5 +48,11 @@ def test_layout_survives_player_npc_rebase_and_recycle(mode, share):
         assert not npc.traction.state.active
         assert npc.traction.state.brake_requests == (0.,) * 4
         assert all(w.drive_torque == 0. for w in npc.tires.states)
+        train = npc.powertrain.snapshot()
+        expected = config.final_drive * npc.signed_speed() / config.wheel_radius
+        assert train.downstream_omega == pytest.approx((expected, expected if share else 0.,
+                                                       expected if share < 1 else 0.), abs=1e-5)
+        assert train.downstream_body_impulse == train.downstream_numerical_dissipation == (0.,) * 3
+        assert train.downstream_wheel_torques == (0.,) * 4
     finally:
         sim.close()

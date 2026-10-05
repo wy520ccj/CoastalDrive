@@ -42,6 +42,9 @@ def test_json_brakes_and_sequences_can_drive_real_vehicle(tmp_path, complete):
     assert all(isinstance(node, tuple) for node in config.torque_curve)
     assert isinstance(config.gear_ratios, tuple)
     assert isinstance(config.body_inertia, tuple)
+    assert isinstance(config.downstream_inertias, tuple)
+    assert isinstance(config.downstream_axes, tuple)
+    assert all(isinstance(axis, tuple) for axis in config.downstream_axes)
     world, vehicle = _create_vehicle(config)
     try:
         for _ in range(12):
@@ -65,10 +68,11 @@ def test_export_contains_complete_brake_metadata_and_source(tmp_path):
     export(path)
     report = json.loads(path.read_text(encoding="utf-8"))
     assert "src/shaft_transmission.py" in report["source_sha256"]
+    assert "src/driveline_inertia.py" in report["source_sha256"]
     assert "src/tire_compliance.py" in report["source_sha256"]
     assert "src/tire_properties.py" in report["source_sha256"]
     assert "src/vehicle_stability.py" in report["source_sha256"]
-    assert len(report["vehicle_fields"]) == 81
+    assert len(report["vehicle_fields"]) == 84
     assert len(report["stability_fields"]) == 10
     assert "src/vehicle_brakes.py" in report["source_sha256"]
     assert len(report["source_sha256"]["src/vehicle_brakes.py"]) == 64
@@ -79,5 +83,5 @@ def test_export_contains_complete_brake_metadata_and_source(tmp_path):
         assert set(mode["vehicle_config"]["stability"]) == set(report["stability_fields"])
         assert mode["native_bullet"]["mass"] > 0
     assert all(unit and purpose for unit, purpose in report["brake_fields"].values())
-    assert report["schema_version"] == "reference-v13"
+    assert report["schema_version"] == "reference-v14"
     assert all(unit and purpose for unit, purpose in report["traction_fields"].values())

@@ -56,7 +56,8 @@ def test_disabled_controller_and_releasing_driver_requests_reach_actuators():
             gear = row["state.powertrain_state.gear_reaction"]
             loss = row["state.powertrain_state.gear_loss_torque"]
             assert row["state.powertrain_state.drive_torque"] == pytest.approx(ratio * (gear - loss), abs=1e-9)
-            assert torque == pytest.approx(ratio * (gear - loss) / 2, abs=1e-9)
+            inertia_torque = row["state.powertrain_state.downstream_wheel_torques.2"]
+            assert torque == pytest.approx(ratio * (gear - loss) / 2 + inertia_torque, abs=1e-9)
             if capacity == 0:
                 assert clutch == 0
         release_ticks = math.ceil(REFERENCE_CAR.clutch_release_time / FIXED_DT)

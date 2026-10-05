@@ -39,6 +39,9 @@ VEHICLE_FIELDS = {
     "input_shaft_inertia": ("kg·m²", "输入轴独立轴向惯量，游戏.005/参考.04设计值，非实测"),
     "input_shaft_axis": ("单位向量", "壳体局部输入轴正转方向"),
     "synchronizer_capacity": ("N·m", "输入轴侧有限同步摩擦锥容量，设计值"),
+    "downstream_inertia_enabled": ("bool", "实体轴分支的输出/前/后驱动轴储能与反力；false为机制A/B"),
+    "downstream_inertias": ("kg·m²", "输出/前/后轴实体设计惯量；非驱动轴不安装对应转子，非实测"),
+    "downstream_axes": ("单位向量", "车身局部三轴正转方向；当前通用模型为纵置轴系"),
     "engine_idle_response": ("s", "实际相对曲轴速度反馈的怠速控制响应"),
     "engine_idle_torque_limit": ("N·m", "怠速控制正转矩容量"),
     "engine_redline_rpm": ("rpm", "请求转矩切断阈值；不钳积分末RPM"),
@@ -239,7 +242,7 @@ def export(output):
     source_names = ("vehicle_config.py", "driver_assist.py", "driving_modes.py", "vehicle.py",
                     "vehicle_tires.py", "vehicle_traction.py", "powertrain.py", "vehicle_steering.py", "vehicle_dynamics.py",
                     "wheel_dynamics.py", "tire_forces.py", "vehicle_contacts.py", "vehicle_state.py",
-                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py", "rotor_dynamics.py", "wheel_geometry.py", "transmission_ports.py", "tire_drivetrain.py", "differential.py", "shaft_transmission.py")
+                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py", "rotor_dynamics.py", "wheel_geometry.py", "transmission_ports.py", "tire_drivetrain.py", "differential.py", "shaft_transmission.py", "driveline_inertia.py")
     hashes = {f"src/{name}": hashlib.sha256((ROOT / "src" / name).read_bytes()).hexdigest()
               for name in source_names}
     hashes["tools/physics/export_reference.py"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
@@ -250,7 +253,7 @@ def export(output):
         "panda_version": PandaSystem.getVersionString(), "bullet_version": getBulletVersion(),
         "measurement": {"ticks": 240, "dt": FIXED_DT, "max_substeps": 0,
                         "ground": "水平无限平面", "gravity": [0, 0, -9.81], "input": "VehicleCommand()"},
-        "schema_version": "reference-v13",
+        "schema_version": "reference-v14",
         "vehicle_fields": VEHICLE_FIELDS, "brake_fields": BRAKE_FIELDS,
         "traction_fields": TRACTION_FIELDS, "stability_fields": STABILITY_FIELDS,
         "input_fields": INPUT_FIELDS, "modes": modes,
@@ -265,5 +268,5 @@ def export(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path,
-                        default=ROOT / "logs/physics/reference-v13/parameters.json")
+                        default=ROOT / "logs/physics/reference-v14/parameters.json")
     export(parser.parse_args().output)

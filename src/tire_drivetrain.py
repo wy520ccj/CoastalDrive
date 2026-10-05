@@ -9,6 +9,7 @@ from differential import (
     differential_torques,
     viscous_projection,
 )
+from driveline_inertia import active_inertias, inertia_projections, project_inertia, rotor_gradients
 from rotor_dynamics import bearing_torques, cross
 from shaft_transmission import (
     brake_increment,
@@ -62,6 +63,11 @@ class DrivetrainStep:
     synchronizer_slip: float = 0.
     synchronizer_heat: float = 0.
     shaft_body_torque: tuple = (0., 0., 0.)
+    downstream_omega: tuple = ()
+    downstream_body_torque: tuple = (0., 0., 0.)
+    downstream_wheel_torques: tuple = (0.,) * 4
+    downstream_kinetic_energy: tuple = ()
+    downstream_numerical_dissipation: tuple = ()
 
 
 def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformations,
@@ -69,7 +75,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                        inverse_inertia, engine_inertia, engine_axis, engine_drag, efficiency,
                        steering_torques=((0., 0., 0.),) * 4, force_initial=((0., 0., 0.),) * 4,
                        shaft_omega=None, shaft_inertia=None, shaft_axis=None,
-                       synchronizing=False, synchronizer_capacity=0.):
+                       synchronizing=False, synchronizer_capacity=0.,
+                       downstream_omega=(), downstream_inertias=(), downstream_axes=()):
     """九维q含实体输入轴；未指定输入轴时保留原八维机制供旧/新A/B。"""
     mass, wheel_inertia = config.mass, config.wheel_inertia
     shaft = shaft_omega is not None
@@ -102,11 +109,21 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     longitudinal = tuple(moments_x[i] + rotor_zeros + tuple(-radii[i] if j == i else 0. for j in range(4)) for i in range(4))
     lateral = tuple(moment + (0.,) * (dimensions - 3) for moment in moments_y)
 
-    def inverse_mass(vector):
+    def base_inverse_mass(vector):
         return (tuple(dot(row, vector[:3]) for row in inverse_inertia)
                 + (vector[3] / engine_inertia,)
                 + ((vector[4] / shaft_inertia,) if shaft else ())
                 + tuple(value / wheel_inertia for value in vector[wheel_start:]))
+
+    downstream = bool(downstream_omega)
+    inertias, gradients, downstream_projections = (), (), ()
+    if downstream:
+        inertias = active_inertias(downstream_inertias, config.front_drive_share)
+        gradients = rotor_gradients(downstream_axes, axes, config.front_drive_share, config.final_drive, wheel_start)
+        downstream_projections = inertia_projections(base_inverse_mass, gradients, inertias)
+
+    def inverse_mass(vector):
+        return project_inertia(base_inverse_mass(vector), downstream_projections)
 
     engine_response = inverse_mass(engine_gradient)
     drag_factor = dt * engine_drag / (1 + dt * engine_drag * dot(engine_gradient, engine_response))
@@ -173,14 +190,24 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     steering = tuple(sum(torque[a] for torque in steering_torques) for a in range(3))
     free_base = tuple(initial[a] + dt * engine_torque * engine_response[a]
                       + (dt * dot(inverse_inertia[a], steering) if a < 3 else 0.) for a in range(dimensions))
+    if downstream:
+        # 上一实体轴速来自真实末状态；轴约束变化时不能重算旧速抹掉储能。
+        momentum = tuple(sum(j * g[a] * (old - dot(g, initial))
+                             for j, g, old in zip(inertias, gradients, downstream_omega)) for a in range(dimensions))
+        initial_response = inverse_mass(momentum)
+        steering_response = inverse_mass(steering + (0.,) * (dimensions - 3))
+        free_base = tuple(initial[a] + initial_response[a] + dt * (engine_torque * engine_response[a]
+                          + steering_response[a]) for a in range(dimensions))
 
     projection = drag_factor * dot(engine_gradient, free_base)
     free_base = tuple(free_base[a] - projection * engine_response[a] for a in range(dimensions))
 
     def spin(state):
-        return tuple(engine_inertia * state[3] * engine_axis[a] - (wheel_inertia * sum(
+        base = tuple(engine_inertia * state[3] * engine_axis[a] - (wheel_inertia * sum(
             state[i + wheel_start] * axes[i][a] for i in range(4)) if rotor else 0.)
             + (shaft_inertia * state[4] * shaft_axis[a] if shaft else 0.) for a in range(3))
+        return tuple(base[a] + sum(j * dot(g, state) * axis[a]
+                     for j, g, axis in zip(inertias, gradients, downstream_axes)) for a in range(3)) if downstream else base
 
     def known(gyro, exclude=None):
         gyro_response = mobility(tuple(gyro) + (0.,) * (dimensions - 3))
@@ -532,9 +559,21 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     shaft_gyro = cross(tuple(shaft_inertia * state[4] * value for value in shaft_axis), state[:3]) if shaft else (0.,) * 3
     shaft_body = tuple((gear_reaction - clutch) * shaft_axis[a] + shaft_gyro[a] for a in range(3)) if shaft else (0.,) * 3
     drive_torque = ratio * ((gear_reaction if shaft else clutch) - loss)
+    downstream_speeds = tuple(dot(g, state) if j else 0. for j, g in zip(inertias, gradients))
+    inertia_torques = tuple(j * (new - old) / dt for j, new, old in
+                           zip(inertias, downstream_speeds, downstream_omega))
+    downstream_wheels = tuple(-sum(torque * g[i + wheel_start] for torque, g in zip(inertia_torques, gradients))
+                             for i in range(4))
+    downstream_spin = tuple(sum(j * speed * axis[a] for j, speed, axis in
+                               zip(inertias, downstream_speeds, downstream_axes)) for a in range(3))
+    downstream_gyro = cross(downstream_spin, state[:3])
+    downstream_body = tuple(-sum(torque * axis[a] for torque, axis in zip(inertia_torques, downstream_axes))
+                            + downstream_gyro[a] for a in range(3))
     wheel_drives = tuple((drive_torque * weight if weight else 0.)
                         - sum(g[i + wheel_start] * torque for g, torque in zip(differential, limited_torques))
                         for i, weight in enumerate(config.drive_weights))
+    if downstream:
+        wheel_drives = tuple(wheel_drives[i] + downstream_wheels[i] for i in range(4))
     return DrivetrainStep(tuple(wheels), end_velocity, state[:3], state[3], engine_speed, drive_torque,
         clutch, clutch_slip, loss, gear_speed, engine_body, dt * engine_torque * engine_speed,
         dt * engine_drag * engine_speed**2, dt * clutch * clutch_slip, dt * loss * gear_speed, sweep + 1,
@@ -542,4 +581,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         tuple(dt * torque * slip for torque, slip in zip(limited_torques, differential_slips)),
         state[4] if shaft else None, shaft_speed, gear_reaction,
         dot(shaft_gear_gradient, state) if shaft and not hard_gear else 0.,
-        dt * gear_reaction * dot(shaft_gear_gradient, state) if shaft and not hard_gear else 0., shaft_body)
+        dt * gear_reaction * dot(shaft_gear_gradient, state) if shaft and not hard_gear else 0., shaft_body,
+        downstream_speeds, downstream_body, downstream_wheels,
+        tuple(.5 * j * speed**2 for j, speed in zip(inertias, downstream_speeds)),
+        tuple(.5 * j * (new - old)**2 for j, new, old in zip(inertias, downstream_speeds, downstream_omega)))

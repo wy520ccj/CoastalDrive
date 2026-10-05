@@ -29,6 +29,7 @@ def mechanical_trial(case, config, duration, output):
             _step(world, car, VehicleCommand(brake=1.))
         if case != "neutral-clutch":
             car.reset(car.spawn, speed=15.)
+        initial_energy = sum(car.snapshot().powertrain_state.downstream_kinetic_energy)
         for tick in range(round(duration / FIXED_DT)):
             time = tick * FIXED_DT
             request = (VehicleCommand(gear=0, clutch=1., throttle=.5 if time < 1.5 else 0.)
@@ -45,6 +46,9 @@ def mechanical_trial(case, config, duration, output):
                    for i, r in enumerate(rows) if i and r["car"]["gear"] != rows[i - 1]["car"]["gear"]]
         return {"case": case, "config": asdict(config), "ticks": len(rows), "end_speed": car.signed_speed(),
                 "end_rpm": rows[-1]["car"]["rpm"], "end_train": rows[-1]["car"]["powertrain_state"],
+                "initial_downstream_energy_j": initial_energy,
+                "end_downstream_energy_j": sum(rows[-1]["car"]["powertrain_state"]["downstream_kinetic_energy"]),
+                "downstream_numerical_j": sum(sum(r["car"]["powertrain_state"]["downstream_numerical_dissipation"]) for r in rows),
                 "max_force_residual": residual, "heats_j": heats, "gear_changes": changes}
     except (ArithmeticError, AssertionError) as error:
         output.with_suffix(".failure.json").write_text(json.dumps({"error": repr(error),
@@ -57,7 +61,7 @@ def mechanical_trial(case, config, duration, output):
                 stream.write(json.dumps(row, ensure_ascii=False, allow_nan=False) + "\n")
 
 
-def run_matrix(output, duration=6.):
+def run_matrix(output, duration=6., mechanism="input"):
     output.mkdir(parents=True, exist_ok=False)
 
     def hashes():
@@ -66,10 +70,11 @@ def run_matrix(output, duration=6.):
 
     cases = (*CASES, *EXTRA_CASES, *MECHANICAL_CASES)
     pending = [(mode, case, enabled) for mode in ("game", "simulation") for case in cases for enabled in (False, True)]
+    field = "input_shaft_enabled" if mechanism == "input" else "downstream_inertia_enabled"
     report = {"status": "running", "started_utc": datetime.now(UTC).isoformat(), "source_before": hashes(), "results": [],
               "protocol": {"duration_s": duration, "frequency_hz": 120, "layout": "default RWD reference and game",
                 "standard_cases": [*CASES, *EXTRA_CASES], "mechanical_cases": list(MECHANICAL_CASES),
-                "change": "input_shaft_enabled only; engine/control curves identical within each pair",
+                "change": f"{field} only; engine/control curves identical within each pair",
                 "initialization": "native settle, then one explicit initial wheel/input-shaft speed; shifts reset once to 15 m/s",
                 "claim": "standard two-mode old/new mechanism comparison; FWD/AWD joint mechanics/lifecycle covered separately; no human/performance gate"}}
 
@@ -85,7 +90,7 @@ def run_matrix(output, duration=6.):
                 for enabled in (False, True):
                     label = "on" if enabled else "off"
                     base = DrivingMode(mode).vehicle_config if case in MECHANICAL_CASES else trial_config(case, True, mode)
-                    config = replace(base, input_shaft_enabled=enabled)
+                    config = replace(base, **{field: enabled})
                     if case in MECHANICAL_CASES:
                         filename = f"{mode}-{case}-{label}.jsonl.gz"
                         result = mechanical_trial(case, config, duration, output / filename)
@@ -94,6 +99,12 @@ def run_matrix(output, duration=6.):
                         result["max_force_residual"] = max(row[f"state.wheel_dynamics.{i}.force_residual"] for row in rows for i in range(4))
                         result["heats_j"] = {name: sum(row[f"state.powertrain_state.{name}"] for row in rows[1:])
                                              for name in ("clutch_heat", "gear_heat", "synchronizer_heat", "engine_drag_heat")}
+                        result["initial_downstream_energy_j"] = sum(value for key, value in rows[0].items()
+                            if key.startswith("state.powertrain_state.downstream_kinetic_energy."))
+                        result["end_downstream_energy_j"] = sum(value for key, value in rows[-1].items()
+                            if key.startswith("state.powertrain_state.downstream_kinetic_energy."))
+                        result["downstream_numerical_j"] = sum(value for row in rows[1:] for key, value in row.items()
+                            if key.startswith("state.powertrain_state.downstream_numerical_dissipation."))
                         assert result["max_force_residual"] < .001 and all(value >= -1e-9 for value in result["heats_j"].values())
                         filename = f"{mode}-{case}-{label}.csv.gz"
                         write_csv(output / filename, rows)
@@ -116,5 +127,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--duration", type=float, default=6.)
+    parser.add_argument("--mechanism", choices=("input", "downstream"), default="input")
     args = parser.parse_args()
-    run_matrix(args.output, args.duration)
+    run_matrix(args.output, args.duration, args.mechanism)

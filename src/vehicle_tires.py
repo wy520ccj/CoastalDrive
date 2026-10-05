@@ -182,7 +182,11 @@ class Tires:
                         shaft_inertia=config.input_shaft_inertia,
                         shaft_axis=tuple(orientation.xform(Vec3(*config.input_shaft_axis))),
                         synchronizing=powertrain.synchronizing,
-                        synchronizer_capacity=config.synchronizer_capacity if powertrain.synchronizing else 0.)
+                        synchronizer_capacity=config.synchronizer_capacity if powertrain.synchronizing else 0.,
+                        downstream_omega=powertrain.downstream_omega if powertrain.downstream_active else (),
+                        downstream_inertias=config.downstream_inertias,
+                        downstream_axes=tuple(tuple(orientation.xform(Vec3(*axis))) for axis in config.downstream_axes)
+                            if powertrain.downstream_active else ())
                     steps = result.wheels
                     force_initial = tuple((step.fx, step.fy, step.brake_torque) for step in steps)
                     drives = result.wheel_drive_torques
@@ -191,6 +195,8 @@ class Tires:
                     chassis.applyTorqueImpulse(Vec3(*result.engine_body_torque) * sub_dt)
                     if powertrain.input_shaft_active:
                         chassis.applyTorqueImpulse(Vec3(*result.shaft_body_torque) * sub_dt)
+                    if powertrain.downstream_active:
+                        chassis.applyTorqueImpulse(Vec3(*result.downstream_body_torque) * sub_dt)
                 else:
                     steps = advance_coupled(free_velocity, free_angular, self.omega, wheel_frames,
                                             projected, drives, capacities, config, self.rear_config, sub_dt,

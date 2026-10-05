@@ -303,9 +303,11 @@ def load_vehicle_config(path, selected):
     for name in ("engine_axis", "input_shaft_axis"):
         if name in values:
             values[name] = tuple(values[name])
-    for name in ("differential_damping", "differential_capacity"):
+    for name in ("differential_damping", "differential_capacity", "downstream_inertias"):
         if name in values:
             values[name] = tuple(values[name])
+    if "downstream_axes" in values:
+        values["downstream_axes"] = tuple(tuple(axis) for axis in values["downstream_axes"])
     if "body_inertia" in values and values["body_inertia"] is not None:
         values["body_inertia"] = tuple(values["body_inertia"])
     return replace(selected, **values)

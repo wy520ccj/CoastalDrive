@@ -1,0 +1,424 @@
+........................................................................ [ 27%]
+........................................................................ [ 54%]
+........................................................................ [ 81%]
+........FFFFFFFFFFFF................F...........                         [100%]
+================================== FAILURES ===================================
+__ test_layout_survives_player_npc_rebase_and_recycle[0.0-DrivingMode.GAME] ___
+
+mode = <DrivingMode.GAME: 'game'>, share = 0.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    def test_layout_survives_player_npc_rebase_and_recycle(mode, share):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        sim = Simulation(track="endless", traffic_count=1, config=config,
+                         input_config=mode.input_config, traffic_input_config=mode.input_config)
+        try:
+            for _ in range(60):
+                sim.step(VehicleCommand(throttle=.5, direction=1))
+            npc = sim.npcs[0]
+            for car in (sim.player, npc):
+                assert car.config is config
+                assert car.traction.driven_wheels == config.driven_wheels
+                snapshot = car.snapshot()
+                for i, wheel in enumerate(snapshot.wheel_dynamics):
+>                   assert wheel.drive_torque == pytest.approx(snapshot.powertrain_state.drive_torque
+                        * (share if i < 2 else 1 - share) / 2, abs=1e-10)
+E                       assert 293.64034675239384 == 293.78097344206344 ± 1.0e-10
+E                         
+E                         comparison failed
+E                         Obtained: 293.64034675239384
+E                         Expected: 293.78097344206344 ± 1.0e-10
+
+tests\test_drive_layout_lifecycle.py:28: AssertionError
+_ test_layout_survives_player_npc_rebase_and_recycle[0.0-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, share = 0.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    def test_layout_survives_player_npc_rebase_and_recycle(mode, share):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        sim = Simulation(track="endless", traffic_count=1, config=config,
+                         input_config=mode.input_config, traffic_input_config=mode.input_config)
+        try:
+            for _ in range(60):
+                sim.step(VehicleCommand(throttle=.5, direction=1))
+            npc = sim.npcs[0]
+            for car in (sim.player, npc):
+                assert car.config is config
+                assert car.traction.driven_wheels == config.driven_wheels
+                snapshot = car.snapshot()
+                for i, wheel in enumerate(snapshot.wheel_dynamics):
+>                   assert wheel.drive_torque == pytest.approx(snapshot.powertrain_state.drive_torque
+                        * (share if i < 2 else 1 - share) / 2, abs=1e-10)
+E                       assert 217.82376697493683 == 218.79457510982067 ± 1.0e-10
+E                         
+E                         comparison failed
+E                         Obtained: 217.82376697493683
+E                         Expected: 218.79457510982067 ± 1.0e-10
+
+tests\test_drive_layout_lifecycle.py:28: AssertionError
+__ test_layout_survives_player_npc_rebase_and_recycle[0.5-DrivingMode.GAME] ___
+
+mode = <DrivingMode.GAME: 'game'>, share = 0.5
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    def test_layout_survives_player_npc_rebase_and_recycle(mode, share):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        sim = Simulation(track="endless", traffic_count=1, config=config,
+                         input_config=mode.input_config, traffic_input_config=mode.input_config)
+        try:
+            for _ in range(60):
+                sim.step(VehicleCommand(throttle=.5, direction=1))
+            npc = sim.npcs[0]
+            for car in (sim.player, npc):
+                assert car.config is config
+                assert car.traction.driven_wheels == config.driven_wheels
+                snapshot = car.snapshot()
+                for i, wheel in enumerate(snapshot.wheel_dynamics):
+>                   assert wheel.drive_torque == pytest.approx(snapshot.powertrain_state.drive_torque
+                        * (share if i < 2 else 1 - share) / 2, abs=1e-10)
+E                       assert 159.34011984131044 == 159.43837227280702 ± 1.0e-10
+E                         
+E                         comparison failed
+E                         Obtained: 159.34011984131044
+E                         Expected: 159.43837227280702 ± 1.0e-10
+
+tests\test_drive_layout_lifecycle.py:28: AssertionError
+_ test_layout_survives_player_npc_rebase_and_recycle[0.5-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, share = 0.5
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    def test_layout_survives_player_npc_rebase_and_recycle(mode, share):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        sim = Simulation(track="endless", traffic_count=1, config=config,
+                         input_config=mode.input_config, traffic_input_config=mode.input_config)
+        try:
+            for _ in range(60):
+                sim.step(VehicleCommand(throttle=.5, direction=1))
+            npc = sim.npcs[0]
+            for car in (sim.player, npc):
+                assert car.config is config
+                assert car.traction.driven_wheels == config.driven_wheels
+                snapshot = car.snapshot()
+                for i, wheel in enumerate(snapshot.wheel_dynamics):
+>                   assert wheel.drive_torque == pytest.approx(snapshot.powertrain_state.drive_torque
+                        * (share if i < 2 else 1 - share) / 2, abs=1e-10)
+E                       assert 108.65419912199683 == 109.26062810872564 ± 1.0e-10
+E                         
+E                         comparison failed
+E                         Obtained: 108.65419912199683
+E                         Expected: 109.26062810872564 ± 1.0e-10
+
+tests\test_drive_layout_lifecycle.py:28: AssertionError
+__ test_layout_survives_player_npc_rebase_and_recycle[1.0-DrivingMode.GAME] ___
+
+mode = <DrivingMode.GAME: 'game'>, share = 1.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    def test_layout_survives_player_npc_rebase_and_recycle(mode, share):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        sim = Simulation(track="endless", traffic_count=1, config=config,
+                         input_config=mode.input_config, traffic_input_config=mode.input_config)
+        try:
+            for _ in range(60):
+                sim.step(VehicleCommand(throttle=.5, direction=1))
+            npc = sim.npcs[0]
+            for car in (sim.player, npc):
+                assert car.config is config
+                assert car.traction.driven_wheels == config.driven_wheels
+                snapshot = car.snapshot()
+                for i, wheel in enumerate(snapshot.wheel_dynamics):
+>                   assert wheel.drive_torque == pytest.approx(snapshot.powertrain_state.drive_torque
+                        * (share if i < 2 else 1 - share) / 2, abs=1e-10)
+E                       assert 303.53968242857394 == 303.6716559316831 ± 1.0e-10
+E                         
+E                         comparison failed
+E                         Obtained: 303.53968242857394
+E                         Expected: 303.6716559316831 ± 1.0e-10
+
+tests\test_drive_layout_lifecycle.py:28: AssertionError
+_ test_layout_survives_player_npc_rebase_and_recycle[1.0-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, share = 1.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    def test_layout_survives_player_npc_rebase_and_recycle(mode, share):
+        config = replace(mode.vehicle_config, front_drive_share=share)
+        sim = Simulation(track="endless", traffic_count=1, config=config,
+                         input_config=mode.input_config, traffic_input_config=mode.input_config)
+        try:
+            for _ in range(60):
+                sim.step(VehicleCommand(throttle=.5, direction=1))
+            npc = sim.npcs[0]
+            for car in (sim.player, npc):
+                assert car.config is config
+                assert car.traction.driven_wheels == config.driven_wheels
+                snapshot = car.snapshot()
+                for i, wheel in enumerate(snapshot.wheel_dynamics):
+>                   assert wheel.drive_torque == pytest.approx(snapshot.powertrain_state.drive_torque
+                        * (share if i < 2 else 1 - share) / 2, abs=1e-10)
+E                       assert 217.94945350136993 == 218.82081328289533 ± 1.0e-10
+E                         
+E                         comparison failed
+E                         Obtained: 217.94945350136993
+E                         Expected: 218.82081328289533 ± 1.0e-10
+
+tests\test_drive_layout_lifecycle.py:28: AssertionError
+____ test_limited_slip_player_npc_rebase_and_recycle[0.0-DrivingMode.GAME] ____
+
+mode = <DrivingMode.GAME: 'game'>, share = 0.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    def test_limited_slip_player_npc_rebase_and_recycle(mode, share):
+        base = mode.vehicle_config
+        damping = (20. if share else 0., 20. if share < 1 else 0., 20. if 0 < share < 1 else 0.)
+        config = replace(base, front_drive_share=share, differential_damping=damping,
+                         differential_capacity=tuple(80. if c else 0. for c in damping))
+        sim = Simulation(track="endless", traffic_count=1, config=config,
+                         input_config=mode.input_config, traffic_input_config=mode.input_config)
+        try:
+            npc = sim.npcs[0]
+            # 首步前的机械初值；此后全部轮速由同一物理步推进。
+            npc.tires.omega[config.driven_wheels[0]] += 10.
+            heat = 0.
+            for _ in range(30):
+                sim.step(VehicleCommand(throttle=.5, direction=1))
+                heat += sum(npc.powertrain.snapshot().differential_heat)
+            assert heat > 0.
+            for car in (sim.player, npc):
+                train = car.powertrain.snapshot()
+                t0, t1, tc = train.differential_torques
+                transfers = (-t0 - tc / 2, t0 - tc / 2, -t1 + tc / 2, t1 + tc / 2)
+                for i, wheel in enumerate(car.snapshot().wheel_dynamics):
+>                   assert wheel.drive_torque == pytest.approx(train.drive_torque * config.drive_weights[i]
+                        + transfers[i], abs=1e-10)
+E                       assert 147.2904006601929 == 147.33733665872992 ± 1.0e-10
+E                         
+E                         comparison failed
+E                         Obtained: 147.2904006601929
+E                         Expected: 147.33733665872992 ± 1.0e-10
+
+tests\test_differential_lifecycle.py:36: AssertionError
+_ test_limited_slip_player_npc_rebase_and_recycle[0.0-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, share = 0.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    def test_limited_slip_player_npc_rebase_and_recycle(mode, share):
+        base = mode.vehicle_config
+        damping = (20. if share else 0., 20. if share < 1 else 0., 20. if 0 < share < 1 else 0.)
+        config = replace(base, front_drive_share=share, differential_damping=damping,
+                         differential_capacity=tuple(80. if c else 0. for c in damping))
+        sim = Simulation(track="endless", traffic_count=1, config=config,
+                         input_config=mode.input_config, traffic_input_config=mode.input_config)
+        try:
+            npc = sim.npcs[0]
+            # 首步前的机械初值；此后全部轮速由同一物理步推进。
+            npc.tires.omega[config.driven_wheels[0]] += 10.
+            heat = 0.
+            for _ in range(30):
+                sim.step(VehicleCommand(throttle=.5, direction=1))
+                heat += sum(npc.powertrain.snapshot().differential_heat)
+            assert heat > 0.
+            for car in (sim.player, npc):
+                train = car.powertrain.snapshot()
+                t0, t1, tc = train.differential_torques
+                transfers = (-t0 - tc / 2, t0 - tc / 2, -t1 + tc / 2, t1 + tc / 2)
+                for i, wheel in enumerate(car.snapshot().wheel_dynamics):
+>                   assert wheel.drive_torque == pytest.approx(train.drive_torque * config.drive_weights[i]
+                        + transfers[i], abs=1e-10)
+E                       assert 108.544096391305 == 108.61697465134665 ± 1.0e-10
+E                         
+E                         comparison failed
+E                         Obtained: 108.544096391305
+E                         Expected: 108.61697465134665 ± 1.0e-10
+
+tests\test_differential_lifecycle.py:36: AssertionError
+____ test_limited_slip_player_npc_rebase_and_recycle[0.5-DrivingMode.GAME] ____
+
+mode = <DrivingMode.GAME: 'game'>, share = 0.5
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    def test_limited_slip_player_npc_rebase_and_recycle(mode, share):
+        base = mode.vehicle_config
+        damping = (20. if share else 0., 20. if share < 1 else 0., 20. if 0 < share < 1 else 0.)
+        config = replace(base, front_drive_share=share, differential_damping=damping,
+                         differential_capacity=tuple(80. if c else 0. for c in damping))
+        sim = Simulation(track="endless", traffic_count=1, config=config,
+                         input_config=mode.input_config, traffic_input_config=mode.input_config)
+        try:
+            npc = sim.npcs[0]
+            # 首步前的机械初值；此后全部轮速由同一物理步推进。
+            npc.tires.omega[config.driven_wheels[0]] += 10.
+            heat = 0.
+            for _ in range(30):
+                sim.step(VehicleCommand(throttle=.5, direction=1))
+                heat += sum(npc.powertrain.snapshot().differential_heat)
+            assert heat > 0.
+            for car in (sim.player, npc):
+                train = car.powertrain.snapshot()
+                t0, t1, tc = train.differential_torques
+                transfers = (-t0 - tc / 2, t0 - tc / 2, -t1 + tc / 2, t1 + tc / 2)
+                for i, wheel in enumerate(car.snapshot().wheel_dynamics):
+>                   assert wheel.drive_torque == pytest.approx(train.drive_torque * config.drive_weights[i]
+                        + transfers[i], abs=1e-10)
+E                       assert 102.65795536367096 == 102.71284797054288 ± 1.0e-10
+E                         
+E                         comparison failed
+E                         Obtained: 102.65795536367096
+E                         Expected: 102.71284797054288 ± 1.0e-10
+
+tests\test_differential_lifecycle.py:36: AssertionError
+_ test_limited_slip_player_npc_rebase_and_recycle[0.5-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, share = 0.5
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    def test_limited_slip_player_npc_rebase_and_recycle(mode, share):
+        base = mode.vehicle_config
+        damping = (20. if share else 0., 20. if share < 1 else 0., 20. if 0 < share < 1 else 0.)
+        config = replace(base, front_drive_share=share, differential_damping=damping,
+                         differential_capacity=tuple(80. if c else 0. for c in damping))
+        sim = Simulation(track="endless", traffic_count=1, config=config,
+                         input_config=mode.input_config, traffic_input_config=mode.input_config)
+        try:
+            npc = sim.npcs[0]
+            # 首步前的机械初值；此后全部轮速由同一物理步推进。
+            npc.tires.omega[config.driven_wheels[0]] += 10.
+            heat = 0.
+            for _ in range(30):
+                sim.step(VehicleCommand(throttle=.5, direction=1))
+                heat += sum(npc.powertrain.snapshot().differential_heat)
+            assert heat > 0.
+            for car in (sim.player, npc):
+                train = car.powertrain.snapshot()
+                t0, t1, tc = train.differential_torques
+                transfers = (-t0 - tc / 2, t0 - tc / 2, -t1 + tc / 2, t1 + tc / 2)
+                for i, wheel in enumerate(car.snapshot().wheel_dynamics):
+>                   assert wheel.drive_torque == pytest.approx(train.drive_torque * config.drive_weights[i]
+                        + transfers[i], abs=1e-10)
+E                       assert 64.9338992224997 == 65.15882178590094 ± 1.0e-10
+E                         
+E                         comparison failed
+E                         Obtained: 64.9338992224997
+E                         Expected: 65.15882178590094 ± 1.0e-10
+
+tests\test_differential_lifecycle.py:36: AssertionError
+____ test_limited_slip_player_npc_rebase_and_recycle[1.0-DrivingMode.GAME] ____
+
+mode = <DrivingMode.GAME: 'game'>, share = 1.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    def test_limited_slip_player_npc_rebase_and_recycle(mode, share):
+        base = mode.vehicle_config
+        damping = (20. if share else 0., 20. if share < 1 else 0., 20. if 0 < share < 1 else 0.)
+        config = replace(base, front_drive_share=share, differential_damping=damping,
+                         differential_capacity=tuple(80. if c else 0. for c in damping))
+        sim = Simulation(track="endless", traffic_count=1, config=config,
+                         input_config=mode.input_config, traffic_input_config=mode.input_config)
+        try:
+            npc = sim.npcs[0]
+            # 首步前的机械初值；此后全部轮速由同一物理步推进。
+            npc.tires.omega[config.driven_wheels[0]] += 10.
+            heat = 0.
+            for _ in range(30):
+                sim.step(VehicleCommand(throttle=.5, direction=1))
+                heat += sum(npc.powertrain.snapshot().differential_heat)
+            assert heat > 0.
+            for car in (sim.player, npc):
+                train = car.powertrain.snapshot()
+                t0, t1, tc = train.differential_torques
+                transfers = (-t0 - tc / 2, t0 - tc / 2, -t1 + tc / 2, t1 + tc / 2)
+                for i, wheel in enumerate(car.snapshot().wheel_dynamics):
+>                   assert wheel.drive_torque == pytest.approx(train.drive_torque * config.drive_weights[i]
+                        + transfers[i], abs=1e-10)
+E                       assert 158.29003988591882 == 158.33512582558436 ± 1.0e-10
+E                         
+E                         comparison failed
+E                         Obtained: 158.29003988591882
+E                         Expected: 158.33512582558436 ± 1.0e-10
+
+tests\test_differential_lifecycle.py:36: AssertionError
+_ test_limited_slip_player_npc_rebase_and_recycle[1.0-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, share = 1.0
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    def test_limited_slip_player_npc_rebase_and_recycle(mode, share):
+        base = mode.vehicle_config
+        damping = (20. if share else 0., 20. if share < 1 else 0., 20. if 0 < share < 1 else 0.)
+        config = replace(base, front_drive_share=share, differential_damping=damping,
+                         differential_capacity=tuple(80. if c else 0. for c in damping))
+        sim = Simulation(track="endless", traffic_count=1, config=config,
+                         input_config=mode.input_config, traffic_input_config=mode.input_config)
+        try:
+            npc = sim.npcs[0]
+            # 首步前的机械初值；此后全部轮速由同一物理步推进。
+            npc.tires.omega[config.driven_wheels[0]] += 10.
+            heat = 0.
+            for _ in range(30):
+                sim.step(VehicleCommand(throttle=.5, direction=1))
+                heat += sum(npc.powertrain.snapshot().differential_heat)
+            assert heat > 0.
+            for car in (sim.player, npc):
+                train = car.powertrain.snapshot()
+                t0, t1, tc = train.differential_torques
+                transfers = (-t0 - tc / 2, t0 - tc / 2, -t1 + tc / 2, t1 + tc / 2)
+                for i, wheel in enumerate(car.snapshot().wheel_dynamics):
+>                   assert wheel.drive_torque == pytest.approx(train.drive_torque * config.drive_weights[i]
+                        + transfers[i], abs=1e-10)
+E                       assert 110.9906640353559 == 111.1066492308558 ± 1.0e-10
+E                         
+E                         comparison failed
+E                         Obtained: 110.9906640353559
+E                         Expected: 111.1066492308558 ± 1.0e-10
+
+tests\test_differential_lifecycle.py:36: AssertionError
+_____________ test_mode_abs_tcs_variants_get_distinct_score_keys ______________
+
+    def test_mode_abs_tcs_variants_get_distinct_score_keys():
+        keys = {
+            (mode, abs_enabled, tcs_enabled): mode.score_variant(abs_enabled, tcs_enabled)
+            for mode in DrivingMode
+            for abs_enabled in (False, True)
+            for tcs_enabled in (False, True)
+        }
+        assert len(set(keys.values())) == 8
+        assert all(":abs-" in value and ":tcs-" in value for value in keys.values())
+>       assert DrivingMode.GAME.score_variant(True).startswith("game-controls-v10:")
+E       AssertionError: assert False
+E        +  where False = <built-in method startswith of str object at 0x0000020A3272C760>('game-controls-v10:')
+E        +    where <built-in method startswith of str object at 0x0000020A3272C760> = 'game-controls-v11:abs-on:tcs-on:esc-on'.startswith
+E        +      where 'game-controls-v11:abs-on:tcs-on:esc-on' = score_variant(True)
+E        +        where score_variant = <DrivingMode.GAME: 'game'>.score_variant
+E        +          where <DrivingMode.GAME: 'game'> = DrivingMode.GAME
+
+tests\test_traction_lifecycle.py:93: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_drive_layout_lifecycle.py::test_layout_survives_player_npc_rebase_and_recycle[0.0-DrivingMode.GAME]
+FAILED tests/test_drive_layout_lifecycle.py::test_layout_survives_player_npc_rebase_and_recycle[0.0-DrivingMode.SIMULATION]
+FAILED tests/test_drive_layout_lifecycle.py::test_layout_survives_player_npc_rebase_and_recycle[0.5-DrivingMode.GAME]
+FAILED tests/test_drive_layout_lifecycle.py::test_layout_survives_player_npc_rebase_and_recycle[0.5-DrivingMode.SIMULATION]
+FAILED tests/test_drive_layout_lifecycle.py::test_layout_survives_player_npc_rebase_and_recycle[1.0-DrivingMode.GAME]
+FAILED tests/test_drive_layout_lifecycle.py::test_layout_survives_player_npc_rebase_and_recycle[1.0-DrivingMode.SIMULATION]
+FAILED tests/test_differential_lifecycle.py::test_limited_slip_player_npc_rebase_and_recycle[0.0-DrivingMode.GAME]
+FAILED tests/test_differential_lifecycle.py::test_limited_slip_player_npc_rebase_and_recycle[0.0-DrivingMode.SIMULATION]
+FAILED tests/test_differential_lifecycle.py::test_limited_slip_player_npc_rebase_and_recycle[0.5-DrivingMode.GAME]
+FAILED tests/test_differential_lifecycle.py::test_limited_slip_player_npc_rebase_and_recycle[0.5-DrivingMode.SIMULATION]
+FAILED tests/test_differential_lifecycle.py::test_limited_slip_player_npc_rebase_and_recycle[1.0-DrivingMode.GAME]
+FAILED tests/test_differential_lifecycle.py::test_limited_slip_player_npc_rebase_and_recycle[1.0-DrivingMode.SIMULATION]
+FAILED tests/test_traction_lifecycle.py::test_mode_abs_tcs_variants_get_distinct_score_keys
+13 failed, 251 passed in 182.08s (0:03:02)

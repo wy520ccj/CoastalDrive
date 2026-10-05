@@ -37,6 +37,9 @@ class VehicleConfig:
     input_shaft_inertia: float = .005  # 游戏输入轴设计惯量kg·m²；参考车取.04，均非实测。
     input_shaft_axis: tuple = (0., 1., 0.)  # 壳体局部输入轴正转方向。
     synchronizer_capacity: float = 80.  # 输入轴侧有限同步锥容量N·m，设计值。
+    downstream_inertia_enabled: bool = True  # 实体输入轴分支内启用输出/前/后驱动轴；false为机制A/B。
+    downstream_inertias: tuple = (.003, .0015, .002)  # kg·m²，游戏设计值；非驱动轴不安装对应转子。
+    downstream_axes: tuple = ((0., 1., 0.),) * 3  # 车身局部各轴正转方向；参考模型为纵置轴系。
     engine_idle_response: float = .15
     engine_idle_torque_limit: float = 65.
     engine_redline_rpm: float = 6500.
@@ -103,6 +106,11 @@ class VehicleConfig:
     suspension_force_limit: float = 6000.0
 
     def __post_init__(self):
+        if len(self.downstream_inertias) != 3 or any(not math.isfinite(j) or j <= 0 for j in self.downstream_inertias):
+            raise ValueError("输出/前/后轴惯量须为三个有限正值")
+        if len(self.downstream_axes) != 3 or any(len(axis) != 3 or any(not math.isfinite(v) for v in axis)
+                or abs(sum(v * v for v in axis) - 1.) > 1e-12 for axis in self.downstream_axes):
+            raise ValueError("输出/前/后轴方向须为三个三维单位向量")
         if not math.isfinite(self.input_shaft_inertia) or self.input_shaft_inertia <= 0:
             raise ValueError("输入轴惯量须为有限正值")
         if not math.isfinite(self.synchronizer_capacity) or self.synchronizer_capacity < 0:

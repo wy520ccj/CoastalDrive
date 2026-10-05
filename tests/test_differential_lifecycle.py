@@ -34,7 +34,7 @@ def test_limited_slip_player_npc_rebase_and_recycle(mode, share):
             transfers = (-t0 - tc / 2, t0 - tc / 2, -t1 + tc / 2, t1 + tc / 2)
             for i, wheel in enumerate(car.snapshot().wheel_dynamics):
                 assert wheel.drive_torque == pytest.approx(train.drive_torque * config.drive_weights[i]
-                    + transfers[i], abs=1e-10)
+                    + transfers[i] + train.downstream_wheel_torques[i], abs=1e-10)
         mechanical = npc.powertrain.snapshot(), tuple(npc.tires.omega)
         for car in (sim.player, npc):
             car.shift(-(REBASE_DISTANCE + SEGMENT_LENGTH))
@@ -48,6 +48,10 @@ def test_limited_slip_player_npc_rebase_and_recycle(mode, share):
         assert npc.config is config
         train = npc.powertrain.snapshot()
         assert train.differential_heat == train.differential_torques == (0.,) * 3
+        expected = config.final_drive * npc.signed_speed() / config.wheel_radius
+        assert train.downstream_omega == pytest.approx((expected, expected if share else 0.,
+                                                       expected if share < 1 else 0.), abs=1e-5)
+        assert train.downstream_numerical_dissipation == train.downstream_body_impulse == (0.,) * 3
         sim.reset_player((0., 0., .55))
         assert sim.player.config is config
         assert sim.player.powertrain.snapshot().differential_heat == (0.,) * 3
