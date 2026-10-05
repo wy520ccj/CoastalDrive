@@ -96,6 +96,8 @@ class VehicleConfig:
     frontal_area: float = 2.142857142857143  # m²; preserves the previous Cd*A product.
     rolling_coefficient: float = 160 / (1200 * 9.81)
     grass_rolling_coefficient: float = 900 / (1200 * 9.81)
+    wheel_rolling_resistance: bool = True  # 有限传动分支走轮端滚阻；false为旧车身阻力A/B。
+    rolling_transition_speed: float = 1.0  # m/s；滚动阻力矩从零连续达到Crr*Fn*r的轮缘速度。
     road_friction: float = 1.1
     grass_friction: float = 0.45
     wheelbase: float = 2.2
@@ -116,6 +118,10 @@ class VehicleConfig:
     suspension_force_limit: float = 6000.0  # N；仅原生对照分支的数值力限，SI势能反力不作硬裁剪。
 
     def __post_init__(self):
+        if not math.isfinite(self.rolling_transition_speed) or self.rolling_transition_speed <= 0.:
+            raise ValueError("滚阻低速过渡轮缘速度须为有限正值m/s")
+        if any(not math.isfinite(c) or c < 0. for c in (self.rolling_coefficient,self.grass_rolling_coefficient)):
+            raise ValueError("铺装/草地滚阻系数须为有限非负值")
         if not (math.isfinite(self.wheel_width) and self.wheel_width > 0.
                 and math.isfinite(self.wheel_shoulder_radius)
                 and 0. < self.wheel_shoulder_radius < min(self.wheel_radius, self.wheel_width / 2)):

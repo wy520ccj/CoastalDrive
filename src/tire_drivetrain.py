@@ -10,6 +10,7 @@ from differential import (
     viscous_projection,
 )
 from driveline_inertia import active_inertias, inertia_projections, project_inertia, rotor_gradients
+from rolling_resistance import rolling_torques
 from rotor_dynamics import bearing_torques, cross
 from shaft_transmission import (
     brake_increment,
@@ -82,13 +83,15 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                        shaft_omega=None, shaft_inertia=None, shaft_axis=None,
                        synchronizing=False, synchronizer_capacity=0.,
                        downstream_omega=(), downstream_inertias=(), downstream_axes=(),
-                       suspension=None):
+                       suspension=None, rolling_coefficients=(0.,) * 4):
     """九维q含实体输入轴；未指定输入轴时保留原八维机制供旧/新A/B。"""
     mass, wheel_inertia = config.mass, config.wheel_inertia
     shaft = shaft_omega is not None
     wheel_start, dimensions = (5, 9) if shaft else (4, 8)
     hard_gear = bool(ratio and not synchronizing) if shaft else bool(ratio)
     initial = tuple(angular) + (engine_omega,) + ((shaft_omega,) if shaft else ()) + tuple(omega)
+    rolling_active = any(rolling_coefficients)
+    road_torques = (0.,) * 4
     rotor = config.wheel_rotor_transport
     axes = tuple(tuple(frame.spin_axis if rotor else frame.axle) for frame in frames)
     radii = tuple(frame.rolling_radius if rotor else config.wheel_radius for frame in frames)
@@ -240,6 +243,9 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         free = tuple(free_base[a] + dt * gyro_response[a] + dt * sum(
             forces[i][0] * responses[i][0][a] + forces[i][1] * responses[i][1][a]
             - forces[i][2] * responses[i][2][a] for i in range(4) if i != exclude) for a in range(dimensions))
+        if rolling_active:
+            response = mobility((0.,) * wheel_start + tuple(-torque for torque in road_torques))
+            free = tuple(free[a] + dt * response[a] for a in range(dimensions))
         end_velocity = tuple(velocity[a] + dt / mass * sum(
             forces[i][0] * frames[i].tangent[a] + forces[i][1] * frames[i].axle[a]
             for i in range(4) if i != exclude) for a in range(3))
@@ -251,9 +257,12 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         return free, end_velocity
 
     def shared(guess):
-        nonlocal shared_branch, shared_port_index
-        state = guess
-        for _ in range(30):
+        nonlocal shared_branch, shared_port_index, road_torques
+        def mapped(state):
+            nonlocal shared_branch, shared_port_index, road_torques
+            if rolling_active:
+                road_torques = rolling_torques(frames,radii,state[wheel_start:],rolling_coefficients,
+                                               config.rolling_transition_speed)
             free, end_velocity = known(cross(spin(state), state[:3]))
             order = [shared_branch] + [i for i in range(len(branches)) if i != shared_branch]
             for branch_index in order:
@@ -288,11 +297,39 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                     break
             else:
                 raise ArithmeticError("限滑/离合共同末状态无可行分区")
-            error = max(abs(end[a] - state[a]) for a in range(dimensions))
-            state = end
-            if error < 1e-14:
-                return state, end_velocity, clutch, loss, gear_reaction
-        raise ArithmeticError("曲轴/四轮转子共同末状态超过30次迭代")
+            return end, end_velocity, clutch, loss, gear_reaction
+
+        state = guess
+        for iteration in range(30):
+            end, end_velocity, clutch, loss, gear_reaction = mapped(state)
+            residual = tuple(state[a] - end[a] for a in range(dimensions))
+            error = max(abs(value) for value in residual)
+            # 逐坐标保留绝对精度；大转速处容纳一次状态舍入的浮点间隔。
+            if all(abs(value) <= max(1e-14, math.ulp(state[a]), math.ulp(end[a]))
+                   for a, value in enumerate(residual)):
+                return end, end_velocity, clutch, loss, gear_reaction
+            if rolling_active and iteration >= 4:
+                # 大轮荷低速滚阻与轴系共同求根，固定点初迭代后用带步长搜索的Newton修正。
+                columns = []
+                for j in range(dimensions):
+                    plus, minus = list(state), list(state)
+                    plus[j] += .0001
+                    minus[j] -= .0001
+                    high, low = mapped(plus)[0], mapped(minus)[0]
+                    columns.append(tuple(float(a == j) - (high[a]-low[a])/.0002 for a in range(dimensions)))
+                delta = _solve(tuple(tuple(columns[j][a] for j in range(dimensions)) for a in range(dimensions)),
+                               tuple(-value for value in residual))
+                for attempt in range(8):
+                    candidate = tuple(state[a] + 2.**-attempt * delta[a] for a in range(dimensions))
+                    target = mapped(candidate)[0]
+                    if max(abs(candidate[a]-target[a]) for a in range(dimensions)) < error:
+                        state = candidate
+                        break
+                else:
+                    state = end
+            else:
+                state = end
+        raise ArithmeticError(f"曲轴/四轮转子共同末状态超过30次迭代：{error:g}")
 
     def velocities(index, state, end_velocity):
         frame = frames[index]
@@ -653,7 +690,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 mode = "airborne"
         wheels.append(WheelStep(state[i + wheel_start], dot(brake_gradients[i], state), vx, vy, dot(state[:3], axes[i]),
             kappa, alpha, fx, fy, brake, maximum, mode, *elastic, patch_kappa, patch_alpha,
-            energy, material, road, numerical, *rate, gyro_torques[i], steering_torques[i]))
+            energy, material, road, numerical, *rate, gyro_torques[i], steering_torques[i],
+            road_torques[i], dt * road_torques[i] * state[i + wheel_start]))
     engine_speed = dot(engine_gradient, state)
     clutch_slip, gear_speed = dot(clutch_gradient, state), dot(gear_gradient, state)
     engine_gyro = cross(tuple(engine_inertia * state[3] * value for value in engine_axis), state[:3])

@@ -4,7 +4,7 @@
 
 ## 当前阶段
 
-- [PHYS-LOAD-01](tasks/PHYS-LOAD-01.md)施工线②已开始，接触基线`a602910`。三维相对风速气动载荷已实际接车身，Snapshot保存相对空气速度/力向量/功率；相关T0通过，完整94字段reference-v27导出。轮端滚阻与参考车标定继续，未跑本块T1或关闭阶段Gate。[当前证据](evidence/PHYS-LOAD-01/aerodynamics.md)。
+- [PHYS-LOAD-01](tasks/PHYS-LOAD-01.md)施工线②推进，接触基线`a602910`、气动`8a3a78f`。轮端滚阻与实际Fn/末轮速共同求解，矩/角冲量/耗散独立保存，无重复车身中央阻力；12项护栏/原生及391项机械/生命周期相关T0通过，完整96字段reference-v28导出。参考车标准标定继续，未跑本块T1或关闭阶段Gate。[当前证据](evidence/PHYS-LOAD-01/rolling-resistance.md)。
 
 - 用户批准的[统一物理完成施工线](physics-completion-plan.md)①自动功能块完成：有限胎宽/胎肩/胎冠、实际道路网格与末姿态同世界跨支持面、近掠及完整悬架共末状态；最终431项相关T1/全Ruff/三种子1200步启动通过，reference-v26完整94字段。四条固定侧撞峰值轮荷15.9–24.7kN，最大局部能量残差4.83e-13J。旧音频断言、机械T2与总体T3/前台性能/人工Gate保持待办；下一②轮端滚阻与参考车标定。[当前证据](evidence/PHYS-SUSP-01/mesh-transition.md)。
 

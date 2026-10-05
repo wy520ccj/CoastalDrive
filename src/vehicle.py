@@ -262,7 +262,8 @@ class Vehicle:
         aero = math.sqrt(sum(x*x for x in air_force))
         self._chassis.applyCentralForce(Vec3(*air_force))
         rolling = 0.0
-        if horizontal_speed > 0.01 and normal_load > 0:
+        wheel_rolling = self.config.finite_drivetrain and self.config.wheel_rolling_resistance
+        if not wheel_rolling and horizontal_speed > 0.01 and normal_load > 0:
             coefficient = self.config.rolling_coefficient if road else self.config.grass_rolling_coefficient
             rolling = coefficient * normal_load * min(horizontal_speed, 1)
             self._chassis.applyCentralForce(-horizontal * (rolling / horizontal_speed))
@@ -297,6 +298,10 @@ class Vehicle:
             self._wheel_contacts = coupled_contacts
             if accumulate:
                 self.suspension.accumulate(previous_suspension)
+        if wheel_rolling:
+            rolling = sum(abs(state.rolling_torque) / state.force_rolling_radius
+                          for state in self.tires.states
+                          if state.road_support)
         traction_limited = any(
             state.kappa is not None and abs(state.kappa) > 0.1 for state in self.tires.states
         )

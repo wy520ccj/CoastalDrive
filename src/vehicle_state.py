@@ -119,6 +119,10 @@ class WheelDynamicsState:
     steering_work: float = 0.0
     longitudinal_angular_impulse: tuple = (0.0, 0.0, 0.0)
     lateral_angular_impulse: tuple = (0.0, 0.0, 0.0)
+    rolling_torque: float = 0.0
+    rolling_angular_impulse: float = 0.0
+    rolling_dissipation: float = 0.0
+    force_rolling_radius: float = 0.0
 
 
 @dataclass(frozen=True)

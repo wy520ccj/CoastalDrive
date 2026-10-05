@@ -151,6 +151,8 @@ class Tires:
         longitudinal_impulses = [state.longitudinal_impulse if accumulate else 0. for state in self.states]
         lateral_impulses = [state.lateral_impulse if accumulate else 0. for state in self.states]
         brake_angular_impulses = [state.brake_angular_impulse if accumulate else 0. for state in self.states]
+        rolling_angular_impulses = [state.rolling_angular_impulse if accumulate else 0. for state in self.states]
+        rolling_dissipation = [state.rolling_dissipation if accumulate else 0. for state in self.states]
         material_dissipation = [state.material_dissipation if accumulate else 0. for state in self.states]
         road_dissipation = [state.road_dissipation if accumulate else 0. for state in self.states]
         elastic_numerical_dissipation = [state.elastic_numerical_dissipation if accumulate else 0. for state in self.states]
@@ -165,6 +167,8 @@ class Tires:
             config.front_brake_share if i < 2 else 1 - config.front_brake_share) / 2
             + (engine_drag / 2 if i >= 2 else 0.0) for i in range(4))
         force_initial = tuple((state.fx, state.fy, state.brake_torque) for state in self.states)
+        rolling_coefficients = (tuple(config.rolling_coefficient if c.surface == "asphalt" else config.grass_rolling_coefficient
+                                      for c in contacts) if config.finite_drivetrain and config.wheel_rolling_resistance else (0.,) * 4)
         for substep in range(substeps):
             steps = None
             fraction = (substep + 1) / substeps
@@ -202,7 +206,8 @@ class Tires:
                         downstream_omega=powertrain.downstream_omega if powertrain.downstream_active else (),
                         downstream_inertias=config.downstream_inertias,
                         downstream_axes=tuple(tuple(orientation.xform(Vec3(*axis))) for axis in config.downstream_axes)
-                            if powertrain.downstream_active else (), suspension=normal_system if suspension is not None else None)
+                            if powertrain.downstream_active else (), suspension=normal_system if suspension is not None else None,
+                        rolling_coefficients=rolling_coefficients)
                     steps = result.wheels
                     force_initial = tuple((step.fx, step.fy, step.brake_torque) for step in steps)
                     drives = result.wheel_drive_torques
@@ -277,6 +282,8 @@ class Tires:
                 longitudinal_impulses[index] += sub_dt * step.fx
                 lateral_impulses[index] += sub_dt * step.fy
                 brake_angular_impulses[index] += sub_dt * step.brake_torque
+                rolling_angular_impulses[index] += sub_dt * step.rolling_torque
+                rolling_dissipation[index] += step.rolling_dissipation
                 material_dissipation[index] += step.material_dissipation
                 road_dissipation[index] += step.road_dissipation
                 elastic_numerical_dissipation[index] += step.elastic_numerical_dissipation
@@ -318,6 +325,10 @@ class Tires:
                     steering_work=steering_work[index],
                     longitudinal_angular_impulse=tuple(longitudinal_angular_impulses[index]),
                     lateral_angular_impulse=tuple(lateral_angular_impulses[index]),
+                    rolling_torque=step.rolling_torque,
+                    rolling_angular_impulse=rolling_angular_impulses[index],
+                    rolling_dissipation=rolling_dissipation[index],
+                    force_rolling_radius=radius,
                 )
             if suspension is not None:
                 final_normal_system = normal_system

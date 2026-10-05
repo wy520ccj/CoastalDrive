@@ -97,8 +97,10 @@ VEHICLE_FIELDS = {
     "air_density": ("kg/m³", "环境空气密度"),
     "drag_coefficient": ("1", "气动阻力Cd"),
     "frontal_area": ("m²", "迎风面积；保持旧CdA乘积的推导设计值"),
-    "rolling_coefficient": ("1", "铺装滚阻160/(1200×9.81)，乘实际Fn及低速线性项"),
+    "rolling_coefficient": ("1", "铺装滚阻160/(1200×9.81)；轮端矩Crr*实际Fn*有效半径及低速连续项"),
     "grass_rolling_coefficient": ("1", "草地滚阻900/(1200×9.81)"),
+    "wheel_rolling_resistance": ("bool", "有限传动采用独立路面轮端阻力矩；false冻结旧车身中央阻力A/B"),
+    "rolling_transition_speed": ("m/s", "滚阻从零线性增长至Crr*Fn*r的实际轮缘速度；通用设计尺度"),
     "road_friction": ("1", "铺装摩擦预算μFn"),
     "grass_friction": ("1", "草地摩擦预算μFn"),
     "wheelbase": ("m", "轴距、Ackermann和轴荷诊断"),
@@ -222,6 +224,8 @@ def measure(mode):
             "world_substep_dt_s": FIXED_DT / physical_substeps(car.config),
             "suspension_state": asdict(car.suspension.state) if car.coupled_suspension else None,
             "aerodynamic_model": "relative-air-3d-scalar-CdA",
+            "rolling_model": "shared-wheel-external-torque" if car.config.finite_drivetrain and car.config.wheel_rolling_resistance else "legacy-central-force",
+            "wheel_dynamics": [asdict(w) for w in car.snapshot().wheel_dynamics],
             "dynamics": asdict(car.snapshot().dynamics),
             "wheels": [{
                 "hub": tuple(w.getChassisConnectionPointCs()), "radius": w.getWheelRadius(),
@@ -258,7 +262,7 @@ def export(output):
     source_names = ("vehicle_config.py", "driver_assist.py", "driving_modes.py", "vehicle.py",
                     "vehicle_tires.py", "vehicle_traction.py", "powertrain.py", "vehicle_steering.py", "vehicle_dynamics.py",
                     "wheel_dynamics.py", "tire_forces.py", "vehicle_contacts.py", "vehicle_state.py",
-                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py", "rotor_dynamics.py", "wheel_geometry.py", "transmission_ports.py", "tire_drivetrain.py", "differential.py", "shaft_transmission.py", "driveline_inertia.py", "suspension.py", "vehicle_suspension.py", "suspension_contacts.py", "suspension_geometry.py", "suspension_kinematics.py", "wheel_envelope.py", "triangle_support.py", "simulation.py", "streamed_road.py", "world_step.py")
+                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py", "rotor_dynamics.py", "wheel_geometry.py", "transmission_ports.py", "tire_drivetrain.py", "differential.py", "shaft_transmission.py", "driveline_inertia.py", "suspension.py", "vehicle_suspension.py", "suspension_contacts.py", "suspension_geometry.py", "suspension_kinematics.py", "wheel_envelope.py", "triangle_support.py", "rolling_resistance.py", "simulation.py", "streamed_road.py", "world_step.py")
     hashes = {f"src/{name}": hashlib.sha256((ROOT / "src" / name).read_bytes()).hexdigest()
               for name in source_names}
     hashes["tools/physics/export_reference.py"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
@@ -271,7 +275,7 @@ def export(output):
                         "world_substeps_per_tick": {mode.value: physical_substeps(mode.vehicle_config) for mode in DrivingMode},
                         "native_dt_s": {mode.value: FIXED_DT / physical_substeps(mode.vehicle_config) for mode in DrivingMode},
                         "ground": "水平无限平面", "gravity": [0, 0, -9.81], "input": "VehicleCommand()"},
-        "schema_version": "reference-v27",
+        "schema_version": "reference-v28",
         "vehicle_fields": VEHICLE_FIELDS, "brake_fields": BRAKE_FIELDS,
         "traction_fields": TRACTION_FIELDS, "stability_fields": STABILITY_FIELDS,
         "input_fields": INPUT_FIELDS, "modes": modes,
@@ -286,5 +290,5 @@ def export(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path,
-                        default=ROOT / "logs/physics/reference-v27/parameters.json")
+                        default=ROOT / "logs/physics/reference-v28/parameters.json")
     export(parser.parse_args().output)

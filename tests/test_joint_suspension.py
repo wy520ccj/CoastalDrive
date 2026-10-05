@@ -115,7 +115,8 @@ def test_actual_bullet_submission_matches_joint_six_dimensional_end(mode, monkey
 
 
 @pytest.mark.parametrize("share", (0., .5, 1.))
-def test_normal_coupling_keeps_downstream_storage_and_airborne_material(share):
+@pytest.mark.parametrize("rolling", (False, True))
+def test_normal_coupling_keeps_downstream_storage_and_airborne_material(share, rolling):
     config = replace(CONFIG, front_drive_share=share)
     contact_frames = frames(20., 17.)
     normal = (math.sin(math.radians(20.)), 0., math.cos(math.radians(20.)))
@@ -133,12 +134,18 @@ def test_normal_coupling_keeps_downstream_storage_and_airborne_material(share):
         torque, 300., 12., brakes, config, config, dt, inverse_inertia=TENSOR,
         engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12, efficiency=.88,
         shaft_omega=shaft, shaft_inertia=.04, shaft_axis=(0., 1., 0.),
-        downstream_omega=old_speeds, downstream_inertias=INERTIAS, downstream_axes=AXES, suspension=system)
+        downstream_omega=old_speeds, downstream_inertias=INERTIAS, downstream_axes=AXES, suspension=system,
+        rolling_coefficients=(.013, .013, .076, .076) if rolling else (0.,) * 4)
     step = result.suspension
     assert step.axial_force[0] == pytest.approx(0., abs=1e-9)
     assert 0. < step.compression[0] < initial[0]
     assert result.normal_residual < 1e-8
     loaded = tuple(replace(frame, load=force / normal[2]) for frame, force in zip(contact_frames, step.axial_force))
+    if rolling:
+        for wheel, frame, coefficient in zip(result.wheels, loaded, (.013, .013, .076, .076)):
+            radius = frame.rolling_radius
+            expected = coefficient * frame.load * radius**2 * wheel.omega / max(abs(radius*wheel.omega), 1.)
+            assert wheel.rolling_torque == pytest.approx(expected, abs=1e-9)
     audit(result, velocity, angular, spins, engine, loaded, deformation, torque, brakes, config, dt,
           old_axes, ((0.,) * 3,) * 4, shaft=shaft, downstream=tuple(zip(old_speeds, inertias, AXES)),
           normal=(system, step))

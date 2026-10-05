@@ -47,6 +47,8 @@ class WheelStep:
     deformation_rate_y: float = 0.0
     gyro_torque: tuple = (0.0, 0.0, 0.0)
     steering_torque: tuple = (0.0, 0.0, 0.0)
+    rolling_torque: float = 0.0
+    rolling_dissipation: float = 0.0
 
 
 def advance_wheel(omega, vx, vy, body_omega, drive, brake, load, mu, mobility, dt,

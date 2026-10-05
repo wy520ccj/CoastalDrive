@@ -72,7 +72,7 @@ def test_export_contains_complete_brake_metadata_and_source(tmp_path):
     assert "src/tire_compliance.py" in report["source_sha256"]
     assert "src/tire_properties.py" in report["source_sha256"]
     assert "src/vehicle_stability.py" in report["source_sha256"]
-    assert len(report["vehicle_fields"]) == 94
+    assert len(report["vehicle_fields"]) == 96
     assert len(report["stability_fields"]) == 10
     assert "src/vehicle_brakes.py" in report["source_sha256"]
     assert len(report["source_sha256"]["src/vehicle_brakes.py"]) == 64
@@ -83,5 +83,5 @@ def test_export_contains_complete_brake_metadata_and_source(tmp_path):
         assert set(mode["vehicle_config"]["stability"]) == set(report["stability_fields"])
         assert mode["native_bullet"]["mass"] > 0
     assert all(unit and purpose for unit, purpose in report["brake_fields"].values())
-    assert report["schema_version"] == "reference-v27"
+    assert report["schema_version"] == "reference-v28"
     assert all(unit and purpose for unit, purpose in report["traction_fields"].values())

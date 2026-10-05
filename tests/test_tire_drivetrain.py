@@ -78,9 +78,9 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
             force[a] += f[a]
             body_torque[a] += moment[a] + frame.spin_axis[a] * (
                 drive - wheel.brake_torque - frame.rolling_radius * wheel.fx) + wheel.gyro_torque[a] + steering[i][a]
-            external[a] += dt * moment[a]
+            external[a] += dt * (moment[a] + wheel.rolling_torque * frame.spin_axis[a])
         assert config.wheel_inertia * (wheel.omega - spins[i]) == pytest.approx(
-            dt * (drive - wheel.brake_torque - frame.rolling_radius * wheel.fx), abs=1e-11)
+            dt * (drive - wheel.brake_torque - frame.rolling_radius * wheel.fx - wheel.rolling_torque), abs=1e-11)
         assert wheel.relative_omega == pytest.approx(wheel.omega + dot(end_angular, frame.spin_axis), abs=1e-12)
         assert wheel.residual < .001
         assert abs(wheel.brake_torque) <= brakes[i] + 1e-10
@@ -120,7 +120,7 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
         contact_loss = dt * sum(w.fx * (f.rolling_radius * w.omega - w.vx) - w.fy * w.vy for f, w in zip(contact_frames, wheels))
     brake_heat = dt * sum(w.brake_torque * w.relative_omega for w in wheels)
     steering_work = dt * sum(dot(end_angular, value) for value in steering)
-    energy_error = (kinetic + numerical + elastic + contact_loss + brake_heat + result.engine_drag_heat
+    energy_error = (kinetic + numerical + elastic + contact_loss + brake_heat + sum(w.rolling_dissipation for w in wheels) + result.engine_drag_heat
                     + result.clutch_heat + result.gear_heat + result.synchronizer_heat + dt * sum(t * s for t, s in zip(torques, slips))
                     - result.engine_work - steering_work)
     if normal is not None:
