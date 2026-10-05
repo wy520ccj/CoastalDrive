@@ -78,6 +78,30 @@ class SuspensionStep:
     body_numerical_dissipation: float
     contact_offset_work: float
     energy_residual: float
+    body_work: float = 0.
+
+
+@dataclass(frozen=True)
+class SuspensionInput:
+    """同拍固定接触几何及真实材料初值；不持有物理世界或车身。"""
+    compression: tuple
+    geometry: tuple
+    gradients: tuple
+    touching: tuple
+    alignment: tuple
+    config: object
+
+
+def shared_suspension(system, velocity, angular, dt, *, mobility=None, forces=(0.,) * 4):
+    """由共同末速度求硬件反力；mobility仅用于法向块的隐式预条件。"""
+    mobility = ((0.,) * 4,) * 4 if mobility is None else mobility
+    speeds = tuple(dot(g, tuple(velocity) + tuple(angular)) - dt * dot(row, forces)
+                   for g, row in zip(system.gradients, mobility))
+    config = system.config
+    return advance_suspension(system.compression, speeds, mobility, system.touching,
+        config.suspension_spring_rates, config.suspension_compression_damping,
+        config.suspension_extension_damping, config.suspension_antiroll_rates,
+        config.suspension_stop_rates, config.suspension_travel, dt, geometry=system.geometry)
 
 
 @dataclass(frozen=True)
@@ -93,6 +117,7 @@ class SuspensionState:
     force_tick: int = 0
     contact_compression: tuple = (0.,) * 4
     initialization_energy: float = 0.
+    substeps: tuple = ()
 
 
 def advance_suspension(compression, extension_speed, mobility, touching,
@@ -160,4 +185,5 @@ def advance_suspension(compression, extension_speed, mobility, touching,
     kinetic_change = dt * dot(forces, extension_speed) + body_loss
     residual = kinetic_change + energy_change + damping_loss + elastic_loss + body_loss - offset_work
     return SuspensionStep(end, tuple(dx / dt for dx in delta), forces, raw, spring, bar, stop,
-                          damping_loss, elastic_loss, body_loss, offset_work, residual)
+                          damping_loss, elastic_loss, body_loss, offset_work, residual,
+                          kinetic_change + body_loss)

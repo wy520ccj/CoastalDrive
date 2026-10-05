@@ -42,12 +42,17 @@ class Tires:
             for i, weight in enumerate(self.config.drive_weights))
 
     def advance(self, chassis, contacts, angles, drive, engine_drag, pressures, tick, dt,
-                external_velocity=(0.0, 0.0, 0.0), external_angular=(0.0, 0.0, 0.0), *, powertrain=None):
+                external_velocity=(0.0, 0.0, 0.0), external_angular=(0.0, 0.0, 0.0), *, powertrain=None,
+                suspension=None):
         pose = chassis.getTransform()
         origin = pose.getPos()
         orientation = pose.getQuat()
         inv_inertia = chassis.getInvInertiaTensorWorld()
         config = self.config
+        normal_steps = []
+        if suspension is not None:
+            normal_adapter, normal_system, on_asphalt = suspension
+            initial_normal_system = normal_system
         wheel_frames = []
         for index in range(4):
             angle = angles[index] if index < 2 else 0.0
@@ -170,6 +175,10 @@ class Tires:
                 free_velocity = tuple(chassis.getLinearVelocity()[a] + external_velocity[a] * fraction for a in range(3))
                 free_angular = tuple(chassis.getAngularVelocity()[a] + external_angular[a] * fraction for a in range(3))
                 if config.finite_drivetrain:
+                    if suspension is not None:
+                        # 固定当拍路面资格，实际离地/再支撑由本子步求出的轮荷决定。
+                        wheel_frames = tuple(replace(frame, supported=base.supported)
+                                             for frame, base in zip(wheel_frames, base_frames))
                     result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
                         wheel_frames, projected, powertrain.engine_torque_request, powertrain.capacity,
                         powertrain.mechanical_ratio, capacities, config, self.rear_config, sub_dt,
@@ -186,11 +195,23 @@ class Tires:
                         downstream_omega=powertrain.downstream_omega if powertrain.downstream_active else (),
                         downstream_inertias=config.downstream_inertias,
                         downstream_axes=tuple(tuple(orientation.xform(Vec3(*axis))) for axis in config.downstream_axes)
-                            if powertrain.downstream_active else ())
+                            if powertrain.downstream_active else (), suspension=normal_system if suspension is not None else None)
                     steps = result.wheels
                     force_initial = tuple((step.fx, step.fy, step.brake_torque) for step in steps)
                     drives = result.wheel_drive_torques
                     end_angular = result.angular
+                    if suspension is not None:
+                        normal_adapter.apply_step(chassis, normal_system, result.suspension, sub_dt)
+                        normal_steps.append((sub_dt, result.suspension))
+                        actual_contacts = normal_adapter.contacts(normal_system, result.suspension, on_asphalt)
+                        wheel_frames = tuple(replace(frame, load=contact.normal_load if base.supported else 0.,
+                                                     supported=contact.in_contact and base.supported)
+                                             for frame, contact, base in zip(wheel_frames, actual_contacts, base_frames))
+                        # 子步冻结同一接点雅可比；用真实共同末速度推进其约束坐标。
+                        next_normal_system = replace(normal_system,
+                            compression=result.suspension.compression,
+                            geometry=tuple(x - sub_dt * sum(a * b for a, b in zip(g, result.velocity + result.angular))
+                                           for x, g in zip(normal_system.geometry, normal_system.gradients)))
                     powertrain.accept_step(result, sub_dt)
                     chassis.applyTorqueImpulse(Vec3(*result.engine_body_torque) * sub_dt)
                     if powertrain.input_shaft_active:
@@ -292,7 +313,13 @@ class Tires:
                     longitudinal_angular_impulse=tuple(longitudinal_angular_impulses[index]),
                     lateral_angular_impulse=tuple(lateral_angular_impulses[index]),
                 )
+            if suspension is not None:
+                final_normal_system = normal_system
+                normal_system = next_normal_system
         self.states = tuple(states)
+        if suspension is not None:
+            return normal_adapter.publish(initial_normal_system, final_normal_system,
+                                          tuple(normal_steps), on_asphalt, tick)
 
     def observe(self, chassis, contacts, tick):
         """完成Bullet步后采样当前滑移；保留前一施力阶段的力与求解滑移。"""

@@ -1,0 +1,12 @@
+F821 Undefined name `config`
+   --> tools\physics\export_reference.py:219:101
+    |
+217 | …     "suspension_authority": "coupled-SI" if car.coupled_suspension else "native-Bullet",
+218 | …     "suspension_contact_model": "finite-radius-sphere-envelope" if car.coupled_suspension else "native-point-ray",
+219 | …     "suspension_velocity_model": "shared-tire-drivetrain-end" if car.coupled_suspension and config.finite_drivetrain else "separate…
+    |                                                                                               ^^^^^^
+220 | …     "suspension_state": asdict(car.suspension.state) if car.coupled_suspension else None,
+221 | …     "wheels": [{
+    |
+
+Found 1 error.

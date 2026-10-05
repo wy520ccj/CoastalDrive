@@ -25,7 +25,7 @@ def solve(velocity, angular, spins, engine, contact_frames, deformation, torque,
 def audit(result, velocity, angular, spins, engine, contact_frames, deformation, torque, brakes, config, dt,
           old_axes, steering, inertia=tuple(tuple(INERTIA[a] if a == b else 0. for b in range(3)) for a in range(3)),
           engine_axis=ENGINE_AXIS, drag=.12, engine_inertia=ENGINE_INERTIA,
-          shaft=None, shaft_inertia=.04, shaft_axis=(0., 1., 0.), downstream=None):
+          shaft=None, shaft_inertia=.04, shaft_axis=(0., 1., 0.), downstream=None, normal=None):
     wheels, end_angular, end_velocity = result.wheels, result.angular, result.velocity
     relative_wheels = tuple(w.omega + dot(end_angular, f.spin_axis) for w, f in zip(wheels, contact_frames))
     slips = (relative_wheels[0] - relative_wheels[1], relative_wheels[2] - relative_wheels[3],
@@ -51,6 +51,13 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
     assert result.differential_torques == pytest.approx(torques, abs=1e-11)
     assert result.differential_slips == pytest.approx(slips, abs=1e-12)
     force, body_torque, external = [0.] * 3, list(result.engine_body_torque), [0.] * 3
+    if normal is not None:
+        system, step = normal
+        for gradient, axial in zip(system.gradients, step.axial_force):
+            for a in range(3):
+                force[a] += gradient[a] * axial
+                body_torque[a] += gradient[a + 3] * axial
+                external[a] += dt * gradient[a + 3] * axial
     if shaft is not None:
         for a in range(3):
             body_torque[a] += result.shaft_body_torque[a]
@@ -116,6 +123,14 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
     energy_error = (kinetic + numerical + elastic + contact_loss + brake_heat + result.engine_drag_heat
                     + result.clutch_heat + result.gear_heat + result.synchronizer_heat + dt * sum(t * s for t, s in zip(torques, slips))
                     - result.engine_work - steering_work)
+    if normal is not None:
+        def potential(x):
+            return (sum(k * value**2 / 2 for k, value in zip(config.suspension_spring_rates, x))
+                    + sum(k * (x[i] - x[i + 1])**2 / 2 for i, k in zip((0, 2), config.suspension_antiroll_rates))
+                    + sum(k * max(abs(value) - config.suspension_travel, 0.)**2 / 2
+                          for k, value in zip(config.suspension_stop_rates, x)))
+        energy_error += (potential(step.compression) - potential(system.compression)
+                         + step.damping_dissipation + step.elastic_numerical_dissipation - step.contact_offset_work)
     assert energy_error == pytest.approx(0., abs=3e-9)
     assert result.clutch_heat >= -1e-9 and result.gear_heat >= -1e-9
     old_spin = tuple(engine_inertia * engine * engine_axis[a] - config.wheel_inertia * sum(

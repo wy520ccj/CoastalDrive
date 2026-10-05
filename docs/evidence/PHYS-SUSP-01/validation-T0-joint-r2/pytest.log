@@ -1,0 +1,98 @@
+............FF.........................                                  [100%]
+================================== FAILURES ===================================
+_ test_actual_bullet_submission_matches_joint_six_dimensional_end[DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000024C8FE1ED70>
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    def test_actual_bullet_submission_matches_joint_six_dimensional_end(mode, monkeypatch):
+        import vehicle_tires
+    
+        observed = []
+        original = vehicle_tires.advance_drivetrain
+    
+        def capture(*args, **kwargs):
+            result = original(*args, **kwargs)
+            observed.append((kwargs["suspension"], result))
+            return result
+    
+        monkeypatch.setattr(vehicle_tires, "advance_drivetrain", capture)
+        _world, car = _create_vehicle(mode.vehicle_config)
+        try:
+            # 仅试验初始条件：带真实倾角、车速、轮速及角速度，不在运行中改写状态。
+            car._chassis.setTransform(TransformState.makePosHpr(Vec3(0, 0, .4), Vec3(0, 0, 3)))
+            car._chassis.setLinearVelocity(Vec3(.2, 12., -.1))
+            car._chassis.setAngularVelocity(Vec3(.15, -.1, .02))
+            car.tires.initialize_rolling(12.)
+            car.apply_command(VehicleCommand(steering=.25, throttle=.3, gear=1, clutch=.7))
+            pending_v = car._chassis.getGravity() * FIXED_DT + car._chassis.getTotalForce() / car.config.mass * FIXED_DT
+            pending_w = car._chassis.getInvInertiaTensorWorld().xform(car._chassis.getTotalTorque()) * FIXED_DT
+            final = observed[-1][1]
+            assert len(observed) == car.config.tire_substeps
+            assert tuple(car._chassis.getLinearVelocity() + pending_v) == pytest.approx(final.velocity, abs=2e-6)
+            assert tuple(car._chassis.getAngularVelocity() + pending_w) == pytest.approx(final.angular, abs=2e-7)
+            for system, result in observed:
+                assert result.normal_residual < 1e-8
+                for i, (gradient, touching) in enumerate(zip(system.gradients, system.touching)):
+                    if touching and result.suspension.axial_force[i] > 0.:
+>                       assert result.suspension.compression[i] == pytest.approx(
+                            system.geometry[i] - FIXED_DT / car.config.tire_substeps
+                            * dot(gradient, result.velocity + result.angular), abs=1e-12)
+E                           assert 0.03616762430364753 == 0.03621405500203683 ± 1.0e-12
+E                             
+E                             comparison failed
+E                             Obtained: 0.03616762430364753
+E                             Expected: 0.03621405500203683 ± 1.0e-12
+
+tests\test_joint_suspension.py:90: AssertionError
+_ test_actual_bullet_submission_matches_joint_six_dimensional_end[DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000024C90C468B0>
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    def test_actual_bullet_submission_matches_joint_six_dimensional_end(mode, monkeypatch):
+        import vehicle_tires
+    
+        observed = []
+        original = vehicle_tires.advance_drivetrain
+    
+        def capture(*args, **kwargs):
+            result = original(*args, **kwargs)
+            observed.append((kwargs["suspension"], result))
+            return result
+    
+        monkeypatch.setattr(vehicle_tires, "advance_drivetrain", capture)
+        _world, car = _create_vehicle(mode.vehicle_config)
+        try:
+            # 仅试验初始条件：带真实倾角、车速、轮速及角速度，不在运行中改写状态。
+            car._chassis.setTransform(TransformState.makePosHpr(Vec3(0, 0, .4), Vec3(0, 0, 3)))
+            car._chassis.setLinearVelocity(Vec3(.2, 12., -.1))
+            car._chassis.setAngularVelocity(Vec3(.15, -.1, .02))
+            car.tires.initialize_rolling(12.)
+            car.apply_command(VehicleCommand(steering=.25, throttle=.3, gear=1, clutch=.7))
+            pending_v = car._chassis.getGravity() * FIXED_DT + car._chassis.getTotalForce() / car.config.mass * FIXED_DT
+            pending_w = car._chassis.getInvInertiaTensorWorld().xform(car._chassis.getTotalTorque()) * FIXED_DT
+            final = observed[-1][1]
+            assert len(observed) == car.config.tire_substeps
+            assert tuple(car._chassis.getLinearVelocity() + pending_v) == pytest.approx(final.velocity, abs=2e-6)
+            assert tuple(car._chassis.getAngularVelocity() + pending_w) == pytest.approx(final.angular, abs=2e-7)
+            for system, result in observed:
+                assert result.normal_residual < 1e-8
+                for i, (gradient, touching) in enumerate(zip(system.gradients, system.touching)):
+                    if touching and result.suspension.axial_force[i] > 0.:
+>                       assert result.suspension.compression[i] == pytest.approx(
+                            system.geometry[i] - FIXED_DT / car.config.tire_substeps
+                            * dot(gradient, result.velocity + result.angular), abs=1e-12)
+E                           assert 0.03636911425816189 == 0.036215017729046506 ± 1.0e-12
+E                             
+E                             comparison failed
+E                             Obtained: 0.03636911425816189
+E                             Expected: 0.036215017729046506 ± 1.0e-12
+
+tests\test_joint_suspension.py:90: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_joint_suspension.py::test_actual_bullet_submission_matches_joint_six_dimensional_end[DrivingMode.GAME]
+FAILED tests/test_joint_suspension.py::test_actual_bullet_submission_matches_joint_six_dimensional_end[DrivingMode.SIMULATION]
+2 failed, 37 passed in 5.32s

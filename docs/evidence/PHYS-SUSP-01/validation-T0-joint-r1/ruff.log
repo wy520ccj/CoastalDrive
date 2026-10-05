@@ -1,0 +1,13 @@
+RUF059 Unpacked variable `world` is never used
+  --> tests\test_joint_suspension.py:72:5
+   |
+71 |     monkeypatch.setattr(vehicle_tires, "advance_drivetrain", capture)
+72 |     world, car = _create_vehicle(mode.vehicle_config)
+   |     ^^^^^
+73 |     try:
+74 |         # 仅试验初始条件：带真实倾角、车速、轮速及角速度，不在运行中改写状态。
+   |
+help: Prefix it with an underscore or any other dummy variable pattern
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).

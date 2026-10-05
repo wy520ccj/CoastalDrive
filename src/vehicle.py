@@ -258,17 +258,26 @@ class Vehicle:
             self._chassis.getTotalTorque()
         ) * FIXED_DT
         tire_contact_tick = self._contact_tick
+        suspension = None
         if self.coupled_suspension:
             tire_contact_tick += 1
-            self._wheel_contacts = self.suspension.advance(
-                self._world, self._chassis, self._vehicle.getWheels(), self.on_asphalt,
-                tire_contact_tick, FIXED_DT, tuple(external_velocity), tuple(external_angular))
-        self.tires.advance(
+            if self.config.finite_drivetrain:
+                system = self.suspension.prepare(self._world, self._chassis, self._vehicle.getWheels())
+                self._wheel_contacts = self.suspension.candidates(system, self.on_asphalt)
+                suspension = self.suspension, system, self.on_asphalt
+            else:
+                self._wheel_contacts = self.suspension.advance(
+                    self._world, self._chassis, self._vehicle.getWheels(), self.on_asphalt,
+                    tire_contact_tick, FIXED_DT, tuple(external_velocity), tuple(external_angular))
+        coupled_contacts = self.tires.advance(
             self._chassis, self._wheel_contacts, wheel_angles(self.steering.angle, self.config),
             drive_torque, engine_drag, pressures, tire_contact_tick, FIXED_DT,
             tuple(external_velocity), tuple(external_angular),
             powertrain=self.powertrain if self.config.finite_drivetrain else None,
+            suspension=suspension,
         )
+        if suspension is not None:
+            self._wheel_contacts = coupled_contacts
         traction_limited = any(
             state.kappa is not None and abs(state.kappa) > 0.1 for state in self.tires.states
         )

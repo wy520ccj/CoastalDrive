@@ -38,8 +38,9 @@ def run(output, prior):
     output.mkdir(parents=True, exist_ok=False)
     hashes = lambda: {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                      for group in ("src", "tests", "tools") for p in sorted((ROOT / group).rglob("*.py"))}
-    report = {"status": "running", "source_before": hashes(), "baseline": "d0f64dd",
-              "protocol": "unchanged one-side fixture/initial conditions/commands; 360 native 120Hz steps per mode; finite-radius sphere envelope, native core+margin Box SDF independently checked; point-ray baseline reused", "results": []}
+    report = {"status": "running", "source_before": hashes(), "baseline": prior.relative_to(ROOT).as_posix(),
+              "baseline_source_sha256": json.loads((prior / "summary.json").read_text(encoding="utf-8"))["source_after"],
+              "protocol": "unchanged one-side fixture/initial conditions/commands; 360 native 120Hz steps per mode; finite-radius sphere envelope, native core+margin Box SDF independently checked; saved prior trace reused", "results": []}
     pending = ["game", "simulation"]
     try:
         for mode in pending[:]:
@@ -66,7 +67,7 @@ def run(output, prior):
                                       "baseline_sum_signed_contact_offset_work_j": sum(row["car"]["suspension_state"]["step"]["contact_offset_work"] for row in old_rows),
                                       "side_contact_ticks": [row["tick"] for row in rows if any(c["in_contact"] and c["contact_normal"][2] < .5 for c in row["car"]["wheel_contacts"])]})
             pending.remove(mode)
-            print(f"DONE {mode}: surface error {old_error:.6g} -> {error:.6g}m; offset {result['sum_signed_contact_offset_work_j']:.6g}J", flush=True)
+            print(f"DONE {mode}: current core+margin surface error {error:.6g}m; offset {result['sum_signed_contact_offset_work_j']:.6g}J", flush=True)
     except (ArithmeticError, AssertionError, ValueError, OSError) as error:
         report.update(status="failed", error=repr(error), failed_mode=pending[0], not_run=pending[1:])
         raise

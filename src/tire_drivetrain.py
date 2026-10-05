@@ -1,7 +1,7 @@
 """四轮接触、曲轴/输入轴、有限离合与制动的共同末状态。"""
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from differential import (
     differential_branches,
@@ -21,6 +21,7 @@ from shaft_transmission import (
     synchronizer_brake_response,
     synchronizer_brake_state,
 )
+from suspension import SuspensionStep, shared_suspension
 from tire_compliance import contact_force, contact_jacobian, energy_terms
 from tire_forces import combined_force, slip_state
 from tire_properties import tire_grip, tire_stiffness
@@ -68,6 +69,8 @@ class DrivetrainStep:
     downstream_wheel_torques: tuple = (0.,) * 4
     downstream_kinetic_energy: tuple = ()
     downstream_numerical_dissipation: tuple = ()
+    suspension: SuspensionStep | None = None
+    normal_residual: float = 0.
 
 
 def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformations,
@@ -76,7 +79,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                        steering_torques=((0., 0., 0.),) * 4, force_initial=((0., 0., 0.),) * 4,
                        shaft_omega=None, shaft_inertia=None, shaft_axis=None,
                        synchronizing=False, synchronizer_capacity=0.,
-                       downstream_omega=(), downstream_inertias=(), downstream_axes=()):
+                       downstream_omega=(), downstream_inertias=(), downstream_axes=(),
+                       suspension=None):
     """九维q含实体输入轴；未指定输入轴时保留原八维机制供旧/新A/B。"""
     mass, wheel_inertia = config.mass, config.wheel_inertia
     shaft = shaft_omega is not None
@@ -133,6 +137,20 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         projection = drag_factor * dot(engine_response, vector)
         return tuple(base[a] - projection * engine_response[a] for a in range(dimensions))
 
+    normal_forces = (0.,) * 4
+    normal_responses, normal_mobility = (), ()
+    if suspension is not None:
+        normal_responses = tuple(mobility(g[3:] + (0.,) * (dimensions - 3)) for g in suspension.gradients)
+        bare = tuple(tuple(value / mass for value in g[:3])
+                     + tuple(dot(row, g[3:]) for row in inverse_inertia) for g in suspension.gradients)
+        normal_mobility = tuple(tuple(dot(g, r) for r in bare) for g in suspension.gradients)
+
+    def normal_loads():
+        nonlocal frames
+        frames = tuple(replace(frame, load=force / alignment if frame.supported and contact and force > 0. else 0.)
+                       for frame, force, alignment, contact in
+                       zip(frames, normal_forces, suspension.alignment, suspension.touching))
+
     responses = tuple((mobility(longitudinal[i]), mobility(lateral[i]), mobility(brake_gradients[i])) for i in range(4))
     differential = differential_gradients(axes)
     if shaft:
@@ -184,7 +202,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     configurations = (config, config, rear_config, rear_config)
     rolling = tuple(max(abs(dot(velocity, frame.tangent) + dot(angular, moments_x[i])),
                         abs(radii[i] * omega[i])) >= config.static_contact_speed for i, frame in enumerate(frames))
-    static = tuple(frame.load > 0 and max(abs(dot(velocity, frame.tangent) + dot(angular, moments_x[i])),
+    static = tuple((frame.load > 0 if suspension is None else suspension.touching[i]) and max(abs(dot(velocity, frame.tangent) + dot(angular, moments_x[i])),
                    abs(dot(velocity, frame.axle) + dot(angular, moments_y[i])), abs(radii[i] * omega[i]))
                    < config.static_contact_speed for i, frame in enumerate(frames))
     steering = tuple(sum(torque[a] for torque in steering_torques) for a in range(3))
@@ -217,6 +235,11 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         end_velocity = tuple(velocity[a] + dt / mass * sum(
             forces[i][0] * frames[i].tangent[a] + forces[i][1] * frames[i].axle[a]
             for i in range(4) if i != exclude) for a in range(3))
+        if suspension is not None:
+            free = tuple(free[a] + dt * sum(force * response[a] for force, response in
+                         zip(normal_forces, normal_responses)) for a in range(dimensions))
+            end_velocity = tuple(end_velocity[a] + dt / mass * sum(force * g[a] for force, g in
+                                 zip(normal_forces, suspension.gradients)) for a in range(3))
         return free, end_velocity
 
     def shared(guess):
@@ -497,8 +520,15 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         forces[:] = original
 
     state = initial
+    normal_error = 0.
     for sweep in range(20):
         state, end_velocity, clutch, loss, gear_reaction = shared(state)
+        if suspension is not None:
+            normal_step = shared_suspension(suspension, end_velocity, state[:3], dt,
+                                            mobility=normal_mobility, forces=normal_forces)
+            normal_forces = normal_step.axial_force
+            normal_loads()
+            state, end_velocity, clutch, loss, gear_reaction = shared(state)
         gyro = cross(spin(state), state[:3])
         for i in (range(4) if sweep % 2 == 0 else range(3, -1, -1)):
             forces[i], modes[i] = solve_wheel(i, gyro)
@@ -522,12 +552,15 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             target_brake = max(-brakes[i], min(brakes[i], brake + dot(brake_gradients[i], state)
                                / (dt * dot(brake_gradients[i], responses[i][2]))))
             brake_error = max(brake_error, abs(brake - target_brake))
-        if maximum < .001 and brake_error < 1e-9:
+        if suspension is not None:
+            normal_step = shared_suspension(suspension, end_velocity, state[:3], dt)
+            normal_error = max(abs(a - b) for a, b in zip(normal_forces, normal_step.axial_force))
+        if maximum < .001 and brake_error < 1e-9 and normal_error < 1e-8:
             break
         if shaft and maximum >= .001 and sweep >= 8:
             correct_contacts(state)
     else:
-        raise ArithmeticError(f"传动/四轮共同求解超过20轮：{maximum:g}N，制动{brake_error:g}Nm")
+        raise ArithmeticError(f"传动/四轮共同求解超过20轮：{maximum:g}N，制动{brake_error:g}Nm，法向{normal_error:g}N")
 
     gyro_torques = bearing_torques(axes, state[wheel_start:], wheel_inertia, state[:3]) if rotor else ((0., 0., 0.),) * 4
     wheels = []
@@ -584,4 +617,5 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         dt * gear_reaction * dot(shaft_gear_gradient, state) if shaft and not hard_gear else 0., shaft_body,
         downstream_speeds, downstream_body, downstream_wheels,
         tuple(.5 * j * speed**2 for j, speed in zip(inertias, downstream_speeds)),
-        tuple(.5 * j * (new - old)**2 for j, new, old in zip(inertias, downstream_speeds, downstream_omega)))
+        tuple(.5 * j * (new - old)**2 for j, new, old in zip(inertias, downstream_speeds, downstream_omega)),
+        normal_step if suspension is not None else None, normal_error)
