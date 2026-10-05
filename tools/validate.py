@@ -18,7 +18,7 @@ AREAS = {
                 "test_road_loads", "test_vehicle_contacts", "test_physics_testbed", "test_h2_map",
                 "test_vehicle_commands", "test_steering_geometry", "test_tire_forces",
                 "test_wheel_dynamics", "test_vehicle_tires", "test_vehicle_config",
-                "test_suspension_si", "test_suspension_coupling", "test_suspension_native", "test_suspension_contacts", "test_suspension_envelope", "test_joint_suspension",
+                "test_suspension_si", "test_suspension_coupling", "test_suspension_native", "test_suspension_contacts", "test_suspension_envelope", "test_joint_suspension", "test_world_substeps",
                 "test_powertrain_config", "test_transmission_ports", "test_tire_drivetrain", "test_shaft_transmission", "test_tire_shaft", "test_input_shaft", "test_driveline_inertia", "test_driveline_native", "test_differential", "test_drive_layout", "test_finite_powertrain", "test_driving_modes", "test_reference_ab",
                 "test_vehicle_brakes", "test_abs_integration", "test_physics_config_io",
                 "test_vehicle_traction", "test_tcs_integration", "test_tcs_probe",

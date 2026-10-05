@@ -1,0 +1,21 @@
+.............F                                                           [100%]
+================================== FAILURES ===================================
+_______ test_initial_pose_preload_is_explicit_and_only_initialized_once _______
+
+    def test_initial_pose_preload_is_explicit_and_only_initialized_once():
+        world, car = _create_vehicle(DrivingMode.SIMULATION.vehicle_config)
+        try:
+            car._chassis.setTransform(TransformState.makePosHpr(Vec3(0, 0, .4), Vec3(0)))
+            _step(world, car, VehicleCommand(gear=0))
+            state = car.suspension.state
+            expected = sum(k * x * x / 2 for k, x in zip(car.config.suspension_spring_rates, state.sampled_compression))
+            assert state.initialization_energy == pytest.approx(expected, abs=1e-10)
+            assert state.initialization_energy > 600.
+>           assert state.geometry_work == 0.
+E           assert 0.0004666313261623145 == 0.0
+E            +  where 0.0004666313261623145 = SuspensionState(step=SuspensionStep(compression=(0.07985254028310115, 0.07985254028310115, 0.07985254028310115, 0.0798...rical_dissipation=0.0, contact_offset_work=0.0, energy_residual=5.660055757417126e-14, body_work=1.4713992489642056)))).geometry_work
+
+tests\test_suspension_native.py:164: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_suspension_native.py::test_initial_pose_preload_is_explicit_and_only_initialized_once
+1 failed, 13 passed in 5.62s

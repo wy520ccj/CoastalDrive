@@ -417,7 +417,22 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
 
         mode = "magic-formula" if frame.load > 0 else "airborne"
         if car.tire_compliance:
-            fx, fy, _error = _solve_force(residual, tolerance=.0001, initial=forces[i][:2], jacobian=jacobian)
+            guess = forces[i][:2]
+            if suspension is not None and sweep == 0 and rolling[i] and frame.load > 0:
+                # 姿态/轮荷刷新后，旧力可能位于曲线下降支。用同一隐式方程的零滑移切线预测初值。
+                vx, _vy, slip, gradients = derivatives(0., 0.)
+                impedance = car.tire_contact_stiffness * dt + car.tire_contact_damping
+                stiffnesses = tire_stiffness(frame.load, car)
+                slopes = tuple(value / max(abs(vx), car.slip_speed) for value in stiffnesses)
+                patch = tuple(slip[a] + car.tire_contact_stiffness * deformations[i][a] / impedance for a in range(2))
+                matrix = tuple(tuple(float(a == b) - slopes[a] * (
+                    gradients[b][a] - float(a == b) / impedance) for b in range(2)) for a in range(2))
+                a, b = matrix[0]
+                c, d = matrix[1]
+                rhs_x, rhs_y = tuple(slopes[a] * patch[a] for a in range(2))
+                determinant = a * d - b * c
+                guess = ((d * rhs_x - b * rhs_y) / determinant, (a * rhs_y - c * rhs_x) / determinant)
+            fx, fy, _error = _solve_force(residual, tolerance=.0001, initial=guess, jacobian=jacobian)
         else:
             sticking = False
             if static[i]:

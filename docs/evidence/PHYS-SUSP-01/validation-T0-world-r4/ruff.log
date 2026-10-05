@@ -1,0 +1,30 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> tools\physics\suspension_coupled_probe.py:16:1
+   |
+14 |   sys.path[:0] = [str(ROOT / "src"), str(ROOT / "tools")]
+15 |
+16 | / from panda3d.bullet import BulletBoxShape, BulletPlaneShape, BulletRigidBodyNode, BulletWorld
+17 | | from panda3d.core import TransformState, Vec3
+18 | | from physics.reference_ab import _step
+19 | |
+20 | | from driving_modes import DrivingMode
+21 | | from vehicle import Vehicle
+22 | | from vehicle_contacts import road_support
+23 | | from vehicle_state import VehicleCommand
+24 | | from vehicle_state import FIXED_DT
+25 | | from world_step import physical_substeps
+   | |________________________________________^
+26 |
+27 |   CASES = ("flat-free", "bank", "one-side", "drop-limit")
+   |
+help: Organize imports
+   |
+22 | from vehicle_contacts import road_support
+   - from vehicle_state import VehicleCommand
+   - from vehicle_state import FIXED_DT
+23 + from vehicle_state import FIXED_DT, VehicleCommand
+24 | from world_step import physical_substeps
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

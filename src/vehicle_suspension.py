@@ -147,3 +147,16 @@ class Suspension:
         return tuple(tuple(pose.getMat().xformPoint(Vec3(*hub))
                            + direction * (wheel.getSuspensionRestLength() - compression))
                      for hub, wheel, compression in zip(self.hubs, wheels, self.compression))
+
+    def accumulate(self, previous):
+        """真实世界子步之间只累加功与冲量；接点/末材料状态来自最后子步。"""
+        current = self.state
+        losses = ("damping_dissipation", "elastic_numerical_dissipation", "body_numerical_dissipation",
+                  "contact_offset_work", "energy_residual", "body_work")
+        step = replace(current.step, **{name: getattr(previous.step, name) + getattr(current.step, name) for name in losses})
+        self.state = replace(current, step=step, sampled_compression=previous.sampled_compression,
+                             geometry_work=previous.geometry_work + current.geometry_work,
+                             initialization_energy=previous.initialization_energy + current.initialization_energy,
+                             linear_impulse=tuple(a + b for a, b in zip(previous.linear_impulse, current.linear_impulse)),
+                             angular_impulse=tuple(a + b for a, b in zip(previous.angular_impulse, current.angular_impulse)),
+                             substeps=previous.substeps + current.substeps)

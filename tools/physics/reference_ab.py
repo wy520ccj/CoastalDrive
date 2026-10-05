@@ -21,6 +21,7 @@ from driver_assist import SIMULATION_INPUT
 from driving_modes import REFERENCE_CAR
 from vehicle import Vehicle
 from vehicle_state import FIXED_DT, VehicleCommand
+from world_step import advance_world, physical_substeps
 
 DEFAULT_OUTPUT = ROOT / "docs" / "evidence" / "PHYS-MODES-01" / "reference-ab"
 SETTLE_TICKS = 240
@@ -58,11 +59,10 @@ def _create_vehicle(config):
     return world, vehicle
 
 
-def _step(world, vehicle, command):
-    previous_velocity = Vec3(vehicle._chassis.getLinearVelocity())
-    vehicle.apply_command(command)
-    world.doPhysics(FIXED_DT, 0, FIXED_DT)
-    vehicle.after_step(previous_velocity)
+def _step(world, vehicle, command, *, world_substeps=None):
+    # 旧Git运行必须显式给出其真实单步协议，不按缺失字段猜测旧接口。
+    substeps = physical_substeps(vehicle.config) if world_substeps is None else world_substeps
+    advance_world(world, [(vehicle, command)], substeps=substeps)
 
 
 def _contact_loads(snapshot):

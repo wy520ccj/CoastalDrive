@@ -1,0 +1,242 @@
+.....FF..FF..........F                                                   [100%]
+================================== FAILURES ===================================
+_______ test_bullet_post_solve_rail_manifold_is_one_real_event[False-4] _______
+
+centered = False, point_count = 4
+
+    @pytest.mark.parametrize("centered,point_count", [(False, 4), (True, 8)])
+    def test_bullet_post_solve_rail_manifold_is_one_real_event(centered, point_count):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(CAR, centered_collision_support=centered))
+        diagnostic = io.StringIO()
+        simulation.set_impact_diagnostic(diagnostic, scenario="test-rail")
+        try:
+            simulation.reset_player((5.8, 30, 0.55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            for _ in range(30):
+                simulation.step(Control())
+                if simulation.snapshot().impacts:
+                    break
+            snapshot = simulation.snapshot()
+>           assert len(snapshot.impacts) == 1
+E           assert 0 == 1
+E            +  where 0 = len(())
+E            +    where () = Snapshot(tick=30, time=0.25, player=CarState(position=(6.5222272872924805, 32.960453033447266, 0.9943847060203552), he...1e-14, body_work=0.0))))), traffic=(), events=(), origin_y=0.0, collisions=0, contact_epoch=2, impacts=(), contacts=()).impacts
+
+tests\test_impact_events.py:45: AssertionError
+_______ test_bullet_post_solve_rail_manifold_is_one_real_event[True-8] ________
+
+centered = True, point_count = 8
+
+    @pytest.mark.parametrize("centered,point_count", [(False, 4), (True, 8)])
+    def test_bullet_post_solve_rail_manifold_is_one_real_event(centered, point_count):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(CAR, centered_collision_support=centered))
+        diagnostic = io.StringIO()
+        simulation.set_impact_diagnostic(diagnostic, scenario="test-rail")
+        try:
+            simulation.reset_player((5.8, 30, 0.55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            for _ in range(30):
+                simulation.step(Control())
+                if simulation.snapshot().impacts:
+                    break
+            snapshot = simulation.snapshot()
+>           assert len(snapshot.impacts) == 1
+E           assert 0 == 1
+E            +  where 0 = len(())
+E            +    where () = Snapshot(tick=30, time=0.25, player=CarState(position=(6.5222272872924805, 32.960453033447266, 0.9943847060203552), he...1e-14, body_work=0.0))))), traffic=(), events=(), origin_y=0.0, collisions=0, contact_epoch=4, impacts=(), contacts=()).impacts
+
+tests\test_impact_events.py:45: AssertionError
+_ test_five_second_rail_scrape_stays_contact_without_repeated_impacts[False] __
+
+finite = False
+
+    @pytest.mark.parametrize("finite", [False, True])
+    def test_five_second_rail_scrape_stays_contact_without_repeated_impacts(finite):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(CAR, finite_drivetrain=finite))
+        try:
+            # 新碰撞盒半宽1.05m；旧7.2m摆位会深陷护栏并触发地面撞击。
+            simulation.reset_player((6.9, 30, 0.55))
+            simulation.player._chassis.setLinearVelocity(Vec3(.5, 8, 0))
+            simulation.player.tires.initialize_rolling(8)
+            contact_ticks = []
+            impacts = []
+            # 接近和传动/车身收敛也占时间；随后仍须有完整5秒逐拍真实接触。
+            for tick in range(1440):
+                # 固定2°轮角/半油门维持沿栏摩擦；输入辅助包络不是恒定轮角工况。
+                simulation.step(VehicleCommand(throttle=.5, steering=2, direction=1))
+                if any(contact.material == "metal_barrier"
+                       for contact in simulation.snapshot().contacts):
+                    contact_ticks.append(tick + 1)
+                impacts.extend(simulation.snapshot().impacts)
+            longest = 0
+            run = 0
+            previous = None
+            for tick in contact_ticks:
+                run = run + 1 if previous == tick - 1 else 1
+                longest = max(longest, run)
+                previous = tick
+>           assert longest >= 600
+E           assert 11 >= 600
+
+tests\test_impact_events.py:124: AssertionError
+__ test_five_second_rail_scrape_stays_contact_without_repeated_impacts[True] __
+
+finite = True
+
+    @pytest.mark.parametrize("finite", [False, True])
+    def test_five_second_rail_scrape_stays_contact_without_repeated_impacts(finite):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(CAR, finite_drivetrain=finite))
+        try:
+            # 新碰撞盒半宽1.05m；旧7.2m摆位会深陷护栏并触发地面撞击。
+            simulation.reset_player((6.9, 30, 0.55))
+            simulation.player._chassis.setLinearVelocity(Vec3(.5, 8, 0))
+            simulation.player.tires.initialize_rolling(8)
+            contact_ticks = []
+            impacts = []
+            # 接近和传动/车身收敛也占时间；随后仍须有完整5秒逐拍真实接触。
+            for tick in range(1440):
+                # 固定2°轮角/半油门维持沿栏摩擦；输入辅助包络不是恒定轮角工况。
+>               simulation.step(VehicleCommand(throttle=.5, steering=2, direction=1))
+
+tests\test_impact_events.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\simulation.py:733: in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+src\world_step.py:42: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0)
+src\vehicle.py:290: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:183: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+src\tire_drivetrain.py:534: in advance_drivetrain
+    forces[i], modes[i] = solve_wheel(i, gyro)
+                          ^^^^^^^^^^^^^^^^^^^^
+src\tire_drivetrain.py:420: in solve_wheel
+    fx, fy, _error = _solve_force(residual, tolerance=.0001, initial=forces[i][:2], jacobian=jacobian)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+residual = <function advance_drivetrain.<locals>.solve_wheel.<locals>.residual at 0x000001C42A5D3C10>
+tolerance = 0.0001, initial = (0.0, 0.0)
+jacobian = <function advance_drivetrain.<locals>.solve_wheel.<locals>.jacobian at 0x000001C42A5D3D70>
+
+    def _solve_force(residual, tolerance=.001, initial=(0.0, 0.0), jacobian=None):
+        """双精度牛顿求解Fx/Fy；不收敛明确报错，不切换到另一套隐含物理。"""
+        fx, fy = initial
+        epsilon = 0.01
+        for _ in range(20):
+            rx, ry = residual(fx, fy)
+            error = math.hypot(rx, ry)
+            if error < tolerance:
+                return fx, fy, error
+            if jacobian is None:
+                px, py = residual(fx + epsilon, fy)
+                nx, ny = residual(fx - epsilon, fy)
+                a, c = (px - nx) / (2 * epsilon), (py - ny) / (2 * epsilon)
+                px, py = residual(fx, fy + epsilon)
+                nx, ny = residual(fx, fy - epsilon)
+                b, d = (px - nx) / (2 * epsilon), (py - ny) / (2 * epsilon)
+            else:
+                a, b, c, d = jacobian(fx, fy)
+            determinant = a * d - b * c
+            dx, dy = (d * rx - b * ry) / determinant, (a * ry - c * rx) / determinant
+            for exponent in range(12):
+                scale = 0.5 ** exponent
+                candidate_x, candidate_y = fx - scale * dx, fy - scale * dy
+                new_rx, new_ry = residual(candidate_x, candidate_y)
+                if math.hypot(new_rx, new_ry) < error:
+                    fx, fy = candidate_x, candidate_y
+                    break
+            else:
+>               raise ArithmeticError(f"轮胎隐式积分不收敛：残差 {error:.6g} N")
+E               ArithmeticError: 轮胎隐式积分不收敛：残差 74682.2 N
+
+src\wheel_dynamics.py:185: ArithmeticError
+_________ test_real_challenge_impact_failure_frame_is_delivered_once __________
+
+    def test_real_challenge_impact_failure_frame_is_delivered_once():
+        session = Session(track="endless")
+        session.start(seed=11, countdown=False, mode=GameMode.DISTANCE_CHALLENGE,
+                      track="endless")
+        session._skip_frame = False
+        session.simulation.player.reset((7.2, 30, .55))
+        session.simulation.player._chassis.setLinearVelocity(Vec3(8, 0, 0))
+        try:
+>           frame = session.frame(FIXED_DT)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_impact_delivery.py:101: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\session.py:237: in frame
+    self.stepper.advance(elapsed, tick_and_collect)
+src\session.py:40: in advance
+    tick()
+src\session.py:228: in tick_and_collect
+    self.tick()
+src\session.py:192: in tick
+    self.simulation.step(self.last_control, FIXED_DT)
+src\simulation.py:733: in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+src\world_step.py:42: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0)
+src\vehicle.py:290: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:183: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+src\tire_drivetrain.py:534: in advance_drivetrain
+    forces[i], modes[i] = solve_wheel(i, gyro)
+                          ^^^^^^^^^^^^^^^^^^^^
+src\tire_drivetrain.py:420: in solve_wheel
+    fx, fy, _error = _solve_force(residual, tolerance=.0001, initial=forces[i][:2], jacobian=jacobian)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+residual = <function advance_drivetrain.<locals>.solve_wheel.<locals>.residual at 0x000001C42C378E00>
+tolerance = 0.0001, initial = (1.424591506469103, -12224.665508082382)
+jacobian = <function advance_drivetrain.<locals>.solve_wheel.<locals>.jacobian at 0x000001C42C378F60>
+
+    def _solve_force(residual, tolerance=.001, initial=(0.0, 0.0), jacobian=None):
+        """双精度牛顿求解Fx/Fy；不收敛明确报错，不切换到另一套隐含物理。"""
+        fx, fy = initial
+        epsilon = 0.01
+        for _ in range(20):
+            rx, ry = residual(fx, fy)
+            error = math.hypot(rx, ry)
+            if error < tolerance:
+                return fx, fy, error
+            if jacobian is None:
+                px, py = residual(fx + epsilon, fy)
+                nx, ny = residual(fx - epsilon, fy)
+                a, c = (px - nx) / (2 * epsilon), (py - ny) / (2 * epsilon)
+                px, py = residual(fx, fy + epsilon)
+                nx, ny = residual(fx, fy - epsilon)
+                b, d = (px - nx) / (2 * epsilon), (py - ny) / (2 * epsilon)
+            else:
+                a, b, c, d = jacobian(fx, fy)
+            determinant = a * d - b * c
+            dx, dy = (d * rx - b * ry) / determinant, (a * ry - c * rx) / determinant
+            for exponent in range(12):
+                scale = 0.5 ** exponent
+                candidate_x, candidate_y = fx - scale * dx, fy - scale * dy
+                new_rx, new_ry = residual(candidate_x, candidate_y)
+                if math.hypot(new_rx, new_ry) < error:
+                    fx, fy = candidate_x, candidate_y
+                    break
+            else:
+>               raise ArithmeticError(f"轮胎隐式积分不收敛：残差 {error:.6g} N")
+E               ArithmeticError: 轮胎隐式积分不收敛：残差 44275.6 N
+
+src\wheel_dynamics.py:185: ArithmeticError
+=========================== short test summary info ===========================
+FAILED tests/test_impact_events.py::test_bullet_post_solve_rail_manifold_is_one_real_event[False-4]
+FAILED tests/test_impact_events.py::test_bullet_post_solve_rail_manifold_is_one_real_event[True-8]
+FAILED tests/test_impact_events.py::test_five_second_rail_scrape_stays_contact_without_repeated_impacts[False]
+FAILED tests/test_impact_events.py::test_five_second_rail_scrape_stays_contact_without_repeated_impacts[True]
+FAILED tests/test_impact_delivery.py::test_real_challenge_impact_failure_frame_is_delivered_once
+5 failed, 17 passed in 16.83s

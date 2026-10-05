@@ -172,6 +172,10 @@ class Vehicle:
         self._wheel_contacts = shift_contacts(self._wheel_contacts, amount)
 
     def apply_control(self, control: Control):
+        self.advance_physics(self.prepare_control(control), FIXED_DT)
+
+    def prepare_control(self, control: Control):
+        """120Hz采样驾驶请求；机械子步不重复积分输入辅助。"""
         command = self.assist.command(
             control, self.signed_speed(), self.powertrain.gear, self.reverse_enabled, FIXED_DT
         )
@@ -179,10 +183,14 @@ class Vehicle:
         # 历史传动在advance内执行此优先级，冻结分支保留其原请求口径。
         if self.config.finite_drivetrain and command.brake > 0:
             command = replace(command, throttle=0.)
-        self.apply_command(command)
+        return self.prepare_command(command)
 
     def apply_command(self, command: VehicleCommand):
         """驾驶辅助和研究控制共用同一执行器与轮胎受力路径。"""
+        self.advance_physics(self.prepare_command(command), FIXED_DT)
+
+    def prepare_command(self, command: VehicleCommand):
+        """转向、电子控制及执行器只按固定120Hz准备一次。"""
         pose = self._chassis.getTransform()
         hpr = pose.getHpr()
         velocity = self._chassis.getLinearVelocity()
@@ -224,6 +232,15 @@ class Vehicle:
             )
         requests = stability.brake_requests
         pressures = self.brakes.advance(requests, self.tires.states, self.config.wheel_radius, FIXED_DT)
+        return drive_torque, engine_drag, pressures
+
+    def advance_physics(self, request, dt, *, tire_substeps=None, angles=None, accumulate=False):
+        """从当前真实Bullet姿态读取接点，完成一个机械/世界共用的积分子步。"""
+        drive_torque, engine_drag, pressures = request
+        pose = self._chassis.getTransform()
+        hpr = pose.getHpr()
+        velocity = self._chassis.getLinearVelocity()
+        angles = wheel_angles(self.steering.angle, self.config) if angles is None else angles
         position = pose.getPos()
         road = self.on_asphalt(position.x, position.y)
         grade = self._road_grade(hpr.x)
@@ -253,12 +270,13 @@ class Vehicle:
             self._chassis.applyCentralForce(-horizontal * (rolling / horizontal_speed))
         external_velocity = (
             self._chassis.getGravity() + self._chassis.getTotalForce() / self.config.mass
-        ) * FIXED_DT
+        ) * dt
         external_angular = self._chassis.getInvInertiaTensorWorld().xform(
             self._chassis.getTotalTorque()
-        ) * FIXED_DT
+        ) * dt
         tire_contact_tick = self._contact_tick
         suspension = None
+        previous_suspension = self.suspension.state
         if self.coupled_suspension:
             tire_contact_tick += 1
             if self.config.finite_drivetrain:
@@ -268,16 +286,19 @@ class Vehicle:
             else:
                 self._wheel_contacts = self.suspension.advance(
                     self._world, self._chassis, self._vehicle.getWheels(), self.on_asphalt,
-                    tire_contact_tick, FIXED_DT, tuple(external_velocity), tuple(external_angular))
+                    tire_contact_tick, dt, tuple(external_velocity), tuple(external_angular))
         coupled_contacts = self.tires.advance(
-            self._chassis, self._wheel_contacts, wheel_angles(self.steering.angle, self.config),
-            drive_torque, engine_drag, pressures, tire_contact_tick, FIXED_DT,
+            self._chassis, self._wheel_contacts, angles,
+            drive_torque, engine_drag, pressures, tire_contact_tick, dt,
             tuple(external_velocity), tuple(external_angular),
             powertrain=self.powertrain if self.config.finite_drivetrain else None,
             suspension=suspension,
+            substeps=tire_substeps, accumulate=accumulate,
         )
         if suspension is not None:
             self._wheel_contacts = coupled_contacts
+            if accumulate:
+                self.suspension.accumulate(previous_suspension)
         traction_limited = any(
             state.kappa is not None and abs(state.kappa) > 0.1 for state in self.tires.states
         )

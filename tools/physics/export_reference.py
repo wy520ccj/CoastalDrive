@@ -17,6 +17,7 @@ from driving_modes import DrivingMode
 from vehicle import Vehicle
 from vehicle_config import body_center, wheel_hubs
 from vehicle_state import FIXED_DT, VehicleCommand
+from world_step import advance_world, physical_substeps
 
 # 单位和计算职责独立列出，新增配置字段时必须同步其含义。
 VEHICLE_FIELDS = {
@@ -79,7 +80,7 @@ VEHICLE_FIELDS = {
     "tire_curvature": ("1", "简化联合Magic Formula曲率"),
     "slip_speed": ("m/s", "低速滑移分母尺度"),
     "static_contact_speed": ("m/s", "低速静摩擦约束尝试尺度"),
-    "tire_substeps": ("次/tick", "轮胎/传动子步数；SI有限传动分支法向硬件共用同一子步末状态"),
+    "tire_substeps": ("次/tick", "SI有限传动分支的机械/Bullet世界共用子步；控制/快照固定120Hz；冻结分支仅细分轮胎"),
     "suspension_si_enabled": ("bool", "按SI硬件换算原生参数；false沿用旧归一化硬件"),
     "suspension_coupled_enabled": ("bool", "SI法向弹簧/轴向阻尼/防倾共同末状态；false原生SI对照"),
     "suspension_antiroll_rates": ("N/m", "前/后防倾杆行程差刚度；设计值，非实车标定"),
@@ -191,10 +192,7 @@ def measure(mode):
                   config=mode.vehicle_config, input_config=mode.input_config)
     try:
         for _ in range(240):
-            previous = car._chassis.getLinearVelocity()
-            car.apply_command(VehicleCommand())
-            world.doPhysics(FIXED_DT, 0, FIXED_DT)
-            car.after_step(previous)
+            advance_world(world, [(car, VehicleCommand())], substeps=physical_substeps(car.config))
         body = car._chassis
         limits = shape_axis_limits(body)
         shape_center = shape_volume_center(body)
@@ -217,6 +215,8 @@ def measure(mode):
             "suspension_authority": "coupled-SI" if car.coupled_suspension else "native-Bullet",
             "suspension_contact_model": "finite-radius-sphere-envelope" if car.coupled_suspension else "native-point-ray",
             "suspension_velocity_model": "shared-tire-drivetrain-end" if car.coupled_suspension and car.config.finite_drivetrain else "separate-normal-stage",
+            "world_substeps": physical_substeps(car.config),
+            "world_substep_dt_s": FIXED_DT / physical_substeps(car.config),
             "suspension_state": asdict(car.suspension.state) if car.coupled_suspension else None,
             "wheels": [{
                 "hub": tuple(w.getChassisConnectionPointCs()), "radius": w.getWheelRadius(),
@@ -253,7 +253,7 @@ def export(output):
     source_names = ("vehicle_config.py", "driver_assist.py", "driving_modes.py", "vehicle.py",
                     "vehicle_tires.py", "vehicle_traction.py", "powertrain.py", "vehicle_steering.py", "vehicle_dynamics.py",
                     "wheel_dynamics.py", "tire_forces.py", "vehicle_contacts.py", "vehicle_state.py",
-                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py", "rotor_dynamics.py", "wheel_geometry.py", "transmission_ports.py", "tire_drivetrain.py", "differential.py", "shaft_transmission.py", "driveline_inertia.py", "suspension.py", "vehicle_suspension.py", "suspension_contacts.py")
+                    "vehicle_brakes.py", "vehicle_traction.py", "vehicle_stability.py", "tire_properties.py", "tire_compliance.py", "tire_coupling.py", "vehicle_collision.py", "rotor_dynamics.py", "wheel_geometry.py", "transmission_ports.py", "tire_drivetrain.py", "differential.py", "shaft_transmission.py", "driveline_inertia.py", "suspension.py", "vehicle_suspension.py", "suspension_contacts.py", "world_step.py")
     hashes = {f"src/{name}": hashlib.sha256((ROOT / "src" / name).read_bytes()).hexdigest()
               for name in source_names}
     hashes["tools/physics/export_reference.py"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
@@ -263,8 +263,10 @@ def export(output):
         "source_sha256": hashes,
         "panda_version": PandaSystem.getVersionString(), "bullet_version": getBulletVersion(),
         "measurement": {"ticks": 240, "dt": FIXED_DT, "max_substeps": 0,
+                        "world_substeps_per_tick": {mode.value: physical_substeps(mode.vehicle_config) for mode in DrivingMode},
+                        "native_dt_s": {mode.value: FIXED_DT / physical_substeps(mode.vehicle_config) for mode in DrivingMode},
                         "ground": "水平无限平面", "gravity": [0, 0, -9.81], "input": "VehicleCommand()"},
-        "schema_version": "reference-v20",
+        "schema_version": "reference-v21",
         "vehicle_fields": VEHICLE_FIELDS, "brake_fields": BRAKE_FIELDS,
         "traction_fields": TRACTION_FIELDS, "stability_fields": STABILITY_FIELDS,
         "input_fields": INPUT_FIELDS, "modes": modes,
@@ -279,5 +281,5 @@ def export(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path,
-                        default=ROOT / "logs/physics/reference-v20/parameters.json")
+                        default=ROOT / "logs/physics/reference-v21/parameters.json")
     export(parser.parse_args().output)

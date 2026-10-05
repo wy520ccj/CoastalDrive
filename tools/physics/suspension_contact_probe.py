@@ -40,7 +40,7 @@ def run(output, prior):
                      for group in ("src", "tests", "tools") for p in sorted((ROOT / group).rglob("*.py"))}
     report = {"status": "running", "source_before": hashes(), "baseline": prior.relative_to(ROOT).as_posix(),
               "baseline_source_sha256": json.loads((prior / "summary.json").read_text(encoding="utf-8"))["source_after"],
-              "protocol": "unchanged one-side fixture/initial conditions/commands; 360 native 120Hz steps per mode; finite-radius sphere envelope, native core+margin Box SDF independently checked; saved prior trace reused", "results": []}
+              "protocol": "unchanged one-side fixture/initial conditions/commands; 360 outer 120Hz ticks per mode; native world substeps recorded per result; finite-radius sphere envelope, native core+margin Box SDF independently checked; saved prior trace reused", "results": []}
     pending = ["game", "simulation"]
     try:
         for mode in pending[:]:

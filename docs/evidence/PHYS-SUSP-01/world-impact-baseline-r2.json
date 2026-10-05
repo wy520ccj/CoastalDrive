@@ -1,0 +1,46 @@
+{
+  "baseline": "dba1742",
+  "protocol": "unmodified fixtures and gates; frozen modules imported before test entries; source paths asserted",
+  "source_modules": {
+    "simulation": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-SUSP-01-world-baseline-src\\simulation.py",
+    "session": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-SUSP-01-world-baseline-src\\session.py",
+    "vehicle": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-SUSP-01-world-baseline-src\\vehicle.py",
+    "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-SUSP-01-world-baseline-src\\tire_drivetrain.py",
+    "wheel_dynamics": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-SUSP-01-world-baseline-src\\wheel_dynamics.py"
+  },
+  "results": [
+    {
+      "case": "rail-false",
+      "status": "failed",
+      "error": "AssertionError()",
+      "traceback": "Traceback (most recent call last):\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\audit_world_baseline.py\", line 36, in <module>\n    run()\n    ~~~^^\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\audit_world_baseline.py\", line 24, in <lambda>\n    (\"rail-false\", lambda: events.test_bullet_post_solve_rail_manifold_is_one_real_event(False, 4)),\n                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\tests\\test_impact_events.py\", line 45, in test_bullet_post_solve_rail_manifold_is_one_real_event\n    assert len(snapshot.impacts) == 1\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "seconds": 0.540887200000725
+    },
+    {
+      "case": "rail-true",
+      "status": "failed",
+      "error": "AssertionError()",
+      "traceback": "Traceback (most recent call last):\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\audit_world_baseline.py\", line 36, in <module>\n    run()\n    ~~~^^\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\audit_world_baseline.py\", line 25, in <lambda>\n    (\"rail-true\", lambda: events.test_bullet_post_solve_rail_manifold_is_one_real_event(True, 8)),\n                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\tests\\test_impact_events.py\", line 45, in test_bullet_post_solve_rail_manifold_is_one_real_event\n    assert len(snapshot.impacts) == 1\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "seconds": 0.5296324999981152
+    },
+    {
+      "case": "scrape-legacy",
+      "status": "failed",
+      "error": "AssertionError()",
+      "traceback": "Traceback (most recent call last):\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\audit_world_baseline.py\", line 36, in <module>\n    run()\n    ~~~^^\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\audit_world_baseline.py\", line 26, in <lambda>\n    (\"scrape-legacy\", lambda: events.test_five_second_rail_scrape_stays_contact_without_repeated_impacts(False)),\n                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\tests\\test_impact_events.py\", line 124, in test_five_second_rail_scrape_stays_contact_without_repeated_impacts\n    assert longest >= 600\n           ^^^^^^^^^^^^^^\nAssertionError\n",
+      "seconds": 7.98872990000018
+    },
+    {
+      "case": "scrape-finite",
+      "status": "failed",
+      "error": "ArithmeticError('轮胎隐式积分不收敛：残差 74682.2 N')",
+      "traceback": "Traceback (most recent call last):\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\audit_world_baseline.py\", line 36, in <module>\n    run()\n    ~~~^^\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\audit_world_baseline.py\", line 27, in <lambda>\n    (\"scrape-finite\", lambda: events.test_five_second_rail_scrape_stays_contact_without_repeated_impacts(True)),\n                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\tests\\test_impact_events.py\", line 112, in test_five_second_rail_scrape_stays_contact_without_repeated_impacts\n    simulation.step(VehicleCommand(throttle=.5, steering=2, direction=1))\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-SUSP-01-world-baseline-src\\simulation.py\", line 725, in step\n    car.apply_command(action)\n    ~~~~~~~~~~~~~~~~~^^^^^^^^\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-SUSP-01-world-baseline-src\\vehicle.py\", line 272, in apply_command\n    coupled_contacts = self.tires.advance(\n        self._chassis, self._wheel_contacts, wheel_angles(self.steering.angle, self.config),\n    ...<3 lines>...\n        suspension=suspension,\n    )\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-SUSP-01-world-baseline-src\\vehicle_tires.py\", line 182, in advance\n    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,\n        wheel_frames, projected, powertrain.engine_torque_request, powertrain.capacity,\n    ...<13 lines>...\n        downstream_axes=tuple(tuple(orientation.xform(Vec3(*axis))) for axis in config.downstream_axes)\n            if powertrain.downstream_active else (), suspension=normal_system if suspension is not None else None)\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-SUSP-01-world-baseline-src\\tire_drivetrain.py\", line 534, in advance_drivetrain\n    forces[i], modes[i] = solve_wheel(i, gyro)\n                          ~~~~~~~~~~~^^^^^^^^^\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-SUSP-01-world-baseline-src\\tire_drivetrain.py\", line 420, in solve_wheel\n    fx, fy, _error = _solve_force(residual, tolerance=.0001, initial=forces[i][:2], jacobian=jacobian)\n                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-SUSP-01-world-baseline-src\\wheel_dynamics.py\", line 185, in _solve_force\n    raise ArithmeticError(f\"轮胎隐式积分不收敛：残差 {error:.6g} N\")\nArithmeticError: 轮胎隐式积分不收敛：残差 74682.2 N\n",
+      "seconds": 0.014207999996870058
+    },
+    {
+      "case": "challenge",
+      "status": "passed",
+      "seconds": 0.12156739999772981
+    }
+  ]
+}

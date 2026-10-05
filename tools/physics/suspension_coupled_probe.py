@@ -20,7 +20,8 @@ from physics.reference_ab import _step
 from driving_modes import DrivingMode
 from vehicle import Vehicle
 from vehicle_contacts import road_support
-from vehicle_state import VehicleCommand
+from vehicle_state import FIXED_DT, VehicleCommand
+from world_step import physical_substeps
 
 CASES = ("flat-free", "bank", "one-side", "drop-limit")
 
@@ -68,6 +69,8 @@ def trial(mode, enabled, case, rows):
                 assert abs(state.suspension_state.step.energy_residual) < 1e-7
         summaries = [row["car"]["suspension_state"] for row in rows] if enabled else []
         return {"mode": mode, "coupled": enabled, "case": case, "config": asdict(config), "ticks": len(rows),
+                "world_substeps": physical_substeps(config), "world_substep_dt_s": FIXED_DT / physical_substeps(config),
+                "native_steps": len(rows) * physical_substeps(config),
                 "max_abs_roll_deg": max(abs(r["car"]["roll"]) for r in rows),
                 "max_compression_m": max(c["compression"] for r in rows for c in r["car"]["wheel_contacts"]),
                 "final_position": rows[-1]["car"]["position"],
@@ -78,7 +81,8 @@ def trial(mode, enabled, case, rows):
                 "sum_initialization_energy_j": sum(s["initialization_energy"] for s in summaries),
                 "max_normal_energy_step_increase_j": max((rows[i]["normal_mechanical_energy_j"] - rows[i-1]["normal_mechanical_energy_j"]
                                                          for i in range(1, len(rows))), default=0.) if enabled else None,
-                "sum_signed_geometry_work_j": sum(s["geometry_work"] for s in summaries)}
+                "sum_signed_geometry_work_j": sum(s["geometry_work"] for s in summaries),
+                "sum_positive_geometry_work_j": sum(max(s["geometry_work"], 0.) for s in summaries)}
     finally:
         car.close()
 
@@ -87,7 +91,7 @@ def run(output, prior=None, reuse_native_only=False):
     output.mkdir(parents=True, exist_ok=False)
     hashes = lambda: {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                      for group in ("src", "tests", "tools") for p in sorted((ROOT / group).rglob("*.py"))}
-    report = {"status": "running", "protocol": "2 modes x 4 cases x 2 branches; 360 native 120Hz steps per trace; initial-condition velocity change only before flat-free recording; SI spring/bar/stop force is potential gradient without native hard clip; contact-offset and geometry work recorded separately", "source_before": hashes(), "results": []}
+    report = {"status": "running", "protocol": "2 modes x 4 cases x 2 branches; 360 outer 120Hz ticks per trace; SI finite-drivetrain native world substeps equal configured mechanical substeps, frozen native branch keeps one world step; initial-condition velocity change only before flat-free recording; SI spring/bar/stop force is potential gradient without native hard clip; contact-offset and geometry work recorded separately", "source_before": hashes(), "results": []}
     pending = [(mode, case, enabled) for mode in ("game", "simulation") for case in CASES for enabled in (False, True)]
     if prior is not None:
         previous = json.loads((prior / "summary.json").read_text(encoding="utf-8"))

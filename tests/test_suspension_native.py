@@ -152,8 +152,17 @@ def test_candidate_ray_does_not_create_energy_in_free_suspension():
         car.close()
 
 
-def test_initial_pose_preload_is_explicit_and_only_initialized_once():
+def test_initial_pose_preload_is_explicit_and_only_initialized_once(monkeypatch):
     world, car = _create_vehicle(DrivingMode.SIMULATION.vehicle_config)
+    phases = []
+    original = car.suspension.publish
+
+    def publish(*args):
+        result = original(*args)
+        phases.append(car.suspension.state)
+        return result
+
+    monkeypatch.setattr(car.suspension, "publish", publish)
     try:
         car._chassis.setTransform(TransformState.makePosHpr(Vec3(0, 0, .4), Vec3(0)))
         _step(world, car, VehicleCommand(gear=0))
@@ -161,7 +170,15 @@ def test_initial_pose_preload_is_explicit_and_only_initialized_once():
         expected = sum(k * x * x / 2 for k, x in zip(car.config.suspension_spring_rates, state.sampled_compression))
         assert state.initialization_energy == pytest.approx(expected, abs=1e-10)
         assert state.initialization_energy > 600.
-        assert state.geometry_work == 0.
+        assert phases[0].geometry_work == 0.
+        assert phases[1].initialization_energy == 0.
+
+        def potential(x):
+            return (sum(k * value**2 / 2 for k, value in zip(car.config.suspension_spring_rates, x))
+                    + sum(k * (x[i] - x[i + 1])**2 / 2 for i, k in zip((0, 2), car.config.suspension_antiroll_rates)))
+
+        assert state.geometry_work == pytest.approx(potential(phases[1].sampled_compression)
+            - potential(phases[0].step.compression), abs=1e-10)
         _step(world, car, VehicleCommand(gear=0))
         assert car.suspension.state.initialization_energy == 0.
     finally:

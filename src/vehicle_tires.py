@@ -43,7 +43,7 @@ class Tires:
 
     def advance(self, chassis, contacts, angles, drive, engine_drag, pressures, tick, dt,
                 external_velocity=(0.0, 0.0, 0.0), external_angular=(0.0, 0.0, 0.0), *, powertrain=None,
-                suspension=None):
+                suspension=None, substeps=None, accumulate=False):
         pose = chassis.getTransform()
         origin = pose.getPos()
         orientation = pose.getQuat()
@@ -112,7 +112,8 @@ class Tires:
                 tuple(response_x), tuple(response_y), tuple(response_t),
             ))
 
-        sub_dt = dt / config.tire_substeps
+        substeps = config.tire_substeps if substeps is None else substeps
+        sub_dt = dt / substeps
         tensor = tuple(tuple((inv_inertia.getCell(a, b) + inv_inertia.getCell(b, a)) / 2
                              for b in range(3)) for a in range(3))
         initial_angles = tuple(state.steering for state in self.states)
@@ -141,29 +142,29 @@ class Tires:
             return frames, tuple(torques)
 
         states = [None] * 4
-        longitudinal_impulses = [0.0] * 4
-        lateral_impulses = [0.0] * 4
-        brake_angular_impulses = [0.0] * 4
-        material_dissipation = [0.0] * 4
-        road_dissipation = [0.0] * 4
-        elastic_numerical_dissipation = [0.0] * 4
-        frame_dissipation = [0.0] * 4
-        gyro_impulses = [[0.0] * 3 for _ in range(4)]
-        steering_impulses = [[0.0] * 3 for _ in range(4)]
-        steering_work = [0.0] * 4
-        longitudinal_angular_impulses = [[0.0] * 3 for _ in range(4)]
-        lateral_angular_impulses = [[0.0] * 3 for _ in range(4)]
+        longitudinal_impulses = [state.longitudinal_impulse if accumulate else 0. for state in self.states]
+        lateral_impulses = [state.lateral_impulse if accumulate else 0. for state in self.states]
+        brake_angular_impulses = [state.brake_angular_impulse if accumulate else 0. for state in self.states]
+        material_dissipation = [state.material_dissipation if accumulate else 0. for state in self.states]
+        road_dissipation = [state.road_dissipation if accumulate else 0. for state in self.states]
+        elastic_numerical_dissipation = [state.elastic_numerical_dissipation if accumulate else 0. for state in self.states]
+        frame_dissipation = [state.frame_dissipation if accumulate else 0. for state in self.states]
+        gyro_impulses = [list(state.gyro_angular_impulse) if accumulate else [0.] * 3 for state in self.states]
+        steering_impulses = [list(state.steering_angular_impulse) if accumulate else [0.] * 3 for state in self.states]
+        steering_work = [state.steering_work if accumulate else 0. for state in self.states]
+        longitudinal_angular_impulses = [list(state.longitudinal_angular_impulse) if accumulate else [0.] * 3 for state in self.states]
+        lateral_angular_impulses = [list(state.lateral_angular_impulse) if accumulate else [0.] * 3 for state in self.states]
         drives = (0.0, 0.0, drive / 2, drive / 2)
         capacities = tuple(config.brake_torque * pressures[i] * (
             config.front_brake_share if i < 2 else 1 - config.front_brake_share) / 2
             + (engine_drag / 2 if i >= 2 else 0.0) for i in range(4))
         force_initial = tuple((state.fx, state.fy, state.brake_torque) for state in self.states)
-        for substep in range(config.tire_substeps):
+        for substep in range(substeps):
             steps = None
-            fraction = (substep + 1) / config.tire_substeps
+            fraction = (substep + 1) / substeps
             torques = ((0.0, 0.0, 0.0),) * 4
             if config.wheel_rotor_transport:
-                wheel_frames, torques = rotor_frames(fraction, substep / config.tire_substeps)
+                wheel_frames, torques = rotor_frames(fraction, substep / substeps)
             if config.tire_compliance or config.wheel_rotor_transport or config.finite_drivetrain:
                 projected = []
                 for i, frame in enumerate(wheel_frames):

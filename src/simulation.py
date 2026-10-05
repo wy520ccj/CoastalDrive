@@ -43,6 +43,7 @@ from vehicle_state import (
     heading_for,
 )
 from world_props import collision_box, props_for
+from world_step import advance_world, physical_substeps
 
 __all__ = [
     "FIXED_DT",
@@ -223,7 +224,7 @@ class Simulation:
         linear, angular, origin = values
         return linear + angular.cross(point - origin)
 
-    def _read_impact_contacts(self, before):
+    def _read_impact_contacts(self, before, *, accumulated=None, publish=True):
         sampled_at_ns = time.perf_counter_ns() if self._impact_diagnostic is not None else None
         samples = []
         post_motion = {}
@@ -281,6 +282,14 @@ class Simulation:
                     old[1] + motion[0] * weight,
                     old[2] + motion[1] * weight,
                 )
+        if accumulated is not None:
+            accumulated[0].extend(samples)
+            for key, values in post_motion.items():
+                previous = accumulated[1].get(key, (0., 0., 0.))
+                accumulated[1][key] = tuple(a + b for a, b in zip(previous, values))
+            samples, post_motion = accumulated
+        if not publish:
+            return
         clusters = aggregate_contacts(samples)
         motion = {key: (values[1] / values[0], values[2] / values[0])
                   for key, values in post_motion.items()}
@@ -711,31 +720,18 @@ class Simulation:
                 if car._chassis not in self._retired_traffic
             ],
         ]
-        velocities = [Vec3(car._chassis.getLinearVelocity()) for car, _ in cars]
-        before = {
-            car._chassis: (
-                Vec3(car._chassis.getLinearVelocity()),
-                Vec3(car._chassis.getAngularVelocity()),
-                Vec3(car._chassis.getTransform().getPos()),
-            )
-            for car, _ in cars
-        }
-        for car, action in cars:
-            if isinstance(action, VehicleCommand):
-                car.apply_command(action)
-            else:
-                car.apply_control(action)
-        # 外层已固定120Hz；禁用Bullet二次累积/显示插值，接触与车体保持同一物理时刻。
-        self._world.doPhysics(FIXED_DT, 0, FIXED_DT)
-        self._read_impact_contacts(before)
-        for (car, _), velocity in zip(cars, velocities):
-            car.after_step(velocity)
-        self.collision_count += sum(
-            self._world.contactTestPair(self._chassis, body).getNumContacts() > 0
-            for body in self._traffic_bodies
-            if body not in self._retired_traffic
-        )
-        self._count_player_collisions()
+        accumulated, traffic_contacts = ([], {}), set()
+
+        def observe(before, final):
+            # 子步接触完整累加，撞击事件与接触年龄仍只按120Hz更新一次。
+            self._read_impact_contacts(before, accumulated=accumulated, publish=final)
+            traffic_contacts.update(body for body in self._traffic_bodies
+                                    if body not in self._retired_traffic
+                                    and self._world.contactTestPair(self._chassis, body).getNumContacts() > 0)
+            self._count_player_collisions()
+
+        advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+        self.collision_count += len(traffic_contacts)
         self._tick += 1
         if self.stream:
             self._rebase()
