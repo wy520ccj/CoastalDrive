@@ -120,6 +120,7 @@ class SuspensionState:
     contact_compression: tuple = (0.,) * 4
     initialization_energy: float = 0.
     substeps: tuple = ()
+    force_gradients: tuple = ()
 
 
 def advance_suspension(compression, extension_speed, mobility, touching,

@@ -1,0 +1,20 @@
+F401 [*] `rotor_dynamics.dot` imported but unused
+  --> tests\test_curved_suspension.py:11:35
+   |
+ 9 | from test_tire_drivetrain import audit
+10 |
+11 | from rotor_dynamics import cross, dot
+   |                                   ^^^
+12 | from suspension import SuspensionInput
+13 | from suspension_geometry import BoxSurface
+   |
+help: Remove unused import: `rotor_dynamics.dot`
+   |
+10 |
+   - from rotor_dynamics import cross, dot
+11 + from rotor_dynamics import cross
+12 | from suspension import SuspensionInput
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

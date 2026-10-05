@@ -53,8 +53,9 @@ class Suspension:
                     initial[i] = constraint_compression[i]
                 arm = tuple(point[a] - origin[a] for a in range(3))
                 gradient = contact_gradient(normal, tuple(direction), arm)
+            surface = replace(hit.surface, reach=rest + config.suspension_travel) if eligible and hit.surface is not None else None
             planes.append(SupportPlane(tuple(orientation.xform(Vec3(*self.hubs[i]))), tuple(direction),
-                                       tuple(normal), rest - constraint_compression[i]) if eligible else None)
+                                       tuple(normal), rest - constraint_compression[i], surface) if eligible else None)
             geometry.append((point, normal, alignment, rest))
             gradients.append(gradient)
             contacts.append(eligible)
@@ -140,7 +141,7 @@ class Suspension:
         self.compression = step.compression
         self.state = SuspensionState(step, loads, final_system.alignment, final_system.touching,
                                      tuple(initial), geometry_work, linear, angular_impulse, tick,
-                                     final_system.geometry, initialization_energy, substeps)
+                                     final_system.geometry, initialization_energy, substeps, final_system.gradients)
         return states
 
     def wheel_positions(self, chassis, wheels):
