@@ -2,7 +2,7 @@ import csv
 import json
 
 import pytest
-from physics.testbed import CASES, _run_case, _wheel_surface_types, _world, compare, run
+from physics.testbed import _run_case, _wheel_surface_types, _world, compare, run
 
 from vehicle import Vehicle
 from vehicle_state import FIXED_DT, Control
@@ -44,7 +44,8 @@ def test_split_mu_assigns_different_surfaces_to_each_side():
 
 
 def test_report_records_exact_tick_rate_inputs_and_split_mu(tmp_path):
-    report = run(tmp_path / "trial", CASES)
+    # 元数据/轨迹接口只需实际阶跃与对开附着；完整工况在参考标定命令中执行。
+    report = run(tmp_path / "trial", ("steering_step", "split_mu_braking"))
     assert report["physics_hz"] == 120
     assert report["fixed_dt_s"] == 1 / 120
     assert report["commands"]["steering_step"].startswith("40 km/h initial; coast 0.5 s")
@@ -53,7 +54,9 @@ def test_report_records_exact_tick_rate_inputs_and_split_mu(tmp_path):
     assert {"tire_forces", "wheel_dynamics", "vehicle_tires"} <= report["source_sha256"].keys()
     assert report["sampling"]["physics_hz"] == 120
     assert report["sampling"]["csv_hz"] == 20
-    assert len(report["summaries"]) == 7
+    assert len(report["summaries"]) == 2
+    assert report["measurement"]["world_substeps_per_tick"] == 2
+    assert report["environment"]["grades_deg"] == {"uphill_braking": 5., "downhill_braking": -5.}
     saved = json.loads((tmp_path / "trial" / "summary.json").read_text(encoding="utf-8"))
     assert saved["physics_hz"] == 120
     for summary in saved["summaries"]:

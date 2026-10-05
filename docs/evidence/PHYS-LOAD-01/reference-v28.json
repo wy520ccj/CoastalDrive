@@ -1,6 +1,6 @@
 {
   "claim": "程序设计参数与本机实现读回，不是实车测量或标定",
-  "git_head_context_only": "8a3a78f7e3052a7f38b2ebfa733fc9acb9b498cd",
+  "git_head_context_only": "ca8d2862710657a5119473c655927439b45c0d7a",
   "source_sha256": {
     "src/vehicle_config.py": "0ae563b9348f47146b64965938e8c4455615a75cd90124e8a3ebfdeafdf2585b",
     "src/driver_assist.py": "09e33431cdd3adee4ec22366bdeccaa7877272a6a1a9d65d49d232b96bfdfe83",
@@ -24,7 +24,7 @@
     "src/rotor_dynamics.py": "c4077261f5c4baba6455d622211b7e8f79360c75c6b7e2566eca42755b1103be",
     "src/wheel_geometry.py": "9f859bba46ca9f8514aa3f6183543557a6e3d1db827ed24a1792def905d639ed",
     "src/transmission_ports.py": "e211605de2c8dd0935dd8fd271880a3c0fd11e256ce2a960f3a7a4f30d68433f",
-    "src/tire_drivetrain.py": "7e008eb577a0533c7b7683db654e0db33158d41f7e388c2bbe44895c99b2e1e4",
+    "src/tire_drivetrain.py": "c81f3ac1864313c710bd4e96229004d1da1419518ae0fc8ab22976ac334b67ac",
     "src/differential.py": "954677fe7c20e40d04c0956465eb544a83646eccd86f45210ea045ccc49cc5fd",
     "src/shaft_transmission.py": "13595a9a20d3a533e92f163cbc72acc10b63444cd8bf2c2fc04c413735569105",
     "src/driveline_inertia.py": "95c71537b1b810443596ae7ea1568573182208534d2e9a03d9020e13cda70196",
