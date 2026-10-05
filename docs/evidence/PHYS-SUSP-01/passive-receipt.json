@@ -1,0 +1,935 @@
+{
+  "task": "PHYS-SUSP-01",
+  "task_status": "in_progress",
+  "date": "2026-10-05",
+  "baseline": "22248e146a2880e9f549c627d9e57443afb0faec",
+  "publication": "commit and normal push authorized by user; actual commit and remote state recorded by Git, not experiment manifests",
+  "implementation": [
+    "SI spring/bar/progressive-stop force conjugate to stored potential; no unphysical native force clip in coupled SI",
+    "native comparison force limit unchanged",
+    "separate material coordinate from prospective contact geometry",
+    "configured first-pose preload accounted only as initialization energy",
+    "research moments use actual same-tick SI contact force phase; native prior phase unchanged",
+    "reference-v17 complete 91 vehicle fields"
+  ],
+  "source_verification": {
+    "final_python_count": 303,
+    "final_manifest": "passive-handling-r1/summary.json",
+    "all_final_source_hashes_match": true,
+    "reference_declared_sources_match": true,
+    "native_manifest_changes_after_run": [
+      "tests/test_esc_probe.py",
+      "tools/physics/esc_probe.py"
+    ],
+    "source_added_after_native": [
+      "tools/physics/suspension_handling_probe.py"
+    ],
+    "production_sources_match_native_run": true
+  },
+  "short_validation": {
+    "rounds": {
+      "r1": {
+        "status": "failed",
+        "commands": [
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_coupling.py",
+            "tests/test_suspension_native.py",
+            "tests/test_physics_config_io.py",
+            "tests/test_traction_lifecycle.py::test_mode_abs_tcs_variants_get_distinct_score_keys"
+          ]
+        ],
+        "summary": "validation-T0-passive-r1/summary.json"
+      },
+      "r2": {
+        "status": "failed",
+        "commands": [
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_coupling.py",
+            "tests/test_suspension_native.py",
+            "tests/test_physics_config_io.py",
+            "tests/test_traction_lifecycle.py::test_mode_abs_tcs_variants_get_distinct_score_keys"
+          ]
+        ],
+        "summary": "validation-T0-passive-r2/summary.json"
+      },
+      "r3": {
+        "status": "passed",
+        "commands": [
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_native.py::test_actual_impulse_is_sum_of_contact_normals_and_real_arms"
+          ]
+        ],
+        "summary": "validation-T0-passive-r3/summary.json"
+      },
+      "r4": {
+        "status": "passed",
+        "commands": [
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_coupling.py",
+            "tests/test_suspension_native.py"
+          ]
+        ],
+        "summary": "validation-T0-passive-r4/summary.json"
+      },
+      "r5": {
+        "status": "failed",
+        "commands": [
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_esc_probe.py"
+          ]
+        ],
+        "summary": "validation-T0-passive-r5/summary.json"
+      },
+      "r6": {
+        "status": "passed",
+        "commands": [
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_esc_probe.py::test_dynamic_contact_gzip_after_real_landing",
+            "tests/test_esc_probe.py::test_stability_source_is_in_hash_account"
+          ]
+        ],
+        "summary": "validation-T0-passive-r6/summary.json"
+      }
+    },
+    "r1": "Ruff format failure; pytest not_run",
+    "r2": "26 passed, 1 failed; independent expected moment accumulated in float32",
+    "r3": "corrected independent double-precision expectation passed; original 1e-5 moment/2e-7 velocity gates kept",
+    "r4": "25 core/native passed; final SI production",
+    "r5": "27 passed, 1 failed; old test assumed still grounded at final sample after actual landing bounce",
+    "r6": "2 relevant landing/hash checks passed; retains 121 samples and all 4 wheels actually recontacting, positive real loads",
+    "reuse": "unaffected passing config/score and research nodes reused; failed raw logs/traces retained",
+    "final_ruff": "src/tests/tools passed, passive-final-ruff.log"
+  },
+  "native_probe": {
+    "summary": "passive-native-r2/summary.json",
+    "cases": 16,
+    "reused_native_cases": 8,
+    "new_coupled_cases": 8,
+    "new_recorded_ticks": 2880,
+    "new_conditioning_ticks": 360,
+    "source_stable_during_run": true,
+    "results": [
+      {
+        "mode": "game",
+        "coupled": false,
+        "case": "flat-free",
+        "ticks": 360,
+        "max_abs_roll_deg": 1.226044414147069e-25,
+        "max_compression_m": 0.062094926834106445,
+        "final_position": [
+          0.0,
+          0.0,
+          0.41868746280670166
+        ],
+        "max_tire_residual_n": 1.936645735486624e-17,
+        "max_suspension_energy_residual_j": null,
+        "sum_signed_force_limit_work_j": 0,
+        "sum_signed_geometry_work_j": 0,
+        "trace": "../coupled-native-r1/game-flat-free-native.jsonl.gz",
+        "reused_from": "docs\\evidence\\PHYS-SUSP-01\\coupled-native-r3\\summary.json"
+      },
+      {
+        "mode": "game",
+        "coupled": false,
+        "case": "bank",
+        "ticks": 360,
+        "max_abs_roll_deg": 13.582894325256348,
+        "max_compression_m": 0.19999998807907104,
+        "final_position": [
+          -0.0894586443901062,
+          7.775967787893023e-06,
+          0.41028934717178345
+        ],
+        "max_tire_residual_n": 0.0009924674869279035,
+        "max_suspension_energy_residual_j": null,
+        "sum_signed_force_limit_work_j": 0,
+        "sum_signed_geometry_work_j": 0,
+        "trace": "../coupled-native-r1/game-bank-native.jsonl.gz",
+        "reused_from": "docs\\evidence\\PHYS-SUSP-01\\coupled-native-r3\\summary.json"
+      },
+      {
+        "mode": "game",
+        "coupled": false,
+        "case": "one-side",
+        "ticks": 360,
+        "max_abs_roll_deg": 179.3278350830078,
+        "max_compression_m": 0.19999998807907104,
+        "final_position": [
+          0.608494758605957,
+          0.006945997476577759,
+          -37.355674743652344
+        ],
+        "max_tire_residual_n": 0.0008756805133266898,
+        "max_suspension_energy_residual_j": null,
+        "sum_signed_force_limit_work_j": 0,
+        "sum_signed_geometry_work_j": 0,
+        "trace": "../coupled-native-r1/game-one-side-native.jsonl.gz",
+        "reused_from": "docs\\evidence\\PHYS-SUSP-01\\coupled-native-r3\\summary.json"
+      },
+      {
+        "mode": "game",
+        "coupled": false,
+        "case": "drop-limit",
+        "ticks": 360,
+        "max_abs_roll_deg": 3.469523653620854e-05,
+        "max_compression_m": 0.19999998807907104,
+        "final_position": [
+          2.6372819661446556e-07,
+          2.7393025447963737e-07,
+          0.4186876118183136
+        ],
+        "max_tire_residual_n": 9.912902981686459e-05,
+        "max_suspension_energy_residual_j": null,
+        "sum_signed_force_limit_work_j": 0,
+        "sum_signed_geometry_work_j": 0,
+        "trace": "../coupled-native-r2/game-drop-limit-native.jsonl.gz",
+        "reused_from": "docs\\evidence\\PHYS-SUSP-01\\coupled-native-r3\\summary.json"
+      },
+      {
+        "mode": "simulation",
+        "coupled": false,
+        "case": "flat-free",
+        "ticks": 360,
+        "max_abs_roll_deg": 5.713167179807738e-28,
+        "max_compression_m": 0.062094926834106445,
+        "final_position": [
+          0.0,
+          0.0,
+          0.41868746280670166
+        ],
+        "max_tire_residual_n": 5.910004993197675e-22,
+        "max_suspension_energy_residual_j": null,
+        "sum_signed_force_limit_work_j": 0,
+        "sum_signed_geometry_work_j": 0,
+        "trace": "../coupled-native-r2/simulation-flat-free-native.jsonl.gz",
+        "reused_from": "docs\\evidence\\PHYS-SUSP-01\\coupled-native-r3\\summary.json"
+      },
+      {
+        "mode": "simulation",
+        "coupled": false,
+        "case": "bank",
+        "ticks": 360,
+        "max_abs_roll_deg": 13.631319999694824,
+        "max_compression_m": 0.19999998807907104,
+        "final_position": [
+          -0.0900849923491478,
+          7.637338421773165e-05,
+          0.4101640284061432
+        ],
+        "max_tire_residual_n": 0.0009784695087617634,
+        "max_suspension_energy_residual_j": null,
+        "sum_signed_force_limit_work_j": 0,
+        "sum_signed_geometry_work_j": 0,
+        "trace": "../coupled-native-r2/simulation-bank-native.jsonl.gz",
+        "reused_from": "docs\\evidence\\PHYS-SUSP-01\\coupled-native-r3\\summary.json"
+      },
+      {
+        "mode": "simulation",
+        "coupled": false,
+        "case": "one-side",
+        "ticks": 360,
+        "max_abs_roll_deg": 179.43601989746094,
+        "max_compression_m": 0.19999998807907104,
+        "final_position": [
+          0.3264893889427185,
+          -0.003569197840988636,
+          -37.424007415771484
+        ],
+        "max_tire_residual_n": 0.0009358952294369492,
+        "max_suspension_energy_residual_j": null,
+        "sum_signed_force_limit_work_j": 0,
+        "sum_signed_geometry_work_j": 0,
+        "trace": "../coupled-native-r2/simulation-one-side-native.jsonl.gz",
+        "reused_from": "docs\\evidence\\PHYS-SUSP-01\\coupled-native-r3\\summary.json"
+      },
+      {
+        "mode": "simulation",
+        "coupled": false,
+        "case": "drop-limit",
+        "ticks": 360,
+        "max_abs_roll_deg": 2.4379171463806415e-06,
+        "max_compression_m": 0.19999998807907104,
+        "final_position": [
+          -5.76384229233895e-09,
+          -1.0407900929987335e-10,
+          0.4186876118183136
+        ],
+        "max_tire_residual_n": 0.00010004370440646014,
+        "max_suspension_energy_residual_j": null,
+        "sum_signed_force_limit_work_j": 0,
+        "sum_signed_geometry_work_j": 0,
+        "trace": "../coupled-native-r2/simulation-drop-limit-native.jsonl.gz",
+        "reused_from": "docs\\evidence\\PHYS-SUSP-01\\coupled-native-r3\\summary.json"
+      },
+      {
+        "mode": "game",
+        "coupled": true,
+        "case": "flat-free",
+        "ticks": 360,
+        "max_abs_roll_deg": 1.289799938673699e-14,
+        "max_compression_m": 0.06219587136465937,
+        "final_position": [
+          0.0,
+          0.0,
+          0.41868746280670166
+        ],
+        "max_tire_residual_n": 1.6096382887267473e-13,
+        "max_suspension_energy_residual_j": 9.592326932761353e-14,
+        "sum_signed_contact_offset_work_j": 0.0,
+        "max_normal_force_n": 3153.131370429589,
+        "sum_initialization_energy_j": 0.0,
+        "max_normal_energy_step_increase_j": 0.0013785526753054,
+        "sum_signed_geometry_work_j": 0.009637575257215758,
+        "trace": "game-flat-free-coupled.jsonl.gz"
+      },
+      {
+        "mode": "game",
+        "coupled": true,
+        "case": "bank",
+        "ticks": 360,
+        "max_abs_roll_deg": 13.76552677154541,
+        "max_compression_m": 0.24800001908374097,
+        "final_position": [
+          -0.08255888521671295,
+          -0.015462524257600307,
+          0.4120318293571472
+        ],
+        "max_tire_residual_n": 0.0009734004237150208,
+        "max_suspension_energy_residual_j": 5.258016244624741e-13,
+        "sum_signed_contact_offset_work_j": -25.38336754692877,
+        "max_normal_force_n": 30174.179622388696,
+        "sum_initialization_energy_j": 4365.633381052361,
+        "max_normal_energy_step_increase_j": 2.958387790386041,
+        "sum_signed_geometry_work_j": 143.27880457883867,
+        "trace": "game-bank-coupled.jsonl.gz"
+      },
+      {
+        "mode": "game",
+        "coupled": true,
+        "case": "one-side",
+        "ticks": 360,
+        "max_abs_roll_deg": 179.38584899902344,
+        "max_compression_m": 0.2395152710234944,
+        "final_position": [
+          1.7003250122070312,
+          0.0060278247110545635,
+          -37.223419189453125
+        ],
+        "max_tire_residual_n": 0.000958141373986812,
+        "max_suspension_energy_residual_j": 9.094947017729282e-13,
+        "sum_signed_contact_offset_work_j": 11090.19256516603,
+        "max_normal_force_n": 57748.718370513685,
+        "sum_initialization_energy_j": 401.703540642126,
+        "max_normal_energy_step_increase_j": 1367.3536114489461,
+        "sum_signed_geometry_work_j": 968.9648618352824,
+        "trace": "game-one-side-coupled.jsonl.gz"
+      },
+      {
+        "mode": "game",
+        "coupled": true,
+        "case": "drop-limit",
+        "ticks": 360,
+        "max_abs_roll_deg": 7.501860799772643e-15,
+        "max_compression_m": 0.14485444051510826,
+        "final_position": [
+          0.0,
+          0.0,
+          0.41868746280670166
+        ],
+        "max_tire_residual_n": 1.6631885089242858e-13,
+        "max_suspension_energy_residual_j": 1.0658141036401503e-12,
+        "sum_signed_contact_offset_work_j": -278.3062259648924,
+        "max_normal_force_n": 16560.100131161806,
+        "sum_initialization_energy_j": 0.0,
+        "max_normal_energy_step_increase_j": 0.001211916837746685,
+        "sum_signed_geometry_work_j": 0.004762837054457236,
+        "trace": "game-drop-limit-coupled.jsonl.gz"
+      },
+      {
+        "mode": "simulation",
+        "coupled": true,
+        "case": "flat-free",
+        "ticks": 360,
+        "max_abs_roll_deg": 1.2861212745837736e-14,
+        "max_compression_m": 0.06219587136465937,
+        "final_position": [
+          0.0,
+          0.0,
+          0.41868746280670166
+        ],
+        "max_tire_residual_n": 2.555214625395918e-13,
+        "max_suspension_energy_residual_j": 9.059419880941277e-14,
+        "sum_signed_contact_offset_work_j": 0.0,
+        "max_normal_force_n": 3153.1313704295894,
+        "sum_initialization_energy_j": 0.0,
+        "max_normal_energy_step_increase_j": 0.0013785526753054,
+        "sum_signed_geometry_work_j": 0.009637575257443132,
+        "trace": "simulation-flat-free-coupled.jsonl.gz"
+      },
+      {
+        "mode": "simulation",
+        "coupled": true,
+        "case": "bank",
+        "ticks": 360,
+        "max_abs_roll_deg": 13.856136322021484,
+        "max_compression_m": 0.24800001908374097,
+        "final_position": [
+          -0.08530941605567932,
+          0.0010853694984689355,
+          0.4114815890789032
+        ],
+        "max_tire_residual_n": 0.0009915085593982982,
+        "max_suspension_energy_residual_j": 9.805489753489383e-13,
+        "sum_signed_contact_offset_work_j": -29.862231768242246,
+        "max_normal_force_n": 30174.18046364026,
+        "sum_initialization_energy_j": 4365.633381052361,
+        "max_normal_energy_step_increase_j": 2.4269957349142715,
+        "sum_signed_geometry_work_j": 140.02275281686747,
+        "trace": "simulation-bank-coupled.jsonl.gz"
+      },
+      {
+        "mode": "simulation",
+        "coupled": true,
+        "case": "one-side",
+        "ticks": 360,
+        "max_abs_roll_deg": 179.79595947265625,
+        "max_compression_m": 0.23268955686841958,
+        "final_position": [
+          3.5170302391052246,
+          -0.0002831419405993074,
+          -34.302772521972656
+        ],
+        "max_tire_residual_n": 0.0008044596984552228,
+        "max_suspension_energy_residual_j": 3.637978807091713e-12,
+        "sum_signed_contact_offset_work_j": 71771.09986757768,
+        "max_normal_force_n": 136688.17471571075,
+        "sum_initialization_energy_j": 401.703540642126,
+        "max_normal_energy_step_increase_j": 5108.192926779764,
+        "sum_signed_geometry_work_j": -1653.90504718439,
+        "trace": "simulation-one-side-coupled.jsonl.gz"
+      },
+      {
+        "mode": "simulation",
+        "coupled": true,
+        "case": "drop-limit",
+        "ticks": 360,
+        "max_abs_roll_deg": 4.731833939838849e-15,
+        "max_compression_m": 0.14485444051510826,
+        "final_position": [
+          0.0,
+          0.0,
+          0.41868746280670166
+        ],
+        "max_tire_residual_n": 2.4952743450790616e-13,
+        "max_suspension_energy_residual_j": 6.252776074688882e-13,
+        "sum_signed_contact_offset_work_j": -278.3062259648924,
+        "max_normal_force_n": 16560.100131161806,
+        "sum_initialization_energy_j": 0.0,
+        "max_normal_energy_step_increase_j": 0.001211916837746685,
+        "sum_signed_geometry_work_j": 0.00476283705501146,
+        "trace": "simulation-drop-limit-coupled.jsonl.gz"
+      }
+    ]
+  },
+  "handling_probe": {
+    "summary": "passive-handling-r1/summary.json",
+    "cases": 8,
+    "recorded_ticks": 5760,
+    "conditioning_ticks": 1920,
+    "source_stable_during_run": true,
+    "results": [
+      {
+        "case": "constant-turn",
+        "mode": "game",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 11.11111111111111,
+        "final_horizontal_speed_mps": 10.402562689315742,
+        "path_distance_m": 63.702172423538165,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 46.20967102050781,
+        "lateral_displacement_m": 35.40214920043945,
+        "heading_change_deg": -79.00735473632812,
+        "peak_abs_unwrapped_heading_deg": 79.00735473632812,
+        "peak_abs_yaw_rate_radps": 0.24833661317825317,
+        "abs_sideslip_integral_rad_s": 0.05130529191098082,
+        "abs_yaw_error_integral_rad": 0.040337156104062126,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 0.0,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": false,
+        "trace": "game-constant-turn-native.csv.gz",
+        "max_tire_residual_n": 0.000901938850045722,
+        "max_abs_roll_deg": 0.6138884425163269
+      },
+      {
+        "case": "constant-turn",
+        "mode": "game",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 11.11111111111111,
+        "final_horizontal_speed_mps": 10.403816156911034,
+        "path_distance_m": 63.71092586828903,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 46.21658706665039,
+        "lateral_displacement_m": 35.40719985961914,
+        "heading_change_deg": -79.00506591796875,
+        "peak_abs_unwrapped_heading_deg": 79.00506591796875,
+        "peak_abs_yaw_rate_radps": 0.24831362068653107,
+        "abs_sideslip_integral_rad_s": 0.050856066250193156,
+        "abs_yaw_error_integral_rad": 0.04066027220252192,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 0.0,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": true,
+        "trace": "game-constant-turn-coupled.csv.gz",
+        "max_tire_residual_n": 0.0009794464893058648,
+        "max_abs_roll_deg": 0.6104019284248352
+      },
+      {
+        "case": "steering-step",
+        "mode": "game",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 22.22222222222222,
+        "final_horizontal_speed_mps": 20.274306400642658,
+        "path_distance_m": 127.1066256138968,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 70.62796020507812,
+        "lateral_displacement_m": 73.94222259521484,
+        "heading_change_deg": -117.4308853149414,
+        "peak_abs_unwrapped_heading_deg": 117.4308853149414,
+        "peak_abs_yaw_rate_radps": 0.4103761315345764,
+        "abs_sideslip_integral_rad_s": 0.2289725692860726,
+        "abs_yaw_error_integral_rad": 0.4743952179194964,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 38.711488407807245,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": false,
+        "trace": "game-steering-step-native.csv.gz",
+        "max_tire_residual_n": 0.0009911303955161392,
+        "max_abs_roll_deg": 1.9989742040634155
+      },
+      {
+        "case": "steering-step",
+        "mode": "game",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 22.22222222222222,
+        "final_horizontal_speed_mps": 20.31031442589792,
+        "path_distance_m": 127.20421579607702,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 71.0660629272461,
+        "lateral_displacement_m": 73.96160125732422,
+        "heading_change_deg": -116.83267211914062,
+        "peak_abs_unwrapped_heading_deg": 116.83267211914062,
+        "peak_abs_yaw_rate_radps": 0.40791165828704834,
+        "abs_sideslip_integral_rad_s": 0.2267152367805134,
+        "abs_yaw_error_integral_rad": 0.4861424063270647,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 71.24556738304265,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": true,
+        "trace": "game-steering-step-coupled.csv.gz",
+        "max_tire_residual_n": 0.0009823399368629642,
+        "max_abs_roll_deg": 1.9846173524856567
+      },
+      {
+        "case": "constant-turn",
+        "mode": "simulation",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 11.11111111111111,
+        "final_horizontal_speed_mps": 9.71984924219753,
+        "path_distance_m": 58.21795647350281,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 43.922794342041016,
+        "lateral_displacement_m": 31.089414596557617,
+        "heading_change_deg": -74.03581237792969,
+        "peak_abs_unwrapped_heading_deg": 74.03581237792969,
+        "peak_abs_yaw_rate_radps": 0.23745422065258026,
+        "abs_sideslip_integral_rad_s": 0.06548024871249566,
+        "abs_yaw_error_integral_rad": 0.016767479024613938,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 0.0,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": false,
+        "trace": "simulation-constant-turn-native.csv.gz",
+        "max_tire_residual_n": 0.0009968455144383978,
+        "max_abs_roll_deg": 0.5406700968742371
+      },
+      {
+        "case": "constant-turn",
+        "mode": "simulation",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 11.11111111111111,
+        "final_horizontal_speed_mps": 9.72032945882696,
+        "path_distance_m": 58.216169777955976,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 43.92734909057617,
+        "lateral_displacement_m": 31.082563400268555,
+        "heading_change_deg": -74.02010345458984,
+        "peak_abs_unwrapped_heading_deg": 74.02010345458984,
+        "peak_abs_yaw_rate_radps": 0.23719832301139832,
+        "abs_sideslip_integral_rad_s": 0.06509524654022272,
+        "abs_yaw_error_integral_rad": 0.017042311563953222,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 0.0,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": true,
+        "trace": "simulation-constant-turn-coupled.csv.gz",
+        "max_tire_residual_n": 0.0009891425794933814,
+        "max_abs_roll_deg": 0.538045346736908
+      },
+      {
+        "case": "steering-step",
+        "mode": "simulation",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 22.22222222222222,
+        "final_horizontal_speed_mps": 19.008874511090532,
+        "path_distance_m": 120.06161394778127,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 62.126705169677734,
+        "lateral_displacement_m": 69.99421691894531,
+        "heading_change_deg": -124.78863525390625,
+        "peak_abs_unwrapped_heading_deg": 124.78863525390625,
+        "peak_abs_yaw_rate_radps": 0.4396078586578369,
+        "abs_sideslip_integral_rad_s": 0.23431672623003602,
+        "abs_yaw_error_integral_rad": 0.2232368394105933,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 0.0,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": false,
+        "trace": "simulation-steering-step-native.csv.gz",
+        "max_tire_residual_n": 0.0009887120800926832,
+        "max_abs_roll_deg": 2.0278897285461426
+      },
+      {
+        "case": "steering-step",
+        "mode": "simulation",
+        "esc_enabled": true,
+        "ticks": 720,
+        "elapsed_s": 6.0,
+        "initial_speed_mps": 22.22222222222222,
+        "final_horizontal_speed_mps": 19.05438378145524,
+        "path_distance_m": 120.17220275915292,
+        "stopped": false,
+        "time_to_stop_s": null,
+        "stopping_path_distance_m": null,
+        "longitudinal_displacement_m": 62.64944076538086,
+        "lateral_displacement_m": 70.066650390625,
+        "heading_change_deg": -123.98577880859375,
+        "peak_abs_unwrapped_heading_deg": 123.98577880859375,
+        "peak_abs_yaw_rate_radps": 0.4368653893470764,
+        "abs_sideslip_integral_rad_s": 0.23105076501980315,
+        "abs_yaw_error_integral_rad": 0.23958970880594485,
+        "esc_active_seconds": 0.0,
+        "abs_active_seconds": 0.0,
+        "allocation_residual_over_1nm_seconds": 0.0,
+        "peak_abs_allocation_residual_nm": 0.0,
+        "airborne_wheel_seconds": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recontact_counts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "coupled": true,
+        "trace": "simulation-steering-step-coupled.csv.gz",
+        "max_tire_residual_n": 0.0009796750196948976,
+        "max_abs_roll_deg": 2.0107719898223877
+      }
+    ],
+    "adverse_response": "yaw error increases retained; no tire/control/input retuning"
+  },
+  "compatibility": {
+    "summary": "passive-off-r1/compatibility.json",
+    "current_native_ticks": 240,
+    "baseline_raw_reused": "6be5f54; independent historical actual Git source run",
+    "identical_common_bytes": true,
+    "projection": [
+      "suspension_state=None"
+    ],
+    "full_new_and_old_raw_saved": true
+  },
+  "commands": [
+    ".venv/Scripts/python.exe tools/physics/suspension_coupled_probe.py --output docs/evidence/PHYS-SUSP-01/passive-native-r2 --prior docs/evidence/PHYS-SUSP-01/coupled-native-r3 --reuse-native-only",
+    ".venv/Scripts/python.exe tools/physics/suspension_handling_probe.py --output docs/evidence/PHYS-SUSP-01/passive-handling-r1",
+    ".venv/Scripts/python.exe docs/evidence/PHYS-SUSP-01/passive-off-compatibility.py --verify-existing",
+    ".venv/Scripts/python.exe -m ruff check src tests tools"
+  ],
+  "remaining": [
+    "single-side flip/recontact still produces positive contact-offset work (simulation about 71.77kJ); not entire-car passivity",
+    "geometry refresh/contact activation continuity remains unresolved",
+    "normal force and tire/transmission must share common body end velocity",
+    "fixed-ground massless suspension model is not full unsprung/moving-platform simulation",
+    "remaining standard scenarios and functional T1 after completed block"
+  ],
+  "not_run": [
+    "functional T1",
+    "T2",
+    "T3",
+    "foreground performance gate",
+    "human driving gate"
+  ],
+  "artifact_sha256": {
+    "esc-landing-r1-failure/simulation-airborne-recontact-A.csv.gz": "c7d1efb9929efa704863132eb300998b8f4a9ca19de339fada7a888f3decbd4d",
+    "esc-landing-r1-failure/simulation-airborne-recontact-B.csv.gz": "aa88e099f4010852122f93a682f15283f9f8761b081ade6ce1ff2bb72f47ea03",
+    "esc-landing-r1-failure/summary.json": "ce51663db0ee55c37c430a10588fa6afd20487343ad746e452772ce850585fdc",
+    "passive-final-ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "passive-handling-r1/game-constant-turn-coupled.csv.gz": "2b94df05f0216d5f80984f163b130d2cae17206d98355d672ac50e1d5c1d7440",
+    "passive-handling-r1/game-constant-turn-native.csv.gz": "f3433da394a6b653bbbc8f434e156a9dd5c829cfd805799d0112eef6badf5d2a",
+    "passive-handling-r1/game-steering-step-coupled.csv.gz": "b263d9262859deca3a6f6115de5376b4bca7c2ae867408ae67479732d18709a9",
+    "passive-handling-r1/game-steering-step-native.csv.gz": "afeb8db65fad4e60d61aae81f891741b88fe838209ce027c158606faeda6c1ba",
+    "passive-handling-r1/simulation-constant-turn-coupled.csv.gz": "b79cf4814336e7b053fc109af315748cff62e0deffb0f23c1e38ef9f6a6f73d9",
+    "passive-handling-r1/simulation-constant-turn-native.csv.gz": "d06191cb1dc4560cbd68964453cee05bc16a541d79ea2f19908325d76baa367b",
+    "passive-handling-r1/simulation-steering-step-coupled.csv.gz": "567023e849c7204f8ffebf9e23de3d27415174d08fcf51edb20d10cefcbab5f6",
+    "passive-handling-r1/simulation-steering-step-native.csv.gz": "c76883a0b011774b12a9265bd2586f86fc1efb25132c7e1f7ef23c916323bf9e",
+    "passive-handling-r1/summary.json": "63d0af79e7dce6c4b62c37ad338b6ff1a745366e4126a942e2b04e431724f892",
+    "passive-native-r1/game-bank-coupled.jsonl.gz": "5d475bf6aa09a5350829d2ec87ae8ef76b9d649736ef302840f1657ef0d47c58",
+    "passive-native-r1/game-drop-limit-coupled.jsonl.gz": "7a753cbbed030f6a4c5a51d0c06369dc6551fa8c2e4ecae3deda3c52e519ad0d",
+    "passive-native-r1/game-flat-free-coupled.jsonl.gz": "f856d5fb5d46b25f41ffc10680503b152612cf6df8297d0c30fb55dfde6a03cd",
+    "passive-native-r1/game-one-side-coupled.jsonl.gz": "850a97b1c002203801288c79c4fc89b9998376f4c9ab52d15521c0119ce19bc4",
+    "passive-native-r1/simulation-bank-coupled.jsonl.gz": "fea509b733e50ae71aa0432e07e2cd80a8d698bc74026a163d0983fdafd5724f",
+    "passive-native-r1/simulation-drop-limit-coupled.jsonl.gz": "a21d0b15dcec371b4361ae15ac746ce705e9129c50788e3da0afc1526a2d335c",
+    "passive-native-r1/simulation-flat-free-coupled.jsonl.gz": "e4c72c5d20f7b12e021883f7a12587943d5cf0079fc8b84c64834bb12800d5f6",
+    "passive-native-r1/simulation-one-side-coupled.jsonl.gz": "63726d8e23cb1ae3940ca329adb015dbcb01d015ad0f16be0636b88935e4cdee",
+    "passive-native-r1/summary.json": "a5bd0405201d79acb47b09a0acb5e630e9acb9a17b36e9001e5a64de231e1613",
+    "passive-native-r2/game-bank-coupled.jsonl.gz": "35b80ec464b61de101de1b899a7b402d1b28d2a7bb96db69ccec6e48e8e5e7e6",
+    "passive-native-r2/game-drop-limit-coupled.jsonl.gz": "e3206c50b8d45509d489dd4f4571b980c27a856a7217ca20f0f9918ecad05e6a",
+    "passive-native-r2/game-flat-free-coupled.jsonl.gz": "387b6c56f96b3ae0a67eeba525a21da38e91d6fff50d9537836dfa51bc5d3380",
+    "passive-native-r2/game-one-side-coupled.jsonl.gz": "9b6da0834a65898c345d962600916e7035cf2624c2c4de7c4e43cd493526d574",
+    "passive-native-r2/simulation-bank-coupled.jsonl.gz": "acde231efc966a208fe67b54750c33970815f46b386b69603d0f7058a5e4df1b",
+    "passive-native-r2/simulation-drop-limit-coupled.jsonl.gz": "6b97773c778fd0f9332f1a6fdc52cdbb1a4618872cc4a2ac90f3573378756a8d",
+    "passive-native-r2/simulation-flat-free-coupled.jsonl.gz": "6270810ed3496cdb98984762db6aa8d66dc956543a8b2c991858d7563df2eb77",
+    "passive-native-r2/simulation-one-side-coupled.jsonl.gz": "1116c8a95d2b8fd61b38129d3faa07d2ae5910c309e2795716af53408033855b",
+    "passive-native-r2/summary.json": "44c4016936779db8ed0e47d2c6bc4c34612878d102c3501a9687c051754e7363",
+    "passive-off-compatibility.py": "8f7b86a3f1a819207bf1b574d803c921814193e8356b5c097b097127bbc63654",
+    "passive-off-r1/baseline/game.jsonl.gz": "4f96bcfbfc2a3a5b2b5dd884913d807f7c0886ba5c38724fff728f04d215aa89",
+    "passive-off-r1/baseline/simulation.jsonl.gz": "206980278af93b4bfd9069257b9b102cdab3daf0014eb7a672aae3577cd800c4",
+    "passive-off-r1/compatibility.json": "960b58187f5380853cceef854c6c5ae8b9d8fede76c23a5e93f4d66bdfc4e599",
+    "passive-off-r1/current/game.jsonl.gz": "c43ba7a26ca0e3d05b34afeee9ea4ab5371039ecfb7db480fa5e7e9484d44505",
+    "passive-off-r1/current/simulation.jsonl.gz": "2aa79160abd8b0b593dbf6b8e50f53cc6b3e7f809afcdad6ddba883acaf26061",
+    "passive.md": "ce3d92f74572c409ea053cf7f318cee8b66acebc26d0ec5af2d15377236b9dcf",
+    "preload-diagnostic/game-bank.jsonl.gz": "87fc3d3c61d4d6675d46228e408f6f1a8c7ae22c1731244d1b91d84f23dc4207",
+    "preload-diagnostic/game-one-side.jsonl.gz": "be49820c93363cdf745cf0ed99f9663ef058e659c4b0f9bf602e7c28b4bb430d",
+    "preload-diagnostic/simulation-bank.jsonl.gz": "ed1c5dc2ffc62563dcd3cf1645d758b1b60b1f03250cd418698d87accd00e937",
+    "preload-diagnostic/simulation-one-side.jsonl.gz": "0befada97a4c9d4101f474a3a306e8fbc598bde285eaeeadc8553f5e284b06c7",
+    "preload-diagnostic/summary.json": "188a3aca897117b02644a7d4e7b3b1433a7b86c37b0811c47d7ddba20008455a",
+    "reference-v17.json": "31e7b2846f45c157101a06d743aac846c0a43f8c0e73e7deb26cf33bd28dbb63",
+    "validation-T0-passive-r1/ruff.log": "2c6819318f9b8131ede8ba9fca85e65260cdbc0934b76a4806884d7d110a8c7c",
+    "validation-T0-passive-r1/summary.json": "50b887e2b4a11629bb844ce40baf603fc9f778f149118fd8b22a61d5d624d5ae",
+    "validation-T0-passive-r2/pytest.log": "4e06774d5765b52686c45152565e6559b1daab5f4f4073f6a852481fc9c7bfa4",
+    "validation-T0-passive-r2/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation-T0-passive-r2/summary.json": "fac612041bf1a6a796ba2f5ffdce888c053bbabe2a4a9746cf0677f24b39e018",
+    "validation-T0-passive-r3/pytest.log": "6a2cadadee24ba45fd3b15c75d70bcf039db761118695fc33a7217a6977a4076",
+    "validation-T0-passive-r3/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation-T0-passive-r3/summary.json": "fe70ed70a3716d3ad90404533062157c1773efe09550caa6fea7edb808852c2d",
+    "validation-T0-passive-r4/pytest.log": "43cdac8661d158e56fbeb34e7970cf65d503f1794e192231307157879a914cfc",
+    "validation-T0-passive-r4/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation-T0-passive-r4/summary.json": "7d63b4fb04a2ef81515b19a31fcd85814915ccb075147e05619a9f25816b7396",
+    "validation-T0-passive-r5/pytest.log": "e5c94b3c8b33dd110bf4e18269b2e486fb0928da125008dc295b91c692ead74e",
+    "validation-T0-passive-r5/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation-T0-passive-r5/summary.json": "832cd473147b69b14c2b8bbbb2d88a5a5f44d05f3e897eec9868fdffbed50a3b",
+    "validation-T0-passive-r6/pytest.log": "3149afd00bab0003e59dfade82e82fdd1435a4a4e1506a779b16db1dbaf44562",
+    "validation-T0-passive-r6/ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation-T0-passive-r6/summary.json": "fdf1ee79b50ab1eb7a313618716cabf810a84a9e7024a50af47e35a190b8497b"
+  }
+}

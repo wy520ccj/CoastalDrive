@@ -83,5 +83,5 @@ def test_export_contains_complete_brake_metadata_and_source(tmp_path):
         assert set(mode["vehicle_config"]["stability"]) == set(report["stability_fields"])
         assert mode["native_bullet"]["mass"] > 0
     assert all(unit and purpose for unit, purpose in report["brake_fields"].values())
-    assert report["schema_version"] == "reference-v16"
+    assert report["schema_version"] == "reference-v17"
     assert all(unit and purpose for unit, purpose in report["traction_fields"].values())

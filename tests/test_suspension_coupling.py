@@ -49,7 +49,7 @@ def test_common_end_state_matches_explicit_body_and_elastic_constraints(bank, sp
     assert all(0 < f < 6000 * math.cos(bank) for f in expected_force)
     mobility = gradient @ np.linalg.solve(mass, gradient.T)
     actual = advance_suspension(compression, gradient @ velocity, mobility, (True,) * 4,
-                               (6000 * math.cos(bank),) * 4, RATES, damping, damping,
+                               RATES, damping, damping,
                                BARS, STOPS, .2, DT)
     assert actual.compression == pytest.approx(expected_x, abs=2e-15)
     assert actual.axial_force == pytest.approx(expected_force, abs=1e-9)
@@ -99,7 +99,7 @@ def test_free_wheels_relax_without_erasing_bar_or_spring_energy():
     x = (.15, .02, .09, -.04)
     for _ in range(80):
         step = advance_suspension(x, (0.,) * 4, ((0.,) * 4,) * 4, (False,) * 4,
-                                  (0.,) * 4, RATES, (5280.,) * 4, (2760.,) * 4,
+                                  RATES, (5280.,) * 4, (2760.,) * 4,
                                   BARS, STOPS, .2, DT)
         assert step.axial_force == pytest.approx((0.,) * 4, abs=1e-10)
         assert potential(step.compression) < potential(x)
@@ -112,29 +112,44 @@ def test_free_wheels_relax_without_erasing_bar_or_spring_energy():
 @pytest.mark.parametrize("x", ((.26, .24, .23, .25), (-.28, -.25, -.24, -.26)))
 def test_progressive_stops_and_free_travel_energy(x):
     step = advance_suspension(x, (0.,) * 4, ((0.,) * 4,) * 4, (False,) * 4,
-                              (0.,) * 4, RATES, (5280.,) * 4, (2760.,) * 4,
+                              RATES, (5280.,) * 4, (2760.,) * 4,
                               BARS, STOPS, .2, DT)
     assert potential(step.compression) < potential(x)
     assert step.elastic_numerical_dissipation >= 0.
     assert abs(step.energy_residual) < 1e-10
 
 
-def test_force_limit_exposes_signed_boundary_work():
+def test_stop_response_exceeds_legacy_clip_with_passive_energy():
     gradient, mass = frames(.3)
     velocity = np.array([0., 0., -3., 0., 0., 0.])
     initial = np.array([.18] * 4)
     mobility = gradient @ np.linalg.solve(mass, gradient.T)
     step = advance_suspension(initial, gradient @ velocity, mobility, (True,) * 4,
-                              (1000 * math.cos(.3),) * 4, RATES, (5280.,) * 4, (2760.,) * 4,
+                              RATES, (5280.,) * 4, (2760.,) * 4,
                               BARS, STOPS, .2, DT)
-    assert step.axial_force == pytest.approx((1000 * math.cos(.3),) * 4, abs=1e-10)
-    assert all(raw > used for raw, used in zip(step.raw_axial_force, step.axial_force))
+    assert min(step.axial_force) / math.cos(.3) > 6000.
+    assert step.raw_axial_force == pytest.approx(step.axial_force, abs=1e-8)
     end_velocity = velocity + DT * np.linalg.solve(mass, gradient.T @ step.axial_force)
     change = (end_velocity @ mass @ end_velocity - velocity @ mass @ velocity) / 2
     balance = change + potential(step.compression) - potential(initial) + step.damping_dissipation + step.elastic_numerical_dissipation + step.body_numerical_dissipation
-    assert balance == pytest.approx(step.force_limit_work, abs=1e-10)
-    assert step.force_limit_work > 0.  # 原有力限是显式模型边界，不能把它报告为正耗散。
+    assert balance == pytest.approx(0., abs=1e-10)
+    assert change + potential(step.compression) - potential(initial) <= 0.
+    assert step.contact_offset_work == 0.
 
 
 def test_grazing_contact_has_no_fabricated_geometry_factor():
     assert contact_gradient((1., 0., 0.), (0., 0., -1.), (0., 0., -.4)) is None
+
+
+def test_prospective_contact_gap_is_dissipative_instead_of_preloading_airborne_spring():
+    gradient, mass = frames(0.)
+    velocity = np.array([0., 0., -3.5, 0., 0., 0.])
+    mobility = gradient @ np.linalg.solve(mass, gradient.T)
+    step = advance_suspension((0.,) * 4, gradient @ velocity, mobility, (True,) * 4,
+                              RATES, (5280.,) * 4, (2760.,) * 4, BARS, STOPS, .2, DT,
+                              geometry=(-.0048,) * 4)
+    end_velocity = velocity + DT * np.linalg.solve(mass, gradient.T @ step.axial_force)
+    kinetic_change = (end_velocity @ mass @ end_velocity - velocity @ mass @ velocity) / 2
+    assert step.contact_offset_work < 0.
+    assert kinetic_change + potential(step.compression) < 0.
+    assert kinetic_change + potential(step.compression) + step.damping_dissipation + step.elastic_numerical_dissipation + step.body_numerical_dissipation == pytest.approx(step.contact_offset_work, abs=1e-10)

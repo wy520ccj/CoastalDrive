@@ -76,7 +76,7 @@ class SuspensionStep:
     damping_dissipation: float
     elastic_numerical_dissipation: float
     body_numerical_dissipation: float
-    force_limit_work: float
+    contact_offset_work: float
     energy_residual: float
 
 
@@ -91,18 +91,22 @@ class SuspensionState:
     linear_impulse: tuple = (0., 0., 0.)
     angular_impulse: tuple = (0., 0., 0.)
     force_tick: int = 0
+    contact_compression: tuple = (0.,) * 4
+    initialization_energy: float = 0.
 
 
-def advance_suspension(compression, extension_speed, mobility, touching, limits,
+def advance_suspension(compression, extension_speed, mobility, touching,
                        rates, compression_damping, extension_damping, bars,
-                       stops, travel, dt):
+                       stops, travel, dt, *, geometry=None):
     """四轮共用一个车身末速度；离地的无质量轮由弹簧/阻尼平衡释放行程。
 
     mobility=A M⁻¹ Aᵀ，A将车身速度映射为轴向伸张速率。
-    接地轴向力非负；显式力限另记有符号边界功，不能冒充被动耗散。
+    接地轴向力非负，弹簧/止挡反力始终为同一势能的梯度。
+    geometry为射线接触约束位置，离地轮的材料状态不会随候选射线重设。
     """
     stiffness = stiffness_matrix(rates, bars)
-    modes = [1 if contact else 0 for contact in touching]  # 0自由，1弹性接触，2力限。
+    geometry = compression if geometry is None else geometry
+    modes = [1 if contact else 0 for contact in touching]  # 0自由，1弹性接触。
     damping = [compression_damping[i] if extension_speed[i] < 0 else extension_damping[i]
                for i in range(4)]
     stop_bounds = [travel if x > travel else -travel if x < -travel else None for x in compression]
@@ -123,25 +127,20 @@ def advance_suspension(compression, extension_speed, mobility, touching, limits,
             else:
                 equations.append([1. if i == j else 0. for j in range(4)]
                                  + [dt * dt * value for value in mobility[i]])
-                values.append(compression[i] - dt * extension_speed[i])
-                equations.append(([-v for v in system[i]] if mode == 1 else [0.] * 4)
+                values.append(geometry[i] - dt * extension_speed[i])
+                equations.append([-v for v in system[i]]
                                  + [1. if i == j else 0. for j in range(4)])
-                values.append(-rhs[i] if mode == 1 else limits[i])
+                values.append(-rhs[i])
         solution = _solve(equations, values)
         end, forces = solution[:4], solution[4:]
         raw = tuple(dot(system[i], end) - rhs[i] for i in range(4))
         next_modes = modes[:]
         for i, mode in enumerate(modes):
-            target = compression[i] - dt * extension_speed[i] - dt * dt * dot(mobility[i], forces)
+            target = geometry[i] - dt * extension_speed[i] - dt * dt * dot(mobility[i], forces)
             if mode == 0 and touching[i] and end[i] < target - 1e-10:
                 next_modes[i] = 1
-            elif mode == 1:
-                if forces[i] < -1e-7:
-                    next_modes[i] = 0
-                elif forces[i] > limits[i] + 1e-7:
-                    next_modes[i] = 2
-            elif mode == 2 and raw[i] < limits[i] - 1e-7:
-                next_modes[i] = 1
+            elif mode == 1 and forces[i] < -1e-7:
+                next_modes[i] = 0
         next_damping = [compression_damping[i] if end[i] >= compression[i] else extension_damping[i]
                         for i in range(4)]
         next_stops = [travel if x > travel else -travel if x < -travel else None for x in end]
@@ -157,8 +156,8 @@ def advance_suspension(compression, extension_speed, mobility, touching, limits,
     damping_loss = sum(c * dx * dx / dt for c, dx in zip(damping, delta))
     elastic_loss = dot(elastic_force, delta) - energy_change
     body_loss = dt * dt * sum(forces[i] * dot(mobility[i], forces) for i in range(4)) / 2
-    limit_work = dot(tuple(raw[i] - forces[i] for i in range(4)), delta)
-    kinetic_change = -dot(forces, delta) - body_loss
-    residual = kinetic_change + energy_change + damping_loss + elastic_loss + body_loss - limit_work
+    offset_work = dot(forces, tuple(geometry[i] - compression[i] for i in range(4)))
+    kinetic_change = dt * dot(forces, extension_speed) + body_loss
+    residual = kinetic_change + energy_change + damping_loss + elastic_loss + body_loss - offset_work
     return SuspensionStep(end, tuple(dx / dt for dx in delta), forces, raw, spring, bar, stop,
-                          damping_loss, elastic_loss, body_loss, limit_work, residual)
+                          damping_loss, elastic_loss, body_loss, offset_work, residual)

@@ -1,0 +1,38 @@
+..................F........                                              [100%]
+================================== FAILURES ===================================
+_________ test_actual_impulse_is_sum_of_contact_normals_and_real_arms _________
+
+    def test_actual_impulse_is_sum_of_contact_normals_and_real_arms():
+        world, car = _create_vehicle(DrivingMode.SIMULATION.vehicle_config)
+        try:
+            car._chassis.setTransform(TransformState.makePosHpr(Vec3(0, 0, .4), Vec3(0, 0, 3)))
+            car._chassis.setAngularVelocity(Vec3(.15, -.1, .02))
+            before_v = Vec3(car._chassis.getLinearVelocity())
+            before_w = Vec3(car._chassis.getAngularVelocity())
+            tensor = car._chassis.getInvInertiaTensorWorld()
+            contacts = car.suspension.advance(world, car._chassis, car._vehicle.getWheels(),
+                                             car.on_asphalt, 1, FIXED_DT, (0.,) * 3, (0.,) * 3)
+            linear, angular = Vec3(0), Vec3(0)
+            for c in contacts:
+                if c.in_contact:
+                    impulse = Vec3(*c.contact_normal) * (c.normal_load * FIXED_DT)
+                    arm = Vec3(*c.contact_point) - car._chassis.getTransform().getPos()
+                    linear += impulse
+                    angular += arm.cross(impulse)
+            assert tuple(car._chassis.getLinearVelocity() - before_v) == pytest.approx(tuple(linear / car.config.mass), abs=2e-7)
+            assert tuple(car._chassis.getAngularVelocity() - before_w) == pytest.approx(tuple(tensor.xform(angular)), abs=2e-7)
+            assert car.suspension.state.linear_impulse == pytest.approx(tuple(linear), abs=1e-5)
+>           assert car.suspension.state.angular_impulse == pytest.approx(tuple(angular), abs=1e-5)
+E           assert (-30.77681367...60324179, 0.0) == approx((-30.7....0 ± 1.0e-05))
+E             
+E             comparison failed. Mismatched elements: 2 / 3:
+E             Max absolute difference: 1.9239902119494445e-05
+E             Max relative difference: 6.251427559592796e-07
+E             Index | Obtained           | Expected                    
+E             0     | -30.77681367349587 | -30.77679443359375 ± 1.0e-05
+E             1     | -638.3139460324179 | -638.31396484375 ± 1.0e-05
+
+tests\test_suspension_native.py:58: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_suspension_native.py::test_actual_impulse_is_sum_of_contact_normals_and_real_arms
+1 failed, 26 passed in 5.69s

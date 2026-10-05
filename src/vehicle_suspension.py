@@ -26,6 +26,7 @@ class Suspension:
         velocity = tuple(chassis.getLinearVelocity()[a] + external_velocity[a] for a in range(3))
         angular = tuple(chassis.getAngularVelocity()[a] + external_angular[a] for a in range(3))
         geometry, gradients, contacts, initial = [], [], [], list(self.compression)
+        constraint_compression = list(self.compression)
         for i, (wheel, hub) in enumerate(zip(wheels, self.hubs)):
             start = pose.getMat().xformPoint(Vec3(*hub))
             rest = wheel.getSuspensionRestLength()
@@ -40,7 +41,12 @@ class Suspension:
             eligible = hit is not None and hit.getNode().isStatic() and alignment > .1
             gradient = (0.,) * 6
             if eligible:
-                initial[i] = rest - (ray_length * hit.getHitFraction() - config.wheel_radius)
+                constraint_compression[i] = rest - (ray_length * hit.getHitFraction() - config.wheel_radius)
+                if self.state.force_tick == 0:
+                    # 初始姿态可以带真实预压；候选射线中的离地间隙不是弹簧伸长。
+                    initial[i] = max(0., constraint_compression[i])
+                elif self.state.normal_force[i] > 0.:
+                    initial[i] = constraint_compression[i]
                 arm = tuple(point[a] - origin[a] for a in range(3))
                 gradient = contact_gradient(normal, tuple(direction), arm)
             geometry.append((point, normal, alignment, rest))
@@ -50,12 +56,11 @@ class Suspension:
                           + tuple(dot(row, g[3:]) for row in inverse) for g in gradients)
         mobility = tuple(tuple(dot(a, b) for b in responses) for a in gradients)
         speeds = tuple(dot(g, velocity + angular) for g in gradients)
-        limits = tuple(wheel.getMaxSuspensionForce() * geometry[i][2] if contacts[i] else 0.
-                       for i, wheel in enumerate(wheels))
-        step = advance_suspension(tuple(initial), speeds, mobility, tuple(contacts), limits,
+        step = advance_suspension(tuple(initial), speeds, mobility, tuple(contacts),
                                   config.suspension_spring_rates, config.suspension_compression_damping,
                                   config.suspension_extension_damping, config.suspension_antiroll_rates,
-                                  config.suspension_stop_rates, config.suspension_travel, dt)
+                                  config.suspension_stop_rates, config.suspension_travel, dt,
+                                  geometry=tuple(constraint_compression))
         linear = tuple(dt * sum(g[a] * force for g, force in zip(gradients, step.axial_force)) for a in range(3))
         angular_impulse = tuple(dt * sum(g[a + 3] * force for g, force in zip(gradients, step.axial_force)) for a in range(3))
         chassis.applyCentralImpulse(Vec3(*linear))
@@ -68,8 +73,8 @@ class Suspension:
             loads.append(force)
             states.append(WheelContactState(
                 supported, point if supported else None, normal if supported else None, raw, force,
-                rest - initial[i] if supported else rest - step.compression[i],
-                initial[i] if supported else step.compression[i], None,
+                rest - constraint_compression[i] if supported else rest - step.compression[i],
+                constraint_compression[i] if supported else step.compression[i], None,
                 ("asphalt" if on_asphalt(point[0], point[1]) else "grass") if supported else None))
         old_energy = elastic_terms(self.compression, config.suspension_spring_rates,
                                   config.suspension_antiroll_rates, config.suspension_stop_rates,
@@ -78,9 +83,12 @@ class Suspension:
                                       config.suspension_antiroll_rates, config.suspension_stop_rates,
                                       config.suspension_travel)
         geometry_work = initial_energy[0] + sum(initial_energy[1]) + initial_energy[2] - old_energy[0] - sum(old_energy[1]) - old_energy[2]
+        initialization_energy = initial_energy[0] + sum(initial_energy[1]) + initial_energy[2] if self.state.force_tick == 0 else 0.
+        geometry_work -= initialization_energy
         self.compression = step.compression
         self.state = SuspensionState(step, tuple(loads), tuple(g[2] for g in geometry), tuple(contacts),
-                                     tuple(initial), geometry_work, linear, angular_impulse, tick)
+                                     tuple(initial), geometry_work, linear, angular_impulse, tick,
+                                     tuple(constraint_compression), initialization_energy)
         return tuple(states)
 
     def wheel_positions(self, chassis, wheels):

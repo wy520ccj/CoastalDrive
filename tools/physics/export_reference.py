@@ -110,7 +110,7 @@ VEHICLE_FIELDS = {
     "body_inertia": ("kg·m²", "null沿用原Bullet Box生成的惯量；reference显式设计惯量"),
     "angular_damping": ("1", "Bullet刚体角阻尼"),
     "suspension_travel": ("m", "射线悬架最大行程，传API时×100cm"),
-    "suspension_force_limit": ("N", "每轮实际施加悬架力上限"),
+    "suspension_force_limit": ("N", "仅原生对照分支的每轮数值力限；SI势能反力不作硬裁剪"),
 }
 BRAKE_FIELDS = {
     "response_time": ("s", "实际压力一阶响应时间常数；0为理想执行器"),
@@ -262,7 +262,7 @@ def export(output):
         "panda_version": PandaSystem.getVersionString(), "bullet_version": getBulletVersion(),
         "measurement": {"ticks": 240, "dt": FIXED_DT, "max_substeps": 0,
                         "ground": "水平无限平面", "gravity": [0, 0, -9.81], "input": "VehicleCommand()"},
-        "schema_version": "reference-v16",
+        "schema_version": "reference-v17",
         "vehicle_fields": VEHICLE_FIELDS, "brake_fields": BRAKE_FIELDS,
         "traction_fields": TRACTION_FIELDS, "stability_fields": STABILITY_FIELDS,
         "input_fields": INPUT_FIELDS, "modes": modes,
@@ -277,5 +277,5 @@ def export(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path,
-                        default=ROOT / "logs/physics/reference-v16/parameters.json")
+                        default=ROOT / "logs/physics/reference-v17/parameters.json")
     export(parser.parse_args().output)

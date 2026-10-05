@@ -1,0 +1,57 @@
+{
+  "started_utc": "2026-10-05T07:21:27.503008+00:00",
+  "git_head": "22248e146a2880e9f549c627d9e57443afb0faec",
+  "git_status": "M src/driving_modes.py\n M src/suspension.py\n M src/vehicle_config.py\n M src/vehicle_suspension.py\n M tests/test_physics_config_io.py\n M tests/test_suspension_coupling.py\n M tests/test_traction_lifecycle.py\n M tools/physics/export_reference.py\n M tools/physics/suspension_coupled_probe.py\n?? docs/evidence/PHYS-SUSP-01/validation-T0-passive-r1/",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_suspension_coupling.py",
+    "tests/test_suspension_native.py",
+    "tests/test_physics_config_io.py",
+    "tests/test_traction_lifecycle.py::test_mode_abs_tcs_variants_get_distinct_score_keys"
+  ],
+  "tier": "T0",
+  "status": "failed",
+  "passed": false,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-SUSP-01\\validation-T0-passive-r2\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.094
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_suspension_coupling.py",
+        "tests/test_suspension_native.py",
+        "tests/test_physics_config_io.py",
+        "tests/test_traction_lifecycle.py::test_mode_abs_tcs_variants_get_distinct_score_keys"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-SUSP-01\\validation-T0-passive-r2\\pytest.log",
+      "status": "failed",
+      "returncode": 1,
+      "error": "process exited 1",
+      "seconds": 6.044
+    }
+  ]
+}

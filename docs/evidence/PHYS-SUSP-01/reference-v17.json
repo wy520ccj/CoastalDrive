@@ -1,0 +1,1910 @@
+{
+  "claim": "程序设计参数与本机实现读回，不是实车测量或标定",
+  "git_head_context_only": "22248e146a2880e9f549c627d9e57443afb0faec",
+  "source_sha256": {
+    "src/vehicle_config.py": "8d74decc91937b55d3fc01227343b9508cf2fbd5984006b4b0f16b57aa8ab938",
+    "src/driver_assist.py": "09e33431cdd3adee4ec22366bdeccaa7877272a6a1a9d65d49d232b96bfdfe83",
+    "src/driving_modes.py": "40c5ed7b6515356bd25bed49e9a798007616fbe68a8cdc93cbf8c59f078ef007",
+    "src/vehicle.py": "e1a9fa74767c1d84aef80d6761bec2c5ccea0daf03bcda6f991986c664e200d9",
+    "src/vehicle_tires.py": "7986d333147bd239a5398f3203628571e4e49825b5a8cff60189833e77dfadb9",
+    "src/vehicle_traction.py": "3290939ea56d16d33287d9591e163f073f21fe2654c7f0ba3031456dec00492d",
+    "src/powertrain.py": "a421003c7370b278f61677cc77b29af07d950ccc281ed57bed90689686883f85",
+    "src/vehicle_steering.py": "e6841e5206685fe76281bbd84c1ac0a0c5c2cf0a225a5814dc4cca4c91769a6f",
+    "src/vehicle_dynamics.py": "f782701ec369d672d3c60506d3429dcf66ea0f84da78a1a28d62f1dcf5b9e06a",
+    "src/wheel_dynamics.py": "934dd04f02d73649f45e18f6a76665e1d291ff2fd63d53b80353d7cce002901a",
+    "src/tire_forces.py": "81503a0b30fb6aef3ca467a1255128ba95176a0d0ece7ba4a255cd941ab6306e",
+    "src/vehicle_contacts.py": "263f782cb50462972f7626722aec27273fac70a92a335c64a4ba3392e3483eaf",
+    "src/vehicle_state.py": "6319441b8459028bf703280ec3c5b9e8e1183705d33a1a5e027c0407f6481564",
+    "src/vehicle_brakes.py": "edc2a07b63e0c8470141abe149ca8dd0db379959c9715341337e1746e82f703a",
+    "src/vehicle_stability.py": "3d90276b5e311e303c6ce27f6982e7b0cd27a4f547bc6a597a1898d847d229b6",
+    "src/tire_properties.py": "ec722554e2173ebd7705c080249ca8ebd7c1509542bc8ffdf0877dd03286c329",
+    "src/tire_compliance.py": "4f5bbf29a86c5a84d5cb12b415ce07027e3949683d10583cd6c7f15228a392c6",
+    "src/tire_coupling.py": "c29a5913f48c00c000c7c6973a58d10cf9d7e019b028934e4a8be9a2207430cf",
+    "src/vehicle_collision.py": "3b10a6b5bf79d9c4e7439810d51aac653e98721f8b82c9ee1bf43f0dabff5874",
+    "src/rotor_dynamics.py": "c4077261f5c4baba6455d622211b7e8f79360c75c6b7e2566eca42755b1103be",
+    "src/wheel_geometry.py": "0b94386a8c74c396950de463ac0ae7508b22b6822e7f53d391928f1b870ce254",
+    "src/transmission_ports.py": "e211605de2c8dd0935dd8fd271880a3c0fd11e256ce2a960f3a7a4f30d68433f",
+    "src/tire_drivetrain.py": "eb80818b30ec68a26342e61d5d5b7a3bb15577ac6421bdf90c8292ab81f1147b",
+    "src/differential.py": "954677fe7c20e40d04c0956465eb544a83646eccd86f45210ea045ccc49cc5fd",
+    "src/shaft_transmission.py": "13595a9a20d3a533e92f163cbc72acc10b63444cd8bf2c2fc04c413735569105",
+    "src/driveline_inertia.py": "95c71537b1b810443596ae7ea1568573182208534d2e9a03d9020e13cda70196",
+    "src/suspension.py": "ef8b52084c393b1e8c09b7f5eeb3ebb162a6cfc52db939ee19159b5ab9c956b8",
+    "src/vehicle_suspension.py": "9a6f7ef284a11ace1f916890ca9385f5bc0f866a645860b0376589a18a804cd8",
+    "tools/physics/export_reference.py": "416449ee6b16c0f17a7c390b2e3bd13e8e37ff9644b593985d1f50867321943c"
+  },
+  "panda_version": "1.10.16",
+  "bullet_version": 284,
+  "measurement": {
+    "ticks": 240,
+    "dt": 0.008333333333333333,
+    "max_substeps": 0,
+    "ground": "水平无限平面",
+    "gravity": [
+      0,
+      0,
+      -9.81
+    ],
+    "input": "VehicleCommand()"
+  },
+  "schema_version": "reference-v17",
+  "vehicle_fields": {
+    "mass": [
+      "kg",
+      "Bullet车身质量；轮胎标称载荷与道路载荷"
+    ],
+    "torque_curve": [
+      "rpm,N·m",
+      "曲轴转矩节点线性插值；game为raw非零节点×1.055"
+    ],
+    "gear_ratios": [
+      "1",
+      "五个自动前进挡传动比"
+    ],
+    "final_drive": [
+      "1",
+      "主减速比"
+    ],
+    "drivetrain_efficiency": [
+      "1",
+      "传动双向功流效率；旧分支为驱动转矩乘率"
+    ],
+    "idle_rpm": [
+      "rpm",
+      "实际曲轴怠速控制目标；不钳末转速"
+    ],
+    "shift_time": [
+      "s",
+      "八维旧分支选择等待/驱动衰减时长；实体轴以真实速差决定同步完成"
+    ],
+    "torque_response": [
+      "s",
+      "实际节气门一阶响应时间常数；旧分支为轮端转矩响应"
+    ],
+    "engine_braking": [
+      "N·m",
+      "闭节气门近似曲轴损失转矩；怠速以下连续趋零，隐式同末速度耗散"
+    ],
+    "finite_drivetrain": [
+      "bool",
+      "真实曲轴/有限离合/双向损失与开放差速器共同末状态"
+    ],
+    "front_drive_share": [
+      "1",
+      "前轴驱动份额；0后驱、1前驱、中间值为固定几何开放中差"
+    ],
+    "differential_damping": [
+      "N·m·s/rad",
+      "前轴/后轴/中差末状态速差的粘性耦合系数，设计值"
+    ],
+    "differential_capacity": [
+      "N·m",
+      "对应限滑转矩上限；有限粘性容量，不是静摩擦锁死"
+    ],
+    "engine_inertia": [
+      "kg·m²",
+      "曲轴独立轴向惯量，通用设计值"
+    ],
+    "engine_axis": [
+      "单位向量",
+      "车身局部曲轴正转方向"
+    ],
+    "input_shaft_enabled": [
+      "bool",
+      "实体输入轴/有限同步；false冻结八维传动A/B"
+    ],
+    "input_shaft_inertia": [
+      "kg·m²",
+      "输入轴独立轴向惯量，游戏.005/参考.04设计值，非实测"
+    ],
+    "input_shaft_axis": [
+      "单位向量",
+      "壳体局部输入轴正转方向"
+    ],
+    "synchronizer_capacity": [
+      "N·m",
+      "输入轴侧有限同步摩擦锥容量，设计值"
+    ],
+    "downstream_inertia_enabled": [
+      "bool",
+      "实体轴分支的输出/前/后驱动轴储能与反力；false为机制A/B"
+    ],
+    "downstream_inertias": [
+      "kg·m²",
+      "输出/前/后轴实体设计惯量；非驱动轴不安装对应转子，非实测"
+    ],
+    "downstream_axes": [
+      "单位向量",
+      "车身局部三轴正转方向；当前通用模型为纵置轴系"
+    ],
+    "engine_idle_response": [
+      "s",
+      "实际相对曲轴速度反馈的怠速控制响应"
+    ],
+    "engine_idle_torque_limit": [
+      "N·m",
+      "怠速控制正转矩容量"
+    ],
+    "engine_redline_rpm": [
+      "rpm",
+      "请求转矩切断阈值；不钳积分末RPM"
+    ],
+    "clutch_capacity": [
+      "N·m",
+      "完全结合干式离合容量"
+    ],
+    "clutch_release_time": [
+      "s",
+      "离合由完全结合至分离的行程时间"
+    ],
+    "clutch_engage_time": [
+      "s",
+      "离合由分离至完全结合的行程时间"
+    ],
+    "clutch_launch_response": [
+      "s",
+      "自动起步离合实际曲轴速度反馈时域"
+    ],
+    "max_speed": [
+      "m/s",
+      "game前进驱动转矩渐退速度；160/3.6"
+    ],
+    "reverse_speed": [
+      "m/s",
+      "game倒车驱动转矩渐退速度；22/3.6"
+    ],
+    "reverse_force": [
+      "N",
+      "game倒车轮端力上限，按半径换算转矩"
+    ],
+    "reverse_gear_ratio": [
+      "1",
+      "倒挡机械传动比"
+    ],
+    "game_speed_limits": [
+      "bool",
+      "启用游戏速度渐退/倒车力上限；不是车身速度钳制"
+    ],
+    "brake_torque": [
+      "N·m",
+      "四轮制动总容量"
+    ],
+    "front_brake_share": [
+      "1",
+      "前轴制动容量份额"
+    ],
+    "braking": [
+      "配置对象",
+      "四轮液压响应与独立ABS压力反馈；详见brake_fields"
+    ],
+    "stability": [
+      "配置对象",
+      "横摆参考与分轮制动ESC；详见stability_fields"
+    ],
+    "traction": [
+      "配置对象",
+      "驱动请求削减及必要的单轮制动TCS；详见traction_fields"
+    ],
+    "steering_degrees": [
+      "°",
+      "虚拟前轴中心角机械限位"
+    ],
+    "steering_rate": [
+      "°/s",
+      "齿条角速度限位"
+    ],
+    "steering_response": [
+      "s⁻¹",
+      "齿条输入临界阻尼响应系数"
+    ],
+    "steering_return": [
+      "s⁻¹",
+      "齿条回正临界阻尼响应系数"
+    ],
+    "wheel_radius": [
+      "m",
+      "原生射线轮半径、独立轮速/滑移/力臂"
+    ],
+    "wheel_inertia": [
+      "kg·m²",
+      "独立单轮轴向转动惯量"
+    ],
+    "tire_compliance": [
+      "bool",
+      "启用隐式接触胎体弹性与阻尼"
+    ],
+    "wheel_rotor_transport": [
+      "bool",
+      "机械轮轴/有效滚动力臂与同末状态轴承反力；false冻结旧机制"
+    ],
+    "tire_contact_stiffness": [
+      "N/m",
+      "接触胎体纵横弹性刚度"
+    ],
+    "tire_contact_damping": [
+      "N·s/m",
+      "接触胎体纵横耗散阻尼"
+    ],
+    "tire_peak_load_exponent": [
+      "1",
+      "峰值能力轮荷指数pD；D∝Fn^pD，标称轮荷能力保持μFn0"
+    ],
+    "longitudinal_load_exponent": [
+      "1",
+      "纵向滑移刚度轮荷指数pX；Cx∝Fn^pX，标称刚度保持Cx0"
+    ],
+    "lateral_load_exponent": [
+      "1",
+      "侧偏刚度轮荷指数pY；Cy∝Fn^pY，标称刚度保持Cy0"
+    ],
+    "longitudinal_stiffness": [
+      "N/κ",
+      "标称单轮载荷下纵向滑移刚度"
+    ],
+    "lateral_stiffness": [
+      "N/rad",
+      "标称载荷下前轮侧偏刚度"
+    ],
+    "rear_lateral_stiffness": [
+      "N/rad",
+      "标称载荷下后轮侧偏刚度"
+    ],
+    "tire_shape": [
+      "1",
+      "简化联合Magic Formula形状"
+    ],
+    "tire_curvature": [
+      "1",
+      "简化联合Magic Formula曲率"
+    ],
+    "slip_speed": [
+      "m/s",
+      "低速滑移分母尺度"
+    ],
+    "static_contact_speed": [
+      "m/s",
+      "低速静摩擦约束尝试尺度"
+    ],
+    "tire_substeps": [
+      "次/tick",
+      "轮胎车体耦合子步数"
+    ],
+    "suspension_si_enabled": [
+      "bool",
+      "按SI硬件换算原生参数；false沿用旧归一化硬件"
+    ],
+    "suspension_coupled_enabled": [
+      "bool",
+      "SI法向弹簧/轴向阻尼/防倾共同末状态；false原生SI对照"
+    ],
+    "suspension_antiroll_rates": [
+      "N/m",
+      "前/后防倾杆行程差刚度；设计值，非实车标定"
+    ],
+    "suspension_stop_rates": [
+      "N/m",
+      "四轮行程边界外渐进止挡刚度；设计值"
+    ],
+    "suspension_spring_rates": [
+      "N/m",
+      "四轮真实弹簧设计值；质量变化时不自动改变硬件"
+    ],
+    "suspension_compression_damping": [
+      "N·s/m",
+      "四轮轴向压缩阻尼；关闭共同求解时为原生法向/射线速率系数"
+    ],
+    "suspension_extension_damping": [
+      "N·s/m",
+      "四轮轴向伸张阻尼；非实车标定"
+    ],
+    "suspension_stiffness": [
+      "s⁻²",
+      "si_enabled=false的旧归一化刚度；平路k=mass×值"
+    ],
+    "suspension_compression": [
+      "s⁻¹",
+      "si_enabled=false的旧归一化压缩阻尼"
+    ],
+    "suspension_relaxation": [
+      "s⁻¹",
+      "si_enabled=false的旧归一化伸张阻尼"
+    ],
+    "air_density": [
+      "kg/m³",
+      "环境空气密度"
+    ],
+    "drag_coefficient": [
+      "1",
+      "气动阻力Cd"
+    ],
+    "frontal_area": [
+      "m²",
+      "迎风面积；保持旧CdA乘积的推导设计值"
+    ],
+    "rolling_coefficient": [
+      "1",
+      "铺装滚阻160/(1200×9.81)，乘实际Fn及低速线性项"
+    ],
+    "grass_rolling_coefficient": [
+      "1",
+      "草地滚阻900/(1200×9.81)"
+    ],
+    "road_friction": [
+      "1",
+      "铺装摩擦预算μFn"
+    ],
+    "grass_friction": [
+      "1",
+      "草地摩擦预算μFn"
+    ],
+    "wheelbase": [
+      "m",
+      "轴距、Ackermann和轴荷诊断"
+    ],
+    "track_width": [
+      "m",
+      "轮距、实际轮连接点横坐标"
+    ],
+    "collision_half_width": [
+      "m",
+      "真实车身碰撞盒半宽"
+    ],
+    "collision_half_length": [
+      "m",
+      "真实车身碰撞盒半长"
+    ],
+    "collision_half_height": [
+      "m",
+      "真实车身碰撞盒半高"
+    ],
+    "centered_collision_support": [
+      "bool",
+      "沿CG投影切分零margin原生Box，完整覆盖名义外廓；默认四块；false为历史Box"
+    ],
+    "body_center_height": [
+      "m",
+      "设计地面基准下碰撞盒中心高度"
+    ],
+    "wheel_connection_height": [
+      "m",
+      "设计地面基准下射线悬架连接点高度"
+    ],
+    "center_of_mass_height": [
+      "m",
+      "真实几何相对CG偏移与轴荷诊断高度"
+    ],
+    "front_weight_share": [
+      "1",
+      "通过真实轴连接点相对CG纵向距离实现静态前载份额"
+    ],
+    "body_inertia": [
+      "kg·m²",
+      "null沿用原Bullet Box生成的惯量；reference显式设计惯量"
+    ],
+    "angular_damping": [
+      "1",
+      "Bullet刚体角阻尼"
+    ],
+    "suspension_travel": [
+      "m",
+      "射线悬架最大行程，传API时×100cm"
+    ],
+    "suspension_force_limit": [
+      "N",
+      "仅原生对照分支的每轮数值力限；SI势能反力不作硬裁剪"
+    ]
+  },
+  "brake_fields": {
+    "response_time": [
+      "s",
+      "实际压力一阶响应时间常数；0为理想执行器"
+    ],
+    "abs_enabled": [
+      "bool",
+      "启用各轮滑移反馈压力调节"
+    ],
+    "target_slip": [
+      "1",
+      "制动滑移目标"
+    ],
+    "slip_hysteresis": [
+      "1",
+      "目标两侧压力增减的滑移死区"
+    ],
+    "minimum_speed": [
+      "m/s",
+      "ABS轮心纵向真值速度介入下限"
+    ],
+    "release_rate": [
+      "比例/s",
+      "压力请求最大减压速率"
+    ],
+    "apply_rate": [
+      "比例/s",
+      "压力请求最大增压速率"
+    ],
+    "slip_rate_gain": [
+      "s⁻¹",
+      "滑移误差到压力请求变化率的比例增益"
+    ]
+  },
+  "traction_fields": {
+    "tcs_enabled": [
+      "bool",
+      "启用驱动轮滑转反馈控制"
+    ],
+    "target_slip": [
+      "1",
+      "驱动滑转目标"
+    ],
+    "slip_hysteresis": [
+      "1",
+      "滑转达到目标并加该余量后触发介入"
+    ],
+    "slip_speed": [
+      "m/s",
+      "低速滑转分母尺度"
+    ],
+    "prediction_time": [
+      "s",
+      "用于抑制驱动滑转增长的预测时域"
+    ],
+    "release_rate": [
+      "比例/s",
+      "可用驱动比例最大削减速率"
+    ],
+    "apply_rate": [
+      "比例/s",
+      "可用驱动比例最大恢复速率"
+    ],
+    "slip_rate_gain": [
+      "s⁻¹",
+      "滑转误差到驱动比例变化率的增益"
+    ],
+    "brake_gain": [
+      "比例",
+      "单轮TCS制动请求增益"
+    ],
+    "maximum_brake": [
+      "比例",
+      "单轮TCS制动请求上限"
+    ]
+  },
+  "stability_fields": {
+    "esc_enabled": [
+      "bool",
+      "启用横摆稳定控制"
+    ],
+    "minimum_speed": [
+      "m/s",
+      "稳定控制最低前进速度"
+    ],
+    "reference_response": [
+      "s",
+      "参考横摆一阶响应时间"
+    ],
+    "yaw_gain": [
+      "s⁻¹",
+      "横摆率误差到期望横摆加速度增益"
+    ],
+    "sideslip_gain": [
+      "s⁻²",
+      "侧偏角超限到期望横摆加速度增益"
+    ],
+    "yaw_threshold": [
+      "rad/s",
+      "横摆率误差介入阈值"
+    ],
+    "sideslip_threshold": [
+      "rad",
+      "侧偏角介入阈值"
+    ],
+    "moment_threshold": [
+      "N·m",
+      "制动力矩请求介入阈值"
+    ],
+    "engine_cut_gain": [
+      "1",
+      "归一化横摆及侧偏误差到发动机削矩比例增益"
+    ],
+    "continuous_reference": [
+      "bool",
+      "低于ESC介入速度仍跟踪有支撑的参考；关闭用于冻结旧控制A/B"
+    ]
+  },
+  "input_fields": {
+    "progressive_pedals": [
+      "bool",
+      "启用键盘踏板渐变"
+    ],
+    "speed_sensitive_steering": [
+      "bool",
+      "启用速度相关键盘转向包络"
+    ],
+    "automatic_reverse": [
+      "bool",
+      "低速S持续制动后辅助切倒挡；false用Q/E显式R/D"
+    ],
+    "throttle_rise": [
+      "比例/s",
+      "游戏油门上升速率；仿真渐变关闭时不使用"
+    ],
+    "throttle_release": [
+      "比例/s",
+      "游戏油门释放速率；仿真渐变关闭时不使用"
+    ],
+    "brake_rise": [
+      "比例/s",
+      "游戏制动上升速率；仿真渐变关闭时不使用"
+    ],
+    "brake_release": [
+      "比例/s",
+      "游戏制动释放速率；仿真渐变关闭时不使用"
+    ],
+    "assisted_lateral_acceleration": [
+      "m/s²",
+      "游戏速度转向包络目标；仿真包络关闭时不使用"
+    ],
+    "reverse_delay": [
+      "s",
+      "游戏辅助倒挡等待；仿真自动倒挡关闭时不使用"
+    ]
+  },
+  "modes": {
+    "game": {
+      "label": "正常游戏",
+      "vehicle_config": {
+        "mass": 1200.0,
+        "torque_curve": [
+          [
+            900,
+            116.05
+          ],
+          [
+            1800,
+            174.075
+          ],
+          [
+            3200,
+            211
+          ],
+          [
+            4500,
+            200.45
+          ],
+          [
+            6000,
+            158.25
+          ],
+          [
+            6500,
+            0
+          ]
+        ],
+        "gear_ratios": [
+          3.25,
+          2.05,
+          1.45,
+          1.1,
+          0.88
+        ],
+        "final_drive": 3.7,
+        "drivetrain_efficiency": 0.88,
+        "idle_rpm": 900.0,
+        "shift_time": 0.28,
+        "torque_response": 0.12,
+        "engine_braking": 24.0,
+        "finite_drivetrain": true,
+        "front_drive_share": 0.0,
+        "differential_damping": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "differential_capacity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "engine_inertia": 0.02,
+        "engine_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "input_shaft_enabled": true,
+        "input_shaft_inertia": 0.005,
+        "input_shaft_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "synchronizer_capacity": 80.0,
+        "downstream_inertia_enabled": true,
+        "downstream_inertias": [
+          0.003,
+          0.0015,
+          0.002
+        ],
+        "downstream_axes": [
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "engine_idle_response": 0.15,
+        "engine_idle_torque_limit": 65.0,
+        "engine_redline_rpm": 6500.0,
+        "clutch_capacity": 300.0,
+        "clutch_release_time": 0.08,
+        "clutch_engage_time": 0.16,
+        "clutch_launch_response": 0.3,
+        "max_speed": 44.44444444444444,
+        "reverse_speed": 6.111111111111111,
+        "reverse_force": 2200.0,
+        "reverse_gear_ratio": 3.0,
+        "game_speed_limits": true,
+        "brake_torque": 3643.2,
+        "front_brake_share": 0.6,
+        "braking": {
+          "response_time": 0.025,
+          "abs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "minimum_speed": 1.5,
+          "release_rate": 25.0,
+          "apply_rate": 5.0,
+          "slip_rate_gain": 30.0
+        },
+        "traction": {
+          "tcs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "slip_speed": 1.0,
+          "prediction_time": 0.12,
+          "release_rate": 12.0,
+          "apply_rate": 1.5,
+          "slip_rate_gain": 12.0,
+          "brake_gain": 0.2,
+          "maximum_brake": 0.25
+        },
+        "stability": {
+          "esc_enabled": true,
+          "minimum_speed": 1.5,
+          "reference_response": 0.15,
+          "yaw_gain": 6.0,
+          "sideslip_gain": 6.0,
+          "yaw_threshold": 0.1,
+          "sideslip_threshold": 0.06,
+          "moment_threshold": 150.0,
+          "engine_cut_gain": 0.4,
+          "continuous_reference": true
+        },
+        "steering_degrees": 26.0,
+        "steering_rate": 50.0,
+        "steering_response": 7.0,
+        "steering_return": 10.0,
+        "wheel_radius": 0.33,
+        "wheel_inertia": 1.8,
+        "longitudinal_stiffness": 60000.0,
+        "lateral_stiffness": 50000.0,
+        "rear_lateral_stiffness": 50000.0,
+        "tire_peak_load_exponent": 0.9,
+        "longitudinal_load_exponent": 0.9,
+        "lateral_load_exponent": 0.85,
+        "tire_compliance": true,
+        "wheel_rotor_transport": true,
+        "tire_contact_stiffness": 150000.0,
+        "tire_contact_damping": 1000.0,
+        "tire_shape": 1.9,
+        "tire_curvature": 0.97,
+        "slip_speed": 1.0,
+        "static_contact_speed": 0.25,
+        "tire_substeps": 2,
+        "suspension_si_enabled": true,
+        "suspension_coupled_enabled": true,
+        "suspension_antiroll_rates": [
+          6000.0,
+          4000.0
+        ],
+        "suspension_stop_rates": [
+          480000.0,
+          480000.0,
+          480000.0,
+          480000.0
+        ],
+        "suspension_spring_rates": [
+          48000.0,
+          48000.0,
+          48000.0,
+          48000.0
+        ],
+        "suspension_compression_damping": [
+          5280.0,
+          5280.0,
+          5280.0,
+          5280.0
+        ],
+        "suspension_extension_damping": [
+          2760.0,
+          2760.0,
+          2760.0,
+          2760.0
+        ],
+        "suspension_stiffness": 40.0,
+        "suspension_compression": 4.4,
+        "suspension_relaxation": 2.3,
+        "air_density": 1.225,
+        "drag_coefficient": 0.32,
+        "frontal_area": 2.142857142857143,
+        "rolling_coefficient": 0.013591573224600747,
+        "grass_rolling_coefficient": 0.0764525993883792,
+        "road_friction": 1.1,
+        "grass_friction": 0.45,
+        "wheelbase": 2.2,
+        "track_width": 1.68,
+        "collision_half_width": 1.05,
+        "collision_half_length": 2.15,
+        "collision_half_height": 0.42,
+        "centered_collision_support": true,
+        "body_center_height": 0.84,
+        "wheel_connection_height": 0.67,
+        "center_of_mass_height": 0.42,
+        "front_weight_share": 0.5,
+        "body_inertia": null,
+        "angular_damping": 0.2,
+        "suspension_travel": 0.2,
+        "suspension_force_limit": 6000.0
+      },
+      "input_config": {
+        "progressive_pedals": true,
+        "speed_sensitive_steering": true,
+        "automatic_reverse": true,
+        "throttle_rise": 1.6,
+        "throttle_release": 5.0,
+        "brake_rise": 6.0,
+        "brake_release": 10.0,
+        "assisted_lateral_acceleration": 7.5,
+        "reverse_delay": 0.4
+      },
+      "geometry_hubs": [
+        [
+          -0.84,
+          1.1,
+          0.25000000000000006
+        ],
+        [
+          0.84,
+          1.1,
+          0.25000000000000006
+        ],
+        [
+          -0.84,
+          -1.1,
+          0.25000000000000006
+        ],
+        [
+          0.84,
+          -1.1,
+          0.25000000000000006
+        ]
+      ],
+      "geometry_body_center": [
+        0.0,
+        0.0,
+        0.42
+      ],
+      "native_bullet": {
+        "mass": 1200.0,
+        "inertia": [
+          1919.560302734375,
+          511.55987548828125,
+          2290.000244140625
+        ],
+        "angular_damping": 0.20000000298023224,
+        "shape_half_extents": [
+          1.0500000715255737,
+          2.1500000953674316,
+          0.4200000464916229
+        ],
+        "shape_axis_limits": [
+          [
+            -1.0500000715255737,
+            1.0500000715255737
+          ],
+          [
+            -2.1500000953674316,
+            2.1500000953674316
+          ],
+          [
+            -0.4200000464916229,
+            0.4200000464916229
+          ]
+        ],
+        "shape_type": "BulletBoxShape",
+        "shape_count": 4,
+        "shape_margin": 0.0,
+        "shape_center": [
+          0.0,
+          0.0,
+          0.41999998688697815
+        ],
+        "shapes": [
+          {
+            "type": "BulletBoxShape",
+            "half_extents": [
+              0.5249999761581421,
+              1.0750000476837158,
+              0.41999998688697815
+            ],
+            "margin": 0.0,
+            "transform": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                -0.5249999761581421,
+                -1.0750000476837158,
+                0.41999998688697815,
+                1.0
+              ]
+            ]
+          },
+          {
+            "type": "BulletBoxShape",
+            "half_extents": [
+              0.5249999761581421,
+              1.0750000476837158,
+              0.41999998688697815
+            ],
+            "margin": 0.0,
+            "transform": [
+              [
+                1.0,
+                8.742277657347586e-08,
+                8.742277657347586e-08,
+                0.0
+              ],
+              [
+                8.742277657347586e-08,
+                -1.0,
+                0.0,
+                0.0
+              ],
+              [
+                8.742277657347586e-08,
+                7.64274186065882e-15,
+                -1.0,
+                0.0
+              ],
+              [
+                -0.5249999761581421,
+                1.0750000476837158,
+                0.41999998688697815,
+                1.0
+              ]
+            ]
+          },
+          {
+            "type": "BulletBoxShape",
+            "half_extents": [
+              0.5249999761581421,
+              1.0750000476837158,
+              0.41999998688697815
+            ],
+            "margin": 0.0,
+            "transform": [
+              [
+                -1.0,
+                0.0,
+                8.742277657347586e-08,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                -8.742277657347586e-08,
+                0.0,
+                -1.0,
+                0.0
+              ],
+              [
+                0.5249999761581421,
+                -1.0750000476837158,
+                0.41999998688697815,
+                1.0
+              ]
+            ]
+          },
+          {
+            "type": "BulletBoxShape",
+            "half_extents": [
+              0.5249999761581421,
+              1.0750000476837158,
+              0.41999998688697815
+            ],
+            "margin": 0.0,
+            "transform": [
+              [
+                -1.0,
+                -8.742277657347586e-08,
+                0.0,
+                0.0
+              ],
+              [
+                8.742277657347586e-08,
+                -1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.5249999761581421,
+                1.0750000476837158,
+                0.41999998688697815,
+                1.0
+              ]
+            ]
+          }
+        ],
+        "position": [
+          0.0,
+          0.0,
+          0.418687641620636
+        ],
+        "suspension_authority": "coupled-SI",
+        "suspension_state": {
+          "step": {
+            "compression": [
+              0.061312404682348304,
+              0.061312404682348304,
+              0.06131240468234831,
+              0.061312404682348304
+            ],
+            "compression_rate": [
+              1.636054961506872e-06,
+              1.636054961506872e-06,
+              1.6360549623395393e-06,
+              1.636054961506872e-06
+            ],
+            "axial_force": [
+              2943.0040631229144,
+              2943.0040631229135,
+              2943.004063122915,
+              2943.004063122918
+            ],
+            "raw_axial_force": [
+              2943.004063122913,
+              2943.004063122913,
+              2943.0040631229203,
+              2943.004063122913
+            ],
+            "spring_energy": 360.88425292147645,
+            "bar_energy": [
+              0.0,
+              9.629649721936179e-32
+            ],
+            "stop_energy": 0.0,
+            "damping_dissipation": 4.710949474444218e-10,
+            "elastic_numerical_dissipation": 1.784170958218402e-11,
+            "body_numerical_dissipation": 4.009848572017587,
+            "contact_offset_work": 0.0,
+            "energy_residual": 1.4210854715202004e-14
+          },
+          "normal_force": [
+            2943.0040631229144,
+            2943.0040631229135,
+            2943.004063122915,
+            2943.004063122918
+          ],
+          "contact_dot": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "candidate_contact": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "sampled_compression": [
+            0.06131239104855696,
+            0.06131239104855696,
+            0.06131239104855696,
+            0.06131239104855696
+          ],
+          "geometry_work": -0.00017059746517134045,
+          "linear_impulse": [
+            0.0,
+            0.0,
+            98.10013543743051
+          ],
+          "angular_impulse": [
+            -4.5474735088646414e-14,
+            -1.5158245029548804e-14,
+            0.0
+          ],
+          "force_tick": 240,
+          "contact_compression": [
+            0.06131239104855696,
+            0.06131239104855696,
+            0.06131239104855696,
+            0.06131239104855696
+          ],
+          "initialization_energy": 0.0
+        },
+        "wheels": [
+          {
+            "hub": [
+              -0.8399999737739563,
+              1.100000023841858,
+              0.25
+            ],
+            "radius": 0.33000001311302185,
+            "rest_length": 0.4000000059604645,
+            "travel_cm": 20.0,
+            "force_limit": 6000.0,
+            "stiffness": 0.0,
+            "compression_damping": 0.0,
+            "relaxation_damping": 0.0,
+            "roll_influence": 0.10000000149011612,
+            "friction_slip": 0.0,
+            "contact": {
+              "in_contact": true,
+              "contact_point": [
+                -0.8399999737739563,
+                1.100000023841858,
+                2.9802322387695312e-08
+              ],
+              "contact_normal": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "suspension_force": 2943.004063122913,
+              "normal_load": 2943.0040631229144,
+              "suspension_length": 0.3386876149119075,
+              "compression": 0.06131239104855696,
+              "skid": null,
+              "surface": "asphalt"
+            }
+          },
+          {
+            "hub": [
+              0.8399999737739563,
+              1.100000023841858,
+              0.25
+            ],
+            "radius": 0.33000001311302185,
+            "rest_length": 0.4000000059604645,
+            "travel_cm": 20.0,
+            "force_limit": 6000.0,
+            "stiffness": 0.0,
+            "compression_damping": 0.0,
+            "relaxation_damping": 0.0,
+            "roll_influence": 0.10000000149011612,
+            "friction_slip": 0.0,
+            "contact": {
+              "in_contact": true,
+              "contact_point": [
+                0.8399999737739563,
+                1.100000023841858,
+                2.9802322387695312e-08
+              ],
+              "contact_normal": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "suspension_force": 2943.004063122913,
+              "normal_load": 2943.0040631229135,
+              "suspension_length": 0.3386876149119075,
+              "compression": 0.06131239104855696,
+              "skid": null,
+              "surface": "asphalt"
+            }
+          },
+          {
+            "hub": [
+              -0.8399999737739563,
+              -1.100000023841858,
+              0.25
+            ],
+            "radius": 0.33000001311302185,
+            "rest_length": 0.4000000059604645,
+            "travel_cm": 20.0,
+            "force_limit": 6000.0,
+            "stiffness": 0.0,
+            "compression_damping": 0.0,
+            "relaxation_damping": 0.0,
+            "roll_influence": 0.10000000149011612,
+            "friction_slip": 0.0,
+            "contact": {
+              "in_contact": true,
+              "contact_point": [
+                -0.8399999737739563,
+                -1.100000023841858,
+                2.9802322387695312e-08
+              ],
+              "contact_normal": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "suspension_force": 2943.0040631229203,
+              "normal_load": 2943.004063122915,
+              "suspension_length": 0.3386876149119075,
+              "compression": 0.06131239104855696,
+              "skid": null,
+              "surface": "asphalt"
+            }
+          },
+          {
+            "hub": [
+              0.8399999737739563,
+              -1.100000023841858,
+              0.25
+            ],
+            "radius": 0.33000001311302185,
+            "rest_length": 0.4000000059604645,
+            "travel_cm": 20.0,
+            "force_limit": 6000.0,
+            "stiffness": 0.0,
+            "compression_damping": 0.0,
+            "relaxation_damping": 0.0,
+            "roll_influence": 0.10000000149011612,
+            "friction_slip": 0.0,
+            "contact": {
+              "in_contact": true,
+              "contact_point": [
+                0.8399999737739563,
+                -1.100000023841858,
+                2.9802322387695312e-08
+              ],
+              "contact_normal": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "suspension_force": 2943.004063122913,
+              "normal_load": 2943.004063122918,
+              "suspension_length": 0.3386876149119075,
+              "compression": 0.06131239104855696,
+              "skid": null,
+              "surface": "asphalt"
+            }
+          }
+        ]
+      }
+    },
+    "simulation": {
+      "label": "困难仿真",
+      "vehicle_config": {
+        "mass": 1200.0,
+        "torque_curve": [
+          [
+            900,
+            110
+          ],
+          [
+            1800,
+            165
+          ],
+          [
+            3200,
+            200
+          ],
+          [
+            4500,
+            190
+          ],
+          [
+            6000,
+            150
+          ],
+          [
+            6500,
+            0
+          ]
+        ],
+        "gear_ratios": [
+          3.25,
+          2.05,
+          1.45,
+          1.1,
+          0.88
+        ],
+        "final_drive": 3.7,
+        "drivetrain_efficiency": 0.88,
+        "idle_rpm": 900.0,
+        "shift_time": 0.28,
+        "torque_response": 0.12,
+        "engine_braking": 24.0,
+        "finite_drivetrain": true,
+        "front_drive_share": 0.0,
+        "differential_damping": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "differential_capacity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "engine_inertia": 0.2,
+        "engine_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "input_shaft_enabled": true,
+        "input_shaft_inertia": 0.04,
+        "input_shaft_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "synchronizer_capacity": 80.0,
+        "downstream_inertia_enabled": true,
+        "downstream_inertias": [
+          0.03,
+          0.015,
+          0.02
+        ],
+        "downstream_axes": [
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "engine_idle_response": 0.15,
+        "engine_idle_torque_limit": 65.0,
+        "engine_redline_rpm": 6500.0,
+        "clutch_capacity": 300.0,
+        "clutch_release_time": 0.08,
+        "clutch_engage_time": 0.16,
+        "clutch_launch_response": 0.3,
+        "max_speed": 44.44444444444444,
+        "reverse_speed": 6.111111111111111,
+        "reverse_force": 2200.0,
+        "reverse_gear_ratio": 3.0,
+        "game_speed_limits": false,
+        "brake_torque": 3643.2,
+        "front_brake_share": 0.6,
+        "braking": {
+          "response_time": 0.025,
+          "abs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "minimum_speed": 1.5,
+          "release_rate": 25.0,
+          "apply_rate": 5.0,
+          "slip_rate_gain": 30.0
+        },
+        "traction": {
+          "tcs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "slip_speed": 1.0,
+          "prediction_time": 0.12,
+          "release_rate": 12.0,
+          "apply_rate": 1.5,
+          "slip_rate_gain": 12.0,
+          "brake_gain": 0.2,
+          "maximum_brake": 0.25
+        },
+        "stability": {
+          "esc_enabled": true,
+          "minimum_speed": 1.5,
+          "reference_response": 0.15,
+          "yaw_gain": 6.0,
+          "sideslip_gain": 6.0,
+          "yaw_threshold": 0.1,
+          "sideslip_threshold": 0.06,
+          "moment_threshold": 150.0,
+          "engine_cut_gain": 0.4,
+          "continuous_reference": true
+        },
+        "steering_degrees": 26.0,
+        "steering_rate": 50.0,
+        "steering_response": 7.0,
+        "steering_return": 10.0,
+        "wheel_radius": 0.33,
+        "wheel_inertia": 1.8,
+        "longitudinal_stiffness": 60000.0,
+        "lateral_stiffness": 50000.0,
+        "rear_lateral_stiffness": 50000.0,
+        "tire_peak_load_exponent": 0.9,
+        "longitudinal_load_exponent": 0.9,
+        "lateral_load_exponent": 0.85,
+        "tire_compliance": true,
+        "wheel_rotor_transport": true,
+        "tire_contact_stiffness": 150000.0,
+        "tire_contact_damping": 1000.0,
+        "tire_shape": 1.9,
+        "tire_curvature": 0.97,
+        "slip_speed": 1.0,
+        "static_contact_speed": 0.25,
+        "tire_substeps": 2,
+        "suspension_si_enabled": true,
+        "suspension_coupled_enabled": true,
+        "suspension_antiroll_rates": [
+          6000.0,
+          4000.0
+        ],
+        "suspension_stop_rates": [
+          480000.0,
+          480000.0,
+          480000.0,
+          480000.0
+        ],
+        "suspension_spring_rates": [
+          48000.0,
+          48000.0,
+          48000.0,
+          48000.0
+        ],
+        "suspension_compression_damping": [
+          5280.0,
+          5280.0,
+          5280.0,
+          5280.0
+        ],
+        "suspension_extension_damping": [
+          2760.0,
+          2760.0,
+          2760.0,
+          2760.0
+        ],
+        "suspension_stiffness": 40.0,
+        "suspension_compression": 4.4,
+        "suspension_relaxation": 2.3,
+        "air_density": 1.225,
+        "drag_coefficient": 0.32,
+        "frontal_area": 2.142857142857143,
+        "rolling_coefficient": 0.013591573224600747,
+        "grass_rolling_coefficient": 0.0764525993883792,
+        "road_friction": 1.1,
+        "grass_friction": 0.45,
+        "wheelbase": 2.2,
+        "track_width": 1.68,
+        "collision_half_width": 1.05,
+        "collision_half_length": 2.15,
+        "collision_half_height": 0.42,
+        "centered_collision_support": true,
+        "body_center_height": 0.84,
+        "wheel_connection_height": 0.67,
+        "center_of_mass_height": 0.42,
+        "front_weight_share": 0.5,
+        "body_inertia": [
+          1919.56,
+          511.56,
+          2290.0
+        ],
+        "angular_damping": 0.0,
+        "suspension_travel": 0.2,
+        "suspension_force_limit": 6000.0
+      },
+      "input_config": {
+        "progressive_pedals": false,
+        "speed_sensitive_steering": false,
+        "automatic_reverse": false,
+        "throttle_rise": 1.6,
+        "throttle_release": 5.0,
+        "brake_rise": 6.0,
+        "brake_release": 10.0,
+        "assisted_lateral_acceleration": 7.5,
+        "reverse_delay": 0.4
+      },
+      "geometry_hubs": [
+        [
+          -0.84,
+          1.1,
+          0.25000000000000006
+        ],
+        [
+          0.84,
+          1.1,
+          0.25000000000000006
+        ],
+        [
+          -0.84,
+          -1.1,
+          0.25000000000000006
+        ],
+        [
+          0.84,
+          -1.1,
+          0.25000000000000006
+        ]
+      ],
+      "geometry_body_center": [
+        0.0,
+        0.0,
+        0.42
+      ],
+      "native_bullet": {
+        "mass": 1200.0,
+        "inertia": [
+          1919.56005859375,
+          511.55999755859375,
+          2290.0
+        ],
+        "angular_damping": 0.0,
+        "shape_half_extents": [
+          1.0500000715255737,
+          2.1500000953674316,
+          0.4200000464916229
+        ],
+        "shape_axis_limits": [
+          [
+            -1.0500000715255737,
+            1.0500000715255737
+          ],
+          [
+            -2.1500000953674316,
+            2.1500000953674316
+          ],
+          [
+            -0.4200000464916229,
+            0.4200000464916229
+          ]
+        ],
+        "shape_type": "BulletBoxShape",
+        "shape_count": 4,
+        "shape_margin": 0.0,
+        "shape_center": [
+          0.0,
+          0.0,
+          0.41999998688697815
+        ],
+        "shapes": [
+          {
+            "type": "BulletBoxShape",
+            "half_extents": [
+              0.5249999761581421,
+              1.0750000476837158,
+              0.41999998688697815
+            ],
+            "margin": 0.0,
+            "transform": [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                -0.5249999761581421,
+                -1.0750000476837158,
+                0.41999998688697815,
+                1.0
+              ]
+            ]
+          },
+          {
+            "type": "BulletBoxShape",
+            "half_extents": [
+              0.5249999761581421,
+              1.0750000476837158,
+              0.41999998688697815
+            ],
+            "margin": 0.0,
+            "transform": [
+              [
+                1.0,
+                8.742277657347586e-08,
+                8.742277657347586e-08,
+                0.0
+              ],
+              [
+                8.742277657347586e-08,
+                -1.0,
+                0.0,
+                0.0
+              ],
+              [
+                8.742277657347586e-08,
+                7.64274186065882e-15,
+                -1.0,
+                0.0
+              ],
+              [
+                -0.5249999761581421,
+                1.0750000476837158,
+                0.41999998688697815,
+                1.0
+              ]
+            ]
+          },
+          {
+            "type": "BulletBoxShape",
+            "half_extents": [
+              0.5249999761581421,
+              1.0750000476837158,
+              0.41999998688697815
+            ],
+            "margin": 0.0,
+            "transform": [
+              [
+                -1.0,
+                0.0,
+                8.742277657347586e-08,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                -8.742277657347586e-08,
+                0.0,
+                -1.0,
+                0.0
+              ],
+              [
+                0.5249999761581421,
+                -1.0750000476837158,
+                0.41999998688697815,
+                1.0
+              ]
+            ]
+          },
+          {
+            "type": "BulletBoxShape",
+            "half_extents": [
+              0.5249999761581421,
+              1.0750000476837158,
+              0.41999998688697815
+            ],
+            "margin": 0.0,
+            "transform": [
+              [
+                -1.0,
+                -8.742277657347586e-08,
+                0.0,
+                0.0
+              ],
+              [
+                8.742277657347586e-08,
+                -1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.5249999761581421,
+                1.0750000476837158,
+                0.41999998688697815,
+                1.0
+              ]
+            ]
+          }
+        ],
+        "position": [
+          0.0,
+          0.0,
+          0.418687641620636
+        ],
+        "suspension_authority": "coupled-SI",
+        "suspension_state": {
+          "step": {
+            "compression": [
+              0.061312404682348304,
+              0.06131240468234831,
+              0.061312404682348304,
+              0.061312404682348304
+            ],
+            "compression_rate": [
+              1.636054961506872e-06,
+              1.6360549623395393e-06,
+              1.636054961506872e-06,
+              1.636054961506872e-06
+            ],
+            "axial_force": [
+              2943.0040631229144,
+              2943.004063122913,
+              2943.004063122915,
+              2943.0040631229176
+            ],
+            "raw_axial_force": [
+              2943.004063122913,
+              2943.0040631229203,
+              2943.004063122913,
+              2943.004063122913
+            ],
+            "spring_energy": 360.88425292147645,
+            "bar_energy": [
+              1.4444474582904269e-31,
+              0.0
+            ],
+            "stop_energy": 0.0,
+            "damping_dissipation": 4.710949474444218e-10,
+            "elastic_numerical_dissipation": 1.784170958218402e-11,
+            "body_numerical_dissipation": 4.009848572017586,
+            "contact_offset_work": 0.0,
+            "energy_residual": 1.2434497875801753e-14
+          },
+          "normal_force": [
+            2943.0040631229144,
+            2943.004063122913,
+            2943.004063122915,
+            2943.0040631229176
+          ],
+          "contact_dot": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "candidate_contact": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "sampled_compression": [
+            0.06131239104855696,
+            0.06131239104855696,
+            0.06131239104855696,
+            0.06131239104855696
+          ],
+          "geometry_work": -0.00017059746522818386,
+          "linear_impulse": [
+            0.0,
+            0.0,
+            98.1001354374305
+          ],
+          "angular_impulse": [
+            -4.5474735088646414e-14,
+            -1.1368683772161604e-14,
+            0.0
+          ],
+          "force_tick": 240,
+          "contact_compression": [
+            0.06131239104855696,
+            0.06131239104855696,
+            0.06131239104855696,
+            0.06131239104855696
+          ],
+          "initialization_energy": 0.0
+        },
+        "wheels": [
+          {
+            "hub": [
+              -0.8399999737739563,
+              1.100000023841858,
+              0.25
+            ],
+            "radius": 0.33000001311302185,
+            "rest_length": 0.4000000059604645,
+            "travel_cm": 20.0,
+            "force_limit": 6000.0,
+            "stiffness": 0.0,
+            "compression_damping": 0.0,
+            "relaxation_damping": 0.0,
+            "roll_influence": 0.10000000149011612,
+            "friction_slip": 0.0,
+            "contact": {
+              "in_contact": true,
+              "contact_point": [
+                -0.8399999737739563,
+                1.100000023841858,
+                2.9802322387695312e-08
+              ],
+              "contact_normal": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "suspension_force": 2943.004063122913,
+              "normal_load": 2943.0040631229144,
+              "suspension_length": 0.3386876149119075,
+              "compression": 0.06131239104855696,
+              "skid": null,
+              "surface": "asphalt"
+            }
+          },
+          {
+            "hub": [
+              0.8399999737739563,
+              1.100000023841858,
+              0.25
+            ],
+            "radius": 0.33000001311302185,
+            "rest_length": 0.4000000059604645,
+            "travel_cm": 20.0,
+            "force_limit": 6000.0,
+            "stiffness": 0.0,
+            "compression_damping": 0.0,
+            "relaxation_damping": 0.0,
+            "roll_influence": 0.10000000149011612,
+            "friction_slip": 0.0,
+            "contact": {
+              "in_contact": true,
+              "contact_point": [
+                0.8399999737739563,
+                1.100000023841858,
+                2.9802322387695312e-08
+              ],
+              "contact_normal": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "suspension_force": 2943.0040631229203,
+              "normal_load": 2943.004063122913,
+              "suspension_length": 0.3386876149119075,
+              "compression": 0.06131239104855696,
+              "skid": null,
+              "surface": "asphalt"
+            }
+          },
+          {
+            "hub": [
+              -0.8399999737739563,
+              -1.100000023841858,
+              0.25
+            ],
+            "radius": 0.33000001311302185,
+            "rest_length": 0.4000000059604645,
+            "travel_cm": 20.0,
+            "force_limit": 6000.0,
+            "stiffness": 0.0,
+            "compression_damping": 0.0,
+            "relaxation_damping": 0.0,
+            "roll_influence": 0.10000000149011612,
+            "friction_slip": 0.0,
+            "contact": {
+              "in_contact": true,
+              "contact_point": [
+                -0.8399999737739563,
+                -1.100000023841858,
+                2.9802322387695312e-08
+              ],
+              "contact_normal": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "suspension_force": 2943.004063122913,
+              "normal_load": 2943.004063122915,
+              "suspension_length": 0.3386876149119075,
+              "compression": 0.06131239104855696,
+              "skid": null,
+              "surface": "asphalt"
+            }
+          },
+          {
+            "hub": [
+              0.8399999737739563,
+              -1.100000023841858,
+              0.25
+            ],
+            "radius": 0.33000001311302185,
+            "rest_length": 0.4000000059604645,
+            "travel_cm": 20.0,
+            "force_limit": 6000.0,
+            "stiffness": 0.0,
+            "compression_damping": 0.0,
+            "relaxation_damping": 0.0,
+            "roll_influence": 0.10000000149011612,
+            "friction_slip": 0.0,
+            "contact": {
+              "in_contact": true,
+              "contact_point": [
+                0.8399999737739563,
+                -1.100000023841858,
+                2.9802322387695312e-08
+              ],
+              "contact_normal": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "suspension_force": 2943.004063122913,
+              "normal_load": 2943.0040631229176,
+              "suspension_length": 0.3386876149119075,
+              "compression": 0.06131239104855696,
+              "skid": null,
+              "surface": "asphalt"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "remaining_constants": {
+    "suspension_rest_length_m": 0.4,
+    "roll_influence": 0.1,
+    "ccd_motion_threshold_m": 0.5,
+    "ccd_swept_sphere_radius_m": 0.35
+  }
+}

@@ -45,17 +45,22 @@ def test_actual_impulse_is_sum_of_contact_normals_and_real_arms():
         tensor = car._chassis.getInvInertiaTensorWorld()
         contacts = car.suspension.advance(world, car._chassis, car._vehicle.getWheels(),
                                          car.on_asphalt, 1, FIXED_DT, (0.,) * 3, (0.,) * 3)
-        linear, angular = Vec3(0), Vec3(0)
+        impulses, moments = [], []
+        origin = car._chassis.getTransform().getPos()
         for c in contacts:
             if c.in_contact:
-                impulse = Vec3(*c.contact_normal) * (c.normal_load * FIXED_DT)
-                arm = Vec3(*c.contact_point) - car._chassis.getTransform().getPos()
-                linear += impulse
-                angular += arm.cross(impulse)
-        assert tuple(car._chassis.getLinearVelocity() - before_v) == pytest.approx(tuple(linear / car.config.mass), abs=2e-7)
-        assert tuple(car._chassis.getAngularVelocity() - before_w) == pytest.approx(tuple(tensor.xform(angular)), abs=2e-7)
-        assert car.suspension.state.linear_impulse == pytest.approx(tuple(linear), abs=1e-5)
-        assert car.suspension.state.angular_impulse == pytest.approx(tuple(angular), abs=1e-5)
+                impulse = tuple(n * c.normal_load * FIXED_DT for n in c.contact_normal)
+                arm = tuple(c.contact_point[a] - origin[a] for a in range(3))
+                impulses.append(impulse)
+                moments.append((arm[1] * impulse[2] - arm[2] * impulse[1],
+                                arm[2] * impulse[0] - arm[0] * impulse[2],
+                                arm[0] * impulse[1] - arm[1] * impulse[0]))
+        linear = tuple(sum(j[a] for j in impulses) for a in range(3))
+        angular = tuple(sum(j[a] for j in moments) for a in range(3))
+        assert tuple(car._chassis.getLinearVelocity() - before_v) == pytest.approx(tuple(v / car.config.mass for v in linear), abs=2e-7)
+        assert tuple(car._chassis.getAngularVelocity() - before_w) == pytest.approx(tuple(tensor.xform(Vec3(*angular))), abs=2e-7)
+        assert car.suspension.state.linear_impulse == pytest.approx(linear, abs=1e-5)
+        assert car.suspension.state.angular_impulse == pytest.approx(angular, abs=1e-5)
         # 独立核对实际车身末速度的全部六维分量，不能只检查总冲量。
         for i, c in enumerate(contacts):
             if c.in_contact:
@@ -63,7 +68,9 @@ def test_actual_impulse_is_sum_of_contact_normals_and_real_arms():
                 arm = Vec3(*c.contact_point) - car._chassis.getTransform().getPos()
                 velocity = car._chassis.getLinearVelocity() + car._chassis.getAngularVelocity().cross(arm)
                 extension_rate = velocity.dot(normal) / car.suspension.state.contact_dot[i]
-                assert car.suspension.state.step.compression_rate[i] == pytest.approx(-extension_rate, abs=2e-7)
+                geometric_rate = (car.suspension.state.step.compression[i]
+                                  - car.suspension.state.contact_compression[i]) / FIXED_DT
+                assert geometric_rate == pytest.approx(-extension_rate, abs=2e-7)
     finally:
         car.close()
 
@@ -126,5 +133,36 @@ def test_reset_and_origin_shift_preserve_correct_suspension_ownership():
         _step(world, car, VehicleCommand(gear=0))
         assert all(c.normal_load == 0 for c in car.snapshot().wheel_contacts)
         assert all(math.isfinite(v) for v in car.snapshot().velocity)
+    finally:
+        car.close()
+
+
+def test_candidate_ray_does_not_create_energy_in_free_suspension():
+    world, car = _create_vehicle(DrivingMode.SIMULATION.vehicle_config)
+    try:
+        _step(world, car, VehicleCommand(gear=0))
+        state = car.suspension.state
+        assert all(state.candidate_contact)
+        assert all(x < 0 for x in state.contact_compression)
+        assert state.normal_force == (0.,) * 4
+        assert state.sampled_compression == state.step.compression == (0.,) * 4
+        assert state.step.spring_energy == state.step.damping_dissipation == 0.
+        assert state.geometry_work == state.initialization_energy == 0.
+    finally:
+        car.close()
+
+
+def test_initial_pose_preload_is_explicit_and_only_initialized_once():
+    world, car = _create_vehicle(DrivingMode.SIMULATION.vehicle_config)
+    try:
+        car._chassis.setTransform(TransformState.makePosHpr(Vec3(0, 0, .4), Vec3(0)))
+        _step(world, car, VehicleCommand(gear=0))
+        state = car.suspension.state
+        expected = sum(k * x * x / 2 for k, x in zip(car.config.suspension_spring_rates, state.sampled_compression))
+        assert state.initialization_energy == pytest.approx(expected, abs=1e-10)
+        assert state.initialization_energy > 600.
+        assert state.geometry_work == 0.
+        _step(world, car, VehicleCommand(gear=0))
+        assert car.suspension.state.initialization_energy == 0.
     finally:
         car.close()

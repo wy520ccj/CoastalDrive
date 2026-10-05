@@ -1,0 +1,23 @@
+......................F.....                                             [100%]
+================================== FAILURES ===================================
+________________ test_dynamic_contact_gzip_after_real_landing _________________
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-361/test_dynamic_contact_gzip_afte0')
+
+    def test_dynamic_contact_gzip_after_real_landing(tmp_path):
+        output = tmp_path / "landing"
+        report = run_matrix(output, 1, ("airborne-recontact",), ("simulation",))
+        assert report["status"] == "completed"
+        for label in ("A", "B"):
+            with gzip.open(output / f"simulation-airborne-recontact-{label}.csv.gz", "rt", encoding="utf-8", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            assert len(rows) == 121
+            assert float(rows[-1]["state.position.2"]) < float(rows[0]["state.position.2"])
+            for index in range(4):
+>               assert rows[-1][f"state.wheel_contacts.{index}.contact_point.2"]
+E               AssertionError: assert ''
+
+tests\test_esc_probe.py:105: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_esc_probe.py::test_dynamic_contact_gzip_after_real_landing
+1 failed, 27 passed in 3.62s

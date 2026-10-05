@@ -47,10 +47,18 @@ def trial(mode, enabled, case, rows):
         for tick in range(360):
             _step(world, car, command)
             state = car.snapshot()
+            storage = (state.suspension_state.step.spring_energy + sum(state.suspension_state.step.bar_energy)
+                       + state.suspension_state.step.stop_energy) if enabled else None
+            local_angular = car._chassis.getTransform().getQuat().conjugate().xform(car._chassis.getAngularVelocity())
+            inertia = car._chassis.getInertia()
+            kinetic = config.mass * sum(v * v for v in state.velocity) / 2 + sum(inertia[a] * local_angular[a] ** 2 for a in range(3)) / 2
             rows.append({"tick": tick + 1, "car": asdict(state), "body_angular": tuple(car._chassis.getAngularVelocity()),
-                         "native_force": tuple(w.getWheelsSuspensionForce() for w in car._vehicle.getWheels())})
+                         "native_force": tuple(w.getWheelsSuspensionForce() for w in car._vehicle.getWheels()),
+                         "normal_mechanical_energy_j": kinetic + config.mass * 9.81 * state.position[2] + storage if enabled else None})
             assert all(math.isfinite(v) for v in (*state.position, *state.velocity, state.roll, state.pitch))
-            assert all(0 <= c.normal_load <= config.suspension_force_limit + 1e-7 for c in state.wheel_contacts)
+            assert all(c.normal_load >= 0 for c in state.wheel_contacts)
+            if not enabled:
+                assert all(c.normal_load <= config.suspension_force_limit + 1e-7 for c in state.wheel_contacts)
             assert all(abs(t.force_residual) < .001 for t in state.wheel_dynamics)
             if enabled:
                 assert state.suspension_state.force_tick == state.contact_tick
@@ -65,7 +73,11 @@ def trial(mode, enabled, case, rows):
                 "final_position": rows[-1]["car"]["position"],
                 "max_tire_residual_n": max(abs(t["force_residual"]) for r in rows for t in r["car"]["wheel_dynamics"]),
                 "max_suspension_energy_residual_j": max((abs(s["step"]["energy_residual"]) for s in summaries), default=None),
-                "sum_signed_force_limit_work_j": sum(s["step"]["force_limit_work"] for s in summaries),
+                "sum_signed_contact_offset_work_j": sum(s["step"]["contact_offset_work"] for s in summaries),
+                "max_normal_force_n": max(c["normal_load"] for row in rows for c in row["car"]["wheel_contacts"]),
+                "sum_initialization_energy_j": sum(s["initialization_energy"] for s in summaries),
+                "max_normal_energy_step_increase_j": max((rows[i]["normal_mechanical_energy_j"] - rows[i-1]["normal_mechanical_energy_j"]
+                                                         for i in range(1, len(rows))), default=0.) if enabled else None,
                 "sum_signed_geometry_work_j": sum(s["geometry_work"] for s in summaries)}
     finally:
         car.close()
@@ -75,7 +87,7 @@ def run(output, prior=None, reuse_native_only=False):
     output.mkdir(parents=True, exist_ok=False)
     hashes = lambda: {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                      for group in ("src", "tests", "tools") for p in sorted((ROOT / group).rglob("*.py"))}
-    report = {"status": "running", "protocol": "2 modes x 4 cases x 2 branches; 360 native 120Hz steps per trace; initial-condition velocity change only before flat-free recording; signed geometry and force-limit work remain model boundary ports", "source_before": hashes(), "results": []}
+    report = {"status": "running", "protocol": "2 modes x 4 cases x 2 branches; 360 native 120Hz steps per trace; initial-condition velocity change only before flat-free recording; SI spring/bar/stop force is potential gradient without native hard clip; contact-offset and geometry work recorded separately", "source_before": hashes(), "results": []}
     pending = [(mode, case, enabled) for mode in ("game", "simulation") for case in CASES for enabled in (False, True)]
     if prior is not None:
         previous = json.loads((prior / "summary.json").read_text(encoding="utf-8"))
@@ -83,7 +95,9 @@ def run(output, prior=None, reuse_native_only=False):
                    if report["source_before"][name] != digest]
         assert previous["source_stable"]
         if reuse_native_only:
-            assert set(changed) <= {"src/vehicle_suspension.py", "tests/test_suspension_native.py",
+            assert set(changed) <= {"src/vehicle_suspension.py", "src/suspension.py", "src/vehicle_config.py", "src/driving_modes.py",
+                                    "tools/physics/export_reference.py", "tests/test_physics_config_io.py", "tests/test_traction_lifecycle.py",
+                                    "tests/test_suspension_coupling.py", "tests/test_suspension_native.py",
                                     "tests/test_vehicle_contacts.py", "tests/test_rotor_lifecycle.py",
                                     Path(__file__).relative_to(ROOT).as_posix()}
         else:

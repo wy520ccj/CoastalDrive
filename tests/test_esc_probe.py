@@ -90,6 +90,8 @@ def test_contact_moment_uses_real_tangent_lateral_and_cumulative_impulse():
 
 def test_stability_source_is_in_hash_account():
     assert "src/vehicle_stability.py" in source_hashes()
+    assert "src/suspension.py" in source_hashes()
+    assert "src/vehicle_suspension.py" in source_hashes()
 
 
 def test_dynamic_contact_gzip_after_real_landing(tmp_path):
@@ -102,7 +104,10 @@ def test_dynamic_contact_gzip_after_real_landing(tmp_path):
         assert len(rows) == 121
         assert float(rows[-1]["state.position.2"]) < float(rows[0]["state.position.2"])
         for index in range(4):
-            assert rows[-1][f"state.wheel_contacts.{index}.contact_point.2"]
+            supported = [row for row in rows if row.get(f"state.wheel_contacts.{index}.in_contact") == "True"]
+            assert supported
+            assert all(row[f"state.wheel_contacts.{index}.contact_point.2"] for row in supported)
+            assert max(float(row[f"state.wheel_contacts.{index}.normal_load"]) for row in supported) > 0.
         assert all(n >= 1 for n in report["cases"][0][label]["recontact_counts"])
     with pytest.raises(FileExistsError):
         run_matrix(output, .1)

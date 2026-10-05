@@ -110,7 +110,7 @@ class VehicleConfig:
     body_inertia: tuple[float, float, float] | None = None
     angular_damping: float = 0.2
     suspension_travel: float = 0.2
-    suspension_force_limit: float = 6000.0
+    suspension_force_limit: float = 6000.0  # N；仅原生对照分支的数值力限，SI势能反力不作硬裁剪。
 
     def __post_init__(self):
         if len(self.suspension_antiroll_rates) != 2 or any(not math.isfinite(k) or k < 0 for k in self.suspension_antiroll_rates):

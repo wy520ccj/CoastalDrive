@@ -182,6 +182,10 @@ def run_trial(case, enabled, duration=6.0, mode="simulation", vehicle_config=Non
             force_tick = vehicle._contact_tick
             _step(world, vehicle, command)
             state = vehicle.snapshot()
+            if vehicle.coupled_suspension:
+                # SI法向与轮胎同拍施力；原生对照仍采用上一拍接触缓存。
+                force_contacts = state.wheel_contacts
+                force_tick = state.suspension_state.force_tick
             distance += math.hypot(state.position[0]-previous_position[0], state.position[1]-previous_position[1])
             previous_position = state.position
             heading += (state.heading-previous_heading+180) % 360-180
@@ -224,7 +228,8 @@ def run_trial(case, enabled, duration=6.0, mode="simulation", vehicle_config=Non
 
 def source_hashes():
     hashes = _source_hashes()
-    for path in (Path(__file__), ROOT / "tools/physics/reference_ab.py"):
+    for path in (Path(__file__), ROOT / "tools/physics/reference_ab.py",
+                 ROOT / "src/suspension.py", ROOT / "src/vehicle_suspension.py"):
         hashes[path.relative_to(ROOT).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
     return hashes
 
@@ -277,7 +282,7 @@ def run_matrix(output, duration=6.0, cases=CASES, modes=MODES):
                   "yaw_error": "completed body yaw versus control reference from that step; control feedback tick retained",
                   "torque": "actual_powertrain_drive_torque_nm is delivered driveline torque, not inferred engine shaft torque; wheel torques retained",
                   "allocation_residual": "active allocation residual >1 Nm duration is diagnostic; full desired/baseline/allocated/residual moments retained every tick",
-                  "tire_contact_moment": "pre-force pose and previous contacts; force_contact_tick verified; tangent/lateral match Tires.advance; projected on body up axis; last_substep from fx/fy, mean from cumulative impulses/dt at fixed sampled contact; excludes axle reaction, suspension, collision and other torques; not net body moment",
+                  "tire_contact_moment": "pre-force pose; SI coupled uses same-tick force contacts, native uses previous contacts; force_contact_tick verified; tangent/lateral match Tires.advance; projected on body up axis; last_substep from fx/fy, mean from cumulative impulses/dt at fixed sampled contact; excludes axle reaction, suspension, collision and other torques; not net body moment",
                   "scope": "mechanism evidence; all non-improvements retained; shorter stopping distance not required; not high fidelity acceptance",
                   "duration_s": duration, "stop": "first horizontal speed <0.1m/s while driver brake >0 recorded; all ticks continue"}}
     (output / "summary.json").write_text(json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False)+"\n", encoding="utf-8")
