@@ -221,6 +221,8 @@ def measure(mode):
             "world_substeps": physical_substeps(car.config),
             "world_substep_dt_s": FIXED_DT / physical_substeps(car.config),
             "suspension_state": asdict(car.suspension.state) if car.coupled_suspension else None,
+            "aerodynamic_model": "relative-air-3d-scalar-CdA",
+            "dynamics": asdict(car.snapshot().dynamics),
             "wheels": [{
                 "hub": tuple(w.getChassisConnectionPointCs()), "radius": w.getWheelRadius(),
                 "rest_length": w.getSuspensionRestLength(),
@@ -269,7 +271,7 @@ def export(output):
                         "world_substeps_per_tick": {mode.value: physical_substeps(mode.vehicle_config) for mode in DrivingMode},
                         "native_dt_s": {mode.value: FIXED_DT / physical_substeps(mode.vehicle_config) for mode in DrivingMode},
                         "ground": "水平无限平面", "gravity": [0, 0, -9.81], "input": "VehicleCommand()"},
-        "schema_version": "reference-v26",
+        "schema_version": "reference-v27",
         "vehicle_fields": VEHICLE_FIELDS, "brake_fields": BRAKE_FIELDS,
         "traction_fields": TRACTION_FIELDS, "stability_fields": STABILITY_FIELDS,
         "input_fields": INPUT_FIELDS, "modes": modes,
@@ -284,5 +286,5 @@ def export(output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path,
-                        default=ROOT / "logs/physics/reference-v26/parameters.json")
+                        default=ROOT / "logs/physics/reference-v27/parameters.json")
     export(parser.parse_args().output)

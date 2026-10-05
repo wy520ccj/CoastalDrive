@@ -13,7 +13,7 @@ from vehicle_brakes import Brakes
 from vehicle_collision import install_chassis_shape
 from vehicle_config import CAR, wheel_hubs
 from vehicle_contacts import read_wheel_contacts, road_support, shift_contacts
-from vehicle_dynamics import DynamicsState, aerodynamic_force, axle_loads, contact_grade
+from vehicle_dynamics import DynamicsState, aerodynamic_load, axle_loads, contact_grade
 from vehicle_stability import StabilityControl
 from vehicle_state import FIXED_DT, CarState, Control, VehicleCommand, forward
 from vehicle_steering import SteeringRack, wheel_angles
@@ -258,11 +258,9 @@ class Vehicle:
         )
         horizontal = Vec3(velocity.x, velocity.y, 0)
         horizontal_speed = horizontal.length()
-        air_velocity = horizontal - self.wind
-        air_speed = air_velocity.length()
-        aero = aerodynamic_force(air_speed, self.config)
-        if air_speed > 0.01:
-            self._chassis.applyCentralForce(-air_velocity * (aero / air_speed))
+        air_velocity, air_force = aerodynamic_load(tuple(velocity), tuple(self.wind), self.config)
+        aero = math.sqrt(sum(x*x for x in air_force))
+        self._chassis.applyCentralForce(Vec3(*air_force))
         rolling = 0.0
         if horizontal_speed > 0.01 and normal_load > 0:
             coefficient = self.config.rolling_coefficient if road else self.config.grass_rolling_coefficient
@@ -314,6 +312,9 @@ class Vehicle:
             sideslip,
             traction_limited,
             grade,
+            air_velocity,
+            air_force,
+            sum(f*v for f,v in zip(air_force,velocity)),
         )
 
     def _road_grade(self, heading):

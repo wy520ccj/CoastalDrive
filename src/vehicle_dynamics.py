@@ -17,6 +17,9 @@ class DynamicsState:
     sideslip: float = 0.0
     traction_limited: bool = False
     road_grade: float | None = None
+    air_relative_velocity: tuple = (0., 0., 0.)
+    aerodynamic_force_vector: tuple = (0., 0., 0.)
+    aerodynamic_power: float = 0.
 
 
 def contact_grade(heading, normals):
@@ -31,6 +34,14 @@ def contact_grade(heading, normals):
 
 def aerodynamic_force(speed, config=CAR):
     return 0.5 * config.air_density * config.drag_coefficient * config.frontal_area * speed * speed
+
+
+def aerodynamic_load(velocity, wind, config=CAR):
+    """通用标量CdA模型，阻力沿完整三维相对空气速度的反向。"""
+    relative = tuple(v-w for v,w in zip(velocity,wind))
+    speed = math.sqrt(sum(x*x for x in relative))
+    factor = .5 * config.air_density * config.drag_coefficient * config.frontal_area * speed
+    return relative, tuple(-factor*x for x in relative)
 
 
 def axle_loads(acceleration, grade, config=CAR):

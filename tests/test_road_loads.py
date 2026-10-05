@@ -1,6 +1,7 @@
 """道路坡度来自实际支撑面；悬架俯仰不参与坡度项。"""
 
 import math
+from dataclasses import replace
 
 import pytest
 from panda3d.bullet import BulletPlaneShape, BulletRigidBodyNode, BulletWorld
@@ -8,8 +9,42 @@ from panda3d.core import BitMask32, Vec3
 
 from vehicle import Vehicle
 from vehicle_config import CAR
-from vehicle_dynamics import contact_grade
-from vehicle_state import FIXED_DT, Control
+from vehicle_dynamics import aerodynamic_load, contact_grade
+from vehicle_state import FIXED_DT, Control, VehicleCommand
+
+
+@pytest.mark.parametrize("velocity,wind,force", (
+    ((3.,4.,12.), (0.,0.,0.), (-39.,-52.,-156.)),
+    ((3.,4.,12.), (3.,4.,12.), (0.,0.,0.)),
+    ((0.,10.,0.), (0.,20.,0.), (0.,100.,0.)),
+    ((0.,10.,0.), (0.,-10.,0.), (0.,-400.,0.)),
+    ((0.,10.,0.), (10.,10.,0.), (100.,0.,0.)),
+    ((0.,0.,12.), (0.,0.,0.), (0.,0.,-144.)),
+))
+def test_three_dimensional_relative_air_speed_sets_load_and_direction(velocity,wind,force):
+    config = replace(CAR, air_density=1., drag_coefficient=.5, frontal_area=4.)
+    relative, load = aerodynamic_load(velocity,wind,config)
+    assert relative == tuple(v-w for v,w in zip(velocity,wind))
+    assert load == pytest.approx(force,abs=1e-12)
+    assert sum(f*v for f,v in zip(load,relative)) <= 0.
+
+
+def test_actual_bullet_body_receives_vertical_drag_and_snapshot_records_power():
+    world = BulletWorld()
+    config = replace(CAR, air_density=1., drag_coefficient=.5, frontal_area=4.)
+    car = Vehicle(world, lambda _x,_y: True, (0.,0.,20.), config=config)
+    try:
+        car._chassis.setLinearVelocity(Vec3(3.,4.,12.))
+        car.apply_command(VehicleCommand(gear=0))
+        assert tuple(car._chassis.getTotalForce()) == pytest.approx((-39.,-52.,-156.),abs=1e-5)
+        dynamics = car.snapshot().dynamics
+        assert dynamics.air_relative_velocity == (3.,4.,12.)
+        assert dynamics.aerodynamic_force_vector == (-39.,-52.,-156.)
+        assert dynamics.aerodynamic_force == 169.
+        assert dynamics.aerodynamic_power == -2197.
+        assert dynamics.rolling_force == 0.
+    finally:
+        car.close()
 
 
 def test_contact_grade_uses_heading_and_support_only():
