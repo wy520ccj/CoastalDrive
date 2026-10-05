@@ -1,0 +1,238 @@
+{
+  "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src",
+  "coupled_off": true,
+  "passed": true,
+  "source_stable": true,
+  "source_sha256": {
+    "application.py": "0de3c739346180c67b9b4930605921aa71add7b80b9001aeae9e738abcbd6424",
+    "chase_camera.py": "4a8273238e7b49f1c8fb72e78c37e518c8b1aa863510f01c7a4f561b09f11146",
+    "coastal_collision.py": "46ac5830de691b08a1acc47f19d7fb2e0accd21ece1acab8cf34666867760b41",
+    "coastal_map.py": "038288a510d2db1b6de136b8e7408c72999eef979145bd454cfaeeffe7b62ade",
+    "controls.py": "1ffceba7d5c14f4fa2945d0e35c4e137b45443f989539f0d7aa22ca269436cad",
+    "curve_mesh.py": "105d779c136301731934b22530bb30ce1c4aa3235edb04d8ed472a13ec9e2ff2",
+    "differential.py": "954677fe7c20e40d04c0956465eb544a83646eccd86f45210ea045ccc49cc5fd",
+    "driveline_inertia.py": "95c71537b1b810443596ae7ea1568573182208534d2e9a03d9020e13cda70196",
+    "driver_assist.py": "09e33431cdd3adee4ec22366bdeccaa7877272a6a1a9d65d49d232b96bfdfe83",
+    "driving_modes.py": "c3390bc71ece7fa7e0342091f396cf706c69227066ca3764dbd14980ea7a2359",
+    "garage.py": "b7c88ed01229f5c07dd3e966ad24b287a963bb60cd2a1b8923d9a1ed21558211",
+    "highway_curve.py": "30b2a7c6d75a38bbce538198e1e53295d1afa6dd14d05760d085d3d150a4e64e",
+    "highway_driver.py": "ca6c8c2155b48b9130d1008b74e0fab904e10e16d860f6d55f39259ae610c226",
+    "highway_map.py": "fc426d2d95134851304c49885f6d0c6caf728e118f3da939878b38721f11592b",
+    "highway_run.py": "6b0520d5ab68e46919a99cbb953b98c5f0e806222bfe4e55d5ee03dd731b6d6b",
+    "highway_segments.py": "ba5494eb325e107d1a40477272db799d4fd26f8cfb7ec8b265c038ff39b1da40",
+    "impact_events.py": "d84747f93b1cafa8b33ee9322f8870ed0bbdd7bf149d4daff281ea7430d6dd5b",
+    "main.py": "1c73870d64e0d9273905d74420db96fdba73ade41f5a89314ab8bcf79f3b7943",
+    "paths.py": "6c9e79bf75ebad3ff0eb509ca8e910fb5a90ca7a89077acd90f844a57078699c",
+    "performance_baseline.py": "c961ebbbca5714f6fd219322e6f4067cdc2730727d64434fbc7f74afbc4d3bdd",
+    "phase0_app.py": "8ec41455706e637735c1419b836cd9b88f15d2f3a6072438b08c83b129dc9e2c",
+    "powertrain.py": "a421003c7370b278f61677cc77b29af07d950ccc281ed57bed90689686883f85",
+    "race.py": "7804a9591ec7dcc979637f5b3f4f4bf758285762b37f0664bd5cfb995a7d1981",
+    "rotor_dynamics.py": "c4077261f5c4baba6455d622211b7e8f79360c75c6b7e2566eca42755b1103be",
+    "scene.py": "68ce959ee496ac68dd28c837c8702959a1cbc06754329e9af0ef95bdcf48879f",
+    "session.py": "f25c3d6592b211132fa7d02c7a3c512fa91cc1d101e822a9e25d43cb0b11ea3d",
+    "settings.py": "1b869c80d8e12bb82aa0425e3a5e8f9540e27c9def65aae78e76edc0c2dd6f4f",
+    "shaft_transmission.py": "13595a9a20d3a533e92f163cbc72acc10b63444cd8bf2c2fc04c413735569105",
+    "simulation.py": "996dea7bab97af68b80258968e5f7c01622a8ea82317867839b090d0f0e84c56",
+    "skins.py": "43a9bfe0a223d6e9de346340d7a1b362f3f4abbfa316744e8ef04085c4656f5e",
+    "sky_dome.py": "45437938b4e2c47cf68fcb84da16553143957bd2d0c1696a44781c1d0fb83a4b",
+    "soundscape.py": "1671c176b8ec8e26eaabd3ab143d51e1ee6e6dafea52b305682a54c5ea4e3415",
+    "streamed_road.py": "acbc92422c9df04ba43505c152ca9c82abbcdc6ccd97b99dfe7fe04aa21c5887",
+    "suspension.py": "1aef918f2105d86b48fcd0bbf9a3cb146d50a0f4881ef53e75b85f4c07e3a4fb",
+    "suspension_contacts.py": "3bfbfd50c46a8758db5f88ad42e2fd9ba508d54787517da64da50935dfec7d0e",
+    "suspension_geometry.py": "400b58d89356bd71bc4a6b60453982308504846832e4b2f6effc5d8d7feb7ff4",
+    "suspension_kinematics.py": "768d24873e0740fc4569d2a0f1ff64429e06f376fe9c98f75d29f58a6b090eff",
+    "test_track.py": "ae90f12ab8647ec859ad7931f501b3183371a1fa11936c9edeb59c882db72cfa",
+    "tire_compliance.py": "4f5bbf29a86c5a84d5cb12b415ce07027e3949683d10583cd6c7f15228a392c6",
+    "tire_coupling.py": "c29a5913f48c00c000c7c6973a58d10cf9d7e019b028934e4a8be9a2207430cf",
+    "tire_drivetrain.py": "4fe1dbd14cd515023864306b1535d964d3a7e426e077b9c7c95591151fdf82e6",
+    "tire_forces.py": "81503a0b30fb6aef3ca467a1255128ba95176a0d0ece7ba4a255cd941ab6306e",
+    "tire_properties.py": "ec722554e2173ebd7705c080249ca8ebd7c1509542bc8ffdf0877dd03286c329",
+    "tracks.py": "f9d5fef1c7b9f4d808fdcb3074f6e1adbf92a6ee57bcdd04e60fc4637580f42d",
+    "traffic.py": "3e3d4bd44b16226962436bde66ea5bc11559cb59d1475c1df2905a61759a96d0",
+    "traffic_recovery.py": "b455ff05ae1f8dbd524662a831f808f67986699378d54840416c308216072d9a",
+    "transmission_ports.py": "e211605de2c8dd0935dd8fd271880a3c0fd11e256ce2a960f3a7a4f30d68433f",
+    "vehicle.py": "03b1433c31fcdcc4762284fdb10eab3b52375bfca40ae12eac2448015b6b7596",
+    "vehicle_brakes.py": "edc2a07b63e0c8470141abe149ca8dd0db379959c9715341337e1746e82f703a",
+    "vehicle_collision.py": "3b10a6b5bf79d9c4e7439810d51aac653e98721f8b82c9ee1bf43f0dabff5874",
+    "vehicle_config.py": "8d74decc91937b55d3fc01227343b9508cf2fbd5984006b4b0f16b57aa8ab938",
+    "vehicle_contacts.py": "263f782cb50462972f7626722aec27273fac70a92a335c64a4ba3392e3483eaf",
+    "vehicle_dynamics.py": "f782701ec369d672d3c60506d3429dcf66ea0f84da78a1a28d62f1dcf5b9e06a",
+    "vehicle_stability.py": "3d90276b5e311e303c6ce27f6982e7b0cd27a4f547bc6a597a1898d847d229b6",
+    "vehicle_state.py": "6319441b8459028bf703280ec3c5b9e8e1183705d33a1a5e027c0407f6481564",
+    "vehicle_steering.py": "e6841e5206685fe76281bbd84c1ac0a0c5c2cf0a225a5814dc4cca4c91769a6f",
+    "vehicle_suspension.py": "bf58ed309b1af8f8a1cce9cb15a1a6a5ad5419b20e1035908519ba7d0db11a12",
+    "vehicle_tires.py": "a10920dd8a0d423c392f4f79e56677ef253df869433cd30e47dcce98d989ffe4",
+    "vehicle_traction.py": "3290939ea56d16d33287d9591e163f073f21fe2654c7f0ba3031456dec00492d",
+    "vehicle_visual.py": "847f473e88fc339095f28ad6651e44ad51057352e76413c3379e43d0f4b4017f",
+    "wheel_dynamics.py": "934dd04f02d73649f45e18f6a76665e1d291ff2fd63d53b80353d7cce002901a",
+    "wheel_geometry.py": "0b94386a8c74c396950de463ac0ae7508b22b6822e7f53d391928f1b870ce254",
+    "world_props.py": "20bdad65716f9d63ffd22cf5138439f761408c95830fc36696298c694405291f",
+    "world_step.py": "f79b377c2e315e12e1ad60f92f565ec291fe004cf4b79e1ca8837a64228bc7bc"
+  },
+  "results": [
+    {
+      "case": "game-box",
+      "completed": 60,
+      "requested": 60,
+      "error": null,
+      "peak_load_n": 6000.0,
+      "peak_local_energy_residual_j": 0.0,
+      "final_position": [
+        6.747835636138916,
+        35.0539436340332,
+        0.3923671245574951
+      ],
+      "final_roll_deg": -1.8576756715774536,
+      "impacts": [
+        {
+          "epoch": 2,
+          "tick": 17,
+          "index": 0,
+          "sources": [
+            1
+          ],
+          "material": "metal_barrier",
+          "raw_impulse": 10263.955078125,
+          "excess_impulse": 10263.955078125,
+          "normal_speed": 7.831444958322992,
+          "tangential_speed": 12.03636428173069,
+          "local_position": [
+            1.0409998805496656,
+            0.1635623301516177,
+            0.07415469034910403
+          ],
+          "local_normal": [
+            -0.9998828403043565,
+            0.0005446952476587997,
+            0.015297351796300417
+          ],
+          "zone": "right",
+          "contact_age_ticks": 1
+        }
+      ]
+    },
+    {
+      "case": "game-partitioned",
+      "completed": 60,
+      "requested": 60,
+      "error": null,
+      "peak_load_n": 6000.0,
+      "peak_local_energy_residual_j": 0.0,
+      "final_position": [
+        6.786360263824463,
+        35.031715393066406,
+        0.42120280861854553
+      ],
+      "final_roll_deg": -0.0866488441824913,
+      "impacts": [
+        {
+          "epoch": 4,
+          "tick": 17,
+          "index": 0,
+          "sources": [
+            1
+          ],
+          "material": "metal_barrier",
+          "raw_impulse": 10261.695419311523,
+          "excess_impulse": 10261.695419311523,
+          "normal_speed": 7.819012472484936,
+          "tangential_speed": 12.037241843948769,
+          "local_position": [
+            1.0397099878849327,
+            0.16257126961112575,
+            0.009690934590175617
+          ],
+          "local_normal": [
+            -0.9999974397939799,
+            0.0005357393806983374,
+            0.002198496941375289
+          ],
+          "zone": "right",
+          "contact_age_ticks": 1
+        }
+      ]
+    },
+    {
+      "case": "simulation-box",
+      "completed": 60,
+      "requested": 60,
+      "error": null,
+      "peak_load_n": 6000.0,
+      "peak_local_energy_residual_j": 0.0,
+      "final_position": [
+        6.737251281738281,
+        35.012596130371094,
+        0.3916185796260834
+      ],
+      "final_roll_deg": -1.7962573766708374,
+      "impacts": [
+        {
+          "epoch": 6,
+          "tick": 17,
+          "index": 0,
+          "sources": [
+            1
+          ],
+          "material": "metal_barrier",
+          "raw_impulse": 10286.630126953125,
+          "excess_impulse": 10286.630126953125,
+          "normal_speed": 7.837669663966931,
+          "tangential_speed": 12.037182063520934,
+          "local_position": [
+            1.040956697760583,
+            0.15950258692907326,
+            0.07160085143349756
+          ],
+          "local_normal": [
+            -0.9998658825806525,
+            0.0006019331007222116,
+            0.016366261874812972
+          ],
+          "zone": "right",
+          "contact_age_ticks": 1
+        }
+      ]
+    },
+    {
+      "case": "simulation-partitioned",
+      "completed": 60,
+      "requested": 60,
+      "error": null,
+      "peak_load_n": 6000.0,
+      "peak_local_energy_residual_j": 0.0,
+      "final_position": [
+        6.7747392654418945,
+        34.96017074584961,
+        0.42141419649124146
+      ],
+      "final_roll_deg": -0.07637041807174683,
+      "impacts": [
+        {
+          "epoch": 8,
+          "tick": 17,
+          "index": 0,
+          "sources": [
+            1
+          ],
+          "material": "metal_barrier",
+          "raw_impulse": 10286.981643676758,
+          "excess_impulse": 10286.981643676758,
+          "normal_speed": 7.827015190263795,
+          "tangential_speed": 12.036509554562935,
+          "local_position": [
+            1.039689703267248,
+            0.15876047109718663,
+            0.008540504267406183
+          ],
+          "local_normal": [
+            -0.9999936101540317,
+            0.0005932807845906074,
+            0.0035252899195931647
+          ],
+          "zone": "right",
+          "contact_age_ticks": 1
+        }
+      ]
+    }
+  ]
+}

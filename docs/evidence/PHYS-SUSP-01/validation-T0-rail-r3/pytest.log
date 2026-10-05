@@ -1,0 +1,121 @@
+FFFF.................................................................... [ 57%]
+......................................................                   [100%]
+================================== FAILURES ===================================
+_ test_high_load_curved_rail_support_converges_and_reaches_snapshot[False-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, centered = False
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("centered", (False, True))
+    def test_high_load_curved_rail_support_converges_and_reaches_snapshot(mode, centered):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(mode.vehicle_config, centered_collision_support=centered))
+        peak_load = 0.
+        try:
+            simulation.reset_player((5.8, 30, .55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            for tick in range(30):
+                simulation.step(Control())
+                state = simulation.snapshot().player
+                support = state.suspension_state
+                assert support.force_tick == state.contact_tick == tick + 1
+                for _dt, step in support.substeps:
+                    assert abs(step.energy_residual) < 3e-9
+                for contact, tire, load in zip(state.wheel_contacts, state.wheel_dynamics, support.normal_force):
+>                   assert tire.normal_load == contact.normal_load == load
+E                   AssertionError: assert 0.0 == 348173.8256999586
+E                    +  where 0.0 = WheelDynamicsState(omega=34.318021118837905, rotation=4.525522810656069, relative_omega=34.313501828487404, longitudin...ring_work=-7.22502854742768e-17, longitudinal_angular_impulse=(0.0, 0.0, 0.0), lateral_angular_impulse=(0.0, 0.0, 0.0)).normal_load
+E                    +  and   348173.8256999586 = WheelContactState(in_contact=True, contact_point=(7.881042076487279, 32.55098852168327, 0.7928911900099627), contact_n...=348173.8256999586, suspension_length=-0.17659088652742372, compression=0.5765908924878882, skid=None, surface='grass').normal_load
+
+tests\test_guardrail_suspension.py:30: AssertionError
+_ test_high_load_curved_rail_support_converges_and_reaches_snapshot[False-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, centered = False
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("centered", (False, True))
+    def test_high_load_curved_rail_support_converges_and_reaches_snapshot(mode, centered):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(mode.vehicle_config, centered_collision_support=centered))
+        peak_load = 0.
+        try:
+            simulation.reset_player((5.8, 30, .55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            for tick in range(30):
+                simulation.step(Control())
+                state = simulation.snapshot().player
+                support = state.suspension_state
+                assert support.force_tick == state.contact_tick == tick + 1
+                for _dt, step in support.substeps:
+                    assert abs(step.energy_residual) < 3e-9
+                for contact, tire, load in zip(state.wheel_contacts, state.wheel_dynamics, support.normal_force):
+>                   assert tire.normal_load == contact.normal_load == load
+E                   AssertionError: assert 0.0 == 350973.43151242513
+E                    +  where 0.0 = WheelDynamicsState(omega=33.61394611721704, rotation=4.515708179897369, relative_omega=33.61965277667022, longitudinal...ing_work=-4.654604487999036e-17, longitudinal_angular_impulse=(0.0, 0.0, 0.0), lateral_angular_impulse=(0.0, 0.0, 0.0)).normal_load
+E                    +  and   350973.43151242513 = WheelContactState(in_contact=True, contact_point=(7.881010037583595, 32.552345563085794, 0.7928187710407729), contact_...350973.43151242513, suspension_length=-0.17643726160186723, compression=0.5764372675623317, skid=None, surface='grass').normal_load
+
+tests\test_guardrail_suspension.py:30: AssertionError
+_ test_high_load_curved_rail_support_converges_and_reaches_snapshot[True-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, centered = True
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("centered", (False, True))
+    def test_high_load_curved_rail_support_converges_and_reaches_snapshot(mode, centered):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(mode.vehicle_config, centered_collision_support=centered))
+        peak_load = 0.
+        try:
+            simulation.reset_player((5.8, 30, .55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            for tick in range(30):
+                simulation.step(Control())
+                state = simulation.snapshot().player
+                support = state.suspension_state
+                assert support.force_tick == state.contact_tick == tick + 1
+                for _dt, step in support.substeps:
+                    assert abs(step.energy_residual) < 3e-9
+                for contact, tire, load in zip(state.wheel_contacts, state.wheel_dynamics, support.normal_force):
+>                   assert tire.normal_load == contact.normal_load == load
+E                   AssertionError: assert 0.0 == 348173.8256999586
+E                    +  where 0.0 = WheelDynamicsState(omega=34.318021118837905, rotation=4.525522810656069, relative_omega=34.313501828487404, longitudin...ring_work=-7.22502854742768e-17, longitudinal_angular_impulse=(0.0, 0.0, 0.0), lateral_angular_impulse=(0.0, 0.0, 0.0)).normal_load
+E                    +  and   348173.8256999586 = WheelContactState(in_contact=True, contact_point=(7.881042076487279, 32.55098852168327, 0.7928911900099627), contact_n...=348173.8256999586, suspension_length=-0.17659088652742372, compression=0.5765908924878882, skid=None, surface='grass').normal_load
+
+tests\test_guardrail_suspension.py:30: AssertionError
+_ test_high_load_curved_rail_support_converges_and_reaches_snapshot[True-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, centered = True
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("centered", (False, True))
+    def test_high_load_curved_rail_support_converges_and_reaches_snapshot(mode, centered):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(mode.vehicle_config, centered_collision_support=centered))
+        peak_load = 0.
+        try:
+            simulation.reset_player((5.8, 30, .55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            for tick in range(30):
+                simulation.step(Control())
+                state = simulation.snapshot().player
+                support = state.suspension_state
+                assert support.force_tick == state.contact_tick == tick + 1
+                for _dt, step in support.substeps:
+                    assert abs(step.energy_residual) < 3e-9
+                for contact, tire, load in zip(state.wheel_contacts, state.wheel_dynamics, support.normal_force):
+>                   assert tire.normal_load == contact.normal_load == load
+E                   AssertionError: assert 0.0 == 350973.43151242513
+E                    +  where 0.0 = WheelDynamicsState(omega=33.61394611721704, rotation=4.515708179897369, relative_omega=33.61965277667022, longitudinal...ing_work=-4.654604487999036e-17, longitudinal_angular_impulse=(0.0, 0.0, 0.0), lateral_angular_impulse=(0.0, 0.0, 0.0)).normal_load
+E                    +  and   350973.43151242513 = WheelContactState(in_contact=True, contact_point=(7.881010037583595, 32.552345563085794, 0.7928187710407729), contact_...350973.43151242513, suspension_length=-0.17643726160186723, compression=0.5764372675623317, skid=None, surface='grass').normal_load
+
+tests\test_guardrail_suspension.py:30: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_guardrail_suspension.py::test_high_load_curved_rail_support_converges_and_reaches_snapshot[False-DrivingMode.GAME]
+FAILED tests/test_guardrail_suspension.py::test_high_load_curved_rail_support_converges_and_reaches_snapshot[False-DrivingMode.SIMULATION]
+FAILED tests/test_guardrail_suspension.py::test_high_load_curved_rail_support_converges_and_reaches_snapshot[True-DrivingMode.GAME]
+FAILED tests/test_guardrail_suspension.py::test_high_load_curved_rail_support_converges_and_reaches_snapshot[True-DrivingMode.SIMULATION]
+4 failed, 122 passed in 17.45s

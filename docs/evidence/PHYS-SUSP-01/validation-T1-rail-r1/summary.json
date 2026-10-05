@@ -1,0 +1,131 @@
+{
+  "started_utc": "2026-10-05T11:37:59.112527+00:00",
+  "git_head": "9f2c1429829a9d2a22c480539cb1cd937f73bd30",
+  "git_status": "M src/driving_modes.py\n M src/suspension.py\n M src/tire_drivetrain.py\n M tests/test_traction_lifecycle.py\n M tools/validate.py\n?? docs/evidence/PHYS-SUSP-01/validation-T0-rail-r1/\n?? docs/evidence/PHYS-SUSP-01/validation-T0-rail-r2/\n?? docs/evidence/PHYS-SUSP-01/validation-T0-rail-r3/\n?? docs/evidence/PHYS-SUSP-01/validation-T0-rail-r4/\n?? tests/test_guardrail_suspension.py\n?? tools/physics/guardrail_support_probe.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_guardrail_suspension.py",
+    "tests/test_suspension_si.py",
+    "tests/test_suspension_coupling.py",
+    "tests/test_suspension_native.py",
+    "tests/test_joint_suspension.py",
+    "tests/test_finite_suspension.py",
+    "tests/test_curved_suspension.py",
+    "tests/test_tire_drivetrain.py",
+    "tests/test_world_substeps.py",
+    "tests/test_physics_config_io.py",
+    "tests/test_traction_lifecycle.py::test_mode_abs_tcs_variants_get_distinct_score_keys"
+  ],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-SUSP-01\\validation-T1-rail-r1\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.224
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_guardrail_suspension.py",
+        "tests/test_suspension_si.py",
+        "tests/test_suspension_coupling.py",
+        "tests/test_suspension_native.py",
+        "tests/test_joint_suspension.py",
+        "tests/test_finite_suspension.py",
+        "tests/test_curved_suspension.py",
+        "tests/test_tire_drivetrain.py",
+        "tests/test_world_substeps.py",
+        "tests/test_physics_config_io.py",
+        "tests/test_traction_lifecycle.py::test_mode_abs_tcs_variants_get_distinct_score_keys"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-SUSP-01\\validation-T1-rail-r1\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 37.628
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-SUSP-01\\validation-T1-rail-r1\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 52.053
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-SUSP-01\\validation-T1-rail-r1\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 51.631
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\docs\\evidence\\PHYS-SUSP-01\\validation-T1-rail-r1\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 40.744
+    }
+  ]
+}

@@ -21,7 +21,7 @@ from shaft_transmission import (
     synchronizer_brake_response,
     synchronizer_brake_state,
 )
-from suspension import SuspensionInput, SuspensionStep, shared_suspension
+from suspension import SuspensionInput, SuspensionStep, _solve, shared_suspension
 from suspension_kinematics import finite_contact_system
 from tire_compliance import contact_force, contact_jacobian, energy_terms
 from tire_forces import combined_force, slip_state
@@ -542,6 +542,40 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 return
         forces[:] = original
 
+    def correct_suspension(guess, velocity_guess):
+        """联立修正六维末速度与曲面反力，消除大轮荷时滞后几何的慢收敛。"""
+        nonlocal suspension, normal_forces
+        original_system, original_forces = suspension, normal_forces
+        values = tuple(velocity_guess) + tuple(guess[:3])
+
+        def residual(values):
+            nonlocal suspension, normal_forces
+            suspension = finite_contact_system(reference_suspension, values[:3], values[3:], dt)
+            normal_projection()
+            normal_forces = shared_suspension(suspension, values[:3], values[3:], dt).axial_force
+            state, velocity_end, _clutch, _loss, _gear = shared(tuple(values[3:]) + tuple(guess[3:]))
+            return tuple(values[a] - end for a, end in enumerate(tuple(velocity_end) + tuple(state[:3])))
+
+        errors = residual(values)
+        columns = []
+        for j in range(6):
+            plus, minus = list(values), list(values)
+            plus[j] += .0001
+            minus[j] -= .0001
+            high, low = residual(plus), residual(minus)
+            columns.append(tuple((high[i] - low[i]) / .0002 for i in range(6)))
+        delta = _solve(tuple(tuple(columns[j][i] for j in range(6)) for i in range(6)),
+                       tuple(-value for value in errors))
+        before = max(abs(value) for value in errors)
+        for attempt in range(8):
+            candidate = tuple(values[i] + 2.**-attempt * delta[i] for i in range(6))
+            after = residual(candidate)
+            if max(abs(value) for value in after) < before:
+                normal_loads()
+                return
+        suspension, normal_forces = original_system, original_forces
+        normal_projection()
+
     state = initial
     normal_error = 0.
     geometry_error = 0.
@@ -589,6 +623,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             break
         if shaft and maximum >= .001 and sweep >= 8:
             correct_contacts(state)
+        if suspension is not None and sweep >= 8 and maximum < .001 and (normal_error >= normal_tolerance or geometry_error >= 1e-12):
+            correct_suspension(state, end_velocity)
     else:
         raise ArithmeticError(f"传动/四轮共同求解超过20轮：{maximum:g}N，制动{brake_error:g}Nm，法向{normal_error:g}N，几何共轭冲量{geometry_error:g}Ns/Nms")
 

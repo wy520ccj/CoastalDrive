@@ -1,5 +1,6 @@
 """射线悬架的真实硬件单位与原生参数边界。"""
 
+import math
 from dataclasses import dataclass
 
 from rotor_dynamics import cross
@@ -49,19 +50,33 @@ def elastic_terms(compression, rates, bars, stops, travel):
 
 
 def _solve(matrix, rhs):
-    """四轮接触/自由行程方程的小型稠密消元，不引入额外数值依赖。"""
-    rows = [list(row) + [value] for row, value in zip(matrix, rhs)]
+    """小型稠密LU及残差修正，保持大止挡反力下的绝对机械精度。"""
+    rows = [list(row) for row in matrix]
     n = len(rows)
+    order = list(range(n))
     for col in range(n):
         pivot = max(range(col, n), key=lambda i: abs(rows[i][col]))
         rows[col], rows[pivot] = rows[pivot], rows[col]
-        scale = rows[col][col]
-        rows[col] = [v / scale for v in rows[col]]
+        order[col], order[pivot] = order[pivot], order[col]
+        for i in range(col + 1, n):
+            factor = rows[i][col] / rows[col][col]
+            rows[i][col] = factor
+            for j in range(col + 1, n):
+                rows[i][j] -= factor * rows[col][j]
+
+    def substitute(values):
+        result = [values[i] for i in order]
         for i in range(n):
-            if i != col:
-                scale = rows[i][col]
-                rows[i] = [v - scale * p for v, p in zip(rows[i], rows[col])]
-    return tuple(row[-1] for row in rows)
+            result[i] = math.fsum([result[i], *(-rows[i][j] * result[j] for j in range(i))])
+        for i in range(n - 1, -1, -1):
+            result[i] = math.fsum([result[i], *(-rows[i][j] * result[j] for j in range(i + 1, n))]) / rows[i][i]
+        return result
+
+    result = substitute(rhs)
+    residual = tuple(math.fsum([rhs[i], *(-value * x for value, x in zip(row, result))])
+                     for i, row in enumerate(matrix))
+    correction = substitute(residual)
+    return tuple(x + dx for x, dx in zip(result, correction))
 
 
 @dataclass(frozen=True)

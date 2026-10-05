@@ -1,0 +1,26 @@
+[
+  {
+    "case": "game-box",
+    "bytes_equal": true,
+    "ticks": 60,
+    "sha256": "b04c79f33af350cb83a829780e0344c8ed91935f1fb1b9ada9187b46e523fe9f"
+  },
+  {
+    "case": "game-partitioned",
+    "bytes_equal": true,
+    "ticks": 60,
+    "sha256": "1017c38dce25c8e6ed2274dcd5bf96c84c87254c43faa68f6dfbd795170a062b"
+  },
+  {
+    "case": "simulation-box",
+    "bytes_equal": true,
+    "ticks": 60,
+    "sha256": "601855957ad5072b227c6befab03a1a94a6c1694f65f25aa76a7ec064cd66abc"
+  },
+  {
+    "case": "simulation-partitioned",
+    "bytes_equal": true,
+    "ticks": 60,
+    "sha256": "0a66cdc686acd6b73c3cb9bf9e6fdec395cfef601711bcb17210ed67e9d867f3"
+  }
+]
