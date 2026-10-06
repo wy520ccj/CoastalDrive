@@ -1,0 +1,249 @@
+{
+  "status": "isolated engineering preparation; not a loadable or calibrated GR86 config",
+  "prior_file_sha256": "5aa8d0e0fb3740cbecaa9533f1871c4e068ea9d5c000fda9409d38d628240836",
+  "rotor_basis": "reference-v28 engineering assumptions, pending GR86 calibration",
+  "reference_pose": "zero steer, axes fixed in body, zero rotor motion relative to housing",
+  "rotors": [
+    {
+      "name": "wheel-0",
+      "inertia_kg_m2": 1.8,
+      "axis": [
+        -1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "wheel-1",
+      "inertia_kg_m2": 1.8,
+      "axis": [
+        -1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "wheel-2",
+      "inertia_kg_m2": 1.8,
+      "axis": [
+        -1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "wheel-3",
+      "inertia_kg_m2": 1.8,
+      "axis": [
+        -1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "engine",
+      "inertia_kg_m2": 0.2,
+      "axis": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "name": "input-shaft",
+      "inertia_kg_m2": 0.04,
+      "axis": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "name": "output-shaft",
+      "inertia_kg_m2": 0.03,
+      "axis": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "name": "rear-drive-shaft",
+      "inertia_kg_m2": 0.02,
+      "axis": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    }
+  ],
+  "deduction_xyz_kg_m2": [
+    7.2,
+    0.29000000000000004,
+    0.0
+  ],
+  "cases": [
+    {
+      "assumed_center_of_mass_height_m": 0.4,
+      "whole_rigid_pose_inertia_xyz_kg_m2": [
+        2002.5620993967573,
+        396.87710707981944,
+        2281.6490372428193
+      ],
+      "candidate_body_inertia_xyz_kg_m2": [
+        1995.3620993967572,
+        396.5871070798194,
+        2281.6490372428193
+      ],
+      "locked_pose_probes": [
+        {
+          "body_angular_velocity_rad_s": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "energy_error_J": -1.1368683772161603e-13,
+          "max_momentum_error_N_m_s": 2.2737367544323206e-13
+        },
+        {
+          "body_angular_velocity_rad_s": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "energy_error_J": -2.842170943040401e-14,
+          "max_momentum_error_N_m_s": 5.684341886080802e-14
+        },
+        {
+          "body_angular_velocity_rad_s": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "energy_error_J": 0.0,
+          "max_momentum_error_N_m_s": 0.0
+        },
+        {
+          "body_angular_velocity_rad_s": [
+            0.3,
+            -0.7,
+            1.1
+          ],
+          "energy_error_J": -2.2737367544323206e-13,
+          "max_momentum_error_N_m_s": 2.2737367544323206e-13
+        }
+      ]
+    },
+    {
+      "assumed_center_of_mass_height_m": 0.45,
+      "whole_rigid_pose_inertia_xyz_kg_m2": [
+        2019.243254608297,
+        413.55826229135914,
+        2281.6490372428193
+      ],
+      "candidate_body_inertia_xyz_kg_m2": [
+        2012.043254608297,
+        413.2682622913591,
+        2281.6490372428193
+      ],
+      "locked_pose_probes": [
+        {
+          "body_angular_velocity_rad_s": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "energy_error_J": -1.1368683772161603e-13,
+          "max_momentum_error_N_m_s": 2.2737367544323206e-13
+        },
+        {
+          "body_angular_velocity_rad_s": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "energy_error_J": -2.842170943040401e-14,
+          "max_momentum_error_N_m_s": 5.684341886080802e-14
+        },
+        {
+          "body_angular_velocity_rad_s": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "energy_error_J": 0.0,
+          "max_momentum_error_N_m_s": 0.0
+        },
+        {
+          "body_angular_velocity_rad_s": [
+            0.3,
+            -0.7,
+            1.1
+          ],
+          "energy_error_J": -2.2737367544323206e-13,
+          "max_momentum_error_N_m_s": 1.1368683772161603e-13
+        }
+      ]
+    },
+    {
+      "assumed_center_of_mass_height_m": 0.5,
+      "whole_rigid_pose_inertia_xyz_kg_m2": [
+        2035.761770555006,
+        430.0767782380679,
+        2281.6490372428193
+      ],
+      "candidate_body_inertia_xyz_kg_m2": [
+        2028.561770555006,
+        429.7867782380679,
+        2281.6490372428193
+      ],
+      "locked_pose_probes": [
+        {
+          "body_angular_velocity_rad_s": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "energy_error_J": -1.1368683772161603e-13,
+          "max_momentum_error_N_m_s": 2.2737367544323206e-13
+        },
+        {
+          "body_angular_velocity_rad_s": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "energy_error_J": -2.842170943040401e-14,
+          "max_momentum_error_N_m_s": 5.684341886080802e-14
+        },
+        {
+          "body_angular_velocity_rad_s": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "energy_error_J": 0.0,
+          "max_momentum_error_N_m_s": 0.0
+        },
+        {
+          "body_angular_velocity_rad_s": [
+            0.3,
+            -0.7,
+            1.1
+          ],
+          "energy_error_J": -2.2737367544323206e-13,
+          "max_momentum_error_N_m_s": 1.1368683772161603e-13
+        }
+      ]
+    }
+  ],
+  "equation": "I_body = I_whole - sum(J * axis * axis^T)",
+  "boundaries": [
+    "Mass and parallel-axis position contributions remain in the whole-vehicle body model",
+    "Only independently modelled axial spin inertia is deducted; transverse rotor inertia is retained",
+    "Relative spin adds its own absolute-speed energy and momentum in the existing solver",
+    "Steering changes the physical rotor axes; do not dynamically retune body_inertia to cancel it",
+    "The front drive shaft is absent for this RWD candidate",
+    "A different rotor calibration requires recomputing this partition before vehicle rebuild"
+  ]
+}

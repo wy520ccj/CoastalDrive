@@ -36,3 +36,7 @@
 当前：只有来源和隔离外观准备，尚无实车型配置、标定结果或游戏集成。[可编辑外观准备](../evidence/PHYS-REAL-01/appearance-preparation.md)已保存并核对前后视／导入尺寸，20网格、11748三角形；为自制近似低模，原厂PDF是尺寸／造型参考，真实游戏材质装配与最终造型验收待实施。提交范围、验证命令和结果在实际实施后填写；只作本地提交，推送按当次授权。
 
 主要来源：[Toyota 2022手册](https://www.toyota.com/content/dam/toyota/brochures/pdf/2022/gr86_ebrochure.pdf)、[Toyota 2022发布稿](https://pressroom.toyota.com/toyota-announces-pricing-on-all-new-2022-gr86/)、[Car and Driver同版本实测](https://www.caranddriver.com/reviews/a37322814/2022-toyota-gr86-drive/)。手册4/13/14页已保存并目视核对；发布稿直接访问403、数据来自官方索引正文核对，核对方式保留于来源记录。
+
+2026-10-06接手增量：原PHYS-DESIGN-01 T2-r4进程继续运行，生产／测试／工具331文件SHA逐项与启动清单相同。等待期间补[惯量接入准备](../evidence/PHYS-REAL-01/inertia-partition.md)：整车刚性随动张量仅减独立转子的轴向张量，不重复减质量和平行轴项。暂沿用reference-v28转子初值，直行RWD扣除(7.2,.29,0)kg·m²；三种CG高度、12组能量／角动量代数核对通过，原始输入和可复算脚本已保存。未创建VehicleConfig，未减少71项待标定，未作机械或实车动态验收。
+
+独立前／后轮距的只读调用点核对：`vehicle_config.wheel_hubs`须按轴取实际轮距，`vehicle_steering.wheel_angles`的Ackermann只取前轮距；`vehicle_visual`已经复用wheel_hubs，悬架／碰撞与轮胎也从实际轮连接点取几何，无需第二套轮位。参数分区在vehicle_parameters、定义／单位在physics/export_reference同步更新。默认统一track_width合同与旧配置恢复保持；只补对应参数／转向／装配节点，不重跑未受影响的机械实验。当前仅定位接入点，尚未修改上述生产接口。
