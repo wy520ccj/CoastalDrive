@@ -4,7 +4,7 @@ import math
 
 import numpy as np
 
-from rotor_dynamics import cross, dot
+from rotor_dynamics import dot
 
 
 def subtract(a, b):
@@ -52,6 +52,81 @@ def _segment(a, b):
     return tuple(a[i] + t * delta[i] for i in range(3)), (1 - t, t)
 
 
+def _difference_of_products(a, b, c, d):
+    ab, cd = a*b, c*d
+    return math.fsum((ab, -cd, math.fma(a, b, -ab), -math.fma(c, d, -cd)))
+
+
+def _cylinder_point_delta(relative, axis, radius, half_width, crown):
+    """点到胎冠内核的分离向量；轴向投影解凸距离的一维驻点。"""
+    axial = math.fsum(x*u for x, u in zip(relative, axis))
+    radial = tuple(relative[i] - axial*axis[i] for i in range(3))
+    rho = math.sqrt(math.fsum(x*x for x in radial))
+    k = crown / half_width**2
+    q = max(-half_width, min(half_width, axial))
+
+    def derivative(q):
+        return q - axial + 2*k*q*max(rho - radius + k*q*q, 0.)
+
+    if derivative(-half_width) >= 0.:
+        q = -half_width
+    elif derivative(half_width) <= 0.:
+        q = half_width
+    else:
+        low, high = -half_width, half_width
+        for _ in range(64):
+            gap = max(rho - radius + k*q*q, 0.)
+            value = q - axial + 2*k*q*gap
+            if value == 0.:
+                break
+            slope = 1 + 2*k*gap + (4*k*k*q*q if gap else 0.)
+            candidate = q - value/slope
+            if candidate == q:
+                break
+            if value > 0.:
+                high = q
+            else:
+                low = q
+            if not low < candidate < high:
+                candidate = (low + high) / 2
+            q = candidate
+            if q == low or q == high:
+                break
+    gap = max(rho - radius + k*q*q, 0.)
+    return tuple((axial-q)*axis[i] + (gap*radial[i]/rho if rho else 0.) for i in range(3))
+
+
+def _cylinder_edge_distance(center, axis, a, b, radius, half_width, crown):
+    """固定有限边到胎冠内核的最近点；边参数驻点保持接触法线平滑。"""
+    edge = subtract(b, a)
+
+    def evaluate(t):
+        relative = tuple(math.fsum((a[i], -center[i], t*edge[i])) for i in range(3))
+        delta = _cylinder_point_delta(relative, axis, radius, half_width, crown)
+        return delta, math.fsum(x*y for x, y in zip(delta, edge))
+
+    da, ga = evaluate(0.)
+    db, gb = evaluate(1.)
+    if ga >= 0.:
+        t, delta = 0., da
+    elif gb <= 0.:
+        t, delta = 1., db
+    else:
+        low, high = 0., 1.
+        for _ in range(64):
+            t = (low + high) / 2
+            delta, value = evaluate(t)
+            if value == 0. or t == low or t == high:
+                break
+            if value > 0.:
+                high = t
+            else:
+                low = t
+    distance = math.sqrt(math.fsum(x*x for x in delta))
+    return (distance, tuple(-x/distance for x in delta) if distance else (0., 0., 1.),
+            tuple(math.fsum((a[i], t*edge[i])) for i in range(3)))
+
+
 def _triangle(a, b, c):
     ab, ac = subtract(b, a), subtract(c, a)
     # 瘦长道路边的单纯形会同时包含40m和微米级边；SVD投影避免行列式相消。
@@ -59,7 +134,9 @@ def _triangle(a, b, c):
     v, w = coordinates
     if rank == 2 and v >= 0. and w >= 0. and v + w <= 1.:
         weights = (1 - v - w, v, w)
-        normal = cross(ab, ac)
+        # 近共线边的叉积由接近的乘积相减；保留乘法低位，避免错误法线卡住GJK。
+        normal = tuple(_difference_of_products(ab[i], ac[j], ab[j], ac[i])
+                       for i, j in ((1, 2), (2, 0), (0, 1)))
         height = math.fsum(x*y for x,y in zip(normal,a)) / dot(normal,normal)
         # 投影点直接由平面法线生成，避免把40m顶点的重心和当作微米级距离。
         return tuple(height*x for x in normal), weights
@@ -111,7 +188,8 @@ def convex_distance(center, axis, support_body, radius, half_width, shoulder, cr
         offset = cylinder_support(tuple(-x for x in direction), axis, radius - shoulder,
                                   half_width - shoulder, 0., crown)
         box = support_body(direction)
-        return subtract(tuple(center[i] + offset[i] for i in range(3)), box), box
+        # 先形成相对几何，保留小外廓量；大坐标加胎面偏移后再相减会丢低位。
+        return tuple(math.fsum((center[i], -box[i], offset[i])) for i in range(3)), box
 
     direction = subtract(center, support_body(center))
     if not dot(direction, direction):
@@ -124,6 +202,19 @@ def convex_distance(center, axis, support_body, radius, half_width, shoulder, cr
             return 0., (0., 0., 1.), center
         candidate = support(point)
         if squared - dot(point, candidate[0]) <= 1e-13 * max(1., squared):
+            features = tuple(dict.fromkeys(v[1] for v, w in zip(vertices, weights) if w > 0.))
+            if len(features) <= 2:
+                # 距离间隙不足以保证曲面法线精度；用实际角点/边投影再核对同一支持判据。
+                refined = _cylinder_edge_distance(center, axis, features[0], features[-1],
+                                                  radius-shoulder, half_width-shoulder, crown)
+                refined_point = tuple(refined[0]*n for n in refined[1])
+                refined_squared = dot(refined_point, refined_point)
+                candidate = support(refined_point)
+                if refined_squared - dot(refined_point, candidate[0]) <= 1e-13 * max(1., refined_squared):
+                    return refined
+                vertices = [(refined_point, refined[2]), candidate]
+                point, weights = _closest(vertices)
+                continue
             distance = math.sqrt(squared)
             witness = tuple(sum(w * vertex[1][i] for w, vertex in zip(weights, vertices)) for i in range(3))
             return distance, tuple(x / distance for x in point), witness

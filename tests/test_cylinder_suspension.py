@@ -2,6 +2,7 @@
 
 import math
 from dataclasses import replace
+from decimal import Decimal, localcontext
 
 import pytest
 from panda3d.bullet import BulletBoxShape, BulletPlaneShape, BulletRigidBodyNode, BulletWorld
@@ -11,7 +12,7 @@ from suspension import SuspensionInput
 from suspension_contacts import cylinder_suspension_rays, suspension_rays
 from suspension_geometry import CylinderSurface
 from suspension_kinematics import SupportPlane, finite_contact_system, rotated_path, rotation_path
-from wheel_envelope import cylinder_box_distance
+from wheel_envelope import _triangle, convex_distance, cylinder_box_distance
 from wheel_geometry import contact_geometry
 
 
@@ -24,8 +25,73 @@ def test_axial_cylinder_distance_matches_independent_product_geometry(center):
     expected = math.hypot(dx, radial_gap)
     distance, normal, point = cylinder_box_distance(center, (1., 0., 0.), half, radius, half_width, shoulder)
     assert distance == pytest.approx(expected, abs=2e-10)
+    radial = math.hypot(dy, dz)
+    separation = (math.copysign(dx, center[0]), math.copysign(radial_gap*dy/radial, center[1]),
+                  math.copysign(radial_gap*dz/radial, center[2]))
+    assert normal == pytest.approx(tuple(x/expected for x in separation), abs=2e-10)
     assert sum(n*n for n in normal) == pytest.approx(1.)
     assert all(abs(x) <= h + 1e-12 for x, h in zip(point, half))
+
+
+@pytest.mark.parametrize("translation", (0., 1000.))
+def test_coastal_edge_distance_matches_independent_tread_profile(translation):
+    # 来自固定种子海岸道路首败；直接在轮轴截面求极小值，不调用支持函数或GJK。
+    center = (-93.59128693753293, 38.14708229635807, 6.613206726773421)
+    edge = ((-93.73227429138764, 37.88618899224942, 5.60507505178071),
+            (-93.45093234488934, 37.9972728574051, 5.608272651732814))
+    axis = (-0.9960291170409282, -0.08901549207978816, -0.0014967219054136758)
+    center = tuple(x + translation for x in center)
+    edge = tuple(tuple(x + translation for x in p) for p in edge)
+
+    def minimum(function, left, right):
+        ratio = (math.sqrt(5) - 1) / 2
+        a, b = right - ratio*(right-left), left + ratio*(right-left)
+        fa, fb = function(a), function(b)
+        for _ in range(80):
+            if fa < fb:
+                right, b, fb = b, a, fa
+                a = right - ratio*(right-left)
+                fa = function(a)
+            else:
+                left, a, fa = a, b, fb
+                b = left + ratio*(right-left)
+                fb = function(b)
+        return min(fa, fb, function(left), function(right))
+
+    def squared_distance(t):
+        relative = tuple(edge[0][i] - center[i] + t*(edge[1][i]-edge[0][i]) for i in range(3))
+        axial = sum(x*u for x, u in zip(relative, axis))
+        radial = math.sqrt(sum((relative[i] - axial*axis[i])**2 for i in range(3)))
+        return minimum(lambda q: (q-axial)**2 + max(radial - (.32-.003*(q/.0925)**2), 0.)**2,
+                       -.0925, .0925)
+
+    expected = math.sqrt(minimum(squared_distance, 0., 1.))
+    distance, normal, witness = convex_distance(
+        center, axis, lambda direction: max(edge, key=lambda p: sum(x*d for x, d in zip(p, direction))),
+        .33, .1025, .01, .003)
+    assert distance == pytest.approx(expected, abs=2e-10)
+    assert sum(x*x for x in normal) == pytest.approx(1.)
+    fraction = (witness[0]-edge[0][0]) / (edge[1][0]-edge[0][0])
+    assert 0. <= fraction <= 1.
+    assert witness == pytest.approx(tuple(edge[0][i] + fraction*(edge[1][i]-edge[0][i]) for i in range(3)),
+                                    abs=2e-10)
+
+
+def test_thin_coastal_simplex_projection_matches_high_precision_plane():
+    a = (0.22642543179541563, 0.21745668623676456, 0.6948215273261817)
+    b = (-0.054921498023231236, 0.10637085348793822, 0.6916238707360074)
+    c = (-0.054920441139092, 0.1063701989570704, 0.6916240502594748)
+    # 按实际双精度边向量定义平面，用70位十进制独立计算原点投影。
+    with localcontext() as context:
+        context.prec = 70
+        ab = tuple(Decimal.from_float(y-x) for x, y in zip(a, b))
+        ac = tuple(Decimal.from_float(y-x) for x, y in zip(a, c))
+        normal = tuple(ab[i]*ac[j]-ab[j]*ac[i] for i, j in ((1, 2), (2, 0), (0, 1)))
+        height = sum(n*Decimal.from_float(x) for n, x in zip(normal, a)) / sum(n*n for n in normal)
+        expected = tuple(float(height*n) for n in normal)
+    point, weights = _triangle(a, b, c)
+    assert point == pytest.approx(expected, rel=0., abs=1e-15)
+    assert all(w > 0. for w in weights)
 
 
 def test_finite_width_does_not_turn_nearby_rail_into_sphere_support():
