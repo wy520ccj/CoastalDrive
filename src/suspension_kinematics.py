@@ -5,7 +5,7 @@ from dataclasses import dataclass, replace
 
 from rotor_dynamics import cross, dot
 from suspension_geometry import BoxSurface, CylinderSurface, sphere_box_entry
-from wheel_envelope import crown_extent_secant, subtract
+from wheel_envelope import crown_extent_secant, cylinder_support, subtract
 
 
 @dataclass(frozen=True)
@@ -30,7 +30,7 @@ def cylinder_endpoint(contact, hub_end, hub_average, direction_end, direction_av
     found = surface.entry(start, end, wheel_axis)
     if found is None:
         return None
-    fraction, local_normal, local_point = found
+    fraction, local_normal, local_point, face = found
     normal = surface.world_vector(local_normal)
     length = -surface.wheel_radius + fraction * (surface.wheel_radius + surface.reach)
     alignment = -dot(normal, direction_end)
@@ -62,9 +62,38 @@ def cylinder_endpoint(contact, hub_end, hub_average, direction_end, direction_av
     speed = tuple(velocity) + tuple(angular)
     squared = sum(value * value for value in speed)
     if squared:
-        correction = ((length - contact.length) / dt - sum(g * v for g, v in zip(gradient, speed))) / squared
+        difference = (face_extension_difference(contact, normal, face, wheel_axis, hub_average,
+                        direction_average, rotation_axis, angle, scale, velocity, angular, dt)
+                      if face is not None else length - contact.length)
+        correction = (difference / dt - sum(g * v for g, v in zip(gradient, speed))) / squared
         gradient = tuple(g + correction * v for g, v in zip(gradient, speed))
     return gradient, alignment
+
+
+def face_extension_difference(contact, normal, face, wheel_axis, hub_average, direction_average,
+                              rotation_axis, angle, scale, velocity, angular, dt):
+    """跨有限面时直接算Δl；固定高度余量与小运动分开，低速不减两个扫掠行程。"""
+    surface = contact.surface
+    anchor, margin = face
+    old_axis = surface.wheel_axis
+    old_support = cylinder_support(normal, old_axis, surface.wheel_radius,
+                                   surface.width / 2, surface.shoulder, surface.crown)
+    clearance = math.fsum([*(normal[a] * (contact.hub[a] - anchor[a]) for a in range(3)),
+                           *(-normal[a] * old_support[a] for a in range(3)),
+                           -margin, dot(normal, contact.direction) * contact.length])
+    axis_length = math.sqrt(dot(old_axis, old_axis))
+    normal_length = math.sqrt(dot(normal, normal))
+    extent = normal_length * crown_extent_secant(
+        dot(normal, old_axis) / (normal_length * axis_length),
+        dot(normal, wheel_axis) / (normal_length * axis_length),
+        surface.wheel_radius, surface.width / 2, surface.shoulder, surface.crown)
+    wheel_average = rotated_path(old_axis, rotation_axis, angle, scale)[1]
+    hub_rate, direction_rate, axis_rate = (cross(angular, vector)
+                                          for vector in (hub_average, direction_average, wheel_average))
+    transport = tuple(velocity[a] + hub_rate[a] + contact.length * direction_rate[a]
+                      - extent * axis_rate[a] / axis_length for a in range(3))
+    direction_end = rotated_path(contact.direction, rotation_axis, angle, scale)[0]
+    return math.fsum((clearance, dt * dot(normal, transport))) / -dot(normal, direction_end)
 
 
 def curved_endpoint(contact, hub_end, direction_end, velocity, dt):

@@ -48,11 +48,11 @@ def triangle_entry(start, end, triangle, margin, axis, radius, width, shoulder, 
             if all(dot(normal, cross(subtract(v1, v0), subtract(core, v0))) >= -1e-12
                    for v0, v1 in ((a,b), (b,c), (c,a))):
                 # 入射法线可能朝三角形背面；同时按反向绕序检查有限面。
-                return fraction, normal, point
+                return fraction, normal, point, (a, margin)
 
             if all(dot(normal, cross(subtract(v1, v0), subtract(core, v0))) <= 1e-12
                    for v0, v1 in ((a,b), (b,c), (c,a))):
-                return fraction, normal, point
+                return fraction, normal, point, (a, margin)
 
     if face_only:
         return None
@@ -73,7 +73,7 @@ def triangle_entry(start, end, triangle, margin, axis, radius, width, shoulder, 
         if fraction == 0. and gap < -1e-9:
             return None
         if gap <= 1e-9:
-            return fraction, normal, tuple(witness[i] + margin * normal[i] for i in range(3))
+            return fraction, normal, tuple(witness[i] + margin * normal[i] for i in range(3)), None
         closing = -dot(normal, velocity)
         if closing <= 0.:
             return None

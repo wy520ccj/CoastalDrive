@@ -65,3 +65,27 @@
 ```
 
 最终轴向修复版原生T1已通过：完整1200拍×30/60/144FPS Snapshot相同（pytest2869.71s），全Ruff及0/17/23各1200拍启动通过（41.0/40.9/40.6s）；与相关27项短检查合并28项不同检查。源码SHA与短检查一致，原门槛和控制不变。当前增量仅本地提交，未推送；旧失败和中断保留，机械/参数化阶段T2及总体Gate没有关闭。
+
+## 一万步轨迹的低速跨面行程
+
+干净`01694dc`的T2-r3实际结束：Ruff通过，pytest36通过/1失败（3881.02s），其余14检查未跑。一万步单车节点在完成9737拍后共同求解失败；轮胎、制动及法向已满足原合同，几何共轭冲量`1.4051563532922668e-11Ns/Nms`超出原`1e-12`。原失败和全部测试数量保持，未减少10000拍。
+
+同一`Simulation(9)`、`Control(throttle=.5)`只在抛错时采集完整输入。四轮支持物为road/outer-shoulder/road/road，保存两份完整512三角形网格；30组末速度查询与原世界梯度最大差为0，离线重放得到相同20轮失败。[完整硬件](coastal-long-step-config.json)、[输入和真实网格](coastal-long-step-input.json)可直接由回归节点复现。
+
+右前轮从一块真实三角面移入相邻面，前后法线分别为`(.0197416636,-.0464975520,.9987233072)`和`(.0197550125,-.0465289927,.9987215790)`；不是同一平面，也不是需要抹平的路面接缝。原Gonzalez修正直接减两个扫掠行程，再除以时间和六维速度平方，低速时行程舍入被放大为梯度抖动。
+
+有限面查询现在同时返回真实面锚点和原margin，保持原有限面入射判据；面锚点相对本子步车身原点传递。设末面法线为n、锚点A、margin为m，支撑高度为H，末方向对齐a1=-n·d1。初始相对此末面的固定余量为`g0=n·(h0-A)-H(n,u0)-m+n·d0*l0`。直接计算
+
+`Δl=(g0+n·Δh+l0*n·Δd-ΔH)/a1`。
+
+使用原实际转动路径的共轭平均向量计算`Δh=dt*(v+Ω×h平均)`、`Δd=dt*Ω×d平均`和胎冠高度差商ΔH，把固定高度余量与小运动分开；不从两个近似相等的扫掠行程取得增量。真正的棱/角曲面继续原几何分支，共同求解仍为20轮、GJK96轮，原支持间隙/机械门槛不变。
+
+同一保存输入5轮收敛：重新查询的共轭冲量残差`4.4047312351375086e-15`，法向`1.8189894035458565e-12N`，悬架能量`-2.3670301829703533e-14J`，四轮实际正支撑。[机器摘要与源码SHA](cross-face-summary.json)。相关107项短检查及全Ruff通过，包含旧棱/角子步、新9737拍子步、实际网格/护栏/转动路径与独立60位平面交点。原9737拍共同求解输入明确复现旧失败并验证修复。
+
+```powershell
+.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_cylinder_suspension.py tests/test_triangle_support.py tests/test_coastal_contact_step.py tests/test_guardrail_suspension.py --output logs/validation/PHYS-DESIGN-01-face-secant-T0 --timeout 600
+.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_finite_suspension.py tests/test_curved_suspension.py tests/test_suspension_contacts.py --output logs/validation/PHYS-DESIGN-01-face-interface-T0 --timeout 600
+.venv/Scripts/python.exe tools/validate.py T1 --tests tests/test_core.py::test_headless_ten_thousand_steps_without_renderer_imports --output logs/validation/PHYS-DESIGN-01-face-secant-native-T1 --timeout 3600
+```
+
+一万拍原生T1实际通过（pytest924.08s）：完成10000拍且未导入显示应用；全Ruff及0/17/23各1200拍启动通过（41.8/41.4/41.6s）。331份源码／测试／工具前后SHA相同，与107项短检查合并108项不同pytest检查。机械/参数化T2、实车型与后续功能、总体T3/前台性能/用户两模式驾驶继续待办。局部重放耗时只作诊断，不作性能Gate。

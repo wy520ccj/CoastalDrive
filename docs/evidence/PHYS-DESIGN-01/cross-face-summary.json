@@ -1,0 +1,183 @@
+{
+  "baseline": "01694dc",
+  "native_failure": {
+    "error": "传动/四轮共同求解超过20轮：1.33586e-05N，制动0Nm，法向9.09495e-13N，几何共轭冲量1.40516e-11Ns/Nms",
+    "last_completed_tick": 9737,
+    "static_body_names": [
+      "road",
+      "outer-shoulder",
+      "road",
+      "road"
+    ],
+    "frozen_query_max_gradient_difference": 0.0,
+    "query_comparisons": 30,
+    "final_velocity": [
+      0.006025879131315647,
+      0.011887677850559785,
+      -0.0010727950532618755
+    ],
+    "final_angular": [
+      -0.0008417266963910072,
+      0.004477098198461416,
+      2.2972855022305412e-05
+    ],
+    "normal_forces": [
+      2705.5801485709962,
+      2216.291181146772,
+      3422.6821223394504,
+      3049.5739666459644
+    ],
+    "geometry_error": 1.4051563532922668e-11,
+    "normal_error": 9.094947017729282e-13,
+    "contact_error": 1.335858830459881e-05,
+    "final_gradients": [
+      [
+        0.0200216481684566,
+        -0.047156999753866974,
+        0.9987296646592303,
+        1.307950205245821,
+        0.4603213610139382,
+        -0.004485642793825496
+      ],
+      [
+        0.019750437831038747,
+        -0.046512947614120025,
+        0.9987668348363624,
+        0.7847182891082363,
+        -1.13379128384896,
+        -0.0683205489179404
+      ],
+      [
+        0.020781321558050205,
+        -0.048946258936960814,
+        0.9986254099373812,
+        -0.7798447802302909,
+        1.1440341413842106,
+        0.0723017817709799
+      ],
+      [
+        0.018954541900592665,
+        -0.04682578177257937,
+        0.9987607328058139,
+        -1.3037116054560238,
+        -0.45172293578357264,
+        0.003563392634827023
+      ]
+    ],
+    "target_gradients": [
+      [
+        0.0200216481684566,
+        -0.047156999753866974,
+        0.9987296646592303,
+        1.307950205245821,
+        0.4603213610139381,
+        -0.004485642793825503
+      ],
+      [
+        0.01975043783057204,
+        -0.046512947615040726,
+        0.9987668348364455,
+        0.7847182891083014,
+        -1.1337912838493065,
+        -0.06832054891794218
+      ],
+      [
+        0.020781321558050205,
+        -0.048946258936960814,
+        0.9986254099373812,
+        -0.7798447802302908,
+        1.1440341413842106,
+        0.0723017817709799
+      ],
+      [
+        0.018954541900592665,
+        -0.04682578177257937,
+        0.9987607328058139,
+        -1.3037116054560236,
+        -0.4517229357835726,
+        0.003563392634827023
+      ]
+    ],
+    "source_sha256": {
+      "wheel_envelope.py": "41c2821aebc879b2e6ac9262d913b1e8d9b3709861b3028e681ceb5b298b63dc",
+      "tire_drivetrain.py": "c81f3ac1864313c710bd4e96229004d1da1419518ae0fc8ab22976ac334b67ac",
+      "suspension_kinematics.py": "d2a9762e89cd2db3217110330b394ba4105869a56d20100f4d751537d56bf9c6"
+    },
+    "scope": "One unchanged native fixed-seed failing substep; frozen mesh query compared before offline use"
+  },
+  "replay_after": {
+    "sweeps": 5,
+    "geometry_impulse_residual": 4.4047312351375086e-15,
+    "normal_force_residual_N": 1.8189894035458565e-12,
+    "suspension_energy_residual_J": -2.3670301829703533e-14,
+    "axial_forces_N": [
+      2705.5801485709203,
+      2216.2911811465915,
+      3422.682122339372,
+      3049.573966646106
+    ],
+    "seconds_diagnostic_only": 0.045811399999365676
+  },
+  "T0": {
+    "nodes": 107,
+    "validation_paths": [
+      "logs/validation/PHYS-DESIGN-01-face-secant-T0",
+      "logs/validation/PHYS-DESIGN-01-face-interface-T0"
+    ],
+    "ruff": "passed"
+  },
+  "T1": {
+    "status": "passed",
+    "command": ".venv/Scripts/python.exe tools/validate.py T1 --tests tests/test_core.py::test_headless_ten_thousand_steps_without_renderer_imports --output logs/validation/PHYS-DESIGN-01-face-secant-native-T1 --timeout 3600",
+    "summary": "logs/validation/PHYS-DESIGN-01-face-secant-native-T1/summary.json",
+    "pytest_nodes": 1,
+    "pytest_seconds": 924.08,
+    "headless_seeds": [
+      0,
+      17,
+      23
+    ],
+    "headless_steps_per_seed": 1200,
+    "checks": [
+      {
+        "name": "ruff",
+        "status": "passed",
+        "seconds": 0.104
+      },
+      {
+        "name": "pytest",
+        "status": "passed",
+        "seconds": 924.425
+      },
+      {
+        "name": "headless-0",
+        "status": "passed",
+        "seconds": 41.805
+      },
+      {
+        "name": "headless-17",
+        "status": "passed",
+        "seconds": 41.447
+      },
+      {
+        "name": "headless-23",
+        "status": "passed",
+        "seconds": 41.585
+      }
+    ],
+    "source_files_unchanged": 331,
+    "combined_distinct_pytest_nodes": 108
+  },
+  "source_sha256": {
+    "src/suspension_geometry.py": "ec640289253e1d2f42332b2bf4b298170f53bc0fb55d359e4b708dd9e5a5f8e7",
+    "src/suspension_kinematics.py": "8ae8e865e1c081d5a10376f82942a2a164314a466cac60a3970dbd0ac08a3821",
+    "src/suspension_contacts.py": "05bc4385617bceeb1568cc9e77a6359436131aaafc3544dad2f2f181a36ff59b",
+    "src/triangle_support.py": "c3993a0044204aea008b0f874a161987b73c33434ef089ddd07547e8e53a851e",
+    "src/vehicle_suspension.py": "f85ed1b88ae947aa1192127b725647ed6d112e3b5ab1f98237d76cf4f634c5d0",
+    "src/wheel_envelope.py": "85894ff7be70db6609a242f3dba513734120c9189d67fde3fd42aca9ede1db71",
+    "tests/test_cylinder_suspension.py": "15eca1230bd524d92d77a246ed04bba3c2febca400897add0401122ec3eeda68",
+    "tests/test_coastal_contact_step.py": "cbf9acc749a26923c0e921fbf8785083e3f20581fe8d508bdd8e4a7e0bbfb843"
+  },
+  "fixture_sha256": "718497f03ac5f5315934411e8d783a283bb049ca1d67da361401ccb61226d8a9",
+  "scope": "Captured native step and independent plane-intersection T0; full T2 and visible/manual gates remain open"
+}

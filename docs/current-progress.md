@@ -4,7 +4,7 @@
 
 ## 当前阶段
 
-- [PHYS-DESIGN-01](tasks/PHYS-DESIGN-01.md)施工线③工程功能及其T1完成：完整96字段、FWD/RWD/AWD、外廓/轮位及地图CG出生点同步，10条参数A/B保存。旧[音频](evidence/PHYS-DESIGN-01/impact-facts.md)/[ABS](evidence/PHYS-DESIGN-01/abs-facts.md)已按原生事实收口。任务仍in_progress：7fedb2a阶段T2-r2为34通过/1海岸距离失败，后14项未跑。相对坐标/叉积补偿及真实面/边/角投影已接入；129拍后子步由20轮失败变为5轮收敛。后续T1保留4护栏通过/1驾驶失败，以及有限面版驾驶失败；已修正近轴向误将半宽10.25cm解释为41.74cm的正交投影错误。原门槛保持，27项短检查/Ruff通过；最终轴向版原生T1/Ruff及三种子启动通过（完整1200拍×30/60/144FPS Snapshot相同，pytest2869.71s），合并28项不同检查。88b8e5c为此前本地检查点；当前增量只作本地提交，未推送。[几何修复与中断/失败记录](evidence/PHYS-DESIGN-01/relative-geometry.md)。阶段T2保持待办；下一④GR86已整理完整96字段来源账本及原厂后轮距/差速器缺口，73项待标定，仅资料准备，未集成。实车型/估计/研究及最终Gate继续。
+- [PHYS-DESIGN-01](tasks/PHYS-DESIGN-01.md)施工线③工程功能/T1完成：96字段、三驱动布局、外廓/轮位/CG出生点联动，10条参数A/B保存。轮胎有限面/边/角及近轴向外廓修复已本地提交01694dc；27项短检查、1200拍×30/60/144FPS完整Snapshot一致和三种子启动通过。[几何证据](evidence/PHYS-DESIGN-01/relative-geometry.md)。旧[音频](evidence/PHYS-DESIGN-01/impact-facts.md)/[ABS](evidence/PHYS-DESIGN-01/abs-facts.md)按原生事实收口。任务仍in_progress：同版本T2-r3已失败结束：Ruff通过、36通过/1万步单车共同几何残差失败（3881.02s），后14项未跑；9737拍输入已保存，30组冻结查询差0；真实有限面增量修复后5轮收敛，共轭残差4.40e-15，107项T0/Ruff通过。一万步原生T1/三种子启动通过，331源码稳定，合并108项；原20轮/精度保持，修复待本地提交，T2待恢复，旧记录保留。下一[④GR86任务包](tasks/PHYS-REAL-01.md)ready，来源账本及可编辑草稿为隔离准备，71项待标定，未接游戏。实车型、估计、研究及最终T3/前台性能/两模式驾驶Gate继续，未推送。
 
 - [PHYS-LOAD-01](tasks/PHYS-LOAD-01.md)施工线②自动功能块完成：三维气动与共同轮端滚阻，完整96字段reference-v28及12条120Hz标准基准保存。0–100为10.483s；平路/+5°/−5°停车45.549/41.261/49.481m；对开附着6.5s停车，静载与滑行理论吻合。391项机械T0复用，23项相关T1/全Ruff/三种子各1200步通过。机械T2/旧音频断言收口及整体Gate保持未完成；下一施工线③工程参数化。[证据与命令](evidence/PHYS-LOAD-01/reference-calibration.md)。
 

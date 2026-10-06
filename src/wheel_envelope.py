@@ -304,7 +304,8 @@ def cylinder_box_entry(start, end, half, margin, axis, radius, half_width, shoul
                 continue
             point = tuple(start[a] + fraction*velocity[a] - support[a] for a in range(3))
             if all(abs(point[a]) <= half[a] for a in range(3) if a != i):
-                return fraction, normal, point
+                anchor = tuple(sign * half[i] if a == i else 0. for a in range(3))
+                return fraction, normal, point, (anchor, margin)
     fraction = 0.
     for _ in range(64):
         center = tuple(start[i] + fraction * velocity[i] for i in range(3))
@@ -313,7 +314,7 @@ def cylinder_box_entry(start, end, half, margin, axis, radius, half_width, shoul
         if fraction == 0. and gap < -1e-9:
             return None
         if gap <= 1e-9:
-            return fraction, normal, tuple(witness[i] + margin * normal[i] for i in range(3))
+            return fraction, normal, tuple(witness[i] + margin * normal[i] for i in range(3)), None
         closing = -dot(normal, velocity)
         if closing <= 0.:
             return None

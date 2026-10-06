@@ -12,8 +12,45 @@ from suspension import SuspensionInput
 from suspension_contacts import cylinder_suspension_rays, suspension_rays
 from suspension_geometry import CylinderSurface
 from suspension_kinematics import SupportPlane, finite_contact_system, rotated_path, rotation_path
+from triangle_support import TriangleSupport
 from wheel_envelope import _triangle, convex_distance, cylinder_box_distance, cylinder_support
 from wheel_geometry import contact_geometry
+
+
+def test_low_speed_cross_face_extension_matches_independent_plane_intersection():
+    slope, radius, dt = 1 / 1024, .33, 1 / 120
+    origin = (100., 70., 2.)
+    points = ((-2., -2., 0.), (2., -2., 0.), (-2., 0., 0.), (2., 0., 0.),
+              (-2., 2., 2*slope), (2., 2., 2*slope))
+    triangles = tuple(tuple(tuple(origin[a]+points[i][a] for a in range(3)) for i in indices)
+                      for indices in ((0, 1, 2), (1, 3, 2), (2, 3, 4), (3, 5, 4)))
+    surface = CylinderSurface((), 0., ((1.,0.,0.), (0.,1.,0.), (0.,0.,1.)),
+        origin, radius, .6, .205, .01, (1.,0.,0.), crown=.003, triangles=TriangleSupport.build(triangles))
+    y = -radius*slope/2 - 1e-6
+    hub, direction = (.2, y, .7), (0.,0.,-1.)
+    found = surface.entry(surface.local((hub[0], hub[1], hub[2]+radius)),
+                          surface.local((hub[0], hub[1], hub[2]-.6)), surface.wheel_axis)
+    fraction, normal, point, _face = found
+    assert normal == (0.,0.,1.)
+    plane = SupportPlane(hub, direction, normal, -radius+fraction*(radius+.6), surface,
+                         tuple(point[a]-origin[a] for a in range(3)))
+    system = SuspensionInput((.03,)*4, (.03,)*4, ((0.,)*6,)*4, (True,)*4, (1.,)*4, None, (plane,)*4)
+    gradients = []
+    for vy in (.0012-1e-12, .0012, .0012+1e-12):
+        velocity = (0., vy, 0.)
+        actual = finite_contact_system(system, velocity, (0.,)*3, dt)
+        work = dt*sum(g*v for g,v in zip(actual.gradients[0], velocity+(0.,)*3))
+        # 末支持面z=s*y，轮轴沿x；独立高精度平面高度给出有限胎冠的支撑行程。
+        with localcontext() as context:
+            context.prec = 60
+            s, r = Decimal.from_float(slope), Decimal.from_float(radius)
+            end_y = Decimal.from_float(y)+Decimal.from_float(dt)*Decimal.from_float(vy)
+            expected = float(Decimal.from_float(hub[2])-s*end_y-r*(1+s*s).sqrt()
+                             -Decimal.from_float(plane.length))
+        assert work == pytest.approx(expected, rel=0., abs=2e-16)
+        assert actual.touching == (True,)*4
+        gradients.append(actual.gradients[0])
+    assert max(abs(a-b) for a,b in zip(gradients[0], gradients[-1])) < 1e-10
 
 
 @pytest.mark.parametrize("center", ((1.3, .4, .8), (1.2, 1.5, 1.4), (.7, .2, 1.1), (-1.4, -1.2, 1.7)))

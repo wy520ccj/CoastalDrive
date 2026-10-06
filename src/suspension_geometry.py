@@ -36,19 +36,29 @@ class CylinderSurface(BoxSurface):
         from wheel_envelope import cylinder_box_entry, cylinder_support
         local_axis = tuple(sum(self.axes[a][b] * axis[b] for b in range(3)) for a in range(3))
         if self.triangles is not None:
-            return self.triangles.entry(start,end,self.radius,local_axis,self.wheel_radius,self.width,self.shoulder,self.crown)
-        if self.plane is None:
-            return cylinder_box_entry(start, end, self.half, self.radius, local_axis,
-                                      self.wheel_radius, self.width / 2, self.shoulder, self.crown)
-        normal, constant = self.plane
-        extent = cylinder_support(normal, local_axis, self.wheel_radius, self.width / 2, self.shoulder, self.crown)
-        distance = sum(n * (x - y) for n, x, y in zip(normal, start, extent)) - constant
-        speed = sum(n * (y - x) for n, x, y in zip(normal, start, end))
-        if speed >= 0. or distance < 0. or distance + speed > 0.:
+            found = self.triangles.entry(start,end,self.radius,local_axis,self.wheel_radius,self.width,self.shoulder,self.crown)
+        elif self.plane is None:
+            found = cylinder_box_entry(start, end, self.half, self.radius, local_axis,
+                                       self.wheel_radius, self.width / 2, self.shoulder, self.crown)
+        else:
+            normal, constant = self.plane
+            extent = cylinder_support(normal, local_axis, self.wheel_radius, self.width / 2, self.shoulder, self.crown)
+            distance = sum(n * (x - y) for n, x, y in zip(normal, start, extent)) - constant
+            speed = sum(n * (y - x) for n, x, y in zip(normal, start, end))
+            if speed >= 0. or distance < 0. or distance + speed > 0.:
+                return None
+            fraction = -distance / speed
+            point = tuple(start[i] + fraction * (end[i] - start[i]) - extent[i] for i in range(3))
+            squared = sum(n*n for n in normal)
+            found = fraction, normal, point, (tuple(constant*n/squared for n in normal), 0.)
+        if found is None:
             return None
-        fraction = -distance / speed
-        point = tuple(start[i] + fraction * (end[i] - start[i]) - extent[i] for i in range(3))
-        return fraction, normal, point
+        fraction, normal, point, face = found
+        # 面锚点相对本子步车身原点，避免末姿态查询把固定平面重新舍入为移动接点。
+        if face is not None:
+            anchor, margin = face
+            face = self.world_vector(tuple(anchor[a] - self.offset[a] for a in range(3))), margin
+        return fraction, normal, point, face
 
 
 def box_interval(start, end, half):

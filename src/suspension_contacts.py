@@ -25,6 +25,7 @@ class RayContact:
     point: tuple
     normal: tuple
     surface: BoxSurface | None = None
+    support_face: tuple | None = None
 
 
 def suspension_rays(world, chassis, rays, radius=0.):
@@ -168,10 +169,10 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
                                   surface.local(tuple(end[a] - origin[a] for a in range(3))), axis)
             if found is None:
                 continue
-            fraction, local_normal, local_point = found
+            fraction, local_normal, local_point, face = found
             normal = surface.world_vector(local_normal)
             point = tuple(surface.world_vector(tuple(local_point[a] - surface.offset[a] for a in range(3)))[b]
                           + chassis.getTransform().getPos()[b] for b in range(3))
-            hits.append(RayContact(body, fraction, point, normal, surface))
+            hits.append(RayContact(body, fraction, point, normal, surface, face))
         results.append(min(hits, key=lambda hit: hit.fraction) if hits else None)
     return tuple(results)

@@ -3,6 +3,8 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from suspension import SuspensionInput
 from suspension_geometry import CylinderSurface
 from suspension_kinematics import SupportPlane, finite_contact_system
@@ -14,13 +16,16 @@ from vehicle_parameters import load_vehicle_config
 from wheel_dynamics import Mobility
 
 
-def test_captured_coastal_edge_step_has_one_conjugate_end_state():
-    path = Path(__file__).resolve().parents[1] / "docs/evidence/PHYS-DESIGN-01/coastal-step-input.json"
+@pytest.mark.parametrize("filename", ("coastal-step-input.json", "coastal-long-step-input.json"))
+def test_captured_coastal_edge_step_has_one_conjugate_end_state(filename):
+    path = Path(__file__).resolve().parents[1] / "docs/evidence/PHYS-DESIGN-01" / filename
     data = json.loads(path.read_text(encoding="utf-8"))
     config = load_vehicle_config(path.parent / data["config_file"], CAR)
-    mesh = TriangleSupport.build(data["triangles_m"])
+    meshes = ({"road": TriangleSupport.build(data["triangles_m"])} if "triangles_m" in data
+              else {name: TriangleSupport.build(triangles) for name, triangles in data["meshes"].items()})
     planes = []
     for values in data["planes"]:
+        mesh = meshes[values.pop("mesh")] if "mesh" in values else meshes["road"]
         surface = values.pop("surface")
         for name in ("offset", "wheel_axis", "half"):
             surface[name] = tuple(surface[name])
@@ -51,3 +56,4 @@ def test_captured_coastal_edge_step_has_one_conjugate_end_state():
     assert abs(result.suspension.energy_residual) < 1e-12
     assert all(force > 0. for force in result.suspension.axial_force)
     assert target.touching == (True,) * 4
+    assert result.sweeps <= 20
