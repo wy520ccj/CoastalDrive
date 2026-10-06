@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "exact_three_dimensional_motion": {
+    "position_rmse_m": 1.0964095982080873e-15,
+    "velocity_rmse_m_s": 4.206542363900633e-16,
+    "orientation_error_rad": 2.92242990056151e-16,
+    "minimum_covariance_eigenvalue": 9.325685671237033e-05,
+    "slipping_wheel_rejections": 0,
+    "gnss_position_rmse_m": null
+  },
+  "delayed_and_immediate_complete_state_max_error": 0.0,
+  "delayed_and_immediate_covariance_max_error": 0.0,
+  "noisy_bias_wheel_slip_and_gnss_outage": {
+    "position_rmse_m": 0.27860078740403843,
+    "velocity_rmse_m_s": 0.11458624329909062,
+    "orientation_error_rad": 0.007610677624716175,
+    "minimum_covariance_eigenvalue": 1.4421863766009686e-08,
+    "slipping_wheel_rejections": 60,
+    "gnss_position_rmse_m": 1.3699111687422245
+  }
+}

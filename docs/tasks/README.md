@@ -25,7 +25,7 @@
 
 秒数指仿真时间；`--timeout` 是每条命令的墙钟上限，默认1800秒。T0/T1不会自动升级或重试。`workflow` 仅检查开发工具，T1不启动游戏；涉及游戏的任务不可用它替代相关模块验收。
 
-模块：`core / vehicle / traffic / road / gameplay / appearance / environment / workflow`，可重复 `--area` 合并。T0可以 `--tests tests/test_x.py::test_name` 只跑一个复现；T1应选完整相关模块。新增子系统同时补充 `tools/validate.py` 的模块映射。启动 smoke 只证明能够运行，不证明车辆行为/画面正确；新行为仍需针对测试。
+模块：`core / vehicle / estimation / traffic / road / gameplay / appearance / environment / workflow`，可重复 `--area` 合并。T0可以 `--tests tests/test_x.py::test_name` 只跑一个复现；T1应选完整相关模块。新增子系统同时补充 `tools/validate.py` 的模块映射。启动 smoke 只证明能够运行，不证明车辆行为/画面正确；新行为仍需针对测试。
 
 ```powershell
 # 普通交通任务的两档检查

@@ -385,6 +385,7 @@ class Vehicle:
             self._lateral_acceleration,
             self.dynamics,
             velocity=tuple(velocity),
+            orientation=tuple(transform.getQuat()),
             wheel_contacts=self._wheel_contacts if include_wheels else (),
             contact_tick=self._contact_tick if include_wheels else 0,
             wheel_dynamics=self.tires.states if include_wheels else (),
