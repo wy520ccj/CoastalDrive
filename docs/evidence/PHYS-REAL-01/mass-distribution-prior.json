@@ -1,0 +1,79 @@
+{
+  "status": "engineering prior only; not manufacturer inertia and not a loadable config",
+  "candidate": {
+    "model_year": 2022,
+    "market": "USA",
+    "model": "Toyota GR86 Premium",
+    "engine": "FA24 2387 cc NA flat four",
+    "transmission": "TL70 six-speed manual",
+    "drive": "RWD",
+    "tire": "Michelin Pilot Sport 4 215/40R18"
+  },
+  "source_file_sha256": "499e258345c1bdceb2bd411c66f5e06c30391f376a0ca6de6dc2867fe4d40eca",
+  "inputs": {
+    "curb_mass_kg": 1287.29514606,
+    "body_length_m": 4.265,
+    "body_width_without_mirrors_m": 1.775,
+    "body_top_m": 1.31,
+    "body_bottom_m": 0.13,
+    "wheelbase_m": 2.575,
+    "front_weight_share": 0.53
+  },
+  "coordinate_definition": "X lateral, Y forward, Z up; body geometry centre is Y=0",
+  "derived_center_of_mass_y_m": 0.07725000000000007,
+  "front_hub_y_relative_to_CG_m": 1.21025,
+  "rear_hub_y_relative_to_CG_m": -1.3647500000000001,
+  "longitudinal_density_gradient_per_m": 0.05096143670570325,
+  "assumptions": [
+    "Mass density uniform across width",
+    "Longitudinal density proportional to 1+k*y, preserving the sourced 53:47 static load",
+    "Vertical density follows Beta(1,beta) inside sourced ground-clearance/body-top bounds",
+    "Three CG heights are engineering sensitivity candidates, not measured heights",
+    "No driver or instrument payload is added"
+  ],
+  "cases": [
+    {
+      "assumed_center_of_mass_height_m": 0.4,
+      "vertical_density_beta": 3.370370370370371,
+      "variance_xyz_m2": [
+        0.2625520833333333,
+        1.5098845208333331,
+        0.04575103448275862
+      ],
+      "whole_rigid_pose_inertia_xyz_kg_m2": [
+        2002.5620993967573,
+        396.87710707981944,
+        2281.6490372428193
+      ]
+    },
+    {
+      "assumed_center_of_mass_height_m": 0.45,
+      "vertical_density_beta": 2.687500000000001,
+      "variance_xyz_m2": [
+        0.2625520833333333,
+        1.5098845208333331,
+        0.05870933333333333
+      ],
+      "whole_rigid_pose_inertia_xyz_kg_m2": [
+        2019.243254608297,
+        413.55826229135914,
+        2281.6490372428193
+      ]
+    },
+    {
+      "assumed_center_of_mass_height_m": 0.5,
+      "vertical_density_beta": 2.18918918918919,
+      "variance_xyz_m2": [
+        0.2625520833333333,
+        1.5098845208333331,
+        0.07154129032258064
+      ],
+      "whole_rigid_pose_inertia_xyz_kg_m2": [
+        2035.761770555006,
+        430.0767782380679,
+        2281.6490372428193
+      ]
+    }
+  ],
+  "implementation_boundary": "This is total rigid-pose inertia. Before mapping to body_inertia, reconcile explicitly modelled wheel/engine/shaft axial inertia and calibrate with the same standard experiments."
+}
