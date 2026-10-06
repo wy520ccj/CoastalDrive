@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "kind": "same_hardware_replay",
+  "full_observation_exact": true,
+  "expected_control_steps": 120,
+  "actual_control_steps": 120
+}

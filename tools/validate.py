@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 AREAS = {
     "workflow": ["test_validation_runner"],
     "estimation": ["test_state_estimation", "test_sensor_run"],
+    "research": ["test_driving_experiment"],
     "core": ["test_core", "test_stage4"],
     "vehicle": ["test_h1_vehicle", "test_driving_response", "test_curved_driving",
                 "test_road_loads", "test_rolling_resistance", "test_vehicle_parameters", "test_vehicle_designs", "test_design_spawn", "test_vehicle_contacts", "test_physics_testbed", "test_h2_map",
