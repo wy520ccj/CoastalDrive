@@ -18,8 +18,8 @@
       "center_of_mass_height": 0.45,
       "front_weight_share": 0.53,
       "body_inertia": [
-        2012.043254608297,
-        413.2682622913591,
+        2014.7686544482972,
+        413.33025779135914,
         2281.6490372428193
       ],
       "angular_damping": 0.0,
@@ -139,7 +139,7 @@
         0.0
       ],
       "input_shaft_enabled": true,
-      "input_shaft_inertia": 0.04,
+      "input_shaft_inertia": 0.0136625,
       "input_shaft_axis": [
         0.0,
         1.0,
@@ -148,9 +148,9 @@
       "synchronizer_capacity": 80.0,
       "downstream_inertia_enabled": true,
       "downstream_inertias": [
-        0.03,
+        0.00871,
         0.015,
-        0.02
+        0.005632
       ],
       "downstream_axes": [
         [
@@ -187,7 +187,7 @@
       "wheel_width": 0.215,
       "wheel_shoulder_radius": 0.01,
       "wheel_crown_height": 0.003,
-      "wheel_inertia": 1.8,
+      "wheel_inertia": 1.11865004,
       "longitudinal_stiffness": 64364.75730299999,
       "lateral_stiffness": 53637.297752499995,
       "rear_lateral_stiffness": 53637.297752499995,
@@ -207,7 +207,7 @@
       "grass_rolling_coefficient": 0.0764525993883792,
       "wheel_rolling_resistance": true,
       "rolling_transition_speed": 1.0,
-      "road_friction": 1.05,
+      "road_friction": 1.1,
       "grass_friction": 0.45
     },
     "suspension": {
@@ -288,7 +288,7 @@
   },
   "metadata": {
     "design_id": "gr86-2022-premium-6mt",
-    "version": "engineering-r2",
+    "version": "engineering-r3",
     "kind": "sourced_vehicle",
     "candidate": {
       "model_year": 2022,
@@ -359,6 +359,78 @@
       "definition": "whole mass supported by four axial springs; current core has no independent unsprung mass"
     },
     "inertia_prior_sha256": "bb9a2445ce9b41924ff3be55000178b2df2fa6ce116bc03c1e6b504991d01dc5",
+    "rotor_prior": {
+      "components_kg_m": {
+        "wheel": [
+          [
+            "tyre_annulus",
+            9.0,
+            0.2286,
+            0.3146
+          ],
+          [
+            "alloy_gyration",
+            10.4,
+            0.18
+          ],
+          [
+            "brake_disc_annulus",
+            7.0,
+            0.08,
+            0.15
+          ]
+        ],
+        "input_shaft": [
+          [
+            "shaft_disc",
+            5.0,
+            0.025
+          ],
+          [
+            "gear_cluster_disc",
+            8.0,
+            0.055
+          ]
+        ],
+        "output_shaft": [
+          [
+            "shaft_disc",
+            5.0,
+            0.022
+          ],
+          [
+            "gear_cluster_disc",
+            6.0,
+            0.05
+          ]
+        ],
+        "rear_shaft": [
+          [
+            "thin_tube",
+            5.5,
+            0.032
+          ]
+        ]
+      },
+      "axial_inertia_kg_m2": {
+        "wheel": 1.11865004,
+        "input_shaft": 0.0136625,
+        "output_shaft": 0.00871,
+        "rear_shaft": 0.005632
+      },
+      "whole_vehicle_rigid_inertia_kg_m2": [
+        2019.243254608297,
+        413.55826229135914,
+        2281.6490372428193
+      ],
+      "engine_inertia_kg_m2": 0.2,
+      "definition": "assumed disc/annulus/tube/gyration dimensions; no OEM rotor measurements; axial terms deducted once from whole rigid-follow tensor"
+    },
+    "tyre_calibration_candidate": {
+      "previous_road_friction": 1.05,
+      "road_friction": 1.1,
+      "basis": "r1 braking exceeded matched 70/100mph distances by 7.67/3.28 percent; one common dry-surface candidate, circle verification pending"
+    },
     "geometry": {
       "OEM_width_without_mirrors_m": 1.775,
       "full_approximate_asset_width_m": 2.03,
@@ -593,7 +665,7 @@
         "unit": "kg·m²",
         "definition": "输入轴独立轴向惯量，游戏.005/参考.04设计值，非实测",
         "status": "engineering_prior",
-        "value": 0.04,
+        "value": 0.0136625,
         "basis": "explicit generic mechanism or engineering initial value; not OEM measurement"
       },
       "input_shaft_axis": {
@@ -626,9 +698,9 @@
         "definition": "输出/前/后轴实体设计惯量；非驱动轴不安装对应转子，非实测",
         "status": "engineering_prior",
         "value": [
-          0.03,
+          0.00871,
           0.015,
-          0.02
+          0.005632
         ],
         "basis": "explicit generic mechanism or engineering initial value; not OEM measurement"
       },
@@ -865,7 +937,7 @@
         "unit": "kg·m²",
         "definition": "独立单轮轴向转动惯量",
         "status": "engineering_prior",
-        "value": 1.8,
+        "value": 1.11865004,
         "basis": "explicit generic mechanism or engineering initial value; not OEM measurement"
       },
       "longitudinal_stiffness": {
@@ -1119,7 +1191,7 @@
         "unit": "1",
         "definition": "铺装摩擦预算μFn",
         "status": "engineering_prior",
-        "value": 1.05,
+        "value": 1.1,
         "basis": "explicit generic mechanism or engineering initial value; not OEM measurement"
       },
       "grass_friction": {
@@ -1214,8 +1286,8 @@
         "definition": "null沿用原Bullet Box生成的惯量；reference显式设计惯量",
         "status": "engineering_prior",
         "value": [
-          2012.043254608297,
-          413.2682622913591,
+          2014.7686544482972,
+          413.33025779135914,
           2281.6490372428193
         ],
         "basis": "explicit generic mechanism or engineering initial value; not OEM measurement"

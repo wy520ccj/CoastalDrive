@@ -62,13 +62,32 @@ def generate(output):
     extension = tuple(2 * extension_ratio * m * frequency for m in corner_masses)
     static_compression = 9.81 / frequency ** 2
     inertia_case, = (case for case in prior["cases"] if case["assumed_center_of_mass_height_m"] == .45)
+    # 缺少实测转子数据时，显式给出质量/回转尺寸工程假设；不能继承参考车后误称实车惯量。
+    rotor_parts = {
+        "wheel": (("tyre_annulus", 9., .2286, radius), ("alloy_gyration", 10.4, .18),
+                  ("brake_disc_annulus", 7., .08, .15)),
+        "input_shaft": (("shaft_disc", 5., .025), ("gear_cluster_disc", 8., .055)),
+        "output_shaft": (("shaft_disc", 5., .022), ("gear_cluster_disc", 6., .05)),
+        "rear_shaft": (("thin_tube", 5.5, .032),),
+    }
+    rotor_inertia = {}
+    for rotor, parts in rotor_parts.items():
+        rotor_inertia[rotor] = sum(.5 * part[1] * (part[2]**2 + part[3]**2) if len(part) == 4 else
+                                   part[1] * part[2]**2 * (1. if part[0] in ("alloy_gyration", "thin_tube") else .5)
+                                   for part in parts)
+    whole = inertia_case["whole_rigid_pose_inertia_xyz_kg_m2"]
+    body_inertia = (whole[0] - 4 * rotor_inertia["wheel"],
+                    whole[1] - REFERENCE_CAR.engine_inertia - rotor_inertia["input_shaft"]
+                    - rotor_inertia["output_shaft"] - rotor_inertia["rear_shaft"], whole[2])
     values = {
         "mass": mass, "torque_curve": tuple(curve), "gear_ratios": tuple(fields["gear_ratios"]["value"]),
         "reverse_gear_ratio": fields["reverse_ratio"]["value"], "final_drive": fields["final_drive"]["value"],
         "wheelbase": fields["wheelbase"]["value"] / 1000, "track_width": fields["front_track"]["value"] / 1000,
         "axle_track_widths": (fields["front_track"]["value"] / 1000, fields["rear_track"]["value"] / 1000),
         "front_weight_share": share, "center_of_mass_height": .45,
-        "body_inertia": tuple(inertia_case["candidate_body_inertia_xyz_kg_m2"]),
+        "body_inertia": body_inertia, "wheel_inertia": rotor_inertia["wheel"],
+        "input_shaft_inertia": rotor_inertia["input_shaft"],
+        "downstream_inertias": (rotor_inertia["output_shaft"], REFERENCE_CAR.downstream_inertias[1], rotor_inertia["rear_shaft"]),
         "wheel_radius": radius, "wheel_width": .215, "drag_coefficient": .276,
         "frontal_area": .84 * fields["width"]["value"] / 1000 * fields["height"]["value"] / 1000,
         "collision_half_width": 1.015, "collision_half_length": 2.13256,
@@ -81,7 +100,7 @@ def generate(output):
         "differential_damping": (0., 600., 0.), "differential_capacity": (0., 2000., 0.),
         "axle_torque_bias_ratios": (1., 2.5),
         "brake_torque": mass * 9.81 * radius * 1.25, "front_brake_share": .70,
-        "road_friction": 1.05, "longitudinal_stiffness": 60000. * mass / 1200,
+        "road_friction": 1.10, "longitudinal_stiffness": 60000. * mass / 1200,
         "lateral_stiffness": 50000. * mass / 1200, "rear_lateral_stiffness": 50000. * mass / 1200,
     }
     config = replace(REFERENCE_CAR, **values)
@@ -89,7 +108,7 @@ def generate(output):
                     "axle_track_widths", "front_weight_share", "wheel_width", "drag_coefficient"}
     derived = {"torque_curve", "wheel_radius", "steering_degrees"}
     metadata = {
-        "design_id": PROFILE_ID, "version": "engineering-r2", "kind": "sourced_vehicle",
+        "design_id": PROFILE_ID, "version": "engineering-r3", "kind": "sourced_vehicle",
         "candidate": source["candidate"], "sources": source["sources"],
         "status": "complete loadable engineering candidate; dynamic calibration pending",
         "performance_targets": source["published_test"],
@@ -100,6 +119,12 @@ def generate(output):
                              "extension_damping_ratio": extension_ratio, "static_compression_m": static_compression,
                              "rest_length_m": .4, "definition": "whole mass supported by four axial springs; current core has no independent unsprung mass"},
         "inertia_prior_sha256": hashlib.sha256((evidence / "inertia-partition.json").read_bytes()).hexdigest(),
+        "rotor_prior": {"components_kg_m": rotor_parts, "axial_inertia_kg_m2": rotor_inertia,
+                        "whole_vehicle_rigid_inertia_kg_m2": whole,
+                        "engine_inertia_kg_m2": REFERENCE_CAR.engine_inertia,
+                        "definition": "assumed disc/annulus/tube/gyration dimensions; no OEM rotor measurements; axial terms deducted once from whole rigid-follow tensor"},
+        "tyre_calibration_candidate": {"previous_road_friction": 1.05, "road_friction": 1.10,
+                                       "basis": "r1 braking exceeded matched 70/100mph distances by 7.67/3.28 percent; one common dry-surface candidate, circle verification pending"},
         "geometry": {"OEM_width_without_mirrors_m": 1.775, "full_approximate_asset_width_m": 2.03,
                      "collider_basis": "full imported visual body including mirrors; nominal OEM width kept separate"},
         "differential": {"OEM_type": "Torsen", "current_model": "regularized torque-bias friction with real terminal axle load",
