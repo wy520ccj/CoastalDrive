@@ -1,0 +1,28 @@
+{
+  "status": "Appearance draft only, not game-integrated or accepted",
+  "source": "Original procedural mesh; OEM brochure p2/p4/p13/p14 used for proportion/trim references",
+  "source_url": "https://www.toyota.com/content/dam/toyota/brochures/pdf/2022/gr86_ebrochure.pdf",
+  "units": "metres; Z up, +Y forward",
+  "wheelbase_m": 2.575,
+  "front_track_m": 1.52,
+  "rear_track_m": 1.55,
+  "nominal_tire_radius_m": 0.3146,
+  "nominal_tire_width_m": 0.215,
+  "editable_source": "gr86_2022_premium_draft.blend",
+  "geometry_kind": "Approximate low-poly representation, not manufacturer CAD",
+  "blender_version": "5.2.2 LTS",
+  "sha256": {
+    "gr86_2022_premium_draft.blend": "b26a9ce4f2b948aa71ba08c4ddc46332d7fd0dd4eba15919a52150e18ef210ad",
+    "gr86_2022_premium_draft.glb": "717da688a3839f59e7fcc3f19d00852f01f9bf3dffec741d3bc7a00167bd993a",
+    "front.png": "665a098db28bab92263788541471b1a89393d95f82d08603763a485a136d5cab",
+    "rear.png": "b59ebd34b725ace3fbeaf46304b4f892ae21d33dc47630c71b9a3315052c55b9"
+  },
+  "geometry_readback": "geometry-readback.json",
+  "render_review": "Actual mesh-conforming lamps, corner intakes and exhaust rings visually reviewed. Bevelled paint body restored to 1.775m width, four wheels retain source dimensions. Game integration and final shape acceptance pending.",
+  "runtime_counts": {
+    "meshes": 20,
+    "triangles": 11748
+  },
+  "editable_generator": "build-appearance-draft.py",
+  "generator_sha256": "d3fd39a9fad020c6f8f40371900ccc9a8ed3ae7d6cdd2494881f6b4d25cf92f9"
+}

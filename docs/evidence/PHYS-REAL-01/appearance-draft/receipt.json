@@ -1,0 +1,40 @@
+{
+  "status": "prepared appearance only; no game or physics integration",
+  "runtime_counts": {
+    "meshes": 20,
+    "triangles": 11748
+  },
+  "nominal_OEM_body_length_m": 4.265,
+  "full_visual_length_m": 4.265120029449463,
+  "visual_surface_layer_length_offset_m": 0.00012002944946321037,
+  "nominal_body_width_m": 1.775,
+  "full_mirror_width_m": 2.0299999713897705,
+  "wheel_readback_verified": true,
+  "reviewed_images": [
+    "front.png",
+    "rear.png"
+  ],
+  "earlier_image": "front-r6.png",
+  "failed_attempt": {
+    "log": "logs/physics/PHYS-REAL-01-preparation/appearance-build-r8.log",
+    "reason": "Blender 5.2 tessellation returns vertex indices; generator corrected to address the polygon vertices"
+  },
+  "completed_build_log": "logs/physics/PHYS-REAL-01-preparation/appearance-build-r10.log",
+  "file_sha256": {
+    "build-appearance-draft.py": "d3fd39a9fad020c6f8f40371900ccc9a8ed3ae7d6cdd2494881f6b4d25cf92f9",
+    "front-r6.png": "9d1ca18e0019ee569a73118b3d19ed932907e68e0f4332500266881ce2e0a3d7",
+    "front.png": "665a098db28bab92263788541471b1a89393d95f82d08603763a485a136d5cab",
+    "geometry-readback.json": "bd2386afb9532a85da17bf0315002dade9fb295c365b9bf94a04678882a02ea7",
+    "gr86_2022_premium_draft.blend": "b26a9ce4f2b948aa71ba08c4ddc46332d7fd0dd4eba15919a52150e18ef210ad",
+    "gr86_2022_premium_draft.glb": "717da688a3839f59e7fcc3f19d00852f01f9bf3dffec741d3bc7a00167bd993a",
+    "manifest.json": "971ff7d2c997f9c584e6cb72c0e81943cb3d22c22612c5a2f9adc59cf291d6e0",
+    "measure-appearance.py": "29254bcc9902a44ed69887e3db11c423f9b0a5b829fefaa9f240cb37e11c2f67",
+    "rear.png": "b59ebd34b725ace3fbeaf46304b4f892ae21d33dc47630c71b9a3315052c55b9"
+  },
+  "paint_body_size_m": [
+    1.774999976158142,
+    4.264999866485596,
+    1.1799999475479126
+  ],
+  "body_width_correction": "Bevel reduced the maximum paint width from 1.775 to 1.765m; paint body mesh restored alone, wheel roots unchanged"
+}
