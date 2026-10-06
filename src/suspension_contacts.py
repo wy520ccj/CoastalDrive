@@ -104,12 +104,17 @@ def wheel_sweep_shape(radius, width, shoulder, crown):
     return envelope
 
 
-def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder, crown=0., *, envelope=None):
+def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder, crown=0., *, envelope=None, ray_origin=None):
     """轮轴和有限胎宽进入真实表面查询；不会创建第二个物理世界。"""
     mask = BitMask32.bit(0)
     # 未加入世界的保守查询盒使用Bullet broadphase筛选实际相交静态物体。
     # 查询盒含整条轮心路径与轮胎外廓，不施力、不生成第二个物理世界。
-    points = tuple(point for ray in rays for point in ray)
+    origin = tuple(chassis.getTransform().getPos()) if ray_origin is None else ray_origin
+    relative_rays = (rays if ray_origin is not None else
+                     tuple(tuple(tuple(point[a] - origin[a] for a in range(3)) for point in ray) for ray in rays))
+    world_rays = (tuple(tuple(tuple(point[a] + ray_origin[a] for a in range(3)) for point in ray) for ray in rays)
+                  if ray_origin is not None else rays)
+    points = tuple(point for ray in world_rays for point in ray)
     padding = radius + width / 2 + 1e-5
     low = tuple(min(p[a] for p in points) - padding for a in range(3))
     high = tuple(max(p[a] for p in points) + padding for a in range(3))
@@ -144,7 +149,7 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
         envelope = wheel_sweep_shape(radius, width, shoulder, crown)
     native_needed = any(body not in exact for body in bodies)
     results = []
-    for (start, end), axis in zip(rays, axes):
+    for (start, end), (relative_start, relative_end), axis in zip(world_rays, relative_rays, axes):
         axis = tuple(axis)
         transverse = math.hypot(axis[1], axis[2])
         rotation = Quat()
@@ -158,21 +163,23 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
             native = world.sweepTestClosest(envelope, TransformState.makePosQuatScale(start, rotation, Vec3(1)),
                                            TransformState.makePosQuatScale(end, rotation, Vec3(1)), mask, 0.)
             if native.hasHit() and native.getNode() != chassis and native.getNode() not in exact:
-                hits.append(RayContact(native.getNode(), native.getHitFraction(), tuple(native.getHitPos()), tuple(native.getHitNormal())))
+                point = tuple(native.getHitPos())
+                if ray_origin is not None:
+                    point = tuple(point[a] - origin[a] for a in range(3))
+                hits.append(RayContact(native.getNode(), native.getHitFraction(), point, tuple(native.getHitNormal())))
         for body, inverse, frame, half, margin, plane, triangles in surfaces:
             reach = math.sqrt(sum((end[a] - start[a])**2 for a in range(3))) - radius
-            origin = chassis.getTransform().getPos()
             offset = tuple(inverse.getCell(3, a) + sum(frame[a][b] * origin[b] for b in range(3)) for a in range(3))
             surface = CylinderSurface(half, margin, frame, offset,
                                       radius, reach, width, shoulder, axis, plane, crown, triangles)
-            found = surface.entry(surface.local(tuple(start[a] - origin[a] for a in range(3))),
-                                  surface.local(tuple(end[a] - origin[a] for a in range(3))), axis)
+            found = surface.entry(surface.local(relative_start), surface.local(relative_end), axis)
             if found is None:
                 continue
             fraction, local_normal, local_point, face = found
             normal = surface.world_vector(local_normal)
-            point = tuple(surface.world_vector(tuple(local_point[a] - surface.offset[a] for a in range(3)))[b]
-                          + chassis.getTransform().getPos()[b] for b in range(3))
+            point = surface.world_vector(tuple(local_point[a] - surface.offset[a] for a in range(3)))
+            if ray_origin is None:
+                point = tuple(point[a] + origin[a] for a in range(3))
             hits.append(RayContact(body, fraction, point, normal, surface, face))
         results.append(min(hits, key=lambda hit: hit.fraction) if hits else None)
     return tuple(results)
