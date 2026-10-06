@@ -7,7 +7,7 @@ from pathlib import Path
 SCHEMA = "vehicle-engineering-v1"
 PARAMETER_GROUPS = {
     "chassis": (
-        "mass", "wheelbase", "track_width", "collision_half_width", "collision_half_length",
+        "mass", "wheelbase", "track_width", "axle_track_widths", "collision_half_width", "collision_half_length",
         "collision_half_height", "centered_collision_support", "body_center_height",
         "wheel_connection_height", "center_of_mass_height", "front_weight_share", "body_inertia",
         "angular_damping", "steering_degrees", "steering_rate", "steering_response", "steering_return",
@@ -16,7 +16,7 @@ PARAMETER_GROUPS = {
     "powertrain": (
         "torque_curve", "gear_ratios", "final_drive", "drivetrain_efficiency", "idle_rpm",
         "shift_time", "torque_response", "engine_braking", "finite_drivetrain", "front_drive_share",
-        "differential_damping", "differential_capacity", "engine_inertia", "engine_axis",
+        "differential_damping", "differential_capacity", "axle_torque_bias_ratios", "engine_inertia", "engine_axis",
         "input_shaft_enabled", "input_shaft_inertia", "input_shaft_axis", "synchronizer_capacity",
         "downstream_inertia_enabled", "downstream_inertias", "downstream_axes", "engine_idle_response",
         "engine_idle_torque_limit", "engine_redline_rpm", "clutch_capacity", "clutch_release_time",
@@ -95,7 +95,7 @@ def load_vehicle_config(path, selected):
     for name in ("engine_axis", "input_shaft_axis"):
         if name in values:
             values[name] = tuple(values[name])
-    for name in ("differential_damping", "differential_capacity", "downstream_inertias"):
+    for name in ("differential_damping", "differential_capacity", "axle_torque_bias_ratios", "downstream_inertias"):
         if name in values:
             values[name] = tuple(values[name])
     if "downstream_axes" in values:
@@ -113,5 +113,7 @@ def load_vehicle_config(path, selected):
             values[name] = tuple(values[name])
     if "body_inertia" in values and values["body_inertia"] is not None:
         values["body_inertia"] = tuple(values["body_inertia"])
+    if "axle_track_widths" in values and values["axle_track_widths"] is not None:
+        values["axle_track_widths"] = tuple(values["axle_track_widths"])
     return replace(selected, **values)
 

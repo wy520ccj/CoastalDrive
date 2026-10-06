@@ -9,6 +9,12 @@ def dot(first, second):
     return sum(a * b for a, b in zip(first, second))
 
 
+def torque_bias_capacities(maximum, biases, axle_torques):
+    """T左右=T轴/2±τ；给定TBR得到|τ|≤|T轴|(B−1)/(2(B+1))。"""
+    return tuple(min(limit, abs(torque) * (bias - 1.) / (2 * (bias + 1.))) if bias > 1. else limit
+                 for limit, bias, torque in zip(maximum, biases, axle_torques))
+
+
 def differential_gradients(axes):
     """滑差是相对壳体轴速之差；转向轴不平行时反力不能省略。"""
     coefficients = ((1., -1., 0., 0.), (0., 0., 1., -1.), (.5, .5, -.5, -.5))

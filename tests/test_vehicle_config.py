@@ -86,6 +86,23 @@ def test_explicit_inertia_controls_real_angular_impulse_response():
         car.close()
 
 
+def test_axle_tracks_reach_native_wheels_and_front_ackermann():
+    from vehicle_steering import wheel_angles
+
+    config = replace(CAR, wheelbase=2.575, axle_track_widths=(1.52, 1.55), front_weight_share=.53)
+    _, car = make_vehicle(config)
+    try:
+        expected = ((-.76, 1.21025, .25), (.76, 1.21025, .25),
+                    (-.775, -1.36475, .25), (.775, -1.36475, .25))
+        for wheel, hub in zip(car._vehicle.getWheels(), expected):
+            assert tuple(wheel.getChassisConnectionPointCs()) == pytest.approx(hub)
+        front_only = replace(config, axle_track_widths=None, track_width=1.52)
+        assert wheel_angles(25., config) == wheel_angles(25., front_only)
+        assert wheel_angles(25., replace(config, axle_track_widths=(1.52, 1.9))) == wheel_angles(25., config)
+    finally:
+        car.close()
+
+
 @pytest.mark.parametrize("share", [.4, .6])
 def test_front_weight_share_changes_real_static_suspension_load(share):
     cfg = replace(CAR, front_weight_share=share)

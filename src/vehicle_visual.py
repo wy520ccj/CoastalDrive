@@ -46,7 +46,7 @@ def load_gltf_vehicle(parent, definition, path, *, trace=None, config):
     body = NodePath(gltf.load_model(Filename.fromOsSpecific(str(path))))
     body.setPythonTag("vehicle-quality", definition.quality)
     if definition.quality == "hero":
-        body.setName("classic-coupe-v1")
+        body.setName(path.stem.replace("_", "-"))
         if trace is not None:
             trace.mark("hero_mesh_loaded")
     body.reparentTo(root)

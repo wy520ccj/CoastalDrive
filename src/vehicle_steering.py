@@ -11,7 +11,7 @@ def wheel_angles(center_angle, config=CAR):
         return 0.0, 0.0
     radius = config.wheelbase / math.tan(math.radians(center_angle))
     return tuple(math.degrees(math.atan(config.wheelbase / (radius + offset)))
-                 for offset in (config.track_width / 2, -config.track_width / 2))
+                 for offset in (config.wheel_track_widths[0] / 2, -config.wheel_track_widths[0] / 2))
 
 
 class SteeringRack:

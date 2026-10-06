@@ -7,6 +7,7 @@ from differential import (
     differential_branches,
     differential_gradients,
     differential_torques,
+    torque_bias_capacities,
     viscous_projection,
 )
 from driveline_inertia import active_inertias, inertia_projections, project_inertia, rotor_gradients
@@ -27,7 +28,12 @@ from suspension_kinematics import finite_contact_system
 from tire_compliance import contact_force, contact_jacobian, energy_terms
 from tire_forces import combined_force, slip_state
 from tire_properties import tire_grip, tire_stiffness
-from transmission_ports import clutch_brake_plans, clutch_brake_state, transmission_state
+from transmission_ports import (
+    PORT_TOLERANCE,
+    clutch_brake_plans,
+    clutch_brake_state,
+    transmission_state,
+)
 from wheel_dynamics import WheelStep, _solve_force
 
 
@@ -168,6 +174,9 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         differential = tuple(g[:4] + (0.,) + g[4:] for g in differential)
     damping, limits = config.differential_damping, config.differential_capacity
     limited = any(c and limit for c, limit in zip(damping, limits))
+    torque_bias = any(value > 1. for value in config.axle_torque_bias_ratios)
+    active_limits, bias_ports = limits, (0., 0.)
+    differential_responses = tuple(mobility(g) for g in differential) if torque_bias else ()
     branches = []
     for branch in differential_branches(differential, damping, limits, mobility, dt):
         projections = branch[0]
@@ -206,7 +215,23 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         if not limited:
             return free
         projected = viscous_projection(free, branch[0])
-        return tuple(projected[a] + branch[1][a] for a in range(dimensions))
+        offset = branch[1]
+        if torque_bias:
+            offset = (0.,) * dimensions
+            for mode, limit, response in zip(branch[2], active_limits, differential_responses):
+                if mode:
+                    offset = tuple(offset[a] - dt * mode * limit * response[a] for a in range(dimensions))
+            offset = viscous_projection(offset, branch[0])
+        return tuple(projected[a] + offset[a] for a in range(dimensions))
+
+    def bias_limits(state, gear_reaction, loss):
+        # 限滑负载是实际齿轮输出减去实体轴储能反力，不读取路面μ或预设抓地分配。
+        axial = tuple(j * (dot(g, state) - old) / dt for j, g, old in
+                      zip(inertias, gradients, downstream_omega)) if downstream else (0., 0., 0.)
+        output = ratio * (gear_reaction - loss)
+        front = config.front_drive_share * output - config.final_drive * (config.front_drive_share * axial[0] + axial[1])
+        rear = (1 - config.front_drive_share) * output - config.final_drive * ((1 - config.front_drive_share) * axial[0] + axial[2])
+        return (*torque_bias_capacities(limits[:2], config.axle_torque_bias_ratios, (front, rear)), limits[2])
 
     forces = list(force_initial)
     modes = [None] * 4
@@ -257,9 +282,11 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         return free, end_velocity
 
     def shared(guess):
-        nonlocal shared_branch, shared_port_index, road_torques
+        nonlocal shared_branch, shared_port_index, road_torques, active_limits, bias_ports
         def mapped(state):
-            nonlocal shared_branch, shared_port_index, road_torques
+            nonlocal shared_branch, shared_port_index, road_torques, active_limits
+            if torque_bias:
+                active_limits = bias_limits(state[:dimensions], *state[dimensions:])
             if rolling_active:
                 road_torques = rolling_torques(frames,radii,state[wheel_start:],rolling_coefficients,
                                                config.rolling_transition_speed)
@@ -290,43 +317,66 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                     clutch = loss = 0.
                 end = tuple(projected[a] - dt * (clutch * mc[a] + loss * ml[a]
                             + (gear_reaction * mg[a] if shaft else 0.)) for a in range(dimensions))
-                if differential_torques(end, branch, differential, damping, limits) is not None:
+                if differential_torques(end, branch, differential, damping, active_limits) is not None:
                     shared_branch = branch_index
                     if shaft:
                         shared_port_index = _index
                     break
             else:
                 raise ArithmeticError("限滑/离合共同末状态无可行分区")
-            return end, end_velocity, clutch, loss, gear_reaction
+            return (end + (gear_reaction, loss) if torque_bias else end), end_velocity, clutch, loss, gear_reaction
 
-        state = guess
+        variables = dimensions + 2 if torque_bias else dimensions
+
+        def residual_size(state, target):
+            if not torque_bias:
+                return max(abs(a - b) for a, b in zip(state, target))
+            # 角速度与端口转矩使用各自原精度；不能用Nm残差接受更差的rad/s试探步。
+            return max(abs(state[a] - target[a]) / (max(1e-14, math.ulp(state[a]), math.ulp(target[a]))
+                       if a < dimensions else PORT_TOLERANCE) for a in range(variables))
+
+        state = tuple(guess) + bias_ports if torque_bias else guess
         for iteration in range(30):
             end, end_velocity, clutch, loss, gear_reaction = mapped(state)
-            residual = tuple(state[a] - end[a] for a in range(dimensions))
+            residual = tuple(state[a] - end[a] for a in range(variables))
             error = max(abs(value) for value in residual)
             # 逐坐标保留绝对精度；大转速处容纳一次状态舍入的浮点间隔。
-            if all(abs(value) <= max(1e-14, math.ulp(state[a]), math.ulp(end[a]))
-                   for a, value in enumerate(residual)):
-                return end, end_velocity, clutch, loss, gear_reaction
-            if rolling_active and iteration >= 4:
+            angular_converged = all(abs(residual[a]) <= max(1e-14, math.ulp(state[a]), math.ulp(end[a]))
+                                    for a in range(dimensions))
+            ports_converged = not torque_bias or all(abs(value) <= PORT_TOLERANCE for value in residual[dimensions:])
+            if angular_converged and ports_converged:
+                if torque_bias:
+                    bias_ports = gear_reaction, loss
+                    active_limits = bias_limits(end[:dimensions], gear_reaction, loss)
+                    if differential_torques(end[:dimensions], branches[shared_branch][0], differential,
+                                            damping, active_limits) is None:
+                        state = end
+                        continue
+                return end[:dimensions], end_velocity, clutch, loss, gear_reaction
+            if (rolling_active or torque_bias) and iteration >= 4:
                 # 大轮荷低速滚阻与轴系共同求根，固定点初迭代后用带步长搜索的Newton修正。
                 columns = []
-                for j in range(dimensions):
+                for j in range(variables):
                     plus, minus = list(state), list(state)
                     plus[j] += .0001
                     minus[j] -= .0001
                     high, low = mapped(plus)[0], mapped(minus)[0]
-                    columns.append(tuple(float(a == j) - (high[a]-low[a])/.0002 for a in range(dimensions)))
-                delta = _solve(tuple(tuple(columns[j][a] for j in range(dimensions)) for a in range(dimensions)),
+                    columns.append(tuple(float(a == j) - (high[a]-low[a])/.0002 for a in range(variables)))
+                delta = _solve(tuple(tuple(columns[j][a] for j in range(variables)) for a in range(variables)),
                                tuple(-value for value in residual))
+                before = residual_size(state, end)
                 for attempt in range(8):
-                    candidate = tuple(state[a] + 2.**-attempt * delta[a] for a in range(dimensions))
+                    candidate = tuple(state[a] + 2.**-attempt * delta[a] for a in range(variables))
                     target = mapped(candidate)[0]
-                    if max(abs(candidate[a]-target[a]) for a in range(dimensions)) < error:
+                    if residual_size(candidate, target) < before:
                         state = candidate
+                        # 下一次mapped前恢复该候选的负载，避免试探步残留容量。
+                        if torque_bias:
+                            active_limits = bias_limits(state[:dimensions], *state[dimensions:])
                         break
                 else:
-                    state = end
+                    # 线搜索已无下降步时，半步固定点抑制末位舍入循环；原30轮／精度保持。
+                    state = tuple(math.fsum((state[a], end[a])) / 2 for a in range(variables))
             else:
                 state = end
         raise ArithmeticError(f"曲轴/四轮转子共同末状态超过30次迭代：{error:g}")
@@ -392,7 +442,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                     index = None
                 end = tuple(projected[a] - dt * (local_clutch * mc[a] + local_loss * ml[a]
                                                 + brake * local_rb[a] + (local_gear * mg[a] if shaft else 0.)) for a in range(dimensions))
-                if differential_torques(end, branch, differential, damping, limits) is not None:
+                if differential_torques(end, branch, differential, damping, active_limits) is not None:
                     warm_branches[i] = branch_index
                     break
             else:
@@ -697,7 +747,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     engine_gyro = cross(tuple(engine_inertia * state[3] * value for value in engine_axis), state[:3])
     engine_body = tuple((clutch + engine_drag * engine_speed - engine_torque) * engine_axis[a] + engine_gyro[a] for a in range(3))
     differential_slips = tuple(dot(g, state) for g in differential)
-    limited_torques = differential_torques(state, branches[shared_branch][0], differential, damping, limits)
+    limited_torques = differential_torques(state, branches[shared_branch][0], differential, damping, active_limits)
     shaft_speed = (state[4] - dot(shaft_axis, state[:3])) if shaft else None
     shaft_gyro = cross(tuple(shaft_inertia * state[4] * value for value in shaft_axis), state[:3]) if shaft else (0.,) * 3
     shaft_body = tuple((gear_reaction - clutch) * shaft_axis[a] + shaft_gyro[a] for a in range(3)) if shaft else (0.,) * 3

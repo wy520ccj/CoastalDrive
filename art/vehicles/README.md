@@ -27,3 +27,9 @@
 ## 材质约定
 
 车漆为非金属有色漆面（metallic=0、roughness=0.32）；金属属性用于裸露镀铬件，不直接把车漆设为金属。玻璃为深蓝灰不透明近似，橡胶低反射率且粗糙。主车仅使用原环境填光的28%，太阳/车库主灯及阴影原样保留，避免均匀环境项让镀铬和漆面蒙白。反射仍是离线中性日光，未声称实时镜面反射或写实内饰。
+
+## PHYS-REAL-01 GR86 外观草稿
+
+`gr86_2022_premium.blend` 是项目原创程序网格生成的近似低模可编辑源，运行网格为 `assets/game/vehicles/gr86_2022_premium.glb`，由 `tools/blender/build_gr86.py` 制作。模型尚未完成游戏装配或最终外观验收；重跑脚本会覆盖对应模型文件，离线预览写入 `logs/physics/PHYS-REAL-01-appearance/`。文件 SHA、生成来源和来源边界见 `gr86-source-manifest.json`。
+
+Toyota 2022 GR86 手册仅作尺寸、比例和外形参考，不是官方 CAD 或授权 Toyota 模型。该近似低模由本项目脚本生成；不声称 Toyota 对模型提供授权或认可。

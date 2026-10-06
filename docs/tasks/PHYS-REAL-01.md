@@ -1,9 +1,11 @@
 # PHYS-REAL-01 首款实车型：2022 GR86 Premium 6MT
 
-- 状态：ready；尚未进入车型实现。
-- 基线 commit：实施前锁定PHYS-DESIGN-01阶段收口提交；当前准备来自01694dc后的隔离资料。
-- 所属阶段/前置：统一物理施工线④；先完成机械／工程参数化T2收口。
+- 状态：in_progress；在隔离工作树实施，尚未合并主目录。
+- 基线 commit：f5dc5ba；主目录T2-r5继续冻结，合并前锁定其阶段收口提交。
+- 所属阶段/前置：统一物理施工线④；实现可在隔离工作树推进，合并和阶段验收以机械／工程参数化T2收口为前置。
 - 角色：主模型负责参数定义、机械模型与集成；默认单条施工线。
+
+用户要求持续推进后，实施目录为`C:/Users/15120/.codex/worktrees/gr86-physics/CoastalDrive`，分支`codex/phys-real-01`。主目录`B:/AI agent/暑期计算机程序设计/CoastalDrive`保持T2-r5的331文件SHA冻结；相邻VI工作树不用作本次实施源。确定的小资源归位由Luna负责，核心几何与参数接入由主模型实施。
 
 ## 目标与范围
 
@@ -40,3 +42,5 @@
 2026-10-06接手增量：原PHYS-DESIGN-01 T2-r4进程继续运行，生产／测试／工具331文件SHA逐项与启动清单相同。等待期间补[惯量接入准备](../evidence/PHYS-REAL-01/inertia-partition.md)：整车刚性随动张量仅减独立转子的轴向张量，不重复减质量和平行轴项。暂沿用reference-v28转子初值，直行RWD扣除(7.2,.29,0)kg·m²；三种CG高度、12组能量／角动量代数核对通过，原始输入和可复算脚本已保存。未创建VehicleConfig，未减少71项待标定，未作机械或实车动态验收。
 
 独立前／后轮距的只读调用点核对：`vehicle_config.wheel_hubs`须按轴取实际轮距，`vehicle_steering.wheel_angles`的Ackermann只取前轮距；`vehicle_visual`已经复用wheel_hubs，悬架／碰撞与轮胎也从实际轮连接点取几何，无需第二套轮位。参数分区在vehicle_parameters、定义／单位在physics/export_reference同步更新。默认统一track_width合同与旧配置恢复保持；只补对应参数／转向／装配节点，不重跑未受影响的机械实验。当前仅定位接入点，尚未修改上述生产接口。
+
+98字段工程初值配置、独立前后轮距、车库/CLI/两模式同硬件、真实静载/外廓与负载限滑已接入；376项相关T1/Ruff及三种子启动通过。1920×1080离屏装配核对完成，人工驾驶待体验。动态初测差异与定圆0有效样本保持，标定和12工况对照继续。[当前实现/证据](../evidence/PHYS-REAL-01/engineering-integration.md)。主目录T2-r8实际浅坡失败，修复79b32d2同步3af5558后恢复r9；此处不再沿用旧331冻结结论。
