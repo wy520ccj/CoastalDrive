@@ -112,7 +112,8 @@ def test_native_layout_launch_outputs_and_reset(mode, share, gear):
             snapshot = vehicle.snapshot()
             for i, wheel in enumerate(snapshot.wheel_dynamics):
                 assert wheel.drive_torque == pytest.approx(snapshot.powertrain_state.drive_torque
-                    * (share if i < 2 else 1 - share) / 2, abs=1e-10)
+                    * (share if i < 2 else 1 - share) / 2
+                    + snapshot.powertrain_state.downstream_wheel_torques[i], abs=1e-10)
                 assert wheel.force_residual < .001
         assert gear * vehicle.signed_speed() > .1
         engine_before = vehicle.powertrain.snapshot()

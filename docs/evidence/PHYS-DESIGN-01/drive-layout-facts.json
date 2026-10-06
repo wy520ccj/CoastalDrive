@@ -1,0 +1,606 @@
+{
+  "status": "unchanged native first step; independent shaft impulse to wheel reaction account",
+  "max_error_N_m": 1.3552527156068805e-20,
+  "rows": [
+    {
+      "mode": "game",
+      "front_drive_share": 0.0,
+      "direction": -1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        -4.709286988358017e-06,
+        0.0,
+        -3.139524658905345e-06
+      ],
+      "wheel_reactions_N_m": [
+        -0.0,
+        -0.0,
+        1.4520301547437221e-05,
+        1.4520301547437221e-05
+      ],
+      "transmission_drive_torque_N_m": -7.631511274168642e-05,
+      "actual_wheel_drive_torques_N_m": [
+        0.0,
+        0.0,
+        -2.363725482340599e-05,
+        -2.363725482340599e-05
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "game",
+      "front_drive_share": 0.0,
+      "direction": -1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        -4.4552634446968535e-06,
+        0.0,
+        -2.970175629797902e-06
+      ],
+      "wheel_reactions_N_m": [
+        -0.0,
+        -0.0,
+        1.3737062287815299e-05,
+        1.3737062287815299e-05
+      ],
+      "transmission_drive_torque_N_m": -6.498574647861888e-05,
+      "actual_wheel_drive_torques_N_m": [
+        0.0,
+        0.0,
+        -1.8755810951494144e-05,
+        -1.8755810951494144e-05
+      ],
+      "max_independent_error_N_m": 3.3881317890172014e-21
+    },
+    {
+      "mode": "game",
+      "front_drive_share": 0.0,
+      "direction": 1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        0.1426632464980169,
+        0.0,
+        0.09510883099867792
+      ],
+      "wheel_reactions_N_m": [
+        -0.0,
+        -0.0,
+        -0.4398783433688854,
+        -0.4398783433688854
+      ],
+      "transmission_drive_torque_N_m": 47.06463876593575,
+      "actual_wheel_drive_torques_N_m": [
+        0.0,
+        0.0,
+        23.092441039598988,
+        23.092441039598988
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "game",
+      "front_drive_share": 0.0,
+      "direction": 1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        0.1426631031651361,
+        0.0,
+        0.09510873544342409
+      ],
+      "wheel_reactions_N_m": [
+        -0.0,
+        -0.0,
+        -0.43987790142583644,
+        -0.43987790142583644
+      ],
+      "transmission_drive_torque_N_m": 47.06464969487454,
+      "actual_wheel_drive_torques_N_m": [
+        0.0,
+        0.0,
+        23.09244694601143,
+        23.09244694601143
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "game",
+      "front_drive_share": 0.5,
+      "direction": -1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        -4.6303114650436475e-06,
+        -2.317162524861496e-06,
+        -3.084198586909535e-06
+      ],
+      "wheel_reactions_N_m": [
+        8.569788776159142e-06,
+        8.569788776159142e-06,
+        9.988805490948015e-06,
+        9.988805490948015e-06
+      ],
+      "transmission_drive_torque_N_m": -8.069713524702407e-05,
+      "actual_wheel_drive_torques_N_m": [
+        -1.1604495035596876e-05,
+        -1.1604495035596876e-05,
+        -1.0185478320808005e-05,
+        -1.0185478320808005e-05
+      ],
+      "max_independent_error_N_m": 1.6940658945086007e-21
+    },
+    {
+      "mode": "game",
+      "front_drive_share": 0.5,
+      "direction": -1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        -4.389410317000455e-06,
+        -2.196256498399389e-06,
+        -2.924205091468088e-06
+      ],
+      "wheel_reactions_N_m": [
+        8.123279065264292e-06,
+        8.123279065264292e-06,
+        9.469983962441384e-06,
+        9.469983962441384e-06
+      ],
+      "transmission_drive_torque_N_m": -6.820109450802263e-05,
+      "actual_wheel_drive_torques_N_m": [
+        -8.926994561741366e-06,
+        -8.926994561741366e-06,
+        -7.580289664564274e-06,
+        -7.580289664564274e-06
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "game",
+      "front_drive_share": 0.5,
+      "direction": 1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        0.07763085644513837,
+        0.03885208606944993,
+        0.051705027167584586
+      ],
+      "wheel_reactions_N_m": [
+        -0.14368490144023538,
+        -0.14368490144023538,
+        -0.16746284247178447,
+        -0.16746284247178447
+      ],
+      "transmission_drive_torque_N_m": 50.79233909074852,
+      "actual_wheel_drive_torques_N_m": [
+        12.554399871246895,
+        12.554399871246895,
+        12.530621930215345,
+        12.530621930215345
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "game",
+      "front_drive_share": 0.5,
+      "direction": 1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        0.0776306637927495,
+        0.03885199002090812,
+        0.05170489836245516
+      ],
+      "wheel_reactions_N_m": [
+        -0.14368454554697332,
+        -0.14368454554697332,
+        -0.16746242597883534,
+        -0.16746242597883534
+      ],
+      "transmission_drive_torque_N_m": 50.792352254847046,
+      "actual_wheel_drive_torques_N_m": [
+        12.554403518164788,
+        12.554403518164788,
+        12.530625637732927,
+        12.530625637732927
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "game",
+      "front_drive_share": 1.0,
+      "direction": -1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        -4.716230806620757e-06,
+        -2.3581154033103787e-06,
+        0.0
+      ],
+      "wheel_reactions_N_m": [
+        1.3087540488372603e-05,
+        1.3087540488372603e-05,
+        -0.0,
+        -0.0
+      ],
+      "transmission_drive_torque_N_m": -7.593008104780246e-05,
+      "actual_wheel_drive_torques_N_m": [
+        -2.4877500035528628e-05,
+        -2.4877500035528628e-05,
+        0.0,
+        0.0
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "game",
+      "front_drive_share": 1.0,
+      "direction": -1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        -4.460736384497936e-06,
+        -2.230368192248968e-06,
+        0.0
+      ],
+      "wheel_reactions_N_m": [
+        1.2378543466981774e-05,
+        1.2378543466981774e-05,
+        -0.0,
+        -0.0
+      ],
+      "transmission_drive_torque_N_m": -6.471870583731229e-05,
+      "actual_wheel_drive_torques_N_m": [
+        -1.998080945167437e-05,
+        -1.998080945167437e-05,
+        0.0,
+        0.0
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "game",
+      "front_drive_share": 1.0,
+      "direction": 1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        0.1428909294412421,
+        0.07144546472062105,
+        0.0
+      ],
+      "wheel_reactions_N_m": [
+        -0.39652232919944685,
+        -0.39652232919944685,
+        -0.0,
+        -0.0
+      ],
+      "transmission_drive_torque_N_m": 47.05159287503149,
+      "actual_wheel_drive_torques_N_m": [
+        23.1292741083163,
+        23.1292741083163,
+        0.0,
+        0.0
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "game",
+      "front_drive_share": 1.0,
+      "direction": 1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        0.14289076547043816,
+        0.07144538273521908,
+        0.0
+      ],
+      "wheel_reactions_N_m": [
+        -0.3965218741804659,
+        -0.3965218741804659,
+        -0.0,
+        -0.0
+      ],
+      "transmission_drive_torque_N_m": 47.051604060075334,
+      "actual_wheel_drive_torques_N_m": [
+        23.129280155857202,
+        23.129280155857202,
+        0.0,
+        0.0
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "simulation",
+      "front_drive_share": 0.0,
+      "direction": -1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        -4.9910991885509045e-05,
+        0.0,
+        -3.327399459033937e-05
+      ],
+      "wheel_reactions_N_m": [
+        -0.0,
+        -0.0,
+        0.00015389222498031957,
+        0.00015389222498031957
+      ],
+      "transmission_drive_torque_N_m": -0.00046011223498847105,
+      "actual_wheel_drive_torques_N_m": [
+        0.0,
+        0.0,
+        -7.616389251391596e-05,
+        -7.616389251391596e-05
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "simulation",
+      "front_drive_share": 0.0,
+      "direction": -1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        -4.89518735423754e-05,
+        0.0,
+        -3.2634582361583605e-05
+      ],
+      "wheel_reactions_N_m": [
+        -0.0,
+        -0.0,
+        0.00015093494342232418,
+        0.00015093494342232418
+      ],
+      "transmission_drive_torque_N_m": -0.0004305168668758949,
+      "actual_wheel_drive_torques_N_m": [
+        0.0,
+        0.0,
+        -6.432349001562327e-05,
+        -6.432349001562327e-05
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "simulation",
+      "front_drive_share": 0.0,
+      "direction": 1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        0.359767407428391,
+        0.0,
+        0.239844938285594
+      ],
+      "wheel_reactions_N_m": [
+        -0.0,
+        -0.0,
+        -1.1092828395708723,
+        -1.1092828395708723
+      ],
+      "transmission_drive_torque_N_m": 13.873290297834885,
+      "actual_wheel_drive_torques_N_m": [
+        0.0,
+        0.0,
+        5.8273623093465705,
+        5.8273623093465705
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "simulation",
+      "front_drive_share": 0.0,
+      "direction": 1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        0.35976791956605836,
+        0.0,
+        0.23984527971070557
+      ],
+      "wheel_reactions_N_m": [
+        -0.0,
+        -0.0,
+        -1.1092844186620132,
+        -1.1092844186620132
+      ],
+      "transmission_drive_torque_N_m": 13.873288212867411,
+      "actual_wheel_drive_torques_N_m": [
+        0.0,
+        0.0,
+        5.827359687771692,
+        5.827359687771692
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "simulation",
+      "front_drive_share": 0.5,
+      "direction": -1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        -4.782388589075407e-05,
+        -2.4123408146916037e-05,
+        -3.160063699178404e-05
+      ],
+      "wheel_reactions_N_m": [
+        8.886539952074218e-05,
+        8.886539952074218e-05,
+        0.000102698272883748,
+        0.000102698272883748
+      ],
+      "transmission_drive_torque_N_m": -0.0005526800796353847,
+      "actual_wheel_drive_torques_N_m": [
+        -4.9304620388103995e-05,
+        -4.9304620388103995e-05,
+        -3.547174702509818e-05,
+        -3.547174702509818e-05
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "simulation",
+      "front_drive_share": 0.5,
+      "direction": -1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        -4.6988242219564045e-05,
+        -2.369851925069371e-05,
+        -3.105296395849381e-05
+      ],
+      "wheel_reactions_N_m": [
+        8.730638466688012e-05,
+        8.730638466688012e-05,
+        0.0001009121073763103,
+        0.0001009121073763103
+      ],
+      "transmission_drive_torque_N_m": -0.0005071541538590299,
+      "actual_wheel_drive_torques_N_m": [
+        -3.948215379787737e-05,
+        -3.948215379787737e-05,
+        -2.5876431088447173e-05,
+        -2.5876431088447173e-05
+      ],
+      "max_independent_error_N_m": 1.3552527156068805e-20
+    },
+    {
+      "mode": "simulation",
+      "front_drive_share": 0.5,
+      "direction": 1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        0.25619680326312744,
+        0.12924024697675315,
+        0.16927540838183236
+      ],
+      "wheel_reactions_N_m": [
+        -0.4760764999253863,
+        -0.4760764999253863,
+        -0.5501415485247828,
+        -0.5501415485247828
+      ],
+      "transmission_drive_torque_N_m": 18.62347350892171,
+      "actual_wheel_drive_torques_N_m": [
+        4.179791877305041,
+        4.179791877305041,
+        4.105726828705644,
+        4.105726828705644
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "simulation",
+      "front_drive_share": 0.5,
+      "direction": 1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        0.25619733741454964,
+        0.12924053359837284,
+        0.16927573842156904
+      ],
+      "wheel_reactions_N_m": [
+        -0.4760775242654482,
+        -0.4760775242654482,
+        -0.5501426531883612,
+        -0.5501426531883612
+      ],
+      "transmission_drive_torque_N_m": 18.62346907855787,
+      "actual_wheel_drive_torques_N_m": [
+        4.17978974537402,
+        4.17978974537402,
+        4.1057246164511065,
+        4.1057246164511065
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "simulation",
+      "front_drive_share": 1.0,
+      "direction": -1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        -5.028265628455078e-05,
+        -2.514132814227539e-05,
+        0.0
+      ],
+      "wheel_reactions_N_m": [
+        0.00013953437118962843,
+        0.00013953437118962843,
+        -0.0,
+        -0.0
+      ],
+      "transmission_drive_torque_N_m": -0.00044364240650544053,
+      "actual_wheel_drive_torques_N_m": [
+        -8.228683206309184e-05,
+        -8.228683206309184e-05,
+        0.0,
+        0.0
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "simulation",
+      "front_drive_share": 1.0,
+      "direction": -1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        -4.933551852918275e-05,
+        -2.4667759264591374e-05,
+        0.0
+      ],
+      "wheel_reactions_N_m": [
+        0.00013690606391848214,
+        0.00013690606391848214,
+        -0.0,
+        -0.0
+      ],
+      "transmission_drive_torque_N_m": -0.00041555480041759315,
+      "actual_wheel_drive_torques_N_m": [
+        -7.087133629031444e-05,
+        -7.087133629031444e-05,
+        0.0,
+        0.0
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "simulation",
+      "front_drive_share": 1.0,
+      "direction": 1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        0.36241757652648665,
+        0.18120878826324333,
+        0.0
+      ],
+      "wheel_reactions_N_m": [
+        -1.0057087748610003,
+        -1.0057087748610003,
+        -0.0,
+        -0.0
+      ],
+      "transmission_drive_torque_N_m": 13.75184783814857,
+      "actual_wheel_drive_torques_N_m": [
+        5.870215144213285,
+        5.870215144213285,
+        0.0,
+        0.0
+      ],
+      "max_independent_error_N_m": 0.0
+    },
+    {
+      "mode": "simulation",
+      "front_drive_share": 1.0,
+      "direction": 1,
+      "dt": 0.004166666666666667,
+      "downstream_inertial_torques_N_m": [
+        0.3624180787824147,
+        0.18120903939120736,
+        0.0
+      ],
+      "wheel_reactions_N_m": [
+        -1.0057101686212009,
+        -1.0057101686212009,
+        -0.0,
+        -0.0
+      ],
+      "transmission_drive_torque_N_m": 13.751844332536104,
+      "actual_wheel_drive_torques_N_m": [
+        5.870211997646851,
+        5.870211997646851,
+        0.0,
+        0.0
+      ],
+      "max_independent_error_N_m": 0.0
+    }
+  ]
+}
