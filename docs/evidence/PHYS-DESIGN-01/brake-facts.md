@@ -1,0 +1,28 @@
+# 阶段回归：离合释放后的输入轴惯性传矩
+
+原T2-r4在冻结ccdd8a1源码上失败结束：Ruff通过，pytest52通过／1失败，8958.739s；后14项未跑。失败为`test_core.py::test_brake_stops_before_reverse_and_beats_throttle`要求完整制动建立时`capacity == drive_torque == 0`。原报告和日志保持在`logs/validation/PHYS-DESIGN-01-stage-T2-r4/`，不覆盖、不记为通过。
+
+## 同轨迹机械事实
+
+使用原Simulation、240拍静置、240拍全油门，再20拍同时全油门／全制动。只包装玩家`accept_step`读取原结果，仍调用原方法；生产源码与331文件冻结清单相比仅`tests/test_core.py`发生变化。[观测脚本](brake-facts-probe.py)与[40个真实子步](native-brake-facts.json)保存完整输入轴／离合／齿轮反力和能量。
+
+| 末两个子步 | 离合容量(N·m) | 离合矩(N·m) | 齿轮反力(N·m) | 驱动矩(N·m) | 输入轴能量变化(J) |
+|---|---:|---:|---:|---:|---:|
+| 前一个 | 0 | 0 | 1.681866 | 17.797503 | −1.281962 |
+| 最后一个 | 0 | 0 | 1.427461 | 15.105388 | −1.080342 |
+
+共同积分的输入轴满足`J_input*(ω_end−ω_start)=dt*(T_clutch−T_gear)`；40子步最大误差9.47593e−17N·m·s。完全释放后输入轴仍通过已挂挡的齿轮减速，驱动矩不能再用离合容量作唯一界限，也不能强清为零。完整制动已经达到1，车速为5.214925m/s；后续实际停车和倒车仍由原机制处理。
+
+测试只改这一条验证：首拍检查离合矩容量；完整制动时检查离合容量／离合矩为零、逐子步输入轴角冲量，保留轴减速传矩事实。原刹车优先、轮能降低、十秒内停车、0.4s倒挡等待、有限挂挡及半秒倒车速度断言保持。未修改生产物理或原机械精度。
+
+```powershell
+.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_core.py::test_brake_stops_before_reverse_and_beats_throttle --output logs/validation/PHYS-DESIGN-01-brake-T0 --timeout 1200
+```
+
+全Ruff／该节点通过，pytest50.80s（runner51.2s）。观测脚本核对与修正节点不是机械阶段通过结论。
+
+## 阶段续跑
+
+r4的前52个通过节点顺序从2095项收集清单核对，失败节点确为第53项。后续T2续跑只用`--deselect`排除这些未受修改影响的通过节点，原失败节点和其余2042项仍运行；原T2后14项也继续执行。沿用`tools/validate.py`现有计划及串行runner，只在本地日志中保存本次续跑入口，不增加通用框架或更改T2默认完整集合。
+
+只有52项复用结果、2043项续跑与后14项全部通过且冻结SHA核对一致，才可写阶段自动通过。原失败、定向T0、续跑结果分别记账；人工驾驶／前台性能／T3仍待后续施工线。

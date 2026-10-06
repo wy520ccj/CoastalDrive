@@ -150,7 +150,7 @@ def test_right_steering_and_reverse_direction():
     assert car.heading > 30
 
 
-def test_brake_stops_before_reverse_and_beats_throttle():
+def test_brake_stops_before_reverse_and_beats_throttle(monkeypatch):
     s = Simulation()
     for _ in range(240):
         s.step(Control())
@@ -161,6 +161,17 @@ def test_brake_stops_before_reverse_and_beats_throttle():
                        for wheel in s.snapshot().player.wheel_dynamics)
     previous_capacity = s.player.powertrain.capacity
     previous_throttle = s.player.powertrain.throttle
+    train = s.player.powertrain
+    accept_step = train.accept_step
+    shaft_steps = []
+
+    def observe_shaft(result, dt):
+        # 完整制动建立期间，逐子步独立核对输入轴角冲量，不把惯性传矩当作离合未释放。
+        shaft_steps.append((train.shaft_omega, result.shaft_omega, dt,
+                            result.clutch_torque, result.gear_reaction))
+        accept_step(result, dt)
+
+    monkeypatch.setattr(train, "accept_step", observe_shaft)
     s.step(Control(throttle=1, brake=1))
     assert s.snapshot().player.throttle == 0
     assert s.snapshot().player.brake > 0
@@ -168,15 +179,20 @@ def test_brake_stops_before_reverse_and_beats_throttle():
     expected = max(0., previous_capacity - CAR.clutch_capacity * FIXED_DT / CAR.clutch_release_time)
     assert s.player.powertrain.capacity == pytest.approx(expected, rel=0, abs=1e-11)
     # 首拍发动机/转子可继续传能；制动优先核对请求和真实有限释放，不强清轴速或转矩。
-    assert abs(s.player.powertrain.drive_torque) <= (
-        abs(s.player.powertrain.ratio) * s.player.powertrain.capacity / CAR.drivetrain_efficiency + 1e-9)
+    assert abs(train.clutch_torque) <= train.capacity + 1e-9
     from driver_assist import GAME_INPUT
 
     for _ in range(round(1 / GAME_INPUT.brake_rise / FIXED_DT) - 1):
         s.step(Control(throttle=1, brake=1))
     assert s.snapshot().player.brake == pytest.approx(1)
     assert 0 < s.snapshot().player.speed < previous
-    assert s.player.powertrain.capacity == s.player.powertrain.drive_torque == 0
+    monkeypatch.setattr(train, "accept_step", accept_step)
+    assert train.capacity == train.clutch_torque == 0
+    for start, end, dt, clutch, gear in shaft_steps:
+        assert CAR.input_shaft_inertia * (end - start) == pytest.approx(dt * (clutch - gear), abs=1e-11)
+    # 离合断开后输入轴仍在减速，齿轮反力携带该轴储能；不强清驱动矩。
+    assert shaft_steps[-1][1] < shaft_steps[-1][0]
+    assert train.drive_torque > 0
     assert sum(.5 * CAR.wheel_inertia * wheel.omega**2
                for wheel in s.snapshot().player.wheel_dynamics) < wheel_energy
     for _ in range(1200):
