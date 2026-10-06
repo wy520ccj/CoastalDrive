@@ -1,0 +1,834 @@
+{
+  "schema": "vehicle-source-ledger-v1",
+  "loadable_vehicle_config": false,
+  "candidate": {
+    "model_year": 2022,
+    "market": "USA",
+    "model": "Toyota GR86 Premium",
+    "engine": "FA24 2387 cc NA flat four",
+    "transmission": "TL70 six-speed manual",
+    "drive": "RWD",
+    "tire": "Michelin Pilot Sport 4 215/40R18"
+  },
+  "sources": {
+    "toyota_2022_brochure": {
+      "url": "https://www.toyota.com/content/dam/toyota/brochures/pdf/2022/gr86_ebrochure.pdf",
+      "publisher": "Toyota USA",
+      "local_pdf": "logs/physics/PHYS-REAL-01-preparation/2022-gr86-brochure.pdf",
+      "sha256": "98943ef10ca166a6809abc64f3908a74b3a167451dc9d06e30d692a48ab4b647",
+      "visually_reviewed_pages_1_based": [
+        4,
+        13,
+        14
+      ]
+    },
+    "cd_2022_test": {
+      "url": "https://www.caranddriver.com/reviews/a37322814/2022-toyota-gr86-drive/",
+      "publisher": "Car and Driver",
+      "author": "David Beard",
+      "updated": "2022-01-03",
+      "matched_trim": "2022 GR86 Premium 6MT; no options"
+    },
+    "mazda_alternative": {
+      "url": "https://www.mazdausa.com/siteassets/pdf/owners-optimized/2020/mx-5-miata/2020-mx-5-miata-features-specs.pdf",
+      "publisher": "Mazda USA",
+      "role": "candidate comparison only"
+    },
+    "toyota_2022_release": {
+      "url": "https://pressroom.toyota.com/toyota-announces-pricing-on-all-new-2022-gr86/",
+      "publisher": "Toyota USA Newsroom",
+      "content_verified": "Official indexed article text for 2022 GR86; 53 front/47 rear, steering 13.5 and 2.5 lock-to-lock turns. Base-grade 2811lb not substituted for measured Premium curb mass."
+    }
+  },
+  "fields": {
+    "chassis": {
+      "mass": {
+        "status": "measured",
+        "value": 1287.29514606,
+        "unit": "kg",
+        "definition": "Bullet车身质量；轮胎标称载荷与道路载荷",
+        "source": "Car and Driver matched Premium 6MT test",
+        "reason": "Measured curb mass; driver/instrument payload protocol still to establish for performance comparison"
+      },
+      "wheelbase": {
+        "status": "manufacturer",
+        "value": 2.575,
+        "unit": "m",
+        "definition": "轴距、Ackermann和轴荷诊断",
+        "source": "Toyota USA brochure p14",
+        "reason": "SI conversion; track_width is the front axle, rear requires a distinct physical parameter"
+      },
+      "track_width": {
+        "status": "manufacturer",
+        "value": 1.52,
+        "unit": "m",
+        "definition": "轮距、实际轮连接点横坐标",
+        "source": "Toyota USA brochure p14",
+        "reason": "SI conversion; track_width is the front axle, rear requires a distinct physical parameter"
+      },
+      "collision_half_width": {
+        "status": "derived",
+        "value": 0.8875,
+        "unit": "m",
+        "definition": "真实车身碰撞盒半宽",
+        "source": "Toyota USA brochure p14",
+        "reason": "Nominal enclosing half dimension; actual exterior/body collider fit to be established"
+      },
+      "collision_half_length": {
+        "status": "derived",
+        "value": 2.1325,
+        "unit": "m",
+        "definition": "真实车身碰撞盒半长",
+        "source": "Toyota USA brochure p14",
+        "reason": "Nominal enclosing half dimension; actual exterior/body collider fit to be established"
+      },
+      "collision_half_height": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "m",
+        "definition": "真实车身碰撞盒半高",
+        "source": "Model parameter not established as OEM data"
+      },
+      "centered_collision_support": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "bool",
+        "definition": "沿CG投影切分零margin原生Box，完整覆盖名义外廓；默认四块；false为历史Box",
+        "source": "Model parameter not established as OEM data"
+      },
+      "body_center_height": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "m",
+        "definition": "设计地面基准下碰撞盒中心高度",
+        "source": "Model parameter not established as OEM data"
+      },
+      "wheel_connection_height": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "m",
+        "definition": "设计地面基准下射线悬架连接点高度",
+        "source": "Model parameter not established as OEM data"
+      },
+      "center_of_mass_height": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "m",
+        "definition": "真实几何相对CG偏移与轴荷诊断高度",
+        "source": "Model parameter not established as OEM data"
+      },
+      "front_weight_share": {
+        "status": "manufacturer",
+        "value": 0.53,
+        "unit": "1",
+        "definition": "通过真实轴连接点相对CG纵向距离实现静态前载份额",
+        "source": "Toyota USA 2022 pricing release",
+        "reason": "Factory front/rear balance 53/47"
+      },
+      "body_inertia": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "kg·m²",
+        "definition": "null沿用原Bullet Box生成的惯量；reference显式设计惯量",
+        "source": "Model parameter not established as OEM data"
+      },
+      "angular_damping": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "1",
+        "definition": "Bullet刚体角阻尼",
+        "source": "Model parameter not established as OEM data"
+      },
+      "steering_degrees": {
+        "status": "derived",
+        "value": 33.333333333333336,
+        "unit": "°",
+        "definition": "虚拟前轴中心角机械限位",
+        "source": "Toyota USA 2022 pricing release",
+        "reason": "Half of 2.5 steering-wheel turns divided by 13.5 overall ratio; nominal mean rack angle to check against geometry"
+      },
+      "steering_rate": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "°/s",
+        "definition": "齿条角速度限位",
+        "source": "Model parameter not established as OEM data"
+      },
+      "steering_response": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "s⁻¹",
+        "definition": "齿条输入临界阻尼响应系数",
+        "source": "Model parameter not established as OEM data"
+      },
+      "steering_return": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "s⁻¹",
+        "definition": "齿条回正临界阻尼响应系数",
+        "source": "Model parameter not established as OEM data"
+      },
+      "air_density": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "kg/m³",
+        "definition": "环境空气密度",
+        "source": "Model parameter not established as OEM data"
+      },
+      "drag_coefficient": {
+        "status": "manufacturer",
+        "value": 0.276,
+        "unit": "1",
+        "definition": "气动阻力Cd",
+        "source": "Toyota USA brochure p13",
+        "reason": "Original brochure version preserved"
+      },
+      "frontal_area": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "m²",
+        "definition": "迎风面积；保持旧CdA乘积的推导设计值",
+        "source": "Model parameter not established as OEM data"
+      }
+    },
+    "powertrain": {
+      "torque_curve": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "rpm,N·m",
+        "definition": "曲轴转矩节点线性插值；game为raw非零节点×1.055",
+        "source": "Toyota USA brochure p4/p13",
+        "exact_net_rating_anchors": [
+          [
+            3700,
+            249.47050249297757
+          ],
+          [
+            7000,
+            231.9381865934627
+          ]
+        ],
+        "reason": "Full-load effective crankshaft torque: existing powertrain suppresses closed-throttle drag at full throttle; no duplicate friction subtraction. Other graphic points are derived, not dynamometer measurements."
+      },
+      "gear_ratios": {
+        "status": "manufacturer",
+        "value": [
+          3.626,
+          2.189,
+          1.541,
+          1.213,
+          1.0,
+          0.767
+        ],
+        "unit": "1",
+        "definition": "五个自动前进挡传动比",
+        "source": "Toyota USA brochure p13",
+        "reason": "Original brochure version preserved"
+      },
+      "final_drive": {
+        "status": "manufacturer",
+        "value": 4.1,
+        "unit": "1",
+        "definition": "主减速比",
+        "source": "Toyota USA brochure p13",
+        "reason": "Original brochure version preserved"
+      },
+      "drivetrain_efficiency": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "1",
+        "definition": "传动双向功流效率；旧分支为驱动转矩乘率",
+        "source": "Model parameter not established as OEM data"
+      },
+      "idle_rpm": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "rpm",
+        "definition": "实际曲轴怠速控制目标；不钳末转速",
+        "source": "Model parameter not established as OEM data"
+      },
+      "shift_time": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "s",
+        "definition": "八维旧分支选择等待/驱动衰减时长；实体轴以真实速差决定同步完成",
+        "source": "Model parameter not established as OEM data"
+      },
+      "torque_response": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "s",
+        "definition": "实际节气门一阶响应时间常数；旧分支为轮端转矩响应",
+        "source": "Model parameter not established as OEM data"
+      },
+      "engine_braking": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N·m",
+        "definition": "闭节气门近似曲轴损失转矩；怠速以下连续趋零，隐式同末速度耗散",
+        "source": "Model parameter not established as OEM data"
+      },
+      "finite_drivetrain": {
+        "status": "model_choice",
+        "value": true,
+        "unit": "bool",
+        "definition": "真实曲轴/有限离合/双向损失与开放差速器共同末状态",
+        "source": "Unified physics completion plan",
+        "reason": "Shared four-wheel/finite mechanical model, not an OEM electronic specification"
+      },
+      "front_drive_share": {
+        "status": "manufacturer",
+        "value": 0.0,
+        "unit": "1",
+        "definition": "前轴驱动份额；0后驱、1前驱、中间值为固定几何开放中差",
+        "source": "Toyota USA brochure p13",
+        "reason": "Rear-wheel drive"
+      },
+      "differential_damping": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N·m·s/rad",
+        "definition": "前轴/后轴/中差末状态速差的粘性耦合系数，设计值",
+        "source": "Model parameter not established as OEM data"
+      },
+      "differential_capacity": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N·m",
+        "definition": "对应限滑转矩上限；有限粘性容量，不是静摩擦锁死",
+        "source": "Model parameter not established as OEM data"
+      },
+      "engine_inertia": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "kg·m²",
+        "definition": "曲轴独立轴向惯量，通用设计值",
+        "source": "Model parameter not established as OEM data"
+      },
+      "engine_axis": {
+        "status": "derived",
+        "value": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "unit": "单位向量",
+        "definition": "车身局部曲轴正转方向",
+        "source": "Longitudinal FA24 layout",
+        "reason": "Geometric axis direction; signed rotor convention must be matched to the model"
+      },
+      "input_shaft_enabled": {
+        "status": "model_choice",
+        "value": true,
+        "unit": "bool",
+        "definition": "实体输入轴/有限同步；false冻结八维传动A/B",
+        "source": "Unified physics completion plan",
+        "reason": "Shared four-wheel/finite mechanical model, not an OEM electronic specification"
+      },
+      "input_shaft_inertia": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "kg·m²",
+        "definition": "输入轴独立轴向惯量，游戏.005/参考.04设计值，非实测",
+        "source": "Model parameter not established as OEM data"
+      },
+      "input_shaft_axis": {
+        "status": "derived",
+        "value": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "unit": "单位向量",
+        "definition": "壳体局部输入轴正转方向",
+        "source": "Longitudinal manual gearbox layout",
+        "reason": "Geometric axis direction; same signed-convention review as crankshaft"
+      },
+      "synchronizer_capacity": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N·m",
+        "definition": "输入轴侧有限同步摩擦锥容量，设计值",
+        "source": "Model parameter not established as OEM data"
+      },
+      "downstream_inertia_enabled": {
+        "status": "model_choice",
+        "value": true,
+        "unit": "bool",
+        "definition": "实体轴分支的输出/前/后驱动轴储能与反力；false为机制A/B",
+        "source": "Unified physics completion plan",
+        "reason": "Shared four-wheel/finite mechanical model, not an OEM electronic specification"
+      },
+      "downstream_inertias": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "kg·m²",
+        "definition": "输出/前/后轴实体设计惯量；非驱动轴不安装对应转子，非实测",
+        "source": "Model parameter not established as OEM data"
+      },
+      "downstream_axes": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "单位向量",
+        "definition": "车身局部三轴正转方向；当前通用模型为纵置轴系",
+        "source": "Model parameter not established as OEM data"
+      },
+      "engine_idle_response": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "s",
+        "definition": "实际相对曲轴速度反馈的怠速控制响应",
+        "source": "Model parameter not established as OEM data"
+      },
+      "engine_idle_torque_limit": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N·m",
+        "definition": "怠速控制正转矩容量",
+        "source": "Model parameter not established as OEM data"
+      },
+      "engine_redline_rpm": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "rpm",
+        "definition": "请求转矩切断阈值；不钳积分末RPM",
+        "source": "Model parameter not established as OEM data"
+      },
+      "clutch_capacity": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N·m",
+        "definition": "完全结合干式离合容量",
+        "source": "Model parameter not established as OEM data"
+      },
+      "clutch_release_time": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "s",
+        "definition": "离合由完全结合至分离的行程时间",
+        "source": "Model parameter not established as OEM data"
+      },
+      "clutch_engage_time": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "s",
+        "definition": "离合由分离至完全结合的行程时间",
+        "source": "Model parameter not established as OEM data"
+      },
+      "clutch_launch_response": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "s",
+        "definition": "自动起步离合实际曲轴速度反馈时域",
+        "source": "Model parameter not established as OEM data"
+      },
+      "max_speed": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "m/s",
+        "definition": "game前进驱动转矩渐退速度；160/3.6",
+        "source": "Model parameter not established as OEM data"
+      },
+      "reverse_speed": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "m/s",
+        "definition": "game倒车驱动转矩渐退速度；22/3.6",
+        "source": "Model parameter not established as OEM data"
+      },
+      "reverse_force": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N",
+        "definition": "game倒车轮端力上限，按半径换算转矩",
+        "source": "Model parameter not established as OEM data"
+      },
+      "reverse_gear_ratio": {
+        "status": "manufacturer",
+        "value": 3.438,
+        "unit": "1",
+        "definition": "倒挡机械传动比",
+        "source": "Toyota USA brochure p13",
+        "reason": "Original brochure version preserved"
+      },
+      "game_speed_limits": {
+        "status": "model_choice",
+        "value": false,
+        "unit": "bool",
+        "definition": "启用游戏速度渐退/倒车力上限；不是车身速度钳制",
+        "source": "Unified physics completion plan",
+        "reason": "Research/real hardware is not calibrated by game speed caps"
+      }
+    },
+    "tires": {
+      "wheel_radius": {
+        "status": "derived",
+        "value": 0.3146,
+        "unit": "m",
+        "definition": "原生射线轮半径、独立轮速/滑移/力臂",
+        "source": "Toyota USA brochure p14 tire size",
+        "reason": "18in rim plus nominal 40% sidewall; unloaded geometric radius, not a measured loaded rolling radius"
+      },
+      "wheel_width": {
+        "status": "manufacturer",
+        "value": 0.215,
+        "unit": "m",
+        "definition": "圆角圆柱轮胎实际胎宽；通用设计值，非实测",
+        "source": "Toyota USA brochure p14",
+        "reason": "215/40R18 nominal section width; tire carcass properties remain model parameters"
+      },
+      "wheel_shoulder_radius": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "m",
+        "definition": "胎肩圆角半径；轮半径和胎宽均包含肩部外廓",
+        "source": "Model parameter not established as OEM data"
+      },
+      "wheel_crown_height": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "m",
+        "definition": "抛物线胎冠中心到肩部落差，设计值；避免平直胎面接点跳变",
+        "source": "Model parameter not established as OEM data"
+      },
+      "wheel_inertia": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "kg·m²",
+        "definition": "独立单轮轴向转动惯量",
+        "source": "Model parameter not established as OEM data"
+      },
+      "longitudinal_stiffness": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N/κ",
+        "definition": "标称单轮载荷下纵向滑移刚度",
+        "source": "Model parameter not established as OEM data"
+      },
+      "lateral_stiffness": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N/rad",
+        "definition": "标称载荷下前轮侧偏刚度",
+        "source": "Model parameter not established as OEM data"
+      },
+      "rear_lateral_stiffness": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N/rad",
+        "definition": "标称载荷下后轮侧偏刚度",
+        "source": "Model parameter not established as OEM data"
+      },
+      "tire_peak_load_exponent": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "1",
+        "definition": "峰值能力轮荷指数pD；D∝Fn^pD，标称轮荷能力保持μFn0",
+        "source": "Model parameter not established as OEM data"
+      },
+      "longitudinal_load_exponent": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "1",
+        "definition": "纵向滑移刚度轮荷指数pX；Cx∝Fn^pX，标称刚度保持Cx0",
+        "source": "Model parameter not established as OEM data"
+      },
+      "lateral_load_exponent": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "1",
+        "definition": "侧偏刚度轮荷指数pY；Cy∝Fn^pY，标称刚度保持Cy0",
+        "source": "Model parameter not established as OEM data"
+      },
+      "tire_compliance": {
+        "status": "model_choice",
+        "value": true,
+        "unit": "bool",
+        "definition": "启用隐式接触胎体弹性与阻尼",
+        "source": "Unified physics completion plan",
+        "reason": "Shared four-wheel/finite mechanical model, not an OEM electronic specification"
+      },
+      "wheel_rotor_transport": {
+        "status": "model_choice",
+        "value": true,
+        "unit": "bool",
+        "definition": "机械轮轴/有效滚动力臂与同末状态轴承反力；false冻结旧机制",
+        "source": "Unified physics completion plan",
+        "reason": "Shared four-wheel/finite mechanical model, not an OEM electronic specification"
+      },
+      "tire_contact_stiffness": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N/m",
+        "definition": "接触胎体纵横弹性刚度",
+        "source": "Model parameter not established as OEM data"
+      },
+      "tire_contact_damping": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N·s/m",
+        "definition": "接触胎体纵横耗散阻尼",
+        "source": "Model parameter not established as OEM data"
+      },
+      "tire_shape": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "1",
+        "definition": "简化联合Magic Formula形状",
+        "source": "Model parameter not established as OEM data"
+      },
+      "tire_curvature": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "1",
+        "definition": "简化联合Magic Formula曲率",
+        "source": "Model parameter not established as OEM data"
+      },
+      "slip_speed": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "m/s",
+        "definition": "低速滑移分母尺度",
+        "source": "Model parameter not established as OEM data"
+      },
+      "static_contact_speed": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "m/s",
+        "definition": "低速静摩擦约束尝试尺度",
+        "source": "Model parameter not established as OEM data"
+      },
+      "tire_substeps": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "次/tick",
+        "definition": "SI有限传动分支的机械/Bullet世界共用子步；控制/快照固定120Hz；冻结分支仅细分轮胎",
+        "source": "Model parameter not established as OEM data"
+      },
+      "rolling_coefficient": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "1",
+        "definition": "铺装滚阻160/(1200×9.81)；轮端矩Crr*实际Fn*有效半径及低速连续项",
+        "source": "Model parameter not established as OEM data"
+      },
+      "grass_rolling_coefficient": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "1",
+        "definition": "草地滚阻900/(1200×9.81)",
+        "source": "Model parameter not established as OEM data"
+      },
+      "wheel_rolling_resistance": {
+        "status": "model_choice",
+        "value": true,
+        "unit": "bool",
+        "definition": "有限传动采用独立路面轮端阻力矩；false冻结旧车身中央阻力A/B",
+        "source": "Unified physics completion plan",
+        "reason": "Shared four-wheel/finite mechanical model, not an OEM electronic specification"
+      },
+      "rolling_transition_speed": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "m/s",
+        "definition": "滚阻从零线性增长至Crr*Fn*r的实际轮缘速度；通用设计尺度",
+        "source": "Model parameter not established as OEM data"
+      },
+      "road_friction": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "1",
+        "definition": "铺装摩擦预算μFn",
+        "source": "Model parameter not established as OEM data"
+      },
+      "grass_friction": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "1",
+        "definition": "草地摩擦预算μFn",
+        "source": "Model parameter not established as OEM data"
+      }
+    },
+    "suspension": {
+      "suspension_si_enabled": {
+        "status": "model_choice",
+        "value": true,
+        "unit": "bool",
+        "definition": "按SI硬件换算原生参数；false沿用旧归一化硬件",
+        "source": "Unified physics completion plan",
+        "reason": "Shared four-wheel/finite mechanical model, not an OEM electronic specification"
+      },
+      "suspension_coupled_enabled": {
+        "status": "model_choice",
+        "value": true,
+        "unit": "bool",
+        "definition": "SI法向弹簧/轴向阻尼/防倾共同末状态；false原生SI对照",
+        "source": "Unified physics completion plan",
+        "reason": "Shared four-wheel/finite mechanical model, not an OEM electronic specification"
+      },
+      "suspension_antiroll_rates": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N/m",
+        "definition": "前/后防倾杆行程差刚度；设计值，非实车标定",
+        "source": "Model parameter not established as OEM data"
+      },
+      "suspension_stop_rates": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N/m",
+        "definition": "四轮行程边界外渐进止挡刚度；设计值",
+        "source": "Model parameter not established as OEM data"
+      },
+      "suspension_spring_rates": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N/m",
+        "definition": "四轮真实弹簧设计值；质量变化时不自动改变硬件",
+        "source": "Model parameter not established as OEM data"
+      },
+      "suspension_compression_damping": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N·s/m",
+        "definition": "四轮轴向压缩阻尼；关闭共同求解时为原生法向/射线速率系数",
+        "source": "Model parameter not established as OEM data"
+      },
+      "suspension_extension_damping": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N·s/m",
+        "definition": "四轮轴向伸张阻尼；非实车标定",
+        "source": "Model parameter not established as OEM data"
+      },
+      "suspension_stiffness": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "s⁻²",
+        "definition": "si_enabled=false的旧归一化刚度；平路k=mass×值",
+        "source": "Model parameter not established as OEM data"
+      },
+      "suspension_compression": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "s⁻¹",
+        "definition": "si_enabled=false的旧归一化压缩阻尼",
+        "source": "Model parameter not established as OEM data"
+      },
+      "suspension_relaxation": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "s⁻¹",
+        "definition": "si_enabled=false的旧归一化伸张阻尼",
+        "source": "Model parameter not established as OEM data"
+      },
+      "suspension_travel": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "m",
+        "definition": "射线悬架最大行程，传API时×100cm",
+        "source": "Model parameter not established as OEM data"
+      },
+      "suspension_force_limit": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N",
+        "definition": "仅原生对照分支的每轮数值力限；SI势能反力不作硬裁剪",
+        "source": "Model parameter not established as OEM data"
+      }
+    },
+    "electronics": {
+      "brake_torque": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "N·m",
+        "definition": "四轮制动总容量",
+        "source": "Model parameter not established as OEM data"
+      },
+      "front_brake_share": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "1",
+        "definition": "前轴制动容量份额",
+        "source": "Model parameter not established as OEM data"
+      },
+      "braking": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "配置对象",
+        "definition": "四轮液压响应与独立ABS压力反馈；详见brake_fields",
+        "source": "Model parameter not established as OEM data"
+      },
+      "traction": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "配置对象",
+        "definition": "驱动请求削减及必要的单轮制动TCS；详见traction_fields",
+        "source": "Model parameter not established as OEM data"
+      },
+      "stability": {
+        "status": "calibration_pending",
+        "value": null,
+        "unit": "配置对象",
+        "definition": "横摆参考与分轮制动ESC；详见stability_fields",
+        "source": "Model parameter not established as OEM data"
+      }
+    }
+  },
+  "additional_hardware_targets": {
+    "rear_track_width_m": {
+      "status": "manufacturer",
+      "value": 1.55,
+      "source": "Toyota USA brochure p14"
+    },
+    "rear_differential_type": {
+      "status": "manufacturer",
+      "value": "Torsen limited slip",
+      "source": "Toyota USA brochure p13",
+      "model_mapping": "Review against existing finite viscous/limited mechanism when implementing; torque-bias characteristics not supplied by this source"
+    }
+  },
+  "performance_targets": {
+    "source": "cd_2022_test",
+    "curb_weight_lb": 2838,
+    "si_mass_kg": 1287.29514606,
+    "time_0_60_mph_s": 5.4,
+    "rollout_omitted_s": 0.3,
+    "quarter_mile_s": 14.0,
+    "quarter_mile_trap_mph": 101,
+    "brake_70_0_mph_ft": 156,
+    "brake_100_0_mph_ft": 325,
+    "skidpad_diameter_ft": 300,
+    "skidpad_g": 0.98
+  },
+  "comparison_protocol": {
+    "braking_start_speeds_m_s": [
+      31.2928,
+      44.704
+    ],
+    "stop_distances_m": [
+      47.5488,
+      99.06
+    ],
+    "skidpad_radius_m": 45.72,
+    "launch_target_speed_m_s": 26.8224,
+    "rollout_omitted_s": 0.3,
+    "include_0_100_km_h_separately": true
+  },
+  "unresolved": [
+    "Front/rear tracks differ; current common track needs explicit axle geometry when implemented.",
+    "Brochure gives GVWR, not curb mass; measured curb mass must be labeled measured.",
+    "Torque plot is schematic; use rating anchors and label read-off points derived.",
+    "Inertias, CG, wheel rates/damping/motion ratios, hydraulic capacity, ECU gains and Torsen characteristics are not published here; derive/calibrate and label model attributes.",
+    "Retain rollout and test speeds; 0-60 mph is not 0-100 km/h.",
+    "OEM brochure reverse 3.438 and ARB 18/15 mm differ from mirrored Product Information (3.437,18.3/14); do not combine silently.",
+    "Appearance source/license and editable model pending."
+  ],
+  "coverage": 96,
+  "source_sha256": {
+    "src/powertrain.py": "a421003c7370b278f61677cc77b29af07d950ccc281ed57bed90689686883f85",
+    "src/vehicle_config.py": "cbccc47ba361be80a9d4ed9eb80e187378637a1d6df9b5281570076c4cce18f9",
+    "src/vehicle_parameters.py": "f3d60755a718d0d5ad4288f2873202279f5162b07d45eecaf1f7341a871cd1ae"
+  },
+  "status": "Preparation only. No production profile, calibration, appearance or real-car report delivered."
+}

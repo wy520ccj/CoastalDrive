@@ -1,0 +1,28 @@
+{
+  "status": "source preparation only; no loaded vehicle or calibration approval",
+  "candidate": {
+    "model_year": 2022,
+    "market": "USA",
+    "model": "Toyota GR86 Premium",
+    "engine": "FA24 2387 cc NA flat four",
+    "transmission": "TL70 six-speed manual",
+    "drive": "RWD",
+    "tire": "Michelin Pilot Sport 4 215/40R18"
+  },
+  "source_bytes_copied_from": "logs/physics/PHYS-REAL-01-preparation",
+  "field_count": 96,
+  "field_status_counts": {
+    "measured": 1,
+    "manufacturer": 9,
+    "derived": 6,
+    "calibration_pending": 71,
+    "model_choice": 9
+  },
+  "source_files_sha256": {
+    "gr86-field-ledger.json": "e60e61592a982e412af78ab6657bb946a34a73dd8161d8acca30e2c64faaea7f",
+    "source-preparation.json": "499e258345c1bdceb2bd411c66f5e06c30391f376a0ca6de6dc2867fe4d40eca"
+  },
+  "manufacturer_pdf_sha256_verified": true,
+  "pdf_in_local_cache": "logs/physics/PHYS-REAL-01-preparation/2022-gr86-brochure.pdf",
+  "production_changes": false
+}

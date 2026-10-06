@@ -11,7 +11,7 @@
 
 允许修改车辆配置／参数分区、车型列表／外观关联、物理轮位及装配、必要标准实验和对应测试；随实车数据补独立前后轮距，保留现有统一轮距配置合同。继续唯一Simulation和现有机械核心，不另建车辆系统。按现有资源目录交付自制外观与可编辑源，更新asset-register真实来源和加工记录。
 
-准备材料在logs/physics/PHYS-REAL-01-preparation：原厂PDF及SHA、source-preparation.json、gr86-field-ledger.json、可编辑Blender／GLB草稿、尺寸读回。账本96字段当前为原厂9／实测1／推导6／模型机制9／待标定71；它不是可加载配置。正式实施时把必要来源账本、完整配置和报告保存到任务证据，勿只依赖被忽略的logs。
+准备材料在logs/physics/PHYS-REAL-01-preparation：原厂PDF及SHA、source-preparation.json、gr86-field-ledger.json、可编辑Blender／GLB草稿、尺寸读回。账本96字段当前为原厂9／实测1／推导6／模型机制9／待标定71；它不是可加载配置。来源记录与96字段账本已按字节保存到[正式准备证据](../evidence/PHYS-REAL-01/source-receipt.md)，缓存PDF及源记录SHA已核对；可加载配置和完整实验报告待实施。
 
 ## 参数与实验协议
 

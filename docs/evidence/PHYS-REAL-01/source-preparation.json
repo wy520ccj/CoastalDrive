@@ -1,0 +1,186 @@
+{
+  "status": "source preparation only; production frozen for PHYS-DESIGN-01 T2",
+  "recorded_utc": "2026-10-05T18:51:57.290682+00:00",
+  "candidate": {
+    "model_year": 2022,
+    "market": "USA",
+    "model": "Toyota GR86 Premium",
+    "engine": "FA24 2387 cc NA flat four",
+    "transmission": "TL70 six-speed manual",
+    "drive": "RWD",
+    "tire": "Michelin Pilot Sport 4 215/40R18"
+  },
+  "sources": {
+    "toyota_2022_brochure": {
+      "url": "https://www.toyota.com/content/dam/toyota/brochures/pdf/2022/gr86_ebrochure.pdf",
+      "publisher": "Toyota USA",
+      "local_pdf": "logs/physics/PHYS-REAL-01-preparation/2022-gr86-brochure.pdf",
+      "sha256": "98943ef10ca166a6809abc64f3908a74b3a167451dc9d06e30d692a48ab4b647",
+      "visually_reviewed_pages_1_based": [
+        4,
+        13,
+        14
+      ]
+    },
+    "cd_2022_test": {
+      "url": "https://www.caranddriver.com/reviews/a37322814/2022-toyota-gr86-drive/",
+      "publisher": "Car and Driver",
+      "author": "David Beard",
+      "updated": "2022-01-03",
+      "matched_trim": "2022 GR86 Premium 6MT; no options"
+    },
+    "mazda_alternative": {
+      "url": "https://www.mazdausa.com/siteassets/pdf/owners-optimized/2020/mx-5-miata/2020-mx-5-miata-features-specs.pdf",
+      "publisher": "Mazda USA",
+      "role": "candidate comparison only"
+    },
+    "toyota_2022_release": {
+      "url": "https://pressroom.toyota.com/toyota-announces-pricing-on-all-new-2022-gr86/",
+      "publisher": "Toyota USA Newsroom",
+      "content_verified": "Official indexed article text for 2022 GR86; 53 front/47 rear, steering 13.5 and 2.5 lock-to-lock turns. Base-grade 2811lb not substituted for measured Premium curb mass."
+    }
+  },
+  "manufacturer_fields": {
+    "gear_ratios": {
+      "value": [
+        3.626,
+        2.189,
+        1.541,
+        1.213,
+        1.0,
+        0.767
+      ],
+      "unit": "1",
+      "source": "toyota_2022_brochure",
+      "page_1_based": 13
+    },
+    "reverse_ratio": {
+      "value": 3.438,
+      "unit": "1",
+      "source": "toyota_2022_brochure",
+      "page_1_based": 13
+    },
+    "final_drive": {
+      "value": 4.1,
+      "unit": "1",
+      "source": "toyota_2022_brochure",
+      "page_1_based": 13
+    },
+    "peak_torque": {
+      "value": 184,
+      "unit": "lb ft at 3700 rpm",
+      "source": "toyota_2022_brochure",
+      "page_1_based": 13
+    },
+    "rated_power": {
+      "value": 228,
+      "unit": "SAE hp at 7000 rpm",
+      "source": "toyota_2022_brochure",
+      "page_1_based": 13
+    },
+    "drag_coefficient": {
+      "value": 0.276,
+      "unit": "1",
+      "source": "toyota_2022_brochure",
+      "page_1_based": 13
+    },
+    "wheelbase": {
+      "value": 2575,
+      "unit": "mm",
+      "source": "toyota_2022_brochure",
+      "page_1_based": 14
+    },
+    "front_track": {
+      "value": 1520,
+      "unit": "mm",
+      "source": "toyota_2022_brochure",
+      "page_1_based": 14
+    },
+    "rear_track": {
+      "value": 1550,
+      "unit": "mm",
+      "source": "toyota_2022_brochure",
+      "page_1_based": 14
+    },
+    "length": {
+      "value": 4265,
+      "unit": "mm",
+      "source": "toyota_2022_brochure",
+      "page_1_based": 14
+    },
+    "width": {
+      "value": 1775,
+      "unit": "mm",
+      "source": "toyota_2022_brochure",
+      "page_1_based": 14
+    },
+    "height": {
+      "value": 1310,
+      "unit": "mm",
+      "source": "toyota_2022_brochure",
+      "page_1_based": 14
+    },
+    "ground_clearance": {
+      "value": 130,
+      "unit": "mm",
+      "source": "toyota_2022_brochure",
+      "page_1_based": 14
+    },
+    "front_arb_diameter": {
+      "value": 18,
+      "unit": "mm",
+      "source": "toyota_2022_brochure",
+      "page_1_based": 13
+    },
+    "rear_arb_diameter": {
+      "value": 15,
+      "unit": "mm",
+      "source": "toyota_2022_brochure",
+      "page_1_based": 13
+    },
+    "front_weight_share": {
+      "value": 0.53,
+      "unit": "1",
+      "source": "toyota_2022_release"
+    },
+    "steering_ratio": {
+      "value": 13.5,
+      "unit": "1",
+      "source": "toyota_2022_release"
+    },
+    "steering_lock_to_lock_turns": {
+      "value": 2.5,
+      "unit": "turns",
+      "source": "toyota_2022_release"
+    }
+  },
+  "published_test": {
+    "source": "cd_2022_test",
+    "curb_weight_lb": 2838,
+    "si_mass_kg": 1287.29514606,
+    "time_0_60_mph_s": 5.4,
+    "rollout_omitted_s": 0.3,
+    "quarter_mile_s": 14.0,
+    "quarter_mile_trap_mph": 101,
+    "brake_70_0_mph_ft": 156,
+    "brake_100_0_mph_ft": 325,
+    "skidpad_diameter_ft": 300,
+    "skidpad_g": 0.98
+  },
+  "derived_anchors": {
+    "unloaded_nominal_tire_radius_m": 0.3146,
+    "peak_torque_nm": 249.47050249297757,
+    "torque_at_rated_power_nm": 231.9381865934627,
+    "nominal_center_steering_limit_deg": 33.333333333333336
+  },
+  "parameter_gaps": [
+    "Front/rear tracks differ; current common track needs explicit axle geometry when implemented.",
+    "Brochure gives GVWR, not curb mass; measured curb mass must be labeled measured.",
+    "Torque plot is schematic; use rating anchors and label read-off points derived.",
+    "Inertias, CG, wheel rates/damping/motion ratios, hydraulic capacity, ECU gains and Torsen characteristics are not published here; derive/calibrate and label model attributes.",
+    "Retain rollout and test speeds; 0-60 mph is not 0-100 km/h.",
+    "OEM brochure reverse 3.438 and ARB 18/15 mm differ from mirrored Product Information (3.437,18.3/14); do not combine silently.",
+    "Appearance source/license and editable model pending."
+  ],
+  "selection_reason": "Matched-year geometry, gear table, torque graphic and matched-trim measured longitudinal/lateral results; fixed-roof coupe fits current appearance pipeline."
+}
