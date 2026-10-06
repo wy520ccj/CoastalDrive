@@ -26,7 +26,9 @@ def test_short_throttle_tap_does_not_leave_power_latched():
             peak = max(peak, sim.snapshot().player.speed)
         assert 0 < peak * 3.6 < 1
         assert sim.snapshot().player.throttle == 0
-        assert abs(sim.player.powertrain.drive_torque) < 0.01 * .33
+        # 驾驶请求与离合均已释放；实体输入轴的微小惯性传矩不能当作油门锁存。
+        assert sim.player.powertrain.throttle < 1e-6
+        assert sim.player.powertrain.capacity == sim.player.powertrain.clutch_torque == 0
     finally:
         sim.close()
 
