@@ -40,7 +40,9 @@ def test_held_throttle_builds_speed_and_changes_gears():
             sim.step(Control())
         checkpoints = {}
         gear_changes = []
+        engaged_changes = []
         last_gear = 1
+        last_engaged_gear = 1
         for tick in range(1, 1201):
             sim.step(Control(throttle=1))
             car = sim.snapshot().player
@@ -49,12 +51,19 @@ def test_held_throttle_builds_speed_and_changes_gears():
             if car.gear != last_gear:
                 gear_changes.append((last_gear, car.gear))
                 last_gear = car.gear
+            if car.gear == 0:
+                assert car.powertrain_state.shift_phase == "synchronizing"
+                assert car.powertrain_state.clutch_capacity == 0
+            elif car.gear != last_engaged_gear:
+                engaged_changes.append((last_engaged_gear, car.gear))
+                last_engaged_gear = car.gear
             assert 800 < car.rpm < 6500
         assert 0.5 < checkpoints[60] < 3
         assert 4 < checkpoints[120] < 12
         assert checkpoints[120] < checkpoints[360] < checkpoints[600] < checkpoints[1200]
         assert checkpoints[1200] > 95
-        assert gear_changes[:2] == [(1, 2), (2, 3)]
+        assert engaged_changes[:2] == [(1, 2), (2, 3)]
+        assert gear_changes[:4] == [(1, 0), (0, 2), (2, 0), (0, 3)]
     finally:
         sim.close()
 
