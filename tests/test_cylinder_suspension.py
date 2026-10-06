@@ -12,7 +12,7 @@ from suspension import SuspensionInput
 from suspension_contacts import cylinder_suspension_rays, suspension_rays
 from suspension_geometry import CylinderSurface
 from suspension_kinematics import SupportPlane, finite_contact_system, rotated_path, rotation_path
-from wheel_envelope import _triangle, convex_distance, cylinder_box_distance
+from wheel_envelope import _triangle, convex_distance, cylinder_box_distance, cylinder_support
 from wheel_geometry import contact_geometry
 
 
@@ -94,6 +94,58 @@ def test_thin_coastal_simplex_projection_matches_high_precision_plane():
     assert all(w > 0. for w in weights)
 
 
+def test_captured_finite_coastal_face_matches_high_precision_profile_extent():
+    center = (-93.05844027821882, 28.190793624421552, 6.316604717301158)
+    axis = (-0.9499677633195276, -0.3123054792652478, -0.005151337166024413)
+    polygon = ((-93.26712958881015, 28.0644303113319, 5.302476043023418),
+               (-92.85155395674252, 28.561646462325694, 5.312669994825364),
+               (-92.85155395674252, 28.387922700622653, 5.307924046279813),
+               (-93.26712958881015, 28.561646462325694, 5.316059459854257))
+    # 70位静态面方程加抛物胎冠的解析最大高度，不用生产距离查询。
+    with localcontext() as context:
+        context.prec = 70
+        a, b, c = (tuple(Decimal.from_float(x) for x in p) for p in polygon[:3])
+        ab, ac = tuple(y-x for x, y in zip(a, b)), tuple(y-x for x, y in zip(a, c))
+        normal = tuple(ab[i]*ac[j] - ab[j]*ac[i] for i, j in ((1, 2), (2, 0), (0, 1)))
+        norm = sum(n*n for n in normal).sqrt()
+        normal = tuple(n/norm for n in normal)
+        if sum(n*(Decimal.from_float(x)-y) for n, x, y in zip(normal, center, a)) < 0:
+            normal = tuple(-n for n in normal)
+        axial = sum(n*Decimal.from_float(u) for n, u in zip(normal, axis))
+        radial = (1 - axial*axial).sqrt()
+        radius, half, crown = Decimal(".32"), Decimal(".0925"), Decimal(".003")
+        q = max(-half, min(half, axial*half*half / (2*crown*radial)))
+        extent = q*axial + radial*(radius - crown*(q/half)**2)
+        expected = float(sum(n*(Decimal.from_float(x)-y) for n, x, y in zip(normal, center, a)) - extent)
+        expected_normal = tuple(float(n) for n in normal)
+    distance, normal, _point = convex_distance(center, axis,
+        lambda d: max(polygon, key=lambda p: sum(x*y for x, y in zip(p, d))), .33, .1025, .01, .003)
+    assert distance == pytest.approx(expected, rel=0., abs=1e-14)
+    assert normal == pytest.approx(expected_normal, rel=0., abs=1e-14)
+
+
+def test_rotated_cap_keeps_axial_extent_and_actual_corner_distance():
+    axis = (.9398454188243761, -.34157626571707533, .004030311850328373)
+    norm = math.sqrt(math.fsum(x*x for x in axis))
+    unit = tuple(x/norm for x in axis)
+    # 此轴的范数平方比1少一个舍入位；真实端面不能把该误差解释成胎径。
+    for sign in (-1., 1.):
+        offset = cylinder_support(tuple(sign*x for x in axis), axis, .33, .1025, .01, .003)
+        extent = math.fsum(x*u for x, u in zip(offset, unit))
+        assert sign*extent == pytest.approx(.1025, rel=0., abs=2e-15)
+        assert offset == pytest.approx(tuple(sign*.1025*u for u in unit), rel=0., abs=2e-15)
+    center = (99.08800894185853, 14.050510012143128, .047717814869382646)
+    corner = (99.3, 14.120750419027639, -.046897439629641796)
+    relative = tuple(x-y for x, y in zip(corner, center))
+    axial = math.fsum(x*u for x, u in zip(relative, unit))
+    radial = math.sqrt(math.fsum((relative[i]-axial*unit[i])**2 for i in range(3)))
+    assert radial < .32-.003
+    distance, normal, point = convex_distance(center, axis, lambda _d: corner, .33, .1025, .01, .003)
+    assert distance == pytest.approx(axial-.0925, rel=0., abs=2e-15)
+    assert normal == pytest.approx(tuple(-u for u in unit), rel=0., abs=2e-15)
+    assert point == corner
+
+
 def test_finite_width_does_not_turn_nearby_rail_into_sphere_support():
     world = BulletWorld()
     rail = BulletRigidBodyNode("rail")
@@ -149,7 +201,6 @@ def test_finite_cylinder_rotation_has_exact_plane_extension_work():
 
 
 def test_crown_contact_is_continuous_and_mechanical_radius_uses_same_profile():
-    from wheel_envelope import cylinder_support
     for a in (-1e-5, 0., 1e-5):
         normal = (a, 0., math.sqrt(1-a*a))
         offset = cylinder_support(normal, (1.,0.,0.), .33, .1025, .01, .003)

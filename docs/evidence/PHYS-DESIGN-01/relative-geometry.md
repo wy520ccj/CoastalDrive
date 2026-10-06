@@ -45,3 +45,23 @@
 ```
 
 最终21项不同短检查有效通过及全Ruff：20项几何通过，新捕获节点首次因JSON梯度列表未恢复为元组失败，仅修复测试数据装配后节点通过；补强的4项独立法线检查通过，复用其余有效结果。相关T1运行中：原海岸场景、种子17、8辆NPC、控制、1200物理拍及30/60/144FPS完整Snapshot相等、四条两模式护栏及三种子启动。通过前不能用短检查代替原生集成结果。阶段T2、实车型及后续施工、T3/前台性能/用户两模式驾驶仍未完成。
+
+## 有限面与轴向端面
+
+上述增量保存为本地检查点`88b8e5c`，没有推送。相关T1已失败结束：4条两模式护栏通过/1完整驾驶节点失败（273.66s），三种子启动未跑。下一处为实际裁剪平面上的单纯形距离未收敛；只用保存的4个实际网格点即可复现同一失败。
+
+增加有限三角面投影候选：轮胎支持点投影必须位于真实三角形内，并满足原全凸体支持判据才返回；不会把道路边外解释为无限平面。面积大的三角形优先，减少短边的法线舍入。独立70位静态面方程与胎冠最大高度核对距离/法线，绝对精度`1e-14`通过；测试首轮未将法线朝向轮胎一侧，修正该几何约定后通过，生产和门槛不变。有限面/原捕获子步/护栏等25项及Ruff通过；该新节点另行补测，不重复其余检查。
+
+有限面版原生T1又失败（431.54s），三种子未跑：这次选到轴向角点时，支持函数生成的顶点竟超出真实轮胎内核。轮轴范数平方少一个舍入位，`direction − projection * axis`的轴向残差被当作径向并归一化，导致声明半宽`.1025m`却返回`.417402968m`的轴向外廓。改用补偿双叉积提取真实正交分量，并按轴长度计算轴向投影；点到内核的投影采用同一几何。没有添加小分量截断。角点/有限边投影提前用原支持判据核对，避免真实端面法线已知时仍迭代有误差的单纯形。
+
+修复后轴向外廓`.1025m`，同一实际角点内核距离`.0823650399584991m`；该点位于端面径向范围内，距离/法线由独立轴向间隙解析式核对。正反轴向外廓和原有限面/边、网格过渡、完整跨面子步、两模式护栏共27项及全Ruff通过（5.91s）。[前后失败、输入、解析结果与源码SHA](finite-feature-summary.json)。96轮GJK、20轮共同求解、原支持间隙和机械残差门槛继续保持。
+
+```powershell
+.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_cylinder_suspension.py tests/test_triangle_support.py tests/test_coastal_contact_step.py tests/test_guardrail_suspension.py --output logs/validation/PHYS-DESIGN-01-finite-face-T0 --timeout 600
+.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_cylinder_suspension.py::test_captured_finite_coastal_face_matches_high_precision_profile_extent --output logs/validation/PHYS-DESIGN-01-finite-face-T0-r3 --timeout 600
+.venv/Scripts/python.exe tools/validate.py T1 --tests tests/test_core.py::test_render_rates_use_identical_simulation --output logs/validation/PHYS-DESIGN-01-finite-face-native-T1 --timeout 3600
+.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_cylinder_suspension.py tests/test_triangle_support.py tests/test_coastal_contact_step.py tests/test_guardrail_suspension.py --output logs/validation/PHYS-DESIGN-01-axial-projection-T0 --timeout 600
+.venv/Scripts/python.exe tools/validate.py T1 --tests tests/test_core.py::test_render_rates_use_identical_simulation --output logs/validation/PHYS-DESIGN-01-axial-native-T1 --timeout 3600
+```
+
+最终轴向修复版原生T1已通过：完整1200拍×30/60/144FPS Snapshot相同（pytest2869.71s），全Ruff及0/17/23各1200拍启动通过（41.0/40.9/40.6s）；与相关27项短检查合并28项不同检查。源码SHA与短检查一致，原门槛和控制不变。当前增量仅本地提交，未推送；旧失败和中断保留，机械/参数化阶段T2及总体Gate没有关闭。

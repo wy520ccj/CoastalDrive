@@ -1,6 +1,7 @@
 """有限胎宽圆角圆柱的凸体距离与沿悬架方向的首次接触。"""
 
 import math
+from itertools import combinations
 
 import numpy as np
 
@@ -13,8 +14,12 @@ def subtract(a, b):
 
 def cylinder_support(direction, axis, radius, half_width, shoulder, crown=0.):
     """圆柱内核加肩部球；radius和half_width都是含肩部的实际外廓。"""
-    axial = dot(direction, axis)
-    radial = subtract(direction, tuple(axial * x for x in axis))
+    axis_squared = dot(axis, axis)
+    axis_length = math.sqrt(axis_squared)
+    unit_axis = tuple(x/axis_length for x in axis)
+    axial = dot(direction, axis) / axis_length
+    # 双叉积保留真实正交分量，避免近轴向减法残差被归一化成虚假的胎径。
+    radial = tuple(x/axis_squared for x in _cross_precise(axis, _cross_precise(direction, axis)))
     radial_length = math.sqrt(dot(radial, radial))
     length = math.sqrt(dot(direction, direction))
     half = half_width - shoulder
@@ -22,7 +27,7 @@ def cylinder_support(direction, axis, radius, half_width, shoulder, crown=0.):
     x = (max(-half, min(half, axial * half**2 / (2 * crown * radial_length)))
          if crown and radial_length else half * axial_sign)
     tread_radius = radius - shoulder - crown * (x / half)**2
-    return tuple(x * axis[i]
+    return tuple(x * unit_axis[i]
                  + (tread_radius * radial[i] / radial_length if radial_length else 0.)
                  + (shoulder * direction[i] / length if length else 0.) for i in range(3))
 
@@ -57,10 +62,18 @@ def _difference_of_products(a, b, c, d):
     return math.fsum((ab, -cd, math.fma(a, b, -ab), -math.fma(c, d, -cd)))
 
 
+def _cross_precise(a, b):
+    return tuple(_difference_of_products(a[i], b[j], a[j], b[i])
+                 for i, j in ((1, 2), (2, 0), (0, 1)))
+
+
 def _cylinder_point_delta(relative, axis, radius, half_width, crown):
     """点到胎冠内核的分离向量；轴向投影解凸距离的一维驻点。"""
-    axial = math.fsum(x*u for x, u in zip(relative, axis))
-    radial = tuple(relative[i] - axial*axis[i] for i in range(3))
+    axis_squared = dot(axis, axis)
+    axis_length = math.sqrt(axis_squared)
+    unit_axis = tuple(x/axis_length for x in axis)
+    axial = math.fsum(x*u for x, u in zip(relative, axis)) / axis_length
+    radial = tuple(x/axis_squared for x in _cross_precise(axis, _cross_precise(relative, axis)))
     rho = math.sqrt(math.fsum(x*x for x in radial))
     k = crown / half_width**2
     q = max(-half_width, min(half_width, axial))
@@ -93,7 +106,7 @@ def _cylinder_point_delta(relative, axis, radius, half_width, crown):
             if q == low or q == high:
                 break
     gap = max(rho - radius + k*q*q, 0.)
-    return tuple((axial-q)*axis[i] + (gap*radial[i]/rho if rho else 0.) for i in range(3))
+    return tuple((axial-q)*unit_axis[i] + (gap*radial[i]/rho if rho else 0.) for i in range(3))
 
 
 def _cylinder_edge_distance(center, axis, a, b, radius, half_width, crown):
@@ -127,6 +140,33 @@ def _cylinder_edge_distance(center, axis, a, b, radius, half_width, crown):
             tuple(math.fsum((a[i], t*edge[i])) for i in range(3)))
 
 
+def _cylinder_face_candidates(center, axis, features, radius, half_width, crown):
+    """有限三角面的投影候选；实际内点与全凸体支持判据共同确认最近面。"""
+    faces = []
+    for a, b, c in combinations(features, 3):
+        ab, ac = subtract(b, a), subtract(c, a)
+        normal = _cross_precise(ab, ac)
+        length = math.sqrt(math.fsum(x*x for x in normal))
+        if length:
+            faces.append((length, a, ab, ac, normal))
+    # 同一裁剪面优先用面积最大的三角形，避免短边放大法线的舍入误差。
+    for length, a, ab, ac, normal in sorted(faces, reverse=True):
+        normal = tuple(x/length for x in normal)
+        if math.fsum(n*(x-y) for n, x, y in zip(normal, center, a)) < 0.:
+            normal = tuple(-x for x in normal)
+        offset = cylinder_support(tuple(-x for x in normal), axis, radius, half_width, 0., crown)
+        relative = tuple(math.fsum((center[i], -a[i], offset[i])) for i in range(3))
+        distance = math.fsum(n*x for n, x in zip(normal, relative))
+        if distance <= 0.:
+            continue
+        body_relative = tuple(relative[i] - distance*normal[i] for i in range(3))
+        coordinates, _residual, rank, _singular = np.linalg.lstsq(
+            np.asarray((ab, ac)).T, np.asarray(body_relative), rcond=None)
+        v, w = coordinates
+        if rank == 2 and v >= 0. and w >= 0. and v + w <= 1.:
+            yield distance, normal, tuple(math.fsum((a[i], v*ab[i], w*ac[i])) for i in range(3))
+
+
 def _triangle(a, b, c):
     ab, ac = subtract(b, a), subtract(c, a)
     # 瘦长道路边的单纯形会同时包含40m和微米级边；SVD投影避免行列式相消。
@@ -135,8 +175,7 @@ def _triangle(a, b, c):
     if rank == 2 and v >= 0. and w >= 0. and v + w <= 1.:
         weights = (1 - v - w, v, w)
         # 近共线边的叉积由接近的乘积相减；保留乘法低位，避免错误法线卡住GJK。
-        normal = tuple(_difference_of_products(ab[i], ac[j], ab[j], ac[i])
-                       for i, j in ((1, 2), (2, 0), (0, 1)))
+        normal = _cross_precise(ab, ac)
         height = math.fsum(x*y for x,y in zip(normal,a)) / dot(normal,normal)
         # 投影点直接由平面法线生成，避免把40m顶点的重心和当作微米级距离。
         return tuple(height*x for x in normal), weights
@@ -200,6 +239,24 @@ def convex_distance(center, axis, support_body, radius, half_width, shoulder, cr
         squared = dot(point, point)
         if squared < 1e-24:
             return 0., (0., 0., 1.), center
+        features = tuple(dict.fromkeys(v[1] for v, w in zip(vertices, weights) if w > 0.))
+        if len(features) <= 2:
+            refined = _cylinder_edge_distance(center, axis, features[0], features[-1],
+                                              radius-shoulder, half_width-shoulder, crown)
+            refined_point = tuple(refined[0]*n for n in refined[1])
+            refined_squared = dot(refined_point, refined_point)
+            candidate = support(refined_point)
+            if refined_squared - dot(refined_point, candidate[0]) <= 1e-13 * max(1., refined_squared):
+                return refined
+        body_pool = tuple(dict.fromkeys(v[1] for v in vertices))
+        if len(body_pool) >= 3:
+            for refined in _cylinder_face_candidates(center, axis, body_pool,
+                                                     radius-shoulder, half_width-shoulder, crown):
+                refined_point = tuple(refined[0]*n for n in refined[1])
+                refined_squared = dot(refined_point, refined_point)
+                candidate = support(refined_point)
+                if refined_squared - dot(refined_point, candidate[0]) <= 1e-13 * max(1., refined_squared):
+                    return refined
         candidate = support(point)
         if squared - dot(point, candidate[0]) <= 1e-13 * max(1., squared):
             features = tuple(dict.fromkeys(v[1] for v, w in zip(vertices, weights) if w > 0.))
