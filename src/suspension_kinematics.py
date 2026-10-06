@@ -25,18 +25,16 @@ def cylinder_endpoint(contact, hub_end, hub_average, direction_end, direction_av
     surface = contact.surface
     wheel_axis, _average = rotated_path(surface.wheel_axis, rotation_axis, angle, scale)
     hub = tuple(hub_end[a] + dt * velocity[a] for a in range(3))
-    start = surface.local(tuple(hub[a] - surface.wheel_radius * direction_end[a] for a in range(3)))
-    end = surface.local(tuple(hub[a] + surface.reach * direction_end[a] for a in range(3)))
-    found = surface.entry(start, end, wheel_axis)
+    start = tuple(hub[a] - surface.wheel_radius * direction_end[a] for a in range(3))
+    end = tuple(hub[a] + surface.reach * direction_end[a] for a in range(3))
+    found = surface.relative_entry(start, end, wheel_axis)
     if found is None:
         return None
-    fraction, local_normal, local_point, face = found
-    normal = surface.world_vector(local_normal)
+    fraction, normal, endpoint, face = found
     length = -surface.wheel_radius + fraction * (surface.wheel_radius + surface.reach)
     alignment = -dot(normal, direction_end)
     if alignment <= 0.:
         return None
-    endpoint = surface.world_vector(tuple(local_point[a] - surface.offset[a] for a in range(3)))
     # 只有同一支持平面才可化简高度差；同法线的另一层路面仍需完整末接点。
     same_plane = normal == contact.normal and abs(dot(normal, subtract(endpoint, contact.point))) <= 1e-10
     if same_plane:

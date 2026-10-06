@@ -32,6 +32,14 @@ class CylinderSurface(BoxSurface):
     crown: float = 0.
     triangles: object | None = None
 
+    def relative_entry(self, start, end, axis):
+        """输入和见证点保持车身相对坐标，避免先加大世界坐标再减回。"""
+        found = self.entry(self.local(start), self.local(end), axis)
+        if found is None:
+            return None
+        fraction, normal, point, face = found
+        return fraction, self.world_vector(normal), self.world_vector(tuple(point[a] - self.offset[a] for a in range(3))), face
+
     def entry(self, start, end, axis):
         from wheel_envelope import cylinder_box_entry, cylinder_support
         local_axis = tuple(sum(self.axes[a][b] * axis[b] for b in range(3)) for a in range(3))

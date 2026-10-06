@@ -91,3 +91,18 @@
 一万拍原生T1实际通过（pytest924.08s）：完成10000拍且未导入显示应用；全Ruff及0/17/23各1200拍启动通过（41.8/41.4/41.6s）。331份源码／测试／工具前后SHA相同，与107项短检查合并108项不同pytest检查。机械/参数化T2、实车型与后续功能、总体T3/前台性能/用户两模式驾驶继续待办。局部重放耗时只作诊断，不作性能Gate。
 
 本轮物理／回归与完整捕获证据范围`01694dc..0072e9c`，仅本地提交、未推送。下一恢复机械／参数化完整T2；后续车型任务包已准备，尚未进入实现。
+
+
+## 浅坡棱接触的相对查询
+
+`9531c20`的T2-r8实际279通过/1浅坡失败（2933.52s），后14项未跑，累计旧版569项通过。第889拍的后轮位于真实坡面边缘，轮胎/制动/法向力已收敛，几何共轭冲量为7.56169e-12，超过原1e-12门槛。[完整失败输入](ramp-step-input.json)和两份原硬件保存；同一静态测试世界、原车身位置重放完全复现原错误。
+
+末姿态查询先形成世界坐标，再减回车身原点，微小末速度变化丢失低位。`relative_entry`现在直接接收车身相对射线；同一Bullet世界的broadphase和原生扫掠仍用世界坐标，解析Box/Plane/网格入口保留相对射线，不再往返相加相减。返回的法线、见证点和面锚点统一到车身相对坐标；纯几何输入仍经自身明确变换。没有改变实际碰撞、轮胎外廓、道路或支持判据。
+
+原失败输入8轮收敛，法向7.28e-12N、悬架能量-5.68e-14J；原20轮共同求解、96轮距离求解和全部精度保持。独立棱接触场景平移4096/8192m后，相对查询逐项完全相同。109项不同短检查/全Ruff通过，原完整浅坡节点通过45.3s；0/17/23各1200拍启动分别42.7/42.5/42.2s通过，合并110项不同pytest。[机器摘要与源码SHA](ramp-relative-summary.json)。生产已变化，旧阶段证据按实际依赖重新审核；T2/T3、前台性能及人工驾驶没有据此通过。
+
+```powershell
+.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_ramp_contact_step.py tests/test_cylinder_suspension.py tests/test_triangle_support.py tests/test_coastal_contact_step.py tests/test_finite_suspension.py tests/test_curved_suspension.py tests/test_suspension_contacts.py tests/test_guardrail_suspension.py --output logs/validation/PHYS-DESIGN-01-ramp-relative-T0 --timeout 600
+.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_ramp_contact_step.py --output logs/validation/PHYS-DESIGN-01-ramp-translation-T0 --timeout 600
+.venv/Scripts/python.exe tools/validate.py T1 --tests tests/test_h1_vehicle.py::test_shallow_ramp_has_real_height_and_body_pitch --output logs/validation/PHYS-DESIGN-01-ramp-native-T1 --timeout 1800
+```

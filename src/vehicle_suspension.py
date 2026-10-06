@@ -31,6 +31,11 @@ class WorldSurface(CylinderSurface):
             self.wheel_radius,self.width,self.shoulder,self.crown,envelope=self.envelope)
         return (hit.fraction,hit.normal,hit.point,hit.support_face) if hit is not None else None
 
+    def relative_entry(self, start, end, axis):
+        hit, = cylinder_suspension_rays(self.world,self.chassis,((start,end),),(axis,),
+            self.wheel_radius,self.width,self.shoulder,self.crown,envelope=self.envelope,ray_origin=self.offset)
+        return (hit.fraction,hit.normal,hit.point,hit.support_face) if hit is not None else None
+
 
 class Suspension:
     def __init__(self, config, hubs):
