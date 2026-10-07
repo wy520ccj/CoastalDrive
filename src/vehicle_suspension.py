@@ -1,6 +1,6 @@
 """同一Bullet世界中的SI悬架射线、共轭法向冲量与施力阶段观测。"""
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 
 from panda3d.core import Vec3
 
@@ -25,6 +25,7 @@ class WorldSurface(CylinderSurface):
     world: object = None
     chassis: object = None
     envelope: object = None
+    queries: dict = field(default_factory=dict, init=False, repr=False, compare=False)
 
     def entry(self, start, end, axis):
         hit, = cylinder_suspension_rays(self.world,self.chassis,((start,end),),(axis,),
@@ -32,9 +33,13 @@ class WorldSurface(CylinderSurface):
         return (hit.fraction,hit.normal,hit.point,hit.support_face) if hit is not None else None
 
     def relative_entry(self, start, end, axis):
-        hit, = cylinder_suspension_rays(self.world,self.chassis,((start,end),),(axis,),
-            self.wheel_radius,self.width,self.shoulder,self.crown,envelope=self.envelope,ray_origin=self.offset)
-        return (hit.fraction,hit.normal,hit.point,hit.support_face) if hit is not None else None
+        # prepare每子步重建对象；同一冻结世界只复用完全相同的射线和轮轴。
+        key = start, end, axis
+        if key not in self.queries:
+            hit, = cylinder_suspension_rays(self.world,self.chassis,((start,end),),(axis,),
+                self.wheel_radius,self.width,self.shoulder,self.crown,envelope=self.envelope,ray_origin=self.offset)
+            self.queries[key] = (hit.fraction,hit.normal,hit.point,hit.support_face) if hit is not None else None
+        return self.queries[key]
 
 
 class Suspension:

@@ -263,26 +263,36 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         return tuple(base[a] + sum(j * dot(g, state) * axis[a]
                      for j, g, axis in zip(inertias, gradients, downstream_axes)) for a in range(3)) if downstream else base
 
-    def known(gyro, exclude=None):
-        gyro_response = mobility(tuple(gyro) + (0.,) * (dimensions - 3))
-        free = tuple(free_base[a] + dt * gyro_response[a] + dt * sum(
+    def load_terms(exclude=None):
+        # 同一次shared求根只改变转子试探速度，四轮力与悬架投影保持不变。
+        angular_load = tuple(dt * sum(
             forces[i][0] * responses[i][0][a] + forces[i][1] * responses[i][1][a]
             - forces[i][2] * responses[i][2][a] for i in range(4) if i != exclude) for a in range(dimensions))
-        if rolling_active:
-            response = mobility((0.,) * wheel_start + tuple(-torque for torque in road_torques))
-            free = tuple(free[a] + dt * response[a] for a in range(dimensions))
         end_velocity = tuple(velocity[a] + dt / mass * sum(
             forces[i][0] * frames[i].tangent[a] + forces[i][1] * frames[i].axle[a]
             for i in range(4) if i != exclude) for a in range(3))
+        normal_load = ()
         if suspension is not None:
-            free = tuple(free[a] + dt * sum(force * response[a] for force, response in
+            normal_load = tuple(dt * sum(force * response[a] for force, response in
                          zip(normal_forces, normal_responses)) for a in range(dimensions))
             end_velocity = tuple(end_velocity[a] + dt / mass * sum(force * g[a] for force, g in
                                  zip(normal_forces, suspension.gradients)) for a in range(3))
+        return angular_load, normal_load, end_velocity
+
+    def known(gyro, loads):
+        angular_load, normal_load, end_velocity = loads
+        gyro_response = mobility(tuple(gyro) + (0.,) * (dimensions - 3))
+        free = tuple(free_base[a] + dt * gyro_response[a] + angular_load[a] for a in range(dimensions))
+        if rolling_active:
+            response = mobility((0.,) * wheel_start + tuple(-torque for torque in road_torques))
+            free = tuple(free[a] + dt * response[a] for a in range(dimensions))
+        if suspension is not None:
+            free = tuple(free[a] + normal_load[a] for a in range(dimensions))
         return free, end_velocity
 
     def shared(guess):
         nonlocal shared_branch, shared_port_index, road_torques, active_limits, bias_ports
+        loads = load_terms()
         def mapped(state):
             nonlocal shared_branch, shared_port_index, road_torques, active_limits
             if torque_bias:
@@ -290,7 +300,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             if rolling_active:
                 road_torques = rolling_torques(frames,radii,state[wheel_start:],rolling_coefficients,
                                                config.rolling_transition_speed)
-            free, end_velocity = known(cross(spin(state), state[:3]))
+            free, end_velocity = known(cross(spin(state), state[:3]), loads)
             order = [shared_branch] + [i for i in range(len(branches)) if i != shared_branch]
             for branch_index in order:
                 branch, mc, ml, response, _wheels, local_response, _plans, shaft_data = branches[branch_index]
@@ -401,7 +411,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         return combined_force(kappa, alpha, grip, cx, cy, car.tire_shape, car.tire_curvature), None
 
     def solve_wheel(i, gyro):
-        free_base_wheel, velocity_base = known(gyro, exclude=i)
+        free_base_wheel, velocity_base = known(gyro, load_terms(exclude=i))
         frame, car = frames[i], configurations[i]
         rx, ry, _rb = responses[i]
         scale_x = dt * (1 / mass + dot(longitudinal[i], rx))

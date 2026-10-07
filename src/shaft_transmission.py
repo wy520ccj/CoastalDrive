@@ -55,17 +55,17 @@ def shaft_brake_state(free, response, dt, capacity, brake_capacity, efficiency, 
                reduced_free[1] / dt if motion == 0 else slope * gear_free,
                reduced_free[2] / dt if brake_mode == 0 else brake_mode * brake_capacity)
         clutch, loss, brake = tuple(sum(columns[j][i] * rhs[j] for j in range(3)) for i in range(3))
+        if abs(clutch) > capacity + tolerance or abs(brake) > brake_capacity + tolerance:
+            continue
         gear = gear_free - sum(response[1][j] * value / response[1][1]
                                for j, value in zip(ports, (clutch, loss, brake)))
+        low, high = gear_loss_limits(gear, efficiency)
+        if not low - tolerance <= loss <= high + tolerance or sign and gear * sign < -tolerance:
+            continue
         values = clutch, gear, loss, brake
         speeds = tuple(free[i] - dt * dot(response[i], values) for i in range(4))
         slip, error, speed, wheel_speed = speeds
-        low, high = gear_loss_limits(gear, efficiency)
-        if abs(clutch) > capacity + tolerance or abs(brake) > brake_capacity + tolerance:
-            continue
-        if abs(error) > tolerance or not low - tolerance <= loss <= high + tolerance:
-            continue
-        if sign and gear * sign < -tolerance:
+        if abs(error) > tolerance:
             continue
         if clutch_mode == 0 and abs(slip) > tolerance or clutch_mode * slip < -tolerance:
             continue

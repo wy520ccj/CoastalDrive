@@ -1,7 +1,7 @@
 """道路三角网格的静态几何索引和有限胎宽首次接触。"""
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from rotor_dynamics import cross, dot
 from suspension_geometry import box_interval
@@ -90,6 +90,21 @@ class TriangleSupport:
     high: tuple
     triangles: tuple = ()
     children: tuple = ()
+    center: tuple = field(init=False)
+    half: tuple = field(init=False)
+    triangle_bounds: tuple = field(init=False)
+
+    def __post_init__(self):
+        # 道路生成后几何固定；查询只为这些原包围盒加轮胎外廓。
+        object.__setattr__(self, "center", tuple((a+b)/2 for a,b in zip(self.low,self.high)))
+        object.__setattr__(self, "half", tuple((b-a)/2 for a,b in zip(self.low,self.high)))
+        bounds = []
+        for triangle in self.triangles:
+            low = tuple(min(p[i] for p in triangle) for i in range(3))
+            high = tuple(max(p[i] for p in triangle) for i in range(3))
+            bounds.append((tuple((a+b)/2 for a,b in zip(low,high)),
+                           tuple((b-a)/2 for a,b in zip(low,high))))
+        object.__setattr__(self, "triangle_bounds", tuple(bounds))
 
     @classmethod
     def build(cls, triangles):
@@ -105,18 +120,15 @@ class TriangleSupport:
         return cls(low, high, children=(cls.build(ordered[:middle]), cls.build(ordered[middle:])))
 
     def candidates(self, start, end, padding):
-        center = tuple((a + b) / 2 for a,b in zip(self.low,self.high))
-        half = tuple((b-a)/2 + padding[i] for i,(a,b) in enumerate(zip(self.low,self.high)))
+        center = self.center
+        half = tuple(value + padding[i] for i,value in enumerate(self.half))
         interval = box_interval(subtract(start, center), subtract(end, center), half)
         if interval is None or interval[0] > 1. or interval[1] < 0.:
             return
         for child in self.children:
             yield from child.candidates(start,end,padding)
-        for triangle in self.triangles:
-            low = tuple(min(p[i] for p in triangle) for i in range(3))
-            high = tuple(max(p[i] for p in triangle) for i in range(3))
-            center = tuple((a+b)/2 for a,b in zip(low,high))
-            half = tuple((b-a)/2 + padding[i] for i,(a,b) in enumerate(zip(low,high)))
+        for triangle, (center, base_half) in zip(self.triangles, self.triangle_bounds):
+            half = tuple(value + padding[i] for i,value in enumerate(base_half))
             interval = box_interval(subtract(start,center),subtract(end,center),half)
             if interval is None or interval[0] > 1. or interval[1] < 0.:
                 continue
