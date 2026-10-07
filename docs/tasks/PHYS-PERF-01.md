@@ -42,3 +42,6 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 支持面几何循环原生块完成：坐标变换、包围盒区间、有限转动共轭路径共3584组与原函数逐值相同；相关100项T0、最终474项T1/Ruff/三种子通过。健康48拍完整快照相同，九车14.424→13.030s仅短测。未减少子步/机械迭代或精度。[证据](../evidence/PHYS-PERF-01/geometry-r1/README.md)。主目录T2仍独立33657dc，隔离继续原顺序三角面候选遍历优化。
 
 三角面索引C遍历试验未保留：1024候选原引用/顺序相同，100项T0/474项T1通过，但真实九车历史21.196s及同进程交替18.212/18.538/20.766/21.988s没有稳定整车收益。初两次快照差异仅新Simulation根生命周期编号，物理48拍相同，完整失败及第三次对照归档。已只将自己本次改的两个生产文件还原586bdf8并重新编译，不把试验通过项记当前新增覆盖。[试验档案](../evidence/PHYS-PERF-01/triangle-traversal-experiment/README.md)。下一机械逆惯量/转子与力投影热点。
+
+
+机械小矩阵块归档（2026-10-07）：[报告](../evidence/PHYS-PERF-01/mechanical-block-r1/mechanical-block-report.md)、[清单与快照/T1收据](../evidence/PHYS-PERF-01/mechanical-block-r1/receipt.json)、[PY/C/PYD源码起止哈希](../evidence/PHYS-PERF-01/mechanical-block-r1/source-hashes.json)。基线 e79af19 + 未提交 `src/mechanical_kernels.c`/`src/tire_drivetrain.py`；2304 mass_response、768 rotor_spin、1280 wheel_load_terms exact 调用通过。48拍单/8车快照与先前机械块/geometry逐字段相同；同进程ABBA四条物理快照相同，contact_epoch复位为0。短测wall/CPU四条按原顺序保存，存在漂移，不称FPS。机械块T0 339项、mass-spin T0 583项及T1 Ruff/722 pytest/三种子均通过；原始summary、日志和gzip(mtime=0)快照均归档。本次只存既有证据，没有重跑。主目录33657dc另行记账；最终T2、产品包、T3、前台和人工Gate未完成。

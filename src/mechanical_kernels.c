@@ -336,7 +336,210 @@ failed:
     PyMem_Free(memory); PyMem_Free(order); Py_DECREF(matrix); return NULL;
 }
 
+static int project_response_data(double *values,int dimensions,PyObject *projection_object) {
+    PyObject *projections=PySequence_Fast(projection_object,"机械投影须为序列");
+    if (!projections) return 0;
+    for (Py_ssize_t k=0; k<PySequence_Fast_GET_SIZE(projections); ++k) {
+        PyObject *part=PySequence_Fast(PySequence_Fast_GET_ITEM(projections,k),"机械投影须为梯度/响应/系数");
+        if (!part) { Py_DECREF(projections); return 0; }
+        if (PySequence_Fast_GET_SIZE(part) != 3) {
+            Py_DECREF(part); Py_DECREF(projections);
+            PyErr_SetString(PyExc_ValueError,"机械投影须为梯度/响应/系数"); return 0;
+        }
+        double gradient[9],response[9],terms[9];
+        int ok=vector(PySequence_Fast_GET_ITEM(part,0),gradient,dimensions)
+            && vector(PySequence_Fast_GET_ITEM(part,1),response,dimensions);
+        double factor=PyFloat_AsDouble(PySequence_Fast_GET_ITEM(part,2));
+        Py_DECREF(part);
+        if (!ok || PyErr_Occurred()) { Py_DECREF(projections); return 0; }
+        for (int i=0; i<dimensions; ++i) terms[i]=gradient[i]*values[i];
+        double scale=factor*compensated(terms,dimensions);
+        for (int i=0; i<dimensions; ++i) values[i]=values[i]-scale*response[i];
+    }
+    Py_DECREF(projections); return 1;
+}
+
+static PyObject *mass_response_call(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *input,*inertia_object,*shaft_object,*projections,*engine_response_object;
+    double engine_inertia,wheel_inertia,drag_factor;
+    static char *names[]={"vector","inverse_inertia","engine_inertia","shaft_inertia","wheel_inertia",
+                         "projections","drag_factor","engine_response",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOdOdOdO",names,&input,&inertia_object,&engine_inertia,
+                                     &shaft_object,&wheel_inertia,&projections,&drag_factor,&engine_response_object)) return NULL;
+    int shaft=shaft_object != Py_None,dimensions=shaft ? 9 : 8,wheel_start=shaft ? 5 : 4;
+    double source[9],values[9],terms[9],engine_response[9];
+    if (!vector(input,source,dimensions)) return NULL;
+    double shaft_inertia=shaft ? PyFloat_AsDouble(shaft_object) : 1.;
+    if (PyErr_Occurred()) return NULL;
+    if (engine_inertia == 0. || wheel_inertia == 0. || shaft_inertia == 0.) {
+        PyErr_SetString(PyExc_ZeroDivisionError,"机械转子惯量为零"); return NULL;
+    }
+    PyObject *rows=PySequence_Fast(inertia_object,"逆惯量须为三行矩阵");
+    if (!rows) return NULL;
+    if (PySequence_Fast_GET_SIZE(rows) != 3) {
+        Py_DECREF(rows); PyErr_SetString(PyExc_ValueError,"逆惯量须为三行矩阵"); return NULL;
+    }
+    for (int a=0; a<3; ++a) {
+        double row[3];
+        if (!vector(PySequence_Fast_GET_ITEM(rows,a),row,3)) { Py_DECREF(rows); return NULL; }
+        for (int b=0; b<3; ++b) terms[b]=row[b]*source[b];
+        values[a]=compensated(terms,3);
+    }
+    Py_DECREF(rows);
+    values[3]=source[3]/engine_inertia;
+    if (shaft) values[4]=source[4]/shaft_inertia;
+    for (int a=wheel_start; a<dimensions; ++a) values[a]=source[a]/wheel_inertia;
+    if (!project_response_data(values,dimensions,projections)) return NULL;
+    if (engine_response_object != Py_None) {
+        if (!vector(engine_response_object,engine_response,dimensions)) return NULL;
+        for (int a=0; a<dimensions; ++a) terms[a]=engine_response[a]*source[a];
+        double projection=drag_factor*compensated(terms,dimensions);
+        for (int a=0; a<dimensions; ++a) values[a]=values[a]-projection*engine_response[a];
+    }
+    PyObject *result=PyTuple_New(dimensions);
+    if (!result) return NULL;
+    for (int a=0; a<dimensions; ++a) {
+        PyObject *value=PyFloat_FromDouble(values[a]);
+        if (!value) { Py_DECREF(result); return NULL; }
+        PyTuple_SET_ITEM(result,a,value);
+    }
+    return result;
+}
+
+static int matrix_values(PyObject *object,double *values,int rows,int columns) {
+    PyObject *sequence=PySequence_Fast(object,"机械矩阵须为行序列");
+    if (!sequence) return 0;
+    if (PySequence_Fast_GET_SIZE(sequence) != rows) {
+        Py_DECREF(sequence); PyErr_SetString(PyExc_ValueError,"机械矩阵行数不一致"); return 0;
+    }
+    for (int i=0; i<rows; ++i) {
+        if (!vector(PySequence_Fast_GET_ITEM(sequence,i),values+i*columns,columns)) { Py_DECREF(sequence); return 0; }
+    }
+    Py_DECREF(sequence); return 1;
+}
+
+static PyObject *rotor_spin_call(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *state_object,*engine_axis_object,*axes_object,*shaft_object,*shaft_axis_object;
+    PyObject *inertia_object,*gradient_object,*downstream_axis_object;
+    double engine_inertia,wheel_inertia;
+    int rotor;
+    static char *names[]={"state","engine_inertia","engine_axis","wheel_inertia","wheel_axes","rotor",
+                         "shaft_inertia","shaft_axis","inertias","gradients","downstream_axes",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OdOdOpOOOOO",names,&state_object,&engine_inertia,&engine_axis_object,
+                                    &wheel_inertia,&axes_object,&rotor,&shaft_object,&shaft_axis_object,
+                                    &inertia_object,&gradient_object,&downstream_axis_object)) return NULL;
+    int shaft=shaft_object != Py_None,dimensions=shaft ? 9 : 8,wheel_start=shaft ? 5 : 4;
+    double state[9],engine_axis[3],axes[12],shaft_axis[3],terms[9],base[3],result[3];
+    if (!vector(state_object,state,dimensions) || !vector(engine_axis_object,engine_axis,3)
+        || !matrix_values(axes_object,axes,4,3)) return NULL;
+    double shaft_inertia=shaft ? PyFloat_AsDouble(shaft_object) : 0.;
+    if (PyErr_Occurred() || (shaft && !vector(shaft_axis_object,shaft_axis,3))) return NULL;
+    for (int a=0; a<3; ++a) {
+        for (int i=0; i<4; ++i) terms[i]=state[i+wheel_start]*axes[i*3+a];
+        base[a]=engine_inertia*state[3]*engine_axis[a]-(rotor ? wheel_inertia*compensated(terms,4) : 0.)
+                +(shaft ? shaft_inertia*state[4]*shaft_axis[a] : 0.);
+    }
+    PyObject *inertias=PySequence_Fast(inertia_object,"实体轴惯量须为序列");
+    if (!inertias) return NULL;
+    int downstream=PySequence_Fast_GET_SIZE(inertias) != 0;
+    Py_DECREF(inertias);
+    if (downstream) {
+        double inertia[3],gradients[27],downstream_axes[9],momentum[3];
+        if (!vector(inertia_object,inertia,3) || !matrix_values(gradient_object,gradients,3,dimensions)
+            || !matrix_values(downstream_axis_object,downstream_axes,3,3)) return NULL;
+        for (int i=0; i<3; ++i) {
+            for (int b=0; b<dimensions; ++b) terms[b]=gradients[i*dimensions+b]*state[b];
+            momentum[i]=inertia[i]*compensated(terms,dimensions);
+        }
+        for (int a=0; a<3; ++a) {
+            for (int i=0; i<3; ++i) terms[i]=momentum[i]*downstream_axes[i*3+a];
+            result[a]=base[a]+compensated(terms,3);
+        }
+    } else {
+        for (int a=0; a<3; ++a) result[a]=base[a];
+    }
+    return Py_BuildValue("(ddd)",result[0],result[1],result[2]);
+}
+
+static PyObject *load_terms_call(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *force_object,*response_object,*tangent_object,*axle_object,*velocity_object;
+    PyObject *normal_force_object,*normal_response_object,*gradient_object,*exclude_object;
+    double dt,mass;
+    int dimensions;
+    static char *names[]={"forces","responses","tangents","axles","velocity","dt","mass",
+                         "normal_forces","normal_responses","normal_gradients","exclude","dimensions",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOOOddOOOOi",names,&force_object,&response_object,&tangent_object,
+        &axle_object,&velocity_object,&dt,&mass,&normal_force_object,&normal_response_object,&gradient_object,
+        &exclude_object,&dimensions)) return NULL;
+    if (dimensions != 8 && dimensions != 9) {
+        PyErr_SetString(PyExc_ValueError,"机械状态须为八或九维"); return NULL;
+    }
+    if (mass == 0.) { PyErr_SetString(PyExc_ZeroDivisionError,"机械车身质量为零"); return NULL; }
+    double force[12],response[108],tangents[12],axles[12],velocity[3],end_velocity[3],terms[4],angular[9],normal[9];
+    if (!matrix_values(force_object,force,4,3) || !matrix_values(tangent_object,tangents,4,3)
+        || !matrix_values(axle_object,axles,4,3) || !vector(velocity_object,velocity,3)) return NULL;
+    PyObject *wheels=PySequence_Fast(response_object,"轮端响应须为四轮序列");
+    if (!wheels) return NULL;
+    if (PySequence_Fast_GET_SIZE(wheels) != 4) {
+        Py_DECREF(wheels); PyErr_SetString(PyExc_ValueError,"轮端响应须为四轮序列"); return NULL;
+    }
+    for (int i=0; i<4; ++i) {
+        if (!matrix_values(PySequence_Fast_GET_ITEM(wheels,i),response+i*3*dimensions,3,dimensions)) {
+            Py_DECREF(wheels); return NULL;
+        }
+    }
+    Py_DECREF(wheels);
+    long exclude=exclude_object == Py_None ? -1 : PyLong_AsLong(exclude_object);
+    if (PyErr_Occurred()) return NULL;
+    for (int a=0; a<dimensions; ++a) {
+        int count=0;
+        for (int i=0; i<4; ++i) {
+            if (i == exclude) continue;
+            terms[count++]=force[i*3]*response[(i*3)*dimensions+a]
+                +force[i*3+1]*response[(i*3+1)*dimensions+a]-force[i*3+2]*response[(i*3+2)*dimensions+a];
+        }
+        angular[a]=dt*compensated(terms,count);
+    }
+    for (int a=0; a<3; ++a) {
+        int count=0;
+        for (int i=0; i<4; ++i) {
+            if (i != exclude) terms[count++]=force[i*3]*tangents[i*3+a]+force[i*3+1]*axles[i*3+a];
+        }
+        end_velocity[a]=velocity[a]+dt/mass*compensated(terms,count);
+    }
+    int suspension=normal_force_object != Py_None;
+    if (suspension) {
+        double normal_forces[4],normal_responses[36],gradients[24];
+        if (!vector(normal_force_object,normal_forces,4) || !matrix_values(normal_response_object,normal_responses,4,dimensions)
+            || !matrix_values(gradient_object,gradients,4,6)) return NULL;
+        for (int a=0; a<dimensions; ++a) {
+            for (int i=0; i<4; ++i) terms[i]=normal_forces[i]*normal_responses[i*dimensions+a];
+            normal[a]=dt*compensated(terms,4);
+        }
+        for (int a=0; a<3; ++a) {
+            for (int i=0; i<4; ++i) terms[i]=normal_forces[i]*gradients[i*6+a];
+            end_velocity[a]=end_velocity[a]+dt/mass*compensated(terms,4);
+        }
+    }
+    PyObject *angular_result=PyTuple_New(dimensions),*normal_result=PyTuple_New(suspension ? dimensions : 0);
+    if (!angular_result || !normal_result) { Py_XDECREF(angular_result); Py_XDECREF(normal_result); return NULL; }
+    for (int a=0; a<dimensions; ++a) {
+        PyObject *value=PyFloat_FromDouble(angular[a]);
+        if (!value) { Py_DECREF(angular_result); Py_DECREF(normal_result); return NULL; }
+        PyTuple_SET_ITEM(angular_result,a,value);
+        if (suspension) {
+            value=PyFloat_FromDouble(normal[a]);
+            if (!value) { Py_DECREF(angular_result); Py_DECREF(normal_result); return NULL; }
+            PyTuple_SET_ITEM(normal_result,a,value);
+        }
+    }
+    return Py_BuildValue("(NN(ddd))",angular_result,normal_result,end_velocity[0],end_velocity[1],end_velocity[2]);
+}
+
 static PyMethodDef methods[] = {
+    {"wheel_load_terms", (PyCFunction)load_terms_call, METH_VARARGS | METH_KEYWORDS, "原四轮力矩与法向投影"},
+    {"rotor_spin", (PyCFunction)rotor_spin_call, METH_VARARGS | METH_KEYWORDS, "原整组转子轴向角动量"},
+    {"mass_response", (PyCFunction)mass_response_call, METH_VARARGS | METH_KEYWORDS, "原实体转子消元及发动机阻力响应"},
     {"solve_lu", (PyCFunction)solve_lu, METH_VARARGS | METH_KEYWORDS, "小型稠密LU及原精度残差修正"},
     {"shaft_brake_state", (PyCFunction)shaft_state, METH_VARARGS | METH_KEYWORDS, "四端口有限末状态原方程C内核"},
     {"dot", (PyCFunction)dot_vector, METH_VARARGS | METH_KEYWORDS, "同次序补偿点积"},

@@ -3,7 +3,7 @@
 import math
 from dataclasses import dataclass, replace
 
-from mechanical_kernels import dot
+from mechanical_kernels import dot, mass_response, rotor_spin, wheel_load_terms
 
 from differential import (
     differential_branches,
@@ -12,7 +12,7 @@ from differential import (
     torque_bias_capacities,
     viscous_projection,
 )
-from driveline_inertia import active_inertias, inertia_projections, project_inertia, rotor_gradients
+from driveline_inertia import active_inertias, inertia_projections, rotor_gradients
 from rolling_resistance import rolling_torques
 from rotor_dynamics import bearing_torques, cross
 from shaft_transmission import (
@@ -122,10 +122,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     lateral = tuple(moment + (0.,) * (dimensions - 3) for moment in moments_y)
 
     def base_inverse_mass(vector):
-        return (tuple(dot(row, vector[:3]) for row in inverse_inertia)
-                + (vector[3] / engine_inertia,)
-                + ((vector[4] / shaft_inertia,) if shaft else ())
-                + tuple(value / wheel_inertia for value in vector[wheel_start:]))
+        return mass_response(vector, inverse_inertia, engine_inertia, shaft_inertia if shaft else None,
+                             wheel_inertia, (), 0., None)
 
     downstream = bool(downstream_omega)
     inertias, gradients, downstream_projections = (), (), ()
@@ -135,15 +133,15 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         downstream_projections = inertia_projections(base_inverse_mass, gradients, inertias)
 
     def inverse_mass(vector):
-        return project_inertia(base_inverse_mass(vector), downstream_projections)
+        return mass_response(vector, inverse_inertia, engine_inertia, shaft_inertia if shaft else None,
+                             wheel_inertia, downstream_projections, 0., None)
 
     engine_response = inverse_mass(engine_gradient)
     drag_factor = dt * engine_drag / (1 + dt * engine_drag * dot(engine_gradient, engine_response))
 
     def mobility(vector):
-        base = inverse_mass(vector)
-        projection = drag_factor * dot(engine_response, vector)
-        return tuple(base[a] - projection * engine_response[a] for a in range(dimensions))
+        return mass_response(vector, inverse_inertia, engine_inertia, shaft_inertia if shaft else None,
+                             wheel_inertia, downstream_projections, drag_factor, engine_response)
 
     normal_forces = (0.,) * 4
     normal_responses, normal_mobility = (), ()
@@ -254,27 +252,17 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     free_base = tuple(free_base[a] - projection * engine_response[a] for a in range(dimensions))
 
     def spin(state):
-        base = tuple(engine_inertia * state[3] * engine_axis[a] - (wheel_inertia * sum(
-            state[i + wheel_start] * axes[i][a] for i in range(4)) if rotor else 0.)
-            + (shaft_inertia * state[4] * shaft_axis[a] if shaft else 0.) for a in range(3))
-        return tuple(base[a] + sum(j * dot(g, state) * axis[a]
-                     for j, g, axis in zip(inertias, gradients, downstream_axes)) for a in range(3)) if downstream else base
+        return rotor_spin(state[:dimensions], engine_inertia, engine_axis, wheel_inertia, axes, rotor,
+                          shaft_inertia if shaft else None, shaft_axis, inertias, gradients, downstream_axes)
+
+    tangents = tuple(frame.tangent for frame in frames)
+    lateral_axes = tuple(frame.axle for frame in frames)
 
     def load_terms(exclude=None):
-        # 同一次shared求根只改变转子试探速度，四轮力与悬架投影保持不变。
-        angular_load = tuple(dt * sum(
-            forces[i][0] * responses[i][0][a] + forces[i][1] * responses[i][1][a]
-            - forces[i][2] * responses[i][2][a] for i in range(4) if i != exclude) for a in range(dimensions))
-        end_velocity = tuple(velocity[a] + dt / mass * sum(
-            forces[i][0] * frames[i].tangent[a] + forces[i][1] * frames[i].axle[a]
-            for i in range(4) if i != exclude) for a in range(3))
-        normal_load = ()
-        if suspension is not None:
-            normal_load = tuple(dt * sum(force * response[a] for force, response in
-                         zip(normal_forces, normal_responses)) for a in range(dimensions))
-            end_velocity = tuple(end_velocity[a] + dt / mass * sum(force * g[a] for force, g in
-                                 zip(normal_forces, suspension.gradients)) for a in range(3))
-        return angular_load, normal_load, end_velocity
+        # 当前法向状态与轮端力直接投影；不另存物理状态。
+        return wheel_load_terms(forces, responses, tangents, lateral_axes, velocity, dt, mass,
+            normal_forces if suspension is not None else None, normal_responses,
+            suspension.gradients if suspension is not None else None, exclude, dimensions)
 
     def known(gyro, loads):
         angular_load, normal_load, end_velocity = loads
