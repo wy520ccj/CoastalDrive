@@ -13,6 +13,7 @@ from vehicle_state import VehicleCommand
 
 def test_grouped_file_round_trip_reaches_actual_vehicle_hardware(tmp_path):
     config = replace(REFERENCE_CAR, mass=1450., wheel_radius=.35, wheel_width=.225,
+                     axle_track_widths=(1.52, 1.55),
                      front_drive_share=1., torque_curve=((900, 100), (6500, 0)),
                      braking=replace(REFERENCE_CAR.braking, target_slip=.18))
     path = tmp_path / "engineering.json"

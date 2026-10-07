@@ -1,0 +1,62 @@
+{
+  "passed": true,
+  "comparisons": [
+    {
+      "baseline": "exact-before.json",
+      "cases": [
+        {
+          "traffic": 0,
+          "snapshots_all_equal": true,
+          "ticks": 48,
+          "before_s": 4.643618000016431,
+          "after_s": 1.4763258000166388
+        },
+        {
+          "traffic": 8,
+          "snapshots_all_equal": true,
+          "ticks": 48,
+          "before_s": 50.96059460003744,
+          "after_s": 14.195120699994732
+        }
+      ]
+    },
+    {
+      "baseline": "wheel-production-snapshots.json",
+      "cases": [
+        {
+          "traffic": 0,
+          "snapshots_all_equal": true,
+          "ticks": 48,
+          "before_s": 1.4716936000186251,
+          "after_s": 1.4763258000166388
+        },
+        {
+          "traffic": 8,
+          "snapshots_all_equal": true,
+          "ticks": 48,
+          "before_s": 16.161784300027648,
+          "after_s": 14.195120699994732
+        }
+      ]
+    },
+    {
+      "baseline": "edge-pilot-snapshots.json",
+      "cases": [
+        {
+          "traffic": 0,
+          "snapshots_all_equal": true,
+          "ticks": 48,
+          "before_s": 1.4916994999948656,
+          "after_s": 1.4763258000166388
+        },
+        {
+          "traffic": 8,
+          "snapshots_all_equal": true,
+          "ticks": 48,
+          "before_s": 14.647078500041971,
+          "after_s": 14.195120699994732
+        }
+      ]
+    }
+  ]
+}

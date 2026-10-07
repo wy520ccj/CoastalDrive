@@ -1,8 +1,10 @@
 """有限离合、双向齿轮损失与单轮制动的共同末状态约束。"""
 
+import mechanical_kernels
+
 from rotor_dynamics import cross, dot
 
-PORT_TOLERANCE = 1e-11
+PORT_TOLERANCE = mechanical_kernels.PORT_TOLERANCE
 
 
 def gear_loss_limits(clutch, efficiency):

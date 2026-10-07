@@ -4,6 +4,7 @@ import math
 from itertools import combinations
 
 import numpy as np
+import wheel_contact_kernels
 
 from rotor_dynamics import dot
 
@@ -12,25 +13,7 @@ def subtract(a, b):
     return tuple(x - y for x, y in zip(a, b))
 
 
-def cylinder_support(direction, axis, radius, half_width, shoulder, crown=0.):
-    """圆柱内核加肩部球；radius和half_width都是含肩部的实际外廓。"""
-    axis_squared = dot(axis, axis)
-    axis_length = math.sqrt(axis_squared)
-    unit_axis = tuple(x/axis_length for x in axis)
-    axial = dot(direction, axis) / axis_length
-    # 双叉积保留真实正交分量，避免近轴向减法残差被归一化成虚假的胎径。
-    radial = tuple(x/axis_squared for x in _cross_precise(axis, _cross_precise(direction, axis)))
-    radial_length = math.sqrt(dot(radial, radial))
-    length = math.sqrt(dot(direction, direction))
-    half = half_width - shoulder
-    axial_sign = (1. if axial > 0. else -1. if axial < 0. else 0.)
-    x = (max(-half, min(half, axial * half**2 / (2 * crown * radial_length)))
-         if crown and radial_length else half * axial_sign)
-    tread_radius = radius - shoulder - crown * (x / half)**2
-    return tuple(x * unit_axis[i]
-                 + (tread_radius * radial[i] / radial_length if radial_length else 0.)
-                 + (shoulder * direction[i] / length if length else 0.) for i in range(3))
-
+cylinder_support = wheel_contact_kernels.cylinder_support
 
 def crown_extent_secant(a0, a1, radius, half_width, shoulder, crown):
     """单位法线轴向投影的支持高度差商；同分区代数化简避免静载下相消。"""
@@ -67,77 +50,9 @@ def _cross_precise(a, b):
                  for i, j in ((1, 2), (2, 0), (0, 1)))
 
 
-def _cylinder_point_delta(relative, axis, radius, half_width, crown):
-    """点到胎冠内核的分离向量；轴向投影解凸距离的一维驻点。"""
-    axis_squared = dot(axis, axis)
-    axis_length = math.sqrt(axis_squared)
-    unit_axis = tuple(x/axis_length for x in axis)
-    axial = math.fsum(x*u for x, u in zip(relative, axis)) / axis_length
-    radial = tuple(x/axis_squared for x in _cross_precise(axis, _cross_precise(relative, axis)))
-    rho = math.sqrt(math.fsum(x*x for x in radial))
-    k = crown / half_width**2
-    q = max(-half_width, min(half_width, axial))
-
-    def derivative(q):
-        return q - axial + 2*k*q*max(rho - radius + k*q*q, 0.)
-
-    if derivative(-half_width) >= 0.:
-        q = -half_width
-    elif derivative(half_width) <= 0.:
-        q = half_width
-    else:
-        low, high = -half_width, half_width
-        for _ in range(64):
-            gap = max(rho - radius + k*q*q, 0.)
-            value = q - axial + 2*k*q*gap
-            if value == 0.:
-                break
-            slope = 1 + 2*k*gap + (4*k*k*q*q if gap else 0.)
-            candidate = q - value/slope
-            if candidate == q:
-                break
-            if value > 0.:
-                high = q
-            else:
-                low = q
-            if not low < candidate < high:
-                candidate = (low + high) / 2
-            q = candidate
-            if q == low or q == high:
-                break
-    gap = max(rho - radius + k*q*q, 0.)
-    return tuple((axial-q)*unit_axis[i] + (gap*radial[i]/rho if rho else 0.) for i in range(3))
-
-
-def _cylinder_edge_distance(center, axis, a, b, radius, half_width, crown):
-    """固定有限边到胎冠内核的最近点；边参数驻点保持接触法线平滑。"""
-    edge = subtract(b, a)
-
-    def evaluate(t):
-        relative = tuple(math.fsum((a[i], -center[i], t*edge[i])) for i in range(3))
-        delta = _cylinder_point_delta(relative, axis, radius, half_width, crown)
-        return delta, math.fsum(x*y for x, y in zip(delta, edge))
-
-    da, ga = evaluate(0.)
-    db, gb = evaluate(1.)
-    if ga >= 0.:
-        t, delta = 0., da
-    elif gb <= 0.:
-        t, delta = 1., db
-    else:
-        low, high = 0., 1.
-        for _ in range(64):
-            t = (low + high) / 2
-            delta, value = evaluate(t)
-            if value == 0. or t == low or t == high:
-                break
-            if value > 0.:
-                high = t
-            else:
-                low = t
-    distance = math.sqrt(math.fsum(x*x for x in delta))
-    return (distance, tuple(-x/distance for x in delta) if distance else (0., 0., 1.),
-            tuple(math.fsum((a[i], t*edge[i])) for i in range(3)))
+# 原胎冠驻点与有限边二分，迭代上限和精确部分和保持。
+_cylinder_point_delta = wheel_contact_kernels.cylinder_point_delta
+_cylinder_edge_distance = wheel_contact_kernels.cylinder_edge_distance
 
 
 def _cylinder_face_candidates(center, axis, features, radius, half_width, crown):

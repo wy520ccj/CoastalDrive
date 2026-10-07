@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "traffic": 0,
+      "ticks": 48,
+      "snapshot_all_fields_equal": true,
+      "before_s": 4.643618000016431,
+      "after_s": 1.6639658999774838,
+      "reduction_percent": 64.166606728383
+    },
+    {
+      "traffic": 8,
+      "ticks": 48,
+      "snapshot_all_fields_equal": true,
+      "before_s": 50.96059460003744,
+      "after_s": 19.737959199934267,
+      "reduction_percent": 61.2681928952223
+    }
+  ]
+}

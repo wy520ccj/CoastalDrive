@@ -1,0 +1,849 @@
+{
+  "status": "completed",
+  "design": "gr86",
+  "seed": 17,
+  "physics_hz": 120,
+  "config": {
+    "mass": 1287.29514606,
+    "torque_curve": [
+      [
+        823.2415540646484,
+        122.53685784250386
+      ],
+      [
+        1231.0417377344493,
+        164.4840379145703
+      ],
+      [
+        1668.4862145067252,
+        176.88407722607195
+      ],
+      [
+        2068.8374386194937,
+        193.29840235478576
+      ],
+      [
+        2469.226261996392,
+        229.77478082814093
+      ],
+      [
+        2891.8485922174305,
+        240.35185971759876
+      ],
+      [
+        3299.610889605818,
+        246.5536302648195
+      ],
+      [
+        3700.0,
+        249.47050249297757
+      ],
+      [
+        4076.98956057375,
+        235.610219695557
+      ],
+      [
+        4796.111009464492,
+        235.24558242685222
+      ],
+      [
+        5319.723657332341,
+        237.06854284889602
+      ],
+      [
+        5619.948177150346,
+        238.89342360351972
+      ],
+      [
+        6010.894428183716,
+        242.905902048892
+      ],
+      [
+        6422.812471488669,
+        246.18910595685475
+      ],
+      [
+        6813.795479104194,
+        240.35185971759876
+      ],
+      [
+        7000.0,
+        231.9381865934627
+      ],
+      [
+        7500.0,
+        209.34562792824056
+      ]
+    ],
+    "gear_ratios": [
+      3.626,
+      2.189,
+      1.541,
+      1.213,
+      1.0,
+      0.767
+    ],
+    "final_drive": 4.1,
+    "drivetrain_efficiency": 0.88,
+    "idle_rpm": 900.0,
+    "shift_time": 0.28,
+    "torque_response": 0.12,
+    "engine_braking": 24.0,
+    "finite_drivetrain": true,
+    "front_drive_share": 0.0,
+    "differential_damping": [
+      0.0,
+      600.0,
+      0.0
+    ],
+    "differential_capacity": [
+      0.0,
+      2000.0,
+      0.0
+    ],
+    "axle_torque_bias_ratios": [
+      1.0,
+      2.5
+    ],
+    "engine_inertia": 0.2,
+    "engine_axis": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "input_shaft_enabled": true,
+    "input_shaft_inertia": 0.0136625,
+    "input_shaft_axis": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "synchronizer_capacity": 80.0,
+    "downstream_inertia_enabled": true,
+    "downstream_inertias": [
+      0.00871,
+      0.015,
+      0.005632
+    ],
+    "downstream_axes": [
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ]
+    ],
+    "engine_idle_response": 0.15,
+    "engine_idle_torque_limit": 65.0,
+    "engine_redline_rpm": 7500.0,
+    "clutch_capacity": 300.0,
+    "clutch_release_time": 0.08,
+    "clutch_engage_time": 0.16,
+    "clutch_launch_response": 0.3,
+    "max_speed": 44.44444444444444,
+    "reverse_speed": 6.111111111111111,
+    "reverse_force": 2200.0,
+    "reverse_gear_ratio": 3.438,
+    "game_speed_limits": false,
+    "brake_torque": 4966.104686805212,
+    "front_brake_share": 0.7,
+    "braking": {
+      "response_time": 0.025,
+      "abs_enabled": true,
+      "target_slip": 0.12,
+      "slip_hysteresis": 0.015,
+      "minimum_speed": 1.5,
+      "release_rate": 25.0,
+      "apply_rate": 5.0,
+      "slip_rate_gain": 30.0
+    },
+    "traction": {
+      "tcs_enabled": true,
+      "target_slip": 0.12,
+      "slip_hysteresis": 0.015,
+      "slip_speed": 1.0,
+      "prediction_time": 0.12,
+      "release_rate": 12.0,
+      "apply_rate": 1.5,
+      "slip_rate_gain": 12.0,
+      "brake_gain": 0.2,
+      "maximum_brake": 0.25
+    },
+    "stability": {
+      "esc_enabled": true,
+      "minimum_speed": 1.5,
+      "reference_response": 0.15,
+      "yaw_gain": 6.0,
+      "sideslip_gain": 6.0,
+      "yaw_threshold": 0.1,
+      "sideslip_threshold": 0.06,
+      "moment_threshold": 150.0,
+      "engine_cut_gain": 0.4,
+      "continuous_reference": true
+    },
+    "steering_degrees": 33.333333333333336,
+    "steering_rate": 50.0,
+    "steering_response": 7.0,
+    "steering_return": 10.0,
+    "wheel_radius": 0.3146,
+    "wheel_width": 0.215,
+    "wheel_shoulder_radius": 0.01,
+    "wheel_crown_height": 0.003,
+    "wheel_inertia": 1.11865004,
+    "longitudinal_stiffness": 64364.75730299999,
+    "lateral_stiffness": 53637.297752499995,
+    "rear_lateral_stiffness": 53637.297752499995,
+    "tire_peak_load_exponent": 0.9,
+    "longitudinal_load_exponent": 0.9,
+    "lateral_load_exponent": 0.85,
+    "tire_compliance": true,
+    "wheel_rotor_transport": true,
+    "tire_contact_stiffness": 150000.0,
+    "tire_contact_damping": 1000.0,
+    "tire_shape": 1.9,
+    "tire_curvature": 0.97,
+    "slip_speed": 1.0,
+    "static_contact_speed": 0.25,
+    "tire_substeps": 2,
+    "suspension_si_enabled": true,
+    "suspension_coupled_enabled": true,
+    "suspension_antiroll_rates": [
+      6000.0,
+      4000.0
+    ],
+    "suspension_stop_rates": [
+      389207.844665603,
+      389207.844665603,
+      345146.57923176116,
+      345146.57923176116
+    ],
+    "suspension_spring_rates": [
+      38920.784466560304,
+      38920.784466560304,
+      34514.65792317611,
+      34514.65792317611
+    ],
+    "suspension_compression_damping": [
+      2550.6498034159586,
+      2550.6498034159586,
+      2261.8969954820764,
+      2261.8969954820764
+    ],
+    "suspension_extension_damping": [
+      4372.542520141644,
+      4372.542520141644,
+      3877.5377065407033,
+      3877.5377065407033
+    ],
+    "suspension_stiffness": 40.0,
+    "suspension_compression": 4.4,
+    "suspension_relaxation": 2.3,
+    "air_density": 1.225,
+    "drag_coefficient": 0.276,
+    "frontal_area": 1.9532100000000001,
+    "rolling_coefficient": 0.013591573224600747,
+    "grass_rolling_coefficient": 0.0764525993883792,
+    "wheel_rolling_resistance": true,
+    "rolling_transition_speed": 1.0,
+    "road_friction": 1.1,
+    "grass_friction": 0.45,
+    "wheelbase": 2.575,
+    "track_width": 1.52,
+    "axle_track_widths": [
+      1.52,
+      1.55
+    ],
+    "collision_half_width": 1.015,
+    "collision_half_length": 2.13256,
+    "collision_half_height": 0.59,
+    "centered_collision_support": true,
+    "body_center_height": 0.72,
+    "wheel_connection_height": 0.6286172308363899,
+    "center_of_mass_height": 0.45,
+    "front_weight_share": 0.53,
+    "body_inertia": [
+      2014.7686544482972,
+      413.33025779135914,
+      2281.6490372428193
+    ],
+    "angular_damping": 0.0,
+    "suspension_travel": 0.2,
+    "suspension_force_limit": 6000.0
+  },
+  "source_before": {
+    "src\\application.py": "651a05d0174c981cf6ba658cfef862cc309922d52ea21a693ea5150ce03b3e6c",
+    "src\\chase_camera.py": "4a8273238e7b49f1c8fb72e78c37e518c8b1aa863510f01c7a4f561b09f11146",
+    "src\\coastal_collision.py": "3ccf47c3ed15f3b06e89deefd2a3a962ed6854ef89e8f17a12f17d19bb2aaa9f",
+    "src\\coastal_map.py": "038288a510d2db1b6de136b8e7408c72999eef979145bd454cfaeeffe7b62ade",
+    "src\\controls.py": "1ffceba7d5c14f4fa2945d0e35c4e137b45443f989539f0d7aa22ca269436cad",
+    "src\\curve_mesh.py": "105d779c136301731934b22530bb30ce1c4aa3235edb04d8ed472a13ec9e2ff2",
+    "src\\differential.py": "92e213c8a2abf2e08991739072d466a141ad739befa3b71715aeaa0a27f55dca",
+    "src\\driveline_inertia.py": "abb40aa1d840f285b9506e8e47df657db56fa8cf1f8f2d1347e3894291ab05cf",
+    "src\\driver_assist.py": "a93b262003dee568c907f5ff8e7bd87665e4774b407f9343f641f533e1143464",
+    "src\\driving_modes.py": "8ea92ef9f8840c930d12769612540aa6983c965103d5922a2e526f90f1882907",
+    "src\\estimation_rotation.py": "2049c64e84b1eeedf5a3ff54f866a43dde6fd54cc68f2eebd0b811b3421a3448",
+    "src\\garage.py": "54d20cd8e175ed2fe75bf5da0f70b9f997d5215b2ce197be0a4f21dc831c05fd",
+    "src\\highway_curve.py": "30b2a7c6d75a38bbce538198e1e53295d1afa6dd14d05760d085d3d150a4e64e",
+    "src\\highway_driver.py": "ca6c8c2155b48b9130d1008b74e0fab904e10e16d860f6d55f39259ae610c226",
+    "src\\highway_map.py": "fc426d2d95134851304c49885f6d0c6caf728e118f3da939878b38721f11592b",
+    "src\\highway_run.py": "6b0520d5ab68e46919a99cbb953b98c5f0e806222bfe4e55d5ee03dd731b6d6b",
+    "src\\highway_segments.py": "ba5494eb325e107d1a40477272db799d4fd26f8cfb7ec8b265c038ff39b1da40",
+    "src\\impact_events.py": "d84747f93b1cafa8b33ee9322f8870ed0bbdd7bf149d4daff281ea7430d6dd5b",
+    "src\\main.py": "c5914c6500beed6a17849f6cf4c574b0cdf4c7ced8b75818692c3d88e7c7c18a",
+    "src\\paths.py": "6c9e79bf75ebad3ff0eb509ca8e910fb5a90ca7a89077acd90f844a57078699c",
+    "src\\performance_baseline.py": "dc2e5c6317c59aa88446ec3854986d67aea4d2a3a1c47d281d018bfaede27e83",
+    "src\\phase0_app.py": "8ec41455706e637735c1419b836cd9b88f15d2f3a6072438b08c83b129dc9e2c",
+    "src\\powertrain.py": "a421003c7370b278f61677cc77b29af07d950ccc281ed57bed90689686883f85",
+    "src\\race.py": "7804a9591ec7dcc979637f5b3f4f4bf758285762b37f0664bd5cfb995a7d1981",
+    "src\\rolling_resistance.py": "832e899a9e8267bf5ee498204370947bbc28e7697b9d0b4d2d763c1a64d710ad",
+    "src\\rotor_dynamics.py": "4289572d69e3fd0576102060f84982348dc40af7dc6c720430ef5fd9231dd832",
+    "src\\scene.py": "68ce959ee496ac68dd28c837c8702959a1cbc06754329e9af0ef95bdcf48879f",
+    "src\\sensor_run.py": "a15fac5c5ad1ac65d4256d708ed5b3eacaf69667ee38e073219871d8138e751b",
+    "src\\sensor_sampling.py": "2fdab3c2b5eb7ba60d842d39f28347236dfe599a24ddb8d475098e9e00e5027e",
+    "src\\session.py": "75db5eae528f03494d74e442b33c3958c9309b23cb56ca5f627f930b2f24a0e6",
+    "src\\settings.py": "1b869c80d8e12bb82aa0425e3a5e8f9540e27c9def65aae78e76edc0c2dd6f4f",
+    "src\\shaft_transmission.py": "c1c768e6d6638963b7e56e056f4b098ec69f43f34c6b5c13161de06ec2612538",
+    "src\\simulation.py": "0c95c39fe11f001dbaf8c5df84d1497792d985e23569f31372cc4019aa68406b",
+    "src\\skins.py": "21b7b397ab304746e0e8b11c0bcef033560b89376b4a8507c837c762ee937c78",
+    "src\\sky_dome.py": "45437938b4e2c47cf68fcb84da16553143957bd2d0c1696a44781c1d0fb83a4b",
+    "src\\soundscape.py": "1671c176b8ec8e26eaabd3ab143d51e1ee6e6dafea52b305682a54c5ea4e3415",
+    "src\\state_estimation.py": "8bd95cd387e9aadf6ce10169c1b38a6739f12368f8c80def2d686432da31389b",
+    "src\\streamed_road.py": "8c9d2279c34e5e5e280166ef19187f4a454917981a9f6af0dca00d9542eecd9a",
+    "src\\suspension.py": "924fba5b0d076c5d4b3b816a880f09e269c1be9a709b0c18ed52f3b43e3dcbba",
+    "src\\suspension_contacts.py": "a17d1bcf33fb232460434d81042287ab64f6c64a7e9ca187e946ddd7593ab865",
+    "src\\suspension_geometry.py": "7abfde1a3af06dbb95ebc54d22ae25a3832b2bc97752e7ff5a54eb7a3924faca",
+    "src\\suspension_kinematics.py": "450f57b6de98cb6f17e92b8300793bafb3a9196263c57eb5f877f4df20ef8e4a",
+    "src\\test_track.py": "ae90f12ab8647ec859ad7931f501b3183371a1fa11936c9edeb59c882db72cfa",
+    "src\\tire_compliance.py": "123a6398681613179073b7756a130ef5799f965474939b652b14c278277fe3ed",
+    "src\\tire_coupling.py": "91194de87cbf04453e1fe3a29a69b632305644e5248693f5302ee0fd8721733b",
+    "src\\tire_drivetrain.py": "7656f5395cfcfec95ddd07eaa43d0ade9b78fe19c19bd3c587a466d185023ae6",
+    "src\\tire_forces.py": "631182c46c78370361d5a5c4633803c7a4d9d3a029abac0ef116a98ad74982e7",
+    "src\\tire_properties.py": "d93c1199a1c2de0f4d447d3690f0db4f1ad95e664c2dea5f2b848ecbd676a6b5",
+    "src\\tracks.py": "f9d5fef1c7b9f4d808fdcb3074f6e1adbf92a6ee57bcdd04e60fc4637580f42d",
+    "src\\traffic.py": "3e3d4bd44b16226962436bde66ea5bc11559cb59d1475c1df2905a61759a96d0",
+    "src\\traffic_recovery.py": "b455ff05ae1f8dbd524662a831f808f67986699378d54840416c308216072d9a",
+    "src\\transmission_ports.py": "e211605de2c8dd0935dd8fd271880a3c0fd11e256ce2a960f3a7a4f30d68433f",
+    "src\\triangle_support.py": "803d8b6a55a4cfe8d0afcb1caacbb990aab6eed4bcb5103dfe66c4dee82e5993",
+    "src\\vehicle.py": "a1c0a81c70f470b22343ed7e7e710d46796246ab5e3b1eef84cd6b39b6790a5b",
+    "src\\vehicle_brakes.py": "39eabaff47ec103af6cd76db5b43f31212c7acaf77b1c0a82ec9806f775ef32d",
+    "src\\vehicle_collision.py": "3b10a6b5bf79d9c4e7439810d51aac653e98721f8b82c9ee1bf43f0dabff5874",
+    "src\\vehicle_config.py": "0e9b712ada99d0817d8b6880a495d57814eb1d7c3c0d0b3fc920e4acf274e154",
+    "src\\vehicle_contacts.py": "36a2c5c815b3ffdc43f1aae3bcd71cd7050246b26aea51977161cb83f63e60c0",
+    "src\\vehicle_designs.py": "c82a388317d7123e7633613950e0025492f739b9ecf130287198bc3be7bccf24",
+    "src\\vehicle_dynamics.py": "56564b31ed5e8c29a2063d95cb28c17c5b13cc41d1b9c15ca4e12a23a288c140",
+    "src\\vehicle_parameters.py": "6aa7916d8401c2aeae806cf8de634289d740ffa86b35d882c0b4047899df3d20",
+    "src\\vehicle_stability.py": "71eca42fa7ae37912e8bd0e5023aa2dbb6defa1e436b865b3eb43f7e27f6cadc",
+    "src\\vehicle_state.py": "2e5af991d86aaa5a010298618eb793ede2974e732a200d3f525ae659d0b2cc5c",
+    "src\\vehicle_steering.py": "d80c07aaea8a4468eda9e6796fceb5714b65b1cd5af3d3f48792773db60e5b34",
+    "src\\vehicle_suspension.py": "ee3d34a82926c0143e7392757eb07c257edc43d9098f9a1fd2437df54105d020",
+    "src\\vehicle_tires.py": "10cdc460c0e68b4a8437ce169f817b5cfe37e64dc3d67e8c32ab952bece9f76d",
+    "src\\vehicle_traction.py": "7be5bbff9aac9ec172419c3ca02fb9d832accf311e018da2747b79568645da5c",
+    "src\\vehicle_visual.py": "6207340d21e244fd2276e803ea429b51ae8f1794366b9b88adb8d636a7ec60ab",
+    "src\\wheel_dynamics.py": "93446add00a11681925e96dcaf13714f30dc3fde58d03fe62ffea2fa8969bf70",
+    "src\\wheel_envelope.py": "1753cc7293baf3e3dd7abdc074a6db7c4c3d2d26f93fb4a9e7686f8b98573ce2",
+    "src\\wheel_geometry.py": "25be660293a3f9160a9375a7301b51d64dfcb6d14b9386003ca0a5d7609d7179",
+    "src\\world_props.py": "20bdad65716f9d63ffd22cf5138439f761408c95830fc36696298c694405291f",
+    "src\\world_step.py": "1bc564a5cd93a224ab799193f45ce9db18b8e5be2b7f72cd4ee9cdeefc091035",
+    "src\\audio\\cues.py": "41d89fe885916e493e96fa1edf85b73e32575d867672fb034649bb17f37b21e9",
+    "src\\audio\\driving.py": "3e8df19ce48cd294d6a228852f132474c055d1e0cf7cb2578d78aafa4ab66615",
+    "src\\audio\\engine.py": "0e756ebc2600984d94c20ad012305aed918f4e560d6eb4ac9d8127b5c2d091fa",
+    "src\\audio\\impact.py": "01e1af74a5df7aa605f80cffb64d25479361b136debe6e5e87f3d20819b4649a",
+    "src\\audio\\music.py": "2d12ca7abb23e8af8793baaef425cf5a393530c060a54ec4ca50fb8ad8a56d6b",
+    "src\\audio\\__init__.py": "c9b2b5ceb0091ead195fb737892eaa931c7715825da23d0b47f8383a2bfa76eb",
+    "src\\environment\\coastal_slice.py": "af6d170d7cfd8c280991a40921b67bc83d03dc5c1d720874ac5c7916484a2bc6",
+    "src\\environment\\expressway.py": "36cb41c7ab5ae9fbb14b4fcf161a8368b395ad5655634c754e4e92f64afe8bcd",
+    "src\\environment\\expressway_materials.py": "e2df79696e7fee5e4ac0460a1003a2d3efe42f890cb6369171b8a9de8d6465a4",
+    "src\\environment\\expressway_mountains.py": "7af3ce1102d9200a026f650a1c9a3867ba851021bf8db47da03d96794ef4d684",
+    "src\\environment\\expressway_route.py": "e7f49d5e79a8d02233e433f8bd5f04dc650a6982edda23db7563e2f0db967587",
+    "src\\environment\\expressway_signs.py": "4d02efb48f48c672d17675fe6f35b7b9686980e75ca9572449f8f6ca76bdf9e0",
+    "src\\environment\\expressway_vegetation.py": "c846c1c1840251d04a9e79bdf7fe0a8be9ac954c43ed1d54e0bd4dad15da2093",
+    "src\\environment\\foundation.py": "2c86aad7311ad18da3f42be404ff9cf7d754037f1ca3fa2f4f8ca14798607ca5",
+    "src\\environment\\surface_mesh.py": "4d32a8e0e5817d5ec378e6cf04f26912519b6531159cd5b5f903a2052151d052",
+    "src\\environment\\terrain.py": "41fd42968a442cb3dd26ba28ca01220f3809705090091615b0d48673b7698abc",
+    "src\\environment\\water.py": "17fd63872585e8d34c004bd12c57c1f3b2af6114a22a545fc9cb1a904a78eb89",
+    "src\\environment\\__init__.py": "81bd978b67af4e6d30d62f99eb4a1e4c28f5f31855ae94ccd4db70283e3b3699",
+    "src\\ui\\hud.py": "7337fd545f79f21a3a19f8c69b6e8a51074e16d4724ae7987b715403c0509b9c",
+    "src\\ui\\main_menu.py": "b085d08c46dc13cba6e9fd9016424c4a626d149785dc81a8658bf7f4535372c9",
+    "src\\ui\\theme.py": "c2ab236939a0d45fb6b6d3877b78c91807917edfcfac0c9807df5ff77fb43b8b",
+    "src\\ui\\__init__.py": "75426685c5c3fe93d169378013fd409e12b0fcf56a034bca3a2ecf9af39bb6a4",
+    "tools\\physics\\abs_probe.py": "929540af0f959b65abb0412a3db48ebdf324a9e1f02045bf092371cff740a076",
+    "tools\\physics\\collision_support_probe.py": "a0da3bae2148fedfb68e3dc393be5ec7ebc9acf1e5f667d3b2a29877013e4fba",
+    "tools\\physics\\design_ab.py": "9ad374c3be83e35ed4654fddc5158eb8f3a4c9a03fb7dea7b56b8e57b9e737f4",
+    "tools\\physics\\differential_ab.py": "16d6e0cef1fd512feb646bd3426ea4257aa4c91ba9a6d5f9686d8a76b19f8a9f",
+    "tools\\physics\\drivetrain_free_probe.py": "85161996f946428831b8ab8d1b73c12451a6dd1345490611a3b13ee8bb5f750d",
+    "tools\\physics\\drivetrain_probe.py": "250398e4f2afba7a98a44c463d1ef5bb2d054d8ed9cea8382d62f77b2c4a6460",
+    "tools\\physics\\drive_layout_ab.py": "fcd3da1470facb96018cc868fe0c0cd4fe010064e2f69f2476b8398897f683ed",
+    "tools\\physics\\esc_probe.py": "35c8542c729d93aee9bb7f444aabc84ca965225efe899305c28b17d9717d6a9e",
+    "tools\\physics\\estimation_probe.py": "0cad42f5ac2929fdeca9d71e92d77bc7cdef604a2ee9af0d7b7548d71f43bd48",
+    "tools\\physics\\export_designs.py": "f4b2d284a4ede2325a38812a409ba8e7d6d9f429b8f5ce71b911b61415e56612",
+    "tools\\physics\\export_reference.py": "a5ee4115f7c4f13e9ae2e35ac182b16d023c3e5405c3a0c0f22ce71fbfe81a49",
+    "tools\\physics\\gr86_benchmark.py": "32b787519902fea87175b87e4287c0dff5c472fdca8d36a675d697d0de06c84f",
+    "tools\\physics\\gr86_profile.py": "30603cf4912118e66b64e5706a32b401ee753b84ebac37905358370c9ac33d77",
+    "tools\\physics\\guardrail_probe.py": "51130a84e441ebf1f5e236ae717d7f500cbbd3f64f3aca81af9bc9e0510c1d49",
+    "tools\\physics\\guardrail_support_probe.py": "02dee6a91c585a5886f14584ac47551ec903a6e535efaba2ba1a7e3e1d30f427",
+    "tools\\physics\\lane_change_probe.py": "9179b62f40be59e183fbdeea9330c6d257ea3a56a754731fc615802c7bf087a9",
+    "tools\\physics\\reference_ab.py": "60861e6c3b637a26f63537bf1b10c0b6af721f958de9116237126a55df032a9e",
+    "tools\\physics\\rotor_ab.py": "9ac41951e97ae643648abf58e2759b4e50e5ab043a237d2c282f0d95da028157",
+    "tools\\physics\\rotor_grade.py": "312a5a2e756706852166a9e8cb3de31c5a616fde161366889e4102ab9ca330e2",
+    "tools\\physics\\rotor_probe.py": "a7ecec2cb26a7e43cf135079e31734e8a5ad3d8732e5ceeb9000be4de91ad4b8",
+    "tools\\physics\\shaft_ab.py": "a38c77deb446f238527b95bf999f57ef8919ce9e732738aa52386ce9449ddc25",
+    "tools\\physics\\steering_geometry_probe.py": "79349f642cf93d5634a426f7bbccac4b608c14f03376dd89115e5e9ed9949eae",
+    "tools\\physics\\suspension_contact_probe.py": "280156467dd23f5c277ffefdc0d1b91b75ac3d8706c09e0468ceea34162e091e",
+    "tools\\physics\\suspension_coupled_probe.py": "d1bbeb1874f4917b3db99bf8ed95dd8c7af9d8a7642c3067daa636ffe0dba34b",
+    "tools\\physics\\suspension_handling_probe.py": "d2e9474ee55eddcb37ce6395eabfb16bf11026a23838993c4ded7157d2ef2268",
+    "tools\\physics\\suspension_probe.py": "fb7edae60a00db44020c6f53fd8ae6d7254858e35f417ee34f917c11cb31afe6",
+    "tools\\physics\\tcs_mechanical_check.py": "6b20cc47dadcf22fcd389fc58296826d1b8d60224df8033102195072ebe477af",
+    "tools\\physics\\tcs_probe.py": "d95d0cbd3eb866b376520be7345226aa2fa6bd1327c5f31179a24b5033bbc94a",
+    "tools\\physics\\testbed.py": "0928132b642493fff5c4d5e63aa6a43d20dd3b8cf6fa7814113f6dfa17d80675",
+    "tools\\physics\\tire_compliance_probe.py": "d9e906d67ddf54fd0c57830cc77e76d5f113e655078867d02e5b4c07fa26f87e",
+    "tools\\physics\\tire_compliance_substeps.py": "e2e7972dc960c496df5752bc63978e84d1e4c1d120b9b1f899c51b5d15cf1f6a",
+    "tools\\physics\\tire_dynamics_probe.py": "cfcf47d16b3b76c21be437a3ea51ea36c317e0b124d2178f519128c38dd37d83",
+    "tools\\physics\\tire_load_probe.py": "d43b98684e9c483620cdea3aa0f597fd89ec5b255c1f9c97637835906c934d20",
+    "tools\\physics\\tire_load_substeps.py": "bf768361d6945390e5c99f50501ae8e696fa43f2b7f4a74f0a588d5e18bd0da7",
+    "tools\\physics\\wheel_integration_lab.py": "84302a5d925987769eb7a39ac649ab86e18594ec40f8491e9fe8cf20cf124846"
+  },
+  "results": [
+    {
+      "case": "straight-brake",
+      "ticks": 960,
+      "gnss_deliveries": 49,
+      "wheel_innovation_rejections": 17,
+      "position_component_rmse_m": 0.3165658091687115,
+      "velocity_component_rmse_m_s": 0.15270168050189267,
+      "rotation_vector_rmse_rad": 0.02588813134042603,
+      "last_orientation_error_deg": 2.62226259101561,
+      "minimum_covariance_eigenvalue": 1.4251334205306218e-08,
+      "final_estimate": {
+        "tick": 1200,
+        "position": [
+          95.05863942283297,
+          38.29676698324687,
+          0.5474555152749533
+        ],
+        "velocity": [
+          -0.03814765326535801,
+          -0.034256435474976,
+          0.05894261248516794
+        ],
+        "orientation": [
+          0.9997388076483585,
+          -0.0026121514037520934,
+          -0.022483788072947822,
+          0.003157913990788946
+        ],
+        "accel_bias": [
+          -0.3092478494152426,
+          0.020477401900206197,
+          0.00975234833632434
+        ],
+        "gyro_bias": [
+          0.0007270989301501269,
+          0.0013478084339679432,
+          0.006173225067029264
+        ],
+        "covariance_diagonal": [
+          0.024650431542532106,
+          0.021018237885620548,
+          0.05460503853606979,
+          0.0013692136000206091,
+          0.00024601354384480773,
+          0.0012339248008501182,
+          3.598014222422076e-05,
+          0.0002366501430944163,
+          0.00011604948446161563,
+          0.020125130990626326,
+          0.0033906649390473636,
+          5.407246380086146e-05,
+          9.431168422312424e-08,
+          2.434730260587162e-06,
+          2.0238558505369423e-05
+        ],
+        "gnss_nis": 5.754824282991624,
+        "wheel_nis": 0.09501537008615454,
+        "wheel_accepted": true
+      },
+      "initialization": "known reset/experiment pose and velocity only; zero unknown bias estimate",
+      "sensor_config": {
+        "wheel_period_ticks": 2,
+        "gnss_period_ticks": 12,
+        "gnss_delay_ticks": 12,
+        "accel_sample_std": 0.035,
+        "gyro_sample_std": 0.001,
+        "accel_bias_walk": 0.002,
+        "gyro_bias_walk": 5e-05,
+        "initial_accel_bias": [
+          0.05,
+          -0.03,
+          0.02
+        ],
+        "initial_gyro_bias": [
+          0.0005,
+          -0.001,
+          0.0015
+        ],
+        "wheel_omega_std": 0.05,
+        "steering_std_rad": 0.0008726646259971648,
+        "gnss_position_std": [
+          1.0,
+          1.0,
+          1.5
+        ],
+        "gnss_velocity_std": [
+          0.08,
+          0.08,
+          0.12
+        ],
+        "gnss_outages": [
+          [
+            600,
+            960
+          ]
+        ]
+      },
+      "trace": "straight-brake.csv.gz",
+      "trace_sha256": "ab2b788d737bf180ac2957e28fdc05c17e78eb9ce1cd579f43154bb0519bf456"
+    },
+    {
+      "case": "turn-brake",
+      "ticks": 960,
+      "gnss_deliveries": 49,
+      "wheel_innovation_rejections": 15,
+      "position_component_rmse_m": 0.31192490672853906,
+      "velocity_component_rmse_m_s": 0.12577570259803716,
+      "rotation_vector_rmse_rad": 0.027911501810795422,
+      "last_orientation_error_deg": 0.7290608378430485,
+      "minimum_covariance_eigenvalue": 1.4310606933318955e-08,
+      "final_estimate": {
+        "tick": 1200,
+        "position": [
+          99.82302886284775,
+          37.943945255520866,
+          0.5616344357609251
+        ],
+        "velocity": [
+          0.04422004648671292,
+          -0.04470207322288743,
+          0.05151931709447867
+        ],
+        "orientation": [
+          0.9846467839570929,
+          -0.0006988726205349318,
+          0.0063089323497274785,
+          -0.17444317066775902
+        ],
+        "accel_bias": [
+          0.061634322678366354,
+          0.004447471232659589,
+          0.006139905666034224
+        ],
+        "gyro_bias": [
+          0.00029005317275940284,
+          -0.005061827384851487,
+          -0.005795410971757941
+        ],
+        "covariance_diagonal": [
+          0.024509976451694497,
+          0.02120367252872119,
+          0.05454484626905138,
+          0.001107786822527004,
+          0.0003092248581331685,
+          0.0012700499342125282,
+          3.507093726334018e-05,
+          0.00012925870111187132,
+          0.00011472296013983263,
+          0.014173338109816734,
+          0.0033892524215321214,
+          8.392904238145677e-05,
+          6.935320695401694e-07,
+          1.8837052770046208e-06,
+          1.6548649436384863e-05
+        ],
+        "gnss_nis": 6.293310217044829,
+        "wheel_nis": 0.0509766881897099,
+        "wheel_accepted": true
+      },
+      "initialization": "known reset/experiment pose and velocity only; zero unknown bias estimate",
+      "sensor_config": {
+        "wheel_period_ticks": 2,
+        "gnss_period_ticks": 12,
+        "gnss_delay_ticks": 12,
+        "accel_sample_std": 0.035,
+        "gyro_sample_std": 0.001,
+        "accel_bias_walk": 0.002,
+        "gyro_bias_walk": 5e-05,
+        "initial_accel_bias": [
+          0.05,
+          -0.03,
+          0.02
+        ],
+        "initial_gyro_bias": [
+          0.0005,
+          -0.001,
+          0.0015
+        ],
+        "wheel_omega_std": 0.05,
+        "steering_std_rad": 0.0008726646259971648,
+        "gnss_position_std": [
+          1.0,
+          1.0,
+          1.5
+        ],
+        "gnss_velocity_std": [
+          0.08,
+          0.08,
+          0.12
+        ],
+        "gnss_outages": [
+          [
+            600,
+            960
+          ]
+        ]
+      },
+      "trace": "turn-brake.csv.gz",
+      "trace_sha256": "6f0a3795023a526baae350b149ca7799efb70fa6d3fdd3f5d97d628986151988"
+    },
+    {
+      "case": "hills",
+      "ticks": 960,
+      "gnss_deliveries": 49,
+      "wheel_innovation_rejections": 17,
+      "position_component_rmse_m": 0.33170315491458385,
+      "velocity_component_rmse_m_s": 0.17697647620706417,
+      "rotation_vector_rmse_rad": 0.030112147840027866,
+      "last_orientation_error_deg": 2.3804614760235605,
+      "minimum_covariance_eigenvalue": 1.4254083397088387e-08,
+      "final_estimate": {
+        "tick": 1200,
+        "position": [
+          0.10860539072243637,
+          46.440601393676104,
+          16.490155122634906
+        ],
+        "velocity": [
+          -0.002937443756945818,
+          -0.03083195710756761,
+          0.059921148165945966
+        ],
+        "orientation": [
+          0.9997757699014513,
+          -0.005237362247834094,
+          -0.020461637658966497,
+          -0.0015170164661558998
+        ],
+        "accel_bias": [
+          -0.3544810216106887,
+          0.017806150701443577,
+          0.011231271847124578
+        ],
+        "gyro_bias": [
+          0.000897910941069694,
+          -0.0011802249638022896,
+          0.0026531539987687722
+        ],
+        "covariance_diagonal": [
+          0.024612504715354384,
+          0.021083078196684618,
+          0.05458705001944246,
+          0.001294095286067046,
+          0.0002559472729448747,
+          0.0012428273497894439,
+          3.548767000172262e-05,
+          0.0002282371000204877,
+          0.00011256849417032773,
+          0.01955988670415172,
+          0.0033379197937322483,
+          5.4211335875142796e-05,
+          1.0329166392104844e-07,
+          2.1083754325329165e-06,
+          1.8698411418696684e-05
+        ],
+        "gnss_nis": 5.691099178041751,
+        "wheel_nis": 0.07839620517696382,
+        "wheel_accepted": true
+      },
+      "initialization": "known reset/experiment pose and velocity only; zero unknown bias estimate",
+      "sensor_config": {
+        "wheel_period_ticks": 2,
+        "gnss_period_ticks": 12,
+        "gnss_delay_ticks": 12,
+        "accel_sample_std": 0.035,
+        "gyro_sample_std": 0.001,
+        "accel_bias_walk": 0.002,
+        "gyro_bias_walk": 5e-05,
+        "initial_accel_bias": [
+          0.05,
+          -0.03,
+          0.02
+        ],
+        "initial_gyro_bias": [
+          0.0005,
+          -0.001,
+          0.0015
+        ],
+        "wheel_omega_std": 0.05,
+        "steering_std_rad": 0.0008726646259971648,
+        "gnss_position_std": [
+          1.0,
+          1.0,
+          1.5
+        ],
+        "gnss_velocity_std": [
+          0.08,
+          0.08,
+          0.12
+        ],
+        "gnss_outages": [
+          [
+            600,
+            960
+          ]
+        ]
+      },
+      "trace": "hills.csv.gz",
+      "trace_sha256": "106e229e364fee42cae44d21294d64669e548314c5307b02f91cd292718925f1"
+    }
+  ],
+  "source_after": {
+    "src\\application.py": "651a05d0174c981cf6ba658cfef862cc309922d52ea21a693ea5150ce03b3e6c",
+    "src\\chase_camera.py": "4a8273238e7b49f1c8fb72e78c37e518c8b1aa863510f01c7a4f561b09f11146",
+    "src\\coastal_collision.py": "3ccf47c3ed15f3b06e89deefd2a3a962ed6854ef89e8f17a12f17d19bb2aaa9f",
+    "src\\coastal_map.py": "038288a510d2db1b6de136b8e7408c72999eef979145bd454cfaeeffe7b62ade",
+    "src\\controls.py": "1ffceba7d5c14f4fa2945d0e35c4e137b45443f989539f0d7aa22ca269436cad",
+    "src\\curve_mesh.py": "105d779c136301731934b22530bb30ce1c4aa3235edb04d8ed472a13ec9e2ff2",
+    "src\\differential.py": "92e213c8a2abf2e08991739072d466a141ad739befa3b71715aeaa0a27f55dca",
+    "src\\driveline_inertia.py": "abb40aa1d840f285b9506e8e47df657db56fa8cf1f8f2d1347e3894291ab05cf",
+    "src\\driver_assist.py": "a93b262003dee568c907f5ff8e7bd87665e4774b407f9343f641f533e1143464",
+    "src\\driving_modes.py": "8ea92ef9f8840c930d12769612540aa6983c965103d5922a2e526f90f1882907",
+    "src\\estimation_rotation.py": "2049c64e84b1eeedf5a3ff54f866a43dde6fd54cc68f2eebd0b811b3421a3448",
+    "src\\garage.py": "54d20cd8e175ed2fe75bf5da0f70b9f997d5215b2ce197be0a4f21dc831c05fd",
+    "src\\highway_curve.py": "30b2a7c6d75a38bbce538198e1e53295d1afa6dd14d05760d085d3d150a4e64e",
+    "src\\highway_driver.py": "ca6c8c2155b48b9130d1008b74e0fab904e10e16d860f6d55f39259ae610c226",
+    "src\\highway_map.py": "fc426d2d95134851304c49885f6d0c6caf728e118f3da939878b38721f11592b",
+    "src\\highway_run.py": "6b0520d5ab68e46919a99cbb953b98c5f0e806222bfe4e55d5ee03dd731b6d6b",
+    "src\\highway_segments.py": "ba5494eb325e107d1a40477272db799d4fd26f8cfb7ec8b265c038ff39b1da40",
+    "src\\impact_events.py": "d84747f93b1cafa8b33ee9322f8870ed0bbdd7bf149d4daff281ea7430d6dd5b",
+    "src\\main.py": "c5914c6500beed6a17849f6cf4c574b0cdf4c7ced8b75818692c3d88e7c7c18a",
+    "src\\paths.py": "6c9e79bf75ebad3ff0eb509ca8e910fb5a90ca7a89077acd90f844a57078699c",
+    "src\\performance_baseline.py": "dc2e5c6317c59aa88446ec3854986d67aea4d2a3a1c47d281d018bfaede27e83",
+    "src\\phase0_app.py": "8ec41455706e637735c1419b836cd9b88f15d2f3a6072438b08c83b129dc9e2c",
+    "src\\powertrain.py": "a421003c7370b278f61677cc77b29af07d950ccc281ed57bed90689686883f85",
+    "src\\race.py": "7804a9591ec7dcc979637f5b3f4f4bf758285762b37f0664bd5cfb995a7d1981",
+    "src\\rolling_resistance.py": "832e899a9e8267bf5ee498204370947bbc28e7697b9d0b4d2d763c1a64d710ad",
+    "src\\rotor_dynamics.py": "4289572d69e3fd0576102060f84982348dc40af7dc6c720430ef5fd9231dd832",
+    "src\\scene.py": "68ce959ee496ac68dd28c837c8702959a1cbc06754329e9af0ef95bdcf48879f",
+    "src\\sensor_run.py": "a15fac5c5ad1ac65d4256d708ed5b3eacaf69667ee38e073219871d8138e751b",
+    "src\\sensor_sampling.py": "2fdab3c2b5eb7ba60d842d39f28347236dfe599a24ddb8d475098e9e00e5027e",
+    "src\\session.py": "75db5eae528f03494d74e442b33c3958c9309b23cb56ca5f627f930b2f24a0e6",
+    "src\\settings.py": "1b869c80d8e12bb82aa0425e3a5e8f9540e27c9def65aae78e76edc0c2dd6f4f",
+    "src\\shaft_transmission.py": "c1c768e6d6638963b7e56e056f4b098ec69f43f34c6b5c13161de06ec2612538",
+    "src\\simulation.py": "0c95c39fe11f001dbaf8c5df84d1497792d985e23569f31372cc4019aa68406b",
+    "src\\skins.py": "21b7b397ab304746e0e8b11c0bcef033560b89376b4a8507c837c762ee937c78",
+    "src\\sky_dome.py": "45437938b4e2c47cf68fcb84da16553143957bd2d0c1696a44781c1d0fb83a4b",
+    "src\\soundscape.py": "1671c176b8ec8e26eaabd3ab143d51e1ee6e6dafea52b305682a54c5ea4e3415",
+    "src\\state_estimation.py": "8bd95cd387e9aadf6ce10169c1b38a6739f12368f8c80def2d686432da31389b",
+    "src\\streamed_road.py": "8c9d2279c34e5e5e280166ef19187f4a454917981a9f6af0dca00d9542eecd9a",
+    "src\\suspension.py": "924fba5b0d076c5d4b3b816a880f09e269c1be9a709b0c18ed52f3b43e3dcbba",
+    "src\\suspension_contacts.py": "a17d1bcf33fb232460434d81042287ab64f6c64a7e9ca187e946ddd7593ab865",
+    "src\\suspension_geometry.py": "7abfde1a3af06dbb95ebc54d22ae25a3832b2bc97752e7ff5a54eb7a3924faca",
+    "src\\suspension_kinematics.py": "450f57b6de98cb6f17e92b8300793bafb3a9196263c57eb5f877f4df20ef8e4a",
+    "src\\test_track.py": "ae90f12ab8647ec859ad7931f501b3183371a1fa11936c9edeb59c882db72cfa",
+    "src\\tire_compliance.py": "123a6398681613179073b7756a130ef5799f965474939b652b14c278277fe3ed",
+    "src\\tire_coupling.py": "91194de87cbf04453e1fe3a29a69b632305644e5248693f5302ee0fd8721733b",
+    "src\\tire_drivetrain.py": "7656f5395cfcfec95ddd07eaa43d0ade9b78fe19c19bd3c587a466d185023ae6",
+    "src\\tire_forces.py": "631182c46c78370361d5a5c4633803c7a4d9d3a029abac0ef116a98ad74982e7",
+    "src\\tire_properties.py": "d93c1199a1c2de0f4d447d3690f0db4f1ad95e664c2dea5f2b848ecbd676a6b5",
+    "src\\tracks.py": "f9d5fef1c7b9f4d808fdcb3074f6e1adbf92a6ee57bcdd04e60fc4637580f42d",
+    "src\\traffic.py": "3e3d4bd44b16226962436bde66ea5bc11559cb59d1475c1df2905a61759a96d0",
+    "src\\traffic_recovery.py": "b455ff05ae1f8dbd524662a831f808f67986699378d54840416c308216072d9a",
+    "src\\transmission_ports.py": "e211605de2c8dd0935dd8fd271880a3c0fd11e256ce2a960f3a7a4f30d68433f",
+    "src\\triangle_support.py": "803d8b6a55a4cfe8d0afcb1caacbb990aab6eed4bcb5103dfe66c4dee82e5993",
+    "src\\vehicle.py": "a1c0a81c70f470b22343ed7e7e710d46796246ab5e3b1eef84cd6b39b6790a5b",
+    "src\\vehicle_brakes.py": "39eabaff47ec103af6cd76db5b43f31212c7acaf77b1c0a82ec9806f775ef32d",
+    "src\\vehicle_collision.py": "3b10a6b5bf79d9c4e7439810d51aac653e98721f8b82c9ee1bf43f0dabff5874",
+    "src\\vehicle_config.py": "0e9b712ada99d0817d8b6880a495d57814eb1d7c3c0d0b3fc920e4acf274e154",
+    "src\\vehicle_contacts.py": "36a2c5c815b3ffdc43f1aae3bcd71cd7050246b26aea51977161cb83f63e60c0",
+    "src\\vehicle_designs.py": "c82a388317d7123e7633613950e0025492f739b9ecf130287198bc3be7bccf24",
+    "src\\vehicle_dynamics.py": "56564b31ed5e8c29a2063d95cb28c17c5b13cc41d1b9c15ca4e12a23a288c140",
+    "src\\vehicle_parameters.py": "6aa7916d8401c2aeae806cf8de634289d740ffa86b35d882c0b4047899df3d20",
+    "src\\vehicle_stability.py": "71eca42fa7ae37912e8bd0e5023aa2dbb6defa1e436b865b3eb43f7e27f6cadc",
+    "src\\vehicle_state.py": "2e5af991d86aaa5a010298618eb793ede2974e732a200d3f525ae659d0b2cc5c",
+    "src\\vehicle_steering.py": "d80c07aaea8a4468eda9e6796fceb5714b65b1cd5af3d3f48792773db60e5b34",
+    "src\\vehicle_suspension.py": "ee3d34a82926c0143e7392757eb07c257edc43d9098f9a1fd2437df54105d020",
+    "src\\vehicle_tires.py": "10cdc460c0e68b4a8437ce169f817b5cfe37e64dc3d67e8c32ab952bece9f76d",
+    "src\\vehicle_traction.py": "7be5bbff9aac9ec172419c3ca02fb9d832accf311e018da2747b79568645da5c",
+    "src\\vehicle_visual.py": "6207340d21e244fd2276e803ea429b51ae8f1794366b9b88adb8d636a7ec60ab",
+    "src\\wheel_dynamics.py": "93446add00a11681925e96dcaf13714f30dc3fde58d03fe62ffea2fa8969bf70",
+    "src\\wheel_envelope.py": "1753cc7293baf3e3dd7abdc074a6db7c4c3d2d26f93fb4a9e7686f8b98573ce2",
+    "src\\wheel_geometry.py": "25be660293a3f9160a9375a7301b51d64dfcb6d14b9386003ca0a5d7609d7179",
+    "src\\world_props.py": "20bdad65716f9d63ffd22cf5138439f761408c95830fc36696298c694405291f",
+    "src\\world_step.py": "1bc564a5cd93a224ab799193f45ce9db18b8e5be2b7f72cd4ee9cdeefc091035",
+    "src\\audio\\cues.py": "41d89fe885916e493e96fa1edf85b73e32575d867672fb034649bb17f37b21e9",
+    "src\\audio\\driving.py": "3e8df19ce48cd294d6a228852f132474c055d1e0cf7cb2578d78aafa4ab66615",
+    "src\\audio\\engine.py": "0e756ebc2600984d94c20ad012305aed918f4e560d6eb4ac9d8127b5c2d091fa",
+    "src\\audio\\impact.py": "01e1af74a5df7aa605f80cffb64d25479361b136debe6e5e87f3d20819b4649a",
+    "src\\audio\\music.py": "2d12ca7abb23e8af8793baaef425cf5a393530c060a54ec4ca50fb8ad8a56d6b",
+    "src\\audio\\__init__.py": "c9b2b5ceb0091ead195fb737892eaa931c7715825da23d0b47f8383a2bfa76eb",
+    "src\\environment\\coastal_slice.py": "af6d170d7cfd8c280991a40921b67bc83d03dc5c1d720874ac5c7916484a2bc6",
+    "src\\environment\\expressway.py": "36cb41c7ab5ae9fbb14b4fcf161a8368b395ad5655634c754e4e92f64afe8bcd",
+    "src\\environment\\expressway_materials.py": "e2df79696e7fee5e4ac0460a1003a2d3efe42f890cb6369171b8a9de8d6465a4",
+    "src\\environment\\expressway_mountains.py": "7af3ce1102d9200a026f650a1c9a3867ba851021bf8db47da03d96794ef4d684",
+    "src\\environment\\expressway_route.py": "e7f49d5e79a8d02233e433f8bd5f04dc650a6982edda23db7563e2f0db967587",
+    "src\\environment\\expressway_signs.py": "4d02efb48f48c672d17675fe6f35b7b9686980e75ca9572449f8f6ca76bdf9e0",
+    "src\\environment\\expressway_vegetation.py": "c846c1c1840251d04a9e79bdf7fe0a8be9ac954c43ed1d54e0bd4dad15da2093",
+    "src\\environment\\foundation.py": "2c86aad7311ad18da3f42be404ff9cf7d754037f1ca3fa2f4f8ca14798607ca5",
+    "src\\environment\\surface_mesh.py": "4d32a8e0e5817d5ec378e6cf04f26912519b6531159cd5b5f903a2052151d052",
+    "src\\environment\\terrain.py": "41fd42968a442cb3dd26ba28ca01220f3809705090091615b0d48673b7698abc",
+    "src\\environment\\water.py": "17fd63872585e8d34c004bd12c57c1f3b2af6114a22a545fc9cb1a904a78eb89",
+    "src\\environment\\__init__.py": "81bd978b67af4e6d30d62f99eb4a1e4c28f5f31855ae94ccd4db70283e3b3699",
+    "src\\ui\\hud.py": "7337fd545f79f21a3a19f8c69b6e8a51074e16d4724ae7987b715403c0509b9c",
+    "src\\ui\\main_menu.py": "b085d08c46dc13cba6e9fd9016424c4a626d149785dc81a8658bf7f4535372c9",
+    "src\\ui\\theme.py": "c2ab236939a0d45fb6b6d3877b78c91807917edfcfac0c9807df5ff77fb43b8b",
+    "src\\ui\\__init__.py": "75426685c5c3fe93d169378013fd409e12b0fcf56a034bca3a2ecf9af39bb6a4",
+    "tools\\physics\\abs_probe.py": "929540af0f959b65abb0412a3db48ebdf324a9e1f02045bf092371cff740a076",
+    "tools\\physics\\collision_support_probe.py": "a0da3bae2148fedfb68e3dc393be5ec7ebc9acf1e5f667d3b2a29877013e4fba",
+    "tools\\physics\\design_ab.py": "9ad374c3be83e35ed4654fddc5158eb8f3a4c9a03fb7dea7b56b8e57b9e737f4",
+    "tools\\physics\\differential_ab.py": "16d6e0cef1fd512feb646bd3426ea4257aa4c91ba9a6d5f9686d8a76b19f8a9f",
+    "tools\\physics\\drivetrain_free_probe.py": "85161996f946428831b8ab8d1b73c12451a6dd1345490611a3b13ee8bb5f750d",
+    "tools\\physics\\drivetrain_probe.py": "250398e4f2afba7a98a44c463d1ef5bb2d054d8ed9cea8382d62f77b2c4a6460",
+    "tools\\physics\\drive_layout_ab.py": "fcd3da1470facb96018cc868fe0c0cd4fe010064e2f69f2476b8398897f683ed",
+    "tools\\physics\\esc_probe.py": "35c8542c729d93aee9bb7f444aabc84ca965225efe899305c28b17d9717d6a9e",
+    "tools\\physics\\estimation_probe.py": "0cad42f5ac2929fdeca9d71e92d77bc7cdef604a2ee9af0d7b7548d71f43bd48",
+    "tools\\physics\\export_designs.py": "f4b2d284a4ede2325a38812a409ba8e7d6d9f429b8f5ce71b911b61415e56612",
+    "tools\\physics\\export_reference.py": "a5ee4115f7c4f13e9ae2e35ac182b16d023c3e5405c3a0c0f22ce71fbfe81a49",
+    "tools\\physics\\gr86_benchmark.py": "32b787519902fea87175b87e4287c0dff5c472fdca8d36a675d697d0de06c84f",
+    "tools\\physics\\gr86_profile.py": "30603cf4912118e66b64e5706a32b401ee753b84ebac37905358370c9ac33d77",
+    "tools\\physics\\guardrail_probe.py": "51130a84e441ebf1f5e236ae717d7f500cbbd3f64f3aca81af9bc9e0510c1d49",
+    "tools\\physics\\guardrail_support_probe.py": "02dee6a91c585a5886f14584ac47551ec903a6e535efaba2ba1a7e3e1d30f427",
+    "tools\\physics\\lane_change_probe.py": "9179b62f40be59e183fbdeea9330c6d257ea3a56a754731fc615802c7bf087a9",
+    "tools\\physics\\reference_ab.py": "60861e6c3b637a26f63537bf1b10c0b6af721f958de9116237126a55df032a9e",
+    "tools\\physics\\rotor_ab.py": "9ac41951e97ae643648abf58e2759b4e50e5ab043a237d2c282f0d95da028157",
+    "tools\\physics\\rotor_grade.py": "312a5a2e756706852166a9e8cb3de31c5a616fde161366889e4102ab9ca330e2",
+    "tools\\physics\\rotor_probe.py": "a7ecec2cb26a7e43cf135079e31734e8a5ad3d8732e5ceeb9000be4de91ad4b8",
+    "tools\\physics\\shaft_ab.py": "a38c77deb446f238527b95bf999f57ef8919ce9e732738aa52386ce9449ddc25",
+    "tools\\physics\\steering_geometry_probe.py": "79349f642cf93d5634a426f7bbccac4b608c14f03376dd89115e5e9ed9949eae",
+    "tools\\physics\\suspension_contact_probe.py": "280156467dd23f5c277ffefdc0d1b91b75ac3d8706c09e0468ceea34162e091e",
+    "tools\\physics\\suspension_coupled_probe.py": "d1bbeb1874f4917b3db99bf8ed95dd8c7af9d8a7642c3067daa636ffe0dba34b",
+    "tools\\physics\\suspension_handling_probe.py": "d2e9474ee55eddcb37ce6395eabfb16bf11026a23838993c4ded7157d2ef2268",
+    "tools\\physics\\suspension_probe.py": "fb7edae60a00db44020c6f53fd8ae6d7254858e35f417ee34f917c11cb31afe6",
+    "tools\\physics\\tcs_mechanical_check.py": "6b20cc47dadcf22fcd389fc58296826d1b8d60224df8033102195072ebe477af",
+    "tools\\physics\\tcs_probe.py": "d95d0cbd3eb866b376520be7345226aa2fa6bd1327c5f31179a24b5033bbc94a",
+    "tools\\physics\\testbed.py": "0928132b642493fff5c4d5e63aa6a43d20dd3b8cf6fa7814113f6dfa17d80675",
+    "tools\\physics\\tire_compliance_probe.py": "d9e906d67ddf54fd0c57830cc77e76d5f113e655078867d02e5b4c07fa26f87e",
+    "tools\\physics\\tire_compliance_substeps.py": "e2e7972dc960c496df5752bc63978e84d1e4c1d120b9b1f899c51b5d15cf1f6a",
+    "tools\\physics\\tire_dynamics_probe.py": "cfcf47d16b3b76c21be437a3ea51ea36c317e0b124d2178f519128c38dd37d83",
+    "tools\\physics\\tire_load_probe.py": "d43b98684e9c483620cdea3aa0f597fd89ec5b255c1f9c97637835906c934d20",
+    "tools\\physics\\tire_load_substeps.py": "bf768361d6945390e5c99f50501ae8e696fa43f2b7f4a74f0a588d5e18bd0da7",
+    "tools\\physics\\wheel_integration_lab.py": "84302a5d925987769eb7a39ac649ab86e18594ec40f8491e9fe8cf20cf124846"
+  },
+  "source_stable": true
+}

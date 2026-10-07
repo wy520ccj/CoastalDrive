@@ -158,6 +158,7 @@ class CarState:
     stability_state: StabilityState = field(default_factory=StabilityState)
     powertrain_state: PowertrainState | None = None
     suspension_state: SuspensionState | None = None
+    orientation: tuple = (1., 0., 0., 0.)  # 完成物理步的body→world四元数，Hamilton标量在前。
 
 
 def forward(heading):

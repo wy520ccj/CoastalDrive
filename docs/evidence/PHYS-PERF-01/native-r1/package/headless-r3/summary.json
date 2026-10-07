@@ -1,0 +1,57 @@
+{
+  "kind": "outside-repository independent package headless; not render, FPS or human gate",
+  "passed": true,
+  "checks": [
+    {
+      "mode": "game",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\builds\\physics-native-candidate-r3\\win_amd64\\coastaldrive.exe",
+        "--headless",
+        "--steps",
+        "120",
+        "--track",
+        "test",
+        "--seed",
+        "17",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "game"
+      ],
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-5ea_q8a7\\game",
+      "returncode": 0,
+      "seconds": 4.527900600005523,
+      "log": "game.log",
+      "report_tick_present": true,
+      "full_hardware_present": true
+    },
+    {
+      "mode": "simulation",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\builds\\physics-native-candidate-r3\\win_amd64\\coastaldrive.exe",
+        "--headless",
+        "--steps",
+        "120",
+        "--track",
+        "test",
+        "--seed",
+        "17",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "simulation"
+      ],
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-5ea_q8a7\\simulation",
+      "returncode": 0,
+      "seconds": 4.216054899996379,
+      "log": "simulation.log",
+      "report_tick_present": true,
+      "full_hardware_present": true
+    }
+  ],
+  "sha256": {
+    "coastaldrive.exe": "e9973139ea41d2ecbe9a781151e32234f5fcfcba394389a479c3544ff317a969",
+    "mechanical_kernels.pyd": "0ac16e3b9d037ce0aa5f1ae27ba3ab5f2a8b73657fec5baade480789fa8111cb",
+    "assets/game/vehicle-configs/gr86-2022-premium-6mt.json": "88c6bdce91429ae59247fec5c6bfd4a7531bbfa918e622dd78e61301dafb6a23"
+  }
+}

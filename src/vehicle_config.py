@@ -31,6 +31,7 @@ class VehicleConfig:
     front_drive_share: float = 0.0  # 0后驱、1前驱；中间值为开放中差的固定几何份额。
     differential_damping: tuple = (0., 0., 0.)  # 前轴/后轴/中差粘性系数，N·m·s/rad；默认开放。
     differential_capacity: tuple = (0., 0., 0.)  # 对应有限耦合容量，N·m；容量为0关闭端口。
+    axle_torque_bias_ratios: tuple = (1., 1.)  # 前／后轴负载依赖最大偏置比；1关闭，非原厂默认TBR。
     engine_inertia: float = .02  # 正常游戏起步响应标定的设计惯量，kg·m²；困难参考车取0.2，非实测。
     engine_axis: tuple = (0., 1., 0.)  # 车身局部曲轴正转方向。
     input_shaft_enabled: bool = True  # false冻结八维传动，仅供同机制旧/新对照。
@@ -102,6 +103,7 @@ class VehicleConfig:
     grass_friction: float = 0.45
     wheelbase: float = 2.2
     track_width: float = 1.68
+    axle_track_widths: tuple[float, float] | None = None  # 前／后轴轮距；None明确沿用统一track_width。
     # 同时覆盖当前车型的车身和外露车轮，玩家与交通车共用这组尺寸。
     collision_half_width: float = 1.05
     collision_half_length: float = 2.15
@@ -118,6 +120,12 @@ class VehicleConfig:
     suspension_force_limit: float = 6000.0  # N；仅原生对照分支的数值力限，SI势能反力不作硬裁剪。
 
     def __post_init__(self):
+        if len(self.axle_torque_bias_ratios) != 2 or any(not math.isfinite(value) or value < 1.
+                for value in self.axle_torque_bias_ratios):
+            raise ValueError("前／后轴扭矩偏置比须为两个不小于1的有限值")
+        if self.axle_track_widths is not None and (len(self.axle_track_widths) != 2
+                or any(not math.isfinite(width) or width <= 0. for width in self.axle_track_widths)):
+            raise ValueError("前／后轴轮距须为两个有限正值m")
         if not math.isfinite(self.rolling_transition_speed) or self.rolling_transition_speed <= 0.:
             raise ValueError("滚阻低速过渡轮缘速度须为有限正值m/s")
         if any(not math.isfinite(c) or c < 0. for c in (self.rolling_coefficient,self.grass_rolling_coefficient)):
@@ -157,6 +165,10 @@ class VehicleConfig:
             raise ValueError("限滑参数依次为前轴、后轴、中差的三项")
         if any(not math.isfinite(v) or v < 0 for v in (*self.differential_damping, *self.differential_capacity)):
             raise ValueError("限滑系数/容量须为有限非负值")
+        for axle, bias in enumerate(self.axle_torque_bias_ratios):
+            if bias > 1. and (not self.finite_drivetrain or not self.input_shaft_enabled
+                    or self.differential_damping[axle] <= 0. or self.differential_capacity[axle] <= 0.):
+                raise ValueError("扭矩偏置需要实体输入轴及对应轴的有限限滑端口")
         enabled = tuple(c > 0 and limit > 0 for c, limit in zip(self.differential_damping, self.differential_capacity))
         if any(enabled) and not self.finite_drivetrain:
             raise ValueError("有限限滑需要有限机械传动")
@@ -164,6 +176,10 @@ class VehicleConfig:
             raise ValueError("未驱动轴不配置传动限滑")
         if enabled[2] and self.front_drive_share in (0, 1):
             raise ValueError("中差限滑仅用于四驱")
+
+    @property
+    def wheel_track_widths(self):
+        return (self.track_width, self.track_width) if self.axle_track_widths is None else self.axle_track_widths
 
     @property
     def drive_weights(self):
@@ -182,10 +198,10 @@ CAR = VehicleConfig()
 def wheel_hubs(config=CAR):
     """前轴静态份额定义质心纵向位置；高度改变真实轮连接点力臂。"""
     return tuple(
-        (side * config.track_width / 2,
+        (side * width / 2,
          config.wheelbase * ((1 if axle == 1 else 0) - config.front_weight_share),
          config.wheel_connection_height - config.center_of_mass_height)
-        for axle in (1, -1) for side in (-1, 1)
+        for axle, width in zip((1, -1), config.wheel_track_widths) for side in (-1, 1)
     )
 
 

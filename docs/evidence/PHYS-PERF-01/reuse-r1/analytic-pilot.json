@@ -1,0 +1,6 @@
+{
+  "status": "mechanical_runs_completed_summary_processing_failed",
+  "derivative_evaluation_count": 0,
+  "reason": "shaft without torque bias never reached eligible Newton path in sampled inputs; empty max() in temporary report",
+  "no_production_analytic_change": true
+}

@@ -51,6 +51,8 @@ VEHICLES = (
                       True, False, physics_id="reference-fwd"),
     VehicleDefinition("reference-awd", "设计参考车 AWD", "vehicles/classic_coupe_v1.glb", "hero",
                       True, False, physics_id="reference-awd"),
+    VehicleDefinition("gr86-2022", "GR86 Premium · 6MT", "vehicles/gr86_2022_premium.glb", "hero",
+                      True, False, physics_id="gr86-2022-premium-6mt"),
     VehicleDefinition(
         "traffic-compact",
         "轻巧掀背",

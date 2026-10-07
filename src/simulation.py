@@ -869,6 +869,7 @@ def interpolate(previous: Snapshot, current: Snapshot, alpha: float):
             traction_state=b.traction_state,
             esc_enabled=b.esc_enabled,
             stability_state=b.stability_state,
+            orientation=orientation(a.orientation, b.orientation),
         )
 
     return replace(

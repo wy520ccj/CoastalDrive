@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from physics.export_reference import BRAKE_FIELDS, STABILITY_FIELDS, TRACTION_FIELDS, VEHICLE_FIELDS
 
-from vehicle_designs import DESIGN_VEHICLES
+from vehicle_designs import DESIGN_VEHICLES, GR86_PROFILE_PATH
 from vehicle_parameters import save_vehicle_config
 
 
@@ -39,6 +39,12 @@ def export_designs(output):
             "layout_source": "三个参考车仅改变前轴驱动份额；共用纵置轴系与其余硬件",
             "input_mode": "游戏/仿真输入辅助独立；选择同一文件不改变硬件",
         }
+        if design.id == "gr86-2022-premium-6mt":
+            metadata = json.loads(GR86_PROFILE_PATH.read_text(encoding="utf-8"))["metadata"]
+            metadata["git_head_at_export"] = head
+            metadata["source_sha256"] = {**source,
+                "assets/game/vehicle-configs/gr86-2022-premium-6mt.json": hashlib.sha256(GR86_PROFILE_PATH.read_bytes()).hexdigest(),
+                "assets/game/vehicles/gr86_2022_premium.glb": hashlib.sha256((ROOT/"assets/game/vehicles/gr86_2022_premium.glb").read_bytes()).hexdigest()}
         save_vehicle_config(output/(design.id+".json"), design.config, metadata=metadata)
     (output/"manifest.json").write_text(json.dumps(
         {"designs": [d.id for d in DESIGN_VEHICLES], "source_sha256": source},

@@ -1,0 +1,2588 @@
+{
+  "created_at_utc": "2026-10-07T06:02:35.414637+00:00",
+  "baseline_head": "983e978",
+  "working_tree_head_at_capture": "983e97818220257a5f13b503f28a61b024a54f71",
+  "working_tree_status_at_capture": [
+    " M docs/current-progress.md",
+    " M src/coastal_collision.py",
+    " M src/suspension_contacts.py",
+    " M src/vehicle.py",
+    " M src/vehicle_suspension.py",
+    " M src/world_step.py",
+    " M tests/test_suspension_query_lifetime.py",
+    " M tools/validate.py",
+    "?? docs/evidence/PHYS-PERF-01/bounds-r1/",
+    "?? tests/data/",
+    "?? tests/test_suspension_candidates.py"
+  ],
+  "archive_entries": [
+    {
+      "kind": "snapshot-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\bounds-production-snapshots.json",
+      "archive": "snapshots/bounds-production-snapshots.json.gz",
+      "source_sha256": "de4ce11d8d2fbb38dfcc8f1db5a9d990b14ec71920fdeb8eeb842a82cf32f641",
+      "archive_sha256": "8de7520b98db6744f1b259a298e725cbec26ecae04bba942d78d45cf3532ff10",
+      "source_bytes": 8722127,
+      "archive_bytes": 1950445,
+      "gzip_mtime": 0,
+      "payload_sha256": "de4ce11d8d2fbb38dfcc8f1db5a9d990b14ec71920fdeb8eeb842a82cf32f641"
+    },
+    {
+      "kind": "snapshot-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\bounds-cache-snapshots.json",
+      "archive": "snapshots/bounds-cache-snapshots.json.gz",
+      "source_sha256": "3db6ed6e6a0289f4b4b0ca66096dfc02b5aa6052080052e9948a1a044638cd8b",
+      "archive_sha256": "52dfeea751837fc72a72cb22b2493d8ea906f1fd1b0a8bf89e87392ff1123892",
+      "source_bytes": 8722142,
+      "archive_bytes": 1950460,
+      "gzip_mtime": 0,
+      "payload_sha256": "3db6ed6e6a0289f4b4b0ca66096dfc02b5aa6052080052e9948a1a044638cd8b"
+    },
+    {
+      "kind": "snapshot-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\bounds-shared-snapshots.json",
+      "archive": "snapshots/bounds-shared-snapshots.json.gz",
+      "source_sha256": "60be14742b00e136ccef8c8d5f5e96821c41a60c6a1c45fbac1e08c2011ec567",
+      "archive_sha256": "7edc57cadbc363f1baffa824ba1659890bdd7f0ef8fd59c10ef97c0b375acfe4",
+      "source_bytes": 8722162,
+      "archive_bytes": 1950459,
+      "gzip_mtime": 0,
+      "payload_sha256": "60be14742b00e136ccef8c8d5f5e96821c41a60c6a1c45fbac1e08c2011ec567"
+    },
+    {
+      "kind": "snapshot-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\bounds-window-snapshots.json",
+      "archive": "snapshots/bounds-window-snapshots.json.gz",
+      "source_sha256": "c03ac8a8b78535cc409cf5398063838dd227695185199b437b660bbb7bedbfbb",
+      "archive_sha256": "8c44196cb8435a8190b979986f67d8c63a936880c80e7d67b79867466eef7e26",
+      "source_bytes": 8722185,
+      "archive_bytes": 1950465,
+      "gzip_mtime": 0,
+      "payload_sha256": "c03ac8a8b78535cc409cf5398063838dd227695185199b437b660bbb7bedbfbb"
+    },
+    {
+      "kind": "comparison",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\bounds-production-comparison.json",
+      "archive": "comparisons/bounds-production-comparison.json",
+      "source_sha256": "8c4d40fb2ffa295c57662ab32c626649346d79821ca940e1661e638fe1479420",
+      "archive_sha256": "8c4d40fb2ffa295c57662ab32c626649346d79821ca940e1661e638fe1479420",
+      "source_bytes": 498,
+      "archive_bytes": 498,
+      "byte_exact": true
+    },
+    {
+      "kind": "comparison",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\bounds-cache-comparison.json",
+      "archive": "comparisons/bounds-cache-comparison.json",
+      "source_sha256": "4f0597ec285e6f0f82ce143cc4656f2c7c234210c3b762f614c9ba33acc225c9",
+      "archive_sha256": "4f0597ec285e6f0f82ce143cc4656f2c7c234210c3b762f614c9ba33acc225c9",
+      "source_bytes": 387,
+      "archive_bytes": 387,
+      "byte_exact": true
+    },
+    {
+      "kind": "comparison",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\bounds-window-comparison.json",
+      "archive": "comparisons/bounds-window-comparison.json",
+      "source_sha256": "30c71d3923acf876564759de97c66cbcef04c60721d42e494e459393e5aed743",
+      "archive_sha256": "30c71d3923acf876564759de97c66cbcef04c60721d42e494e459393e5aed743",
+      "source_bytes": 1538,
+      "archive_bytes": 1538,
+      "byte_exact": true
+    },
+    {
+      "kind": "snapshot-timing-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\bounds-production-snapshots.log",
+      "archive": "snapshots/bounds-production-snapshots.log.gz",
+      "source_sha256": "9d00ccb5a6c4f9bd25cbaf471648c49d1a562faf18d5b44fc80c426b17be3cd3",
+      "archive_sha256": "7ea6350d926a740b47e930fe8fff1948f5f015f4b021aa5083e83dc29172ad46",
+      "source_bytes": 94,
+      "archive_bytes": 87,
+      "gzip_mtime": 0,
+      "payload_sha256": "9d00ccb5a6c4f9bd25cbaf471648c49d1a562faf18d5b44fc80c426b17be3cd3"
+    },
+    {
+      "kind": "snapshot-timing-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\bounds-cache-snapshots.log",
+      "archive": "snapshots/bounds-cache-snapshots.log.gz",
+      "source_sha256": "20a3cb5fd7fff29fc53108bc0245510a95a532f7308d0ae21eaa0a4ec07ce420",
+      "archive_sha256": "8515308f459069325afcbc5b6800396e9a7d73a50b3260f3decd8ed516685a76",
+      "source_bytes": 96,
+      "archive_bytes": 90,
+      "gzip_mtime": 0,
+      "payload_sha256": "20a3cb5fd7fff29fc53108bc0245510a95a532f7308d0ae21eaa0a4ec07ce420"
+    },
+    {
+      "kind": "snapshot-timing-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\bounds-shared-snapshots.log",
+      "archive": "snapshots/bounds-shared-snapshots.log.gz",
+      "source_sha256": "be01bef9e0e2d983c9adf98a96511217b06e39f1e8fc72652966c82ace542070",
+      "archive_sha256": "c594133f0d5c438a1f0c374e4a28ba2d598f3a6e5a170f8c3fe2ac99da8f500b",
+      "source_bytes": 96,
+      "archive_bytes": 91,
+      "gzip_mtime": 0,
+      "payload_sha256": "be01bef9e0e2d983c9adf98a96511217b06e39f1e8fc72652966c82ace542070"
+    },
+    {
+      "kind": "snapshot-timing-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\bounds-window-snapshots.log",
+      "archive": "snapshots/bounds-window-snapshots.log.gz",
+      "source_sha256": "ba2afbcf445929d632694edc58c42b02a3ce7b506528b27acd18a27c296b6aaa",
+      "archive_sha256": "0fa46dc8fd36f29f8f603a241d525dcda706054102e0ad2d0a548923a5f77d27",
+      "source_bytes": 96,
+      "archive_bytes": 91,
+      "gzip_mtime": 0,
+      "payload_sha256": "ba2afbcf445929d632694edc58c42b02a3ce7b506528b27acd18a27c296b6aaa"
+    },
+    {
+      "kind": "comparison-script",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\compare-current.py",
+      "archive": "comparisons/compare-current.py",
+      "source_sha256": "e407d5d6bbcaef1f9cff0ec67f336f23ffe3b5ff0bfcad73ebfe0377ad62b877",
+      "archive_sha256": "e407d5d6bbcaef1f9cff0ec67f336f23ffe3b5ff0bfcad73ebfe0377ad62b877",
+      "source_bytes": 333,
+      "archive_bytes": 333,
+      "byte_exact": true
+    },
+    {
+      "kind": "comparison-script",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\compare-bounds.py",
+      "archive": "comparisons/compare-bounds.py",
+      "source_sha256": "04b93a5d9b17abee8b795935c48374e66dff396581982531a1caa24df6e4b598",
+      "archive_sha256": "04b93a5d9b17abee8b795935c48374e66dff396581982531a1caa24df6e4b598",
+      "source_bytes": 841,
+      "archive_bytes": 841,
+      "byte_exact": true
+    },
+    {
+      "kind": "comparison-script",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\compare-bounds-cache.py",
+      "archive": "comparisons/compare-bounds-cache.py",
+      "source_sha256": "df7c4163ab041bfd2174b5122fa840b9cb18db0257568a59f5bcde9061d844b5",
+      "archive_sha256": "df7c4163ab041bfd2174b5122fa840b9cb18db0257568a59f5bcde9061d844b5",
+      "source_bytes": 711,
+      "archive_bytes": 711,
+      "byte_exact": true
+    },
+    {
+      "kind": "comparison-script",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\compare-window.py",
+      "archive": "comparisons/compare-window.py",
+      "source_sha256": "1d225831453e508f29ffd8bcfcfb2d3256b8942ac8bacc6d1d098f156783eb8f",
+      "archive_sha256": "1d225831453e508f29ffd8bcfcfb2d3256b8942ac8bacc6d1d098f156783eb8f",
+      "source_bytes": 910,
+      "archive_bytes": 910,
+      "byte_exact": true
+    },
+    {
+      "kind": "profile-script",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\profile-bounds.py",
+      "archive": "profile/profile-bounds.py",
+      "source_sha256": "45e8a6441bafbf2915e1c8317404b33bf111bfb956eb81f585ae51f2f1f00084",
+      "archive_sha256": "45e8a6441bafbf2915e1c8317404b33bf111bfb956eb81f585ae51f2f1f00084",
+      "source_bytes": 385,
+      "archive_bytes": 385,
+      "byte_exact": true
+    },
+    {
+      "kind": "profile-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\profile-bounds.log",
+      "archive": "profile/profile-bounds.log.gz",
+      "source_sha256": "f5e5a41db7e2f862f0f9726f02ea1dac8fe365d2fdaccd4402408b5ce4de5a0e",
+      "archive_sha256": "f5b7dc9ab92f4d0235c5d1aa0749550479a30531d02990ce87eb6444eab1d727",
+      "source_bytes": 140,
+      "archive_bytes": 131,
+      "gzip_mtime": 0,
+      "payload_sha256": "f5e5a41db7e2f862f0f9726f02ea1dac8fe365d2fdaccd4402408b5ce4de5a0e"
+    },
+    {
+      "kind": "profile-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\profile-bounds\\gr86-profile.prof",
+      "archive": "profile/profile-bounds/gr86-profile.prof",
+      "source_sha256": "f1f4a7be7c80e8031c84f9f01739addea7b134bd5676de699422a95b9fec0cf8",
+      "archive_sha256": "f1f4a7be7c80e8031c84f9f01739addea7b134bd5676de699422a95b9fec0cf8",
+      "source_bytes": 82021,
+      "archive_bytes": 82021,
+      "byte_exact": true
+    },
+    {
+      "kind": "profile-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\profile-bounds\\profile.json",
+      "archive": "profile/profile-bounds/profile.json",
+      "source_sha256": "2aabc6381cb16e676f8d71e82a6743b1b6064720b70fa928140829eaf693e3a3",
+      "archive_sha256": "2aabc6381cb16e676f8d71e82a6743b1b6064720b70fa928140829eaf693e3a3",
+      "source_bytes": 31738,
+      "archive_bytes": 31738,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T0\\pytest.log",
+      "archive": "validation/PHYS-PERF-01-bounds-T0/pytest.log.gz",
+      "source_sha256": "b05ff0cdaf01c9dc990ad4b5dc912257e62587b711e029986561d3a8ab1ffef7",
+      "archive_sha256": "bc7ab26ebe076099070d797ca6bdf51ab34a59aa2ca213eab98a5b661efd242b",
+      "source_bytes": 183,
+      "archive_bytes": 64,
+      "gzip_mtime": 0,
+      "payload_sha256": "b05ff0cdaf01c9dc990ad4b5dc912257e62587b711e029986561d3a8ab1ffef7"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T0\\ruff.log",
+      "archive": "validation/PHYS-PERF-01-bounds-T0/ruff.log.gz",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "source_bytes": 19,
+      "archive_bytes": 39,
+      "gzip_mtime": 0,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T0\\summary.json",
+      "archive": "validation/PHYS-PERF-01-bounds-T0/summary.json",
+      "source_sha256": "c0c02214033c9b76e76e54a0f0362435bd2af34d164ff3dad9eecb052626f39e",
+      "archive_sha256": "c0c02214033c9b76e76e54a0f0362435bd2af34d164ff3dad9eecb052626f39e",
+      "source_bytes": 2079,
+      "archive_bytes": 2079,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T0-r2\\pytest.log",
+      "archive": "validation/PHYS-PERF-01-bounds-T0-r2/pytest.log.gz",
+      "source_sha256": "12461f9a9f9d40d6d6262c67ce64e8f81f82226336256abcfe8832948533ae9a",
+      "archive_sha256": "3efebf3ae2638c307c1d2550644ab3eb85b58f27ab30b5e6fe01cf5e26a57d6c",
+      "source_bytes": 101,
+      "archive_bytes": 54,
+      "gzip_mtime": 0,
+      "payload_sha256": "12461f9a9f9d40d6d6262c67ce64e8f81f82226336256abcfe8832948533ae9a"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T0-r2\\ruff.log",
+      "archive": "validation/PHYS-PERF-01-bounds-T0-r2/ruff.log.gz",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "source_bytes": 19,
+      "archive_bytes": 39,
+      "gzip_mtime": 0,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T0-r2\\summary.json",
+      "archive": "validation/PHYS-PERF-01-bounds-T0-r2/summary.json",
+      "source_sha256": "56f846d54e09e9164271d1a260bacbdad80264c4939e3e266094f008e536833b",
+      "archive_sha256": "56f846d54e09e9164271d1a260bacbdad80264c4939e3e266094f008e536833b",
+      "source_bytes": 2087,
+      "archive_bytes": 2087,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T1\\headless-0.log",
+      "archive": "validation/PHYS-PERF-01-bounds-T1/headless-0.log.gz",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "d65c41487a0683c90d151693e802a170c167abc5d736b83a54c44ccb260e172d",
+      "source_bytes": 32432,
+      "archive_bytes": 7615,
+      "gzip_mtime": 0,
+      "payload_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T1\\headless-17.log",
+      "archive": "validation/PHYS-PERF-01-bounds-T1/headless-17.log.gz",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "d65c41487a0683c90d151693e802a170c167abc5d736b83a54c44ccb260e172d",
+      "source_bytes": 32432,
+      "archive_bytes": 7615,
+      "gzip_mtime": 0,
+      "payload_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T1\\headless-23.log",
+      "archive": "validation/PHYS-PERF-01-bounds-T1/headless-23.log.gz",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "d65c41487a0683c90d151693e802a170c167abc5d736b83a54c44ccb260e172d",
+      "source_bytes": 32432,
+      "archive_bytes": 7615,
+      "gzip_mtime": 0,
+      "payload_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T1\\pytest.log",
+      "archive": "validation/PHYS-PERF-01-bounds-T1/pytest.log.gz",
+      "source_sha256": "92ece03fa768a25458ee4c3506538b334e4068bee55acf841ddd665afc75cbaf",
+      "archive_sha256": "aef2e29dbc055f03373fef419406ca9fa8b0fcd4102b57063d79167ac9888cf2",
+      "source_bytes": 599,
+      "archive_bytes": 100,
+      "gzip_mtime": 0,
+      "payload_sha256": "92ece03fa768a25458ee4c3506538b334e4068bee55acf841ddd665afc75cbaf"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T1\\ruff.log",
+      "archive": "validation/PHYS-PERF-01-bounds-T1/ruff.log.gz",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "source_bytes": 19,
+      "archive_bytes": 39,
+      "gzip_mtime": 0,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T1\\summary.json",
+      "archive": "validation/PHYS-PERF-01-bounds-T1/summary.json",
+      "source_sha256": "5f5ca91d4bcb45a9ed920b5a8231168dd5931c7cc68461f0f00419e11e30fada",
+      "archive_sha256": "5f5ca91d4bcb45a9ed920b5a8231168dd5931c7cc68461f0f00419e11e30fada",
+      "source_bytes": 4566,
+      "archive_bytes": 4566,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T0\\pytest.log",
+      "archive": "validation/PHYS-PERF-01-bounds-cache-T0/pytest.log.gz",
+      "source_sha256": "bea0765a637346b0a0e42c5cb3343b0bd636417c367405619a7cfd44720290c0",
+      "archive_sha256": "f0c9f7db4568f7a9a57b52ddf57a3725f433f44d38071c65e81acbd4d03a1b44",
+      "source_bytes": 101,
+      "archive_bytes": 54,
+      "gzip_mtime": 0,
+      "payload_sha256": "bea0765a637346b0a0e42c5cb3343b0bd636417c367405619a7cfd44720290c0"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T0\\ruff.log",
+      "archive": "validation/PHYS-PERF-01-bounds-cache-T0/ruff.log.gz",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "source_bytes": 19,
+      "archive_bytes": 39,
+      "gzip_mtime": 0,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T0\\summary.json",
+      "archive": "validation/PHYS-PERF-01-bounds-cache-T0/summary.json",
+      "source_sha256": "43ad320e93c66f1967da61cb46df5efccc5cc43d00e90b47b669d41c92a30ee1",
+      "archive_sha256": "43ad320e93c66f1967da61cb46df5efccc5cc43d00e90b47b669d41c92a30ee1",
+      "source_bytes": 2122,
+      "archive_bytes": 2122,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T1\\headless-0.log",
+      "archive": "validation/PHYS-PERF-01-bounds-cache-T1/headless-0.log.gz",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "d65c41487a0683c90d151693e802a170c167abc5d736b83a54c44ccb260e172d",
+      "source_bytes": 32432,
+      "archive_bytes": 7615,
+      "gzip_mtime": 0,
+      "payload_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T1\\headless-17.log",
+      "archive": "validation/PHYS-PERF-01-bounds-cache-T1/headless-17.log.gz",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "d65c41487a0683c90d151693e802a170c167abc5d736b83a54c44ccb260e172d",
+      "source_bytes": 32432,
+      "archive_bytes": 7615,
+      "gzip_mtime": 0,
+      "payload_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T1\\headless-23.log",
+      "archive": "validation/PHYS-PERF-01-bounds-cache-T1/headless-23.log.gz",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "d65c41487a0683c90d151693e802a170c167abc5d736b83a54c44ccb260e172d",
+      "source_bytes": 32432,
+      "archive_bytes": 7615,
+      "gzip_mtime": 0,
+      "payload_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T1\\pytest.log",
+      "archive": "validation/PHYS-PERF-01-bounds-cache-T1/pytest.log.gz",
+      "source_sha256": "96b6f48eeac63943de38ec482cef2dc4512efd35218aa701fbc76aa67af7ffe4",
+      "archive_sha256": "ef9ff125033db05fd58ae23ab8352475219744072dce807a3749db60e4d76bcc",
+      "source_bytes": 101,
+      "archive_bytes": 54,
+      "gzip_mtime": 0,
+      "payload_sha256": "96b6f48eeac63943de38ec482cef2dc4512efd35218aa701fbc76aa67af7ffe4"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T1\\ruff.log",
+      "archive": "validation/PHYS-PERF-01-bounds-cache-T1/ruff.log.gz",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "source_bytes": 19,
+      "archive_bytes": 39,
+      "gzip_mtime": 0,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T1\\summary.json",
+      "archive": "validation/PHYS-PERF-01-bounds-cache-T1/summary.json",
+      "source_sha256": "c8056a07014e31196e0d8602011b87d5b014a6edae0399ac7392e886247e2ab4",
+      "archive_sha256": "c8056a07014e31196e0d8602011b87d5b014a6edae0399ac7392e886247e2ab4",
+      "source_bytes": 4000,
+      "archive_bytes": 4000,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-shared-T0\\pytest.log",
+      "archive": "validation/PHYS-PERF-01-bounds-shared-T0/pytest.log.gz",
+      "source_sha256": "5fa57e9f8d2471f0771ad16d13b1134ff42a367d1b1e98f08b77979c4097450d",
+      "archive_sha256": "87ce0a982669524e006bcfd2d3ff07d1f102f898de8ed442978c8d8cd38ebe4a",
+      "source_bytes": 2311,
+      "archive_bytes": 837,
+      "gzip_mtime": 0,
+      "payload_sha256": "5fa57e9f8d2471f0771ad16d13b1134ff42a367d1b1e98f08b77979c4097450d"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-shared-T0\\ruff.log",
+      "archive": "validation/PHYS-PERF-01-bounds-shared-T0/ruff.log.gz",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "source_bytes": 19,
+      "archive_bytes": 39,
+      "gzip_mtime": 0,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-shared-T0\\summary.json",
+      "archive": "validation/PHYS-PERF-01-bounds-shared-T0/summary.json",
+      "source_sha256": "1a3ce765c1a45529a04ec84d125bf19a52ce454a7ff05d3f02268836ca9592a0",
+      "archive_sha256": "1a3ce765c1a45529a04ec84d125bf19a52ce454a7ff05d3f02268836ca9592a0",
+      "source_bytes": 2140,
+      "archive_bytes": 2140,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-shared-T0-r2\\pytest.log",
+      "archive": "validation/PHYS-PERF-01-bounds-shared-T0-r2/pytest.log.gz",
+      "source_sha256": "12461f9a9f9d40d6d6262c67ce64e8f81f82226336256abcfe8832948533ae9a",
+      "archive_sha256": "3efebf3ae2638c307c1d2550644ab3eb85b58f27ab30b5e6fe01cf5e26a57d6c",
+      "source_bytes": 101,
+      "archive_bytes": 54,
+      "gzip_mtime": 0,
+      "payload_sha256": "12461f9a9f9d40d6d6262c67ce64e8f81f82226336256abcfe8832948533ae9a"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-shared-T0-r2\\ruff.log",
+      "archive": "validation/PHYS-PERF-01-bounds-shared-T0-r2/ruff.log.gz",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "source_bytes": 19,
+      "archive_bytes": 39,
+      "gzip_mtime": 0,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-shared-T0-r2\\summary.json",
+      "archive": "validation/PHYS-PERF-01-bounds-shared-T0-r2/summary.json",
+      "source_sha256": "f718ea2913d707d573cc9feca7d4985eaec2b004a735b16321b2b6d22c9f1cf1",
+      "archive_sha256": "f718ea2913d707d573cc9feca7d4985eaec2b004a735b16321b2b6d22c9f1cf1",
+      "source_bytes": 2175,
+      "archive_bytes": 2175,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-hull-T0\\pytest.log",
+      "archive": "validation/PHYS-PERF-01-bounds-hull-T0/pytest.log.gz",
+      "source_sha256": "f6194c3381ce1ec7a6ef8e69f37421634cb1db3e841d5426185b47efb8e46296",
+      "archive_sha256": "84b6d3c800b4ba64ab6d738bd3444512c95bef2262c58b7f6b25ea376dbd7d36",
+      "source_bytes": 101,
+      "archive_bytes": 54,
+      "gzip_mtime": 0,
+      "payload_sha256": "f6194c3381ce1ec7a6ef8e69f37421634cb1db3e841d5426185b47efb8e46296"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-hull-T0\\ruff.log",
+      "archive": "validation/PHYS-PERF-01-bounds-hull-T0/ruff.log.gz",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "source_bytes": 19,
+      "archive_bytes": 39,
+      "gzip_mtime": 0,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-hull-T0\\summary.json",
+      "archive": "validation/PHYS-PERF-01-bounds-hull-T0/summary.json",
+      "source_sha256": "ec0b0456e30c8e105cff35d06cd58fc576a37f25b7161717138ffa0232d6d53a",
+      "archive_sha256": "ec0b0456e30c8e105cff35d06cd58fc576a37f25b7161717138ffa0232d6d53a",
+      "source_bytes": 2284,
+      "archive_bytes": 2284,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-world-T0\\pytest.log",
+      "archive": "validation/PHYS-PERF-01-bounds-world-T0/pytest.log.gz",
+      "source_sha256": "8091cc7e77f3ea5a96154daaaaea1931059c30fba6a886d9463ec47a8eb4c561",
+      "archive_sha256": "027df6251d65d9ff3c8a2c12821dfb1b68589ebb621be5dead980df54bc7d4a4",
+      "source_bytes": 101,
+      "archive_bytes": 54,
+      "gzip_mtime": 0,
+      "payload_sha256": "8091cc7e77f3ea5a96154daaaaea1931059c30fba6a886d9463ec47a8eb4c561"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-world-T0\\ruff.log",
+      "archive": "validation/PHYS-PERF-01-bounds-world-T0/ruff.log.gz",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "source_bytes": 19,
+      "archive_bytes": 39,
+      "gzip_mtime": 0,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-world-T0\\summary.json",
+      "archive": "validation/PHYS-PERF-01-bounds-world-T0/summary.json",
+      "source_sha256": "906954b7021d07dd3ca57b762dd944050691c755e9b0c336ee326486ff399966",
+      "archive_sha256": "906954b7021d07dd3ca57b762dd944050691c755e9b0c336ee326486ff399966",
+      "source_bytes": 2491,
+      "archive_bytes": 2491,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-window-T0\\ruff.log",
+      "archive": "validation/PHYS-PERF-01-bounds-window-T0/ruff.log.gz",
+      "source_sha256": "6ef7be03fa9668b99df6cf0ee1aaf53e52c5e93a773b35644be6626ad063172c",
+      "archive_sha256": "2f63ab1f6a37c1f70080fa170f46b983ab5687068e7ff8a3c138439f18f90915",
+      "source_bytes": 756,
+      "archive_bytes": 352,
+      "gzip_mtime": 0,
+      "payload_sha256": "6ef7be03fa9668b99df6cf0ee1aaf53e52c5e93a773b35644be6626ad063172c"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-window-T0\\summary.json",
+      "archive": "validation/PHYS-PERF-01-bounds-window-T0/summary.json",
+      "source_sha256": "7598d98931c530f58944b0fe1bac25303ac66cbfaeb974331773a3f24fb8adca",
+      "archive_sha256": "7598d98931c530f58944b0fe1bac25303ac66cbfaeb974331773a3f24fb8adca",
+      "source_bytes": 2438,
+      "archive_bytes": 2438,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-window-T0-r2\\ruff.log",
+      "archive": "validation/PHYS-PERF-01-bounds-window-T0-r2/ruff.log.gz",
+      "source_sha256": "6ef7be03fa9668b99df6cf0ee1aaf53e52c5e93a773b35644be6626ad063172c",
+      "archive_sha256": "2f63ab1f6a37c1f70080fa170f46b983ab5687068e7ff8a3c138439f18f90915",
+      "source_bytes": 756,
+      "archive_bytes": 352,
+      "gzip_mtime": 0,
+      "payload_sha256": "6ef7be03fa9668b99df6cf0ee1aaf53e52c5e93a773b35644be6626ad063172c"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-window-T0-r2\\summary.json",
+      "archive": "validation/PHYS-PERF-01-bounds-window-T0-r2/summary.json",
+      "source_sha256": "a6ba58385d9a2bb36e67f1867c4845130d8be376f96cbd0090199ca1b1ba62a1",
+      "archive_sha256": "a6ba58385d9a2bb36e67f1867c4845130d8be376f96cbd0090199ca1b1ba62a1",
+      "source_bytes": 2444,
+      "archive_bytes": 2444,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-window-T0-r3\\pytest.log",
+      "archive": "validation/PHYS-PERF-01-bounds-window-T0-r3/pytest.log.gz",
+      "source_sha256": "77c790959886b9cda4721b82c2a3592b87613d87e76747d097a8dd7415d58574",
+      "archive_sha256": "490fdd6a1603ce756f4461b23d0f0e69256a97c6db917489c87adb170b26ffe6",
+      "source_bytes": 101,
+      "archive_bytes": 54,
+      "gzip_mtime": 0,
+      "payload_sha256": "77c790959886b9cda4721b82c2a3592b87613d87e76747d097a8dd7415d58574"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-window-T0-r3\\ruff.log",
+      "archive": "validation/PHYS-PERF-01-bounds-window-T0-r3/ruff.log.gz",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "source_bytes": 19,
+      "archive_bytes": 39,
+      "gzip_mtime": 0,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-window-T0-r3\\summary.json",
+      "archive": "validation/PHYS-PERF-01-bounds-window-T0-r3/summary.json",
+      "source_sha256": "a85e23dba1d4be885e6ba38822a0bf4d1e03018b03a91492590ad014d502c66f",
+      "archive_sha256": "a85e23dba1d4be885e6ba38822a0bf4d1e03018b03a91492590ad014d502c66f",
+      "source_bytes": 2499,
+      "archive_bytes": 2499,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-final-T1\\headless-0.log",
+      "archive": "validation/PHYS-PERF-01-bounds-final-T1/headless-0.log.gz",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "d65c41487a0683c90d151693e802a170c167abc5d736b83a54c44ccb260e172d",
+      "source_bytes": 32432,
+      "archive_bytes": 7615,
+      "gzip_mtime": 0,
+      "payload_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-final-T1\\headless-17.log",
+      "archive": "validation/PHYS-PERF-01-bounds-final-T1/headless-17.log.gz",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "d65c41487a0683c90d151693e802a170c167abc5d736b83a54c44ccb260e172d",
+      "source_bytes": 32432,
+      "archive_bytes": 7615,
+      "gzip_mtime": 0,
+      "payload_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-final-T1\\headless-23.log",
+      "archive": "validation/PHYS-PERF-01-bounds-final-T1/headless-23.log.gz",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "d65c41487a0683c90d151693e802a170c167abc5d736b83a54c44ccb260e172d",
+      "source_bytes": 32432,
+      "archive_bytes": 7615,
+      "gzip_mtime": 0,
+      "payload_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-final-T1\\pytest.log",
+      "archive": "validation/PHYS-PERF-01-bounds-final-T1/pytest.log.gz",
+      "source_sha256": "6b5331a264384e03f53d8f5faf72692c4f3f918b2ae2e6eaa1307800b14c7b83",
+      "archive_sha256": "d85126a10a0446aa2103af05fa0f3e2669d5500c89953b6ada1349f03f0252bb",
+      "source_bytes": 589,
+      "archive_bytes": 87,
+      "gzip_mtime": 0,
+      "payload_sha256": "6b5331a264384e03f53d8f5faf72692c4f3f918b2ae2e6eaa1307800b14c7b83"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-final-T1\\ruff.log",
+      "archive": "validation/PHYS-PERF-01-bounds-final-T1/ruff.log.gz",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "source_bytes": 19,
+      "archive_bytes": 39,
+      "gzip_mtime": 0,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-final-T1\\summary.json",
+      "archive": "validation/PHYS-PERF-01-bounds-final-T1/summary.json",
+      "source_sha256": "76f855377d3de3bbeec8e84a6d5e140ceed6d083a061c21a858bef5ba5abbb21",
+      "archive_sha256": "76f855377d3de3bbeec8e84a6d5e140ceed6d083a061c21a858bef5ba5abbb21",
+      "source_bytes": 4976,
+      "archive_bytes": 4976,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\src\\suspension_contacts.py",
+      "archive": "source-snapshot/src/suspension_contacts.py",
+      "source_sha256": "274bc6fe49d21ba63a25df7c1890b4bc244b389cc83ad4fca6ecfedf12b563e1",
+      "archive_sha256": "274bc6fe49d21ba63a25df7c1890b4bc244b389cc83ad4fca6ecfedf12b563e1",
+      "source_bytes": 14488,
+      "archive_bytes": 14488,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\src\\vehicle_suspension.py",
+      "archive": "source-snapshot/src/vehicle_suspension.py",
+      "source_sha256": "3da7ed48197188630bba5b1d65f35fda858f8c6f057bf79c57645f247172da28",
+      "archive_sha256": "3da7ed48197188630bba5b1d65f35fda858f8c6f057bf79c57645f247172da28",
+      "source_bytes": 13991,
+      "archive_bytes": 13991,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\src\\world_step.py",
+      "archive": "source-snapshot/src/world_step.py",
+      "source_sha256": "a814c876331e8e7bb3294cabb070926f7673575d432e7d36e4809af203aab3b0",
+      "archive_sha256": "a814c876331e8e7bb3294cabb070926f7673575d432e7d36e4809af203aab3b0",
+      "source_bytes": 3043,
+      "archive_bytes": 3043,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\src\\vehicle.py",
+      "archive": "source-snapshot/src/vehicle.py",
+      "source_sha256": "f94fbb9d7ae3cd1621e87a0e79f19f50c58bbfb3a440aec7eeb668f8ed90d39e",
+      "archive_sha256": "f94fbb9d7ae3cd1621e87a0e79f19f50c58bbfb3a440aec7eeb668f8ed90d39e",
+      "source_bytes": 20290,
+      "archive_bytes": 20290,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\src\\coastal_collision.py",
+      "archive": "source-snapshot/src/coastal_collision.py",
+      "source_sha256": "02258d07266c1c926a095f3357abf1d10d007d3bfe7d338fe7542b0116ee5bf4",
+      "archive_sha256": "02258d07266c1c926a095f3357abf1d10d007d3bfe7d338fe7542b0116ee5bf4",
+      "source_bytes": 1402,
+      "archive_bytes": 1402,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\tests\\test_suspension_candidates.py",
+      "archive": "source-snapshot/tests/test_suspension_candidates.py",
+      "source_sha256": "040e97e0974ea7cab02aa0dbb13177c57747d8edb746eb37285b6ae157b7dd59",
+      "archive_sha256": "040e97e0974ea7cab02aa0dbb13177c57747d8edb746eb37285b6ae157b7dd59",
+      "source_bytes": 3780,
+      "archive_bytes": 3780,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\tests\\test_suspension_query_lifetime.py",
+      "archive": "source-snapshot/tests/test_suspension_query_lifetime.py",
+      "source_sha256": "ad1fa0ee8b1f2b4a57051371fea94a5e1ca86a32720844b44d4aa8abf5e530e9",
+      "archive_sha256": "ad1fa0ee8b1f2b4a57051371fea94a5e1ca86a32720844b44d4aa8abf5e530e9",
+      "source_bytes": 2609,
+      "archive_bytes": 2609,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\tests\\data\\highway-contact-r11\\config.json",
+      "archive": "source-snapshot/tests/data/highway-contact-r11/config.json",
+      "source_sha256": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb",
+      "archive_sha256": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb",
+      "source_bytes": 5700,
+      "archive_bytes": 5700,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\tests\\data\\highway-contact-r11\\input.json",
+      "archive": "source-snapshot/tests/data/highway-contact-r11/input.json",
+      "source_sha256": "deca814b54b3c850211afbe26243cec55cdedff1e00ca47a371ece19a1bc3dad",
+      "archive_sha256": "deca814b54b3c850211afbe26243cec55cdedff1e00ca47a371ece19a1bc3dad",
+      "source_bytes": 18540,
+      "archive_bytes": 18540,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\tests\\data\\highway-contact-r11\\rear-config.json",
+      "archive": "source-snapshot/tests/data/highway-contact-r11/rear-config.json",
+      "source_sha256": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb",
+      "archive_sha256": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb",
+      "source_bytes": 5700,
+      "archive_bytes": 5700,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\tools\\validate.py",
+      "archive": "source-snapshot/tools/validate.py",
+      "source_sha256": "694ce180674bcf9173206faf44f7968eae27ca7641b34c3e63c1b42d2865f7f5",
+      "archive_sha256": "694ce180674bcf9173206faf44f7968eae27ca7641b34c3e63c1b42d2865f7f5",
+      "source_bytes": 12191,
+      "archive_bytes": 12191,
+      "byte_exact": true
+    },
+    {
+      "kind": "archive-record",
+      "source": "generated from existing logs and source capture",
+      "archive": "source-audit.json",
+      "archive_sha256": "fb4f25f48b537acf056dafa9878d65e8f95cbe4ce9233e1c7cc745e6ec3f35f5",
+      "archive_bytes": 77175
+    },
+    {
+      "kind": "archive-record",
+      "source": "generated from existing logs and source capture",
+      "archive": "bounds-report.md",
+      "archive_sha256": "61c87a098b7f3cc2259184b437e7276beac408984f7d9f95a06b0e327939437d",
+      "archive_bytes": 2329
+    }
+  ],
+  "source_audit_path": "source-audit.json",
+  "report_path": "bounds-report.md",
+  "validation_summaries": {
+    "PHYS-PERF-01-bounds-T0": {
+      "started_utc": "2026-10-07T05:12:53.458810+00:00",
+      "git_head": "983e97818220257a5f13b503f28a61b024a54f71",
+      "git_status": "M docs/current-progress.md\n M src/suspension_contacts.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_finite_suspension.py",
+        "tests/test_curved_suspension.py",
+        "tests/test_suspension_contacts.py"
+      ],
+      "tier": "T0",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T0\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.245
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_finite_suspension.py",
+            "tests/test_curved_suspension.py",
+            "tests/test_suspension_contacts.py"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T0\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.965
+        }
+      ]
+    },
+    "PHYS-PERF-01-bounds-T0-r2": {
+      "started_utc": "2026-10-07T05:17:58.236135+00:00",
+      "git_head": "983e97818220257a5f13b503f28a61b024a54f71",
+      "git_status": "M docs/current-progress.md\n M src/suspension_contacts.py\n M tools/validate.py\n?? tests/data/\n?? tests/test_suspension_candidates.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_suspension_contacts.py"
+      ],
+      "tier": "T0",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T0-r2\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.104
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_suspension_contacts.py"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T0-r2\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.799
+        }
+      ]
+    },
+    "PHYS-PERF-01-bounds-T1": {
+      "started_utc": "2026-10-07T05:19:58.134248+00:00",
+      "git_head": "983e97818220257a5f13b503f28a61b024a54f71",
+      "git_status": "M docs/current-progress.md\n M src/suspension_contacts.py\n M tools/validate.py\n?? tests/data/\n?? tests/test_suspension_candidates.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_finite_suspension.py",
+        "tests/test_curved_suspension.py",
+        "tests/test_suspension_contacts.py",
+        "tests/test_joint_suspension.py",
+        "tests/test_tire_drivetrain.py",
+        "tests/test_guardrail_suspension.py",
+        "tests/test_suspension_native.py",
+        "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle",
+        "tests/test_gr86.py"
+      ],
+      "tier": "T1",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T1\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.104
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_finite_suspension.py",
+            "tests/test_curved_suspension.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_joint_suspension.py",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_guardrail_suspension.py",
+            "tests/test_suspension_native.py",
+            "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle",
+            "tests/test_gr86.py"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T1\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 76.37
+        },
+        {
+          "name": "headless-0",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "0"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T1\\headless-0.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 24.463
+        },
+        {
+          "name": "headless-17",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "17"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T1\\headless-17.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 24.62
+        },
+        {
+          "name": "headless-23",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "23"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-T1\\headless-23.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 24.339
+        }
+      ]
+    },
+    "PHYS-PERF-01-bounds-cache-T0": {
+      "started_utc": "2026-10-07T05:29:58.532612+00:00",
+      "git_head": "983e97818220257a5f13b503f28a61b024a54f71",
+      "git_status": "M docs/current-progress.md\n M src/suspension_contacts.py\n M src/vehicle_suspension.py\n M tools/validate.py\n?? tests/data/\n?? tests/test_suspension_candidates.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_suspension_contacts.py"
+      ],
+      "tier": "T0",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T0\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.11
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_suspension_contacts.py"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T0\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.773
+        }
+      ]
+    },
+    "PHYS-PERF-01-bounds-cache-T1": {
+      "started_utc": "2026-10-07T05:31:35.307046+00:00",
+      "git_head": "983e97818220257a5f13b503f28a61b024a54f71",
+      "git_status": "M docs/current-progress.md\n M src/suspension_contacts.py\n M src/vehicle_suspension.py\n M tools/validate.py\n?? tests/data/\n?? tests/test_suspension_candidates.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_suspension_contacts.py",
+        "tests/test_suspension_native.py"
+      ],
+      "tier": "T1",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T1\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.105
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_suspension_native.py"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T1\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 7.609
+        },
+        {
+          "name": "headless-0",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "0"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T1\\headless-0.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 23.788
+        },
+        {
+          "name": "headless-17",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "17"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T1\\headless-17.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 23.001
+        },
+        {
+          "name": "headless-23",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "23"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-cache-T1\\headless-23.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 23.23
+        }
+      ]
+    },
+    "PHYS-PERF-01-bounds-shared-T0": {
+      "started_utc": "2026-10-07T05:35:15.237493+00:00",
+      "git_head": "983e97818220257a5f13b503f28a61b024a54f71",
+      "git_status": "M docs/current-progress.md\n M src/suspension_contacts.py\n M src/vehicle_suspension.py\n M tools/validate.py\n?? tests/data/\n?? tests/test_suspension_candidates.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_suspension_contacts.py"
+      ],
+      "tier": "T0",
+      "status": "failed",
+      "passed": false,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-shared-T0\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.114
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_suspension_contacts.py"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-shared-T0\\pytest.log",
+          "status": "failed",
+          "returncode": 1,
+          "error": "process exited 1",
+          "seconds": 0.906
+        }
+      ]
+    },
+    "PHYS-PERF-01-bounds-shared-T0-r2": {
+      "started_utc": "2026-10-07T05:36:07.609297+00:00",
+      "git_head": "983e97818220257a5f13b503f28a61b024a54f71",
+      "git_status": "M docs/current-progress.md\n M src/suspension_contacts.py\n M src/vehicle_suspension.py\n M tests/test_suspension_query_lifetime.py\n M tools/validate.py\n?? tests/data/\n?? tests/test_suspension_candidates.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_suspension_contacts.py"
+      ],
+      "tier": "T0",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-shared-T0-r2\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.103
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_suspension_contacts.py"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-shared-T0-r2\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.771
+        }
+      ]
+    },
+    "PHYS-PERF-01-bounds-hull-T0": {
+      "started_utc": "2026-10-07T05:45:35.809352+00:00",
+      "git_head": "983e97818220257a5f13b503f28a61b024a54f71",
+      "git_status": "M docs/current-progress.md\n M src/coastal_collision.py\n M src/suspension_contacts.py\n M src/vehicle_suspension.py\n M tests/test_suspension_query_lifetime.py\n M tools/validate.py\n?? tests/data/\n?? tests/test_suspension_candidates.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_suspension_contacts.py",
+        "tests/test_guardrail_suspension.py"
+      ],
+      "tier": "T0",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-hull-T0\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.107
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_guardrail_suspension.py"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-hull-T0\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 4.259
+        }
+      ]
+    },
+    "PHYS-PERF-01-bounds-world-T0": {
+      "started_utc": "2026-10-07T05:49:23.622558+00:00",
+      "git_head": "983e97818220257a5f13b503f28a61b024a54f71",
+      "git_status": "M docs/current-progress.md\n M src/coastal_collision.py\n M src/suspension_contacts.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/world_step.py\n M tests/test_suspension_query_lifetime.py\n M tools/validate.py\n?? tests/data/\n?? tests/test_suspension_candidates.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_suspension_contacts.py",
+        "tests/test_guardrail_suspension.py",
+        "tests/test_world_substeps.py",
+        "tests/test_driving_experiment.py"
+      ],
+      "tier": "T0",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-world-T0\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.105
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_guardrail_suspension.py",
+            "tests/test_world_substeps.py",
+            "tests/test_driving_experiment.py"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-world-T0\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 8.495
+        }
+      ]
+    },
+    "PHYS-PERF-01-bounds-window-T0": {
+      "started_utc": "2026-10-07T05:54:03.684181+00:00",
+      "git_head": "983e97818220257a5f13b503f28a61b024a54f71",
+      "git_status": "M docs/current-progress.md\n M src/coastal_collision.py\n M src/suspension_contacts.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/world_step.py\n M tests/test_suspension_query_lifetime.py\n M tools/validate.py\n?? tests/data/\n?? tests/test_suspension_candidates.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_suspension_contacts.py",
+        "tests/test_guardrail_suspension.py",
+        "tests/test_world_substeps.py",
+        "tests/test_driving_experiment.py"
+      ],
+      "tier": "T0",
+      "status": "failed",
+      "passed": false,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-window-T0\\ruff.log",
+          "status": "failed",
+          "returncode": 1,
+          "error": "process exited 1",
+          "seconds": 0.118
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_guardrail_suspension.py",
+            "tests/test_world_substeps.py",
+            "tests/test_driving_experiment.py"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-window-T0\\pytest.log",
+          "status": "not_run"
+        }
+      ]
+    },
+    "PHYS-PERF-01-bounds-window-T0-r2": {
+      "started_utc": "2026-10-07T05:54:21.146807+00:00",
+      "git_head": "983e97818220257a5f13b503f28a61b024a54f71",
+      "git_status": "M docs/current-progress.md\n M src/coastal_collision.py\n M src/suspension_contacts.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/world_step.py\n M tests/test_suspension_query_lifetime.py\n M tools/validate.py\n?? tests/data/\n?? tests/test_suspension_candidates.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_suspension_contacts.py",
+        "tests/test_guardrail_suspension.py",
+        "tests/test_world_substeps.py",
+        "tests/test_driving_experiment.py"
+      ],
+      "tier": "T0",
+      "status": "failed",
+      "passed": false,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-window-T0-r2\\ruff.log",
+          "status": "failed",
+          "returncode": 1,
+          "error": "process exited 1",
+          "seconds": 0.115
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_guardrail_suspension.py",
+            "tests/test_world_substeps.py",
+            "tests/test_driving_experiment.py"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-window-T0-r2\\pytest.log",
+          "status": "not_run"
+        }
+      ]
+    },
+    "PHYS-PERF-01-bounds-window-T0-r3": {
+      "started_utc": "2026-10-07T05:54:30.881607+00:00",
+      "git_head": "983e97818220257a5f13b503f28a61b024a54f71",
+      "git_status": "M docs/current-progress.md\n M src/coastal_collision.py\n M src/suspension_contacts.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/world_step.py\n M tests/test_suspension_query_lifetime.py\n M tools/validate.py\n?? tests/data/\n?? tests/test_suspension_candidates.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_suspension_contacts.py",
+        "tests/test_guardrail_suspension.py",
+        "tests/test_world_substeps.py",
+        "tests/test_driving_experiment.py"
+      ],
+      "tier": "T0",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-window-T0-r3\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.103
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_guardrail_suspension.py",
+            "tests/test_world_substeps.py",
+            "tests/test_driving_experiment.py"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-window-T0-r3\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 8.413
+        }
+      ]
+    },
+    "PHYS-PERF-01-bounds-final-T1": {
+      "started_utc": "2026-10-07T05:56:05.026899+00:00",
+      "git_head": "983e97818220257a5f13b503f28a61b024a54f71",
+      "git_status": "M docs/current-progress.md\n M src/coastal_collision.py\n M src/suspension_contacts.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/world_step.py\n M tests/test_suspension_query_lifetime.py\n M tools/validate.py\n?? tests/data/\n?? tests/test_suspension_candidates.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_finite_suspension.py",
+        "tests/test_curved_suspension.py",
+        "tests/test_suspension_contacts.py",
+        "tests/test_joint_suspension.py",
+        "tests/test_tire_drivetrain.py",
+        "tests/test_guardrail_suspension.py",
+        "tests/test_suspension_native.py",
+        "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle",
+        "tests/test_gr86.py",
+        "tests/test_world_substeps.py",
+        "tests/test_sensor_run.py",
+        "tests/test_driving_experiment.py"
+      ],
+      "tier": "T1",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-final-T1\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.115
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_finite_suspension.py",
+            "tests/test_curved_suspension.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_joint_suspension.py",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_guardrail_suspension.py",
+            "tests/test_suspension_native.py",
+            "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle",
+            "tests/test_gr86.py",
+            "tests/test_world_substeps.py",
+            "tests/test_sensor_run.py",
+            "tests/test_driving_experiment.py"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-final-T1\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 57.571
+        },
+        {
+          "name": "headless-0",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "0"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-final-T1\\headless-0.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 23.299
+        },
+        {
+          "name": "headless-17",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "17"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-final-T1\\headless-17.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 22.973
+        },
+        {
+          "name": "headless-23",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "23"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-bounds-final-T1\\headless-23.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 23.116
+        }
+      ]
+    }
+  },
+  "comparison_summaries": {
+    "bounds-production-comparison.json": {
+      "passed": true,
+      "cases": [
+        {
+          "traffic": 0,
+          "snapshot_all_fields_equal": true,
+          "ticks": 48,
+          "before_s": 1.4763258000166388,
+          "after_s": 4.264123900007689
+        },
+        {
+          "traffic": 8,
+          "snapshot_all_fields_equal": true,
+          "ticks": 48,
+          "before_s": 14.195120699994732,
+          "after_s": 42.16229180000664
+        }
+      ],
+      "kind": "healthy GR86 48-tick comparison; saved highway failure is a separate changed-behavior regression"
+    },
+    "bounds-cache-comparison.json": {
+      "passed": true,
+      "cases": [
+        {
+          "traffic": 0,
+          "snapshot_all_fields_equal": true,
+          "ticks": 48,
+          "before_s": 4.264123900007689,
+          "after_s": 3.0511235000012675
+        },
+        {
+          "traffic": 8,
+          "snapshot_all_fields_equal": true,
+          "ticks": 48,
+          "before_s": 42.16229180000664,
+          "after_s": 32.878638600042905
+        }
+      ]
+    },
+    "bounds-window-comparison.json": {
+      "passed": true,
+      "comparisons": [
+        {
+          "baseline": "edge-production-snapshots.json",
+          "cases": [
+            {
+              "traffic": 0,
+              "snapshot_all_fields_equal": true,
+              "ticks": 48,
+              "before_s": 1.4763258000166388,
+              "after_s": 1.7866569000470918
+            },
+            {
+              "traffic": 8,
+              "snapshot_all_fields_equal": true,
+              "ticks": 48,
+              "before_s": 14.195120699994732,
+              "after_s": 16.536354499970912
+            }
+          ]
+        },
+        {
+          "baseline": "bounds-production-snapshots.json",
+          "cases": [
+            {
+              "traffic": 0,
+              "snapshot_all_fields_equal": true,
+              "ticks": 48,
+              "before_s": 4.264123900007689,
+              "after_s": 1.7866569000470918
+            },
+            {
+              "traffic": 8,
+              "snapshot_all_fields_equal": true,
+              "ticks": 48,
+              "before_s": 42.16229180000664,
+              "after_s": 16.536354499970912
+            }
+          ]
+        },
+        {
+          "baseline": "bounds-cache-snapshots.json",
+          "cases": [
+            {
+              "traffic": 0,
+              "snapshot_all_fields_equal": true,
+              "ticks": 48,
+              "before_s": 3.0511235000012675,
+              "after_s": 1.7866569000470918
+            },
+            {
+              "traffic": 8,
+              "snapshot_all_fields_equal": true,
+              "ticks": 48,
+              "before_s": 32.878638600042905,
+              "after_s": 16.536354499970912
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "profile_bounds_summary": {
+    "status": "completed",
+    "head": "983e978 + uncommitted bounds and frozen static geometry",
+    "simulation": {
+      "seed": 17,
+      "track": "coastal",
+      "traffic_count": 8,
+      "config": "GR86_DESIGN",
+      "input_config": "DrivingMode.GAME.input_config",
+      "control": "Control(throttle=0.3)",
+      "warmup_steps": 8,
+      "profiled_steps_requested": 16,
+      "profiled_steps_completed": 16,
+      "fixed_step_hz": 120,
+      "window": false,
+      "sensor_run": false
+    },
+    "wall_clock_seconds": {
+      "source_hash_before": 0.009804200002690777,
+      "setup": 0.06155820000276435,
+      "warmup_8_steps": 1.9762617999949725,
+      "profiled_16_step_window": 24.872510899993358,
+      "cleanup": 0.0007516000041505322,
+      "source_hash_after": 0.009868299996014684,
+      "total_through_measurement": 27.0710434000066
+    },
+    "profile_file": "gr86-profile.prof",
+    "top_20_by_cumulative_time": [
+      {
+        "file": "src/simulation.py",
+        "line": 708,
+        "function": "step",
+        "primitive_calls": 16,
+        "total_calls": 16,
+        "self_seconds": 0.0002499,
+        "cumulative_seconds": 24.8701617
+      },
+      {
+        "file": "src/world_step.py",
+        "line": 14,
+        "function": "advance_world",
+        "primitive_calls": 16,
+        "total_calls": 16,
+        "self_seconds": 0.0728756,
+        "cumulative_seconds": 24.864865100000003
+      },
+      {
+        "file": "src/vehicle.py",
+        "line": 237,
+        "function": "advance_physics",
+        "primitive_calls": 288,
+        "total_calls": 288,
+        "self_seconds": 0.0162079,
+        "cumulative_seconds": 24.7028491
+      },
+      {
+        "file": "src/vehicle_tires.py",
+        "line": 45,
+        "function": "advance",
+        "primitive_calls": 288,
+        "total_calls": 288,
+        "self_seconds": 0.0669725,
+        "cumulative_seconds": 17.6967581
+      },
+      {
+        "file": "src/tire_drivetrain.py",
+        "line": 82,
+        "function": "advance_drivetrain",
+        "primitive_calls": 288,
+        "total_calls": 288,
+        "self_seconds": 0.10699020000000001,
+        "cumulative_seconds": 17.326854700000002
+      },
+      {
+        "file": "src/suspension_contacts.py",
+        "line": 106,
+        "function": "cylinder_suspension_rays",
+        "primitive_calls": 7562,
+        "total_calls": 7562,
+        "self_seconds": 0.2559132,
+        "cumulative_seconds": 12.008484000000001
+      },
+      {
+        "file": "src/suspension_kinematics.py",
+        "line": 155,
+        "function": "finite_contact_system",
+        "primitive_calls": 3088,
+        "total_calls": 3088,
+        "self_seconds": 0.050949100000000004,
+        "cumulative_seconds": 9.128201
+      },
+      {
+        "file": "src/suspension_kinematics.py",
+        "line": 22,
+        "function": "cylinder_endpoint",
+        "primitive_calls": 12352,
+        "total_calls": 12352,
+        "self_seconds": 0.1551037,
+        "cumulative_seconds": 8.8257428
+      },
+      {
+        "file": "src/vehicle_suspension.py",
+        "line": 37,
+        "function": "relative_entry",
+        "primitive_calls": 12352,
+        "total_calls": 12352,
+        "self_seconds": 0.024991600000000003,
+        "cumulative_seconds": 8.3485507
+      },
+      {
+        "file": "src/vehicle_suspension.py",
+        "line": 57,
+        "function": "prepare",
+        "primitive_calls": 288,
+        "total_calls": 288,
+        "self_seconds": 0.017419800000000003,
+        "cumulative_seconds": 6.9536799
+      },
+      {
+        "file": "src/suspension_geometry.py",
+        "line": 43,
+        "function": "entry",
+        "primitive_calls": 34626,
+        "total_calls": 34626,
+        "self_seconds": 0.08970650000000001,
+        "cumulative_seconds": 6.3500706000000005
+      },
+      {
+        "file": "src/triangle_support.py",
+        "line": 117,
+        "function": "entry",
+        "primitive_calls": 34626,
+        "total_calls": 34626,
+        "self_seconds": 0.1310582,
+        "cumulative_seconds": 6.0209207000000005
+      },
+      {
+        "file": "src/triangle_support.py",
+        "line": 102,
+        "function": "candidates",
+        "primitive_calls": 73922,
+        "total_calls": 683690,
+        "self_seconds": 1.1368936,
+        "cumulative_seconds": 4.8561277
+      },
+      {
+        "file": "src/tire_drivetrain.py",
+        "line": 357,
+        "function": "shared",
+        "primitive_calls": 7720,
+        "total_calls": 7720,
+        "self_seconds": 0.1786035,
+        "cumulative_seconds": 3.9307557
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<built-in method builtins.sum>",
+        "primitive_calls": 2568237,
+        "total_calls": 2568237,
+        "self_seconds": 1.8722429,
+        "cumulative_seconds": 3.4232187
+      },
+      {
+        "file": "src/suspension_contacts.py",
+        "line": 172,
+        "function": "static_support_shapes",
+        "primitive_calls": 288,
+        "total_calls": 288,
+        "self_seconds": 0.8276760000000001,
+        "cumulative_seconds": 3.2197892
+      },
+      {
+        "file": "src/suspension_contacts.py",
+        "line": 198,
+        "function": "cylinder_candidates",
+        "primitive_calls": 288,
+        "total_calls": 288,
+        "self_seconds": 0.45446810000000004,
+        "cumulative_seconds": 2.3644056
+      },
+      {
+        "file": "src/suspension_geometry.py",
+        "line": 72,
+        "function": "box_interval",
+        "primitive_calls": 577060,
+        "total_calls": 577060,
+        "self_seconds": 1.5540487,
+        "cumulative_seconds": 2.1227294000000003
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'sweepTestClosest' of 'panda3d.bullet.BulletWorld' objects>",
+        "primitive_calls": 2805,
+        "total_calls": 2805,
+        "self_seconds": 2.0001966,
+        "cumulative_seconds": 2.0001966
+      },
+      {
+        "file": "src/tire_drivetrain.py",
+        "line": 360,
+        "function": "mapped",
+        "primitive_calls": 24642,
+        "total_calls": 24642,
+        "self_seconds": 0.215728,
+        "cumulative_seconds": 1.9485735000000002
+      }
+    ],
+    "top_20_by_self_time": [
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'sweepTestClosest' of 'panda3d.bullet.BulletWorld' objects>",
+        "primitive_calls": 2805,
+        "total_calls": 2805,
+        "self_seconds": 2.0001966,
+        "cumulative_seconds": 2.0001966
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<built-in method builtins.sum>",
+        "primitive_calls": 2568237,
+        "total_calls": 2568237,
+        "self_seconds": 1.8722429,
+        "cumulative_seconds": 3.4232187
+      },
+      {
+        "file": "src/suspension_geometry.py",
+        "line": 72,
+        "function": "box_interval",
+        "primitive_calls": 577060,
+        "total_calls": 577060,
+        "self_seconds": 1.5540487,
+        "cumulative_seconds": 2.1227294000000003
+      },
+      {
+        "file": "src/triangle_support.py",
+        "line": 102,
+        "function": "candidates",
+        "primitive_calls": 73922,
+        "total_calls": 683690,
+        "self_seconds": 1.1368936,
+        "cumulative_seconds": 4.8561277
+      },
+      {
+        "file": "src/wheel_envelope.py",
+        "line": 12,
+        "function": "subtract",
+        "primitive_calls": 1190283,
+        "total_calls": 1190283,
+        "self_seconds": 0.9619579,
+        "cumulative_seconds": 1.3849989
+      },
+      {
+        "file": "src/suspension_contacts.py",
+        "line": 172,
+        "function": "static_support_shapes",
+        "primitive_calls": 288,
+        "total_calls": 288,
+        "self_seconds": 0.8276760000000001,
+        "cumulative_seconds": 3.2197892
+      },
+      {
+        "file": "src/suspension_contacts.py",
+        "line": 225,
+        "function": "collision_shape_bounds",
+        "primitive_calls": 182304,
+        "total_calls": 182304,
+        "self_seconds": 0.47773240000000006,
+        "cumulative_seconds": 0.7514041
+      },
+      {
+        "file": "src/suspension_contacts.py",
+        "line": 187,
+        "function": "<genexpr>",
+        "primitive_calls": 729216,
+        "total_calls": 729216,
+        "self_seconds": 0.45976740000000005,
+        "cumulative_seconds": 1.0193952000000002
+      },
+      {
+        "file": "src/suspension_contacts.py",
+        "line": 198,
+        "function": "cylinder_candidates",
+        "primitive_calls": 288,
+        "total_calls": 288,
+        "self_seconds": 0.45446810000000004,
+        "cumulative_seconds": 2.3644056
+      },
+      {
+        "file": "src/wheel_envelope.py",
+        "line": 13,
+        "function": "<genexpr>",
+        "primitive_calls": 4761132,
+        "total_calls": 4761132,
+        "self_seconds": 0.423041,
+        "cumulative_seconds": 0.423041
+      },
+      {
+        "file": "src/suspension_geometry.py",
+        "line": 86,
+        "function": "<genexpr>",
+        "primitive_calls": 4723904,
+        "total_calls": 4723904,
+        "self_seconds": 0.4152138,
+        "cumulative_seconds": 0.4152138
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'getCell' of 'panda3d.core.LMatrix4f' objects>",
+        "primitive_calls": 2291526,
+        "total_calls": 2291526,
+        "self_seconds": 0.3016459,
+        "cumulative_seconds": 0.3016459
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<built-in method mechanical_kernels.dot>",
+        "primitive_calls": 1615126,
+        "total_calls": 1615126,
+        "self_seconds": 0.2941173,
+        "cumulative_seconds": 0.2941173
+      },
+      {
+        "file": "src/suspension.py",
+        "line": 65,
+        "function": "substitute",
+        "primitive_calls": 12340,
+        "total_calls": 12340,
+        "self_seconds": 0.25591790000000003,
+        "cumulative_seconds": 0.39907360000000003
+      },
+      {
+        "file": "src/suspension_contacts.py",
+        "line": 106,
+        "function": "cylinder_suspension_rays",
+        "primitive_calls": 7562,
+        "total_calls": 7562,
+        "self_seconds": 0.2559132,
+        "cumulative_seconds": 12.008484000000001
+      },
+      {
+        "file": "src/suspension_kinematics.py",
+        "line": 140,
+        "function": "rotated_path",
+        "primitive_calls": 52864,
+        "total_calls": 52864,
+        "self_seconds": 0.24191890000000002,
+        "cumulative_seconds": 0.42396550000000005
+      },
+      {
+        "file": "src/suspension_contacts.py",
+        "line": 210,
+        "function": "<genexpr>",
+        "primitive_calls": 729216,
+        "total_calls": 729216,
+        "self_seconds": 0.233135,
+        "cumulative_seconds": 1.0415670000000001
+      },
+      {
+        "file": "src/tire_drivetrain.py",
+        "line": 279,
+        "function": "known",
+        "primitive_calls": 30818,
+        "total_calls": 30818,
+        "self_seconds": 0.229976,
+        "cumulative_seconds": 0.8662432000000001
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<built-in method builtins.min>",
+        "primitive_calls": 1888901,
+        "total_calls": 1888901,
+        "self_seconds": 0.2262113,
+        "cumulative_seconds": 0.2436827
+      },
+      {
+        "file": "src/tire_drivetrain.py",
+        "line": 360,
+        "function": "mapped",
+        "primitive_calls": 24642,
+        "total_calls": 24642,
+        "self_seconds": 0.215728,
+        "cumulative_seconds": 1.9485735000000002
+      }
+    ],
+    "src_sha256": {
+      "before_tree": "acb4d124c5b55245524e6f2d418df9d465068974656d7bb545ccdf5552086c20",
+      "after_tree": "acb4d124c5b55245524e6f2d418df9d465068974656d7bb545ccdf5552086c20",
+      "unchanged": true,
+      "changed_files": [],
+      "before_files": {
+        "src/application.py": "651a05d0174c981cf6ba658cfef862cc309922d52ea21a693ea5150ce03b3e6c",
+        "src/audio/__init__.py": "c9b2b5ceb0091ead195fb737892eaa931c7715825da23d0b47f8383a2bfa76eb",
+        "src/audio/cues.py": "41d89fe885916e493e96fa1edf85b73e32575d867672fb034649bb17f37b21e9",
+        "src/audio/driving.py": "3e8df19ce48cd294d6a228852f132474c055d1e0cf7cb2578d78aafa4ab66615",
+        "src/audio/engine.py": "0e756ebc2600984d94c20ad012305aed918f4e560d6eb4ac9d8127b5c2d091fa",
+        "src/audio/impact.py": "01e1af74a5df7aa605f80cffb64d25479361b136debe6e5e87f3d20819b4649a",
+        "src/audio/music.py": "2d12ca7abb23e8af8793baaef425cf5a393530c060a54ec4ca50fb8ad8a56d6b",
+        "src/chase_camera.py": "4a8273238e7b49f1c8fb72e78c37e518c8b1aa863510f01c7a4f561b09f11146",
+        "src/coastal_collision.py": "3ccf47c3ed15f3b06e89deefd2a3a962ed6854ef89e8f17a12f17d19bb2aaa9f",
+        "src/coastal_map.py": "038288a510d2db1b6de136b8e7408c72999eef979145bd454cfaeeffe7b62ade",
+        "src/controls.py": "1ffceba7d5c14f4fa2945d0e35c4e137b45443f989539f0d7aa22ca269436cad",
+        "src/curve_mesh.py": "105d779c136301731934b22530bb30ce1c4aa3235edb04d8ed472a13ec9e2ff2",
+        "src/differential.py": "b1256e856a63efc69db9cb37528bc689ca189a7dfeea33ee17748f9bbb8b50f3",
+        "src/driveline_inertia.py": "f90c175b5111a233bfd9455bcb3226c70f09bb6b63ee882f6253aff81ff9b038",
+        "src/driver_assist.py": "a93b262003dee568c907f5ff8e7bd87665e4774b407f9343f641f533e1143464",
+        "src/driving_experiment.py": "ab02c48d53accd48d643f559a413a0100ee5b9bc20a8447adf8c5a403a6f66a0",
+        "src/driving_modes.py": "8ea92ef9f8840c930d12769612540aa6983c965103d5922a2e526f90f1882907",
+        "src/environment/__init__.py": "81bd978b67af4e6d30d62f99eb4a1e4c28f5f31855ae94ccd4db70283e3b3699",
+        "src/environment/coastal_slice.py": "af6d170d7cfd8c280991a40921b67bc83d03dc5c1d720874ac5c7916484a2bc6",
+        "src/environment/expressway.py": "36cb41c7ab5ae9fbb14b4fcf161a8368b395ad5655634c754e4e92f64afe8bcd",
+        "src/environment/expressway_materials.py": "e2df79696e7fee5e4ac0460a1003a2d3efe42f890cb6369171b8a9de8d6465a4",
+        "src/environment/expressway_mountains.py": "7af3ce1102d9200a026f650a1c9a3867ba851021bf8db47da03d96794ef4d684",
+        "src/environment/expressway_route.py": "e7f49d5e79a8d02233e433f8bd5f04dc650a6982edda23db7563e2f0db967587",
+        "src/environment/expressway_signs.py": "4d02efb48f48c672d17675fe6f35b7b9686980e75ca9572449f8f6ca76bdf9e0",
+        "src/environment/expressway_vegetation.py": "c846c1c1840251d04a9e79bdf7fe0a8be9ac954c43ed1d54e0bd4dad15da2093",
+        "src/environment/foundation.py": "2c86aad7311ad18da3f42be404ff9cf7d754037f1ca3fa2f4f8ca14798607ca5",
+        "src/environment/surface_mesh.py": "4d32a8e0e5817d5ec378e6cf04f26912519b6531159cd5b5f903a2052151d052",
+        "src/environment/terrain.py": "41fd42968a442cb3dd26ba28ca01220f3809705090091615b0d48673b7698abc",
+        "src/environment/water.py": "17fd63872585e8d34c004bd12c57c1f3b2af6114a22a545fc9cb1a904a78eb89",
+        "src/estimation_rotation.py": "2049c64e84b1eeedf5a3ff54f866a43dde6fd54cc68f2eebd0b811b3421a3448",
+        "src/garage.py": "54d20cd8e175ed2fe75bf5da0f70b9f997d5215b2ce197be0a4f21dc831c05fd",
+        "src/highway_curve.py": "30b2a7c6d75a38bbce538198e1e53295d1afa6dd14d05760d085d3d150a4e64e",
+        "src/highway_driver.py": "ca6c8c2155b48b9130d1008b74e0fab904e10e16d860f6d55f39259ae610c226",
+        "src/highway_map.py": "fc426d2d95134851304c49885f6d0c6caf728e118f3da939878b38721f11592b",
+        "src/highway_run.py": "6b0520d5ab68e46919a99cbb953b98c5f0e806222bfe4e55d5ee03dd731b6d6b",
+        "src/highway_segments.py": "ba5494eb325e107d1a40477272db799d4fd26f8cfb7ec8b265c038ff39b1da40",
+        "src/impact_events.py": "d84747f93b1cafa8b33ee9322f8870ed0bbdd7bf149d4daff281ea7430d6dd5b",
+        "src/main.py": "c5914c6500beed6a17849f6cf4c574b0cdf4c7ced8b75818692c3d88e7c7c18a",
+        "src/mechanical_kernels.c": "e5e31aa0dfdb220025fa0ad1e55fec7219770671150248e4fdbbb9099f48872e",
+        "src/mechanical_kernels.cp314-win_amd64.pyd": "ae3c8f89d1ecdeadbf2e5cc6b3c5e688fc32ce55ed56e9ffdf02de541a9a5f03",
+        "src/paths.py": "6c9e79bf75ebad3ff0eb509ca8e910fb5a90ca7a89077acd90f844a57078699c",
+        "src/performance_baseline.py": "dc2e5c6317c59aa88446ec3854986d67aea4d2a3a1c47d281d018bfaede27e83",
+        "src/phase0_app.py": "8ec41455706e637735c1419b836cd9b88f15d2f3a6072438b08c83b129dc9e2c",
+        "src/powertrain.py": "a421003c7370b278f61677cc77b29af07d950ccc281ed57bed90689686883f85",
+        "src/race.py": "7804a9591ec7dcc979637f5b3f4f4bf758285762b37f0664bd5cfb995a7d1981",
+        "src/rolling_resistance.py": "832e899a9e8267bf5ee498204370947bbc28e7697b9d0b4d2d763c1a64d710ad",
+        "src/rotor_dynamics.py": "7f349c5063fd75076ae5ec19ba4ca4931a51e7736f1a7f06cac4d3b57c2ef4f3",
+        "src/scene.py": "68ce959ee496ac68dd28c837c8702959a1cbc06754329e9af0ef95bdcf48879f",
+        "src/sensor_run.py": "a15fac5c5ad1ac65d4256d708ed5b3eacaf69667ee38e073219871d8138e751b",
+        "src/sensor_sampling.py": "2fdab3c2b5eb7ba60d842d39f28347236dfe599a24ddb8d475098e9e00e5027e",
+        "src/session.py": "75db5eae528f03494d74e442b33c3958c9309b23cb56ca5f627f930b2f24a0e6",
+        "src/settings.py": "1b869c80d8e12bb82aa0425e3a5e8f9540e27c9def65aae78e76edc0c2dd6f4f",
+        "src/shaft_transmission.py": "42245a710a74da30b845b80c84fcf16376506ab872187f1d368711a5074d22e1",
+        "src/simulation.py": "0c95c39fe11f001dbaf8c5df84d1497792d985e23569f31372cc4019aa68406b",
+        "src/skins.py": "21b7b397ab304746e0e8b11c0bcef033560b89376b4a8507c837c762ee937c78",
+        "src/sky_dome.py": "45437938b4e2c47cf68fcb84da16553143957bd2d0c1696a44781c1d0fb83a4b",
+        "src/soundscape.py": "1671c176b8ec8e26eaabd3ab143d51e1ee6e6dafea52b305682a54c5ea4e3415",
+        "src/state_estimation.py": "8bd95cd387e9aadf6ce10169c1b38a6739f12368f8c80def2d686432da31389b",
+        "src/streamed_road.py": "8c9d2279c34e5e5e280166ef19187f4a454917981a9f6af0dca00d9542eecd9a",
+        "src/suspension.py": "52e7e4184db32918c35a74f10a08f6c5f587f4b38290c6e455ef3442495d0ea6",
+        "src/suspension_contacts.py": "d849098f100f3f1ac43039ea22d4589e853e78cd3ca4052fe080aef0af13bbe0",
+        "src/suspension_geometry.py": "7abfde1a3af06dbb95ebc54d22ae25a3832b2bc97752e7ff5a54eb7a3924faca",
+        "src/suspension_kinematics.py": "450f57b6de98cb6f17e92b8300793bafb3a9196263c57eb5f877f4df20ef8e4a",
+        "src/test_track.py": "ae90f12ab8647ec859ad7931f501b3183371a1fa11936c9edeb59c882db72cfa",
+        "src/tire_compliance.py": "123a6398681613179073b7756a130ef5799f965474939b652b14c278277fe3ed",
+        "src/tire_coupling.py": "91194de87cbf04453e1fe3a29a69b632305644e5248693f5302ee0fd8721733b",
+        "src/tire_drivetrain.py": "a508dfa14b6bcb87978c12b4ba425ba6e54007ac9995d91a332092d43b2e3fe8",
+        "src/tire_forces.py": "631182c46c78370361d5a5c4633803c7a4d9d3a029abac0ef116a98ad74982e7",
+        "src/tire_properties.py": "d93c1199a1c2de0f4d447d3690f0db4f1ad95e664c2dea5f2b848ecbd676a6b5",
+        "src/tracks.py": "f9d5fef1c7b9f4d808fdcb3074f6e1adbf92a6ee57bcdd04e60fc4637580f42d",
+        "src/traffic.py": "3e3d4bd44b16226962436bde66ea5bc11559cb59d1475c1df2905a61759a96d0",
+        "src/traffic_recovery.py": "b455ff05ae1f8dbd524662a831f808f67986699378d54840416c308216072d9a",
+        "src/transmission_ports.py": "583e7e25c983d23977585e8e43cd9e6241e76650a1a0394f1b098e3683d96b79",
+        "src/triangle_support.py": "fd29290fdf54feb592c9f2d077ed111796eb318bdfd5fc1e9123bd55e0ed3436",
+        "src/ui/__init__.py": "75426685c5c3fe93d169378013fd409e12b0fcf56a034bca3a2ecf9af39bb6a4",
+        "src/ui/hud.py": "7337fd545f79f21a3a19f8c69b6e8a51074e16d4724ae7987b715403c0509b9c",
+        "src/ui/main_menu.py": "b085d08c46dc13cba6e9fd9016424c4a626d149785dc81a8658bf7f4535372c9",
+        "src/ui/theme.py": "c2ab236939a0d45fb6b6d3877b78c91807917edfcfac0c9807df5ff77fb43b8b",
+        "src/vehicle.py": "a1c0a81c70f470b22343ed7e7e710d46796246ab5e3b1eef84cd6b39b6790a5b",
+        "src/vehicle_brakes.py": "39eabaff47ec103af6cd76db5b43f31212c7acaf77b1c0a82ec9806f775ef32d",
+        "src/vehicle_collision.py": "3b10a6b5bf79d9c4e7439810d51aac653e98721f8b82c9ee1bf43f0dabff5874",
+        "src/vehicle_config.py": "75d5876c1b781634556f97e8ff361c071656b92caf51068f2121a42330a949c7",
+        "src/vehicle_contacts.py": "36a2c5c815b3ffdc43f1aae3bcd71cd7050246b26aea51977161cb83f63e60c0",
+        "src/vehicle_designs.py": "c82a388317d7123e7633613950e0025492f739b9ecf130287198bc3be7bccf24",
+        "src/vehicle_dynamics.py": "56564b31ed5e8c29a2063d95cb28c17c5b13cc41d1b9c15ca4e12a23a288c140",
+        "src/vehicle_parameters.py": "6aa7916d8401c2aeae806cf8de634289d740ffa86b35d882c0b4047899df3d20",
+        "src/vehicle_stability.py": "71eca42fa7ae37912e8bd0e5023aa2dbb6defa1e436b865b3eb43f7e27f6cadc",
+        "src/vehicle_state.py": "2e5af991d86aaa5a010298618eb793ede2974e732a200d3f525ae659d0b2cc5c",
+        "src/vehicle_steering.py": "d80c07aaea8a4468eda9e6796fceb5714b65b1cd5af3d3f48792773db60e5b34",
+        "src/vehicle_suspension.py": "c342cbce992ea2cb6397f4bcd0403581ff9c1ec70b24e11c6a9d260fa2bd4956",
+        "src/vehicle_tires.py": "10cdc460c0e68b4a8437ce169f817b5cfe37e64dc3d67e8c32ab952bece9f76d",
+        "src/vehicle_traction.py": "7be5bbff9aac9ec172419c3ca02fb9d832accf311e018da2747b79568645da5c",
+        "src/vehicle_visual.py": "6207340d21e244fd2276e803ea429b51ae8f1794366b9b88adb8d636a7ec60ab",
+        "src/wheel_contact_kernels.c": "b438bba371db3c1ee0e6f1794a5d839d7983714cec8588a5d95d804ee4f3a06f",
+        "src/wheel_contact_kernels.cp314-win_amd64.pyd": "d552b0d0d441a3449cc69bbddcc906679e0b2fa2900f76d3f39f55a3252fb703",
+        "src/wheel_dynamics.py": "93446add00a11681925e96dcaf13714f30dc3fde58d03fe62ffea2fa8969bf70",
+        "src/wheel_envelope.py": "31bf87039788d2bbc02c53d583721606a8342fe71a468ff5817edfcd63fedc10",
+        "src/wheel_geometry.py": "25be660293a3f9160a9375a7301b51d64dfcb6d14b9386003ca0a5d7609d7179",
+        "src/world_props.py": "20bdad65716f9d63ffd22cf5138439f761408c95830fc36696298c694405291f",
+        "src/world_step.py": "1bc564a5cd93a224ab799193f45ce9db18b8e5be2b7f72cd4ee9cdeefc091035"
+      },
+      "after_files": {
+        "src/application.py": "651a05d0174c981cf6ba658cfef862cc309922d52ea21a693ea5150ce03b3e6c",
+        "src/audio/__init__.py": "c9b2b5ceb0091ead195fb737892eaa931c7715825da23d0b47f8383a2bfa76eb",
+        "src/audio/cues.py": "41d89fe885916e493e96fa1edf85b73e32575d867672fb034649bb17f37b21e9",
+        "src/audio/driving.py": "3e8df19ce48cd294d6a228852f132474c055d1e0cf7cb2578d78aafa4ab66615",
+        "src/audio/engine.py": "0e756ebc2600984d94c20ad012305aed918f4e560d6eb4ac9d8127b5c2d091fa",
+        "src/audio/impact.py": "01e1af74a5df7aa605f80cffb64d25479361b136debe6e5e87f3d20819b4649a",
+        "src/audio/music.py": "2d12ca7abb23e8af8793baaef425cf5a393530c060a54ec4ca50fb8ad8a56d6b",
+        "src/chase_camera.py": "4a8273238e7b49f1c8fb72e78c37e518c8b1aa863510f01c7a4f561b09f11146",
+        "src/coastal_collision.py": "3ccf47c3ed15f3b06e89deefd2a3a962ed6854ef89e8f17a12f17d19bb2aaa9f",
+        "src/coastal_map.py": "038288a510d2db1b6de136b8e7408c72999eef979145bd454cfaeeffe7b62ade",
+        "src/controls.py": "1ffceba7d5c14f4fa2945d0e35c4e137b45443f989539f0d7aa22ca269436cad",
+        "src/curve_mesh.py": "105d779c136301731934b22530bb30ce1c4aa3235edb04d8ed472a13ec9e2ff2",
+        "src/differential.py": "b1256e856a63efc69db9cb37528bc689ca189a7dfeea33ee17748f9bbb8b50f3",
+        "src/driveline_inertia.py": "f90c175b5111a233bfd9455bcb3226c70f09bb6b63ee882f6253aff81ff9b038",
+        "src/driver_assist.py": "a93b262003dee568c907f5ff8e7bd87665e4774b407f9343f641f533e1143464",
+        "src/driving_experiment.py": "ab02c48d53accd48d643f559a413a0100ee5b9bc20a8447adf8c5a403a6f66a0",
+        "src/driving_modes.py": "8ea92ef9f8840c930d12769612540aa6983c965103d5922a2e526f90f1882907",
+        "src/environment/__init__.py": "81bd978b67af4e6d30d62f99eb4a1e4c28f5f31855ae94ccd4db70283e3b3699",
+        "src/environment/coastal_slice.py": "af6d170d7cfd8c280991a40921b67bc83d03dc5c1d720874ac5c7916484a2bc6",
+        "src/environment/expressway.py": "36cb41c7ab5ae9fbb14b4fcf161a8368b395ad5655634c754e4e92f64afe8bcd",
+        "src/environment/expressway_materials.py": "e2df79696e7fee5e4ac0460a1003a2d3efe42f890cb6369171b8a9de8d6465a4",
+        "src/environment/expressway_mountains.py": "7af3ce1102d9200a026f650a1c9a3867ba851021bf8db47da03d96794ef4d684",
+        "src/environment/expressway_route.py": "e7f49d5e79a8d02233e433f8bd5f04dc650a6982edda23db7563e2f0db967587",
+        "src/environment/expressway_signs.py": "4d02efb48f48c672d17675fe6f35b7b9686980e75ca9572449f8f6ca76bdf9e0",
+        "src/environment/expressway_vegetation.py": "c846c1c1840251d04a9e79bdf7fe0a8be9ac954c43ed1d54e0bd4dad15da2093",
+        "src/environment/foundation.py": "2c86aad7311ad18da3f42be404ff9cf7d754037f1ca3fa2f4f8ca14798607ca5",
+        "src/environment/surface_mesh.py": "4d32a8e0e5817d5ec378e6cf04f26912519b6531159cd5b5f903a2052151d052",
+        "src/environment/terrain.py": "41fd42968a442cb3dd26ba28ca01220f3809705090091615b0d48673b7698abc",
+        "src/environment/water.py": "17fd63872585e8d34c004bd12c57c1f3b2af6114a22a545fc9cb1a904a78eb89",
+        "src/estimation_rotation.py": "2049c64e84b1eeedf5a3ff54f866a43dde6fd54cc68f2eebd0b811b3421a3448",
+        "src/garage.py": "54d20cd8e175ed2fe75bf5da0f70b9f997d5215b2ce197be0a4f21dc831c05fd",
+        "src/highway_curve.py": "30b2a7c6d75a38bbce538198e1e53295d1afa6dd14d05760d085d3d150a4e64e",
+        "src/highway_driver.py": "ca6c8c2155b48b9130d1008b74e0fab904e10e16d860f6d55f39259ae610c226",
+        "src/highway_map.py": "fc426d2d95134851304c49885f6d0c6caf728e118f3da939878b38721f11592b",
+        "src/highway_run.py": "6b0520d5ab68e46919a99cbb953b98c5f0e806222bfe4e55d5ee03dd731b6d6b",
+        "src/highway_segments.py": "ba5494eb325e107d1a40477272db799d4fd26f8cfb7ec8b265c038ff39b1da40",
+        "src/impact_events.py": "d84747f93b1cafa8b33ee9322f8870ed0bbdd7bf149d4daff281ea7430d6dd5b",
+        "src/main.py": "c5914c6500beed6a17849f6cf4c574b0cdf4c7ced8b75818692c3d88e7c7c18a",
+        "src/mechanical_kernels.c": "e5e31aa0dfdb220025fa0ad1e55fec7219770671150248e4fdbbb9099f48872e",
+        "src/mechanical_kernels.cp314-win_amd64.pyd": "ae3c8f89d1ecdeadbf2e5cc6b3c5e688fc32ce55ed56e9ffdf02de541a9a5f03",
+        "src/paths.py": "6c9e79bf75ebad3ff0eb509ca8e910fb5a90ca7a89077acd90f844a57078699c",
+        "src/performance_baseline.py": "dc2e5c6317c59aa88446ec3854986d67aea4d2a3a1c47d281d018bfaede27e83",
+        "src/phase0_app.py": "8ec41455706e637735c1419b836cd9b88f15d2f3a6072438b08c83b129dc9e2c",
+        "src/powertrain.py": "a421003c7370b278f61677cc77b29af07d950ccc281ed57bed90689686883f85",
+        "src/race.py": "7804a9591ec7dcc979637f5b3f4f4bf758285762b37f0664bd5cfb995a7d1981",
+        "src/rolling_resistance.py": "832e899a9e8267bf5ee498204370947bbc28e7697b9d0b4d2d763c1a64d710ad",
+        "src/rotor_dynamics.py": "7f349c5063fd75076ae5ec19ba4ca4931a51e7736f1a7f06cac4d3b57c2ef4f3",
+        "src/scene.py": "68ce959ee496ac68dd28c837c8702959a1cbc06754329e9af0ef95bdcf48879f",
+        "src/sensor_run.py": "a15fac5c5ad1ac65d4256d708ed5b3eacaf69667ee38e073219871d8138e751b",
+        "src/sensor_sampling.py": "2fdab3c2b5eb7ba60d842d39f28347236dfe599a24ddb8d475098e9e00e5027e",
+        "src/session.py": "75db5eae528f03494d74e442b33c3958c9309b23cb56ca5f627f930b2f24a0e6",
+        "src/settings.py": "1b869c80d8e12bb82aa0425e3a5e8f9540e27c9def65aae78e76edc0c2dd6f4f",
+        "src/shaft_transmission.py": "42245a710a74da30b845b80c84fcf16376506ab872187f1d368711a5074d22e1",
+        "src/simulation.py": "0c95c39fe11f001dbaf8c5df84d1497792d985e23569f31372cc4019aa68406b",
+        "src/skins.py": "21b7b397ab304746e0e8b11c0bcef033560b89376b4a8507c837c762ee937c78",
+        "src/sky_dome.py": "45437938b4e2c47cf68fcb84da16553143957bd2d0c1696a44781c1d0fb83a4b",
+        "src/soundscape.py": "1671c176b8ec8e26eaabd3ab143d51e1ee6e6dafea52b305682a54c5ea4e3415",
+        "src/state_estimation.py": "8bd95cd387e9aadf6ce10169c1b38a6739f12368f8c80def2d686432da31389b",
+        "src/streamed_road.py": "8c9d2279c34e5e5e280166ef19187f4a454917981a9f6af0dca00d9542eecd9a",
+        "src/suspension.py": "52e7e4184db32918c35a74f10a08f6c5f587f4b38290c6e455ef3442495d0ea6",
+        "src/suspension_contacts.py": "d849098f100f3f1ac43039ea22d4589e853e78cd3ca4052fe080aef0af13bbe0",
+        "src/suspension_geometry.py": "7abfde1a3af06dbb95ebc54d22ae25a3832b2bc97752e7ff5a54eb7a3924faca",
+        "src/suspension_kinematics.py": "450f57b6de98cb6f17e92b8300793bafb3a9196263c57eb5f877f4df20ef8e4a",
+        "src/test_track.py": "ae90f12ab8647ec859ad7931f501b3183371a1fa11936c9edeb59c882db72cfa",
+        "src/tire_compliance.py": "123a6398681613179073b7756a130ef5799f965474939b652b14c278277fe3ed",
+        "src/tire_coupling.py": "91194de87cbf04453e1fe3a29a69b632305644e5248693f5302ee0fd8721733b",
+        "src/tire_drivetrain.py": "a508dfa14b6bcb87978c12b4ba425ba6e54007ac9995d91a332092d43b2e3fe8",
+        "src/tire_forces.py": "631182c46c78370361d5a5c4633803c7a4d9d3a029abac0ef116a98ad74982e7",
+        "src/tire_properties.py": "d93c1199a1c2de0f4d447d3690f0db4f1ad95e664c2dea5f2b848ecbd676a6b5",
+        "src/tracks.py": "f9d5fef1c7b9f4d808fdcb3074f6e1adbf92a6ee57bcdd04e60fc4637580f42d",
+        "src/traffic.py": "3e3d4bd44b16226962436bde66ea5bc11559cb59d1475c1df2905a61759a96d0",
+        "src/traffic_recovery.py": "b455ff05ae1f8dbd524662a831f808f67986699378d54840416c308216072d9a",
+        "src/transmission_ports.py": "583e7e25c983d23977585e8e43cd9e6241e76650a1a0394f1b098e3683d96b79",
+        "src/triangle_support.py": "fd29290fdf54feb592c9f2d077ed111796eb318bdfd5fc1e9123bd55e0ed3436",
+        "src/ui/__init__.py": "75426685c5c3fe93d169378013fd409e12b0fcf56a034bca3a2ecf9af39bb6a4",
+        "src/ui/hud.py": "7337fd545f79f21a3a19f8c69b6e8a51074e16d4724ae7987b715403c0509b9c",
+        "src/ui/main_menu.py": "b085d08c46dc13cba6e9fd9016424c4a626d149785dc81a8658bf7f4535372c9",
+        "src/ui/theme.py": "c2ab236939a0d45fb6b6d3877b78c91807917edfcfac0c9807df5ff77fb43b8b",
+        "src/vehicle.py": "a1c0a81c70f470b22343ed7e7e710d46796246ab5e3b1eef84cd6b39b6790a5b",
+        "src/vehicle_brakes.py": "39eabaff47ec103af6cd76db5b43f31212c7acaf77b1c0a82ec9806f775ef32d",
+        "src/vehicle_collision.py": "3b10a6b5bf79d9c4e7439810d51aac653e98721f8b82c9ee1bf43f0dabff5874",
+        "src/vehicle_config.py": "75d5876c1b781634556f97e8ff361c071656b92caf51068f2121a42330a949c7",
+        "src/vehicle_contacts.py": "36a2c5c815b3ffdc43f1aae3bcd71cd7050246b26aea51977161cb83f63e60c0",
+        "src/vehicle_designs.py": "c82a388317d7123e7633613950e0025492f739b9ecf130287198bc3be7bccf24",
+        "src/vehicle_dynamics.py": "56564b31ed5e8c29a2063d95cb28c17c5b13cc41d1b9c15ca4e12a23a288c140",
+        "src/vehicle_parameters.py": "6aa7916d8401c2aeae806cf8de634289d740ffa86b35d882c0b4047899df3d20",
+        "src/vehicle_stability.py": "71eca42fa7ae37912e8bd0e5023aa2dbb6defa1e436b865b3eb43f7e27f6cadc",
+        "src/vehicle_state.py": "2e5af991d86aaa5a010298618eb793ede2974e732a200d3f525ae659d0b2cc5c",
+        "src/vehicle_steering.py": "d80c07aaea8a4468eda9e6796fceb5714b65b1cd5af3d3f48792773db60e5b34",
+        "src/vehicle_suspension.py": "c342cbce992ea2cb6397f4bcd0403581ff9c1ec70b24e11c6a9d260fa2bd4956",
+        "src/vehicle_tires.py": "10cdc460c0e68b4a8437ce169f817b5cfe37e64dc3d67e8c32ab952bece9f76d",
+        "src/vehicle_traction.py": "7be5bbff9aac9ec172419c3ca02fb9d832accf311e018da2747b79568645da5c",
+        "src/vehicle_visual.py": "6207340d21e244fd2276e803ea429b51ae8f1794366b9b88adb8d636a7ec60ab",
+        "src/wheel_contact_kernels.c": "b438bba371db3c1ee0e6f1794a5d839d7983714cec8588a5d95d804ee4f3a06f",
+        "src/wheel_contact_kernels.cp314-win_amd64.pyd": "d552b0d0d441a3449cc69bbddcc906679e0b2fa2900f76d3f39f55a3252fb703",
+        "src/wheel_dynamics.py": "93446add00a11681925e96dcaf13714f30dc3fde58d03fe62ffea2fa8969bf70",
+        "src/wheel_envelope.py": "31bf87039788d2bbc02c53d583721606a8342fe71a468ff5817edfcd63fedc10",
+        "src/wheel_geometry.py": "25be660293a3f9160a9375a7301b51d64dfcb6d14b9386003ca0a5d7609d7179",
+        "src/world_props.py": "20bdad65716f9d63ffd22cf5138439f761408c95830fc36696298c694405291f",
+        "src/world_step.py": "1bc564a5cd93a224ab799193f45ce9db18b8e5be2b7f72cd4ee9cdeefc091035"
+      }
+    },
+    "error": null,
+    "interpretation": "短时离屏诊断数据；墙钟时间不是FPS或前台性能Gate。"
+  },
+  "notes": [
+    "Snapshot and text-log gzip uses mtime=0 with decompressed payload SHA.",
+    "Main-checkout root-cause archive is linked only and not copied.",
+    "No test, simulation, build, or commit was performed for this archive task.",
+    "Profile-bounds is from the shared stage, not the final window version."
+  ]
+}

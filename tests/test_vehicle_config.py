@@ -38,6 +38,11 @@ def test_default_geometry_preserves_original_dimensions():
     assert body_center(CAR) == (0, 0, .42)
 
 
+def test_bias_configuration_checks_port_dimensions_before_axle_dependency():
+    with pytest.raises(ValueError, match="三项"):
+        replace(CAR, axle_torque_bias_ratios=(1., 2.), differential_damping=(0.,))
+
+
 def test_custom_bullet_geometry_and_reset_keep_instance_configuration():
     cfg = replace(CAR, mass=1450, wheel_radius=.37, wheelbase=2.6,
                   track_width=1.9, center_of_mass_height=.48,
@@ -82,6 +87,23 @@ def test_explicit_inertia_controls_real_angular_impulse_response():
     try:
         car._chassis.applyTorqueImpulse(Vec3(50, 80, 100))
         assert tuple(car._chassis.getAngularVelocity()) == pytest.approx((.1, .1, .1))
+    finally:
+        car.close()
+
+
+def test_axle_tracks_reach_native_wheels_and_front_ackermann():
+    from vehicle_steering import wheel_angles
+
+    config = replace(CAR, wheelbase=2.575, axle_track_widths=(1.52, 1.55), front_weight_share=.53)
+    _, car = make_vehicle(config)
+    try:
+        expected = ((-.76, 1.21025, .25), (.76, 1.21025, .25),
+                    (-.775, -1.36475, .25), (.775, -1.36475, .25))
+        for wheel, hub in zip(car._vehicle.getWheels(), expected):
+            assert tuple(wheel.getChassisConnectionPointCs()) == pytest.approx(hub)
+        front_only = replace(config, axle_track_widths=None, track_width=1.52)
+        assert wheel_angles(25., config) == wheel_angles(25., front_only)
+        assert wheel_angles(25., replace(config, axle_track_widths=(1.52, 1.9))) == wheel_angles(25., config)
     finally:
         car.close()
 

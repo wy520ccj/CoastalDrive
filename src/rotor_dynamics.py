@@ -1,13 +1,7 @@
 """机械轮轴的角动量输运；只计算轴承反力，不维护第二套车身状态。"""
 
-def dot(first, second):
-    return sum(first[i] * second[i] for i in range(3))
-
-
-def cross(first, second):
-    return (first[1] * second[2] - first[2] * second[1],
-            first[2] * second[0] - first[0] * second[2],
-            first[0] * second[1] - first[1] * second[0])
+from mechanical_kernels import cross
+from mechanical_kernels import dot3 as dot
 
 
 def solve_transport(angular, inverse_inertia, spin, dt):

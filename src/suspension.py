@@ -3,6 +3,8 @@
 import math
 from dataclasses import dataclass
 
+from mechanical_kernels import dot
+
 from rotor_dynamics import cross
 
 
@@ -13,10 +15,6 @@ def native_coefficients(config, wheel_index, mass):
                 config.suspension_compression_damping[wheel_index] / mass,
                 config.suspension_extension_damping[wheel_index] / mass)
     return config.suspension_stiffness, config.suspension_compression, config.suspension_relaxation
-
-
-def dot(a, b):
-    return sum(x * y for x, y in zip(a, b))
 
 
 def contact_gradient(normal, direction, arm, *, minimum_alignment=.1):

@@ -72,7 +72,7 @@ def test_export_contains_complete_brake_metadata_and_source(tmp_path):
     assert "src/tire_compliance.py" in report["source_sha256"]
     assert "src/tire_properties.py" in report["source_sha256"]
     assert "src/vehicle_stability.py" in report["source_sha256"]
-    assert len(report["vehicle_fields"]) == 96
+    assert len(report["vehicle_fields"]) == 98
     assert len(report["stability_fields"]) == 10
     assert "src/vehicle_brakes.py" in report["source_sha256"]
     assert len(report["source_sha256"]["src/vehicle_brakes.py"]) == 64
