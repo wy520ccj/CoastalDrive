@@ -1,0 +1,17 @@
+{
+  "in_memory_only": true,
+  "cases": [
+    {
+      "traffic": 0,
+      "snapshots_all_equal": true,
+      "before_s": 1.5582329000317259,
+      "after_s": 1.4302657999360235
+    },
+    {
+      "traffic": 8,
+      "snapshots_all_equal": true,
+      "before_s": 17.98089899997285,
+      "after_s": 15.658380599998054
+    }
+  ]
+}
