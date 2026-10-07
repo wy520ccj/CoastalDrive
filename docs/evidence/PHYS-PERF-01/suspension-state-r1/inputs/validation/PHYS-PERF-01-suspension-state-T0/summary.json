@@ -1,0 +1,56 @@
+{
+  "started_utc": "2026-10-07T12:30:17.813438+00:00",
+  "git_head": "409c03cf426417e9dc6321562e9f339c74b536b9",
+  "git_status": "M src/mechanical_kernels.c\n M src/suspension.py\n M src/wheel_contact_kernels.c",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_suspension_coupling.py",
+    "tests/test_joint_suspension.py",
+    "tests/test_finite_suspension.py",
+    "tests/test_cylinder_suspension.py",
+    "tests/test_tire_drivetrain.py"
+  ],
+  "tier": "T0",
+  "status": "failed",
+  "passed": false,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-suspension-state-T0\\ruff.log",
+      "status": "failed",
+      "returncode": 1,
+      "error": "process exited 1",
+      "seconds": 0.108
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_suspension_coupling.py",
+        "tests/test_joint_suspension.py",
+        "tests/test_finite_suspension.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_tire_drivetrain.py"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-suspension-state-T0\\pytest.log",
+      "status": "not_run"
+    }
+  ]
+}

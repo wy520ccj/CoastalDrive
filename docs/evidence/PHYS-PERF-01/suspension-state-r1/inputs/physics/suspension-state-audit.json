@@ -1,0 +1,11 @@
+{
+  "baseline": "d3859f8 original suspension active set and energy account",
+  "all_fields_equal": true,
+  "counts": {
+    "calls": 5757,
+    "zero_mobility": 3860,
+    "nonzero_mobility": 1897,
+    "free_wheels": 178,
+    "stop_input": 2
+  }
+}

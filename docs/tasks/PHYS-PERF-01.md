@@ -81,3 +81,6 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 
 
 拒绝的两项候选算法实验（2026-10-07）：[子步14变量联合Newton / Broyden实验](../evidence/PHYS-PERF-01/coupled-correction-experiment/receipt.json)均未接入生产；单/8车48拍完整Snapshot不与端点基线逐字段相同，短测Newton为1.3569/17.4754s、Broyden为1.5520/19.0373s，显著慢于基线0.7980/7.1059s；Broyden首轮IndexError及修正后r2均保留。[支持面root AABB提前筛选实验](../evidence/PHYS-PERF-01/surface-prefilter-experiment/receipt.json)标准快照与基线相同，但短测0.9699/11.6376s更慢；同进程old/new/new/old完整Snapshot断言失败，原快照未保存，原因未知。正式T0为31项通过（调用审计日志另有独立40项记录）；无T1或机械/能量Gate，两项均拒绝且未进入生产。
+
+
+悬架活动集状态块（2026-10-07）：[证据与收据](../evidence/PHYS-PERF-01/suspension-state-r1/receipt.json)。原64轮/1e-10接触间隙/1e-7反力门槛、LU与能量账保持；d3859f8基线5,757次完整SuspensionStep字段一致，另以独立512次LU探针补足基线审计调用当前LU的边界。单/8车各48拍Snapshot与端点基线相同，短测0.7375/6.4815s仅诊断。T0-r1/r2 Ruff未用导入失败，r3为411 passed；T1为496 passed、Ruff及三种子通过。无FPS或前台Gate结论。

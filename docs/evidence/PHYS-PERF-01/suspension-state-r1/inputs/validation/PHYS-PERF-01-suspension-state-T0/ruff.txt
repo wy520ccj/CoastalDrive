@@ -1,0 +1,34 @@
+F401 [*] `math` imported but unused
+ --> src\suspension.py:3:8
+  |
+1 | """射线悬架的真实硬件单位与原生参数边界。"""
+2 |
+3 | import math
+  |        ^^^^
+4 | from dataclasses import dataclass
+  |
+help: Remove unused import: `math`
+  |
+2 |
+  - import math
+3 | from dataclasses import dataclass
+  |
+
+F401 [*] `mechanical_kernels.solve_lu` imported but unused
+ --> src\suspension.py:7:44
+  |
+6 | from mechanical_kernels import dot, suspension_contact_state
+7 | from mechanical_kernels import solve_lu as _solve
+  |                                            ^^^^^^
+8 |
+9 | from rotor_dynamics import cross
+  |
+help: Remove unused import: `mechanical_kernels.solve_lu`
+  |
+6 | from mechanical_kernels import dot, suspension_contact_state
+  - from mechanical_kernels import solve_lu as _solve
+7 |
+  |
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.

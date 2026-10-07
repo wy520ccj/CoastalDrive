@@ -1,0 +1,496 @@
+{
+  "task": "PHYS-PERF-01 suspension-state-r1 archive",
+  "head": "409c03cf426417e9dc6321562e9f339c74b536b9",
+  "working_tree_status_at_capture": [
+    " M src/mechanical_kernels.c",
+    " M src/suspension.py",
+    " M src/wheel_contact_kernels.c (byte-identical to d3859f8)"
+  ],
+  "source_capture": "source-hashes.json",
+  "source_file_count": 354,
+  "source_capture_stable": true,
+  "current_source_sha256": {
+    "src/mechanical_kernels.c": "f84ce04754432d262b433bdbea08e942f9105c46a32f64c5d2aa70b26a8984b8",
+    "src/suspension.py": "a5b556b9c9450605cfd806baa2bad5e533fb2263733ac8a5cdc178ab2fd39d43"
+  },
+  "fake_modified_wheel_contact_c_sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+  "active_set_contract": "原64轮、1e-10接触间隙、1e-7反力门槛、LU/fsum/fma及能量账保持。",
+  "suspension_state_audit": {
+    "baseline": "d3859f8 original suspension active set and energy account",
+    "all_fields_equal": true,
+    "counts": {
+      "calls": 5757,
+      "zero_mobility": 3860,
+      "nonzero_mobility": 1897,
+      "free_wheels": 178,
+      "stop_input": 2
+    }
+  },
+  "LU_probe": {
+    "result": {
+      "passed": true,
+      "exact_calls": 512,
+      "in_memory_only": true,
+      "c_sha256": "82219c50e2d22f91837e58545b0923c3baff4933f82b1318c08fda6ad619dffa"
+    },
+    "boundary": "audit baseline call path uses current LU helper; independent 512-call probe compares the extracted LU helper against the original probe and is a necessary supplement."
+  },
+  "snapshots": {
+    "baseline": "endpoint-production.json",
+    "trial": "suspension-state-snapshots.json",
+    "all_48_tick_snapshot_arrays_equal": true,
+    "cases": [
+      {
+        "traffic": 0,
+        "tick_count": 48,
+        "seconds": 0.7375159000075655
+      },
+      {
+        "traffic": 8,
+        "tick_count": 48,
+        "seconds": 6.4815054000064265
+      }
+    ]
+  },
+  "profile": {
+    "profiled_steps": 16,
+    "seconds": 4.844423500006087,
+    "interpretation": "short diagnostic only, not FPS"
+  },
+  "validation": {
+    "PHYS-PERF-01-suspension-state-T0": {
+      "status": "failed",
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "failed",
+          "seconds": 0.108,
+          "error": "process exited 1"
+        },
+        {
+          "name": "pytest",
+          "status": "not_run",
+          "seconds": null,
+          "error": null
+        }
+      ]
+    },
+    "PHYS-PERF-01-suspension-state-T0-r2": {
+      "status": "failed",
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "failed",
+          "seconds": 0.105,
+          "error": "process exited 1"
+        },
+        {
+          "name": "pytest",
+          "status": "not_run",
+          "seconds": null,
+          "error": null
+        }
+      ]
+    },
+    "PHYS-PERF-01-suspension-state-T0-r3": {
+      "status": "passed",
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "seconds": 0.109,
+          "error": null
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "seconds": 1.783,
+          "error": null
+        }
+      ]
+    },
+    "PHYS-PERF-01-suspension-state-T1": {
+      "status": "passed",
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "seconds": 0.11,
+          "error": null
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "seconds": 43.642,
+          "error": null
+        },
+        {
+          "name": "headless-0",
+          "status": "passed",
+          "seconds": 12.622,
+          "error": null
+        },
+        {
+          "name": "headless-17",
+          "status": "passed",
+          "seconds": 11.554,
+          "error": null
+        },
+        {
+          "name": "headless-23",
+          "status": "passed",
+          "seconds": 11.349,
+          "error": null
+        }
+      ]
+    }
+  },
+  "T1_seed_seconds": {
+    "headless-0": 12.622,
+    "headless-17": 11.554,
+    "headless-23": 11.349
+  },
+  "limitations": [
+    "No tests, simulations, or builds were run during this archive task.",
+    "No FPS, foreground, or human gate is claimed.",
+    "Main project T2 was independent and remains outside this archive."
+  ],
+  "files": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-state-audit.py",
+      "original_name": "suspension-state-audit.py",
+      "archive": "inputs/physics/suspension-state-audit.py",
+      "source_sha256": "a1553ea9cfd0d2457d73f69c0a9a80a42cfb2bc4048d4412e07c3e265d98cc7a",
+      "archive_sha256": "a1553ea9cfd0d2457d73f69c0a9a80a42cfb2bc4048d4412e07c3e265d98cc7a",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 1974,
+      "archive_bytes": 1974,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-state-audit.json",
+      "original_name": "suspension-state-audit.json",
+      "archive": "inputs/physics/suspension-state-audit.json",
+      "source_sha256": "2db9f70ab0a7853ae3708c5570e33559d6bdd968cd35756e3041de9c90cfb6c7",
+      "archive_sha256": "2db9f70ab0a7853ae3708c5570e33559d6bdd968cd35756e3041de9c90cfb6c7",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 254,
+      "archive_bytes": 254,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-state-audit.log",
+      "original_name": "suspension-state-audit.log",
+      "archive": "inputs/physics/suspension-state-audit.txt",
+      "source_sha256": "87a0c9773e4d92677b09dfef8fd325a07d38fbd992a6662d61501e59335b4203",
+      "archive_sha256": "87a0c9773e4d92677b09dfef8fd325a07d38fbd992a6662d61501e59335b4203",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 396,
+      "archive_bytes": 396,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-state-build.log",
+      "original_name": "suspension-state-build.log",
+      "archive": "inputs/physics/suspension-state-build.txt",
+      "source_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "archive_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 5534,
+      "archive_bytes": 5534,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-state-snapshots.py",
+      "original_name": "suspension-state-snapshots.py",
+      "archive": "inputs/physics/suspension-state-snapshots.py",
+      "source_sha256": "d223231f4693988508eca51b0ab0512f166d6fcae344050f65c875a390f5bf8d",
+      "archive_sha256": "d223231f4693988508eca51b0ab0512f166d6fcae344050f65c875a390f5bf8d",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 1765,
+      "archive_bytes": 1765,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-state-snapshots.json",
+      "original_name": "suspension-state-snapshots.json",
+      "archive": "inputs/physics/suspension-state-snapshots.json.gz",
+      "source_sha256": "61d930fcb6f03bce054280cfac99e13acc3dec164867c9ad0bc67111ee55ef0f",
+      "archive_sha256": "b42ce15e4e13457dd4e472057213a8dfc751dd477de31d37edfd8b48f44a72bf",
+      "payload_sha256": "61d930fcb6f03bce054280cfac99e13acc3dec164867c9ad0bc67111ee55ef0f",
+      "compressed": true,
+      "bytes": 8746915,
+      "archive_bytes": 1962275,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-state-snapshots.log",
+      "original_name": "suspension-state-snapshots.log",
+      "archive": "inputs/physics/suspension-state-snapshots.txt",
+      "source_sha256": "8358345f17e07ecf92b97bde37d8535c1084b1d398a437b1c7bff01c1f190b1d",
+      "archive_sha256": "8358345f17e07ecf92b97bde37d8535c1084b1d398a437b1c7bff01c1f190b1d",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 133,
+      "archive_bytes": 133,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-state-LU-probe.log",
+      "original_name": "suspension-state-LU-probe.log",
+      "archive": "inputs/physics/suspension-state-LU-probe.txt",
+      "source_sha256": "313513d88f4a77a9f895e2b7b661c0c4977e3d03983c88443676831f8857e25d",
+      "archive_sha256": "313513d88f4a77a9f895e2b7b661c0c4977e3d03983c88443676831f8857e25d",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 142,
+      "archive_bytes": 142,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-state-LU-probe.json",
+      "original_name": "suspension-state-LU-probe.json",
+      "archive": "inputs/physics/suspension-state-LU-probe.json",
+      "source_sha256": "9cf0f79447b77b2954d135f0d4694a8969a12e6f8f98b8de91eab0a2c42f1f17",
+      "archive_sha256": "9cf0f79447b77b2954d135f0d4694a8969a12e6f8f98b8de91eab0a2c42f1f17",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 155,
+      "archive_bytes": 155,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/promote-suspension-state.py",
+      "original_name": "promote-suspension-state.py",
+      "archive": "inputs/physics/promote-suspension-state.py",
+      "source_sha256": "a34e257db5a6ac330977f7aa12bab203baee8a25ac989c0eb76dbf3ee289cccc",
+      "archive_sha256": "a34e257db5a6ac330977f7aa12bab203baee8a25ac989c0eb76dbf3ee289cccc",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 7655,
+      "archive_bytes": 7655,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-suspension-state.py",
+      "original_name": "profile-suspension-state.py",
+      "archive": "inputs/physics/profile-suspension-state.py",
+      "source_sha256": "01aaa1276435ab7f905816a6b88cb11f35206ae8b6e8085cd3f5f6ae813bdc1f",
+      "archive_sha256": "01aaa1276435ab7f905816a6b88cb11f35206ae8b6e8085cd3f5f6ae813bdc1f",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 6807,
+      "archive_bytes": 6807,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-suspension-state.log",
+      "original_name": "profile-suspension-state.log",
+      "archive": "inputs/physics/profile-suspension-state.txt",
+      "source_sha256": "98059aadc68354cc7e56e0284d27625f6190bf04f06739ae125fc4accc4a91a5",
+      "archive_sha256": "98059aadc68354cc7e56e0284d27625f6190bf04f06739ae125fc4accc4a91a5",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 139,
+      "archive_bytes": 139,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/endpoint-production.json",
+      "original_name": "endpoint-production.json",
+      "archive": "inputs/physics/endpoint-production.json.gz",
+      "source_sha256": "b3847cd3ff680ea730f6f8a139ee5b0ff9723a95fa10960790da1f4aefdc65db",
+      "archive_sha256": "73a7a9916aed8c568976cc9d090d2d4f4c883615d5b6e2769047377ab1739137",
+      "payload_sha256": "b3847cd3ff680ea730f6f8a139ee5b0ff9723a95fa10960790da1f4aefdc65db",
+      "compressed": true,
+      "bytes": 8722215,
+      "archive_bytes": 1950493,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-suspension-state-r1/gr86-profile.prof",
+      "original_name": "gr86-profile.prof",
+      "archive": "inputs/physics/profile-suspension-state-r1/gr86-profile.prof.gz",
+      "source_sha256": "6ce614b9ea53af69a37094cfe189b8c6ec11c0a51439c6174c0148453674119a",
+      "archive_sha256": "64bfa1fc5bb3f53536c35f31f269ca18c2953bbbb355906f75bc80fa37564009",
+      "payload_sha256": "6ce614b9ea53af69a37094cfe189b8c6ec11c0a51439c6174c0148453674119a",
+      "compressed": true,
+      "bytes": 74546,
+      "archive_bytes": 26733,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-suspension-state-r1/profile.json",
+      "original_name": "profile.json",
+      "archive": "inputs/physics/profile-suspension-state-r1/profile.json",
+      "source_sha256": "ad8a35e04fb0d7dbb7b0720eddb208a40e3c681135451bb0ebcf5e1b46bc9932",
+      "archive_sha256": "ad8a35e04fb0d7dbb7b0720eddb208a40e3c681135451bb0ebcf5e1b46bc9932",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 31867,
+      "archive_bytes": 31867,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-state-T0/ruff.log",
+      "original_name": "ruff.log",
+      "archive": "inputs/validation/PHYS-PERF-01-suspension-state-T0/ruff.txt",
+      "source_sha256": "c0ae5c456fcc89d5076596873277e83f324678de2ed71c9b1103598bbcebe900",
+      "archive_sha256": "c0ae5c456fcc89d5076596873277e83f324678de2ed71c9b1103598bbcebe900",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 875,
+      "archive_bytes": 875,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-state-T0/summary.json",
+      "original_name": "summary.json",
+      "archive": "inputs/validation/PHYS-PERF-01-suspension-state-T0/summary.json",
+      "source_sha256": "52d290dddca966d32db89faacd6dd1a1d80d45a4c6343f740259e8b30b3587b1",
+      "archive_sha256": "52d290dddca966d32db89faacd6dd1a1d80d45a4c6343f740259e8b30b3587b1",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 1879,
+      "archive_bytes": 1879,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-state-T0-r2/ruff.log",
+      "original_name": "ruff.log",
+      "archive": "inputs/validation/PHYS-PERF-01-suspension-state-T0-r2/ruff.txt",
+      "source_sha256": "bd09b29d74dff565d2ccfb37a8cca835fe88b473e21e65bb8cb1e1679af8c461",
+      "archive_sha256": "bd09b29d74dff565d2ccfb37a8cca835fe88b473e21e65bb8cb1e1679af8c461",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 556,
+      "archive_bytes": 556,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-state-T0-r2/summary.json",
+      "original_name": "summary.json",
+      "archive": "inputs/validation/PHYS-PERF-01-suspension-state-T0-r2/summary.json",
+      "source_sha256": "fc1ffa630993d3662f8ed4331b32c89f1c18ebe7e40be110b71ac33bead6e1d4",
+      "archive_sha256": "fc1ffa630993d3662f8ed4331b32c89f1c18ebe7e40be110b71ac33bead6e1d4",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 1885,
+      "archive_bytes": 1885,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-state-T0-r3/pytest.log",
+      "original_name": "pytest.log",
+      "archive": "inputs/validation/PHYS-PERF-01-suspension-state-T0-r3/pytest.txt",
+      "source_sha256": "6f1a6009795e00c551669cba6d3a5e06b3ee64376e2b7e9428db3dd34944a48d",
+      "archive_sha256": "6f1a6009795e00c551669cba6d3a5e06b3ee64376e2b7e9428db3dd34944a48d",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 507,
+      "archive_bytes": 507,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-state-T0-r3/ruff.log",
+      "original_name": "ruff.log",
+      "archive": "inputs/validation/PHYS-PERF-01-suspension-state-T0-r3/ruff.txt",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 19,
+      "archive_bytes": 19,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-state-T0-r3/summary.json",
+      "original_name": "summary.json",
+      "archive": "inputs/validation/PHYS-PERF-01-suspension-state-T0-r3/summary.json",
+      "source_sha256": "fa59b59c9de6bbfcae228381119b167ba74ce91525161731aecbdae28c160d52",
+      "archive_sha256": "fa59b59c9de6bbfcae228381119b167ba74ce91525161731aecbdae28c160d52",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 1940,
+      "archive_bytes": 1940,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-state-T1/headless-0.log",
+      "original_name": "headless-0.log",
+      "archive": "inputs/validation/PHYS-PERF-01-suspension-state-T1/headless-0.txt",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 32432,
+      "archive_bytes": 32432,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-state-T1/headless-17.log",
+      "original_name": "headless-17.log",
+      "archive": "inputs/validation/PHYS-PERF-01-suspension-state-T1/headless-17.txt",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 32432,
+      "archive_bytes": 32432,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-state-T1/headless-23.log",
+      "original_name": "headless-23.log",
+      "archive": "inputs/validation/PHYS-PERF-01-suspension-state-T1/headless-23.txt",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 32432,
+      "archive_bytes": 32432,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-state-T1/pytest.log",
+      "original_name": "pytest.log",
+      "archive": "inputs/validation/PHYS-PERF-01-suspension-state-T1/pytest.txt",
+      "source_sha256": "6e76edf350e10f94e11aab2c0c30b5824688eb5dd09cb3ab01e023f9046246f3",
+      "archive_sha256": "6e76edf350e10f94e11aab2c0c30b5824688eb5dd09cb3ab01e023f9046246f3",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 589,
+      "archive_bytes": 589,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-state-T1/ruff.log",
+      "original_name": "ruff.log",
+      "archive": "inputs/validation/PHYS-PERF-01-suspension-state-T1/ruff.txt",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 19,
+      "archive_bytes": 19,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-state-T1/summary.json",
+      "original_name": "summary.json",
+      "archive": "inputs/validation/PHYS-PERF-01-suspension-state-T1/summary.json",
+      "source_sha256": "b97a6ffe4806c71133ffdd6142c713e691afa9db485a44225e3a2884e7455b66",
+      "archive_sha256": "b97a6ffe4806c71133ffdd6142c713e691afa9db485a44225e3a2884e7455b66",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 5048,
+      "archive_bytes": 5048,
+      "status": "copied"
+    }
+  ]
+}
