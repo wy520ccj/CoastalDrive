@@ -104,7 +104,8 @@ def wheel_sweep_shape(radius, width, shoulder, crown):
     return envelope
 
 
-def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder, crown=0., *, envelope=None, ray_origin=None):
+def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder, crown=0., *, envelope=None, ray_origin=None,
+                             candidate_cache=None):
     """轮轴和有限胎宽进入真实表面查询；不会创建第二个物理世界。"""
     mask = BitMask32.bit(0)
     # 未加入世界的保守查询盒使用Bullet broadphase筛选实际相交静态物体。
@@ -118,6 +119,59 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
     padding = radius + width / 2 + 1e-5
     low = tuple(min(p[a] for p in points) - padding for a in range(3))
     high = tuple(max(p[a] for p in points) + padding for a in range(3))
+    cached = candidate_cache is not None and candidate_cache and all(
+        candidate_cache['low'][a] <= low[a] and high[a] <= candidate_cache['high'][a] for a in range(3))
+    if cached:
+        surfaces, exact, native_needed = candidate_cache['surfaces'], candidate_cache['exact'], candidate_cache['native_needed']
+    else:
+        # 冻结子步内预取5cm邻域；离开覆盖范围便重新查询，实际求交不作近似。
+        if candidate_cache is not None:
+            low = tuple(value - .05 for value in low)
+            high = tuple(value + .05 for value in high)
+        surfaces, exact, native_needed = cylinder_candidates(world, chassis, mask, low, high)
+        if candidate_cache is not None:
+            candidate_cache.update(low=low, high=high, surfaces=surfaces, exact=exact, native_needed=native_needed)
+    if envelope is None:
+        envelope = wheel_sweep_shape(radius, width, shoulder, crown)
+    results = []
+    for (start, end), (relative_start, relative_end), axis in zip(world_rays, relative_rays, axes):
+        axis = tuple(axis)
+        hits = []
+        if native_needed:
+            transverse = math.hypot(axis[1], axis[2])
+            rotation = Quat()
+            if transverse:
+                rotation_axis = Vec3(0., -axis[2] / transverse, axis[1] / transverse)
+                rotation.setFromAxisAngleRad(math.atan2(transverse, axis[0]), rotation_axis)
+            elif axis[0] < 0.:
+                rotation.setFromAxisAngle(180., Vec3(0., 0., 1.))
+            native = world.sweepTestClosest(envelope, TransformState.makePosQuatScale(start, rotation, Vec3(1)),
+                                           TransformState.makePosQuatScale(end, rotation, Vec3(1)), mask, 0.)
+            if native.hasHit() and native.getNode() != chassis and native.getNode() not in exact:
+                point = tuple(native.getHitPos())
+                if ray_origin is not None:
+                    point = tuple(point[a] - origin[a] for a in range(3))
+                hits.append(RayContact(native.getNode(), native.getHitFraction(), point, tuple(native.getHitNormal())))
+        for body, inverse, frame, half, margin, plane, triangles in surfaces:
+            reach = math.sqrt(sum((end[a] - start[a])**2 for a in range(3))) - radius
+            offset = tuple(inverse.getCell(3, a) + sum(frame[a][b] * origin[b] for b in range(3)) for a in range(3))
+            surface = CylinderSurface(half, margin, frame, offset,
+                                      radius, reach, width, shoulder, axis, plane, crown, triangles)
+            found = surface.entry(surface.local(relative_start), surface.local(relative_end), axis)
+            if found is None:
+                continue
+            fraction, local_normal, local_point, face = found
+            normal = surface.world_vector(local_normal)
+            point = surface.world_vector(tuple(local_point[a] - surface.offset[a] for a in range(3)))
+            if ray_origin is None:
+                point = tuple(point[a] + origin[a] for a in range(3))
+            hits.append(RayContact(body, fraction, point, normal, surface, face))
+        results.append(min(hits, key=lambda hit: hit.fraction) if hits else None)
+    return tuple(results)
+
+
+def cylinder_candidates(world, chassis, mask, low, high):
+    """从真实世界读取覆盖盒内静态表面与固定坐标变换。"""
     probe = BulletRigidBodyNode("suspension-query")
     shape = BulletBoxShape(Vec3(*( (b-a)/2 for a,b in zip(low,high))))
     shape.setMargin(0.)
@@ -145,41 +199,5 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
                 half = tuple(shape.getHalfExtentsWithoutMargin()) if isinstance(shape, BulletBoxShape) else ()
                 triangles = mesh if isinstance(shape,BulletTriangleMeshShape) else None
                 surfaces.append((body, inverse, frame, half, shape.getMargin() if plane is None else 0., plane, triangles))
-    if envelope is None:
-        envelope = wheel_sweep_shape(radius, width, shoulder, crown)
     native_needed = any(body not in exact for body in bodies)
-    results = []
-    for (start, end), (relative_start, relative_end), axis in zip(world_rays, relative_rays, axes):
-        axis = tuple(axis)
-        transverse = math.hypot(axis[1], axis[2])
-        rotation = Quat()
-        if transverse:
-            rotation_axis = Vec3(0., -axis[2] / transverse, axis[1] / transverse)
-            rotation.setFromAxisAngleRad(math.atan2(transverse, axis[0]), rotation_axis)
-        elif axis[0] < 0.:
-            rotation.setFromAxisAngle(180., Vec3(0., 0., 1.))
-        hits = []
-        if native_needed:
-            native = world.sweepTestClosest(envelope, TransformState.makePosQuatScale(start, rotation, Vec3(1)),
-                                           TransformState.makePosQuatScale(end, rotation, Vec3(1)), mask, 0.)
-            if native.hasHit() and native.getNode() != chassis and native.getNode() not in exact:
-                point = tuple(native.getHitPos())
-                if ray_origin is not None:
-                    point = tuple(point[a] - origin[a] for a in range(3))
-                hits.append(RayContact(native.getNode(), native.getHitFraction(), point, tuple(native.getHitNormal())))
-        for body, inverse, frame, half, margin, plane, triangles in surfaces:
-            reach = math.sqrt(sum((end[a] - start[a])**2 for a in range(3))) - radius
-            offset = tuple(inverse.getCell(3, a) + sum(frame[a][b] * origin[b] for b in range(3)) for a in range(3))
-            surface = CylinderSurface(half, margin, frame, offset,
-                                      radius, reach, width, shoulder, axis, plane, crown, triangles)
-            found = surface.entry(surface.local(relative_start), surface.local(relative_end), axis)
-            if found is None:
-                continue
-            fraction, local_normal, local_point, face = found
-            normal = surface.world_vector(local_normal)
-            point = surface.world_vector(tuple(local_point[a] - surface.offset[a] for a in range(3)))
-            if ray_origin is None:
-                point = tuple(point[a] + origin[a] for a in range(3))
-            hits.append(RayContact(body, fraction, point, normal, surface, face))
-        results.append(min(hits, key=lambda hit: hit.fraction) if hits else None)
-    return tuple(results)
+    return surfaces, exact, native_needed

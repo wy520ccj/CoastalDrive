@@ -1,0 +1,129 @@
+{
+  "started_utc": "2026-10-07T04:23:52.897970+00:00",
+  "git_head": "78508706ab2f05c975e107957ac15a9aeb43908d",
+  "git_status": "M docs/current-progress.md\n M src/suspension_contacts.py\n M src/vehicle_suspension.py\n M tests/test_suspension_query_lifetime.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_cylinder_suspension.py",
+    "tests/test_triangle_support.py",
+    "tests/test_suspension_query_lifetime.py",
+    "tests/test_ramp_contact_step.py",
+    "tests/test_finite_suspension.py",
+    "tests/test_curved_suspension.py",
+    "tests/test_suspension_contacts.py",
+    "tests/test_joint_suspension.py",
+    "tests/test_tire_drivetrain.py",
+    "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle"
+  ],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-candidates-T1-r2\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.106
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_finite_suspension.py",
+        "tests/test_curved_suspension.py",
+        "tests/test_suspension_contacts.py",
+        "tests/test_joint_suspension.py",
+        "tests/test_tire_drivetrain.py",
+        "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-candidates-T1-r2\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 27.347
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-candidates-T1-r2\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 23.735
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-candidates-T1-r2\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 23.744
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-candidates-T1-r2\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 23.86
+    }
+  ]
+}

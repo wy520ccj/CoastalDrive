@@ -26,6 +26,7 @@ class WorldSurface(CylinderSurface):
     chassis: object = None
     envelope: object = None
     queries: dict = field(default_factory=dict, init=False, repr=False, compare=False)
+    candidates: dict = field(default_factory=dict, init=False, repr=False, compare=False)
 
     def entry(self, start, end, axis):
         hit, = cylinder_suspension_rays(self.world,self.chassis,((start,end),),(axis,),
@@ -37,7 +38,8 @@ class WorldSurface(CylinderSurface):
         key = start, end, axis
         if key not in self.queries:
             hit, = cylinder_suspension_rays(self.world,self.chassis,((start,end),),(axis,),
-                self.wheel_radius,self.width,self.shoulder,self.crown,envelope=self.envelope,ray_origin=self.offset)
+                self.wheel_radius,self.width,self.shoulder,self.crown,envelope=self.envelope,ray_origin=self.offset,
+                candidate_cache=self.candidates)
             self.queries[key] = (hit.fraction,hit.normal,hit.point,hit.support_face) if hit is not None else None
         return self.queries[key]
 
