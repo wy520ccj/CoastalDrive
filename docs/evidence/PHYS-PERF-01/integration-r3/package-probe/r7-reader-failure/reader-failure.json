@@ -1,0 +1,12 @@
+{
+  "status": "failed",
+  "reason": "reader wrongly assumed append; actual launcher rewrites process log, length assertion failed",
+  "reader_returncode": 1,
+  "program_returncode_not_recorded": true,
+  "observed_game_report_tick": 120,
+  "observed_driving_mode": "game",
+  "simulation_check": "not_run",
+  "game_log_sha256": "1df0928d040b1feba1cad62404fd2ed8b0493280b89926be269360e749a0b6b3",
+  "corrected_run": "package-headless-r7-r2",
+  "scope": "reader failure retained, not a package or physical failure conclusion"
+}

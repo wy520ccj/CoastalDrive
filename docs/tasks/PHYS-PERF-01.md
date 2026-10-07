@@ -90,3 +90,6 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 
 
 圆柱查询前置数值实验（2026-10-07，拒绝）：[证据与收据](../evidence/PHYS-PERF-01/cylinder-query-experiment/receipt.json)。8,518次调用/10,012条射线的数值与输入别名一致，T0为31项/Ruff通过；标准单/8车48拍Snapshot与悬架基线相同。ABBA四条完整Snapshot均相同且epoch归零，但新旧CPU时间分别为6.609/6.219与5.953/6.672s，无稳定节省，未运行T1。无性能Gate结论；生产源码恢复至e5765ed字节。
+
+
+主目录整合 r3（2026-10-07，`127c1d0`）：接入 map160 共同接触修正与隔离悬架活动集数值块，严格重建两扩展。T1 528 passed/Ruff/三种子通过；r7候选包 build 哈希前后相同，独立包 game/simulation 各120拍通过，包产物哈希与当前目录相符；reader 首轮日志追加假设错误、simulation未运行已单独保留，r7-r2两模式复核通过。48拍全快照字段与整合基线相同（耗时仅诊断）。复用957节点，余1173与11专项；T2起始摘要标记running，未归档进行中的pytest日志，阶段未过。源码差异清单、旧轨迹失效边界和包/源SHA见[整合 r3 证据](../evidence/PHYS-PERF-01/integration-r3/report.md)。实时前台、T3、人工驾驶验收未完成。
