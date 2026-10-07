@@ -204,11 +204,17 @@ def cylinder_candidates(world, chassis, mask, low, high, *, static_shapes=None):
     center = tuple((a+b)/2 for a,b in zip(low,high))
     half_query = tuple((b-a)/2 for a,b in zip(low,high))
     surfaces, exact, native_needed = [], set(), False
+    projections = {}
     for body, supported, parts in static_shapes:
         included = False
         for inverse, frame, translation, half, margin, plane, triangles, bounds in parts:
-            local_center = tuple(translation[a] + sum(frame[a][b]*center[b] for b in range(3)) for a in range(3))
-            local_half = tuple(sum(abs(frame[a][b])*half_query[b] for b in range(3)) for a in range(3))
+            # 同一查询盒与相同旋转矩阵只投影一次，逐形状平移及实际边界仍分别判断。
+            if frame not in projections:
+                projections[frame] = (
+                    tuple(sum(frame[a][b]*center[b] for b in range(3)) for a in range(3)),
+                    tuple(sum(abs(frame[a][b])*half_query[b] for b in range(3)) for a in range(3)))
+            projected_center, local_half = projections[frame]
+            local_center = tuple(translation[a] + projected_center[a] for a in range(3))
             if bounds is not None and any(local_center[a]+local_half[a] < bounds[0][a]
                     or local_center[a]-local_half[a] > bounds[1][a] for a in range(3)):
                 continue
