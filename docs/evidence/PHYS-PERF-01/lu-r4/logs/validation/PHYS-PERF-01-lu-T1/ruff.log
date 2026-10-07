@@ -1,0 +1,23 @@
+I001 [*] Import block is un-sorted or un-formatted
+ --> src\suspension.py:3:1
+  |
+1 |   """射线悬架的真实硬件单位与原生参数边界。"""
+2 |
+3 | / import math
+4 | | from dataclasses import dataclass
+5 | |
+6 | | from mechanical_kernels import dot, solve_lu as _solve
+7 | |
+8 | | from rotor_dynamics import cross
+  | |________________________________^
+help: Organize imports
+  |
+5 |
+  - from mechanical_kernels import dot, solve_lu as _solve
+6 + from mechanical_kernels import dot
+7 + from mechanical_kernels import solve_lu as _solve
+8 |
+  |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
