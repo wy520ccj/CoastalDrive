@@ -10,6 +10,7 @@ from transmission_ports import PORT_TOLERANCE, _inverse_three
 
 # 保留原端口入口，直接绑定同一有限末状态内核。
 shaft_brake_state = mechanical_kernels.shaft_brake_state
+shaft_brake_plans = mechanical_kernels.shaft_brake_plans
 
 
 def shaft_gradients(engine_axis, shaft_axis, wheel_axes, weights, ratio):
@@ -20,27 +21,6 @@ def shaft_gradients(engine_axis, shaft_axis, wheel_axes, weights, ratio):
     gear = tuple(-shaft_axis[a] - drive_axis[a] for a in range(3)) + (0., 1.) + tuple(-r for r in wheel_ratios)
     loss = drive_axis + (0., 0.) + wheel_ratios
     return clutch, gear, loss
-
-
-def shaft_brake_plans(response, capacity, brake_capacity, efficiency):
-    """已挂挡先消去理想齿比约束；损失区间取实际齿轮反力，而非离合矩。"""
-    ports = (0, 2, 3)
-    gear_response = tuple(response[1][j] / response[1][1] for j in ports)
-    reduced = tuple(tuple(response[i][j] - response[i][1] * response[1][j] / response[1][1]
-                          for j in ports) for i in ports)
-    plans, inverses = [], {}
-    clutch_modes = (0, 1, -1) if capacity else (1, -1)
-    brake_modes = (0, 1, -1) if brake_capacity else (1, -1)
-    for clutch_mode, motion, brake_mode in product(clutch_modes, (1, -1, 0), brake_modes):
-        for sign in ((1, -1) if motion else (0,)):
-            slope = (1 - efficiency if motion * sign > 0 else 1 - 1 / efficiency)
-            rows = (reduced[0] if clutch_mode == 0 else (1., 0., 0.),
-                    reduced[1] if motion == 0 else tuple(slope * gear_response[j] + float(j == 1) for j in range(3)),
-                    reduced[2] if brake_mode == 0 else (0., 0., 1.))
-            if rows not in inverses:
-                inverses[rows] = _inverse_three(rows)
-            plans.append(((clutch_mode, motion, brake_mode), sign, slope, inverses[rows]))
-    return tuple(plans)
 
 
 def shaft_brake_response(direction, response, plan):

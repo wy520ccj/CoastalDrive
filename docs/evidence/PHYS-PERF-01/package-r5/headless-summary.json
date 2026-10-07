@@ -1,0 +1,59 @@
+{
+  "kind": "outside-repository independent package headless; not render, FPS or human gate",
+  "passed": true,
+  "checks": [
+    {
+      "mode": "game",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\builds\\physics-native-candidate-r5\\win_amd64\\coastaldrive.exe",
+        "--headless",
+        "--steps",
+        "120",
+        "--track",
+        "test",
+        "--seed",
+        "17",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "game"
+      ],
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-tgy8558z\\game",
+      "returncode": 0,
+      "seconds": 2.7680931000068085,
+      "log": "game.log",
+      "report_tick_present": true,
+      "full_hardware_present": true
+    },
+    {
+      "mode": "simulation",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\builds\\physics-native-candidate-r5\\win_amd64\\coastaldrive.exe",
+        "--headless",
+        "--steps",
+        "120",
+        "--track",
+        "test",
+        "--seed",
+        "17",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "simulation"
+      ],
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-tgy8558z\\simulation",
+      "returncode": 0,
+      "seconds": 2.541750799995498,
+      "log": "simulation.log",
+      "report_tick_present": true,
+      "full_hardware_present": true
+    }
+  ],
+  "sha256": {
+    "coastaldrive.exe": "c629d5ba5b66e291f5411a4ded1e0953aa82c076ac1568771f817baae6365920",
+    "mechanical_kernels.pyd": "d0372d4596fc97660f9a2b0d327bf0cdd588b454c9984041e3285d2beff41336",
+    "wheel_contact_kernels.pyd": "1d7c5a13081ee02aca5556ecb481206a0c594cf78e71fd1bc6f68c9f7af220e2",
+    "licenses/CPython-LICENSE.txt": "b0e25a78cffb43f4d92de8b61ccfa1f1f98ecbc22330b54b5251e7b6ba010231",
+    "assets/game/vehicle-configs/gr86-2022-premium-6mt.json": "88c6bdce91429ae59247fec5c6bfd4a7531bbfa918e622dd78e61301dafb6a23"
+  }
+}

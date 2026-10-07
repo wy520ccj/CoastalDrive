@@ -34,6 +34,99 @@ static int vector(PyObject *obj, double *data, int count) {
     return 1;
 }
 
+
+/* 分区顺序与三维余子式保持原实现；相同行只在本次构造内复用。 */
+static PyObject *shaft_plans(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *input;
+    double capacity, brake_capacity, efficiency;
+    static char *names[] = {"response", "capacity", "brake_capacity", "efficiency", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oddd", names, &input, &capacity,
+                                     &brake_capacity, &efficiency)) return NULL;
+    if (!PyTuple_Check(input) || PyTuple_GET_SIZE(input) != 4) {
+        PyErr_SetString(PyExc_ValueError, "固定四端口矩阵格式错误");
+        return NULL;
+    }
+    double response[4][4], reduced[3][3], gear_response[3];
+    for (int i = 0; i < 4; ++i)
+        if (!vector(PyTuple_GET_ITEM(input, i), response[i], 4)) return NULL;
+    if (response[1][1] == 0.0 || efficiency == 0.0) {
+        PyErr_SetString(PyExc_ZeroDivisionError, "端口响应或效率为零");
+        return NULL;
+    }
+    const int ports[3] = {0, 2, 3}, modes[] = {0, 1, -1}, motions[] = {1, -1, 0};
+    for (int j = 0; j < 3; ++j) {
+        gear_response[j] = response[1][ports[j]] / response[1][1];
+        for (int i = 0; i < 3; ++i)
+            reduced[i][j] = response[ports[i]][ports[j]]
+                         - response[ports[i]][1] * response[1][ports[j]] / response[1][1];
+    }
+    double cached_rows[45][3][3];
+    PyObject *cached_columns[45];
+    int cache_count = 0, plan_index = 0;
+    int count = (capacity != 0.0 ? 3 : 2) * 5 * (brake_capacity != 0.0 ? 3 : 2);
+    PyObject *result = PyTuple_New(count);
+    if (!result) return NULL;
+    for (int cm = capacity != 0.0 ? 0 : 1; cm < 3; ++cm)
+        for (int mi = 0; mi < 3; ++mi)
+            for (int bm = brake_capacity != 0.0 ? 0 : 1; bm < 3; ++bm)
+                for (int si = 0; si < (motions[mi] != 0 ? 2 : 1); ++si) {
+                    int clutch = modes[cm], motion = motions[mi], brake = modes[bm];
+                    int sign = motion != 0 ? (si == 0 ? 1 : -1) : 0;
+                    double slope = motion * sign > 0 ? 1 - efficiency : 1 - 1 / efficiency;
+                    double rows[3][3];
+                    for (int j = 0; j < 3; ++j) {
+                        rows[0][j] = clutch == 0 ? reduced[0][j] : (double)(j == 0);
+                        rows[1][j] = motion == 0 ? reduced[1][j] : slope * gear_response[j] + (double)(j == 1);
+                        rows[2][j] = brake == 0 ? reduced[2][j] : (double)(j == 2);
+                    }
+                    int cached = 0, created = 0;
+                    for (; cached < cache_count; ++cached) {
+                        int equal = 1;
+                        for (int i = 0; i < 3; ++i)
+                            for (int j = 0; j < 3; ++j)
+                                if (rows[i][j] != cached_rows[cached][i][j]) equal = 0;
+                        if (equal) break;
+                    }
+                    if (cached == cache_count) {
+                        double cofactors[3][3], terms[3], columns[3][3];
+                        for (int i = 0; i < 3; ++i) {
+                            int a = (i + 1) % 3, b = (i + 2) % 3;
+                            cofactors[i][0] = rows[a][1]*rows[b][2] - rows[a][2]*rows[b][1];
+                            cofactors[i][1] = rows[a][2]*rows[b][0] - rows[a][0]*rows[b][2];
+                            cofactors[i][2] = rows[a][0]*rows[b][1] - rows[a][1]*rows[b][0];
+                        }
+                        for (int j = 0; j < 3; ++j) terms[j] = rows[0][j] * cofactors[0][j];
+                        double determinant = compensated(terms, 3);
+                        if (determinant == 0.0) {
+                            PyErr_SetString(PyExc_ZeroDivisionError, "端口约束矩阵奇异");
+                            Py_DECREF(result);
+                            return NULL;
+                        }
+                        for (int k = 0; k < 3; ++k)
+                            for (int i = 0; i < 3; ++i) {
+                                for (int j = 0; j < 3; ++j) terms[j] = cofactors[j][i] * (double)(j == k);
+                                columns[k][i] = compensated(terms, 3) / determinant;
+                            }
+                        PyObject *column = Py_BuildValue("((ddd)(ddd)(ddd))",
+                            columns[0][0], columns[0][1], columns[0][2],
+                            columns[1][0], columns[1][1], columns[1][2],
+                            columns[2][0], columns[2][1], columns[2][2]);
+                        if (!column) { Py_DECREF(result); return NULL; }
+                        for (int i = 0; i < 3; ++i)
+                            for (int j = 0; j < 3; ++j) cached_rows[cached][i][j] = rows[i][j];
+                        cached_columns[cache_count++] = column;
+                        created = 1;
+                    }
+                    PyObject *plan = Py_BuildValue("((iii)idO)", clutch, motion, brake,
+                                                  sign, slope, cached_columns[cached]);
+
+                    if (created) Py_DECREF(cached_columns[cached]);
+                    if (!plan) { Py_DECREF(result); return NULL; }
+                    PyTuple_SET_ITEM(result, plan_index++, plan);
+                }
+    return result;
+}
+
 static PyObject *shaft_state(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *free_object, *response_object, *plans, *warm_object = Py_None;
     double dt, capacity, brake_capacity, efficiency;
@@ -682,6 +775,7 @@ static PyObject *load_terms_call(PyObject *self,PyObject *args,PyObject *kwargs)
 }
 
 static PyMethodDef methods[] = {
+    {"shaft_brake_plans", (PyCFunction)shaft_plans, METH_VARARGS | METH_KEYWORDS, "原四端口有序活动分区与三维逆矩阵"},
     {"rotor_coefficients", (PyCFunction)rotor_coefficients_call, METH_VARARGS | METH_KEYWORDS, "本共同求解的只读转子系数"},
     {"rotor_spin_prepared", (PyCFunction)rotor_spin_prepared_call, METH_VARARGS | METH_KEYWORDS, "复用本共同求解固定转子系数"},
     {"load_coefficients", (PyCFunction)load_coefficients_call, METH_VARARGS | METH_KEYWORDS, "本共同求解的固定轮端投影"},
