@@ -5,10 +5,12 @@ from dataclasses import dataclass, replace
 
 from mechanical_kernels import (
     dot,
+    known_state,
     load_coefficients,
     mass_coefficients,
     mass_response_prepared,
     rotor_coefficients,
+    rotor_known_state,
     rotor_spin_prepared,
     wheel_load_prepared,
 )
@@ -281,15 +283,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             suspension.gradients if suspension is not None else None, exclude)
 
     def known(gyro, loads):
-        angular_load, normal_load, end_velocity = loads
-        gyro_response = mobility(tuple(gyro) + (0.,) * (dimensions - 3))
-        free = tuple(free_base[a] + dt * gyro_response[a] + angular_load[a] for a in range(dimensions))
-        if rolling_active:
-            response = mobility((0.,) * wheel_start + tuple(-torque for torque in road_torques))
-            free = tuple(free[a] + dt * response[a] for a in range(dimensions))
-        if suspension is not None:
-            free = tuple(free[a] + normal_load[a] for a in range(dimensions))
-        return free, end_velocity
+        return known_state(mobility_coefficients, free_base, gyro, loads, dt,
+                           road_torques if rolling_active else None)
 
     spin_columns = None
 
@@ -368,7 +363,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             if rolling_active:
                 road_torques = rolling_torques(frames,radii,state[wheel_start:],rolling_coefficients,
                                                config.rolling_transition_speed)
-            free, end_velocity = known(cross(spin(state), state[:3]), loads)
+            free, end_velocity = rotor_known_state(mobility_coefficients, spin_coefficients, free_base,
+                state[:dimensions], loads, dt, road_torques if rolling_active else None)
             order = [shared_branch] + [i for i in range(len(branches)) if i != shared_branch]
             for branch_index in order:
                 branch, mc, ml, response, _wheels, local_response, _plans, shaft_data = branches[branch_index]
