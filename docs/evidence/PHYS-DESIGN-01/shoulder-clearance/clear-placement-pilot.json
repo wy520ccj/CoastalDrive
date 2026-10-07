@@ -1,0 +1,14 @@
+[
+  {
+    "offset": -4.77,
+    "roll": -0.0012813910143449903,
+    "height_above_surface": 0.42603977801422666,
+    "all_native_wheels_supported": true
+  },
+  {
+    "offset": 4.77,
+    "roll": -0.001041649840772152,
+    "height_above_surface": 0.4262286055288751,
+    "all_native_wheels_supported": true
+  }
+]
