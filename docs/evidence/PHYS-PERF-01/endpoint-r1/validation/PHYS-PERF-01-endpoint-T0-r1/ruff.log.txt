@@ -1,0 +1,17 @@
+F401 [*] `wheel_envelope.subtract` imported but unused
+  --> src\suspension_kinematics.py:11:67
+   |
+ 9 | from rotor_dynamics import cross, dot
+10 | from suspension_geometry import BoxSurface, CylinderSurface, sphere_box_entry
+11 | from wheel_envelope import crown_extent_secant, cylinder_support, subtract
+   |                                                                   ^^^^^^^^
+help: Remove unused import: `wheel_envelope.subtract`
+   |
+10 | from suspension_geometry import BoxSurface, CylinderSurface, sphere_box_entry
+   - from wheel_envelope import crown_extent_secant, cylinder_support, subtract
+11 + from wheel_envelope import crown_extent_secant, cylinder_support
+12 |
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

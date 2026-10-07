@@ -75,3 +75,6 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 
 
 支持面射线变换/接点装配自动功能块完成：CylinderSurface和RayContact仍为原对象，实际entry、Triangle/Box/Plane、其他形状原生扫掠、候选/首hit顺序不变；原reach平方和仍由Python计算，只合并三维变换与装配，公开变换与新块共用一份数值函数。40项台架及真实九车24拍审计15,148条射线、59,361支持面、15,894接点（mesh54,820/plane59/box4,482），全部字段及node/triangles引用相同。40项T0和最终474项T1(51.0s)、Ruff/三种子15.9/14.5/14.8s通过；源初构建的list接口宏在任何运行前已修，不记未验证版通过。两48拍Snapshot与轮胎局部块相同，短测0.8262/8.1057s，九车略慢于8.1024s；profile16拍6.5905→6.0972s、cylinder_rays1.8343→1.3904s只作热点证据。[归档](../evidence/PHYS-PERF-01/surface-ray-r1/receipt.json)。下一实际圆柱末接点与有限运动功共轭计算，查询仍回原唯一世界；主项目33657dc完整T2继续，阶段/实时/人工Gate未完成。
+
+
+有限圆柱末接点数值块完成：原真实世界relative_entry和跨有限面face_extension_difference仍回原函数；同平面/Gonzalez公式、胎冠割线与有限转动直接复用一个C数值实现。4,096割线hex、20,792实际末接点、256无接触/反向/跨面分支逐值相同；89项T0、474项T1/Ruff/三种子14.5/13.2/13.7s通过。首移植脚本名错误在写源前失败，首T0未用导入Ruff失败/pytest未跑均保留。单/九车48拍全部Snapshot相同，短测0.7980/7.1059s，profile16拍5.5928s只定位。证据[endpoint-r1](../evidence/PHYS-PERF-01/endpoint-r1/receipt.json)。main33657dc完整T2已523通过/1检查点初始子步失败，14专项未跑，完整阶段未通过；该失败由主施工线复现处理，性能块不冒充修复。最终包/T3/前台/人工仍待完成。
