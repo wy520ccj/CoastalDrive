@@ -1,0 +1,39 @@
+....F........                                                            [100%]
+================================== FAILURES ===================================
+_ test_five_second_rail_scrape_stays_contact_without_repeated_impacts[False] __
+
+finite = False
+
+    @pytest.mark.parametrize("finite", [False, True])
+    def test_five_second_rail_scrape_stays_contact_without_repeated_impacts(finite):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(CAR, finite_drivetrain=finite))
+        try:
+            # 新碰撞盒半宽1.05m；旧7.2m摆位会深陷护栏并触发地面撞击。
+            simulation.reset_player((6.9, 30, 0.55))
+            simulation.player._chassis.setLinearVelocity(Vec3(.5, 8, 0))
+            simulation.player.tires.initialize_rolling(8)
+            contact_ticks = []
+            impacts = []
+            # 接近和传动/车身收敛也占时间；随后仍须有完整5秒逐拍真实接触。
+            for tick in range(1440):
+                # 固定2°轮角/半油门维持沿栏摩擦；输入辅助包络不是恒定轮角工况。
+                simulation.step(VehicleCommand(throttle=.5, steering=2, direction=1))
+                if any(contact.material == "metal_barrier"
+                       for contact in simulation.snapshot().contacts):
+                    contact_ticks.append(tick + 1)
+                impacts.extend(simulation.snapshot().impacts)
+            longest = 0
+            run = 0
+            previous = None
+            for tick in contact_ticks:
+                run = run + 1 if previous == tick - 1 else 1
+                longest = max(longest, run)
+                previous = tick
+>           assert longest >= 600
+E           assert 227 >= 600
+
+tests\test_impact_events.py:152: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_impact_events.py::test_five_second_rail_scrape_stays_contact_without_repeated_impacts[False]
+1 failed, 12 passed in 50.72s

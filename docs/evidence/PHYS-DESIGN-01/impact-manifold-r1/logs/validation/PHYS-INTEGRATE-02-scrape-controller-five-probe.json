@@ -1,0 +1,33 @@
+{
+  "facts": [
+    {
+      "finite": false,
+      "longest_contact_ticks": 1420,
+      "impact_ticks": [
+        3
+      ],
+      "final_position": [
+        6.83004903793335,
+        58.39781951904297,
+        0.4292241036891937
+      ],
+      "final_heading": -3.0640802606285433e-07
+    },
+    {
+      "finite": true,
+      "longest_contact_ticks": 1420,
+      "impact_ticks": [
+        3
+      ],
+      "final_position": [
+        6.830012798309326,
+        71.38188171386719,
+        0.428777277469635
+      ],
+      "final_heading": -0.0021649478003382683
+    }
+  ],
+  "errors": [],
+  "seconds": 38.98016620000999,
+  "scope": "test-fixture control inputs only in separate process; production/test files unchanged"
+}

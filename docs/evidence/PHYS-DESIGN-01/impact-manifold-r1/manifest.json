@@ -1,0 +1,132 @@
+[
+  {
+    "source": "tests\\test_impact_events.py",
+    "archive": "tests\\test_impact_events.py",
+    "sha256": "dabe60ebffc01711a68fbc19e7d035c18bdd742df7aeebeea466ca72490c067a"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-manifold-close.py",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-manifold-close.py",
+    "sha256": "31a7610b0546ac9f2ab7918851dbbc5772d99d9f8a7addd056a6514c6c5b066b"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-manifold-reuse-audit.json",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-manifold-reuse-audit.json",
+    "sha256": "ccc11355be666446aead6c18b84acfdcf5da5ae44af3cc7185e84efd4bdc9b89"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-impact-scrape-T1-receipt.json",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-impact-scrape-T1-receipt.json",
+    "sha256": "5dd66203fd94ee70fce5703386053815b782ee0dac41b82be74577f1739af0cb"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-stage-T2-r3\\pytest-remaining.log",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-stage-T2-r3\\pytest-remaining.log.txt",
+    "sha256": "f073340783683ee96e02e6b4daecc2a7f23a8be419ece3412afd9331a9be4d1d"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-stage-T2-r3\\ruff.log",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-stage-T2-r3\\ruff.log.txt",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-stage-T2-r3\\summary.json",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-stage-T2-r3\\summary.json",
+    "sha256": "bc03fe7455fad56d23eaf6f54fb8a6d4267f0af84dcdb8c18695dcc7ac851abe"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-impact-timestamp-T0\\pytest.log",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-impact-timestamp-T0\\pytest.log.txt",
+    "sha256": "9edaf587100e0d8634e2c6f749ad3330d6858b08190d998d0554486eae6516cb"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-impact-timestamp-T0\\ruff.log",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-impact-timestamp-T0\\ruff.log.txt",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-impact-timestamp-T0\\summary.json",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-impact-timestamp-T0\\summary.json",
+    "sha256": "002b7263a9b65d94cda38f80769d24e9fa6e9e6191bd8479087947742157df86"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-impact-manifold-T0\\pytest.log",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-impact-manifold-T0\\pytest.log.txt",
+    "sha256": "e29f77532a9ae7ce2acb6c02284f7804ed7018fa79f06177525207fea4fd7d0f"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-impact-manifold-T0\\ruff.log",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-impact-manifold-T0\\ruff.log.txt",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-impact-manifold-T0\\summary.json",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-impact-manifold-T0\\summary.json",
+    "sha256": "f33ec690c11c7a99af797362fe867b24e2f576d47dca6a798abbd781d09b7a45"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-impact-manifold-T1\\pytest.log",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-impact-manifold-T1\\pytest.log.txt",
+    "sha256": "217eec586df559a05bc33a409d253e8ee7e48ec813c570169027b2caeedf71b9"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-impact-manifold-T1\\ruff.log",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-impact-manifold-T1\\ruff.log.txt",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-impact-manifold-T1\\summary.json",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-impact-manifold-T1\\summary.json",
+    "sha256": "42eaa5e854b0789540fc638e07e73a40e2189f57c1ebdef743bed59fe5f7e583"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-impact-scrape-T0\\pytest.log",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-impact-scrape-T0\\pytest.log.txt",
+    "sha256": "5408a5ee91296216e7bef7a5a9988f0b2b82cc0506f5bc8f7f06f8d0d062f0c3"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-impact-scrape-T0\\ruff.log",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-impact-scrape-T0\\ruff.log.txt",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-impact-scrape-T0\\summary.json",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-impact-scrape-T0\\summary.json",
+    "sha256": "a8271be1ee345e95bc37794e2a7b0a90eae165b4e572b84570908cedec54438c"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-scrape-controller-five-probe.json",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-scrape-controller-five-probe.json",
+    "sha256": "d5b9de2487a23157b5d45245fafe9cc78923808167955e8c3d6fa61bd964f9b8"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-scrape-controller-five-probe.py",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-scrape-controller-five-probe.py",
+    "sha256": "f4f13610f7a55ddef34e5eab951f5d21ceeaf5e365b33b01ee7c654446374810"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-scrape-controller-probe.json",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-scrape-controller-probe.json",
+    "sha256": "141a87ca9ca5506e04d1c0acc890f289379865f0fd7df2cb42248527f1c4b10c"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-scrape-controller-probe.log",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-scrape-controller-probe.log.txt",
+    "sha256": "e165a725ef678a3bf14b7ad1dbcb34fa22dee636072365205959a3a5bddacf3d"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-scrape-controller-probe.py",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-scrape-controller-probe.py",
+    "sha256": "4133a8cc4973b40ef660f8fd27ece83e49e97df2c2f69236ba28b5ea569502f5"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-scrape-native-probe.json",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-scrape-native-probe.json",
+    "sha256": "d40a60fd86a21cf957ab8c4a287f65a5c34c2321c40cf21c5bec9c3696e5b631"
+  },
+  {
+    "source": "logs\\validation\\PHYS-INTEGRATE-02-scrape-native-probe.py",
+    "archive": "logs\\validation\\PHYS-INTEGRATE-02-scrape-native-probe.py",
+    "sha256": "b3f932dbbdbfb8b461771ea682928b17c360c70f2bb22ee38006377ff4ee0ad1"
+  }
+]
