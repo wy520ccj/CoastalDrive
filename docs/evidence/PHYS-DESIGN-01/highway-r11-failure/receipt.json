@@ -1,0 +1,125 @@
+{
+  "created_at_utc": "2026-10-07T04:53:30.504438+00:00",
+  "current_head": "a7649d4f562af1d1a17894660fbfb1d8b5619726",
+  "current_git_status": [
+    " M docs/current-progress.md",
+    " M docs/tasks/PHYS-DESIGN-01.md",
+    "?? docs/evidence/PHYS-DESIGN-01/highway-r11-failure/",
+    "?? docs/tasks/PHYS-PERF-01.md"
+  ],
+  "archive_entries": [
+    {
+      "kind": "summary",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-stage-T2-r11-continuation\\summary.json",
+      "archive": "original/summary.json",
+      "source_sha256": "71fd60435a490fc9569bad26ec6ae433af23eea72dd65c82469aef5d9f93e716",
+      "archive_sha256": "71fd60435a490fc9569bad26ec6ae433af23eea72dd65c82469aef5d9f93e716",
+      "source_bytes": 113957,
+      "archive_bytes": 113957,
+      "byte_exact": true
+    },
+    {
+      "kind": "ruff-log",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-stage-T2-r11-continuation\\ruff.log",
+      "archive": "original/ruff.log",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "source_bytes": 19,
+      "archive_bytes": 19,
+      "byte_exact": true
+    },
+    {
+      "kind": "gzip-log",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-stage-T2-r11-continuation\\pytest-remaining.log",
+      "archive": "original/pytest-remaining.log.gz",
+      "source_sha256": "a9680cacafab376d75da4a9562fdbd8509ebf4997d1f3a5d7852d6c6517accd1",
+      "archive_sha256": "100d6f1604d5507a3b1442352fa800976d25b04f56170a2a2320e85b1e3df1d2",
+      "source_bytes": 41979,
+      "archive_bytes": 9445,
+      "gzip_mtime": 0,
+      "payload_sha256": "a9680cacafab376d75da4a9562fdbd8509ebf4997d1f3a5d7852d6c6517accd1"
+    },
+    {
+      "kind": "collection-log",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-r11-current-collection.txt",
+      "archive": "original/current-collection.txt",
+      "source_sha256": "5e4dbc9aaafeedfeeb3bfdf14e409266aa42442ae61478b76cdf1c45897378f5",
+      "archive_sha256": "5e4dbc9aaafeedfeeb3bfdf14e409266aa42442ae61478b76cdf1c45897378f5",
+      "source_bytes": 245719,
+      "archive_bytes": 245719,
+      "byte_exact": true
+    },
+    {
+      "kind": "reuse-manifest",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-r11-reused-nodes.json",
+      "archive": "original/reused-nodes.json",
+      "source_sha256": "403dea04b681379587eb6c3536c27d6f2a7e1ad8c8e39fa244999abd01039b34",
+      "archive_sha256": "403dea04b681379587eb6c3536c27d6f2a7e1ad8c8e39fa244999abd01039b34",
+      "source_bytes": 64699,
+      "archive_bytes": 64699,
+      "byte_exact": true
+    },
+    {
+      "kind": "archive-record",
+      "source": "derived from archived originals and read-only source capture",
+      "archive": "source-audit.json",
+      "archive_sha256": "470ab3ba2092489ef657021a721278a7ab7c6e7b16841ccbf17cb0ee1f495686",
+      "archive_bytes": 107032
+    },
+    {
+      "kind": "archive-record",
+      "source": "derived from archived originals and read-only source capture",
+      "archive": "node-sequence-audit.json",
+      "archive_sha256": "3b75fd1d17ad77d20819c7e125ad09aa5e94a0dbd3f570939122ab8f1f170219",
+      "archive_bytes": 4188
+    },
+    {
+      "kind": "archive-record",
+      "source": "derived from archived originals and read-only source capture",
+      "archive": "failure-report.md",
+      "archive_sha256": "331fe758c76e21dec87a68441bd5bb1a34dfdd84aab1fe9c65badbeffd774db9",
+      "archive_bytes": 1950
+    }
+  ],
+  "report_path": "failure-report.md",
+  "source_audit_path": "source-audit.json",
+  "node_audit_path": "node-sequence-audit.json",
+  "summary_head": "a7649d4f562af1d1a17894660fbfb1d8b5619726",
+  "summary_status": "failed",
+  "original_summary_sha256": "71fd60435a490fc9569bad26ec6ae433af23eea72dd65c82469aef5d9f93e716",
+  "original_ruff_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+  "original_pytest_sha256": "a9680cacafab376d75da4a9562fdbd8509ebf4997d1f3a5d7852d6c6517accd1",
+  "pytest_log_final_line": "1 failed, 32 passed, 596 deselected in 2436.80s (0:40:36)",
+  "pytest_summary_seconds": 2437.206,
+  "pytest_log_seconds": 2436.8,
+  "nodes": {
+    "collection": 2097,
+    "reused": 596,
+    "remaining": 1501,
+    "passed_before_failure": 32,
+    "failed_position": 33,
+    "not_reached_after_failure": 1468
+  },
+  "source_count": 332,
+  "source_mismatch_count": 0,
+  "not_run_checks": [
+    "headless-0",
+    "headless-17",
+    "headless-23",
+    "handling",
+    "surface",
+    "interactions",
+    "finite-coastal",
+    "finite-highway",
+    "straight-0",
+    "hills-0",
+    "straight-17",
+    "hills-17",
+    "straight-23",
+    "hills-23"
+  ],
+  "notes": [
+    "No test, simulation, build, or repair was performed for this archive task.",
+    "The active capture-native diagnostic is unrelated to the r11 T2 source and was excluded."
+  ]
+}
