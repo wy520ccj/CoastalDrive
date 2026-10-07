@@ -1,0 +1,580 @@
+{
+  "schema": "PHYS-PERF-01-triangle-query-r1-receipt-v1",
+  "baseline": "f44aeb1 + uncommitted complete triangle-face query implementation",
+  "source_hashes": "source-hashes.json",
+  "source_eof_state_at_capture": {
+    "returncode": 2,
+    "stdout": "src/wheel_contact_kernels.c:601: new blank line at EOF.\n",
+    "stderr": "",
+    "note": "原样捕获已知EOF多一个空行提示，不在本次修整"
+  },
+  "exact_real_call_audit": {
+    "passed": true,
+    "exact_real_queries": 54821,
+    "hit_queries": 15774,
+    "reference": "f44aeb1 original TriangleSupport.entry with original candidate generator/edge solver",
+    "comparison_instrumentation_only_in_this_process": true
+  },
+  "snapshot_comparison": {
+    "cases_traffic": [
+      0,
+      8
+    ],
+    "ticks_each": 48,
+    "full_field_equal_to_shared_map": [
+      true,
+      true
+    ],
+    "current_seconds": [
+      0.9656479999976,
+      10.458877500059316
+    ],
+    "previous_seconds": [
+      0.9848786000802647,
+      11.480950999975903
+    ]
+  },
+  "profiles": {
+    "profile-shared-map-r1": {
+      "profiled_steps": 16,
+      "window_s": 11.000477699999465,
+      "total_s": 11.891282800002955,
+      "source_unchanged": true,
+      "tree_hash_before": "ceffdca9c40bd2dde5cd625941c14b8a514d0689cb7c411572a59d4ec0e9657a",
+      "tree_hash_after": "ceffdca9c40bd2dde5cd625941c14b8a514d0689cb7c411572a59d4ec0e9657a",
+      "selected_stats": [
+        {
+          "file": "src\\triangle_support.py",
+          "line": 102,
+          "function": "candidates",
+          "calls": 106050,
+          "self_seconds": 0.36466160000000003,
+          "cumulative_seconds": 1.0070358000000001
+        },
+        {
+          "file": "src\\suspension_geometry.py",
+          "line": 45,
+          "function": "entry",
+          "calls": 34626,
+          "self_seconds": 0.0880279,
+          "cumulative_seconds": 2.7985846000000003
+        },
+        {
+          "file": "src\\triangle_support.py",
+          "line": 117,
+          "function": "entry",
+          "calls": 34626,
+          "self_seconds": 0.21063030000000002,
+          "cumulative_seconds": 2.6740802
+        },
+        {
+          "file": "src\\vehicle_suspension.py",
+          "line": 160,
+          "function": "candidates",
+          "calls": 288,
+          "self_seconds": 0.0010899,
+          "cumulative_seconds": 0.018296200000000002
+        }
+      ]
+    },
+    "profile-triangle-query-r1": {
+      "profiled_steps": 16,
+      "window_s": 9.170419300004141,
+      "total_s": 9.936071599993738,
+      "source_unchanged": true,
+      "tree_hash_before": "9e9d31c7270a35c8e8ea3662ed3ec34bacfed478ef147a60c28a38dbc9a433ef",
+      "tree_hash_after": "9e9d31c7270a35c8e8ea3662ed3ec34bacfed478ef147a60c28a38dbc9a433ef",
+      "selected_stats": [
+        {
+          "file": "src\\suspension_geometry.py",
+          "line": 45,
+          "function": "entry",
+          "calls": 34626,
+          "self_seconds": 0.0753361,
+          "cumulative_seconds": 1.3942322
+        },
+        {
+          "file": "src\\triangle_support.py",
+          "line": 117,
+          "function": "entry",
+          "calls": 34626,
+          "self_seconds": 0.0145184,
+          "cumulative_seconds": 1.283763
+        },
+        {
+          "file": "src\\triangle_support.py",
+          "line": 102,
+          "function": "candidates",
+          "calls": 32128,
+          "self_seconds": 0.0663755,
+          "cumulative_seconds": 0.16812000000000002
+        },
+        {
+          "file": "src\\vehicle_suspension.py",
+          "line": 160,
+          "function": "candidates",
+          "calls": 288,
+          "self_seconds": 0.0009774,
+          "cumulative_seconds": 0.0172952
+        }
+      ]
+    }
+  },
+  "validation": {
+    "PHYS-PERF-01-triangle-query-T0": {
+      "head": "f44aeb176f0e0ebf421e6cbf1a647bddf2ea58a2",
+      "status": "passed",
+      "tier": "T0",
+      "tests": [
+        "tests/test_triangle_support.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_suspension_candidates.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_guardrail_suspension.py"
+      ],
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.149,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 2.773,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_triangle_support.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_suspension_candidates.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_guardrail_suspension.py"
+          ]
+        }
+      ],
+      "pytest_log_final_line": "31 passed in 2.35s"
+    },
+    "PHYS-PERF-01-triangle-query-T1": {
+      "head": "f44aeb176f0e0ebf421e6cbf1a647bddf2ea58a2",
+      "status": "passed",
+      "tier": "T1",
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_finite_suspension.py",
+        "tests/test_curved_suspension.py",
+        "tests/test_suspension_contacts.py",
+        "tests/test_joint_suspension.py",
+        "tests/test_tire_drivetrain.py",
+        "tests/test_guardrail_suspension.py",
+        "tests/test_suspension_native.py",
+        "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle",
+        "tests/test_gr86.py",
+        "tests/test_world_substeps.py",
+        "tests/test_sensor_run.py",
+        "tests/test_driving_experiment.py"
+      ],
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.135,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 69.506,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_finite_suspension.py",
+            "tests/test_curved_suspension.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_joint_suspension.py",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_guardrail_suspension.py",
+            "tests/test_suspension_native.py",
+            "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle",
+            "tests/test_gr86.py",
+            "tests/test_world_substeps.py",
+            "tests/test_sensor_run.py",
+            "tests/test_driving_experiment.py"
+          ]
+        },
+        {
+          "name": "headless-0",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 19.488,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "0"
+          ]
+        },
+        {
+          "name": "headless-17",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 18.358,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "17"
+          ]
+        },
+        {
+          "name": "headless-23",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 16.627,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "23"
+          ]
+        }
+      ],
+      "pytest_log_final_line": "474 passed in 69.01s (0:01:09)"
+    }
+  },
+  "archive_manifest": [
+    {
+      "source": "src/wheel_contact_kernels.c",
+      "archived": "source\\wheel_contact_kernels.c",
+      "kind": "captured_source",
+      "source_sha256": "0e7c2794586944fb35c2c022c6a3df419221bd96a96e5c51406e4fd088dd988d",
+      "archive_sha256": "0e7c2794586944fb35c2c022c6a3df419221bd96a96e5c51406e4fd088dd988d",
+      "equal": true,
+      "size_bytes": 32370
+    },
+    {
+      "source": "src/triangle_support.py",
+      "archived": "source\\triangle_support.py",
+      "kind": "captured_source",
+      "source_sha256": "108c3fc8ad10667826e3d8670789253211ccfcc421ecf2aaeff6daf9455f8259",
+      "archive_sha256": "108c3fc8ad10667826e3d8670789253211ccfcc421ecf2aaeff6daf9455f8259",
+      "equal": true,
+      "size_bytes": 5627
+    },
+    {
+      "source": "captured 354-file src/tests/tools inventory",
+      "archived": "source-hashes.json",
+      "kind": "hash_inventory",
+      "sha256": "e49cbbf1cec2a44f8ee25bea196447d392a49bb4fb658f6d44b7087956d59640",
+      "count": 354
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\prepare-triangle-query-helpers.py",
+      "archived": "inputs/prepare-triangle-query-helpers.py",
+      "kind": "copy",
+      "source_sha256": "f253b0772f924529c9fa5ba17116cdcfdfb57f68fd99fb358ed2693038f1aec7",
+      "archive_sha256": "f253b0772f924529c9fa5ba17116cdcfdfb57f68fd99fb358ed2693038f1aec7",
+      "size_bytes": 1571,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\promote-triangle-query.py",
+      "archived": "inputs/promote-triangle-query.py",
+      "kind": "copy",
+      "source_sha256": "701dc0597dddaae65af688b2b8708299196135b3dfe0af01cc80ca237f4b894e",
+      "archive_sha256": "701dc0597dddaae65af688b2b8708299196135b3dfe0af01cc80ca237f4b894e",
+      "size_bytes": 7157,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\triangle-query-body.c",
+      "archived": "inputs/triangle-query-body.c",
+      "kind": "copy",
+      "source_sha256": "d110f9509cc47e4014314980eefa3c59e3c6c9dc868909ad35774443b0a4f427",
+      "archive_sha256": "d110f9509cc47e4014314980eefa3c59e3c6c9dc868909ad35774443b0a4f427",
+      "size_bytes": 6256,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\triangle-query-build.log",
+      "archived": "inputs/triangle-query-build.log.txt",
+      "kind": "copy",
+      "source_sha256": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+      "archive_sha256": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+      "size_bytes": 2880,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\audit-triangle-query-real-calls.py",
+      "archived": "inputs/audit-triangle-query-real-calls.py",
+      "kind": "copy",
+      "source_sha256": "31d6467b532e32d5cb1312c9296f294571c0ab101496f52a61901e11d94c05f0",
+      "archive_sha256": "31d6467b532e32d5cb1312c9296f294571c0ab101496f52a61901e11d94c05f0",
+      "size_bytes": 1832,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\triangle-query-real-call-audit.json",
+      "archived": "inputs/triangle-query-real-call-audit.json",
+      "kind": "copy",
+      "source_sha256": "44673ba7cd3b242e14a685107797c12f868b91c2c22401eafff7a89966eee943",
+      "archive_sha256": "44673ba7cd3b242e14a685107797c12f868b91c2c22401eafff7a89966eee943",
+      "size_bytes": 243,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\triangle-query-real-call-audit.log",
+      "archived": "inputs/triangle-query-real-call-audit.log.txt",
+      "kind": "copy",
+      "source_sha256": "43c7cf2922e945e44a12f67607941fb1909e1304f20ef45e4a07be3502cede9e",
+      "archive_sha256": "43c7cf2922e945e44a12f67607941fb1909e1304f20ef45e4a07be3502cede9e",
+      "size_bytes": 328,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\triangle-query-snapshots.json",
+      "archived": "snapshots/triangle-query-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "ff4ee41ea0ffe988c6daabbeeb51118fe3c1ae11e7640c4da6f87bf8181dca29",
+      "archive_payload_sha256": "ff4ee41ea0ffe988c6daabbeeb51118fe3c1ae11e7640c4da6f87bf8181dca29",
+      "compressed_sha256": "6cb68fc956d4c6f011fca0f3f30c441666c306f331954f826cf03c84b7d84381",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 1950468
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\shared-map-final-snapshots.json",
+      "archived": "snapshots/shared-map-final-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "6561b81fc824b615e0a130ea197649a7b6bc2395c21bf4fc03ad2d378dc927a0",
+      "archive_payload_sha256": "6561b81fc824b615e0a130ea197649a7b6bc2395c21bf4fc03ad2d378dc927a0",
+      "compressed_sha256": "e46d7ac944c7ee550718421ba05bd7578c6538ad557a8ce81acb3227265aa7ac",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 1950476
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-shared-map-r1\\profile.json",
+      "archived": "profiles/profile-shared-map-r1-profile.json",
+      "kind": "copy",
+      "source_sha256": "72f6f94a08f9cdb4a956b878a8480a0468970a92ded82a892c5631f9de756892",
+      "archive_sha256": "72f6f94a08f9cdb4a956b878a8480a0468970a92ded82a892c5631f9de756892",
+      "size_bytes": 31687,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-shared-map-r1\\gr86-profile.prof",
+      "archived": "profiles/profile-shared-map-r1-gr86-profile.prof.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "22584e9d9e03910f871ecfd6d60d20d586b0fd2986d1947edf1dbf0153e8a0ec",
+      "archive_payload_sha256": "22584e9d9e03910f871ecfd6d60d20d586b0fd2986d1947edf1dbf0153e8a0ec",
+      "compressed_sha256": "6faf8801275f546c2a515891561db9bafd9cccdbd1371908cb0030de4a9de2a4",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 28164
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-shared-map.py",
+      "archived": "profiles/profile-shared-map.py",
+      "kind": "copy",
+      "source_sha256": "a894282141149d819fc8add8bcc314d20f525eea9d9333ed35f84dcb7e521347",
+      "archive_sha256": "a894282141149d819fc8add8bcc314d20f525eea9d9333ed35f84dcb7e521347",
+      "size_bytes": 6782,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-triangle-query-r1\\profile.json",
+      "archived": "profiles/profile-triangle-query-r1-profile.json",
+      "kind": "copy",
+      "source_sha256": "6c8f8c8119c1691103481202682bd7a7287246e30a1abc77eae02f55ccf119ba",
+      "archive_sha256": "6c8f8c8119c1691103481202682bd7a7287246e30a1abc77eae02f55ccf119ba",
+      "size_bytes": 31727,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-triangle-query-r1\\gr86-profile.prof",
+      "archived": "profiles/profile-triangle-query-r1-gr86-profile.prof.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "b940475c4402d223e66e5efdc1fa6eb5794439e9d01539a933341319c7be4ede",
+      "archive_payload_sha256": "b940475c4402d223e66e5efdc1fa6eb5794439e9d01539a933341319c7be4ede",
+      "compressed_sha256": "06cf38564a93b02197cbb85c8b29cc5c134b49bc6313792acd8bfec6409afe76",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 28059
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-triangle-query.py",
+      "archived": "profiles/profile-triangle-query.py",
+      "kind": "copy",
+      "source_sha256": "cda7962d99ab0bcf842599234826cc52821e49b073ee8450f2c02f4792513143",
+      "archive_sha256": "cda7962d99ab0bcf842599234826cc52821e49b073ee8450f2c02f4792513143",
+      "size_bytes": 6777,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-triangle-query-T0\\summary.json",
+      "archived": "validation/PHYS-PERF-01-triangle-query-T0-summary.json",
+      "kind": "copy",
+      "source_sha256": "f356ea54ffcd638e0ad3afc935ac57cd80b7009a57557e9484089db190e685bc",
+      "archive_sha256": "f356ea54ffcd638e0ad3afc935ac57cd80b7009a57557e9484089db190e685bc",
+      "size_bytes": 1921,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-triangle-query-T0\\pytest.log",
+      "archived": "validation/PHYS-PERF-01-triangle-query-T0-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "cfec01a37193e68f4e3f201327754cf2ea7457efeedaeb514fec0590f6190980",
+      "archive_sha256": "cfec01a37193e68f4e3f201327754cf2ea7457efeedaeb514fec0590f6190980",
+      "size_bytes": 101,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-triangle-query-T0\\ruff.log",
+      "archived": "validation/PHYS-PERF-01-triangle-query-T0-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-triangle-query-T1\\summary.json",
+      "archived": "validation/PHYS-PERF-01-triangle-query-T1-summary.json",
+      "kind": "copy",
+      "source_sha256": "63829eff7f145e05dd14b7c267bf109ec0e2e148a2e3c8fd6aecf32423a0505f",
+      "archive_sha256": "63829eff7f145e05dd14b7c267bf109ec0e2e148a2e3c8fd6aecf32423a0505f",
+      "size_bytes": 4764,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-triangle-query-T1\\headless-0.log",
+      "archived": "validation/PHYS-PERF-01-triangle-query-T1-headless-0.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-triangle-query-T1\\headless-17.log",
+      "archived": "validation/PHYS-PERF-01-triangle-query-T1-headless-17.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-triangle-query-T1\\headless-23.log",
+      "archived": "validation/PHYS-PERF-01-triangle-query-T1-headless-23.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-triangle-query-T1\\pytest.log",
+      "archived": "validation/PHYS-PERF-01-triangle-query-T1-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "766814456765f0c6f6ba0de6b50536f3e84d5874d2e878cc32a3f2ab3830b76d",
+      "archive_sha256": "766814456765f0c6f6ba0de6b50536f3e84d5874d2e878cc32a3f2ab3830b76d",
+      "size_bytes": 599,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-triangle-query-T1\\ruff.log",
+      "archived": "validation/PHYS-PERF-01-triangle-query-T1-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "equal": true
+    }
+  ],
+  "limits": [
+    "all short timings are diagnostic, not FPS",
+    "source archive preserves pre-cleanup EOF bytes",
+    "no test/simulation/build run during archive"
+  ],
+  "archive_file_sha256": {
+    "inputs/audit-triangle-query-real-calls.py": "31d6467b532e32d5cb1312c9296f294571c0ab101496f52a61901e11d94c05f0",
+    "inputs/prepare-triangle-query-helpers.py": "f253b0772f924529c9fa5ba17116cdcfdfb57f68fd99fb358ed2693038f1aec7",
+    "inputs/promote-triangle-query.py": "701dc0597dddaae65af688b2b8708299196135b3dfe0af01cc80ca237f4b894e",
+    "inputs/triangle-query-body.c": "d110f9509cc47e4014314980eefa3c59e3c6c9dc868909ad35774443b0a4f427",
+    "inputs/triangle-query-build.log.txt": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+    "inputs/triangle-query-real-call-audit.json": "44673ba7cd3b242e14a685107797c12f868b91c2c22401eafff7a89966eee943",
+    "inputs/triangle-query-real-call-audit.log.txt": "43c7cf2922e945e44a12f67607941fb1909e1304f20ef45e4a07be3502cede9e",
+    "profiles/profile-shared-map-r1-gr86-profile.prof.gz": "6faf8801275f546c2a515891561db9bafd9cccdbd1371908cb0030de4a9de2a4",
+    "profiles/profile-shared-map-r1-profile.json": "72f6f94a08f9cdb4a956b878a8480a0468970a92ded82a892c5631f9de756892",
+    "profiles/profile-shared-map.py": "a894282141149d819fc8add8bcc314d20f525eea9d9333ed35f84dcb7e521347",
+    "profiles/profile-triangle-query-r1-gr86-profile.prof.gz": "06cf38564a93b02197cbb85c8b29cc5c134b49bc6313792acd8bfec6409afe76",
+    "profiles/profile-triangle-query-r1-profile.json": "6c8f8c8119c1691103481202682bd7a7287246e30a1abc77eae02f55ccf119ba",
+    "profiles/profile-triangle-query.py": "cda7962d99ab0bcf842599234826cc52821e49b073ee8450f2c02f4792513143",
+    "snapshots/shared-map-final-snapshots.json.gz": "e46d7ac944c7ee550718421ba05bd7578c6538ad557a8ce81acb3227265aa7ac",
+    "snapshots/triangle-query-snapshots.json.gz": "6cb68fc956d4c6f011fca0f3f30c441666c306f331954f826cf03c84b7d84381",
+    "source/triangle_support.py": "108c3fc8ad10667826e3d8670789253211ccfcc421ecf2aaeff6daf9455f8259",
+    "source/wheel_contact_kernels.c": "0e7c2794586944fb35c2c022c6a3df419221bd96a96e5c51406e4fd088dd988d",
+    "source-hashes.json": "e49cbbf1cec2a44f8ee25bea196447d392a49bb4fb658f6d44b7087956d59640",
+    "triangle-query-report.md": "dd77cb3c0af399ae9b83980b8610b87e9625a579f912f942f1e630e6b346c65f",
+    "validation/PHYS-PERF-01-triangle-query-T0-pytest.txt": "cfec01a37193e68f4e3f201327754cf2ea7457efeedaeb514fec0590f6190980",
+    "validation/PHYS-PERF-01-triangle-query-T0-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/PHYS-PERF-01-triangle-query-T0-summary.json": "f356ea54ffcd638e0ad3afc935ac57cd80b7009a57557e9484089db190e685bc",
+    "validation/PHYS-PERF-01-triangle-query-T1-headless-0.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-triangle-query-T1-headless-17.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-triangle-query-T1-headless-23.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-triangle-query-T1-pytest.txt": "766814456765f0c6f6ba0de6b50536f3e84d5874d2e878cc32a3f2ab3830b76d",
+    "validation/PHYS-PERF-01-triangle-query-T1-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/PHYS-PERF-01-triangle-query-T1-summary.json": "63829eff7f145e05dd14b7c267bf109ec0e2e148a2e3c8fd6aecf32423a0505f"
+  }
+}

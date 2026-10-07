@@ -1,0 +1,56 @@
+F401 [*] `shaft_transmission.shaft_brake_state` imported but unused
+  --> src\tire_drivetrain.py:36:5
+   |
+34 |     shaft_brake_plans,
+35 |     shaft_brake_response,
+36 |     shaft_brake_state,
+   |     ^^^^^^^^^^^^^^^^^
+37 |     shaft_gradients,
+38 |     synchronizer_brake_plans,
+   |
+help: Remove unused import
+   |
+35 |     shaft_brake_response,
+   -     shaft_brake_state,
+36 |     shaft_gradients,
+37 |     synchronizer_brake_plans,
+38 |     synchronizer_brake_response,
+   -     synchronizer_brake_state,
+39 | )
+   |
+
+F401 [*] `shaft_transmission.synchronizer_brake_state` imported but unused
+  --> src\tire_drivetrain.py:40:5
+   |
+38 |     synchronizer_brake_plans,
+39 |     synchronizer_brake_response,
+40 |     synchronizer_brake_state,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^
+41 | )
+42 | from suspension import SuspensionInput, SuspensionStep, _solve, shared_suspension
+   |
+help: Remove unused import
+   |
+35 |     shaft_brake_response,
+   -     shaft_brake_state,
+36 |     shaft_gradients,
+37 |     synchronizer_brake_plans,
+38 |     synchronizer_brake_response,
+   -     synchronizer_brake_state,
+39 | )
+   |
+
+RUF059 Unpacked variable `shaft_data` is never used
+   --> src\tire_drivetrain.py:439:84
+    |
+437 |             order = [warm_branches[i]] + [j for j in range(len(branches)) if j != warm_branches[i]]
+438 |             for branch_index in order:
+439 |                 branch, mc, ml, _response, wheel_responses, local_response, plans, shaft_data = branches[branch_index]
+    |                                                                                    ^^^^^^^^^^
+440 |                 projected = branch_free(free, branch)
+441 |                 local_rb = wheel_responses[i][2]
+    |
+help: Prefix it with an underscore or any other dummy variable pattern
+
+Found 3 errors.
+[*] 2 fixable with the `--fix` option (1 hidden fix can be enabled with the `--unsafe-fixes` option).

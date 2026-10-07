@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "queries": 512,
+  "parts_per_query": 240,
+  "all_projections_part_identity_order_and_final_candidates_equal": true,
+  "micro_wall_seconds_python_c_python_c": [
+    0.11631810000108089,
+    0.013057200005277991,
+    0.1130635000008624,
+    0.012373400008073077
+  ],
+  "not_fps": true
+}

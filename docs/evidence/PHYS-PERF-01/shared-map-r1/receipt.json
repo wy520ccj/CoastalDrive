@@ -1,0 +1,717 @@
+{
+  "schema": "PHYS-PERF-01-shared-map-r1-receipt-v1",
+  "baseline": "f4a5ae0 + uncommitted shared map/Jacobian",
+  "source_hashes": "source-hashes.json",
+  "audit_runs": {
+    "first": {
+      "passed": false,
+      "baseline": "f4a5ae0 original mapped/Jacobian; comparison instrumentation only in this process",
+      "exact_actual_calls": {
+        "mapped": 0,
+        "jacobian": 0,
+        "hard_gear": 0,
+        "synchronizing": 0,
+        "nine": 0,
+        "eleven": 0
+      }
+    },
+    "r2": {
+      "passed": true,
+      "baseline": "f4a5ae0 original mapped/Jacobian; comparison instrumentation only in this process",
+      "exact_actual_calls": {
+        "mapped": 160010,
+        "jacobian": 9289,
+        "hard_gear": 156276,
+        "synchronizing": 3734,
+        "nine": 156776,
+        "eleven": 3234
+      }
+    },
+    "interpretation": "first audit script NameError missing rotor_known_state import; not production T0 failure"
+  },
+  "snapshot_comparison": {
+    "cases_traffic": [
+      0,
+      8
+    ],
+    "ticks_each": 48,
+    "shared_map_intermediate_vs_known_state_full_field_equal": [
+      true,
+      true
+    ],
+    "shared_map_final_vs_known_state_full_field_equal": [
+      true,
+      true
+    ],
+    "times_s": {
+      "shared-map-snapshots.json": [
+        1.1102624999766704,
+        12.669514899971546
+      ],
+      "shared-map-final-snapshots.json": [
+        0.9848786000802647,
+        11.480950999975903
+      ],
+      "known-state-snapshots.json": [
+        1.078446300001815,
+        12.130548500019358
+      ]
+    }
+  },
+  "profiles": {
+    "profile-known-state-r1": {
+      "profiled_steps": 16,
+      "warmup_steps": 8,
+      "window_s": 10.648763499993947,
+      "total_s": 11.410501299993484,
+      "source_unchanged": true,
+      "tree_hash_before": "1b6f0d3e54875c07c9b32799dc663a6d844758f07b3a546e7b6e725220ae88d4",
+      "tree_hash_after": "1b6f0d3e54875c07c9b32799dc663a6d844758f07b3a546e7b6e725220ae88d4",
+      "selected_stats": [
+        {
+          "function": "shared",
+          "calls": 7720,
+          "self_s": 0.22298730000000003,
+          "cumulative_s": 2.4389805
+        },
+        {
+          "function": "mapped",
+          "calls": 24642,
+          "self_s": 0.2376019,
+          "cumulative_s": 1.0648598
+        },
+        {
+          "function": "shared_jacobian_columns",
+          "calls": 1346,
+          "self_s": 0.19742900000000002,
+          "cumulative_s": 0.5668667000000001
+        }
+      ]
+    },
+    "profile-shared-map-r1": {
+      "profiled_steps": 16,
+      "warmup_steps": 8,
+      "window_s": 11.000477699999465,
+      "total_s": 11.891282800002955,
+      "source_unchanged": true,
+      "tree_hash_before": "ceffdca9c40bd2dde5cd625941c14b8a514d0689cb7c411572a59d4ec0e9657a",
+      "tree_hash_after": "ceffdca9c40bd2dde5cd625941c14b8a514d0689cb7c411572a59d4ec0e9657a",
+      "selected_stats": [
+        {
+          "function": "shared",
+          "calls": 7720,
+          "self_s": 0.2538866,
+          "cumulative_s": 1.2022958000000001
+        },
+        {
+          "function": "mapped",
+          "calls": 24642,
+          "self_s": 0.08975730000000001,
+          "cumulative_s": 0.23136920000000002
+        },
+        {
+          "function": "shared_jacobian_columns",
+          "calls": 1346,
+          "self_s": 0.0049575,
+          "cumulative_s": 0.023810500000000002
+        },
+        {
+          "function": "<built-in method mechanical_kernels.shared_map_jacobian>",
+          "calls": 1346,
+          "self_s": 0.0167547,
+          "cumulative_s": 0.0167547
+        },
+        {
+          "function": "<built-in method mechanical_kernels.shared_map_coefficients>",
+          "calls": 288,
+          "self_s": 0.011377700000000001,
+          "cumulative_s": 0.011377700000000001
+        },
+        {
+          "function": "<built-in method mechanical_kernels.shared_map_state>",
+          "calls": 24642,
+          "self_s": 0.10485720000000001,
+          "cumulative_s": 0.10485720000000001
+        }
+      ]
+    }
+  },
+  "validation": {
+    "PHYS-PERF-01-shared-map-T0": {
+      "head": "f4a5ae0d5f535e5368a4423095b0d5a7fbf51a2b",
+      "status": "passed",
+      "tier": "T0",
+      "tests": [
+        "tests/test_tire_drivetrain.py",
+        "tests/test_tire_shaft.py",
+        "tests/test_differential.py",
+        "tests/test_drivetrain_jacobian.py",
+        "tests/test_driveline_inertia.py"
+      ],
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.15,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 27.316,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_tire_shaft.py",
+            "tests/test_differential.py",
+            "tests/test_drivetrain_jacobian.py",
+            "tests/test_driveline_inertia.py"
+          ]
+        }
+      ],
+      "pytest_log_final_line": "418 passed in 26.78s"
+    },
+    "PHYS-PERF-01-shared-map-final-T0": {
+      "head": "f4a5ae0d5f535e5368a4423095b0d5a7fbf51a2b",
+      "status": "passed",
+      "tier": "T0",
+      "tests": [
+        "tests/test_tire_drivetrain.py",
+        "tests/test_tire_shaft.py",
+        "tests/test_differential.py",
+        "tests/test_drivetrain_jacobian.py",
+        "tests/test_driveline_inertia.py"
+      ],
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.193,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 26.641,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_tire_shaft.py",
+            "tests/test_differential.py",
+            "tests/test_drivetrain_jacobian.py",
+            "tests/test_driveline_inertia.py"
+          ]
+        }
+      ],
+      "pytest_log_final_line": "418 passed in 26.11s"
+    },
+    "PHYS-PERF-01-shared-map-final-T1": {
+      "head": "f4a5ae0d5f535e5368a4423095b0d5a7fbf51a2b",
+      "status": "passed",
+      "tier": "T1",
+      "tests": [
+        "tests/test_shaft_transmission.py",
+        "tests/test_tire_shaft.py",
+        "tests/test_input_shaft.py",
+        "tests/test_drivetrain_jacobian.py",
+        "tests/test_tire_drivetrain.py",
+        "tests/test_driveline_inertia.py",
+        "tests/test_driveline_native.py",
+        "tests/test_drive_layout.py",
+        "tests/test_differential.py",
+        "tests/test_gr86.py",
+        "tests/test_sensor_run.py",
+        "tests/test_driving_experiment.py",
+        "tests/test_world_substeps.py"
+      ],
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.137,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 91.561,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_shaft_transmission.py",
+            "tests/test_tire_shaft.py",
+            "tests/test_input_shaft.py",
+            "tests/test_drivetrain_jacobian.py",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_driveline_inertia.py",
+            "tests/test_driveline_native.py",
+            "tests/test_drive_layout.py",
+            "tests/test_differential.py",
+            "tests/test_gr86.py",
+            "tests/test_sensor_run.py",
+            "tests/test_driving_experiment.py",
+            "tests/test_world_substeps.py"
+          ]
+        },
+        {
+          "name": "headless-0",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 15.982,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "0"
+          ]
+        },
+        {
+          "name": "headless-17",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 15.203,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "17"
+          ]
+        },
+        {
+          "name": "headless-23",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 16.374,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "23"
+          ]
+        }
+      ],
+      "pytest_log_final_line": "626 passed in 90.97s (0:01:30)"
+    }
+  },
+  "archive_manifest": [
+    {
+      "source": "src/mechanical_kernels.c",
+      "archived": "source\\mechanical_kernels.c",
+      "kind": "captured_source",
+      "source_sha256": "1ca9d1b846237e6fb61937625822cb3b809f131db050387ccf7f88ef199437cd",
+      "archive_sha256": "1ca9d1b846237e6fb61937625822cb3b809f131db050387ccf7f88ef199437cd",
+      "equal": true,
+      "size_bytes": 72474
+    },
+    {
+      "source": "src/tire_drivetrain.py",
+      "archived": "source\\tire_drivetrain.py",
+      "kind": "captured_source",
+      "source_sha256": "870aa4f0bc2adbd5c43dfd85128698ad8131e29607675cab883eacd07be6e935",
+      "archive_sha256": "870aa4f0bc2adbd5c43dfd85128698ad8131e29607675cab883eacd07be6e935",
+      "equal": true,
+      "size_bytes": 47607
+    },
+    {
+      "source": "captured 354-file src/tests/tools inventory",
+      "archived": "source-hashes.json",
+      "kind": "hash_inventory",
+      "sha256": "0c177f5ba5865667c09a8c2753fbea5a7542c21b3d1318ea5a622b14fe975af9",
+      "count": 354
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\prepare-shared-map-helpers.py",
+      "archived": "inputs/prepare-shared-map-helpers.py",
+      "kind": "copy",
+      "source_sha256": "96373e4bd5b6c368e8f527a9110eea38a3114d5549d8e80cd9f52fb4a344b6af",
+      "archive_sha256": "96373e4bd5b6c368e8f527a9110eea38a3114d5549d8e80cd9f52fb4a344b6af",
+      "size_bytes": 3571,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\prepare-shared-map.py",
+      "archived": "inputs/prepare-shared-map.py",
+      "kind": "copy",
+      "source_sha256": "9306df0d50cde045a0b61f4bab4b73bef0bab103eb3da700aba4cc72b0b3bf77",
+      "archive_sha256": "9306df0d50cde045a0b61f4bab4b73bef0bab103eb3da700aba4cc72b0b3bf77",
+      "size_bytes": 15704,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\shared-map-body.c",
+      "archived": "inputs/shared-map-body.c",
+      "kind": "copy",
+      "source_sha256": "0e16fc035264138404575d2ab82f095d4b0221c35d62edb8aa42f8a851d37988",
+      "archive_sha256": "0e16fc035264138404575d2ab82f095d4b0221c35d62edb8aa42f8a851d37988",
+      "size_bytes": 15842,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\promote-shared-map.py",
+      "archived": "inputs/promote-shared-map.py",
+      "kind": "copy",
+      "source_sha256": "5229b3cd8fe861fdbc58ff98a582aabf6ffde3600ef9ec5cb86e979eb76d1216",
+      "archive_sha256": "5229b3cd8fe861fdbc58ff98a582aabf6ffde3600ef9ec5cb86e979eb76d1216",
+      "size_bytes": 4301,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\promote-shared-jacobian.py",
+      "archived": "inputs/promote-shared-jacobian.py",
+      "kind": "copy",
+      "source_sha256": "b8041da2bc8028680f5c7831c57f90ef25b5007a7d3eff470105d3739c1fdaa6",
+      "archive_sha256": "b8041da2bc8028680f5c7831c57f90ef25b5007a7d3eff470105d3739c1fdaa6",
+      "size_bytes": 8369,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\audit-shared-map-real-calls.py",
+      "archived": "inputs/audit-shared-map-real-calls.py",
+      "kind": "copy",
+      "source_sha256": "925e91588cffedb96cef47956b0b687aa4b46353f6c093338c35a90cded03f9f",
+      "archive_sha256": "925e91588cffedb96cef47956b0b687aa4b46353f6c093338c35a90cded03f9f",
+      "size_bytes": 4246,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\audit-shared-map-real-calls-r2.py",
+      "archived": "inputs/audit-shared-map-real-calls-r2.py",
+      "kind": "copy",
+      "source_sha256": "6db554a77f386e7bee26734ac49dfaf13b354fe8832205e12dc8be842e89a923",
+      "archive_sha256": "6db554a77f386e7bee26734ac49dfaf13b354fe8832205e12dc8be842e89a923",
+      "size_bytes": 4350,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\shared-map-real-call-audit.json",
+      "archived": "inputs/shared-map-real-call-audit.json",
+      "kind": "copy",
+      "source_sha256": "a9a20a9f22385ba14615e169f7636717e9c297c06d15f582c423d0fd9b7b5610",
+      "archive_sha256": "a9a20a9f22385ba14615e169f7636717e9c297c06d15f582c423d0fd9b7b5610",
+      "size_bytes": 273,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\shared-map-real-call-audit.log",
+      "archived": "inputs/shared-map-real-call-audit.log",
+      "kind": "copy",
+      "source_sha256": "df6ad2aecf7aeae81d24b0c6e981e6071f44e55d1fd43d23a4ba26afe0380619",
+      "archive_sha256": "df6ad2aecf7aeae81d24b0c6e981e6071f44e55d1fd43d23a4ba26afe0380619",
+      "size_bytes": 124490,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\shared-map-real-call-audit-r2.json",
+      "archived": "inputs/shared-map-real-call-audit-r2.json",
+      "kind": "copy",
+      "source_sha256": "7ee34d6c308d75bf880f20d6c4ad11404ff258859dd0bd75018f90fa9746f390",
+      "archive_sha256": "7ee34d6c308d75bf880f20d6c4ad11404ff258859dd0bd75018f90fa9746f390",
+      "size_bytes": 296,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\shared-map-real-call-audit-r2.log",
+      "archived": "inputs/shared-map-real-call-audit-r2.log",
+      "kind": "copy",
+      "source_sha256": "be290fc465f67405683a81eceef8798205f452a112a3648e198cce6353f83569",
+      "archive_sha256": "be290fc465f67405683a81eceef8798205f452a112a3648e198cce6353f83569",
+      "size_bytes": 434,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\shared-map-snapshots.json",
+      "archived": "snapshots/shared-map-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "078c0c1e9ba4d07a66f22b208029a5392b9e5238cef0d03ba21bcddbbbf6f3d5",
+      "archive_payload_sha256": "078c0c1e9ba4d07a66f22b208029a5392b9e5238cef0d03ba21bcddbbbf6f3d5",
+      "compressed_sha256": "f295b5d2db440d9af63953f2c32a4088267212b2e3e85cf7df7ed5f696634c16",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 1950485
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\shared-map-final-snapshots.json",
+      "archived": "snapshots/shared-map-final-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "6561b81fc824b615e0a130ea197649a7b6bc2395c21bf4fc03ad2d378dc927a0",
+      "archive_payload_sha256": "6561b81fc824b615e0a130ea197649a7b6bc2395c21bf4fc03ad2d378dc927a0",
+      "compressed_sha256": "e46d7ac944c7ee550718421ba05bd7578c6538ad557a8ce81acb3227265aa7ac",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 1950476
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\known-state-snapshots.json",
+      "archived": "snapshots/known-state-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "e367df38682efd8175063fe25e83a5dc6bf16a418f1b3de3e9c1ffea9096d369",
+      "archive_payload_sha256": "e367df38682efd8175063fe25e83a5dc6bf16a418f1b3de3e9c1ffea9096d369",
+      "compressed_sha256": "b365ceffb78d4d482c1dfffaca508d19605116bb1589176025efb1be3efa11d1",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 1950477
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-known-state-r1\\profile.json",
+      "archived": "profiles/profile-known-state-r1-profile.json",
+      "kind": "copy",
+      "source_sha256": "7cc9c034b862fcc0ef6239f7fd2f7ed52657d314704bd128378cb371aff4d0fe",
+      "archive_sha256": "7cc9c034b862fcc0ef6239f7fd2f7ed52657d314704bd128378cb371aff4d0fe",
+      "size_bytes": 31582,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-known-state-r1\\gr86-profile.prof",
+      "archived": "profiles/profile-known-state-r1-gr86-profile.prof.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "5ab92ee2709de5b65dd0741d49d2d815cd15e4dafa7a5ca2473ca9a0f194cd19",
+      "archive_payload_sha256": "5ab92ee2709de5b65dd0741d49d2d815cd15e4dafa7a5ca2473ca9a0f194cd19",
+      "compressed_sha256": "52a3d7d73a23b060e7960f805df0f29e90570a19924443d729bcc2da28a65025",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 28943
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-known-state.py",
+      "archived": "profiles/profile-known-state.py",
+      "kind": "copy",
+      "source_sha256": "9e891b1fa80c3a643fb251eab6478afece82384d0f4fcfffa70c4be225c94e37",
+      "archive_sha256": "9e891b1fa80c3a643fb251eab6478afece82384d0f4fcfffa70c4be225c94e37",
+      "size_bytes": 6774,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-shared-map-r1\\profile.json",
+      "archived": "profiles/profile-shared-map-r1-profile.json",
+      "kind": "copy",
+      "source_sha256": "72f6f94a08f9cdb4a956b878a8480a0468970a92ded82a892c5631f9de756892",
+      "archive_sha256": "72f6f94a08f9cdb4a956b878a8480a0468970a92ded82a892c5631f9de756892",
+      "size_bytes": 31687,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-shared-map-r1\\gr86-profile.prof",
+      "archived": "profiles/profile-shared-map-r1-gr86-profile.prof.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "22584e9d9e03910f871ecfd6d60d20d586b0fd2986d1947edf1dbf0153e8a0ec",
+      "archive_payload_sha256": "22584e9d9e03910f871ecfd6d60d20d586b0fd2986d1947edf1dbf0153e8a0ec",
+      "compressed_sha256": "6faf8801275f546c2a515891561db9bafd9cccdbd1371908cb0030de4a9de2a4",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 28164
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-shared-map.py",
+      "archived": "profiles/profile-shared-map.py",
+      "kind": "copy",
+      "source_sha256": "a894282141149d819fc8add8bcc314d20f525eea9d9333ed35f84dcb7e521347",
+      "archive_sha256": "a894282141149d819fc8add8bcc314d20f525eea9d9333ed35f84dcb7e521347",
+      "size_bytes": 6782,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shared-map-T0\\summary.json",
+      "archived": "validation/PHYS-PERF-01-shared-map-T0-summary.json",
+      "kind": "copy",
+      "source_sha256": "166aee4f7a6664506a6891d2a187db5aa9ab9eaee542569b5cae4353a38364e7",
+      "archive_sha256": "166aee4f7a6664506a6891d2a187db5aa9ab9eaee542569b5cae4353a38364e7",
+      "size_bytes": 1869,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shared-map-T0\\pytest.log",
+      "archived": "validation/PHYS-PERF-01-shared-map-T0-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "6466c0670d8950cee4425d59a0be70cc4010f90053b4107781b003472b2b764c",
+      "archive_sha256": "6466c0670d8950cee4425d59a0be70cc4010f90053b4107781b003472b2b764c",
+      "size_bytes": 508,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shared-map-T0\\ruff.log",
+      "archived": "validation/PHYS-PERF-01-shared-map-T0-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shared-map-final-T0\\summary.json",
+      "archived": "validation/PHYS-PERF-01-shared-map-final-T0-summary.json",
+      "kind": "copy",
+      "source_sha256": "f8877218080c9c2b45a6e846a776625016de3414ff6d6257611f6da4e4c8c3d1",
+      "archive_sha256": "f8877218080c9c2b45a6e846a776625016de3414ff6d6257611f6da4e4c8c3d1",
+      "size_bytes": 1882,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shared-map-final-T0\\pytest.log",
+      "archived": "validation/PHYS-PERF-01-shared-map-final-T0-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "33eda4fa2a0deec6da2489f71ad993db6e4a59579d457714c958ad9ae121f186",
+      "archive_sha256": "33eda4fa2a0deec6da2489f71ad993db6e4a59579d457714c958ad9ae121f186",
+      "size_bytes": 508,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shared-map-final-T0\\ruff.log",
+      "archived": "validation/PHYS-PERF-01-shared-map-final-T0-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shared-map-final-T1\\summary.json",
+      "archived": "validation/PHYS-PERF-01-shared-map-final-T1-summary.json",
+      "kind": "copy",
+      "source_sha256": "900ade68df91e4f02dac6cd4aac0e1352effb645ff46db3a0edfa079abd09a42",
+      "archive_sha256": "900ade68df91e4f02dac6cd4aac0e1352effb645ff46db3a0edfa079abd09a42",
+      "size_bytes": 4294,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shared-map-final-T1\\headless-0.log",
+      "archived": "validation/PHYS-PERF-01-shared-map-final-T1-headless-0.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shared-map-final-T1\\headless-17.log",
+      "archived": "validation/PHYS-PERF-01-shared-map-final-T1-headless-17.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shared-map-final-T1\\headless-23.log",
+      "archived": "validation/PHYS-PERF-01-shared-map-final-T1-headless-23.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shared-map-final-T1\\pytest.log",
+      "archived": "validation/PHYS-PERF-01-shared-map-final-T1-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "0e7e85f129c294f4268a9ced7ae0a1d5798bb459625042df4d1a647403bd1fd2",
+      "archive_sha256": "0e7e85f129c294f4268a9ced7ae0a1d5798bb459625042df4d1a647403bd1fd2",
+      "size_bytes": 761,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shared-map-final-T1\\ruff.log",
+      "archived": "validation/PHYS-PERF-01-shared-map-final-T1-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "equal": true
+    }
+  ],
+  "limits": [
+    "intermediate mapped-only version is not final",
+    "profile totals slightly regress and remain diagnostic only",
+    "no test/simulation/build run during archive"
+  ],
+  "archive_file_sha256": {
+    "inputs/audit-shared-map-real-calls-r2.py": "6db554a77f386e7bee26734ac49dfaf13b354fe8832205e12dc8be842e89a923",
+    "inputs/audit-shared-map-real-calls.py": "925e91588cffedb96cef47956b0b687aa4b46353f6c093338c35a90cded03f9f",
+    "inputs/prepare-shared-map-helpers.py": "96373e4bd5b6c368e8f527a9110eea38a3114d5549d8e80cd9f52fb4a344b6af",
+    "inputs/prepare-shared-map.py": "9306df0d50cde045a0b61f4bab4b73bef0bab103eb3da700aba4cc72b0b3bf77",
+    "inputs/promote-shared-jacobian.py": "b8041da2bc8028680f5c7831c57f90ef25b5007a7d3eff470105d3739c1fdaa6",
+    "inputs/promote-shared-map.py": "5229b3cd8fe861fdbc58ff98a582aabf6ffde3600ef9ec5cb86e979eb76d1216",
+    "inputs/shared-map-body.c": "0e16fc035264138404575d2ab82f095d4b0221c35d62edb8aa42f8a851d37988",
+    "inputs/shared-map-real-call-audit-r2.json": "7ee34d6c308d75bf880f20d6c4ad11404ff258859dd0bd75018f90fa9746f390",
+    "inputs/shared-map-real-call-audit-r2.log": "be290fc465f67405683a81eceef8798205f452a112a3648e198cce6353f83569",
+    "inputs/shared-map-real-call-audit.json": "a9a20a9f22385ba14615e169f7636717e9c297c06d15f582c423d0fd9b7b5610",
+    "inputs/shared-map-real-call-audit.log": "df6ad2aecf7aeae81d24b0c6e981e6071f44e55d1fd43d23a4ba26afe0380619",
+    "profiles/profile-known-state-r1-gr86-profile.prof.gz": "52a3d7d73a23b060e7960f805df0f29e90570a19924443d729bcc2da28a65025",
+    "profiles/profile-known-state-r1-profile.json": "7cc9c034b862fcc0ef6239f7fd2f7ed52657d314704bd128378cb371aff4d0fe",
+    "profiles/profile-known-state.py": "9e891b1fa80c3a643fb251eab6478afece82384d0f4fcfffa70c4be225c94e37",
+    "profiles/profile-shared-map-r1-gr86-profile.prof.gz": "6faf8801275f546c2a515891561db9bafd9cccdbd1371908cb0030de4a9de2a4",
+    "profiles/profile-shared-map-r1-profile.json": "72f6f94a08f9cdb4a956b878a8480a0468970a92ded82a892c5631f9de756892",
+    "profiles/profile-shared-map.py": "a894282141149d819fc8add8bcc314d20f525eea9d9333ed35f84dcb7e521347",
+    "shared-map-report.md": "c98d5d6e45394e15450ceae7974f9f284f08cd266262e15cb530d82664bad889",
+    "snapshots/known-state-snapshots.json.gz": "b365ceffb78d4d482c1dfffaca508d19605116bb1589176025efb1be3efa11d1",
+    "snapshots/shared-map-final-snapshots.json.gz": "e46d7ac944c7ee550718421ba05bd7578c6538ad557a8ce81acb3227265aa7ac",
+    "snapshots/shared-map-snapshots.json.gz": "f295b5d2db440d9af63953f2c32a4088267212b2e3e85cf7df7ed5f696634c16",
+    "source/mechanical_kernels.c": "1ca9d1b846237e6fb61937625822cb3b809f131db050387ccf7f88ef199437cd",
+    "source/tire_drivetrain.py": "870aa4f0bc2adbd5c43dfd85128698ad8131e29607675cab883eacd07be6e935",
+    "source-hashes.json": "0c177f5ba5865667c09a8c2753fbea5a7542c21b3d1318ea5a622b14fe975af9",
+    "validation/PHYS-PERF-01-shared-map-final-T0-pytest.txt": "33eda4fa2a0deec6da2489f71ad993db6e4a59579d457714c958ad9ae121f186",
+    "validation/PHYS-PERF-01-shared-map-final-T0-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/PHYS-PERF-01-shared-map-final-T0-summary.json": "f8877218080c9c2b45a6e846a776625016de3414ff6d6257611f6da4e4c8c3d1",
+    "validation/PHYS-PERF-01-shared-map-final-T1-headless-0.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-shared-map-final-T1-headless-17.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-shared-map-final-T1-headless-23.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-shared-map-final-T1-pytest.txt": "0e7e85f129c294f4268a9ced7ae0a1d5798bb459625042df4d1a647403bd1fd2",
+    "validation/PHYS-PERF-01-shared-map-final-T1-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/PHYS-PERF-01-shared-map-final-T1-summary.json": "900ade68df91e4f02dac6cd4aac0e1352effb645ff46db3a0edfa079abd09a42",
+    "validation/PHYS-PERF-01-shared-map-T0-pytest.txt": "6466c0670d8950cee4425d59a0be70cc4010f90053b4107781b003472b2b764c",
+    "validation/PHYS-PERF-01-shared-map-T0-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/PHYS-PERF-01-shared-map-T0-summary.json": "166aee4f7a6664506a6891d2a187db5aa9ab9eaee542569b5cae4353a38364e7"
+  }
+}

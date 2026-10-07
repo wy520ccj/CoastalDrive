@@ -1,0 +1,578 @@
+{
+  "schema": "PHYS-PERF-01-coefficients-r1-receipt-v1",
+  "baseline": "fe8bcd3 + uncommitted coefficient cache block",
+  "source_hashes": "source-hashes.json",
+  "snapshot_comparison": {
+    "case_traffic": [
+      0,
+      8
+    ],
+    "ticks_each": 48,
+    "final_vs_mechanical_block_physical_fields_equal": [
+      true,
+      true
+    ],
+    "mass_only_intermediate_vs_mechanical_block_equal": [
+      true,
+      true
+    ],
+    "comparison_excludes_diagnostic_contact_epoch": true,
+    "performance_records": [
+      {
+        "version": "coefficients-final",
+        "single_car_s": 1.2528664000128629,
+        "eight_npc_s": 12.098658500035526
+      },
+      {
+        "version": "mechanical-block-historical",
+        "single_car_s": 1.491212499968242,
+        "eight_npc_s": 21.220187800048734
+      },
+      {
+        "version": "mass-only-intermediate-not-final",
+        "single_car_s": 1.2628619000606705,
+        "eight_npc_s": 11.430120400022133
+      }
+    ]
+  },
+  "validation_summaries": {
+    "PHYS-PERF-01-coefficients-final-T1": {
+      "summary_path": "logs/validation/PHYS-PERF-01-coefficients-final-T1/summary.json",
+      "head": "fe8bcd38bf7e27ab1cb54c08a7b3535a9cfdea4f",
+      "status": "passed",
+      "tier": "T1",
+      "pytest_log_final_line": "722 passed in 125.59s (0:02:05)",
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.103,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 126.023,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_finite_suspension.py",
+            "tests/test_curved_suspension.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_joint_suspension.py",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_guardrail_suspension.py",
+            "tests/test_suspension_native.py",
+            "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle",
+            "tests/test_gr86.py",
+            "tests/test_world_substeps.py",
+            "tests/test_sensor_run.py",
+            "tests/test_driving_experiment.py",
+            "tests/test_driveline_inertia.py",
+            "tests/test_driveline_native.py",
+            "tests/test_rotor_transport.py",
+            "tests/test_input_shaft.py",
+            "tests/test_differential.py",
+            "tests/test_drive_layout.py"
+          ]
+        },
+        {
+          "name": "headless-0",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 15.916,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "0"
+          ]
+        },
+        {
+          "name": "headless-17",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 16.144,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "17"
+          ]
+        },
+        {
+          "name": "headless-23",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 16.516,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "23"
+          ]
+        }
+      ]
+    },
+    "PHYS-PERF-01-coefficients-final-T0": {
+      "summary_path": "logs/validation/PHYS-PERF-01-coefficients-final-T0/summary.json",
+      "head": "fe8bcd38bf7e27ab1cb54c08a7b3535a9cfdea4f",
+      "status": "passed",
+      "tier": "T0",
+      "pytest_log_final_line": "372 passed in 1.78s",
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.115,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 2.171,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_joint_suspension.py",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_suspension_candidates.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_driveline_inertia.py"
+          ]
+        }
+      ]
+    },
+    "PHYS-PERF-01-coefficients-T0": {
+      "summary_path": "logs/validation/PHYS-PERF-01-coefficients-T0/summary.json",
+      "head": "fe8bcd38bf7e27ab1cb54c08a7b3535a9cfdea4f",
+      "status": "failed",
+      "tier": "T0",
+      "pytest_log_final_line": null,
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "failed",
+          "returncode": 1,
+          "seconds": 0.133,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "not_run",
+          "returncode": null,
+          "seconds": null,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_joint_suspension.py",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_suspension_candidates.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_driveline_inertia.py"
+          ]
+        }
+      ]
+    },
+    "PHYS-PERF-01-coefficients-T0-r2": {
+      "summary_path": "logs/validation/PHYS-PERF-01-coefficients-T0-r2/summary.json",
+      "head": "fe8bcd38bf7e27ab1cb54c08a7b3535a9cfdea4f",
+      "status": "passed",
+      "tier": "T0",
+      "pytest_log_final_line": "372 passed in 1.80s",
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.111,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 2.206,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_joint_suspension.py",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_suspension_candidates.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_driveline_inertia.py"
+          ]
+        }
+      ]
+    }
+  },
+  "artifact_manifest": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/coefficients-final-snapshots.json",
+      "archived": "inputs/coefficients-final-snapshots.json",
+      "kind": "copy",
+      "source_sha256": "cb37a25f8833f478dacd5aeb938a69f831194a68eeef99b7cd59cbb77ff8c85e",
+      "archived_sha256": "cb37a25f8833f478dacd5aeb938a69f831194a68eeef99b7cd59cbb77ff8c85e",
+      "size_bytes": 8722197,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/coefficients-snapshots.json",
+      "archived": "inputs/coefficients-mass-only-intermediate.json",
+      "kind": "copy",
+      "source_sha256": "f9a6ac713b68514b9a43986f551f6e6efdf3d5629228af00dc6028e73c1c4b46",
+      "archived_sha256": "f9a6ac713b68514b9a43986f551f6e6efdf3d5629228af00dc6028e73c1c4b46",
+      "size_bytes": 8722201,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/mechanical-block-snapshots.json",
+      "archived": "inputs/mechanical-block-snapshots.json",
+      "kind": "copy",
+      "source_sha256": "4f9cfb0405f4784abfa29e793f55b0cfde5b348493ae421b86f0b7c5062f9f2b",
+      "archived_sha256": "4f9cfb0405f4784abfa29e793f55b0cfde5b348493ae421b86f0b7c5062f9f2b",
+      "size_bytes": 8722167,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/mass-spin-exact.json",
+      "archived": "inputs/mass-spin-exact.json",
+      "kind": "copy",
+      "source_sha256": "d7ef9284d36cd7b896d2c89771c021e1db9992fc405d8b2b481a2de084c74aae",
+      "archived_sha256": "d7ef9284d36cd7b896d2c89771c021e1db9992fc405d8b2b481a2de084c74aae",
+      "size_bytes": 126,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/load-terms-exact.json",
+      "archived": "inputs/load-terms-exact.json",
+      "kind": "copy",
+      "source_sha256": "231ac64096f0adbf376e02b6896622d47fc54b4aedfddb24b19c3c11907df3fd",
+      "archived_sha256": "231ac64096f0adbf376e02b6896622d47fc54b4aedfddb24b19c3c11907df3fd",
+      "size_bytes": 73,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/mass-coefficients-body.c",
+      "archived": "source-inputs/mass-coefficients-body.c",
+      "kind": "copy",
+      "source_sha256": "582edd7170f56a7d6d05313bd606143f426d734fa316ad2c4c101fd77e93bef6",
+      "archived_sha256": "582edd7170f56a7d6d05313bd606143f426d734fa316ad2c4c101fd77e93bef6",
+      "size_bytes": 5158,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/rotor-coefficients-body.c",
+      "archived": "source-inputs/rotor-coefficients-body.c",
+      "kind": "copy",
+      "source_sha256": "274dcd462b0249773842e20b0e20cde02acde43b5d3cbbd4eb6d53557a377617",
+      "archived_sha256": "274dcd462b0249773842e20b0e20cde02acde43b5d3cbbd4eb6d53557a377617",
+      "size_bytes": 5072,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/load-coefficients-body.c",
+      "archived": "source-inputs/load-coefficients-body.c",
+      "kind": "copy",
+      "source_sha256": "cd97bfa8ed4e5297fe13cf2d60cf740a199866583040d82918c4d32a3ecc9303",
+      "archived_sha256": "cd97bfa8ed4e5297fe13cf2d60cf740a199866583040d82918c4d32a3ecc9303",
+      "size_bytes": 5358,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/promote-mass-coefficients.py",
+      "archived": "source-inputs/promote-mass-coefficients.py",
+      "kind": "copy",
+      "source_sha256": "29dc3dfc029a78818b98f3bd4a4515b90c90fec2fa359f8328b3b727d06d306a",
+      "archived_sha256": "29dc3dfc029a78818b98f3bd4a4515b90c90fec2fa359f8328b3b727d06d306a",
+      "size_bytes": 4064,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/promote-other-coefficients.py",
+      "archived": "source-inputs/promote-other-coefficients.py",
+      "kind": "copy",
+      "source_sha256": "ea6e990ae1994119ee40527380b390ca9799b16dc5a528f1f151e39139da2407",
+      "archived_sha256": "ea6e990ae1994119ee40527380b390ca9799b16dc5a528f1f151e39139da2407",
+      "size_bytes": 3880,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/check-mass-spin.py",
+      "archived": "source-inputs/check-mass-spin.py",
+      "kind": "copy",
+      "source_sha256": "1f028894b674e91d540b1d4eb76d1dbc12a6ab5f024351748ee89b1cd55969e4",
+      "archived_sha256": "1f028894b674e91d540b1d4eb76d1dbc12a6ab5f024351748ee89b1cd55969e4",
+      "size_bytes": 3613,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/check-load-terms.py",
+      "archived": "source-inputs/check-load-terms.py",
+      "kind": "copy",
+      "source_sha256": "94cc2c7c43f0a9dda09bd3450ca14ff3f211b733ee59c73adc48d22790ed172a",
+      "archived_sha256": "94cc2c7c43f0a9dda09bd3450ca14ff3f211b733ee59c73adc48d22790ed172a",
+      "size_bytes": 2511,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-coefficients-final-T1/summary.json",
+      "archived": "validation/PHYS-PERF-01-coefficients-final-T1-summary.json",
+      "kind": "copy",
+      "source_sha256": "1669b749a7e34eb6f29f08880a1e9ed28e1a09377795899a317ed53692e20194",
+      "archived_sha256": "1669b749a7e34eb6f29f08880a1e9ed28e1a09377795899a317ed53692e20194",
+      "size_bytes": 5247,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-coefficients-final-T1/ruff.log",
+      "archived": "validation/PHYS-PERF-01-coefficients-final-T1-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archived_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-coefficients-final-T1/pytest.log",
+      "archived": "validation/PHYS-PERF-01-coefficients-final-T1-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "fac3c1b4637b2b730b2f782902782dedbe0b15de14bb245783f4f988c090cfe3",
+      "archived_sha256": "fac3c1b4637b2b730b2f782902782dedbe0b15de14bb245783f4f988c090cfe3",
+      "size_bytes": 924,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-coefficients-final-T1/headless-0.log",
+      "archived": "validation/PHYS-PERF-01-coefficients-final-T1-headless-0.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archived_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-coefficients-final-T1/headless-17.log",
+      "archived": "validation/PHYS-PERF-01-coefficients-final-T1-headless-17.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archived_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-coefficients-final-T1/headless-23.log",
+      "archived": "validation/PHYS-PERF-01-coefficients-final-T1-headless-23.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archived_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-coefficients-final-T0/summary.json",
+      "archived": "validation/PHYS-PERF-01-coefficients-final-T0-summary.json",
+      "kind": "copy",
+      "source_sha256": "499e7d2587e6e52e62bea0de0fe77884bdd57005f84d8e1f90bab25e4e8688fa",
+      "archived_sha256": "499e7d2587e6e52e62bea0de0fe77884bdd57005f84d8e1f90bab25e4e8688fa",
+      "size_bytes": 1911,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-coefficients-final-T0/ruff.log",
+      "archived": "validation/PHYS-PERF-01-coefficients-final-T0-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archived_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-coefficients-final-T0/pytest.log",
+      "archived": "validation/PHYS-PERF-01-coefficients-final-T0-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "250717bf823beb51ad7af3ee6a4f52a355ac4b1b7876d078fedbb84ecafeca8b",
+      "archived_sha256": "250717bf823beb51ad7af3ee6a4f52a355ac4b1b7876d078fedbb84ecafeca8b",
+      "size_bytes": 507,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-coefficients-T0/summary.json",
+      "archived": "validation/PHYS-PERF-01-coefficients-T0-summary.json",
+      "kind": "copy",
+      "source_sha256": "f92084a1f40da58c8998a85f158e362a8552905f816f5bcc6533b99888bea5f9",
+      "archived_sha256": "f92084a1f40da58c8998a85f158e362a8552905f816f5bcc6533b99888bea5f9",
+      "size_bytes": 1844,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-coefficients-T0/ruff.log",
+      "archived": "validation/PHYS-PERF-01-coefficients-T0-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "a5f218b2e522e95d85362f7767e94ee6599fe30a29440a1d00f3c853473fd5f6",
+      "archived_sha256": "a5f218b2e522e95d85362f7767e94ee6599fe30a29440a1d00f3c853473fd5f6",
+      "size_bytes": 2133,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-coefficients-T0-r2/summary.json",
+      "archived": "validation/PHYS-PERF-01-coefficients-T0-r2-summary.json",
+      "kind": "copy",
+      "source_sha256": "28d1800f7f39614aa613b48e5478efce8f1612b2829f2fd99c06ae1ca82574f3",
+      "archived_sha256": "28d1800f7f39614aa613b48e5478efce8f1612b2829f2fd99c06ae1ca82574f3",
+      "size_bytes": 1905,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-coefficients-T0-r2/ruff.log",
+      "archived": "validation/PHYS-PERF-01-coefficients-T0-r2-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archived_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-coefficients-T0-r2/pytest.log",
+      "archived": "validation/PHYS-PERF-01-coefficients-T0-r2-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "845ac48835fcf1e8f2179ad5b9a81d7d418cdb66fe31e6b4eef7fca931c3e84c",
+      "archived_sha256": "845ac48835fcf1e8f2179ad5b9a81d7d418cdb66fe31e6b4eef7fca931c3e84c",
+      "size_bytes": 507,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/coefficients-final-snapshots.json",
+      "archived": "snapshots/coefficients-final-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_sha256": "cb37a25f8833f478dacd5aeb938a69f831194a68eeef99b7cd59cbb77ff8c85e",
+      "archived_payload_sha256": "cb37a25f8833f478dacd5aeb938a69f831194a68eeef99b7cd59cbb77ff8c85e",
+      "compressed_sha256": "5938041f98a6c012d22b921c0b3d7c387da6f145c249845c4690b28b95c29eb1",
+      "source_payload_equal": true,
+      "size_bytes": 1950481
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/coefficients-snapshots.json",
+      "archived": "snapshots/coefficients-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_sha256": "f9a6ac713b68514b9a43986f551f6e6efdf3d5629228af00dc6028e73c1c4b46",
+      "archived_payload_sha256": "f9a6ac713b68514b9a43986f551f6e6efdf3d5629228af00dc6028e73c1c4b46",
+      "compressed_sha256": "9e5b798a970d574132d373cdd6572c88fafd8e0714642802a1bb9419de093186",
+      "source_payload_equal": true,
+      "size_bytes": 1950482
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/mechanical-block-snapshots.json",
+      "archived": "snapshots/mechanical-block-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_sha256": "4f9cfb0405f4784abfa29e793f55b0cfde5b348493ae421b86f0b7c5062f9f2b",
+      "archived_payload_sha256": "4f9cfb0405f4784abfa29e793f55b0cfde5b348493ae421b86f0b7c5062f9f2b",
+      "compressed_sha256": "63513cac1eaeb4ed4e24e5991dd6fb46b2def322858e47950d27c669630e7843",
+      "source_payload_equal": true,
+      "size_bytes": 1950442
+    }
+  ],
+  "notes": [
+    "wall-clock短样本有运行条件漂移，不是稳定收益/性能Gate",
+    "mass-only intermediate不是最终结果",
+    "没有与主目录T2混计",
+    "未归档尚在build的package-r5"
+  ],
+  "archive_file_sha256": {
+    "coefficients-report.md": "244f7a26e5eb7d0dd223ba861716ab59f1a94a7672e5ac5d2a0bc9cc83fc03f8",
+    "inputs/coefficients-final-snapshots.json": "cb37a25f8833f478dacd5aeb938a69f831194a68eeef99b7cd59cbb77ff8c85e",
+    "inputs/coefficients-mass-only-intermediate.json": "f9a6ac713b68514b9a43986f551f6e6efdf3d5629228af00dc6028e73c1c4b46",
+    "inputs/load-terms-exact.json": "231ac64096f0adbf376e02b6896622d47fc54b4aedfddb24b19c3c11907df3fd",
+    "inputs/mass-spin-exact.json": "d7ef9284d36cd7b896d2c89771c021e1db9992fc405d8b2b481a2de084c74aae",
+    "inputs/mechanical-block-snapshots.json": "4f9cfb0405f4784abfa29e793f55b0cfde5b348493ae421b86f0b7c5062f9f2b",
+    "snapshots/coefficients-final-snapshots.json.gz": "5938041f98a6c012d22b921c0b3d7c387da6f145c249845c4690b28b95c29eb1",
+    "snapshots/coefficients-snapshots.json.gz": "9e5b798a970d574132d373cdd6572c88fafd8e0714642802a1bb9419de093186",
+    "snapshots/mechanical-block-snapshots.json.gz": "63513cac1eaeb4ed4e24e5991dd6fb46b2def322858e47950d27c669630e7843",
+    "source-hashes.json": "33d4870f5a228f856cf86166dfcb4752d7f06c9f0bb3483104da8db111285045",
+    "source-inputs/check-load-terms.py": "94cc2c7c43f0a9dda09bd3450ca14ff3f211b733ee59c73adc48d22790ed172a",
+    "source-inputs/check-mass-spin.py": "1f028894b674e91d540b1d4eb76d1dbc12a6ab5f024351748ee89b1cd55969e4",
+    "source-inputs/load-coefficients-body.c": "cd97bfa8ed4e5297fe13cf2d60cf740a199866583040d82918c4d32a3ecc9303",
+    "source-inputs/mass-coefficients-body.c": "582edd7170f56a7d6d05313bd606143f426d734fa316ad2c4c101fd77e93bef6",
+    "source-inputs/promote-mass-coefficients.py": "29dc3dfc029a78818b98f3bd4a4515b90c90fec2fa359f8328b3b727d06d306a",
+    "source-inputs/promote-other-coefficients.py": "ea6e990ae1994119ee40527380b390ca9799b16dc5a528f1f151e39139da2407",
+    "source-inputs/rotor-coefficients-body.c": "274dcd462b0249773842e20b0e20cde02acde43b5d3cbbd4eb6d53557a377617",
+    "validation/PHYS-PERF-01-coefficients-final-T0-pytest.txt": "250717bf823beb51ad7af3ee6a4f52a355ac4b1b7876d078fedbb84ecafeca8b",
+    "validation/PHYS-PERF-01-coefficients-final-T0-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/PHYS-PERF-01-coefficients-final-T0-summary.json": "499e7d2587e6e52e62bea0de0fe77884bdd57005f84d8e1f90bab25e4e8688fa",
+    "validation/PHYS-PERF-01-coefficients-final-T1-headless-0.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-coefficients-final-T1-headless-17.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-coefficients-final-T1-headless-23.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-coefficients-final-T1-pytest.txt": "fac3c1b4637b2b730b2f782902782dedbe0b15de14bb245783f4f988c090cfe3",
+    "validation/PHYS-PERF-01-coefficients-final-T1-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/PHYS-PERF-01-coefficients-final-T1-summary.json": "1669b749a7e34eb6f29f08880a1e9ed28e1a09377795899a317ed53692e20194",
+    "validation/PHYS-PERF-01-coefficients-T0-r2-pytest.txt": "845ac48835fcf1e8f2179ad5b9a81d7d418cdb66fe31e6b4eef7fca931c3e84c",
+    "validation/PHYS-PERF-01-coefficients-T0-r2-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/PHYS-PERF-01-coefficients-T0-r2-summary.json": "28d1800f7f39614aa613b48e5478efce8f1612b2829f2fd99c06ae1ca82574f3",
+    "validation/PHYS-PERF-01-coefficients-T0-ruff.txt": "a5f218b2e522e95d85362f7767e94ee6599fe30a29440a1d00f3c853473fd5f6",
+    "validation/PHYS-PERF-01-coefficients-T0-summary.json": "f92084a1f40da58c8998a85f158e362a8552905f816f5bcc6533b99888bea5f9"
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "retained_in_production": false,
+  "reason": "No stable whole-simulation speed gain in alternating trials",
+  "initial_snapshot_failure_only_lifecycle_identity": true,
+  "extra_archive": [
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\triangle-candidates-exact.json",
+      "archive": "logs\\physics\\PHYS-PERF-01\\triangle-candidates-exact.json",
+      "payload_sha256": "d4f1db2db33538150d614844d1d3cf29034f85a2b9ba82580b0285a84e9c6fe8",
+      "archive_sha256": "d4f1db2db33538150d614844d1d3cf29034f85a2b9ba82580b0285a84e9c6fe8"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\triangle-candidates-micro.json",
+      "archive": "logs\\physics\\PHYS-PERF-01\\triangle-candidates-micro.json",
+      "payload_sha256": "1cdafbd98bb464fc168b3adbcebb0132d26f696408353a4f320e9f50d558301a",
+      "archive_sha256": "1cdafbd98bb464fc168b3adbcebb0132d26f696408353a4f320e9f50d558301a"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\triangle-alternating.log",
+      "archive": "logs\\physics\\PHYS-PERF-01\\triangle-alternating.txt",
+      "payload_sha256": "e424286e8515e8562abeddba160353be30ef0551b0717b5ca99f67373b51e828",
+      "archive_sha256": "e424286e8515e8562abeddba160353be30ef0551b0717b5ca99f67373b51e828"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\triangle-alternating-r2.log",
+      "archive": "logs\\physics\\PHYS-PERF-01\\triangle-alternating-r2.txt",
+      "payload_sha256": "5540acc416a8af3fa0122bdff02f141f7016ecff9e6abdfa744b98483f0d32e3",
+      "archive_sha256": "5540acc416a8af3fa0122bdff02f141f7016ecff9e6abdfa744b98483f0d32e3"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\triangle-alternating-r3.log",
+      "archive": "logs\\physics\\PHYS-PERF-01\\triangle-alternating-r3.txt",
+      "payload_sha256": "18ac3888e084c8003d90f4a2bbaa7441b164c1ef8e5bc41ca49ad706bf685c21",
+      "archive_sha256": "18ac3888e084c8003d90f4a2bbaa7441b164c1ef8e5bc41ca49ad706bf685c21"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\triangle-alternating-failure.json",
+      "archive": "logs\\physics\\PHYS-PERF-01\\triangle-alternating-failure.json.gz",
+      "payload_sha256": "b77728f4cf3f6f9f7f38866ae889ecb9e0b2c799ceda72277332b4800423ce0d",
+      "archive_sha256": "4837a547ed93d2ff230a98ce02fbbd3fda6c9db49640e3dc6aeda4f1dff29b31"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\triangle-alternating-snapshots.json",
+      "archive": "logs\\physics\\PHYS-PERF-01\\triangle-alternating-snapshots.json.gz",
+      "payload_sha256": "ab09ad3428d187a57b94ac0d0316ac7c06364e4256e94ba9346352f7648b8560",
+      "archive_sha256": "8614f6496981381cdbc1dc98652d974ce57b67836799440b6c4288e8573fa63f"
+    },
+    {
+      "source": "src\\wheel_contact_kernels.c",
+      "archive": "src\\wheel_contact_kernels.c",
+      "payload_sha256": "51809ae82652bbf882f1f6d936ae197ef16b05fcd81ca6e7131b297063458fcc",
+      "archive_sha256": "51809ae82652bbf882f1f6d936ae197ef16b05fcd81ca6e7131b297063458fcc"
+    },
+    {
+      "source": "src\\triangle_support.py",
+      "archive": "src\\triangle_support.py",
+      "payload_sha256": "5bbd0f992ac8d5a551bc5fab2adf0676dc61ef43996b20da594d37f02cc2e023",
+      "archive_sha256": "5bbd0f992ac8d5a551bc5fab2adf0676dc61ef43996b20da594d37f02cc2e023"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-triangle-candidates\\profile.json",
+      "archive": "logs\\physics\\PHYS-PERF-01\\profile-triangle-candidates\\profile.json.gz",
+      "payload_sha256": "611f35b2e2371762562474a395a7a92fc74c095566229a5773b72d37936f3944",
+      "archive_sha256": "0056859e365cd90320bf4178fa2a67d9e5bbc653639e239a14d3f8999f66fc7e"
+    }
+  ],
+  "alternating": [
+    {
+      "algorithm": "python",
+      "seconds": 18.212062699894886
+    },
+    {
+      "algorithm": "native",
+      "seconds": 18.538058500009356
+    },
+    {
+      "algorithm": "python",
+      "seconds": 20.76606830007222
+    },
+    {
+      "algorithm": "native",
+      "seconds": 21.98762140001054
+    }
+  ]
+}

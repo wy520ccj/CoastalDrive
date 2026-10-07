@@ -1,0 +1,4 @@
+{"algorithm": "python", "seconds": 18.212062699894886, "all_snapshot_fields_equal": true}
+{"algorithm": "native", "seconds": 18.538058500009356, "all_snapshot_fields_equal": true}
+{"algorithm": "python", "seconds": 20.76606830007222, "all_snapshot_fields_equal": true}
+{"algorithm": "native", "seconds": 21.98762140001054, "all_snapshot_fields_equal": true}

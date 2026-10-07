@@ -4,6 +4,7 @@ import math
 from dataclasses import dataclass
 
 from mechanical_kernels import dot
+from mechanical_kernels import solve_lu as _solve
 
 from rotor_dynamics import cross
 
@@ -46,35 +47,6 @@ def elastic_terms(compression, rates, bars, stops, travel):
     force = tuple(dot(row, compression) + k * e for row, k, e in zip(matrix, stops, excess))
     return spring, bar, stop, force
 
-
-def _solve(matrix, rhs):
-    """小型稠密LU及残差修正，保持大止挡反力下的绝对机械精度。"""
-    rows = [list(row) for row in matrix]
-    n = len(rows)
-    order = list(range(n))
-    for col in range(n):
-        pivot = max(range(col, n), key=lambda i: abs(rows[i][col]))
-        rows[col], rows[pivot] = rows[pivot], rows[col]
-        order[col], order[pivot] = order[pivot], order[col]
-        for i in range(col + 1, n):
-            factor = rows[i][col] / rows[col][col]
-            rows[i][col] = factor
-            for j in range(col + 1, n):
-                rows[i][j] -= factor * rows[col][j]
-
-    def substitute(values):
-        result = [values[i] for i in order]
-        for i in range(n):
-            result[i] = math.fsum([result[i], *(-rows[i][j] * result[j] for j in range(i))])
-        for i in range(n - 1, -1, -1):
-            result[i] = math.fsum([result[i], *(-rows[i][j] * result[j] for j in range(i + 1, n))]) / rows[i][i]
-        return result
-
-    result = substitute(rhs)
-    residual = tuple(math.fsum([rhs[i], *(-value * x for value, x in zip(row, result))])
-                     for i, row in enumerate(matrix))
-    correction = substitute(residual)
-    return tuple(x + dx for x, dx in zip(result, correction))
 
 
 @dataclass(frozen=True)

@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "traffic": 0,
+      "all_snapshot_fields_equal": true,
+      "before_s": 1.5653576999320649,
+      "after_s": 1.4723127000324894
+    },
+    {
+      "traffic": 8,
+      "all_snapshot_fields_equal": true,
+      "before_s": 14.424435199980508,
+      "after_s": 13.03013039995858
+    }
+  ]
+}

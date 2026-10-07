@@ -1,0 +1,657 @@
+{
+  "task": "PHYS-PERF-01 wheel-map-r1 archive",
+  "head": "105d8493e7495907e703368e2f41410d079bc501",
+  "working_tree_status": [
+    "M src/mechanical_kernels.c",
+    "M src/tire_drivetrain.py"
+  ],
+  "source_capture": "source-hashes.json",
+  "source_capture_stable_start_end": true,
+  "source_sha256": {
+    "src/mechanical_kernels.c": "6ffa8834a360334cb7cc9c89a1367fd2b41326683b80e58988b272879fa43969",
+    "src/tire_drivetrain.py": "66ad78297f4e95683b861fb893fa43abead94ae619c91d7a6b5125f07338ff1c",
+    "src/mechanical_kernels.cp314-win_amd64.pyd": "1f3245be98e27c15c206402bf124544e95d65ba82656f783bc0e01c5fb2a43e4"
+  },
+  "snapshot_evidence": {
+    "baseline": "clipped-geometry-snapshots.json",
+    "production": "wheel-map-production.json",
+    "check_receipt": "wheel-map-check-receipt.json",
+    "all_48_snapshots_equal": true,
+    "traffic_counts": [
+      0,
+      8
+    ],
+    "short_wall_seconds": [
+      0.8345693999581272,
+      8.102386500031571
+    ]
+  },
+  "real_call_audit": {
+    "passed": true,
+    "baseline": "105d849 original Python wheel local_state",
+    "exact_actual_calls": {
+      "calls": 217053,
+      "hard_gear": 210407,
+      "synchronizing": 6646,
+      "warm_updates": 85725,
+      "multiple_attempts": 7721
+    }
+  },
+  "profile": {
+    "completed_steps": 16,
+    "wall_seconds": 6.590536499992595,
+    "foreground_fps_or_gate_claim": false
+  },
+  "validation": {
+    "PHYS-PERF-01-wheel-map-T0-r1": {
+      "status": "passed",
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "seconds": 0.133,
+          "error": null,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "seconds": 20.083,
+          "error": null,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_tire_shaft.py",
+            "tests/test_differential.py",
+            "tests/test_drivetrain_jacobian.py"
+          ]
+        }
+      ],
+      "headless": null
+    },
+    "PHYS-PERF-01-wheel-map-T0-r2": {
+      "status": "failed",
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "failed",
+          "seconds": 0.12,
+          "error": "process exited 1",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "not_run",
+          "seconds": null,
+          "error": null,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_tire_shaft.py",
+            "tests/test_differential.py",
+            "tests/test_drivetrain_jacobian.py"
+          ]
+        }
+      ],
+      "headless": null
+    },
+    "PHYS-PERF-01-wheel-map-T0-r3": {
+      "status": "passed",
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "seconds": 0.118,
+          "error": null,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "seconds": 19.398,
+          "error": null,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_tire_shaft.py",
+            "tests/test_differential.py",
+            "tests/test_drivetrain_jacobian.py"
+          ]
+        }
+      ],
+      "headless": null
+    },
+    "PHYS-PERF-01-wheel-map-T1": {
+      "status": "passed",
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "seconds": 0.118,
+          "error": null,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "seconds": 73.229,
+          "error": null,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_shaft_transmission.py",
+            "tests/test_tire_shaft.py",
+            "tests/test_input_shaft.py",
+            "tests/test_drivetrain_jacobian.py",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_driveline_inertia.py",
+            "tests/test_driveline_native.py",
+            "tests/test_drive_layout.py",
+            "tests/test_differential.py",
+            "tests/test_gr86.py",
+            "tests/test_sensor_run.py",
+            "tests/test_driving_experiment.py",
+            "tests/test_world_substeps.py"
+          ]
+        },
+        {
+          "name": "headless-0",
+          "status": "passed",
+          "seconds": 13.882,
+          "error": null,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "0"
+          ]
+        },
+        {
+          "name": "headless-17",
+          "status": "passed",
+          "seconds": 13.599,
+          "error": null,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "17"
+          ]
+        },
+        {
+          "name": "headless-23",
+          "status": "passed",
+          "seconds": 15.032,
+          "error": null,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "23"
+          ]
+        }
+      ],
+      "headless": null
+    }
+  },
+  "version_boundary": "快照来源与后续重建分开：check receipt记录快照后C helper缩进变化及重建SHA差异；最终T1/profile基于重建版，不把快照版本表述为同一源码字节。",
+  "receipt_path_error": "首次收据生成的Path.relative_to错误已修正，属于归档脚本问题，不是物理验证失败。",
+  "limitations": [
+    "时间为短时离屏诊断，不是FPS或前台Gate。",
+    "主目录33657dc的T2是独立运行且未完成；未计入此归档。",
+    "产品包、实时前台和人工Gate未完成。"
+  ],
+  "files": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/wheel-map-body.c",
+      "archive": "inputs/physics/wheel-map-body.c",
+      "source_sha256": "422e5df13e3d87d5b46bac650bf6c561521bf19241fc2e075008b1eda94de065",
+      "archive_sha256": "422e5df13e3d87d5b46bac650bf6c561521bf19241fc2e075008b1eda94de065",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 7262,
+      "archive_bytes": 7262,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/promote-wheel-map.py",
+      "archive": "inputs/physics/promote-wheel-map.py",
+      "source_sha256": "aafcbfd51a562e2a8a91bc215a5d50d784688689ffc0ec579310e5277cb0d8ae",
+      "archive_sha256": "aafcbfd51a562e2a8a91bc215a5d50d784688689ffc0ec579310e5277cb0d8ae",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 2579,
+      "archive_bytes": 2579,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/finalize-wheel-map.py",
+      "archive": "inputs/physics/finalize-wheel-map.py",
+      "source_sha256": "01e9044d2cca4799d112d4aede93844c2684b4fec3dc8be98bc97587caf7529f",
+      "archive_sha256": "01e9044d2cca4799d112d4aede93844c2684b4fec3dc8be98bc97587caf7529f",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 2167,
+      "archive_bytes": 2167,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/audit-wheel-map-real-calls.py",
+      "archive": "inputs/physics/audit-wheel-map-real-calls.py",
+      "source_sha256": "353354493def4e4551c8d0dffe5eac5263f45587c0c9efa38ff02f0641f612fd",
+      "archive_sha256": "353354493def4e4551c8d0dffe5eac5263f45587c0c9efa38ff02f0641f612fd",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 3639,
+      "archive_bytes": 3639,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/wheel-map-real-call-audit.log",
+      "archive": "inputs/physics/wheel-map-real-call-audit.log",
+      "source_sha256": "b9a74850a3ca7a228034915797c5b702971726731b134558055d11b7333c860e",
+      "archive_sha256": "b9a74850a3ca7a228034915797c5b702971726731b134558055d11b7333c860e",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 393,
+      "archive_bytes": 393,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/wheel-map-final-real-call-audit.log",
+      "archive": "inputs/physics/wheel-map-final-real-call-audit.log",
+      "source_sha256": "94ec7c30602e39f235b01c862505d1564fd7c98e46376ef40a9fd7d2073ed2a3",
+      "archive_sha256": "94ec7c30602e39f235b01c862505d1564fd7c98e46376ef40a9fd7d2073ed2a3",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 393,
+      "archive_bytes": 393,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/wheel-map-real-call-audit.json",
+      "archive": "inputs/physics/wheel-map-real-call-audit.json",
+      "source_sha256": "5e502f92effc38a13c1fc2c261f200a4080e4adb0c3f744b3d6c3dbe50c7ad45",
+      "archive_sha256": "5e502f92effc38a13c1fc2c261f200a4080e4adb0c3f744b3d6c3dbe50c7ad45",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 250,
+      "archive_bytes": 250,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/wheel-map-build.log",
+      "archive": "inputs/physics/wheel-map-build.log",
+      "source_sha256": "7268a85891eee2d85ce1f34923e18be61d5e224788ae1dafaeac8f60e602c84f",
+      "archive_sha256": "7268a85891eee2d85ce1f34923e18be61d5e224788ae1dafaeac8f60e602c84f",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 2850,
+      "archive_bytes": 2850,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/wheel-map-final-build.log",
+      "archive": "inputs/physics/wheel-map-final-build.log",
+      "source_sha256": "7268a85891eee2d85ce1f34923e18be61d5e224788ae1dafaeac8f60e602c84f",
+      "archive_sha256": "7268a85891eee2d85ce1f34923e18be61d5e224788ae1dafaeac8f60e602c84f",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 2850,
+      "archive_bytes": 2850,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/wheel-map-release-build.log",
+      "archive": "inputs/physics/wheel-map-release-build.log",
+      "source_sha256": "7268a85891eee2d85ce1f34923e18be61d5e224788ae1dafaeac8f60e602c84f",
+      "archive_sha256": "7268a85891eee2d85ce1f34923e18be61d5e224788ae1dafaeac8f60e602c84f",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 2850,
+      "archive_bytes": 2850,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/wheel-map-check-receipt.json",
+      "archive": "inputs/physics/wheel-map-check-receipt.json",
+      "source_sha256": "11c68398d31bd1f073e0036be4ef5f81d915057ae6180089cc012451e664272c",
+      "archive_sha256": "11c68398d31bd1f073e0036be4ef5f81d915057ae6180089cc012451e664272c",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 10487,
+      "archive_bytes": 10487,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-wheel-map.py",
+      "archive": "inputs/physics/profile-wheel-map.py",
+      "source_sha256": "08ea967487c00298e78b35c16b111ca4228b61dc60e628acd3d0b0d38818a7a9",
+      "archive_sha256": "08ea967487c00298e78b35c16b111ca4228b61dc60e628acd3d0b0d38818a7a9",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 6778,
+      "archive_bytes": 6778,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-wheel-map.log",
+      "archive": "inputs/physics/profile-wheel-map.log",
+      "source_sha256": "5c633ff058257eb81210c9bb041318dd0f1ca82b4e3693b1446975c9014c78fa",
+      "archive_sha256": "5c633ff058257eb81210c9bb041318dd0f1ca82b4e3693b1446975c9014c78fa",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 139,
+      "archive_bytes": 139,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-wheel-map-r1/profile.json",
+      "archive": "inputs/physics/profile-wheel-map-r1/profile.json",
+      "source_sha256": "63ee974a93b06ebc7821faa2cd80594e033c5e58510ee22e73611d345559fdd4",
+      "archive_sha256": "63ee974a93b06ebc7821faa2cd80594e033c5e58510ee22e73611d345559fdd4",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 31612,
+      "archive_bytes": 31612,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/clipped-geometry-snapshots.json",
+      "archive": "inputs/physics/clipped-geometry-snapshots.json.gz",
+      "source_sha256": "56f6fb93de0e3f8b51725ad3eaabf569c38773731cf43935103776dad162bb1f",
+      "archive_sha256": "525b0374f84e50f869dbefba486ecca862dde9d8d78035635c3228e4da3151ef",
+      "compressed": true,
+      "payload_sha256": "56f6fb93de0e3f8b51725ad3eaabf569c38773731cf43935103776dad162bb1f",
+      "bytes": 8722215,
+      "archive_bytes": 1950494,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/wheel-map-production.json",
+      "archive": "inputs/physics/wheel-map-production.json.gz",
+      "source_sha256": "700f3c35f0a0ef318811a14f6b7ac8fa831c01530ae00245e57b4759fcf08f40",
+      "archive_sha256": "015476c5889486343601eb102da32a7fcecaa3f8ca5214d4f55002907a12d492",
+      "compressed": true,
+      "payload_sha256": "700f3c35f0a0ef318811a14f6b7ac8fa831c01530ae00245e57b4759fcf08f40",
+      "bytes": 8722219,
+      "archive_bytes": 1950481,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-wheel-map-r1/gr86-profile.prof",
+      "archive": "inputs/physics/profile-wheel-map-r1/gr86-profile.prof.gz",
+      "source_sha256": "9406d94487a640baffeaa5c46d2c8e48646b137b20295c871aa6582921f7bd77",
+      "archive_sha256": "f631a2a009c1b6255e6a2dcf00389595af502e51563822939bfcf04d17293549",
+      "compressed": true,
+      "payload_sha256": "9406d94487a640baffeaa5c46d2c8e48646b137b20295c871aa6582921f7bd77",
+      "bytes": 76097,
+      "archive_bytes": 27441,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-clipped-geometry-r1/profile.json",
+      "archive": "inputs/physics/profile-clipped-geometry-r1/profile.json",
+      "source_sha256": "ddcc9889b54697c827857bd487de407d30749353fbe173497a4b6b0108492a6a",
+      "archive_sha256": "ddcc9889b54697c827857bd487de407d30749353fbe173497a4b6b0108492a6a",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 31728,
+      "archive_bytes": 31728,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-clipped-geometry-r1/gr86-profile.prof",
+      "archive": "inputs/physics/profile-clipped-geometry-r1/gr86-profile.prof.gz",
+      "source_sha256": "0da511f19f22c208bb63c8aef826a295d91e115f6538af4df2f52360a78b1d1e",
+      "archive_sha256": "8dc90ac86af91bc394f9b1b2f1324871d966625938a7df440896268dda76a3ca",
+      "compressed": true,
+      "payload_sha256": "0da511f19f22c208bb63c8aef826a295d91e115f6538af4df2f52360a78b1d1e",
+      "bytes": 76719,
+      "archive_bytes": 27656,
+      "status": "copied"
+    },
+    {
+      "source": "docs/evidence/PHYS-PERF-01/wheel-map-r1/source-hashes.json",
+      "archive": "source-hashes.json",
+      "source_sha256": "22866f1872fe19067cd9298668f24bc37dc6cc289d7594b063048faace66e57a",
+      "archive_sha256": "22866f1872fe19067cd9298668f24bc37dc6cc289d7594b063048faace66e57a",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 75602,
+      "archive_bytes": 75602,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-map-T0-r1/pytest.log",
+      "archive": "inputs/validation/PHYS-PERF-01-wheel-map-T0-r1/pytest.log",
+      "source_sha256": "92f1959531304873120cc38829a419f36a89ef25449bebc3860ac663d58c327f",
+      "archive_sha256": "92f1959531304873120cc38829a419f36a89ef25449bebc3860ac663d58c327f",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 183,
+      "archive_bytes": 183,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-map-T0-r1/ruff.log",
+      "archive": "inputs/validation/PHYS-PERF-01-wheel-map-T0-r1/ruff.log",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 19,
+      "archive_bytes": 19,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-map-T0-r1/summary.json",
+      "archive": "inputs/validation/PHYS-PERF-01-wheel-map-T0-r1/summary.json",
+      "source_sha256": "541ba1dd144b43dc87e332ac10d589d45ce481b36a5dcfac4e7b7be1d0c1e479",
+      "archive_sha256": "541ba1dd144b43dc87e332ac10d589d45ce481b36a5dcfac4e7b7be1d0c1e479",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 1710,
+      "archive_bytes": 1710,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-map-T0-r2/ruff.log",
+      "archive": "inputs/validation/PHYS-PERF-01-wheel-map-T0-r2/ruff.log",
+      "source_sha256": "e4679fec0cbfea18ec119f5bd0c2b74e4a348ae36c5329329c9ef3f8be86d3f8",
+      "archive_sha256": "e4679fec0cbfea18ec119f5bd0c2b74e4a348ae36c5329329c9ef3f8be86d3f8",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 1914,
+      "archive_bytes": 1914,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-map-T0-r2/summary.json",
+      "archive": "inputs/validation/PHYS-PERF-01-wheel-map-T0-r2/summary.json",
+      "source_sha256": "2f17f617944ba181c8ff4f4b9eed0e4c7af9ec3ba8822c4c96d7f35283a1591a",
+      "archive_sha256": "2f17f617944ba181c8ff4f4b9eed0e4c7af9ec3ba8822c4c96d7f35283a1591a",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 1653,
+      "archive_bytes": 1653,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-map-T0-r3/pytest.log",
+      "archive": "inputs/validation/PHYS-PERF-01-wheel-map-T0-r3/pytest.log",
+      "source_sha256": "41854ecf32fa20ff6e0a83cbaf94d9cbac2dd33caee46df567d2d5b5c7008c50",
+      "archive_sha256": "41854ecf32fa20ff6e0a83cbaf94d9cbac2dd33caee46df567d2d5b5c7008c50",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 183,
+      "archive_bytes": 183,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-map-T0-r3/ruff.log",
+      "archive": "inputs/validation/PHYS-PERF-01-wheel-map-T0-r3/ruff.log",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 19,
+      "archive_bytes": 19,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-map-T0-r3/summary.json",
+      "archive": "inputs/validation/PHYS-PERF-01-wheel-map-T0-r3/summary.json",
+      "source_sha256": "3aeda0a04ad104ff18d73f27ab6746c6ff5992e8edc3bcae557973b3d29811d3",
+      "archive_sha256": "3aeda0a04ad104ff18d73f27ab6746c6ff5992e8edc3bcae557973b3d29811d3",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 1710,
+      "archive_bytes": 1710,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-map-T1/headless-0.log",
+      "archive": "inputs/validation/PHYS-PERF-01-wheel-map-T1/headless-0.log",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 32432,
+      "archive_bytes": 32432,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-map-T1/headless-17.log",
+      "archive": "inputs/validation/PHYS-PERF-01-wheel-map-T1/headless-17.log",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 32432,
+      "archive_bytes": 32432,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-map-T1/headless-23.log",
+      "archive": "inputs/validation/PHYS-PERF-01-wheel-map-T1/headless-23.log",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 32432,
+      "archive_bytes": 32432,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-map-T1/pytest.log",
+      "archive": "inputs/validation/PHYS-PERF-01-wheel-map-T1/pytest.log",
+      "source_sha256": "099ddf5cde05486348e7eb429dfd2ced5e564cfa0a135084befa759927bd7d66",
+      "archive_sha256": "099ddf5cde05486348e7eb429dfd2ced5e564cfa0a135084befa759927bd7d66",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 761,
+      "archive_bytes": 761,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-map-T1/ruff.log",
+      "archive": "inputs/validation/PHYS-PERF-01-wheel-map-T1/ruff.log",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 19,
+      "archive_bytes": 19,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-map-T1/summary.json",
+      "archive": "inputs/validation/PHYS-PERF-01-wheel-map-T1/summary.json",
+      "source_sha256": "bd95dfad0e1bf1c6e2182dee6f112bba795087f5f04bf258802fd55e4a8e44c6",
+      "archive_sha256": "bd95dfad0e1bf1c6e2182dee6f112bba795087f5f04bf258802fd55e4a8e44c6",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 4259,
+      "archive_bytes": 4259,
+      "status": "copied"
+    },
+    {
+      "source": "src/mechanical_kernels.c",
+      "archive": "source/mechanical_kernels.c",
+      "source_sha256": "6ffa8834a360334cb7cc9c89a1367fd2b41326683b80e58988b272879fa43969",
+      "archive_sha256": "6ffa8834a360334cb7cc9c89a1367fd2b41326683b80e58988b272879fa43969",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 79424,
+      "archive_bytes": 79424,
+      "status": "copied"
+    },
+    {
+      "source": "src/tire_drivetrain.py",
+      "archive": "source/tire_drivetrain.py",
+      "source_sha256": "66ad78297f4e95683b861fb893fa43abead94ae619c91d7a6b5125f07338ff1c",
+      "archive_sha256": "66ad78297f4e95683b861fb893fa43abead94ae619c91d7a6b5125f07338ff1c",
+      "compressed": false,
+      "payload_sha256": null,
+      "bytes": 47040,
+      "archive_bytes": 47040,
+      "status": "copied"
+    }
+  ]
+}

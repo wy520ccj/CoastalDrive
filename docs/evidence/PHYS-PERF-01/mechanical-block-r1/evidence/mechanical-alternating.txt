@@ -1,0 +1,4 @@
+{"algorithm": "python", "wall_s": 24.185140799949295, "cpu_s": 23.75, "all_physical_snapshot_fields_equal": true}
+{"algorithm": "native", "wall_s": 16.25172119998024, "cpu_s": 16.0625, "all_physical_snapshot_fields_equal": true}
+{"algorithm": "native", "wall_s": 14.333082299985108, "cpu_s": 14.125, "all_physical_snapshot_fields_equal": true}
+{"algorithm": "python", "wall_s": 14.812968899990665, "cpu_s": 14.78125, "all_physical_snapshot_fields_equal": true}

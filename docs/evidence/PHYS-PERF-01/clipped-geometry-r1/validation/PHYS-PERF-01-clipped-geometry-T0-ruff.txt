@@ -1,0 +1,22 @@
+I001 [*] Import block is un-sorted or un-formatted
+ --> src\wheel_envelope.py:3:1
+  |
+1 |   """有限胎宽圆角圆柱的凸体距离与沿悬架方向的首次接触。"""
+2 |
+3 | / import math
+4 | | from itertools import combinations
+5 | |
+6 | | import numpy as np
+7 | | import wheel_contact_kernels
+8 | |
+9 | | from rotor_dynamics import dot
+  | |______________________________^
+help: Organize imports
+   |
+10 |
+   -
+11 | subtract = wheel_contact_kernels.subtract
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

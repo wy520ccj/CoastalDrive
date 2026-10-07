@@ -1,0 +1,206 @@
+{
+  "schema": "PHYS-PERF-01-package-r5-receipt-v1",
+  "package_path": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\builds\\physics-native-candidate-r5\\win_amd64",
+  "head": "16a7c4a6a665ff69948a5247339394951a1ea4c7",
+  "git_status": [],
+  "build_time_source_hash_evidence": {
+    "found": false,
+    "searched_records": [
+      "logs/physics/PHYS-PERF-01/package-build-r5.log",
+      "logs/physics/PHYS-PERF-01/package-headless-r5/summary.json"
+    ],
+    "statement": "current-source-hashes.json is archive-time only and must not be interpreted as build-time provenance"
+  },
+  "build_log": {
+    "source": "logs/physics/PHYS-PERF-01/package-build-r5.log",
+    "archived": "package-build-r5.log.gz",
+    "sha256": "fccfbe0bf37c6bf6dcfa677d3a19c04b725256eb2c8f5eb02cbf1038ed36a177",
+    "raw_sha256": "d7162b656f2ff56542f560d741adc8bedf457663ffad520da3eff35691158f86",
+    "raw_payload_sha256_after_decompress": "d7162b656f2ff56542f560d741adc8bedf457663ffad520da3eff35691158f86",
+    "gzip_mtime": 0,
+    "warnings": [
+      "Could not find an optimized wheel (using index https://archive.panda3d.org/simple/opt) for platform: win_amd64",
+      "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Lib\\site-packages\\direct\\dist\\FreezeTool.py:1019: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.",
+      "warning: build_apps: could not find dependency api-ms-win-core-path-l1-1-0.dll (referenced by python314.dll)",
+      "warning: build_apps: could not find dependency api-ms-win-crt-private-l1-1-0.dll (referenced by libscipy_openblas64_-ed4f167a5330424524f45258e7ca2c8d.dll)",
+      "warning: build_apps: mechanical_kernels.pyd was not found in any downloaded wheel, is a dependency missing from requirements.txt?",
+      "warning: build_apps: wheel_contact_kernels.pyd was not found in any downloaded wheel, is a dependency missing from requirements.txt?",
+      "warning: build_apps: could not find dependency PROPSYS.dll (referenced by _wmi.pyd)"
+    ],
+    "missing_modules_notice_present": true
+  },
+  "headless_summary": {
+    "kind": "outside-repository independent package headless; not render, FPS or human gate",
+    "passed": true,
+    "checks": [
+      {
+        "mode": "game",
+        "command": [
+          "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\builds\\physics-native-candidate-r5\\win_amd64\\coastaldrive.exe",
+          "--headless",
+          "--steps",
+          "120",
+          "--track",
+          "test",
+          "--seed",
+          "17",
+          "--vehicle-design",
+          "gr86-2022-premium-6mt",
+          "--driving-mode",
+          "game"
+        ],
+        "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-tgy8558z\\game",
+        "returncode": 0,
+        "seconds": 2.7680931000068085,
+        "log": "game.log",
+        "report_tick_present": true,
+        "full_hardware_present": true
+      },
+      {
+        "mode": "simulation",
+        "command": [
+          "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\builds\\physics-native-candidate-r5\\win_amd64\\coastaldrive.exe",
+          "--headless",
+          "--steps",
+          "120",
+          "--track",
+          "test",
+          "--seed",
+          "17",
+          "--vehicle-design",
+          "gr86-2022-premium-6mt",
+          "--driving-mode",
+          "simulation"
+        ],
+        "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-tgy8558z\\simulation",
+        "returncode": 0,
+        "seconds": 2.541750799995498,
+        "log": "simulation.log",
+        "report_tick_present": true,
+        "full_hardware_present": true
+      }
+    ],
+    "sha256": {
+      "coastaldrive.exe": "c629d5ba5b66e291f5411a4ded1e0953aa82c076ac1568771f817baae6365920",
+      "mechanical_kernels.pyd": "d0372d4596fc97660f9a2b0d327bf0cdd588b454c9984041e3285d2beff41336",
+      "wheel_contact_kernels.pyd": "1d7c5a13081ee02aca5556ecb481206a0c594cf78e71fd1bc6f68c9f7af220e2",
+      "licenses/CPython-LICENSE.txt": "b0e25a78cffb43f4d92de8b61ccfa1f1f98ecbc22330b54b5251e7b6ba010231",
+      "assets/game/vehicle-configs/gr86-2022-premium-6mt.json": "88c6bdce91429ae59247fec5c6bfd4a7531bbfa918e622dd78e61301dafb6a23"
+    }
+  },
+  "package_files": [
+    {
+      "path": "coastaldrive.exe",
+      "size_bytes": 17701216,
+      "summary_sha256": "c629d5ba5b66e291f5411a4ded1e0953aa82c076ac1568771f817baae6365920",
+      "actual_sha256": "c629d5ba5b66e291f5411a4ded1e0953aa82c076ac1568771f817baae6365920",
+      "matches": true
+    },
+    {
+      "path": "mechanical_kernels.pyd",
+      "size_bytes": 38400,
+      "summary_sha256": "d0372d4596fc97660f9a2b0d327bf0cdd588b454c9984041e3285d2beff41336",
+      "actual_sha256": "d0372d4596fc97660f9a2b0d327bf0cdd588b454c9984041e3285d2beff41336",
+      "matches": true
+    },
+    {
+      "path": "wheel_contact_kernels.pyd",
+      "size_bytes": 26624,
+      "summary_sha256": "1d7c5a13081ee02aca5556ecb481206a0c594cf78e71fd1bc6f68c9f7af220e2",
+      "actual_sha256": "1d7c5a13081ee02aca5556ecb481206a0c594cf78e71fd1bc6f68c9f7af220e2",
+      "matches": true
+    },
+    {
+      "path": "licenses/CPython-LICENSE.txt",
+      "size_bytes": 13804,
+      "summary_sha256": "b0e25a78cffb43f4d92de8b61ccfa1f1f98ecbc22330b54b5251e7b6ba010231",
+      "actual_sha256": "b0e25a78cffb43f4d92de8b61ccfa1f1f98ecbc22330b54b5251e7b6ba010231",
+      "matches": true
+    },
+    {
+      "path": "assets/game/vehicle-configs/gr86-2022-premium-6mt.json",
+      "size_bytes": 51229,
+      "summary_sha256": "88c6bdce91429ae59247fec5c6bfd4a7531bbfa918e622dd78e61301dafb6a23",
+      "actual_sha256": "88c6bdce91429ae59247fec5c6bfd4a7531bbfa918e622dd78e61301dafb6a23",
+      "matches": true
+    }
+  ],
+  "current_sources": "current-source-hashes.json",
+  "archive_manifest": [
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\package-headless-r5\\summary.json",
+      "archived": "headless-summary.json",
+      "sha256": "17f5626dfa4cb4fbc4986eb931186b2fc7b261ff6634754bea8dbfb57f311866",
+      "source_sha256": "17f5626dfa4cb4fbc4986eb931186b2fc7b261ff6634754bea8dbfb57f311866",
+      "size_bytes": 2122,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\package-headless-r5\\game.log",
+      "archived": "game-headless.log.txt",
+      "sha256": "1df0928d040b1feba1cad62404fd2ed8b0493280b89926be269360e749a0b6b3",
+      "source_sha256": "1df0928d040b1feba1cad62404fd2ed8b0493280b89926be269360e749a0b6b3",
+      "size_bytes": 33116,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\package-headless-r5\\simulation.log",
+      "archived": "simulation-headless.log.txt",
+      "sha256": "5e635b21e5c40c71ddb09e501b47ab3ffced11c29a9517e688878cdcdf08e815",
+      "source_sha256": "5e635b21e5c40c71ddb09e501b47ab3ffced11c29a9517e688878cdcdf08e815",
+      "size_bytes": 33554,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\native-package-check.py",
+      "archived": "build-context/native-package-check.py",
+      "sha256": "98b9aed7031c6d13cfb6ea84eededf5b975fa40ef5a6845a7093af1d6d31672c",
+      "source_sha256": "98b9aed7031c6d13cfb6ea84eededf5b975fa40ef5a6845a7093af1d6d31672c",
+      "size_bytes": 2323,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\package-check-r4.py",
+      "archived": "build-context/package-check-r4.py",
+      "sha256": "1a26f39437e4c3aa9edca1aa8b8fdd93f326b32e2e13b875364ddd25dd8f6de3",
+      "source_sha256": "1a26f39437e4c3aa9edca1aa8b8fdd93f326b32e2e13b875364ddd25dd8f6de3",
+      "size_bytes": 346,
+      "equal": true
+    },
+    {
+      "source": "setup.py",
+      "archived": "build-context/setup.py",
+      "sha256": "38346e0ab3937b193653fd471617bca2c2c5eb3acc3a1884030f312344e3429a",
+      "source_sha256": "38346e0ab3937b193653fd471617bca2c2c5eb3acc3a1884030f312344e3429a",
+      "size_bytes": 2101,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\package-build-r5.log",
+      "archived": "package-build-r5.log.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "d7162b656f2ff56542f560d741adc8bedf457663ffad520da3eff35691158f86",
+      "archived_payload_sha256": "d7162b656f2ff56542f560d741adc8bedf457663ffad520da3eff35691158f86",
+      "compressed_sha256": "fccfbe0bf37c6bf6dcfa677d3a19c04b725256eb2c8f5eb02cbf1038ed36a177",
+      "size_bytes": 2829,
+      "payload_equal": true,
+      "gzip_mtime": 0
+    }
+  ],
+  "limits": [
+    "headless仅两种模式各120步，不是render/FPS/human gate",
+    "未运行渲染、测试、模拟或构建",
+    "主目录33657dc完整T2另行记账"
+  ],
+  "archived_file_sha256": {
+    "build-context/native-package-check.py": "98b9aed7031c6d13cfb6ea84eededf5b975fa40ef5a6845a7093af1d6d31672c",
+    "build-context/package-check-r4.py": "1a26f39437e4c3aa9edca1aa8b8fdd93f326b32e2e13b875364ddd25dd8f6de3",
+    "build-context/setup.py": "38346e0ab3937b193653fd471617bca2c2c5eb3acc3a1884030f312344e3429a",
+    "current-source-hashes.json": "b0a2075783d9e47ec29c09352df2629695aa39b75048809ed54793ca7015ef72",
+    "game-headless.log.txt": "1df0928d040b1feba1cad62404fd2ed8b0493280b89926be269360e749a0b6b3",
+    "headless-summary.json": "17f5626dfa4cb4fbc4986eb931186b2fc7b261ff6634754bea8dbfb57f311866",
+    "package-build-r5.log.gz": "fccfbe0bf37c6bf6dcfa677d3a19c04b725256eb2c8f5eb02cbf1038ed36a177",
+    "package-r5-report.md": "c67db84ad8ae01caf8d6f49831c724574449e0eebaff2979d9da39e4f84bfb4b",
+    "simulation-headless.log.txt": "5e635b21e5c40c71ddb09e501b47ab3ffced11c29a9517e688878cdcdf08e815"
+  }
+}

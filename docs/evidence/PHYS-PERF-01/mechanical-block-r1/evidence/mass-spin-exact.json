@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "exact_calls": {
+    "mass_response": 2304,
+    "rotor_spin": 768
+  },
+  "reference": "e79af19"
+}

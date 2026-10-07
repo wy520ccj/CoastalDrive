@@ -1,0 +1,6 @@
+{
+  "only_trailing_empty_line_removed": true,
+  "before_sha256": "0e7c2794586944fb35c2c022c6a3df419221bd96a96e5c51406e4fd088dd988d",
+  "after_sha256": "b5c1f6472d11b5553e2772386035b55f248b75c81a32bbcd21a3b512d31f94a7",
+  "compiled_and_tested_cpp_body_unchanged": true
+}

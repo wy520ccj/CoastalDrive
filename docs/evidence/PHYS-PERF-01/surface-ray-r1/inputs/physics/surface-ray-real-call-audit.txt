@@ -1,0 +1,3 @@
+........................................                                 [100%]
+40 passed in 4.07s
+{"passed": true, "baseline": "105d849 original finite support loop, original reach expression retained in caller", "exact_actual_calls": {"rays": 15148, "surfaces": 59361, "hits": 15894, "relative": 12438, "world": 2710, "mesh": 54820, "plane": 59, "box": 4482}}

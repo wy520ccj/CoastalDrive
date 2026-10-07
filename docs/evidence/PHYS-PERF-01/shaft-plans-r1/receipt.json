@@ -1,0 +1,727 @@
+{
+  "schema": "PHYS-PERF-01-shaft-plans-r1-receipt-v1",
+  "baseline": "16a7c4a + native shaft plans",
+  "source_hashes": "source-hashes.json",
+  "snapshot_checks": {
+    "cases_traffic": [
+      0,
+      8
+    ],
+    "ticks_each": 48,
+    "coefficients_final_vs_shaft_plans_full_field_equal": [
+      true,
+      true
+    ],
+    "abba_algorithms": [
+      "python",
+      "native",
+      "native",
+      "python"
+    ],
+    "abba_vs_coefficients_final_physical_equal_after_lifecycle_normalization": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "contact_epoch_rule": "compare-shaft-plans-alternating.py explicitly assigns state[\"contact_epoch\"]=0 for each tick before equality; serialized ABBA records therefore contain zero for all vehicles",
+    "abba_contact_epochs_all_zero": true,
+    "abba_wall_cpu_records": [
+      {
+        "algorithm": "python",
+        "wall_s": 15.507566000000224,
+        "cpu_s": 15.109375
+      },
+      {
+        "algorithm": "native",
+        "wall_s": 16.016514300034032,
+        "cpu_s": 15.703125
+      },
+      {
+        "algorithm": "native",
+        "wall_s": 16.27266619996226,
+        "cpu_s": 16.0625
+      },
+      {
+        "algorithm": "python",
+        "wall_s": 15.691712800005917,
+        "cpu_s": 15.4375
+      }
+    ]
+  },
+  "probe": {
+    "status": "passed",
+    "matrices": 1152,
+    "all_values_and_cache_identity_equal": true,
+    "order": "Python C Python C",
+    "micro_wall_seconds": [
+      0.07189110000035726,
+      0.005299500000546686,
+      0.07563640001171734,
+      0.0056373000115854666
+    ],
+    "source_head": "16a7c4a + native shaft plans",
+    "not_fps": true
+  },
+  "profile_json_wall_times": {
+    "profile-coefficients-r1": 13.618427000008523,
+    "profile-shaft-plans-r1": 12.485621699990588
+  },
+  "profile_function_stats": {
+    "profile-coefficients-r1": [
+      {
+        "file": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\src\\shaft_transmission.py",
+        "line": 25,
+        "function": "shaft_brake_plans",
+        "primitive_calls": 4320,
+        "total_calls": 4320,
+        "self_seconds": 0.2302982,
+        "cumulative_seconds": 1.0231715000000001
+      }
+    ],
+    "profile-shaft-plans-r1": [
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<built-in method mechanical_kernels.shaft_brake_plans>",
+        "primitive_calls": 4320,
+        "total_calls": 4320,
+        "self_seconds": 0.028612600000000002,
+        "cumulative_seconds": 0.028612600000000002
+      }
+    ]
+  },
+  "validation": {
+    "PHYS-PERF-01-shaft-plans-T0": {
+      "head": "16a7c4a6a665ff69948a5247339394951a1ea4c7",
+      "status": "failed",
+      "tier": "T0",
+      "tests": [
+        "tests/test_drivetrain_inertia.py"
+      ],
+      "pytest_log_final_line": "no tests ran in 0.00s",
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.117,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "failed",
+          "returncode": 4,
+          "seconds": 0.367,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_drivetrain_inertia.py"
+          ]
+        }
+      ]
+    },
+    "PHYS-PERF-01-shaft-plans-T0-r2": {
+      "head": "16a7c4a6a665ff69948a5247339394951a1ea4c7",
+      "status": "passed",
+      "tier": "T0",
+      "tests": [
+        "tests/test_drivetrain_jacobian.py"
+      ],
+      "pytest_log_final_line": "1 passed in 0.89s",
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.132,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 1.33,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_drivetrain_jacobian.py"
+          ]
+        }
+      ]
+    },
+    "PHYS-PERF-01-shaft-plans-T1": {
+      "head": "16a7c4a6a665ff69948a5247339394951a1ea4c7",
+      "status": "passed",
+      "tier": "T1",
+      "tests": [
+        "tests/test_world_substeps.py"
+      ],
+      "pytest_log_final_line": "4 passed in 0.22s",
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.129,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.632,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_world_substeps.py"
+          ]
+        },
+        {
+          "name": "headless-0",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 20.821,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "0"
+          ]
+        },
+        {
+          "name": "headless-17",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 20.468,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "17"
+          ]
+        },
+        {
+          "name": "headless-23",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 20.952,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "23"
+          ]
+        }
+      ]
+    },
+    "PHYS-PERF-01-shaft-plans-T1-r2": {
+      "head": "16a7c4a6a665ff69948a5247339394951a1ea4c7",
+      "status": "passed",
+      "tier": "T1",
+      "tests": [
+        "tests/test_shaft_transmission.py",
+        "tests/test_tire_shaft.py",
+        "tests/test_input_shaft.py",
+        "tests/test_drivetrain_jacobian.py",
+        "tests/test_tire_drivetrain.py",
+        "tests/test_driveline_inertia.py",
+        "tests/test_driveline_native.py",
+        "tests/test_drive_layout.py",
+        "tests/test_differential.py",
+        "tests/test_gr86.py",
+        "tests/test_sensor_run.py",
+        "tests/test_driving_experiment.py",
+        "tests/test_world_substeps.py"
+      ],
+      "pytest_log_final_line": "626 passed in 94.07s (0:01:34)",
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.113,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 94.553,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_shaft_transmission.py",
+            "tests/test_tire_shaft.py",
+            "tests/test_input_shaft.py",
+            "tests/test_drivetrain_jacobian.py",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_driveline_inertia.py",
+            "tests/test_driveline_native.py",
+            "tests/test_drive_layout.py",
+            "tests/test_differential.py",
+            "tests/test_gr86.py",
+            "tests/test_sensor_run.py",
+            "tests/test_driving_experiment.py",
+            "tests/test_world_substeps.py"
+          ]
+        },
+        {
+          "name": "headless-0",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 17.762,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "0"
+          ]
+        },
+        {
+          "name": "headless-17",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 17.956,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "17"
+          ]
+        },
+        {
+          "name": "headless-23",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 17.244,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "23"
+          ]
+        }
+      ]
+    }
+  },
+  "archive_manifest": [
+    {
+      "source": "src/mechanical_kernels.c",
+      "archived": "source\\mechanical_kernels.c",
+      "kind": "captured_source",
+      "source_sha256": "26c4f04aa927824891668140e12d982ac67fc57faee0d16cbd9597372e8a7943",
+      "archive_sha256": "26c4f04aa927824891668140e12d982ac67fc57faee0d16cbd9597372e8a7943",
+      "equal": true,
+      "size_bytes": 44113
+    },
+    {
+      "source": "src/shaft_transmission.py",
+      "archived": "source\\shaft_transmission.py",
+      "kind": "captured_source",
+      "source_sha256": "76fced6112a1b71e8eaa7d62184be7ddb23cba3d270288d439e256012e4d36ed",
+      "archive_sha256": "76fced6112a1b71e8eaa7d62184be7ddb23cba3d270288d439e256012e4d36ed",
+      "equal": true,
+      "size_bytes": 5324
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\shaft-plans-probe.json",
+      "archived": "inputs/shaft-plans-probe.json",
+      "kind": "copy",
+      "source_sha256": "41652d7d22471dab47db5ba477e7de3778f46d94e257b024af8b588f758795cf",
+      "archive_sha256": "41652d7d22471dab47db5ba477e7de3778f46d94e257b024af8b588f758795cf",
+      "size_bytes": 337,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\check-shaft-plans.py",
+      "archived": "inputs/check-shaft-plans.py",
+      "kind": "copy",
+      "source_sha256": "7b3ae9f302bcafdaa849a5c2c6855bac241e82eba419d378ccce3e1b0bff64ad",
+      "archive_sha256": "7b3ae9f302bcafdaa849a5c2c6855bac241e82eba419d378ccce3e1b0bff64ad",
+      "size_bytes": 1828,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\compare-shaft-plans-alternating.py",
+      "archived": "inputs/compare-shaft-plans-alternating.py",
+      "kind": "copy",
+      "source_sha256": "f1b67a70458d398f839f30c62e6b893bb39d2b08258f368faf3502f24086e9c5",
+      "archive_sha256": "f1b67a70458d398f839f30c62e6b893bb39d2b08258f368faf3502f24086e9c5",
+      "size_bytes": 2485,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\coefficients-final-snapshots.json",
+      "archived": "snapshots/coefficients-final-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "cb37a25f8833f478dacd5aeb938a69f831194a68eeef99b7cd59cbb77ff8c85e",
+      "archive_payload_sha256": "cb37a25f8833f478dacd5aeb938a69f831194a68eeef99b7cd59cbb77ff8c85e",
+      "compressed_sha256": "5938041f98a6c012d22b921c0b3d7c387da6f145c249845c4690b28b95c29eb1",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 1950481
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\shaft-plans-snapshots.json",
+      "archived": "snapshots/shaft-plans-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "b8471888c9dbb8ae723594b2ff565f696120ad712fad1e4fdddd38d263eaf0df",
+      "archive_payload_sha256": "b8471888c9dbb8ae723594b2ff565f696120ad712fad1e4fdddd38d263eaf0df",
+      "compressed_sha256": "23ad608582771d4670b52706f963a52fd71e478e0f493b0ff61e32ef49eb7be2",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 1950458
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\shaft-plans-alternating-snapshots.json",
+      "archived": "snapshots/shaft-plans-alternating-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "a22596af8e1576f89385135f804111f33b9c8a40448b3327e39f14a57b46de18",
+      "archive_payload_sha256": "a22596af8e1576f89385135f804111f33b9c8a40448b3327e39f14a57b46de18",
+      "compressed_sha256": "7b120b42874a8554a2977613bbab1a24e7c485c771dd3080e16ec3a70b5fcd35",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 7068275
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-coefficients-r1\\profile.json",
+      "archived": "profiles/profile-coefficients-r1-profile.json",
+      "kind": "copy",
+      "source_sha256": "cb314abaf0d28b7d55db0a8912e55890a2649e43e462367cdf08e8eb580ac3a7",
+      "archive_sha256": "cb314abaf0d28b7d55db0a8912e55890a2649e43e462367cdf08e8eb580ac3a7",
+      "size_bytes": 31683,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-coefficients-r1\\gr86-profile.prof",
+      "archived": "profiles/profile-coefficients-r1-gr86-profile.prof.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "b2e947771e29ccf0e8094893b7a38b669ce60c3896938ce30effa2b61271c91b",
+      "archive_payload_sha256": "b2e947771e29ccf0e8094893b7a38b669ce60c3896938ce30effa2b61271c91b",
+      "compressed_sha256": "3ca4da8ae78566627928c75771f428862b3c90ec3b19afdfa644884bc98e8fed",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 29531
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-coefficients.py",
+      "archived": "profiles/profile-coefficients.py",
+      "kind": "copy",
+      "source_sha256": "17acf5c33fca421cad305a9406922d5b16a3e1c3e1b96410f7634583bd07c322",
+      "archive_sha256": "17acf5c33fca421cad305a9406922d5b16a3e1c3e1b96410f7634583bd07c322",
+      "size_bytes": 6753,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-shaft-plans-r1\\profile.json",
+      "archived": "profiles/profile-shaft-plans-r1-profile.json",
+      "kind": "copy",
+      "source_sha256": "84e198381b409e9a1cd267b75abc49e083b25b916789c3a1622ddc34dd435b44",
+      "archive_sha256": "84e198381b409e9a1cd267b75abc49e083b25b916789c3a1622ddc34dd435b44",
+      "size_bytes": 31591,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-shaft-plans-r1\\gr86-profile.prof",
+      "archived": "profiles/profile-shaft-plans-r1-gr86-profile.prof.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "5f4acb6d3b4f0199d4f81753e07e22da0068b7b0361e9ebe9dda1c8f756f4b8d",
+      "archive_payload_sha256": "5f4acb6d3b4f0199d4f81753e07e22da0068b7b0361e9ebe9dda1c8f756f4b8d",
+      "compressed_sha256": "8ec45eab7d70b9a61a2e28617a2e5b17ac78f332493e454365341e4654220098",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 29351
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-shaft-plans.py",
+      "archived": "profiles/profile-shaft-plans.py",
+      "kind": "copy",
+      "source_sha256": "98343dec63cf74f2e55d9058f434bdf911409fbdccb7c7371a91e3903fc8dd1f",
+      "archive_sha256": "98343dec63cf74f2e55d9058f434bdf911409fbdccb7c7371a91e3903fc8dd1f",
+      "size_bytes": 6773,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T0\\summary.json",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T0-summary.json",
+      "kind": "copy",
+      "source_sha256": "a844d2705c07793f55129d8fdc1dadb04e0a246fe65f188f8eb6cf1e6d66fe0d",
+      "archive_sha256": "a844d2705c07793f55129d8fdc1dadb04e0a246fe65f188f8eb6cf1e6d66fe0d",
+      "size_bytes": 1622,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T0\\pytest.log",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T0-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "6aedbe9bf1abeed82633cc223635c643627398cb45b31ed7454fa6df532edbaa",
+      "archive_sha256": "6aedbe9bf1abeed82633cc223635c643627398cb45b31ed7454fa6df532edbaa",
+      "size_bytes": 97,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T0\\ruff.log",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T0-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T0-r2\\summary.json",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T0-r2-summary.json",
+      "kind": "copy",
+      "source_sha256": "e77184d23d6fb3f50c3f896d9e7b7ebfadaf9b20b73dd4ea95e3882cb062068d",
+      "archive_sha256": "e77184d23d6fb3f50c3f896d9e7b7ebfadaf9b20b73dd4ea95e3882cb062068d",
+      "size_bytes": 1614,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T0-r2\\pytest.log",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T0-r2-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "6b8e0043bd649b0a4586e59d620338685c09a787fa12d7524bcaf3799be30904",
+      "archive_sha256": "6b8e0043bd649b0a4586e59d620338685c09a787fa12d7524bcaf3799be30904",
+      "size_bytes": 100,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T0-r2\\ruff.log",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T0-r2-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T1\\summary.json",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T1-summary.json",
+      "kind": "copy",
+      "source_sha256": "aee117e057fb07b863c5c1f4b29ea63d2c8d52c35b8a8b2dea0771b7b10fe103",
+      "archive_sha256": "aee117e057fb07b863c5c1f4b29ea63d2c8d52c35b8a8b2dea0771b7b10fe103",
+      "size_bytes": 3390,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T1\\headless-0.log",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T1-headless-0.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T1\\headless-17.log",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T1-headless-17.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T1\\headless-23.log",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T1-headless-23.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T1\\pytest.log",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T1-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "b3c02baf3b8dc6ec37cee82bec0c81e4b56ca5c81ba09c9c15e7374eb7576eba",
+      "archive_sha256": "b3c02baf3b8dc6ec37cee82bec0c81e4b56ca5c81ba09c9c15e7374eb7576eba",
+      "size_bytes": 100,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T1\\ruff.log",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T1-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T1-r2\\summary.json",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T1-r2-summary.json",
+      "kind": "copy",
+      "source_sha256": "78ea4fcaf1d1f63438006488b0bff2ead4acc75e09f3b93c014c945a136064e5",
+      "archive_sha256": "78ea4fcaf1d1f63438006488b0bff2ead4acc75e09f3b93c014c945a136064e5",
+      "size_bytes": 4330,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T1-r2\\headless-0.log",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T1-r2-headless-0.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T1-r2\\headless-17.log",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T1-r2-headless-17.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T1-r2\\headless-23.log",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T1-r2-headless-23.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T1-r2\\pytest.log",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T1-r2-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "1f308ceea452aaaefd4c6ed91accd33c57db30362a1d00e7062194953d81fceb",
+      "archive_sha256": "1f308ceea452aaaefd4c6ed91accd33c57db30362a1d00e7062194953d81fceb",
+      "size_bytes": 761,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-shaft-plans-T1-r2\\ruff.log",
+      "archived": "validation/PHYS-PERF-01-shaft-plans-T1-r2-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "equal": true
+    },
+    {
+      "source": "current captured source inventory",
+      "archived": "source-hashes.json",
+      "kind": "hash_inventory",
+      "sha256": "a3b288b4baed9c03760967590ab3e60f09857c2401a06980b6565a5aa1bcd7ef",
+      "count": 354
+    }
+  ],
+  "limits": [
+    "same-process whole-vehicle ABBA shows no stable gain",
+    "short profiled timing is not FPS or foreground gate",
+    "first T0 failure and partial reruns retained as incomplete",
+    "no test/simulation/build run during archive"
+  ],
+  "archive_file_sha256": {
+    "inputs/check-shaft-plans.py": "7b3ae9f302bcafdaa849a5c2c6855bac241e82eba419d378ccce3e1b0bff64ad",
+    "inputs/compare-shaft-plans-alternating.py": "f1b67a70458d398f839f30c62e6b893bb39d2b08258f368faf3502f24086e9c5",
+    "inputs/shaft-plans-probe.json": "41652d7d22471dab47db5ba477e7de3778f46d94e257b024af8b588f758795cf",
+    "profiles/profile-coefficients-r1-gr86-profile.prof.gz": "3ca4da8ae78566627928c75771f428862b3c90ec3b19afdfa644884bc98e8fed",
+    "profiles/profile-coefficients-r1-profile.json": "cb314abaf0d28b7d55db0a8912e55890a2649e43e462367cdf08e8eb580ac3a7",
+    "profiles/profile-coefficients.py": "17acf5c33fca421cad305a9406922d5b16a3e1c3e1b96410f7634583bd07c322",
+    "profiles/profile-shaft-plans-r1-gr86-profile.prof.gz": "8ec45eab7d70b9a61a2e28617a2e5b17ac78f332493e454365341e4654220098",
+    "profiles/profile-shaft-plans-r1-profile.json": "84e198381b409e9a1cd267b75abc49e083b25b916789c3a1622ddc34dd435b44",
+    "profiles/profile-shaft-plans.py": "98343dec63cf74f2e55d9058f434bdf911409fbdccb7c7371a91e3903fc8dd1f",
+    "shaft-plans-report.md": "b84140dd1a472aed8a8565f040c038cf803ef699f6c392633a8120db6ce2d9de",
+    "snapshots/coefficients-final-snapshots.json.gz": "5938041f98a6c012d22b921c0b3d7c387da6f145c249845c4690b28b95c29eb1",
+    "snapshots/shaft-plans-alternating-snapshots.json.gz": "7b120b42874a8554a2977613bbab1a24e7c485c771dd3080e16ec3a70b5fcd35",
+    "snapshots/shaft-plans-snapshots.json.gz": "23ad608582771d4670b52706f963a52fd71e478e0f493b0ff61e32ef49eb7be2",
+    "source/mechanical_kernels.c": "26c4f04aa927824891668140e12d982ac67fc57faee0d16cbd9597372e8a7943",
+    "source/shaft_transmission.py": "76fced6112a1b71e8eaa7d62184be7ddb23cba3d270288d439e256012e4d36ed",
+    "source-hashes.json": "a3b288b4baed9c03760967590ab3e60f09857c2401a06980b6565a5aa1bcd7ef",
+    "validation/PHYS-PERF-01-shaft-plans-T0-pytest.txt": "6aedbe9bf1abeed82633cc223635c643627398cb45b31ed7454fa6df532edbaa",
+    "validation/PHYS-PERF-01-shaft-plans-T0-r2-pytest.txt": "6b8e0043bd649b0a4586e59d620338685c09a787fa12d7524bcaf3799be30904",
+    "validation/PHYS-PERF-01-shaft-plans-T0-r2-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/PHYS-PERF-01-shaft-plans-T0-r2-summary.json": "e77184d23d6fb3f50c3f896d9e7b7ebfadaf9b20b73dd4ea95e3882cb062068d",
+    "validation/PHYS-PERF-01-shaft-plans-T0-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/PHYS-PERF-01-shaft-plans-T0-summary.json": "a844d2705c07793f55129d8fdc1dadb04e0a246fe65f188f8eb6cf1e6d66fe0d",
+    "validation/PHYS-PERF-01-shaft-plans-T1-headless-0.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-shaft-plans-T1-headless-17.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-shaft-plans-T1-headless-23.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-shaft-plans-T1-pytest.txt": "b3c02baf3b8dc6ec37cee82bec0c81e4b56ca5c81ba09c9c15e7374eb7576eba",
+    "validation/PHYS-PERF-01-shaft-plans-T1-r2-headless-0.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-shaft-plans-T1-r2-headless-17.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-shaft-plans-T1-r2-headless-23.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-shaft-plans-T1-r2-pytest.txt": "1f308ceea452aaaefd4c6ed91accd33c57db30362a1d00e7062194953d81fceb",
+    "validation/PHYS-PERF-01-shaft-plans-T1-r2-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/PHYS-PERF-01-shaft-plans-T1-r2-summary.json": "78ea4fcaf1d1f63438006488b0bff2ead4acc75e09f3b93c014c945a136064e5",
+    "validation/PHYS-PERF-01-shaft-plans-T1-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/PHYS-PERF-01-shaft-plans-T1-summary.json": "aee117e057fb07b863c5c1f4b29ea63d2c8d52c35b8a8b2dea0771b7b10fe103"
+  }
+}

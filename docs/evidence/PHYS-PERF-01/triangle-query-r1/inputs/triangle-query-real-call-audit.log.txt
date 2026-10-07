@@ -1,0 +1,3 @@
+.............                                                            [100%]
+13 passed in 2.44s
+{"passed": true, "exact_real_queries": 54821, "hit_queries": 15774, "reference": "f44aeb1 original TriangleSupport.entry with original candidate generator/edge solver", "comparison_instrumentation_only_in_this_process": true}

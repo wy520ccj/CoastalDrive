@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "exact_calls": 512,
+  "production": true,
+  "reference": "b2501d2:src/suspension.py::_solve",
+  "c_sha256": "51cf8c0da4ce02be5eb8b1a2c95209b88688c6191840629e948e043b13c0162c"
+}

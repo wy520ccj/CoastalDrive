@@ -1,0 +1,4 @@
+........................................................................ [ 80%]
+.................                                                        [100%]
+89 passed in 2.09s
+{"passed": true, "baseline": "155aa87 original cylinder endpoint and Python crown secant", "exact_actual_calls": {"endpoint_calls": 20792, "none": 0, "gradient": 20792, "zero_rotation": 16, "crown_probes": 4096, "cross_face_callback": 12}}

@@ -1,0 +1,589 @@
+{
+  "schema": "PHYS-PERF-01-clipped-geometry-r1-receipt-v1",
+  "head_at_source_capture": "7055a13f08753bba8f45b744e679a5086defd597",
+  "source_hashes": "source-hashes.json",
+  "probe": {
+    "passed": true,
+    "clip_cases": 1024,
+    "clip_values_hex_order_and_original_vertex_identity_equal": true,
+    "subtract_cases": 128,
+    "subtract_values_types_and_remaining_iterators_equal": true,
+    "reference": "7055a13 Python clip + original Python zip subtraction"
+  },
+  "snapshots": {
+    "cases_traffic": [
+      0,
+      8
+    ],
+    "ticks_each": 48,
+    "full_field_equal_to_triangle_query": [
+      true,
+      true
+    ],
+    "current_seconds": [
+      0.9280588000256103,
+      9.694099200016353
+    ],
+    "previous_seconds": [
+      0.9656479999976,
+      10.458877500059316
+    ]
+  },
+  "profiles": {
+    "profile-triangle-query-r1": {
+      "profiled_steps": 16,
+      "warmup_steps": 8,
+      "window_s": 9.170419300004141,
+      "total_s": 9.936071599993738,
+      "source_unchanged": true,
+      "tree_hash_before": "9e9d31c7270a35c8e8ea3662ed3ec34bacfed478ef147a60c28a38dbc9a433ef",
+      "tree_hash_after": "9e9d31c7270a35c8e8ea3662ed3ec34bacfed478ef147a60c28a38dbc9a433ef"
+    },
+    "profile-clipped-geometry-r1": {
+      "profiled_steps": 16,
+      "warmup_steps": 8,
+      "window_s": 7.637991700001294,
+      "total_s": 8.361499999999069,
+      "source_unchanged": true,
+      "tree_hash_before": "73fb404b2f876d619a28e6c6f80a0c3b0414453bbbc04749ea18556650d986d5",
+      "tree_hash_after": "73fb404b2f876d619a28e6c6f80a0c3b0414453bbbc04749ea18556650d986d5"
+    }
+  },
+  "validation": {
+    "PHYS-PERF-01-clipped-geometry-T0": {
+      "head": "7055a13f08753bba8f45b744e679a5086defd597",
+      "status": "failed",
+      "tier": "T0",
+      "tests": [
+        "tests/test_triangle_support.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_suspension_candidates.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_guardrail_suspension.py"
+      ],
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "failed",
+          "returncode": 1,
+          "seconds": 0.127,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "not_run",
+          "returncode": null,
+          "seconds": null,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_triangle_support.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_suspension_candidates.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_guardrail_suspension.py"
+          ]
+        }
+      ],
+      "pytest_log_final_line": null,
+      "ruff_log_tail": "[*] 1 fixable with the `--fix` option."
+    },
+    "PHYS-PERF-01-clipped-geometry-T0-r2": {
+      "head": "7055a13f08753bba8f45b744e679a5086defd597",
+      "status": "passed",
+      "tier": "T0",
+      "tests": [
+        "tests/test_triangle_support.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_suspension_candidates.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_guardrail_suspension.py"
+      ],
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.121,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 2.811,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_triangle_support.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_suspension_candidates.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_guardrail_suspension.py"
+          ]
+        }
+      ],
+      "pytest_log_final_line": "31 passed in 2.39s",
+      "ruff_log_tail": "All checks passed!"
+    },
+    "PHYS-PERF-01-clipped-geometry-T1": {
+      "head": "7055a13f08753bba8f45b744e679a5086defd597",
+      "status": "passed",
+      "tier": "T1",
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_finite_suspension.py",
+        "tests/test_curved_suspension.py",
+        "tests/test_suspension_contacts.py",
+        "tests/test_joint_suspension.py",
+        "tests/test_tire_drivetrain.py",
+        "tests/test_guardrail_suspension.py",
+        "tests/test_suspension_native.py",
+        "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle",
+        "tests/test_gr86.py",
+        "tests/test_world_substeps.py",
+        "tests/test_sensor_run.py",
+        "tests/test_driving_experiment.py"
+      ],
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.115,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 55.837,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_finite_suspension.py",
+            "tests/test_curved_suspension.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_joint_suspension.py",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_guardrail_suspension.py",
+            "tests/test_suspension_native.py",
+            "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle",
+            "tests/test_gr86.py",
+            "tests/test_world_substeps.py",
+            "tests/test_sensor_run.py",
+            "tests/test_driving_experiment.py"
+          ]
+        },
+        {
+          "name": "headless-0",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 17.061,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "0"
+          ]
+        },
+        {
+          "name": "headless-17",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 16.6,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "17"
+          ]
+        },
+        {
+          "name": "headless-23",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 16.554,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "23"
+          ]
+        }
+      ],
+      "pytest_log_final_line": "474 passed in 55.33s",
+      "ruff_log_tail": "All checks passed!"
+    }
+  },
+  "archive_manifest": [
+    {
+      "source": "src/wheel_contact_kernels.c",
+      "archived": "source\\wheel_contact_kernels.c",
+      "kind": "captured_source",
+      "source_sha256": "ac35f398cccea991f808a78b6ff4fbd0cedbc970e8e5a10c5e32ff33b03c925c",
+      "archive_sha256": "ac35f398cccea991f808a78b6ff4fbd0cedbc970e8e5a10c5e32ff33b03c925c",
+      "equal": true,
+      "size_bytes": 36055
+    },
+    {
+      "source": "src/triangle_support.py",
+      "archived": "source\\triangle_support.py",
+      "kind": "captured_source",
+      "source_sha256": "99efb56b4d76c42fcabd8977ad52068e62c3e0a945ca67ae7da6b5c8638a10a1",
+      "archive_sha256": "99efb56b4d76c42fcabd8977ad52068e62c3e0a945ca67ae7da6b5c8638a10a1",
+      "equal": true,
+      "size_bytes": 4737
+    },
+    {
+      "source": "src/wheel_envelope.py",
+      "archived": "source\\wheel_envelope.py",
+      "kind": "captured_source",
+      "source_sha256": "a6c0af9eb7162208209c558cb82dfc9c29433336ee77be2d07e298510fdc1c2c",
+      "archive_sha256": "a6c0af9eb7162208209c558cb82dfc9c29433336ee77be2d07e298510fdc1c2c",
+      "equal": true,
+      "size_bytes": 12286
+    },
+    {
+      "source": "captured 354-file src/tests/tools inventory",
+      "archived": "source-hashes.json",
+      "kind": "hash_inventory",
+      "sha256": "4023a800011c7f7a1d7d4466a4dabc04d4fd97a9b9dec11699f46d008548caf3",
+      "count": 354
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\promote-clipped-geometry.py",
+      "archived": "inputs/promote-clipped-geometry.py",
+      "kind": "copy",
+      "source_sha256": "7d78cf38c00561acd36d8607c951a50969fa8cc637f9ab9cc7c555762eb95b66",
+      "archive_sha256": "7d78cf38c00561acd36d8607c951a50969fa8cc637f9ab9cc7c555762eb95b66",
+      "size_bytes": 4584,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\clipped-geometry-body.c",
+      "archived": "inputs/clipped-geometry-body.c",
+      "kind": "copy",
+      "source_sha256": "98fcc2f1716a9c743256e453599a73da7a3a818e8ec28c93945b1feee629267d",
+      "archive_sha256": "98fcc2f1716a9c743256e453599a73da7a3a818e8ec28c93945b1feee629267d",
+      "size_bytes": 3329,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\preserve-subtract-iterator.py",
+      "archived": "inputs/preserve-subtract-iterator.py",
+      "kind": "copy",
+      "source_sha256": "e46d6df8e20bf579cf20b9b6d0bd0f8f8dd01e2e8e75006a1bd1156ac9aad34e",
+      "archive_sha256": "e46d6df8e20bf579cf20b9b6d0bd0f8f8dd01e2e8e75006a1bd1156ac9aad34e",
+      "size_bytes": 1351,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\check-clipped-geometry.py",
+      "archived": "inputs/check-clipped-geometry.py",
+      "kind": "copy",
+      "source_sha256": "cae97d820ae1534b810fa5add4092c471d6d33b43fb9511a42ee2f382caff38a",
+      "archive_sha256": "cae97d820ae1534b810fa5add4092c471d6d33b43fb9511a42ee2f382caff38a",
+      "size_bytes": 2197,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\clipped-geometry-probe.json",
+      "archived": "inputs/clipped-geometry-probe.json",
+      "kind": "copy",
+      "source_sha256": "ac42bdfa826fdbce57255b80f08f3d7b145bc8ca2a846f9ce01ea00b9cbcd353",
+      "archive_sha256": "ac42bdfa826fdbce57255b80f08f3d7b145bc8ca2a846f9ce01ea00b9cbcd353",
+      "size_bytes": 277,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\clipped-geometry-build.log",
+      "archived": "inputs/clipped-geometry-build.log.txt",
+      "kind": "copy",
+      "source_sha256": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+      "archive_sha256": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+      "size_bytes": 2880,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\clipped-geometry-build-r2.log",
+      "archived": "inputs/clipped-geometry-build-r2.log.txt",
+      "kind": "copy",
+      "source_sha256": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+      "archive_sha256": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+      "size_bytes": 2880,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\clipped-geometry-snapshots.json",
+      "archived": "snapshots/clipped-geometry-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "56f6fb93de0e3f8b51725ad3eaabf569c38773731cf43935103776dad162bb1f",
+      "archive_payload_sha256": "56f6fb93de0e3f8b51725ad3eaabf569c38773731cf43935103776dad162bb1f",
+      "compressed_sha256": "525b0374f84e50f869dbefba486ecca862dde9d8d78035635c3228e4da3151ef",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 1950494
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\triangle-query-snapshots.json",
+      "archived": "snapshots/triangle-query-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "ff4ee41ea0ffe988c6daabbeeb51118fe3c1ae11e7640c4da6f87bf8181dca29",
+      "archive_payload_sha256": "ff4ee41ea0ffe988c6daabbeeb51118fe3c1ae11e7640c4da6f87bf8181dca29",
+      "compressed_sha256": "6cb68fc956d4c6f011fca0f3f30c441666c306f331954f826cf03c84b7d84381",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 1950468
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-triangle-query-r1\\profile.json",
+      "archived": "profiles/profile-triangle-query-r1-profile.json",
+      "kind": "copy",
+      "source_sha256": "6c8f8c8119c1691103481202682bd7a7287246e30a1abc77eae02f55ccf119ba",
+      "archive_sha256": "6c8f8c8119c1691103481202682bd7a7287246e30a1abc77eae02f55ccf119ba",
+      "size_bytes": 31727,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-triangle-query-r1\\gr86-profile.prof",
+      "archived": "profiles/profile-triangle-query-r1-gr86-profile.prof.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "b940475c4402d223e66e5efdc1fa6eb5794439e9d01539a933341319c7be4ede",
+      "archive_payload_sha256": "b940475c4402d223e66e5efdc1fa6eb5794439e9d01539a933341319c7be4ede",
+      "compressed_sha256": "06cf38564a93b02197cbb85c8b29cc5c134b49bc6313792acd8bfec6409afe76",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 28059
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-triangle-query.py",
+      "archived": "profiles/profile-triangle-query.py",
+      "kind": "copy",
+      "source_sha256": "cda7962d99ab0bcf842599234826cc52821e49b073ee8450f2c02f4792513143",
+      "archive_sha256": "cda7962d99ab0bcf842599234826cc52821e49b073ee8450f2c02f4792513143",
+      "size_bytes": 6777,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-clipped-geometry-r1\\profile.json",
+      "archived": "profiles/profile-clipped-geometry-r1-profile.json",
+      "kind": "copy",
+      "source_sha256": "ddcc9889b54697c827857bd487de407d30749353fbe173497a4b6b0108492a6a",
+      "archive_sha256": "ddcc9889b54697c827857bd487de407d30749353fbe173497a4b6b0108492a6a",
+      "size_bytes": 31728,
+      "equal": true
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-clipped-geometry-r1\\gr86-profile.prof",
+      "archived": "profiles/profile-clipped-geometry-r1-gr86-profile.prof.gz",
+      "kind": "gzip_mtime0",
+      "source_payload_sha256": "0da511f19f22c208bb63c8aef826a295d91e115f6538af4df2f52360a78b1d1e",
+      "archive_payload_sha256": "0da511f19f22c208bb63c8aef826a295d91e115f6538af4df2f52360a78b1d1e",
+      "compressed_sha256": "8dc90ac86af91bc394f9b1b2f1324871d966625938a7df440896268dda76a3ca",
+      "payload_equal": true,
+      "gzip_mtime": 0,
+      "size_bytes": 27656
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\profile-clipped-geometry.py",
+      "archived": "profiles/profile-clipped-geometry.py",
+      "kind": "copy",
+      "source_sha256": "4d92719651f315b9762657161080d785c7d05ab6b48df2553d3083f8da6b6908",
+      "archive_sha256": "4d92719651f315b9762657161080d785c7d05ab6b48df2553d3083f8da6b6908",
+      "size_bytes": 6784,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-clipped-geometry-T0\\summary.json",
+      "archived": "validation/PHYS-PERF-01-clipped-geometry-T0-summary.json",
+      "kind": "copy",
+      "source_sha256": "8550bd77980c5abae386a2c1a5a114079158592d741e4e2991dfd67658e1df63",
+      "archive_sha256": "8550bd77980c5abae386a2c1a5a114079158592d741e4e2991dfd67658e1df63",
+      "size_bytes": 1896,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-clipped-geometry-T0\\ruff.log",
+      "archived": "validation/PHYS-PERF-01-clipped-geometry-T0-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "f1e193ce3a2f1c377dc104c2aa5fb059a4e72ba1d6de77edd0813d21389f98c0",
+      "archive_sha256": "f1e193ce3a2f1c377dc104c2aa5fb059a4e72ba1d6de77edd0813d21389f98c0",
+      "size_bytes": 531,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-clipped-geometry-T0-r2\\summary.json",
+      "archived": "validation/PHYS-PERF-01-clipped-geometry-T0-r2-summary.json",
+      "kind": "copy",
+      "source_sha256": "d93dbace0f8b93458282f9c2ecb541d0b19a8f72d8c00b42f9af22e39af8547b",
+      "archive_sha256": "d93dbace0f8b93458282f9c2ecb541d0b19a8f72d8c00b42f9af22e39af8547b",
+      "size_bytes": 1957,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-clipped-geometry-T0-r2\\pytest.log",
+      "archived": "validation/PHYS-PERF-01-clipped-geometry-T0-r2-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "14b151558ccb0f23c25070d6322472ccf14d621b0de278969560837b07a4f4c6",
+      "archive_sha256": "14b151558ccb0f23c25070d6322472ccf14d621b0de278969560837b07a4f4c6",
+      "size_bytes": 101,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-clipped-geometry-T0-r2\\ruff.log",
+      "archived": "validation/PHYS-PERF-01-clipped-geometry-T0-r2-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-clipped-geometry-T1\\summary.json",
+      "archived": "validation/PHYS-PERF-01-clipped-geometry-T1-summary.json",
+      "kind": "copy",
+      "source_sha256": "fa236107ab9ab5a7b6ed738854a0c9a507b2067b2ff73e5d7047a08c3ffced98",
+      "archive_sha256": "fa236107ab9ab5a7b6ed738854a0c9a507b2067b2ff73e5d7047a08c3ffced98",
+      "size_bytes": 4798,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-clipped-geometry-T1\\headless-0.log",
+      "archived": "validation/PHYS-PERF-01-clipped-geometry-T1-headless-0.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-clipped-geometry-T1\\headless-17.log",
+      "archived": "validation/PHYS-PERF-01-clipped-geometry-T1-headless-17.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-clipped-geometry-T1\\headless-23.log",
+      "archived": "validation/PHYS-PERF-01-clipped-geometry-T1-headless-23.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-clipped-geometry-T1\\pytest.log",
+      "archived": "validation/PHYS-PERF-01-clipped-geometry-T1-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "745b5454b0ecf085f59efaa65971c6f59b3f673d5e4e8bb9b4f0b51aa5300013",
+      "archive_sha256": "745b5454b0ecf085f59efaa65971c6f59b3f673d5e4e8bb9b4f0b51aa5300013",
+      "size_bytes": 589,
+      "equal": true
+    },
+    {
+      "source": "logs\\validation\\PHYS-PERF-01-clipped-geometry-T1\\ruff.log",
+      "archived": "validation/PHYS-PERF-01-clipped-geometry-T1-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "equal": true
+    }
+  ],
+  "limits": [
+    "timings are short diagnostic samples, not FPS",
+    "initial C body is an earlier subtract sequence; final behavior is source snapshot",
+    "no test/simulation/build run during archive"
+  ],
+  "archive_file_sha256": {
+    "clipped-geometry-report.md": "b557b887d5b17bdb3958dffb5482d532ba073e0eb7c76280037b98aab35e9cf5",
+    "inputs/check-clipped-geometry.py": "cae97d820ae1534b810fa5add4092c471d6d33b43fb9511a42ee2f382caff38a",
+    "inputs/clipped-geometry-body.c": "98fcc2f1716a9c743256e453599a73da7a3a818e8ec28c93945b1feee629267d",
+    "inputs/clipped-geometry-build-r2.log.txt": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+    "inputs/clipped-geometry-build.log.txt": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+    "inputs/clipped-geometry-probe.json": "ac42bdfa826fdbce57255b80f08f3d7b145bc8ca2a846f9ce01ea00b9cbcd353",
+    "inputs/preserve-subtract-iterator.py": "e46d6df8e20bf579cf20b9b6d0bd0f8f8dd01e2e8e75006a1bd1156ac9aad34e",
+    "inputs/promote-clipped-geometry.py": "7d78cf38c00561acd36d8607c951a50969fa8cc637f9ab9cc7c555762eb95b66",
+    "profiles/profile-clipped-geometry-r1-gr86-profile.prof.gz": "8dc90ac86af91bc394f9b1b2f1324871d966625938a7df440896268dda76a3ca",
+    "profiles/profile-clipped-geometry-r1-profile.json": "ddcc9889b54697c827857bd487de407d30749353fbe173497a4b6b0108492a6a",
+    "profiles/profile-clipped-geometry.py": "4d92719651f315b9762657161080d785c7d05ab6b48df2553d3083f8da6b6908",
+    "profiles/profile-triangle-query-r1-gr86-profile.prof.gz": "06cf38564a93b02197cbb85c8b29cc5c134b49bc6313792acd8bfec6409afe76",
+    "profiles/profile-triangle-query-r1-profile.json": "6c8f8c8119c1691103481202682bd7a7287246e30a1abc77eae02f55ccf119ba",
+    "profiles/profile-triangle-query.py": "cda7962d99ab0bcf842599234826cc52821e49b073ee8450f2c02f4792513143",
+    "snapshots/clipped-geometry-snapshots.json.gz": "525b0374f84e50f869dbefba486ecca862dde9d8d78035635c3228e4da3151ef",
+    "snapshots/triangle-query-snapshots.json.gz": "6cb68fc956d4c6f011fca0f3f30c441666c306f331954f826cf03c84b7d84381",
+    "source/triangle_support.py": "99efb56b4d76c42fcabd8977ad52068e62c3e0a945ca67ae7da6b5c8638a10a1",
+    "source/wheel_contact_kernels.c": "ac35f398cccea991f808a78b6ff4fbd0cedbc970e8e5a10c5e32ff33b03c925c",
+    "source/wheel_envelope.py": "a6c0af9eb7162208209c558cb82dfc9c29433336ee77be2d07e298510fdc1c2c",
+    "source-hashes.json": "4023a800011c7f7a1d7d4466a4dabc04d4fd97a9b9dec11699f46d008548caf3",
+    "validation/PHYS-PERF-01-clipped-geometry-T0-r2-pytest.txt": "14b151558ccb0f23c25070d6322472ccf14d621b0de278969560837b07a4f4c6",
+    "validation/PHYS-PERF-01-clipped-geometry-T0-r2-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/PHYS-PERF-01-clipped-geometry-T0-r2-summary.json": "d93dbace0f8b93458282f9c2ecb541d0b19a8f72d8c00b42f9af22e39af8547b",
+    "validation/PHYS-PERF-01-clipped-geometry-T0-ruff.txt": "f1e193ce3a2f1c377dc104c2aa5fb059a4e72ba1d6de77edd0813d21389f98c0",
+    "validation/PHYS-PERF-01-clipped-geometry-T0-summary.json": "8550bd77980c5abae386a2c1a5a114079158592d741e4e2991dfd67658e1df63",
+    "validation/PHYS-PERF-01-clipped-geometry-T1-headless-0.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-clipped-geometry-T1-headless-17.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-clipped-geometry-T1-headless-23.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/PHYS-PERF-01-clipped-geometry-T1-pytest.txt": "745b5454b0ecf085f59efaa65971c6f59b3f673d5e4e8bb9b4f0b51aa5300013",
+    "validation/PHYS-PERF-01-clipped-geometry-T1-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/PHYS-PERF-01-clipped-geometry-T1-summary.json": "fa236107ab9ab5a7b6ed738854a0c9a507b2067b2ff73e5d7047a08c3ffced98"
+  }
+}

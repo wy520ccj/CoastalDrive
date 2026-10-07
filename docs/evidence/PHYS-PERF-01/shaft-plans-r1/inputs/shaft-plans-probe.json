@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "matrices": 1152,
+  "all_values_and_cache_identity_equal": true,
+  "order": "Python C Python C",
+  "micro_wall_seconds": [
+    0.07189110000035726,
+    0.005299500000546686,
+    0.07563640001171734,
+    0.0056373000115854666
+  ],
+  "source_head": "16a7c4a + native shaft plans",
+  "not_fps": true
+}

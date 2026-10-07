@@ -1,0 +1,863 @@
+{
+  "schema": "PHYS-PERF-01-mechanical-block-r1-receipt-v1",
+  "baseline": "e79af19 + uncommitted src/mechanical_kernels.c and src/tire_drivetrain.py",
+  "archive": "docs/evidence/PHYS-PERF-01/mechanical-block-r1",
+  "exact_probes": {
+    "mass_spin": {
+      "passed": true,
+      "exact_calls": {
+        "mass_response": 2304,
+        "rotor_spin": 768
+      },
+      "reference": "e79af19"
+    },
+    "load_terms": {
+      "passed": true,
+      "exact_calls": 1280,
+      "reference": "e79af19"
+    }
+  },
+  "snapshot_checks": {
+    "traffic_cases": [
+      0,
+      8
+    ],
+    "ticks_each": 48,
+    "versions_vs_mass_spin": {
+      "mechanical-block-snapshots.json": [
+        true,
+        true
+      ],
+      "geometry-snapshots.json": [
+        true,
+        true
+      ],
+      "mechanical-alternating-vs-mechanical-block-traffic8": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    "comparison_rule": "物理字段逐值比较，排除诊断标识contact_epoch；源快照记录保持不变。",
+    "abba_algorithms": [
+      "python",
+      "native",
+      "native",
+      "python"
+    ],
+    "abba_snapshots_match_mechanical_block_traffic8": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "abba_root_contact_epoch_values": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "abba_contact_epoch_all_zero": true,
+    "abba_wall_cpu_records": [
+      {
+        "algorithm": "python",
+        "wall_s": 24.185140799949295,
+        "cpu_s": 23.75
+      },
+      {
+        "algorithm": "native",
+        "wall_s": 16.25172119998024,
+        "cpu_s": 16.0625
+      },
+      {
+        "algorithm": "native",
+        "wall_s": 14.333082299985108,
+        "cpu_s": 14.125
+      },
+      {
+        "algorithm": "python",
+        "wall_s": 14.812968899990665,
+        "cpu_s": 14.78125
+      }
+    ]
+  },
+  "validation_summaries": {
+    "logs/validation/PHYS-PERF-01-mass-spin-T0/summary.json": {
+      "head": "e79af19b112d70ff9851129b1b55ba942116873a",
+      "status": "passed",
+      "tier": "T0",
+      "tests": [
+        "tests/test_joint_suspension.py",
+        "tests/test_driveline_inertia.py",
+        "tests/test_driveline_native.py",
+        "tests/test_rotor_transport.py",
+        "tests/test_input_shaft.py",
+        "tests/test_differential.py",
+        "tests/test_drive_layout.py",
+        "tests/test_tire_drivetrain.py"
+      ],
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.15,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 151.441,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_joint_suspension.py",
+            "tests/test_driveline_inertia.py",
+            "tests/test_driveline_native.py",
+            "tests/test_rotor_transport.py",
+            "tests/test_input_shaft.py",
+            "tests/test_differential.py",
+            "tests/test_drive_layout.py",
+            "tests/test_tire_drivetrain.py"
+          ]
+        }
+      ]
+    },
+    "logs/validation/PHYS-PERF-01-mechanical-block-T0/summary.json": {
+      "head": "e79af19b112d70ff9851129b1b55ba942116873a",
+      "status": "passed",
+      "tier": "T0",
+      "tests": [
+        "tests/test_joint_suspension.py",
+        "tests/test_tire_drivetrain.py",
+        "tests/test_suspension_candidates.py",
+        "tests/test_ramp_contact_step.py"
+      ],
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.148,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 2.263,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_joint_suspension.py",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_suspension_candidates.py",
+            "tests/test_ramp_contact_step.py"
+          ]
+        }
+      ]
+    },
+    "logs/validation/PHYS-PERF-01-mechanical-block-T1/summary.json": {
+      "head": "e79af19b112d70ff9851129b1b55ba942116873a",
+      "status": "passed",
+      "tier": "T1",
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_finite_suspension.py",
+        "tests/test_curved_suspension.py",
+        "tests/test_suspension_contacts.py",
+        "tests/test_joint_suspension.py",
+        "tests/test_tire_drivetrain.py",
+        "tests/test_guardrail_suspension.py",
+        "tests/test_suspension_native.py",
+        "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle",
+        "tests/test_gr86.py",
+        "tests/test_world_substeps.py",
+        "tests/test_sensor_run.py",
+        "tests/test_driving_experiment.py",
+        "tests/test_driveline_inertia.py",
+        "tests/test_driveline_native.py",
+        "tests/test_rotor_transport.py",
+        "tests/test_input_shaft.py",
+        "tests/test_differential.py",
+        "tests/test_drive_layout.py"
+      ],
+      "checks": [
+        {
+          "name": "ruff",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 0.128,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ]
+        },
+        {
+          "name": "pytest",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 129.364,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_finite_suspension.py",
+            "tests/test_curved_suspension.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_joint_suspension.py",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_guardrail_suspension.py",
+            "tests/test_suspension_native.py",
+            "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle",
+            "tests/test_gr86.py",
+            "tests/test_world_substeps.py",
+            "tests/test_sensor_run.py",
+            "tests/test_driving_experiment.py",
+            "tests/test_driveline_inertia.py",
+            "tests/test_driveline_native.py",
+            "tests/test_rotor_transport.py",
+            "tests/test_input_shaft.py",
+            "tests/test_differential.py",
+            "tests/test_drive_layout.py"
+          ]
+        },
+        {
+          "name": "headless-0",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 16.412,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "0"
+          ]
+        },
+        {
+          "name": "headless-17",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 16.022,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "17"
+          ]
+        },
+        {
+          "name": "headless-23",
+          "status": "passed",
+          "returncode": 0,
+          "seconds": 16.031,
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "23"
+          ]
+        }
+      ]
+    }
+  },
+  "artifact_manifest": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/mass-spin-exact.json",
+      "archived": "evidence/mass-spin-exact.json",
+      "kind": "copy",
+      "source_sha256": "d7ef9284d36cd7b896d2c89771c021e1db9992fc405d8b2b481a2de084c74aae",
+      "archived_sha256": "d7ef9284d36cd7b896d2c89771c021e1db9992fc405d8b2b481a2de084c74aae",
+      "size_bytes": 126,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/load-terms-exact.json",
+      "archived": "evidence/load-terms-exact.json",
+      "kind": "copy",
+      "source_sha256": "231ac64096f0adbf376e02b6896622d47fc54b4aedfddb24b19c3c11907df3fd",
+      "archived_sha256": "231ac64096f0adbf376e02b6896622d47fc54b4aedfddb24b19c3c11907df3fd",
+      "size_bytes": 73,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/mechanical-alternating.log",
+      "archived": "evidence/mechanical-alternating.txt",
+      "kind": "copy",
+      "source_sha256": "5615a8c52c53104c24127a5b2cf1a06251846a2a59129bbfd86031a92485e848",
+      "archived_sha256": "5615a8c52c53104c24127a5b2cf1a06251846a2a59129bbfd86031a92485e848",
+      "size_bytes": 465,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/check-mass-spin.py",
+      "archived": "scripts/check-mass-spin.py",
+      "kind": "copy",
+      "source_sha256": "1f028894b674e91d540b1d4eb76d1dbc12a6ab5f024351748ee89b1cd55969e4",
+      "archived_sha256": "1f028894b674e91d540b1d4eb76d1dbc12a6ab5f024351748ee89b1cd55969e4",
+      "size_bytes": 3613,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/check-load-terms.py",
+      "archived": "scripts/check-load-terms.py",
+      "kind": "copy",
+      "source_sha256": "94cc2c7c43f0a9dda09bd3450ca14ff3f211b733ee59c73adc48d22790ed172a",
+      "archived_sha256": "94cc2c7c43f0a9dda09bd3450ca14ff3f211b733ee59c73adc48d22790ed172a",
+      "size_bytes": 2511,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/compare-mechanical-alternating.py",
+      "archived": "scripts/compare-mechanical-alternating.py",
+      "kind": "copy",
+      "source_sha256": "92387dbc00aa0100eef4f2a378b2fb608ebf02b83a86ef363f23b2563d1d641e",
+      "archived_sha256": "92387dbc00aa0100eef4f2a378b2fb608ebf02b83a86ef363f23b2563d1d641e",
+      "size_bytes": 2451,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/load-terms-body.c",
+      "archived": "scripts/load-terms-body.c",
+      "kind": "copy",
+      "source_sha256": "33d5847e6cafb97ddb5fd5d2ea3bbd0b0ce87f5286107d7b546ceaea8e31fe18",
+      "archived_sha256": "33d5847e6cafb97ddb5fd5d2ea3bbd0b0ce87f5286107d7b546ceaea8e31fe18",
+      "size_bytes": 4164,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-mass-spin-T0/summary.json",
+      "archived": "validation/mass-spin-T0-summary.json",
+      "kind": "copy",
+      "source_sha256": "46c8a0be93e4787e8097e4a22b9e685dba751024ebd515b8756da42633933ca3",
+      "archived_sha256": "46c8a0be93e4787e8097e4a22b9e685dba751024ebd515b8756da42633933ca3",
+      "size_bytes": 2100,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-mass-spin-T0/ruff.log",
+      "archived": "validation/mass-spin-T0-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archived_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-mass-spin-T0/pytest.log",
+      "archived": "validation/mass-spin-T0-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "735b5699f263d4c372098eeadacb0105d9df2ab84bd313b768302a140c38fc68",
+      "archived_sha256": "735b5699f263d4c372098eeadacb0105d9df2ab84bd313b768302a140c38fc68",
+      "size_bytes": 762,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-mechanical-block-T0/summary.json",
+      "archived": "validation/mechanical-block-T0-summary.json",
+      "kind": "copy",
+      "source_sha256": "c88f7d2bacd35cc85b5013616861c788adea029c254d01a90f836aaa891beff1",
+      "archived_sha256": "c88f7d2bacd35cc85b5013616861c788adea029c254d01a90f836aaa891beff1",
+      "size_bytes": 1823,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-mechanical-block-T0/ruff.log",
+      "archived": "validation/mechanical-block-T0-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archived_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-mechanical-block-T0/pytest.log",
+      "archived": "validation/mechanical-block-T0-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "ca30272a766bfbe0306af8dabfa7ec8255ce7ee12384a02c49b33c8b87b1f158",
+      "archived_sha256": "ca30272a766bfbe0306af8dabfa7ec8255ce7ee12384a02c49b33c8b87b1f158",
+      "size_bytes": 426,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-mechanical-block-T1/summary.json",
+      "archived": "validation/mechanical-block-T1-summary.json",
+      "kind": "copy",
+      "source_sha256": "cefb79046c73d636b8fcb19dff7be1d75bf3efcbf465156011e4d869f724c21b",
+      "archived_sha256": "cefb79046c73d636b8fcb19dff7be1d75bf3efcbf465156011e4d869f724c21b",
+      "size_bytes": 5237,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-mechanical-block-T1/ruff.log",
+      "archived": "validation/mechanical-block-T1-ruff.txt",
+      "kind": "copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archived_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-mechanical-block-T1/pytest.log",
+      "archived": "validation/mechanical-block-T1-pytest.txt",
+      "kind": "copy",
+      "source_sha256": "c476d7b5230ae7e6629db144f01489e1e09f1c8258d3be6fd523c8fed3dc6d14",
+      "archived_sha256": "c476d7b5230ae7e6629db144f01489e1e09f1c8258d3be6fd523c8fed3dc6d14",
+      "size_bytes": 924,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-mechanical-block-T1/headless-0.log",
+      "archived": "validation/mechanical-block-T1-headless-0.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archived_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-mechanical-block-T1/headless-17.log",
+      "archived": "validation/mechanical-block-T1-headless-17.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archived_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-mechanical-block-T1/headless-23.log",
+      "archived": "validation/mechanical-block-T1-headless-23.txt",
+      "kind": "copy",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archived_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "size_bytes": 32432,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/mass-spin-snapshots.json",
+      "archived": "snapshots/mass-spin-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_sha256": "b7279e76d6dc4c4ffcca8f1a1b5cb771803b541257f88c7c6c28348e18e592cd",
+      "archived_payload_sha256": "b7279e76d6dc4c4ffcca8f1a1b5cb771803b541257f88c7c6c28348e18e592cd",
+      "compressed_sha256": "f9693e0b5e8cbe06f53c456435cc359a602faaec55f3852f16aabdffe2e8221a",
+      "source_payload_equal": true,
+      "size_bytes": 1950465
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/mechanical-block-snapshots.json",
+      "archived": "snapshots/mechanical-block-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_sha256": "4f9cfb0405f4784abfa29e793f55b0cfde5b348493ae421b86f0b7c5062f9f2b",
+      "archived_payload_sha256": "4f9cfb0405f4784abfa29e793f55b0cfde5b348493ae421b86f0b7c5062f9f2b",
+      "compressed_sha256": "63513cac1eaeb4ed4e24e5991dd6fb46b2def322858e47950d27c669630e7843",
+      "source_payload_equal": true,
+      "size_bytes": 1950442
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/geometry-snapshots.json",
+      "archived": "snapshots/geometry-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_sha256": "db1fce27df44ccdaced1a6e0442aefcd97e187d4ed604fb32c2168da6a547e0b",
+      "archived_payload_sha256": "db1fce27df44ccdaced1a6e0442aefcd97e187d4ed604fb32c2168da6a547e0b",
+      "compressed_sha256": "bdcc8c415616b83c9cbe534cb1947fcc14fc6c3ac14518415f9ec6f24e30e42e",
+      "source_payload_equal": true,
+      "size_bytes": 1950460
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/mechanical-alternating-snapshots.json",
+      "archived": "snapshots/mechanical-alternating-snapshots.json.gz",
+      "kind": "gzip_mtime0",
+      "source_sha256": "2edfb983d1e1004023239620f1140b7c5a0a6827d809789f5c93dcec52ea7909",
+      "archived_payload_sha256": "2edfb983d1e1004023239620f1140b7c5a0a6827d809789f5c93dcec52ea7909",
+      "compressed_sha256": "78d7128e796b0629331298d98ff36080e65be745affd1ad7a561611aecb8cbea",
+      "source_payload_equal": true,
+      "size_bytes": 7068271
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/mass-response-body.c",
+      "archived": "scripts/mass-response-body.c",
+      "kind": "copy",
+      "source_sha256": "af5269a05ce7278f62900f68e8757e3b91786fd82dbb7abf2da02c03d0ca0ba4",
+      "archived_sha256": "af5269a05ce7278f62900f68e8757e3b91786fd82dbb7abf2da02c03d0ca0ba4",
+      "size_bytes": 3907,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/rotor-spin-body.c",
+      "archived": "scripts/rotor-spin-body.c",
+      "kind": "copy",
+      "source_sha256": "ac65d8789824f39a0bcdd490c5b439ead04723838cb75ca7c08da0076020de6c",
+      "archived_sha256": "ac65d8789824f39a0bcdd490c5b439ead04723838cb75ca7c08da0076020de6c",
+      "size_bytes": 3172,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/promote-mass-response.py",
+      "archived": "scripts/promote-mass-response.py",
+      "kind": "copy",
+      "source_sha256": "5b8c72fe43960adc909af71551c2029360ba5dc5e4e427b31c87177bffe95bef",
+      "archived_sha256": "5b8c72fe43960adc909af71551c2029360ba5dc5e4e427b31c87177bffe95bef",
+      "size_bytes": 1974,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/promote-rotor-spin.py",
+      "archived": "scripts/promote-rotor-spin.py",
+      "kind": "copy",
+      "source_sha256": "3d5a89966bd94138b6243fc6dc9ff048f31c69b96311af749ef727ddb985cbec",
+      "archived_sha256": "3d5a89966bd94138b6243fc6dc9ff048f31c69b96311af749ef727ddb985cbec",
+      "size_bytes": 1198,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/archive-geometry.py",
+      "archived": "scripts/archive-geometry.py",
+      "kind": "copy",
+      "source_sha256": "ea5e23647e6a5df83bcc08d2217e2cb5e5220f18a47520b4ab05ba3428a02470",
+      "archived_sha256": "ea5e23647e6a5df83bcc08d2217e2cb5e5220f18a47520b4ab05ba3428a02470",
+      "size_bytes": 891,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/check-geometry-loops.py",
+      "archived": "scripts/check-geometry-loops.py",
+      "kind": "copy",
+      "source_sha256": "2fc3d8599d8bfcacde9cfc12724236fc2ce9016354078a1b22badd4d3c7121fc",
+      "archived_sha256": "2fc3d8599d8bfcacde9cfc12724236fc2ce9016354078a1b22badd4d3c7121fc",
+      "size_bytes": 1948,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/geometry-loop-body.c",
+      "archived": "scripts/geometry-loop-body.c",
+      "kind": "copy",
+      "source_sha256": "cbee8543419143e31b7ce06830af00bb503e4be5660eed57458f530e32e36a66",
+      "archived_sha256": "cbee8543419143e31b7ce06830af00bb503e4be5660eed57458f530e32e36a66",
+      "size_bytes": 2632,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/geometry-comparison.json",
+      "archived": "evidence/geometry-comparison.json",
+      "kind": "copy",
+      "source_sha256": "047fb10f965837c7c4f3edb6b53c3e0c9bf761d854fe616d83f91ac082798339",
+      "archived_sha256": "047fb10f965837c7c4f3edb6b53c3e0c9bf761d854fe616d83f91ac082798339",
+      "size_bytes": 348,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/geometry-loops-exact.json",
+      "archived": "evidence/geometry-loops-exact.json",
+      "kind": "copy",
+      "source_sha256": "fbe593739ce1123c813826ef7fd7fc7672e867520bda274d3e850eea8eeabfb3",
+      "archived_sha256": "fbe593739ce1123c813826ef7fd7fc7672e867520bda274d3e850eea8eeabfb3",
+      "size_bytes": 115,
+      "sha_equal": true
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/promote-geometry-loops.py",
+      "archived": "scripts/promote-geometry-loops.py",
+      "kind": "copy",
+      "source_sha256": "760fbf36ce6bcbc21cef175ce919bb6d49fadfcddbb1f9433592dd11832b8392",
+      "archived_sha256": "760fbf36ce6bcbc21cef175ce919bb6d49fadfcddbb1f9433592dd11832b8392",
+      "size_bytes": 1629,
+      "sha_equal": true
+    }
+  ],
+  "source_hashes": "source-hashes.json",
+  "scope_limits": [
+    "短测墙钟含明显顺序漂移，不是FPS或前台Gate",
+    "T2/产品包/T3/前台/人工未完成",
+    "不与主目录T2结果合并统计"
+  ],
+  "archive_files_sha256": {
+    "evidence/geometry-comparison.json": "047fb10f965837c7c4f3edb6b53c3e0c9bf761d854fe616d83f91ac082798339",
+    "evidence/geometry-loops-exact.json": "fbe593739ce1123c813826ef7fd7fc7672e867520bda274d3e850eea8eeabfb3",
+    "evidence/load-terms-exact.json": "231ac64096f0adbf376e02b6896622d47fc54b4aedfddb24b19c3c11907df3fd",
+    "evidence/mass-spin-exact.json": "d7ef9284d36cd7b896d2c89771c021e1db9992fc405d8b2b481a2de084c74aae",
+    "evidence/mechanical-alternating.txt": "5615a8c52c53104c24127a5b2cf1a06251846a2a59129bbfd86031a92485e848",
+    "mechanical-block-report.md": "a60969286ec437ee6fae3e679557a93337c68d232ae3b9b571e94958ac03e356",
+    "scripts/archive-geometry.py": "ea5e23647e6a5df83bcc08d2217e2cb5e5220f18a47520b4ab05ba3428a02470",
+    "scripts/check-geometry-loops.py": "2fc3d8599d8bfcacde9cfc12724236fc2ce9016354078a1b22badd4d3c7121fc",
+    "scripts/check-load-terms.py": "94cc2c7c43f0a9dda09bd3450ca14ff3f211b733ee59c73adc48d22790ed172a",
+    "scripts/check-mass-spin.py": "1f028894b674e91d540b1d4eb76d1dbc12a6ab5f024351748ee89b1cd55969e4",
+    "scripts/compare-mechanical-alternating.py": "92387dbc00aa0100eef4f2a378b2fb608ebf02b83a86ef363f23b2563d1d641e",
+    "scripts/geometry-loop-body.c": "cbee8543419143e31b7ce06830af00bb503e4be5660eed57458f530e32e36a66",
+    "scripts/load-terms-body.c": "33d5847e6cafb97ddb5fd5d2ea3bbd0b0ce87f5286107d7b546ceaea8e31fe18",
+    "scripts/mass-response-body.c": "af5269a05ce7278f62900f68e8757e3b91786fd82dbb7abf2da02c03d0ca0ba4",
+    "scripts/promote-geometry-loops.py": "760fbf36ce6bcbc21cef175ce919bb6d49fadfcddbb1f9433592dd11832b8392",
+    "scripts/promote-mass-response.py": "5b8c72fe43960adc909af71551c2029360ba5dc5e4e427b31c87177bffe95bef",
+    "scripts/promote-rotor-spin.py": "3d5a89966bd94138b6243fc6dc9ff048f31c69b96311af749ef727ddb985cbec",
+    "scripts/rotor-spin-body.c": "ac65d8789824f39a0bcdd490c5b439ead04723838cb75ca7c08da0076020de6c",
+    "snapshots/geometry-snapshots.json.gz": "bdcc8c415616b83c9cbe534cb1947fcc14fc6c3ac14518415f9ec6f24e30e42e",
+    "snapshots/mass-spin-snapshots.json.gz": "f9693e0b5e8cbe06f53c456435cc359a602faaec55f3852f16aabdffe2e8221a",
+    "snapshots/mechanical-alternating-snapshots.json.gz": "78d7128e796b0629331298d98ff36080e65be745affd1ad7a561611aecb8cbea",
+    "snapshots/mechanical-block-snapshots.json.gz": "63513cac1eaeb4ed4e24e5991dd6fb46b2def322858e47950d27c669630e7843",
+    "source-hashes.json": "f5c97157f8b31b970d68f15089b7777857afa5edbdb99a71015192f5692a0494",
+    "validation/mass-spin-T0-pytest.txt": "735b5699f263d4c372098eeadacb0105d9df2ab84bd313b768302a140c38fc68",
+    "validation/mass-spin-T0-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/mass-spin-T0-summary.json": "46c8a0be93e4787e8097e4a22b9e685dba751024ebd515b8756da42633933ca3",
+    "validation/mechanical-block-T0-pytest.txt": "ca30272a766bfbe0306af8dabfa7ec8255ce7ee12384a02c49b33c8b87b1f158",
+    "validation/mechanical-block-T0-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/mechanical-block-T0-summary.json": "c88f7d2bacd35cc85b5013616861c788adea029c254d01a90f836aaa891beff1",
+    "validation/mechanical-block-T1-headless-0.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/mechanical-block-T1-headless-17.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/mechanical-block-T1-headless-23.txt": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+    "validation/mechanical-block-T1-pytest.txt": "c476d7b5230ae7e6629db144f01489e1e09f1c8258d3be6fd523c8fed3dc6d14",
+    "validation/mechanical-block-T1-ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "validation/mechanical-block-T1-summary.json": "cefb79046c73d636b8fcb19dff7be1d75bf3efcbf465156011e4d869f724c21b"
+  },
+  "validation_pass_counts_from_logs": {
+    "mass_spin_T0": "583 passed in 150.89s",
+    "mechanical_block_T0": "339 passed in 1.78s",
+    "mechanical_block_T1": "722 passed in 128.90s"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "passed": false,
+  "baseline": "f4a5ae0 original mapped/Jacobian; comparison instrumentation only in this process",
+  "exact_actual_calls": {
+    "mapped": 0,
+    "jacobian": 0,
+    "hard_gear": 0,
+    "synchronizing": 0,
+    "nine": 0,
+    "eleven": 0
+  }
+}

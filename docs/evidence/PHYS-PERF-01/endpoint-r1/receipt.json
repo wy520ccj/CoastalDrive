@@ -1,0 +1,39 @@
+{
+  "scope": "existing evidence archival only; no tests/build/simulation executed",
+  "snapshot_all_fields_equal": true,
+  "cases": [
+    {
+      "traffic": 0,
+      "ticks": 48,
+      "seconds": 0.7980391001037788
+    },
+    {
+      "traffic": 8,
+      "ticks": 48,
+      "seconds": 7.105911799997557
+    }
+  ],
+  "probe": {
+    "passed": true,
+    "baseline": "155aa87 original cylinder endpoint and Python crown secant",
+    "exact_actual_calls": {
+      "endpoint_calls": 20792,
+      "none": 0,
+      "gradient": 20792,
+      "zero_rotation": 16,
+      "crown_probes": 4096,
+      "cross_face_callback": 12
+    }
+  },
+  "branches": {
+    "passed": true,
+    "cases": 256,
+    "none": 128,
+    "gradient": 128,
+    "no_face_cross_plane": 128
+  },
+  "source_snapshot_sha_equal": true,
+  "t1": "474 pytest, Ruff and three seeds passed",
+  "stage": "main33657dc T2 failed checkpoint; 523 passed, 474 deselected; other14 not_run; no T3/visible/human pass",
+  "manifest_payloads_equal": true
+}

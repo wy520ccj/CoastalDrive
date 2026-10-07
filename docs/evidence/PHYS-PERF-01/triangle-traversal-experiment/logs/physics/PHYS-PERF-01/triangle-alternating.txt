@@ -1,0 +1,6 @@
+{"algorithm": "python", "seconds": 18.692447400011588, "all_snapshot_fields_equal": true}
+Traceback (most recent call last):
+  File "C:\Users\15120\.codex\worktrees\gr86-physics\CoastalDrive\logs\physics\PHYS-PERF-01\compare-triangle-alternating.py", line 46, in <module>
+    assert rows[0]['snapshots'] == snapshots
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
