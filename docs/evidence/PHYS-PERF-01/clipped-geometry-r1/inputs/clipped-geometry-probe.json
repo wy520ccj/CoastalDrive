@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "clip_cases": 1024,
+  "clip_values_hex_order_and_original_vertex_identity_equal": true,
+  "subtract_cases": 128,
+  "subtract_values_types_and_remaining_iterators_equal": true,
+  "reference": "7055a13 Python clip + original Python zip subtraction"
+}
