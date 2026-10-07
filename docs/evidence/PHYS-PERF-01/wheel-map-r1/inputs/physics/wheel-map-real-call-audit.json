@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "baseline": "105d849 original Python wheel local_state",
+  "exact_actual_calls": {
+    "calls": 217053,
+    "hard_gear": 210407,
+    "synchronizing": 6646,
+    "warm_updates": 85725,
+    "multiple_attempts": 7721
+  }
+}
