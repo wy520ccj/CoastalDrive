@@ -2,11 +2,12 @@
 
 from itertools import product
 
+import mechanical_kernels
+from mechanical_kernels import dot
+
 from transmission_ports import PORT_TOLERANCE
 
-
-def dot(first, second):
-    return sum(a * b for a, b in zip(first, second))
+viscous_projection = mechanical_kernels.project_vector
 
 
 def torque_bias_capacities(maximum, biases, axle_torques):
@@ -20,14 +21,6 @@ def differential_gradients(axes):
     coefficients = ((1., -1., 0., 0.), (0., 0., 1., -1.), (.5, .5, -.5, -.5))
     return tuple(tuple(sum(weights[i] * axes[i][a] for i in range(4)) for a in range(3))
                  + (0.,) + weights for weights in coefficients)
-
-
-def viscous_projection(vector, projections):
-    """逐个消去未饱和粘性端口；投影来自同一机械逆惯量。"""
-    for gradient, response, factor in projections:
-        scale = factor * dot(gradient, vector)
-        vector = tuple(vector[a] - scale * response[a] for a in range(len(vector)))
-    return vector
 
 
 def differential_branches(gradients, damping, capacities, mobility, dt):

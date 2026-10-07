@@ -3,6 +3,8 @@
 import math
 from dataclasses import dataclass, replace
 
+from mechanical_kernels import dot
+
 from differential import (
     differential_branches,
     differential_gradients,
@@ -35,11 +37,6 @@ from transmission_ports import (
     transmission_state,
 )
 from wheel_dynamics import WheelStep, _solve_force
-
-
-def dot(first, second):
-    """机械账包含空间向量和完整转子速度，不能截掉曲轴/输入轴/轮轴。"""
-    return sum(a * b for a, b in zip(first, second))
 
 
 @dataclass(frozen=True)

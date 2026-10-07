@@ -3,11 +3,13 @@
 import math
 from itertools import product
 
-from transmission_ports import PORT_TOLERANCE, _inverse_three, gear_loss_limits
+import mechanical_kernels
+from mechanical_kernels import dot
 
+from transmission_ports import PORT_TOLERANCE, _inverse_three
 
-def dot(first, second):
-    return sum(a * b for a, b in zip(first, second))
+# 保留原端口入口，直接绑定同一有限末状态内核。
+shaft_brake_state = mechanical_kernels.shaft_brake_state
 
 
 def shaft_gradients(engine_axis, shaft_axis, wheel_axes, weights, ratio):
@@ -39,46 +41,6 @@ def shaft_brake_plans(response, capacity, brake_capacity, efficiency):
                 inverses[rows] = _inverse_three(rows)
             plans.append(((clutch_mode, motion, brake_mode), sign, slope, inverses[rows]))
     return tuple(plans)
-
-
-def shaft_brake_state(free, response, dt, capacity, brake_capacity, efficiency, plans, warm=None):
-    """四端口顺序为离合滑差、齿比误差、齿轮输入速、单轮相对速。"""
-    tolerance = PORT_TOLERANCE
-    ports = (0, 2, 3)
-    gear_free = free[1] / (dt * response[1][1])
-    reduced_free = tuple(free[i] - response[i][1] * free[1] / response[1][1] for i in ports)
-    order = ([warm] if warm is not None else []) + [i for i in range(len(plans)) if i != warm]
-    for index in order:
-        modes, sign, slope, columns = plans[index]
-        clutch_mode, motion, brake_mode = modes
-        rhs = (reduced_free[0] / dt if clutch_mode == 0 else clutch_mode * capacity,
-               reduced_free[1] / dt if motion == 0 else slope * gear_free,
-               reduced_free[2] / dt if brake_mode == 0 else brake_mode * brake_capacity)
-        clutch, loss, brake = tuple(sum(columns[j][i] * rhs[j] for j in range(3)) for i in range(3))
-        if abs(clutch) > capacity + tolerance or abs(brake) > brake_capacity + tolerance:
-            continue
-        gear = gear_free - sum(response[1][j] * value / response[1][1]
-                               for j, value in zip(ports, (clutch, loss, brake)))
-        low, high = gear_loss_limits(gear, efficiency)
-        if not low - tolerance <= loss <= high + tolerance or sign and gear * sign < -tolerance:
-            continue
-        values = clutch, gear, loss, brake
-        speeds = tuple(free[i] - dt * dot(response[i], values) for i in range(4))
-        slip, error, speed, wheel_speed = speeds
-        if abs(error) > tolerance:
-            continue
-        if clutch_mode == 0 and abs(slip) > tolerance or clutch_mode * slip < -tolerance:
-            continue
-        if brake_mode == 0 and abs(wheel_speed) > tolerance or brake_mode * wheel_speed < -tolerance:
-            continue
-        if motion == 0 and abs(speed) > tolerance:
-            continue
-        if motion > 0 and (speed < -tolerance or abs(loss - high) > tolerance):
-            continue
-        if motion < 0 and (speed > tolerance or abs(loss - low) > tolerance):
-            continue
-        return values, speeds, index
-    raise ArithmeticError("实体输入轴/离合/齿轮/制动共同末状态无可行解")
 
 
 def shaft_brake_response(direction, response, plan):

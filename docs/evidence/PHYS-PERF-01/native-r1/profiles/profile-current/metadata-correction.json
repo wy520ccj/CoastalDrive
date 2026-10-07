@@ -1,0 +1,6 @@
+{
+  "original_declared_head": "0afe6b1",
+  "actual_measurement_base": "70d8b94",
+  "source_was_uncommitted": true,
+  "correction": "Copied profiler had hardcoded earlier HEAD. Raw file preserved; source before/after SHA lists are authoritative for measured Python/C/binary."
+}

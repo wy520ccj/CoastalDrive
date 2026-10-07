@@ -13,10 +13,13 @@
 ```powershell
 py -3.14 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe setup.py build_ext --inplace --build-temp builds/native-temp
 .\.venv\Scripts\python.exe src/main.py
 ```
 
 PyCharm 选择 `.venv/Scripts/python.exe`，入口 `src/main.py`。Git仓库包含运行素材；虚拟环境、构建包和离线原始素材不纳入Git。仅克隆源码时先按下文构建独立包，再使用试玩入口。
+
+物理开发版的点积、叉积和有限轴端口小矩阵使用项目内C内核；Windows源码构建需要Visual Studio C++工具。构建保持严格浮点与补偿求和。独立试玩包携带编译内核，运行不需要编译器。硬件/本构/120Hz与原精度不因本地内核改变。
 
 ## 玩法与操作
 
@@ -64,6 +67,7 @@ PyCharm 选择 `.venv/Scripts/python.exe`，入口 `src/main.py`。Git仓库包�
 ```powershell
 .\.venv\Scripts\python.exe tools/validate.py T0 --area audio
 .\.venv\Scripts\python.exe tools/validate.py T1 --area audio
+.\.venv\Scripts\python.exe setup.py build_ext --inplace --build-temp builds/native-temp
 .\.venv\Scripts\python.exe setup.py build_apps --build-base builds/0.8.3-radio02
 ```
 

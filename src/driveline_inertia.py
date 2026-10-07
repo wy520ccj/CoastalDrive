@@ -1,8 +1,9 @@
 """输出轴与前/后驱动轴的刚性惯量消元；各实体转子仍保留机械账。"""
 
+import mechanical_kernels
+from mechanical_kernels import dot
 
-def dot(first, second):
-    return sum(a * b for a, b in zip(first, second))
+project_inertia = mechanical_kernels.project_vector
 
 
 def rotor_weights(front_share):
@@ -22,13 +23,6 @@ def rotor_gradients(rotor_axes, wheel_axes, front_share, final_drive, wheel_star
                        for a in range(3)) + (0.,) * (wheel_start - 3)
                  + tuple(final_drive * w for w in weights)
                  for axis, weights in zip(rotor_axes, rotor_weights(front_share)))
-
-
-def project_inertia(vector, projections):
-    for gradient, response, factor in projections:
-        scale = factor * dot(gradient, vector)
-        vector = tuple(vector[a] - scale * response[a] for a in range(len(vector)))
-    return vector
 
 
 def inertia_projections(inverse_mass, gradients, inertias):

@@ -21,3 +21,5 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 解析导数功能块完成：实体轴共同状态使用当前机械活动分区的精确导数，包含S(q)×Ω、低速滚阻斜率、输出/前后轴储能反力及负载TBR容量；旧八维对照仍用原差分。只替换Newton矩阵计算，原方程、步长搜索、30轮与角速/端口精度保持。新原生16点独立差分回归通过；467项机械T0和最终495项T1/Ruff、三种子1200拍37.0/37.4/37.0s通过，包含传感器与直接实验生命周期。顺便修正新增TBR外部配置的维数检查次序，错误长度返回ValueError而非IndexError，合法98字段不变。
 
 与0afe6b1的48拍完整快照仍逐字段相同，单车4.644→2.407s、九车50.961→27.258s，分别短测下降48.16/46.51%。[完整输入/快照/导数/T1/SHA](../evidence/PHYS-PERF-01/jacobian-r1/receipt.json)。首轮复用已本地aa4368c，GR86标定归档a0c644e，未推送。下一原生小矩阵探针只在logs内编译并比较，尚未改生产依赖；前台/T3/试玩包/人工Gate仍未完成。
+
+原生加速归档（2026-10-07）：[native-r1报告](../evidence/PHYS-PERF-01/native-r1/native-report.md)、[原始/压缩件清单](../evidence/PHYS-PERF-01/native-r1/archive-manifest.json)及[源码哈希链](../evidence/PHYS-PERF-01/native-r1/source-hash-chain.json)记录48拍全Snapshot逐字段相同，单车/8车短测分别下降64.17%/61.27%。原生T0-r1/r2的Ruff失败及未运行测试、r3的510项通过、projection T0的546项、最终T1的511项和三种子结果、旧版920项边界均保留。Profile墙钟仅作诊断；包r3仅为projection前headless证据，渲染未通过/超时，未重跑。源码SHA捕获从70d8b94工作树的未提交状态开始，`.c`/`.pyd`及所有`src` Python哈希的开始/结束值见链文件；本次未运行测试、模拟或渲染。前台性能、最终产品包、T3和人工驾驶Gate仍待完成。

@@ -1,9 +1,15 @@
-from setuptools import setup
+import os
+
+from setuptools import Extension, setup
 
 
 setup(
     name="coastaldrive",
     version="0.8.3",
+    package_dir={"": "src"},
+    ext_modules=[Extension("mechanical_kernels", ["src/mechanical_kernels.c"],
+                           extra_compile_args=(["/fp:strict", "/utf-8"] if os.name == "nt"
+                                               else ["-fno-fast-math", "-ffp-contract=off"]))],
     options={
         "build_apps": {
             "gui_apps": {"coastaldrive": "src/main.py"},
@@ -31,11 +37,13 @@ setup(
                 "assets/game/**/License.txt",
             ],
             "plugins": ["pandagl", "p3openal_audio"],
-            "include_modules": [
+            "include_modules": {"*": [
+                "mechanical_kernels",
+                "numpy._core._exceptions",
                 "direct.gui.DirectGui",
                 "direct.gui.DirectGuiBase",
                 "direct.showbase.ShowBase",
-            ],
+            ]},
         }
     },
 )

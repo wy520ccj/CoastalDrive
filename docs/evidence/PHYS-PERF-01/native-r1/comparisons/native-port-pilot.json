@@ -1,0 +1,9 @@
+{
+  "in_memory_only": true,
+  "native_call_exact_comparisons": 256,
+  "status": "completed",
+  "compiler_flags": [
+    "/fp:strict",
+    "/utf-8"
+  ]
+}
