@@ -1,0 +1,230 @@
+{
+  "stage_baseline": "33657dc",
+  "t2": "523 passed, 1 checkpoint failed, 474 deselected; subsequent 14 checks not_run",
+  "source_unchanged_from_failed_stage": {
+    "src\\application.py": true,
+    "src\\audio\\__init__.py": true,
+    "src\\audio\\cues.py": true,
+    "src\\audio\\driving.py": true,
+    "src\\audio\\engine.py": true,
+    "src\\audio\\impact.py": true,
+    "src\\audio\\music.py": true,
+    "src\\chase_camera.py": true,
+    "src\\coastal_collision.py": true,
+    "src\\coastal_map.py": true,
+    "src\\controls.py": true,
+    "src\\curve_mesh.py": true,
+    "src\\differential.py": true,
+    "src\\driveline_inertia.py": true,
+    "src\\driver_assist.py": true,
+    "src\\driving_experiment.py": true,
+    "src\\driving_modes.py": true,
+    "src\\environment\\__init__.py": true,
+    "src\\environment\\coastal_slice.py": true,
+    "src\\environment\\expressway.py": true,
+    "src\\environment\\expressway_materials.py": true,
+    "src\\environment\\expressway_mountains.py": true,
+    "src\\environment\\expressway_route.py": true,
+    "src\\environment\\expressway_signs.py": true,
+    "src\\environment\\expressway_vegetation.py": true,
+    "src\\environment\\foundation.py": true,
+    "src\\environment\\surface_mesh.py": true,
+    "src\\environment\\terrain.py": true,
+    "src\\environment\\water.py": true,
+    "src\\estimation_rotation.py": true,
+    "src\\garage.py": true,
+    "src\\highway_curve.py": true,
+    "src\\highway_driver.py": true,
+    "src\\highway_map.py": true,
+    "src\\highway_run.py": true,
+    "src\\highway_segments.py": true,
+    "src\\impact_events.py": true,
+    "src\\main.py": true,
+    "src\\mechanical_kernels.c": true,
+    "src\\mechanical_kernels.cp314-win_amd64.pyd": true,
+    "src\\paths.py": true,
+    "src\\performance_baseline.py": true,
+    "src\\phase0_app.py": true,
+    "src\\powertrain.py": true,
+    "src\\race.py": true,
+    "src\\rolling_resistance.py": true,
+    "src\\rotor_dynamics.py": true,
+    "src\\scene.py": true,
+    "src\\sensor_run.py": true,
+    "src\\sensor_sampling.py": true,
+    "src\\session.py": true,
+    "src\\settings.py": true,
+    "src\\shaft_transmission.py": true,
+    "src\\simulation.py": true,
+    "src\\skins.py": true,
+    "src\\sky_dome.py": true,
+    "src\\soundscape.py": true,
+    "src\\state_estimation.py": true,
+    "src\\streamed_road.py": true,
+    "src\\suspension.py": true,
+    "src\\suspension_contacts.py": true,
+    "src\\suspension_geometry.py": true,
+    "src\\suspension_kinematics.py": true,
+    "src\\test_track.py": true,
+    "src\\tire_compliance.py": true,
+    "src\\tire_coupling.py": true,
+    "src\\tire_drivetrain.py": true,
+    "src\\tire_forces.py": true,
+    "src\\tire_properties.py": true,
+    "src\\tracks.py": true,
+    "src\\traffic.py": true,
+    "src\\traffic_recovery.py": true,
+    "src\\transmission_ports.py": true,
+    "src\\triangle_support.py": true,
+    "src\\ui\\__init__.py": true,
+    "src\\ui\\hud.py": true,
+    "src\\ui\\main_menu.py": true,
+    "src\\ui\\theme.py": true,
+    "src\\vehicle.py": true,
+    "src\\vehicle_brakes.py": true,
+    "src\\vehicle_collision.py": true,
+    "src\\vehicle_config.py": true,
+    "src\\vehicle_contacts.py": true,
+    "src\\vehicle_designs.py": true,
+    "src\\vehicle_dynamics.py": true,
+    "src\\vehicle_parameters.py": true,
+    "src\\vehicle_stability.py": true,
+    "src\\vehicle_state.py": true,
+    "src\\vehicle_steering.py": true,
+    "src\\vehicle_suspension.py": true,
+    "src\\vehicle_tires.py": true,
+    "src\\vehicle_traction.py": true,
+    "src\\vehicle_visual.py": true,
+    "src\\wheel_contact_kernels.c": true,
+    "src\\wheel_contact_kernels.cp314-win_amd64.pyd": true,
+    "src\\wheel_dynamics.py": true,
+    "src\\wheel_envelope.py": true,
+    "src\\wheel_geometry.py": true,
+    "src\\world_props.py": true,
+    "src\\world_step.py": true
+  },
+  "original_substep_replay_error_matches": true,
+  "old_initial_tire_overlap": [
+    {
+      "wheel": 0,
+      "center": [
+        42.647464752197266,
+        110.19694519042969,
+        5.5380730628967285
+      ],
+      "overlaps": [
+        {
+          "body": "inner-rail",
+          "distances": [
+            -0.1226772591471672
+          ]
+        }
+      ]
+    },
+    {
+      "wheel": 1,
+      "center": [
+        43.08684539794922,
+        111.81846618652344,
+        5.5380730628967285
+      ],
+      "overlaps": []
+    },
+    {
+      "wheel": 2,
+      "center": [
+        44.77088928222656,
+        109.62156677246094,
+        5.5380730628967285
+      ],
+      "overlaps": [
+        {
+          "body": "inner-rail",
+          "distances": [
+            -0.25044482946395874
+          ]
+        }
+      ]
+    },
+    {
+      "wheel": 3,
+      "center": [
+        45.210269927978516,
+        111.24308776855469,
+        5.5380730628967285
+      ],
+      "overlaps": []
+    }
+  ],
+  "valid_approach": {
+    "position": [
+      44.59638977050781,
+      112.64158630371094,
+      5.452698707580566
+    ],
+    "heading": 93.12269445610931,
+    "initial_tire_pair_distances": [
+      [],
+      [],
+      [],
+      []
+    ],
+    "first_contact_after_launch_tick": 77,
+    "final_speed": -0.21327871084213257,
+    "full_120_settle_150_collision_steps_completed": true
+  },
+  "discarded": "EPS^(1/3) derivative and early suspension correction probes; first step convergence did not complete actual trajectory; all production changes removed",
+  "scope": "only test initial approach changed; original 120/150 steps, 15m/s, actual target pair collision and <10m/s retained",
+  "numerical_method_source": "https://github.com/scipy/scipy/blob/main/scipy/optimize/_numdiff.py",
+  "t0": {
+    "started_utc": "2026-10-07T10:55:45.335518+00:00",
+    "git_head": "33657dc60faaff242fe38e015f9da4cc1f4eb291",
+    "git_status": "M tests/test_h3_review.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_h3_review.py::test_car_hits_solid_roadside_objects"
+    ],
+    "tier": "T0",
+    "status": "passed",
+    "passed": true,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-checkpoint-approach-T0\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.11
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_h3_review.py::test_car_hits_solid_roadside_objects"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-checkpoint-approach-T0\\pytest.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 34.849
+      }
+    ]
+  }
+}
