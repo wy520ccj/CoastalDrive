@@ -598,3 +598,4 @@ static PyMethodDef methods[] = {
 };
 static struct PyModuleDef module = {PyModuleDef_HEAD_INIT, "wheel_contact_kernels", NULL, -1, methods};
 PyMODINIT_FUNC PyInit_wheel_contact_kernels(void) { return PyModule_Create(&module); }
+
