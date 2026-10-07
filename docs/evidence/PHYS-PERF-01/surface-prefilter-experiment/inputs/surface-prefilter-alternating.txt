@@ -1,0 +1,9 @@
+{"name": "old", "wall_seconds": 10.898045199995977, "cpu_seconds": 10.703125}
+{"name": "prefilter", "wall_seconds": 12.724886099997093, "cpu_seconds": 12.5625}
+{"name": "prefilter", "wall_seconds": 12.795911000008346, "cpu_seconds": 12.515625}
+{"name": "old", "wall_seconds": 12.667930800002068, "cpu_seconds": 12.4375}
+Traceback (most recent call last):
+  File "C:\Users\15120\.codex\worktrees\gr86-physics\CoastalDrive\logs\physics\PHYS-PERF-01\compare-prefilter-alternating.py", line 31, in <module>
+    assert all(row['snapshots']==rows[0]['snapshots'] for row in rows)
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

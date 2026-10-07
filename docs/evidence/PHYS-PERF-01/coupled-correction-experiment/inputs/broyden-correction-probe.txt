@@ -1,0 +1,38 @@
+Traceback (most recent call last):
+  File "C:\Users\15120\.codex\worktrees\gr86-physics\CoastalDrive\logs\physics\PHYS-PERF-01\probe-broyden-correction.py", line 30, in <module>
+    exec(compile(source,str(folder/'probe-coupled-correction.py'),'exec'),{'__file__':str(folder/'probe-coupled-correction.py'),'__name__':'__main__'})
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\15120\.codex\worktrees\gr86-physics\CoastalDrive\logs\physics\PHYS-PERF-01\probe-coupled-correction.py", line 34, in <module>
+    sim.step(Control(throttle=.3,steering=.02 if tick>=24 else 0.))
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\15120\.codex\worktrees\gr86-physics\CoastalDrive\src\simulation.py", line 738, in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\15120\.codex\worktrees\gr86-physics\CoastalDrive\src\world_step.py", line 46, in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\15120\.codex\worktrees\gr86-physics\CoastalDrive\src\vehicle.py", line 289, in advance_physics
+    coupled_contacts = self.tires.advance(
+        self._chassis, self._wheel_contacts, angles,
+    ...<4 lines>...
+        substeps=tire_substeps, accumulate=accumulate,
+    )
+  File "C:\Users\15120\.codex\worktrees\gr86-physics\CoastalDrive\src\vehicle_tires.py", line 193, in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+        wheel_frames, projected, powertrain.engine_torque_request, powertrain.capacity,
+    ...<14 lines>...
+            if powertrain.downstream_active else (), suspension=normal_system if suspension is not None else None,
+        rolling_coefficients=rolling_coefficients)
+  File "C:\Users\15120\.codex\worktrees\gr86-physics\CoastalDrive\src\tire_drivetrain.py joint numeric experiment", line 787, in advance_drivetrain
+    tuple(.5 * j * speed**2 for j, speed in zip(inertias, downstream_speeds)),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\15120\.codex\worktrees\gr86-physics\CoastalDrive\src\tire_drivetrain.py joint numeric experiment", line 676, in correct_coupled
+    geometry_error = 0.
+    
+  File "C:\Users\15120\.codex\worktrees\gr86-physics\CoastalDrive\src\tire_drivetrain.py joint numeric experiment", line 676, in <genexpr>
+    geometry_error = 0.
+    
+  File "C:\Users\15120\.codex\worktrees\gr86-physics\CoastalDrive\src\tire_drivetrain.py joint numeric experiment", line 676, in <genexpr>
+    geometry_error = 0.
+    
+IndexError: list index out of range

@@ -78,3 +78,6 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 
 
 有限圆柱末接点数值块完成：原真实世界relative_entry和跨有限面face_extension_difference仍回原函数；同平面/Gonzalez公式、胎冠割线与有限转动直接复用一个C数值实现。4,096割线hex、20,792实际末接点、256无接触/反向/跨面分支逐值相同；89项T0、474项T1/Ruff/三种子14.5/13.2/13.7s通过。首移植脚本名错误在写源前失败，首T0未用导入Ruff失败/pytest未跑均保留。单/九车48拍全部Snapshot相同，短测0.7980/7.1059s，profile16拍5.5928s只定位。证据[endpoint-r1](../evidence/PHYS-PERF-01/endpoint-r1/receipt.json)。main33657dc完整T2已523通过/1检查点初始子步失败，14专项未跑，完整阶段未通过；该失败由主施工线复现处理，性能块不冒充修复。最终包/T3/前台/人工仍待完成。
+
+
+拒绝的两项候选算法实验（2026-10-07）：[子步14变量联合Newton / Broyden实验](../evidence/PHYS-PERF-01/coupled-correction-experiment/receipt.json)均未接入生产；单/8车48拍完整Snapshot不与端点基线逐字段相同，短测Newton为1.3569/17.4754s、Broyden为1.5520/19.0373s，显著慢于基线0.7980/7.1059s；Broyden首轮IndexError及修正后r2均保留。[支持面root AABB提前筛选实验](../evidence/PHYS-PERF-01/surface-prefilter-experiment/receipt.json)标准快照与基线相同，但短测0.9699/11.6376s更慢；同进程old/new/new/old完整Snapshot断言失败，原快照未保存，原因未知。正式T0为31项通过（调用审计日志另有独立40项记录）；无T1或机械/能量Gate，两项均拒绝且未进入生产。

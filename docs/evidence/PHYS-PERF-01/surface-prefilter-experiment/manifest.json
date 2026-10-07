@@ -1,0 +1,114 @@
+{
+  "files": [
+    {
+      "path": "current-source-capture.json",
+      "sha256": "9d4908e455ac0e88ee4cb5027a78365dcf1b138e202b9128f98d5882c814aca3",
+      "bytes": 74888
+    },
+    {
+      "path": "inputs/baseline/baseline.c",
+      "sha256": "0e7d2b67d496dfd30813766ac922d557446a6138be72fb9b67cf1f9c01cd7ea8",
+      "bytes": 49255
+    },
+    {
+      "path": "inputs/baseline/initial-link-failure.txt",
+      "sha256": "70bd1f7ef48ff3665856d04dbdf21cbd8ee3958c4a8a5baf202dff351d8fafc6",
+      "bytes": 3927
+    },
+    {
+      "path": "inputs/baseline/original-manifest.json",
+      "sha256": "38af3c8985359df5f6eb5546b28c53a956266ac97712ba9663172c779afaca5b",
+      "bytes": 2020
+    },
+    {
+      "path": "inputs/baseline/original-receipt.json",
+      "sha256": "00cb41d31e06b3df0495627b017f0930f933213c08f4cd94cedcaa5779b36fc8",
+      "bytes": 2534
+    },
+    {
+      "path": "inputs/baseline/original-wheel-contact-kernels.c",
+      "sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+      "bytes": 49253
+    },
+    {
+      "path": "inputs/baseline/setup.py",
+      "sha256": "d283b9f61759ec86e4c930f46d289929438f051718975a7d390db5877ae0a8df",
+      "bytes": 901
+    },
+    {
+      "path": "inputs/baseline/successful-build.txt",
+      "sha256": "cac47a4a67ca4c187ef16757ae1418d19715cfef0559e598f19867a66655b198",
+      "bytes": 3278
+    },
+    {
+      "path": "inputs/compare-prefilter-alternating.py",
+      "sha256": "5c0b9c79db33b2c3cba2d75716992e30604a5b0c6f4463c3dafa4a928dc63261",
+      "bytes": 1922
+    },
+    {
+      "path": "inputs/endpoint-production.json.gz",
+      "sha256": "73a7a9916aed8c568976cc9d090d2d4f4c883615d5b6e2769047377ab1739137",
+      "bytes": 1950493
+    },
+    {
+      "path": "inputs/promote-surface-prefilter.py",
+      "sha256": "8f0711205d818efeadc5d1e01a86685e7707a06dc611d204d0ce25b74e825602",
+      "bytes": 2421
+    },
+    {
+      "path": "inputs/surface-prefilter-alternating.txt",
+      "sha256": "a31ff2ac02af1d780d3ce15c2a63c933faf62a89ee4d2127e956878e3b1fd74e",
+      "bytes": 669
+    },
+    {
+      "path": "inputs/surface-prefilter-build.txt",
+      "sha256": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+      "bytes": 2880
+    },
+    {
+      "path": "inputs/surface-prefilter-production-experiment.c",
+      "sha256": "9e8a281dec025730cefb091cd6a34298e51de20c31cff35a0a8ddf8c3cb7af24",
+      "bytes": 51278
+    },
+    {
+      "path": "inputs/surface-prefilter-real-call-audit.txt",
+      "sha256": "92787a975cce2b15cb0386510b83842b3990863fb52be2ac89f7723cc99e2d2e",
+      "bytes": 365
+    },
+    {
+      "path": "inputs/surface-prefilter-restore-build.txt",
+      "sha256": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+      "bytes": 2880
+    },
+    {
+      "path": "inputs/surface-prefilter-snapshots.json.gz",
+      "sha256": "649d7ad3526200eca9790965cee82824fc72fe134150b8496894ec425396fbd3",
+      "bytes": 1950482
+    },
+    {
+      "path": "inputs/validation/PHYS-PERF-01-surface-prefilter-T0/pytest.txt",
+      "sha256": "ecd03fbfda8fd04d1a61dcc224f30e8813448b9b7e088d757515d5c23c8645fb",
+      "bytes": 101
+    },
+    {
+      "path": "inputs/validation/PHYS-PERF-01-surface-prefilter-T0/ruff.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19
+    },
+    {
+      "path": "inputs/validation/PHYS-PERF-01-surface-prefilter-T0/summary.json",
+      "sha256": "5f806019f0ef6c89c53afe4f0eadbfbe0ef676552b8849ea3bf756eb02365dee",
+      "bytes": 1961
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "e23e7ef76654c3f8564bcb060af8ae97efdc78d40515e49b7fe39a10419ddc0a",
+      "bytes": 12829
+    },
+    {
+      "path": "report.md",
+      "sha256": "68f60bd0e46905e6ae39d574b1d1a2d13e70f4cc740d5104a161c154965761e0",
+      "bytes": 1849
+    }
+  ]
+}
