@@ -1,0 +1,5 @@
+{"algorithm": "python", "seconds": 18.551920199985034, "all_snapshot_fields_equal": true}
+Traceback (most recent call last):
+  File "C:\Users\15120\.codex\worktrees\gr86-physics\CoastalDrive\logs\physics\PHYS-PERF-01\compare-triangle-alternating.py", line 49, in <module>
+    raise AssertionError('Full Snapshot mismatch saved; no performance acceptance')
+AssertionError: Full Snapshot mismatch saved; no performance acceptance
