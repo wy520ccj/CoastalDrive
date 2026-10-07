@@ -1,0 +1,109 @@
+"""实体输入轴的离合、齿轮反力/效率、同步器与单轮制动端口。"""
+
+import math
+from itertools import product
+
+import mechanical_kernels
+from mechanical_kernels import dot
+
+from transmission_ports import PORT_TOLERANCE, _inverse_three
+
+# 保留原端口入口，直接绑定同一有限末状态内核。
+shaft_brake_state = mechanical_kernels.shaft_brake_state
+shaft_brake_plans = mechanical_kernels.shaft_brake_plans
+
+
+def shaft_gradients(engine_axis, shaft_axis, wheel_axes, weights, ratio):
+    """九维绝对速度中，离合与齿轮分别作用于两根实体轴和真实轮轴。"""
+    wheel_ratios = tuple(ratio * weight for weight in weights)
+    drive_axis = tuple(sum(wheel_ratios[i] * wheel_axes[i][a] for i in range(4)) for a in range(3))
+    clutch = tuple(shaft_axis[a] - engine_axis[a] for a in range(3)) + (1., -1.) + (0.,) * 4
+    gear = tuple(-shaft_axis[a] - drive_axis[a] for a in range(3)) + (0., 1.) + tuple(-r for r in wheel_ratios)
+    loss = drive_axis + (0., 0.) + wheel_ratios
+    return clutch, gear, loss
+
+
+def shaft_brake_response(direction, response, plan):
+    """同一活动分区的精确转矩导数，供轮胎接触牛顿导数使用。"""
+    modes, _sign, slope, columns = plan
+    ports = (0, 2, 3)
+    gear_free = direction[1] / response[1][1]
+    reduced = tuple(direction[i] - response[i][1] * gear_free for i in ports)
+    rhs = (reduced[0] if modes[0] == 0 else 0.,
+           reduced[1] if modes[1] == 0 else slope * gear_free,
+           reduced[2] if modes[2] == 0 else 0.)
+    clutch, loss, brake = tuple(sum(columns[j][i] * rhs[j] for j in range(3)) for i in range(3))
+    gear = gear_free - sum(response[1][j] * value / response[1][1]
+                           for j, value in zip(ports, (clutch, loss, brake)))
+    return clutch, gear, loss, brake
+
+
+def synchronizer_brake_plans(response, capacities):
+    """未挂挡的离合/有限同步锥/单轮制动；零容量端口只能传零矩。"""
+    plans, inverses = [], {}
+    choices = [(0, 1, -1) if capacity else (1, -1) for capacity in capacities]
+    for modes in product(*choices):
+        rows = tuple(response[i] if mode == 0 else tuple(float(i == j) for j in range(3))
+                     for i, mode in enumerate(modes))
+        if rows not in inverses:
+            inverses[rows] = _inverse_three(rows)
+        plans.append((modes, inverses[rows]))
+    return tuple(plans)
+
+
+def synchronizer_brake_state(free, response, dt, capacities, plans, warm=None):
+    """锁合或容量饱和均由末滑差决定，不设置转速、不按固定时间宣布同步。"""
+    order = ([warm] if warm is not None else []) + [i for i in range(len(plans)) if i != warm]
+    for index in order:
+        modes, columns = plans[index]
+        rhs = tuple(free[i] / dt if mode == 0 else mode * capacities[i] for i, mode in enumerate(modes))
+        values = tuple(sum(columns[j][i] * rhs[j] for j in range(3)) for i in range(3))
+        speeds = tuple(free[i] - dt * dot(response[i], values) for i in range(3))
+        if any(abs(value) > capacity + PORT_TOLERANCE for value, capacity in zip(values, capacities)):
+            continue
+        if any(abs(speed) > PORT_TOLERANCE if mode == 0 else mode * speed < -PORT_TOLERANCE
+               for mode, speed in zip(modes, speeds)):
+            continue
+        return values, speeds, index
+    raise ArithmeticError("实体输入轴/离合/同步器/制动共同末状态无可行解")
+
+
+def synchronizer_brake_response(direction, plan):
+    """有限同步活动分区的转矩导数。"""
+    modes, columns = plan
+    rhs = tuple(direction[i] if mode == 0 else 0. for i, mode in enumerate(modes))
+    return tuple(sum(columns[j][i] * rhs[j] for j in range(3)) for i in range(3))
+
+
+def brake_increment(response, speeds, torques, capacities, dt, diagonal):
+    """联合修正四轮制动；饱和行指定容量，锁合行指定末相对速为零。"""
+    rows = []
+    for i in range(4):
+        demand = torques[i] + speeds[i] / (dt * diagonal[i])
+        if abs(demand) < capacities[i]:
+            rows.append(list(response[i]) + [speeds[i] / dt])
+        else:
+            target = max(-capacities[i], min(capacities[i], demand))
+            rows.append([float(i == j) for j in range(4)] + [target - torques[i]])
+    pivots, row = [], 0
+    rounding = 16 * math.ulp(max(abs(value) for line in rows for value in line[:4]))
+    for column in range(4):
+        pivot = max(range(row, 4), key=lambda i: abs(rows[i][column]))
+        if abs(rows[pivot][column]) <= rounding:
+            # 全轮锁合与齿轮静止可能具有相关约束；保留旧转矩的零空间分量。
+            continue
+        rows[row], rows[pivot] = rows[pivot], rows[row]
+        scale = rows[row][column]
+        rows[row] = [value / scale for value in rows[row]]
+        for i in range(4):
+            if i != row:
+                factor = rows[i][column]
+                rows[i] = [rows[i][j] - factor * rows[row][j] for j in range(5)]
+        pivots.append((row, column))
+        row += 1
+        if row == 4:
+            break
+    result = [0.] * 4
+    for row, column in pivots:
+        result[column] = rows[row][4]
+    return tuple(result)
