@@ -1,0 +1,149 @@
+{
+  "files": [
+    {
+      "path": "inputs/physics/audit-surface-ray-real-calls.py",
+      "sha256": "fe9337316c95c34b004f5e24ee5f478206e8dc132f081761969876eee2472591",
+      "bytes": 2966
+    },
+    {
+      "path": "inputs/physics/profile-surface-ray-r1/gr86-profile.prof.gz",
+      "sha256": "7b8fa45931c1d9d4298e0edb57a9fa505f4d0a917eeb4e72cb103b6cb972e37b",
+      "bytes": 27361
+    },
+    {
+      "path": "inputs/physics/profile-surface-ray-r1/profile.json",
+      "sha256": "b3018b794ddf701fe93f9d7bfc6174861a1083d6f9ffa635a0a3fc7201e92c07",
+      "bytes": 31782
+    },
+    {
+      "path": "inputs/physics/profile-surface-ray.py",
+      "sha256": "4302425d9c0594d2830accf34c55f016bf00293cbc751bbff63326d2bc00963e",
+      "bytes": 6785
+    },
+    {
+      "path": "inputs/physics/profile-surface-ray.txt",
+      "sha256": "38ce63f5ae5cc4732ec218b0e4454afa19ffba8154f1397ee78a3dc24859ee6a",
+      "bytes": 138
+    },
+    {
+      "path": "inputs/physics/profile-wheel-map-r1/gr86-profile.prof.gz",
+      "sha256": "f631a2a009c1b6255e6a2dcf00389595af502e51563822939bfcf04d17293549",
+      "bytes": 27441
+    },
+    {
+      "path": "inputs/physics/profile-wheel-map-r1/profile.json",
+      "sha256": "63ee974a93b06ebc7821faa2cd80594e033c5e58510ee22e73611d345559fdd4",
+      "bytes": 31612
+    },
+    {
+      "path": "inputs/physics/promote-surface-ray.py",
+      "sha256": "df6079257da2c041ebfe916035e0eab37ba1a356c748caa216cee1fb6bb4495c",
+      "bytes": 1775
+    },
+    {
+      "path": "inputs/physics/surface-ray-body.c",
+      "sha256": "687af19cb6df88ca53ccfd19769d948c4138ff8bc774b05f8c026ac8016c1b07",
+      "bytes": 4187
+    },
+    {
+      "path": "inputs/physics/surface-ray-build-r2.txt",
+      "sha256": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+      "bytes": 2880
+    },
+    {
+      "path": "inputs/physics/surface-ray-build.txt",
+      "sha256": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+      "bytes": 2880
+    },
+    {
+      "path": "inputs/physics/surface-ray-production.json.gz",
+      "sha256": "1cc790785e7faaf014f3cf112e8b6d1568faee74939eaa283e46452fd5e7b64d",
+      "bytes": 1950488
+    },
+    {
+      "path": "inputs/physics/surface-ray-real-call-audit.json",
+      "sha256": "6081f0de9f73ed2aece53678dd71c1c01a79bc2b2b562893b7fd519f7529426f",
+      "bytes": 319
+    },
+    {
+      "path": "inputs/physics/surface-ray-real-call-audit.txt",
+      "sha256": "36219b174f9d212f58ecd8f219000c9819b697c5701fb5fa183d11ab2bf021a1",
+      "bytes": 365
+    },
+    {
+      "path": "inputs/physics/wheel-map-production.json.gz",
+      "sha256": "015476c5889486343601eb102da32a7fcecaa3f8ca5214d4f55002907a12d492",
+      "bytes": 1950481
+    },
+    {
+      "path": "inputs/validation/PHYS-PERF-01-surface-ray-T0/pytest.txt",
+      "sha256": "8d0892e0220c2419205cb57a19c405ce7e6df30a736c5d8cf399bf37af963692",
+      "bytes": 101
+    },
+    {
+      "path": "inputs/validation/PHYS-PERF-01-surface-ray-T0/ruff.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19
+    },
+    {
+      "path": "inputs/validation/PHYS-PERF-01-surface-ray-T0/summary.json",
+      "sha256": "a7737ccb2db8c1f412628bd7097de6bd46fb83f20e112a663ca35b9fcf60e57a",
+      "bytes": 2015
+    },
+    {
+      "path": "inputs/validation/PHYS-PERF-01-surface-ray-T1/headless-0.txt",
+      "sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "bytes": 32432
+    },
+    {
+      "path": "inputs/validation/PHYS-PERF-01-surface-ray-T1/headless-17.txt",
+      "sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "bytes": 32432
+    },
+    {
+      "path": "inputs/validation/PHYS-PERF-01-surface-ray-T1/headless-23.txt",
+      "sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "bytes": 32432
+    },
+    {
+      "path": "inputs/validation/PHYS-PERF-01-surface-ray-T1/pytest.txt",
+      "sha256": "c050acd754f2883e9585ed6d5183446f78c1bc2c02243124796a64a24a27e8e9",
+      "bytes": 589
+    },
+    {
+      "path": "inputs/validation/PHYS-PERF-01-surface-ray-T1/ruff.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19
+    },
+    {
+      "path": "inputs/validation/PHYS-PERF-01-surface-ray-T1/summary.json",
+      "sha256": "eb818881aad265d41058e09b3418668697f9665ae30a07ed3a2fcedd7497d77e",
+      "bytes": 4852
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "634c9a0f00e65eac9693f1dc0dd409ec5ad4521672c1955825bc2c9987e6300b",
+      "bytes": 18941
+    },
+    {
+      "path": "report.md",
+      "sha256": "c566501cca07084ccb618b748d7ea4ca0a8ee7c97f396ceeccf684ad4a5a8048",
+      "bytes": 1472
+    },
+    {
+      "path": "source/suspension_contacts.py",
+      "sha256": "277810420e07bffff3c5d68fe617c33c11a98765d41ddd010accd777fcca8072",
+      "bytes": 13287
+    },
+    {
+      "path": "source/wheel_contact_kernels.c",
+      "sha256": "d2e8afd336231f695c64ac584a1a82fb3e2939608ffd94f284b7133ca0760d5e",
+      "bytes": 40657
+    },
+    {
+      "path": "source-hashes.json",
+      "sha256": "ae7be5ac1874387336ef7b6fe5495704edfb1af3aadafa7db6729fb2f1dd9a84",
+      "bytes": 74824
+    }
+  ]
+}
