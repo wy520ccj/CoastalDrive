@@ -3,7 +3,15 @@
 import pytest
 from panda3d.core import BitMask32, Vec3
 
-from coastal_map import MAP_POINTS, SEA_LEVEL, map_length, offset_point, point_at, project
+from coastal_map import (
+    MAP_POINTS,
+    RAIL_OFFSET,
+    SEA_LEVEL,
+    map_length,
+    offset_point,
+    point_at,
+    project,
+)
 from session import Session
 from simulation import Control, Simulation
 
@@ -35,10 +43,17 @@ def test_both_rails_are_continuous_including_previously_invisible_sections(sim):
             assert hit.getNode().getName() == ("outer-rail" if side > 0 else "inner-rail")
 
 
-@pytest.mark.parametrize("offset", [-4.95, 4.95])
-def test_raised_shoulders_support_the_vehicle(sim, offset):
+@pytest.mark.parametrize("side", [-1, 1])
+def test_raised_shoulders_support_the_vehicle(sim, side):
     point = max(MAP_POINTS, key=lambda p: p.z)
+    # 自由路肩摆位须容纳完整车身；旧4.95m位置已穿入护栏约13cm。
+    rail = next(body for body in sim._world.getRigidBodies()
+                if body.getName() == ("inner-rail" if side < 0 else "outer-rail"))
+    offset = side * (RAIL_OFFSET - .12 - rail.getShape(0).getMargin()
+                     - sim.config.collision_half_width - .05)
     sim.reset_player(offset_point(point, offset, 0.55), point.heading, point.grade)
+    assert all(contact.getManifoldPoint().getDistance() >= 0. for contact in
+               sim._world.contactTestPair(sim.player._chassis, rail).getContacts())
     for _ in range(240):
         sim.step(Control())
     car = sim.snapshot().player

@@ -1,0 +1,16 @@
+{
+  "baseline": "79b32d2",
+  "sha256": {
+    "input.json": "319a3fd2b662544b59f279338b55a2013665578ba07beab950e39a40d52d7e1a",
+    "config.json": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb",
+    "rear-config.json": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb",
+    "initial-clearance.json": "85bf04ff675e3abd6378e55685424d512ce6d4b72ff8f77ce796e99b5e787562",
+    "clear-placement-pilot.json": "c84f75d5e5bb7f6c7c87c7339b066db40c02714b19cd178f51e4c0ab140e06cc",
+    "native-overlap-pilot.json": "e01779e75b665a330b38247d67f0e27ae7dd595014d1724f3ccf5572839d7a06"
+  },
+  "production_changed": false,
+  "test_contract": "240 ticks, absolute roll<3 degrees, height>surface+.3m, all native wheels touching retained; initial free-shoulder pose must not intersect rail",
+  "old_pose_penetration_m": 0.1299905627965927,
+  "old_pose": "failed and archived; not reclassified as passed",
+  "zero_fraction_rejection_pilot": "not implemented; completes but flips179.935deg; rejected"
+}
