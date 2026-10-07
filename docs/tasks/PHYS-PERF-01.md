@@ -32,3 +32,5 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 
 
 2026-10-07后续状态：主目录T2-r11已实际32通过/1高速车流求解失败（2436.80s），原后14检查未跑，阶段未关闭；正在保存最小失败子步。上述edge归档“仍在跑”描述为捕获时点，不能当作当前状态。下一性能LU仅在logs内试验，512矩阵与19,798个真实8/11维求解调用逐值相同，两条完整Snapshot相同；尚未接入正式源。先处理实际物理失败，再继续产品/性能收口。
+
+静态形状边界候选复用归档（2026-10-07）：[报告](../evidence/PHYS-PERF-01/bounds-r1/bounds-report.md)、[SHA/payload收据](../evidence/PHYS-PERF-01/bounds-r1/receipt.json)、[源码哈希与状态](../evidence/PHYS-PERF-01/bounds-r1/source-audit.json)。HEAD 983e978加未提交修改。健康48拍快照一致；九车edge→全扫描→cache→shared→window为14.195→42.162→32.879→28.317→16.536s，单车window 1.7867s仍慢于edge 1.4763s，均短测非FPS。最终474项T1及种子23.299/22.973/23.116s通过；50项cache T1是历史中间版，非额外最终覆盖。profile来自shared阶段，不代表window。主目录失败根因证据仅链接至 [shape-bounds-r1](<B:/AI agent/暑期计算机程序设计/CoastalDrive/docs/evidence/PHYS-DESIGN-01/shape-bounds-r1/shape-bounds-report.md>)。无新包/前台/T3/人工Gate；完整T2尚未恢复，本次仅归档，未运行测试/模拟/构建。

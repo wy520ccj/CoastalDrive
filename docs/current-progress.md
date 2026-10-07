@@ -1,10 +1,10 @@
 # 当前进度
 
-更新：2026-10-06。**独立包/公开基线：0.8.3 RADIO-02，包含UI-NOTICE-FIX；当前main源码在物理开发中。** 源码来自Visual Identity v1开发线，本轮用户明确确认其作为主版本并授权整理/提交/推送。根目录保留试玩.cmd，阶段入口归档到launchers/archive，原默认build与早期smoke目录分别集中到builds/archive和logs/archive。CoastalDrive-VI-v1工作树同步当前主版本内容；旧main保留于上级备份与Git历史。DS实验档案仍为只读参考。
+更新：2026-10-07。**独立包/公开基线：0.8.3 RADIO-02，包含UI-NOTICE-FIX；当前main源码在物理开发中。** 源码来自Visual Identity v1开发线，本轮用户明确确认其作为主版本并授权整理/提交/推送。根目录保留试玩.cmd，阶段入口归档到launchers/archive，原默认build与早期smoke目录分别集中到builds/archive和logs/archive。CoastalDrive-VI-v1工作树同步当前主版本内容；旧main保留于上级备份与Git历史。DS实验档案仍为只读参考。
 
 ## 当前阶段
 
-- [PHYS-DESIGN-01](tasks/PHYS-DESIGN-01.md)施工线③工程功能/T1完成：96字段、三驱动布局、外廓/轮位/CG出生点联动，10条参数A/B保存。轮胎有限面/边/角及近轴向外廓修复已本地提交01694dc；27项短检查、1200拍×30/60/144FPS完整Snapshot一致和三种子启动通过。[几何证据](evidence/PHYS-DESIGN-01/relative-geometry.md)。旧[音频](evidence/PHYS-DESIGN-01/impact-facts.md)/[ABS](evidence/PHYS-DESIGN-01/abs-facts.md)按原生事实收口。任务仍in_progress：同版本T2-r3已失败结束：Ruff通过、36通过/1万步单车共同几何残差失败（3881.02s），后14项未跑；9737拍输入已保存，30组冻结查询差0；真实有限面增量修复后5轮收敛，共轭残差4.40e-15，107项T0/Ruff通过。一万步原生T1/三种子启动通过，331源码稳定，合并108项；原20轮/精度保持，修复已本地提交0072e9c，T2待恢复，旧记录保留。下一[④GR86任务包](tasks/PHYS-REAL-01.md)ready，来源账本及可编辑草稿为隔离准备，71项待标定，未接游戏。实车型、估计、研究及最终T3/前台性能/两模式驾驶Gate继续，未推送。
+- [PHYS-DESIGN-01](tasks/PHYS-DESIGN-01.md)施工线③工程功能/T1完成；79b32d2相对几何修复保持原精度，a7649d4只修原已穿入护栏的路肩测试摆位，深穿透失败保留。机械T2-r11实际32通过/1高速车流共同求解失败（2436.80s），后14检查未跑；旧版累计628不同有效节点；已捕获3333拍/原实现单步完全复现，真实shape bounds修复456项T1与三种子通过，长轨迹/阶段仍待恢复。隔离目录C:/Users/15120/.codex/worktrees/gr86-physics/CoastalDrive、codex/phys-real-01持续推进：④[GR86实车](tasks/PHYS-REAL-01.md)98字段工程r3及参考/实车各12工况已归档a0c644e；⑤[传感器/延迟ESKF](tasks/PHYS-EST-01.md)c23feaa；⑥[20Hz实验/精确重放](tasks/PHYS-RESEARCH-01.md)0afe6b1；⑦[性能](tasks/PHYS-PERF-01.md)已本地提交常量/几何复用aa4368c、解析Jacobian70d8b94、严格浮点原生内核7850870。原生最终511项相关T1及三种子通过，单/九车48拍完整快照与原基线相同；候选表面复用15457d7及有限面内核8be0a50已本地提交；胎冠点/边内核983e978已本地提交；候选bounds修复及本物理子步共同几何/紧致Hull边界/原三角面窗口，474项最终T1和三种子通过，健康48拍完整快照相同，准备归档提交。九车短测原50.961→edge14.195→正确bounds全读42.162→最后复用16.536s，仍远未达到实时预算，不能当作FPS。旧候选包r3仅projection前两模式120拍headless通过；离屏渲染首项90s超时、后两项未跑。隔离源码尚未合并，未推送；最终产品包、T3、前台性能与用户两模式驾驶待完成。
 
 - [PHYS-LOAD-01](tasks/PHYS-LOAD-01.md)施工线②自动功能块完成：三维气动与共同轮端滚阻，完整96字段reference-v28及12条120Hz标准基准保存。0–100为10.483s；平路/+5°/−5°停车45.549/41.261/49.481m；对开附着6.5s停车，静载与滑行理论吻合。391项机械T0复用，23项相关T1/全Ruff/三种子各1200步通过。机械T2/旧音频断言收口及整体Gate保持未完成；下一施工线③工程参数化。[证据与命令](evidence/PHYS-LOAD-01/reference-calibration.md)。
 
