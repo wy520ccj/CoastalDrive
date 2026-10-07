@@ -329,7 +329,7 @@
         "content_verified": "Official indexed article text for 2022 GR86; 53 front/47 rear, steering 13.5 and 2.5 lock-to-lock turns. Base-grade 2811lb not substituted for measured Premium curb mass."
       }
     },
-    "status": "complete loadable engineering candidate; dynamic calibration pending",
+    "status": "standard and public probes recorded; engineering priors retained; human driving pending",
     "performance_targets": {
       "source": "cd_2022_test",
       "curb_weight_lb": 2838,
@@ -429,7 +429,7 @@
     "tyre_calibration_candidate": {
       "previous_road_friction": 1.05,
       "road_friction": 1.1,
-      "basis": "r1 braking exceeded matched 70/100mph distances by 7.67/3.28 percent; one common dry-surface candidate, circle verification pending"
+      "basis": "one common dry-surface engineering candidate; r3 matched 70/100mph errors +0.322/-3.393 percent and accepted 21m/s circle 0.967388g"
     },
     "geometry": {
       "OEM_width_without_mirrors_m": 1.775,

@@ -1,0 +1,672 @@
+{
+  "format": "PHYS-REAL-01 automatic calibration evidence receipt",
+  "created_utc_note": "Archived from existing local evidence; no simulation or test rerun.",
+  "standard_runs": {
+    "reference": {
+      "log_dir": "logs/physics/PHYS-REAL-01/standard-reference-r1",
+      "source_version": "current-reference-gr86-comparison",
+      "git_sha": "c23feaa4170b7fa6d15b64e4bc6e96da1ff88c68"
+    },
+    "gr86": {
+      "log_dir": "logs/physics/PHYS-REAL-01/standard-gr86-r1",
+      "source_version": "gr86-engineering-r3-standard",
+      "git_sha": "c23feaa4170b7fa6d15b64e4bc6e96da1ff88c68"
+    },
+    "comparison_source": "logs/physics/PHYS-REAL-01/standard-comparison-r1.json",
+    "comparison_sha256": "e5241b8fa975306b26d4ab631b9cc7ee3cacf445f6bdfe26f77d935f965ae387",
+    "case_count": 12,
+    "physics_hz": 120,
+    "csv_row_counts": {
+      "reference/circle_20m.csv": 1440,
+      "reference/circle_40m.csv": 1440,
+      "reference/circle_60m.csv": 1440,
+      "reference/corner_braking.csv": 420,
+      "reference/downhill_braking.csv": 427,
+      "reference/flat_acceleration.csv": 1440,
+      "reference/flat_braking.csv": 390,
+      "reference/flat_coast.csv": 720,
+      "reference/split_mu_braking.csv": 780,
+      "reference/static_load.csv": 240,
+      "reference/steering_step.csv": 420,
+      "reference/uphill_braking.csv": 356,
+      "gr86/circle_20m.csv": 1440,
+      "gr86/circle_40m.csv": 1440,
+      "gr86/circle_60m.csv": 1440,
+      "gr86/corner_braking.csv": 420,
+      "gr86/downhill_braking.csv": 351,
+      "gr86/flat_acceleration.csv": 1440,
+      "gr86/flat_braking.csv": 323,
+      "gr86/flat_coast.csv": 720,
+      "gr86/split_mu_braking.csv": 746,
+      "gr86/static_load.csv": 240,
+      "gr86/steering_step.csv": 420,
+      "gr86/uphill_braking.csv": 299
+    },
+    "worktree_head_at_archive": "0afe6b1"
+  },
+  "archive_files": [
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-reference-r1/summary.json",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/reference-summary.json.gz",
+      "source_sha256": "2835fbda40e260ba3b4005a344ca435f15b4c5871e53a686982b30cf1a5975e3",
+      "archive_sha256": "1764a03506947f60be3c12446285f876e083e7762e2b3c759b79722dcaabe727",
+      "source_bytes": 364129,
+      "archive_bytes": 25514,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-reference-r1/circle_20m.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/reference-circle_20m.csv.gz",
+      "source_sha256": "df9b9a055572ad96fa814678aef6a1b662e24849e33622c5166daa842b11653e",
+      "archive_sha256": "098ab86852a0251141e59dbc9e13a7ec04e12270673b561c156fcad20bd51a42",
+      "source_bytes": 14218307,
+      "archive_bytes": 4965027,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-reference-r1/circle_40m.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/reference-circle_40m.csv.gz",
+      "source_sha256": "979401075341df1339097b02ef93fbd37a27affd67eef5bcc02e9ffebbb78f38",
+      "archive_sha256": "fbd13edf878c9b0e2ac6426079c63c1ccbe013490cdede555914fc9fa8553ed9",
+      "source_bytes": 14279614,
+      "archive_bytes": 4953820,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-reference-r1/circle_60m.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/reference-circle_60m.csv.gz",
+      "source_sha256": "e5bee45f715f30dc433393f08e182a855c42667d3005c32c86ccc58394547078",
+      "archive_sha256": "abea21e01ee0ff2e0ab3cbac4ce9b0dd045da742a7c4aa77d9f2e16656519581",
+      "source_bytes": 14295325,
+      "archive_bytes": 4936287,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-reference-r1/corner_braking.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/reference-corner_braking.csv.gz",
+      "source_sha256": "513ef91cdc7acd800439f833ea800e0f2e13f6b0396742761a8dccbc8db51104",
+      "archive_sha256": "ae672f8fe47e41c1326d2e921ab75efe0d1666bffd079f6a5b993326ff272036",
+      "source_bytes": 4210060,
+      "archive_bytes": 1576741,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-reference-r1/downhill_braking.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/reference-downhill_braking.csv.gz",
+      "source_sha256": "844a93f0f15b499c8c6c7af2d42885d2b1950072c225c051e7f7c8ebdc71fe66",
+      "archive_sha256": "8427666216270d976b31bdeac4f61aeb97a7f59c9ddca8856c439207b3217c34",
+      "source_bytes": 4475197,
+      "archive_bytes": 1525255,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-reference-r1/flat_acceleration.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/reference-flat_acceleration.csv.gz",
+      "source_sha256": "39117d2ce4a85b571bd2528b07115e678e0184cc177a31bdc987a5ffbaa9aa8e",
+      "archive_sha256": "254d0bb02595e1d792390230d90be648881de9461a870b5d02d8a356d1cc3528",
+      "source_bytes": 14188303,
+      "archive_bytes": 4929140,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-reference-r1/flat_braking.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/reference-flat_braking.csv.gz",
+      "source_sha256": "3bed9d8705705b8501c5826642d50dd4582955ecbce222e85ff13d3d4459fbe7",
+      "archive_sha256": "38f4ba2c13ddc352913e5d44194f70312f8bb96ed532a5e7249ba40dca42bca3",
+      "source_bytes": 3939895,
+      "archive_bytes": 1337178,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-reference-r1/flat_coast.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/reference-flat_coast.csv.gz",
+      "source_sha256": "a46bcfe0da2ff4f69d135f294b5124af89db2d440d7a00061672bb51530ee6ad",
+      "archive_sha256": "896374dc4a8a5fcb991dd6bdb87608bb76b1d8e8b9d61db54bff6ae94ee6febc",
+      "source_bytes": 7010364,
+      "archive_bytes": 2121623,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-reference-r1/split_mu_braking.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/reference-split_mu_braking.csv.gz",
+      "source_sha256": "d0a58a17404ac96608c0f30cc43984b18d142a24fcb7c07b8458c6bc9f5c0fa3",
+      "archive_sha256": "054256135f64009658568db33e4eb32a79f2c966f514b97eb0a5072df6118f6d",
+      "source_bytes": 7777596,
+      "archive_bytes": 2873675,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-reference-r1/static_load.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/reference-static_load.csv.gz",
+      "source_sha256": "54f845b3541a89c84da174eb889131a5173904ab00323c9eb4e1399b58bced88",
+      "archive_sha256": "bfc0312049c8e3c4685ca241c4780c21ad56ca4d45bc8a360b70b4318fb9dd14",
+      "source_bytes": 1810662,
+      "archive_bytes": 227352,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-reference-r1/steering_step.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/reference-steering_step.csv.gz",
+      "source_sha256": "be46c4c363a7e9bd4e3a78b61cd92a0399dd43cd05bb94825ea8f0154d32ce65",
+      "archive_sha256": "8afac47108909e081c66513419223b30c739747817f97d59eff78a1952a63518",
+      "source_bytes": 4152157,
+      "archive_bytes": 1522806,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-reference-r1/uphill_braking.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/reference-uphill_braking.csv.gz",
+      "source_sha256": "37d19f8d37f584082d3c99f59b7d7148f190ffd1eb4c1aab4dd86c55598fd9ca",
+      "archive_sha256": "fe55285871b2c12617d04c4a1421fc769c7918288b3f786944e1564a58b94637",
+      "source_bytes": 3734139,
+      "archive_bytes": 1280097,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-gr86-r1/summary.json",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/gr86-summary.json.gz",
+      "source_sha256": "389774517e960f96ac35c307a833cfd5848cacfc772a427637d7f696922d2b53",
+      "archive_sha256": "478c8131a835400a1f0b115d881838170fdf5df5acc0b7b53663748dc0015104",
+      "source_bytes": 366369,
+      "archive_bytes": 28843,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-gr86-r1/circle_20m.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/gr86-circle_20m.csv.gz",
+      "source_sha256": "f0a98e18cda5247abdb8a3b1ef14aabdd168a857060277a60abace3ac7769d86",
+      "archive_sha256": "df6335df287c44258e1322ffbbd63b1cca498b833c61202491a68e55bc7a9046",
+      "source_bytes": 14266285,
+      "archive_bytes": 4994435,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-gr86-r1/circle_40m.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/gr86-circle_40m.csv.gz",
+      "source_sha256": "360eabe358fa42f5863a2a6604fe374b1006805d66d0df46beddbff49a9a997b",
+      "archive_sha256": "d95ab85b912f48d0d36cde068641b1ce4dba2e25da1ab5d3d5234b14b2d743de",
+      "source_bytes": 14331230,
+      "archive_bytes": 4996618,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-gr86-r1/circle_60m.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/gr86-circle_60m.csv.gz",
+      "source_sha256": "6bda13944c09461f1426ff772f7ab2cb8e28344af595234d8cbde1ab25e0baae",
+      "archive_sha256": "1653f408ee82207774dd90599d0d114a29f1660eefb24f7b2324e0b55c05fd00",
+      "source_bytes": 14362645,
+      "archive_bytes": 4992360,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-gr86-r1/corner_braking.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/gr86-corner_braking.csv.gz",
+      "source_sha256": "4a620c33f519f6d4e05d2cc60de6cf793010b8e8dd8c0a4c9a6271397e009e68",
+      "archive_sha256": "6d793adbee3e86f76a651ec83dc9634f581d73f3c94b262d631cf63f26f488e1",
+      "source_bytes": 4221043,
+      "archive_bytes": 1593544,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-gr86-r1/downhill_braking.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/gr86-downhill_braking.csv.gz",
+      "source_sha256": "d81a101c771ff1b9aa64df50b5dcae978806a279d9e536ca1d69f2bc248dc011",
+      "archive_sha256": "ebe014f68755f10e12249b899ba868036eaa91a282308264bc73ea2b185a5aa1",
+      "source_bytes": 3699225,
+      "archive_bytes": 1308406,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-gr86-r1/flat_acceleration.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/gr86-flat_acceleration.csv.gz",
+      "source_sha256": "c459058234089ddf440f3dc44b7f9d67cc1904529e5c3367312cfa7580dd1da9",
+      "archive_sha256": "835abdde2102309260568e1ef0ff411a32575b6cc65764804c2ff256b1c32dd9",
+      "source_bytes": 14212470,
+      "archive_bytes": 4988048,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-gr86-r1/flat_braking.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/gr86-flat_braking.csv.gz",
+      "source_sha256": "ee828e895ba45c436054c381ef97693eca88707612df29da68c1e8952e2a5c27",
+      "archive_sha256": "e16dde276395903d6f4d8cc22205de82040a8d9ba27ea841a712c7eb0bfa14b6",
+      "source_bytes": 3283386,
+      "archive_bytes": 1158206,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-gr86-r1/flat_coast.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/gr86-flat_coast.csv.gz",
+      "source_sha256": "012a434238d65869ea59f0605e97ea86b88e3eb60f1b7e3df79c6fbbce0119a7",
+      "archive_sha256": "e5bfd6d7bb180f3326d8536e4c87578a5aeb4fdfc4ab7ee5fb5705a235e21c68",
+      "source_bytes": 7018422,
+      "archive_bytes": 2099914,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-gr86-r1/split_mu_braking.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/gr86-split_mu_braking.csv.gz",
+      "source_sha256": "772bffd84054f4ce00b482d32749b0112dfc35707a4f6f23aa1f9fba76797a37",
+      "archive_sha256": "f4da82d7d33d5ad292e9410f8743a3709b2e94f3511be26060afa6f9cd3f28df",
+      "source_bytes": 7526383,
+      "archive_bytes": 2758698,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-gr86-r1/static_load.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/gr86-static_load.csv.gz",
+      "source_sha256": "5188c520041c65dd7b3c80a2c3eca27077dfab68ebaf900a76dba73c59ce7eeb",
+      "archive_sha256": "9817db1c1cb95245c238dee8701ab4066bde34081de60d859eb128911ad1caee",
+      "source_bytes": 1867605,
+      "archive_bytes": 349343,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-gr86-r1/steering_step.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/gr86-steering_step.csv.gz",
+      "source_sha256": "70209384e916226923fcf74884aa7b5274cb4bda8a65d0591c6ab25eb7f7f72f",
+      "archive_sha256": "78461167449d44275824fb6e1a7e6c81e4b82cc54a4f44d982219e2ca2863189",
+      "source_bytes": 4166939,
+      "archive_bytes": 1537772,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-gr86-r1/uphill_braking.csv",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/gr86-uphill_braking.csv.gz",
+      "source_sha256": "47e46b9a4567072bef6051ecb83df75e5524afc0703cab1ebb4149b204fd053e",
+      "archive_sha256": "068950c2793241c1a8ee1ccbd85c51b107b57d0679baf6533223b694b92ab8e9",
+      "source_bytes": 3153232,
+      "archive_bytes": 1118035,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-comparison-r1.json",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/standard-comparison-r1.json",
+      "source_sha256": "e5241b8fa975306b26d4ab631b9cc7ee3cacf445f6bdfe26f77d935f965ae387",
+      "archive_sha256": "e5241b8fa975306b26d4ab631b9cc7ee3cacf445f6bdfe26f77d935f965ae387",
+      "source_bytes": 16730,
+      "archive_bytes": 16730,
+      "copy_exact": true
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/standard-comparison-r1.json",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/standard-comparison-r1.json.gz",
+      "source_sha256": "e5241b8fa975306b26d4ab631b9cc7ee3cacf445f6bdfe26f77d935f965ae387",
+      "archive_sha256": "af4a439c38a8f26c7c1f00c5171213a0621950b5058287256c86214a426d0ce6",
+      "source_bytes": 16730,
+      "archive_bytes": 3942,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/skidpad-curvature-r1/summary.json",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/curvature-summary.json.gz",
+      "source_sha256": "8b1530814128fa8122ecd0c26d2c5963410de484bf775681d5633ba0b39b764a",
+      "archive_sha256": "8a60a291a6f69d064a40e48d5ebd1138a223096189f32931631f80a7df39721b",
+      "source_bytes": 64263,
+      "archive_bytes": 20092,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/skidpad-curvature-r1/skidpad.csv.gz",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/curvature-skidpad.csv.gz",
+      "source_sha256": "9b2ce7a30c88d14864d621a0c3f1882cf09f9330998eedc310dfdfdb29589058",
+      "archive_sha256": "9b2ce7a30c88d14864d621a0c3f1882cf09f9330998eedc310dfdfdb29589058",
+      "source_bytes": 18000074,
+      "archive_bytes": 18000074,
+      "copy_exact": true,
+      "gzip_payload_preserved": true
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/skidpad-integral-r1/summary.json",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/integral-summary.json.gz",
+      "source_sha256": "dd5799abefbff6eee22fe7aa75213c0803255b2695e126d8638eba63761eb43c",
+      "archive_sha256": "a707b2986ce8a008c004860d8dc688415d59c6376fe8e506b5a895228dc5a48f",
+      "source_bytes": 63205,
+      "archive_bytes": 19861,
+      "gzip_mtime": 0
+    },
+    {
+      "source": "logs/physics/PHYS-REAL-01/skidpad-integral-r1/skidpad.csv.gz",
+      "archive": "docs/evidence/PHYS-REAL-01/standard-comparison/integral-skidpad.csv.gz",
+      "source_sha256": "574dc812b4f7bfe1c2692726dad055bd15e4e1ca404b1b56a5d33fcfaf68f7e0",
+      "archive_sha256": "574dc812b4f7bfe1c2692726dad055bd15e4e1ca404b1b56a5d33fcfaf68f7e0",
+      "source_bytes": 18251186,
+      "archive_bytes": 18251186,
+      "copy_exact": true,
+      "gzip_payload_preserved": true
+    }
+  ],
+  "source_hash_audit": {
+    "reference": {
+      "testbed_source_count": 31,
+      "matched": 27,
+      "mismatches": [
+        {
+          "source": "src/tire_drivetrain.py",
+          "expected": "7656f5395cfcfec95ddd07eaa43d0ade9b78fe19c19bd3c587a466d185023ae6",
+          "actual": "b1a47dfe23ec0eb99497d9359c3b94227a48b2d1e51fb0e77f35fddb31d3476e"
+        },
+        {
+          "source": "src/shaft_transmission.py",
+          "expected": "c1c768e6d6638963b7e56e056f4b098ec69f43f34c6b5c13161de06ec2612538",
+          "actual": "cd43db28d56c4c50f03d69450905e945e37c440f03a4ce87be2d7b6dd649fda6"
+        },
+        {
+          "source": "src/vehicle_suspension.py",
+          "expected": "ee3d34a82926c0143e7392757eb07c257edc43d9098f9a1fd2437df54105d020",
+          "actual": "7a6b16215ccd65acb9d402780ca411d7eeb4f669c966784b34be2dd0512e48da"
+        },
+        {
+          "source": "src/triangle_support.py",
+          "expected": "803d8b6a55a4cfe8d0afcb1caacbb990aab6eed4bcb5103dfe66c4dee82e5993",
+          "actual": "588c83f8a68445d4214af2c65d552a03473d0cd76db1866bb0427186c95c9847"
+        }
+      ],
+      "summary_sha256": "2835fbda40e260ba3b4005a344ca435f15b4c5871e53a686982b30cf1a5975e3",
+      "current_audit_note": "Rehashed current src files during final report review; summary-time before/after remained stable."
+    },
+    "gr86": {
+      "testbed_source_count": 31,
+      "matched": 27,
+      "mismatches": [
+        {
+          "source": "src/tire_drivetrain.py",
+          "expected": "7656f5395cfcfec95ddd07eaa43d0ade9b78fe19c19bd3c587a466d185023ae6",
+          "actual": "b1a47dfe23ec0eb99497d9359c3b94227a48b2d1e51fb0e77f35fddb31d3476e"
+        },
+        {
+          "source": "src/shaft_transmission.py",
+          "expected": "c1c768e6d6638963b7e56e056f4b098ec69f43f34c6b5c13161de06ec2612538",
+          "actual": "cd43db28d56c4c50f03d69450905e945e37c440f03a4ce87be2d7b6dd649fda6"
+        },
+        {
+          "source": "src/vehicle_suspension.py",
+          "expected": "ee3d34a82926c0143e7392757eb07c257edc43d9098f9a1fd2437df54105d020",
+          "actual": "7a6b16215ccd65acb9d402780ca411d7eeb4f669c966784b34be2dd0512e48da"
+        },
+        {
+          "source": "src/triangle_support.py",
+          "expected": "803d8b6a55a4cfe8d0afcb1caacbb990aab6eed4bcb5103dfe66c4dee82e5993",
+          "actual": "588c83f8a68445d4214af2c65d552a03473d0cd76db1866bb0427186c95c9847"
+        }
+      ],
+      "summary_sha256": "389774517e960f96ac35c307a833cfd5848cacfc772a427637d7f696922d2b53",
+      "current_audit_note": "Rehashed current src files during final report review; summary-time before/after remained stable."
+    }
+  },
+  "embedded_config_audit": {
+    "reference": {
+      "field_count": 98,
+      "canonical_json_sha256": "c19e4a1ec2fd5fadbf24c000d00321a1a157a803d17ed0fc0907ba965160b10b",
+      "physical_data": {
+        "mass": 1200.0,
+        "wheelbase": 2.2,
+        "track_width": 1.68,
+        "axle_track_widths": null,
+        "wheel_radius": 0.33,
+        "engine_redline_rpm": 6500.0,
+        "gear_ratios": [
+          3.25,
+          2.05,
+          1.45,
+          1.1,
+          0.88
+        ],
+        "final_drive": 3.7,
+        "front_weight_share": 0.5
+      }
+    },
+    "gr86": {
+      "field_count": 98,
+      "canonical_json_sha256": "949ecbc8d7a26bf2c740140047314a1fab24ed2cbb6380a3008ea8f94947690a",
+      "physical_data": {
+        "mass": 1287.29514606,
+        "wheelbase": 2.575,
+        "track_width": 1.52,
+        "axle_track_widths": [
+          1.52,
+          1.55
+        ],
+        "wheel_radius": 0.3146,
+        "engine_redline_rpm": 7500.0,
+        "gear_ratios": [
+          3.626,
+          2.189,
+          1.541,
+          1.213,
+          1.0,
+          0.767
+        ],
+        "final_drive": 4.1,
+        "front_weight_share": 0.53
+      }
+    },
+    "comparison_reconstruction": {
+      "method": "reference config plus config_delta_candidate_minus_baseline and config_added_candidate, with config_removed_candidate applied",
+      "candidate_reconstructed_match": "all flattened fields match within 2e-15 floating representation tolerance",
+      "reference_sha256": "c19e4a1ec2fd5fadbf24c000d00321a1a157a803d17ed0fc0907ba965160b10b",
+      "candidate_sha256": "949ecbc8d7a26bf2c740140047314a1fab24ed2cbb6380a3008ea8f94947690a"
+    },
+    "current_runtime_match": {
+      "reference": {
+        "matches_current_runtime_config": true,
+        "field_count": 98
+      },
+      "gr86": {
+        "matches_current_runtime_config": true,
+        "field_count": 98
+      }
+    }
+  },
+  "public_engineering_r3": {
+    "path": "docs/evidence/PHYS-REAL-01/public-probes/engineering-r3.json",
+    "sha256": "c0d0046c090cf54d7f8a6fffa15ab0c1a3212bd940fb290a50ed0aecf2021a19",
+    "status": "completed",
+    "protocol": {
+      "physics_hz": 120,
+      "trace_hz": 120,
+      "curb_mass_only": true,
+      "known_public_driver_equipment_payload": false,
+      "raw_electronics": true,
+      "environment": "same gravity, air, zero wind and plane; tyre hardware and real actuators unchanged"
+    },
+    "metrics": {
+      "0_60mph_with_one_foot_rollout_s": 5.775,
+      "quarter_mile_with_one_foot_rollout_s": 14.175,
+      "brake_70_0_m": 47.701995849609375,
+      "brake_100_0_m": 95.69915008544922,
+      "skidpad_21mps_lateral_g": 0.9673880403912698,
+      "manual_protocol_0_100_kmh_s": 6.433333333333334,
+      "manual_shift_request_rpm": 7400.0,
+      "manual_launch_target_rpm": 4500.0,
+      "manual_quarter_trap_mph": 102.0165878956711,
+      "simulated_added_driver_equipment_payload_kg": 0.0
+    }
+  },
+  "skidpad_attempts": {
+    "curvature": {
+      "status": "completed",
+      "source_stable": true,
+      "protocol": {
+        "physics_hz": 120,
+        "trace_hz": 120,
+        "curb_mass_only": true,
+        "known_public_driver_equipment_payload": false,
+        "raw_electronics": true,
+        "environment": "same gravity, air, zero wind and plane; tyre hardware and real actuators unchanged"
+      },
+      "stages": [
+        {
+          "target_speed_m_s": 12.0,
+          "accepted_ticks": 360,
+          "mean_lateral_g": 0.3227768607332815,
+          "last_speed_m_s": 12.019645690917969,
+          "actual_circle": {
+            "status": "fitted",
+            "radius_m": 45.69991778567966,
+            "radial_rms_m": 0.00010146276776209568,
+            "center_m": [
+              45.967223893845485,
+              5.042649957400457
+            ]
+          }
+        },
+        {
+          "target_speed_m_s": 18.0,
+          "accepted_ticks": 360,
+          "mean_lateral_g": 0.7445668663737861,
+          "last_speed_m_s": 18.218692779541016,
+          "actual_circle": {
+            "status": "fitted",
+            "radius_m": 45.372515970589824,
+            "radial_rms_m": 0.0026773562116858686,
+            "center_m": [
+              47.96647845560586,
+              1.3859904060618362
+            ]
+          }
+        },
+        {
+          "target_speed_m_s": 20.0,
+          "accepted_ticks": 360,
+          "mean_lateral_g": 0.8818796839909326,
+          "last_speed_m_s": 20.030147552490234,
+          "actual_circle": {
+            "status": "fitted",
+            "radius_m": 46.60717857301998,
+            "radial_rms_m": 0.003839970612077861,
+            "center_m": [
+              52.05699718620453,
+              1.9815609389373083
+            ]
+          }
+        },
+        {
+          "target_speed_m_s": 21.0,
+          "accepted_ticks": 360,
+          "mean_lateral_g": 0.9673880403912698,
+          "last_speed_m_s": 20.933677673339844,
+          "actual_circle": {
+            "status": "fitted",
+            "radius_m": 46.39814296475968,
+            "radial_rms_m": 0.003325140150018565,
+            "center_m": [
+              52.012648230440874,
+              3.168449308812157
+            ]
+          }
+        }
+      ],
+      "summary_sha256": "8b1530814128fa8122ecd0c26d2c5963410de484bf775681d5633ba0b39b764a",
+      "trace_sha256": "9b2ce7a30c88d14864d621a0c3f1882cf09f9330998eedc310dfdfdb29589058",
+      "final_21mps_circle_fit": {
+        "status": "fitted",
+        "fitted_radius_m": 46.39814296475968,
+        "target_radius_m": 45.72,
+        "relative_radius_error_percent": 1.483252328870699,
+        "radial_rms_m": 0.003325140150018565,
+        "accepted_ticks": 360,
+        "sample_rate_hz": 120,
+        "effective_points": 360,
+        "mean_lateral_g": 0.9673880403912698
+      }
+    },
+    "integral": {
+      "status": "completed",
+      "source_stable": true,
+      "protocol": {
+        "physics_hz": 120,
+        "trace_hz": 120,
+        "curb_mass_only": true,
+        "known_public_driver_equipment_payload": false,
+        "raw_electronics": true,
+        "environment": "same gravity, air, zero wind and plane; tyre hardware and real actuators unchanged"
+      },
+      "stages": [
+        {
+          "target_speed_m_s": 12.0,
+          "accepted_ticks": 360,
+          "mean_lateral_g": 0.31760390340329997,
+          "last_radius_m": 46.52948162412985,
+          "last_speed_m_s": 12.011648178100586
+        },
+        {
+          "target_speed_m_s": 18.0,
+          "accepted_ticks": 123,
+          "mean_lateral_g": 0.683609208687381,
+          "last_radius_m": 48.81369355132789,
+          "last_speed_m_s": 18.169267654418945
+        },
+        {
+          "target_speed_m_s": 20.0,
+          "accepted_ticks": 0,
+          "mean_lateral_g": null,
+          "last_radius_m": 56.58260792125682,
+          "last_speed_m_s": 10.116140365600586
+        },
+        {
+          "target_speed_m_s": 21.0,
+          "accepted_ticks": 0,
+          "mean_lateral_g": null,
+          "last_radius_m": 49.39183255472101,
+          "last_speed_m_s": 5.268990516662598
+        }
+      ],
+      "summary_sha256": "dd5799abefbff6eee22fe7aa75213c0803255b2695e126d8638eba63761eb43c",
+      "trace_sha256": "574dc812b4f7bfe1c2692726dad055bd15e4e1ca404b1b56a5d33fcfaf68f7e0"
+    }
+  },
+  "other_existing_public_probes": [
+    {
+      "path": "docs/evidence/PHYS-REAL-01/public-probes/automatic-launch-r1.json",
+      "sha256": "528add49ccf690fc8ad73c8219b14538665b5368a35404f95710a37130057a09"
+    },
+    {
+      "path": "docs/evidence/PHYS-REAL-01/public-probes/engineering-r3.json",
+      "sha256": "c0d0046c090cf54d7f8a6fffa15ab0c1a3212bd940fb290a50ed0aecf2021a19"
+    },
+    {
+      "path": "docs/evidence/PHYS-REAL-01/public-probes/launch-6000-r1.json",
+      "sha256": "f63947a95ebc0234953614d5e626be265eabd3262ae3fb905af71faa7c4d1671"
+    },
+    {
+      "path": "docs/evidence/PHYS-REAL-01/public-probes/load-bias-r5.json",
+      "sha256": "f4d635d6044c9fb3462d11b797ec37960749ea2893a8c728a45526822df06f8a"
+    },
+    {
+      "path": "docs/evidence/PHYS-REAL-01/public-probes/prelaunch-r2.json",
+      "sha256": "594cc8ef861553cb16c9393c4c59bc8e3b5906bcfa6776035801399792f410d6"
+    },
+    {
+      "path": "docs/evidence/PHYS-REAL-01/public-probes/progressive-pilot-r1.json",
+      "sha256": "b10e27fb8f24e51dc967dd25278ad2072d9177b190bb65510f53141985be02ab"
+    }
+  ],
+  "scope_note": "Public targets are comparison references, not OEM measurements of driver/equipment load. The standard GR86 run uses the automatic input protocol; the published 0-100 km/h manual figure uses 7400 RPM and is an input-protocol difference, not an OEM-equivalence claim. Human driving, T2 merge/gate remain incomplete.",
+  "calibration_report": {
+    "path": "docs/evidence/PHYS-REAL-01/calibration-report.md",
+    "sha256": "b4d20798847c4b4407c8171c47abbab35f850b1a5cd7c8b0408648ba9ec71c20"
+  },
+  "validation_notes": {
+    "compression": "All 24 plain CSV sources and both standard summaries were gzip archived with mtime=0; archived gzip payload SHA matches original input bytes. Curvature/integral trace gzip files were copied byte-for-byte and retained alongside gzip summaries.",
+    "simulation_or_test_rerun": false
+  },
+  "performance_evidence_boundary": {
+    "path": "logs/physics/PHYS-PERF-01/exact-comparison-r1.json",
+    "sha256": "50b6022ff8c2c7e1246d808e9ed572eb6f9a1e7263e86a9d550359479d94f528",
+    "passed": true,
+    "cases": [
+      {
+        "traffic": 0,
+        "ticks": 48,
+        "all_snapshot_fields_equal": true
+      },
+      {
+        "traffic": 8,
+        "ticks": 48,
+        "all_snapshot_fields_equal": true
+      }
+    ],
+    "purpose": "Independent performance diagnostic only; not evidence in place of the 12-case calibration matrix."
+  }
+}

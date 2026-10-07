@@ -110,7 +110,7 @@ def generate(output):
     metadata = {
         "design_id": PROFILE_ID, "version": "engineering-r3", "kind": "sourced_vehicle",
         "candidate": source["candidate"], "sources": source["sources"],
-        "status": "complete loadable engineering candidate; dynamic calibration pending",
+        "status": "standard and public probes recorded; engineering priors retained; human driving pending",
         "performance_targets": source["published_test"],
         "torque_derivation": {"method": "piecewise RPM map through 1000/3700/7000; graphic ordinate scaled through exact torque/power ratings",
                               "peak_torque_N_m": peak, "peak_rpm": 3700., "torque_at_7000_N_m": rated,
@@ -124,7 +124,7 @@ def generate(output):
                         "engine_inertia_kg_m2": REFERENCE_CAR.engine_inertia,
                         "definition": "assumed disc/annulus/tube/gyration dimensions; no OEM rotor measurements; axial terms deducted once from whole rigid-follow tensor"},
         "tyre_calibration_candidate": {"previous_road_friction": 1.05, "road_friction": 1.10,
-                                       "basis": "r1 braking exceeded matched 70/100mph distances by 7.67/3.28 percent; one common dry-surface candidate, circle verification pending"},
+                                       "basis": "one common dry-surface engineering candidate; r3 matched 70/100mph errors +0.322/-3.393 percent and accepted 21m/s circle 0.967388g"},
         "geometry": {"OEM_width_without_mirrors_m": 1.775, "full_approximate_asset_width_m": 2.03,
                      "collider_basis": "full imported visual body including mirrors; nominal OEM width kept separate"},
         "differential": {"OEM_type": "Torsen", "current_model": "regularized torque-bias friction with real terminal axle load",
