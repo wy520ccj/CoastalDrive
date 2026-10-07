@@ -2,7 +2,6 @@
 #include <Python.h>
 #include <math.h>
 
-/* 部分和算法参考CPython 3.14.2 mathmodule.c，许可见licenses/CPython-LICENSE.txt。 */
 /* 四个有限项的无重叠部分和，保留math.fsum的半偶舍入。 */
 static double sum_four(double values[4]) {
     double partials[4], high = 0., low = 0.;
@@ -300,5 +299,5 @@ static PyMethodDef methods[] = {
     {"cylinder_edge_distance", (PyCFunction)edge_distance_call, METH_VARARGS | METH_KEYWORDS, "原有限边胎冠驻点"},
     {NULL,NULL,0,NULL}
 };
-static struct PyModuleDef module = {PyModuleDef_HEAD_INIT, "wheel_contact_kernels", NULL, -1, methods};
-PyMODINIT_FUNC PyInit_wheel_contact_kernels(void) { return PyModule_Create(&module); }
+static struct PyModuleDef module = {PyModuleDef_HEAD_INIT, "_support_probe", NULL, -1, methods};
+PyMODINIT_FUNC PyInit__support_probe(void) { return PyModule_Create(&module); }

@@ -50,77 +50,9 @@ def _cross_precise(a, b):
                  for i, j in ((1, 2), (2, 0), (0, 1)))
 
 
-def _cylinder_point_delta(relative, axis, radius, half_width, crown):
-    """点到胎冠内核的分离向量；轴向投影解凸距离的一维驻点。"""
-    axis_squared = dot(axis, axis)
-    axis_length = math.sqrt(axis_squared)
-    unit_axis = tuple(x/axis_length for x in axis)
-    axial = math.fsum(x*u for x, u in zip(relative, axis)) / axis_length
-    radial = tuple(x/axis_squared for x in _cross_precise(axis, _cross_precise(relative, axis)))
-    rho = math.sqrt(math.fsum(x*x for x in radial))
-    k = crown / half_width**2
-    q = max(-half_width, min(half_width, axial))
-
-    def derivative(q):
-        return q - axial + 2*k*q*max(rho - radius + k*q*q, 0.)
-
-    if derivative(-half_width) >= 0.:
-        q = -half_width
-    elif derivative(half_width) <= 0.:
-        q = half_width
-    else:
-        low, high = -half_width, half_width
-        for _ in range(64):
-            gap = max(rho - radius + k*q*q, 0.)
-            value = q - axial + 2*k*q*gap
-            if value == 0.:
-                break
-            slope = 1 + 2*k*gap + (4*k*k*q*q if gap else 0.)
-            candidate = q - value/slope
-            if candidate == q:
-                break
-            if value > 0.:
-                high = q
-            else:
-                low = q
-            if not low < candidate < high:
-                candidate = (low + high) / 2
-            q = candidate
-            if q == low or q == high:
-                break
-    gap = max(rho - radius + k*q*q, 0.)
-    return tuple((axial-q)*unit_axis[i] + (gap*radial[i]/rho if rho else 0.) for i in range(3))
-
-
-def _cylinder_edge_distance(center, axis, a, b, radius, half_width, crown):
-    """固定有限边到胎冠内核的最近点；边参数驻点保持接触法线平滑。"""
-    edge = subtract(b, a)
-
-    def evaluate(t):
-        relative = tuple(math.fsum((a[i], -center[i], t*edge[i])) for i in range(3))
-        delta = _cylinder_point_delta(relative, axis, radius, half_width, crown)
-        return delta, math.fsum(x*y for x, y in zip(delta, edge))
-
-    da, ga = evaluate(0.)
-    db, gb = evaluate(1.)
-    if ga >= 0.:
-        t, delta = 0., da
-    elif gb <= 0.:
-        t, delta = 1., db
-    else:
-        low, high = 0., 1.
-        for _ in range(64):
-            t = (low + high) / 2
-            delta, value = evaluate(t)
-            if value == 0. or t == low or t == high:
-                break
-            if value > 0.:
-                high = t
-            else:
-                low = t
-    distance = math.sqrt(math.fsum(x*x for x in delta))
-    return (distance, tuple(-x/distance for x in delta) if distance else (0., 0., 1.),
-            tuple(math.fsum((a[i], t*edge[i])) for i in range(3)))
+# 原胎冠驻点与有限边二分，迭代上限和精确部分和保持。
+_cylinder_point_delta = wheel_contact_kernels.cylinder_point_delta
+_cylinder_edge_distance = wheel_contact_kernels.cylinder_edge_distance
 
 
 def _cylinder_face_candidates(center, axis, features, radius, half_width, crown):

@@ -1,0 +1,697 @@
+{
+  "created_at_utc": "2026-10-07T04:42:10.033468+00:00",
+  "baseline_head": "8be0a5088e5f4743b30d8ac087d7ea52a934f744",
+  "working_tree_status_at_capture": [
+    " M docs/current-progress.md",
+    " M src/wheel_contact_kernels.c",
+    " M src/wheel_envelope.py",
+    "?? docs/evidence/PHYS-PERF-01/edge-native-r1/"
+  ],
+  "archive_entries": [
+    {
+      "kind": "frozen-prototype",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\support-kernel.c",
+      "archive": "experiments/support-kernel-r3.c",
+      "source_sha256": "abf34ff96a3d1a1b65e0e6e308c3b1e3925eb2912bd981a2a4edfd843b8dd7b2",
+      "archive_sha256": "abf34ff96a3d1a1b65e0e6e308c3b1e3925eb2912bd981a2a4edfd843b8dd7b2",
+      "source_bytes": 14747,
+      "archive_bytes": 14747,
+      "byte_exact_at_freeze": true,
+      "frozen_before_followup_work": true
+    },
+    {
+      "kind": "log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\support-build-r3.log",
+      "archive": "experiments/support-build-r3.log.gz",
+      "source_sha256": "1dc18e1a7c3fceda310f75773d8d34674dff00620fe7d69632b840227cb23627",
+      "archive_sha256": "8496f7ff94b95206517cb4bbbb1414cd9656f50119ab25f6805becec36e65d2e",
+      "source_bytes": 3134,
+      "archive_bytes": 758,
+      "gzip_mtime": 0,
+      "payload_sha256": "1dc18e1a7c3fceda310f75773d8d34674dff00620fe7d69632b840227cb23627"
+    },
+    {
+      "kind": "experiment-or-comparison",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\edge-probe.py",
+      "archive": "experiments/edge-probe.py",
+      "source_sha256": "082cb2bbd9e3eed63b4f1760814e06a22683e13e905a4f817a3d26fc311c3e15",
+      "archive_sha256": "082cb2bbd9e3eed63b4f1760814e06a22683e13e905a4f817a3d26fc311c3e15",
+      "source_bytes": 1209,
+      "archive_bytes": 1209,
+      "byte_exact": true
+    },
+    {
+      "kind": "log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\edge-probe.log",
+      "archive": "experiments/edge-probe.log.gz",
+      "source_sha256": "958825b89c125bd86208df1801a56828875e1c3bc87d4e39374926ce548706f1",
+      "archive_sha256": "1465b617a85f77a996df9d7340eee92054a887ee5bdc949b2152976da2bf3b2a",
+      "source_bytes": 168,
+      "archive_bytes": 153,
+      "gzip_mtime": 0,
+      "payload_sha256": "958825b89c125bd86208df1801a56828875e1c3bc87d4e39374926ce548706f1"
+    },
+    {
+      "kind": "experiment-or-comparison",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\edge-probe-exact.json",
+      "archive": "experiments/edge-probe-exact.json",
+      "source_sha256": "3fa8b296502ab8a39ec10c009de5f7f3d5b0d496968bca1c0e71e0e5be5633a5",
+      "archive_sha256": "3fa8b296502ab8a39ec10c009de5f7f3d5b0d496968bca1c0e71e0e5be5633a5",
+      "source_bytes": 196,
+      "archive_bytes": 196,
+      "byte_exact": true
+    },
+    {
+      "kind": "experiment-or-comparison",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\edge-physics-pilot.py",
+      "archive": "experiments/edge-physics-pilot.py",
+      "source_sha256": "8ed6bdf9da8c50419c0a9fa56b4d0e566e97d5c8ca4ba5ce26c7f19206040b62",
+      "archive_sha256": "8ed6bdf9da8c50419c0a9fa56b4d0e566e97d5c8ca4ba5ce26c7f19206040b62",
+      "source_bytes": 1486,
+      "archive_bytes": 1486,
+      "byte_exact": true
+    },
+    {
+      "kind": "log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\edge-pilot-tests.log",
+      "archive": "experiments/edge-pilot-tests.log.gz",
+      "source_sha256": "fd177dbe28342d02ea4fd8b6e914795b5d24c65156b56bb4779e4efd7677dc81",
+      "archive_sha256": "e83283ca8fb4d335373a14164e221babc91e0853cd2b326352cafc409a671791",
+      "source_bytes": 101,
+      "archive_bytes": 54,
+      "gzip_mtime": 0,
+      "payload_sha256": "fd177dbe28342d02ea4fd8b6e914795b5d24c65156b56bb4779e4efd7677dc81"
+    },
+    {
+      "kind": "log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\edge-pilot.log",
+      "archive": "experiments/edge-pilot.log.gz",
+      "source_sha256": "79a3b6b1b4be2baec1fa7697c29612d2e1f4b92d972cd1a116f90bf4e7b5df43",
+      "archive_sha256": "e32cb19ffc94ee3cfc8dce5dc8d19d9a6719f4ef4fcef3a538f2b1671e2d44e9",
+      "source_bytes": 314,
+      "archive_bytes": 168,
+      "gzip_mtime": 0,
+      "payload_sha256": "79a3b6b1b4be2baec1fa7697c29612d2e1f4b92d972cd1a116f90bf4e7b5df43"
+    },
+    {
+      "kind": "experiment-or-comparison",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\edge-pilot-comparison.json",
+      "archive": "comparisons/edge-pilot-comparison.json",
+      "source_sha256": "e2e897a959c61d7e15210ab84c11126e950c0c95d84644b772c4db2f085b4180",
+      "archive_sha256": "e2e897a959c61d7e15210ab84c11126e950c0c95d84644b772c4db2f085b4180",
+      "source_bytes": 345,
+      "archive_bytes": 345,
+      "byte_exact": true
+    },
+    {
+      "kind": "snapshot-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\edge-pilot-snapshots.json",
+      "archive": "snapshots/edge-pilot-snapshots.json.gz",
+      "source_sha256": "7ddad7a353c3ca80be06e775e37bc357445a35834aae68a0ba080070c6a5b153",
+      "archive_sha256": "7218fb4d0ad17dc2d5264235b614b1639d6cdd350e74aabd19001b28cdfa0e25",
+      "source_bytes": 8719562,
+      "archive_bytes": 1949196,
+      "gzip_mtime": 0,
+      "payload_sha256": "7ddad7a353c3ca80be06e775e37bc357445a35834aae68a0ba080070c6a5b153"
+    },
+    {
+      "kind": "log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\edge-production-build.log",
+      "archive": "production/edge-production-build.log.gz",
+      "source_sha256": "3321f5380318c3dc9b49690fe484a823613d64e75d8a419b846fa648cfb7ab43",
+      "archive_sha256": "6d8b153556988914b863a9e9b2b9d90f75fc66d6637b146d01f12f474cc0fbb7",
+      "source_bytes": 2810,
+      "archive_bytes": 778,
+      "gzip_mtime": 0,
+      "payload_sha256": "3321f5380318c3dc9b49690fe484a823613d64e75d8a419b846fa648cfb7ab43"
+    },
+    {
+      "kind": "snapshot-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\edge-production-snapshots.json",
+      "archive": "production/edge-production-snapshots.json.gz",
+      "source_sha256": "43936a706844ead94e888250226d28ebc49e6fbb69ed664eda400b78d60cc632",
+      "archive_sha256": "f2507031c35eb2c12b579e2a2c7ada8994d27ce2eb4d042009be4682238f7f57",
+      "source_bytes": 8722177,
+      "archive_bytes": 1950445,
+      "gzip_mtime": 0,
+      "payload_sha256": "43936a706844ead94e888250226d28ebc49e6fbb69ed664eda400b78d60cc632"
+    },
+    {
+      "kind": "log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\edge-production-snapshots.log",
+      "archive": "production/edge-production-snapshots.log.gz",
+      "source_sha256": "d9ced78eecb2d93eabea2901ec72253de7d8a3430f456e70498d16d47e29ff01",
+      "archive_sha256": "7b7496bb4572edf37e6100b109cd6a8fba8153373a9955afeb66288dfb838a0c",
+      "source_bytes": 96,
+      "archive_bytes": 91,
+      "gzip_mtime": 0,
+      "payload_sha256": "d9ced78eecb2d93eabea2901ec72253de7d8a3430f456e70498d16d47e29ff01"
+    },
+    {
+      "kind": "experiment-or-comparison",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\compare-current.py",
+      "archive": "comparisons/compare-current.py",
+      "source_sha256": "e407d5d6bbcaef1f9cff0ec67f336f23ffe3b5ff0bfcad73ebfe0377ad62b877",
+      "archive_sha256": "e407d5d6bbcaef1f9cff0ec67f336f23ffe3b5ff0bfcad73ebfe0377ad62b877",
+      "source_bytes": 333,
+      "archive_bytes": 333,
+      "byte_exact": true
+    },
+    {
+      "kind": "experiment-or-comparison",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\compare-edge.py",
+      "archive": "comparisons/compare-edge.py",
+      "source_sha256": "e90a6fe2910892e89a09938aa3f6e6428f8d9614440c48030fd2d38f2898307e",
+      "archive_sha256": "e90a6fe2910892e89a09938aa3f6e6428f8d9614440c48030fd2d38f2898307e",
+      "source_bytes": 947,
+      "archive_bytes": 947,
+      "byte_exact": true
+    },
+    {
+      "kind": "experiment-or-comparison",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\edge-production-comparison.json",
+      "archive": "comparisons/edge-production-comparison.json",
+      "source_sha256": "d7cf92f0328591fcab2635e92072d35f57bd0d18827af2ff518bfdf54363a2e2",
+      "archive_sha256": "d7cf92f0328591fcab2635e92072d35f57bd0d18827af2ff518bfdf54363a2e2",
+      "source_bytes": 1486,
+      "archive_bytes": 1486,
+      "byte_exact": true
+    },
+    {
+      "kind": "log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\native-package-build-r4.log",
+      "archive": "package/native-package-build-r4.log.gz",
+      "source_sha256": "92c7501c6d029401d483064d7915139e4866b3d3beff0c5444d4c23c9b46d5a0",
+      "archive_sha256": "95ec6849309f89fcdff0fc0a3f20e25a2746632b1357f10214d789c3d2ad0e3b",
+      "source_bytes": 10250,
+      "archive_bytes": 2830,
+      "gzip_mtime": 0,
+      "payload_sha256": "92c7501c6d029401d483064d7915139e4866b3d3beff0c5444d4c23c9b46d5a0"
+    },
+    {
+      "kind": "experiment-or-comparison",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\package-check-r4.py",
+      "archive": "package/package-check-r4.py",
+      "source_sha256": "1a26f39437e4c3aa9edca1aa8b8fdd93f326b32e2e13b875364ddd25dd8f6de3",
+      "archive_sha256": "1a26f39437e4c3aa9edca1aa8b8fdd93f326b32e2e13b875364ddd25dd8f6de3",
+      "source_bytes": 346,
+      "archive_bytes": 346,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T0\\pytest.log",
+      "archive": "validation/PHYS-PERF-01-edge-T0/pytest.log.gz",
+      "source_sha256": "63170e2689083675c85c712480c11c4f7b5272ae78b9bdbe733d15515bd6984c",
+      "archive_sha256": "920aee952c33665d827b6e2ac47f0faf57d972f40483061bdb94ffcb9ad11090",
+      "source_bytes": 182,
+      "archive_bytes": 63,
+      "gzip_mtime": 0,
+      "payload_sha256": "63170e2689083675c85c712480c11c4f7b5272ae78b9bdbe733d15515bd6984c"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T0\\ruff.log",
+      "archive": "validation/PHYS-PERF-01-edge-T0/ruff.log.gz",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "source_bytes": 19,
+      "archive_bytes": 39,
+      "gzip_mtime": 0,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T0\\summary.json",
+      "archive": "validation/PHYS-PERF-01-edge-T0/summary.json",
+      "source_sha256": "124bc623fae7455a83a1625fdedb8ce2dcad3035734d39e6a9b822cee5d4d36d",
+      "archive_sha256": "124bc623fae7455a83a1625fdedb8ce2dcad3035734d39e6a9b822cee5d4d36d",
+      "source_bytes": 2013,
+      "archive_bytes": 2013,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T1\\headless-0.log",
+      "archive": "validation/PHYS-PERF-01-edge-T1/headless-0.log.gz",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "d65c41487a0683c90d151693e802a170c167abc5d736b83a54c44ccb260e172d",
+      "source_bytes": 32432,
+      "archive_bytes": 7615,
+      "gzip_mtime": 0,
+      "payload_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T1\\headless-17.log",
+      "archive": "validation/PHYS-PERF-01-edge-T1/headless-17.log.gz",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "d65c41487a0683c90d151693e802a170c167abc5d736b83a54c44ccb260e172d",
+      "source_bytes": 32432,
+      "archive_bytes": 7615,
+      "gzip_mtime": 0,
+      "payload_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T1\\headless-23.log",
+      "archive": "validation/PHYS-PERF-01-edge-T1/headless-23.log.gz",
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "d65c41487a0683c90d151693e802a170c167abc5d736b83a54c44ccb260e172d",
+      "source_bytes": 32432,
+      "archive_bytes": 7615,
+      "gzip_mtime": 0,
+      "payload_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T1\\pytest.log",
+      "archive": "validation/PHYS-PERF-01-edge-T1/pytest.log.gz",
+      "source_sha256": "93b28a502ccedb4114de4d97827d6b664cd6f8a24d785c83dbdd2eb94bff38e8",
+      "archive_sha256": "12e223d4bd664d8e60323c52fc93c725c4f4a393770a662064ab3b2e1a24ad07",
+      "source_bytes": 589,
+      "archive_bytes": 90,
+      "gzip_mtime": 0,
+      "payload_sha256": "93b28a502ccedb4114de4d97827d6b664cd6f8a24d785c83dbdd2eb94bff38e8"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T1\\ruff.log",
+      "archive": "validation/PHYS-PERF-01-edge-T1/ruff.log.gz",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "source_bytes": 19,
+      "archive_bytes": 39,
+      "gzip_mtime": 0,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T1\\summary.json",
+      "archive": "validation/PHYS-PERF-01-edge-T1/summary.json",
+      "source_sha256": "eae27d071a09229b72b1eba10953b869f513b321fd9ff92ea7f62bb53c9b8a79",
+      "archive_sha256": "eae27d071a09229b72b1eba10953b869f513b321fd9ff92ea7f62bb53c9b8a79",
+      "source_bytes": 4414,
+      "archive_bytes": 4414,
+      "byte_exact": true
+    },
+    {
+      "kind": "package-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\package-headless-r4\\game.log",
+      "archive": "package/headless-r4/game.log.gz",
+      "source_sha256": "1df0928d040b1feba1cad62404fd2ed8b0493280b89926be269360e749a0b6b3",
+      "archive_sha256": "d2be2575f2961ab8d857b178e1de77a0b840fcde58339a92634361112c4a6054",
+      "source_bytes": 33116,
+      "archive_bytes": 7940,
+      "gzip_mtime": 0,
+      "payload_sha256": "1df0928d040b1feba1cad62404fd2ed8b0493280b89926be269360e749a0b6b3"
+    },
+    {
+      "kind": "package-log-gzip",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\package-headless-r4\\simulation.log",
+      "archive": "package/headless-r4/simulation.log.gz",
+      "source_sha256": "5e635b21e5c40c71ddb09e501b47ab3ffced11c29a9517e688878cdcdf08e815",
+      "archive_sha256": "371600d65f3dca2a3cde2677fa23161f2688347625ace54e912d42f4ca929440",
+      "source_bytes": 33554,
+      "archive_bytes": 8185,
+      "gzip_mtime": 0,
+      "payload_sha256": "5e635b21e5c40c71ddb09e501b47ab3ffced11c29a9517e688878cdcdf08e815"
+    },
+    {
+      "kind": "package-summary",
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\package-headless-r4\\summary.json",
+      "archive": "package/headless-r4/summary.json",
+      "source_sha256": "d94a1ce5a13414cf37b132944abaeee5f620635d78c316b361b001d157127aab",
+      "archive_sha256": "d94a1ce5a13414cf37b132944abaeee5f620635d78c316b361b001d157127aab",
+      "source_bytes": 2121,
+      "archive_bytes": 2121,
+      "byte_exact": true
+    },
+    {
+      "kind": "archive-record",
+      "source": "generated from existing evidence and read-only capture",
+      "archive": "source-hashes.json",
+      "archive_sha256": "112c6a37d050875f61f38c226a8c98215c4af377855dd2a18757c6a74a492893",
+      "archive_bytes": 20939
+    },
+    {
+      "kind": "archive-record",
+      "source": "generated from existing evidence and read-only capture",
+      "archive": "edge-native-report.md",
+      "archive_sha256": "8b5f003ca31b952c7164f851b300cb0a5c9b2da05ffa014e4034555e15a8710c",
+      "archive_bytes": 1780
+    }
+  ],
+  "source_hashes_path": "source-hashes.json",
+  "report_path": "edge-native-report.md",
+  "probe_exact": {
+    "passed": true,
+    "exact_calls": {
+      "point": 1024,
+      "edge": 1024
+    },
+    "in_memory_only": true,
+    "c_sha256": "abf34ff96a3d1a1b65e0e6e308c3b1e3925eb2912bd981a2a4edfd843b8dd7b2"
+  },
+  "pilot_comparison": {
+    "in_memory_only": true,
+    "cases": [
+      {
+        "traffic": 0,
+        "snapshots_all_equal": true,
+        "before_s": 1.4716936000186251,
+        "after_s": 1.4916994999948656
+      },
+      {
+        "traffic": 8,
+        "snapshots_all_equal": true,
+        "before_s": 16.161784300027648,
+        "after_s": 14.647078500041971
+      }
+    ]
+  },
+  "production_comparison": {
+    "passed": true,
+    "comparisons": [
+      {
+        "baseline": "exact-before.json",
+        "cases": [
+          {
+            "traffic": 0,
+            "snapshots_all_equal": true,
+            "ticks": 48,
+            "before_s": 4.643618000016431,
+            "after_s": 1.4763258000166388
+          },
+          {
+            "traffic": 8,
+            "snapshots_all_equal": true,
+            "ticks": 48,
+            "before_s": 50.96059460003744,
+            "after_s": 14.195120699994732
+          }
+        ]
+      },
+      {
+        "baseline": "wheel-production-snapshots.json",
+        "cases": [
+          {
+            "traffic": 0,
+            "snapshots_all_equal": true,
+            "ticks": 48,
+            "before_s": 1.4716936000186251,
+            "after_s": 1.4763258000166388
+          },
+          {
+            "traffic": 8,
+            "snapshots_all_equal": true,
+            "ticks": 48,
+            "before_s": 16.161784300027648,
+            "after_s": 14.195120699994732
+          }
+        ]
+      },
+      {
+        "baseline": "edge-pilot-snapshots.json",
+        "cases": [
+          {
+            "traffic": 0,
+            "snapshots_all_equal": true,
+            "ticks": 48,
+            "before_s": 1.4916994999948656,
+            "after_s": 1.4763258000166388
+          },
+          {
+            "traffic": 8,
+            "snapshots_all_equal": true,
+            "ticks": 48,
+            "before_s": 14.647078500041971,
+            "after_s": 14.195120699994732
+          }
+        ]
+      }
+    ]
+  },
+  "validation_summaries": {
+    "edge-T0": {
+      "started_utc": "2026-10-07T04:35:55.460409+00:00",
+      "git_head": "8be0a5088e5f4743b30d8ac087d7ea52a934f744",
+      "git_status": "M docs/current-progress.md\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_finite_suspension.py",
+        "tests/test_curved_suspension.py"
+      ],
+      "tier": "T0",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T0\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.11
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_finite_suspension.py",
+            "tests/test_curved_suspension.py"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T0\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.907
+        }
+      ]
+    },
+    "edge-T1": {
+      "started_utc": "2026-10-07T04:35:56.713820+00:00",
+      "git_head": "8be0a5088e5f4743b30d8ac087d7ea52a934f744",
+      "git_status": "M docs/current-progress.md\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_suspension_query_lifetime.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_finite_suspension.py",
+        "tests/test_curved_suspension.py",
+        "tests/test_suspension_contacts.py",
+        "tests/test_joint_suspension.py",
+        "tests/test_tire_drivetrain.py",
+        "tests/test_guardrail_suspension.py",
+        "tests/test_suspension_native.py",
+        "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle",
+        "tests/test_gr86.py"
+      ],
+      "tier": "T1",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T1\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.112
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_suspension_query_lifetime.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_finite_suspension.py",
+            "tests/test_curved_suspension.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_joint_suspension.py",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_guardrail_suspension.py",
+            "tests/test_suspension_native.py",
+            "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle",
+            "tests/test_gr86.py"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T1\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 38.618
+        },
+        {
+          "name": "headless-0",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "0"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T1\\headless-0.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 24.88
+        },
+        {
+          "name": "headless-17",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "17"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T1\\headless-17.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 24.903
+        },
+        {
+          "name": "headless-23",
+          "command": [
+            "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "23"
+          ],
+          "reports": [],
+          "log": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-T1\\headless-23.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 24.999
+        }
+      ]
+    }
+  },
+  "package_headless_r4": {
+    "kind": "outside-repository independent package headless; not render, FPS or human gate",
+    "passed": true,
+    "checks": [
+      {
+        "mode": "game",
+        "command": [
+          "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\builds\\physics-native-candidate-r4\\win_amd64\\coastaldrive.exe",
+          "--headless",
+          "--steps",
+          "120",
+          "--track",
+          "test",
+          "--seed",
+          "17",
+          "--vehicle-design",
+          "gr86-2022-premium-6mt",
+          "--driving-mode",
+          "game"
+        ],
+        "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-tnxmofab\\game",
+        "returncode": 0,
+        "seconds": 3.8950865999941016,
+        "log": "game.log",
+        "report_tick_present": true,
+        "full_hardware_present": true
+      },
+      {
+        "mode": "simulation",
+        "command": [
+          "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\builds\\physics-native-candidate-r4\\win_amd64\\coastaldrive.exe",
+          "--headless",
+          "--steps",
+          "120",
+          "--track",
+          "test",
+          "--seed",
+          "17",
+          "--vehicle-design",
+          "gr86-2022-premium-6mt",
+          "--driving-mode",
+          "simulation"
+        ],
+        "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-tnxmofab\\simulation",
+        "returncode": 0,
+        "seconds": 3.66563689999748,
+        "log": "simulation.log",
+        "report_tick_present": true,
+        "full_hardware_present": true
+      }
+    ],
+    "sha256": {
+      "coastaldrive.exe": "9e14dcdbd95afb1f1cdcd3a2586a2bea3c8e0c4d940c5bc408fde803574efd0f",
+      "mechanical_kernels.pyd": "ae3c8f89d1ecdeadbf2e5cc6b3c5e688fc32ce55ed56e9ffdf02de541a9a5f03",
+      "wheel_contact_kernels.pyd": "d552b0d0d441a3449cc69bbddcc906679e0b2fa2900f76d3f39f55a3252fb703",
+      "licenses/CPython-LICENSE.txt": "b0e25a78cffb43f4d92de8b61ccfa1f1f98ecbc22330b54b5251e7b6ba010231",
+      "assets/game/vehicle-configs/gr86-2022-premium-6mt.json": "88c6bdce91429ae59247fec5c6bfd4a7531bbfa918e622dd78e61301dafb6a23"
+    }
+  },
+  "notes": [
+    "Snapshots and text logs compressed deterministically with mtime=0.",
+    "Original logs and validation records remain under logs/.",
+    "No build, test, simulation, or render run for this archive task."
+  ]
+}

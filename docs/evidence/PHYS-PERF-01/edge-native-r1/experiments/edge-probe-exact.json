@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "exact_calls": {
+    "point": 1024,
+    "edge": 1024
+  },
+  "in_memory_only": true,
+  "c_sha256": "abf34ff96a3d1a1b65e0e6e308c3b1e3925eb2912bd981a2a4edfd843b8dd7b2"
+}
