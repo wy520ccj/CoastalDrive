@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "known_and_combined_cases": 768,
+  "exact_free_state_and_original_velocity_object": true,
+  "baseline": "8a8c36e original known + validated mass/rotor numeric kernels"
+}
