@@ -1,0 +1,348 @@
+{
+  "task": "PHYS-PERF-01 cylinder-query experiment archive",
+  "head": "e5765edbe0d546c9c968a2745901379eef2ba5b1",
+  "source_capture": "source-hashes.json",
+  "source_count": 354,
+  "source_capture_stable": true,
+  "restored_production_sources": {
+    "src/wheel_contact_kernels.c": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+    "src/suspension_contacts.py": "43defabbc9f4630394361126063d210802d06f16e4948c29a8eb20a23f8c17b7"
+  },
+  "current_pyd_sha256_not_copied": "b8a69797e07c1c87eaac585d231d11471691fe7645f45828e678ae965a0a57f8",
+  "experiment_source_sha256": "644e3f72be17c8a7c01be6ab2cb9f94cfb0696f9e4ecdc274823dd54daeae820",
+  "audit": {
+    "baseline": "409c03c original suspension ray prefix",
+    "all_fields_and_aliases_equal": true,
+    "counts": {
+      "calls": 8518,
+      "relative": 8007,
+      "world": 511,
+      "rays": 10012
+    }
+  },
+  "standard_snapshots": {
+    "baseline": "suspension-state-snapshots.json",
+    "all_48_tick_snapshot_arrays_equal": true,
+    "cases": [
+      {
+        "traffic": 0,
+        "tick_count": 48,
+        "seconds": 0.7491060000029393
+      },
+      {
+        "traffic": 8,
+        "tick_count": 48,
+        "seconds": 6.385443300008774
+      }
+    ]
+  },
+  "profile": {
+    "profiled_steps": 16,
+    "seconds": 4.740643999990425,
+    "diagnostic_only": true
+  },
+  "formal_T0": {
+    "status": "passed",
+    "checks": [
+      {
+        "name": "ruff",
+        "status": "passed",
+        "seconds": 0.108
+      },
+      {
+        "name": "pytest",
+        "status": "passed",
+        "seconds": 0.696
+      }
+    ],
+    "pytest_result": "31 passed in 0.30s",
+    "ruff_result": "passed"
+  },
+  "alternating_ABBA": {
+    "all_four_full_48_tick_snapshot_arrays_equal": true,
+    "all_global_player_traffic_contact_epochs_zero": true,
+    "cases": [
+      {
+        "kind": "old",
+        "wall_seconds": 6.33902699999453,
+        "cpu_seconds": 5.953125
+      },
+      {
+        "kind": "new",
+        "wall_seconds": 6.737324700006866,
+        "cpu_seconds": 6.609375
+      },
+      {
+        "kind": "new",
+        "wall_seconds": 6.32733550001285,
+        "cpu_seconds": 6.21875
+      },
+      {
+        "kind": "old",
+        "wall_seconds": 6.781395400001202,
+        "cpu_seconds": 6.671875
+      }
+    ],
+    "interpretation": "wall/cpu ordering shows no stable CPU-time saving; experiment rejected"
+  },
+  "limitations": [
+    "No T1 was run.",
+    "No performance/FPS or foreground gate is claimed.",
+    "Binary build artifacts were not copied; current production PYD SHA is recorded above.",
+    "This experiment is not related to the main project T2 contact-convergence failure."
+  ],
+  "files": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/cylinder-query-alternating.json",
+      "original_name": "cylinder-query-alternating.json",
+      "archive": "inputs/physics/cylinder-query-alternating.json.gz",
+      "source_sha256": "4b28bf4767a1c59bedb30f5e50df4e9344e55faae53c2f027898790642b524a8",
+      "archive_sha256": "4f6f58f6575be49e2e3b3bde47f0b39b5144924c3f694a091be7883424f6f8cb",
+      "payload_sha256": "4b28bf4767a1c59bedb30f5e50df4e9344e55faae53c2f027898790642b524a8",
+      "compressed": true,
+      "bytes": 31388737,
+      "archive_bytes": 7066168,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/cylinder-query-alternating.log",
+      "original_name": "cylinder-query-alternating.log",
+      "archive": "inputs/physics/cylinder-query-alternating.txt",
+      "source_sha256": "867dbaabfede1750031f0a437ad1961fd9c45610614fa1f2a8e9ead0b477cd97",
+      "archive_sha256": "867dbaabfede1750031f0a437ad1961fd9c45610614fa1f2a8e9ead0b477cd97",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 360,
+      "archive_bytes": 360,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/cylinder-query-alternating.py",
+      "original_name": "cylinder-query-alternating.py",
+      "archive": "inputs/physics/cylinder-query-alternating.py",
+      "source_sha256": "2c5c420d6d6b653a403bbb4a086c5d374f70dabc612546bbf444bffa1e2531c8",
+      "archive_sha256": "2c5c420d6d6b653a403bbb4a086c5d374f70dabc612546bbf444bffa1e2531c8",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 2135,
+      "archive_bytes": 2135,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/cylinder-query-audit.json",
+      "original_name": "cylinder-query-audit.json",
+      "archive": "inputs/physics/cylinder-query-audit.json",
+      "source_sha256": "ae41cd80d6e772b86a421a0562391824c436cf043b6321e188a354478d835ff7",
+      "archive_sha256": "ae41cd80d6e772b86a421a0562391824c436cf043b6321e188a354478d835ff7",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 203,
+      "archive_bytes": 203,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/cylinder-query-audit.log",
+      "original_name": "cylinder-query-audit.log",
+      "archive": "inputs/physics/cylinder-query-audit.txt",
+      "source_sha256": "39560421485f9d28c365620fbe0102e582ae3635fc2569f8ae4ed6044d3e1a7e",
+      "archive_sha256": "39560421485f9d28c365620fbe0102e582ae3635fc2569f8ae4ed6044d3e1a7e",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 269,
+      "archive_bytes": 269,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/cylinder-query-audit.py",
+      "original_name": "cylinder-query-audit.py",
+      "archive": "inputs/physics/cylinder-query-audit.py",
+      "source_sha256": "c50256aa47fe99140720ca28fbd0e87c7bacca9cff702e9d5c7bba30fbff228b",
+      "archive_sha256": "c50256aa47fe99140720ca28fbd0e87c7bacca9cff702e9d5c7bba30fbff228b",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 2379,
+      "archive_bytes": 2379,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/cylinder-query-body.c",
+      "original_name": "cylinder-query-body.c",
+      "archive": "inputs/physics/cylinder-query-body.c",
+      "source_sha256": "644e3f72be17c8a7c01be6ab2cb9f94cfb0696f9e4ecdc274823dd54daeae820",
+      "archive_sha256": "644e3f72be17c8a7c01be6ab2cb9f94cfb0696f9e4ecdc274823dd54daeae820",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 2921,
+      "archive_bytes": 2921,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/cylinder-query-build.log",
+      "original_name": "cylinder-query-build.log",
+      "archive": "inputs/physics/cylinder-query-build.txt",
+      "source_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "archive_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 5534,
+      "archive_bytes": 5534,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/cylinder-query-restore-build.log",
+      "original_name": "cylinder-query-restore-build.log",
+      "archive": "inputs/physics/cylinder-query-restore-build.txt",
+      "source_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "archive_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 5534,
+      "archive_bytes": 5534,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/cylinder-query-snapshots.json",
+      "original_name": "cylinder-query-snapshots.json",
+      "archive": "inputs/physics/cylinder-query-snapshots.json.gz",
+      "source_sha256": "0f437b482419ae2d39d590606eea8c29bd22ddd37d4b15cd89b7e758a87d6952",
+      "archive_sha256": "050538cbed1042a55ec532bc9fd988d208ac1be376054e1269754b791e9282a2",
+      "payload_sha256": "0f437b482419ae2d39d590606eea8c29bd22ddd37d4b15cd89b7e758a87d6952",
+      "compressed": true,
+      "bytes": 8746914,
+      "archive_bytes": 1962276,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/cylinder-query-snapshots.log",
+      "original_name": "cylinder-query-snapshots.log",
+      "archive": "inputs/physics/cylinder-query-snapshots.txt",
+      "source_sha256": "7ff60b112e1e04b767a660bb85da52152200293b0f245fc4b8316b0f4a476c85",
+      "archive_sha256": "7ff60b112e1e04b767a660bb85da52152200293b0f245fc4b8316b0f4a476c85",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 132,
+      "archive_bytes": 132,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/cylinder-query-snapshots.py",
+      "original_name": "cylinder-query-snapshots.py",
+      "archive": "inputs/physics/cylinder-query-snapshots.py",
+      "source_sha256": "e747e2c1454aa785558c700bcc48dd2163df0f4f0b1646fb9373334817e2e8c4",
+      "archive_sha256": "e747e2c1454aa785558c700bcc48dd2163df0f4f0b1646fb9373334817e2e8c4",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 1772,
+      "archive_bytes": 1772,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/promote-cylinder-query.py",
+      "original_name": "promote-cylinder-query.py",
+      "archive": "inputs/physics/promote-cylinder-query.py",
+      "source_sha256": "a22e8e51a8aeb6bc04d2bec8ccc27e17b2cc968047cf3261f9f6d96977a01456",
+      "archive_sha256": "a22e8e51a8aeb6bc04d2bec8ccc27e17b2cc968047cf3261f9f6d96977a01456",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 1251,
+      "archive_bytes": 1251,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-cylinder-query.py",
+      "original_name": "profile-cylinder-query.py",
+      "archive": "inputs/physics/profile-cylinder-query.py",
+      "source_sha256": "fecb4c596ffe8fbe055a4eb141b83b1e1a05d8a11856a722d6819878bf3ad6f4",
+      "archive_sha256": "fecb4c596ffe8fbe055a4eb141b83b1e1a05d8a11856a722d6819878bf3ad6f4",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 6791,
+      "archive_bytes": 6791,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-cylinder-query.log",
+      "original_name": "profile-cylinder-query.log",
+      "archive": "inputs/physics/profile-cylinder-query.txt",
+      "source_sha256": "07f6529b3df17033080db6eedfb6148d49df6ab8157f460cc4ca664a93206625",
+      "archive_sha256": "07f6529b3df17033080db6eedfb6148d49df6ab8157f460cc4ca664a93206625",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 139,
+      "archive_bytes": 139,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-cylinder-query-r1/gr86-profile.prof",
+      "original_name": "gr86-profile.prof",
+      "archive": "inputs/physics/profile-cylinder-query-r1/gr86-profile.prof.gz",
+      "source_sha256": "09e12ff17d4035b5089f95e0aab7076c5defa3f183df33c21663abfd5ef35c00",
+      "archive_sha256": "2c37e396446677ecbb0bd0fbc46cde321bc23be06ec2335a1f2d21455df8684e",
+      "payload_sha256": "09e12ff17d4035b5089f95e0aab7076c5defa3f183df33c21663abfd5ef35c00",
+      "compressed": true,
+      "bytes": 74125,
+      "archive_bytes": 26506,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-cylinder-query-r1/profile.json",
+      "original_name": "profile.json",
+      "archive": "inputs/physics/profile-cylinder-query-r1/profile.json",
+      "source_sha256": "1ae8d9eaabd0a58b9e3da5201885c735ca1a2b3783569a922c611ac7ce49eab8",
+      "archive_sha256": "1ae8d9eaabd0a58b9e3da5201885c735ca1a2b3783569a922c611ac7ce49eab8",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 31774,
+      "archive_bytes": 31774,
+      "status": "copied"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-state-snapshots.json",
+      "original_name": "suspension-state-snapshots.json",
+      "archive": "inputs/physics/suspension-state-snapshots.json.gz",
+      "source_sha256": "61d930fcb6f03bce054280cfac99e13acc3dec164867c9ad0bc67111ee55ef0f",
+      "archive_sha256": "b42ce15e4e13457dd4e472057213a8dfc751dd477de31d37edfd8b48f44a72bf",
+      "payload_sha256": "61d930fcb6f03bce054280cfac99e13acc3dec164867c9ad0bc67111ee55ef0f",
+      "compressed": true,
+      "bytes": 8746915,
+      "archive_bytes": 1962275,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-cylinder-query-T0/pytest.log",
+      "original_name": "pytest.log",
+      "archive": "inputs/validation/PHYS-PERF-01-cylinder-query-T0/pytest.txt",
+      "source_sha256": "065a8104ee7d07bfb5d5f26768eeab2932ae092d9ee93317fd663b068bbd3a7e",
+      "archive_sha256": "065a8104ee7d07bfb5d5f26768eeab2932ae092d9ee93317fd663b068bbd3a7e",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 101,
+      "archive_bytes": 101,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-cylinder-query-T0/ruff.log",
+      "original_name": "ruff.log",
+      "archive": "inputs/validation/PHYS-PERF-01-cylinder-query-T0/ruff.txt",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 19,
+      "archive_bytes": 19,
+      "status": "copied"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-cylinder-query-T0/summary.json",
+      "original_name": "summary.json",
+      "archive": "inputs/validation/PHYS-PERF-01-cylinder-query-T0/summary.json",
+      "source_sha256": "83e6ecad7e4388de3ebc9869700a0860a5fa3dc892fc77f6241dddaf3302d736",
+      "archive_sha256": "83e6ecad7e4388de3ebc9869700a0860a5fa3dc892fc77f6241dddaf3302d736",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 1856,
+      "archive_bytes": 1856,
+      "status": "copied"
+    }
+  ]
+}

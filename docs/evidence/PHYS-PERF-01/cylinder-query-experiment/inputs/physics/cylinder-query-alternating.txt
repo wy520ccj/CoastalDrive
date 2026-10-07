@@ -1,0 +1,1 @@
+{"all_four_full_trajectories_equal": true, "cases": [{"kind": "old", "wall_seconds": 6.33902699999453, "cpu_seconds": 5.953125}, {"kind": "new", "wall_seconds": 6.737324700006866, "cpu_seconds": 6.609375}, {"kind": "new", "wall_seconds": 6.32733550001285, "cpu_seconds": 6.21875}, {"kind": "old", "wall_seconds": 6.781395400001202, "cpu_seconds": 6.671875}]}

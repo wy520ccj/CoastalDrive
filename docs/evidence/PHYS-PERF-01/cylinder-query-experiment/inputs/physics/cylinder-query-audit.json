@@ -1,0 +1,10 @@
+{
+  "baseline": "409c03c original suspension ray prefix",
+  "all_fields_and_aliases_equal": true,
+  "counts": {
+    "calls": 8518,
+    "relative": 8007,
+    "world": 511,
+    "rays": 10012
+  }
+}

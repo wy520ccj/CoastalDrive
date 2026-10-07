@@ -84,3 +84,6 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 
 
 悬架活动集状态块（2026-10-07）：[证据与收据](../evidence/PHYS-PERF-01/suspension-state-r1/receipt.json)。原64轮/1e-10接触间隙/1e-7反力门槛、LU与能量账保持；d3859f8基线5,757次完整SuspensionStep字段一致，另以独立512次LU探针补足基线审计调用当前LU的边界。单/8车各48拍Snapshot与端点基线相同，短测0.7375/6.4815s仅诊断。T0-r1/r2 Ruff未用导入失败，r3为411 passed；T1为496 passed、Ruff及三种子通过。无FPS或前台Gate结论。
+
+
+圆柱查询前置数值实验（2026-10-07，拒绝）：[证据与收据](../evidence/PHYS-PERF-01/cylinder-query-experiment/receipt.json)。8,518次调用/10,012条射线的数值与输入别名一致，T0为31项/Ruff通过；标准单/8车48拍Snapshot与悬架基线相同。ABBA四条完整Snapshot均相同且epoch归零，但新旧CPU时间分别为6.609/6.219与5.953/6.672s，无稳定节省，未运行T1。无性能Gate结论；生产源码恢复至e5765ed字节。
