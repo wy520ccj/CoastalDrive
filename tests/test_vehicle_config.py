@@ -38,6 +38,11 @@ def test_default_geometry_preserves_original_dimensions():
     assert body_center(CAR) == (0, 0, .42)
 
 
+def test_bias_configuration_checks_port_dimensions_before_axle_dependency():
+    with pytest.raises(ValueError, match="三项"):
+        replace(CAR, axle_torque_bias_ratios=(1., 2.), differential_damping=(0.,))
+
+
 def test_custom_bullet_geometry_and_reset_keep_instance_configuration():
     cfg = replace(CAR, mass=1450, wheel_radius=.37, wheelbase=2.6,
                   track_width=1.9, center_of_mass_height=.48,

@@ -123,10 +123,6 @@ class VehicleConfig:
         if len(self.axle_torque_bias_ratios) != 2 or any(not math.isfinite(value) or value < 1.
                 for value in self.axle_torque_bias_ratios):
             raise ValueError("前／后轴扭矩偏置比须为两个不小于1的有限值")
-        for axle, bias in enumerate(self.axle_torque_bias_ratios):
-            if bias > 1. and (not self.finite_drivetrain or not self.input_shaft_enabled
-                    or self.differential_damping[axle] <= 0. or self.differential_capacity[axle] <= 0.):
-                raise ValueError("扭矩偏置需要实体输入轴及对应轴的有限限滑端口")
         if self.axle_track_widths is not None and (len(self.axle_track_widths) != 2
                 or any(not math.isfinite(width) or width <= 0. for width in self.axle_track_widths)):
             raise ValueError("前／后轴轮距须为两个有限正值m")
@@ -169,6 +165,10 @@ class VehicleConfig:
             raise ValueError("限滑参数依次为前轴、后轴、中差的三项")
         if any(not math.isfinite(v) or v < 0 for v in (*self.differential_damping, *self.differential_capacity)):
             raise ValueError("限滑系数/容量须为有限非负值")
+        for axle, bias in enumerate(self.axle_torque_bias_ratios):
+            if bias > 1. and (not self.finite_drivetrain or not self.input_shaft_enabled
+                    or self.differential_damping[axle] <= 0. or self.differential_capacity[axle] <= 0.):
+                raise ValueError("扭矩偏置需要实体输入轴及对应轴的有限限滑端口")
         enabled = tuple(c > 0 and limit > 0 for c, limit in zip(self.differential_damping, self.differential_capacity))
         if any(enabled) and not self.finite_drivetrain:
             raise ValueError("有限限滑需要有限机械传动")

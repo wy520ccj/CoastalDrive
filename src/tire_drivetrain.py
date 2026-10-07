@@ -290,6 +290,73 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             free = tuple(free[a] + normal_load[a] for a in range(dimensions))
         return free, end_velocity
 
+    spin_columns = None
+
+    def shared_jacobian_columns(state):
+        """当前活动分区的解析导数：转子陀螺、低速滚阻和实际轴负载共同进入。"""
+        nonlocal spin_columns
+        if spin_columns is None:
+            spin_columns = tuple(spin(tuple(float(i == j) for i in range(dimensions)))
+                                 for j in range(dimensions))
+        branch, mc, ml, _response, _wheels, local, _plans, (mg, port_plans) = branches[shared_branch]
+        current_spin = spin(state)
+        plan = port_plans[shared_port_index]
+        port_gradients = ((clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])
+                          if hard_gear else (clutch_gradient, shaft_gear_gradient, brake_gradients[0]))
+        variables = len(state)
+        bias_derivatives = ((0.,) * variables,) * 3
+        if torque_bias:
+            axial = (tuple(j * (dot(g, state[:dimensions]) - old) / dt for j, g, old in
+                           zip(inertias, gradients, downstream_omega)) if downstream else (0.,) * 3)
+            output = ratio * (state[dimensions] - state[dimensions + 1])
+            share = config.front_drive_share
+            torques = (share * output - config.final_drive * (share * axial[0] + axial[1]),
+                       (1-share) * output - config.final_drive * ((1-share) * axial[0] + axial[2]))
+            derivative_rows = []
+            for axle, (torque, bias, limit, weight) in enumerate(zip(torques,
+                    config.axle_torque_bias_ratios, limits, (share, 1-share))):
+                coefficient = (bias-1.) / (2*(bias+1.))
+                slope = (math.copysign(coefficient, torque)
+                         if bias > 1. and abs(torque) * coefficient < limit else 0.)
+                derivative_rows.append(tuple(slope * (weight * ratio * (float(j == dimensions)
+                    - float(j == dimensions+1)) - (config.final_drive / dt *
+                    (weight * inertias[0] * gradients[0][j] + inertias[axle+1] * gradients[axle+1][j])
+                    if downstream and j < dimensions else 0.)) for j in range(variables)))
+            bias_derivatives = (*derivative_rows, (0.,) * variables)
+        columns = []
+        for j in range(variables):
+            gyro_column = cross(spin_columns[j], state[:3]) if j < dimensions else (0.,) * 3
+            if j < 3:
+                second = cross(current_spin, tuple(float(a == j) for a in range(3)))
+                gyro_column = tuple(gyro_column[a] + second[a] for a in range(3))
+            direction = mobility(gyro_column + (0.,) * (dimensions - 3))
+            if rolling_active and wheel_start <= j < dimensions:
+                i = j - wheel_start
+                slope = (rolling_coefficients[i] * frames[i].load * radii[i]**2
+                         / config.rolling_transition_speed
+                         if frames[i].supported and abs(radii[i] * state[j]) < config.rolling_transition_speed else 0.)
+                rolling_direction = mobility((0.,) * wheel_start
+                    + tuple(-slope if a == i else 0. for a in range(4)))
+                direction = tuple(direction[a] + rolling_direction[a] for a in range(dimensions))
+            if torque_bias:
+                for mode, derivative, response in zip(branch[2], bias_derivatives, differential_responses):
+                    if mode:
+                        direction = tuple(direction[a] - mode * derivative[j] * response[a]
+                                          for a in range(dimensions))
+            projected = viscous_projection(direction, branch[0])
+            port_direction = tuple(dot(g, projected) for g in port_gradients)
+            if hard_gear:
+                dc, dg, dl, _db = shaft_brake_response(port_direction, local[0], plan)
+            else:
+                dc, dg, _db = synchronizer_brake_response(port_direction, plan)
+                dl = 0.
+            end_column = tuple(dt * (projected[a] - dc * mc[a] - dg * mg[a] - dl * ml[a])
+                               for a in range(dimensions))
+            if torque_bias:
+                end_column += dg, dl
+            columns.append(tuple(float(a == j) - end_column[a] for a in range(variables)))
+        return columns
+
     def shared(guess):
         nonlocal shared_branch, shared_port_index, road_torques, active_limits, bias_ports
         loads = load_terms()
@@ -365,13 +432,17 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 return end[:dimensions], end_velocity, clutch, loss, gear_reaction
             if (rolling_active or torque_bias) and iteration >= 4:
                 # 大轮荷低速滚阻与轴系共同求根，固定点初迭代后用带步长搜索的Newton修正。
-                columns = []
-                for j in range(variables):
-                    plus, minus = list(state), list(state)
-                    plus[j] += .0001
-                    minus[j] -= .0001
-                    high, low = mapped(plus)[0], mapped(minus)[0]
-                    columns.append(tuple(float(a == j) - (high[a]-low[a])/.0002 for a in range(variables)))
+                if shaft:
+                    columns = shared_jacobian_columns(state)
+                else:
+                    # 冻结的旧八维对照机制保留原中心差分，实体轴使用本构解析导数。
+                    columns = []
+                    for j in range(variables):
+                        plus, minus = list(state), list(state)
+                        plus[j] += .0001
+                        minus[j] -= .0001
+                        high, low = mapped(plus)[0], mapped(minus)[0]
+                        columns.append(tuple(float(a == j) - (high[a]-low[a])/.0002 for a in range(variables)))
                 delta = _solve(tuple(tuple(columns[j][a] for j in range(variables)) for a in range(variables)),
                                tuple(-value for value in residual))
                 before = residual_size(state, end)
