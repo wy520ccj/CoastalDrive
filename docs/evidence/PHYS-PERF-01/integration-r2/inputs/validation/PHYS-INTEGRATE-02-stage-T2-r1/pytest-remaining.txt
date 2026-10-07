@@ -1,0 +1,73 @@
+.........................F
+================================== FAILURES ===================================
+_______ test_contact_episode_counts_traffic_and_guardrail_but_not_floor _______
+
+    def test_contact_episode_counts_traffic_and_guardrail_but_not_floor():
+        sim = Simulation(track="endless", traffic_count=1)
+        try:
+            for _ in range(120):
+                sim.step(Control())
+            assert sim.snapshot().collisions == 0
+            # Hold an overlapping NPC stationary for several steps: one accident.
+            for _ in range(5):
+                sim.npcs[0].reset(tuple(sim.player._chassis.getTransform().getPos()))
+>               sim.step(Control())
+
+tests\test_highway_run.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\simulation.py:738: in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+src\tire_drivetrain.py:690: in advance_drivetrain
+    forces[i], modes[i] = solve_wheel(i, gyro)
+                          ^^^^^^^^^^^^^^^^^^^^
+src\tire_drivetrain.py:538: in solve_wheel
+    fx, fy, _error = _solve_force(residual, tolerance=.0001, initial=guess, jacobian=jacobian)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+residual = <function advance_drivetrain.<locals>.solve_wheel.<locals>.residual at 0x0000019AA166BC10>
+tolerance = 0.0001, initial = (1263.8258048139628, 9217.26999719047)
+jacobian = <function advance_drivetrain.<locals>.solve_wheel.<locals>.jacobian at 0x0000019AA1669F30>
+
+    def _solve_force(residual, tolerance=.001, initial=(0.0, 0.0), jacobian=None):
+        """双精度牛顿求解Fx/Fy；不收敛明确报错，不切换到另一套隐含物理。"""
+        fx, fy = initial
+        epsilon = 0.01
+        for _ in range(20):
+            rx, ry = residual(fx, fy)
+            error = math.hypot(rx, ry)
+            if error < tolerance:
+                return fx, fy, error
+            if jacobian is None:
+                px, py = residual(fx + epsilon, fy)
+                nx, ny = residual(fx - epsilon, fy)
+                a, c = (px - nx) / (2 * epsilon), (py - ny) / (2 * epsilon)
+                px, py = residual(fx, fy + epsilon)
+                nx, ny = residual(fx, fy - epsilon)
+                b, d = (px - nx) / (2 * epsilon), (py - ny) / (2 * epsilon)
+            else:
+                a, b, c, d = jacobian(fx, fy)
+            determinant = a * d - b * c
+            dx, dy = (d * rx - b * ry) / determinant, (a * ry - c * rx) / determinant
+            for exponent in range(12):
+                scale = 0.5 ** exponent
+                candidate_x, candidate_y = fx - scale * dx, fy - scale * dy
+                new_rx, new_ry = residual(candidate_x, candidate_y)
+                if math.hypot(new_rx, new_ry) < error:
+                    fx, fy = candidate_x, candidate_y
+                    break
+            else:
+>               raise ArithmeticError(f"轮胎隐式积分不收敛：残差 {error:.6g} N")
+E               ArithmeticError: 轮胎隐式积分不收敛：残差 61267.6 N
+
+src\wheel_dynamics.py:187: ArithmeticError
+=========================== short test summary info ===========================
+FAILED tests/test_highway_run.py::test_contact_episode_counts_traffic_and_guardrail_but_not_floor
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 25 passed, 1172 deselected in 985.59s (0:16:25)

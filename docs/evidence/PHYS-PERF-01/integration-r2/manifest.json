@@ -1,0 +1,159 @@
+{
+  "files": [
+    {
+      "path": "inputs/physics/benchmark-gr86-visible.py",
+      "sha256": "215e106992adc3534910f648d2033b3d14802c5dc622a3a5f84632174d057c0e",
+      "bytes": 1278
+    },
+    {
+      "path": "inputs/physics/integrated-r2-snapshots.json.gz",
+      "sha256": "09cd4c07352fdb5c716af3226cf8c00cc69b97d742130bad55e4693472af1fb0",
+      "bytes": 1950482
+    },
+    {
+      "path": "inputs/physics/native-package-check.py",
+      "sha256": "98b9aed7031c6d13cfb6ea84eededf5b975fa40ef5a6845a7093af1d6d31672c",
+      "bytes": 2323
+    },
+    {
+      "path": "inputs/physics/package-headless-r6/game.txt",
+      "sha256": "1df0928d040b1feba1cad62404fd2ed8b0493280b89926be269360e749a0b6b3",
+      "bytes": 33116
+    },
+    {
+      "path": "inputs/physics/package-headless-r6/simulation.txt",
+      "sha256": "5e635b21e5c40c71ddb09e501b47ab3ffced11c29a9517e688878cdcdf08e815",
+      "bytes": 33554
+    },
+    {
+      "path": "inputs/physics/package-headless-r6/summary.json",
+      "sha256": "2abfad8aad57549702964a4df811b7d568d8eec1b6003d9c6f2c49cc9c879e14",
+      "bytes": 1899
+    },
+    {
+      "path": "inputs/physics/visible-gr86-r1/final.png",
+      "sha256": "4efd693537221bb190750a99e69ba72e4bed82ce35b65dc4ee9f966e864f6db0",
+      "bytes": 1467930
+    },
+    {
+      "path": "inputs/physics/visible-gr86-r1/report.json",
+      "sha256": "00297b794534a5b96f8450f4301ddebe8a197150ab6bc1d72eb91fb5ac930eda",
+      "bytes": 6633
+    },
+    {
+      "path": "inputs/physics/visible-gr86-r1/test-appearance.json",
+      "sha256": "a8761d026aaf3b58041ec5b2a9d74d5e47ba239462880f875a6873ef3c70caa3",
+      "bytes": 55
+    },
+    {
+      "path": "inputs/physics/visible-probe-original-source.sha256",
+      "sha256": "305aa8dad548812d488595b7c33a2c61b77bd77b677c33c01445ca4487541c88",
+      "bytes": 64
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-checkpoint-T0/pytest.txt",
+      "sha256": "039520ac29527adbad79e9cba3b2232872d59c4767808e9c2862b833c46f9f3a",
+      "bytes": 101
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-checkpoint-T0/ruff.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-checkpoint-T0/summary.json",
+      "sha256": "17febd5c13ce2246f4b0822a160de2a07a0ee2fd25fd00cd1c1d331f1d64087a",
+      "bytes": 1543
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-native-build.txt",
+      "sha256": "136d25e4aa26ceffe64e44f866f55a515f13ecaff4cedf4349a857ec2aaff0b7",
+      "bytes": 5673
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-package-r6/build.txt",
+      "sha256": "d6ef1a7527e7b60aa78b1afeed4f8e8ef5e37ebe7a2c1ee2f8b192fa98ee18c6",
+      "bytes": 10096
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-package-r6/summary.json",
+      "sha256": "d61302063f1659f399155084de45713003a3cfdcb2ae397917869657ca03fe46",
+      "bytes": 75656
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-reuse-audit.json",
+      "sha256": "1af13e23d7b9c4087e391381b55817adb43661380301525435833623b7a86924",
+      "bytes": 431933
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-reused-nodes.json",
+      "sha256": "f38692f0dc4503cd0af4bda342ed2a456d3a46cff7e474d3ab22673607757c04",
+      "bytes": 149063
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-source-audit.json",
+      "sha256": "58c9e73722735f1a462ca2c9b8165f2d86af4476b191bab4a6b158c1d3487291",
+      "bytes": 25251
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-stage-T2-r1/pytest-remaining.txt",
+      "sha256": "23ab9fe02e131ccb46c0ea7ae847cee228c0b20583e5fc4e0b1d841be35d5fb8",
+      "bytes": 4011
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-stage-T2-r1/ruff.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-stage-T2-r1/summary.json",
+      "sha256": "e0c4dfa834ed6f645062b19807ba6eece077e30e17b8873c21f8b485c6431394",
+      "bytes": 201617
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-T1/headless-0.txt",
+      "sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "bytes": 32432
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-T1/headless-17.txt",
+      "sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "bytes": 32432
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-T1/headless-23.txt",
+      "sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "bytes": 32432
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-T1/pytest.txt",
+      "sha256": "41ee506f62f4eea7be80d965e881101707d8fbb16f2d641688b4c2ede6263ffd",
+      "bytes": 924
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-T1/ruff.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19
+    },
+    {
+      "path": "inputs/validation/PHYS-INTEGRATE-02-T1/summary.json",
+      "sha256": "956642168c8661d3bde84e97c127963d8124c49ed9d56ffff4cf0bbacf434229",
+      "bytes": 5352
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "1ac81378d406bf814a93fffb21da081e5e1f56620c252f48da333814d06a73eb",
+      "bytes": 39181
+    },
+    {
+      "path": "report.md",
+      "sha256": "179e6b4fd99fa0ec2a5998db787c2a30f56ec0bbdb4fdf267e13d6d9935c3f77",
+      "bytes": 2257
+    },
+    {
+      "path": "source-capture.json",
+      "sha256": "579c6aeb306fc31a27f3ba295677b167f8e6c2bad540830ca9e5bb72d9e28567",
+      "bytes": 74575
+    }
+  ]
+}
