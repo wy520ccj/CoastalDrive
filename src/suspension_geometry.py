@@ -4,6 +4,8 @@ import math
 from dataclasses import dataclass
 from itertools import pairwise
 
+from wheel_contact_kernels import box_interval, surface_transform
+
 
 @dataclass(frozen=True)
 class BoxSurface:
@@ -16,10 +18,10 @@ class BoxSurface:
     reach: float
 
     def local(self, point):
-        return tuple(self.offset[a] + sum(x*y for x,y in zip(self.axes[a], point)) for a in range(3))
+        return surface_transform(point, self.axes, self.offset)
 
     def world_vector(self, vector):
-        return tuple(sum(vector[a] * self.axes[a][b] for a in range(3)) for b in range(3))
+        return surface_transform(vector, self.axes, transpose=True)
 
 
 @dataclass(frozen=True)
@@ -42,7 +44,7 @@ class CylinderSurface(BoxSurface):
 
     def entry(self, start, end, axis):
         from wheel_envelope import cylinder_box_entry, cylinder_support
-        local_axis = tuple(sum(self.axes[a][b] * axis[b] for b in range(3)) for a in range(3))
+        local_axis = surface_transform(axis, self.axes)
         if self.triangles is not None:
             found = self.triangles.entry(start,end,self.radius,local_axis,self.wheel_radius,self.width,self.shoulder,self.crown)
         elif self.plane is None:
@@ -69,25 +71,6 @@ class CylinderSurface(BoxSurface):
         return fraction, normal, point, face
 
 
-def box_interval(start, end, half):
-    """三轴区间给出直线进入/离开Box的时刻及入射面。"""
-    entry, exit_time, normal = float("-inf"), float("inf"), None
-    for axis in range(3):
-        speed = end[axis] - start[axis]
-        if speed == 0.:
-            if abs(start[axis]) > half[axis]:
-                return None
-            continue
-        near, far = (-half[axis] - start[axis]) / speed, (half[axis] - start[axis]) / speed
-        sign = -1. if speed > 0. else 1.
-        if near > far:
-            near, far = far, near
-        if near > entry:
-            entry, normal = near, tuple(sign if i == axis else 0. for i in range(3))
-        exit_time = min(exit_time, far)
-        if entry > exit_time:
-            return None
-    return entry, exit_time, normal
 
 
 def box_entry(start, end, half):

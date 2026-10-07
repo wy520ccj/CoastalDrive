@@ -3,6 +3,8 @@
 import math
 from dataclasses import dataclass, replace
 
+from wheel_contact_kernels import rotated_path
+
 from rotor_dynamics import cross, dot
 from suspension_geometry import BoxSurface, CylinderSurface, sphere_box_entry
 from wheel_envelope import crown_extent_secant, cylinder_support, subtract
@@ -137,19 +139,6 @@ def rotation_path(angular, dt, damping=0.):
     return tuple(value / speed for value in angular), angle, angle / (dt * speed)
 
 
-def rotated_path(vector, axis, angle, scale):
-    """返回末向量及沿实际转动路径的共轭平均向量，使Δr=dt*Ω×平均r。"""
-    if angle == 0.:
-        return vector, vector
-    parallel = tuple(dot(vector, axis) * value for value in axis)
-    radial = tuple(vector[a] - parallel[a] for a in range(3))
-    tangent = cross(axis, vector)
-    sine, cosine = math.sin(angle), math.cos(angle)
-    average_sine = sine / angle
-    average_cosine = 2 * math.sin(angle / 2)**2 / angle
-    end = tuple(parallel[a] + cosine * radial[a] + sine * tangent[a] for a in range(3))
-    average = tuple(scale * (parallel[a] + average_sine * radial[a] + average_cosine * tangent[a]) for a in range(3))
-    return end, average
 
 
 def finite_contact_system(system, velocity, angular, dt):

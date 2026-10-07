@@ -293,7 +293,87 @@ static PyObject *edge_distance_call(PyObject *self, PyObject *args, PyObject *kw
     return Py_BuildValue("(d(ddd)(ddd))",distance,normal[0],normal[1],normal[2],witness[0],witness[1],witness[2]);
 }
 
+static PyObject *surface_transform(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *value_object, *axes_object, *offset_object = Py_None;
+    int transpose = 0;
+    static char *names[] = {"value", "axes", "offset", "transpose", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|Op",names,&value_object,&axes_object,&offset_object,&transpose))
+        return NULL;
+    double value[3], axes[3][3], offset[3] = {0.,0.,0.};
+    if (!vector(value_object,value) || (offset_object != Py_None && !vector(offset_object,offset))) return NULL;
+    PyObject *rows = PySequence_Fast(axes_object,"支持面变换须为三行矩阵");
+    if (!rows) return NULL;
+    if (PySequence_Fast_GET_SIZE(rows) != 3) {
+        Py_DECREF(rows); PyErr_SetString(PyExc_ValueError,"支持面变换须为三行矩阵"); return NULL;
+    }
+    for (int i=0; i<3; ++i) {
+        if (!vector(PySequence_Fast_GET_ITEM(rows,i),axes[i])) { Py_DECREF(rows); return NULL; }
+    }
+    Py_DECREF(rows);
+    double result[3];
+    for (int a=0; a<3; ++a) {
+        double terms[3];
+        for (int b=0; b<3; ++b) terms[b] = (transpose ? axes[b][a] : axes[a][b])*value[b];
+        /* 与Python三项sum及其后的平移分别舍入，不融合乘加。 */
+        result[a] = offset[a] + sum_three(terms);
+    }
+    return Py_BuildValue("(ddd)",result[0],result[1],result[2]);
+}
+
+static PyObject *box_interval_call(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *start_object, *end_object, *half_object;
+    static char *names[] = {"start", "end", "half", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO",names,&start_object,&end_object,&half_object)) return NULL;
+    double start[3],end[3],half[3];
+    if (!vector(start_object,start) || !vector(end_object,end) || !vector(half_object,half)) return NULL;
+    double entry=-INFINITY,exit_time=INFINITY,sign=0.;
+    int normal_axis=-1;
+    for (int a=0; a<3; ++a) {
+        double speed=end[a]-start[a];
+        if (speed == 0.) {
+            if (fabs(start[a]) > half[a]) Py_RETURN_NONE;
+            continue;
+        }
+        double near=(-half[a]-start[a])/speed,far=(half[a]-start[a])/speed;
+        if (near > far) { double swap=near; near=far; far=swap; }
+        if (near > entry) { entry=near; normal_axis=a; sign=speed>0. ? -1. : 1.; }
+        if (far < exit_time) exit_time=far;
+        if (entry > exit_time) Py_RETURN_NONE;
+    }
+    PyObject *normal=normal_axis < 0 ? Py_NewRef(Py_None) : Py_BuildValue("(ddd)",
+        normal_axis==0 ? sign : 0.,normal_axis==1 ? sign : 0.,normal_axis==2 ? sign : 0.);
+    if (!normal) return NULL;
+    PyObject *result=Py_BuildValue("(ddO)",entry,exit_time,normal);
+    Py_DECREF(normal);
+    return result;
+}
+
+static PyObject *rotated_path_call(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *value_object,*axis_object;
+    double angle,scale;
+    static char *names[] = {"vector", "axis", "angle", "scale", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOdd",names,&value_object,&axis_object,&angle,&scale)) return NULL;
+    if (angle == 0.) return Py_BuildValue("(OO)",value_object,value_object);
+    double value[3],axis[3];
+    if (!vector(value_object,value) || !vector(axis_object,axis)) return NULL;
+    double projection=dot(value,axis),parallel[3],radial[3],tangent[3],end[3],average[3];
+    for (int a=0; a<3; ++a) { parallel[a]=projection*axis[a]; radial[a]=value[a]-parallel[a]; }
+    tangent[0]=axis[1]*value[2]-axis[2]*value[1];
+    tangent[1]=axis[2]*value[0]-axis[0]*value[2];
+    tangent[2]=axis[0]*value[1]-axis[1]*value[0];
+    double sine=sin(angle),cosine=cos(angle),average_sine=sine/angle;
+    double average_cosine=2*pow(sin(angle/2),2)/angle;
+    for (int a=0; a<3; ++a) {
+        end[a]=parallel[a]+cosine*radial[a]+sine*tangent[a];
+        average[a]=scale*(parallel[a]+average_sine*radial[a]+average_cosine*tangent[a]);
+    }
+    return Py_BuildValue("((ddd)(ddd))",end[0],end[1],end[2],average[0],average[1],average[2]);
+}
+
 static PyMethodDef methods[] = {
+    {"box_interval", (PyCFunction)box_interval_call, METH_VARARGS | METH_KEYWORDS, "原三轴线段包围盒区间"},
+    {"rotated_path", (PyCFunction)rotated_path_call, METH_VARARGS | METH_KEYWORDS, "原有限转动末向量与共轭平均"},
+    {"surface_transform", (PyCFunction)surface_transform, METH_VARARGS | METH_KEYWORDS, "支持面三维变换原舍入次序"},
     {"cylinder_support", (PyCFunction)support, METH_VARARGS | METH_KEYWORDS, "有限胎宽原支持函数"},
     {"triangle_face", (PyCFunction)triangle_face, METH_VARARGS | METH_KEYWORDS, "原有限三角面入射与覆盖判据"},
     {"cylinder_point_delta", (PyCFunction)point_delta_call, METH_VARARGS | METH_KEYWORDS, "原胎冠点驻点"},
