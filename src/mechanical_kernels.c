@@ -1,6 +1,8 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <math.h>
+#include <limits.h>
+#include <stdint.h>
 
 #define PORT_TOLERANCE 1e-11
 
@@ -227,7 +229,115 @@ failed:
     return NULL;
 }
 
+/* 无重叠部分和遵循CPython math.fsum的有限数算法与半偶舍入。 */
+static double exact_sum(const double *values, Py_ssize_t length, double *partials) {
+    Py_ssize_t count = 0;
+    double high = 0., low = 0.;
+    for (Py_ssize_t k = 0; k < length; ++k) {
+        double x = values[k];
+        Py_ssize_t write = 0;
+        for (Py_ssize_t j = 0; j < count; ++j) {
+            double y = partials[j];
+            if (fabs(x) < fabs(y)) { double swap=x; x=y; y=swap; }
+            high = x+y; low = y-(high-x);
+            if (low != 0.) partials[write++] = low;
+            x = high;
+        }
+        count = write;
+        if (!isfinite(x)) { PyErr_SetString(PyExc_OverflowError,"有限机械矩阵求和溢出"); return 0.; }
+        if (x != 0.) partials[count++] = x;
+    }
+    high = 0.;
+    if (count) {
+        high = partials[--count];
+        while (count) {
+            double x=high, y=partials[--count];
+            high=x+y; low=y-(high-x);
+            if (low != 0.) break;
+        }
+        if (count && ((low<0. && partials[count-1]<0.) || (low>0. && partials[count-1]>0.))) {
+            double twice=low*2., rounded=high+twice;
+            if (twice == rounded-high) high=rounded;
+        }
+    }
+    return high;
+}
+
+static void lu_substitute(const double *rows, const double *values, const Py_ssize_t *order,
+                          Py_ssize_t n, double *result, double *terms, double *partials) {
+    for (Py_ssize_t i=0; i<n; ++i) result[i]=values[order[i]];
+    for (Py_ssize_t i=0; i<n; ++i) {
+        terms[0]=result[i];
+        for (Py_ssize_t j=0; j<i; ++j) terms[j+1]=-rows[i*n+j]*result[j];
+        result[i]=exact_sum(terms,i+1,partials);
+    }
+    for (Py_ssize_t i=n; i-- > 0;) {
+        terms[0]=result[i];
+        for (Py_ssize_t j=i+1; j<n; ++j) terms[j-i]=-rows[i*n+j]*result[j];
+        result[i]=exact_sum(terms,n-i,partials)/rows[i*n+i];
+    }
+}
+
+static PyObject *solve_lu(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *matrix_object,*rhs_object;
+    static char *names[]={"matrix","rhs",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OO",names,&matrix_object,&rhs_object)) return NULL;
+    PyObject *matrix=PySequence_Fast(matrix_object,"机械矩阵须为行序列");
+    if (!matrix) return NULL;
+    Py_ssize_t n=PySequence_Fast_GET_SIZE(matrix);
+    if (n == 0) { Py_DECREF(matrix); return PyTuple_New(0); }
+    if ((size_t)n > INT_MAX || (size_t)n+3 > (SIZE_MAX/sizeof(double)-2)/(2*(size_t)n)) {
+        Py_DECREF(matrix); return PyErr_NoMemory();
+    }
+    double *memory=PyMem_Malloc((2*n*n+6*n+2)*sizeof(double));
+    Py_ssize_t *order=PyMem_Malloc(n*sizeof(Py_ssize_t));
+    if (!memory || !order) { PyMem_Free(memory); PyMem_Free(order); Py_DECREF(matrix); return PyErr_NoMemory(); }
+    double *original=memory,*rows=original+n*n,*rhs=rows+n*n,*result=rhs+n;
+    double *residual=result+n,*correction=residual+n,*terms=correction+n,*partials=terms+n+1;
+    if (!vector(rhs_object,rhs,(int)n)) goto failed;
+    for (Py_ssize_t i=0; i<n; ++i) {
+        if (!vector(PySequence_Fast_GET_ITEM(matrix,i),original+i*n,(int)n)) goto failed;
+        order[i]=i;
+        for (Py_ssize_t j=0; j<n; ++j) rows[i*n+j]=original[i*n+j];
+    }
+    for (Py_ssize_t col=0; col<n; ++col) {
+        Py_ssize_t pivot=col;
+        for (Py_ssize_t i=col+1; i<n; ++i)
+            if (fabs(rows[i*n+col]) > fabs(rows[pivot*n+col])) pivot=i;
+        for (Py_ssize_t j=0; j<n; ++j) {
+            double swap=rows[col*n+j]; rows[col*n+j]=rows[pivot*n+j]; rows[pivot*n+j]=swap;
+        }
+        Py_ssize_t swap=order[col]; order[col]=order[pivot]; order[pivot]=swap;
+        if (rows[col*n+col] == 0.) { PyErr_SetString(PyExc_ZeroDivisionError,"机械LU矩阵奇异"); goto failed; }
+        for (Py_ssize_t i=col+1; i<n; ++i) {
+            double factor=rows[i*n+col]/rows[col*n+col];
+            rows[i*n+col]=factor;
+            for (Py_ssize_t j=col+1; j<n; ++j) rows[i*n+j]-=factor*rows[col*n+j];
+        }
+    }
+    lu_substitute(rows,rhs,order,n,result,terms,partials);
+    if (PyErr_Occurred()) goto failed;
+    for (Py_ssize_t i=0; i<n; ++i) {
+        terms[0]=rhs[i];
+        for (Py_ssize_t j=0; j<n; ++j) terms[j+1]=-original[i*n+j]*result[j];
+        residual[i]=exact_sum(terms,n+1,partials);
+    }
+    lu_substitute(rows,residual,order,n,correction,terms,partials);
+    if (PyErr_Occurred()) goto failed;
+    PyObject *output=PyTuple_New(n);
+    if (!output) goto failed;
+    for (Py_ssize_t i=0; i<n; ++i) {
+        PyObject *value=PyFloat_FromDouble(result[i]+correction[i]);
+        if (!value) { Py_DECREF(output); goto failed; }
+        PyTuple_SET_ITEM(output,i,value);
+    }
+    PyMem_Free(memory); PyMem_Free(order); Py_DECREF(matrix); return output;
+failed:
+    PyMem_Free(memory); PyMem_Free(order); Py_DECREF(matrix); return NULL;
+}
+
 static PyMethodDef methods[] = {
+    {"solve_lu", (PyCFunction)solve_lu, METH_VARARGS | METH_KEYWORDS, "小型稠密LU及原精度残差修正"},
     {"shaft_brake_state", (PyCFunction)shaft_state, METH_VARARGS | METH_KEYWORDS, "四端口有限末状态原方程C内核"},
     {"dot", (PyCFunction)dot_vector, METH_VARARGS | METH_KEYWORDS, "同次序补偿点积"},
     {"dot3", (PyCFunction)dot_three, METH_VARARGS | METH_KEYWORDS, "三维补偿点积"},

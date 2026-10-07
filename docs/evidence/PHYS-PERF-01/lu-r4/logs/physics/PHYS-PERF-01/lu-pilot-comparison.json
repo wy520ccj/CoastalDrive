@@ -1,0 +1,23 @@
+{
+  "in_memory_only": true,
+  "passed": true,
+  "actual_solve_exact_calls_by_dimension": {
+    "8": 15501,
+    "11": 4297
+  },
+  "cases": [
+    {
+      "traffic": 0,
+      "snapshots_all_equal": true,
+      "before_s": 1.4763258000166388,
+      "after_s": 1.4653427000303054
+    },
+    {
+      "traffic": 8,
+      "snapshots_all_equal": true,
+      "before_s": 14.195120699994732,
+      "after_s": 14.580077400023583
+    }
+  ],
+  "wall_clock_includes_both_old_and_new_solvers": true
+}
