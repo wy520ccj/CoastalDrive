@@ -1,0 +1,59 @@
+{
+  "files": [
+    {
+      "path": "baseline.c",
+      "sha256": "0e7d2b67d496dfd30813766ac922d557446a6138be72fb9b67cf1f9c01cd7ea8",
+      "bytes": 49255
+    },
+    {
+      "path": "build-initial-link-path-failure.txt",
+      "sha256": "70bd1f7ef48ff3665856d04dbdf21cbd8ee3958c4a8a5baf202dff351d8fafc6",
+      "bytes": 3927
+    },
+    {
+      "path": "build-lib/_surface_prefilter_old.cp314-win_amd64.pyd",
+      "sha256": "151ee53fb2c435e809d58a38bddfbfdac820ff208ab111eef1fa91c3ccb9b6cc",
+      "bytes": 45056
+    },
+    {
+      "path": "build-temp/Release/_surface_prefilter_old.cp314-win_amd64.exp",
+      "sha256": "e5dbc59b43ac43ec51a8ddfe4e276d4d6cdf92ef4176ef3937c5ca2c3014a953",
+      "bytes": 1006
+    },
+    {
+      "path": "build-temp/Release/_surface_prefilter_old.cp314-win_amd64.lib",
+      "sha256": "27f1dd9becbeae0f598016752e8718e32b456aadfc8e1cbde596f331453f23dd",
+      "bytes": 2284
+    },
+    {
+      "path": "build-temp/Release/baseline.obj",
+      "sha256": "c251388a54b1fccd80eb8a2b3c32f2ff7d37e4e17dcf7e6f98349ef6704964ef",
+      "bytes": 354284
+    },
+    {
+      "path": "build-temp/Release/Users/15120/.codex/worktrees/gr86-physics/CoastalDrive/logs/physics/PHYS-PERF-01/surface-prefilter-baseline/baseline.obj",
+      "sha256": "1114b1051c3bd24b759518255563fbf049fb2656f275d1c9e063c7795365f2da",
+      "bytes": 354392
+    },
+    {
+      "path": "build.log",
+      "sha256": "cac47a4a67ca4c187ef16757ae1418d19715cfef0559e598f19867a66655b198",
+      "bytes": 3278
+    },
+    {
+      "path": "original-wheel-contact-kernels.c",
+      "sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+      "bytes": 49253
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "00cb41d31e06b3df0495627b017f0930f933213c08f4cd94cedcaa5779b36fc8",
+      "bytes": 2534
+    },
+    {
+      "path": "setup.py",
+      "sha256": "d283b9f61759ec86e4c930f46d289929438f051718975a7d390db5877ae0a8df",
+      "bytes": 901
+    }
+  ]
+}

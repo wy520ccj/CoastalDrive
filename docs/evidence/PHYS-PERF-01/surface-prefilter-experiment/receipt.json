@@ -1,0 +1,294 @@
+{
+  "head": "d3859f8c91b74989229e28c31a0f1fc67e90522c",
+  "scope": "Only docs/evidence/PHYS-PERF-01/surface-prefilter-experiment/ was written.",
+  "current_source_capture": "current-source-capture.json",
+  "current_production_C_sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+  "current_production_C_matches_git_blob": true,
+  "current_production_PYD_sha256": "1bf36dabcc8e74b9732cf5dd71a4183a8b1e91a7350c2648688823c3169388fa",
+  "trial_C_sha256": "9e8a281dec025730cefb091cd6a34298e51de20c31cff35a0a8ddf8c3cb7af24",
+  "baseline_source_sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+  "restored_build_log": "inputs/physics/surface-prefilter-restore-build.txt",
+  "trial_implementation": "提前应用原三角面 root AABB 判据，跳过不可能命中的临时对象；原 entry 公式与候选顺序保持。",
+  "independent_local_audit": {
+    "counts": {
+      "rays": 15148,
+      "surfaces": 59361,
+      "hits": 15894,
+      "relative": 12438,
+      "world": 2710,
+      "mesh": 54820,
+      "plane": 59,
+      "box": 4482
+    },
+    "log_claimed_tests": "40 passed in 6.69s in separate audit log; not the formal T0 run"
+  },
+  "formal_T0": {
+    "status": "passed",
+    "pytest_check": {
+      "status": "passed",
+      "seconds": 3.323
+    },
+    "pytest_log": "inputs/validation/PHYS-PERF-01-surface-prefilter-T0/pytest.txt",
+    "actual_pytest_result": "31 passed in 2.69s"
+  },
+  "standard_snapshot_comparison": {
+    "baseline_seconds": [
+      0.7980391001037788,
+      7.105911799997557
+    ],
+    "trial_seconds": [
+      0.9698799999750918,
+      11.637589899954037
+    ],
+    "baseline_timing_is_comparable": false,
+    "snapshot_arrays_equal_all_fields": true
+  },
+  "alternating_abba": {
+    "wall_seconds": [
+      10.898045199995977,
+      12.724886099997093,
+      12.795911000008346,
+      12.667930800002068
+    ],
+    "cpu_seconds": [
+      10.703125,
+      12.5625,
+      12.515625,
+      12.4375
+    ],
+    "order": [
+      "old",
+      "prefilter",
+      "prefilter",
+      "old"
+    ],
+    "full_snapshot_assertion": "failed",
+    "raw_snapshots_saved": false,
+    "failure_log": "inputs/physics/surface-prefilter-alternating.txt",
+    "cause": "unknown; lifecycle epoch is only a hypothesis"
+  },
+  "baseline_module_archive": {
+    "directory": "inputs/baseline",
+    "pyd_and_obj_copied": false,
+    "original_receipt_and_manifest_preserved": true,
+    "produced_pyd_path_and_sha_are_in_original_receipt": "logs/physics/PHYS-PERF-01/surface-prefilter-baseline/receipt.json"
+  },
+  "limitations": [
+    "No T1 was run.",
+    "No mechanical or energy Gate claimed.",
+    "Standard snapshot equality and independent local audit do not supersede the failing alternating full-snapshot assertion.",
+    "Short timings are diagnostic, not FPS or foreground Gate.",
+    "Main stage T2 continuation and human/performance Gates remain incomplete."
+  ],
+  "files": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/promote-surface-prefilter.py",
+      "original_name": "promote-surface-prefilter.py",
+      "archive": "inputs/promote-surface-prefilter.py",
+      "source_sha256": "8f0711205d818efeadc5d1e01a86685e7707a06dc611d204d0ce25b74e825602",
+      "archive_sha256": "8f0711205d818efeadc5d1e01a86685e7707a06dc611d204d0ce25b74e825602",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 2421,
+      "archive_bytes": 2421
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/surface-prefilter-production-experiment.c",
+      "original_name": "surface-prefilter-production-experiment.c",
+      "archive": "inputs/surface-prefilter-production-experiment.c",
+      "source_sha256": "9e8a281dec025730cefb091cd6a34298e51de20c31cff35a0a8ddf8c3cb7af24",
+      "archive_sha256": "9e8a281dec025730cefb091cd6a34298e51de20c31cff35a0a8ddf8c3cb7af24",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 51278,
+      "archive_bytes": 51278
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/surface-prefilter-real-call-audit.log",
+      "original_name": "surface-prefilter-real-call-audit.log",
+      "archive": "inputs/surface-prefilter-real-call-audit.txt",
+      "source_sha256": "92787a975cce2b15cb0386510b83842b3990863fb52be2ac89f7723cc99e2d2e",
+      "archive_sha256": "92787a975cce2b15cb0386510b83842b3990863fb52be2ac89f7723cc99e2d2e",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 365,
+      "archive_bytes": 365
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/surface-prefilter-build.log",
+      "original_name": "surface-prefilter-build.log",
+      "archive": "inputs/surface-prefilter-build.txt",
+      "source_sha256": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+      "archive_sha256": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 2880,
+      "archive_bytes": 2880
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/surface-prefilter-restore-build.log",
+      "original_name": "surface-prefilter-restore-build.log",
+      "archive": "inputs/surface-prefilter-restore-build.txt",
+      "source_sha256": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+      "archive_sha256": "cbaeb846db332cbd3186f6241273d6d38b8ba942e5f8758b47c90c8da9ab0a2e",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 2880,
+      "archive_bytes": 2880
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/surface-prefilter-snapshots.json",
+      "original_name": "surface-prefilter-snapshots.json",
+      "archive": "inputs/surface-prefilter-snapshots.json.gz",
+      "source_sha256": "d18f542de1ee7ba9fb8a656d4eae00d9515d82abfc8215e9f21cea67fabcfa59",
+      "archive_sha256": "649d7ad3526200eca9790965cee82824fc72fe134150b8496894ec425396fbd3",
+      "payload_sha256": "d18f542de1ee7ba9fb8a656d4eae00d9515d82abfc8215e9f21cea67fabcfa59",
+      "compressed": true,
+      "bytes": 8722200,
+      "archive_bytes": 1950482
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/compare-prefilter-alternating.py",
+      "original_name": "compare-prefilter-alternating.py",
+      "archive": "inputs/compare-prefilter-alternating.py",
+      "source_sha256": "5c0b9c79db33b2c3cba2d75716992e30604a5b0c6f4463c3dafa4a928dc63261",
+      "archive_sha256": "5c0b9c79db33b2c3cba2d75716992e30604a5b0c6f4463c3dafa4a928dc63261",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 1922,
+      "archive_bytes": 1922
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/surface-prefilter-alternating.log",
+      "original_name": "surface-prefilter-alternating.log",
+      "archive": "inputs/surface-prefilter-alternating.txt",
+      "source_sha256": "a31ff2ac02af1d780d3ce15c2a63c933faf62a89ee4d2127e956878e3b1fd74e",
+      "archive_sha256": "a31ff2ac02af1d780d3ce15c2a63c933faf62a89ee4d2127e956878e3b1fd74e",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 669,
+      "archive_bytes": 669
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/endpoint-production.json",
+      "original_name": "endpoint-production.json",
+      "archive": "inputs/endpoint-production.json.gz",
+      "source_sha256": "b3847cd3ff680ea730f6f8a139ee5b0ff9723a95fa10960790da1f4aefdc65db",
+      "archive_sha256": "73a7a9916aed8c568976cc9d090d2d4f4c883615d5b6e2769047377ab1739137",
+      "payload_sha256": "b3847cd3ff680ea730f6f8a139ee5b0ff9723a95fa10960790da1f4aefdc65db",
+      "compressed": true,
+      "bytes": 8722215,
+      "archive_bytes": 1950493
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/surface-prefilter-baseline/original-wheel-contact-kernels.c",
+      "original_name": "original-wheel-contact-kernels.c",
+      "archive": "inputs/baseline/original-wheel-contact-kernels.c",
+      "source_sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+      "archive_sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 49253,
+      "archive_bytes": 49253
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/surface-prefilter-baseline/baseline.c",
+      "original_name": "baseline.c",
+      "archive": "inputs/baseline/baseline.c",
+      "source_sha256": "0e7d2b67d496dfd30813766ac922d557446a6138be72fb9b67cf1f9c01cd7ea8",
+      "archive_sha256": "0e7d2b67d496dfd30813766ac922d557446a6138be72fb9b67cf1f9c01cd7ea8",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 49255,
+      "archive_bytes": 49255
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/surface-prefilter-baseline/setup.py",
+      "original_name": "setup.py",
+      "archive": "inputs/baseline/setup.py",
+      "source_sha256": "d283b9f61759ec86e4c930f46d289929438f051718975a7d390db5877ae0a8df",
+      "archive_sha256": "d283b9f61759ec86e4c930f46d289929438f051718975a7d390db5877ae0a8df",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 901,
+      "archive_bytes": 901
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/surface-prefilter-baseline/receipt.json",
+      "original_name": "receipt.json",
+      "archive": "inputs/baseline/original-receipt.json",
+      "source_sha256": "00cb41d31e06b3df0495627b017f0930f933213c08f4cd94cedcaa5779b36fc8",
+      "archive_sha256": "00cb41d31e06b3df0495627b017f0930f933213c08f4cd94cedcaa5779b36fc8",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 2534,
+      "archive_bytes": 2534
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/surface-prefilter-baseline/manifest.json",
+      "original_name": "manifest.json",
+      "archive": "inputs/baseline/original-manifest.json",
+      "source_sha256": "38af3c8985359df5f6eb5546b28c53a956266ac97712ba9663172c779afaca5b",
+      "archive_sha256": "38af3c8985359df5f6eb5546b28c53a956266ac97712ba9663172c779afaca5b",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 2020,
+      "archive_bytes": 2020
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/surface-prefilter-baseline/build.log",
+      "original_name": "build.log",
+      "archive": "inputs/baseline/successful-build.txt",
+      "source_sha256": "cac47a4a67ca4c187ef16757ae1418d19715cfef0559e598f19867a66655b198",
+      "archive_sha256": "cac47a4a67ca4c187ef16757ae1418d19715cfef0559e598f19867a66655b198",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 3278,
+      "archive_bytes": 3278
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/surface-prefilter-baseline/build-initial-link-path-failure.txt",
+      "original_name": "build-initial-link-path-failure.txt",
+      "archive": "inputs/baseline/initial-link-failure.txt",
+      "source_sha256": "70bd1f7ef48ff3665856d04dbdf21cbd8ee3958c4a8a5baf202dff351d8fafc6",
+      "archive_sha256": "70bd1f7ef48ff3665856d04dbdf21cbd8ee3958c4a8a5baf202dff351d8fafc6",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 3927,
+      "archive_bytes": 3927
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-surface-prefilter-T0/summary.json",
+      "original_name": "summary.json",
+      "archive": "inputs/validation/PHYS-PERF-01-surface-prefilter-T0/summary.json",
+      "source_sha256": "5f806019f0ef6c89c53afe4f0eadbfbe0ef676552b8849ea3bf756eb02365dee",
+      "archive_sha256": "5f806019f0ef6c89c53afe4f0eadbfbe0ef676552b8849ea3bf756eb02365dee",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 1961,
+      "archive_bytes": 1961
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-surface-prefilter-T0/pytest.log",
+      "original_name": "pytest.log",
+      "archive": "inputs/validation/PHYS-PERF-01-surface-prefilter-T0/pytest.txt",
+      "source_sha256": "ecd03fbfda8fd04d1a61dcc224f30e8813448b9b7e088d757515d5c23c8645fb",
+      "archive_sha256": "ecd03fbfda8fd04d1a61dcc224f30e8813448b9b7e088d757515d5c23c8645fb",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 101,
+      "archive_bytes": 101
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-surface-prefilter-T0/ruff.log",
+      "original_name": "ruff.log",
+      "archive": "inputs/validation/PHYS-PERF-01-surface-prefilter-T0/ruff.txt",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 19,
+      "archive_bytes": 19
+    }
+  ]
+}

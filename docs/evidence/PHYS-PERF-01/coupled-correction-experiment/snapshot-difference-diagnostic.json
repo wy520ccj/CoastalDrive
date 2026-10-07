@@ -1,0 +1,59 @@
+{
+  "baseline": "endpoint-production.json",
+  "experiments": {
+    "coupled-correction": [
+      {
+        "traffic": 0,
+        "tick_count": 48,
+        "experiment_seconds": 1.3569408000039402,
+        "baseline_seconds": 0.7980391001037788,
+        "snapshot_scalar_differences": 15863,
+        "numeric_differences": 15863,
+        "non_numeric_or_missing_differences": 0,
+        "max_absolute_numeric_delta": 0.013114936693455093,
+        "max_delta_snapshot_path": "/38/player/wheel_dynamics/0/force_longitudinal_stiffness",
+        "interpretation": "诊断统计覆盖完整序列化Snapshot字段，含solver residual及其他诊断字段；不解释为物理误差或Gate。"
+      },
+      {
+        "traffic": 8,
+        "tick_count": 48,
+        "experiment_seconds": 17.475436799999443,
+        "baseline_seconds": 7.105911799997557,
+        "snapshot_scalar_differences": 137027,
+        "numeric_differences": 137027,
+        "non_numeric_or_missing_differences": 0,
+        "max_absolute_numeric_delta": 0.02345444794627838,
+        "max_delta_snapshot_path": "/46/traffic/5/wheel_dynamics/1/force_longitudinal_stiffness",
+        "interpretation": "诊断统计覆盖完整序列化Snapshot字段，含solver residual及其他诊断字段；不解释为物理误差或Gate。"
+      }
+    ],
+    "broyden-correction": [
+      {
+        "traffic": 0,
+        "tick_count": 48,
+        "experiment_seconds": 1.5520342999952845,
+        "baseline_seconds": 0.7980391001037788,
+        "snapshot_scalar_differences": 15863,
+        "numeric_differences": 15863,
+        "non_numeric_or_missing_differences": 0,
+        "max_absolute_numeric_delta": 0.013114936693455093,
+        "max_delta_snapshot_path": "/38/player/wheel_dynamics/0/force_longitudinal_stiffness",
+        "interpretation": "诊断统计覆盖完整序列化Snapshot字段，含solver residual及其他诊断字段；不解释为物理误差或Gate。"
+      },
+      {
+        "traffic": 8,
+        "tick_count": 48,
+        "experiment_seconds": 19.03725980001036,
+        "baseline_seconds": 7.105911799997557,
+        "snapshot_scalar_differences": 137027,
+        "numeric_differences": 137027,
+        "non_numeric_or_missing_differences": 0,
+        "max_absolute_numeric_delta": 0.023454447960830294,
+        "max_delta_snapshot_path": "/46/traffic/5/wheel_dynamics/1/force_longitudinal_stiffness",
+        "interpretation": "诊断统计覆盖完整序列化Snapshot字段，含solver residual及其他诊断字段；不解释为物理误差或Gate。"
+      }
+    ]
+  },
+  "method": "compare every scalar leaf in each of 48 serialized snapshots; outer seconds/tick timing excluded",
+  "limits": "difference counts and maxima include solver residual/diagnostic fields and are descriptive only"
+}

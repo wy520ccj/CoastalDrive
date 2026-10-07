@@ -1,0 +1,154 @@
+{
+  "task": "PHYS-PERF-01 coupled correction algorithm experiments archive",
+  "head": "d3859f8c91b74989229e28c31a0f1fc67e90522c",
+  "working_tree_status": [],
+  "source_capture": "source-capture.json",
+  "source_count": 354,
+  "source_hashes_stable": true,
+  "production_sources_unchanged": true,
+  "experiments": {
+    "coupled-correction": {
+      "implementation": "in-process exec only; 14-variable Newton joint correction of six-dimensional end velocity and eight tire forces within current substep; original 20 outer iterations, 8 line-search steps, thresholds and actual finite-face/constitutive evaluations retained",
+      "status": "rejected, non-production",
+      "seconds": [
+        1.3569408000039402,
+        17.475436799999443
+      ]
+    },
+    "broyden-correction": {
+      "implementation": "within-substep Jacobian reuse; memory-only experiment",
+      "status": "rejected, non-production",
+      "first_attempt": "broyden-correction-probe.log has IndexError from generator putting matrix assignment inside column collection loop; fixed generator is preserved and r2 is the valid run",
+      "seconds": [
+        1.5520342999952845,
+        19.03725980001036
+      ]
+    }
+  },
+  "baseline": {
+    "source": "endpoint-production.json",
+    "seconds": [
+      0.7980391001037788,
+      7.105911799997557
+    ]
+  },
+  "snapshot_comparison": "snapshot-difference-diagnostic.json",
+  "claims_boundary": [
+    "No mechanical or energy Gate was run or claimed.",
+    "Each experiment completed two 48-tick cases, but complete Snapshot payloads differ from baseline; do not describe as behaviorally equivalent.",
+    "Timing is short diagnostic only. Both experiments were materially slower than baseline.",
+    "Production source was unchanged and clean at HEAD d3859f8."
+  ],
+  "files": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/coupled-correction-body.py",
+      "original_name": "coupled-correction-body.py",
+      "archive": "inputs/coupled-correction-body.py",
+      "source_sha256": "20b86dc0bc43dd01a4f06f959e2d5dfae9e54cef4dcec539eb920ee8431e2a30",
+      "archive_sha256": "20b86dc0bc43dd01a4f06f959e2d5dfae9e54cef4dcec539eb920ee8431e2a30",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 2424,
+      "archive_bytes": 2424
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/probe-coupled-correction.py",
+      "original_name": "probe-coupled-correction.py",
+      "archive": "inputs/probe-coupled-correction.py",
+      "source_sha256": "a2d9940dc741ba84c9c0c4645cf0965729e2ce7fcb1355ceedc39d11ae6e3c63",
+      "archive_sha256": "a2d9940dc741ba84c9c0c4645cf0965729e2ce7fcb1355ceedc39d11ae6e3c63",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 2293,
+      "archive_bytes": 2293
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/coupled-correction-probe.log",
+      "original_name": "coupled-correction-probe.log",
+      "archive": "inputs/coupled-correction-probe.txt",
+      "source_sha256": "eadacb7c3ec1c1fda9c64a25e80c4a509a622c7120806fc324969b1a96f98128",
+      "archive_sha256": "eadacb7c3ec1c1fda9c64a25e80c4a509a622c7120806fc324969b1a96f98128",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 96,
+      "archive_bytes": 96
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/coupled-correction-snapshots.json",
+      "original_name": "coupled-correction-snapshots.json",
+      "archive": "inputs/coupled-correction-snapshots.json.gz",
+      "source_sha256": "50bd0620266f13753d66e4145b7995c08961261d57712736536e767827ba116a",
+      "archive_sha256": "13b15c355b614c88f335ffcf02640aa5a4aad46ec9a45e7a74d355dc21501042",
+      "payload_sha256": "50bd0620266f13753d66e4145b7995c08961261d57712736536e767827ba116a",
+      "compressed": true,
+      "bytes": 8707098,
+      "archive_bytes": 1937954
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/probe-broyden-correction.py",
+      "original_name": "probe-broyden-correction.py",
+      "archive": "inputs/probe-broyden-correction.py",
+      "source_sha256": "909db026bb728b4730d610278afb2a3801a99612d7b2e880a67d2ee05ace2c95",
+      "archive_sha256": "909db026bb728b4730d610278afb2a3801a99612d7b2e880a67d2ee05ace2c95",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 2877,
+      "archive_bytes": 2877
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/broyden-correction-body.py",
+      "original_name": "broyden-correction-body.py",
+      "archive": "inputs/broyden-correction-body.py",
+      "source_sha256": "7bf08ba6539c03686420ed5f104dbb205053f3bda5f6936e91b210bd4b46a762",
+      "archive_sha256": "7bf08ba6539c03686420ed5f104dbb205053f3bda5f6936e91b210bd4b46a762",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 3366,
+      "archive_bytes": 3366
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/broyden-correction-probe.log",
+      "original_name": "broyden-correction-probe.log",
+      "archive": "inputs/broyden-correction-probe.txt",
+      "source_sha256": "8f7b9061cdd82bada14b3c3fff648953fa7d347ca5e4110754f993a5a4ea0b48",
+      "archive_sha256": "8f7b9061cdd82bada14b3c3fff648953fa7d347ca5e4110754f993a5a4ea0b48",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 3035,
+      "archive_bytes": 3035
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/broyden-correction-probe-r2.log",
+      "original_name": "broyden-correction-probe-r2.log",
+      "archive": "inputs/broyden-correction-probe-r2.txt",
+      "source_sha256": "a0f98989d4df43d115fa2c84ce482a5a3140a5f1b7fb8405b1eb1e857fed1b42",
+      "archive_sha256": "a0f98989d4df43d115fa2c84ce482a5a3140a5f1b7fb8405b1eb1e857fed1b42",
+      "payload_sha256": null,
+      "compressed": false,
+      "bytes": 95,
+      "archive_bytes": 95
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/broyden-correction-snapshots.json",
+      "original_name": "broyden-correction-snapshots.json",
+      "archive": "inputs/broyden-correction-snapshots.json.gz",
+      "source_sha256": "ea981d096ce5c30a29f62baf87a944d934fbec0278ec758c766c371d2b6c1d9e",
+      "archive_sha256": "0c7cb78f13840d13f252df0a5e4fe3593288a4ffb73d518fe1709c7a5acd9b1f",
+      "payload_sha256": "ea981d096ce5c30a29f62baf87a944d934fbec0278ec758c766c371d2b6c1d9e",
+      "compressed": true,
+      "bytes": 8707118,
+      "archive_bytes": 1937879
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/endpoint-production.json",
+      "original_name": "endpoint-production.json",
+      "archive": "inputs/endpoint-production.json.gz",
+      "source_sha256": "b3847cd3ff680ea730f6f8a139ee5b0ff9723a95fa10960790da1f4aefdc65db",
+      "archive_sha256": "73a7a9916aed8c568976cc9d090d2d4f4c883615d5b6e2769047377ab1739137",
+      "payload_sha256": "b3847cd3ff680ea730f6f8a139ee5b0ff9723a95fa10960790da1f4aefdc65db",
+      "compressed": true,
+      "bytes": 8722215,
+      "archive_bytes": 1950493
+    }
+  ]
+}

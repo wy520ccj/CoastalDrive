@@ -1,0 +1,18 @@
+F401 [*] `mechanical_kernels.solve_lu` imported but unused
+ --> src\suspension.py:6:44
+  |
+5 | from mechanical_kernels import dot, suspension_contact_state
+6 | from mechanical_kernels import solve_lu as _solve
+  |                                            ^^^^^^
+7 |
+8 | from rotor_dynamics import cross
+  |
+help: Remove unused import: `mechanical_kernels.solve_lu`
+  |
+5 | from mechanical_kernels import dot, suspension_contact_state
+  - from mechanical_kernels import solve_lu as _solve
+6 |
+  |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

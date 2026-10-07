@@ -1,0 +1,134 @@
+{
+  "files": [
+    {
+      "path": "inputs/physics/cylinder-query-alternating.json.gz",
+      "sha256": "4f6f58f6575be49e2e3b3bde47f0b39b5144924c3f694a091be7883424f6f8cb",
+      "bytes": 7066168
+    },
+    {
+      "path": "inputs/physics/cylinder-query-alternating.py",
+      "sha256": "2c5c420d6d6b653a403bbb4a086c5d374f70dabc612546bbf444bffa1e2531c8",
+      "bytes": 2135
+    },
+    {
+      "path": "inputs/physics/cylinder-query-alternating.txt",
+      "sha256": "867dbaabfede1750031f0a437ad1961fd9c45610614fa1f2a8e9ead0b477cd97",
+      "bytes": 360
+    },
+    {
+      "path": "inputs/physics/cylinder-query-audit.json",
+      "sha256": "ae41cd80d6e772b86a421a0562391824c436cf043b6321e188a354478d835ff7",
+      "bytes": 203
+    },
+    {
+      "path": "inputs/physics/cylinder-query-audit.py",
+      "sha256": "c50256aa47fe99140720ca28fbd0e87c7bacca9cff702e9d5c7bba30fbff228b",
+      "bytes": 2379
+    },
+    {
+      "path": "inputs/physics/cylinder-query-audit.txt",
+      "sha256": "39560421485f9d28c365620fbe0102e582ae3635fc2569f8ae4ed6044d3e1a7e",
+      "bytes": 269
+    },
+    {
+      "path": "inputs/physics/cylinder-query-body.c",
+      "sha256": "644e3f72be17c8a7c01be6ab2cb9f94cfb0696f9e4ecdc274823dd54daeae820",
+      "bytes": 2921
+    },
+    {
+      "path": "inputs/physics/cylinder-query-build.txt",
+      "sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "bytes": 5534
+    },
+    {
+      "path": "inputs/physics/cylinder-query-restore-build.txt",
+      "sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "bytes": 5534
+    },
+    {
+      "path": "inputs/physics/cylinder-query-snapshots.json.gz",
+      "sha256": "050538cbed1042a55ec532bc9fd988d208ac1be376054e1269754b791e9282a2",
+      "bytes": 1962276
+    },
+    {
+      "path": "inputs/physics/cylinder-query-snapshots.py",
+      "sha256": "e747e2c1454aa785558c700bcc48dd2163df0f4f0b1646fb9373334817e2e8c4",
+      "bytes": 1772
+    },
+    {
+      "path": "inputs/physics/cylinder-query-snapshots.txt",
+      "sha256": "7ff60b112e1e04b767a660bb85da52152200293b0f245fc4b8316b0f4a476c85",
+      "bytes": 132
+    },
+    {
+      "path": "inputs/physics/profile-cylinder-query-r1/gr86-profile.prof.gz",
+      "sha256": "2c37e396446677ecbb0bd0fbc46cde321bc23be06ec2335a1f2d21455df8684e",
+      "bytes": 26506
+    },
+    {
+      "path": "inputs/physics/profile-cylinder-query-r1/profile.json",
+      "sha256": "1ae8d9eaabd0a58b9e3da5201885c735ca1a2b3783569a922c611ac7ce49eab8",
+      "bytes": 31774
+    },
+    {
+      "path": "inputs/physics/profile-cylinder-query.py",
+      "sha256": "fecb4c596ffe8fbe055a4eb141b83b1e1a05d8a11856a722d6819878bf3ad6f4",
+      "bytes": 6791
+    },
+    {
+      "path": "inputs/physics/profile-cylinder-query.txt",
+      "sha256": "07f6529b3df17033080db6eedfb6148d49df6ab8157f460cc4ca664a93206625",
+      "bytes": 139
+    },
+    {
+      "path": "inputs/physics/promote-cylinder-query.py",
+      "sha256": "a22e8e51a8aeb6bc04d2bec8ccc27e17b2cc968047cf3261f9f6d96977a01456",
+      "bytes": 1251
+    },
+    {
+      "path": "inputs/physics/suspension-state-snapshots.json.gz",
+      "sha256": "b42ce15e4e13457dd4e472057213a8dfc751dd477de31d37edfd8b48f44a72bf",
+      "bytes": 1962275
+    },
+    {
+      "path": "inputs/validation/PHYS-PERF-01-cylinder-query-T0/pytest.txt",
+      "sha256": "065a8104ee7d07bfb5d5f26768eeab2932ae092d9ee93317fd663b068bbd3a7e",
+      "bytes": 101
+    },
+    {
+      "path": "inputs/validation/PHYS-PERF-01-cylinder-query-T0/ruff.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "bytes": 19
+    },
+    {
+      "path": "inputs/validation/PHYS-PERF-01-cylinder-query-T0/summary.json",
+      "sha256": "83e6ecad7e4388de3ebc9869700a0860a5fa3dc892fc77f6241dddaf3302d736",
+      "bytes": 1856
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "86bd929cc8bcab128b11ba061aaaf88d9e83d616e0f0e697e7632cca36a63f42",
+      "bytes": 14220
+    },
+    {
+      "path": "report.md",
+      "sha256": "c46631f2e421e8d9260719bc5af7c5b79dae7c1aa39733d19c2556130b95aa76",
+      "bytes": 1142
+    },
+    {
+      "path": "source-hashes.json",
+      "sha256": "dce44195d0df7a163ecb3d07e9a6c2310013ae31b23811a4b8851a3e686db8d6",
+      "bytes": 75471
+    },
+    {
+      "path": "source-restored/suspension_contacts.py",
+      "sha256": "43defabbc9f4630394361126063d210802d06f16e4948c29a8eb20a23f8c17b7",
+      "bytes": 13061
+    },
+    {
+      "path": "source-restored/wheel_contact_kernels.c",
+      "sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+      "bytes": 49253
+    }
+  ]
+}

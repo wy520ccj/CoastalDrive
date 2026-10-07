@@ -83,3 +83,10 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 主目录第二批整合到a2e6975：784项T1/Ruff/三seed通过，主/隔离两48拍全部Snapshot相同，短测0.8272/6.3367s仅诊断。r6候选包本地构建35.249s、源前后SHA一致，仓库外GR86两模式各120拍2.066/1.694s通过；未替代默认包。1080p/GR86+8NPC实际30秒短测31.169s墙钟、丢仿真25.225s、行进0.349m/0碰撞；后段foregroundFalse，整段.7085FPS/P95 1832ms不能作为有效前台测值，未通过实时性能。截图实际已目视核验，非人工驾驶Gate。[整合/包/可见诊断](../evidence/PHYS-PERF-01/integration-r2/receipt.json)。完整T2目前25通过/1中心完全重叠NPC计数夹具失败，后11未跑；夹具修正生产源保持，阶段继续。
 
 联合14变量Newton及子步内Broyden雅可比试验仅在logs独立进程进行：48拍两场景完成但Snapshot不逐字段相同，短测Newton1.357/17.475s、Broyden1.552/19.037s，比正式0.798/7.106s更慢；不接入生产，不记理论/性能/机械Gate通过。首Broyden生成脚本缩进使未收集完14列时构造矩阵而IndexError，修正后第二次才有有效速度样本，原失败保留。下一从实际profile处理有限支持面查询与数值对象装配，不靠缩减物理步频或残差要求换帧率。
+拒绝的两项候选算法实验（2026-10-07）：[子步14变量联合Newton / Broyden实验](../evidence/PHYS-PERF-01/coupled-correction-experiment/receipt.json)均未接入生产；单/8车48拍完整Snapshot不与端点基线逐字段相同，短测Newton为1.3569/17.4754s、Broyden为1.5520/19.0373s，显著慢于基线0.7980/7.1059s；Broyden首轮IndexError及修正后r2均保留。[支持面root AABB提前筛选实验](../evidence/PHYS-PERF-01/surface-prefilter-experiment/receipt.json)标准快照与基线相同，但短测0.9699/11.6376s更慢；同进程old/new/new/old完整Snapshot断言失败，原快照未保存，原因未知。正式T0为31项通过（调用审计日志另有独立40项记录）；无T1或机械/能量Gate，两项均拒绝且未进入生产。
+
+
+悬架活动集状态块（2026-10-07）：[证据与收据](../evidence/PHYS-PERF-01/suspension-state-r1/receipt.json)。原64轮/1e-10接触间隙/1e-7反力门槛、LU与能量账保持；d3859f8基线5,757次完整SuspensionStep字段一致，另以独立512次LU探针补足基线审计调用当前LU的边界。单/8车各48拍Snapshot与端点基线相同，短测0.7375/6.4815s仅诊断。T0-r1/r2 Ruff未用导入失败，r3为411 passed；T1为496 passed、Ruff及三种子通过。无FPS或前台Gate结论。
+
+
+圆柱查询前置数值实验（2026-10-07，拒绝）：[证据与收据](../evidence/PHYS-PERF-01/cylinder-query-experiment/receipt.json)。8,518次调用/10,012条射线的数值与输入别名一致，T0为31项/Ruff通过；标准单/8车48拍Snapshot与悬架基线相同。ABBA四条完整Snapshot均相同且epoch归零，但新旧CPU时间分别为6.609/6.219与5.953/6.672s，无稳定节省，未运行T1。无性能Gate结论；生产源码恢复至e5765ed字节。
