@@ -45,3 +45,6 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 
 
 机械小矩阵块归档（2026-10-07）：[报告](../evidence/PHYS-PERF-01/mechanical-block-r1/mechanical-block-report.md)、[清单与快照/T1收据](../evidence/PHYS-PERF-01/mechanical-block-r1/receipt.json)、[PY/C/PYD源码起止哈希](../evidence/PHYS-PERF-01/mechanical-block-r1/source-hashes.json)。基线 e79af19 + 未提交 `src/mechanical_kernels.c`/`src/tire_drivetrain.py`；2304 mass_response、768 rotor_spin、1280 wheel_load_terms exact 调用通过。48拍单/8车快照与先前机械块/geometry逐字段相同；同进程ABBA四条物理快照相同，contact_epoch复位为0。短测wall/CPU四条按原顺序保存，存在漂移，不称FPS。机械块T0 339项、mass-spin T0 583项及T1 Ruff/722 pytest/三种子均通过；原始summary、日志和gzip(mtime=0)快照均归档。本次只存既有证据，没有重跑。主目录33657dc另行记账；最终T2、产品包、T3、前台和人工Gate未完成。
+
+
+系数Capsule缓存块归档（2026-10-07）：[报告](../evidence/PHYS-PERF-01/coefficients-r1/coefficients-report.md)、[快照/验证SHA收据](../evidence/PHYS-PERF-01/coefficients-r1/receipt.json)、[354项PY/C/PYD起止哈希](../evidence/PHYS-PERF-01/coefficients-r1/source-hashes.json)。基线fe8bcd3 + 未提交 `src/mechanical_kernels.c`/`src/tire_drivetrain.py`。最终系数块单/8车48拍完整物理快照与机械块一致；最终短测1.2528664/12.0986585s，历史机械块1.4912125/21.2201878s有条件漂移，不称稳定比例/FPS；mass-only中间版独立保留且不作最终值。三类Capsule仅缓存advance数值系数并逐子步重建，动态输入按次传入，单次/缓存共享内核。最终T0 372项、T1 722项/Ruff及三种子通过；初次T0 Ruff失败/pytest未跑与T0-r2通过原样保留。package-r5尚在构建，未归档。主目录33657dc T2独立记账，最终包/T3/前台/人工未完成。本次仅归档，无验证运行。

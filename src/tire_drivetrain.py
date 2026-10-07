@@ -3,7 +3,15 @@
 import math
 from dataclasses import dataclass, replace
 
-from mechanical_kernels import dot, mass_response, rotor_spin, wheel_load_terms
+from mechanical_kernels import (
+    dot,
+    load_coefficients,
+    mass_coefficients,
+    mass_response_prepared,
+    rotor_coefficients,
+    rotor_spin_prepared,
+    wheel_load_prepared,
+)
 
 from differential import (
     differential_branches,
@@ -121,9 +129,12 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     longitudinal = tuple(moments_x[i] + rotor_zeros + tuple(-radii[i] if j == i else 0. for j in range(4)) for i in range(4))
     lateral = tuple(moment + (0.,) * (dimensions - 3) for moment in moments_y)
 
+    # 逆惯量及硬件在本次共同求解中固定，下一物理子步重新读取并构造。
+    base_coefficients = mass_coefficients(inverse_inertia, engine_inertia, shaft_inertia if shaft else None,
+                                          wheel_inertia, (), 0., None)
+
     def base_inverse_mass(vector):
-        return mass_response(vector, inverse_inertia, engine_inertia, shaft_inertia if shaft else None,
-                             wheel_inertia, (), 0., None)
+        return mass_response_prepared(base_coefficients, vector)
 
     downstream = bool(downstream_omega)
     inertias, gradients, downstream_projections = (), (), ()
@@ -132,16 +143,20 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         gradients = rotor_gradients(downstream_axes, axes, config.front_drive_share, config.final_drive, wheel_start)
         downstream_projections = inertia_projections(base_inverse_mass, gradients, inertias)
 
+    inverse_coefficients = mass_coefficients(inverse_inertia, engine_inertia, shaft_inertia if shaft else None,
+                                             wheel_inertia, downstream_projections, 0., None)
+
     def inverse_mass(vector):
-        return mass_response(vector, inverse_inertia, engine_inertia, shaft_inertia if shaft else None,
-                             wheel_inertia, downstream_projections, 0., None)
+        return mass_response_prepared(inverse_coefficients, vector)
 
     engine_response = inverse_mass(engine_gradient)
     drag_factor = dt * engine_drag / (1 + dt * engine_drag * dot(engine_gradient, engine_response))
 
+    mobility_coefficients = mass_coefficients(inverse_inertia, engine_inertia, shaft_inertia if shaft else None,
+                                              wheel_inertia, downstream_projections, drag_factor, engine_response)
+
     def mobility(vector):
-        return mass_response(vector, inverse_inertia, engine_inertia, shaft_inertia if shaft else None,
-                             wheel_inertia, downstream_projections, drag_factor, engine_response)
+        return mass_response_prepared(mobility_coefficients, vector)
 
     normal_forces = (0.,) * 4
     normal_responses, normal_mobility = (), ()
@@ -251,18 +266,19 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     projection = drag_factor * dot(engine_gradient, free_base)
     free_base = tuple(free_base[a] - projection * engine_response[a] for a in range(dimensions))
 
-    def spin(state):
-        return rotor_spin(state[:dimensions], engine_inertia, engine_axis, wheel_inertia, axes, rotor,
-                          shaft_inertia if shaft else None, shaft_axis, inertias, gradients, downstream_axes)
+    spin_coefficients = rotor_coefficients(engine_inertia, engine_axis, wheel_inertia, axes, rotor,
+        shaft_inertia if shaft else None, shaft_axis, inertias, gradients, downstream_axes)
+    wheel_coefficients = load_coefficients(responses, tuple(frame.tangent for frame in frames),
+                                          tuple(frame.axle for frame in frames), dt, mass, dimensions)
 
-    tangents = tuple(frame.tangent for frame in frames)
-    lateral_axes = tuple(frame.axle for frame in frames)
+    def spin(state):
+        return rotor_spin_prepared(spin_coefficients, state[:dimensions])
 
     def load_terms(exclude=None):
-        # 当前法向状态与轮端力直接投影；不另存物理状态。
-        return wheel_load_terms(forces, responses, tangents, lateral_axes, velocity, dt, mass,
+        # 法向响应会随末姿态刷新；当前力和梯度逐次传入，固定轮端矩阵只读复用。
+        return wheel_load_prepared(wheel_coefficients, forces, velocity,
             normal_forces if suspension is not None else None, normal_responses,
-            suspension.gradients if suspension is not None else None, exclude, dimensions)
+            suspension.gradients if suspension is not None else None, exclude)
 
     def known(gyro, loads):
         angular_load, normal_load, end_velocity = loads

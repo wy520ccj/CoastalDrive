@@ -1,0 +1,59 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> src\tire_drivetrain.py:3:1
+   |
+ 1 |   """四轮接触、曲轴/输入轴、有限离合与制动的共同末状态。"""
+ 2 |
+ 3 | / import math
+ 4 | | from dataclasses import dataclass, replace
+ 5 | |
+ 6 | | from mechanical_kernels import dot, mass_coefficients, mass_response_prepared, rotor_spin, wheel_load_terms
+ 7 | |
+ 8 | | from differential import (
+ 9 | |     differential_branches,
+10 | |     differential_gradients,
+11 | |     differential_torques,
+12 | |     torque_bias_capacities,
+13 | |     viscous_projection,
+14 | | )
+15 | | from driveline_inertia import active_inertias, inertia_projections, rotor_gradients
+16 | | from rolling_resistance import rolling_torques
+17 | | from rotor_dynamics import bearing_torques, cross
+18 | | from shaft_transmission import (
+19 | |     brake_increment,
+20 | |     shaft_brake_plans,
+21 | |     shaft_brake_response,
+22 | |     shaft_brake_state,
+23 | |     shaft_gradients,
+24 | |     synchronizer_brake_plans,
+25 | |     synchronizer_brake_response,
+26 | |     synchronizer_brake_state,
+27 | | )
+28 | | from suspension import SuspensionInput, SuspensionStep, _solve, shared_suspension
+29 | | from suspension_kinematics import finite_contact_system
+30 | | from tire_compliance import contact_force, contact_jacobian, energy_terms
+31 | | from tire_forces import combined_force, slip_state
+32 | | from tire_properties import tire_grip, tire_stiffness
+33 | | from transmission_ports import (
+34 | |     PORT_TOLERANCE,
+35 | |     clutch_brake_plans,
+36 | |     clutch_brake_state,
+37 | |     transmission_state,
+38 | | )
+39 | | from wheel_dynamics import WheelStep, _solve_force
+   | |__________________________________________________^
+help: Organize imports
+   |
+5  |
+   - from mechanical_kernels import dot, mass_coefficients, mass_response_prepared, rotor_spin, wheel_load_terms
+6  + from mechanical_kernels import (
+7  +     dot,
+8  +     mass_coefficients,
+9  +     mass_response_prepared,
+10 +     rotor_spin,
+11 +     wheel_load_terms,
+12 + )
+13 |
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
