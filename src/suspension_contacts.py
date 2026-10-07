@@ -13,6 +13,7 @@ from panda3d.bullet import (
     XUp,
 )
 from panda3d.core import BitMask32, Mat4, NodePath, Quat, TransformState, Vec3
+from wheel_contact_kernels import support_candidates
 
 from suspension_geometry import BoxSurface, CylinderSurface, box_entry, sphere_box_entry
 from triangle_support import TriangleSupport
@@ -201,36 +202,20 @@ def cylinder_candidates(world, chassis, mask, low, high, *, static_shapes=None):
     """以真实形状边界筛选覆盖盒；独立查询读取当前世界，prepare查询复用本子步几何。"""
     if static_shapes is None:
         static_shapes = static_support_shapes(world, chassis, mask)
-    center = tuple((a+b)/2 for a,b in zip(low,high))
-    half_query = tuple((b-a)/2 for a,b in zip(low,high))
     surfaces, exact, native_needed = [], set(), False
-    projections = {}
-    for body, supported, parts in static_shapes:
-        included = False
-        for inverse, frame, translation, half, margin, plane, triangles, bounds in parts:
-            # 同一查询盒与相同旋转矩阵只投影一次，逐形状平移及实际边界仍分别判断。
-            if frame not in projections:
-                projections[frame] = (
-                    tuple(sum(frame[a][b]*center[b] for b in range(3)) for a in range(3)),
-                    tuple(sum(abs(frame[a][b])*half_query[b] for b in range(3)) for a in range(3)))
-            projected_center, local_half = projections[frame]
-            local_center = tuple(translation[a] + projected_center[a] for a in range(3))
-            if bounds is not None and any(local_center[a]+local_half[a] < bounds[0][a]
-                    or local_center[a]-local_half[a] > bounds[1][a] for a in range(3)):
-                continue
-            included = True
-            if supported:
+    for body, supported, parts in support_candidates(static_shapes, low, high):
+        if supported:
+            for part, local_center, local_half in parts:
+                inverse, frame, _translation, half, margin, plane, triangles, _bounds = part
                 if triangles is not None:
                     # 只预取覆盖盒内原三角面，保留原索引遍历次序；每条射线仍作原精确筛选。
                     selected = tuple(triangles.candidates(local_center, local_center,
                                                          tuple(value+margin for value in local_half)))
                     triangles = TriangleSupport(triangles.low, triangles.high, selected)
                 surfaces.append((body, inverse, frame, half, margin, plane, triangles))
-        if included:
-            if supported:
-                exact.add(body)
-            else:
-                native_needed = True
+            exact.add(body)
+        else:
+            native_needed = True
     return surfaces, exact, native_needed
 
 
