@@ -1,0 +1,62 @@
+[
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-stage-T2-r2/pytest-remaining.log",
+    "archive": "validation/PHYS-INTEGRATE-02-stage-T2-r2/pytest-remaining.log.gz",
+    "sha256": "9be1bb9d4902bb9010abfc8e24caeeea19d489ef7caa3e75605b960badb059ad",
+    "payload_sha256": "1988ceb9bfb70f836f62fefd76db11993ee73a9ce12645ef28874c0a5135adb7"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-stage-T2-r2/ruff.log",
+    "archive": "validation/PHYS-INTEGRATE-02-stage-T2-r2/ruff.log.gz",
+    "sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+    "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-stage-T2-r2/summary.json",
+    "archive": "validation/PHYS-INTEGRATE-02-stage-T2-r2/summary.json.gz",
+    "sha256": "67a1e16c8c15039e4056ecc290c38bf66a380285ad7e827815556c0ad3050d2d",
+    "payload_sha256": "8f2a345e5bcfd444b7b1197c062634510223c880b5b7aea0265f0c82e4616601"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-impact-delivery-T0/pytest.log",
+    "archive": "validation/PHYS-INTEGRATE-02-impact-delivery-T0/pytest.log.gz",
+    "sha256": "bf91d0b57269cea2ec0d026af0c98f7c56b7bdd05e4083ebaa94ac0ace64d43f",
+    "payload_sha256": "c43ba262f572401a39e8ab1e7206be315b8040669f083e82149df52459409e83"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-impact-delivery-T0/ruff.log",
+    "archive": "validation/PHYS-INTEGRATE-02-impact-delivery-T0/ruff.log.gz",
+    "sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+    "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-impact-delivery-T0/summary.json",
+    "archive": "validation/PHYS-INTEGRATE-02-impact-delivery-T0/summary.json.gz",
+    "sha256": "e65708f729fec4339018f607c6967c6586a7b42415b652c3b0dae50fe004693d",
+    "payload_sha256": "82df7a0f5e17884cc6a644272ecdf0738b09559ad66ddce9b84ef026443d9caf"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-impact-pose-facts.json",
+    "archive": "PHYS-INTEGRATE-02-impact-pose-facts.json",
+    "sha256": "7035c267f983775250006d11aa7fe0451b5c84c23f2aa64329a4f46473bfc623",
+    "payload_sha256": "7035c267f983775250006d11aa7fe0451b5c84c23f2aa64329a4f46473bfc623"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-impact-reuse-audit.json",
+    "archive": "PHYS-INTEGRATE-02-impact-reuse-audit.json",
+    "sha256": "938b251c066079cbb1038f6dbb30c8ff5dbd3b10a6b3cb3364f338b979a7a086",
+    "payload_sha256": "938b251c066079cbb1038f6dbb30c8ff5dbd3b10a6b3cb3364f338b979a7a086"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-impact-delivery-T1-receipt.json",
+    "archive": "PHYS-INTEGRATE-02-impact-delivery-T1-receipt.json",
+    "sha256": "afd65d613d066ccd6fd71d51b33da79b83688e1ea23b8b9c9dc380acb84dc565",
+    "payload_sha256": "afd65d613d066ccd6fd71d51b33da79b83688e1ea23b8b9c9dc380acb84dc565"
+  },
+  {
+    "source": "tests/test_impact_delivery.py",
+    "archive": "source/test_impact_delivery.py",
+    "sha256": "b41f30e5b94315b5ce464b0cf947aa62e2799f93268d8422bed1914b1ed7491a",
+    "payload_sha256": "b41f30e5b94315b5ce464b0cf947aa62e2799f93268d8422bed1914b1ed7491a"
+  }
+]

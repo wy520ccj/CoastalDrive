@@ -1,0 +1,27 @@
+{
+  "baseline": "93a70bb",
+  "stage": "31 passed,1 impact delivery failed,1200 deselected,11 later checks not_run",
+  "facts": {
+    "rail_node": "segment-0-rail-right",
+    "rail_inner_x": 7.880000591278076,
+    "old_position_x": 7.2,
+    "old_pair_distances": [
+      -0.2599998116493225,
+      -0.2599998116493225,
+      -0.2599998116493225,
+      -0.2599998116493225,
+      -0.2599998116493225,
+      -0.2599998116493225,
+      -0.2599998116493225,
+      -0.2599998116493225,
+      -0.2599998116493225,
+      -0.2599998116493225
+    ],
+    "new_position_x": 6.810000591278077,
+    "new_pair_distances": []
+  },
+  "production_unchanged": true,
+  "scope": "only initial rail approach setup changed; original8m/s, first physics tick metal event, one accident, one-time event delivery and challenge RESULTS retained",
+  "T1": "existing complete4 node T0/Ruff and three identical production source headless seed checks reused; no duplicate tests run",
+  "next": "1232 distinct effective nodes reused,898 tests/11 followups pending; full stage not passed"
+}
