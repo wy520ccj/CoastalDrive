@@ -1,0 +1,69 @@
+{
+  "head_at_capture": "9a127e566c55d07756795bd27deb0826aabce6aa",
+  "source_capture_start": "source-capture-start.json",
+  "source_capture_end": "source-capture-end.json",
+  "source_count": 360,
+  "source_aggregate_sha256": "dfc4889b37b8cb9ce4ed97abc19ae1a29dd3f9450669f9d13380e1e58b173570",
+  "target_source_sha256": {
+    "src/mechanical_kernels.c": "429661d06cb9796e191d711b6867f63edf3a98ef1ff82620a996e934d2f55159"
+  },
+  "audit": {
+    "baseline": "127c1d0 independent _shared_solution_old native original suspension active set",
+    "pytest_code": 0,
+    "all_output_hex_equal": true,
+    "counts": {
+      "calls": 16081,
+      "zero_mobility": 10744,
+      "prescribed_four_contact": 10061,
+      "general_partition": 6020
+    }
+  },
+  "snapshot_comparison": [
+    {
+      "traffic": 0,
+      "prescribed_seconds": 0.7078001999998378,
+      "triangle_reference_seconds": 0.7043967999998131,
+      "mainfa_seconds": 0.7201027999999496,
+      "prescribed_equals_triangle_bound": true,
+      "triangle_bound_equals_mainfa": true,
+      "prescribed_equals_mainfa": true
+    },
+    {
+      "traffic": 8,
+      "prescribed_seconds": 4.771768900000097,
+      "triangle_reference_seconds": 4.865848099999312,
+      "mainfa_seconds": 5.106677599999784,
+      "prescribed_equals_triangle_bound": true,
+      "triangle_bound_equals_mainfa": true,
+      "prescribed_equals_mainfa": true
+    }
+  ],
+  "validation": {
+    "T0": {
+      "pytest": "172 passed in 6.56s",
+      "ruff": "passed",
+      "summary_pytest_seconds": 6.634
+    },
+    "T1": {
+      "pytest": "601 passed in 28.84s",
+      "ruff": "passed",
+      "headless_seed_seconds": [
+        8.841,
+        8.73,
+        8.636
+      ],
+      "summary_pytest_seconds": 29.282
+    }
+  },
+  "shared_solution_old_dll_receipt": "reference/shared-solution-baseline/receipt.json",
+  "mainfa_reference": {
+    "archived_from": "docs/evidence/PHYS-PERF-01/triangle-invariants-r1/reference/main-wall-port-precision-r1/snapshots.json.gz",
+    "compressed_sha256": "ddff1bfd69f860c457e2387914fd7a4770cf89f560fb850feb94e571fe2908b6",
+    "payload_sha256": "c8468ee7731e5bf24ee661c82b82df7cb154bec6585d9935db2ad3e9f3522400"
+  },
+  "manifest": "manifest.json",
+  "manifest_items": 25,
+  "all_payloads_verified": true,
+  "report_sha256": "39ca92f51f68df44c870a6aad9dda6df460427a4576206b77426a1d9b3105ecb",
+  "scope": "只归档既有证据与任务页，不运行测试/模拟/构建。"
+}

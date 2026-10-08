@@ -1,0 +1,129 @@
+{
+  "head_at_capture": "500ad9b6694b0abc184718ba7c568a5d2e9eb897",
+  "source_count": 360,
+  "source_hashes_start_end_equal": true,
+  "source_hash_manifest_sha256": "11108efb64301f26fbad793f97202300cfc1e7e63b086b82f8f445fd039537a8",
+  "target_source_sha256": {
+    "src/wheel_contact_kernels.c": "f58182887fc3f5eceecb3f4539336828cdd2cf02a90489a6861f5b4b2406e062",
+    "src/triangle_support.py": "bb5c74344ec55e0e4ef1546cbad4834c5728b85e4a220bdb0107d947f5c17e83"
+  },
+  "independent_old_dll_baseline": {
+    "baseline_commit": "ab204a9a5880d365c489994f3727faf27ff3c637",
+    "source_path": "src/wheel_contact_kernels.c",
+    "module_name": "_contact_system_old",
+    "init_symbol": "PyInit__contact_system_old",
+    "rename_rule": "Only the module definition string and PyInit function symbol were renamed.",
+    "source_sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+    "renamed_source_sha256": "cf87b3397241547edd0e4cec6f162a006fd2e6d08680e8e44150e18bec4fa315",
+    "setup_sha256": "7a4465cb4c089b51e0cccd45d8057cc3bc2beff05acf734f294c98686de53f23",
+    "build_command": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\contact-system-baseline\\setup.py build_ext --build-lib C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\contact-system-baseline\\b --build-temp C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\contact-system-baseline\\t",
+    "strict_compile_args": [
+      "/fp:strict",
+      "/utf-8"
+    ],
+    "build_returncode": 0,
+    "build_log": "build.log",
+    "pyd_path": "b/_contact_system_old.cp314-win_amd64.pyd",
+    "pyd_sha256": "eb77a56abc03e590d31368009087c32af5f754c7f51dffa783a1dfcb59b65936",
+    "import_check": {
+      "passed": true,
+      "module": "_contact_system_old",
+      "exports": [
+        "box_interval",
+        "clipped_triangle",
+        "crown_extent_secant",
+        "cylinder_edge_distance",
+        "cylinder_endpoint",
+        "cylinder_point_delta",
+        "cylinder_support",
+        "rotated_path",
+        "subtract",
+        "support_candidates",
+        "surface_ray_hits",
+        "surface_transform",
+        "triangle_face",
+        "triangle_support_entry"
+      ],
+      "physical_code_executed": false
+    }
+  },
+  "audit_r2": {
+    "baseline": "ab204a9 independent old full query DLL and original triangle-entry Python + old triangle_face DLL",
+    "pytest_code": 0,
+    "all_output_hex_equal": true,
+    "counts": {
+      "queries": 39672,
+      "hits": 9685,
+      "old_edge_calls": 35323,
+      "new_edge_calls": 22361
+    }
+  },
+  "r1_initial_audit_json_preserved": false,
+  "snapshot_versions": [
+    {
+      "file": "triangle-bound-snapshots-r1.json.gz",
+      "source_stable": true,
+      "cases": [
+        [
+          0,
+          0.6978688999997757,
+          48
+        ],
+        [
+          8,
+          4.983806799999911,
+          48
+        ]
+      ]
+    },
+    {
+      "file": "triangle-bound-snapshots.json.gz",
+      "source_stable": true,
+      "cases": [
+        [
+          0,
+          0.7043967999998131,
+          48
+        ],
+        [
+          8,
+          4.865848099999312,
+          48
+        ]
+      ]
+    }
+  ],
+  "validation": {
+    "PHYS-PERF-01-triangle-bound-T0": {
+      "git_head": "500ad9b6694b0abc184718ba7c568a5d2e9eb897",
+      "status": "passed",
+      "pytest_seconds": 0.783,
+      "ruff": "passed",
+      "pytest_line": "27 passed in 0.36s"
+    },
+    "PHYS-PERF-01-triangle-bound-T1": {
+      "git_head": "500ad9b6694b0abc184718ba7c568a5d2e9eb897",
+      "status": "passed",
+      "pytest_seconds": 27.303,
+      "ruff": "passed",
+      "pytest_line": "560 passed in 26.87s"
+    },
+    "PHYS-PERF-01-triangle-bound-T1-r2": {
+      "git_head": "500ad9b6694b0abc184718ba7c568a5d2e9eb897",
+      "status": "passed",
+      "pytest_seconds": 27.452,
+      "ruff": "passed",
+      "pytest_line": "560 passed in 27.01s"
+    }
+  },
+  "payload_entries_verified": 45,
+  "manifest_sha256": "18d1c003204d5f9af995a7392718efc8e8bfb7807e8942e683bd133001f40691",
+  "tests_or_physics_run_during_archive": false,
+  "report_sha256": "44d52dce35bbe6e783f2bb37b25885ac652fde64e4225ab66d8a4cd74dd77f15",
+  "main_wall_baseline_reference": {
+    "archive": "docs/evidence/PHYS-PERF-01/triangle-invariants-r1/reference/main-wall-port-precision-r1/snapshots.json.gz",
+    "source_sha256": "ddff1bfd69f860c457e2387914fd7a4770cf89f560fb850feb94e571fe2908b6",
+    "payload_sha256": "c8468ee7731e5bf24ee661c82b82df7cb154bec6585d9935db2ad3e9f3522400",
+    "all_fields_same_as_triangle_snapshots": true
+  }
+}

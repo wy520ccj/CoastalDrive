@@ -9,15 +9,16 @@ from suspension_geometry import box_interval
 from wheel_envelope import convex_distance, cylinder_support, subtract
 
 
-def triangle_entry(start, end, triangle, margin, axis, radius, width, shoulder, crown, *, face_only=False, ceiling=1.):
+def triangle_entry(start, end, triangle, margin, axis, radius, width, shoulder, crown, *, face_only=False, ceiling=1., padding=None):
     # 原生阶段只处理支持平面和有限面；实际边/角仍进入原凸体距离求解。
     finished, hit = triangle_face(start, end, triangle, margin, axis, radius, width, shoulder, crown,
                                   face_only=face_only, ceiling=ceiling)
     if finished:
         return hit
     velocity = subtract(end, start)
-    padding = tuple(cylinder_support(tuple(float(a == i) for a in range(3)),axis,radius,width/2,shoulder,crown)[i]
-                    + margin for i in range(3))
+    if padding is None:
+        padding = tuple(cylinder_support(tuple(float(a == i) for a in range(3)),axis,radius,width/2,shoulder,crown)[i]
+                        + margin for i in range(3))
     polygon = clipped_triangle(triangle,start,end,padding)
     if not polygon:
         return None

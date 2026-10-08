@@ -1,0 +1,5 @@
+........................................................................ [ 41%]
+........................................................................ [ 83%]
+............................                                             [100%]
+172 passed in 6.57s
+{"baseline": "da6539c original Python energy formulas and independent127 old suspension/dot DLL", "pytest_code": 0, "all_suspension_step_hex_equal": true, "counts": {"steps": 16081, "zero_mobility": 10744, "elastic_calls": 6298}}

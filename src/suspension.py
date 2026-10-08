@@ -2,7 +2,12 @@
 
 from dataclasses import dataclass
 
-from mechanical_kernels import dot, solve_lu, suspension_contact_state
+from mechanical_kernels import (
+    dot,
+    solve_lu,
+    suspension_elastic_terms,
+    suspension_step,
+)
 
 from rotor_dynamics import cross
 
@@ -37,15 +42,7 @@ def stiffness_matrix(rates, bars):
     return matrix
 
 
-def elastic_terms(compression, rates, bars, stops, travel):
-    spring = sum(k * x * x / 2 for k, x in zip(rates, compression))
-    bar = tuple(k * (compression[i] - compression[i + 1]) ** 2 / 2
-                for i, k in zip((0, 2), bars))
-    excess = tuple(x - max(-travel, min(travel, x)) for x in compression)
-    stop = sum(k * e * e / 2 for k, e in zip(stops, excess))
-    matrix = stiffness_matrix(rates, bars)
-    force = tuple(dot(row, compression) + k * e for row, k, e in zip(matrix, stops, excess))
-    return spring, bar, stop, force
+elastic_terms = suspension_elastic_terms
 
 
 
@@ -117,21 +114,6 @@ def advance_suspension(compression, extension_speed, mobility, touching,
     接地轴向力非负，弹簧/止挡反力始终为同一势能的梯度。
     geometry为射线接触约束位置，离地轮的材料状态不会随候选射线重设。
     """
-    stiffness = stiffness_matrix(rates, bars)
     geometry = compression if geometry is None else geometry
-    end, forces, raw, damping = suspension_contact_state(
-        compression, extension_speed, mobility, touching, stiffness,
-        compression_damping, extension_damping, stops, travel, dt, geometry)
-    delta = tuple(end[i] - compression[i] for i in range(4))
-    initial = elastic_terms(compression, rates, bars, stops, travel)
-    spring, bar, stop, elastic_force = elastic_terms(end, rates, bars, stops, travel)
-    energy_change = spring + sum(bar) + stop - initial[0] - sum(initial[1]) - initial[2]
-    damping_loss = sum(c * dx * dx / dt for c, dx in zip(damping, delta))
-    elastic_loss = dot(elastic_force, delta) - energy_change
-    body_loss = dt * dt * sum(forces[i] * dot(mobility[i], forces) for i in range(4)) / 2
-    offset_work = dot(forces, tuple(geometry[i] - compression[i] for i in range(4)))
-    kinetic_change = dt * dot(forces, extension_speed) + body_loss
-    residual = kinetic_change + energy_change + damping_loss + elastic_loss + body_loss - offset_work
-    return SuspensionStep(end, tuple(dx / dt for dx in delta), forces, raw, spring, bar, stop,
-                          damping_loss, elastic_loss, body_loss, offset_work, residual,
-                          kinetic_change + body_loss)
+    return SuspensionStep(*suspension_step(compression, extension_speed, mobility, touching,
+        rates, compression_damping, extension_damping, bars, stops, travel, dt, geometry))

@@ -227,8 +227,7 @@ static void cross(double a[3], double b[3], double result[3]) {
 /* 既有单面入口与整条查询共用原有限面判据。 */
 static PyObject *triangle_face_values(double start[3],double end[3],double vertices[3][3],
     double margin,double axis[3],double radius,double width,double shoulder,double crown,
-    int face_only,double ceiling,double *fraction_bound) {
-    if (fraction_bound) *fraction_bound=-INFINITY;
+    int face_only,double ceiling) {
     double ab[3], ac[3], normal[3], velocity[3], relative[3], offset[3];
     subtract(vertices[1],vertices[0],ab); subtract(vertices[2],vertices[0],ac);
     cross(ab,ac,normal);
@@ -242,7 +241,6 @@ static PyObject *triangle_face_values(double start[3],double end[3],double verti
     double distance = dot(normal,relative) - dot(normal,offset) - margin, speed = dot(normal,velocity);
     if (speed < 0. && distance >= 0.) {
         double fraction = -distance / speed;
-        if (fraction_bound) *fraction_bound=fraction;
         if (!face_only && fraction >= ceiling) return Py_BuildValue("(OO)",Py_True,Py_None);
         if (fraction >= 0. && fraction <= 1.) {
             double point[3], core[3];
@@ -289,7 +287,7 @@ static PyObject *triangle_face(PyObject *self, PyObject *args, PyObject *kwargs)
     for (int i = 0; i < 3; ++i)
         if (!vector(PySequence_Fast_GET_ITEM(triangle,i),vertices[i])) { Py_DECREF(triangle); return NULL; }
     Py_DECREF(triangle);
-    return triangle_face_values(start,end,vertices,margin,axis,radius,width,shoulder,crown,face_only,ceiling,NULL);
+    return triangle_face_values(start,end,vertices,margin,axis,radius,width,shoulder,crown,face_only,ceiling);
 }
 
 static double exact_dot(double a[3], double b[3]) {
@@ -568,36 +566,17 @@ static PyObject *triangle_support_entry(PyObject *self,PyObject *args,PyObject *
             PyErr_SetString(PyExc_ValueError,"三角面须为三个顶点"); goto error;
         }
         for (int i=0; i<3; ++i) if (!vector(PyTuple_GET_ITEM(triangle,i),vertices[i])) goto error;
-        double fraction_bound;
-        PyObject *result=triangle_face_values(start,end,vertices,margin,axis,radius,width,shoulder,crown,1,1.,&fraction_bound);
+        PyObject *result=triangle_face_values(start,end,vertices,margin,axis,radius,width,shoulder,crown,1,1.);
         if (!result) goto error;
         PyObject *hit=PyTuple_GET_ITEM(result,1);
-        int kept;
-        if (hit!=Py_None) kept=triangle_query_best(hit,&best,&ceiling);
-        else {
-            PyObject *pending=Py_BuildValue("(Od)",triangle,fraction_bound);
-            if (!pending) { Py_DECREF(result); goto error; }
-            kept=PyList_Append(curved,pending)>=0;
-            Py_DECREF(pending);
-        }
+        int kept=hit!=Py_None ? triangle_query_best(hit,&best,&ceiling) : PyList_Append(curved,triangle)>=0;
         Py_DECREF(result);
         if (!kept) goto error;
     }
     keywords=PyDict_New();
     if (!keywords) goto error;
-    /* 同一查询的轮胎外廓固定；边角裁剪复用首次求交的原三轴padding。 */
-    PyObject *padding_object=Py_BuildValue("(ddd)",padding[0],padding[1],padding[2]);
-    if (!padding_object) goto error;
-    int padding_set=PyDict_SetItemString(keywords,"padding",padding_object);
-    Py_DECREF(padding_object);
-    if (padding_set<0) goto error;
     for (Py_ssize_t k=0; k<PyList_GET_SIZE(curved); ++k) {
-        PyObject *pending=PyList_GET_ITEM(curved,k);
-        double fraction_bound=PyFloat_AsDouble(PyTuple_GET_ITEM(pending,1));
-        if (PyErr_Occurred()) goto error;
-        /* 原第二次面查询也在fraction>=ceiling时返回None；复用首次精确计算。 */
-        if (fraction_bound>=ceiling) continue;
-        PyObject *arguments=PyTuple_Pack(9,start_object,end_object,PyTuple_GET_ITEM(pending,0),margin_object,axis_object,
+        PyObject *arguments=PyTuple_Pack(9,start_object,end_object,PyList_GET_ITEM(curved,k),margin_object,axis_object,
                                          radius_object,width_object,shoulder_object,crown_object);
         if (!arguments) goto error;
         PyObject *limit=PyFloat_FromDouble(ceiling);
@@ -780,12 +759,17 @@ static void cross_regular(double a[3],double b[3],double result[3]) {
     result[2]=a[0]*b[1]-a[1]*b[0];
 }
 /* 查询仍回到原支持面；同平面和跨面分别保留原功共轭公式。 */
-static PyObject *cylinder_endpoint_values(PyObject *contact,
-    double hub_end[3],double hub_average[3],double direction_end[3],double direction_average[3],
-    double rotation_axis[3],double angle,double scale,double velocity[3],double angular[3],double dt,
-    PyObject *hub_average_object,PyObject *direction_average_object,PyObject *rotation_axis_object,
-    PyObject *velocity_object,PyObject *angular_object,PyObject *face_difference) {
-    PyObject *owned_hub_average=NULL,*owned_direction_average=NULL;
+static PyObject *cylinder_endpoint(PyObject *self,PyObject *args) {
+    PyObject *contact,*hub_end_object,*hub_average_object,*direction_end_object,*direction_average_object;
+    PyObject *rotation_axis_object,*velocity_object,*angular_object,*face_difference;
+    double angle,scale,dt;
+    if (!PyArg_ParseTuple(args,"OOOOOOddOOdO",&contact,&hub_end_object,&hub_average_object,
+        &direction_end_object,&direction_average_object,&rotation_axis_object,&angle,&scale,
+        &velocity_object,&angular_object,&dt,&face_difference)) return NULL;
+    double hub_end[3],hub_average[3],direction_end[3],direction_average[3],rotation_axis[3],velocity[3],angular[3];
+    if (!vector(hub_end_object,hub_end) || !vector(hub_average_object,hub_average)
+        || !vector(direction_end_object,direction_end) || !vector(direction_average_object,direction_average)
+        || !vector(rotation_axis_object,rotation_axis) || !vector(velocity_object,velocity) || !vector(angular_object,angular)) return NULL;
     PyObject *surface=PyObject_GetAttrString(contact,"surface"),*old_normal_object=NULL,*wheel_object=NULL;
     PyObject *found=NULL,*start_object=NULL,*end_object=NULL,*difference_object=NULL;
     double old_axis[3],old_normal[3],old_direction[3],old_hub[3],old_point[3],radius,reach,width,shoulder,crown,old_length;
@@ -847,16 +831,6 @@ static PyObject *cylinder_endpoint_values(PyObject *contact,
             double difference;
             PyObject *face=PyTuple_GET_ITEM(found,3);
             if (face!=Py_None) {
-                if (!hub_average_object) {
-                    owned_hub_average=Py_BuildValue("(ddd)",hub_average[0],hub_average[1],hub_average[2]);
-                    if (!owned_hub_average) goto failure;
-                    hub_average_object=owned_hub_average;
-                }
-                if (!direction_average_object) {
-                    owned_direction_average=Py_BuildValue("(ddd)",direction_average[0],direction_average[1],direction_average[2]);
-                    if (!owned_direction_average) goto failure;
-                    direction_average_object=owned_direction_average;
-                }
                 difference_object=PyObject_CallFunction(face_difference,"OOOOOOOddOOd",contact,PyTuple_GET_ITEM(found,1),face,
                     wheel_object,hub_average_object,direction_average_object,rotation_axis_object,angle,scale,
                     velocity_object,angular_object,dt);
@@ -870,77 +844,17 @@ static PyObject *cylinder_endpoint_values(PyObject *contact,
         }
     }
     PyObject *result=Py_BuildValue("((dddddd)d)",gradient[0],gradient[1],gradient[2],gradient[3],gradient[4],gradient[5],alignment);
-    Py_XDECREF(owned_hub_average); Py_XDECREF(owned_direction_average);
     Py_XDECREF(difference_object); Py_DECREF(found); Py_DECREF(end_object); Py_DECREF(start_object);
     Py_DECREF(wheel_object); Py_DECREF(old_normal_object); Py_DECREF(surface); return result;
 no_contact:
-    Py_XDECREF(owned_hub_average); Py_XDECREF(owned_direction_average);
     Py_XDECREF(found); Py_XDECREF(end_object); Py_XDECREF(start_object); Py_XDECREF(wheel_object);
     Py_XDECREF(old_normal_object); Py_XDECREF(surface); Py_RETURN_NONE;
 failure:
-    Py_XDECREF(owned_hub_average); Py_XDECREF(owned_direction_average);
     Py_XDECREF(difference_object); Py_XDECREF(found); Py_XDECREF(end_object); Py_XDECREF(start_object);
     Py_XDECREF(wheel_object); Py_XDECREF(old_normal_object); Py_XDECREF(surface); return NULL;
 }
-static PyObject *cylinder_endpoint(PyObject *self,PyObject *args) {
-    PyObject *contact,*hub_end_object,*hub_average_object,*direction_end_object,*direction_average_object;
-    PyObject *rotation_axis_object,*velocity_object,*angular_object,*face_difference;
-    double angle,scale,dt;
-    if (!PyArg_ParseTuple(args,"OOOOOOddOOdO",&contact,&hub_end_object,&hub_average_object,
-        &direction_end_object,&direction_average_object,&rotation_axis_object,&angle,&scale,
-        &velocity_object,&angular_object,&dt,&face_difference)) return NULL;
-    double hub_end[3],hub_average[3],direction_end[3],direction_average[3],rotation_axis[3],velocity[3],angular[3];
-    if (!vector(hub_end_object,hub_end) || !vector(hub_average_object,hub_average)
-        || !vector(direction_end_object,direction_end) || !vector(direction_average_object,direction_average)
-        || !vector(rotation_axis_object,rotation_axis) || !vector(velocity_object,velocity) || !vector(angular_object,angular)) return NULL;
-    return cylinder_endpoint_values(contact,hub_end,hub_average,direction_end,direction_average,
-        rotation_axis,angle,scale,velocity,angular,dt,hub_average_object,direction_average_object,
-        rotation_axis_object,velocity_object,angular_object,face_difference);
-}
-
-/* 四轮共用有限转动与接点装配；每个支持面仍执行原relative_entry。 */
-static PyObject *cylinder_contact_system(PyObject *self,PyObject *args) {
-    PyObject *contacts,*axis_object,*velocity_object,*angular_object,*face_difference;
-    double angle,scale,dt,axis[3],velocity[3],angular[3];
-    if (!PyArg_ParseTuple(args,"OOddOOdO",&contacts,&axis_object,&angle,&scale,
-        &velocity_object,&angular_object,&dt,&face_difference)) return NULL;
-    if (!vector(axis_object,axis) || !vector(velocity_object,velocity) || !vector(angular_object,angular)) return NULL;
-    Py_ssize_t count=PyTuple_Size(contacts);
-    if (count<0) return NULL;
-    PyObject *gradients=PyTuple_New(count),*alignment=PyTuple_New(count),*touching=PyTuple_New(count);
-    if (!gradients || !alignment || !touching) goto failure;
-    for (Py_ssize_t i=0; i<count; ++i) {
-        PyObject *contact=PyTuple_GET_ITEM(contacts,i),*endpoint;
-        if (contact==Py_None) { endpoint=Py_NewRef(Py_None); }
-        else {
-            double hub[3],direction[3],hub_end[3],hub_average[3],direction_end[3],direction_average[3];
-            if (!vector_attribute(contact,"hub",hub) || !vector_attribute(contact,"direction",direction)) goto failure;
-            rotated_path_values(hub,axis,angle,scale,hub_end,hub_average);
-            rotated_path_values(direction,axis,angle,scale,direction_end,direction_average);
-            endpoint=cylinder_endpoint_values(contact,hub_end,hub_average,direction_end,direction_average,
-                axis,angle,scale,velocity,angular,dt,NULL,NULL,axis_object,velocity_object,angular_object,face_difference);
-            if (!endpoint) goto failure;
-        }
-        if (endpoint==Py_None) {
-            PyObject *zero=Py_BuildValue("(dddddd)",0.,0.,0.,0.,0.,0.);
-            if (!zero) { Py_DECREF(endpoint); goto failure; }
-            PyTuple_SET_ITEM(gradients,i,zero);
-            PyTuple_SET_ITEM(alignment,i,Py_NewRef(Py_None));
-            PyTuple_SET_ITEM(touching,i,Py_NewRef(Py_False));
-        } else {
-            PyTuple_SET_ITEM(gradients,i,Py_NewRef(PyTuple_GET_ITEM(endpoint,0)));
-            PyTuple_SET_ITEM(alignment,i,Py_NewRef(PyTuple_GET_ITEM(endpoint,1)));
-            PyTuple_SET_ITEM(touching,i,Py_NewRef(Py_True));
-        }
-        Py_DECREF(endpoint);
-    }
-    return Py_BuildValue("NNN",gradients,alignment,touching);
-failure:
-    Py_XDECREF(gradients); Py_XDECREF(alignment); Py_XDECREF(touching); return NULL;
-}
 
 static PyMethodDef methods[] = {
-    {"cylinder_contact_system", (PyCFunction)cylinder_contact_system, METH_VARARGS, "原四轮有限接点几何与装配"},
     {"crown_extent_secant", (PyCFunction)crown_extent_secant, METH_VARARGS, "原胎冠支持高度割线"},
     {"cylinder_endpoint", (PyCFunction)cylinder_endpoint, METH_VARARGS, "原有限圆柱接点与功共轭离散梯度"},
     {"surface_ray_hits", (PyCFunction)surface_ray_hits, METH_VARARGS, "原有限支持面射线变换及有序接点装配"},

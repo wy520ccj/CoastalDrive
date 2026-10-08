@@ -1,0 +1,115 @@
+{
+  "head": "756d26258fa9522a2ec9f7921f93215c77b10627",
+  "items": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/probe-normal-warm.py",
+      "archive": "probe-normal-warm.py",
+      "encoding": "byte-copy",
+      "source_sha256": "52346cdfa3871107be1ca246322f3078e51e8173fa78ddb1d59d6daea1d132de",
+      "archive_sha256": "52346cdfa3871107be1ca246322f3078e51e8173fa78ddb1d59d6daea1d132de",
+      "payload_sha256": "52346cdfa3871107be1ca246322f3078e51e8173fa78ddb1d59d6daea1d132de",
+      "payload_verified": true,
+      "bytes": 1948
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/normal-warm-trial-source.py",
+      "archive": "normal-warm-trial-source.py",
+      "encoding": "byte-copy",
+      "source_sha256": "89d218b24d4171f44a62af589185498d83163a557624d896292bb6d2694c96df",
+      "archive_sha256": "89d218b24d4171f44a62af589185498d83163a557624d896292bb6d2694c96df",
+      "payload_sha256": "89d218b24d4171f44a62af589185498d83163a557624d896292bb6d2694c96df",
+      "payload_verified": true,
+      "bytes": 43595
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/normal-warm-trial.json",
+      "archive": "normal-warm-trial.json",
+      "encoding": "byte-copy",
+      "source_sha256": "ce6eac85be180b94d55fb2c10d0ea1a527103f616f17a78aea6bbd97e2ae95e9",
+      "archive_sha256": "ce6eac85be180b94d55fb2c10d0ea1a527103f616f17a78aea6bbd97e2ae95e9",
+      "payload_sha256": "ce6eac85be180b94d55fb2c10d0ea1a527103f616f17a78aea6bbd97e2ae95e9",
+      "payload_verified": true,
+      "bytes": 262
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/normal-warm-trial.log",
+      "archive": "normal-warm-trial.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "6d78b982cd9eb0594f4f78c8b9e10e59868c6bd79b384a6266fb1b079e8f08c1",
+      "archive_sha256": "6d78b982cd9eb0594f4f78c8b9e10e59868c6bd79b384a6266fb1b079e8f08c1",
+      "payload_sha256": "6d78b982cd9eb0594f4f78c8b9e10e59868c6bd79b384a6266fb1b079e8f08c1",
+      "payload_verified": true,
+      "bytes": 366
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/normal-warm-snapshots.json",
+      "archive": "normal-warm-snapshots.json.gz",
+      "encoding": "gzip-mtime-0",
+      "source_sha256": "b086495d3c9a7af5e14fb9480bdfabe6b007969289e6ed2118f67afad0e2400f",
+      "archive_sha256": "556ef9175b96c8f8609398396f72a3b2182415bb8a71a88e831b7b166b282433",
+      "payload_sha256": "b086495d3c9a7af5e14fb9480bdfabe6b007969289e6ed2118f67afad0e2400f",
+      "payload_verified": true,
+      "bytes": 8746860
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/probe-joint-early.py",
+      "archive": "probe-joint-early.py",
+      "encoding": "byte-copy",
+      "source_sha256": "cca44cdc8aa4bd9a7ea14d66ae398dc34fcdc88e1d1a6c730209c600064f6ab0",
+      "archive_sha256": "cca44cdc8aa4bd9a7ea14d66ae398dc34fcdc88e1d1a6c730209c600064f6ab0",
+      "payload_sha256": "cca44cdc8aa4bd9a7ea14d66ae398dc34fcdc88e1d1a6c730209c600064f6ab0",
+      "payload_verified": true,
+      "bytes": 765
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-early-trial-source.py",
+      "archive": "joint-early-trial-source.py",
+      "encoding": "byte-copy",
+      "source_sha256": "bdb5c678183ee099ab15667d80da09fd0916653c08b706a5d07d0b312b19cd96",
+      "archive_sha256": "bdb5c678183ee099ab15667d80da09fd0916653c08b706a5d07d0b312b19cd96",
+      "payload_sha256": "bdb5c678183ee099ab15667d80da09fd0916653c08b706a5d07d0b312b19cd96",
+      "payload_verified": true,
+      "bytes": 43355
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-early-trial.json",
+      "archive": "joint-early-trial.json",
+      "encoding": "byte-copy",
+      "source_sha256": "41aed46c1420d136d351df7a5922d82813b0fede033362eed2de31e1c84a91dc",
+      "archive_sha256": "41aed46c1420d136d351df7a5922d82813b0fede033362eed2de31e1c84a91dc",
+      "payload_sha256": "41aed46c1420d136d351df7a5922d82813b0fede033362eed2de31e1c84a91dc",
+      "payload_verified": true,
+      "bytes": 262
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-early-trial.log",
+      "archive": "joint-early-trial.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "8b80c66b1f9bfdea4e70cb547e384f106b597ce645c6e9fbad0748cacc906cae",
+      "archive_sha256": "8b80c66b1f9bfdea4e70cb547e384f106b597ce645c6e9fbad0748cacc906cae",
+      "payload_sha256": "8b80c66b1f9bfdea4e70cb547e384f106b597ce645c6e9fbad0748cacc906cae",
+      "payload_verified": true,
+      "bytes": 366
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-early-snapshots.json",
+      "archive": "joint-early-snapshots.json.gz",
+      "encoding": "gzip-mtime-0",
+      "source_sha256": "8c3b7b9b71cbbc1649ef9fad199d2d80a25ef25190e078638c9ac302cd865324",
+      "archive_sha256": "48228730166ba897c2ec06a5532f7fbfec4499c89ed35c0f5a7a9b592a2cdef3",
+      "payload_sha256": "8c3b7b9b71cbbc1649ef9fad199d2d80a25ef25190e078638c9ac302cd865324",
+      "payload_verified": true,
+      "bytes": 8745535
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-bound-snapshots.json",
+      "archive": "triangle-bound-snapshots.json.gz",
+      "encoding": "gzip-mtime-0",
+      "source_sha256": "d396fbf3a43d859dfa88272befa2b560d2dcbe05592f6075b30250e2954bd2ad",
+      "archive_sha256": "56c16fc49f5b107772859adb8035147d9f478493b0862aa78ef013343faa2696",
+      "payload_sha256": "d396fbf3a43d859dfa88272befa2b560d2dcbe05592f6075b30250e2954bd2ad",
+      "payload_verified": true,
+      "bytes": 8746812
+    }
+  ]
+}

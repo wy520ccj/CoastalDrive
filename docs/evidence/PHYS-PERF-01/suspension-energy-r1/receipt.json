@@ -1,0 +1,37 @@
+{
+  "head_at_capture": "da6539c6c57746a90c75a6379cb97a0f41c0aa1f",
+  "source_count": 360,
+  "source_aggregate_sha256": "9e587c619306c5811a60f0d6dd015f848efb1ad7e542f0199700fafdb88f26ef",
+  "manifest_items": 33,
+  "all_payloads_verified": true,
+  "audit": {
+    "baseline": "da6539c original Python energy formulas and independent127 old suspension/dot DLL",
+    "pytest_code": 0,
+    "all_suspension_step_hex_equal": true,
+    "counts": {
+      "steps": 16081,
+      "zero_mobility": 10744,
+      "elastic_calls": 6298
+    }
+  },
+  "snapshot_comparisons": [
+    {
+      "traffic": 0,
+      "new_seconds": 0.6321119999993243,
+      "mainfa_seconds": 0.7201027999999496,
+      "all_fields_equal": true
+    },
+    {
+      "traffic": 8,
+      "new_seconds": 4.339838000000782,
+      "mainfa_seconds": 5.106677599999784,
+      "all_fields_equal": true
+    }
+  ],
+  "validation": {
+    "T0": "172 passed in 5.74s; Ruff passed",
+    "T1": "601 passed in 27.01s; Ruff passed; seeds 7.834/7.691/7.697s"
+  },
+  "scope": "严格原公式/活动集/精度；悬架数值计算与完整13字段装配。性能、T3和人工Gate未完成。",
+  "report_sha256": "bd337208a15b92dc54699c832baaceef4647e9de16830a2dfc129d2013182bd0"
+}

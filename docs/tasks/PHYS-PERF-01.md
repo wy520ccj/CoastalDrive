@@ -112,3 +112,12 @@ Tire constitutive 本构块（2026-10-08，隔离未并入main）：[证据与�
 
 
 主fa T2（2026-10-08）已结束：783 passed/1轮胎落地求解失败/811 deselected，4650.59s，Ruff通过，11专项未跑。[完整失败与360源码核对](../evidence/PHYS-DESIGN-01/recontact-stage-r1/receipt.json)。阶段未通过；真实落地输入最小复现仅0.74s，不再重跑长测来查根因。后续正在修同一隐式力方程，精度不放宽。
+三角面查询不变量归档（2026-10-08）：[报告](../evidence/PHYS-PERF-01/triangle-invariants-r1/report.md)、[逐项与载荷SHA](../evidence/PHYS-PERF-01/triangle-invariants-r1/manifest.json)、[收据](../evidence/PHYS-PERF-01/triangle-invariants-r1/receipt.json)。复用首轮plane fraction，并把同query padding传入edge回调；独立入口/候选顺序/64 sweep/96 GJK/精度保持。旧Python+ab204 DLL实测39,672 query/9,685 hits，hex逐值一致。两版2×48快照与主线墙端精度快照相同。初轮审计JSON被r2同counts覆盖，只保留原始log，不重建；最终T1-r2为560 passed/27.01s、Ruff和三种子通过。性能只作短测诊断。
+
+
+隔离进程内初始化试验（2026-10-08，均拒绝）：[证据与收据](../evidence/PHYS-PERF-01/coupled-initialization-experiment/receipt.json)。法向载荷暖初值与提前联立Newton各89项T0通过，但两场景完整Snapshot均非逐字段相同；样本耗时分别为0.6988/4.8570s、0.9870/8.1486s，当前参考为0.7044/4.8658s。暖初值两项单次耗时均略低于参考，但差幅很小且快照不一致，无稳定收益证据；提前Newton更慢；均未接入生产、无T1或性能/机械Gate结论。目标 `tire_drivetrain.py` 与HEAD字节一致；其余并行工作区改动未纳入冻结。
+
+
+悬架 prescribed closed partition（2026-10-08，隔离块）：[报告](../evidence/PHYS-PERF-01/suspension-prescribed-r1/report.md)、[SHA/载荷清单](../evidence/PHYS-PERF-01/suspension-prescribed-r1/manifest.json)、[收据](../evidence/PHYS-PERF-01/suspension-prescribed-r1/receipt.json)。仅 `mechanical_kernels.c` 新增已指定末行程直接式；零法向逆质量且四轮非负反力，硬件反力保留FMA，其余完整64轮活动集和原门槛不变。独立127 DLL的16,081次调用输出hex一致；T0 172 passed、T1 601 passed/Ruff/三seed通过。2×48拍Snapshot与主线fa037c4 wall-port基线逐字段相同；0.7078/4.7718s仅诊断。\n
+
+悬架能量与完整步数值块（2026-10-08）：[报告/收据](../evidence/PHYS-PERF-01/suspension-energy-r1/receipt.json)。独立da6539c Python公式及旧127 DLL对照16,081个完整步、6,298次势能计算全部字段hex相同；64活动集/20与30轮/全部精度保持。172项T0、601项T1/Ruff/三种子通过；两组48拍Snapshot同main fa，0.6321/4.3398s与profile3.0445s仅诊断。360项源及全部归档载荷独立核对。suspension_contacts.py仅换行标记、无实际差异，不入提交；实时、T3、人工Gate未完成。
