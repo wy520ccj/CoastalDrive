@@ -43,7 +43,9 @@ def test_real_short_trial_energy_and_control_account(case):
     for old, new in zip(trials[0][1], trials[1][1]):
         assert {key: value for key, value in old.items() if key.startswith("command.")} == {
             key: value for key, value in new.items() if key.startswith("command.")}
-    for summary, rows in trials:
+    for candidate, (summary, rows) in zip((False, True), trials):
+        config = trial_config(case, candidate, "simulation")
+        assert config.suspension_si_enabled and config.suspension_coupled_enabled
         for index, wheel in enumerate(summary["energy"]["wheels"]):
             prefix = f"state.wheel_dynamics.{index}."
             for field in DISSIPATION_FIELDS:
@@ -52,7 +54,8 @@ def test_real_short_trial_energy_and_control_account(case):
             for row in rows[1:]:
                 assert prefix+"force_patch_kappa" in row
                 assert prefix+"force_patch_alpha" in row
-                assert row[prefix+"force_contact_tick"] < row[prefix+"sample_tick"]
+                # SI支撑在本拍施力前重读；施力与完成观测是同一外层拍的不同子阶段。
+                assert row[prefix+"force_contact_tick"] == row[prefix+"sample_tick"] == row["state.contact_tick"]
     assert max(wheel["peak_deformation_m"] for wheel in trials[0][0]["energy"]["wheels"]) == 0
     assert max(wheel["peak_elastic_energy_j"] for wheel in trials[1][0]["energy"]["wheels"]) > 0
 

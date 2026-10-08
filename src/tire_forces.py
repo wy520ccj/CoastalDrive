@@ -2,6 +2,8 @@
 
 import math
 
+from mechanical_kernels import tire_combined_force
+
 from tire_properties import tire_grip, tire_stiffness
 from vehicle_config import CAR
 
@@ -24,16 +26,4 @@ def tire_force(kappa, alpha, normal_load, mu, config=CAR):
 
 def combined_force(kappa, alpha, grip, cx, cy, shape, curvature):
     """隐式轮积分在一次求解中复用固定轮荷特性，避免每次残差重复计算幂律。"""
-    if grip == 0:
-        return 0.0, 0.0
-    qx = cx * kappa
-    qy = -cy * math.tan(alpha)
-    qnorm = math.hypot(qx, qy)
-    if qnorm == 0:
-        return 0.0, 0.0
-
-    n = qnorm / (shape * grip)
-    force_magnitude = grip * math.sin(
-        shape * math.atan(n - curvature * (n - math.atan(n)))
-    )
-    return force_magnitude * qx / qnorm, force_magnitude * qy / qnorm
+    return tire_combined_force(kappa, alpha, grip, cx, cy, shape, curvature, math.hypot)

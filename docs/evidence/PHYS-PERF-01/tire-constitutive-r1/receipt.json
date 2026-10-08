@@ -1,0 +1,420 @@
+{
+  "baseline_head": "12ea82b02a0bd5b63eff02d2b9d35826d7acee56",
+  "source_count": 354,
+  "source_start_end_equal": true,
+  "source_hashes_match_tire_snapshot_src": true,
+  "source_hashes_match_completion_summary": true,
+  "changed_files": [
+    "src/mechanical_kernels.c",
+    "src/tire_compliance.py",
+    "src/tire_forces.py",
+    "tests/test_tire_compliance_probe.py",
+    "tools/physics/tire_compliance_probe.py",
+    "tools/physics/tire_load_probe.py"
+  ],
+  "false_modified_files": {
+    "src/suspension_contacts.py": {
+      "current_sha256": "43defabbc9f4630394361126063d210802d06f16e4948c29a8eb20a23f8c17b7",
+      "head_sha256": "43defabbc9f4630394361126063d210802d06f16e4948c29a8eb20a23f8c17b7",
+      "raw_bytes_equal": true
+    },
+    "src/wheel_contact_kernels.c": {
+      "current_sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+      "head_sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+      "raw_bytes_equal": true
+    }
+  },
+  "model": {
+    "hypot": "CPython math.hypot remains on the original function; no libhypot substitution",
+    "energy_frame_transfer": "original implementation retained",
+    "thresholds": "all energy/control/error thresholds unchanged"
+  },
+  "audit": {
+    "baseline": "12ea82b original Python combined/compliant force and Jacobian; originalmath.hypot preserved",
+    "all_values_equal": true,
+    "counts": {
+      "combined": 17772,
+      "contact": 37152,
+      "jacobian": 7681,
+      "rolling": 12166,
+      "sticking": 21892,
+      "sliding": 3094
+    }
+  },
+  "timestamp_boundary": {
+    "original_Python_reproduction": "same two exact timestamp failures (241 == 241), unrelated to constitutive extraction",
+    "cases": 4,
+    "rows_total_including_tick240": 52,
+    "post_initial_rows_ticks241_252": 48,
+    "all_force_and_sample_ticks_match_state_contact_tick": true,
+    "four_case_external_force_and_postBullet_tick_mapping": "retained in compliance-timestamp-observations.json"
+  },
+  "T0": {
+    "pytest": "373 passed in 2.03s",
+    "ruff": "passed"
+  },
+  "T1_initial": {
+    "pytest": "2 failed, 750 passed in 170.16s",
+    "failures": [
+      "acceleration: force_contact_tick 241 equals sample_tick 241",
+      "constant-turn: force_contact_tick 241 equals sample_tick 241"
+    ],
+    "headless_seeds": "not_run"
+  },
+  "phase_T0": {
+    "pytest": "56 passed in 18.98s",
+    "ruff": "passed"
+  },
+  "T1_completion": {
+    "distinct_passed_node_count": 782,
+    "composition": "750 prior passes plus 56 fresh phase/probe passes, deduplicated to 782 distinct nodes",
+    "seed_seconds": [
+      10.103,
+      9.892,
+      9.726
+    ],
+    "passed": true
+  },
+  "snapshots": {
+    "traffic_counts": [
+      0,
+      8
+    ],
+    "ticks_each": [
+      48,
+      48
+    ],
+    "equal_to_shared_solution_baseline": true,
+    "diagnostic_seconds": [
+      0.7526315,
+      5.3735288
+    ],
+    "timing": "diagnostic only, not FPS"
+  },
+  "profile": {
+    "status": "completed",
+    "profiled_steps": 16,
+    "wall_clock_seconds": {
+      "source_hash_before": 0.014904999999998836,
+      "setup": 0.07180519999974422,
+      "warmup_8_steps": 0.4068938000000344,
+      "profiled_16_step_window": 3.887532000000192,
+      "cleanup": 0.0008382999999412277,
+      "source_hash_after": 0.010960000000068248,
+      "total_through_measurement": 4.569155900000169
+    },
+    "interpretation": "diagnostic only, not FPS"
+  },
+  "close_script": {
+    "initial_attempt": "make_plan empty area/tests raised ValueError before checks; no checks were run",
+    "separate_cli_log": "not found among provided source files; no synthetic log added"
+  },
+  "archive_entries": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/audit-tire-constitutive.py",
+      "archive": "physics/audit-tire-constitutive.py",
+      "source_size": 2873,
+      "source_sha256": "deeaf2410c07e290bab81ba30413aa4e6715d53ff053e72a8a618bfb3ec2e4bf",
+      "archive_sha256": "deeaf2410c07e290bab81ba30413aa4e6715d53ff053e72a8a618bfb3ec2e4bf",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/check-original-compliance-timestamps.py",
+      "archive": "physics/check-original-compliance-timestamps.py",
+      "source_size": 617,
+      "source_sha256": "b6bcb8e80af737a1e1e67419920f8a0f021713f548ee8ca489520b2a5a470f1f",
+      "archive_sha256": "b6bcb8e80af737a1e1e67419920f8a0f021713f548ee8ca489520b2a5a470f1f",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/close-tire-constitutive.py",
+      "archive": "physics/close-tire-constitutive.py",
+      "source_size": 2531,
+      "source_sha256": "13c0fe75fbc07a32097f7edf6b1248c53bc9fd40c3b0c66a72cf6593803d0830",
+      "archive_sha256": "13c0fe75fbc07a32097f7edf6b1248c53bc9fd40c3b0c66a72cf6593803d0830",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/compliance-timestamp-observations.json",
+      "archive": "physics/compliance-timestamp-observations.json",
+      "source_size": 13035,
+      "source_sha256": "7a107d2330aa39ca4007fe2724085b0ce6f3b9d4dad42f8773cec0b66082e139",
+      "archive_sha256": "7a107d2330aa39ca4007fe2724085b0ce6f3b9d4dad42f8773cec0b66082e139",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/observe-compliance-timestamps.py",
+      "archive": "physics/observe-compliance-timestamps.py",
+      "source_size": 1279,
+      "source_sha256": "61a6a4040885997d0f3569365304447f061d95fd077afd0572e01126ed2441a6",
+      "archive_sha256": "61a6a4040885997d0f3569365304447f061d95fd077afd0572e01126ed2441a6",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/original-compliance-timestamps.log",
+      "archive": "physics/original-compliance-timestamps.txt",
+      "source_size": 3348,
+      "source_sha256": "5d0702456e7b81e16d726e2311249e6bd35b79340b60e9fad9c171f1e7fff293",
+      "archive_sha256": "5d0702456e7b81e16d726e2311249e6bd35b79340b60e9fad9c171f1e7fff293",
+      "gzip_payload_sha256": null,
+      "original_name": "original-compliance-timestamps.log"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-tire-constitutive.log",
+      "archive": "physics/profile-tire-constitutive.txt",
+      "source_size": 139,
+      "source_sha256": "a2c25f8f6a86f95862f298f126ca0190d22de5974f4ee3468513035b4539acbf",
+      "archive_sha256": "a2c25f8f6a86f95862f298f126ca0190d22de5974f4ee3468513035b4539acbf",
+      "gzip_payload_sha256": null,
+      "original_name": "profile-tire-constitutive.log"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-tire-constitutive.py",
+      "archive": "physics/profile-tire-constitutive.py",
+      "source_size": 6796,
+      "source_sha256": "5bb4dd7d7993d7efe39eb0b23090f72f617b4a0e7c5113080fe822f2950bd315",
+      "archive_sha256": "5bb4dd7d7993d7efe39eb0b23090f72f617b4a0e7c5113080fe822f2950bd315",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/promote-tire-constitutive.py",
+      "archive": "physics/promote-tire-constitutive.py",
+      "source_size": 2234,
+      "source_sha256": "c1dd7d8c1991ee88a89d64bc39d149790a0ae580bb94413040aca2a83d4192f0",
+      "archive_sha256": "c1dd7d8c1991ee88a89d64bc39d149790a0ae580bb94413040aca2a83d4192f0",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/shared-solution-snapshots.json",
+      "archive": "physics/shared-solution-snapshots.json.gz",
+      "source_size": 8746915,
+      "source_sha256": "ddabf682bff41c065e22dc5f3dd95b80c826c7208fdb82508c23c8230161821b",
+      "archive_sha256": "064cee89a1e0535d7be3d6232d67dd83c254ab23fc02276d93bdae2b28e7c135",
+      "gzip_payload_sha256": "ddabf682bff41c065e22dc5f3dd95b80c826c7208fdb82508c23c8230161821b",
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/shared-solution-snapshots.log",
+      "archive": "physics/shared-solution-snapshots.txt",
+      "source_size": 133,
+      "source_sha256": "8cfc1e8171afe58e650171b14507563af2ca09db08e8458505af1212a8bd0a9a",
+      "archive_sha256": "8cfc1e8171afe58e650171b14507563af2ca09db08e8458505af1212a8bd0a9a",
+      "gzip_payload_sha256": null,
+      "original_name": "shared-solution-snapshots.log"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/shared-solution-snapshots.py",
+      "archive": "physics/shared-solution-snapshots.py",
+      "source_size": 1854,
+      "source_sha256": "c61e33ae5621814ec045050d1a0d76959837b21b7932dcc6ae1a61fbf6f3d87b",
+      "archive_sha256": "c61e33ae5621814ec045050d1a0d76959837b21b7932dcc6ae1a61fbf6f3d87b",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/tire-constitutive-audit.json",
+      "archive": "physics/tire-constitutive-audit.json",
+      "source_size": 301,
+      "source_sha256": "bf1fecfa9be164a390e94c76dfe634aa14667d01ca1530683d05d524536655d5",
+      "archive_sha256": "bf1fecfa9be164a390e94c76dfe634aa14667d01ca1530683d05d524536655d5",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/tire-constitutive-audit.log",
+      "archive": "physics/tire-constitutive-audit.txt",
+      "source_size": 763,
+      "source_sha256": "81189f36467bff406edd658fa9f15bb44047c18cdfae070e3af60bc92de7f105",
+      "archive_sha256": "81189f36467bff406edd658fa9f15bb44047c18cdfae070e3af60bc92de7f105",
+      "gzip_payload_sha256": null,
+      "original_name": "tire-constitutive-audit.log"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/tire-constitutive-body.c",
+      "archive": "physics/tire-constitutive-body.c",
+      "source_size": 6376,
+      "source_sha256": "90b924a6092d42229a95373cb754c3382af556eab29db4881fa1269adcb32b4b",
+      "archive_sha256": "90b924a6092d42229a95373cb754c3382af556eab29db4881fa1269adcb32b4b",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/tire-constitutive-build.log",
+      "archive": "physics/tire-constitutive-build.txt",
+      "source_size": 5534,
+      "source_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "archive_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "gzip_payload_sha256": null,
+      "original_name": "tire-constitutive-build.log"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/tire-constitutive-snapshots.json",
+      "archive": "physics/tire-constitutive-snapshots.json.gz",
+      "source_size": 8746914,
+      "source_sha256": "9d09abc9bcf36180952cbca1e49181410ba550dd3ff01ec5a3a72dfa334fb66e",
+      "archive_sha256": "d0b70faeb7fbd003f0590a40aa3d5ad9d9a4420810b98ec4a5b7762024f30959",
+      "gzip_payload_sha256": "9d09abc9bcf36180952cbca1e49181410ba550dd3ff01ec5a3a72dfa334fb66e",
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/tire-constitutive-snapshots.log",
+      "archive": "physics/tire-constitutive-snapshots.txt",
+      "source_size": 132,
+      "source_sha256": "1be8f2969b39f0c65bd114bc2bdab0a241c71c32cf74f94e32e4f3ac54bba250",
+      "archive_sha256": "1be8f2969b39f0c65bd114bc2bdab0a241c71c32cf74f94e32e4f3ac54bba250",
+      "gzip_payload_sha256": null,
+      "original_name": "tire-constitutive-snapshots.log"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/tire-constitutive-snapshots.py",
+      "archive": "physics/tire-constitutive-snapshots.py",
+      "source_size": 1776,
+      "source_sha256": "ea78399e61e2aaad9265057ef6fe160295b88dccbdc63e52424abd95a962ee19",
+      "archive_sha256": "ea78399e61e2aaad9265057ef6fe160295b88dccbdc63e52424abd95a962ee19",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-tire-constitutive-r1/gr86-profile.prof",
+      "archive": "physics/profile-tire-constitutive-r1/gr86-profile.prof",
+      "source_size": 71632,
+      "source_sha256": "a421a447c66dd310ab40f2d29e753051251df5a03f181443beea596971a38d5a",
+      "archive_sha256": "a421a447c66dd310ab40f2d29e753051251df5a03f181443beea596971a38d5a",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-tire-constitutive-r1/profile.json",
+      "archive": "physics/profile-tire-constitutive-r1/profile.json",
+      "source_size": 31768,
+      "source_sha256": "1d894134e7868da20cbae85ccca149b7d2b076dfc1e7bbe75dffc7c5a84acd8b",
+      "archive_sha256": "1d894134e7868da20cbae85ccca149b7d2b076dfc1e7bbe75dffc7c5a84acd8b",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-tire-constitutive-T0/pytest.log",
+      "archive": "validation/T0/pytest.txt",
+      "source_size": 507,
+      "source_sha256": "e590ae65f58ab7fdf3df9cf209c39e06b538396ec0f2bcdd64e82ebfcb339343",
+      "archive_sha256": "e590ae65f58ab7fdf3df9cf209c39e06b538396ec0f2bcdd64e82ebfcb339343",
+      "gzip_payload_sha256": null,
+      "original_name": "pytest.log"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-tire-constitutive-T0/ruff.log",
+      "archive": "validation/T0/ruff.txt",
+      "source_size": 19,
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "gzip_payload_sha256": null,
+      "original_name": "ruff.log"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-tire-constitutive-T0/summary.json",
+      "archive": "validation/T0/summary.json",
+      "source_size": 1887,
+      "source_sha256": "6a79ef52328725916c2f17ed52231938919c129b15be5329cbd35365eb57ba41",
+      "archive_sha256": "6a79ef52328725916c2f17ed52231938919c129b15be5329cbd35365eb57ba41",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-tire-constitutive-T1/pytest.log",
+      "archive": "validation/T1-initial/pytest.txt",
+      "source_size": 4182,
+      "source_sha256": "ed02e83dd6ca45fd376889c65c792fd27a82c9360032518ddafb8dd621e914ff",
+      "archive_sha256": "ed02e83dd6ca45fd376889c65c792fd27a82c9360032518ddafb8dd621e914ff",
+      "gzip_payload_sha256": null,
+      "original_name": "pytest.log"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-tire-constitutive-T1/ruff.log",
+      "archive": "validation/T1-initial/ruff.txt",
+      "source_size": 19,
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "gzip_payload_sha256": null,
+      "original_name": "ruff.log"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-tire-constitutive-T1/summary.json",
+      "archive": "validation/T1-initial/summary.json",
+      "source_size": 5926,
+      "source_sha256": "08d19a7e340f7920579743986340d1af00528dd089c5b070ff3755d5359cf79a",
+      "archive_sha256": "08d19a7e340f7920579743986340d1af00528dd089c5b070ff3755d5359cf79a",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-tire-phase-T0/pytest.log",
+      "archive": "validation/phase-T0/pytest.txt",
+      "source_size": 102,
+      "source_sha256": "03fcd585c377fb660e7c51da335ab984776e0449c1188696036f5a973b5a67e7",
+      "archive_sha256": "03fcd585c377fb660e7c51da335ab984776e0449c1188696036f5a973b5a67e7",
+      "gzip_payload_sha256": null,
+      "original_name": "pytest.log"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-tire-phase-T0/ruff.log",
+      "archive": "validation/phase-T0/ruff.txt",
+      "source_size": 19,
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "gzip_payload_sha256": null,
+      "original_name": "ruff.log"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-tire-phase-T0/summary.json",
+      "archive": "validation/phase-T0/summary.json",
+      "source_size": 1852,
+      "source_sha256": "b03dda02591094e15c64533817dc5271f1edde6d59281d176fa16e722bcf5c0a",
+      "archive_sha256": "b03dda02591094e15c64533817dc5271f1edde6d59281d176fa16e722bcf5c0a",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-tire-constitutive-T1-completion/headless-0.log",
+      "archive": "validation/T1-completion/headless-0.txt",
+      "source_size": 32432,
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "gzip_payload_sha256": null,
+      "original_name": "headless-0.log"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-tire-constitutive-T1-completion/headless-17.log",
+      "archive": "validation/T1-completion/headless-17.txt",
+      "source_size": 32432,
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "gzip_payload_sha256": null,
+      "original_name": "headless-17.log"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-tire-constitutive-T1-completion/headless-23.log",
+      "archive": "validation/T1-completion/headless-23.txt",
+      "source_size": 32432,
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "gzip_payload_sha256": null,
+      "original_name": "headless-23.log"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-tire-constitutive-T1-completion/summary.json",
+      "archive": "validation/T1-completion/summary.json.gz",
+      "source_size": 151379,
+      "source_sha256": "5442a42617fa20566f99e69227e1e75919818828bfa4be1657ec7b6276dc2c50",
+      "archive_sha256": "2d8ebf97b89508d0902ff6a4fdd35a678d6597a248938996805d11aa63516e63",
+      "gzip_payload_sha256": "5442a42617fa20566f99e69227e1e75919818828bfa4be1657ec7b6276dc2c50",
+      "original_name": null
+    }
+  ]
+}

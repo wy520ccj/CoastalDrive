@@ -1,0 +1,64 @@
+........................................................................ [  9%]
+........................................................................ [ 19%]
+........................................................................ [ 28%]
+........................................................................ [ 38%]
+........................................................................ [ 47%]
+........................................................................ [ 57%]
+........................................................................ [ 67%]
+........................................................................ [ 76%]
+........................................................................ [ 86%]
+........................................................................ [ 95%]
+............................FF..                                         [100%]
+================================== FAILURES ===================================
+_______ test_real_short_trial_energy_and_control_account[acceleration] ________
+
+case = 'acceleration'
+
+    @pytest.mark.parametrize("case", ("acceleration", "constant-turn"))
+    def test_real_short_trial_energy_and_control_account(case):
+        trials = [run_trial(case, candidate, .1) for candidate in (False, True)]
+        assert all(summary["ticks"] == 12 for summary, _rows in trials)
+        for old, new in zip(trials[0][1], trials[1][1]):
+            assert {key: value for key, value in old.items() if key.startswith("command.")} == {
+                key: value for key, value in new.items() if key.startswith("command.")}
+        for summary, rows in trials:
+            for index, wheel in enumerate(summary["energy"]["wheels"]):
+                prefix = f"state.wheel_dynamics.{index}."
+                for field in DISSIPATION_FIELDS:
+                    assert wheel[f"{field}_sum_j"] == pytest.approx(sum(row[prefix+field] for row in rows[1:]))
+                assert wheel["peak_elastic_energy_j"] == max(row[prefix+"elastic_energy"] for row in rows)
+                for row in rows[1:]:
+                    assert prefix+"force_patch_kappa" in row
+                    assert prefix+"force_patch_alpha" in row
+>                   assert row[prefix+"force_contact_tick"] < row[prefix+"sample_tick"]
+E                   assert 241 < 241
+
+tests\test_tire_compliance_probe.py:55: AssertionError
+_______ test_real_short_trial_energy_and_control_account[constant-turn] _______
+
+case = 'constant-turn'
+
+    @pytest.mark.parametrize("case", ("acceleration", "constant-turn"))
+    def test_real_short_trial_energy_and_control_account(case):
+        trials = [run_trial(case, candidate, .1) for candidate in (False, True)]
+        assert all(summary["ticks"] == 12 for summary, _rows in trials)
+        for old, new in zip(trials[0][1], trials[1][1]):
+            assert {key: value for key, value in old.items() if key.startswith("command.")} == {
+                key: value for key, value in new.items() if key.startswith("command.")}
+        for summary, rows in trials:
+            for index, wheel in enumerate(summary["energy"]["wheels"]):
+                prefix = f"state.wheel_dynamics.{index}."
+                for field in DISSIPATION_FIELDS:
+                    assert wheel[f"{field}_sum_j"] == pytest.approx(sum(row[prefix+field] for row in rows[1:]))
+                assert wheel["peak_elastic_energy_j"] == max(row[prefix+"elastic_energy"] for row in rows)
+                for row in rows[1:]:
+                    assert prefix+"force_patch_kappa" in row
+                    assert prefix+"force_patch_alpha" in row
+>                   assert row[prefix+"force_contact_tick"] < row[prefix+"sample_tick"]
+E                   assert 241 < 241
+
+tests\test_tire_compliance_probe.py:55: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tire_compliance_probe.py::test_real_short_trial_energy_and_control_account[acceleration]
+FAILED tests/test_tire_compliance_probe.py::test_real_short_trial_energy_and_control_account[constant-turn]
+2 failed, 750 passed in 170.16s (0:02:50)

@@ -90,3 +90,6 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 
 
 隔离 shared-solution 数值块（2026-10-08，未并入main）：[证据与收据](../evidence/PHYS-PERF-01/shared-solution-r1/receipt.json)。严格保留30轮、原角更新/端口容差、8次线搜索、fsum及暖分区更新，旧8维Python求解保留。T0 373 passed/Ruff；T1 645 passed/81.36s、Ruff及三种子10.293/10.465/10.266s通过。独立旧127 C基线审计r4为10,661次映射/Jacobian/LU调用全字段/暖态一致；r1 Keycross、r2旧LU零调用、independent-r1 wrapper scope错误及后续修正日志均保留，属观测范围问题。两模式48拍Snapshot逐字段同主127/map160基线，短时0.8265/5.5733秒仅诊断。测试观测接到真实shared_solution系数包，16样本/2e-6门槛未变；tire_drivetrain同步的map160三行来自主线已验证修复。当前T2等主线继续，尚无profile/实时性能Gate。
+
+
+Tire constitutive 本构块（2026-10-08，隔离未并入main）：[证据与收据](../evidence/PHYS-PERF-01/tire-constitutive-r1/receipt.json)。CPython math.hypot、能量/Frame传递及原阈值保持；combined/force/Jacobian/rolling/sticking/sliding六类审计逐值相同。初始T1为750 pass/2 timestamp probe fail，原Python同样复现241==241，与本构提取无关；phase T0 56通过后，组合T1去重782项通过并补齐三种子。两组48拍Snapshot同shared基线，短时仅诊断。close脚本空plan初始ValueError未运行checks，未伪造CLI日志。[详细归档](../evidence/PHYS-PERF-01/tire-constitutive-r1/report.md)。
