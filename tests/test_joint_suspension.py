@@ -71,17 +71,17 @@ def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite
 
 @pytest.mark.parametrize("mode", list(DrivingMode))
 def test_actual_bullet_submission_matches_joint_six_dimensional_end(mode, monkeypatch):
-    import vehicle_tires
+    import tire_drivetrain
 
     observed = []
-    original = vehicle_tires.advance_drivetrain
+    original = tire_drivetrain.advance_drivetrain
 
     def capture(*args, **kwargs):
         result = original(*args, **kwargs)
         observed.append((result.suspension_system, result))
         return result
 
-    monkeypatch.setattr(vehicle_tires, "advance_drivetrain", capture)
+    monkeypatch.setattr(tire_drivetrain, "advance_drivetrain", capture)
     _world, car = _create_vehicle(mode.vehicle_config)
     try:
         # 仅试验初始条件：带真实倾角、车速、轮速及角速度，不在运行中改写状态。

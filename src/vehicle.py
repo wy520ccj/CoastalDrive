@@ -9,6 +9,7 @@ from panda3d.core import BitMask32, TransformState, Vec3
 from driver_assist import GAME_INPUT, DriverAssist
 from powertrain import Powertrain
 from suspension import native_coefficients
+from tire_drivetrain import solve_drivetrain_stages
 from vehicle_brakes import Brakes
 from vehicle_collision import install_chassis_shape
 from vehicle_config import CAR, wheel_hubs
@@ -235,6 +236,10 @@ class Vehicle:
         return drive_torque, engine_drag, pressures
 
     def advance_physics(self, request, dt, *, tire_substeps=None, angles=None, accumulate=False, static_shapes=None):
+        return solve_drivetrain_stages(self.physics_stages(request, dt, tire_substeps=tire_substeps,
+            angles=angles, accumulate=accumulate, static_shapes=static_shapes))
+
+    def physics_stages(self, request, dt, *, tire_substeps=None, angles=None, accumulate=False, static_shapes=None):
         """从当前真实Bullet姿态读取接点，完成一个机械/世界共用的积分子步。"""
         drive_torque, engine_drag, pressures = request
         pose = self._chassis.getTransform()
@@ -286,7 +291,7 @@ class Vehicle:
                 self._wheel_contacts = self.suspension.advance(
                     self._world, self._chassis, self._vehicle.getWheels(), self.on_asphalt,
                     tire_contact_tick, dt, tuple(external_velocity), tuple(external_angular))
-        coupled_contacts = self.tires.advance(
+        coupled_contacts = yield from self.tires.advance_stages(
             self._chassis, self._wheel_contacts, angles,
             drive_torque, engine_drag, pressures, tire_contact_tick, dt,
             tuple(external_velocity), tuple(external_angular),

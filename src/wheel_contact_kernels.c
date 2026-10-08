@@ -375,22 +375,38 @@ typedef struct {
     int valid;
 } FaceSupport;
 
+typedef struct {
+    int found,face;
+    double fraction,normal[3],point[3],anchor[3],margin;
+} SurfaceEntry;
+
+static PyObject *surface_entry_object(const SurfaceEntry *entry) {
+    if (!entry->found) return Py_NewRef(Py_None);
+    PyObject *face=entry->face ? Py_BuildValue("((ddd)d)",entry->anchor[0],entry->anchor[1],entry->anchor[2],entry->margin)
+                             : Py_NewRef(Py_None);
+    if (!face) return NULL;
+    return Py_BuildValue("(d(ddd)(ddd)N)",entry->fraction,entry->normal[0],entry->normal[1],entry->normal[2],
+                         entry->point[0],entry->point[1],entry->point[2],face);
+}
+
 /* 既有单面入口与整条查询共用原有限面判据。 */
-static PyObject *triangle_face_values(double start[3],double end[3],double vertices[3][3],
+static int triangle_face_result(double start[3],double end[3],double vertices[3][3],
     double margin,double axis[3],double radius,double width,double shoulder,double crown,
-    int face_only,double ceiling,double *fraction_bound,double *prepared_normal,FaceSupport *support_cache) {
+    int face_only,double ceiling,double *fraction_bound,double *prepared_normal,FaceSupport *support_cache,
+    SurfaceEntry *entry,int *finished) {
+    entry->found=0; *finished=face_only;
     if (fraction_bound) *fraction_bound=-INFINITY;
     double ab[3], ac[3], normal[3], velocity[3], relative[3], offset[3];
     if (prepared_normal) {
         for (int i=0;i<3;++i) normal[i]=prepared_normal[i];
         if (normal[0]==0. && normal[1]==0. && normal[2]==0.) {
-            PyErr_SetString(PyExc_ZeroDivisionError,"三角面不能退化"); return NULL;
+            PyErr_SetString(PyExc_ZeroDivisionError,"三角面不能退化"); return 0;
         }
     } else {
         subtract(vertices[1],vertices[0],ab); subtract(vertices[2],vertices[0],ac);
         cross(ab,ac,normal);
         double length = sqrt(dot(normal,normal));
-        if (length == 0.) { PyErr_SetString(PyExc_ZeroDivisionError,"三角面不能退化"); return NULL; }
+        if (length == 0.) { PyErr_SetString(PyExc_ZeroDivisionError,"三角面不能退化"); return 0; }
         for (int i = 0; i < 3; ++i) normal[i] /= length;
     }
     subtract(end,start,velocity);
@@ -398,7 +414,7 @@ static PyObject *triangle_face_values(double start[3],double end[3],double verti
     if (support_cache && support_cache->valid && memcmp(normal,support_cache->normal,sizeof(normal))==0) {
         for (int i=0;i<3;++i) offset[i]=support_cache->offset[i];
     } else {
-        if (!support_values(normal,axis,radius,width/2,shoulder,crown,offset)) return NULL;
+        if (!support_values(normal,axis,radius,width/2,shoulder,crown,offset)) return 0;
         if (support_cache) {
             for (int i=0;i<3;++i) { support_cache->normal[i]=normal[i]; support_cache->offset[i]=offset[i]; }
             support_cache->valid=1;
@@ -409,7 +425,7 @@ static PyObject *triangle_face_values(double start[3],double end[3],double verti
     if (speed < 0. && distance >= 0.) {
         double fraction = -distance / speed;
         if (fraction_bound) *fraction_bound=fraction;
-        if (!face_only && fraction >= ceiling) return Py_BuildValue("(OO)",Py_True,Py_None);
+        if (!face_only && fraction >= ceiling) { *finished=1; return 1; }
         if (fraction >= 0. && fraction <= 1.) {
             double point[3], core[3];
             for (int i = 0; i < 3; ++i) {
@@ -427,14 +443,24 @@ static PyObject *triangle_face_values(double start[3],double end[3],double verti
                 if (orientation > 1e-12) reverse = 0;
             }
             if (forward || reverse) {
-                PyObject *hit = Py_BuildValue("(d(ddd)(ddd)((ddd)d))",fraction,normal[0],normal[1],normal[2],
-                    point[0],point[1],point[2],vertices[0][0],vertices[0][1],vertices[0][2],margin);
-                if (!hit) return NULL;
-                return Py_BuildValue("(ON)",Py_True,hit);
+                entry->found=entry->face=*finished=1; entry->fraction=fraction; entry->margin=margin;
+                for (int i=0;i<3;++i) { entry->normal[i]=normal[i]; entry->point[i]=point[i]; entry->anchor[i]=vertices[0][i]; }
+                return 1;
             }
         }
     }
-    return Py_BuildValue("(OO)",face_only ? Py_True : Py_False,Py_None);
+    return 1;
+}
+
+static PyObject *triangle_face_values(double start[3],double end[3],double vertices[3][3],
+    double margin,double axis[3],double radius,double width,double shoulder,double crown,
+    int face_only,double ceiling,double *fraction_bound,double *prepared_normal,FaceSupport *support_cache) {
+    SurfaceEntry entry={0}; int finished;
+    if (!triangle_face_result(start,end,vertices,margin,axis,radius,width,shoulder,crown,
+        face_only,ceiling,fraction_bound,prepared_normal,support_cache,&entry,&finished)) return NULL;
+    PyObject *hit=surface_entry_object(&entry);
+    if (!hit) return NULL;
+    return Py_BuildValue("(ON)",finished ? Py_True : Py_False,hit);
 }
 
 static PyObject *triangle_face(PyObject *self, PyObject *args, PyObject *kwargs) {
@@ -597,24 +623,14 @@ static PyObject *edge_distance_call(PyObject *self, PyObject *args, PyObject *kw
 #include "wheel_convex_distance.h"
 
 /* 六个原裁剪平面和64次保守推进留在同一数值调用中。 */
-static PyObject *triangle_edge_entry(PyObject *self,PyObject *args) {
-    PyObject *start_object,*end_object,*triangle,*axis_object,*coordinates,*padding_object;
-    double start[3],end[3],padding[3],margin,radius,width,shoulder,crown,ceiling;
-    if (!PyArg_ParseTuple(args,"OOOdOddddOdO",&start_object,&end_object,&triangle,&margin,
-        &axis_object,&radius,&width,&shoulder,&crown,&coordinates,&ceiling,&padding_object)) return NULL;
+static int triangle_edge_values(double start[3],double end[3],double vertices[3][3],double margin,
+    double axis[3],double radius,double width,double shoulder,double crown,PyObject *coordinates,
+    double ceiling,double padding[3],SurfaceEntry *entry) {
+    entry->found=0;
     WheelConvex shape={0};
-    if (!vector(start_object,start) || !vector(end_object,end) || !vector(axis_object,shape.axis)
-        || !vector(padding_object,padding)) return NULL;
-    PyObject *vertices=PySequence_Fast(triangle,"三角面须为三个顶点");
-    if (!vertices) return NULL;
-    if (PySequence_Fast_GET_SIZE(vertices)!=3) {
-        Py_DECREF(vertices); PyErr_SetString(PyExc_ValueError,"三角面须为三个顶点"); return NULL;
-    }
+    for (int i=0;i<3;++i) shape.axis[i]=axis[i];
     double buffers[2][192][3]; int count=3,current=0;
-    for (int i=0;i<3;++i) if (!vector(PySequence_Fast_GET_ITEM(vertices,i),buffers[0][i])) {
-        Py_DECREF(vertices); return NULL;
-    }
-    Py_DECREF(vertices);
+    for (int i=0;i<3;++i) for (int j=0;j<3;++j) buffers[0][i][j]=vertices[i][j];
     for (int axis=0;axis<3;++axis) for (int side=0;side<2;++side) {
         double sign=side==0 ? 1. : -1.;
         double bound=side==0 ? (end[axis]<start[axis] ? end[axis] : start[axis])-padding[axis]
@@ -634,7 +650,7 @@ static PyObject *triangle_edge_entry(PyObject *self,PyObject *args) {
             }
         }
         count=written; current=next;
-        if (!count) Py_RETURN_NONE;
+        if (!count) return 1;
     }
     shape.polygon=buffers[current]; shape.count=count; shape.coordinates=coordinates;
     shape.radius=radius-shoulder; shape.half=width/2-shoulder; shape.crown=crown;
@@ -642,20 +658,40 @@ static PyObject *triangle_edge_entry(PyObject *self,PyObject *args) {
     for (int iteration=0;iteration<64;++iteration) {
         for (int i=0;i<3;++i) shape.center[i]=start[i]+fraction*velocity[i];
         double distance,normal[3],witness[3];
-        if (!wheel_convex_values(&shape,&distance,normal,witness)) return NULL;
+        if (!wheel_convex_values(&shape,&distance,normal,witness)) return 0;
         double gap=distance-margin-shoulder;
-        if (fraction==0. && gap<-1e-9) Py_RETURN_NONE;
+        if (fraction==0. && gap<-1e-9) return 1;
         if (gap<=1e-9) {
             for (int i=0;i<3;++i) witness[i]+=margin*normal[i];
-            return Py_BuildValue("(d(ddd)(ddd)O)",fraction,normal[0],normal[1],normal[2],
-                witness[0],witness[1],witness[2],Py_None);
+            entry->found=1; entry->face=0; entry->fraction=fraction;
+            for (int i=0;i<3;++i) { entry->normal[i]=normal[i]; entry->point[i]=witness[i]; }
+            return 1;
         }
         double closing=-dot(normal,velocity);
-        if (closing<=0.) Py_RETURN_NONE;
+        if (closing<=0.) return 1;
         fraction+=gap/closing;
-        if (fraction>ceiling) Py_RETURN_NONE;
+        if (fraction>ceiling) return 1;
     }
-    PyErr_SetString(PyExc_ArithmeticError,"圆柱/三角形悬架扫掠未收敛"); return NULL;
+    PyErr_SetString(PyExc_ArithmeticError,"圆柱/三角形悬架扫掠未收敛"); return 0;
+}
+
+static PyObject *triangle_edge_entry(PyObject *self,PyObject *args) {
+    PyObject *start_object,*end_object,*triangle,*axis_object,*coordinates,*padding_object;
+    double start[3],end[3],axis[3],padding[3],vertices[3][3],margin,radius,width,shoulder,crown,ceiling;
+    if (!PyArg_ParseTuple(args,"OOOdOddddOdO",&start_object,&end_object,&triangle,&margin,
+        &axis_object,&radius,&width,&shoulder,&crown,&coordinates,&ceiling,&padding_object)) return NULL;
+    if (!vector(start_object,start) || !vector(end_object,end) || !vector(axis_object,axis)
+        || !vector(padding_object,padding)) return NULL;
+    PyObject *items=PySequence_Fast(triangle,"三角面须为三个顶点");
+    if (!items) return NULL;
+    if (PySequence_Fast_GET_SIZE(items)!=3) {
+        Py_DECREF(items); PyErr_SetString(PyExc_ValueError,"三角面须为三个顶点"); return NULL;
+    }
+    for (int i=0;i<3;++i) if (!vector(PySequence_Fast_GET_ITEM(items,i),vertices[i])) { Py_DECREF(items); return NULL; }
+    Py_DECREF(items);
+    SurfaceEntry entry={0};
+    if (!triangle_edge_values(start,end,vertices,margin,axis,radius,width,shoulder,crown,coordinates,ceiling,padding,&entry)) return NULL;
+    return surface_entry_object(&entry);
 }
 
 static void transform_values(const double value[3],const double axes[3][3],const double offset[3],
@@ -862,11 +898,50 @@ static int triangle_query_best(PyObject *hit,PyObject **best,double *ceiling) {
     }
     return 1;
 }
+
+/* 完整网格求交只保留原生候选和末接点；中间面/边不再装配Python对象。 */
+static int triangle_query_values(TrianglePacket *packet,double start[3],double end[3],double padding[3],
+    double margin,double axis[3],double radius,double width,double shoulder,double crown,PyObject *coordinates,
+    SurfaceEntry *result) {
+    PreparedTriangle *small_candidates[32]; double small_bounds[32];
+    PreparedTriangle **candidates=packet->total<=32 ? small_candidates : PyMem_Malloc(packet->total*sizeof(*candidates));
+    double *bounds=packet->total<=32 ? small_bounds : PyMem_Malloc(packet->total*sizeof(*bounds));
+    if (!candidates || !bounds) {
+        if (packet->total>32) { PyMem_Free(candidates); PyMem_Free(bounds); }
+        PyErr_NoMemory(); return 0;
+    }
+    Py_ssize_t count=0;
+    triangle_packet_collect(packet,start,end,padding,candidates,&count);
+    SurfaceEntry best={0}; FaceSupport support_cache={0}; double ceiling=1.;
+    for (Py_ssize_t k=0;k<count;++k) {
+        PreparedTriangle *prepared=candidates[k]; SurfaceEntry hit={0}; int finished;
+        if (!triangle_face_result(start,end,prepared->vertices,margin,axis,radius,width,shoulder,crown,
+            1,1.,&bounds[k],prepared->normal,&support_cache,&hit,&finished)) goto failed;
+        if (hit.found) {
+            bounds[k]=NAN;
+            if (!best.found || hit.fraction<ceiling) { best=hit; ceiling=hit.fraction; }
+        }
+    }
+    for (Py_ssize_t k=0;k<count;++k) {
+        if (isnan(bounds[k]) || bounds[k]>=ceiling) continue;
+        SurfaceEntry hit={0};
+        if (!triangle_edge_values(start,end,candidates[k]->vertices,margin,axis,radius,width,shoulder,crown,
+            coordinates,ceiling,padding,&hit)) goto failed;
+        if (hit.found && (!best.found || hit.fraction<ceiling)) { best=hit; ceiling=hit.fraction; }
+    }
+    if (packet->total>32) { PyMem_Free(candidates); PyMem_Free(bounds); }
+    *result=best; return 1;
+failed:
+    if (packet->total>32) { PyMem_Free(candidates); PyMem_Free(bounds); }
+    return 0;
+}
+
 static PyObject *triangle_support_entry(PyObject *self,PyObject *args,PyObject *kwargs) {
     PyObject *node,*start_object,*end_object,*margin_object,*axis_object,*radius_object,*width_object,*shoulder_object,*crown_object,*edge_entry;
-    static char *names[]={"node","start","end","margin","axis","radius","width","shoulder","crown","edge_entry",NULL};
-    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOOOOOOOO",names,&node,&start_object,&end_object,&margin_object,
-        &axis_object,&radius_object,&width_object,&shoulder_object,&crown_object,&edge_entry)) return NULL;
+    PyObject *coordinates=Py_None;
+    static char *names[]={"node","start","end","margin","axis","radius","width","shoulder","crown","edge_entry","coordinates",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOOOOOOOO|O",names,&node,&start_object,&end_object,&margin_object,
+        &axis_object,&radius_object,&width_object,&shoulder_object,&crown_object,&edge_entry,&coordinates)) return NULL;
     double start[3],end[3],axis[3],padding[3],margin=PyFloat_AsDouble(margin_object),radius=PyFloat_AsDouble(radius_object);
     double width=PyFloat_AsDouble(width_object),shoulder=PyFloat_AsDouble(shoulder_object),crown=PyFloat_AsDouble(crown_object);
     if (PyErr_Occurred() || !vector(start_object,start) || !vector(end_object,end) || !vector(axis_object,axis)) return NULL;
@@ -877,6 +952,11 @@ static PyObject *triangle_support_entry(PyObject *self,PyObject *args,PyObject *
     }
     TrianglePacket *packet=PyCapsule_GetPointer(node,triangle_packet_name);
     if (!packet) return NULL;
+    if (coordinates!=Py_None) {
+        SurfaceEntry result={0};
+        if (!triangle_query_values(packet,start,end,padding,margin,axis,radius,width,shoulder,crown,coordinates,&result)) return NULL;
+        return surface_entry_object(&result);
+    }
     PreparedTriangle **candidates=PyMem_Malloc(packet->total*sizeof(PreparedTriangle *));
     if (packet->total && !candidates) return PyErr_NoMemory();
     Py_ssize_t count=0;
@@ -1004,7 +1084,7 @@ static PyObject *clipped_triangle_call(PyObject *self,PyObject *args,PyObject *k
 static PyObject *cylinder_surface_values(PyObject *start_object, PyObject *end_object, PyObject *axis_object,
     double axes[3][3], double offset[3], PyObject *half, PyObject *plane, PyObject *triangles,
     double margin, double radius, double width, double shoulder, double crown,
-    PyObject *edge_entry, PyObject *box_entry) {
+    PyObject *edge_entry, PyObject *box_entry, PyObject *coordinates) {
     double axis[3], local_axis[3], zero[3] = {0.};
     if (!vector(axis_object, axis)) return NULL;
     transform_values(axis, axes, zero, 0, local_axis);
@@ -1014,8 +1094,8 @@ static PyObject *cylinder_surface_values(PyObject *start_object, PyObject *end_o
     if (triangles != Py_None) {
         PyObject *packet = PyObject_GetAttrString(triangles, "_native");
         if (!packet) { Py_DECREF(local_axis_object); return NULL; }
-        PyObject *arguments = Py_BuildValue("(OOOdOddddO)", packet, start_object, end_object, margin,
-            local_axis_object, radius, width, shoulder, crown, edge_entry);
+        PyObject *arguments = Py_BuildValue("(OOOdOddddOO)", packet, start_object, end_object, margin,
+            local_axis_object, radius, width, shoulder, crown, edge_entry, coordinates);
         Py_DECREF(packet);
         if (arguments) { found = triangle_support_entry(NULL, arguments, NULL); Py_DECREF(arguments); }
     } else if (plane == Py_None) {
@@ -1069,7 +1149,7 @@ static PyObject *cylinder_surface_entry(PyObject *self, PyObject *args) {
     for (int a = 0; a < 3; ++a) if (!vector(PyTuple_GET_ITEM(frame, a), axes[a])) return NULL;
     if (!vector(offset_object, offset)) return NULL;
     return cylinder_surface_values(start, end, axis, axes, offset, half, plane, triangles,
-        margin, radius, width, shoulder, crown, edge_entry, box_entry);
+        margin, radius, width, shoulder, crown, edge_entry, box_entry, Py_None);
 }
 
 /* 保留支持面和接点对象，只合并同一射线的数值变换与有序结果装配。 */
@@ -1077,8 +1157,9 @@ static PyObject *surface_ray_hits(PyObject *self,PyObject *args) {
     PyObject *surfaces,*start_object,*end_object,*axis_object,*origin_object,*surface_class,*contact_class,*edge_entry,*box_entry;
     double radius,reach,width,shoulder,crown;
     int relative,entry_only=0;
-    if (!PyArg_ParseTuple(args,"OOOOOdddddOOOOp|p",&surfaces,&start_object,&end_object,&axis_object,&origin_object,
-                         &radius,&reach,&width,&shoulder,&crown,&surface_class,&contact_class,&edge_entry,&box_entry,&relative,&entry_only)) return NULL;
+    PyObject *coordinates=Py_None;
+    if (!PyArg_ParseTuple(args,"OOOOOdddddOOOOp|pO",&surfaces,&start_object,&end_object,&axis_object,&origin_object,
+                         &radius,&reach,&width,&shoulder,&crown,&surface_class,&contact_class,&edge_entry,&box_entry,&relative,&entry_only,&coordinates)) return NULL;
     double start[3],end[3],origin[3];
     if (!vector(start_object,start) || !vector(end_object,end) || !vector(origin_object,origin)) return NULL;
     PyObject *hits=entry_only ? Py_NewRef(Py_None) : PyList_New(0);
@@ -1104,7 +1185,7 @@ static PyObject *surface_ray_hits(PyObject *self,PyObject *args) {
         local_b=Py_BuildValue("(ddd)",local_end[0],local_end[1],local_end[2]);
         if (!local_a || !local_b) goto failure;
         found=cylinder_surface_values(local_a,local_b,axis_object,axes,offset,half,plane,triangles,
-            PyFloat_AsDouble(margin),radius,width,shoulder,crown,edge_entry,box_entry);
+            PyFloat_AsDouble(margin),radius,width,shoulder,crown,edge_entry,box_entry,coordinates);
         if (!found) goto failure;
         if (found!=Py_None) {
             if (!entry_only) {
@@ -1148,12 +1229,186 @@ failure:
     return hits;
 }
 
+typedef struct {
+    int kind;
+    double axes[3][3],translation[3],half[3],normal[3],constant,margin;
+    TrianglePacket *triangles;
+} SurfacePart;
+typedef struct { PyObject *surfaces; Py_ssize_t count; SurfacePart *parts; } SurfacePacket;
+static const char *surface_packet_name="coastaldrive.surface_queries";
+
+static void surface_packet_free(SurfacePacket *packet) {
+    Py_XDECREF(packet->surfaces); PyMem_Free(packet->parts); PyMem_Free(packet);
+}
+static void release_surface_packet(PyObject *capsule) {
+    SurfacePacket *packet=PyCapsule_GetPointer(capsule,surface_packet_name);
+    if (packet) surface_packet_free(packet);
+}
+static PyObject *surface_packet_create(PyObject *surfaces) {
+    SurfacePacket *packet=PyMem_Calloc(1,sizeof(*packet));
+    if (!packet) return PyErr_NoMemory();
+    packet->count=PyList_Size(surfaces);
+    if (packet->count<0) goto failed;
+    packet->parts=PyMem_Calloc(packet->count,sizeof(*packet->parts));
+    if (packet->count && !packet->parts) { PyErr_NoMemory(); goto failed; }
+    for (Py_ssize_t k=0;k<packet->count;++k) {
+        SurfacePart *part=&packet->parts[k]; PyObject *source=PyList_GET_ITEM(surfaces,k);
+        PyObject *frame=PyTuple_GET_ITEM(source,2),*plane=PyTuple_GET_ITEM(source,5),*triangles=PyTuple_GET_ITEM(source,6);
+        for (int a=0;a<3;++a) if (!vector(PyTuple_GET_ITEM(frame,a),part->axes[a])) goto failed;
+        if (!vector(PyTuple_GET_ITEM(source,7),part->translation)) goto failed;
+        part->margin=PyFloat_AsDouble(PyTuple_GET_ITEM(source,4));
+        if (PyErr_Occurred()) goto failed;
+        if (triangles!=Py_None) {
+            part->kind=2;
+            PyObject *capsule=PyObject_GetAttrString(triangles,"_native");
+            if (!capsule) goto failed;
+            part->triangles=PyCapsule_GetPointer(capsule,triangle_packet_name); Py_DECREF(capsule);
+            if (!part->triangles) goto failed;
+        } else if (plane!=Py_None) {
+            part->kind=0;
+            if (!vector(PyTuple_GET_ITEM(plane,0),part->normal)) goto failed;
+            part->constant=PyFloat_AsDouble(PyTuple_GET_ITEM(plane,1));
+            if (PyErr_Occurred()) goto failed;
+        } else {
+            part->kind=1;
+            if (!vector(PyTuple_GET_ITEM(source,3),part->half)) goto failed;
+        }
+    }
+    packet->surfaces=Py_NewRef(surfaces);
+    PyObject *capsule=PyCapsule_New(packet,surface_packet_name,release_surface_packet);
+    if (!capsule) goto failed;
+    return capsule;
+failed:
+    surface_packet_free(packet); return NULL;
+}
+
+static int cylinder_box_values(double start[3],double end[3],double half[3],double margin,double axis[3],
+    double radius,double half_width,double shoulder,double crown,PyObject *coordinates,SurfaceEntry *hit) {
+    hit->found=0;
+    double bounds[3],near,far,sign; int normal_axis;
+    for (int a=0;a<3;++a) {
+        double radial=1.-axis[a]*axis[a];
+        double extent=fabs(axis[a])*(half_width-shoulder)+(radius-shoulder)*sqrt(radial>0. ? radial : 0.)+shoulder+margin;
+        bounds[a]=half[a]+extent;
+    }
+    if (!box_interval_values(start,end,bounds,&near,&far,&normal_axis,&sign) || near>1. || far<0.) return 1;
+    double velocity[3]; subtract(end,start,velocity);
+    for (int a=0;a<3;++a) for (int side=0;side<2;++side) {
+        double normal[3]={0.},support[3]; sign=side==0 ? -1. : 1.; normal[a]=sign;
+        double speed=sign*velocity[a];
+        if (!support_values(normal,axis,radius,half_width,shoulder,crown,support)) return 0;
+        double distance=sign*start[a]-half[a]-margin-dot(normal,support);
+        if (speed>=0. || distance<0.) continue;
+        double fraction=-distance/speed;
+        if (!(0.<=fraction && fraction<=1.)) continue;
+        double point[3]; int inside=1;
+        for (int b=0;b<3;++b) {
+            point[b]=start[b]+fraction*velocity[b]-support[b];
+            if (b!=a && fabs(point[b])>half[b]) inside=0;
+        }
+        if (inside) {
+            hit->found=hit->face=1; hit->fraction=fraction; hit->margin=margin;
+            for (int b=0;b<3;++b) { hit->normal[b]=normal[b]; hit->point[b]=point[b]; hit->anchor[b]=b==a ? sign*half[a] : 0.; }
+            return 1;
+        }
+    }
+    WheelConvex shape={0}; shape.coordinates=coordinates; shape.radius=radius-shoulder; shape.half=half_width-shoulder; shape.crown=crown;
+    for (int a=0;a<3;++a) { shape.axis[a]=axis[a]; shape.box[a]=half[a]; }
+    double fraction=0.;
+    for (int iteration=0;iteration<64;++iteration) {
+        for (int a=0;a<3;++a) shape.center[a]=start[a]+fraction*velocity[a];
+        double distance,normal[3],witness[3];
+        if (!wheel_convex_values(&shape,&distance,normal,witness)) return 0;
+        double gap=distance-margin-shoulder;
+        if (fraction==0. && gap<-1e-9) return 1;
+        if (gap<=1e-9) {
+            hit->found=1; hit->face=0; hit->fraction=fraction;
+            for (int a=0;a<3;++a) { hit->normal[a]=normal[a]; hit->point[a]=witness[a]+margin*normal[a]; }
+            return 1;
+        }
+        double closing=-dot(normal,velocity);
+        if (closing<=0.) return 1;
+        fraction+=gap/closing;
+        if (fraction>1.) return 1;
+    }
+    PyErr_SetString(PyExc_ArithmeticError,"圆柱/Box悬架扫掠未收敛"); return 0;
+}
+
+static PyObject *cylinder_box_entry_call(PyObject *self,PyObject *args) {
+    PyObject *start_object,*end_object,*half_object,*axis_object,*coordinates;
+    double start[3],end[3],half[3],axis[3],margin,radius,half_width,shoulder,crown;
+    if (!PyArg_ParseTuple(args,"OOOdOddddO",&start_object,&end_object,&half_object,&margin,&axis_object,
+                         &radius,&half_width,&shoulder,&crown,&coordinates)) return NULL;
+    if (!vector(start_object,start) || !vector(end_object,end) || !vector(half_object,half) || !vector(axis_object,axis)) return NULL;
+    SurfaceEntry hit={0};
+    if (!cylinder_box_values(start,end,half,margin,axis,radius,half_width,shoulder,crown,coordinates,&hit)) return NULL;
+    return surface_entry_object(&hit);
+}
+
+/* 同一不可变候选表只解包一次；查询保留真实平移、轮轴和原候选次序。 */
+static PyObject *surface_packet_entry(SurfacePacket *packet,double start[3],double end[3],double axis[3],double origin[3],
+    double radius,double width,double shoulder,double crown,PyObject *coordinates) {
+    SurfaceEntry best={0}; double ceiling=INFINITY,zero[3]={0.};
+    for (Py_ssize_t k=0;k<packet->count;++k) {
+        SurfacePart *part=&packet->parts[k]; SurfaceEntry hit={0};
+        double offset[3],local_start[3],local_end[3],local_axis[3],terms[3];
+        for (int a=0;a<3;++a) {
+            for (int b=0;b<3;++b) terms[b]=part->axes[a][b]*origin[b];
+            offset[a]=part->translation[a]+sum_three(terms);
+        }
+        transform_values(start,part->axes,offset,0,local_start);
+        transform_values(end,part->axes,offset,0,local_end);
+        transform_values(axis,part->axes,zero,0,local_axis);
+        if (part->kind==2) {
+            double padding[3];
+            for (int a=0;a<3;++a) {
+                double direction[3]={0.},support[3]; direction[a]=1.;
+                if (!support_values(direction,local_axis,radius,width/2,shoulder,crown,support)) return NULL;
+                padding[a]=support[a]+part->margin;
+            }
+            if (!triangle_query_values(part->triangles,local_start,local_end,padding,part->margin,local_axis,
+                radius,width,shoulder,crown,coordinates,&hit)) return NULL;
+        } else if (part->kind==0) {
+            double extent[3];
+            if (!support_values(part->normal,local_axis,radius,width/2,shoulder,crown,extent)) return NULL;
+            for (int a=0;a<3;++a) terms[a]=part->normal[a]*(local_start[a]-extent[a]);
+            double distance=sum_three(terms)-part->constant;
+            for (int a=0;a<3;++a) terms[a]=part->normal[a]*(local_end[a]-local_start[a]);
+            double speed=sum_three(terms);
+            if (speed<0. && distance>=0. && distance+speed<=0.) {
+                hit.found=hit.face=1; hit.fraction=-distance/speed; hit.margin=0.;
+                for (int a=0;a<3;++a) terms[a]=part->normal[a]*part->normal[a];
+                double squared=sum_three(terms);
+                for (int a=0;a<3;++a) {
+                    hit.normal[a]=part->normal[a];
+                    hit.point[a]=local_start[a]+hit.fraction*(local_end[a]-local_start[a])-extent[a];
+                    hit.anchor[a]=part->constant*part->normal[a]/squared;
+                }
+            }
+        } else {
+            if (!cylinder_box_values(local_start,local_end,part->half,part->margin,local_axis,
+                radius,width/2,shoulder,crown,coordinates,&hit)) return NULL;
+        }
+        if (!hit.found || hit.fraction>=ceiling) continue;
+        SurfaceEntry world=hit; double translated[3];
+        transform_values(hit.normal,part->axes,zero,1,world.normal);
+        for (int a=0;a<3;++a) translated[a]=hit.point[a]-offset[a];
+        transform_values(translated,part->axes,zero,1,world.point);
+        if (hit.face) {
+            for (int a=0;a<3;++a) translated[a]=hit.anchor[a]-offset[a];
+            transform_values(translated,part->axes,zero,1,world.anchor);
+        }
+        best=world; ceiling=hit.fraction;
+    }
+    return surface_entry_object(&best);
+}
+
 /* 冻结子步中覆盖盒内的静态查询，复用原求交，只省去Python射线/对象装配。 */
 static PyObject *cached_surface_entry(PyObject *self,PyObject *args) {
-    PyObject *cache,*start_object,*end_object,*axis_object,*origin_object,*edge_entry,*box_entry;
+    PyObject *cache,*start_object,*end_object,*axis_object,*origin_object,*edge_entry,*box_entry,*coordinates=Py_None;
     double radius,width,shoulder,crown;
-    if (!PyArg_ParseTuple(args,"OOOOOddddOO",&cache,&start_object,&end_object,&axis_object,&origin_object,
-                         &radius,&width,&shoulder,&crown,&edge_entry,&box_entry)) return NULL;
+    if (!PyArg_ParseTuple(args,"OOOOOddddOO|O",&cache,&start_object,&end_object,&axis_object,&origin_object,
+                         &radius,&width,&shoulder,&crown,&edge_entry,&box_entry,&coordinates)) return NULL;
     if (!PyDict_Check(cache)) { PyErr_SetString(PyExc_TypeError,"支持候选缓存须为字典"); return NULL; }
     if (!PyDict_Size(cache)) return Py_BuildValue("(OO)",Py_False,Py_None);
     PyObject *native=PyDict_GetItemString(cache,"native_needed");
@@ -1170,9 +1425,26 @@ static PyObject *cached_surface_entry(PyObject *self,PyObject *args) {
         double left=(a<b ? a : b)-padding,right=(a>b ? a : b)+padding;
         if (left<low[i] || right>high[i]) return Py_BuildValue("(OO)",Py_False,Py_None);
     }
-    PyObject *arguments=Py_BuildValue("(OOOOOdddddOOOOii)",PyDict_GetItemString(cache,"surfaces"),
+    if (coordinates!=Py_None) {
+        PyObject *surfaces=PyDict_GetItemString(cache,"surfaces"),*capsule=PyDict_GetItemString(cache,"numeric_surfaces");
+        SurfacePacket *packet=capsule ? PyCapsule_GetPointer(capsule,surface_packet_name) : NULL;
+        if (capsule && !packet) return NULL;
+        if (!packet || packet->surfaces!=surfaces) {
+            capsule=surface_packet_create(surfaces);
+            if (!capsule) return NULL;
+            packet=PyCapsule_GetPointer(capsule,surface_packet_name);
+            int saved=PyDict_SetItemString(cache,"numeric_surfaces",capsule); Py_DECREF(capsule);
+            if (saved<0) return NULL;
+        }
+        double axis[3];
+        if (!vector(axis_object,axis)) return NULL;
+        PyObject *hit=surface_packet_entry(packet,start,end,axis,origin,radius,width,shoulder,crown,coordinates);
+        if (!hit) return NULL;
+        return Py_BuildValue("(ON)",Py_True,hit);
+    }
+    PyObject *arguments=Py_BuildValue("(OOOOOdddddOOOOiiO)",PyDict_GetItemString(cache,"surfaces"),
         start_object,end_object,axis_object,origin_object,radius,0.,width,shoulder,crown,
-        Py_None,Py_None,edge_entry,box_entry,1,1);
+        Py_None,Py_None,edge_entry,box_entry,1,1,coordinates);
     if (!arguments) return NULL;
     PyObject *hit=surface_ray_hits(NULL,arguments); Py_DECREF(arguments);
     if (!hit) return NULL;
@@ -1459,6 +1731,7 @@ failed:
 }
 
 static PyMethodDef methods[] = {
+    {"cylinder_box_entry", (PyCFunction)cylinder_box_entry_call, METH_VARARGS, "原Box平面见证点与保守推进的完整数值入口"},
     {"rotor_frame_geometry", (PyCFunction)rotor_frame_geometry, METH_VARARGS, "原四轮机械几何和转向反力"},
     {"triangle_edge_entry", (PyCFunction)triangle_edge_entry, METH_VARARGS, "原有限三角面裁剪与保守推进"},
     {"support_coefficients", (PyCFunction)support_coefficients, METH_VARARGS, "静态形状数值分区一次解包"},

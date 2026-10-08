@@ -59,6 +59,31 @@ from wheel_dynamics import WheelStep, _solve_force, _solve_rolling_force
 
 
 @dataclass(frozen=True)
+class DrivetrainInput:
+    """当前子步的机械输入；求解不提交车身冲量或修改车辆状态。"""
+
+    values: tuple
+    parameters: dict
+
+    def solve(self):
+        return advance_drivetrain(*self.values, **self.parameters)
+
+
+def solve_drivetrain_stages(stages):
+    """直接调用仍按原时序读状态、求解、提交；世界推进可在求解处暂停。"""
+    try:
+        request = next(stages)
+    except StopIteration as finished:
+        return finished.value
+    while True:
+        result = request.solve()
+        try:
+            request = stages.send(result)
+        except StopIteration as finished:
+            return finished.value
+
+
+@dataclass(frozen=True)
 class DrivetrainStep:
     """单次求解结果；速度供功/残差核对，调用方只向唯一Bullet车身提交冲量。"""
 

@@ -1,0 +1,32 @@
+{
+  "baseline": "cef1f4b3823c700386427ee56d53a981f2dd6625",
+  "status": "functional checkpoint verified; chronic lag and realtime budget remain unresolved",
+  "world": "single Bullet world, 120 Hz, two physical substeps; read all vehicle inputs, solve, commit in original order",
+  "native_queries": "same BVH/shape ordering, face/edge/box equations, SVD, 64/96 iteration caps and thresholds; cached numeric transforms invalidated by actual surface-list replacement",
+  "precision_audits": "512 BVH face/edge/miss and 512 complete box sweep comparisons equal; transformed real-world query comparisons equal",
+  "trajectory": "four cases x 128 snapshots equal to prior checkpoint, all fields; compared trajectories include turn/brake, hills and reference car",
+  "abba": {
+    "old_mean_ms": 53.06307187481707,
+    "new_mean_ms": 48.726459375018294,
+    "reduction_percent": 8.172562097477943,
+    "scope": "128 headless coastal GR86 + eight NPC ticks, timed 32:96, single P-core affinity for measurement only; not FPS"
+  },
+  "related_t1": "629 tests, Ruff, seeds 0/17/23 each 1200 ticks passed; earlier overlapping T1 counts are not summed",
+  "parallel": "not implemented; numerical geometry still contains rare SVD/world-query callbacks requiring Python",
+  "pending": [
+    "complete native numerical solver and parallel execution",
+    "120 Hz realtime budget",
+    "final game package",
+    "foreground performance and human driving gates"
+  ],
+  "publication": "local checkpoint only, no push",
+  "git_status": " M src/tire_drivetrain.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M src/world_step.py\n M tests/test_joint_suspension.py\n M tests/test_static_support_cache.py\n M tests/test_triangle_support.py\n M tests/test_world_substeps.py\n?? docs/evidence/PHYS-PERF-01/query-packet-r1/\n",
+  "payload_sha256": {
+    "failure-notes.json": "3efa61920220991402892f67f885189b6fa8bf8360a53b86a5f6c262893f14ee",
+    "reproduction.zip": "67ad46d888c993bc6c4cc43248e8d65c50d0ae1b73da5e4082492374a41a3d04",
+    "source-hashes.json": "5dacacfebf8e9b3afe50c939c13591adde72ff7e160d83ee263d9aea00e2fbdb",
+    "timings.json": "8eaaf74ce545355dc8eacc723b9132d011c244e5ee2f85bb1e35ed85672e9860",
+    "trajectory-diffs.json": "39c2c17f9898d5541b98d318c101a8a05a4cd523cfc8c7476f54edf630ed3c8a",
+    "validation-summaries.json": "a18a66d8e53c9086c13be96c428ca034bbe4828ff1dd1c4c68667fb3db755202"
+  }
+}

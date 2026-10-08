@@ -30,6 +30,7 @@ def advance_world(world, cars, *, substeps, observe=None, static_cache=None, pac
         before = {car._chassis: (Vec3(car._chassis.getLinearVelocity()),
                                 Vec3(car._chassis.getAngularVelocity()),
                                 Vec3(car._chassis.getTransform().getPos())) for car, _action in cars}
+        numerical = []
         for i, (car, action) in enumerate(cars):
             if substeps == 1:
                 if isinstance(action, VehicleCommand):
@@ -43,7 +44,20 @@ def advance_world(world, cars, *, substeps, observe=None, static_cache=None, pac
                     car._chassis.applyCentralForce(force)
                     car._chassis.applyTorque(torque)
                 angles = tuple(a + (b - a) * (index + 1) / substeps for a, b in zip(initial, target))
-                car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+                stages = car.physics_stages(request, dt, tire_substeps=1, angles=angles,
+                                            accumulate=index > 0, static_shapes=static_shapes)
+                inputs = next(stages, None)
+                if inputs is not None:
+                    numerical.append((stages, inputs))
+        # 各车读完本子步后求末状态，再按原车辆/轮端顺序提交；Bullet仍只推进一次。
+        solved = [(stages, inputs.solve()) for stages, inputs in numerical]
+        for stages, result in solved:
+            try:
+                stages.send(result)
+            except StopIteration:
+                pass
+            else:
+                raise RuntimeError("世界子步只允许一次轮端机械求解")
         world.doPhysics(dt, 0, dt)
         if observe is not None:
             observe(before, index == substeps - 1)

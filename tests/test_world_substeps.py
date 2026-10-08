@@ -9,7 +9,50 @@ from physics.reference_ab import _create_vehicle, _step
 
 from driving_modes import DrivingMode
 from simulation import Simulation
+from tire_drivetrain import DrivetrainInput
 from vehicle_state import FIXED_DT, VehicleCommand
+
+
+def test_all_vehicle_states_are_read_before_solving_and_impulses_are_committed_afterward(monkeypatch):
+    sim = Simulation(track="coastal", traffic_count=2, seed=17)
+    events = []
+    original_solve = DrivetrainInput.solve
+
+    def trace(car):
+        original_query, original_tires = car.suspension.prepare, car.tires.advance_stages
+
+        def query(*args, **kwargs):
+            events.append("read")
+            return original_query(*args, **kwargs)
+
+        def tires(*args, **kwargs):
+            result = yield from original_tires(*args, **kwargs)
+            events.append("commit")
+            return result
+
+        monkeypatch.setattr(car.suspension, "prepare", query)
+        monkeypatch.setattr(car.tires, "advance_stages", tires)
+
+    cars = (sim.player, *sim.npcs)
+    for car in cars:
+        trace(car)
+
+    def solve(request):
+        before = tuple((tuple(car._chassis.getLinearVelocity()), tuple(car._chassis.getAngularVelocity()),
+                        car.tires.states, tuple(car.tires.omega)) for car in cars)
+        events.append("solve")
+        result = original_solve(request)
+        after = tuple((tuple(car._chassis.getLinearVelocity()), tuple(car._chassis.getAngularVelocity()),
+                       car.tires.states, tuple(car.tires.omega)) for car in cars)
+        assert after == before
+        return result
+
+    monkeypatch.setattr(DrivetrainInput, "solve", solve)
+    try:
+        sim.step(VehicleCommand(throttle=.3, gear=1))
+        assert events == (["read"] * 3 + ["solve"] * 3 + ["commit"] * 3) * 2
+    finally:
+        sim.close()
 
 
 @pytest.mark.parametrize("mode", list(DrivingMode))
@@ -17,7 +60,7 @@ def test_actual_pose_advances_between_mechanics_with_one_control_tick(mode, monk
     sim = Simulation(track="test", traffic_count=0, config=mode.vehicle_config, input_config=mode.input_config)
     car = sim.player
     poses, prepares, tire_parts = [], [], []
-    original_query, original_prepare, original_tires = car.suspension.prepare, car.powertrain.prepare, car.tires.advance
+    original_query, original_prepare, original_tires = car.suspension.prepare, car.powertrain.prepare, car.tires.advance_stages
 
     def query(*args):
         poses.append(tuple(car._chassis.getTransform().getPos()))
@@ -28,13 +71,13 @@ def test_actual_pose_advances_between_mechanics_with_one_control_tick(mode, monk
         return original_prepare(*args, **kwargs)
 
     def tires(*args, **kwargs):
-        result = original_tires(*args, **kwargs)
+        result = yield from original_tires(*args, **kwargs)
         tire_parts.append(tuple(car.tires.states))
         return result
 
     monkeypatch.setattr(car.suspension, "prepare", query)
     monkeypatch.setattr(car.powertrain, "prepare", prepare)
-    monkeypatch.setattr(car.tires, "advance", tires)
+    monkeypatch.setattr(car.tires, "advance_stages", tires)
     try:
         car._chassis.setLinearVelocity(Vec3(0, 12., 0))  # 一次性试验初速。
         car.tires.initialize_rolling(12.)

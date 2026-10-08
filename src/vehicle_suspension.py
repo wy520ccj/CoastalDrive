@@ -18,7 +18,7 @@ from suspension_geometry import CylinderSurface
 from suspension_kinematics import SupportPlane
 from triangle_support import triangle_entry
 from vehicle_state import WheelContactState
-from wheel_envelope import cylinder_box_entry
+from wheel_envelope import _simplex_coordinates, cylinder_box_entry
 from wheel_geometry import mechanical_axis
 
 
@@ -42,7 +42,8 @@ class WorldSurface(CylinderSurface):
         key = start, end, axis
         if key not in self.queries:
             covered, entry = cached_surface_entry(self.candidates, start, end, axis, self.offset,
-                self.wheel_radius, self.width, self.shoulder, self.crown, triangle_entry, cylinder_box_entry)
+                self.wheel_radius, self.width, self.shoulder, self.crown, triangle_entry, cylinder_box_entry,
+                _simplex_coordinates)
             if not covered:
                 hit, = cylinder_suspension_rays(self.world,self.chassis,((start,end),),(axis,),
                     self.wheel_radius,self.width,self.shoulder,self.crown,envelope=self.envelope,ray_origin=self.offset,

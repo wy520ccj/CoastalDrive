@@ -3,10 +3,43 @@
 import pytest
 from panda3d.bullet import BulletBoxShape, BulletRigidBodyNode, BulletWorld
 from panda3d.core import BitMask32, TransformState, Vec3
+from wheel_contact_kernels import cached_surface_entry
 
 from simulation import Control, Simulation
 from suspension_contacts import cylinder_suspension_rays, static_support_shapes
+from triangle_support import triangle_entry
 from vehicle import Vehicle
+from wheel_envelope import _simplex_coordinates, cylinder_box_entry
+
+
+def test_numeric_surface_queries_match_original_after_origin_and_world_changes():
+    sim = Simulation(seed=17, track='coastal', traffic_count=0)
+    try:
+        car = sim.player
+        spawn = tuple(car._chassis.getTransform().getPos())
+        for delta in ((0.,0.,0.), (.01,.03,0.), (1.,2.,.01)):
+            position = tuple(a+b for a,b in zip(spawn,delta))
+            car._chassis.setTransform(TransformState.makePosHpr(Vec3(*position),Vec3(3.,0.,1.)))
+            shapes = static_support_shapes(sim._world, car._chassis, BitMask32.bit(0))
+            system = car.suspension.prepare(sim._world, car._chassis, car._vehicle.getWheels(), shapes)
+            compared = 0
+            for contact in system.kinematics:
+                if contact is None:
+                    continue
+                surface = contact.surface
+                for shift in (-.001,0.,.001):
+                    start = tuple(contact.hub[a]-surface.wheel_radius*contact.direction[a]+(shift if a==0 else 0.) for a in range(3))
+                    end = tuple(contact.hub[a]+surface.reach*contact.direction[a]+(shift if a==0 else 0.) for a in range(3))
+                    args = (surface.candidates,start,end,surface.wheel_axis,surface.offset,
+                            surface.wheel_radius,surface.width,surface.shoulder,surface.crown,triangle_entry,cylinder_box_entry)
+                    expected = cached_surface_entry(*args)
+                    actual = cached_surface_entry(*args, _simplex_coordinates)
+                    assert actual == expected
+                    assert actual[0]
+                    compared += 1
+            assert compared > 0
+    finally:
+        sim.close()
 
 
 def test_cached_support_tracks_movement_margin_shape_offset_and_removal():

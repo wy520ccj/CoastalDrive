@@ -1,6 +1,7 @@
 """真实有限三角面、接缝和胎宽；期望来自独立平面/圆几何。"""
 
 import math
+import random
 
 import pytest
 from panda3d.bullet import (
@@ -10,12 +11,55 @@ from panda3d.bullet import (
     BulletWorld,
 )
 from panda3d.core import TransformState, Vec3
+from wheel_contact_kernels import cylinder_box_entry as numeric_box_entry
+from wheel_contact_kernels import triangle_support_entry
 
 from suspension_contacts import cylinder_suspension_rays
 from suspension_kinematics import finite_contact_system
-from triangle_support import TriangleSupport
+from triangle_support import TriangleSupport, triangle_entry
 from vehicle import Vehicle
 from vehicle_config import CAR, wheel_hubs
+from wheel_envelope import _simplex_coordinates, cylinder_box_entry
+
+
+def test_numeric_box_query_matches_complete_legacy_face_and_edge_sweep():
+    random_source = random.Random(8107)
+    hits = misses = 0
+    for _ in range(512):
+        x, y = random_source.uniform(-1.4,1.4), random_source.uniform(-1.4,1.4)
+        angle = random_source.uniform(-.7,.7)
+        axis = (math.cos(angle),math.sin(angle),0.)
+        args = ((x,y,1.),(x+.03,y-.02,-1.),(1.,1.,.05),.01,axis,.33,.205/2,.01,.003)
+        expected = cylinder_box_entry(*args)
+        actual = numeric_box_entry(*args, _simplex_coordinates)
+        assert actual == expected
+        hits += actual is not None
+        misses += actual is None
+    assert hits > 0 and misses > 0
+
+
+def test_numeric_mesh_query_keeps_bvh_order_faces_edges_and_misses():
+    triangles = []
+    for x in (-3., 0., 3.):
+        for y in (-3., 0., 3.):
+            a, b, c, d = ((x-.8,y-.8,.03*x), (x+.8,y-.8,.03*x),
+                          (x+.8,y+.8,.03*x+.04), (x-.8,y+.8,.03*x+.04))
+            triangles.extend(((a,b,c),(a,c,d)))
+    mesh = TriangleSupport.build(triangles)
+    random_source = random.Random(1708)
+    hits = misses = 0
+    for _ in range(512):
+        x, y = random_source.uniform(-4.,4.), random_source.uniform(-4.,4.)
+        start, end = (x,y,1.), (x+.03,y-.02,-1.)
+        angle = random_source.uniform(-.4,.4)
+        axis = (math.cos(angle),math.sin(angle),0.)
+        args = (mesh._native,start,end,.01,axis,.33,.205,.01,.003,triangle_entry)
+        expected = triangle_support_entry(*args)
+        actual = triangle_support_entry(*args, _simplex_coordinates)
+        assert actual == expected
+        hits += actual is not None
+        misses += actual is None
+    assert hits > 0 and misses > 0
 
 
 def platform():

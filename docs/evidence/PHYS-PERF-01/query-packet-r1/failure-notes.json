@@ -1,0 +1,7 @@
+{
+  "initial_direct_pytest": "2 observation-wrapper failures and 142 passed; wrappers still observed old Tires.advance. Both were moved to advance_stages without changing assertions.",
+  "stages_t0": "New ordering test initially used nonexistent Simulation.traffic; corrected to actual npcs. Original failed summary retained.",
+  "stages_t1": "531 passed, 2 observation-wrapper failures at removed vehicle_tires.advance_drivetrain import. Observation moved to actual tire_drivetrain entry; r2 two nodes and all three seeds passed.",
+  "query_transform_t0": "Initial Ruff import-order failure, then test placed car at x=1 while coastal spawn x=95. Corrected fixture to actual spawn; r3 passed. Original summaries retained.",
+  "whole_vehicle_suite": "Old time-refinement assertion still fails as recorded in optimize-r1; this related 629-test T1 does not close whole vehicle or stage gates."
+}

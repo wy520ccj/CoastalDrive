@@ -9,7 +9,7 @@ from wheel_contact_kernels import rotor_frame_geometry
 from suspension_kinematics import advance_contact_geometry
 from tire_compliance import deformation_frame, project_deformation, world_deformation
 from tire_coupling import ContactFrame, advance_coupled, cross, dot
-from tire_drivetrain import advance_drivetrain
+from tire_drivetrain import DrivetrainInput, solve_drivetrain_stages
 from tire_forces import slip_state
 from tire_properties import tire_grip, tire_stiffness
 from vehicle_config import CAR, wheel_hubs
@@ -45,6 +45,15 @@ class Tires:
     def advance(self, chassis, contacts, angles, drive, engine_drag, pressures, tick, dt,
                 external_velocity=(0.0, 0.0, 0.0), external_angular=(0.0, 0.0, 0.0), *, powertrain=None,
                 suspension=None, substeps=None, accumulate=False):
+        return solve_drivetrain_stages(self.advance_stages(
+            chassis, contacts, angles, drive, engine_drag, pressures, tick, dt,
+            external_velocity, external_angular, powertrain=powertrain,
+            suspension=suspension, substeps=substeps, accumulate=accumulate))
+
+    def advance_stages(self, chassis, contacts, angles, drive, engine_drag, pressures, tick, dt,
+                       external_velocity=(0.0, 0.0, 0.0), external_angular=(0.0, 0.0, 0.0), *, powertrain=None,
+                       suspension=None, substeps=None, accumulate=False):
+        """准备完整机械输入，等待末状态，再按原轮序向唯一车身提交冲量。"""
         pose = chassis.getTransform()
         origin = pose.getPos()
         orientation = pose.getQuat()
@@ -181,24 +190,24 @@ class Tires:
                         # 固定当拍路面资格，实际离地/再支撑由本子步求出的轮荷决定。
                         wheel_frames = tuple(frame if frame.supported == base.supported else replace(frame, supported=base.supported)
                                              for frame, base in zip(wheel_frames, base_frames))
-                    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+                    result = yield DrivetrainInput((free_velocity, free_angular, tuple(self.omega), powertrain.engine_omega,
                         wheel_frames, projected, powertrain.engine_torque_request, powertrain.capacity,
-                        powertrain.mechanical_ratio, capacities, config, self.rear_config, sub_dt,
-                        inverse_inertia=tensor, engine_inertia=config.engine_inertia,
-                        engine_axis=tuple(orientation.xform(Vec3(*config.engine_axis))),
-                        engine_drag=powertrain.engine_drag_coefficient, efficiency=config.drivetrain_efficiency,
-                        steering_torques=torques,
-                        force_initial=force_initial,
-                        shaft_omega=powertrain.shaft_omega if powertrain.input_shaft_active else None,
-                        shaft_inertia=config.input_shaft_inertia,
-                        shaft_axis=tuple(orientation.xform(Vec3(*config.input_shaft_axis))),
-                        synchronizing=powertrain.synchronizing,
-                        synchronizer_capacity=config.synchronizer_capacity if powertrain.synchronizing else 0.,
-                        downstream_omega=powertrain.downstream_omega if powertrain.downstream_active else (),
-                        downstream_inertias=config.downstream_inertias,
-                        downstream_axes=tuple(tuple(orientation.xform(Vec3(*axis))) for axis in config.downstream_axes)
-                            if powertrain.downstream_active else (), suspension=normal_system if suspension is not None else None,
-                        rolling_coefficients=rolling_coefficients)
+                        powertrain.mechanical_ratio, capacities, config, self.rear_config, sub_dt), {
+                        "inverse_inertia": tensor, "engine_inertia": config.engine_inertia,
+                        "engine_axis": tuple(orientation.xform(Vec3(*config.engine_axis))),
+                        "engine_drag": powertrain.engine_drag_coefficient, "efficiency": config.drivetrain_efficiency,
+                        "steering_torques": torques,
+                        "force_initial": force_initial,
+                        "shaft_omega": powertrain.shaft_omega if powertrain.input_shaft_active else None,
+                        "shaft_inertia": config.input_shaft_inertia,
+                        "shaft_axis": tuple(orientation.xform(Vec3(*config.input_shaft_axis))),
+                        "synchronizing": powertrain.synchronizing,
+                        "synchronizer_capacity": config.synchronizer_capacity if powertrain.synchronizing else 0.,
+                        "downstream_omega": powertrain.downstream_omega if powertrain.downstream_active else (),
+                        "downstream_inertias": config.downstream_inertias,
+                        "downstream_axes": tuple(tuple(orientation.xform(Vec3(*axis))) for axis in config.downstream_axes)
+                            if powertrain.downstream_active else (), "suspension": normal_system if suspension is not None else None,
+                        "rolling_coefficients": rolling_coefficients})
                     steps = result.wheels
                     force_initial = tuple((step.fx, step.fy, step.brake_torque) for step in steps)
                     drives = result.wheel_drive_torques
