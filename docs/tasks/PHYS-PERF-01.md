@@ -93,3 +93,6 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 
 
 主目录整合 r3（2026-10-07，`127c1d0`）：接入 map160 共同接触修正与隔离悬架活动集数值块，严格重建两扩展。T1 528 passed/Ruff/三种子通过；r7候选包 build 哈希前后相同，独立包 game/simulation 各120拍通过，包产物哈希与当前目录相符；reader 首轮日志追加假设错误、simulation未运行已单独保留，r7-r2两模式复核通过。48拍全快照字段与整合基线相同（耗时仅诊断）。复用957节点，余1173与11专项；T2起始摘要标记running，未归档进行中的pytest日志，阶段未过。源码差异清单、旧轨迹失效边界和包/源SHA见[整合 r3 证据](../evidence/PHYS-PERF-01/integration-r3/report.md)。实时前台、T3、人工驾驶验收未完成。
+
+
+主目录T2-r2失败归档（2026-10-08）：[报告](../evidence/PHYS-PERF-01/stage-collision-r1/report.md)、[summary及收据](../evidence/PHYS-PERF-01/stage-collision-r1/receipt.json)、[355项源码SHA与归档清单](../evidence/PHYS-PERF-01/stage-collision-r1/manifest.json)。固定主目录结果为Ruff通过、pytest 267通过/1失败/957 deselected（3740.66s），后续11项未运行；失败输出只记碰撞墙测试的共同末状态超过30轮，误差1.02141e-14，待原输入最小复现，不推测根因。阶段未通过。

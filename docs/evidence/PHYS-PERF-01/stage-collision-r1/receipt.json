@@ -1,0 +1,122 @@
+{
+  "head_at_archive": "cb15abb45d1b01c5bd89b2eaef48950ea10cdfbb",
+  "captured_source_files": 355,
+  "source_hashes_start_end_equal": true,
+  "source_comparison_to_t2_summary": {
+    "summary_head": "01b99f3392e420ea90ab172dd858f0eeded98bbc",
+    "current_head": "cb15abb45d1b01c5bd89b2eaef48950ea10cdfbb",
+    "summary_hash_count": 358,
+    "current_capture_count": 355,
+    "comparable_count": 354,
+    "comparable_hashes_equal": true,
+    "mismatch_paths": [],
+    "summary_only_paths": [
+      "tests/data/highway-contact-r11/config.json",
+      "tests/data/highway-contact-r11/input.json",
+      "tests/data/highway-contact-r11/rear-config.json",
+      "tools/audio/music_sources.json"
+    ]
+  },
+  "t2_summary_sha256": "d51afe099c9d4f10fd871a3f602621e39d688dad595809c9dce9ea7fdc87b6e5",
+  "pytest_log_sha256": "82ff8ebf3fa24b7f5b88b18c64cbd094954ae4b19c70b69db5cc2d1c2f986d01",
+  "ruff_log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+  "reuse_audit_sha256": "90c2f758be11ef40dd480338eb51e6b0aecb5a9190809856b5603466687eecfa",
+  "summary_check_statuses": [
+    {
+      "name": "ruff",
+      "status": "passed",
+      "returncode": 0,
+      "seconds": 0.482,
+      "error": null
+    },
+    {
+      "name": "pytest-remaining",
+      "status": "failed",
+      "returncode": 1,
+      "seconds": 3741.516,
+      "error": "process exited 1"
+    },
+    {
+      "name": "handling",
+      "status": "not_run",
+      "returncode": null,
+      "seconds": null,
+      "error": null
+    },
+    {
+      "name": "surface",
+      "status": "not_run",
+      "returncode": null,
+      "seconds": null,
+      "error": null
+    },
+    {
+      "name": "interactions",
+      "status": "not_run",
+      "returncode": null,
+      "seconds": null,
+      "error": null
+    },
+    {
+      "name": "finite-coastal",
+      "status": "not_run",
+      "returncode": null,
+      "seconds": null,
+      "error": null
+    },
+    {
+      "name": "finite-highway",
+      "status": "not_run",
+      "returncode": null,
+      "seconds": null,
+      "error": null
+    },
+    {
+      "name": "straight-0",
+      "status": "not_run",
+      "returncode": null,
+      "seconds": null,
+      "error": null
+    },
+    {
+      "name": "hills-0",
+      "status": "not_run",
+      "returncode": null,
+      "seconds": null,
+      "error": null
+    },
+    {
+      "name": "straight-17",
+      "status": "not_run",
+      "returncode": null,
+      "seconds": null,
+      "error": null
+    },
+    {
+      "name": "hills-17",
+      "status": "not_run",
+      "returncode": null,
+      "seconds": null,
+      "error": null
+    },
+    {
+      "name": "straight-23",
+      "status": "not_run",
+      "returncode": null,
+      "seconds": null,
+      "error": null
+    },
+    {
+      "name": "hills-23",
+      "status": "not_run",
+      "returncode": null,
+      "seconds": null,
+      "error": null
+    }
+  ],
+  "manifest_sha256": "404c58bde78025ae484a280e2ce209365a0d6a71652e30094e8b8764b89ac65b",
+  "payload_entries_verified": 10,
+  "physical_or_test_execution_during_archive": false,
+  "report_sha256": "e612a394f5b53c490c534f26bd1516fc3f5b802fcba014f126601f2c131e8d3f",
+  "source_hash_count": 355
+}
