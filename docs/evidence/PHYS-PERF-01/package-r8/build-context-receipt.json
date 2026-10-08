@@ -1,0 +1,9 @@
+{
+  "root_setup_sha256": "38346e0ab3937b193653fd471617bca2c2c5eb3acc3a1884030f312344e3429a",
+  "copied_setup_sha256": "38346e0ab3937b193653fd471617bca2c2c5eb3acc3a1884030f312344e3429a",
+  "root_requirements_sha256": "50ca3a76163765415a4edeee8086ee7a49bd7d7da1b740f7a88733d8339352b0",
+  "copied_requirements_sha256": "50ca3a76163765415a4edeee8086ee7a49bd7d7da1b740f7a88733d8339352b0",
+  "builder_context_path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-candidate-r8-source",
+  "copied_code_setup_file_count": 101,
+  "assets_mode": "junction to main assets; assets were not copied or archived"
+}

@@ -1,0 +1,9 @@
+{
+  "status": "failed",
+  "returncode": 1,
+  "script": "docs/evidence/PHYS-PERF-01/integration-r3/package-scripts/native-package-check-r7-r2.py",
+  "reason": "archived script parents[3] points to docs/evidence, output mkdir failed with FileNotFoundError",
+  "phase": "reader output directory before any package execution",
+  "package_checks_run": 0,
+  "corrected_entry": "logs/physics/PHYS-PERF-01/native-package-check-r8.py"
+}

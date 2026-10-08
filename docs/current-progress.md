@@ -4,7 +4,7 @@
 
 ## 当前阶段
 
-- **2026-10-08当前施工状态**：主线已合入dff36ee，真实撞墙墙端口精度修复提交于fa037c4。1145拍保存输入用原30轮重放失败，乘积fma低位+补偿求和+末次fma保持方程/阈值并7轮收敛；Decimal误差5.67e-15→9.54e-18。T0 74通过/13.85s，T1 767通过/189.65s、Ruff和三种子通过；两组48拍Snapshot有53,218数值差异，最大2.91e-11、非数值差异0。PHYS-INTEGRATE-04-stage-T2 session63990运行中，811节点复用、余1320节点及11专项；当前360项源码/数据SHA与T2起始摘要一致，源码冻结。见[墙端精度归档](evidence/PHYS-DESIGN-01/wall-port-precision-r1/report.md)。实时性能、T3、人工Gate未完成，未推送。下列记录保留历史时点。
+- **2026-10-08当前施工状态**：主线fa037c4墙端口精度修复已归档；360项源码/数据与活动PHYS-INTEGRATE-04-stage-T2起始SHA一致。T2 session63990仍在运行，811节点复用、1320节点及11专项待执行。r8候选包在冻结源码副本构建成功，Game/Simulation各120拍headless退出码0、完整硬件字段存在；reader首次入口失败运行0次包检查，修正入口后才取得有效结果。该headless不是render/FPS/前台或人工Gate，公开包未替换，T3/体验未完成。见[r8包档案](evidence/PHYS-PERF-01/package-r8/report.md)与[墙端精度档案](evidence/PHYS-DESIGN-01/wall-port-precision-r1/report.md)。下列记录保留历史时点。
 
 - [PHYS-DESIGN-01](tasks/PHYS-DESIGN-01.md)施工线③工程功能/T1完成；79b32d2相对几何修复保持原精度，a7649d4只修原已穿入护栏的路肩测试摆位，深穿透失败保留。机械T2-r11实际32通过/1高速车流共同求解失败（2436.80s），后14检查未跑；旧版累计628不同有效节点；已捕获3333拍/原实现单步完全复现，真实shape bounds修复456项T1与三种子通过，长轨迹/阶段仍待恢复。隔离目录C:/Users/15120/.codex/worktrees/gr86-physics/CoastalDrive、codex/phys-real-01持续推进：④[GR86实车](tasks/PHYS-REAL-01.md)98字段工程r3及参考/实车各12工况已归档a0c644e；⑤[传感器/延迟ESKF](tasks/PHYS-EST-01.md)c23feaa；⑥[20Hz实验/精确重放](tasks/PHYS-RESEARCH-01.md)0afe6b1；⑦[性能](tasks/PHYS-PERF-01.md)已本地提交常量/几何复用aa4368c、解析Jacobian70d8b94、严格浮点原生内核7850870。原生最终511项相关T1及三种子通过，单/九车48拍完整快照与原基线相同；候选表面复用15457d7及有限面内核8be0a50已本地提交；胎冠点/边内核983e978已本地提交；候选bounds修复及本物理子步共同几何/紧致Hull边界/原三角面窗口，474项最终T1和三种子通过，健康48拍完整快照相同，准备归档提交。九车短测原50.961→edge14.195→正确bounds全读42.162→最后复用16.536s，仍远未达到实时预算，不能当作FPS。旧候选包r3仅projection前两模式120拍headless通过；离屏渲染首项90s超时、后两项未跑。隔离源码尚未合并，未推送；最终产品包、T3、前台性能与用户两模式驾驶待完成。
 

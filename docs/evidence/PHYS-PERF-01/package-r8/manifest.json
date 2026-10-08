@@ -1,0 +1,160 @@
+{
+  "algorithm": "SHA-256",
+  "entry_count": 19,
+  "files": [
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-package-r8/build.log",
+      "archive": "validation/PHYS-INTEGRATE-04-package-r8/build.txt",
+      "source_sha256": "10824bcebae529b50e650d1bae3f17a6cd90d9648097366dd7bf471187031961",
+      "archive_sha256": "10824bcebae529b50e650d1bae3f17a6cd90d9648097366dd7bf471187031961",
+      "compressed": false,
+      "payload_sha256": "10824bcebae529b50e650d1bae3f17a6cd90d9648097366dd7bf471187031961"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-package-r8/summary.json",
+      "archive": "validation/PHYS-INTEGRATE-04-package-r8/summary.json",
+      "source_sha256": "4c3a10cfc941939623d999eff15dbe547b8c975ed4d20024d277f441b916768d",
+      "archive_sha256": "4c3a10cfc941939623d999eff15dbe547b8c975ed4d20024d277f441b916768d",
+      "compressed": false,
+      "payload_sha256": "4c3a10cfc941939623d999eff15dbe547b8c975ed4d20024d277f441b916768d"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-package-r8-r2/build.log",
+      "archive": "validation/PHYS-INTEGRATE-04-package-r8-r2/build.txt",
+      "source_sha256": "9b70bca7164412c1164948519ab6762702545af351d4bf8e886ee55abe76f7e7",
+      "archive_sha256": "9b70bca7164412c1164948519ab6762702545af351d4bf8e886ee55abe76f7e7",
+      "compressed": false,
+      "payload_sha256": "9b70bca7164412c1164948519ab6762702545af351d4bf8e886ee55abe76f7e7"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-package-r8-r2/summary.json",
+      "archive": "validation/PHYS-INTEGRATE-04-package-r8-r2/summary.json",
+      "source_sha256": "1ee582a87a9c13ed3d7abce86e5206d4dc26c0ec2e4c7351989590ec9fcf9e7c",
+      "archive_sha256": "1ee582a87a9c13ed3d7abce86e5206d4dc26c0ec2e4c7351989590ec9fcf9e7c",
+      "compressed": false,
+      "payload_sha256": "1ee582a87a9c13ed3d7abce86e5206d4dc26c0ec2e4c7351989590ec9fcf9e7c"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/build-native-package-r8.py",
+      "archive": "scripts/build-native-package-r8.py",
+      "source_sha256": "f2db869b4bb3a2a4d0092ec5de25f278a9093d7fea975c3d0d5f36728f11f471",
+      "archive_sha256": "f2db869b4bb3a2a4d0092ec5de25f278a9093d7fea975c3d0d5f36728f11f471",
+      "compressed": false,
+      "payload_sha256": "f2db869b4bb3a2a4d0092ec5de25f278a9093d7fea975c3d0d5f36728f11f471"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/build-native-package-r8-r2.py",
+      "archive": "scripts/build-native-package-r8-r2.py",
+      "source_sha256": "cc8199d28d526f4e126000f9b2291007e31888d4ab6022e4f5c69550037f3fbf",
+      "archive_sha256": "cc8199d28d526f4e126000f9b2291007e31888d4ab6022e4f5c69550037f3fbf",
+      "compressed": false,
+      "payload_sha256": "cc8199d28d526f4e126000f9b2291007e31888d4ab6022e4f5c69550037f3fbf"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/native-package-check-r8.py",
+      "archive": "scripts/native-package-check-r8.py",
+      "source_sha256": "7536b955256af6f8a4c3f2caf1537ad7f37adea409cb411f4129fd3030d1a8e3",
+      "archive_sha256": "7536b955256af6f8a4c3f2caf1537ad7f37adea409cb411f4129fd3030d1a8e3",
+      "compressed": false,
+      "payload_sha256": "7536b955256af6f8a4c3f2caf1537ad7f37adea409cb411f4129fd3030d1a8e3"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/package-r8-context-audit.py",
+      "archive": "scripts/package-r8-context-audit.py",
+      "source_sha256": "495d55e6c15264b0ad53fa6ba67653b8e602d0cbdad0e0fcda779d5af2605c5f",
+      "archive_sha256": "495d55e6c15264b0ad53fa6ba67653b8e602d0cbdad0e0fcda779d5af2605c5f",
+      "compressed": false,
+      "payload_sha256": "495d55e6c15264b0ad53fa6ba67653b8e602d0cbdad0e0fcda779d5af2605c5f"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/package-headless-r8/context-audit.json",
+      "archive": "headless/context-audit.json",
+      "source_sha256": "ce88dadc85dc6cd5fba65d131046e06c8dd7476c4d927757cd59c82bfbcaf956",
+      "archive_sha256": "ce88dadc85dc6cd5fba65d131046e06c8dd7476c4d927757cd59c82bfbcaf956",
+      "compressed": false,
+      "payload_sha256": "ce88dadc85dc6cd5fba65d131046e06c8dd7476c4d927757cd59c82bfbcaf956"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/package-headless-r8/game.log",
+      "archive": "headless/game.txt",
+      "source_sha256": "ace2fb5574a74e090475252afa5c44d41e03d61e64da4e2398cc178d476ccfc6",
+      "archive_sha256": "ace2fb5574a74e090475252afa5c44d41e03d61e64da4e2398cc178d476ccfc6",
+      "compressed": false,
+      "payload_sha256": "ace2fb5574a74e090475252afa5c44d41e03d61e64da4e2398cc178d476ccfc6"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/package-headless-r8/reader-entry-failure.json",
+      "archive": "headless/reader-entry-failure.json",
+      "source_sha256": "6f992150656f313ee3db4cb9d693ce4c48740139f8d4401561a2293c4e6a089c",
+      "archive_sha256": "6f992150656f313ee3db4cb9d693ce4c48740139f8d4401561a2293c4e6a089c",
+      "compressed": false,
+      "payload_sha256": "6f992150656f313ee3db4cb9d693ce4c48740139f8d4401561a2293c4e6a089c"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/package-headless-r8/simulation.log",
+      "archive": "headless/simulation.txt",
+      "source_sha256": "35d241ffd4fb0f572cc074fd49b67cf7af5890e12c2293289970fba5532459d1",
+      "archive_sha256": "35d241ffd4fb0f572cc074fd49b67cf7af5890e12c2293289970fba5532459d1",
+      "compressed": false,
+      "payload_sha256": "35d241ffd4fb0f572cc074fd49b67cf7af5890e12c2293289970fba5532459d1"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/package-headless-r8/summary.json",
+      "archive": "headless/summary.json",
+      "source_sha256": "88fa63905911505556defd7ceb5104e3e5dbf5562bca4d461e221d7af2609010",
+      "archive_sha256": "88fa63905911505556defd7ceb5104e3e5dbf5562bca4d461e221d7af2609010",
+      "compressed": false,
+      "payload_sha256": "88fa63905911505556defd7ceb5104e3e5dbf5562bca4d461e221d7af2609010"
+    },
+    {
+      "source": "captured-source/package metadata",
+      "archive": "copied-context-101-sha256.json",
+      "source_sha256": "6b718ac85bbbd7bd7d9cbfc4dae8e9c3ebf097fbb66f000c43703785328421df",
+      "archive_sha256": "6b718ac85bbbd7bd7d9cbfc4dae8e9c3ebf097fbb66f000c43703785328421df",
+      "compressed": false,
+      "payload_sha256": "6b718ac85bbbd7bd7d9cbfc4dae8e9c3ebf097fbb66f000c43703785328421df"
+    },
+    {
+      "source": "captured-source/package metadata",
+      "archive": "build-context-receipt.json",
+      "source_sha256": "aa9512a028b01072492f2fdfb297a4f89240ae1f20b4df0ba8fd7b3ca289c8f2",
+      "archive_sha256": "aa9512a028b01072492f2fdfb297a4f89240ae1f20b4df0ba8fd7b3ca289c8f2",
+      "compressed": false,
+      "payload_sha256": "aa9512a028b01072492f2fdfb297a4f89240ae1f20b4df0ba8fd7b3ca289c8f2"
+    },
+    {
+      "source": "captured-source/package metadata",
+      "archive": "package-artifact-sha256.json",
+      "source_sha256": "392c6d3a5f72238395c6df3614bc288b3ca5298edb67d59178ab707fa7272d35",
+      "archive_sha256": "392c6d3a5f72238395c6df3614bc288b3ca5298edb67d59178ab707fa7272d35",
+      "compressed": false,
+      "payload_sha256": "392c6d3a5f72238395c6df3614bc288b3ca5298edb67d59178ab707fa7272d35"
+    },
+    {
+      "source": "captured-source/package metadata",
+      "archive": "source-hashes-start.json",
+      "source_sha256": "b7b94c1fa5d1fb0366805dfb82f6ef0763bb9e413ba9208c7df9c0f49a73e0f4",
+      "archive_sha256": "b7b94c1fa5d1fb0366805dfb82f6ef0763bb9e413ba9208c7df9c0f49a73e0f4",
+      "compressed": false,
+      "payload_sha256": "b7b94c1fa5d1fb0366805dfb82f6ef0763bb9e413ba9208c7df9c0f49a73e0f4"
+    },
+    {
+      "source": "captured-source/package metadata",
+      "archive": "source-hashes-end.json",
+      "source_sha256": "b7b94c1fa5d1fb0366805dfb82f6ef0763bb9e413ba9208c7df9c0f49a73e0f4",
+      "archive_sha256": "b7b94c1fa5d1fb0366805dfb82f6ef0763bb9e413ba9208c7df9c0f49a73e0f4",
+      "compressed": false,
+      "payload_sha256": "b7b94c1fa5d1fb0366805dfb82f6ef0763bb9e413ba9208c7df9c0f49a73e0f4"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-stage-T2/summary.json",
+      "archive": "stage-T2-start-summary.json",
+      "source_sha256": "1c1376ec36f67e44cea775366b9fe63f141093bd935eb6fb9b144188af8749b1",
+      "archive_sha256": "1c1376ec36f67e44cea775366b9fe63f141093bd935eb6fb9b144188af8749b1",
+      "compressed": false,
+      "payload_sha256": "1c1376ec36f67e44cea775366b9fe63f141093bd935eb6fb9b144188af8749b1"
+    }
+  ],
+  "source_count": 360,
+  "source_hashes_match_t2_start": true
+}
