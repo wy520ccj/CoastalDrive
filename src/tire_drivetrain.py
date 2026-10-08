@@ -7,19 +7,22 @@ from mechanical_kernels import (
     dot,
     known_state,
     load_coefficients,
+    loaded_wheel_force_solution,
     mass_coefficients,
     mass_response_prepared,
     rotor_coefficients,
     rotor_spin_prepared,
     shared_load_solution,
     shared_map_coefficients,
+    suspension_residuals,
+    wheel_brake_correction,
     wheel_contact_state,
-    wheel_force_solution,
     wheel_free_state,
     wheel_load_prepared,
     wheel_map_coefficients,
     wheel_map_derivatives,
     wheel_map_state,
+    wheel_residuals,
 )
 
 from differential import (
@@ -33,12 +36,9 @@ from driveline_inertia import active_inertias, inertia_projections, rotor_gradie
 from rolling_resistance import rolling_torques
 from rotor_dynamics import bearing_torques, cross
 from shaft_transmission import (
-    brake_increment,
     shaft_brake_plans,
-    shaft_brake_response,
     shaft_gradients,
     synchronizer_brake_plans,
-    synchronizer_brake_response,
 )
 from suspension import SuspensionInput, SuspensionStep, _solve, shared_suspension
 from suspension_kinematics import finite_contact_system
@@ -170,6 +170,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                            car.tire_shape, car.tire_curvature) for car in configurations)
     wheel_loads = tuple(frame.load for frame in frames)
     wheel_supported = tuple(frame.supported for frame in frames)
+    tire_compliance = tuple(car.tire_compliance for car in configurations)
 
     def load_parameters():
         # 轮荷刷新时重算本构参数，后续力/Jacobian试探共用同一组数值。
@@ -420,13 +421,23 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             frame = frames[index]
             return wheel_contact_state(state, end_velocity, wheel_start, index, frame.tangent, frame.axle,
                 moments_x[index], moments_y[index], radii[index], (fx, fy), deformations[index],
-                contact_parameters[index], tire_hardware[index], dt, rolling[index], math.hypot)
+                contact_parameters[index], tire_hardware[index], dt, rolling[index], None if shaft else math.hypot)
         vx, vy, _slip = velocities(index, state, end_velocity)
         grip, cx, cy = contact_parameters[index]
         kappa, alpha = slip_state(vx, vy, state[index + wheel_start], radii[index], car)
         return combined_force(kappa, alpha, grip, cx, cy, car.tire_shape, car.tire_curvature), None
 
     def solve_wheel(i, gyro):
+        frame, car = frames[i], configurations[i]
+        if shaft and car.tire_compliance:
+            fx, fy, brake, _error = loaded_wheel_force_solution(wheel_map, i, forces, velocity,
+                normal_forces if suspension is not None else None, normal_responses,
+                suspension.gradients if suspension is not None else None, gyro,
+                road_torques if rolling_active else None, active_limits, warm_branches, warm_modes,
+                moments_x[i], moments_y[i], deformations[i], contact_parameters[i], tire_hardware[i],
+                rolling[i], .0001, forces[i][:2],
+                suspension is not None and sweep == 0 and rolling[i] and wheel_loads[i] > 0, None)
+            return (fx, fy, brake), "magic-formula" if wheel_loads[i] > 0 else "airborne"
         if shaft:
             free_base_wheel, velocity_base = wheel_free_state(wheel_map, forces, velocity,
                 normal_forces if suspension is not None else None, normal_responses,
@@ -434,13 +445,6 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 road_torques if rolling_active else None, i)
         else:
             free_base_wheel, velocity_base = known(gyro, load_terms(exclude=i))
-        frame, car = frames[i], configurations[i]
-        if shaft and car.tire_compliance:
-            fx, fy, brake, _error = wheel_force_solution(wheel_map, i, free_base_wheel, velocity_base, active_limits,
-                warm_branches, warm_modes, frame.tangent, frame.axle, moments_x[i], moments_y[i], radii[i],
-                deformations[i], contact_parameters[i], tire_hardware[i], rolling[i], .0001, forces[i][:2],
-                suspension is not None and sweep == 0 and rolling[i] and wheel_loads[i] > 0, math.hypot)
-            return (fx, fy, brake), "magic-formula" if wheel_loads[i] > 0 else "airborne"
         rx, ry, _rb = responses[i]
         scale_x = dt * (1 / mass + dot(longitudinal[i], rx))
         scale_y = dt * (1 / mass + dot(lateral[i], ry))
@@ -566,27 +570,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         return (fx, fy, brake), mode
 
     def correct_brakes(state):
-        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
-        corrections = []
-        for j in range(4):
-            rb = wheels[j][2]
-            if hard_gear:
-                dc, dg, dl, _db = shaft_brake_response(
-                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
-                    local[0], shared_plans[shared_port_index])
-            else:
-                dc, dg, _db = synchronizer_brake_response(
-                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, brake_gradients[0])),
-                    shared_plans[shared_port_index])
-                dl = 0.
-            corrections.append(tuple(rb[a] - dc * mc[a] - dg * mg[a] - dl * ml[a] for a in range(dimensions)))
-        matrix = tuple(tuple(dot(g, response) for response in corrections) for g in brake_gradients)
-        delta = brake_increment(matrix, tuple(dot(g, state) for g in brake_gradients),
-                                tuple(f[2] for f in forces), brakes, dt,
-                                tuple(dot(brake_gradients[i], responses[i][2]) for i in range(4)))
-        for i, value in enumerate(delta):
-            fx, fy, brake = forces[i]
-            forces[i] = fx, fy, brake + value
+        forces[:] = wheel_brake_correction(wheel_map, state, forces, shared_branch, shared_port_index)
 
     def correct_contacts(guess):
         """强耦合时联合修正八个接触力；仍解同一末状态，不改力/制动门槛。"""
@@ -716,26 +700,30 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             normal_forces = shared_suspension(suspension, end_velocity, state[:3], dt).axial_force
             normal_loads()
             state, end_velocity, clutch, loss, gear_reaction = shared(state)
-        maximum, brake_error = 0., 0.
-        for i in range(4):
-            fx, fy, brake = forces[i]
-            if modes[i] == "sticking":
-                _vx, _vy, slip = velocities(i, state, end_velocity)
-                error = math.hypot(slip[0] / (dt * (1 / mass + dot(longitudinal[i], responses[i][0]))),
-                                   slip[1] / (dt * (1 / mass + dot(lateral[i], responses[i][1]))))
-            else:
-                target, _details = contact(i, state, end_velocity, fx, fy)
-                error = math.hypot(fx - target[0], fy - target[1])
-            maximum = max(maximum, error)
-            target_brake = max(-brakes[i], min(brakes[i], brake + dot(brake_gradients[i], state)
-                               / (dt * dot(brake_gradients[i], responses[i][2]))))
-            brake_error = max(brake_error, abs(brake - target_brake))
+        if shaft:
+            maximum, brake_error = wheel_residuals(wheel_map, state, end_velocity, forces, modes,
+                deformations, contact_parameters, tire_hardware, rolling, moments_x, moments_y,
+                tire_compliance, None)
+        else:
+            maximum, brake_error = 0., 0.
+            for i in range(4):
+                fx, fy, brake = forces[i]
+                if modes[i] == "sticking":
+                    _vx, _vy, slip = velocities(i, state, end_velocity)
+                    error = math.hypot(slip[0] / (dt * (1 / mass + dot(longitudinal[i], responses[i][0]))),
+                                       slip[1] / (dt * (1 / mass + dot(lateral[i], responses[i][1]))))
+                else:
+                    target, _details = contact(i, state, end_velocity, fx, fy)
+                    error = math.hypot(fx - target[0], fy - target[1])
+                maximum = max(maximum, error)
+                target_brake = max(-brakes[i], min(brakes[i], brake + dot(brake_gradients[i], state)
+                                   / (dt * dot(brake_gradients[i], responses[i][2]))))
+                brake_error = max(brake_error, abs(brake - target_brake))
         if suspension is not None:
             normal_step = shared_suspension(suspension, end_velocity, state[:3], dt)
-            normal_error = max(abs(a - b) for a, b in zip(normal_forces, normal_step.axial_force))
             target_system = finite_contact_system(reference_suspension, end_velocity, state[:3], dt)
-            geometry_error = dt * max(abs(sum(force * (new[a] - old[a]) for force, new, old in
-                                             zip(normal_forces, target_system.gradients, suspension.gradients))) for a in range(6))
+            normal_error, geometry_error = suspension_residuals(normal_forces, normal_step.axial_force,
+                suspension.gradients, target_system.gradients, dt)
         if maximum < .001 and brake_error < 1e-9 and normal_error < normal_tolerance and geometry_error < 1e-12:
             break
         # 接触误差已小于力门槛时，仍会推动末姿态；几何未收敛也需联立细化接触力。

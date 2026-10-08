@@ -1,0 +1,76 @@
+{
+  "kind": "external-repository package headless check; not render, FPS or human acceptance",
+  "passed": true,
+  "checks": [
+    {
+      "mode": "game",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-candidate-r10\\win_amd64\\coastaldrive.exe",
+        "--headless",
+        "--steps",
+        "120",
+        "--track",
+        "test",
+        "--seed",
+        "17",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "game"
+      ],
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-r10-43xzk0sx\\game",
+      "returncode": 0,
+      "seconds": 1.1732334999978775,
+      "tick_120_and_mode_ok": true,
+      "full_hardware_present": true,
+      "log": "game.txt"
+    },
+    {
+      "mode": "simulation",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-candidate-r10\\win_amd64\\coastaldrive.exe",
+        "--headless",
+        "--steps",
+        "120",
+        "--track",
+        "test",
+        "--seed",
+        "17",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "simulation"
+      ],
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-r10-43xzk0sx\\simulation",
+      "returncode": 0,
+      "seconds": 0.9394161000018357,
+      "tick_120_and_mode_ok": true,
+      "full_hardware_present": true,
+      "log": "simulation.txt"
+    }
+  ],
+  "native_modules": {
+    "mechanical_kernels": {
+      "path": "win_amd64/mechanical_kernels.pyd",
+      "bytes": 128512,
+      "sha256": "d23a8665e35e08dd23dfbbba3009a22d5ed9589fa18c1f1dbaa8a8cf9dd12c8a",
+      "matches_build_source_sha256": true
+    },
+    "wheel_contact_kernels": {
+      "path": "win_amd64/wheel_contact_kernels.pyd",
+      "bytes": 52224,
+      "sha256": "0668d40d48e9ddc3d27504c6fb1480653cb16d69f220d8beadf53dcb2d6aa833",
+      "matches_build_source_sha256": true
+    }
+  },
+  "required_files_present": {
+    "executable": true,
+    "license": true,
+    "gr86_hardware_config": true
+  },
+  "sha256": {
+    "executable": "729351f4a60b29251805311f28d96ba89df00c6cde63be8a22eceaddd6c52769",
+    "license": "db693914a7f6d42f1d3e09c10eda1482e5d94ed4c70a769476ae8d722a9be1ce",
+    "gr86_hardware_config": "88c6bdce91429ae59247fec5c6bfd4a7531bbfa918e622dd78e61301dafb6a23"
+  }
+}

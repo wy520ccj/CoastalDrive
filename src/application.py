@@ -20,7 +20,7 @@ from scene import Scene
 from session import Phase, Session
 from settings import AppearanceStore, AudioSettingsStore, DrivingModeStore
 from simulation import Control
-from skins import PLAYER_VEHICLES, SKINS, apply_skin, vehicle_definition
+from skins import PLAYER_VEHICLES, SKINS, apply_skin, vehicle_definition, vehicle_for_design
 from soundscape import Soundscape
 from ui import theme
 from ui.hud import DrivingHUD
@@ -29,7 +29,7 @@ from vehicle_designs import vehicle_design
 
 
 class CoastalDrive(ShowBase):
-    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", driving_mode=None, abs_enabled=None, tcs_enabled=None, esc_enabled=None):
+    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", driving_mode=None, vehicle_design_id=None, abs_enabled=None, tcs_enabled=None, esc_enabled=None):
         self.startup_trace = startup_trace
         loadPrcFileData(
             "coastaldrive",
@@ -62,6 +62,8 @@ class CoastalDrive(ShowBase):
         self.output = output or user_data()
         appearance_path = self.output / "test-appearance.json" if smoke else None
         self.appearance = AppearanceStore(appearance_path)
+        if vehicle_design_id is not None:
+            self.appearance.model_id = vehicle_for_design(vehicle_design_id, self.appearance.model_id).id
         audio_path = self.output / "test-audio.json" if smoke else None
         self.audio_settings = AudioSettingsStore(audio_path)
         mode_path = self.output / "test-driving-mode.json" if smoke else None

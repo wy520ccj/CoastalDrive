@@ -1,0 +1,310 @@
+{
+  "task": "PHYS-PERF-01 package-r10 evidence archive",
+  "candidate": "r10",
+  "main_head": "6d58e9a611eb76fa47a19a166c1777504f71e39f",
+  "build": {
+    "status": "passed",
+    "returncode": 0,
+    "seconds": 29.45103620000009,
+    "main_source_frozen": true,
+    "context_unchanged": true,
+    "native_byte_identical": true,
+    "source_native_sha256": {
+      "mechanical_kernels": "d23a8665e35e08dd23dfbbba3009a22d5ed9589fa18c1f1dbaa8a8cf9dd12c8a",
+      "wheel_contact_kernels": "0668d40d48e9ddc3d27504c6fb1480653cb16d69f220d8beadf53dcb2d6aa833"
+    },
+    "packaged_native": {
+      "mechanical_kernels": {
+        "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-candidate-r10\\win_amd64\\mechanical_kernels.pyd",
+        "bytes": 128512,
+        "sha256": "d23a8665e35e08dd23dfbbba3009a22d5ed9589fa18c1f1dbaa8a8cf9dd12c8a",
+        "source_sha256": "d23a8665e35e08dd23dfbbba3009a22d5ed9589fa18c1f1dbaa8a8cf9dd12c8a",
+        "byte_identical": true
+      },
+      "wheel_contact_kernels": {
+        "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-candidate-r10\\win_amd64\\wheel_contact_kernels.pyd",
+        "bytes": 52224,
+        "sha256": "0668d40d48e9ddc3d27504c6fb1480653cb16d69f220d8beadf53dcb2d6aa833",
+        "source_sha256": "0668d40d48e9ddc3d27504c6fb1480653cb16d69f220d8beadf53dcb2d6aa833",
+        "byte_identical": true
+      }
+    }
+  },
+  "headless_package_check": {
+    "kind": "external-repository package headless check; not render, FPS or human acceptance",
+    "passed": true,
+    "checks": [
+      {
+        "mode": "game",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-candidate-r10\\win_amd64\\coastaldrive.exe",
+          "--headless",
+          "--steps",
+          "120",
+          "--track",
+          "test",
+          "--seed",
+          "17",
+          "--vehicle-design",
+          "gr86-2022-premium-6mt",
+          "--driving-mode",
+          "game"
+        ],
+        "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-r10-43xzk0sx\\game",
+        "returncode": 0,
+        "seconds": 1.1732334999978775,
+        "tick_120_and_mode_ok": true,
+        "full_hardware_present": true,
+        "log": "game.txt"
+      },
+      {
+        "mode": "simulation",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-candidate-r10\\win_amd64\\coastaldrive.exe",
+          "--headless",
+          "--steps",
+          "120",
+          "--track",
+          "test",
+          "--seed",
+          "17",
+          "--vehicle-design",
+          "gr86-2022-premium-6mt",
+          "--driving-mode",
+          "simulation"
+        ],
+        "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-r10-43xzk0sx\\simulation",
+        "returncode": 0,
+        "seconds": 0.9394161000018357,
+        "tick_120_and_mode_ok": true,
+        "full_hardware_present": true,
+        "log": "simulation.txt"
+      }
+    ],
+    "native_modules": {
+      "mechanical_kernels": {
+        "path": "win_amd64/mechanical_kernels.pyd",
+        "bytes": 128512,
+        "sha256": "d23a8665e35e08dd23dfbbba3009a22d5ed9589fa18c1f1dbaa8a8cf9dd12c8a",
+        "matches_build_source_sha256": true
+      },
+      "wheel_contact_kernels": {
+        "path": "win_amd64/wheel_contact_kernels.pyd",
+        "bytes": 52224,
+        "sha256": "0668d40d48e9ddc3d27504c6fb1480653cb16d69f220d8beadf53dcb2d6aa833",
+        "matches_build_source_sha256": true
+      }
+    },
+    "required_files_present": {
+      "executable": true,
+      "license": true,
+      "gr86_hardware_config": true
+    },
+    "sha256": {
+      "executable": "729351f4a60b29251805311f28d96ba89df00c6cde63be8a22eceaddd6c52769",
+      "license": "db693914a7f6d42f1d3e09c10eda1482e5d94ed4c70a769476ae8d722a9be1ce",
+      "gr86_hardware_config": "88c6bdce91429ae59247fec5c6bfd4a7531bbfa918e622dd78e61301dafb6a23"
+    }
+  },
+  "offscreen_render": {
+    "checks": [
+      {
+        "mode": "game",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-candidate-r10\\win_amd64\\coastaldrive.exe",
+          "--smoke",
+          "--track",
+          "test",
+          "--seed",
+          "17",
+          "--vehicle-design",
+          "gr86-2022-premium-6mt",
+          "--driving-mode",
+          "game",
+          "--output",
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-package-r10-render\\game"
+        ],
+        "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-r10-render-k2js6ady",
+        "returncode": 0,
+        "timeout": false,
+        "seconds": 4.29019789999802,
+        "report": {
+          "passed": true,
+          "tick": 260,
+          "player_position": [
+            95.00033569335938,
+            6.4584527015686035,
+            0.45000702142715454
+          ],
+          "traffic_count": 0,
+          "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+          "screenshot": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-package-r10-render\\game\\h0-offscreen.png",
+          "restart_20_nodes_stable": true,
+          "restart_20_tasks_stable": true,
+          "restart_20_events_stable": true
+        },
+        "passed": true
+      },
+      {
+        "mode": "simulation",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-candidate-r10\\win_amd64\\coastaldrive.exe",
+          "--smoke",
+          "--track",
+          "test",
+          "--seed",
+          "17",
+          "--vehicle-design",
+          "gr86-2022-premium-6mt",
+          "--driving-mode",
+          "simulation",
+          "--output",
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-package-r10-render\\simulation"
+        ],
+        "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-r10-render-k2js6ady",
+        "returncode": 0,
+        "timeout": false,
+        "seconds": 4.237709000000905,
+        "report": {
+          "passed": true,
+          "tick": 256,
+          "player_position": [
+            95.00102233886719,
+            8.079621315002441,
+            0.4499896764755249
+          ],
+          "traffic_count": 0,
+          "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+          "screenshot": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-package-r10-render\\simulation\\h0-offscreen.png",
+          "restart_20_nodes_stable": true,
+          "restart_20_tasks_stable": true,
+          "restart_20_events_stable": true
+        },
+        "passed": true
+      }
+    ],
+    "passed": true,
+    "scope": "独立包离屏渲染与20次场景重启；不代表前台FPS或人工驾驶。"
+  },
+  "archived_files": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/build-native-package-r10.py",
+      "archive": "scripts/build-native-package-r10.py",
+      "bytes": 6486,
+      "sha256": "2f7f9699760f08c00698e3721310b83a65bb774d98bfc8e1980a322937a43eec"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/native-package-check-r10.py",
+      "archive": "scripts/native-package-check-r10.py",
+      "bytes": 4720,
+      "sha256": "dd5eea20af8288769117036902c84fb0cc50852eaf36f1457c60e7743adeb041"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/package-render-r10.py",
+      "archive": "scripts/package-render-r10.py",
+      "bytes": 2086,
+      "sha256": "6737f6c478139d90d70a6dfb78090a1dec4a14b24745cd66553f6e52718a402b"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-package-r10/summary.json",
+      "archive": "build/summary.json",
+      "bytes": 47616,
+      "sha256": "0c6d2ce26c720c9a4be844914cb2698d7e17a4dd980cfe363cd9aaabacbc4fc6"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-package-r10/build.txt",
+      "archive": "build/build.txt",
+      "bytes": 10316,
+      "sha256": "c1018d3444b3abee9f0a915953e87065a642695d901fe81e93ccaf4202cd9172"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-package-r10/package-check.json",
+      "archive": "headless/package-check.json",
+      "bytes": 2489,
+      "sha256": "9899e334f3c302ad8cd9d7dadcceb3c71cbf3d19860497fae789b5a880d27627"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-package-r10/game.txt",
+      "archive": "headless/game.txt",
+      "bytes": 33113,
+      "sha256": "14743a27c609ec7db839bff4c928f97ce2e78f9064b4730c0189510fa77735b0"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-package-r10/simulation.txt",
+      "archive": "headless/simulation.txt",
+      "bytes": 33562,
+      "sha256": "0559332f76ade6da65c696ed701a6f19eb15860a2d1b583e61eac15e5aa26321"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-package-r10-render/summary.json",
+      "archive": "render/summary.json",
+      "bytes": 2829,
+      "sha256": "1efd1ba37b7146692efdb288cbe362c3f135590150c7f5de2beeb1d676be9a67"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-package-r10-render/game/h0-offscreen.png",
+      "archive": "render/game/h0-offscreen.png",
+      "bytes": 164350,
+      "sha256": "3fcfee8eb4f2e5e6f0aa9ddf3f12d3ad01f30eb551aedc662fdcb0e7c0a75dd9"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-package-r10-render/game/h0-render-smoke.json",
+      "archive": "render/game/h0-render-smoke.json",
+      "bytes": 515,
+      "sha256": "3de6a08013be6f042117f04ce5109818a3a592076ed974d6526b34cec2bb3f2f"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-package-r10-render/game/process.txt",
+      "archive": "render/game/process.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-package-r10-render/game/user-data/CoastalDrive/runtime.log",
+      "archive": "render/game/user-data/CoastalDrive/runtime.txt",
+      "bytes": 66,
+      "sha256": "0511b4d19b897c36de6431ab2292908b1739ce17a2dffe8bdec1416597fbe192"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-package-r10-render/simulation/h0-offscreen.png",
+      "archive": "render/simulation/h0-offscreen.png",
+      "bytes": 163946,
+      "sha256": "ad793385499fe458dc48bde54b9b6fff7b1b102d53e6788c03efd90909855060"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-package-r10-render/simulation/h0-render-smoke.json",
+      "archive": "render/simulation/h0-render-smoke.json",
+      "bytes": 519,
+      "sha256": "b2acbec9be7dcef9783eba8372fec832cc9fa9d96c1e42c6eb16b57cba9b2141"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-package-r10-render/simulation/process.txt",
+      "archive": "render/simulation/process.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-package-r10-render/simulation/user-data/CoastalDrive/runtime.log",
+      "archive": "render/simulation/user-data/CoastalDrive/runtime.txt",
+      "bytes": 66,
+      "sha256": "760e275b01bb996dae579698f26fc92f611c34f3fe17671dbb653702d6de1b7e"
+    },
+    {
+      "source": "generated: binary-preserving Git attributes",
+      "archive": ".gitattributes",
+      "bytes": 8,
+      "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da"
+    }
+  ],
+  "limits": [
+    "offscreen test track reports zero traffic",
+    "not foreground FPS",
+    "not human driving acceptance"
+  ],
+  "not_rerun": [
+    "T1",
+    "T2",
+    "additional physics validation"
+  ],
+  "package_copy": "candidate package and large build outputs omitted; raw summaries, logs, scripts and screenshots retained."
+}

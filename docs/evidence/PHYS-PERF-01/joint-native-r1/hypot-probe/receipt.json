@@ -1,0 +1,11 @@
+{
+  "source_url": "https://raw.githubusercontent.com/python/cpython/v3.14.2/Modules/mathmodule.c",
+  "source_sha256": "fb618164d4dd0ba5dc45062d3521f9c44e270ce513a40bbb8ba8aecf1e374179",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "compile": "/fp:strict",
+  "counts": {
+    "boundary": 196,
+    "random_bits": 100000
+  },
+  "all_hex_equal": true
+}

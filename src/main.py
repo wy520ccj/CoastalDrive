@@ -42,6 +42,8 @@ def main():
     esc_enabled = None if args.esc_selection is None else args.esc_selection == "on"
     if args.steps <= 0:
         parser.error("--steps must be positive")
+    if args.vehicle_config is not None and not args.headless:
+        parser.error("--vehicle-config仅用于无窗口工程实验，请同时指定--headless")
     if args.profile_startup and (args.headless or args.smoke or args.window_smoke):
         parser.error("--profile-startup requires a visible menu run")
     if args.headless:
@@ -70,8 +72,6 @@ def main():
         finally:
             simulation.close()
         return 0
-    if args.vehicle_design is not None or args.vehicle_config is not None:
-        parser.error("车辆工程CLI参数当前用于无窗口入口；窗口车型在车库选择")
     startup = None
     if args.profile_startup:
         from performance_baseline import StartupTrace
@@ -86,7 +86,8 @@ def main():
         startup.mark("application_imported")
         app = CoastalDrive(onscreen=True, output=args.output, seed=args.seed, track=args.track,
                            road_shape=args.road_shape, startup_trace=startup,
-                           driving_mode=driving_mode, abs_enabled=abs_enabled, tcs_enabled=tcs_enabled, esc_enabled=esc_enabled)
+                           driving_mode=driving_mode, vehicle_design_id=args.vehicle_design,
+                           abs_enabled=abs_enabled, tcs_enabled=tcs_enabled, esc_enabled=esc_enabled)
         try:
             app.taskMgr.step()
             startup.mark("first_rendered_frame")
@@ -138,6 +139,7 @@ def main():
         track=args.track,
         road_shape=args.road_shape,
         driving_mode=driving_mode,
+        vehicle_design_id=args.vehicle_design,
         abs_enabled=abs_enabled,
         tcs_enabled=tcs_enabled,
         esc_enabled=esc_enabled,

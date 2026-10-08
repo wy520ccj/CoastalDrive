@@ -1,10 +1,10 @@
 # 当前进度
 
-更新：2026-10-08。**独立包/公开基线：0.8.3 RADIO-02，包含UI-NOTICE-FIX；当前main源码在物理开发中。** 源码来自Visual Identity v1开发线，本轮用户明确确认其作为主版本并授权整理/提交/推送。根目录保留试玩.cmd，阶段入口归档到launchers/archive，原默认build与早期smoke目录分别集中到builds/archive和logs/archive。CoastalDrive-VI-v1工作树同步当前主版本内容；旧main保留于上级备份与Git历史。DS实验档案仍为只读参考。
+更新：2026-10-08。**独立包/公开基线：0.8.3 RADIO-02，包含UI-NOTICE-FIX；当前物理开发在主目录main。** Visual Identity v1已按先前授权成为主版本，旧main保留于上级备份和Git历史。CoastalDrive-VI-v1与gr86-physics工作树为既有历史/辅助施工目录，当前新增物理成果以主目录为准；DS仍为只读参考。根目录试玩.cmd保持公开包入口，本轮物理候选包另放在builds并提供launchers入口。
 
 ## 当前阶段
 
-- **2026-10-08当前施工状态**：主目录 `main` 已完成跨轮载荷与共同状态原生入口；角向/法向中间数组直接接共同求根及局部自由状态，当前轮力、法向响应和几何逐次读取。独立 `b5c35c5` 原Python/旧DLL对照804个完整推进、14,823次共同入口、11,220次局部入口，全部字段hex/世界引用一致，C/PY/PYD起止SHA相同；77项相关T0/Ruff通过。120Hz、共同20轮/端口30轮与原精度保持；不重复完整T1/种子/48拍/profile，不作FPS结论。本轮本地提交，未推送；完整T2/T3、最终包、前台性能与两模式人工驾驶仍待完成。下一局部自由状态与轮力求根直接连通，再收产品和阶段。[本轮证据](evidence/PHYS-PERF-01/shared-load-r1/receipt.json)。
+- **2026-10-08当前施工状态**：按用户要求连续完成五个关联数值块：载荷直接进入局部轮力求根、共同四轮接触/制动残差、悬架反力/几何残差、同版本二维norm与四轮制动联合修正；再接通窗口GR86工程车型选择、独立包与双模式试玩入口。120Hz、硬件、本构、20/30轮、滚动20×20及原精度保持。相对6d58e9a原Python/独立旧DLL，最终804个完整推进全字段hex/世界引用一致，3111次制动修正与原Python逐值一致；norm先有100196组独立探针。合并T1首轮699通过/1旧观测入口失败，接到实际入口后仅复核该1节点及三种子各1200拍通过，复用699项。r10构建/两模式仓库外120拍/离屏渲染及各20次重启通过，截图已目视；[正常模式](../launchers/physics-r10-game.cmd)、[困难仿真](../launchers/physics-r10-simulation.cmd)。本批仅本地提交，未推送。完整T2/T3、1080p海岸8车前台性能与人工驾驶仍待完成；下一沿有限支持面查询与真实静态形状读取继续推进。[数值组证据](evidence/PHYS-PERF-01/joint-native-r1/receipt.json)、[制动/T1证据](evidence/PHYS-PERF-01/brake-correction-r1/receipt.json)、[r10包证据](evidence/PHYS-PERF-01/package-r10/receipt.json)。
 
 以下为各功能块的实施时摘要；现行施工状态见首条和对应任务包顶部。
 

@@ -1,0 +1,29 @@
+Traceback (most recent call last):
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\physics\PHYS-PERF-01\joint-native-r1\audit.py", line 94, in <module>
+    audited((.3, sign * 12., .1), (.12, -.08, .2), (36., 39., 33., 46.), 500.,
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        frames(20., 12., (0., 300., 5500., 5886.)), ((.001, -.0002),) * 4,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        shaft_axis=ENGINE_AXIS, synchronizing=mode == 'synchronizing',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        synchronizer_capacity=20. if mode == 'synchronizing' else 0.)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\physics\PHYS-PERF-01\joint-native-r1\audit.py", line 70, in audited
+    actual = advance(*args, **kwargs)
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\tire_drivetrain.py", line 712, in advance_drivetrain
+    forces[i], modes[i] = solve_wheel(i, gyro)
+                          ~~~~~~~~~~~^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\tire_drivetrain.py", line 435, in solve_wheel
+    fx, fy, brake, _error = loaded_wheel_force_solution(wheel_map, i, forces, velocity,
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        normal_forces if suspension is not None else None, normal_responses,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        rolling[i], .0001, forces[i][:2],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        suspension is not None and sweep == 0 and rolling[i] and wheel_loads[i] > 0, None)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\physics\PHYS-PERF-01\joint-native-r1\audit.py", line 55, in counted_loaded
+    return loaded(*args)
+TypeError: 'NoneType' object is not callable

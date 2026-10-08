@@ -1,0 +1,41 @@
+{
+  "baseline": "6d58e9a",
+  "scope": "Git文本行尾规范化；归档/构建使用原字节，Git索引使用LF。只核对字节转换，不重复物理或构建。",
+  "files": {
+    "src/mechanical_kernels.c": {
+      "raw_sha256": "4993643323fcb60ce0c38ffe139201d8d4963adc8f93904b132b47889d1cfdf4",
+      "indexed_sha256": "061523360dcc5469f44e655476f4df109cb8e7e732b15ca75aa725a804ca4084",
+      "only_crlf_to_lf": true
+    },
+    "src/tire_drivetrain.py": {
+      "raw_sha256": "58fd5d511a089c5b5d0bf74274fdec59a0ef969d07af4e7c73ab095cd7f8118e",
+      "indexed_sha256": "8074a1eeee040a1060f2d1fc2326ad63c68436cc766ca5f390172b3aa5bc820f",
+      "only_crlf_to_lf": true
+    },
+    "src/application.py": {
+      "raw_sha256": "8e490464c53a94bedb4f21ce7e811c98cea61a9ea1922cb3133b33a832a84152",
+      "indexed_sha256": "1df866daba75dc1224cdc1e6b1d05a21598a2c80964ed9e44a9b2c3609a4b224",
+      "only_crlf_to_lf": true
+    },
+    "src/main.py": {
+      "raw_sha256": "74941fdcd58da3fb4b60a46737d28bf36998930b8099a236786f29383815561c",
+      "indexed_sha256": "608a77891906520ec002f06bc5313865df6024ac7f6b6af19fcefd4db0f9deba",
+      "only_crlf_to_lf": true
+    },
+    "src/skins.py": {
+      "raw_sha256": "bbfbf9ee5fe018139e0021ee9e09081bd7b09eb33d5dc0229a8735153e227ddf",
+      "indexed_sha256": "f0d7a07f086b43c3d0e8f3576c16ecd83fb91936384f04b5579f8471befb4ea6",
+      "only_crlf_to_lf": true
+    },
+    "tests/test_drivetrain_jacobian.py": {
+      "raw_sha256": "2fe8f8d8f1fcb3e122a8f07ddf5984ad9abb9efaa6a22eb915b5a6433b340254",
+      "indexed_sha256": "7b1a5aab8684b0bd3218795a862d4e30113eeb56f9e663dd16fe920f2744a03c",
+      "only_crlf_to_lf": true
+    },
+    "tests/test_vehicle_design_entry.py": {
+      "raw_sha256": "04504db341132a78e6c1a0827dd279aad5ebe370d6fbe926b03cdae1508cfb1f",
+      "indexed_sha256": "04504db341132a78e6c1a0827dd279aad5ebe370d6fbe926b03cdae1508cfb1f",
+      "only_crlf_to_lf": true
+    }
+  }
+}

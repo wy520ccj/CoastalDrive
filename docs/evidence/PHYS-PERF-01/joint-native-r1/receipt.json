@@ -1,0 +1,404 @@
+{
+  "task": "PHYS-PERF-01 joint-native-r1 evidence archive",
+  "baseline": "6d58e9a original Python + independent strict C DLL",
+  "main_head_at_evidence": "6d58e9a",
+  "production_source_sha256": {
+    "src/mechanical_kernels.c": "dfd665c69e0ea595312c123f64789001f4148186f05f054ebce1533563e3a484",
+    "src/tire_drivetrain.py": "242f4c8dbe62ac9a5f938f58ba37707db42d555e2db1bb937dce1acd4e7b59c8",
+    "src/mechanical_kernels.cp314-win_amd64.pyd": "316ef5afd22f0967ef36a52f9d807f6d0868a9e7ff2434fe749951b468de0fca"
+  },
+  "tested_native_sha256": {
+    "src/mechanical_kernels.c": "b0958c451bb1df6234d32d0f57aea19979f7b1beccc174628a23a3a75ffe0a3d",
+    "src/tire_drivetrain.py": "242f4c8dbe62ac9a5f938f58ba37707db42d555e2db1bb937dce1acd4e7b59c8",
+    "src/mechanical_kernels.cp314-win_amd64.pyd": "316ef5afd22f0967ef36a52f9d807f6d0868a9e7ff2434fe749951b468de0fca"
+  },
+  "format_chain": {
+    "tested_sha256": "b0958c451bb1df6234d32d0f57aea19979f7b1beccc174628a23a3a75ffe0a3d",
+    "committed_sha256": "dfd665c69e0ea595312c123f64789001f4148186f05f054ebce1533563e3a484",
+    "only_imported_norm_body_trailing_whitespace_removed": true,
+    "tokens_and_line_count_equal": true,
+    "native_sha_unchanged": "316ef5afd22f0967ef36a52f9d807f6d0868a9e7ff2434fe749951b468de0fca",
+    "scope": "纯行尾空白，不重新运行测试/物理或重建已测PYD。"
+  },
+  "final_audit": {
+    "baseline": "6d58e9a original Python + independent strict C DLL",
+    "all_full_step_fields_hex_and_world_references_equal": true,
+    "counts": {
+      "complete_steps": 804,
+      "loaded_force_calls": 11024,
+      "wheel_residual_calls": 2805,
+      "suspension_residual_calls": 2709,
+      "bench_cases": 36
+    },
+    "paired_step_timing_diagnostic_only": {
+      "old_seconds": 1.4416585999788367,
+      "new_seconds": 1.028569600006449
+    },
+    "source_sha_start": {
+      "src/mechanical_kernels.c": "b0958c451bb1df6234d32d0f57aea19979f7b1beccc174628a23a3a75ffe0a3d",
+      "src/tire_drivetrain.py": "242f4c8dbe62ac9a5f938f58ba37707db42d555e2db1bb937dce1acd4e7b59c8",
+      "src/mechanical_kernels.cp314-win_amd64.pyd": "316ef5afd22f0967ef36a52f9d807f6d0868a9e7ff2434fe749951b468de0fca"
+    },
+    "source_sha_end": {
+      "src/mechanical_kernels.c": "b0958c451bb1df6234d32d0f57aea19979f7b1beccc174628a23a3a75ffe0a3d",
+      "src/tire_drivetrain.py": "242f4c8dbe62ac9a5f938f58ba37707db42d555e2db1bb937dce1acd4e7b59c8",
+      "src/mechanical_kernels.cp314-win_amd64.pyd": "316ef5afd22f0967ef36a52f9d807f6d0868a9e7ff2434fe749951b468de0fca"
+    },
+    "scope": "一次功能组旧/新对照；不重复T1/种子/48拍/profile，非FPS证据。"
+  },
+  "hypot_probe": {
+    "source_url": "https://raw.githubusercontent.com/python/cpython/v3.14.2/Modules/mathmodule.c",
+    "source_sha256": "fb618164d4dd0ba5dc45062d3521f9c44e270ce513a40bbb8ba8aecf1e374179",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "compile": "/fp:strict",
+    "counts": {
+      "boundary": 196,
+      "random_bits": 100000
+    },
+    "all_hex_equal": true
+  },
+  "t0_boundaries": {
+    "joint_native_T0": "548 passed; evidence covers the first three blocks and predates the native norm probe.",
+    "design_entry_initial": "11 passed, 2 failed due to the then-existing CLI restriction; preserved as historical failure.",
+    "design_entry_r2": "Ruff and the focused pytest check both passed (2 checks)."
+  },
+  "archived_files": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/audit.json",
+      "archive": "audit.json",
+      "bytes": 1237,
+      "sha256": "2d9405b07f0b7d4883c6a8467f1209926f55db098c4b260c17587e4a709b23d3"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/audit.log",
+      "archive": "audit.txt",
+      "bytes": 1162,
+      "sha256": "4a2f20dd88f261207cf75b82eac568b5ae0997ca03dcc95fefdeec99980b4c1b"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/audit-final.log",
+      "archive": "audit-final.txt",
+      "bytes": 2216,
+      "sha256": "48d0fbec9dcc0872dc668db7303f5255bcff07be376d8f19489c6597ddf75024"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/audit-final-r2.log",
+      "archive": "audit-final-r2.txt",
+      "bytes": 1162,
+      "sha256": "06ef4c5c866519c05b8ecdc2e0ab22c442562566b93ccfa99360ffc25d72330a"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/audit-norm-r1-failure.log",
+      "archive": "audit-norm-r1-failure.txt",
+      "bytes": 2216,
+      "sha256": "48d0fbec9dcc0872dc668db7303f5255bcff07be376d8f19489c6597ddf75024"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/audit-group3.json",
+      "archive": "audit-group3.json",
+      "bytes": 1237,
+      "sha256": "ecc65e682e343ada509fd6672abe4fcf46afd6ac7b2c2199f8d15fc2a812feb7"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/audit-group3.log",
+      "archive": "audit-group3.txt",
+      "bytes": 1162,
+      "sha256": "4a2f20dd88f261207cf75b82eac568b5ae0997ca03dcc95fefdeec99980b4c1b"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/audit.py",
+      "archive": "audit.py",
+      "bytes": 5721,
+      "sha256": "baf53eb80a7ce00f93896c5fe8ffcb1a6cc22a79be18890ed457af9678bf57f0"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/prepare-audit.py",
+      "archive": "prepare-audit.py",
+      "bytes": 2218,
+      "sha256": "5d22ddd1c8b9cff30628236684ff48cd07de2b32def74c3899fe446ab9f10297"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/original-mechanical_kernels.c",
+      "archive": "original-mechanical_kernels.c",
+      "bytes": 137133,
+      "sha256": "d031ec376383123d42f4366c981bfc547ea0e9802f18fe92744072456b86ea8c"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/original-tire_drivetrain.py",
+      "archive": "original-tire_drivetrain.py",
+      "bytes": 48275,
+      "sha256": "d8cbe28bc86c5db3a88c282d3bdd2ddb2e57052bfade6c2e3c6c75923fc18746"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/baseline.c",
+      "archive": "baseline.c",
+      "bytes": 137131,
+      "sha256": "1af9bf8d9376e9e260f410f4d56908b4a534cf73fe57fa23fb4c8afdac922118"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/baseline-sha.json",
+      "archive": "baseline-sha.json",
+      "bytes": 199,
+      "sha256": "4aab5f873b820ea806f21afa3f2c5af5a809307d5e8ad368638ebe5cf321e9ae"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/baseline-build.log",
+      "archive": "baseline-build.txt",
+      "bytes": 2829,
+      "sha256": "9ac4bff9c1bc37d20723611ce43bb1cae67628e06fd9d95998023c93e38fd72c"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/setup.py",
+      "archive": "setup.py",
+      "bytes": 176,
+      "sha256": "f98dccbb4398663b2c18745afe29b2446ff895425b507db5e3cd5a142cdf30e0"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/_joint_native_old.cp314-win_amd64.pyd",
+      "archive": "_joint_native_old.cp314-win_amd64.pyd",
+      "bytes": 114688,
+      "sha256": "d799172757e9353b328911e4bfae088710dbcc86d325857e1eb82adfe07e66c6"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/hypot-probe/receipt.json",
+      "archive": "hypot-probe/receipt.json",
+      "bytes": 410,
+      "sha256": "e890b5a0704dafdebaa8491f037543d76539df500926a6d6916cd5342d765bf5"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/hypot-probe/probe.c",
+      "archive": "hypot-probe/probe.c",
+      "bytes": 3092,
+      "sha256": "b91419fe088241dc2b44fcbcdaa465bd0984f88fde95106415b54a6a5b16bce9"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/hypot-probe/hypot-body.c",
+      "archive": "hypot-probe/hypot-body.c",
+      "bytes": 2596,
+      "sha256": "2a5b75dbee128c10b8f1b6b436ce24bccd9847f196fcb226b35f881d10645c95"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/hypot-probe/mathmodule.c",
+      "archive": "hypot-probe/mathmodule.c",
+      "bytes": 133895,
+      "sha256": "fb618164d4dd0ba5dc45062d3521f9c44e270ce513a40bbb8ba8aecf1e374179"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/hypot-probe.log",
+      "archive": "hypot-probe.txt",
+      "bytes": 376,
+      "sha256": "4e7e7c6871efc7e8c85ce519a12a97b4ede463d375fdff8db3f2471aa4e55066"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/hypot-probe/build.log",
+      "archive": "hypot-probe/build.txt",
+      "bytes": 2794,
+      "sha256": "7791107aff62323020c01fbd068c9019b2aff869a304c900922f70cfaae8ab63"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/tested-final-mechanical_kernels.c",
+      "archive": "tested-final-mechanical_kernels.c",
+      "bytes": 147701,
+      "sha256": "b0958c451bb1df6234d32d0f57aea19979f7b1beccc174628a23a3a75ffe0a3d"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/format-source-chain.json",
+      "archive": "format-source-chain.json",
+      "bytes": 464,
+      "sha256": "b5cdc15dcc813db98874dcd6479433d65d82ac76b7582e7fed2ff234095b145d"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/build.log",
+      "archive": "build.txt",
+      "bytes": 2892,
+      "sha256": "13cef7ae177fafe4114a088586dc9c9bf5248abef4cec41ef0b29ec517ee546f"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/build-hypot.log",
+      "archive": "build-hypot.txt",
+      "bytes": 2892,
+      "sha256": "13cef7ae177fafe4114a088586dc9c9bf5248abef4cec41ef0b29ec517ee546f"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/build-hypot-r2.log",
+      "archive": "build-hypot-r2.txt",
+      "bytes": 2892,
+      "sha256": "13cef7ae177fafe4114a088586dc9c9bf5248abef4cec41ef0b29ec517ee546f"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/ruff-format.log",
+      "archive": "ruff-format.txt",
+      "bytes": 39,
+      "sha256": "4b9315462a6ef4a2fe64e4dc2aec1252bf2299ac92f4976c0e81c84799cff44a"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/extend-residuals.py",
+      "archive": "extend-residuals.py",
+      "bytes": 2548,
+      "sha256": "5dab518ee8136fb18800477a149ee799137c94adc7f07c079a0b45d717ff4e1d"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/extend-wheel-solver.py",
+      "archive": "extend-wheel-solver.py",
+      "bytes": 4920,
+      "sha256": "0ccbaf5cbf516cc725abfc05aa14f3fa755907966157c01be11a56766b96775b"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/probe-hypot.py",
+      "archive": "probe-hypot.py",
+      "bytes": 3347,
+      "sha256": "ffc159e6130f582e9dab47c4e91bbc424c56e3364593bb647bda0ca5174b621f"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/promote-hypot.py",
+      "archive": "promote-hypot.py",
+      "bytes": 2773,
+      "sha256": "8476579aa1d547b77f8677b4866500ed84069659416fc869b5306531f9924e9a"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/tidy-norm-source.py",
+      "archive": "tidy-norm-source.py",
+      "bytes": 1533,
+      "sha256": "f7093acb7c274c6faf80d598bfcc1a2e645e47b50e8c95807507b5be2a38cfc2"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/residual-body.c",
+      "archive": "residual-body.c",
+      "bytes": 5565,
+      "sha256": "497b5c342cc2f018fd99775b556da403a6cda11268be0997331ba2f53b173acb"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/group3-source/mechanical_kernels.c",
+      "archive": "group3-source/mechanical_kernels.c",
+      "bytes": 145547,
+      "sha256": "ed0a7ac57b3d13a35a11038a0f8231df317e07925d9e0d5923107bd96c281bc9"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/group3-source/tire_drivetrain.py",
+      "archive": "group3-source/tire_drivetrain.py",
+      "bytes": 48765,
+      "sha256": "35569c12cc97cb70a0f784cd162d0e1cc1d51d1c558dda823bf179f05189a243"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-r1/group3-source/mechanical_kernels.cp314-win_amd64.pyd",
+      "archive": "group3-source/mechanical_kernels.cp314-win_amd64.pyd",
+      "bytes": 120320,
+      "sha256": "956b1bf737509fa65cf277d96320cf0a7c59fbe5c7f47f04081e4923be1c2a95"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-joint-native-T0/summary.json",
+      "archive": "validation/joint-native-T0/summary.json",
+      "bytes": 2247,
+      "sha256": "2099320a27ad21781435100d3875fba481ed8b5335d8ad063156a2686c83b59b"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-joint-native-T0/ruff.log",
+      "archive": "validation/joint-native-T0/ruff.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-joint-native-T0/pytest.log",
+      "archive": "validation/joint-native-T0/pytest.txt",
+      "bytes": 669,
+      "sha256": "b2fabb3773751be614d918b210c07e1c7b21288c864d3e49dc64a11158e854d3"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-design-entry-T0/summary.json",
+      "archive": "validation/design-entry-T0-initial/summary.json",
+      "bytes": 1725,
+      "sha256": "87d10e7f237ecc8c0eaff04a68558efb518c30655fb3312976653b2e0b899d24"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-design-entry-T0/ruff.log",
+      "archive": "validation/design-entry-T0-initial/ruff.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-design-entry-T0/pytest.log",
+      "archive": "validation/design-entry-T0-initial/pytest.txt",
+      "bytes": 6415,
+      "sha256": "985878eb4166b56fd6c805c8cb4c0a6793bf29b2f4ffc83fca119c9172608010"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-design-entry-T0-r2/summary.json",
+      "archive": "validation/design-entry-T0-r2/summary.json",
+      "bytes": 1746,
+      "sha256": "a51e201482d861b97ff64c3adfb3fe06b128e3b1aef238bacce91f32c2eff9cb"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-design-entry-T0-r2/ruff.log",
+      "archive": "validation/design-entry-T0-r2/ruff.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-design-entry-T0-r2/pytest.log",
+      "archive": "validation/design-entry-T0-r2/pytest.txt",
+      "bytes": 100,
+      "sha256": "fc3f634a394467412c7733d0b0fb8796f5e2caebfb5caa708ac29c72fc64d260"
+    },
+    {
+      "source": "generated: binary-preserving Git attributes",
+      "archive": ".gitattributes",
+      "bytes": 8,
+      "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da"
+    },
+    {
+      "source": "src/mechanical_kernels.c",
+      "archive": "production/mechanical_kernels.c",
+      "bytes": 147587,
+      "sha256": "dfd665c69e0ea595312c123f64789001f4148186f05f054ebce1533563e3a484"
+    },
+    {
+      "source": "src/tire_drivetrain.py",
+      "archive": "production/tire_drivetrain.py",
+      "bytes": 48772,
+      "sha256": "242f4c8dbe62ac9a5f938f58ba37707db42d555e2db1bb937dce1acd4e7b59c8"
+    },
+    {
+      "source": "src/mechanical_kernels.cp314-win_amd64.pyd",
+      "archive": "production/mechanical_kernels.cp314-win_amd64.pyd",
+      "bytes": 122880,
+      "sha256": "316ef5afd22f0967ef36a52f9d807f6d0868a9e7ff2434fe749951b468de0fca"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-profile-r1/profile.json",
+      "archive": "profile/profile.json",
+      "bytes": 31824,
+      "sha256": "b126bd759db6161a52a5963da987b71665b7f918ce9b06c24bb6c5f29915e107"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/joint-native-profile-r1/gr86-profile.prof",
+      "archive": "profile/gr86-profile.prof",
+      "bytes": 67350,
+      "sha256": "40836d0739ca41d0216fc361702096d170c6cd2b468e45c60b871e93a9d3c4a8"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-joint-native.py",
+      "archive": "profile/profile-joint-native.py",
+      "bytes": 6807,
+      "sha256": "8768743ecc5d45dac97dcdcd933fd78ba407659f46793a4fc68555972961c6c5"
+    }
+  ],
+  "not_rerun": [
+    "T1",
+    "T2",
+    "seeds",
+    "48-tick comparison",
+    "profile"
+  ],
+  "performance_scope": "paired-step timing is diagnostic only; no FPS claim.",
+  "profile_diagnostic": {
+    "source_sha_tree_unchanged": true,
+    "seed": 17,
+    "track": "coastal",
+    "traffic_count": 8,
+    "warmup_steps": 8,
+    "profiled_steps": 16,
+    "fixed_step_hz": 120,
+    "window": false,
+    "interpretation": "短时离屏cProfile定位证据，不代表FPS或前台性能Gate。"
+  }
+}

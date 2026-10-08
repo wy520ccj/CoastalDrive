@@ -1,0 +1,1146 @@
+{
+  "tick": 120,
+  "time": 1.0,
+  "player": {
+    "position": [
+      95.0,
+      0.5829877257347107,
+      0.4489820599555969
+    ],
+    "heading": -5.3162719268584624e-05,
+    "speed": 1.4485827684402466,
+    "pitch": 0.29192763566970825,
+    "roll": -0.0004089655994903296,
+    "wheels": [
+      {
+        "position": [
+          94.23999786376953,
+          1.7939387559890747,
+          0.31459999084472656
+        ],
+        "orientation": [
+          0.6010348200798035,
+          -0.7992227673530579,
+          -1.7596859152035904e-06,
+          -3.1420756840816466e-06
+        ]
+      },
+      {
+        "position": [
+          95.76000213623047,
+          1.7939374446868896,
+          0.31459999084472656
+        ],
+        "orientation": [
+          0.6010358929634094,
+          -0.7992219924926758,
+          -1.7596900079297484e-06,
+          -3.142073865092243e-06
+        ]
+      },
+      {
+        "position": [
+          94.2249984741211,
+          -0.7810945510864258,
+          0.31459999084472656
+        ],
+        "orientation": [
+          0.5235974192619324,
+          -0.8519657254219055,
+          -1.4578947684640298e-06,
+          -3.2929733606579248e-06
+        ]
+      },
+      {
+        "position": [
+          95.77499389648438,
+          -0.7810959219932556,
+          0.31460002064704895
+        ],
+        "orientation": [
+          0.5235691666603088,
+          -0.8519830703735352,
+          -1.457785629099817e-06,
+          -3.2930220186244696e-06
+        ]
+      }
+    ],
+    "surface": "asphalt",
+    "steering": 0.0,
+    "throttle": 0.5,
+    "brake": 0.0,
+    "rpm": 1176.2473720370883,
+    "gear": 1,
+    "acceleration": 1.9512687921524048,
+    "lateral_acceleration": -0.00011748062388505787,
+    "dynamics": {
+      "aerodynamic_force": 0.6851153011174006,
+      "rolling_force": 173.83909805470444,
+      "grade_force": -0.0,
+      "front_load": 6266.685746141329,
+      "rear_load": 6361.679636707271,
+      "yaw_rate": 6.078627166061779e-07,
+      "sideslip": 0.00021906780953961385,
+      "traction_limited": false,
+      "road_grade": -0.0,
+      "air_relative_velocity": [
+        6.9131533564359415e-06,
+        1.440454125404358,
+        -0.0018147751688957214
+      ],
+      "aerodynamic_force_vector": [
+        -3.288062633179229e-06,
+        -0.6851147573837022,
+        0.000863150882500293
+      ],
+      "aerodynamic_power": -0.9868779450962791
+    },
+    "active": true,
+    "generation": 0,
+    "signal": 0,
+    "velocity": [
+      6.4573564486636315e-06,
+      1.4485827684402466,
+      -0.0012909173965454102
+    ],
+    "hazards": false,
+    "wheel_contacts": [
+      {
+        "in_contact": true,
+        "contact_point": [
+          94.23999298850373,
+          1.7879033740173527,
+          0.0
+        ],
+        "contact_normal": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "suspension_force": 3150.7530718613684,
+        "normal_load": 3150.7530718613684,
+        "suspension_length": 0.3191691335365885,
+        "compression": 0.08083087242387599,
+        "skid": null,
+        "surface": "asphalt"
+      },
+      {
+        "in_contact": true,
+        "contact_point": [
+          95.75999285030093,
+          1.7879019997060503,
+          0.0
+        ],
+        "contact_normal": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "suspension_force": 3150.3032544499347,
+        "normal_load": 3150.3032544499347,
+        "suspension_length": 0.31918016053981213,
+        "compression": 0.08081984542065235,
+        "skid": null,
+        "surface": "asphalt"
+      },
+      {
+        "in_contact": true,
+        "contact_point": [
+          94.22499046382521,
+          -0.7871299444970983,
+          0.0
+        ],
+        "contact_normal": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "suspension_force": 3244.7665406268748,
+        "normal_load": 3244.7665406268748,
+        "suspension_length": 0.3060451072284238,
+        "compression": 0.09395489873204066,
+        "skid": null,
+        "surface": "asphalt"
+      },
+      {
+        "in_contact": true,
+        "contact_point": [
+          95.77499023740917,
+          -0.7871313176692079,
+          0.0
+        ],
+        "contact_normal": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "suspension_force": 3244.3887724367023,
+        "normal_load": 3244.3887724367023,
+        "suspension_length": 0.30605635775198303,
+        "compression": 0.09394364820848145,
+        "skid": null,
+        "surface": "asphalt"
+      }
+    ],
+    "contact_tick": 120,
+    "wheel_dynamics": [
+      {
+        "omega": 4.599743926533161,
+        "rotation": 1.8570972244344521,
+        "relative_omega": 4.599379068844272,
+        "longitudinal_speed": 1.448533276155346,
+        "lateral_speed": -7.613038318239919e-06,
+        "kappa": -0.0010036614821077633,
+        "alpha": -5.255687558918993e-06,
+        "fx": -64.84734629074265,
+        "fy": -0.04845534295940739,
+        "drive_torque": 0.0,
+        "brake_capacity": 0.0,
+        "brake_torque": 0.0,
+        "normal_load": 3150.7530718613684,
+        "road_support": true,
+        "steering": 0.0,
+        "force_contact_tick": 120,
+        "force_residual": 9.038100570765614e-05,
+        "force_kappa": -0.001003771386529886,
+        "force_alpha": -5.260862750931787e-06,
+        "sample_support": true,
+        "sample_tick": 120,
+        "force_mode": "compliant-rolling",
+        "longitudinal_impulse": -0.5404228822631674,
+        "lateral_impulse": -0.00042584194237198713,
+        "brake_angular_impulse": 0.0,
+        "force_grip": 3466.52495882369,
+        "sample_grip": 3466.52495882369,
+        "force_longitudinal_stiffness": 64248.44701739763,
+        "force_lateral_stiffness": 53545.75265206846,
+        "deformation_x": -0.0004323704291363628,
+        "deformation_y": -3.8257899561837654e-07,
+        "force_patch_kappa": -0.001009444765901266,
+        "force_patch_alpha": 9.050331575294897e-07,
+        "elastic_energy": 0.014020825076868781,
+        "material_dissipation": 1.1471988952525648e-09,
+        "road_dissipation": 0.0007879286287465932,
+        "elastic_numerical_dissipation": 3.584996547665632e-10,
+        "frame_dissipation": 0.0,
+        "deformation_rate_x": 8.218079711774897e-06,
+        "deformation_rate_y": 8.931506383349083e-06,
+        "mechanical_axis": [
+          0.9999999999740617,
+          -9.642320157258018e-07,
+          7.1377030213379315e-06
+        ],
+        "rolling_radius": 0.31459999995938576,
+        "gyro_angular_impulse": [
+          8.559104865961726e-12,
+          2.5624570216034828e-08,
+          -1.1677581094437515e-06
+        ],
+        "steering_angular_impulse": [
+          5.648563529281949e-16,
+          -1.0773779924930476e-21,
+          4.30951196997219e-21
+        ],
+        "steering_work": -1.93343415823149e-19,
+        "longitudinal_angular_impulse": [
+          -0.24264512353085735,
+          2.3488063454574684e-07,
+          0.41072730157171045
+        ],
+        "lateral_angular_impulse": [
+          1.850932287515978e-10,
+          0.00019119937210994542,
+          0.0005156736299038907
+        ],
+        "rolling_torque": 13.472333214755244,
+        "rolling_angular_impulse": 0.11228703246146315,
+        "rolling_dissipation": 0.51504245585447,
+        "force_rolling_radius": 0.31459999995811494
+      },
+      {
+        "omega": 4.599746426425965,
+        "rotation": 1.857094471604861,
+        "relative_omega": 4.599381568737076,
+        "longitudinal_speed": 1.4485342000659849,
+        "lateral_speed": -7.613038339590284e-06,
+        "kappa": -0.0010037557270827695,
+        "alpha": -5.25568422145186e-06,
+        "fx": -64.8413200713888,
+        "fy": -0.04843633575777571,
+        "drive_torque": 0.0,
+        "brake_capacity": 0.0,
+        "brake_torque": 0.0,
+        "normal_load": 3150.3032544499347,
+        "road_support": true,
+        "steering": 0.0,
+        "force_contact_tick": 120,
+        "force_residual": 9.038100570765614e-05,
+        "force_kappa": -0.0010038656305690107,
+        "force_alpha": -5.260859411790955e-06,
+        "sample_support": true,
+        "sample_tick": 120,
+        "force_mode": "compliant-rolling",
+        "longitudinal_impulse": -0.5403724379461625,
+        "lateral_impulse": -0.0004256667466544077,
+        "brake_angular_impulse": 0.0,
+        "force_grip": 3466.0795469042437,
+        "sample_grip": 3466.0795469042437,
+        "force_longitudinal_stiffness": 64240.19176914545,
+        "force_lateral_stiffness": 53539.25478986532,
+        "deformation_x": -0.00043232969099795933,
+        "deformation_y": -3.8243409314803144e-07,
+        "force_patch_kappa": -0.0010094806705245498,
+        "force_patch_alpha": 9.031491643944357e-07,
+        "elastic_energy": 0.014018183098066996,
+        "material_dissipation": 1.1366961815370393e-09,
+        "road_dissipation": 0.0007878836072474202,
+        "elastic_numerical_dissipation": 3.5521755673041527e-10,
+        "frame_dissipation": 0.0,
+        "deformation_rate_x": 8.13357830510925e-06,
+        "deformation_rate_y": 8.928778214429001e-06,
+        "mechanical_axis": [
+          0.9999999999740617,
+          -9.642320157258018e-07,
+          7.1377030213379315e-06
+        ],
+        "rolling_radius": 0.31459999995938576,
+        "gyro_angular_impulse": [
+          8.559109432303542e-12,
+          2.5624583900010367e-08,
+          -1.1677587325393394e-06
+        ],
+        "steering_angular_impulse": [
+          5.648566397053931e-16,
+          -1.0773785394771444e-21,
+          4.3095141579085776e-21
+        ],
+        "steering_work": -1.933435139834738e-19,
+        "longitudinal_angular_impulse": [
+          -0.24262247447510987,
+          2.3485871012256387e-07,
+          -0.41067945105956566
+        ],
+        "lateral_angular_impulse": [
+          1.8501707522875473e-10,
+          0.00019112071070925558,
+          0.0005154615473142468
+        ],
+        "rolling_torque": 13.470409836466173,
+        "rolling_angular_impulse": 0.11227094923351712,
+        "rolling_dissipation": 0.5149689602757321,
+        "force_rolling_radius": 0.31459999995811494
+      },
+      {
+        "omega": 4.70322929020622,
+        "rotation": 2.0445517479768567,
+        "relative_omega": 4.702864432517331,
+        "longitudinal_speed": 1.4485332670397126,
+        "lateral_speed": -6.047844828821937e-06,
+        "kappa": 0.02147183511477722,
+        "alpha": -4.175150800054763e-06,
+        "fx": 1320.9082132588946,
+        "fy": -0.02326825062991622,
+        "drive_torque": 436.49243242100124,
+        "brake_capacity": 9.271816170114636e-15,
+        "brake_torque": 9.271816170114636e-15,
+        "normal_load": 3244.7665406268748,
+        "road_support": true,
+        "steering": 0.0,
+        "force_contact_tick": 120,
+        "force_residual": 9.038100570765614e-05,
+        "force_kappa": 0.021471722737704847,
+        "force_alpha": -4.180327611133388e-06,
+        "sample_support": true,
+        "sample_tick": 120,
+        "force_mode": "compliant-rolling",
+        "longitudinal_impulse": 11.006237855092927,
+        "lateral_impulse": -0.00021005141653947332,
+        "brake_angular_impulse": 7.72651347509553e-17,
+        "force_grip": 3559.479609463539,
+        "sample_grip": 3559.479609463539,
+        "force_longitudinal_stiffness": 65971.26511840493,
+        "force_lateral_stiffness": 54900.80988706035,
+        "deformation_x": 0.008802195826124072,
+        "deformation_y": -1.9981267858315125e-07,
+        "force_patch_kappa": 0.02107211902146567,
+        "force_patch_alpha": 4.475608692926959e-07,
+        "elastic_energy": 5.810898855102086,
+        "material_dissipation": 3.004703736653896e-06,
+        "road_dissipation": 0.3349052390890467,
+        "elastic_numerical_dissipation": 9.389699177042985e-07,
+        "frame_dissipation": 0.0,
+        "deformation_rate_x": 0.0005788393402837335,
+        "deformation_rate_y": 6.703651157556471e-06,
+        "mechanical_axis": [
+          0.9999999999740617,
+          -9.642320157258018e-07,
+          7.1377030213379315e-06
+        ],
+        "rolling_radius": 0.31459999995938576,
+        "gyro_angular_impulse": [
+          8.751754970188754e-12,
+          2.620132005023988e-08,
+          -1.1940421607807342e-06
+        ],
+        "steering_angular_impulse": [
+          5.775664800763469e-16,
+          -1.1016206361319483e-21,
+          4.406482544527793e-21
+        ],
+        "steering_work": -1.9769393677530096e-19,
+        "longitudinal_angular_impulse": [
+          4.941704039017232,
+          -4.783571616630797e-06,
+          -8.529920569824831
+        ],
+        "lateral_angular_impulse": [
+          9.13022757964288e-11,
+          9.431130064409976e-05,
+          -0.00028652745751488336
+        ],
+        "rolling_torque": 13.874326245943697,
+        "rolling_angular_impulse": 0.11563971435962242,
+        "rolling_dissipation": 0.542359277726016,
+        "force_rolling_radius": 0.31459999995811494
+      },
+      {
+        "omega": 4.703241594485789,
+        "rotation": 2.0446181075764636,
+        "relative_omega": 4.7028767367969,
+        "longitudinal_speed": 1.4485342091846367,
+        "lateral_speed": -6.047844867754385e-06,
+        "kappa": 0.021473843042397224,
+        "alpha": -4.175148111361143e-06,
+        "fx": 1320.8664704777732,
+        "fy": -0.023084438561039373,
+        "drive_torque": 436.47766728551903,
+        "brake_capacity": 9.277235780246357e-15,
+        "brake_torque": 9.277235780246357e-15,
+        "normal_load": 3244.3887724367023,
+        "road_support": true,
+        "steering": 0.0,
+        "force_contact_tick": 120,
+        "force_residual": 9.038100570765614e-05,
+        "force_kappa": 0.021473730666068776,
+        "force_alpha": -4.180324920730948e-06,
+        "sample_support": true,
+        "sample_tick": 120,
+        "force_mode": "compliant-rolling",
+        "longitudinal_impulse": 11.005889117382134,
+        "lateral_impulse": -0.0002085187205715024,
+        "brake_angular_impulse": 7.731029816871963e-17,
+        "force_grip": 3559.1066398267617,
+        "sample_grip": 3559.1066398267617,
+        "force_longitudinal_stiffness": 65964.35251277474,
+        "force_lateral_stiffness": 54895.37684084001,
+        "deformation_x": 0.008801914665689572,
+        "deformation_y": -1.9855575949724282e-07,
+        "force_patch_kappa": 0.021073829471510305,
+        "force_patch_alpha": 4.44298083743754e-07,
+        "elastic_energy": 5.8105276366129175,
+        "material_dissipation": 3.00931866654293e-06,
+        "road_dissipation": 0.33492209892427877,
+        "elastic_numerical_dissipation": 9.404120832946692e-07,
+        "frame_dissipation": 0.0,
+        "deformation_rate_x": 0.0005792706243372287,
+        "deformation_rate_y": 6.698925363547048e-06,
+        "mechanical_axis": [
+          0.9999999999740617,
+          -9.642320157258018e-07,
+          7.1377030213379315e-06
+        ],
+        "rolling_radius": 0.31459999995938576,
+        "gyro_angular_impulse": [
+          8.751777995424952e-12,
+          2.6201388964180524e-08,
+          -1.1940453020853362e-06
+        ],
+        "steering_angular_impulse": [
+          5.775680256376946e-16,
+          -1.1016235840562718e-21,
+          4.406494336225087e-21
+        ],
+        "steering_work": -1.9769446580203274e-19,
+        "longitudinal_angular_impulse": [
+          4.94154745884741,
+          -4.783420046451777e-06,
+          8.529511423890991
+        ],
+        "lateral_angular_impulse": [
+          9.06361292153022e-11,
+          9.362313362448461e-05,
+          -0.0002844367191771624
+        ],
+        "rolling_torque": 13.872710943563645,
+        "rolling_angular_impulse": 0.11562621452153302,
+        "rolling_dissipation": 0.5422973893921028,
+        "force_rolling_radius": 0.31459999995811494
+      }
+    ],
+    "brake_states": [
+      {
+        "requested": 0.0,
+        "commanded": 0.0,
+        "pressure": 0.0,
+        "braking_slip": null,
+        "abs_active": false,
+        "phase": "normal",
+        "feedback_tick": 119,
+        "predicted_slip": null
+      },
+      {
+        "requested": 0.0,
+        "commanded": 0.0,
+        "pressure": 0.0,
+        "braking_slip": null,
+        "abs_active": false,
+        "phase": "normal",
+        "feedback_tick": 119,
+        "predicted_slip": null
+      },
+      {
+        "requested": 0.0,
+        "commanded": 0.0,
+        "pressure": 1.2446799191526735e-17,
+        "braking_slip": null,
+        "abs_active": false,
+        "phase": "normal",
+        "feedback_tick": 119,
+        "predicted_slip": null
+      },
+      {
+        "requested": 0.0,
+        "commanded": 0.0,
+        "pressure": 1.2454074659220249e-17,
+        "braking_slip": null,
+        "abs_active": false,
+        "phase": "normal",
+        "feedback_tick": 119,
+        "predicted_slip": null
+      }
+    ],
+    "abs_enabled": true,
+    "tcs_enabled": true,
+    "traction_state": {
+      "requested_throttle": 0.5,
+      "torque_scale": 1.0,
+      "active": false,
+      "wheel_slips": [
+        -0.0010056109636631687,
+        -0.0010056978183371546,
+        0.02147328836049375,
+        0.02147540241494011
+      ],
+      "brake_requests": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "feedback_ticks": [
+        119,
+        119,
+        119,
+        119
+      ]
+    },
+    "esc_enabled": true,
+    "stability_state": {
+      "reference_yaw_rate": 0.0,
+      "unlimited_yaw_rate": -0.0,
+      "observed_yaw_rate": 4.127482782223524e-07,
+      "sideslip": 4.204916937031737e-06,
+      "yaw_error": -4.127482782223524e-07,
+      "desired_brake_moment": 0.0,
+      "baseline_brake_moment": 0.0,
+      "allocated_brake_moment": 0.0,
+      "residual_moment": 0.0,
+      "brake_requests": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "torque_scale": 1.0,
+      "active": false,
+      "feedback_tick": 119,
+      "reference_sideslip": 0.0,
+      "sideslip_error": 4.204916937031737e-06
+    },
+    "powertrain_state": {
+      "engine_omega": 123.17636335887471,
+      "engine_relative_omega": 123.17633675986724,
+      "gear": 1,
+      "ratio": 14.866599999999998,
+      "throttle": 0.4998798152617903,
+      "engine_torque": 79.4192406993059,
+      "engine_drag_coefficient": 0.09742145976095086,
+      "shift_phase": "engaged",
+      "clutch_position": 0.22708198172255525,
+      "clutch_capacity": 68.12459451676658,
+      "clutch_torque": 68.12459451676658,
+      "clutch_slip": 53.26064093022144,
+      "drive_torque": 874.490409884199,
+      "gear_loss_torque": 8.021248453374426,
+      "gear_input_speed": 69.91569582964182,
+      "engine_body_impulse": [
+        9.939092954440772e-08,
+        0.005883620674414506,
+        0.0001025825141942027
+      ],
+      "engine_work": 81.52628853181002,
+      "engine_drag_heat": 12.319122174203006,
+      "clutch_heat": 30.35138071419891,
+      "gear_heat": 4.6601093749530635,
+      "differential_torques": [
+        0.0,
+        -0.007382567741132107,
+        0.0
+      ],
+      "differential_slips": [
+        -2.4998928038755253e-06,
+        -1.2304279568553511e-05,
+        -0.10349026586644117
+      ],
+      "differential_heat": [
+        0.0,
+        7.610097108313804e-10,
+        0.0
+      ],
+      "shaft_omega": 69.91572242865327,
+      "shaft_relative_omega": 69.9156958296458,
+      "gear_reaction": 66.84373711145355,
+      "synchronizer_torque": 0.0,
+      "synchronizer_slip": 0.0,
+      "synchronizer_heat": 0.0,
+      "shaft_body_impulse": [
+        -6.3323346873462005e-09,
+        -0.010705038502586403,
+        -5.176067349197571e-05
+      ],
+      "pending_gear": 1,
+      "downstream_omega": [
+        19.28179599494135,
+        0.0,
+        19.28179599494135
+      ],
+      "downstream_relative_omega": [
+        19.281769395933882,
+        0.0,
+        19.281769395933882
+      ],
+      "downstream_kinetic_energy": [
+        1.6191352453227859,
+        0.0,
+        1.0469540415221503
+      ],
+      "downstream_numerical_dissipation": [
+        0.00010167739411420324,
+        0.0,
+        6.574593382906917e-05
+      ],
+      "downstream_body_impulse": [
+        -1.8331960598551988e-09,
+        -0.003099102129874022,
+        -1.498467498197704e-05
+      ],
+      "downstream_wheel_torques": [
+        -0.0,
+        -0.0,
+        -0.76015508883939,
+        -0.76015508883939
+      ]
+    },
+    "suspension_state": {
+      "step": {
+        "compression": [
+          0.08083800805091472,
+          0.0808271494929202,
+          0.09395811797299643,
+          0.09394703921927673
+        ],
+        "compression_rate": [
+          0.001712550489295639,
+          0.001752977344285922,
+          0.0007726178293843144,
+          0.0008138425908688074
+        ],
+        "axial_force": [
+          3150.7119559725497,
+          3150.2621444310275,
+          3244.724197905219,
+          3244.346434644749
+        ],
+        "raw_axial_force": [
+          3150.7119559725497,
+          3150.2621444310275,
+          3244.724197905219,
+          3244.346434644749
+        ],
+        "spring_energy": 558.968630340742,
+        "bar_energy": [
+          3.537248451606837e-07,
+          2.454775679633323e-07
+        ],
+        "stop_energy": 0.0,
+        "damping_dissipation": 0.00021559357245224287,
+        "elastic_numerical_dissipation": 6.8540080150336635e-06,
+        "body_numerical_dissipation": 0.0,
+        "contact_offset_work": 0.0,
+        "energy_residual": -7.629563213845669e-14,
+        "body_work": -0.16194216909739365
+      },
+      "normal_force": [
+        3150.7530718613684,
+        3150.3032544499347,
+        3244.7665406268748,
+        3244.3887724367023
+      ],
+      "contact_dot": [
+        0.9999869504566429,
+        0.9999869504566429,
+        0.9999869504566429,
+        0.9999869504566429
+      ],
+      "candidate_contact": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "sampled_compression": [
+        0.08082167828849651,
+        0.08081047246900452,
+        0.09394935542880956,
+        0.093937926088982
+      ],
+      "geometry_work": 7.820039781848279e-05,
+      "linear_impulse": [
+        0.0,
+        0.0,
+        106.60281063311118
+      ],
+      "angular_impulse": [
+        -10.181971382452515,
+        0.006198258238233242,
+        0.0
+      ],
+      "force_tick": 120,
+      "contact_compression": [
+        0.08083087242387599,
+        0.08081984542065235,
+        0.09395489873204066,
+        0.09394364820848145
+      ],
+      "initialization_energy": 0.0,
+      "substeps": [
+        [
+          0.004166666666666667,
+          {
+            "compression": [
+              0.08083087827109284,
+              0.08081984996697533,
+              0.09395488110191008,
+              0.09394363278108023
+            ],
+            "compression_rate": [
+              0.0022079958231180363,
+              0.0022505995129940004,
+              0.0013261615441262364,
+              0.0013696061035761709
+            ],
+            "axial_force": [
+              3151.699185368865,
+              3151.2462825650728,
+              3245.865215540615,
+              3245.4852641468096
+            ],
+            "raw_axial_force": [
+              3151.699185368865,
+              3151.2462825650728,
+              3245.865215540615,
+              3245.4852641468096
+            ],
+            "spring_energy": 558.9016947159861,
+            "bar_energy": [
+              3.648704751245475e-07,
+              2.5304944298266213e-07
+            ],
+            "stop_energy": 0.0,
+            "damping_dissipation": 0.00013989796970371277,
+            "elastic_numerical_dissipation": 4.4475062095927775e-06,
+            "body_numerical_dissipation": 0.0,
+            "contact_offset_work": 0.0,
+            "energy_residual": -3.8185058413853223e-14,
+            "body_work": -0.0950029584958425
+          }
+        ],
+        [
+          0.004166666666666667,
+          {
+            "compression": [
+              0.08083800805091472,
+              0.0808271494929202,
+              0.09395811797299643,
+              0.09394703921927673
+            ],
+            "compression_rate": [
+              0.001712550489295639,
+              0.001752977344285922,
+              0.0007726178293843144,
+              0.0008138425908688074
+            ],
+            "axial_force": [
+              3150.7119559725497,
+              3150.2621444310275,
+              3244.724197905219,
+              3244.346434644749
+            ],
+            "raw_axial_force": [
+              3150.7119559725497,
+              3150.2621444310275,
+              3244.724197905219,
+              3244.346434644749
+            ],
+            "spring_energy": 558.968630340742,
+            "bar_energy": [
+              3.537248451606837e-07,
+              2.454775679633323e-07
+            ],
+            "stop_energy": 0.0,
+            "damping_dissipation": 7.56956027485301e-05,
+            "elastic_numerical_dissipation": 2.406501805440886e-06,
+            "body_numerical_dissipation": 0.0,
+            "contact_offset_work": 0.0,
+            "energy_residual": -3.811057372460347e-14,
+            "body_work": -0.06693921060155114
+          }
+        ]
+      ],
+      "force_gradients": [
+        [
+          0.0,
+          0.0,
+          1.00001304971365,
+          1.2109670746992953,
+          0.7600168674639897,
+          -0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.00001304971365,
+          1.2109657018656566,
+          -0.7600028298955539,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.00001304971365,
+          -1.3640998373018483,
+          0.7750195846461265,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.00001304971365,
+          -1.3641012089667612,
+          -0.7750004159904103,
+          0.0
+        ]
+      ]
+    },
+    "orientation": [
+      0.9999967217445374,
+      0.0025475462898612022,
+      -3.5700679745787056e-06,
+      -4.730226237370516e-07
+    ]
+  },
+  "traffic": [],
+  "events": [],
+  "origin_y": 0.0,
+  "collisions": 0,
+  "contact_epoch": 1,
+  "impacts": [],
+  "contacts": [],
+  "driving_mode": "simulation",
+  "vehicle_config": {
+    "mass": 1287.29514606,
+    "torque_curve": [
+      [
+        823.2415540646484,
+        122.53685784250386
+      ],
+      [
+        1231.0417377344493,
+        164.4840379145703
+      ],
+      [
+        1668.4862145067252,
+        176.88407722607195
+      ],
+      [
+        2068.8374386194937,
+        193.29840235478576
+      ],
+      [
+        2469.226261996392,
+        229.77478082814093
+      ],
+      [
+        2891.8485922174305,
+        240.35185971759876
+      ],
+      [
+        3299.610889605818,
+        246.5536302648195
+      ],
+      [
+        3700.0,
+        249.47050249297757
+      ],
+      [
+        4076.98956057375,
+        235.610219695557
+      ],
+      [
+        4796.111009464492,
+        235.24558242685222
+      ],
+      [
+        5319.723657332341,
+        237.06854284889602
+      ],
+      [
+        5619.948177150346,
+        238.89342360351972
+      ],
+      [
+        6010.894428183716,
+        242.905902048892
+      ],
+      [
+        6422.812471488669,
+        246.18910595685475
+      ],
+      [
+        6813.795479104194,
+        240.35185971759876
+      ],
+      [
+        7000.0,
+        231.9381865934627
+      ],
+      [
+        7500.0,
+        209.34562792824056
+      ]
+    ],
+    "gear_ratios": [
+      3.626,
+      2.189,
+      1.541,
+      1.213,
+      1.0,
+      0.767
+    ],
+    "final_drive": 4.1,
+    "drivetrain_efficiency": 0.88,
+    "idle_rpm": 900.0,
+    "shift_time": 0.28,
+    "torque_response": 0.12,
+    "engine_braking": 24.0,
+    "finite_drivetrain": true,
+    "front_drive_share": 0.0,
+    "differential_damping": [
+      0.0,
+      600.0,
+      0.0
+    ],
+    "differential_capacity": [
+      0.0,
+      2000.0,
+      0.0
+    ],
+    "axle_torque_bias_ratios": [
+      1.0,
+      2.5
+    ],
+    "engine_inertia": 0.2,
+    "engine_axis": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "input_shaft_enabled": true,
+    "input_shaft_inertia": 0.0136625,
+    "input_shaft_axis": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "synchronizer_capacity": 80.0,
+    "downstream_inertia_enabled": true,
+    "downstream_inertias": [
+      0.00871,
+      0.015,
+      0.005632
+    ],
+    "downstream_axes": [
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ]
+    ],
+    "engine_idle_response": 0.15,
+    "engine_idle_torque_limit": 65.0,
+    "engine_redline_rpm": 7500.0,
+    "clutch_capacity": 300.0,
+    "clutch_release_time": 0.08,
+    "clutch_engage_time": 0.16,
+    "clutch_launch_response": 0.3,
+    "max_speed": 44.44444444444444,
+    "reverse_speed": 6.111111111111111,
+    "reverse_force": 2200.0,
+    "reverse_gear_ratio": 3.438,
+    "game_speed_limits": false,
+    "brake_torque": 4966.104686805212,
+    "front_brake_share": 0.7,
+    "braking": {
+      "response_time": 0.025,
+      "abs_enabled": true,
+      "target_slip": 0.12,
+      "slip_hysteresis": 0.015,
+      "minimum_speed": 1.5,
+      "release_rate": 25.0,
+      "apply_rate": 5.0,
+      "slip_rate_gain": 30.0
+    },
+    "traction": {
+      "tcs_enabled": true,
+      "target_slip": 0.12,
+      "slip_hysteresis": 0.015,
+      "slip_speed": 1.0,
+      "prediction_time": 0.12,
+      "release_rate": 12.0,
+      "apply_rate": 1.5,
+      "slip_rate_gain": 12.0,
+      "brake_gain": 0.2,
+      "maximum_brake": 0.25
+    },
+    "stability": {
+      "esc_enabled": true,
+      "minimum_speed": 1.5,
+      "reference_response": 0.15,
+      "yaw_gain": 6.0,
+      "sideslip_gain": 6.0,
+      "yaw_threshold": 0.1,
+      "sideslip_threshold": 0.06,
+      "moment_threshold": 150.0,
+      "engine_cut_gain": 0.4,
+      "continuous_reference": true
+    },
+    "steering_degrees": 33.333333333333336,
+    "steering_rate": 50.0,
+    "steering_response": 7.0,
+    "steering_return": 10.0,
+    "wheel_radius": 0.3146,
+    "wheel_width": 0.215,
+    "wheel_shoulder_radius": 0.01,
+    "wheel_crown_height": 0.003,
+    "wheel_inertia": 1.11865004,
+    "longitudinal_stiffness": 64364.75730299999,
+    "lateral_stiffness": 53637.297752499995,
+    "rear_lateral_stiffness": 53637.297752499995,
+    "tire_peak_load_exponent": 0.9,
+    "longitudinal_load_exponent": 0.9,
+    "lateral_load_exponent": 0.85,
+    "tire_compliance": true,
+    "wheel_rotor_transport": true,
+    "tire_contact_stiffness": 150000.0,
+    "tire_contact_damping": 1000.0,
+    "tire_shape": 1.9,
+    "tire_curvature": 0.97,
+    "slip_speed": 1.0,
+    "static_contact_speed": 0.25,
+    "tire_substeps": 2,
+    "suspension_si_enabled": true,
+    "suspension_coupled_enabled": true,
+    "suspension_antiroll_rates": [
+      6000.0,
+      4000.0
+    ],
+    "suspension_stop_rates": [
+      389207.844665603,
+      389207.844665603,
+      345146.57923176116,
+      345146.57923176116
+    ],
+    "suspension_spring_rates": [
+      38920.784466560304,
+      38920.784466560304,
+      34514.65792317611,
+      34514.65792317611
+    ],
+    "suspension_compression_damping": [
+      2550.6498034159586,
+      2550.6498034159586,
+      2261.8969954820764,
+      2261.8969954820764
+    ],
+    "suspension_extension_damping": [
+      4372.542520141644,
+      4372.542520141644,
+      3877.5377065407033,
+      3877.5377065407033
+    ],
+    "suspension_stiffness": 40.0,
+    "suspension_compression": 4.4,
+    "suspension_relaxation": 2.3,
+    "air_density": 1.225,
+    "drag_coefficient": 0.276,
+    "frontal_area": 1.9532100000000001,
+    "rolling_coefficient": 0.013591573224600747,
+    "grass_rolling_coefficient": 0.0764525993883792,
+    "wheel_rolling_resistance": true,
+    "rolling_transition_speed": 1.0,
+    "road_friction": 1.1,
+    "grass_friction": 0.45,
+    "wheelbase": 2.575,
+    "track_width": 1.52,
+    "axle_track_widths": [
+      1.52,
+      1.55
+    ],
+    "collision_half_width": 1.015,
+    "collision_half_length": 2.13256,
+    "collision_half_height": 0.59,
+    "centered_collision_support": true,
+    "body_center_height": 0.72,
+    "wheel_connection_height": 0.6286172308363899,
+    "center_of_mass_height": 0.45,
+    "front_weight_share": 0.53,
+    "body_inertia": [
+      2014.7686544482972,
+      413.33025779135914,
+      2281.6490372428193
+    ],
+    "angular_damping": 0.0,
+    "suspension_travel": 0.2,
+    "suspension_force_limit": 6000.0
+  }
+}

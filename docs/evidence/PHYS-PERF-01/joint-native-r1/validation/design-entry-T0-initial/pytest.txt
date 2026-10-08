@@ -1,0 +1,126 @@
+.......FF....                                                            [100%]
+================================== FAILURES ===================================
+_________ test_window_entry_passes_explicit_gr86_to_application[game] _________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F7E4581BA0>
+mode = 'game'
+
+    @pytest.mark.parametrize("mode", ("game", "simulation"))
+    def test_window_entry_passes_explicit_gr86_to_application(monkeypatch, mode):
+        import main
+    
+        created = []
+    
+        class Application:
+            def __init__(self, **kwargs):
+                created.append(kwargs)
+    
+            def run(self):
+                pass
+    
+            def close_game(self):
+                pass
+    
+        module = types.ModuleType("application")
+        module.CoastalDrive = Application
+        monkeypatch.setitem(sys.modules, "application", module)
+        monkeypatch.setattr(sys, "argv", ["coastaldrive", "--vehicle-design", "gr86-2022-premium-6mt",
+                                        "--driving-mode", mode])
+>       assert main.main() == 0
+               ^^^^^^^^^^^
+
+tests\test_vehicle_design_entry.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\main.py:76: in main
+    parser.error("车辆工程CLI参数当前用于无窗口入口；窗口车型在车库选择")
+C:\Users\15120\AppData\Local\Python\pythoncore-3.14-64\Lib\argparse.py:2773: in error
+    self.exit(2, _('%(prog)s: error: %(message)s\n') % args)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = ArgumentParser(prog='python.exe -m pytest', usage=None, description=None, formatter_class=<class 'argparse.HelpFormatter'>, conflict_handler='error', add_help=True)
+status = 2
+message = 'python.exe -m pytest: error: 车辆工程CLI参数当前用于无窗口入口；窗口车型在车库选择\n'
+
+    def exit(self, status=0, message=None):
+        if message:
+            self._print_message(message, _sys.stderr)
+>       _sys.exit(status)
+E       SystemExit: 2
+
+C:\Users\15120\AppData\Local\Python\pythoncore-3.14-64\Lib\argparse.py:2760: SystemExit
+---------------------------- Captured stderr call -----------------------------
+usage: python.exe -m pytest [-h] [--headless] [--steps STEPS] [--seed SEED]
+                            [--driving-mode {game,simulation}]
+                            [--vehicle-design {game-tuned,reference-rwd,reference-fwd,reference-awd,gr86-2022-premium-6mt}]
+                            [--vehicle-config VEHICLE_CONFIG] [--abs {on,off}]
+                            [--tcs {on,off}] [--esc {on,off}]
+                            [--road-shape {straight,curves,hills}] [--smoke]
+                            [--window-smoke]
+                            [--profile-startup PROFILE_STARTUP]
+                            [--output OUTPUT]
+                            [--track {coastal,highway,endless,test}]
+python.exe -m pytest: error: 车辆工程CLI参数当前用于无窗口入口；窗口车型在车库选择
+______ test_window_entry_passes_explicit_gr86_to_application[simulation] ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F7FF4EC770>
+mode = 'simulation'
+
+    @pytest.mark.parametrize("mode", ("game", "simulation"))
+    def test_window_entry_passes_explicit_gr86_to_application(monkeypatch, mode):
+        import main
+    
+        created = []
+    
+        class Application:
+            def __init__(self, **kwargs):
+                created.append(kwargs)
+    
+            def run(self):
+                pass
+    
+            def close_game(self):
+                pass
+    
+        module = types.ModuleType("application")
+        module.CoastalDrive = Application
+        monkeypatch.setitem(sys.modules, "application", module)
+        monkeypatch.setattr(sys, "argv", ["coastaldrive", "--vehicle-design", "gr86-2022-premium-6mt",
+                                        "--driving-mode", mode])
+>       assert main.main() == 0
+               ^^^^^^^^^^^
+
+tests\test_vehicle_design_entry.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\main.py:76: in main
+    parser.error("车辆工程CLI参数当前用于无窗口入口；窗口车型在车库选择")
+C:\Users\15120\AppData\Local\Python\pythoncore-3.14-64\Lib\argparse.py:2773: in error
+    self.exit(2, _('%(prog)s: error: %(message)s\n') % args)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = ArgumentParser(prog='python.exe -m pytest', usage=None, description=None, formatter_class=<class 'argparse.HelpFormatter'>, conflict_handler='error', add_help=True)
+status = 2
+message = 'python.exe -m pytest: error: 车辆工程CLI参数当前用于无窗口入口；窗口车型在车库选择\n'
+
+    def exit(self, status=0, message=None):
+        if message:
+            self._print_message(message, _sys.stderr)
+>       _sys.exit(status)
+E       SystemExit: 2
+
+C:\Users\15120\AppData\Local\Python\pythoncore-3.14-64\Lib\argparse.py:2760: SystemExit
+---------------------------- Captured stderr call -----------------------------
+usage: python.exe -m pytest [-h] [--headless] [--steps STEPS] [--seed SEED]
+                            [--driving-mode {game,simulation}]
+                            [--vehicle-design {game-tuned,reference-rwd,reference-fwd,reference-awd,gr86-2022-premium-6mt}]
+                            [--vehicle-config VEHICLE_CONFIG] [--abs {on,off}]
+                            [--tcs {on,off}] [--esc {on,off}]
+                            [--road-shape {straight,curves,hills}] [--smoke]
+                            [--window-smoke]
+                            [--profile-startup PROFILE_STARTUP]
+                            [--output OUTPUT]
+                            [--track {coastal,highway,endless,test}]
+python.exe -m pytest: error: 车辆工程CLI参数当前用于无窗口入口；窗口车型在车库选择
+=========================== short test summary info ===========================
+FAILED tests/test_vehicle_design_entry.py::test_window_entry_passes_explicit_gr86_to_application[game]
+FAILED tests/test_vehicle_design_entry.py::test_window_entry_passes_explicit_gr86_to_application[simulation]
+2 failed, 11 passed in 4.72s

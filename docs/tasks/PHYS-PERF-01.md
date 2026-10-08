@@ -1,8 +1,18 @@
 # PHYS-PERF-01 真实物理性能收口
 
-- 状态：in_progress；当前主施工目录为main，跨轮载荷与共同状态原生入口已完成本轮自动收口。
-- 本轮基线：b5c35c5；本轮本地提交，未推送。完整T2/T3、前台性能与人工驾驶仍未完成，当前证据见shared-load-r1。
+- 状态：in_progress；当前主施工目录为main，本批五个关联原生数值块、窗口车型选择及r10候选包自动检查完成。
+- 本批基线：6d58e9a；验证/建包时是其上的未提交修改，本批仅本地提交，未推送。现行证据为joint-native-r1、brake-correction-r1及package-r10；完整T2/T3、前台性能与人工驾驶仍未完成。
 - 范围：减少同一机械子步内重复的几何与代数计算，再接产品/试玩包和最终Gate。
+
+2026-10-08连续施工批次：loaded_wheel_force_solution直接读取当前轮荷后调用原局部求根；wheel_residuals合并四轮同末状态残差；suspension_residuals合并反力与六维几何冲量残差；原生二维norm使用CPython 3.14.2 vector_norm的缩放、补偿平方与微分校正；wheel_brake_correction合并当前端口分区导数、四轮矩阵和制动增量消元。旧八维物理机制保持。norm原始来源为[CPython官方源码](https://github.com/python/cpython/blob/v3.14.2/Modules/mathmodule.c)，许可沿用licenses/CPython-LICENSE.txt。
+
+相关验收按功能组执行：前三块548项T0通过；最终norm100196组IEEE/随机探针与math.hypot hex相同。独立6d58e9a Python/旧DLL先后完成804完整推进（36台架、真实落地、海岸玩家+8NPC），最终所有字段hex/世界引用一致，11024局部入口、2805轮端残差、2709悬架残差；追加制动块3111次每调用与原Python端口/矩阵/消元hex相同。最终合并T1首轮699通过/1旧shared_solution观测入口AttributeError，三seed未跑；只把Jacobian测试接到实际wheel_map/shared_load_solution，原16样本和2e-6门槛保持。r2只跑失败节点（1通过）、Ruff及0/17/23各1200拍启动通过，其余699复用。原None回调TypeError、窗口车型CLI初轮11通过/2旧限制失败和两节点修正通过均归档，不抹掉失败。
+
+本批只做了一次合并热点诊断：海岸GR86+8NPC预热8/采样16拍，完整完成、源SHA前后相同；带profiler2.6033秒用于定位，不能当FPS。主要余项为同世界真实静态shape变换读取、有限支持面射线与边/角查询。制动修正迁移由此继续推进，未再为该块重复profile/48拍/种子。
+
+产品接通：窗口--vehicle-design明确选择对应可选车型，同硬件保留当前外观；没有改变玩家保存文件。r9已验证后继续加入制动块并构建r10，29.451秒成功，构建输入前后相同、两原生模块逐字节一致。仓库外GR86 Game/Simulation各120拍成功；test track零交通离屏渲染及各20次节点/task/event重启稳定，截图已目视。入口见[正常游戏](../../launchers/physics-r10-game.cmd)、[困难仿真](../../launchers/physics-r10-simulation.cmd)，构建包不替换根试玩.cmd。机械/测试、格式字节链及首次失败见[joint-native-r1](../evidence/PHYS-PERF-01/joint-native-r1/receipt.json)、[制动/T1](../evidence/PHYS-PERF-01/brake-correction-r1/receipt.json)；当前包见[package-r10](../evidence/PHYS-PERF-01/package-r10/receipt.json)。r9仅代表制动前版本，保留其原证据。
+
+下一沿有限支持面真实几何读取/对象装配继续推进，按关联功能组统一对照和收口。T2旧落地失败的长阶段及11专项仍未完整复跑，T3、前台性能和两模式人工驾驶仍待完成。
 
 Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数、本构律、20/30轮上限和原残差要求保持；NPC执行共同物理。优化按实际profile定位，不以改变碰撞、控制请求或更新频率换取性能。
 

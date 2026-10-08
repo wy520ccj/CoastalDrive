@@ -89,6 +89,17 @@ def vehicle_definition(vehicle_id):
         raise ValueError(f"Unknown vehicle: {vehicle_id}") from None
 
 
+def vehicle_for_design(design_id, current_model_id):
+    """明确工程选择对应可选车型；同硬件时保留玩家当前外观。"""
+    current = vehicle_definition(current_model_id)
+    if current.physics_id == design_id:
+        return current
+    for vehicle in PLAYER_VEHICLES:
+        if vehicle.physics_id == design_id:
+            return vehicle
+    raise ValueError(f"工程设计没有对应的可选车型：{design_id}")
+
+
 def traffic_models(seed, count):
     rng = random.Random(seed + 141)
     models = []

@@ -1,0 +1,26 @@
+{
+  "baseline": "6d58e9a original Python + independent strict C DLL",
+  "all_full_step_fields_hex_and_world_references_equal": true,
+  "counts": {
+    "complete_steps": 804,
+    "loaded_force_calls": 11024,
+    "wheel_residual_calls": 2805,
+    "suspension_residual_calls": 2709,
+    "bench_cases": 36
+  },
+  "paired_step_timing_diagnostic_only": {
+    "old_seconds": 1.4416585999788367,
+    "new_seconds": 1.028569600006449
+  },
+  "source_sha_start": {
+    "src/mechanical_kernels.c": "b0958c451bb1df6234d32d0f57aea19979f7b1beccc174628a23a3a75ffe0a3d",
+    "src/tire_drivetrain.py": "242f4c8dbe62ac9a5f938f58ba37707db42d555e2db1bb937dce1acd4e7b59c8",
+    "src/mechanical_kernels.cp314-win_amd64.pyd": "316ef5afd22f0967ef36a52f9d807f6d0868a9e7ff2434fe749951b468de0fca"
+  },
+  "source_sha_end": {
+    "src/mechanical_kernels.c": "b0958c451bb1df6234d32d0f57aea19979f7b1beccc174628a23a3a75ffe0a3d",
+    "src/tire_drivetrain.py": "242f4c8dbe62ac9a5f938f58ba37707db42d555e2db1bb937dce1acd4e7b59c8",
+    "src/mechanical_kernels.cp314-win_amd64.pyd": "316ef5afd22f0967ef36a52f9d807f6d0868a9e7ff2434fe749951b468de0fca"
+  },
+  "scope": "一次功能组旧/新对照；不重复T1/种子/48拍/profile，非FPS证据。"
+}

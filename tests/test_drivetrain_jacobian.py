@@ -45,12 +45,23 @@ def test_wall_shared_state_converges_at_original_coordinate_precision():
 
 
 def test_native_loaded_axle_jacobian_matches_independent_difference(monkeypatch):
-    original = tire_drivetrain.shared_solution
+    original = tire_drivetrain.shared_load_solution
+    original_coefficients = tire_drivetrain.wheel_map_coefficients
+    packets = {}
     errors = []
 
-    def audited_solve(coefficients, guess, loads, wheel_loads, supported, warm, bias_ports):
+    def recorded_coefficients(shared, load, *args):
+        packet = original_coefficients(shared, load, *args)
+        packets[packet] = shared, load
+        return packet
+
+    def audited_solve(packet, guess, forces, velocity, normal_forces, normal_responses, gradients,
+                      wheel_loads, supported, warm, bias_ports):
         if len(errors) < 16 and all(load > 0. for load in wheel_loads):
             # GR86的真实限滑端口也是未知量；用同一系数包核对实际输入状态。
+            coefficients, load = packets[packet]
+            loads = tire_drivetrain.wheel_load_prepared(
+                load, forces, velocity, normal_forces, normal_responses, gradients, None)
             state = tuple(guess) + tuple(bias_ports)
 
             def mapped(candidate):
@@ -73,9 +84,11 @@ def test_native_loaded_axle_jacobian_matches_independent_difference(monkeypatch)
                             for i in range(len(state)) for j in range(len(state)))
                 assert error < 2e-6
                 errors.append(error)
-        return original(coefficients, guess, loads, wheel_loads, supported, warm, bias_ports)
+        return original(packet, guess, forces, velocity, normal_forces, normal_responses, gradients,
+                        wheel_loads, supported, warm, bias_ports)
 
-    monkeypatch.setattr(tire_drivetrain, "shared_solution", audited_solve)
+    monkeypatch.setattr(tire_drivetrain, "wheel_map_coefficients", recorded_coefficients)
+    monkeypatch.setattr(tire_drivetrain, "shared_load_solution", audited_solve)
     sim = Simulation(17, track="coastal", traffic_count=0, config=GR86_DESIGN,
                      input_config=GAME_INPUT)
     try:

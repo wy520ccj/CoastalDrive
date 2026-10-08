@@ -1,0 +1,262 @@
+{
+  "task": "PHYS-PERF-01 brake-correction-r1 evidence archive",
+  "baseline": "6d58e9a original Python + independent strict C DLL",
+  "current_production_sha256": {
+    "src/mechanical_kernels.c": "4993643323fcb60ce0c38ffe139201d8d4963adc8f93904b132b47889d1cfdf4",
+    "src/tire_drivetrain.py": "58fd5d511a089c5b5d0bf74274fdec59a0ef969d07af4e7c73ab095cd7f8118e",
+    "src/mechanical_kernels.cp314-win_amd64.pyd": "d23a8665e35e08dd23dfbbba3009a22d5ed9589fa18c1f1dbaa8a8cf9dd12c8a"
+  },
+  "audit": {
+    "baseline": "6d58e9a original Python + independent strict C DLL",
+    "all_full_step_fields_hex_and_world_references_equal": true,
+    "counts": {
+      "complete_steps": 804,
+      "loaded_force_calls": 11024,
+      "wheel_residual_calls": 2805,
+      "suspension_residual_calls": 2709,
+      "bench_cases": 36,
+      "brake_correction_calls": 3111
+    },
+    "paired_step_timing_diagnostic_only": {
+      "old_seconds": 1.4424136000125145,
+      "new_seconds": 1.0720133000322676
+    },
+    "source_sha_start": {
+      "src/mechanical_kernels.c": "4993643323fcb60ce0c38ffe139201d8d4963adc8f93904b132b47889d1cfdf4",
+      "src/tire_drivetrain.py": "58fd5d511a089c5b5d0bf74274fdec59a0ef969d07af4e7c73ab095cd7f8118e",
+      "src/mechanical_kernels.cp314-win_amd64.pyd": "d23a8665e35e08dd23dfbbba3009a22d5ed9589fa18c1f1dbaa8a8cf9dd12c8a"
+    },
+    "source_sha_end": {
+      "src/mechanical_kernels.c": "4993643323fcb60ce0c38ffe139201d8d4963adc8f93904b132b47889d1cfdf4",
+      "src/tire_drivetrain.py": "58fd5d511a089c5b5d0bf74274fdec59a0ef969d07af4e7c73ab095cd7f8118e",
+      "src/mechanical_kernels.cp314-win_amd64.pyd": "d23a8665e35e08dd23dfbbba3009a22d5ed9589fa18c1f1dbaa8a8cf9dd12c8a"
+    },
+    "scope": "一次功能组旧/新对照；不重复T1/种子/48拍/profile，非FPS证据。"
+  },
+  "before_sources_reused": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/brake-correction-r1/before-mechanical_kernels.c",
+      "archive_reference": "../joint-native-r1/production/mechanical_kernels.c",
+      "sha256": "dfd665c69e0ea595312c123f64789001f4148186f05f054ebce1533563e3a484"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/brake-correction-r1/before-tire_drivetrain.py",
+      "archive_reference": "../joint-native-r1/production/tire_drivetrain.py",
+      "sha256": "242f4c8dbe62ac9a5f938f58ba37707db42d555e2db1bb937dce1acd4e7b59c8"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/brake-correction-r1/before-mechanical_kernels.cp314-win_amd64.pyd",
+      "archive_reference": "../joint-native-r1/production/mechanical_kernels.cp314-win_amd64.pyd",
+      "sha256": "316ef5afd22f0967ef36a52f9d807f6d0868a9e7ff2434fe749951b468de0fca"
+    }
+  ],
+  "audit_baseline_dependencies": [
+    {
+      "relative_path": "../joint-native-r1/original-tire_drivetrain.py",
+      "purpose": "audit.py加载6d58e9a原始Python实现"
+    },
+    {
+      "relative_path": "../joint-native-r1/_joint_native_old.cp314-win_amd64.pyd",
+      "purpose": "audit.py导入独立严格C旧DLL"
+    }
+  ],
+  "build_record": {
+    "command": "setup.py build_ext --inplace",
+    "status": "succeeded",
+    "raw_log": "not captured; build output was only shown in terminal",
+    "native_pyd_sha256": "d23a8665e35e08dd23dfbbba3009a22d5ed9589fa18c1f1dbaa8a8cf9dd12c8a"
+  },
+  "t1_history": {
+    "initial": {
+      "status": "failed",
+      "ruff": "passed",
+      "pytest": "699 passed, 1 failed; failure was legacy shared_solution hook AttributeError",
+      "headless_seeds": "not_run"
+    },
+    "r2": {
+      "status": "passed",
+      "ruff": "passed",
+      "pytest": "1 Jacobian node passed",
+      "seeds": {
+        "0": "1200 ticks passed",
+        "17": "1200 ticks passed",
+        "23": "1200 ticks passed"
+      },
+      "reused_prior_passes": 699,
+      "rerun_total_claim": false
+    },
+    "scope_note": "r2 corrected the test hook to capture the actual wheel_map/shared_load_solution. The original 16 samples and 2e-6 tolerance were unchanged; the earlier 699 passes were reused and are not represented as a 700-test rerun."
+  },
+  "prior_r1_archive": "../joint-native-r1/receipt.json",
+  "latest_package_archive": "../package-r10/report.md",
+  "archived_files": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/brake-correction-r1/audit.py",
+      "archive": "audit.py",
+      "bytes": 8360,
+      "sha256": "7f37fa171ff058ac8d202d591c727216355fc1b92b582bdaece51855880fd087"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/brake-correction-r1/audit.json",
+      "archive": "audit.json",
+      "bytes": 1275,
+      "sha256": "ac4be9667a1e00ab38584756630297cc7d463572cce8d0b00d2eb453e37ccd93"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/brake-correction-r1/audit-r1.log",
+      "archive": "audit-r1.txt",
+      "bytes": 1195,
+      "sha256": "129d5648df7a3b79f4479d03eeea220417b0893ce048531781e992d9e7fe19ed"
+    },
+    {
+      "source": "tests/test_drivetrain_jacobian.py",
+      "archive": "tests/test_drivetrain_jacobian.py",
+      "bytes": 4853,
+      "sha256": "2fe8f8d8f1fcb3e122a8f07ddf5984ad9abb9efaa6a22eb915b5a6433b340254"
+    },
+    {
+      "source": "tests/test_vehicle_design_entry.py",
+      "archive": "tests/test_vehicle_design_entry.py",
+      "bytes": 1554,
+      "sha256": "04504db341132a78e6c1a0827dd279aad5ebe370d6fbe926b03cdae1508cfb1f"
+    },
+    {
+      "source": "setup.py",
+      "archive": "setup.py",
+      "bytes": 2101,
+      "sha256": "38346e0ab3937b193653fd471617bca2c2c5eb3acc3a1884030f312344e3429a"
+    },
+    {
+      "source": "src/mechanical_kernels.c",
+      "archive": "production/mechanical_kernels.c",
+      "bytes": 152946,
+      "sha256": "4993643323fcb60ce0c38ffe139201d8d4963adc8f93904b132b47889d1cfdf4"
+    },
+    {
+      "source": "src/tire_drivetrain.py",
+      "archive": "production/tire_drivetrain.py",
+      "bytes": 47490,
+      "sha256": "58fd5d511a089c5b5d0bf74274fdec59a0ef969d07af4e7c73ab095cd7f8118e"
+    },
+    {
+      "source": "src/mechanical_kernels.cp314-win_amd64.pyd",
+      "archive": "production/mechanical_kernels.cp314-win_amd64.pyd",
+      "bytes": 128512,
+      "sha256": "d23a8665e35e08dd23dfbbba3009a22d5ed9589fa18c1f1dbaa8a8cf9dd12c8a"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-joint-native-T1/summary.json",
+      "archive": "validation/T1-initial/summary.json",
+      "bytes": 4398,
+      "sha256": "519f1a71fa5dde5bb39f6e4a53bac3076fb26665e85eb76b4a6b6fab1aaba4a9"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-joint-native-T1/pytest.log",
+      "archive": "validation/T1-initial/pytest.txt",
+      "bytes": 1645,
+      "sha256": "214b2dbc8ef04656c3ea9a7d0cb20fdf92b392a2552eff740dcfd8dd61947b16"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-joint-native-T1/ruff.log",
+      "archive": "validation/T1-initial/ruff.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-joint-native-T1-r2/summary.json",
+      "archive": "validation/T1-r2/summary.json",
+      "bytes": 3645,
+      "sha256": "a43534ec9ebdf2df5614a46cb8fd1110a8d2f890a4f2384fa1785ed55b2ae090"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-joint-native-T1-r2/pytest.log",
+      "archive": "validation/T1-r2/pytest.txt",
+      "bytes": 100,
+      "sha256": "4b5c292f1c5d1b8a55b35a5cbaf582ec92c0a4dbb4679f6aa1d8ced87ffd132d"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-joint-native-T1-r2/ruff.log",
+      "archive": "validation/T1-r2/ruff.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-joint-native-T1-r2/headless-0.log",
+      "archive": "validation/T1-r2/seed-0.txt",
+      "bytes": 32330,
+      "sha256": "b1585c3205d0a877ed96d1c3dd46dc2a108d20744d55b8c8d35f5cba8161ef5a"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-joint-native-T1-r2/headless-17.log",
+      "archive": "validation/T1-r2/seed-17.txt",
+      "bytes": 32330,
+      "sha256": "b1585c3205d0a877ed96d1c3dd46dc2a108d20744d55b8c8d35f5cba8161ef5a"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-joint-native-T1-r2/headless-23.log",
+      "archive": "validation/T1-r2/seed-23.txt",
+      "bytes": 32330,
+      "sha256": "b1585c3205d0a877ed96d1c3dd46dc2a108d20744d55b8c8d35f5cba8161ef5a"
+    },
+    {
+      "source": "generated: binary-preserving Git attributes",
+      "archive": ".gitattributes",
+      "bytes": 8,
+      "sha256": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/brake-correction-r1/source-index-chain.json",
+      "archive": "source-index-chain.json",
+      "bytes": 1932,
+      "sha256": "2c1540d5c99af0536c341301f73eecfa1cd86233db8ba94ad3ff11bf5b4f04c3"
+    }
+  ],
+  "not_rerun": [
+    "tests",
+    "simulation",
+    "build",
+    "additional package validation"
+  ],
+  "claims": "功能块证据归档；不代表T2/T3、FPS或人工驾驶验收。",
+  "source_index_chain": {
+    "baseline": "6d58e9a",
+    "scope": "Git文本行尾规范化；归档/构建使用原字节，Git索引使用LF。只核对字节转换，不重复物理或构建。",
+    "files": {
+      "src/mechanical_kernels.c": {
+        "raw_sha256": "4993643323fcb60ce0c38ffe139201d8d4963adc8f93904b132b47889d1cfdf4",
+        "indexed_sha256": "061523360dcc5469f44e655476f4df109cb8e7e732b15ca75aa725a804ca4084",
+        "only_crlf_to_lf": true
+      },
+      "src/tire_drivetrain.py": {
+        "raw_sha256": "58fd5d511a089c5b5d0bf74274fdec59a0ef969d07af4e7c73ab095cd7f8118e",
+        "indexed_sha256": "8074a1eeee040a1060f2d1fc2326ad63c68436cc766ca5f390172b3aa5bc820f",
+        "only_crlf_to_lf": true
+      },
+      "src/application.py": {
+        "raw_sha256": "8e490464c53a94bedb4f21ce7e811c98cea61a9ea1922cb3133b33a832a84152",
+        "indexed_sha256": "1df866daba75dc1224cdc1e6b1d05a21598a2c80964ed9e44a9b2c3609a4b224",
+        "only_crlf_to_lf": true
+      },
+      "src/main.py": {
+        "raw_sha256": "74941fdcd58da3fb4b60a46737d28bf36998930b8099a236786f29383815561c",
+        "indexed_sha256": "608a77891906520ec002f06bc5313865df6024ac7f6b6af19fcefd4db0f9deba",
+        "only_crlf_to_lf": true
+      },
+      "src/skins.py": {
+        "raw_sha256": "bbfbf9ee5fe018139e0021ee9e09081bd7b09eb33d5dc0229a8735153e227ddf",
+        "indexed_sha256": "f0d7a07f086b43c3d0e8f3576c16ecd83fb91936384f04b5579f8471befb4ea6",
+        "only_crlf_to_lf": true
+      },
+      "tests/test_drivetrain_jacobian.py": {
+        "raw_sha256": "2fe8f8d8f1fcb3e122a8f07ddf5984ad9abb9efaa6a22eb915b5a6433b340254",
+        "indexed_sha256": "7b1a5aab8684b0bd3218795a862d4e30113eeb56f9e663dd16fe920f2744a03c",
+        "only_crlf_to_lf": true
+      },
+      "tests/test_vehicle_design_entry.py": {
+        "raw_sha256": "04504db341132a78e6c1a0827dd279aad5ebe370d6fbe926b03cdae1508cfb1f",
+        "indexed_sha256": "04504db341132a78e6c1a0827dd279aad5ebe370d6fbe926b03cdae1508cfb1f",
+        "only_crlf_to_lf": true
+      }
+    }
+  }
+}

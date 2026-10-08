@@ -1,0 +1,8 @@
+{
+  "tested_sha256": "b0958c451bb1df6234d32d0f57aea19979f7b1beccc174628a23a3a75ffe0a3d",
+  "committed_sha256": "dfd665c69e0ea595312c123f64789001f4148186f05f054ebce1533563e3a484",
+  "only_imported_norm_body_trailing_whitespace_removed": true,
+  "tokens_and_line_count_equal": true,
+  "native_sha_unchanged": "316ef5afd22f0967ef36a52f9d807f6d0868a9e7ff2434fe749951b468de0fca",
+  "scope": "纯行尾空白，不重新运行测试/物理或重建已测PYD。"
+}
