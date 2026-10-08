@@ -1,0 +1,15 @@
+{
+  "pytest_code": 0,
+  "cases": [
+    {
+      "traffic": 0,
+      "seconds": 0.6987552999999025,
+      "all_snapshots_equal": false
+    },
+    {
+      "traffic": 8,
+      "seconds": 4.857016300000396,
+      "all_snapshots_equal": false
+    }
+  ]
+}

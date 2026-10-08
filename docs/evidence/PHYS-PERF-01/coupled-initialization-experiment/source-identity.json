@@ -1,0 +1,8 @@
+{
+  "head": "756d26258fa9522a2ec9f7921f93215c77b10627",
+  "source_path": "src/tire_drivetrain.py",
+  "working_tree_sha256": "6ca34d6b3fd24514dae215f93e50235ad383be24cc039136d9ea3e0263d07e4a",
+  "head_blob_sha256": "6ca34d6b3fd24514dae215f93e50235ad383be24cc039136d9ea3e0263d07e4a",
+  "bytes_equal_to_head": true,
+  "scope_note": "仅核对目标源文件；src/mechanical_kernels.c 与 src/suspension_contacts.py 的既有工作区修改不在本次冻结范围。"
+}
