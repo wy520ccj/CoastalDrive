@@ -1,0 +1,82 @@
+FF                                                                       [100%]
+================================== FAILURES ===================================
+_______ test_bullet_post_solve_rail_manifold_is_one_real_event[False-4] _______
+
+centered = False, point_count = 4
+
+    @pytest.mark.parametrize("centered,point_count", [(False, 4), (True, 8)])
+    def test_bullet_post_solve_rail_manifold_is_one_real_event(centered, point_count):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(CAR, centered_collision_support=centered))
+        diagnostic = io.StringIO()
+        simulation.set_impact_diagnostic(diagnostic, scenario="test-rail")
+        try:
+            simulation.reset_player((5.8, 30, 0.55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            first_native_tick = None
+            for _ in range(30):
+                simulation.step(Control())
+                # 时间戳对应真实求解后冲量；轮胎/传动模型变化不应把旧到达拍写成事件合同。
+                rail_points = [point for manifold in simulation._world.getManifolds()
+                               if ((manifold.getNode0() == simulation.player._chassis
+                                    and "rail" in manifold.getNode1().getName())
+                                   or (manifold.getNode1() == simulation.player._chassis
+                                       and "rail" in manifold.getNode0().getName()))
+                               for point in manifold.getManifoldPoints() if point.getAppliedImpulse() > 0]
+                if rail_points and first_native_tick is None:
+                    first_native_tick = simulation.snapshot().tick
+                if simulation.snapshot().impacts:
+                    break
+            snapshot = simulation.snapshot()
+            assert len(snapshot.impacts) == 1
+            impact = snapshot.impacts[0]
+            assert impact.tick == snapshot.tick == first_native_tick
+            assert impact.material == "metal_barrier"
+>           assert impact.raw_impulse > 8_000
+E           AssertionError: assert 2416.2705078125 > 8000
+E            +  where 2416.2705078125 = ImpactEvent(epoch=2, tick=16, index=0, sources=(1,), material='metal_barrier', raw_impulse=2416.2705078125, excess_imp...1), local_normal=(-0.9999362873905877, -0.009560672611766716, 0.006001224769882442), zone='right', contact_age_ticks=1).raw_impulse
+
+tests\test_impact_events.py:59: AssertionError
+_______ test_bullet_post_solve_rail_manifold_is_one_real_event[True-8] ________
+
+centered = True, point_count = 8
+
+    @pytest.mark.parametrize("centered,point_count", [(False, 4), (True, 8)])
+    def test_bullet_post_solve_rail_manifold_is_one_real_event(centered, point_count):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(CAR, centered_collision_support=centered))
+        diagnostic = io.StringIO()
+        simulation.set_impact_diagnostic(diagnostic, scenario="test-rail")
+        try:
+            simulation.reset_player((5.8, 30, 0.55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            first_native_tick = None
+            for _ in range(30):
+                simulation.step(Control())
+                # 时间戳对应真实求解后冲量；轮胎/传动模型变化不应把旧到达拍写成事件合同。
+                rail_points = [point for manifold in simulation._world.getManifolds()
+                               if ((manifold.getNode0() == simulation.player._chassis
+                                    and "rail" in manifold.getNode1().getName())
+                                   or (manifold.getNode1() == simulation.player._chassis
+                                       and "rail" in manifold.getNode0().getName()))
+                               for point in manifold.getManifoldPoints() if point.getAppliedImpulse() > 0]
+                if rail_points and first_native_tick is None:
+                    first_native_tick = simulation.snapshot().tick
+                if simulation.snapshot().impacts:
+                    break
+            snapshot = simulation.snapshot()
+            assert len(snapshot.impacts) == 1
+            impact = snapshot.impacts[0]
+            assert impact.tick == snapshot.tick == first_native_tick
+            assert impact.material == "metal_barrier"
+>           assert impact.raw_impulse > 8_000
+E           AssertionError: assert 7353.70751953125 > 8000
+E            +  where 7353.70751953125 = ImpactEvent(epoch=4, tick=16, index=0, sources=(1,), material='metal_barrier', raw_impulse=7353.70751953125, excess_im...1), local_normal=(-0.9997882316907187, -0.002594036068286366, 0.020414767929663544), zone='right', contact_age_ticks=1).raw_impulse
+
+tests\test_impact_events.py:59: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_impact_events.py::test_bullet_post_solve_rail_manifold_is_one_real_event[False-4]
+FAILED tests/test_impact_events.py::test_bullet_post_solve_rail_manifold_is_one_real_event[True-8]
+2 failed in 0.81s

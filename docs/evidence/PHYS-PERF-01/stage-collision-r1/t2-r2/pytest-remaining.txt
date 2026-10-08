@@ -1,0 +1,133 @@
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 18%]
+...................................................F
+================================== FAILURES ===================================
+_______________ test_collision_wall_stops_car_without_tunneling _______________
+
+simulation = <simulation.Simulation object at 0x000001E3F9AC2BA0>
+
+    def test_collision_wall_stops_car_without_tunneling(simulation):
+        simulation.reset_player((95, 670, SPAWN[2]))
+        drive(simulation, 2)
+        peak_speed = 0
+        for _ in range(1200):
+>           simulation.step(Control(throttle=1))
+
+tests\test_h1_vehicle.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\simulation.py:738: in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+src\tire_drivetrain.py:702: in advance_drivetrain
+    state, end_velocity, clutch, loss, gear_reaction = shared(state)
+                                                       ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+guess = (-0.00073812207893787, 0.0008832720495389318, 0.0025201059380921273, 167.74084385312554, 0.21689530897315493, 0.03488597313950863, ...)
+
+    def shared(guess):
+        nonlocal shared_branch, shared_port_index, road_torques, active_limits, bias_ports
+        loads = load_terms()
+        def mapped(state):
+            nonlocal shared_branch, shared_port_index, road_torques, active_limits
+            if shaft:
+                end, end_velocity, clutch, loss, gear_reaction, shared_branch, shared_port_index, road_torques, active_limits = (
+                    shared_map_state(shared_map, state, loads, tuple(frame.load for frame in frames),
+                                     tuple(frame.supported for frame in frames), shared_branch))
+                return end, end_velocity, clutch, loss, gear_reaction
+            # 八维旧机械对照保留原两端口机制；实体输入轴使用上面的同方程数值块。
+            if torque_bias:
+                active_limits = bias_limits(state[:dimensions], *state[dimensions:])
+            if rolling_active:
+                road_torques = rolling_torques(frames,radii,state[wheel_start:],rolling_coefficients,
+                                               config.rolling_transition_speed)
+            free, end_velocity = known(cross(spin(state), state[:3]), loads)
+            order = [shared_branch] + [i for i in range(len(branches)) if i != shared_branch]
+            for branch_index in order:
+                branch, mc, ml, response, _wheels, _local_response, _plans, _shaft_data = branches[branch_index]
+                projected = branch_free(free, branch)
+                if ratio:
+                    (clutch, loss), _speeds = transmission_state(
+                        (dot(clutch_gradient, projected), dot(gear_gradient, projected)),
+                        response, dt, capacity, efficiency)
+                else:
+                    clutch = loss = 0.
+                end = tuple(projected[a] - dt * (clutch * mc[a] + loss * ml[a] + 0.) for a in range(dimensions))
+                if differential_torques(end, branch, differential, damping, active_limits) is not None:
+                    shared_branch = branch_index
+                    break
+            else:
+                raise ArithmeticError("限滑/离合共同末状态无可行分区")
+            return (end + (0., loss) if torque_bias else end), end_velocity, clutch, loss, 0.
+    
+        variables = dimensions + 2 if torque_bias else dimensions
+    
+        def residual_size(state, target):
+            if not torque_bias:
+                return max(abs(a - b) for a, b in zip(state, target))
+            # 角速度与端口转矩使用各自原精度；不能用Nm残差接受更差的rad/s试探步。
+            return max(abs(state[a] - target[a]) / (max(1e-14, math.ulp(state[a]), math.ulp(target[a]))
+                       if a < dimensions else PORT_TOLERANCE) for a in range(variables))
+    
+        state = tuple(guess) + bias_ports if torque_bias else guess
+        for iteration in range(30):
+            end, end_velocity, clutch, loss, gear_reaction = mapped(state)
+            residual = tuple(state[a] - end[a] for a in range(variables))
+            error = max(abs(value) for value in residual)
+            # 逐坐标保留绝对精度；大转速处容纳一次状态舍入的浮点间隔。
+            angular_converged = all(abs(residual[a]) <= max(1e-14, math.ulp(state[a]), math.ulp(end[a]))
+                                    for a in range(dimensions))
+            ports_converged = not torque_bias or all(abs(value) <= PORT_TOLERANCE for value in residual[dimensions:])
+            if angular_converged and ports_converged:
+                if torque_bias:
+                    bias_ports = gear_reaction, loss
+                    active_limits = bias_limits(end[:dimensions], gear_reaction, loss)
+                    if differential_torques(end[:dimensions], branches[shared_branch][0], differential,
+                                            damping, active_limits) is None:
+                        state = end
+                        continue
+                return end[:dimensions], end_velocity, clutch, loss, gear_reaction
+            if (rolling_active or torque_bias) and iteration >= 4:
+                # 大轮荷低速滚阻与轴系共同求根，固定点初迭代后用带步长搜索的Newton修正。
+                if shaft:
+                    columns = shared_jacobian_columns(state)
+                else:
+                    # 冻结的旧八维对照机制保留原中心差分，实体轴使用本构解析导数。
+                    columns = []
+                    for j in range(variables):
+                        plus, minus = list(state), list(state)
+                        plus[j] += .0001
+                        minus[j] -= .0001
+                        high, low = mapped(plus)[0], mapped(minus)[0]
+                        columns.append(tuple(float(a == j) - (high[a]-low[a])/.0002 for a in range(variables)))
+                delta = _solve(tuple(tuple(columns[j][a] for j in range(variables)) for a in range(variables)),
+                               tuple(-value for value in residual))
+                before = residual_size(state, end)
+                for attempt in range(8):
+                    candidate = tuple(state[a] + 2.**-attempt * delta[a] for a in range(variables))
+                    target = mapped(candidate)[0]
+                    if residual_size(candidate, target) < before:
+                        state = candidate
+                        # 下一次mapped前恢复该候选的负载，避免试探步残留容量。
+                        if torque_bias:
+                            active_limits = bias_limits(state[:dimensions], *state[dimensions:])
+                        break
+                else:
+                    # 线搜索已无下降步时，半步固定点抑制末位舍入循环；原30轮／精度保持。
+                    state = tuple(math.fsum((state[a], end[a])) / 2 for a in range(variables))
+            else:
+                state = end
+>       raise ArithmeticError(f"曲轴/四轮转子共同末状态超过30次迭代：{error:g}")
+E       ArithmeticError: 曲轴/四轮转子共同末状态超过30次迭代：1.02141e-14
+
+src\tire_drivetrain.py:399: ArithmeticError
+=========================== short test summary info ===========================
+FAILED tests/test_h1_vehicle.py::test_collision_wall_stops_car_without_tunneling
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 267 passed, 957 deselected in 3740.66s (1:02:20)

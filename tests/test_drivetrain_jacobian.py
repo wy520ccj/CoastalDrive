@@ -1,5 +1,11 @@
 """实际共同末状态的解析Jacobian对独立中心差分；不降低求解精度。"""
 
+import gzip
+import json
+import math
+from pathlib import Path
+
+import mechanical_kernels
 import pytest
 from mechanical_kernels import shared_map_jacobian, shared_map_state
 
@@ -8,6 +14,34 @@ from driver_assist import GAME_INPUT
 from simulation import Simulation
 from vehicle_designs import GR86_DESIGN
 from vehicle_state import Control
+
+
+def test_wall_shared_state_converges_at_original_coordinate_precision():
+    # 第1145拍撞墙输入：离合与齿轮在输入轴上产生几乎抵消的反力。
+    data = json.loads(gzip.decompress((Path(__file__).parent / "data/wall-shared/input.json.gz").read_bytes()))
+    constructors = {name: function for name, function in (
+        ("mass_coefficients", mechanical_kernels.mass_coefficients),
+        ("rotor_coefficients", mechanical_kernels.rotor_coefficients),
+        ("shared_map_coefficients", mechanical_kernels.shared_map_coefficients),
+    )}
+
+    def restore(value):
+        if isinstance(value, dict):
+            if "capsule" in value:
+                return constructors[value["capsule"]](*restore(value["args"]), **restore(value["kwargs"]))
+            if "tuple" in value:
+                return tuple(restore(x) for x in value["tuple"])
+            return {k: restore(v) for k, v in value.items()}
+        if isinstance(value, list):
+            return [restore(x) for x in value]
+        return value
+
+    data = restore(data)
+    solution = mechanical_kernels.shared_solution(data["shared_map"], data["guess"], data["loads"],
+        data["wheel_loads"], data["supported"], data["shared_branch"], data["bias_ports"])
+    target = shared_map_state(data["shared_map"], solution[0], data["loads"],
+                             data["wheel_loads"], data["supported"], solution[5])[0]
+    assert all(abs(a-b) <= max(1e-14, math.ulp(a), math.ulp(b)) for a, b in zip(solution[0], target))
 
 
 def test_native_loaded_axle_jacobian_matches_independent_difference(monkeypatch):

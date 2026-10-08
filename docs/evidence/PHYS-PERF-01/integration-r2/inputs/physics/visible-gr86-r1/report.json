@@ -1,0 +1,307 @@
+{
+  "kind": "30-second GR86/8-car visible short probe; not final performance or human gate",
+  "vehicle_design": "gr86-2022-premium-6mt",
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 8,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": false,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "streaming_phases": {},
+  "wall_seconds": 31.1690287,
+  "sample_seconds": 28.217756300000474,
+  "frames": 20,
+  "average_fps": 0.7087735746020198,
+  "display_draw_frames": 18,
+  "display_draw_fps": 0.7084981642831809,
+  "display_draw_p95_ms": 1832.2119000076782,
+  "display_draw_p99_ms": 1832.2119000076782,
+  "display_draw_max_ms": 1832.2119000076782,
+  "display_draw_over_50ms": 18,
+  "p95_ms": 1827.6021999918157,
+  "p99_ms": 1827.6021999918157,
+  "max_ms": 1827.6021999918157,
+  "frames_over_50ms": 20,
+  "frames_over_100ms": 20,
+  "dropped_simulation_seconds": 25.224999999999994,
+  "warmup_dropped_seconds": 2.6833333333333336,
+  "distance_m": 0.3491598824644644,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 27.636617799999996,
+      "ms": 1827.6021999918157
+    },
+    {
+      "second": 25.809003899999993,
+      "ms": 1822.1702000009827
+    },
+    {
+      "second": 29.4432282,
+      "ms": 1806.6069000051357
+    },
+    {
+      "second": 18.7751405,
+      "ms": 1799.551899996004
+    },
+    {
+      "second": 23.986845699999996,
+      "ms": 1780.3540000022622
+    },
+    {
+      "second": 20.502659099999995,
+      "ms": 1727.5024999980815
+    },
+    {
+      "second": 31.1690287,
+      "ms": 1725.8195000031264
+    },
+    {
+      "second": 22.206489999999995,
+      "ms": 1703.834400002961
+    },
+    {
+      "second": 16.975606299999995,
+      "ms": 1703.2630000030622
+    },
+    {
+      "second": 15.272338799999998,
+      "ms": 1266.2614000000758
+    },
+    {
+      "second": 10.6501188,
+      "ms": 1164.0909999987343
+    },
+    {
+      "second": 5.179441799999999,
+      "ms": 1134.0880000061588
+    }
+  ],
+  "segment_work_max_ms": 0.2314000012120232,
+  "segment_step_max_ms": 0,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 0.2314000012120232,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.09960000170394778,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.08610000077169389,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.08250000246334821,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.05509999755304307,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.05509999755304307,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.054100004490464926,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.05230000533629209,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.052100003813393414,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.052100003813393414,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.052100003813393414,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.05190000229049474,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": false
+    },
+    {
+      "second": 31,
+      "minimized": false,
+      "foreground": false
+    }
+  ],
+  "passed": false,
+  "short_performance_passed": false,
+  "git_head": "a2e6975d08e29e329037e5331a08f0fcd3d3707a",
+  "git_status": ""
+}

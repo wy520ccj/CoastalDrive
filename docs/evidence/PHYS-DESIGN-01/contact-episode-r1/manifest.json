@@ -1,0 +1,116 @@
+[
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/capture-episode-overlap.py",
+    "archive": "inputs/capture-episode-overlap.py",
+    "sha256": "1affe6bfdd71595e4502db4f86a9030f58def651d564e129f483ff36c38bdc69",
+    "payload_sha256": "1affe6bfdd71595e4502db4f86a9030f58def651d564e129f483ff36c38bdc69"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/episode-original-overlap.json",
+    "archive": "inputs/episode-original-overlap.json.gz",
+    "sha256": "c81b2c0dd832feb7524623913bb6967ad03856480f665ccf71ef0d137a5bdf9a",
+    "payload_sha256": "85d92e2b5cc2dfb0e857b94f762f0fa8c8408f0d9892657dd1c295d09ac4188d"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/episode-original-overlap.log",
+    "archive": "inputs/episode-original-overlap.log.gz",
+    "sha256": "b92ccb524493cb074b0a60280204b4540c9743ba9c7748f112df07387f3af546",
+    "payload_sha256": "a735c2939d376696588ee751c59d146a5ea2a53d04cbb4f2c0aec7fcb08d7bb6"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/episode-original-overlap-five.json",
+    "archive": "inputs/episode-original-overlap-five.json.gz",
+    "sha256": "7dcd5c92270ae02345916115ed6af52d6802be01a1ec24023e71990ec0a0f54c",
+    "payload_sha256": "3c49b541c40bbca1ab2aaa23115928f7352ba0937c2e827b3f14f85e36ed5efc"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/episode-original-overlap-five.log",
+    "archive": "inputs/episode-original-overlap-five.log.gz",
+    "sha256": "cadb57f70a99809c8fe2d5bb08e6efad54d22e914f2376060e59a15ab600b2d0",
+    "payload_sha256": "1b6af898e6e04e2d706f4d0b3c0be3fceafbfc794d48c382674186fd0518115f"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/pilot-episodes.py",
+    "archive": "inputs/pilot-episodes.py",
+    "sha256": "0aa4392e8e801765c742af5481a18505498e4960813a5c5d0477eb6ada59f268",
+    "payload_sha256": "0aa4392e8e801765c742af5481a18505498e4960813a5c5d0477eb6ada59f268"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/episode-pilot.json",
+    "archive": "inputs/episode-pilot.json.gz",
+    "sha256": "8ce46767ee81f695a09c3d2a47cf2e2b1ade316a80115c347a0250ff94844e1b",
+    "payload_sha256": "42bc9eb569efa9e84ed589923f0e09dd35c4774be15d78fd451950c209c88dbb"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/episode-pilot.log",
+    "archive": "inputs/episode-pilot.log.gz",
+    "sha256": "28dbe878f82e368baf2c7350dd7ec1f457a2e292b5985bc235e9a0505ea743b3",
+    "payload_sha256": "04319487691efa898eee7e32ae37cd86fd8ccc0c16df88242279358b4e36e67d"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-contact-episode-T0/pytest.log",
+    "archive": "validation/PHYS-INTEGRATE-02-contact-episode-T0/pytest.log.gz",
+    "sha256": "e99ba3111b8342498d0651a318e09de4bcd36d6570207703a5679641a99b659f",
+    "payload_sha256": "6a0f0a425e11a0dd255cfdae20a57503fc04f1332e2a778711b38b8b3df7221a"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-contact-episode-T0/ruff.log",
+    "archive": "validation/PHYS-INTEGRATE-02-contact-episode-T0/ruff.log.gz",
+    "sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+    "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-contact-episode-T0/summary.json",
+    "archive": "validation/PHYS-INTEGRATE-02-contact-episode-T0/summary.json.gz",
+    "sha256": "291ccefbe36e8f44336c3249b69c03ddb42bc156e649bdc47a61667e09eda9ed",
+    "payload_sha256": "a928393d6e7bcc048b5541f87efe67943bed438c59937e745e66a73922d62074"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-contact-episode-T1/pytest.log",
+    "archive": "validation/PHYS-INTEGRATE-02-contact-episode-T1/pytest.log.gz",
+    "sha256": "adc79dfe3587e1bd92786192bed17e77ab7b0aae6294591fda6bc7bccbeb3754",
+    "payload_sha256": "5430966b1f813dfec31d28a908c7ebffd4e5966bc7dcc6f6a1bb992a89bc74d2"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-contact-episode-T1/ruff.log",
+    "archive": "validation/PHYS-INTEGRATE-02-contact-episode-T1/ruff.log.gz",
+    "sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+    "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-contact-episode-T1/summary.json",
+    "archive": "validation/PHYS-INTEGRATE-02-contact-episode-T1/summary.json.gz",
+    "sha256": "40ff0d102c7f1104856c3d3c391a58ddf0a8b5a70bdf562407a0d732baa86efa",
+    "payload_sha256": "fe944269deb124c6dedb955c72ef98f967e07114e8219804968e5cedd54609d5"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-stage-T2-r1/pytest-remaining.log",
+    "archive": "validation/PHYS-INTEGRATE-02-stage-T2-r1/pytest-remaining.log.gz",
+    "sha256": "fd4dc3ca00429933badacb3afce81729de029974d42e0d7767db0d3e23b9c3cf",
+    "payload_sha256": "23ab9fe02e131ccb46c0ea7ae847cee228c0b20583e5fc4e0b1d841be35d5fb8"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-stage-T2-r1/ruff.log",
+    "archive": "validation/PHYS-INTEGRATE-02-stage-T2-r1/ruff.log.gz",
+    "sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+    "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-stage-T2-r1/summary.json",
+    "archive": "validation/PHYS-INTEGRATE-02-stage-T2-r1/summary.json.gz",
+    "sha256": "bcd6ed948b7ba42b5d6ee0f502746f712f3b64552e605a21b5e4a07aa920d77d",
+    "payload_sha256": "e0c4dfa834ed6f645062b19807ba6eece077e30e17b8873c21f8b485c6431394"
+  },
+  {
+    "source": "tests/test_highway_run.py",
+    "archive": "source/test_highway_run.py",
+    "sha256": "50171bfa63fdf84cd4b0c94f9d37424f670d251c27c9ecc45c906a644b1bc7ba",
+    "payload_sha256": "50171bfa63fdf84cd4b0c94f9d37424f670d251c27c9ecc45c906a644b1bc7ba"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-02-episode-reuse-audit.json",
+    "archive": "continuation-reuse-audit.json",
+    "sha256": "1a41c6ebb0ca7bf34a8fb8c5c4c87132dedfb9e63058e7246658f69075493dc5",
+    "payload_sha256": "1a41c6ebb0ca7bf34a8fb8c5c4c87132dedfb9e63058e7246658f69075493dc5"
+  }
+]

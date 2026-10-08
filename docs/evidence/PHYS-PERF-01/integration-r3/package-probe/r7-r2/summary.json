@@ -1,0 +1,59 @@
+{
+  "kind": "outside-repository independent package headless; not render, FPS or human gate",
+  "passed": true,
+  "checks": [
+    {
+      "mode": "game",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-candidate-r7\\win_amd64\\coastaldrive.exe",
+        "--headless",
+        "--steps",
+        "120",
+        "--track",
+        "test",
+        "--seed",
+        "17",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "game"
+      ],
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-pjhj1fzb\\game",
+      "returncode": 0,
+      "seconds": 1.4617909000080545,
+      "log": "game.log",
+      "report_tick_present": true,
+      "full_hardware_present": true
+    },
+    {
+      "mode": "simulation",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-candidate-r7\\win_amd64\\coastaldrive.exe",
+        "--headless",
+        "--steps",
+        "120",
+        "--track",
+        "test",
+        "--seed",
+        "17",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "simulation"
+      ],
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-pjhj1fzb\\simulation",
+      "returncode": 0,
+      "seconds": 1.462464700001874,
+      "log": "simulation.log",
+      "report_tick_present": true,
+      "full_hardware_present": true
+    }
+  ],
+  "sha256": {
+    "coastaldrive.exe": "5f698b05d4f0057b75ca3024600a085aaf9e25e16c482740b9d476545de5f1d3",
+    "mechanical_kernels.pyd": "fd5adef39783d5247420139fa163c76bad381101b4fbca93efc80a4fae16a292",
+    "wheel_contact_kernels.pyd": "f4732d42d76f044f3d1b7016cab1e8aae206f90b2a40ae0ea18fb1fcc342b044",
+    "licenses/CPython-LICENSE.txt": "db693914a7f6d42f1d3e09c10eda1482e5d94ed4c70a769476ae8d722a9be1ce",
+    "assets/game/vehicle-configs/gr86-2022-premium-6mt.json": "88c6bdce91429ae59247fec5c6bfd4a7531bbfa918e622dd78e61301dafb6a23"
+  }
+}

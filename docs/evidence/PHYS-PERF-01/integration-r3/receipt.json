@@ -1,0 +1,382 @@
+{
+  "head": "127c1d03b81eb7805003f5e338aa97f89c409852",
+  "source_capture_file_count": 355,
+  "source_start_end_equal": true,
+  "source_diff_from_ee77835": [
+    "src/mechanical_kernels.c",
+    "src/suspension.py"
+  ],
+  "source_diff_from_isolated_6d5cc19": [
+    "src/tire_drivetrain.py",
+    "tests/test_h3_review.py",
+    "tests/test_highway_run.py",
+    "tests/test_impact_delivery.py",
+    "tests/test_impact_events.py"
+  ],
+  "build": {
+    "status": "passed",
+    "seconds": 31.12678,
+    "source_hashes_count": 358,
+    "source_hashes_before_after_equal": true,
+    "inventory_scope_note": "The build receipt has 358 hashed inputs: 354 .py/.c/.pyd under src/tests/tools plus four JSON inputs. This archive separately captures 355 files: those 354 code files plus setup.py."
+  },
+  "T1": {
+    "pytest": "528 passed in 119.11s",
+    "ruff": "passed",
+    "headless_runs": [
+      {
+        "seed": 0,
+        "seconds": 10.183
+      },
+      {
+        "seed": 17,
+        "seconds": 9.959
+      },
+      {
+        "seed": 23,
+        "seconds": 9.972
+      }
+    ],
+    "summary_check_seconds": [
+      10.183,
+      9.959,
+      9.972
+    ]
+  },
+  "package_r7": {
+    "headless_passed": true,
+    "modes": [
+      {
+        "mode": "game",
+        "ticks": 120,
+        "seconds": 1.4617909000080545
+      },
+      {
+        "mode": "simulation",
+        "ticks": 120,
+        "seconds": 1.462464700001874
+      }
+    ],
+    "full_hardware_present": true,
+    "render_fps_human_gate": "not evaluated",
+    "artifact_sha256": {
+      "coastaldrive.exe": "5f698b05d4f0057b75ca3024600a085aaf9e25e16c482740b9d476545de5f1d3",
+      "mechanical_kernels.pyd": "fd5adef39783d5247420139fa163c76bad381101b4fbca93efc80a4fae16a292",
+      "wheel_contact_kernels.pyd": "f4732d42d76f044f3d1b7016cab1e8aae206f90b2a40ae0ea18fb1fcc342b044",
+      "licenses/CPython-LICENSE.txt": "db693914a7f6d42f1d3e09c10eda1482e5d94ed4c70a769476ae8d722a9be1ce",
+      "assets/game/vehicle-configs/gr86-2022-premium-6mt.json": "88c6bdce91429ae59247fec5c6bfd4a7531bbfa918e622dd78e61301dafb6a23"
+    },
+    "artifact_sha256_matches_current_build": true,
+    "checks": [
+      {
+        "mode": "game",
+        "ticks": 120,
+        "returncode": 0,
+        "seconds": 1.4617909000080545,
+        "report_tick_present": true,
+        "full_hardware_present": true
+      },
+      {
+        "mode": "simulation",
+        "ticks": 120,
+        "returncode": 0,
+        "seconds": 1.462464700001874,
+        "report_tick_present": true,
+        "full_hardware_present": true
+      }
+    ]
+  },
+  "package_probe_first_attempt": {
+    "status": "reader assertion failed: expected append, launcher rewrites process log",
+    "simulation_mode": "not run",
+    "program_returncode": "not recorded",
+    "failure_type": "probe-reader failure, not package or physical failure"
+  },
+  "integrated_single_step": {
+    "status": "passed",
+    "sweeps": 10,
+    "energy_residual_J": -1.2346894340264924e-14,
+    "kind": "single saved substep, not full T2"
+  },
+  "snapshots": {
+    "traffic_0_and_8_each_48_ticks": true,
+    "all_snapshot_fields_equal_to_integrated_r2": true,
+    "seconds": [
+      0.8234310000116238,
+      6.180748600003426
+    ],
+    "timings": "diagnostic only"
+  },
+  "reuse": {
+    "pool_before": 1263,
+    "previously_independent": 307,
+    "previously_affected": 956,
+    "current_distinct_reused": 957,
+    "remaining_nodes": 1173,
+    "remaining_followups": 11,
+    "old_physical_trajectories": "invalidated by coupled contact refinement",
+    "current_T1_subset": "reused semantically across strict identical-operation C active-set extraction with independent 5757-call (plus separate 512 LU) audits and current 528 T1/full snapshot proof; not same-source"
+  },
+  "active_T2": {
+    "status": "running at capture",
+    "summary_source": "logs/validation/PHYS-INTEGRATE-03-stage-T2-r1/summary.json",
+    "archived_as": "validation/stage-start-metadata.json.gz",
+    "pytest_log": "not archived while active",
+    "captured_start_summary_sha256": "5f74780d678377a578c820853e237ee498058ef0cd92654717a80c29a07a14a3"
+  },
+  "archive_entries": [
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-T1/headless-0.log",
+      "archive": "validation/T1/headless-0.txt",
+      "source_size": 32432,
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "payload_sha256": null,
+      "original_name": "headless-0.log"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-T1/headless-17.log",
+      "archive": "validation/T1/headless-17.txt",
+      "source_size": 32432,
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "payload_sha256": null,
+      "original_name": "headless-17.log"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-T1/headless-23.log",
+      "archive": "validation/T1/headless-23.txt",
+      "source_size": 32432,
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "payload_sha256": null,
+      "original_name": "headless-23.log"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-T1/pytest.log",
+      "archive": "validation/T1/pytest.txt",
+      "source_size": 681,
+      "source_sha256": "79b41826fc242e98dca178118061c31576d8af19877e8896a0c9f35b3f60f490",
+      "archive_sha256": "79b41826fc242e98dca178118061c31576d8af19877e8896a0c9f35b3f60f490",
+      "payload_sha256": null,
+      "original_name": "pytest.log"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-T1/ruff.log",
+      "archive": "validation/T1/ruff.txt",
+      "source_size": 19,
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "payload_sha256": null,
+      "original_name": "ruff.log"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-T1/summary.json",
+      "archive": "validation/T1/summary.json",
+      "source_size": 5316,
+      "source_sha256": "2380d76114b3ad3b805734174b67ad3379d67a8558130e4019b5e1cffa0e8ef2",
+      "archive_sha256": "2380d76114b3ad3b805734174b67ad3379d67a8558130e4019b5e1cffa0e8ef2",
+      "payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-package-r7/build.log",
+      "archive": "validation/package-r7/build.txt",
+      "source_size": 10096,
+      "source_sha256": "f707d71617c685db418de0a8afaf79aa19c047bd6c4c0e45b1f5c61fc5caed0c",
+      "archive_sha256": "f707d71617c685db418de0a8afaf79aa19c047bd6c4c0e45b1f5c61fc5caed0c",
+      "payload_sha256": null,
+      "original_name": "build.log"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-package-r7/summary.json",
+      "archive": "validation/package-r7/summary.json.gz",
+      "source_size": 75656,
+      "source_sha256": "486a5182efaecb3a579228dc0ae0767bc1deeb78056d4c6e333bdafdd3505274",
+      "archive_sha256": "879ef00bedc78ac73d9c9bb928b3f2e40ae0abeac44fd912e23793d9c510d24f",
+      "payload_sha256": "486a5182efaecb3a579228dc0ae0767bc1deeb78056d4c6e333bdafdd3505274",
+      "original_name": null
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-stage-T2-r1/summary.json",
+      "archive": "validation/stage-start-metadata.json.gz",
+      "source_size": 178466,
+      "source_sha256": "5f74780d678377a578c820853e237ee498058ef0cd92654717a80c29a07a14a3",
+      "archive_sha256": "f556703b884f8e73595ac6cff1ea71d0a8e814a241d0a6c4c64237d611c0dcb4",
+      "payload_sha256": "5f74780d678377a578c820853e237ee498058ef0cd92654717a80c29a07a14a3",
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/package-headless-r7/game-before-reader-failure.log",
+      "archive": "package-probe/r7-reader-failure/game-before-reader-failure.txt",
+      "source_size": 33116,
+      "source_sha256": "1df0928d040b1feba1cad62404fd2ed8b0493280b89926be269360e749a0b6b3",
+      "archive_sha256": "1df0928d040b1feba1cad62404fd2ed8b0493280b89926be269360e749a0b6b3",
+      "payload_sha256": null,
+      "original_name": "game-before-reader-failure.log"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/package-headless-r7/reader-failure.json",
+      "archive": "package-probe/r7-reader-failure/reader-failure.json",
+      "source_size": 534,
+      "source_sha256": "4ff4fb2cc1b7c9a96b14890a92191bc11f14ab4b110f47698b0e953786562c7c",
+      "archive_sha256": "4ff4fb2cc1b7c9a96b14890a92191bc11f14ab4b110f47698b0e953786562c7c",
+      "payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/package-headless-r7-r2/game.log",
+      "archive": "package-probe/r7-r2/game.txt",
+      "source_size": 33116,
+      "source_sha256": "1df0928d040b1feba1cad62404fd2ed8b0493280b89926be269360e749a0b6b3",
+      "archive_sha256": "1df0928d040b1feba1cad62404fd2ed8b0493280b89926be269360e749a0b6b3",
+      "payload_sha256": null,
+      "original_name": "game.log"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/package-headless-r7-r2/simulation.log",
+      "archive": "package-probe/r7-r2/simulation.txt",
+      "source_size": 33554,
+      "source_sha256": "5e635b21e5c40c71ddb09e501b47ab3ffced11c29a9517e688878cdcdf08e815",
+      "archive_sha256": "5e635b21e5c40c71ddb09e501b47ab3ffced11c29a9517e688878cdcdf08e815",
+      "payload_sha256": null,
+      "original_name": "simulation.log"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/package-headless-r7-r2/summary.json",
+      "archive": "package-probe/r7-r2/summary.json",
+      "source_size": 2106,
+      "source_sha256": "3b19776924421d7ae4e34646b1a26cbcde5da9156855135a57cf47c98af5d742",
+      "archive_sha256": "3b19776924421d7ae4e34646b1a26cbcde5da9156855135a57cf47c98af5d742",
+      "payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/integration-r3-build.log",
+      "archive": "build/integration-r3-build.txt",
+      "source_size": 5618,
+      "source_sha256": "6149171bef9197971222ae51e48154fe6f537c73c75b88be25bfc0bcf336e4a3",
+      "archive_sha256": "6149171bef9197971222ae51e48154fe6f537c73c75b88be25bfc0bcf336e4a3",
+      "payload_sha256": null,
+      "original_name": "integration-r3-build.log"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/native-package-check-r7.py",
+      "archive": "package-scripts/native-package-check-r7.py",
+      "source_size": 2623,
+      "source_sha256": "423b196917dfc648c2548dee1fcc067515bc41568cd7587459e58dc93cb092d8",
+      "archive_sha256": "423b196917dfc648c2548dee1fcc067515bc41568cd7587459e58dc93cb092d8",
+      "payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/native-package-check-r7-r2.py",
+      "archive": "package-scripts/native-package-check-r7-r2.py",
+      "source_size": 2710,
+      "source_sha256": "7536b955256af6f8a4c3f2caf1537ad7f37adea409cb411f4129fd3030d1a8e3",
+      "archive_sha256": "7536b955256af6f8a4c3f2caf1537ad7f37adea409cb411f4129fd3030d1a8e3",
+      "payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/integrated-r2-snapshots.json",
+      "archive": "snapshots/baseline-integrated-r2/integrated-r2-snapshots.json.gz",
+      "source_size": 8722208,
+      "source_sha256": "b04a8cafb2a600207d3cf49afe5924b4b6067c87ea1138583b6a9e4c6c1e5031",
+      "archive_sha256": "09cd4c07352fdb5c716af3226cf8c00cc69b97d742130bad55e4693472af1fb0",
+      "payload_sha256": "b04a8cafb2a600207d3cf49afe5924b4b6067c87ea1138583b6a9e4c6c1e5031",
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-map160/replay-integrated.json",
+      "archive": "integration-proof/replay-integrated.json",
+      "source_size": 10014,
+      "source_sha256": "28bccc059af581fccb92f9b1b48d13c31a4f1c82e71135a2ce0b7033bc9236e2",
+      "archive_sha256": "28bccc059af581fccb92f9b1b48d13c31a4f1c82e71135a2ce0b7033bc9236e2",
+      "payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-map160/check-integrated-snapshots.py",
+      "archive": "integration-proof/check-integrated-snapshots.py",
+      "source_size": 1770,
+      "source_sha256": "0af55109d583af61773cae6da0a1e4f5010ca7611c4e41c277aff1a7372cb04d",
+      "archive_sha256": "0af55109d583af61773cae6da0a1e4f5010ca7611c4e41c277aff1a7372cb04d",
+      "payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-map160/integrated-snapshots.json",
+      "archive": "snapshots/integrated-r3/integrated-snapshots.json.gz",
+      "source_size": 8746914,
+      "source_sha256": "27c611ac453fdbb6635986845f63fcc1c7c85b8628bf372b217f4ec3bebf409d",
+      "archive_sha256": "012715d5f62912912b463e14779a21e6b21033a8828b0ee3fb92c68ca54ab598",
+      "payload_sha256": "27c611ac453fdbb6635986845f63fcc1c7c85b8628bf372b217f4ec3bebf409d",
+      "original_name": null
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-map160/integrated-snapshots.log",
+      "archive": "snapshots/integrated-r3/integrated-snapshots.txt",
+      "source_size": 132,
+      "source_sha256": "38e1b3a70270b3c42178497e82763814541eacdbe1c6521b5ae445b460b094e4",
+      "archive_sha256": "38e1b3a70270b3c42178497e82763814541eacdbe1c6521b5ae445b460b094e4",
+      "payload_sha256": null,
+      "original_name": "integrated-snapshots.log"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-reuse-audit.py",
+      "archive": "reuse-audit/PHYS-INTEGRATE-03-reuse-audit.py",
+      "source_size": 4451,
+      "source_sha256": "159a8f195ac29ad608fc3b8190dbcac97b62c352004c590c4eed9793bce06b7a",
+      "archive_sha256": "159a8f195ac29ad608fc3b8190dbcac97b62c352004c590c4eed9793bce06b7a",
+      "payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-reuse-audit.json",
+      "archive": "reuse-audit/PHYS-INTEGRATE-03-reuse-audit.json.gz",
+      "source_size": 617502,
+      "source_sha256": "90c2f758be11ef40dd480338eb51e6b0aecb5a9190809856b5603466687eecfa",
+      "archive_sha256": "8b4d4638a1551800aee5627dd9d28caa24ab03f1d1cd6d06a40fd63b6b8d9038",
+      "payload_sha256": "90c2f758be11ef40dd480338eb51e6b0aecb5a9190809856b5603466687eecfa",
+      "original_name": null
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-finalize-audit.py",
+      "archive": "reuse-audit/PHYS-INTEGRATE-03-finalize-audit.py",
+      "source_size": 2307,
+      "source_sha256": "2ceaf3d092642b8a5a13c2587299e2898fe99871863c3f2f34ba3e658c7afb89",
+      "archive_sha256": "2ceaf3d092642b8a5a13c2587299e2898fe99871863c3f2f34ba3e658c7afb89",
+      "payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-reused-nodes.json",
+      "archive": "reuse-audit/PHYS-INTEGRATE-03-reused-nodes.json.gz",
+      "source_size": 126365,
+      "source_sha256": "e59e3f123b0e6be2c9f3bf939e83262fa093b954b9ee9e44cb6a0ea78162230a",
+      "archive_sha256": "10dfd118f04e81a2e9fde161db30cea431cb5c5cb4d759da99e16cdafed27d2c",
+      "payload_sha256": "e59e3f123b0e6be2c9f3bf939e83262fa093b954b9ee9e44cb6a0ea78162230a",
+      "original_name": null
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-stage-launch.py",
+      "archive": "reuse-audit/PHYS-INTEGRATE-03-stage-launch.py",
+      "source_size": 2013,
+      "source_sha256": "7fd25e0b271c4baae9c1487318cff2d0a3ad3d99e07a3484b48e4e78cac425e0",
+      "archive_sha256": "7fd25e0b271c4baae9c1487318cff2d0a3ad3d99e07a3484b48e4e78cac425e0",
+      "payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-package-build.py",
+      "archive": "package-scripts/PHYS-INTEGRATE-03-package-build.py",
+      "source_size": 1496,
+      "source_sha256": "4d19948365a46c8e92b8997c266c631f6fc6cec4e86938bde291cc87b94a12e3",
+      "archive_sha256": "4d19948365a46c8e92b8997c266c631f6fc6cec4e86938bde291cc87b94a12e3",
+      "payload_sha256": null,
+      "original_name": null
+    }
+  ],
+  "source_diff_note": "Git diff ee77835..127c1d0 lists only mechanical_kernels.c and suspension.py. Diff 6d5cc19..127c1d0 lists tire_drivetrain.py and four test files (including test_h3_review.py); the observed list is retained verbatim in source-capture.json."
+}

@@ -1,0 +1,29 @@
+{"error": "\u4f20\u52a8/\u56db\u8f6e\u5171\u540c\u6c42\u89e3\u8d85\u8fc720\u8f6e\uff1a4.82988e-05N\uff0c\u5236\u52a80Nm\uff0c\u6cd5\u54114.54747e-13N\uff0c\u51e0\u4f55\u5171\u8f6d\u51b2\u91cf6.90466e-12Ns/Nms", "completed_tick": 97, "seconds": 2.0214990000094986}
+Traceback (most recent call last):
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\physics\PHYS-DESIGN-01-map160\capture.py", line 46, in <module>
+    for _ in range(180):sim.step(Control())
+                        ~~~~~~~~^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\simulation.py", line 738, in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\world_step.py", line 46, in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\vehicle.py", line 289, in advance_physics
+    coupled_contacts = self.tires.advance(
+        self._chassis, self._wheel_contacts, angles,
+    ...<4 lines>...
+        substeps=tire_substeps, accumulate=accumulate,
+    )
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\vehicle_tires.py", line 193, in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+        wheel_frames, projected, powertrain.engine_torque_request, powertrain.capacity,
+    ...<14 lines>...
+            if powertrain.downstream_active else (), suspension=normal_system if suspension is not None else None,
+        rolling_coefficients=rolling_coefficients)
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\physics\PHYS-DESIGN-01-map160\capture.py", line 19, in observe
+    try:return original(*args,**kwargs)
+               ~~~~~~~~^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\tire_drivetrain.py", line 730, in advance_drivetrain
+    raise ArithmeticError(f"����/���ֹ�ͬ��ⳬ��20�֣�{maximum:g}N���ƶ�{brake_error:g}Nm������{normal_error:g}N�����ι������{geometry_error:g}Ns/Nms")
+ArithmeticError: ����/���ֹ�ͬ��ⳬ��20�֣�4.82988e-05N���ƶ�0Nm������4.54747e-13N�����ι������6.90466e-12Ns/Nms

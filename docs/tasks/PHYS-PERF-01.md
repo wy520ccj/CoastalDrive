@@ -80,6 +80,9 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 有限圆柱末接点数值块完成：原真实世界relative_entry和跨有限面face_extension_difference仍回原函数；同平面/Gonzalez公式、胎冠割线与有限转动直接复用一个C数值实现。4,096割线hex、20,792实际末接点、256无接触/反向/跨面分支逐值相同；89项T0、474项T1/Ruff/三种子14.5/13.2/13.7s通过。首移植脚本名错误在写源前失败，首T0未用导入Ruff失败/pytest未跑均保留。单/九车48拍全部Snapshot相同，短测0.7980/7.1059s，profile16拍5.5928s只定位。证据[endpoint-r1](../evidence/PHYS-PERF-01/endpoint-r1/receipt.json)。main33657dc完整T2已523通过/1检查点初始子步失败，14专项未跑，完整阶段未通过；该失败由主施工线复现处理，性能块不冒充修复。最终包/T3/前台/人工仍待完成。
 
 
+主目录第二批整合到a2e6975：784项T1/Ruff/三seed通过，主/隔离两48拍全部Snapshot相同，短测0.8272/6.3367s仅诊断。r6候选包本地构建35.249s、源前后SHA一致，仓库外GR86两模式各120拍2.066/1.694s通过；未替代默认包。1080p/GR86+8NPC实际30秒短测31.169s墙钟、丢仿真25.225s、行进0.349m/0碰撞；后段foregroundFalse，整段.7085FPS/P95 1832ms不能作为有效前台测值，未通过实时性能。截图实际已目视核验，非人工驾驶Gate。[整合/包/可见诊断](../evidence/PHYS-PERF-01/integration-r2/receipt.json)。完整T2目前25通过/1中心完全重叠NPC计数夹具失败，后11未跑；夹具修正生产源保持，阶段继续。
+
+联合14变量Newton及子步内Broyden雅可比试验仅在logs独立进程进行：48拍两场景完成但Snapshot不逐字段相同，短测Newton1.357/17.475s、Broyden1.552/19.037s，比正式0.798/7.106s更慢；不接入生产，不记理论/性能/机械Gate通过。首Broyden生成脚本缩进使未收集完14列时构造矩阵而IndexError，修正后第二次才有有效速度样本，原失败保留。下一从实际profile处理有限支持面查询与数值对象装配，不靠缩减物理步频或残差要求换帧率。
 拒绝的两项候选算法实验（2026-10-07）：[子步14变量联合Newton / Broyden实验](../evidence/PHYS-PERF-01/coupled-correction-experiment/receipt.json)均未接入生产；单/8车48拍完整Snapshot不与端点基线逐字段相同，短测Newton为1.3569/17.4754s、Broyden为1.5520/19.0373s，显著慢于基线0.7980/7.1059s；Broyden首轮IndexError及修正后r2均保留。[支持面root AABB提前筛选实验](../evidence/PHYS-PERF-01/surface-prefilter-experiment/receipt.json)标准快照与基线相同，但短测0.9699/11.6376s更慢；同进程old/new/new/old完整Snapshot断言失败，原快照未保存，原因未知。正式T0为31项通过（调用审计日志另有独立40项记录）；无T1或机械/能量Gate，两项均拒绝且未进入生产。
 
 
@@ -89,6 +92,10 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 圆柱查询前置数值实验（2026-10-07，拒绝）：[证据与收据](../evidence/PHYS-PERF-01/cylinder-query-experiment/receipt.json)。8,518次调用/10,012条射线的数值与输入别名一致，T0为31项/Ruff通过；标准单/8车48拍Snapshot与悬架基线相同。ABBA四条完整Snapshot均相同且epoch归零，但新旧CPU时间分别为6.609/6.219与5.953/6.672s，无稳定节省，未运行T1。无性能Gate结论；生产源码恢复至e5765ed字节。
 
 
+主目录整合 r3（2026-10-07，`127c1d0`）：接入 map160 共同接触修正与隔离悬架活动集数值块，严格重建两扩展。T1 528 passed/Ruff/三种子通过；r7候选包 build 哈希前后相同，独立包 game/simulation 各120拍通过，包产物哈希与当前目录相符；reader 首轮日志追加假设错误、simulation未运行已单独保留，r7-r2两模式复核通过。48拍全快照字段与整合基线相同（耗时仅诊断）。复用957节点，余1173与11专项；T2起始摘要标记running，未归档进行中的pytest日志，阶段未过。源码差异清单、旧轨迹失效边界和包/源SHA见[整合 r3 证据](../evidence/PHYS-PERF-01/integration-r3/report.md)。实时前台、T3、人工驾驶验收未完成。
+
+
+主目录T2-r2失败归档（2026-10-08）：[报告](../evidence/PHYS-PERF-01/stage-collision-r1/report.md)、[summary及收据](../evidence/PHYS-PERF-01/stage-collision-r1/receipt.json)、[355项源码SHA与归档清单](../evidence/PHYS-PERF-01/stage-collision-r1/manifest.json)。固定主目录结果为Ruff通过、pytest 267通过/1失败/957 deselected（3740.66s），后续11项未运行；失败输出只记碰撞墙测试的共同末状态超过30轮，误差1.02141e-14，待原输入最小复现，不推测根因。阶段未通过。
 隔离 shared-solution 数值块（2026-10-08，未并入main）：[证据与收据](../evidence/PHYS-PERF-01/shared-solution-r1/receipt.json)。严格保留30轮、原角更新/端口容差、8次线搜索、fsum及暖分区更新，旧8维Python求解保留。T0 373 passed/Ruff；T1 645 passed/81.36s、Ruff及三种子10.293/10.465/10.266s通过。独立旧127 C基线审计r4为10,661次映射/Jacobian/LU调用全字段/暖态一致；r1 Keycross、r2旧LU零调用、independent-r1 wrapper scope错误及后续修正日志均保留，属观测范围问题。两模式48拍Snapshot逐字段同主127/map160基线，短时0.8265/5.5733秒仅诊断。测试观测接到真实shared_solution系数包，16样本/2e-6门槛未变；tire_drivetrain同步的map160三行来自主线已验证修复。当前T2等主线继续，尚无profile/实时性能Gate。
 
 
@@ -97,3 +104,5 @@ Tire constitutive 本构块（2026-10-08，隔离未并入main）：[证据与�
 四轮接点数值块归档（2026-10-08）：[报告](../evidence/PHYS-PERF-01/contact-system-r1/report.md)、[逐件清单/载荷SHA](../evidence/PHYS-PERF-01/contact-system-r1/manifest.json)、[收据](../evidence/PHYS-PERF-01/contact-system-r1/receipt.json)。以ab204a9旧DLL为独立基线；5,753次调用的梯度与对齐值hex全部相同，标准2×48拍完整Snapshot逐字段一致。T0 Ruff导入排序失败、pytest未跑；最终T1 552 passed/27.89s、Ruff与三种子通过。单/九车0.719/5.175s仅短测，不是FPS。354项PY/C/PYD源哈希起止一致；本次只归档既有证据，未跑物理或测试。
 
 轮端解析导数原生块归档（2026-10-08）：[报告](../evidence/PHYS-PERF-01/wheel-derivatives-r1/report.md)、[SHA收据](../evidence/PHYS-PERF-01/wheel-derivatives-r1/receipt.json)、[原件与压缩载荷清单](../evidence/PHYS-PERF-01/wheel-derivatives-r1/manifest.json)。冻结源为 `mechanical_kernels.c`/`tire_drivetrain.py`，354项PY/C/PYD哈希前后相同。独立旧Python解析导数8,840次输出hex逐值相同；两组48拍Snapshot字段相同，0.6835/4.8669s仅诊断。T0 RUF059失败、pytest未跑；最终T1 752通过/148.96s、Ruff和三种子通过。无性能Gate结论。
+
+主线整合与撞墙数值精度修复（2026-10-08）：性能分区已合入dff36ee。实际1145拍撞墙输入独立重放原30轮失败；输入轴上离合/齿轮反力相消，乘积低位保留后补偿求和、fma重建末速度。100位独立Decimal核对，保存输入轴误差由5.67168e-15降至9.54201e-18；原30轮/ULP角速/1e-14/1e-11端口等门槛均不变，独立保存系统7轮收敛。仅四项求和虽能收敛但精度更差，拒绝；统一线搜索误差尺度仍失败，未实施。原生异常中文格式的PyUnicode限制也已修正，保持ArithmeticError语义；新保存输入回归在数值修复前确实失败1.02141e-14。相关74项T0（13.85s），整合767项T1（189.65s）/Ruff/三个seed通过。单/九车48拍完整轨迹与差异已存，53,218个数值字段不同、最大2.91038e-11、没有非数值差异，0.7201/5.1067s仅诊断。命令：`logs/physics/PHYS-DESIGN-01-wall/run-T1.py`；收据`logs/validation/PHYS-INTEGRATE-04-wall-T1/summary.json`，数值复现/Decimal/完整Snapshot位于`logs/physics/PHYS-DESIGN-01-wall`，待不可变归档。阶段重审811节点复用、余1320/11专项待续跑；旧机械长轨迹因精度修复失效，不复用为当前证据。实时/T3/用户体验未过，未推送。

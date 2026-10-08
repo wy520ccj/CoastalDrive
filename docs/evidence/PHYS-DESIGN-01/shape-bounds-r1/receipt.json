@@ -1,0 +1,597 @@
+{
+  "created_at_utc": "2026-10-07T05:41:24.733987+00:00",
+  "baseline_head": "a7649d4",
+  "working_tree_head_at_capture": "a7649d4f562af1d1a17894660fbfb1d8b5619726",
+  "working_tree_status_at_capture": [
+    " M docs/current-progress.md",
+    " M docs/tasks/PHYS-DESIGN-01.md",
+    " M src/suspension_contacts.py",
+    " M tools/validate.py",
+    "?? docs/evidence/PHYS-DESIGN-01/highway-r11-failure/",
+    "?? docs/evidence/PHYS-DESIGN-01/shape-bounds-r1/",
+    "?? docs/tasks/PHYS-PERF-01.md",
+    "?? tests/data/",
+    "?? tests/test_suspension_candidates.py"
+  ],
+  "archive_entries": [
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\capture-native.py",
+      "archive": "diagnostic/capture-native.py",
+      "source_sha256": "6b0a1afbad7df83bc1626c5d38369cebb8aaafc8ddc69b3c23c9b65af6df6452",
+      "archive_sha256": "6b0a1afbad7df83bc1626c5d38369cebb8aaafc8ddc69b3c23c9b65af6df6452",
+      "source_bytes": 5569,
+      "archive_bytes": 5569,
+      "byte_exact": true
+    },
+    {
+      "kind": "text-log-gzip",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\capture-native.log",
+      "archive": "diagnostic/capture-native.log.gz",
+      "source_sha256": "8cbe80e3634a0f9bcd74b67f54b91dcdde0a60d94186a34ba7c65ad8371a1af8",
+      "archive_sha256": "6a235bc0d0c42c16dc3cd8ac43a777edee8b80fb9ed1674b25f59443b8610d64",
+      "source_bytes": 2986,
+      "archive_bytes": 1066,
+      "gzip_mtime": 0,
+      "payload_sha256": "8cbe80e3634a0f9bcd74b67f54b91dcdde0a60d94186a34ba7c65ad8371a1af8"
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\input-native.json",
+      "archive": "diagnostic/input-native.json",
+      "source_sha256": "1559e41f5b1d5dd7ae0286e40040f96f6c7a59d879fc6b49543cbccc4307989e",
+      "archive_sha256": "1559e41f5b1d5dd7ae0286e40040f96f6c7a59d879fc6b49543cbccc4307989e",
+      "source_bytes": 293203,
+      "archive_bytes": 293203,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\config.json",
+      "archive": "diagnostic/config.json",
+      "source_sha256": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb",
+      "archive_sha256": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb",
+      "source_bytes": 5700,
+      "archive_bytes": 5700,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\rear-config.json",
+      "archive": "diagnostic/rear-config.json",
+      "source_sha256": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb",
+      "archive_sha256": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb",
+      "source_bytes": 5700,
+      "archive_bytes": 5700,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\replay-original.py",
+      "archive": "replays/replay-original.py",
+      "source_sha256": "a15c1a374874f6b43dccb3c1328b969396d6779bac64e7cd5744ac431dbec8dc",
+      "archive_sha256": "a15c1a374874f6b43dccb3c1328b969396d6779bac64e7cd5744ac431dbec8dc",
+      "source_bytes": 3408,
+      "archive_bytes": 3408,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\replay-original.json",
+      "archive": "replays/replay-original.json",
+      "source_sha256": "00ed2576752b7f7306cdbdda90f2b50b8386cf95c04aaf3a7e10b6b17d85243c",
+      "archive_sha256": "00ed2576752b7f7306cdbdda90f2b50b8386cf95c04aaf3a7e10b6b17d85243c",
+      "source_bytes": 9426,
+      "archive_bytes": 9426,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\diagnostic-original.json",
+      "archive": "replays/diagnostic-original.json",
+      "source_sha256": "fe129e64c3643c5cf51a01614096ffdbdc74601f4f792d5a2963e9d302cd99b2",
+      "archive_sha256": "fe129e64c3643c5cf51a01614096ffdbdc74601f4f792d5a2963e9d302cd99b2",
+      "source_bytes": 2246,
+      "archive_bytes": 2246,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\replay-latest.py",
+      "archive": "replays/replay-latest.py",
+      "source_sha256": "19de549b27571c5480b53609d2384c88775f0325a0ee929a2f8497371c8da46a",
+      "archive_sha256": "19de549b27571c5480b53609d2384c88775f0325a0ee929a2f8497371c8da46a",
+      "source_bytes": 591,
+      "archive_bytes": 591,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\replay-latest.json",
+      "archive": "replays/replay-latest.json",
+      "source_sha256": "966ba258ae006a9c261724eaf273dafffd11d81c29ab9baa95597aa21e12c951",
+      "archive_sha256": "966ba258ae006a9c261724eaf273dafffd11d81c29ab9baa95597aa21e12c951",
+      "source_bytes": 10024,
+      "archive_bytes": 10024,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\replay-query-variants.py",
+      "archive": "replays/replay-query-variants.py",
+      "source_sha256": "607c517f87791907579d0b95f7b5c156ddb67c84e67dbcdc3126ee3c84687e4e",
+      "archive_sha256": "607c517f87791907579d0b95f7b5c156ddb67c84e67dbcdc3126ee3c84687e4e",
+      "source_bytes": 1469,
+      "archive_bytes": 1469,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\replay-query-none.json",
+      "archive": "replays/replay-query-none.json",
+      "source_sha256": "efd57854abc5da2562337518902fb7c8a84850780dbf40e54b492a5c265e1b3d",
+      "archive_sha256": "efd57854abc5da2562337518902fb7c8a84850780dbf40e54b492a5c265e1b3d",
+      "source_bytes": 9929,
+      "archive_bytes": 9929,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\replay-query-rays.json",
+      "archive": "replays/replay-query-rays.json",
+      "source_sha256": "efd57854abc5da2562337518902fb7c8a84850780dbf40e54b492a5c265e1b3d",
+      "archive_sha256": "efd57854abc5da2562337518902fb7c8a84850780dbf40e54b492a5c265e1b3d",
+      "source_bytes": 9929,
+      "archive_bytes": 9929,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\observe-missing-rays.py",
+      "archive": "candidate-proof/observe-missing-rays.py",
+      "source_sha256": "fe8fc88463aa5c5866fe588b710968ebea09368ed0e9852dcffdba7a16715e30",
+      "archive_sha256": "fe8fc88463aa5c5866fe588b710968ebea09368ed0e9852dcffdba7a16715e30",
+      "source_bytes": 1001,
+      "archive_bytes": 1001,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\missing-rays.json",
+      "archive": "candidate-proof/missing-rays.json",
+      "source_sha256": "c09480f298ed6ad053da897d1043d1685e0eb8dde5856ba8e5204ad38f177a7d",
+      "archive_sha256": "c09480f298ed6ad053da897d1043d1685e0eb8dde5856ba8e5204ad38f177a7d",
+      "source_bytes": 11627,
+      "archive_bytes": 11627,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\probe-candidates.py",
+      "archive": "candidate-proof/probe-candidates.py",
+      "source_sha256": "ec026085dfdd5186c985836e5ff451ecdf51604243037d895c9788e3d58801ce",
+      "archive_sha256": "ec026085dfdd5186c985836e5ff451ecdf51604243037d895c9788e3d58801ce",
+      "source_bytes": 3970,
+      "archive_bytes": 3970,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\candidate-proof.json",
+      "archive": "candidate-proof/candidate-proof.json",
+      "source_sha256": "c6cba795fbfedc3c896bde5ff01139115d513780e6e066368c2bdcde0507654e",
+      "archive_sha256": "c6cba795fbfedc3c896bde5ff01139115d513780e6e066368c2bdcde0507654e",
+      "source_bytes": 4111,
+      "archive_bytes": 4111,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\replay-bounds-pilot.py",
+      "archive": "replays/replay-bounds-pilot.py",
+      "source_sha256": "dbbfd2d545693ec7f46c6a0f271915f797c44de900a2bc6f932759c2cd0d793f",
+      "archive_sha256": "dbbfd2d545693ec7f46c6a0f271915f797c44de900a2bc6f932759c2cd0d793f",
+      "source_bytes": 1154,
+      "archive_bytes": 1154,
+      "byte_exact": true
+    },
+    {
+      "kind": "diagnostic-input-or-result",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\replay-bounds-pilot.json",
+      "archive": "replays/replay-bounds-pilot.json",
+      "source_sha256": "077981a3754ac0c43965cee2249640e400053f6750b5707f0816dbf15bec476b",
+      "archive_sha256": "077981a3754ac0c43965cee2249640e400053f6750b5707f0816dbf15bec476b",
+      "source_bytes": 9562,
+      "archive_bytes": 9562,
+      "byte_exact": true
+    },
+    {
+      "kind": "text-log-gzip",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-highway\\regression-before.log",
+      "archive": "regression/regression-before.log.gz",
+      "source_sha256": "ea43365df65307fe5dbc0110516385f436f68520bcc327e665b248c2a20c4f17",
+      "archive_sha256": "a80bb646c03eff5b86585620d99559a7c232419d297b52e980363de3fa80ea24",
+      "source_bytes": 44130,
+      "archive_bytes": 9254,
+      "gzip_mtime": 0,
+      "payload_sha256": "ea43365df65307fe5dbc0110516385f436f68520bcc327e665b248c2a20c4f17"
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\suspension_contacts.py",
+      "archive": "source-snapshot/src/suspension_contacts.py",
+      "source_sha256": "447e1c58c7f1c4b7289a24b21c02ed330708733552119b97f55b953a04cb77da",
+      "archive_sha256": "447e1c58c7f1c4b7289a24b21c02ed330708733552119b97f55b953a04cb77da",
+      "source_bytes": 12228,
+      "archive_bytes": 12228,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\tests\\test_suspension_candidates.py",
+      "archive": "source-snapshot/tests/test_suspension_candidates.py",
+      "source_sha256": "040e97e0974ea7cab02aa0dbb13177c57747d8edb746eb37285b6ae157b7dd59",
+      "archive_sha256": "040e97e0974ea7cab02aa0dbb13177c57747d8edb746eb37285b6ae157b7dd59",
+      "source_bytes": 3780,
+      "archive_bytes": 3780,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\tools\\validate.py",
+      "archive": "source-snapshot/tools/validate.py",
+      "source_sha256": "34597d793344b465924c03384a874c486f483035114769647ce22d2fe9db6b46",
+      "archive_sha256": "34597d793344b465924c03384a874c486f483035114769647ce22d2fe9db6b46",
+      "source_bytes": 12080,
+      "archive_bytes": 12080,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\tests\\data\\highway-contact-r11\\config.json",
+      "archive": "source-snapshot/tests/data/highway-contact-r11/config.json",
+      "source_sha256": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb",
+      "archive_sha256": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb",
+      "source_bytes": 5700,
+      "archive_bytes": 5700,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\tests\\data\\highway-contact-r11\\input.json",
+      "archive": "source-snapshot/tests/data/highway-contact-r11/input.json",
+      "source_sha256": "deca814b54b3c850211afbe26243cec55cdedff1e00ca47a371ece19a1bc3dad",
+      "archive_sha256": "deca814b54b3c850211afbe26243cec55cdedff1e00ca47a371ece19a1bc3dad",
+      "source_bytes": 18540,
+      "archive_bytes": 18540,
+      "byte_exact": true
+    },
+    {
+      "kind": "source-snapshot",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\tests\\data\\highway-contact-r11\\rear-config.json",
+      "archive": "source-snapshot/tests/data/highway-contact-r11/rear-config.json",
+      "source_sha256": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb",
+      "archive_sha256": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb",
+      "source_bytes": 5700,
+      "archive_bytes": 5700,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T0\\pytest.log",
+      "archive": "validation/PHYS-DESIGN-01-bounds-T0/pytest.log.gz",
+      "source_sha256": "662e002ad1d8286645598204ec0442df6f1885fa09964480470af37e97892aa4",
+      "archive_sha256": "ce8f7913a5ed1f316fc29ec7cabe0850acc490a91b2b4db8a3df38c18637a32c",
+      "source_bytes": 101,
+      "archive_bytes": 54,
+      "gzip_mtime": 0,
+      "payload_sha256": "662e002ad1d8286645598204ec0442df6f1885fa09964480470af37e97892aa4"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T0\\ruff.log",
+      "archive": "validation/PHYS-DESIGN-01-bounds-T0/ruff.log.gz",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "source_bytes": 19,
+      "archive_bytes": 39,
+      "gzip_mtime": 0,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T0\\summary.json",
+      "archive": "validation/PHYS-DESIGN-01-bounds-T0/summary.json",
+      "source_sha256": "3d5d5b986e1ba9582ab5697384adeaff7ed64cf4163c48645514548af5cdeef1",
+      "archive_sha256": "3d5d5b986e1ba9582ab5697384adeaff7ed64cf4163c48645514548af5cdeef1",
+      "source_bytes": 2071,
+      "archive_bytes": 2071,
+      "byte_exact": true
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T1\\headless-0.log",
+      "archive": "validation/PHYS-DESIGN-01-bounds-T1/headless-0.log.gz",
+      "source_sha256": "769cfc81d5e6d84901f34272ad894f9212ada3811594a489187d1803f8bd028c",
+      "archive_sha256": "dce7811c60b697340e44132a9e182979b4c2ffb0eea88655cc83c519b4e9848d",
+      "source_bytes": 32186,
+      "archive_bytes": 7532,
+      "gzip_mtime": 0,
+      "payload_sha256": "769cfc81d5e6d84901f34272ad894f9212ada3811594a489187d1803f8bd028c"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T1\\headless-17.log",
+      "archive": "validation/PHYS-DESIGN-01-bounds-T1/headless-17.log.gz",
+      "source_sha256": "769cfc81d5e6d84901f34272ad894f9212ada3811594a489187d1803f8bd028c",
+      "archive_sha256": "dce7811c60b697340e44132a9e182979b4c2ffb0eea88655cc83c519b4e9848d",
+      "source_bytes": 32186,
+      "archive_bytes": 7532,
+      "gzip_mtime": 0,
+      "payload_sha256": "769cfc81d5e6d84901f34272ad894f9212ada3811594a489187d1803f8bd028c"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T1\\headless-23.log",
+      "archive": "validation/PHYS-DESIGN-01-bounds-T1/headless-23.log.gz",
+      "source_sha256": "769cfc81d5e6d84901f34272ad894f9212ada3811594a489187d1803f8bd028c",
+      "archive_sha256": "dce7811c60b697340e44132a9e182979b4c2ffb0eea88655cc83c519b4e9848d",
+      "source_bytes": 32186,
+      "archive_bytes": 7532,
+      "gzip_mtime": 0,
+      "payload_sha256": "769cfc81d5e6d84901f34272ad894f9212ada3811594a489187d1803f8bd028c"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T1\\pytest.log",
+      "archive": "validation/PHYS-DESIGN-01-bounds-T1/pytest.log.gz",
+      "source_sha256": "871f0dc2ccdf70f9aae5d279c561bb47272a38540f53109cdcc2accdaf9f7dcc",
+      "archive_sha256": "ddb2eeba269ceeb19684349d6cb7c1cd9cdf161411d8b0c0e02b51ba20bb3ef7",
+      "source_bytes": 600,
+      "archive_bytes": 101,
+      "gzip_mtime": 0,
+      "payload_sha256": "871f0dc2ccdf70f9aae5d279c561bb47272a38540f53109cdcc2accdaf9f7dcc"
+    },
+    {
+      "kind": "validation-log-gzip",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T1\\ruff.log",
+      "archive": "validation/PHYS-DESIGN-01-bounds-T1/ruff.log.gz",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "source_bytes": 19,
+      "archive_bytes": 39,
+      "gzip_mtime": 0,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "kind": "validation-summary-or-artifact",
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T1\\summary.json",
+      "archive": "validation/PHYS-DESIGN-01-bounds-T1/summary.json",
+      "source_sha256": "e0e22a1451abe52fdf7345d17755818ffe89902f3bc2397f3a5d69a568e4a186",
+      "archive_sha256": "e0e22a1451abe52fdf7345d17755818ffe89902f3bc2397f3a5d69a568e4a186",
+      "source_bytes": 4459,
+      "archive_bytes": 4459,
+      "byte_exact": true
+    },
+    {
+      "kind": "archive-record",
+      "source": "generated from existing logs and source snapshot",
+      "archive": "source-audit.json",
+      "archive_sha256": "4a20571b053d527d8ccc54dd79684d589eb3e9372b0df49af7e7b8698de6d76a",
+      "archive_bytes": 72721
+    },
+    {
+      "kind": "archive-record",
+      "source": "generated from existing logs and source snapshot",
+      "archive": "shape-bounds-report.md",
+      "archive_sha256": "ae40094384b8d0f329226d516aebf3d6bb9b3ab1baefdb10dd973ab285977b19",
+      "archive_bytes": 2079
+    }
+  ],
+  "report_path": "shape-bounds-report.md",
+  "source_audit_path": "source-audit.json",
+  "validation_summaries": {
+    "bounds-T0": {
+      "started_utc": "2026-10-07T05:17:56.677354+00:00",
+      "git_head": "a7649d4f562af1d1a17894660fbfb1d8b5619726",
+      "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-DESIGN-01.md\n M src/suspension_contacts.py\n M tools/validate.py\n?? docs/evidence/PHYS-DESIGN-01/highway-r11-failure/\n?? docs/tasks/PHYS-PERF-01.md\n?? tests/data/\n?? tests/test_suspension_candidates.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_suspension_contacts.py"
+      ],
+      "tier": "T0",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T0\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.191
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_suspension_contacts.py"
+          ],
+          "reports": [],
+          "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T0\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.861
+        }
+      ]
+    },
+    "bounds-T1": {
+      "started_utc": "2026-10-07T05:19:58.127398+00:00",
+      "git_head": "a7649d4f562af1d1a17894660fbfb1d8b5619726",
+      "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-DESIGN-01.md\n M src/suspension_contacts.py\n M tools/validate.py\n?? docs/evidence/PHYS-DESIGN-01/highway-r11-failure/\n?? docs/tasks/PHYS-PERF-01.md\n?? tests/data/\n?? tests/test_suspension_candidates.py",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_suspension_candidates.py",
+        "tests/test_cylinder_suspension.py",
+        "tests/test_triangle_support.py",
+        "tests/test_ramp_contact_step.py",
+        "tests/test_finite_suspension.py",
+        "tests/test_curved_suspension.py",
+        "tests/test_suspension_contacts.py",
+        "tests/test_joint_suspension.py",
+        "tests/test_tire_drivetrain.py",
+        "tests/test_guardrail_suspension.py",
+        "tests/test_suspension_native.py",
+        "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle"
+      ],
+      "tier": "T1",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T1\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.103
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_suspension_candidates.py",
+            "tests/test_cylinder_suspension.py",
+            "tests/test_triangle_support.py",
+            "tests/test_ramp_contact_step.py",
+            "tests/test_finite_suspension.py",
+            "tests/test_curved_suspension.py",
+            "tests/test_suspension_contacts.py",
+            "tests/test_joint_suspension.py",
+            "tests/test_tire_drivetrain.py",
+            "tests/test_guardrail_suspension.py",
+            "tests/test_suspension_native.py",
+            "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle"
+          ],
+          "reports": [],
+          "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T1\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 229.123
+        },
+        {
+          "name": "headless-0",
+          "command": [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "0"
+          ],
+          "reports": [],
+          "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T1\\headless-0.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 44.063
+        },
+        {
+          "name": "headless-17",
+          "command": [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "17"
+          ],
+          "reports": [],
+          "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T1\\headless-17.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 44.385
+        },
+        {
+          "name": "headless-23",
+          "command": [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "src/main.py",
+            "--headless",
+            "--track",
+            "test",
+            "--steps",
+            "1200",
+            "--seed",
+            "23"
+          ],
+          "reports": [],
+          "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-bounds-T1\\headless-23.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 42.965
+        }
+      ]
+    }
+  },
+  "continuation_boundary": {
+    "r11_failure_and_remaining_selected_nodes_not_closed": true,
+    "later_14_checks_not_run": true
+  },
+  "notes": [
+    "Only files found on disk were included.",
+    "Text logs use deterministic gzip mtime=0; payload SHA is recorded.",
+    "No test, simulation, or build was run for this archival task.",
+    "The isolated static_shapes follow-up and its evidence are excluded."
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "status": "interrupted",
+  "observed_at": "2026-10-08T10:37:28.273544+08:00",
+  "process_exists": false,
+  "unified_exec_session": "unknown process35815",
+  "pytest_log_bytes": 0,
+  "validated_new_nodes": 0,
+  "followups": "11 not_run",
+  "original_summary_preserved": true,
+  "reason": "process absent and no completion output; interruption cause unknown"
+}

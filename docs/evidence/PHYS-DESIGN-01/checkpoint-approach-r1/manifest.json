@@ -1,0 +1,386 @@
+[
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/approach-pilot-r2.log",
+    "archive": "inputs/approach-pilot-r2.log.gz",
+    "sha256": "4d4497efb4fb942376158a032ec023655edb9766822c89b9be93e36c9bae21e6",
+    "payload_sha256": "7027f80dfb350a58bf94a1609c78c74a9162194b02e407108c9b320024992151"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/approach-pilot.json",
+    "archive": "inputs/approach-pilot.json.gz",
+    "sha256": "5d1787fbe7cab82b2f30347ff28a96d40628a26f2383d91062c0b077d7093455",
+    "payload_sha256": "05a7aa97ba6a3e4b1ed5fa24b61b1ac8c2cf3260e5e06f90d255fbfa481a53f9"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/approach-pilot.log",
+    "archive": "inputs/approach-pilot.log.gz",
+    "sha256": "6f213e76bf6c012445b75c7a982fed0760b94b40943384392201d7f8f6594eff",
+    "payload_sha256": "de806df3113dc1858ec90fc298736af2d36d65f3708570aaa5431592e795960e"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/capture-scaled.log",
+    "archive": "inputs/capture-scaled.log.gz",
+    "sha256": "7a1731e2699a9a3b4933aefd206acf7a1727bcb315c7fd89a752a782af201e46",
+    "payload_sha256": "dd2d6b1fd20895f184c2bf3c088defe18a6673e285ec15c0c187c94c47c5d8dc"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/capture-scaled.py",
+    "archive": "inputs/capture-scaled.py",
+    "sha256": "f2baea1d0823b618f6fd937217f9adfda8d13e37d42c17127f5f9e987dea0d2a",
+    "payload_sha256": "f2baea1d0823b618f6fd937217f9adfda8d13e37d42c17127f5f9e987dea0d2a"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/capture.log",
+    "archive": "inputs/capture.log.gz",
+    "sha256": "a6cb60a7b355d37d1001a423ada7b250ac85c4f1f4f996bdbdbcebe390bc1163",
+    "payload_sha256": "a6cab96bd8fcfb594f79c726b071134d1effb3cae4d2a26de1910c905408cc9d"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/capture.py",
+    "archive": "inputs/capture.py",
+    "sha256": "075fb3fa18613b539e9490411072ab96347026b4de7cd45d715f4285fcea5451",
+    "payload_sha256": "075fb3fa18613b539e9490411072ab96347026b4de7cd45d715f4285fcea5451"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/config-scaled.json",
+    "archive": "inputs/config-scaled.json.gz",
+    "sha256": "c1c93df0dae9b1ddc90fd1b5913b1ccee21d55ea4f44933f3b59ea38918d09af",
+    "payload_sha256": "f459dd597376e531cc093971b0b04285eebb45a5fa872def39cb8e28caedca98"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/config.json",
+    "archive": "inputs/config.json.gz",
+    "sha256": "c1c93df0dae9b1ddc90fd1b5913b1ccee21d55ea4f44933f3b59ea38918d09af",
+    "payload_sha256": "f459dd597376e531cc093971b0b04285eebb45a5fa872def39cb8e28caedca98"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/diagnostic-clearance.json",
+    "archive": "inputs/diagnostic-clearance.json.gz",
+    "sha256": "a53f7c88f7bad7e1b271319c90155635f8a443e36ddb461cd184fc83bdde5956",
+    "payload_sha256": "501ae612f3f98a973628811830afd482a3c9f95de90383156aa1e92e97393291"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/diagnostic-correction.json",
+    "archive": "inputs/diagnostic-correction.json.gz",
+    "sha256": "f94b9751afa62e551154e96a85b17672cf2b9c3ff8e2a2a434c89a61a3ec11ec",
+    "payload_sha256": "6f6ad3a73942544b28cb2044de659d778168375e4e01515c4757878db792c562"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/diagnostic-coupled-loads.json",
+    "archive": "inputs/diagnostic-coupled-loads.json.gz",
+    "sha256": "765d1dc9b18279621cf790556f3030e9487f1f8cd69b9a20de3339c16be09ad8",
+    "payload_sha256": "60f85c8c5060064063d011eb788d3e8c3a595abc633c6c0949e492611df00be3"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/diagnostic-jac-step.json",
+    "archive": "inputs/diagnostic-jac-step.json.gz",
+    "sha256": "1a597df2910f9710123f6e7981da1cb861a6ea66fdba7a8739a834ce12f82001",
+    "payload_sha256": "b1fe26c445782f1d5480710e8cbfbaaa35060bc03568c2fac9660e078eac5b8b"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/diagnostic-original.json",
+    "archive": "inputs/diagnostic-original.json.gz",
+    "sha256": "a53f7c88f7bad7e1b271319c90155635f8a443e36ddb461cd184fc83bdde5956",
+    "payload_sha256": "501ae612f3f98a973628811830afd482a3c9f95de90383156aa1e92e97393291"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/diagnostic-same-plane.json",
+    "archive": "inputs/diagnostic-same-plane.json.gz",
+    "sha256": "a53f7c88f7bad7e1b271319c90155635f8a443e36ddb461cd184fc83bdde5956",
+    "payload_sha256": "501ae612f3f98a973628811830afd482a3c9f95de90383156aa1e92e97393291"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/diagnostic-transport.json",
+    "archive": "inputs/diagnostic-transport.json.gz",
+    "sha256": "a53f7c88f7bad7e1b271319c90155635f8a443e36ddb461cd184fc83bdde5956",
+    "payload_sha256": "501ae612f3f98a973628811830afd482a3c9f95de90383156aa1e92e97393291"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/initial-pose-facts.json",
+    "archive": "inputs/initial-pose-facts.json.gz",
+    "sha256": "092826d3aed7a20d675cbef819a2092efe786c46bd876c8254e8922d178fd755",
+    "payload_sha256": "f3a65c56337c758cc4a0675bb36c490a66853862e141dcc8aab814ac5f8127ec"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/input-scaled.json",
+    "archive": "inputs/input-scaled.json.gz",
+    "sha256": "0113f28f1df193804a6437c31f08b7a9b34e05c79a6929397f31afe926bba6c6",
+    "payload_sha256": "03fb2063adcd3d2a31934c4e0956d156aba6b550d3e5d5df0705eb44951f4baf"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/input.json",
+    "archive": "inputs/input.json.gz",
+    "sha256": "9fadaae023ee9de051664a6015e9638fe9e27f4bfb96d7623496278499daa60c",
+    "payload_sha256": "b06ac3443ae80b4a6c67124a048f72e449fddf2c7e4265acefec3204f4688abb"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/inspect-approach.py",
+    "archive": "inputs/inspect-approach.py",
+    "sha256": "203dd2c4ce946bbb498cdc1a3af54fdf3e60027720776fc8278bbe3e8eac3d5a",
+    "payload_sha256": "203dd2c4ce946bbb498cdc1a3af54fdf3e60027720776fc8278bbe3e8eac3d5a"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/inspect-pose.py",
+    "archive": "inputs/inspect-pose.py",
+    "sha256": "0fe47f93a6be225d09b3312c9e6e11e6cc90e7f733f7a24055cbe6b54ad834bf",
+    "payload_sha256": "0fe47f93a6be225d09b3312c9e6e11e6cc90e7f733f7a24055cbe6b54ad834bf"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/inspect-wheel-overlap.py",
+    "archive": "inputs/inspect-wheel-overlap.py",
+    "sha256": "2f2d35eb7c95dc70062bfb761d80ca73488dfd2af37d0879d7c433c34216ec9a",
+    "payload_sha256": "2f2d35eb7c95dc70062bfb761d80ca73488dfd2af37d0879d7c433c34216ec9a"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/pilot-approach.py",
+    "archive": "inputs/pilot-approach.py",
+    "sha256": "7171488e5dacb02188e33080ee305b82fe5b2c67b7124232941aae2fa1cd7c46",
+    "payload_sha256": "7171488e5dacb02188e33080ee305b82fe5b2c67b7124232941aae2fa1cd7c46"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/prepare-replay.py",
+    "archive": "inputs/prepare-replay.py",
+    "sha256": "2c9309ace0a9b908504daef745ff5e7ab1b90f185d25e163d2d9538322d74229",
+    "payload_sha256": "2c9309ace0a9b908504daef745ff5e7ab1b90f185d25e163d2d9538322d74229"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/prepare-scaled-capture.py",
+    "archive": "inputs/prepare-scaled-capture.py",
+    "sha256": "c3bca0836b006c5bf7a1d3fec4120125899fd3093cfd0adc3002bac2f5a1379c",
+    "payload_sha256": "c3bca0836b006c5bf7a1d3fec4120125899fd3093cfd0adc3002bac2f5a1379c"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/probe-coupled-loads.py",
+    "archive": "inputs/probe-coupled-loads.py",
+    "sha256": "f9bfcbcaeb75ad2bc55e869b3a3cca2eccbcdd1f5239c116fa57efcd32f5da34",
+    "payload_sha256": "f9bfcbcaeb75ad2bc55e869b3a3cca2eccbcdd1f5239c116fa57efcd32f5da34"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/probe-coupled-order.log",
+    "archive": "inputs/probe-coupled-order.log.gz",
+    "sha256": "44c7ee4b10e8f96fab03e5e7da0c21599c05fc8621aca84da5e28ee71a18914d",
+    "payload_sha256": "6b9ca199753cc499543ab090f3d7da2d0bc15ddc88199da8fa02631427b51083"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/probe-coupled-order.py",
+    "archive": "inputs/probe-coupled-order.py",
+    "sha256": "0a444c4224f2d482ab64ee7618b45738c5ea6ac71520bd032ebc2faac831bebf",
+    "payload_sha256": "0a444c4224f2d482ab64ee7618b45738c5ea6ac71520bd032ebc2faac831bebf"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/probe-jac-step.py",
+    "archive": "inputs/probe-jac-step.py",
+    "sha256": "7d9c2665efe9963dff14ab683c1372e0635201dee10135caf0db06b4ce17f335",
+    "payload_sha256": "7d9c2665efe9963dff14ab683c1372e0635201dee10135caf0db06b4ce17f335"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/probe-precision.py",
+    "archive": "inputs/probe-precision.py",
+    "sha256": "9796f4f03fa7efd9f5b23b5f5ceef39e406d9aeded4541ada7c1fe6729ebaa5c",
+    "payload_sha256": "9796f4f03fa7efd9f5b23b5f5ceef39e406d9aeded4541ada7c1fe6729ebaa5c"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/probe-scaled-jacobian.py",
+    "archive": "inputs/probe-scaled-jacobian.py",
+    "sha256": "4cb75278f118a4ac586888939f31fb1f36d8f79e7f84bd7bcacde005cd54d7b8",
+    "payload_sha256": "4cb75278f118a4ac586888939f31fb1f36d8f79e7f84bd7bcacde005cd54d7b8"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/rear-config-scaled.json",
+    "archive": "inputs/rear-config-scaled.json.gz",
+    "sha256": "c1c93df0dae9b1ddc90fd1b5913b1ccee21d55ea4f44933f3b59ea38918d09af",
+    "payload_sha256": "f459dd597376e531cc093971b0b04285eebb45a5fa872def39cb8e28caedca98"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/rear-config.json",
+    "archive": "inputs/rear-config.json.gz",
+    "sha256": "c1c93df0dae9b1ddc90fd1b5913b1ccee21d55ea4f44933f3b59ea38918d09af",
+    "payload_sha256": "f459dd597376e531cc093971b0b04285eebb45a5fa872def39cb8e28caedca98"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/replay-clearance.json",
+    "archive": "inputs/replay-clearance.json.gz",
+    "sha256": "938367157caaa7ea762d6f3fb5f47375068710b8d57d76c6e33bd935018e8a6c",
+    "payload_sha256": "2b8f2086ca4cf53f73be562ab58f3d6687484251d3cca99e298720019f19c769"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/replay-correction.json",
+    "archive": "inputs/replay-correction.json.gz",
+    "sha256": "2806950667c42f207778a801d75379112cbabb3e81254e5b513d51f113a8cf32",
+    "payload_sha256": "e130836c931ad08a52a0f9a3a9a93c71b72d74fdffb705dc8242a94427015978"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/replay-coupled-loads.json",
+    "archive": "inputs/replay-coupled-loads.json.gz",
+    "sha256": "3111190c62755bf7270b79471db205c218e29a6a50953f9a95b217c38fdcb316",
+    "payload_sha256": "c5968b047f0668f30e3213017e0f72827808b60adb9ab12011da52cd80979838"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/replay-jac-step-1-.json",
+    "archive": "inputs/replay-jac-step-1-.json.gz",
+    "sha256": "8927b9238f48d174dced4ff9423ef798bc8811164bff010e3b7c05db26be4a91",
+    "payload_sha256": "c67a84d7da4efccd4bb10c7046a9b4515309db62da42d4b9681a51f7662c359c"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/replay-original.json",
+    "archive": "inputs/replay-original.json.gz",
+    "sha256": "938367157caaa7ea762d6f3fb5f47375068710b8d57d76c6e33bd935018e8a6c",
+    "payload_sha256": "2b8f2086ca4cf53f73be562ab58f3d6687484251d3cca99e298720019f19c769"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/replay-original.py",
+    "archive": "inputs/replay-original.py",
+    "sha256": "a78afdf65f20894952c0f88e563b262027bd6d01fec43027a7378f5e9fe1e1da",
+    "payload_sha256": "a78afdf65f20894952c0f88e563b262027bd6d01fec43027a7378f5e9fe1e1da"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/replay-same-plane.json",
+    "archive": "inputs/replay-same-plane.json.gz",
+    "sha256": "938367157caaa7ea762d6f3fb5f47375068710b8d57d76c6e33bd935018e8a6c",
+    "payload_sha256": "2b8f2086ca4cf53f73be562ab58f3d6687484251d3cca99e298720019f19c769"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/replay-scaled-jacobian.json",
+    "archive": "inputs/replay-scaled-jacobian.json.gz",
+    "sha256": "fa690d43d91d02b717bbb4d916635eb5cfeb2120f95f9347742fe4d7486bc16d",
+    "payload_sha256": "f387ea73593da4ce22c9ccedbbea647dbadb30904196c9e3ba46c9ccc68a34bf"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/replay-traced.json",
+    "archive": "inputs/replay-traced.json.gz",
+    "sha256": "938367157caaa7ea762d6f3fb5f47375068710b8d57d76c6e33bd935018e8a6c",
+    "payload_sha256": "2b8f2086ca4cf53f73be562ab58f3d6687484251d3cca99e298720019f19c769"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/replay-transport.json",
+    "archive": "inputs/replay-transport.json.gz",
+    "sha256": "938367157caaa7ea762d6f3fb5f47375068710b8d57d76c6e33bd935018e8a6c",
+    "payload_sha256": "2b8f2086ca4cf53f73be562ab58f3d6687484251d3cca99e298720019f19c769"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/sweep-trace.json",
+    "archive": "inputs/sweep-trace.json.gz",
+    "sha256": "373f01dc30dfed1422fb13f70ea2cf6c458da9eeebd8fb5ba3467b751869d16e",
+    "payload_sha256": "5c46aad1e8183f4d537acb23a8315b0c9b2d169fc6d700cde373fcf174bfc9af"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/trace-sweeps.py",
+    "archive": "inputs/trace-sweeps.py",
+    "sha256": "7db135a8fd006fdfa242fbd357213b475fd5957dcefb643fff2666ca6a2205ae",
+    "payload_sha256": "7db135a8fd006fdfa242fbd357213b475fd5957dcefb643fff2666ca6a2205ae"
+  },
+  {
+    "source": "logs/physics/PHYS-DESIGN-01-checkpoint/wheel-envelope-overlap.json",
+    "archive": "inputs/wheel-envelope-overlap.json.gz",
+    "sha256": "c73398fb4fbd18ea3afed7de715e6d42fa02164004a72c1f7f3b458b6aa6559c",
+    "payload_sha256": "d0e79bb902b6da3d009b44fa3a75477a77a2a999873fd156d03d2b75d94153c9"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-01-stage-T2-r1/pytest-remaining.log",
+    "archive": "validation/PHYS-INTEGRATE-01-stage-T2-r1/pytest-remaining.log.gz",
+    "sha256": "5e6704a08ac06354f0b9579993a53ebda009825cfb4e784621e676adfda456b0",
+    "payload_sha256": "87ce6e1ea3facce99579c1f37a1ad5e04036f0b3ef2843bd86add5e8c3fc9fc0"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-01-stage-T2-r1/ruff.log",
+    "archive": "validation/PHYS-INTEGRATE-01-stage-T2-r1/ruff.log.gz",
+    "sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+    "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-01-stage-T2-r1/running-stack-observation-2.json",
+    "archive": "validation/PHYS-INTEGRATE-01-stage-T2-r1/running-stack-observation-2.json.gz",
+    "sha256": "63b845bcc2fc0cab06bad6f0d50e2021b0a9eb874660ee655a281a2dd73eb095",
+    "payload_sha256": "a2235e85c32eb9d91b414bba4c62dafb80e2e335de0f4af1b94c6a8fe14379b3"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-01-stage-T2-r1/running-stack-observation-3.json",
+    "archive": "validation/PHYS-INTEGRATE-01-stage-T2-r1/running-stack-observation-3.json.gz",
+    "sha256": "a11e3e44e84691a322daa99de7289225237c80f893a682e201022926dccef398",
+    "payload_sha256": "5abc1305a83d9a7937049d36d15e8a3ebd5a3d7d86702ad9f44980add2e585e1"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-01-stage-T2-r1/running-stack-observation-4.json",
+    "archive": "validation/PHYS-INTEGRATE-01-stage-T2-r1/running-stack-observation-4.json.gz",
+    "sha256": "4d1d2dccb6540d282d097ba9884343c61aa9f211a739adf9e7d3d41e34a29282",
+    "payload_sha256": "1b01c627943b54a44d5193eef5111816776c435f8b16246095913acf6f834395"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-01-stage-T2-r1/running-stack-observation-5.json",
+    "archive": "validation/PHYS-INTEGRATE-01-stage-T2-r1/running-stack-observation-5.json.gz",
+    "sha256": "79dbe33106344097f068ece58998bb8133eface3d798cb55c1d015550eff9924",
+    "payload_sha256": "0361ed2eefe6d62d3819411a8a87c6d09a5367aa1a8246fa9c23b783510f73b9"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-01-stage-T2-r1/running-stack-observation-6.json",
+    "archive": "validation/PHYS-INTEGRATE-01-stage-T2-r1/running-stack-observation-6.json.gz",
+    "sha256": "71efebbfd8697efeebb8e31922ab9abca53c4ccc553f8fff5e06f4d9fb627468",
+    "payload_sha256": "1182e27d2cf3152c51a73589a2cdec6df54b267bcf7e83ef91c94160838d896a"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-01-stage-T2-r1/running-stack-observation.json",
+    "archive": "validation/PHYS-INTEGRATE-01-stage-T2-r1/running-stack-observation.json.gz",
+    "sha256": "f40a8d70e829e0b432e3c0dd5c9f7c1146dce585607788eee78556c4694bcef0",
+    "payload_sha256": "dd97eb6243279a412f1d2492f46483f973817180fa1b576c4699b2c2c75fe438"
+  },
+  {
+    "source": "logs/validation/PHYS-INTEGRATE-01-stage-T2-r1/summary.json",
+    "archive": "validation/PHYS-INTEGRATE-01-stage-T2-r1/summary.json.gz",
+    "sha256": "ecfb952bf8728b0277827f40fbf4f3399ed702054354628c37cb21f620e0c1a2",
+    "payload_sha256": "4a6574d3e3bfd6d4c1342947ad705e7c01480f1a25bb3af9643a31b9a62c2442"
+  },
+  {
+    "source": "logs/validation/PHYS-DESIGN-01-checkpoint-T0/pytest.log",
+    "archive": "validation/PHYS-DESIGN-01-checkpoint-T0/pytest.log.gz",
+    "sha256": "bc4b4ad0a4d5b1335549b01a2728d7ccaa55275de5dda575e0a45b1c0ed4bd7d",
+    "payload_sha256": "92577f7d8386a18839ec66ff688c316ca6b498821e45f981f50bd4c3ad56033e"
+  },
+  {
+    "source": "logs/validation/PHYS-DESIGN-01-checkpoint-T0/ruff.log",
+    "archive": "validation/PHYS-DESIGN-01-checkpoint-T0/ruff.log.gz",
+    "sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+    "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/PHYS-DESIGN-01-checkpoint-T0/summary.json",
+    "archive": "validation/PHYS-DESIGN-01-checkpoint-T0/summary.json.gz",
+    "sha256": "038a98d7085ae53999fb7c7574afe372ef81819acf9005fde35ed9f4567b2477",
+    "payload_sha256": "f19ea97f69f4621116a69ed808d9b72673d87d8e409520da857bc5c5129291aa"
+  },
+  {
+    "source": "logs/validation/PHYS-DESIGN-01-checkpoint-approach-T0/pytest.log",
+    "archive": "validation/PHYS-DESIGN-01-checkpoint-approach-T0/pytest.log.gz",
+    "sha256": "01546bcc1cffefabc4220772ed7f99bc0d8657ebdb7fc4d2a148552935310d76",
+    "payload_sha256": "d7f1af9e2c4f379e8d0911f9270289e32fa3d9bc0dd6a559dceb42e9d573b2cf"
+  },
+  {
+    "source": "logs/validation/PHYS-DESIGN-01-checkpoint-approach-T0/ruff.log",
+    "archive": "validation/PHYS-DESIGN-01-checkpoint-approach-T0/ruff.log.gz",
+    "sha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+    "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/PHYS-DESIGN-01-checkpoint-approach-T0/summary.json",
+    "archive": "validation/PHYS-DESIGN-01-checkpoint-approach-T0/summary.json.gz",
+    "sha256": "e74fcb7d1d44f1f76e4f93c5c2d91fb73168b7c918fcdfe15a1655d9dc92f1e4",
+    "payload_sha256": "5a51c4a05b189ba8acd0dfa3532abdbd29165dfdc6367561d71d20593757785b"
+  },
+  {
+    "source": "src/tire_drivetrain.py",
+    "archive": "source/tire_drivetrain.py",
+    "sha256": "a508dfa14b6bcb87978c12b4ba425ba6e54007ac9995d91a332092d43b2e3fe8",
+    "payload_sha256": "a508dfa14b6bcb87978c12b4ba425ba6e54007ac9995d91a332092d43b2e3fe8"
+  },
+  {
+    "source": "src/suspension_kinematics.py",
+    "archive": "source/suspension_kinematics.py",
+    "sha256": "e3b05a3730dfdb06fb9da455ff43930a537c2699dfdb5d38cd92fc7b5000bb9c",
+    "payload_sha256": "e3b05a3730dfdb06fb9da455ff43930a537c2699dfdb5d38cd92fc7b5000bb9c"
+  },
+  {
+    "source": "tests/test_h3_review.py",
+    "archive": "source/test_h3_review.py",
+    "sha256": "43facd050d5c91f8f272d46fe5dc03e367feafd2ec9e46d1fdd39c3304fa23c9",
+    "payload_sha256": "43facd050d5c91f8f272d46fe5dc03e367feafd2ec9e46d1fdd39c3304fa23c9"
+  }
+]

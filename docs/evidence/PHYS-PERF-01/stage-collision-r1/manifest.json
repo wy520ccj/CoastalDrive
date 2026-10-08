@@ -1,0 +1,86 @@
+{
+  "algorithm": "SHA-256",
+  "entry_count": 10,
+  "files": [
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-stage-T2-r2/summary.json",
+      "archive": "t2-r2/summary.json",
+      "source_sha256": "d51afe099c9d4f10fd871a3f602621e39d688dad595809c9dce9ea7fdc87b6e5",
+      "archive_sha256": "d51afe099c9d4f10fd871a3f602621e39d688dad595809c9dce9ea7fdc87b6e5",
+      "compressed": false,
+      "payload_sha256": "d51afe099c9d4f10fd871a3f602621e39d688dad595809c9dce9ea7fdc87b6e5"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-stage-T2-r2/pytest-remaining.log",
+      "archive": "t2-r2/pytest-remaining.txt",
+      "source_sha256": "82ff8ebf3fa24b7f5b88b18c64cbd094954ae4b19c70b69db5cc2d1c2f986d01",
+      "archive_sha256": "82ff8ebf3fa24b7f5b88b18c64cbd094954ae4b19c70b69db5cc2d1c2f986d01",
+      "compressed": false,
+      "payload_sha256": "82ff8ebf3fa24b7f5b88b18c64cbd094954ae4b19c70b69db5cc2d1c2f986d01"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-stage-T2-r2/ruff.log",
+      "archive": "t2-r2/ruff.txt",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "compressed": false,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-stage-r2-launch.py",
+      "archive": "launchers/PHYS-INTEGRATE-03-stage-r2-launch.py",
+      "source_sha256": "e0637428fb5600ca476017b1e88987ff380c258ca85309c5a2e38c63d3f1442d",
+      "archive_sha256": "e0637428fb5600ca476017b1e88987ff380c258ca85309c5a2e38c63d3f1442d",
+      "compressed": false,
+      "payload_sha256": "e0637428fb5600ca476017b1e88987ff380c258ca85309c5a2e38c63d3f1442d"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-01-remaining-pytest.py",
+      "archive": "launchers/PHYS-INTEGRATE-01-remaining-pytest.py",
+      "source_sha256": "a83f8560b9578ef13d4e3345dc1d395887d4b970fb6e41e0997c113ae1e0cad3",
+      "archive_sha256": "a83f8560b9578ef13d4e3345dc1d395887d4b970fb6e41e0997c113ae1e0cad3",
+      "compressed": false,
+      "payload_sha256": "a83f8560b9578ef13d4e3345dc1d395887d4b970fb6e41e0997c113ae1e0cad3"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-reuse-audit.py",
+      "archive": "launchers/PHYS-INTEGRATE-03-reuse-audit.py",
+      "source_sha256": "159a8f195ac29ad608fc3b8190dbcac97b62c352004c590c4eed9793bce06b7a",
+      "archive_sha256": "159a8f195ac29ad608fc3b8190dbcac97b62c352004c590c4eed9793bce06b7a",
+      "compressed": false,
+      "payload_sha256": "159a8f195ac29ad608fc3b8190dbcac97b62c352004c590c4eed9793bce06b7a"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-reuse-audit.json",
+      "archive": "reuse/PHYS-INTEGRATE-03-reuse-audit.json.gz",
+      "source_sha256": "90c2f758be11ef40dd480338eb51e6b0aecb5a9190809856b5603466687eecfa",
+      "archive_sha256": "8b4d4638a1551800aee5627dd9d28caa24ab03f1d1cd6d06a40fd63b6b8d9038",
+      "compressed": true,
+      "payload_sha256": "90c2f758be11ef40dd480338eb51e6b0aecb5a9190809856b5603466687eecfa"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-03-reused-nodes.json",
+      "archive": "reuse/PHYS-INTEGRATE-03-reused-nodes.json.gz",
+      "source_sha256": "e59e3f123b0e6be2c9f3bf939e83262fa093b954b9ee9e44cb6a0ea78162230a",
+      "archive_sha256": "10dfd118f04e81a2e9fde161db30cea431cb5c5cb4d759da99e16cdafed27d2c",
+      "compressed": true,
+      "payload_sha256": "e59e3f123b0e6be2c9f3bf939e83262fa093b954b9ee9e44cb6a0ea78162230a"
+    },
+    {
+      "source": "captured-source-state",
+      "archive": "source-hashes-start.json",
+      "source_sha256": "56cef638a88a9d3023eae5bd30ffe2598fa7c9fa1405890588459b12ce297616",
+      "archive_sha256": "56cef638a88a9d3023eae5bd30ffe2598fa7c9fa1405890588459b12ce297616",
+      "compressed": false,
+      "payload_sha256": "56cef638a88a9d3023eae5bd30ffe2598fa7c9fa1405890588459b12ce297616"
+    },
+    {
+      "source": "captured-source-state",
+      "archive": "source-hashes-end.json",
+      "source_sha256": "56cef638a88a9d3023eae5bd30ffe2598fa7c9fa1405890588459b12ce297616",
+      "archive_sha256": "56cef638a88a9d3023eae5bd30ffe2598fa7c9fa1405890588459b12ce297616",
+      "compressed": false,
+      "payload_sha256": "56cef638a88a9d3023eae5bd30ffe2598fa7c9fa1405890588459b12ce297616"
+    }
+  ]
+}

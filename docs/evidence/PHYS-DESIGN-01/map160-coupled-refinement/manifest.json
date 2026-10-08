@@ -1,0 +1,257 @@
+{
+  "algorithm": "SHA-256; gzip mtime=0, empty original filename",
+  "entries": [
+    {
+      "source": "logs\\physics\\PHYS-DESIGN-01-map160\\capture.log",
+      "archive": "physics/capture.txt",
+      "source_bytes": 2795,
+      "source_sha256": "672f21bc75c9de741cdf2afc3f5aba36552c42fbcb12cb3b0039a684e7fc4ae4",
+      "archive_sha256": "672f21bc75c9de741cdf2afc3f5aba36552c42fbcb12cb3b0039a684e7fc4ae4",
+      "gzip_payload_sha256": null,
+      "original_name": "capture.log"
+    },
+    {
+      "source": "logs\\physics\\PHYS-DESIGN-01-map160\\capture.py",
+      "archive": "physics/capture.py",
+      "source_bytes": 2970,
+      "source_sha256": "631aa18be1d56db33aa0f9194052773f72c63832739a2da9dfe9c934a301b761",
+      "archive_sha256": "631aa18be1d56db33aa0f9194052773f72c63832739a2da9dfe9c934a301b761",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs\\physics\\PHYS-DESIGN-01-map160\\check-healthy-snapshots.py",
+      "archive": "physics/check-healthy-snapshots.py",
+      "source_bytes": 1795,
+      "source_sha256": "889c6817dcb40725eccfb1872db91ffcd331cf23e37850ce5fd03ae822a3f475",
+      "archive_sha256": "889c6817dcb40725eccfb1872db91ffcd331cf23e37850ce5fd03ae822a3f475",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs\\physics\\PHYS-DESIGN-01-map160\\config.json",
+      "archive": "physics/config.json",
+      "source_bytes": 5807,
+      "source_sha256": "f459dd597376e531cc093971b0b04285eebb45a5fa872def39cb8e28caedca98",
+      "archive_sha256": "f459dd597376e531cc093971b0b04285eebb45a5fa872def39cb8e28caedca98",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs\\physics\\PHYS-DESIGN-01-map160\\diagnostic-original.json",
+      "archive": "physics/diagnostic-original.json",
+      "source_bytes": 2647,
+      "source_sha256": "a4f736f36408c5ebc44397e9128b196474ac2dab1e7cb611c2f90e2ffe4041f0",
+      "archive_sha256": "a4f736f36408c5ebc44397e9128b196474ac2dab1e7cb611c2f90e2ffe4041f0",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs\\physics\\PHYS-DESIGN-01-map160\\healthy-snapshots.json",
+      "archive": "physics/healthy-snapshots.json.gz",
+      "source_bytes": 8746914,
+      "source_sha256": "7954de100414abab91d4fe0447a1a8a36ee030e687610dbc4814897d1222bdbf",
+      "archive_sha256": "f52be5ecb44cf31406308bb1bc2b9d3fcc887fe887d1b57f469d3d2603f1ccb0",
+      "gzip_payload_sha256": "7954de100414abab91d4fe0447a1a8a36ee030e687610dbc4814897d1222bdbf",
+      "original_name": null
+    },
+    {
+      "source": "logs\\physics\\PHYS-DESIGN-01-map160\\healthy-snapshots.log",
+      "archive": "physics/healthy-snapshots.txt",
+      "source_bytes": 132,
+      "source_sha256": "31f0e6495960eba90a500543f708ca391e0f3590c14bb637453da0526178c5a8",
+      "archive_sha256": "31f0e6495960eba90a500543f708ca391e0f3590c14bb637453da0526178c5a8",
+      "gzip_payload_sha256": null,
+      "original_name": "healthy-snapshots.log"
+    },
+    {
+      "source": "logs\\physics\\PHYS-DESIGN-01-map160\\input.json",
+      "archive": "physics/input.json.gz",
+      "source_bytes": 55999,
+      "source_sha256": "811fa00e7fefdf1400726e3acc1a19217dff70c4ed8d8a0b0dcc2af837f69608",
+      "archive_sha256": "2da65e54e3645867af83d0e64de9f7c791f23e3fcfd6e91d93971435a7ecff2b",
+      "gzip_payload_sha256": "811fa00e7fefdf1400726e3acc1a19217dff70c4ed8d8a0b0dcc2af837f69608",
+      "original_name": null
+    },
+    {
+      "source": "logs\\physics\\PHYS-DESIGN-01-map160\\iteration-observations.json",
+      "archive": "physics/iteration-observations.json.gz",
+      "source_bytes": 47008,
+      "source_sha256": "43a1c7af132817bf72aedb3340efafe202a065e3a44896e2ea452c8e67331055",
+      "archive_sha256": "9fcd2216c4418b26598db09d8cb38c641edfb2b50035976a5dcdcd8ca05cc209",
+      "gzip_payload_sha256": "43a1c7af132817bf72aedb3340efafe202a065e3a44896e2ea452c8e67331055",
+      "original_name": null
+    },
+    {
+      "source": "logs\\physics\\PHYS-DESIGN-01-map160\\observe-iterations.py",
+      "archive": "physics/observe-iterations.py",
+      "source_bytes": 1530,
+      "source_sha256": "a9e6c8dd7a52a1852c1cd6d06509ae06de82c947c0aa803d6ef53be5ef3bb06b",
+      "archive_sha256": "a9e6c8dd7a52a1852c1cd6d06509ae06de82c947c0aa803d6ef53be5ef3bb06b",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs\\physics\\PHYS-DESIGN-01-map160\\probe-contact-refinement.py",
+      "archive": "physics/probe-contact-refinement.py",
+      "source_bytes": 1012,
+      "source_sha256": "3f3bbd7c2edfd058f84ffb556ae589d0b2308192e1791e69b540291095a6ffd8",
+      "archive_sha256": "3f3bbd7c2edfd058f84ffb556ae589d0b2308192e1791e69b540291095a6ffd8",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs\\physics\\PHYS-DESIGN-01-map160\\rear-config.json",
+      "archive": "physics/rear-config.json",
+      "source_bytes": 5807,
+      "source_sha256": "f459dd597376e531cc093971b0b04285eebb45a5fa872def39cb8e28caedca98",
+      "archive_sha256": "f459dd597376e531cc093971b0b04285eebb45a5fa872def39cb8e28caedca98",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs\\physics\\PHYS-DESIGN-01-map160\\replay-original.json",
+      "archive": "physics/replay-original.json",
+      "source_bytes": 9995,
+      "source_sha256": "198aa87f1e7a45af1b88e7803d5466eb7b448864d61b77eb34791084132e0621",
+      "archive_sha256": "198aa87f1e7a45af1b88e7803d5466eb7b448864d61b77eb34791084132e0621",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs\\physics\\PHYS-DESIGN-01-map160\\replay-original.py",
+      "archive": "physics/replay-original.py",
+      "source_bytes": 3525,
+      "source_sha256": "8c1d90c34daf2f6ce970940d4aa99a2c9485a733c0a5dc56bcb8216ab7275b02",
+      "archive_sha256": "8c1d90c34daf2f6ce970940d4aa99a2c9485a733c0a5dc56bcb8216ab7275b02",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs\\physics\\PHYS-DESIGN-01-map160\\replay-refinement-probe.json",
+      "archive": "physics/replay-refinement-probe.json",
+      "source_bytes": 10045,
+      "source_sha256": "97682a728a7cda30121759bf3fdbe2952ef4c67f6c607f9bfffa084b012d4aa4",
+      "archive_sha256": "97682a728a7cda30121759bf3fdbe2952ef4c67f6c607f9bfffa084b012d4aa4",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs\\validation\\PHYS-INTEGRATE-02-stage-T2-r4\\pytest-remaining.log",
+      "archive": "validation/PHYS-INTEGRATE-02-stage-T2-r4/pytest-remaining.txt",
+      "source_bytes": 45377,
+      "source_sha256": "41f48714f4e68ac02a231a2998a6007822733c39fdb0a75daa4d344c924f0f1b",
+      "archive_sha256": "41f48714f4e68ac02a231a2998a6007822733c39fdb0a75daa4d344c924f0f1b",
+      "gzip_payload_sha256": null,
+      "original_name": "pytest-remaining.log"
+    },
+    {
+      "source": "logs\\validation\\PHYS-INTEGRATE-02-stage-T2-r4\\ruff.log",
+      "archive": "validation/PHYS-INTEGRATE-02-stage-T2-r4/ruff.txt",
+      "source_bytes": 19,
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "gzip_payload_sha256": null,
+      "original_name": "ruff.log"
+    },
+    {
+      "source": "logs\\validation\\PHYS-INTEGRATE-02-stage-T2-r4\\summary.json",
+      "archive": "validation/PHYS-INTEGRATE-02-stage-T2-r4/summary.json.gz",
+      "source_bytes": 208650,
+      "source_sha256": "042257cbd3c9afc0975da8ff9b3cf0823c019ac1455c6644d9f049f9d1828112",
+      "archive_sha256": "dc91504c334445cf95e5a9252cbdace0936543bd346a490c0791b1cc7dc1bc60",
+      "gzip_payload_sha256": "042257cbd3c9afc0975da8ff9b3cf0823c019ac1455c6644d9f049f9d1828112",
+      "original_name": null
+    },
+    {
+      "source": "logs\\validation\\PHYS-DESIGN-01-map160-T0\\pytest.log",
+      "archive": "validation/PHYS-DESIGN-01-map160-T0/pytest.txt",
+      "source_bytes": 426,
+      "source_sha256": "16739bd72c90dee4d8dba18455219cadec7c8ab0d28a02b01b06a3049049d074",
+      "archive_sha256": "16739bd72c90dee4d8dba18455219cadec7c8ab0d28a02b01b06a3049049d074",
+      "gzip_payload_sha256": null,
+      "original_name": "pytest.log"
+    },
+    {
+      "source": "logs\\validation\\PHYS-DESIGN-01-map160-T0\\ruff.log",
+      "archive": "validation/PHYS-DESIGN-01-map160-T0/ruff.txt",
+      "source_bytes": 19,
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "gzip_payload_sha256": null,
+      "original_name": "ruff.log"
+    },
+    {
+      "source": "logs\\validation\\PHYS-DESIGN-01-map160-T0\\summary.json",
+      "archive": "validation/PHYS-DESIGN-01-map160-T0/summary.json",
+      "source_bytes": 1832,
+      "source_sha256": "45c615aee7916ec49c2fdc2d7ad36c3173fe93057b143db71bc632ac294946e3",
+      "archive_sha256": "45c615aee7916ec49c2fdc2d7ad36c3173fe93057b143db71bc632ac294946e3",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "logs\\validation\\PHYS-DESIGN-01-map160-T1\\headless-0.log",
+      "archive": "validation/PHYS-DESIGN-01-map160-T1/headless-0.txt",
+      "source_bytes": 32432,
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "gzip_payload_sha256": null,
+      "original_name": "headless-0.log"
+    },
+    {
+      "source": "logs\\validation\\PHYS-DESIGN-01-map160-T1\\headless-17.log",
+      "archive": "validation/PHYS-DESIGN-01-map160-T1/headless-17.txt",
+      "source_bytes": 32432,
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "gzip_payload_sha256": null,
+      "original_name": "headless-17.log"
+    },
+    {
+      "source": "logs\\validation\\PHYS-DESIGN-01-map160-T1\\headless-23.log",
+      "archive": "validation/PHYS-DESIGN-01-map160-T1/headless-23.txt",
+      "source_bytes": 32432,
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "gzip_payload_sha256": null,
+      "original_name": "headless-23.log"
+    },
+    {
+      "source": "logs\\validation\\PHYS-DESIGN-01-map160-T1\\pytest.log",
+      "archive": "validation/PHYS-DESIGN-01-map160-T1/pytest.txt",
+      "source_bytes": 924,
+      "source_sha256": "271f1bfe1781faa2a90fa6c733c22c6c5942fc0a9bee8d80843a880638adfe63",
+      "archive_sha256": "271f1bfe1781faa2a90fa6c733c22c6c5942fc0a9bee8d80843a880638adfe63",
+      "gzip_payload_sha256": null,
+      "original_name": "pytest.log"
+    },
+    {
+      "source": "logs\\validation\\PHYS-DESIGN-01-map160-T1\\ruff.log",
+      "archive": "validation/PHYS-DESIGN-01-map160-T1/ruff.txt",
+      "source_bytes": 19,
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "gzip_payload_sha256": null,
+      "original_name": "ruff.log"
+    },
+    {
+      "source": "logs\\validation\\PHYS-DESIGN-01-map160-T1\\summary.json",
+      "archive": "validation/PHYS-DESIGN-01-map160-T1/summary.json",
+      "source_bytes": 5570,
+      "source_sha256": "7e559c82772f47916b49e71aedc71c592ed61a71fe822f35a7591e85756656ba",
+      "archive_sha256": "7e559c82772f47916b49e71aedc71c592ed61a71fe822f35a7591e85756656ba",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "src\\tire_drivetrain.py",
+      "archive": "source/tire_drivetrain.py",
+      "source_bytes": 47186,
+      "source_sha256": "625d20d1bd033e5bc3ee3eceb4e463e7adb47ebab2a8bcc33f36227ce80ca2b7",
+      "archive_sha256": "625d20d1bd033e5bc3ee3eceb4e463e7adb47ebab2a8bcc33f36227ce80ca2b7",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    }
+  ]
+}

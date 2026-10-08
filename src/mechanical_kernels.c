@@ -1148,8 +1148,16 @@ static int shared_map_values(const SharedMap *data,const double state[11],const 
             port_free[i]=compensated(terms,9);
         }
         if (!shared_port_state(data,branch,port_free,0.,-1,port_values,&port_index)) return 0;
-        for (int a=0; a<9; ++a) end[a]=projected[a]-data->dt*(port_values[0]*branch->mc[a]
-                                                +port_values[2]*branch->ml[a]+port_values[1]*branch->mg[a]);
+        /* 输入轴上的离合/齿轮反力近乎抵消时，保留乘积低位再重建末速度。 */
+        for (int a=0; a<9; ++a) {
+            double updates[6],torques[3]={port_values[0],port_values[2],port_values[1]},
+                responses[3]={branch->mc[a],branch->ml[a],branch->mg[a]};
+            for (int j=0; j<3; ++j) {
+                updates[2*j]=torques[j]*responses[j];
+                updates[2*j+1]=fma(torques[j],responses[j],-updates[2*j]);
+            }
+            end[a]=fma(-data->dt,compensated(updates,6),projected[a]);
+        }
         int feasible=shared_branch_feasible(data,branch,end,active);
         if (feasible) { branch_index=index; break; }
     }
@@ -1705,7 +1713,9 @@ static PyObject *shared_solution(PyObject *self,PyObject *args) {
     }
     char *number=PyOS_double_to_string(error,'g',6,0,NULL);
     if (!number) return NULL;
-    PyErr_Format(PyExc_ArithmeticError,"曲轴/四轮转子共同末状态超过30次迭代：%s",number);
+    char message[160];
+    PyOS_snprintf(message,sizeof(message),"曲轴/四轮转子共同末状态超过30次迭代：%s",number);
+    PyErr_SetString(PyExc_ArithmeticError,message);
     PyMem_Free(number); return NULL;
 }
 
