@@ -114,3 +114,5 @@ Tire constitutive 本构块（2026-10-08，隔离未并入main）：[证据与�
 
 
 悬架 prescribed closed partition（2026-10-08，隔离块）：[报告](../evidence/PHYS-PERF-01/suspension-prescribed-r1/report.md)、[SHA/载荷清单](../evidence/PHYS-PERF-01/suspension-prescribed-r1/manifest.json)、[收据](../evidence/PHYS-PERF-01/suspension-prescribed-r1/receipt.json)。仅 `mechanical_kernels.c` 新增已指定末行程直接式；零法向逆质量且四轮非负反力，硬件反力保留FMA，其余完整64轮活动集和原门槛不变。独立127 DLL的16,081次调用输出hex一致；T0 172 passed、T1 601 passed/Ruff/三seed通过。2×48拍Snapshot与主线fa037c4 wall-port基线逐字段相同；0.7078/4.7718s仅诊断。\n
+
+悬架能量与完整步数值块（2026-10-08）：[报告/收据](../evidence/PHYS-PERF-01/suspension-energy-r1/receipt.json)。独立da6539c Python公式及旧127 DLL对照16,081个完整步、6,298次势能计算全部字段hex相同；64活动集/20与30轮/全部精度保持。172项T0、601项T1/Ruff/三种子通过；两组48拍Snapshot同main fa，0.6321/4.3398s与profile3.0445s仅诊断。360项源及全部归档载荷独立核对。suspension_contacts.py仅换行标记、无实际差异，不入提交；实时、T3、人工Gate未完成。

@@ -1,0 +1,353 @@
+{
+  "head_at_capture": "da6539c6c57746a90c75a6379cb97a0f41c0aa1f",
+  "source_count": 360,
+  "source_hashes_start_end_equal": true,
+  "source_start_aggregate_sha256": "9e587c619306c5811a60f0d6dd015f848efb1ad7e542f0199700fafdb88f26ef",
+  "source_end_aggregate_sha256": "9e587c619306c5811a60f0d6dd015f848efb1ad7e542f0199700fafdb88f26ef",
+  "snapshot_comparisons": [
+    {
+      "traffic": 0,
+      "new_seconds": 0.6321119999993243,
+      "mainfa_seconds": 0.7201027999999496,
+      "all_fields_equal": true
+    },
+    {
+      "traffic": 8,
+      "new_seconds": 4.339838000000782,
+      "mainfa_seconds": 5.106677599999784,
+      "all_fields_equal": true
+    }
+  ],
+  "items": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-energy-body.c",
+      "archive": "physics/suspension-energy-body.c",
+      "encoding": "byte-copy",
+      "source_sha256": "3029daa399c6f759c15dc265061005a7822b4a593ac1c48f8c5da9d2a32a4cbf",
+      "archive_sha256": "3029daa399c6f759c15dc265061005a7822b4a593ac1c48f8c5da9d2a32a4cbf",
+      "payload_sha256": "3029daa399c6f759c15dc265061005a7822b4a593ac1c48f8c5da9d2a32a4cbf",
+      "payload_verified": true,
+      "payload_bytes": 4556
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/promote-suspension-energy.py",
+      "archive": "physics/promote-suspension-energy.py",
+      "encoding": "byte-copy",
+      "source_sha256": "51dfc6bb908e14bec20562a04bb2479b6a4cac48333dfcdfcf2196482e8412b4",
+      "archive_sha256": "51dfc6bb908e14bec20562a04bb2479b6a4cac48333dfcdfcf2196482e8412b4",
+      "payload_sha256": "51dfc6bb908e14bec20562a04bb2479b6a4cac48333dfcdfcf2196482e8412b4",
+      "payload_verified": true,
+      "payload_bytes": 1873
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/audit-suspension-energy.py",
+      "archive": "physics/audit-suspension-energy.py",
+      "encoding": "byte-copy",
+      "source_sha256": "cb7f11ffd35b51beec7329d4967d011fc9f69fa7b5a381209d431de5e616aaca",
+      "archive_sha256": "cb7f11ffd35b51beec7329d4967d011fc9f69fa7b5a381209d431de5e616aaca",
+      "payload_sha256": "cb7f11ffd35b51beec7329d4967d011fc9f69fa7b5a381209d431de5e616aaca",
+      "payload_verified": true,
+      "payload_bytes": 2618
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-energy-audit.log",
+      "archive": "physics/energy-only-audit.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "c7521a8659e62a55ad8481c73ecb0ae5913bb77dcddb5bd66719f59b8a7a4cf7",
+      "archive_sha256": "c7521a8659e62a55ad8481c73ecb0ae5913bb77dcddb5bd66719f59b8a7a4cf7",
+      "payload_sha256": "c7521a8659e62a55ad8481c73ecb0ae5913bb77dcddb5bd66719f59b8a7a4cf7",
+      "payload_verified": true,
+      "payload_bytes": 495
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-energy-build.log",
+      "archive": "physics/suspension-energy-build.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "archive_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "payload_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "payload_verified": true,
+      "payload_bytes": 5534
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-step-body.c",
+      "archive": "physics/suspension-step-body.c",
+      "encoding": "byte-copy",
+      "source_sha256": "6d0283a58f6848092da2170a9d8c60413685a9b934dbb7c7901ebca3a2ea6654",
+      "archive_sha256": "6d0283a58f6848092da2170a9d8c60413685a9b934dbb7c7901ebca3a2ea6654",
+      "payload_sha256": "6d0283a58f6848092da2170a9d8c60413685a9b934dbb7c7901ebca3a2ea6654",
+      "payload_verified": true,
+      "payload_bytes": 2465
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/promote-suspension-step.py",
+      "archive": "physics/promote-suspension-step.py",
+      "encoding": "byte-copy",
+      "source_sha256": "f800450578db0ee03140ad1e085ae11bfda76e05944f999da2b67a064c5c7134",
+      "archive_sha256": "f800450578db0ee03140ad1e085ae11bfda76e05944f999da2b67a064c5c7134",
+      "payload_sha256": "f800450578db0ee03140ad1e085ae11bfda76e05944f999da2b67a064c5c7134",
+      "payload_verified": true,
+      "payload_bytes": 1138
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-step-build.log",
+      "archive": "physics/suspension-step-build.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "archive_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "payload_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "payload_verified": true,
+      "payload_bytes": 5534
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-step-audit.log",
+      "archive": "physics/suspension-step-audit.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "688b02716cec8898d669258e7ac1a780a676fca1bee12d84f78c298eeaa026a6",
+      "archive_sha256": "688b02716cec8898d669258e7ac1a780a676fca1bee12d84f78c298eeaa026a6",
+      "payload_sha256": "688b02716cec8898d669258e7ac1a780a676fca1bee12d84f78c298eeaa026a6",
+      "payload_verified": true,
+      "payload_bytes": 495
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-energy-audit.json",
+      "archive": "physics/suspension-step-audit.json",
+      "encoding": "byte-copy",
+      "source_sha256": "f6ee835222ee197ff9a0b82ad57bb50f3ac9fcef4adb04c2102118b49a2a5de3",
+      "archive_sha256": "f6ee835222ee197ff9a0b82ad57bb50f3ac9fcef4adb04c2102118b49a2a5de3",
+      "payload_sha256": "f6ee835222ee197ff9a0b82ad57bb50f3ac9fcef4adb04c2102118b49a2a5de3",
+      "payload_verified": true,
+      "payload_bytes": 264
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/measure-suspension-energy.py",
+      "archive": "physics/measure-suspension-energy.py",
+      "encoding": "byte-copy",
+      "source_sha256": "f4fd6664f8db95dfbda5f9b0dd0c33e3918799a2e27cac88d79c869fee2e3922",
+      "archive_sha256": "f4fd6664f8db95dfbda5f9b0dd0c33e3918799a2e27cac88d79c869fee2e3922",
+      "payload_sha256": "f4fd6664f8db95dfbda5f9b0dd0c33e3918799a2e27cac88d79c869fee2e3922",
+      "payload_verified": true,
+      "payload_bytes": 326
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-energy-snapshots.json",
+      "archive": "physics/suspension-energy-snapshots.json.gz",
+      "encoding": "gzip-mtime-0",
+      "source_sha256": "5b7d39b93d65edcc33c85e430f93445642c9f1668506830ef6197ff5d8c67640",
+      "archive_sha256": "48ecace3ad691a7ba5ee4adcc0de098cfe25db53163014a72efcca8d24676130",
+      "payload_sha256": "5b7d39b93d65edcc33c85e430f93445642c9f1668506830ef6197ff5d8c67640",
+      "payload_verified": true,
+      "payload_bytes": 8746812
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-energy-snapshots.log",
+      "archive": "physics/suspension-energy-snapshots.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "6603625ea92146985ee2b883b69e34548b2f892ceeef6f8a15a9a7ccb1721f5b",
+      "archive_sha256": "6603625ea92146985ee2b883b69e34548b2f892ceeef6f8a15a9a7ccb1721f5b",
+      "payload_sha256": "6603625ea92146985ee2b883b69e34548b2f892ceeef6f8a15a9a7ccb1721f5b",
+      "payload_verified": true,
+      "payload_bytes": 132
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-suspension-energy.py",
+      "archive": "profile/profile-suspension-energy.py",
+      "encoding": "byte-copy",
+      "source_sha256": "3d620f5a3efa7324656ce4eb7b52d88aaf429d7f5c65c2f200e2ccfaf7e49926",
+      "archive_sha256": "3d620f5a3efa7324656ce4eb7b52d88aaf429d7f5c65c2f200e2ccfaf7e49926",
+      "payload_sha256": "3d620f5a3efa7324656ce4eb7b52d88aaf429d7f5c65c2f200e2ccfaf7e49926",
+      "payload_verified": true,
+      "payload_bytes": 6801
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-suspension-energy.log",
+      "archive": "profile/profile-suspension-energy.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "2529f73be6e1bdab8496ad577694aaad5bb2524b726bcfdfd70303a83737a385",
+      "archive_sha256": "2529f73be6e1bdab8496ad577694aaad5bb2524b726bcfdfd70303a83737a385",
+      "payload_sha256": "2529f73be6e1bdab8496ad577694aaad5bb2524b726bcfdfd70303a83737a385",
+      "payload_verified": true,
+      "payload_bytes": 138
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-suspension-energy-r1/profile.json",
+      "archive": "profile/profile.json",
+      "encoding": "byte-copy",
+      "source_sha256": "46a820056a46eadb4f18bdb56a25619acdfdb6d7ed5221dc523f544cdbe10407",
+      "archive_sha256": "46a820056a46eadb4f18bdb56a25619acdfdb6d7ed5221dc523f544cdbe10407",
+      "payload_sha256": "46a820056a46eadb4f18bdb56a25619acdfdb6d7ed5221dc523f544cdbe10407",
+      "payload_verified": true,
+      "payload_bytes": 31752
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-suspension-energy-r1/gr86-profile.prof",
+      "archive": "profile/gr86-profile.prof",
+      "encoding": "byte-copy",
+      "source_sha256": "99424e790cad7679abc241e9b7253e4752641f58a779f61326c009e9934f4d61",
+      "archive_sha256": "99424e790cad7679abc241e9b7253e4752641f58a779f61326c009e9934f4d61",
+      "payload_sha256": "99424e790cad7679abc241e9b7253e4752641f58a779f61326c009e9934f4d61",
+      "payload_verified": true,
+      "payload_bytes": 69946
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-energy-T0/pytest.log",
+      "archive": "validation/T0/pytest.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "632fda8c09f259ea99aef70d019d9213c259e90c3c21ad8b0a17bdfc05dba970",
+      "archive_sha256": "632fda8c09f259ea99aef70d019d9213c259e90c3c21ad8b0a17bdfc05dba970",
+      "payload_sha256": "632fda8c09f259ea99aef70d019d9213c259e90c3c21ad8b0a17bdfc05dba970",
+      "payload_verified": true,
+      "payload_bytes": 264
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-energy-T0/ruff.log",
+      "archive": "validation/T0/ruff.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "payload_verified": true,
+      "payload_bytes": 19
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-energy-T0/summary.json",
+      "archive": "validation/T0/summary.json",
+      "encoding": "byte-copy",
+      "source_sha256": "ddec7334dddfd8e8b1cc93400daff291cd22e71aa7f628fe9936e0ad320bfbf6",
+      "archive_sha256": "ddec7334dddfd8e8b1cc93400daff291cd22e71aa7f628fe9936e0ad320bfbf6",
+      "payload_sha256": "ddec7334dddfd8e8b1cc93400daff291cd22e71aa7f628fe9936e0ad320bfbf6",
+      "payload_verified": true,
+      "payload_bytes": 2171
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-energy-T1/headless-0.log",
+      "archive": "validation/T1/headless-0.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "archive_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "payload_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "payload_verified": true,
+      "payload_bytes": 32408
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-energy-T1/headless-17.log",
+      "archive": "validation/T1/headless-17.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "archive_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "payload_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "payload_verified": true,
+      "payload_bytes": 32408
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-energy-T1/headless-23.log",
+      "archive": "validation/T1/headless-23.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "archive_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "payload_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "payload_verified": true,
+      "payload_bytes": 32408
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-energy-T1/pytest.log",
+      "archive": "validation/T1/pytest.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "a836c01dd7e1db94a164c3b2bf52f49560f90467142974b97f7500bc9af1237a",
+      "archive_sha256": "a836c01dd7e1db94a164c3b2bf52f49560f90467142974b97f7500bc9af1237a",
+      "payload_sha256": "a836c01dd7e1db94a164c3b2bf52f49560f90467142974b97f7500bc9af1237a",
+      "payload_verified": true,
+      "payload_bytes": 751
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-energy-T1/ruff.log",
+      "archive": "validation/T1/ruff.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "payload_verified": true,
+      "payload_bytes": 19
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-energy-T1/summary.json",
+      "archive": "validation/T1/summary.json",
+      "encoding": "byte-copy",
+      "source_sha256": "de3bcfe669fa8df865358f133155e3cb3ddd8e40c9d488d6a5a5cc3d8362099b",
+      "archive_sha256": "de3bcfe669fa8df865358f133155e3cb3ddd8e40c9d488d6a5a5cc3d8362099b",
+      "payload_sha256": "de3bcfe669fa8df865358f133155e3cb3ddd8e40c9d488d6a5a5cc3d8362099b",
+      "payload_verified": true,
+      "payload_bytes": 5170
+    },
+    {
+      "source": "docs/evidence/PHYS-PERF-01/triangle-invariants-r1/reference/main-wall-port-precision-r1/snapshots.json.gz",
+      "archive": "reference/main-fa-wall-port-precision-r1-snapshots.json.gz",
+      "encoding": "byte-copy",
+      "source_sha256": "ddff1bfd69f860c457e2387914fd7a4770cf89f560fb850feb94e571fe2908b6",
+      "archive_sha256": "ddff1bfd69f860c457e2387914fd7a4770cf89f560fb850feb94e571fe2908b6",
+      "payload_sha256": "ddff1bfd69f860c457e2387914fd7a4770cf89f560fb850feb94e571fe2908b6",
+      "payload_verified": true,
+      "payload_bytes": 1945283
+    },
+    {
+      "source": "docs/evidence/PHYS-PERF-01/shared-solution-r1/baseline/original-mechanical-kernels.c",
+      "archive": "reference/shared-solution-baseline/original-mechanical-kernels.c",
+      "encoding": "byte-copy",
+      "source_sha256": "f361e69c169f865685fbfeaa2eda9f47b4ba52cab767f833abbb01a160f430a5",
+      "archive_sha256": "f361e69c169f865685fbfeaa2eda9f47b4ba52cab767f833abbb01a160f430a5",
+      "payload_sha256": "f361e69c169f865685fbfeaa2eda9f47b4ba52cab767f833abbb01a160f430a5",
+      "payload_verified": true,
+      "payload_bytes": 83792
+    },
+    {
+      "source": "docs/evidence/PHYS-PERF-01/shared-solution-r1/baseline/baseline.c",
+      "archive": "reference/shared-solution-baseline/baseline.c",
+      "encoding": "byte-copy",
+      "source_sha256": "75148f37a6c12ba6bbf83481b21117442a570353e98ebb0a085a899b0138b544",
+      "archive_sha256": "75148f37a6c12ba6bbf83481b21117442a570353e98ebb0a085a899b0138b544",
+      "payload_sha256": "75148f37a6c12ba6bbf83481b21117442a570353e98ebb0a085a899b0138b544",
+      "payload_verified": true,
+      "payload_bytes": 83796
+    },
+    {
+      "source": "docs/evidence/PHYS-PERF-01/shared-solution-r1/baseline/setup.py",
+      "archive": "reference/shared-solution-baseline/setup.py",
+      "encoding": "byte-copy",
+      "source_sha256": "563423b47ff9c690a76a41ffb69c1b48b3ab8f1de51dc739687081e06c7167fd",
+      "archive_sha256": "563423b47ff9c690a76a41ffb69c1b48b3ab8f1de51dc739687081e06c7167fd",
+      "payload_sha256": "563423b47ff9c690a76a41ffb69c1b48b3ab8f1de51dc739687081e06c7167fd",
+      "payload_verified": true,
+      "payload_bytes": 232
+    },
+    {
+      "source": "docs/evidence/PHYS-PERF-01/shared-solution-r1/baseline/build.txt",
+      "archive": "reference/shared-solution-baseline/build.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "e4ad4306960e4c85eba7290450f48e5a06e842a4fb180a0fc8788af88b3064fd",
+      "archive_sha256": "e4ad4306960e4c85eba7290450f48e5a06e842a4fb180a0fc8788af88b3064fd",
+      "payload_sha256": "e4ad4306960e4c85eba7290450f48e5a06e842a4fb180a0fc8788af88b3064fd",
+      "payload_verified": true,
+      "payload_bytes": 3942
+    },
+    {
+      "source": "docs/evidence/PHYS-PERF-01/shared-solution-r1/baseline/manifest.json",
+      "archive": "reference/shared-solution-baseline/manifest.json",
+      "encoding": "byte-copy",
+      "source_sha256": "c8dd163d034d27cc3a8baa4909f042a05690de64688812c8c6c7dc00c1b3615a",
+      "archive_sha256": "c8dd163d034d27cc3a8baa4909f042a05690de64688812c8c6c7dc00c1b3615a",
+      "payload_sha256": "c8dd163d034d27cc3a8baa4909f042a05690de64688812c8c6c7dc00c1b3615a",
+      "payload_verified": true,
+      "payload_bytes": 1539
+    },
+    {
+      "source": "docs/evidence/PHYS-PERF-01/shared-solution-r1/baseline/receipt.json",
+      "archive": "reference/shared-solution-baseline/receipt.json",
+      "encoding": "byte-copy",
+      "source_sha256": "d2f79a1e6ff9f51d56691523a545551429c8ff090f6a59650d4e7cc8360358ff",
+      "archive_sha256": "d2f79a1e6ff9f51d56691523a545551429c8ff090f6a59650d4e7cc8360358ff",
+      "payload_sha256": "d2f79a1e6ff9f51d56691523a545551429c8ff090f6a59650d4e7cc8360358ff",
+      "payload_verified": true,
+      "payload_bytes": 2229
+    }
+  ]
+}
