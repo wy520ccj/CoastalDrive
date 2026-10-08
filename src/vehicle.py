@@ -402,6 +402,7 @@ class Vehicle:
     def close(self):
         if self.closed:
             return
+        self.suspension.clear_queries()
         self._world.removeVehicle(self._vehicle)
         self._vehicle = None
         self._chassis = None

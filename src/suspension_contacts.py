@@ -13,7 +13,12 @@ from panda3d.bullet import (
     XUp,
 )
 from panda3d.core import BitMask32, Mat4, NodePath, Quat, TransformState, Vec3
-from wheel_contact_kernels import support_candidates, surface_ray_hits
+from wheel_contact_kernels import (
+    prepared_support_candidates,
+    support_candidates,
+    support_coefficients,
+    surface_ray_hits,
+)
 
 from suspension_geometry import BoxSurface, CylinderSurface, box_entry, sphere_box_entry
 from triangle_support import TriangleSupport, triangle_entry
@@ -28,6 +33,15 @@ class RayContact:
     normal: tuple
     surface: BoxSurface | None = None
     support_face: tuple | None = None
+
+
+class StaticSupportShapes(tuple):
+    """同一实际几何元组及其只读原生数值；不持有另一套世界状态。"""
+
+    def __new__(cls, groups):
+        value = super().__new__(cls, groups)
+        value.native = support_coefficients(tuple(groups))
+        return value
 
 
 def suspension_rays(world, chassis, rays, radius=0.):
@@ -162,8 +176,8 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
     return tuple(results)
 
 
-def static_support_shapes(world, chassis, mask):
-    """每prepare从唯一世界读取一次静态几何；机械迭代期间保持该子步的真实变换。"""
+def static_support_shapes(world, chassis, mask, *, cache=None, packet_cache=None):
+    """每子步读取世界资格/变换；未改变的静态分区复用原数值几何。"""
     groups = []
     bodies = (body for body in world.getRigidBodies() if body != chassis and body.isStatic()
               and not (body.getIntoCollideMask() & mask).isZero())
@@ -173,20 +187,45 @@ def static_support_shapes(world, chassis, mask):
         shape_bounds = body.getPythonTag("suspension_shape_bounds") if body.hasPythonTag("suspension_shape_bounds") else None
         supported = bool(shapes) and all(isinstance(shape, (BulletBoxShape, BulletPlaneShape)) or (
             isinstance(shape, BulletTriangleMeshShape) and mesh is not None and len(shapes) == 1) for shape in shapes)
-        body_mat = NodePath(body).getNetTransform().getMat()
+        pose = NodePath(body).getNetTransform()
+        shape_poses = tuple(body.getShapeTransform(i) for i in range(len(shapes)))
+        margins = tuple(shape.getMargin() for shape in shapes)
+        # 原生Hull等可在同一shape上增点；其实际边界也必须进入变更判据。
+        mutable_bounds = tuple(collision_shape_bounds(shape, None)
+                               if shape_bounds is None and isinstance(shape, BulletConvexHullShape)
+                               else None for shape in shapes)
+        signature = pose, tuple(shapes), shape_poses, margins, id(mesh), id(shape_bounds), mutable_bounds
+        previous = cache.get(body) if cache is not None else None
+        if previous is not None and previous[0] == signature:
+            groups.append(previous[1])
+            continue
+        body_mat = pose.getMat()
         parts = []
         for i, shape in enumerate(shapes):
             inverse = Mat4()
-            inverse.invertFrom(body.getShapeTransform(i).getMat() * body_mat)
+            inverse.invertFrom(shape_poses[i].getMat() * body_mat)
             frame = tuple(tuple(inverse.getCell(b, a) for b in range(3)) for a in range(3))
             triangles = mesh if isinstance(shape,BulletTriangleMeshShape) and len(shapes) == 1 else None
             bounds = collision_shape_bounds(shape, triangles) if shape_bounds is None else shape_bounds[i]
             translation = tuple(inverse.getCell(3,a) for a in range(3))
             plane = (tuple(shape.getPlaneNormal()), shape.getPlaneConstant()) if isinstance(shape, BulletPlaneShape) else None
             half = tuple(shape.getHalfExtentsWithoutMargin()) if isinstance(shape, BulletBoxShape) else ()
-            parts.append((inverse, frame, translation, half, shape.getMargin() if plane is None else 0., plane, triangles, bounds))
-        groups.append((body, supported, tuple(parts)))
-    return tuple(groups)
+            parts.append((inverse, frame, translation, half, margins[i] if plane is None else 0., plane, triangles, bounds))
+        group = body, supported, tuple(parts)
+        groups.append(group)
+        if cache is not None:
+            cache[body] = signature, group
+    if cache is not None:
+        active = {group[0] for group in groups}
+        for body in cache.keys() - active:
+            del cache[body]
+    groups = tuple(groups)
+    if packet_cache is None:
+        return groups
+    if packet_cache.get('groups') != groups:
+        packet_cache['groups'] = groups
+        packet_cache['prepared'] = StaticSupportShapes(groups)
+    return packet_cache['prepared']
 
 
 def cylinder_candidates(world, chassis, mask, low, high, *, static_shapes=None):
@@ -194,7 +233,9 @@ def cylinder_candidates(world, chassis, mask, low, high, *, static_shapes=None):
     if static_shapes is None:
         static_shapes = static_support_shapes(world, chassis, mask)
     surfaces, exact, native_needed = [], set(), False
-    for body, supported, parts in support_candidates(static_shapes, low, high):
+    candidates = (prepared_support_candidates(static_shapes.native, low, high)
+                  if isinstance(static_shapes, StaticSupportShapes) else support_candidates(static_shapes, low, high))
+    for body, supported, parts in candidates:
         if supported:
             for part, local_center, local_half in parts:
                 inverse, frame, translation, half, margin, plane, triangles, _bounds = part

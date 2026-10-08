@@ -4,8 +4,8 @@ import math
 from dataclasses import replace
 
 from panda3d.core import Mat3, Quat, Vec3
+from wheel_contact_kernels import rotor_frame_geometry
 
-from rotor_dynamics import steering_torque
 from suspension_kinematics import advance_contact_geometry
 from tire_compliance import deformation_frame, project_deformation, world_deformation
 from tire_coupling import ContactFrame, advance_coupled, cross, dot
@@ -49,6 +49,8 @@ class Tires:
         origin = pose.getPos()
         orientation = pose.getQuat()
         inv_inertia = chassis.getInvInertiaTensorWorld()
+        tensor = tuple(tuple((inv_inertia.getCell(a, b) + inv_inertia.getCell(b, a)) / 2
+                             for b in range(3)) for a in range(3))
         config = self.config
         envelope_geometry = ({"width": config.wheel_width, "shoulder": config.wheel_shoulder_radius,
                               "crown": config.wheel_crown_height}
@@ -96,8 +98,6 @@ class Tires:
                 hub = tuple(point[a] + normal[a] * config.wheel_radius for a in range(3))
                 moment_x, moment_y = cross(hub, tangent), cross(point, axle)
                 # 同一对称惯量与双精度正交基用于所有轮的速度、作用与反作用。
-                tensor = tuple(tuple((inv_inertia.getCell(a, b) + inv_inertia.getCell(b, a)) / 2
-                                     for b in range(3)) for a in range(3))
                 response_x, response_y, response_t = tuple(
                     tuple(dot(row, vector) for row in tensor) for vector in (moment_x, moment_y, axle))
                 mobility = Mobility(
@@ -119,32 +119,23 @@ class Tires:
 
         substeps = config.tire_substeps if substeps is None else substeps
         sub_dt = dt / substeps
-        tensor = tuple(tuple((inv_inertia.getCell(a, b) + inv_inertia.getCell(b, a)) / 2
-                             for b in range(3)) for a in range(3))
         initial_angles = tuple(state.steering for state in self.states)
         base_frames = tuple(wheel_frames)
 
         def rotor_frames(fraction, previous_fraction):
             frames, torques = [], []
-            for i, base in enumerate(base_frames):
-                angle = initial_angles[i] + (base.steering - initial_angles[i]) * fraction
-                previous_angle = initial_angles[i] + (base.steering - initial_angles[i]) * previous_fraction
-                axis = mechanical_axis(orientation.getRight(), orientation.getForward(), angle)
-                previous_axis = mechanical_axis(orientation.getRight(), orientation.getForward(), previous_angle)
-                normal = base.elastic_frame[2] if config.tire_compliance else tuple(Vec3(*base.hub) - Vec3(*base.point))
-                axis, elastic_frame, radius, moment_x = contact_geometry(axis, normal, tuple(base.point), config.wheel_radius,
-                                                                        **envelope_geometry)
+            geometries = rotor_frame_geometry(tuple(orientation.getRight()), tuple(orientation.getForward()),
+                initial_angles, tuple(base.steering for base in base_frames),
+                tuple(base.elastic_frame[2] if config.tire_compliance else tuple(Vec3(*base.hub) - Vec3(*base.point))
+                      for base in base_frames), tuple(tuple(base.point) for base in base_frames), tensor, tuple(self.omega),
+                (config.wheel_radius, config.mass, config.wheel_inertia, sub_dt, fraction, previous_fraction,
+                 config.wheel_width if envelope_geometry else None, config.wheel_shoulder_radius, config.wheel_crown_height))
+            for base, geometry in zip(base_frames, geometries):
+                angle, axis, elastic_frame, radius, moment_x, rx, ry, rt, mobility, torque = geometry
                 tangent, lateral, _normal = elastic_frame
-                moment_y = cross(base.point, lateral)
-                rx, ry, rt = tuple(tuple(dot(row, vector) for row in tensor)
-                                   for vector in (moment_x, moment_y, axis))
-                mobility = Mobility(1 / config.mass + dot(moment_x, rx), dot(moment_x, ry), dot(moment_x, rt),
-                                    1 / config.mass + dot(moment_y, ry), dot(moment_y, rt), dot(axis, rt))
-                frames.append(replace(base, steering=angle, tangent=tangent, axle=lateral,
-                                      elastic_frame=elastic_frame, mobility=mobility,
-                                      response_x=rx, response_y=ry, response_t=rt,
-                                      spin_axis=axis, rolling_radius=radius, moment_x=moment_x))
-                torques.append(steering_torque(previous_axis, axis, self.omega[i], config.wheel_inertia, sub_dt))
+                frames.append(ContactFrame(angle, base.supported, base.load, base.mu, tangent, lateral,
+                    base.point, base.hub, Mobility(*mobility), elastic_frame, rx, ry, rt, axis, radius, moment_x))
+                torques.append(torque)
             return frames, tuple(torques)
 
         states = [None] * 4
@@ -188,7 +179,7 @@ class Tires:
                 if config.finite_drivetrain:
                     if suspension is not None:
                         # 固定当拍路面资格，实际离地/再支撑由本子步求出的轮荷决定。
-                        wheel_frames = tuple(replace(frame, supported=base.supported)
+                        wheel_frames = tuple(frame if frame.supported == base.supported else replace(frame, supported=base.supported)
                                              for frame, base in zip(wheel_frames, base_frames))
                     result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
                         wheel_frames, projected, powertrain.engine_torque_request, powertrain.capacity,
@@ -221,8 +212,6 @@ class Tires:
                         wheel_frames = tuple(replace(frame, load=contact.normal_load if base.supported else 0.,
                                                      supported=contact.in_contact and base.supported)
                                              for frame, contact, base in zip(wheel_frames, actual_contacts, base_frames))
-                        next_normal_system = advance_contact_geometry(normal_system, result.suspension.compression,
-                                                                      result.velocity, result.angular, sub_dt)
                     powertrain.accept_step(result, sub_dt)
                     chassis.applyTorqueImpulse(Vec3(*result.engine_body_torque) * sub_dt)
                     if powertrain.input_shaft_active:
@@ -332,7 +321,10 @@ class Tires:
                 )
             if suspension is not None:
                 final_normal_system = normal_system
-                normal_system = next_normal_system
+                if substep + 1 < substeps:
+                    # 下一轮端子步才需要几何外推；末子步之后由唯一Bullet世界实际推进。
+                    normal_system = advance_contact_geometry(normal_system, result.suspension.compression,
+                                                             result.velocity, result.angular, sub_dt)
         self.states = tuple(states)
         if suspension is not None:
             return normal_adapter.publish(initial_normal_system, final_normal_system,

@@ -3,50 +3,27 @@
 from dataclasses import dataclass, field
 
 from wheel_contact_kernels import (
-    clipped_triangle,
     triangle_face,
     triangle_support_coefficients,
     triangle_support_entry,
 )
 
-from rotor_dynamics import dot
 from suspension_geometry import box_interval
-from wheel_envelope import convex_distance, cylinder_support, subtract
+from wheel_envelope import cylinder_support, subtract, triangle_edge_entry
 
 
-def triangle_entry(start, end, triangle, margin, axis, radius, width, shoulder, crown, *, face_only=False, ceiling=1., padding=None):
+def triangle_entry(start, end, triangle, margin, axis, radius, width, shoulder, crown, *, face_only=False, ceiling=1., padding=None,
+                   face_checked=False):
     # 原生阶段只处理支持平面和有限面；实际边/角仍进入原凸体距离求解。
-    finished, hit = triangle_face(start, end, triangle, margin, axis, radius, width, shoulder, crown,
-                                  face_only=face_only, ceiling=ceiling)
-    if finished:
-        return hit
-    velocity = subtract(end, start)
+    if not face_checked:
+        finished, hit = triangle_face(start, end, triangle, margin, axis, radius, width, shoulder, crown,
+                                      face_only=face_only, ceiling=ceiling)
+        if finished:
+            return hit
     if padding is None:
         padding = tuple(cylinder_support(tuple(float(a == i) for a in range(3)),axis,radius,width/2,shoulder,crown)[i]
                         + margin for i in range(3))
-    polygon = clipped_triangle(triangle,start,end,padding)
-    if not polygon:
-        return None
-
-    def support(direction):
-        return max(polygon, key=lambda p: dot(p, direction))
-
-    fraction = 0.
-    for _ in range(64):
-        center = tuple(start[i] + fraction * velocity[i] for i in range(3))
-        distance, normal, witness = convex_distance(center, axis, support, radius, width / 2, shoulder, crown)
-        gap = distance - margin - shoulder
-        if fraction == 0. and gap < -1e-9:
-            return None
-        if gap <= 1e-9:
-            return fraction, normal, tuple(witness[i] + margin * normal[i] for i in range(3)), None
-        closing = -dot(normal, velocity)
-        if closing <= 0.:
-            return None
-        fraction += gap / closing
-        if fraction > ceiling:
-            return None
-    raise ArithmeticError("圆柱/三角形悬架扫掠未收敛")
+    return triangle_edge_entry(start, end, triangle, margin, axis, radius, width, shoulder, crown, ceiling, padding)
 
 
 @dataclass(frozen=True)

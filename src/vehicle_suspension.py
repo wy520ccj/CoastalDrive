@@ -3,6 +3,7 @@
 from dataclasses import dataclass, field, replace
 
 from panda3d.core import BitMask32, Vec3
+from wheel_contact_kernels import cached_surface_entry
 
 from suspension import (
     SuspensionInput,
@@ -15,7 +16,9 @@ from suspension import (
 from suspension_contacts import cylinder_suspension_rays, static_support_shapes, wheel_sweep_shape
 from suspension_geometry import CylinderSurface
 from suspension_kinematics import SupportPlane
+from triangle_support import triangle_entry
 from vehicle_state import WheelContactState
+from wheel_envelope import cylinder_box_entry
 from wheel_geometry import mechanical_axis
 
 
@@ -38,10 +41,14 @@ class WorldSurface(CylinderSurface):
         # prepare每子步重建对象；同一冻结世界只复用完全相同的射线和轮轴。
         key = start, end, axis
         if key not in self.queries:
-            hit, = cylinder_suspension_rays(self.world,self.chassis,((start,end),),(axis,),
-                self.wheel_radius,self.width,self.shoulder,self.crown,envelope=self.envelope,ray_origin=self.offset,
-                candidate_cache=self.candidates,static_shapes=self.static_shapes)
-            self.queries[key] = (hit.fraction,hit.normal,hit.point,hit.support_face) if hit is not None else None
+            covered, entry = cached_surface_entry(self.candidates, start, end, axis, self.offset,
+                self.wheel_radius, self.width, self.shoulder, self.crown, triangle_entry, cylinder_box_entry)
+            if not covered:
+                hit, = cylinder_suspension_rays(self.world,self.chassis,((start,end),),(axis,),
+                    self.wheel_radius,self.width,self.shoulder,self.crown,envelope=self.envelope,ray_origin=self.offset,
+                    candidate_cache=self.candidates,static_shapes=self.static_shapes)
+                entry = (hit.fraction,hit.normal,hit.point,hit.support_face) if hit is not None else None
+            self.queries[key] = entry
         return self.queries[key]
 
 
@@ -53,6 +60,13 @@ class Suspension:
                                          config.wheel_shoulder_radius, config.wheel_crown_height)
         self.compression = (0.,) * 4
         self.state = SuspensionState()
+        self._support_shapes = None
+        self._candidate_cache = {}
+
+    def clear_queries(self):
+        """车辆移除时释放静态候选引用；reset直接重建悬架。"""
+        self._support_shapes = None
+        self._candidate_cache.clear()
 
     def prepare(self, world, chassis, wheels, static_shapes=None):
         """读取本子步真实接点、切平面和材料初值；求解期间不提交中间冲量。"""
@@ -70,7 +84,11 @@ class Suspension:
         axes = tuple(mechanical_axis(orientation.getRight(), orientation.getForward(), -wheel.getSteering()) for wheel in wheels)
         if static_shapes is None:
             static_shapes = static_support_shapes(world, chassis, BitMask32.bit(0))
-        candidates = {}
+        # 世界每子步已读实际变换；仅在同一不可变几何包内复用覆盖盒候选。
+        if self._support_shapes is not static_shapes:
+            self.clear_queries()
+            self._support_shapes = static_shapes
+        candidates = self._candidate_cache
         hits = cylinder_suspension_rays(world, chassis,
             tuple((start, tuple(start[a] + direction[a] * length for a in range(3))) for start, length in zip(starts, lengths)), axes,
             config.wheel_radius, config.wheel_width, config.wheel_shoulder_radius, config.wheel_crown_height,

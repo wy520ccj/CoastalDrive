@@ -13,7 +13,13 @@ from suspension_contacts import cylinder_suspension_rays, suspension_rays
 from suspension_geometry import CylinderSurface
 from suspension_kinematics import SupportPlane, finite_contact_system, rotated_path, rotation_path
 from triangle_support import TriangleSupport
-from wheel_envelope import _triangle, convex_distance, cylinder_box_distance, cylinder_support
+from wheel_envelope import (
+    _triangle,
+    convex_distance,
+    convex_polygon_distance,
+    cylinder_box_distance,
+    cylinder_support,
+)
 from wheel_geometry import contact_geometry
 
 
@@ -68,6 +74,21 @@ def test_axial_cylinder_distance_matches_independent_product_geometry(center):
     assert normal == pytest.approx(tuple(x/expected for x in separation), abs=2e-10)
     assert sum(n*n for n in normal) == pytest.approx(1.)
     assert all(abs(x) <= h + 1e-12 for x, h in zip(point, half))
+
+
+def test_polygon_distance_checks_current_face_edge_and_opposite_side():
+    polygon = ((-1., -1., 0.), (1., -1., 0.), (1., 1., 0.), (-1., 1., 0.))
+    for center in ((1.3, 1.2, .8), (.7, .2, 1.1), (-1.4, -1.2, .7), (0., 1.3, .9)):
+        dx = max(abs(center[0]) - 1. - .0925, 0.)
+        dy = max(abs(center[1]) - 1., 0.)
+        radial_gap = max(math.hypot(dy, center[2]) - .32, 0.)
+        expected = math.hypot(dx, radial_gap)
+        distance, normal, point = convex_polygon_distance(
+            center, (1., 0., 0.), polygon, .33, .1025, .01, 0.)
+        assert distance == pytest.approx(expected, abs=2e-10)
+        assert sum(n*n for n in normal) == pytest.approx(1., abs=2e-12)
+        assert abs(point[0]) <= 1. + 1e-12 and abs(point[1]) <= 1. + 1e-12
+        assert point[2] == 0.
 
 
 @pytest.mark.parametrize("translation", (0., 1000.))

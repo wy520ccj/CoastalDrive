@@ -1,0 +1,50 @@
+{
+  "snapshots": 128,
+  "float_fields_changed": 6,
+  "categorical": [],
+  "pose_max_absolute": 0.0,
+  "largest": [
+    {
+      "path": "snapshot[89].traffic[0].suspension_state.angular_impulse[2]",
+      "absolute": 2.3592239273284576e-16,
+      "relative": 3.9520239503327825e-15,
+      "old": -0.05969659994418297,
+      "new": -0.059696599944182735
+    },
+    {
+      "path": "snapshot[89].traffic[0].wheel_contacts[3].contact_normal[0]",
+      "absolute": 2.0816681711721685e-17,
+      "relative": 8.921785609840743e-16,
+      "old": 0.023332416426551244,
+      "new": 0.023332416426551265
+    },
+    {
+      "path": "snapshot[89].traffic[0].wheel_contacts[3].contact_normal[1]",
+      "absolute": 1.3877787807814457e-17,
+      "relative": 2.802665693495775e-16,
+      "old": -0.049516386631559474,
+      "new": -0.04951638663155946
+    },
+    {
+      "path": "snapshot[89].traffic[0].suspension_state.force_gradients[3][1]",
+      "absolute": 1.3877787807814457e-17,
+      "relative": 2.9110133750772516e-16,
+      "old": -0.047673390739560485,
+      "new": -0.04767339073956047
+    },
+    {
+      "path": "snapshot[89].traffic[0].suspension_state.force_gradients[3][5]",
+      "absolute": 1.3877787807814457e-17,
+      "relative": 3.2815844598792086e-16,
+      "old": -0.042289899825785016,
+      "new": -0.042289899825785
+    },
+    {
+      "path": "snapshot[89].traffic[0].suspension_state.force_gradients[3][0]",
+      "absolute": 6.938893903907228e-18,
+      "relative": 3.091484949193093e-16,
+      "old": 0.0224451809339015,
+      "new": 0.022445180933901507
+    }
+  ]
+}

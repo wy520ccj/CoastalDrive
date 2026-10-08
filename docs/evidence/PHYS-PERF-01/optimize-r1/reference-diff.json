@@ -1,0 +1,148 @@
+{
+  "snapshots": 128,
+  "float_fields_changed": 1119,
+  "categorical": [],
+  "pose_max_absolute": 0.0,
+  "largest": [
+    {
+      "path": "snapshot[120].traffic[6].wheel_dynamics[2].force_longitudinal_stiffness",
+      "absolute": 1.4551915228366852e-11,
+      "relative": 2.142907335955747e-16,
+      "old": 67907.3471082996,
+      "new": 67907.34710829961
+    },
+    {
+      "path": "snapshot[120].traffic[6].wheel_dynamics[2].force_lateral_stiffness",
+      "absolute": 1.4551915228366852e-11,
+      "relative": 2.5892358447220514e-16,
+      "old": 56201.58263307591,
+      "new": 56201.58263307592
+    },
+    {
+      "path": "snapshot[120].traffic[6].wheel_dynamics[1].force_longitudinal_stiffness",
+      "absolute": 7.275957614183426e-12,
+      "relative": 1.3916972099903907e-16,
+      "old": 52281.18273107456,
+      "new": 52281.18273107455
+    },
+    {
+      "path": "snapshot[120].traffic[6].wheel_dynamics[1].force_lateral_stiffness",
+      "absolute": 7.275957614183426e-12,
+      "relative": 1.6573088733360483e-16,
+      "old": 43902.2425526355,
+      "new": 43902.24255263549
+    },
+    {
+      "path": "snapshot[127].traffic[6].wheel_dynamics[0].force_residual",
+      "absolute": 6.983491130480805e-12,
+      "relative": 2.1270639424220327e-07,
+      "old": 3.2831592439556226e-05,
+      "new": 3.2831599423047356e-05
+    },
+    {
+      "path": "snapshot[127].traffic[6].wheel_dynamics[1].force_residual",
+      "absolute": 6.983491130480805e-12,
+      "relative": 2.1270639424220327e-07,
+      "old": 3.2831592439556226e-05,
+      "new": 3.2831599423047356e-05
+    },
+    {
+      "path": "snapshot[127].traffic[6].wheel_dynamics[2].force_residual",
+      "absolute": 6.983491130480805e-12,
+      "relative": 2.1270639424220327e-07,
+      "old": 3.2831592439556226e-05,
+      "new": 3.2831599423047356e-05
+    },
+    {
+      "path": "snapshot[127].traffic[6].wheel_dynamics[3].force_residual",
+      "absolute": 6.983491130480805e-12,
+      "relative": 2.1270639424220327e-07,
+      "old": 3.2831592439556226e-05,
+      "new": 3.2831599423047356e-05
+    },
+    {
+      "path": "snapshot[126].traffic[6].wheel_dynamics[0].force_residual",
+      "absolute": 2.154431398093768e-12,
+      "relative": 5.6957573292710776e-08,
+      "old": 3.782519427769055e-05,
+      "new": 3.782519643212195e-05
+    },
+    {
+      "path": "snapshot[126].traffic[6].wheel_dynamics[1].force_residual",
+      "absolute": 2.154431398093768e-12,
+      "relative": 5.6957573292710776e-08,
+      "old": 3.782519427769055e-05,
+      "new": 3.782519643212195e-05
+    },
+    {
+      "path": "snapshot[126].traffic[6].wheel_dynamics[2].force_residual",
+      "absolute": 2.154431398093768e-12,
+      "relative": 5.6957573292710776e-08,
+      "old": 3.782519427769055e-05,
+      "new": 3.782519643212195e-05
+    },
+    {
+      "path": "snapshot[126].traffic[6].wheel_dynamics[3].force_residual",
+      "absolute": 2.154431398093768e-12,
+      "relative": 5.6957573292710776e-08,
+      "old": 3.782519427769055e-05,
+      "new": 3.782519643212195e-05
+    },
+    {
+      "path": "snapshot[121].traffic[6].wheel_dynamics[2].fx",
+      "absolute": 1.3642420526593924e-12,
+      "relative": 6.243768766580932e-16,
+      "old": 2184.9656892506077,
+      "new": 2184.9656892506064
+    },
+    {
+      "path": "snapshot[123].traffic[6].wheel_dynamics[2].fx",
+      "absolute": 1.3642420526593924e-12,
+      "relative": 6.23212454993888e-16,
+      "old": 2189.048119509696,
+      "new": 2189.0481195096972
+    },
+    {
+      "path": "snapshot[115].traffic[6].wheel_dynamics[3].fx",
+      "absolute": 4.547473508864641e-13,
+      "relative": 2.099730561166814e-16,
+      "old": 2165.741449387498,
+      "new": 2165.7414493874985
+    },
+    {
+      "path": "snapshot[117].traffic[6].wheel_dynamics[2].fx",
+      "absolute": 4.547473508864641e-13,
+      "relative": 2.091457536874974e-16,
+      "old": 2174.3083130721416,
+      "new": 2174.308313072141
+    },
+    {
+      "path": "snapshot[117].traffic[6].powertrain_state.drive_torque",
+      "absolute": 4.547473508864641e-13,
+      "relative": 3.0208926903915956e-16,
+      "old": 1505.340962070108,
+      "new": 1505.3409620701075
+    },
+    {
+      "path": "snapshot[118].traffic[6].wheel_dynamics[2].fx",
+      "absolute": 4.547473508864641e-13,
+      "relative": 2.0885785378051703e-16,
+      "old": 2177.305486267926,
+      "new": 2177.3054862679264
+    },
+    {
+      "path": "snapshot[120].traffic[6].wheel_contacts[1].suspension_force",
+      "absolute": 4.547473508864641e-13,
+      "relative": 1.8006564303457372e-16,
+      "old": 2525.4531804223743,
+      "new": 2525.453180422374
+    },
+    {
+      "path": "snapshot[120].traffic[6].wheel_contacts[1].normal_load",
+      "absolute": 4.547473508864641e-13,
+      "relative": 1.8006564303457372e-16,
+      "old": 2525.4531804223743,
+      "new": 2525.453180422374
+    }
+  ]
+}

@@ -1,0 +1,1389 @@
+{
+  "PHYS-PERF-01-assembly-T0": {
+    "started_utc": "2026-10-08T13:04:24.148448+00:00",
+    "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+    "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/suspension_kinematics.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle_suspension.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_collision.py\n M tests/test_vehicle_tires.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_finite_suspension.py",
+      "tests/test_cylinder_suspension.py",
+      "tests/test_triangle_support.py",
+      "tests/test_joint_suspension.py",
+      "tests/test_suspension_coupling.py",
+      "tests/test_vehicle_tires.py",
+      "tests/test_vehicle_rotor.py"
+    ],
+    "tier": "T0",
+    "status": "failed",
+    "passed": false,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-assembly-T0\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.155
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_finite_suspension.py",
+          "tests/test_cylinder_suspension.py",
+          "tests/test_triangle_support.py",
+          "tests/test_joint_suspension.py",
+          "tests/test_suspension_coupling.py",
+          "tests/test_vehicle_tires.py",
+          "tests/test_vehicle_rotor.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-assembly-T0\\pytest.log",
+        "status": "failed",
+        "returncode": 4,
+        "error": "process exited 4",
+        "seconds": 0.431
+      }
+    ]
+  },
+  "PHYS-PERF-01-assembly-T0-r2": {
+    "started_utc": "2026-10-08T13:04:32.901422+00:00",
+    "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+    "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/suspension_kinematics.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle_suspension.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_collision.py\n M tests/test_vehicle_tires.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_finite_suspension.py",
+      "tests/test_cylinder_suspension.py",
+      "tests/test_triangle_support.py",
+      "tests/test_joint_suspension.py",
+      "tests/test_suspension_coupling.py",
+      "tests/test_vehicle_tires.py"
+    ],
+    "tier": "T0",
+    "status": "passed",
+    "passed": true,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-assembly-T0-r2\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.15
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_finite_suspension.py",
+          "tests/test_cylinder_suspension.py",
+          "tests/test_triangle_support.py",
+          "tests/test_joint_suspension.py",
+          "tests/test_suspension_coupling.py",
+          "tests/test_vehicle_tires.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-assembly-T0-r2\\pytest.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 23.01
+      }
+    ]
+  },
+  "PHYS-PERF-01-edge-sweep-T0": {
+    "started_utc": "2026-10-08T13:03:27.080619+00:00",
+    "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+    "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle_suspension.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_collision.py\n M tests/test_vehicle_tires.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_cylinder_suspension.py",
+      "tests/test_triangle_support.py",
+      "tests/test_static_support_cache.py",
+      "tests/test_finite_suspension.py",
+      "tests/test_suspension_envelope.py",
+      "tests/test_curved_suspension.py",
+      "tests/test_suspension_contacts.py",
+      "tests/test_suspension_query_lifetime.py",
+      "tests/test_suspension_candidates.py",
+      "tests/test_guardrail_suspension.py"
+    ],
+    "tier": "T0",
+    "status": "passed",
+    "passed": true,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-sweep-T0\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.143
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_cylinder_suspension.py",
+          "tests/test_triangle_support.py",
+          "tests/test_static_support_cache.py",
+          "tests/test_finite_suspension.py",
+          "tests/test_suspension_envelope.py",
+          "tests/test_curved_suspension.py",
+          "tests/test_suspension_contacts.py",
+          "tests/test_suspension_query_lifetime.py",
+          "tests/test_suspension_candidates.py",
+          "tests/test_guardrail_suspension.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-edge-sweep-T0\\pytest.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 2.157
+      }
+    ]
+  },
+  "PHYS-PERF-01-face-cache-T0": {
+    "started_utc": "2026-10-08T13:01:18.821792+00:00",
+    "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+    "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle_suspension.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_collision.py\n M tests/test_vehicle_tires.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_cylinder_suspension.py",
+      "tests/test_triangle_support.py",
+      "tests/test_static_support_cache.py",
+      "tests/test_suspension_kinematics.py"
+    ],
+    "tier": "T0",
+    "status": "failed",
+    "passed": false,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-face-cache-T0\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.149
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_cylinder_suspension.py",
+          "tests/test_triangle_support.py",
+          "tests/test_static_support_cache.py",
+          "tests/test_suspension_kinematics.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-face-cache-T0\\pytest.log",
+        "status": "failed",
+        "returncode": 4,
+        "error": "process exited 4",
+        "seconds": 0.43
+      }
+    ]
+  },
+  "PHYS-PERF-01-face-cache-T0-r2": {
+    "started_utc": "2026-10-08T13:01:28.386631+00:00",
+    "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+    "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle_suspension.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_collision.py\n M tests/test_vehicle_tires.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_cylinder_suspension.py",
+      "tests/test_triangle_support.py",
+      "tests/test_static_support_cache.py"
+    ],
+    "tier": "T0",
+    "status": "passed",
+    "passed": true,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-face-cache-T0-r2\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.134
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_cylinder_suspension.py",
+          "tests/test_triangle_support.py",
+          "tests/test_static_support_cache.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-face-cache-T0-r2\\pytest.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.766
+      }
+    ]
+  },
+  "PHYS-PERF-01-neighborhood-T0": {
+    "started_utc": "2026-10-08T13:09:42.113973+00:00",
+    "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+    "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/suspension_kinematics.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_collision.py\n M tests/test_vehicle_tires.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_static_support_cache.py",
+      "tests/test_suspension_query_lifetime.py",
+      "tests/test_triangle_support.py",
+      "tests/test_finite_suspension.py",
+      "tests/test_vehicle_tires.py",
+      "tests/test_rotor_lifecycle.py"
+    ],
+    "tier": "T0",
+    "status": "passed",
+    "passed": true,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-neighborhood-T0\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.154
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_static_support_cache.py",
+          "tests/test_suspension_query_lifetime.py",
+          "tests/test_triangle_support.py",
+          "tests/test_finite_suspension.py",
+          "tests/test_vehicle_tires.py",
+          "tests/test_rotor_lifecycle.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-neighborhood-T0\\pytest.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 34.639
+      }
+    ]
+  },
+  "PHYS-PERF-01-normal-forces-T0": {
+    "started_utc": "2026-10-08T13:25:28.794611+00:00",
+    "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+    "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/suspension_kinematics.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_collision.py\n M tests/test_vehicle_tires.py\n M tools/performance/benchmark_runtime.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_joint_suspension.py",
+      "tests/test_suspension_coupling.py",
+      "tests/test_suspension_si.py",
+      "tests/test_finite_suspension.py",
+      "tests/test_suspension_native.py",
+      "tests/test_tire_drivetrain.py",
+      "tests/test_tire_shaft.py"
+    ],
+    "tier": "T0",
+    "status": "passed",
+    "passed": true,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-normal-forces-T0\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.141
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_joint_suspension.py",
+          "tests/test_suspension_coupling.py",
+          "tests/test_suspension_si.py",
+          "tests/test_finite_suspension.py",
+          "tests/test_suspension_native.py",
+          "tests/test_tire_drivetrain.py",
+          "tests/test_tire_shaft.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-normal-forces-T0\\pytest.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 5.266
+      }
+    ]
+  },
+  "PHYS-PERF-01-normal-forces-T1": {
+    "started_utc": "2026-10-08T13:30:59.434411+00:00",
+    "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+    "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/suspension_kinematics.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_collision.py\n M tests/test_vehicle_tires.py\n M tools/performance/benchmark_runtime.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_joint_suspension.py",
+      "tests/test_suspension_coupling.py",
+      "tests/test_suspension_si.py",
+      "tests/test_finite_suspension.py",
+      "tests/test_suspension_native.py",
+      "tests/test_tire_drivetrain.py",
+      "tests/test_tire_shaft.py",
+      "tests/test_coastal_contact_step.py",
+      "tests/test_ramp_contact_step.py"
+    ],
+    "tier": "T1",
+    "status": "passed",
+    "passed": true,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-normal-forces-T1\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.124
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_joint_suspension.py",
+          "tests/test_suspension_coupling.py",
+          "tests/test_suspension_si.py",
+          "tests/test_finite_suspension.py",
+          "tests/test_suspension_native.py",
+          "tests/test_tire_drivetrain.py",
+          "tests/test_tire_shaft.py",
+          "tests/test_coastal_contact_step.py",
+          "tests/test_ramp_contact_step.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-normal-forces-T1\\pytest.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 5.517
+      },
+      {
+        "name": "headless-0",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "0"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-normal-forces-T1\\headless-0.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 4.388
+      },
+      {
+        "name": "headless-17",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "17"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-normal-forces-T1\\headless-17.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 4.354
+      },
+      {
+        "name": "headless-23",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "23"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-normal-forces-T1\\headless-23.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 4.365
+      }
+    ]
+  },
+  "PHYS-PERF-01-optimize-T1-final": {
+    "started_utc": "2026-10-08T13:10:50.039151+00:00",
+    "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+    "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/suspension_kinematics.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_collision.py\n M tests/test_vehicle_tires.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_cylinder_suspension.py",
+      "tests/test_triangle_support.py",
+      "tests/test_static_support_cache.py",
+      "tests/test_finite_suspension.py",
+      "tests/test_suspension_envelope.py",
+      "tests/test_curved_suspension.py",
+      "tests/test_suspension_contacts.py",
+      "tests/test_suspension_query_lifetime.py",
+      "tests/test_suspension_candidates.py",
+      "tests/test_guardrail_suspension.py",
+      "tests/test_joint_suspension.py",
+      "tests/test_suspension_coupling.py",
+      "tests/test_vehicle_tires.py",
+      "tests/test_rotor_transport.py",
+      "tests/test_rotor_lifecycle.py",
+      "tests/test_tire_compliance_lifecycle.py",
+      "tests/test_tire_compliance_integration.py",
+      "tests/test_tire_drivetrain.py",
+      "tests/test_tire_warm_start.py",
+      "tests/test_coastal_contact_step.py",
+      "tests/test_ramp_contact_step.py"
+    ],
+    "tier": "T1",
+    "status": "passed",
+    "passed": true,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-final\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.129
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_cylinder_suspension.py",
+          "tests/test_triangle_support.py",
+          "tests/test_static_support_cache.py",
+          "tests/test_finite_suspension.py",
+          "tests/test_suspension_envelope.py",
+          "tests/test_curved_suspension.py",
+          "tests/test_suspension_contacts.py",
+          "tests/test_suspension_query_lifetime.py",
+          "tests/test_suspension_candidates.py",
+          "tests/test_guardrail_suspension.py",
+          "tests/test_joint_suspension.py",
+          "tests/test_suspension_coupling.py",
+          "tests/test_vehicle_tires.py",
+          "tests/test_rotor_transport.py",
+          "tests/test_rotor_lifecycle.py",
+          "tests/test_tire_compliance_lifecycle.py",
+          "tests/test_tire_compliance_integration.py",
+          "tests/test_tire_drivetrain.py",
+          "tests/test_tire_warm_start.py",
+          "tests/test_coastal_contact_step.py",
+          "tests/test_ramp_contact_step.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-final\\pytest.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 79.892
+      },
+      {
+        "name": "headless-0",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "0"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-final\\headless-0.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 4.554
+      },
+      {
+        "name": "headless-17",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "17"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-final\\headless-17.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 4.51
+      },
+      {
+        "name": "headless-23",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "23"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-final\\headless-23.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 4.55
+      }
+    ]
+  },
+  "PHYS-PERF-01-optimize-T1-r1": {
+    "started_utc": "2026-10-08T12:15:48.177725+00:00",
+    "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+    "git_status": "M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle_suspension.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [
+      "vehicle"
+    ],
+    "tests": [
+      "tests/test_coastal_contact_step.py",
+      "tests/test_ramp_contact_step.py"
+    ],
+    "tier": "T1",
+    "status": "timeout",
+    "passed": false,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-r1\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.163
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_h1_vehicle.py",
+          "tests/test_driving_response.py",
+          "tests/test_curved_driving.py",
+          "tests/test_road_loads.py",
+          "tests/test_rolling_resistance.py",
+          "tests/test_vehicle_parameters.py",
+          "tests/test_vehicle_designs.py",
+          "tests/test_design_spawn.py",
+          "tests/test_vehicle_contacts.py",
+          "tests/test_physics_testbed.py",
+          "tests/test_h2_map.py",
+          "tests/test_vehicle_commands.py",
+          "tests/test_steering_geometry.py",
+          "tests/test_tire_forces.py",
+          "tests/test_wheel_dynamics.py",
+          "tests/test_vehicle_tires.py",
+          "tests/test_vehicle_config.py",
+          "tests/test_suspension_si.py",
+          "tests/test_suspension_coupling.py",
+          "tests/test_suspension_native.py",
+          "tests/test_suspension_contacts.py",
+          "tests/test_suspension_envelope.py",
+          "tests/test_joint_suspension.py",
+          "tests/test_finite_suspension.py",
+          "tests/test_curved_suspension.py",
+          "tests/test_world_substeps.py",
+          "tests/test_powertrain_config.py",
+          "tests/test_transmission_ports.py",
+          "tests/test_tire_drivetrain.py",
+          "tests/test_shaft_transmission.py",
+          "tests/test_tire_shaft.py",
+          "tests/test_input_shaft.py",
+          "tests/test_driveline_inertia.py",
+          "tests/test_driveline_native.py",
+          "tests/test_differential.py",
+          "tests/test_drive_layout.py",
+          "tests/test_finite_powertrain.py",
+          "tests/test_driving_modes.py",
+          "tests/test_reference_ab.py",
+          "tests/test_vehicle_brakes.py",
+          "tests/test_abs_integration.py",
+          "tests/test_physics_config_io.py",
+          "tests/test_vehicle_traction.py",
+          "tests/test_tcs_integration.py",
+          "tests/test_tcs_probe.py",
+          "tests/test_vehicle_stability.py",
+          "tests/test_esc_probe.py",
+          "tests/test_esc_integration.py",
+          "tests/test_esc_settings.py",
+          "tests/test_tire_loads.py",
+          "tests/test_tire_load_config.py",
+          "tests/test_tire_load_probe.py",
+          "tests/test_tire_compliance.py",
+          "tests/test_tire_coupling.py",
+          "tests/test_tire_compliance_config.py",
+          "tests/test_tire_compliance_integration.py",
+          "tests/test_tire_compliance_probe.py",
+          "tests/test_rotor_transport.py",
+          "tests/test_tire_compliance_substeps.py",
+          "tests/test_tire_warm_start.py",
+          "tests/test_tire_jacobian.py",
+          "tests/test_vehicle_collision.py",
+          "tests/test_guardrail_suspension.py",
+          "tests/test_cylinder_suspension.py",
+          "tests/test_triangle_support.py",
+          "tests/test_suspension_candidates.py",
+          "tests/test_static_support_cache.py",
+          "tests/test_coastal_contact_step.py",
+          "tests/test_ramp_contact_step.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-r1\\pytest.log",
+        "status": "timeout",
+        "returncode": null,
+        "error": "exceeded 600.0 wall seconds",
+        "seconds": 600.021
+      },
+      {
+        "name": "headless-0",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "0"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-r1\\headless-0.log",
+        "status": "not_run"
+      },
+      {
+        "name": "headless-17",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "17"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-r1\\headless-17.log",
+        "status": "not_run"
+      },
+      {
+        "name": "headless-23",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "23"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-r1\\headless-23.log",
+        "status": "not_run"
+      }
+    ]
+  },
+  "PHYS-PERF-01-optimize-T1-r2": {
+    "started_utc": "2026-10-08T12:31:21.753137+00:00",
+    "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+    "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle_suspension.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_tires.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_tcs_integration.py::test_tcs_reduces_real_excess_drive_slip_with_actual_actuators[False-split-mu]",
+      "tests/test_tcs_integration.py::test_tcs_reduces_real_excess_drive_slip_with_actual_actuators[True-low-mu]",
+      "tests/test_tcs_integration.py::test_tcs_reduces_real_excess_drive_slip_with_actual_actuators[True-split-mu]",
+      "tests/test_tcs_integration.py::test_disabled_controller_and_releasing_driver_requests_reach_actuators",
+      "tests/test_tcs_integration.py::test_actual_tcs_interpolation_reset_and_origin_shift",
+      "tests/test_tcs_probe.py",
+      "tests/test_vehicle_stability.py",
+      "tests/test_esc_probe.py",
+      "tests/test_esc_integration.py",
+      "tests/test_esc_settings.py",
+      "tests/test_tire_loads.py",
+      "tests/test_tire_load_config.py",
+      "tests/test_tire_load_probe.py",
+      "tests/test_tire_compliance.py",
+      "tests/test_tire_coupling.py",
+      "tests/test_tire_compliance_config.py",
+      "tests/test_tire_compliance_integration.py",
+      "tests/test_tire_compliance_probe.py",
+      "tests/test_rotor_transport.py",
+      "tests/test_tire_compliance_substeps.py",
+      "tests/test_tire_warm_start.py",
+      "tests/test_tire_jacobian.py",
+      "tests/test_vehicle_collision.py",
+      "tests/test_guardrail_suspension.py",
+      "tests/test_cylinder_suspension.py",
+      "tests/test_triangle_support.py",
+      "tests/test_suspension_candidates.py",
+      "tests/test_static_support_cache.py",
+      "tests/test_coastal_contact_step.py",
+      "tests/test_ramp_contact_step.py"
+    ],
+    "tier": "T1",
+    "status": "failed",
+    "passed": false,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-r2\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.204
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_tcs_integration.py::test_tcs_reduces_real_excess_drive_slip_with_actual_actuators[False-split-mu]",
+          "tests/test_tcs_integration.py::test_tcs_reduces_real_excess_drive_slip_with_actual_actuators[True-low-mu]",
+          "tests/test_tcs_integration.py::test_tcs_reduces_real_excess_drive_slip_with_actual_actuators[True-split-mu]",
+          "tests/test_tcs_integration.py::test_disabled_controller_and_releasing_driver_requests_reach_actuators",
+          "tests/test_tcs_integration.py::test_actual_tcs_interpolation_reset_and_origin_shift",
+          "tests/test_tcs_probe.py",
+          "tests/test_vehicle_stability.py",
+          "tests/test_esc_probe.py",
+          "tests/test_esc_integration.py",
+          "tests/test_esc_settings.py",
+          "tests/test_tire_loads.py",
+          "tests/test_tire_load_config.py",
+          "tests/test_tire_load_probe.py",
+          "tests/test_tire_compliance.py",
+          "tests/test_tire_coupling.py",
+          "tests/test_tire_compliance_config.py",
+          "tests/test_tire_compliance_integration.py",
+          "tests/test_tire_compliance_probe.py",
+          "tests/test_rotor_transport.py",
+          "tests/test_tire_compliance_substeps.py",
+          "tests/test_tire_warm_start.py",
+          "tests/test_tire_jacobian.py",
+          "tests/test_vehicle_collision.py",
+          "tests/test_guardrail_suspension.py",
+          "tests/test_cylinder_suspension.py",
+          "tests/test_triangle_support.py",
+          "tests/test_suspension_candidates.py",
+          "tests/test_static_support_cache.py",
+          "tests/test_coastal_contact_step.py",
+          "tests/test_ramp_contact_step.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-r2\\pytest.log",
+        "status": "failed",
+        "returncode": 1,
+        "error": "process exited 1",
+        "seconds": 191.327
+      },
+      {
+        "name": "headless-0",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "0"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-r2\\headless-0.log",
+        "status": "not_run"
+      },
+      {
+        "name": "headless-17",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "17"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-r2\\headless-17.log",
+        "status": "not_run"
+      },
+      {
+        "name": "headless-23",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "23"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-r2\\headless-23.log",
+        "status": "not_run"
+      }
+    ]
+  },
+  "PHYS-PERF-01-optimize-T1-r3": {
+    "started_utc": "2026-10-08T12:54:45.847397+00:00",
+    "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+    "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle_suspension.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_collision.py\n M tests/test_vehicle_tires.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_vehicle_collision.py::test_symmetric_airborne_braking_preserves_symmetry_as_tire_step_refines"
+    ],
+    "tier": "T1",
+    "status": "failed",
+    "passed": false,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-r3\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.216
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_vehicle_collision.py::test_symmetric_airborne_braking_preserves_symmetry_as_tire_step_refines"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-r3\\pytest.log",
+        "status": "failed",
+        "returncode": 1,
+        "error": "process exited 1",
+        "seconds": 53.287
+      },
+      {
+        "name": "headless-0",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "0"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-r3\\headless-0.log",
+        "status": "not_run"
+      },
+      {
+        "name": "headless-17",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "17"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-r3\\headless-17.log",
+        "status": "not_run"
+      },
+      {
+        "name": "headless-23",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "23"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-optimize-T1-r3\\headless-23.log",
+        "status": "not_run"
+      }
+    ]
+  },
+  "PHYS-PERF-01-port-seeds-T0": {
+    "started_utc": "2026-10-08T13:39:35.202348+00:00",
+    "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+    "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/suspension_kinematics.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_collision.py\n M tests/test_vehicle_tires.py\n M tools/performance/benchmark_runtime.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_tire_drivetrain.py",
+      "tests/test_tire_shaft.py",
+      "tests/test_joint_suspension.py"
+    ],
+    "tier": "T0",
+    "status": "passed",
+    "passed": true,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-port-seeds-T0\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.142
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_tire_drivetrain.py",
+          "tests/test_tire_shaft.py",
+          "tests/test_joint_suspension.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-port-seeds-T0\\pytest.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 2.111
+      }
+    ]
+  },
+  "PHYS-PERF-01-rotor-frames-T0": {
+    "started_utc": "2026-10-08T13:35:50.043627+00:00",
+    "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+    "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/suspension_kinematics.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_collision.py\n M tests/test_vehicle_tires.py\n M tools/performance/benchmark_runtime.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_rotor_transport.py",
+      "tests/test_rotor_lifecycle.py",
+      "tests/test_vehicle_tires.py",
+      "tests/test_tire_shaft.py",
+      "tests/test_tire_drivetrain.py"
+    ],
+    "tier": "T0",
+    "status": "passed",
+    "passed": true,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-rotor-frames-T0\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.133
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_rotor_transport.py",
+          "tests/test_rotor_lifecycle.py",
+          "tests/test_vehicle_tires.py",
+          "tests/test_tire_shaft.py",
+          "tests/test_tire_drivetrain.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-rotor-frames-T0\\pytest.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 34.178
+      }
+    ]
+  },
+  "PHYS-PERF-01-rotor-port-T1": {
+    "started_utc": "2026-10-08T13:45:21.109421+00:00",
+    "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+    "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/suspension_kinematics.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_collision.py\n M tests/test_vehicle_tires.py\n M tools/performance/benchmark_runtime.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_rotor_transport.py",
+      "tests/test_rotor_lifecycle.py",
+      "tests/test_vehicle_tires.py",
+      "tests/test_tire_shaft.py",
+      "tests/test_tire_drivetrain.py",
+      "tests/test_joint_suspension.py",
+      "tests/test_suspension_coupling.py",
+      "tests/test_tire_compliance_lifecycle.py",
+      "tests/test_tire_compliance_integration.py",
+      "tests/test_coastal_contact_step.py",
+      "tests/test_ramp_contact_step.py"
+    ],
+    "tier": "T1",
+    "status": "passed",
+    "passed": true,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-rotor-port-T1\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.127
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_rotor_transport.py",
+          "tests/test_rotor_lifecycle.py",
+          "tests/test_vehicle_tires.py",
+          "tests/test_tire_shaft.py",
+          "tests/test_tire_drivetrain.py",
+          "tests/test_joint_suspension.py",
+          "tests/test_suspension_coupling.py",
+          "tests/test_tire_compliance_lifecycle.py",
+          "tests/test_tire_compliance_integration.py",
+          "tests/test_coastal_contact_step.py",
+          "tests/test_ramp_contact_step.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-rotor-port-T1\\pytest.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 67.243
+      },
+      {
+        "name": "headless-0",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "0"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-rotor-port-T1\\headless-0.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 4.26
+      },
+      {
+        "name": "headless-17",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "17"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-rotor-port-T1\\headless-17.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 4.201
+      },
+      {
+        "name": "headless-23",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "23"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-rotor-port-T1\\headless-23.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 4.314
+      }
+    ]
+  }
+}

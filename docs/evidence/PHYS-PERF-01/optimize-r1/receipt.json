@@ -1,0 +1,48 @@
+{
+  "baseline": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+  "status": "verified automatic functional checkpoint; task in progress",
+  "fixed_hz": 120,
+  "numerical_acceptance": "same equations, hardware and precision; tiny float differences authorized",
+  "p_core_abba": {
+    "old_mean_ms": 100.05250390565834,
+    "new_mean_ms": 59.461050781067115,
+    "reduction_percent": 40.57015221014937,
+    "scope": "128 headless ticks, timed 32:96, GR86 and eight NPCs; not FPS"
+  },
+  "current_point_ms": 57.3818078127033,
+  "window_gate": "failed: 1.768 display FPS and 23.842 dropped seconds; valid foreground, audio disabled",
+  "full_vehicle_regression": "initial 600s timeout; wrapper mismatch fixed; symmetry fixture corrected; old and new refinement assertion still fails",
+  "latest_t1": "514 tests and three seeds at 1200 ticks passed; earlier geometry T1 605 and force T1 452 also recorded",
+  "implemented": "native convex/sweep and rotor geometry, exact memo, immutable numeric static packets, real-world invalidation, candidate reuse, safeguarded edge Newton, force-only trial solve and checked port seeds",
+  "discarded": [
+    "early outer Newton",
+    "warm GJK",
+    "Anderson",
+    "warm normal",
+    "lag geometry",
+    "shared memo"
+  ],
+  "pending": [
+    "full numerical solve and parallel numeric vehicle work with serial world I/O",
+    "realtime budget",
+    "final product package",
+    "visible and human gate"
+  ],
+  "publication": "no push; source changes were uncommitted at evidence capture",
+  "git_status": " M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/suspension_kinematics.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_collision.py\n M tests/test_vehicle_tires.py\n M tools/performance/benchmark_runtime.py\n M tools/validate.py\n?? docs/evidence/PHYS-PERF-01/optimize-r1/\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py\n",
+  "payload_sha256": {
+    "audit-normal-forces.json": "3147254e1a976892d4b24d2adfc704fabbc4d2afcd1a48ad36a4a63d51779774",
+    "audit-rotor-frames.json": "8fe63a2887be2a0a311885172126760e0f8707dcb220adf64d7be5c45b0c99f9",
+    "baseline-refinement.json": "8b89febd007ff2dfd983b241be2406ef329521b8de69d66a1d33ae497d69ae28",
+    "coastal-final-diff.json": "ec1a5c0427710587e682c832f19abbd3ae5a848bf2ac715b2ab766f85b5e9534",
+    "collision-final.txt": "fe1f415cd9da1b5efd5e02c89657ac78bebeb115561942152012d498dfad7276",
+    "hills-diff.json": "e99c97cec813e039ca45b36d1b1a295042f4f650c609a985ad0a9ece8760c65e",
+    "reference-diff.json": "ab91074802920173865409c28da5ea401b87db967015f7e801ded7eec49d7e34",
+    "reproduction.zip": "069c31fedbc0e677cc57e1b3a292a2443cb3b5e07551a09d424398b1dade735a",
+    "source-hashes.json": "bf94fec7ae81d4ddaee9aa85de96014f052f2163bee6ff44fcf1f0ac95acf3f1",
+    "timings.json": "f1ed5cb993113f8df119126e7231c7d2f950ee2eac682ba8e0bf12d3f7b89273",
+    "validation-summaries.json": "5c0440c75ef8bf376eea3bf74573aec50aa3ab2b6d97135df4b68224e97aa678",
+    "window-report.json": "0eab5ea9b32e9221924698c5a849e35b48945fb995b84bad11f7549a11751758",
+    "window.png": "8af414c74f02fba58820aff2b420b42ba63f550d4a74af316667bd4e4670ecbf"
+  }
+}

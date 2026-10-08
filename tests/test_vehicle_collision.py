@@ -172,9 +172,12 @@ def test_support_representation_preserves_the_original_native_inertia(config):
 
 
 def test_symmetric_airborne_braking_preserves_symmetry_as_tire_step_refines():
-    # 旋转曲轴是轴向矢量；横向轴在左右镜像下不变，纵向旋向车不满足此前提。
+    # 所有旋转轴都是轴向矢量；横向轴在左右镜像下不变，纵向旋向车不满足此前提。
     trials = [esc_probe.run_trial("airborne-recontact", True, 6, "simulation",
-              vehicle_config=replace(REFERENCE_CAR, engine_axis=(1., 0., 0.), tire_substeps=steps))[0]
+              vehicle_config=replace(REFERENCE_CAR, engine_axis=(1., 0., 0.),
+                                     input_shaft_axis=(1., 0., 0.),
+                                     downstream_axes=((1., 0., 0.),) * 3,
+                                     tire_substeps=steps))[0]
               for steps in (2, 4, 8, 16)]
     for trial in trials:
         assert trial["peak_abs_unwrapped_heading_deg"] < .001

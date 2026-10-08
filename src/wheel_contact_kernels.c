@@ -1,6 +1,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <math.h>
+#include <string.h>
 
 /* 部分和算法参考CPython 3.14.2 mathmodule.c，许可见licenses/CPython-LICENSE.txt。 */
 /* 四个有限项的无重叠部分和，保留math.fsum的半偶舍入。 */
@@ -78,8 +79,12 @@ static int vector(PyObject *object, double values[3]) {
         Py_DECREF(sequence); PyErr_SetString(PyExc_ValueError, "轮胎支持向量须为三维"); return 0;
     }
     for (int i = 0; i < 3; ++i) {
-        values[i] = PyFloat_AsDouble(PySequence_Fast_GET_ITEM(sequence, i));
-        if (PyErr_Occurred()) { Py_DECREF(sequence); return 0; }
+        PyObject *item=PySequence_Fast_GET_ITEM(sequence,i);
+        if (PyFloat_CheckExact(item)) values[i]=PyFloat_AS_DOUBLE(item);
+        else {
+            values[i]=PyFloat_AsDouble(item);
+            if (PyErr_Occurred()) { Py_DECREF(sequence); return 0; }
+        }
     }
     Py_DECREF(sequence); return 1;
 }
@@ -176,6 +181,147 @@ error:
     return NULL;
 }
 
+/* 静态分区一次解包；每次覆盖盒查询仍执行同一精确投影与有序筛选。 */
+typedef struct {
+    int frame,bounded;
+    double translation[3],low[3],high[3];
+    PyObject *source;
+} SupportPart;
+typedef struct { Py_ssize_t first,count; PyObject *source; } SupportGroup;
+typedef struct {
+    Py_ssize_t group_count,part_count,frame_count;
+    PyObject *owners;
+    SupportGroup *groups;
+    SupportPart *parts;
+    double (*frames)[3][3];
+} SupportPacket;
+static const char *support_packet_name="CoastalDrive.static_support";
+static void support_packet_free(SupportPacket *data) {
+    Py_XDECREF(data->owners); PyMem_Free(data->groups); PyMem_Free(data->parts); PyMem_Free(data->frames); PyMem_Free(data);
+}
+static void release_support_packet(PyObject *object) {
+    SupportPacket *data=PyCapsule_GetPointer(object,support_packet_name);
+    if (data) support_packet_free(data);
+}
+static PyObject *support_coefficients(PyObject *self,PyObject *args) {
+    PyObject *groups;
+    if (!PyArg_ParseTuple(args,"O",&groups)) return NULL;
+    SupportPacket *data=PyMem_Calloc(1,sizeof(SupportPacket));
+    if (!data) return PyErr_NoMemory();
+    PyObject *frames=PyDict_New();
+    if (!frames) {support_packet_free(data); return NULL;}
+    data->group_count=PyTuple_Size(groups);
+    if (data->group_count<0) goto error;
+    for (Py_ssize_t i=0;i<data->group_count;++i) {
+        PyObject *group=PyTuple_GET_ITEM(groups,i);
+        if (!PyTuple_Check(group) || PyTuple_GET_SIZE(group)!=3 || !PyTuple_Check(PyTuple_GET_ITEM(group,2))) {
+            PyErr_SetString(PyExc_ValueError,"静态支持分区结构错误"); goto error;
+        }
+        data->part_count+=PyTuple_GET_SIZE(PyTuple_GET_ITEM(group,2));
+    }
+    data->groups=PyMem_Calloc(data->group_count,sizeof(SupportGroup));
+    data->parts=PyMem_Calloc(data->part_count,sizeof(SupportPart));
+    data->frames=PyMem_Malloc(data->part_count*sizeof(*data->frames));
+    if ((data->group_count && !data->groups) || (data->part_count && (!data->parts || !data->frames))) {
+        PyErr_NoMemory(); goto error;
+    }
+    Py_ssize_t index=0;
+    for (Py_ssize_t i=0;i<data->group_count;++i) {
+        SupportGroup *group=&data->groups[i]; group->source=PyTuple_GET_ITEM(groups,i); group->first=index;
+        PyObject *parts=PyTuple_GET_ITEM(group->source,2); group->count=PyTuple_GET_SIZE(parts);
+        for (Py_ssize_t j=0;j<group->count;++j,++index) {
+            SupportPart *part=&data->parts[index]; part->source=PyTuple_GET_ITEM(parts,j);
+            if (!PyTuple_Check(part->source) || PyTuple_GET_SIZE(part->source)!=8) {
+                PyErr_SetString(PyExc_ValueError,"静态支持形状结构错误"); goto error;
+            }
+            PyObject *frame=PyTuple_GET_ITEM(part->source,1),*known=PyDict_GetItemWithError(frames,frame);
+            if (!known && PyErr_Occurred()) goto error;
+            if (!known) {
+                if (!PyTuple_Check(frame) || PyTuple_GET_SIZE(frame)!=3) {
+                    PyErr_SetString(PyExc_ValueError,"静态支持旋转须为三维"); goto error;
+                }
+                part->frame=(int)data->frame_count++;
+                for (int a=0;a<3;++a) if (!vector(PyTuple_GET_ITEM(frame,a),data->frames[part->frame][a])) goto error;
+                PyObject *number=PyLong_FromLong(part->frame);
+                if (!number) goto error;
+                int inserted=PyDict_SetItem(frames,frame,number); Py_DECREF(number);
+                if (inserted<0) goto error;
+            } else {
+                part->frame=(int)PyLong_AsLong(known); if (PyErr_Occurred()) goto error;
+            }
+            if (!vector(PyTuple_GET_ITEM(part->source,2),part->translation)) goto error;
+            PyObject *bounds=PyTuple_GET_ITEM(part->source,7);
+            part->bounded=bounds!=Py_None;
+            if (part->bounded) {
+                if (!PyTuple_Check(bounds) || PyTuple_GET_SIZE(bounds)!=2) {
+                    PyErr_SetString(PyExc_ValueError,"静态支持边界须含上下界"); goto error;
+                }
+                if (!vector(PyTuple_GET_ITEM(bounds,0),part->low) || !vector(PyTuple_GET_ITEM(bounds,1),part->high)) goto error;
+            }
+        }
+    }
+    data->owners=Py_NewRef(groups); Py_DECREF(frames);
+    PyObject *result=PyCapsule_New(data,support_packet_name,release_support_packet);
+    if (!result) support_packet_free(data);
+    return result;
+error:
+    Py_DECREF(frames); support_packet_free(data); return NULL;
+}
+
+static PyObject *prepared_support_candidates(PyObject *self,PyObject *args) {
+    PyObject *coefficients,*low_object,*high_object;
+    if (!PyArg_ParseTuple(args,"OOO",&coefficients,&low_object,&high_object)) return NULL;
+    SupportPacket *data=PyCapsule_GetPointer(coefficients,support_packet_name);
+    double low[3],high[3],center[3],half[3];
+    if (!data || !vector(low_object,low) || !vector(high_object,high)) return NULL;
+    for (int a=0;a<3;++a) {center[a]=(low[a]+high[a])/2; half[a]=(high[a]-low[a])/2;}
+    double (*projection)[6]=PyMem_Malloc(data->frame_count*sizeof(*projection));
+    PyObject **half_objects=PyMem_Calloc(data->frame_count,sizeof(PyObject *));
+    PyObject *result=PyList_New(0),*selected=NULL;
+    if ((data->frame_count && (!projection || !half_objects)) || !result) {
+        PyErr_NoMemory(); goto error;
+    }
+    for (Py_ssize_t i=0;i<data->frame_count;++i) for (int a=0;a<3;++a) {
+        double terms[3];
+        for (int b=0;b<3;++b) terms[b]=data->frames[i][a][b]*center[b];
+        projection[i][a]=sum_three(terms);
+        for (int b=0;b<3;++b) terms[b]=fabs(data->frames[i][a][b])*half[b];
+        projection[i][a+3]=sum_three(terms);
+    }
+    for (Py_ssize_t i=0;i<data->group_count;++i) {
+        SupportGroup *group=&data->groups[i]; selected=PyList_New(0);
+        if (!selected) goto error;
+        for (Py_ssize_t j=0;j<group->count;++j) {
+            SupportPart *part=&data->parts[group->first+j]; double local[3],*frame=projection[part->frame]; int separated=0;
+            for (int a=0;a<3;++a) {
+                local[a]=part->translation[a]+frame[a];
+                if (part->bounded && (local[a]+frame[a+3]<part->low[a] || local[a]-frame[a+3]>part->high[a])) separated=1;
+            }
+            if (separated) continue;
+            if (!half_objects[part->frame]) {
+                half_objects[part->frame]=Py_BuildValue("(ddd)",frame[3],frame[4],frame[5]);
+                if (!half_objects[part->frame]) goto error;
+            }
+            PyObject *entry=Py_BuildValue("(O(ddd)O)",part->source,local[0],local[1],local[2],half_objects[part->frame]);
+            if (!entry) goto error;
+            int added=PyList_Append(selected,entry); Py_DECREF(entry);
+            if (added<0) goto error;
+        }
+        if (PyList_GET_SIZE(selected)) {
+            PyObject *entry=Py_BuildValue("(OOO)",PyTuple_GET_ITEM(group->source,0),PyTuple_GET_ITEM(group->source,1),selected);
+            if (!entry) goto error;
+            int added=PyList_Append(result,entry); Py_DECREF(entry);
+            if (added<0) goto error;
+        }
+        Py_CLEAR(selected);
+    }
+    for (Py_ssize_t i=0;i<data->frame_count;++i) Py_XDECREF(half_objects[i]);
+    PyMem_Free(projection); PyMem_Free(half_objects); return result;
+error:
+    if (half_objects) for (Py_ssize_t i=0;i<data->frame_count;++i) Py_XDECREF(half_objects[i]);
+    PyMem_Free(projection); PyMem_Free(half_objects); Py_XDECREF(result); Py_XDECREF(selected); return NULL;
+}
+
 static int support_values(double direction[3], double axis[3], double radius, double half_width,
                           double shoulder, double crown, double result[3]) {
     double inner[3], radial[3];
@@ -224,20 +370,40 @@ static void cross(double a[3], double b[3], double result[3]) {
     result[2] = a[0]*b[1] - a[1]*b[0];
 }
 
+typedef struct {
+    double normal[3], offset[3];
+    int valid;
+} FaceSupport;
+
 /* 既有单面入口与整条查询共用原有限面判据。 */
 static PyObject *triangle_face_values(double start[3],double end[3],double vertices[3][3],
     double margin,double axis[3],double radius,double width,double shoulder,double crown,
-    int face_only,double ceiling,double *fraction_bound) {
+    int face_only,double ceiling,double *fraction_bound,double *prepared_normal,FaceSupport *support_cache) {
     if (fraction_bound) *fraction_bound=-INFINITY;
     double ab[3], ac[3], normal[3], velocity[3], relative[3], offset[3];
-    subtract(vertices[1],vertices[0],ab); subtract(vertices[2],vertices[0],ac);
-    cross(ab,ac,normal);
-    double length = sqrt(dot(normal,normal));
-    if (length == 0.) { PyErr_SetString(PyExc_ZeroDivisionError,"三角面不能退化"); return NULL; }
-    for (int i = 0; i < 3; ++i) normal[i] /= length;
+    if (prepared_normal) {
+        for (int i=0;i<3;++i) normal[i]=prepared_normal[i];
+        if (normal[0]==0. && normal[1]==0. && normal[2]==0.) {
+            PyErr_SetString(PyExc_ZeroDivisionError,"三角面不能退化"); return NULL;
+        }
+    } else {
+        subtract(vertices[1],vertices[0],ab); subtract(vertices[2],vertices[0],ac);
+        cross(ab,ac,normal);
+        double length = sqrt(dot(normal,normal));
+        if (length == 0.) { PyErr_SetString(PyExc_ZeroDivisionError,"三角面不能退化"); return NULL; }
+        for (int i = 0; i < 3; ++i) normal[i] /= length;
+    }
     subtract(end,start,velocity);
     if (dot(normal,velocity) > 0.) for (int i = 0; i < 3; ++i) normal[i] = -normal[i];
-    if (!support_values(normal,axis,radius,width/2,shoulder,crown,offset)) return NULL;
+    if (support_cache && support_cache->valid && memcmp(normal,support_cache->normal,sizeof(normal))==0) {
+        for (int i=0;i<3;++i) offset[i]=support_cache->offset[i];
+    } else {
+        if (!support_values(normal,axis,radius,width/2,shoulder,crown,offset)) return NULL;
+        if (support_cache) {
+            for (int i=0;i<3;++i) { support_cache->normal[i]=normal[i]; support_cache->offset[i]=offset[i]; }
+            support_cache->valid=1;
+        }
+    }
     subtract(start,vertices[0],relative);
     double distance = dot(normal,relative) - dot(normal,offset) - margin, speed = dot(normal,velocity);
     if (speed < 0. && distance >= 0.) {
@@ -289,7 +455,7 @@ static PyObject *triangle_face(PyObject *self, PyObject *args, PyObject *kwargs)
     for (int i = 0; i < 3; ++i)
         if (!vector(PySequence_Fast_GET_ITEM(triangle,i),vertices[i])) { Py_DECREF(triangle); return NULL; }
     Py_DECREF(triangle);
-    return triangle_face_values(start,end,vertices,margin,axis,radius,width,shoulder,crown,face_only,ceiling,NULL);
+    return triangle_face_values(start,end,vertices,margin,axis,radius,width,shoulder,crown,face_only,ceiling,NULL,NULL,NULL);
 }
 
 static double exact_dot(double a[3], double b[3]) {
@@ -303,8 +469,8 @@ static double point_derivative(double q, double axial, double rho, double radius
     return q - axial + 2*k*q*gap;
 }
 
-static int point_delta(double relative[3], double axis[3], double radius, double half_width,
-                       double crown, double delta[3]) {
+static int point_delta_values(double relative[3], double axis[3], double radius, double half_width,
+                       double crown, double delta[3], double direction[3], double *curvature) {
     double axis_squared = dot(axis,axis), axis_length = sqrt(axis_squared);
     if (axis_squared == 0. || half_width == 0.) {
         PyErr_SetString(PyExc_ZeroDivisionError,"轮轴和轮胎内核半宽不能为零"); return 0;
@@ -338,7 +504,28 @@ static int point_delta(double relative[3], double axis[3], double radius, double
     if (gap < 0.) gap = 0.;
     for (int i = 0; i < 3; ++i)
         delta[i] = (axial-q)*(axis[i]/axis_length) + (rho != 0. ? gap*radial[i]/rho : 0.);
+    if (curvature) {
+        double axial_rate=exact_dot(direction,axis)/axis_length;
+        double radial_rate=rho!=0. ? exact_dot(direction,radial)/rho : 0.;
+        double terms[4]={axial_rate*axial_rate,0.,0.,0.};
+        if (gap!=0.) {
+            terms[1]=radial_rate*radial_rate;
+            double tangent=exact_dot(direction,direction)-terms[0]-terms[1];
+            terms[3]=rho!=0. ? gap/rho*tangent : 0.;
+        }
+        if (q!=-half_width && q!=half_width) {
+            double projection=axial_rate-(gap!=0. ? 2*k*q*radial_rate : 0.);
+            double slope=1+2*k*gap+(gap!=0. ? 4*k*k*q*q : 0.);
+            terms[2]=-projection*projection/slope;
+        }
+        *curvature=sum_four(terms);
+    }
     return 1;
+}
+
+static int point_delta(double relative[3],double axis[3],double radius,double half_width,
+                       double crown,double delta[3]) {
+    return point_delta_values(relative,axis,radius,half_width,crown,delta,NULL,NULL);
 }
 
 static PyObject *point_delta_call(PyObject *self, PyObject *args, PyObject *kwargs) {
@@ -352,48 +539,123 @@ static PyObject *point_delta_call(PyObject *self, PyObject *args, PyObject *kwar
 }
 
 static int edge_evaluate(double t, double center[3], double axis[3], double a[3], double edge[3],
-                         double radius, double half_width, double crown, double delta[3], double *derivative) {
+                         double radius, double half_width, double crown, double delta[3], double *derivative,
+                         double *curvature) {
     double relative[3];
     for (int i = 0; i < 3; ++i) {
         double terms[4] = {a[i],-center[i],t*edge[i],0.};
         relative[i] = sum_four(terms);
     }
-    if (PyErr_Occurred() || !point_delta(relative,axis,radius,half_width,crown,delta)) return 0;
+    if (PyErr_Occurred() || !point_delta_values(relative,axis,radius,half_width,crown,delta,edge,curvature)) return 0;
     *derivative = exact_dot(delta,edge);
+    return !PyErr_Occurred();
+}
+
+static int edge_distance_values(double center[3], double axis[3], double a[3], double b[3],
+    double radius, double half_width, double crown, double *distance, double normal[3], double witness[3]) {
+    double edge[3], delta[3], da[3], db[3], ga, gb, t;
+    subtract(b,a,edge);
+    if (!edge_evaluate(0.,center,axis,a,edge,radius,half_width,crown,da,&ga,NULL)
+        || !edge_evaluate(1.,center,axis,a,edge,radius,half_width,crown,db,&gb,NULL)) return 0;
+    if (ga >= 0.) { t = 0.; for (int i=0; i<3; ++i) delta[i] = da[i]; }
+    else if (gb <= 0.) { t = 1.; for (int i=0; i<3; ++i) delta[i] = db[i]; }
+    else {
+        double low = 0., high = 1.; t=.5;
+        for (int iteration = 0; iteration < 64; ++iteration) {
+            double value,slope;
+            if (!edge_evaluate(t,center,axis,a,edge,radius,half_width,crown,delta,&value,&slope)) return 0;
+            if (value == 0. || t == low || t == high) break;
+            if (value > 0.) high = t; else low = t;
+            // 凸距离的解析导数加保守区间；平坦段及越界试探仍走二分。
+            double candidate=slope>0. ? t-value/slope : (low+high)/2;
+            if (candidate==t) break;
+            if (!(low<candidate && candidate<high)) candidate=(low+high)/2;
+            t=candidate;
+        }
+    }
+    *distance = sqrt(exact_dot(delta,delta));
+    for (int i = 0; i < 3; ++i) {
+        normal[i] = *distance != 0. ? -delta[i]/ *distance : (i == 2 ? 1. : 0.);
+        double terms[4] = {a[i],t*edge[i],0.,0.};
+        witness[i] = sum_four(terms);
+    }
     return !PyErr_Occurred();
 }
 
 static PyObject *edge_distance_call(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *center_object, *axis_object, *a_object, *b_object;
-    double center[3], axis[3], a[3], b[3], edge[3], delta[3], da[3], db[3], ga, gb;
-    double radius, half_width, crown, t;
+    double center[3], axis[3], a[3], b[3], distance, normal[3], witness[3];
+    double radius, half_width, crown;
     static char *names[] = {"center","axis","a","b","radius","half_width","crown",NULL};
     if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOOddd",names,&center_object,&axis_object,&a_object,&b_object,
                                     &radius,&half_width,&crown)) return NULL;
-    if (!vector(center_object,center) || !vector(axis_object,axis) || !vector(a_object,a) || !vector(b_object,b)) return NULL;
-    subtract(b,a,edge);
-    if (!edge_evaluate(0.,center,axis,a,edge,radius,half_width,crown,da,&ga)
-        || !edge_evaluate(1.,center,axis,a,edge,radius,half_width,crown,db,&gb)) return NULL;
-    if (ga >= 0.) { t = 0.; for (int i=0; i<3; ++i) delta[i] = da[i]; }
-    else if (gb <= 0.) { t = 1.; for (int i=0; i<3; ++i) delta[i] = db[i]; }
-    else {
-        double low = 0., high = 1.;
-        for (int iteration = 0; iteration < 64; ++iteration) {
-            t = (low+high)/2;
-            double value;
-            if (!edge_evaluate(t,center,axis,a,edge,radius,half_width,crown,delta,&value)) return NULL;
-            if (value == 0. || t == low || t == high) break;
-            if (value > 0.) high = t; else low = t;
-        }
-    }
-    double distance = sqrt(exact_dot(delta,delta)), normal[3], witness[3];
-    for (int i = 0; i < 3; ++i) {
-        normal[i] = distance != 0. ? -delta[i]/distance : (i == 2 ? 1. : 0.);
-        double terms[4] = {a[i],t*edge[i],0.,0.};
-        witness[i] = sum_four(terms);
-    }
-    if (PyErr_Occurred()) return NULL;
+    if (!vector(center_object,center) || !vector(axis_object,axis) || !vector(a_object,a) || !vector(b_object,b)
+        || !edge_distance_values(center,axis,a,b,radius,half_width,crown,&distance,normal,witness)) return NULL;
     return Py_BuildValue("(d(ddd)(ddd))",distance,normal[0],normal[1],normal[2],witness[0],witness[1],witness[2]);
+}
+
+#include "wheel_convex_distance.h"
+
+/* 六个原裁剪平面和64次保守推进留在同一数值调用中。 */
+static PyObject *triangle_edge_entry(PyObject *self,PyObject *args) {
+    PyObject *start_object,*end_object,*triangle,*axis_object,*coordinates,*padding_object;
+    double start[3],end[3],padding[3],margin,radius,width,shoulder,crown,ceiling;
+    if (!PyArg_ParseTuple(args,"OOOdOddddOdO",&start_object,&end_object,&triangle,&margin,
+        &axis_object,&radius,&width,&shoulder,&crown,&coordinates,&ceiling,&padding_object)) return NULL;
+    WheelConvex shape={0};
+    if (!vector(start_object,start) || !vector(end_object,end) || !vector(axis_object,shape.axis)
+        || !vector(padding_object,padding)) return NULL;
+    PyObject *vertices=PySequence_Fast(triangle,"三角面须为三个顶点");
+    if (!vertices) return NULL;
+    if (PySequence_Fast_GET_SIZE(vertices)!=3) {
+        Py_DECREF(vertices); PyErr_SetString(PyExc_ValueError,"三角面须为三个顶点"); return NULL;
+    }
+    double buffers[2][192][3]; int count=3,current=0;
+    for (int i=0;i<3;++i) if (!vector(PySequence_Fast_GET_ITEM(vertices,i),buffers[0][i])) {
+        Py_DECREF(vertices); return NULL;
+    }
+    Py_DECREF(vertices);
+    for (int axis=0;axis<3;++axis) for (int side=0;side<2;++side) {
+        double sign=side==0 ? 1. : -1.;
+        double bound=side==0 ? (end[axis]<start[axis] ? end[axis] : start[axis])-padding[axis]
+                            : (end[axis]>start[axis] ? end[axis] : start[axis])+padding[axis];
+        int written=0,next=1-current;
+        for (int i=0;i<count;++i) {
+            double *a=buffers[current][i],*b=buffers[current][(i+1)%count];
+            double da=sign*(a[axis]-bound),db=sign*(b[axis]-bound);
+            if (da>=0.) {
+                for (int j=0;j<3;++j) buffers[next][written][j]=a[j];
+                ++written;
+            }
+            if ((da>=0.)!=(db>=0.)) {
+                double fraction=da/(da-db);
+                for (int j=0;j<3;++j) buffers[next][written][j]=j==axis ? bound : fma(fraction,b[j]-a[j],a[j]);
+                ++written;
+            }
+        }
+        count=written; current=next;
+        if (!count) Py_RETURN_NONE;
+    }
+    shape.polygon=buffers[current]; shape.count=count; shape.coordinates=coordinates;
+    shape.radius=radius-shoulder; shape.half=width/2-shoulder; shape.crown=crown;
+    double fraction=0.,velocity[3]; subtract(end,start,velocity);
+    for (int iteration=0;iteration<64;++iteration) {
+        for (int i=0;i<3;++i) shape.center[i]=start[i]+fraction*velocity[i];
+        double distance,normal[3],witness[3];
+        if (!wheel_convex_values(&shape,&distance,normal,witness)) return NULL;
+        double gap=distance-margin-shoulder;
+        if (fraction==0. && gap<-1e-9) Py_RETURN_NONE;
+        if (gap<=1e-9) {
+            for (int i=0;i<3;++i) witness[i]+=margin*normal[i];
+            return Py_BuildValue("(d(ddd)(ddd)O)",fraction,normal[0],normal[1],normal[2],
+                witness[0],witness[1],witness[2],Py_None);
+        }
+        double closing=-dot(normal,velocity);
+        if (closing<=0.) Py_RETURN_NONE;
+        fraction+=gap/closing;
+        if (fraction>ceiling) Py_RETURN_NONE;
+    }
+    PyErr_SetString(PyExc_ArithmeticError,"圆柱/三角形悬架扫掠未收敛"); return NULL;
 }
 
 static void transform_values(const double value[3],const double axes[3][3],const double offset[3],
@@ -496,7 +758,7 @@ static PyObject *rotated_path_call(PyObject *self, PyObject *args, PyObject *kwa
 /* 原索引的有序筛选、有限面与首接点在一次查询内完成，边角仍交给原求解函数。 */
 /* 原三角网格的数值副本只随网格构造；源三角面对象供边角和面引用继续使用。 */
 typedef struct {
-    double vertices[3][3], center[3], half[3];
+    double vertices[3][3], center[3], half[3], normal[3];
     PyObject *source;
 } PreparedTriangle;
 typedef struct TrianglePacket {
@@ -546,6 +808,12 @@ static PyObject *triangle_support_coefficients(PyObject *self, PyObject *args) {
         }
         for (int a = 0; a < 3; ++a)
             if (!vector(PyTuple_GET_ITEM(triangle->source, a), triangle->vertices[a])) goto failed;
+        double ab[3],ac[3];
+        subtract(triangle->vertices[1],triangle->vertices[0],ab);
+        subtract(triangle->vertices[2],triangle->vertices[0],ac);
+        cross(ab,ac,triangle->normal);
+        double length=sqrt(dot(triangle->normal,triangle->normal));
+        if (length!=0.) for (int a=0;a<3;++a) triangle->normal[a]/=length;
         if (!vector(PyTuple_GET_ITEM(bound, 0), triangle->center)
             || !vector(PyTuple_GET_ITEM(bound, 1), triangle->half)) goto failed;
     }
@@ -616,12 +884,14 @@ static PyObject *triangle_support_entry(PyObject *self,PyObject *args,PyObject *
     PyObject *curved=PyList_New(0),*best=NULL,*keywords=NULL;
     double ceiling=1.;
     if (!curved) goto error;
+    FaceSupport support_cache={0};
     for (Py_ssize_t k=0; k<count; ++k) {
         PreparedTriangle *prepared=candidates[k];
         PyObject *triangle=prepared->source;
         double (*vertices)[3]=prepared->vertices;
         double fraction_bound;
-        PyObject *result=triangle_face_values(start,end,vertices,margin,axis,radius,width,shoulder,crown,1,1.,&fraction_bound);
+        PyObject *result=triangle_face_values(start,end,vertices,margin,axis,radius,width,shoulder,crown,
+            1,1.,&fraction_bound,prepared->normal,&support_cache);
         if (!result) goto error;
         PyObject *hit=PyTuple_GET_ITEM(result,1);
         int kept;
@@ -643,6 +913,7 @@ static PyObject *triangle_support_entry(PyObject *self,PyObject *args,PyObject *
     int padding_set=PyDict_SetItemString(keywords,"padding",padding_object);
     Py_DECREF(padding_object);
     if (padding_set<0) goto error;
+    if (PyDict_SetItemString(keywords,"face_checked",Py_True)<0) goto error;
     for (Py_ssize_t k=0; k<PyList_GET_SIZE(curved); ++k) {
         PyObject *pending=PyList_GET_ITEM(curved,k);
         double fraction_bound=PyFloat_AsDouble(PyTuple_GET_ITEM(pending,1));
@@ -805,12 +1076,13 @@ static PyObject *cylinder_surface_entry(PyObject *self, PyObject *args) {
 static PyObject *surface_ray_hits(PyObject *self,PyObject *args) {
     PyObject *surfaces,*start_object,*end_object,*axis_object,*origin_object,*surface_class,*contact_class,*edge_entry,*box_entry;
     double radius,reach,width,shoulder,crown;
-    int relative;
-    if (!PyArg_ParseTuple(args,"OOOOOdddddOOOOp",&surfaces,&start_object,&end_object,&axis_object,&origin_object,
-                         &radius,&reach,&width,&shoulder,&crown,&surface_class,&contact_class,&edge_entry,&box_entry,&relative)) return NULL;
+    int relative,entry_only=0;
+    if (!PyArg_ParseTuple(args,"OOOOOdddddOOOOp|p",&surfaces,&start_object,&end_object,&axis_object,&origin_object,
+                         &radius,&reach,&width,&shoulder,&crown,&surface_class,&contact_class,&edge_entry,&box_entry,&relative,&entry_only)) return NULL;
     double start[3],end[3],origin[3];
     if (!vector(start_object,start) || !vector(end_object,end) || !vector(origin_object,origin)) return NULL;
-    PyObject *hits=PyList_New(0);
+    PyObject *hits=entry_only ? Py_NewRef(Py_None) : PyList_New(0);
+    double closest=INFINITY;
     if (!hits) return NULL;
     for (Py_ssize_t k=0; k<PyList_GET_SIZE(surfaces); ++k) {
         PyObject *part=PyList_GET_ITEM(surfaces,k),*body=PyTuple_GET_ITEM(part,0);
@@ -835,11 +1107,13 @@ static PyObject *surface_ray_hits(PyObject *self,PyObject *args) {
             PyFloat_AsDouble(margin),radius,width,shoulder,crown,edge_entry,box_entry);
         if (!found) goto failure;
         if (found!=Py_None) {
-            offset_object=Py_BuildValue("(ddd)",offset[0],offset[1],offset[2]);
-            if (!offset_object) goto failure;
-            surface=PyObject_CallFunction(surface_class,"OOOOddddOOdO",half,margin,frame,offset_object,
-                                          radius,reach,width,shoulder,axis_object,plane,crown,triangles);
-            if (!surface) goto failure;
+            if (!entry_only) {
+                offset_object=Py_BuildValue("(ddd)",offset[0],offset[1],offset[2]);
+                if (!offset_object) goto failure;
+                surface=PyObject_CallFunction(surface_class,"OOOOddddOOdO",half,margin,frame,offset_object,
+                                              radius,reach,width,shoulder,axis_object,plane,crown,triangles);
+                if (!surface) goto failure;
+            }
             double normal[3],point[3],world_normal[3],world_point[3],zero[3]={0.};
             if (!vector(PyTuple_GET_ITEM(found,1),normal) || !vector(PyTuple_GET_ITEM(found,2),point)) goto failure;
             for (int a=0; a<3; ++a) point[a]=point[a]-offset[a];
@@ -849,9 +1123,19 @@ static PyObject *surface_ray_hits(PyObject *self,PyObject *args) {
             normal_object=Py_BuildValue("(ddd)",world_normal[0],world_normal[1],world_normal[2]);
             point_object=Py_BuildValue("(ddd)",world_point[0],world_point[1],world_point[2]);
             if (!normal_object || !point_object) goto failure;
-            hit=PyObject_CallFunctionObjArgs(contact_class,body,PyTuple_GET_ITEM(found,0),point_object,normal_object,
-                                            surface,PyTuple_GET_ITEM(found,3),NULL);
-            if (!hit || PyList_Append(hits,hit)<0) goto failure;
+            if (entry_only) {
+                double fraction=PyFloat_AsDouble(PyTuple_GET_ITEM(found,0));
+                if (PyErr_Occurred()) goto failure;
+                if (fraction<closest) {
+                    hit=PyTuple_Pack(4,PyTuple_GET_ITEM(found,0),normal_object,point_object,PyTuple_GET_ITEM(found,3));
+                    if (!hit) goto failure;
+                    Py_SETREF(hits,Py_NewRef(hit)); closest=fraction;
+                }
+            } else {
+                hit=PyObject_CallFunctionObjArgs(contact_class,body,PyTuple_GET_ITEM(found,0),point_object,normal_object,
+                                                surface,PyTuple_GET_ITEM(found,3),NULL);
+                if (!hit || PyList_Append(hits,hit)<0) goto failure;
+            }
         }
         Py_XDECREF(hit); Py_XDECREF(point_object); Py_XDECREF(normal_object);
         Py_DECREF(found); Py_DECREF(local_b); Py_DECREF(local_a); Py_XDECREF(surface); Py_XDECREF(offset_object);
@@ -862,6 +1146,37 @@ failure:
         Py_DECREF(hits); return NULL;
     }
     return hits;
+}
+
+/* 冻结子步中覆盖盒内的静态查询，复用原求交，只省去Python射线/对象装配。 */
+static PyObject *cached_surface_entry(PyObject *self,PyObject *args) {
+    PyObject *cache,*start_object,*end_object,*axis_object,*origin_object,*edge_entry,*box_entry;
+    double radius,width,shoulder,crown;
+    if (!PyArg_ParseTuple(args,"OOOOOddddOO",&cache,&start_object,&end_object,&axis_object,&origin_object,
+                         &radius,&width,&shoulder,&crown,&edge_entry,&box_entry)) return NULL;
+    if (!PyDict_Check(cache)) { PyErr_SetString(PyExc_TypeError,"支持候选缓存须为字典"); return NULL; }
+    if (!PyDict_Size(cache)) return Py_BuildValue("(OO)",Py_False,Py_None);
+    PyObject *native=PyDict_GetItemString(cache,"native_needed");
+    if (!native || !PyDict_GetItemString(cache,"low") || !PyDict_GetItemString(cache,"high")
+        || !PyDict_GetItemString(cache,"surfaces")) {
+        PyErr_SetString(PyExc_ValueError,"支持候选缓存缺少覆盖盒或表面"); return NULL;
+    }
+    if (native==Py_True) return Py_BuildValue("(OO)",Py_False,Py_None);
+    double start[3],end[3],origin[3],low[3],high[3],padding=radius+width/2+1e-5;
+    if (!vector(start_object,start) || !vector(end_object,end) || !vector(origin_object,origin)
+        || !vector(PyDict_GetItemString(cache,"low"),low) || !vector(PyDict_GetItemString(cache,"high"),high)) return NULL;
+    for (int i=0;i<3;++i) {
+        double a=start[i]+origin[i],b=end[i]+origin[i];
+        double left=(a<b ? a : b)-padding,right=(a>b ? a : b)+padding;
+        if (left<low[i] || right>high[i]) return Py_BuildValue("(OO)",Py_False,Py_None);
+    }
+    PyObject *arguments=Py_BuildValue("(OOOOOdddddOOOOii)",PyDict_GetItemString(cache,"surfaces"),
+        start_object,end_object,axis_object,origin_object,radius,0.,width,shoulder,crown,
+        Py_None,Py_None,edge_entry,box_entry,1,1);
+    if (!arguments) return NULL;
+    PyObject *hit=surface_ray_hits(NULL,arguments); Py_DECREF(arguments);
+    if (!hit) return NULL;
+    PyObject *result=PyTuple_Pack(2,Py_True,hit); Py_DECREF(hit); return result;
 }
 
 /* 胎冠高度的原割线；同分区代数式与跨分区完整差商保持。 */
@@ -1062,7 +1377,94 @@ failure:
     Py_XDECREF(gradients); Py_XDECREF(alignment); Py_XDECREF(touching); return NULL;
 }
 
+
+static int unit_values(double value[3]) {
+    double length=sqrt(dot(value,value));
+    if (length==0.) { PyErr_SetString(PyExc_ZeroDivisionError,"轮轴或接触基向量不能为零"); return 0; }
+    for (int a=0;a<3;++a) value[a]/=length;
+    return 1;
+}
+static int mechanical_axis_values(const double right[3],const double forward[3],double angle,double axis[3]) {
+    double theta=angle*0.017453292519943295,cosine=cos(theta),sine=sin(theta);
+    for (int a=0;a<3;++a) axis[a]=cosine*right[a]-sine*forward[a];
+    return unit_values(axis);
+}
+
+/* 四轮机械轴、胎冠基、逆惯量响应和转向反力共享一次数值装配。 */
+static PyObject *rotor_frame_geometry(PyObject *self,PyObject *args) {
+    PyObject *right_object,*forward_object,*initial_object,*target_object,*normals_object,*points_object;
+    PyObject *tensor_object,*omega_object,*parameters;
+    if (!PyArg_ParseTuple(args,"OOOOOOOOO",&right_object,&forward_object,&initial_object,&target_object,
+        &normals_object,&points_object,&tensor_object,&omega_object,&parameters)) return NULL;
+    double right[3],forward[3],initial[4],target[4],omega[4],tensor[3][3];
+    if (!vector(right_object,right) || !vector(forward_object,forward)) return NULL;
+    if (PyTuple_Size(initial_object)!=4 || PyTuple_Size(target_object)!=4 || PyTuple_Size(omega_object)!=4
+        || PyTuple_Size(parameters)!=9 || PyTuple_Size(normals_object)!=4 || PyTuple_Size(points_object)!=4
+        || PyTuple_Size(tensor_object)!=3) {
+        PyErr_SetString(PyExc_ValueError,"机械轮端输入须为四轮和三维惯量"); return NULL;
+    }
+    for (int i=0;i<4;++i) {
+        initial[i]=PyFloat_AsDouble(PyTuple_GET_ITEM(initial_object,i));
+        target[i]=PyFloat_AsDouble(PyTuple_GET_ITEM(target_object,i));
+        omega[i]=PyFloat_AsDouble(PyTuple_GET_ITEM(omega_object,i));
+    }
+    for (int a=0;a<3;++a) if (!vector(PyTuple_GET_ITEM(tensor_object,a),tensor[a])) return NULL;
+    double radius=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,0)),mass=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,1));
+    double inertia=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,2)),dt=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,3));
+    double fraction=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,4)),previous_fraction=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,5));
+    PyObject *width_object=PyTuple_GET_ITEM(parameters,6);
+    double width=width_object==Py_None ? 0. : PyFloat_AsDouble(width_object);
+    double shoulder=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,7)),crown=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,8));
+    if (PyErr_Occurred()) return NULL;
+    if (mass==0. || dt==0.) { PyErr_SetString(PyExc_ZeroDivisionError,"质量和轮端步长不能为零"); return NULL; }
+    PyObject *result=PyTuple_New(4);
+    if (!result) return NULL;
+    for (int i=0;i<4;++i) {
+        double angle=initial[i]+(target[i]-initial[i])*fraction;
+        double previous_angle=initial[i]+(target[i]-initial[i])*previous_fraction;
+        double axis[3],previous_axis[3],normal[3],point[3],tangent[3],lateral[3],offset[3],moment_x[3],moment_y[3];
+        if (!mechanical_axis_values(right,forward,angle,axis) || !mechanical_axis_values(right,forward,previous_angle,previous_axis)
+            || !vector(PyTuple_GET_ITEM(normals_object,i),normal) || !vector(PyTuple_GET_ITEM(points_object,i),point)
+            || !unit_values(axis) || !unit_values(normal)) goto failed;
+        cross_regular(normal,axis,tangent);
+        if (!unit_values(tangent)) goto failed;
+        cross_regular(tangent,normal,lateral);
+        if (width_object!=Py_None) {
+            if (!support_values(normal,axis,radius,width/2,shoulder,crown,offset)) goto failed;
+            for (int a=0;a<3;++a) offset[a]=-offset[a];
+        } else for (int a=0;a<3;++a) offset[a]=-radius*normal[a];
+        double radial_cross[3]; cross_regular(offset,tangent,radial_cross);
+        double rolling_radius=dot(axis,radial_cross);
+        cross_regular(point,tangent,moment_x); cross_regular(point,lateral,moment_y);
+        for (int a=0;a<3;++a) moment_x[a]-=rolling_radius*axis[a];
+        double responses[3][3],mobility[6],torque[3];
+        double *moments[3]={moment_x,moment_y,axis};
+        for (int j=0;j<3;++j) for (int a=0;a<3;++a) responses[j][a]=dot(tensor[a],moments[j]);
+        mobility[0]=1/mass+dot(moment_x,responses[0]); mobility[1]=dot(moment_x,responses[1]);
+        mobility[2]=dot(moment_x,responses[2]); mobility[3]=1/mass+dot(moment_y,responses[1]);
+        mobility[4]=dot(moment_y,responses[2]); mobility[5]=dot(axis,responses[2]);
+        for (int a=0;a<3;++a) torque[a]=inertia*omega[i]*(axis[a]-previous_axis[a])/dt;
+        PyObject *row=Py_BuildValue("(d(ddd)((ddd)(ddd)(ddd))d(ddd)(ddd)(ddd)(ddd)(dddddd)(ddd))",
+            angle,axis[0],axis[1],axis[2],tangent[0],tangent[1],tangent[2],lateral[0],lateral[1],lateral[2],
+            normal[0],normal[1],normal[2],rolling_radius,moment_x[0],moment_x[1],moment_x[2],
+            responses[0][0],responses[0][1],responses[0][2],responses[1][0],responses[1][1],responses[1][2],
+            responses[2][0],responses[2][1],responses[2][2],mobility[0],mobility[1],mobility[2],mobility[3],mobility[4],mobility[5],
+            torque[0],torque[1],torque[2]);
+        if (!row) goto failed;
+        PyTuple_SET_ITEM(result,i,row);
+    }
+    return result;
+failed:
+    Py_DECREF(result); return NULL;
+}
+
 static PyMethodDef methods[] = {
+    {"rotor_frame_geometry", (PyCFunction)rotor_frame_geometry, METH_VARARGS, "原四轮机械几何和转向反力"},
+    {"triangle_edge_entry", (PyCFunction)triangle_edge_entry, METH_VARARGS, "原有限三角面裁剪与保守推进"},
+    {"support_coefficients", (PyCFunction)support_coefficients, METH_VARARGS, "静态形状数值分区一次解包"},
+    {"prepared_support_candidates", (PyCFunction)prepared_support_candidates, METH_VARARGS, "原静态形状有序覆盖盒筛选"},
+    {"cached_surface_entry", (PyCFunction)cached_surface_entry, METH_VARARGS, "同子步覆盖盒内静态求交的原生入口"},
+    {"convex_distance", (PyCFunction)convex_distance_call, METH_VARARGS, "有限胎宽原GJK连续数值循环"},
     {"cylinder_surface_entry", (PyCFunction)cylinder_surface_entry, METH_VARARGS, "原圆柱/有限支持面纯几何入口"},
     {"triangle_support_coefficients", (PyCFunction)triangle_support_coefficients, METH_VARARGS, "原有限网格固定顶点与包围盒数值"},
     {"cylinder_contact_system", (PyCFunction)cylinder_contact_system, METH_VARARGS, "原四轮有限接点几何与装配"},

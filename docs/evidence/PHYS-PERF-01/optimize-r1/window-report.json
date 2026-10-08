@@ -1,0 +1,354 @@
+{
+  "kind": "short window comparison; not final performance or human gate",
+  "source": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src",
+  "track": "coastal",
+  "vehicle_design": "gr86-2022-premium-6mt",
+  "driving_mode": "game",
+  "controller": "constant-throttle-0.3",
+  "audio": "disabled by existing smoke mode",
+  "tick": 440,
+  "fixed_hz": 120,
+  "shape": "straight",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 8,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "streaming_phases": {},
+  "wall_seconds": 30.8205112,
+  "sample_seconds": 28.079258099998697,
+  "frames": 49,
+  "average_fps": 1.7450603511494585,
+  "display_draw_frames": 47,
+  "display_draw_fps": 1.7682144380618476,
+  "display_draw_p95_ms": 873.5252999977092,
+  "display_draw_p99_ms": 1100.9248999980628,
+  "display_draw_max_ms": 1100.9248999980628,
+  "display_draw_over_50ms": 47,
+  "p95_ms": 889.608199999202,
+  "p99_ms": 1108.7784999981523,
+  "max_ms": 1108.7784999981523,
+  "frames_over_50ms": 49,
+  "frames_over_100ms": 49,
+  "dropped_simulation_seconds": 23.841666666666672,
+  "warmup_dropped_seconds": 2.2666666666666666,
+  "distance_m": -3.680701732635498,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 29.777495699999996,
+      "ms": 1108.7784999981523
+    },
+    {
+      "second": 30.8205112,
+      "ms": 1043.020199998864
+    },
+    {
+      "second": 10.05433,
+      "ms": 889.608199999202
+    },
+    {
+      "second": 9.1647317,
+      "ms": 874.9625000054948
+    },
+    {
+      "second": 8.289764499999999,
+      "ms": 867.5472999966587
+    },
+    {
+      "second": 23.7658572,
+      "ms": 845.9256999994977
+    },
+    {
+      "second": 27.4554731,
+      "ms": 815.0108000045293
+    },
+    {
+      "second": 21.9152329,
+      "ms": 746.0980000032578
+    },
+    {
+      "second": 28.1910759,
+      "ms": 735.6021000014152
+    },
+    {
+      "second": 25.580162,
+      "ms": 720.828999998048
+    },
+    {
+      "second": 17.5806097,
+      "ms": 704.814400000032
+    },
+    {
+      "second": 15.126486699999997,
+      "ms": 689.7878000017954
+    }
+  ],
+  "segment_work_max_ms": 0,
+  "segment_step_max_ms": 0,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true
+    }
+  ],
+  "passed": false,
+  "short_performance_passed": false,
+  "git_head": "cf1316dbd5db59c67e48fb809b4af16b40033158",
+  "git_status": "M docs/current-progress.md\n M docs/tasks/PHYS-PERF-01.md\n M setup.py\n M src/mechanical_kernels.c\n M src/simulation.py\n M src/suspension_contacts.py\n M src/suspension_kinematics.py\n M src/tire_drivetrain.py\n M src/triangle_support.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M src/wheel_envelope.py\n M src/world_step.py\n M tests/test_cylinder_suspension.py\n M tests/test_vehicle_collision.py\n M tests/test_vehicle_tires.py\n M tools/performance/benchmark_runtime.py\n M tools/validate.py\n?? src/wheel_convex_distance.h\n?? tests/test_static_support_cache.py"
+}

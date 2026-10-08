@@ -248,9 +248,9 @@ def test_high_speed_contact_levers_use_current_body_pose(sim, monkeypatch):
     poses = []
     prepare = car.suspension.prepare
 
-    def capture(world, chassis, wheels):
+    def capture(world, chassis, wheels, static_shapes=None):
         poses.append(chassis.getTransform())
-        return prepare(world, chassis, wheels)
+        return prepare(world, chassis, wheels, static_shapes)
 
     monkeypatch.setattr(car.suspension, "prepare", capture)
     car._chassis.setLinearVelocity(Vec3(0, 40, 0))

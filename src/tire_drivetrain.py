@@ -2,6 +2,7 @@
 
 import math
 from dataclasses import dataclass
+from struct import pack
 
 from mechanical_kernels import (
     dot,
@@ -14,6 +15,9 @@ from mechanical_kernels import (
     rotor_spin_prepared,
     shared_load_solution,
     shared_map_coefficients,
+    suspension_coefficients,
+    suspension_forces,
+    suspension_projection,
     suspension_residuals,
     wheel_brake_correction,
     wheel_contact_state,
@@ -181,13 +185,35 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     normal_forces = (0.,) * 4
     normal_responses, normal_mobility = (), ()
     reference_suspension = suspension
+    if suspension is not None:
+        hardware = suspension.config
+        normal_coefficients = suspension_coefficients(suspension.compression, suspension.geometry,
+            hardware.suspension_spring_rates, hardware.suspension_compression_damping,
+            hardware.suspension_extension_damping, hardware.suspension_antiroll_rates,
+            hardware.suspension_stop_rates, hardware.suspension_travel, dt)
+    geometry_results = {}
+    projection_results = {}
+
+    def contact_system(end_velocity, end_angular):
+        # 唯一世界在本advance内冻结；相同末速度的同一几何方程只计算一次。
+        key = pack("6d", *end_velocity, *end_angular)
+        if key not in geometry_results:
+            geometry_results[key] = finite_contact_system(reference_suspension, end_velocity, end_angular, dt)
+        return geometry_results[key]
 
     def normal_projection():
         nonlocal normal_responses, normal_mobility
-        normal_responses = tuple(mobility(g[3:] + (0.,) * (dimensions - 3)) for g in suspension.gradients)
-        bare = tuple(tuple(value / mass for value in g[:3])
-                     + tuple(dot(row, g[3:]) for row in inverse_inertia) for g in suspension.gradients)
-        normal_mobility = tuple(tuple(dot(g, r) for r in bare) for g in suspension.gradients)
+        key = suspension.gradients
+        if key in projection_results:
+            normal_responses, normal_mobility = projection_results[key]
+            return
+        normal_responses, normal_mobility = suspension_projection(mobility_coefficients, suspension.gradients, mass)
+        projection_results[key] = normal_responses, normal_mobility
+
+    def normal_load_solution(end_velocity, end_angular, *, mobility=None, forces=(0.,) * 4):
+        # 试探阶段只用反力；完整能量账在同一收敛末状态计算一次。
+        return suspension_forces(normal_coefficients, suspension.gradients, end_velocity, end_angular,
+                                 suspension.touching, mobility, forces)
 
     if suspension is not None:
         normal_projection()
@@ -645,9 +671,9 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
 
         def residual(values):
             nonlocal suspension, normal_forces
-            suspension = finite_contact_system(reference_suspension, values[:3], values[3:], dt)
+            suspension = contact_system(values[:3], values[3:])
             normal_projection()
-            normal_forces = shared_suspension(suspension, values[:3], values[3:], dt).axial_force
+            normal_forces = normal_load_solution(values[:3], values[3:])
             state, velocity_end, _clutch, _loss, _gear = shared(tuple(values[3:]) + tuple(guess[3:]))
             return tuple(values[a] - end for a, end in enumerate(tuple(velocity_end) + tuple(state[:3])))
 
@@ -678,11 +704,10 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     for sweep in range(20):
         state, end_velocity, clutch, loss, gear_reaction = shared(state)
         if suspension is not None:
-            suspension = finite_contact_system(reference_suspension, end_velocity, state[:3], dt)
+            suspension = contact_system(end_velocity, state[:3])
             normal_projection()
-            normal_step = shared_suspension(suspension, end_velocity, state[:3], dt,
-                                            mobility=normal_mobility, forces=normal_forces)
-            normal_forces = normal_step.axial_force
+            normal_forces = normal_load_solution(end_velocity, state[:3],
+                                                mobility=normal_mobility, forces=normal_forces)
             normal_loads()
             state, end_velocity, clutch, loss, gear_reaction = shared(state)
         gyro = cross(spin(state), state[:3])
@@ -697,7 +722,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         if suspension is not None:
             # 接触块之后用实际末速度刷新硬件反力，再同步机械速度。
             # 预条件块的力与直接本构式可能相差一个舍入位，不能把它留作收敛残差。
-            normal_forces = shared_suspension(suspension, end_velocity, state[:3], dt).axial_force
+            normal_forces = normal_load_solution(end_velocity, state[:3])
             normal_loads()
             state, end_velocity, clutch, loss, gear_reaction = shared(state)
         if shaft:
@@ -720,9 +745,9 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                                    / (dt * dot(brake_gradients[i], responses[i][2]))))
                 brake_error = max(brake_error, abs(brake - target_brake))
         if suspension is not None:
-            normal_step = shared_suspension(suspension, end_velocity, state[:3], dt)
-            target_system = finite_contact_system(reference_suspension, end_velocity, state[:3], dt)
-            normal_error, geometry_error = suspension_residuals(normal_forces, normal_step.axial_force,
+            target_forces = normal_load_solution(end_velocity, state[:3])
+            target_system = contact_system(end_velocity, state[:3])
+            normal_error, geometry_error = suspension_residuals(normal_forces, target_forces,
                 suspension.gradients, target_system.gradients, dt)
         if maximum < .001 and brake_error < 1e-9 and normal_error < normal_tolerance and geometry_error < 1e-12:
             break
@@ -734,6 +759,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     else:
         raise ArithmeticError(f"传动/四轮共同求解超过20轮：{maximum:g}N，制动{brake_error:g}Nm，法向{normal_error:g}N，几何共轭冲量{geometry_error:g}Ns/Nms")
 
+    normal_step = shared_suspension(suspension, end_velocity, state[:3], dt) if suspension is not None else None
     gyro_torques = bearing_torques(axes, state[wheel_start:], wheel_inertia, state[:3]) if rotor else ((0., 0., 0.),) * 4
     wheels = []
     for i, frame in enumerate(frames):

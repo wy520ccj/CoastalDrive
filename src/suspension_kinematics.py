@@ -7,6 +7,7 @@ from wheel_contact_kernels import cylinder_contact_system, rotated_path
 from wheel_contact_kernels import cylinder_endpoint as endpoint_kernel
 
 from rotor_dynamics import cross, dot
+from suspension import SuspensionInput
 from suspension_geometry import BoxSurface, CylinderSurface, sphere_box_entry
 from wheel_envelope import crown_extent_secant, cylinder_support
 
@@ -108,7 +109,8 @@ def finite_contact_system(system, velocity, angular, dt):
     if all(plane is None or isinstance(plane.surface, CylinderSurface) for plane in system.kinematics):
         gradients, alignment, touching = cylinder_contact_system(
             system.kinematics, axis, angle, scale, velocity, angular, dt, face_extension_difference)
-        return replace(system, gradients=gradients, alignment=alignment, touching=touching)
+        return SuspensionInput(system.compression, system.geometry, gradients, touching, alignment,
+                               system.config, system.kinematics, system.angular_damping)
     gradients, alignment, touching = [], [], []
     for plane in system.kinematics:
         if plane is None:
@@ -158,7 +160,8 @@ def finite_contact_system(system, velocity, angular, dt):
         gradients.append(tuple(reciprocal * value for value in plane.normal) + cross(arm, plane.normal))
         alignment.append(1 / reciprocal)
         touching.append(True)
-    return replace(system, gradients=tuple(gradients), alignment=tuple(alignment), touching=tuple(touching))
+    return SuspensionInput(system.compression, system.geometry, tuple(gradients), tuple(touching),
+                           tuple(alignment), system.config, system.kinematics, system.angular_damping)
 
 
 def advance_contact_geometry(system, compression, velocity, angular, dt):

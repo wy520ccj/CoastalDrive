@@ -111,72 +111,29 @@ def _closest(vertices):
     return min(choices, key=lambda value: dot(value[0], value[0]))
 
 
-def cylinder_box_distance(center, axis, half, radius, half_width, shoulder, crown=0.):
-    """GJK给出圆柱内核与Box内核距离、法线和Box见证点；肩部在扫掠时合并。"""
-    def support_body(direction):
-        return tuple(math.copysign(h, x) if x else 0. for h, x in zip(half, direction))
+def _simplex_coordinates(columns, rhs):
+    """近共线及四面体单纯形沿用原SVD，不以普通行列式替代其精度。"""
+    coordinates, _residual, rank, _singular = np.linalg.lstsq(
+        np.asarray(columns).T, np.asarray(rhs), rcond=None)
+    return tuple(coordinates), int(rank)
 
-    return convex_distance(center, axis, support_body, radius, half_width, shoulder, crown)
+
+def cylinder_box_distance(center, axis, half, radius, half_width, shoulder, crown=0.):
+    """有限Box的支持函数和原GJK在同一原生调用中完成。"""
+    return wheel_contact_kernels.convex_distance(
+        center, axis, half, radius, half_width, shoulder, crown, _simplex_coordinates, 1)
+
+
+def convex_polygon_distance(center, axis, polygon, radius, half_width, shoulder, crown):
+    """裁剪面的固定顶点一次读入；原支持顺序及有限边精修保持。"""
+    return wheel_contact_kernels.convex_distance(
+        center, axis, polygon, radius, half_width, shoulder, crown, _simplex_coordinates, 2)
 
 
 def convex_distance(center, axis, support_body, radius, half_width, shoulder, crown):
-    """轮胎内核对任意固定凸体的最近见证点；不持有物理世界。"""
-    def support(direction):
-        offset = cylinder_support(tuple(-x for x in direction), axis, radius - shoulder,
-                                  half_width - shoulder, 0., crown)
-        box = support_body(direction)
-        # 先形成相对几何，保留小外廓量；大坐标加胎面偏移后再相减会丢低位。
-        return tuple(math.fsum((center[i], -box[i], offset[i])) for i in range(3)), box
-
-    direction = subtract(center, support_body(center))
-    if not dot(direction, direction):
-        direction = (0., 0., 1.)
-    vertices = [support(direction)]
-    point, weights = _closest(vertices)
-    for _ in range(96):
-        squared = dot(point, point)
-        if squared < 1e-24:
-            return 0., (0., 0., 1.), center
-        features = tuple(dict.fromkeys(v[1] for v, w in zip(vertices, weights) if w > 0.))
-        if len(features) <= 2:
-            refined = _cylinder_edge_distance(center, axis, features[0], features[-1],
-                                              radius-shoulder, half_width-shoulder, crown)
-            refined_point = tuple(refined[0]*n for n in refined[1])
-            refined_squared = dot(refined_point, refined_point)
-            candidate = support(refined_point)
-            if refined_squared - dot(refined_point, candidate[0]) <= 1e-13 * max(1., refined_squared):
-                return refined
-        body_pool = tuple(dict.fromkeys(v[1] for v in vertices))
-        if len(body_pool) >= 3:
-            for refined in _cylinder_face_candidates(center, axis, body_pool,
-                                                     radius-shoulder, half_width-shoulder, crown):
-                refined_point = tuple(refined[0]*n for n in refined[1])
-                refined_squared = dot(refined_point, refined_point)
-                candidate = support(refined_point)
-                if refined_squared - dot(refined_point, candidate[0]) <= 1e-13 * max(1., refined_squared):
-                    return refined
-        candidate = support(point)
-        if squared - dot(point, candidate[0]) <= 1e-13 * max(1., squared):
-            features = tuple(dict.fromkeys(v[1] for v, w in zip(vertices, weights) if w > 0.))
-            if len(features) <= 2:
-                # 距离间隙不足以保证曲面法线精度；用实际角点/边投影再核对同一支持判据。
-                refined = _cylinder_edge_distance(center, axis, features[0], features[-1],
-                                                  radius-shoulder, half_width-shoulder, crown)
-                refined_point = tuple(refined[0]*n for n in refined[1])
-                refined_squared = dot(refined_point, refined_point)
-                candidate = support(refined_point)
-                if refined_squared - dot(refined_point, candidate[0]) <= 1e-13 * max(1., refined_squared):
-                    return refined
-                vertices = [(refined_point, refined[2]), candidate]
-                point, weights = _closest(vertices)
-                continue
-            distance = math.sqrt(squared)
-            witness = tuple(sum(w * vertex[1][i] for w, vertex in zip(weights, vertices)) for i in range(3))
-            return distance, tuple(x / distance for x in point), witness
-        vertices = [vertex for vertex, weight in zip(vertices, weights) if weight > 1e-15]
-        vertices.append(candidate)
-        point, weights = _closest(vertices)
-    raise ArithmeticError(f"圆柱/固定凸体距离未收敛：center={center}, axis={axis}, point={point}, gap={squared - dot(point,candidate[0]):g}, vertices={vertices}")
+    """独立凸体入口沿用调用方支持函数；生产Box/面走固定数值入口。"""
+    return wheel_contact_kernels.convex_distance(
+        center, axis, support_body, radius, half_width, shoulder, crown, _simplex_coordinates, 0)
 
 
 def cylinder_box_entry(start, end, half, margin, axis, radius, half_width, shoulder, crown=0.):
@@ -220,3 +177,9 @@ def cylinder_box_entry(start, end, half, margin, axis, radius, half_width, shoul
         if fraction > 1.:
             return None
     raise ArithmeticError("圆柱/Box悬架扫掠未收敛")
+
+
+def triangle_edge_entry(start, end, triangle, margin, axis, radius, width, shoulder, crown, ceiling, padding):
+    """有限面边角保留原GJK/SVD和扫掠门槛，只一次传入本查询固定几何。"""
+    return wheel_contact_kernels.triangle_edge_entry(start, end, triangle, margin, axis,
+        radius, width, shoulder, crown, _simplex_coordinates, ceiling, padding)

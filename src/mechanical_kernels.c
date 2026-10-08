@@ -29,8 +29,14 @@ static int vector(PyObject *obj, double *data, int count) {
         return 0;
     }
     for (int i = 0; i < count; ++i) {
-        data[i] = PyFloat_AsDouble(PySequence_Fast_GET_ITEM(sequence, i));
-        if (PyErr_Occurred()) { Py_DECREF(sequence); return 0; }
+        PyObject *item=PySequence_Fast_GET_ITEM(sequence,i);
+        // 生产向量已是Python浮点；直接读取，外部数值类型仍按原转换报错。
+        if (PyFloat_CheckExact(item)) data[i]=PyFloat_AS_DOUBLE(item);
+        else if (item==Py_True || item==Py_False) data[i]=item==Py_True ? 1. : 0.;
+        else {
+            data[i]=PyFloat_AsDouble(item);
+            if (PyErr_Occurred()) { Py_DECREF(sequence); return 0; }
+        }
     }
     Py_DECREF(sequence);
     return 1;
@@ -571,6 +577,45 @@ static PyObject *mass_response_prepared_call(PyObject *self,PyObject *args,PyObj
 
 
 /* 一次性数值接口与子步系数接口共用同一算法，不保留第二份公式。 */
+static PyObject *suspension_projection(PyObject *self,PyObject *args) {
+    PyObject *coefficients,*input;
+    double mass;
+    if (!PyArg_ParseTuple(args,"OOd",&coefficients,&input,&mass)) return NULL;
+    MassCoefficients *data=PyCapsule_GetPointer(coefficients,mass_coefficients_name);
+    double gradients[4][6],responses[4][9],bare[4][6],mobility[4][4];
+    if (!data || !matrix_values(input,&gradients[0][0],4,6)) return NULL;
+    if (mass==0.) {PyErr_SetString(PyExc_ZeroDivisionError,"车身质量不能为零"); return NULL;}
+    for (int i=0;i<4;++i) {
+        double source[9]={0.},terms[6];
+        for (int a=0;a<3;++a) {source[a]=gradients[i][a+3]; bare[i][a]=gradients[i][a]/mass;}
+        mass_response_values(data,source,responses[i]);
+        for (int a=0;a<3;++a) {
+            for (int b=0;b<3;++b) terms[b]=data->inverse[a*3+b]*gradients[i][b+3];
+            bare[i][a+3]=compensated(terms,3);
+        }
+    }
+    for (int i=0;i<4;++i) for (int j=0;j<4;++j) {
+        double terms[6]; for (int a=0;a<6;++a) terms[a]=gradients[i][a]*bare[j][a];
+        mobility[i][j]=compensated(terms,6);
+    }
+    PyObject *result=PyTuple_New(4),*normal=PyTuple_New(4);
+    if (!result || !normal) {Py_XDECREF(result); Py_XDECREF(normal); return NULL;}
+    for (int i=0;i<4;++i) {
+        PyObject *row=PyTuple_New(data->dimensions);
+        if (!row) {Py_DECREF(result); Py_DECREF(normal); return NULL;}
+        for (int a=0;a<data->dimensions;++a) {
+            PyObject *value=PyFloat_FromDouble(responses[i][a]);
+            if (!value) {Py_DECREF(row); Py_DECREF(result); Py_DECREF(normal); return NULL;}
+            PyTuple_SET_ITEM(row,a,value);
+        }
+        PyTuple_SET_ITEM(result,i,row);
+        row=Py_BuildValue("(dddd)",mobility[i][0],mobility[i][1],mobility[i][2],mobility[i][3]);
+        if (!row) {Py_DECREF(result); Py_DECREF(normal); return NULL;}
+        PyTuple_SET_ITEM(normal,i,row);
+    }
+    return Py_BuildValue("(NN)",result,normal);
+}
+
 static PyObject *mass_response_call(PyObject *self,PyObject *args,PyObject *kwargs) {
     PyObject *input,*inverse,*shaft,*projections,*engine_response;
     double engine_inertia,wheel_inertia,drag_factor;
@@ -918,6 +963,7 @@ typedef struct {
     double differential_responses[3][9],radii[4],rolling_coefficients[4],transition;
     double ratio,share,final_drive,biases[2],inertias[3],down_gradients[3][9],old_omega[3];
     SharedBranch branches[27];
+    int port_seeds[27];
 } SharedMap;
 static const char *shared_map_name="CoastalDrive.shared_map";
 static void release_shared_map(PyObject *object) {
@@ -948,6 +994,7 @@ static PyObject *shared_map_coefficients(PyObject *self,PyObject *args,PyObject 
     SharedMap *data=PyMem_Calloc(1,sizeof(SharedMap));
     if (!data) return PyErr_NoMemory();
     data->mass=*mass; data->spin=*spin; data->dt=dt; data->capacity=capacity;
+    for (int i=0;i<27;++i) data->port_seeds[i]=-1;
     for (int j=0; j<9; ++j) {
         double unit[9]={0.}; unit[j]=1.;
         rotor_spin_values(spin,unit,data->spin_columns[j]);
@@ -1129,7 +1176,7 @@ static void shared_active_limits(const SharedMap *data,const double state[11],do
     }
 }
 
-static int shared_map_values(const SharedMap *data,const double state[11],const double angular[9],
+static int shared_map_values(SharedMap *data,const double state[11],const double angular[9],
     const double *normal,const double load[4],const double support[4],int warm,double output[11],
     double road[4],double active[3],double port_values[4],int *branch_output,int *port_output) {
     double momentum[3],gyro[3],free[9],terms[9],end[9];
@@ -1159,7 +1206,9 @@ static int shared_map_values(const SharedMap *data,const double state[11],const 
             for (int a=0; a<9; ++a) terms[a]=data->ports[i][a]*projected[a];
             port_free[i]=compensated(terms,9);
         }
-        if (!shared_port_state(data,branch,port_free,0.,-1,port_values,&port_index)) return 0;
+        /* 暖索引仅属于本advance；每次仍检查实际容量、速度与原端口精度。 */
+        if (!shared_port_state(data,branch,port_free,0.,data->port_seeds[index],port_values,&port_index)) return 0;
+        data->port_seeds[index]=port_index;
         /* 输入轴上的离合/齿轮反力近乎抵消时，保留乘积低位再重建末速度。 */
         for (int a=0; a<9; ++a) {
             double updates[6],torques[3]={port_values[0],port_values[2],port_values[1]},
@@ -1675,20 +1724,10 @@ static PyObject *wheel_map_derivatives(PyObject *self,PyObject *args) {
 }
 
 /* 原四轮接触/阻尼/止挡活动集；分区次序、64轮与精度保持。 */
-static PyObject *suspension_contact_state(PyObject *self,PyObject *args) {
-    PyObject *compression_object,*speed_object,*mobility_object,*touching_object,*stiffness_object;
-    PyObject *compression_damping_object,*extension_damping_object,*stops_object,*geometry_object;
-    double travel,dt;
-    if (!PyArg_ParseTuple(args,"OOOOOOOOddO",&compression_object,&speed_object,&mobility_object,
-        &touching_object,&stiffness_object,&compression_damping_object,&extension_damping_object,
-        &stops_object,&travel,&dt,&geometry_object)) return NULL;
-    double compression[4],speed[4],mobility[16],touching[4],stiffness[16],cd[4],ed[4],stops[4],geometry[4];
-    if (!vector(compression_object,compression,4) || !vector(speed_object,speed,4)
-        || !matrix_values(mobility_object,mobility,4,4) || !vector(touching_object,touching,4)
-        || !matrix_values(stiffness_object,stiffness,4,4) || !vector(compression_damping_object,cd,4)
-        || !vector(extension_damping_object,ed,4) || !vector(stops_object,stops,4)
-        || !vector(geometry_object,geometry,4)) return NULL;
-    double damping[4],bound[4],end[4],forces[4],raw[4],terms[9],partials[9];
+static int suspension_contact_values(const double compression[4],const double speed[4],const double mobility[16],
+    const double touching[4],const double stiffness[16],const double cd[4],const double ed[4],const double stops[4],
+    double travel,double dt,const double geometry[4],double end[4],double forces[4],double raw[4],double damping[4]) {
+    double bound[4],terms[9],partials[9];
     int modes[4],stop_modes[4],zero_mobility=1,converged=0;
     for (int i=0; i<16; ++i) if (mobility[i]!=0.) zero_mobility=0;
     for (int i=0; i<4; ++i) {
@@ -1715,12 +1754,13 @@ static PyObject *suspension_contact_state(PyObject *self,PyObject *args) {
             direct_raw[i]=exact_sum(terms,6,partials);
             if (!(direct_raw[i]>=0.)) admissible=0;
         }
-        if (PyErr_Occurred()) return NULL;
-        if (admissible) return Py_BuildValue("((dddd)(dddd)(dddd)(dddd))",
-            direct_end[0],direct_end[1],direct_end[2],direct_end[3],
-            direct_raw[0],direct_raw[1],direct_raw[2],direct_raw[3],
-            direct_raw[0],direct_raw[1],direct_raw[2],direct_raw[3],
-            direct_damping[0],direct_damping[1],direct_damping[2],direct_damping[3]);
+        if (PyErr_Occurred()) return 0;
+        if (admissible) {
+            for (int i=0;i<4;++i) {
+                end[i]=direct_end[i]; forces[i]=raw[i]=direct_raw[i]; damping[i]=direct_damping[i];
+            }
+            return 1;
+        }
     }
     for (int iteration=0; iteration<64; ++iteration) {
         double system[16],rhs[4],equations[64]={0.},values[8],rows[64],solution[8],residual[8],correction[8];
@@ -1743,7 +1783,7 @@ static PyObject *suspension_contact_state(PyObject *self,PyObject *args) {
             values[2*i]=modes[i] ? geometry[i]-dt*speed[i] : rhs[i];
             values[2*i+1]=modes[i] ? -rhs[i] : 0.;
         }
-        if (!lu_values(equations,values,8,rows,order,solution,residual,correction,terms,partials)) return NULL;
+        if (!lu_values(equations,values,8,rows,order,solution,residual,correction,terms,partials)) return 0;
         for (int i=0; i<4; ++i) {end[i]=solution[i]; forces[i]=solution[i+4];}
         int next_modes[4],next_stops[4],same=1;
         double next_damping[4];
@@ -1761,7 +1801,7 @@ static PyObject *suspension_contact_state(PyObject *self,PyObject *args) {
             next_stops[i]=end[i]>travel ? 1 : end[i]<-travel ? -1 : 0;
             if (next_modes[i]!=modes[i] || next_damping[i]!=damping[i] || next_stops[i]!=stop_modes[i]) same=0;
         }
-        if (PyErr_Occurred()) return NULL;
+        if (PyErr_Occurred()) return 0;
         if (same) {
             if (zero_mobility) for (int i=0; i<4; ++i) {
                 if (modes[i]) {
@@ -1781,11 +1821,81 @@ static PyObject *suspension_contact_state(PyObject *self,PyObject *args) {
             modes[i]=next_modes[i]; damping[i]=next_damping[i]; stop_modes[i]=next_stops[i]; bound[i]=stop_modes[i]*travel;
         }
     }
-    if (PyErr_Occurred()) return NULL;
-    if (!converged) {PyErr_SetString(PyExc_ArithmeticError,"悬架接触/阻尼/止挡活动集未收敛"); return NULL;}
+    if (PyErr_Occurred()) return 0;
+    if (!converged) {PyErr_SetString(PyExc_ArithmeticError,"悬架接触/阻尼/止挡活动集未收敛"); return 0;}
+    return 1;
+}
+
+static PyObject *suspension_contact_state(PyObject *self,PyObject *args) {
+    PyObject *compression_object,*speed_object,*mobility_object,*touching_object,*stiffness_object;
+    PyObject *compression_damping_object,*extension_damping_object,*stops_object,*geometry_object;
+    double travel,dt;
+    if (!PyArg_ParseTuple(args,"OOOOOOOOddO",&compression_object,&speed_object,&mobility_object,
+        &touching_object,&stiffness_object,&compression_damping_object,&extension_damping_object,
+        &stops_object,&travel,&dt,&geometry_object)) return NULL;
+    double compression[4],speed[4],mobility[16],touching[4],stiffness[16],cd[4],ed[4],stops[4],geometry[4];
+    if (!vector(compression_object,compression,4) || !vector(speed_object,speed,4)
+        || !matrix_values(mobility_object,mobility,4,4) || !vector(touching_object,touching,4)
+        || !matrix_values(stiffness_object,stiffness,4,4) || !vector(compression_damping_object,cd,4)
+        || !vector(extension_damping_object,ed,4) || !vector(stops_object,stops,4)
+        || !vector(geometry_object,geometry,4)) return NULL;
+    double end[4],forces[4],raw[4],damping[4];
+    if (!suspension_contact_values(compression,speed,mobility,touching,stiffness,cd,ed,stops,travel,dt,geometry,
+                                   end,forces,raw,damping)) return NULL;
     return Py_BuildValue("((dddd)(dddd)(dddd)(dddd))",end[0],end[1],end[2],end[3],
         forces[0],forces[1],forces[2],forces[3],raw[0],raw[1],raw[2],raw[3],
         damping[0],damping[1],damping[2],damping[3]);
+}
+
+/* 一个advance的材料状态和硬件固定；迭代只求反力，末状态再记完整能量账。 */
+typedef struct {
+    double compression[4],geometry[4],stiffness[16],cd[4],ed[4],stops[4],travel,dt;
+} SuspensionCoefficients;
+static const char *suspension_coefficients_name="coastaldrive.suspension_coefficients";
+static void release_suspension_coefficients(PyObject *object) {
+    PyMem_Free(PyCapsule_GetPointer(object,suspension_coefficients_name));
+}
+static PyObject *suspension_coefficients(PyObject *self,PyObject *args) {
+    PyObject *compression,*geometry,*rates_object,*cd,*ed,*bars_object,*stops;
+    double travel,dt,rates[4],bars[2];
+    if (!PyArg_ParseTuple(args,"OOOOOOOdd",&compression,&geometry,&rates_object,&cd,&ed,&bars_object,&stops,&travel,&dt)) return NULL;
+    SuspensionCoefficients *data=PyMem_Calloc(1,sizeof(SuspensionCoefficients));
+    if (!data) return PyErr_NoMemory();
+    data->travel=travel; data->dt=dt;
+    if (!vector(compression,data->compression,4) || !vector(geometry,data->geometry,4)
+        || !vector(rates_object,rates,4) || !vector(cd,data->cd,4) || !vector(ed,data->ed,4)
+        || !vector(bars_object,bars,2) || !vector(stops,data->stops,4)) { PyMem_Free(data); return NULL; }
+    for (int i=0;i<4;++i) data->stiffness[4*i+i]=rates[i];
+    for (int axle=0;axle<2;++axle) {
+        int left=2*axle,right=left+1;
+        data->stiffness[4*left+left]+=bars[axle]; data->stiffness[4*right+right]+=bars[axle];
+        data->stiffness[4*left+right]-=bars[axle]; data->stiffness[4*right+left]-=bars[axle];
+    }
+    PyObject *result=PyCapsule_New(data,suspension_coefficients_name,release_suspension_coefficients);
+    if (!result) PyMem_Free(data);
+    return result;
+}
+static PyObject *suspension_forces(PyObject *self,PyObject *args) {
+    PyObject *coefficients,*gradients_object,*velocity_object,*angular_object,*touching_object,*mobility_object,*forces_object;
+    if (!PyArg_ParseTuple(args,"OOOOOOO",&coefficients,&gradients_object,&velocity_object,&angular_object,
+        &touching_object,&mobility_object,&forces_object)) return NULL;
+    SuspensionCoefficients *data=PyCapsule_GetPointer(coefficients,suspension_coefficients_name);
+    if (!data) return NULL;
+    double gradients[24],velocity[3],angular[3],touching[4],mobility[16]={0.},previous[4],speed[4],terms[6];
+    if (!matrix_values(gradients_object,gradients,4,6) || !vector(velocity_object,velocity,3)
+        || !vector(angular_object,angular,3) || !vector(touching_object,touching,4)
+        || (mobility_object!=Py_None && !matrix_values(mobility_object,mobility,4,4))
+        || !vector(forces_object,previous,4)) return NULL;
+    for (int i=0;i<4;++i) {
+        for (int a=0;a<6;++a) terms[a]=gradients[6*i+a]*(a<3 ? velocity[a] : angular[a-3]);
+        double free=compensated(terms,6);
+        for (int j=0;j<4;++j) terms[j]=mobility[4*i+j]*previous[j];
+        speed[i]=free-data->dt*compensated(terms,4);
+    }
+    double end[4],forces[4],raw[4],damping[4];
+    if (!suspension_contact_values(data->compression,speed,mobility,touching,data->stiffness,data->cd,data->ed,data->stops,
+        data->travel,data->dt,data->geometry,end,forces,raw,damping)) return NULL;
+    return Py_BuildValue("(dddd)",forces[0],forces[1],forces[2],forces[3]);
 }
 
 /* 同一悬架势能、硬件梯度与离散能量账；保留原乘法/求和次序。 */
@@ -1878,12 +1988,13 @@ static PyObject *shared_solution_result(SharedMap *data,double state[11],const d
     const double *normal,const double load[4],const double support[4],int warm,double ports[2],PyObject *velocity) {
     if (data->bias) {state[9]=ports[0]; state[10]=ports[1];}
     int variables=data->bias ? 11 : 9,branch_index=warm,port_index=-1;
-    double end[11],road[4],active[3],port_values[4],error=0.;
+    double end[11],road[4],active[3],port_values[4],error=0.,previous_error=INFINITY;
     for (int iteration=0; iteration<30; ++iteration) {
         if (!shared_map_values(data,state,angular,normal,load,support,branch_index,
             end,road,active,port_values,&branch_index,&port_index)) return NULL;
         double residual[11];
         int angular_converged=1,ports_converged=1;
+        double last_error=error;
         error=0.;
         for (int a=0; a<variables; ++a) {
             residual[a]=state[a]-end[a];
@@ -1912,7 +2023,9 @@ static PyObject *shared_solution_result(SharedMap *data,double state[11],const d
                 port_values[0],port_values[2],port_values[1],branch_index,port_index,
                 road[0],road[1],road[2],road[3],active[0],active[1],active[2],ports[0],ports[1]);
         }
-        if ((data->rolling || data->bias) && iteration>=4) {
+        /* 固定点已快速下降时沿用原路线；停滞分区提前使用已有解析Newton。 */
+        previous_error=iteration ? last_error : INFINITY;
+        if ((data->rolling || data->bias) && (iteration>=4 || (iteration>=1 && error>=.2*previous_error))) {
             double columns[11][11],matrix[121],rhs[11],rows[121],delta[11],lu_residual[11],correction[11],terms[12],partials[12];
             Py_ssize_t order[11];
             shared_jacobian_values(data,state,load,support,branch_index,port_index,columns);
@@ -2598,6 +2711,9 @@ static PyObject *suspension_residuals(PyObject *self,PyObject *args) {
 }
 
 static PyMethodDef methods[] = {
+    {"suspension_coefficients", (PyCFunction)suspension_coefficients, METH_VARARGS, "本advance固定悬架材料与硬件"},
+    {"suspension_forces", (PyCFunction)suspension_forces, METH_VARARGS, "原活动集只返回当前反力"},
+    {"suspension_projection", (PyCFunction)suspension_projection, METH_VARARGS, "四轮法向响应与Mobility整块计算"},
     {"wheel_residuals", (PyCFunction)wheel_residuals, METH_VARARGS, "同一末状态四轮接触与制动残差"},
     {"wheel_brake_correction", (PyCFunction)wheel_brake_correction, METH_VARARGS, "同一端口分区四轮制动联合修正"},
     {"suspension_residuals", (PyCFunction)suspension_residuals, METH_VARARGS, "原法向/几何共轭残差"},

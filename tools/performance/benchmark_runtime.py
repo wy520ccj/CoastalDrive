@@ -23,12 +23,19 @@ def main():
     parser.add_argument("--seconds", type=float, default=45)
     parser.add_argument("--baseline-compute", action="store_true")
     parser.add_argument("--pipeline", choices=("single", "draw", "cull-draw"), default="draw")
+    parser.add_argument("--track", choices=("coastal", "endless"), default="endless")
+    parser.add_argument("--vehicle-design")
+    parser.add_argument("--driving-mode", choices=("game", "simulation"), default="game")
+    parser.add_argument("--source", type=Path, default=ROOT / "src")
     parser.add_argument("--trace-streaming", action="store_true")
     args = parser.parse_args()
     if not 30 <= args.seconds <= 60:
         parser.error("短测限于30–60秒")
     args.output.mkdir(parents=True, exist_ok=False)
     os.environ["LOCALAPPDATA"] = str(args.output.resolve() / "user-data")
+    sys.path.insert(0, str(args.source.resolve()))
+    import paths
+    paths.resource_root = lambda: ROOT
     streaming_phases = {}
     tracing = False
     if args.trace_streaming:
@@ -80,14 +87,19 @@ def main():
     from panda3d.core import CallbackObject, Filename, loadPrcFileData
 
     from application import CoastalDrive
+    from controls import ConstantController
+    from driving_modes import DrivingMode
+    from simulation import Control
 
     pipelines = {"single": "", "draw": "/Draw", "cull-draw": "Cull/Draw"}
     loadPrcFileData("performance-pipeline", "threading-model " + pipelines[args.pipeline])
-    app = CoastalDrive(smoke=True, onscreen=True, track="endless", road_shape=args.shape,
+    app = CoastalDrive(smoke=True, onscreen=True, track=args.track, road_shape=args.shape,
                        seed=23, output=args.output, render_size=(1920, 1080),
-                       threading_model=pipelines[args.pipeline])
+                       threading_model=pipelines[args.pipeline],
+                       vehicle_design_id=args.vehicle_design, driving_mode=DrivingMode(args.driving_mode))
     app.taskMgr.remove("finish-smoke")
-    app.session.set_controller(EnduranceDriver(app.session.simulation, 724))
+    app.session.set_controller(EnduranceDriver(app.session.simulation, 724) if args.track == "endless"
+                               else ConstantController(Control(throttle=.3)))
     user32 = ctypes.WinDLL("user32", use_last_error=True)
     user32.ShowWindow.argtypes = [wintypes.HWND, ctypes.c_int]
     user32.SetForegroundWindow.argtypes = [wintypes.HWND]
@@ -139,7 +151,12 @@ def main():
             state = app.session.current
             distance = app.session.simulation.road.locate(state.player)[0] - 8
             final.update({
-                "kind": "45-second comparison; not final performance or human gate",
+                "kind": "short window comparison; not final performance or human gate",
+                "source": str(args.source.resolve()), "track": args.track,
+                "vehicle_design": args.vehicle_design, "driving_mode": args.driving_mode,
+                "controller": "highway-driver" if args.track == "endless" else "constant-throttle-0.3",
+                "audio": "disabled by existing smoke mode",
+                "tick": state.tick, "fixed_hz": 120,
                 "shape": args.shape, "seed": 23, "resolution": [1920, 1080],
                 "traffic_count": len(state.traffic), "pipeline": args.pipeline,
                 "baseline_compute": args.baseline_compute, "window_sampling_valid": valid,

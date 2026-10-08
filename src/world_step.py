@@ -12,7 +12,7 @@ def physical_substeps(config):
     return config.tire_substeps if config.suspension_si_enabled and config.suspension_coupled_enabled and config.finite_drivetrain else 1
 
 
-def advance_world(world, cars, *, substeps, observe=None):
+def advance_world(world, cars, *, substeps, observe=None, static_cache=None, packet_cache=None):
     """请求准备一次，子步依次施力/推进；控制、传感采样与快照只结算一个120Hz拍。"""
     velocities = [Vec3(car._chassis.getLinearVelocity()) for car, _action in cars]
     prepared = []
@@ -25,7 +25,7 @@ def advance_world(world, cars, *, substeps, observe=None):
     dt = FIXED_DT / substeps
     for index in range(substeps):
         # 所有车辆共用本物理子步的真实静态几何；下一Bullet推进前重新读取。
-        static_shapes = (static_support_shapes(world, None, BitMask32.bit(0))
+        static_shapes = (static_support_shapes(world, None, BitMask32.bit(0), cache=static_cache, packet_cache=packet_cache)
                          if any(car.coupled_suspension and car.config.finite_drivetrain for car, _action in cars) else None)
         before = {car._chassis: (Vec3(car._chassis.getLinearVelocity()),
                                 Vec3(car._chassis.getAngularVelocity()),

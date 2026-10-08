@@ -132,6 +132,8 @@ class Simulation:
         self.rebases = 0
         self.stream = None
         self._tick = 0
+        self._static_support_cache = {}
+        self._static_support_packet = {}
         self._events = ()
         self.npcs = []
         self.drivers = []
@@ -702,6 +704,8 @@ class Simulation:
                 if car._chassis not in self._retired_traffic:
                     car.close()
             self._world = None
+            self._static_support_cache.clear()
+            self._static_support_packet.clear()
         self.player = None
         self._chassis = self._vehicle = None
 
@@ -735,7 +739,8 @@ class Simulation:
                                     and self._world.contactTestPair(self._chassis, body).getNumContacts() > 0)
             self._count_player_collisions()
 
-        advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+        advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe,
+                      static_cache=self._static_support_cache, packet_cache=self._static_support_packet)
         self.collision_count += len(traffic_contacts)
         self._tick += 1
         if self.stream:

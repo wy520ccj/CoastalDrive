@@ -11,7 +11,8 @@ setup(
     package_dir={"": "src"},
     ext_modules=[
         Extension("mechanical_kernels", ["src/mechanical_kernels.c"], extra_compile_args=compile_args),
-        Extension("wheel_contact_kernels", ["src/wheel_contact_kernels.c"], extra_compile_args=compile_args),
+        Extension("wheel_contact_kernels", ["src/wheel_contact_kernels.c"],
+                  depends=["src/wheel_convex_distance.h"], extra_compile_args=compile_args),
     ],
     options={
         "build_apps": {
