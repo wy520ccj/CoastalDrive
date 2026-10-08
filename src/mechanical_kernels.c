@@ -1316,11 +1316,15 @@ static PyObject *shared_map_jacobian(PyObject *self,PyObject *args,PyObject *kwa
 
 /* 局部轮力与端口分区共用原共同映射判据，暖模式按每次尝试直接更新。 */
 typedef struct {
+    SharedBranch ports;
+    double force_responses[2][9];
+} WheelBranch;
+typedef struct {
     PyObject *shared_owner;
     SharedMap *shared;
     LoadCoefficients load;
     double brake_gradients[4][9],brakes[4];
-    SharedBranch local[];
+    WheelBranch local[];
 } WheelMap;
 static const char *wheel_map_name="CoastalDrive.wheel_map";
 static void release_wheel_map(PyObject *object) {
@@ -1334,7 +1338,7 @@ static PyObject *wheel_map_coefficients(PyObject *self,PyObject *args) {
     SharedMap *shared=PyCapsule_GetPointer(shared_object,shared_map_name);
     LoadCoefficients *load=PyCapsule_GetPointer(load_object,load_coefficients_name);
     if (!shared || !load) return NULL;
-    WheelMap *data=PyMem_Calloc(1,sizeof(WheelMap)+4*shared->branch_count*sizeof(SharedBranch));
+    WheelMap *data=PyMem_Calloc(1,sizeof(WheelMap)+4*shared->branch_count*sizeof(WheelBranch));
     if (!data) return PyErr_NoMemory();
     data->shared=shared; data->load=*load;
     if (!matrix_values(gradients,&data->brake_gradients[0][0],4,9) || !vector(brakes,data->brakes,4)) goto failed;
@@ -1342,7 +1346,11 @@ static PyObject *wheel_map_coefficients(PyObject *self,PyObject *args) {
         PyObject *input=PyTuple_GET_ITEM(branches,b);
         PyObject *responses=PyTuple_GET_ITEM(input,5),*all_plans=PyTuple_GET_ITEM(input,6);
         for (int w=0; w<4; ++w) {
-            SharedBranch *local=&data->local[4*b+w];
+            WheelBranch *wheel_branch=&data->local[4*b+w];
+            SharedBranch *local=&wheel_branch->ports;
+            PyObject *wheel=PyTuple_GET_ITEM(PyTuple_GET_ITEM(input,4),w);
+            for (int j=0; j<2; ++j)
+                if (!vector(PyTuple_GET_ITEM(wheel,j),wheel_branch->force_responses[j],9)) goto failed;
             int n=shared->hard ? 4 : 3;
             for (int j=0; j<n; ++j)
                 if (!vector(PyTuple_GET_ITEM(PyTuple_GET_ITEM(responses,w),j),local->port_response[j],n)) goto failed;
@@ -1359,7 +1367,6 @@ static PyObject *wheel_map_coefficients(PyObject *self,PyObject *args) {
                 }
                 if (!matrix_values(PyTuple_GET_ITEM(source,shared->hard ? 3 : 1),&plan->columns[0][0],3,3)) goto failed;
             }
-            PyObject *wheel=PyTuple_GET_ITEM(PyTuple_GET_ITEM(input,4),w);
             if (!vector(PyTuple_GET_ITEM(wheel,2),local->mc,9)) goto failed;
         }
     }
@@ -1388,7 +1395,7 @@ static PyObject *wheel_map_state(PyObject *self,PyObject *args) {
     for (int visit=-1; visit<data->branch_count; ++visit) {
         int index=visit<0 ? warm : visit;
         if (visit>=0 && index==warm) continue;
-        SharedBranch *branch=&data->branches[index],*local=&packet->local[4*index+wheel];
+        SharedBranch *branch=&data->branches[index],*local=&packet->local[4*index+wheel].ports;
         double projected[9];
         shared_branch_free(data,branch,free,active,projected);
         double port_free[4]={0.};
@@ -1420,6 +1427,88 @@ static PyObject *wheel_map_state(PyObject *self,PyObject *args) {
     return Py_BuildValue("(N(ddd)d(ii))",state,velocity[0],velocity[1],velocity[2],values[3],selected,port_index);
 }
 
+
+/* 同一轮端活动分区的完整解析导数；输入末状态来自原轮力映射。 */
+static PyObject *wheel_map_derivatives(PyObject *self,PyObject *args) {
+    PyObject *coefficients,*state_object,*velocity_object,*moment_x_object,*moment_y_object,*tangent_object,*axle_object;
+    int wheel,branch_index,port_index;
+    double radius;
+    if (!PyArg_ParseTuple(args,"OiiiOOOOdOO",&coefficients,&wheel,&branch_index,&port_index,
+        &state_object,&velocity_object,&moment_x_object,&moment_y_object,&radius,&tangent_object,&axle_object)) return NULL;
+    WheelMap *packet=PyCapsule_GetPointer(coefficients,wheel_map_name);
+    if (!packet) return NULL;
+    SharedMap *data=packet->shared;
+    if (wheel<0 || wheel>=4 || branch_index<0 || branch_index>=data->branch_count) {
+        PyErr_SetString(PyExc_IndexError,"轮端导数分区索引越界"); return NULL;
+    }
+    WheelBranch *wheel_branch=&packet->local[4*branch_index+wheel];
+    SharedBranch *branch=&data->branches[branch_index],*local=&wheel_branch->ports;
+    if (port_index<0 || port_index>=local->plan_count) {
+        PyErr_SetString(PyExc_IndexError,"轮端导数端口索引越界"); return NULL;
+    }
+    SharedPortPlan *plan=&local->plans[port_index];
+    double state[9],velocity[3],moment_x[3],moment_y[3],tangent[3],axle[3],terms[9];
+    if (!vector(state_object,state,9) || !vector(velocity_object,velocity,3)
+        || !vector(moment_x_object,moment_x,3) || !vector(moment_y_object,moment_y,3)
+        || !vector(tangent_object,tangent,3) || !vector(axle_object,axle,3)) return NULL;
+    for (int a=0; a<3; ++a) terms[a]=velocity[a]*tangent[a];
+    double vx=compensated(terms,3);
+    for (int a=0; a<3; ++a) terms[a]=state[a]*moment_x[a];
+    vx=vx+compensated(terms,3);
+    for (int a=0; a<3; ++a) terms[a]=velocity[a]*axle[a];
+    double vy=compensated(terms,3);
+    for (int a=0; a<3; ++a) terms[a]=state[a]*moment_y[a];
+    vy=vy+compensated(terms,3);
+    double gradients[2][3];
+    for (int column=0; column<2; ++column) {
+        const double *response=wheel_branch->force_responses[column];
+        const double *direction=column==0 ? tangent : axle;
+        double port_direction[4],rhs[3],dc,dg,dl,db;
+        int n=data->hard ? 4 : 3;
+        for (int i=0; i<n; ++i) {
+            const double *g=i==n-1 ? packet->brake_gradients[wheel] : data->ports[i];
+            for (int a=0; a<9; ++a) terms[a]=g[a]*response[a];
+            port_direction[i]=compensated(terms,9);
+        }
+        if (data->hard) {
+            int ports[3]={0,2,3};
+            double gear_free=port_direction[1]/local->port_response[1][1],reduced[3],output[3];
+            for (int j=0; j<3; ++j) reduced[j]=port_direction[ports[j]]-local->port_response[ports[j]][1]*gear_free;
+            rhs[0]=plan->modes[0]==0. ? reduced[0] : 0.;
+            rhs[1]=plan->modes[1]==0. ? reduced[1] : plan->slope*gear_free;
+            rhs[2]=plan->modes[2]==0. ? reduced[2] : 0.;
+            for (int a=0; a<3; ++a) {
+                for (int j=0; j<3; ++j) terms[j]=plan->columns[j][a]*rhs[j];
+                output[a]=compensated(terms,3);
+            }
+            dc=output[0]; dl=output[1]; db=output[2];
+            for (int j=0; j<3; ++j) terms[j]=local->port_response[1][ports[j]]*output[j]/local->port_response[1][1];
+            dg=gear_free-compensated(terms,3);
+        } else {
+            double output[3];
+            for (int j=0; j<3; ++j) rhs[j]=plan->modes[j]==0. ? port_direction[j] : 0.;
+            for (int a=0; a<3; ++a) {
+                for (int j=0; j<3; ++j) terms[j]=plan->columns[j][a]*rhs[j];
+                output[a]=compensated(terms,3);
+            }
+            dc=output[0]; dg=output[1]; db=output[2]; dl=0.;
+        }
+        double dq[9];
+        for (int a=0; a<9; ++a) dq[a]=data->dt*(response[a]-dc*branch->mc[a]-dl*branch->ml[a]-db*local->mc[a]-dg*branch->mg[a]);
+        for (int a=0; a<3; ++a) terms[a]=direction[a]*tangent[a];
+        double dx=data->dt/packet->load.mass*compensated(terms,3);
+        for (int a=0; a<3; ++a) terms[a]=dq[a]*moment_x[a];
+        dx=dx+compensated(terms,3);
+        for (int a=0; a<3; ++a) terms[a]=direction[a]*axle[a];
+        double dy=data->dt/packet->load.mass*compensated(terms,3);
+        for (int a=0; a<3; ++a) terms[a]=dq[a]*moment_y[a];
+        dy=dy+compensated(terms,3);
+        gradients[column][0]=radius*dq[wheel+5]-dx;
+        gradients[column][1]=-dy; gradients[column][2]=dx;
+    }
+    return Py_BuildValue("(dd(dd)[(ddd)(ddd)])",vx,vy,radius*state[wheel+5]-vx,-vy,
+        gradients[0][0],gradients[0][1],gradients[0][2],gradients[1][0],gradients[1][1],gradients[1][2]);
+}
 
 /* 原四轮接触/阻尼/止挡活动集；分区次序、64轮与精度保持。 */
 static PyObject *suspension_contact_state(PyObject *self,PyObject *args) {
@@ -1734,6 +1823,7 @@ static PyObject *tire_contact_jacobian(PyObject *self,PyObject *args) {
 }
 
 static PyMethodDef methods[] = {
+    {"wheel_map_derivatives", (PyCFunction)wheel_map_derivatives, METH_VARARGS, "原轮端机械活动分区完整解析导数"},
     {"tire_combined_force", (PyCFunction)tire_combined_force, METH_VARARGS, "原联合滑移轮胎力"},
     {"tire_contact_force", (PyCFunction)tire_contact_force, METH_VARARGS, "原柔性胎体及接触分区"},
     {"tire_contact_jacobian", (PyCFunction)tire_contact_jacobian, METH_VARARGS, "原柔性接触解析导数"},

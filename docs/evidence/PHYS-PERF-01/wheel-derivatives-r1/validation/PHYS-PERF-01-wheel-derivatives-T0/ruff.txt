@@ -1,0 +1,14 @@
+RUF059 Unpacked variable `local_response` is never used
+   --> src\tire_drivetrain.py:464:58
+    |
+462 |                 return wheel_map_derivatives(wheel_map, i, branch_index, index, end, velocity_end,
+463 |                                              moments_x[i], moments_y[i], radii[i], frame.tangent, frame.axle)
+464 |             _branch, mc, ml, _response, wheel_responses, local_response, plans, _shaft_data = branches[branch_index]
+    |                                                          ^^^^^^^^^^^^^^
+465 |             local_rx, local_ry, local_rb = wheel_responses[i]
+466 |             vx, vy, slip = velocities(i, end, velocity_end)
+    |
+help: Prefix it with an underscore or any other dummy variable pattern
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).

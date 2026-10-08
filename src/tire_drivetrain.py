@@ -15,6 +15,7 @@ from mechanical_kernels import (
     shared_solution,
     wheel_load_prepared,
     wheel_map_coefficients,
+    wheel_map_derivatives,
     wheel_map_state,
 )
 
@@ -457,24 +458,15 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
 
         def derivatives(fx, fy):
             end, velocity_end, brake, (branch_index, index) = local_state(fx, fy)
-            _branch, mc, ml, _response, wheel_responses, local_response, plans, shaft_data = branches[branch_index]
+            if shaft:
+                return wheel_map_derivatives(wheel_map, i, branch_index, index, end, velocity_end,
+                                             moments_x[i], moments_y[i], radii[i], frame.tangent, frame.axle)
+            _branch, mc, ml, _response, wheel_responses, _local_response, plans, _shaft_data = branches[branch_index]
             local_rx, local_ry, local_rb = wheel_responses[i]
             vx, vy, slip = velocities(i, end, velocity_end)
             gradients = []
             for response, direction in ((local_rx, frame.tangent), (local_ry, frame.axle)):
-                dg = 0.
-                if shaft:
-                    mg, _shared_plans = shaft_data
-                    if hard_gear:
-                        dc, dg, dl, db = shaft_brake_response(
-                            tuple(dot(g, response) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[i])),
-                            local_response[i], plans[i][index])
-                    else:
-                        dc, dg, db = synchronizer_brake_response(
-                            tuple(dot(g, response) for g in (clutch_gradient, shaft_gear_gradient, brake_gradients[i])),
-                            plans[i][index])
-                        dl = 0.
-                elif ratio:
+                if ratio:
                     active, _sign, columns = plans[i][index]
                     rhs = tuple(dot(g, response) if mode in ("locked", "static") else 0.
                                 for g, mode in zip((clutch_gradient, gear_gradient, brake_gradients[i]), active))
@@ -483,7 +475,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                     dc = dl = 0.
                     db = (dot(brake_gradients[i], response) / dot(brake_gradients[i], local_rb)
                           if abs(brake) < brakes[i] else 0.)
-                dq = tuple(dt * (response[a] - dc * mc[a] - dl * ml[a] - db * local_rb[a] - (dg * mg[a] if shaft else 0.)) for a in range(dimensions))
+                dq = tuple(dt * (response[a] - dc * mc[a] - dl * ml[a] - db * local_rb[a]) for a in range(dimensions))
                 dx = dt / mass * dot(direction, frame.tangent) + dot(dq[:3], moments_x[i])
                 dy = dt / mass * dot(direction, frame.axle) + dot(dq[:3], moments_y[i])
                 gradients.append((radii[i] * dq[i + wheel_start] - dx, -dy, dx))
