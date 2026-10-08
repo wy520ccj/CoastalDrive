@@ -131,3 +131,6 @@ T2-r3首项旧manifold断言失败：真实首撞在第16拍，旧测试写死�
 
 
 2026-10-07 map160 接触修正收口：几何未收敛时仍调用原 `correct_contacts`，保留20轮及全部阈值。修复前 `PHYS-INTEGRATE-02-stage-T2-r4` 真实失败为18通过/1失败，point160 第97拍残差与单步重放、原Newton接触修正10轮收敛证据已归档；后11检查未运行，旧长轨迹不跨源码复用。修复后 T0 337 项、T1 785 项与 Ruff/三种子通过。原 replay 脚本的旧 `kind` 标签曾误复制自33657dc，已改为e8e2a4f并重跑；原stage日志不改写。健康48拍对照仅为诊断。见[map160耦合修正证据](../evidence/PHYS-DESIGN-01/map160-coupled-refinement/report.md)。完整阶段、T3、前台性能和人工Gate未完成。
+
+
+2026-10-08 整合T2中断与续跑：[归档](../evidence/PHYS-PERF-01/stage-interruption-r1/report.md)。r1摘要为running但实际进程不存在，unified session未知，pytest日志0字节且中断原因未知，不计通过。冻结主源码`01b99f3`同源r2已启动，交接观察为PID存在、首个18,000拍highway节点通过、约29个pytest通过标记且未见失败；复用957、剩1173与11专项仍在跑，暂无最终结果。归档不含活动pytest日志。隔离shared-solution `12ea82b`有645项T1但待整合；阶段/T3/前台/人工Gate均未完成。
