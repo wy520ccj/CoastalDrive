@@ -1,7 +1,7 @@
 """四轮接触、曲轴/输入轴、有限离合与制动的共同末状态。"""
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from mechanical_kernels import (
     dot,
@@ -162,7 +162,6 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     def mobility(vector):
         return mass_response_prepared(mobility_coefficients, vector)
 
-    wheel_loads = tuple(frame.load for frame in frames)
     normal_forces = (0.,) * 4
     normal_responses, normal_mobility = (), ()
     reference_suspension = suspension
@@ -178,9 +177,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         normal_projection()
 
     def normal_loads():
-        nonlocal wheel_loads
-        # 支持几何在本次推进内固定，法向力只刷新四个实际轮荷。
-        wheel_loads = tuple(force / alignment if frame.supported and contact and force > 0. else 0.
+        nonlocal frames
+        frames = tuple(replace(frame, load=force / alignment if frame.supported and contact and force > 0. else 0.)
                        for frame, force, alignment, contact in
                        zip(frames, normal_forces, suspension.alignment, suspension.touching))
 
@@ -254,7 +252,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     configurations = (config, config, rear_config, rear_config)
     rolling = tuple(max(abs(dot(velocity, frame.tangent) + dot(angular, moments_x[i])),
                         abs(radii[i] * omega[i])) >= config.static_contact_speed for i, frame in enumerate(frames))
-    static = tuple((wheel_loads[i] > 0 if suspension is None else suspension.touching[i]) and max(abs(dot(velocity, frame.tangent) + dot(angular, moments_x[i])),
+    static = tuple((frame.load > 0 if suspension is None else suspension.touching[i]) and max(abs(dot(velocity, frame.tangent) + dot(angular, moments_x[i])),
                    abs(dot(velocity, frame.axle) + dot(angular, moments_y[i])), abs(radii[i] * omega[i]))
                    < config.static_contact_speed for i, frame in enumerate(frames))
     steering = tuple(sum(torque[a] for torque in steering_torques) for a in range(3))
@@ -307,7 +305,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         loads = load_terms()
         if shaft:
             end, end_velocity, clutch, loss, gear_reaction, shared_branch, shared_port_index, road_torques, active_limits, bias_ports = shared_solution(
-                shared_map, guess, loads, wheel_loads,
+                shared_map, guess, loads, tuple(frame.load for frame in frames),
                 tuple(frame.supported for frame in frames), shared_branch, bias_ports)
             return end, end_velocity, clutch, loss, gear_reaction
         def mapped(state):
@@ -317,7 +315,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 active_limits = bias_limits(state[:dimensions], *state[dimensions:])
             if rolling_active:
                 road_torques = rolling_torques(frames,radii,state[wheel_start:],rolling_coefficients,
-                                               config.rolling_transition_speed, loads=wheel_loads)
+                                               config.rolling_transition_speed)
             free, end_velocity = known(cross(spin(state), state[:3]), loads)
             order = [shared_branch] + [i for i in range(len(branches)) if i != shared_branch]
             for branch_index in order:
@@ -402,8 +400,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     def contact(index, state, end_velocity, fx, fy):
         frame, car = frames[index], configurations[index]
         vx, vy, slip = velocities(index, state, end_velocity)
-        grip = tire_grip(wheel_loads[index], frame.mu, car)
-        cx, cy = tire_stiffness(wheel_loads[index], car)
+        grip = tire_grip(frame.load, frame.mu, car)
+        cx, cy = tire_stiffness(frame.load, car)
         if car.tire_compliance:
             target, *details = contact_force((fx, fy), deformations[index], slip, max(abs(vx), car.slip_speed),
                 rolling[index], grip, cx, cy, dt, car.tire_contact_stiffness, car.tire_contact_damping,
@@ -489,8 +487,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             denominator_gradient = (tuple(math.copysign(1., vx) * value[2] for value in gradients)
                                     if abs(vx) > car.slip_speed else (0., 0.))
             target = contact_jacobian((fx, fy), deformations[i], slip, slip_jacobian,
-                max(abs(vx), car.slip_speed), denominator_gradient, rolling[i], tire_grip(wheel_loads[i], frame.mu, car),
-                *tire_stiffness(wheel_loads[i], car), dt, car.tire_contact_stiffness, car.tire_contact_damping,
+                max(abs(vx), car.slip_speed), denominator_gradient, rolling[i], tire_grip(frame.load, frame.mu, car),
+                *tire_stiffness(frame.load, car), dt, car.tire_contact_stiffness, car.tire_contact_damping,
                 car.tire_shape, car.tire_curvature)
             return 1 - target[0][0], -target[0][1], -target[1][0], 1 - target[1][1]
 
@@ -504,14 +502,14 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             return (-gradients[0][0] / scale_x, -gradients[1][0] / scale_x,
                     -gradients[0][1] / scale_y, -gradients[1][1] / scale_y)
 
-        mode = "magic-formula" if wheel_loads[i] > 0 else "airborne"
+        mode = "magic-formula" if frame.load > 0 else "airborne"
         if car.tire_compliance:
             guess = forces[i][:2]
-            if suspension is not None and sweep == 0 and rolling[i] and wheel_loads[i] > 0:
+            if suspension is not None and sweep == 0 and rolling[i] and frame.load > 0:
                 # 姿态/轮荷刷新后，旧力可能位于曲线下降支。用同一隐式方程的零滑移切线预测初值。
                 vx, _vy, slip, gradients = derivatives(0., 0.)
                 impedance = car.tire_contact_stiffness * dt + car.tire_contact_damping
-                stiffnesses = tire_stiffness(wheel_loads[i], car)
+                stiffnesses = tire_stiffness(frame.load, car)
                 slopes = tuple(value / max(abs(vx), car.slip_speed) for value in stiffnesses)
                 patch = tuple(slip[a] + car.tire_contact_stiffness * deformations[i][a] / impedance for a in range(2))
                 matrix = tuple(tuple(float(a == b) - slopes[a] * (
@@ -522,7 +520,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 determinant = a * d - b * c
                 guess = ((d * rhs_x - b * rhs_y) / determinant, (a * rhs_y - c * rhs_x) / determinant)
             if rolling[i]:
-                fx, fy, _error = _solve_rolling_force(residual, jacobian, tire_grip(wheel_loads[i], frame.mu, car),
+                fx, fy, _error = _solve_rolling_force(residual, jacobian, tire_grip(frame.load, frame.mu, car),
                                                      tolerance=.0001, initial=guess)
             else:
                 fx, fy, _error = _solve_force(residual, tolerance=.0001, initial=guess, jacobian=jacobian)
@@ -531,7 +529,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             if static[i]:
                 fx, fy, _error = _solve_force(sticking_residual, tolerance=.0001,
                                              initial=forces[i][:2], jacobian=sticking_jacobian)
-                sticking = math.hypot(fx, fy) <= tire_grip(wheel_loads[i], frame.mu, car)
+                sticking = math.hypot(fx, fy) <= tire_grip(frame.load, frame.mu, car)
             if sticking:
                 mode = "sticking"
             else:
@@ -620,7 +618,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             scale = 2.**-attempt
             candidate = tuple(values[i] + scale * delta[i] for i in range(8))
             if any(modes[i] == "sticking" and math.hypot(*candidate[2 * i:2 * i + 2])
-                   > tire_grip(wheel_loads[i], frames[i].mu, configurations[i]) for i in range(4)):
+                   > tire_grip(frames[i].load, frames[i].mu, configurations[i]) for i in range(4)):
                 continue
             after = residual(candidate)
             if max(math.hypot(*after[2 * i:2 * i + 2]) for i in range(4)) < before:
@@ -735,7 +733,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             elastic, rate, patch, patch_kappa, patch_alpha, mode = details
             energy, material, road, numerical = energy_terms((fx, fy), deformations[i], elastic, rate, patch,
                 dt, config.tire_contact_stiffness, config.tire_contact_damping)
-            if wheel_loads[i] == 0:
+            if frame.load == 0:
                 mode = "airborne"
         wheels.append(WheelStep(state[i + wheel_start], dot(brake_gradients[i], state), vx, vy, dot(state[:3], axes[i]),
             kappa, alpha, fx, fy, brake, maximum, mode, *elastic, patch_kappa, patch_alpha,

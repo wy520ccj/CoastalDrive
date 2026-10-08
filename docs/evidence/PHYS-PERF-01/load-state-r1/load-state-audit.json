@@ -1,0 +1,9 @@
+{
+  "baseline": "main 98f86e3 plus pending bounded rolling root, original ContactFrame load replacement",
+  "pytest_code": 1,
+  "all_full_step_hex_equal": false,
+  "counts": {
+    "calls": 696,
+    "original_frame_rebuilds": 4120
+  }
+}

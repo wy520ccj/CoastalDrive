@@ -1,0 +1,897 @@
+........................................................................ [ 18%]
+........................................................................ [ 36%]
+........................................................................ [ 54%]
+........................................................................ [ 73%]
+........................................................................ [ 91%]
+...FF.......FFFF........F.....FF.                                        [100%]
+================================== FAILURES ===================================
+_ test_actual_bullet_submission_matches_joint_six_dimensional_end[DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000024333837360>
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    def test_actual_bullet_submission_matches_joint_six_dimensional_end(mode, monkeypatch):
+        import vehicle_tires
+    
+        observed = []
+        original = vehicle_tires.advance_drivetrain
+    
+        def capture(*args, **kwargs):
+            result = original(*args, **kwargs)
+            observed.append((result.suspension_system, result))
+            return result
+    
+        monkeypatch.setattr(vehicle_tires, "advance_drivetrain", capture)
+        _world, car = _create_vehicle(mode.vehicle_config)
+        try:
+            # �������ʼ����������ʵ��ǡ����١����ټ����ٶȣ����������и�д״̬��
+            car._chassis.setTransform(TransformState.makePosHpr(Vec3(0, 0, .4), Vec3(0, 0, 3)))
+            car._chassis.setLinearVelocity(Vec3(.2, 12., -.1))
+            car._chassis.setAngularVelocity(Vec3(.15, -.1, .02))
+            car.tires.initialize_rolling(12.)
+>           car.apply_command(VehicleCommand(steering=.25, throttle=.3, gear=1, clutch=.7))
+
+tests\test_joint_suspension.py:92: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\vehicle.py:190: in apply_command
+    self.advance_physics(self.prepare_command(command), FIXED_DT, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+tests\test_joint_suspension.py:80: in capture
+    result = original(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+logs\physics\PHYS-PERF-01\audit-load-state.py:31: in audited
+    assert hex_tree(asdict(actual)) == hex_tree(asdict(expected)), counts
+                    ^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1496: in asdict
+    return _asdict_inner(obj, dict_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1524: in _asdict_inner
+    return tuple([_asdict_inner(v, dict_factory) for v in obj])
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1564: in _asdict_inner
+    return copy.deepcopy(obj)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+x = <panda3d.bullet.BulletWorld object at 0x00000243338E60A0>, memo = {}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        cls = type(x)
+    
+        if cls in _atomic_types:
+            return x
+    
+        d = id(x)
+        if memo is None:
+            memo = {}
+        else:
+            y = memo.get(d, _nil)
+            if y is not _nil:
+                return y
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = x # atomic copy
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+>                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'panda3d.bullet.BulletWorld' object
+
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\copy.py:146: TypeError
+_ test_actual_bullet_submission_matches_joint_six_dimensional_end[DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000024333F1CE90>
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    def test_actual_bullet_submission_matches_joint_six_dimensional_end(mode, monkeypatch):
+        import vehicle_tires
+    
+        observed = []
+        original = vehicle_tires.advance_drivetrain
+    
+        def capture(*args, **kwargs):
+            result = original(*args, **kwargs)
+            observed.append((result.suspension_system, result))
+            return result
+    
+        monkeypatch.setattr(vehicle_tires, "advance_drivetrain", capture)
+        _world, car = _create_vehicle(mode.vehicle_config)
+        try:
+            # �������ʼ����������ʵ��ǡ����١����ټ����ٶȣ����������и�д״̬��
+            car._chassis.setTransform(TransformState.makePosHpr(Vec3(0, 0, .4), Vec3(0, 0, 3)))
+            car._chassis.setLinearVelocity(Vec3(.2, 12., -.1))
+            car._chassis.setAngularVelocity(Vec3(.15, -.1, .02))
+            car.tires.initialize_rolling(12.)
+>           car.apply_command(VehicleCommand(steering=.25, throttle=.3, gear=1, clutch=.7))
+
+tests\test_joint_suspension.py:92: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\vehicle.py:190: in apply_command
+    self.advance_physics(self.prepare_command(command), FIXED_DT, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+tests\test_joint_suspension.py:80: in capture
+    result = original(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+logs\physics\PHYS-PERF-01\audit-load-state.py:31: in audited
+    assert hex_tree(asdict(actual)) == hex_tree(asdict(expected)), counts
+                    ^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1496: in asdict
+    return _asdict_inner(obj, dict_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1524: in _asdict_inner
+    return tuple([_asdict_inner(v, dict_factory) for v in obj])
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1564: in _asdict_inner
+    return copy.deepcopy(obj)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+x = <panda3d.bullet.BulletWorld object at 0x000002433514FED0>, memo = {}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        cls = type(x)
+    
+        if cls in _atomic_types:
+            return x
+    
+        d = id(x)
+        if memo is None:
+            memo = {}
+        else:
+            y = memo.get(d, _nil)
+            if y is not _nil:
+                return y
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = x # atomic copy
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+>                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'panda3d.bullet.BulletWorld' object
+
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\copy.py:146: TypeError
+_ test_high_load_curved_rail_support_converges_and_reaches_snapshot[False-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, centered = False
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("centered", (False, True))
+    def test_high_load_curved_rail_support_converges_and_reaches_snapshot(mode, centered):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(mode.vehicle_config, centered_collision_support=centered))
+        peak_load = 0.
+        try:
+            simulation.reset_player((5.8, 30, .55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            for tick in range(30):
+>               simulation.step(Control())
+
+tests\test_guardrail_suspension.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\simulation.py:738: in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+logs\physics\PHYS-PERF-01\audit-load-state.py:31: in audited
+    assert hex_tree(asdict(actual)) == hex_tree(asdict(expected)), counts
+                    ^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1496: in asdict
+    return _asdict_inner(obj, dict_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1524: in _asdict_inner
+    return tuple([_asdict_inner(v, dict_factory) for v in obj])
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1564: in _asdict_inner
+    return copy.deepcopy(obj)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+x = <panda3d.bullet.BulletWorld object at 0x000002430198BFC0>, memo = {}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        cls = type(x)
+    
+        if cls in _atomic_types:
+            return x
+    
+        d = id(x)
+        if memo is None:
+            memo = {}
+        else:
+            y = memo.get(d, _nil)
+            if y is not _nil:
+                return y
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = x # atomic copy
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+>                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'panda3d.bullet.BulletWorld' object
+
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\copy.py:146: TypeError
+_ test_high_load_curved_rail_support_converges_and_reaches_snapshot[False-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, centered = False
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("centered", (False, True))
+    def test_high_load_curved_rail_support_converges_and_reaches_snapshot(mode, centered):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(mode.vehicle_config, centered_collision_support=centered))
+        peak_load = 0.
+        try:
+            simulation.reset_player((5.8, 30, .55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            for tick in range(30):
+>               simulation.step(Control())
+
+tests\test_guardrail_suspension.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\simulation.py:738: in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+logs\physics\PHYS-PERF-01\audit-load-state.py:31: in audited
+    assert hex_tree(asdict(actual)) == hex_tree(asdict(expected)), counts
+                    ^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1496: in asdict
+    return _asdict_inner(obj, dict_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1524: in _asdict_inner
+    return tuple([_asdict_inner(v, dict_factory) for v in obj])
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1564: in _asdict_inner
+    return copy.deepcopy(obj)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+x = <panda3d.bullet.BulletWorld object at 0x0000024333E168E0>, memo = {}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        cls = type(x)
+    
+        if cls in _atomic_types:
+            return x
+    
+        d = id(x)
+        if memo is None:
+            memo = {}
+        else:
+            y = memo.get(d, _nil)
+            if y is not _nil:
+                return y
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = x # atomic copy
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+>                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'panda3d.bullet.BulletWorld' object
+
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\copy.py:146: TypeError
+_ test_high_load_curved_rail_support_converges_and_reaches_snapshot[True-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, centered = True
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("centered", (False, True))
+    def test_high_load_curved_rail_support_converges_and_reaches_snapshot(mode, centered):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(mode.vehicle_config, centered_collision_support=centered))
+        peak_load = 0.
+        try:
+            simulation.reset_player((5.8, 30, .55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            for tick in range(30):
+>               simulation.step(Control())
+
+tests\test_guardrail_suspension.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\simulation.py:738: in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+logs\physics\PHYS-PERF-01\audit-load-state.py:31: in audited
+    assert hex_tree(asdict(actual)) == hex_tree(asdict(expected)), counts
+                    ^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1496: in asdict
+    return _asdict_inner(obj, dict_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1524: in _asdict_inner
+    return tuple([_asdict_inner(v, dict_factory) for v in obj])
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1564: in _asdict_inner
+    return copy.deepcopy(obj)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+x = <panda3d.bullet.BulletWorld object at 0x000002433540AB80>, memo = {}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        cls = type(x)
+    
+        if cls in _atomic_types:
+            return x
+    
+        d = id(x)
+        if memo is None:
+            memo = {}
+        else:
+            y = memo.get(d, _nil)
+            if y is not _nil:
+                return y
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = x # atomic copy
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+>                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'panda3d.bullet.BulletWorld' object
+
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\copy.py:146: TypeError
+_ test_high_load_curved_rail_support_converges_and_reaches_snapshot[True-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, centered = True
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("centered", (False, True))
+    def test_high_load_curved_rail_support_converges_and_reaches_snapshot(mode, centered):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(mode.vehicle_config, centered_collision_support=centered))
+        peak_load = 0.
+        try:
+            simulation.reset_player((5.8, 30, .55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            for tick in range(30):
+>               simulation.step(Control())
+
+tests\test_guardrail_suspension.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\simulation.py:738: in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+logs\physics\PHYS-PERF-01\audit-load-state.py:31: in audited
+    assert hex_tree(asdict(actual)) == hex_tree(asdict(expected)), counts
+                    ^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1496: in asdict
+    return _asdict_inner(obj, dict_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1524: in _asdict_inner
+    return tuple([_asdict_inner(v, dict_factory) for v in obj])
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1564: in _asdict_inner
+    return copy.deepcopy(obj)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+x = <panda3d.bullet.BulletWorld object at 0x0000024333ECF420>, memo = {}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        cls = type(x)
+    
+        if cls in _atomic_types:
+            return x
+    
+        d = id(x)
+        if memo is None:
+            memo = {}
+        else:
+            y = memo.get(d, _nil)
+            if y is not _nil:
+                return y
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = x # atomic copy
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+>                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'panda3d.bullet.BulletWorld' object
+
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\copy.py:146: TypeError
+____ test_every_tick_retains_force_request_and_completed_feedback[low-mu] _____
+
+case = 'low-mu'
+
+    @pytest.mark.parametrize("case", ["low-mu", "airborne-recontact"])
+    def test_every_tick_retains_force_request_and_completed_feedback(case):
+>       summary, rows = run_trial(case, True, .1)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_tcs_probe.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\physics\tcs_probe.py:62: in run_trial
+    _step(world, vehicle, VehicleCommand())
+tools\physics\reference_ab.py:65: in _step
+    advance_world(world, [(vehicle, command)], substeps=substeps)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+logs\physics\PHYS-PERF-01\audit-load-state.py:31: in audited
+    assert hex_tree(asdict(actual)) == hex_tree(asdict(expected)), counts
+                    ^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1496: in asdict
+    return _asdict_inner(obj, dict_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1524: in _asdict_inner
+    return tuple([_asdict_inner(v, dict_factory) for v in obj])
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1564: in _asdict_inner
+    return copy.deepcopy(obj)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+x = <panda3d.bullet.BulletWorld object at 0x0000024337CEE130>, memo = {}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        cls = type(x)
+    
+        if cls in _atomic_types:
+            return x
+    
+        d = id(x)
+        if memo is None:
+            memo = {}
+        else:
+            y = memo.get(d, _nil)
+            if y is not _nil:
+                return y
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = x # atomic copy
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+>                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'panda3d.bullet.BulletWorld' object
+
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\copy.py:146: TypeError
+_____ test_airborne_trial_falls_and_recontacts_without_runtime_reposition _____
+
+    def test_airborne_trial_falls_and_recontacts_without_runtime_reposition():
+        # ���������״���غ󻹻�ص������ڸ��ǵڶ��νӵؼ��������֧�š�
+>       summary, rows = run_trial("airborne-recontact", True, 2.0)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_tcs_probe.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\physics\tcs_probe.py:92: in run_trial
+    _step(world, vehicle, command)
+tools\physics\reference_ab.py:65: in _step
+    advance_world(world, [(vehicle, command)], substeps=substeps)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+logs\physics\PHYS-PERF-01\audit-load-state.py:31: in audited
+    assert hex_tree(asdict(actual)) == hex_tree(asdict(expected)), counts
+                    ^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1496: in asdict
+    return _asdict_inner(obj, dict_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1524: in _asdict_inner
+    return tuple([_asdict_inner(v, dict_factory) for v in obj])
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1564: in _asdict_inner
+    return copy.deepcopy(obj)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+x = <panda3d.bullet.BulletWorld object at 0x0000024337BF28B0>, memo = {}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        cls = type(x)
+    
+        if cls in _atomic_types:
+            return x
+    
+        d = id(x)
+        if memo is None:
+            memo = {}
+        else:
+            y = memo.get(d, _nil)
+            if y is not _nil:
+                return y
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = x # atomic copy
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+>                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'panda3d.bullet.BulletWorld' object
+
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\copy.py:146: TypeError
+_______ test_matrix_preserves_dynamic_contact_fields_after_real_landing _______
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-462/test_matrix_preserves_dynamic_0')
+
+    def test_matrix_preserves_dynamic_contact_fields_after_real_landing(tmp_path):
+        output = tmp_path / "airborne"
+>       report = run_matrix(output, 2, ("airborne-recontact",))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_tcs_probe.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\physics\tcs_probe.py:167: in run_matrix
+    summary, rows = run_trial(case, enabled, duration)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tools\physics\tcs_probe.py:92: in run_trial
+    _step(world, vehicle, command)
+tools\physics\reference_ab.py:65: in _step
+    advance_world(world, [(vehicle, command)], substeps=substeps)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+logs\physics\PHYS-PERF-01\audit-load-state.py:31: in audited
+    assert hex_tree(asdict(actual)) == hex_tree(asdict(expected)), counts
+                    ^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1496: in asdict
+    return _asdict_inner(obj, dict_factory)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1524: in _asdict_inner
+    return tuple([_asdict_inner(v, dict_factory) for v in obj])
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1507: in _asdict_inner
+    f.name: _asdict_inner(getattr(obj, f.name), dict)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1564: in _asdict_inner
+    return copy.deepcopy(obj)
+           ^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+x = <panda3d.bullet.BulletWorld object at 0x00000243351F6F70>, memo = {}
+_nil = []
+
+    def deepcopy(x, memo=None, _nil=[]):
+        """Deep copy operation on arbitrary Python objects.
+    
+        See the module's __doc__ string for more info.
+        """
+    
+        cls = type(x)
+    
+        if cls in _atomic_types:
+            return x
+    
+        d = id(x)
+        if memo is None:
+            memo = {}
+        else:
+            y = memo.get(d, _nil)
+            if y is not _nil:
+                return y
+    
+        copier = _deepcopy_dispatch.get(cls)
+        if copier is not None:
+            y = copier(x, memo)
+        else:
+            if issubclass(cls, type):
+                y = x # atomic copy
+            else:
+                copier = getattr(x, "__deepcopy__", None)
+                if copier is not None:
+                    y = copier(memo)
+                else:
+                    reductor = dispatch_table.get(cls)
+                    if reductor:
+                        rv = reductor(x)
+                    else:
+                        reductor = getattr(x, "__reduce_ex__", None)
+                        if reductor is not None:
+>                           rv = reductor(4)
+                                 ^^^^^^^^^^^
+E                           TypeError: cannot pickle 'panda3d.bullet.BulletWorld' object
+
+..\..\..\..\AppData\Local\Python\pythoncore-3.14-64\Lib\copy.py:146: TypeError
+=========================== short test summary info ===========================
+FAILED tests/test_joint_suspension.py::test_actual_bullet_submission_matches_joint_six_dimensional_end[DrivingMode.GAME]
+FAILED tests/test_joint_suspension.py::test_actual_bullet_submission_matches_joint_six_dimensional_end[DrivingMode.SIMULATION]
+FAILED tests/test_guardrail_suspension.py::test_high_load_curved_rail_support_converges_and_reaches_snapshot[False-DrivingMode.GAME]
+FAILED tests/test_guardrail_suspension.py::test_high_load_curved_rail_support_converges_and_reaches_snapshot[False-DrivingMode.SIMULATION]
+FAILED tests/test_guardrail_suspension.py::test_high_load_curved_rail_support_converges_and_reaches_snapshot[True-DrivingMode.GAME]
+FAILED tests/test_guardrail_suspension.py::test_high_load_curved_rail_support_converges_and_reaches_snapshot[True-DrivingMode.SIMULATION]
+FAILED tests/test_tcs_probe.py::test_every_tick_retains_force_request_and_completed_feedback[low-mu]
+FAILED tests/test_tcs_probe.py::test_airborne_trial_falls_and_recontacts_without_runtime_reposition
+FAILED tests/test_tcs_probe.py::test_matrix_preserves_dynamic_contact_fields_after_real_landing
+9 failed, 384 passed in 4.96s
+{"baseline": "main 98f86e3 plus pending bounded rolling root, original ContactFrame load replacement", "pytest_code": 1, "all_full_step_hex_equal": false, "counts": {"calls": 696, "original_frame_rebuilds": 4120}}

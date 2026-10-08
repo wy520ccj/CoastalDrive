@@ -1,0 +1,65 @@
+{
+  "baseline": "4067649",
+  "source_sha256": {
+    "src/tire_drivetrain.py": "63923f998861c3a064caba088bf73e6a06bce0f8e3fad8862a07599376b155c9",
+    "src/rolling_resistance.py": "c415e91c8fefd5721fd07855d351efe4de47c2418f199ccbc5641442eaa092f4"
+  },
+  "T0": "328 passed in 9.69s; Ruff passed",
+  "live_comparison": {
+    "baseline": "main 98f86e3 plus pending bounded rolling root, original ContactFrame load replacement",
+    "pytest": "not_run; existing T0 reused",
+    "all_full_step_hex_equal": true,
+    "counts": {
+      "calls": 432,
+      "original_frame_rebuilds": 13504
+    }
+  },
+  "T1": "reuse 4067649 integration 876 passed; not executed again after user instruction",
+  "items": [
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\promote-load-state.py",
+      "archive": "promote-load-state.py",
+      "sha256": "46d665e4d2a6a4fe36b670eb77fa33eb08dc00f8fed474ae83f5ab28c14738b2"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\load-state-baseline-tire.py",
+      "archive": "load-state-baseline-tire.py",
+      "sha256": "2dec9a00c60f6d63c2d17d46656d85e6a9841a9b8a650c1108a1444d564bf9d3"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\audit-load-state.py",
+      "archive": "audit-load-state.py",
+      "sha256": "7f7f42b523a2c6c2bdfa2df00b334f419e0e3f8bfb77b6b782c9df23ba8023b0"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\load-state-audit.log",
+      "archive": "load-state-audit.txt",
+      "sha256": "5b1d6171921a9c70f8ad9310dbe547b154936a06d4ea6eea2d681f8fe116f410"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\load-state-audit.json",
+      "archive": "load-state-audit.json",
+      "sha256": "99c97912b42660c1cd2a1a28d4dead50bf95a705c38f5601835886ac2f60ff20"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\audit-load-state-live.py",
+      "archive": "audit-load-state-live.py",
+      "sha256": "bf9e977e957bc5893227d3e7f994272c0165d374fbbbee41c729fb04eb3bb92d"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\load-state-live-audit.log",
+      "archive": "load-state-live-audit.txt",
+      "sha256": "d2c33f4b05eea8587cb6bdf6b4528040a29c9ee22e38299f3fdb8c084db6627a"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\load-state-live-audit.json",
+      "archive": "load-state-live-audit.json",
+      "sha256": "0afb603b1fa9aa98b83ef7646d124c0a5cafbb95d7482aff20e5e3409a738db8"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\load-state-T0.log",
+      "archive": "load-state-T0.txt",
+      "sha256": "e559db6c5a807c39cabf544979887539a4fe650a4815eed2ffcb44f79d189123"
+    }
+  ]
+}
