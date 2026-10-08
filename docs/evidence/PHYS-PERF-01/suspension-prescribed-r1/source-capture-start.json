@@ -1,0 +1,1448 @@
+{
+  "capture": "start",
+  "head": "9a127e566c55d07756795bd27deb0826aabce6aa",
+  "count": 360,
+  "entries": [
+    {
+      "path": "setup.py",
+      "sha256": "38346e0ab3937b193653fd471617bca2c2c5eb3acc3a1884030f312344e3429a"
+    },
+    {
+      "path": "src/application.py",
+      "sha256": "651a05d0174c981cf6ba658cfef862cc309922d52ea21a693ea5150ce03b3e6c"
+    },
+    {
+      "path": "src/audio/__init__.py",
+      "sha256": "c9b2b5ceb0091ead195fb737892eaa931c7715825da23d0b47f8383a2bfa76eb"
+    },
+    {
+      "path": "src/audio/cues.py",
+      "sha256": "41d89fe885916e493e96fa1edf85b73e32575d867672fb034649bb17f37b21e9"
+    },
+    {
+      "path": "src/audio/driving.py",
+      "sha256": "3e8df19ce48cd294d6a228852f132474c055d1e0cf7cb2578d78aafa4ab66615"
+    },
+    {
+      "path": "src/audio/engine.py",
+      "sha256": "0e756ebc2600984d94c20ad012305aed918f4e560d6eb4ac9d8127b5c2d091fa"
+    },
+    {
+      "path": "src/audio/impact.py",
+      "sha256": "01e1af74a5df7aa605f80cffb64d25479361b136debe6e5e87f3d20819b4649a"
+    },
+    {
+      "path": "src/audio/music.py",
+      "sha256": "2d12ca7abb23e8af8793baaef425cf5a393530c060a54ec4ca50fb8ad8a56d6b"
+    },
+    {
+      "path": "src/chase_camera.py",
+      "sha256": "4a8273238e7b49f1c8fb72e78c37e518c8b1aa863510f01c7a4f561b09f11146"
+    },
+    {
+      "path": "src/coastal_collision.py",
+      "sha256": "02258d07266c1c926a095f3357abf1d10d007d3bfe7d338fe7542b0116ee5bf4"
+    },
+    {
+      "path": "src/coastal_map.py",
+      "sha256": "038288a510d2db1b6de136b8e7408c72999eef979145bd454cfaeeffe7b62ade"
+    },
+    {
+      "path": "src/controls.py",
+      "sha256": "1ffceba7d5c14f4fa2945d0e35c4e137b45443f989539f0d7aa22ca269436cad"
+    },
+    {
+      "path": "src/curve_mesh.py",
+      "sha256": "105d779c136301731934b22530bb30ce1c4aa3235edb04d8ed472a13ec9e2ff2"
+    },
+    {
+      "path": "src/differential.py",
+      "sha256": "b1256e856a63efc69db9cb37528bc689ca189a7dfeea33ee17748f9bbb8b50f3"
+    },
+    {
+      "path": "src/driveline_inertia.py",
+      "sha256": "f90c175b5111a233bfd9455bcb3226c70f09bb6b63ee882f6253aff81ff9b038"
+    },
+    {
+      "path": "src/driver_assist.py",
+      "sha256": "a93b262003dee568c907f5ff8e7bd87665e4774b407f9343f641f533e1143464"
+    },
+    {
+      "path": "src/driving_experiment.py",
+      "sha256": "ab02c48d53accd48d643f559a413a0100ee5b9bc20a8447adf8c5a403a6f66a0"
+    },
+    {
+      "path": "src/driving_modes.py",
+      "sha256": "8ea92ef9f8840c930d12769612540aa6983c965103d5922a2e526f90f1882907"
+    },
+    {
+      "path": "src/environment/__init__.py",
+      "sha256": "81bd978b67af4e6d30d62f99eb4a1e4c28f5f31855ae94ccd4db70283e3b3699"
+    },
+    {
+      "path": "src/environment/coastal_slice.py",
+      "sha256": "af6d170d7cfd8c280991a40921b67bc83d03dc5c1d720874ac5c7916484a2bc6"
+    },
+    {
+      "path": "src/environment/expressway.py",
+      "sha256": "36cb41c7ab5ae9fbb14b4fcf161a8368b395ad5655634c754e4e92f64afe8bcd"
+    },
+    {
+      "path": "src/environment/expressway_materials.py",
+      "sha256": "e2df79696e7fee5e4ac0460a1003a2d3efe42f890cb6369171b8a9de8d6465a4"
+    },
+    {
+      "path": "src/environment/expressway_mountains.py",
+      "sha256": "7af3ce1102d9200a026f650a1c9a3867ba851021bf8db47da03d96794ef4d684"
+    },
+    {
+      "path": "src/environment/expressway_route.py",
+      "sha256": "e7f49d5e79a8d02233e433f8bd5f04dc650a6982edda23db7563e2f0db967587"
+    },
+    {
+      "path": "src/environment/expressway_signs.py",
+      "sha256": "4d02efb48f48c672d17675fe6f35b7b9686980e75ca9572449f8f6ca76bdf9e0"
+    },
+    {
+      "path": "src/environment/expressway_vegetation.py",
+      "sha256": "c846c1c1840251d04a9e79bdf7fe0a8be9ac954c43ed1d54e0bd4dad15da2093"
+    },
+    {
+      "path": "src/environment/foundation.py",
+      "sha256": "2c86aad7311ad18da3f42be404ff9cf7d754037f1ca3fa2f4f8ca14798607ca5"
+    },
+    {
+      "path": "src/environment/surface_mesh.py",
+      "sha256": "4d32a8e0e5817d5ec378e6cf04f26912519b6531159cd5b5f903a2052151d052"
+    },
+    {
+      "path": "src/environment/terrain.py",
+      "sha256": "41fd42968a442cb3dd26ba28ca01220f3809705090091615b0d48673b7698abc"
+    },
+    {
+      "path": "src/environment/water.py",
+      "sha256": "17fd63872585e8d34c004bd12c57c1f3b2af6114a22a545fc9cb1a904a78eb89"
+    },
+    {
+      "path": "src/estimation_rotation.py",
+      "sha256": "2049c64e84b1eeedf5a3ff54f866a43dde6fd54cc68f2eebd0b811b3421a3448"
+    },
+    {
+      "path": "src/garage.py",
+      "sha256": "54d20cd8e175ed2fe75bf5da0f70b9f997d5215b2ce197be0a4f21dc831c05fd"
+    },
+    {
+      "path": "src/highway_curve.py",
+      "sha256": "30b2a7c6d75a38bbce538198e1e53295d1afa6dd14d05760d085d3d150a4e64e"
+    },
+    {
+      "path": "src/highway_driver.py",
+      "sha256": "ca6c8c2155b48b9130d1008b74e0fab904e10e16d860f6d55f39259ae610c226"
+    },
+    {
+      "path": "src/highway_map.py",
+      "sha256": "fc426d2d95134851304c49885f6d0c6caf728e118f3da939878b38721f11592b"
+    },
+    {
+      "path": "src/highway_run.py",
+      "sha256": "6b0520d5ab68e46919a99cbb953b98c5f0e806222bfe4e55d5ee03dd731b6d6b"
+    },
+    {
+      "path": "src/highway_segments.py",
+      "sha256": "ba5494eb325e107d1a40477272db799d4fd26f8cfb7ec8b265c038ff39b1da40"
+    },
+    {
+      "path": "src/impact_events.py",
+      "sha256": "d84747f93b1cafa8b33ee9322f8870ed0bbdd7bf149d4daff281ea7430d6dd5b"
+    },
+    {
+      "path": "src/main.py",
+      "sha256": "c5914c6500beed6a17849f6cf4c574b0cdf4c7ced8b75818692c3d88e7c7c18a"
+    },
+    {
+      "path": "src/mechanical_kernels.c",
+      "sha256": "429661d06cb9796e191d711b6867f63edf3a98ef1ff82620a996e934d2f55159"
+    },
+    {
+      "path": "src/mechanical_kernels.cp314-win_amd64.pyd",
+      "sha256": "71b6fec01af57444193b2ad83ab94636b04ba75cbd555b78e00f8cfbbc0409cf"
+    },
+    {
+      "path": "src/paths.py",
+      "sha256": "6c9e79bf75ebad3ff0eb509ca8e910fb5a90ca7a89077acd90f844a57078699c"
+    },
+    {
+      "path": "src/performance_baseline.py",
+      "sha256": "dc2e5c6317c59aa88446ec3854986d67aea4d2a3a1c47d281d018bfaede27e83"
+    },
+    {
+      "path": "src/phase0_app.py",
+      "sha256": "8ec41455706e637735c1419b836cd9b88f15d2f3a6072438b08c83b129dc9e2c"
+    },
+    {
+      "path": "src/powertrain.py",
+      "sha256": "a421003c7370b278f61677cc77b29af07d950ccc281ed57bed90689686883f85"
+    },
+    {
+      "path": "src/race.py",
+      "sha256": "7804a9591ec7dcc979637f5b3f4f4bf758285762b37f0664bd5cfb995a7d1981"
+    },
+    {
+      "path": "src/rolling_resistance.py",
+      "sha256": "832e899a9e8267bf5ee498204370947bbc28e7697b9d0b4d2d763c1a64d710ad"
+    },
+    {
+      "path": "src/rotor_dynamics.py",
+      "sha256": "7f349c5063fd75076ae5ec19ba4ca4931a51e7736f1a7f06cac4d3b57c2ef4f3"
+    },
+    {
+      "path": "src/scene.py",
+      "sha256": "68ce959ee496ac68dd28c837c8702959a1cbc06754329e9af0ef95bdcf48879f"
+    },
+    {
+      "path": "src/sensor_run.py",
+      "sha256": "a15fac5c5ad1ac65d4256d708ed5b3eacaf69667ee38e073219871d8138e751b"
+    },
+    {
+      "path": "src/sensor_sampling.py",
+      "sha256": "2fdab3c2b5eb7ba60d842d39f28347236dfe599a24ddb8d475098e9e00e5027e"
+    },
+    {
+      "path": "src/session.py",
+      "sha256": "75db5eae528f03494d74e442b33c3958c9309b23cb56ca5f627f930b2f24a0e6"
+    },
+    {
+      "path": "src/settings.py",
+      "sha256": "1b869c80d8e12bb82aa0425e3a5e8f9540e27c9def65aae78e76edc0c2dd6f4f"
+    },
+    {
+      "path": "src/shaft_transmission.py",
+      "sha256": "76fced6112a1b71e8eaa7d62184be7ddb23cba3d270288d439e256012e4d36ed"
+    },
+    {
+      "path": "src/simulation.py",
+      "sha256": "0c95c39fe11f001dbaf8c5df84d1497792d985e23569f31372cc4019aa68406b"
+    },
+    {
+      "path": "src/skins.py",
+      "sha256": "21b7b397ab304746e0e8b11c0bcef033560b89376b4a8507c837c762ee937c78"
+    },
+    {
+      "path": "src/sky_dome.py",
+      "sha256": "45437938b4e2c47cf68fcb84da16553143957bd2d0c1696a44781c1d0fb83a4b"
+    },
+    {
+      "path": "src/soundscape.py",
+      "sha256": "1671c176b8ec8e26eaabd3ab143d51e1ee6e6dafea52b305682a54c5ea4e3415"
+    },
+    {
+      "path": "src/state_estimation.py",
+      "sha256": "8bd95cd387e9aadf6ce10169c1b38a6739f12368f8c80def2d686432da31389b"
+    },
+    {
+      "path": "src/streamed_road.py",
+      "sha256": "8c9d2279c34e5e5e280166ef19187f4a454917981a9f6af0dca00d9542eecd9a"
+    },
+    {
+      "path": "src/suspension.py",
+      "sha256": "a5b556b9c9450605cfd806baa2bad5e533fb2263733ac8a5cdc178ab2fd39d43"
+    },
+    {
+      "path": "src/suspension_contacts.py",
+      "sha256": "43defabbc9f4630394361126063d210802d06f16e4948c29a8eb20a23f8c17b7"
+    },
+    {
+      "path": "src/suspension_geometry.py",
+      "sha256": "f4f900ecc7a9d15a17d7b361d0b0bc5f89cd6461d36fa14dc881dbd31b2114bd"
+    },
+    {
+      "path": "src/suspension_kinematics.py",
+      "sha256": "b4e27cca15b3d1e266e3dbadf5e5f919b471766fdd4b0b3ea12fbe407d70c6c2"
+    },
+    {
+      "path": "src/test_track.py",
+      "sha256": "ae90f12ab8647ec859ad7931f501b3183371a1fa11936c9edeb59c882db72cfa"
+    },
+    {
+      "path": "src/tire_compliance.py",
+      "sha256": "0490d0163a907fcb412b2a3020c7441b628245d97047822def81846d88ccca41"
+    },
+    {
+      "path": "src/tire_coupling.py",
+      "sha256": "91194de87cbf04453e1fe3a29a69b632305644e5248693f5302ee0fd8721733b"
+    },
+    {
+      "path": "src/tire_drivetrain.py",
+      "sha256": "6ca34d6b3fd24514dae215f93e50235ad383be24cc039136d9ea3e0263d07e4a"
+    },
+    {
+      "path": "src/tire_forces.py",
+      "sha256": "6e8eee59088ada7bfd94454b269dbf7e2fb09605f087d46b0a1cbefb49e99284"
+    },
+    {
+      "path": "src/tire_properties.py",
+      "sha256": "d93c1199a1c2de0f4d447d3690f0db4f1ad95e664c2dea5f2b848ecbd676a6b5"
+    },
+    {
+      "path": "src/tracks.py",
+      "sha256": "f9d5fef1c7b9f4d808fdcb3074f6e1adbf92a6ee57bcdd04e60fc4637580f42d"
+    },
+    {
+      "path": "src/traffic.py",
+      "sha256": "3e3d4bd44b16226962436bde66ea5bc11559cb59d1475c1df2905a61759a96d0"
+    },
+    {
+      "path": "src/traffic_recovery.py",
+      "sha256": "b455ff05ae1f8dbd524662a831f808f67986699378d54840416c308216072d9a"
+    },
+    {
+      "path": "src/transmission_ports.py",
+      "sha256": "583e7e25c983d23977585e8e43cd9e6241e76650a1a0394f1b098e3683d96b79"
+    },
+    {
+      "path": "src/triangle_support.py",
+      "sha256": "bb5c74344ec55e0e4ef1546cbad4834c5728b85e4a220bdb0107d947f5c17e83"
+    },
+    {
+      "path": "src/ui/__init__.py",
+      "sha256": "75426685c5c3fe93d169378013fd409e12b0fcf56a034bca3a2ecf9af39bb6a4"
+    },
+    {
+      "path": "src/ui/hud.py",
+      "sha256": "7337fd545f79f21a3a19f8c69b6e8a51074e16d4724ae7987b715403c0509b9c"
+    },
+    {
+      "path": "src/ui/main_menu.py",
+      "sha256": "b085d08c46dc13cba6e9fd9016424c4a626d149785dc81a8658bf7f4535372c9"
+    },
+    {
+      "path": "src/ui/theme.py",
+      "sha256": "c2ab236939a0d45fb6b6d3877b78c91807917edfcfac0c9807df5ff77fb43b8b"
+    },
+    {
+      "path": "src/vehicle.py",
+      "sha256": "f94fbb9d7ae3cd1621e87a0e79f19f50c58bbfb3a440aec7eeb668f8ed90d39e"
+    },
+    {
+      "path": "src/vehicle_brakes.py",
+      "sha256": "39eabaff47ec103af6cd76db5b43f31212c7acaf77b1c0a82ec9806f775ef32d"
+    },
+    {
+      "path": "src/vehicle_collision.py",
+      "sha256": "3b10a6b5bf79d9c4e7439810d51aac653e98721f8b82c9ee1bf43f0dabff5874"
+    },
+    {
+      "path": "src/vehicle_config.py",
+      "sha256": "75d5876c1b781634556f97e8ff361c071656b92caf51068f2121a42330a949c7"
+    },
+    {
+      "path": "src/vehicle_contacts.py",
+      "sha256": "36a2c5c815b3ffdc43f1aae3bcd71cd7050246b26aea51977161cb83f63e60c0"
+    },
+    {
+      "path": "src/vehicle_designs.py",
+      "sha256": "c82a388317d7123e7633613950e0025492f739b9ecf130287198bc3be7bccf24"
+    },
+    {
+      "path": "src/vehicle_dynamics.py",
+      "sha256": "56564b31ed5e8c29a2063d95cb28c17c5b13cc41d1b9c15ca4e12a23a288c140"
+    },
+    {
+      "path": "src/vehicle_parameters.py",
+      "sha256": "6aa7916d8401c2aeae806cf8de634289d740ffa86b35d882c0b4047899df3d20"
+    },
+    {
+      "path": "src/vehicle_stability.py",
+      "sha256": "71eca42fa7ae37912e8bd0e5023aa2dbb6defa1e436b865b3eb43f7e27f6cadc"
+    },
+    {
+      "path": "src/vehicle_state.py",
+      "sha256": "2e5af991d86aaa5a010298618eb793ede2974e732a200d3f525ae659d0b2cc5c"
+    },
+    {
+      "path": "src/vehicle_steering.py",
+      "sha256": "d80c07aaea8a4468eda9e6796fceb5714b65b1cd5af3d3f48792773db60e5b34"
+    },
+    {
+      "path": "src/vehicle_suspension.py",
+      "sha256": "3da7ed48197188630bba5b1d65f35fda858f8c6f057bf79c57645f247172da28"
+    },
+    {
+      "path": "src/vehicle_tires.py",
+      "sha256": "10cdc460c0e68b4a8437ce169f817b5cfe37e64dc3d67e8c32ab952bece9f76d"
+    },
+    {
+      "path": "src/vehicle_traction.py",
+      "sha256": "7be5bbff9aac9ec172419c3ca02fb9d832accf311e018da2747b79568645da5c"
+    },
+    {
+      "path": "src/vehicle_visual.py",
+      "sha256": "6207340d21e244fd2276e803ea429b51ae8f1794366b9b88adb8d636a7ec60ab"
+    },
+    {
+      "path": "src/wheel_contact_kernels.c",
+      "sha256": "f58182887fc3f5eceecb3f4539336828cdd2cf02a90489a6861f5b4b2406e062"
+    },
+    {
+      "path": "src/wheel_contact_kernels.cp314-win_amd64.pyd",
+      "sha256": "81f8579800d97d9721d158a4757e3cef954a28761dce55fcc7cc6f0c039998ad"
+    },
+    {
+      "path": "src/wheel_dynamics.py",
+      "sha256": "93446add00a11681925e96dcaf13714f30dc3fde58d03fe62ffea2fa8969bf70"
+    },
+    {
+      "path": "src/wheel_envelope.py",
+      "sha256": "9d3841ee52695b258c5960849d96cc9a41b10da977c7515035dabfc66d4401f9"
+    },
+    {
+      "path": "src/wheel_geometry.py",
+      "sha256": "25be660293a3f9160a9375a7301b51d64dfcb6d14b9386003ca0a5d7609d7179"
+    },
+    {
+      "path": "src/world_props.py",
+      "sha256": "20bdad65716f9d63ffd22cf5138439f761408c95830fc36696298c694405291f"
+    },
+    {
+      "path": "src/world_step.py",
+      "sha256": "a814c876331e8e7bb3294cabb070926f7673575d432e7d36e4809af203aab3b0"
+    },
+    {
+      "path": "tests/data/highway-contact-r11/config.json",
+      "sha256": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb"
+    },
+    {
+      "path": "tests/data/highway-contact-r11/input.json",
+      "sha256": "deca814b54b3c850211afbe26243cec55cdedff1e00ca47a371ece19a1bc3dad"
+    },
+    {
+      "path": "tests/data/highway-contact-r11/rear-config.json",
+      "sha256": "23b6cfd3c85b813dfc4ee6a1fad1e783fa32456b16fa0222e99f59dd0dcf21cb"
+    },
+    {
+      "path": "tests/data/wall-shared/input.json.gz",
+      "sha256": "f3273012f0ab46763cb18d48b5732badf4329c634df6d32a93bdd704a4d21cb8"
+    },
+    {
+      "path": "tests/test_abs_integration.py",
+      "sha256": "e9532334ac6011b09772eb2d69b71749db37a9e809e0e66677d079832c6553be"
+    },
+    {
+      "path": "tests/test_appearance.py",
+      "sha256": "d69bfb0b59815db4774c0c87382b58566b81e14946b05c034379567eb13594c9"
+    },
+    {
+      "path": "tests/test_audio_settings.py",
+      "sha256": "64fdfca80eca764e9067eeae8e7ff9a9ed244b4fd594b3d7e2dee7ad523c23a9"
+    },
+    {
+      "path": "tests/test_audio_upgrade.py",
+      "sha256": "b425b5bfe2aded2b6fff3e2c9c9d0d0c5a74eb66a6d5c5a892c4c5b35f956116"
+    },
+    {
+      "path": "tests/test_brake_lifecycle.py",
+      "sha256": "407f80bf93708d104ebdb958ce3d9563685a91fc2005f93089e2df424c544b6f"
+    },
+    {
+      "path": "tests/test_coastal_contact_step.py",
+      "sha256": "96048ba6e76eb975119eab0d1d477028a4a01b88ec616c03236dc410fe5dabdc"
+    },
+    {
+      "path": "tests/test_core.py",
+      "sha256": "4468cc2e5916a8b88187826578db5cff6b8bdee528d32ba6f2c70fae3e0faf38"
+    },
+    {
+      "path": "tests/test_curve_mesh.py",
+      "sha256": "490cd287ab10ecdd4154756e5542caf9bdc46b3549660dcb4f5f6ccedde9c609"
+    },
+    {
+      "path": "tests/test_curved_boundaries.py",
+      "sha256": "f65f9c242fced148db46cbf8410e6fc6544ea2f683bb1b7efa8fb5d9dfa9f9df"
+    },
+    {
+      "path": "tests/test_curved_driving.py",
+      "sha256": "6ab7d202e937b276807c7c3fd27cc9b3f94447576d6d1fedb3534f1a2c3a2b7a"
+    },
+    {
+      "path": "tests/test_curved_suspension.py",
+      "sha256": "3a2edc87295bc04a08d5481ffdd1d5c56ac6bf74a63eea43741299f268ef16cf"
+    },
+    {
+      "path": "tests/test_cylinder_suspension.py",
+      "sha256": "431adb9917cdcdb00a39e498375c855e4a7d22f522a724a3746f5ba59af3a20b"
+    },
+    {
+      "path": "tests/test_design_spawn.py",
+      "sha256": "938e2ebdb76993e58afebe7af89cd81c0a7ea8993d6985a0a39c568130bd0318"
+    },
+    {
+      "path": "tests/test_differential.py",
+      "sha256": "6c456b03cd6bd92fdedfdd19de54cb1ee1832775bd1b5eaac8f6fe4ab959f315"
+    },
+    {
+      "path": "tests/test_differential_lifecycle.py",
+      "sha256": "a27565e5924214af1c647d4025cb90d9d4cfe9493c78d8946240e9426a19ec07"
+    },
+    {
+      "path": "tests/test_drive_layout.py",
+      "sha256": "84cda1341400c0dabff7373cc4893cb1db060b414189e2b40e095d3203d6451f"
+    },
+    {
+      "path": "tests/test_drive_layout_lifecycle.py",
+      "sha256": "05a0e01f4aaa5f8233405d4c62d319a23c0f6a69c50b56d38a1bd4d5d34604a5"
+    },
+    {
+      "path": "tests/test_driveline_inertia.py",
+      "sha256": "d7554e42a97e8338eddc73a733b2f4fd233df0bc2fa1fd0588dcef6701a56ebd"
+    },
+    {
+      "path": "tests/test_driveline_native.py",
+      "sha256": "167b1f36b521b5b0ed9288fa76d9edf18dd81b30d45f2d4a08f8fe4d47366016"
+    },
+    {
+      "path": "tests/test_drivetrain_jacobian.py",
+      "sha256": "6a8919efd87c798337f114941ef7f5f073a43251c3706a9d37347bbbebd5dcd3"
+    },
+    {
+      "path": "tests/test_driving_experiment.py",
+      "sha256": "e29011e0ce63c5702aaa434f9a4cf58d58607596312a05b0080aa2f0d842a0f0"
+    },
+    {
+      "path": "tests/test_driving_mode_ui.py",
+      "sha256": "7c473844aea1619816188c72e2af4537b7c3754e2594bfe4401be66e30eccdde"
+    },
+    {
+      "path": "tests/test_driving_modes.py",
+      "sha256": "e13013b685177ab5c2c36afcc70a4967597c080c3b11ab3fcb4e4047b6e23285"
+    },
+    {
+      "path": "tests/test_driving_response.py",
+      "sha256": "422c99aac71b79a567b7447001728ed84c79d4b335cb3be785c461273a57047a"
+    },
+    {
+      "path": "tests/test_endless.py",
+      "sha256": "8476159882dd6f588c4b8accd872bf1b294c47b509aeed86ec2a02afc5d1e43d"
+    },
+    {
+      "path": "tests/test_environment.py",
+      "sha256": "04578df42c93c11cb07083e7a4d6fb2f0505d8a34ef1ccecf14bebfd52fc444f"
+    },
+    {
+      "path": "tests/test_esc_integration.py",
+      "sha256": "dda2387431acd14883c9c44c6c79657f3d2e695aa9061e867c10b705ce9ef825"
+    },
+    {
+      "path": "tests/test_esc_probe.py",
+      "sha256": "49565ed72fdbcc7b0f36268c246c4ab1549d3e9b13c84b6dfe3afd28a7e131f7"
+    },
+    {
+      "path": "tests/test_esc_settings.py",
+      "sha256": "76aaa45aefb63c33a25fbb3f4600d97ea55054e1d0242b99b5c5e0969188051a"
+    },
+    {
+      "path": "tests/test_expressway.py",
+      "sha256": "50721c910b3c4f15d4cc6a5370f26ee57f2116c376314cb8ee16f4e44747bb7a"
+    },
+    {
+      "path": "tests/test_expressway_route.py",
+      "sha256": "e6e53db9b75891c9b9719331dacb80adc3a176529d60288298180242d31f01aa"
+    },
+    {
+      "path": "tests/test_finite_powertrain.py",
+      "sha256": "2fe7535b4bdffb76e573727374bd994703a9e8c2b98d43ebc3f62380de255f17"
+    },
+    {
+      "path": "tests/test_finite_suspension.py",
+      "sha256": "c3a879888b2796d9c90b2821dc1a5996f77007c9502d3cf6b827fcb9fd6842ac"
+    },
+    {
+      "path": "tests/test_gr86.py",
+      "sha256": "22337c5d78b1d3dbf5bf9d88c2daeaa95e4fe5c597e763f3741a2629ca756c1b"
+    },
+    {
+      "path": "tests/test_guardrail_suspension.py",
+      "sha256": "fae510c676b05a23b2c0c223cf25cb3bd8d28e4d3b578f82da8fa4646dbaf70d"
+    },
+    {
+      "path": "tests/test_h1_vehicle.py",
+      "sha256": "45c4cf0303c27d1cfa926a71df76091e76f08109bd3b4f65415ab1508b46a9b1"
+    },
+    {
+      "path": "tests/test_h2_map.py",
+      "sha256": "fa573ef88a8e2a90c8bb3df3419ccb4a7190bddc20b95338bd2545ee20e5c182"
+    },
+    {
+      "path": "tests/test_h3_review.py",
+      "sha256": "f785fa7d85eb00c98fa4248950aeb315b2dff5ad6e8b74dba646de8b6084feeb"
+    },
+    {
+      "path": "tests/test_h4a_traffic.py",
+      "sha256": "bff93c5d453705d16bff9b6d9ab22c08e6021ed6449c0303d9f8a82c77900ecd"
+    },
+    {
+      "path": "tests/test_highway_curve.py",
+      "sha256": "00bf52bb174a7484ee629177c2d217ca94441c82a8bcf5a0c58cfc27ed0284f2"
+    },
+    {
+      "path": "tests/test_highway_run.py",
+      "sha256": "50171bfa63fdf84cd4b0c94f9d37424f670d251c27c9ecc45c906a644b1bc7ba"
+    },
+    {
+      "path": "tests/test_highway_segments.py",
+      "sha256": "ac79985ac29f11a89f61d1d7f8943b9d08460e3f1f0f63ce0a4ea9e4c99ac961"
+    },
+    {
+      "path": "tests/test_highway_surface.py",
+      "sha256": "77eb1ed71911652b74fcab993417bec61e3f52708c30bf942be3d853618d553f"
+    },
+    {
+      "path": "tests/test_impact_assets.py",
+      "sha256": "817185d17d091f064ca8aa8af8b4ac31f58045e60501e483c0380354dda2b59f"
+    },
+    {
+      "path": "tests/test_impact_audio.py",
+      "sha256": "eb2520c07a7cd53ed9471dbb54da4147f86b8411d5e0dbf86296742549036532"
+    },
+    {
+      "path": "tests/test_impact_delivery.py",
+      "sha256": "b41f30e5b94315b5ce464b0cf947aa62e2799f93268d8422bed1914b1ed7491a"
+    },
+    {
+      "path": "tests/test_impact_events.py",
+      "sha256": "dabe60ebffc01711a68fbc19e7d035c18bdd742df7aeebeea466ca72490c067a"
+    },
+    {
+      "path": "tests/test_impact_integration.py",
+      "sha256": "69d7f78857d97bba5760dfc941b34ca6814bdacd62c17e1bd86ccb09e81cfebe"
+    },
+    {
+      "path": "tests/test_input_shaft.py",
+      "sha256": "c49a4a479470aebd9c0992ea4eb0c65ae1b5c8ab427f5695326314263d802962"
+    },
+    {
+      "path": "tests/test_joint_suspension.py",
+      "sha256": "92243c653d244a4341c7e9d9d331e32f2293b6bc2162e7ab954106b3be47ef04"
+    },
+    {
+      "path": "tests/test_mode_lifecycle.py",
+      "sha256": "27de5d28ae0522a16ce5b7a855d69b22e5cb1e92045b770f61fe147721623c12"
+    },
+    {
+      "path": "tests/test_performance_baseline.py",
+      "sha256": "ac6a70d9321aa6f60472448a1576afb0d21f5acee639c9b82a8bceeb63936cb3"
+    },
+    {
+      "path": "tests/test_performance_diagnostics.py",
+      "sha256": "6367d2628a928ff159669633b655503b0a9f4b132e8775258f60931b87620cac"
+    },
+    {
+      "path": "tests/test_phase3_map.py",
+      "sha256": "1966e856532fd65d3b1e721270af4f105556a97ba1ec3b4e2995efadeeedb695"
+    },
+    {
+      "path": "tests/test_physics_config_io.py",
+      "sha256": "6c2fc461f90b48f3d8054bd8f465d12967826fe51d8c689a3f32cde42fb27e50"
+    },
+    {
+      "path": "tests/test_physics_testbed.py",
+      "sha256": "6f55c00aa197f39a561880997501338b1ac4674d5321a5f5c6439b2ae028b01f"
+    },
+    {
+      "path": "tests/test_powertrain_config.py",
+      "sha256": "734576d8ae348b05e6783e6b3fef6931eb0298d9dfe13258aa9f434c82a41025"
+    },
+    {
+      "path": "tests/test_race.py",
+      "sha256": "0dde1c5ec8e1ef2014e19612106176c2491288206543efae838484035235b4f8"
+    },
+    {
+      "path": "tests/test_ramp_contact_step.py",
+      "sha256": "2b229f2269b6cf3b2b6606026e9c917392d2c2d35ed2d6267ba870b13d3a8f6a"
+    },
+    {
+      "path": "tests/test_reference_ab.py",
+      "sha256": "5367037c7144afef999e4e489175dc418370ebaaae1f82f1ba8b12529165e24f"
+    },
+    {
+      "path": "tests/test_results_keyboard.py",
+      "sha256": "e17c493a69173dd07e80736293b831dffdf072a5fec2c20e6e6d7b1f4430f436"
+    },
+    {
+      "path": "tests/test_road_loads.py",
+      "sha256": "4f69531f4eed1439473e4cc4c80f614aaf1efb77037c6c634c02b1a01064047e"
+    },
+    {
+      "path": "tests/test_rolling_resistance.py",
+      "sha256": "8e54626e7e24135189f8e09cf2c1453abf2c3ee987803063d7b606643e73929a"
+    },
+    {
+      "path": "tests/test_rotor_lifecycle.py",
+      "sha256": "c5845e9f2baa141787a3c916cfeca54ff1e420561bfca0b4263264ba27c89d31"
+    },
+    {
+      "path": "tests/test_rotor_transport.py",
+      "sha256": "46eb53874701d9c6762a2105a62cf752b7e32756abd97cf0e690de43aca18906"
+    },
+    {
+      "path": "tests/test_scene_lifecycle.py",
+      "sha256": "404253ea86289ebb908a66364b91dd742357bd26765eaf4c796c9fa88eb79b7b"
+    },
+    {
+      "path": "tests/test_sensor_run.py",
+      "sha256": "fc2dc0afb89ee3069ef94f26848186bd4b859b8fd2448925b37f75982603fa8d"
+    },
+    {
+      "path": "tests/test_shaft_transmission.py",
+      "sha256": "5fb109366889aa1c848cca62a2ec0340657d74ce970700f965b08392a91cea7f"
+    },
+    {
+      "path": "tests/test_soundscape.py",
+      "sha256": "876d395e88c5cd9aa1b43c53b43caf07b318f554076c119486192cca57fe24d5"
+    },
+    {
+      "path": "tests/test_stage4.py",
+      "sha256": "09a5788c8ae0c8e9d50247e972a519fcf1cc1ecf6b7f65af2b9e6782ac21f623"
+    },
+    {
+      "path": "tests/test_state_estimation.py",
+      "sha256": "672b5ab283a3752e9490155f9c8eb03a2293d76b1f26c1bb841c49eea1b406d2"
+    },
+    {
+      "path": "tests/test_steering_geometry.py",
+      "sha256": "2510dc65b000742d874bc61d2e1d2033c4820ce00e4db1487d2d7824b4cccfba"
+    },
+    {
+      "path": "tests/test_suspension_candidates.py",
+      "sha256": "040e97e0974ea7cab02aa0dbb13177c57747d8edb746eb37285b6ae157b7dd59"
+    },
+    {
+      "path": "tests/test_suspension_contacts.py",
+      "sha256": "c707932c8f43639519f0a252d26202a1b60d11d534beb31856a8b28cc6f6958b"
+    },
+    {
+      "path": "tests/test_suspension_coupling.py",
+      "sha256": "614ca19bbf4c6eff05b94a0d1ad2bdda8ae373c10edfa0c0e2860229bcf488c7"
+    },
+    {
+      "path": "tests/test_suspension_envelope.py",
+      "sha256": "899de0df6ac7642cb57917e29291f1a6e1333008ddd37780edc0f6deefb9679b"
+    },
+    {
+      "path": "tests/test_suspension_native.py",
+      "sha256": "82fd6d81ed14f50e430d78bf783995312dd9eff1567f7e06d4515fb198772923"
+    },
+    {
+      "path": "tests/test_suspension_query_lifetime.py",
+      "sha256": "ad1fa0ee8b1f2b4a57051371fea94a5e1ca86a32720844b44d4aa8abf5e530e9"
+    },
+    {
+      "path": "tests/test_suspension_si.py",
+      "sha256": "ba39f3cf45435ea7f720bf34eee8bd682273c33feb324c3bc06d707f293b7654"
+    },
+    {
+      "path": "tests/test_tcs_integration.py",
+      "sha256": "3aec22dc6757877a6d20abc4ccb9e0988485d255a0492e54b6aec82ddd142e6b"
+    },
+    {
+      "path": "tests/test_tcs_probe.py",
+      "sha256": "109d41a6be5e8f55cabc68769003526cba8d02a4dc6d5f31ac3378bb2198535b"
+    },
+    {
+      "path": "tests/test_tire_compliance.py",
+      "sha256": "8687d95a11e07325667d25641428063817c14b1d13090fb63a6b5cbe81510ea5"
+    },
+    {
+      "path": "tests/test_tire_compliance_config.py",
+      "sha256": "75d5ea78f704bfe6fd49a8dff267f3bfc38ac32f0745b2d280181d237565dc9f"
+    },
+    {
+      "path": "tests/test_tire_compliance_integration.py",
+      "sha256": "c136e9c4195b7d8d81ce49e83aef5ed8b27c859050378c5a4a0f84c1b431f425"
+    },
+    {
+      "path": "tests/test_tire_compliance_lifecycle.py",
+      "sha256": "4f31e1cef80e9e3fd27b3751bcf26526f0a392ddbf80e0f25aefd649925923b3"
+    },
+    {
+      "path": "tests/test_tire_compliance_probe.py",
+      "sha256": "efafc23e593ee9694154a78472cc3a06bf6aac603d3aaea04ef4fcca51391c2a"
+    },
+    {
+      "path": "tests/test_tire_compliance_substeps.py",
+      "sha256": "742e20c2327d52962b14204756ed0eb4fddf525eff256f42666a5cac69c0d5b3"
+    },
+    {
+      "path": "tests/test_tire_coupling.py",
+      "sha256": "8ddc9d3cdd3ed795bcfcbe11f41847a49c37a41e8355090cc9eb5d0b7d404356"
+    },
+    {
+      "path": "tests/test_tire_drivetrain.py",
+      "sha256": "14ff4894c2a881d696dc9359d72ee4be67adbaf77baa69637014aac4ef0d2540"
+    },
+    {
+      "path": "tests/test_tire_forces.py",
+      "sha256": "be08af3ff0971416962b8f0a411a3b2610f63ddfe2d8418655bb56630d62fd79"
+    },
+    {
+      "path": "tests/test_tire_jacobian.py",
+      "sha256": "b88c6e0f0a029664e85b53291242f689c048d01948b2acb0910b3f66de03108d"
+    },
+    {
+      "path": "tests/test_tire_load_config.py",
+      "sha256": "95a0ca6bf71125b6646e8f34bbbea5426582fd91f10a58f352b4b1c10954a9ea"
+    },
+    {
+      "path": "tests/test_tire_load_probe.py",
+      "sha256": "204518ff3f7ed0e51e8209d3856e415fcc19010e8af76008deb493e4828f3af3"
+    },
+    {
+      "path": "tests/test_tire_loads.py",
+      "sha256": "fa92447125b88cf32db8d840c5d59062aaebf175f0e4241deb5736517e2e66e6"
+    },
+    {
+      "path": "tests/test_tire_shaft.py",
+      "sha256": "a9484b29f7e9beb79807eba8a6495aa56154e36bb5861f78fb991f27fa54d36b"
+    },
+    {
+      "path": "tests/test_tire_warm_start.py",
+      "sha256": "4513ed38a7c73cbb05b910ae74d54c8d6d6621bad1c5c54c495957066a08241e"
+    },
+    {
+      "path": "tests/test_torque_bias.py",
+      "sha256": "5d0571333c8e8f7f5aea03e163fab397ecc62f12737a493d5cf69d2a10b4b755"
+    },
+    {
+      "path": "tests/test_traction_lifecycle.py",
+      "sha256": "6df7985e74a57d88f714f1a78ccb3d73b911f072676f6df638264ea578b4704b"
+    },
+    {
+      "path": "tests/test_traffic_behavior.py",
+      "sha256": "dfc4256eb2d0874b7ab21b02c25e9120904feae6f465df740db803f2ce264db9"
+    },
+    {
+      "path": "tests/test_traffic_gap_diagnostic.py",
+      "sha256": "4316a53350f52beb7c9db4d9e6833c0edcddd8b51a81adfa88b0259cb569391f"
+    },
+    {
+      "path": "tests/test_traffic_impacts.py",
+      "sha256": "9f95b207c177244e0c26599940c3315fcd2a63ec98ea88eec470515e0e5536c4"
+    },
+    {
+      "path": "tests/test_traffic_recovery.py",
+      "sha256": "3b870dce2a7450403eca4e5d18627cf986543490069660a2aa1ca6a40cab671a"
+    },
+    {
+      "path": "tests/test_transmission_ports.py",
+      "sha256": "59ebdfb2eeb1635c60846b67a7dd32f622d5616f816890bd893e50485fdf7569"
+    },
+    {
+      "path": "tests/test_triangle_support.py",
+      "sha256": "f1602f5f9c678e2f6147a18350a97f3207faed454ce052e3eb7cf67be6afa7b9"
+    },
+    {
+      "path": "tests/test_ui.py",
+      "sha256": "1fd93817ebb753d5f3be71588ac3fb200c8e9e50dcea4ae08e01055e17d8d1b7"
+    },
+    {
+      "path": "tests/test_ui_assets.py",
+      "sha256": "f1c6930ed24815e0838baabea86e03b1efe0c58c79d92e7c71cefaceef686bd0"
+    },
+    {
+      "path": "tests/test_ui_theme.py",
+      "sha256": "9cf14dbaeaaa892fbb31ba8907f78ddcc101090b670850ddf3bd6d468a7d9f05"
+    },
+    {
+      "path": "tests/test_validation_runner.py",
+      "sha256": "e63dcd926d68dd2e34c489abb4da25aa1d4687ae7f85c006dbcc268cf6b4e97f"
+    },
+    {
+      "path": "tests/test_vehicle_brakes.py",
+      "sha256": "9089c055c15c5482619a6f0b82c7961567d49de75fc4c03388c4a170fd1e678f"
+    },
+    {
+      "path": "tests/test_vehicle_collision.py",
+      "sha256": "1964f6c65ec9b2c8477dc0854142e8f80b8d27ed0bb094735dc7f85fa9fef786"
+    },
+    {
+      "path": "tests/test_vehicle_commands.py",
+      "sha256": "42714d58b2b35da6221aa99d08ce430f6bdc022ed95e2444d73a0cc4a3b5fdd7"
+    },
+    {
+      "path": "tests/test_vehicle_config.py",
+      "sha256": "d34b99716e4effa4b333a8448e23495dfbcfdd86de4f9a8505d879e6038123a1"
+    },
+    {
+      "path": "tests/test_vehicle_contacts.py",
+      "sha256": "85f52feafb34eded71eae159134465526312ca2a10a2a8232c8a6af6c420a46b"
+    },
+    {
+      "path": "tests/test_vehicle_designs.py",
+      "sha256": "c93edc26dafeab877f070ed9b9e45e26e83e3808277c14dec9beea80dfb37a9e"
+    },
+    {
+      "path": "tests/test_vehicle_parameters.py",
+      "sha256": "e06f63d9b42f56f601c9108e36bca0a85e94a29503b450726b20345c9eb215d2"
+    },
+    {
+      "path": "tests/test_vehicle_stability.py",
+      "sha256": "cf5b1c04f5dddb9d6aa5470612bd3a601119b703ec750adee7b0fb9099dd3374"
+    },
+    {
+      "path": "tests/test_vehicle_tires.py",
+      "sha256": "1f0dd18954df99bac3f34670a24d55497a75716b6a0025d39f621b64f86a9bac"
+    },
+    {
+      "path": "tests/test_vehicle_traction.py",
+      "sha256": "3822bbdbc23fa52aa560b820f69c29ba6cf0ed7be4b6307fe1b51d16df38058f"
+    },
+    {
+      "path": "tests/test_vehicle_visual_asset.py",
+      "sha256": "46d3b024eb144d2f66800b4323c54237d1be617e067e25a23521a98f76874d09"
+    },
+    {
+      "path": "tests/test_vehicle_visual_parameters.py",
+      "sha256": "bc7d36f8221ff2f97d192d11a8ca440f3ded844b39454fa94a3923c14df4790a"
+    },
+    {
+      "path": "tests/test_wheel_dynamics.py",
+      "sha256": "69de20bbf74547342705b962af50c995c2f821a24523bbfe0e7b43d94915132e"
+    },
+    {
+      "path": "tests/test_world_substeps.py",
+      "sha256": "5612c516a2d3e5e3c6bcb58e41b25a965563bdc27b33a68d03f147b4c4ed3585"
+    },
+    {
+      "path": "tools/appearance_flicker_check.py",
+      "sha256": "8125d2cb60cc0dab2ff61c4c3b8e1f929dd402ccabb2fb343946dec53e3add17"
+    },
+    {
+      "path": "tools/audio/check_feedback.py",
+      "sha256": "4273fdbed00447c32ef144f3eb758d58ff14f952b446c03113d1830a09b19e7a"
+    },
+    {
+      "path": "tools/audio/check_radio_driving.py",
+      "sha256": "8032190c0893ee47bcbede2820c2de56c05869c66d7c113f4fbd99f3cfe6293e"
+    },
+    {
+      "path": "tools/audio/check_radio_output.py",
+      "sha256": "b2b10f77ae1280138c40cbfd5927aa9077353bb77ccf1e2550762350defa95cf"
+    },
+    {
+      "path": "tools/audio/check_radio_switch.py",
+      "sha256": "b30e486fb9261c5a2a1e5fdbf6b77699f83734db7d92ff652280064322d704d7"
+    },
+    {
+      "path": "tools/audio/check_settings.py",
+      "sha256": "f0499bccd037598f8d63dde860339ddcf15bc2ab36ad20bc93232dea7a721c8d"
+    },
+    {
+      "path": "tools/audio/check_upgrade.py",
+      "sha256": "2234c6e483305853d3d59279148369c2107eecb6a1c97c84bb98414e042a9cc1"
+    },
+    {
+      "path": "tools/audio/make_audition.py",
+      "sha256": "030186c69525bfee6c8102bffdd57cc350032af15dfa9117c744cbb28a878b58"
+    },
+    {
+      "path": "tools/audio/music_sources.json",
+      "sha256": "e754dacffc5f32d0a91c1afdc4e5e72bb8def39eaa339d4d98aec80e598360fd"
+    },
+    {
+      "path": "tools/audio/prepare_music.py",
+      "sha256": "5fcdc6c6b2da4e83534e885c78eef50a8461514e3685e9ec783e612684c462fc"
+    },
+    {
+      "path": "tools/audio/prepare_recorded.py",
+      "sha256": "6d09f32769a888f4889d9d7ec95cc656fa9db9afce37750cb8e6490d6ff8e9c7"
+    },
+    {
+      "path": "tools/audio/prepare_upgrade.py",
+      "sha256": "e4155b754b50fcec386bc2f23b37919265c5cffcd4af028d37b84482117ef6b4"
+    },
+    {
+      "path": "tools/blender/build_classic_coupe.py",
+      "sha256": "bbcaef0c9b9d13fc598dc3f075cb99db1bfa90789500da641893754336b7c7c2"
+    },
+    {
+      "path": "tools/blender/build_coastal_kit.py",
+      "sha256": "5a150504f51c937648a30e8b566ec50e645bf649bdd82981c13b0b1d0472c146"
+    },
+    {
+      "path": "tools/blender/build_coastal_terrain.py",
+      "sha256": "12110d61b4fb44735ae945edb38c9d04c39d268da88889e4b806847a8403a88c"
+    },
+    {
+      "path": "tools/blender/build_expressway_landscape.py",
+      "sha256": "3437599212519f6ed4b2c840b359fc01f0eacb1265c83e2c4442ce1c4f45247b"
+    },
+    {
+      "path": "tools/blender/build_gr86.py",
+      "sha256": "e186979cad5e5a9292f6073a62ccaf1263a8f653acb7b7e08541684e4659594a"
+    },
+    {
+      "path": "tools/blender/build_traffic_family.py",
+      "sha256": "8f8bc6e46f784cd0ff300744aa1a3d7248cf2194711339fc0e1458f62e2340d4"
+    },
+    {
+      "path": "tools/blender_phase0.py",
+      "sha256": "9db8550f719fe6c361e58e3ad0bb73aeae675e1ab76205290d00768c99493c78"
+    },
+    {
+      "path": "tools/curve_drive_check.py",
+      "sha256": "686cdb5f563debb07b595a1ef052daf561b3e4727ea58ebef4a486b1e533c8ee"
+    },
+    {
+      "path": "tools/curve_render_check.py",
+      "sha256": "620af18128020a77dcdc1b27faabe58a44f090eedc61faed37cc0db2db0be359"
+    },
+    {
+      "path": "tools/curve_surface_check.py",
+      "sha256": "53ad1841337eb5fa6c6c269545be3fe50f95f12439929c129934190016683491"
+    },
+    {
+      "path": "tools/driving_mode_check.py",
+      "sha256": "889a143ed49a3ef9822bd5e4200b4ee6e27fd54e0371f23abc92fde3fce7d260"
+    },
+    {
+      "path": "tools/driving_mode_ui_check.py",
+      "sha256": "5da188c9ac736570a87c51196dd5a4c779310440a5fb0b32f86e34abe530470c"
+    },
+    {
+      "path": "tools/endless_check.py",
+      "sha256": "2dcad9a9efcde33036a8d381deaa29b0716c1f31ec47b00ff48999dff4a70318"
+    },
+    {
+      "path": "tools/endless_ui_check.py",
+      "sha256": "d8ebcd13d27970e11a855cb9b47ec0096f520d66f142ccda0a4de3d655698771"
+    },
+    {
+      "path": "tools/endurance_check.py",
+      "sha256": "91d6ae6d786e6de0c636ce1eca14936f40cdce1d0f67ac96fc964c9bb275625b"
+    },
+    {
+      "path": "tools/environment/bake_expressway_shore.py",
+      "sha256": "d7ed65a436adb2e3993a2a6fe47951bdeaf1a2b56a6e1405adc5a9f1512c1e9d"
+    },
+    {
+      "path": "tools/environment/bake_shore_distance.py",
+      "sha256": "fce23785e02f3272cb793ce2e08e206f56795afd7c0f4088992e3e02e65f6a54"
+    },
+    {
+      "path": "tools/environment/build_expressway_kit.py",
+      "sha256": "9c0e580a4a4e0d1f031082ee000672fb4a10bf00f1ef75669e92561ce24b3a9e"
+    },
+    {
+      "path": "tools/environment/build_expressway_signs.py",
+      "sha256": "851b0e1b66f00c0d4d8925277a70703cfd932916f17179042446b184c8a18d6d"
+    },
+    {
+      "path": "tools/environment/capture_coastal.py",
+      "sha256": "7b3f970e767c3bc6d925aaa547a141411ea3e41240729a56672049ac06a5b359"
+    },
+    {
+      "path": "tools/environment/check_expressway.py",
+      "sha256": "e56467e2d4e5dc26e001b3a58b5cacf9548d53808cbb2ef82ab9e8514bee67b0"
+    },
+    {
+      "path": "tools/environment/check_expressway_motion.py",
+      "sha256": "3a66eeeaf13d2173ddc6c4500e4fb15cb96c4446ae24e83ccdd0faf4a2c7d47d"
+    },
+    {
+      "path": "tools/environment/check_sign_faces.py",
+      "sha256": "d25dab1e404f0c1544abc056841c6dde7cc61e133332aac6ea084bc4db979fde"
+    },
+    {
+      "path": "tools/environment/check_sign_spacing.py",
+      "sha256": "6777f86d1320c1a2e4e2b244d423881b58ae3f252ebeb4e6c5501729dcbb6441"
+    },
+    {
+      "path": "tools/environment/check_tree_shadow.py",
+      "sha256": "325bcff7dafc426e12b807b415b18331b4cede489e0c0f557c0474b2ea9ee04e"
+    },
+    {
+      "path": "tools/environment/drive_slice.py",
+      "sha256": "5e8956a9d17b0660d9cab0c28a2395c8afb08bec6018a179129693b73973b58f"
+    },
+    {
+      "path": "tools/environment/export_terrain_data.py",
+      "sha256": "83cbaf6a8661c991f1c9d9def1072220221a94cde168e7ad53d6c42cf2d8d581"
+    },
+    {
+      "path": "tools/environment/make_expressway_sign_faces.py",
+      "sha256": "a9ad0c51473fe9cbe951fc25cd1a59787dbcb64ec0d0a63be3e6f5650a6d1f79"
+    },
+    {
+      "path": "tools/environment/make_expressway_surfaces.py",
+      "sha256": "b125b3c3aff9e882ba8ffea3f3377f85041c1708ec71e1d9e4ab29547a69c3d9"
+    },
+    {
+      "path": "tools/environment/make_ground_detail.py",
+      "sha256": "726fc47eda2cdbea09606f36bb33a6cc538369c53a9548c7d31d29364aa84bf2"
+    },
+    {
+      "path": "tools/environment/make_surface_textures.py",
+      "sha256": "08478c9ebf9d163115b8bca9a4f762974f3e7625d39cf14722dc6ad99188ec4e"
+    },
+    {
+      "path": "tools/environment/verify_shoulder_shadow.py",
+      "sha256": "bc007e7a24f1a10bea0aaea3185c27136f0727858ce4d343d9a1f30f16c57948"
+    },
+    {
+      "path": "tools/garage_check.py",
+      "sha256": "77464dbddfb2ae25b3e6b15ef4e50dd73651fa88c2f2584615b8e90e833369ed"
+    },
+    {
+      "path": "tools/h0_ui_check.py",
+      "sha256": "f4df6d1078daed1f8affc8b73b511b9e1f79faa0c7337d7b1dd24cce53190cce"
+    },
+    {
+      "path": "tools/h1_benchmark.py",
+      "sha256": "a4014f53efd5ce48fafc65afd8937cda945a22a21e1ee54597e2ede7c31bbfa0"
+    },
+    {
+      "path": "tools/h1_native_check.py",
+      "sha256": "5d30bf03fe7fa63ba15d453de2a03ee6361de77533a5f7b97b3ae04687e6cf39"
+    },
+    {
+      "path": "tools/h1_ui_check.py",
+      "sha256": "f190779547509c69b76c36109e7b0d8407ad0c2d08ea8b8839266413448cfab3"
+    },
+    {
+      "path": "tools/h2_render_check.py",
+      "sha256": "730eca2fdf358f69fe32e5da8b96de9f13a7863f6691c4857176c29d4f954186"
+    },
+    {
+      "path": "tools/h2_wheel_check.py",
+      "sha256": "628ae704a3223a7b89799ff8f824b24aac3ea1e4f71eba060b1a20ebcf35d3d9"
+    },
+    {
+      "path": "tools/h3_feedback_check.py",
+      "sha256": "6efc90176e40f40be7c5f1bf2e4210a94566f8f7b5cf63242931fe5d87030986"
+    },
+    {
+      "path": "tools/h3_ui_check.py",
+      "sha256": "153b6ef2292e81eb1ff4df33673b0cbdefebaf975edbc7651df05ba1b0712f84"
+    },
+    {
+      "path": "tools/h4a_traffic_check.py",
+      "sha256": "4cbfdf6e6a115618c64f6cd7ddcdba1d2ce42a828c7192cfa395157f1c352a85"
+    },
+    {
+      "path": "tools/h4a_ui_check.py",
+      "sha256": "d50049218b9d24e110fb48dcfa974dd7801a80d882c530bfa74d41ff216a4600"
+    },
+    {
+      "path": "tools/handling_trace.py",
+      "sha256": "1d01072e4de96954140f4fb2729fb3f182b5f48ec4b057dc441c44d60a845daa"
+    },
+    {
+      "path": "tools/impact_audio_check.py",
+      "sha256": "8ff8de2cf52be456ab79760f3f4a75c5e5309beb57c5287a30186cf9e98ebfdd"
+    },
+    {
+      "path": "tools/make_menu_assets.py",
+      "sha256": "61486b00a3c7c19183eb0b76f652b66aa371134999166a807ab1ade2e8381a1a"
+    },
+    {
+      "path": "tools/make_ui_brand.py",
+      "sha256": "9e44b83f3d524f73ce95e550c5eff38b5049c203d051b3037cb0316fa7c8682c"
+    },
+    {
+      "path": "tools/make_ui_textures.py",
+      "sha256": "ce7ca4a1670beb27840f9ae861c223c27b1ed2b82cd811a0ded23de8b2b456eb"
+    },
+    {
+      "path": "tools/performance/benchmark_runtime.py",
+      "sha256": "81edf1ec56d9a336166a86eb1f5e77e2cd2c04f7d9a8f37fd8f6115f86701d1e"
+    },
+    {
+      "path": "tools/performance/check_distance_transition.py",
+      "sha256": "18bfa90311589b0e032214d01cfd9e915c854e557584c17fa92cdad819279062"
+    },
+    {
+      "path": "tools/performance/check_dynamic_hud.py",
+      "sha256": "f13a5a59e1312cf7ecce097043d314082d815b187d7470266977b29804d6a901"
+    },
+    {
+      "path": "tools/performance/check_highway.py",
+      "sha256": "fedaceb25d12447db021d46da4ac80cb4866f8e5ffb5723b40dd672666f54dd3"
+    },
+    {
+      "path": "tools/performance/check_notice_flicker.py",
+      "sha256": "e8105217e618e80016764e07bb7c3fd5f0a2fbc4c9e28aff49fb064268e0dc28"
+    },
+    {
+      "path": "tools/performance/compare_simulation.py",
+      "sha256": "0c25284e4a245798a13cece12b8d01cd235bf8799cba1534b18c936771547fc7"
+    },
+    {
+      "path": "tools/performance/probe_batching.py",
+      "sha256": "259e091a12a159b25641c399140071d7891b404cf3ebf0b4d8873a2b1c5c277f"
+    },
+    {
+      "path": "tools/performance/profile_highway.py",
+      "sha256": "2011536e10a3656545be2a457e565add2081b428dad1c62c6dfe4078d13ae277"
+    },
+    {
+      "path": "tools/performance/profile_startup.py",
+      "sha256": "24db16f5927ec66ea95b13a804dde767388df310bdb062daf681ae1ad90ad9da"
+    },
+    {
+      "path": "tools/performance/summarize_startup.py",
+      "sha256": "90b5aaff4a6d1ecf6c01b134f57e3a6722abbd4c91ecd551b4ccfd166b5679a6"
+    },
+    {
+      "path": "tools/performance/verify_package.py",
+      "sha256": "2c33b7d23f318d462ad68627bfcd498924b65a35f6f66392e773c449fdd1547b"
+    },
+    {
+      "path": "tools/performance/verify_physics_equivalence.py",
+      "sha256": "d10e25b5a5ded6990801481a85f89566bb1aa5d691c14ff7f883d25cbea27f98"
+    },
+    {
+      "path": "tools/performance/verify_streaming.py",
+      "sha256": "c0c9fae61fb39b5d713cd6de3c1d6e37f1bc13bd5f7295026cf953efce069134"
+    },
+    {
+      "path": "tools/phase0_smoke.py",
+      "sha256": "572e619a56d9e0173df42b9d317afd313583419fddf71f54ae7edd272b94fd0e"
+    },
+    {
+      "path": "tools/phase3_route_check.py",
+      "sha256": "db0a83bf76f07f6747eb19a6c18f6155ce0091561d57dfd322628f169723878b"
+    },
+    {
+      "path": "tools/phase5a_traffic_check.py",
+      "sha256": "149b43e47202c82437a6289b55cbc3f4d359f853413767c08d648a3adbc56741"
+    },
+    {
+      "path": "tools/physics/abs_probe.py",
+      "sha256": "929540af0f959b65abb0412a3db48ebdf324a9e1f02045bf092371cff740a076"
+    },
+    {
+      "path": "tools/physics/collision_support_probe.py",
+      "sha256": "a0da3bae2148fedfb68e3dc393be5ec7ebc9acf1e5f667d3b2a29877013e4fba"
+    },
+    {
+      "path": "tools/physics/design_ab.py",
+      "sha256": "9ad374c3be83e35ed4654fddc5158eb8f3a4c9a03fb7dea7b56b8e57b9e737f4"
+    },
+    {
+      "path": "tools/physics/differential_ab.py",
+      "sha256": "16d6e0cef1fd512feb646bd3426ea4257aa4c91ba9a6d5f9686d8a76b19f8a9f"
+    },
+    {
+      "path": "tools/physics/drive_layout_ab.py",
+      "sha256": "fcd3da1470facb96018cc868fe0c0cd4fe010064e2f69f2476b8398897f683ed"
+    },
+    {
+      "path": "tools/physics/drivetrain_free_probe.py",
+      "sha256": "85161996f946428831b8ab8d1b73c12451a6dd1345490611a3b13ee8bb5f750d"
+    },
+    {
+      "path": "tools/physics/drivetrain_probe.py",
+      "sha256": "250398e4f2afba7a98a44c463d1ef5bb2d054d8ed9cea8382d62f77b2c4a6460"
+    },
+    {
+      "path": "tools/physics/esc_probe.py",
+      "sha256": "35c8542c729d93aee9bb7f444aabc84ca965225efe899305c28b17d9717d6a9e"
+    },
+    {
+      "path": "tools/physics/estimation_probe.py",
+      "sha256": "0cad42f5ac2929fdeca9d71e92d77bc7cdef604a2ee9af0d7b7548d71f43bd48"
+    },
+    {
+      "path": "tools/physics/experiment.py",
+      "sha256": "798c95ab715d5c8df82837e50857940b6a9ad892f7fa8776f545f78f26805b26"
+    },
+    {
+      "path": "tools/physics/export_designs.py",
+      "sha256": "f4b2d284a4ede2325a38812a409ba8e7d6d9f429b8f5ce71b911b61415e56612"
+    },
+    {
+      "path": "tools/physics/export_reference.py",
+      "sha256": "a5ee4115f7c4f13e9ae2e35ac182b16d023c3e5405c3a0c0f22ce71fbfe81a49"
+    },
+    {
+      "path": "tools/physics/gr86_benchmark.py",
+      "sha256": "135c2cbba54edcd67a9b8eaa5f44362347fcc88b63da8ce48a18fcbe004b06c2"
+    },
+    {
+      "path": "tools/physics/gr86_profile.py",
+      "sha256": "55bf6015a91a1e173873caeabcb41c79dbb4ac1f3ff070e3e48f6f6034c18944"
+    },
+    {
+      "path": "tools/physics/guardrail_probe.py",
+      "sha256": "51130a84e441ebf1f5e236ae717d7f500cbbd3f64f3aca81af9bc9e0510c1d49"
+    },
+    {
+      "path": "tools/physics/guardrail_support_probe.py",
+      "sha256": "02dee6a91c585a5886f14584ac47551ec903a6e535efaba2ba1a7e3e1d30f427"
+    },
+    {
+      "path": "tools/physics/lane_change_probe.py",
+      "sha256": "9179b62f40be59e183fbdeea9330c6d257ea3a56a754731fc615802c7bf087a9"
+    },
+    {
+      "path": "tools/physics/reference_ab.py",
+      "sha256": "60861e6c3b637a26f63537bf1b10c0b6af721f958de9116237126a55df032a9e"
+    },
+    {
+      "path": "tools/physics/rotor_ab.py",
+      "sha256": "9ac41951e97ae643648abf58e2759b4e50e5ab043a237d2c282f0d95da028157"
+    },
+    {
+      "path": "tools/physics/rotor_grade.py",
+      "sha256": "312a5a2e756706852166a9e8cb3de31c5a616fde161366889e4102ab9ca330e2"
+    },
+    {
+      "path": "tools/physics/rotor_probe.py",
+      "sha256": "a7ecec2cb26a7e43cf135079e31734e8a5ad3d8732e5ceeb9000be4de91ad4b8"
+    },
+    {
+      "path": "tools/physics/shaft_ab.py",
+      "sha256": "a38c77deb446f238527b95bf999f57ef8919ce9e732738aa52386ce9449ddc25"
+    },
+    {
+      "path": "tools/physics/steering_geometry_probe.py",
+      "sha256": "79349f642cf93d5634a426f7bbccac4b608c14f03376dd89115e5e9ed9949eae"
+    },
+    {
+      "path": "tools/physics/suspension_contact_probe.py",
+      "sha256": "280156467dd23f5c277ffefdc0d1b91b75ac3d8706c09e0468ceea34162e091e"
+    },
+    {
+      "path": "tools/physics/suspension_coupled_probe.py",
+      "sha256": "d1bbeb1874f4917b3db99bf8ed95dd8c7af9d8a7642c3067daa636ffe0dba34b"
+    },
+    {
+      "path": "tools/physics/suspension_handling_probe.py",
+      "sha256": "d2e9474ee55eddcb37ce6395eabfb16bf11026a23838993c4ded7157d2ef2268"
+    },
+    {
+      "path": "tools/physics/suspension_probe.py",
+      "sha256": "fb7edae60a00db44020c6f53fd8ae6d7254858e35f417ee34f917c11cb31afe6"
+    },
+    {
+      "path": "tools/physics/tcs_mechanical_check.py",
+      "sha256": "6b20cc47dadcf22fcd389fc58296826d1b8d60224df8033102195072ebe477af"
+    },
+    {
+      "path": "tools/physics/tcs_probe.py",
+      "sha256": "d95d0cbd3eb866b376520be7345226aa2fa6bd1327c5f31179a24b5033bbc94a"
+    },
+    {
+      "path": "tools/physics/testbed.py",
+      "sha256": "0928132b642493fff5c4d5e63aa6a43d20dd3b8cf6fa7814113f6dfa17d80675"
+    },
+    {
+      "path": "tools/physics/tire_compliance_probe.py",
+      "sha256": "2023ae6f592b66de1a427d778c1b9f2062dc07bffb1dc2e994aff7e9f04a46c1"
+    },
+    {
+      "path": "tools/physics/tire_compliance_substeps.py",
+      "sha256": "e2e7972dc960c496df5752bc63978e84d1e4c1d120b9b1f899c51b5d15cf1f6a"
+    },
+    {
+      "path": "tools/physics/tire_dynamics_probe.py",
+      "sha256": "cfcf47d16b3b76c21be437a3ea51ea36c317e0b124d2178f519128c38dd37d83"
+    },
+    {
+      "path": "tools/physics/tire_load_probe.py",
+      "sha256": "aad221ab90d90456639e80e620bc750b90b198782f7638488be7340a2ac4cc8d"
+    },
+    {
+      "path": "tools/physics/tire_load_substeps.py",
+      "sha256": "bf768361d6945390e5c99f50501ae8e696fa43f2b7f4a74f0a588d5e18bd0da7"
+    },
+    {
+      "path": "tools/physics/wheel_integration_lab.py",
+      "sha256": "84302a5d925987769eb7a39ac649ab86e18594ec40f8491e9fe8cf20cf124846"
+    },
+    {
+      "path": "tools/prepare_audio.py",
+      "sha256": "31a17787322c4ece96c784eb62e7418dd59d5bf343350992846d9c0c837940c9"
+    },
+    {
+      "path": "tools/prepare_h1_assets.py",
+      "sha256": "eaa0366666679e0ee5d3554c603defec9063de2dcc0b5416d9eec7e137e01169"
+    },
+    {
+      "path": "tools/prepare_impact_audio.py",
+      "sha256": "83da99ebd70bf292bcb1ced3a771438b8ae47fcfdeb58f730803b6930cc0659d"
+    },
+    {
+      "path": "tools/prepare_phase6b_materials.py",
+      "sha256": "be9e7ad6982c55f726e644de7affc711692226d2f4230d0293074421ac0c3cb1"
+    },
+    {
+      "path": "tools/prepare_phase6b_nature.py",
+      "sha256": "00cb1dfd4f71d9803aceb69460e4c4a52d0fd681bc8730b31daa7881d29ba322"
+    },
+    {
+      "path": "tools/prepare_phase6b_sky.py",
+      "sha256": "076acec740d139c6c2244ba30b83a0a0503591b2f9d1b6247479d1447280872c"
+    },
+    {
+      "path": "tools/prepare_vehicle_paint.py",
+      "sha256": "e48e3afa60125d59f7d113ec314eba118318cfafbf49d35f5d34574138aac325"
+    },
+    {
+      "path": "tools/render_impact_audition.py",
+      "sha256": "40fcd0a377c485072ce24cb08af60ed3055bc36c7c2ff99f86fa0d01a4db259c"
+    },
+    {
+      "path": "tools/route_driver.py",
+      "sha256": "3bd0b2c9d7d8fa6d0444c3acec6c3bba182fe6c1e45ebd4de5cdb33eedecf415"
+    },
+    {
+      "path": "tools/stage4_ui_check.py",
+      "sha256": "f920f7f410c6c35ea2e17210751e3be475678be2a0e5df6ccdc80a3946023e7e"
+    },
+    {
+      "path": "tools/traffic_gap_diagnostic.py",
+      "sha256": "e4eb7931a631530026b6cbac6102c1a579d36366789aa53a9ed6cbbb2975c043"
+    },
+    {
+      "path": "tools/traffic_gap_video.py",
+      "sha256": "96940d0b0c414c22fd0f64a90bdecefed41fc63bf1fcfe0814fe25de9d45e966"
+    },
+    {
+      "path": "tools/traffic_interaction_check.py",
+      "sha256": "2a699a19eebe1dc77399f79d7d43ad15c46d347ed53a6d8f6a508b660117f50b"
+    },
+    {
+      "path": "tools/ui_6b08_check.py",
+      "sha256": "8dae770c35676d3930312209b9bcc39341cecea1711966f756961b0dc6f05fda"
+    },
+    {
+      "path": "tools/ui_assets_check.py",
+      "sha256": "e5c288a8710e2801cd865cdb17afb9a8c30237672ab10434c2d9a3d8d96dbe38"
+    },
+    {
+      "path": "tools/ui_results_check.py",
+      "sha256": "adf6f3b30bd947d5901b119561173c935305d29c4c37f7da61dd87f9171944d7"
+    },
+    {
+      "path": "tools/validate.py",
+      "sha256": "694ce180674bcf9173206faf44f7968eae27ca7641b34c3e63c1b42d2865f7f5"
+    },
+    {
+      "path": "tools/vehicles/bake_reflection_probe.py",
+      "sha256": "dfd2f51e70b55bca9f15b0e01f2341dfc5222cacb44ed150d254934e3163328f"
+    },
+    {
+      "path": "tools/vehicles/capture_traffic_family.py",
+      "sha256": "80356ae897593a6cb6a5e65b8233ab4aa1ac2358f74ec2b87c2ddf20995d199f"
+    },
+    {
+      "path": "tools/vehicles/capture_vehicle.py",
+      "sha256": "5a2e18c5e4b4d73d23ef1ba074c576aaadeddb249b5125794f2793e9cb096f57"
+    },
+    {
+      "path": "tools/vi_ui_check.py",
+      "sha256": "e53405509b807b8502aa29275b62abf416cfbcdde66d7d491cdc1e33b85710f6"
+    }
+  ],
+  "aggregate_sha256": "dfc4889b37b8cb9ce4ed97abc19ae1a29dd3f9450669f9d13380e1e58b173570"
+}

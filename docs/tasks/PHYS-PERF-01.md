@@ -111,3 +111,6 @@ Tire constitutive 本构块（2026-10-08，隔离未并入main）：[证据与�
 
 
 隔离进程内初始化试验（2026-10-08，均拒绝）：[证据与收据](../evidence/PHYS-PERF-01/coupled-initialization-experiment/receipt.json)。法向载荷暖初值与提前联立Newton各89项T0通过，但两场景完整Snapshot均非逐字段相同；样本耗时分别为0.6988/4.8570s、0.9870/8.1486s，当前参考为0.7044/4.8658s。暖初值两项单次耗时均略低于参考，但差幅很小且快照不一致，无稳定收益证据；提前Newton更慢；均未接入生产、无T1或性能/机械Gate结论。目标 `tire_drivetrain.py` 与HEAD字节一致；其余并行工作区改动未纳入冻结。
+
+
+悬架 prescribed closed partition（2026-10-08，隔离块）：[报告](../evidence/PHYS-PERF-01/suspension-prescribed-r1/report.md)、[SHA/载荷清单](../evidence/PHYS-PERF-01/suspension-prescribed-r1/manifest.json)、[收据](../evidence/PHYS-PERF-01/suspension-prescribed-r1/receipt.json)。仅 `mechanical_kernels.c` 新增已指定末行程直接式；零法向逆质量且四轮非负反力，硬件反力保留FMA，其余完整64轮活动集和原门槛不变。独立127 DLL的16,081次调用输出hex一致；T0 172 passed、T1 601 passed/Ruff/三seed通过。2×48拍Snapshot与主线fa037c4 wall-port基线逐字段相同；0.7078/4.7718s仅诊断。\n

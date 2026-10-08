@@ -1,0 +1,279 @@
+{
+  "head_at_capture": "9a127e566c55d07756795bd27deb0826aabce6aa",
+  "source_count": 360,
+  "source_hashes_start_end_equal": true,
+  "source_start_aggregate_sha256": "dfc4889b37b8cb9ce4ed97abc19ae1a29dd3f9450669f9d13380e1e58b173570",
+  "source_end_aggregate_sha256": "dfc4889b37b8cb9ce4ed97abc19ae1a29dd3f9450669f9d13380e1e58b173570",
+  "snapshot_comparison": [
+    {
+      "traffic": 0,
+      "prescribed_seconds": 0.7078001999998378,
+      "triangle_reference_seconds": 0.7043967999998131,
+      "mainfa_seconds": 0.7201027999999496,
+      "prescribed_equals_triangle_bound": true,
+      "triangle_bound_equals_mainfa": true,
+      "prescribed_equals_mainfa": true
+    },
+    {
+      "traffic": 8,
+      "prescribed_seconds": 4.771768900000097,
+      "triangle_reference_seconds": 4.865848099999312,
+      "mainfa_seconds": 5.106677599999784,
+      "prescribed_equals_triangle_bound": true,
+      "triangle_bound_equals_mainfa": true,
+      "prescribed_equals_mainfa": true
+    }
+  ],
+  "items": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/audit-suspension-prescribed.py",
+      "archive": "physics/audit-suspension-prescribed.py",
+      "encoding": "byte-copy",
+      "source_sha256": "80a1f9a9e80bb74e76bffd72a028388d63e014e3a1827904fd1e4d66a2fb7caf",
+      "archive_sha256": "80a1f9a9e80bb74e76bffd72a028388d63e014e3a1827904fd1e4d66a2fb7caf",
+      "payload_sha256": "80a1f9a9e80bb74e76bffd72a028388d63e014e3a1827904fd1e4d66a2fb7caf",
+      "payload_verified": true,
+      "payload_bytes": 2140
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/measure-suspension-prescribed.py",
+      "archive": "physics/measure-suspension-prescribed.py",
+      "encoding": "byte-copy",
+      "source_sha256": "52613acb3620a1da638ced4b27b07e6b155f23fd64a7f3363b0c2b6062fa431e",
+      "archive_sha256": "52613acb3620a1da638ced4b27b07e6b155f23fd64a7f3363b0c2b6062fa431e",
+      "payload_sha256": "52613acb3620a1da638ced4b27b07e6b155f23fd64a7f3363b0c2b6062fa431e",
+      "payload_verified": true,
+      "payload_bytes": 349
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-prescribed-audit.json",
+      "archive": "physics/suspension-prescribed-audit.json",
+      "encoding": "byte-copy",
+      "source_sha256": "68a712817d5da056de8f9af78a2d925157e660870081af99fe818cf892b21b1d",
+      "archive_sha256": "68a712817d5da056de8f9af78a2d925157e660870081af99fe818cf892b21b1d",
+      "payload_sha256": "68a712817d5da056de8f9af78a2d925157e660870081af99fe818cf892b21b1d",
+      "payload_verified": true,
+      "payload_bytes": 295
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-prescribed-audit.log",
+      "archive": "physics/suspension-prescribed-audit.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "0950a69bc9e466b836df809a26ad71fb8a3fa77f9e7f4ad4b4c70855e036119d",
+      "archive_sha256": "0950a69bc9e466b836df809a26ad71fb8a3fa77f9e7f4ad4b4c70855e036119d",
+      "payload_sha256": "0950a69bc9e466b836df809a26ad71fb8a3fa77f9e7f4ad4b4c70855e036119d",
+      "payload_verified": true,
+      "payload_bytes": 521
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-prescribed-build.log",
+      "archive": "physics/suspension-prescribed-build.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "archive_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "payload_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "payload_verified": true,
+      "payload_bytes": 5534
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-prescribed-snapshots.json",
+      "archive": "physics/suspension-prescribed-snapshots.json.gz",
+      "encoding": "gzip-mtime-0",
+      "source_sha256": "0b326e49774f3618e877c9771c856496e431316234633f427f06db4d8adcae65",
+      "archive_sha256": "9aa0c207b8bbc732100d8568a8613a87cf1dedafd5a8729b144eb78222af4ba7",
+      "payload_sha256": "0b326e49774f3618e877c9771c856496e431316234633f427f06db4d8adcae65",
+      "payload_verified": true,
+      "payload_bytes": 8746812
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/suspension-prescribed-snapshots.log",
+      "archive": "physics/suspension-prescribed-snapshots.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "fc08ec41f548beaa306f78ac6c00c0e59db51f987775ad52bb35d96a0422f697",
+      "archive_sha256": "fc08ec41f548beaa306f78ac6c00c0e59db51f987775ad52bb35d96a0422f697",
+      "payload_sha256": "fc08ec41f548beaa306f78ac6c00c0e59db51f987775ad52bb35d96a0422f697",
+      "payload_verified": true,
+      "payload_bytes": 132
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-bound-snapshots.json",
+      "archive": "reference/triangle-bound-snapshots.json.gz",
+      "encoding": "gzip-mtime-0",
+      "source_sha256": "d396fbf3a43d859dfa88272befa2b560d2dcbe05592f6075b30250e2954bd2ad",
+      "archive_sha256": "56c16fc49f5b107772859adb8035147d9f478493b0862aa78ef013343faa2696",
+      "payload_sha256": "d396fbf3a43d859dfa88272befa2b560d2dcbe05592f6075b30250e2954bd2ad",
+      "payload_verified": true,
+      "payload_bytes": 8746812
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-bound-snapshots.log",
+      "archive": "reference/triangle-bound-snapshots.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "9d873bb5740a38c5e2a99c51d4bb9f13abe8f7ccdaa35d3d9adb952042a8a394",
+      "archive_sha256": "9d873bb5740a38c5e2a99c51d4bb9f13abe8f7ccdaa35d3d9adb952042a8a394",
+      "payload_sha256": "9d873bb5740a38c5e2a99c51d4bb9f13abe8f7ccdaa35d3d9adb952042a8a394",
+      "payload_verified": true,
+      "payload_bytes": 132
+    },
+    {
+      "source": "docs/evidence/PHYS-PERF-01/triangle-invariants-r1/reference/main-wall-port-precision-r1/snapshots.json.gz",
+      "archive": "reference/main-fa-wall-port-precision-r1-snapshots.json.gz",
+      "encoding": "byte-copy",
+      "source_sha256": "ddff1bfd69f860c457e2387914fd7a4770cf89f560fb850feb94e571fe2908b6",
+      "archive_sha256": "ddff1bfd69f860c457e2387914fd7a4770cf89f560fb850feb94e571fe2908b6",
+      "payload_sha256": "ddff1bfd69f860c457e2387914fd7a4770cf89f560fb850feb94e571fe2908b6",
+      "payload_verified": true,
+      "payload_bytes": 1945283
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/shared-solution-baseline/original-mechanical-kernels.c",
+      "archive": "reference/shared-solution-baseline/original-mechanical-kernels.c",
+      "encoding": "byte-copy",
+      "source_sha256": "f361e69c169f865685fbfeaa2eda9f47b4ba52cab767f833abbb01a160f430a5",
+      "archive_sha256": "f361e69c169f865685fbfeaa2eda9f47b4ba52cab767f833abbb01a160f430a5",
+      "payload_sha256": "f361e69c169f865685fbfeaa2eda9f47b4ba52cab767f833abbb01a160f430a5",
+      "payload_verified": true,
+      "payload_bytes": 83792
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/shared-solution-baseline/baseline.c",
+      "archive": "reference/shared-solution-baseline/baseline.c",
+      "encoding": "byte-copy",
+      "source_sha256": "75148f37a6c12ba6bbf83481b21117442a570353e98ebb0a085a899b0138b544",
+      "archive_sha256": "75148f37a6c12ba6bbf83481b21117442a570353e98ebb0a085a899b0138b544",
+      "payload_sha256": "75148f37a6c12ba6bbf83481b21117442a570353e98ebb0a085a899b0138b544",
+      "payload_verified": true,
+      "payload_bytes": 83796
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/shared-solution-baseline/setup.py",
+      "archive": "reference/shared-solution-baseline/setup.py",
+      "encoding": "byte-copy",
+      "source_sha256": "563423b47ff9c690a76a41ffb69c1b48b3ab8f1de51dc739687081e06c7167fd",
+      "archive_sha256": "563423b47ff9c690a76a41ffb69c1b48b3ab8f1de51dc739687081e06c7167fd",
+      "payload_sha256": "563423b47ff9c690a76a41ffb69c1b48b3ab8f1de51dc739687081e06c7167fd",
+      "payload_verified": true,
+      "payload_bytes": 232
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/shared-solution-baseline/build.log",
+      "archive": "reference/shared-solution-baseline/build.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "e4ad4306960e4c85eba7290450f48e5a06e842a4fb180a0fc8788af88b3064fd",
+      "archive_sha256": "e4ad4306960e4c85eba7290450f48e5a06e842a4fb180a0fc8788af88b3064fd",
+      "payload_sha256": "e4ad4306960e4c85eba7290450f48e5a06e842a4fb180a0fc8788af88b3064fd",
+      "payload_verified": true,
+      "payload_bytes": 3942
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/shared-solution-baseline/manifest.json",
+      "archive": "reference/shared-solution-baseline/manifest.json",
+      "encoding": "byte-copy",
+      "source_sha256": "c8dd163d034d27cc3a8baa4909f042a05690de64688812c8c6c7dc00c1b3615a",
+      "archive_sha256": "c8dd163d034d27cc3a8baa4909f042a05690de64688812c8c6c7dc00c1b3615a",
+      "payload_sha256": "c8dd163d034d27cc3a8baa4909f042a05690de64688812c8c6c7dc00c1b3615a",
+      "payload_verified": true,
+      "payload_bytes": 1539
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/shared-solution-baseline/receipt.json",
+      "archive": "reference/shared-solution-baseline/receipt.json",
+      "encoding": "byte-copy",
+      "source_sha256": "d2f79a1e6ff9f51d56691523a545551429c8ff090f6a59650d4e7cc8360358ff",
+      "archive_sha256": "d2f79a1e6ff9f51d56691523a545551429c8ff090f6a59650d4e7cc8360358ff",
+      "payload_sha256": "d2f79a1e6ff9f51d56691523a545551429c8ff090f6a59650d4e7cc8360358ff",
+      "payload_verified": true,
+      "payload_bytes": 2229
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-prescribed-T0/pytest.log",
+      "archive": "validation/T0/pytest.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "6b985a459dc3d0a221c89afbc69dad474244ce6b41f30359ce4873d43aea5164",
+      "archive_sha256": "6b985a459dc3d0a221c89afbc69dad474244ce6b41f30359ce4873d43aea5164",
+      "payload_sha256": "6b985a459dc3d0a221c89afbc69dad474244ce6b41f30359ce4873d43aea5164",
+      "payload_verified": true,
+      "payload_bytes": 264
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-prescribed-T0/ruff.log",
+      "archive": "validation/T0/ruff.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "payload_verified": true,
+      "payload_bytes": 19
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-prescribed-T0/summary.json",
+      "archive": "validation/T0/summary.json",
+      "encoding": "byte-copy",
+      "source_sha256": "33dc5b4b160f0d5303e0d6167fb193cc942201d5469129f1698a2c4cfd14fee9",
+      "archive_sha256": "33dc5b4b160f0d5303e0d6167fb193cc942201d5469129f1698a2c4cfd14fee9",
+      "payload_sha256": "33dc5b4b160f0d5303e0d6167fb193cc942201d5469129f1698a2c4cfd14fee9",
+      "payload_verified": true,
+      "payload_bytes": 3503
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-prescribed-T1/headless-0.log",
+      "archive": "validation/T1/headless-0.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "archive_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "payload_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "payload_verified": true,
+      "payload_bytes": 32408
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-prescribed-T1/headless-17.log",
+      "archive": "validation/T1/headless-17.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "archive_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "payload_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "payload_verified": true,
+      "payload_bytes": 32408
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-prescribed-T1/headless-23.log",
+      "archive": "validation/T1/headless-23.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "archive_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "payload_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "payload_verified": true,
+      "payload_bytes": 32408
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-prescribed-T1/pytest.log",
+      "archive": "validation/T1/pytest.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "fefb93ae8ad7ef9d716e56f4679a6a022a14f07d96738c95e9681eadcdb6d41f",
+      "archive_sha256": "fefb93ae8ad7ef9d716e56f4679a6a022a14f07d96738c95e9681eadcdb6d41f",
+      "payload_sha256": "fefb93ae8ad7ef9d716e56f4679a6a022a14f07d96738c95e9681eadcdb6d41f",
+      "payload_verified": true,
+      "payload_bytes": 751
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-prescribed-T1/ruff.log",
+      "archive": "validation/T1/ruff.txt",
+      "encoding": "byte-copy",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "payload_verified": true,
+      "payload_bytes": 19
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-suspension-prescribed-T1/summary.json",
+      "archive": "validation/T1/summary.json",
+      "encoding": "byte-copy",
+      "source_sha256": "c4dc99ea5d30db4610bf12aac8ec67a0a4efcf9b611d262c4e824dfbceb2c1a4",
+      "archive_sha256": "c4dc99ea5d30db4610bf12aac8ec67a0a4efcf9b611d262c4e824dfbceb2c1a4",
+      "payload_sha256": "c4dc99ea5d30db4610bf12aac8ec67a0a4efcf9b611d262c4e824dfbceb2c1a4",
+      "payload_verified": true,
+      "payload_bytes": 6513
+    }
+  ]
+}

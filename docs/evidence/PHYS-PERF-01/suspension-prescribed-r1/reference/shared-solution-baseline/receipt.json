@@ -1,0 +1,52 @@
+{
+  "baseline_commit": "127c1d0",
+  "module_name": "_shared_solution_old",
+  "init_symbol": "PyInit__shared_solution_old",
+  "rename_rule": "Only the module definition string and PyInit function symbol were renamed; all other source bytes preserved.",
+  "source_sha256": "f361e69c169f865685fbfeaa2eda9f47b4ba52cab767f833abbb01a160f430a5",
+  "renamed_source_sha256": "75148f37a6c12ba6bbf83481b21117442a570353e98ebb0a085a899b0138b544",
+  "setup_sha256": "563423b47ff9c690a76a41ffb69c1b48b3ab8f1de51dc739687081e06c7167fd",
+  "build_command": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-baseline\\setup.py build_ext --build-lib C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-baseline\\b --build-temp C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-baseline\\t",
+  "build_returncode": 0,
+  "build_log": "build.log",
+  "pyd_path": "b/_shared_solution_old.cp314-win_amd64.pyd",
+  "pyd_sha256": "d5012c06d3013d1bf6ffca89b16d815f49c15b73b837ace40f41f0c639fbf357",
+  "source_matches_git_show": true,
+  "renamed_source_diff_is_exact_two_replacements": true,
+  "strict_compile_flags_verified": [
+    "/fp:strict",
+    "/utf-8"
+  ],
+  "import_check": {
+    "passed": true,
+    "module": "_shared_solution_old",
+    "exports": [
+      "PORT_TOLERANCE",
+      "cross",
+      "dot",
+      "dot3",
+      "known_state",
+      "load_coefficients",
+      "mass_coefficients",
+      "mass_response",
+      "mass_response_prepared",
+      "project_vector",
+      "rotor_coefficients",
+      "rotor_known_state",
+      "rotor_spin",
+      "rotor_spin_prepared",
+      "shaft_brake_plans",
+      "shaft_brake_state",
+      "shared_map_coefficients",
+      "shared_map_jacobian",
+      "shared_map_state",
+      "solve_lu",
+      "suspension_contact_state",
+      "wheel_load_prepared",
+      "wheel_load_terms",
+      "wheel_map_coefficients",
+      "wheel_map_state"
+    ],
+    "physical_code_executed": false
+  }
+}

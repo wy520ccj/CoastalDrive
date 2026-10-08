@@ -1,0 +1,50 @@
+{
+  "algorithm": "SHA-256",
+  "entries": [
+    {
+      "path": "b/_shared_solution_old.cp314-win_amd64.pyd",
+      "size": 74240,
+      "sha256": "d5012c06d3013d1bf6ffca89b16d815f49c15b73b837ace40f41f0c639fbf357"
+    },
+    {
+      "path": "baseline.c",
+      "size": 83796,
+      "sha256": "75148f37a6c12ba6bbf83481b21117442a570353e98ebb0a085a899b0138b544"
+    },
+    {
+      "path": "build.log",
+      "size": 3942,
+      "sha256": "e4ad4306960e4c85eba7290450f48e5a06e842a4fb180a0fc8788af88b3064fd"
+    },
+    {
+      "path": "original-mechanical-kernels.c",
+      "size": 83792,
+      "sha256": "f361e69c169f865685fbfeaa2eda9f47b4ba52cab767f833abbb01a160f430a5"
+    },
+    {
+      "path": "receipt.json",
+      "size": 2229,
+      "sha256": "d2f79a1e6ff9f51d56691523a545551429c8ff090f6a59650d4e7cc8360358ff"
+    },
+    {
+      "path": "setup.py",
+      "size": 232,
+      "sha256": "563423b47ff9c690a76a41ffb69c1b48b3ab8f1de51dc739687081e06c7167fd"
+    },
+    {
+      "path": "t/Release/_shared_solution_old.cp314-win_amd64.exp",
+      "size": 983,
+      "sha256": "f9c6297b94b96e2a1d0be632faf4fbceb606317560a364a7b3549a960f8e6844"
+    },
+    {
+      "path": "t/Release/_shared_solution_old.cp314-win_amd64.lib",
+      "size": 2248,
+      "sha256": "897be42b262795f8b07b8e9da91d27f682904c5e78e9d442037dd97a9f803d09"
+    },
+    {
+      "path": "t/Release/baseline.obj",
+      "size": 433266,
+      "sha256": "a076bdbfb5ffb20aabfbe32ed273f16fd0d58821ffe7693fa5f04761f9679e34"
+    }
+  ]
+}

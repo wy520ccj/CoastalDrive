@@ -1,0 +1,11 @@
+{
+  "baseline": "127c1d0 independent _shared_solution_old native original suspension active set",
+  "pytest_code": 0,
+  "all_output_hex_equal": true,
+  "counts": {
+    "calls": 16081,
+    "zero_mobility": 10744,
+    "prescribed_four_contact": 10061,
+    "general_partition": 6020
+  }
+}
