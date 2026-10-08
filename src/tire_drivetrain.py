@@ -11,10 +11,11 @@ from mechanical_kernels import (
     mass_response_prepared,
     rotor_coefficients,
     rotor_spin_prepared,
+    shared_load_solution,
     shared_map_coefficients,
-    shared_solution,
     wheel_contact_state,
     wheel_force_solution,
+    wheel_free_state,
     wheel_load_prepared,
     wheel_map_coefficients,
     wheel_map_derivatives,
@@ -168,6 +169,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     tire_hardware = tuple((car.slip_speed, car.tire_contact_stiffness, car.tire_contact_damping,
                            car.tire_shape, car.tire_curvature) for car in configurations)
     wheel_loads = tuple(frame.load for frame in frames)
+    wheel_supported = tuple(frame.supported for frame in frames)
 
     def load_parameters():
         # 轮荷刷新时重算本构参数，后续力/Jacobian试探共用同一组数值。
@@ -316,12 +318,13 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
 
     def shared(guess):
         nonlocal shared_branch, shared_port_index, road_torques, active_limits, bias_ports
-        loads = load_terms()
         if shaft:
-            end, end_velocity, clutch, loss, gear_reaction, shared_branch, shared_port_index, road_torques, active_limits, bias_ports = shared_solution(
-                shared_map, guess, loads, wheel_loads,
-                tuple(frame.supported for frame in frames), shared_branch, bias_ports)
+            end, end_velocity, clutch, loss, gear_reaction, shared_branch, shared_port_index, road_torques, active_limits, bias_ports = shared_load_solution(
+                wheel_map, guess, forces, velocity, normal_forces if suspension is not None else None,
+                normal_responses, suspension.gradients if suspension is not None else None,
+                wheel_loads, wheel_supported, shared_branch, bias_ports)
             return end, end_velocity, clutch, loss, gear_reaction
+        loads = load_terms()
         def mapped(state):
             nonlocal shared_branch, shared_port_index, road_torques, active_limits
             # 八维旧机械对照保留原两端口机制。
@@ -424,7 +427,13 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         return combined_force(kappa, alpha, grip, cx, cy, car.tire_shape, car.tire_curvature), None
 
     def solve_wheel(i, gyro):
-        free_base_wheel, velocity_base = known(gyro, load_terms(exclude=i))
+        if shaft:
+            free_base_wheel, velocity_base = wheel_free_state(wheel_map, forces, velocity,
+                normal_forces if suspension is not None else None, normal_responses,
+                suspension.gradients if suspension is not None else None, gyro,
+                road_torques if rolling_active else None, i)
+        else:
+            free_base_wheel, velocity_base = known(gyro, load_terms(exclude=i))
         frame, car = frames[i], configurations[i]
         if shaft and car.tire_compliance:
             fx, fy, brake, _error = wheel_force_solution(wheel_map, i, free_base_wheel, velocity_base, active_limits,

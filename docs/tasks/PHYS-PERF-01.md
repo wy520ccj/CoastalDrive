@@ -1,7 +1,7 @@
 # PHYS-PERF-01 真实物理性能收口
 
-- 状态：in_progress；当前主施工目录为main，完整轮端原生入口/末速度本构/胎体能量功能组已完成本轮自动收口。
-- 本轮基线：8deb721；本轮本地提交，未推送。完整T2/T3、前台性能与人工驾驶仍未完成，当前证据见wheel-endpoint-r1。
+- 状态：in_progress；当前主施工目录为main，跨轮载荷与共同状态原生入口已完成本轮自动收口。
+- 本轮基线：b5c35c5；本轮本地提交，未推送。完整T2/T3、前台性能与人工驾驶仍未完成，当前证据见shared-load-r1。
 - 范围：减少同一机械子步内重复的几何与代数计算，再接产品/试玩包和最终Gate。
 
 Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数、本构律、20/30轮上限和原残差要求保持；NPC执行共同物理。优化按实际profile定位，不以改变碰撞、控制请求或更新频率换取性能。
@@ -142,3 +142,9 @@ Wheel solver 功能块证据收口（2026-10-08）：[逐件 SHA 与冻结源码
 一次独立8deb721原Python/旧DLL对照：1,413个完整推进、24,696次局部轮力、33,804次共同末速度本构、5,652次能量账，完整字段hex和世界引用一致；512组独立旧Python能量公式逐值一致。21条台架含FWD/RWD/AWD、正倒挡、挂挡/空挡/同步和低速；另含两条真实落体再接地与九车24拍。命令：`.venv/Scripts/python.exe logs/physics/PHYS-PERF-01/audit-wheel-endpoint.py`。原生扩展按setup.py的`/fp:strict`重建。
 
 相关短检查命令：`.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_tire_compliance.py tests/test_tire_drivetrain.py --output logs/validation/PHYS-PERF-01-wheel-endpoint-T0 --timeout 180`，357 passed in 2.00s、Ruff通过。初轮Ruff仅有未使用contact_force导入F401，移除该导入后上述T0通过；未运行失败版本pytest。不追加完整T1/种子/48拍/profile/长轨迹，不把旧876项T1写成本轮重跑；本轮无FPS结论。代码与不可变证据归档本地提交，未推送；主fa T2的783/1失败及11未跑仍保留，最终T2/T3/产品包/前台/人工Gate继续。下一共同状态和跨轮载荷装配的实际热点，再收产品与阶段。
+
+跨轮载荷与共同状态入口（2026-10-08）：[源码/独立DLL/验证收据](../evidence/PHYS-PERF-01/shared-load-r1/receipt.json)。wheel_load_prepared与新共同/局部入口共用同一个载荷数值函数；shared_solution与新入口共用原30轮求根、解析Jacobian、8次线搜索和逐坐标ULP/1e-11端口要求。固定矩阵沿用本advance的原WheelMap，当前四轮力、法向力/响应、接点梯度每次读取；仅省去角向/法向载荷的Python元组装配和再次读回。局部求解依原顺序排除本轮切向力，仍包含全部真实法向载荷。八维旧机制与旧公开入口保留；不缓存动态世界状态，不引入回退或新架构，120Hz/硬件/本构/20轮与原精度保持。
+
+独立b5c35c5原Python+严格旧DLL一次对照：804个完整推进、14,823次共同载荷入口、11,220次局部自由状态入口、36条台架，全部字段hex与世界引用相同；C/PY/PYD起止SHA相同。台架含FWD/RWD/AWD、柔性开/关、正倒挡、挂挡/空挡/同步；实际轨迹含2s落体再接地和九车16拍。命令：`.venv/Scripts/python.exe logs/physics/PHYS-PERF-01/shared-load-r1/audit.py`，exit0。
+
+相关短检查：`.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_tire_shaft.py tests/test_joint_suspension.py tests/test_rolling_resistance.py --output logs/validation/PHYS-PERF-01-shared-load-T0 --timeout 180`，77 passed in 1.32s、Ruff通过。原生扩展按setup.py的/fp:strict重建。没有本轮失败，也未重复完整T1/种子/48拍/profile/长轨迹，不作FPS结论。Luna仅复制既有证据并写逐件SHA，不跑物理或测试；归档日志采用.txt、目录-text，独立旧/新PYD各一份。仅本地提交，未推送；主fa T2的783/1失败及11未跑保留，T2/T3/产品/前台/两模式人工仍未关闭。下一局部自由状态与轮力求根直接连通，再收产品和阶段。
