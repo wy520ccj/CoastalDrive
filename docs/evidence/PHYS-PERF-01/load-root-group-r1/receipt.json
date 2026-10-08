@@ -1,0 +1,59 @@
+{
+  "baseline": "cc2b3da",
+  "source_count_after": 360,
+  "source_capture_scope": "审计完成后点时哈希；不冒充前后双采样",
+  "audit": {
+    "baseline": "cc2b3da wheel loads; independent old Python root control flow",
+    "all_full_step_hex_and_references_equal": true,
+    "counts": {
+      "full_drivetrain_calls": 1392,
+      "native_root_calls": 16888
+    },
+    "scope": "一次功能组对照；无pytest/T1/三种子重复执行。"
+  },
+  "validation": "Ruff + one grouped old/new live comparison; no repeated pytest/T1/seeds",
+  "items": [
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\promote-load-parameters.py",
+      "archive": "promote-load-parameters.py",
+      "sha256": "43455b61ce22c4c693313cd419cf5437b461587bf90d23b4f86998fea8df12c4"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\load-parameters-baseline-tire.py",
+      "archive": "load-parameters-baseline-tire.py",
+      "sha256": "63923f998861c3a064caba088bf73e6a06bce0f8e3fad8862a07599376b155c9"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\load-parameters-baseline-wheel.py",
+      "archive": "load-parameters-baseline-wheel.py",
+      "sha256": "587e0d351ae34389f859751cdee353b83b007d26419d0555b80128fa42747525"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\audit-load-root-group.py",
+      "archive": "audit-load-root-group.py",
+      "sha256": "82ebbc3c5d3dd961b7b161256f69c0fd3342676abd4534fb30d5ebfdaa3f1c4b"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\load-root-group-audit.json",
+      "archive": "load-root-group-audit.json",
+      "sha256": "0d97ece687b4066fbf3db62e6ebcf4825981ebd76040e41aff73c8043d19fb08"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\load-root-group-audit.log",
+      "archive": "load-root-group-audit.txt",
+      "sha256": "c0f76649357c39f27907abfb196e2e75308e2f0516bb2e9935e34fac2ce57b05"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\load-root-build.log",
+      "archive": "load-root-build.txt",
+      "sha256": "13cef7ae177fafe4114a088586dc9c9bf5248abef4cec41ef0b29ec517ee546f"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\load-root-ruff.log",
+      "archive": "load-root-ruff.txt",
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0"
+    }
+  ],
+  "stage_gate": "pending",
+  "human_gate": "pending"
+}

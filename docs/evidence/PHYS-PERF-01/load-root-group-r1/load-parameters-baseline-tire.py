@@ -162,15 +162,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     def mobility(vector):
         return mass_response_prepared(mobility_coefficients, vector)
 
-    configurations = (config, config, rear_config, rear_config)
     wheel_loads = tuple(frame.load for frame in frames)
-
-    def load_parameters():
-        # 轮荷刷新时重算本构参数，后续力/Jacobian试探共用同一组数值。
-        return tuple((tire_grip(load, frame.mu, car), *tire_stiffness(load, car))
-                     for load, frame, car in zip(wheel_loads, frames, configurations))
-
-    contact_parameters = load_parameters()
     normal_forces = (0.,) * 4
     normal_responses, normal_mobility = (), ()
     reference_suspension = suspension
@@ -186,12 +178,11 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         normal_projection()
 
     def normal_loads():
-        nonlocal wheel_loads, contact_parameters
+        nonlocal wheel_loads
         # 支持几何在本次推进内固定，法向力只刷新四个实际轮荷。
         wheel_loads = tuple(force / alignment if frame.supported and contact and force > 0. else 0.
                        for frame, force, alignment, contact in
                        zip(frames, normal_forces, suspension.alignment, suspension.touching))
-        contact_parameters = load_parameters()
 
     responses = tuple((mobility(longitudinal[i]), mobility(lateral[i]), mobility(brake_gradients[i])) for i in range(4))
     differential = differential_gradients(axes)
@@ -260,6 +251,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
 
     forces = list(force_initial)
     modes = [None] * 4
+    configurations = (config, config, rear_config, rear_config)
     rolling = tuple(max(abs(dot(velocity, frame.tangent) + dot(angular, moments_x[i])),
                         abs(radii[i] * omega[i])) >= config.static_contact_speed for i, frame in enumerate(frames))
     static = tuple((wheel_loads[i] > 0 if suspension is None else suspension.touching[i]) and max(abs(dot(velocity, frame.tangent) + dot(angular, moments_x[i])),
@@ -408,9 +400,10 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         return vx, vy, (radii[index] * state[index + wheel_start] - vx, -vy)
 
     def contact(index, state, end_velocity, fx, fy):
-        car = configurations[index]
+        frame, car = frames[index], configurations[index]
         vx, vy, slip = velocities(index, state, end_velocity)
-        grip, cx, cy = contact_parameters[index]
+        grip = tire_grip(wheel_loads[index], frame.mu, car)
+        cx, cy = tire_stiffness(wheel_loads[index], car)
         if car.tire_compliance:
             target, *details = contact_force((fx, fy), deformations[index], slip, max(abs(vx), car.slip_speed),
                 rolling[index], grip, cx, cy, dt, car.tire_contact_stiffness, car.tire_contact_damping,
@@ -496,8 +489,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             denominator_gradient = (tuple(math.copysign(1., vx) * value[2] for value in gradients)
                                     if abs(vx) > car.slip_speed else (0., 0.))
             target = contact_jacobian((fx, fy), deformations[i], slip, slip_jacobian,
-                max(abs(vx), car.slip_speed), denominator_gradient, rolling[i], contact_parameters[i][0],
-                *contact_parameters[i][1:], dt, car.tire_contact_stiffness, car.tire_contact_damping,
+                max(abs(vx), car.slip_speed), denominator_gradient, rolling[i], tire_grip(wheel_loads[i], frame.mu, car),
+                *tire_stiffness(wheel_loads[i], car), dt, car.tire_contact_stiffness, car.tire_contact_damping,
                 car.tire_shape, car.tire_curvature)
             return 1 - target[0][0], -target[0][1], -target[1][0], 1 - target[1][1]
 
@@ -518,7 +511,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 # 姿态/轮荷刷新后，旧力可能位于曲线下降支。用同一隐式方程的零滑移切线预测初值。
                 vx, _vy, slip, gradients = derivatives(0., 0.)
                 impedance = car.tire_contact_stiffness * dt + car.tire_contact_damping
-                stiffnesses = contact_parameters[i][1:]
+                stiffnesses = tire_stiffness(wheel_loads[i], car)
                 slopes = tuple(value / max(abs(vx), car.slip_speed) for value in stiffnesses)
                 patch = tuple(slip[a] + car.tire_contact_stiffness * deformations[i][a] / impedance for a in range(2))
                 matrix = tuple(tuple(float(a == b) - slopes[a] * (
@@ -529,7 +522,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 determinant = a * d - b * c
                 guess = ((d * rhs_x - b * rhs_y) / determinant, (a * rhs_y - c * rhs_x) / determinant)
             if rolling[i]:
-                fx, fy, _error = _solve_rolling_force(residual, jacobian, contact_parameters[i][0],
+                fx, fy, _error = _solve_rolling_force(residual, jacobian, tire_grip(wheel_loads[i], frame.mu, car),
                                                      tolerance=.0001, initial=guess)
             else:
                 fx, fy, _error = _solve_force(residual, tolerance=.0001, initial=guess, jacobian=jacobian)
@@ -538,7 +531,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             if static[i]:
                 fx, fy, _error = _solve_force(sticking_residual, tolerance=.0001,
                                              initial=forces[i][:2], jacobian=sticking_jacobian)
-                sticking = math.hypot(fx, fy) <= contact_parameters[i][0]
+                sticking = math.hypot(fx, fy) <= tire_grip(wheel_loads[i], frame.mu, car)
             if sticking:
                 mode = "sticking"
             else:
@@ -627,7 +620,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             scale = 2.**-attempt
             candidate = tuple(values[i] + scale * delta[i] for i in range(8))
             if any(modes[i] == "sticking" and math.hypot(*candidate[2 * i:2 * i + 2])
-                   > contact_parameters[i][0] for i in range(4)):
+                   > tire_grip(wheel_loads[i], frames[i].mu, configurations[i]) for i in range(4)):
                 continue
             after = residual(candidate)
             if max(math.hypot(*after[2 * i:2 * i + 2]) for i in range(4)) < before:

@@ -1965,7 +1965,63 @@ static PyObject *suspension_step(PyObject *self,PyObject *args) {
     Py_DECREF(energy); Py_DECREF(contact); return result;
 }
 
+/* 滚动根的控制流与Python原式相同，残差/Jacobian仍回本次真实轮端方程。 */
+static int rolling_root_evaluate(PyObject *function, double fx, double fy, double *values, int count) {
+    PyObject *result = PyObject_CallFunction(function, "dd", fx, fy);
+    if (!result) return 0;
+    int success = vector(result, values, count);
+    Py_DECREF(result);
+    return success;
+}
+
+static PyObject *rolling_root_failure(const char *message, double residual) {
+    char buffer[256];
+    PyOS_snprintf(buffer, sizeof(buffer), "%s%.6g N", message, residual);
+    PyErr_SetString(PyExc_ArithmeticError, buffer);
+    return NULL;
+}
+
+static PyObject *rolling_force_solution(PyObject *self, PyObject *args) {
+    PyObject *residual, *jacobian, *initial, *hypot_function;
+    double grip, tolerance, force[2], error = 0.;
+    if (!PyArg_ParseTuple(args, "OOddOO", &residual, &jacobian, &grip, &tolerance, &initial, &hypot_function)) return NULL;
+    if (!vector(initial, force, 2)) return NULL;
+    for (int i = 0; i < 2; ++i) {
+        double limited = force[i] < grip ? force[i] : grip;
+        force[i] = limited > -grip ? limited : -grip;
+    }
+    double lower_x = -grip, upper_x = grip;
+    for (int outer = 0; outer < 20; ++outer) {
+        double lower_y = -grip, upper_y = grip, r[2], matrix[4];
+        int lateral;
+        for (lateral = 0; lateral < 20; ++lateral) {
+            if (!rolling_root_evaluate(residual, force[0], force[1], r, 2)
+                || !rolling_root_evaluate(jacobian, force[0], force[1], matrix, 4)) return NULL;
+            if (fabs(r[1]) < tolerance) break;
+            if (r[1] > 0.) upper_y = force[1]; else lower_y = force[1];
+            if (matrix[3] == 0.) { PyErr_SetString(PyExc_ZeroDivisionError, "横向根导数为零"); return NULL; }
+            double candidate = force[1] - r[1] / matrix[3];
+            force[1] = lower_y < candidate && candidate < upper_y ? candidate : (lower_y + upper_y) / 2;
+        }
+        if (lateral == 20) return rolling_root_failure("轮胎横向隐式积分超过20次迭代：残差 ", r[1]);
+        PyObject *norm = PyObject_CallFunction(hypot_function, "dd", r[0], r[1]);
+        if (!norm) return NULL;
+        error = PyFloat_AsDouble(norm);
+        Py_DECREF(norm);
+        if (PyErr_Occurred()) return NULL;
+        if (error < tolerance) return Py_BuildValue("(ddd)", force[0], force[1], error);
+        if (r[0] > 0.) upper_x = force[0]; else lower_x = force[0];
+        if (matrix[3] == 0.) { PyErr_SetString(PyExc_ZeroDivisionError, "横向根导数为零"); return NULL; }
+        double derivative = matrix[0] - matrix[1] * matrix[2] / matrix[3];
+        if (derivative == 0.) { PyErr_SetString(PyExc_ZeroDivisionError, "纵向根导数为零"); return NULL; }
+        double candidate = force[0] - r[0] / derivative;
+        force[0] = lower_x < candidate && candidate < upper_x ? candidate : (lower_x + upper_x) / 2;
+    }
+    return rolling_root_failure("轮胎滚动隐式积分超过20次迭代：残差 ", error);
+}
+
 static PyMethodDef methods[] = {
+    {"rolling_force_solution", (PyCFunction)rolling_force_solution, METH_VARARGS, "原滚动接触括根控制流"},
     {"suspension_step", (PyCFunction)suspension_step, METH_VARARGS, "原完整悬架步与能量账"},
     {"suspension_elastic_terms", (PyCFunction)suspension_elastic_terms, METH_VARARGS, "原悬架势能及硬件梯度"},
     {"suspension_energy_account", (PyCFunction)suspension_energy_account, METH_VARARGS, "原悬架离散能量账"},

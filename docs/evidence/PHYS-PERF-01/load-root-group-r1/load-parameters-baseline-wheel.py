@@ -3,8 +3,6 @@
 import math
 from dataclasses import dataclass
 
-from mechanical_kernels import rolling_force_solution
-
 from tire_compliance import contact_force, contact_jacobian, energy_terms
 from tire_forces import combined_force, slip_state
 from tire_properties import tire_grip, tire_stiffness
@@ -192,4 +190,30 @@ def _solve_force(residual, tolerance=.001, initial=(0.0, 0.0), jacobian=None):
 
 def _solve_rolling_force(residual, jacobian, grip, tolerance=.001, initial=(0.0, 0.0)):
     """滚动曲线按摩擦力界括根；横向消元后用Schur导数解纵向同一隐式方程。"""
-    return rolling_force_solution(residual, jacobian, grip, tolerance, initial, math.hypot)
+    fx, fy = (max(-grip, min(grip, value)) for value in initial)
+    lower_x, upper_x = -grip, grip
+    for _ in range(20):
+        lower_y, upper_y = -grip, grip
+        for _ in range(20):
+            rx, ry = residual(fx, fy)
+            a, b, c, d = jacobian(fx, fy)
+            if abs(ry) < tolerance:
+                break
+            if ry > 0:
+                upper_y = fy
+            else:
+                lower_y = fy
+            candidate = fy - ry / d
+            fy = candidate if lower_y < candidate < upper_y else (lower_y + upper_y) / 2
+        else:
+            raise ArithmeticError(f"轮胎横向隐式积分超过20次迭代：残差 {ry:.6g} N")
+        error = math.hypot(rx, ry)
+        if error < tolerance:
+            return fx, fy, error
+        if rx > 0:
+            upper_x = fx
+        else:
+            lower_x = fx
+        candidate = fx - rx / (a - b * c / d)
+        fx = candidate if lower_x < candidate < upper_x else (lower_x + upper_x) / 2
+    raise ArithmeticError(f"轮胎滚动隐式积分超过20次迭代：残差 {error:.6g} N")

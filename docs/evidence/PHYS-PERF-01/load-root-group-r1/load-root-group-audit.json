@@ -1,0 +1,9 @@
+{
+  "baseline": "cc2b3da wheel loads; independent old Python root control flow",
+  "all_full_step_hex_and_references_equal": true,
+  "counts": {
+    "full_drivetrain_calls": 1392,
+    "native_root_calls": 16888
+  },
+  "scope": "一次功能组对照；无pytest/T1/三种子重复执行。"
+}
