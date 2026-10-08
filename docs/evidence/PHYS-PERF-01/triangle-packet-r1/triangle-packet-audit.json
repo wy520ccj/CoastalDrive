@@ -1,0 +1,11 @@
+{
+  "baseline": "ae6f8b1 query body rebuilt as independent old DLL; strict /fp:strict /utf-8",
+  "baseline_dll_sha256": "413717196431209721089d321a196c82c90a84d236329aed4d5efb8bf61ad47d",
+  "pytest_code": 0,
+  "all_query_hex_equal": true,
+  "counts": {
+    "queries": 39663,
+    "hits": 9674
+  },
+  "scope": "本功能组一次相关短检查及真实查询对照；未重跑整套T1/种子/48拍/profile。"
+}

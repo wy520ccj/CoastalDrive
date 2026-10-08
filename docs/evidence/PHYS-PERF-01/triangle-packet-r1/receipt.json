@@ -1,0 +1,92 @@
+{
+  "baseline": "ae6f8b1",
+  "items": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-packet-body.c",
+      "archive": "triangle-packet-body.c",
+      "sha256": "e52dd98ccc0e4be8e1a0a49553f5c0763b16d8281f3ff39a4de28181f7605c39"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/promote-triangle-packet.py",
+      "archive": "promote-triangle-packet.py",
+      "sha256": "77e1db28035181303cd0fca5fea827e765c7ecb3cba1bc20831fb43db4bd6e18"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-packet-original.c",
+      "archive": "triangle-packet-original.c",
+      "sha256": "287259c4bc7f0b48cd2fd0a26ce7918927f3945e450e80ae0700122646129cd1"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-packet-original.py",
+      "archive": "triangle-packet-original.py",
+      "sha256": "bb5c74344ec55e0e4ef1546cbad4834c5728b85e4a220bdb0107d947f5c17e83"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/build-triangle-packet-baseline.py",
+      "archive": "build-triangle-packet-baseline.py",
+      "sha256": "ae0480b8995dc557105cec691a800a4844b04d06786a3f9ce8c4aced2068b5f5"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/audit-triangle-packet.py",
+      "archive": "audit-triangle-packet.py",
+      "sha256": "4f839601073fdf991e787b8146fa19f76ace76c15111a9ee4ee8b9226e441e54"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-packet-build.log",
+      "archive": "triangle-packet-build.txt",
+      "sha256": "36c88849ab24f3e3ddaa7a376de24e1dfbf582728565a94b10472e1fa667d8a0"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-packet-ruff.log",
+      "archive": "triangle-packet-ruff.txt",
+      "sha256": "c6c23466627d72778988a522c3e5753a97ddcbbd8512c5d2339f68d97bf7d436"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-packet-ruff-r2.log",
+      "archive": "triangle-packet-ruff-r2.txt",
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-packet-audit.log",
+      "archive": "triangle-packet-audit.txt",
+      "sha256": "c9c8474d01c4928d523ce3160f5f8034daf73d464a14aa2757bee26ce767fecc"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-packet-audit.json",
+      "archive": "triangle-packet-audit.json",
+      "sha256": "7e38a8d5f6ba2d739604111c827c15f9ae674866397c9ef933aac261a71b21d6"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-packet-baseline/baseline.c",
+      "archive": "triangle-packet-baseline/baseline.c",
+      "sha256": "73348d3dbc9cd4cd232ec8ce22047eb2116dcf8d099fc1d6495d8f0b4d9fe3e7"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-packet-baseline/setup.py",
+      "archive": "triangle-packet-baseline/setup.py",
+      "sha256": "5fde1d5f907a0d7db3c95a61ce77bb2749ad9b2005dcb79e4d58c7bd1046ee2f"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-packet-baseline/build.log",
+      "archive": "triangle-packet-baseline/build.txt",
+      "sha256": "556626f21aa3758555abc971d5e3f4a7921ef97d0a78013740fcdbc16b1b4a9b"
+    }
+  ],
+  "audit": {
+    "baseline": "ae6f8b1 query body rebuilt as independent old DLL; strict /fp:strict /utf-8",
+    "baseline_dll_sha256": "413717196431209721089d321a196c82c90a84d236329aed4d5efb8bf61ad47d",
+    "pytest_code": 0,
+    "all_query_hex_equal": true,
+    "counts": {
+      "queries": 39663,
+      "hits": 9674
+    },
+    "scope": "本功能组一次相关短检查及真实查询对照；未重跑整套T1/种子/48拍/profile。"
+  },
+  "source_sha256": {
+    "src/wheel_contact_kernels.c": "f2f4b0e5691fccf1ed76ea3583181d58d4d07fea5494f7c9257167afb2c0d3f0",
+    "src/triangle_support.py": "a2fad66f6820704df2081ee1b548d5af13657feacd4837154d3f398d1be53fe2"
+  },
+  "stage_gate": "pending",
+  "human_gate": "pending"
+}

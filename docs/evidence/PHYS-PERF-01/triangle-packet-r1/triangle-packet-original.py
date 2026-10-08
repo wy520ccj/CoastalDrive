@@ -2,12 +2,7 @@
 
 from dataclasses import dataclass, field
 
-from wheel_contact_kernels import (
-    clipped_triangle,
-    triangle_face,
-    triangle_support_coefficients,
-    triangle_support_entry,
-)
+from wheel_contact_kernels import clipped_triangle, triangle_face, triangle_support_entry
 
 from rotor_dynamics import dot
 from suspension_geometry import box_interval
@@ -71,9 +66,6 @@ class TriangleSupport:
             bounds.append((tuple((a+b)/2 for a,b in zip(low,high)),
                            tuple((b-a)/2 for a,b in zip(low,high))))
         object.__setattr__(self, "triangle_bounds", tuple(bounds))
-        # 原生数值只复用本节点不可变几何；公开三角面和子节点仍为原对象。
-        object.__setattr__(self, "_native", triangle_support_coefficients(
-            self.center, self.half, self.triangles, self.triangle_bounds, tuple(child._native for child in self.children)))
 
     @classmethod
     def build(cls, triangles):
@@ -104,4 +96,4 @@ class TriangleSupport:
             yield triangle
 
     def entry(self, start, end, margin, axis, radius, width, shoulder, crown):
-        return triangle_support_entry(self._native, start, end, margin, axis, radius, width, shoulder, crown, triangle_entry)
+        return triangle_support_entry(self, start, end, margin, axis, radius, width, shoulder, crown, triangle_entry)

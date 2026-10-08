@@ -1,0 +1,28 @@
+I001 [*] Import block is un-sorted or un-formatted
+ --> src\triangle_support.py:3:1
+  |
+1 |   """道路三角网格的静态几何索引和有限胎宽首次接触。"""
+2 |
+3 | / from dataclasses import dataclass, field
+4 | |
+5 | | from wheel_contact_kernels import clipped_triangle, triangle_face, triangle_support_coefficients, triangle_support_entry
+6 | |
+7 | | from rotor_dynamics import dot
+8 | | from suspension_geometry import box_interval
+9 | | from wheel_envelope import convex_distance, cylinder_support, subtract
+  | |______________________________________________________________________^
+help: Organize imports
+   |
+4  |
+   - from wheel_contact_kernels import clipped_triangle, triangle_face, triangle_support_coefficients, triangle_support_entry
+5  + from wheel_contact_kernels import (
+6  +     clipped_triangle,
+7  +     triangle_face,
+8  +     triangle_support_coefficients,
+9  +     triangle_support_entry,
+10 + )
+11 |
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
