@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\physics\PHYS-DESIGN-01-wall\measure-full-snapshots.py", line 13, in <module>
+    baseline=json.loads(gzip.decompress((root/'docs/evidence/PHYS-PERF-01/wheel-derivatives-r1/physics/wheel-derivatives-snapshots.json.gz').read_bytes()))
+                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\15120\AppData\Local\Python\pythoncore-3.14-64\Lib\pathlib\__init__.py", line 777, in read_bytes
+    with self.open(mode='rb', buffering=0) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\15120\AppData\Local\Python\pythoncore-3.14-64\Lib\pathlib\__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'B:\\AI agent\\���ڼ�����������\\CoastalDrive\\docs\\evidence\\PHYS-PERF-01\\wheel-derivatives-r1\\physics\\wheel-derivatives-snapshots.json.gz'

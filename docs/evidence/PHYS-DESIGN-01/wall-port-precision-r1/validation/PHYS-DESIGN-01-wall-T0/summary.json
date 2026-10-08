@@ -1,0 +1,59 @@
+{
+  "started_utc": "2026-10-08T03:52:40.058870+00:00",
+  "git_head": "dff36eea4ce7582c7589998cdbe24d2751de77bd",
+  "git_status": "M src/mechanical_kernels.c\n M tests/test_drivetrain_jacobian.py\n?? tests/data/wall-shared/",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_drivetrain_jacobian.py",
+    "tests/test_joint_suspension.py",
+    "tests/test_tire_shaft.py",
+    "tests/test_h1_vehicle.py::test_collision_wall_stops_car_without_tunneling",
+    "tests/test_phase3_map.py::test_every_sampled_map_point_supports_the_car[160]"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-wall-T0\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.214
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_drivetrain_jacobian.py",
+        "tests/test_joint_suspension.py",
+        "tests/test_tire_shaft.py",
+        "tests/test_h1_vehicle.py::test_collision_wall_stops_car_without_tunneling",
+        "tests/test_phase3_map.py::test_every_sampled_map_point_supports_the_car[160]"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-DESIGN-01-wall-T0\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 14.229
+    }
+  ]
+}

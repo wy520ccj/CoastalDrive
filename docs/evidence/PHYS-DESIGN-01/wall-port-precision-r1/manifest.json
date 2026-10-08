@@ -1,0 +1,640 @@
+{
+  "algorithm": "SHA-256",
+  "entry_count": 79,
+  "files": [
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/accurate-map/b/_accurate_map.cp314-win_amd64.pyd",
+      "archive": "wall/accurate-map/b/_accurate_map.cp314-win_amd64.pyd.gz",
+      "source_sha256": "75ae750331aa1b9d16fcdf4948f412a814fe5ac073769fd1cd30bd9b6421857d",
+      "archive_sha256": "86a04b275a8dc35718eab40c46ec8821c914e4934752555df4dba8b7ed456180",
+      "compressed": true,
+      "payload_sha256": "75ae750331aa1b9d16fcdf4948f412a814fe5ac073769fd1cd30bd9b6421857d"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/accurate-map/build.log",
+      "archive": "wall/accurate-map/build.txt",
+      "source_sha256": "5498796548efd4ef1f2c96683ede1c0150e5ca55aeab261917ff183451433762",
+      "archive_sha256": "5498796548efd4ef1f2c96683ede1c0150e5ca55aeab261917ff183451433762",
+      "compressed": false,
+      "payload_sha256": "5498796548efd4ef1f2c96683ede1c0150e5ca55aeab261917ff183451433762"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/accurate-map/setup.py",
+      "archive": "wall/accurate-map/setup.py",
+      "source_sha256": "ceff6b6f6562b562a0967fc8c3c622812d25c4a342e32ab78bc1d5bb19e72b73",
+      "archive_sha256": "ceff6b6f6562b562a0967fc8c3c622812d25c4a342e32ab78bc1d5bb19e72b73",
+      "compressed": false,
+      "payload_sha256": "ceff6b6f6562b562a0967fc8c3c622812d25c4a342e32ab78bc1d5bb19e72b73"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/accurate-map/stable.c",
+      "archive": "wall/accurate-map/stable.c",
+      "source_sha256": "39e731a6f208e815230047987c87536bb53f5b1f1227d4ce294056a475911714",
+      "archive_sha256": "39e731a6f208e815230047987c87536bb53f5b1f1227d4ce294056a475911714",
+      "compressed": false,
+      "payload_sha256": "39e731a6f208e815230047987c87536bb53f5b1f1227d4ce294056a475911714"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/accurate-map/t/Release/_accurate_map.cp314-win_amd64.exp",
+      "archive": "wall/accurate-map/t/Release/_accurate_map.cp314-win_amd64.exp.gz",
+      "source_sha256": "06ec532426f8c44917c75bcaeb1e2223a9c61d7abdef302721230cc4c28e04e4",
+      "archive_sha256": "5f262a1c04615cc5c6bd3794ae20892cebb2097b2ac162aaba79c86954c1864d",
+      "compressed": true,
+      "payload_sha256": "06ec532426f8c44917c75bcaeb1e2223a9c61d7abdef302721230cc4c28e04e4"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/accurate-map/t/Release/_accurate_map.cp314-win_amd64.lib",
+      "archive": "wall/accurate-map/t/Release/_accurate_map.cp314-win_amd64.lib.gz",
+      "source_sha256": "d7ad99aa124ccbbf93d13bad5e3946dc434e37050a28a3d9d78d2f310d3f60da",
+      "archive_sha256": "3c9bd1bbb94aa5bfb0682340572eb3a76e301356d7039d509ee63412d6686c93",
+      "compressed": true,
+      "payload_sha256": "d7ad99aa124ccbbf93d13bad5e3946dc434e37050a28a3d9d78d2f310d3f60da"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/accurate-map/t/Release/stable.obj",
+      "archive": "wall/accurate-map/t/Release/stable.obj.gz",
+      "source_sha256": "01b4cbdae894fafff6d9c25fb08b1f590e16e0e0f2775d12f32bc39cdc5287dd",
+      "archive_sha256": "3914c6bb5cfb7560c0c031c6a74c239411db535e58fea439b15ccd0ec286acc7",
+      "compressed": true,
+      "payload_sha256": "01b4cbdae894fafff6d9c25fb08b1f590e16e0e0f2775d12f32bc39cdc5287dd"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/accurate-map-rounding.json",
+      "archive": "wall/accurate-map-rounding.json",
+      "source_sha256": "ead7fa4e040296eb69bd785bdb251e47e2d8ec41673728b6ae567f06e193c4db",
+      "archive_sha256": "ead7fa4e040296eb69bd785bdb251e47e2d8ec41673728b6ae567f06e193c4db",
+      "compressed": false,
+      "payload_sha256": "ead7fa4e040296eb69bd785bdb251e47e2d8ec41673728b6ae567f06e193c4db"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/build-accurate-map.py",
+      "archive": "wall/build-accurate-map.py",
+      "source_sha256": "828fef858e84c76d5d20e65793c24c867cffa35155d544e20edb10e08048c9f1",
+      "archive_sha256": "828fef858e84c76d5d20e65793c24c867cffa35155d544e20edb10e08048c9f1",
+      "compressed": false,
+      "payload_sha256": "828fef858e84c76d5d20e65793c24c867cffa35155d544e20edb10e08048c9f1"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/build-stable-map.py",
+      "archive": "wall/build-stable-map.py",
+      "source_sha256": "0beb290eadd5bcebaba58ccd78c47d8f31146cc4de991fa5a362e17f93ae0e77",
+      "archive_sha256": "0beb290eadd5bcebaba58ccd78c47d8f31146cc4de991fa5a362e17f93ae0e77",
+      "compressed": false,
+      "payload_sha256": "0beb290eadd5bcebaba58ccd78c47d8f31146cc4de991fa5a362e17f93ae0e77"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/capture-shared.log",
+      "archive": "wall/capture-shared.txt",
+      "source_sha256": "8933a4dc9dfa30186e8c948e6afe3445ecc5cf0b2de1ce745a151b23f42e7173",
+      "archive_sha256": "8933a4dc9dfa30186e8c948e6afe3445ecc5cf0b2de1ce745a151b23f42e7173",
+      "compressed": false,
+      "payload_sha256": "8933a4dc9dfa30186e8c948e6afe3445ecc5cf0b2de1ce745a151b23f42e7173"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/capture-shared.py",
+      "archive": "wall/capture-shared.py",
+      "source_sha256": "7e1aa2d23d72b73bebaf0bde6ab85aa512bfe9dd4742b5ef98f3cf21c982394f",
+      "archive_sha256": "7e1aa2d23d72b73bebaf0bde6ab85aa512bfe9dd4742b5ef98f3cf21c982394f",
+      "compressed": false,
+      "payload_sha256": "7e1aa2d23d72b73bebaf0bde6ab85aa512bfe9dd4742b5ef98f3cf21c982394f"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/check-map-rounding.log",
+      "archive": "wall/check-map-rounding.txt",
+      "source_sha256": "d5ea2e97f7d58b9c1f3967483f6a0679b36f156ebd903ee90abec84565000a30",
+      "archive_sha256": "d5ea2e97f7d58b9c1f3967483f6a0679b36f156ebd903ee90abec84565000a30",
+      "compressed": false,
+      "payload_sha256": "d5ea2e97f7d58b9c1f3967483f6a0679b36f156ebd903ee90abec84565000a30"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/check-map-rounding.py",
+      "archive": "wall/check-map-rounding.py",
+      "source_sha256": "1f35a4d92b54c71598764ddf6cfca7fc20cbfcf881a4500793379d922082e6ae",
+      "archive_sha256": "1f35a4d92b54c71598764ddf6cfca7fc20cbfcf881a4500793379d922082e6ae",
+      "compressed": false,
+      "payload_sha256": "1f35a4d92b54c71598764ddf6cfca7fc20cbfcf881a4500793379d922082e6ae"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/error-message-build.log",
+      "archive": "wall/error-message-build.txt",
+      "source_sha256": "6149171bef9197971222ae51e48154fe6f537c73c75b88be25bfc0bcf336e4a3",
+      "archive_sha256": "6149171bef9197971222ae51e48154fe6f537c73c75b88be25bfc0bcf336e4a3",
+      "compressed": false,
+      "payload_sha256": "6149171bef9197971222ae51e48154fe6f537c73c75b88be25bfc0bcf336e4a3"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/integration-build.log",
+      "archive": "wall/integration-build.txt",
+      "source_sha256": "6149171bef9197971222ae51e48154fe6f537c73c75b88be25bfc0bcf336e4a3",
+      "archive_sha256": "6149171bef9197971222ae51e48154fe6f537c73c75b88be25bfc0bcf336e4a3",
+      "compressed": false,
+      "payload_sha256": "6149171bef9197971222ae51e48154fe6f537c73c75b88be25bfc0bcf336e4a3"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/map-rounding.json",
+      "archive": "wall/map-rounding.json",
+      "source_sha256": "c2702ce21da37d08b74c9bc7edc6da28d27dcf0ab1a3876eee01910e556ec88d",
+      "archive_sha256": "c2702ce21da37d08b74c9bc7edc6da28d27dcf0ab1a3876eee01910e556ec88d",
+      "compressed": false,
+      "payload_sha256": "c2702ce21da37d08b74c9bc7edc6da28d27dcf0ab1a3876eee01910e556ec88d"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/map-terms/b/_map_terms.cp314-win_amd64.pyd",
+      "archive": "wall/map-terms/b/_map_terms.cp314-win_amd64.pyd.gz",
+      "source_sha256": "5889db87fdf6f3be3e7a5cf48c8597c00e1ca711c60e72ccedc445b555851e9b",
+      "archive_sha256": "4546c08d14aa9b7dfbe552f56e780c9684bf808dc1b459e85e32b8c00a20ba78",
+      "compressed": true,
+      "payload_sha256": "5889db87fdf6f3be3e7a5cf48c8597c00e1ca711c60e72ccedc445b555851e9b"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/map-terms/build.log",
+      "archive": "wall/map-terms/build.txt",
+      "source_sha256": "91d54d14f6cd986e99a446457a6ed477fa8f5f60a4c4b5753304056fac8c4258",
+      "archive_sha256": "91d54d14f6cd986e99a446457a6ed477fa8f5f60a4c4b5753304056fac8c4258",
+      "compressed": false,
+      "payload_sha256": "91d54d14f6cd986e99a446457a6ed477fa8f5f60a4c4b5753304056fac8c4258"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/map-terms/setup.py",
+      "archive": "wall/map-terms/setup.py",
+      "source_sha256": "adafbd463cb3057ed603252ca45ee793c601928eee7955d6aa8bf263609f21ac",
+      "archive_sha256": "adafbd463cb3057ed603252ca45ee793c601928eee7955d6aa8bf263609f21ac",
+      "compressed": false,
+      "payload_sha256": "adafbd463cb3057ed603252ca45ee793c601928eee7955d6aa8bf263609f21ac"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/map-terms/t/Release/_map_terms.cp314-win_amd64.exp",
+      "archive": "wall/map-terms/t/Release/_map_terms.cp314-win_amd64.exp.gz",
+      "source_sha256": "e932fca6f2d49b803184e589a0cb51eca3eb69444a43eed8cfed15b2d9b4d0e3",
+      "archive_sha256": "a7818d2d3d583fcf4a94abfacfab1f1952908769a84e4efa80e1f41ae66e64e2",
+      "compressed": true,
+      "payload_sha256": "e932fca6f2d49b803184e589a0cb51eca3eb69444a43eed8cfed15b2d9b4d0e3"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/map-terms/t/Release/_map_terms.cp314-win_amd64.lib",
+      "archive": "wall/map-terms/t/Release/_map_terms.cp314-win_amd64.lib.gz",
+      "source_sha256": "f184c3a18be163f0df95f158319016731c26ec80882e633dd2b8d63a22d6c5c0",
+      "archive_sha256": "b31c62418739f55efdac1f937ad52ec641aed5178291388605aa110e14266bb0",
+      "compressed": true,
+      "payload_sha256": "f184c3a18be163f0df95f158319016731c26ec80882e633dd2b8d63a22d6c5c0"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/map-terms/t/Release/terms.obj",
+      "archive": "wall/map-terms/t/Release/terms.obj.gz",
+      "source_sha256": "48fe28be1a3e339271e25dcf19b6e384136ceb5d4e8f83318ff45282e372e264",
+      "archive_sha256": "812b899b8bdb84d5e5acf5bcbc86754298485a286b8d6877f5e53aa5ef080be4",
+      "compressed": true,
+      "payload_sha256": "48fe28be1a3e339271e25dcf19b6e384136ceb5d4e8f83318ff45282e372e264"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/map-terms/terms.c",
+      "archive": "wall/map-terms/terms.c",
+      "source_sha256": "174e6e0dab9c90694d69aef59375360e52dd3afc5203669c547e4f03d806c2b0",
+      "archive_sha256": "174e6e0dab9c90694d69aef59375360e52dd3afc5203669c547e4f03d806c2b0",
+      "compressed": false,
+      "payload_sha256": "174e6e0dab9c90694d69aef59375360e52dd3afc5203669c547e4f03d806c2b0"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/measure-full-snapshots-r2.log",
+      "archive": "wall/measure-full-snapshots-r2.txt",
+      "source_sha256": "152b32e108710c963b974f454a668b03fbbe208a3ef8e95ef94ff1191bd93566",
+      "archive_sha256": "152b32e108710c963b974f454a668b03fbbe208a3ef8e95ef94ff1191bd93566",
+      "compressed": false,
+      "payload_sha256": "152b32e108710c963b974f454a668b03fbbe208a3ef8e95ef94ff1191bd93566"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/measure-full-snapshots.log",
+      "archive": "wall/measure-full-snapshots.txt",
+      "source_sha256": "c4864e0acc4c5c271f80936463f8bfc6c416e8e1aea2857aca3dc89b97c8f5bc",
+      "archive_sha256": "c4864e0acc4c5c271f80936463f8bfc6c416e8e1aea2857aca3dc89b97c8f5bc",
+      "compressed": false,
+      "payload_sha256": "c4864e0acc4c5c271f80936463f8bfc6c416e8e1aea2857aca3dc89b97c8f5bc"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/measure-full-snapshots.py",
+      "archive": "wall/measure-full-snapshots.py",
+      "source_sha256": "e1009e0d30fcefd165806db054cd58319e9f35d1f6e14baaa72d604c0bb22282",
+      "archive_sha256": "e1009e0d30fcefd165806db054cd58319e9f35d1f6e14baaa72d604c0bb22282",
+      "compressed": false,
+      "payload_sha256": "e1009e0d30fcefd165806db054cd58319e9f35d1f6e14baaa72d604c0bb22282"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/numeric-fix-build.log",
+      "archive": "wall/numeric-fix-build.txt",
+      "source_sha256": "6149171bef9197971222ae51e48154fe6f537c73c75b88be25bfc0bcf336e4a3",
+      "archive_sha256": "6149171bef9197971222ae51e48154fe6f537c73c75b88be25bfc0bcf336e4a3",
+      "compressed": false,
+      "payload_sha256": "6149171bef9197971222ae51e48154fe6f537c73c75b88be25bfc0bcf336e4a3"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/observe-accurate-map-r2.log",
+      "archive": "wall/observe-accurate-map-r2.txt",
+      "source_sha256": "5ba54f87b78b2e424aaa6bf1cce4a41a6ff554bcf8c0577604cf964cc4c0d683",
+      "archive_sha256": "5ba54f87b78b2e424aaa6bf1cce4a41a6ff554bcf8c0577604cf964cc4c0d683",
+      "compressed": false,
+      "payload_sha256": "5ba54f87b78b2e424aaa6bf1cce4a41a6ff554bcf8c0577604cf964cc4c0d683"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/observe-accurate-map.log",
+      "archive": "wall/observe-accurate-map.txt",
+      "source_sha256": "abb96585bf72fc86f03ec3a6b49eeb123fd9cff4747c7288da45f318ec978411",
+      "archive_sha256": "abb96585bf72fc86f03ec3a6b49eeb123fd9cff4747c7288da45f318ec978411",
+      "compressed": false,
+      "payload_sha256": "abb96585bf72fc86f03ec3a6b49eeb123fd9cff4747c7288da45f318ec978411"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/observe-accurate-map.py",
+      "archive": "wall/observe-accurate-map.py",
+      "source_sha256": "376531e5146ddabcf1d3c167a08bd4eaae32c1cb105ad257e6853fe1d50d01a4",
+      "archive_sha256": "376531e5146ddabcf1d3c167a08bd4eaae32c1cb105ad257e6853fe1d50d01a4",
+      "compressed": false,
+      "payload_sha256": "376531e5146ddabcf1d3c167a08bd4eaae32c1cb105ad257e6853fe1d50d01a4"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-accurate-map-r2.log",
+      "archive": "wall/probe-accurate-map-r2.txt",
+      "source_sha256": "ae6343e619f4b91f84bd0fc292f17ef0bbd7ca72bfa7ed88f5c3487533b2e4a2",
+      "archive_sha256": "ae6343e619f4b91f84bd0fc292f17ef0bbd7ca72bfa7ed88f5c3487533b2e4a2",
+      "compressed": false,
+      "payload_sha256": "ae6343e619f4b91f84bd0fc292f17ef0bbd7ca72bfa7ed88f5c3487533b2e4a2"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-accurate-map-r3.log",
+      "archive": "wall/probe-accurate-map-r3.txt",
+      "source_sha256": "834ab069a6f96928259704319832164cff1c185a45b55c10c0597404631cd716",
+      "archive_sha256": "834ab069a6f96928259704319832164cff1c185a45b55c10c0597404631cd716",
+      "compressed": false,
+      "payload_sha256": "834ab069a6f96928259704319832164cff1c185a45b55c10c0597404631cd716"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-accurate-map.log",
+      "archive": "wall/probe-accurate-map.txt",
+      "source_sha256": "e696886568314b5d403e771a3bd45ac3f71998bbbb899c4a799e28b1026e49f7",
+      "archive_sha256": "e696886568314b5d403e771a3bd45ac3f71998bbbb899c4a799e28b1026e49f7",
+      "compressed": false,
+      "payload_sha256": "e696886568314b5d403e771a3bd45ac3f71998bbbb899c4a799e28b1026e49f7"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-accurate-map.py",
+      "archive": "wall/probe-accurate-map.py",
+      "source_sha256": "11c61ec5cad564957a12a8095e886034b65455c661eb446cf38f4d840cc1fb5e",
+      "archive_sha256": "11c61ec5cad564957a12a8095e886034b65455c661eb446cf38f4d840cc1fb5e",
+      "compressed": false,
+      "payload_sha256": "11c61ec5cad564957a12a8095e886034b65455c661eb446cf38f4d840cc1fb5e"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-angular-merit-r2.log",
+      "archive": "wall/probe-angular-merit-r2.txt",
+      "source_sha256": "c33f2d8aa441546b36dd49fb65cff614e4bc780d4f13b99df5616c8d27e3b5b4",
+      "archive_sha256": "c33f2d8aa441546b36dd49fb65cff614e4bc780d4f13b99df5616c8d27e3b5b4",
+      "compressed": false,
+      "payload_sha256": "c33f2d8aa441546b36dd49fb65cff614e4bc780d4f13b99df5616c8d27e3b5b4"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-angular-merit.log",
+      "archive": "wall/probe-angular-merit.txt",
+      "source_sha256": "5f6bc4d28fafbad120780b86476f10d3d65e30cb98e627c6797c4eafa3ef19d5",
+      "archive_sha256": "5f6bc4d28fafbad120780b86476f10d3d65e30cb98e627c6797c4eafa3ef19d5",
+      "compressed": false,
+      "payload_sha256": "5f6bc4d28fafbad120780b86476f10d3d65e30cb98e627c6797c4eafa3ef19d5"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-angular-merit.py",
+      "archive": "wall/probe-angular-merit.py",
+      "source_sha256": "b3364524ba68ca6a127a552fd8626c2db2b9f4a049dfb3a7e82be0d2eb2fda83",
+      "archive_sha256": "b3364524ba68ca6a127a552fd8626c2db2b9f4a049dfb3a7e82be0d2eb2fda83",
+      "compressed": false,
+      "payload_sha256": "b3364524ba68ca6a127a552fd8626c2db2b9f4a049dfb3a7e82be0d2eb2fda83"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-stable-map.log",
+      "archive": "wall/probe-stable-map.txt",
+      "source_sha256": "d584275384f31ef7392810cbf9f13619fe02d85ae8d5a7e96fa904534f14bbb2",
+      "archive_sha256": "d584275384f31ef7392810cbf9f13619fe02d85ae8d5a7e96fa904534f14bbb2",
+      "compressed": false,
+      "payload_sha256": "d584275384f31ef7392810cbf9f13619fe02d85ae8d5a7e96fa904534f14bbb2"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-stable-map.py",
+      "archive": "wall/probe-stable-map.py",
+      "source_sha256": "2ae48a993b8854fec9e403a38a6f56560b8b7676acb52186a67e6ed0196df044",
+      "archive_sha256": "2ae48a993b8854fec9e403a38a6f56560b8b7676acb52186a67e6ed0196df044",
+      "compressed": false,
+      "payload_sha256": "2ae48a993b8854fec9e403a38a6f56560b8b7676acb52186a67e6ed0196df044"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/profile-port-accurate-r1/gr86-profile.prof",
+      "archive": "wall/profile-port-accurate-r1/gr86-profile.prof",
+      "source_sha256": "345e5411668a8b3c0551148b8104c2074657530ef26d95b0980645efeb4c2c4c",
+      "archive_sha256": "345e5411668a8b3c0551148b8104c2074657530ef26d95b0980645efeb4c2c4c",
+      "compressed": false,
+      "payload_sha256": "345e5411668a8b3c0551148b8104c2074657530ef26d95b0980645efeb4c2c4c"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/profile-port-accurate-r1/profile.json",
+      "archive": "wall/profile-port-accurate-r1/profile.json",
+      "source_sha256": "e7954a8d6b60047e3627978657058e1ba9ab4975c56fed52fbaf2a087246d458",
+      "archive_sha256": "e7954a8d6b60047e3627978657058e1ba9ab4975c56fed52fbaf2a087246d458",
+      "compressed": false,
+      "payload_sha256": "e7954a8d6b60047e3627978657058e1ba9ab4975c56fed52fbaf2a087246d458"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/profile-port-accurate.log",
+      "archive": "wall/profile-port-accurate.txt",
+      "source_sha256": "051d93ef1858affd56249c9acc7008f227af7c19c3548f2ad23b2b17b8eb32e8",
+      "archive_sha256": "051d93ef1858affd56249c9acc7008f227af7c19c3548f2ad23b2b17b8eb32e8",
+      "compressed": false,
+      "payload_sha256": "051d93ef1858affd56249c9acc7008f227af7c19c3548f2ad23b2b17b8eb32e8"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/profile-port-accurate.py",
+      "archive": "wall/profile-port-accurate.py",
+      "source_sha256": "ce657cf56dc13171f09e5479a7916ebe7a50965cc267df69707f0d81e273c144",
+      "archive_sha256": "ce657cf56dc13171f09e5479a7916ebe7a50965cc267df69707f0d81e273c144",
+      "compressed": false,
+      "payload_sha256": "ce657cf56dc13171f09e5479a7916ebe7a50965cc267df69707f0d81e273c144"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/regression-before-fix.log",
+      "archive": "wall/regression-before-fix.txt",
+      "source_sha256": "56a686c62f7925206633bd1a0162843f0ec3021a766c9f02e7c4bd5d7430268a",
+      "archive_sha256": "56a686c62f7925206633bd1a0162843f0ec3021a766c9f02e7c4bd5d7430268a",
+      "compressed": false,
+      "payload_sha256": "56a686c62f7925206633bd1a0162843f0ec3021a766c9f02e7c4bd5d7430268a"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/regression-before-numeric-fix.log",
+      "archive": "wall/regression-before-numeric-fix.txt",
+      "source_sha256": "eddefa5944d2e48663a9a1971aa36ae59a8af6dd02fc3e66cdf342d5a19b7b6b",
+      "archive_sha256": "eddefa5944d2e48663a9a1971aa36ae59a8af6dd02fc3e66cdf342d5a19b7b6b",
+      "compressed": false,
+      "payload_sha256": "eddefa5944d2e48663a9a1971aa36ae59a8af6dd02fc3e66cdf342d5a19b7b6b"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/replay-accurate-map.json",
+      "archive": "wall/replay-accurate-map.json",
+      "source_sha256": "7f9a6dcb55c23284b5ec8b09e81b37ad7f1d995329e56a1869d7a17e115a9cb6",
+      "archive_sha256": "7f9a6dcb55c23284b5ec8b09e81b37ad7f1d995329e56a1869d7a17e115a9cb6",
+      "compressed": false,
+      "payload_sha256": "7f9a6dcb55c23284b5ec8b09e81b37ad7f1d995329e56a1869d7a17e115a9cb6"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/replay-angular-merit.json",
+      "archive": "wall/replay-angular-merit.json",
+      "source_sha256": "8d162932f90929aa7359b0693728e39bd952549910676cdc47b52aeb252a661a",
+      "archive_sha256": "8d162932f90929aa7359b0693728e39bd952549910676cdc47b52aeb252a661a",
+      "compressed": false,
+      "payload_sha256": "8d162932f90929aa7359b0693728e39bd952549910676cdc47b52aeb252a661a"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/replay-original.json",
+      "archive": "wall/replay-original.json",
+      "source_sha256": "8d162932f90929aa7359b0693728e39bd952549910676cdc47b52aeb252a661a",
+      "archive_sha256": "8d162932f90929aa7359b0693728e39bd952549910676cdc47b52aeb252a661a",
+      "compressed": false,
+      "payload_sha256": "8d162932f90929aa7359b0693728e39bd952549910676cdc47b52aeb252a661a"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/replay-shared.log",
+      "archive": "wall/replay-shared.txt",
+      "source_sha256": "5f6bc4d28fafbad120780b86476f10d3d65e30cb98e627c6797c4eafa3ef19d5",
+      "archive_sha256": "5f6bc4d28fafbad120780b86476f10d3d65e30cb98e627c6797c4eafa3ef19d5",
+      "compressed": false,
+      "payload_sha256": "5f6bc4d28fafbad120780b86476f10d3d65e30cb98e627c6797c4eafa3ef19d5"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/replay-shared.py",
+      "archive": "wall/replay-shared.py",
+      "source_sha256": "15a0124027b9e6b98e29f54a504732101502ddd3848c0545019734a8858c097b",
+      "archive_sha256": "15a0124027b9e6b98e29f54a504732101502ddd3848c0545019734a8858c097b",
+      "compressed": false,
+      "payload_sha256": "15a0124027b9e6b98e29f54a504732101502ddd3848c0545019734a8858c097b"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/replay-stable-map.json",
+      "archive": "wall/replay-stable-map.json",
+      "source_sha256": "50a19751c15b52c7a589f85c7b2cc345922a263a84d23496152825d6a336c3ac",
+      "archive_sha256": "50a19751c15b52c7a589f85c7b2cc345922a263a84d23496152825d6a336c3ac",
+      "compressed": false,
+      "payload_sha256": "50a19751c15b52c7a589f85c7b2cc345922a263a84d23496152825d6a336c3ac"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/run-T1.py",
+      "archive": "wall/run-T1.py",
+      "source_sha256": "c8d2c0a2cb1a8b756d9353d2281bdc98bce92cc463d2d7adbc3dc6bfc2ccdde5",
+      "archive_sha256": "c8d2c0a2cb1a8b756d9353d2281bdc98bce92cc463d2d7adbc3dc6bfc2ccdde5",
+      "compressed": false,
+      "payload_sha256": "c8d2c0a2cb1a8b756d9353d2281bdc98bce92cc463d2d7adbc3dc6bfc2ccdde5"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/shared-input.json",
+      "archive": "wall/shared-input.json",
+      "source_sha256": "d4ce043f24886962955d1a7a702cf6f0b3e5ad2fea389acb1caa891820a1250c",
+      "archive_sha256": "d4ce043f24886962955d1a7a702cf6f0b3e5ad2fea389acb1caa891820a1250c",
+      "compressed": false,
+      "payload_sha256": "d4ce043f24886962955d1a7a702cf6f0b3e5ad2fea389acb1caa891820a1250c"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/snapshot-differences.json",
+      "archive": "wall/snapshot-differences.json",
+      "source_sha256": "f0ceb8e3f792afca8b7e3cb54ef70f96dc9ad47bf28f18902e8d9131671db884",
+      "archive_sha256": "f0ceb8e3f792afca8b7e3cb54ef70f96dc9ad47bf28f18902e8d9131671db884",
+      "compressed": false,
+      "payload_sha256": "f0ceb8e3f792afca8b7e3cb54ef70f96dc9ad47bf28f18902e8d9131671db884"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/snapshots.json",
+      "archive": "wall/snapshots.json.gz",
+      "source_sha256": "c8468ee7731e5bf24ee661c82b82df7cb154bec6585d9935db2ad3e9f3522400",
+      "archive_sha256": "ddff1bfd69f860c457e2387914fd7a4770cf89f560fb850feb94e571fe2908b6",
+      "compressed": true,
+      "payload_sha256": "c8468ee7731e5bf24ee661c82b82df7cb154bec6585d9935db2ad3e9f3522400"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/stable-map/b/_stable_map.cp314-win_amd64.pyd",
+      "archive": "wall/stable-map/b/_stable_map.cp314-win_amd64.pyd.gz",
+      "source_sha256": "3bff805a89aa465970dd4162a6a4f2a5b4357bb62d522aaf08e1ad7ac8dca8de",
+      "archive_sha256": "3b5734c52cd86b38b425204537f88703361f2b88bc7a0ba8a448adb4bad8f386",
+      "compressed": true,
+      "payload_sha256": "3bff805a89aa465970dd4162a6a4f2a5b4357bb62d522aaf08e1ad7ac8dca8de"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/stable-map/build.log",
+      "archive": "wall/stable-map/build.txt",
+      "source_sha256": "be218599fe39fb49f2e7135d2cd7acbc26e8142ac415ac08458899303125480f",
+      "archive_sha256": "be218599fe39fb49f2e7135d2cd7acbc26e8142ac415ac08458899303125480f",
+      "compressed": false,
+      "payload_sha256": "be218599fe39fb49f2e7135d2cd7acbc26e8142ac415ac08458899303125480f"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/stable-map/setup.py",
+      "archive": "wall/stable-map/setup.py",
+      "source_sha256": "0d16cccfda6fd538da0fb96b3f59dcf7a50574b1ecbe9b4b694f7a4625d66972",
+      "archive_sha256": "0d16cccfda6fd538da0fb96b3f59dcf7a50574b1ecbe9b4b694f7a4625d66972",
+      "compressed": false,
+      "payload_sha256": "0d16cccfda6fd538da0fb96b3f59dcf7a50574b1ecbe9b4b694f7a4625d66972"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/stable-map/stable.c",
+      "archive": "wall/stable-map/stable.c",
+      "source_sha256": "382275692927e288410d3af27da4d33c5150dd0a206cd4407f65e02191bcb38f",
+      "archive_sha256": "382275692927e288410d3af27da4d33c5150dd0a206cd4407f65e02191bcb38f",
+      "compressed": false,
+      "payload_sha256": "382275692927e288410d3af27da4d33c5150dd0a206cd4407f65e02191bcb38f"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/stable-map/t/Release/_stable_map.cp314-win_amd64.exp",
+      "archive": "wall/stable-map/t/Release/_stable_map.cp314-win_amd64.exp.gz",
+      "source_sha256": "9020e64bfc80dc96bf779736e97e3b4f05c7063ca2884831ccb89338f8d09f7a",
+      "archive_sha256": "7b2accaca83980ea526bf2e84b5ede5d4ee595f5b737acd7482b6cf6ee9d8e7b",
+      "compressed": true,
+      "payload_sha256": "9020e64bfc80dc96bf779736e97e3b4f05c7063ca2884831ccb89338f8d09f7a"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/stable-map/t/Release/_stable_map.cp314-win_amd64.lib",
+      "archive": "wall/stable-map/t/Release/_stable_map.cp314-win_amd64.lib.gz",
+      "source_sha256": "dd354a1d791fad29d3572f91162d8a94f6e48681395978f95084c98214e47284",
+      "archive_sha256": "27c6a1c5c66ee92607ba030f8010867009b48337f0e1b090dd229cccd36bed8d",
+      "compressed": true,
+      "payload_sha256": "dd354a1d791fad29d3572f91162d8a94f6e48681395978f95084c98214e47284"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/stable-map/t/Release/stable.obj",
+      "archive": "wall/stable-map/t/Release/stable.obj.gz",
+      "source_sha256": "c2d3dfa08446f9ed924ae9663c0ccc199c990cd219ca2f80f351f3197f0f3ee7",
+      "archive_sha256": "68c891b8416b6fccb9bb7b0bdd9f661b5b847f6b5427c78de4c2e68404ffc20b",
+      "compressed": true,
+      "payload_sha256": "c2d3dfa08446f9ed924ae9663c0ccc199c990cd219ca2f80f351f3197f0f3ee7"
+    },
+    {
+      "source": "logs/validation/PHYS-DESIGN-01-wall-T0/pytest.log",
+      "archive": "validation/PHYS-DESIGN-01-wall-T0/pytest.txt",
+      "source_sha256": "533fffa15c56a18f6ed58be1cc27b86ff15293e8159e83f2b1c4414697aeca63",
+      "archive_sha256": "533fffa15c56a18f6ed58be1cc27b86ff15293e8159e83f2b1c4414697aeca63",
+      "compressed": false,
+      "payload_sha256": "533fffa15c56a18f6ed58be1cc27b86ff15293e8159e83f2b1c4414697aeca63"
+    },
+    {
+      "source": "logs/validation/PHYS-DESIGN-01-wall-T0/ruff.log",
+      "archive": "validation/PHYS-DESIGN-01-wall-T0/ruff.txt",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "compressed": false,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "source": "logs/validation/PHYS-DESIGN-01-wall-T0/summary.json",
+      "archive": "validation/PHYS-DESIGN-01-wall-T0/summary.json",
+      "source_sha256": "a9e0b2d5d4ffef73068c183d07c4c8b38d60713d653b7905c859069facb99b73",
+      "archive_sha256": "a9e0b2d5d4ffef73068c183d07c4c8b38d60713d653b7905c859069facb99b73",
+      "compressed": false,
+      "payload_sha256": "a9e0b2d5d4ffef73068c183d07c4c8b38d60713d653b7905c859069facb99b73"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-wall-T1/headless-0.log",
+      "archive": "validation/PHYS-INTEGRATE-04-wall-T1/headless-0.txt",
+      "source_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "archive_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "compressed": false,
+      "payload_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-wall-T1/headless-17.log",
+      "archive": "validation/PHYS-INTEGRATE-04-wall-T1/headless-17.txt",
+      "source_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "archive_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "compressed": false,
+      "payload_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-wall-T1/headless-23.log",
+      "archive": "validation/PHYS-INTEGRATE-04-wall-T1/headless-23.txt",
+      "source_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "archive_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "compressed": false,
+      "payload_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-wall-T1/pytest.log",
+      "archive": "validation/PHYS-INTEGRATE-04-wall-T1/pytest.txt",
+      "source_sha256": "24888670af7a40fa8a73b2c548fe79067ec363e28510a7b6b788b535caa89895",
+      "archive_sha256": "24888670af7a40fa8a73b2c548fe79067ec363e28510a7b6b788b535caa89895",
+      "compressed": false,
+      "payload_sha256": "24888670af7a40fa8a73b2c548fe79067ec363e28510a7b6b788b535caa89895"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-wall-T1/ruff.log",
+      "archive": "validation/PHYS-INTEGRATE-04-wall-T1/ruff.txt",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "compressed": false,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-wall-T1/summary.json",
+      "archive": "validation/PHYS-INTEGRATE-04-wall-T1/summary.json",
+      "source_sha256": "8528ebfb0e7212367d464b9b07a7c9db41417927180a78aa20af07af8edbda2f",
+      "archive_sha256": "8528ebfb0e7212367d464b9b07a7c9db41417927180a78aa20af07af8edbda2f",
+      "compressed": false,
+      "payload_sha256": "8528ebfb0e7212367d464b9b07a7c9db41417927180a78aa20af07af8edbda2f"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-stage-T2/summary.json",
+      "archive": "stage-T2-start-summary.json",
+      "source_sha256": "1c1376ec36f67e44cea775366b9fe63f141093bd935eb6fb9b144188af8749b1",
+      "archive_sha256": "1c1376ec36f67e44cea775366b9fe63f141093bd935eb6fb9b144188af8749b1",
+      "compressed": false,
+      "payload_sha256": "1c1376ec36f67e44cea775366b9fe63f141093bd935eb6fb9b144188af8749b1"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-stage-launch.py",
+      "archive": "launchers/PHYS-INTEGRATE-04-stage-launch.py",
+      "source_sha256": "c9c42028a2aee5e7c6ee36a3f8ba7c771f1d5cbe907f2b218fb1e21e622d1555",
+      "archive_sha256": "c9c42028a2aee5e7c6ee36a3f8ba7c771f1d5cbe907f2b218fb1e21e622d1555",
+      "compressed": false,
+      "payload_sha256": "c9c42028a2aee5e7c6ee36a3f8ba7c771f1d5cbe907f2b218fb1e21e622d1555"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-reuse-audit.py",
+      "archive": "reuse/PHYS-INTEGRATE-04-reuse-audit.py",
+      "source_sha256": "4eb1b43e353626837f4b6314d744eb6bca0cfb0c9278a20f8a1e5f3980ce51d1",
+      "archive_sha256": "4eb1b43e353626837f4b6314d744eb6bca0cfb0c9278a20f8a1e5f3980ce51d1",
+      "compressed": false,
+      "payload_sha256": "4eb1b43e353626837f4b6314d744eb6bca0cfb0c9278a20f8a1e5f3980ce51d1"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-reuse-audit.json",
+      "archive": "reuse/PHYS-INTEGRATE-04-reuse-audit.json.gz",
+      "source_sha256": "5aa52c22013ae157442e5aa54209747e444b7c51d3288252b4773247fb939103",
+      "archive_sha256": "414d8f2aa26bc325b7a4097f98091417448ee5f6dc04dc0f0c977631e6ed69ed",
+      "compressed": true,
+      "payload_sha256": "5aa52c22013ae157442e5aa54209747e444b7c51d3288252b4773247fb939103"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-reused-nodes.json",
+      "archive": "reuse/PHYS-INTEGRATE-04-reused-nodes.json.gz",
+      "source_sha256": "9624208e15d0613f6c7ccf0bb445321ce241cfaa4015ed6618dea483597cd498",
+      "archive_sha256": "bed141850ec6e50b514f0aa5e3a27dbcda03dc79864739b1cf04061e2d10c556",
+      "compressed": true,
+      "payload_sha256": "9624208e15d0613f6c7ccf0bb445321ce241cfaa4015ed6618dea483597cd498"
+    },
+    {
+      "source": "captured-source-state",
+      "archive": "source-hashes-start.json",
+      "source_sha256": "b7b94c1fa5d1fb0366805dfb82f6ef0763bb9e413ba9208c7df9c0f49a73e0f4",
+      "archive_sha256": "b7b94c1fa5d1fb0366805dfb82f6ef0763bb9e413ba9208c7df9c0f49a73e0f4",
+      "compressed": false,
+      "payload_sha256": "b7b94c1fa5d1fb0366805dfb82f6ef0763bb9e413ba9208c7df9c0f49a73e0f4"
+    },
+    {
+      "source": "captured-source-state",
+      "archive": "source-hashes-end.json",
+      "source_sha256": "b7b94c1fa5d1fb0366805dfb82f6ef0763bb9e413ba9208c7df9c0f49a73e0f4",
+      "archive_sha256": "b7b94c1fa5d1fb0366805dfb82f6ef0763bb9e413ba9208c7df9c0f49a73e0f4",
+      "compressed": false,
+      "payload_sha256": "b7b94c1fa5d1fb0366805dfb82f6ef0763bb9e413ba9208c7df9c0f49a73e0f4"
+    }
+  ],
+  "t2_start_source_hash_match": true,
+  "t2_start_head": "fa037c43dac7519173eb7e208f33dcb603e623d3"
+}

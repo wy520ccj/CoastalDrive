@@ -1,0 +1,33 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+______ test_wall_shared_state_converges_at_original_coordinate_precision ______
+
+    def test_wall_shared_state_converges_at_original_coordinate_precision():
+        # ��1145��ײǽ���룺�����������������ϲ������������ķ�����
+        data = json.loads(gzip.decompress((Path(__file__).parent / "data/wall-shared/input.json.gz").read_bytes()))
+        constructors = {name: function for name, function in (
+            ("mass_coefficients", mechanical_kernels.mass_coefficients),
+            ("rotor_coefficients", mechanical_kernels.rotor_coefficients),
+            ("shared_map_coefficients", mechanical_kernels.shared_map_coefficients),
+        )}
+    
+        def restore(value):
+            if isinstance(value, dict):
+                if "capsule" in value:
+                    return constructors[value["capsule"]](*restore(value["args"]), **restore(value["kwargs"]))
+                if "tuple" in value:
+                    return tuple(restore(x) for x in value["tuple"])
+                return {k: restore(v) for k, v in value.items()}
+            if isinstance(value, list):
+                return [restore(x) for x in value]
+            return value
+    
+        data = restore(data)
+>       solution = mechanical_kernels.shared_solution(data["shared_map"], data["guess"], data["loads"],
+            data["wheel_loads"], data["supported"], data["shared_branch"], data["bias_ports"])
+E       ValueError: PyUnicode_FromFormatV() expects an ASCII-encoded format string, got a non-ASCII byte: 0xe6
+
+tests\test_drivetrain_jacobian.py:40: ValueError
+=========================== short test summary info ===========================
+FAILED tests/test_drivetrain_jacobian.py::test_wall_shared_state_converges_at_original_coordinate_precision
+1 failed in 0.31s

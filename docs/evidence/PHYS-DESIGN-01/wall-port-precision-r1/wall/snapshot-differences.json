@@ -1,0 +1,136 @@
+{
+  "difference_count": 53218,
+  "non_numeric": [],
+  "largest_numeric": [
+    {
+      "path": "traffic8[19].traffic[5].wheel_dynamics[3].force_longitudinal_stiffness",
+      "old": 81820.79960811773,
+      "new": 81820.7996081177,
+      "absolute": 2.9103830456733704e-11
+    },
+    {
+      "path": "traffic8[19].traffic[5].wheel_dynamics[3].force_lateral_stiffness",
+      "old": 67281.04352473488,
+      "new": 67281.04352473485,
+      "absolute": 2.9103830456733704e-11
+    },
+    {
+      "path": "traffic8[20].traffic[5].wheel_dynamics[1].force_longitudinal_stiffness",
+      "old": 93109.29545332943,
+      "new": 93109.29545332945,
+      "absolute": 2.9103830456733704e-11
+    },
+    {
+      "path": "traffic8[23].traffic[0].wheel_dynamics[1].force_longitudinal_stiffness",
+      "old": 97343.55128605817,
+      "new": 97343.5512860582,
+      "absolute": 2.9103830456733704e-11
+    },
+    {
+      "path": "traffic8[23].traffic[0].wheel_dynamics[1].force_lateral_stiffness",
+      "old": 79276.57550278335,
+      "new": 79276.57550278338,
+      "absolute": 2.9103830456733704e-11
+    },
+    {
+      "path": "traffic8[26].traffic[2].wheel_dynamics[2].force_longitudinal_stiffness",
+      "old": 92133.42605465052,
+      "new": 92133.4260546505,
+      "absolute": 2.9103830456733704e-11
+    },
+    {
+      "path": "traffic8[26].traffic[2].wheel_dynamics[2].force_lateral_stiffness",
+      "old": 75263.10597955431,
+      "new": 75263.10597955428,
+      "absolute": 2.9103830456733704e-11
+    },
+    {
+      "path": "traffic8[39].traffic[3].wheel_dynamics[3].force_lateral_stiffness",
+      "old": 65628.62889687705,
+      "new": 65628.62889687708,
+      "absolute": 2.9103830456733704e-11
+    },
+    {
+      "path": "traffic8[13].traffic[6].wheel_dynamics[1].force_longitudinal_stiffness",
+      "old": 67681.85946019873,
+      "new": 67681.85946019874,
+      "absolute": 1.4551915228366852e-11
+    },
+    {
+      "path": "traffic8[14].traffic[1].wheel_dynamics[3].force_longitudinal_stiffness",
+      "old": 65625.59158228419,
+      "new": 65625.59158228418,
+      "absolute": 1.4551915228366852e-11
+    },
+    {
+      "path": "traffic8[14].traffic[1].wheel_dynamics[3].force_lateral_stiffness",
+      "old": 54629.084753739015,
+      "new": 54629.084753739,
+      "absolute": 1.4551915228366852e-11
+    },
+    {
+      "path": "traffic8[20].traffic[5].wheel_dynamics[1].force_lateral_stiffness",
+      "old": 76015.7778902073,
+      "new": 76015.77789020732,
+      "absolute": 1.4551915228366852e-11
+    },
+    {
+      "path": "traffic8[21].traffic[6].wheel_dynamics[1].force_lateral_stiffness",
+      "old": 77801.65226356758,
+      "new": 77801.65226356756,
+      "absolute": 1.4551915228366852e-11
+    },
+    {
+      "path": "traffic8[22].traffic[1].wheel_dynamics[0].force_lateral_stiffness",
+      "old": 79518.15782481314,
+      "new": 79518.15782481313,
+      "absolute": 1.4551915228366852e-11
+    },
+    {
+      "path": "traffic8[22].traffic[4].wheel_dynamics[2].force_longitudinal_stiffness",
+      "old": 88160.49132103827,
+      "new": 88160.49132103828,
+      "absolute": 1.4551915228366852e-11
+    },
+    {
+      "path": "traffic8[22].traffic[4].wheel_dynamics[2].force_lateral_stiffness",
+      "old": 72194.2202268477,
+      "new": 72194.22022684771,
+      "absolute": 1.4551915228366852e-11
+    },
+    {
+      "path": "traffic8[24].traffic[0].wheel_dynamics[1].force_longitudinal_stiffness",
+      "old": 98446.50404542006,
+      "new": 98446.50404542005,
+      "absolute": 1.4551915228366852e-11
+    },
+    {
+      "path": "traffic8[24].traffic[0].wheel_dynamics[1].force_lateral_stiffness",
+      "old": 80124.65166364315,
+      "new": 80124.65166364313,
+      "absolute": 1.4551915228366852e-11
+    },
+    {
+      "path": "traffic8[27].traffic[5].wheel_dynamics[2].force_lateral_stiffness",
+      "old": 75565.31058946377,
+      "new": 75565.31058946376,
+      "absolute": 1.4551915228366852e-11
+    },
+    {
+      "path": "traffic8[28].traffic[2].wheel_dynamics[0].force_longitudinal_stiffness",
+      "old": 101441.33176824205,
+      "new": 101441.33176824206,
+      "absolute": 1.4551915228366852e-11
+    }
+  ],
+  "cases": [
+    {
+      "traffic": 0,
+      "seconds": 0.7201027999999496
+    },
+    {
+      "traffic": 8,
+      "seconds": 5.106677599999784
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "baseline": "fa037c43dac7519173eb7e208f33dcb603e623d3",
+  "source_count": 360,
+  "start_end_sha_equal": true,
+  "t2_start_hashes_equal": true,
+  "t2_start_head": "fa037c43dac7519173eb7e208f33dcb603e623d3",
+  "t1_start_head": "dff36eea4ce7582c7589998cdbe24d2751de77bd",
+  "t0_pytest": "74 passed in 13.85s",
+  "t1_pytest": "767 passed in 189.65s",
+  "snapshot_difference_count": 53218,
+  "snapshot_largest_absolute": 2.9103830456733704e-11,
+  "snapshot_non_numeric_count": 0,
+  "manifest_sha256": "a66cbeaa783d06efc6c7c3061f76fbcb371f1df1dbde41b54ee0b6813d599446",
+  "payload_entries_verified": 79,
+  "report_sha256": "26c7d9c1e7a8fd9c972c5a3c40eb9f154d2fae8137f10f64f25a8467201b248d",
+  "t2_pytest_log_archived": false,
+  "archive_performed_no_tests_or_physics": true
+}

@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\physics\PHYS-DESIGN-01-wall\probe-accurate-map.py", line 5, in <module>
+    exec(compile(s,__file__,'exec'))
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\physics\PHYS-DESIGN-01-wall\probe-accurate-map.py", line 11, in <module>
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\physics\PHYS-DESIGN-01-wall\probe-accurate-map.py", line 13, in <module>
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\tire_drivetrain.py", line 6, in <module>
+    from mechanical_kernels import (
+    ...<13 lines>...
+    )
+ImportError: cannot import name 'shared_solution' from 'mechanical_kernels' (B:\AI agent\���ڼ�����������\CoastalDrive\src\mechanical_kernels.cp314-win_amd64.pyd)

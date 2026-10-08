@@ -1,0 +1,1520 @@
+#define PY_SSIZE_T_CLEAN
+#include <Python.h>
+#include <math.h>
+#include <limits.h>
+#include <stdint.h>
+
+#define PORT_TOLERANCE 1e-11
+
+/* 固定小向量采用补偿求和，保持Python 3.14 sum的舍入结果。 */
+static double compensated(const double *values, int count) {
+    double main_sum = 0.0, correction = 0.0;
+    for (int i = 0; i < count; ++i) {
+        double next = main_sum + values[i];
+        correction += fabs(main_sum) >= fabs(values[i])
+            ? (main_sum - next) + values[i] : (values[i] - next) + main_sum;
+        main_sum = next;
+    }
+    return correction != 0.0 && isfinite(correction) ? main_sum + correction : main_sum;
+}
+
+static int vector(PyObject *obj, double *data, int count) {
+    PyObject *sequence = PySequence_Fast(obj, "机械向量须为序列");
+    if (!sequence) return 0;
+    if (PySequence_Fast_GET_SIZE(sequence) != count) {
+        PyErr_SetString(PyExc_ValueError, "机械向量维数不一致");
+        Py_DECREF(sequence);
+        return 0;
+    }
+    for (int i = 0; i < count; ++i) {
+        data[i] = PyFloat_AsDouble(PySequence_Fast_GET_ITEM(sequence, i));
+        if (PyErr_Occurred()) { Py_DECREF(sequence); return 0; }
+    }
+    Py_DECREF(sequence);
+    return 1;
+}
+
+
+/* 分区顺序与三维余子式保持原实现；相同行只在本次构造内复用。 */
+static PyObject *shaft_plans(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *input;
+    double capacity, brake_capacity, efficiency;
+    static char *names[] = {"response", "capacity", "brake_capacity", "efficiency", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oddd", names, &input, &capacity,
+                                     &brake_capacity, &efficiency)) return NULL;
+    if (!PyTuple_Check(input) || PyTuple_GET_SIZE(input) != 4) {
+        PyErr_SetString(PyExc_ValueError, "固定四端口矩阵格式错误");
+        return NULL;
+    }
+    double response[4][4], reduced[3][3], gear_response[3];
+    for (int i = 0; i < 4; ++i)
+        if (!vector(PyTuple_GET_ITEM(input, i), response[i], 4)) return NULL;
+    if (response[1][1] == 0.0 || efficiency == 0.0) {
+        PyErr_SetString(PyExc_ZeroDivisionError, "端口响应或效率为零");
+        return NULL;
+    }
+    const int ports[3] = {0, 2, 3}, modes[] = {0, 1, -1}, motions[] = {1, -1, 0};
+    for (int j = 0; j < 3; ++j) {
+        gear_response[j] = response[1][ports[j]] / response[1][1];
+        for (int i = 0; i < 3; ++i)
+            reduced[i][j] = response[ports[i]][ports[j]]
+                         - response[ports[i]][1] * response[1][ports[j]] / response[1][1];
+    }
+    double cached_rows[45][3][3];
+    PyObject *cached_columns[45];
+    int cache_count = 0, plan_index = 0;
+    int count = (capacity != 0.0 ? 3 : 2) * 5 * (brake_capacity != 0.0 ? 3 : 2);
+    PyObject *result = PyTuple_New(count);
+    if (!result) return NULL;
+    for (int cm = capacity != 0.0 ? 0 : 1; cm < 3; ++cm)
+        for (int mi = 0; mi < 3; ++mi)
+            for (int bm = brake_capacity != 0.0 ? 0 : 1; bm < 3; ++bm)
+                for (int si = 0; si < (motions[mi] != 0 ? 2 : 1); ++si) {
+                    int clutch = modes[cm], motion = motions[mi], brake = modes[bm];
+                    int sign = motion != 0 ? (si == 0 ? 1 : -1) : 0;
+                    double slope = motion * sign > 0 ? 1 - efficiency : 1 - 1 / efficiency;
+                    double rows[3][3];
+                    for (int j = 0; j < 3; ++j) {
+                        rows[0][j] = clutch == 0 ? reduced[0][j] : (double)(j == 0);
+                        rows[1][j] = motion == 0 ? reduced[1][j] : slope * gear_response[j] + (double)(j == 1);
+                        rows[2][j] = brake == 0 ? reduced[2][j] : (double)(j == 2);
+                    }
+                    int cached = 0, created = 0;
+                    for (; cached < cache_count; ++cached) {
+                        int equal = 1;
+                        for (int i = 0; i < 3; ++i)
+                            for (int j = 0; j < 3; ++j)
+                                if (rows[i][j] != cached_rows[cached][i][j]) equal = 0;
+                        if (equal) break;
+                    }
+                    if (cached == cache_count) {
+                        double cofactors[3][3], terms[3], columns[3][3];
+                        for (int i = 0; i < 3; ++i) {
+                            int a = (i + 1) % 3, b = (i + 2) % 3;
+                            cofactors[i][0] = rows[a][1]*rows[b][2] - rows[a][2]*rows[b][1];
+                            cofactors[i][1] = rows[a][2]*rows[b][0] - rows[a][0]*rows[b][2];
+                            cofactors[i][2] = rows[a][0]*rows[b][1] - rows[a][1]*rows[b][0];
+                        }
+                        for (int j = 0; j < 3; ++j) terms[j] = rows[0][j] * cofactors[0][j];
+                        double determinant = compensated(terms, 3);
+                        if (determinant == 0.0) {
+                            PyErr_SetString(PyExc_ZeroDivisionError, "端口约束矩阵奇异");
+                            Py_DECREF(result);
+                            return NULL;
+                        }
+                        for (int k = 0; k < 3; ++k)
+                            for (int i = 0; i < 3; ++i) {
+                                for (int j = 0; j < 3; ++j) terms[j] = cofactors[j][i] * (double)(j == k);
+                                columns[k][i] = compensated(terms, 3) / determinant;
+                            }
+                        PyObject *column = Py_BuildValue("((ddd)(ddd)(ddd))",
+                            columns[0][0], columns[0][1], columns[0][2],
+                            columns[1][0], columns[1][1], columns[1][2],
+                            columns[2][0], columns[2][1], columns[2][2]);
+                        if (!column) { Py_DECREF(result); return NULL; }
+                        for (int i = 0; i < 3; ++i)
+                            for (int j = 0; j < 3; ++j) cached_rows[cached][i][j] = rows[i][j];
+                        cached_columns[cache_count++] = column;
+                        created = 1;
+                    }
+                    PyObject *plan = Py_BuildValue("((iii)idO)", clutch, motion, brake,
+                                                  sign, slope, cached_columns[cached]);
+
+                    if (created) Py_DECREF(cached_columns[cached]);
+                    if (!plan) { Py_DECREF(result); return NULL; }
+                    PyTuple_SET_ITEM(result, plan_index++, plan);
+                }
+    return result;
+}
+
+/* 同一分区判据供既有端口入口与共同状态映射使用。 */
+static int shaft_trial(const double free_values[4],const double response[4][4],double dt,
+                       double capacity,double brake_capacity,double efficiency,
+                       double gear_free,const double reduced[3],const double modes[3],
+                       double sign,double slope,const double columns[3][3],
+                       double result[4],double end_speeds[4]) {
+    const int ports[3]={0,2,3};
+    const double tolerance=PORT_TOLERANCE;
+        double rhs[3] = {modes[0] == 0 ? reduced[0] / dt : modes[0] * capacity,
+                         modes[1] == 0 ? reduced[1] / dt : slope * gear_free,
+                         modes[2] == 0 ? reduced[2] / dt : modes[2] * brake_capacity};
+        double unknown[3], terms[4];
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) terms[j] = columns[j][i] * rhs[j];
+            unknown[i] = compensated(terms, 3);
+        }
+        double clutch = unknown[0], loss = unknown[1], brake = unknown[2];
+        if (fabs(clutch) > capacity + tolerance || fabs(brake) > brake_capacity + tolerance) return 0;
+        for (int j = 0; j < 3; ++j) terms[j] = response[1][ports[j]] * unknown[j] / response[1][1];
+        double gear = gear_free - compensated(terms, 3);
+        double low = (gear >= 0 ? 1 - 1 / efficiency : 1 - efficiency) * gear;
+        double high = (gear >= 0 ? 1 - efficiency : 1 - 1 / efficiency) * gear;
+        if (loss < low - tolerance || loss > high + tolerance || (sign != 0 && gear * sign < -tolerance)) return 0;
+        double values[4] = {clutch, gear, loss, brake}, speeds[4];
+        for (int i = 0; i < 4; ++i) {
+            for (int j = 0; j < 4; ++j) terms[j] = response[i][j] * values[j];
+            speeds[i] = free_values[i] - dt * compensated(terms, 4);
+        }
+        if (fabs(speeds[1]) > tolerance) return 0;
+        if ((modes[0] == 0 && fabs(speeds[0]) > tolerance) || modes[0] * speeds[0] < -tolerance) return 0;
+        if ((modes[2] == 0 && fabs(speeds[3]) > tolerance) || modes[2] * speeds[3] < -tolerance) return 0;
+        if (modes[1] == 0 && fabs(speeds[2]) > tolerance) return 0;
+        if (modes[1] > 0 && (speeds[2] < -tolerance || fabs(loss - high) > tolerance)) return 0;
+        if (modes[1] < 0 && (speeds[2] > tolerance || fabs(loss - low) > tolerance)) return 0;
+    for (int i=0; i<4; ++i) { result[i]=values[i]; end_speeds[i]=speeds[i]; }
+    return 1;
+}
+
+static PyObject *shaft_state(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *free_object, *response_object, *plans, *warm_object = Py_None;
+    double dt, capacity, brake_capacity, efficiency;
+    static char *names[] = {"free", "response", "dt", "capacity", "brake_capacity", "efficiency", "plans", "warm", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OOddddO|O", names, &free_object, &response_object,
+                          &dt, &capacity, &brake_capacity, &efficiency, &plans, &warm_object)) return NULL;
+    double free_values[4], response[4][4];
+    if (!vector(free_object, free_values, 4)) return NULL;
+    if (!PyTuple_Check(response_object) || PyTuple_GET_SIZE(response_object) != 4
+        || !PyTuple_Check(plans)) {
+        PyErr_SetString(PyExc_ValueError, "固定四端口矩阵或活动分区格式错误");
+        return NULL;
+    }
+    for (int i = 0; i < 4; ++i)
+        if (!vector(PyTuple_GET_ITEM(response_object, i), response[i], 4)) return NULL;
+    Py_ssize_t warm = -1, count = PyTuple_GET_SIZE(plans);
+    if (warm_object != Py_None) {
+        warm = PyLong_AsSsize_t(warm_object);
+        if (PyErr_Occurred()) return NULL;
+        if (warm < 0 || warm >= count) {
+            PyErr_SetString(PyExc_IndexError, "活动分区索引越界");
+            return NULL;
+        }
+    }
+    const int ports[3] = {0, 2, 3};
+    double gear_free = free_values[1] / (dt * response[1][1]), reduced[3];
+    for (int i = 0; i < 3; ++i)
+        reduced[i] = free_values[ports[i]] - response[ports[i]][1] * free_values[1] / response[1][1];
+    for (Py_ssize_t visit = warm >= 0 ? -1 : 0; visit < count; ++visit) {
+        Py_ssize_t index = visit < 0 ? warm : visit;
+        if (visit >= 0 && index == warm) continue;
+        PyObject *plan = PyTuple_GetItem(plans, index);
+        if (!plan || !PyTuple_Check(plan) || PyTuple_GET_SIZE(plan) != 4) {
+            PyErr_SetString(PyExc_ValueError, "四端口活动分区格式错误");
+            return NULL;
+        }
+        double modes[3], sign = PyFloat_AsDouble(PyTuple_GET_ITEM(plan, 1));
+        double slope = PyFloat_AsDouble(PyTuple_GET_ITEM(plan, 2));
+        double columns[3][3];
+        PyObject *column_object = PyTuple_GET_ITEM(plan, 3);
+        if (PyErr_Occurred() || !vector(PyTuple_GET_ITEM(plan, 0), modes, 3)) return NULL;
+        if (!PyTuple_Check(column_object) || PyTuple_GET_SIZE(column_object) != 3) {
+            PyErr_SetString(PyExc_ValueError, "活动分区逆矩阵须为三维");
+            return NULL;
+        }
+        for (int i = 0; i < 3; ++i)
+            if (!vector(PyTuple_GET_ITEM(column_object, i), columns[i], 3)) return NULL;
+        double values[4],speeds[4];
+        if (!shaft_trial(free_values,response,dt,capacity,brake_capacity,efficiency,
+                         gear_free,reduced,modes,sign,slope,columns,values,speeds)) continue;
+        return Py_BuildValue("((dddd)(dddd)n)", values[0], values[1], values[2], values[3],
+                             speeds[0], speeds[1], speeds[2], speeds[3], index);
+    }
+    PyErr_SetString(PyExc_ArithmeticError, "实体输入轴/离合/齿轮/制动共同末状态无可行解");
+    return NULL;
+}
+
+static PyObject *dot_vector(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *first, *second;
+    static char *names[] = {"first", "second", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OO", names, &first, &second)) return NULL;
+    PyObject *a = PySequence_Fast(first, "点积输入须为序列");
+    if (!a) return NULL;
+    PyObject *b = PySequence_Fast(second, "点积输入须为序列");
+    if (!b) { Py_DECREF(a); return NULL; }
+    Py_ssize_t count = PySequence_Fast_GET_SIZE(a) < PySequence_Fast_GET_SIZE(b)
+        ? PySequence_Fast_GET_SIZE(a) : PySequence_Fast_GET_SIZE(b);
+    double main_sum = 0.0, correction = 0.0;
+    for (Py_ssize_t i = 0; i < count; ++i) {
+        double value = PyFloat_AsDouble(PySequence_Fast_GET_ITEM(a, i))
+                     * PyFloat_AsDouble(PySequence_Fast_GET_ITEM(b, i));
+        if (PyErr_Occurred()) { Py_DECREF(a); Py_DECREF(b); return NULL; }
+        double next = main_sum + value;
+        correction += fabs(main_sum) >= fabs(value)
+            ? (main_sum - next) + value : (value - next) + main_sum;
+        main_sum = next;
+    }
+    Py_DECREF(a); Py_DECREF(b);
+    return PyFloat_FromDouble(correction != 0.0 && isfinite(correction)
+                              ? main_sum + correction : main_sum);
+}
+
+static PyObject *dot_three(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *first, *second;
+    static char *names[] = {"first", "second", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OO", names, &first, &second)) return NULL;
+    double a[3], b[3], products[3];
+    if (!vector(first, a, 3) || !vector(second, b, 3)) return NULL;
+    for (int i = 0; i < 3; ++i) products[i] = a[i] * b[i];
+    return PyFloat_FromDouble(compensated(products, 3));
+}
+
+static PyObject *cross_three(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *first, *second;
+    static char *names[] = {"first", "second", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OO", names, &first, &second)) return NULL;
+    double a[3], b[3];
+    if (!vector(first, a, 3) || !vector(second, b, 3)) return NULL;
+    return Py_BuildValue("(ddd)", a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]);
+}
+
+static PyObject *project_vector(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *input, *projection_object;
+    static char *names[] = {"vector", "projections", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OO", names, &input, &projection_object)) return NULL;
+    PyObject *projections = PySequence_Fast(projection_object, "机械投影须为序列");
+    if (!projections) return NULL;
+    if (PySequence_Fast_GET_SIZE(projections) == 0) {
+        Py_DECREF(projections);
+        return Py_NewRef(input);
+    }
+    PyObject *sequence = PySequence_Fast(input, "机械向量须为序列");
+    if (!sequence) { Py_DECREF(projections); return NULL; }
+    Py_ssize_t count = PySequence_Fast_GET_SIZE(sequence);
+    double *values = PyMem_Malloc((size_t)count * sizeof(double));
+    if (!values) { Py_DECREF(sequence); Py_DECREF(projections); return PyErr_NoMemory(); }
+    for (Py_ssize_t i = 0; i < count; ++i) {
+        values[i] = PyFloat_AsDouble(PySequence_Fast_GET_ITEM(sequence, i));
+        if (PyErr_Occurred()) goto failed;
+    }
+    for (Py_ssize_t step = 0; step < PySequence_Fast_GET_SIZE(projections); ++step) {
+        PyObject *projection = PySequence_Fast(PySequence_Fast_GET_ITEM(projections, step), "投影须含梯度、响应与系数");
+        if (!projection) goto failed;
+        if (PySequence_Fast_GET_SIZE(projection) != 3) {
+            Py_DECREF(projection);
+            PyErr_SetString(PyExc_ValueError, "投影须含梯度、响应与系数");
+            goto failed;
+        }
+        PyObject *gradient = PySequence_Fast(PySequence_Fast_GET_ITEM(projection, 0), "梯度须为序列");
+        PyObject *response = PySequence_Fast(PySequence_Fast_GET_ITEM(projection, 1), "响应须为序列");
+        double factor = PyFloat_AsDouble(PySequence_Fast_GET_ITEM(projection, 2));
+        Py_DECREF(projection);
+        if (!gradient || !response || PyErr_Occurred()) {
+            Py_XDECREF(gradient); Py_XDECREF(response); goto failed;
+        }
+        if (PySequence_Fast_GET_SIZE(gradient) != count || PySequence_Fast_GET_SIZE(response) != count) {
+            Py_DECREF(gradient); Py_DECREF(response);
+            PyErr_SetString(PyExc_ValueError, "投影与机械向量维数不一致");
+            goto failed;
+        }
+        double main_sum = 0., correction = 0.;
+        for (Py_ssize_t i = 0; i < count; ++i) {
+            double value = PyFloat_AsDouble(PySequence_Fast_GET_ITEM(gradient, i)) * values[i];
+            if (PyErr_Occurred()) { Py_DECREF(gradient); Py_DECREF(response); goto failed; }
+            double next = main_sum + value;
+            correction += fabs(main_sum) >= fabs(value)
+                ? (main_sum-next)+value : (value-next)+main_sum;
+            main_sum = next;
+        }
+        double scale = factor * (correction != 0. && isfinite(correction) ? main_sum + correction : main_sum);
+        for (Py_ssize_t i = 0; i < count; ++i) {
+            double change = PyFloat_AsDouble(PySequence_Fast_GET_ITEM(response, i));
+            if (PyErr_Occurred()) { Py_DECREF(gradient); Py_DECREF(response); goto failed; }
+            values[i] = values[i] - scale * change;
+        }
+        Py_DECREF(gradient); Py_DECREF(response);
+    }
+    PyObject *result = PyTuple_New(count);
+    if (!result) goto failed;
+    for (Py_ssize_t i = 0; i < count; ++i) {
+        PyObject *value = PyFloat_FromDouble(values[i]);
+        if (!value) { Py_DECREF(result); goto failed; }
+        PyTuple_SET_ITEM(result, i, value);
+    }
+    PyMem_Free(values); Py_DECREF(sequence); Py_DECREF(projections);
+    return result;
+failed:
+    PyMem_Free(values); Py_DECREF(sequence); Py_DECREF(projections);
+    return NULL;
+}
+
+/* 无重叠部分和遵循CPython math.fsum的有限数算法与半偶舍入。 */
+static double exact_sum(const double *values, Py_ssize_t length, double *partials) {
+    Py_ssize_t count = 0;
+    double high = 0., low = 0.;
+    for (Py_ssize_t k = 0; k < length; ++k) {
+        double x = values[k];
+        Py_ssize_t write = 0;
+        for (Py_ssize_t j = 0; j < count; ++j) {
+            double y = partials[j];
+            if (fabs(x) < fabs(y)) { double swap=x; x=y; y=swap; }
+            high = x+y; low = y-(high-x);
+            if (low != 0.) partials[write++] = low;
+            x = high;
+        }
+        count = write;
+        if (!isfinite(x)) { PyErr_SetString(PyExc_OverflowError,"有限机械矩阵求和溢出"); return 0.; }
+        if (x != 0.) partials[count++] = x;
+    }
+    high = 0.;
+    if (count) {
+        high = partials[--count];
+        while (count) {
+            double x=high, y=partials[--count];
+            high=x+y; low=y-(high-x);
+            if (low != 0.) break;
+        }
+        if (count && ((low<0. && partials[count-1]<0.) || (low>0. && partials[count-1]>0.))) {
+            double twice=low*2., rounded=high+twice;
+            if (twice == rounded-high) high=rounded;
+        }
+    }
+    return high;
+}
+
+static void lu_substitute(const double *rows, const double *values, const Py_ssize_t *order,
+                          Py_ssize_t n, double *result, double *terms, double *partials) {
+    for (Py_ssize_t i=0; i<n; ++i) result[i]=values[order[i]];
+    for (Py_ssize_t i=0; i<n; ++i) {
+        terms[0]=result[i];
+        for (Py_ssize_t j=0; j<i; ++j) terms[j+1]=-rows[i*n+j]*result[j];
+        result[i]=exact_sum(terms,i+1,partials);
+    }
+    for (Py_ssize_t i=n; i-- > 0;) {
+        terms[0]=result[i];
+        for (Py_ssize_t j=i+1; j<n; ++j) terms[j-i]=-rows[i*n+j]*result[j];
+        result[i]=exact_sum(terms,n-i,partials)/rows[i*n+i];
+    }
+}
+
+/* 公开LU与四轮活动集共用原消元、fsum及一次残差修正。 */
+static int lu_values(const double *original,const double *rhs,Py_ssize_t n,
+                     double *rows,Py_ssize_t *order,double *result,double *residual,
+                     double *correction,double *terms,double *partials) {
+    for (Py_ssize_t i=0; i<n; ++i) {
+        order[i]=i;
+        for (Py_ssize_t j=0; j<n; ++j) rows[i*n+j]=original[i*n+j];
+    }
+    for (Py_ssize_t col=0; col<n; ++col) {
+        Py_ssize_t pivot=col;
+        for (Py_ssize_t i=col+1; i<n; ++i)
+            if (fabs(rows[i*n+col]) > fabs(rows[pivot*n+col])) pivot=i;
+        for (Py_ssize_t j=0; j<n; ++j) {
+            double swap=rows[col*n+j]; rows[col*n+j]=rows[pivot*n+j]; rows[pivot*n+j]=swap;
+        }
+        Py_ssize_t swap=order[col]; order[col]=order[pivot]; order[pivot]=swap;
+        if (rows[col*n+col] == 0.) { PyErr_SetString(PyExc_ZeroDivisionError,"机械LU矩阵奇异"); return 0; }
+        for (Py_ssize_t i=col+1; i<n; ++i) {
+            double factor=rows[i*n+col]/rows[col*n+col];
+            rows[i*n+col]=factor;
+            for (Py_ssize_t j=col+1; j<n; ++j) rows[i*n+j]-=factor*rows[col*n+j];
+        }
+    }
+    lu_substitute(rows,rhs,order,n,result,terms,partials);
+    if (PyErr_Occurred()) return 0;
+    for (Py_ssize_t i=0; i<n; ++i) {
+        terms[0]=rhs[i];
+        for (Py_ssize_t j=0; j<n; ++j) terms[j+1]=-original[i*n+j]*result[j];
+        residual[i]=exact_sum(terms,n+1,partials);
+    }
+    lu_substitute(rows,residual,order,n,correction,terms,partials);
+    if (PyErr_Occurred()) return 0;
+    for (Py_ssize_t i=0; i<n; ++i) result[i]=result[i]+correction[i];
+    return 1;
+}
+
+static PyObject *solve_lu(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *matrix_object,*rhs_object;
+    static char *names[]={"matrix","rhs",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OO",names,&matrix_object,&rhs_object)) return NULL;
+    PyObject *matrix=PySequence_Fast(matrix_object,"机械矩阵须为行序列");
+    if (!matrix) return NULL;
+    Py_ssize_t n=PySequence_Fast_GET_SIZE(matrix);
+    if (n == 0) { Py_DECREF(matrix); return PyTuple_New(0); }
+    if ((size_t)n > INT_MAX || (size_t)n+3 > (SIZE_MAX/sizeof(double)-2)/(2*(size_t)n)) {
+        Py_DECREF(matrix); return PyErr_NoMemory();
+    }
+    double *memory=PyMem_Malloc((2*n*n+6*n+2)*sizeof(double));
+    Py_ssize_t *order=PyMem_Malloc(n*sizeof(Py_ssize_t));
+    if (!memory || !order) { PyMem_Free(memory); PyMem_Free(order); Py_DECREF(matrix); return PyErr_NoMemory(); }
+    double *original=memory,*rows=original+n*n,*rhs=rows+n*n,*result=rhs+n;
+    double *residual=result+n,*correction=residual+n,*terms=correction+n,*partials=terms+n+1;
+    if (!vector(rhs_object,rhs,(int)n)) goto failed;
+    for (Py_ssize_t i=0; i<n; ++i) {
+        if (!vector(PySequence_Fast_GET_ITEM(matrix,i),original+i*n,(int)n)) goto failed;
+    }
+    if (!lu_values(original,rhs,n,rows,order,result,residual,correction,terms,partials)) goto failed;
+    PyObject *output=PyTuple_New(n);
+    if (!output) goto failed;
+    for (Py_ssize_t i=0; i<n; ++i) {
+        PyObject *value=PyFloat_FromDouble(result[i]);
+        if (!value) { Py_DECREF(output); goto failed; }
+        PyTuple_SET_ITEM(output,i,value);
+    }
+    PyMem_Free(memory); PyMem_Free(order); Py_DECREF(matrix); return output;
+failed:
+    PyMem_Free(memory); PyMem_Free(order); Py_DECREF(matrix); return NULL;
+}
+
+static int matrix_values(PyObject *object,double *values,int rows,int columns) {
+    PyObject *sequence=PySequence_Fast(object,"机械矩阵须为行序列");
+    if (!sequence) return 0;
+    if (PySequence_Fast_GET_SIZE(sequence) != rows) {
+        Py_DECREF(sequence); PyErr_SetString(PyExc_ValueError,"机械矩阵行数不一致"); return 0;
+    }
+    for (int i=0; i<rows; ++i) {
+        if (!vector(PySequence_Fast_GET_ITEM(sequence,i),values+i*columns,columns)) { Py_DECREF(sequence); return 0; }
+    }
+    Py_DECREF(sequence); return 1;
+}
+
+/* 同一次共同求解的逆惯量和实体轴投影固定，只保存只读数值系数。 */
+typedef struct {
+    int dimensions,wheel_start,projection_count,has_drag;
+    double inverse[9],engine_inertia,shaft_inertia,wheel_inertia,drag_factor;
+    double gradients[3][9],responses[3][9],factors[3],engine_response[9];
+} MassCoefficients;
+
+static const char *mass_coefficients_name="CoastalDrive.mass_coefficients";
+
+static void release_mass_coefficients(PyObject *object) {
+    PyMem_Free(PyCapsule_GetPointer(object,mass_coefficients_name));
+}
+
+static PyObject *mass_coefficients_call(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *inverse,*shaft,*projections_object,*engine_response;
+    double engine_inertia,wheel_inertia,drag_factor;
+    static char *names[]={"inverse_inertia","engine_inertia","shaft_inertia","wheel_inertia",
+                         "projections","drag_factor","engine_response",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OdOdOdO",names,&inverse,&engine_inertia,&shaft,&wheel_inertia,
+                                     &projections_object,&drag_factor,&engine_response)) return NULL;
+    MassCoefficients *data=PyMem_Calloc(1,sizeof(MassCoefficients));
+    if (!data) return PyErr_NoMemory();
+    data->dimensions=shaft == Py_None ? 8 : 9;
+    data->wheel_start=shaft == Py_None ? 4 : 5;
+    data->engine_inertia=engine_inertia;
+    data->wheel_inertia=wheel_inertia;
+    data->shaft_inertia=shaft == Py_None ? 1. : PyFloat_AsDouble(shaft);
+    data->drag_factor=drag_factor;
+    data->has_drag=engine_response != Py_None;
+    if (PyErr_Occurred() || !matrix_values(inverse,data->inverse,3,3)
+        || (data->has_drag && !vector(engine_response,data->engine_response,data->dimensions))) goto failed;
+    if (data->engine_inertia == 0. || data->shaft_inertia == 0. || data->wheel_inertia == 0.) {
+        PyErr_SetString(PyExc_ZeroDivisionError,"机械转子惯量为零"); goto failed;
+    }
+    PyObject *projections=PySequence_Fast(projections_object,"实体轴投影须为序列");
+    if (!projections) goto failed;
+    Py_ssize_t count=PySequence_Fast_GET_SIZE(projections);
+    if (count>3) {
+        Py_DECREF(projections); PyErr_SetString(PyExc_ValueError,"实体输出/前/后轴投影最多三组"); goto failed;
+    }
+    data->projection_count=(int)count;
+    for (int i=0; i<data->projection_count; ++i) {
+        PyObject *part=PySequence_Fast(PySequence_Fast_GET_ITEM(projections,i),"实体轴投影须为梯度/响应/系数");
+        if (!part) { Py_DECREF(projections); goto failed; }
+        if (PySequence_Fast_GET_SIZE(part)!=3) {
+            Py_DECREF(part); Py_DECREF(projections); PyErr_SetString(PyExc_ValueError,"实体轴投影须为梯度/响应/系数"); goto failed;
+        }
+        int ok=vector(PySequence_Fast_GET_ITEM(part,0),data->gradients[i],data->dimensions)
+            && vector(PySequence_Fast_GET_ITEM(part,1),data->responses[i],data->dimensions);
+        data->factors[i]=PyFloat_AsDouble(PySequence_Fast_GET_ITEM(part,2));
+        Py_DECREF(part);
+        if (!ok || PyErr_Occurred()) { Py_DECREF(projections); goto failed; }
+    }
+    Py_DECREF(projections);
+    PyObject *result=PyCapsule_New(data,mass_coefficients_name,release_mass_coefficients);
+    if (!result) goto failed;
+    return result;
+failed:
+    PyMem_Free(data); return NULL;
+}
+
+static void mass_response_values(const MassCoefficients *data, const double source[9], double values[9]) {
+    double terms[9];
+    for (int a=0; a<3; ++a) {
+        for (int b=0; b<3; ++b) terms[b]=data->inverse[a*3+b]*source[b];
+        values[a]=compensated(terms,3);
+    }
+    values[3]=source[3]/data->engine_inertia;
+    if (data->wheel_start==5) values[4]=source[4]/data->shaft_inertia;
+    for (int a=data->wheel_start; a<data->dimensions; ++a) values[a]=source[a]/data->wheel_inertia;
+    for (int i=0; i<data->projection_count; ++i) {
+        for (int a=0; a<data->dimensions; ++a) terms[a]=data->gradients[i][a]*values[a];
+        double scale=data->factors[i]*compensated(terms,data->dimensions);
+        for (int a=0; a<data->dimensions; ++a) values[a]=values[a]-scale*data->responses[i][a];
+    }
+    if (data->has_drag) {
+        for (int a=0; a<data->dimensions; ++a) terms[a]=data->engine_response[a]*source[a];
+        double projection=data->drag_factor*compensated(terms,data->dimensions);
+        for (int a=0; a<data->dimensions; ++a) values[a]=values[a]-projection*data->engine_response[a];
+    }
+}
+
+static PyObject *mass_response_prepared_call(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *coefficients,*input;
+    static char *names[]={"coefficients","vector",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OO",names,&coefficients,&input)) return NULL;
+    MassCoefficients *data=PyCapsule_GetPointer(coefficients,mass_coefficients_name);
+    if (!data) return NULL;
+    double source[9],values[9];
+    if (!vector(input,source,data->dimensions)) return NULL;
+    mass_response_values(data,source,values);
+    PyObject *result=PyTuple_New(data->dimensions);
+    if (!result) return NULL;
+    for (int a=0; a<data->dimensions; ++a) {
+        PyObject *value=PyFloat_FromDouble(values[a]);
+        if (!value) { Py_DECREF(result); return NULL; }
+        PyTuple_SET_ITEM(result,a,value);
+    }
+    return result;
+}
+
+
+/* 一次性数值接口与子步系数接口共用同一算法，不保留第二份公式。 */
+static PyObject *mass_response_call(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *input,*inverse,*shaft,*projections,*engine_response;
+    double engine_inertia,wheel_inertia,drag_factor;
+    static char *names[]={"vector","inverse_inertia","engine_inertia","shaft_inertia","wheel_inertia",
+                         "projections","drag_factor","engine_response",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOdOdOdO",names,&input,&inverse,&engine_inertia,&shaft,
+                                     &wheel_inertia,&projections,&drag_factor,&engine_response)) return NULL;
+    PyObject *parameters=Py_BuildValue("(OdOdOdO)",inverse,engine_inertia,shaft,wheel_inertia,projections,drag_factor,engine_response);
+    if (!parameters) return NULL;
+    PyObject *coefficients=mass_coefficients_call(self,parameters,NULL);
+    Py_DECREF(parameters);
+    if (!coefficients) return NULL;
+    parameters=PyTuple_Pack(2,coefficients,input);
+    Py_DECREF(coefficients);
+    if (!parameters) return NULL;
+    PyObject *result=mass_response_prepared_call(self,parameters,NULL);
+    Py_DECREF(parameters);
+    return result;
+}
+
+typedef struct {
+    int dimensions,wheel_start,rotor,shaft,downstream;
+    double engine_inertia,wheel_inertia,shaft_inertia;
+    double engine_axis[3],wheel_axes[12],shaft_axis[3],inertias[3],gradients[27],downstream_axes[9];
+} RotorCoefficients;
+
+static const char *rotor_coefficients_name="CoastalDrive.rotor_coefficients";
+
+static void release_rotor_coefficients(PyObject *object) {
+    PyMem_Free(PyCapsule_GetPointer(object,rotor_coefficients_name));
+}
+
+static PyObject *rotor_coefficients_call(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *engine_axis,*axes,*shaft,*shaft_axis,*inertias,*gradients,*downstream_axes;
+    double engine_inertia,wheel_inertia;
+    int rotor;
+    static char *names[]={"engine_inertia","engine_axis","wheel_inertia","wheel_axes","rotor",
+                         "shaft_inertia","shaft_axis","inertias","gradients","downstream_axes",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"dOdOpOOOOO",names,&engine_inertia,&engine_axis,&wheel_inertia,
+                                     &axes,&rotor,&shaft,&shaft_axis,&inertias,&gradients,&downstream_axes)) return NULL;
+    RotorCoefficients *data=PyMem_Calloc(1,sizeof(RotorCoefficients));
+    if (!data) return PyErr_NoMemory();
+    data->rotor=rotor; data->shaft=shaft != Py_None;
+    data->dimensions=data->shaft ? 9 : 8; data->wheel_start=data->shaft ? 5 : 4;
+    data->engine_inertia=engine_inertia; data->wheel_inertia=wheel_inertia;
+    data->shaft_inertia=data->shaft ? PyFloat_AsDouble(shaft) : 0.;
+    if (PyErr_Occurred() || !vector(engine_axis,data->engine_axis,3) || !matrix_values(axes,data->wheel_axes,4,3)
+        || (data->shaft && !vector(shaft_axis,data->shaft_axis,3))) goto failed;
+    PyObject *sequence=PySequence_Fast(inertias,"实体轴惯量须为序列");
+    if (!sequence) goto failed;
+    data->downstream=PySequence_Fast_GET_SIZE(sequence) != 0;
+    Py_DECREF(sequence);
+    if (data->downstream && (!vector(inertias,data->inertias,3)
+        || !matrix_values(gradients,data->gradients,3,data->dimensions)
+        || !matrix_values(downstream_axes,data->downstream_axes,3,3))) goto failed;
+    PyObject *result=PyCapsule_New(data,rotor_coefficients_name,release_rotor_coefficients);
+    if (!result) goto failed;
+    return result;
+failed:
+    PyMem_Free(data); return NULL;
+}
+
+static void rotor_spin_values(const RotorCoefficients *data, const double state[9], double result[3]) {
+    double terms[9],base[3];
+    for (int a=0; a<3; ++a) {
+        for (int i=0; i<4; ++i) terms[i]=state[i+data->wheel_start]*data->wheel_axes[i*3+a];
+        base[a]=data->engine_inertia*state[3]*data->engine_axis[a]
+            -(data->rotor ? data->wheel_inertia*compensated(terms,4) : 0.)
+            +(data->shaft ? data->shaft_inertia*state[4]*data->shaft_axis[a] : 0.);
+    }
+    if (data->downstream) {
+        double momentum[3];
+        for (int i=0; i<3; ++i) {
+            for (int b=0; b<data->dimensions; ++b) terms[b]=data->gradients[i*data->dimensions+b]*state[b];
+            momentum[i]=data->inertias[i]*compensated(terms,data->dimensions);
+        }
+        for (int a=0; a<3; ++a) {
+            for (int i=0; i<3; ++i) terms[i]=momentum[i]*data->downstream_axes[i*3+a];
+            result[a]=base[a]+compensated(terms,3);
+        }
+    } else {
+        for (int a=0; a<3; ++a) result[a]=base[a];
+    }
+}
+
+static PyObject *rotor_spin_prepared_call(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *coefficients,*input;
+    static char *names[]={"coefficients","state",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OO",names,&coefficients,&input)) return NULL;
+    RotorCoefficients *data=PyCapsule_GetPointer(coefficients,rotor_coefficients_name);
+    if (!data) return NULL;
+    double state[9],result[3];
+    if (!vector(input,state,data->dimensions)) return NULL;
+    rotor_spin_values(data,state,result);
+    return Py_BuildValue("(ddd)",result[0],result[1],result[2]);
+}
+
+
+static void known_values(const MassCoefficients *data,const double base[9],const double gyro[3],
+                         const double angular[9],const double *normal,double dt,const double *road,
+                         double values[9]) {
+    double input[9]={0.},response[9];
+    for (int a=0; a<3; ++a) input[a]=gyro[a];
+    mass_response_values(data,input,response);
+    for (int a=0; a<data->dimensions; ++a) values[a]=base[a]+dt*response[a]+angular[a];
+    if (road) {
+        for (int a=0; a<3; ++a) input[a]=0.;
+        for (int a=0; a<4; ++a) input[a+data->wheel_start]=-road[a];
+        mass_response_values(data,input,response);
+        for (int a=0; a<data->dimensions; ++a) values[a]=values[a]+dt*response[a];
+    }
+    if (normal) for (int a=0; a<data->dimensions; ++a) values[a]=values[a]+normal[a];
+}
+
+/* 自由状态按原先后次序叠加陀螺、轮端、滚阻及当前法向载荷。 */
+static PyObject *known_result(const MassCoefficients *data, PyObject *base_object,
+                              const double gyro[3], PyObject *loads, double dt, PyObject *road) {
+    double base[9],angular[9],normal[9],values[9];
+    if (!PyTuple_Check(loads) || PyTuple_GET_SIZE(loads)!=3) {
+        PyErr_SetString(PyExc_ValueError,"共同载荷须含角向、法向及平动自由速度"); return NULL;
+    }
+    if (!vector(base_object,base,data->dimensions)
+        || !vector(PyTuple_GET_ITEM(loads,0),angular,data->dimensions)) return NULL;
+    double torques[4];
+    if (road!=Py_None && !vector(road,torques,4)) return NULL;
+    PyObject *normal_object=PyTuple_GET_ITEM(loads,1);
+    if (!PyTuple_Check(normal_object)) {
+        PyErr_SetString(PyExc_ValueError,"法向载荷须为元组"); return NULL;
+    }
+    int suspension=PyTuple_GET_SIZE(normal_object)!=0;
+    if (suspension && !vector(normal_object,normal,data->dimensions)) return NULL;
+    known_values(data,base,gyro,angular,suspension ? normal : NULL,dt,
+                 road!=Py_None ? torques : NULL,values);
+    PyObject *free=PyTuple_New(data->dimensions);
+    if (!free) return NULL;
+    for (int a=0; a<data->dimensions; ++a) {
+        PyObject *value=PyFloat_FromDouble(values[a]);
+        if (!value) { Py_DECREF(free); return NULL; }
+        PyTuple_SET_ITEM(free,a,value);
+    }
+    return Py_BuildValue("(NO)",free,PyTuple_GET_ITEM(loads,2));
+}
+
+static PyObject *known_state_call(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *coefficients,*base,*input,*loads,*road;
+    double dt,gyro[3];
+    static char *names[]={"coefficients","free_base","gyro","loads","dt","road_torques",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOOdO",names,&coefficients,&base,&input,&loads,&dt,&road)) return NULL;
+    MassCoefficients *data=PyCapsule_GetPointer(coefficients,mass_coefficients_name);
+    if (!data || !vector(input,gyro,3)) return NULL;
+    return known_result(data,base,gyro,loads,dt,road);
+}
+
+static PyObject *rotor_known_state_call(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *coefficients,*spin_coefficients,*base,*input,*loads,*road;
+    double dt;
+    static char *names[]={"coefficients","rotor_coefficients","free_base","state","loads","dt","road_torques",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOOOdO",names,&coefficients,&spin_coefficients,
+                                     &base,&input,&loads,&dt,&road)) return NULL;
+    MassCoefficients *data=PyCapsule_GetPointer(coefficients,mass_coefficients_name);
+    RotorCoefficients *spin=PyCapsule_GetPointer(spin_coefficients,rotor_coefficients_name);
+    if (!data || !spin) return NULL;
+    if (data->dimensions!=spin->dimensions) {
+        PyErr_SetString(PyExc_ValueError,"共同自由状态与转子维数不一致"); return NULL;
+    }
+    double state[9],momentum[3],gyro[3];
+    if (!vector(input,state,data->dimensions)) return NULL;
+    rotor_spin_values(spin,state,momentum);
+    gyro[0]=momentum[1]*state[2]-momentum[2]*state[1];
+    gyro[1]=momentum[2]*state[0]-momentum[0]*state[2];
+    gyro[2]=momentum[0]*state[1]-momentum[1]*state[0];
+    return known_result(data,base,gyro,loads,dt,road);
+}
+
+static PyObject *rotor_spin_call(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *state,*engine_axis,*axes,*shaft,*shaft_axis,*inertias,*gradients,*downstream_axes;
+    double engine_inertia,wheel_inertia;
+    int rotor;
+    static char *names[]={"state","engine_inertia","engine_axis","wheel_inertia","wheel_axes","rotor",
+                         "shaft_inertia","shaft_axis","inertias","gradients","downstream_axes",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OdOdOpOOOOO",names,&state,&engine_inertia,&engine_axis,&wheel_inertia,
+                                     &axes,&rotor,&shaft,&shaft_axis,&inertias,&gradients,&downstream_axes)) return NULL;
+    PyObject *parameters=Py_BuildValue("(dOdOiOOOOO)",engine_inertia,engine_axis,wheel_inertia,axes,rotor,
+                                      shaft,shaft_axis,inertias,gradients,downstream_axes);
+    if (!parameters) return NULL;
+    PyObject *coefficients=rotor_coefficients_call(self,parameters,NULL);
+    Py_DECREF(parameters);
+    if (!coefficients) return NULL;
+    parameters=PyTuple_Pack(2,coefficients,state);
+    Py_DECREF(coefficients);
+    if (!parameters) return NULL;
+    PyObject *result=rotor_spin_prepared_call(self,parameters,NULL);
+    Py_DECREF(parameters);
+    return result;
+}
+
+typedef struct {
+    int dimensions;
+    double dt,mass,responses[108],tangents[12],axles[12];
+} LoadCoefficients;
+
+static const char *load_coefficients_name="CoastalDrive.load_coefficients";
+
+static void release_load_coefficients(PyObject *object) {
+    PyMem_Free(PyCapsule_GetPointer(object,load_coefficients_name));
+}
+
+static PyObject *load_coefficients_call(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *responses,*tangents,*axles;
+    double dt,mass;
+    int dimensions;
+    static char *names[]={"responses","tangents","axles","dt","mass","dimensions",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOddi",names,&responses,&tangents,&axles,&dt,&mass,&dimensions)) return NULL;
+    if (dimensions!=8 && dimensions!=9) { PyErr_SetString(PyExc_ValueError,"机械状态须为八或九维"); return NULL; }
+    if (mass==0.) { PyErr_SetString(PyExc_ZeroDivisionError,"机械车身质量为零"); return NULL; }
+    LoadCoefficients *data=PyMem_Calloc(1,sizeof(LoadCoefficients));
+    if (!data) return PyErr_NoMemory();
+    data->dimensions=dimensions; data->dt=dt; data->mass=mass;
+    if (!matrix_values(tangents,data->tangents,4,3) || !matrix_values(axles,data->axles,4,3)) goto failed;
+    PyObject *wheels=PySequence_Fast(responses,"轮端响应须为四轮序列");
+    if (!wheels) goto failed;
+    if (PySequence_Fast_GET_SIZE(wheels)!=4) {
+        Py_DECREF(wheels); PyErr_SetString(PyExc_ValueError,"轮端响应须为四轮序列"); goto failed;
+    }
+    for (int i=0; i<4; ++i) {
+        if (!matrix_values(PySequence_Fast_GET_ITEM(wheels,i),data->responses+i*3*dimensions,3,dimensions)) {
+            Py_DECREF(wheels); goto failed;
+        }
+    }
+    Py_DECREF(wheels);
+    PyObject *result=PyCapsule_New(data,load_coefficients_name,release_load_coefficients);
+    if (!result) goto failed;
+    return result;
+failed:
+    PyMem_Free(data); return NULL;
+}
+
+static PyObject *wheel_load_prepared_call(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *coefficients,*forces,*velocity_object,*normal_forces_object,*normal_responses_object,*gradients_object,*exclude_object;
+    static char *names[]={"coefficients","forces","velocity","normal_forces","normal_responses","normal_gradients","exclude",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOOOOO",names,&coefficients,&forces,&velocity_object,&normal_forces_object,
+                                     &normal_responses_object,&gradients_object,&exclude_object)) return NULL;
+    LoadCoefficients *data=PyCapsule_GetPointer(coefficients,load_coefficients_name);
+    if (!data) return NULL;
+    double force[12],velocity[3],end_velocity[3],terms[4],angular[9],normal[9];
+    if (!matrix_values(forces,force,4,3) || !vector(velocity_object,velocity,3)) return NULL;
+    long exclude=exclude_object==Py_None ? -1 : PyLong_AsLong(exclude_object);
+    if (PyErr_Occurred()) return NULL;
+    for (int a=0; a<data->dimensions; ++a) {
+        int count=0;
+        for (int i=0; i<4; ++i) {
+            if (i==exclude) continue;
+            terms[count++]=force[i*3]*data->responses[(i*3)*data->dimensions+a]
+                +force[i*3+1]*data->responses[(i*3+1)*data->dimensions+a]
+                -force[i*3+2]*data->responses[(i*3+2)*data->dimensions+a];
+        }
+        angular[a]=data->dt*compensated(terms,count);
+    }
+    /* 平动自由速度每次从真实调用输入读取，不属于固定轮端系数。 */
+    for (int a=0; a<3; ++a) {
+        int count=0;
+        for (int i=0; i<4; ++i) {
+            if (i!=exclude) terms[count++]=force[i*3]*data->tangents[i*3+a]+force[i*3+1]*data->axles[i*3+a];
+        }
+        end_velocity[a]=velocity[a]+data->dt/data->mass*compensated(terms,count);
+    }
+    int suspension=normal_forces_object!=Py_None;
+    if (suspension) {
+        double normal_forces[4],normal_responses[36],gradients[24];
+        if (!vector(normal_forces_object,normal_forces,4)
+            || !matrix_values(normal_responses_object,normal_responses,4,data->dimensions)
+            || !matrix_values(gradients_object,gradients,4,6)) return NULL;
+        for (int a=0; a<data->dimensions; ++a) {
+            for (int i=0; i<4; ++i) terms[i]=normal_forces[i]*normal_responses[i*data->dimensions+a];
+            normal[a]=data->dt*compensated(terms,4);
+        }
+        for (int a=0; a<3; ++a) {
+            for (int i=0; i<4; ++i) terms[i]=normal_forces[i]*gradients[i*6+a];
+            end_velocity[a]=end_velocity[a]+data->dt/data->mass*compensated(terms,4);
+        }
+    }
+    PyObject *angular_result=PyTuple_New(data->dimensions),*normal_result=PyTuple_New(suspension ? data->dimensions : 0);
+    if (!angular_result || !normal_result) { Py_XDECREF(angular_result); Py_XDECREF(normal_result); return NULL; }
+    for (int a=0; a<data->dimensions; ++a) {
+        PyObject *value=PyFloat_FromDouble(angular[a]);
+        if (!value) { Py_DECREF(angular_result); Py_DECREF(normal_result); return NULL; }
+        PyTuple_SET_ITEM(angular_result,a,value);
+        if (suspension) {
+            value=PyFloat_FromDouble(normal[a]);
+            if (!value) { Py_DECREF(angular_result); Py_DECREF(normal_result); return NULL; }
+            PyTuple_SET_ITEM(normal_result,a,value);
+        }
+    }
+    return Py_BuildValue("(NN(ddd))",angular_result,normal_result,end_velocity[0],end_velocity[1],end_velocity[2]);
+}
+
+static PyObject *load_terms_call(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *forces,*responses,*tangents,*axles,*velocity,*normal_forces,*normal_responses,*gradients,*exclude;
+    double dt,mass;
+    int dimensions;
+    static char *names[]={"forces","responses","tangents","axles","velocity","dt","mass",
+                         "normal_forces","normal_responses","normal_gradients","exclude","dimensions",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOOOddOOOOi",names,&forces,&responses,&tangents,&axles,&velocity,
+                                     &dt,&mass,&normal_forces,&normal_responses,&gradients,&exclude,&dimensions)) return NULL;
+    PyObject *parameters=Py_BuildValue("(OOOddi)",responses,tangents,axles,dt,mass,dimensions);
+    if (!parameters) return NULL;
+    PyObject *coefficients=load_coefficients_call(self,parameters,NULL);
+    Py_DECREF(parameters);
+    if (!coefficients) return NULL;
+    parameters=PyTuple_Pack(7,coefficients,forces,velocity,normal_forces,normal_responses,gradients,exclude);
+    Py_DECREF(coefficients);
+    if (!parameters) return NULL;
+    PyObject *result=wheel_load_prepared_call(self,parameters,NULL);
+    Py_DECREF(parameters);
+    return result;
+}
+
+
+/* 当前共同求解的固定机械分区；仅含数值，不持有车辆或物理世界。 */
+typedef struct {
+    double modes[3],sign,slope,columns[3][3];
+} SharedPortPlan;
+typedef struct {
+    int projection_count,plan_count;
+    double gradients[3][9],responses[3][9],factors[3],offset[9],modes[3];
+    double mc[9],ml[9],mg[9],port_response[4][4];
+    SharedPortPlan plans[45];
+} SharedBranch;
+typedef struct {
+    MassCoefficients mass;
+    RotorCoefficients spin;
+    int hard,limited,bias,rolling,downstream,branch_count;
+    double base[9],spin_columns[9][3],dt,capacity,efficiency,synchronizer;
+    double ports[4][9],differential[3][9],damping[3],limits[3];
+    double differential_responses[3][9],radii[4],rolling_coefficients[4],transition;
+    double ratio,share,final_drive,biases[2],inertias[3],down_gradients[3][9],old_omega[3];
+    SharedBranch branches[27];
+} SharedMap;
+static const char *shared_map_name="CoastalDrive.shared_map";
+static void release_shared_map(PyObject *object) {
+    PyMem_Free(PyCapsule_GetPointer(object,shared_map_name));
+}
+static int tuple_fields(PyObject *object,Py_ssize_t count) {
+    if (!PyTuple_Check(object) || PyTuple_GET_SIZE(object)!=count) {
+        PyErr_SetString(PyExc_ValueError,"共同机械数值结构不一致"); return 0;
+    }
+    return 1;
+}
+static PyObject *shared_map_coefficients(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *mass_object,*spin_object,*base,*branches,*ports,*differential,*damping,*limits,*responses,*rolling,*bias;
+    double dt,capacity,efficiency,synchronizer;
+    int hard;
+    static char *names[]={"mass_coefficients","rotor_coefficients","free_base","branches","port_gradients",
+        "differential_gradients","damping","limits","differential_responses","dt","capacity","efficiency",
+        "synchronizer_capacity","hard_gear","rolling","bias",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOOOOOOOddddpOO",names,&mass_object,&spin_object,&base,
+        &branches,&ports,&differential,&damping,&limits,&responses,&dt,&capacity,&efficiency,&synchronizer,&hard,
+        &rolling,&bias)) return NULL;
+    MassCoefficients *mass=PyCapsule_GetPointer(mass_object,mass_coefficients_name);
+    RotorCoefficients *spin=PyCapsule_GetPointer(spin_object,rotor_coefficients_name);
+    if (!mass || !spin) return NULL;
+    if (mass->dimensions!=9 || spin->dimensions!=9) {
+        PyErr_SetString(PyExc_ValueError,"共同分区映射须为实体输入轴九维机制"); return NULL;
+    }
+    SharedMap *data=PyMem_Calloc(1,sizeof(SharedMap));
+    if (!data) return PyErr_NoMemory();
+    data->mass=*mass; data->spin=*spin; data->dt=dt; data->capacity=capacity;
+    for (int j=0; j<9; ++j) {
+        double unit[9]={0.}; unit[j]=1.;
+        rotor_spin_values(spin,unit,data->spin_columns[j]);
+    }
+    data->efficiency=efficiency; data->synchronizer=synchronizer; data->hard=hard;
+    if (!vector(base,data->base,9) || !matrix_values(ports,&data->ports[0][0],hard ? 4 : 3,9)
+        || !matrix_values(differential,&data->differential[0][0],3,9)
+        || !vector(damping,data->damping,3) || !vector(limits,data->limits,3)
+        || !tuple_fields(rolling,3) || !vector(PyTuple_GET_ITEM(rolling,0),data->radii,4)
+        || !vector(PyTuple_GET_ITEM(rolling,1),data->rolling_coefficients,4)
+        || !tuple_fields(bias,7)) goto failed;
+    data->transition=PyFloat_AsDouble(PyTuple_GET_ITEM(rolling,2));
+    data->ratio=PyFloat_AsDouble(PyTuple_GET_ITEM(bias,0));
+    data->share=PyFloat_AsDouble(PyTuple_GET_ITEM(bias,1));
+    data->final_drive=PyFloat_AsDouble(PyTuple_GET_ITEM(bias,2));
+    if (PyErr_Occurred() || !vector(PyTuple_GET_ITEM(bias,3),data->biases,2)) goto failed;
+    data->bias=data->biases[0]>1. || data->biases[1]>1.;
+    if (data->bias && !matrix_values(responses,&data->differential_responses[0][0],3,9)) goto failed;
+    PyObject *old=PyTuple_GET_ITEM(bias,6);
+    if (!PyTuple_Check(old)) { PyErr_SetString(PyExc_ValueError,"实体轴初始速度须为元组"); goto failed; }
+    data->downstream=PyTuple_GET_SIZE(old)!=0;
+    if (data->downstream && (!vector(PyTuple_GET_ITEM(bias,4),data->inertias,3)
+        || !matrix_values(PyTuple_GET_ITEM(bias,5),&data->down_gradients[0][0],3,9)
+        || !vector(old,data->old_omega,3))) goto failed;
+    for (int i=0; i<3; ++i) if (data->damping[i]!=0. && data->limits[i]!=0.) data->limited=1;
+    for (int i=0; i<4; ++i) if (data->rolling_coefficients[i]!=0.) data->rolling=1;
+    if (!PyTuple_Check(branches) || PyTuple_GET_SIZE(branches)<1 || PyTuple_GET_SIZE(branches)>27) {
+        PyErr_SetString(PyExc_ValueError,"三个有限限滑端口的分区数不一致"); goto failed;
+    }
+    data->branch_count=(int)PyTuple_GET_SIZE(branches);
+    for (int i=0; i<data->branch_count; ++i) {
+        SharedBranch *branch=&data->branches[i];
+        PyObject *input=PyTuple_GET_ITEM(branches,i);
+        if (!tuple_fields(input,8)) goto failed;
+        PyObject *partition=PyTuple_GET_ITEM(input,0),*local=PyTuple_GET_ITEM(input,5),*shaft=PyTuple_GET_ITEM(input,7);
+        if (!tuple_fields(partition,3) || !tuple_fields(local,4) || !tuple_fields(shaft,2)
+            || !vector(PyTuple_GET_ITEM(partition,1),branch->offset,9)
+            || !vector(PyTuple_GET_ITEM(partition,2),branch->modes,3)
+            || !vector(PyTuple_GET_ITEM(input,1),branch->mc,9)
+            || !vector(PyTuple_GET_ITEM(input,2),branch->ml,9)
+            || !vector(PyTuple_GET_ITEM(shaft,0),branch->mg,9)) goto failed;
+        PyObject *projections=PyTuple_GET_ITEM(partition,0);
+        if (!PyTuple_Check(projections) || PyTuple_GET_SIZE(projections)>3) {
+            PyErr_SetString(PyExc_ValueError,"限滑投影数不一致"); goto failed;
+        }
+        branch->projection_count=(int)PyTuple_GET_SIZE(projections);
+        for (int j=0; j<branch->projection_count; ++j) {
+            PyObject *projection=PyTuple_GET_ITEM(projections,j);
+            if (!tuple_fields(projection,3) || !vector(PyTuple_GET_ITEM(projection,0),branch->gradients[j],9)
+                || !vector(PyTuple_GET_ITEM(projection,1),branch->responses[j],9)) goto failed;
+            branch->factors[j]=PyFloat_AsDouble(PyTuple_GET_ITEM(projection,2));
+            if (PyErr_Occurred()) goto failed;
+        }
+        PyObject *response=PyTuple_GET_ITEM(local,0);
+        int n=hard ? 4 : 3;
+        if (!tuple_fields(response,n)) goto failed;
+        for (int j=0; j<n; ++j) if (!vector(PyTuple_GET_ITEM(response,j),branch->port_response[j],n)) goto failed;
+        PyObject *plans=PyTuple_GET_ITEM(shaft,1);
+        if (!PyTuple_Check(plans) || PyTuple_GET_SIZE(plans)<1 || PyTuple_GET_SIZE(plans)>45) {
+            PyErr_SetString(PyExc_ValueError,"实体轴有序分区数不一致"); goto failed;
+        }
+        branch->plan_count=(int)PyTuple_GET_SIZE(plans);
+        for (int j=0; j<branch->plan_count; ++j) {
+            SharedPortPlan *plan=&branch->plans[j];
+            PyObject *source=PyTuple_GET_ITEM(plans,j);
+            if (!tuple_fields(source,hard ? 4 : 2) || !vector(PyTuple_GET_ITEM(source,0),plan->modes,3)) goto failed;
+            if (hard) {
+                plan->sign=PyFloat_AsDouble(PyTuple_GET_ITEM(source,1));
+                plan->slope=PyFloat_AsDouble(PyTuple_GET_ITEM(source,2));
+                if (PyErr_Occurred()) goto failed;
+            }
+            if (!matrix_values(PyTuple_GET_ITEM(source,hard ? 3 : 1),&plan->columns[0][0],3,3)) goto failed;
+        }
+    }
+    PyObject *result=PyCapsule_New(data,shared_map_name,release_shared_map);
+    if (!result) goto failed;
+    return result;
+failed:
+    PyMem_Free(data); return NULL;
+}
+static void shared_projection(const SharedBranch *branch,double values[9]) {
+    double terms[9];
+    for (int i=0; i<branch->projection_count; ++i) {
+        for (int a=0; a<9; ++a) terms[a]=branch->gradients[i][a]*values[a];
+        double scale=branch->factors[i]*compensated(terms,9);
+        for (int a=0; a<9; ++a) values[a]=values[a]-scale*branch->responses[i][a];
+    }
+}
+static void shared_branch_free(const SharedMap *data,const SharedBranch *branch,
+                           const double free[9],const double active[3],double projected[9]) {
+    for (int a=0; a<9; ++a) projected[a]=free[a];
+    if (data->limited) {
+        shared_projection(branch,projected);
+        double offset[9];
+        for (int a=0; a<9; ++a) offset[a]=data->bias ? 0. : branch->offset[a];
+        if (data->bias) {
+            for (int i=0; i<3; ++i) if (branch->modes[i]!=0.)
+                for (int a=0; a<9; ++a) offset[a]=offset[a]-data->dt*branch->modes[i]*active[i]*data->differential_responses[i][a];
+            shared_projection(branch,offset);
+        }
+        for (int a=0; a<9; ++a) projected[a]=projected[a]+offset[a];
+    }
+}
+static int shared_branch_feasible(const SharedMap *data,const SharedBranch *branch,
+                              const double end[9],const double active[3]) {
+    double terms[9];
+    int feasible=1;
+    for (int i=0; i<3; ++i) {
+        if (data->damping[i]==0. || active[i]==0.) continue;
+        for (int a=0; a<9; ++a) terms[a]=data->differential[i][a]*end[a];
+        double viscous=data->damping[i]*compensated(terms,9);
+        double torque=branch->modes[i]!=0. ? branch->modes[i]*active[i] : viscous;
+        double bounded=viscous<active[i] ? viscous : active[i];
+        double expected=bounded > -active[i] ? bounded : -active[i];
+        if (fabs(torque-expected)>PORT_TOLERANCE) { feasible=0; break; }
+    }
+    return feasible;
+}
+static int shared_port_state(const SharedMap *data,const SharedBranch *branch,const double free[4],
+                             double brake_capacity,int warm,double values[4],int *index) {
+    double speeds[4],reduced[3],gear_free=0.;
+    const int ports[3]={0,2,3};
+    if (data->hard) {
+        gear_free=free[1]/(data->dt*branch->port_response[1][1]);
+        for (int i=0; i<3; ++i) reduced[i]=free[ports[i]]-branch->port_response[ports[i]][1]*free[1]
+                                                      /branch->port_response[1][1];
+    }
+    for (int visit=-1; visit<branch->plan_count; ++visit) {
+        int k=visit<0 ? warm : visit;
+        if (k<0 || (visit>=0 && k==warm)) continue;
+        const SharedPortPlan *plan=&branch->plans[k];
+        if (data->hard) {
+            if (!shaft_trial(free,branch->port_response,data->dt,data->capacity,brake_capacity,data->efficiency,
+                gear_free,reduced,plan->modes,plan->sign,plan->slope,plan->columns,values,speeds)) continue;
+        } else {
+            double capacities[3]={data->capacity,data->synchronizer,brake_capacity},rhs[3],terms[3],sync_values[3];
+            for (int i=0; i<3; ++i) rhs[i]=plan->modes[i]==0. ? free[i]/data->dt : plan->modes[i]*capacities[i];
+            for (int i=0; i<3; ++i) {
+                for (int j=0; j<3; ++j) terms[j]=plan->columns[j][i]*rhs[j];
+                sync_values[i]=compensated(terms,3);
+            }
+            int feasible=1;
+            for (int i=0; i<3; ++i) {
+                for (int j=0; j<3; ++j) terms[j]=branch->port_response[i][j]*sync_values[j];
+                double speed=free[i]-data->dt*compensated(terms,3);
+                if (fabs(sync_values[i])>capacities[i]+PORT_TOLERANCE
+                    || (plan->modes[i]==0. ? fabs(speed)>PORT_TOLERANCE : plan->modes[i]*speed < -PORT_TOLERANCE)) feasible=0;
+            }
+            if (!feasible) continue;
+            values[0]=sync_values[0]; values[1]=sync_values[1]; values[2]=0.; values[3]=sync_values[2];
+        }
+        *index=k; return 1;
+    }
+    PyErr_SetString(PyExc_ArithmeticError,data->hard ? "实体输入轴/离合/齿轮/制动共同末状态无可行解"
+                                                  : "实体输入轴/离合/同步器/制动共同末状态无可行解");
+    return 0;
+}
+static void shared_axle_torques(const SharedMap *data,const double state[11],double torques[2]) {
+    double terms[9];
+        double axial[3]={0.};
+        if (data->downstream) for (int i=0; i<3; ++i) {
+            for (int a=0; a<9; ++a) terms[a]=data->down_gradients[i][a]*state[a];
+            axial[i]=data->inertias[i]*(compensated(terms,9)-data->old_omega[i])/data->dt;
+        }
+        double output=data->ratio*(state[9]-state[10]);
+        torques[0]=data->share*output-data->final_drive*(data->share*axial[0]+axial[1]);
+        torques[1]=(1-data->share)*output-data->final_drive*((1-data->share)*axial[0]+axial[2]);
+}
+
+static PyObject *shared_map_state(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *coefficients,*input,*loads,*wheel_loads,*supported;
+    int warm;
+    static char *names[]={"coefficients","state","loads","wheel_loads","supported","warm_branch",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOOOi",names,&coefficients,&input,&loads,&wheel_loads,&supported,&warm)) return NULL;
+    SharedMap *data=PyCapsule_GetPointer(coefficients,shared_map_name);
+    if (!data) return NULL;
+    if (warm<0 || warm>=data->branch_count) { PyErr_SetString(PyExc_IndexError,"共同分区索引越界"); return NULL; }
+    double state[11],angular[9],normal[9],load[4],support[4],momentum[3],gyro[3],free[9],terms[9];
+    double active[3],road[4]={0.},end[9],port_values[4]={0.};
+    if (!vector(input,state,data->bias ? 11 : 9) || !tuple_fields(loads,3)
+        || !vector(PyTuple_GET_ITEM(loads,0),angular,9)
+        || !vector(wheel_loads,load,4) || !vector(supported,support,4)) return NULL;
+    PyObject *normal_object=PyTuple_GET_ITEM(loads,1);
+    if (!PyTuple_Check(normal_object)) { PyErr_SetString(PyExc_ValueError,"法向载荷须为元组"); return NULL; }
+    int suspension=PyTuple_GET_SIZE(normal_object)!=0;
+    if (suspension && !vector(normal_object,normal,9)) return NULL;
+    for (int i=0; i<3; ++i) active[i]=data->limits[i];
+    if (data->bias) {
+        double torques[2];
+        shared_axle_torques(data,state,torques);
+        for (int i=0; i<2; ++i) if (data->biases[i]>1.) {
+            double capacity=fabs(torques[i])*(data->biases[i]-1.)/(2*(data->biases[i]+1.));
+            active[i]=capacity<data->limits[i] ? capacity : data->limits[i];
+        }
+    }
+    if (data->rolling) for (int i=0; i<4; ++i) if (support[i]!=0.) {
+        double speed=fabs(data->radii[i]*state[i+5]);
+        double denominator=speed>data->transition ? speed : data->transition;
+        road[i]=data->rolling_coefficients[i]*load[i]*pow(data->radii[i],2.)*state[i+5]/denominator;
+    }
+    rotor_spin_values(&data->spin,state,momentum);
+    gyro[0]=momentum[1]*state[2]-momentum[2]*state[1];
+    gyro[1]=momentum[2]*state[0]-momentum[0]*state[2];
+    gyro[2]=momentum[0]*state[1]-momentum[1]*state[0];
+    known_values(&data->mass,data->base,gyro,angular,suspension ? normal : NULL,data->dt,
+                 data->rolling ? road : NULL,free);
+    int branch_index=-1,port_index=-1;
+    for (int visit=-1; visit<data->branch_count; ++visit) {
+        int index=visit<0 ? warm : visit;
+        if (visit>=0 && index==warm) continue;
+        const SharedBranch *branch=&data->branches[index];
+        double projected[9];
+        shared_branch_free(data,branch,free,active,projected);
+        double port_free[4]={0.};
+        for (int i=0; i<(data->hard ? 4 : 3); ++i) {
+            for (int a=0; a<9; ++a) terms[a]=data->ports[i][a]*projected[a];
+            port_free[i]=compensated(terms,9);
+        }
+        if (!shared_port_state(data,branch,port_free,0.,-1,port_values,&port_index)) return NULL;
+        for (int a=0; a<9; ++a) {
+            double updates[4]={projected[a],-data->dt*port_values[0]*branch->mc[a],
+                -data->dt*port_values[2]*branch->ml[a],-data->dt*port_values[1]*branch->mg[a]};
+            end[a]=compensated(updates,4);
+        }
+        int feasible=shared_branch_feasible(data,branch,end,active);
+        if (feasible) { branch_index=index; break; }
+    }
+    if (branch_index<0) { PyErr_SetString(PyExc_ArithmeticError,"限滑/离合共同末状态无可行分区"); return NULL; }
+    PyObject *result=PyTuple_New(data->bias ? 11 : 9);
+    if (!result) return NULL;
+    for (int a=0; a<(data->bias ? 11 : 9); ++a) {
+        double value=a<9 ? end[a] : port_values[a==9 ? 1 : 2];
+        PyObject *number=PyFloat_FromDouble(value);
+        if (!number) { Py_DECREF(result); return NULL; }
+        PyTuple_SET_ITEM(result,a,number);
+    }
+    return Py_BuildValue("(NOdddii(dddd)(ddd))",result,PyTuple_GET_ITEM(loads,2),
+        port_values[0],port_values[2],port_values[1],branch_index,port_index,
+        road[0],road[1],road[2],road[3],active[0],active[1],active[2]);
+}
+
+
+/* 同一活动分区的本构解析导数，不改变Newton或线搜索判据。 */
+static PyObject *shared_map_jacobian(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *coefficients,*input,*wheel_loads,*supported;
+    int branch_index,port_index;
+    static char *names[]={"coefficients","state","wheel_loads","supported","branch_index","port_index",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOOii",names,&coefficients,&input,&wheel_loads,&supported,
+                                    &branch_index,&port_index)) return NULL;
+    SharedMap *data=PyCapsule_GetPointer(coefficients,shared_map_name);
+    if (!data) return NULL;
+    if (branch_index<0 || branch_index>=data->branch_count) {
+        PyErr_SetString(PyExc_IndexError,"共同分区索引越界"); return NULL;
+    }
+    SharedBranch *branch=&data->branches[branch_index];
+    if (port_index<0 || port_index>=branch->plan_count) {
+        PyErr_SetString(PyExc_IndexError,"共同端口索引越界"); return NULL;
+    }
+    const SharedPortPlan *plan=&branch->plans[port_index];
+    int variables=data->bias ? 11 : 9;
+    double state[11],load[4],support[4],current_spin[3],derivatives[3][11]={{0.}},terms[9];
+    if (!vector(input,state,variables) || !vector(wheel_loads,load,4) || !vector(supported,support,4)) return NULL;
+    rotor_spin_values(&data->spin,state,current_spin);
+    if (data->bias) {
+        double torques[2]; shared_axle_torques(data,state,torques);
+        for (int axle=0; axle<2; ++axle) {
+            double bias=data->biases[axle],weight=axle==0 ? data->share : 1-data->share;
+            double coefficient=(bias-1.)/(2*(bias+1.));
+            double slope=bias>1. && fabs(torques[axle])*coefficient<data->limits[axle]
+                         ? copysign(coefficient,torques[axle]) : 0.;
+            for (int j=0; j<variables; ++j)
+                derivatives[axle][j]=slope*(weight*data->ratio*((double)(j==9)-(double)(j==10))
+                    -(data->downstream && j<9 ? data->final_drive/data->dt
+                      *(weight*data->inertias[0]*data->down_gradients[0][j]
+                        +data->inertias[axle+1]*data->down_gradients[axle+1][j]) : 0.));
+        }
+    }
+    PyObject *columns=PyList_New(variables);
+    if (!columns) return NULL;
+    for (int j=0; j<variables; ++j) {
+        double gyro[3]={0.},input_response[9]={0.},direction[9];
+        if (j<9) {
+            const double *spin=data->spin_columns[j];
+            gyro[0]=spin[1]*state[2]-spin[2]*state[1];
+            gyro[1]=spin[2]*state[0]-spin[0]*state[2];
+            gyro[2]=spin[0]*state[1]-spin[1]*state[0];
+        }
+        if (j<3) {
+            double unit[3]={0.},second[3]; unit[j]=1.;
+            second[0]=current_spin[1]*unit[2]-current_spin[2]*unit[1];
+            second[1]=current_spin[2]*unit[0]-current_spin[0]*unit[2];
+            second[2]=current_spin[0]*unit[1]-current_spin[1]*unit[0];
+            for (int a=0; a<3; ++a) gyro[a]=gyro[a]+second[a];
+        }
+        for (int a=0; a<3; ++a) input_response[a]=gyro[a];
+        mass_response_values(&data->mass,input_response,direction);
+        if (data->rolling && j>=5 && j<9) {
+            int i=j-5;
+            double slope=support[i]!=0. && fabs(data->radii[i]*state[j])<data->transition
+                ? data->rolling_coefficients[i]*load[i]*pow(data->radii[i],2.)/data->transition : 0.;
+            double rolling_input[9]={0.},rolling_direction[9]; rolling_input[j]=-slope;
+            mass_response_values(&data->mass,rolling_input,rolling_direction);
+            for (int a=0; a<9; ++a) direction[a]=direction[a]+rolling_direction[a];
+        }
+        if (data->bias) for (int i=0; i<3; ++i) if (branch->modes[i]!=0.)
+            for (int a=0; a<9; ++a) direction[a]=direction[a]-branch->modes[i]*derivatives[i][j]*data->differential_responses[i][a];
+        shared_projection(branch,direction);
+        double port_direction[4]={0.},dc,dg,dl;
+        for (int i=0; i<(data->hard ? 4 : 3); ++i) {
+            for (int a=0; a<9; ++a) terms[a]=data->ports[i][a]*direction[a];
+            port_direction[i]=compensated(terms,9);
+        }
+        double rhs[3],values[3];
+        if (data->hard) {
+            const int ports[3]={0,2,3};
+            double gear_free=port_direction[1]/branch->port_response[1][1],reduced[3];
+            for (int i=0; i<3; ++i) reduced[i]=port_direction[ports[i]]-branch->port_response[ports[i]][1]*gear_free;
+            rhs[0]=plan->modes[0]==0. ? reduced[0] : 0.;
+            rhs[1]=plan->modes[1]==0. ? reduced[1] : plan->slope*gear_free;
+            rhs[2]=plan->modes[2]==0. ? reduced[2] : 0.;
+            for (int i=0; i<3; ++i) {
+                for (int k=0; k<3; ++k) terms[k]=plan->columns[k][i]*rhs[k];
+                values[i]=compensated(terms,3);
+            }
+            dc=values[0]; dl=values[1];
+            for (int k=0; k<3; ++k) terms[k]=branch->port_response[1][ports[k]]*values[k]/branch->port_response[1][1];
+            dg=gear_free-compensated(terms,3);
+        } else {
+            for (int i=0; i<3; ++i) rhs[i]=plan->modes[i]==0. ? port_direction[i] : 0.;
+            for (int i=0; i<3; ++i) {
+                for (int k=0; k<3; ++k) terms[k]=plan->columns[k][i]*rhs[k];
+                values[i]=compensated(terms,3);
+            }
+            dc=values[0]; dg=values[1]; dl=0.;
+        }
+        PyObject *column=PyTuple_New(variables);
+        if (!column) { Py_DECREF(columns); return NULL; }
+        for (int a=0; a<variables; ++a) {
+            double end_column=a<9 ? data->dt*(direction[a]-dc*branch->mc[a]-dg*branch->mg[a]-dl*branch->ml[a])
+                                 : (a==9 ? dg : dl);
+            PyObject *number=PyFloat_FromDouble((double)(a==j)-end_column);
+            if (!number) { Py_DECREF(column); Py_DECREF(columns); return NULL; }
+            PyTuple_SET_ITEM(column,a,number);
+        }
+        PyList_SET_ITEM(columns,j,column);
+    }
+    return columns;
+}
+
+/* 局部轮力与端口分区共用原共同映射判据，暖模式按每次尝试直接更新。 */
+typedef struct {
+    PyObject *shared_owner;
+    SharedMap *shared;
+    LoadCoefficients load;
+    double brake_gradients[4][9],brakes[4];
+    SharedBranch local[];
+} WheelMap;
+static const char *wheel_map_name="CoastalDrive.wheel_map";
+static void release_wheel_map(PyObject *object) {
+    WheelMap *data=PyCapsule_GetPointer(object,wheel_map_name);
+    Py_DECREF(data->shared_owner);
+    PyMem_Free(data);
+}
+static PyObject *wheel_map_coefficients(PyObject *self,PyObject *args) {
+    PyObject *shared_object,*load_object,*branches,*gradients,*brakes;
+    if (!PyArg_ParseTuple(args,"OOOOO",&shared_object,&load_object,&branches,&gradients,&brakes)) return NULL;
+    SharedMap *shared=PyCapsule_GetPointer(shared_object,shared_map_name);
+    LoadCoefficients *load=PyCapsule_GetPointer(load_object,load_coefficients_name);
+    if (!shared || !load) return NULL;
+    WheelMap *data=PyMem_Calloc(1,sizeof(WheelMap)+4*shared->branch_count*sizeof(SharedBranch));
+    if (!data) return PyErr_NoMemory();
+    data->shared=shared; data->load=*load;
+    if (!matrix_values(gradients,&data->brake_gradients[0][0],4,9) || !vector(brakes,data->brakes,4)) goto failed;
+    for (int b=0; b<shared->branch_count; ++b) {
+        PyObject *input=PyTuple_GET_ITEM(branches,b);
+        PyObject *responses=PyTuple_GET_ITEM(input,5),*all_plans=PyTuple_GET_ITEM(input,6);
+        for (int w=0; w<4; ++w) {
+            SharedBranch *local=&data->local[4*b+w];
+            int n=shared->hard ? 4 : 3;
+            for (int j=0; j<n; ++j)
+                if (!vector(PyTuple_GET_ITEM(PyTuple_GET_ITEM(responses,w),j),local->port_response[j],n)) goto failed;
+            PyObject *plans=PyTuple_GET_ITEM(all_plans,w);
+            local->plan_count=(int)PyTuple_GET_SIZE(plans);
+            for (int j=0; j<local->plan_count; ++j) {
+                PyObject *source=PyTuple_GET_ITEM(plans,j);
+                SharedPortPlan *plan=&local->plans[j];
+                if (!vector(PyTuple_GET_ITEM(source,0),plan->modes,3)) goto failed;
+                if (shared->hard) {
+                    plan->sign=PyFloat_AsDouble(PyTuple_GET_ITEM(source,1));
+                    plan->slope=PyFloat_AsDouble(PyTuple_GET_ITEM(source,2));
+                    if (PyErr_Occurred()) goto failed;
+                }
+                if (!matrix_values(PyTuple_GET_ITEM(source,shared->hard ? 3 : 1),&plan->columns[0][0],3,3)) goto failed;
+            }
+            PyObject *wheel=PyTuple_GET_ITEM(PyTuple_GET_ITEM(input,4),w);
+            if (!vector(PyTuple_GET_ITEM(wheel,2),local->mc,9)) goto failed;
+        }
+    }
+    Py_INCREF(shared_object); data->shared_owner=shared_object;
+    PyObject *result=PyCapsule_New(data,wheel_map_name,release_wheel_map);
+    if (!result) { Py_DECREF(shared_object); goto failed; }
+    return result;
+failed:
+    PyMem_Free(data); return NULL;
+}
+static PyObject *wheel_map_state(PyObject *self,PyObject *args) {
+    PyObject *coefficients,*base_object,*velocity_object,*limits_object,*warm_modes,*tangent_object,*axle_object;
+    int wheel,warm;
+    double fx,fy;
+    if (!PyArg_ParseTuple(args,"OiOOddOiOOO",&coefficients,&wheel,&base_object,&velocity_object,&fx,&fy,
+                         &limits_object,&warm,&warm_modes,&tangent_object,&axle_object)) return NULL;
+    WheelMap *packet=PyCapsule_GetPointer(coefficients,wheel_map_name);
+    if (!packet) return NULL;
+    SharedMap *data=packet->shared;
+    double free[9],velocity[3],active[3],tangent[3],axle[3],terms[9],end[9],values[4];
+    if (!vector(base_object,free,9) || !vector(velocity_object,velocity,3) || !vector(limits_object,active,3)
+        || !vector(tangent_object,tangent,3) || !vector(axle_object,axle,3)) return NULL;
+    const double *rx=packet->load.responses+27*wheel,*ry=rx+9;
+    for (int a=0; a<9; ++a) free[a]=free[a]+data->dt*(rx[a]*fx+ry[a]*fy);
+    int selected=-1,port_index=-1;
+    for (int visit=-1; visit<data->branch_count; ++visit) {
+        int index=visit<0 ? warm : visit;
+        if (visit>=0 && index==warm) continue;
+        SharedBranch *branch=&data->branches[index],*local=&packet->local[4*index+wheel];
+        double projected[9];
+        shared_branch_free(data,branch,free,active,projected);
+        double port_free[4]={0.};
+        int n=data->hard ? 4 : 3;
+        for (int i=0; i<n; ++i) {
+            const double *gradient=i==n-1 ? packet->brake_gradients[wheel] : data->ports[i];
+            for (int a=0; a<9; ++a) terms[a]=gradient[a]*projected[a];
+            port_free[i]=compensated(terms,9);
+        }
+        PyObject *warm_row=PyList_GET_ITEM(warm_modes,index),*old=PyList_GET_ITEM(warm_row,wheel);
+        int mode=old==Py_None ? -1 : (int)PyLong_AsLong(old);
+        if (PyErr_Occurred() || !shared_port_state(data,local,port_free,packet->brakes[wheel],mode,values,&port_index)) return NULL;
+        PyObject *updated=PyLong_FromLong(port_index);
+        if (!updated || PyList_SetItem(warm_row,wheel,updated)<0) return NULL;
+        for (int a=0; a<9; ++a) end[a]=projected[a]-data->dt*(values[0]*branch->mc[a]+values[2]*branch->ml[a]
+                                                       +values[3]*local->mc[a]+values[1]*branch->mg[a]);
+        int feasible=shared_branch_feasible(data,branch,end,active);
+        if (feasible) { selected=index; break; }
+    }
+    if (selected<0) { PyErr_SetString(PyExc_ArithmeticError,"限滑/离合/制动共同末状态无可行分区"); return NULL; }
+    for (int a=0; a<3; ++a) velocity[a]=velocity[a]+data->dt/packet->load.mass*(fx*tangent[a]+fy*axle[a]);
+    PyObject *state=PyTuple_New(9);
+    if (!state) return NULL;
+    for (int a=0; a<9; ++a) {
+        PyObject *number=PyFloat_FromDouble(end[a]);
+        if (!number) { Py_DECREF(state); return NULL; }
+        PyTuple_SET_ITEM(state,a,number);
+    }
+    return Py_BuildValue("(N(ddd)d(ii))",state,velocity[0],velocity[1],velocity[2],values[3],selected,port_index);
+}
+
+
+/* 原四轮接触/阻尼/止挡活动集；分区次序、64轮与精度保持。 */
+static PyObject *suspension_contact_state(PyObject *self,PyObject *args) {
+    PyObject *compression_object,*speed_object,*mobility_object,*touching_object,*stiffness_object;
+    PyObject *compression_damping_object,*extension_damping_object,*stops_object,*geometry_object;
+    double travel,dt;
+    if (!PyArg_ParseTuple(args,"OOOOOOOOddO",&compression_object,&speed_object,&mobility_object,
+        &touching_object,&stiffness_object,&compression_damping_object,&extension_damping_object,
+        &stops_object,&travel,&dt,&geometry_object)) return NULL;
+    double compression[4],speed[4],mobility[16],touching[4],stiffness[16],cd[4],ed[4],stops[4],geometry[4];
+    if (!vector(compression_object,compression,4) || !vector(speed_object,speed,4)
+        || !matrix_values(mobility_object,mobility,4,4) || !vector(touching_object,touching,4)
+        || !matrix_values(stiffness_object,stiffness,4,4) || !vector(compression_damping_object,cd,4)
+        || !vector(extension_damping_object,ed,4) || !vector(stops_object,stops,4)
+        || !vector(geometry_object,geometry,4)) return NULL;
+    double damping[4],bound[4],end[4],forces[4],raw[4],terms[9],partials[9];
+    int modes[4],stop_modes[4],zero_mobility=1,converged=0;
+    for (int i=0; i<16; ++i) if (mobility[i]!=0.) zero_mobility=0;
+    for (int i=0; i<4; ++i) {
+        modes[i]=touching[i]!=0.; damping[i]=speed[i]<0. ? cd[i] : ed[i];
+        stop_modes[i]=compression[i]>travel ? 1 : compression[i]<-travel ? -1 : 0;
+        bound[i]=stop_modes[i]*travel;
+    }
+    for (int iteration=0; iteration<64; ++iteration) {
+        double system[16],rhs[4],equations[64]={0.},values[8],rows[64],solution[8],residual[8],correction[8];
+        Py_ssize_t order[8];
+        for (int i=0; i<16; ++i) system[i]=stiffness[i];
+        for (int i=0; i<4; ++i) {
+            system[4*i+i]+=damping[i]/dt+(stop_modes[i] ? stops[i] : 0.);
+            rhs[i]=damping[i]*compression[i]/dt+(stop_modes[i] ? stops[i]*bound[i] : 0.);
+            for (int j=0; j<4; ++j) {
+                if (!modes[i]) {
+                    equations[(2*i)*8+j]=system[i*4+j];
+                    equations[(2*i+1)*8+j+4]=(double)(i==j);
+                } else {
+                    equations[(2*i)*8+j]=(double)(i==j);
+                    equations[(2*i)*8+j+4]=dt*dt*mobility[i*4+j];
+                    equations[(2*i+1)*8+j]=-system[i*4+j];
+                    equations[(2*i+1)*8+j+4]=(double)(i==j);
+                }
+            }
+            values[2*i]=modes[i] ? geometry[i]-dt*speed[i] : rhs[i];
+            values[2*i+1]=modes[i] ? -rhs[i] : 0.;
+        }
+        if (!lu_values(equations,values,8,rows,order,solution,residual,correction,terms,partials)) return NULL;
+        for (int i=0; i<4; ++i) {end[i]=solution[i]; forces[i]=solution[i+4];}
+        int next_modes[4],next_stops[4],same=1;
+        double next_damping[4];
+        for (int i=0; i<4; ++i) {
+            for (int j=0; j<4; ++j) terms[j]=stiffness[i*4+j]*end[j];
+            terms[4]=damping[i]*(end[i]-compression[i])/dt;
+            terms[5]=stop_modes[i] ? stops[i]*(end[i]-bound[i]) : 0.;
+            raw[i]=exact_sum(terms,6,partials);
+            for (int j=0; j<4; ++j) terms[j]=mobility[i*4+j]*forces[j];
+            double target=geometry[i]-dt*speed[i]-dt*dt*compensated(terms,4);
+            next_modes[i]=modes[i];
+            if (!modes[i] && touching[i]!=0. && end[i]<target-1e-10) next_modes[i]=1;
+            else if (modes[i] && forces[i]<-1e-7) next_modes[i]=0;
+            next_damping[i]=end[i]>=compression[i] ? cd[i] : ed[i];
+            next_stops[i]=end[i]>travel ? 1 : end[i]<-travel ? -1 : 0;
+            if (next_modes[i]!=modes[i] || next_damping[i]!=damping[i] || next_stops[i]!=stop_modes[i]) same=0;
+        }
+        if (PyErr_Occurred()) return NULL;
+        if (same) {
+            if (zero_mobility) for (int i=0; i<4; ++i) {
+                if (modes[i]) {
+                    for (int j=0; j<4; ++j) {
+                        double k=stiffness[i*4+j];
+                        terms[j]=modes[j] ? fma(-k*dt,speed[j],k*geometry[j]) : k*end[j];
+                    }
+                    terms[4]=fma(-damping[i],speed[i],damping[i]*(geometry[i]-compression[i])/dt);
+                    terms[5]=stop_modes[i] ? fma(-stops[i]*dt,speed[i],stops[i]*(geometry[i]-bound[i])) : 0.;
+                    raw[i]=exact_sum(terms,6,partials);
+                }
+                forces[i]=modes[i] ? raw[i] : 0.;
+            }
+            converged=1; break;
+        }
+        for (int i=0; i<4; ++i) {
+            modes[i]=next_modes[i]; damping[i]=next_damping[i]; stop_modes[i]=next_stops[i]; bound[i]=stop_modes[i]*travel;
+        }
+    }
+    if (PyErr_Occurred()) return NULL;
+    if (!converged) {PyErr_SetString(PyExc_ArithmeticError,"悬架接触/阻尼/止挡活动集未收敛"); return NULL;}
+    return Py_BuildValue("((dddd)(dddd)(dddd)(dddd))",end[0],end[1],end[2],end[3],
+        forces[0],forces[1],forces[2],forces[3],raw[0],raw[1],raw[2],raw[3],
+        damping[0],damping[1],damping[2],damping[3]);
+}
+
+static PyMethodDef methods[] = {
+    {"suspension_contact_state", (PyCFunction)suspension_contact_state, METH_VARARGS, "原四轮接触阻尼止挡活动集"},
+    {"wheel_map_coefficients", (PyCFunction)wheel_map_coefficients, METH_VARARGS, "本子步轮胎局部端口的固定系数"},
+    {"wheel_map_state", (PyCFunction)wheel_map_state, METH_VARARGS, "原轮胎试探力与传动制动共同末状态"},
+    {"shared_map_jacobian", (PyCFunction)shared_map_jacobian, METH_VARARGS | METH_KEYWORDS, "原九/十一维共同状态活动分区解析导数"},
+    {"shared_map_coefficients", (PyCFunction)shared_map_coefficients, METH_VARARGS | METH_KEYWORDS, "本共同求解的固定实体轴活动分区"},
+    {"shared_map_state", (PyCFunction)shared_map_state, METH_VARARGS | METH_KEYWORDS, "原九/十一维机械共同末状态映射"},
+    {"known_state", (PyCFunction)known_state_call, METH_VARARGS | METH_KEYWORDS, "原共同自由速度与当前载荷组合"},
+    {"rotor_known_state", (PyCFunction)rotor_known_state_call, METH_VARARGS | METH_KEYWORDS, "原转子陀螺与共同自由速度组合"},
+    {"shaft_brake_plans", (PyCFunction)shaft_plans, METH_VARARGS | METH_KEYWORDS, "原四端口有序活动分区与三维逆矩阵"},
+    {"rotor_coefficients", (PyCFunction)rotor_coefficients_call, METH_VARARGS | METH_KEYWORDS, "本共同求解的只读转子系数"},
+    {"rotor_spin_prepared", (PyCFunction)rotor_spin_prepared_call, METH_VARARGS | METH_KEYWORDS, "复用本共同求解固定转子系数"},
+    {"load_coefficients", (PyCFunction)load_coefficients_call, METH_VARARGS | METH_KEYWORDS, "本共同求解的固定轮端投影"},
+    {"wheel_load_prepared", (PyCFunction)wheel_load_prepared_call, METH_VARARGS | METH_KEYWORDS, "当前轮端力与法向状态的原投影"},
+    {"mass_coefficients", (PyCFunction)mass_coefficients_call, METH_VARARGS | METH_KEYWORDS, "本共同求解的只读逆惯量系数"},
+    {"mass_response_prepared", (PyCFunction)mass_response_prepared_call, METH_VARARGS | METH_KEYWORDS, "复用本共同求解固定逆惯量系数"},
+    {"wheel_load_terms", (PyCFunction)load_terms_call, METH_VARARGS | METH_KEYWORDS, "原四轮力矩与法向投影"},
+    {"rotor_spin", (PyCFunction)rotor_spin_call, METH_VARARGS | METH_KEYWORDS, "原整组转子轴向角动量"},
+    {"mass_response", (PyCFunction)mass_response_call, METH_VARARGS | METH_KEYWORDS, "原实体转子消元及发动机阻力响应"},
+    {"solve_lu", (PyCFunction)solve_lu, METH_VARARGS | METH_KEYWORDS, "小型稠密LU及原精度残差修正"},
+    {"shaft_brake_state", (PyCFunction)shaft_state, METH_VARARGS | METH_KEYWORDS, "四端口有限末状态原方程C内核"},
+    {"dot", (PyCFunction)dot_vector, METH_VARARGS | METH_KEYWORDS, "同次序补偿点积"},
+    {"dot3", (PyCFunction)dot_three, METH_VARARGS | METH_KEYWORDS, "三维补偿点积"},
+    {"cross", (PyCFunction)cross_three, METH_VARARGS | METH_KEYWORDS, "三维叉积"},
+    {"project_vector", (PyCFunction)project_vector, METH_VARARGS | METH_KEYWORDS, "同次序逐端口机械投影"},
+    {NULL, NULL, 0, NULL}
+};
+static struct PyModuleDef module = {PyModuleDef_HEAD_INIT, "_stable_map", NULL, -1, methods};
+PyMODINIT_FUNC PyInit__stable_map(void) {
+    PyObject *result = PyModule_Create(&module);
+    if (!result) return NULL;
+    PyObject *precision = PyFloat_FromDouble(PORT_TOLERANCE);
+    if (!precision) { Py_DECREF(result); return NULL; }
+    if (PyModule_AddObject(result, "PORT_TOLERANCE", precision) < 0) {
+        Py_DECREF(precision); Py_DECREF(result); return NULL;
+    }
+    return result;
+}
