@@ -1,0 +1,78 @@
+........................................................................ [  5%]
+........................................................................ [ 10%]
+........................................................................ [ 16%]
+........................................................................ [ 21%]
+........................................................................ [ 27%]
+........................................................................ [ 32%]
+........................................................................ [ 38%]
+........................................................................ [ 43%]
+........................................................................ [ 49%]
+........................................................................ [ 54%]
+...............................................................F
+================================== FAILURES ===================================
+_____ test_airborne_trial_falls_and_recontacts_without_runtime_reposition _____
+
+    def test_airborne_trial_falls_and_recontacts_without_runtime_reposition():
+>       summary, rows = run_trial("airborne-recontact", True, 1.0)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_tcs_probe.py:58: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tools\physics\tcs_probe.py:92: in run_trial
+    _step(world, vehicle, command)
+tools\physics\reference_ab.py:65: in _step
+    advance_world(world, [(vehicle, command)], substeps=substeps)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+src\tire_drivetrain.py:674: in advance_drivetrain
+    forces[i], modes[i] = solve_wheel(i, gyro)
+                          ^^^^^^^^^^^^^^^^^^^^
+src\tire_drivetrain.py:522: in solve_wheel
+    fx, fy, _error = _solve_force(residual, tolerance=.0001, initial=guess, jacobian=jacobian)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+residual = <function advance_drivetrain.<locals>.solve_wheel.<locals>.residual at 0x0000021BFC50ACF0>
+tolerance = 0.0001, initial = (14331.139179498521, 207.84466896400494)
+jacobian = <function advance_drivetrain.<locals>.solve_wheel.<locals>.jacobian at 0x0000021BFC50B270>
+
+    def _solve_force(residual, tolerance=.001, initial=(0.0, 0.0), jacobian=None):
+        """双精度牛顿求解Fx/Fy；不收敛明确报错，不切换到另一套隐含物理。"""
+        fx, fy = initial
+        epsilon = 0.01
+        for _ in range(20):
+            rx, ry = residual(fx, fy)
+            error = math.hypot(rx, ry)
+            if error < tolerance:
+                return fx, fy, error
+            if jacobian is None:
+                px, py = residual(fx + epsilon, fy)
+                nx, ny = residual(fx - epsilon, fy)
+                a, c = (px - nx) / (2 * epsilon), (py - ny) / (2 * epsilon)
+                px, py = residual(fx, fy + epsilon)
+                nx, ny = residual(fx, fy - epsilon)
+                b, d = (px - nx) / (2 * epsilon), (py - ny) / (2 * epsilon)
+            else:
+                a, b, c, d = jacobian(fx, fy)
+            determinant = a * d - b * c
+            dx, dy = (d * rx - b * ry) / determinant, (a * ry - c * rx) / determinant
+            for exponent in range(12):
+                scale = 0.5 ** exponent
+                candidate_x, candidate_y = fx - scale * dx, fy - scale * dy
+                new_rx, new_ry = residual(candidate_x, candidate_y)
+                if math.hypot(new_rx, new_ry) < error:
+                    fx, fy = candidate_x, candidate_y
+                    break
+            else:
+>               raise ArithmeticError(f"轮胎隐式积分不收敛：残差 {error:.6g} N")
+E               ArithmeticError: 轮胎隐式积分不收敛：残差 12331.1 N
+
+src\wheel_dynamics.py:187: ArithmeticError
+=========================== short test summary info ===========================
+FAILED tests/test_tcs_probe.py::test_airborne_trial_falls_and_recontacts_without_runtime_reposition
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 783 passed, 811 deselected in 4650.59s (1:17:30)

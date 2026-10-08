@@ -1,0 +1,56 @@
+{
+  "baseline": "fa037c4 physics / 462bde6 docs",
+  "source_count": 360,
+  "source_start_hashes_verified_against_current_or_git_bytes": true,
+  "pytest": "783 passed, 1 failed, 811 deselected in 4650.59s",
+  "failure": "tests/test_tcs_probe.py::test_airborne_trial_falls_and_recontacts_without_runtime_reposition",
+  "follow_up_checks": "11 not_run",
+  "stage_gate": "failed",
+  "items": [
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-stage-T2/summary.json",
+      "archive": "summary.json",
+      "sha256": "97657041795d3fff15ed375a8461b33265b2031cc22431634340d8aa16e21e62"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-stage-T2/pytest-remaining.log",
+      "archive": "pytest-remaining.txt",
+      "sha256": "639de5d7ff5f2e5a3bac0634171ef4dc509511ac52878a4b1e7f8a6a17267427"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-stage-T2/ruff.log",
+      "archive": "ruff.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-reuse-audit.json",
+      "archive": "reuse-audit.json",
+      "sha256": "5aa52c22013ae157442e5aa54209747e444b7c51d3288252b4773247fb939103"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-reused-nodes.json",
+      "archive": "reused-nodes.json",
+      "sha256": "9624208e15d0613f6c7ccf0bb445321ce241cfaa4015ed6618dea483597cd498"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-04-stage-launch.py",
+      "archive": "stage-launch.py",
+      "sha256": "c9c42028a2aee5e7c6ee36a3f8ba7c771f1d5cbe907f2b218fb1e21e622d1555"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/capture-recontact.py",
+      "archive": "capture-recontact.py",
+      "sha256": "96de90bcb09a0645c5e60b39b36b7c0b51a182b4274724115530fc4249e16904"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-capture.json",
+      "archive": "captured-wheel.json",
+      "sha256": "17b562bf50407d8359e3c17283b84afd87f19e36b79c3a8345a1e2552c7383e5"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-capture-r4.log",
+      "archive": "reproduction.txt",
+      "sha256": "a9d6140e9d4d87415a585a2f3dd08bdd50357bcfb0cd7ef6153c160b6b47dfcc"
+    }
+  ]
+}

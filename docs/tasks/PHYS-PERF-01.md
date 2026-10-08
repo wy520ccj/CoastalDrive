@@ -109,3 +109,6 @@ Tire constitutive 本构块（2026-10-08，隔离未并入main）：[证据与�
 
 
 主线r8候选包归档（2026-10-08）：[报告](../evidence/PHYS-PERF-01/package-r8/report.md)、[构建/上下文/PYD/产物SHA收据](../evidence/PHYS-PERF-01/package-r8/receipt.json)、[逐件载荷清单](../evidence/PHYS-PERF-01/package-r8/manifest.json)。初次build因复制上下文缺requirements失败，修正后build_apps耗时30.3511912s通过；360项主源码构建前后与T2起始哈希一致，101文件副本指纹与上下文审计相同，两个原生模块在main/副本/包内字节一致。仓库外Game与Simulation各120拍headless成功（1.5338705/1.2547401s），不是render/FPS/体验Gate。初始reader路径错误且运行0项保留；T2 summary快照记录启动fa037c4和运行中状态，pytest日志未归档。
+
+
+主fa T2（2026-10-08）已结束：783 passed/1轮胎落地求解失败/811 deselected，4650.59s，Ruff通过，11专项未跑。[完整失败与360源码核对](../evidence/PHYS-DESIGN-01/recontact-stage-r1/receipt.json)。阶段未通过；真实落地输入最小复现仅0.74s，不再重跑长测来查根因。后续正在修同一隐式力方程，精度不放宽。
