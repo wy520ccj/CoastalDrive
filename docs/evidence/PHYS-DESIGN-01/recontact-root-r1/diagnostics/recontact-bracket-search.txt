@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\physics\PHYS-DESIGN-01-wall\probe-recontact-bracket-search.py", line 11, in <module>
+    stop = source.index('    rx, ry = residual(fx, fy)', start)
+ValueError: substring not found

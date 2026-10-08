@@ -1,0 +1,354 @@
+{
+  "items": [
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-recontact-bracket-search.py",
+      "archive": "diagnostics/probe-recontact-bracket-search.py",
+      "encoding": "byte-copy",
+      "payload_sha256": "985d4a8a0cc088266d87eeb10bcbbb4d2d4c71a25bae64744e8fa5a5b8524a86",
+      "archive_sha256": "985d4a8a0cc088266d87eeb10bcbbb4d2d4c71a25bae64744e8fa5a5b8524a86"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-recontact-force-bracket.py",
+      "archive": "diagnostics/probe-recontact-force-bracket.py",
+      "encoding": "byte-copy",
+      "payload_sha256": "ce4f62dc7bbe39353a8e3c42f2da8c92ea85ee883cba8c2c4f77594cb6d035df",
+      "archive_sha256": "ce4f62dc7bbe39353a8e3c42f2da8c92ea85ee883cba8c2c4f77594cb6d035df"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-recontact-hybrid.py",
+      "archive": "diagnostics/probe-recontact-hybrid.py",
+      "encoding": "byte-copy",
+      "payload_sha256": "d8ff2300ce701186e390b20c69e82431bf72e2b454fcd51695d9ea8616f9f25c",
+      "archive_sha256": "d8ff2300ce701186e390b20c69e82431bf72e2b454fcd51695d9ea8616f9f25c"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-recontact-line-search.py",
+      "archive": "diagnostics/probe-recontact-line-search.py",
+      "encoding": "byte-copy",
+      "payload_sha256": "f08cae8c64ea06ff43640e76a1dc31b3ce41a3e94b1b9c0bfb15ac815c0ca562",
+      "archive_sha256": "f08cae8c64ea06ff43640e76a1dc31b3ce41a3e94b1b9c0bfb15ac815c0ca562"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-recontact-monotone-search.py",
+      "archive": "diagnostics/probe-recontact-monotone-search.py",
+      "encoding": "byte-copy",
+      "payload_sha256": "8c191fcc9e33e47d32797c925f869df50719eac67412bef099737c53b7c0a3e5",
+      "archive_sha256": "8c191fcc9e33e47d32797c925f869df50719eac67412bef099737c53b7c0a3e5"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-recontact-oriented-search.py",
+      "archive": "diagnostics/probe-recontact-oriented-search.py",
+      "encoding": "byte-copy",
+      "payload_sha256": "dffe4a6cd218904186aedbedce7b9d7083bf52a8eeb189e60d73061f74bf28ac",
+      "archive_sha256": "dffe4a6cd218904186aedbedce7b9d7083bf52a8eeb189e60d73061f74bf28ac"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/probe-recontact-predictor.py",
+      "archive": "diagnostics/probe-recontact-predictor.py",
+      "encoding": "byte-copy",
+      "payload_sha256": "ca2c120b2395d8ab792bc8d868d605cc6b432683d62ec23455e7052d531c96c2",
+      "archive_sha256": "ca2c120b2395d8ab792bc8d868d605cc6b432683d62ec23455e7052d531c96c2"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-2s.log",
+      "archive": "diagnostics/recontact-2s.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "f2bffbb730a6fac77e2b497eb287dac140c1dd4572f7c5b671d9a595e8b9902c",
+      "archive_sha256": "f2bffbb730a6fac77e2b497eb287dac140c1dd4572f7c5b671d9a595e8b9902c"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-best-line-search.log",
+      "archive": "diagnostics/recontact-best-line-search.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "fd4c440f069524c8c1e84224e9067a2d9cf32434b823a707bf4494a25a7a21f5",
+      "archive_sha256": "fd4c440f069524c8c1e84224e9067a2d9cf32434b823a707bf4494a25a7a21f5"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-bracket-search-r2.log",
+      "archive": "diagnostics/recontact-bracket-search-r2.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "469adf4234821e45d894e1bb41e2bb820cb791d48a3e119f9327b6b56bfb00a6",
+      "archive_sha256": "469adf4234821e45d894e1bb41e2bb820cb791d48a3e119f9327b6b56bfb00a6"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-bracket-search.log",
+      "archive": "diagnostics/recontact-bracket-search.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "7aff5aaf637ea1dfe063b6d591b7861db08728aac06c22f3612ea355ff1df218",
+      "archive_sha256": "7aff5aaf637ea1dfe063b6d591b7861db08728aac06c22f3612ea355ff1df218"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-capture-r2.log",
+      "archive": "diagnostics/recontact-capture-r2.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "4681979d38d4bdf278d081d46a5aa07c7e5164f6a2c8e41ee02fef26562f4141",
+      "archive_sha256": "4681979d38d4bdf278d081d46a5aa07c7e5164f6a2c8e41ee02fef26562f4141"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-capture-r3.log",
+      "archive": "diagnostics/recontact-capture-r3.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "12794a82d4229411e7a91be322cc79d47c46fef479c026a0a04fd8d69b6a4f81",
+      "archive_sha256": "12794a82d4229411e7a91be322cc79d47c46fef479c026a0a04fd8d69b6a4f81"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-capture-r4.log",
+      "archive": "diagnostics/recontact-capture-r4.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "a9d6140e9d4d87415a585a2f3dd08bdd50357bcfb0cd7ef6153c160b6b47dfcc",
+      "archive_sha256": "a9d6140e9d4d87415a585a2f3dd08bdd50357bcfb0cd7ef6153c160b6b47dfcc"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-capture.log",
+      "archive": "diagnostics/recontact-capture.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "ff04f11ec0dbc316a74533d118e0f5f8bcd28c6de0dd64030cfb818d5326ca97",
+      "archive_sha256": "ff04f11ec0dbc316a74533d118e0f5f8bcd28c6de0dd64030cfb818d5326ca97"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-force-bracket-r2.log",
+      "archive": "diagnostics/recontact-force-bracket-r2.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "604708e78abcc9128d7d77c536af59e4301ed158751fb77390e7c55801534fb7",
+      "archive_sha256": "604708e78abcc9128d7d77c536af59e4301ed158751fb77390e7c55801534fb7"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-force-bracket-r3.log",
+      "archive": "diagnostics/recontact-force-bracket-r3.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "a22987a0932b4d6e608db3e9bd13bb7976e538c6a2ff45d57250b5ea364b05de",
+      "archive_sha256": "a22987a0932b4d6e608db3e9bd13bb7976e538c6a2ff45d57250b5ea364b05de"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-force-bracket-r4.log",
+      "archive": "diagnostics/recontact-force-bracket-r4.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "0bbbb00b71d25ece12b412f29e50309321d07c0de63b43e83543ef4e46d1fc6e",
+      "archive_sha256": "0bbbb00b71d25ece12b412f29e50309321d07c0de63b43e83543ef4e46d1fc6e"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-force-bracket-r5.log",
+      "archive": "diagnostics/recontact-force-bracket-r5.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "bb41c40d65a14c94c10e88f2fe3d83d66e0e3c5306988b5559d46a293127df07",
+      "archive_sha256": "bb41c40d65a14c94c10e88f2fe3d83d66e0e3c5306988b5559d46a293127df07"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-force-bracket.log",
+      "archive": "diagnostics/recontact-force-bracket.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "4d84ccdbc7a358b0987e38ed292e74f767c31bfe73f0282829a647617b062eb7",
+      "archive_sha256": "4d84ccdbc7a358b0987e38ed292e74f767c31bfe73f0282829a647617b062eb7"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-hybrid-r2.log",
+      "archive": "diagnostics/recontact-hybrid-r2.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "7cf7d20a35e9bcb1d2e1263ecd542e78cadebed0f969f08e574305a176e5311a",
+      "archive_sha256": "7cf7d20a35e9bcb1d2e1263ecd542e78cadebed0f969f08e574305a176e5311a"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-hybrid.log",
+      "archive": "diagnostics/recontact-hybrid.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "83b63b82e1c694c5c46a2f5b9758760ec5774251b3ad4d8397dbb18af307a4fc",
+      "archive_sha256": "83b63b82e1c694c5c46a2f5b9758760ec5774251b3ad4d8397dbb18af307a4fc"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-integration-build.log",
+      "archive": "diagnostics/recontact-integration-build.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "6149171bef9197971222ae51e48154fe6f537c73c75b88be25bfc0bcf336e4a3",
+      "archive_sha256": "6149171bef9197971222ae51e48154fe6f537c73c75b88be25bfc0bcf336e4a3"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-monotone-search.log",
+      "archive": "diagnostics/recontact-monotone-search.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "ba7d0e5e80a42f49c3096cf6bab0360e32bddf97217f860691a961c6b57b51fd",
+      "archive_sha256": "ba7d0e5e80a42f49c3096cf6bab0360e32bddf97217f860691a961c6b57b51fd"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-oriented-search.log",
+      "archive": "diagnostics/recontact-oriented-search.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "3707db8f746a69d85e991d78fd40c9127862bc14f6941e9b0fa0de5dd6a06724",
+      "archive_sha256": "3707db8f746a69d85e991d78fd40c9127862bc14f6941e9b0fa0de5dd6a06724"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-predictor-r2.log",
+      "archive": "diagnostics/recontact-predictor-r2.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "1a9d5f36e7ac6bef2131a9707f3022896ea5be8527490ef44da8229e70f28132",
+      "archive_sha256": "1a9d5f36e7ac6bef2131a9707f3022896ea5be8527490ef44da8229e70f28132"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-predictor-r3.log",
+      "archive": "diagnostics/recontact-predictor-r3.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "3696b430e3408f8d04e391dfa03238b2b36924aac7b6841b6b9c1bd11099de5c",
+      "archive_sha256": "3696b430e3408f8d04e391dfa03238b2b36924aac7b6841b6b9c1bd11099de5c"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-predictor-r4.log",
+      "archive": "diagnostics/recontact-predictor-r4.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "9c3d97d1a0452edb20b266a59d8a946d2e4e48ab2d24e459d79e7b4096433762",
+      "archive_sha256": "9c3d97d1a0452edb20b266a59d8a946d2e4e48ab2d24e459d79e7b4096433762"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-predictor-r5.log",
+      "archive": "diagnostics/recontact-predictor-r5.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "9c3d97d1a0452edb20b266a59d8a946d2e4e48ab2d24e459d79e7b4096433762",
+      "archive_sha256": "9c3d97d1a0452edb20b266a59d8a946d2e4e48ab2d24e459d79e7b4096433762"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-predictor.log",
+      "archive": "diagnostics/recontact-predictor.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "1a9d5f36e7ac6bef2131a9707f3022896ea5be8527490ef44da8229e70f28132",
+      "archive_sha256": "1a9d5f36e7ac6bef2131a9707f3022896ea5be8527490ef44da8229e70f28132"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-rolling-T0-r2.log",
+      "archive": "diagnostics/recontact-rolling-T0-r2.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "f41a137786e214037ce51c92be6e715416f9e57a5e204e544580dd5cd34096ef",
+      "archive_sha256": "f41a137786e214037ce51c92be6e715416f9e57a5e204e544580dd5cd34096ef"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-rolling-T0.log",
+      "archive": "diagnostics/recontact-rolling-T0.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "1749ba84c697f9c43426ea30459d4ea390946d78e269d433f718f354e92588d3",
+      "archive_sha256": "1749ba84c697f9c43426ea30459d4ea390946d78e269d433f718f354e92588d3"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-snapshots.log",
+      "archive": "diagnostics/recontact-snapshots.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "40b4688b3206b65bc923877100ac87f352025d1a052240430069e78075708802",
+      "archive_sha256": "40b4688b3206b65bc923877100ac87f352025d1a052240430069e78075708802"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-2s-False.json",
+      "archive": "diagnostics/recontact-2s-False.json.gz",
+      "encoding": "gzip-mtime0",
+      "payload_sha256": "81c12e77dd3b8f05d2e6f01aeb5917dd1d57555be12dc11279acb728e2e46646",
+      "archive_sha256": "1b78b39f05c71fd9e3bad66217e76257f135be31e261540a4132287f94b7ea5d"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-2s-True.json",
+      "archive": "diagnostics/recontact-2s-True.json.gz",
+      "encoding": "gzip-mtime0",
+      "payload_sha256": "397c85e61795a5b161652b4d7b31edd1e58334ef2bf61a977b9493a44d0321e6",
+      "archive_sha256": "c7d063b2156f1f79efc2955bfcdcf88270832f551bb66b7241b0995a0f686a7b"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-capture.json",
+      "archive": "diagnostics/recontact-capture.json",
+      "encoding": "byte-copy",
+      "payload_sha256": "17b562bf50407d8359e3c17283b84afd87f19e36b79c3a8345a1e2552c7383e5",
+      "archive_sha256": "17b562bf50407d8359e3c17283b84afd87f19e36b79c3a8345a1e2552c7383e5"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-snapshot-comparison.json",
+      "archive": "diagnostics/recontact-snapshot-comparison.json",
+      "encoding": "byte-copy",
+      "payload_sha256": "75a6a314e78e68f904de3a95d8c715dbb2c9594bc9357620ed3fe58e9330dfda",
+      "archive_sha256": "75a6a314e78e68f904de3a95d8c715dbb2c9594bc9357620ed3fe58e9330dfda"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/recontact-snapshots.json",
+      "archive": "diagnostics/recontact-snapshots.json.gz",
+      "encoding": "gzip-mtime0",
+      "payload_sha256": "35fdb664a82a06a02c01b1b85f47f4d8b6ab796bf612b92aaba23c11415de8ec",
+      "archive_sha256": "dd82e61640af40464883af853df08f84fcfc105ff86da3922b4bedfbc56eb622"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/measure-recontact-snapshots.py",
+      "archive": "diagnostics/measure-recontact-snapshots.py",
+      "encoding": "byte-copy",
+      "payload_sha256": "213149cc816a27d151bc71a261501fd22df144bcfeb7c14f21c48b428f7e8f6a",
+      "archive_sha256": "213149cc816a27d151bc71a261501fd22df144bcfeb7c14f21c48b428f7e8f6a"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/measure-recontact.py",
+      "archive": "diagnostics/measure-recontact.py",
+      "encoding": "byte-copy",
+      "payload_sha256": "723e4040bd1299000c0dcc71ba435557cd062bf6dd8bbe0fb24af9632dfdb8ad",
+      "archive_sha256": "723e4040bd1299000c0dcc71ba435557cd062bf6dd8bbe0fb24af9632dfdb8ad"
+    },
+    {
+      "source": "logs/physics/PHYS-DESIGN-01-wall/run-recontact-T1.py",
+      "archive": "diagnostics/run-recontact-T1.py",
+      "encoding": "byte-copy",
+      "payload_sha256": "cefffb5c109f595fee2fa41c35fe6eb5e6bf7116a101481d6fee81feb1e88223",
+      "archive_sha256": "cefffb5c109f595fee2fa41c35fe6eb5e6bf7116a101481d6fee81feb1e88223"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-05-recontact-T1/headless-0.log",
+      "archive": "validation/headless-0.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "b1585c3205d0a877ed96d1c3dd46dc2a108d20744d55b8c8d35f5cba8161ef5a",
+      "archive_sha256": "b1585c3205d0a877ed96d1c3dd46dc2a108d20744d55b8c8d35f5cba8161ef5a"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-05-recontact-T1/headless-17.log",
+      "archive": "validation/headless-17.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "b1585c3205d0a877ed96d1c3dd46dc2a108d20744d55b8c8d35f5cba8161ef5a",
+      "archive_sha256": "b1585c3205d0a877ed96d1c3dd46dc2a108d20744d55b8c8d35f5cba8161ef5a"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-05-recontact-T1/headless-23.log",
+      "archive": "validation/headless-23.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "b1585c3205d0a877ed96d1c3dd46dc2a108d20744d55b8c8d35f5cba8161ef5a",
+      "archive_sha256": "b1585c3205d0a877ed96d1c3dd46dc2a108d20744d55b8c8d35f5cba8161ef5a"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-05-recontact-T1/pytest.log",
+      "archive": "validation/pytest.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "06d6e2edaf16a056b58ec14965e864a49125e870cd997fd5ab9034017abf58dd",
+      "archive_sha256": "06d6e2edaf16a056b58ec14965e864a49125e870cd997fd5ab9034017abf58dd"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-05-recontact-T1/ruff.log",
+      "archive": "validation/ruff.txt",
+      "encoding": "byte-copy",
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "source": "logs/validation/PHYS-INTEGRATE-05-recontact-T1/summary.json",
+      "archive": "validation/summary.json",
+      "encoding": "byte-copy",
+      "payload_sha256": "3e1ba2c4d577b7b4bf367a67433aa0a72c495c00a3f366846bb569fdcf0e7ee2",
+      "archive_sha256": "3e1ba2c4d577b7b4bf367a67433aa0a72c495c00a3f366846bb569fdcf0e7ee2"
+    },
+    {
+      "source": "src/wheel_dynamics.py",
+      "archive": "source/src/wheel_dynamics.py",
+      "encoding": "byte-copy",
+      "payload_sha256": "587e0d351ae34389f859751cdee353b83b007d26419d0555b80128fa42747525",
+      "archive_sha256": "587e0d351ae34389f859751cdee353b83b007d26419d0555b80128fa42747525"
+    },
+    {
+      "source": "src/tire_drivetrain.py",
+      "archive": "source/src/tire_drivetrain.py",
+      "encoding": "byte-copy",
+      "payload_sha256": "2dec9a00c60f6d63c2d17d46656d85e6a9841a9b8a650c1108a1444d564bf9d3",
+      "archive_sha256": "2dec9a00c60f6d63c2d17d46656d85e6a9841a9b8a650c1108a1444d564bf9d3"
+    },
+    {
+      "source": "tests/test_tcs_probe.py",
+      "archive": "source/tests/test_tcs_probe.py",
+      "encoding": "byte-copy",
+      "payload_sha256": "2fe535421a54392db85cd2b308394e3706c1afe014ae6d998ff3b6ab339f1d72",
+      "archive_sha256": "2fe535421a54392db85cd2b308394e3706c1afe014ae6d998ff3b6ab339f1d72"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+RECENTER (12955.8497974247, -12.709585752312773) 0.0720774415396743 (8.012749486364715, -0.007709405228474869) [(-0.00017879807270696816, 1.7939170825869737e-06, 5.064093072959708e-06), (1.7852529349429656e-06, -7.951687133105534e-06, -1.7102950048576465e-06)]
+Traceback (most recent call last):
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\physics\PHYS-DESIGN-01-wall\probe-recontact-predictor.py", line 28, in <module>
+    summary, rows = run_trial('airborne-recontact', True, 1.)
+                    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\tools\physics\tcs_probe.py", line 92, in run_trial
+    _step(world, vehicle, command)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\tools\physics\reference_ab.py", line 65, in _step
+    advance_world(world, [(vehicle, command)], substeps=substeps)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\world_step.py", line 46, in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\vehicle.py", line 289, in advance_physics
+    coupled_contacts = self.tires.advance(
+        self._chassis, self._wheel_contacts, angles,
+    ...<4 lines>...
+        substeps=tire_substeps, accumulate=accumulate,
+    )
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\vehicle_tires.py", line 193, in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+        wheel_frames, projected, powertrain.engine_torque_request, powertrain.capacity,
+    ...<14 lines>...
+            if powertrain.downstream_active else (), suspension=normal_system if suspension is not None else None,
+        rolling_coefficients=rolling_coefficients)
+  File "<string>", line 594, in advance_drivetrain
+  File "<string>", line 442, in solve_wheel
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\wheel_dynamics.py", line 187, in _solve_force
+    raise ArithmeticError(f"��̥��ʽ���ֲ��������в� {error:.6g} N")
+ArithmeticError: ��̥��ʽ���ֲ��������в� 884.376 N

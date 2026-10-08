@@ -1,0 +1,38 @@
+Traceback (most recent call last):
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\physics\PHYS-DESIGN-01-wall\probe-recontact-hybrid.py", line 30, in <module>
+    summary, rows = run_trial('airborne-recontact', enabled, 2.)
+                    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\tools\physics\tcs_probe.py", line 92, in run_trial
+    _step(world, vehicle, command)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\tools\physics\reference_ab.py", line 65, in _step
+    advance_world(world, [(vehicle, command)], substeps=substeps)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\world_step.py", line 46, in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\vehicle.py", line 289, in advance_physics
+    coupled_contacts = self.tires.advance(
+        self._chassis, self._wheel_contacts, angles,
+    ...<4 lines>...
+        substeps=tire_substeps, accumulate=accumulate,
+    )
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\vehicle_tires.py", line 193, in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+        wheel_frames, projected, powertrain.engine_torque_request, powertrain.capacity,
+    ...<14 lines>...
+            if powertrain.downstream_active else (), suspension=normal_system if suspension is not None else None,
+        rolling_coefficients=rolling_coefficients)
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\tire_drivetrain.py", line 678, in advance_drivetrain
+    forces[i], modes[i] = solve_wheel(i, gyro)
+                          ~~~~~~~~~~~^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\src\tire_drivetrain.py", line 523, in solve_wheel
+    fx, fy, _error = _solve_rolling_force(residual, jacobian, tire_grip(frame.load, frame.mu, car),
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                         tolerance=.0001, initial=guess)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\physics\PHYS-DESIGN-01-wall\probe-recontact-hybrid.py", line 25, in <lambda>
+    tire_drivetrain._solve_rolling_force = lambda residual, jacobian, grip, tolerance=.001, initial=(0.,0.): wheel_dynamics._solve_safeguarded_force(residual, tolerance, initial, jacobian, grip)
+                                                                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 33, in _solve_safeguarded_force
+ArithmeticError: ��̥��ʽ���ֲ��������в� 11180.1 N

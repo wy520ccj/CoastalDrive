@@ -137,3 +137,6 @@ T2-r3首项旧manifold断言失败：真实首撞在第16拍，旧测试写死�
 
 
 墙端口精度修复归档（2026-10-08，fa037c4）：[报告](../evidence/PHYS-DESIGN-01/wall-port-precision-r1/report.md)、[哈希收据](../evidence/PHYS-DESIGN-01/wall-port-precision-r1/receipt.json)、[逐项清单与压缩载荷SHA](../evidence/PHYS-DESIGN-01/wall-port-precision-r1/manifest.json)。保存的1145拍失败输入在100位Decimal复核下以FMA保留乘积低位、补偿求和和末次FMA重建端口末速度，原方程/30轮/精度门槛不变，7轮收敛；两组48拍Snapshot有53,218个数值差异、最大2.91e-11、非数值差异0，不标作逐字段相同。T0 74 passed/13.85s；T1 767 passed/189.65s、Ruff/三seed通过（摘要启动HEAD dff36ee，运行时源码/fixture未提交，不能写成fa037c4启动）。PHYS-INTEGRATE-04-stage-T2 session63990启动summary与当前360项源指纹一致，正在运行；起始811节点复用，余1320节点和11专项。此次未复制仍写入的pytest日志，未跑测试/物理。
+
+
+落地隐式力修复（2026-10-08）：[报告与收据](../evidence/PHYS-DESIGN-01/recontact-root-r1/report.md)。滚动接触力以实际摩擦界括根并消去横向变量，仍解原残差，1e-4N不变；20纵向/每步20横向是新的求解安排，旧轨迹不冒充相同。真实落体回弹至125/126拍后再接地；窗口延至2s，末60拍四轮持续支撑断言通过。358项T0与整合876项T1/Ruff/三种子通过，360源码稳定；主阶段/T3/实时与人工未完成。

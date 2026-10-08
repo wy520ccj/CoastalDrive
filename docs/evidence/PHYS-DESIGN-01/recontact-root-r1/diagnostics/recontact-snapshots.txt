@@ -1,0 +1,1 @@
+[{"traffic": 0, "new_seconds": 0.7021669999994629, "old_seconds": 0.6321119999993243, "all_fields_equal": false}, {"traffic": 8, "new_seconds": 6.265035499998703, "old_seconds": 4.339838000000782, "all_fields_equal": false}]

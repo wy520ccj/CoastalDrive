@@ -1,0 +1,10 @@
+{
+  "validation": "876 passed / Ruff / 3 seeds",
+  "source_count": 360,
+  "source_hashes_equal": true,
+  "items": 50,
+  "report_sha256": "cb54f6f58c3ed0a9e906ee75c54bd9d5457927c9e00f253a10f1e3986ecdf8e5",
+  "stage_gate": "pending",
+  "human_gate": "pending",
+  "manifest": "manifest.json"
+}

@@ -1,0 +1,40 @@
+..............FF........................................................ [ 20%]
+........................................................................ [ 40%]
+........................................................................ [ 60%]
+........................................................................ [ 80%]
+......................................................................   [100%]
+================================== FAILURES ===================================
+_____ test_airborne_trial_falls_and_recontacts_without_runtime_reposition _____
+
+    def test_airborne_trial_falls_and_recontacts_without_runtime_reposition():
+        summary, rows = run_trial("airborne-recontact", True, 1.0)
+        assert rows[-1]["state.position.2"] < rows[0]["state.position.2"]
+        assert all(seconds > 0 for seconds in summary["airborne_wheel_seconds"])
+        assert all(count >= 1 for count in summary["recontact_counts"])
+>       assert all(rows[-1][f"state.wheel_dynamics.{wheel}.sample_support"] for wheel in range(4))
+E       assert False
+E        +  where False = all(<generator object test_airborne_trial_falls_and_recontacts_without_runtime_reposition.<locals>.<genexpr> at 0x000001A2DAD2DC60>)
+
+tests\test_tcs_probe.py:62: AssertionError
+_______ test_matrix_preserves_dynamic_contact_fields_after_real_landing _______
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-458/test_matrix_preserves_dynamic_0')
+
+    def test_matrix_preserves_dynamic_contact_fields_after_real_landing(tmp_path):
+        output = tmp_path / "airborne"
+        report = run_matrix(output, 1, ("airborne-recontact",))
+        assert report["status"] == "completed"
+        for label in ("A", "B"):
+            with (output / f"airborne-recontact-{label}.csv").open(encoding="utf-8", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            assert len(rows) == 121
+            assert all(f"state.wheel_contacts.{wheel}.contact_point.2" in rows[-1] for wheel in range(4))
+>           assert all(rows[-1][f"state.wheel_contacts.{wheel}.contact_point.2"] for wheel in range(4))
+E           assert False
+E            +  where False = all(<generator object test_matrix_preserves_dynamic_contact_fields_after_real_landing.<locals>.<genexpr> at 0x000001A2DBB96F20>)
+
+tests\test_tcs_probe.py:74: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_tcs_probe.py::test_airborne_trial_falls_and_recontacts_without_runtime_reposition
+FAILED tests/test_tcs_probe.py::test_matrix_preserves_dynamic_contact_fields_after_real_landing
+2 failed, 356 passed in 5.27s
