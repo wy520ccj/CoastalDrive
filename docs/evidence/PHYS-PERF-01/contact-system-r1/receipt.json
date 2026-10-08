@@ -1,0 +1,17 @@
+{
+  "baseline_commit": "ab204a9a5880d365c489994f3727faf27ff3c637",
+  "source_files_count": 354,
+  "source_hashes_unchanged": true,
+  "source_hashes_start_sha256": "706320b38e60a300403185714d7c1d324db92da6e66a9df8518f489143430796",
+  "source_hashes_end_sha256": "706320b38e60a300403185714d7c1d324db92da6e66a9df8518f489143430796",
+  "manifest_sha256": "a062ca267fe8032a24edd8ffc855885cc944bb13a313ff9fb4078adf2709247f",
+  "archive_payloads_verified": 32,
+  "optional_inputs": {
+    "contact_system_snapshots_script_present": false
+  },
+  "validation": {
+    "T0": "Ruff I001 import-order failure; pytest not run",
+    "T1": "Ruff passed; pytest 552 passed in 27.89s; 3 headless seeds passed"
+  },
+  "physical_execution_during_archive": false
+}

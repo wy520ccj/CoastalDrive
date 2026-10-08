@@ -1,0 +1,50 @@
+{
+  "algorithm": "SHA-256",
+  "entries": [
+    {
+      "path": "b/_contact_system_old.cp314-win_amd64.pyd",
+      "size": 45056,
+      "sha256": "eb77a56abc03e590d31368009087c32af5f754c7f51dffa783a1dfcb59b65936"
+    },
+    {
+      "path": "baseline.c",
+      "size": 49249,
+      "sha256": "cf87b3397241547edd0e4cec6f162a006fd2e6d08680e8e44150e18bec4fa315"
+    },
+    {
+      "path": "build.log",
+      "size": 3924,
+      "sha256": "7a519e21b661207f1edb1435da9e0c2016c6a2a3e2854caee77642038c456cdc"
+    },
+    {
+      "path": "original-wheel-contact-kernels.c",
+      "size": 49253,
+      "sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b"
+    },
+    {
+      "path": "receipt.json",
+      "size": 1893,
+      "sha256": "4fab18836ac39610d1c55d9b6fbe367a3ccf47ceef54dd13d3968707761d2c41"
+    },
+    {
+      "path": "setup.py",
+      "size": 230,
+      "sha256": "7a4465cb4c089b51e0cccd45d8057cc3bc2beff05acf734f294c98686de53f23"
+    },
+    {
+      "path": "t/Release/_contact_system_old.cp314-win_amd64.exp",
+      "size": 976,
+      "sha256": "f80c68d364277ad34f8827eeff8dc8b347dd92dd68dd3ae53278e618ac22a0ba"
+    },
+    {
+      "path": "t/Release/_contact_system_old.cp314-win_amd64.lib",
+      "size": 2228,
+      "sha256": "2462566b0055d874772b735a2ad630b24184f86ef3b8cc57d34954d0e3e5e71e"
+    },
+    {
+      "path": "t/Release/baseline.obj",
+      "size": 354253,
+      "sha256": "660a2429d91e0fbcc0f33ba5d6edf0313c39c7c6ce1dedf0cd96e5f120c2e6ff"
+    }
+  ]
+}

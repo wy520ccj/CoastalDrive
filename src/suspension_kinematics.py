@@ -3,8 +3,8 @@
 import math
 from dataclasses import dataclass, replace
 
+from wheel_contact_kernels import cylinder_contact_system, rotated_path
 from wheel_contact_kernels import cylinder_endpoint as endpoint_kernel
-from wheel_contact_kernels import rotated_path
 
 from rotor_dynamics import cross, dot
 from suspension_geometry import BoxSurface, CylinderSurface, sphere_box_entry
@@ -105,6 +105,10 @@ def finite_contact_system(system, velocity, angular, dt):
     if system.kinematics is None:
         return system  # 纯机械台架的输入明确为固定线性雅可比。
     axis, angle, scale = rotation_path(angular, dt, system.angular_damping)
+    if all(plane is None or isinstance(plane.surface, CylinderSurface) for plane in system.kinematics):
+        gradients, alignment, touching = cylinder_contact_system(
+            system.kinematics, axis, angle, scale, velocity, angular, dt, face_extension_difference)
+        return replace(system, gradients=gradients, alignment=alignment, touching=touching)
     gradients, alignment, touching = [], [], []
     for plane in system.kinematics:
         if plane is None:
