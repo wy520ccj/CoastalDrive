@@ -1,10 +1,10 @@
 # 当前进度
 
-更新：2026-10-07。**独立包/公开基线：0.8.3 RADIO-02，包含UI-NOTICE-FIX；当前main源码在物理开发中。** 源码来自Visual Identity v1开发线，本轮用户明确确认其作为主版本并授权整理/提交/推送。根目录保留试玩.cmd，阶段入口归档到launchers/archive，原默认build与早期smoke目录分别集中到builds/archive和logs/archive。CoastalDrive-VI-v1工作树同步当前主版本内容；旧main保留于上级备份与Git历史。DS实验档案仍为只读参考。
+更新：2026-10-08。**独立包/公开基线：0.8.3 RADIO-02，包含UI-NOTICE-FIX；当前main源码在物理开发中。** 源码来自Visual Identity v1开发线，本轮用户明确确认其作为主版本并授权整理/提交/推送。根目录保留试玩.cmd，阶段入口归档到launchers/archive，原默认build与早期smoke目录分别集中到builds/archive和logs/archive。CoastalDrive-VI-v1工作树同步当前主版本内容；旧main保留于上级备份与Git历史。DS实验档案仍为只读参考。
 
 ## 当前阶段
 
-- **2026-10-08当前施工状态**：main现HEAD `cb15abb`，本次T2-r2原summary保留启动指纹`01b99f3`。T2-r2最终失败：pytest报告267通过/1失败、957 deselected、3740.66s；失败节点为`test_h1_vehicle.py::test_collision_wall_stops_car_without_tunneling`，后续11项not_run。失败输出只记录共同末状态超过30轮及误差1.02141e-14，不推断根因，待最小复现；阶段未通过。详情见[失败证据](evidence/PHYS-PERF-01/stage-collision-r1/report.md)。隔离wheel-derivatives T1仍独立运行，不纳入此主目录结果。实时性能、T3、人工驾驶Gate未完成，未推送。下列记录保留施工时点历史。
+- **2026-10-08当前施工状态**：main整合性能块dff36ee；原T2-r2失败267/1及11专项未跑完整保留。真实撞墙第1145拍共享输入已保存，独立重放相同30轮残差；端口乘积低位补偿与fma重建末速度保持原30轮/ULP/1e-14/端口精度，100位独立算术误差5.67e-15→9.54e-18。原墙测试、保存输入/map160等74项T0与整合767项T1/Ruff/三seed通过。两48拍全Snapshot比较只有数值差异（最大2.91e-11），原始轨迹已保存，不再声称逐字节相同。阶段重审复用811节点、余1320/11专项待续跑；实时性能、T3、人工Gate仍未完成，未推送。见PHYS-PERF-01任务包及原[失败证据](evidence/PHYS-PERF-01/stage-collision-r1/report.md)。下列记录保留历史时点。
 
 - [PHYS-DESIGN-01](tasks/PHYS-DESIGN-01.md)施工线③工程功能/T1完成；79b32d2相对几何修复保持原精度，a7649d4只修原已穿入护栏的路肩测试摆位，深穿透失败保留。机械T2-r11实际32通过/1高速车流共同求解失败（2436.80s），后14检查未跑；旧版累计628不同有效节点；已捕获3333拍/原实现单步完全复现，真实shape bounds修复456项T1与三种子通过，长轨迹/阶段仍待恢复。隔离目录C:/Users/15120/.codex/worktrees/gr86-physics/CoastalDrive、codex/phys-real-01持续推进：④[GR86实车](tasks/PHYS-REAL-01.md)98字段工程r3及参考/实车各12工况已归档a0c644e；⑤[传感器/延迟ESKF](tasks/PHYS-EST-01.md)c23feaa；⑥[20Hz实验/精确重放](tasks/PHYS-RESEARCH-01.md)0afe6b1；⑦[性能](tasks/PHYS-PERF-01.md)已本地提交常量/几何复用aa4368c、解析Jacobian70d8b94、严格浮点原生内核7850870。原生最终511项相关T1及三种子通过，单/九车48拍完整快照与原基线相同；候选表面复用15457d7及有限面内核8be0a50已本地提交；胎冠点/边内核983e978已本地提交；候选bounds修复及本物理子步共同几何/紧致Hull边界/原三角面窗口，474项最终T1和三种子通过，健康48拍完整快照相同，准备归档提交。九车短测原50.961→edge14.195→正确bounds全读42.162→最后复用16.536s，仍远未达到实时预算，不能当作FPS。旧候选包r3仅projection前两模式120拍headless通过；离屏渲染首项90s超时、后两项未跑。隔离源码尚未合并，未推送；最终产品包、T3、前台性能与用户两模式驾驶待完成。
 
