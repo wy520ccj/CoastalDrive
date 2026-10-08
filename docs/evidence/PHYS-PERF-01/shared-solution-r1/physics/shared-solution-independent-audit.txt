@@ -1,0 +1,81 @@
+........................................................................ [ 19%]
+........................................................................ [ 38%]
+........................................................................ [ 57%]
+........................................................................ [ 77%]
+...................................................F
+================================== FAILURES ===================================
+_______ test_native_loaded_axle_jacobian_matches_independent_difference _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001ABDD033BB0>
+
+    def test_native_loaded_axle_jacobian_matches_independent_difference(monkeypatch):
+        original = tire_drivetrain.shared_solution
+        errors = []
+    
+        def audited_solve(coefficients, guess, loads, wheel_loads, supported, warm, bias_ports):
+            if len(errors) < 16 and all(load > 0. for load in wheel_loads):
+                # GR86����ʵ�޻��˿�Ҳ��δ֪������ͬһϵ�����˶�ʵ������״̬��
+                state = tuple(guess) + tuple(bias_ports)
+    
+                def mapped(candidate):
+                    return tire_drivetrain.shared_map_state(
+                        coefficients, candidate, loads, wheel_loads, supported, warm)
+    
+                partition = mapped(state)[5:7]
+                columns = tire_drivetrain.shared_map_jacobian(
+                    coefficients, state, wheel_loads, supported, *partition)
+                numeric, partitions = [], []
+                for j in range(len(state)):
+                    positive, negative = list(state), list(state)
+                    positive[j] += .0001
+                    negative[j] -= .0001
+                    high, low = mapped(positive), mapped(negative)
+                    partitions.extend((high[5:7], low[5:7]))
+                    numeric.append(tuple(float(i == j) - (high[0][i]-low[0][i])/.0002 for i in range(len(state))))
+                if all(candidate == partition for candidate in partitions):
+                    error = max(abs(columns[j][i] - numeric[j][i]) / max(1., abs(columns[j][i]), abs(numeric[j][i]))
+                                for i in range(len(state)) for j in range(len(state)))
+                    assert error < 2e-6
+                    errors.append(error)
+            return original(coefficients, guess, loads, wheel_loads, supported, warm, bias_ports)
+    
+        monkeypatch.setattr(tire_drivetrain, "shared_solution", audited_solve)
+        sim = Simulation(17, track="coastal", traffic_count=0, config=GR86_DESIGN,
+                         input_config=GAME_INPUT)
+        try:
+            for tick in range(24):
+>               sim.step(Control(throttle=.3, steering=.02 if tick >= 12 else 0.))
+
+tests\test_drivetrain_jacobian.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\simulation.py:738: in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+src\tire_drivetrain.py:685: in advance_drivetrain
+    state, end_velocity, clutch, loss, gear_reaction = shared(state)
+                                                       ^^^^^^^^^^^^^
+src\tire_drivetrain.py:312: in shared
+    end, end_velocity, clutch, loss, gear_reaction, shared_branch, shared_port_index, road_torques, active_limits, bias_ports = shared_solution(
+tests\test_drivetrain_jacobian.py:41: in audited_solve
+    return original(coefficients, guess, loads, wheel_loads, supported, warm, bias_ports)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+logs\physics\PHYS-PERF-01\audit-shared-solution-independent.py:32: in audited
+    original=space['original_factory'](scope)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+scope = {'bias_ports': (0.0, 0.0), 'coefficients': <capsule object "CoastalDrive.shared_map" at 0x000001ABDEE7E750>, 'errors': [], 'guess': (0.0, 0.0, 0.0, 94.24777960769379, 0.0, 0.0, ...), ...}
+
+>   ???
+E   KeyError: 'shared_branch'
+
+127c1d0 frozen original shared root:2: KeyError
+=========================== short test summary info ===========================
+FAILED tests/test_drivetrain_jacobian.py::test_native_loaded_axle_jacobian_matches_independent_difference
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 339 passed in 1.60s

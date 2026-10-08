@@ -87,3 +87,6 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 
 
 圆柱查询前置数值实验（2026-10-07，拒绝）：[证据与收据](../evidence/PHYS-PERF-01/cylinder-query-experiment/receipt.json)。8,518次调用/10,012条射线的数值与输入别名一致，T0为31项/Ruff通过；标准单/8车48拍Snapshot与悬架基线相同。ABBA四条完整Snapshot均相同且epoch归零，但新旧CPU时间分别为6.609/6.219与5.953/6.672s，无稳定节省，未运行T1。无性能Gate结论；生产源码恢复至e5765ed字节。
+
+
+隔离 shared-solution 数值块（2026-10-08，未并入main）：[证据与收据](../evidence/PHYS-PERF-01/shared-solution-r1/receipt.json)。严格保留30轮、原角更新/端口容差、8次线搜索、fsum及暖分区更新，旧8维Python求解保留。T0 373 passed/Ruff；T1 645 passed/81.36s、Ruff及三种子10.293/10.465/10.266s通过。独立旧127 C基线审计r4为10,661次映射/Jacobian/LU调用全字段/暖态一致；r1 Keycross、r2旧LU零调用、independent-r1 wrapper scope错误及后续修正日志均保留，属观测范围问题。两模式48拍Snapshot逐字段同主127/map160基线，短时0.8265/5.5733秒仅诊断。测试观测接到真实shared_solution系数包，16样本/2e-6门槛未变；tire_drivetrain同步的map160三行来自主线已验证修复。当前T2等主线继续，尚无profile/实时性能Gate。

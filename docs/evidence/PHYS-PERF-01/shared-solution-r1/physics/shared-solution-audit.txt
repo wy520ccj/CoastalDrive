@@ -1,0 +1,53 @@
+........................................................................ [ 19%]
+........................................................................ [ 38%]
+........................................................................ [ 57%]
+........................................................................ [ 77%]
+..............F
+================================== FAILURES ===================================
+_ test_real_shaft_joint_tire_brake_and_limited_differential_balance[-1-engaged-False-0.0] _
+
+share = 0.0, compliance = False, mode = 'engaged', ratio_sign = -1
+
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("compliance", (False, True))
+    @pytest.mark.parametrize("mode", ("engaged", "neutral", "synchronizing"))
+    @pytest.mark.parametrize("ratio_sign", (-1, 1))
+    def test_real_shaft_joint_tire_brake_and_limited_differential_balance(share, compliance, mode, ratio_sign):
+        damping = (20. if share else 0., 20. if share < 1 else 0., 20. if 0 < share < 1 else 0.)
+        config = replace(CONFIG, front_drive_share=share, tire_compliance=compliance,
+                         differential_damping=damping, differential_capacity=tuple(80. if c else 0. for c in damping))
+        contact_frames = frames(20., 12., (0., 300., 5500., 5886.))
+        deformation = ((.001, -.0002),) * 4
+        velocity, angular = (.3, ratio_sign * 12., .1), (.12, -.08, .2)
+        spins, engine, shaft = (36., 39., 33., 46.), 500., 300.
+        ratio = 0. if mode == "neutral" else ratio_sign * 12.
+        torque, brakes, dt = 80., (100., 300., 50., 0.), 1 / 240
+        steering = ((0., 0., 0.),) * 4
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            torque, 300., ratio, brakes, config, config, dt, inverse_inertia=TENSOR,
+            engine_inertia=ENGINE_INERTIA, engine_axis=ENGINE_AXIS, engine_drag=.12, efficiency=.88,
+            shaft_omega=shaft, shaft_inertia=.04, shaft_axis=ENGINE_AXIS,
+            synchronizing=mode == "synchronizing", synchronizer_capacity=20. if mode == "synchronizing" else 0.)
+
+tests\test_tire_shaft.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:685: in advance_drivetrain
+    state, end_velocity, clutch, loss, gear_reaction = shared(state)
+                                                       ^^^^^^^^^^^^^
+src\tire_drivetrain.py:312: in shared
+    end, end_velocity, clutch, loss, gear_reaction, shared_branch, shared_port_index, road_torques, active_limits, bias_ports = shared_solution(
+logs\physics\PHYS-PERF-01\audit-shared-solution.py:26: in audited
+    original=space['original_factory'](scope)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+scope = {'active_limits': (0.0, 80.0, 0.0), 'bias_limits': <function advance_drivetrain.<locals>.bias_limits at 0x000002A2B8B0...'bias_ports': (0.0, 0.0), 'branch_free': <function advance_drivetrain.<locals>.branch_free at 0x000002A2B8B081A0>, ...}
+
+>   ???
+E   KeyError: 'cross'
+
+127c1d0 frozen original shared root:19: KeyError
+=========================== short test summary info ===========================
+FAILED tests/test_tire_shaft.py::test_real_shaft_joint_tire_brake_and_limited_differential_balance[-1-engaged-False-0.0]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 302 passed in 1.43s

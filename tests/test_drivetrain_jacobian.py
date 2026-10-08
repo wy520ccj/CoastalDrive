@@ -1,8 +1,7 @@
 """实际共同末状态的解析Jacobian对独立中心差分；不降低求解精度。"""
 
-import inspect
-
 import pytest
+from mechanical_kernels import shared_map_jacobian, shared_map_state
 
 import tire_drivetrain
 from driver_assist import GAME_INPUT
@@ -12,34 +11,37 @@ from vehicle_state import Control
 
 
 def test_native_loaded_axle_jacobian_matches_independent_difference(monkeypatch):
-    original = tire_drivetrain._solve
+    original = tire_drivetrain.shared_solution
     errors = []
 
-    def audited_solve(matrix, rhs):
-        caller = inspect.currentframe().f_back
-        if caller.f_code.co_name == "shared" and len(errors) < 16:
-            values = caller.f_locals
-            state, mapped = values["state"], values["mapped"]
-            partition = values["shared_branch"], values["shared_port_index"]
+    def audited_solve(coefficients, guess, loads, wheel_loads, supported, warm, bias_ports):
+        if len(errors) < 16 and all(load > 0. for load in wheel_loads):
+            # GR86的真实限滑端口也是未知量；用同一系数包核对实际输入状态。
+            state = tuple(guess) + tuple(bias_ports)
+
+            def mapped(candidate):
+                return shared_map_state(
+                    coefficients, candidate, loads, wheel_loads, supported, warm)
+
+            partition = mapped(state)[5:7]
+            columns = shared_map_jacobian(
+                coefficients, state, wheel_loads, supported, *partition)
             numeric, partitions = [], []
             for j in range(len(state)):
                 positive, negative = list(state), list(state)
                 positive[j] += .0001
                 negative[j] -= .0001
-                high = mapped(positive)[0]
-                partitions.append((caller.f_locals["shared_branch"], caller.f_locals["shared_port_index"]))
-                low = mapped(negative)[0]
-                partitions.append((caller.f_locals["shared_branch"], caller.f_locals["shared_port_index"]))
-                numeric.append(tuple(float(i == j) - (high[i]-low[i])/.0002 for i in range(len(state))))
-            mapped(state)
+                high, low = mapped(positive), mapped(negative)
+                partitions.extend((high[5:7], low[5:7]))
+                numeric.append(tuple(float(i == j) - (high[0][i]-low[0][i])/.0002 for i in range(len(state))))
             if all(candidate == partition for candidate in partitions):
-                error = max(abs(matrix[i][j] - numeric[j][i]) / max(1., abs(matrix[i][j]), abs(numeric[j][i]))
+                error = max(abs(columns[j][i] - numeric[j][i]) / max(1., abs(columns[j][i]), abs(numeric[j][i]))
                             for i in range(len(state)) for j in range(len(state)))
                 assert error < 2e-6
                 errors.append(error)
-        return original(matrix, rhs)
+        return original(coefficients, guess, loads, wheel_loads, supported, warm, bias_ports)
 
-    monkeypatch.setattr(tire_drivetrain, "_solve", audited_solve)
+    monkeypatch.setattr(tire_drivetrain, "shared_solution", audited_solve)
     sim = Simulation(17, track="coastal", traffic_count=0, config=GR86_DESIGN,
                      input_config=GAME_INPUT)
     try:

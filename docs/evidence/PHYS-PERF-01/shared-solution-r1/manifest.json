@@ -1,0 +1,325 @@
+{
+  "algorithm": "SHA-256; gzip mtime=0 and empty original filename",
+  "entries": [
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\audit-shared-solution-independent.py",
+      "archive": "physics/audit-shared-solution-independent.py",
+      "source_size": 3166,
+      "source_sha256": "9014952c11e5468d152d0b77b6c5ed050d054b88d318dc80ff3dd1e724d7ccb3",
+      "archive_sha256": "9014952c11e5468d152d0b77b6c5ed050d054b88d318dc80ff3dd1e724d7ccb3",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\audit-shared-solution-state.py",
+      "archive": "physics/audit-shared-solution-state.py",
+      "source_size": 2791,
+      "source_sha256": "6b4e88c0fdae85f7221dece75884dfcf37a23f07c9354aeb949707933a0cfafb",
+      "archive_sha256": "6b4e88c0fdae85f7221dece75884dfcf37a23f07c9354aeb949707933a0cfafb",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\audit-shared-solution.py",
+      "archive": "physics/audit-shared-solution.py",
+      "source_size": 2819,
+      "source_sha256": "e9379a992b86054a9ebe90540a354f4359b8ec8e0f3370fab3b0c45618e979ee",
+      "archive_sha256": "e9379a992b86054a9ebe90540a354f4359b8ec8e0f3370fab3b0c45618e979ee",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\promote-shared-solution.py",
+      "archive": "physics/promote-shared-solution.py",
+      "source_size": 6040,
+      "source_sha256": "9bbe656165bb3d8c419c09222886feb6b5ef8da830f4f33efdc56e1182b05458",
+      "archive_sha256": "9bbe656165bb3d8c419c09222886feb6b5ef8da830f4f33efdc56e1182b05458",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-audit-r2.log",
+      "archive": "physics/shared-solution-audit-r2.txt",
+      "source_size": 3079,
+      "source_sha256": "956b844ca610933430ea3fd2b55b9f8272c9c3c376d64e02e1a605ea4fac3eef",
+      "archive_sha256": "956b844ca610933430ea3fd2b55b9f8272c9c3c376d64e02e1a605ea4fac3eef",
+      "gzip_payload_sha256": null,
+      "original_name": "shared-solution-audit-r2.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-audit.log",
+      "archive": "physics/shared-solution-audit.txt",
+      "source_size": 3532,
+      "source_sha256": "7f0d80d78123912d6fa7c0b96f61555c2b65650d8bdb444499a59f625d88c018",
+      "archive_sha256": "7f0d80d78123912d6fa7c0b96f61555c2b65650d8bdb444499a59f625d88c018",
+      "gzip_payload_sha256": null,
+      "original_name": "shared-solution-audit.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-body.c",
+      "archive": "physics/shared-solution-body.c",
+      "source_size": 5746,
+      "source_sha256": "98e77c148e8894257a746a8109e1ec34dff40a92b9cf132bffffb40140cb6a01",
+      "archive_sha256": "98e77c148e8894257a746a8109e1ec34dff40a92b9cf132bffffb40140cb6a01",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-build-r2.log",
+      "archive": "physics/shared-solution-build-r2.txt",
+      "source_size": 5534,
+      "source_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "archive_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "gzip_payload_sha256": null,
+      "original_name": "shared-solution-build-r2.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-build.log",
+      "archive": "physics/shared-solution-build.txt",
+      "source_size": 5534,
+      "source_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "archive_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "gzip_payload_sha256": null,
+      "original_name": "shared-solution-build.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-independent-audit-r2.log",
+      "archive": "physics/shared-solution-independent-audit-r2.txt",
+      "source_size": 724,
+      "source_sha256": "c1a98751e2ad55954008b984ab962f38cae6113f806bd07b6c2b547fb0970bf9",
+      "archive_sha256": "c1a98751e2ad55954008b984ab962f38cae6113f806bd07b6c2b547fb0970bf9",
+      "gzip_payload_sha256": null,
+      "original_name": "shared-solution-independent-audit-r2.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-independent-audit-r3.log",
+      "archive": "physics/shared-solution-independent-audit-r3.txt",
+      "source_size": 724,
+      "source_sha256": "667f30034e9ab1e2a6c7ddece064fe0f508248699959de8c1625965dcd95736c",
+      "archive_sha256": "667f30034e9ab1e2a6c7ddece064fe0f508248699959de8c1625965dcd95736c",
+      "gzip_payload_sha256": null,
+      "original_name": "shared-solution-independent-audit-r3.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-independent-audit-r4.log",
+      "archive": "physics/shared-solution-independent-audit-r4.txt",
+      "source_size": 724,
+      "source_sha256": "667f30034e9ab1e2a6c7ddece064fe0f508248699959de8c1625965dcd95736c",
+      "archive_sha256": "667f30034e9ab1e2a6c7ddece064fe0f508248699959de8c1625965dcd95736c",
+      "gzip_payload_sha256": null,
+      "original_name": "shared-solution-independent-audit-r4.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-independent-audit.json",
+      "archive": "physics/shared-solution-independent-audit.json",
+      "source_size": 247,
+      "source_sha256": "ec1bd6b9d83d2a4de60803ac270d5bfc7788a63449e5170c2ccb3ec42f42ffc5",
+      "archive_sha256": "ec1bd6b9d83d2a4de60803ac270d5bfc7788a63449e5170c2ccb3ec42f42ffc5",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-independent-audit.log",
+      "archive": "physics/shared-solution-independent-audit.txt",
+      "source_size": 4953,
+      "source_sha256": "afc6fe16198cc9569a2b84397b0a2cb9cf56b751e9a4c67c011f9f1e78d60aa2",
+      "archive_sha256": "afc6fe16198cc9569a2b84397b0a2cb9cf56b751e9a4c67c011f9f1e78d60aa2",
+      "gzip_payload_sha256": null,
+      "original_name": "shared-solution-independent-audit.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-snapshots.json",
+      "archive": "physics/shared-solution-snapshots.json.gz",
+      "source_size": 8746915,
+      "source_sha256": "ddabf682bff41c065e22dc5f3dd95b80c826c7208fdb82508c23c8230161821b",
+      "archive_sha256": "064cee89a1e0535d7be3d6232d67dd83c254ab23fc02276d93bdae2b28e7c135",
+      "gzip_payload_sha256": "ddabf682bff41c065e22dc5f3dd95b80c826c7208fdb82508c23c8230161821b",
+      "original_name": null
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-snapshots.log",
+      "archive": "physics/shared-solution-snapshots.txt",
+      "source_size": 133,
+      "source_sha256": "8cfc1e8171afe58e650171b14507563af2ca09db08e8458505af1212a8bd0a9a",
+      "archive_sha256": "8cfc1e8171afe58e650171b14507563af2ca09db08e8458505af1212a8bd0a9a",
+      "gzip_payload_sha256": null,
+      "original_name": "shared-solution-snapshots.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-snapshots.py",
+      "archive": "physics/shared-solution-snapshots.py",
+      "source_size": 1854,
+      "source_sha256": "c61e33ae5621814ec045050d1a0d76959837b21b7932dcc6ae1a61fbf6f3d87b",
+      "archive_sha256": "c61e33ae5621814ec045050d1a0d76959837b21b7932dcc6ae1a61fbf6f3d87b",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-state-audit.json",
+      "archive": "physics/shared-solution-state-audit.json",
+      "source_size": 246,
+      "source_sha256": "e9ec9b4ddf54a4541afd766737f33b4b8a30778495351ce752fd0f2996f9ea68",
+      "archive_sha256": "e9ec9b4ddf54a4541afd766737f33b4b8a30778495351ce752fd0f2996f9ea68",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-state-audit.log",
+      "archive": "physics/shared-solution-state-audit.txt",
+      "source_size": 723,
+      "source_sha256": "8a053a11b2d670d6ca6b3ad06f1a67c0b2ead8c635ee3f6488c53f99069fcebe",
+      "archive_sha256": "8a053a11b2d670d6ca6b3ad06f1a67c0b2ead8c635ee3f6488c53f99069fcebe",
+      "gzip_payload_sha256": null,
+      "original_name": "shared-solution-state-audit.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-baseline\\original-mechanical-kernels.c",
+      "archive": "baseline/original-mechanical-kernels.c",
+      "source_size": 83792,
+      "source_sha256": "f361e69c169f865685fbfeaa2eda9f47b4ba52cab767f833abbb01a160f430a5",
+      "archive_sha256": "f361e69c169f865685fbfeaa2eda9f47b4ba52cab767f833abbb01a160f430a5",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-baseline\\baseline.c",
+      "archive": "baseline/baseline.c",
+      "source_size": 83796,
+      "source_sha256": "75148f37a6c12ba6bbf83481b21117442a570353e98ebb0a085a899b0138b544",
+      "archive_sha256": "75148f37a6c12ba6bbf83481b21117442a570353e98ebb0a085a899b0138b544",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-baseline\\setup.py",
+      "archive": "baseline/setup.py",
+      "source_size": 232,
+      "source_sha256": "563423b47ff9c690a76a41ffb69c1b48b3ab8f1de51dc739687081e06c7167fd",
+      "archive_sha256": "563423b47ff9c690a76a41ffb69c1b48b3ab8f1de51dc739687081e06c7167fd",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-baseline\\build.log",
+      "archive": "baseline/build.txt",
+      "source_size": 3942,
+      "source_sha256": "e4ad4306960e4c85eba7290450f48e5a06e842a4fb180a0fc8788af88b3064fd",
+      "archive_sha256": "e4ad4306960e4c85eba7290450f48e5a06e842a4fb180a0fc8788af88b3064fd",
+      "gzip_payload_sha256": null,
+      "original_name": "build.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-baseline\\manifest.json",
+      "archive": "baseline/manifest.json",
+      "source_size": 1539,
+      "source_sha256": "c8dd163d034d27cc3a8baa4909f042a05690de64688812c8c6c7dc00c1b3615a",
+      "archive_sha256": "c8dd163d034d27cc3a8baa4909f042a05690de64688812c8c6c7dc00c1b3615a",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\shared-solution-baseline\\receipt.json",
+      "archive": "baseline/receipt.json",
+      "source_size": 2229,
+      "source_sha256": "d2f79a1e6ff9f51d56691523a545551429c8ff090f6a59650d4e7cc8360358ff",
+      "archive_sha256": "d2f79a1e6ff9f51d56691523a545551429c8ff090f6a59650d4e7cc8360358ff",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-shared-solution-T0\\pytest.log",
+      "archive": "validation/T0/pytest.txt",
+      "source_size": 507,
+      "source_sha256": "5fde0b9c585a1b50b3e4d1f2b94ce9ea3ca7b2033b7f1c0697df2ea8403a27d7",
+      "archive_sha256": "5fde0b9c585a1b50b3e4d1f2b94ce9ea3ca7b2033b7f1c0697df2ea8403a27d7",
+      "gzip_payload_sha256": null,
+      "original_name": "pytest.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-shared-solution-T0\\ruff.log",
+      "archive": "validation/T0/ruff.txt",
+      "source_size": 19,
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "gzip_payload_sha256": null,
+      "original_name": "ruff.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-shared-solution-T0\\summary.json",
+      "archive": "validation/T0/summary.json",
+      "source_size": 1904,
+      "source_sha256": "ace7fc2074c1ac95453180820117d329e5a15249b6a337f3eeb2dd8a26552968",
+      "archive_sha256": "ace7fc2074c1ac95453180820117d329e5a15249b6a337f3eeb2dd8a26552968",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-shared-solution-T1\\headless-0.log",
+      "archive": "validation/T1/headless-0.txt",
+      "source_size": 32432,
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "gzip_payload_sha256": null,
+      "original_name": "headless-0.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-shared-solution-T1\\headless-17.log",
+      "archive": "validation/T1/headless-17.txt",
+      "source_size": 32432,
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "gzip_payload_sha256": null,
+      "original_name": "headless-17.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-shared-solution-T1\\headless-23.log",
+      "archive": "validation/T1/headless-23.txt",
+      "source_size": 32432,
+      "source_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "archive_sha256": "2577addbeb767c378e25302984c08b75cf17ffe3c85b1acd52fe1d4dd1417acc",
+      "gzip_payload_sha256": null,
+      "original_name": "headless-23.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-shared-solution-T1\\pytest.log",
+      "archive": "validation/T1/pytest.txt",
+      "source_size": 761,
+      "source_sha256": "eb1da5568b33a58321e8a154d4950259d46acccd114bb1aa1fa6b7bf3417561a",
+      "archive_sha256": "eb1da5568b33a58321e8a154d4950259d46acccd114bb1aa1fa6b7bf3417561a",
+      "gzip_payload_sha256": null,
+      "original_name": "pytest.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-shared-solution-T1\\ruff.log",
+      "archive": "validation/T1/ruff.txt",
+      "source_size": 19,
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "gzip_payload_sha256": null,
+      "original_name": "ruff.log"
+    },
+    {
+      "source": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-shared-solution-T1\\summary.json",
+      "archive": "validation/T1/summary.json",
+      "source_size": 5582,
+      "source_sha256": "11718be594ab4cef0d9190f9bbfab3dab08d8c46c5c98652cadd2255cc2eb18d",
+      "archive_sha256": "11718be594ab4cef0d9190f9bbfab3dab08d8c46c5c98652cadd2255cc2eb18d",
+      "gzip_payload_sha256": null,
+      "original_name": null
+    },
+    {
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\physics\\PHYS-DESIGN-01-map160\\integrated-snapshots.json",
+      "archive": "baseline/main-127c1d0-map160-integrated-snapshots.json.gz",
+      "source_size": 8746914,
+      "source_sha256": "27c611ac453fdbb6635986845f63fcc1c7c85b8628bf372b217f4ec3bebf409d",
+      "archive_sha256": "012715d5f62912912b463e14779a21e6b21033a8828b0ee3fb92c68ca54ab598",
+      "gzip_payload_sha256": "27c611ac453fdbb6635986845f63fcc1c7c85b8628bf372b217f4ec3bebf409d",
+      "original_name": null
+    }
+  ],
+  "metadata_files": {
+    "source-capture.json": "58d3b49cb17dc65b6071d667898f886a97f8c5a9abeab84c02468ea4d188c193",
+    "receipt.json": "e25ae6d98f01c56d144f8bd1becf0216fc4422316b3326c6d8c80fd07bf23597",
+    "report.md": "4e3553b3d45fd419f197e91980c34e6e48d3d325e0029220bb2f34aa49ef98a9"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "baseline": "127c1d0 original Python shared root; current native mapping/Jacobian boundaries, full root/warm audit",
+  "all_fields_equal": true,
+  "counts": {
+    "calls": 10661,
+    "bias_calls": 9380,
+    "ordinary_calls": 1281
+  }
+}

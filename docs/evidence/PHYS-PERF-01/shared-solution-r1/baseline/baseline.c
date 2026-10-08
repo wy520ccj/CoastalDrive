@@ -1105,7 +1105,23 @@ static void shared_axle_torques(const SharedMap *data,const double state[11],dou
         torques[1]=(1-data->share)*output-data->final_drive*((1-data->share)*axial[0]+axial[2]);
 }
 
-static void shared_active_limits(const SharedMap *data,const double state[11],double active[3]) {
+static PyObject *shared_map_state(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *coefficients,*input,*loads,*wheel_loads,*supported;
+    int warm;
+    static char *names[]={"coefficients","state","loads","wheel_loads","supported","warm_branch",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOOOi",names,&coefficients,&input,&loads,&wheel_loads,&supported,&warm)) return NULL;
+    SharedMap *data=PyCapsule_GetPointer(coefficients,shared_map_name);
+    if (!data) return NULL;
+    if (warm<0 || warm>=data->branch_count) { PyErr_SetString(PyExc_IndexError,"共同分区索引越界"); return NULL; }
+    double state[11],angular[9],normal[9],load[4],support[4],momentum[3],gyro[3],free[9],terms[9];
+    double active[3],road[4]={0.},end[9],port_values[4]={0.};
+    if (!vector(input,state,data->bias ? 11 : 9) || !tuple_fields(loads,3)
+        || !vector(PyTuple_GET_ITEM(loads,0),angular,9)
+        || !vector(wheel_loads,load,4) || !vector(supported,support,4)) return NULL;
+    PyObject *normal_object=PyTuple_GET_ITEM(loads,1);
+    if (!PyTuple_Check(normal_object)) { PyErr_SetString(PyExc_ValueError,"法向载荷须为元组"); return NULL; }
+    int suspension=PyTuple_GET_SIZE(normal_object)!=0;
+    if (suspension && !vector(normal_object,normal,9)) return NULL;
     for (int i=0; i<3; ++i) active[i]=data->limits[i];
     if (data->bias) {
         double torques[2];
@@ -1115,15 +1131,6 @@ static void shared_active_limits(const SharedMap *data,const double state[11],do
             active[i]=capacity<data->limits[i] ? capacity : data->limits[i];
         }
     }
-}
-
-static int shared_map_values(const SharedMap *data,const double state[11],const double angular[9],
-    const double *normal,const double load[4],const double support[4],int warm,double output[11],
-    double road[4],double active[3],double port_values[4],int *branch_output,int *port_output) {
-    double momentum[3],gyro[3],free[9],terms[9],end[9];
-    int suspension=normal!=NULL;
-    for (int i=0; i<4; ++i) {road[i]=0.; port_values[i]=0.;}
-    shared_active_limits(data,state,active);
     if (data->rolling) for (int i=0; i<4; ++i) if (support[i]!=0.) {
         double speed=fabs(data->radii[i]*state[i+5]);
         double denominator=speed>data->transition ? speed : data->transition;
@@ -1147,38 +1154,13 @@ static int shared_map_values(const SharedMap *data,const double state[11],const 
             for (int a=0; a<9; ++a) terms[a]=data->ports[i][a]*projected[a];
             port_free[i]=compensated(terms,9);
         }
-        if (!shared_port_state(data,branch,port_free,0.,-1,port_values,&port_index)) return 0;
+        if (!shared_port_state(data,branch,port_free,0.,-1,port_values,&port_index)) return NULL;
         for (int a=0; a<9; ++a) end[a]=projected[a]-data->dt*(port_values[0]*branch->mc[a]
                                                 +port_values[2]*branch->ml[a]+port_values[1]*branch->mg[a]);
         int feasible=shared_branch_feasible(data,branch,end,active);
         if (feasible) { branch_index=index; break; }
     }
-    if (branch_index<0) { PyErr_SetString(PyExc_ArithmeticError,"限滑/离合共同末状态无可行分区"); return 0; }
-    for (int a=0; a<(data->bias ? 11 : 9); ++a) output[a]=a<9 ? end[a] : port_values[a==9 ? 1 : 2];
-    *branch_output=branch_index; *port_output=port_index;
-    return 1;
-}
-
-static PyObject *shared_map_state(PyObject *self,PyObject *args,PyObject *kwargs) {
-    PyObject *coefficients,*input,*loads,*wheel_loads,*supported;
-    int warm;
-    static char *names[]={"coefficients","state","loads","wheel_loads","supported","warm_branch",NULL};
-    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOOOi",names,&coefficients,&input,&loads,&wheel_loads,&supported,&warm)) return NULL;
-    SharedMap *data=PyCapsule_GetPointer(coefficients,shared_map_name);
-    if (!data) return NULL;
-    if (warm<0 || warm>=data->branch_count) { PyErr_SetString(PyExc_IndexError,"共同分区索引越界"); return NULL; }
-    double state[11],angular[9],normal[9],load[4],support[4];
-    double active[3],road[4],end[11],port_values[4];
-    if (!vector(input,state,data->bias ? 11 : 9) || !tuple_fields(loads,3)
-        || !vector(PyTuple_GET_ITEM(loads,0),angular,9)
-        || !vector(wheel_loads,load,4) || !vector(supported,support,4)) return NULL;
-    PyObject *normal_object=PyTuple_GET_ITEM(loads,1);
-    if (!PyTuple_Check(normal_object)) { PyErr_SetString(PyExc_ValueError,"法向载荷须为元组"); return NULL; }
-    int suspension=PyTuple_GET_SIZE(normal_object)!=0;
-    if (suspension && !vector(normal_object,normal,9)) return NULL;
-    int branch_index,port_index;
-    if (!shared_map_values(data,state,angular,suspension ? normal : NULL,load,support,warm,
-        end,road,active,port_values,&branch_index,&port_index)) return NULL;
+    if (branch_index<0) { PyErr_SetString(PyExc_ArithmeticError,"限滑/离合共同末状态无可行分区"); return NULL; }
     PyObject *result=PyTuple_New(data->bias ? 11 : 9);
     if (!result) return NULL;
     for (int a=0; a<(data->bias ? 11 : 9); ++a) {
@@ -1194,12 +1176,25 @@ static PyObject *shared_map_state(PyObject *self,PyObject *args,PyObject *kwargs
 
 
 /* 同一活动分区的本构解析导数，不改变Newton或线搜索判据。 */
-static void shared_jacobian_values(const SharedMap *data,const double state[11],const double load[4],
-    const double support[4],int branch_index,int port_index,double columns[11][11]) {
-    const SharedBranch *branch=&data->branches[branch_index];
+static PyObject *shared_map_jacobian(PyObject *self,PyObject *args,PyObject *kwargs) {
+    PyObject *coefficients,*input,*wheel_loads,*supported;
+    int branch_index,port_index;
+    static char *names[]={"coefficients","state","wheel_loads","supported","branch_index","port_index",NULL};
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOOii",names,&coefficients,&input,&wheel_loads,&supported,
+                                    &branch_index,&port_index)) return NULL;
+    SharedMap *data=PyCapsule_GetPointer(coefficients,shared_map_name);
+    if (!data) return NULL;
+    if (branch_index<0 || branch_index>=data->branch_count) {
+        PyErr_SetString(PyExc_IndexError,"共同分区索引越界"); return NULL;
+    }
+    SharedBranch *branch=&data->branches[branch_index];
+    if (port_index<0 || port_index>=branch->plan_count) {
+        PyErr_SetString(PyExc_IndexError,"共同端口索引越界"); return NULL;
+    }
     const SharedPortPlan *plan=&branch->plans[port_index];
     int variables=data->bias ? 11 : 9;
-    double current_spin[3],derivatives[3][11]={{0.}},terms[9];
+    double state[11],load[4],support[4],current_spin[3],derivatives[3][11]={{0.}},terms[9];
+    if (!vector(input,state,variables) || !vector(wheel_loads,load,4) || !vector(supported,support,4)) return NULL;
     rotor_spin_values(&data->spin,state,current_spin);
     if (data->bias) {
         double torques[2]; shared_axle_torques(data,state,torques);
@@ -1215,6 +1210,8 @@ static void shared_jacobian_values(const SharedMap *data,const double state[11],
                         +data->inertias[axle+1]*data->down_gradients[axle+1][j]) : 0.));
         }
     }
+    PyObject *columns=PyList_New(variables);
+    if (!columns) return NULL;
     for (int j=0; j<variables; ++j) {
         double gyro[3]={0.},input_response[9]={0.},direction[9];
         if (j<9) {
@@ -1271,43 +1268,14 @@ static void shared_jacobian_values(const SharedMap *data,const double state[11],
             }
             dc=values[0]; dg=values[1]; dl=0.;
         }
+        PyObject *column=PyTuple_New(variables);
+        if (!column) { Py_DECREF(columns); return NULL; }
         for (int a=0; a<variables; ++a) {
             double end_column=a<9 ? data->dt*(direction[a]-dc*branch->mc[a]-dg*branch->mg[a]-dl*branch->ml[a])
                                  : (a==9 ? dg : dl);
-            columns[j][a]=(double)(a==j)-end_column;
-        }
-    }
-}
-
-static PyObject *shared_map_jacobian(PyObject *self,PyObject *args,PyObject *kwargs) {
-    PyObject *coefficients,*input,*wheel_loads,*supported;
-    int branch_index,port_index;
-    static char *names[]={"coefficients","state","wheel_loads","supported","branch_index","port_index",NULL};
-    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOOii",names,&coefficients,&input,&wheel_loads,&supported,
-                                    &branch_index,&port_index)) return NULL;
-    SharedMap *data=PyCapsule_GetPointer(coefficients,shared_map_name);
-    if (!data) return NULL;
-    if (branch_index<0 || branch_index>=data->branch_count) {
-        PyErr_SetString(PyExc_IndexError,"共同分区索引越界"); return NULL;
-    }
-    SharedBranch *branch=&data->branches[branch_index];
-    if (port_index<0 || port_index>=branch->plan_count) {
-        PyErr_SetString(PyExc_IndexError,"共同端口索引越界"); return NULL;
-    }
-    int variables=data->bias ? 11 : 9;
-    double state[11],load[4],support[4];
-    if (!vector(input,state,variables) || !vector(wheel_loads,load,4) || !vector(supported,support,4)) return NULL;
-    double numeric[11][11];
-    shared_jacobian_values(data,state,load,support,branch_index,port_index,numeric);
-    PyObject *columns=PyList_New(variables);
-    if (!columns) return NULL;
-    for (int j=0; j<variables; ++j) {
-        PyObject *column=PyTuple_New(variables);
-        if (!column) {Py_DECREF(columns); return NULL;}
-        for (int a=0; a<variables; ++a) {
-            PyObject *value=PyFloat_FromDouble(numeric[j][a]);
-            if (!value) {Py_DECREF(column); Py_DECREF(columns); return NULL;}
-            PyTuple_SET_ITEM(column,a,value);
+            PyObject *number=PyFloat_FromDouble((double)(a==j)-end_column);
+            if (!number) { Py_DECREF(column); Py_DECREF(columns); return NULL; }
+            PyTuple_SET_ITEM(column,a,number);
         }
         PyList_SET_ITEM(columns,j,column);
     }
@@ -1509,119 +1477,7 @@ static PyObject *suspension_contact_state(PyObject *self,PyObject *args) {
         damping[0],damping[1],damping[2],damping[3]);
 }
 
-/* 原九/十一维共同求根；分区暖状态按每次试探更新，30轮及原精度保持。 */
-static double angular_tolerance(double a,double b) {
-    double x=fabs(a),y=fabs(b),tol=1e-14;
-    double ua=nextafter(x,INFINITY)-x,ub=nextafter(y,INFINITY)-y;
-    if (ua>tol) tol=ua;
-    if (ub>tol) tol=ub;
-    return tol;
-}
-static double shared_residual_size(const SharedMap *data,const double state[11],const double end[11]) {
-    int variables=data->bias ? 11 : 9;
-    double maximum=0.;
-    for (int a=0; a<variables; ++a) {
-        double value=fabs(state[a]-end[a]);
-        if (data->bias) value/=a<9 ? angular_tolerance(state[a],end[a]) : PORT_TOLERANCE;
-        if (value>maximum) maximum=value;
-    }
-    return maximum;
-}
-static PyObject *shared_solution(PyObject *self,PyObject *args) {
-    PyObject *coefficients,*guess,*loads,*wheel_loads,*supported,*bias_ports;
-    int warm;
-    if (!PyArg_ParseTuple(args,"OOOOOiO",&coefficients,&guess,&loads,&wheel_loads,&supported,&warm,&bias_ports)) return NULL;
-    SharedMap *data=PyCapsule_GetPointer(coefficients,shared_map_name);
-    if (!data) return NULL;
-    if (warm<0 || warm>=data->branch_count) {PyErr_SetString(PyExc_IndexError,"共同分区索引越界"); return NULL;}
-    double state[11],angular[9],normal[9],load[4],support[4];
-    if (!vector(guess,state,9) || !tuple_fields(loads,3)
-        || !vector(PyTuple_GET_ITEM(loads,0),angular,9) || !vector(wheel_loads,load,4)
-        || !vector(supported,support,4)) return NULL;
-    PyObject *normal_object=PyTuple_GET_ITEM(loads,1);
-    if (!tuple_fields(bias_ports,2) || !PyTuple_Check(normal_object)) {
-        if (!PyErr_Occurred()) PyErr_SetString(PyExc_ValueError,"法向载荷须为元组");
-        return NULL;
-    }
-    int suspension=PyTuple_GET_SIZE(normal_object)!=0;
-    if (suspension && !vector(normal_object,normal,9)) return NULL;
-    double ports[2];
-    if (!vector(bias_ports,ports,2)) return NULL;
-    if (data->bias) {state[9]=ports[0]; state[10]=ports[1];}
-    int variables=data->bias ? 11 : 9,branch_index=warm,port_index=-1;
-    double end[11],road[4],active[3],port_values[4],error=0.;
-    for (int iteration=0; iteration<30; ++iteration) {
-        if (!shared_map_values(data,state,angular,suspension ? normal : NULL,load,support,branch_index,
-            end,road,active,port_values,&branch_index,&port_index)) return NULL;
-        double residual[11];
-        int angular_converged=1,ports_converged=1;
-        error=0.;
-        for (int a=0; a<variables; ++a) {
-            residual[a]=state[a]-end[a];
-            double magnitude=fabs(residual[a]);
-            if (magnitude>error) error=magnitude;
-            if (a<9 && !(magnitude<=angular_tolerance(state[a],end[a]))) angular_converged=0;
-            if (a>=9 && !(magnitude<=PORT_TOLERANCE)) ports_converged=0;
-        }
-        if (angular_converged && ports_converged) {
-            if (data->bias) {
-                ports[0]=port_values[1]; ports[1]=port_values[2];
-                shared_active_limits(data,end,active);
-                if (!shared_branch_feasible(data,&data->branches[branch_index],end,active)) {
-                    for (int a=0; a<variables; ++a) state[a]=end[a];
-                    continue;
-                }
-            }
-            PyObject *result=PyTuple_New(9);
-            if (!result) return NULL;
-            for (int a=0; a<9; ++a) {
-                PyObject *value=PyFloat_FromDouble(end[a]);
-                if (!value) {Py_DECREF(result); return NULL;}
-                PyTuple_SET_ITEM(result,a,value);
-            }
-            return Py_BuildValue("(NOdddii(dddd)(ddd)(dd))",result,PyTuple_GET_ITEM(loads,2),
-                port_values[0],port_values[2],port_values[1],branch_index,port_index,
-                road[0],road[1],road[2],road[3],active[0],active[1],active[2],ports[0],ports[1]);
-        }
-        if ((data->rolling || data->bias) && iteration>=4) {
-            double columns[11][11],matrix[121],rhs[11],rows[121],delta[11],lu_residual[11],correction[11],terms[12],partials[12];
-            Py_ssize_t order[11];
-            shared_jacobian_values(data,state,load,support,branch_index,port_index,columns);
-            for (int a=0; a<variables; ++a) {
-                rhs[a]=-residual[a];
-                for (int j=0; j<variables; ++j) matrix[a*variables+j]=columns[j][a];
-            }
-            if (!lu_values(matrix,rhs,variables,rows,order,delta,lu_residual,correction,terms,partials)) return NULL;
-            double before=shared_residual_size(data,state,end);
-            int accepted=0;
-            for (int attempt=0; attempt<8; ++attempt) {
-                double candidate[11],target[11],step=ldexp(1.,-attempt);
-                for (int a=0; a<variables; ++a) candidate[a]=state[a]+step*delta[a];
-                if (!shared_map_values(data,candidate,angular,suspension ? normal : NULL,load,support,branch_index,
-                    target,road,active,port_values,&branch_index,&port_index)) return NULL;
-                if (shared_residual_size(data,candidate,target)<before) {
-                    for (int a=0; a<variables; ++a) state[a]=candidate[a];
-                    if (data->bias) shared_active_limits(data,state,active);
-                    accepted=1; break;
-                }
-            }
-            if (!accepted) {
-                for (int a=0; a<variables; ++a) {
-                    double pair[2]={state[a],end[a]};
-                    state[a]=exact_sum(pair,2,partials)/2;
-                }
-                if (PyErr_Occurred()) return NULL;
-            }
-        } else for (int a=0; a<variables; ++a) state[a]=end[a];
-    }
-    char *number=PyOS_double_to_string(error,'g',6,0,NULL);
-    if (!number) return NULL;
-    PyErr_Format(PyExc_ArithmeticError,"曲轴/四轮转子共同末状态超过30次迭代：%s",number);
-    PyMem_Free(number); return NULL;
-}
-
 static PyMethodDef methods[] = {
-    {"shared_solution", (PyCFunction)shared_solution, METH_VARARGS, "原九/十一维共同转子求根"},
     {"suspension_contact_state", (PyCFunction)suspension_contact_state, METH_VARARGS, "原四轮接触阻尼止挡活动集"},
     {"wheel_map_coefficients", (PyCFunction)wheel_map_coefficients, METH_VARARGS, "本子步轮胎局部端口的固定系数"},
     {"wheel_map_state", (PyCFunction)wheel_map_state, METH_VARARGS, "原轮胎试探力与传动制动共同末状态"},
@@ -1648,8 +1504,8 @@ static PyMethodDef methods[] = {
     {"project_vector", (PyCFunction)project_vector, METH_VARARGS | METH_KEYWORDS, "同次序逐端口机械投影"},
     {NULL, NULL, 0, NULL}
 };
-static struct PyModuleDef module = {PyModuleDef_HEAD_INIT, "mechanical_kernels", NULL, -1, methods};
-PyMODINIT_FUNC PyInit_mechanical_kernels(void) {
+static struct PyModuleDef module = {PyModuleDef_HEAD_INIT, "_shared_solution_old", NULL, -1, methods};
+PyMODINIT_FUNC PyInit__shared_solution_old(void) {
     PyObject *result = PyModule_Create(&module);
     if (!result) return NULL;
     PyObject *precision = PyFloat_FromDouble(PORT_TOLERANCE);

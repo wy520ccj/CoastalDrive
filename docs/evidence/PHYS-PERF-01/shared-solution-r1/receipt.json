@@ -1,0 +1,96 @@
+{
+  "baseline_head": "6d5cc1956201ccf8f0e34fd4507354c626bab1c1",
+  "source_file_count": 354,
+  "source_capture_time": "before evidence copy; final stability verified after archive",
+  "source_changes_from_HEAD": [
+    "src/mechanical_kernels.c",
+    "src/tire_drivetrain.py",
+    "tests/test_drivetrain_jacobian.py"
+  ],
+  "false_M_files_raw_equal": {
+    "src/suspension_contacts.py": {
+      "current_sha256": "43defabbc9f4630394361126063d210802d06f16e4948c29a8eb20a23f8c17b7",
+      "head_sha256": "43defabbc9f4630394361126063d210802d06f16e4948c29a8eb20a23f8c17b7",
+      "raw_bytes_equal": true
+    },
+    "src/wheel_contact_kernels.c": {
+      "current_sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+      "head_sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+      "raw_bytes_equal": true
+    }
+  },
+  "model": {
+    "solver_sweeps": 30,
+    "angle_update": "ULP or 1e-14 bound preserved",
+    "port_tolerance": 1e-11,
+    "line_searches": 8,
+    "half_step_accumulation": "fsum",
+    "warm_partition": "direct updates retained",
+    "old_8d_python_solver": "retained"
+  },
+  "T0": {
+    "pytest": "373 passed",
+    "ruff": "passed; full raw summary/log archived"
+  },
+  "T1": {
+    "pytest": "645 passed in 81.36s",
+    "ruff": "passed",
+    "seed_runs_seconds": [
+      10.293,
+      10.465,
+      10.266
+    ]
+  },
+  "independent_old_kernel_audit": {
+    "audit_version": "r4",
+    "status": "all exact",
+    "calls": 10661,
+    "bias_calls": 9380,
+    "ordinary_calls": 1281,
+    "baseline": "original 127c1d0 native C mapping/Jacobian/LU, independent of new public shared_solution helper",
+    "evidence_file": "physics/shared-solution-independent-audit.json"
+  },
+  "failed_or_superseded_audits": [
+    {
+      "name": "r1",
+      "issue": "Keycross"
+    },
+    {
+      "name": "r2",
+      "issue": "old LU observation: zero calls"
+    },
+    {
+      "name": "independent-r1",
+      "issue": "wrapper scope incorrect"
+    },
+    {
+      "name": "earlier probe iterations",
+      "issue": "factoryScope/test observation later corrected; retained logs are not physical failures"
+    }
+  ],
+  "snapshots": {
+    "traffic_modes": [
+      0,
+      8
+    ],
+    "ticks_each": 48,
+    "all_fields_equal_to_main_127c1d0_map160_baseline": true,
+    "diagnostic_seconds": [
+      0.8265195,
+      5.5732561
+    ],
+    "timing_interpretation": "diagnostic only"
+  },
+  "old_kernel_baseline": {
+    "module": "_shared_solution_old",
+    "source_sha256": "f361e69c169f865685fbfeaa2eda9f47b4ba52cab767f833abbb01a160f430a5",
+    "renamed_source_sha256": "75148f37a6c12ba6bbf83481b21117442a570353e98ebb0a085a899b0138b544",
+    "pyd_sha256": "d5012c06d3013d1bf6ffca89b16d815f49c15b73b837ace40f41f0c639fbf357",
+    "binary_policy": "PYD and object files not copied; SHA values retained in baseline receipt/manifest"
+  },
+  "profile": "none; no real FPS/performance gate evidence in this archive",
+  "integration_status": "not merged to main; main 01b99f3 T2-r2 was running at capture",
+  "source_end_sha256_equal": true,
+  "test_observation_change": "test_drivetrain_jacobian.py now observes the actual shared_solution coefficient package and independent finite differences; retains 16 samples and 2e-6 threshold.",
+  "upstream_map160_change": "tire_drivetrain.py also includes the three-line map160 condition from main 127c1d0; previously validated in main PHYS-DESIGN-01 map160 T0/T1, reused as upstream fix."
+}

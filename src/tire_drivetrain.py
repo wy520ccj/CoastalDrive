@@ -12,8 +12,7 @@ from mechanical_kernels import (
     rotor_coefficients,
     rotor_spin_prepared,
     shared_map_coefficients,
-    shared_map_jacobian,
-    shared_map_state,
+    shared_solution,
     wheel_load_prepared,
     wheel_map_coefficients,
     wheel_map_state,
@@ -300,21 +299,17 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     wheel_map = (wheel_map_coefficients(shared_map, wheel_coefficients, tuple(branches),
                                           brake_gradients, brakes) if shaft else None)
 
-    def shared_jacobian_columns(state):
-        return shared_map_jacobian(shared_map, state, tuple(frame.load for frame in frames),
-                                   tuple(frame.supported for frame in frames), shared_branch, shared_port_index)
-
     def shared(guess):
         nonlocal shared_branch, shared_port_index, road_torques, active_limits, bias_ports
         loads = load_terms()
+        if shaft:
+            end, end_velocity, clutch, loss, gear_reaction, shared_branch, shared_port_index, road_torques, active_limits, bias_ports = shared_solution(
+                shared_map, guess, loads, tuple(frame.load for frame in frames),
+                tuple(frame.supported for frame in frames), shared_branch, bias_ports)
+            return end, end_velocity, clutch, loss, gear_reaction
         def mapped(state):
             nonlocal shared_branch, shared_port_index, road_torques, active_limits
-            if shaft:
-                end, end_velocity, clutch, loss, gear_reaction, shared_branch, shared_port_index, road_torques, active_limits = (
-                    shared_map_state(shared_map, state, loads, tuple(frame.load for frame in frames),
-                                     tuple(frame.supported for frame in frames), shared_branch))
-                return end, end_velocity, clutch, loss, gear_reaction
-            # 八维旧机械对照保留原两端口机制；实体输入轴使用上面的同方程数值块。
+            # 八维旧机械对照保留原两端口机制。
             if torque_bias:
                 active_limits = bias_limits(state[:dimensions], *state[dimensions:])
             if rolling_active:
@@ -368,17 +363,14 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 return end[:dimensions], end_velocity, clutch, loss, gear_reaction
             if (rolling_active or torque_bias) and iteration >= 4:
                 # 大轮荷低速滚阻与轴系共同求根，固定点初迭代后用带步长搜索的Newton修正。
-                if shaft:
-                    columns = shared_jacobian_columns(state)
-                else:
-                    # 冻结的旧八维对照机制保留原中心差分，实体轴使用本构解析导数。
-                    columns = []
-                    for j in range(variables):
-                        plus, minus = list(state), list(state)
-                        plus[j] += .0001
-                        minus[j] -= .0001
-                        high, low = mapped(plus)[0], mapped(minus)[0]
-                        columns.append(tuple(float(a == j) - (high[a]-low[a])/.0002 for a in range(variables)))
+                # 冻结的旧八维对照机制保留原中心差分。
+                columns = []
+                for j in range(variables):
+                    plus, minus = list(state), list(state)
+                    plus[j] += .0001
+                    minus[j] -= .0001
+                    high, low = mapped(plus)[0], mapped(minus)[0]
+                    columns.append(tuple(float(a == j) - (high[a]-low[a])/.0002 for a in range(variables)))
                 delta = _solve(tuple(tuple(columns[j][a] for j in range(variables)) for a in range(variables)),
                                tuple(-value for value in residual))
                 before = residual_size(state, end)
@@ -722,7 +714,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                                              zip(normal_forces, target_system.gradients, suspension.gradients))) for a in range(6))
         if maximum < .001 and brake_error < 1e-9 and normal_error < normal_tolerance and geometry_error < 1e-12:
             break
-        if shaft and maximum >= .001 and sweep >= 8:
+        # 接触误差已小于力门槛时，仍会推动末姿态；几何未收敛也需联立细化接触力。
+        if shaft and sweep >= 8 and (maximum >= .001 or geometry_error >= 1e-12):
             correct_contacts(state)
         if suspension is not None and sweep >= 8 and maximum < .001 and (normal_error >= normal_tolerance or geometry_error >= 1e-12):
             correct_suspension(state, end_velocity)
