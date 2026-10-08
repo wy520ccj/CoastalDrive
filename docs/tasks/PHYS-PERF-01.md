@@ -1,7 +1,7 @@
 # PHYS-PERF-01 真实物理性能收口
 
 - 状态：in_progress；当前主施工目录为main，本批五个关联原生数值块、窗口车型选择及r10候选包自动检查完成。
-- 本批基线：6d58e9a；验证/建包时是其上的未提交修改，本批仅本地提交，未推送。现行证据为joint-native-r1、brake-correction-r1及package-r10；完整T2/T3、前台性能与人工驾驶仍未完成。
+- 本批基线：6d58e9a；验证/建包时是其上的未提交修改，实现提交4639cf8；2026-10-08用户授权提交并推送当前main累计成果，远端发布以Git核对为准。现行证据为joint-native-r1、brake-correction-r1及package-r10；完整T2/T3、前台性能与人工驾驶仍未完成。
 - 范围：减少同一机械子步内重复的几何与代数计算，再接产品/试玩包和最终Gate。
 
 2026-10-08连续施工批次：loaded_wheel_force_solution直接读取当前轮荷后调用原局部求根；wheel_residuals合并四轮同末状态残差；suspension_residuals合并反力与六维几何冲量残差；原生二维norm使用CPython 3.14.2 vector_norm的缩放、补偿平方与微分校正；wheel_brake_correction合并当前端口分区导数、四轮矩阵和制动增量消元。旧八维物理机制保持。norm原始来源为[CPython官方源码](https://github.com/python/cpython/blob/v3.14.2/Modules/mathmodule.c)，许可沿用licenses/CPython-LICENSE.txt。
@@ -20,7 +20,7 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 
 先保存相同输入的完整Snapshot与局部矩/能量账。按2026-10-08用户指示，后续按功能组做一次必要旧/新对照和相关短检查；不为每个小块重复完整T1/种子/48拍/profile，已有有效证据按版本与范围复用。最终前台1080p中画质8车，30秒预热/5分钟采样、平均≥60FPS且P95≤25ms；T3、试玩包、两模式人工驾驶保持待办。
 
-仅本地提交，未推送。当前没有前台性能通过结论。
+2026-10-08按用户授权正常推送origin/main；历史段落的未推送描述保留对应施工时点。当前没有前台性能通过结论。
 
 首个复用功能块完成：同一shared求根保存四轮/法向常量投影，道路生成时保存原三角面AABB，端口容量/损失条件提前排除，WorldSurface只在当前prepare子步缓存完全相同射线。下一prepare对象重新创建，真实移动支持面回归通过。120Hz/子步/20和30轮/全部精度保持，98硬件字段未改。
 
