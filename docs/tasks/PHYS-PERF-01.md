@@ -1,14 +1,14 @@
 # PHYS-PERF-01 真实物理性能收口
 
-- 状态：in_progress；施工线⑦，在codex/phys-real-01隔离工作树实施。
-- 基线：0afe6b1；主目录33657dc已整合b2501d2，冻结源码T2继续运行；后续性能块在隔离线本地推进，未推送。
+- 状态：in_progress；当前主施工目录为main，完整轮端原生入口/末速度本构/胎体能量功能组已完成本轮自动收口。
+- 本轮基线：8deb721；本轮本地提交，未推送。完整T2/T3、前台性能与人工驾驶仍未完成，当前证据见wheel-endpoint-r1。
 - 范围：减少同一机械子步内重复的几何与代数计算，再接产品/试玩包和最终Gate。
 
 Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数、本构律、20/30轮上限和原残差要求保持；NPC执行共同物理。优化按实际profile定位，不以改变碰撞、控制请求或更新频率换取性能。
 
 首份诊断为logs/physics/PHYS-PERF-01/profile-r1：GR86玩家与8辆NPC、coastal、种子17，无窗口/估计器，8拍预热与16拍cProfile。源码前后SHA一致、24拍完整执行；预热2.001s，带profiler91.559s。采样短且与主目录T2同时运行，只用于定位调用，不能当作FPS或前台Gate。热点是shared重复端口分区求解、known重复四轮力投影，以及TriangleSupport真实有限面查询。
 
-先保存相同输入的完整Snapshot与局部矩/能量账；每次优化做相关T0和短原生对照。功能块完成跑T1，已有不受影响证据复用。最终前台1080p中画质8车，30秒预热/5分钟采样、平均≥60FPS且P95≤25ms；T3、试玩包、两模式人工驾驶保持待办。
+先保存相同输入的完整Snapshot与局部矩/能量账。按2026-10-08用户指示，后续按功能组做一次必要旧/新对照和相关短检查；不为每个小块重复完整T1/种子/48拍/profile，已有有效证据按版本与范围复用。最终前台1080p中画质8车，30秒预热/5分钟采样、平均≥60FPS且P95≤25ms；T3、试玩包、两模式人工驾驶保持待办。
 
 仅本地提交，未推送。当前没有前台性能通过结论。
 
@@ -133,3 +133,12 @@ Tire constitutive 本构块（2026-10-08，隔离未并入main）：[证据与�
 
 
 支持面纯几何与命中装配（2026-10-08）：[证据](../evidence/PHYS-PERF-01/surface-entry-r1/receipt.json)。同一entry供公开CylinderSurface和射线查询使用，静态translation直接沿用；未命中不再构造Surface对象。一次旧C+旧Python对照90直接入口及9,643射线，所有字段hex/引用一致，构造39,603→9,643。Ruff通过；未再次pytest/T1/种子/48拍/profile，不宣称FPS。下一完整九维局部轮端力/Jacobian的原生求解，避免每次残差往返Python。
+
+
+Wheel solver 功能块证据收口（2026-10-08）：[逐件 SHA 与冻结源码 SHA](../evidence/PHYS-PERF-01/wheel-solver-r1/receipt.json)。基线 `8deb721` 原 Python + 独立旧 C DLL；已有对照 1,413 次完整调用、24,696 次原生力计算（滚动 17,076、静态 7,620）、21 个基准案例，完整输出 hex 与世界引用一致，Ruff 通过。本次只归档，未运行测试/模拟/profile/构建；不重复 T1/种子/48 拍/profile。876 项 T1 是 `4067649` 既有证据复用，不是本块重跑。主目录 `main`，未推送；完整 T2/T3/前台性能/人工未完成。下一步继续轮端数值入口、本构与能量装配。
+
+轮端完整入口/末速度本构/胎体能量功能组（2026-10-08）：[报告与源码/验证收据](../evidence/PHYS-PERF-01/wheel-endpoint-r1/receipt.json)。九维实体轴提前进入原生轮力入口，同一调用完成原首轮切线预测、局部力/Jacobian求根与最终制动反力；避免建立原Python局部残差闭包和反复装配末状态。共同末速度接点、本构与轮力共用相同速度数值函数，energy_terms和advance_wheel共用原储能/耗散公式。八维旧机制继续保留；硬件、120Hz、共同20轮/端口30轮、滚动20×20括根及原1e-4N/整体精度保持。
+
+一次独立8deb721原Python/旧DLL对照：1,413个完整推进、24,696次局部轮力、33,804次共同末速度本构、5,652次能量账，完整字段hex和世界引用一致；512组独立旧Python能量公式逐值一致。21条台架含FWD/RWD/AWD、正倒挡、挂挡/空挡/同步和低速；另含两条真实落体再接地与九车24拍。命令：`.venv/Scripts/python.exe logs/physics/PHYS-PERF-01/audit-wheel-endpoint.py`。原生扩展按setup.py的`/fp:strict`重建。
+
+相关短检查命令：`.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_tire_compliance.py tests/test_tire_drivetrain.py --output logs/validation/PHYS-PERF-01-wheel-endpoint-T0 --timeout 180`，357 passed in 2.00s、Ruff通过。初轮Ruff仅有未使用contact_force导入F401，移除该导入后上述T0通过；未运行失败版本pytest。不追加完整T1/种子/48拍/profile/长轨迹，不把旧876项T1写成本轮重跑；本轮无FPS结论。代码与不可变证据归档本地提交，未推送；主fa T2的783/1失败及11未跑仍保留，最终T2/T3/产品包/前台/人工Gate继续。下一共同状态和跨轮载荷装配的实际热点，再收产品与阶段。

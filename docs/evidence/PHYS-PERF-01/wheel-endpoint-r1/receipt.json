@@ -1,0 +1,106 @@
+{
+  "baseline": "8deb721 original Python advance + independent old mechanical DLL; strict fp",
+  "original_evidence": "../wheel-solver-r1/receipt.json",
+  "audit": {
+    "baseline": "8deb721 original Python advance + independent old mechanical DLL; strict fp",
+    "baseline_dll_sha256": "b1304f22c4a38a23363214338d256cf0b0be4e0e93973019d452e8c42ef6c52e",
+    "all_full_step_hex_and_references_equal": true,
+    "counts": {
+      "full_calls": 1413,
+      "native_force_calls": 24696,
+      "rolling_force_calls": 17076,
+      "static_force_calls": 7620,
+      "bench_cases": 21,
+      "contact_calls": 33804,
+      "energy_calls": 5652,
+      "energy_cases": 512
+    },
+    "scope": "轮端初值/制动反力、末速度本构和胎体能量功能组的一次旧/新对照；不重复T1/种子/48拍/profile。"
+  },
+  "T0": {
+    "pytest": "357 passed in 2.00s",
+    "ruff": "passed",
+    "summary": "validation/summary.json"
+  },
+  "precision": "120Hz；共同20轮/端口30轮；滚动20×20括根；局部1e-4N和原整体残差门槛保持。",
+  "coverage": "一次功能组旧/新推进对照+357项相关短检查；876项旧T1不记成本轮重跑。",
+  "items": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/audit-wheel-endpoint.py",
+      "archive": "audit-wheel-endpoint.py",
+      "bytes": 6315,
+      "sha256": "00c2ca69c4bccdfe0862eca55a695ae1e56dd9c5a5f34f33edbed1c8c8fff822"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/prepare-wheel-endpoint-audit.py",
+      "archive": "prepare-wheel-endpoint-audit.py",
+      "bytes": 2255,
+      "sha256": "55e79168917fc8488a259df523b165b9d249bcf1837ea87f25a5fafbf385efb3"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/wheel-endpoint-audit.json",
+      "archive": "wheel-endpoint-audit.json",
+      "bytes": 638,
+      "sha256": "98bbe49bcec130f205e43967590551827933923e931bff16b28bccb0033d32ed"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/wheel-endpoint-audit.log",
+      "archive": "wheel-endpoint-audit.txt",
+      "bytes": 633,
+      "sha256": "da205c513e564c791fdcc156004ae4d0089eff8ece4c62bf2cded35b7ad235ae"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/wheel-endpoint-build.log",
+      "archive": "wheel-endpoint-build.txt",
+      "bytes": 2892,
+      "sha256": "13cef7ae177fafe4114a088586dc9c9bf5248abef4cec41ef0b29ec517ee546f"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-endpoint-T0/summary.json",
+      "archive": "validation/summary.json",
+      "bytes": 1839,
+      "sha256": "9e847f4428f9f74f394d2f1f9b06ee18c0fab752cdcc0b2533dbdbd91f2d6558"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-endpoint-T0/ruff.log",
+      "archive": "validation/ruff.txt",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-wheel-endpoint-T0/pytest.log",
+      "archive": "validation/pytest.txt",
+      "bytes": 426,
+      "sha256": "d7021c691abe0de0146a5e691d1528346a0b59858483a74dc85a198b9f0d17e7"
+    },
+    {
+      "source": "src/mechanical_kernels.c",
+      "archive": "production/mechanical_kernels.c",
+      "bytes": 133164,
+      "sha256": "5079efe738e37cd9b4db31f83b27764f2908b75af94e1afdf552d603d110bdd7"
+    },
+    {
+      "source": "src/tire_drivetrain.py",
+      "archive": "production/tire_drivetrain.py",
+      "bytes": 47690,
+      "sha256": "0472890c32966c9dad79b949b70618c2b2329f5aa4f2c88a264b047a61507efb"
+    },
+    {
+      "source": "src/tire_compliance.py",
+      "archive": "production/tire_compliance.py",
+      "bytes": 2635,
+      "sha256": "aadcdd908370c88e1aa6bdf5654ec5b3034ae3dfa24dc720a1aeb48c3ca75bff"
+    },
+    {
+      "source": "src/mechanical_kernels.cp314-win_amd64.pyd",
+      "archive": "production/mechanical_kernels.cp314-win_amd64.pyd",
+      "bytes": 111616,
+      "sha256": "13c2a3445a761902b1bf53436470e6f841b673c936b4028bb9821ec2becad5dd"
+    }
+  ],
+  "stage_gate": "pending",
+  "T3": "not_run",
+  "foreground_performance": "not_run",
+  "human_driving": "pending",
+  "publication": "本地，未推送"
+}

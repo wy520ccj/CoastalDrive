@@ -1,0 +1,152 @@
+{
+  "task": "PHYS-PERF-01 wheel-solver-r1 evidence archive",
+  "workspace": "main",
+  "head": "8deb721",
+  "baseline": "8deb721 original Python advance + independent old mechanical DLL; strict fp",
+  "baseline_dll_sha256": "b1304f22c4a38a23363214338d256cf0b0be4e0e93973019d452e8c42ef6c52e",
+  "captured_source_sha256": [
+    {
+      "source": "src/mechanical_kernels.c",
+      "capture": "logs/physics/PHYS-PERF-01/wheel-solver-captured/mechanical_kernels.c",
+      "archive": "captured/mechanical_kernels.c",
+      "bytes": 127360,
+      "sha256": "d2ccb4100196449ca87d759cf4737ddd47061ad8636b1d190e9512a3cd75193f"
+    },
+    {
+      "source": "src/tire_drivetrain.py",
+      "capture": "logs/physics/PHYS-PERF-01/wheel-solver-captured/tire_drivetrain.py",
+      "archive": "captured/tire_drivetrain.py",
+      "bytes": 47440,
+      "sha256": "7303a6ef65e0463a4766df79cb2e55cd1006fed89b4940a9e1ea3d1ef5c1490b"
+    }
+  ],
+  "audit": {
+    "baseline": "8deb721 original Python advance + independent old mechanical DLL; strict fp",
+    "baseline_dll_sha256": "b1304f22c4a38a23363214338d256cf0b0be4e0e93973019d452e8c42ef6c52e",
+    "all_full_step_hex_and_references_equal": true,
+    "counts": {
+      "full_calls": 1413,
+      "native_force_calls": 24696,
+      "rolling_force_calls": 17076,
+      "static_force_calls": 7620,
+      "bench_cases": 21
+    },
+    "scope": "一次功能组旧/新对照，不再次pytest/T1/种子/48拍/profile。"
+  },
+  "archived_files": [
+    {
+      "archive": "wheel-solver-audit.json",
+      "bytes": 502,
+      "sha256": "fc822e24f2879568c693fd025bd6b89726ab3e7749d4b0cda737328713c93193"
+    },
+    {
+      "archive": "wheel-solver-audit.log",
+      "bytes": 484,
+      "sha256": "8e7d1df5b8500b8a69b7fedfca99ec4bb4560f37d9317baa6ceb80ab30a882bf"
+    },
+    {
+      "archive": "audit-wheel-solver.py",
+      "bytes": 4821,
+      "sha256": "8053b88d4ea26069f4097079bb7c2557a3731b93ec55101fe8bfbf8f13c38ce5"
+    },
+    {
+      "archive": "wheel-solver-original.py",
+      "bytes": 46853,
+      "sha256": "e25bcd661bc86b874d43890f0d785e004a57e94931cda3faa9ae05a2c9979b3f"
+    },
+    {
+      "archive": "wheel-solver-original.c",
+      "bytes": 117461,
+      "sha256": "548983070001cf117045573302645f7dc16a14c88f1d61387c1765e6d4bb12ed"
+    },
+    {
+      "archive": "wheel-solver-body.c",
+      "bytes": 6279,
+      "sha256": "770536b4dc91e7bac5ce768869ca247da8c5629f3be658bd54ea6d5b13ce8bf8"
+    },
+    {
+      "archive": "promote-wheel-solver.py",
+      "bytes": 1652,
+      "sha256": "89c0bb450f74dfcff16177ab95ef49c3477af264145728b20388e887eb0c0984"
+    },
+    {
+      "archive": "prepare-wheel-solver-helpers.py",
+      "bytes": 6943,
+      "sha256": "dfd25b9462a4834065df0e825043d721a0eedf6a737f0a3d618925d5ddf7f321"
+    },
+    {
+      "archive": "build-wheel-solver-baseline.py",
+      "bytes": 927,
+      "sha256": "8ec4d6de29abda8fce7ada3a2e7aee339579a1f47167d03cc3a8c1f0e3e7729a"
+    },
+    {
+      "archive": "wheel-solver-build.log",
+      "bytes": 2892,
+      "sha256": "13cef7ae177fafe4114a088586dc9c9bf5248abef4cec41ef0b29ec517ee546f"
+    },
+    {
+      "archive": "wheel-solver-ruff.log",
+      "bytes": 20,
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0"
+    },
+    {
+      "archive": "wheel-solver-baseline/_wheel_solver_old.cp314-win_amd64.pyd",
+      "bytes": 100864,
+      "sha256": "b1304f22c4a38a23363214338d256cf0b0be4e0e93973019d452e8c42ef6c52e"
+    },
+    {
+      "archive": "wheel-solver-baseline/baseline.c",
+      "bytes": 117459,
+      "sha256": "5e8419a68180e06fda0b029633f9e9da66463edb9d54b049d55a58e6c8da5fd6"
+    },
+    {
+      "archive": "wheel-solver-baseline/build/lib.win-amd64-cpython-314/_wheel_solver_old.cp314-win_amd64.pyd",
+      "bytes": 100864,
+      "sha256": "b1304f22c4a38a23363214338d256cf0b0be4e0e93973019d452e8c42ef6c52e"
+    },
+    {
+      "archive": "wheel-solver-baseline/build/temp.win-amd64-cpython-314/Release/_wheel_solver_old.cp314-win_amd64.exp",
+      "bytes": 882,
+      "sha256": "83ce3e3755ef009727a54e6134869da5dab2a3b95fdaf1245f6ac1f5005af661"
+    },
+    {
+      "archive": "wheel-solver-baseline/build/temp.win-amd64-cpython-314/Release/_wheel_solver_old.cp314-win_amd64.lib",
+      "bytes": 2192,
+      "sha256": "825fb2a7aecc123051ad971c4ed4bfe51f7312b48ff3b9fc71597e8861c47cbf"
+    },
+    {
+      "archive": "wheel-solver-baseline/build/temp.win-amd64-cpython-314/Release/baseline.obj",
+      "bytes": 504717,
+      "sha256": "50dfb13c6c13221f0fc82ef0095dddea5701c4a0544531c7aea7c4762dd56036"
+    },
+    {
+      "archive": "wheel-solver-baseline/build.log",
+      "bytes": 2835,
+      "sha256": "7ae20514c95b39200d8ee3a0b2d41149c5ec0773d648e72635534b87879c2737"
+    },
+    {
+      "archive": "wheel-solver-baseline/setup.py",
+      "bytes": 181,
+      "sha256": "95ad45dab55622a9245c0cfd28950eb2f5655f456ee8daf6e5e541c113c123bb"
+    },
+    {
+      "archive": "captured/mechanical_kernels.c",
+      "bytes": 127360,
+      "sha256": "d2ccb4100196449ca87d759cf4737ddd47061ad8636b1d190e9512a3cd75193f"
+    },
+    {
+      "archive": "captured/tire_drivetrain.py",
+      "bytes": 47440,
+      "sha256": "7303a6ef65e0463a4766df79cb2e55cd1006fed89b4940a9e1ea3d1ef5c1490b"
+    }
+  ],
+  "validation_rerun": false,
+  "validation_note": "只归档已有证据；未运行测试、模拟、profile、构建或重复T1/种子/48拍。876项T1为4067649既有证据复用，不是本块重跑。",
+  "gates": {
+    "T2": "pending",
+    "T3": "pending",
+    "foreground_performance": "pending",
+    "human_driving": "pending"
+  },
+  "publication": "本地main，未推送；工作区源码修改未提交。"
+}

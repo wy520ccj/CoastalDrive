@@ -13,7 +13,6 @@ from mechanical_kernels import (
     rotor_spin_prepared,
     shared_map_coefficients,
     shared_solution,
-    wheel_contact_state,
     wheel_force_solution,
     wheel_load_prepared,
     wheel_map_coefficients,
@@ -41,7 +40,7 @@ from shaft_transmission import (
 )
 from suspension import SuspensionInput, SuspensionStep, _solve, shared_suspension
 from suspension_kinematics import finite_contact_system
-from tire_compliance import contact_jacobian, energy_terms
+from tire_compliance import contact_force, contact_jacobian, energy_terms
 from tire_forces import combined_force, slip_state
 from tire_properties import tire_grip, tire_stiffness
 from transmission_ports import (
@@ -413,25 +412,19 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
 
     def contact(index, state, end_velocity, fx, fy):
         car = configurations[index]
-        if car.tire_compliance:
-            frame = frames[index]
-            return wheel_contact_state(state, end_velocity, wheel_start, index, frame.tangent, frame.axle,
-                moments_x[index], moments_y[index], radii[index], (fx, fy), deformations[index],
-                contact_parameters[index], tire_hardware[index], dt, rolling[index], math.hypot)
-        vx, vy, _slip = velocities(index, state, end_velocity)
+        vx, vy, slip = velocities(index, state, end_velocity)
         grip, cx, cy = contact_parameters[index]
+        if car.tire_compliance:
+            target, *details = contact_force((fx, fy), deformations[index], slip, max(abs(vx), car.slip_speed),
+                rolling[index], grip, cx, cy, dt, car.tire_contact_stiffness, car.tire_contact_damping,
+                car.tire_shape, car.tire_curvature)
+            return target, details
         kappa, alpha = slip_state(vx, vy, state[index + wheel_start], radii[index], car)
         return combined_force(kappa, alpha, grip, cx, cy, car.tire_shape, car.tire_curvature), None
 
     def solve_wheel(i, gyro):
         free_base_wheel, velocity_base = known(gyro, load_terms(exclude=i))
         frame, car = frames[i], configurations[i]
-        if shaft and car.tire_compliance:
-            fx, fy, brake, _error = wheel_force_solution(wheel_map, i, free_base_wheel, velocity_base, active_limits,
-                warm_branches, warm_modes, frame.tangent, frame.axle, moments_x[i], moments_y[i], radii[i],
-                deformations[i], contact_parameters[i], tire_hardware[i], rolling[i], .0001, forces[i][:2],
-                suspension is not None and sweep == 0 and rolling[i] and wheel_loads[i] > 0, math.hypot)
-            return (fx, fy, brake), "magic-formula" if wheel_loads[i] > 0 else "airborne"
         rx, ry, _rb = responses[i]
         scale_x = dt * (1 / mass + dot(longitudinal[i], rx))
         scale_y = dt * (1 / mass + dot(lateral[i], ry))
@@ -538,7 +531,11 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 rhs_x, rhs_y = tuple(slopes[a] * patch[a] for a in range(2))
                 determinant = a * d - b * c
                 guess = ((d * rhs_x - b * rhs_y) / determinant, (a * rhs_y - c * rhs_x) / determinant)
-            if rolling[i]:
+            if shaft:
+                fx, fy, _error = wheel_force_solution(wheel_map, i, free_base_wheel, velocity_base, active_limits,
+                    warm_branches, warm_modes, frame.tangent, frame.axle, moments_x[i], moments_y[i], radii[i],
+                    deformations[i], contact_parameters[i], tire_hardware[i], rolling[i], .0001, guess, math.hypot)
+            elif rolling[i]:
                 fx, fy, _error = _solve_rolling_force(residual, jacobian, contact_parameters[i][0],
                                                      tolerance=.0001, initial=guess)
             else:

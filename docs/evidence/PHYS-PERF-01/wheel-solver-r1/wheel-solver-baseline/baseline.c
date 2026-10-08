@@ -1385,13 +1385,18 @@ static PyObject *wheel_map_coefficients(PyObject *self,PyObject *args) {
 failed:
     PyMem_Free(data); return NULL;
 }
-static int wheel_map_values(WheelMap *packet,int wheel,const double base[9],const double base_velocity[3],
-    double fx,double fy,const double active[3],int warm,PyObject *warm_modes,const double tangent[3],const double axle[3],
-    double end[9],double velocity[3],double *brake,int *branch_index,int *mode_index) {
+static PyObject *wheel_map_state(PyObject *self,PyObject *args) {
+    PyObject *coefficients,*base_object,*velocity_object,*limits_object,*warm_modes,*tangent_object,*axle_object;
+    int wheel,warm;
+    double fx,fy;
+    if (!PyArg_ParseTuple(args,"OiOOddOiOOO",&coefficients,&wheel,&base_object,&velocity_object,&fx,&fy,
+                         &limits_object,&warm,&warm_modes,&tangent_object,&axle_object)) return NULL;
+    WheelMap *packet=PyCapsule_GetPointer(coefficients,wheel_map_name);
+    if (!packet) return NULL;
     SharedMap *data=packet->shared;
-    double free[9],terms[9],values[4];
-    for (int a=0;a<9;++a) free[a]=base[a];
-    for (int a=0;a<3;++a) velocity[a]=base_velocity[a];
+    double free[9],velocity[3],active[3],tangent[3],axle[3],terms[9],end[9],values[4];
+    if (!vector(base_object,free,9) || !vector(velocity_object,velocity,3) || !vector(limits_object,active,3)
+        || !vector(tangent_object,tangent,3) || !vector(axle_object,axle,3)) return NULL;
     const double *rx=packet->load.responses+27*wheel,*ry=rx+9;
     for (int a=0; a<9; ++a) free[a]=free[a]+data->dt*(rx[a]*fx+ry[a]*fy);
     int selected=-1,port_index=-1;
@@ -1410,33 +1415,16 @@ static int wheel_map_values(WheelMap *packet,int wheel,const double base[9],cons
         }
         PyObject *warm_row=PyList_GET_ITEM(warm_modes,index),*old=PyList_GET_ITEM(warm_row,wheel);
         int mode=old==Py_None ? -1 : (int)PyLong_AsLong(old);
-        if (PyErr_Occurred() || !shared_port_state(data,local,port_free,packet->brakes[wheel],mode,values,&port_index)) return 0;
+        if (PyErr_Occurred() || !shared_port_state(data,local,port_free,packet->brakes[wheel],mode,values,&port_index)) return NULL;
         PyObject *updated=PyLong_FromLong(port_index);
-        if (!updated || PyList_SetItem(warm_row,wheel,updated)<0) return 0;
+        if (!updated || PyList_SetItem(warm_row,wheel,updated)<0) return NULL;
         for (int a=0; a<9; ++a) end[a]=projected[a]-data->dt*(values[0]*branch->mc[a]+values[2]*branch->ml[a]
                                                        +values[3]*local->mc[a]+values[1]*branch->mg[a]);
         int feasible=shared_branch_feasible(data,branch,end,active);
         if (feasible) { selected=index; break; }
     }
-    if (selected<0) { PyErr_SetString(PyExc_ArithmeticError,"限滑/离合/制动共同末状态无可行分区"); return 0; }
+    if (selected<0) { PyErr_SetString(PyExc_ArithmeticError,"限滑/离合/制动共同末状态无可行分区"); return NULL; }
     for (int a=0; a<3; ++a) velocity[a]=velocity[a]+data->dt/packet->load.mass*(fx*tangent[a]+fy*axle[a]);
-    *brake=values[3]; *branch_index=selected; *mode_index=port_index;
-    return 1;
-}
-static PyObject *wheel_map_state(PyObject *self,PyObject *args) {
-    PyObject *coefficients,*base_object,*velocity_object,*limits_object,*warm_modes,*tangent_object,*axle_object;
-    int wheel,warm;
-    double fx,fy;
-    if (!PyArg_ParseTuple(args,"OiOOddOiOOO",&coefficients,&wheel,&base_object,&velocity_object,&fx,&fy,
-                         &limits_object,&warm,&warm_modes,&tangent_object,&axle_object)) return NULL;
-    WheelMap *packet=PyCapsule_GetPointer(coefficients,wheel_map_name);
-    if (!packet) return NULL;
-    double base[9],base_velocity[3],active[3],tangent[3],axle[3],end[9],velocity[3],brake;
-    int selected,port_index;
-    if (!vector(base_object,base,9) || !vector(velocity_object,base_velocity,3) || !vector(limits_object,active,3)
-        || !vector(tangent_object,tangent,3) || !vector(axle_object,axle,3)) return NULL;
-    if (!wheel_map_values(packet,wheel,base,base_velocity,fx,fy,active,warm,warm_modes,tangent,axle,
-                          end,velocity,&brake,&selected,&port_index)) return NULL;
     PyObject *state=PyTuple_New(9);
     if (!state) return NULL;
     for (int a=0; a<9; ++a) {
@@ -1444,25 +1432,33 @@ static PyObject *wheel_map_state(PyObject *self,PyObject *args) {
         if (!number) { Py_DECREF(state); return NULL; }
         PyTuple_SET_ITEM(state,a,number);
     }
-    return Py_BuildValue("(N(ddd)d(ii))",state,velocity[0],velocity[1],velocity[2],brake,selected,port_index);
+    return Py_BuildValue("(N(ddd)d(ii))",state,velocity[0],velocity[1],velocity[2],values[3],selected,port_index);
 }
 
 
 /* 同一轮端活动分区的完整解析导数；输入末状态来自原轮力映射。 */
-static int wheel_derivative_values(WheelMap *packet,int wheel,int branch_index,int port_index,
-    const double state[9],const double velocity[3],const double moment_x[3],const double moment_y[3],double radius,
-    const double tangent[3],const double axle[3],double speed[2],double slip[2],double gradients[2][3]) {
+static PyObject *wheel_map_derivatives(PyObject *self,PyObject *args) {
+    PyObject *coefficients,*state_object,*velocity_object,*moment_x_object,*moment_y_object,*tangent_object,*axle_object;
+    int wheel,branch_index,port_index;
+    double radius;
+    if (!PyArg_ParseTuple(args,"OiiiOOOOdOO",&coefficients,&wheel,&branch_index,&port_index,
+        &state_object,&velocity_object,&moment_x_object,&moment_y_object,&radius,&tangent_object,&axle_object)) return NULL;
+    WheelMap *packet=PyCapsule_GetPointer(coefficients,wheel_map_name);
+    if (!packet) return NULL;
     SharedMap *data=packet->shared;
     if (wheel<0 || wheel>=4 || branch_index<0 || branch_index>=data->branch_count) {
-        PyErr_SetString(PyExc_IndexError,"轮端导数分区索引越界"); return 0;
+        PyErr_SetString(PyExc_IndexError,"轮端导数分区索引越界"); return NULL;
     }
     WheelBranch *wheel_branch=&packet->local[4*branch_index+wheel];
     SharedBranch *branch=&data->branches[branch_index],*local=&wheel_branch->ports;
     if (port_index<0 || port_index>=local->plan_count) {
-        PyErr_SetString(PyExc_IndexError,"轮端导数端口索引越界"); return 0;
+        PyErr_SetString(PyExc_IndexError,"轮端导数端口索引越界"); return NULL;
     }
     SharedPortPlan *plan=&local->plans[port_index];
-    double terms[9];
+    double state[9],velocity[3],moment_x[3],moment_y[3],tangent[3],axle[3],terms[9];
+    if (!vector(state_object,state,9) || !vector(velocity_object,velocity,3)
+        || !vector(moment_x_object,moment_x,3) || !vector(moment_y_object,moment_y,3)
+        || !vector(tangent_object,tangent,3) || !vector(axle_object,axle,3)) return NULL;
     for (int a=0; a<3; ++a) terms[a]=velocity[a]*tangent[a];
     double vx=compensated(terms,3);
     for (int a=0; a<3; ++a) terms[a]=state[a]*moment_x[a];
@@ -1471,6 +1467,7 @@ static int wheel_derivative_values(WheelMap *packet,int wheel,int branch_index,i
     double vy=compensated(terms,3);
     for (int a=0; a<3; ++a) terms[a]=state[a]*moment_y[a];
     vy=vy+compensated(terms,3);
+    double gradients[2][3];
     for (int column=0; column<2; ++column) {
         const double *response=wheel_branch->force_responses[column];
         const double *direction=column==0 ? tangent : axle;
@@ -1517,24 +1514,7 @@ static int wheel_derivative_values(WheelMap *packet,int wheel,int branch_index,i
         gradients[column][0]=radius*dq[wheel+5]-dx;
         gradients[column][1]=-dy; gradients[column][2]=dx;
     }
-    speed[0]=vx; speed[1]=vy; slip[0]=radius*state[wheel+5]-vx; slip[1]=-vy;
-    return 1;
-}
-static PyObject *wheel_map_derivatives(PyObject *self,PyObject *args) {
-    PyObject *coefficients,*state_object,*velocity_object,*moment_x_object,*moment_y_object,*tangent_object,*axle_object;
-    int wheel,branch_index,port_index;
-    double radius;
-    if (!PyArg_ParseTuple(args,"OiiiOOOOdOO",&coefficients,&wheel,&branch_index,&port_index,
-        &state_object,&velocity_object,&moment_x_object,&moment_y_object,&radius,&tangent_object,&axle_object)) return NULL;
-    WheelMap *packet=PyCapsule_GetPointer(coefficients,wheel_map_name);
-    if (!packet) return NULL;
-    double state[9],velocity[3],moment_x[3],moment_y[3],tangent[3],axle[3],speed[2],slip[2],gradients[2][3];
-    if (!vector(state_object,state,9) || !vector(velocity_object,velocity,3)
-        || !vector(moment_x_object,moment_x,3) || !vector(moment_y_object,moment_y,3)
-        || !vector(tangent_object,tangent,3) || !vector(axle_object,axle,3)) return NULL;
-    if (!wheel_derivative_values(packet,wheel,branch_index,port_index,state,velocity,moment_x,moment_y,radius,
-                                 tangent,axle,speed,slip,gradients)) return NULL;
-    return Py_BuildValue("(dd(dd)[(ddd)(ddd)])",speed[0],speed[1],slip[0],slip[1],
+    return Py_BuildValue("(dd(dd)[(ddd)(ddd)])",vx,vy,radius*state[wheel+5]-vx,-vy,
         gradients[0][0],gradients[0][1],gradients[0][2],gradients[1][0],gradients[1][1],gradients[1][2]);
 }
 
@@ -1858,32 +1838,6 @@ static PyObject *tire_combined_force(PyObject *self,PyObject *args) {
     if (!tire_curve_values(kappa,alpha,grip,cx,cy,shape,curvature,hypot_function,target)) return NULL;
     return Py_BuildValue("(dd)",target[0],target[1]);
 }
-static int tire_contact_values(const double force[2],const double previous[2],const double slip[2],
-    double denominator,int rolling,double grip,double cx,double cy,double dt,double stiffness,double damping,
-    double shape,double curvature,PyObject *hypot_function,double target[2],double deformation[2],double rate[2],
-    double patch[2],double *kappa,double *alpha,const char **mode) {
-    double impedance=stiffness*dt+damping;
-    for (int i=0; i<2; ++i) {
-        rate[i]=(force[i]-stiffness*previous[i])/impedance;
-        deformation[i]=previous[i]+dt*rate[i]; patch[i]=slip[i]-rate[i];
-    }
-    *kappa=patch[0]/denominator; *alpha=atan2(-patch[1],denominator);
-    if (rolling) {
-        if (!tire_curve_values(*kappa,*alpha,grip,cx,cy,shape,curvature,hypot_function,target)) return 0;
-        *mode="compliant-rolling";
-    } else {
-        double trial[2],magnitude;
-        for (int i=0; i<2; ++i) trial[i]=stiffness*previous[i]+impedance*slip[i];
-        if (!tire_norm(hypot_function,trial[0],trial[1],&magnitude)) return 0;
-        if (magnitude<=grip) {
-            target[0]=trial[0]; target[1]=trial[1]; *mode="compliant-sticking";
-        } else {
-            for (int i=0; i<2; ++i) target[i]=grip*trial[i]/magnitude;
-            *mode="compliant-sliding";
-        }
-    }
-    return 1;
-}
 static PyObject *tire_contact_force(PyObject *self,PyObject *args) {
     PyObject *force_object,*previous_object,*slip_object,*hypot_function;
     double denominator,grip,cx,cy,dt,stiffness,damping,shape,curvature;
@@ -1892,79 +1846,46 @@ static PyObject *tire_contact_force(PyObject *self,PyObject *args) {
         &grip,&cx,&cy,&dt,&stiffness,&damping,&shape,&curvature,&hypot_function)) return NULL;
     double force[2],previous[2],slip[2],rate[2],deformation[2],patch[2],target[2];
     if (!vector(force_object,force,2) || !vector(previous_object,previous,2) || !vector(slip_object,slip,2)) return NULL;
-    double kappa,alpha; const char *mode;
-    if (!tire_contact_values(force,previous,slip,denominator,rolling,grip,cx,cy,dt,stiffness,damping,
-                             shape,curvature,hypot_function,target,deformation,rate,patch,&kappa,&alpha,&mode)) return NULL;
+    double impedance=stiffness*dt+damping;
+    for (int i=0; i<2; ++i) {
+        rate[i]=(force[i]-stiffness*previous[i])/impedance;
+        deformation[i]=previous[i]+dt*rate[i]; patch[i]=slip[i]-rate[i];
+    }
+    double kappa=patch[0]/denominator,alpha=atan2(-patch[1],denominator);
+    const char *mode;
+    if (rolling) {
+        if (!tire_curve_values(kappa,alpha,grip,cx,cy,shape,curvature,hypot_function,target)) return NULL;
+        mode="compliant-rolling";
+    } else {
+        double trial[2],magnitude;
+        for (int i=0; i<2; ++i) trial[i]=stiffness*previous[i]+impedance*slip[i];
+        if (!tire_norm(hypot_function,trial[0],trial[1],&magnitude)) return NULL;
+        if (magnitude<=grip) {
+            target[0]=trial[0]; target[1]=trial[1]; mode="compliant-sticking";
+        } else {
+            for (int i=0; i<2; ++i) target[i]=grip*trial[i]/magnitude;
+            mode="compliant-sliding";
+        }
+    }
     return Py_BuildValue("((dd)(dd)(dd)(dd)dds)",target[0],target[1],deformation[0],deformation[1],
         rate[0],rate[1],patch[0],patch[1],kappa,alpha,mode);
 }
-/* 接点速度与机械轮速共用原力臂；各点积分别保留补偿求和次序。 */
-static void wheel_velocity_values(const double *state,const double velocity[3],int coordinate,
-    const double tangent[3],const double axle[3],const double moment_x[3],const double moment_y[3],
-    double radius,double speed[2],double slip[2]) {
-    double terms[3];
-    for (int a=0;a<3;++a) terms[a]=velocity[a]*tangent[a];
-    speed[0]=compensated(terms,3);
-    for (int a=0;a<3;++a) terms[a]=state[a]*moment_x[a];
-    speed[0]=speed[0]+compensated(terms,3);
-    for (int a=0;a<3;++a) terms[a]=velocity[a]*axle[a];
-    speed[1]=compensated(terms,3);
-    for (int a=0;a<3;++a) terms[a]=state[a]*moment_y[a];
-    speed[1]=speed[1]+compensated(terms,3);
-    slip[0]=radius*state[coordinate]-speed[0]; slip[1]=-speed[1];
-}
-static PyObject *wheel_contact_state(PyObject *self,PyObject *args) {
-    PyObject *state_object,*velocity_object,*tangent_object,*axle_object,*moment_x_object,*moment_y_object;
-    PyObject *force_object,*previous_object,*parameters_object,*hardware_object,*hypot_function;
-    int wheel_start,wheel,rolling;
-    double radius,dt,state[9],velocity[3],tangent[3],axle[3],moment_x[3],moment_y[3];
-    double force[2],previous[2],parameters[3],hardware[5],speed[2],slip[2],target[2],deformation[2],rate[2],patch[2];
-    if (!PyArg_ParseTuple(args,"OOiiOOOOdOOOOdpO",&state_object,&velocity_object,&wheel_start,&wheel,
-        &tangent_object,&axle_object,&moment_x_object,&moment_y_object,&radius,&force_object,&previous_object,
-        &parameters_object,&hardware_object,&dt,&rolling,&hypot_function)) return NULL;
-    if ((wheel_start!=4 && wheel_start!=5) || wheel<0 || wheel>=4) {
-        PyErr_SetString(PyExc_IndexError,"接点机械轮速索引越界"); return NULL;
-    }
-    if (!vector(state_object,state,wheel_start+4) || !vector(velocity_object,velocity,3)
-        || !vector(tangent_object,tangent,3) || !vector(axle_object,axle,3)
-        || !vector(moment_x_object,moment_x,3) || !vector(moment_y_object,moment_y,3)
-        || !vector(force_object,force,2) || !vector(previous_object,previous,2)
-        || !vector(parameters_object,parameters,3) || !vector(hardware_object,hardware,5)) return NULL;
-    wheel_velocity_values(state,velocity,wheel_start+wheel,tangent,axle,moment_x,moment_y,radius,speed,slip);
-    double denominator=fabs(speed[0])>hardware[0] ? fabs(speed[0]) : hardware[0],kappa,alpha;
-    const char *mode;
-    if (!tire_contact_values(force,previous,slip,denominator,rolling,parameters[0],parameters[1],parameters[2],
-        dt,hardware[1],hardware[2],hardware[3],hardware[4],hypot_function,target,deformation,rate,patch,&kappa,&alpha,&mode)) return NULL;
-    return Py_BuildValue("((dd)[(dd)(dd)(dd)dds])",target[0],target[1],deformation[0],deformation[1],
-        rate[0],rate[1],patch[0],patch[1],kappa,alpha,mode);
-}
-static PyObject *tire_energy_terms(PyObject *self,PyObject *args) {
-    PyObject *force_object,*previous_object,*deformation_object,*rate_object,*patch_object;
-    double dt,stiffness,damping,force[2],previous[2],deformation[2],rate[2],patch[2],terms[2];
-    if (!PyArg_ParseTuple(args,"OOOOOddd",&force_object,&previous_object,&deformation_object,&rate_object,
-        &patch_object,&dt,&stiffness,&damping)) return NULL;
-    if (!vector(force_object,force,2) || !vector(previous_object,previous,2)
-        || !vector(deformation_object,deformation,2) || !vector(rate_object,rate,2) || !vector(patch_object,patch,2)) return NULL;
-    for (int a=0;a<2;++a) terms[a]=deformation[a]*deformation[a];
-    double energy=.5*stiffness*compensated(terms,2);
-    for (int a=0;a<2;++a) terms[a]=rate[a]*rate[a];
-    double material=dt*damping*compensated(terms,2);
-    for (int a=0;a<2;++a) terms[a]=force[a]*patch[a];
-    double road=dt*compensated(terms,2);
-    for (int a=0;a<2;++a) terms[a]=pow(deformation[a]-previous[a],2.);
-    double numerical=.5*stiffness*compensated(terms,2);
-    return Py_BuildValue("(dddd)",energy,material,road,numerical);
-}
-static int tire_jacobian_values(const double force[2],const double previous[2],const double slip[2],
-    const double slip_jacobian[4],double denominator,const double denominator_gradient[2],int rolling,
-    double grip,double cx,double cy,double dt,double stiffness,double damping,double shape,double curvature,
-    PyObject *hypot_function,double result[4]) {
-    if (grip==0.) { for (int i=0;i<4;++i) result[i]=0.; return 1; }
+static PyObject *tire_contact_jacobian(PyObject *self,PyObject *args) {
+    PyObject *force_object,*previous_object,*slip_object,*slip_jacobian_object,*denominator_gradient_object,*hypot_function;
+    double denominator,grip,cx,cy,dt,stiffness,damping,shape,curvature;
+    int rolling;
+    if (!PyArg_ParseTuple(args,"OOOOdOpddddddddO",&force_object,&previous_object,&slip_object,&slip_jacobian_object,
+        &denominator,&denominator_gradient_object,&rolling,&grip,&cx,&cy,&dt,&stiffness,&damping,&shape,&curvature,&hypot_function)) return NULL;
+    if (grip==0.) return Py_BuildValue("((dd)(dd))",0.,0.,0.,0.);
+    double force[2],previous[2],slip[2],slip_jacobian[4],denominator_gradient[2],result[4];
+    if (!vector(force_object,force,2) || !vector(previous_object,previous,2) || !vector(slip_object,slip,2)
+        || !matrix_values(slip_jacobian_object,slip_jacobian,2,2)
+        || !vector(denominator_gradient_object,denominator_gradient,2)) return NULL;
     double impedance=stiffness*dt+damping;
     if (!rolling) {
         double trial[2],magnitude,trial_jacobian[4],projection[4],terms[2];
         for (int i=0; i<2; ++i) trial[i]=stiffness*previous[i]+impedance*slip[i];
-        if (!tire_norm(hypot_function,trial[0],trial[1],&magnitude)) return 0;
+        if (!tire_norm(hypot_function,trial[0],trial[1],&magnitude)) return NULL;
         for (int i=0; i<4; ++i) trial_jacobian[i]=impedance*slip_jacobian[i];
         if (magnitude<=grip) {
             for (int i=0; i<4; ++i) result[i]=trial_jacobian[i];
@@ -1987,7 +1908,7 @@ static int tire_jacobian_values(const double force[2],const double previous[2],c
                 q_jacobian[2*i+j]=(stiffnesses[i]*patch_jacobian-q[i]*denominator_gradient[j])/denominator;
             }
         }
-        if (!tire_norm(hypot_function,q[0],q[1],&magnitude)) return 0;
+        if (!tire_norm(hypot_function,q[0],q[1],&magnitude)) return NULL;
         if (magnitude==0.) {
             for (int i=0; i<4; ++i) result[i]=q_jacobian[i];
         } else {
@@ -2002,21 +1923,6 @@ static int tire_jacobian_values(const double force[2],const double previous[2],c
             }
         }
     }
-    return 1;
-}
-static PyObject *tire_contact_jacobian(PyObject *self,PyObject *args) {
-    PyObject *force_object,*previous_object,*slip_object,*slip_jacobian_object,*denominator_gradient_object,*hypot_function;
-    double denominator,grip,cx,cy,dt,stiffness,damping,shape,curvature;
-    int rolling;
-    if (!PyArg_ParseTuple(args,"OOOOdOpddddddddO",&force_object,&previous_object,&slip_object,&slip_jacobian_object,
-        &denominator,&denominator_gradient_object,&rolling,&grip,&cx,&cy,&dt,&stiffness,&damping,&shape,&curvature,&hypot_function)) return NULL;
-    if (grip==0.) return Py_BuildValue("((dd)(dd))",0.,0.,0.,0.);
-    double force[2],previous[2],slip[2],slip_jacobian[4],denominator_gradient[2],result[4];
-    if (!vector(force_object,force,2) || !vector(previous_object,previous,2) || !vector(slip_object,slip,2)
-        || !matrix_values(slip_jacobian_object,slip_jacobian,2,2)
-        || !vector(denominator_gradient_object,denominator_gradient,2)) return NULL;
-    if (!tire_jacobian_values(force,previous,slip,slip_jacobian,denominator,denominator_gradient,rolling,
-                              grip,cx,cy,dt,stiffness,damping,shape,curvature,hypot_function,result)) return NULL;
     return Py_BuildValue("((dd)(dd))",result[0],result[1],result[2],result[3]);
 }
 
@@ -2075,15 +1981,11 @@ static PyObject *rolling_root_failure(const char *message, double residual) {
     return NULL;
 }
 
-typedef int (*ForceEvaluation)(void *,double,double,int,double *);
-typedef struct { PyObject *residual,*jacobian; } CallbackForce;
-static int callback_force_values(void *context,double fx,double fy,int jacobian,double *values) {
-    CallbackForce *data=context;
-    return rolling_root_evaluate(jacobian ? data->jacobian : data->residual,fx,fy,values,jacobian ? 4 : 2);
-}
-static int rolling_root_values(ForceEvaluation evaluate,void *context,double grip,double tolerance,
-    double force[2],PyObject *hypot_function,double *final_error) {
-    double error=0.;
+static PyObject *rolling_force_solution(PyObject *self, PyObject *args) {
+    PyObject *residual, *jacobian, *initial, *hypot_function;
+    double grip, tolerance, force[2], error = 0.;
+    if (!PyArg_ParseTuple(args, "OOddOO", &residual, &jacobian, &grip, &tolerance, &initial, &hypot_function)) return NULL;
+    if (!vector(initial, force, 2)) return NULL;
     for (int i = 0; i < 2; ++i) {
         double limited = force[i] < grip ? force[i] : grip;
         force[i] = limited > -grip ? limited : -grip;
@@ -2093,162 +1995,32 @@ static int rolling_root_values(ForceEvaluation evaluate,void *context,double gri
         double lower_y = -grip, upper_y = grip, r[2], matrix[4];
         int lateral;
         for (lateral = 0; lateral < 20; ++lateral) {
-            if (!evaluate(context,force[0],force[1],0,r)
-                || !evaluate(context,force[0],force[1],1,matrix)) return 0;
+            if (!rolling_root_evaluate(residual, force[0], force[1], r, 2)
+                || !rolling_root_evaluate(jacobian, force[0], force[1], matrix, 4)) return NULL;
             if (fabs(r[1]) < tolerance) break;
             if (r[1] > 0.) upper_y = force[1]; else lower_y = force[1];
-            if (matrix[3] == 0.) { PyErr_SetString(PyExc_ZeroDivisionError, "横向根导数为零"); return 0; }
+            if (matrix[3] == 0.) { PyErr_SetString(PyExc_ZeroDivisionError, "横向根导数为零"); return NULL; }
             double candidate = force[1] - r[1] / matrix[3];
             force[1] = lower_y < candidate && candidate < upper_y ? candidate : (lower_y + upper_y) / 2;
         }
-        if (lateral == 20) { rolling_root_failure("轮胎横向隐式积分超过20次迭代：残差 ",r[1]); return 0; }
+        if (lateral == 20) return rolling_root_failure("轮胎横向隐式积分超过20次迭代：残差 ", r[1]);
         PyObject *norm = PyObject_CallFunction(hypot_function, "dd", r[0], r[1]);
-        if (!norm) return 0;
+        if (!norm) return NULL;
         error = PyFloat_AsDouble(norm);
         Py_DECREF(norm);
-        if (PyErr_Occurred()) return 0;
-        if (error < tolerance) { *final_error=error; return 1; }
+        if (PyErr_Occurred()) return NULL;
+        if (error < tolerance) return Py_BuildValue("(ddd)", force[0], force[1], error);
         if (r[0] > 0.) upper_x = force[0]; else lower_x = force[0];
-        if (matrix[3] == 0.) { PyErr_SetString(PyExc_ZeroDivisionError, "横向根导数为零"); return 0; }
+        if (matrix[3] == 0.) { PyErr_SetString(PyExc_ZeroDivisionError, "横向根导数为零"); return NULL; }
         double derivative = matrix[0] - matrix[1] * matrix[2] / matrix[3];
-        if (derivative == 0.) { PyErr_SetString(PyExc_ZeroDivisionError, "纵向根导数为零"); return 0; }
+        if (derivative == 0.) { PyErr_SetString(PyExc_ZeroDivisionError, "纵向根导数为零"); return NULL; }
         double candidate = force[0] - r[0] / derivative;
         force[0] = lower_x < candidate && candidate < upper_x ? candidate : (lower_x + upper_x) / 2;
     }
-    rolling_root_failure("轮胎滚动隐式积分超过20次迭代：残差 ",error); return 0;
-}
-static PyObject *rolling_force_solution(PyObject *self,PyObject *args) {
-    CallbackForce context;
-    PyObject *initial,*hypot_function;
-    double grip,tolerance,force[2],error;
-    if (!PyArg_ParseTuple(args,"OOddOO",&context.residual,&context.jacobian,&grip,&tolerance,&initial,&hypot_function)) return NULL;
-    if (!vector(initial,force,2) || !rolling_root_values(callback_force_values,&context,grip,tolerance,force,hypot_function,&error)) return NULL;
-    return Py_BuildValue("(ddd)",force[0],force[1],error);
-}
-
-/* 本次轮端方程的固定输入；暖分区仍逐次写回原list。 */
-typedef struct {
-    WheelMap *map;
-    int wheel,rolling;
-    double base[9],velocity[3],active[3],tangent[3],axle[3],moment_x[3],moment_y[3];
-    double radius,previous[2],parameters[3],hardware[5];
-    PyObject *warm_branches,*warm_modes,*hypot;
-} WheelForce;
-
-static int wheel_force_state(WheelForce *data,double fx,double fy,double state[9],double velocity[3],
-    double *brake,int *selected,int *mode) {
-    int warm=(int)PyLong_AsLong(PyList_GET_ITEM(data->warm_branches,data->wheel));
-    if (PyErr_Occurred() || !wheel_map_values(data->map,data->wheel,data->base,data->velocity,fx,fy,data->active,
-        warm,data->warm_modes,data->tangent,data->axle,state,velocity,brake,selected,mode)) return 0;
-    PyObject *updated=PyLong_FromLong(*selected);
-    if (!updated || PyList_SetItem(data->warm_branches,data->wheel,updated)<0) return 0;
-    return 1;
-}
-static int wheel_force_values(void *context,double fx,double fy,int jacobian,double *result) {
-    WheelForce *data=context;
-    double state[9],velocity[3],brake;
-    int selected,mode;
-    if (!wheel_force_state(data,fx,fy,state,velocity,&brake,&selected,&mode)) return 0;
-    double force[2]={fx,fy},speed[2],slip[2],gradients[2][3];
-    if (jacobian) {
-        if (!wheel_derivative_values(data->map,data->wheel,selected,mode,state,velocity,data->moment_x,data->moment_y,
-            data->radius,data->tangent,data->axle,speed,slip,gradients)) return 0;
-    } else {
-        wheel_velocity_values(state,velocity,data->wheel+5,data->tangent,data->axle,
-            data->moment_x,data->moment_y,data->radius,speed,slip);
-    }
-    double denominator=fabs(speed[0]);
-    if (data->hardware[0]>denominator) denominator=data->hardware[0];
-    double dt=data->map->shared->dt;
-    if (jacobian) {
-        double slip_jacobian[4]={gradients[0][0],gradients[1][0],gradients[0][1],gradients[1][1]};
-        double denominator_gradient[2]={0.},target[4];
-        if (fabs(speed[0])>data->hardware[0])
-            for (int a=0;a<2;++a) denominator_gradient[a]=copysign(1.,speed[0])*gradients[a][2];
-        if (!tire_jacobian_values(force,data->previous,slip,slip_jacobian,denominator,denominator_gradient,data->rolling,
-            data->parameters[0],data->parameters[1],data->parameters[2],dt,data->hardware[1],data->hardware[2],
-            data->hardware[3],data->hardware[4],data->hypot,target)) return 0;
-        result[0]=1-target[0]; result[1]=-target[1]; result[2]=-target[2]; result[3]=1-target[3];
-    } else {
-        double target[2],deformation[2],rate[2],patch[2],kappa,alpha;
-        const char *contact_mode;
-        if (!tire_contact_values(force,data->previous,slip,denominator,data->rolling,
-            data->parameters[0],data->parameters[1],data->parameters[2],dt,data->hardware[1],data->hardware[2],
-            data->hardware[3],data->hardware[4],data->hypot,target,deformation,rate,patch,&kappa,&alpha,&contact_mode)) return 0;
-        result[0]=fx-target[0]; result[1]=fy-target[1];
-    }
-    return 1;
-}
-static int wheel_newton_values(WheelForce *data,double tolerance,double force[2],double *final_error) {
-    double error=0.;
-    for (int iteration=0;iteration<20;++iteration) {
-        double residual[2],matrix[4];
-        if (!wheel_force_values(data,force[0],force[1],0,residual)
-            || !tire_norm(data->hypot,residual[0],residual[1],&error)) return 0;
-        if (error<tolerance) { *final_error=error; return 1; }
-        if (!wheel_force_values(data,force[0],force[1],1,matrix)) return 0;
-        double determinant=matrix[0]*matrix[3]-matrix[1]*matrix[2];
-        if (determinant==0.) { PyErr_SetString(PyExc_ZeroDivisionError,"轮胎Jacobian行列式为零"); return 0; }
-        double dx=(matrix[3]*residual[0]-matrix[1]*residual[1])/determinant;
-        double dy=(matrix[0]*residual[1]-matrix[2]*residual[0])/determinant;
-        int exponent;
-        for (exponent=0;exponent<12;++exponent) {
-            double scale=ldexp(1.,-exponent),candidate_x=force[0]-scale*dx,candidate_y=force[1]-scale*dy;
-            double next[2],next_error;
-            if (!wheel_force_values(data,candidate_x,candidate_y,0,next) || !tire_norm(data->hypot,next[0],next[1],&next_error)) return 0;
-            if (next_error<error) { force[0]=candidate_x; force[1]=candidate_y; break; }
-        }
-        if (exponent==12) { rolling_root_failure("轮胎隐式积分不收敛：残差 ",error); return 0; }
-    }
-    rolling_root_failure("轮胎隐式积分超过20次迭代：残差 ",error); return 0;
-}
-static PyObject *wheel_force_solution(PyObject *self,PyObject *args) {
-    WheelForce context;
-    PyObject *coefficients,*base,*velocity,*active,*tangent,*axle,*moment_x,*moment_y,*previous,*parameters,*hardware,*initial;
-    double tolerance,force[2],error;
-    int predict;
-    if (!PyArg_ParseTuple(args,"Oi" "OOOOOOOOO" "dOOOpdOpO",&coefficients,&context.wheel,&base,&velocity,&active,
-        &context.warm_branches,&context.warm_modes,&tangent,&axle,&moment_x,&moment_y,&context.radius,&previous,
-        &parameters,&hardware,&context.rolling,&tolerance,&initial,&predict,&context.hypot)) return NULL;
-    context.map=PyCapsule_GetPointer(coefficients,wheel_map_name);
-    if (!context.map) return NULL;
-    if (context.wheel<0 || context.wheel>=4) { PyErr_SetString(PyExc_IndexError,"轮端索引越界"); return NULL; }
-    if (!vector(base,context.base,9) || !vector(velocity,context.velocity,3) || !vector(active,context.active,3)
-        || !vector(tangent,context.tangent,3) || !vector(axle,context.axle,3) || !vector(moment_x,context.moment_x,3)
-        || !vector(moment_y,context.moment_y,3) || !vector(previous,context.previous,2)
-        || !vector(parameters,context.parameters,3) || !vector(hardware,context.hardware,5) || !vector(initial,force,2)) return NULL;
-    double state[9],end_velocity[3],brake;
-    int selected,mode;
-    if (predict) {
-        /* 首轮真实轮荷刷新后的同方程零滑移切线初值。 */
-        double speed[2],slip[2],gradients[2][3],slopes[2],patch[2],matrix[4];
-        if (!wheel_force_state(&context,0.,0.,state,end_velocity,&brake,&selected,&mode)
-            || !wheel_derivative_values(context.map,context.wheel,selected,mode,state,end_velocity,
-                context.moment_x,context.moment_y,context.radius,context.tangent,context.axle,speed,slip,gradients)) return NULL;
-        double dt=context.map->shared->dt,impedance=context.hardware[1]*dt+context.hardware[2];
-        double denominator=fabs(speed[0])>context.hardware[0] ? fabs(speed[0]) : context.hardware[0];
-        for (int a=0;a<2;++a) {
-            slopes[a]=context.parameters[a+1]/denominator;
-            patch[a]=slip[a]+context.hardware[1]*context.previous[a]/impedance;
-            for (int b=0;b<2;++b) matrix[2*a+b]=(double)(a==b)-slopes[a]*(gradients[b][a]-(double)(a==b)/impedance);
-        }
-        double rhs_x=slopes[0]*patch[0],rhs_y=slopes[1]*patch[1];
-        double determinant=matrix[0]*matrix[3]-matrix[1]*matrix[2];
-        if (determinant==0.) { PyErr_SetString(PyExc_ZeroDivisionError,"轮胎初值切线行列式为零"); return NULL; }
-        force[0]=(matrix[3]*rhs_x-matrix[1]*rhs_y)/determinant;
-        force[1]=(matrix[0]*rhs_y-matrix[2]*rhs_x)/determinant;
-    }
-    int solved=context.rolling ? rolling_root_values(wheel_force_values,&context,context.parameters[0],tolerance,force,context.hypot,&error)
-                               : wheel_newton_values(&context,tolerance,force,&error);
-    if (!solved) return NULL;
-    if (!wheel_force_state(&context,force[0],force[1],state,end_velocity,&brake,&selected,&mode)) return NULL;
-    return Py_BuildValue("(dddd)",force[0],force[1],brake,error);
+    return rolling_root_failure("轮胎滚动隐式积分超过20次迭代：残差 ", error);
 }
 
 static PyMethodDef methods[] = {
-    {"tire_energy_terms", (PyCFunction)tire_energy_terms, METH_VARARGS, "原胎体储能、材料/路面/离散耗散"},
-    {"wheel_contact_state", (PyCFunction)wheel_contact_state, METH_VARARGS, "原共同末速度接点与胎体本构"},
-    {"wheel_force_solution", (PyCFunction)wheel_force_solution, METH_VARARGS, "原九维轮端柔性接触力与解析Jacobian共同求解"},
     {"rolling_force_solution", (PyCFunction)rolling_force_solution, METH_VARARGS, "原滚动接触括根控制流"},
     {"suspension_step", (PyCFunction)suspension_step, METH_VARARGS, "原完整悬架步与能量账"},
     {"suspension_elastic_terms", (PyCFunction)suspension_elastic_terms, METH_VARARGS, "原悬架势能及硬件梯度"},
@@ -2284,8 +2056,8 @@ static PyMethodDef methods[] = {
     {"project_vector", (PyCFunction)project_vector, METH_VARARGS | METH_KEYWORDS, "同次序逐端口机械投影"},
     {NULL, NULL, 0, NULL}
 };
-static struct PyModuleDef module = {PyModuleDef_HEAD_INIT, "mechanical_kernels", NULL, -1, methods};
-PyMODINIT_FUNC PyInit_mechanical_kernels(void) {
+static struct PyModuleDef module = {PyModuleDef_HEAD_INIT, "_wheel_solver_old", NULL, -1, methods};
+PyMODINIT_FUNC PyInit__wheel_solver_old(void) {
     PyObject *result = PyModule_Create(&module);
     if (!result) return NULL;
     PyObject *precision = PyFloat_FromDouble(PORT_TOLERANCE);
