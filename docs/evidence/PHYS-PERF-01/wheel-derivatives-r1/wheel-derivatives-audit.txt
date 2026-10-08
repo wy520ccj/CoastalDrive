@@ -1,0 +1,1975 @@
+........................................................................ [ 21%]
+........................................................................ [ 42%]
+........................................................................ [ 63%]
+........................................................................ [ 84%]
+..............FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF.FFFF                     [100%]
+================================== FAILURES ===================================
+_______ test_native_loaded_axle_jacobian_matches_independent_difference _______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002D64B8CD940>
+
+    def test_native_loaded_axle_jacobian_matches_independent_difference(monkeypatch):
+        original = tire_drivetrain.shared_solution
+        errors = []
+    
+        def audited_solve(coefficients, guess, loads, wheel_loads, supported, warm, bias_ports):
+            if len(errors) < 16 and all(load > 0. for load in wheel_loads):
+                # GR86����ʵ�޻��˿�Ҳ��δ֪������ͬһϵ�����˶�ʵ������״̬��
+                state = tuple(guess) + tuple(bias_ports)
+    
+                def mapped(candidate):
+                    return shared_map_state(
+                        coefficients, candidate, loads, wheel_loads, supported, warm)
+    
+                partition = mapped(state)[5:7]
+                columns = shared_map_jacobian(
+                    coefficients, state, wheel_loads, supported, *partition)
+                numeric, partitions = [], []
+                for j in range(len(state)):
+                    positive, negative = list(state), list(state)
+                    positive[j] += .0001
+                    negative[j] -= .0001
+                    high, low = mapped(positive), mapped(negative)
+                    partitions.extend((high[5:7], low[5:7]))
+                    numeric.append(tuple(float(i == j) - (high[0][i]-low[0][i])/.0002 for i in range(len(state))))
+                if all(candidate == partition for candidate in partitions):
+                    error = max(abs(columns[j][i] - numeric[j][i]) / max(1., abs(columns[j][i]), abs(numeric[j][i]))
+                                for i in range(len(state)) for j in range(len(state)))
+                    assert error < 2e-6
+                    errors.append(error)
+            return original(coefficients, guess, loads, wheel_loads, supported, warm, bias_ports)
+    
+        monkeypatch.setattr(tire_drivetrain, "shared_solution", audited_solve)
+        sim = Simulation(17, track="coastal", traffic_count=0, config=GR86_DESIGN,
+                         input_config=GAME_INPUT)
+        try:
+            for tick in range(24):
+>               sim.step(Control(throttle=.3, steering=.02 if tick >= 12 else 0.))
+
+tests\test_drivetrain_jacobian.py:49: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\simulation.py:738: in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (8.594402579182385e-07, -9.292602195504587e-07, -2.9581655406716767e-11, 94.24868550670814, 0.01151795130418579, 0.0, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[False-0.008333333333333333-0.0--20.0] _
+
+bank = -20.0, share = 0.0, dt = 0.008333333333333333, finite_rotation = False
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.025202402031581184, -0.005617841619593608, 0.14948930027366583, 182.6284960969737, 192.9856720521304, 60.09121522528284, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[False-0.008333333333333333-0.0-20.0] _
+
+bank = 20.0, share = 0.0, dt = 0.008333333333333333, finite_rotation = False
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.026816442540332604, -0.060214944786909565, 0.15651025095645968, 182.62822446959473, 191.26417477594046, 60.1071744864688, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[False-0.008333333333333333-0.5--20.0] _
+
+bank = -20.0, share = 0.5, dt = 0.008333333333333333, finite_rotation = False
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.02547750085000115, -0.0037517368251983024, 0.1492066668815558, 182.62850538107713, 191.5710208326737, 59.44365378367462, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[False-0.008333333333333333-0.5-20.0] _
+
+bank = 20.0, share = 0.5, dt = 0.008333333333333333, finite_rotation = False
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.026946323242171766, -0.058504043350624174, 0.15603789057143116, 182.62823298154217, 190.75121589950592, 59.4751129318676, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[False-0.008333333333333333-1.0--20.0] _
+
+bank = -20.0, share = 1.0, dt = 0.008333333333333333, finite_rotation = False
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.02597579911866933, -0.0021426769283086075, 0.1490127513307109, 182.62851338635025, 186.73489386901463, 58.97802404627831, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[False-0.008333333333333333-1.0-20.0] _
+
+bank = 20.0, share = 1.0, dt = 0.008333333333333333, finite_rotation = False
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.02732298954050981, -0.056910169370010116, 0.15556313041961564, 182.6282409112635, 186.6722768327637, 58.994625688437495, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[False-0.004166666666666667-0.0--20.0] _
+
+bank = -20.0, share = 0.0, dt = 0.004166666666666667, finite_rotation = False
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.032109375339704926, -0.028836493735121246, 0.15904644105604832, 178.8237019871312, 192.31273342379006, 60.49976839126493, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[False-0.004166666666666667-0.0-20.0] _
+
+bank = 20.0, share = 0.0, dt = 0.004166666666666667, finite_rotation = False
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.032827341883101525, -0.06108275626340051, 0.1625497174654123, 178.82362157251143, 191.55696680305013, 60.51082458009585, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[False-0.004166666666666667-0.5--20.0] _
+
+bank = -20.0, share = 0.5, dt = 0.004166666666666667, finite_rotation = False
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.032200039267445094, -0.02778105693573041, 0.15900344205829667, 178.82370461914314, 192.0552131455398, 60.03976427044996, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[False-0.004166666666666667-0.5-20.0] _
+
+bank = 20.0, share = 0.5, dt = 0.004166666666666667, finite_rotation = False
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.03287806996927489, -0.060086653325068705, 0.16239477395689525, 178.82362405655863, 191.69536113129786, 60.05645753450108, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[False-0.004166666666666667-1.0--20.0] _
+
+bank = -20.0, share = 1.0, dt = 0.004166666666666667, finite_rotation = False
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.03246859067435059, -0.026785666218505817, 0.15896718917308622, 178.82370710141427, 189.28529250134602, 59.68667998469052, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[False-0.004166666666666667-1.0-20.0] _
+
+bank = 20.0, share = 1.0, dt = 0.004166666666666667, finite_rotation = False
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.03311195224132606, -0.059096731157441705, 0.16223566277699306, 178.82362652519248, 189.2686863595721, 59.695392612881136, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.0--20.0] _
+
+bank = -20.0, share = 0.0, dt = 0.008333333333333333, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.02523315091571326, -0.005828833395578788, 0.14950067437748604, 182.62849504726336, 192.98411889384332, 60.09121701370228, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.0-20.0] _
+
+bank = 20.0, share = 0.0, dt = 0.008333333333333333, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.026812303621934742, -0.06022960539387071, 0.15650937493740527, 182.6282243966564, 191.26454077824357, 60.1071745720101, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.5--20.0] _
+
+bank = -20.0, share = 0.5, dt = 0.008333333333333333, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.02550801099470561, -0.00396135853952119, 0.14921747522359624, 182.62850433818306, 191.57041430085087, 59.44370814143755, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.5-20.0] _
+
+bank = 20.0, share = 0.5, dt = 0.008333333333333333, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.02694213055152436, -0.05851788792321038, 0.15603706313895171, 182.62823291266375, 190.75143626078213, 59.47510788337524, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-1.0--20.0] _
+
+bank = -20.0, share = 1.0, dt = 0.008333333333333333, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.026006229639868424, -0.002350689045693077, 0.14902306935779386, 182.6285123514641, 186.73500617745276, 58.97809764390765, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-1.0-20.0] _
+
+bank = 20.0, share = 1.0, dt = 0.008333333333333333, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.02731883299318353, -0.05692317449272989, 0.15556234811555147, 182.6282408465614, 186.6723485765308, 58.994621354931205, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-0.0--20.0] _
+
+bank = -20.0, share = 0.0, dt = 0.004166666666666667, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.03211815859189895, -0.028906087506812856, 0.15904923010345012, 178.82370181358064, 192.31242251737365, 60.49976181824569, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-0.0-20.0] _
+
+bank = 20.0, share = 0.0, dt = 0.004166666666666667, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.03282654264833376, -0.06108782380534929, 0.16254920815246163, 178.82362155987414, 191.55706358870083, 60.51082463320729, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-0.5--20.0] _
+
+bank = -20.0, share = 0.5, dt = 0.004166666666666667, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.03220877833398114, -0.027850369462501214, 0.15900614860219828, 178.823704446294, 192.05508747457924, 60.03976549773989, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-0.5-20.0] _
+
+bank = 20.0, share = 0.5, dt = 0.004166666666666667, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.03287725700486484, -0.06009152940274371, 0.16239428252515528, 178.82362404439888, 191.695420453895, 60.05645642108244, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-1.0--20.0] _
+
+bank = -20.0, share = 1.0, dt = 0.004166666666666667, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.03247731162913497, -0.026854665549677584, 0.15896982966612183, 178.8237069293461, 189.2853228283673, 59.68668217230337, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-1.0-20.0] _
+
+bank = 20.0, share = 1.0, dt = 0.004166666666666667, finite_rotation = True
+
+    @pytest.mark.parametrize("bank", (-20., 20.))
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("dt", (1 / 120, 1 / 240))
+    @pytest.mark.parametrize("finite_rotation", (False, True))
+    def test_joint_hardware_kinematics_and_full_rotor_energy(bank, share, dt, finite_rotation):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(bank, 17.)
+        normal = (math.sin(math.radians(bank)), 0., math.cos(math.radians(bank)))
+        alignment = normal[2]
+        gradients = tuple(tuple(n / alignment for n in normal)
+                          + tuple(value / alignment for value in cross(frame.point, normal))
+                          for frame in contact_frames)
+        initial = (.064, .047, .067, .05)
+        system = SuspensionInput(initial, initial, gradients, (True,) * 4, (alignment,) * 4, config)
+        if finite_rotation:
+            direction = (0., 0., -1.)
+            planes = tuple(SupportPlane(tuple(frame.point[a] - (.4 - initial[i]) * direction[a]
+                                             + config.wheel_radius * normal[a] for a in range(3)),
+                                        direction, normal, .4 - initial[i]) for i, frame in enumerate(contact_frames))
+            system = replace(system, kinematics=planes, angular_damping=.2)
+        velocity, angular, spins, engine = (.3, 20., -.2), (.04, -.06, .17), (61., 60., 62., 59.), 175.
+        deformation = ((.002, -.001),) * 4
+        brakes = (200., 300., 120., 150.)
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            85., 120., 3.2, brakes, config, replace(config, lateral_stiffness=config.rear_lateral_stiffness), dt,
+            inverse_inertia=TENSOR, engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12,
+            efficiency=.88, shaft_omega=180., shaft_inertia=.04, shaft_axis=(0., 1., 0.), suspension=system)
+
+tests\test_joint_suspension.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.03311114180469255, -0.0591014139313804, 0.1622351895571316, 178.82362651351474, 189.26870986516053, 59.69539174326551, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_actual_bullet_submission_matches_joint_six_dimensional_end[DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002D64E02D810>
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    def test_actual_bullet_submission_matches_joint_six_dimensional_end(mode, monkeypatch):
+        import vehicle_tires
+    
+        observed = []
+        original = vehicle_tires.advance_drivetrain
+    
+        def capture(*args, **kwargs):
+            result = original(*args, **kwargs)
+            observed.append((result.suspension_system, result))
+            return result
+    
+        monkeypatch.setattr(vehicle_tires, "advance_drivetrain", capture)
+        _world, car = _create_vehicle(mode.vehicle_config)
+        try:
+            # �������ʼ����������ʵ��ǡ����١����ټ����ٶȣ����������и�д״̬��
+            car._chassis.setTransform(TransformState.makePosHpr(Vec3(0, 0, .4), Vec3(0, 0, 3)))
+            car._chassis.setLinearVelocity(Vec3(.2, 12., -.1))
+            car._chassis.setAngularVelocity(Vec3(.15, -.1, .02))
+            car.tires.initialize_rolling(12.)
+>           car.apply_command(VehicleCommand(steering=.25, throttle=.3, gear=1, clutch=.7))
+
+tests\test_joint_suspension.py:92: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\vehicle.py:190: in apply_command
+    self.advance_physics(self.prepare_command(command), FIXED_DT, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+tests\test_joint_suspension.py:80: in capture
+    result = original(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.12836192815530256, -0.16110517861309473, 0.01920580055173576, 97.79945866208269, 367.60217925890834, 36.390694810814786, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_actual_bullet_submission_matches_joint_six_dimensional_end[DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002D64DF868D0>
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    def test_actual_bullet_submission_matches_joint_six_dimensional_end(mode, monkeypatch):
+        import vehicle_tires
+    
+        observed = []
+        original = vehicle_tires.advance_drivetrain
+    
+        def capture(*args, **kwargs):
+            result = original(*args, **kwargs)
+            observed.append((result.suspension_system, result))
+            return result
+    
+        monkeypatch.setattr(vehicle_tires, "advance_drivetrain", capture)
+        _world, car = _create_vehicle(mode.vehicle_config)
+        try:
+            # �������ʼ����������ʵ��ǡ����١����ټ����ٶȣ����������и�д״̬��
+            car._chassis.setTransform(TransformState.makePosHpr(Vec3(0, 0, .4), Vec3(0, 0, 3)))
+            car._chassis.setLinearVelocity(Vec3(.2, 12., -.1))
+            car._chassis.setAngularVelocity(Vec3(.15, -.1, .02))
+            car.tires.initialize_rolling(12.)
+>           car.apply_command(VehicleCommand(steering=.25, throttle=.3, gear=1, clutch=.7))
+
+tests\test_joint_suspension.py:92: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\vehicle.py:190: in apply_command
+    self.advance_physics(self.prepare_command(command), FIXED_DT, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+tests\test_joint_suspension.py:80: in capture
+    result = original(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.09337624854618046, -0.17314590500339963, 0.01689035978836882, 94.61438657513081, 159.2906454658438, 36.388024668084064, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_normal_coupling_keeps_downstream_storage_and_airborne_material[False-0.0] _
+
+share = 0.0, rolling = False
+
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("rolling", (False, True))
+    def test_normal_coupling_keeps_downstream_storage_and_airborne_material(share, rolling):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(20., 17.)
+        normal = (math.sin(math.radians(20.)), 0., math.cos(math.radians(20.)))
+        gradients = tuple(((0.,) * 6 if i == 0 else tuple(n / normal[2] for n in normal)
+                          + tuple(value / normal[2] for value in cross(frame.point, normal)))
+                          for i, frame in enumerate(contact_frames))
+        initial = (.032, .058, .072, .041)
+        system = SuspensionInput(initial, initial, gradients, (False, True, True, True), (normal[2],) * 4, config)
+        velocity, angular, spins, engine, shaft = (.3, 12., -.1), (.12, -.08, .2), (36., 39., 33., 46.), 500., 300.
+        old_axes = tuple(frame.spin_axis for frame in contact_frames)
+        rows, inertias = explicit_axes(share, old_axes)
+        old_speeds = tuple(row @ (*angular, engine, shaft, *spins) if j else 0. for row, j in zip(rows, inertias))
+        dt, torque, brakes, deformation = 1 / 240, 80., (100., 300., 50., 0.), ((.001, -.0002),) * 4
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            torque, 300., 12., brakes, config, config, dt, inverse_inertia=TENSOR,
+            engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12, efficiency=.88,
+            shaft_omega=shaft, shaft_inertia=.04, shaft_axis=(0., 1., 0.),
+            downstream_omega=old_speeds, downstream_inertias=INERTIAS, downstream_axes=AXES, suspension=system,
+            rolling_coefficients=(.013, .013, .076, .076) if rolling else (0.,) * 4)
+
+tests\test_joint_suspension.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.09525919972218617, -0.0908308850559743, 0.2007372454479005, 494.18098712164993, 390.5661869018544, 35.76851851851852, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_normal_coupling_keeps_downstream_storage_and_airborne_material[False-0.5] _
+
+share = 0.5, rolling = False
+
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("rolling", (False, True))
+    def test_normal_coupling_keeps_downstream_storage_and_airborne_material(share, rolling):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(20., 17.)
+        normal = (math.sin(math.radians(20.)), 0., math.cos(math.radians(20.)))
+        gradients = tuple(((0.,) * 6 if i == 0 else tuple(n / normal[2] for n in normal)
+                          + tuple(value / normal[2] for value in cross(frame.point, normal)))
+                          for i, frame in enumerate(contact_frames))
+        initial = (.032, .058, .072, .041)
+        system = SuspensionInput(initial, initial, gradients, (False, True, True, True), (normal[2],) * 4, config)
+        velocity, angular, spins, engine, shaft = (.3, 12., -.1), (.12, -.08, .2), (36., 39., 33., 46.), 500., 300.
+        old_axes = tuple(frame.spin_axis for frame in contact_frames)
+        rows, inertias = explicit_axes(share, old_axes)
+        old_speeds = tuple(row @ (*angular, engine, shaft, *spins) if j else 0. for row, j in zip(rows, inertias))
+        dt, torque, brakes, deformation = 1 / 240, 80., (100., 300., 50., 0.), ((.001, -.0002),) * 4
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            torque, 300., 12., brakes, config, config, dt, inverse_inertia=TENSOR,
+            engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12, efficiency=.88,
+            shaft_omega=shaft, shaft_inertia=.04, shaft_axis=(0., 1., 0.),
+            downstream_omega=old_speeds, downstream_inertias=INERTIAS, downstream_axes=AXES, suspension=system,
+            rolling_coefficients=(.013, .013, .076, .076) if rolling else (0.,) * 4)
+
+tests\test_joint_suspension.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.09195218597070026, -0.08248146302825501, 0.20118919928148915, 494.18100794315114, 404.267766288704, 30.82154654487975, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_normal_coupling_keeps_downstream_storage_and_airborne_material[False-1.0] _
+
+share = 1.0, rolling = False
+
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("rolling", (False, True))
+    def test_normal_coupling_keeps_downstream_storage_and_airborne_material(share, rolling):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(20., 17.)
+        normal = (math.sin(math.radians(20.)), 0., math.cos(math.radians(20.)))
+        gradients = tuple(((0.,) * 6 if i == 0 else tuple(n / normal[2] for n in normal)
+                          + tuple(value / normal[2] for value in cross(frame.point, normal)))
+                          for i, frame in enumerate(contact_frames))
+        initial = (.032, .058, .072, .041)
+        system = SuspensionInput(initial, initial, gradients, (False, True, True, True), (normal[2],) * 4, config)
+        velocity, angular, spins, engine, shaft = (.3, 12., -.1), (.12, -.08, .2), (36., 39., 33., 46.), 500., 300.
+        old_axes = tuple(frame.spin_axis for frame in contact_frames)
+        rows, inertias = explicit_axes(share, old_axes)
+        old_speeds = tuple(row @ (*angular, engine, shaft, *spins) if j else 0. for row, j in zip(rows, inertias))
+        dt, torque, brakes, deformation = 1 / 240, 80., (100., 300., 50., 0.), ((.001, -.0002),) * 4
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            torque, 300., 12., brakes, config, config, dt, inverse_inertia=TENSOR,
+            engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12, efficiency=.88,
+            shaft_omega=shaft, shaft_inertia=.04, shaft_axis=(0., 1., 0.),
+            downstream_omega=old_speeds, downstream_inertias=INERTIAS, downstream_axes=AXES, suspension=system,
+            rolling_coefficients=(.013, .013, .076, .076) if rolling else (0.,) * 4)
+
+tests\test_joint_suspension.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.09951096422959968, -0.07695214076452545, 0.2010573359014091, 494.1810217319848, 377.08008729165095, 29.8870351119573, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_normal_coupling_keeps_downstream_storage_and_airborne_material[True-0.0] _
+
+share = 0.0, rolling = True
+
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("rolling", (False, True))
+    def test_normal_coupling_keeps_downstream_storage_and_airborne_material(share, rolling):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(20., 17.)
+        normal = (math.sin(math.radians(20.)), 0., math.cos(math.radians(20.)))
+        gradients = tuple(((0.,) * 6 if i == 0 else tuple(n / normal[2] for n in normal)
+                          + tuple(value / normal[2] for value in cross(frame.point, normal)))
+                          for i, frame in enumerate(contact_frames))
+        initial = (.032, .058, .072, .041)
+        system = SuspensionInput(initial, initial, gradients, (False, True, True, True), (normal[2],) * 4, config)
+        velocity, angular, spins, engine, shaft = (.3, 12., -.1), (.12, -.08, .2), (36., 39., 33., 46.), 500., 300.
+        old_axes = tuple(frame.spin_axis for frame in contact_frames)
+        rows, inertias = explicit_axes(share, old_axes)
+        old_speeds = tuple(row @ (*angular, engine, shaft, *spins) if j else 0. for row, j in zip(rows, inertias))
+        dt, torque, brakes, deformation = 1 / 240, 80., (100., 300., 50., 0.), ((.001, -.0002),) * 4
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            torque, 300., 12., brakes, config, config, dt, inverse_inertia=TENSOR,
+            engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12, efficiency=.88,
+            shaft_omega=shaft, shaft_inertia=.04, shaft_axis=(0., 1., 0.),
+            downstream_omega=old_speeds, downstream_inertias=INERTIAS, downstream_axes=AXES, suspension=system,
+            rolling_coefficients=(.013, .013, .076, .076) if rolling else (0.,) * 4)
+
+tests\test_joint_suspension.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.09545730259973509, -0.09078019889404258, 0.2007475581745146, 494.1809872480493, 389.93495657897677, 35.76851851851852, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_normal_coupling_keeps_downstream_storage_and_airborne_material[True-0.5] _
+
+share = 0.5, rolling = True
+
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("rolling", (False, True))
+    def test_normal_coupling_keeps_downstream_storage_and_airborne_material(share, rolling):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(20., 17.)
+        normal = (math.sin(math.radians(20.)), 0., math.cos(math.radians(20.)))
+        gradients = tuple(((0.,) * 6 if i == 0 else tuple(n / normal[2] for n in normal)
+                          + tuple(value / normal[2] for value in cross(frame.point, normal)))
+                          for i, frame in enumerate(contact_frames))
+        initial = (.032, .058, .072, .041)
+        system = SuspensionInput(initial, initial, gradients, (False, True, True, True), (normal[2],) * 4, config)
+        velocity, angular, spins, engine, shaft = (.3, 12., -.1), (.12, -.08, .2), (36., 39., 33., 46.), 500., 300.
+        old_axes = tuple(frame.spin_axis for frame in contact_frames)
+        rows, inertias = explicit_axes(share, old_axes)
+        old_speeds = tuple(row @ (*angular, engine, shaft, *spins) if j else 0. for row, j in zip(rows, inertias))
+        dt, torque, brakes, deformation = 1 / 240, 80., (100., 300., 50., 0.), ((.001, -.0002),) * 4
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            torque, 300., 12., brakes, config, config, dt, inverse_inertia=TENSOR,
+            engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12, efficiency=.88,
+            shaft_omega=shaft, shaft_inertia=.04, shaft_axis=(0., 1., 0.),
+            downstream_omega=old_speeds, downstream_inertias=INERTIAS, downstream_axes=AXES, suspension=system,
+            rolling_coefficients=(.013, .013, .076, .076) if rolling else (0.,) * 4)
+
+tests\test_joint_suspension.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.09210621684523213, -0.08253462304710983, 0.20118989573682422, 494.1810078105825, 403.78245768960824, 30.859203107227906, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_normal_coupling_keeps_downstream_storage_and_airborne_material[True-1.0] _
+
+share = 1.0, rolling = True
+
+    @pytest.mark.parametrize("share", (0., .5, 1.))
+    @pytest.mark.parametrize("rolling", (False, True))
+    def test_normal_coupling_keeps_downstream_storage_and_airborne_material(share, rolling):
+        config = replace(CONFIG, front_drive_share=share)
+        contact_frames = frames(20., 17.)
+        normal = (math.sin(math.radians(20.)), 0., math.cos(math.radians(20.)))
+        gradients = tuple(((0.,) * 6 if i == 0 else tuple(n / normal[2] for n in normal)
+                          + tuple(value / normal[2] for value in cross(frame.point, normal)))
+                          for i, frame in enumerate(contact_frames))
+        initial = (.032, .058, .072, .041)
+        system = SuspensionInput(initial, initial, gradients, (False, True, True, True), (normal[2],) * 4, config)
+        velocity, angular, spins, engine, shaft = (.3, 12., -.1), (.12, -.08, .2), (36., 39., 33., 46.), 500., 300.
+        old_axes = tuple(frame.spin_axis for frame in contact_frames)
+        rows, inertias = explicit_axes(share, old_axes)
+        old_speeds = tuple(row @ (*angular, engine, shaft, *spins) if j else 0. for row, j in zip(rows, inertias))
+        dt, torque, brakes, deformation = 1 / 240, 80., (100., 300., 50., 0.), ((.001, -.0002),) * 4
+>       result = advance_drivetrain(velocity, angular, spins, engine, contact_frames, deformation,
+            torque, 300., 12., brakes, config, config, dt, inverse_inertia=TENSOR,
+            engine_inertia=.2, engine_axis=(0., 1., 0.), engine_drag=.12, efficiency=.88,
+            shaft_omega=shaft, shaft_inertia=.04, shaft_axis=(0., 1., 0.),
+            downstream_omega=old_speeds, downstream_inertias=INERTIAS, downstream_axes=AXES, suspension=system,
+            rolling_coefficients=(.013, .013, .076, .076) if rolling else (0.,) * 4)
+
+tests\test_joint_suspension.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (0.0995211651138257, -0.07702396267993268, 0.20114829278092775, 494.1810215528778, 377.0321212694197, 29.89498868829016, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_high_load_curved_rail_support_converges_and_reaches_snapshot[False-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, centered = False
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("centered", (False, True))
+    def test_high_load_curved_rail_support_converges_and_reaches_snapshot(mode, centered):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(mode.vehicle_config, centered_collision_support=centered))
+        peak_load = 0.
+        try:
+            simulation.reset_player((5.8, 30, .55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            for tick in range(30):
+>               simulation.step(Control())
+
+tests\test_guardrail_suspension.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\simulation.py:738: in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (-0.013884778646201567, -0.0045696887387446485, 2.0619783727317092e-06, 97.33876371178202, 348.07387061165866, 36.36363636363636, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_high_load_curved_rail_support_converges_and_reaches_snapshot[False-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, centered = False
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("centered", (False, True))
+    def test_high_load_curved_rail_support_converges_and_reaches_snapshot(mode, centered):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(mode.vehicle_config, centered_collision_support=centered))
+        peak_load = 0.
+        try:
+            simulation.reset_player((5.8, 30, .55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            for tick in range(30):
+>               simulation.step(Control())
+
+tests\test_guardrail_suspension.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\simulation.py:738: in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (-0.045679265600076444, -0.015696159641537026, 7.2071570933463495e-06, 94.5714997814529, 143.818496300849, 36.36363636363636, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_high_load_curved_rail_support_converges_and_reaches_snapshot[True-DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>, centered = True
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("centered", (False, True))
+    def test_high_load_curved_rail_support_converges_and_reaches_snapshot(mode, centered):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(mode.vehicle_config, centered_collision_support=centered))
+        peak_load = 0.
+        try:
+            simulation.reset_player((5.8, 30, .55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            for tick in range(30):
+>               simulation.step(Control())
+
+tests\test_guardrail_suspension.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\simulation.py:738: in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (-0.013884778646201567, -0.0045696887387446485, 2.0619783727317092e-06, 97.33876371178202, 348.07387061165866, 36.36363636363636, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+_ test_high_load_curved_rail_support_converges_and_reaches_snapshot[True-DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>, centered = True
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    @pytest.mark.parametrize("centered", (False, True))
+    def test_high_load_curved_rail_support_converges_and_reaches_snapshot(mode, centered):
+        simulation = Simulation(track="highway", traffic_count=0,
+                                config=replace(mode.vehicle_config, centered_collision_support=centered))
+        peak_load = 0.
+        try:
+            simulation.reset_player((5.8, 30, .55))
+            simulation.player._chassis.setLinearVelocity(Vec3(8, 12, 0))
+            simulation.player.tires.initialize_rolling(12)
+            for tick in range(30):
+>               simulation.step(Control())
+
+tests\test_guardrail_suspension.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\simulation.py:738: in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe)
+src\world_step.py:46: in advance_world
+    car.advance_physics(request, dt, tire_substeps=1, angles=angles, accumulate=index > 0, static_shapes=static_shapes)
+src\vehicle.py:289: in advance_physics
+    coupled_contacts = self.tires.advance(
+src\vehicle_tires.py:193: in advance
+    result = advance_drivetrain(free_velocity, free_angular, self.omega, powertrain.engine_omega,
+src\tire_drivetrain.py:677: in advance_drivetrain
+    correct_brakes(state)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+state = (-0.045679265600076444, -0.015696159641537026, 7.2071570933463495e-06, 94.5714997814529, 143.818496300849, 36.36363636363636, ...)
+
+    def correct_brakes(state):
+        _branch, mc, ml, _response, wheels, local, _plans, (mg, shared_plans) = branches[shared_branch]
+        corrections = []
+        for j in range(4):
+            rb = wheels[j][2]
+            if hard_gear:
+>               dc, dg, dl, _db = shaft_brake_response(
+                                  ^^^^^^^^^^^^^^^^^^^^
+                    tuple(dot(g, rb) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])),
+                    local[0], shared_plans[shared_port_index])
+E               NameError: name 'shaft_brake_response' is not defined
+
+src\tire_drivetrain.py:540: NameError
+=========================== short test summary info ===========================
+FAILED tests/test_drivetrain_jacobian.py::test_native_loaded_axle_jacobian_matches_independent_difference
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[False-0.008333333333333333-0.0--20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[False-0.008333333333333333-0.0-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[False-0.008333333333333333-0.5--20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[False-0.008333333333333333-0.5-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[False-0.008333333333333333-1.0--20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[False-0.008333333333333333-1.0-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[False-0.004166666666666667-0.0--20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[False-0.004166666666666667-0.0-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[False-0.004166666666666667-0.5--20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[False-0.004166666666666667-0.5-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[False-0.004166666666666667-1.0--20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[False-0.004166666666666667-1.0-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.0--20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.0-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.5--20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-0.5-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-1.0--20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.008333333333333333-1.0-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-0.0--20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-0.0-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-0.5--20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-0.5-20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-1.0--20.0]
+FAILED tests/test_joint_suspension.py::test_joint_hardware_kinematics_and_full_rotor_energy[True-0.004166666666666667-1.0-20.0]
+FAILED tests/test_joint_suspension.py::test_actual_bullet_submission_matches_joint_six_dimensional_end[DrivingMode.GAME]
+FAILED tests/test_joint_suspension.py::test_actual_bullet_submission_matches_joint_six_dimensional_end[DrivingMode.SIMULATION]
+FAILED tests/test_joint_suspension.py::test_normal_coupling_keeps_downstream_storage_and_airborne_material[False-0.0]
+FAILED tests/test_joint_suspension.py::test_normal_coupling_keeps_downstream_storage_and_airborne_material[False-0.5]
+FAILED tests/test_joint_suspension.py::test_normal_coupling_keeps_downstream_storage_and_airborne_material[False-1.0]
+FAILED tests/test_joint_suspension.py::test_normal_coupling_keeps_downstream_storage_and_airborne_material[True-0.0]
+FAILED tests/test_joint_suspension.py::test_normal_coupling_keeps_downstream_storage_and_airborne_material[True-0.5]
+FAILED tests/test_joint_suspension.py::test_normal_coupling_keeps_downstream_storage_and_airborne_material[True-1.0]
+FAILED tests/test_guardrail_suspension.py::test_high_load_curved_rail_support_converges_and_reaches_snapshot[False-DrivingMode.GAME]
+FAILED tests/test_guardrail_suspension.py::test_high_load_curved_rail_support_converges_and_reaches_snapshot[False-DrivingMode.SIMULATION]
+FAILED tests/test_guardrail_suspension.py::test_high_load_curved_rail_support_converges_and_reaches_snapshot[True-DrivingMode.GAME]
+FAILED tests/test_guardrail_suspension.py::test_high_load_curved_rail_support_converges_and_reaches_snapshot[True-DrivingMode.SIMULATION]
+37 failed, 303 passed in 2.36s
+{"baseline": "ab204a9 original Python analytical derivative body", "pytest_code": 1, "counts": {"calls": 492, "hard_gear": 492, "synchronizing": 0}, "all_output_hex_equal": false}

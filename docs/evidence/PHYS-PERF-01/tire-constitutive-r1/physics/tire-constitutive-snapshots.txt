@@ -1,0 +1,1 @@
+{"all_fields_equal": true, "cases": [{"traffic": 0, "seconds": 0.7526315000000068}, {"traffic": 8, "seconds": 5.373528799999804}]}

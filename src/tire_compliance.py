@@ -2,7 +2,7 @@
 
 import math
 
-from tire_forces import combined_force
+from mechanical_kernels import tire_contact_force, tire_contact_jacobian
 
 
 def deformation_frame(tangent, normal):
@@ -38,23 +38,8 @@ def deformation_state(force, previous, dt, stiffness, damping):
 
 def contact_force(force, previous, slip, denominator, rolling, grip, cx, cy,
                   dt, stiffness, damping, shape, curvature):
-    deformation, rate = deformation_state(force, previous, dt, stiffness, damping)
-    patch = tuple(slip[i] - rate[i] for i in range(2))
-    if rolling:
-        kappa, alpha = patch[0] / denominator, math.atan2(-patch[1], denominator)
-        target = combined_force(kappa, alpha, grip, cx, cy, shape, curvature)
-        mode = "compliant-rolling"
-    else:
-        trial = tuple(stiffness * previous[i] + (stiffness * dt + damping) * slip[i]
-                      for i in range(2))
-        magnitude = math.hypot(*trial)
-        if magnitude <= grip:
-            target, mode = trial, "compliant-sticking"
-        else:
-            target = tuple(grip * value / magnitude for value in trial)
-            mode = "compliant-sliding"
-        kappa, alpha = patch[0] / denominator, math.atan2(-patch[1], denominator)
-    return target, deformation, rate, patch, kappa, alpha, mode
+    return tire_contact_force(force, previous, slip, denominator, rolling, grip, cx, cy,
+                              dt, stiffness, damping, shape, curvature, math.hypot)
 
 
 def energy_terms(force, previous, deformation, rate, patch, dt, stiffness, damping):
@@ -68,37 +53,5 @@ def energy_terms(force, previous, deformation, rate, patch, dt, stiffness, dampi
 def contact_jacobian(force, previous, slip, slip_jacobian, denominator, denominator_gradient,
                      rolling, grip, cx, cy, dt, stiffness, damping, shape, curvature):
     """同一接触目标对Fx/Fy的解析导数；投影边界选取分段半光滑导数。"""
-    if grip == 0:
-        return ((0.0, 0.0), (0.0, 0.0))
-    impedance = stiffness * dt + damping
-    if not rolling:
-        trial = tuple(stiffness * previous[i] + impedance * slip[i] for i in range(2))
-        magnitude = math.hypot(*trial)
-        trial_jacobian = tuple(tuple(impedance * value for value in row) for row in slip_jacobian)
-        if magnitude <= grip:
-            return trial_jacobian
-        projection = tuple(tuple(grip / magnitude * (
-            float(i == j) - trial[i] * trial[j] / magnitude**2) for j in range(2)) for i in range(2))
-        return tuple(tuple(sum(projection[i][a] * trial_jacobian[a][j] for a in range(2))
-                           for j in range(2)) for i in range(2))
-
-    patch = tuple(slip[i] - (force[i] - stiffness * previous[i]) / impedance for i in range(2))
-    patch_jacobian = tuple(tuple(slip_jacobian[i][j] - float(i == j) / impedance
-                                for j in range(2)) for i in range(2))
-    stiffnesses = (cx, cy)
-    q = tuple(stiffnesses[i] * patch[i] / denominator for i in range(2))
-    q_jacobian = tuple(tuple((stiffnesses[i] * patch_jacobian[i][j]
-                             - q[i] * denominator_gradient[j]) / denominator
-                            for j in range(2)) for i in range(2))
-    magnitude = math.hypot(*q)
-    if magnitude == 0:
-        return q_jacobian
-    n = magnitude / (shape * grip)
-    u = n - curvature * (n - math.atan(n))
-    angle = shape * math.atan(u)
-    ratio = grip * math.sin(angle) / magnitude
-    radial = math.cos(angle) * (1 - curvature + curvature / (1 + n*n)) / (1 + u*u)
-    radial_jacobian = tuple(tuple(ratio * float(i == j) + (radial - ratio) * (
-        q[i] / magnitude) * (q[j] / magnitude) for j in range(2)) for i in range(2))
-    return tuple(tuple(sum(radial_jacobian[i][a] * q_jacobian[a][j] for a in range(2))
-                       for j in range(2)) for i in range(2))
+    return tire_contact_jacobian(force, previous, slip, slip_jacobian, denominator, denominator_gradient,
+                                 rolling, grip, cx, cy, dt, stiffness, damping, shape, curvature, math.hypot)

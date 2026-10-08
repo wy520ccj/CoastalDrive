@@ -96,3 +96,11 @@ Simulation保持唯一权威世界、120Hz和现有物理子步。硬件参数�
 
 
 主目录T2-r2失败归档（2026-10-08）：[报告](../evidence/PHYS-PERF-01/stage-collision-r1/report.md)、[summary及收据](../evidence/PHYS-PERF-01/stage-collision-r1/receipt.json)、[355项源码SHA与归档清单](../evidence/PHYS-PERF-01/stage-collision-r1/manifest.json)。固定主目录结果为Ruff通过、pytest 267通过/1失败/957 deselected（3740.66s），后续11项未运行；失败输出只记碰撞墙测试的共同末状态超过30轮，误差1.02141e-14，待原输入最小复现，不推测根因。阶段未通过。
+隔离 shared-solution 数值块（2026-10-08，未并入main）：[证据与收据](../evidence/PHYS-PERF-01/shared-solution-r1/receipt.json)。严格保留30轮、原角更新/端口容差、8次线搜索、fsum及暖分区更新，旧8维Python求解保留。T0 373 passed/Ruff；T1 645 passed/81.36s、Ruff及三种子10.293/10.465/10.266s通过。独立旧127 C基线审计r4为10,661次映射/Jacobian/LU调用全字段/暖态一致；r1 Keycross、r2旧LU零调用、independent-r1 wrapper scope错误及后续修正日志均保留，属观测范围问题。两模式48拍Snapshot逐字段同主127/map160基线，短时0.8265/5.5733秒仅诊断。测试观测接到真实shared_solution系数包，16样本/2e-6门槛未变；tire_drivetrain同步的map160三行来自主线已验证修复。当前T2等主线继续，尚无profile/实时性能Gate。
+
+
+Tire constitutive 本构块（2026-10-08，隔离未并入main）：[证据与收据](../evidence/PHYS-PERF-01/tire-constitutive-r1/receipt.json)。CPython math.hypot、能量/Frame传递及原阈值保持；combined/force/Jacobian/rolling/sticking/sliding六类审计逐值相同。初始T1为750 pass/2 timestamp probe fail，原Python同样复现241==241，与本构提取无关；phase T0 56通过后，组合T1去重782项通过并补齐三种子。两组48拍Snapshot同shared基线，短时仅诊断。close脚本空plan初始ValueError未运行checks，未伪造CLI日志。[详细归档](../evidence/PHYS-PERF-01/tire-constitutive-r1/report.md)。
+
+四轮接点数值块归档（2026-10-08）：[报告](../evidence/PHYS-PERF-01/contact-system-r1/report.md)、[逐件清单/载荷SHA](../evidence/PHYS-PERF-01/contact-system-r1/manifest.json)、[收据](../evidence/PHYS-PERF-01/contact-system-r1/receipt.json)。以ab204a9旧DLL为独立基线；5,753次调用的梯度与对齐值hex全部相同，标准2×48拍完整Snapshot逐字段一致。T0 Ruff导入排序失败、pytest未跑；最终T1 552 passed/27.89s、Ruff与三种子通过。单/九车0.719/5.175s仅短测，不是FPS。354项PY/C/PYD源哈希起止一致；本次只归档既有证据，未跑物理或测试。
+
+轮端解析导数原生块归档（2026-10-08）：[报告](../evidence/PHYS-PERF-01/wheel-derivatives-r1/report.md)、[SHA收据](../evidence/PHYS-PERF-01/wheel-derivatives-r1/receipt.json)、[原件与压缩载荷清单](../evidence/PHYS-PERF-01/wheel-derivatives-r1/manifest.json)。冻结源为 `mechanical_kernels.c`/`tire_drivetrain.py`，354项PY/C/PYD哈希前后相同。独立旧Python解析导数8,840次输出hex逐值相同；两组48拍Snapshot字段相同，0.6835/4.8669s仅诊断。T0 RUF059失败、pytest未跑；最终T1 752通过/148.96s、Ruff和三种子通过。无性能Gate结论。

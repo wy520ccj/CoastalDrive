@@ -1,0 +1,13 @@
+{
+  "baseline": "ab204a9 independent old Python + _contact_system_old DLL",
+  "pytest_code": 0,
+  "counts": {
+    "calls": 5753,
+    "cylinder": 5268,
+    "mixed": 283,
+    "no_kinematics": 202,
+    "touching": 22944,
+    "released": 68
+  },
+  "all_output_hex_equal": true
+}

@@ -1,0 +1,28 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> src\suspension_kinematics.py:3:1
+   |
+ 1 |   """真实Box曲面或接触切平面上的有限行程与功共轭雅可比。"""
+ 2 |
+ 3 | / import math
+ 4 | | from dataclasses import dataclass, replace
+ 5 | |
+ 6 | | from wheel_contact_kernels import cylinder_contact_system
+ 7 | | from wheel_contact_kernels import cylinder_endpoint as endpoint_kernel
+ 8 | | from wheel_contact_kernels import rotated_path
+ 9 | |
+10 | | from rotor_dynamics import cross, dot
+11 | | from suspension_geometry import BoxSurface, CylinderSurface, sphere_box_entry
+12 | | from wheel_envelope import crown_extent_secant, cylinder_support
+   | |________________________________________________________________^
+help: Organize imports
+  |
+5 |
+  - from wheel_contact_kernels import cylinder_contact_system
+6 + from wheel_contact_kernels import cylinder_contact_system, rotated_path
+7 | from wheel_contact_kernels import cylinder_endpoint as endpoint_kernel
+  - from wheel_contact_kernels import rotated_path
+8 |
+  |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

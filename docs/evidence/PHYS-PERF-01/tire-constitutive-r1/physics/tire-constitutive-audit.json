@@ -1,0 +1,12 @@
+{
+  "baseline": "12ea82b original Python combined/compliant force and Jacobian; originalmath.hypot preserved",
+  "all_values_equal": true,
+  "counts": {
+    "combined": 17772,
+    "contact": 37152,
+    "jacobian": 7681,
+    "rolling": 12166,
+    "sticking": 21892,
+    "sliding": 3094
+  }
+}

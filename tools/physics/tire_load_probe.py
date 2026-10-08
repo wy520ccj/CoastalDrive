@@ -84,8 +84,8 @@ def run_matrix(output, duration=6.0, cases=LOAD_CASES, modes=MODES, enabled=True
                   "initialization": "one assignment of speed/pure rolling; airborne +2m or coast yaw +.5rad/s only at initialization; no runtime state edits",
                   "acceleration": "0 km/h; throttle 1; direction 1",
                   "constant_turn": "40 km/h; steering 3 degrees, throttle .15 fixed; no imposed radius",
-                  "force_feedback": "full normal_load, force_grip, force_longitudinal_stiffness and force_lateral_stiffness per wheel retained; force_contact_tick distinguishes force from completed sample",
-                  "tire_contact_moment": "pre-force pose and previous contacts; matched force_contact_tick; Fx/Fy last substep and cumulative impulse/dt mean at sampled fixed contact; body-up projection; excludes axle reactions and other torques, not net body moment",
+                  "force_feedback": "full normal_load, force_grip, force_longitudinal_stiffness and force_lateral_stiffness per wheel retained; force_contact_tick labels force inputs; SI force and completed sample share an outer contact tick with separate phase fields",
+                  "tire_contact_moment": "pre-force pose and force-phase supports; matched force_contact_tick; Fx/Fy last substep and cumulative impulse/dt mean at sampled fixed contact; body-up projection; excludes axle reactions and other torques, not net body moment",
                   "scope": "all raw outcomes and deltas retained; no mandatory distance/yaw improvement or high fidelity acceptance"}}
     (output / "summary.json").write_text(json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False)+"\n", encoding="utf-8")
     return report

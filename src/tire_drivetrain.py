@@ -12,10 +12,10 @@ from mechanical_kernels import (
     rotor_coefficients,
     rotor_spin_prepared,
     shared_map_coefficients,
-    shared_map_jacobian,
-    shared_map_state,
+    shared_solution,
     wheel_load_prepared,
     wheel_map_coefficients,
+    wheel_map_derivatives,
     wheel_map_state,
 )
 
@@ -300,21 +300,17 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     wheel_map = (wheel_map_coefficients(shared_map, wheel_coefficients, tuple(branches),
                                           brake_gradients, brakes) if shaft else None)
 
-    def shared_jacobian_columns(state):
-        return shared_map_jacobian(shared_map, state, tuple(frame.load for frame in frames),
-                                   tuple(frame.supported for frame in frames), shared_branch, shared_port_index)
-
     def shared(guess):
         nonlocal shared_branch, shared_port_index, road_torques, active_limits, bias_ports
         loads = load_terms()
+        if shaft:
+            end, end_velocity, clutch, loss, gear_reaction, shared_branch, shared_port_index, road_torques, active_limits, bias_ports = shared_solution(
+                shared_map, guess, loads, tuple(frame.load for frame in frames),
+                tuple(frame.supported for frame in frames), shared_branch, bias_ports)
+            return end, end_velocity, clutch, loss, gear_reaction
         def mapped(state):
             nonlocal shared_branch, shared_port_index, road_torques, active_limits
-            if shaft:
-                end, end_velocity, clutch, loss, gear_reaction, shared_branch, shared_port_index, road_torques, active_limits = (
-                    shared_map_state(shared_map, state, loads, tuple(frame.load for frame in frames),
-                                     tuple(frame.supported for frame in frames), shared_branch))
-                return end, end_velocity, clutch, loss, gear_reaction
-            # 八维旧机械对照保留原两端口机制；实体输入轴使用上面的同方程数值块。
+            # 八维旧机械对照保留原两端口机制。
             if torque_bias:
                 active_limits = bias_limits(state[:dimensions], *state[dimensions:])
             if rolling_active:
@@ -368,17 +364,14 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 return end[:dimensions], end_velocity, clutch, loss, gear_reaction
             if (rolling_active or torque_bias) and iteration >= 4:
                 # 大轮荷低速滚阻与轴系共同求根，固定点初迭代后用带步长搜索的Newton修正。
-                if shaft:
-                    columns = shared_jacobian_columns(state)
-                else:
-                    # 冻结的旧八维对照机制保留原中心差分，实体轴使用本构解析导数。
-                    columns = []
-                    for j in range(variables):
-                        plus, minus = list(state), list(state)
-                        plus[j] += .0001
-                        minus[j] -= .0001
-                        high, low = mapped(plus)[0], mapped(minus)[0]
-                        columns.append(tuple(float(a == j) - (high[a]-low[a])/.0002 for a in range(variables)))
+                # 冻结的旧八维对照机制保留原中心差分。
+                columns = []
+                for j in range(variables):
+                    plus, minus = list(state), list(state)
+                    plus[j] += .0001
+                    minus[j] -= .0001
+                    high, low = mapped(plus)[0], mapped(minus)[0]
+                    columns.append(tuple(float(a == j) - (high[a]-low[a])/.0002 for a in range(variables)))
                 delta = _solve(tuple(tuple(columns[j][a] for j in range(variables)) for a in range(variables)),
                                tuple(-value for value in residual))
                 before = residual_size(state, end)
@@ -465,24 +458,15 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
 
         def derivatives(fx, fy):
             end, velocity_end, brake, (branch_index, index) = local_state(fx, fy)
-            _branch, mc, ml, _response, wheel_responses, local_response, plans, shaft_data = branches[branch_index]
+            if shaft:
+                return wheel_map_derivatives(wheel_map, i, branch_index, index, end, velocity_end,
+                                             moments_x[i], moments_y[i], radii[i], frame.tangent, frame.axle)
+            _branch, mc, ml, _response, wheel_responses, _local_response, plans, _shaft_data = branches[branch_index]
             local_rx, local_ry, local_rb = wheel_responses[i]
             vx, vy, slip = velocities(i, end, velocity_end)
             gradients = []
             for response, direction in ((local_rx, frame.tangent), (local_ry, frame.axle)):
-                dg = 0.
-                if shaft:
-                    mg, _shared_plans = shaft_data
-                    if hard_gear:
-                        dc, dg, dl, db = shaft_brake_response(
-                            tuple(dot(g, response) for g in (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[i])),
-                            local_response[i], plans[i][index])
-                    else:
-                        dc, dg, db = synchronizer_brake_response(
-                            tuple(dot(g, response) for g in (clutch_gradient, shaft_gear_gradient, brake_gradients[i])),
-                            plans[i][index])
-                        dl = 0.
-                elif ratio:
+                if ratio:
                     active, _sign, columns = plans[i][index]
                     rhs = tuple(dot(g, response) if mode in ("locked", "static") else 0.
                                 for g, mode in zip((clutch_gradient, gear_gradient, brake_gradients[i]), active))
@@ -491,7 +475,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                     dc = dl = 0.
                     db = (dot(brake_gradients[i], response) / dot(brake_gradients[i], local_rb)
                           if abs(brake) < brakes[i] else 0.)
-                dq = tuple(dt * (response[a] - dc * mc[a] - dl * ml[a] - db * local_rb[a] - (dg * mg[a] if shaft else 0.)) for a in range(dimensions))
+                dq = tuple(dt * (response[a] - dc * mc[a] - dl * ml[a] - db * local_rb[a]) for a in range(dimensions))
                 dx = dt / mass * dot(direction, frame.tangent) + dot(dq[:3], moments_x[i])
                 dy = dt / mass * dot(direction, frame.axle) + dot(dq[:3], moments_y[i])
                 gradients.append((radii[i] * dq[i + wheel_start] - dx, -dy, dx))

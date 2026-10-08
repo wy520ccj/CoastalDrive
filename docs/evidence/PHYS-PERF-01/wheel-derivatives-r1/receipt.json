@@ -1,0 +1,63 @@
+{
+  "baseline_commit": "ab204a9 original Python analytical derivative body",
+  "head_at_capture": "3693771c10008e86be2246897fe2a4496197a202",
+  "source_count": 354,
+  "source_hashes_start_end_equal": true,
+  "mechanical_kernels_sha256": "51c2043a0363d35738c8c95f6cf35686ba1c02a7afdddd69e57631f8851d3550",
+  "tire_drivetrain_sha256": "6ca34d6b3fd24514dae215f93e50235ad383be24cc039136d9ea3e0263d07e4a",
+  "unrelated_existing_dirty_source": "src/suspension_contacts.py left unstaged and unchanged",
+  "manifest_sha256": "54b12b497c24ca2b0a0262b741231dee4975425a7efcab4bc0e3340ae94f48af",
+  "payload_entries_verified": 21,
+  "audit_r3": {
+    "baseline": "ab204a9 original Python analytical derivative body",
+    "pytest_code": 0,
+    "counts": {
+      "calls": 8840,
+      "hard_gear": 8676,
+      "synchronizing": 164
+    },
+    "all_output_hex_equal": true
+  },
+  "snapshot_result": {
+    "all_fields_equal": true,
+    "cases": [
+      {
+        "traffic": 0,
+        "seconds": 0.6834875000004104
+      },
+      {
+        "traffic": 8,
+        "seconds": 4.8669462000007115
+      }
+    ]
+  },
+  "T0": {
+    "status": "failed",
+    "ruff_log": "RUF059 unused local local_response",
+    "pytest_status": "not_run"
+  },
+  "T1": {
+    "status": "passed",
+    "pytest_log_line": "752 passed in 148.96s",
+    "headless": [
+      {
+        "name": "headless-0",
+        "status": "passed",
+        "seconds": 8.486
+      },
+      {
+        "name": "headless-17",
+        "status": "passed",
+        "seconds": 8.5
+      },
+      {
+        "name": "headless-23",
+        "status": "passed",
+        "seconds": 8.476
+      }
+    ],
+    "ruff": "passed"
+  },
+  "archive_performed_no_tests_or_physics": true,
+  "report_sha256": "e7cf2ec3fd04b187d11077a3ac8c95b6cdc4c8a327e675ceee65ecfddf681056"
+}

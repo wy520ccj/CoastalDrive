@@ -117,7 +117,7 @@ def run_matrix(output, duration=6.0, cases=LOAD_CASES, modes=MODES):
                   "settle_ticks": SETTLE_TICKS, "airborne_settle_ticks": 0,
                   "comparison": "same mode car, initial conditions, controls, load exponents and K/b; A compliance false, B true; ABS/TCS/ESC all true",
                   "initialization": "once-only speed/pure rolling, airborne +2m or coast yaw +.5rad/s; no runtime edits",
-                  "energy_phase": "deformation, elastic_energy and force_patch_kappa/alpha are final tire substep at force_contact_tick; force_kappa/alpha same force phase; kappa/alpha are completed Bullet observations at sample_tick",
+                  "energy_phase": "deformation, elastic_energy and force_patch_kappa/alpha are final tire substep at force_contact_tick; force_kappa/alpha same force phase; kappa/alpha are completed Bullet observations at sample_tick; SI force and completed sample share the outer contact tick but occur before/after Bullet respectively",
                   "dissipation": "material/road/elastic_numerical/frame fields are Joules summed over tire substeps within one tick; trial sums exclude initial row; no positivity clamp",
                   "energy_scope": "contact storage/dissipation only; not complete chassis/engine/brake/collision energy balance; maximum energy is not time-summed",
                   "mode_energy": "per-wheel dissipation sums and storage/deformation/force-patch/force-wheel/completed-wheel slip maxima across selected independent trials; not one continuous drive",
