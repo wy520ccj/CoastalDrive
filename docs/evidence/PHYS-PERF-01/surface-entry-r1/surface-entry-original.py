@@ -4,7 +4,7 @@ import math
 from dataclasses import dataclass
 from itertools import pairwise
 
-from wheel_contact_kernels import box_interval, cylinder_surface_entry, surface_transform
+from wheel_contact_kernels import box_interval, surface_transform
 
 
 @dataclass(frozen=True)
@@ -43,12 +43,32 @@ class CylinderSurface(BoxSurface):
         return fraction, self.world_vector(normal), self.world_vector(tuple(point[a] - self.offset[a] for a in range(3))), face
 
     def entry(self, start, end, axis):
-        from triangle_support import triangle_entry
-        from wheel_envelope import cylinder_box_entry
-        return cylinder_surface_entry(start, end, axis, self.axes, self.offset, self.half,
-            self.plane, self.triangles, self.radius, self.wheel_radius, self.width,
-            self.shoulder, self.crown, triangle_entry, cylinder_box_entry)
-
+        from wheel_envelope import cylinder_box_entry, cylinder_support
+        local_axis = surface_transform(axis, self.axes)
+        if self.triangles is not None:
+            found = self.triangles.entry(start,end,self.radius,local_axis,self.wheel_radius,self.width,self.shoulder,self.crown)
+        elif self.plane is None:
+            found = cylinder_box_entry(start, end, self.half, self.radius, local_axis,
+                                       self.wheel_radius, self.width / 2, self.shoulder, self.crown)
+        else:
+            normal, constant = self.plane
+            extent = cylinder_support(normal, local_axis, self.wheel_radius, self.width / 2, self.shoulder, self.crown)
+            distance = sum(n * (x - y) for n, x, y in zip(normal, start, extent)) - constant
+            speed = sum(n * (y - x) for n, x, y in zip(normal, start, end))
+            if speed >= 0. or distance < 0. or distance + speed > 0.:
+                return None
+            fraction = -distance / speed
+            point = tuple(start[i] + fraction * (end[i] - start[i]) - extent[i] for i in range(3))
+            squared = sum(n*n for n in normal)
+            found = fraction, normal, point, (tuple(constant*n/squared for n in normal), 0.)
+        if found is None:
+            return None
+        fraction, normal, point, face = found
+        # 面锚点相对本子步车身原点，避免末姿态查询把固定平面重新舍入为移动接点。
+        if face is not None:
+            anchor, margin = face
+            face = self.world_vector(tuple(anchor[a] - self.offset[a] for a in range(3))), margin
+        return fraction, normal, point, face
 
 
 

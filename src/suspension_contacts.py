@@ -16,7 +16,8 @@ from panda3d.core import BitMask32, Mat4, NodePath, Quat, TransformState, Vec3
 from wheel_contact_kernels import support_candidates, surface_ray_hits
 
 from suspension_geometry import BoxSurface, CylinderSurface, box_entry, sphere_box_entry
-from triangle_support import TriangleSupport
+from triangle_support import TriangleSupport, triangle_entry
+from wheel_envelope import cylinder_box_entry
 
 
 @dataclass(frozen=True)
@@ -156,7 +157,7 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
         if surfaces:
             reach = math.sqrt(sum((end[a] - start[a])**2 for a in range(3))) - radius
             hits.extend(surface_ray_hits(surfaces, relative_start, relative_end, axis, origin,
-                radius, reach, width, shoulder, crown, CylinderSurface, RayContact, ray_origin is not None))
+                radius, reach, width, shoulder, crown, CylinderSurface, RayContact, triangle_entry, cylinder_box_entry, ray_origin is not None))
         results.append(min(hits, key=lambda hit: hit.fraction) if hits else None)
     return tuple(results)
 
@@ -196,13 +197,13 @@ def cylinder_candidates(world, chassis, mask, low, high, *, static_shapes=None):
     for body, supported, parts in support_candidates(static_shapes, low, high):
         if supported:
             for part, local_center, local_half in parts:
-                inverse, frame, _translation, half, margin, plane, triangles, _bounds = part
+                inverse, frame, translation, half, margin, plane, triangles, _bounds = part
                 if triangles is not None:
                     # 只预取覆盖盒内原三角面，保留原索引遍历次序；每条射线仍作原精确筛选。
                     selected = tuple(triangles.candidates(local_center, local_center,
                                                          tuple(value+margin for value in local_half)))
                     triangles = TriangleSupport(triangles.low, triangles.high, selected)
-                surfaces.append((body, inverse, frame, half, margin, plane, triangles))
+                surfaces.append((body, inverse, frame, half, margin, plane, triangles, translation))
             exact.add(body)
         else:
             native_needed = True

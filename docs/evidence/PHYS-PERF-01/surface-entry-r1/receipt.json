@@ -1,0 +1,65 @@
+{
+  "baseline": "a2f743e; reused independent old DLL surface_ray_hits body equal by source SHA",
+  "old_ray_body_sha256": "b87a563ce8d3b2cfdd13542e27e01d568ec33e88527dc65d0dd0d95b058ad823",
+  "old_dll_sha256": "413717196431209721089d321a196c82c90a84d236329aed4d5efb8bf61ad47d",
+  "source_sha256": {
+    "src/wheel_contact_kernels.c": "d29ff32eb2a9152c0fc8ff0757ae8fd99a1d6678ecbfc8e7108a369028df35b7",
+    "src/suspension_geometry.py": "8ddb772b1be417f85e165d91ad38e7c5a276838c829dacc97b328b78a5b5f998",
+    "src/suspension_contacts.py": "5d7e1fe4f731d18fab637eb0c70d6ef8fc28fb0ba6c793e5b87cc0a69f62c7f0"
+  },
+  "items": [
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\surface-entry-body.c",
+      "archive": "surface-entry-body.c",
+      "sha256": "6978aacd305ed73b4c2401620d9bb7b700eac13a65088d2a60b4c98148e59816"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\promote-surface-entry.py",
+      "archive": "promote-surface-entry.py",
+      "sha256": "4815773669991e2509f9ecbce439481d72cafc67a402f6b36e4840e8337ae994"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\surface-entry-original.py",
+      "archive": "surface-entry-original.py",
+      "sha256": "f4f900ecc7a9d15a17d7b361d0b0bc5f89cd6461d36fa14dc881dbd31b2114bd"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\audit-surface-entry.py",
+      "archive": "audit-surface-entry.py",
+      "sha256": "cf43fa838671f56a3e3bda70c85cafb732eb37d7475943d4a09562ef8e583168"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\surface-entry-audit.json",
+      "archive": "surface-entry-audit.json",
+      "sha256": "fef872f7b3c87de691720d89990160506c9ce5606a608039555d258245b577ec"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\surface-entry-audit.log",
+      "archive": "surface-entry-audit.txt",
+      "sha256": "d3e67bb8fa24fe3074644d1a1b0556b5187e5f966aebe18f07224cbd260268c5"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\surface-entry-build.log",
+      "archive": "surface-entry-build.txt",
+      "sha256": "36c88849ab24f3e3ddaa7a376de24e1dfbf582728565a94b10472e1fa667d8a0"
+    },
+    {
+      "source": "logs\\physics\\PHYS-PERF-01\\surface-entry-ruff.log",
+      "archive": "surface-entry-ruff.txt",
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0"
+    }
+  ],
+  "audit": {
+    "baseline": "independent old surface-ray C DLL plus a2f743e original Python CylinderSurface.entry",
+    "all_fields_hex_and_references_equal": true,
+    "counts": {
+      "ray_queries": 9643,
+      "original_surfaces": 39603,
+      "current_surfaces": 9643,
+      "direct_entries": 90
+    },
+    "scope": "一次组对照；未重跑pytest/T1/三种子/48拍/profile。"
+  },
+  "stage_gate": "pending",
+  "human_gate": "pending"
+}

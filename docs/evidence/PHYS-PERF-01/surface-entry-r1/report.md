@@ -1,0 +1,3 @@
+CylinderSurface公开入口和射线装配共用同一原生纯几何函数，Triangle/Plane/Box原有限求交与支持面锚点顺序保持，边角仍走原精确求解。静态形状已经读取的translation直接沿用，减少inverse.getCell重复读取；CylinderSurface和offset元组延至实际hit后创建，查询对象仍属于唯一世界。
+
+一次对照：原a2f743e Python entry与旧独立DLL的surface_ray_hits函数；该DLL射线函数源码与a2f743e逐字相同，复用既有严格构建DLL。90个有限Box/Plane直接入口、真实九车24拍9,643条射线所有字段hex/对象引用相同。支持面构造39,603→9,643，减少29,960次，未据此宣称FPS。Ruff通过。没有再次pytest/T1/种子/48拍/profile；整体阶段/实时/人工继续。

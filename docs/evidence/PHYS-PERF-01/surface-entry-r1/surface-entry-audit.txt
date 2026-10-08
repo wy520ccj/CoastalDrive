@@ -1,0 +1,1 @@
+{"baseline": "independent old surface-ray C DLL plus a2f743e original Python CylinderSurface.entry", "all_fields_hex_and_references_equal": true, "counts": {"ray_queries": 9643, "original_surfaces": 39603, "current_surfaces": 9643, "direct_entries": 90}, "scope": "һ������գ�δ����pytest/T1/������/48��/profile��"}

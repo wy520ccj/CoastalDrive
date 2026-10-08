@@ -130,3 +130,6 @@ Tire constitutive 本构块（2026-10-08，隔离未并入main）：[证据与�
 
 
 有限网格数值数组（2026-10-08）：[证据](../evidence/PHYS-PERF-01/triangle-packet-r1/receipt.json)。源三角面/候选顺序/边角和64/96迭代精度保持；数组仅缓存固定几何并明确持有元组及子packet。一次11项相关短检查+九车24拍，独立旧DLL39,663查询/9,674 hits全部hex相同；Ruff通过，首导入排序失败保留。未重跑T1/种子/48拍/profile。下一支持面无命中路径的对象装配与相同原生纯几何入口。
+
+
+支持面纯几何与命中装配（2026-10-08）：[证据](../evidence/PHYS-PERF-01/surface-entry-r1/receipt.json)。同一entry供公开CylinderSurface和射线查询使用，静态translation直接沿用；未命中不再构造Surface对象。一次旧C+旧Python对照90直接入口及9,643射线，所有字段hex/引用一致，构造39,603→9,643。Ruff通过；未再次pytest/T1/种子/48拍/profile，不宣称FPS。下一完整九维局部轮端力/Jacobian的原生求解，避免每次残差往返Python。
