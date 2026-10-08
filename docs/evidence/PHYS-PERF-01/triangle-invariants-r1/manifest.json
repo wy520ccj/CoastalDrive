@@ -1,0 +1,376 @@
+{
+  "algorithm": "SHA-256",
+  "entry_count": 45,
+  "files": [
+    {
+      "source": "logs/physics/PHYS-PERF-01/audit-triangle-bound.py",
+      "archive": "triangle-bound/audit-triangle-bound.py",
+      "source_sha256": "2954abddc64588fd18a3830622aa5428ad8fc527bbffa8b7f001e4e757f38706",
+      "archive_sha256": "2954abddc64588fd18a3830622aa5428ad8fc527bbffa8b7f001e4e757f38706",
+      "compressed": false,
+      "payload_sha256": "2954abddc64588fd18a3830622aa5428ad8fc527bbffa8b7f001e4e757f38706"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/measure-triangle-bound.py",
+      "archive": "triangle-bound/measure-triangle-bound.py",
+      "source_sha256": "32a2f57bf1db51ed5fc5ca520839b9f46cd362310ca056222fe744301a44dc5c",
+      "archive_sha256": "32a2f57bf1db51ed5fc5ca520839b9f46cd362310ca056222fe744301a44dc5c",
+      "compressed": false,
+      "payload_sha256": "32a2f57bf1db51ed5fc5ca520839b9f46cd362310ca056222fe744301a44dc5c"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-triangle-bound.log",
+      "archive": "triangle-bound/profile-triangle-bound.txt",
+      "source_sha256": "299e83d4ff3574580df92b576854b5ef43a63de4483b16fd6672bbb79968f640",
+      "archive_sha256": "299e83d4ff3574580df92b576854b5ef43a63de4483b16fd6672bbb79968f640",
+      "compressed": false,
+      "payload_sha256": "299e83d4ff3574580df92b576854b5ef43a63de4483b16fd6672bbb79968f640"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-triangle-bound.py",
+      "archive": "triangle-bound/profile-triangle-bound.py",
+      "source_sha256": "e07ac35f576ca0a719640310d9b00cb94c7a2cf80706754483752e2f11f900bc",
+      "archive_sha256": "e07ac35f576ca0a719640310d9b00cb94c7a2cf80706754483752e2f11f900bc",
+      "compressed": false,
+      "payload_sha256": "e07ac35f576ca0a719640310d9b00cb94c7a2cf80706754483752e2f11f900bc"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-bound-audit-r2.json",
+      "archive": "triangle-bound/triangle-bound-audit-r2.json",
+      "source_sha256": "134f33933e09298b3fea6e0552efeafd598baa8466172e07782063f39dc64688",
+      "archive_sha256": "134f33933e09298b3fea6e0552efeafd598baa8466172e07782063f39dc64688",
+      "compressed": false,
+      "payload_sha256": "134f33933e09298b3fea6e0552efeafd598baa8466172e07782063f39dc64688"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-bound-audit-r2.log",
+      "archive": "triangle-bound/triangle-bound-audit-r2.txt",
+      "source_sha256": "a2133dc3483d721d43cdf79600bb324108410d6a2933cebfc3753fdf91c899e9",
+      "archive_sha256": "a2133dc3483d721d43cdf79600bb324108410d6a2933cebfc3753fdf91c899e9",
+      "compressed": false,
+      "payload_sha256": "a2133dc3483d721d43cdf79600bb324108410d6a2933cebfc3753fdf91c899e9"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-bound-audit-r3.log",
+      "archive": "triangle-bound/triangle-bound-audit-r3.txt",
+      "source_sha256": "767b1d5ab03f22a7fa848f198bd2b3c224a8679a2b5cecaca146068c8dea5094",
+      "archive_sha256": "767b1d5ab03f22a7fa848f198bd2b3c224a8679a2b5cecaca146068c8dea5094",
+      "compressed": false,
+      "payload_sha256": "767b1d5ab03f22a7fa848f198bd2b3c224a8679a2b5cecaca146068c8dea5094"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-bound-audit.json",
+      "archive": "triangle-bound/triangle-bound-audit.json",
+      "source_sha256": "134f33933e09298b3fea6e0552efeafd598baa8466172e07782063f39dc64688",
+      "archive_sha256": "134f33933e09298b3fea6e0552efeafd598baa8466172e07782063f39dc64688",
+      "compressed": false,
+      "payload_sha256": "134f33933e09298b3fea6e0552efeafd598baa8466172e07782063f39dc64688"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-bound-audit.log",
+      "archive": "triangle-bound/triangle-bound-audit.txt",
+      "source_sha256": "a2133dc3483d721d43cdf79600bb324108410d6a2933cebfc3753fdf91c899e9",
+      "archive_sha256": "a2133dc3483d721d43cdf79600bb324108410d6a2933cebfc3753fdf91c899e9",
+      "compressed": false,
+      "payload_sha256": "a2133dc3483d721d43cdf79600bb324108410d6a2933cebfc3753fdf91c899e9"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-bound-build-r2.log",
+      "archive": "triangle-bound/triangle-bound-build-r2.txt",
+      "source_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "archive_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "compressed": false,
+      "payload_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-bound-build.log",
+      "archive": "triangle-bound/triangle-bound-build.txt",
+      "source_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "archive_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229",
+      "compressed": false,
+      "payload_sha256": "c5119d48960adb125e51ead4dd08ef38bea9565899bb4980c5baccfddb189229"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-bound-snapshots-r1.json",
+      "archive": "triangle-bound/triangle-bound-snapshots-r1.json.gz",
+      "source_sha256": "a87402a6ae7a885da330eae36e8d547ffd8c70ba607a57ab86eb1d7c92b08307",
+      "archive_sha256": "306041b7c35de9bb8353edc6f3410cd6764f8396c595fd24f9810038b7e43c7b",
+      "compressed": true,
+      "payload_sha256": "a87402a6ae7a885da330eae36e8d547ffd8c70ba607a57ab86eb1d7c92b08307"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-bound-snapshots-r2.log",
+      "archive": "triangle-bound/triangle-bound-snapshots-r2.txt",
+      "source_sha256": "37ce83004ca8caa7d4257b6036230ce56be99351781a9ae8e3d1648ee6a1cbdc",
+      "archive_sha256": "37ce83004ca8caa7d4257b6036230ce56be99351781a9ae8e3d1648ee6a1cbdc",
+      "compressed": false,
+      "payload_sha256": "37ce83004ca8caa7d4257b6036230ce56be99351781a9ae8e3d1648ee6a1cbdc"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-bound-snapshots.json",
+      "archive": "triangle-bound/triangle-bound-snapshots.json.gz",
+      "source_sha256": "d396fbf3a43d859dfa88272befa2b560d2dcbe05592f6075b30250e2954bd2ad",
+      "archive_sha256": "56c16fc49f5b107772859adb8035147d9f478493b0862aa78ef013343faa2696",
+      "compressed": true,
+      "payload_sha256": "d396fbf3a43d859dfa88272befa2b560d2dcbe05592f6075b30250e2954bd2ad"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/triangle-bound-snapshots.log",
+      "archive": "triangle-bound/triangle-bound-snapshots.txt",
+      "source_sha256": "9d873bb5740a38c5e2a99c51d4bb9f13abe8f7ccdaa35d3d9adb952042a8a394",
+      "archive_sha256": "9d873bb5740a38c5e2a99c51d4bb9f13abe8f7ccdaa35d3d9adb952042a8a394",
+      "compressed": false,
+      "payload_sha256": "9d873bb5740a38c5e2a99c51d4bb9f13abe8f7ccdaa35d3d9adb952042a8a394"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-triangle-bound-r1/gr86-profile.prof",
+      "archive": "profile-triangle-bound-r1/gr86-profile.prof",
+      "source_sha256": "435bf8dac3d384f0260ec98ae94f377e3eb421e249fd36f4652eaa6bf3c76618",
+      "archive_sha256": "435bf8dac3d384f0260ec98ae94f377e3eb421e249fd36f4652eaa6bf3c76618",
+      "compressed": false,
+      "payload_sha256": "435bf8dac3d384f0260ec98ae94f377e3eb421e249fd36f4652eaa6bf3c76618"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/profile-triangle-bound-r1/profile.json",
+      "archive": "profile-triangle-bound-r1/profile.json",
+      "source_sha256": "77c87298c9a45d764bd386a54aaaff782c69f63225e6eaf9918f9013ad3509a2",
+      "archive_sha256": "77c87298c9a45d764bd386a54aaaff782c69f63225e6eaf9918f9013ad3509a2",
+      "compressed": false,
+      "payload_sha256": "77c87298c9a45d764bd386a54aaaff782c69f63225e6eaf9918f9013ad3509a2"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/contact-system-baseline/b/_contact_system_old.cp314-win_amd64.pyd",
+      "archive": "reference/contact-system-baseline/b/_contact_system_old.cp314-win_amd64.pyd.gz",
+      "source_sha256": "eb77a56abc03e590d31368009087c32af5f754c7f51dffa783a1dfcb59b65936",
+      "archive_sha256": "7e8a2353a7a8bc44b56e30ff1116fa5b66837b87e1b1ac9fff3d35b542c8f40c",
+      "compressed": true,
+      "payload_sha256": "eb77a56abc03e590d31368009087c32af5f754c7f51dffa783a1dfcb59b65936"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/contact-system-baseline/baseline.c",
+      "archive": "reference/contact-system-baseline/baseline.c",
+      "source_sha256": "cf87b3397241547edd0e4cec6f162a006fd2e6d08680e8e44150e18bec4fa315",
+      "archive_sha256": "cf87b3397241547edd0e4cec6f162a006fd2e6d08680e8e44150e18bec4fa315",
+      "compressed": false,
+      "payload_sha256": "cf87b3397241547edd0e4cec6f162a006fd2e6d08680e8e44150e18bec4fa315"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/contact-system-baseline/build.log",
+      "archive": "reference/contact-system-baseline/build.txt",
+      "source_sha256": "7a519e21b661207f1edb1435da9e0c2016c6a2a3e2854caee77642038c456cdc",
+      "archive_sha256": "7a519e21b661207f1edb1435da9e0c2016c6a2a3e2854caee77642038c456cdc",
+      "compressed": false,
+      "payload_sha256": "7a519e21b661207f1edb1435da9e0c2016c6a2a3e2854caee77642038c456cdc"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/contact-system-baseline/manifest.json",
+      "archive": "reference/contact-system-baseline/manifest.json",
+      "source_sha256": "0209e0e813b21449448682b154be5237f95ad0bf62059550a322068107c1163b",
+      "archive_sha256": "0209e0e813b21449448682b154be5237f95ad0bf62059550a322068107c1163b",
+      "compressed": false,
+      "payload_sha256": "0209e0e813b21449448682b154be5237f95ad0bf62059550a322068107c1163b"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/contact-system-baseline/original-wheel-contact-kernels.c",
+      "archive": "reference/contact-system-baseline/original-wheel-contact-kernels.c",
+      "source_sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+      "archive_sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+      "compressed": false,
+      "payload_sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/contact-system-baseline/receipt.json",
+      "archive": "reference/contact-system-baseline/receipt.json",
+      "source_sha256": "4fab18836ac39610d1c55d9b6fbe367a3ccf47ceef54dd13d3968707761d2c41",
+      "archive_sha256": "4fab18836ac39610d1c55d9b6fbe367a3ccf47ceef54dd13d3968707761d2c41",
+      "compressed": false,
+      "payload_sha256": "4fab18836ac39610d1c55d9b6fbe367a3ccf47ceef54dd13d3968707761d2c41"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/contact-system-baseline/setup.py",
+      "archive": "reference/contact-system-baseline/setup.py",
+      "source_sha256": "7a4465cb4c089b51e0cccd45d8057cc3bc2beff05acf734f294c98686de53f23",
+      "archive_sha256": "7a4465cb4c089b51e0cccd45d8057cc3bc2beff05acf734f294c98686de53f23",
+      "compressed": false,
+      "payload_sha256": "7a4465cb4c089b51e0cccd45d8057cc3bc2beff05acf734f294c98686de53f23"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/contact-system-baseline/t/Release/_contact_system_old.cp314-win_amd64.exp",
+      "archive": "reference/contact-system-baseline/t/Release/_contact_system_old.cp314-win_amd64.exp.gz",
+      "source_sha256": "f80c68d364277ad34f8827eeff8dc8b347dd92dd68dd3ae53278e618ac22a0ba",
+      "archive_sha256": "0b759c4f0fed0ab844dd5ac6903ad5bdc16c6866ab22691fb04ae16b84723c50",
+      "compressed": true,
+      "payload_sha256": "f80c68d364277ad34f8827eeff8dc8b347dd92dd68dd3ae53278e618ac22a0ba"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/contact-system-baseline/t/Release/_contact_system_old.cp314-win_amd64.lib",
+      "archive": "reference/contact-system-baseline/t/Release/_contact_system_old.cp314-win_amd64.lib.gz",
+      "source_sha256": "2462566b0055d874772b735a2ad630b24184f86ef3b8cc57d34954d0e3e5e71e",
+      "archive_sha256": "7afdc902749791e4d4f8ff5ed635c3432d3745dc0f1589648f4da6cec1ba1dea",
+      "compressed": true,
+      "payload_sha256": "2462566b0055d874772b735a2ad630b24184f86ef3b8cc57d34954d0e3e5e71e"
+    },
+    {
+      "source": "logs/physics/PHYS-PERF-01/contact-system-baseline/t/Release/baseline.obj",
+      "archive": "reference/contact-system-baseline/t/Release/baseline.obj.gz",
+      "source_sha256": "660a2429d91e0fbcc0f33ba5d6edf0313c39c7c6ce1dedf0cd96e5f120c2e6ff",
+      "archive_sha256": "04775052acefb03c11f0ac6a7bdfe141153c8d7b4b2fdec79e701230eb44af4a",
+      "compressed": true,
+      "payload_sha256": "660a2429d91e0fbcc0f33ba5d6edf0313c39c7c6ce1dedf0cd96e5f120c2e6ff"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-triangle-bound-T0/pytest.log",
+      "archive": "validation/PHYS-PERF-01-triangle-bound-T0/pytest.txt",
+      "source_sha256": "2d26304dd019b2072f9565103a5f81d17716e38fd5732c52bbf84b74db82ce88",
+      "archive_sha256": "2d26304dd019b2072f9565103a5f81d17716e38fd5732c52bbf84b74db82ce88",
+      "compressed": false,
+      "payload_sha256": "2d26304dd019b2072f9565103a5f81d17716e38fd5732c52bbf84b74db82ce88"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-triangle-bound-T0/ruff.log",
+      "archive": "validation/PHYS-PERF-01-triangle-bound-T0/ruff.txt",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "compressed": false,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-triangle-bound-T0/summary.json",
+      "archive": "validation/PHYS-PERF-01-triangle-bound-T0/summary.json",
+      "source_sha256": "f06ce98c074d9ba952ee3d55f7e756b0b2e63efd375dba68e41d320ff103817e",
+      "archive_sha256": "f06ce98c074d9ba952ee3d55f7e756b0b2e63efd375dba68e41d320ff103817e",
+      "compressed": false,
+      "payload_sha256": "f06ce98c074d9ba952ee3d55f7e756b0b2e63efd375dba68e41d320ff103817e"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-triangle-bound-T1/headless-0.log",
+      "archive": "validation/PHYS-PERF-01-triangle-bound-T1/headless-0.txt",
+      "source_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "archive_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "compressed": false,
+      "payload_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-triangle-bound-T1/headless-17.log",
+      "archive": "validation/PHYS-PERF-01-triangle-bound-T1/headless-17.txt",
+      "source_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "archive_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "compressed": false,
+      "payload_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-triangle-bound-T1/headless-23.log",
+      "archive": "validation/PHYS-PERF-01-triangle-bound-T1/headless-23.txt",
+      "source_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "archive_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "compressed": false,
+      "payload_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-triangle-bound-T1/pytest.log",
+      "archive": "validation/PHYS-PERF-01-triangle-bound-T1/pytest.txt",
+      "source_sha256": "b6b625e5199b543f254fb1e5e42b9aa3ee54697a1396f069522f545e9ab8a178",
+      "archive_sha256": "b6b625e5199b543f254fb1e5e42b9aa3ee54697a1396f069522f545e9ab8a178",
+      "compressed": false,
+      "payload_sha256": "b6b625e5199b543f254fb1e5e42b9aa3ee54697a1396f069522f545e9ab8a178"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-triangle-bound-T1/ruff.log",
+      "archive": "validation/PHYS-PERF-01-triangle-bound-T1/ruff.txt",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "compressed": false,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-triangle-bound-T1/summary.json",
+      "archive": "validation/PHYS-PERF-01-triangle-bound-T1/summary.json",
+      "source_sha256": "d287a7c38c68680cdf5f1246d87381c4e530da6acd2e06f810ffcd646f444a80",
+      "archive_sha256": "d287a7c38c68680cdf5f1246d87381c4e530da6acd2e06f810ffcd646f444a80",
+      "compressed": false,
+      "payload_sha256": "d287a7c38c68680cdf5f1246d87381c4e530da6acd2e06f810ffcd646f444a80"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-triangle-bound-T1-r2/headless-0.log",
+      "archive": "validation/PHYS-PERF-01-triangle-bound-T1-r2/headless-0.txt",
+      "source_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "archive_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "compressed": false,
+      "payload_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-triangle-bound-T1-r2/headless-17.log",
+      "archive": "validation/PHYS-PERF-01-triangle-bound-T1-r2/headless-17.txt",
+      "source_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "archive_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "compressed": false,
+      "payload_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-triangle-bound-T1-r2/headless-23.log",
+      "archive": "validation/PHYS-PERF-01-triangle-bound-T1-r2/headless-23.txt",
+      "source_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "archive_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5",
+      "compressed": false,
+      "payload_sha256": "0d32b42c8a41ad0cf56786c5edc5dcb4b42186241f67af0ccc7d49d390f267e5"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-triangle-bound-T1-r2/pytest.log",
+      "archive": "validation/PHYS-PERF-01-triangle-bound-T1-r2/pytest.txt",
+      "source_sha256": "0bf6646c8c15577767a0629720aacb8284d741b4d0090d8900bdf0fde82101ca",
+      "archive_sha256": "0bf6646c8c15577767a0629720aacb8284d741b4d0090d8900bdf0fde82101ca",
+      "compressed": false,
+      "payload_sha256": "0bf6646c8c15577767a0629720aacb8284d741b4d0090d8900bdf0fde82101ca"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-triangle-bound-T1-r2/ruff.log",
+      "archive": "validation/PHYS-PERF-01-triangle-bound-T1-r2/ruff.txt",
+      "source_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "compressed": false,
+      "payload_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "source": "logs/validation/PHYS-PERF-01-triangle-bound-T1-r2/summary.json",
+      "archive": "validation/PHYS-PERF-01-triangle-bound-T1-r2/summary.json",
+      "source_sha256": "e4198e91de2f968859537f8334bb7ab0eef49438937abf29ef84588ab73c6212",
+      "archive_sha256": "e4198e91de2f968859537f8334bb7ab0eef49438937abf29ef84588ab73c6212",
+      "compressed": false,
+      "payload_sha256": "e4198e91de2f968859537f8334bb7ab0eef49438937abf29ef84588ab73c6212"
+    },
+    {
+      "source": "captured-source-state",
+      "archive": "source-hashes-start.json",
+      "source_sha256": "11108efb64301f26fbad793f97202300cfc1e7e63b086b82f8f445fd039537a8",
+      "archive_sha256": "11108efb64301f26fbad793f97202300cfc1e7e63b086b82f8f445fd039537a8",
+      "compressed": false,
+      "payload_sha256": "11108efb64301f26fbad793f97202300cfc1e7e63b086b82f8f445fd039537a8"
+    },
+    {
+      "source": "captured-source-state",
+      "archive": "source-hashes-end.json",
+      "source_sha256": "11108efb64301f26fbad793f97202300cfc1e7e63b086b82f8f445fd039537a8",
+      "archive_sha256": "11108efb64301f26fbad793f97202300cfc1e7e63b086b82f8f445fd039537a8",
+      "compressed": false,
+      "payload_sha256": "11108efb64301f26fbad793f97202300cfc1e7e63b086b82f8f445fd039537a8"
+    },
+    {
+      "source": "B:/AI agent/暑期计算机程序设计/CoastalDrive/docs/evidence/PHYS-DESIGN-01/wall-port-precision-r1/wall/snapshots.json.gz",
+      "archive": "reference/main-wall-port-precision-r1/snapshots.json.gz",
+      "source_sha256": "ddff1bfd69f860c457e2387914fd7a4770cf89f560fb850feb94e571fe2908b6",
+      "archive_sha256": "ddff1bfd69f860c457e2387914fd7a4770cf89f560fb850feb94e571fe2908b6",
+      "compressed": true,
+      "payload_sha256": "c8468ee7731e5bf24ee661c82b82df7cb154bec6585d9935db2ad3e9f3522400"
+    }
+  ],
+  "optional_inputs": {
+    "triangle-bound-audit-r1-json": "not preserved; unqualified JSON was overwritten by r2 with identical counts",
+    "triangle-bound-audit-r3-json": "not present; r3 log preserved",
+    "measure-triangle-bound-json": "no separate file present; measurement records are the snapshot JSONs/logs"
+  },
+  "old_dll_reference": {
+    "source_sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+    "renamed_source_sha256": "cf87b3397241547edd0e4cec6f162a006fd2e6d08680e8e44150e18bec4fa315",
+    "pyd_sha256": "eb77a56abc03e590d31368009087c32af5f754c7f51dffa783a1dfcb59b65936"
+  }
+}

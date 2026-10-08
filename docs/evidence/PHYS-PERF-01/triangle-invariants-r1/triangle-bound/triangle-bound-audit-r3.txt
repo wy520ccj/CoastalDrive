@@ -1,0 +1,3 @@
+...........................                                              [100%]
+27 passed in 0.27s
+{"baseline": "ab204a9 independent old full query DLL and original triangle-entry Python + old triangle_face DLL", "pytest_code": 0, "all_output_hex_equal": true, "counts": {"queries": 39672, "hits": 9685, "old_edge_calls": 35323, "new_edge_calls": 22361}}

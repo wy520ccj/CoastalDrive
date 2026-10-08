@@ -1,0 +1,40 @@
+{
+  "baseline_commit": "ab204a9a5880d365c489994f3727faf27ff3c637",
+  "source_path": "src/wheel_contact_kernels.c",
+  "module_name": "_contact_system_old",
+  "init_symbol": "PyInit__contact_system_old",
+  "rename_rule": "Only the module definition string and PyInit function symbol were renamed.",
+  "source_sha256": "a6c6a0928ce2596a1285ad496fc246a8257a2f126f336b79413cbd78ac5bb30b",
+  "renamed_source_sha256": "cf87b3397241547edd0e4cec6f162a006fd2e6d08680e8e44150e18bec4fa315",
+  "setup_sha256": "7a4465cb4c089b51e0cccd45d8057cc3bc2beff05acf734f294c98686de53f23",
+  "build_command": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\.venv\\Scripts\\python.exe C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\contact-system-baseline\\setup.py build_ext --build-lib C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\contact-system-baseline\\b --build-temp C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive\\logs\\physics\\PHYS-PERF-01\\contact-system-baseline\\t",
+  "strict_compile_args": [
+    "/fp:strict",
+    "/utf-8"
+  ],
+  "build_returncode": 0,
+  "build_log": "build.log",
+  "pyd_path": "b/_contact_system_old.cp314-win_amd64.pyd",
+  "pyd_sha256": "eb77a56abc03e590d31368009087c32af5f754c7f51dffa783a1dfcb59b65936",
+  "import_check": {
+    "passed": true,
+    "module": "_contact_system_old",
+    "exports": [
+      "box_interval",
+      "clipped_triangle",
+      "crown_extent_secant",
+      "cylinder_edge_distance",
+      "cylinder_endpoint",
+      "cylinder_point_delta",
+      "cylinder_support",
+      "rotated_path",
+      "subtract",
+      "support_candidates",
+      "surface_ray_hits",
+      "surface_transform",
+      "triangle_face",
+      "triangle_support_entry"
+    ],
+    "physical_code_executed": false
+  }
+}
