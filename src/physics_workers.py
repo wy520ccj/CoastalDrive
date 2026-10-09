@@ -32,6 +32,7 @@ _worker_memory = None
 _worker_version = None
 _worker_material = None
 _worker_candidates = {}
+_worker_meshes = {}
 _job_header = struct.Struct('<QQ')
 _result_header = struct.Struct('<Qdd')
 
@@ -147,7 +148,19 @@ def _load_geometry(reference):
     if _worker_memory is not None:
         _worker_memory.close()
     _worker_memory = SharedMemory(name=reference.name)
-    groups,material,hulls = pickle.loads(_worker_memory.buf[:reference.size])
+    groups,material,hulls,meshes = pickle.loads(_worker_memory.buf[:reference.size])
+    # 每个版本提供全部有效网格的原始载荷；空闲进程可直接跨版本进入，不依赖补丁历史。
+    # 未变网格只复用其不可变原生索引，世界变换/资格/候选仍随当前版本重建。
+    active_meshes = set()
+    for identifier,payload in meshes:
+        active_meshes.add(identifier)
+        if identifier not in _worker_meshes:
+            _worker_meshes[identifier] = pickle.loads(payload)
+    for identifier in _worker_meshes.keys()-active_meshes:
+        del _worker_meshes[identifier]
+    groups = tuple((index,supported,tuple((*part[:6],
+                    _worker_meshes[part[6]] if part[6] is not None else None,*part[7:])
+                    for part in parts)) for index,supported,parts in groups)
     _worker_geometry = StaticSupportShapes(tuple((StaticSource(index),supported,parts) for index,supported,parts in groups))
     _worker_geometry.install_hulls({StaticSource(index):parts for index,parts in hulls})
     _worker_candidates.clear()
@@ -308,6 +321,8 @@ class PhysicsWorkers:
         self.next_prepare_start = 0.
         self.preparation_next = 0
         self.initialisation_seconds = 0.
+        self.mesh_payloads = {}
+        self.mesh_identifier = 0
 
     def _start_one(self):
         context = get_context('spawn')
@@ -388,7 +403,7 @@ class PhysicsWorkers:
         while not self.preparation_ready(wait=True):
             pass
 
-    def clear_geometry(self):
+    def clear_geometry(self, *, retain_meshes=False):
         self.finish_preparation()
         self.shapes = None
         self.reference = None
@@ -397,18 +412,37 @@ class PhysicsWorkers:
             self.memory.close()
             self.memory.unlink()
             self.memory = None
+        if not retain_meshes:
+            self.mesh_payloads.clear()
+
+    def _mesh_packet(self, mesh):
+        """按原不可变网格身份只序列化一次；变换、margin和支持资格不进入此缓存。"""
+        if mesh is None:
+            return None
+        key = id(mesh)
+        if key not in self.mesh_payloads:
+            self.mesh_identifier += 1
+            self.mesh_payloads[key] = (mesh,self.mesh_identifier,
+                                      pickle.dumps(mesh,protocol=pickle.HIGHEST_PROTOCOL))
+        return self.mesh_payloads[key][1]
 
     def _publish_geometry(self, shapes, material):
         if self.shapes is shapes and self.material==material:
             return
-        self.clear_geometry()
+        self.clear_geometry(retain_meshes=True)
         # 顺序与唯一世界的静态分区完全一致，共享内存只保存数值而非第二个物理世界。
-        groups = tuple((index,supported,tuple((None,*part[1:]) for part in parts))
+        groups = tuple((index,supported,tuple((None,*part[1:6],self._mesh_packet(part[6]),*part[7:]) for part in parts))
                        for index,(_body,supported,parts) in enumerate(shapes))
+        # 只保留当前世界仍使用的网格，退役/替换的支持面不会混入后续查询。
+        active_meshes = {part[6] for _index,_supported,parts in groups for part in parts if part[6] is not None}
+        for key in tuple(self.mesh_payloads):
+            if self.mesh_payloads[key][1] not in active_meshes:
+                del self.mesh_payloads[key]
+        meshes = tuple((identifier,payload) for _mesh,identifier,payload in self.mesh_payloads.values())
         track,curve,origin = material
         curve_values = (curve.seed,curve.height,curve.base_height,tuple(curve.y_table),curve.advance) if curve is not None else None
         hulls = tuple((index,shapes.hulls[body]) for index,(body,_supported,_parts) in enumerate(shapes) if body in shapes.hulls)
-        payload = pickle.dumps((groups,(track,curve_values,origin),hulls), protocol=pickle.HIGHEST_PROTOCOL)
+        payload = pickle.dumps((groups,(track,curve_values,origin),hulls,meshes), protocol=pickle.HIGHEST_PROTOCOL)
         self.memory = SharedMemory(create=True, size=len(payload))
         self.memory.buf[:len(payload)] = payload
         self.version += 1

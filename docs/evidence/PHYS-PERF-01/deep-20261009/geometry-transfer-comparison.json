@@ -1,0 +1,110 @@
+{
+  "all_snapshots_equal": true,
+  "samples": 7200,
+  "different_ticks": [],
+  "before_geometry_updates": [
+    {
+      "tick": 1903,
+      "version": 2,
+      "ms": 141.90840000082972
+    },
+    {
+      "tick": 2929,
+      "version": 3,
+      "ms": 153.8237000022491
+    },
+    {
+      "tick": 3937,
+      "version": 4,
+      "ms": 160.42019999804324
+    },
+    {
+      "tick": 4897,
+      "version": 5,
+      "ms": 155.450700000074
+    },
+    {
+      "tick": 5803,
+      "version": 6,
+      "ms": 154.62279999701423
+    },
+    {
+      "tick": 6763,
+      "version": 7,
+      "ms": 157.69080000245594
+    }
+  ],
+  "after_geometry_updates": [
+    {
+      "tick": 1903,
+      "version": 2,
+      "ms": 39.46709999945597
+    },
+    {
+      "tick": 2929,
+      "version": 3,
+      "ms": 42.502000000240514
+    },
+    {
+      "tick": 3937,
+      "version": 4,
+      "ms": 44.4668999989517
+    },
+    {
+      "tick": 4897,
+      "version": 5,
+      "ms": 42.53939999762224
+    },
+    {
+      "tick": 5803,
+      "version": 6,
+      "ms": 45.93540000132634
+    },
+    {
+      "tick": 6763,
+      "version": 7,
+      "ms": 43.172300000151154
+    }
+  ],
+  "before_slow_steps": [
+    {
+      "tick": 1903,
+      "geometry_version": 2,
+      "ms": 141.90840000082972
+    },
+    {
+      "tick": 2929,
+      "geometry_version": 3,
+      "ms": 153.8237000022491
+    },
+    {
+      "tick": 3937,
+      "geometry_version": 4,
+      "ms": 160.42019999804324
+    },
+    {
+      "tick": 4897,
+      "geometry_version": 5,
+      "ms": 155.450700000074
+    },
+    {
+      "tick": 5803,
+      "geometry_version": 6,
+      "ms": 154.62279999701423
+    },
+    {
+      "tick": 6763,
+      "geometry_version": 7,
+      "ms": 157.69080000245594
+    }
+  ],
+  "after_slow_steps": [
+    {
+      "tick": 6701,
+      "geometry_version": 6,
+      "ms": 120.76890000025742
+    }
+  ],
+  "geometry_change_mean_before_ms": 153.98610000011104,
+  "geometry_change_mean_after_ms": 43.013849999624654
+}

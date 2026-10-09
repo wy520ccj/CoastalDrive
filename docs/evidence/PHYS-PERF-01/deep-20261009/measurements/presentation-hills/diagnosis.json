@@ -1,0 +1,48 @@
+{
+  "kind": "instrumented presentation diagnosis, not speed comparison",
+  "sample_start_after_first_apply_seconds": 3,
+  "physics_y_reverse_counts": [
+    0,
+    0,
+    0,
+    4,
+    18,
+    22,
+    20,
+    8,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "render_y_reverse_counts": [
+    0,
+    0,
+    0,
+    7,
+    24,
+    30,
+    28,
+    13,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "repeated_snapshot_frames": 287,
+  "render_frames": 1017,
+  "physical_publications": 733,
+  "camera_query_ms": {
+    "mean": 3.00176724935145,
+    "p95": 7.779899999150075,
+    "max": 14.941000001272187
+  },
+  "player_relative_camera_y_changes": {
+    "below_minus_2mm": 321,
+    "above_plus_2mm": 298,
+    "minimum_m": -0.043849603318079744,
+    "maximum_m": 0.036298083327785946
+  }
+}

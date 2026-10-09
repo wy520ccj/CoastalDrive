@@ -4,7 +4,8 @@
   "retained": [
     "完整海岸道路资格和最近点原生有序遍历",
     "原生候选窗口复用原三角面数据",
-    "真实物理基准及源码选择/生成器计时核对"
+    "真实物理基准及源码选择/生成器计时核对",
+    "只读三角网格跨几何版本复用序列化载荷和原生索引，实际变换/资格/候选随版本更新"
   ],
   "rejected": {
     "contact_packet": "ABBA约0.9%，尾部无改善",
@@ -14,7 +15,8 @@
     "cython_generic": "15.98ms，1200拍快照相同但更慢",
     "cython_inference": "15.66ms，未整合",
     "hybrid_master": "无窗口12.51ms，但真实前台无改善；未整合",
-    "stable_ownership": "独立ABBA约1.9%，新增协议/归属复杂度不值得，已撤销"
+    "stable_ownership": "独立ABBA约1.9%，新增协议/归属复杂度不值得，已撤销",
+    "panda_gc_plus_shorter_switch": "GC rate0.05 + switch0.001窗口变慢至25.27物理Hz/32.26绘制FPS，状态表增至约28万；未整合，不能分别推断两个选项的效果"
   },
   "failed_attempts": [
     "首个计时包装使用了不存在的_observe_contacts，未进入测量",
@@ -26,7 +28,16 @@
     "计时T0首轮仅Ruff排序失败，pytest未跑；r2两项通过"
   ],
   "local_experiment_root": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\deep-20261009",
-  "t2": "待执行",
+  "t2": "实际完整pytest 46通过/1失败，315.37秒；后续not_run。冻结基线与当前默认CLI均在2196拍以相同残差失败，此前2195拍完整Snapshot SHA一致，为既有收敛失败。T3未执行。",
   "t3": "未执行，实时/阶段Gate未通过",
-  "manual": "用户实际驾驶结论待确认"
+  "manual": "用户实际驾驶结论待确认",
+  "geometry_version_evidence": {
+    "comparison": "geometry-transfer-comparison.json",
+    "all_7200_snapshots_equal": true,
+    "geometry_change_mean_before_ms": 153.9861,
+    "geometry_change_mean_after_ms": 43.01385,
+    "unexplained_after_spike_ms": 120.7689,
+    "final_T1": "53 passed, Ruff and three 1200-tick seeds passed"
+  },
+  "presentation_diagnosis": "玩家实际/插值道路y均未倒退；相对相机y有约4cm单帧回摆；慢物理刷新与持续相机追赶相关。其他NPC有小于0.5mm真实初期位移，不能宣称所有车辆物理零抖动。"
 }

@@ -4,7 +4,13 @@ from dataclasses import replace
 from multiprocessing.shared_memory import SharedMemory
 
 import pytest
-from panda3d.core import TransformState, Vec3
+from panda3d.bullet import (
+    BulletBoxShape,
+    BulletRigidBodyNode,
+    BulletTriangleMesh,
+    BulletTriangleMeshShape,
+)
+from panda3d.core import BitMask32, TransformState, Vec3
 
 from driving_modes import DrivingMode
 from session import GameMode, Phase, Session
@@ -192,3 +198,72 @@ def test_one_worker_handles_many_cars_without_pipe_backpressure_or_result_reorde
     finally:
         serial.close()
         parallel.close()
+
+
+def test_geometry_versions_reuse_only_unchanged_meshes_and_rebuild_actual_replacements():
+    from triangle_support import TriangleSupport
+
+    serial = Simulation(seed=17,track='coastal',traffic_count=2)
+    parallel = Simulation(seed=17,track='coastal',traffic_count=2,physics_workers=4)
+    try:
+        parallel.prepare_physics()
+        pool = parallel._physics_workers
+        initial = dict(pool.mesh_payloads)
+        assert initial
+        count = pool.mesh_identifier
+        for sim in (serial,parallel):
+            body = BulletRigidBodyNode('added-geometry')
+            body.addShape(BulletBoxShape(Vec3(1.,1.,.1)))
+            body.setIntoCollideMask(BitMask32.bit(0))
+            body.setTransform(TransformState.makePos(Vec3(0.,0.,10.)))
+            sim._world.attachRigidBody(body)
+        for _ in range(3):
+            serial.step(Control(throttle=.3))
+            parallel.step(Control(throttle=.3))
+            assert serial.snapshot() == parallel.snapshot()
+        assert pool.version >= 2
+        assert pool.mesh_identifier == count
+        assert all(pool.mesh_payloads[key][2] is value[2] for key,value in initial.items())
+        for sim in (serial,parallel):
+            body = next(body for body in sim._world.getRigidBodies() if body.hasPythonTag('suspension_mesh'))
+            old = body.getPythonTag('suspension_mesh')
+            def collect(mesh):
+                return mesh.triangles+tuple(triangle for child in mesh.children for triangle in collect(child))
+            triangles = tuple(tuple((x,y,z+.02) for x,y,z in triangle) for triangle in collect(old))
+            native = BulletTriangleMesh()
+            for triangle in triangles:
+                native.addTriangle(*(Vec3(*point) for point in triangle))
+            margin = body.getShape(0).getMargin()
+            body.removeShape(body.getShape(0))
+            shape = BulletTriangleMeshShape(native,dynamic=False)
+            shape.setMargin(margin)
+            body.addShape(shape)
+            body.setPythonTag('suspension_mesh',TriangleSupport.build(triangles))
+            body.clearPythonTag('suspension_shape_bounds')
+            if sim is parallel:
+                replaced_key = id(old)
+        for _ in range(4):
+            serial.step(Control(throttle=.3))
+            parallel.step(Control(throttle=.3))
+            assert serial.snapshot() == parallel.snapshot()
+        assert pool.mesh_identifier > count
+        assert replaced_key not in pool.mesh_payloads
+        # 新进程没有读过前两个版本，必须直接从当前完整网格载荷进入。
+        pool.count = 5
+        parallel.prepare_physics()
+        for _ in range(2):
+            serial.step(Control())
+            parallel.step(Control())
+            assert serial.snapshot() == parallel.snapshot()
+        # 重开丢弃旧世界支持面，原生网格资源随实际进程/当前版本释放。
+        serial.reset(23)
+        parallel.reset(23)
+        assert pool.mesh_payloads == {}
+        parallel.prepare_physics()
+        serial.step(Control())
+        parallel.step(Control())
+        assert serial.snapshot() == parallel.snapshot()
+    finally:
+        serial.close()
+        parallel.close()
+    assert pool.mesh_payloads == {}

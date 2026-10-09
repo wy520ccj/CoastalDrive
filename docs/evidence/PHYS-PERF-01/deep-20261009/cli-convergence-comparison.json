@@ -1,0 +1,10 @@
+{
+  "all_completed_snapshots_equal": true,
+  "completed_snapshots": 2195,
+  "baseline_failed_iteration": 2196,
+  "current_failed_iteration": 2196,
+  "same_error": true,
+  "error": "传动/四轮共同求解超过20轮：1.92046e-11N，制动0Nm，法向9.09495e-13N，几何共轭冲量2.46916e-11Ns/Nms",
+  "baseline": "9bcad62 frozen source",
+  "current": "f966c50 plus geometry-transfer changes"
+}
