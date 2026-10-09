@@ -146,6 +146,7 @@ def main():
     parser.add_argument('--workers', type=int, default=9)
     parser.add_argument('--traffic', type=int, default=8)
     parser.add_argument('--mode', choices=('game', 'simulation'), default='game')
+    parser.add_argument('--traffic-input-mode', choices=('game', 'simulation'), help='显式匹配窗口交通输入；省略时沿用旧基准同模式口径')
     parser.add_argument('--track', choices=('test', 'coastal', 'endless'), default='coastal')
     parser.add_argument('--shape', choices=('straight', 'curves', 'hills'), default='straight')
     parser.add_argument('--driver', choices=('sequence','endurance'), default='sequence')
@@ -256,7 +257,8 @@ def main():
               for path in args.source.iterdir() if path.suffix in ('.py', '.c', '.cpp', '.h', '.pyd')}
     sim = Simulation(seed=args.seed, track=args.track, road_shape=args.shape,
                      traffic_count=args.traffic, config=config, input_config=mode.input_config,
-                     traffic_input_config=mode.input_config, physics_workers=args.workers)
+                     traffic_input_config=DrivingMode(args.traffic_input_mode).input_config if args.traffic_input_mode else mode.input_config,
+                     physics_workers=args.workers)
     driver = None
     if args.driver == 'endurance':
         sys.path.insert(0, str(ROOT/'tools'))

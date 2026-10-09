@@ -1,0 +1,75 @@
+{
+  "kind": "真实原方程计时诊断，非正式吞吐；CPUcycles不换算成毫秒",
+  "steps": 240,
+  "raw_receive_wall_ms_per_step": 6.8508512506772,
+  "actual_remote_solve_overlap_ms_per_step": 5.687892916709339,
+  "unclassified_schedule_reply_transport_ms_per_step": 1.1629583339678597,
+  "remote_solve_mean_ms": 2.0970882692294115,
+  "nested_categories_do_not_sum": {
+    "bullet": {
+      "count": 480,
+      "wall_ms_per_step": 0.667255416738044,
+      "cycles_per_step": 1611581.1666666667
+    },
+    "control": {
+      "count": 3120,
+      "wall_ms_per_step": 0.6602858335251464,
+      "cycles_per_step": 1590958.1916666667
+    },
+    "full-step": {
+      "count": 240,
+      "wall_ms_per_step": 14.930693333356734,
+      "cycles_per_step": 20830493.5875
+    },
+    "input-encoding": {
+      "count": 6240,
+      "wall_ms_per_step": 0.7837199995416692,
+      "cycles_per_step": 1882017.1625
+    },
+    "observation": {
+      "count": 3120,
+      "wall_ms_per_step": 0.8690629163841853,
+      "cycles_per_step": 2095590.8041666667
+    },
+    "ordered-commit": {
+      "count": 6240,
+      "wall_ms_per_step": 0.6729833330458254,
+      "cycles_per_step": 1616994.7041666666
+    },
+    "output-decoding": {
+      "count": 6240,
+      "wall_ms_per_step": 0.9311050003513325,
+      "cycles_per_step": 2232643.5375
+    },
+    "prepare-read": {
+      "count": 6240,
+      "wall_ms_per_step": 0.8568279178083079,
+      "cycles_per_step": 2055549.3666666667
+    },
+    "recv": {
+      "count": 6240,
+      "wall_ms_per_step": 6.8508512506771995,
+      "cycles_per_step": 1393729.1791666667
+    },
+    "send": {
+      "count": 6240,
+      "wall_ms_per_step": 0.23175583337433636,
+      "cycles_per_step": 551924.1125
+    },
+    "snapshot": {
+      "count": 240,
+      "wall_ms_per_step": 0.7702237499718952,
+      "cycles_per_step": 1856077.5125
+    },
+    "static-world-read": {
+      "count": 240,
+      "wall_ms_per_step": 0.7831683333127634,
+      "cycles_per_step": 1888145.4375
+    },
+    "submit-including-backpressure": {
+      "count": 6240,
+      "wall_ms_per_step": 5.110165832714604,
+      "cycles_per_step": 4370330.675
+    }
+  }
+}

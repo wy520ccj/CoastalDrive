@@ -30,6 +30,11 @@ def audited_worker(output, connection):
     physics_workers._worker_loop(connection)
 
 
+def physics_progress(session):
+    """从权威状态取进度；隔离原型必须覆写为后端即时采样，不能使用显示缓存。"""
+    return session.current.tick, session.stepper.dropped_time, time.perf_counter()
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
@@ -49,6 +54,7 @@ def main():
     parser.add_argument("--switch-interval",type=float,help="Python物理/绘制线程切换间隔诊断")
     parser.add_argument("--trace-phases",action="store_true",help="以各调用线程CPU时间记录真实阶段；诊断用")
     parser.add_argument('--physics-workers',type=int,help='显式数值进程数，默认沿用游戏设置')
+    parser.add_argument('--traffic-count',type=int,help='固定实测交通车辆数，仍使用完整原车辆物理')
     args = parser.parse_args()
     if not 30 <= args.seconds <= 60:
         parser.error("短测限于30–60秒")
@@ -58,6 +64,8 @@ def main():
         parser.error("缓存回收比例须在(0,1]内")
     if args.switch_interval is not None and not 0.<args.switch_interval<1.:
         parser.error("线程切换间隔须在(0,1)秒内")
+    if args.traffic_count is not None and args.traffic_count < 0:
+        parser.error('交通车数须非负')
     if args.switch_interval is not None:
         sys.setswitchinterval(args.switch_interval)
     args.output.mkdir(parents=True, exist_ok=False)
@@ -118,6 +126,24 @@ def main():
     from controls import ConstantController
     from driving_modes import DrivingMode
     from simulation import Control
+
+    if args.traffic_count is not None:
+        from simulation import Simulation
+
+        original_simulation_init = Simulation.__init__
+        original_simulation_reset = Simulation.reset
+
+        def fixed_traffic(self, *arguments, **keywords):
+            keywords['traffic_count'] = args.traffic_count
+            original_simulation_init(self, *arguments, **keywords)
+
+        Simulation.__init__ = fixed_traffic
+
+        def fixed_traffic_reset(self, *arguments, **keywords):
+            self.traffic_count = args.traffic_count
+            original_simulation_reset(self, *arguments, **keywords)
+
+        Simulation.reset = fixed_traffic_reset
 
     EnduranceDriver = importlib.import_module('endurance_check').EnduranceDriver
 
@@ -182,6 +208,8 @@ def main():
                        threading_model=pipelines[args.pipeline],independent_clock=args.independent_clock,
                        vehicle_design_id=args.vehicle_design, driving_mode=DrivingMode(args.driving_mode),
                        physics_workers=args.physics_workers)
+    if args.traffic_count is not None and len(app.session.current.traffic) != args.traffic_count:
+        raise RuntimeError('窗口启动后的实际交通车数与指定工况不一致')
     app.taskMgr.remove("finish-smoke")
     app.session.set_controller(EnduranceDriver(app.session.simulation, 724) if args.track == "endless"
                                else ConstantController(Control(throttle=.3,steering=args.steering)))
@@ -220,9 +248,7 @@ def main():
         now = time.perf_counter()
         if task.time >= 3:
             if start_dropped is None:
-                start_dropped = app.session.stepper.dropped_time
-                start_tick = app.session.current.tick
-                sample_started_at = now
+                start_tick, start_dropped, sample_started_at = physics_progress(app.session)
                 app.scene.segment_work["max_step_ms"] = 0
                 measuring_draw = True
                 tracing = True
@@ -242,6 +268,7 @@ def main():
         if task.time >= args.seconds:
             if args.independent_clock:
                 app.session.stop_clock()
+            end_tick, end_dropped, sample_finished_at = physics_progress(app.session)
             measuring_draw = False
             tracing = False
             measuring_phases = False
@@ -294,13 +321,13 @@ def main():
                 "p99_ms": values[int(len(values) * .99)], "max_ms": max(values),
                 "frames_over_50ms": sum(v > 50 for v in values),
                 "frames_over_100ms": sum(v > 100 for v in values),
-                "dropped_simulation_seconds": app.session.stepper.dropped_time - start_dropped,
+                "dropped_simulation_seconds": end_dropped - start_dropped,
                 "warmup_dropped_seconds": start_dropped, "distance_m": distance,
-                "physics_start_tick":start_tick, "physics_end_tick":app.session.current.tick,
-                "physics_sample_ticks":app.session.current.tick-start_tick,
-                "physics_sample_simulated_seconds":(app.session.current.tick-start_tick)/120,
-                "physics_sample_wall_seconds":now-sample_started_at,
-                "physics_sample_hz":(app.session.current.tick-start_tick)/(now-sample_started_at),
+                "physics_start_tick":start_tick, "physics_end_tick":end_tick,
+                "physics_sample_ticks":end_tick-start_tick,
+                "physics_sample_simulated_seconds":(end_tick-start_tick)/120,
+                "physics_sample_wall_seconds":sample_finished_at-sample_started_at,
+                "physics_sample_hz":(end_tick-start_tick)/(sample_finished_at-sample_started_at),
                 "collisions": app.session.simulation.collision_count,
                 "frames_slow": sorted(samples, key=lambda row: row["ms"], reverse=True)[:12],
                 "segment_work_max_ms": max(w["frame_ms"] for w in work_samples),

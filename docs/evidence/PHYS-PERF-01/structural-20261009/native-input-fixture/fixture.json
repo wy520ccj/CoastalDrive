@@ -1,0 +1,251 @@
+{
+  "kind": "真实方程验证输入；本次文件记录含I/O，不是性能基准",
+  "entries": {
+    "6240": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6241": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6242": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6243": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6244": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6245": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6246": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6247": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6248": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6249": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6250": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6251": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6252": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6253": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6254": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6255": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6256": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6257": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6258": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6259": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6260": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6261": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6262": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6263": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6264": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    },
+    "6265": {
+      "dt": 0.004166666666666667,
+      "tick": 241
+    }
+  },
+  "schema_records": [
+    [
+      "config",
+      "body",
+      "contacts",
+      "angles",
+      "request",
+      "tick",
+      "dt",
+      "external_velocity",
+      "external_angular",
+      "omega",
+      "rotation",
+      "deformation",
+      "states",
+      "powertrain",
+      "normal_system",
+      "normal_geometry",
+      "compression",
+      "previous_force_tick",
+      "accumulate",
+      "previous_normal_force",
+      "wheel_inputs",
+      "world_source"
+    ],
+    [
+      "omega",
+      "rotation",
+      "deformation",
+      "states",
+      "powertrain",
+      "suspension_state",
+      "compression",
+      "contacts",
+      "impulses",
+      "normal_geometry"
+    ],
+    [
+      "in_contact",
+      "contact_point",
+      "contact_normal",
+      "suspension_force",
+      "normal_load",
+      "suspension_length",
+      "compression",
+      "skid",
+      "surface"
+    ],
+    [
+      "omega",
+      "rotation",
+      "relative_omega",
+      "longitudinal_speed",
+      "lateral_speed",
+      "kappa",
+      "alpha",
+      "fx",
+      "fy",
+      "drive_torque",
+      "brake_capacity",
+      "brake_torque",
+      "normal_load",
+      "road_support",
+      "steering",
+      "force_contact_tick",
+      "force_residual",
+      "force_kappa",
+      "force_alpha",
+      "sample_support",
+      "sample_tick",
+      "force_mode",
+      "longitudinal_impulse",
+      "lateral_impulse",
+      "brake_angular_impulse",
+      "force_grip",
+      "sample_grip",
+      "force_longitudinal_stiffness",
+      "force_lateral_stiffness",
+      "deformation_x",
+      "deformation_y",
+      "force_patch_kappa",
+      "force_patch_alpha",
+      "elastic_energy",
+      "material_dissipation",
+      "road_dissipation",
+      "elastic_numerical_dissipation",
+      "frame_dissipation",
+      "deformation_rate_x",
+      "deformation_rate_y",
+      "mechanical_axis",
+      "rolling_radius",
+      "gyro_angular_impulse",
+      "steering_angular_impulse",
+      "steering_work",
+      "longitudinal_angular_impulse",
+      "lateral_angular_impulse",
+      "rolling_torque",
+      "rolling_angular_impulse",
+      "rolling_dissipation",
+      "force_rolling_radius"
+    ],
+    [
+      "step",
+      "normal_force",
+      "contact_dot",
+      "candidate_contact",
+      "sampled_compression",
+      "geometry_work",
+      "linear_impulse",
+      "angular_impulse",
+      "force_tick",
+      "contact_compression",
+      "initialization_energy",
+      "substeps",
+      "force_gradients"
+    ],
+    [
+      "compression",
+      "compression_rate",
+      "axial_force",
+      "raw_axial_force",
+      "spring_energy",
+      "bar_energy",
+      "stop_energy",
+      "damping_dissipation",
+      "elastic_numerical_dissipation",
+      "body_numerical_dissipation",
+      "contact_offset_work",
+      "energy_residual",
+      "body_work"
+    ],
+    [
+      "position",
+      "orientation",
+      "velocity",
+      "angular",
+      "tensor",
+      "angular_damping"
+    ]
+  ],
+  "physical_substeps": 2,
+  "numerical_results_replayed_in_physics": false
+}

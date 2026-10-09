@@ -1,0 +1,23 @@
+{
+  "baseline_commit": "0c879e0",
+  "population": 13,
+  "mode": "simulation",
+  "traffic_input_mode": "game",
+  "seed": 23,
+  "track": "endless-hills",
+  "A": {
+    "mean_ms": 15.671072749998226,
+    "p95_ms": 21.316565001416166,
+    "p99_ms": 24.183177500035526,
+    "max_ms": 26.47389999947336
+  },
+  "B": {
+    "mean_ms": 17.3084645000381,
+    "p95_ms": 22.501362500224783,
+    "p99_ms": 25.316465999931093,
+    "max_ms": 28.78700000110257
+  },
+  "all_600_full_snapshots_equal": true,
+  "native_continuous_solver_implemented": false,
+  "production_physics_source_changes": false
+}

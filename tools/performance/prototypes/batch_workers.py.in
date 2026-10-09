@@ -1,0 +1,156 @@
+# 以下代码仅追加到隔离物理副本；持久双向共享缓冲，每子步每进程一次批量通知。
+_slot_bytes = 1024 * 1024
+
+
+def _batch_worker_loop(connection):
+    import importlib
+    import json
+    import os
+    from pathlib import Path
+
+    output = os.environ.get('PHYS_STRUCT_LOG')
+    if output:
+        names = ('physics_workers', 'tire_drivetrain', 'vehicle_tires', 'vehicle_suspension',
+                 'suspension_contacts', 'triangle_support', 'vehicle_tire_step')
+        paths = {name: importlib.import_module(name).__file__ for name in names}
+        (Path(output) / f'worker-source-{os.getpid()}.json').write_text(json.dumps(paths), encoding='utf-8')
+    configurations = {}
+    arena = None
+    try:
+        while True:
+            message = _receive_message(connection)
+            if message is None:
+                return
+            command = message[0]
+            if command in ('initialise', 'prepare'):
+                _, reference, configs = message
+                try:
+                    _load_geometry(reference)
+                    for identifier, config in configs:
+                        if config is not None:
+                            configurations[identifier] = config
+                        if command == 'prepare':
+                            config = configurations[identifier]
+                            tire_hardware(config)
+                            wheel_hull(config.wheel_radius, config.wheel_width,
+                                       config.wheel_shoulder_radius, config.wheel_crown_height)
+                except Exception as error:  # 外部进程边界回传原异常。
+                    _send_message(connection, (command, error, traceback.format_exc()))
+                else:
+                    _send_message(connection, (command, None, None))
+                continue
+            _, reference, name, input_base, output_base, configs, descriptors = message
+            if arena is None:
+                arena = SharedMemory(name=name)
+            configurations.update(configs)
+            replies = []
+            offset = 0
+            try:
+                _load_geometry(reference)
+                for identifier, configuration, position, length in descriptors:
+                    request = from_bytes(arena.buf[input_base + position:input_base + position + length])
+                    request = replace(request, config=configurations[configuration])
+                    wall, cpu = time.perf_counter(), time.process_time()
+                    result = _solve_vehicle(request, reference)
+                    timing = time.perf_counter() - wall, time.process_time() - cpu
+                    payload = result_bytes(result) if result is not None else b''
+                    if offset + len(payload) > _slot_bytes:
+                        raise BufferError('批量结果超过原型缓冲容量')
+                    arena.buf[output_base + offset:output_base + offset + len(payload)] = payload
+                    replies.append((identifier, offset, len(payload), timing))
+                    offset += len(payload)
+            except Exception as error:  # 外部进程边界，不降级或重试求解。
+                _send_message(connection, ('batch-error', error, traceback.format_exc()))
+            else:
+                _send_message(connection, ('batch-result', replies))
+    finally:
+        connection.close()
+        if arena is not None:
+            arena.close()
+        if _worker_memory is not None:
+            _worker_memory.close()
+
+
+class BatchPhysicsWorkers(PhysicsWorkers):
+    def __init__(self, count):
+        super().__init__(count)
+        self.batch_arena = SharedMemory(create=True, size=count * 2 * _slot_bytes)
+
+    def _start_one(self):
+        parent, child = get_context('spawn').Pipe()
+        process = get_context('spawn').Process(target=_batch_worker_loop, args=(child,), daemon=True)
+        process.start()
+        child.close()
+        self.processes.append((process, parent))
+        self.worker_configurations.append(set())
+        self.worker_references.append(None)
+
+    def batch(self, requests, shapes, material, query_lock=None):
+        self._start()
+        self.finish_preparation()
+        self._publish_geometry(shapes, material)
+        groups = [[] for _ in self.processes]
+        configs = [[] for _ in self.processes]
+        identifiers = []
+        offsets = [0] * len(self.processes)
+        for request in requests:
+            frozen = _freeze_request(request)
+            if not isinstance(frozen, TireAdvanceInput) or frozen.normal_system is not None:
+                raise TypeError('结构原型只支持现行完整轮端数值输入')
+            identifier = self.identifier
+            self.identifier += 1
+            identifiers.append(identifier)
+            index = identifier % len(self.processes)
+            configuration = id(frozen.config)
+            if configuration not in self.worker_configurations[index]:
+                configs[index].append((configuration, frozen.config))
+                self.worker_configurations[index].add(configuration)
+                self.configuration_transfers += 1
+            payload = input_bytes(frozen)
+            offset = offsets[index]
+            if offset + len(payload) > _slot_bytes:
+                raise BufferError('批量输入超过原型缓冲容量')
+            base = index * 2 * _slot_bytes
+            self.batch_arena.buf[base + offset:base + offset + len(payload)] = payload
+            groups[index].append((identifier, configuration, offset, len(payload)))
+            offsets[index] += len(payload)
+            self.numeric_packets += 1
+        for index, group in enumerate(groups):
+            if group:
+                base = index * 2 * _slot_bytes
+                _send_message(self.processes[index][1], ('batch', self.reference, self.batch_arena.name,
+                              base, base + _slot_bytes, configs[index], group))
+        results = {}
+        for index, group in enumerate(groups):
+            if not group:
+                continue
+            message = _receive_message(self.processes[index][1])
+            if message[0] == 'batch-error':
+                error = message[1]
+                error.add_note(message[2])
+                raise error
+            if message[0] != 'batch-result':
+                raise ValueError('批量数值进程返回类型错误')
+            base = index * 2 * _slot_bytes + _slot_bytes
+            for identifier, position, length, timing in message[1]:
+                results[identifier] = from_bytes(self.batch_arena.buf[base + position:base + position + length]) if length else None
+                self.samples.append(timing)
+        for request, identifier in zip(requests, identifiers):
+            result = results[identifier]
+            if result is None:
+                self.world_query_count += 1
+                with query_lock if query_lock is not None else nullcontext():
+                    result = request.solve()
+            else:
+                self.remote_count += 1
+            yield result
+
+    def close(self):
+        try:
+            super().close()
+        finally:
+            self.batch_arena.close()
+            self.batch_arena.unlink()
+
+
+PhysicsWorkers = BatchPhysicsWorkers

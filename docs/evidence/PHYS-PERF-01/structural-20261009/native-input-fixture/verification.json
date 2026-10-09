@@ -1,0 +1,7 @@
+{
+  "complete_vehicle_substep_inputs": 26,
+  "old_solver_results_all_exact": true,
+  "failures": [],
+  "physics_world_created": false,
+  "kind": "独立数值方程对照，不是完整物理吞吐基准"
+}
