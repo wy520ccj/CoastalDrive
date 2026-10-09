@@ -6,6 +6,7 @@ from wheel_contact_kernels import (
     triangle_face,
     triangle_support_coefficients,
     triangle_support_entry,
+    triangle_support_window,
 )
 
 from suspension_geometry import box_interval
@@ -83,6 +84,16 @@ class TriangleSupport:
             if interval is None or interval[0] > 1. or interval[1] < 0.:
                 continue
             yield triangle
+
+    def window(self, start, end, padding):
+        """保留原索引遍历顺序与整根边界；原生窗口复用已计算的三角面几何。"""
+        triangles, bounds, native = triangle_support_window(self._native, start, end, padding)
+        result = TriangleSupport.__new__(TriangleSupport)
+        for name, value in (('low', self.low), ('high', self.high), ('center', self.center),
+                            ('half', self.half), ('triangles', triangles), ('children', ()),
+                            ('triangle_bounds', bounds), ('_native', native)):
+            object.__setattr__(result, name, value)
+        return result
 
     def entry(self, start, end, margin, axis, radius, width, shoulder, crown):
         return triangle_support_entry(self._native, start, end, margin, axis, radius, width, shoulder, crown, triangle_entry)

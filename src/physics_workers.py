@@ -23,7 +23,7 @@ from suspension_contacts import StaticSupportShapes
 from suspension_geometry import CylinderSurface
 from test_track import on_asphalt
 from tire_drivetrain import DrivetrainInput, DrivetrainStep
-from triangle_support import TriangleSupport, triangle_entry
+from triangle_support import triangle_entry
 from vehicle_tire_step import TireAdvanceInput, tire_hardware
 from wheel_envelope import _simplex_coordinates, cylinder_box_entry
 
@@ -127,9 +127,8 @@ class FrozenWorldSurface(CylinderSurface):
                 for part, local_center, local_half in parts:
                     inverse, frame, translation, half, margin, plane, triangles, _bounds = part
                     if triangles is not None:
-                        triangles = TriangleSupport(triangles.low,triangles.high,
-                            tuple(triangles.candidates(local_center,local_center,
-                                                       tuple(value+margin for value in local_half))))
+                        triangles = triangles.window(local_center,local_center,
+                                                      tuple(value+margin for value in local_half))
                     surfaces.append((body,inverse,frame,half,margin,plane,triangles,translation))
             self.candidates.update(low=low,high=high,surfaces=surfaces,native_needed=False)
             covered, entry = cached_surface_entry(self.candidates, start, end, axis, self.offset,

@@ -1,6 +1,7 @@
 """真实有限三角面、接缝和胎宽；期望来自独立平面/圆几何。"""
 
 import math
+import pickle
 import random
 
 import pytest
@@ -20,6 +21,33 @@ from triangle_support import TriangleSupport, triangle_entry
 from vehicle import Vehicle
 from vehicle_config import CAR, wheel_hubs
 from wheel_envelope import _simplex_coordinates, cylinder_box_entry
+
+
+def test_native_window_preserves_order_source_identity_nested_windows_and_lifetime():
+    triangles = []
+    for x in range(12):
+        a,b,c = (float(x),0.,0.), (float(x)+.8,0.,0.), (float(x),1.,.01*x)
+        triangles.append((a,b,c))
+    mesh = TriangleSupport.build(triangles)
+    for center,padding in (((3.,.4,0.),(1.,1.,1.)), ((-20.,0.,0.),(.1,.1,.1)),
+                           ((6.,.5,0.),(20.,20.,20.))):
+        expected = tuple(mesh.candidates(center,center,padding))
+        window = mesh.window(center,center,padding)
+        assert len(expected) == len(window.triangles)
+        assert all(a is b for a,b in zip(expected,window.triangles))
+        reconstructed = TriangleSupport(mesh.low,mesh.high,expected)
+        assert window.triangle_bounds == reconstructed.triangle_bounds
+        for x in (2.99,3.,3.8,4.,5.):
+            arguments = ((x,.3,1.),(x,.3,-1.),.01,(1.,0.,0.),.33,.205,.01,.003)
+            assert window.entry(*arguments) == reconstructed.entry(*arguments)
+        inner = window.window(center,center,(.01,.01,.01))
+        assert inner.triangles == tuple(window.candidates(center,center,(.01,.01,.01)))
+        restored = pickle.loads(pickle.dumps(window))
+        del window
+        assert restored.triangles == expected
+        assert inner.entry((3.,.2,1.),(3.,.2,-1.),.01,(1.,0.,0.),.33,.205,.01,.003) == (
+            TriangleSupport(mesh.low,mesh.high,inner.triangles).entry(
+                (3.,.2,1.),(3.,.2,-1.),.01,(1.,0.,0.),.33,.205,.01,.003))
 
 
 def test_numeric_box_query_matches_complete_legacy_face_and_edge_sweep():

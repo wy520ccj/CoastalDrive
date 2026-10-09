@@ -1,0 +1,22 @@
+{
+  "single-simulation": {
+    "count": 1200,
+    "same": true,
+    "different_ticks": []
+  },
+  "coastal-simulation": {
+    "count": 1200,
+    "same": true,
+    "different_ticks": []
+  },
+  "hills-game": {
+    "count": 1200,
+    "same": true,
+    "different_ticks": []
+  },
+  "hills-simulation": {
+    "count": 1200,
+    "same": true,
+    "different_ticks": []
+  }
+}

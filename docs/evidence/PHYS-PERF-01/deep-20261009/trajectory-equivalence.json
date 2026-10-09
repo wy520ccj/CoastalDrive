@@ -1,0 +1,17 @@
+{
+  "prefetch-candidate": {
+    "samples": 1200,
+    "same": true,
+    "different_ticks": []
+  },
+  "shared-candidates": {
+    "samples": 1200,
+    "same": true,
+    "different_ticks": []
+  },
+  "native-window": {
+    "samples": 1200,
+    "same": true,
+    "different_ticks": []
+  }
+}

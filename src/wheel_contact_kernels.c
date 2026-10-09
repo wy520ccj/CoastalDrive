@@ -890,6 +890,44 @@ static void triangle_packet_collect(TrianglePacket *packet, double start[3], dou
     }
 }
 
+/* 候选窗口一次筛选并复用原顶点/法线/边界；不重新计算同一不可变三角面。 */
+static PyObject *triangle_support_window(PyObject *self,PyObject *args) {
+    PyObject *coefficients,*start_object,*end_object,*padding_object;
+    if (!PyArg_ParseTuple(args,"OOOO",&coefficients,&start_object,&end_object,&padding_object)) return NULL;
+    TrianglePacket *source=PyCapsule_GetPointer(coefficients,triangle_packet_name);
+    if (!source) return NULL;
+    double start[3],end[3],padding[3];
+    if (!vector(start_object,start) || !vector(end_object,end) || !vector(padding_object,padding)) return NULL;
+    PreparedTriangle **selected=PyMem_Malloc((source->total ? source->total : 1)*sizeof(*selected));
+    if (!selected) return PyErr_NoMemory();
+    Py_ssize_t count=0;
+    triangle_packet_collect(source,start,end,padding,selected,&count);
+    TrianglePacket *packet=PyMem_Calloc(1,sizeof(TrianglePacket));
+    if (!packet) { PyMem_Free(selected); return PyErr_NoMemory(); }
+    memcpy(packet->center,source->center,sizeof(packet->center));
+    memcpy(packet->half,source->half,sizeof(packet->half));
+    packet->triangle_count=packet->total=count;
+    packet->triangles=PyMem_Calloc(count ? count : 1,sizeof(PreparedTriangle));
+    packet->triangle_owners=PyTuple_New(count);
+    PyObject *bounds=PyTuple_New(count);
+    if (!packet->triangles || !packet->triangle_owners || !bounds) {
+        PyMem_Free(selected); Py_XDECREF(bounds); triangle_packet_free(packet); return PyErr_NoMemory();
+    }
+    for (Py_ssize_t i=0;i<count;++i) {
+        packet->triangles[i]=*selected[i];
+        PyTuple_SET_ITEM(packet->triangle_owners,i,Py_NewRef(selected[i]->source));
+        double *center=selected[i]->center,*half=selected[i]->half;
+        PyObject *bound=Py_BuildValue("((ddd)(ddd))",center[0],center[1],center[2],half[0],half[1],half[2]);
+        if (!bound) { PyMem_Free(selected); Py_DECREF(bounds); triangle_packet_free(packet); return NULL; }
+        PyTuple_SET_ITEM(bounds,i,bound);
+    }
+    PyMem_Free(selected);
+    PyObject *capsule=PyCapsule_New(packet,triangle_packet_name,release_triangle_packet);
+    if (!capsule) { Py_DECREF(bounds); triangle_packet_free(packet); return NULL; }
+    PyObject *result=PyTuple_Pack(3,packet->triangle_owners,bounds,capsule);
+    Py_DECREF(bounds); Py_DECREF(capsule); return result;
+}
+
 static int triangle_query_best(PyObject *hit,PyObject **best,double *ceiling) {
     double fraction=PyFloat_AsDouble(PyTuple_GetItem(hit,0));
     if (PyErr_Occurred()) return 0;
@@ -1801,7 +1839,83 @@ failed:
     Py_DECREF(result); return NULL;
 }
 
+/* 海岸固定折线的完整有序查询；材料资格和最近投影共用原几何数据。 */
+typedef struct {
+    Py_ssize_t count;
+    double radius_squared;
+    double (*segments)[10];
+} RoadStrip;
+static const char *road_strip_name="coastal.road-strip";
+static void release_road_strip(PyObject *capsule) {
+    RoadStrip *strip=PyCapsule_GetPointer(capsule,road_strip_name);
+    if (strip) { PyMem_Free(strip->segments); PyMem_Free(strip); }
+}
+static PyObject *road_strip_coefficients(PyObject *self,PyObject *args) {
+    PyObject *segments; double radius_squared;
+    if (!PyArg_ParseTuple(args,"Od",&segments,&radius_squared)) return NULL;
+    Py_ssize_t count=PyTuple_Size(segments);
+    if (count<0) return NULL;
+    if (!count || !(radius_squared>0.)) { PyErr_SetString(PyExc_ValueError,"道路须含线段和正的宽度平方"); return NULL; }
+    RoadStrip *strip=PyMem_Calloc(1,sizeof(RoadStrip));
+    if (!strip) return PyErr_NoMemory();
+    strip->segments=PyMem_Calloc(count,sizeof(*strip->segments));
+    if (!strip->segments) { PyMem_Free(strip); return PyErr_NoMemory(); }
+    strip->count=count; strip->radius_squared=radius_squared;
+    for (Py_ssize_t i=0;i<count;++i) {
+        PyObject *segment=PyTuple_GET_ITEM(segments,i);
+        if (PyTuple_Size(segment)!=9) { if (!PyErr_Occurred()) PyErr_SetString(PyExc_ValueError,"道路段须为九项数值"); goto failed; }
+        for (int j=0;j<9;++j) strip->segments[i][j]=PyFloat_AsDouble(PyTuple_GET_ITEM(segment,j));
+        if (PyErr_Occurred()) goto failed;
+        double *s=strip->segments[i];
+        s[9]=s[2]*s[2]+s[3]*s[3];
+        if (!(s[4]>0. && s[9]>0.)) { PyErr_SetString(PyExc_ValueError,"道路段不能退化"); goto failed; }
+    }
+    PyObject *capsule=PyCapsule_New(strip,road_strip_name,release_road_strip);
+    if (capsule) return capsule;
+failed:
+    PyMem_Free(strip->segments); PyMem_Free(strip); return NULL;
+}
+static double road_fraction(double x,double y,const double *s,double denominator) {
+    double t=((x-s[0])*s[2]+(y-s[1])*s[3])/denominator;
+    /* 保持Python max(0,min(1,t))的次序，包括NaN的既有比较行为。 */
+    t=t<1. ? t : 1.;
+    return t>0. ? t : 0.;
+}
+static double road_distance_squared(double x,double y,const double *s,double t) {
+    return pow(x-s[0]-t*s[2],2.)+pow(y-s[1]-t*s[3],2.);
+}
+static PyObject *road_strip_contains(PyObject *self,PyObject *args) {
+    PyObject *coefficients; double x,y;
+    if (!PyArg_ParseTuple(args,"Odd",&coefficients,&x,&y)) return NULL;
+    RoadStrip *strip=PyCapsule_GetPointer(coefficients,road_strip_name);
+    if (!strip) return NULL;
+    for (Py_ssize_t i=0;i<strip->count;++i) {
+        double *s=strip->segments[i];
+        if (s[5]<=x && x<=s[6] && s[7]<=y && y<=s[8]) {
+            double t=road_fraction(x,y,s,s[4]);
+            if (road_distance_squared(x,y,s,t)<=strip->radius_squared) Py_RETURN_TRUE;
+        }
+    }
+    Py_RETURN_FALSE;
+}
+static PyObject *road_strip_project(PyObject *self,PyObject *args) {
+    PyObject *coefficients; double x,y;
+    if (!PyArg_ParseTuple(args,"Odd",&coefficients,&x,&y)) return NULL;
+    RoadStrip *strip=PyCapsule_GetPointer(coefficients,road_strip_name);
+    if (!strip) return NULL;
+    Py_ssize_t index=0; double best=INFINITY,fraction=0.;
+    for (Py_ssize_t i=0;i<strip->count;++i) {
+        double *s=strip->segments[i],t=road_fraction(x,y,s,s[9]);
+        double distance=road_distance_squared(x,y,s,t);
+        if (distance<best) { best=distance; index=i; fraction=t; }
+    }
+    return Py_BuildValue("(ndd)",index,fraction,best);
+}
+
 static PyMethodDef methods[] = {
+    {"road_strip_coefficients", (PyCFunction)road_strip_coefficients, METH_VARARGS, "固定道路原折线系数"},
+    {"road_strip_contains", (PyCFunction)road_strip_contains, METH_VARARGS, "原顺序道路材料资格"},
+    {"road_strip_project", (PyCFunction)road_strip_project, METH_VARARGS, "完整折线最近投影"},
     {"wheel_observations", (PyCFunction)wheel_observations, METH_VARARGS, "完成Bullet积分后的四轮机械观测"},
     {"cylinder_box_entry", (PyCFunction)cylinder_box_entry_call, METH_VARARGS, "原Box平面见证点与保守推进的完整数值入口"},
     {"rotor_frame_geometry", (PyCFunction)rotor_frame_geometry, METH_VARARGS, "原四轮机械几何和转向反力"},
@@ -1812,6 +1926,7 @@ static PyMethodDef methods[] = {
     {"convex_distance", (PyCFunction)convex_distance_call, METH_VARARGS, "有限胎宽原GJK连续数值循环"},
     {"cylinder_surface_entry", (PyCFunction)cylinder_surface_entry, METH_VARARGS, "原圆柱/有限支持面纯几何入口"},
     {"triangle_support_coefficients", (PyCFunction)triangle_support_coefficients, METH_VARARGS, "原有限网格固定顶点与包围盒数值"},
+    {"triangle_support_window", (PyCFunction)triangle_support_window, METH_VARARGS, "原顺序候选窗口及不可变三角几何复用"},
     {"cylinder_contact_system", (PyCFunction)cylinder_contact_system, METH_VARARGS, "原四轮有限接点几何与装配"},
     {"crown_extent_secant", (PyCFunction)crown_extent_secant, METH_VARARGS, "原胎冠支持高度割线"},
     {"cylinder_endpoint", (PyCFunction)cylinder_endpoint, METH_VARARGS, "原有限圆柱接点与功共轭离散梯度"},

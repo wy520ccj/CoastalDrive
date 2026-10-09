@@ -1,0 +1,18 @@
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests\test_physics_benchmark.py:3:1
+  |
+1 |   """分段计时覆盖生成器实际执行，并排除交回结果前的等待。"""
+2 |
+3 | / import pytest
+4 | |
+5 | | from performance import benchmark_physics
+  | |_________________________________________^
+help: Organize imports
+  |
+3 | import pytest
+  -
+4 | from performance import benchmark_physics
+  |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

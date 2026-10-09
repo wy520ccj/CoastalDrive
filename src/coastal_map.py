@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from functools import lru_cache
 from itertools import pairwise
 
+from wheel_contact_kernels import road_strip_coefficients, road_strip_contains, road_strip_project
+
 ROAD_WIDTH = 8.6
 SHOULDER_WIDTH = 12.8
 RAIL_OFFSET = 6.0
@@ -123,15 +125,7 @@ def point_at(distance):
 
 def project(x, y):
     """Nearest centreline point, lateral distance and distance along the loop."""
-    best = float("inf")
-    best_i, best_t = 0, 0.0
-    for i, a in enumerate(MAP_POINTS):
-        b = MAP_POINTS[(i + 1) % MAP_POINT_COUNT]
-        dx, dy = b.x - a.x, b.y - a.y
-        t = max(0, min(1, ((x - a.x) * dx + (y - a.y) * dy) / (dx * dx + dy * dy)))
-        distance = (x - a.x - t * dx) ** 2 + (y - a.y - t * dy) ** 2
-        if distance < best:
-            best, best_i, best_t = distance, i, t
+    best_i, best_t, best = road_strip_project(_ROAD_STRIP, x, y)
     a, b, _ = segment(best_i)
     return blend(a, b, best_t), math.sqrt(best), DISTANCES[best_i] + LENGTHS[best_i] * best_t
 
@@ -161,14 +155,12 @@ ROAD_SEGMENTS = tuple(
     for a, b, length in (segment(i) for i in range(MAP_POINT_COUNT))
 )
 
+# 固定地图的原线段一次装配；轮端、交通、规则和显示仍查询同一完整折线。
+_ROAD_STRIP = road_strip_coefficients(ROAD_SEGMENTS, (ROAD_WIDTH / 2) ** 2)
+
 
 def on_road(x, y):
-    for ax, ay, dx, dy, length_sq, left, right, bottom, top in ROAD_SEGMENTS:
-        if left <= x <= right and bottom <= y <= top:
-            t = max(0, min(1, ((x - ax) * dx + (y - ay) * dy) / length_sq))
-            if (x - ax - t * dx) ** 2 + (y - ay - t * dy) ** 2 <= (ROAD_WIDTH / 2) ** 2:
-                return True
-    return False
+    return road_strip_contains(_ROAD_STRIP, x, y)
 
 
 def coast_side(point):

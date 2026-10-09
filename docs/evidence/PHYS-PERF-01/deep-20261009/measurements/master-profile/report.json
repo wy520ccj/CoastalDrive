@@ -1,0 +1,2278 @@
+{
+  "arguments": {
+    "output": "logs\\performance\\deep-20261009\\master-profile",
+    "source": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src",
+    "workers": 9,
+    "traffic": 8,
+    "mode": "game",
+    "track": "coastal",
+    "shape": "straight",
+    "seed": 17,
+    "warmup": 240,
+    "steps": 120,
+    "trace": false,
+    "profile": true,
+    "capture": false,
+    "capture_hashes": false,
+    "cpu_mask": null,
+    "worker_profile": false
+  },
+  "head": "9bcad620451cda6c6892f34bb0a4fa1596c84452",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "machine": "Windows-11-10.0.26200-SP0",
+  "source_hashes": {
+    "application.py": "dad5ecf524cc043cd649f1f4819d7e03a2dfc7dc9d530be4bd55ae235b0c13c3",
+    "chase_camera.py": "4a8273238e7b49f1c8fb72e78c37e518c8b1aa863510f01c7a4f561b09f11146",
+    "coastal_collision.py": "39eb737938480ae7d6d594fb5d69073cb89182e022235a92b0cdc7c515782242",
+    "coastal_map.py": "7e7065031d9e518a204a10db07fd7d8b027c935bafca49cd7299a0941cef4ac0",
+    "controls.py": "1ffceba7d5c14f4fa2945d0e35c4e137b45443f989539f0d7aa22ca269436cad",
+    "convex_cast_kernels.cp314-win_amd64.pyd": "a54ba6964e0b48f9a8f93e2b5c6b00b6a8f2bf783cb2835d324120647aac4035",
+    "convex_cast_kernels.cpp": "c9305c08c596505879274a8224fa503668acfa29186a7d18cb71fc39b7dc8c2f",
+    "convex_queries.py": "d53d894d8f5f0e234b744b717a02f441b71b65cd1e5b4b3fb5d372ce7639cccf",
+    "curve_mesh.py": "105d779c136301731934b22530bb30ce1c4aa3235edb04d8ed472a13ec9e2ff2",
+    "differential.py": "b1256e856a63efc69db9cb37528bc689ca189a7dfeea33ee17748f9bbb8b50f3",
+    "driveline_inertia.py": "f90c175b5111a233bfd9455bcb3226c70f09bb6b63ee882f6253aff81ff9b038",
+    "driver_assist.py": "09e33431cdd3adee4ec22366bdeccaa7877272a6a1a9d65d49d232b96bfdfe83",
+    "driving_experiment.py": "0a87018882754bc5946d857e798fa38cad660092f84be0d45db4d92b8de2fb03",
+    "driving_modes.py": "8ea92ef9f8840c930d12769612540aa6983c965103d5922a2e526f90f1882907",
+    "estimation_rotation.py": "2049c64e84b1eeedf5a3ff54f866a43dde6fd54cc68f2eebd0b811b3421a3448",
+    "garage.py": "54d20cd8e175ed2fe75bf5da0f70b9f997d5215b2ce197be0a4f21dc831c05fd",
+    "highway_curve.py": "30b2a7c6d75a38bbce538198e1e53295d1afa6dd14d05760d085d3d150a4e64e",
+    "highway_driver.py": "ca6c8c2155b48b9130d1008b74e0fab904e10e16d860f6d55f39259ae610c226",
+    "highway_map.py": "fc426d2d95134851304c49885f6d0c6caf728e118f3da939878b38721f11592b",
+    "highway_run.py": "6b0520d5ab68e46919a99cbb953b98c5f0e806222bfe4e55d5ee03dd731b6d6b",
+    "highway_segments.py": "ba5494eb325e107d1a40477272db799d4fd26f8cfb7ec8b265c038ff39b1da40",
+    "impact_events.py": "d84747f93b1cafa8b33ee9322f8870ed0bbdd7bf149d4daff281ea7430d6dd5b",
+    "main.py": "c63968f34423f6d363b76c72f490fa509d4b07ad4f25c59f82fd17075a5bebe6",
+    "mechanical_kernels.c": "d1195f544aa51c69352022ffa2a091a605db84e29397eb33c933e25813244525",
+    "mechanical_kernels.cp314-win_amd64.pyd": "6ab69550213d33e4be36ca8b333270f826802d472040b427e60702ddae60d9e6",
+    "paths.py": "6c9e79bf75ebad3ff0eb509ca8e910fb5a90ca7a89077acd90f844a57078699c",
+    "performance_baseline.py": "c961ebbbca5714f6fd219322e6f4067cdc2730727d64434fbc7f74afbc4d3bdd",
+    "phase0_app.py": "8ec41455706e637735c1419b836cd9b88f15d2f3a6072438b08c83b129dc9e2c",
+    "physics_packet_kernels.c": "da12ceeb6259c40550eeff93870c86e31255028580639d85e8ea690ca181d804",
+    "physics_packet_kernels.cp314-win_amd64.pyd": "fdf6f7667c2b976926685e880f6cc196e744194c8d22f1f2336fe7d8cc7b14c5",
+    "physics_wire.py": "a76a62c335944bad889b8980818d45ec471ada02018d1dced0d10d6f1dc93ffc",
+    "physics_workers.py": "1c78d106e4ccae4a8e2bbcc025bca40c1a47e7e6520d021fae72795d6b0dfb6c",
+    "powertrain.py": "a421003c7370b278f61677cc77b29af07d950ccc281ed57bed90689686883f85",
+    "race.py": "7804a9591ec7dcc979637f5b3f4f4bf758285762b37f0664bd5cfb995a7d1981",
+    "rolling_resistance.py": "c415e91c8fefd5721fd07855d351efe4de47c2418f199ccbc5641442eaa092f4",
+    "rotor_dynamics.py": "7f349c5063fd75076ae5ec19ba4ca4931a51e7736f1a7f06cac4d3b57c2ef4f3",
+    "scene.py": "e4e2e5ee349d77663e28c5170142890d3aea7740a425ae5ac8d9afec75345b1f",
+    "sensor_run.py": "05eede75600bf3716289faa1db09d1a3fcb07d068e45214fea2fd2e8f9b75dc1",
+    "sensor_sampling.py": "2fdab3c2b5eb7ba60d842d39f28347236dfe599a24ddb8d475098e9e00e5027e",
+    "session.py": "5db3fd2034ce06e6ab8f709914dec32ec0f182d170d2792924092bed66837888",
+    "session_clock.py": "c78821de1012fbe12b0ece003822d4630fc4b289e328102114bf94e86d809e1d",
+    "settings.py": "1b869c80d8e12bb82aa0425e3a5e8f9540e27c9def65aae78e76edc0c2dd6f4f",
+    "shaft_transmission.py": "76fced6112a1b71e8eaa7d62184be7ddb23cba3d270288d439e256012e4d36ed",
+    "simulation.py": "594053a2ffec4d75fb3917c769081e0c52e24680f106da362587a6c40e6330f8",
+    "skins.py": "bbfbf9ee5fe018139e0021ee9e09081bd7b09eb33d5dc0229a8735153e227ddf",
+    "sky_dome.py": "45437938b4e2c47cf68fcb84da16553143957bd2d0c1696a44781c1d0fb83a4b",
+    "soundscape.py": "1671c176b8ec8e26eaabd3ab143d51e1ee6e6dafea52b305682a54c5ea4e3415",
+    "state_estimation.py": "8bd95cd387e9aadf6ce10169c1b38a6739f12368f8c80def2d686432da31389b",
+    "streamed_road.py": "8c9d2279c34e5e5e280166ef19187f4a454917981a9f6af0dca00d9542eecd9a",
+    "suspension.py": "860c094ea510c6100a7f4ff7c72d00195098a00de32ceebd2e45aded6dd21081",
+    "suspension_contacts.py": "7a663c93d1e23c6d154bf950510dc51d4dc0bc87164901d128e5c54fa3872790",
+    "suspension_geometry.py": "8ddb772b1be417f85e165d91ad38e7c5a276838c829dacc97b328b78a5b5f998",
+    "suspension_kinematics.py": "21b4e03ec5b94ca08963be73b57b8c6452cb1eec8f52e22c36be9e2dcf146b90",
+    "test_track.py": "ae90f12ab8647ec859ad7931f501b3183371a1fa11936c9edeb59c882db72cfa",
+    "tire_compliance.py": "aadcdd908370c88e1aa6bdf5654ec5b3034ae3dfa24dc720a1aeb48c3ca75bff",
+    "tire_coupling.py": "c29a5913f48c00c000c7c6973a58d10cf9d7e019b028934e4a8be9a2207430cf",
+    "tire_drivetrain.py": "a0d3d6fb4c77e88a1120452164d67770cebba0c1c5f361c75f183b72e370102e",
+    "tire_forces.py": "6e8eee59088ada7bfd94454b269dbf7e2fb09605f087d46b0a1cbefb49e99284",
+    "tire_properties.py": "ec722554e2173ebd7705c080249ca8ebd7c1509542bc8ffdf0877dd03286c329",
+    "tracks.py": "f9d5fef1c7b9f4d808fdcb3074f6e1adbf92a6ee57bcdd04e60fc4637580f42d",
+    "traffic.py": "3e3d4bd44b16226962436bde66ea5bc11559cb59d1475c1df2905a61759a96d0",
+    "traffic_recovery.py": "b455ff05ae1f8dbd524662a831f808f67986699378d54840416c308216072d9a",
+    "transmission_ports.py": "583e7e25c983d23977585e8e43cd9e6241e76650a1a0394f1b098e3683d96b79",
+    "triangle_support.py": "0e51244a04990b5834aa8850ce9695a5f65fb75a70d6d47f0114d9160150e1d3",
+    "vehicle.py": "c911c618fb271544cd85101d811b8b7ad6462a700ad7cfa63725fd28b5c6ef5a",
+    "vehicle_brakes.py": "edc2a07b63e0c8470141abe149ca8dd0db379959c9715341337e1746e82f703a",
+    "vehicle_collision.py": "3b10a6b5bf79d9c4e7439810d51aac653e98721f8b82c9ee1bf43f0dabff5874",
+    "vehicle_config.py": "75d5876c1b781634556f97e8ff361c071656b92caf51068f2121a42330a949c7",
+    "vehicle_contacts.py": "263f782cb50462972f7626722aec27273fac70a92a335c64a4ba3392e3483eaf",
+    "vehicle_designs.py": "c82a388317d7123e7633613950e0025492f739b9ecf130287198bc3be7bccf24",
+    "vehicle_dynamics.py": "56564b31ed5e8c29a2063d95cb28c17c5b13cc41d1b9c15ca4e12a23a288c140",
+    "vehicle_parameters.py": "6aa7916d8401c2aeae806cf8de634289d740ffa86b35d882c0b4047899df3d20",
+    "vehicle_stability.py": "3d90276b5e311e303c6ce27f6982e7b0cd27a4f547bc6a597a1898d847d229b6",
+    "vehicle_state.py": "2e5af991d86aaa5a010298618eb793ede2974e732a200d3f525ae659d0b2cc5c",
+    "vehicle_steering.py": "d80c07aaea8a4468eda9e6796fceb5714b65b1cd5af3d3f48792773db60e5b34",
+    "vehicle_suspension.py": "d3c70cb8a621d894a5bec696c9c437dccb71612ec79c19611a3aefcf87553f2f",
+    "vehicle_tires.py": "ac57679657322ef7985bd9438a8b7c9ca2ca3f14971e94da7c6d817376753708",
+    "vehicle_tire_step.py": "bbcb9d0b37e8f05ebe4c86c322f7ad256853ca24639e5c50054f63b2df9dac0b",
+    "vehicle_traction.py": "3290939ea56d16d33287d9591e163f073f21fe2654c7f0ba3031456dec00492d",
+    "vehicle_visual.py": "6207340d21e244fd2276e803ea429b51ae8f1794366b9b88adb8d636a7ec60ab",
+    "wheel_contact_kernels.c": "efaaa7677603f62eb997615e51084ae53c119debd5c9cc0104a9a89ea1df8091",
+    "wheel_contact_kernels.cp314-win_amd64.pyd": "040279e2953eb50dbf68282574f55bd476e5c4740c028cc3955e9a84caa740ac",
+    "wheel_convex_distance.h": "90241cef29a95ffa5621c560da50a9e0ee778099f412b0ced4acb267fa5c4fc3",
+    "wheel_dynamics.py": "b75a96bce22b2fab62ed4b7323020e458f6df57e0e363426101eaafa086cbfe7",
+    "wheel_envelope.py": "29491083c000660fa16deb73e0dd7f7f94bed3e64880b232be50ecefbde4fa04",
+    "wheel_geometry.py": "9f859bba46ca9f8514aa3f6183543557a6e3d1db827ed24a1792def905d639ed",
+    "world_props.py": "20bdad65716f9d63ffd22cf5138439f761408c95830fc36696298c694405291f",
+    "world_step.py": "cb2cd626c496d68d33bb9df7f09b00bb165c1ea8636d1a8509a76aae86a2a853"
+  },
+  "budget_ms": 8.333333333333334,
+  "passed": true,
+  "preparation_seconds": 0.39538720000018657,
+  "warmup_seconds": 2.8461652000005415,
+  "main_cpu_seconds": 1.234375,
+  "complete_step": {
+    "count": 120,
+    "mean_ms": 16.628511666673752,
+    "p95_ms": 20.614904998546987,
+    "p99_ms": 22.953329000702077,
+    "max_ms": 28.111199999329983,
+    "total_seconds": 1.9954214000008506
+  },
+  "simulated_seconds": 1.0,
+  "throughput_hz": 60.13767317517435,
+  "simulated_to_compute_wall": 0.5011472764597863,
+  "sweeps": {},
+  "phases_inclusive_do_not_sum": {},
+  "workers": {
+    "processes": 9,
+    "configured_processes": 9,
+    "geometry_versions": 1,
+    "remote": 6480,
+    "world_required": 0,
+    "worker_solve": {
+      "wall": {
+        "mean_ms": 2.262475787026435,
+        "p95_ms": 3.8139999996928964,
+        "max_ms": 8.973200001491932
+      },
+      "cpu": {
+        "mean_ms": 2.293113425925926,
+        "p95_ms": 15.625,
+        "max_ms": 15.625
+      }
+    },
+    "configuration_transfers": 9,
+    "timing_window_requests": 2160,
+    "preparation_seconds": 0.3902204999994865,
+    "initialisation_seconds": 0.38880819999940286,
+    "numeric_packets": 6480
+  },
+  "profile_inclusive_do_not_sum": [
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\simulation.py",
+      "line": 762,
+      "name": "step",
+      "calls": 120,
+      "self_seconds": 0.007946700000000001,
+      "inclusive_seconds": 1.8644932
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\world_step.py",
+      "line": 15,
+      "name": "advance_world",
+      "calls": 120,
+      "self_seconds": 0.0274836,
+      "inclusive_seconds": 1.8353607
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_workers.py",
+      "line": 470,
+      "name": "results",
+      "calls": 2400,
+      "self_seconds": 0.00302,
+      "inclusive_seconds": 0.7435683000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_workers.py",
+      "line": 455,
+      "name": "_receive",
+      "calls": 2160,
+      "self_seconds": 0.0030173,
+      "inclusive_seconds": 0.7399996000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_workers.py",
+      "line": 43,
+      "name": "_receive_message",
+      "calls": 2160,
+      "self_seconds": 0.0058717000000000005,
+      "inclusive_seconds": 0.7365571000000001
+    },
+    {
+      "file": "C:\\Users\\15120\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\multiprocessing\\connection.py",
+      "line": 214,
+      "name": "recv_bytes",
+      "calls": 2160,
+      "self_seconds": 0.0038163000000000003,
+      "inclusive_seconds": 0.6735763
+    },
+    {
+      "file": "C:\\Users\\15120\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\multiprocessing\\connection.py",
+      "line": 316,
+      "name": "_recv_bytes",
+      "calls": 2160,
+      "self_seconds": 0.0086132,
+      "inclusive_seconds": 0.6679873000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method _winapi.WaitForMultipleObjects>",
+      "calls": 871,
+      "self_seconds": 0.6204366,
+      "inclusive_seconds": 0.6204366
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+      "line": 207,
+      "name": "static_support_shapes",
+      "calls": 120,
+      "self_seconds": 0.09725900000000001,
+      "inclusive_seconds": 0.2273505
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle.py",
+      "line": 243,
+      "name": "physics_stages",
+      "calls": 4320,
+      "self_seconds": 0.047918600000000006,
+      "inclusive_seconds": 0.22721200000000003
+    },
+    {
+      "file": "C:\\Users\\15120\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\dataclasses.py",
+      "line": 1754,
+      "name": "replace",
+      "calls": 13953,
+      "self_seconds": 0.011751800000000001,
+      "inclusive_seconds": 0.1569577
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle.py",
+      "line": 353,
+      "name": "after_step",
+      "calls": 1080,
+      "self_seconds": 0.0080003,
+      "inclusive_seconds": 0.1563301
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle.py",
+      "line": 179,
+      "name": "prepare_control",
+      "calls": 1080,
+      "self_seconds": 0.0015888,
+      "inclusive_seconds": 0.14454430000000001
+    },
+    {
+      "file": "C:\\Users\\15120\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\dataclasses.py",
+      "line": 1773,
+      "name": "_replace",
+      "calls": 13953,
+      "self_seconds": 0.0728463,
+      "inclusive_seconds": 0.1392952
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle.py",
+      "line": 194,
+      "name": "prepare_command",
+      "calls": 1080,
+      "self_seconds": 0.0107293,
+      "inclusive_seconds": 0.13237680000000002
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method builtins.next>",
+      "calls": 2160,
+      "self_seconds": 0.0009312000000000001,
+      "inclusive_seconds": 0.1259998
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\simulation.py",
+      "line": 825,
+      "name": "snapshot",
+      "calls": 120,
+      "self_seconds": 0.0008151,
+      "inclusive_seconds": 0.12087980000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'doPhysics' of 'panda3d.bullet.BulletWorld' objects>",
+      "calls": 240,
+      "self_seconds": 0.1204188,
+      "inclusive_seconds": 0.1204188
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+      "line": 343,
+      "name": "observe",
+      "calls": 1080,
+      "self_seconds": 0.0012994,
+      "inclusive_seconds": 0.118954
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+      "line": 382,
+      "name": "observe_rotors",
+      "calls": 1080,
+      "self_seconds": 0.0206319,
+      "inclusive_seconds": 0.11765460000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_workers.py",
+      "line": 419,
+      "name": "submit",
+      "calls": 2160,
+      "self_seconds": 0.0110071,
+      "inclusive_seconds": 0.1158507
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\simulation.py",
+      "line": 826,
+      "name": "<genexpr>",
+      "calls": 1080,
+      "self_seconds": 0.0015832,
+      "inclusive_seconds": 0.1088458
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle.py",
+      "line": 377,
+      "name": "snapshot",
+      "calls": 1260,
+      "self_seconds": 0.011448300000000002,
+      "inclusive_seconds": 0.1076021
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'send' of 'generator' objects>",
+      "calls": 2160,
+      "self_seconds": 0.0050273,
+      "inclusive_seconds": 0.10717070000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_wire.py",
+      "line": 41,
+      "name": "input_bytes",
+      "calls": 2160,
+      "self_seconds": 0.0094502,
+      "inclusive_seconds": 0.0789633
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\simulation.py",
+      "line": 785,
+      "name": "observe",
+      "calls": 240,
+      "self_seconds": 0.0010273,
+      "inclusive_seconds": 0.0574326
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_wire.py",
+      "line": 56,
+      "name": "from_bytes",
+      "calls": 2160,
+      "self_seconds": 0.0010375,
+      "inclusive_seconds": 0.0561282
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method physics_packet_kernels.decode>",
+      "calls": 2160,
+      "self_seconds": 0.055090700000000006,
+      "inclusive_seconds": 0.055090700000000006
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+      "line": 415,
+      "name": "wheel_poses",
+      "calls": 1080,
+      "self_seconds": 0.0306826,
+      "inclusive_seconds": 0.053958500000000006
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_stability.py",
+      "line": 73,
+      "name": "advance",
+      "calls": 1080,
+      "self_seconds": 0.0324467,
+      "inclusive_seconds": 0.0536089
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+      "line": 220,
+      "name": "<genexpr>",
+      "calls": 90720,
+      "self_seconds": 0.0127297,
+      "inclusive_seconds": 0.037647400000000004
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method builtins.sum>",
+      "calls": 21663,
+      "self_seconds": 0.0191971,
+      "inclusive_seconds": 0.0350964
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method builtins.sorted>",
+      "calls": 244,
+      "self_seconds": 0.006040800000000001,
+      "inclusive_seconds": 0.0348841
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle.py",
+      "line": 341,
+      "name": "_road_grade",
+      "calls": 3240,
+      "self_seconds": 0.0063198,
+      "inclusive_seconds": 0.0347275
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+      "line": 70,
+      "name": "commit",
+      "calls": 2160,
+      "self_seconds": 0.0221088,
+      "inclusive_seconds": 0.033183000000000004
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method physics_packet_kernels.encode>",
+      "calls": 2160,
+      "self_seconds": 0.032730300000000004,
+      "inclusive_seconds": 0.032730300000000004
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+      "line": 116,
+      "name": "read",
+      "calls": 2160,
+      "self_seconds": 0.017253300000000003,
+      "inclusive_seconds": 0.031741200000000004
+    },
+    {
+      "file": "C:\\Users\\15120\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\multiprocessing\\connection.py",
+      "line": 364,
+      "name": "_get_more_data",
+      "calls": 2160,
+      "self_seconds": 0.0063442,
+      "inclusive_seconds": 0.031511500000000005
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\simulation.py",
+      "line": 282,
+      "name": "_read_impact_contacts",
+      "calls": 240,
+      "self_seconds": 0.013911900000000001,
+      "inclusive_seconds": 0.030017500000000003
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+      "line": 223,
+      "name": "accumulate",
+      "calls": 1080,
+      "self_seconds": 0.0072759,
+      "inclusive_seconds": 0.0275904
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+      "line": 139,
+      "name": "observe",
+      "calls": 2160,
+      "self_seconds": 0.0122901,
+      "inclusive_seconds": 0.027459
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_dynamics.py",
+      "line": 25,
+      "name": "contact_grade",
+      "calls": 3240,
+      "self_seconds": 0.007654,
+      "inclusive_seconds": 0.026426400000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method builtins.getattr>",
+      "calls": 290511,
+      "self_seconds": 0.025924600000000003,
+      "inclusive_seconds": 0.025924600000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getShapeTransform' of 'panda3d.bullet.BulletBodyNode' objects>",
+      "calls": 75960,
+      "self_seconds": 0.0249177,
+      "inclusive_seconds": 0.0249177
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\simulation.py",
+      "line": 806,
+      "name": "_count_player_collisions",
+      "calls": 240,
+      "self_seconds": 0.0124597,
+      "inclusive_seconds": 0.022785600000000003
+    },
+    {
+      "file": "C:\\Users\\15120\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\multiprocessing\\connection.py",
+      "line": 188,
+      "name": "send_bytes",
+      "calls": 2160,
+      "self_seconds": 0.004567600000000001,
+      "inclusive_seconds": 0.0205556
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+      "line": 221,
+      "name": "<genexpr>",
+      "calls": 90720,
+      "self_seconds": 0.0118099,
+      "inclusive_seconds": 0.020468800000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\simulation.py",
+      "line": 545,
+      "name": "_drive_traffic",
+      "calls": 20,
+      "self_seconds": 0.0007276,
+      "inclusive_seconds": 0.0195815
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_dynamics.py",
+      "line": 29,
+      "name": "<genexpr>",
+      "calls": 12960,
+      "self_seconds": 0.0044253,
+      "inclusive_seconds": 0.0162137
+    },
+    {
+      "file": "C:\\Users\\15120\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\multiprocessing\\connection.py",
+      "line": 290,
+      "name": "_send_bytes",
+      "calls": 2160,
+      "self_seconds": 0.0028451,
+      "inclusive_seconds": 0.0153316
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_brakes.py",
+      "line": 37,
+      "name": "advance",
+      "calls": 1080,
+      "self_seconds": 0.0092744,
+      "inclusive_seconds": 0.0153033
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+      "line": 213,
+      "name": "<lambda>",
+      "calls": 14760,
+      "self_seconds": 0.009149000000000001,
+      "inclusive_seconds": 0.0152864
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method _winapi.ReadFile>",
+      "calls": 4320,
+      "self_seconds": 0.0152341,
+      "inclusive_seconds": 0.0152341
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\traffic.py",
+      "line": 93,
+      "name": "control",
+      "calls": 160,
+      "self_seconds": 0.0031030000000000003,
+      "inclusive_seconds": 0.013441100000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+      "line": 211,
+      "name": "<genexpr>",
+      "calls": 14880,
+      "self_seconds": 0.0072313,
+      "inclusive_seconds": 0.0132364
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'xform' of 'panda3d.core.LQuaternionf' objects>",
+      "calls": 57240,
+      "self_seconds": 0.012683400000000001,
+      "inclusive_seconds": 0.012683400000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle.py",
+      "line": 386,
+      "name": "<genexpr>",
+      "calls": 5400,
+      "self_seconds": 0.0014987000000000002,
+      "inclusive_seconds": 0.012562400000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_traction.py",
+      "line": 36,
+      "name": "advance",
+      "calls": 1080,
+      "self_seconds": 0.0064616000000000005,
+      "inclusive_seconds": 0.012340700000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method _winapi.PeekNamedPipe>",
+      "calls": 2160,
+      "self_seconds": 0.0119092,
+      "inclusive_seconds": 0.0119092
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_dynamics.py",
+      "line": 39,
+      "name": "aerodynamic_load",
+      "calls": 2160,
+      "self_seconds": 0.006489900000000001,
+      "inclusive_seconds": 0.011459500000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method _winapi.WriteFile>",
+      "calls": 2160,
+      "self_seconds": 0.0113229,
+      "inclusive_seconds": 0.0113229
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+      "line": 216,
+      "name": "wheel_positions",
+      "calls": 1080,
+      "self_seconds": 0.0026352000000000003,
+      "inclusive_seconds": 0.010914700000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+      "line": 155,
+      "name": "prepare",
+      "calls": 1080,
+      "self_seconds": 0.007123900000000001,
+      "inclusive_seconds": 0.0109003
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_steering.py",
+      "line": 8,
+      "name": "wheel_angles",
+      "calls": 3240,
+      "self_seconds": 0.0046474,
+      "inclusive_seconds": 0.009776
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+      "line": 151,
+      "name": "<genexpr>",
+      "calls": 8640,
+      "self_seconds": 0.0059513000000000005,
+      "inclusive_seconds": 0.009417
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+      "line": 290,
+      "name": "snapshot",
+      "calls": 1260,
+      "self_seconds": 0.0030028000000000003,
+      "inclusive_seconds": 0.0093296
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getMargin' of 'panda3d.bullet.BulletShape' objects>",
+      "calls": 75960,
+      "self_seconds": 0.0086589,
+      "inclusive_seconds": 0.0086589
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_wire.py",
+      "line": 47,
+      "name": "<genexpr>",
+      "calls": 21600,
+      "self_seconds": 0.0051764,
+      "inclusive_seconds": 0.0081635
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+      "line": 225,
+      "name": "<genexpr>",
+      "calls": 90720,
+      "self_seconds": 0.006579000000000001,
+      "inclusive_seconds": 0.0079518
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getTransform' of 'panda3d.core.PandaNode' objects>",
+      "calls": 42300,
+      "self_seconds": 0.0077229,
+      "inclusive_seconds": 0.0077229
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+      "line": 219,
+      "name": "<genexpr>",
+      "calls": 5400,
+      "self_seconds": 0.0055265,
+      "inclusive_seconds": 0.007657000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getNode0' of 'panda3d.bullet.BulletPersistentManifold' objects>",
+      "calls": 71362,
+      "self_seconds": 0.0073607,
+      "inclusive_seconds": 0.0073607
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\traffic.py",
+      "line": 28,
+      "name": "sample",
+      "calls": 1668,
+      "self_seconds": 0.0004466,
+      "inclusive_seconds": 0.0073321
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getNode1' of 'panda3d.bullet.BulletPersistentManifold' objects>",
+      "calls": 71362,
+      "self_seconds": 0.007064900000000001,
+      "inclusive_seconds": 0.007064900000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\driver_assist.py",
+      "line": 51,
+      "name": "command",
+      "calls": 1080,
+      "self_seconds": 0.0028055000000000003,
+      "inclusive_seconds": 0.006965600000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\traffic.py",
+      "line": 31,
+      "name": "sample_lateral",
+      "calls": 1668,
+      "self_seconds": 0.0012602000000000002,
+      "inclusive_seconds": 0.0068855
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'append' of 'list' objects>",
+      "calls": 61332,
+      "self_seconds": 0.0065544,
+      "inclusive_seconds": 0.0065544
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getShapes' of 'panda3d.bullet.BulletBodyNode' objects>",
+      "calls": 14760,
+      "self_seconds": 0.0064142,
+      "inclusive_seconds": 0.0064142
+    },
+    {
+      "file": "C:\\Users\\15120\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\dataclasses.py",
+      "line": 1463,
+      "name": "_is_dataclass_instance",
+      "calls": 13953,
+      "self_seconds": 0.0040575,
+      "inclusive_seconds": 0.0059107000000000005
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+      "line": 217,
+      "name": "<genexpr>",
+      "calls": 29520,
+      "self_seconds": 0.0042839,
+      "inclusive_seconds": 0.0057026
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+      "line": 121,
+      "name": "<genexpr>",
+      "calls": 10800,
+      "self_seconds": 0.0032996,
+      "inclusive_seconds": 0.0054593
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_dynamics.py",
+      "line": 47,
+      "name": "axle_loads",
+      "calls": 2160,
+      "self_seconds": 0.0033615000000000003,
+      "inclusive_seconds": 0.0052337
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+      "line": 428,
+      "name": "<genexpr>",
+      "calls": 43200,
+      "self_seconds": 0.0049846000000000005,
+      "inclusive_seconds": 0.0049846000000000005
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getPos' of 'panda3d.core.TransformState' objects>",
+      "calls": 31260,
+      "self_seconds": 0.0049008,
+      "inclusive_seconds": 0.0049008
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method builtins.isinstance>",
+      "calls": 41120,
+      "self_seconds": 0.004417,
+      "inclusive_seconds": 0.004417
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'hasPythonTag' of 'panda3d.core.PandaNode' objects>",
+      "calls": 44280,
+      "self_seconds": 0.004367,
+      "inclusive_seconds": 0.004367
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_state.py",
+      "line": 164,
+      "name": "forward",
+      "calls": 4500,
+      "self_seconds": 0.0025964,
+      "inclusive_seconds": 0.0042601
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getWorldTransform' of 'panda3d.bullet.BulletWheel' objects>",
+      "calls": 4320,
+      "self_seconds": 0.004220300000000001,
+      "inclusive_seconds": 0.004220300000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'update' of 'dict' objects>",
+      "calls": 2160,
+      "self_seconds": 0.0041974000000000004,
+      "inclusive_seconds": 0.0041974000000000004
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getQuat' of 'panda3d.core.TransformState' objects>",
+      "calls": 20700,
+      "self_seconds": 0.0041417,
+      "inclusive_seconds": 0.0041417
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle.py",
+      "line": 318,
+      "name": "<genexpr>",
+      "calls": 10800,
+      "self_seconds": 0.0032153000000000004,
+      "inclusive_seconds": 0.0040419
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method builtins.id>",
+      "calls": 46440,
+      "self_seconds": 0.003962,
+      "inclusive_seconds": 0.003962
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle.py",
+      "line": 262,
+      "name": "<genexpr>",
+      "calls": 10800,
+      "self_seconds": 0.0031882000000000004,
+      "inclusive_seconds": 0.0038935000000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method wheel_contact_kernels.wheel_observations>",
+      "calls": 1080,
+      "self_seconds": 0.0037929,
+      "inclusive_seconds": 0.0037929
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_steering.py",
+      "line": 13,
+      "name": "<genexpr>",
+      "calls": 8640,
+      "self_seconds": 0.0026033000000000002,
+      "inclusive_seconds": 0.0037447
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'get' of 'dict' objects>",
+      "calls": 17820,
+      "self_seconds": 0.0036645000000000002,
+      "inclusive_seconds": 0.0036645000000000002
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method builtins.max>",
+      "calls": 35379,
+      "self_seconds": 0.0036456,
+      "inclusive_seconds": 0.0036456
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method builtins.abs>",
+      "calls": 44485,
+      "self_seconds": 0.0036452000000000003,
+      "inclusive_seconds": 0.0036452000000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'update' of 'set' objects>",
+      "calls": 240,
+      "self_seconds": 0.0002132,
+      "inclusive_seconds": 0.0036022000000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'GetOverlappedResult' of '_winapi.Overlapped' objects>",
+      "calls": 6480,
+      "self_seconds": 0.0034973,
+      "inclusive_seconds": 0.0034973
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getManifolds' of 'panda3d.bullet.BulletWorld' objects>",
+      "calls": 480,
+      "self_seconds": 0.0034955000000000003,
+      "inclusive_seconds": 0.0034955000000000003
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_traction.py",
+      "line": 39,
+      "name": "<genexpr>",
+      "calls": 5400,
+      "self_seconds": 0.0027766,
+      "inclusive_seconds": 0.0034728000000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getAngularVelocity' of 'panda3d.bullet.BulletRigidBodyNode' objects>",
+      "calls": 18360,
+      "self_seconds": 0.0034084000000000002,
+      "inclusive_seconds": 0.0034084000000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\simulation.py",
+      "line": 788,
+      "name": "<genexpr>",
+      "calls": 240,
+      "self_seconds": 0.0009821,
+      "inclusive_seconds": 0.003389
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle.py",
+      "line": 156,
+      "name": "signed_speed",
+      "calls": 1080,
+      "self_seconds": 0.0015977,
+      "inclusive_seconds": 0.0033354
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_steering.py",
+      "line": 23,
+      "name": "advance",
+      "calls": 1080,
+      "self_seconds": 0.0023580000000000003,
+      "inclusive_seconds": 0.0032666
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'applyTorqueImpulse' of 'panda3d.bullet.BulletRigidBodyNode' objects>",
+      "calls": 25920,
+      "self_seconds": 0.003193,
+      "inclusive_seconds": 0.003193
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\coastal_map.py",
+      "line": 118,
+      "name": "point_at",
+      "calls": 1668,
+      "self_seconds": 0.0010060000000000002,
+      "inclusive_seconds": 0.0031787
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\coastal_map.py",
+      "line": 162,
+      "name": "on_road",
+      "calls": 3420,
+      "self_seconds": 0.0011413,
+      "inclusive_seconds": 0.0031057000000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getWheels' of 'panda3d.bullet.BulletVehicle' objects>",
+      "calls": 6480,
+      "self_seconds": 0.0031053,
+      "inclusive_seconds": 0.0031053
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle.py",
+      "line": 321,
+      "name": "<genexpr>",
+      "calls": 10173,
+      "self_seconds": 0.0025144,
+      "inclusive_seconds": 0.0030658
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getCell' of 'panda3d.core.LMatrix3f' objects>",
+      "calls": 19440,
+      "self_seconds": 0.0029871000000000003,
+      "inclusive_seconds": 0.0029871000000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method builtins.min>",
+      "calls": 28645,
+      "self_seconds": 0.0029527000000000004,
+      "inclusive_seconds": 0.0029527000000000004
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method math.sin>",
+      "calls": 21068,
+      "self_seconds": 0.0029163,
+      "inclusive_seconds": 0.0029163
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'dot' of 'panda3d.core.LVecBase3f' objects>",
+      "calls": 25020,
+      "self_seconds": 0.0028216,
+      "inclusive_seconds": 0.0028216
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getIntoCollideMask' of 'panda3d.core.PandaNode' objects>",
+      "calls": 14760,
+      "self_seconds": 0.0027814000000000003,
+      "inclusive_seconds": 0.0027814000000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method math.radians>",
+      "calls": 25740,
+      "self_seconds": 0.0027038,
+      "inclusive_seconds": 0.0027038
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getLinearVelocity' of 'panda3d.bullet.BulletRigidBodyNode' objects>",
+      "calls": 14220,
+      "self_seconds": 0.0025561,
+      "inclusive_seconds": 0.0025561
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getNetTransform' of 'panda3d.core.NodePath' objects>",
+      "calls": 14760,
+      "self_seconds": 0.0025522,
+      "inclusive_seconds": 0.0025522
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method builtins.len>",
+      "calls": 22380,
+      "self_seconds": 0.0024754,
+      "inclusive_seconds": 0.0024754
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getName' of 'panda3d.core.Namable' objects>",
+      "calls": 20520,
+      "self_seconds": 0.0024678,
+      "inclusive_seconds": 0.0024678
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'applyImpulse' of 'panda3d.bullet.BulletRigidBodyNode' objects>",
+      "calls": 8640,
+      "self_seconds": 0.0024658,
+      "inclusive_seconds": 0.0024658
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_contacts.py",
+      "line": 8,
+      "name": "road_support",
+      "calls": 25920,
+      "self_seconds": 0.0024603000000000003,
+      "inclusive_seconds": 0.0024603000000000003
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+      "line": 36,
+      "name": "driven_omega",
+      "calls": 1080,
+      "self_seconds": 0.0014438,
+      "inclusive_seconds": 0.0023948000000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method math.cos>",
+      "calls": 18786,
+      "self_seconds": 0.0023362,
+      "inclusive_seconds": 0.0023362
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'contactTestPair' of 'panda3d.bullet.BulletWorld' objects>",
+      "calls": 1920,
+      "self_seconds": 0.0021145,
+      "inclusive_seconds": 0.0021145
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\traffic.py",
+      "line": 40,
+      "name": "locate",
+      "calls": 180,
+      "self_seconds": 0.0001854,
+      "inclusive_seconds": 0.0020632000000000003
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\coastal_map.py",
+      "line": 107,
+      "name": "blend",
+      "calls": 1848,
+      "self_seconds": 0.0010143,
+      "inclusive_seconds": 0.0020004000000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method wheel_contact_kernels.road_strip_contains>",
+      "calls": 3420,
+      "self_seconds": 0.0019644000000000003,
+      "inclusive_seconds": 0.0019644000000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'values' of 'dict' objects>",
+      "calls": 13953,
+      "self_seconds": 0.0019390000000000002,
+      "inclusive_seconds": 0.0019390000000000002
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'isStatic' of 'panda3d.bullet.BulletBodyNode' objects>",
+      "calls": 15840,
+      "self_seconds": 0.0019352000000000002,
+      "inclusive_seconds": 0.0019352000000000002
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'write' of '_io.BytesIO' objects>",
+      "calls": 4320,
+      "self_seconds": 0.0019244000000000002,
+      "inclusive_seconds": 0.0019244000000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\simulation.py",
+      "line": 244,
+      "name": "_contact_material",
+      "calls": 2880,
+      "self_seconds": 0.0013503,
+      "inclusive_seconds": 0.0018921
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getHpr' of 'panda3d.core.TransformState' objects>",
+      "calls": 7740,
+      "self_seconds": 0.0018540000000000002,
+      "inclusive_seconds": 0.0018540000000000002
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method builtins.hasattr>",
+      "calls": 13953,
+      "self_seconds": 0.0018532000000000002,
+      "inclusive_seconds": 0.0018532000000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle.py",
+      "line": 116,
+      "name": "coupled_suspension",
+      "calls": 8940,
+      "self_seconds": 0.0018216,
+      "inclusive_seconds": 0.0018216
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\coastal_map.py",
+      "line": 126,
+      "name": "project",
+      "calls": 180,
+      "self_seconds": 0.0002045,
+      "inclusive_seconds": 0.0018191000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method math.degrees>",
+      "calls": 16880,
+      "self_seconds": 0.0018074,
+      "inclusive_seconds": 0.0018074
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_stability.py",
+      "line": 44,
+      "name": "excess",
+      "calls": 2216,
+      "self_seconds": 0.0010701,
+      "inclusive_seconds": 0.0017127000000000002
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getSuspensionRestLength' of 'panda3d.bullet.BulletWheel' objects>",
+      "calls": 12960,
+      "self_seconds": 0.0016826,
+      "inclusive_seconds": 0.0016826
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\simulation.py",
+      "line": 814,
+      "name": "<genexpr>",
+      "calls": 20160,
+      "self_seconds": 0.0016442000000000002,
+      "inclusive_seconds": 0.0016442000000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\simulation.py",
+      "line": 224,
+      "name": "_source_id",
+      "calls": 2880,
+      "self_seconds": 0.0010911,
+      "inclusive_seconds": 0.0016345
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'disable' of '_lsprof.Profiler' objects>",
+      "calls": 1,
+      "self_seconds": 0.0015962,
+      "inclusive_seconds": 0.0015962
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getMat' of 'panda3d.core.TransformState' objects>",
+      "calls": 4560,
+      "self_seconds": 0.00159,
+      "inclusive_seconds": 0.00159
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\traffic.py",
+      "line": 74,
+      "name": "extents",
+      "calls": 1440,
+      "self_seconds": 0.0010592000000000002,
+      "inclusive_seconds": 0.0015881
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\coastal_map.py",
+      "line": 171,
+      "name": "offset_point",
+      "calls": 1668,
+      "self_seconds": 0.00044730000000000003,
+      "inclusive_seconds": 0.0015875000000000002
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'applyEngineForce' of 'panda3d.bullet.BulletVehicle' objects>",
+      "calls": 8640,
+      "self_seconds": 0.0015855,
+      "inclusive_seconds": 0.0015855
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_stability.py",
+      "line": 105,
+      "name": "<genexpr>",
+      "calls": 5400,
+      "self_seconds": 0.0012137,
+      "inclusive_seconds": 0.0015810000000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle.py",
+      "line": 338,
+      "name": "<genexpr>",
+      "calls": 8640,
+      "self_seconds": 0.0014827,
+      "inclusive_seconds": 0.0014827
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\world_step.py",
+      "line": 49,
+      "name": "<genexpr>",
+      "calls": 6480,
+      "self_seconds": 0.0014781,
+      "inclusive_seconds": 0.0014781
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'setBrake' of 'panda3d.bullet.BulletVehicle' objects>",
+      "calls": 8640,
+      "self_seconds": 0.0014627000000000002,
+      "inclusive_seconds": 0.0014627000000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\driver_assist.py",
+      "line": 33,
+      "name": "steering_limit",
+      "calls": 1240,
+      "self_seconds": 0.0010118,
+      "inclusive_seconds": 0.0014395
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+      "line": 95,
+      "name": "input_shaft_active",
+      "calls": 14362,
+      "self_seconds": 0.0014346,
+      "inclusive_seconds": 0.0014346
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle.py",
+      "line": 217,
+      "name": "<genexpr>",
+      "calls": 5400,
+      "self_seconds": 0.0010903,
+      "inclusive_seconds": 0.0014312
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\driver_assist.py",
+      "line": 29,
+      "name": "approach",
+      "calls": 2160,
+      "self_seconds": 0.0009869,
+      "inclusive_seconds": 0.0014255000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_properties.py",
+      "line": 4,
+      "name": "tire_grip",
+      "calls": 4320,
+      "self_seconds": 0.0013612000000000001,
+      "inclusive_seconds": 0.0013612000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method math.atan2>",
+      "calls": 6800,
+      "self_seconds": 0.0013189,
+      "inclusive_seconds": 0.0013189
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+      "line": 53,
+      "name": "engine_torque",
+      "calls": 1080,
+      "self_seconds": 0.0012997,
+      "inclusive_seconds": 0.0012997
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'setFrictionSlip' of 'panda3d.bullet.BulletWheel' objects>",
+      "calls": 8640,
+      "self_seconds": 0.0012946000000000001,
+      "inclusive_seconds": 0.0012946000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'isZero' of 'panda3d.core.BitMask_uint32_t_32' objects>",
+      "calls": 14760,
+      "self_seconds": 0.0012885000000000001,
+      "inclusive_seconds": 0.0012885000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method math.copysign>",
+      "calls": 11964,
+      "self_seconds": 0.0012805000000000002,
+      "inclusive_seconds": 0.0012805000000000002
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'applyCentralImpulse' of 'panda3d.bullet.BulletRigidBodyNode' objects>",
+      "calls": 2160,
+      "self_seconds": 0.0012180000000000001,
+      "inclusive_seconds": 0.0012180000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method wheel_contact_kernels.road_strip_project>",
+      "calls": 180,
+      "self_seconds": 0.0011768,
+      "inclusive_seconds": 0.0011768
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getvalue' of '_io.BytesIO' objects>",
+      "calls": 2160,
+      "self_seconds": 0.0011666,
+      "inclusive_seconds": 0.0011666
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getUp' of 'panda3d.core.LQuaternionf' objects>",
+      "calls": 4320,
+      "self_seconds": 0.0011529,
+      "inclusive_seconds": 0.0011529
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\coastal_map.py",
+      "line": 166,
+      "name": "coast_side",
+      "calls": 1668,
+      "self_seconds": 0.0006919000000000001,
+      "inclusive_seconds": 0.0011402
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_workers.py",
+      "line": 387,
+      "name": "finish_preparation",
+      "calls": 2160,
+      "self_seconds": 0.0008340000000000001,
+      "inclusive_seconds": 0.0011084
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+      "line": 99,
+      "name": "downstream_active",
+      "calls": 3240,
+      "self_seconds": 0.0007846000000000001,
+      "inclusive_seconds": 0.0011066000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method math.exp>",
+      "calls": 8760,
+      "self_seconds": 0.0010693,
+      "inclusive_seconds": 0.0010693
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getSteering' of 'panda3d.bullet.BulletWheel' objects>",
+      "calls": 8640,
+      "self_seconds": 0.001048,
+      "inclusive_seconds": 0.001048
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getRight' of 'panda3d.core.LQuaternionf' objects>",
+      "calls": 3240,
+      "self_seconds": 0.0010379,
+      "inclusive_seconds": 0.0010379
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_dynamics.py",
+      "line": 41,
+      "name": "<genexpr>",
+      "calls": 8640,
+      "self_seconds": 0.001036,
+      "inclusive_seconds": 0.001036
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getRigidBodies' of 'panda3d.bullet.BulletWorld' objects>",
+      "calls": 140,
+      "self_seconds": 0.0009965,
+      "inclusive_seconds": 0.0009965
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'conjugate' of 'panda3d.core.LQuaternionf' objects>",
+      "calls": 4320,
+      "self_seconds": 0.0009939,
+      "inclusive_seconds": 0.0009939
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'unpack_from' of '_struct.Struct' objects>",
+      "calls": 2160,
+      "self_seconds": 0.0009809,
+      "inclusive_seconds": 0.0009809
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+      "line": 400,
+      "name": "<genexpr>",
+      "calls": 5400,
+      "self_seconds": 0.0009785,
+      "inclusive_seconds": 0.0009785
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_dynamics.py",
+      "line": 44,
+      "name": "<genexpr>",
+      "calls": 8640,
+      "self_seconds": 0.0009780000000000001,
+      "inclusive_seconds": 0.0009780000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method math.atan>",
+      "calls": 8080,
+      "self_seconds": 0.0009753,
+      "inclusive_seconds": 0.0009753
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_workers.py",
+      "line": 265,
+      "name": "_freeze_request",
+      "calls": 2160,
+      "self_seconds": 0.0006915000000000001,
+      "inclusive_seconds": 0.0009681000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'setHpr' of 'panda3d.core.LQuaternionf' objects>",
+      "calls": 4320,
+      "self_seconds": 0.0009670000000000001,
+      "inclusive_seconds": 0.0009670000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getInvInertiaTensorWorld' of 'panda3d.bullet.BulletRigidBodyNode' objects>",
+      "calls": 4320,
+      "self_seconds": 0.0009647000000000001,
+      "inclusive_seconds": 0.0009647000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_dynamics.py",
+      "line": 42,
+      "name": "<genexpr>",
+      "calls": 8640,
+      "self_seconds": 0.0009314000000000001,
+      "inclusive_seconds": 0.0009314000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_workers.py",
+      "line": 322,
+      "name": "_start",
+      "calls": 2160,
+      "self_seconds": 0.0006352,
+      "inclusive_seconds": 0.0008909
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_workers.py",
+      "line": 490,
+      "name": "diagnostics",
+      "calls": 1,
+      "self_seconds": 2.9900000000000002e-05,
+      "inclusive_seconds": 0.0008632000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getbuffer' of '_winapi.Overlapped' objects>",
+      "calls": 4320,
+      "self_seconds": 0.0008322000000000001,
+      "inclusive_seconds": 0.0008322000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method math.sqrt>",
+      "calls": 6008,
+      "self_seconds": 0.0008292000000000001,
+      "inclusive_seconds": 0.0008292000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method garbageCollect>",
+      "calls": 1,
+      "self_seconds": 0.0008286000000000001,
+      "inclusive_seconds": 0.0008286000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getRow3' of 'panda3d.core.LMatrix4f' objects>",
+      "calls": 4320,
+      "self_seconds": 0.0008284000000000001,
+      "inclusive_seconds": 0.0008284000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle.py",
+      "line": 269,
+      "name": "<genexpr>",
+      "calls": 8640,
+      "self_seconds": 0.0008246000000000001,
+      "inclusive_seconds": 0.0008246000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'setFromAxisAngle' of 'panda3d.core.LQuaternionf' objects>",
+      "calls": 4320,
+      "self_seconds": 0.0008233,
+      "inclusive_seconds": 0.0008233
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'xformPoint' of 'panda3d.core.LMatrix4f' objects>",
+      "calls": 4320,
+      "self_seconds": 0.0007507000000000001,
+      "inclusive_seconds": 0.0007507000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_config.py",
+      "line": 180,
+      "name": "wheel_track_widths",
+      "calls": 5760,
+      "self_seconds": 0.0007484000000000001,
+      "inclusive_seconds": 0.0007484000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'applyCentralForce' of 'panda3d.bullet.BulletRigidBodyNode' objects>",
+      "calls": 3240,
+      "self_seconds": 0.000738,
+      "inclusive_seconds": 0.000738
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+      "line": 403,
+      "name": "<genexpr>",
+      "calls": 5400,
+      "self_seconds": 0.0007197000000000001,
+      "inclusive_seconds": 0.0007197000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+      "line": 232,
+      "name": "<genexpr>",
+      "calls": 4320,
+      "self_seconds": 0.0007093000000000001,
+      "inclusive_seconds": 0.0007093000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method time.process_time>",
+      "calls": 240,
+      "self_seconds": 0.0007054,
+      "inclusive_seconds": 0.0007054
+    },
+    {
+      "file": "C:\\Users\\15120\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\multiprocessing\\connection.py",
+      "line": 137,
+      "name": "_check_closed",
+      "calls": 4320,
+      "self_seconds": 0.0006863,
+      "inclusive_seconds": 0.0006863
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getTotalForce' of 'panda3d.bullet.BulletRigidBodyNode' objects>",
+      "calls": 3240,
+      "self_seconds": 0.0006743000000000001,
+      "inclusive_seconds": 0.0006743000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'normalized' of 'panda3d.core.LVecBase3f' objects>",
+      "calls": 4320,
+      "self_seconds": 0.0006681,
+      "inclusive_seconds": 0.0006681
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getForward' of 'panda3d.core.LQuaternionf' objects>",
+      "calls": 2160,
+      "self_seconds": 0.0006551,
+      "inclusive_seconds": 0.0006551
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'pack' of '_struct.Struct' objects>",
+      "calls": 2160,
+      "self_seconds": 0.0006528,
+      "inclusive_seconds": 0.0006528
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'cross' of 'panda3d.core.LVecBase3f' objects>",
+      "calls": 4320,
+      "self_seconds": 0.0006439000000000001,
+      "inclusive_seconds": 0.0006439000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_stability.py",
+      "line": 107,
+      "name": "<genexpr>",
+      "calls": 5400,
+      "self_seconds": 0.0006212,
+      "inclusive_seconds": 0.0006212
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+      "line": 402,
+      "name": "<genexpr>",
+      "calls": 5400,
+      "self_seconds": 0.0006201000000000001,
+      "inclusive_seconds": 0.0006201000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'xform' of 'panda3d.core.LMatrix3f' objects>",
+      "calls": 2160,
+      "self_seconds": 0.0006194,
+      "inclusive_seconds": 0.0006194
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getTotalTorque' of 'panda3d.bullet.BulletRigidBodyNode' objects>",
+      "calls": 3240,
+      "self_seconds": 0.000611,
+      "inclusive_seconds": 0.000611
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\driveline_inertia.py",
+      "line": 15,
+      "name": "active_inertias",
+      "calls": 2160,
+      "self_seconds": 0.0006077000000000001,
+      "inclusive_seconds": 0.0006077000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\tools\\performance\\benchmark_physics.py",
+      "line": 252,
+      "name": "control",
+      "calls": 120,
+      "self_seconds": 0.0002794,
+      "inclusive_seconds": 0.000606
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_traction.py",
+      "line": 73,
+      "name": "<genexpr>",
+      "calls": 5400,
+      "self_seconds": 0.0005902,
+      "inclusive_seconds": 0.0005902
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'setSteeringValue' of 'panda3d.bullet.BulletVehicle' objects>",
+      "calls": 2160,
+      "self_seconds": 0.0005593,
+      "inclusive_seconds": 0.0005593
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'setFromMatrix' of 'panda3d.core.LQuaternionf' objects>",
+      "calls": 4320,
+      "self_seconds": 0.0005509,
+      "inclusive_seconds": 0.0005509
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+      "line": 127,
+      "name": "ratio",
+      "calls": 2210,
+      "self_seconds": 0.0005482,
+      "inclusive_seconds": 0.0005482
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\world_step.py",
+      "line": 60,
+      "name": "<genexpr>",
+      "calls": 2400,
+      "self_seconds": 0.0005446,
+      "inclusive_seconds": 0.0005446
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'startswith' of 'str' objects>",
+      "calls": 5760,
+      "self_seconds": 0.0005418,
+      "inclusive_seconds": 0.0005418
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method math.tan>",
+      "calls": 3960,
+      "self_seconds": 0.0005344,
+      "inclusive_seconds": 0.0005344
+    },
+    {
+      "file": "<string>",
+      "line": 2,
+      "name": "__init__",
+      "calls": 280,
+      "self_seconds": 0.00033640000000000005,
+      "inclusive_seconds": 0.0005246000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_brakes.py",
+      "line": 74,
+      "name": "<genexpr>",
+      "calls": 5400,
+      "self_seconds": 0.0005223000000000001,
+      "inclusive_seconds": 0.0005223000000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getGravity' of 'panda3d.bullet.BulletRigidBodyNode' objects>",
+      "calls": 2160,
+      "self_seconds": 0.0004988,
+      "inclusive_seconds": 0.0004988
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+      "line": 233,
+      "name": "<genexpr>",
+      "calls": 4320,
+      "self_seconds": 0.0004915000000000001,
+      "inclusive_seconds": 0.0004915000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_stability.py",
+      "line": 109,
+      "name": "<genexpr>",
+      "calls": 2160,
+      "self_seconds": 0.00045430000000000004,
+      "inclusive_seconds": 0.00045430000000000004
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_workers.py",
+      "line": 401,
+      "name": "_publish_geometry",
+      "calls": 2160,
+      "self_seconds": 0.00044590000000000005,
+      "inclusive_seconds": 0.00044590000000000005
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'items' of 'dict' objects>",
+      "calls": 2642,
+      "self_seconds": 0.00044080000000000004,
+      "inclusive_seconds": 0.00044080000000000004
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\world_step.py",
+      "line": 22,
+      "name": "<genexpr>",
+      "calls": 3240,
+      "self_seconds": 0.0004396,
+      "inclusive_seconds": 0.0004396
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'append' of 'collections.deque' objects>",
+      "calls": 2160,
+      "self_seconds": 0.00042520000000000004,
+      "inclusive_seconds": 0.00042520000000000004
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+      "line": 24,
+      "name": "__init__",
+      "calls": 2160,
+      "self_seconds": 0.0004064,
+      "inclusive_seconds": 0.0004064
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\impact_events.py",
+      "line": 188,
+      "name": "update",
+      "calls": 120,
+      "self_seconds": 0.0003262,
+      "inclusive_seconds": 0.00040100000000000004
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getManifoldPoints' of 'panda3d.bullet.BulletPersistentManifold' objects>",
+      "calls": 2880,
+      "self_seconds": 0.0003992,
+      "inclusive_seconds": 0.0003992
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'length' of 'panda3d.core.LVecBase3f' objects>",
+      "calls": 2160,
+      "self_seconds": 0.0003928,
+      "inclusive_seconds": 0.0003928
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\simulation.py",
+      "line": 236,
+      "name": "_prune_contact_sources",
+      "calls": 20,
+      "self_seconds": 0.0002224,
+      "inclusive_seconds": 0.00039230000000000005
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getAngularDamping' of 'panda3d.bullet.BulletRigidBodyNode' objects>",
+      "calls": 2160,
+      "self_seconds": 0.00038340000000000005,
+      "inclusive_seconds": 0.00038340000000000005
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getPythonTag' of 'panda3d.core.PandaNode' objects>",
+      "calls": 1320,
+      "self_seconds": 0.0003457,
+      "inclusive_seconds": 0.0003457
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_workers.py",
+      "line": 493,
+      "name": "<genexpr>",
+      "calls": 4322,
+      "self_seconds": 0.00032050000000000004,
+      "inclusive_seconds": 0.00032050000000000004
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\impact_events.py",
+      "line": 114,
+      "name": "aggregate_contacts",
+      "calls": 120,
+      "self_seconds": 0.00018830000000000002,
+      "inclusive_seconds": 0.0002997
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getNumContacts' of 'panda3d.bullet.BulletContactResult' objects>",
+      "calls": 1920,
+      "self_seconds": 0.0002924,
+      "inclusive_seconds": 0.0002924
+    },
+    {
+      "file": "C:\\Users\\15120\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\multiprocessing\\connection.py",
+      "line": 141,
+      "name": "_check_readable",
+      "calls": 2160,
+      "self_seconds": 0.00028900000000000003,
+      "inclusive_seconds": 0.00028900000000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method _bisect.bisect_right>",
+      "calls": 1668,
+      "self_seconds": 0.00028730000000000004,
+      "inclusive_seconds": 0.00028730000000000004
+    },
+    {
+      "file": "C:\\Users\\15120\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\multiprocessing\\connection.py",
+      "line": 145,
+      "name": "_check_writable",
+      "calls": 2160,
+      "self_seconds": 0.00028720000000000004,
+      "inclusive_seconds": 0.00028720000000000004
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_workers.py",
+      "line": 357,
+      "name": "preparation_ready",
+      "calls": 2160,
+      "self_seconds": 0.0002744,
+      "inclusive_seconds": 0.0002744
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getInertia' of 'panda3d.bullet.BulletRigidBodyNode' objects>",
+      "calls": 1080,
+      "self_seconds": 0.0002502,
+      "inclusive_seconds": 0.0002502
+    },
+    {
+      "file": "<string>",
+      "line": 9,
+      "name": "__eq__",
+      "calls": 2160,
+      "self_seconds": 0.0002302,
+      "inclusive_seconds": 0.0002302
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'applyTorque' of 'panda3d.bullet.BulletRigidBodyNode' objects>",
+      "calls": 1080,
+      "self_seconds": 0.0002134,
+      "inclusive_seconds": 0.0002134
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'invertInPlace' of 'panda3d.core.LMatrix4f' objects>",
+      "calls": 240,
+      "self_seconds": 0.0002111,
+      "inclusive_seconds": 0.0002111
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method builtins.any>",
+      "calls": 1054,
+      "self_seconds": 0.00020690000000000001,
+      "inclusive_seconds": 0.00020690000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_stability.py",
+      "line": 48,
+      "name": "allocate_brakes",
+      "calls": 28,
+      "self_seconds": 0.0001343,
+      "inclusive_seconds": 0.00020150000000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\traffic.py",
+      "line": 51,
+      "name": "delta",
+      "calls": 1280,
+      "self_seconds": 0.0002001,
+      "inclusive_seconds": 0.0002001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_state.py",
+      "line": 24,
+      "name": "__post_init__",
+      "calls": 280,
+      "self_seconds": 0.00018820000000000002,
+      "inclusive_seconds": 0.00018820000000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_state.py",
+      "line": 43,
+      "name": "__post_init__",
+      "calls": 1113,
+      "self_seconds": 0.00018680000000000001,
+      "inclusive_seconds": 0.00018680000000000001
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+      "line": 135,
+      "name": "capacity",
+      "calls": 1260,
+      "self_seconds": 0.0001845,
+      "inclusive_seconds": 0.0001845
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\coastal_map.py",
+      "line": 93,
+      "name": "segment",
+      "calls": 180,
+      "self_seconds": 0.0001111,
+      "inclusive_seconds": 0.00015350000000000002
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\coastal_map.py",
+      "line": 103,
+      "name": "map_length",
+      "calls": 1668,
+      "self_seconds": 0.0001486,
+      "inclusive_seconds": 0.0001486
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\world_step.py",
+      "line": 29,
+      "name": "<genexpr>",
+      "calls": 240,
+      "self_seconds": 9.630000000000001e-05,
+      "inclusive_seconds": 0.000132
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method bit>",
+      "calls": 120,
+      "self_seconds": 0.00012240000000000002,
+      "inclusive_seconds": 0.00012240000000000002
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method math.isclose>",
+      "calls": 120,
+      "self_seconds": 9.240000000000001e-05,
+      "inclusive_seconds": 9.240000000000001e-05
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'getScale' of 'panda3d.core.TransformState' objects>",
+      "calls": 240,
+      "self_seconds": 9.130000000000001e-05,
+      "inclusive_seconds": 9.130000000000001e-05
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method time.perf_counter>",
+      "calls": 360,
+      "self_seconds": 7.120000000000001e-05,
+      "inclusive_seconds": 7.120000000000001e-05
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\world_step.py",
+      "line": 10,
+      "name": "physical_substeps",
+      "calls": 120,
+      "self_seconds": 7.02e-05,
+      "inclusive_seconds": 7.02e-05
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'extend' of 'list' objects>",
+      "calls": 240,
+      "self_seconds": 6.37e-05,
+      "inclusive_seconds": 6.37e-05
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<built-in method math.hypot>",
+      "calls": 340,
+      "self_seconds": 6.19e-05,
+      "inclusive_seconds": 6.19e-05
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "name": "<method 'keys' of 'dict' objects>",
+      "calls": 120,
+      "self_seconds": 4.5600000000000004e-05,
+      "inclusive_seconds": 4.5600000000000004e-05
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_stability.py",
+      "line": 133,
+      "name": "<genexpr>",
+      "calls": 140,
+      "self_seconds": 2.51e-05,
+      "inclusive_seconds": 2.51e-05
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\tools\\performance\\benchmark_physics.py",
+      "line": 69,
+      "name": "distribution",
+      "calls": 1,
+      "self_seconds": 4.800000000000001e-06,
+      "inclusive_seconds": 1.81e-05
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_stability.py",
+      "line": 51,
+      "name": "<genexpr>",
+      "calls": 140,
+      "self_seconds": 1.69e-05,
+      "inclusive_seconds": 1.69e-05
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_stability.py",
+      "line": 137,
+      "name": "<genexpr>",
+      "calls": 140,
+      "self_seconds": 1.3300000000000001e-05,
+      "inclusive_seconds": 1.3300000000000001e-05
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\simulation.py",
+      "line": 623,
+      "name": "_recycle_traffic",
+      "calls": 20,
+      "self_seconds": 1.0300000000000001e-05,
+      "inclusive_seconds": 1.0300000000000001e-05
+    },
+    {
+      "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\tools\\performance\\benchmark_physics.py",
+      "line": 74,
+      "name": "percentile",
+      "calls": 2,
+      "self_seconds": 3.9e-06,
+      "inclusive_seconds": 4.7e-06
+    }
+  ],
+  "source_unchanged": true
+}

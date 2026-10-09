@@ -2,6 +2,7 @@
 
 import argparse
 import ctypes
+import importlib
 import json
 import os
 import subprocess
@@ -9,13 +10,24 @@ import sys
 import time
 from collections import deque
 from ctypes import wintypes
-from functools import wraps
+from functools import partial, wraps
 from itertools import pairwise
 from pathlib import Path
 from types import ModuleType
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path[:0] = [str(ROOT / "src"), str(ROOT / "tools")]
+sys.path.insert(0, str(ROOT / "tools"))
+
+
+def audited_worker(output, connection):
+    """启动阶段记录工作进程实际模块，不在采样段插入计时或文件操作。"""
+    import physics_workers
+
+    modules = {name: importlib.import_module(name).__file__ for name in (
+        'physics_workers','tire_drivetrain','vehicle_tires','vehicle_suspension',
+        'suspension_contacts','triangle_support','vehicle_tire_step')}
+    (Path(output)/f'worker-source-{os.getpid()}.json').write_text(json.dumps(modules), encoding='utf-8')
+    physics_workers._worker_loop(connection)
 
 
 def main():
@@ -36,6 +48,7 @@ def main():
     parser.add_argument("--gc-rate",type=float,help="Panda状态缓存分批回收诊断")
     parser.add_argument("--switch-interval",type=float,help="Python物理/绘制线程切换间隔诊断")
     parser.add_argument("--trace-phases",action="store_true",help="以各调用线程CPU时间记录真实阶段；诊断用")
+    parser.add_argument('--physics-workers',type=int,help='显式数值进程数，默认沿用游戏设置')
     args = parser.parse_args()
     if not 30 <= args.seconds <= 60:
         parser.error("短测限于30–60秒")
@@ -99,13 +112,27 @@ def main():
             self.sample = lru_cache(maxsize=8192)(self.sample)
 
         curve_type.__init__ = cached_init
-    from endurance_check import EnduranceDriver
     from panda3d.core import CallbackObject, Filename, RenderState, TransformState, loadPrcFileData
 
     from application import CoastalDrive
     from controls import ConstantController
     from driving_modes import DrivingMode
     from simulation import Control
+
+    EnduranceDriver = importlib.import_module('endurance_check').EnduranceDriver
+
+    # 耐久工具的历史入口会插入当前src；源码对照必须在加载游戏前锁定指定模块。
+    sys.path.insert(0, str(args.source.resolve()))
+    source_modules = {} if args.baseline_compute else {name: importlib.import_module(name).__file__ for name in (
+        'application','simulation','vehicle','world_step','physics_workers','tire_drivetrain',
+        'vehicle_tires','suspension_contacts','triangle_support','coastal_map')}
+    if not args.baseline_compute:
+        for name,filename in source_modules.items():
+            if Path(filename).resolve().parent != args.source.resolve():
+                raise RuntimeError(f'窗口源码对照未加载指定模块：{name}: {filename}')
+        import physics_workers
+
+        physics_workers._worker_loop = partial(audited_worker, str(args.output.resolve()))
 
     phase_samples = {}
     measuring_phases = False
@@ -153,7 +180,8 @@ def main():
     app = CoastalDrive(smoke=True, onscreen=True, track=args.track, road_shape=args.shape,
                        seed=23, output=args.output, render_size=(1920, 1080),
                        threading_model=pipelines[args.pipeline],independent_clock=args.independent_clock,
-                       vehicle_design_id=args.vehicle_design, driving_mode=DrivingMode(args.driving_mode))
+                       vehicle_design_id=args.vehicle_design, driving_mode=DrivingMode(args.driving_mode),
+                       physics_workers=args.physics_workers)
     app.taskMgr.remove("finish-smoke")
     app.session.set_controller(EnduranceDriver(app.session.simulation, 724) if args.track == "endless"
                                else ConstantController(Control(throttle=.3,steering=args.steering)))
@@ -168,6 +196,8 @@ def main():
     previous = time.perf_counter()
     last_second = -1
     start_dropped = None
+    start_tick = None
+    sample_started_at = None
     final = {}
     if args.profile:
         import cProfile
@@ -186,11 +216,13 @@ def main():
     region.setDrawCallback(CallbackObject.make(count_draw))
 
     def observe(task):
-        nonlocal previous, last_second, start_dropped, measuring_draw, tracing, measuring_phases
+        nonlocal previous, last_second, start_dropped, start_tick, sample_started_at, measuring_draw, tracing, measuring_phases
         now = time.perf_counter()
         if task.time >= 3:
             if start_dropped is None:
                 start_dropped = app.session.stepper.dropped_time
+                start_tick = app.session.current.tick
+                sample_started_at = now
                 app.scene.segment_work["max_step_ms"] = 0
                 measuring_draw = True
                 tracing = True
@@ -236,6 +268,7 @@ def main():
                 "baseline_compute": args.baseline_compute, "window_sampling_valid": valid,
                 "renderer": app.win.getGsg().getDriverRenderer(),
                 "profile": args.profile,
+                "source_modules":source_modules,
                 "trace_phases":args.trace_phases,
                 "phase_timing":{
                     name:{
@@ -263,6 +296,11 @@ def main():
                 "frames_over_100ms": sum(v > 100 for v in values),
                 "dropped_simulation_seconds": app.session.stepper.dropped_time - start_dropped,
                 "warmup_dropped_seconds": start_dropped, "distance_m": distance,
+                "physics_start_tick":start_tick, "physics_end_tick":app.session.current.tick,
+                "physics_sample_ticks":app.session.current.tick-start_tick,
+                "physics_sample_simulated_seconds":(app.session.current.tick-start_tick)/120,
+                "physics_sample_wall_seconds":now-sample_started_at,
+                "physics_sample_hz":(app.session.current.tick-start_tick)/(now-sample_started_at),
                 "collisions": app.session.simulation.collision_count,
                 "frames_slow": sorted(samples, key=lambda row: row["ms"], reverse=True)[:12],
                 "segment_work_max_ms": max(w["frame_ms"] for w in work_samples),
@@ -294,6 +332,12 @@ def main():
     final["git_head"] = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True,
     ).strip()
+    worker_sources = [json.loads(path.read_text(encoding='utf-8')) for path in args.output.glob('worker-source-*.json')]
+    final['worker_sources'] = worker_sources
+    final['worker_source_valid'] = all(Path(filename).resolve().parent == args.source.resolve()
+                                       for modules in worker_sources for filename in modules.values())
+    if not final['worker_source_valid']:
+        final['passed'] = final['short_performance_passed'] = False
     final["git_status"] = subprocess.check_output(
         ["git", "status", "--short"], cwd=ROOT, text=True, encoding="utf-8",
     ).strip()

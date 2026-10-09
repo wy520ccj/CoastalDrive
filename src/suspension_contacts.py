@@ -22,7 +22,7 @@ from wheel_contact_kernels import (
 
 from convex_queries import HullGeometry, native_transform, wheel_hull
 from suspension_geometry import BoxSurface, CylinderSurface, box_entry, sphere_box_entry
-from triangle_support import TriangleSupport, triangle_entry
+from triangle_support import triangle_entry
 from wheel_envelope import cylinder_box_entry
 
 
@@ -279,9 +279,8 @@ def cylinder_candidates(world, chassis, mask, low, high, *, static_shapes=None, 
                 inverse, frame, translation, half, margin, plane, triangles, _bounds = part
                 if triangles is not None:
                     # 只预取覆盖盒内原三角面，保留原索引遍历次序；每条射线仍作原精确筛选。
-                    selected = tuple(triangles.candidates(local_center, local_center,
-                                                         tuple(value+margin for value in local_half)))
-                    triangles = TriangleSupport(triangles.low, triangles.high, selected)
+                    triangles = triangles.window(local_center, local_center,
+                                                 tuple(value+margin for value in local_half))
                 surfaces.append((body, inverse, frame, half, margin, plane, triangles, translation))
             exact.add(body)
         else:

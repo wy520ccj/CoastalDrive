@@ -1,0 +1,2676 @@
+[
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_workers.py",
+    "name": "_solve_vehicle",
+    "calls": 2160,
+    "self": 0.033559200000000004,
+    "total": 8.3134288
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+    "name": "solve",
+    "calls": 2160,
+    "self": 0.0591867,
+    "total": 8.2227558
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "advance",
+    "calls": 2160,
+    "self": 0.0149488,
+    "total": 6.8529725
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "solve_drivetrain_stages",
+    "calls": 2160,
+    "self": 0.0053211,
+    "total": 6.838023700000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "solve",
+    "calls": 2160,
+    "self": 0.006081700000000001,
+    "total": 5.5246829
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\tools\\performance\\benchmark_physics.py",
+    "name": "advance",
+    "calls": 2160,
+    "self": 0.12137120000000001,
+    "total": 5.5186012
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "advance_drivetrain",
+    "calls": 2160,
+    "self": 0.5155322,
+    "total": 5.397223200000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "contact_system",
+    "calls": 25242,
+    "self": 0.0338712,
+    "total": 2.1119447
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_kinematics.py",
+    "name": "finite_contact_system",
+    "calls": 18012,
+    "self": 0.047440500000000003,
+    "total": 2.0708138
+  },
+  {
+    "file": "~",
+    "name": "<built-in method wheel_contact_kernels.cylinder_contact_system>",
+    "calls": 18012,
+    "self": 0.2332647,
+    "total": 1.8680651000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "cylinder_suspension_rays",
+    "calls": 4852,
+    "self": 0.10121559999999999,
+    "total": 1.6279309000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "relative_entry",
+    "calls": 72048,
+    "self": 0.13162120000000002,
+    "total": 1.60375
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "advance_stages",
+    "calls": 4320,
+    "self": 0.3720366,
+    "total": 1.2921462000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "prepare",
+    "calls": 2160,
+    "self": 0.1261231,
+    "total": 1.2132334
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "cylinder_candidates",
+    "calls": 2102,
+    "self": 0.0412783,
+    "total": 1.0154688
+  },
+  {
+    "file": "~",
+    "name": "<built-in method wheel_contact_kernels.cached_surface_entry>",
+    "calls": 62658,
+    "self": 0.5628581000000001,
+    "total": 0.6884424
+  },
+  {
+    "file": "~",
+    "name": "<built-in method builtins.next>",
+    "calls": 2160,
+    "self": 0.0017247,
+    "total": 0.6716077000000001
+  },
+  {
+    "file": "~",
+    "name": "<method 'send' of 'generator' objects>",
+    "calls": 2160,
+    "self": 0.0141488,
+    "total": 0.6364120000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\triangle_support.py",
+    "name": "candidates",
+    "calls": 227929,
+    "self": 0.4379892000000001,
+    "total": 0.6226328
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "solve_wheel",
+    "calls": 48888,
+    "self": 0.04463369999999999,
+    "total": 0.3705868
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "shared",
+    "calls": 63816,
+    "self": 0.0344401,
+    "total": 0.32814230000000005
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.loaded_wheel_force_solution>",
+    "calls": 48888,
+    "self": 0.3259531,
+    "total": 0.3259531
+  },
+  {
+    "file": "~",
+    "name": "<built-in method wheel_contact_kernels.surface_ray_hits>",
+    "calls": 11332,
+    "self": 0.18977590000000003,
+    "total": 0.3199255000000001
+  },
+  {
+    "file": "~",
+    "name": "<built-in method builtins.sum>",
+    "calls": 225388,
+    "self": 0.1856286,
+    "total": 0.3131507
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.shared_load_solution>",
+    "calls": 63816,
+    "self": 0.2937022,
+    "total": 0.2937022
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\triangle_support.py",
+    "name": "__post_init__",
+    "calls": 9001,
+    "self": 0.1085376,
+    "total": 0.2765811
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.shaft_brake_plans>",
+    "calls": 31500,
+    "self": 0.21980349999999999,
+    "total": 0.21980349999999999
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "normal_loads",
+    "calls": 24501,
+    "self": 0.049137700000000006,
+    "total": 0.2178702
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 31500,
+    "self": 0.027008400000000002,
+    "total": 0.20621330000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "load_parameters",
+    "calls": 26661,
+    "self": 0.03417680000000001,
+    "total": 0.16647380000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\wheel_envelope.py",
+    "name": "_simplex_coordinates",
+    "calls": 5230,
+    "self": 0.015404300000000003,
+    "total": 0.1575592
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.dot>",
+    "calls": 794280,
+    "self": 0.154727,
+    "total": 0.154727
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 512640,
+    "self": 0.06964920000000001,
+    "total": 0.1474528
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 133305,
+    "self": 0.06673760000000001,
+    "total": 0.132297
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\linalg\\_linalg.py",
+    "name": "lstsq",
+    "calls": 5230,
+    "self": 0.0752805,
+    "total": 0.1312388
+  },
+  {
+    "file": "C:\\Users\\15120\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\dataclasses.py",
+    "name": "replace",
+    "calls": 10800,
+    "self": 0.0157818,
+    "total": 0.11091299999999998
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_kinematics.py",
+    "name": "rotation_path",
+    "calls": 18012,
+    "self": 0.07753499999999999,
+    "total": 0.1054784
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "normal_load_solution",
+    "calls": 37464,
+    "self": 0.0114804,
+    "total": 0.1024179
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+    "name": "deformation_frame",
+    "calls": 8640,
+    "self": 0.0469887,
+    "total": 0.09991500000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0079468,
+    "total": 0.09926520000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\triangle_support.py",
+    "name": "triangle_entry",
+    "calls": 18597,
+    "self": 0.0084295,
+    "total": 0.09417439999999999
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "publish",
+    "calls": 2160,
+    "self": 0.020232100000000003,
+    "total": 0.0935076
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\shaft_transmission.py",
+    "name": "synchronizer_brake_plans",
+    "calls": 900,
+    "self": 0.015932300000000003,
+    "total": 0.0914607
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.suspension_forces>",
+    "calls": 37464,
+    "self": 0.0909375,
+    "total": 0.0909375
+  },
+  {
+    "file": "C:\\Users\\15120\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\dataclasses.py",
+    "name": "_replace",
+    "calls": 10800,
+    "self": 0.0509661,
+    "total": 0.08906180000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\wheel_envelope.py",
+    "name": "triangle_edge_entry",
+    "calls": 18597,
+    "self": 0.0067023000000000004,
+    "total": 0.08574490000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "rotor_frames",
+    "calls": 2160,
+    "self": 0.031212300000000002,
+    "total": 0.08474100000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0146866,
+    "total": 0.0845702
+  },
+  {
+    "file": "~",
+    "name": "<built-in method wheel_contact_kernels.subtract>",
+    "calls": 329158,
+    "self": 0.0832786,
+    "total": 0.0832786
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.wheel_map_coefficients>",
+    "calls": 2160,
+    "self": 0.0818786,
+    "total": 0.0818786
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "correct_suspension",
+    "calls": 57,
+    "self": 0.0017326000000000002,
+    "total": 0.08059660000000002
+  },
+  {
+    "file": "~",
+    "name": "<built-in method wheel_contact_kernels.triangle_edge_entry>",
+    "calls": 18597,
+    "self": 0.04706770000000001,
+    "total": 0.0790426
+  },
+  {
+    "file": "~",
+    "name": "<built-in method builtins.min>",
+    "calls": 100681,
+    "self": 0.054388500000000006,
+    "total": 0.07891630000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "residual",
+    "calls": 798,
+    "self": 0.0033245,
+    "total": 0.0765562
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 900,
+    "self": 0.0006804000000000001,
+    "total": 0.07516510000000001
+  },
+  {
+    "file": "~",
+    "name": "<built-in method builtins.max>",
+    "calls": 103184,
+    "self": 0.046336800000000004,
+    "total": 0.0681996
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\driveline_inertia.py",
+    "name": "rotor_gradients",
+    "calls": 2160,
+    "self": 0.0059308,
+    "total": 0.0672186
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "contacts",
+    "calls": 4320,
+    "self": 0.0264964,
+    "total": 0.0666867
+  },
+  {
+    "file": "<string>",
+    "name": "__hash__",
+    "calls": 4320,
+    "self": 0.0341335,
+    "total": 0.0642277
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\wheel_geometry.py",
+    "name": "mechanical_axis",
+    "calls": 8640,
+    "self": 0.018155800000000003,
+    "total": 0.06038760000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+    "name": "project_deformation",
+    "calls": 8640,
+    "self": 0.015712300000000002,
+    "total": 0.05868400000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "normal_projection",
+    "calls": 15180,
+    "self": 0.0164678,
+    "total": 0.055660100000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.023811700000000005,
+    "total": 0.0536964
+  },
+  {
+    "file": "~",
+    "name": "<method 'disable' of '_lsprof.Profiler' objects>",
+    "calls": 2160,
+    "self": 0.051613700000000005,
+    "total": 0.051613700000000005
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.shared_map_coefficients>",
+    "calls": 2160,
+    "self": 0.049815200000000004,
+    "total": 0.049815200000000004
+  },
+  {
+    "file": "~",
+    "name": "<method 'setdefault' of 'dict' objects>",
+    "calls": 2160,
+    "self": 0.0034635000000000004,
+    "total": 0.04930849999999999
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 32400,
+    "self": 0.0232741,
+    "total": 0.04909410000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "apply_step",
+    "calls": 2160,
+    "self": 0.013413900000000001,
+    "total": 0.048855100000000005
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\triangle_support.py",
+    "name": "<genexpr>",
+    "calls": 433100,
+    "self": 0.048040400000000004,
+    "total": 0.048040400000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\differential.py",
+    "name": "differential_gradients",
+    "calls": 2160,
+    "self": 0.0032201,
+    "total": 0.04785470000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\differential.py",
+    "name": "differential_branches",
+    "calls": 2160,
+    "self": 0.03012,
+    "total": 0.0469443
+  },
+  {
+    "file": "~",
+    "name": "<built-in method wheel_contact_kernels.prepared_support_candidates>",
+    "calls": 2102,
+    "self": 0.045120799999999996,
+    "total": 0.045120799999999996
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension.py",
+    "name": "shared_suspension",
+    "calls": 2160,
+    "self": 0.008404500000000002,
+    "total": 0.0398192
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\driveline_inertia.py",
+    "name": "<genexpr>",
+    "calls": 25920,
+    "self": 0.013026600000000003,
+    "total": 0.0397122
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "candidates",
+    "calls": 2160,
+    "self": 0.0055249999999999995,
+    "total": 0.039304700000000005
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.suspension_projection>",
+    "calls": 15147,
+    "self": 0.039192300000000006,
+    "total": 0.039192300000000006
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "mobility",
+    "calls": 58320,
+    "self": 0.0114505,
+    "total": 0.038964200000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_properties.py",
+    "name": "tire_stiffness",
+    "calls": 115284,
+    "self": 0.038672500000000005,
+    "total": 0.038672500000000005
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+    "name": "accept_step",
+    "calls": 2160,
+    "self": 0.024999900000000002,
+    "total": 0.037666700000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\shaft_transmission.py",
+    "name": "<genexpr>",
+    "calls": 44928,
+    "self": 0.024284000000000003,
+    "total": 0.0375784
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\transmission_ports.py",
+    "name": "_inverse_three",
+    "calls": 1944,
+    "self": 0.0031063000000000006,
+    "total": 0.0367178
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\shaft_transmission.py",
+    "name": "shaft_gradients",
+    "calls": 2160,
+    "self": 0.016024,
+    "total": 0.036362599999999995
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\differential.py",
+    "name": "<genexpr>",
+    "calls": 25920,
+    "self": 0.010516800000000001,
+    "total": 0.0358564
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_properties.py",
+    "name": "tire_grip",
+    "calls": 115284,
+    "self": 0.034704,
+    "total": 0.034704
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension.py",
+    "name": "contact_gradient",
+    "calls": 8640,
+    "self": 0.021771500000000003,
+    "total": 0.0338668
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.011075000000000002,
+    "total": 0.0337797
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.dot3>",
+    "calls": 179534,
+    "self": 0.03353660000000001,
+    "total": 0.03353660000000001
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.mass_response_prepared>",
+    "calls": 69120,
+    "self": 0.0331573,
+    "total": 0.0331573
+  },
+  {
+    "file": "~",
+    "name": "<built-in method wheel_contact_kernels.box_interval>",
+    "calls": 164579,
+    "self": 0.032805600000000004,
+    "total": 0.032805600000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+    "name": "<genexpr>",
+    "calls": 25920,
+    "self": 0.010826100000000002,
+    "total": 0.0319554
+  },
+  {
+    "file": "~",
+    "name": "<built-in method builtins.hash>",
+    "calls": 26429,
+    "self": 0.0193661,
+    "total": 0.0316948
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "correct_brakes",
+    "calls": 13176,
+    "self": 0.007500000000000001,
+    "total": 0.0312489
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_kinematics.py",
+    "name": "face_extension_difference",
+    "calls": 1814,
+    "self": 0.0165192,
+    "total": 0.0310504
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 103680,
+    "self": 0.0158909,
+    "total": 0.030766800000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 103680,
+    "self": 0.017113399999999997,
+    "total": 0.029884700000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_workers.py",
+    "name": "material_query",
+    "calls": 25920,
+    "self": 0.010343800000000002,
+    "total": 0.029522000000000003
+  },
+  {
+    "file": "~",
+    "name": "<method 'append' of 'list' objects>",
+    "calls": 211955,
+    "self": 0.029118700000000004,
+    "total": 0.029118700000000004
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.cross>",
+    "calls": 125016,
+    "self": 0.0277008,
+    "total": 0.0277008
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 77760,
+    "self": 0.015876,
+    "total": 0.0273766
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\transmission_ports.py",
+    "name": "<genexpr>",
+    "calls": 23328,
+    "self": 0.007948,
+    "total": 0.027092599999999998
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "correct_contacts",
+    "calls": 53,
+    "self": 0.0050528,
+    "total": 0.026788900000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_kinematics.py",
+    "name": "<genexpr>",
+    "calls": 90060,
+    "self": 0.0194572,
+    "total": 0.026604500000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.008422900000000002,
+    "total": 0.026024400000000003
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.project_vector>",
+    "calls": 110160,
+    "self": 0.024491000000000002,
+    "total": 0.024491000000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0068767,
+    "total": 0.0238973
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.wheel_brake_correction>",
+    "calls": 13176,
+    "self": 0.023748900000000007,
+    "total": 0.023748900000000007
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "<genexpr>",
+    "calls": 25920,
+    "self": 0.016924,
+    "total": 0.0233697
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 6480,
+    "self": 0.0059325,
+    "total": 0.0231037
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.wheel_residuals>",
+    "calls": 12222,
+    "self": 0.022566000000000003,
+    "total": 0.022566000000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension.py",
+    "name": "advance_suspension",
+    "calls": 2160,
+    "self": 0.0038548000000000002,
+    "total": 0.021567
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0124571,
+    "total": 0.0215458
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\wheel_geometry.py",
+    "name": "unit",
+    "calls": 8640,
+    "self": 0.012203400000000003,
+    "total": 0.021540800000000002
+  },
+  {
+    "file": "~",
+    "name": "<built-in method wheel_contact_kernels.rotor_frame_geometry>",
+    "calls": 2160,
+    "self": 0.020662600000000003,
+    "total": 0.020662600000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\triangle_support.py",
+    "name": "<genexpr>",
+    "calls": 225216,
+    "self": 0.020519000000000003,
+    "total": 0.020519000000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "contact",
+    "calls": 12456,
+    "self": 0.0063517,
+    "total": 0.0203924
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\rotor_dynamics.py",
+    "name": "bearing_torques",
+    "calls": 2160,
+    "self": 0.0041452,
+    "total": 0.020310400000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 122505,
+    "self": 0.0197825,
+    "total": 0.0197825
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\wheel_geometry.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.0129285,
+    "total": 0.0194681
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\coastal_map.py",
+    "name": "on_road",
+    "calls": 25920,
+    "self": 0.007074800000000001,
+    "total": 0.0191782
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "residual",
+    "calls": 954,
+    "self": 0.0042821000000000005,
+    "total": 0.0187501
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.011724400000000001,
+    "total": 0.018729700000000002
+  },
+  {
+    "file": "~",
+    "name": "<built-in method builtins.getattr>",
+    "calls": 170300,
+    "self": 0.0180279,
+    "total": 0.0180279
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+    "name": "world_deformation",
+    "calls": 8640,
+    "self": 0.011376699999999998,
+    "total": 0.017381800000000006
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+    "name": "applyTorqueImpulse",
+    "calls": 25920,
+    "self": 0.013932100000000001,
+    "total": 0.017024599999999997
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\triangle_support.py",
+    "name": "<genexpr>",
+    "calls": 205512,
+    "self": 0.016611200000000003,
+    "total": 0.016611200000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.006194600000000001,
+    "total": 0.0164208
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\rotor_dynamics.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.010284400000000003,
+    "total": 0.0161652
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\convex_queries.py",
+    "name": "native_transform",
+    "calls": 3762,
+    "self": 0.0088342,
+    "total": 0.0161248
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\driveline_inertia.py",
+    "name": "inertia_projections",
+    "calls": 2160,
+    "self": 0.0078648,
+    "total": 0.0160963
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.009546,
+    "total": 0.0158141
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\linalg\\_linalg.py",
+    "name": "_commonType",
+    "calls": 5230,
+    "self": 0.007541900000000001,
+    "total": 0.0150618
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\triangle_support.py",
+    "name": "<genexpr>",
+    "calls": 205512,
+    "self": 0.0144857,
+    "total": 0.0144857
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0116792,
+    "total": 0.014269
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "velocities",
+    "calls": 8640,
+    "self": 0.008215400000000001,
+    "total": 0.0140817
+  },
+  {
+    "file": "~",
+    "name": "<method 'xform' of 'panda3d.core.LQuaternionf' objects>",
+    "calls": 38880,
+    "self": 0.014043100000000001,
+    "total": 0.014043100000000001
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.wheel_contact_state>",
+    "calls": 12456,
+    "self": 0.014040700000000001,
+    "total": 0.014040700000000001
+  },
+  {
+    "file": "~",
+    "name": "<method 'get' of 'dict' objects>",
+    "calls": 88809,
+    "self": 0.0126464,
+    "total": 0.0126464
+  },
+  {
+    "file": "~",
+    "name": "<method 'update' of 'dict' objects>",
+    "calls": 4262,
+    "self": 0.012393900000000003,
+    "total": 0.012393900000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0042496,
+    "total": 0.0123383
+  },
+  {
+    "file": "~",
+    "name": "<built-in method wheel_contact_kernels.road_strip_contains>",
+    "calls": 25920,
+    "self": 0.012103400000000002,
+    "total": 0.012103400000000002
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.suspension_step>",
+    "calls": 2160,
+    "self": 0.0120852,
+    "total": 0.0120852
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_forces.py",
+    "name": "slip_state",
+    "calls": 8640,
+    "self": 0.0077159,
+    "total": 0.0115501
+  },
+  {
+    "file": "~",
+    "name": "<built-in method numpy.asarray>",
+    "calls": 20920,
+    "self": 0.011257599999999998,
+    "total": 0.011257599999999998
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "spin",
+    "calls": 12222,
+    "self": 0.004926000000000001,
+    "total": 0.010980700000000001
+  },
+  {
+    "file": "~",
+    "name": "<method 'add' of 'set' objects>",
+    "calls": 9075,
+    "self": 0.005837,
+    "total": 0.010870000000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "<genexpr>",
+    "calls": 45328,
+    "self": 0.010246900000000001,
+    "total": 0.010246900000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0064866,
+    "total": 0.010197800000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0063861,
+    "total": 0.009847700000000001
+  },
+  {
+    "file": "~",
+    "name": "<built-in method math.sqrt>",
+    "calls": 58892,
+    "self": 0.009641700000000003,
+    "total": 0.009641700000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+    "name": "applyImpulse",
+    "calls": 8640,
+    "self": 0.0079116,
+    "total": 0.0092356
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0072823,
+    "total": 0.009191800000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\convex_queries.py",
+    "name": "entry",
+    "calls": 1881,
+    "self": 0.000912,
+    "total": 0.0091348
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "<genexpr>",
+    "calls": 8076,
+    "self": 0.006431800000000001,
+    "total": 0.009004700000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_kinematics.py",
+    "name": "<genexpr>",
+    "calls": 72048,
+    "self": 0.008798,
+    "total": 0.008798
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\differential.py",
+    "name": "differential_torques",
+    "calls": 2160,
+    "self": 0.006414800000000001,
+    "total": 0.008742700000000003
+  },
+  {
+    "file": "~",
+    "name": "<built-in method builtins.isinstance>",
+    "calls": 78544,
+    "self": 0.0085432,
+    "total": 0.0085432
+  },
+  {
+    "file": "~",
+    "name": "<built-in method convex_cast_kernels.cast>",
+    "calls": 1881,
+    "self": 0.0082228,
+    "total": 0.0082228
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\triangle_support.py",
+    "name": "<genexpr>",
+    "calls": 68504,
+    "self": 0.008018200000000001,
+    "total": 0.008018200000000001
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.suspension_residuals>",
+    "calls": 12222,
+    "self": 0.0078209,
+    "total": 0.0078209
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_wire.py",
+    "name": "inverse_inertia",
+    "calls": 2160,
+    "self": 0.0074237,
+    "total": 0.0074237
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\triangle_support.py",
+    "name": "<genexpr>",
+    "calls": 68504,
+    "self": 0.007413100000000001,
+    "total": 0.007413100000000001
+  },
+  {
+    "file": "~",
+    "name": "<method 'getCell' of 'panda3d.core.LMatrix3f' objects>",
+    "calls": 38880,
+    "self": 0.007381800000000001,
+    "total": 0.007381800000000001
+  },
+  {
+    "file": "~",
+    "name": "<built-in method _struct.pack>",
+    "calls": 25242,
+    "self": 0.0072597,
+    "total": 0.0072597
+  },
+  {
+    "file": "~",
+    "name": "<built-in method wheel_contact_kernels.triangle_support_coefficients>",
+    "calls": 9001,
+    "self": 0.0071749000000000005,
+    "total": 0.0071749000000000005
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0022741000000000003,
+    "total": 0.007135800000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 43200,
+    "self": 0.007027400000000001,
+    "total": 0.007027400000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\_core\\_ufunc_config.py",
+    "name": "__enter__",
+    "calls": 5230,
+    "self": 0.0034952,
+    "total": 0.006823
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\linalg\\_linalg.py",
+    "name": "_makearray",
+    "calls": 10460,
+    "self": 0.0044878,
+    "total": 0.0068189999999999995
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_workers.py",
+    "name": "_load_geometry",
+    "calls": 2160,
+    "self": 0.0041374,
+    "total": 0.006708400000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "<genexpr>",
+    "calls": 82548,
+    "self": 0.006622400000000001,
+    "total": 0.006622400000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.004057800000000001,
+    "total": 0.0065276
+  },
+  {
+    "file": "~",
+    "name": "<built-in method builtins.abs>",
+    "calls": 60468,
+    "self": 0.006525800000000002,
+    "total": 0.006525800000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+    "name": "energy_terms",
+    "calls": 8640,
+    "self": 0.0025862000000000003,
+    "total": 0.0064386
+  },
+  {
+    "file": "~",
+    "name": "<built-in method math.cos>",
+    "calls": 43932,
+    "self": 0.0064167,
+    "total": 0.0064167
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 21600,
+    "self": 0.005240400000000001,
+    "total": 0.006354900000000001
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.mass_coefficients>",
+    "calls": 6480,
+    "self": 0.0062924,
+    "total": 0.0062924
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+    "name": "synchronizing",
+    "calls": 10800,
+    "self": 0.0046858,
+    "total": 0.0061491
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "<genexpr>",
+    "calls": 25920,
+    "self": 0.0045246,
+    "total": 0.006093100000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.006079000000000001,
+    "total": 0.006079000000000001
+  },
+  {
+    "file": "C:\\Users\\15120\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\dataclasses.py",
+    "name": "_is_dataclass_instance",
+    "calls": 10800,
+    "self": 0.004160500000000001,
+    "total": 0.006069400000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\differential.py",
+    "name": "<genexpr>",
+    "calls": 43200,
+    "self": 0.006067600000000001,
+    "total": 0.006067600000000001
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.rotor_spin_prepared>",
+    "calls": 12222,
+    "self": 0.0060547,
+    "total": 0.0060547
+  },
+  {
+    "file": "~",
+    "name": "<method 'xform' of 'panda3d.core.LMatrix3f' objects>",
+    "calls": 25920,
+    "self": 0.0060293,
+    "total": 0.0060293
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.0060051,
+    "total": 0.0060051
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.005082800000000001,
+    "total": 0.005943200000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\triangle_support.py",
+    "name": "<genexpr>",
+    "calls": 36004,
+    "self": 0.005868900000000001,
+    "total": 0.005868900000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "<genexpr>",
+    "calls": 82548,
+    "self": 0.0057978000000000005,
+    "total": 0.0057978000000000005
+  },
+  {
+    "file": "~",
+    "name": "<built-in method math.sin>",
+    "calls": 42707,
+    "self": 0.0057607000000000005,
+    "total": 0.0057607000000000005
+  },
+  {
+    "file": "<string>",
+    "name": "__hash__",
+    "calls": 4320,
+    "self": 0.0045202,
+    "total": 0.005689800000000001
+  },
+  {
+    "file": "~",
+    "name": "<method 'getRight' of 'panda3d.core.LQuaternionf' objects>",
+    "calls": 10800,
+    "self": 0.0056112,
+    "total": 0.0056112
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\_core\\getlimits.py",
+    "name": "__new__",
+    "calls": 5230,
+    "self": 0.0041524000000000005,
+    "total": 0.005513100000000001
+  },
+  {
+    "file": "~",
+    "name": "<built-in method math.atan2>",
+    "calls": 28533,
+    "self": 0.005389400000000001,
+    "total": 0.005389400000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+    "name": "mechanical_ratio",
+    "calls": 2160,
+    "self": 0.0021056,
+    "total": 0.0053496
+  },
+  {
+    "file": "~",
+    "name": "<method 'getForward' of 'panda3d.core.LQuaternionf' objects>",
+    "calls": 10800,
+    "self": 0.005221900000000001,
+    "total": 0.005221900000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.005196300000000001,
+    "total": 0.005196300000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "<genexpr>",
+    "calls": 16346,
+    "self": 0.005190899999999999,
+    "total": 0.005190899999999999
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\linalg\\_linalg.py",
+    "name": "_realType",
+    "calls": 15690,
+    "self": 0.0032592,
+    "total": 0.0051619
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.0051247,
+    "total": 0.0051247
+  },
+  {
+    "file": "<string>",
+    "name": "__hash__",
+    "calls": 4320,
+    "self": 0.0038101000000000007,
+    "total": 0.005087000000000001
+  },
+  {
+    "file": "<string>",
+    "name": "__hash__",
+    "calls": 9149,
+    "self": 0.0034684000000000004,
+    "total": 0.005069000000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\triangle_support.py",
+    "name": "<genexpr>",
+    "calls": 36004,
+    "self": 0.005053400000000001,
+    "total": 0.005053400000000001
+  },
+  {
+    "file": "~",
+    "name": "<method 'astype' of 'numpy.ndarray' objects>",
+    "calls": 15690,
+    "self": 0.0049047000000000006,
+    "total": 0.0049047000000000006
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.004891400000000001,
+    "total": 0.004891400000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0026845000000000003,
+    "total": 0.004848100000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0031033000000000007,
+    "total": 0.0048418
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_wire.py",
+    "name": "getPos",
+    "calls": 6480,
+    "self": 0.004809800000000001,
+    "total": 0.004809800000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.004660900000000001,
+    "total": 0.004660900000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.0046445,
+    "total": 0.0046445
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "inverse_mass",
+    "calls": 6480,
+    "self": 0.0015118000000000002,
+    "total": 0.004639700000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 43200,
+    "self": 0.0045661,
+    "total": 0.0045661
+  },
+  {
+    "file": "~",
+    "name": "<method 'setHpr' of 'panda3d.core.LQuaternionf' objects>",
+    "calls": 8640,
+    "self": 0.0045658999999999995,
+    "total": 0.0045658999999999995
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "<genexpr>",
+    "calls": 36004,
+    "self": 0.004403,
+    "total": 0.004403
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\linalg\\_linalg.py",
+    "name": "isComplexType",
+    "calls": 15690,
+    "self": 0.003075300000000001,
+    "total": 0.004362700000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0042905,
+    "total": 0.0042905
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\wheel_geometry.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.004225400000000001,
+    "total": 0.004225400000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.0041382,
+    "total": 0.0041382
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "base_inverse_mass",
+    "calls": 4320,
+    "self": 0.0015140000000000004,
+    "total": 0.004029700000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.0039813,
+    "total": 0.0039813
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.003971,
+    "total": 0.003971
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.0039591,
+    "total": 0.0039591
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\shaft_transmission.py",
+    "name": "<genexpr>",
+    "calls": 32400,
+    "self": 0.0039438,
+    "total": 0.0039438
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "<genexpr>",
+    "calls": 32400,
+    "self": 0.003870900000000001,
+    "total": 0.003870900000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 21600,
+    "self": 0.0038616000000000006,
+    "total": 0.0038616000000000006
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.tire_energy_terms>",
+    "calls": 8640,
+    "self": 0.0038524,
+    "total": 0.0038524
+  },
+  {
+    "file": "~",
+    "name": "<method 'cross' of 'panda3d.core.LVector3f' objects>",
+    "calls": 17280,
+    "self": 0.0038417,
+    "total": 0.0038417
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\_core\\_ufunc_config.py",
+    "name": "__exit__",
+    "calls": 5230,
+    "self": 0.0018793,
+    "total": 0.0037856000000000005
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.0037820000000000006,
+    "total": 0.0037820000000000006
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.suspension_elastic_terms>",
+    "calls": 4320,
+    "self": 0.003747,
+    "total": 0.003747
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.0037244,
+    "total": 0.0037244
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.0037153000000000004,
+    "total": 0.0037153000000000004
+  },
+  {
+    "file": "<string>",
+    "name": "__init__",
+    "calls": 8640,
+    "self": 0.0037112000000000004,
+    "total": 0.0037112000000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.003708800000000001,
+    "total": 0.003708800000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+    "name": "applyCentralImpulse",
+    "calls": 2160,
+    "self": 0.0032762000000000004,
+    "total": 0.0036841000000000005
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "<genexpr>",
+    "calls": 32400,
+    "self": 0.0036476000000000004,
+    "total": 0.0036476000000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\driveline_inertia.py",
+    "name": "<genexpr>",
+    "calls": 32400,
+    "self": 0.0036033,
+    "total": 0.0036033
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+    "name": "downstream_active",
+    "calls": 8640,
+    "self": 0.0024176999999999996,
+    "total": 0.003594800000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+    "name": "input_shaft_active",
+    "calls": 25920,
+    "self": 0.0035014000000000004,
+    "total": 0.0035014000000000004
+  },
+  {
+    "file": "~",
+    "name": "<built-in method makePosQuatScale>",
+    "calls": 3762,
+    "self": 0.0034895000000000004,
+    "total": 0.0034895000000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_compliance.py",
+    "name": "<genexpr>",
+    "calls": 34560,
+    "self": 0.0034538000000000004,
+    "total": 0.0034538000000000004
+  },
+  {
+    "file": "~",
+    "name": "<built-in method bit>",
+    "calls": 4852,
+    "self": 0.003431200000000001,
+    "total": 0.003431200000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "<genexpr>",
+    "calls": 27516,
+    "self": 0.0033755,
+    "total": 0.0033755
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 25920,
+    "self": 0.0031853999999999997,
+    "total": 0.0031853999999999997
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0016948000000000002,
+    "total": 0.0031766
+  },
+  {
+    "file": "~",
+    "name": "<built-in method __new__ of type object at 0x00007FF8F9E36D90>",
+    "calls": 6481,
+    "self": 0.0031531000000000003,
+    "total": 0.0031531000000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 32400,
+    "self": 0.0030888,
+    "total": 0.0030888
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_wire.py",
+    "name": "getQuat",
+    "calls": 4320,
+    "self": 0.0030777,
+    "total": 0.0030777
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_kinematics.py",
+    "name": "<genexpr>",
+    "calls": 7256,
+    "self": 0.0017869000000000001,
+    "total": 0.0030295
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.load_coefficients>",
+    "calls": 2160,
+    "self": 0.0029527000000000004,
+    "total": 0.0029527000000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0029405000000000004,
+    "total": 0.0029405000000000004
+  },
+  {
+    "file": "~",
+    "name": "<built-in method numpy.array>",
+    "calls": 5230,
+    "self": 0.0029111,
+    "total": 0.0029111
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0019042000000000004,
+    "total": 0.0028463
+  },
+  {
+    "file": "~",
+    "name": "<method 'extend' of 'list' objects>",
+    "calls": 15148,
+    "self": 0.0027332000000000003,
+    "total": 0.0027332000000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 6480,
+    "self": 0.0027209000000000005,
+    "total": 0.0027209000000000005
+  },
+  {
+    "file": "<string>",
+    "name": "__eq__",
+    "calls": 2160,
+    "self": 0.0025710000000000004,
+    "total": 0.0025710000000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 21600,
+    "self": 0.0025187,
+    "total": 0.0025187
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.rotor_coefficients>",
+    "calls": 2160,
+    "self": 0.0025008000000000005,
+    "total": 0.0025008000000000005
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+    "name": "getLinearVelocity",
+    "calls": 6480,
+    "self": 0.0024698000000000003,
+    "total": 0.0024698000000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_config.py",
+    "name": "drive_weights",
+    "calls": 6480,
+    "self": 0.0023963,
+    "total": 0.0023963
+  },
+  {
+    "file": "~",
+    "name": "<built-in method builtins.issubclass>",
+    "calls": 26151,
+    "self": 0.0023504000000000003,
+    "total": 0.0023504000000000003
+  },
+  {
+    "file": "~",
+    "name": "<method 'setScale' of 'panda3d.core.TransformState' objects>",
+    "calls": 3762,
+    "self": 0.0023454,
+    "total": 0.0023454
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0022999,
+    "total": 0.0022999
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0022817000000000002,
+    "total": 0.0022817000000000002
+  },
+  {
+    "file": "~",
+    "name": "<method 'squeeze' of 'numpy.ndarray' objects>",
+    "calls": 5230,
+    "self": 0.0022312,
+    "total": 0.0022312
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0022213,
+    "total": 0.0022213
+  },
+  {
+    "file": "~",
+    "name": "<method 'normalized' of 'panda3d.core.LVecBase3f' objects>",
+    "calls": 8640,
+    "self": 0.002168,
+    "total": 0.002168
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0021613,
+    "total": 0.0021613
+  },
+  {
+    "file": "~",
+    "name": "<built-in method numpy._core._multiarray_umath._make_extobj>",
+    "calls": 5230,
+    "self": 0.0020871,
+    "total": 0.0020871
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0020492,
+    "total": 0.0020492
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0020403,
+    "total": 0.0020403
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0020236,
+    "total": 0.0020236
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0020145000000000002,
+    "total": 0.0020145000000000002
+  },
+  {
+    "file": "~",
+    "name": "<method 'values' of 'dict' objects>",
+    "calls": 10800,
+    "self": 0.0020136,
+    "total": 0.0020136
+  },
+  {
+    "file": "~",
+    "name": "<method 'cross' of 'panda3d.core.LVecBase3f' objects>",
+    "calls": 8640,
+    "self": 0.0020076,
+    "total": 0.0020076
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0019912000000000003,
+    "total": 0.0019912000000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0019261000000000003,
+    "total": 0.0019261000000000003
+  },
+  {
+    "file": "~",
+    "name": "<built-in method builtins.hasattr>",
+    "calls": 10800,
+    "self": 0.0019089,
+    "total": 0.0019089
+  },
+  {
+    "file": "~",
+    "name": "<method 'reset' of '_contextvars.ContextVar' objects>",
+    "calls": 5230,
+    "self": 0.0019063000000000005,
+    "total": 0.0019063000000000005
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0018951000000000003,
+    "total": 0.0018951000000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0018708000000000002,
+    "total": 0.0018708000000000002
+  },
+  {
+    "file": "~",
+    "name": "<method 'dot' of 'panda3d.core.LVecBase3f' objects>",
+    "calls": 8640,
+    "self": 0.0018404,
+    "total": 0.0018404
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0018190000000000003,
+    "total": 0.0018190000000000003
+  },
+  {
+    "file": "~",
+    "name": "<built-in method wheel_contact_kernels.rotated_path>",
+    "calls": 3628,
+    "self": 0.0017967999999999999,
+    "total": 0.0017967999999999999
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+    "name": "getSuspensionRestLength",
+    "calls": 17280,
+    "self": 0.0017828000000000002,
+    "total": 0.0017828000000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0017672,
+    "total": 0.0017672
+  },
+  {
+    "file": "~",
+    "name": "<method '__array_wrap__' of 'numpy.ndarray' objects>",
+    "calls": 10460,
+    "self": 0.0017660000000000002,
+    "total": 0.0017660000000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0017557000000000002,
+    "total": 0.0017557000000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "<genexpr>",
+    "calls": 13750,
+    "self": 0.0017411000000000002,
+    "total": 0.0017411000000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+    "name": "getAngularVelocity",
+    "calls": 6480,
+    "self": 0.0017385,
+    "total": 0.0017385
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0017103,
+    "total": 0.0017103
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0017052000000000002,
+    "total": 0.0017052000000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_contacts.py",
+    "name": "road_support",
+    "calls": 8640,
+    "self": 0.0017042000000000001,
+    "total": 0.0017042000000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0016932000000000002,
+    "total": 0.0016932000000000002
+  },
+  {
+    "file": "~",
+    "name": "<built-in method builtins.len>",
+    "calls": 10800,
+    "self": 0.0016423,
+    "total": 0.0016423
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_kinematics.py",
+    "name": "<genexpr>",
+    "calls": 7256,
+    "self": 0.0016122999999999999,
+    "total": 0.0016122999999999999
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\shaft_transmission.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0015891000000000002,
+    "total": 0.0015891000000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0015710999999999998,
+    "total": 0.0015710999999999998
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0015709,
+    "total": 0.0015709
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0015468,
+    "total": 0.0015468
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.suspension_coefficients>",
+    "calls": 2160,
+    "self": 0.0015437,
+    "total": 0.0015437
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "<genexpr>",
+    "calls": 4324,
+    "self": 0.0011279,
+    "total": 0.0015385
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0014894,
+    "total": 0.0014894
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0014345,
+    "total": 0.0014345
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 6480,
+    "self": 0.0013859,
+    "total": 0.0013859
+  },
+  {
+    "file": "~",
+    "name": "<built-in method wheel_contact_kernels.cylinder_support>",
+    "calls": 1814,
+    "self": 0.0013624000000000002,
+    "total": 0.0013624000000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_kinematics.py",
+    "name": "<genexpr>",
+    "calls": 7256,
+    "self": 0.0013610999999999999,
+    "total": 0.0013610999999999999
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0013608,
+    "total": 0.0013608
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0013563000000000002,
+    "total": 0.0013563000000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0013534,
+    "total": 0.0013534
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0013475000000000002,
+    "total": 0.0013475000000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_suspension.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0013333,
+    "total": 0.0013333
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\linalg\\_linalg.py",
+    "name": "_assert_2d",
+    "calls": 5230,
+    "self": 0.0013102,
+    "total": 0.0013102
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0013078,
+    "total": 0.0013078
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "<lambda>",
+    "calls": 11332,
+    "self": 0.0012942000000000001,
+    "total": 0.0012942000000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0012738,
+    "total": 0.0012738
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "<genexpr>",
+    "calls": 4324,
+    "self": 0.0009145000000000002,
+    "total": 0.001272
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0012685,
+    "total": 0.0012685
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0012602,
+    "total": 0.0012602
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0012452000000000001,
+    "total": 0.0012452000000000001
+  },
+  {
+    "file": "~",
+    "name": "<method 'set' of '_contextvars.ContextVar' objects>",
+    "calls": 5230,
+    "self": 0.0012406999999999997,
+    "total": 0.0012406999999999997
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\triangle_support.py",
+    "name": "<genexpr>",
+    "calls": 9001,
+    "self": 0.0012304,
+    "total": 0.0012304
+  },
+  {
+    "file": "~",
+    "name": "<built-in method math.radians>",
+    "calls": 8640,
+    "self": 0.0012229000000000003,
+    "total": 0.0012229000000000003
+  },
+  {
+    "file": "~",
+    "name": "<method 'getMat' of 'panda3d.core.TransformState' objects>",
+    "calls": 3762,
+    "self": 0.001209,
+    "total": 0.001209
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\driveline_inertia.py",
+    "name": "rotor_weights",
+    "calls": 2160,
+    "self": 0.0011531,
+    "total": 0.0011531
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0011481000000000002,
+    "total": 0.0011481000000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tires.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0011244,
+    "total": 0.0011244
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.0011047000000000001,
+    "total": 0.0011047000000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "<genexpr>",
+    "calls": 8408,
+    "self": 0.0010826,
+    "total": 0.0010826
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\shaft_transmission.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0010723,
+    "total": 0.0010723
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "<genexpr>",
+    "calls": 8408,
+    "self": 0.0010649000000000001,
+    "total": 0.0010649000000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\shaft_transmission.py",
+    "name": "<genexpr>",
+    "calls": 8640,
+    "self": 0.0010581,
+    "total": 0.0010581
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_workers.py",
+    "name": "isStatic",
+    "calls": 8640,
+    "self": 0.0010462000000000002,
+    "total": 0.0010462000000000002
+  },
+  {
+    "file": "~",
+    "name": "<built-in method math.fsum>",
+    "calls": 3628,
+    "self": 0.0010446000000000003,
+    "total": 0.0010446000000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\driveline_inertia.py",
+    "name": "active_inertias",
+    "calls": 2160,
+    "self": 0.001042,
+    "total": 0.001042
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 10800,
+    "self": 0.001013,
+    "total": 0.001013
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+    "name": "ratio",
+    "calls": 2100,
+    "self": 0.0009556,
+    "total": 0.0009556
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_kinematics.py",
+    "name": "<genexpr>",
+    "calls": 7256,
+    "self": 0.0009435,
+    "total": 0.0009435
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+    "name": "getSteering",
+    "calls": 8640,
+    "self": 0.0009039,
+    "total": 0.0009039
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+    "name": "capacity",
+    "calls": 2160,
+    "self": 0.0008697000000000002,
+    "total": 0.0008697000000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\_core\\_ufunc_config.py",
+    "name": "__init__",
+    "calls": 5230,
+    "self": 0.0008552000000000002,
+    "total": 0.0008552000000000002
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+    "name": "getTransform",
+    "calls": 6480,
+    "self": 0.0008326,
+    "total": 0.0008326
+  },
+  {
+    "file": "~",
+    "name": "<method 'getRow3' of 'panda3d.core.LMatrix4f' objects>",
+    "calls": 3762,
+    "self": 0.0007434000000000001,
+    "total": 0.0007434000000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 3445,
+    "self": 0.0005241,
+    "total": 0.0007277000000000001
+  },
+  {
+    "file": "~",
+    "name": "<method 'getUpper3' of 'panda3d.core.LMatrix4f' objects>",
+    "calls": 3762,
+    "self": 0.0007048,
+    "total": 0.0007048
+  },
+  {
+    "file": "~",
+    "name": "<built-in method builtins.any>",
+    "calls": 2160,
+    "self": 0.0006983000000000001,
+    "total": 0.0006983000000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\linalg\\_linalg.py",
+    "name": "_lstsq_dispatcher",
+    "calls": 5230,
+    "self": 0.0006870000000000001,
+    "total": 0.0006870000000000001
+  },
+  {
+    "file": "~",
+    "name": "<method 'setFromAxisAngleRad' of 'panda3d.core.LQuaternionf' objects>",
+    "calls": 1881,
+    "self": 0.000682,
+    "total": 0.000682
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 5586,
+    "self": 0.0006765,
+    "total": 0.0006765
+  },
+  {
+    "file": "~",
+    "name": "<method 'items' of 'dict' objects>",
+    "calls": 2160,
+    "self": 0.0006435000000000001,
+    "total": 0.0006435000000000001
+  },
+  {
+    "file": "~",
+    "name": "<built-in method wheel_contact_kernels.crown_extent_secant>",
+    "calls": 1814,
+    "self": 0.0006178999999999999,
+    "total": 0.0006178999999999999
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 399,
+    "self": 0.00040930000000000003,
+    "total": 0.0005981000000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+    "name": "__init__",
+    "calls": 2160,
+    "self": 0.0005957,
+    "total": 0.0005957
+  },
+  {
+    "file": "~",
+    "name": "<method 'setFromMatrix' of 'panda3d.core.LQuaternionf' objects>",
+    "calls": 3762,
+    "self": 0.0005234,
+    "total": 0.0005234
+  },
+  {
+    "file": "~",
+    "name": "<method 'getR' of 'panda3d.core.LQuaternionf' objects>",
+    "calls": 3762,
+    "self": 0.00046410000000000006,
+    "total": 0.00046410000000000006
+  },
+  {
+    "file": "~",
+    "name": "<method 'getI' of 'panda3d.core.LQuaternionf' objects>",
+    "calls": 3762,
+    "self": 0.0004449,
+    "total": 0.0004449
+  },
+  {
+    "file": "~",
+    "name": "<method 'getJ' of 'panda3d.core.LQuaternionf' objects>",
+    "calls": 3762,
+    "self": 0.000438,
+    "total": 0.000438
+  },
+  {
+    "file": "~",
+    "name": "<built-in method math.hypot>",
+    "calls": 2305,
+    "self": 0.00043750000000000006,
+    "total": 0.00043750000000000006
+  },
+  {
+    "file": "~",
+    "name": "<method 'getK' of 'panda3d.core.LQuaternionf' objects>",
+    "calls": 3762,
+    "self": 0.0004176,
+    "total": 0.0004176
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<lambda>",
+    "calls": 1908,
+    "self": 0.00029110000000000003,
+    "total": 0.0004016
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 3816,
+    "self": 0.00040100000000000004,
+    "total": 0.00040100000000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\physics_wire.py",
+    "name": "pose",
+    "calls": 2160,
+    "self": 0.0003143,
+    "total": 0.0003143
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 2394,
+    "self": 0.0002953,
+    "total": 0.0002953
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+    "name": "getAngularDamping",
+    "calls": 2160,
+    "self": 0.00024460000000000004,
+    "total": 0.00024460000000000004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\vehicle_tire_step.py",
+    "name": "getInvInertiaTensorWorld",
+    "calls": 2160,
+    "self": 0.0002433,
+    "total": 0.0002433
+  },
+  {
+    "file": "~",
+    "name": "<built-in method mechanical_kernels.solve_lu>",
+    "calls": 57,
+    "self": 0.0002004,
+    "total": 0.0002004
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 265,
+    "self": 9.530000000000001e-05,
+    "total": 0.00014280000000000003
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 399,
+    "self": 7.72e-05,
+    "total": 0.00010960000000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\suspension_contacts.py",
+    "name": "<genexpr>",
+    "calls": 148,
+    "self": 9.37e-05,
+    "total": 0.00010960000000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 399,
+    "self": 7.58e-05,
+    "total": 0.00010350000000000001
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 265,
+    "self": 7.04e-05,
+    "total": 9.410000000000001e-05
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 477,
+    "self": 7.900000000000001e-05,
+    "total": 7.900000000000001e-05
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 399,
+    "self": 7.72e-05,
+    "total": 7.72e-05
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 477,
+    "self": 5.52e-05,
+    "total": 5.52e-05
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 265,
+    "self": 4.04e-05,
+    "total": 4.04e-05
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\tire_drivetrain.py",
+    "name": "<genexpr>",
+    "calls": 399,
+    "self": 4e-05,
+    "total": 4e-05
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src\\powertrain.py",
+    "name": "gear_ratio",
+    "calls": 60,
+    "self": 3.770000000000001e-05,
+    "total": 3.770000000000001e-05
+  },
+  {
+    "file": "~",
+    "name": "<built-in method math.ulp>",
+    "calls": 53,
+    "self": 2.61e-05,
+    "total": 2.61e-05
+  },
+  {
+    "file": "<string>",
+    "name": "__eq__",
+    "calls": 74,
+    "self": 2.23e-05,
+    "total": 2.23e-05
+  },
+  {
+    "file": "~",
+    "name": "<built-in method builtins.id>",
+    "calls": 74,
+    "self": 1.59e-05,
+    "total": 1.59e-05
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\_core\\getlimits.py",
+    "name": "_init",
+    "calls": 1,
+    "self": 3.1000000000000004e-06,
+    "total": 1.3300000000000001e-05
+  },
+  {
+    "file": "~",
+    "name": "<built-in method numpy._core._multiarray_umath._populate_finfo_constants>",
+    "calls": 1,
+    "self": 1.02e-05,
+    "total": 1.02e-05
+  },
+  {
+    "file": "C:\\Users\\15120\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\collections\\__init__.py",
+    "name": "__missing__",
+    "calls": 44,
+    "self": 6.800000000000001e-06,
+    "total": 6.800000000000001e-06
+  },
+  {
+    "file": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\_core\\multiarray.py",
+    "name": "result_type",
+    "calls": 1,
+    "self": 1.0000000000000001e-07,
+    "total": 1.0000000000000001e-07
+  }
+]

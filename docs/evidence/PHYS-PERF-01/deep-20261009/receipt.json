@@ -1,0 +1,32 @@
+{
+  "baseline": "9bcad620451cda6c6892f34bb0a4fa1596c84452",
+  "real_time_120_hz_passed": false,
+  "retained": [
+    "完整海岸道路资格和最近点原生有序遍历",
+    "原生候选窗口复用原三角面数据",
+    "真实物理基准及源码选择/生成器计时核对"
+  ],
+  "rejected": {
+    "contact_packet": "ABBA约0.9%，尾部无改善",
+    "p_core_affinity": "15.06ms，比默认约14.1ms慢",
+    "larger_prefetch": "没有明确收益，已撤销",
+    "shared_candidate_dictionary": "没有明确收益，已撤销",
+    "cython_generic": "15.98ms，1200拍快照相同但更慢",
+    "cython_inference": "15.66ms，未整合",
+    "hybrid_master": "无窗口12.51ms，但真实前台无改善；未整合",
+    "stable_ownership": "独立ABBA约1.9%，新增协议/归属复杂度不值得，已撤销"
+  },
+  "failed_attempts": [
+    "首个计时包装使用了不存在的_observe_contacts，未进入测量",
+    "首个冻结源码对照未固定资源根，导入车辆JSON失败",
+    "编译实验首轮重复长绝对路径超出MSVC输出能力，未建成",
+    "编译r3重复使用旧生成文件，仅是重复构建；r4明确重新生成后测量",
+    "旧benchmark_runtime的--source被耐久工具插入路径和Windows spawn覆盖；修复前窗口样本不用于A/B",
+    "新源码守卫首轮延迟导入physics_workers产生KeyError；其后守卫正确拒绝错误源码；r3后又补子进程核对",
+    "计时T0首轮仅Ruff排序失败，pytest未跑；r2两项通过"
+  ],
+  "local_experiment_root": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\deep-20261009",
+  "t2": "待执行",
+  "t3": "未执行，实时/阶段Gate未通过",
+  "manual": "用户实际驾驶结论待确认"
+}
