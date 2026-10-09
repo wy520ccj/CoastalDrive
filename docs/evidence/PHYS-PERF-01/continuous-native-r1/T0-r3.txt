@@ -1,0 +1,4 @@
+..                                                                       [100%]
+2 passed in 0.09s
+ACTUAL_CONTINUOUS_NATIVE_CALLS 4
+NATIVE_BINARY B:\AI agent\���ڼ�����������\CoastalDrive\logs\performance\native-r1\candidate\mechanical_kernels.cp314-win_amd64.pyd

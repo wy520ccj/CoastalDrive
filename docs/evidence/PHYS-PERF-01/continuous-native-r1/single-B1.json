@@ -1,0 +1,58 @@
+{
+  "kind": "完整真实数值子步，独立于IPC；不能证明完整物理步或前台120Hz",
+  "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\candidate",
+  "modules": {
+    "physics_workers": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\candidate\\physics_workers.py",
+      "sha256": "94e48b0e651d63a53ad141d2653380cc30003de1e5612018cc838b00c7ca845a"
+    },
+    "physics_wire": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\candidate\\physics_wire.py",
+      "sha256": "a76a62c335944bad889b8980818d45ec471ada02018d1dced0d10d6f1dc93ffc"
+    },
+    "vehicle_tire_step": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\candidate\\vehicle_tire_step.py",
+      "sha256": "bbcb9d0b37e8f05ebe4c86c322f7ad256853ca24639e5c50054f63b2df9dac0b"
+    },
+    "tire_drivetrain": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\candidate\\tire_drivetrain.py",
+      "sha256": "4d305a6b3369a4256efa56fa1d40e7a7cec79f98b1e71151ccfbbdb60a810055"
+    },
+    "vehicle_tires": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\candidate\\vehicle_tires.py",
+      "sha256": "ac57679657322ef7985bd9438a8b7c9ca2ca3f14971e94da7c6d817376753708"
+    },
+    "suspension_kinematics": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\candidate\\suspension_kinematics.py",
+      "sha256": "21b4e03ec5b94ca08963be73b57b8c6452cb1eec8f52e22c36be9e2dcf146b90"
+    },
+    "mechanical_kernels": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\candidate\\mechanical_kernels.cp314-win_amd64.pyd",
+      "sha256": "2c1f4f68a54c38aafa9ad53182db9445ebdd80eea8ab6d16f679027a55816f2a"
+    },
+    "wheel_contact_kernels": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\candidate\\wheel_contact_kernels.cp314-win_amd64.pyd",
+      "sha256": "2953376903b425e2641f101bcec2efa8d6a1a8f7e9eb6142804c4e283f871510"
+    }
+  },
+  "inputs": 26,
+  "warmup_rounds": 8,
+  "measured_rounds": 120,
+  "complete_vehicle_substep": {
+    "count": 3120,
+    "mean_ms": 1.4005210897150204,
+    "p95_ms": 1.612754998132004,
+    "p99_ms": 1.7260530010753428,
+    "max_ms": 2.2776000005251262,
+    "total_seconds": 4.369625799910864
+  },
+  "quantized_process_cpu_seconds": 4.390625,
+  "all_results_byte_exact": true,
+  "mismatches": [],
+  "physics_world_created": false,
+  "original_results_used_only_for_validation": true,
+  "timing_excludes_wire_encoding_and_validation": true,
+  "profile_is_separate_from_timing": true,
+  "checked_modules_unchanged": true,
+  "passed": true
+}

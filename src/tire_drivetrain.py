@@ -1,11 +1,14 @@
 """四轮接触、曲轴/输入轴、有限离合与制动的共同末状态。"""
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+from functools import lru_cache
 from struct import pack
 
 from mechanical_kernels import (
     dot,
+    joint_solve,
+    joint_workspace,
     known_state,
     load_coefficients,
     loaded_wheel_force_solution,
@@ -28,6 +31,7 @@ from mechanical_kernels import (
     wheel_map_state,
     wheel_residuals,
 )
+from wheel_contact_kernels import joint_contact_prepare, joint_surface_prepare
 
 from differential import (
     differential_branches,
@@ -121,6 +125,47 @@ class DrivetrainStep:
     suspension: SuspensionStep | None = None
     normal_residual: float = 0.
     suspension_system: SuspensionInput | None = None
+
+
+@lru_cache(maxsize=32)
+def native_joint_workspace(config):
+    """每进程顺序求解复用工作区；当子步状态在原生入口完整重置。"""
+    return joint_workspace()
+
+
+def native_contact_geometry(system):
+    """准备当前实际几何；覆盖盒外继续原生查询完整分区，不回调Python求解。"""
+    from panda3d.core import BitMask32
+
+    import physics_workers
+    from suspension_contacts import StaticSupportShapes, static_support_shapes
+    from vehicle_suspension import WorldSurface
+
+    complete = []
+    direct_shapes = None
+    for plane in system.kinematics:
+        if plane is None:
+            complete.append(None)
+            continue
+        shapes = (plane.surface.static_shapes if isinstance(plane.surface, WorldSurface)
+                  else physics_workers._worker_geometry)
+        if shapes is None:
+            # 保存的单车接点可以只有唯一世界引用，实际几何仍在迭代前统一读取。
+            if direct_shapes is None:
+                direct_shapes = StaticSupportShapes(static_support_shapes(
+                    plane.surface.world, plane.surface.chassis, BitMask32.bit(0)))
+            shapes = direct_shapes
+        if isinstance(shapes, StaticSupportShapes):
+            if not shapes.joint_supported:
+                return None  # 原路径执行真实Bullet凸体扫掠，不能丢掉其候选。
+            if shapes.joint_surfaces is None:
+                shapes.joint_surfaces = joint_surface_prepare(shapes)
+            complete.append(shapes.joint_surfaces)
+        else:
+            if not all(supported for _body, supported, _parts in shapes):
+                return None
+            complete.append(joint_surface_prepare(shapes))
+    return joint_contact_prepare(system.kinematics, system.angular_damping, tuple(complete))
 
 
 def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformations,
@@ -722,68 +767,92 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         suspension, normal_forces = original_system, original_forces
         normal_projection()
 
-    state = initial
-    normal_error = 0.
-    geometry_error = 0.
-    normal_tolerance = 1e-10
-    for sweep in range(20):
-        state, end_velocity, clutch, loss, gear_reaction = shared(state)
-        if suspension is not None:
-            suspension = contact_system(end_velocity, state[:3])
-            normal_projection()
-            normal_forces = normal_load_solution(end_velocity, state[:3],
-                                                mobility=normal_mobility, forces=normal_forces)
-            normal_loads()
-            state, end_velocity, clutch, loss, gear_reaction = shared(state)
-        gyro = cross(spin(state), state[:3])
-        for i in (range(4) if sweep % 2 == 0 else range(3, -1, -1)):
-            forces[i], modes[i] = solve_wheel(i, gyro)
-
-
-        state, end_velocity, clutch, loss, gear_reaction = shared(state)
-        if shaft:
-            correct_brakes(state)
-            state, end_velocity, clutch, loss, gear_reaction = shared(state)
-        if suspension is not None:
-            # 接触块之后用实际末速度刷新硬件反力，再同步机械速度。
-            # 预条件块的力与直接本构式可能相差一个舍入位，不能把它留作收敛残差。
-            normal_forces = normal_load_solution(end_velocity, state[:3])
-            normal_loads()
-            state, end_velocity, clutch, loss, gear_reaction = shared(state)
-        if shaft:
-            maximum, brake_error = wheel_residuals(wheel_map, state, end_velocity, forces, modes,
-                deformations, contact_parameters, tire_hardware, rolling, moments_x, moments_y,
-                tire_compliance, None)
-        else:
-            maximum, brake_error = 0., 0.
-            for i in range(4):
-                fx, fy, brake = forces[i]
-                if modes[i] == "sticking":
-                    _vx, _vy, slip = velocities(i, state, end_velocity)
-                    error = math.hypot(slip[0] / (dt * (1 / mass + dot(longitudinal[i], responses[i][0]))),
-                                       slip[1] / (dt * (1 / mass + dot(lateral[i], responses[i][1]))))
-                else:
-                    target, _details = contact(i, state, end_velocity, fx, fy)
-                    error = math.hypot(fx - target[0], fy - target[1])
-                maximum = max(maximum, error)
-                target_brake = max(-brakes[i], min(brakes[i], brake + dot(brake_gradients[i], state)
-                                   / (dt * dot(brake_gradients[i], responses[i][2]))))
-                brake_error = max(brake_error, abs(brake - target_brake))
-        if suspension is not None:
-            target_forces = normal_load_solution(end_velocity, state[:3])
-            target_system = contact_system(end_velocity, state[:3])
-            normal_error, geometry_error = suspension_residuals(normal_forces, target_forces,
-                suspension.gradients, target_system.gradients, dt)
-        if maximum < .001 and brake_error < 1e-9 and normal_error < normal_tolerance and geometry_error < 1e-12:
-            break
-        # 接触误差已小于力门槛时，仍会推动末姿态；几何未收敛也需联立细化接触力。
-        if shaft and sweep >= 8 and (maximum >= .001 or geometry_error >= 1e-12):
-            correct_contacts(state)
-        if suspension is not None and sweep >= 8 and maximum < .001 and (normal_error >= normal_tolerance or geometry_error >= 1e-12):
-            correct_suspension(state, end_velocity)
+    native = (shaft and all(tire_compliance) and suspension is not None
+              and suspension.kinematics is not None
+              and all(plane is None or type(plane.surface).__name__ in ('WorldSurface', 'FrozenWorldSurface')
+                      for plane in suspension.kinematics))
+    geometry = native_contact_geometry(suspension) if native else None
+    if geometry is not None:
+        laws = tuple((frame.mu, car.mass, car.tire_peak_load_exponent,
+                      car.longitudinal_stiffness, car.longitudinal_load_exponent,
+                      car.lateral_stiffness, car.lateral_load_exponent)
+                     for frame, car in zip(frames, configurations))
+        (state, end_velocity, clutch, loss, gear_reaction, native_forces, native_modes,
+         normal_forces, native_gradients, alignment, touching, wheel_loads, contact_parameters,
+         shared_branch, shared_port_index, road_torques, active_limits, bias_ports, sweeps,
+         normal_error, geometry_error, maximum, brake_error) = joint_solve(
+            native_joint_workspace(config), wheel_map, normal_coefficients, geometry,
+            (initial, velocity, tuple(forces), deformations, moments_x, moments_y,
+             rolling, wheel_supported, wheel_loads, tire_hardware, laws,
+             suspension.gradients, suspension.touching,
+             tuple(0. if value is None else value for value in suspension.alignment)))
+        forces[:] = native_forces
+        modes[:] = native_modes
+        suspension = replace(suspension, gradients=native_gradients,
+            alignment=alignment, touching=touching)
+        sweep = sweeps - 1
     else:
-        raise ArithmeticError(f"传动/四轮共同求解超过20轮：{maximum:g}N，制动{brake_error:g}Nm，法向{normal_error:g}N，几何共轭冲量{geometry_error:g}Ns/Nms")
+        state = initial
+        normal_error = 0.
+        geometry_error = 0.
+        normal_tolerance = 1e-10
+        for sweep in range(20):
+            state, end_velocity, clutch, loss, gear_reaction = shared(state)
+            if suspension is not None:
+                suspension = contact_system(end_velocity, state[:3])
+                normal_projection()
+                normal_forces = normal_load_solution(end_velocity, state[:3],
+                                                    mobility=normal_mobility, forces=normal_forces)
+                normal_loads()
+                state, end_velocity, clutch, loss, gear_reaction = shared(state)
+            gyro = cross(spin(state), state[:3])
+            for i in (range(4) if sweep % 2 == 0 else range(3, -1, -1)):
+                forces[i], modes[i] = solve_wheel(i, gyro)
 
+
+            state, end_velocity, clutch, loss, gear_reaction = shared(state)
+            if shaft:
+                correct_brakes(state)
+                state, end_velocity, clutch, loss, gear_reaction = shared(state)
+            if suspension is not None:
+                # 接触块之后用实际末速度刷新硬件反力，再同步机械速度。
+                # 预条件块的力与直接本构式可能相差一个舍入位，不能把它留作收敛残差。
+                normal_forces = normal_load_solution(end_velocity, state[:3])
+                normal_loads()
+                state, end_velocity, clutch, loss, gear_reaction = shared(state)
+            if shaft:
+                maximum, brake_error = wheel_residuals(wheel_map, state, end_velocity, forces, modes,
+                    deformations, contact_parameters, tire_hardware, rolling, moments_x, moments_y,
+                    tire_compliance, None)
+            else:
+                maximum, brake_error = 0., 0.
+                for i in range(4):
+                    fx, fy, brake = forces[i]
+                    if modes[i] == "sticking":
+                        _vx, _vy, slip = velocities(i, state, end_velocity)
+                        error = math.hypot(slip[0] / (dt * (1 / mass + dot(longitudinal[i], responses[i][0]))),
+                                           slip[1] / (dt * (1 / mass + dot(lateral[i], responses[i][1]))))
+                    else:
+                        target, _details = contact(i, state, end_velocity, fx, fy)
+                        error = math.hypot(fx - target[0], fy - target[1])
+                    maximum = max(maximum, error)
+                    target_brake = max(-brakes[i], min(brakes[i], brake + dot(brake_gradients[i], state)
+                                       / (dt * dot(brake_gradients[i], responses[i][2]))))
+                    brake_error = max(brake_error, abs(brake - target_brake))
+            if suspension is not None:
+                target_forces = normal_load_solution(end_velocity, state[:3])
+                target_system = contact_system(end_velocity, state[:3])
+                normal_error, geometry_error = suspension_residuals(normal_forces, target_forces,
+                    suspension.gradients, target_system.gradients, dt)
+            if maximum < .001 and brake_error < 1e-9 and normal_error < normal_tolerance and geometry_error < 1e-12:
+                break
+            # 接触误差已小于力门槛时，仍会推动末姿态；几何未收敛也需联立细化接触力。
+            if shaft and sweep >= 8 and (maximum >= .001 or geometry_error >= 1e-12):
+                correct_contacts(state)
+            if suspension is not None and sweep >= 8 and maximum < .001 and (normal_error >= normal_tolerance or geometry_error >= 1e-12):
+                correct_suspension(state, end_velocity)
+        else:
+            raise ArithmeticError(f"传动/四轮共同求解超过20轮：{maximum:g}N，制动{brake_error:g}Nm，法向{normal_error:g}N，几何共轭冲量{geometry_error:g}Ns/Nms")
     normal_step = shared_suspension(suspension, end_velocity, state[:3], dt) if suspension is not None else None
     gyro_torques = bearing_torques(axes, state[wheel_start:], wheel_inertia, state[:3]) if rotor else ((0., 0., 0.),) * 4
     wheels = []

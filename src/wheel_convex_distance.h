@@ -62,6 +62,31 @@ static int wheel_coordinates(WheelConvex *shape, double columns[3][3], int count
             return !PyErr_Occurred();
         }
     }
+    /* 连续内核直接求小型SVD；原独立入口仍保留原NumPy边界。 */
+    if(shape->coordinates==Py_None) {
+        double matrix[3][3],rotation[3][3]={{0.}},squared[3];
+        for(int i=0;i<count;++i){rotation[i][i]=1.;for(int a=0;a<3;++a)matrix[i][a]=columns[i][a];}
+        for(int sweep=0;sweep<40;++sweep) {
+            int changed=0;
+            for(int i=0;i<count;++i)for(int j=i+1;j<count;++j) {
+                double aa=exact_dot(matrix[i],matrix[i]),bb=exact_dot(matrix[j],matrix[j]),ab=exact_dot(matrix[i],matrix[j]);
+                if(ab==0.||fabs(ab)<=2.220446049250313e-16*sqrt(aa)*sqrt(bb))continue;
+                double tau=(bb-aa)/(2*ab),t=copysign(1.,tau)/(fabs(tau)+hypot(1.,tau)),c=1/sqrt(1+t*t),d=c*t;
+                for(int a=0;a<3;++a){double x=matrix[i][a],y=matrix[j][a];matrix[i][a]=c*x-d*y;matrix[j][a]=d*x+c*y;}
+                for(int a=0;a<count;++a){double x=rotation[i][a],y=rotation[j][a];rotation[i][a]=c*x-d*y;rotation[j][a]=d*x+c*y;}
+                changed=1;
+            }
+            if(!changed)break;
+        }
+        double largest=0.;
+        for(int i=0;i<count;++i){squared[i]=exact_dot(matrix[i],matrix[i]);if(squared[i]>largest)largest=squared[i];values[i]=0.;}
+        double threshold=pow(3*2.220446049250313e-16,2.)*largest;*rank=0;
+        for(int i=0;i<count;++i)if(squared[i]>threshold) {
+            ++*rank;double projection=exact_dot(matrix[i],rhs)/squared[i];
+            for(int a=0;a<count;++a)values[a]+=rotation[i][a]*projection;
+        }
+        return 1;
+    }
     PyObject *matrix=PyTuple_New(count);
     if (!matrix) return 0;
     for (int i=0;i<count;++i) {

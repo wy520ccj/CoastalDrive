@@ -1912,7 +1912,71 @@ static PyObject *road_strip_project(PyObject *self,PyObject *args) {
     return Py_BuildValue("(ndd)",index,fraction,best);
 }
 
+static int joint_surface_values(SurfacePacket *packet,double start[3],double end[3],double axis[3],double origin[3],
+    double radius,double width,double shoulder,double crown,SurfaceEntry *result) {
+    PyObject *coordinates=Py_None;
+    SurfaceEntry best={0}; double ceiling=INFINITY,zero[3]={0.};
+    for (Py_ssize_t k=0;k<packet->count;++k) {
+        SurfacePart *part=&packet->parts[k]; SurfaceEntry hit={0};
+        double offset[3],local_start[3],local_end[3],local_axis[3],terms[3];
+        for (int a=0;a<3;++a) {
+            for (int b=0;b<3;++b) terms[b]=part->axes[a][b]*origin[b];
+            offset[a]=part->translation[a]+sum_three(terms);
+        }
+        transform_values(start,part->axes,offset,0,local_start);
+        transform_values(end,part->axes,offset,0,local_end);
+        transform_values(axis,part->axes,zero,0,local_axis);
+        if (part->kind==2) {
+            double padding[3];
+            for (int a=0;a<3;++a) {
+                double direction[3]={0.},support[3]; direction[a]=1.;
+                if (!support_values(direction,local_axis,radius,width/2,shoulder,crown,support)) return 0;
+                padding[a]=support[a]+part->margin;
+            }
+            if (!triangle_query_values(part->triangles,local_start,local_end,padding,part->margin,local_axis,
+                radius,width,shoulder,crown,coordinates,&hit)) return 0;
+        } else if (part->kind==0) {
+            double extent[3];
+            if (!support_values(part->normal,local_axis,radius,width/2,shoulder,crown,extent)) return 0;
+            for (int a=0;a<3;++a) terms[a]=part->normal[a]*(local_start[a]-extent[a]);
+            double distance=sum_three(terms)-part->constant;
+            for (int a=0;a<3;++a) terms[a]=part->normal[a]*(local_end[a]-local_start[a]);
+            double speed=sum_three(terms);
+            if (speed<0. && distance>=0. && distance+speed<=0.) {
+                hit.found=hit.face=1; hit.fraction=-distance/speed; hit.margin=0.;
+                for (int a=0;a<3;++a) terms[a]=part->normal[a]*part->normal[a];
+                double squared=sum_three(terms);
+                for (int a=0;a<3;++a) {
+                    hit.normal[a]=part->normal[a];
+                    hit.point[a]=local_start[a]+hit.fraction*(local_end[a]-local_start[a])-extent[a];
+                    hit.anchor[a]=part->constant*part->normal[a]/squared;
+                }
+            }
+        } else {
+            if (!cylinder_box_values(local_start,local_end,part->half,part->margin,local_axis,
+                radius,width/2,shoulder,crown,coordinates,&hit)) return 0;
+        }
+        if (!hit.found || hit.fraction>=ceiling) continue;
+        SurfaceEntry world=hit; double translated[3];
+        transform_values(hit.normal,part->axes,zero,1,world.normal);
+        for (int a=0;a<3;++a) translated[a]=hit.point[a]-offset[a];
+        transform_values(translated,part->axes,zero,1,world.point);
+        if (hit.face) {
+            for (int a=0;a<3;++a) translated[a]=hit.anchor[a]-offset[a];
+            transform_values(translated,part->axes,zero,1,world.anchor);
+        }
+        best=world; ceiling=hit.fraction;
+    }
+    *result=best; return 1;
+}
+
+
+#include "joint_contact_impl.h"
+
 static PyMethodDef methods[] = {
+    {"joint_contact_prepare",joint_contact_prepare,METH_VARARGS,"连续共同求解的真实有限接点准备"},
+    {"joint_surface_prepare",joint_surface_prepare,METH_VARARGS,"覆盖盒外真实几何的持久原生查询包"},
+    {"_joint_coordinates",joint_coordinates_probe,METH_VARARGS,"连续有限几何的小型SVD验证入口"},
     {"road_strip_coefficients", (PyCFunction)road_strip_coefficients, METH_VARARGS, "固定道路原折线系数"},
     {"road_strip_contains", (PyCFunction)road_strip_contains, METH_VARARGS, "原顺序道路材料资格"},
     {"road_strip_project", (PyCFunction)road_strip_project, METH_VARARGS, "完整折线最近投影"},
@@ -1945,4 +2009,9 @@ static PyMethodDef methods[] = {
     {NULL,NULL,0,NULL}
 };
 static struct PyModuleDef module = {PyModuleDef_HEAD_INIT, "wheel_contact_kernels", NULL, -1, methods};
-PyMODINIT_FUNC PyInit_wheel_contact_kernels(void) { return PyModule_Create(&module); }
+PyMODINIT_FUNC PyInit_wheel_contact_kernels(void) {
+    PyObject *result=PyModule_Create(&module); if(!result)return NULL;
+    PyObject *api=PyCapsule_New(&joint_contact_api,JOINT_CONTACT_API_NAME,NULL);
+    if(!api || PyModule_AddObject(result,"_joint_contact_api",api)<0){Py_XDECREF(api);Py_DECREF(result);return NULL;}
+    return result;
+}

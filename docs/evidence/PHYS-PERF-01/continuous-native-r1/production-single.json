@@ -1,0 +1,58 @@
+{
+  "kind": "完整真实数值子步，独立于IPC；不能证明完整物理步或前台120Hz",
+  "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src",
+  "modules": {
+    "physics_workers": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\physics_workers.py",
+      "sha256": "94e48b0e651d63a53ad141d2653380cc30003de1e5612018cc838b00c7ca845a"
+    },
+    "physics_wire": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\physics_wire.py",
+      "sha256": "a76a62c335944bad889b8980818d45ec471ada02018d1dced0d10d6f1dc93ffc"
+    },
+    "vehicle_tire_step": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tire_step.py",
+      "sha256": "bbcb9d0b37e8f05ebe4c86c322f7ad256853ca24639e5c50054f63b2df9dac0b"
+    },
+    "tire_drivetrain": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\tire_drivetrain.py",
+      "sha256": "0c38565c882497e0604788d3952f8f55bbe4defb61c8266064c0061fe95529cf"
+    },
+    "vehicle_tires": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tires.py",
+      "sha256": "ac57679657322ef7985bd9438a8b7c9ca2ca3f14971e94da7c6d817376753708"
+    },
+    "suspension_kinematics": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\suspension_kinematics.py",
+      "sha256": "21b4e03ec5b94ca08963be73b57b8c6452cb1eec8f52e22c36be9e2dcf146b90"
+    },
+    "mechanical_kernels": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\mechanical_kernels.cp314-win_amd64.pyd",
+      "sha256": "595648663d5464e4a4bdb1675df8eeb79878c9f7e3a0d183150288db15e1f4cb"
+    },
+    "wheel_contact_kernels": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\wheel_contact_kernels.cp314-win_amd64.pyd",
+      "sha256": "bdec63662ad02a23e6bc6a825ba78327151352aa3363f444e4fcb1c9129994c1"
+    }
+  },
+  "inputs": 26,
+  "warmup_rounds": 8,
+  "measured_rounds": 120,
+  "complete_vehicle_substep": {
+    "count": 3120,
+    "mean_ms": 1.387446121762901,
+    "p95_ms": 1.673549999213719,
+    "p99_ms": 2.0506260021284097,
+    "max_ms": 2.8894999995827675,
+    "total_seconds": 4.328831899900251
+  },
+  "quantized_process_cpu_seconds": 4.234375,
+  "all_results_byte_exact": true,
+  "mismatches": [],
+  "physics_world_created": false,
+  "original_results_used_only_for_validation": true,
+  "timing_excludes_wire_encoding_and_validation": true,
+  "profile_is_separate_from_timing": true,
+  "checked_modules_unchanged": true,
+  "passed": true
+}

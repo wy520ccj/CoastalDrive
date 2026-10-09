@@ -1,0 +1,70 @@
+........................................................................ [ 15%]
+........................................................................ [ 31%]
+........................................................................ [ 47%]
+........................................................................ [ 63%]
+........................................................................ [ 79%]
+........................................................................ [ 95%]
+..................F                                                      [100%]
+================================== FAILURES ===================================
+______ test_saved_four_wheel_substep_keeps_support_and_vertical_momentum ______
+
+    def test_saved_four_wheel_substep_keeps_support_and_vertical_momentum():
+        record = tuples(json.loads((DATA / 'input.json').read_text(encoding='utf-8')))
+        config = load_vehicle_config(DATA / 'config.json', CAR)
+        rear = load_vehicle_config(DATA / 'rear-config.json', CAR)
+        sim = Simulation(record['seed'], track='highway', traffic_count=0)
+        try:
+            pose = record['solver_chassis']
+            sim.player._chassis.setTransform(TransformState.makePosQuatScale(
+                Vec3(*pose['position']), Quat(*pose['orientation']), Vec3(1)))
+            planes = []
+            for values in record['planes']:
+                surface = WorldSurface(**values.pop('surface'), world=sim._world, chassis=sim.player._chassis,
+                                       envelope=sim.player.suspension.envelope)
+                planes.append(SupportPlane(**values, surface=surface))
+            system = SuspensionInput(**record['suspension'], config=config, kinematics=tuple(planes))
+            arguments = record['arguments']
+            frames = []
+            for values in arguments.pop('frames'):
+                values['mobility'] = Mobility(**values['mobility'])
+                frames.append(ContactFrame(**values))
+>           result = advance_drivetrain(**arguments, frames=tuple(frames), config=config, rear_config=rear, suspension=system)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_suspension_candidates.py:67:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\tire_drivetrain.py:765: in advance_drivetrain
+    geometry = native_contact_geometry(suspension) if native else None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+system = SuspensionInput(compression=(0.0667192904396336, 0.06672447610678339, 0.05588100767509824, 0.05588616353956327), geome...2862940>), point=(0.8400042947743014, -1.1004493030445701, -0.4186961855739355))), angular_damping=0.20000000298023224)
+
+    def native_contact_geometry(system):
+        """准备当前实际几何；覆盖盒外继续原生查询完整分区，不回调Python求解。"""
+        import physics_workers
+        from suspension_contacts import StaticSupportShapes
+        from vehicle_suspension import WorldSurface
+
+        complete = []
+        for plane in system.kinematics:
+            if plane is None:
+                complete.append(None)
+                continue
+            shapes = (plane.surface.static_shapes if isinstance(plane.surface, WorldSurface)
+                      else physics_workers._worker_geometry)
+            if isinstance(shapes, StaticSupportShapes):
+                if not shapes.joint_supported:
+                    return None  # 原路径执行真实Bullet凸体扫掠，不能丢掉其候选。
+                if shapes.joint_surfaces is None:
+                    shapes.joint_surfaces = joint_surface_prepare(shapes)
+                complete.append(shapes.joint_surfaces)
+            else:
+>               if not all(supported for _body, supported, _parts in shapes):
+                                                                     ^^^^^^
+E               TypeError: 'NoneType' object is not iterable
+
+src\tire_drivetrain.py:156: TypeError
+=========================== short test summary info ===========================
+FAILED tests/test_suspension_candidates.py::test_saved_four_wheel_substep_keeps_support_and_vertical_momentum
+1 failed, 450 passed in 23.93s

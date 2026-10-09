@@ -42,6 +42,8 @@ class StaticSupportShapes(tuple):
     def __new__(cls, groups):
         value = super().__new__(cls, groups)
         value.native = support_coefficients(tuple(groups))
+        value.joint_surfaces = None
+        value.joint_supported = all(supported for _body, supported, _parts in groups)
         value.hulls = {}
         value.hull_parts = {}
         return value

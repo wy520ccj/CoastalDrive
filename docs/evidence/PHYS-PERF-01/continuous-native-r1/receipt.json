@@ -1,0 +1,908 @@
+{
+  "baseline": "d3d056904276d425c747a10b130192aea785c7a9",
+  "branch": "main",
+  "single": {
+    "single-A1": {
+      "inputs": 26,
+      "measured_rounds": 120,
+      "complete_vehicle_substep": {
+        "count": 3120,
+        "mean_ms": 1.875983621806508,
+        "p95_ms": 2.4387200004639444,
+        "p99_ms": 4.017943999024283,
+        "max_ms": 5.793200001789955,
+        "total_seconds": 5.853068900036305
+      },
+      "all_results_byte_exact": true,
+      "checked_modules_unchanged": true
+    },
+    "single-B1": {
+      "inputs": 26,
+      "measured_rounds": 120,
+      "complete_vehicle_substep": {
+        "count": 3120,
+        "mean_ms": 1.4005210897150204,
+        "p95_ms": 1.612754998132004,
+        "p99_ms": 1.7260530010753428,
+        "max_ms": 2.2776000005251262,
+        "total_seconds": 4.369625799910864
+      },
+      "all_results_byte_exact": true,
+      "checked_modules_unchanged": true
+    },
+    "single-B2": {
+      "inputs": 26,
+      "measured_rounds": 120,
+      "complete_vehicle_substep": {
+        "count": 3120,
+        "mean_ms": 1.4029245513122592,
+        "p95_ms": 1.615420000416634,
+        "p99_ms": 1.794924000205355,
+        "max_ms": 2.487400000973139,
+        "total_seconds": 4.377124600094248
+      },
+      "all_results_byte_exact": true,
+      "checked_modules_unchanged": true
+    },
+    "single-A2": {
+      "inputs": 26,
+      "measured_rounds": 120,
+      "complete_vehicle_substep": {
+        "count": 3120,
+        "mean_ms": 1.788452211558951,
+        "p95_ms": 2.264435000324737,
+        "p99_ms": 3.893076999993354,
+        "max_ms": 5.598700001428369,
+        "total_seconds": 5.579970900063927
+      },
+      "all_results_byte_exact": true,
+      "checked_modules_unchanged": true
+    },
+    "production-single": {
+      "inputs": 26,
+      "measured_rounds": 120,
+      "complete_vehicle_substep": {
+        "count": 3120,
+        "mean_ms": 1.387446121762901,
+        "p95_ms": 1.673549999213719,
+        "p99_ms": 2.0506260021284097,
+        "max_ms": 2.8894999995827675,
+        "total_seconds": 4.328831899900251
+      },
+      "all_results_byte_exact": true,
+      "checked_modules_unchanged": true
+    },
+    "single-second": {
+      "inputs": 26,
+      "measured_rounds": 1,
+      "complete_vehicle_substep": {
+        "count": 26,
+        "mean_ms": 1.5037153845276827,
+        "p95_ms": 1.712174999738636,
+        "p99_ms": 1.7280749998462852,
+        "max_ms": 1.7305000001215376,
+        "total_seconds": 0.03909659999771975
+      },
+      "all_results_byte_exact": true,
+      "checked_modules_unchanged": true
+    }
+  },
+  "world": {
+    "world-9-A1": {
+      "arguments": {
+        "output": "logs\\performance\\native-r1\\world-9-A1",
+        "source": "logs\\performance\\native-r1\\oracle",
+        "workers": 9,
+        "traffic": 8,
+        "mode": "simulation",
+        "traffic_input_mode": "game",
+        "track": "endless",
+        "shape": "hills",
+        "driver": "endurance",
+        "seed": 23,
+        "warmup": 240,
+        "steps": 600,
+        "trace": false,
+        "profile": false,
+        "capture": false,
+        "capture_hashes": true,
+        "cpu_mask": null,
+        "worker_profile": false,
+        "native_profile": false
+      },
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 10.85568983322446,
+        "p95_ms": 14.711294999324306,
+        "p99_ms": 16.314325999337598,
+        "max_ms": 20.11309999943478,
+        "total_seconds": 6.513413899934676
+      },
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "source_unchanged": true,
+      "measurement_complete": true,
+      "steps_over_50ms": [],
+      "active_traffic": 8,
+      "snapshot_hashes": {
+        "exact_count": 600,
+        "all_equal_to_A1": true,
+        "sequence_sha256": "b2523f163de5f5e9fcc430362202b4a09c374dfc71036746907a1341dc2a2af9"
+      }
+    },
+    "world-9-B1": {
+      "arguments": {
+        "output": "logs\\performance\\native-r1\\world-9-B1",
+        "source": "logs\\performance\\native-r1\\candidate",
+        "workers": 9,
+        "traffic": 8,
+        "mode": "simulation",
+        "traffic_input_mode": "game",
+        "track": "endless",
+        "shape": "hills",
+        "driver": "endurance",
+        "seed": 23,
+        "warmup": 240,
+        "steps": 600,
+        "trace": false,
+        "profile": false,
+        "capture": false,
+        "capture_hashes": true,
+        "cpu_mask": null,
+        "worker_profile": false,
+        "native_profile": false
+      },
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 10.415346333320485,
+        "p95_ms": 12.804044999938922,
+        "p99_ms": 14.407139000031744,
+        "max_ms": 17.336000000796048,
+        "total_seconds": 6.249207799992291
+      },
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "source_unchanged": true,
+      "measurement_complete": true,
+      "steps_over_50ms": [],
+      "active_traffic": 8,
+      "snapshot_hashes": {
+        "exact_count": 600,
+        "all_equal_to_A1": true,
+        "sequence_sha256": "b2523f163de5f5e9fcc430362202b4a09c374dfc71036746907a1341dc2a2af9"
+      }
+    },
+    "world-9-B2": {
+      "arguments": {
+        "output": "logs\\performance\\native-r1\\world-9-B2",
+        "source": "logs\\performance\\native-r1\\candidate",
+        "workers": 9,
+        "traffic": 8,
+        "mode": "simulation",
+        "traffic_input_mode": "game",
+        "track": "endless",
+        "shape": "hills",
+        "driver": "endurance",
+        "seed": 23,
+        "warmup": 240,
+        "steps": 600,
+        "trace": false,
+        "profile": false,
+        "capture": false,
+        "capture_hashes": true,
+        "cpu_mask": null,
+        "worker_profile": false,
+        "native_profile": false
+      },
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 10.280288833328086,
+        "p95_ms": 12.596800000210349,
+        "p99_ms": 14.382646000085513,
+        "max_ms": 16.617900000710506,
+        "total_seconds": 6.168173299996852
+      },
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "source_unchanged": true,
+      "measurement_complete": true,
+      "steps_over_50ms": [],
+      "active_traffic": 8,
+      "snapshot_hashes": {
+        "exact_count": 600,
+        "all_equal_to_A1": true,
+        "sequence_sha256": "b2523f163de5f5e9fcc430362202b4a09c374dfc71036746907a1341dc2a2af9"
+      }
+    },
+    "world-9-A2": {
+      "arguments": {
+        "output": "logs\\performance\\native-r1\\world-9-A2",
+        "source": "logs\\performance\\native-r1\\oracle",
+        "workers": 9,
+        "traffic": 8,
+        "mode": "simulation",
+        "traffic_input_mode": "game",
+        "track": "endless",
+        "shape": "hills",
+        "driver": "endurance",
+        "seed": 23,
+        "warmup": 240,
+        "steps": 600,
+        "trace": false,
+        "profile": false,
+        "capture": false,
+        "capture_hashes": true,
+        "cpu_mask": null,
+        "worker_profile": false,
+        "native_profile": false
+      },
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 10.874262833319033,
+        "p95_ms": 14.84606500143854,
+        "p99_ms": 16.830524998404144,
+        "max_ms": 17.842799999925774,
+        "total_seconds": 6.524557699991419
+      },
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "source_unchanged": true,
+      "measurement_complete": true,
+      "steps_over_50ms": [],
+      "active_traffic": 8,
+      "snapshot_hashes": {
+        "exact_count": 600,
+        "all_equal_to_A1": true,
+        "sequence_sha256": "b2523f163de5f5e9fcc430362202b4a09c374dfc71036746907a1341dc2a2af9"
+      }
+    },
+    "production-9": {
+      "arguments": {
+        "output": "logs\\performance\\native-r1\\production-9",
+        "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src",
+        "workers": 9,
+        "traffic": 8,
+        "mode": "simulation",
+        "traffic_input_mode": "game",
+        "track": "endless",
+        "shape": "hills",
+        "driver": "endurance",
+        "seed": 23,
+        "warmup": 240,
+        "steps": 600,
+        "trace": false,
+        "profile": false,
+        "capture": false,
+        "capture_hashes": true,
+        "cpu_mask": null,
+        "worker_profile": false,
+        "native_profile": false
+      },
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 10.122640500048874,
+        "p95_ms": 12.262359998931059,
+        "p99_ms": 13.95551899953716,
+        "max_ms": 16.279499999654945,
+        "total_seconds": 6.073584300029324
+      },
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "source_unchanged": true,
+      "measurement_complete": true,
+      "steps_over_50ms": [],
+      "active_traffic": 8,
+      "snapshot_hashes": {
+        "exact_count": 600,
+        "all_equal_to_A1": true,
+        "sequence_sha256": "b2523f163de5f5e9fcc430362202b4a09c374dfc71036746907a1341dc2a2af9"
+      }
+    },
+    "world-13-A1": {
+      "arguments": {
+        "output": "logs\\performance\\native-r1\\world-13-A1",
+        "source": "logs\\performance\\native-r1\\oracle",
+        "workers": 9,
+        "traffic": 12,
+        "mode": "simulation",
+        "traffic_input_mode": "game",
+        "track": "endless",
+        "shape": "hills",
+        "driver": "endurance",
+        "seed": 23,
+        "warmup": 240,
+        "steps": 600,
+        "trace": false,
+        "profile": false,
+        "capture": false,
+        "capture_hashes": true,
+        "cpu_mask": null,
+        "worker_profile": false,
+        "native_profile": false
+      },
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 15.774930000006862,
+        "p95_ms": 21.215624999786087,
+        "p99_ms": 23.94412699770328,
+        "max_ms": 25.739700002304744,
+        "total_seconds": 9.464958000004117
+      },
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "source_unchanged": true,
+      "measurement_complete": true,
+      "steps_over_50ms": [],
+      "active_traffic": 12,
+      "snapshot_hashes": {
+        "exact_count": 600,
+        "all_equal_to_A1": true,
+        "sequence_sha256": "58931606eceea6399bcffed17f0999ef6a5c561d14531e2e3f1c633ce20198a8"
+      }
+    },
+    "world-13-B1": {
+      "arguments": {
+        "output": "logs\\performance\\native-r1\\world-13-B1",
+        "source": "logs\\performance\\native-r1\\candidate",
+        "workers": 9,
+        "traffic": 12,
+        "mode": "simulation",
+        "traffic_input_mode": "game",
+        "track": "endless",
+        "shape": "hills",
+        "driver": "endurance",
+        "seed": 23,
+        "warmup": 240,
+        "steps": 600,
+        "trace": false,
+        "profile": false,
+        "capture": false,
+        "capture_hashes": true,
+        "cpu_mask": null,
+        "worker_profile": false,
+        "native_profile": false
+      },
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 13.630675166708292,
+        "p95_ms": 16.883889998098308,
+        "p99_ms": 18.739379000217003,
+        "max_ms": 22.420199999032775,
+        "total_seconds": 8.178405100024975
+      },
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "source_unchanged": true,
+      "measurement_complete": true,
+      "steps_over_50ms": [],
+      "active_traffic": 12,
+      "snapshot_hashes": {
+        "exact_count": 600,
+        "all_equal_to_A1": true,
+        "sequence_sha256": "58931606eceea6399bcffed17f0999ef6a5c561d14531e2e3f1c633ce20198a8"
+      }
+    },
+    "world-13-B2": {
+      "arguments": {
+        "output": "logs\\performance\\native-r1\\world-13-B2",
+        "source": "logs\\performance\\native-r1\\candidate",
+        "workers": 9,
+        "traffic": 12,
+        "mode": "simulation",
+        "traffic_input_mode": "game",
+        "track": "endless",
+        "shape": "hills",
+        "driver": "endurance",
+        "seed": 23,
+        "warmup": 240,
+        "steps": 600,
+        "trace": false,
+        "profile": false,
+        "capture": false,
+        "capture_hashes": true,
+        "cpu_mask": null,
+        "worker_profile": false,
+        "native_profile": false
+      },
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 13.413708499974746,
+        "p95_ms": 16.389274998982724,
+        "p99_ms": 17.513893001305398,
+        "max_ms": 19.033100001252024,
+        "total_seconds": 8.048225099984847
+      },
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "source_unchanged": true,
+      "measurement_complete": true,
+      "steps_over_50ms": [],
+      "active_traffic": 12,
+      "snapshot_hashes": {
+        "exact_count": 600,
+        "all_equal_to_A1": true,
+        "sequence_sha256": "58931606eceea6399bcffed17f0999ef6a5c561d14531e2e3f1c633ce20198a8"
+      }
+    },
+    "world-13-A2": {
+      "arguments": {
+        "output": "logs\\performance\\native-r1\\world-13-A2",
+        "source": "logs\\performance\\native-r1\\oracle",
+        "workers": 9,
+        "traffic": 12,
+        "mode": "simulation",
+        "traffic_input_mode": "game",
+        "track": "endless",
+        "shape": "hills",
+        "driver": "endurance",
+        "seed": 23,
+        "warmup": 240,
+        "steps": 600,
+        "trace": false,
+        "profile": false,
+        "capture": false,
+        "capture_hashes": true,
+        "cpu_mask": null,
+        "worker_profile": false,
+        "native_profile": false
+      },
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 15.850459833321413,
+        "p95_ms": 21.620814999914725,
+        "p99_ms": 23.983424999969426,
+        "max_ms": 26.30230000067968,
+        "total_seconds": 9.510275899992848
+      },
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "source_unchanged": true,
+      "measurement_complete": true,
+      "steps_over_50ms": [],
+      "active_traffic": 12,
+      "snapshot_hashes": {
+        "exact_count": 600,
+        "all_equal_to_A1": true,
+        "sequence_sha256": "58931606eceea6399bcffed17f0999ef6a5c561d14531e2e3f1c633ce20198a8"
+      }
+    },
+    "production-13": {
+      "arguments": {
+        "output": "logs\\performance\\native-r1\\production-13",
+        "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src",
+        "workers": 9,
+        "traffic": 12,
+        "mode": "simulation",
+        "traffic_input_mode": "game",
+        "track": "endless",
+        "shape": "hills",
+        "driver": "endurance",
+        "seed": 23,
+        "warmup": 240,
+        "steps": 600,
+        "trace": false,
+        "profile": false,
+        "capture": false,
+        "capture_hashes": true,
+        "cpu_mask": null,
+        "worker_profile": false,
+        "native_profile": false
+      },
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 13.27679999993658,
+        "p95_ms": 16.188464997321713,
+        "p99_ms": 17.15575799909857,
+        "max_ms": 20.709500000521075,
+        "total_seconds": 7.9660799999619485
+      },
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "source_unchanged": true,
+      "measurement_complete": true,
+      "steps_over_50ms": [],
+      "active_traffic": 12,
+      "snapshot_hashes": {
+        "exact_count": 600,
+        "all_equal_to_A1": true,
+        "sequence_sha256": "58931606eceea6399bcffed17f0999ef6a5c561d14531e2e3f1c633ce20198a8"
+      }
+    }
+  },
+  "window": {
+    "window-13-A": {
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\oracle",
+      "window_sampling_valid": false,
+      "physics_sample_hz": 40.219575625186145,
+      "display_draw_fps": 70.36662456526368,
+      "display_draw_p95_ms": 25.111099999776343,
+      "display_draw_max_ms": 38.89320000234875,
+      "display_draw_over_50ms": 0,
+      "dropped_simulation_seconds": 17.98333333333333,
+      "physics_sample_wall_seconds": 27.001776699999027,
+      "traffic_count": 12,
+      "worker_source_valid": true,
+      "eligible_for_short_comparison": false,
+      "excluded_reason": "窗口采样无效",
+      "presentation": {
+        "definition": "开窗3秒后的道路y单帧位移；相机项为玩家y减相机y，不代表完整三维视觉验收",
+        "published_player_y": {
+          "intervals": 1085,
+          "min_mm": 3.7603378295898438,
+          "max_mm": 134.88006591796875,
+          "negative_count_below_minus_1e_minus9": 0
+        },
+        "rendered_player_y": {
+          "intervals": 1899,
+          "min_mm": 0.92085345483639,
+          "max_mm": 158.43032229184928,
+          "negative_count_below_minus_1e_minus9": 0
+        },
+        "camera_relative_player_y": {
+          "intervals": 1899,
+          "min_mm": -70.70806539056207,
+          "max_mm": 56.56881506490663,
+          "negative_count_below_minus_1e_minus9": 908
+        },
+        "raw_local_path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\window-13-A\\presentation.json",
+        "raw_sha256": "d90ece2620c309e792dc79c05afd3a950cd662280fb6a5d767dc5eb9088308ab"
+      }
+    },
+    "window-13-A2": {
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\oracle",
+      "window_sampling_valid": true,
+      "physics_sample_hz": 44.62561927397399,
+      "display_draw_fps": 83.6365064049301,
+      "display_draw_p95_ms": 18.397099996946054,
+      "display_draw_max_ms": 27.684500000759726,
+      "display_draw_over_50ms": 0,
+      "dropped_simulation_seconds": 16.908333333333328,
+      "physics_sample_wall_seconds": 27.00242640000215,
+      "traffic_count": 12,
+      "worker_source_valid": true,
+      "eligible_for_short_comparison": true,
+      "excluded_reason": null,
+      "presentation": {
+        "definition": "开窗3秒后的道路y单帧位移；相机项为玩家y减相机y，不代表完整三维视觉验收",
+        "published_player_y": {
+          "intervals": 1204,
+          "min_mm": 4.099845886230469,
+          "max_mm": 147.66693115234375,
+          "negative_count_below_minus_1e_minus9": 0
+        },
+        "rendered_player_y": {
+          "intervals": 2257,
+          "min_mm": 0.8576305816490049,
+          "max_mm": 167.7055813853059,
+          "negative_count_below_minus_1e_minus9": 0
+        },
+        "camera_relative_player_y": {
+          "intervals": 2257,
+          "min_mm": -62.73520890393769,
+          "max_mm": 74.35230990093089,
+          "negative_count_below_minus_1e_minus9": 1023
+        },
+        "raw_local_path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\window-13-A2\\presentation.json",
+        "raw_sha256": "dd1c74c3ba08eefb43b8dc84aabaa50b8d229a0ca8ecda6859c40752ca622a6a"
+      }
+    },
+    "window-13-B": {
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\candidate",
+      "window_sampling_valid": true,
+      "physics_sample_hz": 48.05807803179708,
+      "display_draw_fps": 74.896501702187,
+      "display_draw_p95_ms": 20.55359999940265,
+      "display_draw_max_ms": 26.525499997660518,
+      "display_draw_over_50ms": 0,
+      "dropped_simulation_seconds": 16.15000000000001,
+      "physics_sample_wall_seconds": 27.00898690000031,
+      "traffic_count": 12,
+      "worker_source_valid": true,
+      "eligible_for_short_comparison": true,
+      "excluded_reason": null,
+      "presentation": {
+        "definition": "开窗3秒后的道路y单帧位移；相机项为玩家y减相机y，不代表完整三维视觉验收",
+        "published_player_y": {
+          "intervals": 1298,
+          "min_mm": 5.545616149902344,
+          "max_mm": 158.82110595703125,
+          "negative_count_below_minus_1e_minus9": 0
+        },
+        "rendered_player_y": {
+          "intervals": 2021,
+          "min_mm": 1.7841522613881722,
+          "max_mm": 155.8332747118385,
+          "negative_count_below_minus_1e_minus9": 0
+        },
+        "camera_relative_player_y": {
+          "intervals": 2021,
+          "min_mm": -76.25366707483394,
+          "max_mm": 63.710966759501275,
+          "negative_count_below_minus_1e_minus9": 867
+        },
+        "raw_local_path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\window-13-B\\presentation.json",
+        "raw_sha256": "01d283115ff857cb8a9d867e0ae1f57e8e28020856c4f08ba918e2d5bf077e92"
+      }
+    },
+    "window-9-A": {
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\oracle",
+      "window_sampling_valid": true,
+      "physics_sample_hz": 63.13293100734095,
+      "display_draw_fps": 116.1354109403837,
+      "display_draw_p95_ms": 12.671299999055918,
+      "display_draw_max_ms": 26.784500001667766,
+      "display_draw_over_50ms": 0,
+      "dropped_simulation_seconds": 12.783333333333335,
+      "physics_sample_wall_seconds": 27.006507900001452,
+      "traffic_count": 8,
+      "worker_source_valid": true,
+      "eligible_for_short_comparison": true,
+      "excluded_reason": null,
+      "presentation": {
+        "definition": "开窗3秒后的道路y单帧位移；相机项为玩家y减相机y，不代表完整三维视觉验收",
+        "published_player_y": {
+          "intervals": 1705,
+          "min_mm": 8.849143981933594,
+          "max_mm": 193.66455078125,
+          "negative_count_below_minus_1e_minus9": 0
+        },
+        "rendered_player_y": {
+          "intervals": 3135,
+          "min_mm": 0.0,
+          "max_mm": 253.16137174908704,
+          "negative_count_below_minus_1e_minus9": 0
+        },
+        "camera_relative_player_y": {
+          "intervals": 3135,
+          "min_mm": -271.8353271484375,
+          "max_mm": 114.21483854596204,
+          "negative_count_below_minus_1e_minus9": 1516
+        },
+        "raw_local_path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\window-9-A\\presentation.json",
+        "raw_sha256": "46126f5210437e2642cf0da7cfed0284f25d718f0e8e3dcc143dee013c59466e"
+      }
+    },
+    "window-9-B": {
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\candidate",
+      "window_sampling_valid": true,
+      "physics_sample_hz": 62.869732714180444,
+      "display_draw_fps": 114.93024462191333,
+      "display_draw_p95_ms": 12.780799999745796,
+      "display_draw_max_ms": 21.606400001473958,
+      "display_draw_over_50ms": 0,
+      "dropped_simulation_seconds": 12.791666666666648,
+      "physics_sample_wall_seconds": 27.008226800000557,
+      "traffic_count": 8,
+      "worker_source_valid": true,
+      "eligible_for_short_comparison": false,
+      "excluded_reason": "约0.35秒测试与采样重叠，外部负载不一致",
+      "presentation": {
+        "definition": "开窗3秒后的道路y单帧位移；相机项为玩家y减相机y，不代表完整三维视觉验收",
+        "published_player_y": {
+          "intervals": 1698,
+          "min_mm": 12.620925903320312,
+          "max_mm": 195.5108642578125,
+          "negative_count_below_minus_1e_minus9": 0
+        },
+        "rendered_player_y": {
+          "intervals": 3102,
+          "min_mm": 0.0,
+          "max_mm": 258.1944885929488,
+          "negative_count_below_minus_1e_minus9": 0
+        },
+        "camera_relative_player_y": {
+          "intervals": 3102,
+          "min_mm": -221.7254638671875,
+          "max_mm": 93.14122627020538,
+          "negative_count_below_minus_1e_minus9": 1509
+        },
+        "raw_local_path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\window-9-B\\presentation.json",
+        "raw_sha256": "30e22e2fc35a8e4a0c5bdd09b9710404028eeb4e7895bf2c0ba4f35ff15af43d"
+      }
+    },
+    "window-9-B2": {
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\candidate",
+      "window_sampling_valid": true,
+      "physics_sample_hz": 64.95594146626983,
+      "display_draw_fps": 117.73241558754262,
+      "display_draw_p95_ms": 12.657100000069477,
+      "display_draw_max_ms": 22.01680000143824,
+      "display_draw_over_50ms": 0,
+      "dropped_simulation_seconds": 12.36666666666668,
+      "physics_sample_wall_seconds": 27.002918599999248,
+      "traffic_count": 8,
+      "worker_source_valid": true,
+      "eligible_for_short_comparison": true,
+      "excluded_reason": null,
+      "presentation": {
+        "definition": "开窗3秒后的道路y单帧位移；相机项为玩家y减相机y，不代表完整三维视觉验收",
+        "published_player_y": {
+          "intervals": 1754,
+          "min_mm": 13.543128967285156,
+          "max_mm": 199.6917724609375,
+          "negative_count_below_minus_1e_minus9": 0
+        },
+        "rendered_player_y": {
+          "intervals": 3177,
+          "min_mm": 0.0,
+          "max_mm": 265.64152287105003,
+          "negative_count_below_minus_1e_minus9": 0
+        },
+        "camera_relative_player_y": {
+          "intervals": 3177,
+          "min_mm": -179.107666015625,
+          "max_mm": 86.47025684615528,
+          "negative_count_below_minus_1e_minus9": 1517
+        },
+        "raw_local_path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\window-9-B2\\presentation.json",
+        "raw_sha256": "df79f09cca3ebbc0d4299d85c24f58b3bb5746a6a30c7bb32d207d62d1778f1b"
+      }
+    },
+    "window-production-13": {
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src",
+      "window_sampling_valid": true,
+      "physics_sample_hz": 48.6022224763599,
+      "display_draw_fps": 74.85771986533638,
+      "display_draw_p95_ms": 20.467199999984587,
+      "display_draw_max_ms": 35.00500000154716,
+      "display_draw_over_50ms": 0,
+      "dropped_simulation_seconds": 16.066666666666666,
+      "physics_sample_wall_seconds": 27.01522549999936,
+      "traffic_count": 12,
+      "worker_source_valid": true,
+      "eligible_for_short_comparison": true,
+      "excluded_reason": null,
+      "presentation": {
+        "definition": "开窗3秒后的道路y单帧位移；相机项为玩家y减相机y，不代表完整三维视觉验收",
+        "published_player_y": {
+          "intervals": 1312,
+          "min_mm": 5.9642791748046875,
+          "max_mm": 160.675048828125,
+          "negative_count_below_minus_1e_minus9": 0
+        },
+        "rendered_player_y": {
+          "intervals": 2020,
+          "min_mm": 1.740693803860438,
+          "max_mm": 166.25059026362976,
+          "negative_count_below_minus_1e_minus9": 0
+        },
+        "camera_relative_player_y": {
+          "intervals": 2020,
+          "min_mm": -112.49049413932255,
+          "max_mm": 64.15125893308016,
+          "negative_count_below_minus_1e_minus9": 872
+        },
+        "raw_local_path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r1\\window-production-13\\presentation.json",
+        "raw_sha256": "f545dfdef855415331fe9d85ba5e0cbb83a6a1a7bc0f24d273a87d2776db36f0"
+      }
+    }
+  },
+  "comparisons": {
+    "world-9": {
+      "old_mean_ms": 10.864976333271747,
+      "native_mean_ms": 10.347817583324286,
+      "reduction_percent": 4.759870008770928
+    },
+    "world-13": {
+      "old_mean_ms": 15.812694916664137,
+      "native_mean_ms": 13.52219183334152,
+      "reduction_percent": 14.485216437767235
+    },
+    "single": {
+      "old_mean_ms": 1.8322179166827295,
+      "native_mean_ms": 1.4017228205136398,
+      "reduction_percent": 23.495845786101167
+    }
+  },
+  "single_profile": {
+    "raw_sha256": "6ab968fc6fac9fbb898555f85375c08baf122617ac2f3af0878b0ac767502101",
+    "native_joint_calls": 26,
+    "old_iteration_callbacks": {
+      "shared": 0,
+      "solve_wheel": 0,
+      "contact_system": 0
+    }
+  },
+  "production_source_sha256": {
+    "setup.py": "187f68dd57e24f7c9a7441a5411cc38d7c8d76d78cbf40ca2f3b570d049924a3",
+    "src\\tire_drivetrain.py": "0c38565c882497e0604788d3952f8f55bbe4defb61c8266064c0061fe95529cf",
+    "src\\suspension_contacts.py": "eaaa792c128268e41a4932131e4e9112d5bd60bccaae2a601f8795ec8976caf1",
+    "src\\joint_contact_api.h": "89ea8b6dd32440d769a7f7c4d76889111e513022b7a2d6cec57688935a6b539c",
+    "src\\joint_contact_impl.h": "99e13cd528a33052421b5a56b6a1aa583395956874b91a5a498c34593bb0b60b",
+    "src\\joint_iteration.h": "8b0c33d99fe0b7565a2d85e85035e372b87453ebc606385e2ec7c39c0b338beb",
+    "src\\joint_iteration_helpers.h": "cb20cae8f0b865e3d50b289e6eaa9a8de44007673cda32060ead948a8624646c",
+    "src\\mechanical_kernels.c": "d96adebbdc8676150a2a739b968717e4eeb0b988ff80468f443413bbcc11dbd2",
+    "src\\wheel_contact_kernels.c": "699eaa70716822444f5c68986c195c68122151ef3b3fcce50e68cb813710055b",
+    "src\\wheel_convex_distance.h": "6dfb6e5c421895966bb4d9447bd4161b686e04bf24edb31c8946b3865a1a63bb",
+    "src\\mechanical_kernels.cp314-win_amd64.pyd": "595648663d5464e4a4bdb1675df8eeb79878c9f7e3a0d183150288db15e1f4cb",
+    "src\\wheel_contact_kernels.cp314-win_amd64.pyd": "bdec63662ad02a23e6bc6a825ba78327151352aa3363f444e4fcb1c9129994c1"
+  },
+  "verification": {
+    "T1_first": "450 passed / 1 failed；失败为保存WorldSurface缺少static_shapes，后修迭代前实际读取",
+    "T1_recheck": "失败节点及连续内核17 passed，Ruff及0/17/23各1200拍通过；其余450复用不累加",
+    "last_geometry_version_check": "16 passed；新增同几何换版本的capsule生命周期断言",
+    "T2": "not_run；历史默认车型收敛失败仍未关闭",
+    "T3": "not_run",
+    "human_gate": "pending",
+    "real_time_gate": "failed",
+    "public_package_rebuilt": false
+  },
+  "external_load": "本轮停止onmyoji和wallpaper32；正式ABBA和有效窗口期间不并行构建/测试。window-9-B重叠样本剔除；未限制系统后台调度/频率，短窗口不是最终性能Gate。",
+  "archived_text_logs": {
+    "production-build-r2.txt": {
+      "original_sha256": "10f1b9057db1cd6ed3cff01f5b71801c3aac21b416475cc1a07798425bb93ce2",
+      "archived_sha256": "6b4f29eda2e5609ad35ee29d81c407657904cb33594b52f02707f7e149d2783f",
+      "normalization": "only line-ending and trailing ASCII whitespace; original local logs preserved"
+    },
+    "single-first.txt": {
+      "original_sha256": "6ef9380b84bfc080cfd3224da792fedc25e452520ef4b9efcd3117703e6959e3",
+      "archived_sha256": "7295cb2be51b7e668f7f9844130a16409e8b019ad8a56370c9399516d57bdd7c",
+      "normalization": "only line-ending and trailing ASCII whitespace; original local logs preserved"
+    },
+    "T0-continuous.txt": {
+      "original_sha256": "8505a8cbc8dac6ee255213e4c0abdb34af6272f08d1db915da3b5250778c35a2",
+      "archived_sha256": "a57295a89d5e946a6eb40f2d6f6615d5514220eca4f5f33dd0195232e0c1e398",
+      "normalization": "only line-ending and trailing ASCII whitespace; original local logs preserved"
+    },
+    "T0-geometry-version.txt": {
+      "original_sha256": "085e038ccbd65d41e3ccd494c98fe7795645515344d6adb54df3130432353495",
+      "archived_sha256": "82b57a32cf2a6790a70040cb9eb52b4e2571a7b283c95c69a982acd880870d84",
+      "normalization": "only line-ending and trailing ASCII whitespace; original local logs preserved"
+    },
+    "T0-native-geometry.txt": {
+      "original_sha256": "47040f6aa17a126d95c4da1b27ebb764e01160aaf0be1588cf306d0d0471c82f",
+      "archived_sha256": "347769df282557a1102bbad50e5d2fff15025e998521e0d31423f9da43d98d1a",
+      "normalization": "only line-ending and trailing ASCII whitespace; original local logs preserved"
+    },
+    "T0-r1.txt": {
+      "original_sha256": "6efbfb0ecc113cd911523e41ee3bb60bd1cc1b0781d58fdbd83f96b3de6c1540",
+      "archived_sha256": "be79cc81c5ed8d0a24553b3408ef98eb5c51035fc2244cf5af8f0291cf35c8f7",
+      "normalization": "only line-ending and trailing ASCII whitespace; original local logs preserved"
+    },
+    "T0-r2.txt": {
+      "original_sha256": "bfd0d33d881d89a13d25500f36751c577fe77fd2a0768bdbfd8c0cfb8d99448a",
+      "archived_sha256": "d506e270bd45ac09deab52f2e0e2250d162a34dd286a31fdc4cf952d2c716dc5",
+      "normalization": "only line-ending and trailing ASCII whitespace; original local logs preserved"
+    },
+    "T0-r3.txt": {
+      "original_sha256": "64d84c941e84ebfede9541b2d77e2b971b68d28a2207be77cd785fb92a79f7c6",
+      "archived_sha256": "dc47c5895938334b3198beb659715d0874e56d747d08ed897c9b43d15fa163dc",
+      "normalization": "only line-ending and trailing ASCII whitespace; original local logs preserved"
+    },
+    "T1-final\\headless-0.txt": {
+      "original_sha256": "d8fdaf9f94636ec6150d673fc8ed39986542293bcf584260aaa7c430160c1980",
+      "archived_sha256": "d39391267d2cc4a8abccbd10b8cc50713f3fee2937324061b6c773e66f448f87",
+      "normalization": "only line-ending and trailing ASCII whitespace; original local logs preserved"
+    },
+    "T1-final\\headless-17.txt": {
+      "original_sha256": "d8fdaf9f94636ec6150d673fc8ed39986542293bcf584260aaa7c430160c1980",
+      "archived_sha256": "d39391267d2cc4a8abccbd10b8cc50713f3fee2937324061b6c773e66f448f87",
+      "normalization": "only line-ending and trailing ASCII whitespace; original local logs preserved"
+    },
+    "T1-final\\headless-23.txt": {
+      "original_sha256": "d8fdaf9f94636ec6150d673fc8ed39986542293bcf584260aaa7c430160c1980",
+      "archived_sha256": "d39391267d2cc4a8abccbd10b8cc50713f3fee2937324061b6c773e66f448f87",
+      "normalization": "only line-ending and trailing ASCII whitespace; original local logs preserved"
+    },
+    "T1-final\\pytest.txt": {
+      "original_sha256": "d27b5c28d72f6635a8335e9a4bd7f4d773729cdf4f11875688c51bc964f29e94",
+      "archived_sha256": "e7295eefdf7692e1719c685c5d8a3edd1f0dc7f77f25aab9bd8153dec6d4def1",
+      "normalization": "only line-ending and trailing ASCII whitespace; original local logs preserved"
+    },
+    "T1-final\\ruff.txt": {
+      "original_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archived_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "normalization": "only line-ending and trailing ASCII whitespace; original local logs preserved"
+    },
+    "T1-production\\pytest.txt": {
+      "original_sha256": "aee5f095619f255503aba89ce2605a52a7a745aeb6a0d351e1ca0abfdeb99565",
+      "archived_sha256": "1affd7e1a7fc845c0d173d0078ee0ac9121c12d26f3bc8a6d7cb5aef37615e99",
+      "normalization": "only line-ending and trailing ASCII whitespace; original local logs preserved"
+    },
+    "T1-production\\ruff.txt": {
+      "original_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "archived_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "normalization": "only line-ending and trailing ASCII whitespace; original local logs preserved"
+    }
+  }
+}

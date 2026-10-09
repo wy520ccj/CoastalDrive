@@ -2710,7 +2710,10 @@ static PyObject *suspension_residuals(PyObject *self,PyObject *args) {
     return Py_BuildValue("(dd)",normal_error,dt*geometry_error);
 }
 
+#include "joint_iteration.h"
 static PyMethodDef methods[] = {
+    {"joint_workspace",joint_workspace,METH_NOARGS,"持久共同迭代数值工作区"},
+    {"joint_solve",joint_solve,METH_VARARGS,"连续四轮/传动/有限接触共同迭代"},
     {"suspension_coefficients", (PyCFunction)suspension_coefficients, METH_VARARGS, "本advance固定悬架材料与硬件"},
     {"suspension_forces", (PyCFunction)suspension_forces, METH_VARARGS, "原活动集只返回当前反力"},
     {"suspension_projection", (PyCFunction)suspension_projection, METH_VARARGS, "四轮法向响应与Mobility整块计算"},

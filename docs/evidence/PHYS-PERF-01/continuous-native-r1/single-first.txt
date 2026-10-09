@@ -1,0 +1,35 @@
+Traceback (most recent call last):
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\tools\performance\benchmark_vehicle_solver.py", line 118, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\tools\performance\benchmark_vehicle_solver.py", line 64, in main
+    if physics_workers._solve_vehicle(request, reference) is None:
+       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\performance\native-r1\candidate\physics_workers.py", line 180, in _solve_vehicle
+    result = (request.solve(static_geometry=_worker_geometry,surface_material=material_query,
+              ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            surface_candidates=_worker_candidates.setdefault(request.config,{}))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\performance\native-r1\candidate\vehicle_tire_step.py", line 173, in solve
+    contacts = tires.advance(body,contacts,self.angles,drive,drag,pressures,self.tick,self.dt,
+        self.external_velocity,self.external_angular,powertrain=powertrain,
+        suspension=(suspension,normal_system,on_asphalt),substeps=1,accumulate=self.accumulate)
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\performance\native-r1\candidate\vehicle_tires.py", line 48, in advance
+    return solve_drivetrain_stages(self.advance_stages(
+        chassis, contacts, angles, drive, engine_drag, pressures, tick, dt,
+        external_velocity, external_angular, powertrain=powertrain,
+        suspension=suspension, substeps=substeps, accumulate=accumulate))
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\performance\native-r1\candidate\tire_drivetrain.py", line 83, in solve_drivetrain_stages
+    result = request.solve()
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\performance\native-r1\candidate\tire_drivetrain.py", line 73, in solve
+    return advance_drivetrain(*self.values, **self.parameters)
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\performance\native-r1\candidate\tire_drivetrain.py", line 856, in advance_drivetrain
+    downstream_wheels = tuple(-sum(torque * g[i + wheel_start] for torque, g in zip(inertia_torques, gradients))
+                        ^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\performance\native-r1\candidate\tire_drivetrain.py", line 856, in <genexpr>
+    downstream_wheels = tuple(-sum(torque * g[i + wheel_start] for torque, g in zip(inertia_torques, gradients))
+                               ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\logs\performance\native-r1\candidate\tire_drivetrain.py", line 856, in <genexpr>
+    downstream_wheels = tuple(-sum(torque * g[i + wheel_start] for torque, g in zip(inertia_torques, gradients))
+                                            ~^^^^^^^^^^^^^^^^^
+IndexError: tuple index out of range
