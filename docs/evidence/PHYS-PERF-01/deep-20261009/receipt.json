@@ -16,7 +16,9 @@
     "cython_inference": "15.66ms，未整合",
     "hybrid_master": "无窗口12.51ms，但真实前台无改善；未整合",
     "stable_ownership": "独立ABBA约1.9%，新增协议/归属复杂度不值得，已撤销",
-    "panda_gc_plus_shorter_switch": "GC rate0.05 + switch0.001窗口变慢至25.27物理Hz/32.26绘制FPS，状态表增至约28万；未整合，不能分别推断两个选项的效果"
+    "panda_gc_plus_shorter_switch": "GC rate0.05 + switch0.001窗口变慢至25.27物理Hz/32.26绘制FPS，状态表增至约28万；未整合，不能分别推断两个选项的效果",
+    "workers13_window": "单次困难弯坡13车前台25.78物理Hz/31.01显示FPS，无整合；不能与先前低负载条件直接作性能归因",
+    "unlock_submit_wait": "相邻窗口A26.04Hz/37.64FPS，B23.70Hz/43.97FPS；释放提交等待锁显示更快但物理更慢，保留原实现"
   },
   "failed_attempts": [
     "首个计时包装使用了不存在的_observe_contacts，未进入测量",
@@ -39,5 +41,34 @@
     "unexplained_after_spike_ms": 120.7689,
     "final_T1": "53 passed, Ruff and three 1200-tick seeds passed"
   },
-  "presentation_diagnosis": "玩家实际/插值道路y均未倒退；相对相机y有约4cm单帧回摆；慢物理刷新与持续相机追赶相关。其他NPC有小于0.5mm真实初期位移，不能宣称所有车辆物理零抖动。"
+  "presentation_diagnosis": "玩家实际/插值道路y均未倒退；相对相机y有约4cm单帧回摆；慢物理刷新与持续相机追赶相关。其他NPC有小于0.5mm真实初期位移，不能宣称所有车辆物理零抖动。",
+  "implementation_checkpoint": "31f22ef",
+  "background_load": {
+    "observed_local_time": "2026-10-09 14:43",
+    "sample_seconds": 3,
+    "onmyoji_process_cpu_cores": [
+      1.387,
+      1.315
+    ],
+    "onmyoji_process_start_local": [
+      "2026-10-09 14:08:53",
+      "2026-10-09 14:08:48"
+    ],
+    "wallpaper_cpu_cores": 0.229,
+    "before_A_B_geometry_reports_finished": "2026-10-09 14:08:23",
+    "changed_environment_no_cross_comparison": true
+  },
+  "final_simulation_stability": {
+    "simulation_seconds": 60,
+    "completed_ticks": 7440,
+    "player_collisions": 0,
+    "active_traffic": 8,
+    "mean_ms": 23.362183458308817,
+    "p95_ms": 31.5912650001337,
+    "p99_ms": 36.90270899831378,
+    "max_ms": 81.09839999815449,
+    "compute_seconds": 168.20772089982347,
+    "source_unchanged": true,
+    "real_time_passed": false
+  }
 }
