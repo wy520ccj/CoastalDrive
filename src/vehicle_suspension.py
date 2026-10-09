@@ -44,6 +44,8 @@ class WorldSurface(CylinderSurface):
             covered, entry = cached_surface_entry(self.candidates, start, end, axis, self.offset,
                 self.wheel_radius, self.width, self.shoulder, self.crown, triangle_entry, cylinder_box_entry,
                 _simplex_coordinates)
+            if self.candidates.get('hulls'):
+                covered = False
             if not covered:
                 hit, = cylinder_suspension_rays(self.world,self.chassis,((start,end),),(axis,),
                     self.wheel_radius,self.width,self.shoulder,self.crown,envelope=self.envelope,ray_origin=self.offset,

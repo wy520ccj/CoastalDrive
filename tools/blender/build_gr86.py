@@ -138,11 +138,12 @@ for side in (-1,1):
     mesh('Tail lamp housing',[(x*.42,-2.13252,.68),(x*.78,-2.13252,.72),(x*.80,-2.06,.78),(x*.49,-2.13252,.77)],[(0,1,2,3)],LENS)
     mesh('Tail running light',[(x*.45,-2.13254,.745),(x*.765,-2.13254,.742),(x*.765,-2.13254,.708),
                               (x*.72,-2.13254,.693),(x*.74,-2.13254,.727),(x*.46,-2.13254,.730)],[(0,1,2,3,4,5)],RED)
-    cylinder('Exhaust outlet',(side*.63,-2.08755,.23),.055,.09,STEEL,axis='Y')
-    cylinder('Exhaust dark center',(side*.63,-2.1306,.23),.043,.004,BLACK,axis='Y')
+    cylinder('Exhaust outlet',(side*.63,-2.09355,.23),.055,.09,STEEL,axis='Y')
+    cylinder('Exhaust dark center',(side*.63,-2.1376,.23),.043,.004,BLACK,axis='Y')
 mesh('Front grille',[(-.60,2.13251,.56),(.60,2.13251,.56),(.49,2.13251,.25),(-.49,2.13251,.25)],[(0,1,2,3)],BLACK)
-box('Rear diffuser',(0,-2.12001,.26),(1.50,.025,.18),BLACK,bevel=.012)
-box('Rear plate',(0,-2.12501,.53),(.40,.015,.14),LAMP,bevel=.007)
+# 车身后表面为-2.1325m；装饰件外表面须保持3mm间距，避免行驶时争抢深度。
+box('Rear diffuser',(0,-2.12301,.26),(1.50,.025,.18),BLACK,bevel=.012)
+box('Rear plate',(0,-2.12801,.53),(.40,.015,.14),LAMP,bevel=.007)
 box('Premium ducktail',(0,-2.01,.835),(1.65,.19,.065),PAINT,paint,bevel=.024)
 
 # 四个轮根符合现有显示接口，轮轴沿X；18英寸轮圈及215/40R18名义尺寸。

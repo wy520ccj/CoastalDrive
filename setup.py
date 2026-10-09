@@ -4,6 +4,20 @@ from setuptools import Extension, setup
 
 compile_args = (["/fp:strict", "/utf-8"] if os.name == "nt"
                 else ["-fno-fast-math", "-ffp-contract=off"])
+convex_sources = [
+    "BulletCollision/CollisionShapes/btSphereShape.cpp",
+    "BulletCollision/CollisionShapes/btCollisionShape.cpp",
+    "BulletCollision/CollisionShapes/btConvexShape.cpp",
+    "BulletCollision/CollisionShapes/btConvexInternalShape.cpp",
+    "BulletCollision/NarrowPhaseCollision/btContinuousConvexCollision.cpp",
+    "BulletCollision/NarrowPhaseCollision/btConvexCast.cpp",
+    "BulletCollision/NarrowPhaseCollision/btGjkPairDetector.cpp",
+    "BulletCollision/NarrowPhaseCollision/btGjkEpa2.cpp",
+    "BulletCollision/NarrowPhaseCollision/btGjkEpaPenetrationDepthSolver.cpp",
+    "BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.cpp",
+    "LinearMath/btAlignedAllocator.cpp",
+    "LinearMath/btVector3.cpp",
+]
 
 setup(
     name="coastaldrive",
@@ -13,6 +27,8 @@ setup(
         Extension("mechanical_kernels", ["src/mechanical_kernels.c"], extra_compile_args=compile_args),
         Extension("wheel_contact_kernels", ["src/wheel_contact_kernels.c"],
                   depends=["src/wheel_convex_distance.h"], extra_compile_args=compile_args),
+        Extension("convex_cast_kernels", ["src/convex_cast_kernels.cpp", *["vendor/bullet-2.84/"+name for name in convex_sources]],
+                  include_dirs=["vendor/bullet-2.84"], extra_compile_args=compile_args, language="c++"),
     ],
     options={
         "build_apps": {
@@ -40,11 +56,20 @@ setup(
                 "assets/game/expressway/shaders/*.glsl",
                 "assets/game/**/License.txt",
                 "licenses/CPython-LICENSE.txt",
+                "licenses/Bullet-LICENSE.txt",
             ],
             "plugins": ["pandagl", "p3openal_audio"],
             "include_modules": {"*": [
                 "mechanical_kernels",
                 "wheel_contact_kernels",
+                "convex_cast_kernels",
+                "multiprocessing.spawn",
+                "multiprocessing.popen_spawn_win32",
+                "multiprocessing.shared_memory",
+                "multiprocessing.reduction",
+                "multiprocessing.resource_tracker",
+                "_multiprocessing",
+                "_winapi",
                 "numpy._core._exceptions",
                 "direct.gui.DirectGui",
                 "direct.gui.DirectGuiBase",

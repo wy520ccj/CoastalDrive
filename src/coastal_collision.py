@@ -8,6 +8,7 @@ def add_rail_shapes(body, vertices):
     # 顶点前后两半分别是两侧，每个站点依次为底点、顶点。
     side_count = len(vertices) // 2
     bounds = []
+    hull_vertices = []
     for start in range(0, side_count, 2):
         end = (start + 2) % side_count
         points = [Vec3(*vertices[index]) for index in (
@@ -22,8 +23,11 @@ def add_rail_shapes(body, vertices):
             shape.addPoint(point)
         shape.setMargin(0.01)
         body.addShape(shape, TransformState.makePos(center))
+        hull_vertices.append(tuple(tuple(point) for point in local_points))
         margin = shape.getMargin()
         bounds.append((tuple(min(point[a] for point in local_points) - margin for a in range(3)),
                        tuple(max(point[a] for point in local_points) + margin for a in range(3))))
     # 与真实凸体共用这些原顶点；包围球会把细护栏横向扩成1.5m宽的候选。
     body.setPythonTag("suspension_shape_bounds", tuple(bounds))
+    body.setPythonTag("suspension_hull_shapes", tuple(body.getShapes()))
+    body.setPythonTag("suspension_hull_vertices", tuple(hull_vertices))

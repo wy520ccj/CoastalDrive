@@ -1,6 +1,7 @@
 import json
 import logging
 import math
+import os
 
 import simplepbr
 from direct.gui import DirectGuiGlobals as DGG
@@ -29,7 +30,7 @@ from vehicle_designs import vehicle_design
 
 
 class CoastalDrive(ShowBase):
-    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", driving_mode=None, vehicle_design_id=None, abs_enabled=None, tcs_enabled=None, esc_enabled=None):
+    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", driving_mode=None, vehicle_design_id=None, abs_enabled=None, tcs_enabled=None, esc_enabled=None, physics_workers=None, independent_clock=None):
         self.startup_trace = startup_trace
         loadPrcFileData(
             "coastaldrive",
@@ -78,6 +79,8 @@ class CoastalDrive(ShowBase):
             road_shape=road_shape,
             scores=BestTimes(self.output / "test-best-times.json") if smoke else None,
             vehicle_config=vehicle_design(vehicle_definition(self.appearance.model_id).physics_id).config,
+            physics_workers=min(9,max(0,(os.process_cpu_count() or 1)-1)) if physics_workers is None else physics_workers,
+            independent_clock=not smoke if independent_clock is None else independent_clock,
         )
         if startup_trace is not None:
             startup_trace.mark("simulation_initialized")
@@ -953,8 +956,8 @@ class CoastalDrive(ShowBase):
         camera_position, look_at = self.chase_camera.update(
             state.player, self.session.camera_distance, camera_dt, snap=snap
         )
-        camera_position = self.session.simulation.camera_position(
-            position + Vec3(0, 0, 1.4), camera_position
+        camera_position = self.session.camera_position(
+            position + Vec3(0, 0, 1.4), camera_position, state.origin_y
         )
         self.camera.setPos(camera_position)
         self.camera.lookAt(look_at)

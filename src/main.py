@@ -3,6 +3,7 @@
 import argparse
 import json
 import logging
+import multiprocessing
 import os
 import traceback
 from dataclasses import asdict
@@ -17,7 +18,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--headless", action="store_true")
     parser.add_argument("--steps", type=int, default=10000)
+    parser.add_argument("--traffic-count", type=int, help="无窗口实验的交通车数；省略时按赛道默认值")
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--physics-workers", type=int, help="数值工作进程数；0为串行对照，窗口默认按CPU启用")
+    parser.add_argument("--synchronous-physics", action="store_true", help="诊断用：在绘制线程推进固定物理步")
     parser.add_argument("--driving-mode", choices=("game", "simulation"))
     parser.add_argument("--vehicle-design", choices=tuple(v.id for v in DESIGN_VEHICLES),
                         help="明确选择工程硬件；输入模式只改变辅助")
@@ -42,6 +46,10 @@ def main():
     esc_enabled = None if args.esc_selection is None else args.esc_selection == "on"
     if args.steps <= 0:
         parser.error("--steps must be positive")
+    if args.traffic_count is not None and (args.traffic_count<0 or not args.headless):
+        parser.error("--traffic-count须非负且只用于--headless")
+    if args.physics_workers is not None and not 0 <= args.physics_workers <= 32:
+        parser.error("--physics-workers must be between 0 and 32")
     if args.vehicle_config is not None and not args.headless:
         parser.error("--vehicle-config仅用于无窗口工程实验，请同时指定--headless")
     if args.profile_startup and (args.headless or args.smoke or args.window_smoke):
@@ -59,7 +67,8 @@ def main():
         config = selected.configured_vehicle(abs_enabled, tcs_enabled, esc_enabled, base_config=base_config)
         simulation = Simulation(
             args.seed, track=args.track, road_shape=args.road_shape,
-            config=config, input_config=selected.input_config,
+            traffic_count=args.traffic_count,
+            config=config, input_config=selected.input_config, physics_workers=args.physics_workers or 0,
         )
         controller = ConstantController(Control(throttle=0.5))
         try:
@@ -68,6 +77,7 @@ def main():
             report = asdict(simulation.snapshot())
             report["driving_mode"] = selected.value
             report["vehicle_config"] = asdict(config)
+            report["physics_workers"] = simulation._physics_workers.diagnostics() if simulation._physics_workers is not None else None
             print(json.dumps(report, indent=2))
         finally:
             simulation.close()
@@ -87,7 +97,8 @@ def main():
         app = CoastalDrive(onscreen=True, output=args.output, seed=args.seed, track=args.track,
                            road_shape=args.road_shape, startup_trace=startup,
                            driving_mode=driving_mode, vehicle_design_id=args.vehicle_design,
-                           abs_enabled=abs_enabled, tcs_enabled=tcs_enabled, esc_enabled=esc_enabled)
+                           abs_enabled=abs_enabled, tcs_enabled=tcs_enabled, esc_enabled=esc_enabled,
+                           physics_workers=args.physics_workers,independent_clock=not args.synchronous_physics)
         try:
             app.taskMgr.step()
             startup.mark("first_rendered_frame")
@@ -143,6 +154,8 @@ def main():
         abs_enabled=abs_enabled,
         tcs_enabled=tcs_enabled,
         esc_enabled=esc_enabled,
+        physics_workers=args.physics_workers,
+        independent_clock=not (smoke or args.synchronous_physics),
     )
     try:
         app.run()
@@ -152,6 +165,8 @@ def main():
 
 
 if __name__ == "__main__":
+    # 冻结游戏的子进程先进入标准数值工作入口，不能再次启动窗口或创建进程池。
+    multiprocessing.freeze_support()
     try:
         result = main()
     except Exception:

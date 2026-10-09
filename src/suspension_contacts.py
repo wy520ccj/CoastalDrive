@@ -20,6 +20,7 @@ from wheel_contact_kernels import (
     surface_ray_hits,
 )
 
+from convex_queries import HullGeometry, native_transform, wheel_hull
 from suspension_geometry import BoxSurface, CylinderSurface, box_entry, sphere_box_entry
 from triangle_support import TriangleSupport, triangle_entry
 from wheel_envelope import cylinder_box_entry
@@ -41,7 +42,14 @@ class StaticSupportShapes(tuple):
     def __new__(cls, groups):
         value = super().__new__(cls, groups)
         value.native = support_coefficients(tuple(groups))
+        value.hulls = {}
+        value.hull_parts = {}
         return value
+
+    def install_hulls(self, hulls):
+        self.hulls = hulls
+        self.hull_parts = {id(part):hull for body,_supported,parts in self if body in hulls
+                           for part,hull in zip(parts,hulls[body])}
 
 
 def suspension_rays(world, chassis, rays, radius=0.):
@@ -138,22 +146,27 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
     cached = candidate_cache is not None and candidate_cache and all(
         candidate_cache['low'][a] <= low[a] and high[a] <= candidate_cache['high'][a] for a in range(3))
     if cached:
-        surfaces, exact, native_needed = candidate_cache['surfaces'], candidate_cache['exact'], candidate_cache['native_needed']
+        surfaces, exact, native_needed, hulls = (candidate_cache[name] for name in ('surfaces','exact','native_needed','hulls'))
     else:
         # 冻结子步内预取5cm邻域；离开覆盖范围便重新查询，实际求交不作近似。
         if candidate_cache is not None:
             low = tuple(value - .05 for value in low)
             high = tuple(value + .05 for value in high)
-        surfaces, exact, native_needed = cylinder_candidates(world, chassis, mask, low, high, static_shapes=static_shapes)
+        surfaces, exact, native_needed, hulls = cylinder_candidates(world, chassis, mask, low, high, static_shapes=static_shapes,numeric_hulls=bool(crown))
         if candidate_cache is not None:
-            candidate_cache.update(low=low, high=high, surfaces=surfaces, exact=exact, native_needed=native_needed)
-    if envelope is None:
+            candidate_cache.update(low=low, high=high, surfaces=surfaces, exact=exact, native_needed=native_needed,hulls=hulls)
+    wheel = wheel_hull(radius,width,shoulder,crown) if hulls else None
+    if hulls and wheel is None:
+        # 原无胎冠圆柱仍使用其原生形状，不以多边形替代。
+        native_needed = True
+        hulls = ()
+    if envelope is None and native_needed:
         envelope = wheel_sweep_shape(radius, width, shoulder, crown)
     results = []
     for (start, end), (relative_start, relative_end), axis in zip(world_rays, relative_rays, axes):
         axis = tuple(axis)
         hits = []
-        if native_needed:
+        if native_needed or hulls:
             transverse = math.hypot(axis[1], axis[2])
             rotation = Quat()
             if transverse:
@@ -161,8 +174,23 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
                 rotation.setFromAxisAngleRad(math.atan2(transverse, axis[0]), rotation_axis)
             elif axis[0] < 0.:
                 rotation.setFromAxisAngle(180., Vec3(0., 0., 1.))
-            native = world.sweepTestClosest(envelope, TransformState.makePosQuatScale(start, rotation, Vec3(1)),
-                                           TransformState.makePosQuatScale(end, rotation, Vec3(1)), mask, 0.)
+            from_pose = TransformState.makePosQuatScale(start,rotation,Vec3(1))
+            to_pose = TransformState.makePosQuatScale(end,rotation,Vec3(1))
+        if hulls:
+            first,last = native_transform(from_pose),native_transform(to_pose)
+            for body,parts in hulls:
+                closest = None
+                for part in parts:
+                    found = part.entry(wheel,first,last,closest[0] if closest else 1.)
+                    if found is not None:
+                        closest = found
+                if closest is not None:
+                    fraction,normal,point = closest
+                    if ray_origin is not None:
+                        point = tuple(point[a]-origin[a] for a in range(3))
+                    hits.append(RayContact(body,fraction,point,normal))
+        if native_needed:
+            native = world.sweepTestClosest(envelope, from_pose, to_pose, mask, 0.)
             if native.hasHit() and native.getNode() != chassis and native.getNode() not in exact:
                 point = tuple(native.getHitPos())
                 if ray_origin is not None:
@@ -179,6 +207,7 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
 def static_support_shapes(world, chassis, mask, *, cache=None, packet_cache=None):
     """每子步读取世界资格/变换；未改变的静态分区复用原数值几何。"""
     groups = []
+    hull_packets = {}
     bodies = (body for body in world.getRigidBodies() if body != chassis and body.isStatic()
               and not (body.getIntoCollideMask() & mask).isZero())
     for body in sorted(bodies,key=lambda node: (node.getName(),tuple(node.getTransform().getPos()))):
@@ -190,14 +219,18 @@ def static_support_shapes(world, chassis, mask, *, cache=None, packet_cache=None
         pose = NodePath(body).getNetTransform()
         shape_poses = tuple(body.getShapeTransform(i) for i in range(len(shapes)))
         margins = tuple(shape.getMargin() for shape in shapes)
+        hull_vertices = (body.getPythonTag('suspension_hull_vertices') if body.hasPythonTag('suspension_hull_vertices')
+                         and tuple(shapes)==body.getPythonTag('suspension_hull_shapes') and pose.getScale()==Vec3(1.) else None)
         # 原生Hull等可在同一shape上增点；其实际边界也必须进入变更判据。
         mutable_bounds = tuple(collision_shape_bounds(shape, None)
                                if shape_bounds is None and isinstance(shape, BulletConvexHullShape)
                                else None for shape in shapes)
-        signature = pose, tuple(shapes), shape_poses, margins, id(mesh), id(shape_bounds), mutable_bounds
+        signature = pose, tuple(shapes), shape_poses, margins, id(mesh), id(shape_bounds), mutable_bounds, id(hull_vertices)
         previous = cache.get(body) if cache is not None else None
         if previous is not None and previous[0] == signature:
             groups.append(previous[1])
+            if previous[2] is not None:
+                hull_packets[body] = previous[2]
             continue
         body_mat = pose.getMat()
         parts = []
@@ -212,9 +245,13 @@ def static_support_shapes(world, chassis, mask, *, cache=None, packet_cache=None
             half = tuple(shape.getHalfExtentsWithoutMargin()) if isinstance(shape, BulletBoxShape) else ()
             parts.append((inverse, frame, translation, half, margins[i] if plane is None else 0., plane, triangles, bounds))
         group = body, supported, tuple(parts)
+        hulls = tuple(HullGeometry(vertices,margin,native_transform(pose),native_transform(shape_pose))
+                      for vertices,margin,shape_pose in zip(hull_vertices,margins,shape_poses)) if hull_vertices is not None else None
+        if hulls is not None:
+            hull_packets[body] = hulls
         groups.append(group)
         if cache is not None:
-            cache[body] = signature, group
+            cache[body] = signature, group, hulls
     if cache is not None:
         active = {group[0] for group in groups}
         for body in cache.keys() - active:
@@ -225,14 +262,15 @@ def static_support_shapes(world, chassis, mask, *, cache=None, packet_cache=None
     if packet_cache.get('groups') != groups:
         packet_cache['groups'] = groups
         packet_cache['prepared'] = StaticSupportShapes(groups)
+        packet_cache['prepared'].install_hulls(hull_packets)
     return packet_cache['prepared']
 
 
-def cylinder_candidates(world, chassis, mask, low, high, *, static_shapes=None):
+def cylinder_candidates(world, chassis, mask, low, high, *, static_shapes=None, numeric_hulls=False):
     """以真实形状边界筛选覆盖盒；独立查询读取当前世界，prepare查询复用本子步几何。"""
     if static_shapes is None:
         static_shapes = static_support_shapes(world, chassis, mask)
-    surfaces, exact, native_needed = [], set(), False
+    surfaces, exact, native_needed, hulls = [], set(), False, []
     candidates = (prepared_support_candidates(static_shapes.native, low, high)
                   if isinstance(static_shapes, StaticSupportShapes) else support_candidates(static_shapes, low, high))
     for body, supported, parts in candidates:
@@ -247,8 +285,14 @@ def cylinder_candidates(world, chassis, mask, low, high, *, static_shapes=None):
                 surfaces.append((body, inverse, frame, half, margin, plane, triangles, translation))
             exact.add(body)
         else:
-            native_needed = True
-    return surfaces, exact, native_needed
+            if numeric_hulls and isinstance(static_shapes,StaticSupportShapes) and body in static_shapes.hulls:
+                # 精确分区候选已按原真实边界筛选；凸体仍用原Bullet求交和margin。
+                selected = tuple(static_shapes.hull_parts[id(part)] for part,_center,_half in parts)
+                hulls.append((body,selected))
+                exact.add(body)
+            else:
+                native_needed = True
+    return surfaces, exact, native_needed, hulls
 
 
 def collision_shape_bounds(shape, triangles):

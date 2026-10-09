@@ -1,0 +1,274 @@
+{
+  "README.md": {
+    "bytes": 3719,
+    "sha256": "0f8ad7f30c8fb1685f8100386516fe95522c6233cdc6cca4c40682af27296cd1"
+  },
+  "receipt.json": {
+    "bytes": 34945,
+    "sha256": "68d037398861a480f7bc6a188a372bc4b5be82bbd1797e909699a11d08b5f656"
+  },
+  "commands/build_parallel_package.py": {
+    "bytes": 6731,
+    "sha256": "6b4a19ee6989e04bd7e5e9d6d4121afef0993ed4f22266d28640cd9f1f0f2918"
+  },
+  "commands/check_parallel_package.py": {
+    "bytes": 5266,
+    "sha256": "b7f5d0c4be3e71bddb62a2b731b62fa1377b6dba846bc8b15b7f503deb10c80c"
+  },
+  "commands/parallel_trajectory.py": {
+    "bytes": 4650,
+    "sha256": "62a070001516438aea02aea3f7adcad18c6b3ec513b0bfadf2ef73abaf242879"
+  },
+  "commands/profile_vehicle_workers.py": {
+    "bytes": 1358,
+    "sha256": "a4178be2cccfa805985d5635b27b9f08d5d2289185907ea7cfc1feef61a80df7"
+  },
+  "commands/render_parallel_package.py": {
+    "bytes": 2113,
+    "sha256": "adc676747d8e74aeeb2338f81f42e4755e0b9a5610640e85f630d6572f9c02c0"
+  },
+  "rear/after-straight.png": {
+    "bytes": 54204,
+    "sha256": "37613893eb79b0e1c707bc1748a085a81cd9cf639286d5ea1ebe22d117040b81"
+  },
+  "rear/after-turn-1.png": {
+    "bytes": 38435,
+    "sha256": "8f624198753a71baaad3d6ad5bddc22219042356df133956fe53ff3c3720e3cd"
+  },
+  "rear/after-turn-2.png": {
+    "bytes": 56413,
+    "sha256": "14c07b54ff6d011a96968721de8dc54e0205ee3237c648492b4c152bc62588bd"
+  },
+  "rear/before.png": {
+    "bytes": 46982,
+    "sha256": "bb9ca1fd687f93a36c6f7b1ebd3b3603216fefe7df4689d56c9a9071b6478bfc"
+  },
+  "rear/repair.json": {
+    "bytes": 1822,
+    "sha256": "270317f649dcb4ad28b94650aea939e980aaf45ca8a9ab6c1860c3e2b6223517"
+  },
+  "trajectories/coastal-new.json": {
+    "bytes": 4018,
+    "sha256": "1a801339b3c8dcc60666e61caf914e3cdae3e04de8686662ecb7e9573f9dc3ba"
+  },
+  "trajectories/coastal-old.json": {
+    "bytes": 3779,
+    "sha256": "ad62bec7f4d97b7128f51aeb1f0de10d4feb3b4084dcaa5f804760f84522135a"
+  },
+  "trajectories/coastal.json.xz": {
+    "bytes": 3327648,
+    "sha256": "ba0040d56dbe906132919c9cde28663948a2f2d05fea15e13ae2c4c033155f23"
+  },
+  "trajectories/coastal640-new.json": {
+    "bytes": 17627,
+    "sha256": "09fa9a26a233babfe0b942eb51e7c5bb734dd2e485c2558cd7364f02637f9295"
+  },
+  "trajectories/coastal640-old.json": {
+    "bytes": 17268,
+    "sha256": "abaa785b839be1d66a38c241592db4d81c501006a41362967f7b05c0b4d436f4"
+  },
+  "trajectories/coastal640.json.xz": {
+    "bytes": 17618992,
+    "sha256": "502ad72c38e90e9e0d4372348461433566a03525481897165011120c21aff99a"
+  },
+  "trajectories/hills-new.json": {
+    "bytes": 4004,
+    "sha256": "71877d98e1f31ce5337ca102dcf5fe829aadc887ba5fefa6216cc78715e9c38d"
+  },
+  "trajectories/hills-old.json": {
+    "bytes": 3774,
+    "sha256": "0d273e36db448a9915bbccd4ee438464759ecba6bd71c003a7f1378315de765c"
+  },
+  "trajectories/hills.json.xz": {
+    "bytes": 3264228,
+    "sha256": "1be2655a30747b40525fbd7150a4eb5d4df98f1f490b7fbb2a948e2ed0eaa0fb"
+  },
+  "trajectories/reference-new.json": {
+    "bytes": 4023,
+    "sha256": "70920f4d5357f4c5357d2feef2495e040b7b24b47cda09c99c032af912c96dea"
+  },
+  "trajectories/reference-old.json": {
+    "bytes": 3780,
+    "sha256": "721a25462a023b84365359baa630a7f5acbecebff8098937afe01a7a49549c14"
+  },
+  "trajectories/reference.json.xz": {
+    "bytes": 3276240,
+    "sha256": "57faca7689d82455f031312222d44d34bda96955eceb4553ab8fe5ba350e3dde"
+  },
+  "trajectories/single-new.json": {
+    "bytes": 4066,
+    "sha256": "c5d23406d91aa378736f4e3a51dc83089c632be3d188fa84602bebb9e49e5648"
+  },
+  "trajectories/single-old.json": {
+    "bytes": 3869,
+    "sha256": "f409fb1374f04992e6b738e4ce668d6f0b3b08f78959f9422c223de4ee625ed8"
+  },
+  "trajectories/single.json.xz": {
+    "bytes": 353316,
+    "sha256": "67e94b445cdd7e168380334786f1d45f4d52c9ec8ae5de5a52bd6611f8726580"
+  },
+  "window/tail-repaired-turn-r3.json": {
+    "bytes": 8619,
+    "sha256": "5d1dcab70e799adecd1c847c5de172d7db3bd38e51a38311e62dce1c009008fd"
+  },
+  "window/window-convex-parallel-r1.json": {
+    "bytes": 8123,
+    "sha256": "75cc99ea4ae26aa570950f83ff1c0dff2776a605aa3e91f9522c29ca3e179810"
+  },
+  "window/window-fixed-packet-final-r1.json": {
+    "bytes": 8570,
+    "sha256": "ae7f1ed1d806cb066659213bdcf0e0867845cf945374d2fad25ec41cd8d8d054"
+  },
+  "window/window-independent-clock-r1.json": {
+    "bytes": 8298,
+    "sha256": "c480f35df67569a627bbddc7baccd587c1f37964a0801b257c6e21d879b4ef66"
+  },
+  "window/window-independent-clock-r2.json": {
+    "bytes": 8290,
+    "sha256": "5bf0fc35319bd73623a7d266939cfadbb1bb665a867b944229a5965564708dcf"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1/build.txt": {
+    "bytes": 10780,
+    "sha256": "7823d8d7b7f6a393a055a25956104cb555b4b260d8ed1f6d611f7ad5f5999a6e"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1/game.txt": {
+    "bytes": 33423,
+    "sha256": "58de7baafe507f7299a8c5b5f1b3da1136428bfb1d301800032f6264fd2ae49e"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1/package-check.json": {
+    "bytes": 3217,
+    "sha256": "b9ee2be2430b8a1c31ceac9d08fac6a978bc18cf189fbd4c3691b7bc126b76a3"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1/simulation.txt": {
+    "bytes": 33842,
+    "sha256": "10679aba092beb8683df289308a2b3248a4122258529fd0d2026fe9ec3e2e43e"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1/summary.json": {
+    "bytes": 82727,
+    "sha256": "d94f848278c842055e26e882ab5ae96e8ad932f99b0a8ace53051b9d7ffb097a"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1b/build.txt": {
+    "bytes": 10790,
+    "sha256": "fbcea29d2b2382e113567c79e92d9a615edb4334569c31ad5cca79ddd8636abb"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1b/game.txt": {
+    "bytes": 265754,
+    "sha256": "4a6b0b705657c35898a2fd0cb4a67e2c8a15f1a1fa04c32a58cb6dc4a1230b8e"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1b/package-check.json": {
+    "bytes": 4504,
+    "sha256": "10e28566c9415e07448287a42c916487e76428e0be79247929d14452b80df000"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1b/simulation.txt": {
+    "bytes": 266172,
+    "sha256": "7a0d4f757eac96c0bdd7a802c73588648e5f431faa958c18a524608e49cd830a"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1b/summary.json": {
+    "bytes": 82735,
+    "sha256": "3dfd2523d4b8615118fe05bdf028dccc0647221bfacbc20323600a834aeb37d0"
+  },
+  "package/render/summary.json": {
+    "bytes": 2899,
+    "sha256": "76a254e88698a4e9925789dcfad1004875723f21646a70c0928509304fbf4508"
+  },
+  "package/render/game/h0-offscreen.png": {
+    "bytes": 164185,
+    "sha256": "27a221716524b470b177fca0b19cc0a59b0dcc689f4bbcd468240cd49bc35b80"
+  },
+  "package/render/game/h0-render-smoke.json": {
+    "bytes": 524,
+    "sha256": "d8253b533e46ad71e142cfdac7fe1e60d71d8e8b0429de89bc091e603ff95811"
+  },
+  "package/render/game/process.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "package/render/simulation/h0-offscreen.png": {
+    "bytes": 163538,
+    "sha256": "f964cfbcad6b5e63e5a8065b71b446e72e7aa3d7515a2df9c0d42b0b3c13833e"
+  },
+  "package/render/simulation/h0-render-smoke.json": {
+    "bytes": 526,
+    "sha256": "b126003442fc63265189d7a739065a8c99c45af1c2ccd5ffbe53bd4d66973f34"
+  },
+  "package/render/simulation/process.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "checks/PHYS-PERF-01-clock-final-T0/ruff.txt": {
+    "bytes": 512,
+    "sha256": "af76122a7a308d3dbf85dd96c9be3e7d8c4c933c7ff38ef0fb79cfeb9b99c6f3"
+  },
+  "checks/PHYS-PERF-01-clock-final-T0/summary.json": {
+    "bytes": 2344,
+    "sha256": "835439701521f02965e37d4dba090425e3f03b9084f76e09c58da2b52f2da6ac"
+  },
+  "checks/PHYS-PERF-01-clock-final-T0-r2/ruff.txt": {
+    "bytes": 512,
+    "sha256": "af76122a7a308d3dbf85dd96c9be3e7d8c4c933c7ff38ef0fb79cfeb9b99c6f3"
+  },
+  "checks/PHYS-PERF-01-clock-final-T0-r2/summary.json": {
+    "bytes": 2350,
+    "sha256": "9b180acaf7984fa8192a04960ec83f8d796479ea102ab2806dea726719af3b9f"
+  },
+  "checks/PHYS-PERF-01-convex-queries-T0/pytest.txt": {
+    "bytes": 100,
+    "sha256": "c1bf4a8bc543b0f315b954e5cc97b6f290877f2050a2666b69c3f3331f822aff"
+  },
+  "checks/PHYS-PERF-01-convex-queries-T0/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/PHYS-PERF-01-convex-queries-T0/summary.json": {
+    "bytes": 2013,
+    "sha256": "0cbdbbf109f7e07269f3b2da6a44ff090ae9247251c175554950b382cf4c6ce2"
+  },
+  "checks/PHYS-PERF-01-headless-cli-T0/pytest.txt": {
+    "bytes": 1,
+    "sha256": "cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8"
+  },
+  "checks/PHYS-PERF-01-headless-cli-T0/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/PHYS-PERF-01-headless-cli-T0/summary.json": {
+    "bytes": 2451,
+    "sha256": "750081bee9f0adfd97a0ced45ea6e0afa1340cfd4a028e90c5c6fb060edd5474"
+  },
+  "checks/PHYS-PERF-01-headless-cli-T0-r2/pytest.txt": {
+    "bytes": 100,
+    "sha256": "c271218aa5fd980b72f521f6ec83cf3c197f479c064f3bc43b06e41ec732df79"
+  },
+  "checks/PHYS-PERF-01-headless-cli-T0-r2/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/PHYS-PERF-01-headless-cli-T0-r2/summary.json": {
+    "bytes": 2468,
+    "sha256": "dd67a4ad23cbb3a5acdacecf9f88323b47d29e4c26e102fb97b26125d45d4df8"
+  },
+  "checks/PHYS-PERF-01-parallel-final-T1/headless-0.txt": {
+    "bytes": 32330,
+    "sha256": "b1585c3205d0a877ed96d1c3dd46dc2a108d20744d55b8c8d35f5cba8161ef5a"
+  },
+  "checks/PHYS-PERF-01-parallel-final-T1/headless-17.txt": {
+    "bytes": 32330,
+    "sha256": "b1585c3205d0a877ed96d1c3dd46dc2a108d20744d55b8c8d35f5cba8161ef5a"
+  },
+  "checks/PHYS-PERF-01-parallel-final-T1/headless-23.txt": {
+    "bytes": 32330,
+    "sha256": "b1585c3205d0a877ed96d1c3dd46dc2a108d20744d55b8c8d35f5cba8161ef5a"
+  },
+  "checks/PHYS-PERF-01-parallel-final-T1/pytest.txt": {
+    "bytes": 670,
+    "sha256": "54ef31a20d91e63d704b01abbebe59de7a2f81649b6d0774d7a2ade5ab542ea6"
+  },
+  "checks/PHYS-PERF-01-parallel-final-T1/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/PHYS-PERF-01-parallel-final-T1/summary.json": {
+    "bytes": 5582,
+    "sha256": "546c06c90e5f6321469194cc4d5339e1b8c934d77e4c73945f8548861563a960"
+  }
+}

@@ -318,7 +318,7 @@ class Scene:
         if simulation.track == "endless":
             from environment.expressway import stabilize_sun
 
-            stabilize_sun(self.sun_path, position, simulation.origin_y)
+            stabilize_sun(self.sun_path, position, self.base.session.render_origin())
         self.rail_sun_path.setPos(self.sun_path.getPos())
         self.rail_sun_path.setHpr(self.sun_path.getHpr())
 
@@ -379,7 +379,7 @@ class Scene:
         self.traffic = []
         self.traffic_wheels = []
         self.traffic_signals = []
-        traffic_count = len(self.base.session.simulation.snapshot().traffic)
+        traffic_count = len(self.base.session.current.traffic)
         for model_id, skin in zip(
             traffic_models(self.base.session.seed, traffic_count),
             traffic_skins(self.base.session.seed, traffic_count),
@@ -474,21 +474,22 @@ class Scene:
         if stream is None:
             return
         started = perf_counter()
+        indices = frozenset(self.base.session.render_segments())
         for index in tuple(self.segment_nodes):
-            if index not in stream.segments:
+            if index not in indices:
                 self.segment_nodes.pop(index).removeNode()
         for index in tuple(self.segment_builds):
-            if index not in stream.segments:
+            if index not in indices:
                 root, steps = self.segment_builds.pop(index)
                 steps.close()
                 root.removeNode()
                 self.segment_work["cancelled"] += 1
         deadline = started + budget_ms / 1000 if budget_ms is not None else math.inf
         # 物理窗口提前1200m加载；优先准备距玩家最近的缺失段，支持反向行驶。
-        center = sum(stream.segments) / len(stream.segments) if stream.segments else 0
+        center = sum(indices) / len(indices) if indices else 0
         if distance is not None:
             center = distance / 200
-        missing = sorted(stream.segments.keys() - self.segment_nodes.keys(),
+        missing = sorted(indices - self.segment_nodes.keys(),
                          key=lambda i: abs(i - center))
         for index in missing:
             if perf_counter() >= deadline:
@@ -514,7 +515,7 @@ class Scene:
                 self.segment_work["phase"] = phase
         for index, root in self.segment_nodes.items():
             x, y, z = anchor(stream.curve, index)
-            root.setPos(x, y - simulation.origin_y, z)
+            root.setPos(x, y - self.base.session.render_origin(), z)
         self.segment_work["near_pending"] = sum(abs(i - center) <= 3 for i in missing
                                                 if i not in self.segment_nodes)
         self.segment_work["frame_ms"] = (perf_counter() - started) * 1000

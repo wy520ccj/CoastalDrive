@@ -52,6 +52,10 @@ class TriangleSupport:
         object.__setattr__(self, "_native", triangle_support_coefficients(
             self.center, self.half, self.triangles, self.triangle_bounds, tuple(child._native for child in self.children)))
 
+    def __reduce__(self):
+        """进程只交换不可变网格数值；各进程自行重建原生只读索引。"""
+        return type(self), (self.low, self.high, self.triangles, self.children)
+
     @classmethod
     def build(cls, triangles):
         triangles = tuple(tuple(tuple(p) for p in triangle) for triangle in triangles)

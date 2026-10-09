@@ -1,0 +1,377 @@
+{
+  "kind": "short window comparison; not final performance or human gate",
+  "source": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src",
+  "track": "coastal",
+  "vehicle_design": "gr86-2022-premium-6mt",
+  "driving_mode": "game",
+  "controller": "constant-throttle-0.3",
+  "audio": "disabled by existing smoke mode",
+  "tick": 1168,
+  "fixed_hz": 120,
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 8,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "profile": false,
+  "independent_clock": true,
+  "physics_workers": {
+    "processes": 9,
+    "configured_processes": 9,
+    "geometry_versions": 1,
+    "remote": 21024,
+    "world_required": 0,
+    "worker_solve": {
+      "wall": {
+        "mean_ms": 4.253545239205181,
+        "p95_ms": 6.296699997619726,
+        "max_ms": 17.002499997033738
+      },
+      "cpu": {
+        "mean_ms": 3.841400146484375,
+        "p95_ms": 15.625,
+        "max_ms": 15.625
+      }
+    },
+    "configuration_transfers": 9,
+    "timing_window_requests": 4096
+  },
+  "streaming_phases": {},
+  "wall_seconds": 30.003049399999995,
+  "sample_seconds": 27.013196200001403,
+  "frames": 2234,
+  "average_fps": 82.70032111194172,
+  "display_draw_frames": 2233,
+  "display_draw_fps": 82.7126473916394,
+  "display_draw_p95_ms": 18.29110000107903,
+  "display_draw_p99_ms": 22.257000004174188,
+  "display_draw_max_ms": 24.92820000043139,
+  "display_draw_over_50ms": 0,
+  "p95_ms": 15.498799999477342,
+  "p99_ms": 17.346900000120513,
+  "max_ms": 27.183899997908156,
+  "frames_over_50ms": 0,
+  "frames_over_100ms": 0,
+  "dropped_simulation_seconds": 18.133333333333326,
+  "warmup_dropped_seconds": 1.9666666666666668,
+  "distance_m": 27.090327276354927,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 17.2356168,
+      "ms": 27.183899997908156
+    },
+    {
+      "second": 20.156834699999997,
+      "ms": 25.600299995858222
+    },
+    {
+      "second": 11.088345899999998,
+      "ms": 25.170400003844406
+    },
+    {
+      "second": 29.6912903,
+      "ms": 23.769899999024346
+    },
+    {
+      "second": 18.253759099999996,
+      "ms": 22.15779999824008
+    },
+    {
+      "second": 10.1663366,
+      "ms": 20.43779999803519
+    },
+    {
+      "second": 9.032196099999998,
+      "ms": 20.226499997079372
+    },
+    {
+      "second": 18.664340599999996,
+      "ms": 19.282100001873914
+    },
+    {
+      "second": 4.4465255,
+      "ms": 18.761100000119768
+    },
+    {
+      "second": 6.819804699999999,
+      "ms": 18.399300002784003
+    },
+    {
+      "second": 13.7601487,
+      "ms": 18.256100003782194
+    },
+    {
+      "second": 23.375814499999997,
+      "ms": 17.91850000154227
+    }
+  ],
+  "segment_work_max_ms": 0,
+  "segment_step_max_ms": 0,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true
+    }
+  ],
+  "passed": false,
+  "short_performance_passed": false,
+  "git_head": "1efa3f3c5d0a1a56f3a725980e18ad832dec1150",
+  "git_status": "M art/vehicles/gr86_2022_premium.blend\n M assets/game/vehicles/gr86_2022_premium.glb\n M setup.py\n M src/application.py\n M src/coastal_collision.py\n M src/main.py\n M src/scene.py\n M src/session.py\n M src/simulation.py\n M src/suspension_contacts.py\n M src/triangle_support.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/world_step.py\n M tools/blender/build_gr86.py\n M tools/performance/benchmark_runtime.py\n M tools/validate.py\n?? licenses/Bullet-LICENSE.txt\n?? src/convex_cast_kernels.cpp\n?? src/convex_queries.py\n?? src/physics_workers.py\n?? src/session_clock.py\n?? src/vehicle_tire_step.py\n?? tests/test_convex_queries.py\n?? tests/test_physics_workers.py\n?? tests/test_session_clock.py\n?? tools/blender/fix_gr86_rear_layers.py\n?? vendor/"
+}

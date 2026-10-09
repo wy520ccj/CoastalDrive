@@ -1,0 +1,373 @@
+{
+  "kind": "short window comparison; not final performance or human gate",
+  "source": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src",
+  "track": "coastal",
+  "vehicle_design": "gr86-2022-premium-6mt",
+  "driving_mode": "game",
+  "controller": "constant-throttle-0.3",
+  "audio": "disabled by existing smoke mode",
+  "tick": 1224,
+  "fixed_hz": 120,
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 8,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "profile": false,
+  "physics_workers": {
+    "processes": 8,
+    "geometry_versions": 1,
+    "remote": 22032,
+    "world_required": 0,
+    "worker_solve": {
+      "wall": {
+        "mean_ms": 3.4768415713417857,
+        "p95_ms": 5.434999999124557,
+        "max_ms": 22.468299997854047
+      },
+      "cpu": {
+        "mean_ms": 3.0353576615831517,
+        "p95_ms": 15.625,
+        "max_ms": 31.25
+      }
+    }
+  },
+  "streaming_phases": {},
+  "wall_seconds": 30.121443799999998,
+  "sample_seconds": 27.156698200000392,
+  "frames": 141,
+  "average_fps": 5.192089220920015,
+  "display_draw_frames": 139,
+  "display_draw_fps": 5.192299443390819,
+  "display_draw_p95_ms": 215.7117999959155,
+  "display_draw_p99_ms": 234.48289999942062,
+  "display_draw_max_ms": 235.9853000016301,
+  "display_draw_over_50ms": 139,
+  "p95_ms": 214.6814000006998,
+  "p99_ms": 234.55870000179857,
+  "max_ms": 235.82909999822732,
+  "frames_over_50ms": 141,
+  "frames_over_100ms": 141,
+  "dropped_simulation_seconds": 17.625,
+  "warmup_dropped_seconds": 2.091666666666667,
+  "distance_m": 31.083134627149654,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 19.2796669,
+      "ms": 235.82909999822732
+    },
+    {
+      "second": 10.9405997,
+      "ms": 234.55870000179857
+    },
+    {
+      "second": 19.0438384,
+      "ms": 231.91500000393717
+    },
+    {
+      "second": 28.3840659,
+      "ms": 218.40559999691322
+    },
+    {
+      "second": 21.277205199999997,
+      "ms": 217.6800999950501
+    },
+    {
+      "second": 13.1481006,
+      "ms": 216.63980000448646
+    },
+    {
+      "second": 11.7472912,
+      "ms": 215.94489999552025
+    },
+    {
+      "second": 8.799573899999999,
+      "ms": 214.6814000006998
+    },
+    {
+      "second": 12.356913199999997,
+      "ms": 214.16160000080708
+    },
+    {
+      "second": 26.282312699999995,
+      "ms": 209.95980000589043
+    },
+    {
+      "second": 7.246361699999999,
+      "ms": 209.24319999903673
+    },
+    {
+      "second": 19.4878793,
+      "ms": 208.21170000272105
+    }
+  ],
+  "segment_work_max_ms": 0,
+  "segment_step_max_ms": 0,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true
+    }
+  ],
+  "passed": false,
+  "short_performance_passed": false,
+  "git_head": "1efa3f3c5d0a1a56f3a725980e18ad832dec1150",
+  "git_status": "M setup.py\n M src/application.py\n M src/coastal_collision.py\n M src/main.py\n M src/session.py\n M src/simulation.py\n M src/suspension_contacts.py\n M src/triangle_support.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/world_step.py\n M tools/performance/benchmark_runtime.py\n?? licenses/Bullet-LICENSE.txt\n?? src/convex_cast_kernels.cpp\n?? src/convex_queries.py\n?? src/physics_workers.py\n?? src/vehicle_tire_step.py\n?? tests/test_physics_workers.py\n?? vendor/"
+}

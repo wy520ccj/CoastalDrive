@@ -28,9 +28,14 @@ def main():
     parser.add_argument("--driving-mode", choices=("game", "simulation"), default="game")
     parser.add_argument("--source", type=Path, default=ROOT / "src")
     parser.add_argument("--trace-streaming", action="store_true")
+    parser.add_argument("--profile", action="store_true")
+    parser.add_argument("--independent-clock", action="store_true")
+    parser.add_argument("--steering", type=float, default=0., help="车尾运动画面复核用恒定转向")
     args = parser.parse_args()
     if not 30 <= args.seconds <= 60:
         parser.error("短测限于30–60秒")
+    if not -1.<=args.steering<=1.:
+        parser.error("转向须在[-1,1]内")
     args.output.mkdir(parents=True, exist_ok=False)
     os.environ["LOCALAPPDATA"] = str(args.output.resolve() / "user-data")
     sys.path.insert(0, str(args.source.resolve()))
@@ -95,11 +100,11 @@ def main():
     loadPrcFileData("performance-pipeline", "threading-model " + pipelines[args.pipeline])
     app = CoastalDrive(smoke=True, onscreen=True, track=args.track, road_shape=args.shape,
                        seed=23, output=args.output, render_size=(1920, 1080),
-                       threading_model=pipelines[args.pipeline],
+                       threading_model=pipelines[args.pipeline],independent_clock=args.independent_clock,
                        vehicle_design_id=args.vehicle_design, driving_mode=DrivingMode(args.driving_mode))
     app.taskMgr.remove("finish-smoke")
     app.session.set_controller(EnduranceDriver(app.session.simulation, 724) if args.track == "endless"
-                               else ConstantController(Control(throttle=.3)))
+                               else ConstantController(Control(throttle=.3,steering=args.steering)))
     user32 = ctypes.WinDLL("user32", use_last_error=True)
     user32.ShowWindow.argtypes = [wintypes.HWND, ctypes.c_int]
     user32.SetForegroundWindow.argtypes = [wintypes.HWND]
@@ -112,6 +117,9 @@ def main():
     last_second = -1
     start_dropped = None
     final = {}
+    if args.profile:
+        import cProfile
+        profiler = cProfile.Profile()
     draw_times = []
     measuring_draw = False
 
@@ -134,6 +142,8 @@ def main():
                 app.scene.segment_work["max_step_ms"] = 0
                 measuring_draw = True
                 tracing = True
+                if args.profile:
+                    profiler.enable()
             samples.append({"second": task.time, "ms": (now - previous) * 1000})
             work_samples.append(dict(app.scene.segment_work))
         previous = now
@@ -143,8 +153,13 @@ def main():
                             "foreground": props.getForeground()})
             last_second = int(task.time)
         if task.time >= args.seconds:
+            if args.independent_clock:
+                app.session.stop_clock()
             measuring_draw = False
             tracing = False
+            if args.profile:
+                profiler.disable()
+                profiler.dump_stats(str(args.output / "main.prof"))
             values = sorted(row["ms"] for row in samples)
             draw_values = sorted((b - a) * 1000 for a, b in pairwise(draw_times))
             valid = all(not w["minimized"] and w["foreground"] for w in windows)
@@ -155,12 +170,16 @@ def main():
                 "source": str(args.source.resolve()), "track": args.track,
                 "vehicle_design": args.vehicle_design, "driving_mode": args.driving_mode,
                 "controller": "highway-driver" if args.track == "endless" else "constant-throttle-0.3",
+                "constant_steering": args.steering,
                 "audio": "disabled by existing smoke mode",
                 "tick": state.tick, "fixed_hz": 120,
                 "shape": args.shape, "seed": 23, "resolution": [1920, 1080],
                 "traffic_count": len(state.traffic), "pipeline": args.pipeline,
                 "baseline_compute": args.baseline_compute, "window_sampling_valid": valid,
                 "renderer": app.win.getGsg().getDriverRenderer(),
+                "profile": args.profile,
+                "independent_clock": args.independent_clock,
+                "physics_workers": app.session.simulation._physics_workers.diagnostics() if app.session.simulation._physics_workers is not None else None,
                 "streaming_phases": streaming_phases,
                 "wall_seconds": task.time, "sample_seconds": sum(values) / 1000,
                 "frames": len(values), "average_fps": len(values) * 1000 / sum(values),

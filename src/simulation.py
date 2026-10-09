@@ -76,8 +76,9 @@ class Snapshot:
 class Simulation:
     def __init__(self, seed=0, *, track="coastal", wind=(0, 0, 0), traffic_count=None,
                  road_shape="straight", traffic_span=540, config=CAR,
-                 input_config=GAME_INPUT, traffic_input_config=GAME_INPUT):
+                 input_config=GAME_INPUT, traffic_input_config=GAME_INPUT, physics_workers=0):
         self.config = config
+        self._query_lock = None
         self.input_config = input_config
         self.traffic_input_config = traffic_input_config
         self.wind = Vec3(*wind)
@@ -98,6 +99,9 @@ class Simulation:
         }[track]
         self.spawn = HIGHWAY_SPAWN if track in ("highway", "endless") else SPAWN
         self.closed = False
+        from physics_workers import PhysicsWorkers
+
+        self._physics_workers = PhysicsWorkers(physics_workers) if physics_workers else None
         self._world = None
         self.player = None
         self.npcs = []
@@ -116,6 +120,8 @@ class Simulation:
         if self.closed:
             raise RuntimeError("Simulation is closed")
         self._destroy_physics()
+        if self._physics_workers is not None:
+            self._physics_workers.clear_geometry()
         self._reset_contact_history()
         self.seed = seed
         self.origin_y = 0.0
@@ -740,7 +746,8 @@ class Simulation:
             self._count_player_collisions()
 
         advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe,
-                      static_cache=self._static_support_cache, packet_cache=self._static_support_packet)
+                      static_cache=self._static_support_cache, packet_cache=self._static_support_packet,
+                      workers=self._physics_workers, material=(self.track,self.road.curve,self.origin_y),query_lock=self._query_lock)
         self.collision_count += len(traffic_contacts)
         self._tick += 1
         if self.stream:
@@ -797,6 +804,8 @@ class Simulation:
     def close(self):
         if self.closed:
             return
+        if self._physics_workers is not None:
+            self._physics_workers.close()
         self._destroy_physics()
         self.npcs.clear()
         self._traffic.clear()

@@ -1,0 +1,138 @@
+{
+  "kind": "external-repository package headless check; not render, FPS or human acceptance",
+  "passed": true,
+  "checks": [
+    {
+      "mode": "game",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-candidate-parallel-r1b\\win_amd64\\coastaldrive.exe",
+        "--headless",
+        "--steps",
+        "120",
+        "--track",
+        "coastal",
+        "--seed",
+        "17",
+        "--physics-workers",
+        "9",
+        "--traffic-count",
+        "8",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "game"
+      ],
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-parallel-r1-xmrtvilr\\game",
+      "returncode": 0,
+      "seconds": 3.5737194000030286,
+      "tick_120_and_mode_ok": true,
+      "full_hardware_and_eight_npcs_present": true,
+      "full_hardware_present": true,
+      "log": "game.txt",
+      "physics_workers": {
+        "processes": 9,
+        "configured_processes": 9,
+        "geometry_versions": 1,
+        "remote": 2160,
+        "world_required": 0,
+        "worker_solve": {
+          "wall": {
+            "mean_ms": 3.6372791666878954,
+            "p95_ms": 5.06630000018049,
+            "max_ms": 114.14400000649039
+          },
+          "cpu": {
+            "mean_ms": 3.2335069444444446,
+            "p95_ms": 15.625,
+            "max_ms": 31.25
+          }
+        },
+        "configuration_transfers": 9,
+        "timing_window_requests": 2160
+      }
+    },
+    {
+      "mode": "simulation",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-candidate-parallel-r1b\\win_amd64\\coastaldrive.exe",
+        "--headless",
+        "--steps",
+        "120",
+        "--track",
+        "coastal",
+        "--seed",
+        "17",
+        "--physics-workers",
+        "9",
+        "--traffic-count",
+        "8",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "simulation"
+      ],
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-physics-native-parallel-r1-xmrtvilr\\simulation",
+      "returncode": 0,
+      "seconds": 3.280540200001269,
+      "tick_120_and_mode_ok": true,
+      "full_hardware_and_eight_npcs_present": true,
+      "full_hardware_present": true,
+      "log": "simulation.txt",
+      "physics_workers": {
+        "processes": 9,
+        "configured_processes": 9,
+        "geometry_versions": 1,
+        "remote": 2160,
+        "world_required": 0,
+        "worker_solve": {
+          "wall": {
+            "mean_ms": 3.7090340278626646,
+            "p95_ms": 5.183900000702124,
+            "max_ms": 32.6026999973692
+          },
+          "cpu": {
+            "mean_ms": 3.5517939814814814,
+            "p95_ms": 15.625,
+            "max_ms": 31.25
+          }
+        },
+        "configuration_transfers": 9,
+        "timing_window_requests": 2160
+      }
+    }
+  ],
+  "native_modules": {
+    "mechanical_kernels": {
+      "path": "win_amd64/mechanical_kernels.pyd",
+      "bytes": 133632,
+      "sha256": "6ab69550213d33e4be36ca8b333270f826802d472040b427e60702ddae60d9e6",
+      "matches_build_source_sha256": true
+    },
+    "wheel_contact_kernels": {
+      "path": "win_amd64/wheel_contact_kernels.pyd",
+      "bytes": 88576,
+      "sha256": "f926b64d0a2732663070e3d7614614ee075aa3b33eb1a2ea8cb0b29c7aaae330",
+      "matches_build_source_sha256": true
+    },
+    "convex_cast_kernels": {
+      "path": "win_amd64/convex_cast_kernels.pyd",
+      "bytes": 68608,
+      "sha256": "a54ba6964e0b48f9a8f93e2b5c6b00b6a8f2bf783cb2835d324120647aac4035",
+      "matches_build_source_sha256": true
+    }
+  },
+  "required_files_present": {
+    "executable": true,
+    "license": true,
+    "bullet_license": true,
+    "repaired_gr86_model": true,
+    "gr86_hardware_config": true
+  },
+  "sha256": {
+    "executable": "2f8ca2a9cc48da96e7bb4053460d5b89cb22f10c948f05e2cdd6d6d0da66569d",
+    "license": "db693914a7f6d42f1d3e09c10eda1482e5d94ed4c70a769476ae8d722a9be1ce",
+    "bullet_license": "885cd516a8420acb7c3e0b1a7119913b686495001ae564e3229740460e8cff59",
+    "repaired_gr86_model": "5d6077eb793ca9b44026adfd3f3cac58629c09ac959a83f9983fb8a78818a359",
+    "gr86_hardware_config": "88c6bdce91429ae59247fec5c6bfd4a7531bbfa918e622dd78e61301dafb6a23"
+  }
+}

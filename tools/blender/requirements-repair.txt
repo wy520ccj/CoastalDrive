@@ -1,0 +1,3 @@
+# 仅用于既有Blender源文件的离线位置修复，不进入游戏运行依赖。
+blender-asset-tracer==1.23
+zstandard==0.25.0

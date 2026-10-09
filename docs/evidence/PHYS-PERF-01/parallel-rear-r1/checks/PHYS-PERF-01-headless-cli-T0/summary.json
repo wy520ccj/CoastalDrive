@@ -1,0 +1,53 @@
+{
+  "started_utc": "2026-10-08T17:27:07.154400+00:00",
+  "git_head": "1efa3f3c5d0a1a56f3a725980e18ad832dec1150",
+  "git_status": "M art/vehicles/gr86-source-manifest.json\n M art/vehicles/gr86_2022_premium.blend\n M assets/game/vehicles/gr86_2022_premium.glb\n M docs/asset-register.csv\n M setup.py\n M src/application.py\n M src/coastal_collision.py\n M src/main.py\n M src/scene.py\n M src/session.py\n M src/simulation.py\n M src/suspension_contacts.py\n M src/triangle_support.py\n M src/vehicle.py\n M src/vehicle_suspension.py\n M src/world_step.py\n M tools/blender/build_gr86.py\n M tools/performance/benchmark_runtime.py\n M tools/validate.py\n?? licenses/Bullet-LICENSE.txt\n?? src/convex_cast_kernels.cpp\n?? src/convex_queries.py\n?? src/physics_workers.py\n?? src/session_clock.py\n?? src/vehicle_tire_step.py\n?? tests/test_convex_queries.py\n?? tests/test_physics_workers.py\n?? tests/test_session_clock.py\n?? tools/blender/fix_gr86_rear_layers.py\n?? tools/blender/requirements-repair.txt\n?? vendor/",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_core.py",
+    "tests/test_vehicle_designs.py"
+  ],
+  "tier": "T0",
+  "status": "timeout",
+  "passed": false,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-headless-cli-T0\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.132
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_core.py",
+        "tests/test_vehicle_designs.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-headless-cli-T0\\pytest.log",
+      "status": "timeout",
+      "returncode": null,
+      "error": "exceeded 180.0 wall seconds",
+      "seconds": 180.011
+    }
+  ]
+}

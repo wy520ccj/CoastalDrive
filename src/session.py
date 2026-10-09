@@ -1,6 +1,7 @@
 import hashlib
 import json
 import math
+from contextlib import nullcontext
 from dataclasses import asdict, replace
 from enum import Enum
 
@@ -9,6 +10,7 @@ from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
 from highway_run import TRAFFIC_DENSITIES, HighwayRun
 from race import GameMode, RaceTracker
+from session_clock import SessionClock
 from simulation import FIXED_DT, Control, Simulation, interpolate
 from tracks import get_track
 
@@ -46,7 +48,10 @@ class FixedStepper:
 class Session:
     def __init__(self, seed=0, *, track="coastal", scores=None, road_shape="straight",
                  driving_mode=DrivingMode.GAME, abs_enabled=None, tcs_enabled=None, esc_enabled=None,
-                 vehicle_config=None):
+                 vehicle_config=None, physics_workers=0, independent_clock=False):
+        self.independent_clock = independent_clock
+        self._clock = None
+        self.physics_workers = physics_workers
         self.road_shape = road_shape
         self.traffic_density = "normal"
         self.driving_mode = driving_mode
@@ -55,7 +60,7 @@ class Session:
                                                               base_config=vehicle_config)
         self.simulation = Simulation(
             seed, track=track, road_shape=road_shape,
-            config=self.vehicle_config, input_config=driving_mode.input_config,
+            config=self.vehicle_config, input_config=driving_mode.input_config, physics_workers=physics_workers,
         )
         self.track = get_track(track)
         self.keyboard = KeyboardController()
@@ -128,6 +133,7 @@ class Session:
             self.abs_enabled, self.tcs_enabled, enabled, base_config=self.base_vehicle_config)
 
     def start(self, seed=None, *, countdown=True, mode=None, track=None):
+        self.stop_clock()
         chosen_track = get_track(track) if track is not None else self.track
         chosen_mode = self.mode if mode is None else mode
         if chosen_mode == GameMode.TIME_TRIAL and chosen_track.circuit is None:
@@ -151,6 +157,7 @@ class Session:
                 self.seed, track=track, traffic_count=traffic_count,
                 road_shape=self.road_shape, traffic_span=density.spawn_span,
                 config=self.vehicle_config, input_config=self.driving_mode.input_config,
+                physics_workers=self.physics_workers,
             )
             self.track = get_track(track)
         else:
@@ -185,6 +192,7 @@ class Session:
         return variant
 
     def set_controller(self, controller: Controller):
+        self.stop_clock()
         self.keyboard.clear()
         self.last_control = Control()
         self.controller = controller
@@ -239,6 +247,12 @@ class Session:
                 self.finish()
 
     def frame(self, elapsed):
+        if self.independent_clock:
+            self._skip_frame = False
+            if self._clock is None and self.phase in (Phase.DRIVING,Phase.COUNTDOWN):
+                self._clock = SessionClock(self)
+                self._clock.start()
+            return self._clock.frame() if self._clock is not None else self.current
         if self._skip_frame:
             elapsed = 0.0
             self._skip_frame = False
@@ -267,6 +281,7 @@ class Session:
         return replace(current, impacts=tuple(collected), contacts=self.current.contacts)
 
     def pause(self):
+        self.stop_clock()
         if self.phase in (Phase.DRIVING, Phase.COUNTDOWN):
             self._resume_phase = self.phase
             self.phase = Phase.PAUSED
@@ -285,6 +300,7 @@ class Session:
             self.pause()
 
     def reset_player(self):
+        self.stop_clock()
         if not self.simulation.recover_player():
             self.notice = "附近暂时没有安全空位，请稍后再试"
             return
@@ -301,6 +317,7 @@ class Session:
         self.sync_snapshots()
 
     def menu(self):
+        self.stop_clock()
         self.phase = Phase.MENU
         self.mode = GameMode.FREE_DRIVE
         self.simulation.set_checkpoint_frames_enabled(False)
@@ -311,6 +328,7 @@ class Session:
         self.sync_snapshots()
 
     def finish(self):
+        self.stop_clock()
         self.race.stop()
         self.highway.stop("挑战提前结束" if self.mode == GameMode.DISTANCE_CHALLENGE else "自由驾驶结束")
         self.phase = Phase.RESULTS
@@ -334,5 +352,30 @@ class Session:
             self.camera_distance = 16.0 if self.camera_distance == 11.0 else 11.0
 
     def close(self):
+        self.stop_clock()
         self.keyboard.clear()
         self.simulation.close()
+
+    def stop_clock(self):
+        if self._clock is not None and self._clock.stop():
+            self._clock = None
+
+    def render_segments(self):
+        if self._clock is not None:
+            return self._clock.visible_segments
+        stream = self.simulation.stream
+        return tuple(stream.segments) if stream is not None else ()
+
+    def render_origin(self):
+        return self._clock.visible_origin if self._clock is not None else self.current.origin_y
+
+    def camera_position(self, start, end, origin_y):
+        """世界查询与推进互斥；重定位期间将当帧相机转换到当前世界再转回。"""
+        with self._clock.world_lock if self._clock is not None else nullcontext():
+            offset = origin_y-self.simulation.origin_y
+            start,end = type(start)(start),type(end)(end)
+            start.y += offset
+            end.y += offset
+            result = self.simulation.camera_position(start,end)
+            result.y -= offset
+            return result

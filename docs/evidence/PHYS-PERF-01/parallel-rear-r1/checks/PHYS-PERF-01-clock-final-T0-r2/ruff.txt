@@ -1,0 +1,14 @@
+SIM211 Use `not ...` instead of `False if ... else True`
+   --> src\main.py:153:27
+    |
+151 |         esc_enabled=esc_enabled,
+152 |         physics_workers=args.physics_workers,
+153 |         independent_clock=False if smoke or args.synchronous_physics else True,
+    |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+154 |     )
+155 |     try:
+    |
+help: Replace with `not ...`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).

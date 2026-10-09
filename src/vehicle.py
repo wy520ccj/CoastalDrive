@@ -19,6 +19,7 @@ from vehicle_stability import StabilityControl
 from vehicle_state import FIXED_DT, CarState, Control, VehicleCommand, forward
 from vehicle_steering import SteeringRack, wheel_angles
 from vehicle_suspension import Suspension
+from vehicle_tire_step import TireAdvanceInput
 from vehicle_tires import Tires
 from vehicle_traction import TractionControl
 
@@ -239,7 +240,8 @@ class Vehicle:
         return solve_drivetrain_stages(self.physics_stages(request, dt, tire_substeps=tire_substeps,
             angles=angles, accumulate=accumulate, static_shapes=static_shapes))
 
-    def physics_stages(self, request, dt, *, tire_substeps=None, angles=None, accumulate=False, static_shapes=None):
+    def physics_stages(self, request, dt, *, tire_substeps=None, angles=None, accumulate=False, static_shapes=None,
+                       complete_tires=False):
         """从当前真实Bullet姿态读取接点，完成一个机械/世界共用的积分子步。"""
         drive_torque, engine_drag, pressures = request
         pose = self._chassis.getTransform()
@@ -280,25 +282,34 @@ class Vehicle:
         ) * dt
         tire_contact_tick = self._contact_tick
         suspension = None
+        system = None
         previous_suspension = self.suspension.state
         if self.coupled_suspension:
             tire_contact_tick += 1
             if self.config.finite_drivetrain:
-                system = self.suspension.prepare(self._world, self._chassis, self._vehicle.getWheels(), static_shapes)
-                self._wheel_contacts = self.suspension.candidates(system, self.on_asphalt)
+                if not (complete_tires and tire_substeps==1):
+                    system = self.suspension.prepare(self._world, self._chassis, self._vehicle.getWheels(), static_shapes)
+                    self._wheel_contacts = self.suspension.candidates(system, self.on_asphalt)
                 suspension = self.suspension, system, self.on_asphalt
             else:
                 self._wheel_contacts = self.suspension.advance(
                     self._world, self._chassis, self._vehicle.getWheels(), self.on_asphalt,
                     tire_contact_tick, dt, tuple(external_velocity), tuple(external_angular))
-        coupled_contacts = yield from self.tires.advance_stages(
-            self._chassis, self._wheel_contacts, angles,
-            drive_torque, engine_drag, pressures, tire_contact_tick, dt,
-            tuple(external_velocity), tuple(external_angular),
-            powertrain=self.powertrain if self.config.finite_drivetrain else None,
-            suspension=suspension,
-            substeps=tire_substeps, accumulate=accumulate,
-        )
+        if complete_tires and suspension is not None and tire_substeps==1:
+            result = yield TireAdvanceInput.read(self._chassis,self.tires,self.powertrain,self.suspension,
+                system,self._wheel_contacts,angles,request,tire_contact_tick,dt,
+                tuple(external_velocity),tuple(external_angular),accumulate,
+                world_source=(self._world,self._chassis,self._vehicle.getWheels(),self.on_asphalt,static_shapes,self.suspension.envelope))
+            coupled_contacts = result.commit(self._chassis,self.tires,self.powertrain,self.suspension)
+        else:
+            coupled_contacts = yield from self.tires.advance_stages(
+                self._chassis, self._wheel_contacts, angles,
+                drive_torque, engine_drag, pressures, tire_contact_tick, dt,
+                tuple(external_velocity), tuple(external_angular),
+                powertrain=self.powertrain if self.config.finite_drivetrain else None,
+                suspension=suspension,
+                substeps=tire_substeps, accumulate=accumulate,
+            )
         if suspension is not None:
             self._wheel_contacts = coupled_contacts
             if accumulate:

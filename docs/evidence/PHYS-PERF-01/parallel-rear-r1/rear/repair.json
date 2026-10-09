@@ -1,0 +1,66 @@
+{
+  "blend_changes": [
+    {
+      "object": "OBExhaust dark center",
+      "offset": 388903,
+      "before": -2.1305999755859375,
+      "after": -2.1375999450683594
+    },
+    {
+      "object": "OBExhaust dark center.001",
+      "offset": 390304,
+      "before": -2.1305999755859375,
+      "after": -2.1375999450683594
+    },
+    {
+      "object": "OBExhaust outlet",
+      "offset": 391705,
+      "before": -2.087549924850464,
+      "after": -2.093549966812134
+    },
+    {
+      "object": "OBExhaust outlet.001",
+      "offset": 393106,
+      "before": -2.087549924850464,
+      "after": -2.093549966812134
+    },
+    {
+      "object": "OBRear diffuser",
+      "offset": 411173,
+      "before": -2.1200098991394043,
+      "after": -2.1230099201202393
+    },
+    {
+      "object": "OBRear plate",
+      "offset": 413975,
+      "before": -2.1250100135803223,
+      "after": -2.1280100345611572
+    }
+  ],
+  "glb_changes": [
+    {
+      "material_group": "Exhaust Steel surfaces",
+      "translation_m": 0.006
+    },
+    {
+      "material_group": "Head Light surfaces",
+      "vertices": 216,
+      "outer_surface_m": 2.135509967803955
+    },
+    {
+      "material_group": "Satin Black Plastic surfaces",
+      "exhaust_center_parts": 2,
+      "translation_m": 0.007
+    },
+    {
+      "material_group": "Satin Black Plastic surfaces",
+      "vertices": 216,
+      "outer_surface_m": 2.135509967803955
+    }
+  ],
+  "method": "DNA loc fields and corresponding GLB vertex translation; no Blender rebuild",
+  "sha256": {
+    "art\\vehicles\\gr86_2022_premium.blend": "6f8737616cfa9e4f1bfefb2218ea0db52dd1074ab440007b3050454f56d329cc",
+    "assets\\game\\vehicles\\gr86_2022_premium.glb": "5d6077eb793ca9b44026adfd3f3cac58629c09ac959a83f9983fb8a78818a359"
+  }
+}
