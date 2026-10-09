@@ -1,0 +1,73 @@
+{
+  "kind": "收尾3秒进程CPU变化，非先前ABBA负载证据",
+  "wall_seconds": 3.0191684,
+  "nonessential_games": [],
+  "top_cpu": [
+    {
+      "name": "pwsh",
+      "id": 14708,
+      "cpu_seconds": 0.390625,
+      "average_cores": 0.129381653570566
+    },
+    {
+      "name": "ChatGPT",
+      "id": 8,
+      "cpu_seconds": 0.203125,
+      "average_cores": 0.06727845985669431
+    },
+    {
+      "name": "ChatGPT",
+      "id": 35740,
+      "cpu_seconds": 0.09375,
+      "average_cores": 0.03105159685693584
+    },
+    {
+      "name": "CrossDeviceService",
+      "id": 16136,
+      "cpu_seconds": 0.078125,
+      "average_cores": 0.0258763307141132
+    },
+    {
+      "name": "iGoSwServer",
+      "id": 5912,
+      "cpu_seconds": 0.03125,
+      "average_cores": 0.010350532285645279
+    },
+    {
+      "name": "msedgewebview2",
+      "id": 11080,
+      "cpu_seconds": 0.03125,
+      "average_cores": 0.010350532285645279
+    },
+    {
+      "name": "AWCC.UCSubAgent",
+      "id": 21732,
+      "cpu_seconds": 0.015625,
+      "average_cores": 0.0051752661428226395
+    },
+    {
+      "name": "HipsTray",
+      "id": 5904,
+      "cpu_seconds": 0.015625,
+      "average_cores": 0.0051752661428226395
+    },
+    {
+      "name": "msedgewebview2",
+      "id": 32656,
+      "cpu_seconds": 0.015625,
+      "average_cores": 0.0051752661428226395
+    },
+    {
+      "name": "nierserver",
+      "id": 25040,
+      "cpu_seconds": 0.015625,
+      "average_cores": 0.0051752661428226395
+    },
+    {
+      "name": "promecefpluginhost",
+      "id": 37548,
+      "cpu_seconds": 0.015625,
+      "average_cores": 0.0051752661428226395
+    }
+  ]
+}

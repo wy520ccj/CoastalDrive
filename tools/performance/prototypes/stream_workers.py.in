@@ -1,0 +1,127 @@
+# 隔离实验：持久共享槽和有界排队；完整求解仍执行原实现。
+_stream_slots = 4
+_stream_capacity = 131072
+_stream_descriptor = struct.Struct('<QQQ')
+
+
+class StreamConnection:
+    """小管道仅传索引；数值输入/输出沿原字节协议进入持久共享槽。"""
+
+    def __init__(self, connection, name, worker, count, *, child):
+        self.connection = connection
+        self.memory = SharedMemory(name=name)
+        self.worker = worker
+        self.count = count
+        self.child = child
+
+    def offset(self, identifier, result):
+        slot = (identifier // self.count) % _stream_slots
+        return ((self.worker * _stream_slots + slot) * 2 + result) * _stream_capacity
+
+    def send_bytes(self, packet):
+        numeric = (not self.child and packet[0] == 1) or (self.child and packet[0] in (2, 3))
+        if not numeric:
+            self.connection.send_bytes(packet)
+            return
+        identifier = struct.unpack_from('<Q', packet, 1)[0]
+        offset = self.offset(identifier, int(self.child))
+        size = len(packet)
+        if size > _stream_capacity:
+            raise BufferError('完整数值包超过流式原型共享槽容量')
+        self.memory.buf[offset:offset + size] = packet
+        self.connection.send_bytes(b'\4' + _stream_descriptor.pack(identifier, offset, size))
+
+    def recv_bytes(self):
+        packet = self.connection.recv_bytes()
+        if packet[0] != 4:
+            return packet
+        identifier, offset, size = _stream_descriptor.unpack_from(packet, 1)
+        expected = self.offset(identifier, int(not self.child))
+        if offset != expected or size > _stream_capacity:
+            raise ValueError('流式共享槽索引或大小错误')
+        return bytes(self.memory.buf[offset:offset + size])
+
+    def close(self):
+        self.connection.close()
+        self.memory.close()
+
+
+def _stream_worker_loop(connection, name, worker, count):
+    _worker_loop(StreamConnection(connection, name, worker, count, child=True))
+
+
+class StreamPhysicsWorkers(PhysicsWorkers):
+    """保持读取/求解/有序提交重叠；仅满槽时回收最早未读结果。"""
+
+    def __init__(self, count):
+        super().__init__(count)
+        self.stream_arena = SharedMemory(create=True, size=count * _stream_slots * 2 * _stream_capacity)
+        self.stream_pending = [deque() for _ in range(count)]
+        self.stream_high_water = 0
+
+    def _start_one(self):
+        parent, child = get_context('spawn').Pipe()
+        index = len(self.processes)
+        process = get_context('spawn').Process(target=_stream_worker_loop,
+            args=(child, self.stream_arena.name, index, self.count), daemon=True)
+        process.start()
+        child.close()
+        self.processes.append((process, StreamConnection(parent, self.stream_arena.name, index, self.count, child=False)))
+        self.worker_configurations.append(set())
+        self.worker_references.append(None)
+
+    def submit(self, request, shapes, material):
+        frozen = _freeze_request(request)
+        if not isinstance(frozen, TireAdvanceInput) or frozen.normal_system is not None:
+            raise TypeError('流式原型要求现行完整车辆数值输入')
+        self._start()
+        self.finish_preparation()
+        self._publish_geometry(shapes, material)
+        identifier = self.identifier
+        self.identifier += 1
+        index = identifier % self.count
+        pending = self.stream_pending[index]
+        if len(pending) == _stream_slots:
+            previous = pending[0]
+            self.completed[previous] = self._receive(index, previous)
+        configuration_id = id(frozen.config)
+        self.configurations[configuration_id] = frozen.config
+        configuration = None
+        if configuration_id not in self.worker_configurations[index]:
+            configuration = frozen.config
+            self.worker_configurations[index].add(configuration_id)
+            self.configuration_transfers += 1
+        connection = self.processes[index][1]
+        if configuration is not None or self.worker_references[index] != self.reference:
+            _send_message(connection, ('context', self.reference, configuration_id, configuration))
+            self.worker_references[index] = self.reference
+        connection.send_bytes(b'\1' + _job_header.pack(identifier, configuration_id) + input_bytes(frozen))
+        pending.append(identifier)
+        self.stream_high_water = max(self.stream_high_water, len(pending))
+        self.in_flight[index] = pending[0]
+        self.numeric_packets += 1
+        return index, identifier
+
+    def _receive(self, index, identifier):
+        pending = self.stream_pending[index]
+        if not pending or pending[0] != identifier:
+            raise ValueError('流式结果未按工作进程原请求顺序回收')
+        result = super()._receive(index, identifier)
+        pending.popleft()
+        if pending:
+            self.in_flight[index] = pending[0]
+        return result
+
+    def diagnostics(self):
+        return {**super().diagnostics(), 'stream_queue_high_water': self.stream_high_water,
+                'stream_slots_per_worker': _stream_slots, 'original_complete_solver': True}
+
+    def close(self):
+        try:
+            super().close()
+        finally:
+            self.stream_arena.close()
+            self.stream_arena.unlink()
+
+
+PhysicsWorkers = StreamPhysicsWorkers

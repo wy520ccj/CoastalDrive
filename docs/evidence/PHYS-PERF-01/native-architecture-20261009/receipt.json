@@ -1,0 +1,65 @@
+{
+  "baseline_commit": "00d4d8e",
+  "production_source_changes": false,
+  "complete_native_vehicle_solver_implemented": false,
+  "stream_prototype_integrated": false,
+  "physics_120hz_verified": false,
+  "native_solver_port_status": "not_implemented; preparation and verification boundary defined",
+  "stream_13cars": {
+    "runs": {
+      "A1": {
+        "count": 600,
+        "mean_ms": 19.603530000040337,
+        "p95_ms": 28.282624997882518,
+        "p99_ms": 33.651068001527165,
+        "max_ms": 50.7145000010496,
+        "total_seconds": 11.762118000024202
+      },
+      "B1": {
+        "count": 600,
+        "mean_ms": 15.997981166698688,
+        "p95_ms": 21.25203999949007,
+        "p99_ms": 24.790761999720416,
+        "max_ms": 28.753899998264387,
+        "total_seconds": 9.598788700019213
+      },
+      "B2": {
+        "count": 600,
+        "mean_ms": 15.905479666671454,
+        "p95_ms": 21.344624999437656,
+        "p99_ms": 23.15497200041135,
+        "max_ms": 27.934800000366522,
+        "total_seconds": 9.543287800002872
+      },
+      "A2": {
+        "count": 600,
+        "mean_ms": 16.631507666619047,
+        "p95_ms": 22.22545500098931,
+        "p99_ms": 24.76673799981653,
+        "max_ms": 27.312499998515705,
+        "total_seconds": 9.978904599971429
+      }
+    },
+    "snapshots_each": 600,
+    "all_600_full_snapshots_equal": true,
+    "stable_performance_benefit_proven": false,
+    "reason": "A1/A2 variation; user prioritized full native solver before further scheduler work",
+    "first_128_steps_with_games": "correctness only; games stopped before ABBA",
+    "no_new_9car_or_foreground_validation": true
+  },
+  "validation": {
+    "T1_workflow": "passed",
+    "pytest_physics_benchmark": "2 passed",
+    "ruff_src_tests_tools": "passed",
+    "git_diff_check": "passed",
+    "T2": "not_run; historical failure remains",
+    "T3": "not_run",
+    "human_gate": "pending"
+  },
+  "tools_sha256": {
+    "tools/performance/benchmark_vehicle_solver.py": "febd3c440b2673fd9a5166660c63274ef787722084b8f1e21f769739dac1c3c6",
+    "tools/performance/prototypes/build_stream_prototype.py": "bf915b43c3f0149d2297c7e8df193c2ced1ce1e2658e32732523ff891a70d309",
+    "tools/performance/prototypes/stream_workers.py.in": "5180ca93d35a22992a18c0a534830ecf0da9b3ca3c1da50d55e2dd44840ede17"
+  },
+  "raw_logs": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\job-20261009"
+}
