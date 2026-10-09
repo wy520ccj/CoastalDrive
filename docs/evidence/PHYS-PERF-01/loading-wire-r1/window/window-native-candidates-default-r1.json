@@ -1,0 +1,442 @@
+{
+  "kind": "short window comparison; not final performance or human gate",
+  "source": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src",
+  "track": "coastal",
+  "vehicle_design": "gr86-2022-premium-6mt",
+  "driving_mode": "game",
+  "controller": "constant-throttle-0.3",
+  "constant_steering": 0.0,
+  "gc_rate": 1.0,
+  "python_switch_interval": 0.005,
+  "audio": "disabled by existing smoke mode",
+  "tick": 1399,
+  "fixed_hz": 120,
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 8,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "profile": false,
+  "independent_clock": true,
+  "physics_workers": {
+    "processes": 9,
+    "configured_processes": 9,
+    "geometry_versions": 1,
+    "remote": 25182,
+    "world_required": 0,
+    "worker_solve": {
+      "wall": {
+        "mean_ms": 3.6495578369139525,
+        "p95_ms": 5.414599999994607,
+        "max_ms": 23.200900000119873
+      },
+      "cpu": {
+        "mean_ms": 3.505706787109375,
+        "p95_ms": 15.625,
+        "max_ms": 15.625
+      }
+    },
+    "configuration_transfers": 9,
+    "timing_window_requests": 4096
+  },
+  "streaming_phases": {},
+  "wall_seconds": 30.006945399999996,
+  "sample_seconds": 27.01567470000009,
+  "frames": 2614,
+  "average_fps": 96.75864212267818,
+  "display_draw_frames": 2613,
+  "display_draw_fps": 96.77047519099284,
+  "display_draw_p95_ms": 15.790200000083132,
+  "display_draw_p99_ms": 19.033699999909004,
+  "display_draw_max_ms": 89.01130000003832,
+  "display_draw_over_50ms": 1,
+  "p95_ms": 12.693500000068525,
+  "p99_ms": 14.873899999884088,
+  "max_ms": 88.90659999997297,
+  "frames_over_50ms": 1,
+  "frames_over_100ms": 0,
+  "dropped_simulation_seconds": 16.358333333333317,
+  "warmup_dropped_seconds": 1.8666666666666665,
+  "distance_m": 44.83817314186693,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 18.727136299999998,
+      "ms": 88.90659999997297
+    },
+    {
+      "second": 4.5593664,
+      "ms": 27.60379999995166
+    },
+    {
+      "second": 18.511709999999997,
+      "ms": 24.761099999977887
+    },
+    {
+      "second": 11.261599999999998,
+      "ms": 23.873399999956746
+    },
+    {
+      "second": 21.170672699999997,
+      "ms": 23.319200000059936
+    },
+    {
+      "second": 14.340348799999997,
+      "ms": 21.910000000161745
+    },
+    {
+      "second": 10.025195699999998,
+      "ms": 21.374200000082055
+    },
+    {
+      "second": 23.238828599999998,
+      "ms": 21.280899999965186
+    },
+    {
+      "second": 21.9244673,
+      "ms": 21.066499999960797
+    },
+    {
+      "second": 23.7074324,
+      "ms": 19.73449999991317
+    },
+    {
+      "second": 25.831598599999996,
+      "ms": 19.61659999983567
+    },
+    {
+      "second": 21.7288832,
+      "ms": 18.764200000077835
+    }
+  ],
+  "segment_work_max_ms": 0,
+  "segment_step_max_ms": 0,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1584,
+      "render_states": 2998
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3705,
+      "render_states": 7528
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3155,
+      "render_states": 7626
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3096,
+      "render_states": 7625
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3207,
+      "render_states": 7090
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3079,
+      "render_states": 7588
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3054,
+      "render_states": 6943
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3465,
+      "render_states": 7527
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3498,
+      "render_states": 6952
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2777,
+      "render_states": 7397
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2631,
+      "render_states": 6479
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2874,
+      "render_states": 7297
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2896,
+      "render_states": 6717
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2608,
+      "render_states": 7273
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2657,
+      "render_states": 6723
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2642,
+      "render_states": 6690
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2869,
+      "render_states": 7181
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2654,
+      "render_states": 6669
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2652,
+      "render_states": 6665
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2834,
+      "render_states": 7184
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2845,
+      "render_states": 7064
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2102,
+      "render_states": 7118
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1717,
+      "render_states": 6504
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1706,
+      "render_states": 6308
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1840,
+      "render_states": 6911
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1762,
+      "render_states": 7030
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1836,
+      "render_states": 6802
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1782,
+      "render_states": 6246
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1713,
+      "render_states": 6209
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1688,
+      "render_states": 5976
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1777,
+      "render_states": 6039
+    }
+  ],
+  "passed": false,
+  "short_performance_passed": false,
+  "git_head": "e21315432757e560e31a66b47cae3d407110aab1",
+  "git_status": "M src/physics_workers.py\n M src/vehicle_tire_step.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M tools/performance/benchmark_runtime.py\n?? tests/test_wheel_observations.py"
+}

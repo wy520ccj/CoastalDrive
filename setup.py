@@ -24,6 +24,7 @@ setup(
     version="0.8.3",
     package_dir={"": "src"},
     ext_modules=[
+        Extension("physics_packet_kernels", ["src/physics_packet_kernels.c"], extra_compile_args=compile_args),
         Extension("mechanical_kernels", ["src/mechanical_kernels.c"], extra_compile_args=compile_args),
         Extension("wheel_contact_kernels", ["src/wheel_contact_kernels.c"],
                   depends=["src/wheel_convex_distance.h"], extra_compile_args=compile_args),
@@ -60,6 +61,7 @@ setup(
             ],
             "plugins": ["pandagl", "p3openal_audio"],
             "include_modules": {"*": [
+                "physics_packet_kernels",
                 "mechanical_kernels",
                 "wheel_contact_kernels",
                 "convex_cast_kernels",

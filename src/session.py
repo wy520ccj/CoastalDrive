@@ -69,6 +69,7 @@ class Session:
         self.phase = Phase.MENU
         self.seed = seed
         self.countdown_ticks = 0
+        self._settling_initial = False
         self.camera_distance = 11.0
         self._resume_phase = Phase.DRIVING
         self._skip_frame = True
@@ -132,7 +133,7 @@ class Session:
         self.vehicle_config = self.driving_mode.configured_vehicle(
             self.abs_enabled, self.tcs_enabled, enabled, base_config=self.base_vehicle_config)
 
-    def start(self, seed=None, *, countdown=True, mode=None, track=None):
+    def start(self, seed=None, *, countdown=True, mode=None, track=None, settle_initial=False):
         self.stop_clock()
         chosen_track = get_track(track) if track is not None else self.track
         chosen_mode = self.mode if mode is None else mode
@@ -165,6 +166,12 @@ class Session:
             self.simulation.traffic_count = traffic_count
             self.simulation.traffic_span = density.spawn_span
             self.simulation.reset(self.seed)
+        if settle_initial:
+            settled = self.simulation.settle_initial(loading_ticks=60 if countdown else None)
+            self._settling_initial = settled is None
+        else:
+            self.simulation.prepare_physics(background=countdown)
+            self._settling_initial = False
         self.mode = chosen_mode
         self.simulation.set_checkpoint_frames_enabled(self.mode == GameMode.TIME_TRIAL)
         self.race.start(
@@ -213,11 +220,7 @@ class Session:
 
     def tick(self):
         if self.phase == Phase.COUNTDOWN:
-            self.countdown_ticks -= 1
-            if self.countdown_ticks == 0:
-                self.phase = Phase.DRIVING
-                self.keyboard.clear()
-                self.begin_driving()
+            self.countdown_step(1)
         elif self.phase == Phase.DRIVING:
             self.previous = self.current
             self.last_control = self.controller.sample(self.current, FIXED_DT)
@@ -246,6 +249,31 @@ class Session:
             ):
                 self.finish()
 
+    def countdown_step(self, ticks):
+        """未开放驾驶时只结算起步节拍，不施力、不记圈速。"""
+        ready = self.simulation.physics_ready()
+        self.countdown_ticks = max(0,self.countdown_ticks-ticks)
+        if ready and self._settling_initial:
+            for _ in range(min(ticks,8)):
+                self.previous = self.current
+                self._settling_initial = not self.simulation.settle_initial_step()
+                self.current = self.simulation.snapshot()
+                if not self._settling_initial:
+                    break
+        if self.countdown_ticks == 0 and ready and not self._settling_initial:
+            self.phase = Phase.DRIVING
+            self.keyboard.clear()
+            self.begin_driving()
+
+    def advance_countdown(self, elapsed):
+        """倒计时按真实经过时间显示；物理追帧上限不应把三秒拖成四秒。"""
+        if not math.isfinite(elapsed) or elapsed<0:
+            raise ValueError("Frame time must be finite and nonnegative")
+        self.stepper.remainder += elapsed
+        ticks = int((self.stepper.remainder+1e-12)/FIXED_DT)
+        self.stepper.remainder = max(0.,self.stepper.remainder-ticks*FIXED_DT)
+        self.countdown_step(ticks)
+
     def frame(self, elapsed):
         if self.independent_clock:
             self._skip_frame = False
@@ -271,7 +299,9 @@ class Session:
             if latest.tick > before_tick and latest.contact_epoch == epoch:
                 collected.extend(latest.impacts)
 
-        if self.phase in (Phase.DRIVING, Phase.COUNTDOWN):
+        if self.phase == Phase.COUNTDOWN:
+            self.advance_countdown(elapsed)
+        elif self.phase == Phase.DRIVING:
             self.stepper.advance(elapsed, tick_and_collect)
         # 保留导致驾驶结束的最后一批事件；结果页后续帧自然没有新 tick。
         if (self.phase not in (Phase.DRIVING, Phase.RESULTS)

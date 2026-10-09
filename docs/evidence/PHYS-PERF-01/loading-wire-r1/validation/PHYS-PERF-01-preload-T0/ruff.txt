@@ -1,0 +1,27 @@
+I001 [*] Import block is un-sorted or un-formatted
+   --> tools\performance\benchmark_runtime.py:131:9
+    |
+130 |       if args.trace_phases:
+131 | /         import world_step
+132 | |         from direct.showbase.ShowBase import ShowBase
+133 | |
+134 | |         from physics_workers import PhysicsWorkers
+135 | |         from session import Session
+136 | |         from simulation import Simulation
+137 | |         from vehicle import Vehicle
+    | |___________________________________^
+138 |
+139 |           for owner,attribute,name in (
+    |
+help: Organize imports
+    |
+130 |     if args.trace_phases:
+    -         import world_step
+131 |         from direct.showbase.ShowBase import ShowBase
+132 |
+133 +         import world_step
+134 |         from physics_workers import PhysicsWorkers
+    |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

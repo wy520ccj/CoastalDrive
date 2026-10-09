@@ -1,0 +1,80 @@
+{
+  "checks": [
+    {
+      "mode": "game",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-candidate-parallel-r1d\\win_amd64\\coastaldrive.exe",
+        "--smoke",
+        "--track",
+        "test",
+        "--seed",
+        "17",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "game",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-package-parallel-r1d-render\\game"
+      ],
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-parallel-r1b-render-9f2xa1a2",
+      "returncode": 0,
+      "timeout": false,
+      "seconds": 4.509034800000336,
+      "report": {
+        "passed": true,
+        "tick": 258,
+        "player_position": [
+          95.00030517578125,
+          6.326192378997803,
+          0.44999951124191284
+        ],
+        "traffic_count": 0,
+        "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+        "screenshot": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-package-parallel-r1d-render\\game\\h0-offscreen.png",
+        "restart_20_nodes_stable": true,
+        "restart_20_tasks_stable": true,
+        "restart_20_events_stable": true
+      },
+      "passed": true
+    },
+    {
+      "mode": "simulation",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-candidate-parallel-r1d\\win_amd64\\coastaldrive.exe",
+        "--smoke",
+        "--track",
+        "test",
+        "--seed",
+        "17",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "simulation",
+        "--output",
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-package-parallel-r1d-render\\simulation"
+      ],
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-parallel-r1b-render-9f2xa1a2",
+      "returncode": 0,
+      "timeout": false,
+      "seconds": 5.8502411999998,
+      "report": {
+        "passed": true,
+        "tick": 258,
+        "player_position": [
+          95.00111389160156,
+          8.230729103088379,
+          0.44998082518577576
+        ],
+        "traffic_count": 0,
+        "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+        "screenshot": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-package-parallel-r1d-render\\simulation\\h0-offscreen.png",
+        "restart_20_nodes_stable": true,
+        "restart_20_tasks_stable": true,
+        "restart_20_events_stable": true
+      },
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "scope": "独立包离屏渲染与20次场景重启；不代表前台FPS或人工驾驶。"
+}

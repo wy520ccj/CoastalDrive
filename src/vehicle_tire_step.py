@@ -125,7 +125,7 @@ class TireAdvanceInput:
             normal_system,suspension.geometry if normal_system is not None else None,
             suspension.compression,suspension.state.force_tick,accumulate,suspension.state.normal_force,wheels,world_source)
 
-    def solve(self, *, static_geometry=None, surface_material=None):
+    def solve(self, *, static_geometry=None, surface_material=None, surface_candidates=None):
         """仅一个机械子步；原Tires代码计算完整末状态，记录冲量而不操作Bullet。"""
         tires = Tires.__new__(Tires)
         tires.config = self.config
@@ -143,8 +143,9 @@ class TireAdvanceInput:
         suspension.config = self.config
         suspension.hubs = tires.hubs
         suspension.envelope = None
-        suspension._support_shapes = None
-        suspension._candidate_cache = {}
+        # 只保留当前几何版本的覆盖盒候选；几何加载时清空，越界仍作原完整筛选。
+        suspension._support_shapes = static_geometry if surface_candidates is not None else None
+        suspension._candidate_cache = {} if surface_candidates is None else surface_candidates
         suspension.geometry = self.normal_geometry
         suspension.compression = self.compression
         suspension.state = SuspensionState(force_tick=self.previous_force_tick,normal_force=self.previous_normal_force)

@@ -1,0 +1,302 @@
+{
+  ".gitattributes": {
+    "bytes": 70,
+    "sha256": "368a6f267d6aca1f66c81bafca5475dbd373111122bb9e78fb8ad3ad0a17ed62"
+  },
+  "countdown/PHYS-PERF-01-countdown-loading-final-game/report.json": {
+    "bytes": 274277,
+    "sha256": "a60e079d03c4db1ee5d86f7c32ffc1b7bed8b8b4f21068142ca414907449f322"
+  },
+  "countdown/PHYS-PERF-01-countdown-loading-final-simulation/report.json": {
+    "bytes": 270886,
+    "sha256": "6c3b3efb88bc2d9f0134fdf5d49719bf00edb933cad8bc2ef7d58220bdfe247a"
+  },
+  "countdown/PHYS-PERF-01-countdown-render-r7/report.json": {
+    "bytes": 71329,
+    "sha256": "233796d60975cb336ac54f4b8edc2d57c0e6301925fd890e92bcc7c8ea07658c"
+  },
+  "countdown/PHYS-PERF-01-countdown-staged-window-game/report.json": {
+    "bytes": 197329,
+    "sha256": "0b3027d22e7f5ba6f9387478282d79d1bd2b7ad6c14b3096a83fc843bdc24162"
+  },
+  "countdown/PHYS-PERF-01-countdown-staged-window-simulation/report.json": {
+    "bytes": 200827,
+    "sha256": "3cd0514fd37665cbfcef5d43b1a88fd06877dc66af8835cc8e3fc2d285f736ca"
+  },
+  "countdown/PHYS-PERF-01-countdown-window-r1/report.json": {
+    "bytes": 126795,
+    "sha256": "4cc90c104aeda5b9541f06836f6d5c7c3a45c516195fb0111cf584c4ce6fc181"
+  },
+  "countdown/visual-r7/1.png": {
+    "bytes": 1253361,
+    "sha256": "ba0e2226a7084457e282e6e076d5322c13a3e5662c3f175b7c5f55a93d1d8b38"
+  },
+  "countdown/visual-r7/2.png": {
+    "bytes": 1249180,
+    "sha256": "b5fae094bd30462e708cbba18e409d7062f52441a398cf2ac88be01116230b00"
+  },
+  "countdown/visual-r7/3.png": {
+    "bytes": 1249601,
+    "sha256": "4e8315f6547dae491848bf05cf5b185df46026a861102c3ef89691718c2c308e"
+  },
+  "countdown/visual-r7/go.png": {
+    "bytes": 1248598,
+    "sha256": "2cfdb4bf38b938ffa5dc7f66e079721d130f15da85e9d3811ce24acddc38ae52"
+  },
+  "numeric/native-observe-nine-r2-timing.json": {
+    "bytes": 4026,
+    "sha256": "c9a83dc09a21ede031921f0d34532c98bfc392ea1466290282741bbbea627ca9"
+  },
+  "numeric/numeric-packet-nine-r1-timing.json": {
+    "bytes": 4020,
+    "sha256": "5e4b4e1b6ee2f61603603a44989bfc41f9d31ad898af482528ed5accbfa47722"
+  },
+  "numeric/persistent-candidates-nine-r1-timing.json": {
+    "bytes": 4027,
+    "sha256": "3e73e1744d7bf2f1c601cca8af578a9df6eda806420ea8f113ae08981f2c4e21"
+  },
+  "package/build_parallel_package.py": {
+    "bytes": 6773,
+    "sha256": "f2c49621fc6ae1eadea2f03f50ea8cbf9e6048e6b3f22d7cb1f04ed7898a2e77"
+  },
+  "package/check_parallel_package.py": {
+    "bytes": 5292,
+    "sha256": "d582a8f7a3dbe437126091bdb0217806d78405954d8c58fa24ba6f0b17e9506c"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1d/build.txt": {
+    "bytes": 10927,
+    "sha256": "3f79ba0d4c8400f4c771ed06a908ea03471b82fe3c534ff17c8b28f0ddc0a6a2"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1d/game.txt": {
+    "bytes": 265854,
+    "sha256": "d9f7563bf741e8fcb869612880f79c93a93e6d1cd2d5cb06445d188c097d9244"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1d/package-check.json": {
+    "bytes": 4972,
+    "sha256": "4e0313671475917f3175e6bbe7008eb46f1faa3a3afc04a7b80e31f997b97796"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1d/simulation.txt": {
+    "bytes": 266271,
+    "sha256": "1a941e08cfc2e4551ef4cb266f0c08e66e34071c7c1cacba0321885b598a1603"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1d/summary.json": {
+    "bytes": 84946,
+    "sha256": "0ef967c5e45ed96144c3a52197cb161de22b78356beb2a858831271a6ca8bf52"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1d-render/game/h0-offscreen.png": {
+    "bytes": 163531,
+    "sha256": "a23b442146430a3bfceec8d69a218ad7e5a42ed6897484f7a5535f4bb28eee0a"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1d-render/game/h0-render-smoke.json": {
+    "bytes": 523,
+    "sha256": "04ec03e5a3288a01ea07dc2d1b32751bc4fb7436a41b755cae86c3597a827822"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1d-render/game/process.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1d-render/simulation/h0-offscreen.png": {
+    "bytes": 163464,
+    "sha256": "a8b345d556769f2a7f5a7b6713284d0d4512c6848fc00fb5c143e155c1c0d441"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1d-render/simulation/h0-render-smoke.json": {
+    "bytes": 529,
+    "sha256": "acee31987db06caef438301e616a6d9f9992c9bd038880eb8500ac3f740867d7"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1d-render/simulation/process.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "package/PHYS-PERF-01-package-parallel-r1d-render/summary.json": {
+    "bytes": 2900,
+    "sha256": "8a582c9019a3a66c0982806a58a69bc9890223cdaffb63aa687cda09c1a08685"
+  },
+  "package/render_parallel_package.py": {
+    "bytes": 2113,
+    "sha256": "ab4e0233996fddb6c7ddd7e87728db381ad14b8ce4cb01588af5a9ac8f41057e"
+  },
+  "README.md": {
+    "bytes": 8003,
+    "sha256": "6a494d69ebf0683148fa2cd6379b16f41b788dd6a8900109eb10bcd4b855ae7c"
+  },
+  "receipt.json": {
+    "bytes": 2154,
+    "sha256": "d46bf8038b1699243cc0ab21759b8ee22f54f0f5d22cd9ce14b3a220a16bdadd"
+  },
+  "validation/PHYS-PERF-01-countdown-settle-T0/pytest.txt": {
+    "bytes": 102,
+    "sha256": "5bc3928447a8c7ef73cce39246560c85e3bc194f795181073405a68fa50e8ae6"
+  },
+  "validation/PHYS-PERF-01-countdown-settle-T0/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "validation/PHYS-PERF-01-countdown-settle-T0/summary.json": {
+    "bytes": 2442,
+    "sha256": "dfc374463d09e778d477e410a354f3271db4d83bdd7ff6b823e979f1b39c2a95"
+  },
+  "validation/PHYS-PERF-01-countdown-staged-settle-T0/pytest.txt": {
+    "bytes": 102,
+    "sha256": "72b4f00226fc4ccc22f7c78b766a0f0634f57edf04c6d614f9725544abe398f9"
+  },
+  "validation/PHYS-PERF-01-countdown-staged-settle-T0/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "validation/PHYS-PERF-01-countdown-staged-settle-T0/summary.json": {
+    "bytes": 2382,
+    "sha256": "a9a506408b0de18bf81a4a5ea67c065e2e577fd486bc41e1dee28a44478a67d4"
+  },
+  "validation/PHYS-PERF-01-countdown-T0/pytest.txt": {
+    "bytes": 102,
+    "sha256": "db7d40bfdb1149ac31ae8c8d808d4fb0de364cec90d36ff93a7a55ff14503f22"
+  },
+  "validation/PHYS-PERF-01-countdown-T0/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "validation/PHYS-PERF-01-countdown-T0/summary.json": {
+    "bytes": 2362,
+    "sha256": "65d2807802d64eefefe1b0530ab7338c974bb156053d168f5389a32bd12684f0"
+  },
+  "validation/PHYS-PERF-01-countdown-T0-r2/pytest.txt": {
+    "bytes": 2113,
+    "sha256": "27b64f4eacaee73766e8ed1c70e99702d8c2263b5f4fc38f43c787226eb99901"
+  },
+  "validation/PHYS-PERF-01-countdown-T0-r2/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "validation/PHYS-PERF-01-countdown-T0-r2/summary.json": {
+    "bytes": 2449,
+    "sha256": "90a62628e6ba6b8a53f0eaba07606f7e8ee8badde89784728405313a649b5c27"
+  },
+  "validation/PHYS-PERF-01-loading-render-order-T0/pytest.txt": {
+    "bytes": 6988,
+    "sha256": "63fe67802c79e74c8e4ed90e6e016c45140a6855108487fe0c8760a170052c3c"
+  },
+  "validation/PHYS-PERF-01-loading-render-order-T0/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "validation/PHYS-PERF-01-loading-render-order-T0/summary.json": {
+    "bytes": 2134,
+    "sha256": "c064f2c823139202296f75187bf2798fdea90c5aac8fd1711328bad2bf976923"
+  },
+  "validation/PHYS-PERF-01-loading-render-order-T0-r2/pytest.txt": {
+    "bytes": 101,
+    "sha256": "b82daab4356e2a1d682a9eec974b042e5e74c72cf2f252da5234f7f7977c06b3"
+  },
+  "validation/PHYS-PERF-01-loading-render-order-T0-r2/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "validation/PHYS-PERF-01-loading-render-order-T0-r2/summary.json": {
+    "bytes": 2126,
+    "sha256": "a6aca3f159825c242531d0515eda523e303022c5e49a1935124cad77be5f896e"
+  },
+  "validation/PHYS-PERF-01-loading-wire-T1/pytest.txt": {
+    "bytes": 7773,
+    "sha256": "7663893597c710b0bf9cf7878ee12aa391a8347853adcdf4eb827a821084b089"
+  },
+  "validation/PHYS-PERF-01-loading-wire-T1/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "validation/PHYS-PERF-01-loading-wire-T1/summary.json": {
+    "bytes": 5977,
+    "sha256": "2c9f6aa96286be741a0dddb492331eb4b738f79a7fc1697cd734f9a05d3debc2"
+  },
+  "validation/PHYS-PERF-01-loading-wire-T1-r2/pytest.txt": {
+    "bytes": 7043,
+    "sha256": "72ed8900018c626d3e5fa163c96dbc76143f49b078b67285c76983790f742689"
+  },
+  "validation/PHYS-PERF-01-loading-wire-T1-r2/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "validation/PHYS-PERF-01-loading-wire-T1-r2/summary.json": {
+    "bytes": 4602,
+    "sha256": "dbd6c14b3f8829c65360c61f70e7cdada1af4a64b74be4fa2a50276d24489c2d"
+  },
+  "validation/PHYS-PERF-01-loading-wire-T1-r3/headless-0.txt": {
+    "bytes": 32358,
+    "sha256": "d8fdaf9f94636ec6150d673fc8ed39986542293bcf584260aaa7c430160c1980"
+  },
+  "validation/PHYS-PERF-01-loading-wire-T1-r3/headless-17.txt": {
+    "bytes": 32358,
+    "sha256": "d8fdaf9f94636ec6150d673fc8ed39986542293bcf584260aaa7c430160c1980"
+  },
+  "validation/PHYS-PERF-01-loading-wire-T1-r3/headless-23.txt": {
+    "bytes": 32358,
+    "sha256": "d8fdaf9f94636ec6150d673fc8ed39986542293bcf584260aaa7c430160c1980"
+  },
+  "validation/PHYS-PERF-01-loading-wire-T1-r3/pytest.txt": {
+    "bytes": 113,
+    "sha256": "17e721b58059195fcc9c115936de136f7c2b6c077043e5c1ccf2f8c1fd0f229f"
+  },
+  "validation/PHYS-PERF-01-loading-wire-T1-r3/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "validation/PHYS-PERF-01-loading-wire-T1-r3/summary.json": {
+    "bytes": 4796,
+    "sha256": "a0cae367b5dbf5e4c40b0515f6cd209afdd264d7d2d353c789efdb4d5e0e113b"
+  },
+  "validation/PHYS-PERF-01-observations-T0/pytest.txt": {
+    "bytes": 184,
+    "sha256": "b5c321ff73477a0e661a812baa358bd827c3f0df98bb1b19b0b9766eb3c3a8e2"
+  },
+  "validation/PHYS-PERF-01-observations-T0/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "validation/PHYS-PERF-01-observations-T0/summary.json": {
+    "bytes": 1862,
+    "sha256": "3e02a75f068e89e0a95bca835d56f59fc35c4505019468aa1921b45715b7f656"
+  },
+  "validation/PHYS-PERF-01-preload-T0/ruff.txt": {
+    "bytes": 855,
+    "sha256": "6b7257d18715ff004423a90fd753e1b38002eca94cd1a239bcd5bd3e0232add1"
+  },
+  "validation/PHYS-PERF-01-preload-T0/summary.json": {
+    "bytes": 1758,
+    "sha256": "1091fa0213d478bb77b13d0790f0e16f58470dbd7cc9b9799ba46932bc761de2"
+  },
+  "validation/PHYS-PERF-01-preload-T0-r2/pytest.txt": {
+    "bytes": 100,
+    "sha256": "9a0c3b092cc6c196cfd53031ce943649900110fa2c92a370dec557831ff8eb3c"
+  },
+  "validation/PHYS-PERF-01-preload-T0-r2/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "validation/PHYS-PERF-01-preload-T0-r2/summary.json": {
+    "bytes": 1842,
+    "sha256": "477f88a9b27aa92ad6015652a2df238ed2f185bc5f36e66b3828be7545390105"
+  },
+  "validation/PHYS-PERF-01-wire-T0/pytest.txt": {
+    "bytes": 2527,
+    "sha256": "3529f5d1ca8115dc18f1e046fb3d49d8eccba8452d0176c6876b8961eda24901"
+  },
+  "validation/PHYS-PERF-01-wire-T0/ruff.txt": {
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "validation/PHYS-PERF-01-wire-T0/summary.json": {
+    "bytes": 1933,
+    "sha256": "e6cb40519c1b22ccec1de7586a2afd2481e0646625ecf22624a53b00c8b478c8"
+  },
+  "window/window-native-candidates-default-r1.json": {
+    "bytes": 10031,
+    "sha256": "98e2890623b83c1559a3f7a654ad3537f6ed903c36df50d1023a03560f0e1dd6"
+  },
+  "window/window-numeric-packet-phase-r1.json": {
+    "bytes": 12492,
+    "sha256": "5b3e12e8fc05661a0c40b47ee5480d13b91c1d58aacbc8f296b3454731258ab9"
+  },
+  "window/window-phase-default-r1.json": {
+    "bytes": 12233,
+    "sha256": "2caa8c6cd24ae0190f4bb768b3b01d6896f26a72083828eb2bb571ce5d3f2678"
+  }
+}

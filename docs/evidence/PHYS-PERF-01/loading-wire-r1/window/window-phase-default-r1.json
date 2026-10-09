@@ -1,0 +1,517 @@
+{
+  "kind": "short window comparison; not final performance or human gate",
+  "source": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src",
+  "track": "coastal",
+  "vehicle_design": "gr86-2022-premium-6mt",
+  "driving_mode": "game",
+  "controller": "constant-throttle-0.3",
+  "constant_steering": 0.0,
+  "gc_rate": 1.0,
+  "python_switch_interval": 0.005,
+  "audio": "disabled by existing smoke mode",
+  "tick": 1384,
+  "fixed_hz": 120,
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 8,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "profile": false,
+  "trace_phases": true,
+  "phase_timing": {
+    "render-snapshot": {
+      "count": 2603,
+      "window_samples": 2603,
+      "wall_mean_ms": 0.3553180560856461,
+      "cpu_mean_ms": 0.31213983864771416,
+      "wall_p95_ms": 0.5112000001190609,
+      "cpu_p95_ms": 0.0
+    },
+    "worker-submit": {
+      "count": 22587,
+      "window_samples": 4096,
+      "wall_mean_ms": 0.14425460220477307,
+      "cpu_mean_ms": 0.13835392039668837,
+      "wall_p95_ms": 0.8551000000807107,
+      "cpu_p95_ms": 0.0
+    },
+    "window-update": {
+      "count": 2603,
+      "window_samples": 2603,
+      "wall_mean_ms": 1.443530388014373,
+      "cpu_mean_ms": 0.8343737994621591,
+      "wall_p95_ms": 2.33869999988201,
+      "cpu_p95_ms": 15.625
+    },
+    "panda-state-collection": {
+      "count": 2603,
+      "window_samples": 2603,
+      "wall_mean_ms": 1.969395582018702,
+      "cpu_mean_ms": 1.4106319631194775,
+      "wall_p95_ms": 2.8540000000703003,
+      "cpu_p95_ms": 15.625
+    },
+    "worker-receive": {
+      "count": 22590,
+      "window_samples": 4096,
+      "wall_mean_ms": 0.6432405710498483,
+      "cpu_mean_ms": 0.1452523240371846,
+      "wall_p95_ms": 2.9959999999391584,
+      "cpu_p95_ms": 0.0
+    },
+    "vehicle-observation": {
+      "count": 11295,
+      "window_samples": 4096,
+      "wall_mean_ms": 0.09514585214683156,
+      "cpu_mean_ms": 0.10928508189464364,
+      "wall_p95_ms": 0.15029999985927134,
+      "cpu_p95_ms": 0.0
+    },
+    "static-geometry": {
+      "count": 1254,
+      "window_samples": 1254,
+      "wall_mean_ms": 1.051985885168146,
+      "cpu_mean_ms": 0.8597488038277512,
+      "wall_p95_ms": 1.1799999999766442,
+      "cpu_p95_ms": 15.625
+    },
+    "physical-world-tick": {
+      "count": 1254,
+      "window_samples": 1254,
+      "wall_mean_ms": 20.586540031901308,
+      "cpu_mean_ms": 10.055322966507177,
+      "wall_p95_ms": 26.483500000040294,
+      "cpu_p95_ms": 31.25
+    },
+    "physical-session-tick": {
+      "count": 1254,
+      "window_samples": 1254,
+      "wall_mean_ms": 21.34505637958279,
+      "cpu_mean_ms": 10.640948963317385,
+      "wall_p95_ms": 27.235600000039994,
+      "cpu_p95_ms": 31.25
+    }
+  },
+  "independent_clock": true,
+  "physics_workers": {
+    "processes": 9,
+    "configured_processes": 9,
+    "geometry_versions": 1,
+    "remote": 24912,
+    "world_required": 0,
+    "worker_solve": {
+      "wall": {
+        "mean_ms": 3.615706103514693,
+        "p95_ms": 5.394299999807117,
+        "max_ms": 12.145400000008522
+      },
+      "cpu": {
+        "mean_ms": 2.92205810546875,
+        "p95_ms": 15.625,
+        "max_ms": 15.625
+      }
+    },
+    "configuration_transfers": 9,
+    "timing_window_requests": 4096
+  },
+  "streaming_phases": {},
+  "wall_seconds": 30.0063108,
+  "sample_seconds": 27.010899600000126,
+  "frames": 2604,
+  "average_fps": 96.40552660452626,
+  "display_draw_frames": 2603,
+  "display_draw_fps": 96.41948912650388,
+  "display_draw_p95_ms": 15.66299999990406,
+  "display_draw_p99_ms": 19.46840000005068,
+  "display_draw_max_ms": 24.152999999841995,
+  "display_draw_over_50ms": 0,
+  "p95_ms": 12.734199999840712,
+  "p99_ms": 14.486499999975422,
+  "max_ms": 25.522099999989223,
+  "frames_over_50ms": 0,
+  "frames_over_100ms": 0,
+  "dropped_simulation_seconds": 16.558333333333326,
+  "warmup_dropped_seconds": 1.7833333333333334,
+  "distance_m": 43.652323797620234,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 28.8178147,
+      "ms": 25.522099999989223
+    },
+    {
+      "second": 27.878397999999997,
+      "ms": 24.438799999870753
+    },
+    {
+      "second": 22.752819300000002,
+      "ms": 23.64080000006652
+    },
+    {
+      "second": 8.644728299999999,
+      "ms": 21.035100000062812
+    },
+    {
+      "second": 25.0940901,
+      "ms": 20.54269999985081
+    },
+    {
+      "second": 8.830432199999999,
+      "ms": 19.276100000070073
+    },
+    {
+      "second": 6.167931299999999,
+      "ms": 18.66979999999785
+    },
+    {
+      "second": 28.9281516,
+      "ms": 18.41300000000956
+    },
+    {
+      "second": 27.2642757,
+      "ms": 18.21220000010726
+    },
+    {
+      "second": 17.8516818,
+      "ms": 18.07199999984732
+    },
+    {
+      "second": 9.6898565,
+      "ms": 17.79209999995146
+    },
+    {
+      "second": 8.626434699999999,
+      "ms": 17.47690000001967
+    }
+  ],
+  "segment_work_max_ms": 0,
+  "segment_step_max_ms": 0,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1584,
+      "render_states": 2972
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3035,
+      "render_states": 6825
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3052,
+      "render_states": 7074
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3260,
+      "render_states": 6792
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3037,
+      "render_states": 7060
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3488,
+      "render_states": 7582
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3260,
+      "render_states": 6958
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3422,
+      "render_states": 7004
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3533,
+      "render_states": 6963
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2753,
+      "render_states": 7416
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2619,
+      "render_states": 6852
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2934,
+      "render_states": 7299
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2622,
+      "render_states": 6637
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2649,
+      "render_states": 6727
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2829,
+      "render_states": 7188
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2868,
+      "render_states": 7223
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2655,
+      "render_states": 6610
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2630,
+      "render_states": 6647
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2673,
+      "render_states": 6622
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2651,
+      "render_states": 6634
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3041,
+      "render_states": 7070
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2399,
+      "render_states": 7078
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1781,
+      "render_states": 6535
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1849,
+      "render_states": 6991
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1834,
+      "render_states": 6934
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1801,
+      "render_states": 6348
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1686,
+      "render_states": 6388
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1778,
+      "render_states": 6349
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1774,
+      "render_states": 6114
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1849,
+      "render_states": 6926
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1880,
+      "render_states": 6812
+    }
+  ],
+  "passed": false,
+  "short_performance_passed": false,
+  "git_head": "e21315432757e560e31a66b47cae3d407110aab1",
+  "git_status": "M src/physics_workers.py\n M src/vehicle_tire_step.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M tools/performance/benchmark_runtime.py\n?? tests/test_wheel_observations.py"
+}

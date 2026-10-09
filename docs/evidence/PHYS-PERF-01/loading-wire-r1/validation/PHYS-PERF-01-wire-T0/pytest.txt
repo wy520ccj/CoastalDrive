@@ -1,0 +1,47 @@
+..FF........                                                             [100%]
+================================== FAILURES ===================================
+____ test_truncation_version_layout_and_unknown_types_are_explicit_errors _____
+
+    def test_truncation_version_layout_and_unknown_types_are_explicit_errors():
+        payload = encode(_layout,WheelDynamicsState())
+        for end in range(len(payload)):
+            with pytest.raises(ValueError):
+                from_bytes(payload[:end])
+        with pytest.raises(ValueError,match='多余'):
+            from_bytes(payload+b'\0')
+        with pytest.raises(ValueError,match='版本'):
+            from_bytes(b'BAD1'+payload[4:])
+        with pytest.raises(ValueError,match='布局'):
+            from_bytes(payload[:4]+b'\xff'*8+payload[12:])
+        with pytest.raises(ValueError,match='类型'):
+            from_bytes(payload[:12]+b'\xff')
+        with pytest.raises(TypeError):
+>           encode(_layout,object())
+E           ValueError: PyUnicode_FromFormatV() expects an ASCII-encoded format string, got a non-ASCII byte: 0xe8
+
+tests\test_physics_wire.py:67: ValueError
+_________ test_packet_record_missing_fields_and_layout_mismatch_raise _________
+
+    def test_packet_record_missing_fields_and_layout_mismatch_raise():
+        incomplete = WheelDynamicsState.__new__(WheelDynamicsState)
+        with pytest.raises(ValueError,match='缺字段'):
+>           encode(_layout,incomplete)
+E           ValueError: PyUnicode_FromFormatV() expects an ASCII-encoded format string, got a non-ASCII byte: 0xe8
+
+tests\test_physics_wire.py:79: ValueError
+
+During handling of the above exception, another exception occurred:
+
+    def test_packet_record_missing_fields_and_layout_mismatch_raise():
+        incomplete = WheelDynamicsState.__new__(WheelDynamicsState)
+>       with pytest.raises(ValueError,match='缺字段'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E        Regex: '缺字段'
+E        Input: 'PyUnicode_FromFormatV() expects an ASCII-encoded format string, got a non-ASCII byte: 0xe8'
+
+tests\test_physics_wire.py:78: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_physics_wire.py::test_truncation_version_layout_and_unknown_types_are_explicit_errors
+FAILED tests/test_physics_wire.py::test_packet_record_missing_fields_and_layout_mismatch_raise
+2 failed, 10 passed in 8.37s

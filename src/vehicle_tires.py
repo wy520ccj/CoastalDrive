@@ -4,7 +4,7 @@ import math
 from dataclasses import replace
 
 from panda3d.core import Mat3, Quat, Vec3
-from wheel_contact_kernels import rotor_frame_geometry
+from wheel_contact_kernels import rotor_frame_geometry, wheel_observations
 
 from suspension_kinematics import advance_contact_geometry
 from tire_compliance import deformation_frame, project_deformation, world_deformation
@@ -16,7 +16,7 @@ from vehicle_config import CAR, wheel_hubs
 from vehicle_contacts import road_support
 from vehicle_state import WheelDynamicsState, WheelState
 from wheel_dynamics import Mobility, advance_wheel
-from wheel_geometry import contact_geometry, mechanical_axis
+from wheel_geometry import mechanical_axis
 
 
 class Tires:
@@ -342,6 +342,8 @@ class Tires:
 
     def observe(self, chassis, contacts, tick):
         """完成Bullet步后采样当前滑移；保留前一施力阶段的力与求解滑移。"""
+        if self.config.wheel_rotor_transport:
+            return self.observe_rotors(chassis,contacts,tick)
         pose = chassis.getTransform()
         velocity, angular = chassis.getLinearVelocity(), chassis.getAngularVelocity()
         states = []
@@ -363,30 +365,51 @@ class Tires:
             hub = point + normal * self.config.wheel_radius
             vx = (velocity + angular.cross(hub)).dot(tangent)
             vy = (velocity + angular.cross(point)).dot(axle)
-            radius, spin_axis = self.config.wheel_radius, tuple(axle)
-            if self.config.wheel_rotor_transport:
-                spin_axis = mechanical_axis(pose.getQuat().getRight(), pose.getQuat().getForward(), state.steering)
-                config = self.config
-                geometry = ({"width": config.wheel_width, "shoulder": config.wheel_shoulder_radius,
-                             "crown": config.wheel_crown_height}
-                            if config.suspension_si_enabled and config.suspension_coupled_enabled else {})
-                spin_axis, frame, radius, moment_x = contact_geometry(spin_axis, tuple(normal), tuple(point), radius, **geometry)
-                tangent, axle, _normal = frame
-                vx = dot(velocity, tangent) + dot(angular, moment_x)
-                vy = dot(tuple(velocity[a] + cross(angular, point)[a] for a in range(3)), axle)
+            radius = self.config.wheel_radius
             kappa, alpha = slip_state(vx, vy, self.omega[index],
                                       radius, self.config)
             mu = self.config.road_friction if contact.surface == "asphalt" else self.config.grass_friction
             states.append(replace(
-                state, relative_omega=self.omega[index] + (dot(angular, spin_axis)
-                    if self.config.wheel_rotor_transport else angular.dot(axle)),
+                state, relative_omega=self.omega[index] + angular.dot(axle),
                 longitudinal_speed=float(vx), lateral_speed=float(vy),
                 kappa=kappa if supported else None, alpha=alpha if supported else None,
                 sample_support=supported, sample_tick=tick,
                 sample_grip=tire_grip(contact.normal_load, mu, self.config) if supported else 0.0,
-                mechanical_axis=spin_axis if self.config.wheel_rotor_transport else (0.0, 0.0, 0.0),
-                rolling_radius=radius if self.config.wheel_rotor_transport else None,
+                mechanical_axis=(0.0, 0.0, 0.0), rolling_radius=None,
             ))
+        self.states = tuple(states)
+
+    def observe_rotors(self, chassis, contacts, tick):
+        """四轮共同采样原机械几何；没有新的积分或车辆状态来源。"""
+        config = self.config
+        pose = chassis.getTransform()
+        orientation = pose.getQuat()
+        normals,points,supported = [],[],[]
+        for index,contact in enumerate(contacts):
+            support = contact.in_contact and road_support(contact.contact_normal)
+            if support:
+                normal = Vec3(*contact.contact_normal)
+                point = Vec3(*contact.contact_point)-pose.getPos()
+            else:
+                normal = orientation.getUp()
+                point = orientation.xform(Vec3(*self.hubs[index]))-normal*config.wheel_radius
+            normals.append(tuple(normal))
+            points.append(tuple(point))
+            supported.append(support)
+        observations = wheel_observations(tuple(orientation.getRight()),tuple(orientation.getForward()),
+            tuple(state.steering for state in self.states),tuple(normals),tuple(points),
+            tuple(chassis.getLinearVelocity()),tuple(chassis.getAngularVelocity()),tuple(self.omega),
+            tuple(contact.normal_load for contact in contacts),
+            tuple(config.road_friction if contact.surface=='asphalt' else config.grass_friction for contact in contacts),
+            (config.wheel_radius,config.wheel_width if config.suspension_si_enabled and config.suspension_coupled_enabled else None,
+             config.wheel_shoulder_radius,config.wheel_crown_height,config.slip_speed,config.mass,config.tire_peak_load_exponent))
+        states = []
+        for state,support,values in zip(self.states,supported,observations):
+            axis,radius,relative,vx,vy,kappa,alpha,grip = values
+            states.append(replace(state,relative_omega=relative,longitudinal_speed=vx,lateral_speed=vy,
+                kappa=kappa if support else None,alpha=alpha if support else None,
+                sample_support=support,sample_tick=tick,sample_grip=grip if support else 0.,
+                mechanical_axis=axis,rolling_radius=radius))
         self.states = tuple(states)
 
     def wheel_poses(self, chassis, bullet_vehicle):

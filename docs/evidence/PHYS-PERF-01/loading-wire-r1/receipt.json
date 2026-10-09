@@ -1,0 +1,36 @@
+{
+  "baseline_head": "e21315432757e560e31a66b47cae3d407110aab1",
+  "state": "automatic block closed; optimization paused at user request; realtime and human gates pending",
+  "scope": "numeric cache/observations/wire; loading and 3-second countdown with real initial settling; no T2/T3",
+  "trajectory_payloads": {
+    "persistent-candidates-nine-r1": {
+      "payload_sha256": "50c86491ade70d63cd74dde1980ad1539d1119082685aae6428886a43e01b1ac",
+      "gzip_sha256": "11a69fdea23470a85829202d8ed2b739842a72a099e03011d17b0b4e87773418",
+      "ticks": 128,
+      "shared_archive": "../parallel-rear-r1/trajectories/coastal.json.xz"
+    },
+    "native-observe-nine-r2": {
+      "payload_sha256": "50c86491ade70d63cd74dde1980ad1539d1119082685aae6428886a43e01b1ac",
+      "gzip_sha256": "11a69fdea23470a85829202d8ed2b739842a72a099e03011d17b0b4e87773418",
+      "ticks": 128,
+      "shared_archive": "../parallel-rear-r1/trajectories/coastal.json.xz"
+    },
+    "numeric-packet-nine-r1": {
+      "payload_sha256": "50c86491ade70d63cd74dde1980ad1539d1119082685aae6428886a43e01b1ac",
+      "gzip_sha256": "11a69fdea23470a85829202d8ed2b739842a72a099e03011d17b0b4e87773418",
+      "ticks": 128,
+      "shared_archive": "../parallel-rear-r1/trajectories/coastal.json.xz"
+    }
+  },
+  "build_inputs_still_identical": true,
+  "package": "physics-native-candidate-parallel-r1d",
+  "package_native_sha256": {
+    "physics_packet_kernels": "fdf6f7667c2b976926685e880f6cc196e744194c8d22f1f2336fe7d8cc7b14c5",
+    "mechanical_kernels": "6ab69550213d33e4be36ca8b333270f826802d472040b427e60702ddae60d9e6",
+    "wheel_contact_kernels": "bbe8358f572a04a6a532838b9f07019cdc5df5008a227cabe041082fb6ede79e",
+    "convex_cast_kernels": "a54ba6964e0b48f9a8f93e2b5c6b00b6a8f2bf783cb2835d324120647aac4035"
+  },
+  "t1_final": "44 passed, Ruff and seeds 0/17/23 each 1200 ticks passed; see validation/T1-r3",
+  "reuse": "T1-r1 683 passed/1 failed before staged settling and render-order fix; numeric solver scopes unchanged. Counts are not added.",
+  "manual_gate": "not accepted by user; screenshots and short windows are supporting evidence only"
+}

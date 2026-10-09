@@ -1,0 +1,519 @@
+{
+  "kind": "short window comparison; not final performance or human gate",
+  "source": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\src",
+  "track": "coastal",
+  "vehicle_design": "gr86-2022-premium-6mt",
+  "driving_mode": "game",
+  "controller": "constant-throttle-0.3",
+  "constant_steering": 0.0,
+  "gc_rate": 1.0,
+  "python_switch_interval": 0.005,
+  "audio": "disabled by existing smoke mode",
+  "tick": 1521,
+  "fixed_hz": 120,
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 8,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "profile": false,
+  "trace_phases": true,
+  "phase_timing": {
+    "render-snapshot": {
+      "count": 2757,
+      "window_samples": 2757,
+      "wall_mean_ms": 0.3528833877431158,
+      "cpu_mean_ms": 0.4477239753355096,
+      "wall_p95_ms": 0.5065000000286091,
+      "cpu_p95_ms": 0.0
+    },
+    "window-update": {
+      "count": 2757,
+      "window_samples": 2757,
+      "wall_mean_ms": 1.2120159956452181,
+      "cpu_mean_ms": 1.0031284004352556,
+      "wall_p95_ms": 1.8993999997292121,
+      "cpu_p95_ms": 15.625
+    },
+    "panda-state-collection": {
+      "count": 2757,
+      "window_samples": 2757,
+      "wall_mean_ms": 1.9248370692786019,
+      "cpu_mean_ms": 1.5471980413492927,
+      "wall_p95_ms": 2.836699999988923,
+      "cpu_p95_ms": 15.625
+    },
+    "worker-receive": {
+      "count": 24317,
+      "window_samples": 4096,
+      "wall_mean_ms": 0.6220043385277425,
+      "cpu_mean_ms": 0.10473639840440845,
+      "wall_p95_ms": 2.980100000058883,
+      "cpu_p95_ms": 0.0
+    },
+    "worker-submit": {
+      "count": 24309,
+      "window_samples": 4096,
+      "wall_mean_ms": 0.09025474104384847,
+      "cpu_mean_ms": 0.0854878851454194,
+      "wall_p95_ms": 0.7780999999340565,
+      "cpu_p95_ms": 0.0
+    },
+    "vehicle-observation": {
+      "count": 12159,
+      "window_samples": 4096,
+      "wall_mean_ms": 0.09659387285124874,
+      "cpu_mean_ms": 0.14778147874002798,
+      "wall_p95_ms": 0.14790000022912864,
+      "cpu_p95_ms": 0.0
+    },
+    "static-geometry": {
+      "count": 1350,
+      "window_samples": 1350,
+      "wall_mean_ms": 1.004980888884785,
+      "cpu_mean_ms": 0.8101851851851851,
+      "wall_p95_ms": 1.0882999999921594,
+      "cpu_p95_ms": 15.625
+    },
+    "physical-world-tick": {
+      "count": 1350,
+      "window_samples": 1350,
+      "wall_mean_ms": 19.074514296303448,
+      "cpu_mean_ms": 8.263888888888888,
+      "wall_p95_ms": 23.814300000140065,
+      "cpu_p95_ms": 31.25
+    },
+    "physical-session-tick": {
+      "count": 1350,
+      "window_samples": 1350,
+      "wall_mean_ms": 19.80636325924833,
+      "cpu_mean_ms": 8.773148148148149,
+      "wall_p95_ms": 24.51310000014928,
+      "cpu_p95_ms": 31.25
+    }
+  },
+  "independent_clock": true,
+  "physics_workers": {
+    "processes": 9,
+    "configured_processes": 9,
+    "geometry_versions": 2,
+    "remote": 27378,
+    "world_required": 0,
+    "worker_solve": {
+      "wall": {
+        "mean_ms": 3.6493800048841285,
+        "p95_ms": 5.48869999965973,
+        "max_ms": 12.23389999995561
+      },
+      "cpu": {
+        "mean_ms": 3.1280517578125,
+        "p95_ms": 15.625,
+        "max_ms": 15.625
+      }
+    },
+    "configuration_transfers": 9,
+    "timing_window_requests": 4096,
+    "preparation_seconds": 0.4747241000000031,
+    "numeric_packets": 27378
+  },
+  "streaming_phases": {},
+  "wall_seconds": 30.0092257,
+  "sample_seconds": 27.01084230000015,
+  "frames": 2758,
+  "average_fps": 102.10714532215772,
+  "display_draw_frames": 2757,
+  "display_draw_fps": 102.1170762612092,
+  "display_draw_p95_ms": 15.03339999999298,
+  "display_draw_p99_ms": 18.344099999922037,
+  "display_draw_max_ms": 22.872499999721185,
+  "display_draw_over_50ms": 0,
+  "p95_ms": 12.308700000176032,
+  "p99_ms": 14.936899999611342,
+  "max_ms": 24.036599999817554,
+  "frames_over_50ms": 0,
+  "frames_over_100ms": 0,
+  "dropped_simulation_seconds": 15.766666666666662,
+  "warmup_dropped_seconds": 1.4916666666666663,
+  "distance_m": 54.660539994727856,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 9.1642188,
+      "ms": 24.036599999817554
+    },
+    {
+      "second": 26.8129477,
+      "ms": 22.487900000214722
+    },
+    {
+      "second": 28.2632515,
+      "ms": 21.209300000009534
+    },
+    {
+      "second": 25.3072354,
+      "ms": 20.665500000177417
+    },
+    {
+      "second": 27.879657499999997,
+      "ms": 20.357999999760068
+    },
+    {
+      "second": 22.7039349,
+      "ms": 19.673600000260194
+    },
+    {
+      "second": 24.216488899999998,
+      "ms": 19.06619999999748
+    },
+    {
+      "second": 13.458529299999999,
+      "ms": 17.821399999775167
+    },
+    {
+      "second": 7.763655399999999,
+      "ms": 17.50240000001213
+    },
+    {
+      "second": 5.8358965000000005,
+      "ms": 17.100200000186305
+    },
+    {
+      "second": 6.6985866000000005,
+      "ms": 16.988500000024942
+    },
+    {
+      "second": 5.816853099999999,
+      "ms": 16.762199999902805
+    }
+  ],
+  "segment_work_max_ms": 0,
+  "segment_step_max_ms": 0,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0,
+      "max_step_ms": 0,
+      "completed": 0,
+      "cancelled": 0,
+      "phase": "",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2835,
+      "render_states": 3001
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3174,
+      "render_states": 6985
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3328,
+      "render_states": 7100
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3239,
+      "render_states": 7635
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3446,
+      "render_states": 7614
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3036,
+      "render_states": 7070
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3380,
+      "render_states": 7599
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 3342,
+      "render_states": 7029
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2673,
+      "render_states": 6968
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2694,
+      "render_states": 6949
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2910,
+      "render_states": 6577
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2699,
+      "render_states": 6815
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2707,
+      "render_states": 6782
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2673,
+      "render_states": 7341
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2922,
+      "render_states": 7332
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2656,
+      "render_states": 6748
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2773,
+      "render_states": 6419
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2721,
+      "render_states": 6723
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2672,
+      "render_states": 7191
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 2189,
+      "render_states": 7221
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1781,
+      "render_states": 6554
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1867,
+      "render_states": 7181
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1736,
+      "render_states": 6464
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1781,
+      "render_states": 6410
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1681,
+      "render_states": 6864
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1862,
+      "render_states": 6895
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1467,
+      "render_states": 6185
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1706,
+      "render_states": 6129
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1834,
+      "render_states": 5979
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1791,
+      "render_states": 6380
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1780,
+      "render_states": 5919
+    }
+  ],
+  "passed": false,
+  "short_performance_passed": false,
+  "git_head": "e21315432757e560e31a66b47cae3d407110aab1",
+  "git_status": "M setup.py\n M src/physics_workers.py\n M src/session.py\n M src/simulation.py\n M src/vehicle_tire_step.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M tests/test_physics_workers.py\n M tools/performance/benchmark_runtime.py\n M tools/validate.py\n?? src/physics_packet_kernels.c\n?? src/physics_wire.py\n?? tests/test_wheel_observations.py"
+}

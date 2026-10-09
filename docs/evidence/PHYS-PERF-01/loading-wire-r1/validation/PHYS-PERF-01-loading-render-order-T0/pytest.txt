@@ -1,0 +1,127 @@
+..F                                                                      [100%]
+================================== FAILURES ===================================
+_ test_results_horizontal_keys_and_selected_action[GameMode.DISTANCE_CHALLENGE-endless] _
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-479/test_results_horizontal_keys_a2')
+mode = <GameMode.DISTANCE_CHALLENGE: 'distance_challenge'>, track = 'endless'
+
+    @pytest.mark.parametrize("mode,track", [
+        (GameMode.TIME_TRIAL, "coastal"),
+        (GameMode.FREE_DRIVE, "coastal"),
+        (GameMode.DISTANCE_CHALLENGE, "endless"),
+    ])
+    def test_results_horizontal_keys_and_selected_action(tmp_path, mode, track):
+        app = CoastalDrive(smoke=True, output=tmp_path)
+        app.taskMgr.remove("finish-smoke")
+        app.taskMgr.remove("drive-update")
+        exits = []
+        app.userExit = lambda: exits.append(True)
+    
+        def press(key):
+            app.messenger.send(key)
+            app.messenger.send(key + "-up")
+    
+        try:
+            app.start_game(mode=mode, track=track)
+            app.session.phase = Phase.DRIVING
+            app.refresh_panel()
+            for succeeded in (True, False):
+                if mode == GameMode.TIME_TRIAL:
+                    app.session.race.snapshot = replace(
+                        app.session.race.snapshot, finished=True, last_lap=87.123,
+                        invalidated=not succeeded, invalid_reason="错过检查点" if not succeeded else "",
+                    )
+                    app.session.tick()
+                elif mode == GameMode.DISTANCE_CHALLENGE:
+                    app.session.highway.snapshot = replace(
+                        app.session.highway.snapshot, finished=True, succeeded=succeeded,
+                        reason="完成挑战" if succeeded else "发生碰撞",
+                    )
+                    app.session.tick()
+                else:
+                    app.session.finish()
+                assert app.session.phase == Phase.RESULTS
+                frozen = app.session.simulation.snapshot()
+                # 故意不刷新面板：比赛刚结束时的首个按键也必须使用结算按钮。
+                app.messenger.send("arrow_right")
+                app.messenger.send("arrow_right")
+                assert app.panel_selection == 1  # 按住不连续跳选项。
+                app.messenger.send("arrow_right-up")
+                app.refresh_panel()
+                assert app.panel_selection == 1
+                assert app.buttons[1]["frameTexture"][0] == app.button_states[2]
+                press("d")
+                assert app.panel_selection == 2
+                press("arrow_right")
+                assert app.panel_selection == 0
+                press("arrow_left")
+                assert app.panel_selection == 2
+                press("a")
+                assert app.panel_selection == 1
+                press("arrow_up")
+                assert app.panel_selection == 0
+                press("arrow_down")
+                assert app.panel_selection == 1
+                assert app.session.simulation.snapshot() == frozen
+                assert not app.session.keyboard.pressed
+                press("enter")
+                assert app.session.phase == Phase.MENU
+                assert not app.main_menu.root.isHidden()
+                # 不等待渲染帧，立即再次进入同一模式并结束。
+>               app.start_game(mode=mode, track=track)
+
+tests\test_results_keyboard.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\application.py:151: in start_game
+    self._enter_game(mode, track)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <application.CoastalDrive object at 0x000001E6078DEE40>
+mode = <GameMode.DISTANCE_CHALLENGE: 'distance_challenge'>, track = 'endless'
+
+    def _enter_game(self, mode, track):
+        self.driving_keys_held.clear()
+        self.hud.select_radio(None)
+        if track == "endless":
+            self.session.traffic_density = self.highway_density_keys[self.highway_density_index]
+        self.session.start(mode=mode, track=track,settle_initial=True)
+        self.sync_scene()
+        if track == "endless":
+            # 重开复用Scene时，道路可能已回到起点；加载阶段补齐近景。
+            self.scene.sync_segments()
+        self.chase_camera.position = None
+        self._camera_origin = self.session.simulation.origin_y
+        self.apply_scene(self.session.current,0.)
+        # 首次显存上传/绘制准备留在加载画面；倒计时开始后只切换已生成的数字。
+        # 手动加载帧同样先执行PBR正常准备，让新灯光使用专用阴影shader。
+        self.pipeline._update(Task.Task())
+        self.render.prepareScene(self.win.getGsg())
+        self.countdown.root.prepareScene(self.win.getGsg())
+        for _ in range(2):
+>           self.graphicsEngine.renderFrame()
+E           AssertionError: Shader input camera_world_position is not present.
+E            at line 397 of c:\buildslave\sdk-windows-amd64\build\panda\src\pgraph\shaderAttrib.cxx
+
+src\application.py:183: AssertionError
+---------------------------- Captured stderr call -----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+Assertion failed: Shader input camera_world_position is not present.
+ at line 397 of c:\buildslave\sdk-windows-amd64\build\panda\src\pgraph\shaderAttrib.cxx
+Assertion failed: Shader input camera_world_position is not present.
+ at line 397 of c:\buildslave\sdk-windows-amd64\build\panda\src\pgraph\shaderAttrib.cxx
+Assertion failed: Shader input camera_world_position is not present.
+ at line 397 of c:\buildslave\sdk-windows-amd64\build\panda\src\pgraph\shaderAttrib.cxx
+Assertion failed: Shader input camera_world_position is not present.
+ at line 397 of c:\buildslave\sdk-windows-amd64\build\panda\src\pgraph\shaderAttrib.cxx
+Assertion failed: Shader input camera_world_position is not present.
+ at line 397 of c:\buildslave\sdk-windows-amd64\build\panda\src\pgraph\shaderAttrib.cxx
+Assertion failed: Shader input camera_world_position is not present.
+ at line 397 of c:\buildslave\sdk-windows-amd64\build\panda\src\pgraph\shaderAttrib.cxx
+=========================== short test summary info ===========================
+FAILED tests/test_results_keyboard.py::test_results_horizontal_keys_and_selected_action[GameMode.DISTANCE_CHALLENGE-endless]
+1 failed, 2 passed in 42.63s

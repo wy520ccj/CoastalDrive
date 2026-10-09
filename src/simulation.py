@@ -27,6 +27,7 @@ from highway_map import on_road as highway_on_road
 from highway_segments import REBASE_DISTANCE, SEGMENT_LENGTH
 from impact_events import ContactSample, ImpactTracker, aggregate_contacts, new_contact_epoch
 from streamed_road import StreamedRoad
+from suspension_contacts import static_support_shapes
 from test_track import OBSTACLES, SPAWN, on_asphalt
 from traffic import Driver, Road, extents
 from traffic_recovery import TrafficRecovery
@@ -138,6 +139,7 @@ class Simulation:
         self.rebases = 0
         self.stream = None
         self._tick = 0
+        self.initialisation_ticks = 0
         self._static_support_cache = {}
         self._static_support_packet = {}
         self._events = ()
@@ -156,6 +158,48 @@ class Simulation:
         self.props = []
         self._build_world()
         self._build_traffic()
+
+    def prepare_physics(self, *, background=False):
+        """进入对局前准备固定数值资源；不施力、不改变tick或当前物理快照。"""
+        if self._physics_workers is None or not self.npcs or physical_substeps(self.config) <= 1:
+            return
+        shapes = static_support_shapes(self._world,None,BitMask32.bit(0),
+            cache=self._static_support_cache,packet_cache=self._static_support_packet)
+        self._physics_workers.prepare(shapes,(self.track,self.road.curve,self.origin_y),
+                                      tuple(car.config for car in (self.player,*self.npcs)),background=background)
+
+    def physics_ready(self):
+        return self._physics_workers is None or self._physics_workers.preparation_ready()
+
+    def settle_initial(self, *, loading_ticks=None):
+        """加载时真实落地；可将剩余悬架稳定留在倒计时，GO前必须完成。"""
+        if self._tick != 0:
+            raise RuntimeError("落地初始化只能用于新建对局")
+        self.prepare_physics()
+        # 执行器端口保持刹车/分离离合，避免正常模式的S键自动倒车规则。
+        command = VehicleCommand(brake=1.,direction=1,gear=1,clutch=0.)
+        self._initialisation_command = command
+        self._initialisation_quiet = 0
+        for _ in range(360 if loading_ticks is None else loading_ticks):
+            if self.settle_initial_step():
+                return self._tick
+        return None
+
+    def settle_initial_step(self):
+        """初始悬架在唯一世界按120Hz推进，执行器锁定起步；圈速尚未开始。"""
+        command = self._initialisation_command
+        self.step(command,traffic_controls=(command,)*len(self.npcs))
+        bodies = (self.player,*self.npcs)
+        stable = all(car._chassis.getLinearVelocity().length()<=.001
+                     and car._chassis.getAngularVelocity().length()<=.001 for car in bodies)
+        self._initialisation_quiet = self._initialisation_quiet+1 if stable else 0
+        if self._initialisation_quiet>=24:
+            self._reset_contact_history()
+            self.initialisation_ticks = self._tick
+            return True
+        if self._tick>=360:
+            raise RuntimeError("出生车辆在三秒物理时间内未完成落地稳定")
+        return False
 
     def _reset_contact_history(self):
         old_epoch = self.contact_epoch
@@ -715,7 +759,7 @@ class Simulation:
         self.player = None
         self._chassis = self._vehicle = None
 
-    def step(self, control: Control | VehicleCommand, dt=FIXED_DT):
+    def step(self, control: Control | VehicleCommand, dt=FIXED_DT, *, traffic_controls=None):
         if self.closed:
             raise RuntimeError("Simulation is closed")
         if not math.isclose(dt, FIXED_DT, rel_tol=0, abs_tol=1e-12):
@@ -726,12 +770,13 @@ class Simulation:
                 self._update_stream()
             self._recycle_traffic()
             self._prune_contact_sources()
-            self._drive_traffic()
+            if traffic_controls is None:
+                self._drive_traffic()
         cars = [
             (self.player, control),
             *[
                 (car, action)
-                for car, action in zip(self.npcs, self._traffic_controls)
+                for car, action in zip(self.npcs,self._traffic_controls if traffic_controls is None else traffic_controls)
                 if car._chassis not in self._retired_traffic
             ],
         ]

@@ -57,7 +57,12 @@ class SessionClock:
             while not self.stop_requested.is_set():
                 now = time.perf_counter()
                 elapsed,previous = now-previous,now
-                self.session.stepper.advance(elapsed,self.tick)
+                if self.session.phase.value == 'countdown':
+                    with self.world_lock:
+                        self.session.advance_countdown(elapsed)
+                        self.publish()
+                else:
+                    self.session.stepper.advance(elapsed,self.tick)
                 remaining = FIXED_DT-self.session.stepper.remainder-(time.perf_counter()-now)
                 if remaining>0:
                     self.stop_requested.wait(remaining)

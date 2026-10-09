@@ -1,0 +1,135 @@
+{
+  "started_utc": "2026-10-09T03:10:12.187069+00:00",
+  "git_head": "e21315432757e560e31a66b47cae3d407110aab1",
+  "git_status": "M setup.py\n M src/application.py\n M src/physics_workers.py\n M src/session.py\n M src/session_clock.py\n M src/simulation.py\n M src/vehicle_tire_step.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M tests/test_physics_workers.py\n M tools/performance/benchmark_runtime.py\n M tools/validate.py\n?? src/physics_packet_kernels.c\n?? src/physics_wire.py\n?? src/ui/countdown.py\n?? tests/test_countdown.py\n?? tests/test_physics_wire.py\n?? tests/test_wheel_observations.py\n?? tools/performance/check_countdown.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_physics_workers.py",
+    "tests/test_physics_wire.py",
+    "tests/test_wheel_observations.py",
+    "tests/test_session_clock.py",
+    "tests/test_impact_delivery.py",
+    "tests/test_mode_lifecycle.py",
+    "tests/test_countdown.py",
+    "tests/test_ui_assets.py",
+    "tests/test_ui.py",
+    "tests/test_results_keyboard.py",
+    "tests/test_driving_mode_ui.py",
+    "tests/test_core.py::test_countdown_freezes_car_and_pauses",
+    "tests/test_stage4.py::test_time_trial_timer_starts_after_countdown"
+  ],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-loading-wire-T1-r3\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.097
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_physics_workers.py",
+        "tests/test_physics_wire.py",
+        "tests/test_wheel_observations.py",
+        "tests/test_session_clock.py",
+        "tests/test_impact_delivery.py",
+        "tests/test_mode_lifecycle.py",
+        "tests/test_countdown.py",
+        "tests/test_ui_assets.py",
+        "tests/test_ui.py",
+        "tests/test_results_keyboard.py",
+        "tests/test_driving_mode_ui.py",
+        "tests/test_core.py::test_countdown_freezes_car_and_pauses",
+        "tests/test_stage4.py::test_time_trial_timer_starts_after_countdown"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-loading-wire-T1-r3\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 147.98
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-loading-wire-T1-r3\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 3.689
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-loading-wire-T1-r3\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 3.697
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PHYS-PERF-01-loading-wire-T1-r3\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 3.661
+    }
+  ]
+}

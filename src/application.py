@@ -1,6 +1,5 @@
 import json
 import logging
-import math
 import os
 
 import simplepbr
@@ -24,6 +23,7 @@ from simulation import Control
 from skins import PLAYER_VEHICLES, SKINS, apply_skin, vehicle_definition, vehicle_for_design
 from soundscape import Soundscape
 from ui import theme
+from ui.countdown import Countdown
 from ui.hud import DrivingHUD
 from ui.main_menu import MainMenu
 from vehicle_designs import vehicle_design
@@ -156,7 +156,12 @@ class CoastalDrive(ShowBase):
     def _load_game(self, task, mode, track):
         if task.frame == 0:
             return task.cont
-        self._enter_game(mode, track)
+        if task.frame == 1:
+            self._enter_game(mode, track)
+            # 首次绘制仍覆盖加载画面，走正常PBR任务次序后再开始三秒倒计时。
+            self.session.phase = Phase.LOADING
+            return task.cont
+        self.session.phase = Phase.COUNTDOWN
         self.loading.hide()
         return task.done
 
@@ -165,13 +170,17 @@ class CoastalDrive(ShowBase):
         self.hud.select_radio(None)
         if track == "endless":
             self.session.traffic_density = self.highway_density_keys[self.highway_density_index]
-        self.session.start(mode=mode, track=track)
+        self.session.start(mode=mode, track=track,settle_initial=True)
         self.sync_scene()
         if track == "endless":
             # 重开复用Scene时，道路可能已回到起点；加载阶段补齐近景。
             self.scene.sync_segments()
         self.chase_camera.position = None
         self._camera_origin = self.session.simulation.origin_y
+        self.apply_scene(self.session.current,0.)
+        # 首次显存上传/绘制准备留在加载画面；倒计时开始后只切换已生成的数字。
+        self.render.prepareScene(self.win.getGsg())
+        self.countdown.root.prepareScene(self.win.getGsg())
 
     def sync_scene(self):
         track = self.session.simulation.track
@@ -396,6 +405,7 @@ class CoastalDrive(ShowBase):
         if self.startup_trace is not None:
             self.startup_trace.mark("display_font_loaded")
         self.hud = DrivingHUD(self.aspect2d, self.loader, self.ui_font, self.display_font)
+        self.countdown = Countdown(self.aspect2d)
         self.status_frame = self.hud.status_frame
         self.status = self.hud.status
         self.status_notice = self.hud.status_notice
@@ -913,6 +923,7 @@ class CoastalDrive(ShowBase):
             self._scene_track = None
             self._scene_shape = None
         if self.garage is not None:
+            self.countdown.update('menu',0,0.)
             if self.soundscape is not None:
                 self.soundscape.update(self.session.current, self.session.phase, None,
                                        self.clock.getDt())
@@ -923,6 +934,7 @@ class CoastalDrive(ShowBase):
             self.session.keyboard.pressed = self.driving_keys_held.copy()
         dropped = self.session.stepper.dropped_time
         state = self.session.frame(self.clock.getDt())
+        self.countdown.update(self.session.phase.value,self.session.countdown_ticks,self.clock.getDt())
         if self.soundscape is not None:
             self.soundscape.update(state, self.session.phase, None, self.clock.getDt(),
                                    countdown_ticks=self.session.countdown_ticks,
@@ -946,25 +958,9 @@ class CoastalDrive(ShowBase):
                 self.session.stepper.dropped_time - dropped,
             )
         self.sync_scene()
-        self.scene.apply(state)
-        if self.chase_camera.position is not None:
-            self.chase_camera.position.y -= state.origin_y - self._camera_origin
-        self._camera_origin = state.origin_y
-        position = Vec3(*state.player.position)
-        snap = state.tick == 0 or "player_reset" in state.events
         camera_dt = self.clock.getDt() if self.session.phase == Phase.DRIVING else 0
-        camera_position, look_at = self.chase_camera.update(
-            state.player, self.session.camera_distance, camera_dt, snap=snap
-        )
-        camera_position = self.session.camera_position(
-            position + Vec3(0, 0, 1.4), camera_position, state.origin_y
-        )
-        self.camera.setPos(camera_position)
-        self.camera.lookAt(look_at)
-        self.camLens.setFov(self.chase_camera.fov)
-        self.scene.update_lighting(position)
-        phase = self.session.phase
-        countdown = f"{math.ceil(self.session.countdown_ticks / 120)} 秒后开始" if phase == Phase.COUNTDOWN else ""
+        self.apply_scene(state,camera_dt)
+        countdown = ""  # 起步节拍由中央大数字表现，左上角只保留驾驶信息。
         surface = "asphalt" if state.player.surface == "asphalt" else "off-road"
         self.hud.update(
             state, self.session.race.snapshot, self.session.highway.snapshot,
@@ -976,6 +972,25 @@ class CoastalDrive(ShowBase):
             self.update_diagnostics(state, surface)
         self.refresh_panel()
         return task.cont
+
+    def apply_scene(self, state, camera_dt):
+        """加载帧和驾驶帧共用相同的车辆表现、相机及光照。"""
+        self.scene.apply(state)
+        if self.chase_camera.position is not None:
+            self.chase_camera.position.y -= state.origin_y - self._camera_origin
+        self._camera_origin = state.origin_y
+        position = Vec3(*state.player.position)
+        snap = state.tick == 0 or "player_reset" in state.events
+        camera_position, look_at = self.chase_camera.update(
+            state.player, self.session.camera_distance, camera_dt, snap=snap
+        )
+        camera_position = self.session.camera_position(
+            position + Vec3(0, 0, 1.4), camera_position, state.origin_y
+        )
+        self.camera.setPos(camera_position)
+        self.camera.lookAt(look_at)
+        self.camLens.setFov(self.chase_camera.fov)
+        self.scene.update_lighting(position)
 
     def update_diagnostics(self, state, surface):
         self.diagnostics.setText(
@@ -1047,6 +1062,7 @@ class CoastalDrive(ShowBase):
             self.scene = None
         self.main_menu.destroy()
         self.hud.destroy()
+        self.countdown.destroy()
         self.loading.destroy()
         for widget in (
             self.diagnostics,

@@ -1730,7 +1730,79 @@ failed:
     Py_DECREF(result); return NULL;
 }
 
+/* 完成世界积分后批量采样四轮；保留原机械轴/胎冠/滑移与载荷幂律。 */
+static PyObject *wheel_observations(PyObject *self,PyObject *args) {
+    PyObject *right_object,*forward_object,*angles,*normals,*points,*velocity_object,*angular_object;
+    PyObject *omega_object,*loads,*frictions,*parameters;
+    if (!PyArg_ParseTuple(args,"OOOOOOOOOOO",&right_object,&forward_object,&angles,&normals,&points,
+        &velocity_object,&angular_object,&omega_object,&loads,&frictions,&parameters)) return NULL;
+    if (PyTuple_Size(angles)!=4 || PyTuple_Size(normals)!=4 || PyTuple_Size(points)!=4 ||
+        PyTuple_Size(omega_object)!=4 || PyTuple_Size(loads)!=4 || PyTuple_Size(frictions)!=4 ||
+        PyTuple_Size(parameters)!=7) {
+        PyErr_SetString(PyExc_ValueError,"机械观测须为四轮和七个硬件参数"); return NULL;
+    }
+    double right[3],forward[3],velocity[3],angular[3];
+    if (!vector(right_object,right) || !vector(forward_object,forward) ||
+        !vector(velocity_object,velocity) || !vector(angular_object,angular)) return NULL;
+    double radius=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,0));
+    PyObject *width_object=PyTuple_GET_ITEM(parameters,1);
+    double width=width_object==Py_None ? 0. : PyFloat_AsDouble(width_object);
+    double shoulder=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,2));
+    double crown=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,3));
+    double slip_speed=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,4));
+    double mass=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,5));
+    double peak_exponent=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,6));
+    if (PyErr_Occurred()) return NULL;
+    PyObject *result=PyTuple_New(4);
+    if (!result) return NULL;
+    for (int i=0;i<4;++i) {
+        double angle=PyFloat_AsDouble(PyTuple_GET_ITEM(angles,i));
+        double omega=PyFloat_AsDouble(PyTuple_GET_ITEM(omega_object,i));
+        double load=PyFloat_AsDouble(PyTuple_GET_ITEM(loads,i));
+        double mu=PyFloat_AsDouble(PyTuple_GET_ITEM(frictions,i));
+        double axis[3],normal[3],point[3],tangent[3],lateral[3],offset[3],radial[3],moment[3];
+        if (PyErr_Occurred() || !mechanical_axis_values(right,forward,angle,axis) ||
+            !vector(PyTuple_GET_ITEM(normals,i),normal) || !vector(PyTuple_GET_ITEM(points,i),point) ||
+            !unit_values(axis) || !unit_values(normal)) goto failed;
+        cross_regular(normal,axis,tangent);
+        if (!unit_values(tangent)) goto failed;
+        cross_regular(tangent,normal,lateral);
+        if (width_object!=Py_None) {
+            if (!support_values(normal,axis,radius,width/2,shoulder,crown,offset)) goto failed;
+            for (int a=0;a<3;++a) offset[a]=-offset[a];
+        } else for (int a=0;a<3;++a) offset[a]=-radius*normal[a];
+        cross_regular(offset,tangent,radial);
+        double rolling_radius=dot(axis,radial);
+        cross_regular(point,tangent,moment);
+        for (int a=0;a<3;++a) moment[a]-=rolling_radius*axis[a];
+        double vx=dot(velocity,tangent)+dot(angular,moment);
+        double hub_cross[3],lateral_velocity[3];
+        cross_regular(angular,point,hub_cross);
+        for (int a=0;a<3;++a) lateral_velocity[a]=velocity[a]+hub_cross[a];
+        double vy=dot(lateral_velocity,lateral);
+        double denominator=fmax(fabs(vx),slip_speed);
+        if (denominator==0.) { PyErr_SetString(PyExc_ZeroDivisionError,"滑移速度分母不能为零"); goto failed; }
+        double kappa=(rolling_radius*omega-vx)/denominator;
+        double alpha=atan2(vy,denominator);
+        double relative=omega+dot(angular,axis);
+        double grip=0.;
+        if (load!=0.) {
+            if (load<0. || mass<=0.) { PyErr_SetString(PyExc_ValueError,"轮荷须非负且质量须为正"); goto failed; }
+            double ratio=load/(mass*9.81/4);
+            grip=mu*load*pow(ratio,peak_exponent-1);
+        }
+        PyObject *row=Py_BuildValue("((ddd)ddddddd)",axis[0],axis[1],axis[2],rolling_radius,relative,
+            vx,vy,kappa,alpha,grip);
+        if (!row) goto failed;
+        PyTuple_SET_ITEM(result,i,row);
+    }
+    return result;
+failed:
+    Py_DECREF(result); return NULL;
+}
+
 static PyMethodDef methods[] = {
+    {"wheel_observations", (PyCFunction)wheel_observations, METH_VARARGS, "完成Bullet积分后的四轮机械观测"},
     {"cylinder_box_entry", (PyCFunction)cylinder_box_entry_call, METH_VARARGS, "原Box平面见证点与保守推进的完整数值入口"},
     {"rotor_frame_geometry", (PyCFunction)rotor_frame_geometry, METH_VARARGS, "原四轮机械几何和转向反力"},
     {"triangle_edge_entry", (PyCFunction)triangle_edge_entry, METH_VARARGS, "原有限三角面裁剪与保守推进"},
