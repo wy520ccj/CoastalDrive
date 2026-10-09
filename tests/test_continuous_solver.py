@@ -2,9 +2,11 @@
 
 import math
 import pickle
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 from multiprocessing.shared_memory import SharedMemory
 from pathlib import Path
+from threading import Barrier, get_ident
 
 import numpy as np
 import pytest
@@ -24,7 +26,9 @@ def test_real_complete_inputs_use_native_iteration_and_reset_workspace(monkeypat
     memory.buf[:] = payload
     reference = physics_workers.GeometryRef(memory.name, len(payload), 1)
     original = tire_drivetrain.joint_solve
+    original_prepare = tire_drivetrain.joint_mechanical_prepare
     native_calls = []
+    prepare_calls = []
 
     def native(*args):
         native_calls.append(args[0])
@@ -33,9 +37,15 @@ def test_real_complete_inputs_use_native_iteration_and_reset_workspace(monkeypat
     def python_iteration(*args, **kwargs):
         raise AssertionError('真实输入不允许回到旧Python共同迭代或有限接触回调')
 
+    def prepare(*args):
+        prepare_calls.append(args[0])
+        return original_prepare(*args)
+
     monkeypatch.setattr(tire_drivetrain, 'joint_solve', native)
+    monkeypatch.setattr(tire_drivetrain, 'joint_mechanical_prepare', prepare)
     for name in ('shared_load_solution', 'loaded_wheel_force_solution', 'finite_contact_system',
-                 'wheel_residuals', 'suspension_residuals'):
+                 'wheel_residuals', 'suspension_residuals', 'differential_branches', 'shaft_brake_plans',
+                 'shared_map_coefficients', 'wheel_map_coefficients', 'load_coefficients', 'suspension_projection'):
         monkeypatch.setattr(tire_drivetrain, name, python_iteration)
     identifiers = sorted(int(path.stem.split('-')[1]) for path in FIXTURE.glob('input-*.bin'))
     try:
@@ -53,6 +63,8 @@ def test_real_complete_inputs_use_native_iteration_and_reset_workspace(monkeypat
                 assert physics_workers._worker_geometry.joint_surfaces is not previous_geometry.joint_surfaces
         assert len(native_calls) == 2*len(identifiers) == 52
         assert all(workspace is native_calls[0] for workspace in native_calls)
+        assert len(prepare_calls) == 52
+        assert all(workspace is prepare_calls[0] for workspace in prepare_calls)
     finally:
         physics_workers._worker_geometry = None
         physics_workers._worker_candidates.clear()
@@ -63,6 +75,24 @@ def test_real_complete_inputs_use_native_iteration_and_reset_workspace(monkeypat
             physics_workers._worker_memory = None
         memory.close()
         memory.unlink()
+
+
+def test_mutable_numeric_workspaces_are_owned_by_each_thread():
+    hardware = pickle.loads((FIXTURE/'hardware.pickle').read_bytes())
+    barrier = Barrier(2)
+
+    def workspace():
+        owner = get_ident()
+        joint = tire_drivetrain.native_joint_workspace(hardware, owner)
+        mechanical = tire_drivetrain.native_mechanical_workspace(hardware, owner)
+        barrier.wait(timeout=5)
+        return owner, joint, mechanical
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        first, second = (result.result() for result in (pool.submit(workspace), pool.submit(workspace)))
+    assert first[0] != second[0]
+    assert first[1] is not second[1]
+    assert first[2] is not second[2]
 
 
 @pytest.mark.parametrize('columns', (1, 2, 3))

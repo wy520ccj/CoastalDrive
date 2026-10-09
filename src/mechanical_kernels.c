@@ -2711,7 +2711,11 @@ static PyObject *suspension_residuals(PyObject *self,PyObject *args) {
 }
 
 #include "joint_iteration.h"
+#include "joint_mechanical_prepare.h"
 static PyMethodDef methods[] = {
+    {"joint_mechanical_workspace",joint_mechanical_workspace,METH_VARARGS,"持久机械分区准备工作区"},
+    {"joint_mechanical_prepare",joint_mechanical_prepare,METH_VARARGS,"实际四端口/限滑/轮端矩阵连续数值准备"},
+    {"joint_differential_torques",joint_differential_torques,METH_VARARGS,"同一收敛分区的真实限滑力矩"},
     {"joint_workspace",joint_workspace,METH_NOARGS,"持久共同迭代数值工作区"},
     {"joint_solve",joint_solve,METH_VARARGS,"连续四轮/传动/有限接触共同迭代"},
     {"suspension_coefficients", (PyCFunction)suspension_coefficients, METH_VARARGS, "本advance固定悬架材料与硬件"},

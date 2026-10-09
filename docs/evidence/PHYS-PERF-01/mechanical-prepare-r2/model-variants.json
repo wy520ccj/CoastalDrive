@@ -1,0 +1,782 @@
+[
+  {
+    "variant": "reference",
+    "input": "input-6240.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6241.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6242.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6243.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6244.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6245.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6246.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6247.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6248.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6249.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6250.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6251.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6252.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6253.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6254.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6255.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6256.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6257.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6258.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6259.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6260.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6261.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6262.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6263.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6264.bin",
+    "passed": true
+  },
+  {
+    "variant": "reference",
+    "input": "input-6265.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6240.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6241.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6242.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6243.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6244.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6245.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6246.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6247.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6248.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6249.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6250.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6251.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6252.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6253.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6254.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6255.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6256.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6257.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6258.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6259.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6260.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6261.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6262.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6263.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6264.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd",
+    "input": "input-6265.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6240.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6241.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6242.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6243.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6244.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6245.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6246.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6247.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6248.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6249.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6250.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6251.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6252.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6253.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6254.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6255.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6256.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6257.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6258.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6259.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6260.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6261.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6262.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6263.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6264.bin",
+    "passed": true
+  },
+  {
+    "variant": "fwd",
+    "input": "input-6265.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6240.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6241.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6242.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6243.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6244.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6245.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6246.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6247.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6248.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6249.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6250.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6251.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6252.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6253.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6254.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6255.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6256.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6257.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6258.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6259.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6260.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6261.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6262.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6263.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6264.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd",
+    "input": "input-6265.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6240.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6241.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6242.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6243.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6244.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6245.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6246.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6247.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6248.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6249.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6250.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6251.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6252.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6253.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6254.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6255.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6256.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6257.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6258.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6259.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6260.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6261.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6262.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6263.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6264.bin",
+    "passed": true
+  },
+  {
+    "variant": "awd-open",
+    "input": "input-6265.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6240.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6241.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6242.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6243.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6244.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6245.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6246.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6247.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6248.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6249.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6250.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6251.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6252.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6253.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6254.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6255.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6256.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6257.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6258.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6259.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6260.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6261.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6262.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6263.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6264.bin",
+    "passed": true
+  },
+  {
+    "variant": "rwd-open",
+    "input": "input-6265.bin",
+    "passed": true
+  }
+]

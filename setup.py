@@ -26,7 +26,8 @@ setup(
     ext_modules=[
         Extension("physics_packet_kernels", ["src/physics_packet_kernels.c"], extra_compile_args=compile_args),
         Extension("mechanical_kernels", ["src/mechanical_kernels.c"],
-                  depends=["src/joint_iteration.h", "src/joint_iteration_helpers.h", "src/joint_contact_api.h"],
+                  depends=["src/joint_iteration.h", "src/joint_iteration_helpers.h", "src/joint_contact_api.h",
+                           "src/joint_mechanical_prepare.h"],
                   extra_compile_args=compile_args),
         Extension("wheel_contact_kernels", ["src/wheel_contact_kernels.c"],
                   depends=["src/wheel_convex_distance.h", "src/joint_contact_impl.h", "src/joint_contact_api.h"],

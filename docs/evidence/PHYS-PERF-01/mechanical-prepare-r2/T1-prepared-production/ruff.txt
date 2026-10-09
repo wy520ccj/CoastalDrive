@@ -1,0 +1,118 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> src\tire_drivetrain.py:3:1
+   |
+ 1 |   """四轮接触、曲轴/输入轴、有限离合与制动的共同末状态。"""
+ 2 |
+ 3 | / import math
+ 4 | | from dataclasses import dataclass, replace
+ 5 | | from functools import lru_cache
+ 6 | | from struct import pack
+ 7 | | from threading import get_ident
+ 8 | |
+ 9 | | from mechanical_kernels import (
+10 | |     dot,
+11 | |     joint_solve,
+12 | |     joint_mechanical_workspace,
+13 | |     joint_mechanical_prepare,
+14 | |     joint_differential_torques,
+15 | |     joint_workspace,
+16 | |     known_state,
+17 | |     load_coefficients,
+18 | |     loaded_wheel_force_solution,
+19 | |     mass_coefficients,
+20 | |     mass_response_prepared,
+21 | |     rotor_coefficients,
+22 | |     rotor_spin_prepared,
+23 | |     shared_load_solution,
+24 | |     shared_map_coefficients,
+25 | |     suspension_coefficients,
+26 | |     suspension_forces,
+27 | |     suspension_projection,
+28 | |     suspension_residuals,
+29 | |     wheel_brake_correction,
+30 | |     wheel_contact_state,
+31 | |     wheel_free_state,
+32 | |     wheel_load_prepared,
+33 | |     wheel_map_coefficients,
+34 | |     wheel_map_derivatives,
+35 | |     wheel_map_state,
+36 | |     wheel_residuals,
+37 | | )
+38 | | from wheel_contact_kernels import joint_contact_prepare, joint_surface_prepare
+39 | |
+40 | | from differential import (
+41 | |     differential_branches,
+42 | |     differential_gradients,
+43 | |     differential_torques,
+44 | |     torque_bias_capacities,
+45 | |     viscous_projection,
+46 | | )
+47 | | from driveline_inertia import active_inertias, inertia_projections, rotor_gradients
+48 | | from rolling_resistance import rolling_torques
+49 | | from rotor_dynamics import bearing_torques, cross
+50 | | from shaft_transmission import (
+51 | |     shaft_brake_plans,
+52 | |     shaft_gradients,
+53 | |     synchronizer_brake_plans,
+54 | | )
+55 | | from suspension import SuspensionInput, SuspensionStep, _solve, shared_suspension
+56 | | from suspension_kinematics import finite_contact_system
+57 | | from tire_compliance import contact_jacobian, energy_terms
+58 | | from tire_forces import combined_force, slip_state
+59 | | from tire_properties import tire_grip, tire_stiffness
+60 | | from transmission_ports import (
+61 | |     PORT_TOLERANCE,
+62 | |     clutch_brake_plans,
+63 | |     clutch_brake_state,
+64 | |     transmission_state,
+65 | | )
+66 | | from wheel_dynamics import WheelStep, _solve_force, _solve_rolling_force
+   | |________________________________________________________________________^
+help: Organize imports
+   |
+10 |     dot,
+11 +     joint_differential_torques,
+12 +     joint_mechanical_prepare,
+13 +     joint_mechanical_workspace,
+14 |     joint_solve,
+   -     joint_mechanical_workspace,
+   -     joint_mechanical_prepare,
+   -     joint_differential_torques,
+15 |     joint_workspace,
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\test_continuous_solver.py:3:1
+   |
+ 1 |   """连续内核实际执行、工作区重置及有限几何的小型SVD独立核对。"""
+ 2 |
+ 3 | / import math
+ 4 | | import pickle
+ 5 | | from dataclasses import replace
+ 6 | | from concurrent.futures import ThreadPoolExecutor
+ 7 | | from multiprocessing.shared_memory import SharedMemory
+ 8 | | from pathlib import Path
+ 9 | | from threading import Barrier, get_ident
+10 | |
+11 | | import numpy as np
+12 | | import pytest
+13 | | from wheel_contact_kernels import _joint_coordinates, convex_distance
+14 | |
+15 | | import physics_workers
+16 | | import tire_drivetrain
+17 | | from physics_wire import from_bytes, result_bytes
+   | |_________________________________________________^
+18 |
+19 |   FIXTURE = Path(__file__).resolve().parents[1]/'docs/evidence/PHYS-PERF-01/structural-20261009/native-input-fixture'
+   |
+help: Organize imports
+  |
+4 | import pickle
+5 + from concurrent.futures import ThreadPoolExecutor
+6 | from dataclasses import replace
+  - from concurrent.futures import ThreadPoolExecutor
+7 | from multiprocessing.shared_memory import SharedMemory
+  |
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.

@@ -1,0 +1,32 @@
+{
+  "before": {
+    "wall_time": 1791544655.7103672,
+    "processes": [
+      {
+        "ProcessName": "onmyoji",
+        "Id": 44516,
+        "CPU": 2878.421875
+      },
+      {
+        "ProcessName": "onmyoji",
+        "Id": 45412,
+        "CPU": 2925.109375
+      }
+    ]
+  },
+  "after": {
+    "wall_time": 1791544676.4328077,
+    "processes": [
+      {
+        "ProcessName": "onmyoji",
+        "Id": 44516,
+        "CPU": 2916.8125
+      },
+      {
+        "ProcessName": "onmyoji",
+        "Id": 45412,
+        "CPU": 2962.359375
+      }
+    ]
+  }
+}

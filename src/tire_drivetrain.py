@@ -4,9 +4,13 @@ import math
 from dataclasses import dataclass, replace
 from functools import lru_cache
 from struct import pack
+from threading import get_ident
 
 from mechanical_kernels import (
     dot,
+    joint_differential_torques,
+    joint_mechanical_prepare,
+    joint_mechanical_workspace,
     joint_solve,
     joint_workspace,
     known_state,
@@ -128,9 +132,15 @@ class DrivetrainStep:
 
 
 @lru_cache(maxsize=32)
-def native_joint_workspace(config):
-    """每进程顺序求解复用工作区；当子步状态在原生入口完整重置。"""
+def native_joint_workspace(config, thread):
+    """每线程顺序求解复用工作区；当前子步状态在原生入口完整重置。"""
     return joint_workspace()
+
+
+@lru_cache(maxsize=32)
+def native_mechanical_workspace(config, thread):
+    """每线程顺序复用分区数值；当前状态、容量、几何仍逐子步刷新。"""
+    return joint_mechanical_workspace()
 
 
 def native_contact_geometry(system):
@@ -246,12 +256,19 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     wheel_supported = tuple(frame.supported for frame in frames)
     tire_compliance = tuple(car.tire_compliance for car in configurations)
 
+    native = (shaft and all(tire_compliance) and suspension is not None
+              and suspension.kinematics is not None
+              and all(plane is None or type(plane.surface).__name__ in ('WorldSurface', 'FrozenWorldSurface')
+                      for plane in suspension.kinematics))
+    geometry = native_contact_geometry(suspension) if native else None
+    prepared_native = geometry is not None and hard_gear
+
     def load_parameters():
         # 轮荷刷新时重算本构参数，后续力/Jacobian试探共用同一组数值。
         return tuple((tire_grip(load, frame.mu, car), *tire_stiffness(load, car))
                      for load, frame, car in zip(wheel_loads, frames, configurations))
 
-    contact_parameters = load_parameters()
+    contact_parameters = () if geometry is not None else load_parameters()
     normal_forces = (0.,) * 4
     normal_responses, normal_mobility = (), ()
     reference_suspension = suspension
@@ -285,7 +302,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         return suspension_forces(normal_coefficients, suspension.gradients, end_velocity, end_angular,
                                  suspension.touching, mobility, forces)
 
-    if suspension is not None:
+    if suspension is not None and geometry is None:
         normal_projection()
 
     def normal_loads():
@@ -296,7 +313,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                        zip(frames, normal_forces, suspension.alignment, suspension.touching))
         contact_parameters = load_parameters()
 
-    responses = tuple((mobility(longitudinal[i]), mobility(lateral[i]), mobility(brake_gradients[i])) for i in range(4))
+    responses = (() if prepared_native else tuple((mobility(longitudinal[i]), mobility(lateral[i]),
+        mobility(brake_gradients[i])) for i in range(4)))
     differential = differential_gradients(axes)
     if shaft:
         differential = tuple(g[:4] + (0.,) + g[4:] for g in differential)
@@ -305,35 +323,38 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     torque_bias = any(value > 1. for value in config.axle_torque_bias_ratios)
     active_limits, bias_ports = limits, (0., 0.)
     differential_responses = tuple(mobility(g) for g in differential) if torque_bias else ()
-    branches = []
-    for branch in differential_branches(differential, damping, limits, mobility, dt):
-        projections = branch[0]
-        mc = viscous_projection(mobility(clutch_gradient), projections)
-        ml = viscous_projection(mobility(gear_gradient), projections)
-        dcc, dcl, dll = dot(clutch_gradient, mc), dot(clutch_gradient, ml), dot(gear_gradient, ml)
-        wheel_responses = tuple(tuple(viscous_projection(r, projections) for r in wheel) for wheel in responses)
-        local_response = tuple(((dcc, dcl, dot(clutch_gradient, wheel_responses[i][2])),
-                               (dcl, dll, dot(gear_gradient, wheel_responses[i][2])),
-                               (dot(clutch_gradient, wheel_responses[i][2]), dot(gear_gradient, wheel_responses[i][2]),
-                                dot(brake_gradients[i], wheel_responses[i][2]))) for i in range(4))
-        shaft_data = None
-        if shaft:
-            mg = viscous_projection(mobility(shaft_gear_gradient), projections)
-            port_gradients = (clutch_gradient, shaft_gear_gradient, gear_gradient) if hard_gear else (clutch_gradient, shaft_gear_gradient)
-            port_responses = (mc, mg, ml) if hard_gear else (mc, mg)
-            local_response = tuple(tuple(tuple(dot(g, r) for r in (*port_responses, wheel_responses[i][2]))
-                                         for g in (*port_gradients, brake_gradients[i])) for i in range(4))
-            if hard_gear:
-                plans = tuple(shaft_brake_plans(local_response[i], capacity, brakes[i], efficiency) for i in range(4))
-                shared_plans = shaft_brake_plans(local_response[0], capacity, 0., efficiency)
+    if not prepared_native:
+        branches = []
+        for branch in differential_branches(differential, damping, limits, mobility, dt):
+            projections = branch[0]
+            mc = viscous_projection(mobility(clutch_gradient), projections)
+            ml = viscous_projection(mobility(gear_gradient), projections)
+            dcc, dcl, dll = dot(clutch_gradient, mc), dot(clutch_gradient, ml), dot(gear_gradient, ml)
+            wheel_responses = tuple(tuple(viscous_projection(r, projections) for r in wheel) for wheel in responses)
+            local_response = tuple(((dcc, dcl, dot(clutch_gradient, wheel_responses[i][2])),
+                                   (dcl, dll, dot(gear_gradient, wheel_responses[i][2])),
+                                   (dot(clutch_gradient, wheel_responses[i][2]), dot(gear_gradient, wheel_responses[i][2]),
+                                    dot(brake_gradients[i], wheel_responses[i][2]))) for i in range(4))
+            shaft_data = None
+            if shaft:
+                mg = viscous_projection(mobility(shaft_gear_gradient), projections)
+                port_gradients = (clutch_gradient, shaft_gear_gradient, gear_gradient) if hard_gear else (clutch_gradient, shaft_gear_gradient)
+                port_responses = (mc, mg, ml) if hard_gear else (mc, mg)
+                local_response = tuple(tuple(tuple(dot(g, r) for r in (*port_responses, wheel_responses[i][2]))
+                                             for g in (*port_gradients, brake_gradients[i])) for i in range(4))
+                if hard_gear:
+                    plans = tuple(shaft_brake_plans(local_response[i], capacity, brakes[i], efficiency) for i in range(4))
+                    shared_plans = shaft_brake_plans(local_response[0], capacity, 0., efficiency)
+                else:
+                    plans = tuple(synchronizer_brake_plans(local_response[i], (capacity, synchronizer_capacity, brakes[i])) for i in range(4))
+                    shared_plans = synchronizer_brake_plans(local_response[0], (capacity, synchronizer_capacity, 0.))
+                shaft_data = mg, shared_plans
             else:
-                plans = tuple(synchronizer_brake_plans(local_response[i], (capacity, synchronizer_capacity, brakes[i])) for i in range(4))
-                shared_plans = synchronizer_brake_plans(local_response[0], (capacity, synchronizer_capacity, 0.))
-            shaft_data = mg, shared_plans
-        else:
-            plans = (tuple(clutch_brake_plans(local_response[i], capacity, brakes[i], efficiency) for i in range(4))
-                     if ratio else ((),) * 4)
-        branches.append((branch, mc, ml, ((dcc, dcl), (dcl, dll)), wheel_responses, local_response, plans, shaft_data))
+                plans = (tuple(clutch_brake_plans(local_response[i], capacity, brakes[i], efficiency) for i in range(4))
+                         if ratio else ((),) * 4)
+            branches.append((branch, mc, ml, ((dcc, dcl), (dcl, dll)), wheel_responses, local_response, plans, shaft_data))
+    else:
+        branches = ()
     warm_modes = [[None] * 4 for _ in branches]
     warm_branches = [0] * 4
     shared_branch = 0
@@ -385,8 +406,10 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
 
     spin_coefficients = rotor_coefficients(engine_inertia, engine_axis, wheel_inertia, axes, rotor,
         shaft_inertia if shaft else None, shaft_axis, inertias, gradients, downstream_axes)
-    wheel_coefficients = load_coefficients(responses, tuple(frame.tangent for frame in frames),
-                                          tuple(frame.axle for frame in frames), dt, mass, dimensions)
+    wheel_coefficients = ((longitudinal, lateral, tuple(frame.tangent for frame in frames),
+                          tuple(frame.axle for frame in frames), mass) if prepared_native else
+        load_coefficients(responses, tuple(frame.tangent for frame in frames),
+                          tuple(frame.axle for frame in frames), dt, mass, dimensions))
 
     def spin(state):
         return rotor_spin_prepared(spin_coefficients, state[:dimensions])
@@ -402,16 +425,25 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                            road_torques if rolling_active else None)
 
     # 固定机械分区只属于本次advance；法向力、当前轮荷与试探状态逐次传入。
-    shared_map = (shared_map_coefficients(mobility_coefficients, spin_coefficients, free_base,
-        tuple(branches), (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])
-        if hard_gear else (clutch_gradient, shaft_gear_gradient, brake_gradients[0]),
-        differential, damping, limits, differential_responses, dt, capacity, efficiency,
-        synchronizer_capacity, hard_gear, (radii, rolling_coefficients, config.rolling_transition_speed),
-        (ratio, config.front_drive_share, config.final_drive, config.axle_torque_bias_ratios,
-         inertias, gradients, tuple(downstream_omega))) if shaft else None)
+    if prepared_native:
+        shared_map, wheel_map = joint_mechanical_prepare(
+            native_mechanical_workspace(config, get_ident()), mobility_coefficients, spin_coefficients,
+            free_base, wheel_coefficients, (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0]),
+            differential, damping, limits, differential_responses, dt, capacity, efficiency,
+            synchronizer_capacity, hard_gear, (radii, rolling_coefficients, config.rolling_transition_speed),
+            (ratio, config.front_drive_share, config.final_drive, config.axle_torque_bias_ratios,
+             inertias, gradients, tuple(downstream_omega)), brake_gradients, brakes)
+    else:
+        shared_map = (shared_map_coefficients(mobility_coefficients, spin_coefficients, free_base,
+            tuple(branches), (clutch_gradient, shaft_gear_gradient, gear_gradient, brake_gradients[0])
+            if hard_gear else (clutch_gradient, shaft_gear_gradient, brake_gradients[0]),
+            differential, damping, limits, differential_responses, dt, capacity, efficiency,
+            synchronizer_capacity, hard_gear, (radii, rolling_coefficients, config.rolling_transition_speed),
+            (ratio, config.front_drive_share, config.final_drive, config.axle_torque_bias_ratios,
+             inertias, gradients, tuple(downstream_omega))) if shaft else None)
 
-    wheel_map = (wheel_map_coefficients(shared_map, wheel_coefficients, tuple(branches),
-                                          brake_gradients, brakes) if shaft else None)
+        wheel_map = (wheel_map_coefficients(shared_map, wheel_coefficients, tuple(branches),
+                                              brake_gradients, brakes) if shaft else None)
 
     def shared(guess):
         nonlocal shared_branch, shared_port_index, road_torques, active_limits, bias_ports
@@ -767,11 +799,6 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         suspension, normal_forces = original_system, original_forces
         normal_projection()
 
-    native = (shaft and all(tire_compliance) and suspension is not None
-              and suspension.kinematics is not None
-              and all(plane is None or type(plane.surface).__name__ in ('WorldSurface', 'FrozenWorldSurface')
-                      for plane in suspension.kinematics))
-    geometry = native_contact_geometry(suspension) if native else None
     if geometry is not None:
         laws = tuple((frame.mu, car.mass, car.tire_peak_load_exponent,
                       car.longitudinal_stiffness, car.longitudinal_load_exponent,
@@ -781,7 +808,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
          normal_forces, native_gradients, alignment, touching, wheel_loads, contact_parameters,
          shared_branch, shared_port_index, road_torques, active_limits, bias_ports, sweeps,
          normal_error, geometry_error, maximum, brake_error) = joint_solve(
-            native_joint_workspace(config), wheel_map, normal_coefficients, geometry,
+            native_joint_workspace(config, get_ident()), wheel_map, normal_coefficients, geometry,
             (initial, velocity, tuple(forces), deformations, moments_x, moments_y,
              rolling, wheel_supported, wheel_loads, tire_hardware, laws,
              suspension.gradients, suspension.touching,
@@ -880,7 +907,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     engine_gyro = cross(tuple(engine_inertia * state[3] * value for value in engine_axis), state[:3])
     engine_body = tuple((clutch + engine_drag * engine_speed - engine_torque) * engine_axis[a] + engine_gyro[a] for a in range(3))
     differential_slips = tuple(dot(g, state) for g in differential)
-    limited_torques = differential_torques(state, branches[shared_branch][0], differential, damping, active_limits)
+    limited_torques = (joint_differential_torques(shared_map, state, shared_branch, active_limits) if prepared_native
+                      else differential_torques(state, branches[shared_branch][0], differential, damping, active_limits))
     shaft_speed = (state[4] - dot(shaft_axis, state[:3])) if shaft else None
     shaft_gyro = cross(tuple(shaft_inertia * state[4] * value for value in shaft_axis), state[:3]) if shaft else (0.,) * 3
     shaft_body = tuple((gear_reaction - clutch) * shaft_axis[a] + shaft_gyro[a] for a in range(3)) if shaft else (0.,) * 3

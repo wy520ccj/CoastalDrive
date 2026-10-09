@@ -1,0 +1,312 @@
+{
+  "baseline": "13ece6eba00e91af55c8163dcde9a7f1e7c506c1",
+  "policy": "用户撤销关闭应用的授权；后续只记录负载。最终正式对照保持两份onmyoji运行，不关应用、不修改优先级/亲和性，不并行测试/构建。",
+  "comparisons": {
+    "world-9": {
+      "old_mean_ms": 20.70722116666123,
+      "new_mean_ms": 19.637475416639063,
+      "reduction_percent": 5.166051694780105,
+      "interpretation": "基线波动较大，不能认定9车稳定收益"
+    },
+    "world-13": {
+      "old_mean_ms": 23.819573999990098,
+      "new_mean_ms": 21.316997166777583,
+      "reduction_percent": 10.506387869126277,
+      "interpretation": "两端基线较近，两次B均低于两次A；仍非8.333ms达标"
+    },
+    "single": {
+      "old_mean_ms": 1.817650769216692,
+      "new_mean_ms": 1.6529491826764944,
+      "reduction_percent": 9.061233837079442
+    }
+  },
+  "reports": {
+    "prepared-r2-world-9-A1": {
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 19.262439666696686,
+        "p95_ms": 23.300314996231457,
+        "p99_ms": 25.534788000513796,
+        "max_ms": 30.612599999585655,
+        "total_seconds": 11.557463800018013
+      },
+      "source_unchanged": true,
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "all_600_snapshot_hashes_equal": true,
+      "hash_sequence_sha256": "b2523f163de5f5e9fcc430362202b4a09c374dfc71036746907a1341dc2a2af9"
+    },
+    "prepared-r2-world-9-B1": {
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 19.545139000038034,
+        "p95_ms": 24.15743000165093,
+        "p99_ms": 27.617055004229762,
+        "max_ms": 30.60919999552425,
+        "total_seconds": 11.72708340002282
+      },
+      "source_unchanged": true,
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "all_600_snapshot_hashes_equal": true,
+      "hash_sequence_sha256": "b2523f163de5f5e9fcc430362202b4a09c374dfc71036746907a1341dc2a2af9"
+    },
+    "prepared-r2-world-9-B2": {
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 19.729811833240092,
+        "p95_ms": 24.620515000788146,
+        "p99_ms": 27.387092997596476,
+        "max_ms": 34.31060000002617,
+        "total_seconds": 11.837887099944055
+      },
+      "source_unchanged": true,
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "all_600_snapshot_hashes_equal": true,
+      "hash_sequence_sha256": "b2523f163de5f5e9fcc430362202b4a09c374dfc71036746907a1341dc2a2af9"
+    },
+    "prepared-r2-world-9-A2": {
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 22.152002666625776,
+        "p95_ms": 28.007745003924356,
+        "p99_ms": 31.6115430057107,
+        "max_ms": 38.305600006424356,
+        "total_seconds": 13.291201599975466
+      },
+      "source_unchanged": true,
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "all_600_snapshot_hashes_equal": true,
+      "hash_sequence_sha256": "b2523f163de5f5e9fcc430362202b4a09c374dfc71036746907a1341dc2a2af9"
+    },
+    "prepared-r2-world-13-A1": {
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 24.156750833244587,
+        "p95_ms": 30.552059993715375,
+        "p99_ms": 34.169311999867205,
+        "max_ms": 37.3808000003919,
+        "total_seconds": 14.494050499946752
+      },
+      "source_unchanged": true,
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "all_600_snapshot_hashes_equal": true,
+      "hash_sequence_sha256": "58931606eceea6399bcffed17f0999ef6a5c561d14531e2e3f1c633ce20198a8"
+    },
+    "prepared-r2-world-13-B1": {
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 21.19807466675411,
+        "p95_ms": 26.545405001888867,
+        "p99_ms": 29.437510001589537,
+        "max_ms": 35.54209999856539,
+        "total_seconds": 12.718844800052466
+      },
+      "source_unchanged": true,
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "all_600_snapshot_hashes_equal": true,
+      "hash_sequence_sha256": "58931606eceea6399bcffed17f0999ef6a5c561d14531e2e3f1c633ce20198a8"
+    },
+    "prepared-r2-world-13-B2": {
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 21.435919666801055,
+        "p95_ms": 27.553765003540317,
+        "p99_ms": 30.64579100115224,
+        "max_ms": 35.80030000011902,
+        "total_seconds": 12.861551800080633
+      },
+      "source_unchanged": true,
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "all_600_snapshot_hashes_equal": true,
+      "hash_sequence_sha256": "58931606eceea6399bcffed17f0999ef6a5c561d14531e2e3f1c633ce20198a8"
+    },
+    "prepared-r2-world-13-A2": {
+      "complete_step": {
+        "count": 600,
+        "mean_ms": 23.48239716673561,
+        "p95_ms": 29.4846150016383,
+        "p99_ms": 32.911250001488945,
+        "max_ms": 36.576200000126846,
+        "total_seconds": 14.089438300041365
+      },
+      "source_unchanged": true,
+      "physical_substeps": 2,
+      "compute_budget_met": false,
+      "all_600_snapshot_hashes_equal": true,
+      "hash_sequence_sha256": "58931606eceea6399bcffed17f0999ef6a5c561d14531e2e3f1c633ce20198a8"
+    },
+    "prepared-final-single-A1": {
+      "complete_vehicle_substep": {
+        "count": 3120,
+        "mean_ms": 1.8541991666657291,
+        "p95_ms": 2.6605600021866844,
+        "p99_ms": 3.620942000125067,
+        "max_ms": 6.409299996448681,
+        "total_seconds": 5.785101399997075
+      },
+      "all_3120_results_byte_exact": true
+    },
+    "prepared-final-single-B1": {
+      "complete_vehicle_substep": {
+        "count": 3120,
+        "mean_ms": 1.6956247756332652,
+        "p95_ms": 2.438434998839511,
+        "p99_ms": 2.7203290006582392,
+        "max_ms": 5.309799998940434,
+        "total_seconds": 5.290349299975787
+      },
+      "all_3120_results_byte_exact": true
+    },
+    "prepared-final-single-B2": {
+      "complete_vehicle_substep": {
+        "count": 3120,
+        "mean_ms": 1.6102735897197236,
+        "p95_ms": 2.346220002436894,
+        "p99_ms": 3.383353001045178,
+        "max_ms": 5.909500003326684,
+        "total_seconds": 5.024053599925537
+      },
+      "all_3120_results_byte_exact": true
+    },
+    "prepared-final-single-A2": {
+      "complete_vehicle_substep": {
+        "count": 3120,
+        "mean_ms": 1.781102371767655,
+        "p95_ms": 2.672980001443647,
+        "p99_ms": 4.597794997171149,
+        "max_ms": 6.7742000028374605,
+        "total_seconds": 5.557039399915084
+      },
+      "all_3120_results_byte_exact": true
+    }
+  },
+  "window": {
+    "A": {
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\native-r2\\oracle",
+      "window_sampling_valid": true,
+      "worker_source_valid": true,
+      "physics_sample_hz": 32.49022819382549,
+      "display_draw_fps": 40.34038826960196,
+      "display_draw_p95_ms": 37.588399995001964,
+      "display_draw_max_ms": 44.89570000441745,
+      "display_draw_over_50ms": 0,
+      "dropped_simulation_seconds": 19.73333333333334,
+      "background_cpu_cores_including_startup": 2.7785552385281655,
+      "published_player_y": {
+        "intervals": 877,
+        "min_mm": 1.6231536865234375,
+        "max_mm": 108.0322265625,
+        "negative_count_below_minus_1e_minus9": 0
+      },
+      "rendered_player_y": {
+        "intervals": 1087,
+        "min_mm": 0.4189991693994699,
+        "max_mm": 120.48975086829472,
+        "negative_count_below_minus_1e_minus9": 0
+      },
+      "camera_relative_player_y": {
+        "intervals": 1087,
+        "min_mm": -52.07977071573566,
+        "max_mm": 52.97804737378442,
+        "negative_count_below_minus_1e_minus9": 535
+      },
+      "presentation_sha256": "6838d106f8ca52d89a811c2e4a479923c54aa4e93b85c6b1bd04c25c6b049ccd"
+    },
+    "B": {
+      "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src",
+      "window_sampling_valid": true,
+      "worker_source_valid": true,
+      "physics_sample_hz": 34.865459324100705,
+      "display_draw_fps": 41.308758473567416,
+      "display_draw_p95_ms": 37.39800000039395,
+      "display_draw_max_ms": 46.774700000241864,
+      "display_draw_over_50ms": 0,
+      "dropped_simulation_seconds": 19.20000000000001,
+      "background_cpu_cores_including_startup": 2.7363951460551856,
+      "published_player_y": {
+        "intervals": 941,
+        "min_mm": 1.7862319946289062,
+        "max_mm": 116.4703369140625,
+        "negative_count_below_minus_1e_minus9": 0
+      },
+      "rendered_player_y": {
+        "intervals": 1114,
+        "min_mm": 0.5683641880818158,
+        "max_mm": 129.64758538431198,
+        "negative_count_below_minus_1e_minus9": 0
+      },
+      "camera_relative_player_y": {
+        "intervals": 1114,
+        "min_mm": -70.18934118435993,
+        "max_mm": 43.62877840568302,
+        "negative_count_below_minus_1e_minus9": 541
+      },
+      "presentation_sha256": "286612a275db387bfb7fe34940f404a381a75f1d3da46fa78c3bfb11704de054"
+    }
+  },
+  "rollback_experiments": {
+    "normal_initial_prediction": "26输入1040次字节相同但没有减少当前输入的迭代轮数，未整合",
+    "empty_geometry_windows": "线程CPU周期接触−16.6%/原生迭代−7.7%；13车ABBA/反向复测有局部收益，但9车无稳定收益、前台27.93→27.11Hz，已撤销源码并重新编译原DLL。仅保留实验",
+    "initial_profile": "profile-main-13与两份旧onmyoji重叠，剔除；曾按旧授权停止。用户撤销授权后不再停止任何用户应用。清理环境下profile只定位，不与保留程序的正式样本比较性能",
+    "model_simplifications": "胎冠/胎肩、陀螺和轴惯量未删减或近似；未实施这些删减敏感度实验"
+  },
+  "source_sha256": {
+    "setup.py": "8fa3a647410097ca84b5ae6bba9784481586e906b28f4b76f21f3777e49cbcc4",
+    "src\\tire_drivetrain.py": "af70e4a309218722cb862fd8591b982b59e13a90bcca0b5bbca403517729164a",
+    "src\\mechanical_kernels.c": "a0bc3e42f6f80de2fd4222f88ff2da37fc6e30d9211282f783695ee5b1227cec",
+    "src\\joint_mechanical_prepare.h": "556bd7b018d0a84dd744dbefc66eff13932a7669ac4e910860d0ee4ff115d254",
+    "src\\joint_contact_impl.h": "99e13cd528a33052421b5a56b6a1aa583395956874b91a5a498c34593bb0b60b",
+    "tests\\test_continuous_solver.py": "2f9524fd006600958ec59f585e043ffcccce52eafa70fdea77c54d44ff1564f2",
+    "src\\mechanical_kernels.cp314-win_amd64.pyd": "10f1084b30093cb4ead70a81586fd9ddd5655cea70cbec474ed8943595af7b91",
+    "src\\wheel_contact_kernels.cp314-win_amd64.pyd": "3809271d5f3e2bb7dcdde1cd94c85c077ce81382693172e25b04f74b6c0780f7"
+  },
+  "canonical_confirmation": {
+    "all_600_snapshot_hashes_equal": true,
+    "complete_step": {
+      "count": 600,
+      "mean_ms": 24.236938000297716,
+      "p95_ms": 30.19807999880867,
+      "p99_ms": 33.51098500279476,
+      "max_ms": 38.63249999994878,
+      "total_seconds": 14.54216280017863
+    },
+    "source_unchanged": true,
+    "interpretation": "独立生产确认，环境时间不同，不拼接为额外性能收益"
+  },
+  "native_path_calls": {
+    "joint_mechanical_prepare": 26,
+    "joint_solve": 26,
+    "differential_branches": 0,
+    "shaft_brake_plans": 0,
+    "shared_map_coefficients": 0,
+    "wheel_map_coefficients": 0
+  },
+  "model_variant_check": {
+    "variants": [
+      "reference",
+      "rwd",
+      "fwd",
+      "awd",
+      "awd-open",
+      "rwd-open"
+    ],
+    "all_156_complete_results_byte_exact": true,
+    "old_report_sha256": "3f27d57b76c3f80434dd0de0bca1e4b668a94150098a8a58ec86ec49a32182ac",
+    "new_report_sha256": "3f27d57b76c3f80434dd0de0bca1e4b668a94150098a8a58ec86ec49a32182ac"
+  },
+  "verification": {
+    "T1": "88 passed；Ruff及0/17/23各1200拍通过；初轮仅导入排序失败、测试未跑，修复后完整相关组执行",
+    "old_T1_450": "仅复用未改机制的历史覆盖，不累计为新测试数",
+    "T2": "not_run；旧默认车型收敛失败未关闭",
+    "T3": "not_run",
+    "human_gate": "pending",
+    "real_time_gate": "failed",
+    "public_package_rebuilt": false
+  }
+}
