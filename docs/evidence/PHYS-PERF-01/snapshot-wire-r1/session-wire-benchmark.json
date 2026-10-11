@@ -1,0 +1,62 @@
+[
+  {
+    "mode": "game",
+    "codec": "pickle",
+    "payload_bytes": 37435,
+    "roundtrip_ms": [
+      0.49093459999994593,
+      0.4859109999999873,
+      0.4968286000000717
+    ]
+  },
+  {
+    "mode": "game",
+    "codec": "native-first",
+    "payload_bytes": 34847,
+    "roundtrip_ms": [
+      0.23858180000001994,
+      0.2341623999998319,
+      0.23610759999996844
+    ]
+  },
+  {
+    "mode": "game",
+    "codec": "native-repeat",
+    "payload_bytes": 600,
+    "roundtrip_ms": [
+      0.01611019999995733,
+      0.01531699999986813,
+      0.014523600000075021
+    ]
+  },
+  {
+    "mode": "simulation",
+    "codec": "pickle",
+    "payload_bytes": 160041,
+    "roundtrip_ms": [
+      2.1651687999999467,
+      2.1846337999998013,
+      2.1835547999999108
+    ]
+  },
+  {
+    "mode": "simulation",
+    "codec": "native-first",
+    "payload_bytes": 139199,
+    "roundtrip_ms": [
+      1.120058199999903,
+      1.1274195999999392,
+      1.1401126000000659
+    ]
+  },
+  {
+    "mode": "simulation",
+    "codec": "native-repeat",
+    "payload_bytes": 600,
+    "roundtrip_ms": [
+      0.014707999999927779,
+      0.014114000000063243,
+      0.015064200000097117
+    ]
+  }
+]

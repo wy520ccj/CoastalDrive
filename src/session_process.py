@@ -1,5 +1,7 @@
 """独立会话进程持有唯一物理世界；窗口通过完成步快照和驾驶请求协作。"""
 
+import pickle
+import struct
 import traceback
 from collections import deque
 from dataclasses import dataclass, replace
@@ -16,6 +18,7 @@ from controls import KeyboardController
 from session import Phase, Session
 from session_clock import PRESENTATION_DELAY
 from simulation import FIXED_DT, interpolate, shift_snapshot
+from snapshot_wire import decode_snapshots, encode_snapshots
 from traffic import Road
 
 
@@ -38,6 +41,51 @@ class SessionOutput:
     rebases: int
     traffic_cycles: int
     initialisation_ticks: int
+
+_FRAME_HEADER = struct.Struct('<I')
+
+
+def _encode_frame(output, cache=None):
+    """只编码窗口未收到的真实完成步；双方最多保留16份原快照引用。"""
+    cache = {} if cache is None else cache
+    states, indices = [], []
+
+    def index(state):
+        key = id(state)
+        if key not in cache:
+            cache[key] = state
+            states.append(state)
+            indices.append(key)
+        return key
+
+    history = tuple(index(state) for state in output.history)
+    previous, current = index(output.previous), index(output.current)
+    status = (tuple(indices),history,previous,current,output.timeline_origin,output.dropped_epoch,
+              output.phase,output.countdown_ticks,output.dropped_time,output.race,output.highway,
+              output.notice,output.segments,output.collisions,output.rebases,output.traffic_cycles,
+              output.initialisation_ticks)
+    header = pickle.dumps(status,protocol=5)
+    while len(cache)>16:
+        del cache[next(iter(cache))]
+    return b'\1'+_FRAME_HEADER.pack(len(header))+header+encode_snapshots((tuple(states),output.impacts))
+
+
+def _decode_frame(payload, cache=None):
+    cache = {} if cache is None else cache
+    size, = _FRAME_HEADER.unpack_from(payload,1)
+    boundary = 1+_FRAME_HEADER.size+size
+    if boundary > len(payload):
+        raise ValueError('完整会话快照头被截断')
+    (indices,history,previous,current,origin,epoch,phase,countdown,dropped,race,highway,notice,
+     segments,collisions,rebases,cycles,initial) = pickle.loads(payload[1+_FRAME_HEADER.size:boundary])
+    states, impacts = decode_snapshots(memoryview(payload)[boundary:])
+    cache.update(zip(indices,states))
+    output = SessionOutput(tuple(cache[index] for index in history),origin,epoch,cache[previous],
+        cache[current],impacts,phase,countdown,dropped,race,highway,notice,segments,
+        collisions,rebases,cycles,initial)
+    while len(cache)>16:
+        del cache[next(iter(cache))]
+    return output
 
 
 def _output(session):
@@ -78,13 +126,13 @@ def _metadata(session):
              ('session','session_clock','simulation','npc_physics','vehicle','world_step','tire_drivetrain')})
 
 
-def _reply(connection, operation):
+def _reply(connection, operation, *, frame_cache=None):
     try:
         result = operation()
     except Exception as error:  # noqa: BLE001 - 进程边界完整回传原始失败。
-        connection.send((False, error, traceback.format_exc()))
+        connection.send_bytes(b'\0'+pickle.dumps((False,error,traceback.format_exc()),protocol=5))
     else:
-        connection.send((True, result, None))
+        connection.send_bytes(_encode_frame(result,frame_cache) if frame_cache is not None else b'\0'+pickle.dumps((True,result,None),protocol=5))
 
 
 def _camera_loop(connection, session):
@@ -108,6 +156,7 @@ def _serve(connection, camera, input_word, seed, options, worker_loop):
     physics_workers._worker_loop = worker_loop
     session = None
     camera_thread = None
+    frame_cache = {}
     try:
         session = Session(seed, **options, independent_clock=True)
         session.keyboard.input_word = input_word
@@ -115,7 +164,7 @@ def _serve(connection, camera, input_word, seed, options, worker_loop):
         session._ipc_tick, session._ipc_epoch, session._ipc_phase = -1, None, None
         camera_thread = Thread(target=_camera_loop, args=(camera, session), daemon=True)
         camera_thread.start()
-        connection.send((True, (_output(session), _metadata(session)), None))
+        _reply(connection, lambda: (_output(session), _metadata(session)))
         while True:
             command, arguments = connection.recv()
             if command == 'close':
@@ -170,9 +219,9 @@ def _serve(connection, camera, input_word, seed, options, worker_loop):
                                if session.simulation._physics_workers else None)
                 return _output(session), _metadata(session), diagnostics
 
-            _reply(connection, execute)
+            _reply(connection, execute, frame_cache=frame_cache if command=='frame' else None)
     except Exception as error:  # noqa: BLE001 - 启动与通信失败须传回窗口。
-        connection.send((False, error, traceback.format_exc()))
+        connection.send_bytes(b'\0'+pickle.dumps((False,error,traceback.format_exc()),protocol=5))
     finally:
         if session is not None:
             session.close()
@@ -209,6 +258,7 @@ class SessionProcess:
         self.pending_frame = False
         self.output = None
         self.history = deque(maxlen=12)
+        self.frame_cache = {}
         self.received_impacts = []
         self.simulation = SimulationView()
         self.simulation.input_config = driving_mode.input_config
@@ -241,7 +291,12 @@ class SessionProcess:
         if not self.connection.poll(60.):
             raise TimeoutError('独立会话未返回结果')
         try:
-            ok, result, trace = self.connection.recv()
+            payload = self.connection.recv_bytes()
+            if payload[0] == 1:
+                return _decode_frame(payload,self.frame_cache)
+            if payload[0] != 0:
+                raise ValueError('未知完整会话快照类型')
+            ok, result, trace = pickle.loads(payload[1:])
         except EOFError as error:
             raise RuntimeError('独立会话进程意外退出') from error
         if not ok:
@@ -427,7 +482,10 @@ class SessionProcess:
         self.camera.send((tuple(start), tuple(end), origin_y))
         if not self.camera.poll(30.):
             raise TimeoutError('独立会话未返回相机扫掠')
-        ok, result, trace = self.camera.recv()
+        payload = self.camera.recv_bytes()
+        if payload[0] != 0:
+            raise ValueError('未知相机查询消息类型')
+        ok, result, trace = pickle.loads(payload[1:])
         if not ok:
             result.add_note(trace)
             raise result
@@ -455,6 +513,7 @@ class SessionProcess:
                     raise RuntimeError('独立会话关闭超时')
         finally:
             self.keyboard.clear()
+            self.frame_cache.clear()
             self.camera.close()
             self.connection.close()
             self.process.close()
