@@ -740,8 +740,8 @@ class CoastalDrive(ShowBase):
             self.panel_title.setText("驾驶模式")
             self.panel_note.setText(
                 f"当前：{self.session.driving_mode.label} · 下次起步应用\n"
-                "玩家完整 · 正常交通精简 · 困难全车完整\n"
-                "自动换挡 · 仿真Q倒/E前 · ABS/TCS/ESC独立开关"
+                "困难：完整动力学 · 尚未完成实车标定\n"
+                "仿真：Q选R后W加油 · E回前进 · S只刹车"
                 + (f"\n{self.driving_mode_settings.notice}" if self.driving_mode_settings.notice else "")
             )
             options = [

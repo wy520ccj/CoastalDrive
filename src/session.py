@@ -65,7 +65,7 @@ class Session:
             physics_workers=self.physics_worker_count(),
         )
         self.track = get_track(track)
-        self.keyboard = KeyboardController()
+        self.keyboard = KeyboardController(self.driving_mode.input_config)
         self.controller = self.keyboard
         self.stepper = FixedStepper()
         self.phase = Phase.MENU
@@ -190,6 +190,7 @@ class Session:
         )
         self.highway = HighwayRun(challenge=self.mode == GameMode.DISTANCE_CHALLENGE)
         self.keyboard.direction = 1
+        self.keyboard.input_config = self.driving_mode.input_config
         self.keyboard.clear()
         self.controller = self.keyboard
         self.stepper.reset()

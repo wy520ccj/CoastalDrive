@@ -1,0 +1,16 @@
+[
+  {
+    "case": "old_full_lock_key",
+    "tap_seconds": 0.1,
+    "initial_speed_kmh": 100,
+    "max_rack_degrees": 5.238470471079871,
+    "heading_after_one_second": -15.308298110961914
+  },
+  {
+    "case": "new_wheel_rate_key",
+    "tap_seconds": 0.1,
+    "initial_speed_kmh": 100,
+    "max_rack_degrees": 0.30707250510577283,
+    "heading_after_one_second": -0.897894024848938
+  }
+]

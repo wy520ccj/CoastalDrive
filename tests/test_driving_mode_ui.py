@@ -123,6 +123,8 @@ def test_menu_mode_selection_and_hud_text(tmp_path, height):
                        track=app.session.simulation.track, countdown="", notice="",
                        driving_mode=app.session.driving_mode)
         assert "Q 倒挡 / E 前进挡" in app.hud.help.getText()
+        assert "选挡后W加油" in app.hud.help.getText()
+        assert "S / ↓ 只刹车" in app.hud.help.getText()
         assert "刹车·倒车" not in app.hud.help.getText()
         assert "ABS待命 TCS关闭 ESC关闭" in app.hud.help.getText()
         app.toggle_abs()

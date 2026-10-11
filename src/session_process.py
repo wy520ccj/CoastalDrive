@@ -202,7 +202,7 @@ class SessionProcess:
         self.driving_mode = driving_mode
         self.base_vehicle_config = vehicle_config
         self.traffic_density = 'normal'
-        self.keyboard = KeyboardController()
+        self.keyboard = KeyboardController(driving_mode.input_config)
         self.controller = self.keyboard
         self.camera_distance = 11.
         self.closed = False
@@ -396,6 +396,7 @@ class SessionProcess:
     def set_driving_mode(self, mode):
         self._command('driving_mode', mode)
         self.driving_mode = mode
+        self.keyboard.input_config = mode.input_config
         self.simulation.input_config = mode.input_config
 
     def set_vehicle_config(self, config):

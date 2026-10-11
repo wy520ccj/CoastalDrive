@@ -17,8 +17,8 @@ def set_text(widget, value):
 
 def driving_help(mode, abs_label=None, tcs_label=None, esc_label=None):
     """输入说明只表达已有模式行为。"""
-    direction = " · Q 倒挡 / E 前进挡" if mode == DrivingMode.SIMULATION else ""
-    brake = "刹车" if mode == DrivingMode.SIMULATION else "刹车·倒车"
+    direction = " · Q 倒挡 / E 前进挡（选挡后W加油）" if mode == DrivingMode.SIMULATION else ""
+    brake = "只刹车" if mode == DrivingMode.SIMULATION else "刹车·倒车"
     electronics = ""
     if abs_label is not None:
         electronics = f" · ABS{abs_label}"
@@ -116,7 +116,7 @@ class DrivingHUD:
         )
         set_text(self.help, driving_help(driving_mode, abs_label, tcs_label, esc_label))
         set_text(self.speed, f"{abs(state.player.speed) * 3.6:03.0f}")
-        set_text(self.gear, "R" if state.player.gear < 0 else f"D{state.player.gear}")
+        set_text(self.gear, "R" if state.player.gear < 0 else "N" if state.player.gear == 0 else f"D{state.player.gear}")
         set_text(self.gear_rpm, f"{state.player.rpm:4.0f} rpm")
         # 色条直接表示当前发动机转速，末端标尺 7000 rpm；不改变物理转速。
         active = round(min(1, max(0, state.player.rpm / 7000)) * len(self.rpm_segments))
