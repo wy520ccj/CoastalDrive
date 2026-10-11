@@ -1,0 +1,58 @@
+{
+  "kind": "完整真实数值子步，独立于IPC；不能证明完整物理步或前台120Hz",
+  "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\surface-broadphase",
+  "modules": {
+    "physics_workers": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\surface-broadphase\\physics_workers.py",
+      "sha256": "94e48b0e651d63a53ad141d2653380cc30003de1e5612018cc838b00c7ca845a"
+    },
+    "physics_wire": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\surface-broadphase\\physics_wire.py",
+      "sha256": "a76a62c335944bad889b8980818d45ec471ada02018d1dced0d10d6f1dc93ffc"
+    },
+    "vehicle_tire_step": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\surface-broadphase\\vehicle_tire_step.py",
+      "sha256": "bbcb9d0b37e8f05ebe4c86c322f7ad256853ca24639e5c50054f63b2df9dac0b"
+    },
+    "tire_drivetrain": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\surface-broadphase\\tire_drivetrain.py",
+      "sha256": "af70e4a309218722cb862fd8591b982b59e13a90bcca0b5bbca403517729164a"
+    },
+    "vehicle_tires": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\surface-broadphase\\vehicle_tires.py",
+      "sha256": "ac57679657322ef7985bd9438a8b7c9ca2ca3f14971e94da7c6d817376753708"
+    },
+    "suspension_kinematics": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\surface-broadphase\\suspension_kinematics.py",
+      "sha256": "21b4e03ec5b94ca08963be73b57b8c6452cb1eec8f52e22c36be9e2dcf146b90"
+    },
+    "mechanical_kernels": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\surface-broadphase\\mechanical_kernels.cp314-win_amd64.pyd",
+      "sha256": "10f1084b30093cb4ead70a81586fd9ddd5655cea70cbec474ed8943595af7b91"
+    },
+    "wheel_contact_kernels": {
+      "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\surface-broadphase\\wheel_contact_kernels.cp314-win_amd64.pyd",
+      "sha256": "4f4701370d11f0d79d148378354d12151d95e53cc5937b91b5ebc80d5d1e60db"
+    }
+  },
+  "inputs": 26,
+  "warmup_rounds": 4,
+  "measured_rounds": 20,
+  "complete_vehicle_substep": {
+    "count": 520,
+    "mean_ms": 1.4542275000009726,
+    "p95_ms": 2.3240150001583957,
+    "p99_ms": 2.6720659999682512,
+    "max_ms": 3.448099999786791,
+    "total_seconds": 0.7561983000005057
+  },
+  "quantized_process_cpu_seconds": 0.765625,
+  "all_results_byte_exact": true,
+  "mismatches": [],
+  "physics_world_created": false,
+  "original_results_used_only_for_validation": true,
+  "timing_excludes_wire_encoding_and_validation": true,
+  "profile_is_separate_from_timing": true,
+  "checked_modules_unchanged": true,
+  "passed": true
+}

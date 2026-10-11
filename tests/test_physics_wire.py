@@ -6,7 +6,7 @@ import struct
 from dataclasses import replace
 
 import pytest
-from physics_packet_kernels import decode, encode, layout
+from physics_packet_kernels import decode, encode, encode_into, layout
 
 from physics_wire import _layout, from_bytes, input_bytes, result_bytes
 from simulation import Control, Simulation
@@ -84,3 +84,19 @@ def test_packet_record_missing_fields_and_layout_mismatch_raise():
     other = layout((WheelDynamicsState,),(('omega',),),123)
     with pytest.raises(ValueError,match='布局'):
         decode(other,encode(_layout,WheelDynamicsState()))
+
+
+def test_native_encoding_into_bounded_buffer_preserves_bits_and_guards():
+    values = (WheelDynamicsState(omega=-0., fx=1.e-100), [0., -0., math.inf, -math.inf])
+    packet = encode(_layout, values)
+    guarded = bytearray(b'prefix' + b'\0' * len(packet) + b'suffix')
+    with memoryview(guarded)[6:-6] as target:
+        assert encode_into(_layout, values, target) == len(packet)
+    assert guarded == b'prefix' + packet + b'suffix'
+    for capacity in (0, 3, 11, len(packet) - 1):
+        target = bytearray(b'\0' * capacity + b'guard')
+        with memoryview(target)[:capacity] as limited, pytest.raises(BufferError):
+            encode_into(_layout, values, limited)
+        assert target[capacity:] == b'guard'
+    with pytest.raises(TypeError):
+        encode_into(_layout, values, bytes(len(packet)))

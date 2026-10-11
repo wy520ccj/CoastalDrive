@@ -1,0 +1,32 @@
+{
+  "baseline": "6b4ea7f9726ebcdae757e32796c2ee12fe4ff7b4",
+  "status": "in_progress",
+  "snapshot_comparisons_exact": {
+    "paired-A1-r2/paired-B1": true,
+    "paired-A2/paired-B2": true,
+    "late-world-A/late-world-B": true
+  },
+  "source_sha256": {
+    "src/physics_channel.py": "9e6c29c144d946eb82234c929e7feee9249669aec2907f91221cc7c503208e10",
+    "src/physics_workers.py": "566298927b5eb974c029838e51797e643f6df2d2e7369d0e48de1cac2eb82a98",
+    "src/physics_wire.py": "f7bc6b53ecec27d6961689d3163e1913839bf26a785509a00f2069cfd9deed90",
+    "src/physics_packet_kernels.c": "8707c7d52cf7a6764d889371c9967303a972c4331051047f1e82bf863b6b4684",
+    "src/joint_contact_impl.h": "61a14bff08d3cc34543edeeb7f2bc3c540fbb19bf1172effc732457f09f6b983",
+    "src/wheel_contact_kernels.c": "4e1a931cba4d8601d2738c320bb337fa45689eb79ac9b4f442eb0af8d47a6d85",
+    "tests/test_physics_channel.py": "3ebec2bf4dccc2f9cc3de2856550b43ee38ca87b5be0ab557adec9cbdb5d7c73",
+    "tests/test_physics_wire.py": "2786fdcb28300fbd18e999b4ed30590944ec4e468a8278cc00faa0b9f5ad2651",
+    "tests/test_continuous_solver.py": "577f54982d068cb0b9d7c1ba0aa06ff6527fdf8ec2d71ab8e2e708b319075943",
+    "tools/validate.py": "939006a8622e64dbe47020e6a213269c003d2ab0f657b0b41900349e369eb1d0",
+    "src\\convex_cast_kernels.cp314-win_amd64.pyd": "a54ba6964e0b48f9a8f93e2b5c6b00b6a8f2bf783cb2835d324120647aac4035",
+    "src\\mechanical_kernels.cp314-win_amd64.pyd": "10f1084b30093cb4ead70a81586fd9ddd5655cea70cbec474ed8943595af7b91",
+    "src\\physics_packet_kernels.cp314-win_amd64.pyd": "8e07eafb2397c7cc54253d65214d4732306826d845dbbdaabda9c315748fd489",
+    "src\\wheel_contact_kernels.cp314-win_amd64.pyd": "c72644ec1b969e1da4a55f8c0eae0461bf978230b6600c4b28816a29c0a2fc12"
+  },
+  "production_npc_model": "unchanged_full_physics",
+  "npc_bullet": "isolated_experiment_only_not_approved_or_integrated",
+  "new_commit": null,
+  "remote_push": false,
+  "T2_T3": "not_run",
+  "human_gate": "pending",
+  "performance_gate": "failed"
+}

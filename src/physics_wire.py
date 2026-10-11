@@ -4,7 +4,7 @@ import hashlib
 from dataclasses import fields, replace
 
 from panda3d.core import Mat3, Quat, Vec3
-from physics_packet_kernels import decode, encode, layout
+from physics_packet_kernels import decode, encode, encode_into, layout
 
 from suspension import SuspensionState, SuspensionStep
 from vehicle_state import WheelContactState, WheelDynamicsState
@@ -38,7 +38,7 @@ _signature = '|'.join(cls.__module__+'.'+cls.__name__+':'+','.join(names)
 _layout = layout(_records,_names,int.from_bytes(hashlib.sha256(_signature).digest()[:8],'little'))
 
 
-def input_bytes(request):
+def numeric_input(request):
     body = request.body
     numeric = NumericBodyInput()
     numeric.position = tuple(body.pose.getPos())
@@ -46,7 +46,15 @@ def input_bytes(request):
     numeric.velocity,numeric.angular = body.velocity,body.angular
     numeric.tensor = tuple(body.inverse_inertia.getCell(row,column) for row in range(3) for column in range(3))
     numeric.angular_damping = body.angular_damping
-    return encode(_layout,replace(request,config=None,body=numeric,world_source=None))
+    return replace(request,config=None,body=numeric,world_source=None)
+
+
+def input_bytes(request):
+    return encode(_layout,numeric_input(request))
+
+
+def write_numeric(record, buffer):
+    return encode_into(_layout,record,buffer)
 
 
 def result_bytes(result):

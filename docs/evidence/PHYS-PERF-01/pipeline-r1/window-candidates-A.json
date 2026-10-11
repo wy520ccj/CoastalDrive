@@ -1,0 +1,549 @@
+{
+  "kind": "short window comparison; not final performance or human gate",
+  "source": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline",
+  "track": "endless",
+  "vehicle_design": "gr86-2022-premium-6mt",
+  "driving_mode": "simulation",
+  "controller": "highway-driver",
+  "constant_steering": 0.0,
+  "gc_rate": 1.0,
+  "python_switch_interval": 0.005,
+  "audio": "disabled by existing smoke mode",
+  "tick": 1144,
+  "fixed_hz": 120,
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 12,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "profile": false,
+  "source_modules": {
+    "application": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\application.py",
+    "simulation": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\simulation.py",
+    "vehicle": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle.py",
+    "world_step": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\world_step.py",
+    "physics_workers": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\physics_workers.py",
+    "tire_drivetrain": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\tire_drivetrain.py",
+    "vehicle_tires": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tires.py",
+    "suspension_contacts": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\suspension_contacts.py",
+    "triangle_support": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\triangle_support.py",
+    "coastal_map": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\coastal_map.py"
+  },
+  "trace_phases": false,
+  "phase_timing": {},
+  "independent_clock": true,
+  "physics_workers": {
+    "processes": 9,
+    "configured_processes": 9,
+    "geometry_versions": 1,
+    "remote": 29744,
+    "world_required": 0,
+    "worker_solve": {
+      "wall": {
+        "mean_ms": 2.664660375969796,
+        "p95_ms": 3.8369000003513065,
+        "max_ms": 8.617200000117009
+      },
+      "cpu": {
+        "mean_ms": 1.956939697265625,
+        "p95_ms": 15.625,
+        "max_ms": 15.625
+      }
+    },
+    "configuration_transfers": 9,
+    "timing_window_requests": 4096,
+    "preparation_seconds": 0.4701476999998704,
+    "initialisation_seconds": 0.46860339999966527,
+    "numeric_packets": 29744
+  },
+  "streaming_phases": {},
+  "wall_seconds": 30.013761199999994,
+  "sample_seconds": 27.035013400000025,
+  "frames": 1171,
+  "average_fps": 43.31420083557269,
+  "display_draw_frames": 1169,
+  "display_draw_fps": 43.302746641360244,
+  "display_draw_p95_ms": 31.940700000177458,
+  "display_draw_p99_ms": 36.50770000012926,
+  "display_draw_max_ms": 42.82819999980347,
+  "display_draw_over_50ms": 0,
+  "p95_ms": 29.948200000035285,
+  "p99_ms": 33.83949999988545,
+  "max_ms": 39.01550000000498,
+  "frames_over_50ms": 0,
+  "frames_over_100ms": 0,
+  "dropped_simulation_seconds": 18.32500000000001,
+  "warmup_dropped_seconds": 1.9166666666666665,
+  "distance_m": 65.51997494041294,
+  "physics_start_tick": 122,
+  "physics_end_tick": 1144,
+  "physics_sample_ticks": 1022,
+  "physics_sample_simulated_seconds": 8.516666666666667,
+  "physics_sample_wall_seconds": 27.014258600000176,
+  "physics_sample_hz": 37.831872979848995,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 25.374047699999995,
+      "ms": 39.01550000000498
+    },
+    {
+      "second": 17.868494199999997,
+      "ms": 38.03120000020499
+    },
+    {
+      "second": 24.483399799999997,
+      "ms": 37.29520000024422
+    },
+    {
+      "second": 26.748195299999995,
+      "ms": 36.41909999987547
+    },
+    {
+      "second": 28.517627899999997,
+      "ms": 35.86349999977756
+    },
+    {
+      "second": 3.278128,
+      "ms": 35.74280000020735
+    },
+    {
+      "second": 17.660737899999997,
+      "ms": 35.5440000003
+    },
+    {
+      "second": 17.3425925,
+      "ms": 34.637600000223756
+    },
+    {
+      "second": 23.933755799999997,
+      "ms": 34.57939999998416
+    },
+    {
+      "second": 19.675062799999996,
+      "ms": 34.41209999982675
+    },
+    {
+      "second": 17.3073536,
+      "ms": 33.95829999999478
+    },
+    {
+      "second": 3.110915699999999,
+      "ms": 33.83949999988545
+    }
+  ],
+  "segment_work_max_ms": 0.1855000000432483,
+  "segment_step_max_ms": 0,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 0.1855000000432483,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.1661999999669206,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.15239999993355013,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.13839999974152306,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.132200000280136,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.13140000010025688,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.12590000005729962,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.12549999973998638,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.11660000018309802,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.10469999961060239,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.10430000020278385,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.10310000016033882,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 4315,
+      "render_states": 1184
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 8964,
+      "render_states": 2066
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 12118,
+      "render_states": 2054
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 10909,
+      "render_states": 2168
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 14706,
+      "render_states": 2044
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 10725,
+      "render_states": 2151
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 12628,
+      "render_states": 2165
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 13537,
+      "render_states": 1971
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 9867,
+      "render_states": 2053
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 13189,
+      "render_states": 2166
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 14028,
+      "render_states": 1971
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 10830,
+      "render_states": 2177
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 11730,
+      "render_states": 2181
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 12692,
+      "render_states": 2158
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 14433,
+      "render_states": 2173
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 10047,
+      "render_states": 2174
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 11711,
+      "render_states": 1976
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 11133,
+      "render_states": 2066
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 12676,
+      "render_states": 2088
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 11955,
+      "render_states": 2167
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 12264,
+      "render_states": 2218
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 9946,
+      "render_states": 2189
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 9223,
+      "render_states": 2013
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 10711,
+      "render_states": 2186
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 10669,
+      "render_states": 2163
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 14166,
+      "render_states": 2095
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 13039,
+      "render_states": 1990
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 13268,
+      "render_states": 1997
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 5727,
+      "render_states": 2025
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 15054,
+      "render_states": 2079
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 11097,
+      "render_states": 1991
+    }
+  ],
+  "passed": false,
+  "short_performance_passed": false,
+  "git_head": "6b4ea7f9726ebcdae757e32796c2ee12fe4ff7b4",
+  "worker_sources": [
+    {
+      "physics_workers": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\baseline\\vehicle_tire_step.py"
+    }
+  ],
+  "worker_source_valid": true,
+  "git_status": "M src/application.py\n M src/controls.py\n M src/joint_contact_impl.h\n M src/physics_packet_kernels.c\n M src/physics_wire.py\n M src/physics_workers.py\n M src/session.py\n M src/simulation.py\n M src/wheel_contact_kernels.c\n M tests/test_continuous_solver.py\n M tests/test_physics_wire.py\n M tools/endurance_check.py\n M tools/validate.py\n?? src/physics_channel.py\n?? tests/test_physics_channel.py"
+}

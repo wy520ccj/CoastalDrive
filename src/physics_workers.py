@@ -9,7 +9,7 @@ from collections import deque
 from contextlib import nullcontext
 from dataclasses import dataclass, field, replace
 from functools import lru_cache
-from multiprocessing import get_context
+from multiprocessing import get_context, parent_process
 from multiprocessing.shared_memory import SharedMemory
 
 from wheel_contact_kernels import cached_surface_entry, prepared_support_candidates
@@ -18,7 +18,8 @@ from coastal_map import on_road
 from convex_queries import wheel_hull
 from highway_curve import HighwayCurve
 from highway_map import on_road as highway_on_road
-from physics_wire import from_bytes, input_bytes, result_bytes
+from physics_channel import SLOTS, PhysicsChannel
+from physics_wire import from_bytes, input_bytes, numeric_input, result_bytes
 from suspension_contacts import StaticSupportShapes
 from suspension_geometry import CylinderSurface
 from test_track import on_asphalt
@@ -42,7 +43,17 @@ def _send_message(connection, message):
 
 
 def _receive_message(connection):
+    if isinstance(connection,PhysicsChannel):
+        payload = connection.receive_view()
+        try:
+            return _decode_message(payload)
+        finally:
+            connection.release_view(payload)
     payload = connection.recv_bytes()
+    return _decode_message(payload)
+
+
+def _decode_message(payload):
     kind = payload[0]
     if kind == 0:
         return pickle.loads(payload[1:])
@@ -189,7 +200,7 @@ def _solve_vehicle(request, reference):
 
 
 def _worker_loop(connection):
-    """每个进程一条直接管道；避免通用任务队列的额外GIL线程和唤醒延迟。"""
+    """每个进程一组有界共享槽；完成包发布后才允许主世界读取。"""
     configurations = {}
     reference = None
     try:
@@ -243,14 +254,23 @@ def _worker_loop(connection):
             else:
                 timing = time.perf_counter()-wall,time.process_time()-cpu
                 if numeric:
-                    packet = b'\2'+_result_header.pack(identifier,*timing)+result_bytes(result) if result is not None else b'\3'+_result_header.pack(identifier,*timing)
-                    connection.send_bytes(packet)
+                    if isinstance(connection,PhysicsChannel) and result is not None:
+                        connection.send_numeric(b'\2'+_result_header.pack(identifier,*timing),result)
+                    else:
+                        packet = b'\2'+_result_header.pack(identifier,*timing)+result_bytes(result) if result is not None else b'\3'+_result_header.pack(identifier,*timing)
+                        connection.send_bytes(packet)
                 else:
                     _send_message(connection,(identifier,result,None,None,timing))
     finally:
         connection.close()
         if _worker_memory is not None:
             _worker_memory.close()
+
+
+def _shared_worker(name, outgoing, incoming, run):
+    channel = PhysicsChannel(name, 0, outgoing, incoming, child=True)
+    channel.peer = parent_process()
+    run(channel)
 
 
 def _freeze_system(system):
@@ -323,14 +343,29 @@ class PhysicsWorkers:
         self.initialisation_seconds = 0.
         self.mesh_payloads = {}
         self.mesh_identifier = 0
+        self.channel_memories = []
+        self.pending = []
 
     def _start_one(self):
         context = get_context('spawn')
-        parent,child = context.Pipe()
-        process = context.Process(target=_worker_loop,args=(child,),daemon=True)
-        process.start()
-        child.close()
+        memory = SharedMemory(create=True, size=PhysicsChannel.allocation_size(1))
+        outgoing = context.Semaphore(SLOTS), context.Semaphore(0)
+        incoming = context.Semaphore(SLOTS), context.Semaphore(0)
+        parent = PhysicsChannel(memory.name,0,outgoing,incoming)
+        process = context.Process(target=_shared_worker,
+            args=(memory.name,incoming,outgoing,_worker_loop),daemon=True)
+        try:
+            process.start()
+        except BaseException:
+            parent.close()
+            memory.close()
+            memory.unlink()
+            process.close()
+            raise
+        parent.peer = process
         self.processes.append((process,parent))
+        self.channel_memories.append(memory)
+        self.pending.append(deque())
         self.worker_configurations.append(set())
         self.worker_references.append(None)
 
@@ -461,8 +496,9 @@ class PhysicsWorkers:
         identifier = self.identifier
         self.identifier += 1
         index = identifier % len(self.processes)
-        if index in self.in_flight:
-            previous = self.in_flight[index]
+        pending = self.pending[index]
+        if len(pending) == SLOTS:
+            previous = pending[0]
             self.completed[previous] = self._receive(index, previous)
         configuration_id,configuration = None,None
         if isinstance(frozen,TireAdvanceInput):
@@ -477,13 +513,17 @@ class PhysicsWorkers:
             if configuration is not None or self.worker_references[index] != self.reference:
                 _send_message(connection,('context',self.reference,configuration_id,configuration))
                 self.worker_references[index] = self.reference
-            connection.send_bytes(b'\1'+_job_header.pack(identifier,configuration_id)+input_bytes(frozen))
+            if isinstance(connection,PhysicsChannel):
+                connection.send_numeric(b'\1'+_job_header.pack(identifier,configuration_id),numeric_input(frozen))
+            else:
+                connection.send_bytes(b'\1'+_job_header.pack(identifier,configuration_id)+input_bytes(frozen))
             self.numeric_packets += 1
         else:
             if isinstance(frozen,TireAdvanceInput):
                 frozen = replace(frozen,config=None,world_source=None)
             _send_message(connection,(identifier,frozen,self.reference,configuration_id,configuration))
-        self.in_flight[index] = identifier
+        pending.append(identifier)
+        self.in_flight[index] = pending[0]
         return index,identifier
 
     def _receive(self, index, identifier):
@@ -494,7 +534,14 @@ class PhysicsWorkers:
             raise RuntimeError(f"车辆数值进程{process.pid}意外退出") from disconnected
         if returned != identifier:
             raise RuntimeError("车辆数值进程返回的请求编号不一致")
-        del self.in_flight[index]
+        pending = self.pending[index]
+        if not pending or pending[0] != identifier:
+            raise RuntimeError('车辆数值结果与有界请求队列不一致')
+        pending.popleft()
+        if pending:
+            self.in_flight[index] = pending[0]
+        else:
+            del self.in_flight[index]
         self.samples.append(timing)
         if error is not None:
             error.add_note(trace)
@@ -536,10 +583,16 @@ class PhysicsWorkers:
     def close(self):
         try:
             for process,connection in self.processes:
+                if self.in_flight:
+                    if process.is_alive():
+                        process.terminate()
+                    continue
+                if not process.is_alive():
+                    continue
                 try:
                     _send_message(connection,None)
-                except OSError as disconnected:
-                    logging.getLogger(__name__).warning("关闭数值进程%s时管道已断开：%s",process.pid,disconnected)
+                except (OSError, EOFError, TimeoutError) as disconnected:
+                    logging.getLogger(__name__).warning("关闭数值进程%s时共享槽已断开：%s",process.pid,disconnected)
             for process,connection in self.processes:
                 process.join(5.)
                 if process.is_alive():
@@ -552,8 +605,13 @@ class PhysicsWorkers:
             self.worker_configurations.clear()
             self.worker_references.clear()
             self.in_flight.clear()
+            self.pending.clear()
             self.completed.clear()
             self.preparing.clear()
             self.preparation_configs = None
         finally:
             self.clear_geometry()
+            for memory in self.channel_memories:
+                memory.close()
+                memory.unlink()
+            self.channel_memories.clear()

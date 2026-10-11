@@ -5,13 +5,14 @@
 #include <string.h>
 
 typedef struct { PyObject *types, *names; uint64_t signature; } Layout;
-typedef struct { char *data; size_t length, capacity; } Writer;
+typedef struct { char *data; size_t length, capacity; int fixed; } Writer;
 typedef struct { const unsigned char *data; size_t offset, length; } Reader;
 
 static int append(Writer *w, const void *data, size_t size) {
     if (size > (size_t)PY_SSIZE_T_MAX - w->length) { PyErr_NoMemory(); return -1; }
     size_t needed = w->length + size;
     if (needed > w->capacity) {
+        if (w->fixed) { PyErr_SetString(PyExc_BufferError,"车辆共享槽容量不足"); return -1; }
         size_t capacity = needed > w->capacity * 2 ? needed : w->capacity * 2;
         char *grown = PyMem_Realloc(w->data, capacity);
         if (!grown) { PyErr_NoMemory(); return -1; }
@@ -211,7 +212,20 @@ static PyObject *decode(PyObject *self, PyObject *args) {
 done:
     PyBuffer_Release(&buffer); return result;
 }
+
+static PyObject *encode_into(PyObject *self, PyObject *args) {
+    PyObject *capsule,*value;Py_buffer buffer;
+    if (!PyArg_ParseTuple(args,"OOw*",&capsule,&value,&buffer)) return NULL;
+    Layout *layout=PyCapsule_GetPointer(capsule,"coastaldrive.physics_layout");
+    PyObject *result=NULL;
+    if (layout) {
+        Writer writer={(char *)buffer.buf,0,(size_t)buffer.len,1};
+        if (!append(&writer,"CDP1",4) && !put_integer(&writer,layout->signature,8) && !pack(layout,&writer,value))
+            result=PyLong_FromSize_t(writer.length);
+    }
+    PyBuffer_Release(&buffer);return result;
+}
 static PyMethodDef methods[]={{"layout",make_layout,METH_VARARGS,NULL},{"encode",encode,METH_VARARGS,NULL},
-    {"decode",decode,METH_VARARGS,NULL},{NULL,NULL,0,NULL}};
+    {"decode",decode,METH_VARARGS,NULL},{"encode_into",encode_into,METH_VARARGS,NULL},{NULL,NULL,0,NULL}};
 static struct PyModuleDef module={PyModuleDef_HEAD_INIT,"physics_packet_kernels",NULL,-1,methods};
 PyMODINIT_FUNC PyInit_physics_packet_kernels(void) { return PyModule_Create(&module); }

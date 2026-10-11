@@ -5,6 +5,8 @@ typedef struct {
     double axis[3],origin[3],low[3],high[3],radius,reach,width,shoulder,crown;
     SurfacePacket *surfaces;
     SurfacePacket *complete;
+    SurfacePacket *candidate;
+    double candidate_low[3],candidate_high[3];
 } JointPlane;
 typedef struct { JointPlane planes[4]; double damping; PyObject *complete_owners; } JointContacts;
 
@@ -26,7 +28,10 @@ static double joint_fsum(const double *values,int count) {
 static void joint_contacts_free(PyObject *capsule) {
     JointContacts *data=PyCapsule_GetPointer(capsule,JOINT_CONTACT_PACKET_NAME);
     if(!data)return;
-    for(int i=0;i<4;++i)if(data->planes[i].surfaces)surface_packet_free(data->planes[i].surfaces);
+    for(int i=0;i<4;++i){
+        if(data->planes[i].surfaces)surface_packet_free(data->planes[i].surfaces);
+        if(data->planes[i].candidate)surface_packet_free(data->planes[i].candidate);
+    }
     Py_XDECREF(data->complete_owners);
     PyMem_Free(data);
 }
@@ -76,9 +81,54 @@ static PyObject *joint_contact_prepare(PyObject *self,PyObject *args) {
     if(!result)goto failed;
     return result;
 failed:
-    for(int i=0;i<4;++i)if(data->planes[i].surfaces)surface_packet_free(data->planes[i].surfaces);
+    for(int i=0;i<4;++i){
+        if(data->planes[i].surfaces)surface_packet_free(data->planes[i].surfaces);
+        if(data->planes[i].candidate)surface_packet_free(data->planes[i].candidate);
+    }
     Py_XDECREF(data->complete_owners);
     PyMem_Free(data);return NULL;
+}
+
+
+/* 只在覆盖盒越界时从本子步完整世界重筛；盒内保持所有可能接触的原序形状。 */
+static int joint_complete_candidates(JointPlane *p,const double start[3],const double end[3]) {
+    if(p->candidate) {
+        int covered=1;
+        for(int a=0;a<3;++a)if(fmin(start[a],end[a])<p->candidate_low[a]||fmax(start[a],end[a])>p->candidate_high[a])covered=0;
+        if(covered)return 1;
+    } else {
+        SurfacePacket *candidate=PyMem_Calloc(1,sizeof(*candidate));if(!candidate){PyErr_NoMemory();return 0;}
+        candidate->parts=PyMem_Malloc(p->complete->count*sizeof(*candidate->parts));
+        if(p->complete->count&&!candidate->parts){PyMem_Free(candidate);PyErr_NoMemory();return 0;}
+        p->candidate=candidate;
+    }
+    double center[3],half[3],envelope=p->radius+fabs(p->width)/2+fabs(p->shoulder)+fabs(p->crown);
+    for(int a=0;a<3;++a) {
+        p->candidate_low[a]=fmin(start[a],end[a])-.05;p->candidate_high[a]=fmax(start[a],end[a])+.05;
+        center[a]=(p->candidate_low[a]+p->candidate_high[a])/2;half[a]=(p->candidate_high[a]-p->candidate_low[a])/2;
+    }
+    p->candidate->count=0;
+    for(Py_ssize_t i=0;i<p->complete->count;++i) {
+        SurfacePart *part=&p->complete->parts[i];int possible=1;
+        if(part->kind!=0) {
+            double offset[3],local_center[3],local_half[3];
+            for(int a=0;a<3;++a) {
+                double origin_terms[3],size_terms[3];
+                for(int b=0;b<3;++b){origin_terms[b]=part->axes[a][b]*p->origin[b];size_terms[b]=fabs(part->axes[a][b])*half[b];}
+                offset[a]=part->translation[a]+sum_three(origin_terms);local_half[a]=sum_three(size_terms)+envelope+part->margin;
+            }
+            transform_values(center,part->axes,offset,0,local_center);
+            for(int a=0;a<3;++a) {
+                double object_center=part->kind==2?part->triangles->center[a]:0.;
+                double object_half=part->kind==2?part->triangles->half[a]:part->half[a];
+                /* 包围盒只向外扩：补偿大坐标投影舍入，不改变任何精确接触阈值。 */
+                double rounding=32*2.220446049250313e-16*(fabs(local_center[a])+fabs(offset[a])+fabs(object_center)+local_half[a]+object_half+1.);
+                if(fabs(local_center[a]-object_center)>local_half[a]+object_half+rounding)possible=0;
+            }
+        }
+        if(possible)p->candidate->parts[p->candidate->count++]=*part;
+    }
+    return 1;
 }
 
 static int joint_contact_evaluate(void *packet,const double *velocity,const double *angular,double dt,
@@ -106,7 +156,8 @@ static int joint_contact_evaluate(void *packet,const double *velocity,const doub
             if(fmin(start[a],end[a])+p->origin[a]-padding<p->low[a]
                 ||fmax(start[a],end[a])+p->origin[a]+padding>p->high[a]) {
                 if(!p->complete){PyErr_SetString(PyExc_ArithmeticError,"连续有限接点缺少覆盖盒外的真实几何");return 0;}
-                selected=p->complete;break;
+                if(!joint_complete_candidates(p,start,end))return 0;
+                selected=p->candidate;break;
             }
         }
         SurfaceEntry hit={0};
@@ -152,6 +203,29 @@ static int joint_contact_evaluate(void *packet,const double *velocity,const doub
     return 1;
 }
 static JointContactApi joint_contact_api={joint_contact_evaluate};
+
+static PyObject *joint_contact_state(PyObject *self,PyObject *args) {
+    PyObject *capsule,*linear,*rotation;double dt,velocity[3],angular[3],gradients[24],alignment[4],touching[4];
+    if(!PyArg_ParseTuple(args,"OOOd",&capsule,&linear,&rotation,&dt))return NULL;
+    JointContacts *data=PyCapsule_GetPointer(capsule,JOINT_CONTACT_PACKET_NAME);
+    if(!data||!vector(linear,velocity)||!vector(rotation,angular))return NULL;
+    if(!joint_contact_evaluate(data,velocity,angular,dt,gradients,alignment,touching))return NULL;
+    PyObject *g=PyTuple_New(4),*a=PyTuple_New(4),*t=PyTuple_New(4),*counts=PyTuple_New(4);
+    if(!g||!a||!t||!counts)goto failed;
+    for(int i=0;i<4;++i) {
+        double *row=gradients+6*i;
+        PyObject *gradient=Py_BuildValue("(dddddd)",row[0],row[1],row[2],row[3],row[4],row[5]);
+        PyObject *value=touching[i]!=0.?PyFloat_FromDouble(alignment[i]):Py_NewRef(Py_None);
+        PyObject *contact=PyBool_FromLong(touching[i]!=0.);
+        PyObject *count=Py_BuildValue("(nn)",data->planes[i].candidate?data->planes[i].candidate->count:-1,
+                                     data->planes[i].complete?data->planes[i].complete->count:0);
+        if(!gradient||!value||!contact||!count){Py_XDECREF(gradient);Py_XDECREF(value);Py_XDECREF(contact);Py_XDECREF(count);goto failed;}
+        PyTuple_SET_ITEM(g,i,gradient);PyTuple_SET_ITEM(a,i,value);PyTuple_SET_ITEM(t,i,contact);PyTuple_SET_ITEM(counts,i,count);
+    }
+    return Py_BuildValue("(NNNN)",g,a,t,counts);
+failed:
+    Py_XDECREF(g);Py_XDECREF(a);Py_XDECREF(t);Py_XDECREF(counts);return NULL;
+}
 
 static PyObject *joint_coordinates_probe(PyObject *self,PyObject *args) {
     PyObject *columns,*rhs;if(!PyArg_ParseTuple(args,"OO",&columns,&rhs))return NULL;

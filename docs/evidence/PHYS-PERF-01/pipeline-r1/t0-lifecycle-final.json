@@ -1,0 +1,53 @@
+{
+  "started_utc": "2026-10-10T01:52:00.794791+00:00",
+  "git_head": "6b4ea7f9726ebcdae757e32796c2ee12fe4ff7b4",
+  "git_status": "M src/application.py\n M src/physics_packet_kernels.c\n M src/physics_wire.py\n M src/physics_workers.py\n M src/session.py\n M src/simulation.py\n M tests/test_physics_wire.py\n M tools/endurance_check.py\n M tools/validate.py\n?? src/physics_channel.py\n?? tests/test_physics_channel.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_physics_channel.py",
+    "tests/test_validation_runner.py"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\t0-lifecycle-final\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.465
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_physics_channel.py",
+        "tests/test_validation_runner.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\t0-lifecycle-final\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 32.488
+    }
+  ]
+}

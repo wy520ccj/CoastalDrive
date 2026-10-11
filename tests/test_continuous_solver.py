@@ -10,13 +10,70 @@ from threading import Barrier, get_ident
 
 import numpy as np
 import pytest
-from wheel_contact_kernels import _joint_coordinates, convex_distance
+from wheel_contact_kernels import _joint_contact_state, _joint_coordinates, convex_distance
 
 import physics_workers
 import tire_drivetrain
 from physics_wire import from_bytes, result_bytes
+from suspension import SuspensionState
+from suspension_kinematics import finite_contact_system
+from vehicle_suspension import Suspension
+from vehicle_tire_step import TireBodyInput, TireWheelInput, tire_hardware
 
 FIXTURE = Path(__file__).resolve().parents[1]/'docs/evidence/PHYS-PERF-01/structural-20261009/native-input-fixture'
+
+
+def test_complete_world_candidates_cover_crossings_and_preserve_finite_geometry():
+    hardware = pickle.loads((FIXTURE/'hardware.pickle').read_bytes())
+    payload = (FIXTURE/'geometry.pickle').read_bytes()
+    memory = SharedMemory(create=True, size=len(payload))
+    memory.buf[:] = payload
+    reference = physics_workers.GeometryRef(memory.name, len(payload), 1701)
+    try:
+        physics_workers._load_geometry(reference)
+        request = from_bytes((FIXTURE/'input-6240.bin').read_bytes())
+        body = TireBodyInput(request.body.pose, request.body.velocity, request.body.angular,
+                             request.body.inverse_inertia, request.body.angular_damping)
+        adapter = Suspension.__new__(Suspension)
+        adapter.config = hardware
+        adapter.hubs, _rear = tire_hardware(hardware)
+        adapter.envelope = None
+        adapter.compression = request.compression
+        adapter.state = SuspensionState(force_tick=request.previous_force_tick,
+                                         normal_force=request.previous_normal_force)
+        adapter._support_shapes = None
+        adapter._candidate_cache = {}
+        system = adapter.prepare(physics_workers.StaticQueryBoundary(), body,
+            tuple(TireWheelInput(*wheel) for wheel in request.wheel_inputs), physics_workers._worker_geometry)
+        geometry = tire_drivetrain.native_contact_geometry(system)
+        assert geometry is not None
+        vx, vy, vz = request.body.velocity
+        queries = (((vx, vy, vz), request.body.angular),
+                   ((vx+100, vy+100, vz), (.2, -.3, .1)),
+                   ((vx-180, vy-80, vz-4), (-.1, .4, -.2)),
+                   ((vx+100.01, vy+100.01, vz), (.2001, -.3001, .1001)),
+                   ((vx, vy, vz), request.body.angular))
+        filtered = []
+        for velocity, angular in queries:
+            gradients, alignment, touching, counts = _joint_contact_state(geometry, velocity, angular, request.dt)
+            expected = finite_contact_system(system, velocity, angular, request.dt)
+            np.testing.assert_allclose(gradients, expected.gradients, rtol=2e-13, atol=2e-13)
+            assert touching == expected.touching
+            for actual, target in zip(alignment, expected.alignment):
+                assert actual == pytest.approx(target, rel=2e-13, abs=2e-13) if target is not None else actual is None
+            filtered.extend((kept, full) for kept, full in counts if kept >= 0)
+        assert filtered and all(0 <= kept <= full for kept, full in filtered)
+        assert any(kept < full for kept, full in filtered)
+    finally:
+        physics_workers._worker_geometry = None
+        physics_workers._worker_candidates.clear()
+        physics_workers._worker_meshes.clear()
+        physics_workers._worker_version = None
+        if physics_workers._worker_memory is not None:
+            physics_workers._worker_memory.close()
+            physics_workers._worker_memory = None
+        memory.close()
+        memory.unlink()
 
 
 def test_real_complete_inputs_use_native_iteration_and_reset_workspace(monkeypatch):

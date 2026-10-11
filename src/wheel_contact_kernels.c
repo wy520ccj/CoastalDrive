@@ -1925,6 +1925,17 @@ static int joint_surface_values(SurfacePacket *packet,double start[3],double end
         }
         transform_values(start,part->axes,offset,0,local_start);
         transform_values(end,part->axes,offset,0,local_end);
+        /* 完整世界先筛实际路径外廓，命中仍由原有限面/边/角求交确认。 */
+        if(part->kind!=0) {
+            double a[3],b[3],bounds[3],near,far,sign;int normal_axis;
+            double envelope=radius+fabs(width)/2+fabs(shoulder)+fabs(crown)+part->margin;
+            for(int i=0;i<3;++i) {
+                double center=part->kind==2?part->triangles->center[i]:0.;
+                double half=part->kind==2?part->triangles->half[i]:part->half[i];
+                a[i]=local_start[i]-center;b[i]=local_end[i]-center;bounds[i]=half+envelope;
+            }
+            if(!box_interval_values(a,b,bounds,&near,&far,&normal_axis,&sign)||near>1.||far<0.)continue;
+        }
         transform_values(axis,part->axes,zero,0,local_axis);
         if (part->kind==2) {
             double padding[3];
@@ -1975,6 +1986,7 @@ static int joint_surface_values(SurfacePacket *packet,double start[3],double end
 
 static PyMethodDef methods[] = {
     {"joint_contact_prepare",joint_contact_prepare,METH_VARARGS,"连续共同求解的真实有限接点准备"},
+    {"_joint_contact_state",joint_contact_state,METH_VARARGS,"独立核对末姿态几何和完整世界候选数量"},
     {"joint_surface_prepare",joint_surface_prepare,METH_VARARGS,"覆盖盒外真实几何的持久原生查询包"},
     {"_joint_coordinates",joint_coordinates_probe,METH_VARARGS,"连续有限几何的小型SVD验证入口"},
     {"road_strip_coefficients", (PyCFunction)road_strip_coefficients, METH_VARARGS, "固定道路原折线系数"},

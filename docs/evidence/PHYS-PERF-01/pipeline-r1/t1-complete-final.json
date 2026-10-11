@@ -1,0 +1,129 @@
+{
+  "started_utc": "2026-10-11T05:40:30.925994+00:00",
+  "git_head": "6b4ea7f9726ebcdae757e32796c2ee12fe4ff7b4",
+  "git_status": "M src/application.py\n M src/controls.py\n M src/joint_contact_impl.h\n M src/physics_packet_kernels.c\n M src/physics_wire.py\n M src/physics_workers.py\n M src/session.py\n M src/simulation.py\n M src/wheel_contact_kernels.c\n M tests/test_continuous_solver.py\n M tests/test_physics_wire.py\n M tools/endurance_check.py\n M tools/validate.py\n?? src/physics_channel.py\n?? tests/test_physics_channel.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_physics_workers.py",
+    "tests/test_physics_wire.py",
+    "tests/test_session_clock.py",
+    "tests/test_continuous_solver.py",
+    "tests/test_suspension_candidates.py",
+    "tests/test_suspension_contacts.py",
+    "tests/test_triangle_support.py",
+    "tests/test_static_support_cache.py",
+    "tests/test_world_substeps.py",
+    "tests/test_joint_suspension.py"
+  ],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\t1-complete-final\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.471
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_physics_workers.py",
+        "tests/test_physics_wire.py",
+        "tests/test_session_clock.py",
+        "tests/test_continuous_solver.py",
+        "tests/test_suspension_candidates.py",
+        "tests/test_suspension_contacts.py",
+        "tests/test_triangle_support.py",
+        "tests/test_static_support_cache.py",
+        "tests/test_world_substeps.py",
+        "tests/test_joint_suspension.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\t1-complete-final\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 20.745
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\t1-complete-final\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 2.891
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\t1-complete-final\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 2.715
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\pipeline-r1\\t1-complete-final\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 2.753
+    }
+  ]
+}
