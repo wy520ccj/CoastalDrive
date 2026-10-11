@@ -1,0 +1,549 @@
+{
+  "kind": "short window comparison; not final performance or human gate",
+  "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\traffic-native-r1\\normal-actor\\src",
+  "track": "endless",
+  "vehicle_design": "gr86-2022-premium-6mt",
+  "driving_mode": "game",
+  "controller": "highway-driver",
+  "constant_steering": 0.0,
+  "gc_rate": 1.0,
+  "python_switch_interval": 0.005,
+  "audio": "disabled by existing smoke mode",
+  "tick": 5400,
+  "fixed_hz": 120,
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 12,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "profile": false,
+  "source_modules": {
+    "application": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\traffic-native-r1\\normal-actor\\src\\application.py",
+    "simulation": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\traffic-native-r1\\normal-actor\\src\\simulation.py",
+    "vehicle": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\traffic-native-r1\\normal-actor\\src\\vehicle.py",
+    "world_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\traffic-native-r1\\normal-actor\\src\\world_step.py",
+    "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\traffic-native-r1\\normal-actor\\src\\physics_workers.py",
+    "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\traffic-native-r1\\normal-actor\\src\\tire_drivetrain.py",
+    "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\traffic-native-r1\\normal-actor\\src\\vehicle_tires.py",
+    "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\traffic-native-r1\\normal-actor\\src\\suspension_contacts.py",
+    "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\traffic-native-r1\\normal-actor\\src\\triangle_support.py",
+    "coastal_map": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\traffic-native-r1\\normal-actor\\src\\coastal_map.py"
+  },
+  "trace_phases": false,
+  "phase_timing": {},
+  "independent_clock": true,
+  "physics_workers": null,
+  "streaming_phases": {},
+  "wall_seconds": 45.0026418,
+  "sample_seconds": 42.00563409999995,
+  "frames": 3482,
+  "average_fps": 82.89364211740357,
+  "display_draw_frames": 3481,
+  "display_draw_fps": 82.89826568374157,
+  "display_draw_p95_ms": 17.14460000039253,
+  "display_draw_p99_ms": 19.850700000461075,
+  "display_draw_max_ms": 84.43359999910172,
+  "display_draw_over_50ms": 1,
+  "p95_ms": 16.72080000025744,
+  "p99_ms": 19.24920000055863,
+  "max_ms": 82.95299999917916,
+  "frames_over_50ms": 1,
+  "frames_over_100ms": 0,
+  "dropped_simulation_seconds": 0.0,
+  "warmup_dropped_seconds": 0.0,
+  "distance_m": 982.8709511614746,
+  "physics_start_tick": 360,
+  "physics_end_tick": 5400,
+  "physics_sample_ticks": 5040,
+  "physics_sample_simulated_seconds": 42.0,
+  "physics_sample_wall_seconds": 41.997424900000624,
+  "physics_sample_hz": 120.00735787969526,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 8.968862099999999,
+      "ms": 82.95299999917916
+    },
+    {
+      "second": 37.498453,
+      "ms": 37.28210000008403
+    },
+    {
+      "second": 23.1523841,
+      "ms": 35.31490000023041
+    },
+    {
+      "second": 30.0447902,
+      "ms": 33.54439999930037
+    },
+    {
+      "second": 15.995474399999999,
+      "ms": 30.77060000032361
+    },
+    {
+      "second": 31.0411906,
+      "ms": 30.371200000445242
+    },
+    {
+      "second": 38.7395716,
+      "ms": 27.210800000830204
+    },
+    {
+      "second": 31.123934399999996,
+      "ms": 27.03780000047118
+    },
+    {
+      "second": 24.162748699999998,
+      "ms": 26.91199999935634
+    },
+    {
+      "second": 16.9854362,
+      "ms": 25.53729999999632
+    },
+    {
+      "second": 38.691967399999996,
+      "ms": 25.313100000857958
+    },
+    {
+      "second": 24.2236726,
+      "ms": 22.39969999936875
+    }
+  ],
+  "segment_work_max_ms": 15.051200000016252,
+  "segment_step_max_ms": 13.146199999027885,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 15.051200000016252,
+      "max_step_ms": 13.146199999027885,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 14.795600000070408,
+      "max_step_ms": 13.146199999027885,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 14.201200001480174,
+      "max_step_ms": 13.146199999027885,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 13.266800000565127,
+      "max_step_ms": 13.146199999027885,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 12.4798999986524,
+      "max_step_ms": 13.146199999027885,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 11.03510000029928,
+      "max_step_ms": 13.146199999027885,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 10.450300000229618,
+      "max_step_ms": 13.146199999027885,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 9.343199999420904,
+      "max_step_ms": 13.146199999027885,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 9.328500000265194,
+      "max_step_ms": 13.146199999027885,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 9.301000000050408,
+      "max_step_ms": 13.146199999027885,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 9.228500000972417,
+      "max_step_ms": 13.146199999027885,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 8.2191999990755,
+      "max_step_ms": 13.146199999027885,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1152
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2029
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1958
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2134
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2029
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1966
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2184
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2040
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1965
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2173
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2195
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1969
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2145
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2052
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1984
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2156
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2133
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1982
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1976
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2154
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1981
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2084
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2082
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2158
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2171
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2184
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2089
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2072
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2072
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2189
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2198
+    },
+    {
+      "second": 31,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1993
+    },
+    {
+      "second": 32,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2084
+    },
+    {
+      "second": 33,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2218
+    },
+    {
+      "second": 34,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2202
+    },
+    {
+      "second": 35,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2212
+    },
+    {
+      "second": 36,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2190
+    },
+    {
+      "second": 37,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2106
+    },
+    {
+      "second": 38,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2108
+    },
+    {
+      "second": 39,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2106
+    },
+    {
+      "second": 40,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2098
+    },
+    {
+      "second": 41,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2209
+    },
+    {
+      "second": 42,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2188
+    },
+    {
+      "second": 43,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2193
+    },
+    {
+      "second": 44,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2190
+    },
+    {
+      "second": 45,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2037
+    }
+  ],
+  "passed": true,
+  "short_performance_passed": false,
+  "git_head": "a5761250d800691f14b69592f3cf4e8e54b3e9ff",
+  "worker_sources": [],
+  "worker_source_valid": true,
+  "git_status": "M docs/physics-roadmap.md\n M docs/vehicle-physics.md\n M src/application.py\n M src/chase_camera.py\n M src/driving_modes.py\n M src/main.py\n M src/session.py\n M src/session_clock.py\n M src/simulation.py\n M src/suspension_contacts.py\n M src/tire_drivetrain.py\n M src/world_step.py\n M tests/test_expressway.py\n M tests/test_expressway_route.py\n M tests/test_session_clock.py\n M tests/test_static_support_cache.py\n M tests/test_traction_lifecycle.py\n M tests/test_world_substeps.py\n M tools/curve_drive_check.py\n M tools/performance/benchmark_runtime.py\n M tools/performance/trace_presentation.py\n M tools/validate.py\n?? launchers/physics-native-traffic-game.cmd\n?? launchers/physics-native-traffic-simulation.cmd\n?? src/npc_physics.py\n?? tests/test_chase_camera.py\n?? tests/test_npc_physics.py"
+}

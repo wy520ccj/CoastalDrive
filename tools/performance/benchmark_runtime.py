@@ -2,13 +2,14 @@
 
 import argparse
 import ctypes
+import gc
 import importlib
 import json
 import os
 import subprocess
 import sys
 import time
-from collections import deque
+from collections import Counter, deque
 from ctypes import wintypes
 from functools import partial, wraps
 from itertools import pairwise
@@ -32,6 +33,10 @@ def audited_worker(output, connection):
 
 def physics_progress(session):
     """从权威状态取进度；隔离原型必须覆写为后端即时采样，不能使用显示缓存。"""
+    from session_process import SessionProcess
+
+    if isinstance(session,SessionProcess):
+        return session.progress()
     return session.current.tick, session.stepper.dropped_time, time.perf_counter()
 
 
@@ -54,7 +59,8 @@ def main():
     parser.add_argument("--switch-interval",type=float,help="Python物理/绘制线程切换间隔诊断")
     parser.add_argument("--trace-phases",action="store_true",help="以各调用线程CPU时间记录真实阶段；诊断用")
     parser.add_argument('--physics-workers',type=int,help='显式数值进程数，默认沿用游戏设置')
-    parser.add_argument('--traffic-count',type=int,help='固定实测交通车辆数，仍使用完整原车辆物理')
+    parser.add_argument('--traffic-count',type=int,help='固定实测交通车辆数，模型沿用所选驾驶模式')
+    parser.add_argument('--trace-draw-poses',action='store_true',help='记录实际Draw线程的车身/相机变换')
     args = parser.parse_args()
     if not 30 <= args.seconds <= 60:
         parser.error("短测限于30–60秒")
@@ -75,6 +81,20 @@ def main():
     paths.resource_root = lambda: ROOT
     streaming_phases = {}
     tracing = False
+    gc_started = {}
+    gc_pauses = []
+
+    def cyclic_collection(phase, info):
+        generation = info['generation']
+        if phase == 'start':
+            gc_started[generation] = time.perf_counter()
+        else:
+            started = gc_started.pop(generation)
+            if tracing:
+                gc_pauses.append({'generation':generation, 'ms':(time.perf_counter()-started)*1000,
+                                  'collected':info['collected']})
+
+    gc.callbacks.append(cyclic_collection)
     if args.trace_streaming:
         from environment import expressway_route
 
@@ -120,7 +140,16 @@ def main():
             self.sample = lru_cache(maxsize=8192)(self.sample)
 
         curve_type.__init__ = cached_init
-    from panda3d.core import CallbackObject, Filename, RenderState, TransformState, loadPrcFileData
+    from panda3d.core import (
+        CallbackObject,
+        ClockObject,
+        ConfigVariableBool,
+        Filename,
+        RenderState,
+        Thread,
+        TransformState,
+        loadPrcFileData,
+    )
 
     from application import CoastalDrive
     from controls import ConstantController
@@ -184,9 +213,11 @@ def main():
         from direct.showbase.ShowBase import ShowBase
 
         import world_step
+        from highway_driver import HighwayDriver
         from physics_workers import PhysicsWorkers
         from session import Session
         from simulation import Simulation
+        from streamed_road import StreamedRoad
         from vehicle import Vehicle
 
         for owner,attribute,name in (
@@ -195,6 +226,11 @@ def main():
             (Vehicle,'after_step','vehicle-observation'),(PhysicsWorkers,'submit','worker-submit'),
             (PhysicsWorkers,'_receive','worker-receive'),
             (world_step,'static_support_shapes','static-geometry'),
+            (Simulation,'_drive_traffic','traffic-decision'),
+            (Simulation,'_update_stream','physics-stream-update'),
+            (StreamedRoad,'add','physics-road-attach'),
+            (HighwayDriver,'plan','traffic-plan'),
+            (HighwayDriver,'control','traffic-control'),
             (ShowBase,'_ShowBase__garbageCollectStates','panda-state-collection'),
         ):
             setattr(owner,attribute,timed(name,getattr(owner,attribute)))
@@ -211,8 +247,14 @@ def main():
     if args.traffic_count is not None and len(app.session.current.traffic) != args.traffic_count:
         raise RuntimeError('窗口启动后的实际交通车数与指定工况不一致')
     app.taskMgr.remove("finish-smoke")
-    app.session.set_controller(EnduranceDriver(app.session.simulation, 724) if args.track == "endless"
-                               else ConstantController(Control(throttle=.3,steering=args.steering)))
+    from session_process import SessionProcess
+
+    controller = (EnduranceDriver(app.session.simulation, 724) if args.track == "endless"
+                  else ConstantController(Control(throttle=.3,steering=args.steering)))
+    if isinstance(app.session,SessionProcess):
+        app.session.set_controller(controller,bind_world=args.track == 'endless')
+    else:
+        app.session.set_controller(controller)
     user32 = ctypes.WinDLL("user32", use_last_error=True)
     user32.ShowWindow.argtypes = [wintypes.HWND, ctypes.c_int]
     user32.SetForegroundWindow.argtypes = [wintypes.HWND]
@@ -231,11 +273,16 @@ def main():
         import cProfile
         profiler = cProfile.Profile()
     draw_times = []
+    draw_poses = []
     measuring_draw = False
 
     def count_draw(data):
         if measuring_draw:
-            draw_times.append(time.perf_counter())
+            now = time.perf_counter()
+            draw_times.append(now)
+            if args.trace_draw_poses:
+                draw_poses.append((now,ClockObject.getGlobalClock().getFrameTime(),
+                                   tuple(app.scene.player.getPos()),tuple(app.camera.getPos())))
         data.upcall()
 
     # 末个活动显示区每个实际窗口绘制调用一次；避免把主线程超前更新当作显示FPS。
@@ -287,6 +334,12 @@ def main():
                 "controller": "highway-driver" if args.track == "endless" else "constant-throttle-0.3",
                 "constant_steering": args.steering,
                 "gc_rate":1. if args.gc_rate is None else args.gc_rate,
+                "transform_cache":ConfigVariableBool('transform-cache').getValue(),
+                "render_clock_mode":int(ClockObject.getGlobalClock().getMode()),
+                "render_clock_average_rate":ClockObject.getGlobalClock().getAverageFrameRate(),
+                "traffic_models":(dict(Counter(app.session.simulation.traffic_models))
+                                  if isinstance(app.session,SessionProcess)
+                                  else dict(Counter(type(car).__name__ for car in app.session.simulation.npcs))),
                 "python_switch_interval":sys.getswitchinterval(),
                 "audio": "disabled by existing smoke mode",
                 "tick": state.tick, "fixed_hz": 120,
@@ -295,8 +348,11 @@ def main():
                 "baseline_compute": args.baseline_compute, "window_sampling_valid": valid,
                 "renderer": app.win.getGsg().getDriverRenderer(),
                 "profile": args.profile,
+                "draw_thread":Thread.getCurrentThread().getName() if args.trace_draw_poses else None,
                 "source_modules":source_modules,
+                "authority_source_modules":app.session.source_modules if isinstance(app.session,SessionProcess) else source_modules,
                 "trace_phases":args.trace_phases,
+                "python_gc_pauses":gc_pauses,
                 "phase_timing":{
                     name:{
                         'count':record['count'],'window_samples':len(record['samples']),
@@ -355,6 +411,7 @@ def main():
         app.graphicsEngine.syncFrame()
         app.win.saveScreenshot(Filename.fromOsSpecific(str(args.output / "final.png")))
     finally:
+        gc.callbacks.remove(cyclic_collection)
         app.close_game()
     final["git_head"] = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True,
@@ -369,6 +426,8 @@ def main():
         ["git", "status", "--short"], cwd=ROOT, text=True, encoding="utf-8",
     ).strip()
     (args.output / "report.json").write_text(json.dumps(final, indent=2), encoding="utf-8")
+    if args.trace_draw_poses:
+        (args.output / "draw-poses.json").write_text(json.dumps(draw_poses),encoding='utf-8')
     print(json.dumps({k: v for k, v in final.items()
                       if k not in ("windows", "frames_slow", "git_status", "segment_work_slow")},
                      indent=2))

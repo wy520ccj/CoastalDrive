@@ -227,7 +227,9 @@ def static_support_shapes(world, chassis, mask, *, cache=None, packet_cache=None
         mutable_bounds = tuple(collision_shape_bounds(shape, None)
                                if shape_bounds is None and isinstance(shape, BulletConvexHullShape)
                                else None for shape in shapes)
-        signature = pose, tuple(shapes), shape_poses, margins, id(mesh), id(shape_bounds), mutable_bounds, id(hull_vertices)
+        # 资格按真实数值判定，不依赖TransformState全局去重后才成立的对象身份。
+        signature = (pose.getMat(), tuple(shapes), tuple(item.getMat() for item in shape_poses),
+                     margins, id(mesh), id(shape_bounds), mutable_bounds, id(hull_vertices))
         previous = cache.get(body) if cache is not None else None
         if previous is not None and previous[0] == signature:
             groups.append(previous[1])

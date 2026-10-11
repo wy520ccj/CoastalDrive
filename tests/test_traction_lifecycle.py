@@ -53,7 +53,9 @@ def test_tcs_choice_persists_and_rebuilds_player_and_traffic_from_same_config(tm
 
 
 def test_player_reset_and_npc_recycle_clear_tcs_controller_memory():
-    session = Session(track="endless")
+    # 完整NPC电子控制属于困难模式；保持原硬件和全部生命周期断言。
+    session = Session(track="endless", driving_mode=DrivingMode.SIMULATION,
+                      vehicle_config=DrivingMode.GAME.vehicle_config)
     try:
         simulation = session.simulation
         feedback = tuple(WheelDynamicsState(
@@ -90,7 +92,7 @@ def test_mode_abs_tcs_variants_get_distinct_score_keys():
     }
     assert len(set(keys.values())) == 8
     assert all(":abs-" in value and ":tcs-" in value for value in keys.values())
-    assert DrivingMode.GAME.score_variant(True).startswith("game-controls-v25:")
+    assert DrivingMode.GAME.score_variant(True).startswith("game-native-traffic-v26:")
     assert DrivingMode.SIMULATION.score_variant(True).startswith("reference-v28:")
 
 

@@ -1,6 +1,7 @@
 import hashlib
 import json
 import math
+import os
 from contextlib import nullcontext
 from dataclasses import asdict, replace
 from enum import Enum
@@ -60,7 +61,8 @@ class Session:
                                                               base_config=vehicle_config)
         self.simulation = Simulation(
             seed, track=track, road_shape=road_shape,
-            config=self.vehicle_config, input_config=driving_mode.input_config, physics_workers=physics_workers,
+            config=self.vehicle_config, input_config=driving_mode.input_config,
+            physics_workers=self.physics_worker_count(),
         )
         self.track = get_track(track)
         self.keyboard = KeyboardController()
@@ -78,6 +80,14 @@ class Session:
         self.race = RaceTracker(self.mode, scores=scores)
         self.highway = HighwayRun()
         self.sync_snapshots()
+
+    def physics_worker_count(self):
+        """窗口自动选择：正常模式只求完整玩家，困难模式仍并行全部车辆。"""
+        if self.physics_workers is not None:
+            return self.physics_workers
+        if self.driving_mode == DrivingMode.GAME:
+            return 0
+        return min(9, max(0, (os.process_cpu_count() or 1) - 1))
 
     def sync_snapshots(self):
         self.last_control = Control()
@@ -158,7 +168,7 @@ class Session:
                 self.seed, track=track, traffic_count=traffic_count,
                 road_shape=self.road_shape, traffic_span=density.spawn_span,
                 config=self.vehicle_config, input_config=self.driving_mode.input_config,
-                physics_workers=self.physics_workers,
+                physics_workers=self.physics_worker_count(),
             )
             self.track = get_track(track)
         else:
@@ -274,13 +284,13 @@ class Session:
         self.stepper.remainder = max(0.,self.stepper.remainder-ticks*FIXED_DT)
         self.countdown_step(ticks)
 
-    def frame(self, elapsed):
+    def frame(self, elapsed, *, sampled_at=None):
         if self.independent_clock:
             self._skip_frame = False
             if self._clock is None and self.phase in (Phase.DRIVING,Phase.COUNTDOWN):
                 self._clock = SessionClock(self)
                 self._clock.start()
-            return self._clock.frame() if self._clock is not None else self.current
+            return self._clock.frame(sampled_at) if self._clock is not None else self.current
         if self._skip_frame:
             elapsed = 0.0
             self._skip_frame = False

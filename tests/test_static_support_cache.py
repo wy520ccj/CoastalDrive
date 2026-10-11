@@ -2,7 +2,7 @@
 
 import pytest
 from panda3d.bullet import BulletBoxShape, BulletRigidBodyNode, BulletWorld
-from panda3d.core import BitMask32, TransformState, Vec3
+from panda3d.core import BitMask32, ConfigVariableBool, TransformState, Vec3
 from wheel_contact_kernels import cached_surface_entry
 
 from simulation import Control, Simulation
@@ -10,6 +10,17 @@ from suspension_contacts import cylinder_suspension_rays, static_support_shapes
 from triangle_support import triangle_entry
 from vehicle import Vehicle
 from wheel_envelope import _simplex_coordinates, cylinder_box_entry
+
+
+@pytest.fixture(params=(True, False))
+def transform_policy(request):
+    policy = ConfigVariableBool('transform-cache')
+    original = policy.getValue()
+    policy.setValue(request.param)
+    try:
+        yield
+    finally:
+        policy.setValue(original)
 
 
 def test_numeric_surface_queries_match_original_after_origin_and_world_changes():
@@ -42,7 +53,7 @@ def test_numeric_surface_queries_match_original_after_origin_and_world_changes()
         sim.close()
 
 
-def test_cached_support_tracks_movement_margin_shape_offset_and_removal():
+def test_cached_support_tracks_movement_margin_shape_offset_and_removal(transform_policy):
     world = BulletWorld()
     ground = BulletRigidBodyNode('ground')
     box = BulletBoxShape(Vec3(2., 2., .05))
@@ -99,7 +110,7 @@ def test_simulation_reset_and_close_release_cached_world_references():
     assert sim._static_support_packet == {}
 
 
-def test_vehicle_neighborhood_reuses_only_unchanged_geometry_and_refreshes_outside():
+def test_vehicle_neighborhood_reuses_only_unchanged_geometry_and_refreshes_outside(transform_policy):
     world = BulletWorld()
     ground = BulletRigidBodyNode('finite-platform')
     box = BulletBoxShape(Vec3(6., 6., .05))

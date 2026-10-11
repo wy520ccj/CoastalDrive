@@ -1,0 +1,124 @@
+{
+  "kind": "observed presentation diagnostic; foreground validity stays in window report",
+  "old": {
+    "render_velocity_ratio": {
+      "0.05": 0.07966465829142771,
+      "0.5": 1.0720999694157354,
+      "0.95": 1.509060070290142,
+      "0.99": 1.6475572432448098
+    },
+    "relative_camera_distance_change_mm": {
+      "0.05": 6.610840713904054,
+      "0.5": 85.22263880351488,
+      "0.95": 244.98059443497232,
+      "0.99": 289.9189343305526
+    },
+    "velocity_outside_10_percent": 0.8062295081967213,
+    "samples": 3050,
+    "long_frames_excluded": 1
+  },
+  "fixed": {
+    "render_velocity_ratio": {
+      "0.05": 0.5606524041176829,
+      "0.5": 0.999112771769553,
+      "0.95": 1.4040229194041562,
+      "0.99": 1.5538523527172754
+    },
+    "relative_camera_distance_change_mm": {
+      "0.05": 4.289813248579577,
+      "0.5": 55.08473983651463,
+      "0.95": 167.13234965432912,
+      "0.99": 236.78231171051857
+    },
+    "velocity_outside_10_percent": 0.5,
+    "samples": 2840,
+    "long_frames_excluded": 0
+  },
+  "common_physics_position_snapshots": 5304,
+  "complete_position_arrays_equal": true,
+  "continuous_camera": {
+    "render_velocity_ratio": {
+      "0.05": 0.6012102044629944,
+      "0.5": 0.999599466475586,
+      "0.95": 1.4021160225749891,
+      "0.99": 1.5937694541724874
+    },
+    "relative_camera_distance_change_mm": {
+      "0.05": 0.029817404175958018,
+      "0.5": 0.529260728121983,
+      "0.95": 1.9149687414152794,
+      "0.99": 2.1972814451292066
+    },
+    "velocity_outside_10_percent": 0.4625668449197861,
+    "samples": 2992,
+    "long_frames_excluded": 1
+  },
+  "continuous_common_snapshots": 5362,
+  "continuous_positions_equal": true,
+  "readonly_camera": {
+    "render_velocity_ratio": {
+      "0.05": 0.5765616171422157,
+      "0.5": 0.9983308729035834,
+      "0.95": 1.4431847126901962,
+      "0.99": 1.6084730737609492
+    },
+    "relative_camera_distance_change_mm": {
+      "0.05": 0.027138449780750307,
+      "0.5": 0.4347365189030228,
+      "0.95": 1.795217059541443,
+      "0.99": 2.2050664174546597
+    },
+    "velocity_outside_10_percent": 0.5200589970501475,
+    "samples": 3390,
+    "long_frames_excluded": 0
+  },
+  "readonly_common_snapshots": 5313,
+  "readonly_positions_equal": true,
+  "owner_production": {
+    "render_velocity_ratio": {
+      "0.05": 0.9503025623785105,
+      "0.5": 0.9999573994720029,
+      "0.95": 1.0569643002438531,
+      "0.99": 1.4005531436034349
+    },
+    "relative_camera_distance_change_mm": {
+      "0.05": 0.022921598599623394,
+      "0.5": 0.3155524270361809,
+      "0.95": 1.5603999681914615,
+      "0.99": 1.6908528659804745
+    },
+    "velocity_outside_10_percent": 0.06651428571428572,
+    "samples": 4375,
+    "long_frames_excluded": 2
+  },
+  "actual_draw_velocity_ratio": {
+    "car_wall": {
+      "p5": 0.6571511185573344,
+      "p50": 1.010278190585126,
+      "p95": 1.5698534319379664,
+      "outside_10_percent": 0.6329142857142858,
+      "samples": 4375
+    },
+    "car_frame": {
+      "p5": 0.9989593385445658,
+      "p50": 0.9999518758460247,
+      "p95": 1.000468247032177,
+      "outside_10_percent": 0.05782857142857143,
+      "samples": 4375
+    },
+    "camera_wall": {
+      "p5": 0.6568405623164771,
+      "p50": 1.0091077498959955,
+      "p95": 1.5684888024501582,
+      "outside_10_percent": 0.6329142857142858,
+      "samples": 4375
+    },
+    "camera_frame": {
+      "p5": 0.987505146249702,
+      "p50": 1.0001057680671677,
+      "p95": 1.0020995791444003,
+      "outside_10_percent": 0.05828571428571429,
+      "samples": 4375
+    }
+  }
+}

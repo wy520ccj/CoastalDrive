@@ -1,12 +1,12 @@
 import json
 import logging
-import os
+import time
 
 import simplepbr
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectButton, DirectFrame, OnscreenText
 from direct.showbase.ShowBase import ShowBase
-from panda3d.core import Filename, TextNode, TransparencyAttrib, Vec3, loadPrcFileData
+from panda3d.core import ClockObject, Filename, TextNode, TransparencyAttrib, Vec3, loadPrcFileData
 
 from audio.music import STATIONS
 from chase_camera import ChaseCamera
@@ -40,6 +40,8 @@ class CoastalDrive(ShowBase):
                     'icon-filename assets/game/ui/coastal-drive.ico',
                     f"win-size {render_size[0]} {render_size[1]}",
                     "sync-video 1",
+                    # 高频车辆变换几乎不命中全局缓存；保留RenderState缓存和线程安全回收。
+                    "transform-cache false",
                     f"threading-model {threading_model}",
                     "window-type offscreen" if smoke and not onscreen else "window-type onscreen",
                     "audio-library-name null" if smoke else "audio-library-name p3openal_audio",
@@ -47,6 +49,10 @@ class CoastalDrive(ShowBase):
             ),
         )
         super().__init__()
+        # 物理独立120Hz；高精度等待交还GIL，Panda的忙等限帧会挤占物理准备/提交。
+        ClockObject.getGlobalClock().setMode(ClockObject.MNormal)
+        self._render_deadline = time.perf_counter()
+        self.taskMgr.add(self.pace_frame,"render-frame-pacing",sort=-100)
         if startup_trace is not None:
             startup_trace.mark("window_initialized")
         self.disableMouse()
@@ -69,7 +75,13 @@ class CoastalDrive(ShowBase):
         self.audio_settings = AudioSettingsStore(audio_path)
         mode_path = self.output / "test-driving-mode.json" if smoke else None
         self.driving_mode_settings = DrivingModeStore(mode_path)
-        self.session = Session(
+        use_clock = not smoke if independent_clock is None else independent_clock
+        session_type = Session
+        if use_clock:
+            from session_process import SessionProcess
+
+            session_type = SessionProcess
+        self.session = session_type(
             seed,
             track=track,
             driving_mode=driving_mode if driving_mode is not None else self.driving_mode_settings.mode,
@@ -79,8 +91,8 @@ class CoastalDrive(ShowBase):
             road_shape=road_shape,
             scores=BestTimes(self.output / "test-best-times.json") if smoke else None,
             vehicle_config=vehicle_design(vehicle_definition(self.appearance.model_id).physics_id).config,
-            physics_workers=min(9,max(0,(os.process_cpu_count() or 1)-1)) if physics_workers is None else physics_workers,
-            independent_clock=not smoke if independent_clock is None else independent_clock,
+            physics_workers=physics_workers,
+            independent_clock=use_clock,
         )
         if startup_trace is not None:
             startup_trace.mark("simulation_initialized")
@@ -114,6 +126,7 @@ class CoastalDrive(ShowBase):
         self._diagnostics_was_visible = False
         self._camera_origin = 0.0
         self.chase_camera = ChaseCamera()
+        self._camera_time = self.session.current.time
         self.commands_held = set()
         self.driving_keys_held = set()
         self._shutdown = False
@@ -727,8 +740,8 @@ class CoastalDrive(ShowBase):
             self.panel_title.setText("驾驶模式")
             self.panel_note.setText(
                 f"当前：{self.session.driving_mode.label} · 下次起步应用\n"
-                "困难仿真：Q 倒挡 · E 前进挡\n"
-                "自动前进换挡 · ABS/TCS/ESC独立开关"
+                "玩家完整 · 正常交通精简 · 困难全车完整\n"
+                "自动换挡 · 仿真Q倒/E前 · ABS/TCS/ESC独立开关"
                 + (f"\n{self.driving_mode_settings.notice}" if self.driving_mode_settings.notice else "")
             )
             options = [
@@ -911,6 +924,14 @@ class CoastalDrive(ShowBase):
         else:
             self.panel_accent.show()
 
+    def pace_frame(self, task):
+        remaining = self._render_deadline-time.perf_counter()
+        if remaining > 0:
+            time.sleep(remaining)
+        self._render_deadline = time.perf_counter()+1/90
+        self.clock.syncFrameTime()
+        return task.cont
+
     def update(self, task):
         # 驾驶切台只改内存状态，进入暂停/菜单/结算再保存选择。
         if self._radio_dirty and self.session.phase not in (Phase.DRIVING, Phase.COUNTDOWN):
@@ -933,7 +954,9 @@ class CoastalDrive(ShowBase):
         if self.session.phase == Phase.DRIVING and self.session.controller is self.session.keyboard:
             self.session.keyboard.pressed = self.driving_keys_held.copy()
         dropped = self.session.stepper.dropped_time
-        state = self.session.frame(self.clock.getDt())
+        # Panda帧起点是整帧共同的显示时刻；不能用执行到这里时的随机线程调度时刻。
+        sampled_at = time.perf_counter()-(self.clock.getRealTime()-self.clock.getFrameTime())
+        state = self.session.frame(self.clock.getDt(),sampled_at=sampled_at)
         self.countdown.update(self.session.phase.value,self.session.countdown_ticks,self.clock.getDt())
         if self.soundscape is not None:
             self.soundscape.update(state, self.session.phase, None, self.clock.getDt(),
@@ -958,7 +981,7 @@ class CoastalDrive(ShowBase):
                 self.session.stepper.dropped_time - dropped,
             )
         self.sync_scene()
-        camera_dt = self.clock.getDt() if self.session.phase == Phase.DRIVING else 0
+        camera_dt = max(0.,state.time-self._camera_time) if self.session.phase == Phase.DRIVING else 0
         self.apply_scene(state,camera_dt)
         countdown = ""  # 起步节拍由中央大数字表现，左上角只保留驾驶信息。
         surface = "asphalt" if state.player.surface == "asphalt" else "off-road"
@@ -976,9 +999,9 @@ class CoastalDrive(ShowBase):
     def apply_scene(self, state, camera_dt):
         """加载帧和驾驶帧共用相同的车辆表现、相机及光照。"""
         self.scene.apply(state)
-        if self.chase_camera.position is not None:
-            self.chase_camera.position.y -= state.origin_y - self._camera_origin
+        self.chase_camera.shift_origin(state.origin_y-self._camera_origin)
         self._camera_origin = state.origin_y
+        self._camera_time = state.time
         position = Vec3(*state.player.position)
         snap = state.tick == 0 or "player_reset" in state.events
         camera_position, look_at = self.chase_camera.update(

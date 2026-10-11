@@ -139,7 +139,9 @@ def test_scene_segment_unload_reload_and_rebase(kit):
     scene.stabilize_rail = lambda node: None
     stream = SimpleNamespace(segments={0: [], 1: [], 2: [], 3: []}, curve=None)
     simulation = SimpleNamespace(stream=stream, origin_y=0, seed=23)
-    scene.base = SimpleNamespace(session=SimpleNamespace(simulation=simulation))
+    scene.base = SimpleNamespace(session=SimpleNamespace(
+        simulation=simulation, render_segments=lambda: tuple(stream.segments),
+        render_origin=lambda: simulation.origin_y))
     scene.sync_segments()
     old = scene.segment_nodes[2]
     initial = [scene.segment_nodes[i].getNumChildren() for i in range(4)]

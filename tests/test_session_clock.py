@@ -8,7 +8,7 @@ import pytest
 
 from impact_events import ImpactEvent
 from session import Phase, Session
-from session_clock import SessionClock
+from session_clock import PRESENTATION_DELAY, SessionClock
 from simulation import FIXED_DT, Control
 
 
@@ -74,18 +74,18 @@ def test_completed_snapshots_interpolate_without_extrapolation_and_events_delive
     monkeypatch.setattr('session_clock.time.perf_counter',lambda:now[0])
     clock = SessionClock(session)
     try:
-        session.tick()
+        with clock.world_lock:
+            session.tick()
         previous = session.current
-        session.tick()
+        clock.publish()
+        with clock.world_lock:
+            session.tick()
         current = session.current
         event = ImpactEvent(current.contact_epoch,current.tick,0,(12,),'hard_solid',200,190,2,1,
                             (0,2,0),(0,-1,0),'front',1)
         session.current = replace(current,impacts=(event,))
-        clock.previous_completed_at,clock.completed_at = .97,1.
         clock.publish()
-        clock.previous,clock.current = previous,session.current
-        clock.previous_completed_at,clock.completed_at = .97,1.
-        now[0] = 1.015
+        now[0] = 1.+PRESENTATION_DELAY+1.5*FIXED_DT
         frame = clock.frame()
         for first,last,value in zip(previous.player.position,current.player.position,frame.player.position):
             assert value==pytest.approx((first+last)/2,abs=1e-12)
@@ -93,6 +93,63 @@ def test_completed_snapshots_interpolate_without_extrapolation_and_events_delive
         assert clock.frame().impacts==()
         now[0] = 2.
         assert clock.frame().player.position==current.player.position
+    finally:
+        session.simulation._query_lock = None
+        session.close()
+
+
+def test_irregular_completion_and_catchup_keep_fixed_presentation_speed(monkeypatch):
+    """相同真实轨迹不应因计算耗时变化而让整个相机画面加速、减速。"""
+    session = Session(track='test')
+    session.start(countdown=False)
+    now = [1.]
+    monkeypatch.setattr('session_clock.time.perf_counter',lambda:now[0])
+    clock = SessionClock(session)
+    base = session.current
+    try:
+        for tick, completion in ((1, .015), (2, .019), (3, .041), (4, .043), (5, .044)):
+            now[0] = 1.+completion
+            session.previous = session.current
+            session.current = replace(base,tick=tick,time=tick*FIXED_DT,
+                player=replace(base.player,position=(0.,20*tick*FIXED_DT,.55)))
+            clock.publish()
+        for elapsed in (.044, .047, .051, .055):
+            # 同一帧的执行点晚了5ms，仍使用该帧共同起点，不能改变显示位置。
+            now[0] = 1.+elapsed+.005
+            frame = clock.frame(1.+elapsed)
+            assert frame.player.position[1] == pytest.approx(20*(elapsed-PRESENTATION_DELAY),abs=1e-12)
+        now[0] = 2.
+        assert clock.frame().player.position == session.current.player.position
+        assert len(clock.history) <= 12
+    finally:
+        session.simulation._query_lock = None
+        session.close()
+
+
+def test_rebased_history_uses_latest_origin_and_reset_cannot_blend_old_position(monkeypatch):
+    session = Session(track='test')
+    session.start(countdown=False)
+    now = [1.]
+    monkeypatch.setattr('session_clock.time.perf_counter',lambda:now[0])
+    clock = SessionClock(session)
+    base = session.current
+    try:
+        for tick in range(1,5):
+            origin = 2000. if tick >= 3 else 0.
+            session.previous = session.current
+            session.current = replace(base,tick=tick,time=tick*FIXED_DT,origin_y=origin,
+                player=replace(base.player,position=(0.,20*tick*FIXED_DT-origin,.55)))
+            clock.publish()
+        now[0] = 1.+PRESENTATION_DELAY+1.5*FIXED_DT
+        frame = clock.frame()
+        assert frame.origin_y == 2000.
+        assert frame.player.position[1]+frame.origin_y == pytest.approx(20*1.5*FIXED_DT,abs=1e-12)
+        session.previous = session.current
+        session.current = replace(session.current,tick=5,time=5*FIXED_DT,events=('player_reset',),
+                                  player=replace(base.player,position=(3.,45.,.55)))
+        clock.publish()
+        assert len(clock.history) == 1
+        assert clock.frame().player.position == (3.,45.,.55)
     finally:
         session.simulation._query_lock = None
         session.close()

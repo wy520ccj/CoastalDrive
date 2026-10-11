@@ -73,8 +73,8 @@ class DrivetrainInput:
     values: tuple
     parameters: dict
 
-    def solve(self):
-        return advance_drivetrain(*self.values, **self.parameters)
+    def solve(self, *, query_lock=None):
+        return advance_drivetrain(*self.values, **self.parameters, query_lock=query_lock)
 
 
 def solve_drivetrain_stages(stages):
@@ -185,7 +185,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                        shaft_omega=None, shaft_inertia=None, shaft_axis=None,
                        synchronizing=False, synchronizer_capacity=0.,
                        downstream_omega=(), downstream_inertias=(), downstream_axes=(),
-                       suspension=None, rolling_coefficients=(0.,) * 4):
+                       suspension=None, rolling_coefficients=(0.,) * 4, query_lock=None):
     """九维q含实体输入轴；未指定输入轴时保留原八维机制供旧/新A/B。"""
     mass, wheel_inertia = config.mass, config.wheel_inertia
     shaft = shaft_omega is not None
@@ -804,15 +804,22 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                       car.longitudinal_stiffness, car.longitudinal_load_exponent,
                       car.lateral_stiffness, car.lateral_load_exponent)
                      for frame, car in zip(frames, configurations))
-        (state, end_velocity, clutch, loss, gear_reaction, native_forces, native_modes,
-         normal_forces, native_gradients, alignment, touching, wheel_loads, contact_parameters,
-         shared_branch, shared_port_index, road_torques, active_limits, bias_ports, sweeps,
-         normal_error, geometry_error, maximum, brake_error) = joint_solve(
-            native_joint_workspace(config, get_ident()), wheel_map, normal_coefficients, geometry,
-            (initial, velocity, tuple(forces), deformations, moments_x, moments_y,
-             rolling, wheel_supported, wheel_loads, tire_hardware, laws,
-             suspension.gradients, suspension.touching,
-             tuple(0. if value is None else value for value in suspension.alignment)))
+        # 完整几何已在持锁区封装为数值包；纯C迭代期间相机可查询未推进的世界。
+        if query_lock is not None:
+            query_lock.release()
+        try:
+            (state, end_velocity, clutch, loss, gear_reaction, native_forces, native_modes,
+             normal_forces, native_gradients, alignment, touching, wheel_loads, contact_parameters,
+             shared_branch, shared_port_index, road_torques, active_limits, bias_ports, sweeps,
+             normal_error, geometry_error, maximum, brake_error) = joint_solve(
+                native_joint_workspace(config, get_ident()), wheel_map, normal_coefficients, geometry,
+                (initial, velocity, tuple(forces), deformations, moments_x, moments_y,
+                 rolling, wheel_supported, wheel_loads, tire_hardware, laws,
+                 suspension.gradients, suspension.touching,
+                 tuple(0. if value is None else value for value in suspension.alignment)))
+        finally:
+            if query_lock is not None:
+                query_lock.acquire()
         forces[:] = native_forces
         modes[:] = native_modes
         suspension = replace(suspension, gradients=native_gradients,

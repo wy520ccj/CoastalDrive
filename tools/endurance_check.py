@@ -59,6 +59,13 @@ class EnduranceDriver:
     def lane_changes(self):
         return self.driver.lane_changes
 
+    def __getstate__(self):
+        """跨进程只传控制器状态，唯一世界由会话持有者明确绑定。"""
+        return {name:value for name,value in self.__dict__.items() if name != 'simulation'}
+
+    def bind(self, simulation):
+        self.simulation = simulation
+
     def sample(self, state, dt):
         simulation = self.simulation
         if simulation.origin_y != self.last_origin:
@@ -202,7 +209,12 @@ def main():
         # smoke mode's windowEvent already suppresses focus pause; keep that fact explicit in evidence.
         app.session.start(mode=GameMode.FREE_DRIVE, track="endless", countdown=False)
         driver = EnduranceDriver(app.session.simulation, args.seed + 701)
-        app.session.set_controller(driver)
+        from session_process import SessionProcess
+
+        if isinstance(app.session,SessionProcess):
+            app.session.set_controller(driver,bind_world=True)
+        else:
+            app.session.set_controller(driver)
         app.taskMgr.add(monitor, "endurance-monitor", sort=50)
         started = last_frame = time.perf_counter()
         app.run()

@@ -166,7 +166,9 @@ class Simulation:
         shapes = static_support_shapes(self._world,None,BitMask32.bit(0),
             cache=self._static_support_cache,packet_cache=self._static_support_packet)
         self._physics_workers.prepare(shapes,(self.track,self.road.curve,self.origin_y),
-                                      tuple(car.config for car in (self.player,*self.npcs)),background=background)
+                                      tuple(car.config for car in (self.player,*self.npcs)
+                                            if car.coupled_suspension and car.config.finite_drivetrain),
+                                      background=background)
 
     def physics_ready(self):
         return self._physics_workers is None or self._physics_workers.preparation_ready()
@@ -502,6 +504,9 @@ class Simulation:
             self._prop_bodies.append(body)
 
     def _build_traffic(self):
+        from npc_physics import TrafficVehicle
+
+        vehicle_type = TrafficVehicle if self.input_config is GAME_INPUT else Vehicle
         rng = random.Random(self.seed)
         spawns = traffic_spawns(self.seed)
         for i in range(self.traffic_count):
@@ -519,7 +524,7 @@ class Simulation:
                     rng.uniform(12, 17),
                 )
             p = self.road.sample(distance, lane)
-            car = Vehicle(
+            car = vehicle_type(
                 self._world,
                 self.on_asphalt,
                 design_spawn((p.x, p.y, p.z + 0.55), self.config, p.heading, p.grade),

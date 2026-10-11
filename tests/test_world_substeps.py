@@ -13,8 +13,59 @@ from tire_drivetrain import DrivetrainInput
 from vehicle_state import FIXED_DT, VehicleCommand
 
 
+@pytest.mark.parametrize('fail', (False, True))
+def test_local_numeric_iteration_releases_query_lock_and_restores_on_error(monkeypatch, fail):
+    from vehicle_designs import GR86_DESIGN
+
+    class QueryLock:
+        def __init__(self):
+            self.depth = 1
+
+        def acquire(self):
+            assert self.depth == 0
+            self.depth = 1
+
+        def release(self):
+            assert self.depth == 1
+            self.depth = 0
+
+    lock = QueryLock()
+    sim = Simulation(track='test', traffic_count=0, config=GR86_DESIGN)
+    sim._query_lock = lock
+    calls = []
+    original_solve = __import__('tire_drivetrain').joint_solve
+    original_prepare = sim.player.suspension.prepare
+
+    def prepare(*args):
+        assert lock.depth == 1
+        return original_prepare(*args)
+
+    def solve(*args):
+        assert lock.depth == 0
+        calls.append('numeric')
+        if fail:
+            raise ArithmeticError('保留数值失败')
+        return original_solve(*args)
+
+    monkeypatch.setattr(sim.player.suspension, 'prepare', prepare)
+    monkeypatch.setattr('tire_drivetrain.joint_solve', solve)
+    try:
+        if fail:
+            with pytest.raises(ArithmeticError, match='保留数值失败'):
+                sim.step(VehicleCommand(throttle=.3, gear=1))
+            assert sim.snapshot().tick == 0
+        else:
+            sim.step(VehicleCommand(throttle=.3, gear=1))
+            assert sim.snapshot().tick == 1
+        assert calls and lock.depth == 1
+    finally:
+        sim._query_lock = None
+        sim.close()
+
+
 def test_all_vehicle_states_are_read_before_solving_and_impulses_are_committed_afterward(monkeypatch):
-    sim = Simulation(track="coastal", traffic_count=2, seed=17)
+    sim = Simulation(track="coastal", traffic_count=2, seed=17,
+                     input_config=DrivingMode.SIMULATION.input_config)
     events = []
     original_solve = DrivetrainInput.solve
 

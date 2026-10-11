@@ -56,7 +56,9 @@ def advance_world(world, cars, *, substeps, observe=None, static_cache=None, pac
                         pending.append(workers.submit(inputs, static_shapes, material))
         # 各车读完本子步后求末状态，再按原车辆/轮端顺序提交；Bullet仍只推进一次。
         requests = [inputs for _stages, inputs in numerical]
-        results = workers.results(requests, pending, query_lock) if parallel else [inputs.solve() for inputs in requests]
+        results = (workers.results(requests, pending, query_lock) if parallel
+                   else [inputs.solve(query_lock=query_lock) if query_lock is not None else inputs.solve()
+                         for inputs in requests])
         solved = zip((stages for stages, _inputs in numerical), results)
         # 独立时钟在输入读取/提交/世界推进期间持锁；纯数值等待不占用相机查询。
         unlocked = parallel and query_lock is not None

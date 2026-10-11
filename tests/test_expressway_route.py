@@ -87,7 +87,9 @@ def test_all_shapes_keep_physical_surfaces_and_stream_lifetime(kit, curve, monke
     scene.stabilize_rail = lambda node: None
     stream = SimpleNamespace(segments={42: []}, curve=curve)
     sim = SimpleNamespace(stream=stream, origin_y=8000, seed=23)
-    scene.base = SimpleNamespace(session=SimpleNamespace(simulation=sim))
+    scene.base = SimpleNamespace(session=SimpleNamespace(
+        simulation=sim, render_segments=lambda: tuple(stream.segments),
+        render_origin=lambda: sim.origin_y))
     scene.sync_segments()
     expected = curve_mesh.surfaces(curve, 42) if curve else surface_meshes()
     for name, surface in expected.items():
@@ -206,7 +208,9 @@ def test_partial_segment_stays_detached_and_is_cancelled_on_unload(kit, monkeypa
     scene.stabilize_rail = lambda node: None
     stream = SimpleNamespace(segments={6: [], -6: []}, curve=HighwayCurve(23, hills=True))
     simulation = SimpleNamespace(stream=stream, origin_y=0, seed=23)
-    scene.base = SimpleNamespace(session=SimpleNamespace(simulation=simulation))
+    scene.base = SimpleNamespace(session=SimpleNamespace(
+        simulation=simulation, render_segments=lambda: tuple(stream.segments),
+        render_origin=lambda: simulation.origin_y))
     clock = iter(n * .0001 for n in range(10000))
     monkeypatch.setattr(scene_module, "perf_counter", lambda: next(clock))
     scene.sync_segments(budget_ms=1, distance=-8)
@@ -248,7 +252,9 @@ def test_budgeted_completion_attaches_whole_segment_at_current_origin(kit, monke
     scene.stabilize_rail = lambda node: None
     stream = SimpleNamespace(segments={-7: []}, curve=curve)
     simulation = SimpleNamespace(stream=stream, origin_y=0, seed=23)
-    scene.base = SimpleNamespace(session=SimpleNamespace(simulation=simulation))
+    scene.base = SimpleNamespace(session=SimpleNamespace(
+        simulation=simulation, render_segments=lambda: tuple(stream.segments),
+        render_origin=lambda: simulation.origin_y))
     clock = iter(n * .0001 for n in range(100000))
     monkeypatch.setattr(scene_module, "perf_counter", lambda: next(clock))
     calls = 0

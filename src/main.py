@@ -20,7 +20,7 @@ def main():
     parser.add_argument("--steps", type=int, default=10000)
     parser.add_argument("--traffic-count", type=int, help="无窗口实验的交通车数；省略时按赛道默认值")
     parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--physics-workers", type=int, help="数值工作进程数；0为串行对照，窗口默认按CPU启用")
+    parser.add_argument("--physics-workers", type=int, help="数值进程数；窗口正常模式默认0，困难模式按CPU启用")
     parser.add_argument("--synchronous-physics", action="store_true", help="诊断用：在绘制线程推进固定物理步")
     parser.add_argument("--driving-mode", choices=("game", "simulation"))
     parser.add_argument("--vehicle-design", choices=tuple(v.id for v in DESIGN_VEHICLES),

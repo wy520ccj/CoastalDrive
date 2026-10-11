@@ -1,0 +1,19 @@
+{
+  "driving_mode": "game",
+  "vehicle_design": "gr86-2022-premium-6mt",
+  "shape": "hills",
+  "seed": 23,
+  "traffic_count": 12,
+  "requested_seconds": 30.0,
+  "requested_distance_m": 0.0,
+  "simulation_seconds": 30.0,
+  "wall_seconds": 21.237741400000232,
+  "start_s": 7.999995671147,
+  "player_distance_m": 593.1277950047593,
+  "max_step_m": 0.25487050295867497,
+  "working_set_bytes": 112259072,
+  "rigid_bodies": 195,
+  "transform_states": 183,
+  "passed": true,
+  "failures": []
+}

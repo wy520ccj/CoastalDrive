@@ -1,0 +1,556 @@
+{
+  "kind": "short window comparison; not final performance or human gate",
+  "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src",
+  "track": "endless",
+  "vehicle_design": "gr86-2022-premium-6mt",
+  "driving_mode": "game",
+  "controller": "highway-driver",
+  "constant_steering": 0.0,
+  "gc_rate": 1.0,
+  "transform_cache": false,
+  "render_clock_mode": 0,
+  "render_clock_average_rate": 76.03375138223862,
+  "traffic_models": {
+    "TrafficVehicle": 12
+  },
+  "python_switch_interval": 0.005,
+  "audio": "disabled by existing smoke mode",
+  "tick": 5190,
+  "fixed_hz": 120,
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 12,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "profile": false,
+  "draw_thread": "Main",
+  "source_modules": {
+    "application": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\application.py",
+    "simulation": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\simulation.py",
+    "vehicle": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle.py",
+    "world_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\world_step.py",
+    "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\physics_workers.py",
+    "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\tire_drivetrain.py",
+    "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tires.py",
+    "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\suspension_contacts.py",
+    "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\triangle_support.py",
+    "coastal_map": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\coastal_map.py"
+  },
+  "trace_phases": false,
+  "phase_timing": {},
+  "independent_clock": true,
+  "physics_workers": null,
+  "streaming_phases": {},
+  "wall_seconds": 45.002953299999994,
+  "sample_seconds": 42.01371130000007,
+  "frames": 3131,
+  "average_fps": 74.52329020978432,
+  "display_draw_frames": 3129,
+  "display_draw_fps": 74.51854926373956,
+  "display_draw_p95_ms": 17.700499998682062,
+  "display_draw_p99_ms": 20.084499999939,
+  "display_draw_max_ms": 136.01779999953578,
+  "display_draw_over_50ms": 1,
+  "p95_ms": 17.33310000054189,
+  "p99_ms": 23.30650000112655,
+  "max_ms": 131.80560000000696,
+  "frames_over_50ms": 1,
+  "frames_over_100ms": 1,
+  "dropped_simulation_seconds": 1.7499999999999998,
+  "warmup_dropped_seconds": 0.0,
+  "distance_m": 939.7553676424844,
+  "physics_start_tick": 359,
+  "physics_end_tick": 5190,
+  "physics_sample_ticks": 4831,
+  "physics_sample_simulated_seconds": 40.25833333333333,
+  "physics_sample_wall_seconds": 42.00645450000047,
+  "physics_sample_hz": 115.00613554519212,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 42.6113972,
+      "ms": 131.80560000000696
+    },
+    {
+      "second": 16.040637799999995,
+      "ms": 46.17520000101649
+    },
+    {
+      "second": 23.600292399999997,
+      "ms": 42.58999999910884
+    },
+    {
+      "second": 24.516190199999997,
+      "ms": 35.58800000064366
+    },
+    {
+      "second": 31.849813899999994,
+      "ms": 30.459399999017478
+    },
+    {
+      "second": 28.6892012,
+      "ms": 29.344500000661355
+    },
+    {
+      "second": 15.874505899999997,
+      "ms": 29.23980000014126
+    },
+    {
+      "second": 4.236227200000001,
+      "ms": 29.04360000138695
+    },
+    {
+      "second": 30.978548399999994,
+      "ms": 28.732500000842265
+    },
+    {
+      "second": 14.810368899999999,
+      "ms": 28.12610000000859
+    },
+    {
+      "second": 18.851584299999995,
+      "ms": 27.42269999907876
+    },
+    {
+      "second": 18.547703999999996,
+      "ms": 27.26729999994859
+    }
+  ],
+  "segment_work_max_ms": 20.27559999987716,
+  "segment_step_max_ms": 18.10219999970286,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 20.27559999987716,
+      "max_step_ms": 18.10219999970286,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 16.72560000042722,
+      "max_step_ms": 18.10219999970286,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 14.610099999117665,
+      "max_step_ms": 12.769000000844244,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 14.353399999890826,
+      "max_step_ms": 12.769000000844244,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 14.272000000346452,
+      "max_step_ms": 18.10219999970286,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 13.746600001468323,
+      "max_step_ms": 18.10219999970286,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 13.39670000015758,
+      "max_step_ms": 18.10219999970286,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 11.770000000979053,
+      "max_step_ms": 18.10219999970286,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 10.57540000147128,
+      "max_step_ms": 18.10219999970286,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 10.480999999344931,
+      "max_step_ms": 18.10219999970286,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 9.858100000201375,
+      "max_step_ms": 18.10219999970286,
+      "completed": 15,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 9.45769999998447,
+      "max_step_ms": 18.10219999970286,
+      "completed": 16,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1152
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2136
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2144
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2133
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2137
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2043
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2182
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2165
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2165
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2190
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1991
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1968
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2147
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2051
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2167
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1960
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2151
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2155
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2160
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2060
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2170
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1976
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2179
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1991
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2185
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2205
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2186
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1970
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2071
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2171
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2212
+    },
+    {
+      "second": 31,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2080
+    },
+    {
+      "second": 32,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2209
+    },
+    {
+      "second": 33,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2202
+    },
+    {
+      "second": 34,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2164
+    },
+    {
+      "second": 35,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1994
+    },
+    {
+      "second": 36,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2203
+    },
+    {
+      "second": 37,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2198
+    },
+    {
+      "second": 38,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2003
+    },
+    {
+      "second": 39,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2089
+    },
+    {
+      "second": 40,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2004
+    },
+    {
+      "second": 41,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2226
+    },
+    {
+      "second": 42,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2208
+    },
+    {
+      "second": 43,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2190
+    },
+    {
+      "second": 44,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2223
+    },
+    {
+      "second": 45,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2099
+    }
+  ],
+  "passed": true,
+  "short_performance_passed": false,
+  "git_head": "a5761250d800691f14b69592f3cf4e8e54b3e9ff",
+  "worker_sources": [],
+  "worker_source_valid": true,
+  "git_status": "M docs/physics-roadmap.md\n M docs/vehicle-physics.md\n M src/application.py\n M src/chase_camera.py\n M src/driving_modes.py\n M src/main.py\n M src/session.py\n M src/session_clock.py\n M src/simulation.py\n M src/suspension_contacts.py\n M src/tire_drivetrain.py\n M src/world_step.py\n M tests/test_expressway.py\n M tests/test_expressway_route.py\n M tests/test_session_clock.py\n M tests/test_static_support_cache.py\n M tests/test_traction_lifecycle.py\n M tests/test_world_substeps.py\n M tools/curve_drive_check.py\n M tools/performance/benchmark_runtime.py\n M tools/performance/trace_presentation.py\n M tools/validate.py\n?? launchers/physics-native-traffic-game.cmd\n?? launchers/physics-native-traffic-simulation.cmd\n?? src/npc_physics.py\n?? tests/test_chase_camera.py\n?? tests/test_npc_physics.py"
+}
