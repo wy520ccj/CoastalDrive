@@ -1,0 +1,30 @@
+{
+  "baseline": "e08dfb94a36da0c74fa378c03fd5ddabb8c8be47",
+  "status": "in_progress",
+  "whole_600_snapshot_hashes_exact": true,
+  "errors_identical": true,
+  "raw_repeat_exact": 160,
+  "parallel_complete_exact": 60,
+  "native_gil_release_observed": true,
+  "npc_simplification_integrated": false,
+  "native_thread_pool_integrated": false,
+  "production_source_sha256": {
+    "setup.py": "e3fa2279675847fb97339cb9e5d83c3ddf6f6069229bd7deafc19cc915c75be2",
+    "src/native_solve_runtime.h": "1b96830edb632cf036877f3b858eb9f1d7da3cb8ee14c66f1d10e18b4e2f94e4",
+    "src/joint_contact_api.h": "dfccda508cb573646f9b9279fd6efeecb141fab193b25055a23439c33c4a5ab5",
+    "src/joint_contact_impl.h": "82cda5ee98a40f1074a1034654753d96c67b863372e33657c8f229f075059b4f",
+    "src/joint_iteration.h": "f108632422973503bf1d8f47f19a4693b64fc968982d2c695febbabc0926d032",
+    "src/joint_iteration_helpers.h": "56ce8bd2243cab3f75fbca886cd3aafa0811e6b532062445fc0a2fac18b9d5b8",
+    "src/mechanical_kernels.c": "ccb125d223f647b72f2f3cc24fd273169d351f39b92ce1622cef6b99c0e93378",
+    "src/wheel_contact_kernels.c": "37bc7b3c1b37ad482600b732c7ff1722a3fdf5f84f23bdd3b6fdab445603f5a0",
+    "tests/test_continuous_solver.py": "1a7f03461512c00dfbb14e49e80869441d26ce06421908f686244bec17fd00fc",
+    "src\\convex_cast_kernels.cp314-win_amd64.pyd": "a54ba6964e0b48f9a8f93e2b5c6b00b6a8f2bf783cb2835d324120647aac4035",
+    "src\\mechanical_kernels.cp314-win_amd64.pyd": "3e8f74b4d1f839939fbe7809c5c40d2b7afb6499236e8acc5bc1a8ec0ecdc77a",
+    "src\\physics_packet_kernels.cp314-win_amd64.pyd": "8e07eafb2397c7cc54253d65214d4732306826d845dbbdaabda9c315748fd489",
+    "src\\wheel_contact_kernels.cp314-win_amd64.pyd": "852aa1b7482ed582f7689e998182866ec8a00665ed48eae6d5be64d35b13df1f"
+  },
+  "performance_gate": "failed",
+  "human_gate": "pending",
+  "T2_T3": "not_run",
+  "remote_push": false
+}

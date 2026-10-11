@@ -1,0 +1,444 @@
+{
+  "kind": "short window comparison; not final performance or human gate",
+  "source": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\npc-nogil",
+  "track": "endless",
+  "vehicle_design": "gr86-2022-premium-6mt",
+  "driving_mode": "game",
+  "controller": "highway-driver",
+  "constant_steering": 0.0,
+  "gc_rate": 1.0,
+  "python_switch_interval": 0.001,
+  "audio": "disabled by existing smoke mode",
+  "tick": 3123,
+  "fixed_hz": 120,
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 12,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "profile": false,
+  "source_modules": {
+    "application": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\npc-nogil\\application.py",
+    "simulation": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\npc-nogil\\simulation.py",
+    "vehicle": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\npc-nogil\\vehicle.py",
+    "world_step": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\npc-nogil\\world_step.py",
+    "physics_workers": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\npc-nogil\\physics_workers.py",
+    "tire_drivetrain": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\npc-nogil\\tire_drivetrain.py",
+    "vehicle_tires": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\npc-nogil\\vehicle_tires.py",
+    "suspension_contacts": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\npc-nogil\\suspension_contacts.py",
+    "triangle_support": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\npc-nogil\\triangle_support.py",
+    "coastal_map": "B:\\AI agent\\\u6691\u671f\u8ba1\u7b97\u673a\u7a0b\u5e8f\u8bbe\u8ba1\\CoastalDrive\\logs\\performance\\pipeline-r1\\npc-nogil\\coastal_map.py"
+  },
+  "trace_phases": false,
+  "phase_timing": {},
+  "independent_clock": true,
+  "physics_workers": null,
+  "streaming_phases": {},
+  "wall_seconds": 30.015281099999996,
+  "sample_seconds": 27.02870159999998,
+  "frames": 1398,
+  "average_fps": 51.72279529698168,
+  "display_draw_frames": 1396,
+  "display_draw_fps": 51.72541688425807,
+  "display_draw_p95_ms": 28.26920000006794,
+  "display_draw_p99_ms": 32.02289999990171,
+  "display_draw_max_ms": 40.26309999994737,
+  "display_draw_over_50ms": 0,
+  "p95_ms": 25.149699999929,
+  "p99_ms": 29.737300000078903,
+  "max_ms": 42.577399999800036,
+  "frames_over_50ms": 0,
+  "frames_over_100ms": 0,
+  "dropped_simulation_seconds": 3.924999999999991,
+  "warmup_dropped_seconds": 0.0,
+  "distance_m": 495.63010874772897,
+  "physics_start_tick": 352,
+  "physics_end_tick": 3123,
+  "physics_sample_ticks": 2771,
+  "physics_sample_simulated_seconds": 23.091666666666665,
+  "physics_sample_wall_seconds": 27.016501600000083,
+  "physics_sample_hz": 102.56694375262826,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 17.302643099999997,
+      "ms": 42.577399999800036
+    },
+    {
+      "second": 25.9666366,
+      "ms": 37.37619999992603
+    },
+    {
+      "second": 18.9249181,
+      "ms": 35.01859999983026
+    },
+    {
+      "second": 7.424530699999999,
+      "ms": 33.26899999979105
+    },
+    {
+      "second": 18.9745045,
+      "ms": 32.52259999999296
+    },
+    {
+      "second": 27.900317799999996,
+      "ms": 32.406799999989744
+    },
+    {
+      "second": 27.650407099999995,
+      "ms": 32.11309999983314
+    },
+    {
+      "second": 10.302046200000001,
+      "ms": 31.217599999990853
+    },
+    {
+      "second": 26.018736499999996,
+      "ms": 31.192700000019613
+    },
+    {
+      "second": 17.937042599999998,
+      "ms": 30.494999999973516
+    },
+    {
+      "second": 27.8694853,
+      "ms": 30.000100000052043
+    },
+    {
+      "second": 4.089133599999999,
+      "ms": 29.992499999934807
+    }
+  ],
+  "segment_work_max_ms": 14.36239999998179,
+  "segment_step_max_ms": 13.642099999970014,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 14.36239999998179,
+      "max_step_ms": 13.642099999970014,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 12.783800000079282,
+      "max_step_ms": 11.612300000024334,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 12.07709999994222,
+      "max_step_ms": 13.642099999970014,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 12.037199999895165,
+      "max_step_ms": 13.642099999970014,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 11.20800000012423,
+      "max_step_ms": 13.642099999970014,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 11.005899999872781,
+      "max_step_ms": 13.642099999970014,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 10.878899999852365,
+      "max_step_ms": 8.320299999923009,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "drain-shadow",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 10.34050000021125,
+      "max_step_ms": 13.642099999970014,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 9.201699999948687,
+      "max_step_ms": 13.642099999970014,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 9.09910000018499,
+      "max_step_ms": 11.612300000024334,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 8.373000000119646,
+      "max_step_ms": 11.612300000024334,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "mountain-row",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 7.847099999935381,
+      "max_step_ms": 11.612300000024334,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "drain-shadow",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 7201,
+      "render_states": 1152
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 11311,
+      "render_states": 1951
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 11241,
+      "render_states": 2146
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 12477,
+      "render_states": 2025
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 12527,
+      "render_states": 2136
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 10357,
+      "render_states": 1953
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 11511,
+      "render_states": 2031
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 10966,
+      "render_states": 1981
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 11869,
+      "render_states": 2163
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 10612,
+      "render_states": 2162
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 13299,
+      "render_states": 1966
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 12116,
+      "render_states": 2170
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 12918,
+      "render_states": 1965
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 11061,
+      "render_states": 2144
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 13647,
+      "render_states": 2177
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 12403,
+      "render_states": 1974
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 12179,
+      "render_states": 2152
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 13067,
+      "render_states": 2178
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 12676,
+      "render_states": 2056
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 5620,
+      "render_states": 1968
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 12397,
+      "render_states": 2174
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 9615,
+      "render_states": 2044
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 12747,
+      "render_states": 2163
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 11277,
+      "render_states": 2040
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 8864,
+      "render_states": 1961
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 11154,
+      "render_states": 2153
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 8724,
+      "render_states": 2038
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 11760,
+      "render_states": 2156
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 13653,
+      "render_states": 1961
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 10010,
+      "render_states": 2048
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 8934,
+      "render_states": 2183
+    }
+  ],
+  "passed": false,
+  "short_performance_passed": false,
+  "git_head": "e08dfb94a36da0c74fa378c03fd5ddabb8c8be47",
+  "worker_sources": [],
+  "worker_source_valid": true,
+  "git_status": "M setup.py\n M src/joint_contact_api.h\n M src/joint_contact_impl.h\n M src/joint_iteration.h\n M src/joint_iteration_helpers.h\n M src/mechanical_kernels.c\n M src/wheel_contact_kernels.c\n M tests/test_continuous_solver.py\n?? src/native_solve_runtime.h"
+}

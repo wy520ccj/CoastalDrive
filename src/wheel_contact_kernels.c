@@ -1,5 +1,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include "native_solve_runtime.h"
 #include <math.h>
 #include <string.h>
 
@@ -942,10 +943,10 @@ static int triangle_query_values(TrianglePacket *packet,double start[3],double e
     double margin,double axis[3],double radius,double width,double shoulder,double crown,PyObject *coordinates,
     SurfaceEntry *result) {
     PreparedTriangle *small_candidates[32]; double small_bounds[32];
-    PreparedTriangle **candidates=packet->total<=32 ? small_candidates : PyMem_Malloc(packet->total*sizeof(*candidates));
-    double *bounds=packet->total<=32 ? small_bounds : PyMem_Malloc(packet->total*sizeof(*bounds));
+    PreparedTriangle **candidates=packet->total<=32 ? small_candidates : PyMem_RawMalloc(packet->total*sizeof(*candidates));
+    double *bounds=packet->total<=32 ? small_bounds : PyMem_RawMalloc(packet->total*sizeof(*bounds));
     if (!candidates || !bounds) {
-        if (packet->total>32) { PyMem_Free(candidates); PyMem_Free(bounds); }
+        if (packet->total>32) { PyMem_RawFree(candidates); PyMem_RawFree(bounds); }
         PyErr_NoMemory(); return 0;
     }
     Py_ssize_t count=0;
@@ -967,10 +968,10 @@ static int triangle_query_values(TrianglePacket *packet,double start[3],double e
             coordinates,ceiling,padding,&hit)) goto failed;
         if (hit.found && (!best.found || hit.fraction<ceiling)) { best=hit; ceiling=hit.fraction; }
     }
-    if (packet->total>32) { PyMem_Free(candidates); PyMem_Free(bounds); }
+    if (packet->total>32) { PyMem_RawFree(candidates); PyMem_RawFree(bounds); }
     *result=best; return 1;
 failed:
-    if (packet->total>32) { PyMem_Free(candidates); PyMem_Free(bounds); }
+    if (packet->total>32) { PyMem_RawFree(candidates); PyMem_RawFree(bounds); }
     return 0;
 }
 

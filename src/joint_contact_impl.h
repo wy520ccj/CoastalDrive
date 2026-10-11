@@ -9,6 +9,10 @@ typedef struct {
     double candidate_low[3],candidate_high[3];
 } JointPlane;
 typedef struct { JointPlane planes[4]; double damping; PyObject *complete_owners; } JointContacts;
+static void joint_candidate_free(SurfacePacket *packet) {
+    PyMem_RawFree(packet->parts);PyMem_RawFree(packet);
+}
+
 
 static double joint_fsum(const double *values,int count) {
     double partials[16],hi=0.,lo=0.; int n=0;
@@ -30,7 +34,7 @@ static void joint_contacts_free(PyObject *capsule) {
     if(!data)return;
     for(int i=0;i<4;++i){
         if(data->planes[i].surfaces)surface_packet_free(data->planes[i].surfaces);
-        if(data->planes[i].candidate)surface_packet_free(data->planes[i].candidate);
+        if(data->planes[i].candidate)joint_candidate_free(data->planes[i].candidate);
     }
     Py_XDECREF(data->complete_owners);
     PyMem_Free(data);
@@ -83,7 +87,7 @@ static PyObject *joint_contact_prepare(PyObject *self,PyObject *args) {
 failed:
     for(int i=0;i<4;++i){
         if(data->planes[i].surfaces)surface_packet_free(data->planes[i].surfaces);
-        if(data->planes[i].candidate)surface_packet_free(data->planes[i].candidate);
+        if(data->planes[i].candidate)joint_candidate_free(data->planes[i].candidate);
     }
     Py_XDECREF(data->complete_owners);
     PyMem_Free(data);return NULL;
@@ -97,9 +101,9 @@ static int joint_complete_candidates(JointPlane *p,const double start[3],const d
         for(int a=0;a<3;++a)if(fmin(start[a],end[a])<p->candidate_low[a]||fmax(start[a],end[a])>p->candidate_high[a])covered=0;
         if(covered)return 1;
     } else {
-        SurfacePacket *candidate=PyMem_Calloc(1,sizeof(*candidate));if(!candidate){PyErr_NoMemory();return 0;}
-        candidate->parts=PyMem_Malloc(p->complete->count*sizeof(*candidate->parts));
-        if(p->complete->count&&!candidate->parts){PyMem_Free(candidate);PyErr_NoMemory();return 0;}
+        SurfacePacket *candidate=PyMem_RawCalloc(1,sizeof(*candidate));if(!candidate){PyErr_NoMemory();return 0;}
+        candidate->parts=PyMem_RawMalloc(p->complete->count*sizeof(*candidate->parts));
+        if(p->complete->count&&!candidate->parts){PyMem_RawFree(candidate);PyErr_NoMemory();return 0;}
         p->candidate=candidate;
     }
     double center[3],half[3],envelope=p->radius+fabs(p->width)/2+fabs(p->shoulder)+fabs(p->crown);
@@ -202,7 +206,9 @@ static int joint_contact_evaluate(void *packet,const double *velocity,const doub
     }
     return 1;
 }
-static JointContactApi joint_contact_api={joint_contact_evaluate};
+static void joint_contact_begin(NativeSolveError *error){native_solve_error=error;}
+static void joint_contact_end(void){native_solve_error=NULL;}
+static JointContactApi joint_contact_api={joint_contact_evaluate,joint_contact_begin,joint_contact_end};
 
 static PyObject *joint_contact_state(PyObject *self,PyObject *args) {
     PyObject *capsule,*linear,*rotation;double dt,velocity[3],angular[3],gradients[24],alignment[4],touching[4];

@@ -224,7 +224,17 @@ static PyObject *joint_solve(PyObject *self,PyObject *args) {
     memset(w->normal,0,sizeof(w->normal));memset(w->road,0,sizeof(w->road));memset(w->bias_ports,0,sizeof(w->bias_ports));memset(w->warm_branches,0,sizeof(w->warm_branches));
     for(int i=0;i<27;++i)for(int j=0;j<4;++j)w->warm_modes[i][j]=-1;
     w->cache_count=0;w->shared_branch=0;w->shared_port=-1;w->busy=1;
-    int success=joint_iterate(w);w->busy=0;if(!success)return NULL;
+    NativeSolveError error={0};native_solve_error=&error;w->api->begin(&error);
+    PyThreadState *saved=PyEval_SaveThread();
+    int success=joint_iterate(w);
+    PyEval_RestoreThread(saved);
+    w->api->end();native_solve_error=NULL;w->busy=0;
+    if(error.type){
+        if(error.type==PyExc_MemoryError&&error.message[0]==0)PyErr_NoMemory();
+        else PyErr_SetString(error.type,error.message);
+        return NULL;
+    }
+    if(!success)return NULL;
     PyObject *result=PyTuple_New(23);if(!result)return NULL;
     PyTuple_SET_ITEM(result,0,joint_vector_object(w->state,9));PyTuple_SET_ITEM(result,1,joint_vector_object(w->velocity,3));
     PyTuple_SET_ITEM(result,2,PyFloat_FromDouble(w->port_values[0]));PyTuple_SET_ITEM(result,3,PyFloat_FromDouble(w->port_values[2]));PyTuple_SET_ITEM(result,4,PyFloat_FromDouble(w->port_values[1]));

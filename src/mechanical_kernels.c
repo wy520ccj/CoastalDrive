@@ -1,5 +1,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include "native_solve_runtime.h"
 #include <math.h>
 #include <limits.h>
 #include <stdint.h>

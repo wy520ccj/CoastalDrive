@@ -1,0 +1,24 @@
+{
+  "source": "src",
+  "observer_progress": 0,
+  "raw_repeat_exact": 160,
+  "exceptions": [
+    [
+      "nan-state",
+      "OverflowError",
+      "有限机械矩阵求和溢出"
+    ],
+    [
+      "infinite-force",
+      "OverflowError",
+      "有限机械矩阵求和溢出"
+    ],
+    [
+      "zero-hardware",
+      "ArithmeticError",
+      "轮胎横向隐式积分超过20次迭代：残差 -nan(ind) N"
+    ]
+  ],
+  "parallel_complete_exact": 60,
+  "passed": true
+}

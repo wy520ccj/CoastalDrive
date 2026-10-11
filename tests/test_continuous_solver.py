@@ -152,6 +152,65 @@ def test_mutable_numeric_workspaces_are_owned_by_each_thread():
     assert first[2] is not second[2]
 
 
+def test_native_parallel_complete_results_and_error_recovery(monkeypatch):
+    hardware = pickle.loads((FIXTURE/'hardware.pickle').read_bytes())
+    payload = (FIXTURE/'geometry.pickle').read_bytes()
+    memory = SharedMemory(create=True, size=len(payload))
+    memory.buf[:] = payload
+    reference = physics_workers.GeometryRef(memory.name, len(payload), 1)
+    identifier = min(int(path.stem.split('-')[1]) for path in FIXTURE.glob('input-*.bin'))
+    request = replace(from_bytes((FIXTURE/f'input-{identifier}.bin').read_bytes()), config=hardware)
+    expected = (FIXTURE/f'result-{identifier}.bin').read_bytes()
+    native = tire_drivetrain.joint_solve
+    captured = []
+
+    def capture(*args):
+        captured.append(args)
+        return native(*args)
+
+    try:
+        monkeypatch.setattr(tire_drivetrain, 'joint_solve', capture)
+        assert result_bytes(physics_workers._solve_vehicle(request, reference)) == expected
+        monkeypatch.setattr(tire_drivetrain, 'joint_solve', native)
+        args = captured[-1]
+        original = native(*args)
+        # 纯数值区的错误须在恢复线程状态后传回，下一次合法求解仍可复用工作区。
+        for invalid in (math.nan, math.inf):
+            data = list(args[-1])
+            state = list(data[0])
+            state[3] = invalid
+            data[0] = tuple(state)
+            with pytest.raises(OverflowError, match='有限机械矩阵求和溢出'):
+                native(*args[:-1], tuple(data))
+            assert native(*args) == original
+        barrier = Barrier(3)
+        geometry = physics_workers._worker_geometry
+
+        def solve():
+            owner = get_ident()
+            candidates = {}
+            barrier.wait(timeout=5)
+            for _ in range(8):
+                result = request.solve(static_geometry=geometry,
+                    surface_material=physics_workers.material_query, surface_candidates=candidates)
+                assert result_bytes(result) == expected
+            return owner
+
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            owners = [future.result() for future in [executor.submit(solve) for _ in range(3)]]
+        assert len(set(owners)) == 3
+    finally:
+        physics_workers._worker_geometry = None
+        physics_workers._worker_candidates.clear()
+        physics_workers._worker_meshes.clear()
+        physics_workers._worker_version = None
+        if physics_workers._worker_memory is not None:
+            physics_workers._worker_memory.close()
+            physics_workers._worker_memory = None
+        memory.close()
+        memory.unlink()
+
+
 @pytest.mark.parametrize('columns', (1, 2, 3))
 @pytest.mark.parametrize('condition', (1., 1e4, 1e8))
 def test_native_simplex_svd_rank_and_independent_backward_error(columns, condition):

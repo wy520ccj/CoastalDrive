@@ -64,12 +64,13 @@ static int joint_shared_values(SharedMap *data,double state[11],const double ang
             }
         } else for (int a=0; a<variables; ++a) state[a]=end[a];
     }
+    PyGILState_STATE error_gil=PyGILState_Ensure();
     char *number=PyOS_double_to_string(error,'g',6,0,NULL);
-    if (!number) return 0;
+    if (!number){PyGILState_Release(error_gil);return 0;}
     char message[160];
     PyOS_snprintf(message,sizeof(message),"曲轴/四轮转子共同末状态超过30次迭代：%s",number);
     PyErr_SetString(PyExc_ArithmeticError,message);
-    PyMem_Free(number); return 0;
+    PyMem_Free(number);PyGILState_Release(error_gil); return 0;
 }
 
 static int joint_wheel_map_values(WheelMap *packet,int wheel,const double base[9],const double base_velocity[3],
