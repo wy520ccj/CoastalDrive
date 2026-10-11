@@ -23,9 +23,8 @@ def drive_npc(simulation):
     return npc
 
 
-@pytest.mark.parametrize("mode", list(DrivingMode))
-def test_real_npc_shift_rebase_preserve_elastic_memory_then_reset_and_recycle_clear(mode):
-    session = Session(track="endless", driving_mode=mode)
+def test_full_npc_shift_rebase_preserve_elastic_memory_then_reset_and_recycle_clear():
+    session = Session(track="endless", driving_mode=DrivingMode.SIMULATION)
     try:
         session.start(countdown=False)
         simulation = session.simulation
@@ -69,15 +68,18 @@ def test_mode_rebuild_creates_true_compliance_cars_without_previous_elastic_ener
     try:
         session.start(countdown=False)
         old_world = session.simulation
-        old_npc = drive_npc(old_world)
-        assert sum(elastic_memory(old_npc)[1]) > 0
+        for _ in range(120):
+            old_world.step(Control(throttle=.3))
+        old_car = old_world.player
+        assert sum(elastic_memory(old_car)[1]) > 0
+        assert all(car.snapshot().wheel_dynamics == () for car in old_world.npcs)
         session.menu()
         session.set_driving_mode(DrivingMode.SIMULATION)
         session.start(countdown=False)
         assert old_world.closed
         assert session.simulation is not old_world
         for car in [session.simulation.player, *session.simulation.npcs]:
-            assert car is not old_npc
+            assert car is not old_car
             assert car.config is session.vehicle_config
             assert car.config.tire_compliance
             assert elastic_memory(car) == (((0.0, 0.0, 0.0),) * 4, (0.0,) * 4)

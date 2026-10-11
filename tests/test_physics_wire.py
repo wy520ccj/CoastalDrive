@@ -7,11 +7,46 @@ from dataclasses import replace
 
 import pytest
 from physics_packet_kernels import decode, encode, encode_into, layout
+from wheel_contact_kernels import wheel_state_update
 
 from physics_wire import _layout, from_bytes, input_bytes, result_bytes
 from simulation import Control, Simulation
 from vehicle_state import WheelDynamicsState
 from vehicle_tire_step import TireAdvanceResult
+
+
+def test_native_wheel_record_matches_frozen_constructor_and_replace_without_mutating_old_state():
+    from dataclasses import FrozenInstanceError
+
+    empty = WheelDynamicsState()
+    rng = random.Random(2801)
+    for _ in range(64):
+        force = {'omega':rng.uniform(-90,90),'fx':rng.uniform(-3000,3000),
+                 'steering':rng.uniform(-33,33),'force_contact_tick':17,
+                 'force_mode':'sticking','gyro_angular_impulse':(.12,-0.,.3),
+                 'deformation_x':-0.,'force_patch_kappa':None}
+        actual = wheel_state_update(empty,**force)
+        assert encode(_layout,actual) == encode(_layout,WheelDynamicsState(**force))
+        original = encode(_layout,actual)
+        sample = {'relative_omega':-0.,'kappa':math.nan,'alpha':None,
+                  'sample_support':True,'sample_tick':18,'sample_grip':1234.,
+                  'mechanical_axis':(.3,.4,.5),'rolling_radius':.31}
+        observed = wheel_state_update(actual,**sample)
+        assert encode(_layout,observed) == encode(_layout,replace(actual,**sample))
+        assert encode(_layout,actual) == original
+        with pytest.raises(FrozenInstanceError):
+            observed.omega = 1.
+    assert empty == WheelDynamicsState()
+    with pytest.raises(TypeError,match='未知字段'):
+        wheel_state_update(empty,omgea=1.)
+    with pytest.raises(TypeError):
+        wheel_state_update(1,omega=1.)
+    class TextRecord(str):
+        pass
+    text = TextRecord('变长载荷不能作为物理记录分配')
+    text.omega = 0.
+    with pytest.raises(TypeError):
+        wheel_state_update(text,omega=1.)
 
 
 def test_numeric_packet_preserves_double_bits_and_nested_container_types():

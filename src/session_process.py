@@ -102,7 +102,7 @@ def _camera_loop(connection, session):
         connection.close()
 
 
-def _serve(connection, camera, seed, options, worker_loop):
+def _serve(connection, camera, input_word, seed, options, worker_loop):
     import physics_workers
 
     physics_workers._worker_loop = worker_loop
@@ -110,6 +110,8 @@ def _serve(connection, camera, seed, options, worker_loop):
     camera_thread = None
     try:
         session = Session(seed, **options, independent_clock=True)
+        session.keyboard.input_word = input_word
+        session.keyboard.input_reader = True
         session._ipc_tick, session._ipc_epoch, session._ipc_phase = -1, None, None
         camera_thread = Thread(target=_camera_loop, args=(camera, session), daemon=True)
         camera_thread.start()
@@ -121,10 +123,6 @@ def _serve(connection, camera, seed, options, worker_loop):
 
             def execute(command=command, arguments=arguments):
                 if command == 'frame':
-                    pressed, direction = arguments
-                    if session.controller is session.keyboard:
-                        session.keyboard.pressed = pressed
-                        session.keyboard.direction = direction
                     if session._clock is None and session.phase in (Phase.DRIVING, Phase.COUNTDOWN):
                         session.frame(0.)
                     return _output(session)
@@ -144,6 +142,8 @@ def _serve(connection, camera, seed, options, worker_loop):
                     if bind_world:
                         controller.bind(session.simulation)
                     session.set_controller(controller)
+                elif command == 'keyboard':
+                    session.set_controller(session.keyboard)
                 elif command == 'pause':
                     session.pause()
                 elif command == 'resume':
@@ -218,9 +218,10 @@ class SessionProcess:
         self.race = SimpleNamespace(snapshot=None)
         self.highway = SimpleNamespace(snapshot=None)
         context = get_context('spawn')
+        self.keyboard.input_word = context.Value('I', 0)
         self.connection, child = context.Pipe()
         self.camera, camera_child = context.Pipe()
-        self.process = context.Process(target=_serve, args=(child, camera_child, seed, {
+        self.process = context.Process(target=_serve, args=(child, camera_child, self.keyboard.input_word, seed, {
             'track':track, 'road_shape':road_shape, 'driving_mode':driving_mode, 'scores':scores,
             'vehicle_config':vehicle_config, 'abs_enabled':abs_enabled, 'tcs_enabled':tcs_enabled,
             'esc_enabled':esc_enabled, 'physics_workers':physics_workers}, workers._worker_loop),
@@ -300,10 +301,11 @@ class SessionProcess:
         self.simulation._physics_workers = self.simulation if diagnostics is not None else None
 
     def frame(self, elapsed, *, sampled_at=None):
+        self.keyboard.publish_input()
         if self.pending_frame and self.connection.poll():
             self._finish_frame()
         if not self.pending_frame and self.phase in (Phase.DRIVING, Phase.COUNTDOWN):
-            self.connection.send(('frame', (self.keyboard.pressed.copy(), self.keyboard.direction)))
+            self.connection.send(('frame', ()))
             self.pending_frame = True
         if not self.process.is_alive():
             self._finish_frame()
@@ -339,7 +341,10 @@ class SessionProcess:
         self.received_impacts.clear()
 
     def set_controller(self, controller, *, bind_world=False):
-        self._command('controller', controller, bind_world)
+        if controller is self.keyboard:
+            self._command('keyboard')
+        else:
+            self._command('controller', controller, bind_world)
         self.controller = controller
         self.keyboard.clear()
 

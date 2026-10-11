@@ -2,10 +2,9 @@
 
 import math
 
-import pytest
-
 from driving_modes import DrivingMode
 from highway_segments import REBASE_DISTANCE, SEGMENT_LENGTH
+from npc_physics import TrafficVehicle
 from session import Session
 from simulation import Control
 
@@ -14,9 +13,8 @@ def rotor_state(car):
     return tuple(car.tires.omega), tuple(car.tires.states)
 
 
-@pytest.mark.parametrize("mode", list(DrivingMode))
-def test_player_npc_rotor_rebase_recycle_and_mode_rebuild(mode):
-    session = Session(track="endless", road_shape="hills", driving_mode=mode)
+def test_player_full_npc_rotor_rebase_recycle_and_mode_rebuild():
+    session = Session(track="endless", road_shape="hills", driving_mode=DrivingMode.SIMULATION)
     try:
         session.start(countdown=False)
         sim = session.simulation
@@ -55,9 +53,18 @@ def test_player_npc_rotor_rebase_recycle_and_mode_rebuild(mode):
         assert npc.suspension.state.step is None
         old_world = sim
         session.menu()
-        session.set_driving_mode(DrivingMode.SIMULATION if mode == DrivingMode.GAME else DrivingMode.GAME)
+        session.set_driving_mode(DrivingMode.GAME)
         session.start(countdown=False)
         assert old_world.closed and session.simulation is not old_world
+        assert session.simulation.player.config.wheel_rotor_transport
+        for car in session.simulation.npcs:
+            assert isinstance(car,TrafficVehicle)
+            assert car.snapshot().wheel_dynamics == ()
+        normal_world = session.simulation
+        session.menu()
+        session.set_driving_mode(DrivingMode.SIMULATION)
+        session.start(countdown=False)
+        assert normal_world.closed
         for car in [session.simulation.player, *session.simulation.npcs]:
             assert car.config.wheel_rotor_transport
             assert car.suspension.state.step is None

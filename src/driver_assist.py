@@ -24,7 +24,7 @@ class InputConfig:
 GAME_INPUT = InputConfig()
 SIMULATION_INPUT = InputConfig(
     progressive_pedals=False, speed_sensitive_steering=False, automatic_reverse=False,
-    keyboard_steering_rate=.4,
+    keyboard_steering_rate=1.2,
 )
 
 

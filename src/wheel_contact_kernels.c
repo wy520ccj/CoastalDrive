@@ -1985,7 +1985,39 @@ static int joint_surface_values(SurfacePacket *packet,double start[3],double end
 
 #include "joint_contact_impl.h"
 
+/* 完整轮端记录仅复制已有字段；不再次执行51字段的Python冻结构造器。 */
+static PyObject *wheel_state_update(PyObject *self, PyObject *args, PyObject *updates) {
+    PyObject *state;
+    if (!PyArg_ParseTuple(args,"O",&state)) return NULL;
+    PyTypeObject *type=Py_TYPE(state);
+    if (!(type->tp_flags & Py_TPFLAGS_HEAPTYPE) || type->tp_base!=&PyBaseObject_Type || type->tp_itemsize!=0) {
+        PyErr_SetString(PyExc_TypeError,"轮端更新须使用完整Python记录"); return NULL;
+    }
+    PyObject *original=PyObject_GenericGetDict(state,NULL);
+    if (!original) return NULL;
+    PyObject *values=PyDict_Copy(original);
+    if (!values) { Py_DECREF(original); return NULL; }
+    if (updates) {
+        Py_ssize_t position=0; PyObject *key,*value;
+        while (PyDict_Next(updates,&position,&key,&value)) {
+            int exists=PyDict_Contains(original,key);
+            if (exists<=0) {
+                if (exists==0) PyErr_SetString(PyExc_TypeError,"轮端更新含未知字段");
+                Py_DECREF(original); Py_DECREF(values); return NULL;
+            }
+            if (PyDict_SetItem(values,key,value)) {
+                Py_DECREF(original); Py_DECREF(values); return NULL;
+            }
+        }
+    }
+    Py_DECREF(original);
+    PyObject *result=PyType_GenericAlloc(type,0);
+    if (result && PyObject_GenericSetDict(result,values,NULL)) Py_CLEAR(result);
+    Py_DECREF(values); return result;
+}
+
 static PyMethodDef methods[] = {
+    {"wheel_state_update", (PyCFunction)wheel_state_update, METH_VARARGS | METH_KEYWORDS, "复制完整轮端力学账并更新本拍字段"},
     {"joint_contact_prepare",joint_contact_prepare,METH_VARARGS,"连续共同求解的真实有限接点准备"},
     {"_joint_contact_state",joint_contact_state,METH_VARARGS,"独立核对末姿态几何和完整世界候选数量"},
     {"joint_surface_prepare",joint_surface_prepare,METH_VARARGS,"覆盖盒外真实几何的持久原生查询包"},

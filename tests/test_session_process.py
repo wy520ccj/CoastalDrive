@@ -88,3 +88,20 @@ def test_mode_switch_and_new_start_discard_old_history_and_keep_full_hard_traffi
         assert remote.simulation.traffic_models == ('TrafficVehicle',)*8
     finally:
         remote.close()
+
+
+def test_switching_back_to_shared_keyboard_keeps_the_authoritative_controller_and_clears_input():
+    remote = SessionProcess(track='test',driving_mode=DrivingMode.GAME)
+    try:
+        remote.start(countdown=False)
+        remote.set_controller(ConstantController(Control(throttle=.3)))
+        remote.keyboard.press('w')
+        remote.set_controller(remote.keyboard)
+        assert remote.controller is remote.keyboard
+        assert remote.keyboard.input_word.value == 0
+        remote.frame(0)
+        time.sleep(.1)
+        remote.pause()
+        assert remote.current.player.throttle == 0
+    finally:
+        remote.close()

@@ -1,0 +1,140 @@
+BASELINE_MODULES B:\AI agent\���ڼ�����������\CoastalDrive\logs\performance\input-latency-r1\baseline\src\session.py B:\AI agent\���ڼ�����������\CoastalDrive\logs\performance\input-latency-r1\baseline\src\vehicle_tires.py B:\AI agent\���ڼ�����������\CoastalDrive\logs\performance\input-latency-r1\baseline\src\wheel_contact_kernels.cp314-win_amd64.pyd
+FFFF                                                                     [100%]
+================================== FAILURES ===================================
+___ test_player_npc_rotor_rebase_recycle_and_mode_rebuild[DrivingMode.GAME] ___
+
+mode = <DrivingMode.GAME: 'game'>
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    def test_player_npc_rotor_rebase_recycle_and_mode_rebuild(mode):
+        session = Session(track="endless", road_shape="hills", driving_mode=mode)
+        try:
+            session.start(countdown=False)
+            sim = session.simulation
+            assert sim.config.wheel_rotor_transport
+            npc = sim.npcs[0]
+            active_bearing = False
+            for _ in range(120):
+                sim.step(Control(throttle=.3))
+                active_bearing |= any(math.sqrt(sum(v*v for v in w.gyro_angular_impulse)) > 1e-8
+                                      for w in npc.snapshot().wheel_dynamics)
+>           assert active_bearing
+E           assert False
+
+tests\test_rotor_lifecycle.py:30: AssertionError
+_ test_player_npc_rotor_rebase_recycle_and_mode_rebuild[DrivingMode.SIMULATION] _
+
+mode = <DrivingMode.SIMULATION: 'simulation'>
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    def test_player_npc_rotor_rebase_recycle_and_mode_rebuild(mode):
+        session = Session(track="endless", road_shape="hills", driving_mode=mode)
+        try:
+            session.start(countdown=False)
+            sim = session.simulation
+            assert sim.config.wheel_rotor_transport
+            npc = sim.npcs[0]
+            active_bearing = False
+            for _ in range(120):
+                sim.step(Control(throttle=.3))
+                active_bearing |= any(math.sqrt(sum(v*v for v in w.gyro_angular_impulse)) > 1e-8
+                                      for w in npc.snapshot().wheel_dynamics)
+            assert active_bearing
+            for car in (sim.player, npc):
+                assert car.config is sim.config
+                assert all(w.rolling_radius > 0 and math.isfinite(w.steering_work)
+                           for w in car.snapshot().wheel_dynamics)
+            state = rotor_state(npc)
+            suspension = npc.suspension.state
+            assert suspension.force_tick == npc.snapshot().contact_tick
+            assert suspension.step is not None
+            assert all(w.getWheelsSuspensionForce() == 0 for w in npc._vehicle.getWheels())
+            npc.shift(100)
+            assert rotor_state(npc) == state
+            assert npc.suspension.state == suspension
+            npc.shift(-100)
+            for car in [sim.player, *sim.npcs]:
+                car.shift(-(REBASE_DISTANCE + SEGMENT_LENGTH))
+            sim._rebase()
+            assert sim.rebases == 1 and rotor_state(npc) == state
+            npc.shift(-5000)
+            cycles = sim.traffic_cycles
+            sim._update_stream()
+            assert sim.traffic_cycles > cycles
+            assert "traffic_recycled:0" in sim._events
+            assert all(w.gyro_angular_impulse == (0., 0., 0.) and w.steering_work == 0.
+                       for w in npc.snapshot().wheel_dynamics)
+            assert npc.suspension.state.step is None
+            old_world = sim
+            session.menu()
+            session.set_driving_mode(DrivingMode.SIMULATION if mode == DrivingMode.GAME else DrivingMode.GAME)
+            session.start(countdown=False)
+            assert old_world.closed and session.simulation is not old_world
+            for car in [session.simulation.player, *session.simulation.npcs]:
+>               assert car.config.wheel_rotor_transport
+E               assert False
+E                +  where False = VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0).wheel_rotor_transport
+E                +    where VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0) = <npc_physics.TrafficVehicle object at 0x00000266DD2056D0>.config
+
+tests\test_rotor_lifecycle.py:62: AssertionError
+_ test_real_npc_shift_rebase_preserve_elastic_memory_then_reset_and_recycle_clear[DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>
+
+    @pytest.mark.parametrize("mode", list(DrivingMode))
+    def test_real_npc_shift_rebase_preserve_elastic_memory_then_reset_and_recycle_clear(mode):
+        session = Session(track="endless", driving_mode=mode)
+        try:
+            session.start(countdown=False)
+            simulation = session.simulation
+>           npc = drive_npc(simulation)
+                  ^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_tire_compliance_lifecycle.py:32:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+simulation = <simulation.Simulation object at 0x00000266D82A0050>
+
+    def drive_npc(simulation):
+        npc = simulation.npcs[0]
+        for _ in range(120):
+            simulation.step(Control(throttle=.3))
+        deformation, energies = elastic_memory(npc)
+>       assert npc.config.tire_compliance
+E       assert False
+E        +  where False = VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0).tire_compliance
+E        +    where VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0) = <npc_physics.TrafficVehicle object at 0x00000266D838BED0>.config
+
+tests\test_tire_compliance_lifecycle.py:19: AssertionError
+_ test_mode_rebuild_creates_true_compliance_cars_without_previous_elastic_energy _
+
+    def test_mode_rebuild_creates_true_compliance_cars_without_previous_elastic_energy():
+        session = Session(track="endless")
+        try:
+            session.start(countdown=False)
+            old_world = session.simulation
+>           old_npc = drive_npc(old_world)
+                      ^^^^^^^^^^^^^^^^^^^^
+
+tests\test_tire_compliance_lifecycle.py:72:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+simulation = <simulation.Simulation object at 0x00000266D82A0830>
+
+    def drive_npc(simulation):
+        npc = simulation.npcs[0]
+        for _ in range(120):
+            simulation.step(Control(throttle=.3))
+        deformation, energies = elastic_memory(npc)
+>       assert npc.config.tire_compliance
+E       assert False
+E        +  where False = VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0).tire_compliance
+E        +    where VehicleConfig(mass=1200.0, torque_curve=((900, 116.05), (1800, 174.075), (3200, 211), (4500, 200.45), (6000, 158.25), ..., front_weight_share=0.5, body_inertia=None, angular_damping=0.2, suspension_travel=0.2, suspension_force_limit=6000.0) = <npc_physics.TrafficVehicle object at 0x00000266D88F4B90>.config
+
+tests\test_tire_compliance_lifecycle.py:19: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_rotor_lifecycle.py::test_player_npc_rotor_rebase_recycle_and_mode_rebuild[DrivingMode.GAME]
+FAILED tests/test_rotor_lifecycle.py::test_player_npc_rotor_rebase_recycle_and_mode_rebuild[DrivingMode.SIMULATION]
+FAILED tests/test_tire_compliance_lifecycle.py::test_real_npc_shift_rebase_preserve_elastic_memory_then_reset_and_recycle_clear[DrivingMode.GAME]
+FAILED tests/test_tire_compliance_lifecycle.py::test_mode_rebuild_creates_true_compliance_cars_without_previous_elastic_energy
+4 failed in 13.02s

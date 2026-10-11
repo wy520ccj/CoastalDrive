@@ -258,9 +258,24 @@ def main():
     user32 = ctypes.WinDLL("user32", use_last_error=True)
     user32.ShowWindow.argtypes = [wintypes.HWND, ctypes.c_int]
     user32.SetForegroundWindow.argtypes = [wintypes.HWND]
+    user32.GetForegroundWindow.restype = wintypes.HWND
+    user32.GetWindowThreadProcessId.argtypes = [wintypes.HWND, ctypes.POINTER(wintypes.DWORD)]
+    user32.GetWindowThreadProcessId.restype = wintypes.DWORD
+    user32.AttachThreadInput.argtypes = [wintypes.DWORD, wintypes.DWORD, wintypes.BOOL]
     handle = app.win.getWindowHandle().getIntHandle()
     user32.ShowWindow(handle, 9)
-    user32.SetForegroundWindow(handle)
+    if not user32.SetForegroundWindow(handle):
+        # 独立工具进程不一定获得Windows的前台许可；只在启动时挂接一次输入队列。
+        # 无论激活成败立即解除挂接，采样仍逐秒核对真实窗口状态。
+        current_thread = ctypes.WinDLL('kernel32').GetCurrentThreadId()
+        foreground_thread = user32.GetWindowThreadProcessId(user32.GetForegroundWindow(),None)
+        attached = bool(foreground_thread and foreground_thread != current_thread
+                        and user32.AttachThreadInput(current_thread,foreground_thread,True))
+        try:
+            user32.SetForegroundWindow(handle)
+        finally:
+            if attached:
+                user32.AttachThreadInput(current_thread,foreground_thread,False)
     samples, windows = [], []
     work_samples = []
     previous = time.perf_counter()

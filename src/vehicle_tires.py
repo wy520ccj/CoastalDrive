@@ -4,7 +4,7 @@ import math
 from dataclasses import replace
 
 from panda3d.core import Mat3, Quat, Vec3
-from wheel_contact_kernels import rotor_frame_geometry, wheel_observations
+from wheel_contact_kernels import rotor_frame_geometry, wheel_observations, wheel_state_update
 
 from suspension_kinematics import advance_contact_geometry
 from tire_compliance import deformation_frame, project_deformation, world_deformation
@@ -17,6 +17,8 @@ from vehicle_contacts import road_support
 from vehicle_state import WheelDynamicsState, WheelState
 from wheel_dynamics import Mobility, advance_wheel
 from wheel_geometry import mechanical_axis
+
+_EMPTY_WHEEL_STATE = WheelDynamicsState()
 
 
 class Tires:
@@ -289,7 +291,7 @@ class Tires:
                 self.rotation[index] += sub_dt * step.relative_omega
                 wheel_config = config if index < 2 else self.rear_config
                 cx, cy = tire_stiffness(load, wheel_config)
-                states[index] = WheelDynamicsState(
+                states[index] = wheel_state_update(_EMPTY_WHEEL_STATE,
                     omega=step.omega, rotation=self.rotation[index],
                     relative_omega=step.relative_omega,
                     longitudinal_speed=step.vx, lateral_speed=step.vy,
@@ -369,7 +371,7 @@ class Tires:
             kappa, alpha = slip_state(vx, vy, self.omega[index],
                                       radius, self.config)
             mu = self.config.road_friction if contact.surface == "asphalt" else self.config.grass_friction
-            states.append(replace(
+            states.append(wheel_state_update(
                 state, relative_omega=self.omega[index] + angular.dot(axle),
                 longitudinal_speed=float(vx), lateral_speed=float(vy),
                 kappa=kappa if supported else None, alpha=alpha if supported else None,
@@ -406,7 +408,7 @@ class Tires:
         states = []
         for state,support,values in zip(self.states,supported,observations):
             axis,radius,relative,vx,vy,kappa,alpha,grip = values
-            states.append(replace(state,relative_omega=relative,longitudinal_speed=vx,lateral_speed=vy,
+            states.append(wheel_state_update(state,relative_omega=relative,longitudinal_speed=vx,lateral_speed=vy,
                 kappa=kappa if support else None,alpha=alpha if support else None,
                 sample_support=support,sample_tick=tick,sample_grip=grip if support else 0.,
                 mechanical_axis=axis,rolling_radius=radius))

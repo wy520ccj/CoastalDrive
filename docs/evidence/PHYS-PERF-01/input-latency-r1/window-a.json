@@ -1,0 +1,568 @@
+{
+  "kind": "short window comparison; not final performance or human gate",
+  "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src",
+  "track": "endless",
+  "vehicle_design": "gr86-2022-premium-6mt",
+  "driving_mode": "simulation",
+  "controller": "highway-driver",
+  "constant_steering": 0.0,
+  "gc_rate": 1.0,
+  "transform_cache": false,
+  "render_clock_mode": 0,
+  "render_clock_average_rate": 31.139085840816612,
+  "traffic_models": {
+    "Vehicle": 12
+  },
+  "python_switch_interval": 0.005,
+  "audio": "disabled by existing smoke mode",
+  "tick": 848,
+  "fixed_hz": 120,
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 12,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": false,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "profile": false,
+  "draw_thread": null,
+  "source_modules": {
+    "application": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\application.py",
+    "simulation": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\simulation.py",
+    "vehicle": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle.py",
+    "world_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\world_step.py",
+    "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\physics_workers.py",
+    "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\tire_drivetrain.py",
+    "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tires.py",
+    "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\suspension_contacts.py",
+    "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\triangle_support.py",
+    "coastal_map": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\coastal_map.py"
+  },
+  "authority_source_modules": {
+    "session": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\session.py",
+    "session_clock": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\session_clock.py",
+    "simulation": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\simulation.py",
+    "npc_physics": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\npc_physics.py",
+    "vehicle": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle.py",
+    "world_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\world_step.py",
+    "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\tire_drivetrain.py"
+  },
+  "trace_phases": false,
+  "phase_timing": {},
+  "independent_clock": true,
+  "physics_workers": {
+    "processes": 9,
+    "configured_processes": 9,
+    "geometry_versions": 1,
+    "remote": 22048,
+    "world_required": 0,
+    "worker_solve": {
+      "wall": {
+        "mean_ms": 3.506555639648745,
+        "p95_ms": 4.8353000020142645,
+        "max_ms": 11.99129999804427
+      },
+      "cpu": {
+        "mean_ms": 3.162384033203125,
+        "p95_ms": 15.625,
+        "max_ms": 15.625
+      }
+    },
+    "configuration_transfers": 9,
+    "timing_window_requests": 4096,
+    "preparation_seconds": 0.8861376999993809,
+    "initialisation_seconds": 0.8819982999993954,
+    "numeric_packets": 22048
+  },
+  "streaming_phases": {},
+  "wall_seconds": 30.0320096,
+  "sample_seconds": 27.05060400000002,
+  "frames": 767,
+  "average_fps": 28.354265213449555,
+  "display_draw_frames": 766,
+  "display_draw_fps": 28.341051971971442,
+  "display_draw_p95_ms": 47.89370000071358,
+  "display_draw_p99_ms": 52.450700000918005,
+  "display_draw_max_ms": 60.47220000255038,
+  "display_draw_over_50ms": 21,
+  "p95_ms": 47.76950000086799,
+  "p99_ms": 53.226800002448726,
+  "max_ms": 57.67289999857894,
+  "frames_over_50ms": 23,
+  "frames_over_100ms": 0,
+  "dropped_simulation_seconds": 20.74999999999999,
+  "warmup_dropped_seconds": 2.1,
+  "distance_m": 32.96474733499731,
+  "physics_start_tick": 88,
+  "physics_end_tick": 848,
+  "physics_sample_ticks": 760,
+  "physics_sample_simulated_seconds": 6.333333333333333,
+  "physics_sample_wall_seconds": 27.0727063000013,
+  "physics_sample_hz": 28.07255364787685,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 17.461638699999998,
+      "ms": 57.67289999857894
+    },
+    {
+      "second": 15.0126956,
+      "ms": 57.21170000106213
+    },
+    {
+      "second": 7.556803299999999,
+      "ms": 55.796799999370705
+    },
+    {
+      "second": 26.257015999999997,
+      "ms": 53.72009999700822
+    },
+    {
+      "second": 25.0668641,
+      "ms": 53.556399998342386
+    },
+    {
+      "second": 8.4013353,
+      "ms": 53.32110000017565
+    },
+    {
+      "second": 24.543048600000002,
+      "ms": 53.244799997628434
+    },
+    {
+      "second": 21.192692499999996,
+      "ms": 53.226800002448726
+    },
+    {
+      "second": 17.579897399999997,
+      "ms": 52.99949999971432
+    },
+    {
+      "second": 10.392108699999998,
+      "ms": 52.643800001533236
+    },
+    {
+      "second": 23.2179975,
+      "ms": 52.5759999982256
+    },
+    {
+      "second": 26.5195113,
+      "ms": 52.52160000236472
+    }
+  ],
+  "segment_work_max_ms": 0.35969999953522347,
+  "segment_step_max_ms": 0,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 0.35969999953522347,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.33070000063162297,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.3125000002910383,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.27299999783281237,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.2714000002015382,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.25649999952293,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.22140000146464445,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.21259999994072132,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.2088999972329475,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.2069000001938548,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.20659999790950678,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 0.18869999985327013,
+      "max_step_ms": 0,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "sign-batch",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 1206
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 1113
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 1984
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2195
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 1982
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 1833
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 1816
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2180
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 1847
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 1983
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2052
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2062
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2170
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2169
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2177
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2193
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2176
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2012
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2162
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2175
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2071
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2016
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2208
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2268
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 1678
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 1861
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2182
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2006
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 1363
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2117
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": false,
+      "transform_states": 1,
+      "render_states": 2080
+    }
+  ],
+  "passed": false,
+  "short_performance_passed": false,
+  "git_head": "e021eac87fcb010800170b41985463997b4d50bc",
+  "worker_sources": [
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance\\input-latency-r1\\baseline\\src\\vehicle_tire_step.py"
+    }
+  ],
+  "worker_source_valid": true,
+  "git_status": "M src/controls.py\n M src/driver_assist.py\n M src/driving_modes.py\n M src/session_process.py\n M src/vehicle_tires.py\n M src/wheel_contact_kernels.c\n M tests/test_keyboard_steering.py\n M tests/test_physics_wire.py\n M tests/test_rotor_lifecycle.py\n M tests/test_session_process.py\n M tests/test_tire_compliance_lifecycle.py\n M tests/test_traction_lifecycle.py",
+  "raw_gc_pause_count": 767,
+  "raw_report": "logs\\performance\\input-latency-r1\\window-a\\report.json",
+  "raw_report_sha256": "74cc16c6abdfabc0847a94169ea26b4911c5b31dd7bf7f43b640da6b25186c53"
+}
