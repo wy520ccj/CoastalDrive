@@ -1,0 +1,418 @@
+{
+  "kind": "standalone dual-mode lifecycle/render verification; not FPS or human gate",
+  "package": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-traffic-r6\\win_amd64",
+  "exe_sha256": "7a6d8fbdd7b04fe6a06029439c7c89a0fadb9d161b6ed0c2aa3a15614aecbbe7",
+  "modules": [
+    {
+      "module": "convex_cast_kernels.pyd",
+      "source_sha256": "a54ba6964e0b48f9a8f93e2b5c6b00b6a8f2bf783cb2835d324120647aac4035",
+      "package_sha256": "a54ba6964e0b48f9a8f93e2b5c6b00b6a8f2bf783cb2835d324120647aac4035",
+      "same": true
+    },
+    {
+      "module": "mechanical_kernels.pyd",
+      "source_sha256": "57be291a84a9023966d6404a2126864601529707117d584377f20089a92d4a4a",
+      "package_sha256": "57be291a84a9023966d6404a2126864601529707117d584377f20089a92d4a4a",
+      "same": true
+    },
+    {
+      "module": "physics_packet_kernels.pyd",
+      "source_sha256": "8e07eafb2397c7cc54253d65214d4732306826d845dbbdaabda9c315748fd489",
+      "package_sha256": "8e07eafb2397c7cc54253d65214d4732306826d845dbbdaabda9c315748fd489",
+      "same": true
+    },
+    {
+      "module": "wheel_contact_kernels.pyd",
+      "source_sha256": "5dc5e23f9434bd07314b7068f6d9f34c1b085f7a11fb01dc759f3a4adc29efef",
+      "package_sha256": "5dc5e23f9434bd07314b7068f6d9f34c1b085f7a11fb01dc759f3a4adc29efef",
+      "same": true
+    }
+  ],
+  "checks": [
+    {
+      "mode": "game",
+      "kind": "profile-startup",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-traffic-r6\\win_amd64\\coastaldrive.exe",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "game",
+        "--track",
+        "coastal",
+        "--profile-startup",
+        "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-whole-step-r6-2s6oafin\\game\\startup.json",
+        "--output",
+        "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-whole-step-r6-2s6oafin\\game"
+      ],
+      "returncode": 0,
+      "seconds": 8.814337599999817,
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-whole-step-r6-2s6oafin\\game",
+      "passed": true,
+      "report": {
+        "timeline": [
+          {
+            "event": "entrypoint_ready",
+            "since_process_start_s": null,
+            "since_previous_s": null
+          },
+          {
+            "event": "application_imported",
+            "since_process_start_s": null,
+            "since_previous_s": 0.0923
+          },
+          {
+            "event": "window_initialized",
+            "since_process_start_s": null,
+            "since_previous_s": 0.946
+          },
+          {
+            "event": "renderer_initialized",
+            "since_process_start_s": null,
+            "since_previous_s": 0.0011
+          },
+          {
+            "event": "simulation_initialized",
+            "since_process_start_s": null,
+            "since_previous_s": 0.2348
+          },
+          {
+            "event": "primary_font_loaded",
+            "since_process_start_s": null,
+            "since_previous_s": 0.4337
+          },
+          {
+            "event": "display_font_loaded",
+            "since_process_start_s": null,
+            "since_previous_s": 0.0296
+          },
+          {
+            "event": "ui_ready",
+            "since_process_start_s": null,
+            "since_previous_s": 0.3008
+          },
+          {
+            "event": "first_rendered_frame",
+            "since_process_start_s": null,
+            "since_previous_s": 0.1876
+          },
+          {
+            "event": "main_menu_usable",
+            "since_process_start_s": null,
+            "since_previous_s": 0.0
+          }
+        ],
+        "time_to_first_frame_s": null,
+        "time_to_menu_usable_s": null,
+        "clock": "time.perf_counter_ns; relative transition",
+        "scenario": "visible coastal main menu, then 8-car free drive",
+        "startup_scene_created": false,
+        "startup_traffic_count": 0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+        "first_frame_capture": "startup.png",
+        "drive_transition": {
+          "timeline": [
+            {
+              "event": "drive_transition_started",
+              "since_process_start_s": null,
+              "since_previous_s": null
+            },
+            {
+              "event": "environment_assets_loaded",
+              "since_process_start_s": null,
+              "since_previous_s": 5.0276
+            },
+            {
+              "event": "hero_mesh_loaded",
+              "since_process_start_s": null,
+              "since_previous_s": 0.0747
+            },
+            {
+              "event": "reflection_resource_loaded",
+              "since_process_start_s": null,
+              "since_previous_s": 0.0034
+            },
+            {
+              "event": "hero_vehicle_loaded",
+              "since_process_start_s": null,
+              "since_previous_s": 0.0015
+            },
+            {
+              "event": "traffic_vehicles_loaded",
+              "since_process_start_s": null,
+              "since_previous_s": 0.2522
+            },
+            {
+              "event": "first_drive_frame",
+              "since_process_start_s": null,
+              "since_previous_s": 0.2578
+            }
+          ],
+          "time_to_first_frame_s": null,
+          "time_to_menu_usable_s": null,
+          "clock": "time.perf_counter_ns; relative transition"
+        },
+        "drive_traffic_count": 8,
+        "drive_transition_s": 5.6173
+      }
+    },
+    {
+      "mode": "game",
+      "kind": "headless",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-traffic-r6\\win_amd64\\coastaldrive.exe",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "game",
+        "--track",
+        "coastal",
+        "--headless",
+        "--steps",
+        "120",
+        "--traffic-count",
+        "8"
+      ],
+      "returncode": 0,
+      "seconds": 1.0156465999998545,
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-whole-step-r6-2s6oafin\\game",
+      "passed": true,
+      "actual_tick": 120,
+      "actual_traffic": 8,
+      "actual_mode": "game"
+    },
+    {
+      "mode": "game",
+      "kind": "smoke",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-traffic-r6\\win_amd64\\coastaldrive.exe",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "game",
+        "--track",
+        "coastal",
+        "--smoke",
+        "--output",
+        "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-whole-step-r6-2s6oafin\\game"
+      ],
+      "returncode": 0,
+      "seconds": 10.02814699999999,
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-whole-step-r6-2s6oafin\\game",
+      "passed": true,
+      "report": {
+        "passed": true,
+        "tick": 263,
+        "player_position": [
+          95.00045013427734,
+          6.675730228424072,
+          0.44421830773353577
+        ],
+        "traffic_count": 8,
+        "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+        "screenshot": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-whole-step-r6-2s6oafin\\game\\h0-offscreen.png",
+        "restart_20_nodes_stable": true,
+        "restart_20_tasks_stable": true,
+        "restart_20_events_stable": true
+      }
+    },
+    {
+      "mode": "simulation",
+      "kind": "profile-startup",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-traffic-r6\\win_amd64\\coastaldrive.exe",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "simulation",
+        "--track",
+        "coastal",
+        "--profile-startup",
+        "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-whole-step-r6-2s6oafin\\simulation\\startup.json",
+        "--output",
+        "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-whole-step-r6-2s6oafin\\simulation"
+      ],
+      "returncode": 0,
+      "seconds": 9.184821699999702,
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-whole-step-r6-2s6oafin\\simulation",
+      "passed": true,
+      "report": {
+        "timeline": [
+          {
+            "event": "entrypoint_ready",
+            "since_process_start_s": null,
+            "since_previous_s": null
+          },
+          {
+            "event": "application_imported",
+            "since_process_start_s": null,
+            "since_previous_s": 0.0768
+          },
+          {
+            "event": "window_initialized",
+            "since_process_start_s": null,
+            "since_previous_s": 0.8902
+          },
+          {
+            "event": "renderer_initialized",
+            "since_process_start_s": null,
+            "since_previous_s": 0.0009
+          },
+          {
+            "event": "simulation_initialized",
+            "since_process_start_s": null,
+            "since_previous_s": 0.2234
+          },
+          {
+            "event": "primary_font_loaded",
+            "since_process_start_s": null,
+            "since_previous_s": 0.4394
+          },
+          {
+            "event": "display_font_loaded",
+            "since_process_start_s": null,
+            "since_previous_s": 0.0288
+          },
+          {
+            "event": "ui_ready",
+            "since_process_start_s": null,
+            "since_previous_s": 0.3056
+          },
+          {
+            "event": "first_rendered_frame",
+            "since_process_start_s": null,
+            "since_previous_s": 0.1872
+          },
+          {
+            "event": "main_menu_usable",
+            "since_process_start_s": null,
+            "since_previous_s": 0.0
+          }
+        ],
+        "time_to_first_frame_s": null,
+        "time_to_menu_usable_s": null,
+        "clock": "time.perf_counter_ns; relative transition",
+        "scenario": "visible coastal main menu, then 8-car free drive",
+        "startup_scene_created": false,
+        "startup_traffic_count": 0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+        "first_frame_capture": "startup.png",
+        "drive_transition": {
+          "timeline": [
+            {
+              "event": "drive_transition_started",
+              "since_process_start_s": null,
+              "since_previous_s": null
+            },
+            {
+              "event": "environment_assets_loaded",
+              "since_process_start_s": null,
+              "since_previous_s": 5.5974
+            },
+            {
+              "event": "hero_mesh_loaded",
+              "since_process_start_s": null,
+              "since_previous_s": 0.0715
+            },
+            {
+              "event": "reflection_resource_loaded",
+              "since_process_start_s": null,
+              "since_previous_s": 0.0035
+            },
+            {
+              "event": "hero_vehicle_loaded",
+              "since_process_start_s": null,
+              "since_previous_s": 0.0014
+            },
+            {
+              "event": "traffic_vehicles_loaded",
+              "since_process_start_s": null,
+              "since_previous_s": 0.245
+            },
+            {
+              "event": "first_drive_frame",
+              "since_process_start_s": null,
+              "since_previous_s": 0.2742
+            }
+          ],
+          "time_to_first_frame_s": null,
+          "time_to_menu_usable_s": null,
+          "clock": "time.perf_counter_ns; relative transition"
+        },
+        "drive_traffic_count": 8,
+        "drive_transition_s": 6.193
+      }
+    },
+    {
+      "mode": "simulation",
+      "kind": "headless",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-traffic-r6\\win_amd64\\coastaldrive.exe",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "simulation",
+        "--track",
+        "coastal",
+        "--headless",
+        "--steps",
+        "120",
+        "--traffic-count",
+        "8"
+      ],
+      "returncode": 0,
+      "seconds": 4.45089519999965,
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-whole-step-r6-2s6oafin\\simulation",
+      "passed": true,
+      "actual_tick": 120,
+      "actual_traffic": 8,
+      "actual_mode": "simulation"
+    },
+    {
+      "mode": "simulation",
+      "kind": "smoke",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-traffic-r6\\win_amd64\\coastaldrive.exe",
+        "--vehicle-design",
+        "gr86-2022-premium-6mt",
+        "--driving-mode",
+        "simulation",
+        "--track",
+        "coastal",
+        "--smoke",
+        "--output",
+        "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-whole-step-r6-2s6oafin\\simulation"
+      ],
+      "returncode": 0,
+      "seconds": 12.44316389999949,
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-whole-step-r6-2s6oafin\\simulation",
+      "passed": true,
+      "report": {
+        "passed": true,
+        "tick": 280,
+        "player_position": [
+          95.00257110595703,
+          10.480918884277344,
+          0.42827051877975464
+        ],
+        "traffic_count": 8,
+        "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+        "screenshot": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-whole-step-r6-2s6oafin\\simulation\\h0-offscreen.png",
+        "restart_20_nodes_stable": true,
+        "restart_20_tasks_stable": true,
+        "restart_20_events_stable": true
+      }
+    }
+  ],
+  "passed": true,
+  "raw_report": "logs\\performance\\whole-step-r1\\package-r6\\report.json",
+  "raw_report_sha256": "1f297ee7bf925d3b1499092045aa90ec383119e506588dedc675b10b417a91af"
+}

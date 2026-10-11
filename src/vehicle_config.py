@@ -27,7 +27,8 @@ class VehicleConfig:
     shift_time: float = 0.28
     torque_response: float = 0.12
     engine_braking: float = 24.0  # Approximate closed-throttle torque at the crank, Nm.
-    finite_drivetrain: bool = True  # 两模式共用真实曲轴/有限离合；false用于冻结旧机制A/B。
+    finite_drivetrain: bool = True  # 玩家/困难交通车的完整传动；false用于原生交通车及旧机制对照。
+    native_tire_forces: bool = False  # 正常交通车由Bullet原生轮胎按实际驱动份额施力。
     front_drive_share: float = 0.0  # 0后驱、1前驱；中间值为开放中差的固定几何份额。
     differential_damping: tuple = (0., 0., 0.)  # 前轴/后轴/中差粘性系数，N·m·s/rad；默认开放。
     differential_capacity: tuple = (0., 0., 0.)  # 对应有限耦合容量，N·m；容量为0关闭端口。
@@ -159,7 +160,10 @@ class VehicleConfig:
             raise ValueError("输入轴方向须为三维单位向量")
         if not 0 <= self.front_drive_share <= 1:
             raise ValueError("前轴驱动份额须在0到1之间")
-        if self.front_drive_share != 0 and not self.finite_drivetrain:
+        if self.native_tire_forces and (self.finite_drivetrain or self.suspension_coupled_enabled
+                                       or self.wheel_rotor_transport or self.tire_compliance):
+            raise ValueError("原生交通轮胎与完整轮端求解不能同时启用")
+        if self.front_drive_share != 0 and not (self.finite_drivetrain or self.native_tire_forces):
             raise ValueError("前驱/四驱需要有限机械传动，旧对照分支仅支持后驱")
         if len(self.differential_damping) != 3 or len(self.differential_capacity) != 3:
             raise ValueError("限滑参数依次为前轴、后轴、中差的三项")

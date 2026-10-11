@@ -1,6 +1,6 @@
 """正常模式交通车的原生碰撞、停车唤醒与两模式边界。"""
 
-from dataclasses import asdict
+from dataclasses import asdict, replace
 
 import pytest
 from panda3d.bullet import BulletBoxShape, BulletPlaneShape, BulletRigidBodyNode, BulletWorld
@@ -16,6 +16,42 @@ from vehicle_state import FIXED_DT, Control, VehicleCommand
 from world_step import advance_world, physical_substeps
 
 CONFIG = vehicle_design('gr86-2022-premium-6mt').config
+
+
+@pytest.mark.parametrize('share', [0., .5, 1.])
+def test_native_traffic_preserves_drive_layout_and_recycles(share):
+    config = replace(DrivingMode.GAME.vehicle_config, front_drive_share=share)
+    sim = Simulation(seed=23, track='endless', traffic_count=1, config=config,
+                     input_config=DrivingMode.GAME.input_config)
+    try:
+        npc = sim.npcs[0]
+        assert type(npc) is TrafficVehicle
+        assert sim.player.config is config and sim.player.config.finite_drivetrain
+        assert npc.config.native_tire_forces and not npc.config.finite_drivetrain
+        assert npc.config.drive_weights == config.drive_weights
+        # 实际原生轮分别收到驱动与发动机制动；没有完整传动遥测冒充实体轴积分。
+        npc.physics_stages((1000., 200., (0.,)*4), 1/240)
+        for weight, wheel in zip(config.drive_weights, npc._vehicle.getWheels()):
+            assert wheel.getEngineForce() == pytest.approx(1000.*weight/config.wheel_radius, rel=1e-6)
+            assert wheel.getBrake() == pytest.approx(200.*weight/240/config.wheel_radius, rel=1e-6)
+        for _ in range(30):
+            sim.step(Control(throttle=.3))
+        assert npc.snapshot().wheel_dynamics == ()
+        npc.shift(-5000.)
+        cycles = sim.traffic_cycles
+        sim._update_stream()
+        assert sim.traffic_cycles > cycles
+        assert npc.config.drive_weights == config.drive_weights
+        assert npc.config.native_tire_forces
+    finally:
+        sim.close()
+
+
+def test_native_traffic_configuration_keeps_full_solver_guard():
+    with pytest.raises(ValueError, match='不能同时'):
+        replace(CONFIG, native_tire_forces=True)
+    with pytest.raises(ValueError, match='旧对照'):
+        replace(CONFIG, finite_drivetrain=False, front_drive_share=.5)
 
 
 @pytest.mark.parametrize('mode', list(DrivingMode))

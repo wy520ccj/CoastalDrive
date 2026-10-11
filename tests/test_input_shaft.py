@@ -100,7 +100,8 @@ def test_input_shaft_config_boundary_rejects_nonphysical_parameters(field, value
 def test_native_npc_input_shaft_rebase_and_recycle(mode, share):
     config = replace(mode.vehicle_config, front_drive_share=share)
     sim = Simulation(track="endless", traffic_count=1, config=config,
-                     input_config=mode.input_config, traffic_input_config=mode.input_config)
+                     input_config=DrivingMode.SIMULATION.input_config,
+                     traffic_input_config=DrivingMode.SIMULATION.input_config)
     try:
         npc = sim.npcs[0]
         for _ in range(30):

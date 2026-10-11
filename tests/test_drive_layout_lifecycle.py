@@ -15,7 +15,8 @@ from vehicle_state import VehicleCommand, WheelDynamicsState
 def test_layout_survives_player_npc_rebase_and_recycle(mode, share):
     config = replace(mode.vehicle_config, front_drive_share=share)
     sim = Simulation(track="endless", traffic_count=1, config=config,
-                     input_config=mode.input_config, traffic_input_config=mode.input_config)
+                     input_config=DrivingMode.SIMULATION.input_config,
+                     traffic_input_config=DrivingMode.SIMULATION.input_config)
     try:
         for _ in range(60):
             sim.step(VehicleCommand(throttle=.5, direction=1))

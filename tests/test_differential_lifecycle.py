@@ -18,7 +18,8 @@ def test_limited_slip_player_npc_rebase_and_recycle(mode, share):
     config = replace(base, front_drive_share=share, differential_damping=damping,
                      differential_capacity=tuple(80. if c else 0. for c in damping))
     sim = Simulation(track="endless", traffic_count=1, config=config,
-                     input_config=mode.input_config, traffic_input_config=mode.input_config)
+                     input_config=DrivingMode.SIMULATION.input_config,
+                     traffic_input_config=DrivingMode.SIMULATION.input_config)
     try:
         npc = sim.npcs[0]
         # 首步前的机械初值；此后全部轮速由同一物理步推进。

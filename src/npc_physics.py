@@ -14,7 +14,7 @@ from vehicle_steering import wheel_angles
 class TrafficVehicle(Vehicle):
     def __init__(self, *args, **kwargs):
         config = kwargs['config']
-        kwargs['config'] = replace(config, finite_drivetrain=False, suspension_coupled_enabled=False,
+        kwargs['config'] = replace(config, finite_drivetrain=False, native_tire_forces=True, suspension_coupled_enabled=False,
                                    wheel_rotor_transport=False, tire_compliance=False,
                                    axle_torque_bias_ratios=(1., 1.),
                                    differential_damping=(0., 0., 0.), differential_capacity=(0., 0., 0.),
@@ -69,7 +69,7 @@ class TrafficVehicle(Vehicle):
             wheel.setFrictionSlip(mu)
             self._vehicle.applyEngineForce(drive * self.config.drive_weights[i] / radius, i)
             share = self.config.front_brake_share if i < 2 else 1 - self.config.front_brake_share
-            torque = self.config.brake_torque * pressures[i] * share / 2 + (drag / 2 if i >= 2 else 0)
+            torque = self.config.brake_torque * pressures[i] * share / 2 + drag * self.config.drive_weights[i]
             # Bullet原生制动上限是每世界子步的冲量。
             self._vehicle.setBrake(torque * dt / radius, i)
         self.dynamics = DynamicsState(air_relative_velocity=air_velocity, aerodynamic_force_vector=air_force,
