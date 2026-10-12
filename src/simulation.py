@@ -638,7 +638,7 @@ class Simulation:
             if body not in self._retired_traffic:
                 if not self._outside_player_view(body.getTransform().getPos()):
                     continue
-                self._world.removeVehicle(car._vehicle)
+                car.detach_physics()
                 self._retired_traffic.add(body)
                 self._generations[i] += 1
             lane = self.drivers[i].lane
@@ -650,8 +650,7 @@ class Simulation:
                 if not self._position_clear(position, p.heading, ignore=car):
                     continue
                 car.reset(position, p.heading, p.grade)
-                self._world.attachRigidBody(body)
-                self._world.attachVehicle(car._vehicle)
+                car.attach_physics()
                 self._retired_traffic.remove(body)
                 self.drivers[i].recovering = False
                 self._traffic_controls[i] = Control()
@@ -667,7 +666,7 @@ class Simulation:
             if body not in self._retired_traffic:
                 if abs(self.road.locate(car.snapshot(include_wheels=False))[0] - player_y) < 1100:
                     continue
-                self._world.removeVehicle(car._vehicle)
+                car.detach_physics()
                 self._retired_traffic.add(body)
                 self._generations[i] += 1
             # Alternate front and rear entries; no visible car is moved.
@@ -679,8 +678,7 @@ class Simulation:
                 if not self._position_clear(point, p.heading, ignore=car):
                     continue
                 car.reset(point, p.heading, p.grade)
-                self._world.attachRigidBody(body)
-                self._world.attachVehicle(car._vehicle)
+                car.attach_physics()
                 self._retired_traffic.remove(body)
                 self.drivers[i].recovering = False
                 self.drivers[i].cancel()

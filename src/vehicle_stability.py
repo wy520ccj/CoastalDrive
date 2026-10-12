@@ -4,6 +4,7 @@ import math
 from dataclasses import dataclass
 
 from panda3d.core import Vec3
+from wheel_contact_kernels import stability_advance
 
 from tire_properties import tire_grip
 
@@ -78,7 +79,6 @@ class StabilityControl:
         local_velocity = orientation.conjugate().xform(chassis.getLinearVelocity())
         speed = float(local_velocity.y)
         yaw = float(orientation.conjugate().xform(chassis.getAngularVelocity()).z)
-        direction = math.copysign(1.0, speed)
         beta = math.atan2(local_velocity.x, abs(speed))
         capacities, limits, arms = [], [], []
         grip_budget = 0.0
@@ -102,46 +102,9 @@ class StabilityControl:
             point = Vec3(*contact.contact_point) - pose.getPos()
             arms.append(-math.copysign(1.0, wheel.longitudinal_speed)
                         * point.cross(tangent).dot(orientation.getUp()))
-        base = tuple(min(request * capacity, limit)
-                     for request, capacity, limit in zip(requests, capacities, limits))
-        baseline = sum(force * arm for force, arm in zip(base, arms))
-        unlimited = -speed * math.tan(math.radians(steering)) / vehicle.wheelbase
         supported = any(w.sample_support for w in wheels)
-        eligible = abs(speed) >= config.minimum_speed and supported
-        reference, reference_beta, target = 0.0, 0.0, 0.0
-        if eligible or config.continuous_reference and supported and speed != 0:
-            # 附着上界只约束期望横摆，不截断实际轮胎力或车辆状态。
-            yaw_limit = grip_budget / (vehicle.mass * abs(speed))
-            achievable = max(-yaw_limit, min(yaw_limit, unlimited))
-            reference = self.state.reference_yaw_rate + (achievable - self.state.reference_yaw_rate) * (
-                1 - math.exp(-dt / config.reference_response)
-            )
-            # 定常单轨关系：后轴接点横速=车身横速+r*后轴距；正常转弯的β不是零。
-            rear_distance = vehicle.wheelbase * vehicle.front_weight_share
-            rear_stiffness = 2 * vehicle.rear_lateral_stiffness
-            rear_slip = vehicle.mass * vehicle.front_weight_share * speed * reference / rear_stiffness
-            reference_beta = math.atan(-rear_distance * reference / abs(speed) + rear_slip)
-        if eligible:
-            target = chassis.getInertia().z * (
-                config.yaw_gain * excess(reference - yaw, config.yaw_threshold)
-                - direction * config.sideslip_gain * excess(beta - reference_beta, config.sideslip_threshold)
-            )
-        output, scale, allocated = tuple(requests), 1.0, baseline
-        if config.esc_enabled and eligible and abs(target - baseline) > config.moment_threshold:
-            understeer = abs(yaw) < abs(reference) and yaw * reference >= 0
-            forces = allocate_brakes(base, limits, arms, target, understeer)
-            output = tuple(
-                request if force == initial else force / capacity
-                for request, force, initial, capacity in zip(requests, forces, base, capacities)
-            )
-            allocated = sum(force * arm for force, arm in zip(forces, arms))
-            scale = max(0.0, 1 - config.engine_cut_gain * (
-                abs(excess(reference - yaw, config.yaw_threshold)) / config.yaw_threshold
-                + abs(excess(beta - reference_beta, config.sideslip_threshold)) / config.sideslip_threshold
-            ))
-        active = output != tuple(requests) or scale < 1.0
-        self.state = StabilityState(reference, unlimited, yaw, beta, reference - yaw,
-                                    target, baseline, allocated, target - allocated,
-                                    output, scale, active, wheels[0].sample_tick,
-                                    reference_beta, beta - reference_beta)
+        inertia = chassis.getInertia().z if abs(speed) >= config.minimum_speed and supported else 0.
+        self.state = stability_advance(config, vehicle, self.state, tuple(requests), speed, yaw, beta,
+            inertia, steering, dt, tuple(capacities), tuple(limits), tuple(arms), grip_budget, supported,
+            wheels[0].sample_tick)
         return self.state

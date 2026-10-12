@@ -2017,7 +2017,11 @@ static PyObject *wheel_state_update(PyObject *self, PyObject *args, PyObject *up
 }
 
 #include "static_support_read.h"
+#include "vehicle_controls_native.h"
 static PyMethodDef methods[] = {
+    {"brakes_advance", brakes_advance_native, METH_VARARGS, "原四轮液压/ABS反馈与完整状态"},
+    {"traction_advance", traction_advance_native, METH_VARARGS, "原驱动轮TCS反馈与完整状态"},
+    {"stability_advance", stability_advance_native, METH_VARARGS, "原横摆参考/分轮制动分配与完整状态"},
     {"static_support_read", (PyCFunction)static_support_read, METH_VARARGS, "真实静态形状资格/签名及未变几何的批量读取"},
     {"wheel_state_update", (PyCFunction)wheel_state_update, METH_VARARGS | METH_KEYWORDS, "复制完整轮端力学账并更新本拍字段"},
     {"joint_contact_prepare",joint_contact_prepare,METH_VARARGS,"连续共同求解的真实有限接点准备"},
@@ -2057,6 +2061,7 @@ static PyMethodDef methods[] = {
 };
 static struct PyModuleDef module = {PyModuleDef_HEAD_INIT, "wheel_contact_kernels", NULL, -1, methods};
 PyMODINIT_FUNC PyInit_wheel_contact_kernels(void) {
+    if(!control_keys_init())return NULL;
     PyObject *result=PyModule_Create(&module); if(!result)return NULL;
     PyObject *api=PyCapsule_New(&joint_contact_api,JOINT_CONTACT_API_NAME,NULL);
     if(!api || PyModule_AddObject(result,"_joint_contact_api",api)<0){Py_XDECREF(api);Py_DECREF(result);return NULL;}

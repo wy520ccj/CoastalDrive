@@ -1,5 +1,7 @@
 """电子配置与输入模式正交，世界重建/reset和成绩分区使用真实配置。"""
 
+from dataclasses import replace
+
 import pytest
 
 from driving_modes import DrivingMode
@@ -37,8 +39,9 @@ def test_abs_choice_survives_mode_changes_and_reuses_world_on_restart(tmp_path):
         session.close()
 
 
-def test_player_and_recycled_npc_reset_independent_brake_memory():
-    session = Session(track="endless")
+@pytest.mark.parametrize('mode', list(DrivingMode))
+def test_player_and_recycled_npc_reset_independent_brake_memory(mode):
+    session = Session(track="endless", driving_mode=mode)
     try:
         sim = session.simulation
         for _ in range(30):
@@ -50,8 +53,14 @@ def test_player_and_recycled_npc_reset_independent_brake_memory():
         sim.npcs[0].reset((0, 2000, .55))
         sim._update_stream()
         assert sim.traffic_cycles > 0
-        for car in (sim.player, sim.npcs[0]):
-            assert car.brakes.config is sim.config.braking
+        assert sim.player.brakes.config is sim.config.braking
+        npc = sim.npcs[0]
+        if mode is DrivingMode.SIMULATION:
+            assert npc.brakes.config is sim.config.braking
+        else:
+            assert npc.config.native_tire_forces
+            assert npc.brakes.config == replace(sim.config.braking, abs_enabled=False)
+        for car in (sim.player, npc):
             assert all(state.pressure == 0 and not state.abs_active and state.feedback_tick == 0
                        for state in car.brakes.states)
     finally:

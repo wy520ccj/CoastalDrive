@@ -50,6 +50,8 @@ class Vehicle:
         self.name = name
         self._chassis = None
         self._vehicle = None
+        self._attached = False
+        self._native_action = not self.coupled_suspension
         self.closed = False
         self.assist = DriverAssist(self.config, self.input_config)
         self.powertrain = Powertrain(self.config)
@@ -81,10 +83,12 @@ class Vehicle:
         chassis.setCcdMotionThreshold(0.5)
         chassis.setCcdSweptSphereRadius(0.35)
         self._world.attachRigidBody(chassis)
+        self._attached = True
 
         vehicle = BulletVehicle(self._world, chassis)
         vehicle.setCoordinateSystem(ZUp)
-        self._world.attachVehicle(vehicle)
+        if self._native_action:
+            self._world.attachVehicle(vehicle)
         for index, (x, y, z) in enumerate(self.hubs):
             wheel = vehicle.createWheel()
             wheel.setChassisConnectionPointCs(Vec3(x, y, z))
@@ -97,6 +101,7 @@ class Vehicle:
             stiffness, compression, extension = native_coefficients(self.config, index, chassis.getMass())
             if self.coupled_suspension:
                 stiffness = compression = extension = 0.
+                wheel.setWheelsSuspensionForce(0.)
             wheel.setSuspensionStiffness(stiffness)
             wheel.setWheelsDampingRelaxation(extension)
             wheel.setWheelsDampingCompression(compression)
@@ -255,10 +260,11 @@ class Vehicle:
             axle_loads(self._load_acceleration, grade, self.config) if grade is not None else (0.0, 0.0)
         )
         # 自定义轮胎独占切向受力；原生车辆只保留射线悬架和轮心位置。
-        for index, wheel in enumerate(self._vehicle.getWheels()):
-            wheel.setFrictionSlip(0)
-            self._vehicle.applyEngineForce(0, index)
-            self._vehicle.setBrake(0, index)
+        if self._native_action:
+            for index, wheel in enumerate(self._vehicle.getWheels()):
+                wheel.setFrictionSlip(0)
+                self._vehicle.applyEngineForce(0, index)
+                self._vehicle.setBrake(0, index)
         normal_load = sum(
             contact.normal_load for contact in self._wheel_contacts
             if contact.in_contact and road_support(contact.contact_normal)
@@ -415,11 +421,27 @@ class Vehicle:
             suspension_state=self.suspension.state if self.coupled_suspension and include_wheels else None,
         )
 
+    def attach_physics(self):
+        """回收车重新进入同一世界；原生Action只服务实际原生轮胎/悬架。"""
+        self._world.attachRigidBody(self._chassis)
+        if self._native_action:
+            self._world.attachVehicle(self._vehicle)
+        self._attached = True
+
+    def detach_physics(self):
+        """退役或关闭时移除真实刚体及其已登记的Action。"""
+        if self._attached:
+            if self._native_action:
+                self._world.removeVehicle(self._vehicle)
+            else:
+                self._world.removeRigidBody(self._chassis)
+            self._attached = False
+
     def close(self):
         if self.closed:
             return
         self.suspension.clear_queries()
-        self._world.removeVehicle(self._vehicle)
+        self.detach_physics()
         self._vehicle = None
         self._chassis = None
         self.closed = True
