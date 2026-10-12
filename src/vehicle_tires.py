@@ -4,10 +4,16 @@ import math
 from dataclasses import replace
 
 from panda3d.core import Quat, Vec3
-from wheel_contact_kernels import rotor_frame_geometry, wheel_observations, wheel_state_update
+from wheel_contact_kernels import (
+    rotor_frame_geometry,
+    tire_prepare_frames,
+    tire_publish,
+    wheel_observations,
+    wheel_state_update,
+)
 
 from suspension_kinematics import advance_contact_geometry
-from tire_compliance import deformation_frame, project_deformation, world_deformation
+from tire_compliance import project_deformation, world_deformation
 from tire_coupling import ContactFrame, advance_coupled, cross, dot
 from tire_drivetrain import DrivetrainInput, solve_drivetrain_stages
 from tire_forces import slip_state
@@ -72,6 +78,7 @@ class Tires:
             normal_adapter, normal_system, on_asphalt = suspension
             initial_normal_system = normal_system
         wheel_frames = []
+        contact_geometry = []
         for index in range(4):
             angle = angles[index] if index < 2 else 0.0
             steering = Quat()
@@ -94,6 +101,9 @@ class Tires:
                 axle = tangent.cross(normal)
                 point = orientation.xform(Vec3(*self.hubs[index])) - normal * config.wheel_radius
                 load, mu = 0.0, config.road_friction
+            if config.tire_compliance:
+                contact_geometry.append((angle, supported, load, mu, tuple(tangent), tuple(normal), tuple(point)))
+                continue
             hub = point + normal * config.wheel_radius
             # Fx在接点的力矩减去轮轴的r*Fx反力矩，等效于轮心力与内部驱动反力。
             moment_x = point.cross(tangent) - axle * config.wheel_radius
@@ -102,31 +112,19 @@ class Tires:
             response_y = inv_inertia.xform(moment_y)
             response_t = inv_inertia.xform(axle)
             elastic_frame = None
-            if config.tire_compliance:
-                elastic_frame = deformation_frame(tuple(tangent), tuple(normal))
-                tangent, axle, normal = elastic_frame
-                point = tuple(point)
-                hub = tuple(point[a] + normal[a] * config.wheel_radius for a in range(3))
-                moment_x, moment_y = cross(hub, tangent), cross(point, axle)
-                # 同一对称惯量与双精度正交基用于所有轮的速度、作用与反作用。
-                response_x, response_y, response_t = tuple(
-                    tuple(dot(row, vector) for row in tensor) for vector in (moment_x, moment_y, axle))
-                mobility = Mobility(
-                    1 / config.mass + dot(moment_x, response_x),
-                    dot(moment_x, response_y), dot(moment_x, response_t),
-                    1 / config.mass + dot(moment_y, response_y),
-                    dot(moment_y, response_t), dot(axle, response_t))
-            else:
-                mobility = Mobility(
-                    1 / config.mass + moment_x.dot(response_x),
-                    moment_x.dot(response_y), moment_x.dot(response_t),
-                    1 / config.mass + moment_y.dot(response_y),
-                    moment_y.dot(response_t), axle.dot(response_t))
+            mobility = Mobility(
+                1 / config.mass + moment_x.dot(response_x),
+                moment_x.dot(response_y), moment_x.dot(response_t),
+                1 / config.mass + moment_y.dot(response_y),
+                moment_y.dot(response_t), axle.dot(response_t))
             wheel_frames.append(ContactFrame(
                 angle, supported, load, mu, tangent, axle, point, hub, mobility,
                 elastic_frame,
                 tuple(response_x), tuple(response_y), tuple(response_t),
             ))
+        if config.tire_compliance:
+            # 同一对称惯量和双精度正交基供四轮作用与反作用使用。
+            wheel_frames = tire_prepare_frames(config, ContactFrame, Mobility, tensor, tuple(contact_geometry))
 
         substeps = config.tire_substeps if substeps is None else substeps
         sub_dt = dt / substeps
@@ -150,20 +148,21 @@ class Tires:
             return frames, tuple(torques)
 
         states = [None] * 4
-        longitudinal_impulses = [state.longitudinal_impulse if accumulate else 0. for state in self.states]
-        lateral_impulses = [state.lateral_impulse if accumulate else 0. for state in self.states]
-        brake_angular_impulses = [state.brake_angular_impulse if accumulate else 0. for state in self.states]
-        rolling_angular_impulses = [state.rolling_angular_impulse if accumulate else 0. for state in self.states]
-        rolling_dissipation = [state.rolling_dissipation if accumulate else 0. for state in self.states]
-        material_dissipation = [state.material_dissipation if accumulate else 0. for state in self.states]
-        road_dissipation = [state.road_dissipation if accumulate else 0. for state in self.states]
-        elastic_numerical_dissipation = [state.elastic_numerical_dissipation if accumulate else 0. for state in self.states]
         frame_dissipation = [state.frame_dissipation if accumulate else 0. for state in self.states]
-        gyro_impulses = [list(state.gyro_angular_impulse) if accumulate else [0.] * 3 for state in self.states]
-        steering_impulses = [list(state.steering_angular_impulse) if accumulate else [0.] * 3 for state in self.states]
-        steering_work = [state.steering_work if accumulate else 0. for state in self.states]
-        longitudinal_angular_impulses = [list(state.longitudinal_angular_impulse) if accumulate else [0.] * 3 for state in self.states]
-        lateral_angular_impulses = [list(state.lateral_angular_impulse) if accumulate else [0.] * 3 for state in self.states]
+        if not config.finite_drivetrain:
+            longitudinal_impulses = [state.longitudinal_impulse if accumulate else 0. for state in self.states]
+            lateral_impulses = [state.lateral_impulse if accumulate else 0. for state in self.states]
+            brake_angular_impulses = [state.brake_angular_impulse if accumulate else 0. for state in self.states]
+            rolling_angular_impulses = [state.rolling_angular_impulse if accumulate else 0. for state in self.states]
+            rolling_dissipation = [state.rolling_dissipation if accumulate else 0. for state in self.states]
+            material_dissipation = [state.material_dissipation if accumulate else 0. for state in self.states]
+            road_dissipation = [state.road_dissipation if accumulate else 0. for state in self.states]
+            elastic_numerical_dissipation = [state.elastic_numerical_dissipation if accumulate else 0. for state in self.states]
+            gyro_impulses = [list(state.gyro_angular_impulse) if accumulate else [0.] * 3 for state in self.states]
+            steering_impulses = [list(state.steering_angular_impulse) if accumulate else [0.] * 3 for state in self.states]
+            steering_work = [state.steering_work if accumulate else 0. for state in self.states]
+            longitudinal_angular_impulses = [list(state.longitudinal_angular_impulse) if accumulate else [0.] * 3 for state in self.states]
+            lateral_angular_impulses = [list(state.lateral_angular_impulse) if accumulate else [0.] * 3 for state in self.states]
         drives = (0.0, 0.0, drive / 2, drive / 2)
         capacities = tuple(config.brake_torque * pressures[i] * (
             config.front_brake_share if i < 2 else 1 - config.front_brake_share) / 2
@@ -242,6 +241,26 @@ class Tires:
                     end_angular = tuple(free_angular[a] + sub_dt * angular_increment[a] for a in range(3))
             # 正反次序成对，避免固定左轮先积分产生持续偏航偏置。
             order = range(4) if substep % 2 == 0 else range(3, -1, -1)
+            if config.finite_drivetrain:
+                omega, rotation, deformation, published, impulses = tire_publish(
+                    _EMPTY_WHEEL_STATE, config, self.rear_config, tuple(wheel_frames), tuple(steps),
+                    self.states if substep == 0 else tuple(states), tuple(self.rotation), tuple(self.deformation),
+                    tuple(drives), tuple(capacities), tuple(frame_dissipation), tuple(end_angular), sub_dt, tick,
+                    accumulate or substep > 0, substep % 2 == 1)
+                # 数值装配保留原Panda单精度边界；冲量只提交到当前唯一车身。
+                for kind, impulse, point in impulses:
+                    if kind == "point":
+                        chassis.applyImpulse(Vec3(*impulse), Vec3(*point))
+                    else:
+                        chassis.applyTorqueImpulse(Vec3(*impulse))
+                self.omega, self.rotation, self.deformation = list(omega), list(rotation), list(deformation)
+                states = published
+                if suspension is not None:
+                    final_normal_system = normal_system
+                    if substep + 1 < substeps:
+                        normal_system = advance_contact_geometry(normal_system, result.suspension.compression,
+                                                                 result.velocity, result.angular, sub_dt)
+                continue
             for index in order:
                 frame = wheel_frames[index]
                 angle, supported, load, mu = frame.steering, frame.supported, frame.load, frame.mu

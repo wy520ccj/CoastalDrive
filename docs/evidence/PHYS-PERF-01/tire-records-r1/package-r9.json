@@ -1,0 +1,57 @@
+{
+  "kind": "standalone dual-mode lifecycle/render verification; not FPS or human gate",
+  "package": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-traffic-r9\\win_amd64",
+  "exe_sha256": "5f0e1af9fc5c2dfba77a41a45c1155cf05f6ba8ea52bc4da1ae8d9a37c3250cf",
+  "modules": [
+    {
+      "module": "convex_cast_kernels.pyd",
+      "source_sha256": "a54ba6964e0b48f9a8f93e2b5c6b00b6a8f2bf783cb2835d324120647aac4035",
+      "package_sha256": "a54ba6964e0b48f9a8f93e2b5c6b00b6a8f2bf783cb2835d324120647aac4035",
+      "same": true
+    },
+    {
+      "module": "mechanical_kernels.pyd",
+      "source_sha256": "57be291a84a9023966d6404a2126864601529707117d584377f20089a92d4a4a",
+      "package_sha256": "57be291a84a9023966d6404a2126864601529707117d584377f20089a92d4a4a",
+      "same": true
+    },
+    {
+      "module": "physics_packet_kernels.pyd",
+      "source_sha256": "f59d4369bf5b2e9360f190aceccd86d7e9a1a0448b781c287823a33f5f0e846c",
+      "package_sha256": "f59d4369bf5b2e9360f190aceccd86d7e9a1a0448b781c287823a33f5f0e846c",
+      "same": true
+    },
+    {
+      "module": "wheel_contact_kernels.pyd",
+      "source_sha256": "0e7d3529ad3459a5e3278dc1bc353ee54b1dcbba10bf4b71c5e4798daab44650",
+      "package_sha256": "0e7d3529ad3459a5e3278dc1bc353ee54b1dcbba10bf4b71c5e4798daab44650",
+      "same": true
+    }
+  ],
+  "checks": [
+    {
+      "mode": "game",
+      "kind": "profile-startup",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\physics-native-traffic-r9\\win_amd64\\coastaldrive.exe",
+        "--vehicle-design",
+        "gr96-2022-premium-6mt",
+        "--driving-mode",
+        "game",
+        "--track",
+        "coastal",
+        "--profile-startup",
+        "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-controls-native-r9-59av2rr9\\game\\startup.json",
+        "--output",
+        "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-controls-native-r9-59av2rr9\\game"
+      ],
+      "returncode": 2,
+      "seconds": 0.40758029999960854,
+      "cwd": "C:\\Users\\15120\\AppData\\Local\\Temp\\CoastalDrive-controls-native-r9-59av2rr9\\game",
+      "passed": false
+    }
+  ],
+  "passed": false,
+  "raw_report_path": "logs\\performance\\complete-tire-native-r1\\package-r9\\report.json",
+  "raw_report_sha256": "082ff3cbf66cc2d52bffb5e08c5033e94c3dd1dcc216c70fa50a8c336775496f"
+}

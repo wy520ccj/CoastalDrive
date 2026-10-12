@@ -1,0 +1,27 @@
+{
+  "packet_c_source_identical": true,
+  "old_sections": {
+    ".text": "132cedcdcee1865aaff8f1ab82e6659fe6de452661a43e35fdff7e94dc39af4e",
+    ".rdata": "24662dab7a6ef7c20dd073d9d4216d9853279c364f9fb2a4f0a778ef6f9d2c56",
+    ".data": "4e98143d1d70d550972b08cafb4da8b94ed5bb2619178e2e7448aef31d4740b0",
+    ".pdata": "4e3e2ba5a0345a2c4c2e7e3980ed09779ad85deb8faff9e2356334c87290f2c7",
+    ".rsrc": "b2d6e17eba2da3fe1271ea82f82d676d5398549c6548c9faa0a2507b3886956c",
+    ".reloc": "039af613880206ec0c08bd2ab201c51f744001c31632d0f093273959dde6f6f2"
+  },
+  "new_sections": {
+    ".text": "132cedcdcee1865aaff8f1ab82e6659fe6de452661a43e35fdff7e94dc39af4e",
+    ".rdata": "a5dcf6a33cb259225b628af1aa3609c68ccb2189f5538bcb83dd7d9b629d4213",
+    ".data": "4e98143d1d70d550972b08cafb4da8b94ed5bb2619178e2e7448aef31d4740b0",
+    ".pdata": "4e3e2ba5a0345a2c4c2e7e3980ed09779ad85deb8faff9e2356334c87290f2c7",
+    ".rsrc": "b2d6e17eba2da3fe1271ea82f82d676d5398549c6548c9faa0a2507b3886956c",
+    ".reloc": "039af613880206ec0c08bd2ab201c51f744001c31632d0f093273959dde6f6f2"
+  },
+  "identical_sections": {
+    ".text": true,
+    ".rdata": false,
+    ".data": true,
+    ".pdata": true,
+    ".rsrc": true,
+    ".reloc": true
+  }
+}
