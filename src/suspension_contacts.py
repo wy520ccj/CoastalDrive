@@ -15,6 +15,7 @@ from panda3d.bullet import (
 from panda3d.core import BitMask32, Mat4, NodePath, Quat, TransformState, Vec3
 from wheel_contact_kernels import (
     prepared_support_candidates,
+    static_support_read,
     support_candidates,
     support_coefficients,
     surface_ray_hits,
@@ -208,34 +209,11 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
 
 def static_support_shapes(world, chassis, mask, *, cache=None, packet_cache=None):
     """每子步读取世界资格/变换；未改变的静态分区复用原数值几何。"""
-    groups = []
-    hull_packets = {}
-    bodies = (body for body in world.getRigidBodies() if body != chassis and body.isStatic()
-              and not (body.getIntoCollideMask() & mask).isZero())
-    for body in sorted(bodies,key=lambda node: (node.getName(),tuple(node.getTransform().getPos()))):
-        shapes = body.getShapes()
-        mesh = body.getPythonTag("suspension_mesh") if body.hasPythonTag("suspension_mesh") else None
-        shape_bounds = body.getPythonTag("suspension_shape_bounds") if body.hasPythonTag("suspension_shape_bounds") else None
-        supported = bool(shapes) and all(isinstance(shape, (BulletBoxShape, BulletPlaneShape)) or (
-            isinstance(shape, BulletTriangleMeshShape) and mesh is not None and len(shapes) == 1) for shape in shapes)
-        pose = NodePath(body).getNetTransform()
-        shape_poses = tuple(body.getShapeTransform(i) for i in range(len(shapes)))
-        margins = tuple(shape.getMargin() for shape in shapes)
-        hull_vertices = (body.getPythonTag('suspension_hull_vertices') if body.hasPythonTag('suspension_hull_vertices')
-                         and tuple(shapes)==body.getPythonTag('suspension_hull_shapes') and pose.getScale()==Vec3(1.) else None)
-        # 原生Hull等可在同一shape上增点；其实际边界也必须进入变更判据。
-        mutable_bounds = tuple(collision_shape_bounds(shape, None)
-                               if shape_bounds is None and isinstance(shape, BulletConvexHullShape)
-                               else None for shape in shapes)
-        # 资格按真实数值判定，不依赖TransformState全局去重后才成立的对象身份。
-        signature = (pose.getMat(), tuple(shapes), tuple(item.getMat() for item in shape_poses),
-                     margins, id(mesh), id(shape_bounds), mutable_bounds, id(hull_vertices))
-        previous = cache.get(body) if cache is not None else None
-        if previous is not None and previous[0] == signature:
-            groups.append(previous[1])
-            if previous[2] is not None:
-                hull_packets[body] = previous[2]
-            continue
+    groups, hull_packets, updates = static_support_read(world, chassis, mask, cache, NodePath,
+        (BulletBoxShape, BulletPlaneShape, BulletTriangleMeshShape, BulletConvexHullShape),
+        Vec3(1.), collision_shape_bounds)
+    for record, signature in updates:
+        index, body, supported, shapes, mesh, shape_bounds, pose, shape_poses, margins, hull_vertices = record
         body_mat = pose.getMat()
         parts = []
         for i, shape in enumerate(shapes):
@@ -253,13 +231,9 @@ def static_support_shapes(world, chassis, mask, *, cache=None, packet_cache=None
                       for vertices,margin,shape_pose in zip(hull_vertices,margins,shape_poses)) if hull_vertices is not None else None
         if hulls is not None:
             hull_packets[body] = hulls
-        groups.append(group)
+        groups[index] = group
         if cache is not None:
             cache[body] = signature, group, hulls
-    if cache is not None:
-        active = {group[0] for group in groups}
-        for body in cache.keys() - active:
-            del cache[body]
     groups = tuple(groups)
     if packet_cache is None:
         return groups

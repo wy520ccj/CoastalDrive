@@ -1,0 +1,26 @@
+{
+  "kind": "fixed real world metadata reader; no world integration or FPS",
+  "samples": [
+    {
+      "reader": "old",
+      "mean_ms": 0.7264013333330391,
+      "bodies": 182
+    },
+    {
+      "reader": "new",
+      "mean_ms": 0.46999466667709083,
+      "bodies": 182
+    },
+    {
+      "reader": "new",
+      "mean_ms": 0.4595039999965896,
+      "bodies": 182
+    },
+    {
+      "reader": "old",
+      "mean_ms": 0.7138183333396834,
+      "bodies": 182
+    }
+  ],
+  "geometry_equal": true
+}

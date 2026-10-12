@@ -1,0 +1,568 @@
+{
+  "kind": "short window comparison; not final performance or human gate",
+  "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src",
+  "track": "endless",
+  "vehicle_design": "gr86-2022-premium-6mt",
+  "driving_mode": "simulation",
+  "controller": "highway-driver",
+  "constant_steering": 0.0,
+  "gc_rate": 1.0,
+  "transform_cache": false,
+  "render_clock_mode": 0,
+  "render_clock_average_rate": 61.398655329186745,
+  "traffic_models": {
+    "Vehicle": 12
+  },
+  "python_switch_interval": 0.005,
+  "audio": "disabled by existing smoke mode",
+  "tick": 2008,
+  "fixed_hz": 120,
+  "shape": "hills",
+  "seed": 23,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "traffic_count": 12,
+  "pipeline": "draw",
+  "baseline_compute": false,
+  "window_sampling_valid": true,
+  "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+  "profile": false,
+  "draw_thread": null,
+  "source_modules": {
+    "application": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\application.py",
+    "simulation": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\simulation.py",
+    "vehicle": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle.py",
+    "world_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\world_step.py",
+    "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\physics_workers.py",
+    "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\tire_drivetrain.py",
+    "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tires.py",
+    "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\suspension_contacts.py",
+    "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\triangle_support.py",
+    "coastal_map": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\coastal_map.py"
+  },
+  "authority_source_modules": {
+    "session": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\session.py",
+    "session_clock": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\session_clock.py",
+    "simulation": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\simulation.py",
+    "npc_physics": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\npc_physics.py",
+    "vehicle": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle.py",
+    "world_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\world_step.py",
+    "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\tire_drivetrain.py"
+  },
+  "trace_phases": false,
+  "phase_timing": {},
+  "independent_clock": true,
+  "physics_workers": {
+    "processes": 9,
+    "configured_processes": 9,
+    "geometry_versions": 2,
+    "remote": 52208,
+    "world_required": 0,
+    "worker_solve": {
+      "wall": {
+        "mean_ms": 1.905039355467708,
+        "p95_ms": 2.6706999997259118,
+        "max_ms": 11.319799999910174
+      },
+      "cpu": {
+        "mean_ms": 1.575469970703125,
+        "p95_ms": 15.625,
+        "max_ms": 15.625
+      }
+    },
+    "configuration_transfers": 9,
+    "timing_window_requests": 4096,
+    "preparation_seconds": 0.5209261999998489,
+    "initialisation_seconds": 0.5190539000000172,
+    "numeric_packets": 52208
+  },
+  "streaming_phases": {},
+  "wall_seconds": 30.0018206,
+  "sample_seconds": 27.00726880000002,
+  "frames": 1880,
+  "average_fps": 69.61088934694494,
+  "display_draw_frames": 1879,
+  "display_draw_fps": 69.6126629546213,
+  "display_draw_p95_ms": 18.85900000024776,
+  "display_draw_p99_ms": 21.112899999934598,
+  "display_draw_max_ms": 41.48810000015146,
+  "display_draw_over_50ms": 0,
+  "p95_ms": 18.592599999919912,
+  "p99_ms": 21.117799999956333,
+  "max_ms": 40.94140000006519,
+  "frames_over_50ms": 0,
+  "frames_over_100ms": 0,
+  "dropped_simulation_seconds": 12.10833333333336,
+  "warmup_dropped_seconds": 1.0666666666666669,
+  "distance_m": 211.5024048170977,
+  "physics_start_tick": 220,
+  "physics_end_tick": 2008,
+  "physics_sample_ticks": 1788,
+  "physics_sample_simulated_seconds": 14.9,
+  "physics_sample_wall_seconds": 26.99893910000037,
+  "physics_sample_hz": 66.22482436726469,
+  "collisions": 0,
+  "frames_slow": [
+    {
+      "second": 28.505055099999996,
+      "ms": 40.94140000006519
+    },
+    {
+      "second": 29.7907621,
+      "ms": 33.42819999988933
+    },
+    {
+      "second": 9.886140300000001,
+      "ms": 28.84089999997741
+    },
+    {
+      "second": 29.870395399999996,
+      "ms": 24.073899999621062
+    },
+    {
+      "second": 28.5527585,
+      "ms": 23.943600000166043
+    },
+    {
+      "second": 29.4647348,
+      "ms": 22.637200000190205
+    },
+    {
+      "second": 7.339734899999999,
+      "ms": 22.08299999983865
+    },
+    {
+      "second": 28.618336199999998,
+      "ms": 21.783299999697192
+    },
+    {
+      "second": 13.4797431,
+      "ms": 21.70139999998355
+    },
+    {
+      "second": 26.993660199999997,
+      "ms": 21.639199999754055
+    },
+    {
+      "second": 21.1532423,
+      "ms": 21.59090000031938
+    },
+    {
+      "second": 19.6205031,
+      "ms": 21.487900000010995
+    }
+  ],
+  "segment_work_max_ms": 15.764799999942625,
+  "segment_step_max_ms": 14.411900000141031,
+  "near_pending_frames": 0,
+  "segment_work_slow": [
+    {
+      "frame_ms": 15.764799999942625,
+      "max_step_ms": 14.411900000141031,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "road-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 9.014600000227802,
+      "max_step_ms": 14.411900000141031,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 7.874500000070839,
+      "max_step_ms": 14.411900000141031,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 7.717800000136776,
+      "max_step_ms": 14.411900000141031,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 5.562899999858928,
+      "max_step_ms": 5.415699999957724,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "markings",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 5.516100000022561,
+      "max_step_ms": 5.415699999957724,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "surface",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 5.4103000002214685,
+      "max_step_ms": 14.411900000141031,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 5.104699999719742,
+      "max_step_ms": 5.415699999957724,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "ground-cover",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 5.048500000157219,
+      "max_step_ms": 14.411900000141031,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "detail-batch",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 4.988700000012614,
+      "max_step_ms": 5.415699999957724,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "surface",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 4.928500000005442,
+      "max_step_ms": 5.415699999957724,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "terrain-mesh",
+      "near_pending": 0
+    },
+    {
+      "frame_ms": 4.660300000068673,
+      "max_step_ms": 5.415699999957724,
+      "completed": 13,
+      "cancelled": 0,
+      "phase": "drain-shadow",
+      "near_pending": 0
+    }
+  ],
+  "windows": [
+    {
+      "second": 0,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1206
+    },
+    {
+      "second": 1,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1946
+    },
+    {
+      "second": 2,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2101
+    },
+    {
+      "second": 3,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2268
+    },
+    {
+      "second": 4,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2187
+    },
+    {
+      "second": 5,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2267
+    },
+    {
+      "second": 6,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2168
+    },
+    {
+      "second": 7,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2086
+    },
+    {
+      "second": 8,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1998
+    },
+    {
+      "second": 9,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1868
+    },
+    {
+      "second": 10,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1805
+    },
+    {
+      "second": 11,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1672
+    },
+    {
+      "second": 12,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2008
+    },
+    {
+      "second": 13,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2298
+    },
+    {
+      "second": 14,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2210
+    },
+    {
+      "second": 15,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2134
+    },
+    {
+      "second": 16,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1830
+    },
+    {
+      "second": 17,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1734
+    },
+    {
+      "second": 18,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2008
+    },
+    {
+      "second": 19,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2044
+    },
+    {
+      "second": 20,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2027
+    },
+    {
+      "second": 21,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2153
+    },
+    {
+      "second": 22,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1924
+    },
+    {
+      "second": 23,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2053
+    },
+    {
+      "second": 24,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2188
+    },
+    {
+      "second": 25,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2196
+    },
+    {
+      "second": 26,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2135
+    },
+    {
+      "second": 27,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2190
+    },
+    {
+      "second": 28,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 1871
+    },
+    {
+      "second": 29,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2205
+    },
+    {
+      "second": 30,
+      "minimized": false,
+      "foreground": true,
+      "transform_states": 1,
+      "render_states": 2005
+    }
+  ],
+  "passed": false,
+  "short_performance_passed": false,
+  "git_head": "a7b57ea17ee641069ad9418833aa96bd0e070f6c",
+  "worker_sources": [
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tire_step.py"
+    },
+    {
+      "physics_workers": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\physics_workers.py",
+      "tire_drivetrain": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\tire_drivetrain.py",
+      "vehicle_tires": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tires.py",
+      "vehicle_suspension": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_suspension.py",
+      "suspension_contacts": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\suspension_contacts.py",
+      "triangle_support": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\triangle_support.py",
+      "vehicle_tire_step": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_tire_step.py"
+    }
+  ],
+  "worker_source_valid": true,
+  "git_status": "M setup.py\n M src/suspension_contacts.py\n M src/wheel_contact_kernels.c\n M tools/validate.py\n?? src/static_support_read.h\n?? tests/test_static_support_read.py",
+  "raw_gc_pause_count": 117,
+  "raw_report": "logs\\performance\\static-read-r1\\window-new\\report.json",
+  "raw_report_sha256": "be6759aa0cadab1a045b8cbab549b49ed52b6fc2122fbec79ac9722d5d3212b7"
+}

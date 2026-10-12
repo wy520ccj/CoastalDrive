@@ -2016,7 +2016,9 @@ static PyObject *wheel_state_update(PyObject *self, PyObject *args, PyObject *up
     Py_DECREF(values); return result;
 }
 
+#include "static_support_read.h"
 static PyMethodDef methods[] = {
+    {"static_support_read", (PyCFunction)static_support_read, METH_VARARGS, "真实静态形状资格/签名及未变几何的批量读取"},
     {"wheel_state_update", (PyCFunction)wheel_state_update, METH_VARARGS | METH_KEYWORDS, "复制完整轮端力学账并更新本拍字段"},
     {"joint_contact_prepare",joint_contact_prepare,METH_VARARGS,"连续共同求解的真实有限接点准备"},
     {"_joint_contact_state",joint_contact_state,METH_VARARGS,"独立核对末姿态几何和完整世界候选数量"},
