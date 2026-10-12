@@ -1,0 +1,8 @@
+{
+  "ticks": 480,
+  "exact_fields": 3821280,
+  "wheel_rotations": 24960,
+  "max_axis_error": 5.495326149684843e-07,
+  "passed": true,
+  "scope": "all snapshot fields and float bits exact except visual wheel quaternions; three unit axes equivalent"
+}

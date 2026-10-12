@@ -386,10 +386,11 @@ class Vehicle:
         hpr = transform.getHpr()
         velocity = self._chassis.getLinearVelocity()
         # 交通感知只读取车身状态；四轮姿态仍完整提供给正式Snapshot。
-        wheels = self.tires.wheel_poses(self._chassis, self._vehicle) if include_wheels else ()
-        if include_wheels and self.coupled_suspension:
-            positions = self.suspension.wheel_positions(self._chassis, self._vehicle.getWheels())
-            wheels = tuple(replace(wheel, position=position) for wheel, position in zip(wheels, positions))
+        wheels = ()
+        if include_wheels:
+            positions = (self.suspension.wheel_positions(self._chassis, self._vehicle.getWheels())
+                         if self.coupled_suspension else None)
+            wheels = self.tires.wheel_poses(self._chassis, self._vehicle, positions=positions)
         return CarState(
             (float(position.x), float(position.y), float(position.z)),
             float(hpr.x),

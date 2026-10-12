@@ -1,0 +1,32 @@
+[
+  {
+    "path": "src\\convex_cast_kernels.cp314-win_amd64.pyd",
+    "sha256": "a54ba6964e0b48f9a8f93e2b5c6b00b6a8f2bf783cb2835d324120647aac4035",
+    "bytes": 68608
+  },
+  {
+    "path": "src\\mechanical_kernels.cp314-win_amd64.pyd",
+    "sha256": "57be291a84a9023966d6404a2126864601529707117d584377f20089a92d4a4a",
+    "bytes": 185856
+  },
+  {
+    "path": "src\\physics_packet_kernels.cp314-win_amd64.pyd",
+    "sha256": "8e07eafb2397c7cc54253d65214d4732306826d845dbbdaabda9c315748fd489",
+    "bytes": 18432
+  },
+  {
+    "path": "src\\wheel_contact_kernels.cp314-win_amd64.pyd",
+    "sha256": "0735fffa4e0ba5cae7dc30f66d570700079ed1986f571ae45c3ad7c8629f93d7",
+    "bytes": 150016
+  },
+  {
+    "path": "logs\\performance\\observation-native-r1\\pose-a1\\snapshots.json.xz",
+    "sha256": "505f5a4bc33540332c3d52118842a64eb0c9a14215119ac03d4fb0a0c36f74d9",
+    "bytes": 21834132
+  },
+  {
+    "path": "logs\\performance\\observation-native-r1\\pose-b1\\snapshots.json.xz",
+    "sha256": "ddbac9074a37151a5dd1c69eb68706579eedaad2b0c2211ebce87a52501db1fa",
+    "bytes": 21833772
+  }
+]

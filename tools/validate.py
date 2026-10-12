@@ -19,7 +19,7 @@ AREAS = {
     "vehicle": ["test_h1_vehicle", "test_driving_response", "test_curved_driving",
                 "test_road_loads", "test_rolling_resistance", "test_vehicle_parameters", "test_vehicle_designs", "test_design_spawn", "test_vehicle_contacts", "test_physics_testbed", "test_h2_map",
                 "test_vehicle_commands", "test_npc_physics", "test_steering_geometry", "test_tire_forces",
-                "test_wheel_dynamics", "test_vehicle_tires", "test_wheel_observations", "test_physics_wire", "test_physics_channel", "test_vehicle_config",
+                "test_wheel_dynamics", "test_vehicle_tires", "test_wheel_observations", "test_wheel_pose_composition", "test_physics_wire", "test_physics_channel", "test_vehicle_config",
                 "test_suspension_si", "test_suspension_coupling", "test_suspension_native", "test_suspension_contacts", "test_suspension_envelope", "test_joint_suspension", "test_finite_suspension", "test_curved_suspension", "test_world_substeps", "test_physics_workers", "test_convex_queries",
                 "test_powertrain_config", "test_transmission_ports", "test_tire_drivetrain", "test_drivetrain_prepare", "test_continuous_solver", "test_shaft_transmission", "test_tire_shaft", "test_input_shaft", "test_driveline_inertia", "test_driveline_native", "test_differential", "test_drive_layout", "test_finite_powertrain", "test_driving_modes", "test_reference_ab",
                 "test_vehicle_brakes", "test_native_vehicle_controls", "test_abs_integration", "test_physics_config_io",

@@ -3,7 +3,7 @@
 import math
 from dataclasses import replace
 
-from panda3d.core import Mat3, Quat, Vec3
+from panda3d.core import Quat, Vec3
 from wheel_contact_kernels import rotor_frame_geometry, wheel_observations, wheel_state_update
 
 from suspension_kinematics import advance_contact_geometry
@@ -414,20 +414,18 @@ class Tires:
                 mechanical_axis=axis,rolling_radius=radius))
         self.states = tuple(states)
 
-    def wheel_poses(self, chassis, bullet_vehicle):
-        """原生矩阵提供悬架位置；转向和滚动来自真实执行器及独立转角。"""
+    def wheel_poses(self, chassis, bullet_vehicle, *, positions=None):
+        """位置来自实际悬架；转向和滚动来自真实执行器及独立转角。"""
         chassis_orientation = chassis.getTransform().getQuat()
         wheels = []
-        for index, wheel in enumerate(bullet_vehicle.getWheels()):
+        if positions is None:
+            positions = tuple(tuple(wheel.getWorldTransform().getRow3(3)) for wheel in bullet_vehicle.getWheels())
+        for index, position in enumerate(positions):
             steer = Quat()
             steer.setHpr(Vec3(-self.states[index].steering, 0, 0))
             roll = Quat()
             roll.setFromAxisAngle(-math.degrees(self.rotation[index]), Vec3(1, 0, 0))
-            rows = [chassis_orientation.xform(steer.xform(roll.xform(axis))) for axis in (
-                Vec3(1, 0, 0), Vec3(0, 1, 0), Vec3(0, 0, 1),
-            )]
-            orientation = Quat()
-            orientation.setFromMatrix(Mat3(*(value for row in rows for value in row)))
-            wheels.append(WheelState(tuple(wheel.getWorldTransform().getRow3(3)),
-                                     tuple(orientation)))
+            # Panda采用行向量次序：轮滚动→齿条转向→车身姿态。
+            orientation = roll * steer * chassis_orientation
+            wheels.append(WheelState(position, tuple(orientation)))
         return tuple(wheels)
