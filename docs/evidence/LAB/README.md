@@ -1,5 +1,7 @@
 # LAB-01 / LAB-02 实现与验收证据
 
+2026-10-13菜单反馈修订：[LAB-MENU-01](../../tasks/LAB-MENU-01.md)。menu-before.png为用户原图；menu-720/menu-1080为各五类菜单真实鼠标悬停截图和输入检查收据（每类稳定120帧、所有行中心/边缘、选择和外部关闭）。20项T1/Ruff/三种子通过，收据见menu-T1-summary.json；字体与物理模型未改，人工体验待确认。
+
 2026-10-13字体反馈修订：[LAB-TYPE-01](../../tasks/LAB-TYPE-01.md)。正文Regular→Bold、辅助字加深、小字采样调整，Heavy标题/橙色指标保持。720/1080各5张实际GUI截图见typography-720-final/typography-1080-final，字形对比见typography-comparison.png；载入原A/B记录，不为字体重跑试验。相关T1/Ruff/三种子通过，人工清晰度确认待用户实际查看。
 
 2026-10-13，主目录main，施工基线396084acbf22bc510b399387bd31966c8c63ffe8；源码和原有未提交悬架准备同时存在。实验室实现已本地提交24dbdc2，收尾元数据另见Git日志；不推送、不改公开试玩包。

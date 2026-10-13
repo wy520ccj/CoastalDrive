@@ -11,6 +11,7 @@
 - 用户反馈Regular仍偏瘦后，对比三种字重的真实渲染，正文改为Bold并以48 pixels per unit生成字形；辅助字加深为43/64/74，按钮和坐标小字同步调整。仅实验室采用此设置，共享游戏主题保持原值。证据见[字体修订](../tasks/LAB-TYPE-01.md)。
 - 图表刻度采用整洁数值范围；曲线游标对应真实记录，A结束后的时刻不外推A数值。
 - 圆角卡片与按钮为程序几何/纹理，控件和文字保持可编辑。参考图仅指导布局，运行界面不铺一张静态截图。
+- 下拉菜单采用等宽、定高平面行及细轮廓，悬停只改变背景色；文字和可点击区域保持尺寸。与触发控件左边缘对齐，底部空间不足时向上展开。见[菜单修订](../tasks/LAB-MENU-01.md)。
 - 制动距离和计算数据由真实试验更新，不强行复制参考图中的示意数字。
 
 布局借鉴[CarSim动画/曲线联动](https://www.carsim.com/products/supporting/view/index.php)；信息层级和分组参考[NN/g视觉层级](https://www.nngroup.com/articles/visual-hierarchy-ux-definition/)、[邻近原则](https://www.nngroup.com/articles/gestalt-proximity/)。字体来源、SHA和许可记录见assets/game/ui/fonts/lab-font-source.json及asset-register.csv。

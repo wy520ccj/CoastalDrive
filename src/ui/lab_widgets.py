@@ -3,6 +3,8 @@
 import math
 from functools import lru_cache
 
+from direct.gui.DirectOptionMenu import DirectOptionMenu
+from direct.showbase import ShowBaseGlobal
 from panda3d.core import (
     Geom,
     GeomNode,
@@ -16,6 +18,38 @@ from panda3d.core import (
 
 # 辅助文字保持层级，但在奶白底上保留清晰、扎实的笔画。
 MUTED = (43 / 255, 64 / 255, 74 / 255, 1)
+
+
+class LabOptionMenu(DirectOptionMenu):
+    """定高平面列表；悬停不改变文字或鼠标命中区域。"""
+
+    def __init__(self, parent=None, **options):
+        super().__init__(parent, **options)
+        self.initialiseoptions(LabOptionMenu)
+
+    def _highlightItem(self, item, index):
+        item["frameColor"] = self["highlightColor"]
+        self.highlightedIndex = index
+
+    def _unhighlightItem(self, item, frameColor):
+        item["frameColor"] = frameColor
+        self.highlightedIndex = None
+
+    def showPopupMenu(self, event=None):
+        height = self.maxHeight * len(self["items"])
+        self.popupMenu["frameSize"] = (-.002, self.maxWidth + .002, -height - .002, .002)
+        super().showPopupMenu(event)
+        popup = self.popupMenu
+        bounds = self["frameSize"]
+        popup.setPos(self, 0, 0, bounds[2] - .008)
+        screen = ShowBaseGlobal.render2d
+        pos, scale = popup.getPos(screen), popup.getScale(screen)
+        # 底部控件向上展开，其余列表与控件左边缘对齐向下展开。
+        if pos.z - height * scale.z < -.99:
+            popup.setZ(self, bounds[3] + .008 + height)
+        pos = popup.getPos(screen)
+        popup.setX(screen, max(-.99, min(pos.x, .99 - self.maxWidth * scale.x)))
+        popup.setZ(screen, max(-.99 + height * scale.z, min(pos.z, .99)))
 
 
 def rounded_panel(parent, name, box, color, radius=.025):

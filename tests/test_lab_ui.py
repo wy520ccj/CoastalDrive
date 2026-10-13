@@ -3,6 +3,25 @@
 from types import SimpleNamespace
 
 from lab_application import VehicleLab
+from ui.lab_widgets import LabOptionMenu
+
+
+def test_menu_hover_does_not_shrink_hitbox_or_change_text_size():
+    item = {"frameSize": (0, .60, -.04, .04), "text_scale": (.038, .038),
+            "frameColor": (1, 1, 1, 1)}
+    menu = {"highlightColor": (.85, .91, .91, 1)}
+    class HoverMenu(dict):
+        highlightedIndex = None
+
+    fake = HoverMenu(menu)
+    for _ in range(20):
+        LabOptionMenu._highlightItem(fake, item, 2)
+        assert fake.highlightedIndex == 2
+        assert item["frameSize"] == (0, .60, -.04, .04)
+        assert item["text_scale"] == (.038, .038)
+        LabOptionMenu._unhighlightItem(fake, item, (1, 1, 1, 1))
+        assert fake.highlightedIndex is None
+    assert item["frameColor"] == (1, 1, 1, 1)
 
 
 def test_programmatic_slider_events_do_not_pause_computation_and_user_scrub_does():

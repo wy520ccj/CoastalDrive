@@ -12,7 +12,6 @@ from direct.gui.DirectGui import (
     DirectButton,
     DirectEntry,
     DirectFrame,
-    DirectOptionMenu,
     OnscreenText,
 )
 from direct.showbase.ShowBase import ShowBase
@@ -23,7 +22,7 @@ from lab_records import LabRecord, changed_conditions, export_record, load_recor
 from lab_scene import LabScene
 from paths import user_data
 from ui import theme
-from ui.lab_widgets import MUTED, button_textures
+from ui.lab_widgets import MUTED, LabOptionMenu, button_textures
 from vehicle_designs import DESIGN_VEHICLES, vehicle_design
 from vehicle_parameters import load_vehicle_config
 from vehicle_state import VehicleCommand
@@ -104,9 +103,13 @@ class VehicleLab(ShowBase):
         return entry
 
     def option(self, labels, x, z, width, command=None, parent=None):
-        return DirectOptionMenu(parent=parent or self.root, items=labels, text_font=self.font,
+        return LabOptionMenu(parent=parent or self.root, items=labels, text_font=self.font,
             item_text_font=self.font, item_text_scale=.038, item_text_fg=INK,
-            item_frameColor=BUTTON,
+            item_text_pos=(.025, -.013), item_frameSize=(0, width, -.04, .04),
+            item_frameColor=PANEL, item_relief=DGG.FLAT, item_borderWidth=(0, 0),
+            item_pad=(0, 0), item_pressEffect=False,
+            popupMenu_relief=DGG.FLAT, popupMenu_frameColor=(.68, .75, .75, 1),
+            popupMenu_borderWidth=(0, 0),
             text_scale=.038, text_fg=INK, text_align=TextNode.ALeft, text_pos=(.025, -.013),
             frameSize=(0, width, -.04, .04), frameColor=BUTTON, relief=DGG.FLAT,
             pos=(x, 0, z), command=command, highlightColor=(.85, .91, .91, 1),
@@ -114,7 +117,7 @@ class VehicleLab(ShowBase):
             popupMarker_relief=DGG.FLAT, popupMarker_frameColor=(0, 0, 0, 0),
             popupMarker_text="▼", popupMarker_text_font=self.font,
             popupMarker_text_fg=MUTED, popupMarker_text_scale=.7,
-            popupMarkerBorder=(0, 0), highlightScale=(.038, .038))
+            popupMarkerBorder=(0, 0))
 
     def build_ui(self):
         from ui.lab_workbench import build_workbench

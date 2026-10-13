@@ -1,0 +1,46 @@
+{
+  "height": 720,
+  "menus": {
+    "vehicle": {
+      "rows": 5,
+      "row_height": 0.07999999821186066,
+      "steady_hover_frames": 120,
+      "edge_hover_frames_per_row": 24,
+      "selection": "参考前驱 FWD",
+      "outside_click_closes": true
+    },
+    "maneuver": {
+      "rows": 8,
+      "row_height": 0.07999999821186066,
+      "steady_hover_frames": 120,
+      "edge_hover_frames_per_row": 24,
+      "selection": "执行器输入",
+      "outside_click_closes": true
+    },
+    "abs": {
+      "rows": 2,
+      "row_height": 0.07999999821186066,
+      "steady_hover_frames": 120,
+      "edge_hover_frames_per_row": 24,
+      "selection": "ABS 关闭",
+      "outside_click_closes": true
+    },
+    "plot": {
+      "rows": 7,
+      "row_height": 0.07999999821186066,
+      "steady_hover_frames": 120,
+      "edge_hover_frames_per_row": 24,
+      "selection": "四轮滑移率",
+      "outside_click_closes": true
+    },
+    "esc": {
+      "rows": 2,
+      "row_height": 0.07999999821186066,
+      "steady_hover_frames": 120,
+      "edge_hover_frames_per_row": 24,
+      "selection": "ESC 开启",
+      "outside_click_closes": true
+    }
+  },
+  "physics_rerun": false
+}
