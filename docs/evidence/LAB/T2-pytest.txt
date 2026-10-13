@@ -35,7 +35,7 @@ E             return advance_drivetrain(*self.values, **self.parameters, query_l
 E           File "B:\AI agent\暑期计算机程序设计\CoastalDrive\src\tire_drivetrain.py", line 825, in advance_drivetrain
 E             raise ArithmeticError(f"传动/四轮共同求解超过20轮：{maximum:g}N，制动{brake_error:g}Nm，法向{normal_error:g}N，几何共轭冲量{geometry_error:g}Ns/Nms")
 E         ArithmeticError: 传动/四轮共同求解超过20轮：1.92046e-11N，制动0Nm，法向9.09495e-13N，几何共轭冲量2.46916e-11Ns/Nms
-E         
+E
 E       assert 1 == 0
 E        +  where 1 = CompletedProcess(args=['B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe', 'B:\\AI agent\\暑期计算机程序设计\\...eometry_error:g}Ns/Nms")\nArithmeticError: 传动/四轮共同求解超过20轮：1.92046e-11N，制动0Nm，法向9.09495e-13N，几何共轭冲量2.46916e-11Ns/Nms\n').returncode
 
