@@ -1,5 +1,11 @@
 # PHYS-PERF-01 真实物理性能收口
 
+## 2026-10-13 用户授权提交推送
+
+发布起点为 main `e7f75a8`，远端 main 核对为 `13ece6e`，已有12个本地提交待推送。本次另保存悬架初始批量求交开发检查点：`setup.py`、`src/suspension_contacts.py`、`src/wheel_contact_kernels.c`、`src/suspension_query_batch.h`。工作期间新出现的 `src/suspension_prepare.h` 未接入本检查点，保留为未提交工作。
+
+命令：`.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_suspension_contacts.py tests/test_suspension_candidates.py tests/test_suspension_query_lifetime.py tests/test_suspension_native.py tests/test_finite_suspension.py --output logs/validation/PUBLISH-20261013-suspension-T0 --timeout 180`。70 passed in 2.57s，Ruff通过；使用现有本地原生扩展，确认批量入口可导入，本轮未重建或独立核对源码/DLL一致性。没有运行T1/T2/T3、完整数值对照、性能或人工验收，不将此前r9证据作为此检查点的新验收。公开试玩包保持原版，阶段仍in_progress。下一完成悬架准备功能块及其源码/DLL核对和相关验收。
+
 ## 2026-10-12 完整四轮接点准备/末状态装配r9
 
 状态 **in_progress；正常短Gate通过，困难慢动作/120Hz仍失败**。main基线b26175c。真实接点后的四轮双精度正交基/惯量响应，以及完整有限传动的冲量/变形/完整力学账一次原生装配；Panda转换/顺序、唯一世界/120Hz/两子步/机械与困难NPC精度保持。1024轮准备及16组合1280次完整发布字段位型/实际冲量相同；最终13车ABBA四次480拍完整SHA相同，整步11.455→11.155ms（−2.619%），仍超预算。662项T1/Ruff/三种子通过，19项退化/记录T0补充通过。有效正常坡道12NPC/60秒120.000Hz/85.487FPS、丢时0/>50ms零、短Gate true；有效困难30秒66.364Hz/75.037FPS、丢时12.05秒、Gate false，未作旧/新前台配对收益。r9四DLL SHA/双模式仓库外会话/8车120拍/离屏各20重开通过，截图已看、两入口更新。初末法向发布/参考导入/helper GR96错误修正，失败保留；旧空中制动细化失败/T2/T3/长帧与人工待办。公开包保持，只本地保存不推送。下一悬架准备及传动输入/结果剩余完整计算，为连续原生并行准备。[证据](../evidence/PHYS-PERF-01/tire-records-r1/README.md)。

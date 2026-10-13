@@ -1386,8 +1386,9 @@ static PyObject *cylinder_box_entry_call(PyObject *self,PyObject *args) {
 
 /* 同一不可变候选表只解包一次；查询保留真实平移、轮轴和原候选次序。 */
 static PyObject *surface_packet_entry(SurfacePacket *packet,double start[3],double end[3],double axis[3],double origin[3],
-    double radius,double width,double shoulder,double crown,PyObject *coordinates) {
+    double radius,double width,double shoulder,double crown,PyObject *coordinates,Py_ssize_t *selected) {
     SurfaceEntry best={0}; double ceiling=INFINITY,zero[3]={0.};
+    if(selected)*selected=-1;
     for (Py_ssize_t k=0;k<packet->count;++k) {
         SurfacePart *part=&packet->parts[k]; SurfaceEntry hit={0};
         double offset[3],local_start[3],local_end[3],local_axis[3],terms[3];
@@ -1437,7 +1438,7 @@ static PyObject *surface_packet_entry(SurfacePacket *packet,double start[3],doub
             for (int a=0;a<3;++a) translated[a]=hit.anchor[a]-offset[a];
             transform_values(translated,part->axes,zero,1,world.anchor);
         }
-        best=world; ceiling=hit.fraction;
+        best=world; ceiling=hit.fraction;if(selected)*selected=k;
     }
     return surface_entry_object(&best);
 }
@@ -1477,7 +1478,7 @@ static PyObject *cached_surface_entry(PyObject *self,PyObject *args) {
         }
         double axis[3];
         if (!vector(axis_object,axis)) return NULL;
-        PyObject *hit=surface_packet_entry(packet,start,end,axis,origin,radius,width,shoulder,crown,coordinates);
+        PyObject *hit=surface_packet_entry(packet,start,end,axis,origin,radius,width,shoulder,crown,coordinates,NULL);
         if (!hit) return NULL;
         return Py_BuildValue("(ON)",Py_True,hit);
     }
@@ -2020,7 +2021,9 @@ static PyObject *wheel_state_update(PyObject *self, PyObject *args, PyObject *up
 #include "vehicle_controls_native.h"
 #include "tire_publish.h"
 #include "tire_prepare.h"
+#include "suspension_query_batch.h"
 static PyMethodDef methods[] = {
+    {"surface_initial_hits", surface_initial_hits, METH_VARARGS, "同一候选表的完整初始轮端批量求交"},
     {"tire_prepare_frames", tire_prepare_frames, METH_VARARGS, "完整四轮双精度接点坐标及车身响应"},
     {"tire_publish", tire_publish, METH_VARARGS, "完整四轮末状态、原顺序冲量与力学账一次装配"},
     {"brakes_advance", brakes_advance_native, METH_VARARGS, "原四轮液压/ABS反馈与完整状态"},

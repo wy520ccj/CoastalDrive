@@ -18,13 +18,14 @@ from wheel_contact_kernels import (
     static_support_read,
     support_candidates,
     support_coefficients,
+    surface_initial_hits,
     surface_ray_hits,
 )
 
 from convex_queries import HullGeometry, native_transform, wheel_hull
 from suspension_geometry import BoxSurface, CylinderSurface, box_entry, sphere_box_entry
 from triangle_support import triangle_entry
-from wheel_envelope import cylinder_box_entry
+from wheel_envelope import _simplex_coordinates, cylinder_box_entry
 
 
 @dataclass(frozen=True)
@@ -165,8 +166,12 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
         hulls = ()
     if envelope is None and native_needed:
         envelope = wheel_sweep_shape(radius, width, shoulder, crown)
+    batch = bool(surfaces) and not native_needed and not hulls
+    surface_hits = (surface_initial_hits(surfaces, candidate_cache, world_rays, relative_rays, tuple(axes), origin,
+                    radius, width, shoulder, crown, CylinderSurface, RayContact, _simplex_coordinates,
+                    ray_origin is not None) if batch else None)
     results = []
-    for (start, end), (relative_start, relative_end), axis in zip(world_rays, relative_rays, axes):
+    for index, ((start, end), (relative_start, relative_end), axis) in enumerate(zip(world_rays, relative_rays, axes)):
         axis = tuple(axis)
         hits = []
         if native_needed or hulls:
@@ -199,7 +204,10 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
                 if ray_origin is not None:
                     point = tuple(point[a] - origin[a] for a in range(3))
                 hits.append(RayContact(native.getNode(), native.getHitFraction(), point, tuple(native.getHitNormal())))
-        if surfaces:
+        if batch:
+            if surface_hits[index] is not None:
+                hits.append(surface_hits[index])
+        elif surfaces:
             reach = math.sqrt(sum((end[a] - start[a])**2 for a in range(3))) - radius
             hits.extend(surface_ray_hits(surfaces, relative_start, relative_end, axis, origin,
                 radius, reach, width, shoulder, crown, CylinderSurface, RayContact, triangle_entry, cylinder_box_entry, ray_origin is not None))
