@@ -27,7 +27,7 @@ PARAMETER_GROUPS = {
         "wheel_radius", "wheel_width", "wheel_shoulder_radius", "wheel_crown_height", "wheel_inertia",
         "longitudinal_stiffness", "lateral_stiffness", "rear_lateral_stiffness",
         "tire_peak_load_exponent", "longitudinal_load_exponent", "lateral_load_exponent",
-        "tire_compliance", "wheel_rotor_transport", "tire_contact_stiffness", "tire_contact_damping",
+        "tire_compliance", "native_tire_forces", "wheel_rotor_transport", "tire_contact_stiffness", "tire_contact_damping",
         "tire_shape", "tire_curvature", "slip_speed", "static_contact_speed", "tire_substeps",
         "rolling_coefficient", "grass_rolling_coefficient", "wheel_rolling_resistance",
         "rolling_transition_speed", "road_friction", "grass_friction",

@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "B:\AI agent\暑期计算机程序设计\CoastalDrive\logs\LAB-stage\baseline-src\main.py", line 171, in <module>
+    result = main()
+  File "B:\AI agent\暑期计算机程序设计\CoastalDrive\logs\LAB-stage\baseline-src\main.py", line 76, in main
+    simulation.step(controller.sample(simulation.snapshot(), FIXED_DT))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\暑期计算机程序设计\CoastalDrive\logs\LAB-stage\baseline-src\simulation.py", line 796, in step
+    advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe,
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                  static_cache=self._static_support_cache, packet_cache=self._static_support_packet,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                  workers=self._physics_workers, material=(self.track,self.road.curve,self.origin_y),query_lock=self._query_lock)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "B:\AI agent\暑期计算机程序设计\CoastalDrive\src\world_step.py", line 60, in advance_world
+    else [inputs.solve(query_lock=query_lock) if query_lock is not None else inputs.solve()
+                                                                             ~~~~~~~~~~~~^^
+  File "B:\AI agent\暑期计算机程序设计\CoastalDrive\src\tire_drivetrain.py", line 74, in solve
+    return advance_drivetrain(*self.values, **self.parameters, query_lock=query_lock)
+  File "B:\AI agent\暑期计算机程序设计\CoastalDrive\src\tire_drivetrain.py", line 825, in advance_drivetrain
+    raise ArithmeticError(f"传动/四轮共同求解超过20轮：{maximum:g}N，制动{brake_error:g}Nm，法向{normal_error:g}N，几何共轭冲量{geometry_error:g}Ns/Nms")
+ArithmeticError: 传动/四轮共同求解超过20轮：1.92046e-11N，制动0Nm，法向9.09495e-13N，几何共轭冲量2.46916e-11Ns/Nms

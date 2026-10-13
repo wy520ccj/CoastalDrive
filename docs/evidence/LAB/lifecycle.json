@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "rounds": [
+    {
+      "game_world_closed": true,
+      "lab_world_closed": true,
+      "gui_before_lab": 0,
+      "gui_after_lab": 0
+    },
+    {
+      "game_world_closed": true,
+      "lab_world_closed": true,
+      "gui_before_lab": 0,
+      "gui_after_lab": 0
+    }
+  ],
+  "human_acceptance": "pending"
+}

@@ -1,0 +1,8 @@
+{
+  "font": "Source Han Sans SC Regular",
+  "source": "https://raw.githubusercontent.com/adobe-fonts/source-han-sans/release/OTF/SimplifiedChinese/SourceHanSansSC-Regular.otf",
+  "license": "SIL Open Font License 1.1",
+  "license_file": "OFL-SourceHanSans.txt",
+  "sha256": "f1d8611151880c6c336aabeac4640ef434fa13cbfbf1ffe82d0a71b2a5637256",
+  "use": "Vehicle Lab body and chart labels; no pixel font"
+}

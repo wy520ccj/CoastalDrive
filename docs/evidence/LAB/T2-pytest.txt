@@ -1,0 +1,46 @@
+......................................................................F
+================================== FAILURES ===================================
+__________________ test_headless_cli_from_another_directory ___________________
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-510/test_headless_cli_from_another0')
+
+    def test_headless_cli_from_another_directory(tmp_path):
+        main = Path(__file__).resolve().parents[1] / "src/main.py"
+        result = subprocess.run(
+            [sys.executable, str(main), "--headless", "--steps", "10000"],
+            cwd=tmp_path,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "B:\AI agent\暑期计算机程序设计\CoastalDrive\src\main.py", line 177, in <module>
+E             result = main()
+E           File "B:\AI agent\暑期计算机程序设计\CoastalDrive\src\main.py", line 79, in main
+E             simulation.step(controller.sample(simulation.snapshot(), FIXED_DT))
+E             ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "B:\AI agent\暑期计算机程序设计\CoastalDrive\src\simulation.py", line 797, in step
+E             advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe,
+E             ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                           static_cache=self._static_support_cache, packet_cache=self._static_support_packet,
+E                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                           workers=self._physics_workers, material=(self.track,self.road.curve,self.origin_y),query_lock=self._query_lock)
+E                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "B:\AI agent\暑期计算机程序设计\CoastalDrive\src\world_step.py", line 60, in advance_world
+E             else [inputs.solve(query_lock=query_lock) if query_lock is not None else inputs.solve()
+E                                                                                      ~~~~~~~~~~~~^^
+E           File "B:\AI agent\暑期计算机程序设计\CoastalDrive\src\tire_drivetrain.py", line 74, in solve
+E             return advance_drivetrain(*self.values, **self.parameters, query_lock=query_lock)
+E           File "B:\AI agent\暑期计算机程序设计\CoastalDrive\src\tire_drivetrain.py", line 825, in advance_drivetrain
+E             raise ArithmeticError(f"传动/四轮共同求解超过20轮：{maximum:g}N，制动{brake_error:g}Nm，法向{normal_error:g}N，几何共轭冲量{geometry_error:g}Ns/Nms")
+E         ArithmeticError: 传动/四轮共同求解超过20轮：1.92046e-11N，制动0Nm，法向9.09495e-13N，几何共轭冲量2.46916e-11Ns/Nms
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe', 'B:\\AI agent\\暑期计算机程序设计\\...eometry_error:g}Ns/Nms")\nArithmeticError: 传动/四轮共同求解超过20轮：1.92046e-11N，制动0Nm，法向9.09495e-13N，几何共轭冲量2.46916e-11Ns/Nms\n').returncode
+
+tests\test_core.py:65: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_core.py::test_headless_cli_from_another_directory - Asserti...
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 70 passed in 96.67s (0:01:36)

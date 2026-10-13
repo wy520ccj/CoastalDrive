@@ -55,14 +55,14 @@ def test_menu_mode_selection_and_hud_text(tmp_path, height):
     try:
         app.session.menu()
         app.refresh_panel()
-        assert len(app.main_menu.actions) == len(app.main_menu.buttons) == 6
+        assert len(app.main_menu.actions) == len(app.main_menu.buttons) == 7
         assert [b["text"] for b in app.main_menu.buttons] == [
-            "计时挑战", "滨海自由驾驶", "无限高速", "车库", "声音设置", "退出"]
+            "计时挑战", "滨海自由驾驶", "无限高速", "车库", "声音设置", "退出", "进入实验室  ›"]
         old_world = app.session.simulation
         app.messenger.send("f2")
         assert app.driving_mode_page and app.panel_option_count == 6
         assert [b["text"] for b in app.buttons[:6]] == [
-            "正常游戏", "困难仿真", "车辆 ABS：开启", "驱动防滑 TCS：开启", "横摆稳定 ESC：开启", "返回"]
+            "辅助驾驶", "直接输入", "车辆 ABS：开启", "驱动防滑 TCS：开启", "横摆稳定 ESC：开启", "返回"]
         note_bottom = app.panel_note.getTightBounds(app.panel)[0].z
         assert note_bottom > app.buttons[0].getZ() + app.buttons[0]["frameSize"][3]
         app.key_down("arrow_down")
@@ -99,7 +99,7 @@ def test_menu_mode_selection_and_hud_text(tmp_path, height):
         app.key_down("escape")
         app.key_up("escape")
         assert not app.driving_mode_page and not app.main_menu.root.isHidden()
-        assert "困难仿真" in app.main_menu.driving_mode_button["text"]
+        assert "直接输入" in app.main_menu.driving_mode_button["text"]
         corner = TextNode("mode-corner-width")
         corner.setFont(app.ui_font)
         assert corner.calcWidth(app.main_menu.driving_mode_button["text"]) * .04 <= .76

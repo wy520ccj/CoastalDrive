@@ -96,6 +96,7 @@ class Simulation:
             "coastal": on_road,
             "highway": highway_on_road,
             "test": on_asphalt,
+            "lab": lambda x, y: True,
             "endless": lambda x, y: abs(x) <= 6.75,
         }[track]
         self.spawn = HIGHWAY_SPAWN if track in ("highway", "endless") else SPAWN
@@ -451,7 +452,7 @@ class Simulation:
             ground = BulletRigidBodyNode("test-ground")
             ground.addShape(BulletPlaneShape(Vec3(0, 0, 1), 0))
             self._world.attachRigidBody(ground)
-            for obstacle in OBSTACLES:
+            for obstacle in OBSTACLES if self.track == "test" else ():
                 body = BulletRigidBodyNode(obstacle.name)
                 body.addShape(BulletBoxShape(Vec3(*obstacle.half_size)))
                 body.setTransform(

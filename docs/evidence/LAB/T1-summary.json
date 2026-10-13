@@ -1,0 +1,125 @@
+{
+  "started_utc": "2026-10-13T01:41:10.141154+00:00",
+  "git_head": "396084acbf22bc510b399387bd31966c8c63ffe8",
+  "git_status": "M docs/asset-register.csv\n M setup.py\n M src/application.py\n M src/driving_modes.py\n M src/main.py\n M src/simulation.py\n M src/ui/hud.py\n M src/ui/main_menu.py\n M src/vehicle_parameters.py\n M src/vehicle_suspension.py\n M src/wheel_contact_kernels.c\n M tests/test_driving_mode_ui.py\n M tools/validate.py\n?? assets/game/ui/fonts/SourceHanSansSC-Regular.otf\n?? assets/game/ui/fonts/lab-font-source.json\n?? docs/design/\n?? docs/tasks/LAB-01.md\n?? docs/tasks/LAB-02.md\n?? docs/vehicle-lab.md\n?? launchers/vehicle-lab.cmd\n?? src/lab_application.py\n?? src/lab_experiment.py\n?? src/lab_maneuvers.py\n?? src/lab_records.py\n?? src/lab_scene.py\n?? src/lab_signals.py\n?? src/suspension_prepare.h\n?? src/ui/lab_plot.py\n?? src/ui/lab_widgets.py\n?? src/ui/lab_workbench.py\n?? tests/suspension_prepare_reference.py\n?? tests/test_lab_experiment.py\n?? tests/test_lab_maneuvers.py\n?? tests/test_lab_records.py\n?? tests/test_lab_ui.py\n?? tests/test_native_suspension_prepare.py\n?? tools/lab_lifecycle_check.py\n?? tools/lab_ui_check.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [
+    "lab",
+    "research"
+  ],
+  "tests": [
+    "tests/test_driving_mode_ui.py",
+    "tests/test_driving_modes.py",
+    "tests/test_world_substeps.py",
+    "tests/test_vehicle_parameters.py"
+  ],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\LAB-release-T1\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.113
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_lab_experiment.py",
+        "tests/test_lab_records.py",
+        "tests/test_lab_ui.py",
+        "tests/test_lab_maneuvers.py",
+        "tests/test_driving_experiment.py",
+        "tests/test_driving_mode_ui.py",
+        "tests/test_driving_modes.py",
+        "tests/test_world_substeps.py",
+        "tests/test_vehicle_parameters.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\LAB-release-T1\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 28.451
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\LAB-release-T1\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 2.209
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\LAB-release-T1\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 2.177
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\LAB-release-T1\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 2.194
+    }
+  ]
+}

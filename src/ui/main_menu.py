@@ -8,7 +8,7 @@ from ui import theme
 
 
 class MainMenu:
-    def __init__(self, parent, loader, body_font, display_font, actions, *, driving_mode_action=None):
+    def __init__(self, parent, loader, body_font, display_font, actions, *, driving_mode_action=None, lab_action=None):
         self.root = parent.attachNewNode("main-menu")
         self.root.setTransparency(TransparencyAttrib.MAlpha)
         self.background = DirectFrame(
@@ -22,6 +22,7 @@ class MainMenu:
             frameTexture=loader.loadTexture(theme.asset_filename("wordmark.png")),
             frameSize=(-1.66, -0.28, 0.48, 1.00),
         )
+        self.static_frames = [self.wordmark]
         OnscreenText(parent=self.content, text="\u6d77 \u5cb8 \u9a7e \u9a76", font=body_font,
                      fg=theme.INK, align=TextNode.ARight, pos=(-0.40, 0.59), scale=0.058)
         labels = ("计时挑战", "滨海自由驾驶", "无限高速", "车库", "声音设置", "退出")
@@ -55,16 +56,31 @@ class MainMenu:
                              pos=(0.433, -0.030), scale=0.085)
             button.bind(DGG.ENTER, lambda event, i=index: self.select(i))
             self.buttons.append(button)
-        DirectFrame(parent=self.content, frameColor=(0.4, 0.46, 0.48, 0.35),
-                    frameSize=(-1.58, -0.58, -0.292, -0.289))
-        DirectFrame(parent=self.content, frameColor=(*theme.PAPER[:3], 0.9),
-                    frameSize=(-1.47, -0.69, -0.909, -0.851))
+        if lab_action is not None:
+            self.static_frames.append(DirectFrame(parent=self.content, frameColor=(*theme.PAPER[:3], .94),
+                                                 frameSize=(.52, 1.63, -.49, .07)))
+            OnscreenText(parent=self.content, text="车辆动力学实验室", font=body_font,
+                         fg=theme.INK, align=TextNode.ALeft, pos=(.60, -.06), scale=.072)
+            OnscreenText(parent=self.content, text="配置工况 · 真实曲线 · 参数对比\n120 Hz离线试验 / 精确输入 / 数据导出", font=body_font,
+                         fg=theme.MUTED, align=TextNode.ALeft, pos=(.60, -.16), scale=.036)
+            button = DirectButton(parent=self.content, text="进入实验室  ›", text_font=body_font,
+                text_fg=theme.INK, text_scale=.049, text_pos=(0, -.017),
+                frameSize=(-.46, .46, -.06, .06), frameTexture=self.textures,
+                frameColor=(1, 1, 1, 1), pos=(1.075, 0, -.36), relief=DGG.FLAT,
+                command=lab_action, pressEffect=False)
+            button.bind(DGG.ENTER, lambda event: self.select(6))
+            self.buttons.append(button)
+            self.actions = (*actions, lab_action)
+        self.static_frames.append(DirectFrame(parent=self.content, frameColor=(0.4, 0.46, 0.48, 0.35),
+                                             frameSize=(-1.58, -0.58, -0.292, -0.289)))
+        self.static_frames.append(DirectFrame(parent=self.content, frameColor=(*theme.PAPER[:3], 0.9),
+                                             frameSize=(-1.47, -0.69, -0.909, -0.851)))
         self.hint = OnscreenText(parent=self.content, text="↑ ↓ 选择    Enter 确认", font=body_font,
                                 fg=theme.INK, pos=(-1.08, -0.89), scale=0.032)
         self.notice = OnscreenText(parent=self.content, text="", font=body_font, fg=theme.FAILURE,
                                   pos=(-1.08, -0.95), scale=0.028, mayChange=True)
         self.driving_mode_button = DirectButton(
-            parent=self.content, text="驾驶模式：正常游戏  F2", text_font=body_font,
+            parent=self.content, text="驾驶输入：辅助驾驶  F2", text_font=body_font,
             text_fg=theme.INK, text_scale=0.040, text_pos=(0, -0.013),
             frameSize=(-.38, .38, -.045, .045), frameTexture=self.textures,
             frameColor=(1, 1, 1, 1), pos=(1.25, 0, -.88), relief=DGG.FLAT,
@@ -74,7 +90,7 @@ class MainMenu:
         self.root.hide()
 
     def set_driving_mode(self, mode):
-        self.driving_mode_button["text"] = f"驾驶模式：{mode.label}  F2"
+        self.driving_mode_button["text"] = f"驾驶输入：{mode.label}  F2"
 
     def select(self, index):
         self.selected = index % len(self.buttons)
@@ -95,6 +111,8 @@ class MainMenu:
         self.background["frameSize"] = (-aspect, aspect, -1, 1)
 
     def destroy(self):
+        for frame in self.static_frames:
+            frame.destroy()
         for button in self.buttons:
             button.destroy()
         self.driving_mode_button.destroy()

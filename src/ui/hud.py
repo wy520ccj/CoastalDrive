@@ -26,7 +26,7 @@ def driving_help(mode, abs_label=None, tcs_label=None, esc_label=None):
         electronics += f" TCS{tcs_label}"
     if esc_label is not None:
         electronics += f" ESC{esc_label}"
-    return (f"驾驶模式：{mode.label}{direction}{electronics}\n"
+    return (f"驾驶输入：{mode.label}{direction}{electronics}\n"
             f"W / ↑ 油门   S / ↓ {brake}   A D 转向   R 复位   C 视角   N 切台   M 音乐   Esc 暂停")
 
 

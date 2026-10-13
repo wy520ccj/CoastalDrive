@@ -1,0 +1,10 @@
+{
+  "returncode": 1,
+  "baseline": "396084a four task-modified headless modules; initial existing physics working tree and DLLs retained",
+  "command": [
+    "main.py",
+    "--headless",
+    "--steps",
+    "10000"
+  ]
+}

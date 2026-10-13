@@ -36,7 +36,7 @@ class CoastalDrive(ShowBase):
             "coastaldrive",
             "\n".join(
                 [
-                    "window-title CoastalDrive Audio Upgrade",
+                    "window-title CoastalDrive",
                     'icon-filename assets/game/ui/coastal-drive.ico',
                     f"win-size {render_size[0]} {render_size[1]}",
                     "sync-video 1",
@@ -130,6 +130,7 @@ class CoastalDrive(ShowBase):
         self.commands_held = set()
         self.driving_keys_held = set()
         self._shutdown = False
+        self.next_workspace = None
         self._audio_checkpoints = 0
         self._audio_phase = Phase.MENU
         self._radio_last_station = self.audio_settings.radio_station or 1
@@ -165,6 +166,11 @@ class CoastalDrive(ShowBase):
         self.loading_text.setText("正在加载滨海公路…" if track == "coastal" else "正在加载无限高速…")
         self.loading.show()
         self.taskMgr.add(lambda task: self._load_game(task, mode, track), "load-game")
+
+    def open_vehicle_lab(self):
+        """主入口释放游戏会话后进入实验室，两个工作方式共用生产物理内核。"""
+        self.next_workspace = "lab"
+        self.userExit()
 
     def _load_game(self, task, mode, track):
         if task.frame == 0:
@@ -430,7 +436,7 @@ class CoastalDrive(ShowBase):
             lambda: self.start_game(mode=GameMode.TIME_TRIAL),
             lambda: self.start_game(mode=GameMode.FREE_DRIVE),
             self.choose_highway, self.choose_garage, self.choose_audio_settings, self.userExit,
-        ), driving_mode_action=self.choose_driving_mode)
+        ), driving_mode_action=self.choose_driving_mode, lab_action=self.open_vehicle_lab)
         self.diagnostics = OnscreenText(
             **{**text_style, "fg": theme.DIAGNOSTIC_TEXT, "shadow": theme.DIAGNOSTIC_SHADOW},
             text="",
@@ -737,16 +743,16 @@ class CoastalDrive(ShowBase):
                 ("取消返回  Esc", self.cancel_garage),
             ]
         elif self.driving_mode_page:
-            self.panel_title.setText("驾驶模式")
+            self.panel_title.setText("驾驶输入")
             self.panel_note.setText(
                 f"当前：{self.session.driving_mode.label} · 下次起步应用\n"
-                "困难：完整动力学 · 尚未完成实车标定\n"
-                "仿真：Q选R后W加油 · E回前进 · S只刹车"
+                "车辆硬件由车库选择，实验工况在实验室设置\n"
+                "直接输入：Q选R后W加油 · E回前进 · S只刹车"
                 + (f"\n{self.driving_mode_settings.notice}" if self.driving_mode_settings.notice else "")
             )
             options = [
-                ("正常游戏", lambda: self.set_driving_mode(DrivingMode.GAME)),
-                ("困难仿真", lambda: self.set_driving_mode(DrivingMode.SIMULATION)),
+                (DrivingMode.GAME.label, lambda: self.set_driving_mode(DrivingMode.GAME)),
+                (DrivingMode.SIMULATION.label, lambda: self.set_driving_mode(DrivingMode.SIMULATION)),
                 (f"车辆 ABS：{'开启' if self.session.abs_enabled else '关闭'}", self.toggle_abs),
                 (f"驱动防滑 TCS：{'开启' if self.session.tcs_enabled else '关闭'}", self.toggle_tcs),
                 (f"横摆稳定 ESC：{'开启' if self.session.esc_enabled else '关闭'}", self.toggle_esc),
@@ -1074,6 +1080,8 @@ class CoastalDrive(ShowBase):
         if self.garage is not None:
             self.close_garage()
         self.taskMgr.remove("drive-update")
+        self.taskMgr.remove("render-frame-pacing")
+        self.taskMgr.remove("simplepbr update")
         self.taskMgr.remove("finish-smoke")
         self.taskMgr.remove("load-game")
         self.ignoreAll()

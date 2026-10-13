@@ -13,7 +13,7 @@ class DrivingMode(Enum):
 
     @property
     def label(self):
-        return "正常游戏" if self == DrivingMode.GAME else "困难仿真"
+        return "辅助驾驶" if self == DrivingMode.GAME else "直接输入"
 
     @property
     def vehicle_config(self):

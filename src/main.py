@@ -17,6 +17,7 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--headless", action="store_true")
+    parser.add_argument("--lab", action="store_true", help="打开车辆动力学实验室")
     parser.add_argument("--steps", type=int, default=10000)
     parser.add_argument("--traffic-count", type=int, help="无窗口实验的交通车数；省略时按赛道默认值")
     parser.add_argument("--seed", type=int, default=0)
@@ -46,6 +47,8 @@ def main():
     esc_enabled = None if args.esc_selection is None else args.esc_selection == "on"
     if args.steps <= 0:
         parser.error("--steps must be positive")
+    if args.lab and (args.headless or args.smoke or args.window_smoke or args.profile_startup):
+        parser.error("--lab用于交互实验室，不能与游戏诊断入口组合")
     if args.traffic_count is not None and (args.traffic_count<0 or not args.headless):
         parser.error("--traffic-count须非负且只用于--headless")
     if args.physics_workers is not None and not 0 <= args.physics_workers <= 32:
@@ -142,26 +145,29 @@ def main():
             app.close_game()
 
     smoke = args.smoke or args.window_smoke
-    app = CoastalDrive(
-        smoke=smoke,
-        onscreen=args.window_smoke,
-        output=args.output,
-        seed=args.seed,
-        track=args.track,
-        road_shape=args.road_shape,
-        driving_mode=driving_mode,
-        vehicle_design_id=args.vehicle_design,
-        abs_enabled=abs_enabled,
-        tcs_enabled=tcs_enabled,
-        esc_enabled=esc_enabled,
-        physics_workers=args.physics_workers,
-        independent_clock=not (smoke or args.synchronous_physics),
-    )
-    try:
-        app.run()
-        return 0 if not smoke or getattr(app, "smoke_passed", False) else 1
-    finally:
-        app.close_game()
+    workspace = "lab" if args.lab else "game"
+    while workspace is not None:
+        if workspace == "lab":
+            from lab_application import VehicleLab
+
+            app = VehicleLab(output=args.output)
+        else:
+            app = CoastalDrive(
+                smoke=smoke, onscreen=args.window_smoke, output=args.output,
+                seed=args.seed, track=args.track, road_shape=args.road_shape,
+                driving_mode=driving_mode, vehicle_design_id=args.vehicle_design,
+                abs_enabled=abs_enabled, tcs_enabled=tcs_enabled, esc_enabled=esc_enabled,
+                physics_workers=args.physics_workers,
+                independent_clock=not (smoke or args.synchronous_physics),
+            )
+        try:
+            app.run()
+            workspace = app.next_workspace
+            if smoke:
+                return 0 if app.smoke_passed else 1
+        finally:
+            app.close_game()
+    return 0
 
 
 if __name__ == "__main__":
