@@ -37,6 +37,8 @@
 
 `export`每次新建独立目录，包含signals.csv、vehicle.json、experiment.json、snapshots.bin、report.html；有A基线时另存baseline-A及comparison.json，比较列出全部改变条件。默认结果保存在用户数据experiments目录，可用`--output`指定。
 
+隔离施工树codex/simulation-fidelity增加参数说明：鼠标悬停参数名称或聚焦输入框后按F1，Esc关闭；顶部“参数说明 F1”也可进入，再按组浏览128项配置。公式以横式分数、上下标和希腊字母排版，附符号释义、用途、数值来源及对应源码。待运行编辑值与已运行配置分开；工程输入明确没有程序自动推导式。该新增功能尚未整合main，请用C:/Users/15120/.codex/worktrees/simulation-fidelity/CoastalDrive/launchers/vehicle-lab.cmd。见[参数说明任务](tasks/LAB-PARAM-01.md)。
+
 ## 设计与验证
 
 布局依据用户认可的[生成设计参考](design/vehicle-lab-reference.png)，正文为Source Han Sans SC Bold，标题使用当前品牌字体。默认保持两张主曲线，参数/详细信号折叠；旧VI菜单截图不作为设计依据。规范及生成说明见[设计记录](design/vehicle-lab-design.md)。

@@ -67,6 +67,8 @@ class VehicleLab(ShowBase):
         self.timeline_hover = False
         self.timeline_target = 0.
         self.entries = {}
+        self.hovered_parameter = None
+        self.focused_parameter = "speed"
         self.scene = LabScene(self)
         self.build_ui()
         self.scene.set_vehicle(vehicle_design("reference-rwd"))
@@ -75,6 +77,7 @@ class VehicleLab(ShowBase):
         self.accept("escape", self.escape)
         self.accept("space", self.hotkey, [self.toggle_pause])
         self.accept("period", self.hotkey, [self.single_step])
+        self.accept("f1", self.show_parameter_help)
         self.accept("mouse1", self.set_pointer, [True])
         self.accept("mouse1-up", self.set_pointer, [False])
         self.taskMgr.add(self.update, "lab-update")
@@ -96,14 +99,41 @@ class VehicleLab(ShowBase):
 
     def field(self, key, label, value, z, *, x=-1.61, width=.30, parent=None):
         self.text(label, x, z, .039, MUTED, parent=parent)
+        target = DirectFrame(parent=parent or self.root, frameColor=(0, 0, 0, 0), relief=None,
+                             frameSize=(0, .31, -.015, .045), pos=(x, 0, z), state=DGG.NORMAL)
+        self.bind_parameter(target, key)
         entry = DirectEntry(parent=parent or self.root, initialText=str(value), text_font=self.font,
             text_fg=INK, scale=.038, width=width/.038, numLines=1, focus=0,
             frameColor=(.94, .95, .92, 1), pos=(x+.34, 0, z-.003), relief=DGG.FLAT)
         self.entries[key] = entry
+        self.bind_parameter(entry, key, focus=True)
         return entry
 
-    def option(self, labels, x, z, width, command=None, parent=None):
-        return LabOptionMenu(parent=parent or self.root, items=labels, text_font=self.font,
+    def bind_parameter(self, widget, key, *, focus=False):
+        widget.bind(DGG.ENTER, self.enter_parameter, [key])
+        widget.bind(DGG.EXIT, self.leave_parameter, [key])
+        if focus:
+            widget["focusInCommand"] = self.focus_parameter
+            widget["focusInExtraArgs"] = [key]
+
+    def enter_parameter(self, key, event=None):
+        self.hovered_parameter = key
+
+    def leave_parameter(self, key, event=None):
+        if self.hovered_parameter == key:
+            self.hovered_parameter = None
+
+    def focus_parameter(self, key):
+        self.focused_parameter = key
+
+    def show_parameter_help(self):
+        key = self.hovered_parameter or self.focused_parameter
+        for menu in (self.vehicle_menu, self.maneuver_menu, self.abs_menu, self.esc_menu, self.plot_menu):
+            menu.hidePopupMenu()
+        self.parameter_help.show(key)
+
+    def option(self, labels, x, z, width, command=None, parent=None, parameter=None):
+        menu = LabOptionMenu(parent=parent or self.root, items=labels, text_font=self.font,
             item_text_font=self.font, item_text_scale=.038, item_text_fg=INK,
             item_text_pos=(.025, -.013), item_frameSize=(0, width, -.04, .04),
             item_frameColor=PANEL, item_relief=DGG.FLAT, item_borderWidth=(0, 0),
@@ -118,6 +148,9 @@ class VehicleLab(ShowBase):
             popupMarker_text="▼", popupMarker_text_font=self.font,
             popupMarker_text_fg=MUTED, popupMarker_text_scale=.7,
             popupMarkerBorder=(0, 0))
+        if parameter is not None:
+            self.bind_parameter(menu, parameter)
+        return menu
 
     def build_ui(self):
         from ui.lab_workbench import build_workbench
@@ -249,6 +282,9 @@ class VehicleLab(ShowBase):
             action()
 
     def escape(self):
+        if not self.parameter_help.root.isHidden():
+            self.parameter_help.hide()
+            return
         for panel in (self.manual_panel, self.details_panel, self.advanced_panel, self.record_menu):
             if not panel.isHidden():
                 panel.hide()
