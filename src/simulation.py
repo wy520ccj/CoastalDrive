@@ -581,7 +581,9 @@ class Simulation:
                     if lane_states is not None else None
                 )
                 occupied = [value for key, value in reservations.items() if key != i]
-                driver.plan(states[i + 1], others, self.road, occupied, lane_states=sensed)
+                lane_neighbors = {}
+                driver.plan(states[i + 1], others, self.road, occupied,
+                            lane_states=sensed, lane_neighbors=lane_neighbors)
                 if driver.phase in ("signal", "changing"):
                     reservations[i] = (
                         driver.target_lane,
@@ -591,7 +593,8 @@ class Simulation:
                 else:
                     reservations.pop(i, None)
                 self._traffic_controls[i] = driver.control(
-                    states[i + 1], others, self.road, positions, lane_states=sensed
+                    states[i + 1], others, self.road, positions,
+                    lane_states=sensed, lane_neighbors=lane_neighbors
                 )
             else:
                 self._traffic_controls[i] = driver.control(
@@ -665,10 +668,14 @@ class Simulation:
 
     def _update_stream(self):
         player_y = self.road.locate(self.player.snapshot(include_wheels=False))[0]
+        coordinate_offset = 0 if self.road.curve else self.origin_y
+        occupied = [player_y + coordinate_offset]
         for i, car in enumerate(self.npcs):
             body = car._chassis
             if body not in self._retired_traffic:
-                if abs(self.road.locate(car.snapshot(include_wheels=False))[0] - player_y) < 1100:
+                distance = self.road.locate(car.snapshot(include_wheels=False))[0]
+                if abs(distance - player_y) < 1100:
+                    occupied.append(distance + coordinate_offset)
                     continue
                 car.detach_physics()
                 self._retired_traffic.add(body)
@@ -692,14 +699,9 @@ class Simulation:
                 self._generations[i] += 1
                 self.traffic_cycles += 1
                 self._events += (f"traffic_recycled:{i}",)
+                occupied.append(self.road.locate(car.snapshot(include_wheels=False))[0] + coordinate_offset)
                 break
-        occupied = [
-            self.road.locate(car.snapshot(include_wheels=False))[0]
-            + (0 if self.road.curve else self.origin_y)
-            for car in [self.player, *self.npcs]
-            if car._chassis not in self._retired_traffic
-        ]
-        self.stream.update(player_y + (0 if self.road.curve else self.origin_y), self.origin_y, occupied)
+        self.stream.update(player_y + coordinate_offset, self.origin_y, occupied)
 
     def _rebase(self):
         local_y = self.player._chassis.getTransform().getPos().y

@@ -2,6 +2,7 @@
 
 import math
 from dataclasses import dataclass, replace
+from functools import lru_cache
 
 from coastal_map import MapPoint, map_length, offset_point, point_at, project
 from driver_assist import GAME_INPUT, InputConfig, steering_limit
@@ -72,11 +73,17 @@ class Road:
 
 
 def extents(heading, road_heading, config=CAR):
-    angle = math.radians(heading - road_heading)
-    sine, cosine = abs(math.sin(angle)), abs(math.cos(angle))
     # 沿用交通感知的0.1m内收量，几何尺寸随车辆配置变化。
     width = config.collision_half_width - (CAR.collision_half_width - HALF_WIDTH)
     length = config.collision_half_length
+    return projected_extents(heading - road_heading, width, length)
+
+
+@lru_cache(maxsize=512)
+def projected_extents(relative_heading, width, length):
+    """同一批感知的邻车朝向会重复使用；键只包含当前几何数值。"""
+    angle = math.radians(relative_heading)
+    sine, cosine = abs(math.sin(angle)), abs(math.cos(angle))
     return width * cosine + length * sine, length * cosine + width * sine
 
 

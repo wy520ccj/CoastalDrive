@@ -115,3 +115,46 @@ FixedStepper每批最多八拍后交还执行机会，未完成时间保留，�
 下一步：保留当前修正，在有效前台条件下核验普通12/繁忙18的真实时间欠账及动态HUD/轮姿，再针对已测的CPU准备/提交与流送尖峰继续优化；用户真实操控验收独立待确认。整体目标保持active。
 
 提交前边界复核补充：单次世界推进的非耦合配置可能仍有内部轮胎细分，保留其原多请求串行入口；游戏配置明确tire_substeps=1，继续使用单次请求边界。增加1/2子步纯数值释放锁及异常恢复覆盖，相关world/steering/modes T0通过（t0-world-boundary）；原T1其余节点复用，不重复整套测试。
+
+## r2 最新有效短测与未完成边界
+
+源码检查点8ce3d51；其后src/traffic.py只缓存同参数投影数学，src/simulation.py复用本拍已读位置/同批邻车表，src/highway_driver.py只缓存同一20Hz不可变感知批中的邻车查询。决策频率、随机序列、重定位/生成/回收和碰撞规则保持。logs/game-drive-r2/before-step、after-step、after-neighbors的1200拍完整快照SHA全部相同；全推进单次序列均值4.282679→4.176124ms、P95 8.145635→7.637355ms，非稳定配对整体收益。T0 27项/T1 11项、Ruff、0/17/23各1200拍及0/23各30模拟秒弯坡通过；原88项T1/世界边界有效覆盖复用。未修改/重建protected悬架原生工作。
+
+| r2有效1080p前台，game-tuned | 时长 | 物理Hz | 绘制FPS | 帧P95/P99 ms | 落后P95/峰值 ms |
+|---|---:|---:|---:|---:|---:|
+| window-normal，高速12NPC | 60s | 120.005200 | 87.116560 | 15.5272/17.5485 | 13.5600/37.9065 |
+| window-busy，高速18NPC | 60s | 119.989365 | 86.073011 | 17.3984/20.1333 | 15.4121/37.8105 |
+| window-time-trial-active，计时0NPC | 45s | 119.997032 | 87.489730 | 14.6638/16.1365 | 8.3721/8.8552 |
+
+以上三份report.json的window_sampling_valid/short_performance_passed均true；丢时0、>50ms帧0、驾驶presentation停滞0、碰撞0，真实路线均≥600m。高速seed23/hills，计时coastal；音频按既有smoke关闭。不将短测等同长期/声音/实际操控验收。2026-10-13用户反馈当前画面可以，未明确认定操控通过。
+
+诊断工具增补驾驶阶段/显示停滞统计、实际玩法/完赛停止和闭环路线增量。初window-time-trial跨完赛后结算静止约9.4秒，原100.214Hz与812停滞帧含正常停止，不能用于驾驶慢动作诊断；原报告保留。同时其结算切换67.0319ms是真实长帧。window-results-trace完成50.606秒有效比赛，但窗口最小化/失焦，前台Gate无效；panel-refresh峰值34.8225ms、成绩写盘2.2713ms仅作线索，结算切换尚无最终修复/通过结论。
+
+```powershell
+.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_endless.py tests/test_traffic_behavior.py tests/test_highway_curve.py --output logs/game-drive-r2/t0-traffic
+.venv/Scripts/python.exe tools/validate.py T1 --tests tests/test_h4a_traffic.py tests/test_session_process.py --output logs/game-drive-r2/t1-traffic
+.venv/Scripts/python.exe tools/performance/benchmark_runtime.py --output logs/game-drive-r2/window-busy --track endless --shape hills --seconds 60 --vehicle-design game-tuned --driving-mode game --traffic-count 18 --independent-clock
+.venv/Scripts/python.exe tools/performance/benchmark_runtime.py --output logs/game-drive-r2/window-normal --track endless --shape hills --seconds 60 --vehicle-design game-tuned --driving-mode game --traffic-count 12 --independent-clock
+.venv/Scripts/python.exe tools/performance/benchmark_runtime.py --output logs/game-drive-r2/window-time-trial-active --track coastal --game-mode time_trial --seconds 45 --vehicle-design game-tuned --driving-mode game --traffic-count 0 --independent-clock
+```
+
+r2当时源码/诊断/文档未提交；旧失败保留，后续本地收口范围见r3，本轮无推送/公开包更新。
+
+## r3 结算切换、真实绘制与本地收口
+
+日志logs/game-drive-r3。probe_results_panel使用真实UI/完成态夹具，仅定位结算创建，不冒充跑圈或前台Gate。panel-before-r2为35.0478ms，逐前缀TextNode.getWidth约30ms；panel-after直接calcWidth候选134.0889ms更慢，已撤回。当前加载阶段生成并保留固定结算字形几何/prepareScene，关闭时释放；fit_lines整行放得下则只测一次，溢出沿用原算法。panel-after-r2与panel-after-wrap分别7.0382/6.6503ms，100组换行旧/新相同。截图结算面板RGB区域(470,155)-(1440,850)逐像素相同，标题/说明/成绩区域亦全同；全幅背景622像素变化/RMS 0.663664/255。初RGBA getbbox受零alpha差影响误报全图一致，随后转RGB实测并修正；rgb-image-comparison.json保留结果。离屏初帧仍有冷初始化开销，不能当作整个流程性能证明。最初probe漏PBR任务更新导致shader输入缺失，后补真实taskMgr.step；初失败/profile保留。
+
+window-results真实完赛但即时退出，原始物理119.878Hz包含约48ms结算尾部，shortGate false报告保留；显示最大24.915ms、0帧>50ms。工具后续显式记录第一/最后驾驶状态权威进度，不把结算正常停止算吞吐；新增--results-seconds及切换附近帧记录，控制器标签改为实际route-driver-90。
+
+window-results-r2实际有效完赛50.606模拟秒，另观察2.000秒结果页，全程foreground且未最小化，短Gate通过。驾驶119.947380Hz、落后P95 8.3156/峰值13.0752ms；绘制86.617877FPS/P95 15.3896/P99 16.8071/最大23.8332ms；切换主帧22.5819ms，0帧>50ms、丢时0、驾驶显示停滞0、碰撞0。该收据是实际RouteDriver跑圈，不是完成态夹具；仍按smoke关闭音频。
+
+T0初Ruff导入格式失败，修正后9通过/1失败。失败仅test_ui_modes_results_and_existing_keys仍要求六按钮，与既有实验室第七入口冲突；baseline-ui-test.log加载冻结application-before.py同失败复现。仅修旧菜单预期，完整该节点T1与Ruff/0/17/23各1200拍通过，复用其余九项有效T0。不重复r2物理/交通和r1完整机械有效检查。protected-files.json记录三悬架源SHA不变；未重建原生扩展。
+
+```powershell
+.venv/Scripts/python.exe tools/performance/probe_results_panel.py --output logs/game-drive-r3/panel-after-wrap
+.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_results_keyboard.py tests/test_ui.py tests/test_ui_assets.py --output logs/game-drive-r3/t0-results-r2
+.venv/Scripts/python.exe tools/validate.py T1 --tests tests/test_ui.py::test_ui_modes_results_and_existing_keys --output logs/game-drive-r3/t1-results
+.venv/Scripts/python.exe tools/performance/benchmark_runtime.py --output logs/game-drive-r3/window-results-r2 --track coastal --game-mode time_trial --seconds 60 --results-seconds 2 --vehicle-design game-tuned --driving-mode game --traffic-count 0 --independent-clock
+```
+
+本地收口包含r2交通复用、r3结算字形/换行准备、诊断工具/既有测试预期及任务文档；protected工作不提交。当前画面已获用户认可，实际转向手感、长期/声音与T2/T3阶段仍开放；goal active，不推送或替换公开包。

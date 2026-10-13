@@ -6,7 +6,15 @@ import simplepbr
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectButton, DirectFrame, OnscreenText
 from direct.showbase.ShowBase import ShowBase
-from panda3d.core import ClockObject, Filename, TextNode, TransparencyAttrib, Vec3, loadPrcFileData
+from panda3d.core import (
+    ClockObject,
+    Filename,
+    NodePath,
+    TextNode,
+    TransparencyAttrib,
+    Vec3,
+    loadPrcFileData,
+)
 
 from audio.music import STATIONS
 from chase_camera import ChaseCamera
@@ -476,6 +484,16 @@ class CoastalDrive(ShowBase):
             **text_style, parent=self.panel, text="", pos=(0, 0.12),
             scale=0.041, mayChange=True,
         )
+        # 固定结算字形在加载时创建并上传；持有几何以免动态字体回收后再次栅格化。
+        result_text = TextNode("result-glyphs")
+        result_text.setFont(self.ui_font)
+        result_text.setText("".join(dict.fromkeys(
+            "挑战成功失败驾驶结束无限高速自由滨海有效完成计时圈无效错过检查点车辆复位提前"
+            "本次不记录速暂无最佳成绩可重新出发或返回菜单距离用时碰撞发生公里"
+            "重新挑战出发  Enter返回主菜单退出本圈最佳秒0123456789.ms"
+        )))
+        self.result_glyph_geometry = NodePath(result_text.generate())
+        self.result_glyph_geometry.prepareScene(self.win.getGsg())
         self.buttons = [
             DirectButton(
                 parent=self.panel,
@@ -503,6 +521,10 @@ class CoastalDrive(ShowBase):
         probe.setFont(self.ui_font)
         lines = []
         for source in value.split("\n"):
+            probe.setText(source)
+            if probe.getWidth() * scale <= width:
+                lines.append(source)
+                continue
             line = ""
             for char in source:
                 probe.setText(line + char)
@@ -1104,5 +1126,6 @@ class CoastalDrive(ShowBase):
             self.panel,
         ):
             widget.destroy()
+        self.result_glyph_geometry.removeNode()
         self.destroy()
         self._shutdown = True

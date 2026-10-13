@@ -72,7 +72,9 @@ class HighwayDriver(Driver):
         self.recovery = TrafficRecovery(self.config, self.input_config)
         self.recovery_action = None
 
-    def neighbors(self, car, traffic, road, lane):
+    def neighbors(self, car, traffic, road, lane, *, lane_neighbors=None):
+        if lane_neighbors is not None and lane in lane_neighbors:
+            return lane_neighbors[lane]
         front, rear = (math.inf, None), (math.inf, None)
         lateral = road.lanes[lane]
         own_length = extents(car.heading, 0, self.config)[1]
@@ -88,7 +90,10 @@ class HighwayDriver(Driver):
                 front = gap, other
             elif delta < 0 and gap < rear[0]:
                 rear = gap, other
-        return front, rear
+        result = front, rear
+        if lane_neighbors is not None:
+            lane_neighbors[lane] = result
+        return result
 
     def lane_acceleration(self, car, front):
         gap, leader = front
@@ -100,8 +105,8 @@ class HighwayDriver(Driver):
             headway=self.headway,
         )
 
-    def opportunity(self, car, traffic, road, lane, reservations):
-        front, rear = self.neighbors(car, traffic, road, lane)
+    def opportunity(self, car, traffic, road, lane, reservations, *, lane_neighbors=None):
+        front, rear = self.neighbors(car, traffic, road, lane, lane_neighbors=lane_neighbors)
         for target, y, speed in reservations:
             if target == lane and abs(y - car.position[1]) < 12 + max(speed, car.speed) * 3:
                 return None
@@ -187,11 +192,14 @@ class HighwayDriver(Driver):
         self.avoid_offset += max(-0.03, min(0.03, offset - self.avoid_offset))
         self.hazard_brake = braking
 
-    def plan(self, car, traffic, road, reservations, *, lane_states=None):
+    def plan(self, car, traffic, road, reservations, *, lane_states=None, lane_neighbors=None):
+        # 只在同一次20Hz决策的不可变感知状态内复用，下一批必须重新感知。
+        if lane_neighbors is None:
+            lane_neighbors = {}
         if road.curve:
             if lane_states is None:
                 lane_states = [road.lane_frame(c) for c in [car, *traffic]]
-            self.plan(lane_states[0], lane_states[1:], FLAT_ROAD, reservations)
+            self.plan(lane_states[0], lane_states[1:], FLAT_ROAD, reservations, lane_neighbors=lane_neighbors)
             return
         dt = 0.05
         was_recovering = self.recovering
@@ -221,14 +229,14 @@ class HighwayDriver(Driver):
         self.anticipate(car, traffic, road)
         if self.rear_pressure and self.phase == "cruise":
             self.decision_clock = 0
-        front, _ = self.neighbors(car, traffic, road, self.lane)
+        front, _ = self.neighbors(car, traffic, road, self.lane, lane_neighbors=lane_neighbors)
         gap, leader = front
         blocked = leader is not None and gap < self.cruise * 4 and car.speed < self.cruise - 2
         self.waiting = min(12, self.waiting + dt) if blocked else max(0, self.waiting - dt)
         self.clear_time = self.clear_time + dt if gap > max(45, car.speed * 3) else 0
         if self.phase == "signal":
             self.elapsed += dt
-            if self.opportunity(car, traffic, road, self.target_lane, reservations) is None:
+            if self.opportunity(car, traffic, road, self.target_lane, reservations, lane_neighbors=lane_neighbors) is None:
                 self.cancel()
             elif self.elapsed >= 1.0:
                 self.phase = "changing"
@@ -237,7 +245,7 @@ class HighwayDriver(Driver):
         elif self.phase == "changing":
             if (
                 abs(car.position[0] - road.lanes[self.lane]) < 0.8
-                and self.opportunity(car, traffic, road, self.target_lane, reservations) is None
+                and self.opportunity(car, traffic, road, self.target_lane, reservations, lane_neighbors=lane_neighbors) is None
             ):
                 self.cancel()
                 return
@@ -254,7 +262,7 @@ class HighwayDriver(Driver):
             candidates = []
             for lane in (self.lane - 1, self.lane + 1):
                 if 0 <= lane < len(road.lanes):
-                    gain = self.opportunity(car, traffic, road, lane, reservations)
+                    gain = self.opportunity(car, traffic, road, lane, reservations, lane_neighbors=lane_neighbors)
                     if gain is None:
                         continue
                     benefit, reason = gain - current, "overtake"
@@ -286,7 +294,7 @@ class HighwayDriver(Driver):
         self.clear_time = self.waiting = 0.0
         self.reason = "cruise"
 
-    def control(self, car, traffic, road, locations, *, lane_states=None):
+    def control(self, car, traffic, road, locations, *, lane_states=None, lane_neighbors=None):
         if self.recovery_action is not None:
             return self.recovery_action
         if road.curve:
@@ -294,7 +302,8 @@ class HighwayDriver(Driver):
                 lane_states = [road.lane_frame(c, p) for c, p in zip([car, *traffic], locations)]
             local_car, *local_traffic = lane_states
             action = self.control(local_car, local_traffic, FLAT_ROAD,
-                                  [FLAT_ROAD.locate(c) for c in [local_car, *local_traffic]])
+                                  [FLAT_ROAD.locate(c) for c in [local_car, *local_traffic]],
+                                  lane_neighbors=lane_neighbors)
             steering = super().control(car, traffic, road, locations)
             if self.recovering:
                 return steering
@@ -321,7 +330,7 @@ class HighwayDriver(Driver):
             return steering_action
         lanes = (self.lane, self.target_lane) if self.phase == "changing" else (self.lane,)
         desired_acc = min(
-            self.lane_acceleration(car, self.neighbors(car, traffic, road, lane)[0])
+            self.lane_acceleration(car, self.neighbors(car, traffic, road, lane, lane_neighbors=lane_neighbors)[0])
             for lane in lanes
         )
         if self.hazard_brake:

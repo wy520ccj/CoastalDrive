@@ -46,6 +46,7 @@ def traced_authority(output, *arguments):
     import tire_drivetrain
     import world_step
     from npc_physics import TrafficVehicle
+    from race import BestTimes
     from session import Session
     from simulation import Simulation
     from tire_drivetrain import DrivetrainInput
@@ -85,6 +86,7 @@ def traced_authority(output, *arguments):
         (Simulation, '_count_player_collisions', 'collision-count'),
         (tire_drivetrain, 'joint_solve', 'native-joint-solve'),
         (Session, 'camera_position', 'camera-query'),
+        (BestTimes, 'record', 'score-file-update'),
     ):
         setattr(owner, attribute, timed(name, getattr(owner, attribute)))
     # Simulation在导入时绑定函数，诊断覆写须指向同一个计时入口。
@@ -99,6 +101,7 @@ def traced_authority(output, *arguments):
             result[name] = {'count': record['count'],
                 'wall_mean_ms': record['wall']/record['count']*1000,
                 'cpu_mean_ms': record['cpu']/record['count']*1000,
+                'wall_max_ms':max(values)*1000,
                 'wall_p95_ms': values[int((len(values)-1)*.95)]*1000,
                 'wall_p99_ms': values[int((len(values)-1)*.99)]*1000}
         (Path(output)/'authority-timing.json').write_text(json.dumps(result), encoding='utf-8')
@@ -114,6 +117,8 @@ def main():
     parser.add_argument("--track", choices=("coastal", "endless"), default="endless")
     parser.add_argument("--vehicle-design")
     parser.add_argument("--driving-mode", choices=("game", "simulation"), default="game")
+    parser.add_argument('--game-mode', choices=('free_drive', 'time_trial', 'distance_challenge'))
+    parser.add_argument('--results-seconds', type=float, default=0., help='完赛后继续绘制结算；物理吞吐只取驾驶采样区间')
     parser.add_argument("--source", type=Path, default=ROOT / "src")
     parser.add_argument("--trace-streaming", action="store_true")
     parser.add_argument("--profile", action="store_true")
@@ -292,6 +297,7 @@ def main():
             (CoastalDrive,'update','window-update'),(Session,'frame','render-snapshot'),
             (CoastalDrive,'apply_scene','scene-application'),
             (CoastalDrive,'pace_frame','frame-pacing'),
+            (CoastalDrive,'refresh_panel','panel-refresh'),
             (SessionProcess,'frame','remote-frame'),
             (SessionProcess,'camera_position','camera-roundtrip'),
             (Session,'tick','physical-session-tick'),(Simulation,'step','physical-world-tick'),
@@ -317,6 +323,11 @@ def main():
                        threading_model=pipelines[args.pipeline],independent_clock=args.independent_clock,
                        vehicle_design_id=args.vehicle_design, driving_mode=DrivingMode(args.driving_mode),
                        physics_workers=args.physics_workers)
+    if args.game_mode is not None:
+        from race import GameMode
+
+        app.session.start(mode=GameMode(args.game_mode), countdown=False)
+        app.sync_scene()
     if args.traffic_count is not None and len(app.session.current.traffic) != args.traffic_count:
         from highway_run import TRAFFIC_DENSITIES
 
@@ -332,9 +343,12 @@ def main():
             app.close_game()
             raise RuntimeError('窗口启动后的实际交通车数与指定工况不一致')
     app.taskMgr.remove("finish-smoke")
+    from route_driver import RouteDriver
+
     from session_process import SessionProcess
 
     controller = (EnduranceDriver(app.session.simulation, 724) if args.track == "endless"
+                  else RouteDriver(90) if args.game_mode == 'time_trial'
                   else ConstantController(Control(throttle=.3,steering=args.steering)))
     if isinstance(app.session,SessionProcess):
         app.session.set_controller(controller,bind_world=args.track == 'endless')
@@ -362,6 +376,8 @@ def main():
             if attached:
                 user32.AttachThreadInput(current_thread,foreground_thread,False)
     samples, windows = [], []
+    previous_progress = app.session.simulation.road.locate(app.session.current.player)[0]
+    route_distance = 0.
     work_samples = []
     previous = time.perf_counter()
     last_second = -1
@@ -369,6 +385,8 @@ def main():
     start_tick = None
     sample_started_at = None
     final = {}
+    driving_end_progress = None
+    results_started_at = None
     if args.profile:
         import cProfile
         profiler = cProfile.Profile()
@@ -391,8 +409,13 @@ def main():
     region.setDrawCallback(CallbackObject.make(count_draw))
 
     def observe(task):
-        nonlocal previous, last_second, start_dropped, start_tick, sample_started_at, measuring_draw, tracing, measuring_phases
+        nonlocal previous, last_second, start_dropped, start_tick, sample_started_at, measuring_draw, tracing, measuring_phases, previous_progress, route_distance
+        nonlocal driving_end_progress, results_started_at
         now = time.perf_counter()
+        road = app.session.simulation.road
+        progress = road.locate(app.session.current.player)[0]
+        route_distance += road.delta(progress, previous_progress)
+        previous_progress = progress
         if task.time >= 3:
             if start_dropped is None:
                 start_tick, start_dropped, sample_started_at = physics_progress(app.session)
@@ -403,8 +426,12 @@ def main():
                 if args.profile:
                     profiler.enable()
             samples.append({"second": task.time, "ms": (now - previous) * 1000,
-                            "physics_lag_ms": app.session.stepper.backlog_time * 1000})
+                            "physics_lag_ms": app.session.stepper.backlog_time * 1000,
+                            "presentation_time": app._camera_time,
+                            "phase":app.session.phase.value})
             work_samples.append(dict(app.scene.segment_work))
+            if args.game_mode == 'time_trial' and app.session.phase.value == 'driving':
+                driving_end_progress = physics_progress(app.session)
         previous = now
         if int(task.time) != last_second:
             props = app.win.getProperties()
@@ -413,10 +440,17 @@ def main():
                             "transform_states":TransformState.getNumStates(),
                             "render_states":RenderState.getNumStates()})
             last_second = int(task.time)
-        if task.time >= args.seconds:
+        trial_finished = args.game_mode == 'time_trial' and app.session.race.snapshot.finished
+        if trial_finished and results_started_at is None:
+            results_started_at = task.time
+        results_observed = trial_finished and task.time - results_started_at >= args.results_seconds
+        if task.time >= args.seconds or results_observed:
             if args.independent_clock:
                 app.session.stop_clock()
             end_tick, end_dropped, sample_finished_at = physics_progress(app.session)
+            # 完赛后Simulation正常停止；结算创建/绘制不能算进驾驶吞吐的分母。
+            if trial_finished and driving_end_progress is not None:
+                end_tick, end_dropped, sample_finished_at = driving_end_progress
             measuring_draw = False
             tracing = False
             measuring_phases = False
@@ -425,15 +459,33 @@ def main():
                 profiler.dump_stats(str(args.output / "main.prof"))
             values = sorted(row["ms"] for row in samples)
             lag_values = sorted(row["physics_lag_ms"] for row in samples)
+            stalled_frames, stall_ms, maximum_stall_ms = 0, 0., 0.
+            for before, after in pairwise(samples):
+                if (before['phase'] == after['phase'] == 'driving'
+                        and after['presentation_time'] <= before['presentation_time'] + 1e-9):
+                    stalled_frames += 1
+                    stall_ms += after['ms']
+                    maximum_stall_ms = max(maximum_stall_ms, stall_ms)
+                else:
+                    stall_ms = 0.
             draw_values = sorted((b - a) * 1000 for a, b in pairwise(draw_times))
             valid = all(not w["minimized"] and w["foreground"] for w in windows)
             state = app.session.current
-            distance = app.session.simulation.road.locate(state.player)[0] - 8
+            distance = route_distance
             final.update({
                 "kind": "short window comparison; not final performance or human gate",
                 "source": str(args.source.resolve()), "track": args.track,
                 "vehicle_design": args.vehicle_design, "driving_mode": args.driving_mode,
-                "controller": "highway-driver" if args.track == "endless" else "constant-throttle-0.3",
+                "game_mode":app.session.mode.value,
+                "end_reason":'time_trial_finished' if trial_finished else 'time_limit',
+                "phase":app.session.phase.value,
+                "race_finished":app.session.race.snapshot.finished,
+                "race_invalidated":app.session.race.snapshot.invalidated,
+                "race_elapsed_seconds":app.session.race.snapshot.elapsed,
+                "results_observed_seconds":task.time-results_started_at if trial_finished else 0.,
+                "results_transition_frames":[row for row in samples if results_started_at is not None
+                                             and abs(row['second']-results_started_at) <= .25],
+                "controller": "highway-driver" if args.track == "endless" else 'route-driver-90' if args.game_mode == 'time_trial' else "constant-throttle-0.3",
                 "constant_steering": args.steering,
                 "gc_rate":1. if args.gc_rate is None else args.gc_rate,
                 "transform_cache":ConfigVariableBool('transform-cache').getValue(),
@@ -461,6 +513,7 @@ def main():
                         'wall_mean_ms':record['wall']/record['count']*1000,
                         'cpu_mean_ms':record['cpu']/record['count']*1000,
                         'wall_p95_ms':sorted(sample[0]*1000 for sample in record['samples'])[int((len(record['samples'])-1)*.95)],
+                        'wall_max_ms':max(sample[0]*1000 for sample in record['samples']),
                         'cpu_p95_ms':sorted(sample[1]*1000 for sample in record['samples'])[int((len(record['samples'])-1)*.95)],
                     } for name,record in phase_samples.items()
                 },
@@ -489,6 +542,9 @@ def main():
                 "physics_time_deficit_seconds":(sample_finished_at-sample_started_at)-(end_tick-start_tick)/120,
                 "physics_lag_p95_ms":lag_values[int((len(lag_values)-1)*.95)],
                 "physics_lag_max_ms":max(lag_values),
+                "presentation_stalled_frames":stalled_frames,
+                "presentation_stalled_frame_percent":100*stalled_frames/max(1,len(samples)-1),
+                "presentation_maximum_stall_ms":maximum_stall_ms,
                 "collisions": app.session.simulation.collision_count,
                 "frames_slow": sorted(samples, key=lambda row: row["ms"], reverse=True)[:12],
                 "segment_work_max_ms": max(w["frame_ms"] for w in work_samples),
