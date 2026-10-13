@@ -1,0 +1,53 @@
+{
+  "stage": "frozen joint node using prepared real inputs; NOT installed in Simulation",
+  "assumptions": "40kg each wheel, radial 200000N/m and 500Ns/m; zero relative wheel-center speed initial condition",
+  "legacy_preload": "copied suspension state and prior solved load/radial rate, not a new static equilibrium",
+  "known_work": "includes frozen geometric inertial bias; not finite-pose full-world energy validation",
+  "iterations": 4,
+  "momentum_residual": 3.701927653310122e-12,
+  "force_residual_N": 9.511040843790397e-10,
+  "port_residual_Nm": 2.3197681161574924e-13,
+  "frozen_energy_error_J": 1.680433570072637e-11,
+  "normal_N": [
+    4162.522949912674,
+    2900.3031002148027,
+    3077.8348583729558,
+    1805.1190328023251
+  ],
+  "FxFy_N": [
+    [
+      -499.6215980097996,
+      1924.06322078492
+    ],
+    [
+      -454.5447316227967,
+      1488.7890806744597
+    ],
+    [
+      -1592.3338156994928,
+      1460.735795406688
+    ],
+    [
+      -1986.755699542971,
+      121.16601294943985
+    ]
+  ],
+  "relative_wheel_center_speed_mps": [
+    -0.030225029943489187,
+    -0.050111072798565796,
+    -0.010265113007156667,
+    -0.036283654246254585
+  ],
+  "actual_prepared_control": {
+    "ratio": 12.025,
+    "synchronizing": false,
+    "clutch_capacity": 210.0,
+    "brake_capacities": [
+      163.94399999382472,
+      163.94399999382472,
+      95.9239487372783,
+      0.023901989732632006
+    ],
+    "engine_torque": 78.60985042795083
+  }
+}

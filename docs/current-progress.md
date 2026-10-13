@@ -1,10 +1,10 @@
 # 当前进度
 
-更新：2026-10-13。**公开基线：0.8.3 RADIO-02，包含UI-NOTICE-FIX；游戏模式/原悬架准备由main施工，仿真真实性位于codex/simulation-fidelity隔离树。** 本树C:/Users/15120/.codex/worktrees/simulation-fidelity/CoastalDrive的新增仿真成果尚未整合main。Visual Identity v1已成为主版本，旧main保留备份/Git历史；CoastalDrive-VI-v1/gr86-physics为历史/辅助目录，DS只读。根目录试玩.cmd保持公开包入口，仿真工作树使用launchers/vehicle-lab.cmd。
+更新：2026-10-14。**公开基线：0.8.3 RADIO-02，包含UI-NOTICE-FIX；游戏模式/原悬架准备由main施工，仿真真实性位于codex/simulation-fidelity隔离树。** 本树C:/Users/15120/.codex/worktrees/simulation-fidelity/CoastalDrive的新增仿真成果尚未整合main。Visual Identity v1已成为主版本，旧main保留备份/Git历史；CoastalDrive-VI-v1/gr86-physics为历史/辅助目录，DS只读。根目录试玩.cmd保持公开包入口，仿真工作树使用launchers/vehicle-lab.cmd。
 
 ## 当前阶段
 
-- **2026-10-13 簧下质量 SIM-UNSPRUNG-01施工中**：质量/CG/平行轴分解、六维车身+四轮心耦合惯量/离心科氏、冻结法向隐式块及21项T0/Ruff通过，真实初始化轮心用于假设质量模态分析。**未接入Simulation，不能宣称轮跳已实现**；下一联立传动/Fx/Fy与真实几何/状态，保留完整验收要求。见[任务](tasks/SIM-UNSPRUNG-01.md)、[力学节点](unsprung-dynamics.md)。
+- **2026-10-14 簧下质量 SIM-UNSPRUNG-01施工中**：质量/CG/惯量分解及十六维车身/轮心/转子共同块，径向轮荷/FxFy/有限传动/制动/限滑联立，35项T0/Ruff及实际准备输入保存/复算通过。局部冻结误差约1.68e−11J；**未接入新世界/有限姿态，不能宣称轮跳已实现**。下一簧上CG/主轴与原生gyro单计、真实几何/状态。见[任务](tasks/SIM-UNSPRUNG-01.md)、[节点与边界](unsprung-dynamics.md)。
 
 - **2026-10-13 回正机制 SIM-ALIGN-01**：独立树新增刷毛受力中心、共轭接触速度/惯量响应/真实冲量及指定转向输入功；参考设计启用，游戏/GR86保持。60km/h阶跃唯一开关横摆峰值0.377226→0.361163rad/s，Mz56.2705N·m、半长减半28.3486；2/4/8步细化、完整能量/原生Python一致、旧归档396/393帧通过。15项T0、414项T1/Ruff/三种子与720/1080各3图通过。均布刷毛混合近似、实测/外倾K&C/簧下/人工/整体Gate仍开放，未合main。见[任务](tasks/SIM-ALIGN-01.md)、[推导与用途](tire-aligning.md)。
 

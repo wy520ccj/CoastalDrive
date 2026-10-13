@@ -7,6 +7,44 @@ import numpy as np
 from suspension import elastic_terms, stiffness_matrix
 
 
+def suspension_potential(compression, config):
+    spring,bars,stop,force = elastic_terms(tuple(compression),config.suspension_spring_rates,
+        config.suspension_antiroll_rates,config.suspension_stop_rates,config.suspension_travel)
+    return spring+sum(bars)+stop,np.asarray(force)
+
+
+@dataclass(frozen=True)
+class NormalMaterial:
+    suspension_force: np.ndarray
+    normal_force: np.ndarray
+    suspension_potential: float
+    tire_potential: float
+    suspension_damping: float
+    tire_damping: float
+    suspension_tangent: np.ndarray
+    radial_tangent: np.ndarray
+    spring_force: np.ndarray
+
+
+def normal_material(compression, relative_velocity, deflection, previous_deflection,
+                    dt, config, radial_rates, radial_damping):
+    """法向块与传动/轮胎共同求解共用唯一材料方程。"""
+    coefficient = np.where(relative_velocity>=0.,config.suspension_compression_damping,
+                           config.suspension_extension_damping)
+    potential,spring = suspension_potential(compression,config)
+    delta_rate = (np.maximum(deflection,0.)-np.maximum(previous_deflection,0.))/dt
+    trial = radial_rates*np.maximum(deflection,0.)+radial_damping*delta_rate
+    contact = (deflection>0.) & (trial>0.)
+    normal = np.where(contact,trial,0.)
+    hessian = np.asarray(stiffness_matrix(config.suspension_spring_rates,config.suspension_antiroll_rates))
+    hessian += np.diag(np.where(np.abs(compression)>config.suspension_travel,config.suspension_stop_rates,0.))
+    return NormalMaterial(spring+coefficient*relative_velocity,normal,float(potential),
+        float(.5*np.dot(radial_rates,np.maximum(deflection,0.)**2)),
+        float(dt*np.dot(coefficient,relative_velocity**2)),
+        float(dt*np.dot(np.where(contact,radial_damping,0.),delta_rate**2)),
+        dt*hessian+np.diag(coefficient),np.where(contact,dt*radial_rates+radial_damping,0.),spring)
+
+
 @dataclass(frozen=True)
 class UnsprungNormalStep:
     velocity: np.ndarray
@@ -39,35 +77,22 @@ def normal_block(mechanics, velocity, compression, tire_deflection, normals,
     known, road_delta = np.asarray(known_force),np.asarray(road_delta)
     rates, damping = np.asarray(radial_rates),np.asarray(radial_damping)
     normal_gradient = np.einsum('iaj,ia->ij',mechanics.wheel_jacobians,normals)
-    spring_matrix = np.asarray(stiffness_matrix(config.suspension_spring_rates,config.suspension_antiroll_rates))
     spring_gradient = np.zeros((4,10))
     spring_gradient[:,6:] = np.eye(4)
     mass = mechanics.mass_matrix
-    material = (config.suspension_spring_rates,config.suspension_antiroll_rates,
-                config.suspension_stop_rates,config.suspension_travel)
-
     def elastic(q):
-        spring,bars,stop,force = elastic_terms(tuple(q),*material)
-        return spring+sum(bars)+stop,np.asarray(force)
+        return suspension_potential(q,config)
 
     def evaluate(end):
         relative = end[6:]
         q = q0+dt*relative
         delta = delta0+road_delta-dt*(normal_gradient@end)
-        # 阻尼作用于实际径向压缩，不对尚未接触的空气间隙施力。
-        delta_rate = (np.maximum(delta,0.)-np.maximum(delta0,0.))/dt
-        coefficient = np.where(relative>=0.,config.suspension_compression_damping,
-                               config.suspension_extension_damping)
-        potential,spring = elastic(q)
-        suspension = spring+coefficient*relative
-        trial = rates*np.maximum(delta,0.)+damping*delta_rate
-        contact = (delta>0.) & (trial>0.)
-        normal = np.where(contact,trial,0.)
+        material = normal_material(q,relative,delta,delta0,dt,config,rates,damping)
+        suspension,normal = material.suspension_force,material.normal_force
         residual = mass@(end-velocity)-dt*known+dt*spring_gradient.T@suspension-dt*normal_gradient.T@normal
-        hessian = spring_matrix+np.diag(np.where(np.abs(q)>config.suspension_travel,config.suspension_stop_rates,0.))
-        jacobian = mass+dt*spring_gradient.T@(dt*hessian+np.diag(coefficient))@spring_gradient
-        jacobian += dt*normal_gradient.T@np.diag(np.where(contact,dt*rates+damping,0.))@normal_gradient
-        return residual,jacobian,q,delta,suspension,normal,potential,coefficient,contact,delta_rate
+        jacobian = mass+dt*spring_gradient.T@material.suspension_tangent@spring_gradient
+        jacobian += dt*normal_gradient.T@np.diag(material.radial_tangent)@normal_gradient
+        return residual,jacobian,q,delta,suspension,normal,material
 
     end = velocity.copy()
     for iteration in range(20):
@@ -86,13 +111,12 @@ def normal_block(mechanics, velocity, compression, tire_deflection, normals,
             raise ArithmeticError(f"簧下法向块线搜索不下降：{error:.9g} N·s")
     else:
         raise ArithmeticError(f"簧下法向块超过20轮：{error:.9g} N·s")
-    _residual,_jacobian,q,delta,suspension,normal,potential,coefficient,contact,delta_rate = details
+    _residual,_jacobian,q,delta,suspension,normal,material = details
+    potential,tire_potential = material.suspension_potential,material.tire_potential
     original_potential,_ = elastic(q0)
-    tire_potential = .5*np.dot(rates,np.maximum(delta,0.)**2)
     original_tire = .5*np.dot(rates,np.maximum(delta0,0.)**2)
-    material_loss = dt*np.dot(coefficient,end[6:]**2)
-    tire_material = dt*np.dot(np.where(contact,damping,0.),delta_rate**2)
-    elastic_numeric = np.dot(suspension-coefficient*end[6:],q-q0)-(potential-original_potential)
+    material_loss,tire_material = material.suspension_damping,material.tire_damping
+    elastic_numeric = np.dot(material.spring_force,q-q0)-(potential-original_potential)
     elastic_numeric += np.dot(normal,delta-delta0)-(tire_potential-original_tire)-tire_material
     velocity_delta = end-velocity
     kinetic_numeric = .5*velocity_delta@mass@velocity_delta

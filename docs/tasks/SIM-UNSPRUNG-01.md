@@ -21,3 +21,13 @@
 21项T0/Ruff通过，日志`logs/validation/SIM-UNSPRUNG-01-mass-T0`；`tools/physics/unsprung_mass_check.py --output logs/SIM-UNSPRUNG-01/mass-reference-r1`从实际初始化Snapshot读取参考轮心/已有配置，再核对假设25/40/65kg分解和七模态。质量/径向刚度非实测，完整试验台新机制未跑。中间失败及推导见[质量节点说明](../unsprung-dynamics.md)，[证据](../evidence/SIM-UNSPRUNG-01/README.md)。T1/T2/T3/GUI不在该未接入节点冒充完成，原414项整合结果不重跑。
 
 下一施工入口：现有`src/drivetrain_prepare.h`/`src/mechanical_kernels.c`的质量响应把平动独立按mass相除，不能原样沿用十维耦合；需要同一扩展广义质量/力端口及车身姿态/CG改造，再接`vehicle_suspension`真实几何与`vehicle_tire_step`传输/提交。保留既有有限传动、轴向反力和回正输入功。当前默认模式/另一AI main保持。
+
+## 2026-10-14 传动/切向共同节点
+
+在0dd3a03后新增十六维质量/力端口和34个未知量的共同求解：车身/四轮心、曲轴/输入轴/四轮自旋、从动轴Jggᵀ储能，轮胎Fx/Fy与径向轮荷、离合/硬挡/同步器/双向损失、干制动/滚阻/动态TBR限滑在同一残差中求解。纵横/法向表面点虚功完整计入轮心运动和自旋；拖距仅移动侧向作用点。有外倾时侧向拖距的轴向分量也进入轮速方程。
+
+法向块与新共同块共用normal_material，轮胎曲线/弹性/能量调用现有生产函数。RWD/FWD/AWD、倒挡/倒车、同步/空挡离地、有限制动、动态TBR、非对称路面、旧从动轴真实动量及独立能量核对通过；完整实际准备输入的保存/复算通过，35项T0/Ruff日志joint-T0。准备输入来自旧Simulation的60km/h手动3°/油门.4/制动.15/一挡/离合.7，只有新算子单步预测，没有新世界完整车辆运行。
+
+共同块仍冻结质量/接触构型，known力中的几何惯性偏置不是外界能量来源，误差属于局部块，**不是全车有限姿态验收**。40kg/200000N/m/500Ns/m仍为假设；轮心初始相对速度零、旧悬架预载/旧轮荷径向初值不等于新静平衡。早期joint-powered数据保留，完整参数版joint-powered-complete；不回填原数据。
+
+下一：锁止参考分解固定于车型初始化；映射簧上CG、完整惯量主轴与真实碰撞/连接点。当前Panda惯量接口为三主惯量，不能丢弃惯量积。零外矩/零阻尼1/240s自由转动已观察原生刚体gyro生效，必须只算一次；见native-gyro-observation.json。有限姿态/道路接点与冻结节点形成同一外层求解并提交唯一世界，再补状态/记录/原生/实际Gate。任务保持in_progress。

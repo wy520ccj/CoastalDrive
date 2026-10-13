@@ -1,0 +1,32 @@
+{
+  "mass_kg": 1.0,
+  "inertia_kgm2": [
+    2,
+    3,
+    4
+  ],
+  "gravity_mps2": [
+    0,
+    0,
+    0
+  ],
+  "angular_damping": 0.0,
+  "dt_s": 0.004166666666666667,
+  "start": [
+    0.30000001192092896,
+    0.5,
+    0.699999988079071
+  ],
+  "end": [
+    0.2992701530456543,
+    0.5005818009376526,
+    0.6998439431190491
+  ],
+  "explicit_euler_gyro_expected": [
+    0.2992708452666799,
+    0.5005833333465788,
+    0.6998437380728623
+  ],
+  "observed_native_gyro_effect": true,
+  "inference": "Native gyro must be accounted once during body integration; this probe does not establish the complete coupled pose integrator."
+}

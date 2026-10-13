@@ -8,3 +8,14 @@
 - 首次质量节点3/10失败：两项内部力相加/减的末位浮点功残差，改成解析相消；一项极小中心差分的惯量相减舍入，改为五点差分，原误差门槛保持。之后10/10、法向7/7、模态4/4及最终21项T0通过。没有降低原生产求解阈值。
 
 未运行/未实现：有限姿态全车联合迭代、真实路面新接点、独立轮心状态的120Hz推进、曲轴/输入轴/四轮/从动轴端口扩展、原生一致、重开/记录/GUI、实际颠簸和制动、T1/T2/T3及人工/实测Gate。任务包继续列出完整要求，不能用本节点替代。[推导与接入问题](../../unsprung-dynamics.md)。
+
+## 2026-10-14共同机械节点
+
+十六维惯量/真实表面点力学端口与34未知量的共同残差已实现；上文的传动/切向端口扩展已完成**冻结构型部分**，生产世界与有限姿态仍未接入。
+
+- `joint-T0`：`.venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_unsprung_dynamics.py tests/test_unsprung_contact.py tests/test_unsprung_modes.py tests/test_unsprung_joint.py --output logs/validation/SIM-UNSPRUNG-01-joint-T0 --timeout 120`，35项/Ruff通过。原法向材料抽为共享函数后11项先通过；新共同节点最初9项通过、Ruff两未用测试变量已修复；随后13项边界/独立能量通过，最终加入完整输入复算。生产C内核未修改/重建。
+- `joint-powered-complete`：`tools/physics/unsprung_joint_check.py --output logs/SIM-UNSPRUNG-01/joint-powered-complete-r3`。真实准备输入、假设参数全部数字、旧预载/动力状态、预测及来源保存；4轮求解，力9.51e−10N/端口2.32e−13N·m、冻结能量误差1.68e−11J，当前测试可直接读完整JSON复算。不是实际新世界行驶试验。
+- `joint-powered`早期预测与数值相同，但source-input未完整保存新假设数组；保留原记录。补齐独立复算输入后生成完整新版本，没有修改/回填早期文件。最早空挡节点在logs/SIM-UNSPRUNG-01/joint-real-input-r1，只用于接口探索，不作为有限传动验收。
+- `native-gyro-observation.json`：本地Panda1.10.16、1/240s、零重力/外矩/阻尼、I=(2,3,4)自由转动，Ω变化与gyro方向一致。该观察证实原生已处理刚体gyro，不证明新有限姿态积分完成。
+
+新的共同块仍冻结构型，known中的惯性偏置功不是物理外界功。相对轮心初速零、40kg/200000N/m/500Ns/m假设及旧预载不构成实测标定或新静平衡。下一CG/主轴/有限姿态与真实几何接入；任务in_progress，整体目标active。
