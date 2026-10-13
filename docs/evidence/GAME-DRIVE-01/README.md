@@ -185,3 +185,15 @@ T0初Ruff导入格式失败，修正后9通过/1失败。失败仅test_ui_modes_
     .venv/Scripts/python.exe tools/performance/benchmark_runtime.py --output logs/game-drive-r4/window-busy-audio --track endless --shape hills --seconds 120 --extended --vehicle-design game-tuned --driving-mode game --traffic-count 18 --independent-clock --audio
 
 两次分项另加--trace-phases；同步候选另加--vsync off。不删模型、不修改实验台/保护悬架文件、不重建DLL、不推送/换公开包。实际操控与偶发绘制等待仍开放，goal active；下一绘制线程/驱动等待分项，复用已有数值/短测证据。
+
+## r5 / 2026-10-14 用户验收收口
+
+实际反馈原文：“短按可控，松键和反打响应正常”；在明确告知约84FPS/120Hz/无丢时、较长样本仍有一次约0.1秒停顿后，用户确认“整体流畅，偶发短停可接受”。本次目标据此通过人工验收；严格零长帧样本仍fail，旧自动结论不改，不推广为长期/阶段T2/T3通过。
+
+单线程120秒有效对照window-busy-audio-single-r2：物理120.000258Hz、75.967184FPS、P95/P99 17.4841/21.2731ms、最大137.2034ms，两帧>50ms；落后P95/峰值15.8984/37.4624ms，丢时/碰撞0。未用于正式游戏。首single对照第11秒起失焦（本次pstats -h实际弹出辅助GUI）；已关闭本次helper，报告无效且保留。
+
+text-stats全量GPU采集window-pstats仅为高开销诊断；UDP发送异常后转TCP，原始输出约2.684GB，停止的只是一经PID/命令确认的本次采集器，客户端正常完成120秒。Main/Draw/GPU接收帧数5071/3739/5087，协议允许丢失/乱序；不能当完整帧序列。第265绘制帧120.016ms中，111.910ms属于PStats自身Check residency，Flip:End仅0.063ms；不能把该停顿归因于正常游戏。依据[该版本TextMonitor原始格式](https://github.com/panda3d/panda3d/blob/v1.10.16/pandatool/src/text-stats/textMonitor.cxx)和[GL驻留检查的连接条件](https://github.com/panda3d/panda3d/blob/v1.10.16/panda/src/glstuff/glGraphicsStateGuardian_src.cxx)。归档render-pstats/raw.txt.gz为282080545字节，原始2683708975字节，SHA b12818eed7b5fef70338e8eca983ca0149fdea86ee7b12602eb15434b8445a04；解压逐字节SHA一致。原始文件清理被自动审批拒绝、未给具体原因，因此原文件也保留。
+
+PStats端口/GPU/限时改版未完成运行验收，整体从正式工具撤回；原型logs/game-drive-r5/benchmark-pstats-experimental.py仅供历史定位，不能作为产品入口。生产代码与ef6d377相同，正式/Draw、同步、声音、机械与实验台保持。收口核对r1～r4实际报告/源码SHA/命令边界：直接命令648拍完整SHA相同、交通1200拍相同、五车型30条积分工况无错误/碰撞、制动差0.0820507～0.1186269m；相关T0/T1/Ruff/三种子有效结果复用，未重跑不变的检查。保护三源SHA一致、未重建DLL。
+
+完成本次游戏共享新力学机制、实时与手感目标；用户明确接受偶发短停，保留绘制等待为已接受改进项，不将严格Gate fail改pass。当前源码入口仍game-current.cmd；收口仅本地文档提交，不推送或替换公开包。
