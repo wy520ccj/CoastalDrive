@@ -274,6 +274,9 @@ class VehicleLab(ShowBase):
     def toggle_details(self):
         self.details_panel.show() if self.details_panel.isHidden() else self.details_panel.hide()
 
+    def show_engineering(self):
+        self.engineering_panel.show()
+
     def toggle_record_menu(self):
         self.record_menu.show() if self.record_menu.isHidden() else self.record_menu.hide()
 
@@ -284,6 +287,9 @@ class VehicleLab(ShowBase):
     def escape(self):
         if not self.parameter_help.root.isHidden():
             self.parameter_help.hide()
+            return
+        if not self.engineering_panel.root.isHidden():
+            self.engineering_panel.hide()
             return
         for panel in (self.manual_panel, self.details_panel, self.advanced_panel, self.record_menu):
             if not panel.isHidden():
@@ -325,12 +331,16 @@ class VehicleLab(ShowBase):
 
     def set_plot_group(self, selection):
         names = ("制动响应", "转向响应",
-                 "四轮法向载荷", "四轮滑移率", "轮胎力 / 轮速", "路径跟踪", "执行器响应")
+                 "四轮法向载荷", "四轮滑移率", "轮胎力 / 轮速", "路径跟踪", "执行器响应",
+                 "轮胎侧偏角", "附着利用率", "车身侧偏 / 侧倾", "左右载荷转移")
         groups = ((("speed",), ("ax",)), (("yaw",), ("steering_request", "steering")),
-                  (("load_fl", "load_fr"), ("load_rl", "load_rr")),
+                  (("sample_load_fl", "sample_load_fr"), ("sample_load_rl", "sample_load_rr")),
                   (("kappa_fl", "kappa_fr"), ("kappa_rl", "kappa_rr")),
                   (("fx_fl", "fy_fl"), ("omega_fl", "omega_rl")), (("path_error",), ("speed",)),
-                  (("throttle_request", "engine_throttle"), ("brake_request", "pressure_fl")))
+                  (("throttle_request", "engine_throttle"), ("brake_request", "pressure_fl")),
+                  (("alpha_fl", "alpha_fr"), ("alpha_rl", "alpha_rr")),
+                  (("utilization_fl", "utilization_fr"), ("utilization_rl", "utilization_rr")),
+                  (("beta",), ("roll",)), (("ltr_front",), ("ltr_rear",)))
         for plot, keys in zip(self.plots, groups[names.index(selection)]):
             plot.keys = keys
         self.refresh_plots()
@@ -365,7 +375,7 @@ class VehicleLab(ShowBase):
             f"滑移 FL/FR  {slips[0]} / {slips[1]}\n"
             f"       RL/RR  {slips[2]} / {slips[3]}\n"
             f"\n"
-            f"载荷 FL/FR  {loads[0]} / {loads[1]} N\n"
+            f"施力轮荷 FL/FR  {loads[0]} / {loads[1]} N\n"
             f"       RL/RR  {loads[2]} / {loads[3]} N\n\n"
             f"压力 FL/FR  {row['pressure_fl']:.0%} / {row['pressure_fr']:.0%}\n"
             f"       RL/RR  {row['pressure_rl']:.0%} / {row['pressure_rr']:.0%}")

@@ -1,0 +1,55 @@
+{
+  "started_utc": "2026-10-13T07:58:26.934758+00:00",
+  "git_head": "b2fa419612a0cdfb78e16073b49b358826dd2cf6",
+  "git_status": "M assets/game/ui/formulas/manifest.json\n M src/lab_application.py\n M src/lab_records.py\n M src/lab_signals.py\n M src/parameter_formulas.py\n M src/parameter_help.py\n M src/ui/lab_workbench.py\n M src/ui/parameter_help.py\n M tests/test_lab_records.py\n?? assets/game/ui/formulas/metric.beta-0.png\n?? assets/game/ui/formulas/metric.ltr_front-0.png\n?? assets/game/ui/formulas/metric.mfdd-0.png\n?? assets/game/ui/formulas/metric.utilization_fl-0.png\n?? assets/game/ui/formulas/metric.yaw_gain-0.png\n?? docs/tasks/SIM-HANDLING-01.md\n?? src/lab_metrics.py\n?? src/ui/lab_engineering.py\n?? tests/test_lab_metrics.py\n?? tools/lab_engineering_ui_check.py\n?? tools/physics/lab_engineering_probe.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_lab_records.py",
+    "tests/test_lab_metrics.py",
+    "tests/test_parameter_help.py"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\logs\\validation\\SIM-HANDLING-01-final-T0\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.121
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_lab_records.py",
+        "tests/test_lab_metrics.py",
+        "tests/test_parameter_help.py"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\logs\\validation\\SIM-HANDLING-01-final-T0\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 3.325
+    }
+  ]
+}

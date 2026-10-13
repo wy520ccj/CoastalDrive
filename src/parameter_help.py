@@ -49,6 +49,17 @@ GROUP_SOURCES = {
     "electronics": "src/vehicle_brakes.py；src/vehicle_traction.py；src/vehicle_stability.py",
 }
 
+METRIC_INFO = {
+    "metric.mfdd": ("充分发出平均减速度", "m/s²", "距离平均指标", "dm=(vb²−ve²)/[2(se−sb)]；速度以m/s计。", "vb=80%初速，ve=10%初速；水平路径交点线性插值，未到区间或区间增速/异常终止保留无效原因。不是瞬时减速度峰值。", "src/lab_metrics.py · mfdd"),
+    "metric.yaw_gain": ("稳态横摆增益", "1/s", "工况条件指标", "Gr=−r世界z/δ实际。", "右转为正，δ为实际中心前轮角。末1s速度/角度变化≤2%、横摆≤5%才发布；不是方向盘增益，不从单点推算不足转向梯度。", "src/lab_metrics.py · yaw_gain"),
+    "metric.beta": ("峰值车身侧偏", "deg", "完成步观测", "β=atan2(v右, |v前|)。", "水平速度≤1m/s未定义；峰值来自真实车身速度，不用几何转弯参考值代替。", "src/vehicle.py · update_dynamics；src/lab_metrics.py"),
+    "metric.roll": ("峰值车身侧倾", "deg", "完成步观测", "读取实际刚体姿态的侧倾角，统计绝对峰值。", "本量不是道路倾角，也不是通过横向加速度乘一个常数生成的动画。", "src/vehicle.py；src/lab_metrics.py"),
+}
+for _axle in ("front", "rear"):
+    METRIC_INFO[f"metric.ltr_{_axle}"] = ("轴左右轮荷差比", "1", "完成步轮荷指标", "LTR=(Fz,R−Fz,L)/(Fz,R+Fz,L)。", "使用完成步真实接点轮荷，右减左；整轴失去支撑时未定义。峰值取绝对值，不以此单项宣称翻车合格。", "src/lab_signals.py；src/lab_metrics.py")
+for _wheel in ("fl", "fr", "rl", "rr"):
+    METRIC_INFO[f"metric.utilization_{_wheel}"] = ("末子步附着利用率", "1", "施力阶段指标", "η=√(Fx²+Fy²)/D施力。", "实际末子步Fx/Fy与同阶段D共同计算；离地/预算零未定义，不把η限制为1，数值分量残差单独记录。", "src/lab_signals.py；src/lab_metrics.py")
+
 
 @dataclass(frozen=True)
 class Explanation:
@@ -61,6 +72,8 @@ class Explanation:
 
 
 def explanation(key):
+    if key in METRIC_INFO:
+        return Explanation(*METRIC_INFO[key])
     if key in EDITOR_INFO:
         return Explanation(*EDITOR_INFO[key])
     if key in SPECIAL:

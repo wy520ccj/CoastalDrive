@@ -7,8 +7,16 @@ from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectFrame, OnscreenText
 from panda3d.core import CardMaker, Filename, Point2, TextNode, Texture, TransparencyAttrib
 
+from lab_metrics import engineering_analysis
 from parameter_formulas import FORMULAS, formula_key
-from parameter_help import ALIASES, EDITOR_INFO, explanation, group_parameters, parameter_group
+from parameter_help import (
+    ALIASES,
+    EDITOR_INFO,
+    METRIC_INFO,
+    explanation,
+    group_parameters,
+    parameter_group,
+)
 from paths import resource_root
 from ui import theme
 from ui.lab_widgets import MUTED, rounded_panel
@@ -87,6 +95,15 @@ class ParameterHelp:
 
     def context(self, key):
         app = self.app
+        if key in METRIC_INFO:
+            record = app.active_record()
+            if record is None:
+                return "尚无真实试验", "指标值：—"
+            summary = record.metadata["summary"]
+            analysis = engineering_analysis(record.samples, record.snapshots, summary["options"], summary["reason"])
+            item = next(item for item in analysis["metrics"] if "metric."+item["key"] == key)
+            value = f"{item['value']:.5g}" if item["value"] is not None else "— 未满足工况条件"
+            return "已完成试验记录；"+item["note"], "当前指标："+value
         if app.record is not None:
             config = app.record.metadata["vehicle_config"]
             options = app.record.metadata["summary"]["options"]

@@ -5,6 +5,61 @@
   "font_points": 24,
   "source": "src/parameter_formulas.py",
   "formulas": {
+    "metric.mfdd": [
+      {
+        "file": "metric.mfdd-0.png",
+        "tex": "d_m=\\frac{v_b^2-v_e^2}{2(s_e-s_b)},\\quad v_b=0.8v_0,\\quad v_e=0.1v_0",
+        "width": 1263,
+        "height": 133,
+        "texture_width": 2048,
+        "texture_height": 256,
+        "sha256": "d2fe07fd15bee6509356becb5d07c36476ff94239508fea120f626a29fbc4e29"
+      }
+    ],
+    "metric.yaw_gain": [
+      {
+        "file": "metric.yaw_gain-0.png",
+        "tex": "G_r=\\frac{\\overline{r}_{\\mathrm{right}}}{\\overline{\\delta}_{\\mathrm{actual}}}",
+        "width": 303,
+        "height": 133,
+        "texture_width": 512,
+        "texture_height": 256,
+        "sha256": "ca2afdafc3b471ca185adee84fe36178e4057f2a8f5655b1ce39bbadd3003069"
+      }
+    ],
+    "metric.beta": [
+      {
+        "file": "metric.beta-0.png",
+        "tex": "\\beta=\\arctan\\left(\\frac{v_{\\mathrm{right}}}{|v_{\\mathrm{forward}}|}\\right)",
+        "width": 606,
+        "height": 106,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "839097c87ed7d801ecab7685f43ad33cbf896781e29783dfd874d7a65b372e5f"
+      }
+    ],
+    "metric.ltr_front": [
+      {
+        "file": "metric.ltr_front-0.png",
+        "tex": "\\mathrm{LTR}=\\frac{F_{z,R}-F_{z,L}}{F_{z,R}+F_{z,L}}",
+        "width": 493,
+        "height": 120,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "b4523a99fd19785f2c10cfa741c15c3a65ac5fde2e294e26487a4faa24ada91c"
+      }
+    ],
+    "metric.utilization_fl": [
+      {
+        "file": "metric.utilization_fl-0.png",
+        "tex": "\\eta=\\frac{\\sqrt{F_x^2+F_y^2}}{D_{\\mathrm{force}}}",
+        "width": 386,
+        "height": 156,
+        "texture_width": 512,
+        "texture_height": 256,
+        "sha256": "e95cc26624ce750de1ff4d77a38e82542ad82fc5ada17fcda11f1859ad7c2503"
+      }
+    ],
     "speed": [
       {
         "file": "speed-0.png",

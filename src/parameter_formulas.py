@@ -4,6 +4,16 @@ from parameter_help import ALIASES
 
 # 每项为独立数学行、符号释义。保留近似号，避免把解释式当成实际求解器。
 FORMULAS = {
+    "metric.mfdd": ((r"d_m=\frac{v_b^2-v_e^2}{2(s_e-s_b)},\quad v_b=0.8v_0,\quad v_e=0.1v_0",),
+                    "v采用m/s，s采用m；b/e分别为80%/10%初速交点。"),
+    "metric.yaw_gain": ((r"G_r=\frac{\overline{r}_{\mathrm{right}}}{\overline{\delta}_{\mathrm{actual}}}",),
+                        "分子为右转横摆率rad/s，分母为实际中心前轮角rad；仅稳态窗有效。"),
+    "metric.beta": ((r"\beta=\arctan\left(\frac{v_{\mathrm{right}}}{|v_{\mathrm{forward}}|}\right)",),
+                    "车身局部速度分量；源码采用atan2处理象限，低速不发布。"),
+    "metric.ltr_front": ((r"\mathrm{LTR}=\frac{F_{z,R}-F_{z,L}}{F_{z,R}+F_{z,L}}",),
+                         "R/L：同轴右/左轮；轮荷采用完成步采样。"),
+    "metric.utilization_fl": ((r"\eta=\frac{\sqrt{F_x^2+F_y^2}}{D_{\mathrm{force}}}",),
+                              "Fx/Fy与D采用同一个末机械子步；预算D不是完成步sample_grip。"),
     "speed": ((r"v_0=\frac{V_0}{3.6},\qquad \omega_0=\frac{v_0}{r_0}",),
               "V0：输入车速 km/h；v0：初速 m/s；r0：轮胎半径。"),
     "road_friction": ((r"D=\mu F_z\left(\frac{F_z}{F_{z0}}\right)^{p_D-1}",),
@@ -61,4 +71,8 @@ def formula_key(key):
         return "lateral_stiffness"
     if field == "abs":
         return "braking.target_slip"
+    if field == "metric.ltr_rear":
+        return "metric.ltr_front"
+    if field.startswith("metric.utilization_"):
+        return "metric.utilization_fl"
     return field if field in FORMULAS else None

@@ -10,7 +10,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from lab_maneuvers import path_error, reference_path
-from lab_signals import SIGNAL_BY_KEY, SIGNALS, sample_signals
+from lab_metrics import engineering_analysis
+from lab_signals import LEGACY_SIGNAL_KEYS, SIGNAL_BY_KEY, SIGNALS, sample_signals
 from paths import resource_root
 from snapshot_wire import decode_snapshots, encode_snapshots
 from vehicle_state import VehicleCommand
@@ -124,6 +125,18 @@ def export_record(record, folder, baseline=None):
         writer.writeheader()
         writer.writerows(record.samples)
     records = (baseline, record) if baseline else (record,)
+    analyses = [engineering_analysis(item.samples, item.snapshots, item.metadata["summary"]["options"],
+                                    item.metadata["summary"]["reason"]) for item in records]
+    (folder/"engineering.json").write_text(json.dumps({"definition_fingerprint": model_fingerprint(),
+                                                      "A" if baseline else "current": analyses[0],
+                                                      **({"B": analyses[1]} if baseline else {})},
+                                                     ensure_ascii=False, indent=2, allow_nan=False), encoding="utf-8")
+    metrics_table = "".join(f'<tr><td>{html.escape(item["label"])}</td>'
+                            + "".join(f'<td>{analysis["metrics"][index]["value"]:.4g}</td>'
+                                      if analysis["metrics"][index]["value"] is not None else '<td>未满足条件</td>'
+                                      for analysis in analyses)
+                            + f'<td>{item["unit"]}</td><td>{html.escape(item["note"])}</td></tr>'
+                            for index, item in enumerate(analyses[-1]["metrics"]))
     keys = ("speed", "path_error", "ay", "yaw", "steering", "kappa_fl") if record.metadata["driver"] else (
         "speed", "ax", "yaw", "steering", "kappa_fl", "load_fl")
     plots = "\n".join(plot_svg(records, key) for key in keys)
@@ -141,7 +154,7 @@ def export_record(record, folder, baseline=None):
 <style>body{{background:#f3efe3;color:#102b3a;font:15px system-ui;max-width:1000px;margin:40px auto;padding:0 24px}}svg{{width:100%;margin:10px 0}}pre{{white-space:pre-wrap;background:#fefcf5;padding:20px;border-radius:8px}}td{{border-bottom:1px solid #c9d3cc;padding:8px}}h1{{color:#247e96}}</style>
 <h1>CoastalDrive · 车辆动力学实验</h1><p>{html.escape(record.metadata["vehicle_name"])} · 120 Hz · 离线固定步</p>
 <p>{html.escape(record.metadata["model_basis"])}</p><p>曲线来自真实物理记录。A 为海蓝，B 为橙色；单次记录为海蓝。制动距离使用完成步的三维行驶距离，停止阈值 |v| ≤ 0.1 m/s。</p>
-<h2>试验结果</h2><pre>{summary}</pre>{plots}<h2>比较条件</h2><pre>{change_text}</pre>
+<h2>试验结果</h2><pre>{summary}</pre><h2>工程指标</h2><p>列顺序：{"A / B" if baseline else "本次"}。未满足条件的原因及计算区间见engineering.json。</p><table>{metrics_table}</table>{plots}<h2>比较条件</h2><pre>{change_text}</pre>
 <h2>信号单位与字段来源</h2><table>{catalog}</table><p>完整配置、命令序列与源码/原生模块摘要见 experiment.json；120 Hz 数据见 signals.csv，动画快照见 snapshots.bin。实际计算耗时不包含初始化与文件导出。</p></html>'''
     (folder/"report.html").write_text(report, encoding="utf-8")
     return folder/"report.html"
@@ -162,6 +175,10 @@ def load_record(folder):
     commands = tuple(VehicleCommand(**command) for command in document.pop("commands"))
     if not len(samples) == len(snapshots) == len(commands) or not samples:
         raise ValueError("信号、快照与输入记录长度不一致")
+    declared = {item["key"] for item in document["signals"]}
+    if (declared not in (LEGACY_SIGNAL_KEYS, set(SIGNAL_BY_KEY))
+        or any(set(row) != declared for row in samples)):
+        raise ValueError("信号字段与当前或旧版完整目录不一致")
     options = LabOptions(**document["summary"]["options"])
     saved_config = json.loads((folder/"vehicle.json").read_text(encoding="utf-8"))
     if saved_config != document["vehicle_config"]:
@@ -173,8 +190,14 @@ def load_record(folder):
             raise ValueError("信号与动画的120Hz时间或姿态不一致")
         expected = sample_signals(state, command, snapshots[0].time)
         expected["path_error"] = path_error(options, state.player, snapshots[0].player)
-        if expected != row:
+        # 旧记录严格验证原字段，再从其已有快照补新显示字段，不重算物理或覆盖原文件。
+        if any(key not in expected for key in row) or {key: expected[key] for key in row} != row:
             raise ValueError("信号数据与对应的真实动画快照不一致")
+    if set(samples[0]) != set(expected):
+        document["display_signal_upgrade"] = {"basis": "original snapshots", "analysis": "current lab_signals"}
+        samples = tuple({**sample_signals(state, command, snapshots[0].time),
+                         "path_error": path_error(options, state.player, snapshots[0].player)}
+                        for state, command in zip(snapshots, commands, strict=True))
     return LabRecord(document, samples, snapshots, commands)
 
 

@@ -8,6 +8,7 @@ import pytest
 
 from lab_experiment import LabExperiment, LabOptions
 from lab_records import LabRecord, changed_conditions, export_record, load_record, recalculate
+from lab_signals import LEGACY_SIGNAL_KEYS
 
 
 def record(options):
@@ -35,6 +36,7 @@ def test_export_load_and_recalculate_reproduce_full_actual_snapshots(tmp_path):
         rows = list(csv.DictReader(stream))
     assert len(rows) == len(original.samples)
     assert float(rows[-1]["speed"]) == original.samples[-1]["speed"]
+    assert (tmp_path/"trial/engineering.json").is_file()
     with pytest.raises(FileExistsError):
         export_record(original, tmp_path/"trial")
 
@@ -47,6 +49,9 @@ def test_ab_includes_all_actual_conditions_and_both_original_runs(tmp_path):
     export_record(candidate, tmp_path/"ab", baseline)
     assert load_record(tmp_path/"ab/baseline-A").samples == baseline.samples
     assert (tmp_path/"ab/comparison.json").is_file()
+    engineering = json.loads((tmp_path/"ab/engineering.json").read_text(encoding="utf-8"))
+    assert set(engineering) == {"A", "B", "definition_fingerprint"}
+    assert engineering["A"]["metrics"][0]["value"] is None  # 尚未达到有效速度区间。
     # 基线是独立快照，不会因为继续运行候选而改变。
     assert baseline.samples[-1]["speed"] != candidate.samples[-1]["speed"]
 
@@ -79,3 +84,23 @@ def test_signal_tampering_and_vehicle_file_mismatch_are_rejected(tmp_path):
     path.write_text(json.dumps(document), encoding="utf-8")
     with pytest.raises(ValueError, match="完整配置"):
         load_record(tmp_path/"vehicle")
+
+
+def test_complete_legacy_signals_are_verified_then_enriched_from_original_snapshots(tmp_path):
+    original = record(LabOptions(speed_kph=40, duration=.1))
+    export_record(original, tmp_path/"legacy")
+    path = tmp_path/"legacy/experiment.json"
+    document = json.loads(path.read_text(encoding="utf-8"))
+    document["samples"] = [{key: value for key, value in row.items() if key in LEGACY_SIGNAL_KEYS}
+                           for row in document["samples"]]
+    document["signals"] = [item for item in document["signals"] if item["key"] in LEGACY_SIGNAL_KEYS]
+    path.write_text(json.dumps(document), encoding="utf-8")
+    contents = path.read_bytes()
+    loaded = load_record(tmp_path/"legacy")
+    assert loaded.samples == original.samples and loaded.snapshots == original.snapshots
+    assert loaded.metadata["display_signal_upgrade"]["basis"] == "original snapshots"
+    assert path.read_bytes() == contents
+    document["samples"][1]["fx_fl"] += 1
+    path.write_text(json.dumps(document), encoding="utf-8")
+    with pytest.raises(ValueError, match="信号数据"):
+        load_record(tmp_path/"legacy")

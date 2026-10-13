@@ -67,7 +67,8 @@ def build_workbench(app):
     app.candidate_value = app.text("—", 1.43, .158, .052, theme.ORANGE, font=app.heading_font)
     app.result = app.text("固定 A 后比较", 1.07, .077, .029, MUTED)
     app.timing = app.text("仿真  —\n计算  —", 1.07, -.008, .030, MUTED)
-    app.button("查看详细信号  ›", 1.35, -.135, .56, app.toggle_details)
+    app.button("详细信号", 1.20, -.135, .27, app.toggle_details)
+    app.button("工程指标", 1.50, -.135, .27, app.show_engineering)
 
     app.button("暂停", -.70, -.100, .30, app.toggle_pause)
     app.button("单步", -.34, -.100, .30, app.single_step)
@@ -87,7 +88,8 @@ def build_workbench(app):
                  LabPlot(root, app.font, (.40, 1.72, -.86, -.27), "ax")]
     for plot in app.plots:
         plot.update(())
-    app.plot_menu = app.option(["制动响应", "转向响应", "四轮法向载荷", "四轮滑移率", "轮胎力 / 轮速", "路径跟踪", "执行器响应"],
+    app.plot_menu = app.option(["制动响应", "转向响应", "四轮法向载荷", "四轮滑移率", "轮胎力 / 轮速", "路径跟踪", "执行器响应",
+                               "轮胎侧偏角", "附着利用率", "车身侧偏 / 侧倾", "左右载荷转移"],
                               -1.63, -.785, .60, app.set_plot_group, parameter="plot")
     app.text("曲线组", -1.62, -.700, .030, MUTED)
     app.text("A 海蓝   B 橙色", .60, -.238, .026, MUTED)
@@ -152,3 +154,6 @@ def build_workbench(app):
     from ui.parameter_help import ParameterHelp
 
     app.parameter_help = ParameterHelp(app)
+    from ui.lab_engineering import EngineeringPanel
+
+    app.engineering_panel = EngineeringPanel(app)
