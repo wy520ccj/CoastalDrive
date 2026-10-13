@@ -39,6 +39,6 @@
 
 ## 设计与验证
 
-布局依据用户认可的[生成设计参考](design/vehicle-lab-reference.png)，正文为Source Han Sans SC Regular，标题使用当前品牌字体。默认保持两张主曲线，参数/详细信号折叠；旧VI菜单截图不作为设计依据。规范及生成说明见[设计记录](design/vehicle-lab-design.md)。
+布局依据用户认可的[生成设计参考](design/vehicle-lab-reference.png)，正文为Source Han Sans SC Bold，标题使用当前品牌字体。默认保持两张主曲线，参数/详细信号折叠；旧VI菜单截图不作为设计依据。规范及生成说明见[设计记录](design/vehicle-lab-design.md)。
 
 自动功能与实际渲染证据见[evidence/LAB/README.md](evidence/LAB/README.md)。T2默认海岸10000拍旧求解失败在隔离本轮入口/场地改动后仍复现；本轮不调整方程、20轮上限或阈值。实验室新工况短测通过不代表整个物理阶段或13车实时Gate通过；人工操作/画面体验待确认。

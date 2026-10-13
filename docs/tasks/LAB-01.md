@@ -11,7 +11,7 @@
 - 允许修改：新增 lab_* 与 ui/lab_*、main.py/application.py/main_menu.py 的入口接线、Simulation新增纯平面lab场地（沿用全部车辆方程）、工程参数导出字段补齐、相关测试/验证工具、实验室说明和开发路线。
 - 只读：Simulation、DrivingExperiment、VehicleCommand、车辆设计/资源与工程证据。
 - 不得修改：车辆方程/机械子步/已认可游戏驾驶参数、悬架准备未提交成果、既有性能证据、公开试玩包。
-- 2026-10-13 设计依据锁定为用户认可的生成图 docs/design/vehicle-lab-reference.png；不采用旧VI菜单截图。正文使用Source Han Sans SC Regular，小字号统一提高；默认两张曲线，高级参数/详细信号折叠。
+- 2026-10-13 设计依据锁定为用户认可的生成图 docs/design/vehicle-lab-reference.png；不采用旧VI菜单截图。正文使用Source Han Sans SC Bold，小字号统一提高；默认两张曲线，高级参数/详细信号折叠。
 - 初始工作区：setup.py、vehicle_suspension.py、wheel_contact_kernels.c，以及 suspension_prepare.h 和两份对应测试；不归本任务。
 
 ## 验收

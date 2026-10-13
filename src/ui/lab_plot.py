@@ -7,10 +7,9 @@ from panda3d.core import LineSegs, TextNode
 
 from lab_signals import SIGNAL_BY_KEY
 from ui import theme
-from ui.lab_widgets import rounded_panel
+from ui.lab_widgets import MUTED, rounded_panel
 
 TEXT = theme.INK
-MUTED = theme.MUTED
 COLORS = (theme.SEA, theme.ORANGE)
 
 
@@ -23,7 +22,7 @@ class LabPlot:
         self.title = OnscreenText(parent=self.root, font=font, text="", fg=TEXT,
             pos=(left+.06, top-.065), scale=.039, align=TextNode.ALeft, mayChange=True)
         self.readout = OnscreenText(parent=self.root, font=font, text="", fg=MUTED,
-            pos=(left+.06, bottom+.020), scale=.031, align=TextNode.ALeft, mayChange=True)
+            pos=(left+.06, bottom+.020), scale=.034, align=TextNode.ALeft, mayChange=True)
         self.axis_labels = []
         self.lines = self.root.attachNewNode("curves")
         self.cursor = self.root.attachNewNode("cursor")
@@ -58,14 +57,14 @@ class LabPlot:
             grid.drawTo(x1, 0, z)
             label = f"{value:.2f}" if step < 1 else f"{value:g}"
             self.axis_labels.append(OnscreenText(parent=self.root, font=self.font, text=label, fg=MUTED,
-                pos=(x0-.025, z-.009), scale=.032, align=TextNode.ARight))
+                pos=(x0-.025, z-.009), scale=.034, align=TextNode.ARight))
         for index in range(5):
             x = x0+index*(x1-x0)/4
             grid.moveTo(x, 0, z0)
             grid.drawTo(x, 0, z1)
             self.axis_labels.append(OnscreenText(parent=self.root, font=self.font,
                 text=f"{self.duration*index/4:.1f}", fg=MUTED,
-                pos=(x, z0-.052), scale=.032))
+                pos=(x, z0-.052), scale=.034))
         self.lines.attachNewNode(grid.create())
         for rows, color in zip(series, COLORS):
             for channel, key in enumerate(self.keys):

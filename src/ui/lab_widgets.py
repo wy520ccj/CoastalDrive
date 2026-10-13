@@ -1,4 +1,4 @@
-"""实验室专用圆角卡片几何；无位图文字，控件仍由DirectGUI编辑。"""
+"""实验室专用控件样式与卡片几何；控件仍由DirectGUI编辑。"""
 
 import math
 from functools import lru_cache
@@ -13,6 +13,9 @@ from panda3d.core import (
     PNMImage,
     Texture,
 )
+
+# 辅助文字保持层级，但在奶白底上保留清晰、扎实的笔画。
+MUTED = (43 / 255, 64 / 255, 74 / 255, 1)
 
 
 def rounded_panel(parent, name, box, color, radius=.025):

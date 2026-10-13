@@ -23,13 +23,12 @@ from lab_records import LabRecord, changed_conditions, export_record, load_recor
 from lab_scene import LabScene
 from paths import user_data
 from ui import theme
-from ui.lab_widgets import button_textures
+from ui.lab_widgets import MUTED, button_textures
 from vehicle_designs import DESIGN_VEHICLES, vehicle_design
 from vehicle_parameters import load_vehicle_config
 from vehicle_state import VehicleCommand
 
 INK = theme.INK
-MUTED = theme.MUTED
 ACCENT = theme.SEA
 PANEL = theme.PAPER_LIGHT
 BUTTON = theme.PAPER
@@ -45,7 +44,9 @@ class VehicleLab(ShowBase):
         self.setBackgroundColor(*theme.PAPER)
         self.pipeline = simplepbr.init(enable_shadows=True, max_lights=1, msaa_samples=4, shadow_bias=.0007)
         self.camLens.setNearFar(.1, 1500)
-        self.font = theme.load_font("fonts/SourceHanSansSC-Regular.otf")
+        self.font = theme.load_font("fonts/SourceHanSansSC-Bold.otf")
+        # 正文按小字分辨率生成字形，避免160像素字形过度缩小时笔画忽细忽粗。
+        self.font.setPixelsPerUnit(48)
         self.heading_font = theme.load_font()
         self.display_font = theme.load_font(theme.DISPLAY_FONT_FILE)
         self.root = DirectFrame(parent=self.aspect2d, frameColor=(0, 0, 0, 0), relief=None,
@@ -87,7 +88,7 @@ class VehicleLab(ShowBase):
 
     def button(self, label, x, z, width, action, parent=None, accent=False):
         button = DirectButton(parent=parent or self.root, text=label, text_font=self.font,
-            text_scale=.034, text_fg=(1, 1, 1, 1) if accent else INK, text_pos=(0, -.012),
+            text_scale=.035, text_fg=(1, 1, 1, 1) if accent else INK, text_pos=(0, -.012),
             frameColor=(1, 1, 1, 1), frameTexture=button_textures(accent),
             frameSize=(-width/2, width/2, -.045, .045), borderWidth=(0, 0),
             relief=DGG.FLAT, pos=(x, 0, z), command=action, pressEffect=False)
@@ -112,7 +113,7 @@ class VehicleLab(ShowBase):
             popupMarker_pos=(width-.025, 0, 0), popupMarker_scale=.03,
             popupMarker_relief=DGG.FLAT, popupMarker_frameColor=(0, 0, 0, 0),
             popupMarker_text="▼", popupMarker_text_font=self.font,
-            popupMarker_text_fg=theme.MUTED, popupMarker_text_scale=.7,
+            popupMarker_text_fg=MUTED, popupMarker_text_scale=.7,
             popupMarkerBorder=(0, 0), highlightScale=(.038, .038))
 
     def build_ui(self):

@@ -1,5 +1,7 @@
 # LAB-01 / LAB-02 实现与验收证据
 
+2026-10-13字体反馈修订：[LAB-TYPE-01](../../tasks/LAB-TYPE-01.md)。正文Regular→Bold、辅助字加深、小字采样调整，Heavy标题/橙色指标保持。720/1080各5张实际GUI截图见typography-720-final/typography-1080-final，字形对比见typography-comparison.png；载入原A/B记录，不为字体重跑试验。相关T1/Ruff/三种子通过，人工清晰度确认待用户实际查看。
+
 2026-10-13，主目录main，施工基线396084acbf22bc510b399387bd31966c8c63ffe8；源码和原有未提交悬架准备同时存在。实验室实现已本地提交24dbdc2，收尾元数据另见Git日志；不推送、不改公开试玩包。
 
 ## 当前结果
