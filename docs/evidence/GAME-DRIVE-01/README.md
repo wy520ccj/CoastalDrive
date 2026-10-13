@@ -158,3 +158,30 @@ T0初Ruff导入格式失败，修正后9通过/1失败。失败仅test_ui_modes_
 ```
 
 本地收口包含r2交通复用、r3结算字形/换行准备、诊断工具/既有测试预期及任务文档；protected工作不提交。当前画面已获用户认可，实际转向手感、长期/声音与T2/T3阶段仍开放；goal active，不推送或替换公开包。
+
+## r4 正式音频负载、120秒测量与未解决绘制等待
+
+基线b70c8ce，日志logs/game-drive-r4。smoke_audio隔离设置/成绩但使用正式OpenAL/Soundscape，默认静音smoke与交互音频语义保持。--audio核对有效OpenAL设备、每秒采实际声音状态；--extended显式允许60秒以上到300秒，默认短测不变。首次120秒命令缺--extended被原边界拒绝，未启动窗口，不算样本。声音T0九项、声音键/设置隔离节点T1与Ruff/三种子通过；新增诊断同步参数后收口T1-final同节点/三种子通过，旧数值/操控/实验台结果复用。
+
+| r4有效前台/18NPC/弯坡/seed23/game-tuned/正式声音 | 时长 | 物理Hz | FPS | 帧P95/P99/最大 ms | 落后P95/峰值 ms | 结论 |
+|---|---:|---:|---:|---:|---:|---|
+| window-busy-audio，无分项插桩 | 120s | 119.996423 | 83.811312 | 18.1881/20.4717/111.3062 | 16.0858/120.3650 | 严格样本Gate fail |
+| window-busy-audio-trace，分项 | 60s | 120.002700 | 见report.json | 0帧>50ms | 16.2122/43.4414 | 短阈值通过；诊断非最终收益 |
+| window-busy-audio-trace-r2，分项/物理GC | 120s | 120.000108 | 83.357287 | 18.7652/21.0092/131.8157 | 16.1301/43.0290 | fail；定位绘制等待 |
+| window-busy-audio-no-vsync，同步关闭候选 | 120s | 120.002824 | 84.292169 | 17.8409/20.2908/98.2337 | 16.1683/41.7735 | fail；未用于正式入口 |
+
+以上窗口有效，丢时/碰撞/驾驶显示停滞均0。三个120秒样本实际14040～14041拍，117模拟秒与117墙钟秒一致；不是用绘制FPS冒充物理吞吐。三个120秒样本各118个稳态采样中，十层引擎与所选电台真实状态均PLAYING，OpenAL设备有效；不宣称新的人工听感结论。
+
+长帧定位：第二次120秒第54.459秒绘制131.816ms；同刻render-frame慢调用started_at=1819.282176、wall=121.5939ms/cpu=0。两端GC、物理、声音/设备更新无同刻对应长事件。常规physics-road-attach约20～27ms与camera-roundtrip约33ms时间戳相关，不解释122ms绘制等待。证据定位到绘制等待，未证明具体GPU/驱动故障。首无插桩120秒111.306ms失败保留，60秒未复现不能关闭它。
+
+诊断峰值修正：原phase_timing.wall_max只取最近4096调用，可能漏掉前半程大峰值；slow_calls保留了上述122ms原始事件。工具改为全区间最大值和慢调用起点/CPU/墙钟；原报告不改。分位数仍标window_samples，嵌套耗时不能相加。
+
+同步对照依据Panda3D官方[同步配置说明](https://github.com/panda3d/panda3d-docs/blob/1.10/optimization/index.rst)与[v1.10.16 WGL上下文reset源码](https://github.com/panda3d/panda3d/blob/v1.10.16/panda/src/wgldisplay/wglGraphicsStateGuardian.cxx)：同步值在上下文初始化时设置，因此诊断参数在ShowBase创建前传入；不能运行后只改PRC值假装对照。关闭候选仍98.234ms长帧，未采用；正式游戏同步默认true、原/Draw管线保持。
+
+主要命令（各诊断输出目录独立）：
+
+    .venv/Scripts/python.exe tools/validate.py T0 --tests tests/test_soundscape.py --output logs/game-drive-r4/t0-audio
+    .venv/Scripts/python.exe tools/validate.py T1 --tests tests/test_ui.py::test_driving_radio_keys_defer_disk_save_and_leave_panel_intact --output logs/game-drive-r4/t1-final
+    .venv/Scripts/python.exe tools/performance/benchmark_runtime.py --output logs/game-drive-r4/window-busy-audio --track endless --shape hills --seconds 120 --extended --vehicle-design game-tuned --driving-mode game --traffic-count 18 --independent-clock --audio
+
+两次分项另加--trace-phases；同步候选另加--vsync off。不删模型、不修改实验台/保护悬架文件、不重建DLL、不推送/换公开包。实际操控与偶发绘制等待仍开放，goal active；下一绘制线程/驱动等待分项，复用已有数值/短测证据。

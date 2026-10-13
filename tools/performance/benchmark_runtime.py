@@ -49,11 +49,27 @@ def traced_authority(output, *arguments):
     from race import BestTimes
     from session import Session
     from simulation import Simulation
+    from streamed_road import StreamedRoad
     from tire_drivetrain import DrivetrainInput
     from vehicle import Vehicle
     from vehicle_tire_step import TireAdvanceInput
 
     records = {}
+    gc_started = {}
+    gc_pauses = []
+
+    def collect(phase, info):
+        generation = info['generation']
+        if phase == 'start':
+            gc_started[generation] = time.perf_counter(), time.thread_time()
+        else:
+            started, cpu_started = gc_started.pop(generation)
+            gc_pauses.append({'started_at':started, 'generation':generation,
+                              'wall_ms':(time.perf_counter()-started)*1000,
+                              'cpu_ms':(time.thread_time()-cpu_started)*1000,
+                              'collected':info['collected']})
+
+    gc.callbacks.append(collect)
 
     def timed(name, function):
         @wraps(function)
@@ -64,16 +80,23 @@ def traced_authority(output, *arguments):
             finally:
                 duration = time.perf_counter()-wall, time.thread_time()-cpu
                 record = records.setdefault(name, {'count': 0, 'wall': 0., 'cpu': 0.,
-                                                   'samples': deque(maxlen=8192)})
+                                                   'samples': deque(maxlen=8192), 'slow_calls': deque(maxlen=16),
+                                                   'wall_max':0.})
                 record['count'] += 1
                 record['wall'] += duration[0]
+                record['wall_max'] = max(record['wall_max'], duration[0])
                 record['cpu'] += duration[1]
                 record['samples'].append(duration[0])
+                if duration[0] >= .020:
+                    record['slow_calls'].append({'started_at': wall, 'wall_ms': duration[0]*1000,
+                                                 'cpu_ms': duration[1]*1000})
         return call
 
     for owner, attribute, name in (
         (Session, 'tick', 'session-tick'), (Simulation, 'step', 'simulation-step'),
         (Simulation, '_drive_traffic', 'traffic-decision'),
+        (Simulation, '_update_stream', 'physics-stream-update'),
+        (StreamedRoad, 'add', 'physics-road-attach'),
         (Simulation, 'snapshot', 'snapshot'),
         (world_step, 'advance_world', 'advance-world'),
         (TireAdvanceInput, 'solve', 'complete-solve'),
@@ -95,16 +118,19 @@ def traced_authority(output, *arguments):
     try:
         session_process._serve(*arguments)
     finally:
+        gc.callbacks.remove(collect)
         result = {}
         for name, record in records.items():
             values = sorted(record['samples'])
             result[name] = {'count': record['count'],
                 'wall_mean_ms': record['wall']/record['count']*1000,
                 'cpu_mean_ms': record['cpu']/record['count']*1000,
-                'wall_max_ms':max(values)*1000,
+                'wall_max_ms':record['wall_max']*1000,
                 'wall_p95_ms': values[int((len(values)-1)*.95)]*1000,
                 'wall_p99_ms': values[int((len(values)-1)*.99)]*1000}
+            result[name]['slow_calls'] = list(record['slow_calls'])
         (Path(output)/'authority-timing.json').write_text(json.dumps(result), encoding='utf-8')
+        (Path(output)/'authority-gc.json').write_text(json.dumps(gc_pauses), encoding='utf-8')
 
 
 def main():
@@ -112,13 +138,16 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--shape", choices=("straight", "curves", "hills"), default="hills")
     parser.add_argument("--seconds", type=float, default=45)
+    parser.add_argument('--extended', action='store_true', help='显式延长到60秒以上、最多300秒；默认仍为短测')
     parser.add_argument("--baseline-compute", action="store_true")
     parser.add_argument("--pipeline", choices=("single", "draw", "cull-draw"), default="draw")
+    parser.add_argument('--vsync', choices=('on', 'off'), default='on', help='只在诊断进程改变垂直同步，正式入口保持开启')
     parser.add_argument("--track", choices=("coastal", "endless"), default="endless")
     parser.add_argument("--vehicle-design")
     parser.add_argument("--driving-mode", choices=("game", "simulation"), default="game")
     parser.add_argument('--game-mode', choices=('free_drive', 'time_trial', 'distance_challenge'))
     parser.add_argument('--results-seconds', type=float, default=0., help='完赛后继续绘制结算；物理吞吐只取驾驶采样区间')
+    parser.add_argument('--audio', action='store_true', help='隔离设置/成绩，启用正式OpenAL驾驶声音和电台')
     parser.add_argument("--source", type=Path, default=ROOT / "src")
     parser.add_argument("--trace-streaming", action="store_true")
     parser.add_argument("--profile", action="store_true")
@@ -131,7 +160,9 @@ def main():
     parser.add_argument('--traffic-count',type=int,help='固定实测交通车辆数，模型沿用所选驾驶模式')
     parser.add_argument('--trace-draw-poses',action='store_true',help='记录实际Draw线程的车身/相机变换')
     args = parser.parse_args()
-    if not 30 <= args.seconds <= 60:
+    if args.extended and not 60 < args.seconds <= 300:
+        parser.error('延长窗口须在60秒以上、300秒以内')
+    if not args.extended and not 30 <= args.seconds <= 60:
         parser.error("短测限于30–60秒")
     if not -1.<=args.steering<=1.:
         parser.error("转向须在[-1,1]内")
@@ -161,7 +192,7 @@ def main():
             started = gc_started.pop(generation)
             if tracing:
                 gc_pauses.append({'generation':generation, 'ms':(time.perf_counter()-started)*1000,
-                                  'collected':info['collected']})
+                                  'collected':info['collected'], 'started_at':started})
 
     gc.callbacks.append(cyclic_collection)
     if args.trace_streaming:
@@ -271,11 +302,16 @@ def main():
                 return function(*arguments,**keywords)
             finally:
                 durations = time.perf_counter()-wall,time.thread_time()-cpu
-                record = phase_samples.setdefault(name,{'count':0,'wall':0.,'cpu':0.,'samples':deque(maxlen=4096)})
+                record = phase_samples.setdefault(name,{'count':0,'wall':0.,'cpu':0.,'samples':deque(maxlen=4096),
+                                                        'slow_calls':deque(maxlen=16), 'wall_max':0.})
                 record['count'] += 1
                 record['wall'] += durations[0]
+                record['wall_max'] = max(record['wall_max'], durations[0])
                 record['cpu'] += durations[1]
                 record['samples'].append(durations)
+                if durations[0] >= .020:
+                    record['slow_calls'].append({'started_at':wall,'wall_ms':durations[0]*1000,
+                                                 'cpu_ms':durations[1]*1000})
         return call
 
     if args.trace_phases:
@@ -290,6 +326,7 @@ def main():
 
         session_process._serve = partial(traced_authority, str(args.output.resolve()))
         from simulation import Simulation
+        from soundscape import Soundscape
         from streamed_road import StreamedRoad
         from vehicle import Vehicle
 
@@ -298,6 +335,8 @@ def main():
             (CoastalDrive,'apply_scene','scene-application'),
             (CoastalDrive,'pace_frame','frame-pacing'),
             (CoastalDrive,'refresh_panel','panel-refresh'),
+            (Soundscape,'update','soundscape-update'),
+            (ShowBase,'_ShowBase__audioLoop','audio-device-update'),
             (SessionProcess,'frame','remote-frame'),
             (SessionProcess,'camera_position','camera-roundtrip'),
             (Session,'tick','physical-session-tick'),(Simulation,'step','physical-world-tick'),
@@ -318,11 +357,18 @@ def main():
     loadPrcFileData("performance-pipeline", "threading-model " + pipelines[args.pipeline])
     if args.gc_rate is not None:
         loadPrcFileData("performance-gc","garbage-collect-states-rate "+str(args.gc_rate))
-    app = CoastalDrive(smoke=True, onscreen=True, track=args.track, road_shape=args.shape,
+    app = CoastalDrive(smoke=True, smoke_audio=args.audio, onscreen=True, track=args.track, road_shape=args.shape,
                        seed=23, output=args.output, render_size=(1920, 1080),
                        threading_model=pipelines[args.pipeline],independent_clock=args.independent_clock,
+                       sync_video=args.vsync == 'on',
                        vehicle_design_id=args.vehicle_design, driving_mode=DrivingMode(args.driving_mode),
                        physics_workers=args.physics_workers)
+    audio_managers = [{'type': manager.getType().getName(), 'valid': manager.isValid()}
+                      for manager in app.sfxManagerList]
+    if args.audio and not all(manager['type'] == 'OpenALAudioManager' and manager['valid']
+                              for manager in audio_managers):
+        app.close_game()
+        raise RuntimeError('带声音测量未获得有效OpenAL设备，不能作为正式声音负载收据')
     if args.game_mode is not None:
         from race import GameMode
 
@@ -385,6 +431,7 @@ def main():
     start_tick = None
     sample_started_at = None
     final = {}
+    audio_samples = []
     driving_end_progress = None
     results_started_at = None
     if args.profile:
@@ -440,6 +487,12 @@ def main():
                             "transform_states":TransformState.getNumStates(),
                             "render_states":RenderState.getNumStates()})
             last_second = int(task.time)
+            if args.audio:
+                audio_samples.append({
+                    'second': int(task.time), 'loops_playing': app.soundscape.loops_playing,
+                    'engine_status': [int(sound.status()) for sound in app.soundscape.engine_audio.loops],
+                    'music_status': [int(sound.status()) for sound in app.soundscape.music.tracks],
+                })
         trial_finished = args.game_mode == 'time_trial' and app.session.race.snapshot.finished
         if trial_finished and results_started_at is None:
             results_started_at = task.time
@@ -473,7 +526,7 @@ def main():
             state = app.session.current
             distance = route_distance
             final.update({
-                "kind": "short window comparison; not final performance or human gate",
+                "kind": "extended foreground sample; not full-stage or human gate" if args.extended else "short window comparison; not final performance or human gate",
                 "source": str(args.source.resolve()), "track": args.track,
                 "vehicle_design": args.vehicle_design, "driving_mode": args.driving_mode,
                 "game_mode":app.session.mode.value,
@@ -489,13 +542,17 @@ def main():
                 "constant_steering": args.steering,
                 "gc_rate":1. if args.gc_rate is None else args.gc_rate,
                 "transform_cache":ConfigVariableBool('transform-cache').getValue(),
+                "sync_video_requested":args.vsync,
+                "sync_video_configured":ConfigVariableBool('sync-video').getValue(),
                 "render_clock_mode":int(ClockObject.getGlobalClock().getMode()),
                 "render_clock_average_rate":ClockObject.getGlobalClock().getAverageFrameRate(),
                 "traffic_models":(dict(Counter(app.session.simulation.traffic_models))
                                   if isinstance(app.session,SessionProcess)
                                   else dict(Counter(type(car).__name__ for car in app.session.simulation.npcs))),
                 "python_switch_interval":sys.getswitchinterval(),
-                "audio": "disabled by existing smoke mode",
+                "audio": "OpenAL driving audio and radio" if args.audio else "disabled by existing smoke mode",
+                "audio_managers":audio_managers,
+                "audio_samples":audio_samples,
                 "tick": state.tick, "fixed_hz": 120,
                 "shape": args.shape, "seed": 23, "resolution": [1920, 1080],
                 "traffic_count": len(state.traffic), "pipeline": args.pipeline,
@@ -507,14 +564,16 @@ def main():
                 "authority_source_modules":app.session.source_modules if isinstance(app.session,SessionProcess) else source_modules,
                 "trace_phases":args.trace_phases,
                 "python_gc_pauses":gc_pauses,
+                "observation_time_origin":now-task.time,
                 "phase_timing":{
                     name:{
                         'count':record['count'],'window_samples':len(record['samples']),
                         'wall_mean_ms':record['wall']/record['count']*1000,
                         'cpu_mean_ms':record['cpu']/record['count']*1000,
                         'wall_p95_ms':sorted(sample[0]*1000 for sample in record['samples'])[int((len(record['samples'])-1)*.95)],
-                        'wall_max_ms':max(sample[0]*1000 for sample in record['samples']),
+                        'wall_max_ms':record['wall_max']*1000,
                         'cpu_p95_ms':sorted(sample[1]*1000 for sample in record['samples'])[int((len(record['samples'])-1)*.95)],
+                        'slow_calls':list(record['slow_calls']),
                     } for name,record in phase_samples.items()
                 },
                 "independent_clock": args.independent_clock,
@@ -593,7 +652,7 @@ def main():
     if args.trace_draw_poses:
         (args.output / "draw-poses.json").write_text(json.dumps(draw_poses),encoding='utf-8')
     print(json.dumps({k: v for k, v in final.items()
-                      if k not in ("windows", "frames_slow", "git_status", "segment_work_slow")},
+                      if k not in ("windows", "frames_slow", "git_status", "segment_work_slow", "audio_samples")},
                      indent=2))
     return 0 if final["passed"] else 1
 

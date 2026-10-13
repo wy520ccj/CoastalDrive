@@ -38,7 +38,9 @@ from vehicle_designs import vehicle_design
 
 
 class CoastalDrive(ShowBase):
-    def __init__(self, *, smoke=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", driving_mode=None, vehicle_design_id=None, abs_enabled=None, tcs_enabled=None, esc_enabled=None, physics_workers=None, independent_clock=None):
+    def __init__(self, *, smoke=False, smoke_audio=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", sync_video=True, driving_mode=None, vehicle_design_id=None, abs_enabled=None, tcs_enabled=None, esc_enabled=None, physics_workers=None, independent_clock=None):
+        # 带声音的诊断仍隔离设置/成绩，只打开正式音频链路。
+        audio_enabled = not smoke or smoke_audio
         self.startup_trace = startup_trace
         loadPrcFileData(
             "coastaldrive",
@@ -47,12 +49,12 @@ class CoastalDrive(ShowBase):
                     "window-title CoastalDrive",
                     'icon-filename assets/game/ui/coastal-drive.ico',
                     f"win-size {render_size[0]} {render_size[1]}",
-                    "sync-video 1",
+                    f"sync-video {int(sync_video)}",
                     # 高频车辆变换几乎不命中全局缓存；保留RenderState缓存和线程安全回收。
                     "transform-cache false",
                     f"threading-model {threading_model}",
                     "window-type offscreen" if smoke and not onscreen else "window-type onscreen",
-                    "audio-library-name null" if smoke else "audio-library-name p3openal_audio",
+                    "audio-library-name p3openal_audio" if audio_enabled else "audio-library-name null",
                 ]
             ),
         )
@@ -112,7 +114,7 @@ class CoastalDrive(ShowBase):
         self.scene = None
         self.soundscape = (
             None
-            if smoke
+            if not audio_enabled
             else Soundscape(
                 self, self.audio_settings.master_volume, self.audio_settings.effects_volume,
                 self.audio_settings.music_volume, self.audio_settings.radio_station,
