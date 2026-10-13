@@ -78,6 +78,7 @@ VEHICLE_FIELDS = {
     "longitudinal_load_exponent": ("1", "纵向滑移刚度轮荷指数pX；Cx∝Fn^pX，标称刚度保持Cx0"),
     "lateral_load_exponent": ("1", "侧偏刚度轮荷指数pY；Cy∝Fn^pY，标称刚度保持Cy0"),
     "longitudinal_stiffness": ("N/κ", "标称单轮载荷下纵向滑移刚度"),
+    "tire_reference_load": ("N", "轮胎特性固定标定轮荷；实际Fn变化，整车质量变化不重设此值"),
     "lateral_stiffness": ("N/rad", "标称载荷下前轮侧偏刚度"),
     "rear_lateral_stiffness": ("N/rad", "标称载荷下后轮侧偏刚度"),
     "tire_shape": ("1", "简化联合Magic Formula形状"),

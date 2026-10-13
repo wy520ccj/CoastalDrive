@@ -132,6 +132,7 @@ class VehicleLab(ShowBase):
             onset=float(self.entries["onset"].get()), radius_m=float(self.entries["radius"].get()),
             right_friction=float(self.entries["right_mu"].get()),
             cg_height=float(self.entries["cg"].get()) if self.entries["cg"].get().strip() else None,
+            tire_reference_load=float(self.entries["tire_load"].get()) if self.entries["tire_load"].get().strip() else None,
             abs_enabled=self.abs_menu.selectedIndex == 0, esc_enabled=self.esc_menu.selectedIndex == 1)
 
     def set_options(self, options):
@@ -144,6 +145,7 @@ class VehicleLab(ShowBase):
         self.abs_menu.set(0 if options.abs_enabled else 1)
         self.esc_menu.set(1 if options.esc_enabled else 0)
         self.entries["cg"].enterText("" if options.cg_height is None else str(options.cg_height))
+        self.entries["tire_load"].enterText("" if options.tire_reference_load is None else str(options.tire_reference_load))
 
     def start_experiment(self):
         try:

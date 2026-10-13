@@ -63,9 +63,11 @@ def test_degenerate_frame_reports_original_arithmetic_failure(tangent, normal):
 @pytest.mark.parametrize('compliance', [False, True])
 @pytest.mark.parametrize('accumulate', [False, True])
 @pytest.mark.parametrize('reverse', [False, True])
-def test_complete_publish_keeps_all_fields_types_and_actual_panda_impulses(rotor, compliance, accumulate, reverse):
+@pytest.mark.parametrize('reference_load', [2943., 4100.])
+def test_complete_publish_keeps_all_fields_types_and_actual_panda_impulses(rotor, compliance, accumulate, reverse, reference_load):
     rng = random.Random(65001)
-    config = replace(CAR, finite_drivetrain=True, wheel_rotor_transport=rotor, tire_compliance=compliance)
+    config = replace(CAR, finite_drivetrain=True, wheel_rotor_transport=rotor, tire_compliance=compliance,
+                     mass=1750., tire_reference_load=reference_load)
     rear = replace(config, mass=config.mass*1.1, longitudinal_stiffness=config.longitudinal_stiffness*.8)
     for turn in range(80):
         frames, steps, old = [], [], []

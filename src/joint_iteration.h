@@ -61,7 +61,7 @@ static int joint_normal(JointWork *w,const double *velocity,const double *angula
         data->travel,data->dt,data->geometry,end,result,raw,damping);
 }
 static void joint_load_parameters(JointWork *w) {
-    for(int i=0;i<4;++i){const double *p=w->law+7*i;double load=w->loads[i],ratio=load/(p[1]*9.81/4);
+    for(int i=0;i<4;++i){const double *p=w->law+7*i;double load=w->loads[i],ratio=load/p[1];
         w->parameters[3*i]=load==0.?0.:p[0]*load*pow(ratio,p[2]-1);
         w->parameters[3*i+1]=p[3]*pow(ratio,p[4]);w->parameters[3*i+2]=p[5]*pow(ratio,p[6]);}
 }

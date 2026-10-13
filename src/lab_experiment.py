@@ -35,6 +35,7 @@ class LabOptions:
     cg_height: float | None = None
     radius_m: float = 60.
     right_friction: float = .3
+    tire_reference_load: float | None = None
 
     def __post_init__(self):
         design = vehicle_design(self.vehicle_id)
@@ -48,6 +49,9 @@ class LabOptions:
             raise ValueError("初速0～200km/h、μ0.1～2、时长≤60s、转角须在车型范围内")
         if self.cg_height is not None and (not math.isfinite(self.cg_height) or not .2 <= self.cg_height <= 1):
             raise ValueError("质心高度须为0.2～1m")
+        if self.tire_reference_load is not None and (
+                not math.isfinite(self.tire_reference_load) or self.tire_reference_load <= 0):
+            raise ValueError("轮胎标定基准轮荷须为有限正值N；留空采用车型轮胎数据")
 
 
 LAB_DEFAULTS = LabOptions()
@@ -65,6 +69,8 @@ class LabExperiment:
                              grass_rolling_coefficient=config.rolling_coefficient)
         if options.cg_height is not None:
             config = replace(config, center_of_mass_height=options.cg_height)
+        if options.tire_reference_load is not None:
+            config = replace(config, tire_reference_load=options.tire_reference_load)
         self.config = config
         self.source_start = model_fingerprint()
         self.experiment = DrivingExperiment(config, ExperimentOptions(seed=options.seed, track="lab"))

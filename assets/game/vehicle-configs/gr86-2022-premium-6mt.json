@@ -208,7 +208,9 @@
       "wheel_rolling_resistance": true,
       "rolling_transition_speed": 1.0,
       "road_friction": 1.1,
-      "grass_friction": 0.45
+      "grass_friction": 0.45,
+      "tire_reference_load": 3157.09134571215,
+      "native_tire_forces": false
     },
     "suspension": {
       "suspension_si_enabled": true,
@@ -1312,6 +1314,20 @@
         "status": "engineering_prior",
         "value": 6000.0,
         "basis": "explicit generic mechanism or engineering initial value; not OEM measurement"
+      },
+      "tire_reference_load": {
+        "unit": "N",
+        "definition": "固定轮胎特性标定轮荷；从既有车型曲线按1287.29514606kg×9.81/4迁移，保留原曲线。不是Michelin轮胎额定载荷或台架实测。",
+        "status": "engineering_prior",
+        "value": 3157.09134571215,
+        "basis": "SIM-TIRE-01 preserves previous nominal tire curve; no Michelin bench data"
+      },
+      "native_tire_forces": {
+        "unit": "bool",
+        "definition": "简化交通轮胎开关；此实车型完整求解保持false",
+        "status": "model_mechanism",
+        "value": false,
+        "basis": "existing complete tire model configuration; metadata coverage repair"
       }
     },
     "nested_field_metadata": {

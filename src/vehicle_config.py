@@ -68,8 +68,9 @@ class VehicleConfig:
     wheel_shoulder_radius: float = .01  # m，圆角肩部；半径与胎宽均定义含肩部外廓。
     wheel_crown_height: float = .003  # m，胎面中心到肩部的抛物线胎冠落差，通用设计值。
     wheel_inertia: float = 1.8  # 单轮轴向转动惯量，kg·m²。
-    longitudinal_stiffness: float = 60000.0  # 静态单轮载荷下，N/单位滑转率。
-    lateral_stiffness: float = 50000.0  # 静态单轮载荷下，N/rad。
+    tire_reference_load: float = 2943.0  # N，固定轮胎标定轮荷；换整车质量时仍保持同一轮胎数据。
+    longitudinal_stiffness: float = 60000.0  # 固定轮胎标定轮荷下，N/单位滑转率。
+    lateral_stiffness: float = 50000.0  # 固定轮胎标定轮荷下，N/rad。
     rear_lateral_stiffness: float = 50000.0  # 后轮可独立定义侧偏刚度，N/rad。
     tire_peak_load_exponent: float = .90  # 峰值力随轮荷次线性增长；1恢复原线性模型。
     longitudinal_load_exponent: float = .90
@@ -121,6 +122,8 @@ class VehicleConfig:
     suspension_force_limit: float = 6000.0  # N；仅原生对照分支的数值力限，SI势能反力不作硬裁剪。
 
     def __post_init__(self):
+        if not math.isfinite(self.tire_reference_load) or self.tire_reference_load <= 0.:
+            raise ValueError("轮胎固定标定轮荷须为有限正值N")
         if len(self.axle_torque_bias_ratios) != 2 or any(not math.isfinite(value) or value < 1.
                 for value in self.axle_torque_bias_ratios):
             raise ValueError("前／后轴扭矩偏置比须为两个不小于1的有限值")

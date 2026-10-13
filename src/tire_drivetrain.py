@@ -736,7 +736,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         normal_projection()
 
     if geometry is not None:
-        laws = tuple((frame.mu, car.mass, car.tire_peak_load_exponent,
+        laws = tuple((frame.mu, car.tire_reference_load, car.tire_peak_load_exponent,
                       car.longitudinal_stiffness, car.longitudinal_load_exponent,
                       car.lateral_stiffness, car.lateral_load_exponent)
                      for frame, car in zip(frames, configurations))

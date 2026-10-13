@@ -112,7 +112,8 @@ def build_workbench(app):
     app.field("right_mu", "右侧附着 μ", .3, .32, x=.44, parent=app.advanced_panel)
     app.field("onset", "转向起始 s", .5, .20, x=.44, parent=app.advanced_panel)
     app.esc_menu = app.option(["ESC 关闭", "ESC 开启"], -.82, .071, .62, parent=app.advanced_panel)
-    app.text("质心留空采用车型配置；右侧附着仅用于对开制动。\n改动用于下一次试验，当前结果仍对应原配置。", -.82, -.06,
+    app.field("tire_load", "轮胎基准 N", "", .075, x=.44, parent=app.advanced_panel)
+    app.text("质心/轮胎基准留空采用车型值；基准 N 是轮胎特性标定量。\n载荷变化仍保留同一轮胎基准；右侧 μ 仅用于对开制动。", -.82, -.06,
              .030, MUTED, parent=app.advanced_panel)
     app.advanced_panel.hide()
 

@@ -423,7 +423,7 @@ class Tires:
             tuple(contact.normal_load for contact in contacts),
             tuple(config.road_friction if contact.surface=='asphalt' else config.grass_friction for contact in contacts),
             (config.wheel_radius,config.wheel_width if config.suspension_si_enabled and config.suspension_coupled_enabled else None,
-             config.wheel_shoulder_radius,config.wheel_crown_height,config.slip_speed,config.mass,config.tire_peak_load_exponent))
+             config.wheel_shoulder_radius,config.wheel_crown_height,config.slip_speed,config.tire_reference_load,config.tire_peak_load_exponent))
         states = []
         for state,support,values in zip(self.states,supported,observations):
             axis,radius,relative,vx,vy,kappa,alpha,grip = values
