@@ -1,0 +1,97 @@
+{
+  "data_kind": "synthetic algorithm fixture, NOT measured tire data",
+  "same_mu": 0.9199701266425069,
+  "A": {
+    "status": "stopped",
+    "reason": "stopped",
+    "error": null,
+    "simulation_seconds": 3.2916666666666665,
+    "compute_seconds": 0.8803422000310093,
+    "distance_m": 46.05230646546845,
+    "stopping_distance_m": 46.05230646546845,
+    "peak_deceleration_mps2": -8.721746444702148,
+    "peak_lateral_acceleration_mps2": 0.023877255618572235,
+    "peak_yaw_rate_radps": 0.0015156986191868782,
+    "mean_path_error_m": null,
+    "maximum_path_error_m": null,
+    "abs_ticks": 351,
+    "ticks": 395,
+    "initialization_ticks": 177,
+    "options": {
+      "vehicle_id": "reference-rwd",
+      "maneuver": "braking",
+      "speed_kph": 100,
+      "friction": 0.9199701266425069,
+      "abs_enabled": true,
+      "esc_enabled": false,
+      "duration": 12.0,
+      "steering_deg": 3.0,
+      "onset": 0.5,
+      "seed": 0,
+      "cg_height": null,
+      "radius_m": 60.0,
+      "right_friction": 0.3,
+      "tire_reference_load": null
+    }
+  },
+  "B": {
+    "status": "stopped",
+    "reason": "stopped",
+    "error": null,
+    "simulation_seconds": 3.2666666666666666,
+    "compute_seconds": 0.8129033000295749,
+    "distance_m": 45.66711736828487,
+    "stopping_distance_m": 45.66711736828487,
+    "peak_deceleration_mps2": -8.831018447875977,
+    "peak_lateral_acceleration_mps2": 0.03406896814703941,
+    "peak_yaw_rate_radps": 0.002125269966199994,
+    "mean_path_error_m": null,
+    "maximum_path_error_m": null,
+    "abs_ticks": 346,
+    "ticks": 392,
+    "initialization_ticks": 177,
+    "options": {
+      "vehicle_id": "reference-rwd",
+      "maneuver": "braking",
+      "speed_kph": 100,
+      "friction": 0.9199701266425069,
+      "abs_enabled": true,
+      "esc_enabled": false,
+      "duration": 12.0,
+      "steering_deg": 3.0,
+      "onset": 0.5,
+      "seed": 0,
+      "cg_height": null,
+      "radius_m": 60.0,
+      "right_friction": 0.3,
+      "tire_reference_load": null
+    }
+  },
+  "changed_conditions": {
+    "vehicle.lateral_load_exponent": {
+      "A": 0.85,
+      "B": 0.7798855423285226
+    },
+    "vehicle.lateral_stiffness": {
+      "A": 50000.0,
+      "B": 65009.492904697225
+    },
+    "vehicle.longitudinal_load_exponent": {
+      "A": 0.9,
+      "B": 0.7507029340392298
+    },
+    "vehicle.longitudinal_stiffness": {
+      "A": 60000.0,
+      "B": 81933.69367924689
+    },
+    "vehicle.rear_lateral_stiffness": {
+      "A": 50000.0,
+      "B": 65009.492904697225
+    },
+    "vehicle.tire_peak_load_exponent": {
+      "A": 0.9,
+      "B": 0.8600270120829107
+    }
+  },
+  "candidate_export_load_exact": true
+}

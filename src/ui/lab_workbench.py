@@ -44,7 +44,7 @@ def build_workbench(app):
 
     app.text("车辆模型", -1.62, .542, .032, MUTED)
     app.vehicle_menu = app.option(["游戏调校", "参考后驱 RWD", "参考前驱 FWD", "参考四驱 AWD", "GR86 Premium 6MT"],
-                                 -1.63, .463, .60, parameter="vehicle")
+                                 -1.63, .463, .60, command=app.choose_vehicle, parameter="vehicle")
     app.vehicle_menu.set(1)
     app.text("试验工况", -1.62, .360, .032, MUTED)
     app.maneuver_menu = app.option(list(MANEUVERS.values()), -1.63, .282, .60, app.apply_preset, parameter="maneuver")
@@ -98,9 +98,9 @@ def build_workbench(app):
     app.button("导出 CSV / 报告", 1.36, -.935, .62, app.export)
 
     app.record_menu = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
-                                 frameSize=(1.05, 1.71, .47, .83), sortOrder=60)
+                                 frameSize=(1.05, 1.71, .34, .83), sortOrder=60)
     for z, label, action in ((.76, "载入记录", app.open_record), (.65, "复算当前记录", app.recalculate_record),
-                             (.54, "打开报告", app.open_report)):
+                             (.54, "打开报告", app.open_report), (.43, "导入工程模型", app.open_engineering)):
         app.button(label, 1.38, z, .56, action, parent=app.record_menu)
     app.record_menu.hide()
 

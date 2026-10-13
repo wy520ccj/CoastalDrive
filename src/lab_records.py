@@ -14,6 +14,7 @@ from lab_metrics import engineering_analysis
 from lab_signals import LEGACY_SIGNAL_KEYS, SIGNAL_BY_KEY, SIGNALS, sample_signals
 from paths import resource_root
 from snapshot_wire import decode_snapshots, encode_snapshots
+from tire_calibration import validate_fit_metadata
 from vehicle_state import VehicleCommand
 
 SCHEMA = "coastal-vehicle-lab-v1"
@@ -41,7 +42,10 @@ class LabRecord:
     @classmethod
     def from_run(cls, run):
         return cls({"schema": SCHEMA, "physics_hz": 120, "mode": "offline_fixed_step",
-                    "vehicle_name": run.design.name, "model_basis": run.design.basis,
+                    "vehicle_name": run.design.name,
+                    "model_basis": (run.parameter_metadata["basis"] if run.parameter_metadata is not None
+                                    and "basis" in run.parameter_metadata else run.design.basis),
+                    "parameter_metadata": json.loads(json.dumps(run.parameter_metadata, allow_nan=False)),
                     "vehicle_config": json.loads(json.dumps(asdict(run.config), allow_nan=False)),
                     "summary": run.summary(),
                     "reference_path": reference_path(run.options, run.snapshots[0].player),
@@ -183,6 +187,8 @@ def load_record(folder):
     saved_config = json.loads((folder/"vehicle.json").read_text(encoding="utf-8"))
     if saved_config != document["vehicle_config"]:
         raise ValueError("车辆文件与实验中保存的完整配置不一致")
+    if document.get("parameter_metadata") is not None:
+        validate_fit_metadata(document["parameter_metadata"])
     for index, (row, state, command) in enumerate(zip(samples, snapshots, commands)):
         if (state.tick != snapshots[0].tick+index or row["tick"] != state.tick
             or not math.isclose(row["time"], index/120, abs_tol=1e-9)
@@ -204,12 +210,17 @@ def load_record(folder):
 def recalculate(record):
     """同版本逐拍重算保存的精确命令；回放动画本身不计算物理。"""
     from lab_experiment import LabExperiment, LabOptions
+    from vehicle_designs import vehicle_design
+    from vehicle_parameters import config_from_document
 
     if record.metadata["summary"]["reason"] in ("failed", "collision", "reset"):
         raise ValueError("终止试验可分析已完成记录；自动复算仅接受暂停、停止或时长完成的试验")
     if record.metadata["source_start"] != model_fingerprint():
         raise ValueError("当前模型版本与记录不同，不能声明确定性重算")
-    run = LabExperiment(LabOptions(**record.metadata["summary"]["options"]))
+    options = LabOptions(**record.metadata["summary"]["options"])
+    config = config_from_document(record.metadata["vehicle_config"], vehicle_design(options.vehicle_id).config)
+    parameter_metadata = record.metadata.get("parameter_metadata")
+    run = LabExperiment(options, config=config, parameter_metadata=parameter_metadata)
     try:
         for command in record.commands[1:]:
             run.step(command)

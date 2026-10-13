@@ -1,8 +1,10 @@
 # 当前进度
 
-更新：2026-10-13。**独立包/公开基线：0.8.3 RADIO-02，包含UI-NOTICE-FIX；当前物理开发在主目录main。** Visual Identity v1已按先前授权成为主版本，旧main保留于上级备份和Git历史。CoastalDrive-VI-v1与gr86-physics工作树为既有历史/辅助施工目录，当前新增物理成果以主目录为准；DS仍为只读参考。根目录试玩.cmd保持公开包入口，本轮物理候选包另放在builds并提供launchers入口。
+更新：2026-10-13。**公开基线：0.8.3 RADIO-02，包含UI-NOTICE-FIX；游戏模式/原悬架准备由main施工，仿真真实性位于codex/simulation-fidelity隔离树。** 本树C:/Users/15120/.codex/worktrees/simulation-fidelity/CoastalDrive的新增仿真成果尚未整合main。Visual Identity v1已成为主版本，旧main保留备份/Git历史；CoastalDrive-VI-v1/gr86-physics为历史/辅助目录，DS只读。根目录试玩.cmd保持公开包入口，仿真工作树使用launchers/vehicle-lab.cmd。
 
 ## 当前阶段
+
+- **2026-10-13 轮胎标定入口 SIM-TIRE-FIT-01**：现有生产本构六参数拟合、整序列留出/秩/条件数/误差拒绝、完整工程模型导入及保存配置复算已实现；合成3N扰动参数恢复、错误联合留出拒绝、解析瞬态核、同μ整车46.052→45.667m通过。48项T1/Ruff/三种子、来源副本15项T0及720/1080真实输入/渲染通过。示例非实测，默认车型/物理方程保持，实测/回正外倾/簧下/人工/整体Gate仍开放；未合main。见[任务](tasks/SIM-TIRE-FIT-01.md)、[使用与依据](tire-calibration.md)。
 
 - **2026-10-13 工程分析 SIM-HANDLING-01**：隔离树新增真实α/β/分阶段Fn与D/利用率/LTR，折叠10项指标及A/B、四组曲线/F1数学说明、报告与分析指纹。MFDD μ1.1/0.6为8.931/5.889m/s²；定圆8s未稳态、12s横摆增益7.362s⁻¹，未改阈值/物理。34项T1/Ruff/三种子、补充T0及720/1080实际输入/渲染通过，人工/实车标定/整体Gate开放；未合main。见[任务与证据](tasks/SIM-HANDLING-01.md)，下一轮胎部件拟合/留出验证。
 

@@ -1,5 +1,6 @@
 """车辆动力学实验室窗口：配置、离线运行、真实曲线与记录分析。"""
 
+import json
 import math
 import os
 from datetime import UTC, datetime
@@ -21,10 +22,11 @@ from lab_experiment import MANEUVERS, LabExperiment, LabOptions
 from lab_records import LabRecord, changed_conditions, export_record, load_record, recalculate
 from lab_scene import LabScene
 from paths import user_data
+from tire_calibration import validate_fit_metadata
 from ui import theme
 from ui.lab_widgets import MUTED, LabOptionMenu, button_textures
 from vehicle_designs import DESIGN_VEHICLES, vehicle_design
-from vehicle_parameters import load_vehicle_config
+from vehicle_parameters import config_from_document, load_vehicle_config
 from vehicle_state import VehicleCommand
 
 INK = theme.INK
@@ -53,6 +55,8 @@ class VehicleLab(ShowBase):
         self.output = Path(output) if output else user_data()/"experiments"
         self.next_workspace = None
         self.run_state = None
+        self.engineered_config = None
+        self.parameter_metadata = None
         self.record = None
         self.baseline = None
         self.playing = False
@@ -168,6 +172,42 @@ class VehicleLab(ShowBase):
             tire_reference_load=float(self.entries["tire_load"].get()) if self.entries["tire_load"].get().strip() else None,
             abs_enabled=self.abs_menu.selectedIndex == 0, esc_enabled=self.esc_menu.selectedIndex == 1)
 
+    def choose_vehicle(self, label):
+        self.engineered_config = None
+        self.parameter_metadata = None
+
+    def import_engineering(self, path):
+        try:
+            document = json.loads(Path(path).read_text(encoding="utf-8"))
+            design = DESIGN_VEHICLES[self.vehicle_menu.selectedIndex]
+            config = config_from_document(document, design.config)
+            metadata = document.get("metadata", {})
+            validate_fit_metadata(metadata)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            self.notice.setText(f"工程配置载入失败：{error}")
+            return
+        self.engineered_config, self.parameter_metadata = config, metadata
+        self.entries["mu"].enterText(str(config.road_friction))
+        self.entries["cg"].enterText("")
+        self.entries["tire_load"].enterText("")
+        basis = metadata.get("basis", "导入工程配置，来源按文件声明")
+        self.model_note.setText(f"{design.name} · 导入工程模型")
+        self.notice.setText(basis)
+        self.record_menu.hide()
+
+    def open_engineering(self):
+        import tkinter as tk
+        from tkinter import filedialog
+
+        dialog = tk.Tk()
+        dialog.withdraw()
+        try:
+            path = filedialog.askopenfilename(title="导入完整车辆工程模型", filetypes=[("车辆工程JSON", "*.json")])
+        finally:
+            dialog.destroy()
+        if path:
+            self.import_engineering(path)
+
     def set_options(self, options):
         self.vehicle_menu.set(next(i for i, design in enumerate(DESIGN_VEHICLES) if design.id == options.vehicle_id))
         self.maneuver_menu.set(tuple(MANEUVERS).index(options.maneuver))
@@ -195,7 +235,8 @@ class VehicleLab(ShowBase):
         self.details_panel.hide()
         self.record_menu.hide()
         try:
-            self.run_state = LabExperiment(options)
+            self.run_state = LabExperiment(options, config=self.engineered_config,
+                                           parameter_metadata=self.parameter_metadata)
         except (ArithmeticError, ValueError, RuntimeError, OSError) as error:
             self.status.setText("初始化失败")
             self.notice.setText(str(error))
@@ -204,6 +245,8 @@ class VehicleLab(ShowBase):
         self.scene.set_vehicle(self.run_state.design, self.run_state.config)
         self.scene.set_trial(options, self.run_state.snapshots[0].player)
         basis = "工程初值" if options.vehicle_id.startswith("gr86") else "设计模型"
+        if self.engineered_config is not None:
+            basis = "导入工程模型（来源见F1）"
         self.model_note.setText(f"{self.run_state.design.name} · {basis}")
         self.notice.setText("离线计算真实固定步；暂停后可拖动时间轴分析")
         self.manual_panel.show() if options.maneuver == "manual" else self.manual_panel.hide()
@@ -469,6 +512,8 @@ class VehicleLab(ShowBase):
         self.playing = False
         self.manual_panel.hide()
         self.set_options(options)
+        self.engineered_config = config
+        self.parameter_metadata = record.metadata.get("parameter_metadata")
         self.scene.set_vehicle(design, config)
         self.scene.set_trial(options, record.snapshots[0].player)
         basis = "工程初值" if options.vehicle_id.startswith("gr86") else "设计模型"

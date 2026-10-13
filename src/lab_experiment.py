@@ -58,11 +58,12 @@ LAB_DEFAULTS = LabOptions()
 
 
 class LabExperiment:
-    def __init__(self, options=LAB_DEFAULTS):
+    def __init__(self, options=LAB_DEFAULTS, *, config=None, parameter_metadata=None):
         self.options = options
         self.design = vehicle_design(options.vehicle_id)
+        self.parameter_metadata = parameter_metadata
         config = DrivingMode.SIMULATION.configured_vehicle(options.abs_enabled,
-            esc_enabled=options.esc_enabled, base_config=self.design.config)
+            esc_enabled=options.esc_enabled, base_config=self.design.config if config is None else config)
         config = replace(config, road_friction=options.friction)
         if options.maneuver == "split_braking":
             config = replace(config, grass_friction=options.right_friction,

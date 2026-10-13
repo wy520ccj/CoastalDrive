@@ -79,9 +79,9 @@ def save_vehicle_config(path, config, *, metadata=None):
     Path(path).write_text(json.dumps(document, ensure_ascii=False, indent=2, allow_nan=False), encoding="utf-8")
 
 
-def load_vehicle_config(path, selected):
-    """JSON文件边界恢复不可变配置；嵌套电子配置继承选定车型。"""
-    values = _parameters(json.loads(Path(path).read_text(encoding="utf-8")))
+def config_from_document(document, selected):
+    """文件或保存记录恢复同一不可变配置；嵌套控制配置继承选定车型。"""
+    values = dict(_parameters(document))
     if "braking" in values:
         values["braking"] = replace(selected.braking, **values["braking"])
     if "stability" in values:
@@ -116,4 +116,8 @@ def load_vehicle_config(path, selected):
     if "axle_track_widths" in values and values["axle_track_widths"] is not None:
         values["axle_track_widths"] = tuple(values["axle_track_widths"])
     return replace(selected, **values)
+
+
+def load_vehicle_config(path, selected):
+    return config_from_document(json.loads(Path(path).read_text(encoding="utf-8")), selected)
 
