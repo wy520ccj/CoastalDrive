@@ -8,7 +8,7 @@ typedef struct {
     int busy,sweep,shared_branch,shared_port,warm_branches[4],warm_modes[27][4],cache_count;
     WheelMap *map;SuspensionCoefficients *suspension;JointContactApi *api;void *contacts;
     double state[9],initial_velocity[3],velocity[3],port_values[4],forces[4][3];
-    double previous[8],moment_x[12],moment_y[12],rolling[4],supported[4],loads[4];
+    double previous[8],moment_x[12],moment_y[12],rolling[4],supported[4],loads[4],lateral_bias[4];
     double hardware[20],law[28],parameters[12],normal[4],gradients[24],touching[4],alignment[4];
     double responses[36],mobility[16],road[4],active[3],bias_ports[2];
     double maximum,brake_error,normal_error,geometry_error;
@@ -93,6 +93,7 @@ static int joint_wheel(JointWork *w,int i,const double gyro[3]) {
     memcpy(c.axle,w->map->load.axles+3*i,sizeof(c.axle));memcpy(c.moment_x,w->moment_x+3*i,sizeof(c.moment_x));
     memcpy(c.moment_y,w->moment_y+3*i,sizeof(c.moment_y));memcpy(c.previous,w->previous+2*i,sizeof(c.previous));
     memcpy(c.parameters,w->parameters+3*i,sizeof(c.parameters));memcpy(c.hardware,w->hardware+5*i,sizeof(c.hardware));c.radius=data->radii[i];
+    c.lateral_bias=w->lateral_bias[i];
     int predict=w->sweep==0&&c.rolling&&w->loads[i]>0.;
     if(!joint_wheel_force_result(&c,.0001,force,predict,&brake))return 0;
     w->forces[i][0]=force[0];w->forces[i][1]=force[1];w->forces[i][2]=brake;return 1;
@@ -101,6 +102,7 @@ static int joint_contact_errors(JointWork *w,double *errors) {
     SharedMap *data=w->map->shared;w->maximum=0.;w->brake_error=0.;
     for(int i=0;i<4;++i){const double *p=w->parameters+3*i,*h=w->hardware+5*i;double speed[2],slip[2],target[2],deformation[2],rate[2],patch[2],kappa,alpha,terms[9];const char *mode;
         wheel_velocity_values(w->state,w->velocity,i+5,w->map->load.tangents+3*i,w->map->load.axles+3*i,w->moment_x+3*i,w->moment_y+3*i,data->radii[i],speed,slip);
+        speed[1]+=w->lateral_bias[i];slip[1]-=w->lateral_bias[i];
         double denominator=fabs(speed[0])>h[0]?fabs(speed[0]):h[0];
         if(!tire_contact_values(w->forces[i],w->previous+2*i,slip,denominator,w->rolling[i]!=0.,p[0],p[1],p[2],data->dt,h[1],h[2],h[3],h[4],Py_None,target,deformation,rate,patch,&kappa,&alpha,&mode))return 0;
         double ex=w->forces[i][0]-target[0],ey=w->forces[i][1]-target[1],error=hypot_two(ex,ey);
@@ -213,14 +215,15 @@ static PyObject *joint_solve(PyObject *self,PyObject *args) {
     w->contacts=PyCapsule_GetPointer(contacts,JOINT_CONTACT_PACKET_NAME);if(!w->map||!w->suspension||!w->contacts)return NULL;
     PyObject *module=PyImport_ImportModule("wheel_contact_kernels");if(!module)return NULL;
     PyObject *api=PyObject_GetAttrString(module,"_joint_contact_api");Py_DECREF(module);if(!api)return NULL;
-    w->api=PyCapsule_GetPointer(api,JOINT_CONTACT_API_NAME);Py_DECREF(api);if(!w->api||!tuple_fields(input,14))return NULL;
+    w->api=PyCapsule_GetPointer(api,JOINT_CONTACT_API_NAME);Py_DECREF(api);if(!w->api||!tuple_fields(input,15))return NULL;
     if(!vector(PyTuple_GET_ITEM(input,0),w->state,9)||!vector(PyTuple_GET_ITEM(input,1),w->initial_velocity,3)
         ||!matrix_values(PyTuple_GET_ITEM(input,2),&w->forces[0][0],4,3)||!matrix_values(PyTuple_GET_ITEM(input,3),w->previous,4,2)
         ||!matrix_values(PyTuple_GET_ITEM(input,4),w->moment_x,4,3)||!matrix_values(PyTuple_GET_ITEM(input,5),w->moment_y,4,3)
         ||!vector(PyTuple_GET_ITEM(input,6),w->rolling,4)||!vector(PyTuple_GET_ITEM(input,7),w->supported,4)
         ||!vector(PyTuple_GET_ITEM(input,8),w->loads,4)||!matrix_values(PyTuple_GET_ITEM(input,9),w->hardware,4,5)
         ||!matrix_values(PyTuple_GET_ITEM(input,10),w->law,4,7)||!matrix_values(PyTuple_GET_ITEM(input,11),w->gradients,4,6)
-        ||!vector(PyTuple_GET_ITEM(input,12),w->touching,4)||!vector(PyTuple_GET_ITEM(input,13),w->alignment,4))return NULL;
+        ||!vector(PyTuple_GET_ITEM(input,12),w->touching,4)||!vector(PyTuple_GET_ITEM(input,13),w->alignment,4)
+        ||!vector(PyTuple_GET_ITEM(input,14),w->lateral_bias,4))return NULL;
     memset(w->normal,0,sizeof(w->normal));memset(w->road,0,sizeof(w->road));memset(w->bias_ports,0,sizeof(w->bias_ports));memset(w->warm_branches,0,sizeof(w->warm_branches));
     for(int i=0;i<27;++i)for(int j=0;j<4;++j)w->warm_modes[i][j]=-1;
     w->cache_count=0;w->shared_branch=0;w->shared_port=-1;w->busy=1;

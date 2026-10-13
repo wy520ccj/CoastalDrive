@@ -2270,11 +2270,11 @@ static PyObject *wheel_contact_state(PyObject *self,PyObject *args) {
     PyObject *state_object,*velocity_object,*tangent_object,*axle_object,*moment_x_object,*moment_y_object;
     PyObject *force_object,*previous_object,*parameters_object,*hardware_object,*hypot_function;
     int wheel_start,wheel,rolling;
-    double radius,dt,state[9],velocity[3],tangent[3],axle[3],moment_x[3],moment_y[3];
+    double radius,dt,state[9],velocity[3],tangent[3],axle[3],moment_x[3],moment_y[3],lateral_bias=0.;
     double force[2],previous[2],parameters[3],hardware[5],speed[2],slip[2],target[2],deformation[2],rate[2],patch[2];
-    if (!PyArg_ParseTuple(args,"OOiiOOOOdOOOOdpO",&state_object,&velocity_object,&wheel_start,&wheel,
+    if (!PyArg_ParseTuple(args,"OOiiOOOOdOOOOdpO|d",&state_object,&velocity_object,&wheel_start,&wheel,
         &tangent_object,&axle_object,&moment_x_object,&moment_y_object,&radius,&force_object,&previous_object,
-        &parameters_object,&hardware_object,&dt,&rolling,&hypot_function)) return NULL;
+        &parameters_object,&hardware_object,&dt,&rolling,&hypot_function,&lateral_bias)) return NULL;
     if ((wheel_start!=4 && wheel_start!=5) || wheel<0 || wheel>=4) {
         PyErr_SetString(PyExc_IndexError,"接点机械轮速索引越界"); return NULL;
     }
@@ -2284,6 +2284,7 @@ static PyObject *wheel_contact_state(PyObject *self,PyObject *args) {
         || !vector(force_object,force,2) || !vector(previous_object,previous,2)
         || !vector(parameters_object,parameters,3) || !vector(hardware_object,hardware,5)) return NULL;
     wheel_velocity_values(state,velocity,wheel_start+wheel,tangent,axle,moment_x,moment_y,radius,speed,slip);
+    speed[1]+=lateral_bias;slip[1]-=lateral_bias;
     double denominator=fabs(speed[0])>hardware[0] ? fabs(speed[0]) : hardware[0],kappa,alpha;
     const char *mode;
     if (!tire_contact_values(force,previous,slip,denominator,rolling,parameters[0],parameters[1],parameters[2],
@@ -2480,7 +2481,7 @@ typedef struct {
     WheelMap *map;
     int wheel,rolling;
     double base[9],velocity[3],active[3],tangent[3],axle[3],moment_x[3],moment_y[3];
-    double radius,previous[2],parameters[3],hardware[5];
+    double radius,previous[2],parameters[3],hardware[5],lateral_bias;
     PyObject *warm_branches,*warm_modes,*hypot;
 } WheelForce;
 
@@ -2506,6 +2507,7 @@ static int wheel_force_values(void *context,double fx,double fy,int jacobian,dou
         wheel_velocity_values(state,velocity,data->wheel+5,data->tangent,data->axle,
             data->moment_x,data->moment_y,data->radius,speed,slip);
     }
+    speed[1]+=data->lateral_bias;slip[1]-=data->lateral_bias;
     double denominator=fabs(speed[0]);
     if (data->hardware[0]>denominator) denominator=data->hardware[0];
     double dt=data->map->shared->dt;
@@ -2561,6 +2563,7 @@ static PyObject *wheel_force_result(WheelForce *context,double tolerance,double 
         if (!wheel_force_state(context,0.,0.,state,end_velocity,&brake,&selected,&mode)
             || !wheel_derivative_values(context->map,context->wheel,selected,mode,state,end_velocity,
                 context->moment_x,context->moment_y,context->radius,context->tangent,context->axle,speed,slip,gradients)) return NULL;
+        speed[1]+=context->lateral_bias;slip[1]-=context->lateral_bias;
         double dt=context->map->shared->dt,impedance=context->hardware[1]*dt+context->hardware[2];
         double denominator=fabs(speed[0])>context->hardware[0] ? fabs(speed[0]) : context->hardware[0];
         for (int a=0;a<2;++a) {
@@ -2581,7 +2584,7 @@ static PyObject *wheel_force_result(WheelForce *context,double tolerance,double 
     return Py_BuildValue("(dddd)",force[0],force[1],brake,error);
 }
 static PyObject *wheel_force_solution(PyObject *self,PyObject *args) {
-    WheelForce context;
+    WheelForce context={0};
     PyObject *coefficients,*base,*velocity,*active,*tangent,*axle,*moment_x,*moment_y,*previous,*parameters,*hardware,*initial;
     double tolerance,force[2];
     int predict;
@@ -2600,15 +2603,15 @@ static PyObject *wheel_force_solution(PyObject *self,PyObject *args) {
 
 /* 当前跨轮载荷直接进入局部力求根，不装配/读回自由状态元组。 */
 static PyObject *loaded_wheel_force_solution(PyObject *self,PyObject *args) {
-    WheelForce context;
+    WheelForce context={0};
     PyObject *coefficients,*forces,*velocity,*normal_forces,*normal_responses,*gradients,*gyro_object,*road_object;
     PyObject *active,*moment_x,*moment_y,*previous,*parameters,*hardware,*initial;
     double tolerance,force[2],angular[9],normal[9],gyro[3],road[4];
     int predict;
-    if (!PyArg_ParseTuple(args,"Oi" "OOOOOOOOOOOOOOO" "pdOpO",&coefficients,&context.wheel,
+    if (!PyArg_ParseTuple(args,"Oi" "OOOOOOOOOOOOOOO" "pdOpO|d",&coefficients,&context.wheel,
         &forces,&velocity,&normal_forces,&normal_responses,&gradients,&gyro_object,&road_object,&active,
         &context.warm_branches,&context.warm_modes,&moment_x,&moment_y,&previous,&parameters,&hardware,
-        &context.rolling,&tolerance,&initial,&predict,&context.hypot)) return NULL;
+        &context.rolling,&tolerance,&initial,&predict,&context.hypot,&context.lateral_bias)) return NULL;
     context.map=PyCapsule_GetPointer(coefficients,wheel_map_name);
     if (!context.map) return NULL;
     if (context.wheel<0 || context.wheel>=4) { PyErr_SetString(PyExc_IndexError,"轮端索引越界"); return NULL; }
@@ -2633,13 +2636,15 @@ static PyObject *loaded_wheel_force_solution(PyObject *self,PyObject *args) {
 static PyObject *wheel_residuals(PyObject *self,PyObject *args) {
     PyObject *coefficients,*state_object,*velocity_object,*forces_object,*modes_object,*previous_object;
     PyObject *parameters_object,*hardware_object,*rolling_object,*moment_x_object,*moment_y_object,*compliance_object,*hypot;
-    if (!PyArg_ParseTuple(args,"OOOOOOOOOOOOO",&coefficients,&state_object,&velocity_object,&forces_object,
+    PyObject *bias_object=Py_None;
+    if (!PyArg_ParseTuple(args,"OOOOOOOOOOOOO|O",&coefficients,&state_object,&velocity_object,&forces_object,
         &modes_object,&previous_object,&parameters_object,&hardware_object,&rolling_object,&moment_x_object,
-        &moment_y_object,&compliance_object,&hypot)) return NULL;
+        &moment_y_object,&compliance_object,&hypot,&bias_object)) return NULL;
     WheelMap *packet=PyCapsule_GetPointer(coefficients,wheel_map_name);
     if (!packet) return NULL;
     double state[9],velocity[3],forces[12],previous[8],parameters[12],hardware[20],rolling[4];
-    double moment_x[12],moment_y[12],compliance[4];
+    double moment_x[12],moment_y[12],compliance[4],bias[4]={0.};
+    if(bias_object!=Py_None&&!vector(bias_object,bias,4))return NULL;
     if (!vector(state_object,state,9) || !vector(velocity_object,velocity,3)
         || !matrix_values(forces_object,forces,4,3) || !matrix_values(previous_object,previous,4,2)
         || !matrix_values(parameters_object,parameters,4,3) || !matrix_values(hardware_object,hardware,4,5)
@@ -2655,6 +2660,7 @@ static PyObject *wheel_residuals(PyObject *self,PyObject *args) {
         const double *tangent=packet->load.tangents+3*i,*axle=packet->load.axles+3*i;
         double radius=packet->shared->radii[i],speed[2],slip[2],error,terms[9];
         wheel_velocity_values(state,velocity,i+5,tangent,axle,moment_x+3*i,moment_y+3*i,radius,speed,slip);
+        speed[1]+=bias[i];slip[1]-=bias[i];
         if (strcmp(mode,"sticking")==0) {
             const double *rx=packet->load.responses+27*i,*ry=rx+9;
             for (int a=0;a<9;++a) terms[a]=(a<3 ? moment_x[3*i+a] : a==i+5 ? -radius : 0.)*rx[a];

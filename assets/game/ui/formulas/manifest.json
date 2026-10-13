@@ -5,6 +5,46 @@
   "font_points": 24,
   "source": "src/parameter_formulas.py",
   "formulas": {
+    "tire_contact_half_length": [
+      {
+        "file": "tire_contact_half_length-0.png",
+        "tex": "z=\\min\\left(1,\\frac{D}{2\\sqrt{(C_\\kappa\\kappa)^2+(C_\\alpha\\tan\\alpha)^2}}\\right)",
+        "width": 956,
+        "height": 136,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "af5da8dedd9a062e33a38ffc1a64cb8f97128d8aca456f38b9b70dd71b42bf9d"
+      },
+      {
+        "file": "tire_contact_half_length-1.png",
+        "tex": "t=\\mathrm{sgn}(v_x)\\frac{a z(3-2z)}{3(2-z)},\\qquad M_z=t F_y",
+        "width": 1046,
+        "height": 113,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "ebf13ab8229556c2502a3f8e73d4c07321f22952ac7ac085bf692b4f098a5868"
+      }
+    ],
+    "tire_aligning_enabled": [
+      {
+        "file": "tire_aligning_enabled-0.png",
+        "tex": "\\mathbf{p}_*=\\mathbf{p}-t\\mathbf{e}_x,\\qquad M_z=t F_y",
+        "width": 880,
+        "height": 80,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "e63105368dd2e7158c7d29c19106dafb01936ccfa9f3f1775a3f9b74255bf2c6"
+      },
+      {
+        "file": "tire_aligning_enabled-1.png",
+        "tex": "W_{\\mathrm{steer}}=-\\Delta t\\, F_y\\, v_{y,\\mathrm{steer}}",
+        "width": 686,
+        "height": 83,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "c97ebce81d6c64018d516576ad73bdae4da099ea7bb0c1ff2eb4cd34debb71ef"
+      }
+    ],
     "metric.mfdd": [
       {
         "file": "metric.mfdd-0.png",

@@ -23,10 +23,22 @@ _signature = '|'.join(cls.__module__+'.'+cls.__name__+':'+','.join(names)
                       for cls,names in zip(_records,_names)).encode()
 _layout = layout(_records,_names,int.from_bytes(hashlib.sha256(_signature).digest()[:8],'little'))
 
+# SIM-ALIGN前的完整快照；新增量的零默认表示当时没有此机制，不回算历史物理。
+_align_names = {"pneumatic_trail", "aligning_moment", "aligning_angular_impulse",
+                "contact_steering_work", "steering_lateral_velocity"}
+_legacy_names = tuple(tuple(name for name in names if name not in _align_names)
+                      if cls is WheelDynamicsState else names for cls, names in zip(_records, _names))
+_legacy_signature = int.from_bytes(hashlib.sha256('|'.join(
+    cls.__module__+'.'+cls.__name__+':'+','.join(names)
+    for cls, names in zip(_records, _legacy_names)).encode()).digest()[:8], 'little')
+_legacy_layout = layout(_records, _legacy_names, _legacy_signature)
+
 
 def encode_snapshots(states):
     return encode(_layout,states)
 
 
 def decode_snapshots(payload):
+    if payload[:4] == b'CDP1' and int.from_bytes(payload[4:12], 'little') == _legacy_signature:
+        return decode(_legacy_layout,payload)
     return decode(_layout,payload)

@@ -49,6 +49,13 @@ SIGNALS = (
           ("omega", "轮速", "rad/s", "omega"), ("fx", "纵向力", "N", "fx"),
           ("fy", "侧向力", "N", "fy"), ("grip", "附着力上限", "N", "sample_grip"))
       for index, wheel in enumerate(("fl", "fr", "rl", "rr"))),
+    *(Signal(f"{field}_{wheel}", f"{label} {wheel.upper()}", unit,
+             f"Snapshot.player.wheel_dynamics[{index}].{attribute}; final force substep except step work")
+      for field, label, unit, attribute in (
+          ("mz", "接触区回正力矩", "N·m", "aligning_moment"),
+          ("trail", "接触区拖距", "m", "pneumatic_trail"),
+          ("contact_steering_work", "本拍接触转向输入功", "J", "contact_steering_work"))
+      for index, wheel in enumerate(("fl", "fr", "rl", "rr"))),
     *(Signal(f"sample_load_{wheel}", f"完成步轮荷 {wheel.upper()}", "N",
              f"Snapshot.player.wheel_contacts[{index}].normal_load")
       for index, wheel in enumerate(("fl", "fr", "rl", "rr"))),
@@ -63,6 +70,8 @@ SIGNALS = (
       for index, wheel in enumerate(("fl", "fr", "rl", "rr"))),
 )
 SIGNAL_BY_KEY = {signal.key: signal for signal in SIGNALS}
+PRE_ALIGN_SIGNAL_KEYS = set(SIGNAL_BY_KEY) - {f"{key}_{wheel}"
+    for key in ("mz", "trail", "contact_steering_work") for wheel in ("fl", "fr", "rl", "rr")}
 LEGACY_SIGNAL_KEYS = {"time", "tick", "speed", "ax", "ay", "yaw", "steering", "steering_request",
                       "throttle", "brake", "engine_throttle", "throttle_request", "brake_request",
                       "gear", "rpm", "clutch", "clutch_request", "gear_request", "path_error"} | {
@@ -93,6 +102,9 @@ def sample_signals(snapshot, command, start_time):
                            ("omega", state.omega), ("fx", state.fx), ("fy", state.fy),
                            ("grip", state.sample_grip)):
             values[f"{key}_{wheel}"] = value
+        values[f"mz_{wheel}"] = state.aligning_moment
+        values[f"trail_{wheel}"] = state.pneumatic_trail
+        values[f"contact_steering_work_{wheel}"] = state.contact_steering_work
         values[f"sample_load_{wheel}"] = player.wheel_contacts[index].normal_load
         values[f"utilization_{wheel}"] = (math.hypot(state.fx, state.fy)/state.force_grip
                                          if state.road_support and state.force_grip > 0 else None)

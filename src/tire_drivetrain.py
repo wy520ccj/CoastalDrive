@@ -476,7 +476,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
     def velocities(index, state, end_velocity):
         frame = frames[index]
         vx = dot(end_velocity, frame.tangent) + dot(state[:3], moments_x[index])
-        vy = dot(end_velocity, frame.axle) + dot(state[:3], moments_y[index])
+        vy = (dot(end_velocity, frame.axle) + dot(state[:3], moments_y[index])
+              + frame.steering_lateral_velocity)
         return vx, vy, (radii[index] * state[index + wheel_start] - vx, -vy)
 
     def contact(index, state, end_velocity, fx, fy):
@@ -485,7 +486,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             frame = frames[index]
             return wheel_contact_state(state, end_velocity, wheel_start, index, frame.tangent, frame.axle,
                 moments_x[index], moments_y[index], radii[index], (fx, fy), deformations[index],
-                contact_parameters[index], tire_hardware[index], dt, rolling[index], None if shaft else math.hypot)
+                contact_parameters[index], tire_hardware[index], dt, rolling[index], None if shaft else math.hypot,
+                frame.steering_lateral_velocity)
         vx, vy, _slip = velocities(index, state, end_velocity)
         grip, cx, cy = contact_parameters[index]
         kappa, alpha = slip_state(vx, vy, state[index + wheel_start], radii[index], car)
@@ -500,7 +502,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 road_torques if rolling_active else None, active_limits, warm_branches, warm_modes,
                 moments_x[i], moments_y[i], deformations[i], contact_parameters[i], tire_hardware[i],
                 rolling[i], .0001, forces[i][:2],
-                suspension is not None and sweep == 0 and rolling[i] and wheel_loads[i] > 0, None)
+                suspension is not None and sweep == 0 and rolling[i] and wheel_loads[i] > 0, None,
+                frame.steering_lateral_velocity)
             return (fx, fy, brake), "magic-formula" if wheel_loads[i] > 0 else "airborne"
         if shaft:
             free_base_wheel, velocity_base = wheel_free_state(wheel_map, forces, velocity,
@@ -555,8 +558,9 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
         def derivatives(fx, fy):
             end, velocity_end, brake, (branch_index, index) = local_state(fx, fy)
             if shaft:
-                return wheel_map_derivatives(wheel_map, i, branch_index, index, end, velocity_end,
+                vx, vy, slip, gradients = wheel_map_derivatives(wheel_map, i, branch_index, index, end, velocity_end,
                                              moments_x[i], moments_y[i], radii[i], frame.tangent, frame.axle)
+                return vx, vy + frame.steering_lateral_velocity, (slip[0], slip[1] - frame.steering_lateral_velocity), gradients
             _branch, mc, ml, _response, wheel_responses, _local_response, plans, _shaft_data = branches[branch_index]
             local_rx, local_ry, local_rb = wheel_responses[i]
             vx, vy, slip = velocities(i, end, velocity_end)
@@ -752,7 +756,8 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                 (initial, velocity, tuple(forces), deformations, moments_x, moments_y,
                  rolling, wheel_supported, wheel_loads, tire_hardware, laws,
                  suspension.gradients, suspension.touching,
-                 tuple(0. if value is None else value for value in suspension.alignment)))
+                 tuple(0. if value is None else value for value in suspension.alignment),
+                 tuple(frame.steering_lateral_velocity for frame in frames)))
         finally:
             if query_lock is not None:
                 query_lock.acquire()
@@ -793,7 +798,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
             if shaft:
                 maximum, brake_error = wheel_residuals(wheel_map, state, end_velocity, forces, modes,
                     deformations, contact_parameters, tire_hardware, rolling, moments_x, moments_y,
-                    tire_compliance, None)
+                    tire_compliance, None, tuple(frame.steering_lateral_velocity for frame in frames))
             else:
                 maximum, brake_error = 0., 0.
                 for i in range(4):

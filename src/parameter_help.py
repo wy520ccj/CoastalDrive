@@ -28,6 +28,8 @@ EDITOR_INFO = {
 ALIASES = {"mu": "road_friction", "right_mu": "grass_friction", "cg": "center_of_mass_height", "tire_load": "tire_reference_load"}
 CONTROL_FIELDS = {"braking": BRAKE_FIELDS, "traction": TRACTION_FIELDS, "stability": STABILITY_FIELDS}
 SPECIAL = {
+    "tire_aligning_enabled": ("轮胎接触区回正机制", "bool", "模型机制开关", "受力点p*=p−t·纵向单位矢量；Mz=t·Fy。", "与同一接触速度、质量响应和冲量共轭；转向仍由理想执行器指定，不能把反力称为方向盘手感。低速没有停车扭矩模型。", "src/tire_aligning.py；src/tire_drivetrain.py"),
+    "tire_contact_half_length": ("轮胎接触区纵向半长", "m", "待标定设计输入", "均布压力刷毛积分给出t=a·z(3−2z)/[3(2−z)]；z为黏着区长度比例。", "不是胎宽或轮半径；用上一子步轮荷/滑移冻结分布，力仍由现有联合曲线求解。需要轮胎Mz试验；六参数Fx/Fy拟合不能标定此量。", "src/tire_aligning.py · brush_trail / aligning_frame"),
     "tire_reference_load": EDITOR_INFO["tire_load"],
     "center_of_mass_height": EDITOR_INFO["cg"],
     "road_friction": EDITOR_INFO["mu"], "grass_friction": EDITOR_INFO["right_mu"],

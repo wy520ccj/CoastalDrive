@@ -89,7 +89,7 @@ def build_workbench(app):
     for plot in app.plots:
         plot.update(())
     app.plot_menu = app.option(["制动响应", "转向响应", "四轮法向载荷", "四轮滑移率", "轮胎力 / 轮速", "路径跟踪", "执行器响应",
-                               "轮胎侧偏角", "附着利用率", "车身侧偏 / 侧倾", "左右载荷转移"],
+                               "轮胎侧偏角", "附着利用率", "车身侧偏 / 侧倾", "左右载荷转移", "轮胎回正力矩"],
                               -1.63, -.785, .60, app.set_plot_group, parameter="plot")
     app.text("曲线组", -1.62, -.700, .030, MUTED)
     app.text("A 海蓝   B 橙色", .60, -.238, .026, MUTED)

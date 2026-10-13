@@ -1,0 +1,134 @@
+{
+  "started_utc": "2026-10-13T15:13:59.945989+00:00",
+  "git_head": "b53527c60788b64910a1d348868dabeb01aa81c2",
+  "git_status": "M assets/game/ui/formulas/manifest.json\n M src/joint_iteration.h\n M src/joint_iteration_helpers.h\n M src/lab_application.py\n M src/lab_records.py\n M src/lab_signals.py\n M src/mechanical_kernels.c\n M src/parameter_formulas.py\n M src/parameter_help.py\n M src/snapshot_wire.py\n M src/tire_coupling.py\n M src/tire_drivetrain.py\n M src/ui/lab_workbench.py\n M src/ui/parameter_help.py\n M src/vehicle_config.py\n M src/vehicle_designs.py\n M src/vehicle_parameter_info.py\n M src/vehicle_parameters.py\n M src/vehicle_state.py\n M src/vehicle_tires.py\n M tests/test_tire_drivetrain.py\n?? assets/game/ui/formulas/tire_aligning_enabled-0.png\n?? assets/game/ui/formulas/tire_aligning_enabled-1.png\n?? assets/game/ui/formulas/tire_contact_half_length-0.png\n?? assets/game/ui/formulas/tire_contact_half_length-1.png\n?? docs/tasks/SIM-ALIGN-01.md\n?? src/tire_aligning.py\n?? tests/test_tire_aligning.py\n?? tools/physics/tire_aligning_check.py\n?? tools/tire_aligning_ui_check.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [
+    "lab"
+  ],
+  "tests": [
+    "tests/test_tire_aligning.py",
+    "tests/test_tire_drivetrain.py",
+    "tests/test_joint_suspension.py",
+    "tests/test_drivetrain_jacobian.py",
+    "tests/test_vehicle_parameters.py",
+    "tests/test_vehicle_designs.py",
+    "tests/test_physics_wire.py",
+    "tests/test_world_substeps.py"
+  ],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\logs\\validation\\SIM-ALIGN-01-T1\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.128
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_lab_experiment.py",
+        "tests/test_lab_records.py",
+        "tests/test_lab_ui.py",
+        "tests/test_lab_maneuvers.py",
+        "tests/test_lab_metrics.py",
+        "tests/test_parameter_help.py",
+        "tests/test_tire_calibration.py",
+        "tests/test_tire_aligning.py",
+        "tests/test_tire_drivetrain.py",
+        "tests/test_joint_suspension.py",
+        "tests/test_drivetrain_jacobian.py",
+        "tests/test_vehicle_parameters.py",
+        "tests/test_vehicle_designs.py",
+        "tests/test_physics_wire.py",
+        "tests/test_world_substeps.py"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\logs\\validation\\SIM-ALIGN-01-T1\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 22.569
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\logs\\validation\\SIM-ALIGN-01-T1\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 2.255
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\logs\\validation\\SIM-ALIGN-01-T1\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 2.218
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\logs\\validation\\SIM-ALIGN-01-T1\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 2.248
+    }
+  ]
+}

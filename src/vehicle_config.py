@@ -79,6 +79,8 @@ class VehicleConfig:
     wheel_rotor_transport: bool = True  # 机械轮轴、有效力臂及同末状态轴承反力；false冻结旧机制。
     tire_contact_stiffness: float = 150000.0  # 二维各向同性接触区弹性，N/m。
     tire_contact_damping: float = 1000.0  # N·s/m。
+    tire_aligning_enabled: bool = False  # 刷毛受力中心机制；游戏旧硬件保持，实验设计单独启用。
+    tire_contact_half_length: float = .08  # m，接触区纵向半长设计初值，需轮胎台架标定。
     tire_shape: float = 1.9
     tire_curvature: float = 0.97
     slip_speed: float = 1.0  # 低速滑移分母的模型尺度，m/s。
@@ -122,6 +124,10 @@ class VehicleConfig:
     suspension_force_limit: float = 6000.0  # N；仅原生对照分支的数值力限，SI势能反力不作硬裁剪。
 
     def __post_init__(self):
+        if not math.isfinite(self.tire_contact_half_length) or self.tire_contact_half_length <= 0.:
+            raise ValueError("轮胎接触区纵向半长须为有限正值m")
+        if self.tire_aligning_enabled and not (self.tire_compliance and self.wheel_rotor_transport):
+            raise ValueError("轮胎受力中心须使用弹性接触与机械轮轴，不支持旧刚性分支")
         if not math.isfinite(self.tire_reference_load) or self.tire_reference_load <= 0.:
             raise ValueError("轮胎固定标定轮荷须为有限正值N")
         if len(self.axle_torque_bias_ratios) != 2 or any(not math.isfinite(value) or value < 1.

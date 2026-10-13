@@ -1,0 +1,19 @@
+{
+  "sha256": "4d26689c645ac9c6627e7979fc11d86cae967e3191a9116862b0e1eebc350015",
+  "bytes": 8212650,
+  "runs": [
+    "off",
+    "on-2",
+    "on-4",
+    "on-8",
+    "half-2"
+  ],
+  "full_export_load_verified": true,
+  "old_archive_readback": {
+    "A_frames": 396,
+    "B_frames": 393,
+    "source": "../SIM-TIRE-FIT-01/vehicle-AB.zip",
+    "original_fields_verified": true,
+    "new_mechanism_zero": true
+  }
+}

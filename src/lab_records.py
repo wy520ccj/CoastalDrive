@@ -11,7 +11,13 @@ from pathlib import Path
 
 from lab_maneuvers import path_error, reference_path
 from lab_metrics import engineering_analysis
-from lab_signals import LEGACY_SIGNAL_KEYS, SIGNAL_BY_KEY, SIGNALS, sample_signals
+from lab_signals import (
+    LEGACY_SIGNAL_KEYS,
+    PRE_ALIGN_SIGNAL_KEYS,
+    SIGNAL_BY_KEY,
+    SIGNALS,
+    sample_signals,
+)
 from paths import resource_root
 from snapshot_wire import decode_snapshots, encode_snapshots
 from tire_calibration import validate_fit_metadata
@@ -180,7 +186,7 @@ def load_record(folder):
     if not len(samples) == len(snapshots) == len(commands) or not samples:
         raise ValueError("信号、快照与输入记录长度不一致")
     declared = {item["key"] for item in document["signals"]}
-    if (declared not in (LEGACY_SIGNAL_KEYS, set(SIGNAL_BY_KEY))
+    if (declared not in (LEGACY_SIGNAL_KEYS, PRE_ALIGN_SIGNAL_KEYS, set(SIGNAL_BY_KEY))
         or any(set(row) != declared for row in samples)):
         raise ValueError("信号字段与当前或旧版完整目录不一致")
     options = LabOptions(**document["summary"]["options"])

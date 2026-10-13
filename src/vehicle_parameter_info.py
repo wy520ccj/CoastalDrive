@@ -1,6 +1,8 @@
 """共享参数单位与定义；工程导出和只读说明使用同一字段表。"""
 
 VEHICLE_FIELDS = {
+    "tire_aligning_enabled": ("bool", "接触区刷毛受力中心；Mz参与共轭速度/实际车身冲量，不模拟自由转向或助力"),
+    "tire_contact_half_length": ("m", "接触区纵向半长设计输入；均布刷毛小滑移拖距a/3，需指定轮荷下Fx/Fy/Mz台架标定"),
     "native_tire_forces": ("bool", "原生简化交通轮胎；与完整轮端求解互斥，实验台保持完整模型"),
     "mass": ("kg", "Bullet车身质量；轮胎标称载荷与道路载荷"),
     "torque_curve": ("rpm,N·m", "曲轴转矩节点线性插值；game为raw非零节点×1.055"),

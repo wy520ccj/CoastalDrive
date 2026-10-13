@@ -28,6 +28,8 @@ class ContactFrame:
     spin_axis: tuple | None = None
     rolling_radius: float | None = None
     moment_x: tuple | None = None
+    pneumatic_trail: float = 0.
+    steering_lateral_velocity: float = 0.
 
 
 def advance_coupled(velocity, angular, omega, frames, deformations, drives, brakes,
@@ -89,7 +91,8 @@ def advance_coupled(velocity, angular, omega, frames, deformations, drives, brak
             fx, fy, used_brake = forces[i]
             wheel_omega = omega[i] + dt * (drives[i] - used_brake - radius * fx) / inertia
             vx = longitudinal_speed(end_velocity, end_angular, frame)
-            vy = dot(tuple(end_velocity[a] + cross(end_angular, frame.point)[a] for a in range(3)), frame.axle)
+            vy = (dot(tuple(end_velocity[a] + cross(end_angular, frame.point)[a] for a in range(3)), frame.axle)
+                  + frame.steering_lateral_velocity)
             body_omega = dot(end_angular, axes[i])
             grip = tire_grip(frame.load, frame.mu, wheel_config)
             cx, cy = tire_stiffness(frame.load, wheel_config)
@@ -148,7 +151,8 @@ def advance_coupled(velocity, angular, omega, frames, deformations, drives, brak
             known_velocity, known_angular = body_state(exclude=i, bearing=bearing)
             point_speed = tuple(known_velocity[a] + cross(known_angular, frame.point)[a] for a in range(3))
             step = advance_wheel(omega[i], longitudinal_speed(known_velocity, known_angular, frame),
-                                 dot(point_speed, frame.axle), dot(known_angular, axes[i]), drives[i], brakes[i], frame.load,
+                                 dot(point_speed, frame.axle) + frame.steering_lateral_velocity,
+                                 dot(known_angular, axes[i]), drives[i], brakes[i], frame.load,
                                  frame.mu, frame.mobility, dt, configurations[i], deformations[i],
                                  force_tolerance=.0001, rolling_contact=rolling_contacts[i],
                                  force_initial=forces[i][:2], rolling_radius=radii[i])

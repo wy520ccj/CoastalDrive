@@ -375,7 +375,7 @@ class VehicleLab(ShowBase):
     def set_plot_group(self, selection):
         names = ("制动响应", "转向响应",
                  "四轮法向载荷", "四轮滑移率", "轮胎力 / 轮速", "路径跟踪", "执行器响应",
-                 "轮胎侧偏角", "附着利用率", "车身侧偏 / 侧倾", "左右载荷转移")
+                 "轮胎侧偏角", "附着利用率", "车身侧偏 / 侧倾", "左右载荷转移", "轮胎回正力矩")
         groups = ((("speed",), ("ax",)), (("yaw",), ("steering_request", "steering")),
                   (("sample_load_fl", "sample_load_fr"), ("sample_load_rl", "sample_load_rr")),
                   (("kappa_fl", "kappa_fr"), ("kappa_rl", "kappa_rr")),
@@ -383,10 +383,13 @@ class VehicleLab(ShowBase):
                   (("throttle_request", "engine_throttle"), ("brake_request", "pressure_fl")),
                   (("alpha_fl", "alpha_fr"), ("alpha_rl", "alpha_rr")),
                   (("utilization_fl", "utilization_fr"), ("utilization_rl", "utilization_rr")),
-                  (("beta",), ("roll",)), (("ltr_front",), ("ltr_rear",)))
+                  (("beta",), ("roll",)), (("ltr_front",), ("ltr_rear",)),
+                  (("mz_fl", "mz_fr"), ("mz_rl", "mz_rr")))
         for plot, keys in zip(self.plots, groups[names.index(selection)]):
             plot.keys = keys
         self.refresh_plots()
+        for plot in self.plots:
+            plot.seek(self.view_index/120)
 
     def show_sample(self, index):
         active = self.record if self.record is not None else self.run_state

@@ -181,6 +181,10 @@ class ParameterHelp:
         self.key = key
         if switch_group:
             self.group, self.page = parameter_group(key), 0
+            field = ALIASES.get(key, key)
+            fields = group_parameters(self.group)
+            if field in fields:
+                self.page = fields.index(field)//8
             self.groups.set(list(GROUP_LABELS).index(self.group), fCommand=0)
             self.refresh_list()
         basis, values = self.context(key)

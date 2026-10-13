@@ -4,6 +4,14 @@ from parameter_help import ALIASES
 
 # 每项为独立数学行、符号释义。保留近似号，避免把解释式当成实际求解器。
 FORMULAS = {
+    "tire_contact_half_length": ((
+        r"z=\min\left(1,\frac{D}{2\sqrt{(C_\kappa\kappa)^2+(C_\alpha\tan\alpha)^2}}\right)",
+        r"t=\mathrm{sgn}(v_x)\frac{a z(3-2z)}{3(2-z)},\qquad M_z=t F_y",
+    ), "a：接触纵向半长；z：黏着比例；零滑移取z=1。上一子步冻结分布；低速/零轮荷取t=0。"),
+    "tire_aligning_enabled": ((
+        r"\mathbf{p}_*=\mathbf{p}-t\mathbf{e}_x,\qquad M_z=t F_y",
+        r"W_{\mathrm{steer}}=-\Delta t\, F_y\, v_{y,\mathrm{steer}}",
+    ), "p*：等效受力点，不改变悬架/碰撞接点；Wsteer：指定转向运动对接触系统的输入功。"),
     "metric.mfdd": ((r"d_m=\frac{v_b^2-v_e^2}{2(s_e-s_b)},\quad v_b=0.8v_0,\quad v_e=0.1v_0",),
                     "v采用m/s，s采用m；b/e分别为80%/10%初速交点。"),
     "metric.yaw_gain": ((r"G_r=\frac{\overline{r}_{\mathrm{right}}}{\overline{\delta}_{\mathrm{actual}}}",),

@@ -105,6 +105,11 @@ class WheelDynamicsState:
     deformation_y: float = 0.0
     force_patch_kappa: float | None = None
     force_patch_alpha: float | None = None
+    pneumatic_trail: float = 0.
+    aligning_moment: float = 0.
+    aligning_angular_impulse: tuple = (0., 0., 0.)
+    contact_steering_work: float = 0.
+    steering_lateral_velocity: float = 0.
     elastic_energy: float = 0.0
     material_dissipation: float = 0.0
     road_dissipation: float = 0.0

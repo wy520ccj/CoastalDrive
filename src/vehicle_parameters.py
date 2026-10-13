@@ -29,6 +29,7 @@ PARAMETER_GROUPS = {
         "tire_peak_load_exponent", "longitudinal_load_exponent", "lateral_load_exponent",
         "tire_compliance", "native_tire_forces", "wheel_rotor_transport", "tire_contact_stiffness", "tire_contact_damping",
         "tire_shape", "tire_curvature", "slip_speed", "static_contact_speed", "tire_substeps",
+        "tire_aligning_enabled", "tire_contact_half_length",
         "rolling_coefficient", "grass_rolling_coefficient", "wheel_rolling_resistance",
         "rolling_transition_speed", "road_friction", "grass_friction",
     ),
@@ -82,6 +83,9 @@ def save_vehicle_config(path, config, *, metadata=None):
 def config_from_document(document, selected):
     """文件或保存记录恢复同一不可变配置；嵌套控制配置继承选定车型。"""
     values = dict(_parameters(document))
+    # 老工程文件没有接触区回正机制；导入后仍保留其原力学定义。
+    if "tire_aligning_enabled" not in values:
+        values["tire_aligning_enabled"] = False
     if "braking" in values:
         values["braking"] = replace(selected.braking, **values["braking"])
     if "stability" in values:
