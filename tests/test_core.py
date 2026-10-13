@@ -87,17 +87,23 @@ def test_seed_repeatability_and_restart():
     assert s.snapshot().traffic != other
 
 
-def test_stepper_drop_and_fractional_remainder():
+def test_stepper_preserves_all_elapsed_time_and_catches_up_in_bounded_batches():
     stepper = FixedStepper()
     ticks = []
     assert stepper.advance(0.25, lambda: ticks.append(1)) == 8
     assert len(ticks) == 8
-    assert stepper.dropped_time == pytest.approx(22 * FIXED_DT)
-    assert stepper.remainder == pytest.approx(0)
+    assert stepper.dropped_time == 0
+    assert stepper.backlog_time == pytest.approx(22 * FIXED_DT)
+    assert stepper.advance(0, lambda: ticks.append(1)) == 8
+    assert stepper.advance(0, lambda: ticks.append(1)) == 8
+    assert stepper.advance(0, lambda: ticks.append(1)) == 6
+    assert len(ticks) == 30
+    assert stepper.remainder == pytest.approx(0, abs=1e-12)
+    assert stepper.backlog_time == 0
     stepper.advance(FIXED_DT / 2, lambda: ticks.append(1))
-    assert len(ticks) == 8
+    assert len(ticks) == 30
     stepper.advance(FIXED_DT / 2, lambda: ticks.append(1))
-    assert len(ticks) == 9
+    assert len(ticks) == 31
 
 
 @pytest.mark.parametrize("dt", [-1, float("inf"), float("nan")])

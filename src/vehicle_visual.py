@@ -14,6 +14,17 @@ from vehicle_designs import vehicle_design
 WHEEL_NAMES = ("wheel-front-left", "wheel-front-right", "wheel-back-left", "wheel-back-right")
 
 
+def batch_driving_geometry(root, wheels):
+    """涂装完成后合并静态网格，保留车身装配变换与四轮动态枢轴。"""
+    for part in (root.getChild(0), *wheels):
+        children = tuple(part.getChildren())
+        geometry = part.attachNewNode('driving-geometry')
+        for child in children:
+            child.reparentTo(geometry)
+        geometry.clearModelNodes()
+        geometry.flattenStrong()
+
+
 def load_vehicle(parent, definition: VehicleDefinition, *, trace=None, config=None):
     """按统一车型定义装配显示车；调用方身份不参与资产选择。"""
     if config is None:

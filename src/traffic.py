@@ -131,14 +131,18 @@ class Driver:
         if not road.closed and not road.endless:
             # The finite preview ends here. Wait on the road until safe to recycle.
             desired = min(desired, math.sqrt(max(0, 4 * (road.length - 12 - distance))))
-        for ahead in range(0, max(20, int(abs(car.speed) * 2)), 5):
-            a, b = (
-                road.sample(distance + ahead, self.lane),
-                road.sample(distance + ahead + 8, self.lane),
-            )
-            curvature = abs(math.radians((b.heading - a.heading + 180) % 360 - 180)) / 8
-            bend_speed = math.sqrt(2.5 / max(curvature, 0.001))
-            desired = min(desired, math.sqrt(bend_speed**2 + 5 * ahead))
+        if not road.closed and road.curve is None:
+            # 直线感知坐标的所有预览曲率恒为零；原循环最小上限出现在ahead=0。
+            desired = min(desired, 50.)
+        else:
+            for ahead in range(0, max(20, int(abs(car.speed) * 2)), 5):
+                a, b = (
+                    road.sample(distance + ahead, self.lane),
+                    road.sample(distance + ahead + 8, self.lane),
+                )
+                curvature = abs(math.radians((b.heading - a.heading + 180) % 360 - 180)) / 8
+                bend_speed = math.sqrt(2.5 / max(curvature, 0.001))
+                desired = min(desired, math.sqrt(bend_speed**2 + 5 * ahead))
         own_width, own_length = extents(car.heading, p.heading, self.config)
         nearest_gap = math.inf
         lead_speed = desired
@@ -146,8 +150,10 @@ class Driver:
             if not other.active:
                 continue
             delta = road.delta(other_distance, distance)
+            if delta <= 0:
+                continue
             other_width, other_length = extents(other.heading, p.heading, self.config)
-            if delta <= 0 or abs(other_lateral - lateral) > own_width + other_width + 0.2:
+            if abs(other_lateral - lateral) > own_width + other_width + 0.2:
                 continue
             gap = delta - own_length - other_length
             if gap < nearest_gap:

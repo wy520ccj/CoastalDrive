@@ -40,6 +40,70 @@ def physics_progress(session):
     return session.current.tick, session.stepper.dropped_time, time.perf_counter()
 
 
+def traced_authority(output, *arguments):
+    """诊断实际权威进程；分项包含调用，不能将嵌套耗时相加。"""
+    import session_process
+    import tire_drivetrain
+    import world_step
+    from npc_physics import TrafficVehicle
+    from session import Session
+    from simulation import Simulation
+    from tire_drivetrain import DrivetrainInput
+    from vehicle import Vehicle
+    from vehicle_tire_step import TireAdvanceInput
+
+    records = {}
+
+    def timed(name, function):
+        @wraps(function)
+        def call(*args, **kwargs):
+            wall, cpu = time.perf_counter(), time.thread_time()
+            try:
+                return function(*args, **kwargs)
+            finally:
+                duration = time.perf_counter()-wall, time.thread_time()-cpu
+                record = records.setdefault(name, {'count': 0, 'wall': 0., 'cpu': 0.,
+                                                   'samples': deque(maxlen=8192)})
+                record['count'] += 1
+                record['wall'] += duration[0]
+                record['cpu'] += duration[1]
+                record['samples'].append(duration[0])
+        return call
+
+    for owner, attribute, name in (
+        (Session, 'tick', 'session-tick'), (Simulation, 'step', 'simulation-step'),
+        (Simulation, '_drive_traffic', 'traffic-decision'),
+        (Simulation, 'snapshot', 'snapshot'),
+        (world_step, 'advance_world', 'advance-world'),
+        (TireAdvanceInput, 'solve', 'complete-solve'),
+        (DrivetrainInput, 'solve', 'serial-drivetrain-solve'),
+        (TrafficVehicle, 'prepare_command', 'npc-command'),
+        (TrafficVehicle, 'physics_stages', 'npc-force'),
+        (TrafficVehicle, 'after_step', 'npc-observation'),
+        (Vehicle, 'after_step', 'player-observation'),
+        (Simulation, '_read_impact_contacts', 'impact-observation'),
+        (Simulation, '_count_player_collisions', 'collision-count'),
+        (tire_drivetrain, 'joint_solve', 'native-joint-solve'),
+        (Session, 'camera_position', 'camera-query'),
+    ):
+        setattr(owner, attribute, timed(name, getattr(owner, attribute)))
+    # Simulation在导入时绑定函数，诊断覆写须指向同一个计时入口。
+    import simulation
+    simulation.advance_world = world_step.advance_world
+    try:
+        session_process._serve(*arguments)
+    finally:
+        result = {}
+        for name, record in records.items():
+            values = sorted(record['samples'])
+            result[name] = {'count': record['count'],
+                'wall_mean_ms': record['wall']/record['count']*1000,
+                'cpu_mean_ms': record['cpu']/record['count']*1000,
+                'wall_p95_ms': values[int((len(values)-1)*.95)]*1000,
+                'wall_p99_ms': values[int((len(values)-1)*.99)]*1000}
+        (Path(output)/'authority-timing.json').write_text(json.dumps(result), encoding='utf-8')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
@@ -212,16 +276,24 @@ def main():
     if args.trace_phases:
         from direct.showbase.ShowBase import ShowBase
 
+        import session_process
         import world_step
         from highway_driver import HighwayDriver
         from physics_workers import PhysicsWorkers
         from session import Session
+        from session_process import SessionProcess
+
+        session_process._serve = partial(traced_authority, str(args.output.resolve()))
         from simulation import Simulation
         from streamed_road import StreamedRoad
         from vehicle import Vehicle
 
         for owner,attribute,name in (
             (CoastalDrive,'update','window-update'),(Session,'frame','render-snapshot'),
+            (CoastalDrive,'apply_scene','scene-application'),
+            (CoastalDrive,'pace_frame','frame-pacing'),
+            (SessionProcess,'frame','remote-frame'),
+            (SessionProcess,'camera_position','camera-roundtrip'),
             (Session,'tick','physical-session-tick'),(Simulation,'step','physical-world-tick'),
             (Vehicle,'after_step','vehicle-observation'),(PhysicsWorkers,'submit','worker-submit'),
             (PhysicsWorkers,'_receive','worker-receive'),
@@ -232,6 +304,7 @@ def main():
             (HighwayDriver,'plan','traffic-plan'),
             (HighwayDriver,'control','traffic-control'),
             (ShowBase,'_ShowBase__garbageCollectStates','panda-state-collection'),
+            (ShowBase,'_ShowBase__igLoop','render-frame'),
         ):
             setattr(owner,attribute,timed(name,getattr(owner,attribute)))
 
@@ -245,7 +318,19 @@ def main():
                        vehicle_design_id=args.vehicle_design, driving_mode=DrivingMode(args.driving_mode),
                        physics_workers=args.physics_workers)
     if args.traffic_count is not None and len(app.session.current.traffic) != args.traffic_count:
-        raise RuntimeError('窗口启动后的实际交通车数与指定工况不一致')
+        from highway_run import TRAFFIC_DENSITIES
+
+        densities = {density.cars: name for name, density in TRAFFIC_DENSITIES.items()}
+        if args.track != 'endless' or args.traffic_count not in densities:
+            app.close_game()
+            raise ValueError('窗口交通数量须对应真实无限高速车流选项')
+        # 与游戏菜单相同，重建会话时读取车流密度；不能只检查数量或改显示快照。
+        app.session.traffic_density = densities[args.traffic_count]
+        app.session.start(countdown=False)
+        app.sync_scene()
+        if len(app.session.current.traffic) != args.traffic_count:
+            app.close_game()
+            raise RuntimeError('窗口启动后的实际交通车数与指定工况不一致')
     app.taskMgr.remove("finish-smoke")
     from session_process import SessionProcess
 
@@ -317,7 +402,8 @@ def main():
                 measuring_phases = args.trace_phases
                 if args.profile:
                     profiler.enable()
-            samples.append({"second": task.time, "ms": (now - previous) * 1000})
+            samples.append({"second": task.time, "ms": (now - previous) * 1000,
+                            "physics_lag_ms": app.session.stepper.backlog_time * 1000})
             work_samples.append(dict(app.scene.segment_work))
         previous = now
         if int(task.time) != last_second:
@@ -338,6 +424,7 @@ def main():
                 profiler.disable()
                 profiler.dump_stats(str(args.output / "main.prof"))
             values = sorted(row["ms"] for row in samples)
+            lag_values = sorted(row["physics_lag_ms"] for row in samples)
             draw_values = sorted((b - a) * 1000 for a, b in pairwise(draw_times))
             valid = all(not w["minimized"] and w["foreground"] for w in windows)
             state = app.session.current
@@ -399,6 +486,9 @@ def main():
                 "physics_sample_simulated_seconds":(end_tick-start_tick)/120,
                 "physics_sample_wall_seconds":sample_finished_at-sample_started_at,
                 "physics_sample_hz":(end_tick-start_tick)/(sample_finished_at-sample_started_at),
+                "physics_time_deficit_seconds":(sample_finished_at-sample_started_at)-(end_tick-start_tick)/120,
+                "physics_lag_p95_ms":lag_values[int((len(lag_values)-1)*.95)],
+                "physics_lag_max_ms":max(lag_values),
                 "collisions": app.session.simulation.collision_count,
                 "frames_slow": sorted(samples, key=lambda row: row["ms"], reverse=True)[:12],
                 "segment_work_max_ms": max(w["frame_ms"] for w in work_samples),
@@ -410,10 +500,13 @@ def main():
                 "passed": valid and distance > 600 and not app.session.simulation.collision_count,
             })
             final["short_performance_passed"] = (
-                final["passed"] and final["display_draw_fps"] >= 60
+                final["passed"] and final["display_draw_fps"] >= 70
                 and final["display_draw_p95_ms"] <= 25
                 and final["display_draw_over_50ms"] == 0
                 and final["dropped_simulation_seconds"] == 0
+                and final["physics_sample_hz"] >= 119.9
+                and final["physics_lag_p95_ms"] <= 25
+                and final["physics_lag_max_ms"] <= 100
                 and final["near_pending_frames"] == 0
             )
             app.userExit()

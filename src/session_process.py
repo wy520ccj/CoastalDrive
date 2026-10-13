@@ -41,6 +41,7 @@ class SessionOutput:
     rebases: int
     traffic_cycles: int
     initialisation_ticks: int
+    backlog_time: float = 0.
 
 _FRAME_HEADER = struct.Struct('<I')
 
@@ -63,7 +64,7 @@ def _encode_frame(output, cache=None):
     status = (tuple(indices),history,previous,current,output.timeline_origin,output.dropped_epoch,
               output.phase,output.countdown_ticks,output.dropped_time,output.race,output.highway,
               output.notice,output.segments,output.collisions,output.rebases,output.traffic_cycles,
-              output.initialisation_ticks)
+              output.initialisation_ticks,output.backlog_time)
     header = pickle.dumps(status,protocol=5)
     while len(cache)>16:
         del cache[next(iter(cache))]
@@ -77,12 +78,12 @@ def _decode_frame(payload, cache=None):
     if boundary > len(payload):
         raise ValueError('完整会话快照头被截断')
     (indices,history,previous,current,origin,epoch,phase,countdown,dropped,race,highway,notice,
-     segments,collisions,rebases,cycles,initial) = pickle.loads(payload[1+_FRAME_HEADER.size:boundary])
+     segments,collisions,rebases,cycles,initial,backlog) = pickle.loads(payload[1+_FRAME_HEADER.size:boundary])
     states, impacts = decode_snapshots(memoryview(payload)[boundary:])
     cache.update(zip(indices,states))
     output = SessionOutput(tuple(cache[index] for index in history),origin,epoch,cache[previous],
         cache[current],impacts,phase,countdown,dropped,race,highway,notice,segments,
-        collisions,rebases,cycles,initial)
+        collisions,rebases,cycles,initial,backlog)
     while len(cache)>16:
         del cache[next(iter(cache))]
     return output
@@ -113,8 +114,9 @@ def _output(session):
             segments = clock.segments
             status = clock.status
     phase, countdown, dropped, race, highway, notice, collisions, rebases, cycles, initial = status
+    backlog = max(0., perf_counter()-timeline_origin-current.time) if phase == Phase.DRIVING else 0.
     return SessionOutput(history, timeline_origin, dropped_epoch, previous, current, impacts, phase, countdown,
-                         dropped, race, highway, notice, segments, collisions, rebases, cycles, initial)
+                         dropped, race, highway, notice, segments, collisions, rebases, cycles, initial,backlog)
 
 
 def _metadata(session):
@@ -264,7 +266,7 @@ class SessionProcess:
         self.simulation.input_config = driving_mode.input_config
         self.simulation._physics_workers = self.simulation if physics_workers else None
         self.simulation.worker_statistics = None
-        self.stepper = SimpleNamespace(dropped_time=0.)
+        self.stepper = SimpleNamespace(dropped_time=0.,backlog_time=0.)
         self.race = SimpleNamespace(snapshot=None)
         self.highway = SimpleNamespace(snapshot=None)
         context = get_context('spawn')
@@ -333,6 +335,7 @@ class SessionProcess:
         self.received_impacts.extend(output.impacts)
         self.phase, self.countdown_ticks = output.phase, output.countdown_ticks
         self.stepper.dropped_time = output.dropped_time
+        self.stepper.backlog_time = output.backlog_time
         self.race.snapshot, self.highway.snapshot, self.notice = output.race, output.highway, output.notice
         sim = self.simulation
         sim.origin_y = self.current.origin_y

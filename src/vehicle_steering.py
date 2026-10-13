@@ -39,3 +39,15 @@ class SteeringRack:
         rate = config.steering_rate
         self.angle += max(-rate * dt, min(rate * dt, next_angle - self.angle))
         return self.angle
+
+    def advance_assisted(self, target_degrees, dt, response_time, return_time):
+        """游戏驾驶请求采用单次无超调响应；松键/反打不继承旧角速度。"""
+        config = self.config
+        target = max(-config.steering_degrees, min(config.steering_degrees, target_degrees))
+        returning = target * self.angle < 0 or abs(target) < abs(self.angle)
+        duration = return_time if returning else response_time
+        delta = (target - self.angle) * -math.expm1(-dt / duration)
+        delta = max(-config.steering_rate * dt, min(config.steering_rate * dt, delta))
+        self.angle += delta
+        self.velocity = delta / dt
+        return self.angle

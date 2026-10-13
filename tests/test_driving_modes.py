@@ -7,6 +7,19 @@ from vehicle_config import CAR
 from vehicle_state import Control, VehicleCommand
 
 
+def test_game_uses_120hz_mechanics_and_lab_retains_design_substeps():
+    from vehicle_designs import DESIGN_VEHICLES
+    from world_step import physical_substeps
+
+    for design in DESIGN_VEHICLES:
+        game = DrivingMode.GAME.configured_vehicle(base_config=design.config)
+        lab = DrivingMode.SIMULATION.configured_vehicle(base_config=design.config)
+        assert physical_substeps(game) == 1
+        assert physical_substeps(lab) == 2
+        assert asdict(game) == asdict(lab) | {'tire_substeps': 1}
+        assert DrivingMode.GAME.configured_vehicle(base_config=game) is game
+
+
 def test_reference_mode_has_a_coherent_vehicle_profile():
     assert DrivingMode.GAME.vehicle_config is CAR
     assert DrivingMode.SIMULATION.vehicle_config is REFERENCE_CAR

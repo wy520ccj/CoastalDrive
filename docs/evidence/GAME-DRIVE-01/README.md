@@ -1,0 +1,117 @@
+# 当前游戏路径与操控取舍
+
+基线：2026-10-13 main `ebcc448`（实验台/字体/菜单修订版）。任务：[GAME-DRIVE-01](../../tasks/GAME-DRIVE-01.md)。原setup.py、悬架准备源码与测试未改；使用现有DLL，不重建另一施工线的扩展。冻结源码/DLL：`logs/game-drive-r1/baseline/src`；资源只读引用当前assets。
+
+## 初始入口与转向块（r1历史结果）
+
+游戏与实验台共用当前Simulation、完整玩家车辆、轮胎/悬架/传动/电子控制、碰撞/CCD、120Hz及两个机械子步。实验室的VehicleCommand仍进入原完整执行器。游戏优先使用已有TrafficVehicle：真实Bullet车身/碰撞、原生悬架/轮胎，省略NPC的有限传动联合迭代、胎体弹性、转子输运及ABS/TCS/ESC。没有进一步削减玩家模型，也没有还原旧源码。
+
+游戏启动忽略旧保存的simulation输入设置；F2只设置ABS/TCS/ESC，不再通过输入选项改变NPC模型。底层simulation模式保留供研究与显式诊断参数使用，实验台界面不属本任务。
+
+游戏Control采用一次无超调转向响应：打舵时间常数0.10s、回正/反打0.06s，沿用硬件50°/s限速；松键后每拍减舵，反打不继承旧角速度。键盘不再另加累积。车速包络名义横向加速度7.5→4.5m/s²（非实际横向加速度硬限制），GR86在100km/h的目标上限1.405→0.843°。低速保留完整机械限位；油门、刹车、自动倒车与相机规则保持。游戏成绩隔离为game-keyboard-v31。
+
+## 测量
+
+同GR86、seed23、弯坡高速，预热60拍/采样240拍完整世界（不含绘制/IPC）；分别串行测量，不能当作前台FPS：
+
+| 冻结基线 | 完整步均值 | P95 |
+|---|---:|---:|
+| 正常0NPC | 3.004ms | 3.506ms |
+| 正常12原生NPC | 5.047ms | 7.464ms |
+| 直接输入12完整NPC/9worker | 11.589ms | 14.667ms |
+
+120Hz预算8.333ms。因此先固定正常NPC路径，保留玩家完整模型；无依据再删玩家仿真量。
+
+同100km/h真实GR86/同一lab平面，仅初始化设置滚动初速，之后全部由Simulation推进：
+
+| 右转按键 | 原直接输入松键角/后续峰值 | 新游戏松键角/后续首拍 | 新游戏松键0.3s后 |
+|---|---:|---:|---:|
+| 0.1s | 0.260° / 0.921° | 0.533° / 0.464° | 0.00359° |
+| 0.3s | 3.544° / 6.674° | 0.805° / 0.700° | 0.00542° |
+| 0.5s | 9.665° / 14.068° | 0.845° / 0.736° | 0.00569° |
+
+新游戏松键后不继续增加转角，三条轨迹零玩家碰撞。这是离线操控数值证据，非人工手感。对应`steering-before-r2`/`steering-after`。原正常分支未单独重跑该操控探针，不将其与原直接输入混称同一基线。
+
+直接VehicleCommand旧/新对照：三工况共192+216+240=648拍，完整Snapshot SHA逐拍相同，所有记录行相同（`exact-comparison.json`）；人工实验室效果仍由其施工线验收。
+
+## 有效前台
+
+两次保持同一当前外部应用负载，不关闭用户应用、不调优先级/亲和性。1080p、Draw管线、独立权威会话、GR86/seed23/弯坡高速；音频按既有smoke工具关闭。旧默认路径30秒、新游戏60秒为各自短样本，时长不同，不计算配对性能百分比。
+
+| 场景 | 物理Hz | 绘制FPS | P95 / P99 | 丢时 | 玩家碰撞 | 短Gate |
+|---|---:|---:|---:|---:|---:|---|
+| 原直接输入12完整NPC | 70.421 | 73.697 | 17.844 / 20.704ms | 11.1s | 0 | fail |
+| 新游戏12原生NPC | 119.987 | 81.941 | 17.062 / 20.072ms | 0 | 0 | pass |
+
+两次窗口前台/父进程/权威会话/worker源码有效。新游戏距离1356.559m，>50ms长帧0，近景pending0。原窗口距离240.490m，未满足工具距离与实时Gate，不把显示流畅作为实时证据。18NPC检查及T1结果待记录。
+
+## 命令与失败
+
+```powershell
+.venv/Scripts/python.exe tools/performance/benchmark_physics.py --source logs/game-drive-r1/baseline/src --output logs/game-drive-r1/baseline-game-12 --workers 0 --traffic 12 --mode game --traffic-input-mode game --track endless --shape hills --driver endurance --seed 23 --warmup 60 --steps 240 --capture-hashes
+.venv/Scripts/python.exe tools/game_drive_check.py --source logs/game-drive-r1/baseline/src --output logs/game-drive-r1/steering-before-r2 --mode simulation
+.venv/Scripts/python.exe tools/game_drive_check.py --output logs/game-drive-r1/steering-after --mode game
+# --exact分别输出exact-before/exact-after，比较完整快照；默认模式为game。
+.venv/Scripts/python.exe tools/performance/benchmark_runtime.py --output logs/game-drive-r1/window-after --shape hills --seconds 60 --track endless --vehicle-design gr86-2022-premium-6mt --driving-mode game --traffic-count 12 --independent-clock
+```
+
+首次T0为20通过/2失败：低速大转角回正仍受50°/s硬件限速，新增测试误把所有车速都要求0.3秒回到1%；修正测试按低速1秒/高速0.3秒、保持逐拍立即减舵及限速断言后22项T0/Ruff通过。原测试未放宽。新增100km/h真实反打回正回归待执行。
+
+操控工具首次误用不存在的LabRun类名，改为实际LabExperiment后成功。前台冻结基线首次缺少子进程assets路径，确认进程结束后补只读资源junction再测，原失败保留；未使用该启动作为性能样本。繁忙检查首次工具只核对数量而未设置密度，实际12辆导致启动失败/退出清理挂起；仅终止本次已核实PID的两个诊断进程。修工具通过真实Session的busy密度重开，并在数量不支持时关闭会话后报错，18辆重新测量。没有关闭用户实验台或其它应用。
+
+T2/T3/长时间前台/声音未跑，本任务不将既有旧海岸长跑求解失败宣称修复。游戏自动收据、用户实际驾驶分别记账；用户手感验收待确认。
+
+## 当前试玩
+
+[当前游戏源码入口](../../../launchers/game-current.cmd)固定game输入，沿用本机车型/皮肤及电子开关；支持从主菜单进入实验室。根试玩与其他独立包仅为历史版本，不承载本轮结果。本轮不推送、不替换公开包。
+
+
+## 实时追赶与后续取舍（2026-10-13，施工中）
+
+FixedStepper每批最多八拍后交还执行机会，未完成时间保留，下一批必须真实计算；没有变大dt、外推车辆、删欠账或修改现实时间。会话传输新增真实物理落后毫秒诊断。200ms人为停顿后完成全部拍并追到25ms以内；相关T0通过。长期超预算仍会积压，因此不能用丢时0单独认定实时通过。
+
+| 有效前台短窗 | 物理Hz | FPS | 物理落后P95 / 峰值 | 结论 |
+|---|---:|---:|---:|---|
+| 18NPC原两子步、原丢时钟 | 118.713 | 67.041 | 未记录 | 丢时0.55s，fail |
+| 18NPC保留欠账、两子步 | 119.929 | 66.302 | 96.228 / 123.433ms | fail，用户指出明显卡顿 |
+| 恢复原相机查询，权威分项诊断 | 114.003 | 56.643 | 1288.149 / 1424.505ms | fail，含计时插桩，不作最终性能 |
+| 一次机械求解、纯数值期间释放查询锁，诊断 | 119.980 | 63.915 | 22.779 / 45.617ms | FPS仍fail，含计时插桩 |
+| 初始车辆合批60s候选 | 119.148 | 75.456 | 589.933 / 809.978ms | 实时fail；轮枢轴烘焙错误，禁止采用为最终结果 |
+
+全部窗口保留真实18NPC、碰撞、弯坡、1080p、seed23、GR86硬件；音频按smoke关闭。窗口有效性与绘制采样在对应report.json中核对。没有关闭用户应用或实验台。短Gate现在要求FPS≥70、物理Hz≥119.9、落后P95≤25ms/峰值≤100ms、丢时0；工具旧passed只含路线完成，必须看short_performance_passed。无绘制8s的119.804Hz/落后P95 15.999ms只是隔离证据。
+
+权威进程分项计时：两子步完整session-tick均值8.24～8.69ms，预算8.333ms；其中世界推进约6.72～7.04ms，联合数值求解约0.66～0.70ms/子步。主窗口renderFrame均值10.767ms/CPU10.276ms，窗口更新5.260ms，相机往返2.657ms；嵌套项不能相加。计时插桩有开销，不用它认定稳定吞吐。
+
+游戏现在每120Hz拍一次完整机械求解（tire_substeps=1），保留当前弹性轮胎/转子/有限传动/耦合悬架/电子控制/碰撞方程；实验台SIMULATION保留设计两子步，不读取游戏取舍。成绩版本game-keyboard-v32。单步路径也通过已有数值请求/提交边界释放查询锁，不让相机等完整拍。独立无绘制18NPC480拍均值4.475ms/P95 8.011ms；不是前台验收。
+
+新增game_mechanics_check对五种车型的μ1.1/0.6制动与100km/h键盘反打做同初始化/两子步与单步对照，各15条。30条全部完成、无非有限状态、无异常求解；单步停车距离比两子步少0.082～0.119m，反打后第一拍立即减舵、300ms余角约0.0046～0.0053°。例如GR86 μ1.1为37.749→37.656m、μ0.6为66.844→66.742m；游戏调校为43.980→43.897m、66.350→66.237m。仅该工况的数值取舍证据，不宣称所有场景完全等价。实验台完整方程和界面没有修改。
+
+另外消除交通控制重复数学、NPC同一请求两子步的重复原生执行器设置、Snapshot metadata二次replace；各480拍完整SHA相同。NPC准备单对均值6.551→6.193ms，不能认定稳定收益。玩家碰撞与音效共用一次玩家接触集合，原冲量/距离/顺序/碰撞计数保持；480拍SHA相同，单对4.757→4.775ms无明确整步收益。
+
+车辆表现合批仅发生在Scene的涂装完成后，车身装配变换和轮枢轴保持；在单位子节点中合并静态几何，转向灯不合并。原直接flatten轮枢轴候选出现车轮悬空，已修正，未进入主源码。修正后六张1920×1080同物理姿态/前后视点，每图176～315像素变化，单通道RMS≤0.136/255；实图已查看，轮位及外观保持。统计原2897节点/2502Geom，修正候选约785节点/1769Geom。首图片工具遗漏PBR任务更新导致shader input断言，修正后重跑；原截图只作失败记录。此为静态对照，不替代动态HUD/车辆无闪烁检查。
+
+被拒绝的候选：省略玩家胎体弹性/转子输运后求解更慢；NPC决策分摊、75Hz显示限帧均无实时收益；相机由物理所有者排队执行及混合排队均更慢，已撤回；子进程1ms线程切换更差，撤回。Cull/Draw已有PERF-04-FIX真实动态文字缺失证据，保持/Draw，未重新采用。合批依据Panda3D官方的局部网格合并说明：https://docs.panda3d.org/1.9/cpp/optimization/too-many-meshes 。不合并整个地图或动态车辆根。
+
+验证账：初始输入T1为61测试/Ruff/三种子1200拍通过；最近游戏120Hz相关T0为32测试通过。合批/接触T0初48通过/2失败：既有撞击测试的计时覆写未接收新增manifolds参数，更新覆写并继续转发，原真实冲量和计数断言保持；补充世界子步生命周期覆写同样接入。最终T1为88测试/Ruff/三种子各1200拍通过（t1-current-r2）；两次当前源码前台窗口状态无效，T2/T3和用户手感仍待完成。旧10000拍求解失败冻结基线同残差复现，未声称修复。
+
+日志根：logs/game-drive-r1。主要新增目录：window-authority-detail、window-120mechanics-query-r2、mechanics-one-r2、mechanics-two、contact-before/after、render-before-batch-r3、render-after-batch-r4、t0-batch-contact。完整源码、现有DLL和原失败均保留在本地日志，不做远端发布。
+
+
+## 当前源码收据
+
+- 最终T1：88测试、Ruff、0/17/23各1200拍通过；含五种实际资产合批后的动态轮位/车身包围检查、游戏输入/实际反打、模式/界面、NPC、时钟停顿/暂停、独立会话/快照传输、实验室/工况、真实护栏音效接触及两子步瞬时障碍撤除。原撞击断言和数值阈值未放宽。
+- window-current-r2：GR86硬件/18NPC/60s；第29秒起minimized=true/foreground=false，整段前台无效。独立进度119.984Hz、丢时0、落后P95 17.415ms/峰值202.172ms，绘制有效区间85.594FPS；不能用此组合认定完整前台实时通过。
+- window-current-game-tuned：用户当前游戏调校/18NPC/30s；第4秒起foreground=false、未最小化，前台Gate无效。119.940Hz、丢时0、76.132FPS、P95 21.669ms/P99 26.541ms、落后P95 30.925ms/峰值66.736ms，零>50ms/零碰撞；即便忽略失焦，P95落后仍超25ms，不改门槛。
+- 两次失焦与先前用户指出的有效窗口卡顿分开记录，后者仍是明确fail。所有进程已正常结束，只保留用户已有实验台进程；没有反复强抢前台。
+- protected-files-final.json证实vehicle_suspension.py/wheel_contact_kernels.c/suspension_prepare.h与初始冻结源SHA相同；未重建DLL。source-checkpoint-hashes.json保存本次源/DLL版本。已有setup.py和悬架准备及其测试保持未提交，提交范围只含GAME-DRIVE-01。
+
+```powershell
+.venv/Scripts/python.exe tools/game_mechanics_check.py --source logs/game-drive-r1/candidate-120mechanics --output logs/game-drive-r1/mechanics-one-r2 --substeps 1
+.venv/Scripts/python.exe tools/game_mechanics_check.py --output logs/game-drive-r1/mechanics-two --substeps 2
+.venv/Scripts/python.exe tools/validate.py T1 --tests tests/test_vehicle_batch.py tests/test_game_steering.py tests/test_keyboard_steering.py tests/test_driving_modes.py tests/test_driving_mode_ui.py tests/test_vehicle_commands.py tests/test_npc_physics.py tests/test_session_clock.py tests/test_session_process.py tests/test_snapshot_wire.py tests/test_lab_experiment.py tests/test_lab_maneuvers.py tests/test_impact_events.py tests/test_world_substeps.py --output logs/game-drive-r1/t1-current-r2
+.venv/Scripts/python.exe tools/performance/benchmark_runtime.py --output logs/game-drive-r1/window-current-game-tuned --shape hills --seconds 30 --track endless --vehicle-design game-tuned --driving-mode game --traffic-count 18 --independent-clock
+```
+
+下一步：保留当前修正，在有效前台条件下核验普通12/繁忙18的真实时间欠账及动态HUD/轮姿，再针对已测的CPU准备/提交与流送尖峰继续优化；用户真实操控验收独立待确认。整体目标保持active。
+
+提交前边界复核补充：单次世界推进的非耦合配置可能仍有内部轮胎细分，保留其原多请求串行入口；游戏配置明确tire_substeps=1，继续使用单次请求边界。增加1/2子步纯数值释放锁及异常恢复覆盖，相关world/steering/modes T0通过（t0-world-boundary）；原T1其余节点复用，不重复整套测试。

@@ -36,10 +36,18 @@ def advance_world(world, cars, *, substeps, observe=None, static_cache=None, pac
         parallel = workers is not None and len(cars)>1 and substeps>1
         for i, (car, action) in enumerate(cars):
             if substeps == 1:
-                if isinstance(action, VehicleCommand):
-                    car.apply_command(action, static_shapes=static_shapes)
-                else:
-                    car.apply_control(action, static_shapes=static_shapes)
+                # 非耦合模型仍可有内部轮胎细分，沿用原串行入口的多次请求/提交。
+                if car.config.tire_substeps != 1:
+                    if isinstance(action, VehicleCommand):
+                        car.apply_command(action, static_shapes=static_shapes)
+                    else:
+                        car.apply_control(action, static_shapes=static_shapes)
+                    continue
+                request = car.prepare_command(action) if isinstance(action, VehicleCommand) else car.prepare_control(action)
+                stages = car.physics_stages(request, dt, static_shapes=static_shapes)
+                inputs = next(stages, None)
+                if inputs is not None:
+                    numerical.append((stages, inputs))
             else:
                 request, initial, target, force, torque = prepared[i]
                 if index:

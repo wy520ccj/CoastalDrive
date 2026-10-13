@@ -80,7 +80,7 @@ class MainMenu:
         self.notice = OnscreenText(parent=self.content, text="", font=body_font, fg=theme.FAILURE,
                                   pos=(-1.08, -0.95), scale=0.028, mayChange=True)
         self.driving_mode_button = DirectButton(
-            parent=self.content, text="驾驶输入：辅助驾驶  F2", text_font=body_font,
+            parent=self.content, text="驾驶辅助  F2", text_font=body_font,
             text_fg=theme.INK, text_scale=0.040, text_pos=(0, -0.013),
             frameSize=(-.38, .38, -.045, .045), frameTexture=self.textures,
             frameColor=(1, 1, 1, 1), pos=(1.25, 0, -.88), relief=DGG.FLAT,
@@ -90,7 +90,7 @@ class MainMenu:
         self.root.hide()
 
     def set_driving_mode(self, mode):
-        self.driving_mode_button["text"] = f"驾驶输入：{mode.label}  F2"
+        self.driving_mode_button["text"] = "驾驶辅助  F2"
 
     def select(self, index):
         self.selected = index % len(self.buttons)

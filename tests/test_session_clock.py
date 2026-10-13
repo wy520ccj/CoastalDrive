@@ -2,7 +2,7 @@
 
 import time
 from dataclasses import replace
-from threading import get_ident
+from threading import Event, get_ident
 
 import pytest
 
@@ -19,6 +19,42 @@ class RecordedController:
     def sample(self, state, dt):
         self.calls.append((state.tick,dt,get_ident()))
         return Control(throttle=.3)
+
+
+class StallingController:
+    def __init__(self):
+        self.stalled = Event()
+
+    def sample(self, state, dt):
+        if not self.stalled.is_set():
+            self.stalled.set()
+            time.sleep(.2)
+        return Control(throttle=.2)
+
+
+def test_real_clock_computes_all_pending_steps_after_a_200ms_stall():
+    session = Session(track='test', independent_clock=True)
+    controller = StallingController()
+    try:
+        session.start(countdown=False)
+        session.set_controller(controller)
+        session.frame(0.)
+        assert controller.stalled.wait(2.)
+        clock = session._clock
+        deadline = time.perf_counter() + 3.
+        lag = 1.
+        while time.perf_counter() < deadline:
+            with clock.output_lock:
+                completed = clock.current.time
+                lag = time.perf_counter() - clock.timeline_origin - completed
+            if completed >= .4 and lag < .025:
+                break
+            time.sleep(.005)
+        assert completed >= .4
+        assert session.stepper.dropped_time == 0
+        assert lag < .025
+    finally:
+        session.close()
 
 
 def await_ticks(session, target):

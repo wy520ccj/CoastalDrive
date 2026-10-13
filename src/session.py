@@ -39,11 +39,15 @@ class FixedStepper:
         self.remainder += elapsed
         available = int((self.remainder + 1e-12) / FIXED_DT)
         count = min(available, 8)
-        self.remainder = max(0.0, self.remainder - available * FIXED_DT)
-        self.dropped_time += (available - count) * FIXED_DT
         for _ in range(count):
+            # 每批最多八拍只用于交还执行机会；未完成时间留到下一批真实计算，不能删掉。
+            self.remainder = max(0.0, self.remainder - FIXED_DT)
             tick()
         return count
+
+    @property
+    def backlog_time(self):
+        return int((self.remainder + 1e-12) / FIXED_DT) * FIXED_DT
 
 
 class Session:
@@ -318,7 +322,7 @@ class Session:
         if (self.phase not in (Phase.DRIVING, Phase.RESULTS)
                 or frame_phase in (Phase.PAUSED, Phase.MENU, Phase.RESULTS)):
             collected = []
-        current = interpolate(self.previous, self.current, self.stepper.remainder / FIXED_DT)
+        current = interpolate(self.previous, self.current, min(1., self.stepper.remainder / FIXED_DT))
         return replace(current, impacts=tuple(collected), contacts=self.current.contacts)
 
     def pause(self):

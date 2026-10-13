@@ -49,7 +49,7 @@ from paths import resource_root
 from skins import apply_skin, traffic_models, traffic_skins, vehicle_definition
 from sky_dome import make_sky
 from test_track import OBSTACLES, TRACK_X
-from vehicle_visual import load_vehicle
+from vehicle_visual import batch_driving_geometry, load_vehicle
 from world_props import collision_box
 
 
@@ -374,6 +374,7 @@ class Scene:
         )
         model = self.player.getChild(0)
         apply_skin(model, self.base.skin_index)
+        batch_driving_geometry(self.player, self.wheels)
         if trace is not None:
             trace.mark("hero_vehicle_loaded")
         self.traffic = []
@@ -388,6 +389,7 @@ class Scene:
                 self.render, vehicle_definition(model_id), config=self.base.session.simulation.config
             )
             apply_skin(car.getChild(0), skin)
+            batch_driving_geometry(car, wheels)
             self.traffic.append(car)
             self.traffic_wheels.append(wheels)
             lights = []

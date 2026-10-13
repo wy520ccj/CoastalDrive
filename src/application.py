@@ -84,7 +84,8 @@ class CoastalDrive(ShowBase):
         self.session = session_type(
             seed,
             track=track,
-            driving_mode=driving_mode if driving_mode is not None else self.driving_mode_settings.mode,
+            # 交互游戏固定辅助输入；显式模式参数仅供诊断，实验室另走VehicleCommand。
+            driving_mode=driving_mode if driving_mode is not None else DrivingMode.GAME,
             abs_enabled=abs_enabled if abs_enabled is not None else self.driving_mode_settings.abs_enabled,
             tcs_enabled=tcs_enabled if tcs_enabled is not None else self.driving_mode_settings.tcs_enabled,
             esc_enabled=esc_enabled if esc_enabled is not None else self.driving_mode_settings.esc_enabled,
@@ -743,16 +744,13 @@ class CoastalDrive(ShowBase):
                 ("取消返回  Esc", self.cancel_garage),
             ]
         elif self.driving_mode_page:
-            self.panel_title.setText("驾驶输入")
+            self.panel_title.setText("驾驶辅助")
             self.panel_note.setText(
-                f"当前：{self.session.driving_mode.label} · 下次起步应用\n"
-                "车辆硬件由车库选择，实验工况在实验室设置\n"
-                "直接输入：Q选R后W加油 · E回前进 · S只刹车"
+                "游戏使用车速转向辅助 · 下次起步应用\n"
+                "车辆硬件由车库选择，完整物理实验在实验室设置"
                 + (f"\n{self.driving_mode_settings.notice}" if self.driving_mode_settings.notice else "")
             )
             options = [
-                (DrivingMode.GAME.label, lambda: self.set_driving_mode(DrivingMode.GAME)),
-                (DrivingMode.SIMULATION.label, lambda: self.set_driving_mode(DrivingMode.SIMULATION)),
                 (f"车辆 ABS：{'开启' if self.session.abs_enabled else '关闭'}", self.toggle_abs),
                 (f"驱动防滑 TCS：{'开启' if self.session.tcs_enabled else '关闭'}", self.toggle_tcs),
                 (f"横摆稳定 ESC：{'开启' if self.session.esc_enabled else '关闭'}", self.toggle_esc),
@@ -1024,7 +1022,7 @@ class CoastalDrive(ShowBase):
     def update_diagnostics(self, state, surface):
         self.diagnostics.setText(
             f"Tick {self.session.current.tick}   Simulation 120 Hz\n"
-            f"Dropped time {self.session.stepper.dropped_time:.3f} s\n"
+            f"物理落后 {self.session.stepper.backlog_time*1000:.1f} ms\n"
             f"油门 {state.player.throttle:.0%}   刹车 {state.player.brake:.0%}   {surface}\n"
             f"加速度 {self.chase_camera.acceleration:+.1f} m/s²\n"
             f"转向 {state.player.steering:+.1f}°    横向 {state.player.lateral_acceleration / 9.81:+.2f} g\n"

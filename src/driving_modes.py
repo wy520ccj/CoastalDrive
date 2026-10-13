@@ -26,6 +26,9 @@ class DrivingMode(Enum):
     def configured_vehicle(self, abs_enabled=None, tcs_enabled=None, esc_enabled=None, *, base_config=None):
         """车辆电子开关独立于输入模式；同配置沿用同一不可变实例。"""
         config = self.vehicle_config if base_config is None else base_config
+        # 游戏每120Hz拍完成一次机械求解；实验台保留设计的两子步精度。
+        if self == DrivingMode.GAME and config.tire_substeps != 1:
+            config = replace(config, tire_substeps=1)
         braking = config.braking
         traction = config.traction
         stability = config.stability
@@ -40,7 +43,7 @@ class DrivingMode(Enum):
         return replace(config, braking=braking, traction=traction, stability=stability)
 
     def score_variant(self, abs_enabled, tcs_enabled=True, esc_enabled=True):
-        version = "game-native-traffic-v26" if self == DrivingMode.GAME else "reference-keyboard-v30"
+        version = "game-keyboard-v32" if self == DrivingMode.GAME else "reference-keyboard-v30"
         abs_variant = "on" if abs_enabled else "off"
         tcs_variant = "on" if tcs_enabled else "off"
         esc_variant = "on" if esc_enabled else "off"

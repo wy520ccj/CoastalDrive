@@ -36,7 +36,7 @@ def test_bullet_post_solve_rail_manifold_is_one_real_event(centered):
     native_points = {}
     original_read = simulation._read_impact_contacts
 
-    def observe_native(before, *, accumulated=None, publish=True):
+    def observe_native(before, *, accumulated=None, publish=True, manifolds=None):
         points = native_points.setdefault(simulation._tick + 1, [])
         for manifold in simulation._world.getManifolds():
             node0, node1 = manifold.getNode0(), manifold.getNode1()
@@ -46,7 +46,7 @@ def test_bullet_post_solve_rail_manifold_is_one_real_event(centered):
             points.extend((max(0., point.getAppliedImpulse()), point.getLifeTime())
                           for point in manifold.getManifoldPoints()
                           if point.getDistance() <= 0 or point.getAppliedImpulse() > 0)
-        return original_read(before, accumulated=accumulated, publish=publish)
+        return original_read(before, accumulated=accumulated, publish=publish, manifolds=manifolds)
 
     simulation._read_impact_contacts = observe_native
     try:

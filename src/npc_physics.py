@@ -26,16 +26,20 @@ class TrafficVehicle(Vehicle):
         for wheel in self._vehicle.getWheels():
             wheel.setRollInfluence(1.)
         self.native_dt = 1 / 240
+        self._native_request = None
+        self._native_mu = None
+        self._drive_weights = self.config.drive_weights
         self._park_pose = self._chassis.getTransform()
         self._park_quiet = 0
         self._chassis.setDeactivationEnabled(True)
 
     def reset(self, position, heading=0, pitch=0, *, speed=0.):
         super().reset(position, heading, pitch, speed=speed)
+        self._native_request = None
         self._park_pose = self._chassis.getTransform()
         self._park_quiet = 0
 
-    def prepare_command(self, command):
+    def prepare_command(self, command, *, input_config=None):
         """原输入辅助/转向执行器与油门响应保留，NPC不执行完整轮端电子控制。"""
         self.steering.advance(command.steering, FIXED_DT)
         for index, angle in enumerate(wheel_angles(self.steering.angle, self.config)):
@@ -57,6 +61,7 @@ class TrafficVehicle(Vehicle):
 
     def physics_stages(self, request, dt, **options):
         drive, drag, pressures = request
+        previous_dt = self.native_dt
         self.native_dt = dt
         velocity = self._chassis.getLinearVelocity()
         position = self._chassis.getTransform().getPos()
@@ -65,13 +70,16 @@ class TrafficVehicle(Vehicle):
         air_velocity, air_force = aerodynamic_load(tuple(velocity), tuple(self.wind), self.config)
         self._chassis.applyCentralForce(Vec3(*air_force))
         radius = self.config.wheel_radius
-        for i, wheel in enumerate(self._vehicle.getWheels()):
-            wheel.setFrictionSlip(mu)
-            self._vehicle.applyEngineForce(drive * self.config.drive_weights[i] / radius, i)
-            share = self.config.front_brake_share if i < 2 else 1 - self.config.front_brake_share
-            torque = self.config.brake_torque * pressures[i] * share / 2 + drag * self.config.drive_weights[i]
-            # Bullet原生制动上限是每世界子步的冲量。
-            self._vehicle.setBrake(torque * dt / radius, i)
+        # 同一120Hz请求的两个子步保留轮端执行器值；材质/子步长变化时仍立即重写。
+        if request is not self._native_request or dt != previous_dt or mu != self._native_mu:
+            for i, wheel in enumerate(self._vehicle.getWheels()):
+                wheel.setFrictionSlip(mu)
+                self._vehicle.applyEngineForce(drive * self._drive_weights[i] / radius, i)
+                share = self.config.front_brake_share if i < 2 else 1 - self.config.front_brake_share
+                torque = self.config.brake_torque * pressures[i] * share / 2 + drag * self._drive_weights[i]
+                # Bullet原生制动上限是每世界子步的冲量。
+                self._vehicle.setBrake(torque * dt / radius, i)
+            self._native_request, self._native_mu = request, mu
         self.dynamics = DynamicsState(air_relative_velocity=air_velocity, aerodynamic_force_vector=air_force,
             aerodynamic_power=sum(force * speed for force, speed in zip(air_force, velocity)))
         return iter(())
@@ -103,7 +111,7 @@ class TrafficVehicle(Vehicle):
         if self._park_quiet >= 24:
             self._chassis.setActive(False)
 
-    def snapshot(self, *, include_wheels=True):
+    def snapshot(self, *, include_wheels=True, active=True, generation=0, signal=0, hazards=False):
         pose = self._chassis.getTransform()
         position = pose.getPos()
         hpr = pose.getHpr()
@@ -124,4 +132,5 @@ class TrafficVehicle(Vehicle):
             acceleration=self._acceleration, lateral_acceleration=self._lateral_acceleration,
             surface='asphalt' if self.on_asphalt(position.x, position.y) else 'grass',
             dynamics=self.dynamics, traction_state=self.traction.state, stability_state=self.stability.state,
+            active=active, generation=generation, signal=signal, hazards=hazards,
             velocity=tuple(velocity), orientation=tuple(pose.getQuat()))

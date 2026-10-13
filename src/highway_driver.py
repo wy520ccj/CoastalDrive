@@ -75,6 +75,7 @@ class HighwayDriver(Driver):
     def neighbors(self, car, traffic, road, lane):
         front, rear = (math.inf, None), (math.inf, None)
         lateral = road.lanes[lane]
+        own_length = extents(car.heading, 0, self.config)[1]
         for other in traffic:
             if not other.active:
                 continue
@@ -82,7 +83,7 @@ class HighwayDriver(Driver):
             if abs(other.position[0] - lateral) > width + 0.95 + 0.25:
                 continue
             delta = other.position[1] - car.position[1]
-            gap = abs(delta) - length - extents(car.heading, 0, self.config)[1]
+            gap = abs(delta) - length - own_length
             if delta >= 0 and gap < front[0]:
                 front = gap, other
             elif delta < 0 and gap < rear[0]:

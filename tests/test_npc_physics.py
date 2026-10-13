@@ -18,6 +18,28 @@ from world_step import advance_world, physical_substeps
 CONFIG = vehicle_design('gr86-2022-premium-6mt').config
 
 
+def test_native_request_reuse_preserves_material_and_time_scaled_braking():
+    sim = Simulation(track='test', traffic_count=1, config=CONFIG,
+                     input_config=DrivingMode.GAME.input_config)
+    try:
+        npc = sim.npcs[0]
+        request = npc.prepare_command(VehicleCommand(brake=.4))
+        npc.physics_stages(request, FIXED_DT / 2)
+        wheel = npc._vehicle.getWheel(0)
+        first_brake = wheel.getBrake()
+        assert first_brake > 0
+        npc.on_asphalt = lambda x, y: False
+        npc.physics_stages(request, FIXED_DT / 2)
+        assert wheel.getFrictionSlip() == pytest.approx(npc.config.grass_friction)
+        assert wheel.getBrake() == first_brake
+        npc.physics_stages(request, FIXED_DT)
+        assert wheel.getBrake() == pytest.approx(2 * first_brake)
+        npc.reset((0, 0, .8))
+        assert npc._native_request is None
+    finally:
+        sim.close()
+
+
 @pytest.mark.parametrize('share', [0., .5, 1.])
 def test_native_traffic_preserves_drive_layout_and_recycles(share):
     config = replace(DrivingMode.GAME.vehicle_config, front_drive_share=share)
@@ -64,7 +86,7 @@ def test_only_normal_traffic_uses_native_model_and_player_is_complete(mode):
         assert type(sim.player) is Vehicle
         assert sim.player.config is config
         assert sim.player.coupled_suspension and sim.player.config.finite_drivetrain
-        assert physical_substeps(config) == 2
+        assert physical_substeps(config) == (1 if mode is DrivingMode.GAME else 2)
         assert asdict(config) == hardware
         for car in sim.npcs:
             assert isinstance(car, TrafficVehicle) == (mode is DrivingMode.GAME)

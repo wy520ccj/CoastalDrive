@@ -190,19 +190,24 @@ class Vehicle:
         # 历史传动在advance内执行此优先级，冻结分支保留其原请求口径。
         if self.config.finite_drivetrain and command.brake > 0:
             command = replace(command, throttle=0.)
-        return self.prepare_command(command)
+        return self.prepare_command(command, input_config=self.assist.input_config)
 
     def apply_command(self, command: VehicleCommand, *, static_shapes=None):
         """驾驶辅助和研究控制共用同一执行器与轮胎受力路径。"""
         self.advance_physics(self.prepare_command(command), FIXED_DT, static_shapes=static_shapes)
 
-    def prepare_command(self, command: VehicleCommand):
+    def prepare_command(self, command: VehicleCommand, *, input_config=None):
         """转向、电子控制及执行器只按固定120Hz准备一次。"""
         pose = self._chassis.getTransform()
         hpr = pose.getHpr()
         velocity = self._chassis.getLinearVelocity()
         speed = velocity.dot(Vec3(*forward(hpr.x)))
-        self.steering.advance(command.steering, FIXED_DT)
+        if input_config is not None and input_config.steering_response_time is not None:
+            self.steering.advance_assisted(command.steering, FIXED_DT,
+                                          input_config.steering_response_time,
+                                          input_config.steering_return_time)
+        else:
+            self.steering.advance(command.steering, FIXED_DT)
         for wheel_index, angle in enumerate(wheel_angles(self.steering.angle, self.config)):
             self._vehicle.setSteeringValue(-angle, wheel_index)
 
@@ -380,7 +385,7 @@ class Vehicle:
             max(-12, min(12, road_acceleration)) - self._load_acceleration
         ) * (1 - math.exp(-FIXED_DT / 0.15))
 
-    def snapshot(self, *, include_wheels=True):
+    def snapshot(self, *, include_wheels=True, active=True, generation=0, signal=0, hazards=False):
         transform = self._chassis.getTransform()
         position = transform.getPos()
         hpr = transform.getHpr()
@@ -407,6 +412,7 @@ class Vehicle:
             self._acceleration,
             self._lateral_acceleration,
             self.dynamics,
+            active=active, generation=generation, signal=signal, hazards=hazards,
             velocity=tuple(velocity),
             orientation=tuple(transform.getQuat()),
             wheel_contacts=self._wheel_contacts if include_wheels else (),

@@ -14,7 +14,8 @@ from vehicle_state import FIXED_DT, VehicleCommand
 
 
 @pytest.mark.parametrize('fail', (False, True))
-def test_local_numeric_iteration_releases_query_lock_and_restores_on_error(monkeypatch, fail):
+@pytest.mark.parametrize('substeps', (1, 2))
+def test_local_numeric_iteration_releases_query_lock_and_restores_on_error(monkeypatch, fail, substeps):
     from vehicle_designs import GR86_DESIGN
 
     class QueryLock:
@@ -30,7 +31,7 @@ def test_local_numeric_iteration_releases_query_lock_and_restores_on_error(monke
             self.depth = 0
 
     lock = QueryLock()
-    sim = Simulation(track='test', traffic_count=0, config=GR86_DESIGN)
+    sim = Simulation(track='test', traffic_count=0, config=replace(GR86_DESIGN, tire_substeps=substeps))
     sim._query_lock = lock
     calls = []
     original_solve = __import__('tire_drivetrain').joint_solve
@@ -174,8 +175,8 @@ def test_first_substep_impact_survives_contact_ending_before_final_substep(monke
     calls = []
     original = sim._count_player_collisions
 
-    def count():
-        original()
+    def count(manifolds=None):
+        original(manifolds)
         calls.append(sim.player_collisions)
         if len(calls) == 1:
             # 生命周期试验：第一子步真实碰撞后障碍物撤下，不能漏掉已发生的冲量。

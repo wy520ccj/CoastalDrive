@@ -16,15 +16,18 @@ class InputConfig:
     throttle_release: float = 5.0
     brake_rise: float = 6.0
     brake_release: float = 10.0
-    assisted_lateral_acceleration: float = 7.5
+    assisted_lateral_acceleration: float = 4.5
     reverse_delay: float = .4
     keyboard_steering_rate: float | None = None  # 归一化方向盘行程/s；None保留正常模式直接输入。
+    steering_response_time: float | None = .10  # 游戏输入只经一次无超调转向响应；研究执行器不使用。
+    steering_return_time: float = .06
 
 
 GAME_INPUT = InputConfig()
 SIMULATION_INPUT = InputConfig(
     progressive_pedals=False, speed_sensitive_steering=False, automatic_reverse=False,
     keyboard_steering_rate=1.2,
+    steering_response_time=None,
 )
 
 

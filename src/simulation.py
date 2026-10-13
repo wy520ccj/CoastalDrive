@@ -282,19 +282,22 @@ class Simulation:
         linear, angular, origin = values
         return linear + angular.cross(point - origin)
 
-    def _read_impact_contacts(self, before, *, accumulated=None, publish=True):
+    def _player_manifolds(self):
+        for manifold in self._world.getManifolds():
+            node0, node1 = manifold.getNode0(), manifold.getNode1()
+            if node0 == self._chassis:
+                yield manifold, node1, True
+            elif node1 == self._chassis:
+                yield manifold, node0, False
+
+    def _read_impact_contacts(self, before, *, accumulated=None, publish=True, manifolds=None):
         sampled_at_ns = time.perf_counter_ns() if self._impact_diagnostic is not None else None
         samples = []
         post_motion = {}
         player_mat = self._chassis.getTransform().getMat()
         inverse = type(player_mat)(player_mat)
         inverse.invertInPlace()
-        for manifold in self._world.getManifolds():
-            node0, node1 = manifold.getNode0(), manifold.getNode1()
-            if node0 != self._chassis and node1 != self._chassis:
-                continue
-            player_is_a = node0 == self._chassis
-            other = node1 if player_is_a else node0
+        for manifold, other, player_is_a in self._player_manifolds() if manifolds is None else manifolds:
             material, barrier_side = self._contact_material(other.getName())
             source_id = self._source_id(other)
             for point in manifold.getManifoldPoints():
@@ -788,11 +791,12 @@ class Simulation:
 
         def observe(before, final):
             # 子步接触完整累加，撞击事件与接触年龄仍只按120Hz更新一次。
-            self._read_impact_contacts(before, accumulated=accumulated, publish=final)
+            manifolds = tuple(self._player_manifolds())
+            self._read_impact_contacts(before, accumulated=accumulated, publish=final, manifolds=manifolds)
             traffic_contacts.update(body for body in self._traffic_bodies
                                     if body not in self._retired_traffic
                                     and self._world.contactTestPair(self._chassis, body).getNumContacts() > 0)
-            self._count_player_collisions()
+            self._count_player_collisions(manifolds)
 
         advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe,
                       static_cache=self._static_support_cache, packet_cache=self._static_support_packet,
@@ -807,13 +811,9 @@ class Simulation:
             # Headless runs have no render loop to collect Panda's cached transforms.
             TransformState.garbageCollect()
 
-    def _count_player_collisions(self):
+    def _count_player_collisions(self, manifolds=None):
         # 与动力学使用同一批完成步接触；重新contactTest会漏掉有求解冲量的margin接触。
-        for manifold in self._world.getManifolds():
-            a, b = manifold.getNode0(), manifold.getNode1()
-            if self._chassis not in (a, b):
-                continue
-            other = b if a == self._chassis else a
+        for manifold, other, _player_is_a in self._player_manifolds() if manifolds is None else manifolds:
             name = other.getName()
             if not any(kind in name for kind in ("traffic", "rail", "tree", "rock", "checkpoint", "wall")):
                 continue
@@ -828,8 +828,7 @@ class Simulation:
 
     def snapshot(self):
         traffic = tuple(
-            replace(
-                car.snapshot(),
+            car.snapshot(
                 active=car._chassis not in self._retired_traffic,
                 generation=self._generations[i],
                 signal=self.drivers[i].signal if isinstance(self.drivers[i], HighwayDriver) else 0,
