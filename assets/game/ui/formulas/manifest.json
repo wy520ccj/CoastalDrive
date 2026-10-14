@@ -114,12 +114,12 @@
     "unsprung_enabled": [
       {
         "file": "unsprung_enabled-0.png",
-        "tex": "\\mathbf{v}_i=\\mathbf{V}_s+\\boldsymbol{\\Omega}\\times\\mathbf{r}_i+u_i\\mathbf{n}_i",
-        "width": 733,
-        "height": 70,
+        "tex": "\\mathbf{v}_{i,1}=\\mathbf{J}_{i,0}\\mathbf{z}_1+\\mathbf{b}_i",
+        "width": 533,
+        "height": 76,
         "texture_width": 1024,
         "texture_height": 128,
-        "sha256": "429efab8e0e606140987e858fb17fc0801ac3323bc4b93f65d55fea32863bece"
+        "sha256": "ef5c4d87a6e0fee64b9d19fbe3f4c57b9445a4183a460eac528c1ac6438a1ee0"
       },
       {
         "file": "unsprung_enabled-1.png",
@@ -152,12 +152,12 @@
       },
       {
         "file": "tire_radial_stiffness-2.png",
-        "tex": "\\delta_1-\\delta_0=-hs\\left(\\mathbf{g}_n\\mathbf{z}+v_n^{\\mathrm{steer}}\\right)",
-        "width": 850,
+        "tex": "\\delta_1-\\delta_0=-hs\\left(\\mathbf{g}_n\\mathbf{z}+v_n^{\\mathrm{steer}}+\\widehat{\\mathbf{n}}\\cdot\\mathbf{b}_i\\right)",
+        "width": 1100,
         "height": 93,
-        "texture_width": 1024,
+        "texture_width": 2048,
         "texture_height": 128,
-        "sha256": "7eca192229ced2ddc707db2233253d4954941c3c4f7e7de3a0c77836d57524fc"
+        "sha256": "03b96c0ffb1fb5503f2bc80256cd02b75c5277c051d393fd349ca7a56363289e"
       }
     ],
     "tire_radial_damping": [

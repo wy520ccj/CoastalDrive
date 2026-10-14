@@ -88,6 +88,8 @@ class SprungBodyFrame:
 class NativeWheelGuides:
     """同一Bullet世界中的四个轮心点质量；只持有原生对象及固定几何。"""
 
+    STOP_ERP = .2
+
     def __init__(self, world, body, frame, displacement=(0.,)*4):
         self.world,self.body,self.frame = world,body,frame
         self.points,self.constraints = [],[]
@@ -116,6 +118,7 @@ class NativeWheelGuides:
             # Bullet旧6DOF在零位置误差时不生成限位行；零目标速度保证首拍也锁止。
             # 无限容量表示理想导向的双边反力，并非新增可调执行器或悬架力。
             motor = guide.getTranslationalLimitMotor()
+            motor.setStopErp(Vec3(self.STOP_ERP))
             motor.setTargetVelocity(Vec3(0,0,0))
             motor.setMaxMotorForce(Vec3(float("inf"),float("inf"),0))
             motor.setMotorEnabled(0,True)
@@ -134,6 +137,14 @@ class NativeWheelGuides:
             local = np.asarray(arm)+np.array((0.,0.,offset))
             anchor = rigid_transform(self.frame.principal_axes.T,self.frame.principal_axes.T@local)
             constraint.setFrames(anchor,TransformState.makeIdentity())
+
+    def velocity_bias(self, dt):
+        """读取本步冻结导向行的实际ERP速度；不修改轮心位置或速度。"""
+        self.refresh_frames()
+        _position,rotation = self.frame.read(self.body)
+        errors = np.asarray([tuple(c.getTranslationalLimitMotor().getCurrentError()) for c in self.constraints])
+        errors[:,2] = 0.
+        return -self.STOP_ERP/dt*(errors@rotation.T)
 
     def read(self):
         position,rotation = self.frame.read(self.body)

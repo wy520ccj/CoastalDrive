@@ -62,6 +62,22 @@ def test_finite_normal_geometry_is_not_changed_by_rotor_speeds():
         world.removeRigidBody(bump);world.removeRigidBody(ground)
 
 
+def test_native_guide_bias_moves_real_predicted_contact_and_keeps_separate_virtual_work():
+    world,ground,bump,context = contact_case()
+    try:
+        context.wheel_velocity_bias = np.array(((.01,-.02,.003),)*4)
+        velocity = np.zeros(16);velocity[1]=5.;velocity[3:6]=(.1,-.2,.3)
+        result = context.evaluate(velocity)
+        surface = (result.contacts.normal@velocity+result.contacts.steering_velocity[:,2]
+                   +result.contacts.guide_velocity[:,2])
+        assert -context.dt*result.scale*surface==pytest.approx(
+            result.geometry.deflection-context.initial.deflection,abs=1e-10)
+        assert result.contacts.steering_velocity[:,2]==pytest.approx(np.zeros(4),abs=1e-15)
+        assert result.geometry.hits[0].node==bump
+    finally:
+        world.removeRigidBody(bump);world.removeRigidBody(ground)
+
+
 @pytest.mark.parametrize("vertical",[-1e-5,-1e-8,-1e-11,0.,1e-11,1e-8,1e-5])
 def test_same_plane_small_motion_keeps_analytic_pressure_gradient_without_cancellation(vertical):
     world,ground,bump,context = contact_case()

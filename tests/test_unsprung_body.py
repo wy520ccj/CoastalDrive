@@ -186,3 +186,38 @@ def test_actual_native_static_support_matches_joint_without_chassis_velocity_rep
     assert relative == pytest.approx(np.zeros(4),abs=1e-8)
     assert tuple(body.getTransform().getPos()) == pytest.approx(position,abs=1e-8)
     guides.close()
+
+
+def test_rotating_native_guide_matches_full_joint_with_erp_and_actual_initial_momentum():
+    config,dt = REFERENCE_DESIGN,1/240
+    world,body,frame,guides = native_vehicle(masses=(40.,)*4,displacement=(.02,-.03,.04,-.01))
+    try:
+        body.setLinearVelocity(Vec3(.2,3.,.1));body.setAngularVelocity(Vec3(.3,-.4,.2))
+        _position,rotation = frame.read(body)
+        _centers,_speeds,q,_u,_xy = guides.read()
+        z = np.r_[tuple(body.getLinearVelocity()),tuple(body.getAngularVelocity()),(.1,-.12,0.,.05),np.zeros(6)]
+        mechanical = assemble_unsprung(frame.partition,rotation,q,GUIDES,z[:10])
+        for point,speed in zip(guides.points,mechanical.wheel_jacobians@z[:10]):
+            point.setLinearVelocity(Vec3(*speed))
+        point = guides.points[0]
+        point.setTransform(TransformState.makePos(point.getTransform().getPos()+Vec3(1e-5,-2e-5,0)))
+        _centers,speeds,q,u,_xy = guides.read();z[6:10]=u
+        mechanical = assemble_unsprung(frame.partition,rotation,q,GUIDES,z[:10])
+        graph = drivetrain_ports(mechanical,np.tile((1.,0.,0.),(4,1)),(0.,1.,0.),(0.,1.,0.),((0.,1.,0.),)*3,0.,config)
+        bias = guides.velocity_bias(dt)
+        contacts = tire_ports(graph,np.tile((0.,0.,-.33),(4,1)),np.tile((0.,1.,0.),(4,1)),
+            np.tile((1.,0.,0.),(4,1)),GUIDES,np.zeros((4,3)),np.zeros(4),wheel_velocity_bias=bias)
+        known = np.zeros(16)
+        down = graph.downstream@z
+        result = solve_unsprung_joint(graph,contacts,z,down,q,np.full(4,-.5),np.zeros((4,2)),np.zeros((4,2)),known,
+            np.zeros(4),np.zeros(4),np.zeros(4),np.ones(4),np.zeros(4),0.,0.,0.,np.zeros(4),0.,False,dt,config,
+            wheel_initial_velocity=speeds,wheel_velocity_bias=bias,native_body_gyro=True)
+        assert abs(result.energy_error)<1e-9 and abs(result.guide_work)>1e-6
+        apply_joint_forces(body,guides,graph,contacts,result,0.,0.,down,np.zeros(3),dt,config)
+        world.doPhysics(dt,0,dt)
+        _centers,new_speeds,_q,_u,_xy = guides.read()
+        actual = np.r_[tuple(body.getLinearVelocity()),tuple(body.getAngularVelocity())]
+        assert actual==pytest.approx(result.velocity[:6],abs=2e-6)
+        assert new_speeds==pytest.approx(mechanical.wheel_jacobians@result.velocity[:10]+bias,abs=2e-6)
+    finally:
+        guides.close();world.removeRigidBody(body)

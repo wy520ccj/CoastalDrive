@@ -30,8 +30,11 @@ def hardware(config, steering=0., body_speed=None, trail=.02, steer_rate=0., rat
 
 def solve(config, speed=20., steering=3., brake=(120.,120.,80.,80.), ratio=3.2,
           sync=False, capacity=100., road=(0.,)*4, airborne=False, spin_offsets=(0.,)*4,
-          old_down_offset=(0.,)*3, wheel_error=None):
+          old_down_offset=(0.,)*3, wheel_error=None, guide_bias=None):
     graph,contacts,partition = hardware(config,steering,steer_rate=-.2,ratio=ratio)
+    if guide_bias is not None:
+        directions = np.array((contacts.longitudinal[:,:3],contacts.lateral[:,:3],contacts.normal[:,:3]))
+        contacts = replace(contacts,guide_velocity=np.einsum('cia,ia->ic',directions,guide_bias))
     state = np.zeros(16)
     state[1],state[10],state[12:] = speed,250.,speed/.33
     state[12:] += spin_offsets
@@ -48,8 +51,25 @@ def solve(config, speed=20., steering=3., brake=(120.,120.,80.,80.), ratio=3.2,
     actual = None if wheel_error is None else graph.mechanical.wheel_jacobians@state[:10]+wheel_error
     result = solve_unsprung_joint(graph,contacts,state,downstream,compression,deflection,np.zeros((4,2)),np.zeros((4,2)),
         known,road,radial,np.full(4,500.),np.full(4,.7),np.full(4,.013),50.,.12,capacity,brake,ratio,sync,1/240,config,
-        wheel_initial_velocity=actual)
+        wheel_initial_velocity=actual,wheel_velocity_bias=guide_bias,
+        wheel_known_force=np.tile((0.,0.,-40*9.81),(4,1)))
     return result,graph,contacts,state,downstream,known,compression,deflection
+
+
+def test_finite_guide_velocity_keeps_actual_wheel_momentum_energy_and_separate_constraint_work():
+    bias = np.array(((.03,-.02,0.),(-.02,.04,0.),(.01,-.04,0.),(-.03,.01,0.)))
+    old_error = -.3*bias
+    result,graph,_contacts,start,old_down,_known,_q,_delta = solve(
+        REFERENCE_DESIGN,wheel_error=old_error,guide_bias=bias)
+    end_wheels = graph.mechanical.wheel_jacobians@result.velocity[:10]+bias
+    old_wheels = graph.mechanical.wheel_jacobians@start[:10]+old_error
+    actual_delta = .5*(result.velocity-start)@graph.base_mass@(result.velocity+start)
+    actual_delta += graph.wheel_kinetic_correction(result.velocity,end_wheels)-graph.wheel_kinetic_correction(start,old_wheels)
+    actual_delta += .5*np.dot(graph.downstream_inertias,(result.downstream_omega-old_down)*(result.downstream_omega+old_down))
+    assert result.kinetic_change==pytest.approx(actual_delta,abs=2e-10)
+    assert result.energy_error==pytest.approx(0.,abs=3e-8)
+    assert abs(result.guide_work)>1e-4
+    assert result.momentum_error<1e-9 and result.force_error<1e-5 and result.port_error<1e-9
 
 
 @pytest.mark.parametrize("share", [0.,.5,1.])

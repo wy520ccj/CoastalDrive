@@ -14,6 +14,13 @@ def point_inertia(mass, position):
     return mass*(np.dot(position,position)*np.eye(3)-np.outer(position,position))
 
 
+def native_gyro_impulse(inertia, angular, dt):
+    """匹配Bullet隐式body gyro的一次Newton增量；返回角动量冲量，不另推进刚体。"""
+    momentum = inertia@angular
+    jacobian = inertia+dt*(cross_matrix(angular)@inertia-cross_matrix(momentum))
+    return -inertia@np.linalg.solve(jacobian,dt*np.cross(angular,momentum))
+
+
 @dataclass(frozen=True)
 class SprungPartition:
     mass: float

@@ -31,10 +31,14 @@ class RadialContactStep:
 
 
 class FiniteRadialContact:
-    def __init__(self, roads, hardware, centers, rotation, old_axes, deformation, steering, trails, dt, config, on_asphalt):
+    wheel_velocity_bias = None
+
+    def __init__(self, roads, hardware, centers, rotation, old_axes, deformation, steering, trails, dt, config, on_asphalt,
+                 wheel_velocity_bias=None):
         self.roads,self.hardware,self.centers,self.rotation = roads,hardware,np.asarray(centers),rotation
         self.deformation,self.steering,self.trails = np.asarray(deformation),steering,trails
         self.dt,self.config,self.on_asphalt = dt,config,on_asphalt
+        self.wheel_velocity_bias = wheel_velocity_bias
         self.initial = roads.query(centers,rotation[:,2],old_axes)
         self.target = roads.query(centers,rotation[:,2],hardware.axes)
         self.cache_key,self.cached = None,None
@@ -45,6 +49,8 @@ class FiniteRadialContact:
             return self.cached
         h,hardware,config = self.dt,self.hardware,self.config
         wheel_velocity = hardware.mechanical.wheel_jacobians@velocity[:10]
+        if self.wheel_velocity_bias is not None:
+            wheel_velocity = wheel_velocity+self.wheel_velocity_bias
         middle_rotation = rotation_increment(.5*h*velocity[3:6])
         end_rotation = rotation_increment(h*velocity[3:6])
         middle_axes = hardware.axes@middle_rotation.T
@@ -88,7 +94,7 @@ class FiniteRadialContact:
         tangents /= np.linalg.norm(tangents,axis=1)[:,None]
         laterals = np.cross(tangents,normals)
         contacts = tire_ports(hardware,middle.offsets,tangents,laterals,normals,self.steering,self.trails,
-            normal_offsets=middle.normal_offsets,material_axes=middle_axes)
+            normal_offsets=middle.normal_offsets,material_axes=middle_axes,wheel_velocity_bias=self.wheel_velocity_bias)
         # 指定转向先改变轮轴包络；这部分是执行器输入功，不充作道路输入或假耗散。
         normal_steering = -(self.target.deflection-self.initial.deflection)/(h*scales)
         contacts = replace(contacts,normal=gradients,

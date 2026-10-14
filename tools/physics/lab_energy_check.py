@@ -105,6 +105,8 @@ def balance(source, step, old, new):
     residual = kinetic+gravity+elastic+losses-step.engine_work-external-steering_gyro-step.steering_work-step.road_work
     native_kinetic = kinetic-step.kinetic_change
     predicted_wheels = source.hardware.mechanical.wheel_jacobians@step.velocity[:10]
+    if source.guide_velocity_bias is not None:
+        predicted_wheels += source.guide_velocity_bias
     predicted_body,predicted_angular = step.velocity[:3],step.velocity[3:6]
     body_defect = .5*mass.mass*np.dot(new["velocity"]-predicted_body,new["velocity"]+predicted_body)
     wheel_defect = .5*np.sum(np.asarray(mass.wheel_masses)[:,None]
@@ -131,15 +133,17 @@ def balance(source, step, old, new):
     old_tangent = .5*source.config.tire_contact_stiffness*np.sum(source.deformation**2)
     tangent_geometry = new["tangent"]-old["tangent"]-(sum(w.elastic_energy for w in step.wheels)-old_tangent)+projection
     geometry_work = gravity+step.known_work-external-steering_gyro
-    reconstructed = step.energy_error+native_kinetic+elastic_geometry+geometry_work
+    reconstructed = step.energy_error+native_kinetic+elastic_geometry+geometry_work+step.guide_work+step.body_gyro_work
     if abs(residual-reconstructed)>1e-8:
         raise ArithmeticError("独立储能账与差项分解不一致")
     if abs(elastic_geometry-spring_geometry-radial_geometry-tangent_geometry)>1e-8:
         raise ArithmeticError("三个实际弹性储能差与总差不一致")
     normals = source.geometry.normals
-    wheel_predicted = source.hardware.mechanical.wheel_jacobians@step.velocity[:10]
+    wheel_predicted = predicted_wheels
     point_motion = np.einsum('ij,ij->i',normals,h*wheel_predicted-displacement[1:])
     surface = source.contacts.normal@step.velocity+source.contacts.steering_velocity[:,2]
+    if source.contacts.guide_velocity is not None:
+        surface += source.contacts.guide_velocity[:,2]
     shape_motion = (new["deflection"]-initial_delta
                     +np.einsum('ij,ij->i',normals,displacement[1:])
                     +h*(step.normal_scale*surface-np.einsum('ij,ij->i',normals,wheel_predicted)))
@@ -152,6 +156,8 @@ def balance(source, step, old, new):
             "losses":losses,"engine_work":step.engine_work,"external_work":external,
             "steering_gyro_work":steering_gyro,"contact_steering_work":step.steering_work,
             "moving_road_work":step.road_work,"actual_energy_residual":residual,
+            "numerical_guide_work":step.guide_work,"energy_residual_after_guide_work":residual-step.guide_work,
+            "energy_residual_after_guide_and_gyro_work":residual-step.guide_work-step.body_gyro_work,
             "frozen_energy_residual":step.energy_error,"native_kinetic_defect":native_kinetic,
             "native_body_translation_defect":body_defect,"native_wheel_translation_defect":wheel_defect,
             "native_body_angular_defect":angular_defect,"native_inertia_transport_defect":inertia_defect,
@@ -169,7 +175,8 @@ def balance(source, step, old, new):
             **{f"native_point_velocity_defect_{i}":float(native_velocity_error[i]) for i in range(4)},
             **{f"native_point_position_defect_{i}":float(native_position_error[i]) for i in range(4)},
             **{f"normal_spin_radius_{i}":float(source.contacts.spin_radii[i,2]) for i in range(4)},
-            "inertial_bias_work":-h*np.dot(step.velocity[:10],source.hardware.mechanical.inertial_bias)}
+            "body_gyro_work":step.body_gyro_work,
+            "continuous_bias_work_not_applied":-h*np.dot(step.velocity[:10],source.hardware.mechanical.inertial_bias)}
 
 
 def write_rows(path,rows):

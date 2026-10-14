@@ -82,10 +82,11 @@ class UnsprungTirePorts:
     radii: np.ndarray
     spin_radii: np.ndarray
     steering_velocity: np.ndarray
+    guide_velocity: np.ndarray | None = None
 
 
 def tire_ports(drivetrain, contact_offsets, tangents, laterals, normals, steering_angular, trails, *, normal_offsets=None,
-               material_axes=None):
+               material_axes=None, wheel_velocity_bias=None):
     """切向材料点与法向包络的共轭端口；显式包络法向不含轴向自旋。"""
     mechanical = drivetrain.mechanical
     rows,radii,biases = [],[],[]
@@ -120,4 +121,6 @@ def tire_ports(drivetrain, contact_offsets, tangents, laterals, normals, steerin
         radii.append(lever)
         biases.append(relative)
     rows,radii = np.asarray(rows),np.asarray(radii)
-    return UnsprungTirePorts(rows[:,0],rows[:,1],rows[:,2],radii[:,0],radii,np.asarray(biases))
+    guide = None if wheel_velocity_bias is None else np.column_stack(
+        [np.einsum('ij,ij->i',wheel_velocity_bias,directions) for directions in (tangents,laterals,normals)])
+    return UnsprungTirePorts(rows[:,0],rows[:,1],rows[:,2],radii[:,0],radii,np.asarray(biases),guide)

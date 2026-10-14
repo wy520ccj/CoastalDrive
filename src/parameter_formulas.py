@@ -19,14 +19,14 @@ FORMULAS = {
         r"\mathbf{I}_s=\mathbf{I}_0-\sum_i P(m_i,\mathbf{r}_i)-P(m_s,\mathbf{c}_s)",
     ), "mi：输入的轮端平动质量；ms/cs/Is：分出的簧上质量/CG/中央惯量。P为平行轴项，轴向转子惯量另计。"),
     "unsprung_enabled": ((
-        r"\mathbf{v}_i=\mathbf{V}_s+\boldsymbol{\Omega}\times\mathbf{r}_i+u_i\mathbf{n}_i",
+        r"\mathbf{v}_{i,1}=\mathbf{J}_{i,0}\mathbf{z}_1+\mathbf{b}_i",
         r"\mathcal{M}=\mathrm{diag}(m_s\mathbf{1},\mathbf{I}_s,\mathbf{0})+\sum_i m_i\mathbf{J}_i^T\mathbf{J}_i",
-    ), "轮心有真实平动惯性；Ji是轮心速度雅可比，ui是相对导向速度。与径向轮荷/Fx/Fy/有限传动同一末状态。"),
+    ), "Ji展开为簧上平动、Ω×轮心力臂和相对行程速度；下标0/1为步初/末。bi是原生位置误差的数值修正，非材料参数。与轮荷/Fx/Fy/有限传动同一末状态。"),
     "tire_radial_stiffness": ((
         r"F_n^*=\max\left(0,k_r\delta_++c_r\frac{\Delta\delta_+}{h}\right)",
         r"s=\|\overline{\mathbf{n}}\|,\quad F_n=sF_n^*,\quad U_r=\frac{1}{2}k_r\delta_+^2",
-        r"\delta_1-\delta_0=-hs\left(\mathbf{g}_n\mathbf{z}+v_n^{\mathrm{steer}}\right)",
-    ), "δ来自连续有符号距离；F*为材料系数力，Fn为实际施力大小。s由有限空间梯度计算，不是可调增益。"),
+        r"\delta_1-\delta_0=-hs\left(\mathbf{g}_n\mathbf{z}+v_n^{\mathrm{steer}}+\widehat{\mathbf{n}}\cdot\mathbf{b}_i\right)",
+    ), "δ来自连续有符号距离；F*为材料系数力，Fn为实际施力。s由空间梯度计算，非可调增益；bi为原生导向数值修正，与指定转向功分开。"),
     "tire_radial_damping": ((
         r"F_n^*=\max\left(0,k_r\delta_++c_r\frac{\Delta\delta_+}{h}\right)",
         r"F_n=\|\overline{\mathbf{n}}\|F_n^*",

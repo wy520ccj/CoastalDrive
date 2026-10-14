@@ -19,9 +19,10 @@ def check(output,height):
     try:
         app.import_engineering(ROOT/"docs/evidence/SIM-UNSPRUNG-01/production/engineering-preview.json")
         screenshots = []
-        for key in ("tire_radial_stiffness","tire_radial_damping"):
+        expected = {"tire_radial_stiffness":3,"tire_radial_damping":3,"unsprung_enabled":2}
+        for key,count in expected.items():
             app.parameter_help.show(key)
-            assert len(app.parameter_help.formula_nodes)==3
+            assert len(app.parameter_help.formula_nodes)==count
             for _ in range(4):
                 app.taskMgr.step();app.graphicsEngine.renderFrame()
             assert app.parameter_help.notes.getTightBounds(app.parameter_help.root)[0].z>-.73
@@ -30,7 +31,7 @@ def check(output,height):
             screenshots.append(name)
         assert app.run_state is None
         (output/"result.json").write_text(json.dumps({"height":height,"screenshots":screenshots,
-            "formula_lines_per_field":3,"physics_world_started":False,"formula_bounds":True},indent=2),encoding="utf-8")
+            "formula_lines_per_field":expected,"physics_world_started":False,"formula_bounds":True},indent=2),encoding="utf-8")
     finally:
         app.close_game()
 
