@@ -88,6 +88,10 @@ class VehicleConfig:
     tire_substeps: int = 2
     suspension_si_enabled: bool = True  # false沿用质量归一化旧硬件，供明确旧/新对照。
     suspension_coupled_enabled: bool = True  # SI分支共同求法向力；false保留首增量的原生SI对照。
+    unsprung_enabled: bool = False  # 独立轮心质量与径向弹性；完成整车验收后才更换参考默认。
+    unsprung_masses: tuple = (40.,) * 4  # kg，轮端平动质量设计假设，不含重复轴向自旋惯量。
+    tire_radial_stiffness: tuple = (200000.,) * 4  # N/m，未测量的四轮径向刚度初值。
+    tire_radial_damping: tuple = (500.,) * 4  # N·s/m，正径向压缩阻尼设计初值。
     suspension_antiroll_rates: tuple = (6000., 4000.)  # N/m；前/后左右行程差的设计刚度，非实测标定。
     suspension_stop_rates: tuple = (480000.,) * 4  # N/m；行程边界外的渐进止挡设计刚度。
     suspension_spring_rates: tuple = (48000.,) * 4  # N/m；四轮实际弹簧设计值，平路与旧1200kg参数相同。
@@ -124,6 +128,19 @@ class VehicleConfig:
     suspension_force_limit: float = 6000.0  # N；仅原生对照分支的数值力限，SI势能反力不作硬裁剪。
 
     def __post_init__(self):
+        for values,label,positive in ((self.unsprung_masses,"四轮簧下平动质量kg",True),
+                                     (self.tire_radial_stiffness,"四轮径向刚度N/m",True),
+                                     (self.tire_radial_damping,"四轮径向阻尼Ns/m",False)):
+            if len(values)!=4 or any(not math.isfinite(v) or v<0. or positive and v==0. for v in values):
+                raise ValueError(f"{label}须为四个有限{'正' if positive else '非负'}值")
+        if self.unsprung_enabled:
+            if not (self.suspension_si_enabled and self.suspension_coupled_enabled and self.finite_drivetrain
+                    and self.input_shaft_enabled and self.tire_compliance and self.wheel_rotor_transport):
+                raise ValueError("独立轮心须使用SI悬架与完整有限传动/输入轴/弹性接触/机械轮轴")
+            if self.body_inertia is None or self.mass<=sum(self.unsprung_masses):
+                raise ValueError("独立轮心须提供锁止参考惯量，整车质量须大于四轮质量总和")
+            if self.angular_damping!=0.:
+                raise ValueError("独立轮心模型须使用零原生角阻尼，阻尼由实际材料/端口提供")
         if not math.isfinite(self.tire_contact_half_length) or self.tire_contact_half_length <= 0.:
             raise ValueError("轮胎接触区纵向半长须为有限正值m")
         if self.tire_aligning_enabled and not (self.tire_compliance and self.wheel_rotor_transport):

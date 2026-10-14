@@ -14,6 +14,7 @@ from unsprung_body import (
     SprungBodyFrame,
     apply_joint_forces,
     quaternion_rotation,
+    rigid_transform,
 )
 from unsprung_drivetrain import drivetrain_ports, tire_ports
 from unsprung_dynamics import assemble_unsprung, partition_vehicle
@@ -36,6 +37,14 @@ def native_vehicle(gravity=(0.,0.,0.), pose=None, masses=MASSES, displacement=(0
     world.attachRigidBody(body)
     guides = NativeWheelGuides(world,body,frame,displacement)
     return world,body,frame,guides
+
+
+def test_dynamic_physics_frames_preserve_distinct_native_positions_below_matrix_cache_tolerance():
+    first,second = -.11094984412193298,-.11095023155212402
+    a = rigid_transform(np.eye(3),(0.,0.,first))
+    b = rigid_transform(np.eye(3),(0.,0.,second))
+    assert a.getPos().z==first and b.getPos().z==second
+    assert a!=b
 
 
 def test_full_principal_inertia_and_design_pose_preserve_real_collision_geometry():

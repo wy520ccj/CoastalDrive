@@ -136,20 +136,21 @@ class Powertrain:
     def capacity(self):
         return self.config.clutch_capacity * self.clutch_position
 
-    def observe(self, chassis):
+    def observe(self, chassis, *, orientation=None):
         """真正相对壳体RPM；曲轴绝对轴速只能由共同机械积分更新。"""
         from panda3d.core import Vec3
 
-        axis = chassis.getTransform().getQuat().xform(Vec3(*self.config.engine_axis))
+        orientation = chassis.getTransform().getQuat() if orientation is None else orientation
+        axis = orientation.xform(Vec3(*self.config.engine_axis))
         self.relative_omega = self.engine_omega - chassis.getAngularVelocity().dot(axis)
         self.rpm = self.relative_omega * 60 / math.tau
         if self.input_shaft_active:
-            shaft_axis = chassis.getTransform().getQuat().xform(Vec3(*self.config.input_shaft_axis))
+            shaft_axis = orientation.xform(Vec3(*self.config.input_shaft_axis))
             self.shaft_relative_omega = self.shaft_omega - chassis.getAngularVelocity().dot(shaft_axis)
         if self.downstream_active:
             inertias = active_inertias(self.config.downstream_inertias, self.config.front_drive_share)
             self.downstream_relative_omega = tuple(w - chassis.getAngularVelocity().dot(
-                chassis.getTransform().getQuat().xform(Vec3(*axis))) if j else 0.
+                orientation.xform(Vec3(*axis))) if j else 0.
                 for w, j, axis in zip(self.downstream_omega, inertias, self.config.downstream_axes))
 
     def prepare(self, speed, driven_omega, pedal, direction, braking, dt, *,

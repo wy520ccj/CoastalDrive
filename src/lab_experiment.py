@@ -4,8 +4,6 @@ import math
 from dataclasses import asdict, dataclass, replace
 from time import perf_counter
 
-from panda3d.core import Vec3
-
 from driving_experiment import DrivingExperiment, ExperimentOptions
 from driving_modes import DrivingMode
 from lab_maneuvers import path_command, path_error
@@ -96,13 +94,11 @@ class LabExperiment:
                 simulation.step(initial_command)
             # 只在初始化设置滚动初值；试验中的姿态/轮速全部由真实物理推进。
             player = simulation.player
-            direction = player._chassis.getTransform().getQuat().getForward()
-            player._chassis.setLinearVelocity(Vec3(direction * (options.speed_kph/3.6)))
-            player.tires.initialize_rolling(options.speed_kph/3.6)
-            player.powertrain.initialize_rolling(options.speed_kph/3.6)
+            player.initialize_rolling(options.speed_kph/3.6)
             initial = simulation.snapshot()
-            player.tires.observe(player._chassis,
-                read_wheel_contacts(player._vehicle, player.on_asphalt), initial.tick)
+            if not config.unsprung_enabled:
+                player.tires.observe(player._chassis,
+                    read_wheel_contacts(player._vehicle, player.on_asphalt), initial.tick)
             initial = simulation.snapshot()
             self.start_time = initial.time
             self.initial_collisions = initial.collisions

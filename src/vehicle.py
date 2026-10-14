@@ -22,6 +22,15 @@ from vehicle_suspension import Suspension
 from vehicle_tire_step import TireAdvanceInput
 from vehicle_tires import Tires
 from vehicle_traction import TractionControl
+from vehicle_unsprung import (
+    UnsprungAdvanceInput,
+    install_body,
+    install_guides,
+    observe_unsprung,
+)
+from vehicle_unsprung import (
+    initialize_rolling as initialize_unsprung_rolling,
+)
 
 
 class Vehicle:
@@ -50,6 +59,10 @@ class Vehicle:
         self.name = name
         self._chassis = None
         self._vehicle = None
+        self._sprung_frame = None
+        self._wheel_guides = None
+        self._unsprung_pending = None
+        self._unsprung_observation = None
         self._attached = False
         self._native_action = not self.coupled_suspension
         self.closed = False
@@ -75,11 +88,15 @@ class Vehicle:
     def _build_physics(self, heading, pitch):
         chassis = BulletRigidBodyNode(self.name)
         chassis.setIntoCollideMask(BitMask32.bit(1))
-        chassis.setMass(self.config.mass)
         chassis.setDeactivationEnabled(False)
         chassis.setAngularDamping(self.config.angular_damping)
-        install_chassis_shape(chassis, self.config)
-        chassis.setTransform(TransformState.makePosHpr(Vec3(*self.spawn), Vec3(heading, pitch, 0)))
+        pose = TransformState.makePosHpr(Vec3(*self.spawn), Vec3(heading, pitch, 0))
+        if self.config.unsprung_enabled:
+            self._sprung_frame = install_body(chassis,self.config,pose)
+        else:
+            chassis.setMass(self.config.mass)
+            install_chassis_shape(chassis, self.config)
+            chassis.setTransform(pose)
         chassis.setCcdMotionThreshold(0.5)
         chassis.setCcdSweptSphereRadius(0.35)
         self._world.attachRigidBody(chassis)
@@ -110,10 +127,31 @@ class Vehicle:
 
         self._chassis = chassis
         self._vehicle = vehicle
+        if self.config.unsprung_enabled:
+            install_guides(self)
+            observe_unsprung(self,0)
         self._initialize_wheel_poses()
 
+    def reference_pose(self):
+        """设计坐标供相机/外形；新刚体的物理原点始终位于簧上CG。"""
+        return self._sprung_frame.reference_pose(self._chassis) if self.config.unsprung_enabled else self._chassis.getTransform()
+
+    def initialize_rolling(self, speed):
+        """研究初始条件的统一入口；运行中不覆盖任何轮心/刚体速度。"""
+        if self.config.unsprung_enabled:
+            initialize_unsprung_rolling(self,speed)
+        else:
+            self._chassis.setLinearVelocity(self._chassis.getTransform().getQuat().getForward()*speed)
+            self.tires.initialize_rolling(speed)
+            self.powertrain.initialize_rolling(speed)
+
+    def settled(self):
+        body = self._chassis
+        return (body.getLinearVelocity().length()<=.001 and body.getAngularVelocity().length()<=.001
+                and (not self.config.unsprung_enabled or all(p.getLinearVelocity().length()<=.001 for p in self._wheel_guides.points)))
+
     def _initialize_wheel_poses(self):
-        pose = self._chassis.getTransform()
+        pose = self.reference_pose()
         for wheel, hub in zip(self._vehicle.getWheels(), self.hubs):
             position = pose.getMat().xformPoint(Vec3(*hub) - Vec3(0, 0, 0.4))
             wheel.setWorldTransform(TransformState.makePosHpr(position, pose.getHpr()).getMat())
@@ -123,9 +161,12 @@ class Vehicle:
         return self.config.suspension_si_enabled and self.config.suspension_coupled_enabled
 
     def reset(self, position, heading=0, pitch=0, *, speed=0.0):
-        self._chassis.setTransform(
-            TransformState.makePosHpr(Vec3(*position), Vec3(heading, pitch, 0))
-        )
+        pose = TransformState.makePosHpr(Vec3(*position), Vec3(heading, pitch, 0))
+        if self.config.unsprung_enabled:
+            self._wheel_guides.close()
+            self._chassis.setTransform(self._sprung_frame.physical_pose(pose))
+        else:
+            self._chassis.setTransform(pose)
         self._chassis.setLinearVelocity(Vec3(*forward(heading)) * speed)
         self._chassis.setAngularVelocity(Vec3(0, 0, 0))
         self._chassis.clearForces()
@@ -150,6 +191,9 @@ class Vehicle:
         self._wheel_contacts = ()
         self._contact_tick = 0
         self.dynamics = DynamicsState()
+        if self.config.unsprung_enabled:
+            install_guides(self)
+            initialize_unsprung_rolling(self,speed)
         for index, wheel in enumerate(self._vehicle.getWheels()):
             self._vehicle.applyEngineForce(0, index)
             self._vehicle.setBrake(0, index)
@@ -160,7 +204,7 @@ class Vehicle:
 
     def signed_speed(self):
         velocity = self._chassis.getLinearVelocity()
-        heading = self._chassis.getTransform().getHpr().x
+        heading = self.reference_pose().getHpr().x
         return velocity.dot(Vec3(*forward(heading)))
 
     def shift(self, amount):
@@ -169,6 +213,11 @@ class Vehicle:
         self._chassis.setTransform(
             TransformState.makePosHpr(pose.getPos() - Vec3(0, amount, 0), pose.getHpr())
         )
+        if self.config.unsprung_enabled:
+            for point in self._wheel_guides.points:
+                point_pose = point.getTransform()
+                point.setTransform(TransformState.makePosQuatScale(point_pose.getPos()-Vec3(0,amount,0),point_pose.getQuat(),Vec3(1)))
+            observe_unsprung(self,self._contact_tick)
         for wheel in self._vehicle.getWheels():
             pose = TransformState.makeMat(wheel.getWorldTransform())
             wheel.setWorldTransform(
@@ -176,7 +225,8 @@ class Vehicle:
                     pose.getPos() - Vec3(0, amount, 0), pose.getQuat(), Vec3(1)
                 ).getMat()
             )
-        self._wheel_contacts = shift_contacts(self._wheel_contacts, amount)
+        if not self.config.unsprung_enabled:
+            self._wheel_contacts = shift_contacts(self._wheel_contacts, amount)
 
     def apply_control(self, control: Control, *, static_shapes=None):
         self.advance_physics(self.prepare_control(control), FIXED_DT, static_shapes=static_shapes)
@@ -198,7 +248,7 @@ class Vehicle:
 
     def prepare_command(self, command: VehicleCommand):
         """转向、电子控制及执行器只按固定120Hz准备一次。"""
-        pose = self._chassis.getTransform()
+        pose = self.reference_pose()
         hpr = pose.getHpr()
         velocity = self._chassis.getLinearVelocity()
         speed = velocity.dot(Vec3(*forward(hpr.x)))
@@ -223,12 +273,13 @@ class Vehicle:
                          zip(requests, traction.brake_requests))
         stability = self.stability.advance(
             self._chassis, self.tires.states, self._wheel_contacts, requests,
-            self.steering.angle, FIXED_DT,
+            self.steering.angle, FIXED_DT,pose=pose,
+            yaw_inertia=self.config.body_inertia[2] if self.config.unsprung_enabled else None,
         )
         if self.config.finite_drivetrain:
-            self.powertrain.observe(self._chassis)
+            self.powertrain.observe(self._chassis,orientation=pose.getQuat())
             self.powertrain.prepare(speed, self.tires.driven_omega(
-                self._chassis, wheel_angles(self.steering.angle, self.config)), pedal, direction,
+                self._chassis, wheel_angles(self.steering.angle, self.config),orientation=pose.getQuat()), pedal, direction,
                 brake > 0, FIXED_DT, drive_scale=min(traction.torque_scale, stability.torque_scale),
                 gear=command.gear, clutch=command.clutch)
             drive_torque = engine_drag = 0.
@@ -249,6 +300,22 @@ class Vehicle:
                        complete_tires=False):
         """从当前真实Bullet姿态读取接点，完成一个机械/世界共用的积分子步。"""
         drive_torque, engine_drag, pressures = request
+        if self.config.unsprung_enabled:
+            angles = wheel_angles(self.steering.angle,self.config) if angles is None else angles
+            source = UnsprungAdvanceInput.read(self,pressures,angles,self._contact_tick+1,dt,accumulate,static_shapes)
+            result = yield source
+            source.commit(self,result)
+            velocity = tuple(self._chassis.getLinearVelocity())
+            local = self.reference_pose().getQuat().conjugate().xform(Vec3(*velocity))
+            grade = self._road_grade(self.reference_pose().getHpr().x)
+            self.dynamics = DynamicsState(math.sqrt(sum(f*f for f in source.air_force)),
+                sum(abs(w.rolling_torque)/source.contacts.radii[i] for i,w in enumerate(result.wheels)),
+                self.config.mass*9.81*math.sin(math.radians(grade)) if grade is not None else 0.,
+                sum(result.normal.normal_force[:2]),sum(result.normal.normal_force[2:]),
+                float(self._chassis.getAngularVelocity().z),math.degrees(math.atan2(local.x,abs(local.y))) if abs(local.y)>1. else 0.,
+                any(abs(w.kappa)>.1 for w in result.wheels),grade,
+                source.air_velocity,source.air_force,sum(f*v for f,v in zip(source.air_force,velocity)))
+            return
         pose = self._chassis.getTransform()
         hpr = pose.getHpr()
         velocity = self._chassis.getLinearVelocity()
@@ -361,19 +428,22 @@ class Vehicle:
         self._contact_tick += 1
         if not self.coupled_suspension:
             self._wheel_contacts = read_wheel_contacts(self._vehicle, self.on_asphalt)
-        self.tires.observe(self._chassis, self._wheel_contacts, self._contact_tick)
+        if self.config.unsprung_enabled:
+            observe_unsprung(self,self._contact_tick)
+        else:
+            self.tires.observe(self._chassis, self._wheel_contacts, self._contact_tick)
         if self.config.finite_drivetrain:
-            self.powertrain.observe(self._chassis)
+            self.powertrain.observe(self._chassis,orientation=self.reference_pose().getQuat())
         velocity = self._chassis.getLinearVelocity()
         acceleration = (velocity - Vec3(previous_velocity)) / FIXED_DT
-        axes = self._chassis.getTransform().getQuat()
+        axes = self.reference_pose().getQuat()
         self._acceleration = acceleration.dot(axes.getForward())
         self._lateral_acceleration = acceleration.dot(axes.getRight())
-        grade = self._road_grade(self._chassis.getTransform().getHpr().x)
+        grade = self._road_grade(self.reference_pose().getHpr().x)
         road_acceleration = 0.0
         if grade is not None:
             angle = math.radians(grade)
-            direction = Vec3(*forward(self._chassis.getTransform().getHpr().x))
+            direction = Vec3(*forward(self.reference_pose().getHpr().x))
             tangent = direction * math.cos(angle) + Vec3(0, 0, math.sin(angle))
             road_acceleration = acceleration.dot(tangent)
         self._load_acceleration += (
@@ -381,16 +451,17 @@ class Vehicle:
         ) * (1 - math.exp(-FIXED_DT / 0.15))
 
     def snapshot(self, *, include_wheels=True):
-        transform = self._chassis.getTransform()
+        transform = self.reference_pose()
         position = transform.getPos()
         hpr = transform.getHpr()
         velocity = self._chassis.getLinearVelocity()
         # 交通感知只读取车身状态；四轮姿态仍完整提供给正式Snapshot。
         wheels = ()
         if include_wheels:
-            positions = (self.suspension.wheel_positions(self._chassis, self._vehicle.getWheels())
+            positions = (tuple(tuple(p.getTransform().getPos()) for p in self._wheel_guides.points) if self.config.unsprung_enabled else
+                         self.suspension.wheel_positions(self._chassis, self._vehicle.getWheels())
                          if self.coupled_suspension else None)
-            wheels = self.tires.wheel_poses(self._chassis, self._vehicle, positions=positions)
+            wheels = self.tires.wheel_poses(self._chassis, self._vehicle, positions=positions,orientation=transform.getQuat())
         return CarState(
             (float(position.x), float(position.y), float(position.z)),
             float(hpr.x),
@@ -419,12 +490,15 @@ class Vehicle:
             esc_enabled=self.config.stability.esc_enabled,
             stability_state=self.stability.state,
             powertrain_state=self.powertrain.snapshot() if self.config.finite_drivetrain else None,
-            suspension_state=self.suspension.state if self.coupled_suspension and include_wheels else None,
+            suspension_state=self.suspension.state if self.coupled_suspension and not self.config.unsprung_enabled and include_wheels else None,
+            unsprung_state=self._unsprung_observation if self.config.unsprung_enabled and include_wheels else None,
         )
 
     def attach_physics(self):
         """回收车重新进入同一世界；原生Action只服务实际原生轮胎/悬架。"""
         self._world.attachRigidBody(self._chassis)
+        if self.config.unsprung_enabled:
+            self._wheel_guides.attach()
         if self._native_action:
             self._world.attachVehicle(self._vehicle)
         self._attached = True
@@ -432,6 +506,8 @@ class Vehicle:
     def detach_physics(self):
         """退役或关闭时移除真实刚体及其已登记的Action。"""
         if self._attached:
+            if self.config.unsprung_enabled:
+                self._wheel_guides.detach()
             if self._native_action:
                 self._world.removeVehicle(self._vehicle)
             else:
@@ -443,6 +519,8 @@ class Vehicle:
             return
         self.suspension.clear_queries()
         self.detach_physics()
+        if self.config.unsprung_enabled:
+            self._wheel_guides.close()
         self._vehicle = None
         self._chassis = None
         self.closed = True

@@ -15,7 +15,7 @@ class TrafficVehicle(Vehicle):
     def __init__(self, *args, **kwargs):
         config = kwargs['config']
         kwargs['config'] = replace(config, finite_drivetrain=False, native_tire_forces=True, suspension_coupled_enabled=False,
-                                   wheel_rotor_transport=False, tire_compliance=False,
+                                   wheel_rotor_transport=False, tire_compliance=False,unsprung_enabled=False,
                                    axle_torque_bias_ratios=(1., 1.),
                                    differential_damping=(0., 0., 0.), differential_capacity=(0., 0., 0.),
                                    braking=replace(config.braking, abs_enabled=False),

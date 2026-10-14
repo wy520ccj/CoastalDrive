@@ -74,6 +74,11 @@ class Explanation:
 
 
 def explanation(key):
+    if key in ("unsprung_enabled","unsprung_masses","tire_radial_stiffness","tire_radial_damping"):
+        unit,definition = VEHICLE_FIELDS[key]
+        return Explanation(definition.split("；")[0],unit,"轮心与径向材料",
+            "输入来自部件试验/工程设计；下式说明其力学用途，不由程序反推输入量。",definition,
+            "src/vehicle_unsprung.py；src/unsprung_dynamics.py；src/unsprung_contact.py；src/unsprung_joint.py")
     if key in METRIC_INFO:
         return Explanation(*METRIC_INFO[key])
     if key in EDITOR_INFO:

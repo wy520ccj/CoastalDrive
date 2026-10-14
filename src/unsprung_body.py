@@ -5,17 +5,24 @@ from itertools import permutations
 
 import numpy as np
 from panda3d.bullet import BulletGenericConstraint, BulletRigidBodyNode, BulletSphereShape
-from panda3d.core import BitMask32, Mat4, TransformState, Vec3
+from panda3d.core import BitMask32, Mat3, Quat, TransformState, Vec3
 
 from vehicle_collision import chassis_shapes
 
 
 def rigid_transform(rotation, position=(0.,0.,0.)):
     """列向量物理矩阵转换为Panda行向量约定，只在原生边界变成单精度。"""
-    matrix = np.eye(4)
-    matrix[:3,:3] = np.asarray(rotation).T
-    matrix[3,:3] = position
-    return TransformState.makeMat(Mat4(*matrix.ravel()))
+    quaternion = Quat()
+    quaternion.setFromMatrix(Mat3(*np.asarray(rotation).T.ravel()))
+    # matrix定义会被Panda全局缓存按almost_equal合并，不能用于变化的物理连接点。
+    return TransformState.makePosQuatScale(Vec3(*position),quaternion,Vec3(1))
+
+
+def rigid_matrix_pose(matrix):
+    """纯刚体矩阵转成显式位置/四元数，保持原生边界精度与独立复算。"""
+    quaternion = Quat()
+    quaternion.setFromMatrix(Mat3(*(matrix.getCell(a,b) for a in range(3) for b in range(3))))
+    return TransformState.makePosQuatScale(matrix.getRow3(3),quaternion,Vec3(1))
 
 
 def quaternion_rotation(quaternion):
@@ -50,14 +57,14 @@ class SprungBodyFrame:
         return self.principal_axes.T@reference_vector
 
     def physical_pose(self, reference_pose):
-        return TransformState.makeMat(rigid_transform(self.principal_axes,self.partition.center).getMat()*reference_pose.getMat())
+        return rigid_matrix_pose(rigid_transform(self.principal_axes,self.partition.center).getMat()*reference_pose.getMat())
 
     def reference_pose(self, body):
         mapping = rigid_transform(self.principal_axes.T,-self.principal_axes.T@self.partition.center)
-        return TransformState.makeMat(mapping.getMat()*body.getTransform().getMat())
+        return rigid_matrix_pose(mapping.getMat()*body.getTransform().getMat())
 
     def sprung_pose(self, body):
-        return TransformState.makeMat(rigid_transform(self.principal_axes.T).getMat()*body.getTransform().getMat())
+        return rigid_matrix_pose(rigid_transform(self.principal_axes.T).getMat()*body.getTransform().getMat())
 
     def read(self, body):
         """精确静态基变换与原生实时CG，供力学数组使用，不依赖场景显示节点。"""
@@ -72,7 +79,7 @@ class SprungBodyFrame:
         body.setMass(self.partition.mass)
         mapping = rigid_transform(self.principal_axes.T,-self.principal_axes.T@self.partition.center)
         for shape,transform in chassis_shapes(config):
-            body.addShape(shape,TransformState.makeMat(transform.getMat()*mapping.getMat()))
+            body.addShape(shape,rigid_matrix_pose(transform.getMat()*mapping.getMat()))
         # 原生增添形状会重算惯量，最后才写入分解后的三主惯量。
         body.setInertia(Vec3(*self.principal_inertia))
         body.setTransform(self.physical_pose(reference_pose))
@@ -84,6 +91,7 @@ class NativeWheelGuides:
     def __init__(self, world, body, frame, displacement=(0.,)*4):
         self.world,self.body,self.frame = world,body,frame
         self.points,self.constraints = [],[]
+        self._attached = True
         position,rotation = frame.read(body)
         for i,(mass,arm,offset) in enumerate(zip(frame.partition.wheel_masses,frame.partition.wheel_arms,displacement)):
             point = BulletRigidBodyNode(f"{body.getName()}-wheel-center-{i}")
@@ -140,12 +148,27 @@ class NativeWheelGuides:
         return centers,speeds,displacement,relative,transverse
 
     def close(self):
+        self.detach()
+        self.constraints.clear()
+        self.points.clear()
+
+    def detach(self):
+        if not self._attached:
+            return
         for constraint in self.constraints:
             self.world.removeConstraint(constraint)
         for point in self.points:
             self.world.removeRigidBody(point)
-        self.constraints.clear()
-        self.points.clear()
+        self._attached = False
+
+    def attach(self):
+        if self._attached:
+            return
+        for point in self.points:
+            self.world.attachRigidBody(point)
+        for constraint in self.constraints:
+            self.world.attachConstraint(constraint,True)
+        self._attached = True
 
 
 def apply_joint_forces(body, wheel_guides, hardware, contacts, step, engine_torque, engine_drag,

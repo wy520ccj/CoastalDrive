@@ -1,0 +1,139 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>CoastalDrive 实验报告</title>
+<style>body{background:#f3efe3;color:#102b3a;font:15px system-ui;max-width:1000px;margin:40px auto;padding:0 24px}svg{width:100%;margin:10px 0}pre{white-space:pre-wrap;background:#fefcf5;padding:20px;border-radius:8px}td{border-bottom:1px solid #c9d3cc;padding:8px}h1{color:#247e96}</style>
+<h1>CoastalDrive · 车辆动力学实验</h1><p>设计参考车 RWD · 120 Hz · 离线固定步</p>
+<p>reference-v28完整设计，模型外廓同步</p><p>曲线来自真实物理记录。A 为海蓝，B 为橙色；单次记录为海蓝。制动距离使用完成步的三维行驶距离，停止阈值 |v| ≤ 0.1 m/s。</p>
+<h2>试验结果</h2><pre>{
+  &quot;status&quot;: &quot;time_limit&quot;,
+  &quot;reason&quot;: &quot;time_limit&quot;,
+  &quot;error&quot;: null,
+  &quot;simulation_seconds&quot;: 0.125,
+  &quot;compute_seconds&quot;: 0.7234355000000505,
+  &quot;distance_m&quot;: 1.0405199391191589,
+  &quot;stopping_distance_m&quot;: null,
+  &quot;peak_deceleration_mps2&quot;: -0.17269116640090942,
+  &quot;peak_lateral_acceleration_mps2&quot;: 0.2549078166484833,
+  &quot;peak_yaw_rate_radps&quot;: 0.007698695641011,
+  &quot;mean_path_error_m&quot;: null,
+  &quot;maximum_path_error_m&quot;: null,
+  &quot;abs_ticks&quot;: 0,
+  &quot;ticks&quot;: 15,
+  &quot;initialization_ticks&quot;: 195,
+  &quot;options&quot;: {
+    &quot;vehicle_id&quot;: &quot;reference-rwd&quot;,
+    &quot;maneuver&quot;: &quot;step_steer&quot;,
+    &quot;speed_kph&quot;: 30.0,
+    &quot;friction&quot;: 1.1,
+    &quot;abs_enabled&quot;: true,
+    &quot;esc_enabled&quot;: false,
+    &quot;duration&quot;: 0.12,
+    &quot;steering_deg&quot;: 2.0,
+    &quot;onset&quot;: 0.0,
+    &quot;seed&quot;: 0,
+    &quot;cg_height&quot;: null,
+    &quot;radius_m&quot;: 60.0,
+    &quot;right_friction&quot;: 0.3,
+    &quot;tire_reference_load&quot;: null
+  }
+}</pre><h2>工程指标</h2><p>列顺序：本次。未满足条件的原因及计算区间见engineering.json。</p><table><tr><td>充分发出平均减速度</td><td>未满足条件</td><td>m/s²</td><td>仅适用于制动工况</td></tr><tr><td>稳态横摆增益</td><td>未满足条件</td><td>1/s</td><td>需要转向开始至少2s，尾窗至少1s</td></tr><tr><td>峰值车身侧偏</td><td>0.06679</td><td>deg</td><td>已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据</td></tr><tr><td>峰值车身侧倾</td><td>0.02218</td><td>deg</td><td>已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据</td></tr><tr><td>峰值前轴左右轮荷差比</td><td>0.009682</td><td>1</td><td>已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据</td></tr><tr><td>峰值后轴左右轮荷差比</td><td>0.009289</td><td>1</td><td>已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据</td></tr><tr><td>峰值附着利用率 FL</td><td>0.0552</td><td>1</td><td>末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义</td></tr><tr><td>峰值附着利用率 FR</td><td>0.05553</td><td>1</td><td>末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义</td></tr><tr><td>峰值附着利用率 RL</td><td>0.0138</td><td>1</td><td>末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义</td></tr><tr><td>峰值附着利用率 RR</td><td>0.01361</td><td>1</td><td>末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义</td></tr></table><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220">
+<rect width="100%" height="100%" fill="#fefcf5"/>
+<text x="16" y="22" fill="#102b3a" font-size="14">车速 / km/h</text>
+<path d="M58 188.0H744" stroke="#c9d3cc"/>
+<text x="5" y="192.0" fill="#455c63" font-size="11">29.93</text>
+<path d="M58 150.0H744" stroke="#c9d3cc"/>
+<text x="5" y="154.0" fill="#455c63" font-size="11">29.95</text>
+<path d="M58 112.0H744" stroke="#c9d3cc"/>
+<text x="5" y="116.0" fill="#455c63" font-size="11">29.97</text>
+<path d="M58 74.0H744" stroke="#c9d3cc"/>
+<text x="5" y="78.0" fill="#455c63" font-size="11">29.99</text>
+<path d="M58 36.0H744" stroke="#c9d3cc"/>
+<text x="5" y="40.0" fill="#455c63" font-size="11">30.01</text>
+<path d="M58.00,50.87 L103.73,54.65 L149.47,61.36 L195.20,70.03 L240.93,79.58 L286.67,89.20 L332.40,98.46 L378.13,107.25 L423.87,115.64 L469.60,123.79 L515.33,131.87 L561.07,139.96 L606.80,148.15 L652.53,156.41 L698.27,164.74 L744.00,173.13" fill="none" stroke="#247e96" stroke-width="1.7"/>
+<text x="58" y="212" fill="#455c63" font-size="11">0</text>
+<text x="685" y="212" fill="#455c63" font-size="11">0.12 s</text>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220">
+<rect width="100%" height="100%" fill="#fefcf5"/>
+<text x="16" y="22" fill="#102b3a" font-size="14">纵向加速度 / m/s²</text>
+<path d="M58 188.0H744" stroke="#c9d3cc"/>
+<text x="5" y="192.0" fill="#455c63" font-size="11">-0.19</text>
+<path d="M58 150.0H744" stroke="#c9d3cc"/>
+<text x="5" y="154.0" fill="#455c63" font-size="11">-0.14</text>
+<path d="M58 112.0H744" stroke="#c9d3cc"/>
+<text x="5" y="116.0" fill="#455c63" font-size="11">-0.09</text>
+<path d="M58 74.0H744" stroke="#c9d3cc"/>
+<text x="5" y="78.0" fill="#455c63" font-size="11">-0.04</text>
+<path d="M58 36.0H744" stroke="#c9d3cc"/>
+<text x="5" y="40.0" fill="#455c63" font-size="11">0.01</text>
+<path d="M58.00,46.48 L103.73,97.98 L149.47,137.83 L195.20,164.41 L240.93,176.48 L286.67,177.52 L332.40,172.48 L378.13,166.14 L423.87,160.67 L469.60,157.37 L515.33,156.41 L561.07,156.75 L606.80,157.88 L652.53,158.99 L698.27,159.94 L744.00,160.61" fill="none" stroke="#247e96" stroke-width="1.7"/>
+<text x="58" y="212" fill="#455c63" font-size="11">0</text>
+<text x="685" y="212" fill="#455c63" font-size="11">0.12 s</text>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220">
+<rect width="100%" height="100%" fill="#fefcf5"/>
+<text x="16" y="22" fill="#102b3a" font-size="14">横摆角速度 / rad/s</text>
+<path d="M58 188.0H744" stroke="#c9d3cc"/>
+<text x="5" y="192.0" fill="#455c63" font-size="11">-0.02</text>
+<path d="M58 150.0H744" stroke="#c9d3cc"/>
+<text x="5" y="154.0" fill="#455c63" font-size="11">-0.01</text>
+<path d="M58 112.0H744" stroke="#c9d3cc"/>
+<text x="5" y="116.0" fill="#455c63" font-size="11">-0.00</text>
+<path d="M58 74.0H744" stroke="#c9d3cc"/>
+<text x="5" y="78.0" fill="#455c63" font-size="11">0.00</text>
+<path d="M58 36.0H744" stroke="#c9d3cc"/>
+<text x="5" y="40.0" fill="#455c63" font-size="11">0.01</text>
+<path d="M58.00,87.31 L103.73,87.32 L149.47,87.41 L195.20,87.61 L240.93,88.09 L286.67,89.03 L332.40,90.49 L378.13,92.44 L423.87,95.18 L469.60,98.35 L515.33,102.51 L561.07,107.51 L606.80,113.50 L652.53,120.31 L698.27,128.04 L744.00,136.69" fill="none" stroke="#247e96" stroke-width="1.7"/>
+<text x="58" y="212" fill="#455c63" font-size="11">0</text>
+<text x="685" y="212" fill="#455c63" font-size="11">0.12 s</text>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220">
+<rect width="100%" height="100%" fill="#fefcf5"/>
+<text x="16" y="22" fill="#102b3a" font-size="14">实际转角 / deg</text>
+<path d="M58 188.0H744" stroke="#c9d3cc"/>
+<text x="5" y="192.0" fill="#455c63" font-size="11">-0.03</text>
+<path d="M58 150.0H744" stroke="#c9d3cc"/>
+<text x="5" y="154.0" fill="#455c63" font-size="11">0.09</text>
+<path d="M58 112.0H744" stroke="#c9d3cc"/>
+<text x="5" y="116.0" fill="#455c63" font-size="11">0.22</text>
+<path d="M58 74.0H744" stroke="#c9d3cc"/>
+<text x="5" y="78.0" fill="#455c63" font-size="11">0.35</text>
+<path d="M58 36.0H744" stroke="#c9d3cc"/>
+<text x="5" y="40.0" fill="#455c63" font-size="11">0.47</text>
+<path d="M58.00,177.52 L103.73,176.54 L149.47,173.74 L195.20,169.33 L240.93,163.52 L286.67,156.46 L332.40,148.31 L378.13,139.24 L423.87,129.35 L469.60,118.79 L515.33,107.65 L561.07,96.03 L606.80,84.03 L652.53,71.72 L698.27,59.19 L744.00,46.48" fill="none" stroke="#247e96" stroke-width="1.7"/>
+<text x="58" y="212" fill="#455c63" font-size="11">0</text>
+<text x="685" y="212" fill="#455c63" font-size="11">0.12 s</text>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220">
+<rect width="100%" height="100%" fill="#fefcf5"/>
+<text x="16" y="22" fill="#102b3a" font-size="14">滑移率 FL / 1</text>
+<path d="M58 188.0H744" stroke="#c9d3cc"/>
+<text x="5" y="192.0" fill="#455c63" font-size="11">-0.01</text>
+<path d="M58 150.0H744" stroke="#c9d3cc"/>
+<text x="5" y="154.0" fill="#455c63" font-size="11">-0.01</text>
+<path d="M58 112.0H744" stroke="#c9d3cc"/>
+<text x="5" y="116.0" fill="#455c63" font-size="11">-0.00</text>
+<path d="M58 74.0H744" stroke="#c9d3cc"/>
+<text x="5" y="78.0" fill="#455c63" font-size="11">0.00</text>
+<path d="M58 36.0H744" stroke="#c9d3cc"/>
+<text x="5" y="40.0" fill="#455c63" font-size="11">0.01</text>
+<path d="M58.00,104.06 L103.73,116.10 L149.47,119.94 L195.20,118.54 L240.93,115.04 L286.67,111.63 L332.40,109.37 L378.13,108.42 L423.87,108.46 L469.60,109.01 L515.33,109.68 L561.07,110.23 L606.80,110.60 L652.53,110.77 L698.27,110.82 L744.00,110.80" fill="none" stroke="#247e96" stroke-width="1.7"/>
+<text x="58" y="212" fill="#455c63" font-size="11">0</text>
+<text x="685" y="212" fill="#455c63" font-size="11">0.12 s</text>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220">
+<rect width="100%" height="100%" fill="#fefcf5"/>
+<text x="16" y="22" fill="#102b3a" font-size="14">施力阶段轮荷 FL / N</text>
+<path d="M58 188.0H744" stroke="#c9d3cc"/>
+<text x="5" y="192.0" fill="#455c63" font-size="11">2940.04</text>
+<path d="M58 150.0H744" stroke="#c9d3cc"/>
+<text x="5" y="154.0" fill="#455c63" font-size="11">2950.03</text>
+<path d="M58 112.0H744" stroke="#c9d3cc"/>
+<text x="5" y="116.0" fill="#455c63" font-size="11">2960.02</text>
+<path d="M58 74.0H744" stroke="#c9d3cc"/>
+<text x="5" y="78.0" fill="#455c63" font-size="11">2970.01</text>
+<path d="M58 36.0H744" stroke="#c9d3cc"/>
+<text x="5" y="40.0" fill="#455c63" font-size="11">2979.99</text>
+<path d="M58.00,177.23 L103.73,177.52 L149.47,177.24 L195.20,176.20 L240.93,174.06 L286.67,170.61 L332.40,165.64 L378.13,159.04 L423.87,150.69 L469.60,140.55 L515.33,128.64 L561.07,114.99 L606.80,99.74 L652.53,83.08 L698.27,65.23 L744.00,46.48" fill="none" stroke="#247e96" stroke-width="1.7"/>
+<text x="58" y="212" fill="#455c63" font-size="11">0</text>
+<text x="685" y="212" fill="#455c63" font-size="11">0.12 s</text>
+</svg><h2>比较条件</h2><pre>{}</pre>
+<h2>信号单位与字段来源</h2><table><tr><td>time</td><td>试验时间</td><td>s</td><td>Snapshot.time - initial.time</td></tr><tr><td>tick</td><td>物理拍</td><td>1</td><td>Snapshot.tick; includes initialization ticks</td></tr><tr><td>speed</td><td>车速</td><td>km/h</td><td>Snapshot.player.speed * 3.6</td></tr><tr><td>ax</td><td>纵向加速度</td><td>m/s²</td><td>Snapshot.player.acceleration</td></tr><tr><td>ay</td><td>横向加速度</td><td>m/s²</td><td>Snapshot.player.lateral_acceleration</td></tr><tr><td>yaw</td><td>横摆角速度</td><td>rad/s</td><td>Snapshot.player.dynamics.yaw_rate</td></tr><tr><td>horizontal_speed</td><td>水平速度模</td><td>m/s</td><td>hypot(Snapshot.player.velocity.x, velocity.y)</td></tr><tr><td>beta</td><td>车身侧偏角</td><td>deg</td><td>Snapshot.player.dynamics.sideslip; horizontal_speed&lt;=1m/s undefined</td></tr><tr><td>roll</td><td>车身侧倾角</td><td>deg</td><td>Snapshot.player.roll</td></tr><tr><td>ltr_front</td><td>前轴左右轮荷差比</td><td>1</td><td>(sample_load_fr-sample_load_fl)/(sample_load_fr+sample_load_fl)</td></tr><tr><td>ltr_rear</td><td>后轴左右轮荷差比</td><td>1</td><td>(sample_load_rr-sample_load_rl)/(sample_load_rr+sample_load_rl)</td></tr><tr><td>steering</td><td>实际转角</td><td>deg</td><td>Snapshot.player.steering</td></tr><tr><td>steering_request</td><td>转角请求</td><td>deg</td><td>VehicleCommand.steering</td></tr><tr><td>throttle</td><td>油门踏板</td><td>1</td><td>Snapshot.player.throttle</td></tr><tr><td>brake</td><td>制动踏板</td><td>1</td><td>Snapshot.player.brake</td></tr><tr><td>engine_throttle</td><td>电子油门响应</td><td>1</td><td>Snapshot.player.powertrain_state.throttle</td></tr><tr><td>throttle_request</td><td>油门请求</td><td>1</td><td>VehicleCommand.throttle</td></tr><tr><td>brake_request</td><td>制动请求</td><td>1</td><td>VehicleCommand.brake</td></tr><tr><td>gear</td><td>实际挡位</td><td>1</td><td>Snapshot.player.gear</td></tr><tr><td>rpm</td><td>发动机转速</td><td>rpm</td><td>Snapshot.player.rpm</td></tr><tr><td>clutch</td><td>实际离合</td><td>1</td><td>Snapshot.player.powertrain_state.clutch_position</td></tr><tr><td>clutch_request</td><td>离合请求</td><td>1</td><td>VehicleCommand.clutch; None=automatic</td></tr><tr><td>gear_request</td><td>挡位请求</td><td>1</td><td>VehicleCommand.gear; None=automatic</td></tr><tr><td>path_error</td><td>路径误差</td><td>m</td><td>lab_maneuvers.path_error(options, Snapshot.player, initial)</td></tr><tr><td>kappa_fl</td><td>滑移率 FL</td><td>1</td><td>Snapshot.player.wheel_dynamics[0].kappa</td></tr><tr><td>kappa_fr</td><td>滑移率 FR</td><td>1</td><td>Snapshot.player.wheel_dynamics[1].kappa</td></tr><tr><td>kappa_rl</td><td>滑移率 RL</td><td>1</td><td>Snapshot.player.wheel_dynamics[2].kappa</td></tr><tr><td>kappa_rr</td><td>滑移率 RR</td><td>1</td><td>Snapshot.player.wheel_dynamics[3].kappa</td></tr><tr><td>load_fl</td><td>施力阶段轮荷 FL</td><td>N</td><td>Snapshot.player.wheel_dynamics[0].normal_load</td></tr><tr><td>load_fr</td><td>施力阶段轮荷 FR</td><td>N</td><td>Snapshot.player.wheel_dynamics[1].normal_load</td></tr><tr><td>load_rl</td><td>施力阶段轮荷 RL</td><td>N</td><td>Snapshot.player.wheel_dynamics[2].normal_load</td></tr><tr><td>load_rr</td><td>施力阶段轮荷 RR</td><td>N</td><td>Snapshot.player.wheel_dynamics[3].normal_load</td></tr><tr><td>alpha_fl</td><td>轮胎侧偏角 FL</td><td>rad</td><td>Snapshot.player.wheel_dynamics[0].alpha</td></tr><tr><td>alpha_fr</td><td>轮胎侧偏角 FR</td><td>rad</td><td>Snapshot.player.wheel_dynamics[1].alpha</td></tr><tr><td>alpha_rl</td><td>轮胎侧偏角 RL</td><td>rad</td><td>Snapshot.player.wheel_dynamics[2].alpha</td></tr><tr><td>alpha_rr</td><td>轮胎侧偏角 RR</td><td>rad</td><td>Snapshot.player.wheel_dynamics[3].alpha</td></tr><tr><td>force_grip_fl</td><td>施力附着预算 FL</td><td>N</td><td>Snapshot.player.wheel_dynamics[0].force_grip</td></tr><tr><td>force_grip_fr</td><td>施力附着预算 FR</td><td>N</td><td>Snapshot.player.wheel_dynamics[1].force_grip</td></tr><tr><td>force_grip_rl</td><td>施力附着预算 RL</td><td>N</td><td>Snapshot.player.wheel_dynamics[2].force_grip</td></tr><tr><td>force_grip_rr</td><td>施力附着预算 RR</td><td>N</td><td>Snapshot.player.wheel_dynamics[3].force_grip</td></tr><tr><td>force_residual_fl</td><td>施力分量残差 FL</td><td>N</td><td>Snapshot.player.wheel_dynamics[0].force_residual</td></tr><tr><td>force_residual_fr</td><td>施力分量残差 FR</td><td>N</td><td>Snapshot.player.wheel_dynamics[1].force_residual</td></tr><tr><td>force_residual_rl</td><td>施力分量残差 RL</td><td>N</td><td>Snapshot.player.wheel_dynamics[2].force_residual</td></tr><tr><td>force_residual_rr</td><td>施力分量残差 RR</td><td>N</td><td>Snapshot.player.wheel_dynamics[3].force_residual</td></tr><tr><td>force_tick_fl</td><td>施力接点拍 FL</td><td>1</td><td>Snapshot.player.wheel_dynamics[0].force_contact_tick</td></tr><tr><td>force_tick_fr</td><td>施力接点拍 FR</td><td>1</td><td>Snapshot.player.wheel_dynamics[1].force_contact_tick</td></tr><tr><td>force_tick_rl</td><td>施力接点拍 RL</td><td>1</td><td>Snapshot.player.wheel_dynamics[2].force_contact_tick</td></tr><tr><td>force_tick_rr</td><td>施力接点拍 RR</td><td>1</td><td>Snapshot.player.wheel_dynamics[3].force_contact_tick</td></tr><tr><td>sample_tick_fl</td><td>完成步接点拍 FL</td><td>1</td><td>Snapshot.player.wheel_dynamics[0].sample_tick</td></tr><tr><td>sample_tick_fr</td><td>完成步接点拍 FR</td><td>1</td><td>Snapshot.player.wheel_dynamics[1].sample_tick</td></tr><tr><td>sample_tick_rl</td><td>完成步接点拍 RL</td><td>1</td><td>Snapshot.player.wheel_dynamics[2].sample_tick</td></tr><tr><td>sample_tick_rr</td><td>完成步接点拍 RR</td><td>1</td><td>Snapshot.player.wheel_dynamics[3].sample_tick</td></tr><tr><td>omega_fl</td><td>轮速 FL</td><td>rad/s</td><td>Snapshot.player.wheel_dynamics[0].omega</td></tr><tr><td>omega_fr</td><td>轮速 FR</td><td>rad/s</td><td>Snapshot.player.wheel_dynamics[1].omega</td></tr><tr><td>omega_rl</td><td>轮速 RL</td><td>rad/s</td><td>Snapshot.player.wheel_dynamics[2].omega</td></tr><tr><td>omega_rr</td><td>轮速 RR</td><td>rad/s</td><td>Snapshot.player.wheel_dynamics[3].omega</td></tr><tr><td>fx_fl</td><td>纵向力 FL</td><td>N</td><td>Snapshot.player.wheel_dynamics[0].fx</td></tr><tr><td>fx_fr</td><td>纵向力 FR</td><td>N</td><td>Snapshot.player.wheel_dynamics[1].fx</td></tr><tr><td>fx_rl</td><td>纵向力 RL</td><td>N</td><td>Snapshot.player.wheel_dynamics[2].fx</td></tr><tr><td>fx_rr</td><td>纵向力 RR</td><td>N</td><td>Snapshot.player.wheel_dynamics[3].fx</td></tr><tr><td>fy_fl</td><td>侧向力 FL</td><td>N</td><td>Snapshot.player.wheel_dynamics[0].fy</td></tr><tr><td>fy_fr</td><td>侧向力 FR</td><td>N</td><td>Snapshot.player.wheel_dynamics[1].fy</td></tr><tr><td>fy_rl</td><td>侧向力 RL</td><td>N</td><td>Snapshot.player.wheel_dynamics[2].fy</td></tr><tr><td>fy_rr</td><td>侧向力 RR</td><td>N</td><td>Snapshot.player.wheel_dynamics[3].fy</td></tr><tr><td>grip_fl</td><td>附着力上限 FL</td><td>N</td><td>Snapshot.player.wheel_dynamics[0].sample_grip</td></tr><tr><td>grip_fr</td><td>附着力上限 FR</td><td>N</td><td>Snapshot.player.wheel_dynamics[1].sample_grip</td></tr><tr><td>grip_rl</td><td>附着力上限 RL</td><td>N</td><td>Snapshot.player.wheel_dynamics[2].sample_grip</td></tr><tr><td>grip_rr</td><td>附着力上限 RR</td><td>N</td><td>Snapshot.player.wheel_dynamics[3].sample_grip</td></tr><tr><td>mz_fl</td><td>接触区回正力矩 FL</td><td>N·m</td><td>Snapshot.player.wheel_dynamics[0].aligning_moment; final force substep except step work</td></tr><tr><td>mz_fr</td><td>接触区回正力矩 FR</td><td>N·m</td><td>Snapshot.player.wheel_dynamics[1].aligning_moment; final force substep except step work</td></tr><tr><td>mz_rl</td><td>接触区回正力矩 RL</td><td>N·m</td><td>Snapshot.player.wheel_dynamics[2].aligning_moment; final force substep except step work</td></tr><tr><td>mz_rr</td><td>接触区回正力矩 RR</td><td>N·m</td><td>Snapshot.player.wheel_dynamics[3].aligning_moment; final force substep except step work</td></tr><tr><td>trail_fl</td><td>接触区拖距 FL</td><td>m</td><td>Snapshot.player.wheel_dynamics[0].pneumatic_trail; final force substep except step work</td></tr><tr><td>trail_fr</td><td>接触区拖距 FR</td><td>m</td><td>Snapshot.player.wheel_dynamics[1].pneumatic_trail; final force substep except step work</td></tr><tr><td>trail_rl</td><td>接触区拖距 RL</td><td>m</td><td>Snapshot.player.wheel_dynamics[2].pneumatic_trail; final force substep except step work</td></tr><tr><td>trail_rr</td><td>接触区拖距 RR</td><td>m</td><td>Snapshot.player.wheel_dynamics[3].pneumatic_trail; final force substep except step work</td></tr><tr><td>contact_steering_work_fl</td><td>本拍接触转向输入功 FL</td><td>J</td><td>Snapshot.player.wheel_dynamics[0].contact_steering_work; final force substep except step work</td></tr><tr><td>contact_steering_work_fr</td><td>本拍接触转向输入功 FR</td><td>J</td><td>Snapshot.player.wheel_dynamics[1].contact_steering_work; final force substep except step work</td></tr><tr><td>contact_steering_work_rl</td><td>本拍接触转向输入功 RL</td><td>J</td><td>Snapshot.player.wheel_dynamics[2].contact_steering_work; final force substep except step work</td></tr><tr><td>contact_steering_work_rr</td><td>本拍接触转向输入功 RR</td><td>J</td><td>Snapshot.player.wheel_dynamics[3].contact_steering_work; final force substep except step work</td></tr><tr><td>sample_load_fl</td><td>完成步轮荷 FL</td><td>N</td><td>Snapshot.player.wheel_contacts[0].normal_load</td></tr><tr><td>sample_load_fr</td><td>完成步轮荷 FR</td><td>N</td><td>Snapshot.player.wheel_contacts[1].normal_load</td></tr><tr><td>sample_load_rl</td><td>完成步轮荷 RL</td><td>N</td><td>Snapshot.player.wheel_contacts[2].normal_load</td></tr><tr><td>sample_load_rr</td><td>完成步轮荷 RR</td><td>N</td><td>Snapshot.player.wheel_contacts[3].normal_load</td></tr><tr><td>utilization_fl</td><td>末子步附着利用率 FL</td><td>1</td><td>hypot(wheel_dynamics[0].fx, fy)/force_grip; road_support and grip&gt;0 only</td></tr><tr><td>utilization_fr</td><td>末子步附着利用率 FR</td><td>1</td><td>hypot(wheel_dynamics[1].fx, fy)/force_grip; road_support and grip&gt;0 only</td></tr><tr><td>utilization_rl</td><td>末子步附着利用率 RL</td><td>1</td><td>hypot(wheel_dynamics[2].fx, fy)/force_grip; road_support and grip&gt;0 only</td></tr><tr><td>utilization_rr</td><td>末子步附着利用率 RR</td><td>1</td><td>hypot(wheel_dynamics[3].fx, fy)/force_grip; road_support and grip&gt;0 only</td></tr><tr><td>abs_fl</td><td>ABS FL</td><td>bool</td><td>Snapshot.player.brake_states[0].abs_active</td></tr><tr><td>abs_fr</td><td>ABS FR</td><td>bool</td><td>Snapshot.player.brake_states[1].abs_active</td></tr><tr><td>abs_rl</td><td>ABS RL</td><td>bool</td><td>Snapshot.player.brake_states[2].abs_active</td></tr><tr><td>abs_rr</td><td>ABS RR</td><td>bool</td><td>Snapshot.player.brake_states[3].abs_active</td></tr><tr><td>pressure_fl</td><td>制动压力比例 FL</td><td>1</td><td>Snapshot.player.brake_states[0].pressure</td></tr><tr><td>pressure_fr</td><td>制动压力比例 FR</td><td>1</td><td>Snapshot.player.brake_states[1].pressure</td></tr><tr><td>pressure_rl</td><td>制动压力比例 RL</td><td>1</td><td>Snapshot.player.brake_states[2].pressure</td></tr><tr><td>pressure_rr</td><td>制动压力比例 RR</td><td>1</td><td>Snapshot.player.brake_states[3].pressure</td></tr></table><p>完整配置、命令序列与源码/原生模块摘要见 experiment.json；120 Hz 数据见 signals.csv，动画快照见 snapshots.bin。实际计算耗时不包含初始化与文件导出。</p></html>

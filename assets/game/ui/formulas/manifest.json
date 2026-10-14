@@ -5,6 +5,86 @@
   "font_points": 24,
   "source": "src/parameter_formulas.py",
   "formulas": {
+    "unsprung_masses": [
+      {
+        "file": "unsprung_masses-0.png",
+        "tex": "m_s=M-\\sum_i m_i,\\qquad \\mathbf{c}_s=-\\frac{\\sum_i m_i\\mathbf{r}_i}{m_s}",
+        "width": 1010,
+        "height": 196,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "a203452c0536864e76f3c0e76d7962ea14ee7f40ada7d71fa4dece8975602450"
+      },
+      {
+        "file": "unsprung_masses-1.png",
+        "tex": "\\mathbf{I}_s=\\mathbf{I}_0-\\sum_i P(m_i,\\mathbf{r}_i)-P(m_s,\\mathbf{c}_s)",
+        "width": 1000,
+        "height": 136,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "e1aa3c55e46eef0385344f955a452682721a7ab4907374e3d49df21c53d52b94"
+      }
+    ],
+    "unsprung_enabled": [
+      {
+        "file": "unsprung_enabled-0.png",
+        "tex": "\\mathbf{v}_i=\\mathbf{V}_s+\\boldsymbol{\\Omega}\\times\\mathbf{r}_i+u_i\\mathbf{n}_i",
+        "width": 733,
+        "height": 70,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "429efab8e0e606140987e858fb17fc0801ac3323bc4b93f65d55fea32863bece"
+      },
+      {
+        "file": "unsprung_enabled-1.png",
+        "tex": "\\mathcal{M}=\\mathrm{diag}(m_s\\mathbf{1},\\mathbf{I}_s,\\mathbf{0})+\\sum_i m_i\\mathbf{J}_i^T\\mathbf{J}_i",
+        "width": 1026,
+        "height": 143,
+        "texture_width": 2048,
+        "texture_height": 256,
+        "sha256": "b5730e9155b1c1255ccf8737d5cf4c99c159225d093b2f1ad7b1b4cca4b28d56"
+      }
+    ],
+    "tire_radial_stiffness": [
+      {
+        "file": "tire_radial_stiffness-0.png",
+        "tex": "\\delta_+=\\max(\\delta,0),\\quad F_z=\\max\\left(0,k_r\\delta_++c_r\\frac{\\Delta\\delta_+}{h}\\right)",
+        "width": 1493,
+        "height": 100,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "524f3766eecff0efa8630e424b4e19895564c3e920f2f2ea19e1a4d6b786b021"
+      },
+      {
+        "file": "tire_radial_stiffness-1.png",
+        "tex": "U_r=\\frac{1}{2}k_r\\delta_+^2",
+        "width": 370,
+        "height": 100,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "35c565fd5e7e2584340899628aa61fb2f7a05cc204f597ac71057d61970b2ae8"
+      }
+    ],
+    "tire_radial_damping": [
+      {
+        "file": "tire_radial_damping-0.png",
+        "tex": "F_z=\\max\\left(0,k_r\\delta_++c_r\\frac{\\Delta\\delta_+}{h}\\right)",
+        "width": 886,
+        "height": 100,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "3a0ae334816e802304a7c083f96533d4370d2d89b8981dd0c5b9b5f31a28fe93"
+      },
+      {
+        "file": "tire_radial_damping-1.png",
+        "tex": "E_{r,\\mathrm{damp}}=h c_r\\left(\\frac{\\Delta\\delta_+}{h}\\right)^2",
+        "width": 636,
+        "height": 116,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "b02771204b310376875a6b992a38628adb5cb536e4362be6bd935ad039e6d574"
+      }
+    ],
     "tire_contact_half_length": [
       {
         "file": "tire_contact_half_length-0.png",

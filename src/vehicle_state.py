@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 
 from powertrain import PowertrainState
 from suspension import SuspensionState
+from unsprung_state import UnsprungState
 from vehicle_brakes import BrakeState
 from vehicle_config import CAR
 from vehicle_dynamics import DynamicsState
@@ -164,6 +165,7 @@ class CarState:
     powertrain_state: PowertrainState | None = None
     suspension_state: SuspensionState | None = None
     orientation: tuple = (1., 0., 0., 0.)  # 完成物理步的body→world四元数，Hamilton标量在前。
+    unsprung_state: UnsprungState | None = None
 
 
 def forward(heading):

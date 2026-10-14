@@ -34,6 +34,7 @@ PARAMETER_GROUPS = {
         "rolling_transition_speed", "road_friction", "grass_friction",
     ),
     "suspension": (
+        "unsprung_enabled", "unsprung_masses", "tire_radial_stiffness", "tire_radial_damping",
         "suspension_si_enabled", "suspension_coupled_enabled", "suspension_antiroll_rates",
         "suspension_stop_rates", "suspension_spring_rates", "suspension_compression_damping",
         "suspension_extension_damping", "suspension_stiffness", "suspension_compression",
@@ -86,6 +87,8 @@ def config_from_document(document, selected):
     # 老工程文件没有接触区回正机制；导入后仍保留其原力学定义。
     if "tire_aligning_enabled" not in values:
         values["tire_aligning_enabled"] = False
+    if "unsprung_enabled" not in values:
+        values["unsprung_enabled"] = False
     if "braking" in values:
         values["braking"] = replace(selected.braking, **values["braking"])
     if "stability" in values:
@@ -104,6 +107,9 @@ def config_from_document(document, selected):
             values[name] = tuple(values[name])
     if "downstream_axes" in values:
         values["downstream_axes"] = tuple(tuple(axis) for axis in values["downstream_axes"])
+    for name in ("unsprung_masses", "tire_radial_stiffness", "tire_radial_damping"):
+        if name in values:
+            values[name] = tuple(values[name])
     si_fields = ("suspension_spring_rates", "suspension_compression_damping", "suspension_extension_damping",
                  "suspension_antiroll_rates", "suspension_stop_rates")
     if "suspension_si_enabled" not in values:

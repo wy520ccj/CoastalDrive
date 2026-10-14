@@ -33,7 +33,7 @@ def advance_world(world, cars, *, substeps, observe=None, static_cache=None, pac
                                 Vec3(car._chassis.getTransform().getPos())) for car, _action in cars}
         numerical = []
         pending = []
-        parallel = workers is not None and len(cars)>1 and substeps>1
+        parallel = workers is not None and len(cars)>1 and substeps>1 and not any(car.config.unsprung_enabled for car,_action in cars)
         for i, (car, action) in enumerate(cars):
             if substeps == 1:
                 if isinstance(action, VehicleCommand):

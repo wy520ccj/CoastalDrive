@@ -4,6 +4,22 @@ from parameter_help import ALIASES
 
 # 每项为独立数学行、符号释义。保留近似号，避免把解释式当成实际求解器。
 FORMULAS = {
+    "unsprung_masses": ((
+        r"m_s=M-\sum_i m_i,\qquad \mathbf{c}_s=-\frac{\sum_i m_i\mathbf{r}_i}{m_s}",
+        r"\mathbf{I}_s=\mathbf{I}_0-\sum_i P(m_i,\mathbf{r}_i)-P(m_s,\mathbf{c}_s)",
+    ), "mi：输入的轮端平动质量；ms/cs/Is：分出的簧上质量/CG/中央惯量。P为平行轴项，轴向转子惯量另计。"),
+    "unsprung_enabled": ((
+        r"\mathbf{v}_i=\mathbf{V}_s+\boldsymbol{\Omega}\times\mathbf{r}_i+u_i\mathbf{n}_i",
+        r"\mathcal{M}=\mathrm{diag}(m_s\mathbf{1},\mathbf{I}_s,\mathbf{0})+\sum_i m_i\mathbf{J}_i^T\mathbf{J}_i",
+    ), "轮心有真实平动惯性；Ji是轮心速度雅可比，ui是相对导向速度。与径向轮荷/Fx/Fy/有限传动同一末状态。"),
+    "tire_radial_stiffness": ((
+        r"\delta_+=\max(\delta,0),\quad F_z=\max\left(0,k_r\delta_++c_r\frac{\Delta\delta_+}{h}\right)",
+        r"U_r=\frac{1}{2}k_r\delta_+^2",
+    ), "δ：真实胎面求交得到的径向压缩；h：机械子步。无可用支撑/未压缩时没有轮胎拉力，kr与cr需部件数据。"),
+    "tire_radial_damping": ((
+        r"F_z=\max\left(0,k_r\delta_++c_r\frac{\Delta\delta_+}{h}\right)",
+        r"E_{r,\mathrm{damp}}=h c_r\left(\frac{\Delta\delta_+}{h}\right)^2",
+    ), "仅激活接触中的正压缩材料耗散；径向阻尼作用于轮胎，悬架阻尼作用于车身与轮心之间的相对速度。"),
     "tire_contact_half_length": ((
         r"z=\min\left(1,\frac{D}{2\sqrt{(C_\kappa\kappa)^2+(C_\alpha\tan\alpha)^2}}\right)",
         r"t=\mathrm{sgn}(v_x)\frac{a z(3-2z)}{3(2-z)},\qquad M_z=t F_y",

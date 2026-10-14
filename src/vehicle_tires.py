@@ -42,8 +42,8 @@ class Tires:
         """仅用于试验初始条件；运行中轮速始终由转矩方程积分。"""
         self.omega = [speed / self.config.wheel_radius] * 4
 
-    def driven_omega(self, chassis, angles=(0., 0.)):
-        orientation = chassis.getTransform().getQuat()
+    def driven_omega(self, chassis, angles=(0., 0.), *, orientation=None):
+        orientation = chassis.getTransform().getQuat() if orientation is None else orientation
         if self.config.front_drive_share == 0:
             return (self.omega[2] + self.omega[3]) / 2 + chassis.getAngularVelocity().dot(orientation.getRight())
         angular = tuple(chassis.getAngularVelocity())
@@ -465,9 +465,9 @@ class Tires:
                 mechanical_axis=axis,rolling_radius=radius))
         self.states = tuple(states)
 
-    def wheel_poses(self, chassis, bullet_vehicle, *, positions=None):
+    def wheel_poses(self, chassis, bullet_vehicle, *, positions=None, orientation=None):
         """位置来自实际悬架；转向和滚动来自真实执行器及独立转角。"""
-        chassis_orientation = chassis.getTransform().getQuat()
+        chassis_orientation = chassis.getTransform().getQuat() if orientation is None else orientation
         wheels = []
         if positions is None:
             positions = tuple(tuple(wheel.getWorldTransform().getRow3(3)) for wheel in bullet_vehicle.getWheels())

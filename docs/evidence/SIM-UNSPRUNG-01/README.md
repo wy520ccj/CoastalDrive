@@ -23,3 +23,7 @@
 ## 2026-10-14后续原生世界
 
 质量/CG/主轴/真实四轮心与道路已进入独立的五刚体Bullet验证世界，43项T0及实际实体凸起轨迹、有限原生精度的开放项、完整输入/执行源码/图表见[native-world](native-world/README.md)。该节点使用新的实际轮心动量与静平衡初态，上面的冻结/旧预载节点保持原版本证据。生产Vehicle/Simulation/Snapshot/记录/UI仍未安装，不提升任务或整体Gate。
+
+## 后续正式链施工
+
+在上述原生节点之后，已初步接入正式Simulation/Vehicle/120Hz/执行器/Snapshot数值包、生命周期及Lab保存载入精确复算，66项T0通过；新参数数学说明与显式开发预览配置见[production](production/README.md)。旧节点保留其时点结论，新机制默认关闭，完整能量/工程信号/颠簸制动/T1及实测/人工Gate仍开放。

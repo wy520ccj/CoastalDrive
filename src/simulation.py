@@ -193,8 +193,7 @@ class Simulation:
         command = self._initialisation_command
         self.step(command,traffic_controls=(command,)*len(self.npcs))
         bodies = (self.player,*self.npcs)
-        stable = all(car._chassis.getLinearVelocity().length()<=.001
-                     and car._chassis.getAngularVelocity().length()<=.001 for car in bodies)
+        stable = all(car.settled() for car in bodies)
         self._initialisation_quiet = self._initialisation_quiet+1 if stable else 0
         if self._initialisation_quiet>=24:
             self._reset_contact_history()
