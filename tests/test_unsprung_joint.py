@@ -30,7 +30,7 @@ def hardware(config, steering=0., body_speed=None, trail=.02, steer_rate=0., rat
 
 def solve(config, speed=20., steering=3., brake=(120.,120.,80.,80.), ratio=3.2,
           sync=False, capacity=100., road=(0.,)*4, airborne=False, spin_offsets=(0.,)*4,
-          old_down_offset=(0.,)*3):
+          old_down_offset=(0.,)*3, wheel_error=None):
     graph,contacts,partition = hardware(config,steering,steer_rate=-.2,ratio=ratio)
     state = np.zeros(16)
     state[1],state[10],state[12:] = speed,250.,speed/.33
@@ -45,8 +45,10 @@ def solve(config, speed=20., steering=3., brake=(120.,120.,80.,80.), ratio=3.2,
         deflection = np.full(4,-.5)
         compression = np.zeros(4)
     known = np.r_[graph.mechanical.gravity_forces((0.,0.,-9.81)),np.zeros(6)]
+    actual = None if wheel_error is None else graph.mechanical.wheel_jacobians@state[:10]+wheel_error
     result = solve_unsprung_joint(graph,contacts,state,downstream,compression,deflection,np.zeros((4,2)),np.zeros((4,2)),
-        known,road,radial,np.full(4,500.),np.full(4,.7),np.full(4,.013),50.,.12,capacity,brake,ratio,sync,1/240,config)
+        known,road,radial,np.full(4,500.),np.full(4,.7),np.full(4,.013),50.,.12,capacity,brake,ratio,sync,1/240,config,
+        wheel_initial_velocity=actual)
     return result,graph,contacts,state,downstream,known,compression,deflection
 
 
@@ -127,7 +129,7 @@ def test_full_joint_keeps_real_load_and_finite_drive_brake_energy(share,ratio,sy
     assert graph.mass@end-graph.initial_momentum(start,old_down) == pytest.approx(force/240.,abs=1e-9)
 
 
-@pytest.mark.parametrize("case", ["reverse","lsd","rough","stored_rotor"])
+@pytest.mark.parametrize("case", ["reverse","lsd","rough","stored_rotor","actual_wheels"])
 def test_reverse_lsd_rough_load_and_prior_actual_rotor_state_have_closed_energy(case):
     config = REFERENCE_DESIGN
     options = {}
@@ -139,8 +141,10 @@ def test_reverse_lsd_rough_load_and_prior_actual_rotor_state_have_closed_energy(
         options.update(spin_offsets=(-2.,2.,-3.,3.))
     elif case=="rough":
         options.update(road=(.003,0.,0.,-.003))
-    else:
+    elif case=="stored_rotor":
         options.update(old_down_offset=(10.,-5.,3.))
+    else:
+        options.update(wheel_error=np.array(((.02,-.01,0.),(-.03,.01,0.),(.01,.02,0.),(-.02,-.015,0.))))
     result,graph,contacts,start,old_down,known,q0,delta0 = solve(config,**options)
     end,dt = result.velocity,1/240
     assert result.energy_error == pytest.approx(0.,abs=3e-8)
@@ -153,10 +157,12 @@ def test_reverse_lsd_rough_load_and_prior_actual_rotor_state_have_closed_energy(
     if case=="stored_rotor":
         assert np.max(np.abs(result.downstream_omega-old_down))>1.
 
-    def kinetic(state, downstream):
+    def kinetic(state, downstream, wheel_error=None):
         mechanical = graph.mechanical
         wheel_velocities = np.array([state[:3]+np.cross(state[3:6],r)+mechanical.guides[i]*state[6+i]
                                      for i,r in enumerate(mechanical.wheel_arms)])
+        if wheel_error is not None:
+            wheel_velocities += wheel_error
         return (.5*mechanical.sprung_mass*np.dot(state[:3],state[:3])
                 +.5*state[3:6]@mechanical.world_inertia@state[3:6]
                 +.5*np.sum(mechanical.wheel_masses[:,None]*wheel_velocities**2)
@@ -169,8 +175,23 @@ def test_reverse_lsd_rough_load_and_prior_actual_rotor_state_have_closed_energy(
                 +sum(.5*k*(q[i]-q[i+1])**2 for i,k in zip((0,2),config.suspension_antiroll_rates))
                 +sum(.5*k*max(abs(x)-config.suspension_travel,0.)**2 for k,x in zip(config.suspension_stop_rates,q)))
 
-    k_change = kinetic(end,result.downstream_omega)-kinetic(start,old_down)
-    k_discrete = kinetic(end-start,result.downstream_omega-old_down)
+    wheel_error = options.get("wheel_error")
+    k_change = kinetic(end,result.downstream_omega)-kinetic(start,old_down,wheel_error)
+    k_discrete = kinetic(end-start,result.downstream_omega-old_down,None if wheel_error is None else -wheel_error)
+    # 以各真实质量的Δv·(v1+v0)核对增量，避免两份约250kJ动能相减的舍入。
+    m = graph.mechanical
+    old_wheels = np.array([start[:3]+np.cross(start[3:6],r)+m.guides[i]*start[6+i] for i,r in enumerate(m.wheel_arms)])
+    if wheel_error is not None:
+        old_wheels += wheel_error
+    new_wheels = np.array([end[:3]+np.cross(end[3:6],r)+m.guides[i]*end[6+i] for i,r in enumerate(m.wheel_arms)])
+    rotor_inertias = np.r_[config.engine_inertia,config.input_shaft_inertia,np.full(4,config.wheel_inertia)]
+    increment = (.5*m.sprung_mass*np.dot(end[:3]-start[:3],end[:3]+start[:3])
+                 +.5*(end[3:6]-start[3:6])@m.world_inertia@(end[3:6]+start[3:6])
+                 +.5*np.sum(m.wheel_masses[:,None]*(new_wheels-old_wheels)*(new_wheels+old_wheels))
+                 +.5*np.dot(rotor_inertias,(end[10:]-start[10:])*(end[10:]+start[10:]))
+                 +.5*np.dot(graph.downstream_inertias,(result.downstream_omega-old_down)*(result.downstream_omega+old_down)))
+    assert result.kinetic_change == pytest.approx(increment,abs=4e-11)
+    assert result.kinetic_numerical_loss == pytest.approx(k_discrete,abs=4e-11)
     delta,q = result.tire_deflection,result.compression
     u_change = suspension_energy(q)-suspension_energy(q0)+.5*200000.*np.sum(np.maximum(delta,0.)**2-np.maximum(delta0,0.)**2)
     u_change += .5*config.tire_contact_stiffness*sum(w.deformation_x**2+w.deformation_y**2 for w in result.wheels)

@@ -1,0 +1,23 @@
+{
+  "steps": 192,
+  "duration": 0.8,
+  "substeps": 2,
+  "mass_per_wheel": 25.0,
+  "native_velocity_defect": 1.489254619180258e-06,
+  "native_transverse": 4.83347960100744e-07,
+  "frozen_energy_error": 1.1056044968427159e-11,
+  "force_error": 9.91841105246749e-06,
+  "native_kinetic_increment_defect": 0.00521025829766586,
+  "initial_velocity_incompatibility": 6.583269514555228e-05,
+  "external_body_contacts": 0,
+  "normal_min": 898.9663543528604,
+  "normal_max": 4771.684406127889,
+  "peak_body_acceleration": 1.3287395238876343,
+  "rms_body_acceleration": 0.3900445732160019,
+  "peak_wheel_relative_speed": 0.3347752492107901,
+  "final_body_z": 0.42161592841148376,
+  "initial_body_z": 0.4172636866569519,
+  "stage": "actual Bullet bodies and road; not yet production Vehicle/Snapshot integration or finite-pose gate",
+  "remaining_bodies": 0,
+  "remaining_constraints": 0
+}

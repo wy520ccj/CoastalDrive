@@ -48,11 +48,12 @@ class UnsprungJointStep:
 def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compression, tire_deflection,
                          deformations, initial_force, known_force, road_delta, radial_rates, radial_damping,
                          friction, rolling_coefficients, engine_torque, engine_drag, clutch_capacity,
-                         brake_capacities, ratio, synchronizing, dt, config):
+                         brake_capacities, ratio, synchronizing, dt, config, *, wheel_initial_velocity=None):
     """同时解十六速度、八接触力和十有限端口，不在结束后修补轮速/轮荷。
 
     本函数保持当前构型的质量/力端口，有限姿态与真实世界接点须由外层联立。
     known_force含外层已知广义力，惯性偏置应在外层按同一构型处理。
+    原生轮心速度若带有限导向误差，显式传入并保留其动量/动能，而不是先强设到导向速度。
     """
     start = np.asarray(velocity)
     old_down = np.asarray(downstream_omega)
@@ -64,7 +65,11 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
     gs[:,6:10] = np.eye(4)
     ports = np.vstack((hardware.clutch,hardware.gear,hardware.output,hardware.brakes,hardware.differential))
     inertia = hardware.mass
-    momentum = hardware.initial_momentum(start,old_down)
+    actual_wheels = (hardware.mechanical.wheel_jacobians@start[:10] if wheel_initial_velocity is None
+                     else np.asarray(wheel_initial_velocity))
+    if actual_wheels.shape!=(4,3) or not np.isfinite(actual_wheels).all():
+        raise ValueError("原生轮心初速须为四个有限世界三维速度")
+    momentum = hardware.initial_momentum(start,old_down,actual_wheels)
     response = np.diag(ports@np.linalg.solve(inertia,ports.T))
     rolling = np.maximum(np.abs(gx@start+contacts.radii*start[12:]),np.abs(contacts.radii*start[12:]))>=config.static_contact_speed
     state_scale = np.r_[np.ones(10),np.full(6,100.),np.full(8,1000.),np.full(10,100.)]
@@ -176,8 +181,11 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
     potential_change = normal.suspension_potential-old_potential+normal.tire_potential-old_radial+contact_energy-old_contact
     elastic_numeric = np.dot(normal.spring_force,q-q0)-(normal.suspension_potential-old_potential)
     elastic_numeric += np.dot(normal.normal_force,delta-delta0)-(normal.tire_potential-old_radial)-normal.tire_damping
-    kinetic_change = .5*(end@inertia@end-start@hardware.base_mass@start-np.dot(hardware.downstream_inertias,old_down**2))
+    kinetic_change = .5*((end-start)@hardware.base_mass@(end+start)
+                        +np.dot(hardware.downstream_inertias,(down-old_down)*(down+old_down)))
+    kinetic_change -= hardware.wheel_kinetic_correction(start,actual_wheels)
     kinetic_numeric = .5*((end-start)@hardware.base_mass@(end-start)+np.dot(hardware.downstream_inertias,(down-old_down)**2))
+    kinetic_numeric += hardware.wheel_kinetic_correction(end-start,hardware.mechanical.wheel_jacobians@end[:10]-actual_wheels)
     engine_work = dt*engine_torque*np.dot(hardware.engine,end)
     engine_heat = dt*engine_drag*np.dot(hardware.engine,end)**2
     port_heat = dt*torques*speeds

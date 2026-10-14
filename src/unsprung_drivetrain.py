@@ -26,9 +26,19 @@ class UnsprungDrivetrain:
     engine_axis: np.ndarray
     shaft_axis: np.ndarray
 
-    def initial_momentum(self, velocity, downstream_omega):
+    def initial_momentum(self, velocity, downstream_omega, wheel_velocities=None):
         """从动轴以前一实际转速携带动量，不把不一致旧转速悄悄改成约束值。"""
-        return self.base_mass@velocity+self.downstream.T@(self.downstream_inertias*downstream_omega)
+        momentum = self.base_mass@velocity+self.downstream.T@(self.downstream_inertias*downstream_omega)
+        if wheel_velocities is not None:
+            difference = np.asarray(wheel_velocities)-self.mechanical.wheel_jacobians@velocity[:10]
+            momentum[:10] += self.mechanical.wheel_forces(self.mechanical.wheel_masses[:,None]*difference)
+        return momentum
+
+    def wheel_kinetic_correction(self, velocity, actual_wheel_velocities):
+        """保留原生导向迭代留下的实际轮心动能，不先投影覆盖真实速度。"""
+        predicted = self.mechanical.wheel_jacobians@velocity[:10]
+        actual = np.asarray(actual_wheel_velocities)
+        return .5*np.sum(self.mechanical.wheel_masses[:,None]*(actual-predicted)*(actual+predicted))
 
     def spin(self, velocity, config):
         return (config.engine_inertia*velocity[10]*self.engine_axis
