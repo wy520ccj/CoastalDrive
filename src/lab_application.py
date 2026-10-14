@@ -274,6 +274,11 @@ class VehicleLab(ShowBase):
             self.entries["speed"].enterText("18")
             self.entries["duration"].enterText("3")
             self.set_plot_group("车身 / 轮心振动")
+        elif mode=="ride_braking":
+            self.entries["speed"].enterText("30")
+            self.entries["duration"].enterText("3")
+            self.entries["onset"].enterText("0.6")
+            self.set_plot_group("制动响应")
         else:
             self.set_plot_group("转向响应")
 

@@ -404,6 +404,15 @@
         "texture_width": 2048,
         "texture_height": 128,
         "sha256": "4c0efc786cc5ba62c50a26fd28b9b9d4a68dfe735be131d5557f1e32d890f7b0"
+      },
+      {
+        "file": "onset-1.png",
+        "tex": "u_{\\mathrm{brake,req}}=\\mathbb{1}_{t\\geq t_0}",
+        "width": 513,
+        "height": 83,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "e99896caec15e50dac38c7c81ff607748c47040a51e8785c582653170645252b"
       }
     ],
     "steer": [

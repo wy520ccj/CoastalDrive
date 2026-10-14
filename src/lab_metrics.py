@@ -4,7 +4,7 @@ import math
 from itertools import pairwise
 from statistics import mean
 
-VERSION = "coastal-engineering-metrics-v2"
+VERSION = "coastal-engineering-metrics-v3"
 WHEELS = ("fl", "fr", "rl", "rr")
 
 
@@ -14,13 +14,25 @@ def metric(key, label, unit, value, note, window=None):
             "note": note, "window": window}
 
 
+def brake_start_index(rows,maneuver):
+    """延迟制动取首次请求前的真实样本；原立即制动协议保留初样本。"""
+    if maneuver!="ride_braking":
+        return 0
+    return next((index-1 for index,row in enumerate(rows[1:],1) if row["brake_request"]>0.),None)
+
+
 def mfdd(rows, positions, maneuver, reason):
     """速度/路径交点线性插值，80%→10%区间内不能反向增速。"""
     invalid = lambda note: metric("mfdd", "充分发出平均减速度", "m/s²", None, note)
-    if maneuver not in ("braking", "split_braking"):
+    if maneuver not in ("braking", "split_braking", "ride_braking"):
         return invalid("仅适用于制动工况")
     if reason in ("failed", "collision", "reset"):
         return invalid("试验异常终止，保留信号但不发布有效指标")
+    reference = brake_start_index(rows,maneuver)
+    if reference is None:
+        return invalid("尚未施加制动请求")
+    reference_time = rows[reference]["time"]
+    rows,positions = rows[reference:],positions[reference:]
     initial = rows[0]["horizontal_speed"]
     if initial <= 1:
         return invalid("初速不足1m/s")
@@ -48,9 +60,11 @@ def mfdd(rows, positions, maneuver, reason):
     value = ((.8*initial)**2-(.1*initial)**2)/(2*(end[2]-start[2]))
     return metric("mfdd", "充分发出平均减速度", "m/s²", value,
                   "按水平路径距离平均，80%→10%初速交点线性插值；不等于减速度峰值"
-                  + ("；对开附着的曲线路径工程值，不作为直线制动合格结果" if maneuver == "split_braking" else ""),
+                  + ("；对开附着的曲线路径工程值，不作为直线制动合格结果" if maneuver == "split_braking" else "")
+                  + ("；凸起研究工况，以制动请求前样本为基准，不作为平路制动合格结果" if maneuver=="ride_braking" else ""),
                   {"start_s": start[1], "end_s": end[1], "start_m": start[2], "end_m": end[2],
-                   "start_speed_mps": .8*initial, "end_speed_mps": .1*initial})
+                   "start_speed_mps": .8*initial, "end_speed_mps": .1*initial,
+                   "reference_time_s":reference_time,"reference_speed_mps":initial})
 
 
 def yaw_gain(rows, maneuver, onset, reason):
@@ -114,7 +128,7 @@ def ride_analysis(rows, snapshots, options, reason):
                    ("ride.unload_fraction","零轮荷采样比例","1"),
                    *((f"ride.min_load_{w}",f"最小施力轮荷 {w.upper()}","N") for w in WHEELS),
                    ("ride.load_cv_fl","FL动态轮荷比","1"))
-    issue = ("需要实体凸起工况" if options["maneuver"]!="ride_bump" else
+    issue = ("需要实体凸起工况" if options["maneuver"] not in ("ride_bump","ride_braking") else
              "试验异常终止" if reason in ("failed","collision","reset") else
              "记录没有独立轮心观测" if any(s.player.unsprung_state is None for s in snapshots) else None)
     if issue is None:

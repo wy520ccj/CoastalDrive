@@ -124,7 +124,7 @@ class LabScene:
         self.reference_node.setDepthWrite(False)
         self.reference_node.setBin("fixed", 5)
         self.surface_node = self.root.attachNewNode("surface-markings")
-        if options.maneuver == "ride_bump":
+        if options.maneuver in ("ride_bump","ride_braking"):
             center, half = bump_geometry(options, initial.position, self.config)
             card = CardMaker("left-bump-top")
             card.setFrame(-half[0], half[0], -half[1], half[1])

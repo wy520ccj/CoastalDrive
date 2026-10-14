@@ -1,8 +1,10 @@
 # 当前进度
 
-更新：2026-10-14。**公开基线：0.8.3 RADIO-02，包含UI-NOTICE-FIX；游戏模式/原悬架准备由main施工，仿真真实性位于codex/simulation-fidelity隔离树。** 本树C:/Users/15120/.codex/worktrees/simulation-fidelity/CoastalDrive的新增仿真成果尚未整合main。Visual Identity v1已成为主版本，旧main保留备份/Git历史；CoastalDrive-VI-v1/gr86-physics为历史/辅助目录，DS只读。根目录试玩.cmd保持公开包入口，仿真工作树使用launchers/vehicle-lab.cmd。
+更新：2026-10-15。**公开基线：0.8.3 RADIO-02，包含UI-NOTICE-FIX；游戏模式/原悬架准备由main施工，仿真真实性位于codex/simulation-fidelity隔离树。** 本树C:/Users/15120/.codex/worktrees/simulation-fidelity/CoastalDrive的新增仿真成果尚未整合main。Visual Identity v1已成为主版本，旧main保留备份/Git历史；CoastalDrive-VI-v1/gr86-physics为历史/辅助目录，DS只读。根目录试玩.cmd保持公开包入口，仿真工作树使用launchers/vehicle-lab.cmd。
 
 ## 当前阶段
+
+- **2026-10-15 颠簸制动节点**：新增真实Box/延迟全制动/CG距离与MFDD基准、55行数学F1及C++源指纹；有证明的Box剖面修复实际支持间隙失败，旧阈值保持。30km/h同协议25→65kg/轮，制动4.013→4.035m、RL最小轮荷491.8→139.0N、簧上RMS0.2695→0.3150；两组往返/A完整复算一致。11+42项T0、83项T1/Ruff/三种子及720/1080各5图/真实F1通过。默认关闭、未合main；全车精度/实测/人工仍开放。见[证据](evidence/SIM-UNSPRUNG-01/ride-braking/README.md)、[机制](ride-braking.md)。
 
 - **2026-10-14 实验场坐标/棱边修复**：lab从局部原点创建，降低95m单精度位移量化；独立导向误差峰10.69→0.470µm。棱内法线按真实支持函数驻点计算，固定失败步从3.67e−7Ns降到7.94e−13Ns，未改阈值。真实2/4/8凸起完整576/1152/2304步，累计−0.04015/−0.12237/+0.12942J；原8步+0.72304J，仍未证明收敛。9+36项T0、68项T1/Ruff/三种子与记录复算通过，失败/执行字节保留；默认关闭、未合main。见[证据](evidence/SIM-UNSPRUNG-01/local-origin/README.md)、[机制](lab-coordinate-precision.md)。完整精度/颠簸制动/实测/人工仍开放。
 

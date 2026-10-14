@@ -30,7 +30,7 @@ SCHEMA = "coastal-vehicle-lab-v1"
 def model_fingerprint():
     """源码与实际原生模块内容共同标识版本，覆盖未提交构建。"""
     root = resource_root()
-    files = [path for path in (root/"src").glob("*") if path.suffix in (".py", ".c", ".h", ".pyd")]
+    files = [path for path in (root/"src").glob("*") if path.suffix in (".py", ".c", ".cpp", ".h", ".pyd")]
     files += list((root/"assets/game/vehicle-configs").glob("*.json"))
     # 独立包源码位于冻结资源中；实际包的exe/pyd也必须进入版本证据。
     if not files:
@@ -158,6 +158,8 @@ def export_record(record, folder, baseline=None):
         "speed", "ax", "yaw", "steering", "kappa_fl", "load_fl")
     if record.metadata["summary"]["options"]["maneuver"]=="ride_bump":
         keys = ("sprung_az","hub_az_fl","travel_fl","radial_fl","load_fl","cg_speed")
+    elif record.metadata["summary"]["options"]["maneuver"]=="ride_braking":
+        keys = ("cg_speed","cg_ax","pressure_fl","kappa_fl","load_fl","travel_fl")
     plots = "\n".join(plot_svg(records, key) for key in keys)
     summary = html.escape(json.dumps(record.metadata["summary"], ensure_ascii=False, indent=2))
     comparison = changed_conditions(baseline, record) if baseline else {}

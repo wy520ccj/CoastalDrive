@@ -114,13 +114,13 @@ def build_workbench(app):
     app.field("cg", "质心高度 m", "", .20, x=-.82, parent=app.advanced_panel)
     app.field("radius", "定圆半径 m", 60, .44, x=.44, parent=app.advanced_panel)
     app.field("right_mu", "右侧附着 μ", .3, .32, x=.44, parent=app.advanced_panel)
-    app.field("onset", "转向起始 s", .5, .20, x=.44, parent=app.advanced_panel)
+    app.field("onset", "输入起始 s", .5, .20, x=.44, parent=app.advanced_panel)
     app.esc_menu = app.option(["ESC 关闭", "ESC 开启"], -.82, .071, .62, parent=app.advanced_panel, parameter="esc")
     app.field("tire_load", "轮胎基准 N", "", .075, x=.44, parent=app.advanced_panel)
     app.field("bump_height", "凸起高度 m", .01, -.08, x=-.82, parent=app.advanced_panel)
     app.field("bump_length", "凸起长度 m", .9, -.08, x=.44, parent=app.advanced_panel)
     app.field("bump_distance", "凸起距离 m", 6, -.20, x=-.82, parent=app.advanced_panel)
-    app.text("凸起三项仅用于轮跳工况；轮端质量/径向系数在工程模型中定义。\n质心/轮胎基准留空采用车型值；右侧 μ 仅用于对开制动。", -.82, -.34,
+    app.text("凸起三项用于轮跳/颠簸制动；输入起始用于转向或颠簸制动请求。\n轮端参数在工程模型定义；质心/轮胎基准留空采用车型值。", -.82, -.34,
              .030, MUTED, parent=app.advanced_panel)
     app.advanced_panel.hide()
 

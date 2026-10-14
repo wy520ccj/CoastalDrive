@@ -13,7 +13,7 @@ EDITOR_INFO = {
     "mu": ("主路面附着", "1", "轮胎峰值预算", "D=μ·Fn·(Fn/Fn0)^(pD−1)。", "μ是路面/轮胎条件的标定输入，不是由天气名称计算；Fx/Fy共用联合滑移预算。", "src/tire_properties.py · tire_grip"),
     "right_mu": ("右侧附着", "1", "对开制动", "实际接触点x≥分界线时使用右侧μ。", "仅对开附着工况生效；按接触点位置分类，不固定绑定某个轮号。", "src/lab_experiment.py · LabExperiment.__init__"),
     "duration": ("试验时长", "s", "停止条件", "Δt=1/120s；t=n·Δt，首次t≥输入时长时结束。", "每拍内部仍有两个机械子步；计算墙钟时间不是试验时间。", "src/lab_experiment.py · step / advance"),
-    "onset": ("转向开始时刻", "s", "输入时序", "t<onset时δreq=0，之后施加指定转角。", "正弦工况为δreq=A·sin[2π·0.5·(t−onset)]；制动/路径工况采用各自协议。", "src/lab_experiment.py · command_at"),
+    "onset": ("输入开始时刻", "s", "输入时序", "转向工况在t0后施加转角；颠簸制动在t0后请求全制动。", "正弦频率0.5Hz；颠簸制动请求0→1，实际压力/ABS仍由执行器与轮速反馈计算。普通制动立即开始。", "src/lab_experiment.py · command_at"),
     "steer": ("目标中心转角", "deg", "转向请求", "R=L/tanδ；δL/R=atan[L/(R±前轮距/2)]。", "先经过真实齿条限位/速率/二阶响应，再按Ackermann几何分成左右前轮角；不是方向盘角。", "src/vehicle_steering.py · SteeringRack.advance / wheel_angles"),
     "cg": ("质心高度", "m", "工程输入", "稳态解释式：纵向轴荷转移约m·h·ax/L。", "实际Fn来自耦合悬架求解，不直接施加此近似式；高度改变CG相对连接点，不自动推算车身惯量。", "src/vehicle_config.py · wheel_hubs；src/vehicle_suspension.py"),
     "radius": ("目标定圆半径", "m", "目标路径", "几何参考δ=atan(L/R)；跟踪曲率κ=2·ey/ld²。", "真实路径跟踪控制器产生转向和速度请求，车辆仍按物理推进，不钉在圆上。", "src/lab_maneuvers.py · target_point / path_command"),
@@ -55,7 +55,7 @@ GROUP_SOURCES = {
 }
 
 METRIC_INFO = {
-    "metric.mfdd": ("充分发出平均减速度", "m/s²", "距离平均指标", "dm=(vb²−ve²)/[2(se−sb)]；速度以m/s计。", "vb=80%初速，ve=10%初速；水平路径交点线性插值，未到区间或区间增速/异常终止保留无效原因。不是瞬时减速度峰值。", "src/lab_metrics.py · mfdd"),
+    "metric.mfdd": ("充分发出平均减速度", "m/s²", "距离平均指标", "dm=(vb²−ve²)/[2(se−sb)]；速度以m/s计。", "vb/ve为制动基准速度的80%/10%；颠簸制动取请求前样本，排除滑行段。水平路径交点插值，增速/异常终止无效；凸起工况不作平路合格判据。", "src/lab_metrics.py · mfdd"),
     "metric.yaw_gain": ("稳态横摆增益", "1/s", "工况条件指标", "Gr=−r世界z/δ实际。", "右转为正，δ为实际中心前轮角。末1s速度/角度变化≤2%、横摆≤5%才发布；不是方向盘增益，不从单点推算不足转向梯度。", "src/lab_metrics.py · yaw_gain"),
     "metric.beta": ("峰值车身侧偏", "deg", "完成步观测", "β=atan2(v右, |v前|)。", "水平速度≤1m/s未定义；峰值来自真实车身速度，不用几何转弯参考值代替。", "src/vehicle.py · update_dynamics；src/lab_metrics.py"),
     "metric.roll": ("峰值车身侧倾", "deg", "完成步观测", "读取实际刚体姿态的侧倾角，统计绝对峰值。", "本量不是道路倾角，也不是通过横向加速度乘一个常数生成的动画。", "src/vehicle.py；src/lab_metrics.py"),
