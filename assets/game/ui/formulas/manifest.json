@@ -5,6 +5,92 @@
   "font_points": 24,
   "source": "src/parameter_formulas.py",
   "formulas": {
+    "metric.ride.body_rms": [
+      {
+        "file": "metric.ride.body_rms-0.png",
+        "tex": "a_{z,n}=\\frac{v_{z,n}-v_{z,n-1}}{\\Delta t},\\qquad \\Delta t=\\frac{1}{120}\\,\\mathrm{s}",
+        "width": 990,
+        "height": 93,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "39d7f9dab6cee9ce05eaff3423a37d2a3d6dcde15d38489560c9302d7b849248"
+      },
+      {
+        "file": "metric.ride.body_rms-1.png",
+        "tex": "a_{\\mathrm{RMS}}=\\sqrt{\\frac{1}{N}\\sum_{n=1}^{N}a_{z,n}^{\\,2}}",
+        "width": 626,
+        "height": 220,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "1914ece8ff17b7f5e8a8c80823c89aab7c8ee1d472b0a5f264e909012f61da54"
+      }
+    ],
+    "metric.ride.body_peak": [
+      {
+        "file": "metric.ride.body_peak-0.png",
+        "tex": "a_{\\mathrm{peak}}=\\max_n |a_{z,n}|",
+        "width": 550,
+        "height": 96,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "4ec08fbca67f0a0e71c4b294c6b515da1e21c4e08382946087968ba4ceae757f"
+      }
+    ],
+    "metric.ride.hub_peak": [
+      {
+        "file": "metric.ride.hub_peak-0.png",
+        "tex": "a_{i,z,n}=\\frac{v_{i,z,n}-v_{i,z,n-1}}{\\Delta t},\\qquad a_{\\mathrm{peak}}=\\max_{i,n}|a_{i,z,n}|",
+        "width": 1383,
+        "height": 126,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "1678f057c28b3493107e69ab79f70ee5bf44cab7de4946c2d1c9659f6157bc1e"
+      }
+    ],
+    "metric.ride.max_travel": [
+      {
+        "file": "metric.ride.max_travel-0.png",
+        "tex": "q_{\\max}=\\max_{i,n} q_{i,n}",
+        "width": 500,
+        "height": 100,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "8ab33a3938fa3312a6e69dd03fb0a1e9af8432a64b809243150edbc7e0724fef"
+      }
+    ],
+    "metric.ride.unload_fraction": [
+      {
+        "file": "metric.ride.unload_fraction-0.png",
+        "tex": "p_0=\\frac{1}{4N}\\sum_{i=1}^{4}\\sum_{n=1}^{N}\\mathbf{1}_{F_{z,i,n}=0}",
+        "width": 706,
+        "height": 193,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "b133c9ac1bc7faeb18f44ad58bfe4a5f880308e71e7a3dbe78611e1bc2efb9bc"
+      }
+    ],
+    "metric.ride.min_load_fl": [
+      {
+        "file": "metric.ride.min_load_fl-0.png",
+        "tex": "F_{z,i,\\min}=\\min_n F_{z,i,n}",
+        "width": 630,
+        "height": 100,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "893fb2ef84f2b889893e05113fdf4ccb41fdf218d7e97030100adb729f833cb9"
+      }
+    ],
+    "metric.ride.load_cv_fl": [
+      {
+        "file": "metric.ride.load_cv_fl-0.png",
+        "tex": "D_L=\\frac{\\sqrt{\\frac{1}{N}\\sum_{n=1}^{N}(F_{z,\\mathrm{FL},n}-F_{z,\\mathrm{FL},0})^2}}{F_{z,\\mathrm{FL},0}}",
+        "width": 800,
+        "height": 220,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "f06870ecac3fe1925f744e737234f773c725b7eedb5daf1f50586c0e895e2cb3"
+      }
+    ],
     "unsprung_masses": [
       {
         "file": "unsprung_masses-0.png",
@@ -183,12 +269,21 @@
     "speed": [
       {
         "file": "speed-0.png",
-        "tex": "v_0=\\frac{V_0}{3.6},\\qquad \\omega_0=\\frac{v_0}{r_0}",
-        "width": 660,
-        "height": 103,
-        "texture_width": 1024,
+        "tex": "v_0=\\frac{V_0}{3.6}",
+        "width": 233,
+        "height": 100,
+        "texture_width": 256,
         "texture_height": 128,
-        "sha256": "20844bd5235eccd88abe08daf8c1e18e5869e89fc615c27449b542a7043a9473"
+        "sha256": "f97a2a300896f3fba275b34b1a1e75f167e12bb6d9326080832622f49cea08bd"
+      },
+      {
+        "file": "speed-1.png",
+        "tex": "\\omega_{i,0}=\\frac{v_{i,x}^{\\mathrm{ns}}}{r_{i,\\mathrm{load}}}-\\boldsymbol{\\Omega}\\cdot\\mathbf{a}_i",
+        "width": 606,
+        "height": 130,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "46713b8e1c12e327a914e5b37ebd7031650caf50cfe504ab414a1293b79cb9fc"
       }
     ],
     "road_friction": [

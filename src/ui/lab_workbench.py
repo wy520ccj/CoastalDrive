@@ -89,7 +89,8 @@ def build_workbench(app):
     for plot in app.plots:
         plot.update(())
     app.plot_menu = app.option(["制动响应", "转向响应", "四轮法向载荷", "四轮滑移率", "轮胎力 / 轮速", "路径跟踪", "执行器响应",
-                               "轮胎侧偏角", "附着利用率", "车身侧偏 / 侧倾", "左右载荷转移", "轮胎回正力矩"],
+                               "轮胎侧偏角", "附着利用率", "车身侧偏 / 侧倾", "左右载荷转移", "轮胎回正力矩",
+                               "质心运动", "车身 / 轮心振动", "悬架行程 / 速度", "轮胎径向压缩"],
                               -1.63, -.785, .60, app.set_plot_group, parameter="plot")
     app.text("曲线组", -1.62, -.700, .030, MUTED)
     app.text("A 海蓝   B 橙色", .60, -.238, .026, MUTED)
@@ -105,7 +106,7 @@ def build_workbench(app):
     app.record_menu.hide()
 
     app.advanced_panel = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
-                                    frameSize=(-.94, 1.72, -.18, .69), sortOrder=70)
+                                    frameSize=(-.94, 1.72, -.46, .69), sortOrder=70)
     app.text("高级参数", -.82, .578, .047, parent=app.advanced_panel, font=app.heading_font)
     app.button("关闭", 1.52, .592, .26, app.toggle_advanced, parent=app.advanced_panel)
     app.field("duration", "时长 s", 12, .44, x=-.82, parent=app.advanced_panel)
@@ -116,7 +117,10 @@ def build_workbench(app):
     app.field("onset", "转向起始 s", .5, .20, x=.44, parent=app.advanced_panel)
     app.esc_menu = app.option(["ESC 关闭", "ESC 开启"], -.82, .071, .62, parent=app.advanced_panel, parameter="esc")
     app.field("tire_load", "轮胎基准 N", "", .075, x=.44, parent=app.advanced_panel)
-    app.text("质心/轮胎基准留空采用车型值；基准 N 是轮胎特性标定量。\n载荷变化仍保留同一轮胎基准；右侧 μ 仅用于对开制动。", -.82, -.06,
+    app.field("bump_height", "凸起高度 m", .01, -.08, x=-.82, parent=app.advanced_panel)
+    app.field("bump_length", "凸起长度 m", .9, -.08, x=.44, parent=app.advanced_panel)
+    app.field("bump_distance", "凸起距离 m", 6, -.20, x=-.82, parent=app.advanced_panel)
+    app.text("凸起三项仅用于轮跳工况；轮端质量/径向系数在工程模型中定义。\n质心/轮胎基准留空采用车型值；右侧 μ 仅用于对开制动。", -.82, -.34,
              .030, MUTED, parent=app.advanced_panel)
     app.advanced_panel.hide()
 

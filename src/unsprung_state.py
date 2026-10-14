@@ -22,3 +22,6 @@ class UnsprungState:
     mechanical_energy: float
     native_velocity_defect: tuple
     force_tick: int
+    sprung_acceleration: tuple | None = None
+    total_center_acceleration: tuple | None = None
+    wheel_accelerations: tuple | None = None

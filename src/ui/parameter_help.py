@@ -25,7 +25,8 @@ from vehicle_designs import DESIGN_VEHICLES, GR86_PROFILE_PATH
 GROUP_LABELS = {"chassis": "底盘与转向", "tires": "轮胎", "suspension": "悬架",
                 "powertrain": "动力与传动", "electronics": "制动与控制"}
 OPTION_FIELDS = {"speed": "speed_kph", "duration": "duration", "steer": "steering_deg",
-                 "onset": "onset", "radius": "radius_m"}
+                 "onset": "onset", "radius": "radius_m", "bump_height": "bump_height_m",
+                 "bump_length": "bump_length_m", "bump_distance": "bump_distance_m"}
 
 
 class ParameterHelp:
@@ -101,7 +102,8 @@ class ParameterHelp:
                 return "尚无真实试验", "指标值：—"
             summary = record.metadata["summary"]
             analysis = engineering_analysis(record.samples, record.snapshots, summary["options"], summary["reason"])
-            item = next(item for item in analysis["metrics"] if "metric."+item["key"] == key)
+            item = next(item for item in (*analysis["metrics"], *analysis["ride"]["metrics"])
+                        if "metric."+item["key"] == key)
             value = f"{item['value']:.5g}" if item["value"] is not None else "— 未满足工况条件"
             return "已完成试验记录；"+item["note"], "当前指标："+value
         if app.record is not None:
@@ -165,7 +167,7 @@ class ParameterHelp:
         if key in app.entries:
             pending = app.entries[key].get().strip() or "留空，采用车型值"
             if key in OPTION_FIELDS:
-                current = str(options[OPTION_FIELDS[key]]) if options else "尚未试验"
+                current = str(options.get(OPTION_FIELDS[key], "旧记录未保存此字段")) if options else "尚未试验"
             return basis, f"待运行编辑值：{pending}\n已运行 / 配置值：{current}"
         if key.startswith("manual."):
             return basis, f"手动编辑值：{app.manual_entries[key.split('.')[1]].get()}（按应用输入后生效）"

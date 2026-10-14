@@ -168,6 +168,9 @@ class VehicleLab(ShowBase):
             duration=float(self.entries["duration"].get()), steering_deg=float(self.entries["steer"].get()),
             onset=float(self.entries["onset"].get()), radius_m=float(self.entries["radius"].get()),
             right_friction=float(self.entries["right_mu"].get()),
+            bump_height_m=float(self.entries["bump_height"].get()),
+            bump_length_m=float(self.entries["bump_length"].get()),
+            bump_distance_m=float(self.entries["bump_distance"].get()),
             cg_height=float(self.entries["cg"].get()) if self.entries["cg"].get().strip() else None,
             tire_reference_load=float(self.entries["tire_load"].get()) if self.entries["tire_load"].get().strip() else None,
             abs_enabled=self.abs_menu.selectedIndex == 0, esc_enabled=self.esc_menu.selectedIndex == 1)
@@ -213,7 +216,9 @@ class VehicleLab(ShowBase):
         self.maneuver_menu.set(tuple(MANEUVERS).index(options.maneuver))
         for key, value in (("speed", options.speed_kph), ("mu", options.friction),
                            ("duration", options.duration), ("steer", options.steering_deg),
-                           ("onset", options.onset), ("radius", options.radius_m), ("right_mu", options.right_friction)):
+                           ("onset", options.onset), ("radius", options.radius_m), ("right_mu", options.right_friction),
+                           ("bump_height", options.bump_height_m), ("bump_length", options.bump_length_m),
+                           ("bump_distance", options.bump_distance_m)):
             self.entries[key].enterText(str(value))
         self.abs_menu.set(0 if options.abs_enabled else 1)
         self.esc_menu.set(1 if options.esc_enabled else 0)
@@ -265,6 +270,10 @@ class VehicleLab(ShowBase):
         elif mode in ("braking", "split_braking"):
             self.entries["speed"].enterText("100")
             self.set_plot_group("制动响应")
+        elif mode=="ride_bump":
+            self.entries["speed"].enterText("18")
+            self.entries["duration"].enterText("3")
+            self.set_plot_group("车身 / 轮心振动")
         else:
             self.set_plot_group("转向响应")
 
@@ -373,9 +382,11 @@ class VehicleLab(ShowBase):
             self.scene.trajectory(snapshots)
 
     def set_plot_group(self, selection):
+        self.plot_menu.set(self.plot_menu["items"].index(selection), fCommand=0)
         names = ("制动响应", "转向响应",
                  "四轮法向载荷", "四轮滑移率", "轮胎力 / 轮速", "路径跟踪", "执行器响应",
-                 "轮胎侧偏角", "附着利用率", "车身侧偏 / 侧倾", "左右载荷转移", "轮胎回正力矩")
+                 "轮胎侧偏角", "附着利用率", "车身侧偏 / 侧倾", "左右载荷转移", "轮胎回正力矩",
+                 "质心运动", "车身 / 轮心振动", "悬架行程 / 速度", "轮胎径向压缩")
         groups = ((("speed",), ("ax",)), (("yaw",), ("steering_request", "steering")),
                   (("sample_load_fl", "sample_load_fr"), ("sample_load_rl", "sample_load_rr")),
                   (("kappa_fl", "kappa_fr"), ("kappa_rl", "kappa_rr")),
@@ -384,7 +395,11 @@ class VehicleLab(ShowBase):
                   (("alpha_fl", "alpha_fr"), ("alpha_rl", "alpha_rr")),
                   (("utilization_fl", "utilization_fr"), ("utilization_rl", "utilization_rr")),
                   (("beta",), ("roll",)), (("ltr_front",), ("ltr_rear",)),
-                  (("mz_fl", "mz_fr"), ("mz_rl", "mz_rr")))
+                  (("mz_fl", "mz_fr"), ("mz_rl", "mz_rr")),
+                  (("cg_ax", "cg_ay"), ("cg_beta",)),
+                  (("sprung_az",), ("hub_az_fl", "hub_az_rl")),
+                  (("travel_fl", "travel_rl"), ("travel_rate_fl", "travel_rate_rl")),
+                  (("radial_fl", "force_radial_fl"), ("radial_rl", "force_radial_rl")))
         for plot, keys in zip(self.plots, groups[names.index(selection)]):
             plot.keys = keys
         self.refresh_plots()

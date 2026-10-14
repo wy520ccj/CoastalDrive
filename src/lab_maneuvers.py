@@ -5,6 +5,14 @@ import math
 from vehicle_state import VehicleCommand
 
 
+def bump_geometry(options, origin, config):
+    """真实实体和视窗标记共用几何，左轮轨迹上固定矩形凸起。"""
+    half = (.24, options.bump_length_m/2, options.bump_height_m/2)
+    center = (origin[0]-config.wheel_track_widths[0]/2,
+              origin[1]+options.bump_distance_m+half[1], half[2])
+    return center, half
+
+
 def lane_offset(distance):
     """3.5m参考双移线：20m入段、30m横移、20m保持、30m回线。"""
     if distance < 20:

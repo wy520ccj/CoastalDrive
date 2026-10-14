@@ -4,7 +4,7 @@ import math
 
 from panda3d.core import AmbientLight, CardMaker, DirectionalLight, LineSegs, Quat, Vec3
 
-from lab_maneuvers import reference_path
+from lab_maneuvers import bump_geometry, reference_path
 from skins import apply_skin, vehicle_for_design
 from vehicle_visual import load_vehicle
 
@@ -51,6 +51,7 @@ class LabScene:
 
     def set_vehicle(self, design, config=None):
         config = design.config if config is None else config
+        self.config = config
         if self.vehicle is not None:
             self.vehicle.removeNode()
             for wheel in self.wheels:
@@ -123,6 +124,14 @@ class LabScene:
         self.reference_node.setDepthWrite(False)
         self.reference_node.setBin("fixed", 5)
         self.surface_node = self.root.attachNewNode("surface-markings")
+        if options.maneuver == "ride_bump":
+            center, half = bump_geometry(options, initial.position, self.config)
+            card = CardMaker("left-bump-top")
+            card.setFrame(-half[0], half[0], -half[1], half[1])
+            top = self.surface_node.attachNewNode(card.generate())
+            top.setP(-90)
+            top.setPos(center[0], center[1], options.bump_height_m)
+            top.setColor(.98, .43, .10, 1)
         if options.maneuver == "split_braking":
             boundary = initial.position[0]
             for name, low, high, color in (("mu-left", boundary-500, boundary, (.43, .48, .47, 1)),

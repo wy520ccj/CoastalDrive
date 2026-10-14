@@ -6,7 +6,10 @@ from vehicle_parameter_info import BRAKE_FIELDS, STABILITY_FIELDS, TRACTION_FIEL
 from vehicle_parameters import PARAMETER_GROUPS
 
 EDITOR_INFO = {
-    "speed": ("初始车速", "km/h", "初速", "v0=输入值/3.6；初始轮速ω0=v0/r0。", "只设置试验初值，运行后车速来自实际刚体。", "src/lab_experiment.py · LabExperiment.__init__"),
+    "bump_height": ("实体凸起高度", "m", "道路几何输入", "实体路面顶面z=输入高度。", "仅轮跳工况生效；矩形台阶真实参与轮胎求交与碰撞，不按高度生成轮荷或动画。", "src/lab_experiment.py · install_bump"),
+    "bump_length": ("实体凸起长度", "m", "道路几何输入", "实体沿前进方向覆盖距离d至d+L。", "宽度固定0.48m，位于左轮轨迹；前后轮依实际运动先后经过。", "src/lab_experiment.py · install_bump"),
+    "bump_distance": ("凸起前缘距起点", "m", "道路几何输入", "前缘y=y初始+d。", "试验需覆盖左前和左后轮；不足时指标显示未满足条件，不能仅看前轮峰值。", "src/lab_experiment.py · install_bump"),
+    "speed": ("初始车速", "km/h", "初速", "v0=输入值/3.6；独立轮心按实际加载半径和轮轴角速度初始化滚动。", "只设置试验初值，运行后车速来自实际刚体；旧刚体初始化沿用名义半径v0/r0。", "src/lab_experiment.py · LabExperiment.__init__；src/vehicle_unsprung.py · initialize_rolling"),
     "mu": ("主路面附着", "1", "轮胎峰值预算", "D=μ·Fn·(Fn/Fn0)^(pD−1)。", "μ是路面/轮胎条件的标定输入，不是由天气名称计算；Fx/Fy共用联合滑移预算。", "src/tire_properties.py · tire_grip"),
     "right_mu": ("右侧附着", "1", "对开制动", "实际接触点x≥分界线时使用右侧μ。", "仅对开附着工况生效；按接触点位置分类，不固定绑定某个轮号。", "src/lab_experiment.py · LabExperiment.__init__"),
     "duration": ("试验时长", "s", "停止条件", "Δt=1/120s；t=n·Δt，首次t≥输入时长时结束。", "每拍内部仍有两个机械子步；计算墙钟时间不是试验时间。", "src/lab_experiment.py · step / advance"),
@@ -61,6 +64,17 @@ for _axle in ("front", "rear"):
     METRIC_INFO[f"metric.ltr_{_axle}"] = ("轴左右轮荷差比", "1", "完成步轮荷指标", "LTR=(Fz,R−Fz,L)/(Fz,R+Fz,L)。", "使用完成步真实接点轮荷，右减左；整轴失去支撑时未定义。峰值取绝对值，不以此单项宣称翻车合格。", "src/lab_signals.py；src/lab_metrics.py")
 for _wheel in ("fl", "fr", "rl", "rr"):
     METRIC_INFO[f"metric.utilization_{_wheel}"] = ("末子步附着利用率", "1", "施力阶段指标", "η=√(Fx²+Fy²)/D施力。", "实际末子步Fx/Fy与同阶段D共同计算；离地/预算零未定义，不把η限制为1，数值分量残差单独记录。", "src/lab_signals.py；src/lab_metrics.py")
+    METRIC_INFO[f"metric.ride.min_load_{_wheel}"] = (f"最小施力轮荷 {_wheel.upper()}", "N", "接地描述指标", "Fmin=min(Fn)。", "取完整区间末机械子步实际法向力；零轮荷意味着该采样没有承载力。", "src/lab_metrics.py · ride_analysis")
+for _key, _title, _unit, _formula, _use in (
+    ("body_rms", "簧上垂向RMS", "m/s²", "aRMS=√(Σaz²/N)。", "完成步实际簧上CG世界Z速度差/固定步长；未做频率加权，不是座椅ISO舒适等级。"),
+    ("body_peak", "簧上垂向峰值", "m/s²", "apeak=max|az|。", "簧上CG惯性加速度，包含完整凸起区间；不同初速/路谱下不可直接比较。"),
+    ("hub_peak", "轮心垂向峰值", "m/s²", "apeak=max|az,i|。", "四轮实际轮心速度差/固定步长；同一末状态读数，不用车身运动复制轮跳。"),
+    ("max_travel", "最大压缩行程", "m", "qmax=max(qi)。", "真实轮心相对车身导向行程，正值为压缩；用于检查悬架工作空间。"),
+    ("unload_fraction", "零轮荷采样比例", "1", "p0=Σ[Fn,i=0]/(4N)。", "四轮末子步Fn=0样本的比例；不是插值后精确离地时长。"),
+    ("load_cv_fl", "FL动态轮荷比", "1", "DL=√(Σ(Fn−Fn初始)²/N)/Fn初始。", "FL轮荷相对初始静载的均方根变化；不是绕运行均值的标准差。"),
+):
+    METRIC_INFO["metric.ride."+_key] = (_title, _unit, "完整凸起区间", _formula, _use,
+                                      "src/lab_metrics.py · ride_analysis；src/lab_signals.py")
 
 
 @dataclass(frozen=True)

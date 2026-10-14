@@ -1,0 +1,1183 @@
+{
+  "files": {
+    "assets/game/ui/formulas/body_inertia-0.png": {
+      "bytes": 13830,
+      "sha256": "a3fd175fca55ba53582a52f49a7a0df62f7ce61f29e696dcd7c0e741ef9bd990"
+    },
+    "assets/game/ui/formulas/braking.response_time-0.png": {
+      "bytes": 13772,
+      "sha256": "815e04c670204a05d0dc1dfff549d7f3867a3fa7595411b1fa038f36af074010"
+    },
+    "assets/game/ui/formulas/braking.target_slip-0.png": {
+      "bytes": 5739,
+      "sha256": "4c16e99c03743c9522546ac74cd54676a4e0e0e42bcafdf2890627b3dd6d0eb5"
+    },
+    "assets/game/ui/formulas/center_of_mass_height-0.png": {
+      "bytes": 8612,
+      "sha256": "452dd56fe4875571ae0e589ec4977b7d41ec96197bb5c3fb14864e8e674908b0"
+    },
+    "assets/game/ui/formulas/duration-0.png": {
+      "bytes": 8892,
+      "sha256": "a5109cb883eb352fe412c160351b1542313901c812c86ce4449fe52e6ea606c4"
+    },
+    "assets/game/ui/formulas/lateral_stiffness-0.png": {
+      "bytes": 10009,
+      "sha256": "3b00788bcd0a849b46b8885bfa47e369fbacfeddf2f03594a47015b12745c06c"
+    },
+    "assets/game/ui/formulas/lateral_stiffness-1.png": {
+      "bytes": 6012,
+      "sha256": "df8f784fe0cf32af172fedf17a088e098c6efc5111850a3572561fa26c2e4bb3"
+    },
+    "assets/game/ui/formulas/License.txt": {
+      "bytes": 5476,
+      "sha256": "bab3d31dfef07f483624f2f65f2711e76065b8e7273278b1c071ede1041c9959"
+    },
+    "assets/game/ui/formulas/longitudinal_stiffness-0.png": {
+      "bytes": 9732,
+      "sha256": "fae50b8a24ec8c4d4da4da67289d168ee7e622966924702e6b6e8518b6eafc1a"
+    },
+    "assets/game/ui/formulas/longitudinal_stiffness-1.png": {
+      "bytes": 5533,
+      "sha256": "2bb67a86f196b818e869e969026137d4dc648039bb34ca7cd704a024eed00d12"
+    },
+    "assets/game/ui/formulas/manifest.json": {
+      "bytes": 19328,
+      "sha256": "a5b9ba58277440c46f27721924c871af6c31e70e75fcaa1d622c97e80c5b4510"
+    },
+    "assets/game/ui/formulas/manual.brake-0.png": {
+      "bytes": 9043,
+      "sha256": "e88ff606710601de73db92442ee68b7fc9e184a13269ac8cc2b3fc13573de206"
+    },
+    "assets/game/ui/formulas/manual.clutch-0.png": {
+      "bytes": 12094,
+      "sha256": "367504210385ad9e1eee14cd97d5cb9ab78894150f63fbff4b2d4af04177f445"
+    },
+    "assets/game/ui/formulas/manual.gear-0.png": {
+      "bytes": 8176,
+      "sha256": "62223c48944965fbd11ef8bcd2382d7d62fe26c8e105ac1495f23cf2a78db712"
+    },
+    "assets/game/ui/formulas/manual.throttle-0.png": {
+      "bytes": 4001,
+      "sha256": "36fd95825595d07e51f5eb36dcf3c8aaff6e5725a4c0dfcda1436f607b8383f1"
+    },
+    "assets/game/ui/formulas/metric.beta-0.png": {
+      "bytes": 12148,
+      "sha256": "839097c87ed7d801ecab7685f43ad33cbf896781e29783dfd874d7a65b372e5f"
+    },
+    "assets/game/ui/formulas/metric.ltr_front-0.png": {
+      "bytes": 8043,
+      "sha256": "b4523a99fd19785f2c10cfa741c15c3a65ac5fde2e294e26487a4faa24ada91c"
+    },
+    "assets/game/ui/formulas/metric.mfdd-0.png": {
+      "bytes": 21600,
+      "sha256": "d2fe07fd15bee6509356becb5d07c36476ff94239508fea120f626a29fbc4e29"
+    },
+    "assets/game/ui/formulas/metric.ride.body_peak-0.png": {
+      "bytes": 9432,
+      "sha256": "4ec08fbca67f0a0e71c4b294c6b515da1e21c4e08382946087968ba4ceae757f"
+    },
+    "assets/game/ui/formulas/metric.ride.body_rms-0.png": {
+      "bytes": 11490,
+      "sha256": "39d7f9dab6cee9ce05eaff3423a37d2a3d6dcde15d38489560c9302d7b849248"
+    },
+    "assets/game/ui/formulas/metric.ride.body_rms-1.png": {
+      "bytes": 15270,
+      "sha256": "1914ece8ff17b7f5e8a8c80823c89aab7c8ee1d472b0a5f264e909012f61da54"
+    },
+    "assets/game/ui/formulas/metric.ride.hub_peak-0.png": {
+      "bytes": 18807,
+      "sha256": "1678f057c28b3493107e69ab79f70ee5bf44cab7de4946c2d1c9659f6157bc1e"
+    },
+    "assets/game/ui/formulas/metric.ride.load_cv_fl-0.png": {
+      "bytes": 15847,
+      "sha256": "f06870ecac3fe1925f744e737234f773c725b7eedb5daf1f50586c0e895e2cb3"
+    },
+    "assets/game/ui/formulas/metric.ride.max_travel-0.png": {
+      "bytes": 8671,
+      "sha256": "8ab33a3938fa3312a6e69dd03fb0a1e9af8432a64b809243150edbc7e0724fef"
+    },
+    "assets/game/ui/formulas/metric.ride.min_load_fl-0.png": {
+      "bytes": 9032,
+      "sha256": "893fb2ef84f2b889893e05113fdf4ccb41fdf218d7e97030100adb729f833cb9"
+    },
+    "assets/game/ui/formulas/metric.ride.unload_fraction-0.png": {
+      "bytes": 14635,
+      "sha256": "b133c9ac1bc7faeb18f44ad58bfe4a5f880308e71e7a3dbe78611e1bc2efb9bc"
+    },
+    "assets/game/ui/formulas/metric.utilization_fl-0.png": {
+      "bytes": 8565,
+      "sha256": "e95cc26624ce750de1ff4d77a38e82542ad82fc5ada17fcda11f1859ad7c2503"
+    },
+    "assets/game/ui/formulas/metric.yaw_gain-0.png": {
+      "bytes": 7114,
+      "sha256": "ca2afdafc3b471ca185adee84fe36178e4057f2a8f5655b1ce39bbadd3003069"
+    },
+    "assets/game/ui/formulas/onset-0.png": {
+      "bytes": 16821,
+      "sha256": "4c0efc786cc5ba62c50a26fd28b9b9d4a68dfe735be131d5557f1e32d890f7b0"
+    },
+    "assets/game/ui/formulas/radius-0.png": {
+      "bytes": 8869,
+      "sha256": "a75353146d5b7c752d3c1df8f438471a41c00e223fb93723fcddab4397bc259e"
+    },
+    "assets/game/ui/formulas/radius-1.png": {
+      "bytes": 7032,
+      "sha256": "04a3851f47e48768773896dd9256c352a5a3a40b11887debb878363989f89938"
+    },
+    "assets/game/ui/formulas/road_friction-0.png": {
+      "bytes": 11738,
+      "sha256": "9b8a1a447bc1fc1d8001a16ed94281455389d851da6e8ec072a348f24549ffdb"
+    },
+    "assets/game/ui/formulas/speed-0.png": {
+      "bytes": 4423,
+      "sha256": "f97a2a300896f3fba275b34b1a1e75f167e12bb6d9326080832622f49cea08bd"
+    },
+    "assets/game/ui/formulas/speed-1.png": {
+      "bytes": 11191,
+      "sha256": "46713b8e1c12e327a914e5b37ebd7031650caf50cfe504ab414a1293b79cb9fc"
+    },
+    "assets/game/ui/formulas/steer-0.png": {
+      "bytes": 3971,
+      "sha256": "d3ecc4b2f5a8e6c5ad0f3b7f6927bfecdb06f9d6e50e695966a1b1957b385282"
+    },
+    "assets/game/ui/formulas/steer-1.png": {
+      "bytes": 12364,
+      "sha256": "876c3e43123100615d01541f17bf1f10df743b592fecd8bf04d0d20fcdc1066e"
+    },
+    "assets/game/ui/formulas/suspension_antiroll_rates-0.png": {
+      "bytes": 11738,
+      "sha256": "341cc25db8bed25501350f79d1e0fcf4d08af00959c9d1ab7ddf9d814d179871"
+    },
+    "assets/game/ui/formulas/suspension_spring_rates-0.png": {
+      "bytes": 15780,
+      "sha256": "d346712ea2786d8101c1172ce9399b42446b600733af497000275e84035c8a37"
+    },
+    "assets/game/ui/formulas/tire_aligning_enabled-0.png": {
+      "bytes": 9365,
+      "sha256": "e63105368dd2e7158c7d29c19106dafb01936ccfa9f3f1775a3f9b74255bf2c6"
+    },
+    "assets/game/ui/formulas/tire_aligning_enabled-1.png": {
+      "bytes": 10677,
+      "sha256": "c97ebce81d6c64018d516576ad73bdae4da099ea7bb0c1ff2eb4cd34debb71ef"
+    },
+    "assets/game/ui/formulas/tire_contact_half_length-0.png": {
+      "bytes": 16981,
+      "sha256": "af5da8dedd9a062e33a38ffc1a64cb8f97128d8aca456f38b9b70dd71b42bf9d"
+    },
+    "assets/game/ui/formulas/tire_contact_half_length-1.png": {
+      "bytes": 18336,
+      "sha256": "ebf13ab8229556c2502a3f8e73d4c07321f22952ac7ac085bf692b4f098a5868"
+    },
+    "assets/game/ui/formulas/tire_radial_damping-0.png": {
+      "bytes": 13604,
+      "sha256": "3a0ae334816e802304a7c083f96533d4370d2d89b8981dd0c5b9b5f31a28fe93"
+    },
+    "assets/game/ui/formulas/tire_radial_damping-1.png": {
+      "bytes": 11539,
+      "sha256": "b02771204b310376875a6b992a38628adb5cb536e4362be6bd935ad039e6d574"
+    },
+    "assets/game/ui/formulas/tire_radial_stiffness-0.png": {
+      "bytes": 20839,
+      "sha256": "524f3766eecff0efa8630e424b4e19895564c3e920f2f2ea19e1a4d6b786b021"
+    },
+    "assets/game/ui/formulas/tire_radial_stiffness-1.png": {
+      "bytes": 6409,
+      "sha256": "35c565fd5e7e2584340899628aa61fb2f7a05cc204f597ac71057d61970b2ae8"
+    },
+    "assets/game/ui/formulas/tire_reference_load-0.png": {
+      "bytes": 11738,
+      "sha256": "9b8a1a447bc1fc1d8001a16ed94281455389d851da6e8ec072a348f24549ffdb"
+    },
+    "assets/game/ui/formulas/tire_reference_load-1.png": {
+      "bytes": 9732,
+      "sha256": "fae50b8a24ec8c4d4da4da67289d168ee7e622966924702e6b6e8518b6eafc1a"
+    },
+    "assets/game/ui/formulas/tire_reference_load-2.png": {
+      "bytes": 10009,
+      "sha256": "3b00788bcd0a849b46b8885bfa47e369fbacfeddf2f03594a47015b12745c06c"
+    },
+    "assets/game/ui/formulas/torque_curve-0.png": {
+      "bytes": 12683,
+      "sha256": "e701446370c52f33672ce1c49ea43f615e1e3add8bd2bdefe2ab242c5bedf370"
+    },
+    "assets/game/ui/formulas/unsprung_enabled-0.png": {
+      "bytes": 8698,
+      "sha256": "429efab8e0e606140987e858fb17fc0801ac3323bc4b93f65d55fea32863bece"
+    },
+    "assets/game/ui/formulas/unsprung_enabled-1.png": {
+      "bytes": 19364,
+      "sha256": "b5730e9155b1c1255ccf8737d5cf4c99c159225d093b2f1ad7b1b4cca4b28d56"
+    },
+    "assets/game/ui/formulas/unsprung_masses-0.png": {
+      "bytes": 14635,
+      "sha256": "a203452c0536864e76f3c0e76d7962ea14ee7f40ada7d71fa4dece8975602450"
+    },
+    "assets/game/ui/formulas/unsprung_masses-1.png": {
+      "bytes": 14970,
+      "sha256": "e1aa3c55e46eef0385344f955a452682721a7ab4907374e3d49df21c53d52b94"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-40-r1/mass-40/engineering.json": {
+      "bytes": 20499,
+      "sha256": "dc0fcec785b709984c10804d9d152201889d406d1bbd3e9d0b8bdd7977c69354"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-40-r1/mass-40/experiment.json": {
+      "bytes": 1574740,
+      "sha256": "82f89b46f0122085d352323a6332b7b5309c35f23e4303a540adf07f2e525484"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-40-r1/mass-40/report.html": {
+      "bytes": 54342,
+      "sha256": "4a15a3f676bcafa3029e6ebe5ce8e20c3c2aebd87bb1dc6cae328178a568819f"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-40-r1/mass-40/signals.csv": {
+      "bytes": 640134,
+      "sha256": "969c30cfcc66ac946382d4f767386850f95b2e30594f2911eefe0e06b56c264e"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-40-r1/mass-40/snapshots.bin": {
+      "bytes": 1722502,
+      "sha256": "952a01c4a882b025480d75810504a9f9d6e0d080bc4e964c2fd86d25c3c8ab8c"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-40-r1/mass-40/vehicle.json": {
+      "bytes": 5194,
+      "sha256": "98d5ea42ce25dc60025f8efc035518d41251c201a072789de857838e54a8d5d9"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-40-r1/result.json": {
+      "bytes": 4789,
+      "sha256": "e78383dee1115f81c9a895151baff776b6007e6f18f085f317205903fcf2217f"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-25/engineering.json": {
+      "bytes": 20503,
+      "sha256": "976ac3869de92ff2958f5216709dd5de1deb6ef07b045b23a96856153191a816"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-25/experiment.json": {
+      "bytes": 1574787,
+      "sha256": "d47b5a37dc4ac3423b6e5578cfafc54a0819bffbc35b6c36059d8972c88211e6"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-25/report.html": {
+      "bytes": 54352,
+      "sha256": "1f4f403eccfaccd68616a5e03bbece6dc0f4c260a09dec64bcdaad205f821e6c"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-25/signals.csv": {
+      "bytes": 640183,
+      "sha256": "2da8d661f2b5852d0893ee7cf39e9b3cdfe67031e82121d4e049b83c0f794ded"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-25/snapshots.bin": {
+      "bytes": 1722502,
+      "sha256": "94b14b86d7a851974e74beed88c333bd5de1530e1c27aa910bd87f881e961280"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-25/vehicle.json": {
+      "bytes": 5194,
+      "sha256": "48583ac973c5f1cfe50783394ca3b372a5388e22887aa51b6e7ad08f0884772d"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-65/baseline-A/engineering.json": {
+      "bytes": 20503,
+      "sha256": "976ac3869de92ff2958f5216709dd5de1deb6ef07b045b23a96856153191a816"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-65/baseline-A/experiment.json": {
+      "bytes": 1574787,
+      "sha256": "d47b5a37dc4ac3423b6e5578cfafc54a0819bffbc35b6c36059d8972c88211e6"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-65/baseline-A/report.html": {
+      "bytes": 54352,
+      "sha256": "1f4f403eccfaccd68616a5e03bbece6dc0f4c260a09dec64bcdaad205f821e6c"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-65/baseline-A/signals.csv": {
+      "bytes": 640183,
+      "sha256": "2da8d661f2b5852d0893ee7cf39e9b3cdfe67031e82121d4e049b83c0f794ded"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-65/baseline-A/snapshots.bin": {
+      "bytes": 1722502,
+      "sha256": "94b14b86d7a851974e74beed88c333bd5de1530e1c27aa910bd87f881e961280"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-65/baseline-A/vehicle.json": {
+      "bytes": 5194,
+      "sha256": "48583ac973c5f1cfe50783394ca3b372a5388e22887aa51b6e7ad08f0884772d"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-65/comparison.json": {
+      "bytes": 2325,
+      "sha256": "8edaf6f8ddc88ee8afbd3385e0aabc5e2716c73a1118e70cc3a408c963f1f1dd"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-65/engineering.json": {
+      "bytes": 28408,
+      "sha256": "8c534e2d49e355118a2f0fba4f31e9d8c0b92839dc32e74892c716dd84c9df21"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-65/experiment.json": {
+      "bytes": 1574668,
+      "sha256": "f49abed660e60d293dedfd144b1ae05ac96850dad9210a2ac500cffcf1ef91a5"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-65/report.html": {
+      "bytes": 80699,
+      "sha256": "b5ecfc8f965dbe73225c13198808ed5f613afac24c8554f5385d0b0589ad7509"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-65/signals.csv": {
+      "bytes": 640061,
+      "sha256": "08b00904805679491748cbc8fd6879722fb40496d59dad532ec8f977a21d2500"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-65/snapshots.bin": {
+      "bytes": 1722502,
+      "sha256": "11dbd137cbe72a3561287a65f14cacabb1d64679059805ef7a0ccee3d17db720"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/mass-65/vehicle.json": {
+      "bytes": 5194,
+      "sha256": "70471ce61f1f8ce87ba3d8aa6cde506c51174edc028b267bad43c4d9798c65d9"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ab-r1/result.json": {
+      "bytes": 9669,
+      "sha256": "e41dab45344702354c9bdb45440563411e34d8c56ffa14e25bfccb848ca56bd1"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r1/01-curves.png": {
+      "bytes": 381679,
+      "sha256": "5626531669fe73b52b7b16d40f5c47a644fe8cc35f9e540150cde4f18962cb30"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r1/02-curves.png": {
+      "bytes": 390204,
+      "sha256": "15a434bed604a1d40dc1d81739588725752d1479b693e8663dce9b68f68cf827"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r1/03-curves.png": {
+      "bytes": 381521,
+      "sha256": "d1d5fbba329a94ba5766a72e3132b1828afc72235a97b8982ffc7b645f6a58ef"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r1/04-curves.png": {
+      "bytes": 385688,
+      "sha256": "3dea828117f129746507f4c515a94a8d324a751ec0542232414066895548b03f"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r1/05-ride-metrics.png": {
+      "bytes": 325937,
+      "sha256": "4f00dbd453581dc496ae74c658417b8dd0061e52db23d3429d4cb5f676b59cf0"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r1/06-rms-formula.png": {
+      "bytes": 307899,
+      "sha256": "baf514be66471afcacbc07ee2c83b42761b33cedcb2b8c940088c10c2ec04be6"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r1/07-load-formula.png": {
+      "bytes": 289415,
+      "sha256": "99ce4d7dbed48608524ea4df54d00ed5a4ff8164701b36910a4b5e24d956653e"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r1/08-bump-inputs.png": {
+      "bytes": 319200,
+      "sha256": "dbcc1d85d59c49d2c70707f179926824181066b9fb56d612361123410edeff39"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r1/09-bump-help.png": {
+      "bytes": 304871,
+      "sha256": "040f92ec98d5c2a7251392bc07128ff1f4348f1606a1784878b2fdf39acc0ac4"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r1/result.json": {
+      "bytes": 459,
+      "sha256": "ecd07fdcd2f874e778dd467e0ed2682e8c2c61c35d35578e2cd3232e8f23d36b"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r2/01-curves.png": {
+      "bytes": 381675,
+      "sha256": "2fcb32b73daa3f2c4e83880842f36b420e5f2d4e7316adfa118c91778fc49151"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r2/02-curves.png": {
+      "bytes": 390201,
+      "sha256": "82288772ce1639bd83b6fe8fcbad3904cb1a14ea77eea6dcc932579f66e16050"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r2/03-curves.png": {
+      "bytes": 381519,
+      "sha256": "c2606671a6e6211b7ecb79dfd19e7c393d037197654ab9299cc265c90bc0c386"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r2/04-curves.png": {
+      "bytes": 385685,
+      "sha256": "b7f5533e3913e854083175ced5cfd206d1973faf34ce819b5e57ba8539ee8c2a"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r2/05-ride-metrics.png": {
+      "bytes": 325937,
+      "sha256": "4f00dbd453581dc496ae74c658417b8dd0061e52db23d3429d4cb5f676b59cf0"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r2/06-rms-formula.png": {
+      "bytes": 307899,
+      "sha256": "baf514be66471afcacbc07ee2c83b42761b33cedcb2b8c940088c10c2ec04be6"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r2/07-load-formula.png": {
+      "bytes": 289415,
+      "sha256": "99ce4d7dbed48608524ea4df54d00ed5a4ff8164701b36910a4b5e24d956653e"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r2/08-bump-inputs.png": {
+      "bytes": 319200,
+      "sha256": "dbcc1d85d59c49d2c70707f179926824181066b9fb56d612361123410edeff39"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r2/09-bump-help.png": {
+      "bytes": 304871,
+      "sha256": "040f92ec98d5c2a7251392bc07128ff1f4348f1606a1784878b2fdf39acc0ac4"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r2/10-loaded-radius-formula.png": {
+      "bytes": 336458,
+      "sha256": "7150fe14dbdc1561011e9a8ce7afa916aa3b4769df114a917376be118a279247"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-1080-r2/result.json": {
+      "bytes": 496,
+      "sha256": "2411a3bef895ea1e5db48869eaed63b3e632a28c3d939264509cd25e33899015"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r1/01-curves.png": {
+      "bytes": 200198,
+      "sha256": "07dfc42de8e4bd2aed301e680b491c94a8802a403390cb5b7babf62d50982c43"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r1/02-curves.png": {
+      "bytes": 204726,
+      "sha256": "4623a66a86a698648299a9b993f5418b98415177f9361e87650c30bc3bd9c730"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r1/03-curves.png": {
+      "bytes": 200491,
+      "sha256": "f9157fcf2633f5c5bb4c4416d9e1322a08e837a0856ba2f80f26d94f11f30526"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r1/04-curves.png": {
+      "bytes": 203134,
+      "sha256": "86219f86e1686e5981333ee55da8053c4f56e59f93ba6ffe2691620149059fa0"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r2/01-curves.png": {
+      "bytes": 200199,
+      "sha256": "8a134419085c9107ec343f8c5ac81e2c147d3dc561b0e4b76f53a37ef194f3f6"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r2/02-curves.png": {
+      "bytes": 204727,
+      "sha256": "45fe3a45fde76b9dbe366d93169341634f74705aaecf6b10ad9ce898d9ba9029"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r2/03-curves.png": {
+      "bytes": 200492,
+      "sha256": "5411e5e33bc7592b8a3ad51e04c3bf30582f842f40613fbbc1aa58ba1ba4f938"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r2/04-curves.png": {
+      "bytes": 203136,
+      "sha256": "f0ff7f16b5aa09d99c9e27ea3ffa87f208f8aeb4bd7c65e1eba23c8556317c2d"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r2/05-ride-metrics.png": {
+      "bytes": 175353,
+      "sha256": "d4b6cffc7bcaea7baa659d3a55ecfe775e8178c727fa32cb8d2c8a8cf1cca235"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r3/01-curves.png": {
+      "bytes": 201100,
+      "sha256": "7650480b8f253dd4793e5b5f87d0f43f42a8d2e2a0dd50b0b472668e7d34549d"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r3/02-curves.png": {
+      "bytes": 205737,
+      "sha256": "99312ec882376bd55e0ccc96b5b963aba3fa5ccb85004e881e6d98b6e1597652"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r3/03-curves.png": {
+      "bytes": 201373,
+      "sha256": "fe3f34d8ffc6d0adbb2f9c9e0e771b9d150e7bc7f715d6830f5479eda003aca7"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r3/04-curves.png": {
+      "bytes": 203271,
+      "sha256": "6d9f6749f1c06fc0fde1e833995378b8fa6d509f5e63bad16d2cdbd6d48a1b05"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r3/05-ride-metrics.png": {
+      "bytes": 172389,
+      "sha256": "bb95289ae7857661a94f20157dbfe7db11cfefa858cec24890ff88382267c86c"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r3/06-rms-formula.png": {
+      "bytes": 166575,
+      "sha256": "5220d95ed4e427bdd7eba46be7051fc61fd7bd23f249575ba07a59438161d8bb"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r3/07-load-formula.png": {
+      "bytes": 155391,
+      "sha256": "ee73b02f91711a8f23529956fb8bc8745eb26cd98da3b8b3c66b52ec1e35ae59"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r3/08-bump-inputs.png": {
+      "bytes": 168193,
+      "sha256": "820f6fe99050d9b6b4e27dc73379398e6cecb3bbc628a77db72e0389904838a9"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r3/09-bump-help.png": {
+      "bytes": 161955,
+      "sha256": "8667f0088ee6c6716d8266df1836fafd64ffacc5b6494c158cfdceb53cd34429"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r3/result.json": {
+      "bytes": 458,
+      "sha256": "ce0fa1ee7efaa052a93cfddfad4f5cb4c9ef3ae78e68fceba17be7f376cfb2e3"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r4/01-curves.png": {
+      "bytes": 201101,
+      "sha256": "2257f57462c860d06aaa8b6db51059e425137910b9d1d528b0f1a1099427d5d5"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r4/02-curves.png": {
+      "bytes": 205739,
+      "sha256": "9b8966cf40840889e4db7a3f4e1c4f9ad0412576d9046db19b9ebf9d987a739a"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r4/03-curves.png": {
+      "bytes": 201375,
+      "sha256": "4c74995009aaf3fd07e4dacce0e53cc4e7a6f781778b5ddcd311d28d1976d146"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r4/04-curves.png": {
+      "bytes": 203272,
+      "sha256": "cae06732375b7be3141ee0960501f386a00cfcbeffcdb23f8b0c229872805a75"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r4/05-ride-metrics.png": {
+      "bytes": 172389,
+      "sha256": "bb95289ae7857661a94f20157dbfe7db11cfefa858cec24890ff88382267c86c"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r4/06-rms-formula.png": {
+      "bytes": 166575,
+      "sha256": "5220d95ed4e427bdd7eba46be7051fc61fd7bd23f249575ba07a59438161d8bb"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r4/07-load-formula.png": {
+      "bytes": 155391,
+      "sha256": "ee73b02f91711a8f23529956fb8bc8745eb26cd98da3b8b3c66b52ec1e35ae59"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r4/08-bump-inputs.png": {
+      "bytes": 168193,
+      "sha256": "820f6fe99050d9b6b4e27dc73379398e6cecb3bbc628a77db72e0389904838a9"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r4/09-bump-help.png": {
+      "bytes": 161955,
+      "sha256": "8667f0088ee6c6716d8266df1836fafd64ffacc5b6494c158cfdceb53cd34429"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r4/10-loaded-radius-formula.png": {
+      "bytes": 180897,
+      "sha256": "09be524b0ffb04de6b68acd07383095bdfa9dddb3cf9ba4423c8c3e752db75ad"
+    },
+    "logs/SIM-UNSPRUNG-01/ride-ui-720-r4/result.json": {
+      "bytes": 495,
+      "sha256": "c78377c78ac61de7fef20fe2b962265f52a1821c93e0bc1c55c2a30257970561"
+    },
+    "logs/validation/SIM-UNSPRUNG-01-ride-T1/headless-0.log": {
+      "bytes": 33839,
+      "sha256": "c0b108e39a9aa586989a0d0e1bfb6524ae2d4ffabc6c49f4d3ce1fb280881ce6"
+    },
+    "logs/validation/SIM-UNSPRUNG-01-ride-T1/headless-17.log": {
+      "bytes": 33839,
+      "sha256": "c0b108e39a9aa586989a0d0e1bfb6524ae2d4ffabc6c49f4d3ce1fb280881ce6"
+    },
+    "logs/validation/SIM-UNSPRUNG-01-ride-T1/headless-23.log": {
+      "bytes": 33839,
+      "sha256": "c0b108e39a9aa586989a0d0e1bfb6524ae2d4ffabc6c49f4d3ce1fb280881ce6"
+    },
+    "logs/validation/SIM-UNSPRUNG-01-ride-T1/pytest.log": {
+      "bytes": 183,
+      "sha256": "64f3da01eee4dda0a392c20a870bd410e7d10dfc38134b2ab13c605127f90dee"
+    },
+    "logs/validation/SIM-UNSPRUNG-01-ride-T1/ruff.log": {
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "logs/validation/SIM-UNSPRUNG-01-ride-T1/summary.json": {
+      "bytes": 5378,
+      "sha256": "297c8ba382c54f02942f26a0bc27cb20988ebb7053eb0ec72ef3b03ea2be7d26"
+    },
+    "src/application.py": {
+      "bytes": 53082,
+      "sha256": "3e0a0acdb9601790005c121fe2f8de7a853b2c7a3c46ee22efffd98c61b527df"
+    },
+    "src/audio/__init__.py": {
+      "bytes": 59,
+      "sha256": "c9b2b5ceb0091ead195fb737892eaa931c7715825da23d0b47f8383a2bfa76eb"
+    },
+    "src/audio/cues.py": {
+      "bytes": 957,
+      "sha256": "41d89fe885916e493e96fa1edf85b73e32575d867672fb034649bb17f37b21e9"
+    },
+    "src/audio/driving.py": {
+      "bytes": 2109,
+      "sha256": "3e8df19ce48cd294d6a228852f132474c055d1e0cf7cb2578d78aafa4ab66615"
+    },
+    "src/audio/engine.py": {
+      "bytes": 2996,
+      "sha256": "0e756ebc2600984d94c20ad012305aed918f4e560d6eb4ac9d8127b5c2d091fa"
+    },
+    "src/audio/impact.py": {
+      "bytes": 18393,
+      "sha256": "01e1af74a5df7aa605f80cffb64d25479361b136debe6e5e87f3d20819b4649a"
+    },
+    "src/audio/music.py": {
+      "bytes": 3008,
+      "sha256": "2d12ca7abb23e8af8793baaef425cf5a393530c060a54ec4ca50fb8ad8a56d6b"
+    },
+    "src/chase_camera.py": {
+      "bytes": 2051,
+      "sha256": "4911c0f91810de33a8c9f5e8fce529348867d1c1a9e8fb3e0ae76febada4c16c"
+    },
+    "src/coastal_collision.py": {
+      "bytes": 1650,
+      "sha256": "39eb737938480ae7d6d594fb5d69073cb89182e022235a92b0cdc7c515782242"
+    },
+    "src/coastal_map.py": {
+      "bytes": 6903,
+      "sha256": "7e7065031d9e518a204a10db07fd7d8b027c935bafca49cd7299a0941cef4ac0"
+    },
+    "src/controls.py": {
+      "bytes": 2887,
+      "sha256": "af9e6e23a2f29ddf356175b574a37fffb44b6b1ce811069910ebbca4adbb3172"
+    },
+    "src/convex_cast_kernels.cp314-win_amd64.pyd": {
+      "bytes": 68608,
+      "sha256": "e15ee855508ddee9dc2abfbdae5dca80d27918740804a153070bf1e83003fc0d"
+    },
+    "src/convex_queries.py": {
+      "bytes": 1762,
+      "sha256": "f6fdcf9dc00ed2ca5dca92bcf6fdc3db5c1c989ca7234e6b215b1a5c154762db"
+    },
+    "src/curve_mesh.py": {
+      "bytes": 2373,
+      "sha256": "105d779c136301731934b22530bb30ce1c4aa3235edb04d8ed472a13ec9e2ff2"
+    },
+    "src/differential.py": {
+      "bytes": 2688,
+      "sha256": "b1256e856a63efc69db9cb37528bc689ca189a7dfeea33ee17748f9bbb8b50f3"
+    },
+    "src/driveline_inertia.py": {
+      "bytes": 1741,
+      "sha256": "f90c175b5111a233bfd9455bcb3226c70f09bb6b63ee882f6253aff81ff9b038"
+    },
+    "src/driver_assist.py": {
+      "bytes": 3583,
+      "sha256": "f0b738592e2f3ccc6fc74ec9ccb0ec95e2d3884f19fd468c011a0ae3fb405ae8"
+    },
+    "src/drivetrain_prepare.h": {
+      "bytes": 11564,
+      "sha256": "efce51bb865776cdaf51889afc563c23c46e358aec4ec57958cc6c570412d970"
+    },
+    "src/driving_experiment.py": {
+      "bytes": 6027,
+      "sha256": "96b86ea4c3616621fec4d3628a495b7872d80dfe2994e7927731004f1cd3704b"
+    },
+    "src/driving_modes.py": {
+      "bytes": 2603,
+      "sha256": "e3d56b41955e273834fe23fc3aaf161078f75111d79029dc366dbba38b839f54"
+    },
+    "src/environment/__init__.py": {
+      "bytes": 71,
+      "sha256": "81bd978b67af4e6d30d62f99eb4a1e4c28f5f31855ae94ccd4db70283e3b3699"
+    },
+    "src/environment/coastal_slice.py": {
+      "bytes": 7355,
+      "sha256": "af6d170d7cfd8c280991a40921b67bc83d03dc5c1d720874ac5c7916484a2bc6"
+    },
+    "src/environment/expressway.py": {
+      "bytes": 21896,
+      "sha256": "36cb41c7ab5ae9fbb14b4fcf161a8368b395ad5655634c754e4e92f64afe8bcd"
+    },
+    "src/environment/expressway_materials.py": {
+      "bytes": 6579,
+      "sha256": "e2df79696e7fee5e4ac0460a1003a2d3efe42f890cb6369171b8a9de8d6465a4"
+    },
+    "src/environment/expressway_mountains.py": {
+      "bytes": 3964,
+      "sha256": "7af3ce1102d9200a026f650a1c9a3867ba851021bf8db47da03d96794ef4d684"
+    },
+    "src/environment/expressway_route.py": {
+      "bytes": 18020,
+      "sha256": "e7f49d5e79a8d02233e433f8bd5f04dc650a6982edda23db7563e2f0db967587"
+    },
+    "src/environment/expressway_signs.py": {
+      "bytes": 2653,
+      "sha256": "4d02efb48f48c672d17675fe6f35b7b9686980e75ca9572449f8f6ca76bdf9e0"
+    },
+    "src/environment/expressway_vegetation.py": {
+      "bytes": 7861,
+      "sha256": "c846c1c1840251d04a9e79bdf7fe0a8be9ac954c43ed1d54e0bd4dad15da2093"
+    },
+    "src/environment/foundation.py": {
+      "bytes": 2527,
+      "sha256": "2c86aad7311ad18da3f42be404ff9cf7d754037f1ca3fa2f4f8ca14798607ca5"
+    },
+    "src/environment/surface_mesh.py": {
+      "bytes": 2138,
+      "sha256": "4d32a8e0e5817d5ec378e6cf04f26912519b6531159cd5b5f903a2052151d052"
+    },
+    "src/environment/terrain.py": {
+      "bytes": 9785,
+      "sha256": "41fd42968a442cb3dd26ba28ca01220f3809705090091615b0d48673b7698abc"
+    },
+    "src/environment/water.py": {
+      "bytes": 711,
+      "sha256": "17fd63872585e8d34c004bd12c57c1f3b2af6114a22a545fc9cb1a904a78eb89"
+    },
+    "src/estimation_rotation.py": {
+      "bytes": 3015,
+      "sha256": "2049c64e84b1eeedf5a3ff54f866a43dde6fd54cc68f2eebd0b811b3421a3448"
+    },
+    "src/garage.py": {
+      "bytes": 2604,
+      "sha256": "54d20cd8e175ed2fe75bf5da0f70b9f997d5215b2ce197be0a4f21dc831c05fd"
+    },
+    "src/highway_curve.py": {
+      "bytes": 3895,
+      "sha256": "30b2a7c6d75a38bbce538198e1e53295d1afa6dd14d05760d085d3d150a4e64e"
+    },
+    "src/highway_driver.py": {
+      "bytes": 15814,
+      "sha256": "ca6c8c2155b48b9130d1008b74e0fab904e10e16d860f6d55f39259ae610c226"
+    },
+    "src/highway_map.py": {
+      "bytes": 2359,
+      "sha256": "fc426d2d95134851304c49885f6d0c6caf728e118f3da939878b38721f11592b"
+    },
+    "src/highway_run.py": {
+      "bytes": 2060,
+      "sha256": "6b0520d5ab68e46919a99cbb953b98c5f0e806222bfe4e55d5ee03dd731b6d6b"
+    },
+    "src/highway_segments.py": {
+      "bytes": 3774,
+      "sha256": "ba5494eb325e107d1a40477272db799d4fd26f8cfb7ec8b265c038ff39b1da40"
+    },
+    "src/impact_events.py": {
+      "bytes": 9282,
+      "sha256": "d84747f93b1cafa8b33ee9322f8870ed0bbdd7bf149d4daff281ea7430d6dd5b"
+    },
+    "src/joint_contact_api.h": {
+      "bytes": 550,
+      "sha256": "dfccda508cb573646f9b9279fd6efeecb141fab193b25055a23439c33c4a5ab5"
+    },
+    "src/joint_contact_impl.h": {
+      "bytes": 16828,
+      "sha256": "82cda5ee98a40f1074a1034654753d96c67b863372e33657c8f229f075059b4f"
+    },
+    "src/joint_iteration.h": {
+      "bytes": 22150,
+      "sha256": "1f3371ac5828da1b055cb6e96141fe91bfe487dd59cd51ec779239fae4a39fd4"
+    },
+    "src/joint_iteration_helpers.h": {
+      "bytes": 17966,
+      "sha256": "128ddd092f5d7b8f5a9e14a95fe33f44dd277e762b63a3c51402843cb1625360"
+    },
+    "src/joint_mechanical_prepare.h": {
+      "bytes": 11792,
+      "sha256": "556bd7b018d0a84dd744dbefc66eff13932a7669ac4e910860d0ee4ff115d254"
+    },
+    "src/lab_application.py": {
+      "bytes": 31400,
+      "sha256": "20a21d9e2471ba5bae68c945d79b0dcf802a92f9c6172a6555108d95744baf25"
+    },
+    "src/lab_experiment.py": {
+      "bytes": 12008,
+      "sha256": "604ba2b1e285977f74e60ec8edf5ef402b77c8a2e8a3cccd1a3c8d674b10c347"
+    },
+    "src/lab_maneuvers.py": {
+      "bytes": 3007,
+      "sha256": "b04dfe94c26adf7e8e544a83c6b04b52bdba4883da30bccbd09499c42ebc91a3"
+    },
+    "src/lab_metrics.py": {
+      "bytes": 9663,
+      "sha256": "576032bdc80b897bda467bf3921d0b7d6af5cad890f8a52c3b727b9bcf7aeeec"
+    },
+    "src/lab_records.py": {
+      "bytes": 15439,
+      "sha256": "f23a920375992856c2d0209fdfcb8eead85a9b098eb2ec55bdd39242e7509ccf"
+    },
+    "src/lab_scene.py": {
+      "bytes": 6877,
+      "sha256": "25bd7dc6dbb9540578d782463a53807cb812061d2745e066778c2b600d976f53"
+    },
+    "src/lab_signals.py": {
+      "bytes": 12381,
+      "sha256": "d07aa023cb786fe94a1ed5d9c8af03613e2d9d176c836d169fd89cf61b84f446"
+    },
+    "src/main.py": {
+      "bytes": 9534,
+      "sha256": "26f4325514d4e9bc23c2f0385383f686a13db5fc72d1003d292b04d89acaba8d"
+    },
+    "src/mechanical_kernels.c": {
+      "bytes": 161133,
+      "sha256": "b1bf14a550dff3322ed146952fbb22a92fa09df23d7ca9fca6b45a467b66cef6"
+    },
+    "src/mechanical_kernels.cp314-win_amd64.pyd": {
+      "bytes": 186368,
+      "sha256": "0eedfbf011c7fac3cffc143ae035c8956e2dde1aeb2619d717b467b81801ac0a"
+    },
+    "src/native_solve_runtime.h": {
+      "bytes": 1281,
+      "sha256": "1b96830edb632cf036877f3b858eb9f1d7da3cb8ee14c66f1d10e18b4e2f94e4"
+    },
+    "src/npc_physics.py": {
+      "bytes": 7490,
+      "sha256": "cb36b723538d7c4c213634013d19e0894c106fd3e231dc96d32128df094653ad"
+    },
+    "src/parameter_formulas.py": {
+      "bytes": 9521,
+      "sha256": "6b14222983ca44c28646967e48a008b8c2f99f76d5d6dd891f2f464857b21737"
+    },
+    "src/parameter_help.py": {
+      "bytes": 15864,
+      "sha256": "eaa2de166a534bcfcf7a55eb3c236ed72a6609b5cacdadfb00768ac118cc8df8"
+    },
+    "src/paths.py": {
+      "bytes": 427,
+      "sha256": "6c9e79bf75ebad3ff0eb509ca8e910fb5a90ca7a89077acd90f844a57078699c"
+    },
+    "src/performance_baseline.py": {
+      "bytes": 1859,
+      "sha256": "dc2e5c6317c59aa88446ec3854986d67aea4d2a3a1c47d281d018bfaede27e83"
+    },
+    "src/phase0_app.py": {
+      "bytes": 875,
+      "sha256": "8ec41455706e637735c1419b836cd9b88f15d2f3a6072438b08c83b129dc9e2c"
+    },
+    "src/physics_channel.py": {
+      "bytes": 4111,
+      "sha256": "2bcf768717d6a5e10506e379bd6b62f2901b8716ac55b997a14535437819b657"
+    },
+    "src/physics_packet_kernels.c": {
+      "bytes": 11938,
+      "sha256": "55838c91a854d0067c8bc9e6d161437dc1a86afe04339592ffa39a5e357c7e90"
+    },
+    "src/physics_packet_kernels.cp314-win_amd64.pyd": {
+      "bytes": 18432,
+      "sha256": "d9ba17eab7f9576e40b8a288a511bc31e842fd225837e086ae6d83c05c375dd6"
+    },
+    "src/physics_wire.py": {
+      "bytes": 2220,
+      "sha256": "3b832ea747f164c2f47c1640d23155296195f7d94cc37f5a3e5be4851a684bdc"
+    },
+    "src/physics_workers.py": {
+      "bytes": 28855,
+      "sha256": "bbe5a8d5c06d369ec96abe4103b1e7c5a1de300432f09bd5d47b4b9486348394"
+    },
+    "src/powertrain.py": {
+      "bytes": 19078,
+      "sha256": "9e058c885a41b840fe1aa0844dfaadda96b71bbe9fece323f6aae91cde961b9d"
+    },
+    "src/race.py": {
+      "bytes": 7718,
+      "sha256": "7804a9591ec7dcc979637f5b3f4f4bf758285762b37f0664bd5cfb995a7d1981"
+    },
+    "src/rolling_resistance.py": {
+      "bytes": 629,
+      "sha256": "c415e91c8fefd5721fd07855d351efe4de47c2418f199ccbc5641442eaa092f4"
+    },
+    "src/rotor_dynamics.py": {
+      "bytes": 1369,
+      "sha256": "7f349c5063fd75076ae5ec19ba4ca4931a51e7736f1a7f06cac4d3b57c2ef4f3"
+    },
+    "src/scene.py": {
+      "bytes": 29276,
+      "sha256": "e4e2e5ee349d77663e28c5170142890d3aea7740a425ae5ac8d9afec75345b1f"
+    },
+    "src/sensor_run.py": {
+      "bytes": 2238,
+      "sha256": "05eede75600bf3716289faa1db09d1a3fcb07d068e45214fea2fd2e8f9b75dc1"
+    },
+    "src/sensor_sampling.py": {
+      "bytes": 5494,
+      "sha256": "2fdab3c2b5eb7ba60d842d39f28347236dfe599a24ddb8d475098e9e00e5027e"
+    },
+    "src/session.py": {
+      "bytes": 18490,
+      "sha256": "c9290bb5b29d67789f237a2132399ad8360993617d43a0ee4e1a256e10b90cd1"
+    },
+    "src/session_clock.py": {
+      "bytes": 6493,
+      "sha256": "9f883d02002bfeb935634d81ad76d95f5c017ec03cfd57309d91ccc8475c0132"
+    },
+    "src/session_process.py": {
+      "bytes": 22687,
+      "sha256": "2e68070847b5111d801d865829f53290f8cd6c655d54980f2aeadf84ee5fd05b"
+    },
+    "src/settings.py": {
+      "bytes": 8023,
+      "sha256": "1b869c80d8e12bb82aa0425e3a5e8f9540e27c9def65aae78e76edc0c2dd6f4f"
+    },
+    "src/shaft_transmission.py": {
+      "bytes": 5324,
+      "sha256": "76fced6112a1b71e8eaa7d62184be7ddb23cba3d270288d439e256012e4d36ed"
+    },
+    "src/simulation.py": {
+      "bytes": 44221,
+      "sha256": "9a81011cc35e32ba7a35bbb9465fbf34e954c90e19004925047cdee4abe5c856"
+    },
+    "src/skins.py": {
+      "bytes": 4646,
+      "sha256": "bbfbf9ee5fe018139e0021ee9e09081bd7b09eb33d5dc0229a8735153e227ddf"
+    },
+    "src/sky_dome.py": {
+      "bytes": 2209,
+      "sha256": "45437938b4e2c47cf68fcb84da16553143957bd2d0c1696a44781c1d0fb83a4b"
+    },
+    "src/snapshot_wire.py": {
+      "bytes": 3877,
+      "sha256": "db8dbf8bf3e256c431e15383db08603173054aa95174b8403111e8fea864369a"
+    },
+    "src/soundscape.py": {
+      "bytes": 4549,
+      "sha256": "1671c176b8ec8e26eaabd3ab143d51e1ee6e6dafea52b305682a54c5ea4e3415"
+    },
+    "src/state_estimation.py": {
+      "bytes": 9450,
+      "sha256": "8bd95cd387e9aadf6ce10169c1b38a6739f12368f8c80def2d686432da31389b"
+    },
+    "src/static_support_read.h": {
+      "bytes": 9213,
+      "sha256": "9440f7da1b72304a27429e7a9f8d75cb652c758351621718d7e90bb9937ad5ac"
+    },
+    "src/streamed_road.py": {
+      "bytes": 4463,
+      "sha256": "8c9d2279c34e5e5e280166ef19187f4a454917981a9f6af0dca00d9542eecd9a"
+    },
+    "src/suspension.py": {
+      "bytes": 4556,
+      "sha256": "860c094ea510c6100a7f4ff7c72d00195098a00de32ceebd2e45aded6dd21081"
+    },
+    "src/suspension_contacts.py": {
+      "bytes": 16650,
+      "sha256": "629357a1f3aeaf7b465c3817ac70300ed365f8426141f422cf48d274bd5155cb"
+    },
+    "src/suspension_geometry.py": {
+      "bytes": 4067,
+      "sha256": "8ddb772b1be417f85e165d91ad38e7c5a276838c829dacc97b328b78a5b5f998"
+    },
+    "src/suspension_kinematics.py": {
+      "bytes": 10912,
+      "sha256": "21b4e03ec5b94ca08963be73b57b8c6452cb1eec8f52e22c36be9e2dcf146b90"
+    },
+    "src/suspension_query_batch.h": {
+      "bytes": 3951,
+      "sha256": "1699742bce978a0d2a65266069755c93369e8cb563683b5a65c0443e9e1e365d"
+    },
+    "src/test_track.py": {
+      "bytes": 964,
+      "sha256": "ae90f12ab8647ec859ad7931f501b3183371a1fa11936c9edeb59c882db72cfa"
+    },
+    "src/tire_aligning.py": {
+      "bytes": 2428,
+      "sha256": "e9143d6531e6a835f0d803a91a24333c80122a3ce23240f35222489558fc6a30"
+    },
+    "src/tire_calibration.py": {
+      "bytes": 12798,
+      "sha256": "e9c1f5a64691e939c7c70da54c54abfe119eb3a7565e2df69b42a6a2c766760c"
+    },
+    "src/tire_compliance.py": {
+      "bytes": 2635,
+      "sha256": "aadcdd908370c88e1aa6bdf5654ec5b3034ae3dfa24dc720a1aeb48c3ca75bff"
+    },
+    "src/tire_coupling.py": {
+      "bytes": 9482,
+      "sha256": "35be2cf23fe2fc299c1d363ea0cdec905f5912c62e34cc8b4d335d792f255a59"
+    },
+    "src/tire_drivetrain.py": {
+      "bytes": 51807,
+      "sha256": "95b6bd5443ba76a73fcfeb0d5531d722001b7472859d69179641b94389a6f432"
+    },
+    "src/tire_forces.py": {
+      "bytes": 1019,
+      "sha256": "6e8eee59088ada7bfd94454b269dbf7e2fb09605f087d46b0a1cbefb49e99284"
+    },
+    "src/tire_prepare.h": {
+      "bytes": 5781,
+      "sha256": "14081a216e05548fbfba4393c1baa2ff5a6803f9ee6650773783a180acf99dbe"
+    },
+    "src/tire_properties.py": {
+      "bytes": 591,
+      "sha256": "ba09760f22849d2325d14756f8249be0102fb4f0fa66a9bda910db76f965ae15"
+    },
+    "src/tire_publish.h": {
+      "bytes": 15193,
+      "sha256": "bc05a7cdf12e8f9a003ba3c9a9f3acea7180db3663d4b504ed9abe1770b2d1c7"
+    },
+    "src/tracks.py": {
+      "bytes": 2116,
+      "sha256": "f9d5fef1c7b9f4d808fdcb3074f6e1adbf92a6ee57bcdd04e60fc4637580f42d"
+    },
+    "src/traffic.py": {
+      "bytes": 8048,
+      "sha256": "3e3d4bd44b16226962436bde66ea5bc11559cb59d1475c1df2905a61759a96d0"
+    },
+    "src/traffic_recovery.py": {
+      "bytes": 4483,
+      "sha256": "b455ff05ae1f8dbd524662a831f808f67986699378d54840416c308216072d9a"
+    },
+    "src/transmission_ports.py": {
+      "bytes": 7309,
+      "sha256": "583e7e25c983d23977585e8e43cd9e6241e76650a1a0394f1b098e3683d96b79"
+    },
+    "src/triangle_support.py": {
+      "bytes": 5235,
+      "sha256": "0e51244a04990b5834aa8850ce9695a5f65fb75a70d6d47f0114d9160150e1d3"
+    },
+    "src/ui/__init__.py": {
+      "bytes": 71,
+      "sha256": "75426685c5c3fe93d169378013fd409e12b0fcf56a034bca3a2ecf9af39bb6a4"
+    },
+    "src/ui/countdown.py": {
+      "bytes": 3645,
+      "sha256": "a5ba575189585f43456f4a82e602347e7ff397ed2f73e6b46e1d093c3ad5d9ab"
+    },
+    "src/ui/hud.py": {
+      "bytes": 10485,
+      "sha256": "b7b476cf2bbb2208ef352afcc0c1219d01906900724f977476c06da637c21630"
+    },
+    "src/ui/lab_engineering.py": {
+      "bytes": 5143,
+      "sha256": "1d27c85daa1eab66257444e8cda7d640eb7162a3127e7a3e8f5ff0bbe6f75277"
+    },
+    "src/ui/lab_plot.py": {
+      "bytes": 5293,
+      "sha256": "b791237d40f34de88c8a85377dbd2261ac02b1907a182c7c947f387e60a899d6"
+    },
+    "src/ui/lab_widgets.py": {
+      "bytes": 4254,
+      "sha256": "6f40f97d27a2635d59404f42e46d9f7335d6fd25ec547f816b6cb96bbc7bac62"
+    },
+    "src/ui/lab_workbench.py": {
+      "bytes": 11005,
+      "sha256": "37572f1ba24877cb8830e4a9c3a8d9c5e6ab2c318ed62b2c77bf465e788267fd"
+    },
+    "src/ui/main_menu.py": {
+      "bytes": 6922,
+      "sha256": "b79bb8e1cc02723e7b2632754973f8622f6bf5e1cdd53ce3dcc8fefe8206d860"
+    },
+    "src/ui/parameter_help.py": {
+      "bytes": 12793,
+      "sha256": "638175107852e1e52799cd99ca3b6f48356c51f75a3e5282dfa3f3e122e67118"
+    },
+    "src/ui/theme.py": {
+      "bytes": 1973,
+      "sha256": "c2ab236939a0d45fb6b6d3877b78c91807917edfcfac0c9807df5ff77fb43b8b"
+    },
+    "src/unsprung_body.py": {
+      "bytes": 10094,
+      "sha256": "b27a24f324f7455f73681e4b036a33aad70b530dbba862b7e470362553f86586"
+    },
+    "src/unsprung_contact.py": {
+      "bytes": 6269,
+      "sha256": "2b0274b1fdc93e7d61e6243ff9930296ed29d4138fde5ccff10686e4b26682e8"
+    },
+    "src/unsprung_drivetrain.py": {
+      "bytes": 5515,
+      "sha256": "bdb1168da15bdc74ffc497e0ad2260fc6e29f73a88cd41c7adc5a272a17c28f7"
+    },
+    "src/unsprung_dynamics.py": {
+      "bytes": 5918,
+      "sha256": "e692481ea10d26e4ca798fa0e59ca0c5bec08b0b436c754139da28c966d7a97a"
+    },
+    "src/unsprung_geometry.py": {
+      "bytes": 2151,
+      "sha256": "7913408b04a0c4cde7dcbfdb370047001b91ae97e7230f3e64bc40db59012dc0"
+    },
+    "src/unsprung_joint.py": {
+      "bytes": 12108,
+      "sha256": "7e879cb43095f8044691819c11e089d2fef405011e3db1a0c1e93ce7fb1aa4b3"
+    },
+    "src/unsprung_state.py": {
+      "bytes": 783,
+      "sha256": "f065daff79fa083975c9ddf5ec30d6ab6be432d7cbd1c1cc2907a505189d1275"
+    },
+    "src/vehicle.py": {
+      "bytes": 27530,
+      "sha256": "873b996874f24b88cc9fe4c8394619eafdca6e10426bf52b96132ec43806ee43"
+    },
+    "src/vehicle_brakes.py": {
+      "bytes": 1374,
+      "sha256": "a2f230cf732ef4420d3c8d58fa9fb6f29a899f3cfc1a64181f0c7ae08e9d4dbd"
+    },
+    "src/vehicle_collision.py": {
+      "bytes": 2416,
+      "sha256": "3b10a6b5bf79d9c4e7439810d51aac653e98721f8b82c9ee1bf43f0dabff5874"
+    },
+    "src/vehicle_config.py": {
+      "bytes": 17196,
+      "sha256": "cbc96d237575562d769266aba80b31d80abd1d67f2d390f4620d4ae172557a83"
+    },
+    "src/vehicle_contacts.py": {
+      "bytes": 1881,
+      "sha256": "36a2c5c815b3ffdc43f1aae3bcd71cd7050246b26aea51977161cb83f63e60c0"
+    },
+    "src/vehicle_controls_native.h": {
+      "bytes": 20337,
+      "sha256": "07cf7968f79a285fd4f79f70d6bfc9948aeee85e8f5b9447986d3afa80ee1480"
+    },
+    "src/vehicle_designs.py": {
+      "bytes": 2293,
+      "sha256": "30ecf47eb4a53694076554c9c62db982d624c3aa0e81816ee2bea31c9aeaf093"
+    },
+    "src/vehicle_dynamics.py": {
+      "bytes": 1994,
+      "sha256": "56564b31ed5e8c29a2063d95cb28c17c5b13cc41d1b9c15ca4e12a23a288c140"
+    },
+    "src/vehicle_parameter_info.py": {
+      "bytes": 13258,
+      "sha256": "6a08120c92e3be656e336f67351ebe52fcd2f140f5ba4a1e5ac2376ebbc669a1"
+    },
+    "src/vehicle_parameters.py": {
+      "bytes": 7532,
+      "sha256": "028402f3be34a5c57b30043432cf7d0535a5ff8d561bcd1629223ed05ca6170d"
+    },
+    "src/vehicle_stability.py": {
+      "bytes": 5027,
+      "sha256": "d1afc24fb5fa79d549354cdfc4bdeac79be2902586069cc314136a4196e4bee0"
+    },
+    "src/vehicle_state.py": {
+      "bytes": 6176,
+      "sha256": "bdf1e0028b1595ea5dd48a7815b3788679d3dc3dd82e74e310392c977648c395"
+    },
+    "src/vehicle_steering.py": {
+      "bytes": 1604,
+      "sha256": "d80c07aaea8a4468eda9e6796fceb5714b65b1cd5af3d3f48792773db60e5b34"
+    },
+    "src/vehicle_suspension.py": {
+      "bytes": 15089,
+      "sha256": "d3c70cb8a621d894a5bec696c9c437dccb71612ec79c19611a3aefcf87553f2f"
+    },
+    "src/vehicle_tire_step.py": {
+      "bytes": 8165,
+      "sha256": "f5d35ecbd01f7ed38a5a1e0101c950a60b917dfe05011fb2ae67fd72017e161e"
+    },
+    "src/vehicle_tires.py": {
+      "bytes": 33017,
+      "sha256": "129e8064b2e83b906fa27b9a9b70df5cbce7b9128f7dd54f6082075e5cf02778"
+    },
+    "src/vehicle_traction.py": {
+      "bytes": 1584,
+      "sha256": "9de483fd20d23611c3ac6a354e0148310c81e710e476746a44705e32463f45fe"
+    },
+    "src/vehicle_unsprung.py": {
+      "bytes": 20428,
+      "sha256": "0ac4dac761a40a29e321596f3d4fe188e1338c832f53154b6591d1e650655234"
+    },
+    "src/vehicle_visual.py": {
+      "bytes": 5382,
+      "sha256": "6207340d21e244fd2276e803ea429b51ae8f1794366b9b88adb8d636a7ec60ab"
+    },
+    "src/wheel_contact_kernels.c": {
+      "bytes": 119507,
+      "sha256": "98718dc1cd6d5adfca508d5280a2a061eae40399c90ea73d635aaec736868f1b"
+    },
+    "src/wheel_contact_kernels.cp314-win_amd64.pyd": {
+      "bytes": 169472,
+      "sha256": "31b4484afd7d41390ad786409870c45ea4727fa9f8845247e9e617f583bbcf95"
+    },
+    "src/wheel_convex_distance.h": {
+      "bytes": 16914,
+      "sha256": "6dfb6e5c421895966bb4d9447bd4161b686e04bf24edb31c8946b3865a1a63bb"
+    },
+    "src/wheel_dynamics.py": {
+      "bytes": 9084,
+      "sha256": "134aca631bee4fb0d80fafa6ded1c3a9ca722fa262fd09edcbeff6a1927a6e08"
+    },
+    "src/wheel_envelope.py": {
+      "bytes": 8741,
+      "sha256": "29491083c000660fa16deb73e0dd7f7f94bed3e64880b232be50ecefbde4fa04"
+    },
+    "src/wheel_geometry.py": {
+      "bytes": 1317,
+      "sha256": "25be660293a3f9160a9375a7301b51d64dfcb6d14b9386003ca0a5d7609d7179"
+    },
+    "src/world_props.py": {
+      "bytes": 2012,
+      "sha256": "20bdad65716f9d63ffd22cf5138439f761408c95830fc36696298c694405291f"
+    },
+    "src/world_step.py": {
+      "bytes": 5100,
+      "sha256": "6c6bc29da669193331d25109607bac1ab245ff78e4a2b72bc6fae6767c6fec5b"
+    },
+    "tests/test_lab_ride.py": {
+      "bytes": 3603,
+      "sha256": "848384dd2edcf7e9844fec98d5f99d091f0889900ecc094c14c900646b915cbe"
+    },
+    "tests/test_vehicle_unsprung.py": {
+      "bytes": 6354,
+      "sha256": "0c9bd003d22e4fe7ac86468521c1d257295f073125175dc3f86a66f67855c658"
+    },
+    "tools/lab_ride_ui_check.py": {
+      "bytes": 4595,
+      "sha256": "88cf952ea294ba4c7ed71aee5458940ccb7d8a5915c5fa23ce888560370034cb"
+    },
+    "tools/physics/lab_ride_check.py": {
+      "bytes": 3236,
+      "sha256": "ef3967315b0e758d437596ab1ddb6123ee520b4b840de3e88e2379395416beb7"
+    },
+    "final-model-fingerprint.json": {
+      "bytes": 12027,
+      "sha256": "f00291c4a67db8277483babd9cb3938dea5004400a7d80d4e5391d055eb5a5e6"
+    }
+  },
+  "executed_source_matches_all_three_records": true,
+  "raw_zip_sha256": "e03a7995fd31777cd8ac7efd402179e2b4182ecfbad4a01c5d13069eaa0ffd6c",
+  "source_zip_sha256": "fb68a45aca77b7698da0cfe2318a86fe42f81987d603fcf7ff95fad1a249ff58"
+}

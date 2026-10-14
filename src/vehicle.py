@@ -429,7 +429,14 @@ class Vehicle:
         if not self.coupled_suspension:
             self._wheel_contacts = read_wheel_contacts(self._vehicle, self.on_asphalt)
         if self.config.unsprung_enabled:
-            observe_unsprung(self,self._contact_tick)
+            previous = self._unsprung_observation
+            current = observe_unsprung(self,self._contact_tick)
+            # 完成步速度差提供惯性加速度；不把车身坐标分量的变化误当成加速度。
+            self._unsprung_observation = replace(current,
+                sprung_acceleration=tuple((v-old)/FIXED_DT for v,old in zip(current.sprung_velocity,previous_velocity)),
+                total_center_acceleration=tuple((v-old)/FIXED_DT for v,old in zip(current.total_center_velocity,previous.total_center_velocity)),
+                wheel_accelerations=tuple(tuple((a-b)/FIXED_DT for a,b in zip(v,old))
+                    for v,old in zip(current.wheel_velocities,previous.wheel_velocities)))
         else:
             self.tires.observe(self._chassis, self._wheel_contacts, self._contact_tick)
         if self.config.finite_drivetrain:

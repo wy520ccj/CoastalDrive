@@ -4,9 +4,12 @@ import math
 from dataclasses import asdict, dataclass, replace
 from time import perf_counter
 
+from panda3d.bullet import BulletBoxShape, BulletRigidBodyNode
+from panda3d.core import BitMask32, TransformState, Vec3
+
 from driving_experiment import DrivingExperiment, ExperimentOptions
 from driving_modes import DrivingMode
-from lab_maneuvers import path_command, path_error
+from lab_maneuvers import bump_geometry, path_command, path_error
 from lab_records import model_fingerprint
 from lab_signals import sample_signals
 from vehicle_contacts import read_wheel_contacts
@@ -15,7 +18,7 @@ from vehicle_state import FIXED_DT, VehicleCommand
 
 MANEUVERS = {"braking": "直线制动", "step_steer": "阶跃转向", "circle": "固定转角",
              "sine_steer": "正弦转向", "manual": "执行器输入", "constant_radius": "定圆试验",
-             "double_lane_change": "参考双移线", "split_braking": "对开附着制动"}
+             "double_lane_change": "参考双移线", "split_braking": "对开附着制动", "ride_bump":"单侧凸起 / 轮跳"}
 
 
 @dataclass(frozen=True)
@@ -34,6 +37,9 @@ class LabOptions:
     radius_m: float = 60.
     right_friction: float = .3
     tire_reference_load: float | None = None
+    bump_height_m: float = .01
+    bump_length_m: float = .9
+    bump_distance_m: float = 6.
 
     def __post_init__(self):
         design = vehicle_design(self.vehicle_id)
@@ -50,6 +56,9 @@ class LabOptions:
         if self.tire_reference_load is not None and (
                 not math.isfinite(self.tire_reference_load) or self.tire_reference_load <= 0):
             raise ValueError("轮胎标定基准轮荷须为有限正值N；留空采用车型轮胎数据")
+        if (not all(math.isfinite(v) for v in (self.bump_height_m,self.bump_length_m,self.bump_distance_m))
+                or not .001<=self.bump_height_m<=.05 or not .1<=self.bump_length_m<=5. or not 2.<=self.bump_distance_m<=100.):
+            raise ValueError("凸起高度须为1～50mm、长度0.1～5m、距起点2～100m")
 
 
 LAB_DEFAULTS = LabOptions()
@@ -71,6 +80,8 @@ class LabExperiment:
         if options.tire_reference_load is not None:
             config = replace(config, tire_reference_load=options.tire_reference_load)
         self.config = config
+        if options.maneuver=="ride_bump" and not config.unsprung_enabled:
+            raise ValueError("轮跳工况需要独立轮心模型，请先导入对应工程配置")
         self.source_start = model_fingerprint()
         self.experiment = DrivingExperiment(config, ExperimentOptions(seed=options.seed, track="lab"))
         self.compute_seconds = 0.
@@ -92,6 +103,8 @@ class LabExperiment:
             # 先在真实固定步释放落地锁车制动，再施加研究初速；不把预载压力带入试验。
             for _ in range(max(1, math.ceil(8*config.braking.response_time/FIXED_DT))):
                 simulation.step(initial_command)
+            if options.maneuver=="ride_bump":
+                install_bump(simulation,options,config)
             # 只在初始化设置滚动初值；试验中的姿态/轮速全部由真实物理推进。
             player = simulation.player
             player.initialize_rolling(options.speed_kph/3.6)
@@ -127,6 +140,8 @@ class LabExperiment:
         options = self.options
         if options.maneuver == "manual":
             return self.manual_command
+        if options.maneuver=="ride_bump":
+            return VehicleCommand(gear=0,clutch=0.)
         if options.maneuver in ("constant_radius", "double_lane_change"):
             return path_command(options, self.current.player, self.snapshots[0].player,
                                 self.config, self.speed_integral)
@@ -206,3 +221,16 @@ class LabExperiment:
         if not self.closed:
             self.experiment.close()
             self.closed = True
+
+
+def install_bump(simulation, options, config):
+    """左侧实体路面刺激；几何与碰撞留在唯一世界，运行中不移动道路或车轮。"""
+    center, half = bump_geometry(options, simulation.player.reference_pose().getPos(), config)
+    body = BulletRigidBodyNode("lab-left-bump")
+    shape = BulletBoxShape(Vec3(*half))
+    shape.setMargin(0.)
+    body.addShape(shape)
+    body.setTransform(TransformState.makePos(Vec3(*center)))
+    body.setIntoCollideMask(BitMask32(7))
+    simulation._world.attachRigidBody(body)
+    simulation._prop_bodies.append(body)

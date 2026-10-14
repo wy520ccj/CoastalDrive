@@ -9,7 +9,12 @@ from physics_packet_kernels import encode
 from lab_experiment import LabExperiment, LabOptions
 from lab_records import LabRecord, export_record, load_record, recalculate
 from simulation import Simulation
-from snapshot_wire import _pre_unsprung_layout, decode_snapshots, encode_snapshots
+from snapshot_wire import (
+    _pre_kinematics_layout,
+    _pre_unsprung_layout,
+    decode_snapshots,
+    encode_snapshots,
+)
 from vehicle_designs import REFERENCE_DESIGN
 from vehicle_parameters import config_from_document, grouped_parameters
 from vehicle_state import VehicleCommand
@@ -38,7 +43,9 @@ def test_unique_simulation_owns_five_vehicle_bodies_and_reads_actual_positions()
         assert world.getNumRigidBodies()==6 and world.getNumConstraints()==4
         car = simulation.player
         assert car._chassis.getMass()==1040.
+        previous = simulation.snapshot().player.unsprung_state
         for _ in range(16):
+            previous = simulation.snapshot().player.unsprung_state
             simulation.step(VehicleCommand(gear=0,clutch=0.))
         state = simulation.snapshot().player
         assert state.unsprung_state is not None and state.suspension_state is None
@@ -48,8 +55,17 @@ def test_unique_simulation_owns_five_vehicle_bodies_and_reads_actual_positions()
         mass = state.unsprung_state
         expected = (1040.*np.array(mass.sprung_position)+40.*np.array(mass.wheel_positions).sum(axis=0))/1200.
         assert mass.total_center_position==pytest.approx(expected,abs=1e-12)
+        weighted_velocity = (1040.*np.array(mass.sprung_velocity)+40.*np.array(mass.wheel_velocities).sum(axis=0))/1200.
+        assert mass.total_center_velocity==pytest.approx(weighted_velocity,abs=1e-12)
+        assert mass.total_center_acceleration==pytest.approx(
+            (weighted_velocity-np.array(previous.total_center_velocity))*120,abs=1e-11)
         snapshot = simulation.snapshot()
+        assert state.unsprung_state.sprung_acceleration is not None
+        assert state.unsprung_state.wheel_accelerations is not None
         assert decode_snapshots(encode_snapshots((snapshot,)))[0]==snapshot
+        old = decode_snapshots(encode(_pre_kinematics_layout,(snapshot,)))[0].player.unsprung_state
+        assert old.sprung_acceleration is None and old.wheel_accelerations is None
+        assert old.wheel_positions == state.unsprung_state.wheel_positions
         legacy = decode_snapshots(encode(_pre_unsprung_layout,(snapshot,)))[0]
         assert legacy.player.unsprung_state is None
         assert legacy.player.wheel_dynamics==snapshot.player.wheel_dynamics

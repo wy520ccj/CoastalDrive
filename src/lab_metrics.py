@@ -4,7 +4,7 @@ import math
 from itertools import pairwise
 from statistics import mean
 
-VERSION = "coastal-engineering-metrics-v1"
+VERSION = "coastal-engineering-metrics-v2"
 WHEELS = ("fl", "fr", "rl", "rr")
 
 
@@ -82,8 +82,15 @@ def yaw_gain(rows, maneuver, onset, reason):
 
 
 def engineering_analysis(rows, snapshots, options, reason):
-    results = [mfdd(rows, [state.player.position for state in snapshots], options["maneuver"], reason),
-               yaw_gain(rows, options["maneuver"], options["onset"], reason)]
+    # 原记录的刚体通道保持；新模型的制动距离/稳态速度取整车质量加权CG。
+    motion_rows, positions = [], []
+    for row, snapshot in zip(rows, snapshots, strict=True):
+        state = snapshot.player.unsprung_state
+        motion_rows.append({**row, "horizontal_speed": math.hypot(*state.total_center_velocity[:2])}
+                           if state is not None else row)
+        positions.append(state.total_center_position if state is not None else snapshot.player.position)
+    results = [mfdd(motion_rows, positions, options["maneuver"], reason),
+               yaw_gain(motion_rows, options["maneuver"], options["onset"], reason)]
     for key, label, unit in (("beta", "峰值车身侧偏", "deg"), ("roll", "峰值车身侧倾", "deg"),
                              ("ltr_front", "峰值前轴左右轮荷差比", "1"), ("ltr_rear", "峰值后轴左右轮荷差比", "1")):
         values = [abs(row[key]) for row in rows if row[key] is not None]
@@ -94,4 +101,46 @@ def engineering_analysis(rows, snapshots, options, reason):
         results.append(metric(f"utilization_{wheel}", f"峰值附着利用率 {wheel.upper()}", "1",
                               max(values) if values else None,
                               "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义"))
-    return {"version": VERSION, "metrics": results}
+    return {"version": VERSION, "metrics": results,
+            "ride":ride_analysis(rows,snapshots,options,reason)}
+
+
+def ride_analysis(rows, snapshots, options, reason):
+    """单侧凸起的未加权运动与接地描述，不用ISO座椅舒适等级解释质心RMS。"""
+    definitions = (("ride.body_rms","簧上垂向RMS","m/s²"),
+                   ("ride.body_peak","簧上垂向峰值","m/s²"),
+                   ("ride.hub_peak","轮心垂向峰值","m/s²"),
+                   ("ride.max_travel","最大压缩行程","m"),
+                   ("ride.unload_fraction","零轮荷采样比例","1"),
+                   *((f"ride.min_load_{w}",f"最小施力轮荷 {w.upper()}","N") for w in WHEELS),
+                   ("ride.load_cv_fl","FL动态轮荷比","1"))
+    issue = ("需要实体凸起工况" if options["maneuver"]!="ride_bump" else
+             "试验异常终止" if reason in ("failed","collision","reset") else
+             "记录没有独立轮心观测" if any(s.player.unsprung_state is None for s in snapshots) else None)
+    if issue is None:
+        reached = [any(s.player.wheel_contacts[i].in_contact and s.player.wheel_contacts[i].contact_point[2]>0.
+                       for s in snapshots) for i in (0,2)]
+        if not all(reached):
+            issue = "尚未完整刺激左前/左后轮，延长试验或调整初速/凸起距离"
+    window = {"start_s":rows[0]["time"],"end_s":rows[-1]["time"],
+              "basis":"全部已完成步；世界Z惯性加速度，未做频率加权"}
+    if issue is not None:
+        return {"metrics":[metric(key,label,unit,None,issue,window) for key,label,unit in definitions]}
+    complete = rows[1:]
+    body = [float(r["sprung_az"]) for r in complete if r["sprung_az"] is not None]
+    hubs = [abs(float(r[f"hub_az_{w}"])) for r in complete for w in WHEELS if r[f"hub_az_{w}"] is not None]
+    if not body or not hubs:
+        return {"metrics":[metric(key,label,unit,None,"旧观测未保存加速度",window) for key,label,unit in definitions]}
+    static = float(rows[0]["load_fl"])
+    values = (math.sqrt(mean(v*v for v in body)),max(map(abs,body)),max(hubs),
+              max(r[f"travel_{w}"] for r in complete for w in WHEELS),
+              sum(r[f"load_{w}"]<=0. for r in complete for w in WHEELS)/(4*len(complete)),
+              *(min(r[f"load_{w}"] for r in complete) for w in WHEELS),
+              math.sqrt(mean((float(r["load_fl"])-static)**2 for r in complete))/static if static>0. else None)
+    notes = ("簧上CG世界Z加速度RMS，未加权；不是座椅ISO舒适等级",
+             "簧上CG世界Z惯性加速度绝对峰值", "四轮实际速度差的世界Z加速度绝对峰值",
+             "实际轮心相对车身的压缩行程最大值", "四轮Fn=0的完成步占比；不是插值后的精确离地时长",
+             *("末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算" for _ in WHEELS),
+             "sqrt(mean((Fn_FL−初始Fn_FL)^2))/初始Fn_FL，完整区间")
+    return {"metrics":[metric(key,label,unit,float(value) if value is not None else None,note,window)
+                       for (key,label,unit),value,note in zip(definitions,values,notes,strict=True)]}

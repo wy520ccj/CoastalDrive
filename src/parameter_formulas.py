@@ -4,6 +4,16 @@ from parameter_help import ALIASES
 
 # 每项为独立数学行、符号释义。保留近似号，避免把解释式当成实际求解器。
 FORMULAS = {
+    "metric.ride.body_rms": ((
+        r"a_{z,n}=\frac{v_{z,n}-v_{z,n-1}}{\Delta t},\qquad \Delta t=\frac{1}{120}\,\mathrm{s}",
+        r"a_{\mathrm{RMS}}=\sqrt{\frac{1}{N}\sum_{n=1}^{N}a_{z,n}^{\,2}}",
+    ), "vz：实际簧上CG世界Z速度；N：完成步数。等间隔离散样本，不做频率加权。"),
+    "metric.ride.body_peak": ((r"a_{\mathrm{peak}}=\max_n |a_{z,n}|",), "az：簧上CG世界Z惯性加速度。"),
+    "metric.ride.hub_peak": ((r"a_{i,z,n}=\frac{v_{i,z,n}-v_{i,z,n-1}}{\Delta t},\qquad a_{\mathrm{peak}}=\max_{i,n}|a_{i,z,n}|",), "vi：实际轮心速度；i遍历四轮。"),
+    "metric.ride.max_travel": ((r"q_{\max}=\max_{i,n} q_{i,n}",), "qi：轮心相对车身导向的压缩行程；正值为压缩。"),
+    "metric.ride.unload_fraction": ((r"p_0=\frac{1}{4N}\sum_{i=1}^{4}\sum_{n=1}^{N}\mathbf{1}_{F_{z,i,n}=0}",), "指示函数在末机械子步实际Fn为零时取1，否则为0。"),
+    "metric.ride.min_load_fl": ((r"F_{z,i,\min}=\min_n F_{z,i,n}",), "Fz：末机械子步实际法向施力；i为指定轮。"),
+    "metric.ride.load_cv_fl": ((r"D_L=\frac{\sqrt{\frac{1}{N}\sum_{n=1}^{N}(F_{z,\mathrm{FL},n}-F_{z,\mathrm{FL},0})^2}}{F_{z,\mathrm{FL},0}}",), "Fn,0：试验初始静载；该比值围绕初始值，未减运行均值。"),
     "unsprung_masses": ((
         r"m_s=M-\sum_i m_i,\qquad \mathbf{c}_s=-\frac{\sum_i m_i\mathbf{r}_i}{m_s}",
         r"\mathbf{I}_s=\mathbf{I}_0-\sum_i P(m_i,\mathbf{r}_i)-P(m_s,\mathbf{c}_s)",
@@ -38,8 +48,9 @@ FORMULAS = {
                          "R/L：同轴右/左轮；轮荷采用完成步采样。"),
     "metric.utilization_fl": ((r"\eta=\frac{\sqrt{F_x^2+F_y^2}}{D_{\mathrm{force}}}",),
                               "Fx/Fy与D采用同一个末机械子步；预算D不是完成步sample_grip。"),
-    "speed": ((r"v_0=\frac{V_0}{3.6},\qquad \omega_0=\frac{v_0}{r_0}",),
-              "V0：输入车速 km/h；v0：初速 m/s；r0：轮胎半径。"),
+    "speed": ((r"v_0=\frac{V_0}{3.6}",
+               r"\omega_{i,0}=\frac{v_{i,x}^{\mathrm{ns}}}{r_{i,\mathrm{load}}}-\boldsymbol{\Omega}\cdot\mathbf{a}_i"),
+              "独立轮心模型：ns为不含自旋的实际胎面纵向速度；rload为加载半径；ai为轮轴。旧刚体初值采用名义半径v0/r0。"),
     "road_friction": ((r"D=\mu F_z\left(\frac{F_z}{F_{z0}}\right)^{p_D-1}",),
                       "D：联合附着力预算；Fz：实际轮荷；Fz0：固定标定轮荷；pD：负荷指数。"),
     "tire_reference_load": ((
@@ -99,4 +110,6 @@ def formula_key(key):
         return "metric.ltr_front"
     if field.startswith("metric.utilization_"):
         return "metric.utilization_fl"
+    if field.startswith("metric.ride.min_load_"):
+        return "metric.ride.min_load_fl"
     return field if field in FORMULAS else None

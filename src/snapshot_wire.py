@@ -24,6 +24,15 @@ _signature = '|'.join(cls.__module__+'.'+cls.__name__+':'+','.join(names)
                       for cls,names in zip(_records,_names)).encode()
 _layout = layout(_records,_names,int.from_bytes(hashlib.sha256(_signature).digest()[:8],'little'))
 
+# 独立轮心首版已有真实速度，但没有发布加速度；旧记录不能虚构这些字段。
+_acceleration_names = {"sprung_acceleration","total_center_acceleration","wheel_accelerations"}
+_pre_kinematics_names = tuple(tuple(name for name in names if name not in _acceleration_names)
+                              if cls is UnsprungState else names for cls,names in zip(_records,_names))
+_pre_kinematics_signature = int.from_bytes(hashlib.sha256('|'.join(
+    cls.__module__+'.'+cls.__name__+':'+','.join(names)
+    for cls,names in zip(_records,_pre_kinematics_names)).encode()).digest()[:8],'little')
+_pre_kinematics_layout = layout(_records,_pre_kinematics_names,_pre_kinematics_signature)
+
 # SIM-ALIGN前的完整快照；新增量的零默认表示当时没有此机制，不回算历史物理。
 _align_names = {"pneumatic_trail", "aligning_moment", "aligning_angular_impulse",
                 "contact_steering_work", "steering_lateral_velocity"}
@@ -47,6 +56,8 @@ def encode_snapshots(states):
 
 
 def decode_snapshots(payload):
+    if payload[:4]==b'CDP1' and int.from_bytes(payload[4:12],'little')==_pre_kinematics_signature:
+        return decode(_pre_kinematics_layout,payload)
     if payload[:4] == b'CDP1' and int.from_bytes(payload[4:12],'little')==_pre_unsprung_signature:
         return decode(_pre_unsprung_layout,payload)
     if payload[:4] == b'CDP1' and int.from_bytes(payload[4:12], 'little') == _legacy_signature:

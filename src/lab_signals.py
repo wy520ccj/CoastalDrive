@@ -12,6 +12,29 @@ class Signal:
     source: str
 
 
+UNSPRUNG_SIGNALS = (
+    Signal("cg_speed", "整车质心车速", "km/h", "mass-weighted actual CG velocity projected on body forward; rigid model uses existing CG speed"),
+    Signal("cg_ax", "质心纵向加速度", "m/s²", "Snapshot.player.unsprung_state.total_center_acceleration projected on current body forward; rigid model uses ax"),
+    Signal("cg_ay", "质心横向加速度", "m/s²", "Snapshot.player.unsprung_state.total_center_acceleration projected on current body right; rigid model uses ay"),
+    Signal("cg_beta", "质心侧偏角 / 右正", "deg", "atan2(CG velocity right, abs(forward)); horizontal speed<=1m/s undefined"),
+    Signal("sprung_z", "簧上质心高度", "m", "Snapshot.player.unsprung_state.sprung_position.z; independent wheel model only"),
+    Signal("sprung_vz", "簧上垂向速度", "m/s", "Snapshot.player.unsprung_state.sprung_velocity.z; world Z"),
+    Signal("sprung_az", "簧上垂向加速度", "m/s²", "Snapshot.player.unsprung_state.sprung_acceleration.z; inertial world Z, unweighted"),
+    *(Signal(f"{field}_{wheel}",f"{label} {wheel.upper()}",unit,
+             f"Snapshot.player.unsprung_state.{attribute}[{index}]{suffix}; independent wheel model only")
+      for field,label,unit,attribute,suffix in (
+          ("hub_z","轮心高度","m","wheel_positions",".z"),
+          ("hub_vz","轮心垂向速度","m/s","wheel_velocities",".z"),
+          ("hub_az","轮心垂向加速度","m/s²","wheel_accelerations",".z"),
+          ("travel_rate","悬架压缩速度","m/s","relative_velocity",""),
+          ("radial","实际径向压缩","m","radial_deflection",""),
+          ("force_radial","施力径向压缩","m","force_radial_deflection",""))
+      for index,wheel in enumerate(("fl","fr","rl","rr"))),
+    *(Signal(f"travel_{wheel}",f"悬架压缩行程 {wheel.upper()}","m",
+             f"Snapshot.player.wheel_contacts[{index}].compression; independent wheel model only")
+      for index,wheel in enumerate(("fl","fr","rl","rr"))),
+)
+
 SIGNALS = (
     Signal("time", "试验时间", "s", "Snapshot.time - initial.time"),
     Signal("tick", "物理拍", "1", "Snapshot.tick; includes initialization ticks"),
@@ -68,9 +91,11 @@ SIGNALS = (
     *(Signal(f"pressure_{wheel}", f"制动压力比例 {wheel.upper()}", "1",
              f"Snapshot.player.brake_states[{index}].pressure")
       for index, wheel in enumerate(("fl", "fr", "rl", "rr"))),
+    *UNSPRUNG_SIGNALS,
 )
 SIGNAL_BY_KEY = {signal.key: signal for signal in SIGNALS}
-PRE_ALIGN_SIGNAL_KEYS = set(SIGNAL_BY_KEY) - {f"{key}_{wheel}"
+PRE_UNSPRUNG_SIGNAL_KEYS = set(SIGNAL_BY_KEY)-{s.key for s in UNSPRUNG_SIGNALS}
+PRE_ALIGN_SIGNAL_KEYS = PRE_UNSPRUNG_SIGNAL_KEYS - {f"{key}_{wheel}"
     for key in ("mz", "trail", "contact_steering_work") for wheel in ("fl", "fr", "rl", "rr")}
 LEGACY_SIGNAL_KEYS = {"time", "tick", "speed", "ax", "ay", "yaw", "steering", "steering_request",
                       "throttle", "brake", "engine_throttle", "throttle_request", "brake_request",
@@ -114,4 +139,42 @@ def sample_signals(snapshot, command, start_time):
         total = values[f"sample_load_{left}"] + values[f"sample_load_{right}"]
         values[f"ltr_{axle}"] = ((values[f"sample_load_{right}"]-values[f"sample_load_{left}"])/total
                                  if total > 0 else None)
+    sample_unsprung(player,values)
     return values
+
+
+def body_components(vector, quaternion):
+    """惯性向量投影到当前车身轴，不微分旋转坐标分量。"""
+    vector = tuple(map(float,vector))
+    w,x,y,z = map(float,quaternion)
+    norm = math.sqrt(w*w+x*x+y*y+z*z)
+    w,x,y,z = (v/norm for v in (w,x,y,z))
+    right = (1-2*(y*y+z*z),2*(x*y+z*w),2*(x*z-y*w))
+    forward = (2*(x*y-z*w),1-2*(x*x+z*z),2*(y*z+x*w))
+    return sum(a*b for a,b in zip(vector,right)),sum(a*b for a,b in zip(vector,forward))
+
+
+def sample_unsprung(player, values):
+    """工程后处理只读Snapshot；无新自由度的旧记录保留未定义轮跳量。"""
+    values.update({s.key:None for s in UNSPRUNG_SIGNALS})
+    observation = player.unsprung_state
+    if observation is None:
+        values.update(cg_speed=values["speed"],cg_ax=values["ax"],cg_ay=values["ay"],cg_beta=values["beta"])
+        return
+    vx,vy = body_components(observation.total_center_velocity,player.orientation)
+    values.update(cg_speed=vy*3.6,cg_beta=math.degrees(math.atan2(vx,abs(vy)))
+                  if math.hypot(*observation.total_center_velocity[:2])>1 else None,
+                  sprung_z=observation.sprung_position[2],sprung_vz=observation.sprung_velocity[2])
+    if observation.total_center_acceleration is not None:
+        ay,ax = body_components(observation.total_center_acceleration,player.orientation)
+        values.update(cg_ax=ax,cg_ay=ay)
+    if observation.sprung_acceleration is not None:
+        values["sprung_az"] = observation.sprung_acceleration[2]
+    for i,wheel in enumerate(("fl","fr","rl","rr")):
+        values.update({f"hub_z_{wheel}":observation.wheel_positions[i][2],
+                       f"hub_vz_{wheel}":observation.wheel_velocities[i][2],
+                       f"hub_az_{wheel}":None if observation.wheel_accelerations is None else observation.wheel_accelerations[i][2],
+                       f"travel_{wheel}":player.wheel_contacts[i].compression,
+                       f"travel_rate_{wheel}":observation.relative_velocity[i],
+                       f"radial_{wheel}":observation.radial_deflection[i],
+                       f"force_radial_{wheel}":observation.force_radial_deflection[i]})

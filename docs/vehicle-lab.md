@@ -48,3 +48,5 @@
 布局依据用户认可的[生成设计参考](design/vehicle-lab-reference.png)，正文为Source Han Sans SC Bold，标题使用当前品牌字体。默认保持两张主曲线，参数/详细信号折叠；旧VI菜单截图不作为设计依据。规范及生成说明见[设计记录](design/vehicle-lab-design.md)。
 
 自动功能与实际渲染证据见[evidence/LAB/README.md](evidence/LAB/README.md)。T2默认海岸10000拍旧求解失败在隔离本轮入口/场地改动后仍复现；本轮不调整方程、20轮上限或阈值。实验室新工况短测通过不代表整个物理阶段或13车实时Gate通过；人工操作/画面体验待确认。
+
+隔离树新增“单侧凸起/轮跳”：先导入[显式工程预览配置](evidence/SIM-UNSPRUNG-01/production/engineering-preview.json)，选择工况，默认18km/h/3s；高级参数编辑实体凸起高度、长度、距起点。四组曲线分别看总CG、簧上/轮心振动、悬架行程/速度和径向压缩。“工程指标→乘坐/接地”显示十项A/B读数，名称悬停F1看数学公式。前后左轮未完整经过、无独立轮心或异常终止时保留未满足条件原因。质量/径向系数为设计假设，未加权簧上CG加速度不作为座椅舒适认证；[实际结果与限制](evidence/SIM-UNSPRUNG-01/ride/README.md)。该功能未合main，完整力学验证仍进行中。

@@ -14,6 +14,7 @@ from lab_metrics import engineering_analysis
 from lab_signals import (
     LEGACY_SIGNAL_KEYS,
     PRE_ALIGN_SIGNAL_KEYS,
+    PRE_UNSPRUNG_SIGNAL_KEYS,
     SIGNAL_BY_KEY,
     SIGNALS,
     sample_signals,
@@ -147,8 +148,16 @@ def export_record(record, folder, baseline=None):
                                       for analysis in analyses)
                             + f'<td>{item["unit"]}</td><td>{html.escape(item["note"])}</td></tr>'
                             for index, item in enumerate(analyses[-1]["metrics"]))
+    ride_table = "".join(f'<tr><td>{html.escape(item["label"])}</td>'
+                        + "".join(f'<td>{analysis["ride"]["metrics"][i]["value"]:.4g}</td>'
+                                  if analysis["ride"]["metrics"][i]["value"] is not None else '<td>未满足条件</td>'
+                                  for analysis in analyses)
+                        + f'<td>{item["unit"]}</td><td>{html.escape(item["note"])}</td></tr>'
+                        for i,item in enumerate(analyses[-1]["ride"]["metrics"]))
     keys = ("speed", "path_error", "ay", "yaw", "steering", "kappa_fl") if record.metadata["driver"] else (
         "speed", "ax", "yaw", "steering", "kappa_fl", "load_fl")
+    if record.metadata["summary"]["options"]["maneuver"]=="ride_bump":
+        keys = ("sprung_az","hub_az_fl","travel_fl","radial_fl","load_fl","cg_speed")
     plots = "\n".join(plot_svg(records, key) for key in keys)
     summary = html.escape(json.dumps(record.metadata["summary"], ensure_ascii=False, indent=2))
     comparison = changed_conditions(baseline, record) if baseline else {}
@@ -164,7 +173,7 @@ def export_record(record, folder, baseline=None):
 <style>body{{background:#f3efe3;color:#102b3a;font:15px system-ui;max-width:1000px;margin:40px auto;padding:0 24px}}svg{{width:100%;margin:10px 0}}pre{{white-space:pre-wrap;background:#fefcf5;padding:20px;border-radius:8px}}td{{border-bottom:1px solid #c9d3cc;padding:8px}}h1{{color:#247e96}}</style>
 <h1>CoastalDrive · 车辆动力学实验</h1><p>{html.escape(record.metadata["vehicle_name"])} · 120 Hz · 离线固定步</p>
 <p>{html.escape(record.metadata["model_basis"])}</p><p>曲线来自真实物理记录。A 为海蓝，B 为橙色；单次记录为海蓝。制动距离使用完成步的三维行驶距离，停止阈值 |v| ≤ 0.1 m/s。</p>
-<h2>试验结果</h2><pre>{summary}</pre><h2>工程指标</h2><p>列顺序：{"A / B" if baseline else "本次"}。未满足条件的原因及计算区间见engineering.json。</p><table>{metrics_table}</table>{plots}<h2>比较条件</h2><pre>{change_text}</pre>
+<h2>试验结果</h2><pre>{summary}</pre><h2>工程指标</h2><p>列顺序：{"A / B" if baseline else "本次"}。未满足条件的原因及计算区间见engineering.json。</p><table>{metrics_table}</table><h2>乘坐运动与接地</h2><p>世界Z质心/轮心惯性加速度，未作频率加权，不作为ISO座椅舒适等级。实体刺激未完成或旧记录缺少自由度时保留未定义值。</p><table>{ride_table}</table>{plots}<h2>比较条件</h2><pre>{change_text}</pre>
 <h2>信号单位与字段来源</h2><table>{catalog}</table><p>完整配置、命令序列与源码/原生模块摘要见 experiment.json；120 Hz 数据见 signals.csv，动画快照见 snapshots.bin。实际计算耗时不包含初始化与文件导出。</p></html>'''
     (folder/"report.html").write_text(report, encoding="utf-8")
     return folder/"report.html"
@@ -186,7 +195,7 @@ def load_record(folder):
     if not len(samples) == len(snapshots) == len(commands) or not samples:
         raise ValueError("信号、快照与输入记录长度不一致")
     declared = {item["key"] for item in document["signals"]}
-    if (declared not in (LEGACY_SIGNAL_KEYS, PRE_ALIGN_SIGNAL_KEYS, set(SIGNAL_BY_KEY))
+    if (declared not in (LEGACY_SIGNAL_KEYS, PRE_ALIGN_SIGNAL_KEYS, PRE_UNSPRUNG_SIGNAL_KEYS,set(SIGNAL_BY_KEY))
         or any(set(row) != declared for row in samples)):
         raise ValueError("信号字段与当前或旧版完整目录不一致")
     options = LabOptions(**document["summary"]["options"])
