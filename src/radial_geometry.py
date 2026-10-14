@@ -79,6 +79,32 @@ class RadialSurface:
                     if all(abs(exact_point[j])<half[j]-tolerance for j in range(3) if j!=index):
                         distance,normal,wheel,point = float(exact_distance),exact_normal,local_center+lower,exact_point
                         plane = tuple(exact_normal),float(half[index])
+                elif np.count_nonzero(boundary)==2:
+                    # 棱的内部见证点要求法线的自由轴分量为零；在法线锥内解支持函数驻点。
+                    fixed = np.flatnonzero(boundary)
+                    free = int(np.flatnonzero(~boundary)[0])
+                    basis = np.eye(3)[fixed]*np.sign(np.asarray(point)[fixed])[:,None]
+                    edge = np.zeros(3)
+                    edge[fixed] = np.sign(np.asarray(point)[fixed])*half[fixed]
+
+                    def edge_support(angle,basis=basis,edge=edge):
+                        direction = np.cos(angle)*basis[0]+np.sin(angle)*basis[1]
+                        derivative = -np.sin(angle)*basis[0]+np.cos(angle)*basis[1]
+                        lower = np.asarray(cylinder_support(tuple(-direction),tuple(local_axis),config.wheel_radius,
+                            config.wheel_width/2,config.wheel_shoulder_radius,config.wheel_crown_height))
+                        return direction,lower,float(np.dot(derivative,local_center+lower-edge))
+
+                    left,right = 0.,np.pi/2
+                    if edge_support(left)[2]>0. and edge_support(right)[2]<0.:
+                        for _ in range(52):
+                            middle = (left+right)/2
+                            if edge_support(middle)[2]>0.:left=middle
+                            else:right=middle
+                        exact_normal,lower,_slope = edge_support((left+right)/2)
+                        exact_distance = np.dot(exact_normal,local_center+lower-edge)
+                        exact_point = local_center+lower-exact_distance*exact_normal
+                        if abs(exact_point[free])<half[free]-tolerance:
+                            distance,normal,wheel,point = float(exact_distance),exact_normal,local_center+lower,exact_point
             normal = self.frame.T@normal
             normal /= np.linalg.norm(normal)
             world_plane = None if plane is None else (tuple(normal),float(plane[1]-np.dot(plane[0],self.translation)))

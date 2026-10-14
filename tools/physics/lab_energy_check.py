@@ -13,6 +13,8 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
+from unsprung_step_checkpoint import save_step
+
 import simulation as simulation_module
 from lab_experiment import LabExperiment, LabOptions
 from lab_records import model_fingerprint
@@ -170,6 +172,12 @@ def balance(source, step, old, new):
             "inertial_bias_work":-h*np.dot(step.velocity[:10],source.hardware.mechanical.inertial_bias)}
 
 
+def write_rows(path,rows):
+    with path.open("w",encoding="utf-8",newline="") as stream:
+        writer = csv.DictWriter(stream,fieldnames=rows[0])
+        writer.writeheader();writer.writerows(rows)
+
+
 def check(output, maneuver, duration, substeps):
     output.mkdir(parents=True,exist_ok=False)
     executed = Path(__file__).read_bytes()
@@ -179,6 +187,18 @@ def check(output, maneuver, duration, substeps):
     run = LabExperiment(options,config=config)
     rows, pending, peak = [],[],[]
     original_commit, original_advance = UnsprungAdvanceInput.commit,simulation_module.advance_world
+    original_solve = UnsprungAdvanceInput.solve
+
+    def solve(source,**kwargs):
+        try:
+            return original_solve(source,**kwargs)
+        except ArithmeticError as error:
+            save_step(source,output/"failed-step.pkl")
+            failure = {"error":str(error),"completed_steps":len(rows),"completed_time":len(rows)*source.dt,
+                       "summary":run.summary(),"source":model_fingerprint(),"config":asdict(config)}
+            (output/"failure.json").write_text(json.dumps(failure,indent=2,ensure_ascii=False),encoding="utf-8")
+            write_rows(output/"completed-substeps.csv",rows)
+            raise
 
     def commit(source, car, result):
         old_angles = tuple(w.steering for w in car.tires.states[:2])
@@ -208,6 +228,7 @@ def check(output, maneuver, duration, substeps):
         return original_advance(*args,observe=after,**kwargs)
 
     UnsprungAdvanceInput.commit,simulation_module.advance_world = commit,advance
+    UnsprungAdvanceInput.solve = solve
     try:
         while not run.done:
             command = VehicleCommand(steering=3.,throttle=.4,brake=.15,gear=1,clutch=.7) if maneuver=="manual" else None
@@ -225,6 +246,7 @@ def check(output, maneuver, duration, substeps):
         print(json.dumps({"reason":run.reason,"steps":len(rows),"energy_residual_max":result["max_abs"]["actual_energy_residual"],"energy_residual_sum":result["sum"]["actual_energy_residual"]}))
     finally:
         UnsprungAdvanceInput.commit,simulation_module.advance_world = original_commit,original_advance
+        UnsprungAdvanceInput.solve = original_solve
         run.close()
 
 

@@ -59,6 +59,9 @@ __all__ = [
     "interpolate",
 ]
 
+# 实验场从局部原点创建，避免继承测试道路95m横向坐标的单精度位移量化。
+LAB_SPAWN = (0.,0.,SPAWN[2])
+
 
 @dataclass(frozen=True)
 class Snapshot:
@@ -99,7 +102,7 @@ class Simulation:
             "lab": lambda x, y: True,
             "endless": lambda x, y: abs(x) <= 6.75,
         }[track]
-        self.spawn = HIGHWAY_SPAWN if track in ("highway", "endless") else SPAWN
+        self.spawn = LAB_SPAWN if track=="lab" else HIGHWAY_SPAWN if track in ("highway", "endless") else SPAWN
         self.closed = False
         from physics_workers import PhysicsWorkers
 
@@ -127,7 +130,7 @@ class Simulation:
         self._reset_contact_history()
         self.seed = seed
         self.origin_y = 0.0
-        self.spawn = HIGHWAY_SPAWN if self.track in ("highway", "endless") else SPAWN
+        self.spawn = LAB_SPAWN if self.track=="lab" else HIGHWAY_SPAWN if self.track in ("highway", "endless") else SPAWN
         self.road = Road(self.track, seed=seed, shape=self.road_shape)
         if self.track == "endless" and not self.road.curve:
             self.on_asphalt = lambda x, y: abs(x) <= 6.75

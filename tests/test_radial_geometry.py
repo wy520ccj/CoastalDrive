@@ -52,6 +52,7 @@ def test_ground_and_finite_bump_select_continuous_largest_real_compression():
     bump.setIntoCollideMask(BitMask32.bit(0))
     world.attachRigidBody(ground); world.attachRigidBody(bump)
     roads = RadialRoads(world,body,REFERENCE_DESIGN)
+    actual_top = bump.getTransform().getPos().z+shape.getHalfExtentsWithoutMargin().z
     previous = None
     seen = set()
     try:
@@ -61,6 +62,9 @@ def test_ground_and_finite_bump_select_continuous_largest_real_compression():
             # 独立圆/角点深度与无限平面深度取最大，切换没有几何能量跳变。
             expected = max(.33-.315,.33-math.hypot(y,.315-.01))
             assert result.deflection[0]==pytest.approx(expected,abs=2e-9)
+            if result.hits[0].node==bump:
+                distance = math.hypot(y,.315-actual_top)
+                assert result.normals[0]==pytest.approx((0.,y/distance,(.315-actual_top)/distance),abs=2e-13)
             if previous is not None:
                 assert abs(result.deflection[0]-previous)<=.001
             previous = result.deflection[0]
