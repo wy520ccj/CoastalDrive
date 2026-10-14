@@ -102,6 +102,24 @@ def balance(source, step, old, new):
               +np.sum(step.port_heat)+step.rolling_heat+step.engine_heat+projection)
     residual = kinetic+gravity+elastic+losses-step.engine_work-external-steering_gyro-step.steering_work-step.road_work
     native_kinetic = kinetic-step.kinetic_change
+    predicted_wheels = source.hardware.mechanical.wheel_jacobians@step.velocity[:10]
+    predicted_body,predicted_angular = step.velocity[:3],step.velocity[3:6]
+    body_defect = .5*mass.mass*np.dot(new["velocity"]-predicted_body,new["velocity"]+predicted_body)
+    wheel_defect = .5*np.sum(np.asarray(mass.wheel_masses)[:,None]
+        *(new["wheel_velocity"]-predicted_wheels)*(new["wheel_velocity"]+predicted_wheels))
+    angular_defect = .5*np.dot(new["angular"]-predicted_angular,
+        old["inertia"]@(new["angular"]+predicted_angular))
+    inertia_defect = .5*new["angular"]@(new["inertia"]-old["inertia"])@new["angular"]
+    predicted_spin = np.r_[step.velocity[10:],step.downstream_omega]
+    spin_defect = .5*np.dot(old["spin_inertias"],(new["spin"]-predicted_spin)*(new["spin"]+predicted_spin))
+    if abs(native_kinetic-body_defect-wheel_defect-angular_defect-inertia_defect-spin_defect)>1e-8:
+        raise ArithmeticError("原生动能差的独立分量不闭合")
+    # 单精度舍入仅作参照；不写回速度，也不把误差当耗散。
+    rounded_body = predicted_body.astype(np.float32).astype(float)
+    rounded_wheels = predicted_wheels.astype(np.float32).astype(float)
+    rounding_defect = .5*mass.mass*np.dot(rounded_body-predicted_body,rounded_body+predicted_body)
+    rounding_defect += .5*np.sum(np.asarray(mass.wheel_masses)[:,None]
+        *(rounded_wheels-predicted_wheels)*(rounded_wheels+predicted_wheels))
     elastic_geometry = elastic-step.potential_change+projection
     spring_geometry = new["spring"]-step.normal.suspension_potential
     radial_rates = np.asarray(source.config.tire_radial_stiffness)*np.array([hit is not None for hit in source.geometry.hits])
@@ -133,6 +151,12 @@ def balance(source, step, old, new):
             "steering_gyro_work":steering_gyro,"contact_steering_work":step.steering_work,
             "moving_road_work":step.road_work,"actual_energy_residual":residual,
             "frozen_energy_residual":step.energy_error,"native_kinetic_defect":native_kinetic,
+            "native_body_translation_defect":body_defect,"native_wheel_translation_defect":wheel_defect,
+            "native_body_angular_defect":angular_defect,"native_inertia_transport_defect":inertia_defect,
+            "native_spin_defect":spin_defect,"float32_translation_rounding_defect":rounding_defect,
+            "native_translation_beyond_rounding":body_defect+wheel_defect-rounding_defect,
+            "native_body_velocity_error":float(np.max(np.abs(new["velocity"]-predicted_body))),
+            "native_wheel_velocity_error":float(np.max(np.abs(new["wheel_velocity"]-predicted_wheels))),
             "elastic_geometry_defect":elastic_geometry,"geometry_work_defect":geometry_work,
             "spring_geometry_defect":spring_geometry,"radial_geometry_defect":radial_geometry,
             "tangent_geometry_defect":tangent_geometry,
