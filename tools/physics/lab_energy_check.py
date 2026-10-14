@@ -41,6 +41,9 @@ def state(car, angles):
             "wheel_velocity":velocities,"inertia":hardware.mechanical.world_inertia,"mass":mass,
             "spin":spin,"spin_inertias":inertias,"spring":spring,"radial":tire,"tangent":tangent,
             "deflection":geometry.deflection,"compression":q+car._unsprung_reference,
+            "normals":geometry.normals,"normal_offsets":geometry.normal_offsets,"axes":hardware.axes,
+            "road_nodes":tuple(None if hit is None else hit.node.getName() for hit in geometry.hits),
+            "contact_points":tuple(None if hit is None else hit.point for hit in geometry.hits),
             "gravity":np.array([tuple(car._chassis.getGravity()),*(tuple(p.getGravity()) for p in car._wheel_guides.points)]),
             "external_force":np.array([tuple(car._chassis.getTotalForce()),*(tuple(p.getTotalForce()) for p in car._wheel_guides.points)]),
             "external_torque":np.asarray(tuple(car._chassis.getTotalTorque()))}
@@ -58,7 +61,8 @@ def normal_geometry_derivatives(car):
     angles = tuple(s.steering for s in car.tires.states[:2])
     pos,rotation,centers,_vel,_q,_u,_xy,_v,hardware = read_mechanics(car,angles)
     geometry = read_unsprung_geometry(car._world,car._chassis,centers,rotation[:,2],hardware.axes,car.config)
-    ports = tire_ports(hardware,geometry.offsets,geometry.tangents,geometry.laterals,geometry.normals,np.zeros((4,3)),np.zeros(4))
+    ports = tire_ports(hardware,geometry.offsets,geometry.tangents,geometry.laterals,geometry.normals,np.zeros((4,3)),np.zeros(4),
+                       normal_offsets=geometry.normal_offsets)
     results = []
     for epsilon in (1e-3,1e-4,1e-5):
         for axis in range(3):
@@ -111,6 +115,18 @@ def balance(source, step, old, new):
         raise ArithmeticError("独立储能账与差项分解不一致")
     if abs(elastic_geometry-spring_geometry-radial_geometry-tangent_geometry)>1e-8:
         raise ArithmeticError("三个实际弹性储能差与总差不一致")
+    normals = source.geometry.normals
+    wheel_predicted = source.hardware.mechanical.wheel_jacobians@step.velocity[:10]
+    point_motion = np.einsum('ij,ij->i',normals,h*wheel_predicted-displacement[1:])
+    surface = source.contacts.normal@step.velocity+source.contacts.steering_velocity[:,2]
+    shape_motion = (new["deflection"]-source.geometry.deflection
+                    +np.einsum('ij,ij->i',normals,displacement[1:])
+                    +h*(surface-np.einsum('ij,ij->i',normals,wheel_predicted)))
+    radial_defect = new["deflection"]-step.tire_deflection
+    if np.max(np.abs(radial_defect-point_motion-shape_motion))>1e-12:
+        raise ArithmeticError("实际径向位移差项不闭合")
+    native_velocity_error = h*np.einsum('ij,ij->i',normals,wheel_predicted-new["wheel_velocity"])
+    native_position_error = np.einsum('ij,ij->i',normals,h*new["wheel_velocity"]-displacement[1:])
     return {"kinetic_change":kinetic,"gravity_change":gravity,"elastic_change":elastic,
             "losses":losses,"engine_work":step.engine_work,"external_work":external,
             "steering_gyro_work":steering_gyro,"contact_steering_work":step.steering_work,
@@ -121,6 +137,11 @@ def balance(source, step, old, new):
             "tangent_geometry_defect":tangent_geometry,
             **{f"radial_deflection_defect_{i}":float(new["deflection"][i]-step.tire_deflection[i]) for i in range(4)},
             **{f"spring_compression_defect_{i}":float(new["compression"][i]-step.compression[i]) for i in range(4)},
+            **{f"point_motion_defect_{i}":float(point_motion[i]) for i in range(4)},
+            **{f"surface_shape_defect_{i}":float(shape_motion[i]) for i in range(4)},
+            **{f"native_point_velocity_defect_{i}":float(native_velocity_error[i]) for i in range(4)},
+            **{f"native_point_position_defect_{i}":float(native_position_error[i]) for i in range(4)},
+            **{f"normal_spin_radius_{i}":float(source.contacts.spin_radii[i,2]) for i in range(4)},
             "inertial_bias_work":-h*np.dot(step.velocity[:10],source.hardware.mechanical.inertial_bias)}
 
 
@@ -131,7 +152,7 @@ def check(output, maneuver, duration, substeps):
     config = replace(REFERENCE_DESIGN,unsprung_enabled=True,tire_substeps=substeps)
     options = LabOptions(maneuver=maneuver,speed_kph=18. if maneuver=="ride_bump" else 60.,duration=duration)
     run = LabExperiment(options,config=config)
-    rows, pending = [],[]
+    rows, pending, peak = [],[],[]
     original_commit, original_advance = UnsprungAdvanceInput.commit,simulation_module.advance_world
 
     def commit(source, car, result):
@@ -141,10 +162,22 @@ def check(output, maneuver, duration, substeps):
     def advance(*args,observe,**kwargs):
         def after(before,last):
             source,result,old = pending.pop()
-            row = balance(source,result,old,state(run.experiment.simulation.player,source.angles))
+            new = state(run.experiment.simulation.player,source.angles)
+            row = balance(source,result,old,new)
             row["substep"] = len(rows)+1
             row["time"] = row["substep"]*source.dt
             rows.append(row)
+            if not peak or abs(row["elastic_geometry_defect"])>abs(peak[0]["ledger"]["elastic_geometry_defect"]):
+                def physical(values):
+                    keys = ("position","rotation","centers","velocity","angular","wheel_velocity",
+                            "spin","deflection","compression","normals","normal_offsets","axes")
+                    return {**{key:values[key].tolist() for key in keys},
+                            "road_nodes":values["road_nodes"],"contact_points":values["contact_points"]}
+                peak[:] = [{"ledger":row,"actual_before":physical(old),"actual_after":physical(new),
+                            "initial_velocity":source.velocity.tolist(),"predicted_velocity":result.velocity.tolist(),
+                            "normal_port":source.contacts.normal.tolist(),"known_force":source.known_force.tolist(),
+                            "predicted_compression":result.compression.tolist(),"predicted_deflection":result.tire_deflection.tolist(),
+                            "normal_force":result.normal.normal_force.tolist(),"dt":source.dt}]
             observe(before,last)
         return original_advance(*args,observe=after,**kwargs)
 
@@ -162,6 +195,7 @@ def check(output, maneuver, duration, substeps):
                   "sum":{key:sum(r[key] for r in rows) for key in rows[0] if key not in ("time","substep")}}
         result["normal_geometry_derivatives"] = normal_geometry_derivatives(run.experiment.simulation.player)
         (output/"result.json").write_text(json.dumps(result,indent=2,ensure_ascii=False),encoding="utf-8")
+        (output/"peak-input.json").write_text(json.dumps(peak[0],indent=2,ensure_ascii=False),encoding="utf-8")
         print(json.dumps({"reason":run.reason,"steps":len(rows),"energy_residual_max":result["max_abs"]["actual_energy_residual"],"energy_residual_sum":result["sum"]["actual_energy_residual"]}))
     finally:
         UnsprungAdvanceInput.commit,simulation_module.advance_world = original_commit,original_advance

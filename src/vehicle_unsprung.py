@@ -114,7 +114,8 @@ class UnsprungAdvanceInput:
             projected,loss = project_deformation(car.tires.deformation[i],basis,config.tire_contact_stiffness)
             local_deformation.append(projected)
             frame_loss.append(loss)
-        contacts = tire_ports(hardware,geometry.offsets,geometry.tangents,geometry.laterals,geometry.normals,steer,trails)
+        contacts = tire_ports(hardware,geometry.offsets,geometry.tangents,geometry.laterals,geometry.normals,steer,trails,
+                              normal_offsets=geometry.normal_offsets)
         steering_torque = config.wheel_inertia*np.asarray(car.tires.omega)[:,None]*np.cross(steer,hardware.axes)
         air_velocity,air_force = aerodynamic_load(tuple(body.getLinearVelocity()),tuple(car.wind),config)
         body.applyCentralForce(Vec3(*air_force))

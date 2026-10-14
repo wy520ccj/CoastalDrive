@@ -98,7 +98,7 @@ def run(output, *, mass=40., substeps=2, speed=5., duration=1.2, bump=True):
         geometry = read_unsprung_geometry(world,body,centers,rotation[:,2],axes,config,static_shapes=support)
         graph = drivetrain_ports(mechanical,axes,rotation[:,1],rotation[:,1],np.tile(rotation[:,1],(3,1)),0.,config)
         contacts = tire_ports(graph,geometry.offsets,geometry.tangents,geometry.laterals,geometry.normals,
-                              np.zeros((4,3)),np.zeros(4))
+                              np.zeros((4,3)),np.zeros(4),normal_offsets=geometry.normal_offsets)
         # 共同预测计入几何惯性；物理提交不重复施加，原生guide/gyro自行实现。
         known = np.r_[mechanical.gravity_forces(gravity)-mechanical.inertial_bias,np.zeros(6)]
         step = solve_unsprung_joint(graph,contacts,v,downstream,displacement+reference_q,geometry.deflection,

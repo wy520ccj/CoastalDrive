@@ -6,6 +6,7 @@ import numpy as np
 
 from suspension_contacts import cylinder_suspension_rays
 from vehicle_contacts import road_support
+from wheel_envelope import cylinder_support
 
 
 @dataclass(frozen=True)
@@ -16,6 +17,7 @@ class UnsprungGeometry:
     normals: np.ndarray
     tangents: np.ndarray
     laterals: np.ndarray
+    normal_offsets: np.ndarray
 
 
 def read_unsprung_geometry(world, body, centers, up, axes, config, *, static_shapes=None):
@@ -26,7 +28,7 @@ def read_unsprung_geometry(world, body, centers, up, axes, config, *, static_sha
     starts,ends = centers+before*up,centers-after*up
     found = cylinder_suspension_rays(world,body,tuple(zip(map(tuple,starts),map(tuple,ends))),tuple(map(tuple,axes)),
         radius,config.wheel_width,config.wheel_shoulder_radius,config.wheel_crown_height,static_shapes=static_shapes)
-    hits,delta,offsets,normals,tangents,laterals = [],[],[],[],[],[]
+    hits,delta,offsets,normals,tangents,laterals,normal_offsets = [],[],[],[],[],[],[]
     for center,start,end,axis,hit in zip(centers,starts,ends,axes,found):
         eligible = hit is not None and hit.node.isStatic() and road_support(hit.normal) and np.dot(hit.normal,up)>0.
         if eligible:
@@ -44,5 +46,10 @@ def read_unsprung_geometry(world, body, centers, up, axes, config, *, static_sha
         normals.append(normal)
         tangents.append(tangent)
         laterals.append(np.cross(tangent,normal))
+        # 扫掠见证点属于平移后的未加载包络；法向压缩的梯度用包络支持点。
+        # 轮胎绕自身轴旋转不改变包络，不能由扫掠方向的切向偏移产生自旋反力。
+        support = np.asarray(cylinder_support(tuple(-normal),tuple(axis),radius,config.wheel_width/2,
+                                               config.wheel_shoulder_radius,config.wheel_crown_height))
+        normal_offsets.append(support+compression*normal)
     return UnsprungGeometry(tuple(hits),np.asarray(delta),np.asarray(offsets),np.asarray(normals),
-                            np.asarray(tangents),np.asarray(laterals))
+                            np.asarray(tangents),np.asarray(laterals),np.asarray(normal_offsets))
