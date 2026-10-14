@@ -35,12 +35,16 @@ def tilted_query():
 
 
 def test_loaded_tilted_radial_envelope_is_independent_of_wheel_spin():
-    world,_body,road,_pos,_centers,_basis,hardware,g,_config = tilted_query()
+    world,_body,road,_pos,_centers,basis,hardware,g,_config = tilted_query()
     try:
         legacy = tire_ports(hardware,g.offsets,g.tangents,g.laterals,g.normals,np.zeros((4,3)),np.zeros(4))
         actual = tire_ports(hardware,g.offsets,g.tangents,g.laterals,g.normals,np.zeros((4,3)),np.zeros(4),
                             normal_offsets=g.normal_offsets)
-        assert max(abs(legacy.normal[:,12:]).flat)>1e-5
+        # 原扫掠定义把未加载中心沿导向的切向平移也算进力臂。
+        sweep = g.deflection/np.einsum('ij,j->i',g.normals,basis[:,2])
+        old_offsets = g.offsets+sweep[:,None]*basis[:,2]-g.deflection[:,None]*g.normals
+        old = tire_ports(hardware,old_offsets,g.tangents,g.laterals,g.normals,np.zeros((4,3)),np.zeros(4))
+        assert max(abs(old.normal[:,12:]).flat)>1e-5
         assert np.array_equal(actual.normal[:,10:],np.zeros((4,6)))
         speed = np.r_[np.zeros(12),12.,24.,48.,96.]
         assert np.array_equal(actual.normal@speed,np.zeros(4))

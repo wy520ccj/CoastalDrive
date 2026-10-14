@@ -105,7 +105,8 @@ def balance(source, step, old, new):
     elastic_geometry = elastic-step.potential_change+projection
     spring_geometry = new["spring"]-step.normal.suspension_potential
     radial_rates = np.asarray(source.config.tire_radial_stiffness)*np.array([hit is not None for hit in source.geometry.hits])
-    old_radial = .5*np.dot(radial_rates,np.maximum(source.geometry.deflection,0.)**2)
+    initial_delta = source.geometry.deflection if source.finite_contact is None else source.finite_contact.initial.deflection
+    old_radial = .5*np.dot(radial_rates,np.maximum(initial_delta,0.)**2)
     radial_geometry = new["radial"]-old["radial"]-(step.normal.tire_potential-old_radial)
     old_tangent = .5*source.config.tire_contact_stiffness*np.sum(source.deformation**2)
     tangent_geometry = new["tangent"]-old["tangent"]-(sum(w.elastic_energy for w in step.wheels)-old_tangent)+projection
@@ -119,9 +120,9 @@ def balance(source, step, old, new):
     wheel_predicted = source.hardware.mechanical.wheel_jacobians@step.velocity[:10]
     point_motion = np.einsum('ij,ij->i',normals,h*wheel_predicted-displacement[1:])
     surface = source.contacts.normal@step.velocity+source.contacts.steering_velocity[:,2]
-    shape_motion = (new["deflection"]-source.geometry.deflection
+    shape_motion = (new["deflection"]-initial_delta
                     +np.einsum('ij,ij->i',normals,displacement[1:])
-                    +h*(surface-np.einsum('ij,ij->i',normals,wheel_predicted)))
+                    +h*(step.normal_scale*surface-np.einsum('ij,ij->i',normals,wheel_predicted)))
     radial_defect = new["deflection"]-step.tire_deflection
     if np.max(np.abs(radial_defect-point_motion-shape_motion))>1e-12:
         raise ArithmeticError("实际径向位移差项不闭合")
@@ -156,7 +157,8 @@ def check(output, maneuver, duration, substeps):
     original_commit, original_advance = UnsprungAdvanceInput.commit,simulation_module.advance_world
 
     def commit(source, car, result):
-        pending.append((source,result,state(car,source.angles)))
+        old_angles = tuple(w.steering for w in car.tires.states[:2])
+        pending.append((source.resolved_source(result),result,state(car,old_angles)))
         original_commit(source,car,result)
 
     def advance(*args,observe,**kwargs):

@@ -84,13 +84,19 @@ class UnsprungTirePorts:
     steering_velocity: np.ndarray
 
 
-def tire_ports(drivetrain, contact_offsets, tangents, laterals, normals, steering_angular, trails, *, normal_offsets=None):
+def tire_ports(drivetrain, contact_offsets, tangents, laterals, normals, steering_angular, trails, *, normal_offsets=None,
+               material_axes=None):
     """切向材料点与法向包络的共轭端口；显式包络法向不含轴向自旋。"""
     mechanical = drivetrain.mechanical
     rows,radii,biases = [],[],[]
     for i, (offset,tangent,lateral,normal,steer,trail) in enumerate(zip(
             contact_offsets,tangents,laterals,normals,steering_angular,trails)):
         wheel,lever,relative = [],[],[]
+        spin_axis = drivetrain.axes[i] if material_axes is None else material_axes[i]
+        brake = drivetrain.brakes[i]
+        if material_axes is not None:
+            brake = brake.copy()
+            brake[3:6] = spin_axis
         # 侧向材料点保留拖距；显式法向取包络势能梯度，不把扫掠位移当材料速度。
         for direction,axis in enumerate((tangent,lateral,normal)):
             point_offset = np.asarray(offset)-trail*np.asarray(tangent) if direction==1 else np.asarray(offset)
@@ -102,11 +108,11 @@ def tire_ports(drivetrain, contact_offsets, tangents, laterals, normals, steerin
             gradient[:3] = axis
             gradient[3:6] = np.cross(point,axis)
             gradient[6+i] = np.dot(mechanical.guides[i],axis)
-            radius = np.dot(drivetrain.axes[i],np.cross(point_offset,axis))
+            radius = np.dot(spin_axis,np.cross(point_offset,axis))
             if envelope_normal:
                 radius = 0.
             else:
-                gradient -= radius*drivetrain.brakes[i]
+                gradient -= radius*brake
             wheel.append(gradient)
             lever.append(radius)
             relative.append(np.dot(np.cross(steer,point_offset),axis))

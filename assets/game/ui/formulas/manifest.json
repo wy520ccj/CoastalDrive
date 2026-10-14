@@ -134,35 +134,53 @@
     "tire_radial_stiffness": [
       {
         "file": "tire_radial_stiffness-0.png",
-        "tex": "\\delta_+=\\max(\\delta,0),\\quad F_z=\\max\\left(0,k_r\\delta_++c_r\\frac{\\Delta\\delta_+}{h}\\right)",
-        "width": 1493,
+        "tex": "F_n^*=\\max\\left(0,k_r\\delta_++c_r\\frac{\\Delta\\delta_+}{h}\\right)",
+        "width": 923,
         "height": 100,
-        "texture_width": 2048,
+        "texture_width": 1024,
         "texture_height": 128,
-        "sha256": "524f3766eecff0efa8630e424b4e19895564c3e920f2f2ea19e1a4d6b786b021"
+        "sha256": "2d7f2e70a22a916b2141df4353dea89afc05b1fee79e675401aa75b78c63dac3"
       },
       {
         "file": "tire_radial_stiffness-1.png",
-        "tex": "U_r=\\frac{1}{2}k_r\\delta_+^2",
-        "width": 370,
+        "tex": "s=\\|\\overline{\\mathbf{n}}\\|,\\quad F_n=sF_n^*,\\quad U_r=\\frac{1}{2}k_r\\delta_+^2",
+        "width": 1156,
         "height": 100,
-        "texture_width": 512,
+        "texture_width": 2048,
         "texture_height": 128,
-        "sha256": "35c565fd5e7e2584340899628aa61fb2f7a05cc204f597ac71057d61970b2ae8"
+        "sha256": "8db11c715a2991ae2dd58240d9dbdf26a96fce60a528b044c19f4cc45d1b0b62"
+      },
+      {
+        "file": "tire_radial_stiffness-2.png",
+        "tex": "\\delta_1-\\delta_0=-hs\\left(\\mathbf{g}_n\\mathbf{z}+v_n^{\\mathrm{steer}}\\right)",
+        "width": 850,
+        "height": 93,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "7eca192229ced2ddc707db2233253d4954941c3c4f7e7de3a0c77836d57524fc"
       }
     ],
     "tire_radial_damping": [
       {
         "file": "tire_radial_damping-0.png",
-        "tex": "F_z=\\max\\left(0,k_r\\delta_++c_r\\frac{\\Delta\\delta_+}{h}\\right)",
-        "width": 886,
+        "tex": "F_n^*=\\max\\left(0,k_r\\delta_++c_r\\frac{\\Delta\\delta_+}{h}\\right)",
+        "width": 923,
         "height": 100,
         "texture_width": 1024,
         "texture_height": 128,
-        "sha256": "3a0ae334816e802304a7c083f96533d4370d2d89b8981dd0c5b9b5f31a28fe93"
+        "sha256": "2d7f2e70a22a916b2141df4353dea89afc05b1fee79e675401aa75b78c63dac3"
       },
       {
         "file": "tire_radial_damping-1.png",
+        "tex": "F_n=\\|\\overline{\\mathbf{n}}\\|F_n^*",
+        "width": 406,
+        "height": 100,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "c4edb6229026be21695ab9314a3b5e352abca7781c015c9eb73fbc2f1108448e"
+      },
+      {
+        "file": "tire_radial_damping-2.png",
         "tex": "E_{r,\\mathrm{damp}}=h c_r\\left(\\frac{\\Delta\\delta_+}{h}\\right)^2",
         "width": 636,
         "height": 116,

@@ -6,11 +6,13 @@ from dataclasses import dataclass, replace
 import numpy as np
 from panda3d.core import Vec3
 
+from radial_geometry import RadialRoads
 from tire_aligning import brush_trail
 from tire_compliance import project_deformation, world_deformation
 from tire_drivetrain import DrivetrainStep
 from tire_properties import tire_grip, tire_stiffness
 from unsprung_body import NativeWheelGuides, SprungBodyFrame, apply_joint_forces
+from unsprung_contact_geometry import FiniteRadialContact
 from unsprung_drivetrain import drivetrain_ports, tire_ports
 from unsprung_dynamics import assemble_unsprung, partition_vehicle
 from unsprung_geometry import read_unsprung_geometry
@@ -88,12 +90,14 @@ class UnsprungAdvanceInput:
     frame_loss: np.ndarray
     air_velocity: tuple
     air_force: tuple
+    finite_contact: object | None = None
 
     @classmethod
     def read(cls, car, pressures, angles, tick, dt, accumulate, static_shapes):
         config,body = car.config,car._chassis
         _pos,rotation,centers,speeds,q,_u,_transverse,v,hardware = read_mechanics(car,angles)
-        geometry = read_unsprung_geometry(car._world,body,centers,rotation[:,2],hardware.axes,config,static_shapes=static_shapes)
+        roads = RadialRoads(car._world,body,config,static_shapes)
+        geometry = roads.query(centers,rotation[:,2],hardware.axes)
         friction = np.array([config.road_friction if hit is None or car.on_asphalt(*hit.point[:2])
                              else config.grass_friction for hit in geometry.hits])
         rolling = np.array([config.rolling_coefficient if hit is None or car.on_asphalt(*hit.point[:2])
@@ -116,6 +120,9 @@ class UnsprungAdvanceInput:
             frame_loss.append(loss)
         contacts = tire_ports(hardware,geometry.offsets,geometry.tangents,geometry.laterals,geometry.normals,steer,trails,
                               normal_offsets=geometry.normal_offsets)
+        old_axes = np.array([mechanical_axis(rotation[:,0],rotation[:,1],old.steering) for old in car.tires.states])
+        finite = FiniteRadialContact(roads,hardware,centers,rotation,old_axes,car.tires.deformation,
+                                    steer,np.asarray(trails),dt,config,car.on_asphalt)
         steering_torque = config.wheel_inertia*np.asarray(car.tires.omega)[:,None]*np.cross(steer,hardware.axes)
         air_velocity,air_force = aerodynamic_load(tuple(body.getLinearVelocity()),tuple(car.wind),config)
         body.applyCentralForce(Vec3(*air_force))
@@ -130,24 +137,34 @@ class UnsprungAdvanceInput:
             known,friction,rolling,car.powertrain.engine_torque_request,car.powertrain.engine_drag_coefficient,
             car.powertrain.capacity,capacities,car.powertrain.mechanical_ratio,car.powertrain.synchronizing,
             steering_torque,steer,np.asarray(trails),tuple(angles),tick,dt,accumulate,np.asarray(frame_loss),
-            air_velocity,air_force)
+            air_velocity,air_force,finite)
 
     def solve(self, *, query_lock=None):
         """纯数值子步；真实世界查询已在read阶段完成。"""
-        eligible = np.array([hit is not None for hit in self.geometry.hits])
+        eligible = np.array([hit is not None for hit in self.geometry.hits]) if self.finite_contact is None else np.ones(4)
+        deflection = self.geometry.deflection if self.finite_contact is None else self.finite_contact.initial.deflection
         return solve_unsprung_joint(self.hardware,self.contacts,self.velocity,self.downstream,self.compression,
-            self.geometry.deflection,self.deformation,self.initial_force,self.known_force,np.zeros(4),
+            deflection,self.deformation,self.initial_force,self.known_force,np.zeros(4),
             np.asarray(self.config.tire_radial_stiffness)*eligible,np.asarray(self.config.tire_radial_damping)*eligible,self.friction,self.rolling,
             self.engine_torque,self.engine_drag,self.clutch_capacity,self.brake_capacity,self.ratio,self.synchronizing,
-            self.dt,self.config,wheel_initial_velocity=self.wheel_velocity)
+            self.dt,self.config,wheel_initial_velocity=self.wheel_velocity,finite_contact=self.finite_contact)
+
+    def resolved_source(self, result):
+        source = self
+        if result.contact_geometry is not None:
+            contact = result.contact_geometry
+            source = replace(self,contacts=contact.contacts,geometry=contact.geometry,deformation=contact.deformation,
+                             frame_loss=contact.frame_loss,friction=contact.friction,rolling=contact.rolling)
+        return source
 
     def commit(self, car, result):
-        apply_joint_forces(car._chassis,car._wheel_guides,self.hardware,self.contacts,result,
-            self.engine_torque,self.engine_drag,self.downstream,np.sum(self.steering_torque,axis=0),self.dt,self.config)
-        car.powertrain.accept_step(powertrain_result(self,result),self.dt)
-        publish_tires(car,self,result)
-        car._unsprung_pending = self,result
-        car._wheel_contacts = wheel_contacts(car,self.geometry,result.normal.normal_force,result.compression,result.normal.suspension_force)
+        source = self.resolved_source(result)
+        apply_joint_forces(car._chassis,car._wheel_guides,source.hardware,source.contacts,result,
+            source.engine_torque,source.engine_drag,source.downstream,np.sum(source.steering_torque,axis=0),source.dt,source.config)
+        car.powertrain.accept_step(powertrain_result(source,result),source.dt)
+        publish_tires(car,source,result)
+        car._unsprung_pending = source,result
+        car._wheel_contacts = wheel_contacts(car,source.geometry,result.normal.normal_force,result.compression,result.normal.suspension_force)
 
 
 def powertrain_result(source, step):

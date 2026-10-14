@@ -23,13 +23,15 @@ FORMULAS = {
         r"\mathcal{M}=\mathrm{diag}(m_s\mathbf{1},\mathbf{I}_s,\mathbf{0})+\sum_i m_i\mathbf{J}_i^T\mathbf{J}_i",
     ), "轮心有真实平动惯性；Ji是轮心速度雅可比，ui是相对导向速度。与径向轮荷/Fx/Fy/有限传动同一末状态。"),
     "tire_radial_stiffness": ((
-        r"\delta_+=\max(\delta,0),\quad F_z=\max\left(0,k_r\delta_++c_r\frac{\Delta\delta_+}{h}\right)",
-        r"U_r=\frac{1}{2}k_r\delta_+^2",
-    ), "δ：真实胎面求交得到的径向压缩；h：机械子步。无可用支撑/未压缩时没有轮胎拉力，kr与cr需部件数据。"),
+        r"F_n^*=\max\left(0,k_r\delta_++c_r\frac{\Delta\delta_+}{h}\right)",
+        r"s=\|\overline{\mathbf{n}}\|,\quad F_n=sF_n^*,\quad U_r=\frac{1}{2}k_r\delta_+^2",
+        r"\delta_1-\delta_0=-hs\left(\mathbf{g}_n\mathbf{z}+v_n^{\mathrm{steer}}\right)",
+    ), "δ来自连续有符号距离；F*为材料系数力，Fn为实际施力大小。s由有限空间梯度计算，不是可调增益。"),
     "tire_radial_damping": ((
-        r"F_z=\max\left(0,k_r\delta_++c_r\frac{\Delta\delta_+}{h}\right)",
+        r"F_n^*=\max\left(0,k_r\delta_++c_r\frac{\Delta\delta_+}{h}\right)",
+        r"F_n=\|\overline{\mathbf{n}}\|F_n^*",
         r"E_{r,\mathrm{damp}}=h c_r\left(\frac{\Delta\delta_+}{h}\right)^2",
-    ), "仅激活接触中的正压缩材料耗散；径向阻尼作用于轮胎，悬架阻尼作用于车身与轮心之间的相对速度。"),
+    ), "耗散采用真实末压缩变化；有限空间梯度把材料力变为实际施力。径向阻尼与悬架阻尼作用于不同自由度。"),
     "tire_contact_half_length": ((
         r"z=\min\left(1,\frac{D}{2\sqrt{(C_\kappa\kappa)^2+(C_\alpha\tan\alpha)^2}}\right)",
         r"t=\mathrm{sgn}(v_x)\frac{a z(3-2z)}{3(2-z)},\qquad M_z=t F_y",

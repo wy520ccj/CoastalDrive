@@ -43,12 +43,16 @@ class UnsprungJointStep:
     force_error: float
     port_error: float
     iterations: int
+    contact_geometry: object | None = None
+    normal_coefficients: np.ndarray | None = None
+    normal_scale: np.ndarray | None = None
 
 
 def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compression, tire_deflection,
                          deformations, initial_force, known_force, road_delta, radial_rates, radial_damping,
                          friction, rolling_coefficients, engine_torque, engine_drag, clutch_capacity,
-                         brake_capacities, ratio, synchronizing, dt, config, *, wheel_initial_velocity=None):
+                         brake_capacities, ratio, synchronizing, dt, config, *, wheel_initial_velocity=None,
+                         finite_contact=None):
     """同时解十六速度、八接触力和十有限端口，不在结束后修补轮速/轮荷。
 
     本函数保持当前构型的质量/力端口，有限姿态与真实世界接点须由外层联立。
@@ -60,7 +64,9 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
     q0,delta0,previous = map(np.asarray,(compression,tire_deflection,deformations))
     known,road,rates,radial_c,mu,rolling_c,brakes = map(np.asarray,
         (known_force,road_delta,radial_rates,radial_damping,friction,rolling_coefficients,brake_capacities))
-    gx,gy,gn = contacts.longitudinal,contacts.lateral,contacts.normal
+    gx = contacts.longitudinal
+    if finite_contact is not None and np.any(road!=0.):
+        raise ValueError("有限真实静态接触不接受额外道路位移输入")
     gs = np.zeros((4,16))
     gs[:,6:10] = np.eye(4)
     ports = np.vstack((hardware.clutch,hardware.gear,hardware.output,hardware.brakes,hardware.differential))
@@ -77,9 +83,19 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
 
     def evaluate(values):
         end,forces,torques = values[:16],values[16:24].reshape(4,2),values[24:]
+        kinematics = finite_contact.evaluate(end) if finite_contact is not None else None
+        active = contacts if kinematics is None else kinematics.contacts
+        gx,gy,gn = active.longitudinal,active.lateral,active.normal
+        local_previous = previous if kinematics is None else kinematics.deformation
+        local_mu = mu if kinematics is None else kinematics.friction
+        local_rolling = rolling_c if kinematics is None else kinematics.rolling
+        scale = np.ones(4) if kinematics is None else kinematics.scale
+        eligible = np.ones(4) if kinematics is None else np.array([hit is not None for hit in kinematics.geometry.hits])
         q = q0+dt*end[6:10]
-        delta = delta0+road-dt*(gn@end+contacts.steering_velocity[:,2])
-        normal = normal_material(q,end[6:10],delta,delta0,dt,config,rates,radial_c)
+        delta = (delta0+road-dt*(gn@end+active.steering_velocity[:,2]) if kinematics is None
+                 else kinematics.geometry.deflection)
+        coefficients = normal_material(q,end[6:10],delta,delta0,dt,config,rates*eligible,radial_c*eligible)
+        normal = coefficients if kinematics is None else replace(coefficients,normal_force=coefficients.normal_force*scale)
         down = hardware.downstream@end
         loss = torques[2]
         output_torque = ratio*(torques[1]-loss)
@@ -91,9 +107,9 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         limits = np.r_[torque_bias_capacities(config.differential_capacity[:2],config.axle_torque_bias_ratios,axle),
                        config.differential_capacity[2]]
         speeds = ports@end
-        contact_speeds = np.column_stack((gx@end,gy@end,gn@end))+contacts.steering_velocity
-        rolling_torque = rolling_c*normal.normal_force*contacts.radii**2*end[12:] / np.maximum(
-            np.abs(contacts.radii*end[12:]),config.rolling_transition_speed)
+        contact_speeds = np.column_stack((gx@end,gy@end,gn@end))+active.steering_velocity
+        rolling_torque = local_rolling*normal.normal_force*active.radii**2*end[12:] / np.maximum(
+            np.abs(active.radii*end[12:]),config.rolling_transition_speed)
         reaction = known+engine_torque*hardware.engine-engine_drag*np.dot(hardware.engine,end)*hardware.engine
         reaction = reaction-gs.T@normal.suspension_force+gn.T@normal.normal_force+gx.T@forces[:,0]+gy.T@forces[:,1]-ports.T@torques
         reaction[12:] -= rolling_torque
@@ -104,10 +120,10 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         for i in range(4):
             car = config if i<2 else config_rear
             load = float(normal.normal_force[i])
-            grip = tire_grip(load,mu[i],car)
+            grip = tire_grip(load,local_mu[i],car)
             cx,cy = tire_stiffness(load,car)
-            vx = contact_speeds[i,0]+contacts.radii[i]*end[12+i]
-            result = contact_force(tuple(forces[i]),tuple(previous[i]),tuple(-contact_speeds[i,:2]),
+            vx = contact_speeds[i,0]+active.radii[i]*end[12+i]
+            result = contact_force(tuple(forces[i]),tuple(local_previous[i]),tuple(-contact_speeds[i,:2]),
                 max(abs(vx),config.slip_speed),bool(rolling[i]),grip,cx,cy,dt,
                 config.tire_contact_stiffness,config.tire_contact_damping,config.tire_shape,config.tire_curvature)
             force_errors.extend(forces[i]-result[0])
@@ -128,7 +144,8 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         differential_error = torques[7:]-np.clip(np.asarray(config.differential_damping)*speeds[7:],-limits,limits)
         port_errors = np.r_[error_c,error_g,error_l,brake_error,differential_error]
         residual = np.r_[momentum_error,force_errors,port_errors]
-        return residual,(q,delta,normal,down,contact_speeds,rolling_torque,details,np.asarray(parameters),speeds,output_torque)
+        return residual,(q,delta,normal,down,contact_speeds,rolling_torque,details,np.asarray(parameters),speeds,output_torque,
+                         active,local_previous,coefficients,scale,kinematics)
 
     config_rear = replace(config,lateral_stiffness=config.rear_lateral_stiffness)
     values = np.r_[start,np.asarray(initial_force).ravel(),np.zeros(10)]
@@ -159,13 +176,13 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
     else:
         raise ArithmeticError(f"簧下/轮胎/传动共同求解超过30轮：{momentum_error:g}Ns，{force_error:g}N，{port_error:g}Nm")
     end,forces,torques = values[:16],values[16:24].reshape(4,2),values[24:]
-    q,delta,normal,down,surface,rolling_torque,contact,parameters,speeds,drive = details
+    q,delta,normal,down,surface,rolling_torque,contact,parameters,speeds,drive,active,previous,coefficients,scale,kinematics = details
     wheels,contact_energy,material_heat,road_heat,tangent_numeric = [],0.,0.,0.,0.
     for i,result in enumerate(contact):
         _target,elastic,rate,patch,patch_kappa,patch_alpha,mode = result
         energy,material,dissipation,numeric = energy_terms(tuple(forces[i]),tuple(previous[i]),elastic,rate,patch,
                                                          dt,config.tire_contact_stiffness,config.tire_contact_damping)
-        vx = surface[i,0]+contacts.radii[i]*end[12+i]
+        vx = surface[i,0]+active.radii[i]*end[12+i]
         wheels.append(WheelStep(end[12+i],speeds[3+i],vx,surface[i,1],np.dot(end[3:6],hardware.axes[i]),
             -surface[i,0]/max(abs(vx),config.slip_speed),math.atan2(surface[i,1],max(abs(vx),config.slip_speed)),
             *forces[i],torques[3+i],force_error,mode if normal.normal_force[i]>0. else "airborne",*elastic,
@@ -180,7 +197,7 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
     old_contact = .5*config.tire_contact_stiffness*np.sum(previous**2)
     potential_change = normal.suspension_potential-old_potential+normal.tire_potential-old_radial+contact_energy-old_contact
     elastic_numeric = np.dot(normal.spring_force,q-q0)-(normal.suspension_potential-old_potential)
-    elastic_numeric += np.dot(normal.normal_force,delta-delta0)-(normal.tire_potential-old_radial)-normal.tire_damping
+    elastic_numeric += np.dot(coefficients.normal_force,delta-delta0)-(normal.tire_potential-old_radial)-normal.tire_damping
     kinetic_change = .5*((end-start)@hardware.base_mass@(end+start)
                         +np.dot(hardware.downstream_inertias,(down-old_down)*(down+old_down)))
     kinetic_change -= hardware.wheel_kinetic_correction(start,actual_wheels)
@@ -190,7 +207,7 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
     engine_heat = dt*engine_drag*np.dot(hardware.engine,end)**2
     port_heat = dt*torques*speeds
     rolling_heat = dt*np.dot(rolling_torque,end[12:])
-    steering_work = -dt*np.sum(np.column_stack((forces,normal.normal_force))*contacts.steering_velocity)
+    steering_work = -dt*np.sum(np.column_stack((forces,normal.normal_force))*active.steering_velocity)
     known_work,road_work = dt*np.dot(end,known),np.dot(normal.normal_force,road)
     material_loss = material_heat+normal.suspension_damping+normal.tire_damping
     contact_numeric = tangent_numeric+elastic_numeric
@@ -199,4 +216,5 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
     return UnsprungJointStep(end,q,delta,normal,tuple(wheels),forces,torques,down,rolling_torque,parameters,float(drive),
         float(kinetic_change),float(kinetic_numeric),float(potential_change),float(material_loss),float(contact_numeric),
         float(road_heat),port_heat,float(rolling_heat),float(engine_work),float(engine_heat),float(known_work),
-        float(steering_work),float(road_work),float(balance),momentum_error,force_error,port_error,iteration+1)
+        float(steering_work),float(road_work),float(balance),momentum_error,force_error,port_error,iteration+1,
+        kinematics,coefficients.normal_force.copy(),scale)
