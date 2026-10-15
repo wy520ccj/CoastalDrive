@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from itertools import product
 
 import numpy as np
+from mechanical_kernels import cross
 from panda3d.core import BitMask32
 from radial_contact_kernels import signed_distance
 
@@ -143,7 +144,7 @@ class RadialRoads:
                 distance,normal,point,road,plane = best
                 compression,offset = -distance,point-center
                 hit = RadialHit(road,tuple(point),tuple(normal),plane)
-            tangent = np.cross(normal,axis)
+            tangent = np.asarray(cross(normal,axis))
             tangent /= np.linalg.norm(tangent)
             support = np.asarray(cylinder_support(tuple(-normal),tuple(axis),config.wheel_radius,
                 config.wheel_width/2,config.wheel_shoulder_radius,config.wheel_crown_height))
@@ -152,7 +153,7 @@ class RadialRoads:
             offsets.append(offset)
             normals.append(normal)
             tangents.append(tangent)
-            laterals.append(np.cross(tangent,normal))
+            laterals.append(cross(tangent,normal))
             normal_offsets.append(support+compression*normal)
         return UnsprungGeometry(tuple(hits),np.asarray(delta),np.asarray(offsets),np.asarray(normals),
             np.asarray(tangents),np.asarray(laterals),np.asarray(normal_offsets))

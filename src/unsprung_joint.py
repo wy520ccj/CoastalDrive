@@ -4,6 +4,7 @@ import math
 from dataclasses import dataclass, replace
 
 import numpy as np
+from mechanical_kernels import cross
 
 from differential import torque_bias_capacities
 from tire_compliance import contact_force, energy_terms
@@ -139,7 +140,7 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         reaction = reaction-gs.T@normal.suspension_force+gn.T@normal.normal_force+gx.T@forces[:,0]+gy.T@forces[:,1]-ports.T@torques
         reaction[12:] -= rolling_torque
         rotor_bias = np.zeros(16)
-        rotor_bias[3:6] = np.cross(end[3:6],hardware.spin(end,config))
+        rotor_bias[3:6] = cross(end[3:6],hardware.spin(end,config))
         momentum_error = inertia@end-momentum-dt*(reaction-rotor_bias)
         gyro = np.zeros(3)
         if native_body_gyro:

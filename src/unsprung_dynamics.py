@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 
 import numpy as np
+from mechanical_kernels import cross
 
 
 def cross_matrix(vector):
@@ -18,7 +19,7 @@ def native_gyro_impulse(inertia, angular, dt):
     """匹配Bullet隐式body gyro的一次Newton增量；返回角动量冲量，不另推进刚体。"""
     momentum = inertia@angular
     jacobian = inertia+dt*(cross_matrix(angular)@inertia-cross_matrix(momentum))
-    return -inertia@np.linalg.solve(jacobian,dt*np.cross(angular,momentum))
+    return -inertia@np.linalg.solve(jacobian,dt*np.asarray(cross(angular,momentum)))
 
 
 @dataclass(frozen=True)
@@ -110,18 +111,18 @@ def assemble_unsprung(partition, orientation, displacement, guides_local, genera
     angular_skew = cross_matrix(angular)
     derivative[3:6,3:6] = angular_skew@world_inertia-world_inertia@angular_skew
     bias = np.zeros(10)
-    bias[3:6] = np.cross(angular,world_inertia@angular)
+    bias[3:6] = cross(angular,world_inertia@angular)
     jacobians, wheel_velocities = [],[]
     for i, (mass,arm,guide) in enumerate(zip(masses,arms,guides)):
         jacobian = np.zeros((3,10))
         jacobian[:,:3] = np.eye(3)
         jacobian[:,3:6] = -cross_matrix(arm)
         jacobian[:,6+i] = guide
-        arm_rate = np.cross(angular,arm)+guide*velocity[6+i]
+        arm_rate = cross(angular,arm)+guide*velocity[6+i]
         jacobian_rate = np.zeros((3,10))
         jacobian_rate[:,3:6] = -cross_matrix(arm_rate)
-        jacobian_rate[:,6+i] = np.cross(angular,guide)
-        centrifugal = np.cross(angular,np.cross(angular,arm))+2*np.cross(angular,guide)*velocity[6+i]
+        jacobian_rate[:,6+i] = cross(angular,guide)
+        centrifugal = np.asarray(cross(angular,cross(angular,arm)))+2*np.asarray(cross(angular,guide))*velocity[6+i]
         matrix += mass*jacobian.T@jacobian
         derivative += mass*(jacobian_rate.T@jacobian+jacobian.T@jacobian_rate)
         bias += mass*jacobian.T@centrifugal

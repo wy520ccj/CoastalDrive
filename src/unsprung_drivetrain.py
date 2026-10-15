@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 
 import numpy as np
+from mechanical_kernels import cross
 
 from driveline_inertia import active_inertias, rotor_weights
 
@@ -107,16 +108,16 @@ def tire_ports(drivetrain, contact_offsets, tangents, laterals, normals, steerin
             point = mechanical.wheel_arms[i]+point_offset
             gradient = np.zeros(16)
             gradient[:3] = axis
-            gradient[3:6] = np.cross(point,axis)
+            gradient[3:6] = cross(point,axis)
             gradient[6+i] = np.dot(mechanical.guides[i],axis)
-            radius = np.dot(spin_axis,np.cross(point_offset,axis))
+            radius = np.dot(spin_axis,cross(point_offset,axis))
             if envelope_normal:
                 radius = 0.
             else:
                 gradient -= radius*brake
             wheel.append(gradient)
             lever.append(radius)
-            relative.append(np.dot(np.cross(steer,point_offset),axis))
+            relative.append(np.dot(cross(steer,point_offset),axis))
         rows.append(wheel)
         radii.append(lever)
         biases.append(relative)

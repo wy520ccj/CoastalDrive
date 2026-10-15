@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 
 import numpy as np
+from mechanical_kernels import cross
 from wheel_contact_kernels import rotated_path
 
 from unsprung_dynamics import cross_matrix
@@ -40,7 +41,7 @@ class FiniteSuspensionMotion:
         guide = increment@old_guide
         speed = np.linalg.norm(angular)
         average = np.asarray(rotated_path(tuple(old_guide),tuple(angular/speed),h*speed,1.)[1]) if speed else old_guide
-        guide_change = h*np.cross(angular,average)
+        guide_change = h*np.asarray(cross(angular,average))
         old_arms = self.centers-self.position
         arm_change = h*(wheel_velocity-velocity[:3])
         arms = old_arms+arm_change

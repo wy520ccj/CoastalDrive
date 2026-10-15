@@ -3,6 +3,7 @@
 from dataclasses import dataclass, replace
 
 import numpy as np
+from mechanical_kernels import cross
 from wheel_contact_kernels import rotated_path
 
 from tire_compliance import project_deformation
@@ -61,10 +62,10 @@ class FiniteRadialContact:
         for i,normal in enumerate(middle.normals):
             support = np.asarray(cylinder_support(tuple(-normal),tuple(middle_axes[i]),config.wheel_radius,
                 config.wheel_width/2,config.wheel_shoulder_radius,config.wheel_crown_height))
-            meridian = np.cross(middle_axes[i],normal)
+            meridian = cross(middle_axes[i],normal)
             squared = np.dot(meridian,meridian)
-            axial_lever = np.dot(np.cross(support,normal),meridian)/squared if squared else 0.
-            surface_velocity = wheel_velocity[i]+np.cross(velocity[3:6],axial_lever*middle_axes[i])
+            axial_lever = np.dot(cross(support,normal),meridian)/squared if squared else 0.
+            surface_velocity = wheel_velocity[i]+cross(velocity[3:6],axial_lever*middle_axes[i])
             motion = np.dot(surface_velocity,surface_velocity)
             if end.hits[i] is not None and motion>0.:
                 delta_change = end.deflection[i]-self.target.deflection[i]
@@ -73,7 +74,7 @@ class FiniteRadialContact:
                     # 同一有限平面直接算小位移和包络高度割线，避免两个近似等深度相减。
                     plane_normal = np.asarray(first.plane[0])
                     eta0 = np.dot(plane_normal,hardware.axes[i])
-                    eta_change = h*np.dot(plane_normal,np.cross(velocity[3:6],average_axes[i]))
+                    eta_change = h*np.dot(plane_normal,cross(velocity[3:6],average_axes[i]))
                     extent = crown_extent_secant(float(eta0),float(eta0+eta_change),config.wheel_radius,
                         config.wheel_width/2,config.wheel_shoulder_radius,config.wheel_crown_height)
                     delta_change = extent*eta_change-h*np.dot(plane_normal,wheel_velocity[i])
@@ -85,7 +86,7 @@ class FiniteRadialContact:
             normal = normal/scales[i]
             normals[i] = normal
             gradients[i,:3] = normal
-            gradients[i,3:6] = np.cross(hardware.mechanical.wheel_arms[i]+axial_lever*middle_axes[i],normal)
+            gradients[i,3:6] = cross(hardware.mechanical.wheel_arms[i]+axial_lever*middle_axes[i],normal)
             gradients[i,6+i] = np.dot(hardware.mechanical.guides[i],normal)
         tangents = np.cross(normals,middle_axes)
         tangents /= np.linalg.norm(tangents,axis=1)[:,None]
