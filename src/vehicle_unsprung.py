@@ -17,6 +17,7 @@ from unsprung_drivetrain import drivetrain_ports, tire_ports
 from unsprung_dynamics import assemble_unsprung, partition_vehicle
 from unsprung_geometry import read_unsprung_geometry
 from unsprung_joint import solve_unsprung_joint
+from unsprung_motion import FiniteSuspensionMotion
 from unsprung_state import UnsprungState
 from vehicle_config import wheel_hubs
 from vehicle_dynamics import aerodynamic_load
@@ -95,12 +96,15 @@ class UnsprungAdvanceInput:
     wheel_known_force: np.ndarray | None = None
     native_body_gyro: bool = False
     body_external_torque: np.ndarray | None = None
+    finite_motion: object | None = None
 
     @classmethod
     def read(cls, car, pressures, angles, tick, dt, accumulate, static_shapes):
         config,body = car.config,car._chassis
-        _pos,rotation,centers,speeds,q,_u,_transverse,v,hardware = read_mechanics(car,angles)
+        position,rotation,centers,speeds,q,_u,_transverse,v,hardware = read_mechanics(car,angles)
         guide_bias = car._wheel_guides.velocity_bias(dt)
+        motion = FiniteSuspensionMotion(position,rotation,centers,q+car._unsprung_reference,
+                                        hardware.mechanical,guide_bias,dt)
         roads = RadialRoads(car._world,body,config,static_shapes)
         geometry = roads.query(centers,rotation[:,2],hardware.axes)
         friction = np.array([config.road_friction if hit is None or car.on_asphalt(*hit.point[:2])
@@ -127,7 +131,7 @@ class UnsprungAdvanceInput:
                               normal_offsets=geometry.normal_offsets,wheel_velocity_bias=guide_bias)
         old_axes = np.array([mechanical_axis(rotation[:,0],rotation[:,1],old.steering) for old in car.tires.states])
         finite = FiniteRadialContact(roads,hardware,centers,rotation,old_axes,car.tires.deformation,
-                                    steer,np.asarray(trails),dt,config,car.on_asphalt,guide_bias)
+                                    steer,np.asarray(trails),dt,config,car.on_asphalt,guide_bias,motion)
         steering_torque = config.wheel_inertia*np.asarray(car.tires.omega)[:,None]*np.cross(steer,hardware.axes)
         air_velocity,air_force = aerodynamic_load(tuple(body.getLinearVelocity()),tuple(car.wind),config)
         body.applyCentralForce(Vec3(*air_force))
@@ -146,7 +150,7 @@ class UnsprungAdvanceInput:
             known,friction,rolling,car.powertrain.engine_torque_request,car.powertrain.engine_drag_coefficient,
             car.powertrain.capacity,capacities,car.powertrain.mechanical_ratio,car.powertrain.synchronizing,
             steering_torque,steer,np.asarray(trails),tuple(angles),tick,dt,accumulate,np.asarray(frame_loss),
-            air_velocity,air_force,finite,guide_bias,wheel_known,True,np.asarray(tuple(body.getTotalTorque())))
+            air_velocity,air_force,finite,guide_bias,wheel_known,True,np.asarray(tuple(body.getTotalTorque())),motion)
 
     def solve(self, *, query_lock=None):
         """纯数值子步；真实世界查询已在read阶段完成。"""
@@ -158,7 +162,7 @@ class UnsprungAdvanceInput:
             self.engine_torque,self.engine_drag,self.clutch_capacity,self.brake_capacity,self.ratio,self.synchronizing,
             self.dt,self.config,wheel_initial_velocity=self.wheel_velocity,finite_contact=self.finite_contact,
             wheel_velocity_bias=self.guide_velocity_bias,wheel_known_force=self.wheel_known_force,
-            native_body_gyro=self.native_body_gyro,body_external_torque=self.body_external_torque)
+            native_body_gyro=self.native_body_gyro,body_external_torque=self.body_external_torque,finite_motion=self.finite_motion)
 
     def resolved_source(self, result):
         source = self

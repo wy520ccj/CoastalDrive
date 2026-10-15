@@ -49,6 +49,8 @@ class UnsprungJointStep:
     normal_scale: np.ndarray | None = None
     guide_work: float = 0.
     body_gyro_work: float = 0.
+    suspension_geometry_work: float = 0.
+    suspension_relative_velocity: np.ndarray | None = None
 
 
 def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compression, tire_deflection,
@@ -56,7 +58,7 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
                          friction, rolling_coefficients, engine_torque, engine_drag, clutch_capacity,
                          brake_capacities, ratio, synchronizing, dt, config, *, wheel_initial_velocity=None,
                          finite_contact=None, wheel_velocity_bias=None, wheel_known_force=None,
-                         native_body_gyro=False, body_external_torque=None):
+                         native_body_gyro=False, body_external_torque=None,finite_motion=None):
     """同时解十六速度、八接触力和十有限端口，不在结束后修补轮速/轮荷。
 
     本函数保持当前构型的质量/力端口，有限姿态与真实世界接点须由外层联立。
@@ -103,9 +105,13 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         scale = np.ones(4) if kinematics is None else kinematics.scale
         eligible = np.ones(4) if kinematics is None else np.array([hit is not None for hit in kinematics.geometry.hits])
         q = q0+dt*end[6:10]
+        suspension_velocity = end[6:10]
+        if finite_motion is not None:
+            motion = finite_motion.evaluate(end)
+            q,suspension_velocity = motion.compression,motion.relative_velocity
         delta = (delta0+road-dt*(gn@end+active.steering_velocity[:,2]+guide[:,2]) if kinematics is None
                  else kinematics.geometry.deflection)
-        coefficients = normal_material(q,end[6:10],delta,delta0,dt,config,rates*eligible,radial_c*eligible)
+        coefficients = normal_material(q,suspension_velocity,delta,delta0,dt,config,rates*eligible,radial_c*eligible)
         normal = coefficients if kinematics is None else replace(coefficients,normal_force=coefficients.normal_force*scale)
         down = hardware.downstream@end
         loss = torques[2]
@@ -164,7 +170,7 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         port_errors = np.r_[error_c,error_g,error_l,brake_error,differential_error]
         residual = np.r_[momentum_error,force_errors,port_errors]
         return residual,(q,delta,normal,down,contact_speeds,rolling_torque,details,np.asarray(parameters),speeds,output_torque,
-                         active,local_previous,coefficients,scale,kinematics,gyro)
+                         active,local_previous,coefficients,scale,kinematics,gyro,suspension_velocity)
 
     config_rear = replace(config,lateral_stiffness=config.rear_lateral_stiffness)
     values = np.r_[start,np.asarray(initial_force).ravel(),np.zeros(10)]
@@ -195,7 +201,7 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
     else:
         raise ArithmeticError(f"簧下/轮胎/传动共同求解超过30轮：{momentum_error:g}Ns，{force_error:g}N，{port_error:g}Nm")
     end,forces,torques = values[:16],values[16:24].reshape(4,2),values[24:]
-    q,delta,normal,down,surface,rolling_torque,contact,parameters,speeds,drive,active,previous,coefficients,scale,kinematics,gyro = details
+    q,delta,normal,down,surface,rolling_torque,contact,parameters,speeds,drive,active,previous,coefficients,scale,kinematics,gyro,suspension_velocity = details
     wheels,contact_energy,material_heat,road_heat,tangent_numeric = [],0.,0.,0.,0.
     for i,result in enumerate(contact):
         _target,elastic,rate,patch,patch_kappa,patch_alpha,mode = result
@@ -237,12 +243,15 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
     guide_impulse = hardware.mechanical.wheel_masses[:,None]*(end_wheels-actual_wheels)-dt*wheel_force
     guide_work = float(np.sum(guide_impulse*bias))
     gyro_work = float(np.dot(end[3:6],gyro))
+    # 本构读取真实末构型；原生仍冻结本步力方向。两种几何的功差是数值积分项，不是材料耗散。
+    suspension_geometry_work = np.dot(normal.spring_force,q-q0-dt*end[6:10])
+    suspension_geometry_work += dt*np.dot(normal.suspension_force-normal.spring_force,suspension_velocity-end[6:10])
     material_loss = material_heat+normal.suspension_damping+normal.tire_damping
     contact_numeric = tangent_numeric+elastic_numeric
     balance = kinetic_change+kinetic_numeric+potential_change+material_loss+contact_numeric+road_heat
-    balance += engine_heat+sum(port_heat)+rolling_heat-engine_work-known_work-steering_work-road_work-guide_work-gyro_work
+    balance += engine_heat+sum(port_heat)+rolling_heat-engine_work-known_work-steering_work-road_work-guide_work-gyro_work-suspension_geometry_work
     return UnsprungJointStep(end,q,delta,normal,tuple(wheels),forces,torques,down,rolling_torque,parameters,float(drive),
         float(kinetic_change),float(kinetic_numeric),float(potential_change),float(material_loss),float(contact_numeric),
         float(road_heat),port_heat,float(rolling_heat),float(engine_work),float(engine_heat),float(known_work),
         float(steering_work),float(road_work),float(balance),momentum_error,force_error,port_error,iteration+1,
-        kinematics,coefficients.normal_force.copy(),scale,guide_work,gyro_work)
+        kinematics,coefficients.normal_force.copy(),scale,guide_work,gyro_work,float(suspension_geometry_work),suspension_velocity.copy())

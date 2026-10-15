@@ -19,7 +19,8 @@ def check(output,height):
     try:
         app.import_engineering(ROOT/"docs/evidence/SIM-UNSPRUNG-01/production/engineering-preview.json")
         screenshots = []
-        expected = {"tire_radial_stiffness":3,"tire_radial_damping":3,"unsprung_enabled":2}
+        expected = {"tire_radial_stiffness":3,"tire_radial_damping":3,"unsprung_enabled":2,
+                    "suspension_spring_rates":2,"suspension_compression_damping":2,"suspension_extension_damping":2}
         for key,count in expected.items():
             app.parameter_help.show(key)
             assert len(app.parameter_help.formula_nodes)==count

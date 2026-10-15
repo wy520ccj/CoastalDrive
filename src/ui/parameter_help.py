@@ -24,6 +24,10 @@ from vehicle_designs import DESIGN_VEHICLES, GR86_PROFILE_PATH
 
 GROUP_LABELS = {"chassis": "底盘与转向", "tires": "轮胎", "suspension": "悬架",
                 "powertrain": "动力与传动", "electronics": "制动与控制"}
+BROWSER_LABELS = {"suspension_spring_rates":"轮心等效弹簧率",
+                  "suspension_compression_damping":"轮心等效压缩阻尼","suspension_extension_damping":"轮心等效伸张阻尼",
+                  "suspension_stiffness":"质量归一化弹簧率",
+                  "suspension_compression":"质量归一化压缩阻尼","suspension_relaxation":"质量归一化伸张阻尼"}
 OPTION_FIELDS = {"speed": "speed_kph", "duration": "duration", "steer": "steering_deg",
                  "onset": "onset", "radius": "radius_m", "bump_height": "bump_height_m",
                  "bump_length": "bump_length_m", "bump_distance": "bump_distance_m"}
@@ -80,7 +84,8 @@ class ParameterHelp:
             position = self.page * 8 + index
             if position < len(fields):
                 info = explanation(fields[position])
-                button["text"] = info.title[:13] + ("…" if len(info.title) > 13 else "")
+                title = BROWSER_LABELS.get(fields[position],info.title)
+                button["text"] = title[:13] + ("…" if len(title) > 13 else "")
                 button.show()
             else:
                 button.hide()
@@ -190,7 +195,7 @@ class ParameterHelp:
             self.groups.set(list(GROUP_LABELS).index(self.group), fCommand=0)
             self.refresh_list()
         basis, values = self.context(key)
-        self.title.setText(info.title)
+        self.title.setText(BROWSER_LABELS.get(ALIASES.get(key,key),info.title))
         unit = info.unit.replace("s⁻¹", "1/s").replace("s⁻²", "1/s²")
         self.details.setText(f"{info.role}  /  {unit}\n{values}")
         for node in self.formula_nodes:
@@ -222,6 +227,8 @@ class ParameterHelp:
             algorithm = FORMULAS[math_key][1]
         else:
             algorithm = info.formula
+        if ALIASES.get(key,key) in ("suspension_spring_rates","suspension_compression_damping","suspension_extension_damping"):
+            algorithm += "\n参数按轮心行程等效；台架原始参数须按安装运动比换算。"
         self.notes.setPos(-.45, bottom-.023)
         self.notes.setText(f"{algorithm}\n{info.use}\n\n数值来源\n{basis}\n\n对应源码\n{info.source}")
         self.root.show()

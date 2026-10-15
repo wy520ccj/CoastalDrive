@@ -10,6 +10,7 @@ from suspension import stiffness_matrix
 from unsprung_drivetrain import drivetrain_ports, tire_ports
 from unsprung_dynamics import assemble_unsprung, partition_vehicle
 from unsprung_joint import solve_unsprung_joint
+from unsprung_motion import FiniteSuspensionMotion
 from vehicle_designs import REFERENCE_DESIGN
 from wheel_geometry import mechanical_axis
 
@@ -30,7 +31,7 @@ def hardware(config, steering=0., body_speed=None, trail=.02, steer_rate=0., rat
 
 def solve(config, speed=20., steering=3., brake=(120.,120.,80.,80.), ratio=3.2,
           sync=False, capacity=100., road=(0.,)*4, airborne=False, spin_offsets=(0.,)*4,
-          old_down_offset=(0.,)*3, wheel_error=None, guide_bias=None):
+          old_down_offset=(0.,)*3, wheel_error=None, guide_bias=None, finite_geometry=False):
     graph,contacts,partition = hardware(config,steering,steer_rate=-.2,ratio=ratio)
     if guide_bias is not None:
         directions = np.array((contacts.longitudinal[:,:3],contacts.lateral[:,:3],contacts.normal[:,:3]))
@@ -49,11 +50,25 @@ def solve(config, speed=20., steering=3., brake=(120.,120.,80.,80.), ratio=3.2,
         compression = np.zeros(4)
     known = np.r_[graph.mechanical.gravity_forces((0.,0.,-9.81)),np.zeros(6)]
     actual = None if wheel_error is None else graph.mechanical.wheel_jacobians@state[:10]+wheel_error
+    motion = FiniteSuspensionMotion(np.zeros(3),np.eye(3),graph.mechanical.wheel_arms,compression,
+        graph.mechanical,np.zeros((4,3)) if guide_bias is None else guide_bias,1/240) if finite_geometry else None
     result = solve_unsprung_joint(graph,contacts,state,downstream,compression,deflection,np.zeros((4,2)),np.zeros((4,2)),
         known,road,radial,np.full(4,500.),np.full(4,.7),np.full(4,.013),50.,.12,capacity,brake,ratio,sync,1/240,config,
         wheel_initial_velocity=actual,wheel_velocity_bias=guide_bias,
-        wheel_known_force=np.tile((0.,0.,-40*9.81),(4,1)))
+        wheel_known_force=np.tile((0.,0.,-40*9.81),(4,1)),finite_motion=motion)
     return result,graph,contacts,state,downstream,known,compression,deflection
+
+
+def test_finite_suspension_material_uses_end_geometry_and_keeps_numerical_work_out_of_heat():
+    result,_graph,_contacts,_start,_down,_known,_q,_delta = solve(REFERENCE_DESIGN,finite_geometry=True)
+    assert result.energy_error==pytest.approx(0.,abs=3e-8)
+    assert result.material_loss>=0. and abs(result.suspension_geometry_work)>1e-9
+    independently_summed = (result.kinetic_change+result.kinetic_numerical_loss+result.potential_change
+        +result.material_loss+result.contact_numerical_loss+result.road_loss+sum(result.port_heat)+result.rolling_heat
+        +result.engine_heat-result.engine_work-result.known_work-result.steering_work-result.road_work
+        -result.guide_work-result.body_gyro_work)
+    assert independently_summed==pytest.approx(result.suspension_geometry_work,abs=3e-8)
+    assert result.momentum_error<1e-9 and result.force_error<1e-5 and result.port_error<1e-9
 
 
 def test_finite_guide_velocity_keeps_actual_wheel_momentum_energy_and_separate_constraint_work():

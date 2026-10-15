@@ -41,7 +41,7 @@ def state(car, angles):
     inertias = np.r_[car.config.engine_inertia,car.config.input_shaft_inertia,
                     np.full(4,car.config.wheel_inertia),hardware.downstream_inertias]
     return {"position":pos,"rotation":rotation,"centers":centers,"velocity":v[:3],"angular":v[3:6],
-            "wheel_velocity":velocities,"inertia":hardware.mechanical.world_inertia,"mass":mass,
+            "wheel_velocity":velocities,"relative_velocity":_u,"inertia":hardware.mechanical.world_inertia,"mass":mass,
             "spin":spin,"spin_inertias":inertias,"spring":spring,"radial":tire,"tangent":tangent,
             "deflection":geometry.deflection,"compression":q+car._unsprung_reference,
             "normals":geometry.normals,"normal_offsets":geometry.normal_offsets,"axes":hardware.axes,
@@ -134,7 +134,8 @@ def balance(source, step, old, new):
     old_tangent = .5*source.config.tire_contact_stiffness*np.sum(source.deformation**2)
     tangent_geometry = new["tangent"]-old["tangent"]-(sum(w.elastic_energy for w in step.wheels)-old_tangent)+projection
     geometry_work = gravity+step.known_work-external-steering_gyro
-    reconstructed = step.energy_error+native_kinetic+elastic_geometry+geometry_work+step.guide_work+step.body_gyro_work
+    reconstructed = (step.energy_error+native_kinetic+elastic_geometry+geometry_work+step.guide_work
+                     +step.body_gyro_work+step.suspension_geometry_work)
     if abs(residual-reconstructed)>1e-8:
         raise ArithmeticError("独立储能账与差项分解不一致")
     if abs(elastic_geometry-spring_geometry-radial_geometry-tangent_geometry)>1e-8:
@@ -153,12 +154,20 @@ def balance(source, step, old, new):
         raise ArithmeticError("实际径向位移差项不闭合")
     native_velocity_error = h*np.einsum('ij,ij->i',normals,wheel_predicted-new["wheel_velocity"])
     native_position_error = np.einsum('ij,ij->i',normals,h*new["wheel_velocity"]-displacement[1:])
+    actual_spring = suspension_potential(new["compression"],source.config)[1]
+    actual_damping = np.where(new["relative_velocity"]>=0.,source.config.suspension_compression_damping,
+                              source.config.suspension_extension_damping)*new["relative_velocity"]
     return {"kinetic_change":kinetic,"gravity_change":gravity,"elastic_change":elastic,
             "losses":losses,"engine_work":step.engine_work,"external_work":external,
             "steering_gyro_work":steering_gyro,"contact_steering_work":step.steering_work,
             "moving_road_work":step.road_work,"actual_energy_residual":residual,
             "numerical_guide_work":step.guide_work,"energy_residual_after_guide_work":residual-step.guide_work,
             "energy_residual_after_guide_and_gyro_work":residual-step.guide_work-step.body_gyro_work,
+            "suspension_geometry_work":step.suspension_geometry_work,
+            "energy_residual_after_all_geometry_work":residual-step.guide_work-step.body_gyro_work-step.suspension_geometry_work,
+            "suspension_force_end_error_max":float(np.max(np.abs(step.normal.suspension_force-actual_spring-actual_damping))),
+            "suspension_velocity_end_error_max":float(np.max(np.abs(new["relative_velocity"]-step.suspension_relative_velocity))),
+            "suspension_compression_end_error_max":float(np.max(np.abs(new["compression"]-step.compression))),
             "frozen_energy_residual":step.energy_error,"native_kinetic_defect":native_kinetic,
             "native_body_translation_defect":body_defect,"native_wheel_translation_defect":wheel_defect,
             "native_body_angular_defect":angular_defect,"native_inertia_transport_defect":inertia_defect,

@@ -7,16 +7,8 @@ from wheel_contact_kernels import rotated_path
 
 from tire_compliance import project_deformation
 from unsprung_drivetrain import tire_ports
-from unsprung_dynamics import cross_matrix
+from unsprung_motion import rotation_increment
 from wheel_envelope import crown_extent_secant, cylinder_support
-
-
-def rotation_increment(vector):
-    angle = np.linalg.norm(vector)
-    if angle==0.:
-        return np.eye(3)
-    skew = cross_matrix(vector/angle)
-    return np.eye(3)+np.sin(angle)*skew+(1-np.cos(angle))*skew@skew
 
 
 @dataclass(frozen=True)
@@ -32,13 +24,15 @@ class RadialContactStep:
 
 class FiniteRadialContact:
     wheel_velocity_bias = None
+    finite_motion = None
 
     def __init__(self, roads, hardware, centers, rotation, old_axes, deformation, steering, trails, dt, config, on_asphalt,
-                 wheel_velocity_bias=None):
+                 wheel_velocity_bias=None,finite_motion=None):
         self.roads,self.hardware,self.centers,self.rotation = roads,hardware,np.asarray(centers),rotation
         self.deformation,self.steering,self.trails = np.asarray(deformation),steering,trails
         self.dt,self.config,self.on_asphalt = dt,config,on_asphalt
         self.wheel_velocity_bias = wheel_velocity_bias
+        self.finite_motion = finite_motion
         self.initial = roads.query(centers,rotation[:,2],old_axes)
         self.target = roads.query(centers,rotation[:,2],hardware.axes)
         self.cache_key,self.cached = None,None
@@ -53,6 +47,9 @@ class FiniteRadialContact:
             wheel_velocity = wheel_velocity+self.wheel_velocity_bias
         middle_rotation = rotation_increment(.5*h*velocity[3:6])
         end_rotation = rotation_increment(h*velocity[3:6])
+        if self.finite_motion is not None:
+            motion = self.finite_motion.evaluate(velocity)
+            wheel_velocity,end_rotation = motion.wheel_velocity,motion.rotation_increment
         middle_axes = hardware.axes@middle_rotation.T
         end_axes = hardware.axes@end_rotation.T
         speed = np.linalg.norm(velocity[3:6])

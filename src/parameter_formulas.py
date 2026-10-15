@@ -92,8 +92,14 @@ FORMULAS = {
                               "p：压力比例；u：ABS调节后的指令；τ：响应时间常数；Δt：控制步长。"),
     "braking.target_slip": ((r"\lambda\approx\frac{v_x-r\omega}{|v_x|}",),
                             "λ：制动滑移；vx：接触点纵向速度；rω：轮缘速度；仅在足够速度时启用。"),
-    "suspension_spring_rates": ((r"U_s=\frac{1}{2}\sum_i k_i q_i^2,\qquad Q_i=-\frac{\partial U_s}{\partial q_i}",),
-                                "ki：弹簧刚度；qi：行程；Q：与行程对应的恢复力。"),
+    "suspension_spring_rates": ((
+        r"U_s=\frac{1}{2}\sum_i k_i q_i^2,\qquad Q_i=-\frac{\partial U_s}{\partial q_i}",
+        r"q_{i,1}=q_{i,0}+\mathbf{r}_{i,1}\cdot\mathbf{g}_1-\mathbf{r}_{i,0}\cdot\mathbf{g}_0",
+    ), "ki：弹簧刚度；qi：压缩行程。第二式为独立轮心末构型，ri是轮心相对簧上CG的世界向量，g为真实导向。止挡/防倾另由相应势能计算。"),
+    "suspension_compression_damping": ((
+        r"\dot{q}_i=\mathbf{g}_1\cdot\left(\mathbf{v}_{i,1}-\mathbf{V}_{s,1}-\boldsymbol{\Omega}_1\times\mathbf{r}_{i,1}\right)",
+        r"F_{d,i}=c_i^{\pm}\dot{q}_i,\qquad E_d=h\sum_i c_i^{\pm}\dot{q}_i^{\,2}\geq 0",
+    ), "独立轮心使用真实末姿态的相对速度；c+用于压缩，c−用于伸张。普通模型沿原法向/射线速率定义，计算来源可分别核对。"),
     "suspension_antiroll_rates": ((r"U_{\mathrm{bar}}=\frac{1}{2}k_{\mathrm{bar}}(q_L-q_R)^2",),
                                   "qL / qR：同轴左右行程；kbar：防倾刚度。"),
     "body_inertia": ((r"I_a=\sum_j\left(m_j d_{j,a}^{\,2}+I_{j,a}\right)",),
@@ -105,6 +111,8 @@ FORMULAS = {
 
 def formula_key(key):
     field = ALIASES.get(key, key)
+    if field=="suspension_extension_damping":
+        return "suspension_compression_damping"
     if field == "rear_lateral_stiffness":
         return "lateral_stiffness"
     if field == "abs":

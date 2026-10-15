@@ -541,6 +541,35 @@
         "texture_width": 1024,
         "texture_height": 256,
         "sha256": "d346712ea2786d8101c1172ce9399b42446b600733af497000275e84035c8a37"
+      },
+      {
+        "file": "suspension_spring_rates-1.png",
+        "tex": "q_{i,1}=q_{i,0}+\\mathbf{r}_{i,1}\\cdot\\mathbf{g}_1-\\mathbf{r}_{i,0}\\cdot\\mathbf{g}_0",
+        "width": 956,
+        "height": 63,
+        "texture_width": 1024,
+        "texture_height": 64,
+        "sha256": "aa30ca81304fa2405d7a5011c2c365348fae3eb0d890092d9af22e48a452e8cd"
+      }
+    ],
+    "suspension_compression_damping": [
+      {
+        "file": "suspension_compression_damping-0.png",
+        "tex": "\\dot{q}_i=\\mathbf{g}_1\\cdot\\left(\\mathbf{v}_{i,1}-\\mathbf{V}_{s,1}-\\boldsymbol{\\Omega}_1\\times\\mathbf{r}_{i,1}\\right)",
+        "width": 1043,
+        "height": 80,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "5f6cb35ccf84da8e5a712f5a6689b0b9346bc7cba6a6bad0992fcf9aa24599a3"
+      },
+      {
+        "file": "suspension_compression_damping-1.png",
+        "tex": "F_{d,i}=c_i^{\\pm}\\dot{q}_i,\\qquad E_d=h\\sum_i c_i^{\\pm}\\dot{q}_i^{\\,2}\\geq 0",
+        "width": 1106,
+        "height": 146,
+        "texture_width": 2048,
+        "texture_height": 256,
+        "sha256": "7dccc6ce76fa9c7e26ced8a5c1bb27b393d39af1c735e9e5987f9d9575970f23"
       }
     ],
     "suspension_antiroll_rates": [
