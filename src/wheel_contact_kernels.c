@@ -2025,6 +2025,8 @@ static PyObject *wheel_state_update(PyObject *self, PyObject *args, PyObject *up
 #include "suspension_prepare.h"
 #include "lab_contact_native.h"
 static PyMethodDef methods[] = {
+    {"rotation_increment_terms",rotation_increment_terms_native,METH_VARARGS,"试验台原旋转系数矩阵批量准备"},
+    {"finite_motion_vectors",finite_motion_vectors_native,METH_VARARGS,"试验台原有限悬架四轮向量批量准备"},
     {"box_axis_supports",box_axis_supports_native,METH_VARARGS,"试验台原Box六向法线和真实支持点批量准备"},
     {"radial_box_bounds",radial_box_bounds_native,METH_VARARGS,"试验台原Box包围盒支持距离批量准备"},
     {"box_face_candidates",box_face_candidates_native,METH_VARARGS,"试验台原Box面候选批量准备"},

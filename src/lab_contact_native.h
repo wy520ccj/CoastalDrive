@@ -416,4 +416,54 @@ static PyObject *box_edge_frames_native(PyObject *self,PyObject *args) {
 error:
     lab_release(v,5); return NULL;
 }
+/* 原Rodrigues三个系数矩阵逐项准备；三角函数和矩阵乘法仍由原NumPy执行。 */
+static PyObject *rotation_increment_terms_native(PyObject *self,PyObject *args) {
+    PyObject *inputs,*outputs;
+    double sine,one_minus_cosine;
+    if (!PyArg_ParseTuple(args,"OOdd",&inputs,&outputs,&sine,&one_minus_cosine)) return NULL;
+    const int dimensions[2]={1,2};
+    const Py_ssize_t shapes[2][3]={{3},{9,3}};
+    Py_buffer v[2]={{0}};
+    if (!lab_buffers(inputs,outputs,v,1,1,dimensions,shapes,-1,-1)) goto error;
+    double x=lab_get(v,0,0),y=lab_get(v,1,0),z=lab_get(v,2,0);
+    double skew[3][3]={{0.,-z,y},{z,0.,-x},{-y,x,0.}};
+    for (int i=0;i<3;++i) for (int j=0;j<3;++j) {
+        lab_set(v+1,i,j,skew[i][j]);
+        lab_set(v+1,3+i,j,(i==j ? 1. : 0.)+sine*skew[i][j]);
+        lab_set(v+1,6+i,j,one_minus_cosine*skew[i][j]);
+    }
+    lab_release(v,2); Py_RETURN_NONE;
+error:
+    lab_release(v,2); return NULL;
+}
+
+/* 四轮保留原减法/乘法/加法及NumPy普通叉积顺序；输出布局由调用者按原矩阵分配。 */
+static PyObject *finite_motion_vectors_native(PyObject *self,PyObject *args) {
+    PyObject *inputs,*outputs;
+    double h;
+    if (!PyArg_ParseTuple(args,"OOd",&inputs,&outputs,&h)) return NULL;
+    const int dimensions[7]={1,2,2,1,2,2,2};
+    const Py_ssize_t shapes[7][3]={{3},{4,3},{4,3},{6},{4,3},{4,3},{4,3}};
+    Py_buffer v[7]={{0}};
+    if (!lab_buffers(inputs,outputs,v,4,3,dimensions,shapes,-1,-1)) goto error;
+    double position[3],translation[3],angular[3];
+    for (int j=0;j<3;++j) {
+        position[j]=lab_get(v,j,0); translation[j]=lab_get(v+3,j,0); angular[j]=lab_get(v+3,3+j,0);
+    }
+    for (int i=0;i<4;++i) {
+        double difference[3],arms[3],product[3];
+        for (int j=0;j<3;++j) {
+            double old_arm=lab_get(v+1,i,j)-position[j];
+            difference[j]=lab_get(v+2,i,j)-translation[j];
+            double change=h*difference[j];
+            arms[j]=old_arm+change;
+            lab_set(v+4,i,j,old_arm); lab_set(v+5,i,j,change);
+        }
+        cross_regular(angular,arms,product);
+        for (int j=0;j<3;++j) lab_set(v+6,i,j,difference[j]-product[j]);
+    }
+    lab_release(v,7); Py_RETURN_NONE;
+error:
+    lab_release(v,7); return NULL;
+}
 #endif
