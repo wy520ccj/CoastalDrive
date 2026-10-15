@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 
 import numpy as np
-from mechanical_kernels import cross
+from wheel_contact_kernels import unsprung_tire_ports
 
 from driveline_inertia import active_inertias, rotor_weights
 
@@ -90,38 +90,11 @@ def tire_ports(drivetrain, contact_offsets, tangents, laterals, normals, steerin
                material_axes=None, wheel_velocity_bias=None):
     """切向材料点与法向包络的共轭端口；显式包络法向不含轴向自旋。"""
     mechanical = drivetrain.mechanical
-    rows,radii,biases = [],[],[]
-    for i, (offset,tangent,lateral,normal,steer,trail) in enumerate(zip(
-            contact_offsets,tangents,laterals,normals,steering_angular,trails)):
-        wheel,lever,relative = [],[],[]
-        spin_axis = drivetrain.axes[i] if material_axes is None else material_axes[i]
-        brake = drivetrain.brakes[i]
-        if material_axes is not None:
-            brake = brake.copy()
-            brake[3:6] = spin_axis
-        # 侧向材料点保留拖距；显式法向取包络势能梯度，不把扫掠位移当材料速度。
-        for direction,axis in enumerate((tangent,lateral,normal)):
-            point_offset = np.asarray(offset)-trail*np.asarray(tangent) if direction==1 else np.asarray(offset)
-            envelope_normal = direction==2 and normal_offsets is not None
-            if envelope_normal:
-                point_offset = normal_offsets[i]
-            point = mechanical.wheel_arms[i]+point_offset
-            gradient = np.zeros(16)
-            gradient[:3] = axis
-            gradient[3:6] = cross(point,axis)
-            gradient[6+i] = np.dot(mechanical.guides[i],axis)
-            radius = np.dot(spin_axis,cross(point_offset,axis))
-            if envelope_normal:
-                radius = 0.
-            else:
-                gradient -= radius*brake
-            wheel.append(gradient)
-            lever.append(radius)
-            relative.append(np.dot(cross(steer,point_offset),axis))
-        rows.append(wheel)
-        radii.append(lever)
-        biases.append(relative)
-    rows,radii = np.asarray(rows),np.asarray(radii)
+    inputs = tuple(None if value is None else np.asarray(value,dtype=float) for value in (
+        mechanical.wheel_arms,mechanical.guides,drivetrain.axes,drivetrain.brakes,contact_offsets,
+        tangents,laterals,normals,steering_angular,trails,normal_offsets,material_axes))
+    rows,radii,biases = np.empty((4,3,16)),np.empty((4,3)),np.empty((4,3))
+    unsprung_tire_ports(inputs,(rows,radii,biases))
     guide = None if wheel_velocity_bias is None else np.column_stack(
         [np.einsum('ij,ij->i',wheel_velocity_bias,directions) for directions in (tangents,laterals,normals)])
-    return UnsprungTirePorts(rows[:,0],rows[:,1],rows[:,2],radii[:,0],radii,np.asarray(biases),guide)
+    return UnsprungTirePorts(rows[:,0],rows[:,1],rows[:,2],radii[:,0],radii,biases,guide)

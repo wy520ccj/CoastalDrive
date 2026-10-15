@@ -3,13 +3,11 @@
 from dataclasses import dataclass, replace
 
 import numpy as np
-from mechanical_kernels import cross
-from wheel_contact_kernels import rotated_path
+from wheel_contact_kernels import finite_radial_gradients, rotated_path
 
 from tire_compliance import project_deformation
 from unsprung_drivetrain import tire_ports
 from unsprung_motion import rotation_increment
-from wheel_envelope import crown_extent_secant, cylinder_support
 
 
 @dataclass(frozen=True)
@@ -58,39 +56,17 @@ class FiniteRadialContact:
                                   for axis in hardware.axes]) if speed else hardware.axes
         middle = self.roads.query(self.centers+.5*h*wheel_velocity,middle_rotation@self.rotation[:,2],middle_axes)
         end = self.roads.query(self.centers+h*wheel_velocity,end_rotation@self.rotation[:,2],end_axes)
-        gradients,scales,normals = np.zeros((4,16)),np.ones(4),middle.normals.copy()
-        for i,normal in enumerate(middle.normals):
-            support = np.asarray(cylinder_support(tuple(-normal),tuple(middle_axes[i]),config.wheel_radius,
-                config.wheel_width/2,config.wheel_shoulder_radius,config.wheel_crown_height))
-            meridian = cross(middle_axes[i],normal)
-            squared = np.dot(meridian,meridian)
-            axial_lever = np.dot(cross(support,normal),meridian)/squared if squared else 0.
-            surface_velocity = wheel_velocity[i]+cross(velocity[3:6],axial_lever*middle_axes[i])
-            motion = np.dot(surface_velocity,surface_velocity)
-            if end.hits[i] is not None and motion>0.:
-                delta_change = end.deflection[i]-self.target.deflection[i]
-                first,last = self.target.hits[i],end.hits[i]
-                if first is not None and first.node==last.node and first.plane is not None and first.plane==last.plane:
-                    # 同一有限平面直接算小位移和包络高度割线，避免两个近似等深度相减。
-                    plane_normal = np.asarray(first.plane[0])
-                    eta0 = np.dot(plane_normal,hardware.axes[i])
-                    eta_change = h*np.dot(plane_normal,cross(velocity[3:6],average_axes[i]))
-                    extent = crown_extent_secant(float(eta0),float(eta0+eta_change),config.wheel_radius,
-                        config.wheel_width/2,config.wheel_shoulder_radius,config.wheel_crown_height)
-                    delta_change = extent*eta_change-h*np.dot(plane_normal,wheel_velocity[i])
-                desired = -delta_change/h
-                normal = normal+(desired-np.dot(normal,surface_velocity))*surface_velocity/motion
-            scales[i] = np.linalg.norm(normal)
-            if scales[i]==0.:
-                raise ArithmeticError("有限径向接触的空间梯度退化")
-            normal = normal/scales[i]
-            normals[i] = normal
-            gradients[i,:3] = normal
-            gradients[i,3:6] = cross(hardware.mechanical.wheel_arms[i]+axial_lever*middle_axes[i],normal)
-            gradients[i,6+i] = np.dot(hardware.mechanical.guides[i],normal)
-        tangents = np.cross(normals,middle_axes)
-        tangents /= np.linalg.norm(tangents,axis=1)[:,None]
-        laterals = np.cross(tangents,normals)
+        # 原生只组装已查询构型的梯度/坐标；道路中点和末点仍在上方逐次真实求交。
+        planes,same_plane,touching = np.zeros((4,3)),np.zeros(4),np.zeros(4)
+        for i,(first,last) in enumerate(zip(self.target.hits,end.hits,strict=True)):
+            touching[i] = last is not None
+            if first is not None and last is not None and first.node==last.node and first.plane is not None and first.plane==last.plane:
+                planes[i],same_plane[i] = first.plane[0],1.
+        gradients,scales,normals,tangents,laterals = np.empty((4,16)),np.empty(4),np.empty((4,3)),np.empty((4,3)),np.empty((4,3))
+        finite_radial_gradients((middle.normals,middle_axes,hardware.axes,average_axes,wheel_velocity,
+            velocity[3:6],hardware.mechanical.wheel_arms,hardware.mechanical.guides,self.target.deflection,
+            end.deflection,planes,same_plane,touching),(gradients,scales,normals,tangents,laterals),
+            h,config.wheel_radius,config.wheel_width/2,config.wheel_shoulder_radius,config.wheel_crown_height)
         contacts = tire_ports(hardware,middle.offsets,tangents,laterals,normals,self.steering,self.trails,
             normal_offsets=middle.normal_offsets,material_axes=middle_axes,wheel_velocity_bias=self.wheel_velocity_bias)
         # 指定转向先改变轮轴包络；这部分是执行器输入功，不充作道路输入或假耗散。
