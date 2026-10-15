@@ -2025,6 +2025,8 @@ static PyObject *wheel_state_update(PyObject *self, PyObject *args, PyObject *up
 #include "suspension_prepare.h"
 #include "lab_contact_native.h"
 static PyMethodDef methods[] = {
+    {"box_cone_samples",box_cone_samples_native,METH_VARARGS,"试验台原Box法线锥两端支持求值"},
+    {"box_cone_refine",box_cone_refine_native,METH_VARARGS,"试验台原Box法线锥52轮细化与见证点"},
     {"radial_plane_values",radial_plane_values_native,METH_VARARGS,"试验台原真实平面支持距离及局部见证点批量计算"},
     {"radial_contact_frames",radial_contact_frames_native,METH_VARARGS,"试验台已选径向接触与腾空坐标批量组装"},
     {"unsprung_body_torque",unsprung_body_torque_native,METH_VARARGS,"试验台原四轮力矩归集与车身陀螺残差端口"},

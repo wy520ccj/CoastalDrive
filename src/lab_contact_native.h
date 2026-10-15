@@ -242,4 +242,71 @@ static PyObject *radial_contact_frames_native(PyObject *self,PyObject *args) {
 error:
     lab_release(v,13); return NULL;
 }
+typedef struct {
+    double center[3],axis[3],basis[2][3],edge[3];
+    double radius,half_width,shoulder,crown;
+    PyObject *cosine,*sine;
+} LabBoxCone;
+
+/* 保留原NumPy标量sin/cos与三元素dot顺序；只消除临时小向量和重复包装。 */
+static int lab_box_evaluate(const LabBoxCone *cone,double angle,double normal[3],double wheel[3],double values[2]) {
+    PyObject *result=PyObject_CallFunction(cone->cosine,"d",angle);
+    if (!result) return 0;
+    double cosine=PyFloat_AsDouble(result); Py_DECREF(result); if (PyErr_Occurred()) return 0;
+    result=PyObject_CallFunction(cone->sine,"d",angle);
+    if (!result) return 0;
+    double sine=PyFloat_AsDouble(result); Py_DECREF(result); if (PyErr_Occurred()) return 0;
+    double tangent[3],negative[3],support_point[3],delta[3];
+    for (int j=0;j<3;++j) {
+        normal[j]=cosine*cone->basis[0][j]+sine*cone->basis[1][j];
+        tangent[j]=-sine*cone->basis[0][j]+cosine*cone->basis[1][j];
+        negative[j]=-normal[j];
+    }
+    if (!support_values(negative,cone->axis,cone->radius,cone->half_width,cone->shoulder,cone->crown,support_point)) return 0;
+    for (int j=0;j<3;++j) { wheel[j]=cone->center[j]+support_point[j]; delta[j]=wheel[j]-cone->edge[j]; }
+    values[0]=lab_dot(normal,delta); values[1]=lab_dot(tangent,delta);
+    return 1;
+}
+static void lab_box_store(Py_buffer *views,int row,const double normal[3],const double wheel[3],const double values[2]) {
+    for (int j=0;j<3;++j) { lab_set(views+4,row,j,normal[j]); lab_set(views+5,row,j,wheel[j]); }
+    for (int j=0;j<2;++j) lab_set(views+6,row,j,values[j]);
+}
+static PyObject *lab_box_cone_call(PyObject *args,int refine) {
+    PyObject *inputs,*outputs;
+    LabBoxCone cone;
+    double ceiling;
+    if (!PyArg_ParseTuple(args,"OOdddddOO",&inputs,&outputs,&cone.radius,&cone.half_width,&cone.shoulder,&cone.crown,
+        &ceiling,&cone.cosine,&cone.sine)) return NULL;
+    const int dimensions[7]={1,1,2,1,2,2,2};
+    const Py_ssize_t shapes[7][3]={{3},{3},{2,3},{3},{3,3},{3,3},{3,2}};
+    Py_buffer v[7]={{0}};
+    if (!lab_buffers(inputs,outputs,v,4,3,dimensions,shapes,-1,-1)) goto error;
+    for (int j=0;j<3;++j) { cone.center[j]=lab_get(v,j,0); cone.axis[j]=lab_get(v+1,j,0); cone.edge[j]=lab_get(v+3,j,0); }
+    for (int j=0;j<2;++j) lab_row(v+2,j,cone.basis[j]);
+    double normal[3],wheel[3],values[2];
+    if (!refine) {
+        for (int row=0;row<2;++row) {
+            if (!lab_box_evaluate(&cone,row==0 ? 0. : ceiling,normal,wheel,values)) goto error;
+            lab_box_store(v,row,normal,wheel,values);
+        }
+    } else {
+        double lo=0.,hi=ceiling;
+        for (int iteration=0;iteration<52;++iteration) {
+            double middle=(lo+hi)/2;
+            if (!lab_box_evaluate(&cone,middle,normal,wheel,values)) goto error;
+            if (values[1]>0.) lo=middle; else hi=middle;
+        }
+        if (!lab_box_evaluate(&cone,(lo+hi)/2,normal,wheel,values)) goto error;
+        lab_box_store(v,2,normal,wheel,values);
+    }
+    lab_release(v,7); Py_RETURN_NONE;
+error:
+    lab_release(v,7); return NULL;
+}
+static PyObject *box_cone_samples_native(PyObject *self,PyObject *args) {
+    return lab_box_cone_call(args,0);
+}
+static PyObject *box_cone_refine_native(PyObject *self,PyObject *args) {
+    return lab_box_cone_call(args,1);
+}
 #endif

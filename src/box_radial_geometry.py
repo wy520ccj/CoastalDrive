@@ -3,6 +3,7 @@
 from itertools import product
 
 import numpy as np
+from wheel_contact_kernels import box_cone_refine, box_cone_samples
 
 from wheel_envelope import cylinder_support
 
@@ -18,6 +19,8 @@ def box_section(center,axis,half,config):
     if config.wheel_crown_height==0.:
         return None
     axis = axis/np.linalg.norm(axis)
+    center_native,axis_native = np.asarray(center,dtype=float),np.asarray(axis,dtype=float)
+    parameters = config.wheel_radius,config.wheel_width/2,config.wheel_shoulder_radius,config.wheel_crown_height,np.pi/2
     tolerance = 128*np.finfo(float).eps*max(1.,np.linalg.norm(center),max(half))
     for free in range(3):
         positive = center+wheel_support(-np.eye(3)[free],axis,config)
@@ -57,26 +60,18 @@ def box_section(center,axis,half,config):
             delta = (center[fixed]-edge[fixed])*signs
             length = np.linalg.norm(delta)
 
-            def evaluate(angle,basis=basis,edge=edge):
-                normal = np.cos(angle)*basis[0]+np.sin(angle)*basis[1]
-                tangent = -np.sin(angle)*basis[0]+np.cos(angle)*basis[1]
-                wheel = center+wheel_support(normal,axis,config)
-                return normal,wheel,float(np.dot(normal,wheel-edge)),float(np.dot(tangent,wheel-edge))
-
-            left,right = evaluate(0.),evaluate(np.pi/2)
-            upper = max(left[2],right[2])
+            normals,wheels,values = np.empty((3,3)),np.empty((3,3)),np.empty((3,2))
+            inputs,outputs = (center_native,axis_native,basis,edge),(normals,wheels,values)
+            box_cone_samples(inputs,outputs,*parameters,np.cos,np.sin)
+            upper = max(float(values[0,0]),float(values[1,0]))
             critical = np.sqrt(max(length*length-first_theta*first_theta,0.))
             minimum_dot = -np.linalg.norm(np.minimum(delta,0.)) if min(delta)<0. else min(delta)
             maximum_dot = np.linalg.norm(np.maximum(delta,0.)) if max(delta)>0. else max(delta)
             if critical>second_theta and minimum_dot>-critical:
                 # 所有驻点均为严格极大值，因此这一法线锥最多只有一个内部极大值。
-                if left[3]>0. and right[3]<0.:
-                    lo,hi = 0.,np.pi/2
-                    for _ in range(52):
-                        middle = (lo+hi)/2
-                        if evaluate(middle)[3]>0.:lo=middle
-                        else:hi=middle
-                    normal,wheel,distance,_slope = evaluate((lo+hi)/2)
+                if values[0,1]>0. and values[1,1]<0.:
+                    box_cone_refine(inputs,outputs,*parameters,np.cos,np.sin)
+                    normal,wheel,distance = normals[2],wheels[2],float(values[2,0])
                     upper = max(upper,distance)
                     road = edge.copy();road[free]=wheel[free]
                     if (abs(road[free])<=half[free]+tolerance

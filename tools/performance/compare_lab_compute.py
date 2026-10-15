@@ -102,6 +102,8 @@ def compare(args):
              ("nonlinear-A", "nonlinear-bump", args.baseline), ("nonlinear-B", "nonlinear-bump", ROOT)]
     if args.turning_abba:
         cases[6:6] = [("turning-B2", "turning", ROOT), ("turning-A2", "turning", args.baseline)]
+    if args.bump_abba:
+        cases += [("nonlinear-B2", "nonlinear-bump", ROOT), ("nonlinear-A2", "nonlinear-bump", args.baseline)]
     reference, rows = {}, []
     for name, scenario, source in cases:
         command = [sys.executable, str(ROOT/"tools/physics/run_sim_double.py"), str(Path(__file__).resolve()),
@@ -127,6 +129,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--worker", action="store_true")
     parser.add_argument("--turning-abba", action="store_true", help="转向也按ABBA串行对照，原单次协议保留")
+    parser.add_argument("--bump-abba", action="store_true", help="实体凸起也按ABBA串行对照")
     parser.add_argument("--source", type=Path, default=ROOT)
     parser.add_argument("--baseline", type=Path, help="完整对照必须显式指定本轮基线，避免误用旧版本")
     parser.add_argument("--scenario", choices=("braking", "turning", "nonlinear-bump"), default="braking")
