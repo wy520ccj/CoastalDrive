@@ -309,4 +309,58 @@ static PyObject *box_cone_samples_native(PyObject *self,PyObject *args) {
 static PyObject *box_cone_refine_native(PyObject *self,PyObject *args) {
     return lab_box_cone_call(args,1);
 }
+/* 六个轴向仍逐个调用原支持函数；负法线在前，保留零符号及每次支持运算的算术顺序。 */
+static int lab_box_axis_values(const double center[3],double axis[3],double radius,double half_width,double shoulder,
+                               double crown,double normals[6][3],double wheels[6][3]) {
+    for (int index=0;index<3;++index) for (int side=0;side<2;++side) {
+        int row=2*index+side;
+        double sign=side==0 ? -1. : 1.,direction[3],support_point[3];
+        for (int j=0;j<3;++j) { normals[row][j]=sign*(j==index ? 1. : 0.); direction[j]=-normals[row][j]; }
+        if (!support_values(direction,axis,radius,half_width,shoulder,crown,support_point)) return 0;
+        for (int j=0;j<3;++j) wheels[row][j]=center[j]+support_point[j];
+    }
+    return 1;
+}
+static PyObject *box_axis_supports_native(PyObject *self,PyObject *args) {
+    PyObject *inputs,*outputs;
+    double radius,half_width,shoulder,crown;
+    if (!PyArg_ParseTuple(args,"OOdddd",&inputs,&outputs,&radius,&half_width,&shoulder,&crown)) return NULL;
+    const int dimensions[4]={1,1,2,2};
+    const Py_ssize_t shapes[4][3]={{3},{3},{6,3},{6,3}};
+    Py_buffer v[4]={{0}};
+    if (!lab_buffers(inputs,outputs,v,2,2,dimensions,shapes,-1,-1)) goto error;
+    double center[3],axis[3],normals[6][3],wheels[6][3];
+    for (int j=0;j<3;++j) { center[j]=lab_get(v,j,0); axis[j]=lab_get(v+1,j,0); }
+    if (!lab_box_axis_values(center,axis,radius,half_width,shoulder,crown,normals,wheels)) goto error;
+    for (int i=0;i<6;++i) for (int j=0;j<3;++j) {
+        lab_set(v+2,i,j,normals[i][j]); lab_set(v+3,i,j,wheels[i][j]);
+    }
+    lab_release(v,4); Py_RETURN_NONE;
+error:
+    lab_release(v,4); return NULL;
+}
+static double lab_box_maximum(double first,double second) {
+    if (isnan(first)) return first;
+    if (isnan(second)) return second;
+    return first>second ? first : second;
+}
+static PyObject *radial_box_bounds_native(PyObject *self,PyObject *args) {
+    PyObject *inputs,*outputs;
+    double radius,half_width,shoulder,crown;
+    if (!PyArg_ParseTuple(args,"OOdddd",&inputs,&outputs,&radius,&half_width,&shoulder,&crown)) return NULL;
+    const int dimensions[4]={1,1,1,1};
+    const Py_ssize_t shapes[4][3]={{3},{3},{3},{3}};
+    Py_buffer v[4]={{0}};
+    if (!lab_buffers(inputs,outputs,v,3,1,dimensions,shapes,-1,-1)) goto error;
+    double center[3],axis[3],normals[6][3],wheels[6][3];
+    for (int j=0;j<3;++j) { center[j]=lab_get(v,j,0); axis[j]=lab_get(v+1,j,0); }
+    if (!lab_box_axis_values(center,axis,radius,half_width,shoulder,crown,normals,wheels)) goto error;
+    for (int j=0;j<3;++j) {
+        double half=lab_get(v+2,j,0),minimum=wheels[2*j+1][j],maximum=wheels[2*j][j];
+        lab_set(v+3,j,0,lab_box_maximum(lab_box_maximum(minimum-half,-half-maximum),0.));
+    }
+    lab_release(v,4); Py_RETURN_NONE;
+error:
+    lab_release(v,4); return NULL;
+}
 #endif

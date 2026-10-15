@@ -3,9 +3,12 @@
 from itertools import product
 
 import numpy as np
-from wheel_contact_kernels import box_cone_refine, box_cone_samples
+from wheel_contact_kernels import box_axis_supports, box_cone_refine, box_cone_samples
 
 from wheel_envelope import cylinder_support
+
+_BOX_AXES = np.eye(3)
+_BOX_AXES.flags.writeable = False
 
 
 def wheel_support(normal,axis,config):
@@ -22,9 +25,10 @@ def box_section(center,axis,half,config):
     center_native,axis_native = np.asarray(center,dtype=float),np.asarray(axis,dtype=float)
     parameters = config.wheel_radius,config.wheel_width/2,config.wheel_shoulder_radius,config.wheel_crown_height,np.pi/2
     tolerance = 128*np.finfo(float).eps*max(1.,np.linalg.norm(center),max(half))
+    axis_normals,axis_wheels = np.empty((6,3)),np.empty((6,3))
+    box_axis_supports((center_native,axis_native),(axis_normals,axis_wheels),*parameters[:4])
     for free in range(3):
-        positive = center+wheel_support(-np.eye(3)[free],axis,config)
-        negative = center+wheel_support(np.eye(3)[free],axis,config)
+        positive,negative = axis_wheels[2*free],axis_wheels[2*free+1]
         clearance = min(half[free]-positive[free],negative[free]+half[free])
         if clearance<=0.:
             continue
@@ -46,16 +50,15 @@ def box_section(center,axis,half,config):
         candidates,bounds = [],[]
 
         for index in fixed:
-            for sign in (-1.,1.):
-                normal = sign*np.eye(3)[index]
-                wheel = center+wheel_support(normal,axis,config)
+            for side in range(2):
+                normal,wheel = axis_normals[2*index+side],axis_wheels[2*index+side]
                 distance = float(np.dot(normal,wheel)-half[index])
                 road = wheel-distance*normal
                 if all(abs(road[j])<=half[j]+tolerance for j in range(3) if j!=index):
                     candidates.append((distance,normal,wheel,road,(tuple(normal),float(half[index]))))
 
         for signs in product((-1.,1.),repeat=2):
-            basis = np.eye(3)[fixed]*np.asarray(signs)[:,None]
+            basis = _BOX_AXES[fixed]*np.asarray(signs)[:,None]
             edge = np.zeros(3);edge[fixed]=np.asarray(signs)*half[fixed]
             delta = (center[fixed]-edge[fixed])*signs
             length = np.linalg.norm(delta)

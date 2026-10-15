@@ -7,9 +7,9 @@ from itertools import product
 import numpy as np
 from panda3d.core import BitMask32
 from radial_contact_kernels import signed_distance
-from wheel_contact_kernels import radial_contact_frames, radial_plane_values
+from wheel_contact_kernels import radial_box_bounds, radial_contact_frames, radial_plane_values
 
-from box_radial_geometry import box_section, wheel_support
+from box_radial_geometry import box_section
 from suspension_contacts import StaticSupportShapes, static_support_shapes
 from unsprung_body import quaternion_rotation
 from vehicle_contacts import road_support
@@ -74,10 +74,9 @@ class RadialSurface:
         local_center,local_axis = self.frame@center+self.translation,self.frame@axis
         section = None
         if self.half and self.margin==0.:
-            half = np.asarray(self.half)
-            minimum = np.asarray([local_center[j]+wheel_support(np.eye(3)[j],local_axis,config)[j] for j in range(3)])
-            maximum = np.asarray([local_center[j]+wheel_support(-np.eye(3)[j],local_axis,config)[j] for j in range(3)])
-            gap = np.maximum(np.maximum(minimum-half,-half-maximum),0.)
+            half,gap = np.asarray(self.half,dtype=float),np.empty(3)
+            radial_box_bounds((local_center,local_axis,half),(gap,),config.wheel_radius,config.wheel_width/2,
+                config.wheel_shoulder_radius,config.wheel_crown_height)
             if np.linalg.norm(gap)>config.wheel_radius+config.suspension_travel:
                 return
             section = box_section(local_center,local_axis,self.half,config)
