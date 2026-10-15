@@ -1,0 +1,171 @@
+{
+  "date": "2026-10-15",
+  "source_base": "722ecfdd6e537c91f473090508d81669f260847c",
+  "scope": "committed game/lab integration; documentation, launcher and discovery updates",
+  "build": {
+    "returncode": 0,
+    "fresh_native_modules": {
+      "convex_cast_kernels.cp314-win_amd64.pyd": "e014c8f15c9318debd4c6dc3b0838a00998917a50abf425db910e9cc9ce2a332",
+      "mechanical_kernels.cp314-win_amd64.pyd": "547017e9d6d024e5187d6c72f83d0162caf3acdd20c5d24c0b54f9ea79afa8b8",
+      "physics_packet_kernels.cp314-win_amd64.pyd": "33c908918c95e15e0442a8d88c3a33e830f026926f197253152e7e0cef7e64b3",
+      "wheel_contact_kernels.cp314-win_amd64.pyd": "bd2969f105b2956206531b969dcd0821ddb3f0fb67b7d9c518fd1f0e95557198"
+    },
+    "command": "PROJECT_VENV_PYTHON setup.py build_ext --inplace --force --build-temp builds/integration-native-temp",
+    "cwd": "logs/integration-20261015/source"
+  },
+  "excluded_work": {
+    "setup.py": "3a081b10819816481cf5f23dbe6d2e45583f704173e60b1d5258a12dbcaadd8d",
+    "src/vehicle_suspension.py": "adc1970146adb02c98d1114a6a9832a5c9ca5c6de08b8139392d39131626037f",
+    "src/wheel_contact_kernels.c": "e4651398f963a96ff28c2b25c1ab6369bdf0875c879e7601440c09fb791a6947",
+    "src/suspension_prepare.h": "6b1e423952f81998e4da3963f8894cf2ffadd1162c369cc7e571f0cbcfdca034",
+    "tests/suspension_prepare_reference.py": "dfd6887580479b600752b6ce4f50d57baa961fd9f49111a8b136a6bff18ef29c",
+    "tests/test_native_suspension_prepare.py": "df4ef94a0efd29ab42329641314501e231e7ed4a27fa8f1cbda7df94179baf8e"
+  },
+  "excluded_work_unchanged": true,
+  "T1": {
+    "passed": true,
+    "pytest": "130 passed in 193.57s",
+    "checks": [
+      {
+        "name": "ruff",
+        "status": "passed",
+        "seconds": 0.291
+      },
+      {
+        "name": "pytest",
+        "status": "passed",
+        "seconds": 194.231
+      },
+      {
+        "name": "headless-0",
+        "status": "passed",
+        "seconds": 1.455
+      },
+      {
+        "name": "headless-17",
+        "status": "passed",
+        "seconds": 1.464
+      },
+      {
+        "name": "headless-23",
+        "status": "passed",
+        "seconds": 1.435
+      }
+    ],
+    "areas": [
+      "lab",
+      "research"
+    ],
+    "tests": [
+      "tests/test_core.py",
+      "tests/test_game_steering.py",
+      "tests/test_driving_modes.py",
+      "tests/test_driving_mode_ui.py",
+      "tests/test_world_substeps.py",
+      "tests/test_session_clock.py",
+      "tests/test_session_process.py",
+      "tests/test_snapshot_wire.py",
+      "tests/test_keyboard_steering.py",
+      "tests/test_npc_physics.py",
+      "tests/test_vehicle_batch.py",
+      "tests/test_impact_events.py",
+      "tests/test_ui.py"
+    ]
+  },
+  "lifecycle": {
+    "passed": true,
+    "rounds": [
+      {
+        "game_world_closed": true,
+        "lab_world_closed": true,
+        "gui_before_lab": 0,
+        "gui_after_lab": 0
+      },
+      {
+        "game_world_closed": true,
+        "lab_world_closed": true,
+        "gui_before_lab": 0,
+        "gui_after_lab": 0
+      }
+    ],
+    "human_acceptance": "pending"
+  },
+  "menu_1080": {
+    "height": 1080,
+    "menus": {
+      "vehicle": {
+        "rows": 5,
+        "row_height": 0.07999999821186066,
+        "steady_hover_frames": 120,
+        "edge_hover_frames_per_row": 24,
+        "selection": "参考前驱 FWD",
+        "outside_click_closes": true
+      },
+      "maneuver": {
+        "rows": 8,
+        "row_height": 0.07999999821186066,
+        "steady_hover_frames": 120,
+        "edge_hover_frames_per_row": 24,
+        "selection": "执行器输入",
+        "outside_click_closes": true
+      },
+      "abs": {
+        "rows": 2,
+        "row_height": 0.07999999821186066,
+        "steady_hover_frames": 120,
+        "edge_hover_frames_per_row": 24,
+        "selection": "ABS 关闭",
+        "outside_click_closes": true
+      },
+      "plot": {
+        "rows": 7,
+        "row_height": 0.07999999821186066,
+        "steady_hover_frames": 120,
+        "edge_hover_frames_per_row": 24,
+        "selection": "四轮滑移率",
+        "outside_click_closes": true
+      },
+      "esc": {
+        "rows": 2,
+        "row_height": 0.07999999821186066,
+        "steady_hover_frames": 120,
+        "edge_hover_frames_per_row": 24,
+        "selection": "ESC 开启",
+        "outside_click_closes": true
+      }
+    },
+    "physics_rerun": false
+  },
+  "discovery": {
+    "passed": true,
+    "ruff_discovered_files": 943,
+    "excluded_roots": [
+      ".venv",
+      "build",
+      "builds",
+      "legacy",
+      "logs",
+      "vendor"
+    ],
+    "pytest_testpaths": [
+      "tests"
+    ],
+    "archive_preserves_original_text": true,
+    "launchers_checked": true,
+    "protected_unchanged": true
+  },
+  "actual_imports": {
+    "simulation": "src/simulation.py",
+    "vehicle_suspension": "src/vehicle_suspension.py",
+    "lab_experiment": "src/lab_experiment.py",
+    "physics_packet_kernels": "src/physics_packet_kernels.cp314-win_amd64.pyd",
+    "mechanical_kernels": "src/mechanical_kernels.cp314-win_amd64.pyd",
+    "wheel_contact_kernels": "src/wheel_contact_kernels.cp314-win_amd64.pyd",
+    "convex_cast_kernels": "src/convex_cast_kernels.cp314-win_amd64.pyd"
+  },
+  "stage_gate": "not_assessed",
+  "lab_human_gate": "pending",
+  "historical_T2_failure": "retained; no T2/T3 run in this integration",
+  "game_human_acceptance": "2026-10-14; disclosed occasional render hiccups accepted",
+  "local_logs": "logs/integration-20261015"
+}
