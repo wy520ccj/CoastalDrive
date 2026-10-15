@@ -7,7 +7,7 @@ import pytest
 from lab_contact_reference import finite_gradients_reference, tire_ports_reference
 from test_finite_radial_contact import contact_case
 from test_unsprung_joint import hardware
-from wheel_contact_kernels import finite_radial_gradients, unsprung_tire_ports
+from wheel_contact_kernels import finite_radial_gradients, unsprung_body_torque, unsprung_tire_ports
 
 from unsprung_drivetrain import tire_ports
 from unsprung_motion import rotation_increment
@@ -18,6 +18,19 @@ def assert_bits(actual, expected):
     assert actual.shape == expected.shape
     assert actual.dtype == expected.dtype
     assert actual.tobytes() == expected.tobytes()
+
+
+@pytest.mark.parametrize("scale", [0.,1e-12,1.,1e8])
+def test_body_torque_keeps_original_wheel_order_and_bitwise_signed_values(scale):
+    rng = np.random.default_rng(71)
+    for _ in range(250):
+        arms = rng.normal(size=(4,6))[:,::2]*scale
+        force = rng.normal(size=(4,6))[:,::2]*scale
+        reaction,rotor = rng.normal(size=32)[::2]*scale,rng.normal(size=32)[::2]*scale
+        expected = reaction[3:6]-rotor[3:6]-np.sum(np.cross(arms,force),axis=0)
+        output = np.empty(6)[::2]
+        unsprung_body_torque((arms,force,reaction,rotor),(output,))
+        assert_bits(output,expected)
 
 
 @pytest.mark.parametrize("normal_offsets,material_axes,guide_bias", [

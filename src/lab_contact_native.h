@@ -153,4 +153,24 @@ static PyObject *finite_radial_gradients_native(PyObject *self,PyObject *args) {
 error:
     lab_release(v,18); return NULL;
 }
+/* 车身陀螺残差仍使用原生轮心实际力；这里只按原四轮顺序归集力矩。 */
+static PyObject *unsprung_body_torque_native(PyObject *self,PyObject *args) {
+    PyObject *inputs,*outputs;
+    if (!PyArg_ParseTuple(args,"OO",&inputs,&outputs)) return NULL;
+    const int dimensions[5]={2,2,1,1,1};
+    const Py_ssize_t shapes[5][3]={{4,3},{4,3},{16},{16},{3}};
+    Py_buffer v[5]={{0}};
+    if (!lab_buffers(inputs,outputs,v,4,1,dimensions,shapes,-1,-1)) goto error;
+    double total[3]={0.};
+    for (int i=0;i<4;++i) {
+        double arm[3],force[3],moment[3];
+        lab_row(v,i,arm); lab_row(v+1,i,force);
+        cross_regular(arm,force,moment);
+        for (int j=0;j<3;++j) total[j]+=moment[j];
+    }
+    for (int j=0;j<3;++j) lab_set(v+4,j,0,lab_get(v+2,j+3,0)-lab_get(v+3,j+3,0)-total[j]);
+    lab_release(v,5); Py_RETURN_NONE;
+error:
+    lab_release(v,5); return NULL;
+}
 #endif

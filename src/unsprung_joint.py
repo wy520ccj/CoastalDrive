@@ -5,6 +5,7 @@ from dataclasses import dataclass, replace
 
 import numpy as np
 from mechanical_kernels import cross
+from wheel_contact_kernels import unsprung_body_torque
 
 from differential import torque_bias_capacities
 from tire_compliance import contact_force, energy_terms
@@ -175,8 +176,9 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
                     config.front_drive_share*inertial_torques[0]+inertial_torques[1]),
                 (1-config.front_drive_share)*output_torque-config.final_drive*(
                     (1-config.front_drive_share)*inertial_torques[0]+inertial_torques[2]))
-        limits = np.r_[torque_bias_capacities(config.differential_capacity[:2],config.axle_torque_bias_ratios,axle),
-                       config.differential_capacity[2]]
+        limits = np.empty(3)
+        limits[:2] = torque_bias_capacities(config.differential_capacity[:2],config.axle_torque_bias_ratios,axle)
+        limits[2] = config.differential_capacity[2]
         reaction = engine_reaction-gs.T@normal.suspension_force+gn.T@normal.normal_force+gx.T@forces[:,0]+gy.T@forces[:,1]-ports.T@torques
         reaction[12:] -= rolling_torque
         momentum_error = free_momentum-dt*(reaction-rotor_bias)
@@ -184,18 +186,21 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         if native_body_gyro:
             wheel_force = (forces[:,0,None]*gx[:,:3]+forces[:,1,None]*gy[:,:3]+normal.normal_force[:,None]*gn[:,:3]
                            -normal.suspension_force[:,None]*hardware.mechanical.guides+wheel_known)
-            body_torque = reaction[3:6]-rotor_bias[3:6]-np.sum(np.cross(hardware.mechanical.wheel_arms,wheel_force),axis=0)
+            body_torque = np.empty(3)
+            unsprung_body_torque((hardware.mechanical.wheel_arms,wheel_force,reaction,rotor_bias),(body_torque,))
             free_angular = start[3:6]+dt*np.linalg.solve(hardware.mechanical.world_inertia,body_torque-external_torque)
             gyro = native_gyro_impulse(hardware.mechanical.world_inertia,free_angular,dt)
             momentum_error[3:6] -= gyro
-        force_errors,details = [],[]
+        # 残差维数由共同方程固定；直接装配，避免每次差分重新解释通用拼接规则。
+        residual,details = np.empty(34),[]
+        residual[:16] = momentum_error
         for i in range(4):
             grip,cx,cy = parameters[i]
             vx = contact_speeds[i,0]+active.radii[i]*end[12+i]
             result = contact_force(tuple(forces[i]),tuple(local_previous[i]),tuple(-contact_speeds[i,:2]),
                 max(abs(vx),config.slip_speed),bool(rolling[i]),grip,cx,cy,dt,
                 config.tire_contact_stiffness,config.tire_contact_damping,config.tire_shape,config.tire_curvature)
-            force_errors.extend(forces[i]-result[0])
+            residual[16+2*i:18+2*i] = forces[i]-result[0]
             details.append(result)
         error_c = torques[0]-np.clip(torques[0]+speeds[0]/(dt*response[0]),-clutch_capacity,clutch_capacity)
         if ratio and not synchronizing:
@@ -210,8 +215,9 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
             error_g,error_l = torques[1],loss
         brake_error = torques[3:7]-np.clip(torques[3:7]+speeds[3:7]/(dt*response[3:7]),-brakes,brakes)
         differential_error = torques[7:]-np.clip(np.asarray(config.differential_damping)*speeds[7:],-limits,limits)
-        port_errors = np.r_[error_c,error_g,error_l,brake_error,differential_error]
-        residual = np.r_[momentum_error,force_errors,port_errors]
+        residual[24:27] = error_c,error_g,error_l
+        residual[27:31] = brake_error
+        residual[31:] = differential_error
         return residual,(q,delta,normal,down,contact_speeds,rolling_torque,details,parameters,speeds,output_torque,
                          active,local_previous,coefficients,scale,kinematics,gyro,suspension_velocity)
 

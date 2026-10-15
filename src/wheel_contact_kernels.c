@@ -2025,6 +2025,7 @@ static PyObject *wheel_state_update(PyObject *self, PyObject *args, PyObject *up
 #include "suspension_prepare.h"
 #include "lab_contact_native.h"
 static PyMethodDef methods[] = {
+    {"unsprung_body_torque",unsprung_body_torque_native,METH_VARARGS,"试验台原四轮力矩归集与车身陀螺残差端口"},
     {"unsprung_tire_ports",unsprung_tire_ports_native,METH_VARARGS,"试验台四轮完整材料/法向力端口批量组装"},
     {"finite_radial_gradients",finite_radial_gradients_native,METH_VARARGS,"试验台原有限径向虚功梯度与接触坐标"},
     {"suspension_prepare_paths", suspension_prepare_paths, METH_VARARGS, "完整四轮初始行程与机械轮轴"},
