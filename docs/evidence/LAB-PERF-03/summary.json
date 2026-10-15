@@ -1,0 +1,2808 @@
+{
+  "baseline": "c1f38eb",
+  "source_changes": [
+    "unsprung_joint.py"
+  ],
+  "solver_and_energy_tail_text_exact": true,
+  "runtime": {
+    "panda": "1.10.16",
+    "bullet": 285,
+    "scalar_bits": 64,
+    "module": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\build\\sim-double-runtime\\panda-source\\built-double\\panda3d\\core.cp314-win_amd64.pyd"
+  },
+  "native_sha256": {
+    "physics_packet_kernels": "15a0b544c4f7d5bad628003ee1ebd3b1dc2a6a351fd4830de1feaadc2ac61ae7",
+    "mechanical_kernels": "2c7555836bcc7a925f05835d391d4c530e628561d3896bc49d2d20e1dd32edfa",
+    "wheel_contact_kernels": "f7a563885c22afe315799186269be34e000c745fbe18eb9654d9861a367bf5d6",
+    "convex_cast_kernels": "8e640cd429cd51ba93619cc8302dce19634f292eba34e87496707fd2de4170da",
+    "radial_contact_kernels": "9a2d6155ec2df5436eb09712bdc3628da501b2cda7455a9814be5386b1550ba9"
+  },
+  "groups": [
+    {
+      "scenario": "braking",
+      "options": {
+        "vehicle_id": "reference-rwd",
+        "maneuver": "braking",
+        "speed_kph": 100.0,
+        "friction": 1.1,
+        "abs_enabled": true,
+        "esc_enabled": false,
+        "duration": 0.2,
+        "steering_deg": 3.0,
+        "onset": 0.5,
+        "seed": 0,
+        "cg_height": null,
+        "radius_m": 60.0,
+        "right_friction": 0.3,
+        "tire_reference_load": null,
+        "bump_height_m": 0.01,
+        "bump_length_m": 0.9,
+        "bump_distance_m": 6.0
+      },
+      "actual_config": {
+        "mass": 1200.0,
+        "torque_curve": [
+          [
+            900,
+            110
+          ],
+          [
+            1800,
+            165
+          ],
+          [
+            3200,
+            200
+          ],
+          [
+            4500,
+            190
+          ],
+          [
+            6000,
+            150
+          ],
+          [
+            6500,
+            0
+          ]
+        ],
+        "gear_ratios": [
+          3.25,
+          2.05,
+          1.45,
+          1.1,
+          0.88
+        ],
+        "final_drive": 3.7,
+        "drivetrain_efficiency": 0.88,
+        "idle_rpm": 900.0,
+        "shift_time": 0.28,
+        "torque_response": 0.12,
+        "engine_braking": 24.0,
+        "finite_drivetrain": true,
+        "native_tire_forces": false,
+        "front_drive_share": 0.0,
+        "differential_damping": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "differential_capacity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "axle_torque_bias_ratios": [
+          1.0,
+          1.0
+        ],
+        "engine_inertia": 0.2,
+        "engine_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "input_shaft_enabled": true,
+        "input_shaft_inertia": 0.04,
+        "input_shaft_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "synchronizer_capacity": 80.0,
+        "downstream_inertia_enabled": true,
+        "downstream_inertias": [
+          0.03,
+          0.015,
+          0.02
+        ],
+        "downstream_axes": [
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "engine_idle_response": 0.15,
+        "engine_idle_torque_limit": 65.0,
+        "engine_redline_rpm": 6500.0,
+        "clutch_capacity": 300.0,
+        "clutch_release_time": 0.08,
+        "clutch_engage_time": 0.16,
+        "clutch_launch_response": 0.3,
+        "max_speed": 44.44444444444444,
+        "reverse_speed": 6.111111111111111,
+        "reverse_force": 2200.0,
+        "reverse_gear_ratio": 3.0,
+        "game_speed_limits": false,
+        "brake_torque": 3643.2,
+        "front_brake_share": 0.6,
+        "braking": {
+          "response_time": 0.025,
+          "abs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "minimum_speed": 1.5,
+          "release_rate": 25.0,
+          "apply_rate": 5.0,
+          "slip_rate_gain": 30.0
+        },
+        "traction": {
+          "tcs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "slip_speed": 1.0,
+          "prediction_time": 0.12,
+          "release_rate": 12.0,
+          "apply_rate": 1.5,
+          "slip_rate_gain": 12.0,
+          "brake_gain": 0.2,
+          "maximum_brake": 0.25
+        },
+        "stability": {
+          "esc_enabled": false,
+          "minimum_speed": 1.5,
+          "reference_response": 0.15,
+          "yaw_gain": 6.0,
+          "sideslip_gain": 6.0,
+          "yaw_threshold": 0.1,
+          "sideslip_threshold": 0.06,
+          "moment_threshold": 150.0,
+          "engine_cut_gain": 0.4,
+          "continuous_reference": true
+        },
+        "steering_degrees": 26.0,
+        "steering_rate": 50.0,
+        "steering_response": 7.0,
+        "steering_return": 10.0,
+        "wheel_radius": 0.33,
+        "wheel_width": 0.205,
+        "wheel_shoulder_radius": 0.01,
+        "wheel_crown_height": 0.003,
+        "wheel_inertia": 1.8,
+        "tire_reference_load": 2943.0,
+        "longitudinal_stiffness": 60000.0,
+        "lateral_stiffness": 50000.0,
+        "rear_lateral_stiffness": 50000.0,
+        "tire_peak_load_exponent": 0.9,
+        "longitudinal_load_exponent": 0.9,
+        "lateral_load_exponent": 0.85,
+        "tire_compliance": true,
+        "wheel_rotor_transport": true,
+        "tire_contact_stiffness": 150000.0,
+        "tire_contact_damping": 1000.0,
+        "tire_aligning_enabled": true,
+        "tire_contact_half_length": 0.08,
+        "tire_shape": 1.9,
+        "tire_curvature": 0.97,
+        "slip_speed": 1.0,
+        "static_contact_speed": 0.25,
+        "tire_substeps": 2,
+        "suspension_si_enabled": true,
+        "suspension_coupled_enabled": true,
+        "unsprung_enabled": true,
+        "unsprung_masses": [
+          40.0,
+          40.0,
+          40.0,
+          40.0
+        ],
+        "tire_radial_stiffness": [
+          200000.0,
+          200000.0,
+          200000.0,
+          200000.0
+        ],
+        "tire_radial_damping": [
+          500.0,
+          500.0,
+          500.0,
+          500.0
+        ],
+        "suspension_antiroll_rates": [
+          6000.0,
+          4000.0
+        ],
+        "suspension_stop_rates": [
+          480000.0,
+          480000.0,
+          480000.0,
+          480000.0
+        ],
+        "suspension_spring_rates": [
+          48000.0,
+          48000.0,
+          48000.0,
+          48000.0
+        ],
+        "suspension_coil_enabled": false,
+        "suspension_spring_preloads": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "suspension_installation_curves": null,
+        "suspension_damper_curves": null,
+        "suspension_compression_damping": [
+          5280.0,
+          5280.0,
+          5280.0,
+          5280.0
+        ],
+        "suspension_extension_damping": [
+          2760.0,
+          2760.0,
+          2760.0,
+          2760.0
+        ],
+        "suspension_stiffness": 40.0,
+        "suspension_compression": 4.4,
+        "suspension_relaxation": 2.3,
+        "air_density": 1.225,
+        "drag_coefficient": 0.32,
+        "frontal_area": 2.142857142857143,
+        "rolling_coefficient": 0.013591573224600747,
+        "grass_rolling_coefficient": 0.0764525993883792,
+        "wheel_rolling_resistance": true,
+        "rolling_transition_speed": 1.0,
+        "road_friction": 1.1,
+        "grass_friction": 0.45,
+        "wheelbase": 2.2,
+        "track_width": 1.68,
+        "axle_track_widths": null,
+        "collision_half_width": 0.994,
+        "collision_half_length": 2.128,
+        "collision_half_height": 0.671692818403244,
+        "centered_collision_support": true,
+        "body_center_height": 0.7716928255558014,
+        "wheel_connection_height": 0.67,
+        "center_of_mass_height": 0.42,
+        "front_weight_share": 0.5,
+        "body_inertia": [
+          1919.56,
+          511.56,
+          2290.0
+        ],
+        "angular_damping": 0.0,
+        "suspension_travel": 0.2,
+        "suspension_force_limit": 6000.0
+      },
+      "requested_config": {
+        "mass": 1200.0,
+        "torque_curve": [
+          [
+            900,
+            110
+          ],
+          [
+            1800,
+            165
+          ],
+          [
+            3200,
+            200
+          ],
+          [
+            4500,
+            190
+          ],
+          [
+            6000,
+            150
+          ],
+          [
+            6500,
+            0
+          ]
+        ],
+        "gear_ratios": [
+          3.25,
+          2.05,
+          1.45,
+          1.1,
+          0.88
+        ],
+        "final_drive": 3.7,
+        "drivetrain_efficiency": 0.88,
+        "idle_rpm": 900.0,
+        "shift_time": 0.28,
+        "torque_response": 0.12,
+        "engine_braking": 24.0,
+        "finite_drivetrain": true,
+        "native_tire_forces": false,
+        "front_drive_share": 0.0,
+        "differential_damping": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "differential_capacity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "axle_torque_bias_ratios": [
+          1.0,
+          1.0
+        ],
+        "engine_inertia": 0.2,
+        "engine_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "input_shaft_enabled": true,
+        "input_shaft_inertia": 0.04,
+        "input_shaft_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "synchronizer_capacity": 80.0,
+        "downstream_inertia_enabled": true,
+        "downstream_inertias": [
+          0.03,
+          0.015,
+          0.02
+        ],
+        "downstream_axes": [
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "engine_idle_response": 0.15,
+        "engine_idle_torque_limit": 65.0,
+        "engine_redline_rpm": 6500.0,
+        "clutch_capacity": 300.0,
+        "clutch_release_time": 0.08,
+        "clutch_engage_time": 0.16,
+        "clutch_launch_response": 0.3,
+        "max_speed": 44.44444444444444,
+        "reverse_speed": 6.111111111111111,
+        "reverse_force": 2200.0,
+        "reverse_gear_ratio": 3.0,
+        "game_speed_limits": false,
+        "brake_torque": 3643.2,
+        "front_brake_share": 0.6,
+        "braking": {
+          "response_time": 0.025,
+          "abs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "minimum_speed": 1.5,
+          "release_rate": 25.0,
+          "apply_rate": 5.0,
+          "slip_rate_gain": 30.0
+        },
+        "traction": {
+          "tcs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "slip_speed": 1.0,
+          "prediction_time": 0.12,
+          "release_rate": 12.0,
+          "apply_rate": 1.5,
+          "slip_rate_gain": 12.0,
+          "brake_gain": 0.2,
+          "maximum_brake": 0.25
+        },
+        "stability": {
+          "esc_enabled": true,
+          "minimum_speed": 1.5,
+          "reference_response": 0.15,
+          "yaw_gain": 6.0,
+          "sideslip_gain": 6.0,
+          "yaw_threshold": 0.1,
+          "sideslip_threshold": 0.06,
+          "moment_threshold": 150.0,
+          "engine_cut_gain": 0.4,
+          "continuous_reference": true
+        },
+        "steering_degrees": 26.0,
+        "steering_rate": 50.0,
+        "steering_response": 7.0,
+        "steering_return": 10.0,
+        "wheel_radius": 0.33,
+        "wheel_width": 0.205,
+        "wheel_shoulder_radius": 0.01,
+        "wheel_crown_height": 0.003,
+        "wheel_inertia": 1.8,
+        "tire_reference_load": 2943.0,
+        "longitudinal_stiffness": 60000.0,
+        "lateral_stiffness": 50000.0,
+        "rear_lateral_stiffness": 50000.0,
+        "tire_peak_load_exponent": 0.9,
+        "longitudinal_load_exponent": 0.9,
+        "lateral_load_exponent": 0.85,
+        "tire_compliance": true,
+        "wheel_rotor_transport": true,
+        "tire_contact_stiffness": 150000.0,
+        "tire_contact_damping": 1000.0,
+        "tire_aligning_enabled": true,
+        "tire_contact_half_length": 0.08,
+        "tire_shape": 1.9,
+        "tire_curvature": 0.97,
+        "slip_speed": 1.0,
+        "static_contact_speed": 0.25,
+        "tire_substeps": 2,
+        "suspension_si_enabled": true,
+        "suspension_coupled_enabled": true,
+        "unsprung_enabled": true,
+        "unsprung_masses": [
+          40.0,
+          40.0,
+          40.0,
+          40.0
+        ],
+        "tire_radial_stiffness": [
+          200000.0,
+          200000.0,
+          200000.0,
+          200000.0
+        ],
+        "tire_radial_damping": [
+          500.0,
+          500.0,
+          500.0,
+          500.0
+        ],
+        "suspension_antiroll_rates": [
+          6000.0,
+          4000.0
+        ],
+        "suspension_stop_rates": [
+          480000.0,
+          480000.0,
+          480000.0,
+          480000.0
+        ],
+        "suspension_spring_rates": [
+          48000.0,
+          48000.0,
+          48000.0,
+          48000.0
+        ],
+        "suspension_coil_enabled": false,
+        "suspension_spring_preloads": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "suspension_installation_curves": null,
+        "suspension_damper_curves": null,
+        "suspension_compression_damping": [
+          5280.0,
+          5280.0,
+          5280.0,
+          5280.0
+        ],
+        "suspension_extension_damping": [
+          2760.0,
+          2760.0,
+          2760.0,
+          2760.0
+        ],
+        "suspension_stiffness": 40.0,
+        "suspension_compression": 4.4,
+        "suspension_relaxation": 2.3,
+        "air_density": 1.225,
+        "drag_coefficient": 0.32,
+        "frontal_area": 2.142857142857143,
+        "rolling_coefficient": 0.013591573224600747,
+        "grass_rolling_coefficient": 0.0764525993883792,
+        "wheel_rolling_resistance": true,
+        "rolling_transition_speed": 1.0,
+        "road_friction": 1.1,
+        "grass_friction": 0.45,
+        "wheelbase": 2.2,
+        "track_width": 1.68,
+        "axle_track_widths": null,
+        "collision_half_width": 0.994,
+        "collision_half_length": 2.128,
+        "collision_half_height": 0.671692818403244,
+        "centered_collision_support": true,
+        "body_center_height": 0.7716928255558014,
+        "wheel_connection_height": 0.67,
+        "center_of_mass_height": 0.42,
+        "front_weight_share": 0.5,
+        "body_inertia": [
+          1919.56,
+          511.56,
+          2290.0
+        ],
+        "angular_damping": 0.0,
+        "suspension_travel": 0.2,
+        "suspension_force_limit": 6000.0
+      },
+      "measured": {
+        "A": {
+          "runs": 2,
+          "wall_seconds": 3.028911750001498,
+          "cpu_seconds": 3.0234375,
+          "physics_snapshot_seconds": 3.0274725499930355,
+          "step_p95_seconds": 0.1331829700007802,
+          "step_p99_seconds": 0.1358741679996092,
+          "initialization": {
+            "wall_seconds": 16.003557250000085,
+            "cpu_seconds": 15.9296875,
+            "ticks": 195.0
+          }
+        },
+        "B": {
+          "runs": 2,
+          "wall_seconds": 2.6231614999996964,
+          "cpu_seconds": 2.5625,
+          "physics_snapshot_seconds": 2.6217560499972024,
+          "step_p95_seconds": 0.11525196000111464,
+          "step_p99_seconds": 0.1190114100001665,
+          "initialization": {
+            "wall_seconds": 14.133520600000338,
+            "cpu_seconds": 14.0390625,
+            "ticks": 195.0
+          }
+        }
+      },
+      "wall_reduction_percent": 13.395908613105057,
+      "cpu_reduction_percent": 15.245478036175708,
+      "payload_sha256": "d3999426c0f1c64bbbe1005a759608f810d21e7b40c03aa42c2889482d1ac4a1",
+      "complete_payload_exact": true
+    },
+    {
+      "scenario": "turning",
+      "options": {
+        "vehicle_id": "reference-rwd",
+        "maneuver": "step_steer",
+        "speed_kph": 30.0,
+        "friction": 1.1,
+        "abs_enabled": true,
+        "esc_enabled": false,
+        "duration": 0.4,
+        "steering_deg": 2.0,
+        "onset": 0.0,
+        "seed": 0,
+        "cg_height": null,
+        "radius_m": 60.0,
+        "right_friction": 0.3,
+        "tire_reference_load": null,
+        "bump_height_m": 0.01,
+        "bump_length_m": 0.9,
+        "bump_distance_m": 6.0
+      },
+      "actual_config": {
+        "mass": 1200.0,
+        "torque_curve": [
+          [
+            900,
+            110
+          ],
+          [
+            1800,
+            165
+          ],
+          [
+            3200,
+            200
+          ],
+          [
+            4500,
+            190
+          ],
+          [
+            6000,
+            150
+          ],
+          [
+            6500,
+            0
+          ]
+        ],
+        "gear_ratios": [
+          3.25,
+          2.05,
+          1.45,
+          1.1,
+          0.88
+        ],
+        "final_drive": 3.7,
+        "drivetrain_efficiency": 0.88,
+        "idle_rpm": 900.0,
+        "shift_time": 0.28,
+        "torque_response": 0.12,
+        "engine_braking": 24.0,
+        "finite_drivetrain": true,
+        "native_tire_forces": false,
+        "front_drive_share": 0.0,
+        "differential_damping": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "differential_capacity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "axle_torque_bias_ratios": [
+          1.0,
+          1.0
+        ],
+        "engine_inertia": 0.2,
+        "engine_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "input_shaft_enabled": true,
+        "input_shaft_inertia": 0.04,
+        "input_shaft_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "synchronizer_capacity": 80.0,
+        "downstream_inertia_enabled": true,
+        "downstream_inertias": [
+          0.03,
+          0.015,
+          0.02
+        ],
+        "downstream_axes": [
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "engine_idle_response": 0.15,
+        "engine_idle_torque_limit": 65.0,
+        "engine_redline_rpm": 6500.0,
+        "clutch_capacity": 300.0,
+        "clutch_release_time": 0.08,
+        "clutch_engage_time": 0.16,
+        "clutch_launch_response": 0.3,
+        "max_speed": 44.44444444444444,
+        "reverse_speed": 6.111111111111111,
+        "reverse_force": 2200.0,
+        "reverse_gear_ratio": 3.0,
+        "game_speed_limits": false,
+        "brake_torque": 3643.2,
+        "front_brake_share": 0.6,
+        "braking": {
+          "response_time": 0.025,
+          "abs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "minimum_speed": 1.5,
+          "release_rate": 25.0,
+          "apply_rate": 5.0,
+          "slip_rate_gain": 30.0
+        },
+        "traction": {
+          "tcs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "slip_speed": 1.0,
+          "prediction_time": 0.12,
+          "release_rate": 12.0,
+          "apply_rate": 1.5,
+          "slip_rate_gain": 12.0,
+          "brake_gain": 0.2,
+          "maximum_brake": 0.25
+        },
+        "stability": {
+          "esc_enabled": false,
+          "minimum_speed": 1.5,
+          "reference_response": 0.15,
+          "yaw_gain": 6.0,
+          "sideslip_gain": 6.0,
+          "yaw_threshold": 0.1,
+          "sideslip_threshold": 0.06,
+          "moment_threshold": 150.0,
+          "engine_cut_gain": 0.4,
+          "continuous_reference": true
+        },
+        "steering_degrees": 26.0,
+        "steering_rate": 50.0,
+        "steering_response": 7.0,
+        "steering_return": 10.0,
+        "wheel_radius": 0.33,
+        "wheel_width": 0.205,
+        "wheel_shoulder_radius": 0.01,
+        "wheel_crown_height": 0.003,
+        "wheel_inertia": 1.8,
+        "tire_reference_load": 2943.0,
+        "longitudinal_stiffness": 60000.0,
+        "lateral_stiffness": 50000.0,
+        "rear_lateral_stiffness": 50000.0,
+        "tire_peak_load_exponent": 0.9,
+        "longitudinal_load_exponent": 0.9,
+        "lateral_load_exponent": 0.85,
+        "tire_compliance": true,
+        "wheel_rotor_transport": true,
+        "tire_contact_stiffness": 150000.0,
+        "tire_contact_damping": 1000.0,
+        "tire_aligning_enabled": true,
+        "tire_contact_half_length": 0.08,
+        "tire_shape": 1.9,
+        "tire_curvature": 0.97,
+        "slip_speed": 1.0,
+        "static_contact_speed": 0.25,
+        "tire_substeps": 2,
+        "suspension_si_enabled": true,
+        "suspension_coupled_enabled": true,
+        "unsprung_enabled": true,
+        "unsprung_masses": [
+          40.0,
+          40.0,
+          40.0,
+          40.0
+        ],
+        "tire_radial_stiffness": [
+          200000.0,
+          200000.0,
+          200000.0,
+          200000.0
+        ],
+        "tire_radial_damping": [
+          500.0,
+          500.0,
+          500.0,
+          500.0
+        ],
+        "suspension_antiroll_rates": [
+          6000.0,
+          4000.0
+        ],
+        "suspension_stop_rates": [
+          480000.0,
+          480000.0,
+          480000.0,
+          480000.0
+        ],
+        "suspension_spring_rates": [
+          48000.0,
+          48000.0,
+          48000.0,
+          48000.0
+        ],
+        "suspension_coil_enabled": false,
+        "suspension_spring_preloads": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "suspension_installation_curves": null,
+        "suspension_damper_curves": null,
+        "suspension_compression_damping": [
+          5280.0,
+          5280.0,
+          5280.0,
+          5280.0
+        ],
+        "suspension_extension_damping": [
+          2760.0,
+          2760.0,
+          2760.0,
+          2760.0
+        ],
+        "suspension_stiffness": 40.0,
+        "suspension_compression": 4.4,
+        "suspension_relaxation": 2.3,
+        "air_density": 1.225,
+        "drag_coefficient": 0.32,
+        "frontal_area": 2.142857142857143,
+        "rolling_coefficient": 0.013591573224600747,
+        "grass_rolling_coefficient": 0.0764525993883792,
+        "wheel_rolling_resistance": true,
+        "rolling_transition_speed": 1.0,
+        "road_friction": 1.1,
+        "grass_friction": 0.45,
+        "wheelbase": 2.2,
+        "track_width": 1.68,
+        "axle_track_widths": null,
+        "collision_half_width": 0.994,
+        "collision_half_length": 2.128,
+        "collision_half_height": 0.671692818403244,
+        "centered_collision_support": true,
+        "body_center_height": 0.7716928255558014,
+        "wheel_connection_height": 0.67,
+        "center_of_mass_height": 0.42,
+        "front_weight_share": 0.5,
+        "body_inertia": [
+          1919.56,
+          511.56,
+          2290.0
+        ],
+        "angular_damping": 0.0,
+        "suspension_travel": 0.2,
+        "suspension_force_limit": 6000.0
+      },
+      "requested_config": {
+        "mass": 1200.0,
+        "torque_curve": [
+          [
+            900,
+            110
+          ],
+          [
+            1800,
+            165
+          ],
+          [
+            3200,
+            200
+          ],
+          [
+            4500,
+            190
+          ],
+          [
+            6000,
+            150
+          ],
+          [
+            6500,
+            0
+          ]
+        ],
+        "gear_ratios": [
+          3.25,
+          2.05,
+          1.45,
+          1.1,
+          0.88
+        ],
+        "final_drive": 3.7,
+        "drivetrain_efficiency": 0.88,
+        "idle_rpm": 900.0,
+        "shift_time": 0.28,
+        "torque_response": 0.12,
+        "engine_braking": 24.0,
+        "finite_drivetrain": true,
+        "native_tire_forces": false,
+        "front_drive_share": 0.0,
+        "differential_damping": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "differential_capacity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "axle_torque_bias_ratios": [
+          1.0,
+          1.0
+        ],
+        "engine_inertia": 0.2,
+        "engine_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "input_shaft_enabled": true,
+        "input_shaft_inertia": 0.04,
+        "input_shaft_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "synchronizer_capacity": 80.0,
+        "downstream_inertia_enabled": true,
+        "downstream_inertias": [
+          0.03,
+          0.015,
+          0.02
+        ],
+        "downstream_axes": [
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "engine_idle_response": 0.15,
+        "engine_idle_torque_limit": 65.0,
+        "engine_redline_rpm": 6500.0,
+        "clutch_capacity": 300.0,
+        "clutch_release_time": 0.08,
+        "clutch_engage_time": 0.16,
+        "clutch_launch_response": 0.3,
+        "max_speed": 44.44444444444444,
+        "reverse_speed": 6.111111111111111,
+        "reverse_force": 2200.0,
+        "reverse_gear_ratio": 3.0,
+        "game_speed_limits": false,
+        "brake_torque": 3643.2,
+        "front_brake_share": 0.6,
+        "braking": {
+          "response_time": 0.025,
+          "abs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "minimum_speed": 1.5,
+          "release_rate": 25.0,
+          "apply_rate": 5.0,
+          "slip_rate_gain": 30.0
+        },
+        "traction": {
+          "tcs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "slip_speed": 1.0,
+          "prediction_time": 0.12,
+          "release_rate": 12.0,
+          "apply_rate": 1.5,
+          "slip_rate_gain": 12.0,
+          "brake_gain": 0.2,
+          "maximum_brake": 0.25
+        },
+        "stability": {
+          "esc_enabled": true,
+          "minimum_speed": 1.5,
+          "reference_response": 0.15,
+          "yaw_gain": 6.0,
+          "sideslip_gain": 6.0,
+          "yaw_threshold": 0.1,
+          "sideslip_threshold": 0.06,
+          "moment_threshold": 150.0,
+          "engine_cut_gain": 0.4,
+          "continuous_reference": true
+        },
+        "steering_degrees": 26.0,
+        "steering_rate": 50.0,
+        "steering_response": 7.0,
+        "steering_return": 10.0,
+        "wheel_radius": 0.33,
+        "wheel_width": 0.205,
+        "wheel_shoulder_radius": 0.01,
+        "wheel_crown_height": 0.003,
+        "wheel_inertia": 1.8,
+        "tire_reference_load": 2943.0,
+        "longitudinal_stiffness": 60000.0,
+        "lateral_stiffness": 50000.0,
+        "rear_lateral_stiffness": 50000.0,
+        "tire_peak_load_exponent": 0.9,
+        "longitudinal_load_exponent": 0.9,
+        "lateral_load_exponent": 0.85,
+        "tire_compliance": true,
+        "wheel_rotor_transport": true,
+        "tire_contact_stiffness": 150000.0,
+        "tire_contact_damping": 1000.0,
+        "tire_aligning_enabled": true,
+        "tire_contact_half_length": 0.08,
+        "tire_shape": 1.9,
+        "tire_curvature": 0.97,
+        "slip_speed": 1.0,
+        "static_contact_speed": 0.25,
+        "tire_substeps": 2,
+        "suspension_si_enabled": true,
+        "suspension_coupled_enabled": true,
+        "unsprung_enabled": true,
+        "unsprung_masses": [
+          40.0,
+          40.0,
+          40.0,
+          40.0
+        ],
+        "tire_radial_stiffness": [
+          200000.0,
+          200000.0,
+          200000.0,
+          200000.0
+        ],
+        "tire_radial_damping": [
+          500.0,
+          500.0,
+          500.0,
+          500.0
+        ],
+        "suspension_antiroll_rates": [
+          6000.0,
+          4000.0
+        ],
+        "suspension_stop_rates": [
+          480000.0,
+          480000.0,
+          480000.0,
+          480000.0
+        ],
+        "suspension_spring_rates": [
+          48000.0,
+          48000.0,
+          48000.0,
+          48000.0
+        ],
+        "suspension_coil_enabled": false,
+        "suspension_spring_preloads": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "suspension_installation_curves": null,
+        "suspension_damper_curves": null,
+        "suspension_compression_damping": [
+          5280.0,
+          5280.0,
+          5280.0,
+          5280.0
+        ],
+        "suspension_extension_damping": [
+          2760.0,
+          2760.0,
+          2760.0,
+          2760.0
+        ],
+        "suspension_stiffness": 40.0,
+        "suspension_compression": 4.4,
+        "suspension_relaxation": 2.3,
+        "air_density": 1.225,
+        "drag_coefficient": 0.32,
+        "frontal_area": 2.142857142857143,
+        "rolling_coefficient": 0.013591573224600747,
+        "grass_rolling_coefficient": 0.0764525993883792,
+        "wheel_rolling_resistance": true,
+        "rolling_transition_speed": 1.0,
+        "road_friction": 1.1,
+        "grass_friction": 0.45,
+        "wheelbase": 2.2,
+        "track_width": 1.68,
+        "axle_track_widths": null,
+        "collision_half_width": 0.994,
+        "collision_half_length": 2.128,
+        "collision_half_height": 0.671692818403244,
+        "centered_collision_support": true,
+        "body_center_height": 0.7716928255558014,
+        "wheel_connection_height": 0.67,
+        "center_of_mass_height": 0.42,
+        "front_weight_share": 0.5,
+        "body_inertia": [
+          1919.56,
+          511.56,
+          2290.0
+        ],
+        "angular_damping": 0.0,
+        "suspension_travel": 0.2,
+        "suspension_force_limit": 6000.0
+      },
+      "measured": {
+        "A": {
+          "runs": 1,
+          "wall_seconds": 6.120966800001042,
+          "cpu_seconds": 6.109375,
+          "physics_snapshot_seconds": 6.118204099995637,
+          "step_p95_seconds": 0.13334491500136209,
+          "step_p99_seconds": 0.14443978699971924,
+          "initialization": {
+            "wall_seconds": 15.677165299999615,
+            "cpu_seconds": 15.546875,
+            "ticks": 195.0
+          }
+        },
+        "B": {
+          "runs": 1,
+          "wall_seconds": 5.369427800000267,
+          "cpu_seconds": 5.328125,
+          "physics_snapshot_seconds": 5.366715699998167,
+          "step_p95_seconds": 0.11946902999989106,
+          "step_p99_seconds": 0.13103056999996626,
+          "initialization": {
+            "wall_seconds": 14.13927230000263,
+            "cpu_seconds": 14.140625,
+            "ticks": 195.0
+          }
+        }
+      },
+      "wall_reduction_percent": 12.27810939932965,
+      "cpu_reduction_percent": 12.78772378516624,
+      "payload_sha256": "77659c6db32866a0bfde95b97a29cf130e9670cf99b8c5cfa3b5361b80bbc3ec",
+      "complete_payload_exact": true
+    },
+    {
+      "scenario": "nonlinear-bump",
+      "options": {
+        "vehicle_id": "reference-rwd",
+        "maneuver": "ride_bump",
+        "speed_kph": 18.0,
+        "friction": 1.1,
+        "abs_enabled": true,
+        "esc_enabled": false,
+        "duration": 1.2,
+        "steering_deg": 3.0,
+        "onset": 0.5,
+        "seed": 0,
+        "cg_height": null,
+        "radius_m": 60.0,
+        "right_friction": 0.3,
+        "tire_reference_load": null,
+        "bump_height_m": 0.01,
+        "bump_length_m": 0.4,
+        "bump_distance_m": 2.0
+      },
+      "actual_config": {
+        "mass": 1200.0,
+        "torque_curve": [
+          [
+            900,
+            110
+          ],
+          [
+            1800,
+            165
+          ],
+          [
+            3200,
+            200
+          ],
+          [
+            4500,
+            190
+          ],
+          [
+            6000,
+            150
+          ],
+          [
+            6500,
+            0
+          ]
+        ],
+        "gear_ratios": [
+          3.25,
+          2.05,
+          1.45,
+          1.1,
+          0.88
+        ],
+        "final_drive": 3.7,
+        "drivetrain_efficiency": 0.88,
+        "idle_rpm": 900.0,
+        "shift_time": 0.28,
+        "torque_response": 0.12,
+        "engine_braking": 24.0,
+        "finite_drivetrain": true,
+        "native_tire_forces": false,
+        "front_drive_share": 0.0,
+        "differential_damping": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "differential_capacity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "axle_torque_bias_ratios": [
+          1.0,
+          1.0
+        ],
+        "engine_inertia": 0.2,
+        "engine_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "input_shaft_enabled": true,
+        "input_shaft_inertia": 0.04,
+        "input_shaft_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "synchronizer_capacity": 80.0,
+        "downstream_inertia_enabled": true,
+        "downstream_inertias": [
+          0.03,
+          0.015,
+          0.02
+        ],
+        "downstream_axes": [
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "engine_idle_response": 0.15,
+        "engine_idle_torque_limit": 65.0,
+        "engine_redline_rpm": 6500.0,
+        "clutch_capacity": 300.0,
+        "clutch_release_time": 0.08,
+        "clutch_engage_time": 0.16,
+        "clutch_launch_response": 0.3,
+        "max_speed": 44.44444444444444,
+        "reverse_speed": 6.111111111111111,
+        "reverse_force": 2200.0,
+        "reverse_gear_ratio": 3.0,
+        "game_speed_limits": false,
+        "brake_torque": 3643.2,
+        "front_brake_share": 0.6,
+        "braking": {
+          "response_time": 0.025,
+          "abs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "minimum_speed": 1.5,
+          "release_rate": 25.0,
+          "apply_rate": 5.0,
+          "slip_rate_gain": 30.0
+        },
+        "traction": {
+          "tcs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "slip_speed": 1.0,
+          "prediction_time": 0.12,
+          "release_rate": 12.0,
+          "apply_rate": 1.5,
+          "slip_rate_gain": 12.0,
+          "brake_gain": 0.2,
+          "maximum_brake": 0.25
+        },
+        "stability": {
+          "esc_enabled": false,
+          "minimum_speed": 1.5,
+          "reference_response": 0.15,
+          "yaw_gain": 6.0,
+          "sideslip_gain": 6.0,
+          "yaw_threshold": 0.1,
+          "sideslip_threshold": 0.06,
+          "moment_threshold": 150.0,
+          "engine_cut_gain": 0.4,
+          "continuous_reference": true
+        },
+        "steering_degrees": 26.0,
+        "steering_rate": 50.0,
+        "steering_response": 7.0,
+        "steering_return": 10.0,
+        "wheel_radius": 0.33,
+        "wheel_width": 0.205,
+        "wheel_shoulder_radius": 0.01,
+        "wheel_crown_height": 0.003,
+        "wheel_inertia": 1.8,
+        "tire_reference_load": 2943.0,
+        "longitudinal_stiffness": 60000.0,
+        "lateral_stiffness": 50000.0,
+        "rear_lateral_stiffness": 50000.0,
+        "tire_peak_load_exponent": 0.9,
+        "longitudinal_load_exponent": 0.9,
+        "lateral_load_exponent": 0.85,
+        "tire_compliance": true,
+        "wheel_rotor_transport": true,
+        "tire_contact_stiffness": 150000.0,
+        "tire_contact_damping": 1000.0,
+        "tire_aligning_enabled": true,
+        "tire_contact_half_length": 0.08,
+        "tire_shape": 1.9,
+        "tire_curvature": 0.97,
+        "slip_speed": 1.0,
+        "static_contact_speed": 0.25,
+        "tire_substeps": 2,
+        "suspension_si_enabled": true,
+        "suspension_coupled_enabled": true,
+        "unsprung_enabled": true,
+        "unsprung_masses": [
+          40.0,
+          40.0,
+          40.0,
+          40.0
+        ],
+        "tire_radial_stiffness": [
+          200000.0,
+          200000.0,
+          200000.0,
+          200000.0
+        ],
+        "tire_radial_damping": [
+          500.0,
+          500.0,
+          500.0,
+          500.0
+        ],
+        "suspension_antiroll_rates": [
+          6000.0,
+          4000.0
+        ],
+        "suspension_stop_rates": [
+          480000.0,
+          480000.0,
+          480000.0,
+          480000.0
+        ],
+        "suspension_spring_rates": [
+          47625.732421875015,
+          47625.732421875015,
+          47625.732421875015,
+          47625.732421875015
+        ],
+        "suspension_coil_enabled": true,
+        "suspension_spring_preloads": [
+          956.2500000000001,
+          956.2500000000001,
+          956.2500000000001,
+          956.2500000000001
+        ],
+        "suspension_installation_curves": [
+          [
+            [
+              -0.2,
+              -0.12000000000000002,
+              -0.12600000000000003
+            ],
+            [
+              -0.15,
+              -0.0975,
+              -0.09899999999999999
+            ],
+            [
+              -0.1,
+              -0.07,
+              -0.069
+            ],
+            [
+              -0.05,
+              -0.037500000000000006,
+              -0.036000000000000004
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.05,
+              0.04250000000000001,
+              0.03900000000000001
+            ],
+            [
+              0.1,
+              0.09000000000000002,
+              0.08100000000000002
+            ],
+            [
+              0.15,
+              0.1425,
+              0.126
+            ],
+            [
+              0.2,
+              0.20000000000000004,
+              0.17400000000000002
+            ]
+          ],
+          [
+            [
+              -0.2,
+              -0.12000000000000002,
+              -0.12600000000000003
+            ],
+            [
+              -0.15,
+              -0.0975,
+              -0.09899999999999999
+            ],
+            [
+              -0.1,
+              -0.07,
+              -0.069
+            ],
+            [
+              -0.05,
+              -0.037500000000000006,
+              -0.036000000000000004
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.05,
+              0.04250000000000001,
+              0.03900000000000001
+            ],
+            [
+              0.1,
+              0.09000000000000002,
+              0.08100000000000002
+            ],
+            [
+              0.15,
+              0.1425,
+              0.126
+            ],
+            [
+              0.2,
+              0.20000000000000004,
+              0.17400000000000002
+            ]
+          ],
+          [
+            [
+              -0.2,
+              -0.12000000000000002,
+              -0.12600000000000003
+            ],
+            [
+              -0.15,
+              -0.0975,
+              -0.09899999999999999
+            ],
+            [
+              -0.1,
+              -0.07,
+              -0.069
+            ],
+            [
+              -0.05,
+              -0.037500000000000006,
+              -0.036000000000000004
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.05,
+              0.04250000000000001,
+              0.03900000000000001
+            ],
+            [
+              0.1,
+              0.09000000000000002,
+              0.08100000000000002
+            ],
+            [
+              0.15,
+              0.1425,
+              0.126
+            ],
+            [
+              0.2,
+              0.20000000000000004,
+              0.17400000000000002
+            ]
+          ],
+          [
+            [
+              -0.2,
+              -0.12000000000000002,
+              -0.12600000000000003
+            ],
+            [
+              -0.15,
+              -0.0975,
+              -0.09899999999999999
+            ],
+            [
+              -0.1,
+              -0.07,
+              -0.069
+            ],
+            [
+              -0.05,
+              -0.037500000000000006,
+              -0.036000000000000004
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.05,
+              0.04250000000000001,
+              0.03900000000000001
+            ],
+            [
+              0.1,
+              0.09000000000000002,
+              0.08100000000000002
+            ],
+            [
+              0.15,
+              0.1425,
+              0.126
+            ],
+            [
+              0.2,
+              0.20000000000000004,
+              0.17400000000000002
+            ]
+          ]
+        ],
+        "suspension_damper_curves": [
+          [
+            [
+              -1.0683760683760684,
+              -872.6016
+            ],
+            [
+              -0.46741452991452986,
+              -459.26400000000007
+            ],
+            [
+              -0.2003205128205128,
+              -275.5584
+            ],
+            [
+              -0.06677350427350427,
+              -183.70560000000003
+            ],
+            [
+              -0.026709401709401708,
+              -73.48224
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.026709401709401708,
+              140.57471999999999
+            ],
+            [
+              0.06677350427350427,
+              351.4368
+            ],
+            [
+              0.2003205128205128,
+              527.1551999999999
+            ],
+            [
+              0.46741452991452986,
+              878.592
+            ],
+            [
+              1.0683760683760684,
+              1669.3247999999999
+            ]
+          ],
+          [
+            [
+              -1.0683760683760684,
+              -872.6016
+            ],
+            [
+              -0.46741452991452986,
+              -459.26400000000007
+            ],
+            [
+              -0.2003205128205128,
+              -275.5584
+            ],
+            [
+              -0.06677350427350427,
+              -183.70560000000003
+            ],
+            [
+              -0.026709401709401708,
+              -73.48224
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.026709401709401708,
+              140.57471999999999
+            ],
+            [
+              0.06677350427350427,
+              351.4368
+            ],
+            [
+              0.2003205128205128,
+              527.1551999999999
+            ],
+            [
+              0.46741452991452986,
+              878.592
+            ],
+            [
+              1.0683760683760684,
+              1669.3247999999999
+            ]
+          ],
+          [
+            [
+              -1.0683760683760684,
+              -872.6016
+            ],
+            [
+              -0.46741452991452986,
+              -459.26400000000007
+            ],
+            [
+              -0.2003205128205128,
+              -275.5584
+            ],
+            [
+              -0.06677350427350427,
+              -183.70560000000003
+            ],
+            [
+              -0.026709401709401708,
+              -73.48224
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.026709401709401708,
+              140.57471999999999
+            ],
+            [
+              0.06677350427350427,
+              351.4368
+            ],
+            [
+              0.2003205128205128,
+              527.1551999999999
+            ],
+            [
+              0.46741452991452986,
+              878.592
+            ],
+            [
+              1.0683760683760684,
+              1669.3247999999999
+            ]
+          ],
+          [
+            [
+              -1.0683760683760684,
+              -872.6016
+            ],
+            [
+              -0.46741452991452986,
+              -459.26400000000007
+            ],
+            [
+              -0.2003205128205128,
+              -275.5584
+            ],
+            [
+              -0.06677350427350427,
+              -183.70560000000003
+            ],
+            [
+              -0.026709401709401708,
+              -73.48224
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.026709401709401708,
+              140.57471999999999
+            ],
+            [
+              0.06677350427350427,
+              351.4368
+            ],
+            [
+              0.2003205128205128,
+              527.1551999999999
+            ],
+            [
+              0.46741452991452986,
+              878.592
+            ],
+            [
+              1.0683760683760684,
+              1669.3247999999999
+            ]
+          ]
+        ],
+        "suspension_compression_damping": [
+          5263.1175168,
+          5263.1175168,
+          5263.1175168,
+          5263.1175168
+        ],
+        "suspension_extension_damping": [
+          2751.1750656,
+          2751.1750656,
+          2751.1750656,
+          2751.1750656
+        ],
+        "suspension_stiffness": 40.0,
+        "suspension_compression": 4.4,
+        "suspension_relaxation": 2.3,
+        "air_density": 1.225,
+        "drag_coefficient": 0.32,
+        "frontal_area": 2.142857142857143,
+        "rolling_coefficient": 0.013591573224600747,
+        "grass_rolling_coefficient": 0.0764525993883792,
+        "wheel_rolling_resistance": true,
+        "rolling_transition_speed": 1.0,
+        "road_friction": 1.1,
+        "grass_friction": 0.45,
+        "wheelbase": 2.2,
+        "track_width": 1.68,
+        "axle_track_widths": null,
+        "collision_half_width": 0.994,
+        "collision_half_length": 2.128,
+        "collision_half_height": 0.671692818403244,
+        "centered_collision_support": true,
+        "body_center_height": 0.7716928255558014,
+        "wheel_connection_height": 0.67,
+        "center_of_mass_height": 0.42,
+        "front_weight_share": 0.5,
+        "body_inertia": [
+          1919.56,
+          511.56,
+          2290.0
+        ],
+        "angular_damping": 0.0,
+        "suspension_travel": 0.2,
+        "suspension_force_limit": 6000.0
+      },
+      "requested_config": {
+        "mass": 1200.0,
+        "torque_curve": [
+          [
+            900,
+            110
+          ],
+          [
+            1800,
+            165
+          ],
+          [
+            3200,
+            200
+          ],
+          [
+            4500,
+            190
+          ],
+          [
+            6000,
+            150
+          ],
+          [
+            6500,
+            0
+          ]
+        ],
+        "gear_ratios": [
+          3.25,
+          2.05,
+          1.45,
+          1.1,
+          0.88
+        ],
+        "final_drive": 3.7,
+        "drivetrain_efficiency": 0.88,
+        "idle_rpm": 900.0,
+        "shift_time": 0.28,
+        "torque_response": 0.12,
+        "engine_braking": 24.0,
+        "finite_drivetrain": true,
+        "native_tire_forces": false,
+        "front_drive_share": 0.0,
+        "differential_damping": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "differential_capacity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "axle_torque_bias_ratios": [
+          1.0,
+          1.0
+        ],
+        "engine_inertia": 0.2,
+        "engine_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "input_shaft_enabled": true,
+        "input_shaft_inertia": 0.04,
+        "input_shaft_axis": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "synchronizer_capacity": 80.0,
+        "downstream_inertia_enabled": true,
+        "downstream_inertias": [
+          0.03,
+          0.015,
+          0.02
+        ],
+        "downstream_axes": [
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "engine_idle_response": 0.15,
+        "engine_idle_torque_limit": 65.0,
+        "engine_redline_rpm": 6500.0,
+        "clutch_capacity": 300.0,
+        "clutch_release_time": 0.08,
+        "clutch_engage_time": 0.16,
+        "clutch_launch_response": 0.3,
+        "max_speed": 44.44444444444444,
+        "reverse_speed": 6.111111111111111,
+        "reverse_force": 2200.0,
+        "reverse_gear_ratio": 3.0,
+        "game_speed_limits": false,
+        "brake_torque": 3643.2,
+        "front_brake_share": 0.6,
+        "braking": {
+          "response_time": 0.025,
+          "abs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "minimum_speed": 1.5,
+          "release_rate": 25.0,
+          "apply_rate": 5.0,
+          "slip_rate_gain": 30.0
+        },
+        "traction": {
+          "tcs_enabled": true,
+          "target_slip": 0.12,
+          "slip_hysteresis": 0.015,
+          "slip_speed": 1.0,
+          "prediction_time": 0.12,
+          "release_rate": 12.0,
+          "apply_rate": 1.5,
+          "slip_rate_gain": 12.0,
+          "brake_gain": 0.2,
+          "maximum_brake": 0.25
+        },
+        "stability": {
+          "esc_enabled": true,
+          "minimum_speed": 1.5,
+          "reference_response": 0.15,
+          "yaw_gain": 6.0,
+          "sideslip_gain": 6.0,
+          "yaw_threshold": 0.1,
+          "sideslip_threshold": 0.06,
+          "moment_threshold": 150.0,
+          "engine_cut_gain": 0.4,
+          "continuous_reference": true
+        },
+        "steering_degrees": 26.0,
+        "steering_rate": 50.0,
+        "steering_response": 7.0,
+        "steering_return": 10.0,
+        "wheel_radius": 0.33,
+        "wheel_width": 0.205,
+        "wheel_shoulder_radius": 0.01,
+        "wheel_crown_height": 0.003,
+        "wheel_inertia": 1.8,
+        "tire_reference_load": 2943.0,
+        "longitudinal_stiffness": 60000.0,
+        "lateral_stiffness": 50000.0,
+        "rear_lateral_stiffness": 50000.0,
+        "tire_peak_load_exponent": 0.9,
+        "longitudinal_load_exponent": 0.9,
+        "lateral_load_exponent": 0.85,
+        "tire_compliance": true,
+        "wheel_rotor_transport": true,
+        "tire_contact_stiffness": 150000.0,
+        "tire_contact_damping": 1000.0,
+        "tire_aligning_enabled": true,
+        "tire_contact_half_length": 0.08,
+        "tire_shape": 1.9,
+        "tire_curvature": 0.97,
+        "slip_speed": 1.0,
+        "static_contact_speed": 0.25,
+        "tire_substeps": 2,
+        "suspension_si_enabled": true,
+        "suspension_coupled_enabled": true,
+        "unsprung_enabled": true,
+        "unsprung_masses": [
+          40.0,
+          40.0,
+          40.0,
+          40.0
+        ],
+        "tire_radial_stiffness": [
+          200000.0,
+          200000.0,
+          200000.0,
+          200000.0
+        ],
+        "tire_radial_damping": [
+          500.0,
+          500.0,
+          500.0,
+          500.0
+        ],
+        "suspension_antiroll_rates": [
+          6000.0,
+          4000.0
+        ],
+        "suspension_stop_rates": [
+          480000.0,
+          480000.0,
+          480000.0,
+          480000.0
+        ],
+        "suspension_spring_rates": [
+          47625.732421875015,
+          47625.732421875015,
+          47625.732421875015,
+          47625.732421875015
+        ],
+        "suspension_coil_enabled": true,
+        "suspension_spring_preloads": [
+          956.2500000000001,
+          956.2500000000001,
+          956.2500000000001,
+          956.2500000000001
+        ],
+        "suspension_installation_curves": [
+          [
+            [
+              -0.2,
+              -0.12000000000000002,
+              -0.12600000000000003
+            ],
+            [
+              -0.15,
+              -0.0975,
+              -0.09899999999999999
+            ],
+            [
+              -0.1,
+              -0.07,
+              -0.069
+            ],
+            [
+              -0.05,
+              -0.037500000000000006,
+              -0.036000000000000004
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.05,
+              0.04250000000000001,
+              0.03900000000000001
+            ],
+            [
+              0.1,
+              0.09000000000000002,
+              0.08100000000000002
+            ],
+            [
+              0.15,
+              0.1425,
+              0.126
+            ],
+            [
+              0.2,
+              0.20000000000000004,
+              0.17400000000000002
+            ]
+          ],
+          [
+            [
+              -0.2,
+              -0.12000000000000002,
+              -0.12600000000000003
+            ],
+            [
+              -0.15,
+              -0.0975,
+              -0.09899999999999999
+            ],
+            [
+              -0.1,
+              -0.07,
+              -0.069
+            ],
+            [
+              -0.05,
+              -0.037500000000000006,
+              -0.036000000000000004
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.05,
+              0.04250000000000001,
+              0.03900000000000001
+            ],
+            [
+              0.1,
+              0.09000000000000002,
+              0.08100000000000002
+            ],
+            [
+              0.15,
+              0.1425,
+              0.126
+            ],
+            [
+              0.2,
+              0.20000000000000004,
+              0.17400000000000002
+            ]
+          ],
+          [
+            [
+              -0.2,
+              -0.12000000000000002,
+              -0.12600000000000003
+            ],
+            [
+              -0.15,
+              -0.0975,
+              -0.09899999999999999
+            ],
+            [
+              -0.1,
+              -0.07,
+              -0.069
+            ],
+            [
+              -0.05,
+              -0.037500000000000006,
+              -0.036000000000000004
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.05,
+              0.04250000000000001,
+              0.03900000000000001
+            ],
+            [
+              0.1,
+              0.09000000000000002,
+              0.08100000000000002
+            ],
+            [
+              0.15,
+              0.1425,
+              0.126
+            ],
+            [
+              0.2,
+              0.20000000000000004,
+              0.17400000000000002
+            ]
+          ],
+          [
+            [
+              -0.2,
+              -0.12000000000000002,
+              -0.12600000000000003
+            ],
+            [
+              -0.15,
+              -0.0975,
+              -0.09899999999999999
+            ],
+            [
+              -0.1,
+              -0.07,
+              -0.069
+            ],
+            [
+              -0.05,
+              -0.037500000000000006,
+              -0.036000000000000004
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.05,
+              0.04250000000000001,
+              0.03900000000000001
+            ],
+            [
+              0.1,
+              0.09000000000000002,
+              0.08100000000000002
+            ],
+            [
+              0.15,
+              0.1425,
+              0.126
+            ],
+            [
+              0.2,
+              0.20000000000000004,
+              0.17400000000000002
+            ]
+          ]
+        ],
+        "suspension_damper_curves": [
+          [
+            [
+              -1.0683760683760684,
+              -872.6016
+            ],
+            [
+              -0.46741452991452986,
+              -459.26400000000007
+            ],
+            [
+              -0.2003205128205128,
+              -275.5584
+            ],
+            [
+              -0.06677350427350427,
+              -183.70560000000003
+            ],
+            [
+              -0.026709401709401708,
+              -73.48224
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.026709401709401708,
+              140.57471999999999
+            ],
+            [
+              0.06677350427350427,
+              351.4368
+            ],
+            [
+              0.2003205128205128,
+              527.1551999999999
+            ],
+            [
+              0.46741452991452986,
+              878.592
+            ],
+            [
+              1.0683760683760684,
+              1669.3247999999999
+            ]
+          ],
+          [
+            [
+              -1.0683760683760684,
+              -872.6016
+            ],
+            [
+              -0.46741452991452986,
+              -459.26400000000007
+            ],
+            [
+              -0.2003205128205128,
+              -275.5584
+            ],
+            [
+              -0.06677350427350427,
+              -183.70560000000003
+            ],
+            [
+              -0.026709401709401708,
+              -73.48224
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.026709401709401708,
+              140.57471999999999
+            ],
+            [
+              0.06677350427350427,
+              351.4368
+            ],
+            [
+              0.2003205128205128,
+              527.1551999999999
+            ],
+            [
+              0.46741452991452986,
+              878.592
+            ],
+            [
+              1.0683760683760684,
+              1669.3247999999999
+            ]
+          ],
+          [
+            [
+              -1.0683760683760684,
+              -872.6016
+            ],
+            [
+              -0.46741452991452986,
+              -459.26400000000007
+            ],
+            [
+              -0.2003205128205128,
+              -275.5584
+            ],
+            [
+              -0.06677350427350427,
+              -183.70560000000003
+            ],
+            [
+              -0.026709401709401708,
+              -73.48224
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.026709401709401708,
+              140.57471999999999
+            ],
+            [
+              0.06677350427350427,
+              351.4368
+            ],
+            [
+              0.2003205128205128,
+              527.1551999999999
+            ],
+            [
+              0.46741452991452986,
+              878.592
+            ],
+            [
+              1.0683760683760684,
+              1669.3247999999999
+            ]
+          ],
+          [
+            [
+              -1.0683760683760684,
+              -872.6016
+            ],
+            [
+              -0.46741452991452986,
+              -459.26400000000007
+            ],
+            [
+              -0.2003205128205128,
+              -275.5584
+            ],
+            [
+              -0.06677350427350427,
+              -183.70560000000003
+            ],
+            [
+              -0.026709401709401708,
+              -73.48224
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.026709401709401708,
+              140.57471999999999
+            ],
+            [
+              0.06677350427350427,
+              351.4368
+            ],
+            [
+              0.2003205128205128,
+              527.1551999999999
+            ],
+            [
+              0.46741452991452986,
+              878.592
+            ],
+            [
+              1.0683760683760684,
+              1669.3247999999999
+            ]
+          ]
+        ],
+        "suspension_compression_damping": [
+          5263.1175168,
+          5263.1175168,
+          5263.1175168,
+          5263.1175168
+        ],
+        "suspension_extension_damping": [
+          2751.1750656,
+          2751.1750656,
+          2751.1750656,
+          2751.1750656
+        ],
+        "suspension_stiffness": 40.0,
+        "suspension_compression": 4.4,
+        "suspension_relaxation": 2.3,
+        "air_density": 1.225,
+        "drag_coefficient": 0.32,
+        "frontal_area": 2.142857142857143,
+        "rolling_coefficient": 0.013591573224600747,
+        "grass_rolling_coefficient": 0.0764525993883792,
+        "wheel_rolling_resistance": true,
+        "rolling_transition_speed": 1.0,
+        "road_friction": 1.1,
+        "grass_friction": 0.45,
+        "wheelbase": 2.2,
+        "track_width": 1.68,
+        "axle_track_widths": null,
+        "collision_half_width": 0.994,
+        "collision_half_length": 2.128,
+        "collision_half_height": 0.671692818403244,
+        "centered_collision_support": true,
+        "body_center_height": 0.7716928255558014,
+        "wheel_connection_height": 0.67,
+        "center_of_mass_height": 0.42,
+        "front_weight_share": 0.5,
+        "body_inertia": [
+          1919.56,
+          511.56,
+          2290.0
+        ],
+        "angular_damping": 0.0,
+        "suspension_travel": 0.2,
+        "suspension_force_limit": 6000.0
+      },
+      "measured": {
+        "A": {
+          "runs": 1,
+          "wall_seconds": 37.69898900000044,
+          "cpu_seconds": 37.375,
+          "physics_snapshot_seconds": 37.69075729998076,
+          "step_p95_seconds": 0.4251471099993068,
+          "step_p99_seconds": 0.4421164929997394,
+          "initialization": {
+            "wall_seconds": 30.469829800000298,
+            "cpu_seconds": 30.40625,
+            "ticks": 243.0
+          }
+        },
+        "B": {
+          "runs": 1,
+          "wall_seconds": 34.01743319999878,
+          "cpu_seconds": 33.75,
+          "physics_snapshot_seconds": 34.009314200004155,
+          "step_p95_seconds": 0.3898619799982043,
+          "step_p99_seconds": 0.40124344799976824,
+          "initialization": {
+            "wall_seconds": 25.501164599998447,
+            "cpu_seconds": 25.390625,
+            "ticks": 243.0
+          }
+        }
+      },
+      "wall_reduction_percent": 9.765661885525944,
+      "cpu_reduction_percent": 9.6989966555184,
+      "payload_sha256": "2e437c1bd1270f074cf3c607d84220b5a8f8e27980da6c3530155acdb7d53b0d",
+      "complete_payload_exact": true,
+      "peak_normal_load_change_from_initial_N": [
+        1606.892247524001,
+        205.0973327185975,
+        1705.9934174944271,
+        217.0728399884215
+      ]
+    }
+  ],
+  "frozen_scenarios": {
+    "exact": true,
+    "runs": [
+      {
+        "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-03\\baseline",
+        "label": "A",
+        "cases": {
+          "share-0.0-sync-False-air-False": "ba09ee0892253d8f3ba824f550eb238888c47ca1aaa1be5537983b8b45bbd9fe",
+          "share-0.0-sync-False-air-True": "28e878356d0228ac329700107b760c55cdffd22efe6b5f471ac4c34607888598",
+          "share-0.0-sync-True-air-False": "997621262f0530bce40367201abea0a692638578c2e59ae2fe48851f6dcd47d0",
+          "share-0.0-sync-True-air-True": "1e2a8f22dbc8dd9b8d5cf2e95e418af90e3ab744d8da9072f792bb26bdffe307",
+          "share-0.5-sync-False-air-False": "95234567c541abb8d6a57611da24dc5f4af7613e118ecfdf19c3e8ca8ede00ad",
+          "share-0.5-sync-False-air-True": "ea31edd2a9ebf34592a1ad9cd1b045bfadd76323f332f477a7f767f30f27c9a8",
+          "share-0.5-sync-True-air-False": "540cfeb383b6ed5c985b2df5a227999a5591faf8e681d3425c2b17ad5d74f704",
+          "share-0.5-sync-True-air-True": "6305b17f1aa8866c7db8568cc4f83119bcbf818c7ade74284f17182b58aa13e5",
+          "share-1.0-sync-False-air-False": "177eb93d0a6e8a35eeb1b1095e3cc499efe852ead34dd868093d86e3a633ccd6",
+          "share-1.0-sync-False-air-True": "07f20abe69f8e67ef72cbc34ff04c11c929c7d754fac9071e0f98c28d12d1a40",
+          "share-1.0-sync-True-air-False": "2de50c78858a171d7018af35510b03b4feafc20851f76fa32d3de085db579a9c",
+          "share-1.0-sync-True-air-True": "69c463bf24e37f4e0dc34ee96dd45ed691d3efda88537f214558580f2a1584f5",
+          "reverse": "7dac68a762542532d164835b91a786e8f6a6a177dd40da0bbe44b2ac2b2165bd",
+          "rough": "a9b4edb943047020a7f6cd4abb08f44130758ec1ff7686e2612962cd20451533",
+          "finite-suspension": "d019d65c342319b792a79bab06143a8755a436bf0522949594a3b0db418ad304",
+          "stored-rotor": "2cf9da0765977d9ecfe7c941ed8c94b6638fcbce8deca1e75567deb398a2bb91",
+          "guide-bias": "9881340028174d63daeff4e78b90ee95bb3ff10341b8b1c6a67e2e6d383867d3",
+          "wheel-momentum": "6a38971480de4aa85e03429be34028d9dd51fcf996834a428dd4a8966b040a7d"
+        }
+      },
+      {
+        "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive",
+        "label": "B",
+        "cases": {
+          "share-0.0-sync-False-air-False": "ba09ee0892253d8f3ba824f550eb238888c47ca1aaa1be5537983b8b45bbd9fe",
+          "share-0.0-sync-False-air-True": "28e878356d0228ac329700107b760c55cdffd22efe6b5f471ac4c34607888598",
+          "share-0.0-sync-True-air-False": "997621262f0530bce40367201abea0a692638578c2e59ae2fe48851f6dcd47d0",
+          "share-0.0-sync-True-air-True": "1e2a8f22dbc8dd9b8d5cf2e95e418af90e3ab744d8da9072f792bb26bdffe307",
+          "share-0.5-sync-False-air-False": "95234567c541abb8d6a57611da24dc5f4af7613e118ecfdf19c3e8ca8ede00ad",
+          "share-0.5-sync-False-air-True": "ea31edd2a9ebf34592a1ad9cd1b045bfadd76323f332f477a7f767f30f27c9a8",
+          "share-0.5-sync-True-air-False": "540cfeb383b6ed5c985b2df5a227999a5591faf8e681d3425c2b17ad5d74f704",
+          "share-0.5-sync-True-air-True": "6305b17f1aa8866c7db8568cc4f83119bcbf818c7ade74284f17182b58aa13e5",
+          "share-1.0-sync-False-air-False": "177eb93d0a6e8a35eeb1b1095e3cc499efe852ead34dd868093d86e3a633ccd6",
+          "share-1.0-sync-False-air-True": "07f20abe69f8e67ef72cbc34ff04c11c929c7d754fac9071e0f98c28d12d1a40",
+          "share-1.0-sync-True-air-False": "2de50c78858a171d7018af35510b03b4feafc20851f76fa32d3de085db579a9c",
+          "share-1.0-sync-True-air-True": "69c463bf24e37f4e0dc34ee96dd45ed691d3efda88537f214558580f2a1584f5",
+          "reverse": "7dac68a762542532d164835b91a786e8f6a6a177dd40da0bbe44b2ac2b2165bd",
+          "rough": "a9b4edb943047020a7f6cd4abb08f44130758ec1ff7686e2612962cd20451533",
+          "finite-suspension": "d019d65c342319b792a79bab06143a8755a436bf0522949594a3b0db418ad304",
+          "stored-rotor": "2cf9da0765977d9ecfe7c941ed8c94b6638fcbce8deca1e75567deb398a2bb91",
+          "guide-bias": "9881340028174d63daeff4e78b90ee95bb3ff10341b8b1c6a67e2e6d383867d3",
+          "wheel-momentum": "6a38971480de4aa85e03429be34028d9dd51fcf996834a428dd4a8966b040a7d"
+        }
+      }
+    ]
+  },
+  "profile_call_counts": {
+    "before": {
+      "ticks": 6,
+      "residual_calls": 1692,
+      "normal_material_calls": 1692,
+      "finite_contact_calls": 1692,
+      "road_geometry_queries": 1122,
+      "spin_calls": 1704
+    },
+    "after": {
+      "ticks": 6,
+      "residual_calls": 1692,
+      "normal_material_calls": 540,
+      "finite_contact_calls": 540,
+      "road_geometry_queries": 1122,
+      "spin_calls": 840
+    }
+  },
+  "validation": {
+    "T0": {
+      "started_utc": "2026-10-15T08:47:35.822368+00:00",
+      "git_head": "c1f38eb2ead59f66d2f27893b99fa488ad70b0cf",
+      "git_status": "M src/unsprung_joint.py\n?? docs/tasks/LAB-PERF-03.md",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_unsprung_joint.py",
+        "tests/test_unsprung_dry_ports.py",
+        "tests/test_unsprung_edge_checkpoint.py",
+        "tests/test_finite_radial_contact.py"
+      ],
+      "tier": "T0",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\lab-perf-03\\T0\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.159
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_unsprung_joint.py",
+            "tests/test_unsprung_dry_ports.py",
+            "tests/test_unsprung_edge_checkpoint.py",
+            "tests/test_finite_radial_contact.py"
+          ],
+          "reports": [],
+          "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\lab-perf-03\\T0\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 1.626
+        }
+      ]
+    },
+    "T0-standard": {
+      "started_utc": "2026-10-15T08:52:40.493510+00:00",
+      "git_head": "c1f38eb2ead59f66d2f27893b99fa488ad70b0cf",
+      "git_status": "M src/unsprung_joint.py\n?? docs/tasks/LAB-PERF-03.md",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "areas": [],
+      "tests": [
+        "tests/test_unsprung_joint.py",
+        "tests/test_unsprung_dry_ports.py",
+        "tests/test_unsprung_edge_checkpoint.py",
+        "tests/test_finite_radial_contact.py"
+      ],
+      "tier": "T0",
+      "status": "passed",
+      "passed": true,
+      "stage_gate": "not_assessed",
+      "human_gate": "pending",
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "reports": [],
+          "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\lab-perf-03\\T0-standard\\ruff.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 0.124
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_unsprung_joint.py",
+            "tests/test_unsprung_dry_ports.py",
+            "tests/test_unsprung_edge_checkpoint.py",
+            "tests/test_finite_radial_contact.py"
+          ],
+          "reports": [],
+          "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\lab-perf-03\\T0-standard\\pytest.log",
+          "status": "passed",
+          "returncode": 0,
+          "error": null,
+          "seconds": 1.723
+        }
+      ]
+    },
+    "lab-regression": {
+      "scope": "实验台专项完整模块与记录复算；按用户限定不运行游戏seed/window；不是通用T1/T2/T3 Gate",
+      "runtime": {
+        "panda_version": "1.10.16",
+        "bullet_version": 285,
+        "math_scalar_bits": 64,
+        "files": {
+          "bin/d3dx9_43.dll": "84b900dbd7fa978d6e0caee26fc54f2f61d92c9c75d10b35f00e3e82cd1d67b4",
+          "bin/libp3direct.dll": "127a84f04e16280ec8cbc4439893d605c27c140a84c17f6aa88a9f59321e466f",
+          "bin/libp3dtool.dll": "e9a912e0742166ddc0b74e532160853753c7d1194d8d96dabc28390a0e5a13d5",
+          "bin/libp3dtoolconfig.dll": "0c45a336c087ad84bb831ddf5d56c6fd828ab467744b201f552e54fc5d052fc6",
+          "bin/libp3framework.dll": "7393d45ecaafc621d3430321cf0807cabefc0274dadeed383895d0178fdea6a2",
+          "bin/libp3interrogatedb.dll": "7b043cf017ff8b579e17899dfb1d34ce29ced29aa31eab72f7758634b48c6de7",
+          "bin/libp3openal_audio.dll": "919abf33167d89431977a7ad1275ddb8ec56fb409560205e367b61c55bce5cb0",
+          "bin/libp3windisplay.dll": "4bd3b5cf9388ebadf9c13466523592220393abeba4001600eaa9e32cc67c667b",
+          "bin/libpanda.dll": "10498c8138ff4c79410166e61b120f2c48ea0ab2248059b4096ab4062446d7c7",
+          "bin/libpandabullet.dll": "483ef5e561d75fe7191633731713eee5a3e163ee0f84bba5ce03a4decc0fb0fa",
+          "bin/libpandaegg.dll": "6033115bd3db949bdbbe337ff81817aea7a83fb35019c41cff2b83f44e6d8555",
+          "bin/libpandaexpress.dll": "5fd3c1a9f29ec00f0380e285f82ca81230b2bfde7f27bb8ecf6b414167c574f1",
+          "bin/libpandagl.dll": "fb0d9f1d23e14afb9fbac76c5d3b0c9e78e8c14e1b5b4819bf973c3390b261a3",
+          "bin/python314.dll": "7ffe3ab11342db03cc18b026f27485c0f74f5bf10f239f1f6573394900596394",
+          "bin/vcruntime140.dll": "052ad6a20d375957e82aa6a3c441ea548d89be0981516ca7eb306e063d5027f4",
+          "bin/vcruntime140_1.dll": "6a99bc0128e0c7d6cbbf615fcc26909565e17d4ca3451b97f8987f9c6acbc6c8",
+          "panda3d/bullet.cp314-win_amd64.pyd": "6e1f3b023d5060c39dd299f42ea423b005047eaa18f4fa2e962fa76381225154",
+          "panda3d/core.cp314-win_amd64.pyd": "92708c8b920fe01a27a46c4e2c09984bb8711995cbb8eb285b5f82e5c2fd8537"
+        }
+      },
+      "tests": [
+        "test_box_radial_geometry.py",
+        "test_finite_radial_contact.py",
+        "test_finite_suspension.py",
+        "test_lab_experiment.py",
+        "test_lab_maneuvers.py",
+        "test_lab_metrics.py",
+        "test_lab_origin.py",
+        "test_lab_records.py",
+        "test_lab_ride.py",
+        "test_lab_ride_braking.py",
+        "test_lab_ui.py",
+        "test_radial_geometry.py",
+        "test_suspension_bench.py",
+        "test_suspension_damper.py",
+        "test_suspension_motion.py",
+        "test_suspension_preload.py",
+        "test_suspension_work.py",
+        "test_unsprung_body.py",
+        "test_unsprung_contact.py",
+        "test_unsprung_dry_ports.py",
+        "test_unsprung_dynamics.py",
+        "test_unsprung_edge_checkpoint.py",
+        "test_unsprung_geometry.py",
+        "test_unsprung_joint.py",
+        "test_unsprung_modes.py",
+        "test_unsprung_motion.py",
+        "test_unsprung_radial_ports.py",
+        "test_vehicle_unsprung.py"
+      ],
+      "checks": [
+        {
+          "name": "ruff",
+          "command": [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "ruff",
+            "check",
+            "src",
+            "tests",
+            "tools"
+          ],
+          "exit_code": 0,
+          "seconds": 0.17077399999834597
+        },
+        {
+          "name": "pytest",
+          "command": [
+            "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+            "-m",
+            "pytest",
+            "-q",
+            "tests/test_box_radial_geometry.py",
+            "tests/test_finite_radial_contact.py",
+            "tests/test_finite_suspension.py",
+            "tests/test_lab_experiment.py",
+            "tests/test_lab_maneuvers.py",
+            "tests/test_lab_metrics.py",
+            "tests/test_lab_origin.py",
+            "tests/test_lab_records.py",
+            "tests/test_lab_ride.py",
+            "tests/test_lab_ride_braking.py",
+            "tests/test_lab_ui.py",
+            "tests/test_radial_geometry.py",
+            "tests/test_suspension_bench.py",
+            "tests/test_suspension_damper.py",
+            "tests/test_suspension_motion.py",
+            "tests/test_suspension_preload.py",
+            "tests/test_suspension_work.py",
+            "tests/test_unsprung_body.py",
+            "tests/test_unsprung_contact.py",
+            "tests/test_unsprung_dry_ports.py",
+            "tests/test_unsprung_dynamics.py",
+            "tests/test_unsprung_edge_checkpoint.py",
+            "tests/test_unsprung_geometry.py",
+            "tests/test_unsprung_joint.py",
+            "tests/test_unsprung_modes.py",
+            "tests/test_unsprung_motion.py",
+            "tests/test_unsprung_radial_ports.py",
+            "tests/test_vehicle_unsprung.py"
+          ],
+          "exit_code": 0,
+          "seconds": 70.37917759999982
+        }
+      ],
+      "passed": true
+    }
+  },
+  "validation_counts": {
+    "Double_T0": 35,
+    "standard_T0": 35,
+    "Double_lab_regression": 222
+  },
+  "physics_gate": "原完整模型/配置/120Hz/双子步/epsilon/阈值保持；未提升已有能量/精度Gate",
+  "formal_T1_T2_T3": "not_run; 按用户只处理试验台，专项完整回归/记录复算完成，游戏seed/window未跑",
+  "real_time_human_gate": "open; 实测仍慢于实时，人工体验待确认",
+  "raw_evidence_sha256": "11f147efc1e482178462ff5fdf74b808d18e85f948f02a76d37f7113008f593e"
+}

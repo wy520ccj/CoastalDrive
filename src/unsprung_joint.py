@@ -102,11 +102,18 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
     state_scale = np.r_[np.ones(10),np.full(6,100.),np.full(8,1000.),np.full(10,100.)]
     row_scale = np.r_[np.maximum(np.diag(inertia)*state_scale[:16],1.),np.full(8,1000.),np.full(10,100.)]
 
-    def evaluate(values):
-        end,forces,torques = values[:16],values[16:24].reshape(4,2),values[24:]
+    configuration_key,configuration_data = None,None
+    velocity_key,velocity_data = None,None
+
+    def configuration(end):
+        nonlocal configuration_key,configuration_data
+        # 有限接触/行程只依赖车身和轮心十速度；旧冻结法向端口仍可含自旋，须用全部速度。
+        key = (end[:10] if finite_contact is not None else end).tobytes()
+        if key==configuration_key:
+            return configuration_data
         kinematics = finite_contact.evaluate(end) if finite_contact is not None else None
         active = contacts if kinematics is None else kinematics.contacts
-        gx,gy,gn = active.longitudinal,active.lateral,active.normal
+        gn = active.normal
         guide = np.zeros((4,3)) if active.guide_velocity is None else active.guide_velocity
         local_previous = previous if kinematics is None else kinematics.deformation
         local_mu = mu if kinematics is None else kinematics.friction
@@ -122,26 +129,57 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
                  else kinematics.geometry.deflection)
         coefficients = normal_material(q,suspension_velocity,delta,delta0,dt,config,rates*eligible,radial_c*eligible)
         normal = coefficients if kinematics is None else replace(coefficients,normal_force=coefficients.normal_force*scale)
+        parameters = []
+        for i in range(4):
+            car = config if i<2 else config_rear
+            load = float(normal.normal_force[i])
+            grip = tire_grip(load,local_mu[i],car)
+            cx,cy = tire_stiffness(load,car)
+            parameters.append((grip,cx,cy))
+        configuration_key = key
+        configuration_data = (kinematics,active,guide,local_previous,local_rolling,scale,q,
+                              suspension_velocity,delta,coefficients,normal,np.asarray(parameters))
+        return configuration_data
+
+    def velocity_terms(end):
+        nonlocal velocity_key,velocity_data
+        key = end.tobytes()
+        if key==velocity_key:
+            return velocity_data
+        geometry = configuration(end)
+        _kinematics,active,guide,_previous,local_rolling,_scale,_q,_u,_delta,_coefficients,normal,_parameters = geometry
+        gx,gy,gn = active.longitudinal,active.lateral,active.normal
         down = hardware.downstream@end
+        inertial_torques = hardware.downstream_inertias*(down-old_down)/dt
+        speeds = ports@end
+        contact_speeds = np.column_stack((gx@end,gy@end,gn@end))+active.steering_velocity+guide
+        rolling_torque = local_rolling*normal.normal_force*active.radii**2*end[12:] / np.maximum(
+            np.abs(active.radii*end[12:]),config.rolling_transition_speed)
+        engine_reaction = known+engine_torque*hardware.engine-engine_drag*np.dot(hardware.engine,end)*hardware.engine
+        rotor_bias = np.zeros(16)
+        rotor_bias[3:6] = cross(end[3:6],hardware.spin(end,config))
+        free_momentum = inertia@end-momentum
+        velocity_key = key
+        velocity_data = (geometry,down,inertial_torques,speeds,contact_speeds,rolling_torque,
+                         engine_reaction,rotor_bias,free_momentum)
+        return velocity_data
+
+    def evaluate(values):
+        end,forces,torques = values[:16],values[16:24].reshape(4,2),values[24:]
+        geometry,down,inertial_torques,speeds,contact_speeds,rolling_torque,engine_reaction,rotor_bias,free_momentum = velocity_terms(end)
+        kinematics,active,_guide,local_previous,_rolling,scale,q,suspension_velocity,delta,coefficients,normal,parameters = geometry
+        gx,gy,gn = active.longitudinal,active.lateral,active.normal
         loss = torques[2]
         output_torque = ratio*(torques[1]-loss)
-        inertial_torques = hardware.downstream_inertias*(down-old_down)/dt
         axle = (config.front_drive_share*output_torque-config.final_drive*(
                     config.front_drive_share*inertial_torques[0]+inertial_torques[1]),
                 (1-config.front_drive_share)*output_torque-config.final_drive*(
                     (1-config.front_drive_share)*inertial_torques[0]+inertial_torques[2]))
         limits = np.r_[torque_bias_capacities(config.differential_capacity[:2],config.axle_torque_bias_ratios,axle),
                        config.differential_capacity[2]]
-        speeds = ports@end
-        contact_speeds = np.column_stack((gx@end,gy@end,gn@end))+active.steering_velocity+guide
-        rolling_torque = local_rolling*normal.normal_force*active.radii**2*end[12:] / np.maximum(
-            np.abs(active.radii*end[12:]),config.rolling_transition_speed)
-        reaction = known+engine_torque*hardware.engine-engine_drag*np.dot(hardware.engine,end)*hardware.engine
-        reaction = reaction-gs.T@normal.suspension_force+gn.T@normal.normal_force+gx.T@forces[:,0]+gy.T@forces[:,1]-ports.T@torques
+        reaction = engine_reaction-gs.T@normal.suspension_force+gn.T@normal.normal_force+gx.T@forces[:,0]+gy.T@forces[:,1]-ports.T@torques
         reaction[12:] -= rolling_torque
-        rotor_bias = np.zeros(16)
-        rotor_bias[3:6] = cross(end[3:6],hardware.spin(end,config))
-        momentum_error = inertia@end-momentum-dt*(reaction-rotor_bias)
+        momentum_error = free_momentum-dt*(reaction-rotor_bias)
         gyro = np.zeros(3)
         if native_body_gyro:
             wheel_force = (forces[:,0,None]*gx[:,:3]+forces[:,1,None]*gy[:,:3]+normal.normal_force[:,None]*gn[:,:3]
@@ -150,19 +188,15 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
             free_angular = start[3:6]+dt*np.linalg.solve(hardware.mechanical.world_inertia,body_torque-external_torque)
             gyro = native_gyro_impulse(hardware.mechanical.world_inertia,free_angular,dt)
             momentum_error[3:6] -= gyro
-        force_errors,details,parameters = [],[],[]
+        force_errors,details = [],[]
         for i in range(4):
-            car = config if i<2 else config_rear
-            load = float(normal.normal_force[i])
-            grip = tire_grip(load,local_mu[i],car)
-            cx,cy = tire_stiffness(load,car)
+            grip,cx,cy = parameters[i]
             vx = contact_speeds[i,0]+active.radii[i]*end[12+i]
             result = contact_force(tuple(forces[i]),tuple(local_previous[i]),tuple(-contact_speeds[i,:2]),
                 max(abs(vx),config.slip_speed),bool(rolling[i]),grip,cx,cy,dt,
                 config.tire_contact_stiffness,config.tire_contact_damping,config.tire_shape,config.tire_curvature)
             force_errors.extend(forces[i]-result[0])
             details.append(result)
-            parameters.append((grip,cx,cy))
         error_c = torques[0]-np.clip(torques[0]+speeds[0]/(dt*response[0]),-clutch_capacity,clutch_capacity)
         if ratio and not synchronizing:
             error_g = speeds[1]/(dt*response[1])
@@ -178,7 +212,7 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         differential_error = torques[7:]-np.clip(np.asarray(config.differential_damping)*speeds[7:],-limits,limits)
         port_errors = np.r_[error_c,error_g,error_l,brake_error,differential_error]
         residual = np.r_[momentum_error,force_errors,port_errors]
-        return residual,(q,delta,normal,down,contact_speeds,rolling_torque,details,np.asarray(parameters),speeds,output_torque,
+        return residual,(q,delta,normal,down,contact_speeds,rolling_torque,details,parameters,speeds,output_torque,
                          active,local_previous,coefficients,scale,kinematics,gyro,suspension_velocity)
 
     config_rear = replace(config,lateral_stiffness=config.rear_lateral_stiffness)
