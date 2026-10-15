@@ -13,6 +13,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
+from suspension_work import work_terms
 from unsprung_step_checkpoint import save_step
 
 import simulation as simulation_module
@@ -215,16 +216,18 @@ def write_rows(path,rows):
         writer.writeheader();writer.writerows(rows)
 
 
-def check(output, maneuver, duration, substeps, engineering=None):
+def check(output, maneuver, duration, substeps, engineering=None,record=False):
     output.mkdir(parents=True,exist_ok=False)
     executed = Path(__file__).read_bytes()
     (output/"executed-tool.py").write_bytes(executed)
     config = replace(REFERENCE_DESIGN,unsprung_enabled=True,tire_substeps=substeps)
+    metadata=None
     if engineering is not None:
         (output/"engineering-input.json").write_bytes(engineering.read_bytes())
         config = replace(load_vehicle_config(engineering,config),tire_substeps=substeps)
+        metadata=json.loads(engineering.read_text(encoding="utf-8")).get("metadata")
     options = LabOptions(maneuver=maneuver,speed_kph=18. if maneuver=="ride_bump" else 60.,duration=duration)
-    run = LabExperiment(options,config=config)
+    run = LabExperiment(options,config=config,parameter_metadata=metadata)
     rows, pending, peak = [],[],[]
     original_commit, original_advance = UnsprungAdvanceInput.commit,simulation_module.advance_world
     original_solve = UnsprungAdvanceInput.solve
@@ -249,7 +252,7 @@ def check(output, maneuver, duration, substeps, engineering=None):
         def after(before,last):
             source,result,old = pending.pop()
             new = state(run.experiment.simulation.player,source.angles)
-            row = balance(source,result,old,new)
+            row = {**balance(source,result,old,new),**work_terms(source,result,old)}
             row["substep"] = len(rows)+1
             row["time"] = row["substep"]*source.dt
             rows.append(row)
@@ -284,6 +287,9 @@ def check(output, maneuver, duration, substeps, engineering=None):
         result["normal_geometry_derivatives"] = normal_geometry_derivatives(run.experiment.simulation.player)
         (output/"result.json").write_text(json.dumps(result,indent=2,ensure_ascii=False),encoding="utf-8")
         (output/"peak-input.json").write_text(json.dumps(peak[0],indent=2,ensure_ascii=False),encoding="utf-8")
+        if record:
+            from lab_records import LabRecord, export_record
+            export_record(LabRecord.from_run(run),output/"record")
         print(json.dumps({"reason":run.reason,"steps":len(rows),"energy_residual_max":result["max_abs"]["actual_energy_residual"],"energy_residual_sum":result["sum"]["actual_energy_residual"]}))
     finally:
         UnsprungAdvanceInput.commit,simulation_module.advance_world = original_commit,original_advance
@@ -298,5 +304,6 @@ if __name__ == "__main__":
     parser.add_argument("--duration",type=float,default=2.4)
     parser.add_argument("--substeps",type=int,choices=(2,4,8),default=2)
     parser.add_argument("--engineering",type=Path,help="完整工程输入；实际配置与原文件均保存")
+    parser.add_argument("--record",action="store_true",help="保存本次运行的完整真实记录，不再重跑取样")
     args = parser.parse_args()
-    check(args.output.resolve(),args.maneuver,args.duration,args.substeps,args.engineering)
+    check(args.output.resolve(),args.maneuver,args.duration,args.substeps,args.engineering,args.record)
