@@ -5,6 +5,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from suspension import elastic_terms, stiffness_matrix
+from suspension_damper import damper_curve
 from suspension_installation import installation_curve
 
 
@@ -51,6 +52,22 @@ def suspension_damping(compression, relative_velocity, config):
     return coefficient,derivative
 
 
+def damping_material(compression, relative_velocity, config):
+    """返回轮心阻力、速度导数、行程导数；力速表不产生独立储能。"""
+    if config.suspension_damper_curves is None:
+        coefficient,gradient=suspension_damping(compression,relative_velocity,config)
+        return coefficient*relative_velocity,coefficient,gradient*relative_velocity
+    ratio,gradient=np.ones(4),np.zeros(4)
+    if config.suspension_installation_curves is not None:
+        axes=[installation_curve(rows)[1] for rows in config.suspension_installation_curves]
+        values=np.array([axis.at(q)[1:] for axis,q in zip(axes,compression,strict=True)])
+        ratio,gradient=(values/np.array([axis.reference_ratio for axis in axes])[:,None]).T
+    values=np.array([damper_curve(rows).at(r*u) for rows,r,u in
+        zip(config.suspension_damper_curves,ratio,relative_velocity,strict=True)])
+    force,slope=values.T
+    return ratio*force,ratio**2*slope,gradient*(force+ratio*relative_velocity*slope)
+
+
 @dataclass(frozen=True)
 class NormalMaterial:
     suspension_force: np.ndarray
@@ -67,7 +84,7 @@ class NormalMaterial:
 def normal_material(compression, relative_velocity, deflection, previous_deflection,
                     dt, config, radial_rates, radial_damping):
     """法向块与传动/轮胎共同求解共用唯一材料方程。"""
-    coefficient,coefficient_gradient = suspension_damping(compression,relative_velocity,config)
+    damper,damper_speed,damper_travel = damping_material(compression,relative_velocity,config)
     potential,spring,spring_tangent = _elastic_material(compression,config)
     delta_rate = (np.maximum(deflection,0.)-np.maximum(previous_deflection,0.))/dt
     trial = radial_rates*np.maximum(deflection,0.)+radial_damping*delta_rate
@@ -75,11 +92,11 @@ def normal_material(compression, relative_velocity, deflection, previous_deflect
     normal = np.where(contact,trial,0.)
     hessian = np.asarray(stiffness_matrix(spring_tangent,config.suspension_antiroll_rates))
     hessian += np.diag(np.where(np.abs(compression)>config.suspension_travel,config.suspension_stop_rates,0.))
-    return NormalMaterial(spring+coefficient*relative_velocity,normal,float(potential),
+    return NormalMaterial(spring+damper,normal,float(potential),
         float(.5*np.dot(radial_rates,np.maximum(deflection,0.)**2)),
-        float(dt*np.dot(coefficient,relative_velocity**2)),
+        float(dt*np.dot(damper,relative_velocity)),
         float(dt*np.dot(np.where(contact,radial_damping,0.),delta_rate**2)),
-        dt*hessian+np.diag(coefficient+dt*coefficient_gradient*relative_velocity),
+        dt*hessian+np.diag(damper_speed+dt*damper_travel),
         np.where(contact,dt*radial_rates+radial_damping,0.),spring)
 
 

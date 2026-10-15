@@ -116,6 +116,11 @@ FORMULAS = {
         r"v_d=r_d(q)\dot q,\qquad F_{d,w}=c_d^{\pm}r_d(q)^2\dot q",
         r"c_d^{\pm}=\frac{c_{w,0}^{\pm}}{r_d(0)^2},\qquad P_d=c_d^{\pm}v_d^2\geq0",
     ), "rd是减振器位移曲线对轮心行程的导数；参考轮心阻尼cw,0换回部件阻尼cd后，再由当前运动比映射。压缩/伸张各用其部件系数。"),
+    "suspension_damper_curves": ((
+        r"T(v)=T_j+\frac{T_{j+1}-T_j}{v_{j+1}-v_j}(v-v_j)",
+        r"\rho(q)=\frac{r_d(q)}{r_d(0)},\qquad v_* =\rho\dot q,\quad F_{d,w}=\rho T(v_*)",
+        r"P_d=F_{d,w}\dot q=T(v_*)v_*\geq0",
+    ), "T是q=0参考轮心速度—阻力表，由活塞台架按rd(0)变换。当前安装比同时进入速度与反力；表覆盖常阻尼，域外按端段斜率外推。不表示液压迟滞。"),
     "suspension_antiroll_rates": ((r"U_{\mathrm{bar}}=\frac{1}{2}k_{\mathrm{bar}}(q_L-q_R)^2",),
                                   "qL / qR：同轴左右行程；kbar：防倾刚度。"),
     "body_inertia": ((r"I_a=\sum_j\left(m_j d_{j,a}^{\,2}+I_{j,a}\right)",),

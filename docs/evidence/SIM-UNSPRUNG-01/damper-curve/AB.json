@@ -1,0 +1,735 @@
+{
+  "results": [
+    {
+      "label": "A",
+      "summary": {
+        "status": "time_limit",
+        "reason": "time_limit",
+        "error": null,
+        "simulation_seconds": 2.4,
+        "compute_seconds": 88.93007440000292,
+        "distance_m": 11.605333285266848,
+        "stopping_distance_m": null,
+        "peak_deceleration_mps2": -0.7585602830804224,
+        "peak_lateral_acceleration_mps2": 0.31764787207259654,
+        "peak_yaw_rate_radps": 0.0037813163855610157,
+        "mean_path_error_m": null,
+        "maximum_path_error_m": null,
+        "abs_ticks": 0,
+        "ticks": 288,
+        "initialization_ticks": 184,
+        "options": {
+          "vehicle_id": "reference-rwd",
+          "maneuver": "ride_bump",
+          "speed_kph": 18.0,
+          "friction": 1.1,
+          "abs_enabled": true,
+          "esc_enabled": false,
+          "duration": 2.4,
+          "steering_deg": 3.0,
+          "onset": 0.5,
+          "seed": 0,
+          "cg_height": null,
+          "radius_m": 60.0,
+          "right_friction": 0.3,
+          "tire_reference_load": null,
+          "bump_height_m": 0.01,
+          "bump_length_m": 0.9,
+          "bump_distance_m": 6.0
+        }
+      },
+      "record_roundtrip_exact": true,
+      "recalculate_exact": null,
+      "analysis": {
+        "version": "coastal-engineering-metrics-v3",
+        "metrics": [
+          {
+            "key": "mfdd",
+            "label": "充分发出平均减速度",
+            "unit": "m/s²",
+            "value": null,
+            "status": "unavailable",
+            "note": "仅适用于制动工况",
+            "window": null
+          },
+          {
+            "key": "yaw_gain",
+            "label": "稳态横摆增益",
+            "unit": "1/s",
+            "value": null,
+            "status": "unavailable",
+            "note": "需要固定转角或定圆稳态工况",
+            "window": null
+          },
+          {
+            "key": "beta",
+            "label": "峰值车身侧偏",
+            "unit": "deg",
+            "value": 0.29592843767560933,
+            "status": "available",
+            "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+            "window": null
+          },
+          {
+            "key": "roll",
+            "label": "峰值车身侧倾",
+            "unit": "deg",
+            "value": 0.2375179839832029,
+            "status": "available",
+            "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+            "window": null
+          },
+          {
+            "key": "ltr_front",
+            "label": "峰值前轴左右轮荷差比",
+            "unit": "1",
+            "value": 0.2628493418729355,
+            "status": "available",
+            "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+            "window": null
+          },
+          {
+            "key": "ltr_rear",
+            "label": "峰值后轴左右轮荷差比",
+            "unit": "1",
+            "value": 0.2691619123213729,
+            "status": "available",
+            "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+            "window": null
+          },
+          {
+            "key": "utilization_fl",
+            "label": "峰值附着利用率 FL",
+            "unit": "1",
+            "value": 0.0465092259119549,
+            "status": "available",
+            "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+            "window": null
+          },
+          {
+            "key": "utilization_fr",
+            "label": "峰值附着利用率 FR",
+            "unit": "1",
+            "value": 0.033158140242729804,
+            "status": "available",
+            "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+            "window": null
+          },
+          {
+            "key": "utilization_rl",
+            "label": "峰值附着利用率 RL",
+            "unit": "1",
+            "value": 0.047111189844146625,
+            "status": "available",
+            "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+            "window": null
+          },
+          {
+            "key": "utilization_rr",
+            "label": "峰值附着利用率 RR",
+            "unit": "1",
+            "value": 0.03420637625792737,
+            "status": "available",
+            "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+            "window": null
+          }
+        ],
+        "ride": {
+          "metrics": [
+            {
+              "key": "ride.body_rms",
+              "label": "簧上垂向RMS",
+              "unit": "m/s²",
+              "value": 0.28820819482927346,
+              "status": "available",
+              "note": "簧上CG世界Z加速度RMS，未加权；不是座椅ISO舒适等级",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.body_peak",
+              "label": "簧上垂向峰值",
+              "unit": "m/s²",
+              "value": 1.1186718032897656,
+              "status": "available",
+              "note": "簧上CG世界Z惯性加速度绝对峰值",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.hub_peak",
+              "label": "轮心垂向峰值",
+              "unit": "m/s²",
+              "value": 17.46144667043358,
+              "status": "available",
+              "note": "四轮实际速度差的世界Z加速度绝对峰值",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.max_travel",
+              "label": "最大压缩行程",
+              "unit": "m",
+              "value": 0.03357012139432847,
+              "status": "available",
+              "note": "实际轮心相对车身的压缩行程最大值",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.unload_fraction",
+              "label": "零轮荷采样比例",
+              "unit": "1",
+              "value": 0.0,
+              "status": "available",
+              "note": "四轮Fn=0的完成步占比；不是插值后的精确离地时长",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.min_load_fl",
+              "label": "最小施力轮荷 FL",
+              "unit": "N",
+              "value": 1565.9003912835017,
+              "status": "available",
+              "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.min_load_fr",
+              "label": "最小施力轮荷 FR",
+              "unit": "N",
+              "value": 2652.849518713676,
+              "status": "available",
+              "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.min_load_rl",
+              "label": "最小施力轮荷 RL",
+              "unit": "N",
+              "value": 1560.3134211091622,
+              "status": "available",
+              "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.min_load_rr",
+              "label": "最小施力轮荷 RR",
+              "unit": "N",
+              "value": 2662.6643162891137,
+              "status": "available",
+              "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.load_cv_fl",
+              "label": "FL动态轮荷比",
+              "unit": "1",
+              "value": 0.07277977165428076,
+              "status": "available",
+              "note": "sqrt(mean((Fn_FL−初始Fn_FL)^2))/初始Fn_FL，完整区间",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "label": "B",
+      "summary": {
+        "status": "time_limit",
+        "reason": "time_limit",
+        "error": null,
+        "simulation_seconds": 2.4,
+        "compute_seconds": 81.3109497999958,
+        "distance_m": 11.605592379893407,
+        "stopping_distance_m": null,
+        "peak_deceleration_mps2": -0.7612810741380012,
+        "peak_lateral_acceleration_mps2": 0.27439788126691034,
+        "peak_yaw_rate_radps": 0.003823030271797888,
+        "mean_path_error_m": null,
+        "maximum_path_error_m": null,
+        "abs_ticks": 0,
+        "ticks": 288,
+        "initialization_ticks": 243,
+        "options": {
+          "vehicle_id": "reference-rwd",
+          "maneuver": "ride_bump",
+          "speed_kph": 18.0,
+          "friction": 1.1,
+          "abs_enabled": true,
+          "esc_enabled": false,
+          "duration": 2.4,
+          "steering_deg": 3.0,
+          "onset": 0.5,
+          "seed": 0,
+          "cg_height": null,
+          "radius_m": 60.0,
+          "right_friction": 0.3,
+          "tire_reference_load": null,
+          "bump_height_m": 0.01,
+          "bump_length_m": 0.9,
+          "bump_distance_m": 6.0
+        }
+      },
+      "record_roundtrip_exact": true,
+      "recalculate_exact": true,
+      "analysis": {
+        "version": "coastal-engineering-metrics-v3",
+        "metrics": [
+          {
+            "key": "mfdd",
+            "label": "充分发出平均减速度",
+            "unit": "m/s²",
+            "value": null,
+            "status": "unavailable",
+            "note": "仅适用于制动工况",
+            "window": null
+          },
+          {
+            "key": "yaw_gain",
+            "label": "稳态横摆增益",
+            "unit": "1/s",
+            "value": null,
+            "status": "unavailable",
+            "note": "需要固定转角或定圆稳态工况",
+            "window": null
+          },
+          {
+            "key": "beta",
+            "label": "峰值车身侧偏",
+            "unit": "deg",
+            "value": 0.25793327628279705,
+            "status": "available",
+            "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+            "window": null
+          },
+          {
+            "key": "roll",
+            "label": "峰值车身侧倾",
+            "unit": "deg",
+            "value": 0.21778898599754112,
+            "status": "available",
+            "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+            "window": null
+          },
+          {
+            "key": "ltr_front",
+            "label": "峰值前轴左右轮荷差比",
+            "unit": "1",
+            "value": 0.2546791481450331,
+            "status": "available",
+            "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+            "window": null
+          },
+          {
+            "key": "ltr_rear",
+            "label": "峰值后轴左右轮荷差比",
+            "unit": "1",
+            "value": 0.26560485624285995,
+            "status": "available",
+            "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+            "window": null
+          },
+          {
+            "key": "utilization_fl",
+            "label": "峰值附着利用率 FL",
+            "unit": "1",
+            "value": 0.04323043691683792,
+            "status": "available",
+            "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+            "window": null
+          },
+          {
+            "key": "utilization_fr",
+            "label": "峰值附着利用率 FR",
+            "unit": "1",
+            "value": 0.03143359635853475,
+            "status": "available",
+            "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+            "window": null
+          },
+          {
+            "key": "utilization_rl",
+            "label": "峰值附着利用率 RL",
+            "unit": "1",
+            "value": 0.045082251603243716,
+            "status": "available",
+            "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+            "window": null
+          },
+          {
+            "key": "utilization_rr",
+            "label": "峰值附着利用率 RR",
+            "unit": "1",
+            "value": 0.02868293782170377,
+            "status": "available",
+            "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+            "window": null
+          }
+        ],
+        "ride": {
+          "metrics": [
+            {
+              "key": "ride.body_rms",
+              "label": "簧上垂向RMS",
+              "unit": "m/s²",
+              "value": 0.24251523520751542,
+              "status": "available",
+              "note": "簧上CG世界Z加速度RMS，未加权；不是座椅ISO舒适等级",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.body_peak",
+              "label": "簧上垂向峰值",
+              "unit": "m/s²",
+              "value": 0.9097902425197272,
+              "status": "available",
+              "note": "簧上CG世界Z惯性加速度绝对峰值",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.hub_peak",
+              "label": "轮心垂向峰值",
+              "unit": "m/s²",
+              "value": 21.92984607931011,
+              "status": "available",
+              "note": "四轮实际速度差的世界Z加速度绝对峰值",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.max_travel",
+              "label": "最大压缩行程",
+              "unit": "m",
+              "value": 0.03497880376536697,
+              "status": "available",
+              "note": "实际轮心相对车身的压缩行程最大值",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.unload_fraction",
+              "label": "零轮荷采样比例",
+              "unit": "1",
+              "value": 0.0,
+              "status": "available",
+              "note": "四轮Fn=0的完成步占比；不是插值后的精确离地时长",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.min_load_fl",
+              "label": "最小施力轮荷 FL",
+              "unit": "N",
+              "value": 1599.9102566461886,
+              "status": "available",
+              "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.min_load_fr",
+              "label": "最小施力轮荷 FR",
+              "unit": "N",
+              "value": 2680.235466288088,
+              "status": "available",
+              "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.min_load_rl",
+              "label": "最小施力轮荷 RL",
+              "unit": "N",
+              "value": 1571.715571277026,
+              "status": "available",
+              "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.min_load_rr",
+              "label": "最小施力轮荷 RR",
+              "unit": "N",
+              "value": 2679.674409779782,
+              "status": "available",
+              "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.load_cv_fl",
+              "label": "FL动态轮荷比",
+              "unit": "1",
+              "value": 0.06336573869930615,
+              "status": "available",
+              "note": "sqrt(mean((Fn_FL−初始Fn_FL)^2))/初始Fn_FL，完整区间",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 2.4,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "changed_conditions": {
+    "vehicle.suspension_damper_curves": {
+      "A": null,
+      "B": [
+        [
+          [
+            -1.0683760683760684,
+            -872.6016
+          ],
+          [
+            -0.46741452991452986,
+            -459.26400000000007
+          ],
+          [
+            -0.2003205128205128,
+            -275.5584
+          ],
+          [
+            -0.06677350427350427,
+            -183.70560000000003
+          ],
+          [
+            -0.026709401709401708,
+            -73.48224
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.026709401709401708,
+            140.57471999999999
+          ],
+          [
+            0.06677350427350427,
+            351.4368
+          ],
+          [
+            0.2003205128205128,
+            527.1551999999999
+          ],
+          [
+            0.46741452991452986,
+            878.592
+          ],
+          [
+            1.0683760683760684,
+            1669.3247999999999
+          ]
+        ],
+        [
+          [
+            -1.0683760683760684,
+            -872.6016
+          ],
+          [
+            -0.46741452991452986,
+            -459.26400000000007
+          ],
+          [
+            -0.2003205128205128,
+            -275.5584
+          ],
+          [
+            -0.06677350427350427,
+            -183.70560000000003
+          ],
+          [
+            -0.026709401709401708,
+            -73.48224
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.026709401709401708,
+            140.57471999999999
+          ],
+          [
+            0.06677350427350427,
+            351.4368
+          ],
+          [
+            0.2003205128205128,
+            527.1551999999999
+          ],
+          [
+            0.46741452991452986,
+            878.592
+          ],
+          [
+            1.0683760683760684,
+            1669.3247999999999
+          ]
+        ],
+        [
+          [
+            -1.0683760683760684,
+            -872.6016
+          ],
+          [
+            -0.46741452991452986,
+            -459.26400000000007
+          ],
+          [
+            -0.2003205128205128,
+            -275.5584
+          ],
+          [
+            -0.06677350427350427,
+            -183.70560000000003
+          ],
+          [
+            -0.026709401709401708,
+            -73.48224
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.026709401709401708,
+            140.57471999999999
+          ],
+          [
+            0.06677350427350427,
+            351.4368
+          ],
+          [
+            0.2003205128205128,
+            527.1551999999999
+          ],
+          [
+            0.46741452991452986,
+            878.592
+          ],
+          [
+            1.0683760683760684,
+            1669.3247999999999
+          ]
+        ],
+        [
+          [
+            -1.0683760683760684,
+            -872.6016
+          ],
+          [
+            -0.46741452991452986,
+            -459.26400000000007
+          ],
+          [
+            -0.2003205128205128,
+            -275.5584
+          ],
+          [
+            -0.06677350427350427,
+            -183.70560000000003
+          ],
+          [
+            -0.026709401709401708,
+            -73.48224
+          ],
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.026709401709401708,
+            140.57471999999999
+          ],
+          [
+            0.06677350427350427,
+            351.4368
+          ],
+          [
+            0.2003205128205128,
+            527.1551999999999
+          ],
+          [
+            0.46741452991452986,
+            878.592
+          ],
+          [
+            1.0683760683760684,
+            1669.3247999999999
+          ]
+        ]
+      ]
+    }
+  }
+}

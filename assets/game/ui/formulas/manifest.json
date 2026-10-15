@@ -668,6 +668,35 @@
         "sha256": "59889b22f232ec30546c44740ffabe2ca78ae497f5ea65d2876c4b020a3b22bc"
       }
     ],
+    "suspension_damper_curves": [
+      {
+        "file": "suspension_damper_curves-0.png",
+        "tex": "T(v)=T_j+\\frac{T_{j+1}-T_j}{v_{j+1}-v_j}(v-v_j)",
+        "width": 820,
+        "height": 123,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "999c9d5968066ef0b8ee4a315a203562935137832e90ac20a90327e149b0ad82"
+      },
+      {
+        "file": "suspension_damper_curves-1.png",
+        "tex": "\\rho(q)=\\frac{r_d(q)}{r_d(0)},\\qquad v_* =\\rho\\dot q,\\quad F_{d,w}=\\rho T(v_*)",
+        "width": 1363,
+        "height": 116,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "ec66b0d3035f63ab16f6897d4f12b157a8f9032532d57116390b2a2906494264"
+      },
+      {
+        "file": "suspension_damper_curves-2.png",
+        "tex": "P_d=F_{d,w}\\dot q=T(v_*)v_*\\geq0",
+        "width": 840,
+        "height": 76,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "50f6fc2e0299bdf40582db3a433c20237853bbad77ac48f4842f1399a1839c24"
+      }
+    ],
     "suspension_antiroll_rates": [
       {
         "file": "suspension_antiroll_rates-0.png",

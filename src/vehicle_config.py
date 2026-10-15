@@ -3,6 +3,7 @@
 import math
 from dataclasses import dataclass, field
 
+from suspension_damper import damper_curve
 from suspension_installation import installation_curve
 from vehicle_brakes import BrakeConfig
 from vehicle_stability import StabilityConfig
@@ -99,6 +100,7 @@ class VehicleConfig:
     suspension_coil_enabled: bool = False  # 独立轮心的压缩螺旋弹簧；松弛后不承受拉力。
     suspension_spring_preloads: tuple = (0.,) * 4  # N；q=0时的四轮轮心等效预载，不是附加外载荷。
     suspension_installation_curves: tuple | None = None  # 四角(q,弹簧增量,减振器增量)m；PCHIP及端点切线外推。
+    suspension_damper_curves: tuple | None = None  # 四角q=0轮心等效(速度m/s,阻力N)表；覆盖常阻尼。
     suspension_compression_damping: tuple = (5280.,) * 4  # N·s/m；轮心等效压缩阻尼，原生对照为法向/射线速率。
     suspension_extension_damping: tuple = (2760.,) * 4  # N·s/m；耦合分支的轴向伸张阻尼。
     suspension_stiffness: float = 40.0
@@ -132,6 +134,15 @@ class VehicleConfig:
     suspension_force_limit: float = 6000.0  # N；仅原生对照分支的数值力限，SI势能反力不作硬裁剪。
 
     def __post_init__(self):
+        if self.suspension_damper_curves is not None:
+            if not self.unsprung_enabled:
+                raise ValueError("减振器力速表须使用独立轮心共同模型")
+            if not isinstance(self.suspension_damper_curves,tuple) or len(self.suspension_damper_curves)!=4:
+                raise ValueError("须提供四角不可变减振器力速表")
+            for rows in self.suspension_damper_curves:
+                if not isinstance(rows,tuple) or any(not isinstance(row,tuple) for row in rows):
+                    raise ValueError("力速表须为不可变坐标行")
+                damper_curve(rows)
         if self.suspension_installation_curves is not None:
             if not self.suspension_coil_enabled:
                 raise ValueError("部件安装曲线须显式启用独立轮心压缩螺旋弹簧")

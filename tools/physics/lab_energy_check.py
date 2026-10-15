@@ -164,6 +164,19 @@ def balance(source, step, old, new):
         ratios=np.array([axis.at(q)[1]/axis.reference_ratio for axis,q in zip(axes,new["compression"],strict=True)])
         actual_coefficient=actual_coefficient*ratios**2
     actual_damping = actual_coefficient*new["relative_velocity"]
+    if source.config.suspension_damper_curves is not None:
+        rho=np.ones(4)
+        if source.config.suspension_installation_curves is not None:
+            rho=ratios
+        # 独立按保存表逐段重建实际末本构，不调用共同求解器的damping_material。
+        actual_damping=[]
+        for rows,r,u in zip(source.config.suspension_damper_curves,rho,new["relative_velocity"],strict=True):
+            nodes=np.asarray(rows)
+            speed=r*u
+            i=min(max(int(np.searchsorted(nodes[:,0],speed,side="right"))-1,0),len(nodes)-2)
+            slope=(nodes[i+1,1]-nodes[i,1])/(nodes[i+1,0]-nodes[i,0])
+            actual_damping.append(r*(nodes[i,1]+slope*(speed-nodes[i,0])))
+        actual_damping=np.asarray(actual_damping)
     return {"kinetic_change":kinetic,"gravity_change":gravity,"elastic_change":elastic,
             "losses":losses,"engine_work":step.engine_work,"external_work":external,
             "steering_gyro_work":steering_gyro,"contact_steering_work":step.steering_work,

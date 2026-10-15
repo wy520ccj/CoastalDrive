@@ -81,6 +81,7 @@ VEHICLE_FIELDS = {
     "suspension_coil_enabled": ("bool", "独立轮心压缩螺旋弹簧；自由长度之外不承受拉力"),
     "suspension_spring_preloads": ("N", "零轮心行程的等效安装预载；由部件刚度/运动比/安装压缩推导"),
     "suspension_installation_curves": ("m", "四角轮心/弹簧/减振器位移增量；PCHIP及端点切线外推，实测范围另记"),
+    "suspension_damper_curves": ("m/s,N", "四角参考轮心速度—阻力表；启用时覆盖两项常阻尼，实际按当前安装比映射"),
     "suspension_compression_damping": ("N·s/m", "四轮轴向压缩阻尼；关闭共同求解时为原生法向/射线速率系数"),
     "suspension_extension_damping": ("N·s/m", "四轮轴向伸张阻尼；非实车标定"),
     "suspension_stiffness": ("s⁻²", "si_enabled=false的旧归一化刚度；平路k=mass×值"),

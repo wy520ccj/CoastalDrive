@@ -41,6 +41,7 @@ SPECIAL = {
     "rear_lateral_stiffness": ("后轮侧偏刚度", "N/rad", "固定基准下标定量", "后轮采用独立Cy0，同一轮荷幂律。", "改变前后刚度分配会改变操稳平衡；不能仅用停车距离辨识。", "src/vehicle_tires.py · 后轴配置"),
     "suspension_spring_rates": ("四轮弹簧刚度", "N/m", "弹性标定量", "Us=½Σki·qi²；力由势能对行程的梯度给出。", "独立轮心按真实末行程共同求解；参考材料刚度与实际总切线区分，有限几何功差单列。", "src/suspension.py；src/unsprung_contact.py；src/suspension_installation.py；src/suspension_bench.py"),
     "suspension_installation_curves": ("部件安装位移曲线", "m", "安装运动学输入", "xs=x0+s(q)，rs=s′(q)；Fw=ks·max(xs,0)·rs。", "PCHIP位移一阶连续，节点处切线可跳；区间外端点切线外推。导数由位移求出，不是直接测得。", "src/suspension_installation.py；src/unsprung_contact.py；src/suspension_bench.py"),
+    "suspension_damper_curves": ("减振器力速曲线", "m/s,N", "被动部件台架表", "参考轮心T(v)分段线性；实际Fw=ρT(ρ·dq/dt)，ρ=rd(q)/rd(0)。", "表生效时覆盖两项常阻尼；每步损耗h·Fw·dq/dt≥0，不增加储能。域外沿端段斜率外推，非实测覆盖。", "src/suspension_damper.py；src/unsprung_contact.py；src/suspension_bench.py"),
     "suspension_spring_preloads": ("轮心等效安装预载", "N", "安装几何推导量", "F0=rs·ks·x0；Uc=½Σkw·max(q+F0/kw,0)²。", "在q=0处定义，不改变接合区切线刚度；松弛后弹簧力为零，防倾与止挡另计。", "src/unsprung_contact.py；src/suspension_bench.py"),
     "suspension_coil_enabled": ("压缩螺旋弹簧", "bool", "材料机制选择", "开启时采用带安装压缩的非负弹簧势能；关闭时保留原双向弹性。", "须使用独立轮心；开关只选择弹簧本构，不生成另一套车辆状态。", "src/vehicle_config.py；src/unsprung_contact.py"),
     "suspension_compression_damping": ("四轮压缩阻尼", "N·s/m", "减振器标定量", "Fd=c+·dq/dt，压缩速度非负；伸张采用c−。", "独立轮心取末姿态相对速度；部件系数由力速曲线辨识，经运动比换算。", "src/unsprung_motion.py；src/unsprung_contact.py；src/suspension_bench.py"),

@@ -27,6 +27,7 @@ GROUP_LABELS = {"chassis": "底盘与转向", "tires": "轮胎", "suspension": "
                 "powertrain": "动力与传动", "electronics": "制动与控制"}
 BROWSER_LABELS = {"suspension_spring_rates":"轮心等效弹簧率",
                   "suspension_installation_curves":"部件安装位移曲线",
+                  "suspension_damper_curves":"减振器力速曲线",
                   "suspension_spring_preloads":"轮心等效安装预载","suspension_coil_enabled":"压缩螺旋弹簧",
                   "suspension_compression_damping":"轮心等效压缩阻尼","suspension_extension_damping":"轮心等效伸张阻尼",
                   "suspension_stiffness":"质量归一化弹簧率",
@@ -152,6 +153,9 @@ class ParameterHelp:
         if field=="suspension_installation_curves" and field in config:
             current = ("未提供，使用常运动比" if config[field] is None else
                        "四角节点数 "+" / ".join(str(len(rows)) for rows in config[field])+"；完整坐标见工程JSON")
+        if field=="suspension_damper_curves" and field in config:
+            current=("未提供，采用压缩/伸张常阻尼" if config[field] is None else
+                     "四角节点数 "+" / ".join(str(len(rows)) for rows in config[field])+"；完整力速表见工程JSON")
         if "." in field and not field.startswith("manual."):
             parent, child = field.split(".")
             current = str(config[parent][child])
@@ -241,6 +245,10 @@ class ParameterHelp:
             if config.get("suspension_installation_curves") is not None:
                 math_key="installation_damping" if field.endswith("damping") else "suspension_installation_curves"
                 if field=="suspension_spring_rates":self.title.setText("参考轮心材料刚度")
+        if (field in ("suspension_compression_damping","suspension_extension_damping")
+            and self.configuration()[0].get("suspension_damper_curves") is not None):
+            math_key="suspension_damper_curves"
+            self.title.setText("零速参考斜率 · 力速表生效")
         if math_key is not None:
             # 图片保留数学字形比例；长公式只缩小到面板宽度，不拉伸或压扁。
             for entry in self.formula_manifest["formulas"][math_key]:
@@ -272,6 +280,8 @@ class ParameterHelp:
         use=info.use
         if math_key=="suspension_installation_curves" and field=="suspension_spring_preloads":
             use="F0不改变部件ks；变运动比下，载荷通过几何项改变轮心总切线。松弛/防倾/止挡分别计算。"
+        if math_key=="suspension_damper_curves" and field.endswith("damping"):
+            use="当前系数只记录参考零速段斜率；实际受力由整张力速表决定，编辑此系数不改变表。"
         self.notes.setPos(-.45, bottom-.023)
         self.notes.setText(f"{algorithm}\n{use}\n\n数值来源\n{basis}\n\n对应源码\n{info.source}")
         self.root.show()
