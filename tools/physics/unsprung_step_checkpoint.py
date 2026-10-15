@@ -19,6 +19,8 @@ def save_step(source,path):
     finite.roads,finite.on_asphalt = roads,None
     finite.initial,finite.target = numeric_geometry(finite.initial),numeric_geometry(finite.target)
     finite.cache_key,finite.cached = None,None
+    finite.query_cache = (None if all(surface.plane is not None for surface in roads.surfaces)
+                          else [{} for _ in roads.surfaces])
     value = replace(source,geometry=numeric_geometry(source.geometry),finite_contact=finite)
     path.write_bytes(pickle.dumps(value,protocol=5))
 

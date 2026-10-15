@@ -35,6 +35,19 @@ class RadialHit:
     plane: tuple | None
 
 
+def _cached_plane(surface,centers,axes,config,keys,cache):
+    values = [cache.get(key) for key in keys]
+    missing = [i for i,value in enumerate(values) if value is None]
+    if len(missing)==len(keys):
+        # 全缺失保留原批量与矩阵布局；部分缺失只用原行视图，不压紧或重排。
+        computed = surface.query_plane(centers,axes,config)
+    else:
+        computed = [surface.query_plane(centers[i:i+1],axes[i:i+1],config)[0] for i in missing]
+    for index,value in zip(missing,computed,strict=True):
+        cache[keys[index]] = values[index] = value
+    return tuple(values)
+
+
 @dataclass(frozen=True)
 class RadialSurface:
     body: object
@@ -139,19 +152,37 @@ class RadialRoads:
                     raise ValueError(f"独立轮心有符号接触尚不支持该静态形状：{road.getName()}")
         self.surfaces,self.config = tuple(surfaces),config
 
-    def query(self, centers, up, axes):
+    def query(self, centers, up, axes, *, surface_cache=None):
+        """缓存仅供持有本描述/配置的有限接触对象使用，下一子步必须重建。"""
         config = self.config
         centers,up,axes = map(np.asarray,(centers,up,axes))
         count = len(centers)
-        planes = tuple(surface.query_plane(centers,axes,config) if surface.plane is not None else None
-                       for surface in self.surfaces)
+        if surface_cache is None:
+            keys = None
+            planes = tuple(surface.query_plane(centers,axes,config) if surface.plane is not None else None
+                           for surface in self.surfaces)
+        else:
+            layout = centers.dtype.str,centers.shape[1:],centers.strides[1:],axes.dtype.str,axes.shape[1:],axes.strides[1:]
+            keys = tuple((layout,center.tobytes(),axis.tobytes()) for center,axis in zip(centers,axes,strict=True))
+            planes = tuple(_cached_plane(surface,centers,axes,config,keys,cache) if surface.plane is not None else None
+                           for surface,cache in zip(self.surfaces,surface_cache,strict=True))
         hits = []
         touch,distances = np.zeros(count),np.zeros(count)
         points,hit_normals = np.zeros((count,3)),np.zeros((count,3))
         for i,(center,axis) in enumerate(zip(centers,axes)):
             best = None
-            for surface,values in zip(self.surfaces,planes):
-                candidates = surface.query(center,axis,config) if values is None else (values[i],)
+            for index,(surface,values) in enumerate(zip(self.surfaces,planes)):
+                if values is not None:
+                    candidates = (values[i],)
+                elif surface_cache is None:
+                    candidates = surface.query(center,axis,config)
+                else:
+                    cache = surface_cache[index]
+                    candidates = cache.get(keys[i])
+                    if candidates is None:
+                        # 完整成功或空候选才写入；失败仍由原几何算法向上传播。
+                        candidates = tuple(surface.query(center,axis,config))
+                        cache[keys[i]] = candidates
                 for distance,normal,point,plane in candidates:
                     if (distance<=config.wheel_radius+config.suspension_travel and road_support(normal)
                             and (best is None or distance<best[0])):

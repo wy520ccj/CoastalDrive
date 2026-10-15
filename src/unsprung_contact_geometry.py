@@ -1,6 +1,7 @@
 """有限接触末构型与空间离散梯度；只预测求解构型，真实积分仍属于原生世界。"""
 
 from dataclasses import dataclass, replace
+from functools import cached_property
 
 import numpy as np
 from wheel_contact_kernels import finite_radial_gradients, rotated_path
@@ -25,6 +26,14 @@ class FiniteRadialContact:
     wheel_velocity_bias = None
     finite_motion = None
 
+    @cached_property
+    def query_cache(self):
+        """仅本子步静态描述的数值候选；派生属性可由旧可信检查点重建。"""
+        # 纯平面批量查询比逐轮缓存更便宜；存在有限实体时才共同准备逐轮键。
+        if all(surface.plane is not None for surface in self.roads.surfaces):
+            return None
+        return [{} for _ in self.roads.surfaces]
+
     def __init__(self, roads, hardware, centers, rotation, old_axes, deformation, steering, trails, dt, config, on_asphalt,
                  wheel_velocity_bias=None,finite_motion=None):
         self.roads,self.hardware,self.centers,self.rotation = roads,hardware,np.asarray(centers),rotation
@@ -32,8 +41,8 @@ class FiniteRadialContact:
         self.dt,self.config,self.on_asphalt = dt,config,on_asphalt
         self.wheel_velocity_bias = wheel_velocity_bias
         self.finite_motion = finite_motion
-        self.initial = roads.query(centers,rotation[:,2],old_axes)
-        self.target = roads.query(centers,rotation[:,2],hardware.axes)
+        self.initial = roads.query(centers,rotation[:,2],old_axes,surface_cache=self.query_cache)
+        self.target = roads.query(centers,rotation[:,2],hardware.axes,surface_cache=self.query_cache)
         self.cache_key,self.cached = None,None
 
     def evaluate(self, velocity):
@@ -55,9 +64,11 @@ class FiniteRadialContact:
         speed = np.linalg.norm(velocity[3:6])
         average_axes = np.asarray([rotated_path(tuple(axis),tuple(velocity[3:6]/speed),h*speed,1.)[1]
                                   for axis in hardware.axes]) if speed else hardware.axes
-        middle = self.roads.query(self.centers+.5*h*wheel_velocity,middle_rotation@self.rotation[:,2],middle_axes)
-        end = self.roads.query(self.centers+h*wheel_velocity,end_rotation@self.rotation[:,2],end_axes)
-        # 原生只组装已查询构型的梯度/坐标；道路中点和末点仍在上方逐次真实求交。
+        middle = self.roads.query(self.centers+.5*h*wheel_velocity,middle_rotation@self.rotation[:,2],middle_axes,
+                                 surface_cache=self.query_cache)
+        end = self.roads.query(self.centers+h*wheel_velocity,end_rotation@self.rotation[:,2],end_axes,
+                              surface_cache=self.query_cache)
+        # 中点和末点仍逐次请求真实几何；只有相同字节/布局的数值候选可以复用。
         planes,same_plane,touching = np.zeros((4,3)),np.zeros(4),np.zeros(4)
         for i,(first,last) in enumerate(zip(self.target.hits,end.hits,strict=True)):
             touching[i] = last is not None
