@@ -1,0 +1,1490 @@
+{
+  "baseline": "d8679c5b27584ac07a1b1610271e2cba018a0bfb",
+  "commits": {
+    "6306801": "63068012bbdc5b6e95bae646a934b713d66a8653",
+    "2d45293": "2d452937d10929e775f745ad389b244ec4cea8b5",
+    "f2df8d0": "f2df8d08465a3e14effa43b29929a9ce3ce22a0a",
+    "c058cc4": "c058cc4c604850f6cd70b87d7bda12c14a31f7be",
+    "dd1c9bf": "dd1c9bf57f478d5846ff61d582c56663bd0786a1",
+    "0944541": "094454121dc2848b86fc20260a2d285df1155728",
+    "d8679c5": "d8679c5b27584ac07a1b1610271e2cba018a0bfb"
+  },
+  "protocol": {
+    "engineering": "docs/evidence/SIM-UNSPRUNG-01/production/engineering-preview.json",
+    "engineering_sha256": "a2086412a5aaaf662e53ea898d8254ec0152634edd2ed69aa57b76d84d66fb89",
+    "options": {
+      "vehicle_id": "reference-rwd",
+      "maneuver": "braking",
+      "speed_kph": 100.0,
+      "friction": 1.1,
+      "abs_enabled": true,
+      "esc_enabled": false,
+      "duration": 0.2,
+      "steering_deg": 3.0,
+      "onset": 0.5,
+      "seed": 0,
+      "cg_height": null,
+      "radius_m": 60.0,
+      "right_friction": 0.3,
+      "tire_reference_load": null,
+      "bump_height_m": 0.01,
+      "bump_length_m": 0.9,
+      "bump_distance_m": 6.0
+    },
+    "config": {
+      "mass": 1200.0,
+      "torque_curve": [
+        [
+          900,
+          110
+        ],
+        [
+          1800,
+          165
+        ],
+        [
+          3200,
+          200
+        ],
+        [
+          4500,
+          190
+        ],
+        [
+          6000,
+          150
+        ],
+        [
+          6500,
+          0
+        ]
+      ],
+      "gear_ratios": [
+        3.25,
+        2.05,
+        1.45,
+        1.1,
+        0.88
+      ],
+      "final_drive": 3.7,
+      "drivetrain_efficiency": 0.88,
+      "idle_rpm": 900.0,
+      "shift_time": 0.28,
+      "torque_response": 0.12,
+      "engine_braking": 24.0,
+      "finite_drivetrain": true,
+      "native_tire_forces": false,
+      "front_drive_share": 0.0,
+      "differential_damping": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "differential_capacity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "axle_torque_bias_ratios": [
+        1.0,
+        1.0
+      ],
+      "engine_inertia": 0.2,
+      "engine_axis": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "input_shaft_enabled": true,
+      "input_shaft_inertia": 0.04,
+      "input_shaft_axis": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "synchronizer_capacity": 80.0,
+      "downstream_inertia_enabled": true,
+      "downstream_inertias": [
+        0.03,
+        0.015,
+        0.02
+      ],
+      "downstream_axes": [
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "engine_idle_response": 0.15,
+      "engine_idle_torque_limit": 65.0,
+      "engine_redline_rpm": 6500.0,
+      "clutch_capacity": 300.0,
+      "clutch_release_time": 0.08,
+      "clutch_engage_time": 0.16,
+      "clutch_launch_response": 0.3,
+      "max_speed": 44.44444444444444,
+      "reverse_speed": 6.111111111111111,
+      "reverse_force": 2200.0,
+      "reverse_gear_ratio": 3.0,
+      "game_speed_limits": false,
+      "brake_torque": 3643.2,
+      "front_brake_share": 0.6,
+      "braking": {
+        "response_time": 0.025,
+        "abs_enabled": true,
+        "target_slip": 0.12,
+        "slip_hysteresis": 0.015,
+        "minimum_speed": 1.5,
+        "release_rate": 25.0,
+        "apply_rate": 5.0,
+        "slip_rate_gain": 30.0
+      },
+      "traction": {
+        "tcs_enabled": true,
+        "target_slip": 0.12,
+        "slip_hysteresis": 0.015,
+        "slip_speed": 1.0,
+        "prediction_time": 0.12,
+        "release_rate": 12.0,
+        "apply_rate": 1.5,
+        "slip_rate_gain": 12.0,
+        "brake_gain": 0.2,
+        "maximum_brake": 0.25
+      },
+      "stability": {
+        "esc_enabled": false,
+        "minimum_speed": 1.5,
+        "reference_response": 0.15,
+        "yaw_gain": 6.0,
+        "sideslip_gain": 6.0,
+        "yaw_threshold": 0.1,
+        "sideslip_threshold": 0.06,
+        "moment_threshold": 150.0,
+        "engine_cut_gain": 0.4,
+        "continuous_reference": true
+      },
+      "steering_degrees": 26.0,
+      "steering_rate": 50.0,
+      "steering_response": 7.0,
+      "steering_return": 10.0,
+      "wheel_radius": 0.33,
+      "wheel_width": 0.205,
+      "wheel_shoulder_radius": 0.01,
+      "wheel_crown_height": 0.003,
+      "wheel_inertia": 1.8,
+      "tire_reference_load": 2943.0,
+      "longitudinal_stiffness": 60000.0,
+      "lateral_stiffness": 50000.0,
+      "rear_lateral_stiffness": 50000.0,
+      "tire_peak_load_exponent": 0.9,
+      "longitudinal_load_exponent": 0.9,
+      "lateral_load_exponent": 0.85,
+      "tire_compliance": true,
+      "wheel_rotor_transport": true,
+      "tire_contact_stiffness": 150000.0,
+      "tire_contact_damping": 1000.0,
+      "tire_aligning_enabled": true,
+      "tire_contact_half_length": 0.08,
+      "tire_shape": 1.9,
+      "tire_curvature": 0.97,
+      "slip_speed": 1.0,
+      "static_contact_speed": 0.25,
+      "tire_substeps": 2,
+      "suspension_si_enabled": true,
+      "suspension_coupled_enabled": true,
+      "unsprung_enabled": true,
+      "unsprung_masses": [
+        40.0,
+        40.0,
+        40.0,
+        40.0
+      ],
+      "tire_radial_stiffness": [
+        200000.0,
+        200000.0,
+        200000.0,
+        200000.0
+      ],
+      "tire_radial_damping": [
+        500.0,
+        500.0,
+        500.0,
+        500.0
+      ],
+      "suspension_antiroll_rates": [
+        6000.0,
+        4000.0
+      ],
+      "suspension_stop_rates": [
+        480000.0,
+        480000.0,
+        480000.0,
+        480000.0
+      ],
+      "suspension_spring_rates": [
+        48000.0,
+        48000.0,
+        48000.0,
+        48000.0
+      ],
+      "suspension_coil_enabled": false,
+      "suspension_spring_preloads": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "suspension_installation_curves": null,
+      "suspension_damper_curves": null,
+      "suspension_compression_damping": [
+        5280.0,
+        5280.0,
+        5280.0,
+        5280.0
+      ],
+      "suspension_extension_damping": [
+        2760.0,
+        2760.0,
+        2760.0,
+        2760.0
+      ],
+      "suspension_stiffness": 40.0,
+      "suspension_compression": 4.4,
+      "suspension_relaxation": 2.3,
+      "air_density": 1.225,
+      "drag_coefficient": 0.32,
+      "frontal_area": 2.142857142857143,
+      "rolling_coefficient": 0.013591573224600747,
+      "grass_rolling_coefficient": 0.0764525993883792,
+      "wheel_rolling_resistance": true,
+      "rolling_transition_speed": 1.0,
+      "road_friction": 1.1,
+      "grass_friction": 0.45,
+      "wheelbase": 2.2,
+      "track_width": 1.68,
+      "axle_track_widths": null,
+      "collision_half_width": 0.994,
+      "collision_half_length": 2.128,
+      "collision_half_height": 0.671692818403244,
+      "centered_collision_support": true,
+      "body_center_height": 0.7716928255558014,
+      "wheel_connection_height": 0.67,
+      "center_of_mass_height": 0.42,
+      "front_weight_share": 0.5,
+      "body_inertia": [
+        1919.56,
+        511.56,
+        2290.0
+      ],
+      "angular_damping": 0.0,
+      "suspension_travel": 0.2,
+      "suspension_force_limit": 6000.0
+    },
+    "ticks": 24,
+    "physics_hz": 120,
+    "mechanical_substeps": 2,
+    "same_protocol_not_same_physics_across_revisions": true,
+    "initialization_included_in_step_timing": false,
+    "gpu_ui_in_step_timing": false
+  },
+  "cases": [
+    {
+      "case": "6306801-normal-clean",
+      "runtime": {
+        "panda": "1.10.16",
+        "bullet": 284,
+        "scalar_bits": 32,
+        "module": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Lib\\site-packages\\panda3d\\core.cp314-win_amd64.pyd"
+      },
+      "initialization": {
+        "wall_seconds": 0.3183206000012433,
+        "cpu_seconds": 0.296875,
+        "ticks": 177
+      },
+      "measured": {
+        "wall_seconds": 0.05802060000132769,
+        "cpu_seconds": 0.0625,
+        "physics_snapshot_seconds": 0.05734580000353162,
+        "ticks": 24,
+        "step_seconds": [
+          0.0025251000006392132,
+          0.002316299998710747,
+          0.002293299998200382,
+          0.0022988000000623288,
+          0.0022212000003491994,
+          0.0024288000004162313,
+          0.0035700000007636845,
+          0.00304850000065926,
+          0.0028550999995786697,
+          0.0026412000006530434,
+          0.002475600000252598,
+          0.0024023999994824408,
+          0.0022957999990467215,
+          0.002375199999733013,
+          0.0022396000003936933,
+          0.0023932000003696885,
+          0.002117500000167638,
+          0.002251599998999154,
+          0.0021542999984376365,
+          0.0021885999994992744,
+          0.002100899999277317,
+          0.0021827000000484986,
+          0.0024248000008810777,
+          0.002212600000348175
+        ]
+      },
+      "step_p95_seconds": 0.003019490000497171,
+      "step_p99_seconds": 0.0034500550007396666,
+      "simulated_seconds": 0.2
+    },
+    {
+      "case": "6306801-clean",
+      "runtime": {
+        "panda": "1.10.16",
+        "bullet": 284,
+        "scalar_bits": 32,
+        "module": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Lib\\site-packages\\panda3d\\core.cp314-win_amd64.pyd"
+      },
+      "initialization": {
+        "wall_seconds": 6.919346999999107,
+        "cpu_seconds": 6.890625,
+        "ticks": 195
+      },
+      "measured": {
+        "wall_seconds": 1.2023409999983414,
+        "cpu_seconds": 1.203125,
+        "physics_snapshot_seconds": 1.2014965999951528,
+        "ticks": 24,
+        "step_seconds": [
+          0.05038070000045991,
+          0.049358700000084355,
+          0.049016599999959,
+          0.04941950000102224,
+          0.04816179999943415,
+          0.047558300000673626,
+          0.04981539999971574,
+          0.05227369999920484,
+          0.05433149999953457,
+          0.048753499999293126,
+          0.053394000000480446,
+          0.0524199999999837,
+          0.053048199999466306,
+          0.04987480000090727,
+          0.05093990000023041,
+          0.048134299999219365,
+          0.049007599998731166,
+          0.04766059999928984,
+          0.049063200000091456,
+          0.04851490000146441,
+          0.04861940000046161,
+          0.04901629999949364,
+          0.05601869999918563,
+          0.04755010000008042
+        ]
+      },
+      "step_p95_seconds": 0.05419087499967645,
+      "step_p99_seconds": 0.055630643999265886,
+      "simulated_seconds": 0.2
+    },
+    {
+      "case": "2d45293-clean",
+      "runtime": {
+        "panda": "1.10.16",
+        "bullet": 284,
+        "scalar_bits": 32,
+        "module": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Lib\\site-packages\\panda3d\\core.cp314-win_amd64.pyd"
+      },
+      "initialization": {
+        "wall_seconds": 6.88882890000059,
+        "cpu_seconds": 6.859375,
+        "ticks": 195
+      },
+      "measured": {
+        "wall_seconds": 1.2708613999984664,
+        "cpu_seconds": 1.265625,
+        "physics_snapshot_seconds": 1.269440800002485,
+        "ticks": 24,
+        "step_seconds": [
+          0.053401899998789304,
+          0.047043099999427795,
+          0.04817349999939324,
+          0.047863600000709994,
+          0.0525125999993179,
+          0.04814540000006673,
+          0.054851900000358,
+          0.054151700000147684,
+          0.053875499999776366,
+          0.054645300000629504,
+          0.05463390000113577,
+          0.05527790000087407,
+          0.053597800000716234,
+          0.05015629999979865,
+          0.05259189999924274,
+          0.05473320000055537,
+          0.05427910000071279,
+          0.057492699999784236,
+          0.05419609999989916,
+          0.05498760000045877,
+          0.0553593999993609,
+          0.05083139999987907,
+          0.05369840000093973,
+          0.0543508999999176
+        ]
+      },
+      "step_p95_seconds": 0.05534717499958788,
+      "step_p99_seconds": 0.05700204099968687,
+      "simulated_seconds": 0.2
+    },
+    {
+      "case": "f2df8d0-clean",
+      "runtime": {
+        "panda": "1.10.16",
+        "bullet": 284,
+        "scalar_bits": 32,
+        "module": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Lib\\site-packages\\panda3d\\core.cp314-win_amd64.pyd"
+      },
+      "initialization": {
+        "wall_seconds": 24.406452600000193,
+        "cpu_seconds": 24.15625,
+        "ticks": 195
+      },
+      "measured": {
+        "wall_seconds": 4.587863999999172,
+        "cpu_seconds": 4.578125,
+        "physics_snapshot_seconds": 4.586509900003875,
+        "ticks": 24,
+        "step_seconds": [
+          0.18086589999984426,
+          0.1886278999991191,
+          0.18597260000024107,
+          0.1928795000003447,
+          0.19294359999912558,
+          0.19497580000097514,
+          0.19124579999879643,
+          0.19513809999989462,
+          0.1894936000007874,
+          0.2005769000006694,
+          0.1935609000011027,
+          0.18713799999932235,
+          0.1953099000002112,
+          0.1898196000001917,
+          0.19579569999950763,
+          0.1999035000008007,
+          0.1950383999992482,
+          0.18777090000003227,
+          0.18507859999954235,
+          0.1953397999986919,
+          0.1874314000015147,
+          0.18858950000139885,
+          0.18331080000098154,
+          0.19104719999995723
+        ]
+      },
+      "step_p95_seconds": 0.19928733000060672,
+      "step_p99_seconds": 0.20042201800069961,
+      "simulated_seconds": 0.2
+    },
+    {
+      "case": "c058cc4-32",
+      "runtime": {
+        "panda": "1.10.16",
+        "bullet": 284,
+        "scalar_bits": 32,
+        "module": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Lib\\site-packages\\panda3d\\core.cp314-win_amd64.pyd"
+      },
+      "initialization": {
+        "wall_seconds": 29.043658099999448,
+        "cpu_seconds": 28.75,
+        "ticks": 195
+      },
+      "measured": {
+        "wall_seconds": 5.188293600000179,
+        "cpu_seconds": 5.171875,
+        "physics_snapshot_seconds": 5.186863799997809,
+        "ticks": 24,
+        "step_seconds": [
+          0.21640339999976277,
+          0.21211960000073304,
+          0.20716940000056638,
+          0.21798629999830155,
+          0.2205324999995355,
+          0.21991759999946225,
+          0.21440739999889047,
+          0.21524890000000596,
+          0.20725019999918004,
+          0.2085960000003979,
+          0.21721849999994447,
+          0.2106843999990815,
+          0.20901640000010957,
+          0.21132220000072266,
+          0.2190707999998267,
+          0.21538950000103796,
+          0.2193210999994335,
+          0.22210000000086438,
+          0.22150909999982105,
+          0.21605350000027101,
+          0.22065519999887329,
+          0.21893260000069859,
+          0.22465100000044913,
+          0.22272720000000845
+        ]
+      },
+      "step_p95_seconds": 0.22263312000013685,
+      "step_p99_seconds": 0.22420852600034777,
+      "simulated_seconds": 0.2
+    },
+    {
+      "case": "c058cc4-64",
+      "runtime": {
+        "panda": "1.10.16",
+        "bullet": 285,
+        "scalar_bits": 64,
+        "module": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\build\\sim-double-runtime\\panda-source\\built-double\\panda3d\\core.cp314-win_amd64.pyd"
+      },
+      "initialization": {
+        "wall_seconds": 26.60231980000026,
+        "cpu_seconds": 26.265625,
+        "ticks": 195
+      },
+      "measured": {
+        "wall_seconds": 5.071198900001036,
+        "cpu_seconds": 5.0,
+        "physics_snapshot_seconds": 5.0698213999949076,
+        "ticks": 24,
+        "step_seconds": [
+          0.2115938000006281,
+          0.21870380000109435,
+          0.21535969999968074,
+          0.2161156000001938,
+          0.2137748000004649,
+          0.21496549999937997,
+          0.21414959999856364,
+          0.2270064000003913,
+          0.20975910000015574,
+          0.20192500000121072,
+          0.20759340000040538,
+          0.19904649999989488,
+          0.20577140000023064,
+          0.20717770000010205,
+          0.214078500001051,
+          0.21031869999933406,
+          0.2081672999993316,
+          0.21116410000104224,
+          0.20548389999930805,
+          0.21864189999905648,
+          0.20559470000080182,
+          0.222517299998799,
+          0.20827049999934388,
+          0.20400840000002063
+        ]
+      },
+      "step_p95_seconds": 0.2219452749991433,
+      "step_p99_seconds": 0.22597390700002506,
+      "simulated_seconds": 0.2
+    },
+    {
+      "case": "dd1c9bf-32",
+      "runtime": {
+        "panda": "1.10.16",
+        "bullet": 284,
+        "scalar_bits": 32,
+        "module": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Lib\\site-packages\\panda3d\\core.cp314-win_amd64.pyd"
+      },
+      "initialization": {
+        "wall_seconds": 28.134314999999333,
+        "cpu_seconds": 27.90625,
+        "ticks": 195
+      },
+      "measured": {
+        "wall_seconds": 5.326931300000069,
+        "cpu_seconds": 5.3125,
+        "physics_snapshot_seconds": 5.325522800007093,
+        "ticks": 24,
+        "step_seconds": [
+          0.22071599999981117,
+          0.2243650999989768,
+          0.21068949999971665,
+          0.22160409999924013,
+          0.21390559999963443,
+          0.21472819999871717,
+          0.21581780000087747,
+          0.21483790000092995,
+          0.21226770000066608,
+          0.22181859999909648,
+          0.21184549999998126,
+          0.21486319999894476,
+          0.23622880000039004,
+          0.25019480000082694,
+          0.23157950000131677,
+          0.21419129999958386,
+          0.21819909999976517,
+          0.2289586999995663,
+          0.2330480999989959,
+          0.23358970000117552,
+          0.22669280000081926,
+          0.22255240000049525,
+          0.21737920000123268,
+          0.21684479999930772
+        ]
+      },
+      "step_p95_seconds": 0.23583293500050787,
+      "step_p99_seconds": 0.24698262000072646,
+      "simulated_seconds": 0.2
+    },
+    {
+      "case": "dd1c9bf-64",
+      "runtime": {
+        "panda": "1.10.16",
+        "bullet": 285,
+        "scalar_bits": 64,
+        "module": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\build\\sim-double-runtime\\panda-source\\built-double\\panda3d\\core.cp314-win_amd64.pyd"
+      },
+      "initialization": {
+        "wall_seconds": 28.166656699999294,
+        "cpu_seconds": 27.921875,
+        "ticks": 195
+      },
+      "measured": {
+        "wall_seconds": 5.28138620000027,
+        "cpu_seconds": 5.234375,
+        "physics_snapshot_seconds": 5.279996899997059,
+        "ticks": 24,
+        "step_seconds": [
+          0.22387950000120327,
+          0.21377340000071854,
+          0.216715499998827,
+          0.2142119999989518,
+          0.2123647999997047,
+          0.22310109999853012,
+          0.21915330000047106,
+          0.22937819999970088,
+          0.2142803000006097,
+          0.2277484000005643,
+          0.21762909999961266,
+          0.21514190000016242,
+          0.21344270000008692,
+          0.2198160000007192,
+          0.22220910000032745,
+          0.21584970000003523,
+          0.21396830000048794,
+          0.21945229999982985,
+          0.2283647000003839,
+          0.23046350000004168,
+          0.2262183000002551,
+          0.22243090000119992,
+          0.23006590000113647,
+          0.21171729999878153
+        ]
+      },
+      "step_p95_seconds": 0.22996274500092112,
+      "step_p99_seconds": 0.23037205200029348,
+      "simulated_seconds": 0.2
+    },
+    {
+      "case": "current-32",
+      "runtime": {
+        "panda": "1.10.16",
+        "bullet": 284,
+        "scalar_bits": 32,
+        "module": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Lib\\site-packages\\panda3d\\core.cp314-win_amd64.pyd"
+      },
+      "initialization": {
+        "wall_seconds": 28.157592800000202,
+        "cpu_seconds": 27.9375,
+        "ticks": 195
+      },
+      "measured": {
+        "wall_seconds": 5.295285000000149,
+        "cpu_seconds": 5.203125,
+        "physics_snapshot_seconds": 5.293786899994302,
+        "ticks": 24,
+        "step_seconds": [
+          0.2294927999992069,
+          0.2295563999996375,
+          0.21175490000132413,
+          0.2264993000007962,
+          0.21401119999973162,
+          0.2157281999989209,
+          0.2180592999993678,
+          0.21526929999890854,
+          0.22103119999883347,
+          0.22951199999988603,
+          0.21401949999926728,
+          0.2242004999989149,
+          0.2092914999993809,
+          0.21182470000167086,
+          0.21111039999959758,
+          0.21029020000059973,
+          0.2194404999991093,
+          0.23524080000061076,
+          0.23028159999921627,
+          0.22767099999873608,
+          0.22428910000053293,
+          0.228091899998617,
+          0.21984929999962333,
+          0.2187603999991552
+        ]
+      },
+      "step_p95_seconds": 0.23017281999927947,
+      "step_p99_seconds": 0.23410018400029003,
+      "simulated_seconds": 0.2
+    },
+    {
+      "case": "current-double-clean",
+      "runtime": {
+        "panda": "1.10.16",
+        "bullet": 285,
+        "scalar_bits": 64,
+        "module": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\build\\sim-double-runtime\\panda-source\\built-double\\panda3d\\core.cp314-win_amd64.pyd"
+      },
+      "initialization": {
+        "wall_seconds": 27.614238699999987,
+        "cpu_seconds": 27.40625,
+        "ticks": 195
+      },
+      "measured": {
+        "wall_seconds": 5.244089899999381,
+        "cpu_seconds": 5.15625,
+        "physics_snapshot_seconds": 5.24273030000586,
+        "ticks": 24,
+        "step_seconds": [
+          0.218386599999576,
+          0.2192670000004,
+          0.22034119999989343,
+          0.22783200000048964,
+          0.22679649999918183,
+          0.21417060000021593,
+          0.2151138000008359,
+          0.21817490000103135,
+          0.22167910000098345,
+          0.21143819999997504,
+          0.2153450999994675,
+          0.2169618999996601,
+          0.21147869999913382,
+          0.21107560000018566,
+          0.21103539999967325,
+          0.21566039999925124,
+          0.22488389999853098,
+          0.21188029999939317,
+          0.20954680000068038,
+          0.22254330000032496,
+          0.22636310000052617,
+          0.22386179999921296,
+          0.22232810000059544,
+          0.22791390000020328
+        ]
+      },
+      "step_p95_seconds": 0.22767667500029348,
+      "step_p99_seconds": 0.22789506300026915,
+      "simulated_seconds": 0.2
+    },
+    {
+      "case": "current-instrument-32",
+      "runtime": {
+        "panda": "1.10.16",
+        "bullet": 284,
+        "scalar_bits": 32,
+        "module": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Lib\\site-packages\\panda3d\\core.cp314-win_amd64.pyd"
+      },
+      "initialization": {
+        "wall_seconds": 28.228516299999683,
+        "cpu_seconds": 28.109375,
+        "ticks": 195
+      },
+      "measured": {
+        "wall_seconds": 5.352757200000269,
+        "cpu_seconds": 5.3125,
+        "physics_snapshot_seconds": 5.35133549999955,
+        "ticks": 24,
+        "step_seconds": [
+          0.21808389999932842,
+          0.2221014999995532,
+          0.21171159999903466,
+          0.2148190000007162,
+          0.25737929999922926,
+          0.21795899999960966,
+          0.2174847000005684,
+          0.20701430000008259,
+          0.21779069999865897,
+          0.22300210000139487,
+          0.2212629999994533,
+          0.21817840000039723,
+          0.21814079999967362,
+          0.21855259999938426,
+          0.2211158999998588,
+          0.2089479999995092,
+          0.22980160000042815,
+          0.22268299999996088,
+          0.22483590000047116,
+          0.22889179999947373,
+          0.2291810999995505,
+          0.22098220000043511,
+          0.25952849999885075,
+          0.22329790000003413
+        ]
+      },
+      "step_p95_seconds": 0.253242644999409,
+      "step_p99_seconds": 0.2590341839989378,
+      "simulated_seconds": 0.2
+    }
+  ],
+  "config_differences": {
+    "2d45293-32": {
+      "changed_common": {},
+      "added": {}
+    },
+    "2d45293-clean": {
+      "changed_common": {},
+      "added": {}
+    },
+    "6306801-32": {
+      "changed_common": {},
+      "added": {}
+    },
+    "6306801-clean": {
+      "changed_common": {},
+      "added": {}
+    },
+    "6306801-normal-clean": {
+      "changed_common": {
+        "unsprung_enabled": [
+          true,
+          false
+        ]
+      },
+      "added": {}
+    },
+    "c058cc4-32": {
+      "changed_common": {},
+      "added": {}
+    },
+    "c058cc4-64": {
+      "changed_common": {},
+      "added": {}
+    },
+    "current-32": {
+      "changed_common": {},
+      "added": {
+        "suspension_installation_curves": null,
+        "suspension_coil_enabled": false,
+        "suspension_damper_curves": null,
+        "suspension_spring_preloads": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "current-double": {
+      "changed_common": {},
+      "added": {
+        "suspension_installation_curves": null,
+        "suspension_coil_enabled": false,
+        "suspension_damper_curves": null,
+        "suspension_spring_preloads": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "current-double-clean": {
+      "changed_common": {},
+      "added": {
+        "suspension_installation_curves": null,
+        "suspension_coil_enabled": false,
+        "suspension_damper_curves": null,
+        "suspension_spring_preloads": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "current-instrument-32": {
+      "changed_common": {},
+      "added": {
+        "suspension_installation_curves": null,
+        "suspension_coil_enabled": false,
+        "suspension_damper_curves": null,
+        "suspension_spring_preloads": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "current-normal-32": {
+      "changed_common": {
+        "unsprung_enabled": [
+          true,
+          false
+        ]
+      },
+      "added": {
+        "suspension_installation_curves": null,
+        "suspension_coil_enabled": false,
+        "suspension_damper_curves": null,
+        "suspension_spring_preloads": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "dd1c9bf-32": {
+      "changed_common": {},
+      "added": {}
+    },
+    "dd1c9bf-64": {
+      "changed_common": {},
+      "added": {}
+    },
+    "f2df8d0-32": {
+      "changed_common": {},
+      "added": {}
+    },
+    "f2df8d0-clean": {
+      "changed_common": {},
+      "added": {}
+    }
+  },
+  "instrumentation": {
+    "inclusive_timings": {
+      "radial_query": {
+        "calls": 4488,
+        "inclusive_seconds": 0.9720860000270477
+      },
+      "finite_motion": {
+        "calls": 8928,
+        "inclusive_seconds": 0.16244360007840442
+      },
+      "finite_contact": {
+        "calls": 6768,
+        "inclusive_seconds": 3.395580700118444
+      },
+      "joint": {
+        "calls": 48,
+        "inclusive_seconds": 5.163563000005524
+      }
+    },
+    "joint_iterations": [
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "snapshots_exactly_equal_to_uninstrumented": true,
+    "percentages_overlap_do_not_add": true
+  },
+  "profile": {
+    "ticks": 6,
+    "total_seconds": 2.6178386000000033,
+    "functions": [
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\lab_experiment.py",
+        "line": 164,
+        "function": "step",
+        "primitive_calls": 6,
+        "calls": 6,
+        "self_seconds": 9.67e-05,
+        "cumulative_seconds": 2.6353547
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\simulation.py",
+        "line": 773,
+        "function": "step",
+        "primitive_calls": 6,
+        "calls": 6,
+        "self_seconds": 0.00011980000000000001,
+        "cumulative_seconds": 2.6342996000000003
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\world_step.py",
+        "line": 15,
+        "function": "advance_world",
+        "primitive_calls": 6,
+        "calls": 6,
+        "self_seconds": 0.0005865,
+        "cumulative_seconds": 2.6340692000000003
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_unsprung.py",
+        "line": 155,
+        "function": "solve",
+        "primitive_calls": 12,
+        "calls": 12,
+        "self_seconds": 0.00025350000000000004,
+        "cumulative_seconds": 2.5469693
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\unsprung_joint.py",
+        "line": 64,
+        "function": "solve_unsprung_joint",
+        "primitive_calls": 12,
+        "calls": 12,
+        "self_seconds": 0.013444800000000002,
+        "cumulative_seconds": 2.5466418
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\unsprung_joint.py",
+        "line": 104,
+        "function": "evaluate",
+        "primitive_calls": 1692,
+        "calls": 1692,
+        "self_seconds": 0.17674530000000002,
+        "cumulative_seconds": 2.5238975000000003
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\unsprung_contact_geometry.py",
+        "line": 40,
+        "function": "evaluate",
+        "primitive_calls": 1692,
+        "calls": 1692,
+        "self_seconds": 0.10594680000000001,
+        "cumulative_seconds": 1.7671897
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\_core\\numeric.py",
+        "line": 1563,
+        "function": "cross",
+        "primitive_calls": 47616,
+        "calls": 47616,
+        "self_seconds": 0.458946,
+        "cumulative_seconds": 1.4879708
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\_core\\numeric.py",
+        "line": 1489,
+        "function": "moveaxis",
+        "primitive_calls": 142848,
+        "calls": 142848,
+        "self_seconds": 0.24942460000000002,
+        "cumulative_seconds": 0.9292747
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\unsprung_drivetrain.py",
+        "line": 88,
+        "function": "tire_ports",
+        "primitive_calls": 552,
+        "calls": 552,
+        "self_seconds": 0.0787119,
+        "cumulative_seconds": 0.7007249000000001
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\_core\\numeric.py",
+        "line": 1427,
+        "function": "normalize_axis_tuple",
+        "primitive_calls": 285696,
+        "calls": 285696,
+        "self_seconds": 0.36387210000000003,
+        "cumulative_seconds": 0.5729287000000001
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\radial_geometry.py",
+        "line": 127,
+        "function": "query",
+        "primitive_calls": 1122,
+        "calls": 1122,
+        "self_seconds": 0.06270880000000001,
+        "cumulative_seconds": 0.4825605
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\unsprung_dynamics.py",
+        "line": 17,
+        "function": "native_gyro_impulse",
+        "primitive_calls": 1692,
+        "calls": 1692,
+        "self_seconds": 0.0189939,
+        "cumulative_seconds": 0.11174150000000001
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\_core\\numeric.py",
+        "line": 1476,
+        "function": "<genexpr>",
+        "primitive_calls": 571392,
+        "calls": 571392,
+        "self_seconds": 0.0721003,
+        "cumulative_seconds": 0.1040336
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\unsprung_contact.py",
+        "line": 84,
+        "function": "normal_material",
+        "primitive_calls": 1692,
+        "calls": 1692,
+        "self_seconds": 0.0523536,
+        "cumulative_seconds": 0.0976994
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\radial_geometry.py",
+        "line": 47,
+        "function": "query",
+        "primitive_calls": 8976,
+        "calls": 8976,
+        "self_seconds": 0.07112840000000001,
+        "cumulative_seconds": 0.09513490000000001
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\lib\\_index_tricks_impl.py",
+        "line": 343,
+        "function": "__getitem__",
+        "primitive_calls": 5262,
+        "calls": 5262,
+        "self_seconds": 0.0532865,
+        "cumulative_seconds": 0.0835992
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<built-in method builtins.len>",
+        "primitive_calls": 914244,
+        "calls": 914244,
+        "self_seconds": 0.07402030000000001,
+        "cumulative_seconds": 0.07402030000000001
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\unsprung_motion.py",
+        "line": 33,
+        "function": "evaluate",
+        "primitive_calls": 2232,
+        "calls": 2232,
+        "self_seconds": 0.0180698,
+        "cumulative_seconds": 0.0728218
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle.py",
+        "line": 304,
+        "function": "physics_stages",
+        "primitive_calls": 24,
+        "calls": 24,
+        "self_seconds": 0.0003009,
+        "cumulative_seconds": 0.0667509
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\linalg\\_linalg.py",
+        "line": 374,
+        "function": "solve",
+        "primitive_calls": 3420,
+        "calls": 3420,
+        "self_seconds": 0.0259201,
+        "cumulative_seconds": 0.05756120000000001
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<built-in method builtins.next>",
+        "primitive_calls": 12,
+        "calls": 12,
+        "self_seconds": 2.64e-05,
+        "cumulative_seconds": 0.0508643
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\vehicle_unsprung.py",
+        "line": 101,
+        "function": "read",
+        "primitive_calls": 12,
+        "calls": 12,
+        "self_seconds": 0.0011982000000000002,
+        "cumulative_seconds": 0.0507668
+      },
+      {
+        "file": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Lib\\site-packages\\numpy\\linalg\\_linalg.py",
+        "line": 2598,
+        "function": "norm",
+        "primitive_calls": 14532,
+        "calls": 14532,
+        "self_seconds": 0.024406900000000002,
+        "cumulative_seconds": 0.049558500000000005
+      }
+    ],
+    "overhead_excluded_from_revision_timings": true
+  },
+  "integrity": {
+    "hotspot_sources_same_as_0944541": [
+      "src/vehicle_unsprung.py",
+      "src/unsprung_joint.py",
+      "src/unsprung_contact.py",
+      "src/unsprung_contact_geometry.py",
+      "src/unsprung_motion.py",
+      "src/radial_geometry.py"
+    ],
+    "vendor_unchanged": true,
+    "native_import_audit": [
+      {
+        "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive",
+        "modules": {
+          "physics_packet_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\physics_packet_kernels.cp314-win_amd64.pyd",
+            "sha256": "15a0b544c4f7d5bad628003ee1ebd3b1dc2a6a351fd4830de1feaadc2ac61ae7"
+          },
+          "mechanical_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\mechanical_kernels.cp314-win_amd64.pyd",
+            "sha256": "2c7555836bcc7a925f05835d391d4c530e628561d3896bc49d2d20e1dd32edfa"
+          },
+          "wheel_contact_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\wheel_contact_kernels.cp314-win_amd64.pyd",
+            "sha256": "f7a563885c22afe315799186269be34e000c745fbe18eb9654d9861a367bf5d6"
+          },
+          "convex_cast_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\convex_cast_kernels.cp314-win_amd64.pyd",
+            "sha256": "8e640cd429cd51ba93619cc8302dce19634f292eba34e87496707fd2de4170da"
+          },
+          "radial_contact_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src\\radial_contact_kernels.cp314-win_amd64.pyd",
+            "sha256": "9a2d6155ec2df5436eb09712bdc3628da501b2cda7455a9814be5386b1550ba9"
+          }
+        },
+        "matching_recorded_results": [
+          "current-32",
+          "current-double",
+          "current-double-clean",
+          "current-instrument-32",
+          "current-normal-32"
+        ]
+      },
+      {
+        "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\2d45293",
+        "modules": {
+          "physics_packet_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\2d45293\\src\\physics_packet_kernels.cp314-win_amd64.pyd",
+            "sha256": "cd1a6b321554c705dd94783bcc7288033fa091119774d66c5105f1a4d7977067"
+          },
+          "mechanical_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\2d45293\\src\\mechanical_kernels.cp314-win_amd64.pyd",
+            "sha256": "e8358f1a90a0e675cfecbc16b0591f23990864b3eecb0b72f00acd7e62193780"
+          },
+          "wheel_contact_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\2d45293\\src\\wheel_contact_kernels.cp314-win_amd64.pyd",
+            "sha256": "4d953ae9d0a6737490d153ed46c248c7c31a82ec90ecf389be6dfc6f63ab08ef"
+          },
+          "convex_cast_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\2d45293\\src\\convex_cast_kernels.cp314-win_amd64.pyd",
+            "sha256": "0a095a90a8600409113fac2c02ebe74efb657cd2e996594e15801a1e88d1ee74"
+          }
+        },
+        "matching_recorded_results": [
+          "2d45293-32",
+          "2d45293-clean"
+        ]
+      },
+      {
+        "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\6306801",
+        "modules": {
+          "physics_packet_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\6306801\\src\\physics_packet_kernels.cp314-win_amd64.pyd",
+            "sha256": "35a7e4a4e5bdfc58bac1798f7afdfc4c9636a79e3ed69bd8e9acfcc691e945e7"
+          },
+          "mechanical_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\6306801\\src\\mechanical_kernels.cp314-win_amd64.pyd",
+            "sha256": "e5d21eb4e0d914c875efed8e4baf2da7e2d6310fa80cb20914b64e792b2cac3b"
+          },
+          "wheel_contact_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\6306801\\src\\wheel_contact_kernels.cp314-win_amd64.pyd",
+            "sha256": "ef81016c63398203150e14c00f62e05f8e7793c4dadcec1b4ab8f6b21e118e79"
+          },
+          "convex_cast_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\6306801\\src\\convex_cast_kernels.cp314-win_amd64.pyd",
+            "sha256": "52e7c29b329ee2b3527a39076cb2592e1ee7f4200e8939e397c5935cbcd209bc"
+          }
+        },
+        "matching_recorded_results": [
+          "6306801-32",
+          "6306801-clean",
+          "6306801-normal-clean"
+        ]
+      },
+      {
+        "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\a71b313",
+        "modules": {
+          "physics_packet_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\a71b313\\src\\physics_packet_kernels.cp314-win_amd64.pyd",
+            "sha256": "52cda20e1b60b6ba0d702cd627fcb9fc39c8ef9954e061222fa73a0b5b5a9c1b"
+          },
+          "mechanical_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\a71b313\\src\\mechanical_kernels.cp314-win_amd64.pyd",
+            "sha256": "1195f7702792e1a95e48369b8d482eb89fb5fcc7770e7e70812ccbbb569c9418"
+          },
+          "wheel_contact_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\a71b313\\src\\wheel_contact_kernels.cp314-win_amd64.pyd",
+            "sha256": "2a08113a659ab963a019933b3306380f9808b87e02d397a7d3d45dc93b64997d"
+          },
+          "convex_cast_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\a71b313\\src\\convex_cast_kernels.cp314-win_amd64.pyd",
+            "sha256": "98a89b1ca4cb1619d4808f1136a6b98bc49b5e2da4aaac44efbcd709ab692598"
+          },
+          "radial_contact_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\a71b313\\src\\radial_contact_kernels.cp314-win_amd64.pyd",
+            "sha256": "4eeb80cff8a34009810d0edd2dfe86bc009649ab410e331ddc4f7bd0c99c4735"
+          }
+        },
+        "matching_recorded_results": []
+      },
+      {
+        "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\c058cc4",
+        "modules": {
+          "physics_packet_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\c058cc4\\src\\physics_packet_kernels.cp314-win_amd64.pyd",
+            "sha256": "20358ee21440dfdc46cf9a44b275fcc10476752ae3281715e016697ad20dbc4a"
+          },
+          "mechanical_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\c058cc4\\src\\mechanical_kernels.cp314-win_amd64.pyd",
+            "sha256": "09b2303667a20ef5e5d57417806fd202243ccab7f0cae8e49237921964d3a076"
+          },
+          "wheel_contact_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\c058cc4\\src\\wheel_contact_kernels.cp314-win_amd64.pyd",
+            "sha256": "2b47d6a0b88b16c37caf51e449a27bf8de7f6bdbbc2261170116015275fdb8ba"
+          },
+          "convex_cast_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\c058cc4\\src\\convex_cast_kernels.cp314-win_amd64.pyd",
+            "sha256": "016d209c8561d42fe6fe418f0cb11e65411b0f02701190b1e942b906d3088bec"
+          },
+          "radial_contact_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\c058cc4\\src\\radial_contact_kernels.cp314-win_amd64.pyd",
+            "sha256": "ef93288d76e24a20e673baf1cf3c1469682c7f3f9259e3bc64ac943d620a90dc"
+          }
+        },
+        "matching_recorded_results": [
+          "c058cc4-32",
+          "c058cc4-64"
+        ]
+      },
+      {
+        "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\dd1c9bf",
+        "modules": {
+          "physics_packet_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\dd1c9bf\\src\\physics_packet_kernels.cp314-win_amd64.pyd",
+            "sha256": "b81813d49ec655c1cad1147a9b45817f75da328dda914c477a49811689e937d2"
+          },
+          "mechanical_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\dd1c9bf\\src\\mechanical_kernels.cp314-win_amd64.pyd",
+            "sha256": "d4823be4cd837961c3a3666b1cd824b1977e12c20c44c939ba1248a7eb0a7e4d"
+          },
+          "wheel_contact_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\dd1c9bf\\src\\wheel_contact_kernels.cp314-win_amd64.pyd",
+            "sha256": "594c8b5933f4856af8bd53106f1c09773fc45996f53777222592a1e3a4bdcbb2"
+          },
+          "convex_cast_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\dd1c9bf\\src\\convex_cast_kernels.cp314-win_amd64.pyd",
+            "sha256": "99b547dcd1fc04a650ee8393bc8ac58a71f8cec726e12838ca855c5406d94f4f"
+          },
+          "radial_contact_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\dd1c9bf\\src\\radial_contact_kernels.cp314-win_amd64.pyd",
+            "sha256": "1bb68f6f982e29412425ae48946ec94d1f9ec32fa3ee753bebe56055e9942a45"
+          }
+        },
+        "matching_recorded_results": [
+          "dd1c9bf-32",
+          "dd1c9bf-64"
+        ]
+      },
+      {
+        "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\f2df8d0",
+        "modules": {
+          "physics_packet_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\f2df8d0\\src\\physics_packet_kernels.cp314-win_amd64.pyd",
+            "sha256": "71272b1c3dd19090755b2a73ece14568a1cecc0194fd160e6a48ead0bcea6a5a"
+          },
+          "mechanical_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\f2df8d0\\src\\mechanical_kernels.cp314-win_amd64.pyd",
+            "sha256": "823104ded49caa9a5b93f1872680a52ceb199ea7ba950f09f774f332239863ed"
+          },
+          "wheel_contact_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\f2df8d0\\src\\wheel_contact_kernels.cp314-win_amd64.pyd",
+            "sha256": "8815647cdc2736fb9901987e4eea12e92020da6e2d5ca56d2175b7e5d0e5382e"
+          },
+          "convex_cast_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\f2df8d0\\src\\convex_cast_kernels.cp314-win_amd64.pyd",
+            "sha256": "622969f4648c1a8613464e4fd01edd473a271f14b2455279adcec7e8e2b6e1d8"
+          },
+          "radial_contact_kernels": {
+            "path": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\lab-perf-01\\f2df8d0\\src\\radial_contact_kernels.cp314-win_amd64.pyd",
+            "sha256": "4dfa3e475d859fd51da1717d8f8353d5aedbfde16b303914d057a19cfb3773b8"
+          }
+        },
+        "matching_recorded_results": [
+          "f2df8d0-32",
+          "f2df8d0-clean"
+        ]
+      }
+    ]
+  },
+  "environment": {
+    "previous_preview_pids": [
+      25268,
+      12656
+    ],
+    "preview_observed_cpu_seconds_per_two_wall_seconds": 1.82,
+    "preview_closed_local_time": "2026-10-15T15:31:52.5804411+08:00",
+    "key_transitions_retested_after_preview_closed": true,
+    "initial_five_historical_builds_plus_one_unused_a71_build": "all six exited zero"
+  },
+  "limits": [
+    "每项仅24拍，P95/P99只描述这个短样本，不作实时或尾延迟Gate",
+    "首批6306801/2d45293/f2df8d0及current-double有先前测试预览竞争，原数据保留；关键点使用clean补测",
+    "c058cc4的32位首测处在关闭预览的时间附近，仅作量级交叉参考；当前32/64和dd1c9bf配对无该预览",
+    "不同物理版本不宣称相同结果；同版本开关对照只是定位机制成本，未修改产品默认",
+    "未逐个细分f2df8d0之后约10-15%的剩余增量；未实施优化或重跑功能T1/T2/T3"
+  ],
+  "raw_evidence_sha256": "cfaa891bf15737483b55c2d8bcc434eb9f9b87de06e4c2c549f48c0c00cc9a5e"
+}
