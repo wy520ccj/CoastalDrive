@@ -4,11 +4,10 @@ import math
 from dataclasses import dataclass, replace
 
 import numpy as np
-from mechanical_kernels import cross
+from mechanical_kernels import cross, unsprung_contact_residual, unsprung_port_residual
 from wheel_contact_kernels import unsprung_body_torque
 
-from differential import torque_bias_capacities
-from tire_compliance import contact_force, energy_terms
+from tire_compliance import energy_terms
 from tire_properties import tire_grip, tire_stiffness
 from unsprung_contact import normal_material, suspension_potential
 from unsprung_dynamics import native_gyro_impulse
@@ -100,6 +99,11 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
     external_torque = np.zeros(3) if body_external_torque is None else np.asarray(body_external_torque)
     response = np.diag(ports@np.linalg.solve(inertia,ports.T))
     rolling = np.maximum(np.abs(gx@start+contacts.radii*start[12:]),np.abs(contacts.radii*start[12:]))>=config.static_contact_speed
+    rolling_flags = rolling.astype(float)
+    port_settings = (dt,ratio,synchronizing,config.front_drive_share,config.final_drive,
+                     config.drivetrain_efficiency,clutch_capacity,config.synchronizer_capacity)
+    port_tuning = tuple(np.asarray(values,dtype=float) for values in
+                        (config.differential_capacity,config.axle_torque_bias_ratios,config.differential_damping))
     state_scale = np.r_[np.ones(10),np.full(6,100.),np.full(8,1000.),np.full(10,100.)]
     row_scale = np.r_[np.maximum(np.diag(inertia)*state_scale[:16],1.),np.full(8,1000.),np.full(10,100.)]
 
@@ -173,13 +177,6 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         gx,gy,gn = active.longitudinal,active.lateral,active.normal
         loss = torques[2]
         output_torque = ratio*(torques[1]-loss)
-        axle = (config.front_drive_share*output_torque-config.final_drive*(
-                    config.front_drive_share*inertial_torques[0]+inertial_torques[1]),
-                (1-config.front_drive_share)*output_torque-config.final_drive*(
-                    (1-config.front_drive_share)*inertial_torques[0]+inertial_torques[2]))
-        limits = np.empty(3)
-        limits[:2] = torque_bias_capacities(config.differential_capacity[:2],config.axle_torque_bias_ratios,axle)
-        limits[2] = config.differential_capacity[2]
         reaction = engine_reaction-gs.T@normal.suspension_force+gn.T@normal.normal_force+gx.T@forces[:,0]+gy.T@forces[:,1]-ports.T@torques
         reaction[12:] -= rolling_torque
         momentum_error = free_momentum-dt*(reaction-rotor_bias)
@@ -197,32 +194,12 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
             gyro = gyro_cache[gyro_key]
             momentum_error[3:6] -= gyro
         # 残差维数由共同方程固定；直接装配，避免每次差分重新解释通用拼接规则。
-        residual,details = np.empty(34),[]
+        residual = np.empty(34)
         residual[:16] = momentum_error
-        for i in range(4):
-            grip,cx,cy = parameters[i]
-            vx = contact_speeds[i,0]+active.radii[i]*end[12+i]
-            result = contact_force(tuple(forces[i]),tuple(local_previous[i]),tuple(-contact_speeds[i,:2]),
-                max(abs(vx),config.slip_speed),bool(rolling[i]),grip,cx,cy,dt,
-                config.tire_contact_stiffness,config.tire_contact_damping,config.tire_shape,config.tire_curvature)
-            residual[16+2*i:18+2*i] = forces[i]-result[0]
-            details.append(result)
-        error_c = torques[0]-np.clip(torques[0]+speeds[0]/(dt*response[0]),-clutch_capacity,clutch_capacity)
-        if ratio and not synchronizing:
-            error_g = speeds[1]/(dt*response[1])
-            slope = 1-config.drivetrain_efficiency if torques[1]*speeds[2]>=0. else 1-1/config.drivetrain_efficiency
-            error_l = loss-slope*torques[1]
-        elif ratio:
-            capacity = config.synchronizer_capacity
-            error_g = torques[1]-np.clip(torques[1]+speeds[1]/(dt*response[1]),-capacity,capacity)
-            error_l = loss
-        else:
-            error_g,error_l = torques[1],loss
-        brake_error = torques[3:7]-np.clip(torques[3:7]+speeds[3:7]/(dt*response[3:7]),-brakes,brakes)
-        differential_error = torques[7:]-np.clip(np.asarray(config.differential_damping)*speeds[7:],-limits,limits)
-        residual[24:27] = error_c,error_g,error_l
-        residual[27:31] = brake_error
-        residual[31:] = differential_error
+        details = unsprung_contact_residual((end,forces,local_previous,contact_speeds,active.radii,rolling_flags,parameters),
+            residual,dt,config.tire_contact_stiffness,config.tire_contact_damping,config.tire_shape,config.tire_curvature,
+            config.slip_speed,math.hypot)
+        unsprung_port_residual((torques,speeds,response,inertial_torques,brakes,*port_tuning),residual,port_settings,output_torque)
         return residual,(q,delta,normal,down,contact_speeds,rolling_torque,details,parameters,speeds,output_torque,
                          active,local_previous,coefficients,scale,kinematics,gyro,suspension_velocity)
 
