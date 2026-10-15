@@ -1,0 +1,60 @@
+FF                                                                       [100%]
+================================== FAILURES ===================================
+_ test_preload_initializes_geometry_and_workers_without_advancing_world[DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>
+
+    @pytest.mark.parametrize('mode',list(DrivingMode))
+    def test_preload_initializes_geometry_and_workers_without_advancing_world(mode):
+        config = mode.configured_vehicle(base_config=GR86_DESIGN)
+        serial = Simulation(seed=17,track='coastal',traffic_count=2,config=config,input_config=mode.input_config)
+        parallel = Simulation(seed=17,track='coastal',traffic_count=2,config=config,input_config=mode.input_config,physics_workers=2)
+        try:
+            for seed in (17,23):
+                if seed==23:
+                    serial.reset(seed)
+                    parallel.reset(seed)
+                before = parallel.snapshot()
+                count = parallel._physics_workers.remote_count
+                parallel.prepare_physics()
+                assert parallel.snapshot() == before
+                assert parallel._physics_workers.remote_count == count
+                assert parallel._physics_workers.identifier == count
+>               assert len(parallel._physics_workers.processes) == 2
+E               assert 0 == 2
+E                +  where 0 = len([])
+E                +    where [] = <physics_workers.PhysicsWorkers object at 0x0000017EFFAE42F0>.processes
+E                +      where <physics_workers.PhysicsWorkers object at 0x0000017EFFAE42F0> = <simulation.Simulation object at 0x0000017EFF1C3A10>._physics_workers
+
+tests\test_physics_workers.py:37: AssertionError
+_ test_parallel_complete_tire_step_matches_serial_turn_brake_and_world_reset[DrivingMode.GAME] _
+
+mode = <DrivingMode.GAME: 'game'>
+
+    @pytest.mark.parametrize('mode',list(DrivingMode))
+    def test_parallel_complete_tire_step_matches_serial_turn_brake_and_world_reset(mode):
+        config = mode.configured_vehicle(base_config=GR86_DESIGN)
+        serial = Simulation(seed=17,track='coastal',traffic_count=2,config=config,input_config=mode.input_config)
+        parallel = Simulation(seed=17,track='coastal',traffic_count=2,config=config,input_config=mode.input_config,physics_workers=2)
+        try:
+            for seed in (17,23):
+                if seed==23:
+                    serial.reset(seed)
+                    parallel.reset(seed)
+                    assert parallel._physics_workers.reference is None
+                for tick in range(40):
+                    control = Control(throttle=.3 if tick<24 else 0.,brake=.5 if tick>=24 else 0.,
+                                      steering=.1 if tick>=16 else 0.)
+                    serial.step(control)
+                    parallel.step(control)
+                    assert parallel.snapshot() == serial.snapshot()
+>           assert parallel._physics_workers.remote_count > 0
+E           assert 0 > 0
+E            +  where 0 = <physics_workers.PhysicsWorkers object at 0x0000017EFF1C2CF0>.remote_count
+E            +    where <physics_workers.PhysicsWorkers object at 0x0000017EFF1C2CF0> = <simulation.Simulation object at 0x0000017EFF1C30E0>._physics_workers
+
+tests\test_physics_workers.py:150: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_physics_workers.py::test_preload_initializes_geometry_and_workers_without_advancing_world[DrivingMode.GAME]
+FAILED tests/test_physics_workers.py::test_parallel_complete_tire_step_matches_serial_turn_brake_and_world_reset[DrivingMode.GAME]
+2 failed in 1.20s

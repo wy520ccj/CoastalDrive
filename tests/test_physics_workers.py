@@ -16,6 +16,7 @@ from driving_modes import DrivingMode
 from session import GameMode, Phase, Session
 from simulation import Control, Simulation
 from vehicle_designs import GR86_DESIGN
+from world_step import physical_substeps
 
 
 @pytest.mark.parametrize('mode',list(DrivingMode))
@@ -34,9 +35,15 @@ def test_preload_initializes_geometry_and_workers_without_advancing_world(mode):
             assert parallel.snapshot() == before
             assert parallel._physics_workers.remote_count == count
             assert parallel._physics_workers.identifier == count
-            assert len(parallel._physics_workers.processes) == 2
-            assert parallel._physics_workers.preparation_seconds > 0.
-            assert all(id(config) in values for values in parallel._physics_workers.worker_configurations)
+            if physical_substeps(config) > 1:
+                assert len(parallel._physics_workers.processes) == 2
+                assert parallel._physics_workers.preparation_seconds > 0.
+                assert all(id(config) in values for values in parallel._physics_workers.worker_configurations)
+            else:
+                # 游戏每拍单次机械求解，不创建没有数值任务的工作进程。
+                assert not parallel._physics_workers.processes
+                assert parallel._physics_workers.preparation_seconds == 0.
+                assert not parallel._physics_workers.worker_configurations
             assert not parallel._physics_workers.in_flight
             for _ in range(3):
                 serial.step(Control(throttle=.3,steering=.1))
@@ -147,16 +154,22 @@ def test_parallel_complete_tire_step_matches_serial_turn_brake_and_world_reset(m
                 serial.step(control)
                 parallel.step(control)
                 assert parallel.snapshot() == serial.snapshot()
-        assert parallel._physics_workers.remote_count > 0
-        memory = parallel._physics_workers.reference.name
+        if physical_substeps(config) > 1:
+            assert parallel._physics_workers.remote_count > 0
+            memory = parallel._physics_workers.reference.name
+        else:
+            assert parallel._physics_workers.remote_count == 0
+            assert parallel._physics_workers.reference is None
+            memory = None
     finally:
         serial.close()
         parallel.close()
     assert not parallel._physics_workers.processes
     assert parallel._physics_workers.shapes is None
     assert parallel._physics_workers.memory is None
-    with pytest.raises(FileNotFoundError):
-        SharedMemory(name=memory)
+    if memory is not None:
+        with pytest.raises(FileNotFoundError):
+            SharedMemory(name=memory)
 
 
 def test_parallel_still_commits_real_bullet_collision_and_same_impact_events():

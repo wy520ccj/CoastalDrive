@@ -1,0 +1,60 @@
+{
+  "base": "6ca4cb4",
+  "scope": "legacy-main suspension assembly; not latest simulation-fidelity lab",
+  "modes": [
+    {
+      "mode": "game",
+      "workers": 0,
+      "traffic": 12,
+      "steps_each": 480,
+      "all_four_snapshot_sequences_equal": true,
+      "baseline_mean_ms": 3.6732132291793578,
+      "candidate_mean_ms": 3.6278340625642613,
+      "mean_change_percent": -1.2354079053895517
+    },
+    {
+      "mode": "simulation",
+      "workers": 9,
+      "traffic": 12,
+      "steps_each": 480,
+      "all_four_snapshot_sequences_equal": true,
+      "baseline_mean_ms": 11.811585312485324,
+      "candidate_mean_ms": 11.661133958362294,
+      "mean_change_percent": -1.273760889353237
+    }
+  ],
+  "T0": "24 passed; first Ruff import-order failure corrected",
+  "T1": "264 passed, 2 stale game worker assertions failed; frozen baseline reproduces both; corrected complete worker module 12 passed and three seeds passed",
+  "lifecycle": {
+    "passed": true,
+    "rounds": [
+      {
+        "game_world_closed": true,
+        "lab_world_closed": true,
+        "gui_before_lab": 0,
+        "gui_after_lab": 0
+      },
+      {
+        "game_world_closed": true,
+        "lab_world_closed": true,
+        "gui_before_lab": 0,
+        "gui_after_lab": 0
+      }
+    ],
+    "human_acceptance": "pending"
+  },
+  "T2": "interrupted after user corrected latest lab source; no T2 pass claimed",
+  "source_sha256": {
+    "setup.py": "3a081b10819816481cf5f23dbe6d2e45583f704173e60b1d5258a12dbcaadd8d",
+    "src\\vehicle_suspension.py": "adc1970146adb02c98d1114a6a9832a5c9ca5c6de08b8139392d39131626037f",
+    "src\\wheel_contact_kernels.c": "e4651398f963a96ff28c2b25c1ab6369bdf0875c879e7601440c09fb791a6947",
+    "src\\suspension_prepare.h": "6b1e423952f81998e4da3963f8894cf2ffadd1162c369cc7e571f0cbcfdca034"
+  },
+  "native_sha256": {
+    "convex_cast_kernels.cp314-win_amd64.pyd": "eaf7822d35416e8dc2f76ef9fb0fbaeb622163740a319f8c88e3de7314ded933",
+    "mechanical_kernels.cp314-win_amd64.pyd": "3c2b51ca2836c83257df3a007c7dc9358ad6e0f0f5c73857f17408fbbc360dc2",
+    "physics_packet_kernels.cp314-win_amd64.pyd": "d33317429202ad44dae7b1250fa5964810bf48a896286be89210341c3675660f",
+    "wheel_contact_kernels.cp314-win_amd64.pyd": "7ced648aa014c73706b595c0a8fbaed68e7cee26fa7535559dad8a9cec5f49f1"
+  },
+  "window": "source main, explicit simulation / GR86 / 12 full NPC: valid 70.915Hz, 86.078FPS, 11.046s deficit, 0 dropped time; failed historical diagnostic, not current game or latest lab acceptance"
+}

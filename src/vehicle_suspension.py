@@ -3,13 +3,16 @@
 from dataclasses import dataclass, field, replace
 
 from panda3d.core import BitMask32, Vec3
-from wheel_contact_kernels import cached_surface_entry
+from wheel_contact_kernels import (
+    cached_surface_entry,
+    suspension_prepare_paths,
+    suspension_prepare_system,
+)
 
 from suspension import (
     SuspensionInput,
     SuspensionState,
     advance_suspension,
-    contact_gradient,
     dot,
     elastic_terms,
 )
@@ -19,7 +22,6 @@ from suspension_kinematics import SupportPlane
 from triangle_support import triangle_entry
 from vehicle_state import WheelContactState
 from wheel_envelope import _simplex_coordinates, cylinder_box_entry
-from wheel_geometry import mechanical_axis
 
 
 @dataclass(frozen=True)
@@ -77,14 +79,10 @@ class Suspension:
         pose = chassis.getTransform()
         origin, orientation = pose.getPos(), pose.getQuat()
         direction = orientation.xform(Vec3(0, 0, -1))
-        geometry, gradients, contacts, planes, initial = [], [], [], [], list(self.compression)
-        constraint_compression = list(self.compression)
-        lengths = tuple(w.getSuspensionRestLength() + config.suspension_travel + config.wheel_radius for w in wheels)
         # 路径描述轮心；向上退一个半径，保留原查询的压缩行程覆盖范围。
         hub_arms = tuple(tuple(orientation.xform(Vec3(*hub))) for hub in self.hubs)
-        starts = tuple(tuple(origin[a] + hub[a] - direction[a] * config.wheel_radius for a in range(3))
-                       for hub in hub_arms)
-        axes = tuple(mechanical_axis(orientation.getRight(), orientation.getForward(), -wheel.getSteering()) for wheel in wheels)
+        rests, lengths, axes, rays = suspension_prepare_paths(wheels, config, tuple(origin), tuple(direction),
+                                                             hub_arms, tuple(orientation.getRight()), tuple(orientation.getForward()))
         if static_shapes is None:
             static_shapes = static_support_shapes(world, chassis, BitMask32.bit(0))
         # 世界每子步已读实际变换；仅在同一不可变几何包内复用覆盖盒候选。
@@ -92,45 +90,15 @@ class Suspension:
             self.clear_queries()
             self._support_shapes = static_shapes
         candidates = self._candidate_cache
-        hits = cylinder_suspension_rays(world, chassis,
-            tuple((start, tuple(start[a] + direction[a] * length for a in range(3))) for start, length in zip(starts, lengths)), axes,
+        hits = cylinder_suspension_rays(world, chassis, rays, axes,
             config.wheel_radius, config.wheel_width, config.wheel_shoulder_radius, config.wheel_crown_height,
             envelope=self.envelope,static_shapes=static_shapes,candidate_cache=candidates)
-        for i, (wheel, ray_length, hit) in enumerate(zip(wheels, lengths, hits)):
-            rest = wheel.getSuspensionRestLength()
-            point = hit.point if hit else None
-            normal = hit.normal if hit else None
-            alignment = -dot(normal, tuple(direction)) if hit else None
-            # 当前路面是固定刚体；保留动态物体碰撞，射线法向模型不承诺移动支撑。
-            eligible = hit is not None and hit.node.isStatic() and alignment > 0.
-            gradient = (0.,) * 6
-            if eligible:
-                constraint_compression[i] = rest - (ray_length * hit.fraction - config.wheel_radius)
-                if self.state.force_tick == 0:
-                    # 初始姿态可以带真实预压；候选射线中的离地间隙不是弹簧伸长。
-                    initial[i] = max(0., constraint_compression[i])
-                elif self.state.normal_force[i] > 0.:
-                    initial[i] = constraint_compression[i]
-                arm = tuple(point[a] - origin[a] for a in range(3))
-                gradient = contact_gradient(normal, tuple(direction), arm, minimum_alignment=0.)
-            surface = (WorldSurface(half=(), radius=0., axes=((1.,0.,0.),(0.,1.,0.),(0.,0.,1.)),
-                                   offset=tuple(origin), wheel_radius=config.wheel_radius,
-                                   reach=rest+config.suspension_travel, width=config.wheel_width,
-                                   shoulder=config.wheel_shoulder_radius, wheel_axis=axes[i],
-                                   crown=config.wheel_crown_height, world=world, chassis=chassis,
-                                   envelope=self.envelope,static_shapes=static_shapes) if eligible else None)
-            if eligible:
-                # 初始四轮覆盖盒已经从同一世界完成筛选；各轮末姿态沿用该真实候选集合。
-                surface.candidates.update(candidates)
-            planes.append(SupportPlane(hub_arms[i], tuple(direction),
-                                       tuple(normal), rest - constraint_compression[i], surface,
-                                       arm) if eligible else None)
-            geometry.append((point, normal, alignment, rest))
-            gradients.append(gradient)
-            contacts.append(eligible)
-        self.geometry = tuple(geometry)
-        return SuspensionInput(tuple(initial), tuple(constraint_compression), tuple(gradients),
-                               tuple(contacts), tuple(g[2] for g in geometry), config, tuple(planes), chassis.getAngularDamping())
+        # 真实命中资格与本子步材料初值完整装配；动态碰撞不充当固定悬架支撑。
+        self.geometry, system = suspension_prepare_system(config, self.compression, self.state.force_tick,
+            self.state.normal_force, (tuple(origin), tuple(direction), hub_arms, axes, lengths, rests, hits),
+            (world, chassis, self.envelope, static_shapes, candidates, chassis.getAngularDamping()),
+            (WorldSurface, SupportPlane, SuspensionInput))
+        return system
 
     def advance(self, world, chassis, wheels, on_asphalt, tick, dt,
                 external_velocity, external_angular):
