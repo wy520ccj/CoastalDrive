@@ -24,6 +24,7 @@ from unsprung_drivetrain import tire_ports
 from unsprung_dynamics import cross_matrix
 from unsprung_geometry import read_unsprung_geometry
 from vehicle_designs import REFERENCE_DESIGN
+from vehicle_parameters import load_vehicle_config
 from vehicle_state import VehicleCommand
 from vehicle_unsprung import UnsprungAdvanceInput, read_mechanics
 
@@ -195,11 +196,14 @@ def write_rows(path,rows):
         writer.writeheader();writer.writerows(rows)
 
 
-def check(output, maneuver, duration, substeps):
+def check(output, maneuver, duration, substeps, engineering=None):
     output.mkdir(parents=True,exist_ok=False)
     executed = Path(__file__).read_bytes()
     (output/"executed-tool.py").write_bytes(executed)
     config = replace(REFERENCE_DESIGN,unsprung_enabled=True,tire_substeps=substeps)
+    if engineering is not None:
+        (output/"engineering-input.json").write_bytes(engineering.read_bytes())
+        config = replace(load_vehicle_config(engineering,config),tire_substeps=substeps)
     options = LabOptions(maneuver=maneuver,speed_kph=18. if maneuver=="ride_bump" else 60.,duration=duration)
     run = LabExperiment(options,config=config)
     rows, pending, peak = [],[],[]
@@ -252,7 +256,8 @@ def check(output, maneuver, duration, substeps):
             run.step(command)
         with (output/"substeps.csv").open("w",newline="",encoding="utf-8") as stream:
             writer = csv.DictWriter(stream,fieldnames=rows[0]); writer.writeheader(); writer.writerows(rows)
-        result = {"summary":run.summary(),"config":asdict(config),"substeps":substeps,"source":model_fingerprint(),
+        result = {"summary":run.summary(),"config":asdict(run.config),"requested_config":asdict(config),
+                  "substeps":substeps,"source":model_fingerprint(),
                   "tool_sha256":hashlib.sha256(executed).hexdigest(),"runtime":runtime_fingerprint(),
                   "definition":"Actual world kinetic + gravity + suspension/radial/tangent potential; all joint losses. External force work uses actual displacement; imposed steering/engine use joint end-speed quadrature. Diagnostic residual, not a claimed closed energy gate.",
                   "max_abs":{key:max(abs(r[key]) for r in rows) for key in rows[0] if key not in ("time","substep")},
@@ -273,5 +278,6 @@ if __name__ == "__main__":
     parser.add_argument("--maneuver",choices=("ride_bump","manual"),default="ride_bump")
     parser.add_argument("--duration",type=float,default=2.4)
     parser.add_argument("--substeps",type=int,choices=(2,4,8),default=2)
+    parser.add_argument("--engineering",type=Path,help="完整工程输入；实际配置与原文件均保存")
     args = parser.parse_args()
-    check(args.output.resolve(),args.maneuver,args.duration,args.substeps)
+    check(args.output.resolve(),args.maneuver,args.duration,args.substeps,args.engineering)

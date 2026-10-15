@@ -40,6 +40,8 @@ SPECIAL = {
     "lateral_stiffness": ("前轮侧偏刚度", "N/rad", "固定基准下标定量", "Cy(Fn)=Cy0·(Fn/Fn0)^pY；小侧偏时Fy≈−Cy·α。", "影响转向/不足转向；需在规定Fn、胎压、温度下标定。", "src/tire_properties.py · tire_stiffness"),
     "rear_lateral_stiffness": ("后轮侧偏刚度", "N/rad", "固定基准下标定量", "后轮采用独立Cy0，同一轮荷幂律。", "改变前后刚度分配会改变操稳平衡；不能仅用停车距离辨识。", "src/vehicle_tires.py · 后轴配置"),
     "suspension_spring_rates": ("四轮弹簧刚度", "N/m", "弹性标定量", "Us=½Σki·qi²；力由势能对行程的梯度给出。", "独立轮心按真实末行程共同求解；部件换算见台架报告，有限几何功差单列。", "src/suspension.py；src/unsprung_motion.py；src/unsprung_joint.py；src/suspension_bench.py"),
+    "suspension_spring_preloads": ("轮心等效安装预载", "N", "安装几何推导量", "F0=rs·ks·x0；Uc=½Σkw·max(q+F0/kw,0)²。", "在q=0处定义，不改变接合区切线刚度；松弛后弹簧力为零，防倾与止挡另计。", "src/unsprung_contact.py；src/suspension_bench.py"),
+    "suspension_coil_enabled": ("压缩螺旋弹簧", "bool", "材料机制选择", "开启时采用带安装压缩的非负弹簧势能；关闭时保留原双向弹性。", "须使用独立轮心；开关只选择弹簧本构，不生成另一套车辆状态。", "src/vehicle_config.py；src/unsprung_contact.py"),
     "suspension_compression_damping": ("四轮压缩阻尼", "N·s/m", "减振器标定量", "Fd=c+·dq/dt，压缩速度非负；伸张采用c−。", "独立轮心取末姿态相对速度；部件系数由力速曲线辨识，经运动比换算。", "src/unsprung_motion.py；src/unsprung_contact.py；src/suspension_bench.py"),
     "suspension_extension_damping": ("四轮伸张阻尼", "N·s/m", "减振器标定量", "Fd=c−·dq/dt，伸张速度为负；压缩采用c+。", "阻尼热非负；部件换算独立留出验证，有限几何功差不作材料热。", "src/unsprung_motion.py；src/unsprung_joint.py；src/suspension_bench.py"),
     "suspension_antiroll_rates": ("前后防倾刚度", "N/m", "弹性标定量", "Ubar=½kbar·(qL−qR)²。", "左右行程差产生相反反力，改变轮荷分配及轴总附着能力。", "src/suspension.py；src/suspension_contacts.py"),

@@ -102,6 +102,11 @@ FORMULAS = {
         r"F_{d,i}=c_i^{\pm}\dot{q}_i,\qquad E_d=h\sum_i c_i^{\pm}\dot{q}_i^{\,2}\geq 0",
         r"r_d=\frac{\mathrm{d}x_d}{\mathrm{d}q},\qquad c_w^{\pm}=r_d^2 c_d^{\pm}",
     ), "独立轮心使用末姿态相对速度；c+压缩、c−伸张。xd为活塞行程，rd为常运动比，cd为部件阻尼、cw为轮心等效阻尼。普通模型沿原速率定义。"),
+    "suspension_spring_preloads": ((
+        r"a_i=q_i+\frac{F_{0,i}}{k_{w,i}},\qquad U_c=\frac{1}{2}\sum_i k_{w,i}[a_i]_+^2",
+        r"F_{c,i}=k_{w,i}[a_i]_+,\qquad k_{t,i}=k_{w,i}\,\mathbf{1}_{a_i>0}",
+        r"F_{0,i}=r_{s,i}k_{s,i}x_{0,i},\qquad k_{w,i}=r_{s,i}^2k_{s,i}",
+    ), "[a]+表示max(a,0)。q为轮心行程，x0为q=0处部件安装压缩，F0为等效预载。仅压缩螺旋模式启用；原双向模型保持½Σkq²。防倾/止挡另计。"),
     "suspension_antiroll_rates": ((r"U_{\mathrm{bar}}=\frac{1}{2}k_{\mathrm{bar}}(q_L-q_R)^2",),
                                   "qL / qR：同轴左右行程；kbar：防倾刚度。"),
     "body_inertia": ((r"I_a=\sum_j\left(m_j d_{j,a}^{\,2}+I_{j,a}\right)",),
@@ -113,6 +118,8 @@ FORMULAS = {
 
 def formula_key(key):
     field = ALIASES.get(key, key)
+    if field=="suspension_coil_enabled":
+        return "suspension_spring_preloads"
     if field=="suspension_extension_damping":
         return "suspension_compression_damping"
     if field == "rear_lateral_stiffness":

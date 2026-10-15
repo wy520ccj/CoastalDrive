@@ -590,6 +590,35 @@
         "sha256": "f24dd0cf1e2d12774700764e3e2488a7f9f36f444dfb4c5d657bb21349801561"
       }
     ],
+    "suspension_spring_preloads": [
+      {
+        "file": "suspension_spring_preloads-0.png",
+        "tex": "a_i=q_i+\\frac{F_{0,i}}{k_{w,i}},\\qquad U_c=\\frac{1}{2}\\sum_i k_{w,i}[a_i]_+^2",
+        "width": 1160,
+        "height": 153,
+        "texture_width": 2048,
+        "texture_height": 256,
+        "sha256": "b63b0c218957a8654d20a45303ae96563e9ccd22a4e26f2476ec3169c2ab7ea3"
+      },
+      {
+        "file": "suspension_spring_preloads-1.png",
+        "tex": "F_{c,i}=k_{w,i}[a_i]_+,\\qquad k_{t,i}=k_{w,i}\\,\\mathbf{1}_{a_i>0}",
+        "width": 1190,
+        "height": 80,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "e3de4c756d9ee7656a257296d15d1e6f2fe07b705ef06f2553a857e0f67f99f2"
+      },
+      {
+        "file": "suspension_spring_preloads-2.png",
+        "tex": "F_{0,i}=r_{s,i}k_{s,i}x_{0,i},\\qquad k_{w,i}=r_{s,i}^2k_{s,i}",
+        "width": 1113,
+        "height": 106,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "be6ac7ff2ca46a612ff0416bd22ad48a72909439c15c4df864b063055fbfa03d"
+      }
+    ],
     "suspension_antiroll_rates": [
       {
         "file": "suspension_antiroll_rates-0.png",

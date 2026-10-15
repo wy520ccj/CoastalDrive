@@ -26,6 +26,7 @@ from vehicle_designs import DESIGN_VEHICLES, GR86_PROFILE_PATH
 GROUP_LABELS = {"chassis": "底盘与转向", "tires": "轮胎", "suspension": "悬架",
                 "powertrain": "动力与传动", "electronics": "制动与控制"}
 BROWSER_LABELS = {"suspension_spring_rates":"轮心等效弹簧率",
+                  "suspension_spring_preloads":"轮心等效安装预载","suspension_coil_enabled":"压缩螺旋弹簧",
                   "suspension_compression_damping":"轮心等效压缩阻尼","suspension_extension_damping":"轮心等效伸张阻尼",
                   "suspension_stiffness":"质量归一化弹簧率",
                   "suspension_compression":"质量归一化压缩阻尼","suspension_relaxation":"质量归一化伸张阻尼"}
@@ -109,18 +110,9 @@ class ParameterHelp:
     def choose_item(self, index):
         self.show(group_parameters(self.group)[self.page * 8 + index], switch_group=False)
 
-    def context(self, key):
+    def configuration(self):
+        """公式与数值来源共同读取同一已运行记录或待运行配置。"""
         app = self.app
-        if key in METRIC_INFO:
-            record = app.active_record()
-            if record is None:
-                return "尚无真实试验", "指标值：—"
-            summary = record.metadata["summary"]
-            analysis = engineering_analysis(record.samples, record.snapshots, summary["options"], summary["reason"])
-            item = next(item for item in (*analysis["metrics"], *analysis["ride"]["metrics"])
-                        if "metric."+item["key"] == key)
-            value = f"{item['value']:.5g}" if item["value"] is not None else "— 未满足工况条件"
-            return "已完成试验记录；"+item["note"], "当前指标："+value
         if app.record is not None:
             config = app.record.metadata["vehicle_config"]
             options = app.record.metadata["summary"]["options"]
@@ -139,13 +131,28 @@ class ParameterHelp:
             basis = "选中车型的工程配置；尚未试验"
             design_id = design.id
             parameter_metadata = app.parameter_metadata
+        return config,options,basis,design_id,parameter_metadata
+
+    def context(self, key):
+        app = self.app
+        if key in METRIC_INFO:
+            record = app.active_record()
+            if record is None:
+                return "尚无真实试验", "指标值：—"
+            summary = record.metadata["summary"]
+            analysis = engineering_analysis(record.samples, record.snapshots, summary["options"], summary["reason"])
+            item = next(item for item in (*analysis["metrics"], *analysis["ride"]["metrics"])
+                        if "metric."+item["key"] == key)
+            value = f"{item['value']:.5g}" if item["value"] is not None else "— 未满足工况条件"
+            return "已完成试验记录；"+item["note"], "当前指标："+value
+        config,options,basis,design_id,parameter_metadata = self.configuration()
         field = ALIASES.get(key, key)
         current = display_value(config[field]) if field in config else "旧记录未保存此字段"
         if "." in field and not field.startswith("manual."):
             parent, child = field.split(".")
             current = str(config[parent][child])
         if field in config:
-            suspension_basis = suspension_source_note(parameter_metadata, field, config[field])
+            suspension_basis = suspension_source_note(parameter_metadata, field, config[field], config)
             fit = parameter_metadata["tire_calibration"] if parameter_metadata is not None and "tire_calibration" in parameter_metadata else None
             fitted = fit is not None and field in fit["parameters"]
             if fit is not None and field == "rear_lateral_stiffness":
@@ -171,11 +178,14 @@ class ParameterHelp:
             elif suspension_basis is not None:
                 basis += "\n"+suspension_basis
             elif design_id == "gr86-2022-premium-6mt":
-                ledger = json.loads(GR86_PROFILE_PATH.read_text(encoding="utf-8"))["metadata"]["vehicle_fields"][field]
-                if json.loads(json.dumps(config[field])) == ledger["value"]:
+                ledger = json.loads(GR86_PROFILE_PATH.read_text(encoding="utf-8"))["metadata"]["vehicle_fields"]
+                if field not in ledger:
+                    basis += "\n车型账本未提供此参数；当前为模型值，不作原厂/实测归属"
+                elif json.loads(json.dumps(config[field])) == ledger[field]["value"]:
                     statuses = {"measured": "实测", "oem": "原厂", "derived": "推导",
                                 "engineering_prior": "工程初值", "model_mechanism": "模型机制"}
-                    basis += f"\n当前车型账本分类：{statuses.get(ledger['status'], ledger['status'])}"
+                    status = ledger[field]["status"]
+                    basis += f"\n当前车型账本分类：{statuses.get(status, status)}"
                 else:
                     basis += "\n该值已覆盖车型原值，不沿用原来源分类"
             else:
@@ -216,6 +226,10 @@ class ParameterHelp:
         self.formula_nodes.clear()
         bottom = self.details.getTightBounds(self.root)[0].z - .035
         math_key = formula_key(key)
+        if math_key=="suspension_spring_rates":
+            config = self.configuration()[0]
+            if config.get("suspension_coil_enabled",False):
+                math_key = "suspension_spring_preloads"
         if math_key is not None:
             # 图片保留数学字形比例；长公式只缩小到面板宽度，不拉伸或压扁。
             for entry in self.formula_manifest["formulas"][math_key]:
@@ -240,6 +254,8 @@ class ParameterHelp:
             algorithm = FORMULAS[math_key][1]
         else:
             algorithm = info.formula
+        if math_key=="suspension_spring_preloads":
+            algorithm += "\nq=0沿用悬架参考长度处的轮心位置；x0不能直接填静载压缩。"
         if ALIASES.get(key,key) in ("suspension_spring_rates","suspension_compression_damping","suspension_extension_damping"):
             algorithm += "\n参数按轮心行程等效；台架原始参数须按安装运动比换算。"
         self.notes.setPos(-.45, bottom-.023)

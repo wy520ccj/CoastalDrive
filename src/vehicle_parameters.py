@@ -37,6 +37,7 @@ PARAMETER_GROUPS = {
         "unsprung_enabled", "unsprung_masses", "tire_radial_stiffness", "tire_radial_damping",
         "suspension_si_enabled", "suspension_coupled_enabled", "suspension_antiroll_rates",
         "suspension_stop_rates", "suspension_spring_rates", "suspension_compression_damping",
+        "suspension_coil_enabled", "suspension_spring_preloads",
         "suspension_extension_damping", "suspension_stiffness", "suspension_compression",
         "suspension_relaxation", "suspension_travel", "suspension_force_limit",
     ),
@@ -89,6 +90,11 @@ def config_from_document(document, selected):
         values["tire_aligning_enabled"] = False
     if "unsprung_enabled" not in values:
         values["unsprung_enabled"] = False
+    # 旧文件没有压缩弹簧/安装预载，恢复其原双向弹性定义。
+    if "suspension_coil_enabled" not in values:
+        values["suspension_coil_enabled"] = False
+    if "suspension_spring_preloads" not in values:
+        values["suspension_spring_preloads"] = (0.,)*4
     if "braking" in values:
         values["braking"] = replace(selected.braking, **values["braking"])
     if "stability" in values:
@@ -107,7 +113,7 @@ def config_from_document(document, selected):
             values[name] = tuple(values[name])
     if "downstream_axes" in values:
         values["downstream_axes"] = tuple(tuple(axis) for axis in values["downstream_axes"])
-    for name in ("unsprung_masses", "tire_radial_stiffness", "tire_radial_damping"):
+    for name in ("unsprung_masses", "tire_radial_stiffness", "tire_radial_damping", "suspension_spring_preloads"):
         if name in values:
             values[name] = tuple(values[name])
     si_fields = ("suspension_spring_rates", "suspension_compression_damping", "suspension_extension_damping",

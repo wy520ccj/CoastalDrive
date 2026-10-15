@@ -95,6 +95,8 @@ class VehicleConfig:
     suspension_antiroll_rates: tuple = (6000., 4000.)  # N/m；前/后左右行程差的设计刚度，非实测标定。
     suspension_stop_rates: tuple = (480000.,) * 4  # N/m；行程边界外的渐进止挡设计刚度。
     suspension_spring_rates: tuple = (48000.,) * 4  # N/m；四轮轮心等效刚度，不是减振支柱部件原始刚度。
+    suspension_coil_enabled: bool = False  # 独立轮心的压缩螺旋弹簧；松弛后不承受拉力。
+    suspension_spring_preloads: tuple = (0.,) * 4  # N；q=0时的四轮轮心等效预载，不是附加外载荷。
     suspension_compression_damping: tuple = (5280.,) * 4  # N·s/m；轮心等效压缩阻尼，原生对照为法向/射线速率。
     suspension_extension_damping: tuple = (2760.,) * 4  # N·s/m；耦合分支的轴向伸张阻尼。
     suspension_stiffness: float = 40.0
@@ -128,6 +130,15 @@ class VehicleConfig:
     suspension_force_limit: float = 6000.0  # N；仅原生对照分支的数值力限，SI势能反力不作硬裁剪。
 
     def __post_init__(self):
+        if type(self.suspension_coil_enabled) is not bool:
+            raise ValueError("压缩螺旋弹簧开关须为bool")
+        if len(self.suspension_spring_preloads)!=4 or any(isinstance(value,bool) or not math.isfinite(value) or value<0.
+                                                       for value in self.suspension_spring_preloads):
+            raise ValueError("四轮轮心预载须为有限非负值N")
+        if self.suspension_coil_enabled and not self.unsprung_enabled:
+            raise ValueError("压缩螺旋弹簧须使用独立轮心共同模型")
+        if any(self.suspension_spring_preloads) and not self.suspension_coil_enabled:
+            raise ValueError("非零安装预载须显式启用压缩螺旋弹簧")
         for values,label,positive in ((self.unsprung_masses,"四轮簧下平动质量kg",True),
                                      (self.tire_radial_stiffness,"四轮径向刚度N/m",True),
                                      (self.tire_radial_damping,"四轮径向阻尼Ns/m",False)):

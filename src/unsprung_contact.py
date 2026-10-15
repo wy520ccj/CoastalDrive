@@ -7,10 +7,26 @@ import numpy as np
 from suspension import elastic_terms, stiffness_matrix
 
 
-def suspension_potential(compression, config):
-    spring,bars,stop,force = elastic_terms(tuple(compression),config.suspension_spring_rates,
+def _elastic_material(compression, config):
+    """安装预压与松弛共用同一势能；防倾杆和止挡仍作用在原轮心行程。"""
+    rates = config.suspension_spring_rates
+    spring,bars,stop,force = elastic_terms(tuple(compression),(0.,)*4 if config.suspension_coil_enabled else rates,
         config.suspension_antiroll_rates,config.suspension_stop_rates,config.suspension_travel)
-    return spring+sum(bars)+stop,np.asarray(force)
+    force = np.asarray(force)
+    tangent = rates
+    if config.suspension_coil_enabled:
+        rates = np.asarray(rates)
+        shifted = np.asarray(compression)+np.asarray(config.suspension_spring_preloads)/rates
+        active = np.maximum(shifted,0.)
+        spring = .5*np.dot(rates,active**2)
+        force += rates*active
+        tangent = np.where(shifted>0.,rates,0.)
+    return spring+sum(bars)+stop,force,tangent
+
+
+def suspension_potential(compression, config):
+    potential,force,_ = _elastic_material(compression,config)
+    return potential,force
 
 
 @dataclass(frozen=True)
@@ -31,12 +47,12 @@ def normal_material(compression, relative_velocity, deflection, previous_deflect
     """法向块与传动/轮胎共同求解共用唯一材料方程。"""
     coefficient = np.where(relative_velocity>=0.,config.suspension_compression_damping,
                            config.suspension_extension_damping)
-    potential,spring = suspension_potential(compression,config)
+    potential,spring,spring_tangent = _elastic_material(compression,config)
     delta_rate = (np.maximum(deflection,0.)-np.maximum(previous_deflection,0.))/dt
     trial = radial_rates*np.maximum(deflection,0.)+radial_damping*delta_rate
     contact = (deflection>0.) & (trial>0.)
     normal = np.where(contact,trial,0.)
-    hessian = np.asarray(stiffness_matrix(config.suspension_spring_rates,config.suspension_antiroll_rates))
+    hessian = np.asarray(stiffness_matrix(spring_tangent,config.suspension_antiroll_rates))
     hessian += np.diag(np.where(np.abs(compression)>config.suspension_travel,config.suspension_stop_rates,0.))
     return NormalMaterial(spring+coefficient*relative_velocity,normal,float(potential),
         float(.5*np.dot(radial_rates,np.maximum(deflection,0.)**2)),

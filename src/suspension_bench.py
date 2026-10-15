@@ -7,6 +7,9 @@ from dataclasses import replace
 
 SCHEMA = "coastal-suspension-bench-v1"
 FIT_SCHEMA = "coastal-suspension-fit-v1"
+INSTALLED_SCHEMA = "coastal-suspension-bench-v2"
+INSTALLED_FIT_SCHEMA = "coastal-suspension-fit-v2"
+INSTALLED_DEFINITION = "positive_compression_resistance;spring_input_from_free_length;installed_compression_at_zero_wheel_travel"
 WHEELS = ("FL", "FR", "RL", "RR")
 KINDS = {"spring": "suspension_spring_rates",
          "compression": "suspension_compression_damping",
@@ -22,11 +25,13 @@ def _number(value, label):
     return value
 
 
-def fit_bench(document, base):
+def _fit_document(document):
     """各部件独立过原点最小二乘；整序列留出只验证，不调整拟合值。"""
     if set(document) != {"schema", "source", "source_kind", "temperature_c", "units", "definition", "corners"}:
         raise ValueError("悬架台架文件字段不完整或含未知字段")
-    if document["schema"] != SCHEMA or document["units"] != UNITS or document["definition"] != DEFINITION:
+    installed = document["schema"] == INSTALLED_SCHEMA
+    if (document["schema"] not in (SCHEMA,INSTALLED_SCHEMA) or document["units"] != UNITS
+        or document["definition"] != (INSTALLED_DEFINITION if installed else DEFINITION)):
         raise ValueError("悬架台架版本、SI单位或零位/力方向定义不支持")
     if document["source_kind"] not in ("measured", "synthetic") or not isinstance(document["source"], str) or not document["source"].strip():
         raise ValueError("台架来源不能为空，须声明measured或synthetic")
@@ -34,10 +39,14 @@ def fit_bench(document, base):
     if set(document["corners"]) != set(WHEELS):
         raise ValueError("须逐一提供FL/FR/RL/RR部件与安装运动比")
     parameters = {field: [] for field in KINDS.values()}
+    if installed:
+        parameters.update(suspension_coil_enabled=True,suspension_spring_preloads=[])
     results = {}
     for wheel in WHEELS:
         corner = document["corners"][wheel]
-        if set(corner) != {"spring_id", "damper_id", "spring_motion_ratio", "damper_motion_ratio", "installation_source", "rows"}:
+        fields = {"spring_id", "damper_id", "spring_motion_ratio", "damper_motion_ratio", "installation_source", "rows"}
+        if installed: fields.add("spring_installed_compression_m")
+        if set(corner) != fields:
             raise ValueError(f"{wheel}部件/安装字段不完整或含未知字段")
         for key in ("spring_id", "damper_id", "installation_source"):
             if not isinstance(corner[key], str) or not corner[key].strip():
@@ -45,6 +54,8 @@ def fit_bench(document, base):
         for key in ("spring_motion_ratio", "damper_motion_ratio"):
             if _number(corner[key], key) <= 0:
                 raise ValueError("压缩运动比须为有限正值；不支持变运动比或反向安装")
+        if installed and _number(corner["spring_installed_compression_m"],"零行程处弹簧安装压缩m") < 0.:
+            raise ValueError("安装压缩须为非负值；当前不支持带间隙的弹簧座安装")
         groups = {(kind, split): [] for kind in KINDS for split in ("train", "validation")}
         series = {}
         for row in corner["rows"]:
@@ -85,14 +96,29 @@ def fit_bench(document, base):
                                  "count": len(rows)}
             results[wheel][kind] = {"component_rate": rate, "motion_ratio": ratio,
                 "wheel_rate": rate*ratio**2, "checks": checks}
+            if installed and kind == "spring":
+                installed_compression = corner["spring_installed_compression_m"]
+                preload = ratio*rate*installed_compression
+                parameters["suspension_spring_preloads"].append(preload)
+                results[wheel][kind].update(installed_compression_m=installed_compression,wheel_preload_N=preload)
     passed = all(check[key] <= limit for corner in results.values() for result in corner.values()
                  for check in result["checks"].values() for key, limit in LIMITS.items())
-    report = {"schema": FIT_SCHEMA, "passed": passed, "limits": LIMITS, "results": results,
+    report = {"schema": INSTALLED_FIT_SCHEMA if installed else FIT_SCHEMA, "passed": passed, "limits": LIMITS, "results": results,
               "parameters": parameters, "input": document,
               "input_sha256": hashlib.sha256(json.dumps(document, sort_keys=True, ensure_ascii=False,
                     allow_nan=False).encode("utf-8")).hexdigest()}
-    config = replace(base, **{field: tuple(values) for field, values in parameters.items()},
-                     suspension_si_enabled=True)
+    return report
+
+
+def fit_bench(document, base):
+    """部件数据生成完整硬件；安装模型须已具备实际独立轮心自由度。"""
+    report = _fit_document(document)
+    parameters = report["parameters"]
+    values = {field:tuple(parameters[field]) for field in KINDS.values()}
+    values.update(suspension_coil_enabled=report["schema"]==INSTALLED_FIT_SCHEMA,
+                  suspension_spring_preloads=tuple(parameters["suspension_spring_preloads"])
+                      if report["schema"]==INSTALLED_FIT_SCHEMA else (0.,)*4)
+    config = replace(base, **values, suspension_si_enabled=True)
     return config, report
 
 
@@ -100,30 +126,44 @@ def validate_metadata(metadata):
     """文件边界重算输入与报告，不能只凭passed标记授予台架来源。"""
     if metadata is None or "suspension_calibration" not in metadata:
         return
-    from vehicle_config import CAR
-
     report = metadata["suspension_calibration"]
-    if report["schema"] != FIT_SCHEMA or report["passed"] is not True:
+    if report["schema"] not in (FIT_SCHEMA,INSTALLED_FIT_SCHEMA) or report["passed"] is not True:
         raise ValueError("悬架台架报告未通过或版本不支持")
-    _, recomputed = fit_bench(report["input"], CAR)
+    recomputed = _fit_document(report["input"])
     if recomputed != report or not recomputed["passed"]:
         raise ValueError("悬架台架报告未通过、版本不支持或与原始数据不一致")
 
 
-def source_note(metadata, field, value):
+def _installation_matches(report, config):
+    # 旧保存记录的配置没有这两个字段，其明确语义是原双向弹性/零预载。
+    coil = config.get("suspension_coil_enabled",False)
+    preloads = config.get("suspension_spring_preloads",(0.,)*4)
+    return ((coil and list(preloads)==report["parameters"]["suspension_spring_preloads"])
+            if report["schema"]==INSTALLED_FIT_SCHEMA else not coil and not any(preloads))
+
+
+def source_note(metadata, field, value, config):
     """仅给实际相同的配置值沿用部件来源；覆盖值明确解除原标定归属。"""
-    if metadata is None or "suspension_calibration" not in metadata or field not in KINDS.values():
+    if metadata is None or "suspension_calibration" not in metadata:
         return None
     report = metadata["suspension_calibration"]
-    if list(value) != report["parameters"][field]:
+    if field not in report["parameters"]:
+        return None
+    saved = report["parameters"][field]
+    if (value if isinstance(value,bool) else list(value)) != saved:
         return "已覆盖部件换算值，不沿用其台架来源"
-    kind = next(kind for kind, key in KINDS.items() if key == field)
+    kind = next((kind for kind, key in KINDS.items() if key == field),"spring")
+    if kind=="spring" and not _installation_matches(report,config):
+        return "部件斜率来自原台架；安装值已覆盖，不沿用其安装来源/适用域"
     values = [report["results"][wheel][kind] for wheel in WHEELS]
     ratios = " / ".join(f"{item['motion_ratio']:g}" for item in values)
     rates = " / ".join(f"{item['component_rate']:.4g}" for item in values)
     source = "合成数据，非实测" if report["input"]["source_kind"] == "synthetic" else "按文件声明：部件台架拟合"
+    installation = ("安装压缩m："+" / ".join(f"{report['results'][wheel]['spring']['installed_compression_m']:g}" for wheel in WHEELS)
+                    if report["schema"]==INSTALLED_FIT_SCHEMA and kind=="spring" else
+                    "零预载" if kind=="spring" else "压缩/伸张分别拟合")
     return (f"{source}；{report['input']['temperature_c']:g}°C\n"
-            f"部件系数 {rates}；r={ratios}\n独立序列留出通过；常运动比/零预载，范围见工程JSON")
+            f"部件系数 {rates}；r={ratios}\n{installation}；范围见工程JSON")
 
 
 def record_coverage(metadata, config, samples):
@@ -136,7 +176,7 @@ def record_coverage(metadata, config, samples):
         items = {}
         for kind, field in KINDS.items():
             fit = report["results"][wheel][kind]
-            if list(config[field]) != report["parameters"][field]:
+            if list(config[field]) != report["parameters"][field] or kind=="spring" and not _installation_matches(report,config):
                 items[kind] = {"status": "overridden"}
                 continue
             key = ("travel_" if kind == "spring" else "travel_rate_")+wheel.lower()
@@ -144,7 +184,9 @@ def record_coverage(metadata, config, samples):
             if not inputs or any(value is None for value in inputs):
                 items[kind] = {"status": "missing_observation"}
                 continue
-            inputs = [value*fit["motion_ratio"] for value in inputs
+            offset = fit["installed_compression_m"] if kind=="spring" and report["schema"]==INSTALLED_FIT_SCHEMA else 0.
+            inputs = [max(0.,offset+value*fit["motion_ratio"]) if kind=="spring" and report["schema"]==INSTALLED_FIT_SCHEMA
+                      else value*fit["motion_ratio"] for value in inputs
                       if kind == "spring" or (value >= 0 if kind == "compression" else value <= 0)]
             domains = [check["input_domain"] for check in fit["checks"].values()]
             domain = [min(d[0] for d in domains), max(d[1] for d in domains)]
