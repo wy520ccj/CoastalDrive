@@ -28,7 +28,7 @@ setup(
         Extension("mechanical_kernels", ["src/mechanical_kernels.c"],
                   depends=["src/joint_iteration.h", "src/joint_iteration_helpers.h", "src/joint_contact_api.h",
                            "src/joint_mechanical_prepare.h", "src/drivetrain_prepare.h", "src/native_solve_runtime.h",
-                           "src/lab_joint_native.h"],
+                           "src/lab_joint_native.h", "src/lab_normal_native.h"],
                   extra_compile_args=compile_args),
         Extension("wheel_contact_kernels", ["src/wheel_contact_kernels.c"],
                   depends=["src/wheel_convex_distance.h", "src/joint_contact_impl.h", "src/joint_contact_api.h",

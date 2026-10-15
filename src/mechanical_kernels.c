@@ -2721,8 +2721,11 @@ static PyObject *suspension_residuals(PyObject *self,PyObject *args) {
 #include "joint_mechanical_prepare.h"
 #include "drivetrain_prepare.h"
 #include "lab_joint_native.h"
+#include "lab_normal_native.h"
 
 static PyMethodDef methods[] = {
+    {"unsprung_normal_parameters",unsprung_normal_parameters_native,METH_VARARGS,"试验台不可变法向材料系数准备"},
+    {"unsprung_normal_material",unsprung_normal_material_native,METH_VARARGS,"试验台完整四轮法向材料批量组装"},
     {"unsprung_contact_residual",unsprung_contact_residual_native,METH_VARARGS,"试验台四轮原材料残差批量组装"},
     {"unsprung_port_residual",unsprung_port_residual_native,METH_VARARGS,"试验台完整有限端口残差批量组装"},
     {"drivetrain_prepare",drivetrain_prepare,METH_VARARGS,"轮轴约束、实体轴惯量与自由状态连续准备"},

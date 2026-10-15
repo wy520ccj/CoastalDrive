@@ -1,8 +1,10 @@
 """四个簧下自由度的冻结构型法向块；用于全车共同求解的局部线性化。"""
 
 from dataclasses import dataclass
+from functools import lru_cache
 
 import numpy as np
+from mechanical_kernels import unsprung_normal_material, unsprung_normal_parameters
 
 from suspension import elastic_terms, stiffness_matrix
 from suspension_damper import damper_curve
@@ -81,7 +83,7 @@ class NormalMaterial:
     spring_force: np.ndarray
 
 
-def normal_material(compression, relative_velocity, deflection, previous_deflection,
+def _normal_material_numpy(compression, relative_velocity, deflection, previous_deflection,
                     dt, config, radial_rates, radial_damping):
     """法向块与传动/轮胎共同求解共用唯一材料方程。"""
     damper,damper_speed,damper_travel = damping_material(compression,relative_velocity,config)
@@ -98,6 +100,42 @@ def normal_material(compression, relative_velocity, deflection, previous_deflect
         float(dt*np.dot(np.where(contact,radial_damping,0.),delta_rate**2)),
         dt*hessian+np.diag(damper_speed+dt*damper_travel),
         np.where(contact,dt*radial_rates+radial_damping,0.),spring)
+
+
+@lru_cache(maxsize=32)
+def _normal_parameters(rates,bars,stops,travel,coil,preloads,compression,extension,installation,curves):
+    """只准备不可变配置；曲线验证仍由原入口负责，不保存任何车辆状态。"""
+    spring,damper,force = None,None,None
+    if installation is not None:
+        axes = [installation_curve(rows) for rows in installation]
+        spring,damper = (tuple((pair[index].q,pair[index].displacement,pair[index].slopes,pair[index].reference_ratio)
+                              for pair in axes) for index in (0,1))
+    if curves is not None:
+        axes = [damper_curve(rows) for rows in curves]
+        force = tuple((axis.speed,axis.force) for axis in axes)
+    return (unsprung_normal_parameters(rates,bars,stops,travel,coil,preloads,compression,extension,spring,damper,force),
+            np.asarray(rates,dtype=float))
+
+
+def normal_material(compression, relative_velocity, deflection, previous_deflection,
+                    dt, config, radial_rates, radial_damping):
+    """完整四轮材料批量组装；能量点积与非双精度输入沿用原NumPy语义。"""
+    inputs = tuple(np.asarray(value) for value in
+                   (compression,relative_velocity,deflection,previous_deflection,radial_rates,radial_damping))
+    if any(value.dtype!=np.float64 for value in inputs):
+        return _normal_material_numpy(compression,relative_velocity,deflection,previous_deflection,
+                                      dt,config,radial_rates,radial_damping)
+    parameters,rates = _normal_parameters(config.suspension_spring_rates,config.suspension_antiroll_rates,
+        config.suspension_stop_rates,config.suspension_travel,config.suspension_coil_enabled,
+        config.suspension_spring_preloads,config.suspension_compression_damping,config.suspension_extension_damping,
+        config.suspension_installation_curves,config.suspension_damper_curves)
+    values = np.empty((13,4))
+    spring,bars,stop = unsprung_normal_material(parameters,inputs,values,dt)
+    if config.suspension_coil_enabled:
+        spring = .5*np.dot(rates,values[8])
+    return NormalMaterial(values[0],values[1],float(spring+sum(bars)+stop),
+        float(.5*np.dot(radial_rates,values[9])),float(dt*np.dot(values[10],relative_velocity)),
+        float(dt*np.dot(values[11],values[12])),values[4:8],values[3],values[2])
 
 
 @dataclass(frozen=True)
