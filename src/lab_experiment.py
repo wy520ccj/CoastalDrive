@@ -13,6 +13,7 @@ from driving_modes import DrivingMode
 from lab_maneuvers import bump_geometry, path_command, path_error
 from lab_metrics import brake_start_index
 from lab_records import model_fingerprint
+from lab_runtime import runtime_fingerprint
 from lab_signals import sample_signals
 from vehicle_contacts import read_wheel_contacts
 from vehicle_designs import vehicle_design
@@ -86,6 +87,7 @@ class LabExperiment:
         if options.maneuver in ("ride_bump","ride_braking") and not config.unsprung_enabled:
             raise ValueError("轮跳/颠簸制动需要独立轮心模型，请先导入对应工程配置")
         self.source_start = model_fingerprint()
+        self.runtime_start = runtime_fingerprint()
         self.experiment = DrivingExperiment(config, ExperimentOptions(seed=options.seed, track="lab"))
         self.compute_seconds = 0.
         self.error = None

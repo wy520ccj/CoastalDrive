@@ -32,6 +32,8 @@ def test_export_load_and_recalculate_reproduce_full_actual_snapshots(tmp_path):
     assert repeated.snapshots == loaded.snapshots
     assert repeated.commands == loaded.commands
     assert "Snapshot.player.wheel_dynamics" in report.read_text(encoding="utf-8")
+    assert loaded.metadata["runtime_start"]==loaded.metadata["runtime_end"]==original.metadata["runtime_start"]
+    assert f"{loaded.metadata['runtime_start']['math_scalar_bits']} 位" in report.read_text(encoding="utf-8")
     with (tmp_path/"trial/signals.csv").open(encoding="utf-8-sig", newline="") as stream:
         rows = list(csv.DictReader(stream))
     assert len(rows) == len(original.samples)
@@ -66,6 +68,29 @@ def test_corrupt_snapshot_and_different_model_versions_are_rejected(tmp_path):
     changed = replace(original, metadata={**original.metadata, "source_start": {"different": "version"}})
     with pytest.raises(ValueError, match="版本"):
         recalculate(changed)
+
+
+def test_same_source_cannot_recalculate_with_different_or_unrecorded_runtime():
+    original = record(LabOptions(speed_kph=30,duration=.02))
+    changed = {**original.metadata["runtime_start"],"math_scalar_bits":0}
+    different = replace(original,metadata={**original.metadata,"runtime_start":changed,"runtime_end":changed})
+    with pytest.raises(ValueError,match="运行时"):
+        recalculate(different)
+    metadata = {k:v for k,v in original.metadata.items() if k not in ("runtime_start","runtime_end")}
+    with pytest.raises(ValueError,match="旧记录"):
+        recalculate(replace(original,metadata=metadata))
+    assert changed_conditions(original,different).keys()=={"runtime_version"}
+
+
+def test_external_record_rejects_malformed_runtime_precision(tmp_path):
+    original = record(LabOptions(speed_kph=30,duration=.02))
+    export_record(original,tmp_path/"runtime")
+    path = tmp_path/"runtime/experiment.json"
+    document = json.loads(path.read_text(encoding="utf-8"))
+    document["runtime_start"]["math_scalar_bits"] = 128
+    path.write_text(json.dumps(document),encoding="utf-8")
+    with pytest.raises(ValueError,match="运行时"):
+        load_record(tmp_path/"runtime")
 
 
 def test_signal_tampering_and_vehicle_file_mismatch_are_rejected(tmp_path):

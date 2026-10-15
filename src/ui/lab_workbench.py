@@ -5,6 +5,7 @@ from direct.gui.DirectGui import DirectEntry, DirectFrame, DirectSlider
 from panda3d.core import CardMaker, Point2
 
 from lab_experiment import MANEUVERS
+from lab_runtime import runtime_fingerprint
 from ui import theme
 from ui.lab_plot import LabPlot
 from ui.lab_widgets import MUTED, rounded_panel
@@ -54,7 +55,8 @@ def build_workbench(app):
     app.button("高级参数  ›", -1.33, -.143, .60, app.toggle_advanced)
     app.button("开始试验", -1.33, -.292, .60, app.start_experiment, accent=True)
     app.button("固定当前为 A", -1.33, -.395, .60, app.pin_baseline)
-    app.text("离线实验 / 固定120 Hz\n零交通 / 平整试验场", -1.62, -.57, .035, MUTED)
+    bits = runtime_fingerprint()["math_scalar_bits"]
+    app.text(f"离线实验 / {bits} 位\n固定120 Hz / 平整试验场", -1.62, -.57, .035, MUTED)
 
     app.model_note = app.text("设计参考车 RWD", -.84, -.053, .035, MUTED)
     app.button("切换视角", .73, .674, .29, app.cycle_camera)

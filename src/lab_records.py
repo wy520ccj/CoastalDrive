@@ -11,6 +11,7 @@ from pathlib import Path
 
 from lab_maneuvers import path_error, reference_path
 from lab_metrics import engineering_analysis
+from lab_runtime import runtime_fingerprint, validate_runtime_document
 from lab_signals import (
     LEGACY_SIGNAL_KEYS,
     PRE_ALIGN_SIGNAL_KEYS,
@@ -61,6 +62,7 @@ class LabRecord:
                                "lane_change_m": [20, 30, 20, 30], "lane_offset_m": 3.5}
                               if run.options.maneuver in ("constant_radius", "double_lane_change") else None,
                     "source_start": run.source_start, "source_end": model_fingerprint(),
+                    "runtime_start": run.runtime_start, "runtime_end": runtime_fingerprint(),
                     "python": platform.python_version(), "hardware": platform.machine()},
                    tuple(dict(row) for row in run.samples), tuple(run.snapshots), tuple(run.commands))
 
@@ -81,6 +83,8 @@ def changed_conditions(baseline, candidate):
     compare("vehicle", baseline.metadata["vehicle_config"], candidate.metadata["vehicle_config"])
     if baseline.metadata["source_start"] != candidate.metadata["source_start"]:
         changes["model_version"] = {"A": "基线源码摘要", "B": "不同源码摘要"}
+    if baseline.metadata.get("runtime_start") != candidate.metadata.get("runtime_start"):
+        changes["runtime_version"] = {"A": baseline.metadata.get("runtime_start"),"B":candidate.metadata.get("runtime_start")}
     return changes
 
 
@@ -162,6 +166,8 @@ def export_record(record, folder, baseline=None):
         keys = ("cg_speed","cg_ax","pressure_fl","kappa_fl","load_fl","travel_fl")
     plots = "\n".join(plot_svg(records, key) for key in keys)
     summary = html.escape(json.dumps(record.metadata["summary"], ensure_ascii=False, indent=2))
+    runtime = record.metadata.get("runtime_start")
+    precision = "旧记录未保存计算精度" if runtime is None else f"{runtime['math_scalar_bits']} 位原生数学"
     comparison = changed_conditions(baseline, record) if baseline else {}
     if baseline:
         export_record(baseline, folder/"baseline-A")
@@ -173,7 +179,7 @@ def export_record(record, folder, baseline=None):
                       f'<td>{signal.unit}</td><td>{html.escape(signal.source)}</td></tr>' for signal in SIGNALS)
     report = f'''<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>CoastalDrive 实验报告</title>
 <style>body{{background:#f3efe3;color:#102b3a;font:15px system-ui;max-width:1000px;margin:40px auto;padding:0 24px}}svg{{width:100%;margin:10px 0}}pre{{white-space:pre-wrap;background:#fefcf5;padding:20px;border-radius:8px}}td{{border-bottom:1px solid #c9d3cc;padding:8px}}h1{{color:#247e96}}</style>
-<h1>CoastalDrive · 车辆动力学实验</h1><p>{html.escape(record.metadata["vehicle_name"])} · 120 Hz · 离线固定步</p>
+<h1>CoastalDrive · 车辆动力学实验</h1><p>{html.escape(record.metadata["vehicle_name"])} · 120 Hz · 离线固定步 · {html.escape(precision)}</p>
 <p>{html.escape(record.metadata["model_basis"])}</p><p>曲线来自真实物理记录。A 为海蓝，B 为橙色；单次记录为海蓝。制动距离使用完成步的三维行驶距离，停止阈值 |v| ≤ 0.1 m/s。</p>
 <h2>试验结果</h2><pre>{summary}</pre><h2>工程指标</h2><p>列顺序：{"A / B" if baseline else "本次"}。未满足条件的原因及计算区间见engineering.json。</p><table>{metrics_table}</table><h2>乘坐运动与接地</h2><p>世界Z质心/轮心惯性加速度，未作频率加权，不作为ISO座椅舒适等级。实体刺激未完成或旧记录缺少自由度时保留未定义值。</p><table>{ride_table}</table>{plots}<h2>比较条件</h2><pre>{change_text}</pre>
 <h2>信号单位与字段来源</h2><table>{catalog}</table><p>完整配置、命令序列与源码/原生模块摘要见 experiment.json；120 Hz 数据见 signals.csv，动画快照见 snapshots.bin。实际计算耗时不包含初始化与文件导出。</p></html>'''
@@ -188,6 +194,10 @@ def load_record(folder):
     document = json.loads((folder/"experiment.json").read_text(encoding="utf-8"))
     if document["schema"] != SCHEMA or document["physics_hz"] != 120:
         raise ValueError("只支持当前120Hz实验记录")
+    if ("runtime_start" in document)!=("runtime_end" in document):raise ValueError("运行时首末摘要不完整")
+    if "runtime_start" in document:
+        validate_runtime_document(document["runtime_start"])
+        validate_runtime_document(document["runtime_end"])
     payload = (folder/"snapshots.bin").read_bytes()
     if hashlib.sha256(payload).hexdigest() != document["snapshot_sha256"]:
         raise ValueError("动画快照文件损坏或与记录不一致")
@@ -234,6 +244,10 @@ def recalculate(record):
         raise ValueError("终止试验可分析已完成记录；自动复算仅接受暂停、停止或时长完成的试验")
     if record.metadata["source_start"] != model_fingerprint():
         raise ValueError("当前模型版本与记录不同，不能声明确定性重算")
+    if "runtime_start" not in record.metadata or "runtime_end" not in record.metadata:
+        raise ValueError("旧记录未保存实际运行时，不能声明确定性重算")
+    if not record.metadata["runtime_start"]==record.metadata["runtime_end"]==runtime_fingerprint():
+        raise ValueError("当前运行时精度或库内容与记录不同，不能声明确定性重算")
     options = LabOptions(**record.metadata["summary"]["options"])
     config = config_from_document(record.metadata["vehicle_config"], vehicle_design(options.vehicle_id).config)
     parameter_metadata = record.metadata.get("parameter_metadata")

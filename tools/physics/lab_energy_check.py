@@ -18,6 +18,7 @@ from unsprung_step_checkpoint import save_step
 import simulation as simulation_module
 from lab_experiment import LabExperiment, LabOptions
 from lab_records import model_fingerprint
+from lab_runtime import runtime_fingerprint
 from unsprung_contact import suspension_potential
 from unsprung_drivetrain import tire_ports
 from unsprung_dynamics import cross_matrix
@@ -243,7 +244,7 @@ def check(output, maneuver, duration, substeps):
         with (output/"substeps.csv").open("w",newline="",encoding="utf-8") as stream:
             writer = csv.DictWriter(stream,fieldnames=rows[0]); writer.writeheader(); writer.writerows(rows)
         result = {"summary":run.summary(),"config":asdict(config),"substeps":substeps,"source":model_fingerprint(),
-                  "tool_sha256":hashlib.sha256(executed).hexdigest(),
+                  "tool_sha256":hashlib.sha256(executed).hexdigest(),"runtime":runtime_fingerprint(),
                   "definition":"Actual world kinetic + gravity + suspension/radial/tangent potential; all joint losses. External force work uses actual displacement; imposed steering/engine use joint end-speed quadrature. Diagnostic residual, not a claimed closed energy gate.",
                   "max_abs":{key:max(abs(r[key]) for r in rows) for key in rows[0] if key not in ("time","substep")},
                   "sum":{key:sum(r[key] for r in rows) for key in rows[0] if key not in ("time","substep")}}

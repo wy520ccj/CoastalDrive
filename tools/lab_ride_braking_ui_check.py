@@ -15,7 +15,7 @@ from lab_experiment import MANEUVERS
 from lab_records import load_record
 
 
-def check(output,height,records):
+def check(output,height,records,baseline=None,candidate=None):
     output.mkdir(parents=True,exist_ok=False)
     width = round(height*16/9)
     app = VehicleLab(offscreen=True,render_size=(width,height))
@@ -49,9 +49,9 @@ def check(output,height,records):
         assert app.parameter_help.notes.getTightBounds(app.parameter_help.root)[0].z>-.73
         capture("02-braking-onset-formula")
         app.parameter_help.hide();app.advanced_panel.hide()
-        if records is not None:
-            app.import_record(records/"mass-65")
-            app.baseline = load_record(records/"mass-25")
+        if records is not None or candidate is not None:
+            app.import_record(records/"mass-65" if candidate is None else candidate)
+            app.baseline = load_record(records/"mass-25" if baseline is None else baseline)
             app.present_summary(app.record.metadata["summary"])
             app.set_plot_group("制动响应")
             app.show_sample(len(app.record.samples)-1)
@@ -63,7 +63,7 @@ def check(output,height,records):
             capture("05-mfdd-reference")
             assert app.parameter_help.notes.getTightBounds(app.parameter_help.root)[0].z>-.73
         (output/"result.json").write_text(json.dumps({"height":height,"screenshots":screenshots,
-            "real_hover_f1":True,"record_comparison":records is not None,"physics_started":app.run_state is not None},indent=2),encoding="utf-8")
+            "real_hover_f1":True,"record_comparison":records is not None or candidate is not None,"physics_started":app.run_state is not None},indent=2),encoding="utf-8")
     finally:app.close_game()
 
 
@@ -72,5 +72,9 @@ if __name__=="__main__":
     parser.add_argument("--output",type=Path,required=True)
     parser.add_argument("--height",type=int,choices=(720,1080),required=True)
     parser.add_argument("--records",type=Path)
+    parser.add_argument("--baseline",type=Path)
+    parser.add_argument("--candidate",type=Path)
     args = parser.parse_args()
-    check(args.output.resolve(),args.height,None if args.records is None else args.records.resolve())
+    if (args.baseline is None)!=(args.candidate is None):parser.error("--baseline与--candidate须同时提供")
+    check(args.output.resolve(),args.height,None if args.records is None else args.records.resolve(),
+          None if args.baseline is None else args.baseline.resolve(),None if args.candidate is None else args.candidate.resolve())
