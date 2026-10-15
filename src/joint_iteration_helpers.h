@@ -113,7 +113,7 @@ static int joint_wheel_map_values(WheelMap *packet,int wheel,const double base[9
 typedef struct {
     WheelMap *map;int wheel,rolling;
     double base[9],velocity[3],active[3],tangent[3],axle[3],moment_x[3],moment_y[3];
-    double radius,previous[2],parameters[3],hardware[5];
+    double radius,previous[2],parameters[3],hardware[5],lateral_bias;
     int *warm_branches; int (*warm_modes)[4]; PyObject *hypot;
 } JointWheelForce;
 
@@ -140,6 +140,7 @@ static int joint_wheel_force_values(void *context,double fx,double fy,int jacobi
         wheel_velocity_values(state,velocity,data->wheel+5,data->tangent,data->axle,
             data->moment_x,data->moment_y,data->radius,speed,slip);
     }
+    speed[1]+=data->lateral_bias;slip[1]-=data->lateral_bias;
     double denominator=fabs(speed[0]);
     if (data->hardware[0]>denominator) denominator=data->hardware[0];
     double dt=data->map->shared->dt;
@@ -197,6 +198,7 @@ static int joint_wheel_force_result(JointWheelForce *context,double tolerance,do
         if (!joint_wheel_force_state(context,0.,0.,state,end_velocity,&brake,&selected,&mode)
             || !wheel_derivative_values(context->map,context->wheel,selected,mode,state,end_velocity,
                 context->moment_x,context->moment_y,context->radius,context->tangent,context->axle,speed,slip,gradients)) return 0;
+        speed[1]+=context->lateral_bias;slip[1]-=context->lateral_bias;
         double dt=context->map->shared->dt,impedance=context->hardware[1]*dt+context->hardware[2];
         double denominator=fabs(speed[0])>context->hardware[0] ? fabs(speed[0]) : context->hardware[0];
         for (int a=0;a<2;++a) {

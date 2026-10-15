@@ -1,0 +1,30 @@
+{
+  "native_body_translation_defect": {
+    "sum_J": -9.057531145241212,
+    "peak_abs_J": 0.20912847179723093
+  },
+  "native_wheel_translation_defect": {
+    "sum_J": 9.853314623591464,
+    "peak_abs_J": 0.20863367269333832
+  },
+  "native_body_angular_defect": {
+    "sum_J": -0.050500030110481854,
+    "peak_abs_J": 0.004042966242671413
+  },
+  "native_inertia_transport_defect": {
+    "sum_J": -1.7445670071296868e-09,
+    "peak_abs_J": 1.812164807094711e-10
+  },
+  "native_spin_defect": {
+    "sum_J": 0.0,
+    "peak_abs_J": 0.0
+  },
+  "float32_translation_rounding_defect": {
+    "sum_J": -0.060438034225013385,
+    "peak_abs_J": 0.0013569810754620027
+  },
+  "native_translation_beyond_rounding": {
+    "sum_J": 0.8562215125752565,
+    "peak_abs_J": 0.005794210283822745
+  }
+}

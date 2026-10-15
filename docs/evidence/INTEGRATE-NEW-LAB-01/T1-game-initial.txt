@@ -1,0 +1,390 @@
+.............FF......................................................... [ 60%]
+............................FF.F...............                          [100%]
+================================== FAILURES ===================================
+_ test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics[700] __
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-598/test_game_ignores_stale_direct0')
+height = 700
+
+    @pytest.mark.parametrize("height", [700, 1080])
+    def test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics(tmp_path, height):
+        path = tmp_path / "test-driving-mode.json"
+        path.write_text(json.dumps({"mode": "simulation", "abs_enabled": True,
+                                   "tcs_enabled": True, "esc_enabled": True}), encoding="utf-8")
+        app = CoastalDrive(smoke=True, output=tmp_path, render_size=(round(height * 16 / 9), height))
+        app.taskMgr.remove("finish-smoke")
+        try:
+            app.session.menu()
+            app.refresh_panel()
+            assert app.session.driving_mode is DrivingMode.GAME
+            assert app.session.simulation.input_config is DrivingMode.GAME.input_config
+            assert [b["text"] for b in app.main_menu.buttons] == [
+                "计时挑战", "滨海自由驾驶", "无限高速", "车库", "声音设置", "退出", "进入实验室  ›"]
+            old_world = app.session.simulation
+            app.messenger.send("f2")
+            assert app.driving_mode_page and app.panel_option_count == 4
+            assert [b["text"] for b in app.buttons[:4]] == [
+                "车辆 ABS：开启", "驱动防滑 TCS：开启", "横摆稳定 ESC：开启", "返回"]
+            assert app.panel_note.getTightBounds(app.panel)[0].z > (
+                app.buttons[0].getZ() + app.buttons[0]["frameSize"][3])
+            app.key_down("enter")
+            app.key_up("enter")
+            assert not app.session.abs_enabled and app.session.simulation is old_world
+            assert DrivingModeStore(path).mode is DrivingMode.GAME
+            assert not DrivingModeStore(path).abs_enabled
+            app.toggle_tcs()
+            app.toggle_esc()
+            assert not app.session.tcs_enabled and not app.session.esc_enabled
+            assert [b["text"] for b in app.buttons[:3]] == [
+                "车辆 ABS：关闭", "驱动防滑 TCS：关闭", "横摆稳定 ESC：关闭"]
+            app.toggle_abs()
+            blocked = tmp_path / "blocked-settings"
+            blocked.write_text("not a directory", encoding="utf-8")
+            original_path = app.driving_mode_settings.path
+            app.driving_mode_settings.path = blocked / "driving-mode.json"
+            app.toggle_abs()
+            assert app.driving_mode_settings.notice
+            app.driving_mode_settings.path = original_path
+            app.toggle_abs()
+            app.key_down("escape")
+            app.key_up("escape")
+            assert not app.driving_mode_page and not app.main_menu.root.isHidden()
+            corner = TextNode("mode-corner-width")
+            corner.setFont(app.ui_font)
+            assert corner.calcWidth(app.main_menu.driving_mode_button["text"]) * .04 <= .76
+            app.choose_garage()
+            for _ in range(3):
+                app.cycle_garage_model()
+            assert app.garage_model_id == "reference-fwd"
+            app.apply_garage()
+            assert app.session.base_vehicle_config is vehicle_design("reference-fwd").config
+            assert app.session.simulation is old_world
+>           app.session.start(countdown=False)
+
+tests\test_driving_mode_ui.py:104: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\session.py:171: in start
+    self.simulation = Simulation(
+src\simulation.py:122: in __init__
+    self.reset(seed)
+src\simulation.py:164: in reset
+    self._build_traffic()
+src\simulation.py:533: in _build_traffic
+    car = vehicle_type(
+src\npc_physics.py:17: in __init__
+    kwargs['config'] = replace(config, finite_drivetrain=False, native_tire_forces=True, suspension_coupled_enabled=False,
+C:\Users\15120\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1770: in replace
+    return _replace(obj, **changes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\15120\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1804: in _replace
+    return self.__class__(**changes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:113: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = VehicleConfig(mass=1200.0, torque_curve=((900, 110), (1800, 165), (3200, 200), (4500, 190), (6000, 150), (6500, 0)), g...0.5, body_inertia=(1919.56, 511.56, 2290.0), angular_damping=0.0, suspension_travel=0.2, suspension_force_limit=6000.0)
+
+    def __post_init__(self):
+        if self.suspension_damper_curves is not None:
+            if not self.unsprung_enabled:
+                raise ValueError("减振器力速表须使用独立轮心共同模型")
+            if not isinstance(self.suspension_damper_curves,tuple) or len(self.suspension_damper_curves)!=4:
+                raise ValueError("须提供四角不可变减振器力速表")
+            for rows in self.suspension_damper_curves:
+                if not isinstance(rows,tuple) or any(not isinstance(row,tuple) for row in rows):
+                    raise ValueError("力速表须为不可变坐标行")
+                damper_curve(rows)
+        if self.suspension_installation_curves is not None:
+            if not self.suspension_coil_enabled:
+                raise ValueError("部件安装曲线须显式启用独立轮心压缩螺旋弹簧")
+            if not isinstance(self.suspension_installation_curves,tuple) or len(self.suspension_installation_curves)!=4:
+                raise ValueError("须提供四角不可变安装曲线")
+            for rows in self.suspension_installation_curves:
+                if not isinstance(rows,tuple) or any(not isinstance(row,tuple) for row in rows):
+                    raise ValueError("安装曲线须为不可变坐标行")
+                installation_curve(rows)
+        if type(self.suspension_coil_enabled) is not bool:
+            raise ValueError("压缩螺旋弹簧开关须为bool")
+        if len(self.suspension_spring_preloads)!=4 or any(isinstance(value,bool) or not math.isfinite(value) or value<0.
+                                                       for value in self.suspension_spring_preloads):
+            raise ValueError("四轮轮心预载须为有限非负值N")
+        if self.suspension_coil_enabled and not self.unsprung_enabled:
+            raise ValueError("压缩螺旋弹簧须使用独立轮心共同模型")
+        if any(self.suspension_spring_preloads) and not self.suspension_coil_enabled:
+            raise ValueError("非零安装预载须显式启用压缩螺旋弹簧")
+        for values,label,positive in ((self.unsprung_masses,"四轮簧下平动质量kg",True),
+                                     (self.tire_radial_stiffness,"四轮径向刚度N/m",True),
+                                     (self.tire_radial_damping,"四轮径向阻尼Ns/m",False)):
+            if len(values)!=4 or any(not math.isfinite(v) or v<0. or positive and v==0. for v in values):
+                raise ValueError(f"{label}须为四个有限{'正' if positive else '非负'}值")
+        if self.unsprung_enabled:
+            if not (self.suspension_si_enabled and self.suspension_coupled_enabled and self.finite_drivetrain
+                    and self.input_shaft_enabled and self.tire_compliance and self.wheel_rotor_transport):
+                raise ValueError("独立轮心须使用SI悬架与完整有限传动/输入轴/弹性接触/机械轮轴")
+            if self.body_inertia is None or self.mass<=sum(self.unsprung_masses):
+                raise ValueError("独立轮心须提供锁止参考惯量，整车质量须大于四轮质量总和")
+            if self.angular_damping!=0.:
+                raise ValueError("独立轮心模型须使用零原生角阻尼，阻尼由实际材料/端口提供")
+        if not math.isfinite(self.tire_contact_half_length) or self.tire_contact_half_length <= 0.:
+            raise ValueError("轮胎接触区纵向半长须为有限正值m")
+        if self.tire_aligning_enabled and not (self.tire_compliance and self.wheel_rotor_transport):
+>           raise ValueError("轮胎受力中心须使用弹性接触与机械轮轴，不支持旧刚性分支")
+E           ValueError: 轮胎受力中心须使用弹性接触与机械轮轴，不支持旧刚性分支
+
+src\vehicle_config.py:180: ValueError
+---------------------------- Captured stderr call -----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+_ test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics[1080] _
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-598/test_game_ignores_stale_direct1')
+height = 1080
+
+    @pytest.mark.parametrize("height", [700, 1080])
+    def test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics(tmp_path, height):
+        path = tmp_path / "test-driving-mode.json"
+        path.write_text(json.dumps({"mode": "simulation", "abs_enabled": True,
+                                   "tcs_enabled": True, "esc_enabled": True}), encoding="utf-8")
+        app = CoastalDrive(smoke=True, output=tmp_path, render_size=(round(height * 16 / 9), height))
+        app.taskMgr.remove("finish-smoke")
+        try:
+            app.session.menu()
+            app.refresh_panel()
+            assert app.session.driving_mode is DrivingMode.GAME
+            assert app.session.simulation.input_config is DrivingMode.GAME.input_config
+            assert [b["text"] for b in app.main_menu.buttons] == [
+                "计时挑战", "滨海自由驾驶", "无限高速", "车库", "声音设置", "退出", "进入实验室  ›"]
+            old_world = app.session.simulation
+            app.messenger.send("f2")
+            assert app.driving_mode_page and app.panel_option_count == 4
+            assert [b["text"] for b in app.buttons[:4]] == [
+                "车辆 ABS：开启", "驱动防滑 TCS：开启", "横摆稳定 ESC：开启", "返回"]
+            assert app.panel_note.getTightBounds(app.panel)[0].z > (
+                app.buttons[0].getZ() + app.buttons[0]["frameSize"][3])
+            app.key_down("enter")
+            app.key_up("enter")
+            assert not app.session.abs_enabled and app.session.simulation is old_world
+            assert DrivingModeStore(path).mode is DrivingMode.GAME
+            assert not DrivingModeStore(path).abs_enabled
+            app.toggle_tcs()
+            app.toggle_esc()
+            assert not app.session.tcs_enabled and not app.session.esc_enabled
+            assert [b["text"] for b in app.buttons[:3]] == [
+                "车辆 ABS：关闭", "驱动防滑 TCS：关闭", "横摆稳定 ESC：关闭"]
+            app.toggle_abs()
+            blocked = tmp_path / "blocked-settings"
+            blocked.write_text("not a directory", encoding="utf-8")
+            original_path = app.driving_mode_settings.path
+            app.driving_mode_settings.path = blocked / "driving-mode.json"
+            app.toggle_abs()
+            assert app.driving_mode_settings.notice
+            app.driving_mode_settings.path = original_path
+            app.toggle_abs()
+            app.key_down("escape")
+            app.key_up("escape")
+            assert not app.driving_mode_page and not app.main_menu.root.isHidden()
+            corner = TextNode("mode-corner-width")
+            corner.setFont(app.ui_font)
+            assert corner.calcWidth(app.main_menu.driving_mode_button["text"]) * .04 <= .76
+            app.choose_garage()
+            for _ in range(3):
+                app.cycle_garage_model()
+            assert app.garage_model_id == "reference-fwd"
+            app.apply_garage()
+            assert app.session.base_vehicle_config is vehicle_design("reference-fwd").config
+            assert app.session.simulation is old_world
+>           app.session.start(countdown=False)
+
+tests\test_driving_mode_ui.py:104: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\session.py:171: in start
+    self.simulation = Simulation(
+src\simulation.py:122: in __init__
+    self.reset(seed)
+src\simulation.py:164: in reset
+    self._build_traffic()
+src\simulation.py:533: in _build_traffic
+    car = vehicle_type(
+src\npc_physics.py:17: in __init__
+    kwargs['config'] = replace(config, finite_drivetrain=False, native_tire_forces=True, suspension_coupled_enabled=False,
+C:\Users\15120\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1770: in replace
+    return _replace(obj, **changes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\15120\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1804: in _replace
+    return self.__class__(**changes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:113: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = VehicleConfig(mass=1200.0, torque_curve=((900, 110), (1800, 165), (3200, 200), (4500, 190), (6000, 150), (6500, 0)), g...0.5, body_inertia=(1919.56, 511.56, 2290.0), angular_damping=0.0, suspension_travel=0.2, suspension_force_limit=6000.0)
+
+    def __post_init__(self):
+        if self.suspension_damper_curves is not None:
+            if not self.unsprung_enabled:
+                raise ValueError("减振器力速表须使用独立轮心共同模型")
+            if not isinstance(self.suspension_damper_curves,tuple) or len(self.suspension_damper_curves)!=4:
+                raise ValueError("须提供四角不可变减振器力速表")
+            for rows in self.suspension_damper_curves:
+                if not isinstance(rows,tuple) or any(not isinstance(row,tuple) for row in rows):
+                    raise ValueError("力速表须为不可变坐标行")
+                damper_curve(rows)
+        if self.suspension_installation_curves is not None:
+            if not self.suspension_coil_enabled:
+                raise ValueError("部件安装曲线须显式启用独立轮心压缩螺旋弹簧")
+            if not isinstance(self.suspension_installation_curves,tuple) or len(self.suspension_installation_curves)!=4:
+                raise ValueError("须提供四角不可变安装曲线")
+            for rows in self.suspension_installation_curves:
+                if not isinstance(rows,tuple) or any(not isinstance(row,tuple) for row in rows):
+                    raise ValueError("安装曲线须为不可变坐标行")
+                installation_curve(rows)
+        if type(self.suspension_coil_enabled) is not bool:
+            raise ValueError("压缩螺旋弹簧开关须为bool")
+        if len(self.suspension_spring_preloads)!=4 or any(isinstance(value,bool) or not math.isfinite(value) or value<0.
+                                                       for value in self.suspension_spring_preloads):
+            raise ValueError("四轮轮心预载须为有限非负值N")
+        if self.suspension_coil_enabled and not self.unsprung_enabled:
+            raise ValueError("压缩螺旋弹簧须使用独立轮心共同模型")
+        if any(self.suspension_spring_preloads) and not self.suspension_coil_enabled:
+            raise ValueError("非零安装预载须显式启用压缩螺旋弹簧")
+        for values,label,positive in ((self.unsprung_masses,"四轮簧下平动质量kg",True),
+                                     (self.tire_radial_stiffness,"四轮径向刚度N/m",True),
+                                     (self.tire_radial_damping,"四轮径向阻尼Ns/m",False)):
+            if len(values)!=4 or any(not math.isfinite(v) or v<0. or positive and v==0. for v in values):
+                raise ValueError(f"{label}须为四个有限{'正' if positive else '非负'}值")
+        if self.unsprung_enabled:
+            if not (self.suspension_si_enabled and self.suspension_coupled_enabled and self.finite_drivetrain
+                    and self.input_shaft_enabled and self.tire_compliance and self.wheel_rotor_transport):
+                raise ValueError("独立轮心须使用SI悬架与完整有限传动/输入轴/弹性接触/机械轮轴")
+            if self.body_inertia is None or self.mass<=sum(self.unsprung_masses):
+                raise ValueError("独立轮心须提供锁止参考惯量，整车质量须大于四轮质量总和")
+            if self.angular_damping!=0.:
+                raise ValueError("独立轮心模型须使用零原生角阻尼，阻尼由实际材料/端口提供")
+        if not math.isfinite(self.tire_contact_half_length) or self.tire_contact_half_length <= 0.:
+            raise ValueError("轮胎接触区纵向半长须为有限正值m")
+        if self.tire_aligning_enabled and not (self.tire_compliance and self.wheel_rotor_transport):
+>           raise ValueError("轮胎受力中心须使用弹性接触与机械轮轴，不支持旧刚性分支")
+E           ValueError: 轮胎受力中心须使用弹性接触与机械轮轴，不支持旧刚性分支
+
+src\vehicle_config.py:180: ValueError
+---------------------------- Captured stderr call -----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+_ test_complete_world_candidates_cover_crossings_and_preserve_finite_geometry _
+
+    def test_complete_world_candidates_cover_crossings_and_preserve_finite_geometry():
+        hardware = pickle.loads((FIXTURE/'hardware.pickle').read_bytes())
+        payload = (FIXTURE/'geometry.pickle').read_bytes()
+        memory = SharedMemory(create=True, size=len(payload))
+        memory.buf[:] = payload
+        reference = physics_workers.GeometryRef(memory.name, len(payload), 1701)
+        try:
+            physics_workers._load_geometry(reference)
+>           request = from_bytes((FIXTURE/'input-6240.bin').read_bytes())
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_continuous_solver.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = b'CDP1a\xc3\xecq\x06\xf8\xd9\xee \x00&\x06\x03\x00\x00\x00\x03\x00\x00\x00@\x96ig\xbf\x03\x00\x00\x00@\xad\xbc!@\x03\x...0\x00\x00\x00\x00\x00\x00\x06\x02\x00\x00\x00\x03\x00\x00\x00\xa0\x99\x99\xd9?\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+
+    def from_bytes(payload):
+>       return decode(_layout,payload)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: 车辆数值包布局不匹配
+
+src\physics_wire.py:65: ValueError
+_____ test_real_complete_inputs_use_native_iteration_and_reset_workspace ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001A921126E90>
+
+    def test_real_complete_inputs_use_native_iteration_and_reset_workspace(monkeypatch):
+        hardware = pickle.loads((FIXTURE/'hardware.pickle').read_bytes())
+        payload = (FIXTURE/'geometry.pickle').read_bytes()
+        memory = SharedMemory(create=True, size=len(payload))
+        memory.buf[:] = payload
+        reference = physics_workers.GeometryRef(memory.name, len(payload), 1)
+        original = tire_drivetrain.joint_solve
+        original_prepare = tire_drivetrain.joint_mechanical_prepare
+        native_calls = []
+        prepare_calls = []
+    
+        def native(*args):
+            native_calls.append(args[0])
+            return original(*args)
+    
+        def python_iteration(*args, **kwargs):
+            raise AssertionError('真实输入不允许回到旧Python共同迭代或有限接触回调')
+    
+        def prepare(*args):
+            prepare_calls.append(args[0])
+            return original_prepare(*args)
+    
+        monkeypatch.setattr(tire_drivetrain, 'joint_solve', native)
+        monkeypatch.setattr(tire_drivetrain, 'joint_mechanical_prepare', prepare)
+        for name in ('shared_load_solution', 'loaded_wheel_force_solution', 'finite_contact_system',
+                     'wheel_residuals', 'suspension_residuals', 'differential_branches', 'shaft_brake_plans',
+                     'shared_map_coefficients', 'wheel_map_coefficients', 'load_coefficients', 'suspension_projection'):
+            monkeypatch.setattr(tire_drivetrain, name, python_iteration)
+        identifiers = sorted(int(path.stem.split('-')[1]) for path in FIXTURE.glob('input-*.bin'))
+        try:
+            # 同一工作区交错处理真实两子步/各车输入；改变次序不能带入上一车暖模式。
+            for index, identifier in enumerate((*identifiers, *reversed(identifiers))):
+                if index == len(identifiers):
+                    previous_geometry = physics_workers._worker_geometry
+                    reference = replace(reference, version=2)
+>               request = replace(from_bytes((FIXTURE/f'input-{identifier}.bin').read_bytes()), config=hardware)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_continuous_solver.py:114: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = b'CDP1a\xc3\xecq\x06\xf8\xd9\xee \x00&\x06\x03\x00\x00\x00\x03\x00\x00\x00@\x96ig\xbf\x03\x00\x00\x00@\xad\xbc!@\x03\x...0\x00\x00\x00\x00\x00\x00\x06\x02\x00\x00\x00\x03\x00\x00\x00\xa0\x99\x99\xd9?\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+
+    def from_bytes(payload):
+>       return decode(_layout,payload)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: 车辆数值包布局不匹配
+
+src\physics_wire.py:65: ValueError
+__________ test_native_parallel_complete_results_and_error_recovery ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001A9211923F0>
+
+    def test_native_parallel_complete_results_and_error_recovery(monkeypatch):
+        hardware = pickle.loads((FIXTURE/'hardware.pickle').read_bytes())
+        payload = (FIXTURE/'geometry.pickle').read_bytes()
+        memory = SharedMemory(create=True, size=len(payload))
+        memory.buf[:] = payload
+        reference = physics_workers.GeometryRef(memory.name, len(payload), 1)
+        identifier = min(int(path.stem.split('-')[1]) for path in FIXTURE.glob('input-*.bin'))
+>       request = replace(from_bytes((FIXTURE/f'input-{identifier}.bin').read_bytes()), config=hardware)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_continuous_solver.py:162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+payload = b'CDP1a\xc3\xecq\x06\xf8\xd9\xee \x00&\x06\x03\x00\x00\x00\x03\x00\x00\x00@\x96ig\xbf\x03\x00\x00\x00@\xad\xbc!@\x03\x...0\x00\x00\x00\x00\x00\x00\x06\x02\x00\x00\x00\x03\x00\x00\x00\xa0\x99\x99\xd9?\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+
+    def from_bytes(payload):
+>       return decode(_layout,payload)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: 车辆数值包布局不匹配
+
+src\physics_wire.py:65: ValueError
+=========================== short test summary info ===========================
+FAILED tests/test_driving_mode_ui.py::test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics[700]
+FAILED tests/test_driving_mode_ui.py::test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics[1080]
+FAILED tests/test_continuous_solver.py::test_complete_world_candidates_cover_crossings_and_preserve_finite_geometry
+FAILED tests/test_continuous_solver.py::test_real_complete_inputs_use_native_iteration_and_reset_workspace
+FAILED tests/test_continuous_solver.py::test_native_parallel_complete_results_and_error_recovery
+5 failed, 114 passed in 24.16s

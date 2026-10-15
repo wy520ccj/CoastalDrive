@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 
 from powertrain import PowertrainState
 from suspension import SuspensionState
+from unsprung_state import UnsprungState
 from vehicle_brakes import BrakeState
 from vehicle_config import CAR
 from vehicle_dynamics import DynamicsState
@@ -105,6 +106,11 @@ class WheelDynamicsState:
     deformation_y: float = 0.0
     force_patch_kappa: float | None = None
     force_patch_alpha: float | None = None
+    pneumatic_trail: float = 0.
+    aligning_moment: float = 0.
+    aligning_angular_impulse: tuple = (0., 0., 0.)
+    contact_steering_work: float = 0.
+    steering_lateral_velocity: float = 0.
     elastic_energy: float = 0.0
     material_dissipation: float = 0.0
     road_dissipation: float = 0.0
@@ -159,6 +165,7 @@ class CarState:
     powertrain_state: PowertrainState | None = None
     suspension_state: SuspensionState | None = None
     orientation: tuple = (1., 0., 0., 0.)  # 完成物理步的body→world四元数，Hamilton标量在前。
+    unsprung_state: UnsprungState | None = None
 
 
 def forward(heading):

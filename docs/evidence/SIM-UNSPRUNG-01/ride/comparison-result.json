@@ -1,0 +1,299 @@
+[
+  {
+    "mass_kg": 25.0,
+    "reason": "time_limit",
+    "error": null,
+    "frames": 289,
+    "metrics": [
+      {
+        "key": "ride.body_rms",
+        "label": "簧上垂向RMS",
+        "unit": "m/s²",
+        "value": 0.2572638381633835,
+        "status": "available",
+        "note": "簧上CG世界Z加速度RMS，未加权；不是座椅ISO舒适等级",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4000000000000004,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.body_peak",
+        "label": "簧上垂向峰值",
+        "unit": "m/s²",
+        "value": 1.2613941729068756,
+        "status": "available",
+        "note": "簧上CG世界Z惯性加速度绝对峰值",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4000000000000004,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.hub_peak",
+        "label": "轮心垂向峰值",
+        "unit": "m/s²",
+        "value": 27.335774302482605,
+        "status": "available",
+        "note": "四轮实际速度差的世界Z加速度绝对峰值",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4000000000000004,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.max_travel",
+        "label": "最大压缩行程",
+        "unit": "m",
+        "value": 0.0617254833901968,
+        "status": "available",
+        "note": "实际轮心相对车身的压缩行程最大值",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4000000000000004,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.unload_fraction",
+        "label": "零轮荷采样比例",
+        "unit": "1",
+        "value": 0.0,
+        "status": "available",
+        "note": "四轮Fn=0的完成步占比；不是插值后的精确离地时长",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4000000000000004,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.min_load_fl",
+        "label": "最小施力轮荷 FL",
+        "unit": "N",
+        "value": 1770.4095664142478,
+        "status": "available",
+        "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4000000000000004,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.min_load_fr",
+        "label": "最小施力轮荷 FR",
+        "unit": "N",
+        "value": 2708.3818502532904,
+        "status": "available",
+        "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4000000000000004,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.min_load_rl",
+        "label": "最小施力轮荷 RL",
+        "unit": "N",
+        "value": 1755.367302437923,
+        "status": "available",
+        "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4000000000000004,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.min_load_rr",
+        "label": "最小施力轮荷 RR",
+        "unit": "N",
+        "value": 2703.720682177311,
+        "status": "available",
+        "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4000000000000004,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.load_cv_fl",
+        "label": "FL动态轮荷比",
+        "unit": "1",
+        "value": 0.06876233662905525,
+        "status": "available",
+        "note": "sqrt(mean((Fn_FL−初始Fn_FL)^2))/初始Fn_FL，完整区间",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4000000000000004,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      }
+    ],
+    "changed_conditions": {},
+    "record_roundtrip_exact": true,
+    "recalculate_exact": null
+  },
+  {
+    "mass_kg": 65.0,
+    "reason": "time_limit",
+    "error": null,
+    "frames": 289,
+    "metrics": [
+      {
+        "key": "ride.body_rms",
+        "label": "簧上垂向RMS",
+        "unit": "m/s²",
+        "value": 0.28878387941458594,
+        "status": "available",
+        "note": "簧上CG世界Z加速度RMS，未加权；不是座椅ISO舒适等级",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.body_peak",
+        "label": "簧上垂向峰值",
+        "unit": "m/s²",
+        "value": 1.1337728798389435,
+        "status": "available",
+        "note": "簧上CG世界Z惯性加速度绝对峰值",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.hub_peak",
+        "label": "轮心垂向峰值",
+        "unit": "m/s²",
+        "value": 17.83278778195381,
+        "status": "available",
+        "note": "四轮实际速度差的世界Z加速度绝对峰值",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.max_travel",
+        "label": "最大压缩行程",
+        "unit": "m",
+        "value": 0.05355539314727481,
+        "status": "available",
+        "note": "实际轮心相对车身的压缩行程最大值",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.unload_fraction",
+        "label": "零轮荷采样比例",
+        "unit": "1",
+        "value": 0.0,
+        "status": "available",
+        "note": "四轮Fn=0的完成步占比；不是插值后的精确离地时长",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.min_load_fl",
+        "label": "最小施力轮荷 FL",
+        "unit": "N",
+        "value": 1512.841467756295,
+        "status": "available",
+        "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.min_load_fr",
+        "label": "最小施力轮荷 FR",
+        "unit": "N",
+        "value": 2674.8057649961443,
+        "status": "available",
+        "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.min_load_rl",
+        "label": "最小施力轮荷 RL",
+        "unit": "N",
+        "value": 1524.5893055479025,
+        "status": "available",
+        "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.min_load_rr",
+        "label": "最小施力轮荷 RR",
+        "unit": "N",
+        "value": 2672.8876084341696,
+        "status": "available",
+        "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      },
+      {
+        "key": "ride.load_cv_fl",
+        "label": "FL动态轮荷比",
+        "unit": "1",
+        "value": 0.08042340379891744,
+        "status": "available",
+        "note": "sqrt(mean((Fn_FL−初始Fn_FL)^2))/初始Fn_FL，完整区间",
+        "window": {
+          "start_s": 0.0,
+          "end_s": 2.4,
+          "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+        }
+      }
+    ],
+    "changed_conditions": {
+      "vehicle.unsprung_masses": {
+        "A": [
+          25.0,
+          25.0,
+          25.0,
+          25.0
+        ],
+        "B": [
+          65.0,
+          65.0,
+          65.0,
+          65.0
+        ]
+      }
+    },
+    "record_roundtrip_exact": true,
+    "recalculate_exact": null
+  }
+]

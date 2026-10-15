@@ -3,6 +3,8 @@
 import math
 from dataclasses import dataclass, field
 
+from suspension_damper import damper_curve
+from suspension_installation import installation_curve
 from vehicle_brakes import BrakeConfig
 from vehicle_stability import StabilityConfig
 from vehicle_traction import TractionConfig
@@ -68,8 +70,9 @@ class VehicleConfig:
     wheel_shoulder_radius: float = .01  # m，圆角肩部；半径与胎宽均定义含肩部外廓。
     wheel_crown_height: float = .003  # m，胎面中心到肩部的抛物线胎冠落差，通用设计值。
     wheel_inertia: float = 1.8  # 单轮轴向转动惯量，kg·m²。
-    longitudinal_stiffness: float = 60000.0  # 静态单轮载荷下，N/单位滑转率。
-    lateral_stiffness: float = 50000.0  # 静态单轮载荷下，N/rad。
+    tire_reference_load: float = 2943.0  # N，固定轮胎标定轮荷；换整车质量时仍保持同一轮胎数据。
+    longitudinal_stiffness: float = 60000.0  # 固定轮胎标定轮荷下，N/单位滑转率。
+    lateral_stiffness: float = 50000.0  # 固定轮胎标定轮荷下，N/rad。
     rear_lateral_stiffness: float = 50000.0  # 后轮可独立定义侧偏刚度，N/rad。
     tire_peak_load_exponent: float = .90  # 峰值力随轮荷次线性增长；1恢复原线性模型。
     longitudinal_load_exponent: float = .90
@@ -78,6 +81,8 @@ class VehicleConfig:
     wheel_rotor_transport: bool = True  # 机械轮轴、有效力臂及同末状态轴承反力；false冻结旧机制。
     tire_contact_stiffness: float = 150000.0  # 二维各向同性接触区弹性，N/m。
     tire_contact_damping: float = 1000.0  # N·s/m。
+    tire_aligning_enabled: bool = False  # 刷毛受力中心机制；游戏旧硬件保持，实验设计单独启用。
+    tire_contact_half_length: float = .08  # m，接触区纵向半长设计初值，需轮胎台架标定。
     tire_shape: float = 1.9
     tire_curvature: float = 0.97
     slip_speed: float = 1.0  # 低速滑移分母的模型尺度，m/s。
@@ -85,10 +90,18 @@ class VehicleConfig:
     tire_substeps: int = 2
     suspension_si_enabled: bool = True  # false沿用质量归一化旧硬件，供明确旧/新对照。
     suspension_coupled_enabled: bool = True  # SI分支共同求法向力；false保留首增量的原生SI对照。
+    unsprung_enabled: bool = False  # 独立轮心质量与径向弹性；完成整车验收后才更换参考默认。
+    unsprung_masses: tuple = (40.,) * 4  # kg，轮端平动质量设计假设，不含重复轴向自旋惯量。
+    tire_radial_stiffness: tuple = (200000.,) * 4  # N/m，未测量的四轮径向刚度初值。
+    tire_radial_damping: tuple = (500.,) * 4  # N·s/m，正径向压缩阻尼设计初值。
     suspension_antiroll_rates: tuple = (6000., 4000.)  # N/m；前/后左右行程差的设计刚度，非实测标定。
     suspension_stop_rates: tuple = (480000.,) * 4  # N/m；行程边界外的渐进止挡设计刚度。
-    suspension_spring_rates: tuple = (48000.,) * 4  # N/m；四轮实际弹簧设计值，平路与旧1200kg参数相同。
-    suspension_compression_damping: tuple = (5280.,) * 4  # N·s/m；耦合分支的轴向压缩阻尼，原生对照为法向/射线速率。
+    suspension_spring_rates: tuple = (48000.,) * 4  # N/m；四轮轮心等效刚度，不是减振支柱部件原始刚度。
+    suspension_coil_enabled: bool = False  # 独立轮心的压缩螺旋弹簧；松弛后不承受拉力。
+    suspension_spring_preloads: tuple = (0.,) * 4  # N；q=0时的四轮轮心等效预载，不是附加外载荷。
+    suspension_installation_curves: tuple | None = None  # 四角(q,弹簧增量,减振器增量)m；PCHIP及端点切线外推。
+    suspension_damper_curves: tuple | None = None  # 四角q=0轮心等效(速度m/s,阻力N)表；覆盖常阻尼。
+    suspension_compression_damping: tuple = (5280.,) * 4  # N·s/m；轮心等效压缩阻尼，原生对照为法向/射线速率。
     suspension_extension_damping: tuple = (2760.,) * 4  # N·s/m；耦合分支的轴向伸张阻尼。
     suspension_stiffness: float = 40.0
     suspension_compression: float = 4.4
@@ -121,6 +134,52 @@ class VehicleConfig:
     suspension_force_limit: float = 6000.0  # N；仅原生对照分支的数值力限，SI势能反力不作硬裁剪。
 
     def __post_init__(self):
+        if self.suspension_damper_curves is not None:
+            if not self.unsprung_enabled:
+                raise ValueError("减振器力速表须使用独立轮心共同模型")
+            if not isinstance(self.suspension_damper_curves,tuple) or len(self.suspension_damper_curves)!=4:
+                raise ValueError("须提供四角不可变减振器力速表")
+            for rows in self.suspension_damper_curves:
+                if not isinstance(rows,tuple) or any(not isinstance(row,tuple) for row in rows):
+                    raise ValueError("力速表须为不可变坐标行")
+                damper_curve(rows)
+        if self.suspension_installation_curves is not None:
+            if not self.suspension_coil_enabled:
+                raise ValueError("部件安装曲线须显式启用独立轮心压缩螺旋弹簧")
+            if not isinstance(self.suspension_installation_curves,tuple) or len(self.suspension_installation_curves)!=4:
+                raise ValueError("须提供四角不可变安装曲线")
+            for rows in self.suspension_installation_curves:
+                if not isinstance(rows,tuple) or any(not isinstance(row,tuple) for row in rows):
+                    raise ValueError("安装曲线须为不可变坐标行")
+                installation_curve(rows)
+        if type(self.suspension_coil_enabled) is not bool:
+            raise ValueError("压缩螺旋弹簧开关须为bool")
+        if len(self.suspension_spring_preloads)!=4 or any(isinstance(value,bool) or not math.isfinite(value) or value<0.
+                                                       for value in self.suspension_spring_preloads):
+            raise ValueError("四轮轮心预载须为有限非负值N")
+        if self.suspension_coil_enabled and not self.unsprung_enabled:
+            raise ValueError("压缩螺旋弹簧须使用独立轮心共同模型")
+        if any(self.suspension_spring_preloads) and not self.suspension_coil_enabled:
+            raise ValueError("非零安装预载须显式启用压缩螺旋弹簧")
+        for values,label,positive in ((self.unsprung_masses,"四轮簧下平动质量kg",True),
+                                     (self.tire_radial_stiffness,"四轮径向刚度N/m",True),
+                                     (self.tire_radial_damping,"四轮径向阻尼Ns/m",False)):
+            if len(values)!=4 or any(not math.isfinite(v) or v<0. or positive and v==0. for v in values):
+                raise ValueError(f"{label}须为四个有限{'正' if positive else '非负'}值")
+        if self.unsprung_enabled:
+            if not (self.suspension_si_enabled and self.suspension_coupled_enabled and self.finite_drivetrain
+                    and self.input_shaft_enabled and self.tire_compliance and self.wheel_rotor_transport):
+                raise ValueError("独立轮心须使用SI悬架与完整有限传动/输入轴/弹性接触/机械轮轴")
+            if self.body_inertia is None or self.mass<=sum(self.unsprung_masses):
+                raise ValueError("独立轮心须提供锁止参考惯量，整车质量须大于四轮质量总和")
+            if self.angular_damping!=0.:
+                raise ValueError("独立轮心模型须使用零原生角阻尼，阻尼由实际材料/端口提供")
+        if not math.isfinite(self.tire_contact_half_length) or self.tire_contact_half_length <= 0.:
+            raise ValueError("轮胎接触区纵向半长须为有限正值m")
+        if self.tire_aligning_enabled and not (self.tire_compliance and self.wheel_rotor_transport):
+            raise ValueError("轮胎受力中心须使用弹性接触与机械轮轴，不支持旧刚性分支")
+        if not math.isfinite(self.tire_reference_load) or self.tire_reference_load <= 0.:
+            raise ValueError("轮胎固定标定轮荷须为有限正值N")
         if len(self.axle_torque_bias_ratios) != 2 or any(not math.isfinite(value) or value < 1.
                 for value in self.axle_torque_bias_ratios):
             raise ValueError("前／后轴扭矩偏置比须为两个不小于1的有限值")

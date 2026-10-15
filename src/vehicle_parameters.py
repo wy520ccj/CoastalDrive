@@ -25,16 +25,21 @@ PARAMETER_GROUPS = {
     ),
     "tires": (
         "wheel_radius", "wheel_width", "wheel_shoulder_radius", "wheel_crown_height", "wheel_inertia",
-        "longitudinal_stiffness", "lateral_stiffness", "rear_lateral_stiffness",
+        "tire_reference_load", "longitudinal_stiffness", "lateral_stiffness", "rear_lateral_stiffness",
         "tire_peak_load_exponent", "longitudinal_load_exponent", "lateral_load_exponent",
         "tire_compliance", "native_tire_forces", "wheel_rotor_transport", "tire_contact_stiffness", "tire_contact_damping",
         "tire_shape", "tire_curvature", "slip_speed", "static_contact_speed", "tire_substeps",
+        "tire_aligning_enabled", "tire_contact_half_length",
         "rolling_coefficient", "grass_rolling_coefficient", "wheel_rolling_resistance",
         "rolling_transition_speed", "road_friction", "grass_friction",
     ),
     "suspension": (
+        "unsprung_enabled", "unsprung_masses", "tire_radial_stiffness", "tire_radial_damping",
         "suspension_si_enabled", "suspension_coupled_enabled", "suspension_antiroll_rates",
         "suspension_stop_rates", "suspension_spring_rates", "suspension_compression_damping",
+        "suspension_coil_enabled", "suspension_spring_preloads",
+        "suspension_installation_curves",
+        "suspension_damper_curves",
         "suspension_extension_damping", "suspension_stiffness", "suspension_compression",
         "suspension_relaxation", "suspension_travel", "suspension_force_limit",
     ),
@@ -79,9 +84,29 @@ def save_vehicle_config(path, config, *, metadata=None):
     Path(path).write_text(json.dumps(document, ensure_ascii=False, indent=2, allow_nan=False), encoding="utf-8")
 
 
-def load_vehicle_config(path, selected):
-    """JSON文件边界恢复不可变配置；嵌套电子配置继承选定车型。"""
-    values = _parameters(json.loads(Path(path).read_text(encoding="utf-8")))
+def config_from_document(document, selected):
+    """文件或保存记录恢复同一不可变配置；嵌套控制配置继承选定车型。"""
+    values = dict(_parameters(document))
+    # 老工程文件没有接触区回正机制；导入后仍保留其原力学定义。
+    if "tire_aligning_enabled" not in values:
+        values["tire_aligning_enabled"] = False
+    if "unsprung_enabled" not in values:
+        values["unsprung_enabled"] = False
+    # 旧文件没有压缩弹簧/安装预载，恢复其原双向弹性定义。
+    if "suspension_coil_enabled" not in values:
+        values["suspension_coil_enabled"] = False
+    if "suspension_spring_preloads" not in values:
+        values["suspension_spring_preloads"] = (0.,)*4
+    if "suspension_installation_curves" not in values:
+        values["suspension_installation_curves"] = None
+    elif values["suspension_installation_curves"] is not None:
+        values["suspension_installation_curves"] = tuple(tuple(tuple(row) for row in rows)
+            for rows in values["suspension_installation_curves"])
+    if "suspension_damper_curves" not in values:
+        values["suspension_damper_curves"]=None
+    elif values["suspension_damper_curves"] is not None:
+        values["suspension_damper_curves"]=tuple(tuple(tuple(row) for row in rows)
+            for rows in values["suspension_damper_curves"])
     if "braking" in values:
         values["braking"] = replace(selected.braking, **values["braking"])
     if "stability" in values:
@@ -100,6 +125,9 @@ def load_vehicle_config(path, selected):
             values[name] = tuple(values[name])
     if "downstream_axes" in values:
         values["downstream_axes"] = tuple(tuple(axis) for axis in values["downstream_axes"])
+    for name in ("unsprung_masses", "tire_radial_stiffness", "tire_radial_damping", "suspension_spring_preloads"):
+        if name in values:
+            values[name] = tuple(values[name])
     si_fields = ("suspension_spring_rates", "suspension_compression_damping", "suspension_extension_damping",
                  "suspension_antiroll_rates", "suspension_stop_rates")
     if "suspension_si_enabled" not in values:
@@ -116,4 +144,8 @@ def load_vehicle_config(path, selected):
     if "axle_track_widths" in values and values["axle_track_widths"] is not None:
         values["axle_track_widths"] = tuple(values["axle_track_widths"])
     return replace(selected, **values)
+
+
+def load_vehicle_config(path, selected):
+    return config_from_document(json.loads(Path(path).read_text(encoding="utf-8")), selected)
 

@@ -1,0 +1,13 @@
+{
+  "height": 1080,
+  "actual_key_F1": true,
+  "actual_plot_menu_callback": true,
+  "trial_has_nonzero_Mz": true,
+  "texture_not_downsized": true,
+  "notes_inside_card": true,
+  "screenshots": [
+    "01-actual-aligning-curves.png",
+    "02-tire_contact_half_length.png",
+    "02-tire_aligning_enabled.png"
+  ]
+}

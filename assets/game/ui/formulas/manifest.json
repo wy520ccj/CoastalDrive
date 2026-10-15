@@ -1,0 +1,734 @@
+{
+  "renderer": "Matplotlib MathText 3.11.2",
+  "fontset": "stix",
+  "dpi": 240,
+  "font_points": 24,
+  "source": "src/parameter_formulas.py",
+  "formulas": {
+    "metric.ride.body_rms": [
+      {
+        "file": "metric.ride.body_rms-0.png",
+        "tex": "a_{z,n}=\\frac{v_{z,n}-v_{z,n-1}}{\\Delta t},\\qquad \\Delta t=\\frac{1}{120}\\,\\mathrm{s}",
+        "width": 990,
+        "height": 93,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "39d7f9dab6cee9ce05eaff3423a37d2a3d6dcde15d38489560c9302d7b849248"
+      },
+      {
+        "file": "metric.ride.body_rms-1.png",
+        "tex": "a_{\\mathrm{RMS}}=\\sqrt{\\frac{1}{N}\\sum_{n=1}^{N}a_{z,n}^{\\,2}}",
+        "width": 626,
+        "height": 220,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "1914ece8ff17b7f5e8a8c80823c89aab7c8ee1d472b0a5f264e909012f61da54"
+      }
+    ],
+    "metric.ride.body_peak": [
+      {
+        "file": "metric.ride.body_peak-0.png",
+        "tex": "a_{\\mathrm{peak}}=\\max_n |a_{z,n}|",
+        "width": 550,
+        "height": 96,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "4ec08fbca67f0a0e71c4b294c6b515da1e21c4e08382946087968ba4ceae757f"
+      }
+    ],
+    "metric.ride.hub_peak": [
+      {
+        "file": "metric.ride.hub_peak-0.png",
+        "tex": "a_{i,z,n}=\\frac{v_{i,z,n}-v_{i,z,n-1}}{\\Delta t},\\qquad a_{\\mathrm{peak}}=\\max_{i,n}|a_{i,z,n}|",
+        "width": 1383,
+        "height": 126,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "1678f057c28b3493107e69ab79f70ee5bf44cab7de4946c2d1c9659f6157bc1e"
+      }
+    ],
+    "metric.ride.max_travel": [
+      {
+        "file": "metric.ride.max_travel-0.png",
+        "tex": "q_{\\max}=\\max_{i,n} q_{i,n}",
+        "width": 500,
+        "height": 100,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "8ab33a3938fa3312a6e69dd03fb0a1e9af8432a64b809243150edbc7e0724fef"
+      }
+    ],
+    "metric.ride.unload_fraction": [
+      {
+        "file": "metric.ride.unload_fraction-0.png",
+        "tex": "p_0=\\frac{1}{4N}\\sum_{i=1}^{4}\\sum_{n=1}^{N}\\mathbf{1}_{F_{z,i,n}=0}",
+        "width": 706,
+        "height": 193,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "b133c9ac1bc7faeb18f44ad58bfe4a5f880308e71e7a3dbe78611e1bc2efb9bc"
+      }
+    ],
+    "metric.ride.min_load_fl": [
+      {
+        "file": "metric.ride.min_load_fl-0.png",
+        "tex": "F_{z,i,\\min}=\\min_n F_{z,i,n}",
+        "width": 630,
+        "height": 100,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "893fb2ef84f2b889893e05113fdf4ccb41fdf218d7e97030100adb729f833cb9"
+      }
+    ],
+    "metric.ride.load_cv_fl": [
+      {
+        "file": "metric.ride.load_cv_fl-0.png",
+        "tex": "D_L=\\frac{\\sqrt{\\frac{1}{N}\\sum_{n=1}^{N}(F_{z,\\mathrm{FL},n}-F_{z,\\mathrm{FL},0})^2}}{F_{z,\\mathrm{FL},0}}",
+        "width": 800,
+        "height": 220,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "f06870ecac3fe1925f744e737234f773c725b7eedb5daf1f50586c0e895e2cb3"
+      }
+    ],
+    "unsprung_masses": [
+      {
+        "file": "unsprung_masses-0.png",
+        "tex": "m_s=M-\\sum_i m_i,\\qquad \\mathbf{c}_s=-\\frac{\\sum_i m_i\\mathbf{r}_i}{m_s}",
+        "width": 1010,
+        "height": 196,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "a203452c0536864e76f3c0e76d7962ea14ee7f40ada7d71fa4dece8975602450"
+      },
+      {
+        "file": "unsprung_masses-1.png",
+        "tex": "\\mathbf{I}_s=\\mathbf{I}_0-\\sum_i P(m_i,\\mathbf{r}_i)-P(m_s,\\mathbf{c}_s)",
+        "width": 1000,
+        "height": 136,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "e1aa3c55e46eef0385344f955a452682721a7ab4907374e3d49df21c53d52b94"
+      }
+    ],
+    "unsprung_enabled": [
+      {
+        "file": "unsprung_enabled-0.png",
+        "tex": "\\mathbf{v}_{i,1}=\\mathbf{J}_{i,0}\\mathbf{z}_1+\\mathbf{b}_i",
+        "width": 533,
+        "height": 76,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "ef5c4d87a6e0fee64b9d19fbe3f4c57b9445a4183a460eac528c1ac6438a1ee0"
+      },
+      {
+        "file": "unsprung_enabled-1.png",
+        "tex": "\\mathcal{M}=\\mathrm{diag}(m_s\\mathbf{1},\\mathbf{I}_s,\\mathbf{0})+\\sum_i m_i\\mathbf{J}_i^T\\mathbf{J}_i",
+        "width": 1026,
+        "height": 143,
+        "texture_width": 2048,
+        "texture_height": 256,
+        "sha256": "b5730e9155b1c1255ccf8737d5cf4c99c159225d093b2f1ad7b1b4cca4b28d56"
+      }
+    ],
+    "tire_radial_stiffness": [
+      {
+        "file": "tire_radial_stiffness-0.png",
+        "tex": "F_n^*=\\max\\left(0,k_r\\delta_++c_r\\frac{\\Delta\\delta_+}{h}\\right)",
+        "width": 923,
+        "height": 100,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "2d7f2e70a22a916b2141df4353dea89afc05b1fee79e675401aa75b78c63dac3"
+      },
+      {
+        "file": "tire_radial_stiffness-1.png",
+        "tex": "s=\\|\\overline{\\mathbf{n}}\\|,\\quad F_n=sF_n^*,\\quad U_r=\\frac{1}{2}k_r\\delta_+^2",
+        "width": 1156,
+        "height": 100,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "8db11c715a2991ae2dd58240d9dbdf26a96fce60a528b044c19f4cc45d1b0b62"
+      },
+      {
+        "file": "tire_radial_stiffness-2.png",
+        "tex": "\\delta_1-\\delta_0=-hs\\left(\\mathbf{g}_n\\mathbf{z}+v_n^{\\mathrm{steer}}+\\widehat{\\mathbf{n}}\\cdot\\mathbf{b}_i\\right)",
+        "width": 1100,
+        "height": 93,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "03b96c0ffb1fb5503f2bc80256cd02b75c5277c051d393fd349ca7a56363289e"
+      }
+    ],
+    "tire_radial_damping": [
+      {
+        "file": "tire_radial_damping-0.png",
+        "tex": "F_n^*=\\max\\left(0,k_r\\delta_++c_r\\frac{\\Delta\\delta_+}{h}\\right)",
+        "width": 923,
+        "height": 100,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "2d7f2e70a22a916b2141df4353dea89afc05b1fee79e675401aa75b78c63dac3"
+      },
+      {
+        "file": "tire_radial_damping-1.png",
+        "tex": "F_n=\\|\\overline{\\mathbf{n}}\\|F_n^*",
+        "width": 406,
+        "height": 100,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "c4edb6229026be21695ab9314a3b5e352abca7781c015c9eb73fbc2f1108448e"
+      },
+      {
+        "file": "tire_radial_damping-2.png",
+        "tex": "E_{r,\\mathrm{damp}}=h c_r\\left(\\frac{\\Delta\\delta_+}{h}\\right)^2",
+        "width": 636,
+        "height": 116,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "b02771204b310376875a6b992a38628adb5cb536e4362be6bd935ad039e6d574"
+      }
+    ],
+    "tire_contact_half_length": [
+      {
+        "file": "tire_contact_half_length-0.png",
+        "tex": "z=\\min\\left(1,\\frac{D}{2\\sqrt{(C_\\kappa\\kappa)^2+(C_\\alpha\\tan\\alpha)^2}}\\right)",
+        "width": 956,
+        "height": 136,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "af5da8dedd9a062e33a38ffc1a64cb8f97128d8aca456f38b9b70dd71b42bf9d"
+      },
+      {
+        "file": "tire_contact_half_length-1.png",
+        "tex": "t=\\mathrm{sgn}(v_x)\\frac{a z(3-2z)}{3(2-z)},\\qquad M_z=t F_y",
+        "width": 1046,
+        "height": 113,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "ebf13ab8229556c2502a3f8e73d4c07321f22952ac7ac085bf692b4f098a5868"
+      }
+    ],
+    "tire_aligning_enabled": [
+      {
+        "file": "tire_aligning_enabled-0.png",
+        "tex": "\\mathbf{p}_*=\\mathbf{p}-t\\mathbf{e}_x,\\qquad M_z=t F_y",
+        "width": 880,
+        "height": 80,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "e63105368dd2e7158c7d29c19106dafb01936ccfa9f3f1775a3f9b74255bf2c6"
+      },
+      {
+        "file": "tire_aligning_enabled-1.png",
+        "tex": "W_{\\mathrm{steer}}=-\\Delta t\\, F_y\\, v_{y,\\mathrm{steer}}",
+        "width": 686,
+        "height": 83,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "c97ebce81d6c64018d516576ad73bdae4da099ea7bb0c1ff2eb4cd34debb71ef"
+      }
+    ],
+    "metric.mfdd": [
+      {
+        "file": "metric.mfdd-0.png",
+        "tex": "d_m=\\frac{v_b^2-v_e^2}{2(s_e-s_b)},\\quad v_b=0.8v_0,\\quad v_e=0.1v_0",
+        "width": 1263,
+        "height": 133,
+        "texture_width": 2048,
+        "texture_height": 256,
+        "sha256": "d2fe07fd15bee6509356becb5d07c36476ff94239508fea120f626a29fbc4e29"
+      }
+    ],
+    "metric.yaw_gain": [
+      {
+        "file": "metric.yaw_gain-0.png",
+        "tex": "G_r=\\frac{\\overline{r}_{\\mathrm{right}}}{\\overline{\\delta}_{\\mathrm{actual}}}",
+        "width": 303,
+        "height": 133,
+        "texture_width": 512,
+        "texture_height": 256,
+        "sha256": "ca2afdafc3b471ca185adee84fe36178e4057f2a8f5655b1ce39bbadd3003069"
+      }
+    ],
+    "metric.beta": [
+      {
+        "file": "metric.beta-0.png",
+        "tex": "\\beta=\\arctan\\left(\\frac{v_{\\mathrm{right}}}{|v_{\\mathrm{forward}}|}\\right)",
+        "width": 606,
+        "height": 106,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "839097c87ed7d801ecab7685f43ad33cbf896781e29783dfd874d7a65b372e5f"
+      }
+    ],
+    "metric.ltr_front": [
+      {
+        "file": "metric.ltr_front-0.png",
+        "tex": "\\mathrm{LTR}=\\frac{F_{z,R}-F_{z,L}}{F_{z,R}+F_{z,L}}",
+        "width": 493,
+        "height": 120,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "b4523a99fd19785f2c10cfa741c15c3a65ac5fde2e294e26487a4faa24ada91c"
+      }
+    ],
+    "metric.utilization_fl": [
+      {
+        "file": "metric.utilization_fl-0.png",
+        "tex": "\\eta=\\frac{\\sqrt{F_x^2+F_y^2}}{D_{\\mathrm{force}}}",
+        "width": 386,
+        "height": 156,
+        "texture_width": 512,
+        "texture_height": 256,
+        "sha256": "e95cc26624ce750de1ff4d77a38e82542ad82fc5ada17fcda11f1859ad7c2503"
+      }
+    ],
+    "speed": [
+      {
+        "file": "speed-0.png",
+        "tex": "v_0=\\frac{V_0}{3.6}",
+        "width": 233,
+        "height": 100,
+        "texture_width": 256,
+        "texture_height": 128,
+        "sha256": "f97a2a300896f3fba275b34b1a1e75f167e12bb6d9326080832622f49cea08bd"
+      },
+      {
+        "file": "speed-1.png",
+        "tex": "\\omega_{i,0}=\\frac{v_{i,x}^{\\mathrm{ns}}}{r_{i,\\mathrm{load}}}-\\boldsymbol{\\Omega}\\cdot\\mathbf{a}_i",
+        "width": 606,
+        "height": 130,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "46713b8e1c12e327a914e5b37ebd7031650caf50cfe504ab414a1293b79cb9fc"
+      }
+    ],
+    "road_friction": [
+      {
+        "file": "road_friction-0.png",
+        "tex": "D=\\mu F_z\\left(\\frac{F_z}{F_{z0}}\\right)^{p_D-1}",
+        "width": 566,
+        "height": 130,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "9b8a1a447bc1fc1d8001a16ed94281455389d851da6e8ec072a348f24549ffdb"
+      }
+    ],
+    "tire_reference_load": [
+      {
+        "file": "tire_reference_load-0.png",
+        "tex": "D=\\mu F_z\\left(\\frac{F_z}{F_{z0}}\\right)^{p_D-1}",
+        "width": 566,
+        "height": 130,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "9b8a1a447bc1fc1d8001a16ed94281455389d851da6e8ec072a348f24549ffdb"
+      },
+      {
+        "file": "tire_reference_load-1.png",
+        "tex": "C_\\kappa=C_{\\kappa0}\\left(\\frac{F_z}{F_{z0}}\\right)^{p_\\kappa}",
+        "width": 486,
+        "height": 116,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "fae50b8a24ec8c4d4da4da67289d168ee7e622966924702e6b6e8518b6eafc1a"
+      },
+      {
+        "file": "tire_reference_load-2.png",
+        "tex": "C_\\alpha=C_{\\alpha0}\\left(\\frac{F_z}{F_{z0}}\\right)^{p_\\alpha}",
+        "width": 503,
+        "height": 116,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "3b00788bcd0a849b46b8885bfa47e369fbacfeddf2f03594a47015b12745c06c"
+      }
+    ],
+    "longitudinal_stiffness": [
+      {
+        "file": "longitudinal_stiffness-0.png",
+        "tex": "C_\\kappa=C_{\\kappa0}\\left(\\frac{F_z}{F_{z0}}\\right)^{p_\\kappa}",
+        "width": 486,
+        "height": 116,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "fae50b8a24ec8c4d4da4da67289d168ee7e622966924702e6b6e8518b6eafc1a"
+      },
+      {
+        "file": "longitudinal_stiffness-1.png",
+        "tex": "F_x\\approx C_\\kappa\\kappa",
+        "width": 283,
+        "height": 66,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "2bb67a86f196b818e869e969026137d4dc648039bb34ca7cd704a024eed00d12"
+      }
+    ],
+    "lateral_stiffness": [
+      {
+        "file": "lateral_stiffness-0.png",
+        "tex": "C_\\alpha=C_{\\alpha0}\\left(\\frac{F_z}{F_{z0}}\\right)^{p_\\alpha}",
+        "width": 503,
+        "height": 116,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "3b00788bcd0a849b46b8885bfa47e369fbacfeddf2f03594a47015b12745c06c"
+      },
+      {
+        "file": "lateral_stiffness-1.png",
+        "tex": "F_y\\approx-C_\\alpha\\alpha",
+        "width": 383,
+        "height": 80,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "df8f784fe0cf32af172fedf17a088e098c6efc5111850a3572561fa26c2e4bb3"
+      }
+    ],
+    "duration": [
+      {
+        "file": "duration-0.png",
+        "tex": "\\Delta t=\\frac{1}{120}\\,\\mathrm{s},\\qquad t_n=n\\Delta t",
+        "width": 743,
+        "height": 93,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "a5109cb883eb352fe412c160351b1542313901c812c86ce4449fe52e6ea606c4"
+      }
+    ],
+    "onset": [
+      {
+        "file": "onset-0.png",
+        "tex": "\\delta_{\\mathrm{req}}=A\\sin\\left[2\\pi f(t-t_0)\\right],\\quad f=0.5\\,\\mathrm{Hz}",
+        "width": 1156,
+        "height": 83,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "4c0efc786cc5ba62c50a26fd28b9b9d4a68dfe735be131d5557f1e32d890f7b0"
+      },
+      {
+        "file": "onset-1.png",
+        "tex": "u_{\\mathrm{brake,req}}=\\mathbb{1}_{t\\geq t_0}",
+        "width": 513,
+        "height": 83,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "e99896caec15e50dac38c7c81ff607748c47040a51e8785c582653170645252b"
+      }
+    ],
+    "steer": [
+      {
+        "file": "steer-0.png",
+        "tex": "R=\\frac{L}{\\tan\\delta}",
+        "width": 250,
+        "height": 93,
+        "texture_width": 256,
+        "texture_height": 128,
+        "sha256": "d3ecc4b2f5a8e6c5ad0f3b7f6927bfecdb06f9d6e50e695966a1b1957b385282"
+      },
+      {
+        "file": "steer-1.png",
+        "tex": "\\delta_{L,R}=\\arctan\\left(\\frac{L}{R\\pm t_f/2}\\right)",
+        "width": 673,
+        "height": 110,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "876c3e43123100615d01541f17bf1f10df743b592fecd8bf04d0d20fcdc1066e"
+      }
+    ],
+    "center_of_mass_height": [
+      {
+        "file": "center_of_mass_height-0.png",
+        "tex": "\\Delta F_{z,\\mathrm{axle}}\\approx\\frac{m h a_x}{L}",
+        "width": 456,
+        "height": 103,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "452dd56fe4875571ae0e589ec4977b7d41ec96197bb5c3fb14864e8e674908b0"
+      }
+    ],
+    "radius": [
+      {
+        "file": "radius-0.png",
+        "tex": "\\delta_{\\mathrm{ref}}=\\arctan\\left(\\frac{L}{R}\\right)",
+        "width": 510,
+        "height": 93,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "a75353146d5b7c752d3c1df8f438471a41c00e223fb93723fcddab4397bc259e"
+      },
+      {
+        "file": "radius-1.png",
+        "tex": "\\kappa_{\\mathrm{path}}=\\frac{2e_y}{l_d^2}",
+        "width": 306,
+        "height": 140,
+        "texture_width": 512,
+        "texture_height": 256,
+        "sha256": "04a3851f47e48768773896dd9256c352a5a3a40b11887debb878363989f89938"
+      }
+    ],
+    "manual.throttle": [
+      {
+        "file": "manual.throttle-0.png",
+        "tex": "u=\\frac{u_{\\%}}{100}",
+        "width": 220,
+        "height": 90,
+        "texture_width": 256,
+        "texture_height": 128,
+        "sha256": "36fd95825595d07e51f5eb36dcf3c8aaff6e5725a4c0dfcda1436f607b8383f1"
+      }
+    ],
+    "manual.brake": [
+      {
+        "file": "manual.brake-0.png",
+        "tex": "T_{\\mathrm{cap},i}=T_{\\mathrm{total}}\\,b_i\\,p_i",
+        "width": 546,
+        "height": 83,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "e88ff606710601de73db92442ee68b7fc9e184a13269ac8cc2b3fc13573de206"
+      }
+    ],
+    "manual.gear": [
+      {
+        "file": "manual.gear-0.png",
+        "tex": "\\omega_{\\mathrm{in}}=i_g i_f\\overline{\\omega}_{\\mathrm{wheel}}",
+        "width": 480,
+        "height": 83,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "62223c48944965fbd11ef8bcd2382d7d62fe26c8e105ac1495f23cf2a78db712"
+      }
+    ],
+    "manual.clutch": [
+      {
+        "file": "manual.clutch-0.png",
+        "tex": "\\Delta c\\leq\\frac{\\Delta t}{\\tau_{\\mathrm{engage}}},\\qquad T_{\\max}=c T_{\\mathrm{clutch}}",
+        "width": 976,
+        "height": 106,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "367504210385ad9e1eee14cd97d5cb9ab78894150f63fbff4b2d4af04177f445"
+      }
+    ],
+    "braking.response_time": [
+      {
+        "file": "braking.response_time-0.png",
+        "tex": "p_{n+1}=u_n+(p_n-u_n)\\exp\\left(-\\frac{\\Delta t}{\\tau}\\right)",
+        "width": 996,
+        "height": 90,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "815e04c670204a05d0dc1dfff549d7f3867a3fa7595411b1fa038f36af074010"
+      }
+    ],
+    "braking.target_slip": [
+      {
+        "file": "braking.target_slip-0.png",
+        "tex": "\\lambda\\approx\\frac{v_x-r\\omega}{|v_x|}",
+        "width": 300,
+        "height": 100,
+        "texture_width": 512,
+        "texture_height": 128,
+        "sha256": "4c16e99c03743c9522546ac74cd54676a4e0e0e42bcafdf2890627b3dd6d0eb5"
+      }
+    ],
+    "suspension_spring_rates": [
+      {
+        "file": "suspension_spring_rates-0.png",
+        "tex": "U_s=\\frac{1}{2}\\sum_i k_i q_i^2,\\qquad Q_i=-\\frac{\\partial U_s}{\\partial q_i}",
+        "width": 910,
+        "height": 150,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "d346712ea2786d8101c1172ce9399b42446b600733af497000275e84035c8a37"
+      },
+      {
+        "file": "suspension_spring_rates-1.png",
+        "tex": "q_{i,1}=q_{i,0}+\\mathbf{r}_{i,1}\\cdot\\mathbf{g}_1-\\mathbf{r}_{i,0}\\cdot\\mathbf{g}_0",
+        "width": 956,
+        "height": 63,
+        "texture_width": 1024,
+        "texture_height": 64,
+        "sha256": "aa30ca81304fa2405d7a5011c2c365348fae3eb0d890092d9af22e48a452e8cd"
+      },
+      {
+        "file": "suspension_spring_rates-2.png",
+        "tex": "r_s=\\frac{\\mathrm{d}x_s}{\\mathrm{d}q},\\qquad k_w=r_s^2 k_s",
+        "width": 713,
+        "height": 116,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "4fa1d873cde18987438a100959f02df4978334a9e959a49d36678fb694b52ce5"
+      }
+    ],
+    "suspension_compression_damping": [
+      {
+        "file": "suspension_compression_damping-0.png",
+        "tex": "\\dot{q}_i=\\mathbf{g}_1\\cdot\\left(\\mathbf{v}_{i,1}-\\mathbf{V}_{s,1}-\\boldsymbol{\\Omega}_1\\times\\mathbf{r}_{i,1}\\right)",
+        "width": 1043,
+        "height": 80,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "5f6cb35ccf84da8e5a712f5a6689b0b9346bc7cba6a6bad0992fcf9aa24599a3"
+      },
+      {
+        "file": "suspension_compression_damping-1.png",
+        "tex": "F_{d,i}=c_i^{\\pm}\\dot{q}_i,\\qquad E_d=h\\sum_i c_i^{\\pm}\\dot{q}_i^{\\,2}\\geq 0",
+        "width": 1106,
+        "height": 146,
+        "texture_width": 2048,
+        "texture_height": 256,
+        "sha256": "7dccc6ce76fa9c7e26ced8a5c1bb27b393d39af1c735e9e5987f9d9575970f23"
+      },
+      {
+        "file": "suspension_compression_damping-2.png",
+        "tex": "r_d=\\frac{\\mathrm{d}x_d}{\\mathrm{d}q},\\qquad c_w^{\\pm}=r_d^2 c_d^{\\pm}",
+        "width": 750,
+        "height": 116,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "f24dd0cf1e2d12774700764e3e2488a7f9f36f444dfb4c5d657bb21349801561"
+      }
+    ],
+    "suspension_spring_preloads": [
+      {
+        "file": "suspension_spring_preloads-0.png",
+        "tex": "a_i=q_i+\\frac{F_{0,i}}{k_{w,i}},\\qquad U_c=\\frac{1}{2}\\sum_i k_{w,i}[a_i]_+^2",
+        "width": 1160,
+        "height": 153,
+        "texture_width": 2048,
+        "texture_height": 256,
+        "sha256": "b63b0c218957a8654d20a45303ae96563e9ccd22a4e26f2476ec3169c2ab7ea3"
+      },
+      {
+        "file": "suspension_spring_preloads-1.png",
+        "tex": "F_{c,i}=k_{w,i}[a_i]_+,\\qquad k_{t,i}=k_{w,i}\\,\\mathbf{1}_{a_i>0}",
+        "width": 1190,
+        "height": 80,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "e3de4c756d9ee7656a257296d15d1e6f2fe07b705ef06f2553a857e0f67f99f2"
+      },
+      {
+        "file": "suspension_spring_preloads-2.png",
+        "tex": "F_{0,i}=r_{s,i}k_{s,i}x_{0,i},\\qquad k_{w,i}=r_{s,i}^2k_{s,i}",
+        "width": 1113,
+        "height": 106,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "be6ac7ff2ca46a612ff0416bd22ad48a72909439c15c4df864b063055fbfa03d"
+      }
+    ],
+    "suspension_installation_curves": [
+      {
+        "file": "suspension_installation_curves-0.png",
+        "tex": "x_s(q)=x_0+s(q),\\qquad U_c=\\frac{1}{2}k_s[x_s(q)]_+^2",
+        "width": 1266,
+        "height": 100,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "bcecca46db885cf05a2d34b305f36cad107ab05bba144fe2f75a528240a78122"
+      },
+      {
+        "file": "suspension_installation_curves-1.png",
+        "tex": "F_w=k_s[x_s]_+r_s,\\qquad k_t=k_s(r_s^2+x_s r_s')\\mathbf{1}_{x_s>0}",
+        "width": 1380,
+        "height": 100,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "785c54ef03222080f440c6ac5a714687eff1d96eb8b01edf24390fffe9aeb79e"
+      },
+      {
+        "file": "suspension_installation_curves-2.png",
+        "tex": "k_s=\\frac{k_{w,0}}{r_s(0)^2},\\qquad x_0=\\frac{F_0}{k_s r_s(0)}",
+        "width": 796,
+        "height": 130,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "6afc0dccc4afc0d3fad1b4f0ab0e90053ab6c340df32ae70c66a838916bf3614"
+      }
+    ],
+    "installation_damping": [
+      {
+        "file": "installation_damping-0.png",
+        "tex": "v_d=r_d(q)\\dot q,\\qquad F_{d,w}=c_d^{\\pm}r_d(q)^2\\dot q",
+        "width": 1093,
+        "height": 100,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "153dfbb051f6177f05782478d80b65f80ba062494db914af6493dc915204d45c"
+      },
+      {
+        "file": "installation_damping-1.png",
+        "tex": "c_d^{\\pm}=\\frac{c_{w,0}^{\\pm}}{r_d(0)^2},\\qquad P_d=c_d^{\\pm}v_d^2\\geq0",
+        "width": 960,
+        "height": 146,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "59889b22f232ec30546c44740ffabe2ca78ae497f5ea65d2876c4b020a3b22bc"
+      }
+    ],
+    "suspension_damper_curves": [
+      {
+        "file": "suspension_damper_curves-0.png",
+        "tex": "T(v)=T_j+\\frac{T_{j+1}-T_j}{v_{j+1}-v_j}(v-v_j)",
+        "width": 820,
+        "height": 123,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "999c9d5968066ef0b8ee4a315a203562935137832e90ac20a90327e149b0ad82"
+      },
+      {
+        "file": "suspension_damper_curves-1.png",
+        "tex": "\\rho(q)=\\frac{r_d(q)}{r_d(0)},\\qquad v_* =\\rho\\dot q,\\quad F_{d,w}=\\rho T(v_*)",
+        "width": 1363,
+        "height": 116,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "ec66b0d3035f63ab16f6897d4f12b157a8f9032532d57116390b2a2906494264"
+      },
+      {
+        "file": "suspension_damper_curves-2.png",
+        "tex": "P_d=F_{d,w}\\dot q=T(v_*)v_*\\geq0",
+        "width": 840,
+        "height": 76,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "50f6fc2e0299bdf40582db3a433c20237853bbad77ac48f4842f1399a1839c24"
+      }
+    ],
+    "suspension_antiroll_rates": [
+      {
+        "file": "suspension_antiroll_rates-0.png",
+        "tex": "U_{\\mathrm{bar}}=\\frac{1}{2}k_{\\mathrm{bar}}(q_L-q_R)^2",
+        "width": 700,
+        "height": 100,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "341cc25db8bed25501350f79d1e0fcf4d08af00959c9d1ab7ddf9d814d179871"
+      }
+    ],
+    "body_inertia": [
+      {
+        "file": "body_inertia-0.png",
+        "tex": "I_a=\\sum_j\\left(m_j d_{j,a}^{\\,2}+I_{j,a}\\right)",
+        "width": 653,
+        "height": 160,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "a3fd175fca55ba53582a52f49a7a0df62f7ce61f29e696dcd7c0e741ef9bd990"
+      }
+    ],
+    "torque_curve": [
+      {
+        "file": "torque_curve-0.png",
+        "tex": "T(\\omega)=T_1+\\frac{\\omega-\\omega_1}{\\omega_2-\\omega_1}(T_2-T_1)",
+        "width": 886,
+        "height": 93,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "e701446370c52f33672ce1c49ea43f615e1e3add8bd2bdefe2ab242c5bedf370"
+      }
+    ]
+  }
+}

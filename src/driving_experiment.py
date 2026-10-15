@@ -5,8 +5,6 @@ import json
 import math
 from dataclasses import asdict, dataclass, replace
 
-from panda3d.core import Vec3
-
 from driving_modes import REFERENCE_CAR, DrivingMode
 from sensor_run import SensingRun
 from simulation import Simulation, Snapshot
@@ -84,11 +82,9 @@ class DrivingExperiment:
             initial = self.simulation.snapshot()
         if options.initial_speed:
             player = self.simulation.player
-            direction = player._chassis.getTransform().getQuat().getForward()
-            player._chassis.setLinearVelocity(Vec3(direction * options.initial_speed))
-            player.tires.initialize_rolling(options.initial_speed)
-            player.powertrain.initialize_rolling(options.initial_speed)
-            player.tires.observe(player._chassis, read_wheel_contacts(player._vehicle, player.on_asphalt), initial.tick)
+            player.initialize_rolling(options.initial_speed)
+            if not self.vehicle_config.unsprung_enabled:
+                player.tires.observe(player._chassis, read_wheel_contacts(player._vehicle, player.on_asphalt), initial.tick)
             initial = self.simulation.snapshot()
         self.initial = initial
         self.sensing = (SensingRun(initial, self.vehicle_config, self.sensor_config, self.sensor_seed)

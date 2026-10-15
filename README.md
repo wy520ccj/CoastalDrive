@@ -2,11 +2,13 @@
 
 当前开发版本（2026-10-15）：**main，游戏实时操控 + 车辆动力学实验台**。两个方向共用权威 Simulation；游戏使用120 Hz单次机械求解，实验台保留每拍两次机械子步和精确执行器。游戏操控与整体流畅已获用户验收，偶发绘制短停已披露并接受；实验台自动功能/渲染通过，人工体验待确认。
 
-[当前进度](docs/current-progress.md) · [本次集成与发布](docs/tasks/INTEGRATE-20261015.md) · [实验台说明](docs/vehicle-lab.md) · [入口与历史版本](launchers/README.md)
+[当前进度](docs/current-progress.md) · [真实新版合并](docs/tasks/INTEGRATE-NEW-LAB-01.md) · [实验台说明](docs/vehicle-lab.md) · [入口与历史版本](launchers/README.md)
 
 双击根目录 **试玩.cmd** 或 `launchers/game-current.cmd` 启动当前源码游戏；双击 `launchers/vehicle-lab.cmd` 进入实验台，游戏主菜单也可进入。首次克隆须完成下文环境安装和原生编译。`试玩-物理开发.cmd` 是显式重新编译源码的开发入口，会包含本地未提交改动。
 
-历史独立包 **0.8.3 RADIO-02** 位于 `builds/0.8.3-radio02/win_amd64/`，可从 `launchers/archive/试玩-RADIO-02.cmd` 启动；它未包含本次游戏与实验台成果。其他r9/r10/parallel包与相邻工作树均只代表各自历史版本。整体物理、实车标定及长期性能Gate仍按[物理路线](docs/physics-roadmap.md)和各任务记录推进。
+新版试验台真实来源为 `codex/simulation-fidelity` 的 `0944541`，包含参数悬停/F1数学公式、工程指标、轮胎标定、独立轮心与部件台架。`launchers/vehicle-lab-double-preview.cmd` 打开显式工程预览，`vehicle-lab-double.cmd` 使用双精度普通实验室；先恢复隔离SDK：`.venv/Scripts/python.exe tools/physics/restore_sim_double_runtime.py`，详见[双精度说明](docs/sim-double-runtime.md)。新机制按工程配置启用，游戏默认参数保持。
+
+历史独立包 **0.8.3 RADIO-02** 位于 `builds/0.8.3-radio02/win_amd64/`，从 `launchers/archive/试玩-RADIO-02.cmd` 启动；没有本次游戏与新版试验台成果。r9/r10/parallel是历史包。整体物理、实车标定及长期性能Gate仍按[物理路线](docs/physics-roadmap.md)和各任务记录推进。
 
 ## 运行
 
@@ -61,11 +63,11 @@ PyCharm 选择 `.venv/Scripts/python.exe`，入口 `src/main.py`。Git仓库包�
 | `assets/source/` | 离线原始素材与缓存，不随Git提交 |
 | `legacy/` | 只读旧工程 |
 
-`CoastalDrive` 的 `main` 为主工作目录；相邻 `CoastalDrive-VI-v1`、`gr86-physics`、`simulation-fidelity` 是各自历史/辅助工作树，不自动同步，也不作为当前状态依据。旧main另有本地备份和Git历史。当前事实从 `docs/current-progress.md` 进入，旧任务/证据仅支持其记录的源码版本。
+`CoastalDrive` 的 `main` 为统一主目录；`simulation-fidelity` 是本次新版试验台的真实开发来源，已纳入当前合并；VI-v1/gr86-physics是历史/辅助工作树。上轮6ca4cb4误将simulation-fidelity归为历史、只发布主目录8个提交，本次纠正并合入其25个提交。旧main另有本地备份和Git历史。当前事实从 `docs/current-progress.md` 进入，旧任务/证据仅支持其记录的源码版本。
 
 ## 检查与构建
 
-按修改范围执行相关短检查，任务与等级说明见 [验证入口](docs/tasks/README.md)。本次集成检查及已有有效证据的复用边界见[集成任务](docs/tasks/INTEGRATE-20261015.md)；旧独立包的声音/资源smoke不能代替当前源码验收。T2既有海岸长跑求解失败、T3和长期性能Gate保持开放。
+按修改范围执行相关短检查，任务与等级说明见 [验证入口](docs/tasks/README.md)。真实新版合并与证据复用边界见[当前任务](docs/tasks/INTEGRATE-NEW-LAB-01.md)；旧独立包的声音/资源smoke不能代替当前源码验收。完整能量、实车标定、T2/T3和长期性能Gate分别保留。
 
 ```powershell
 .\.venv\Scripts\python.exe tools/validate.py T0 --area audio

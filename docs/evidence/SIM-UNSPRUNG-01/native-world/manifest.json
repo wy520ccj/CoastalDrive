@@ -1,0 +1,40 @@
+{
+  "base_commit": "de56ab82dc835ca00fe439bc1c2fdf8695bc0c27",
+  "scope": "WIP native mechanical world; production Vehicle/records/UI not integrated",
+  "native_extensions": {
+    "src\\convex_cast_kernels.cp314-win_amd64.pyd": "e15ee855508ddee9dc2abfbdae5dca80d27918740804a153070bf1e83003fc0d",
+    "src\\mechanical_kernels.cp314-win_amd64.pyd": "0eedfbf011c7fac3cffc143ae035c8956e2dde1aeb2619d717b467b81801ac0a",
+    "src\\physics_packet_kernels.cp314-win_amd64.pyd": "d9ba17eab7f9576e40b8a288a511bc31e842fd225837e086ae6d83c05c375dd6",
+    "src\\wheel_contact_kernels.cp314-win_amd64.pyd": "31b4484afd7d41390ad786409870c45ea4727fa9f8845247e9e617f583bbcf95"
+  },
+  "files": {
+    "native-mass-comparison.png": "843f3aa0c6cae6942f015d96dcc7bc37962a55e939008653ec144831ec57b2d2",
+    "native-unequal-freefall.json": "03d7c8a7328f2ad9ae3fccac84f6f5c9c760988910e91cf2bf0f6cf898bb8bb0",
+    "native-physical-mass25\\input.json": "74f7c69c8ecc87131a730e75c14f2131e8590147aa6f6b26a4a8438728875580",
+    "native-physical-mass25\\summary.json": "92851488f3473010b5ba829242cfbdbdcc115c7914a718b7c66d8d5a5e85ccf1",
+    "native-physical-mass25\\trajectory.csv": "2961aeb8eceaf33f72c46852b52c417201e608f19cd71cf3242034d3cbb0bedd",
+    "native-physical-mass65\\input.json": "628ce0d24c0f11c265cdc2c638b049bdabf3f689aca28b3b6fb12eabaefbb5bb",
+    "native-physical-mass65\\summary.json": "6f0bbfb8b4841507debb13bed969ac880a4e9bbef1f521dbf77d00039c67ea7e",
+    "native-physical-mass65\\trajectory.csv": "2644cf4b571c3c10b70ab5671852fdd8999036e0f95e336580f7fd0b5d9275f0",
+    "native-physical-step2\\input.json": "fd052fdd82afda6ebfd01b0d79ad869f3c931de23646eba0daffe2418c90481a",
+    "native-physical-step2\\summary.json": "83bae7990ad089ee7eb43ffda2ffaed81e1bd02502474d7ec8ce01a7a22cee51",
+    "native-physical-step2\\trajectory.csv": "d61b7de6a389fa13e24fbba6ab3f8c8be65d48378c3e79c90ace2afa12c42c08",
+    "native-physical-step4\\input.json": "f3ee37ea7bb4303949b832eb2166ce4947f37def7c6bef47a1ab96e0c768a4e8",
+    "native-physical-step4\\summary.json": "bfc05f3d3c8eaf340f0172544eea225b3553928ca5c26958f9eb55d499e7c558",
+    "native-physical-step4\\trajectory.csv": "2c269e8052d0305a4f629754dfdf2d1acad6882eff0dbcf625fbd44f77118746",
+    "native-physical-step8\\input.json": "abd71e85124fff9a8ce1597c186ae3c512b754a365344a249772bf3847c71461",
+    "native-physical-step8\\summary.json": "74dab8e6af576e40654c8b7bbc788ec21ab59ab40fda16747494effc86167a82",
+    "native-physical-step8\\trajectory.csv": "cae4db8c55195661f84271d86a815747952ffc38f9a54b4ed49b6bbc18131a24",
+    "T0\\pytest.log": "08fd297672cd0afba2afd2b4b11b13642f2d2d82d0b4a79c9a9b98cb84d01d4c",
+    "T0\\ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "T0\\summary.json": "be4444852cac2286b86730de01b7a73760fc71053e032eea7375b39d27a2e12c",
+    "source\\src\\unsprung_body.py": "7863aac371aeaa2e6052822cee176758e9eb9a3a9073c168e4a8e3b9f5c502aa",
+    "source\\src\\unsprung_contact.py": "2b0274b1fdc93e7d61e6243ff9930296ed29d4138fde5ccff10686e4b26682e8",
+    "source\\src\\unsprung_drivetrain.py": "bdb1168da15bdc74ffc497e0ad2260fc6e29f73a88cd41c7adc5a272a17c28f7",
+    "source\\src\\unsprung_dynamics.py": "e692481ea10d26e4ca798fa0e59ca0c5bec08b0b436c754139da28c966d7a97a",
+    "source\\src\\unsprung_geometry.py": "7913408b04a0c4cde7dcbfdb370047001b91ae97e7230f3e64bc40db59012dc0",
+    "source\\src\\unsprung_joint.py": "7e879cb43095f8044691819c11e089d2fef405011e3db1a0c1e93ce7fb1aa4b3",
+    "source\\tools\\physics\\unsprung_plot.py": "bc7ada29499ce8b294878cd256e54f1ecf21415d2b95fd332fdb58a715601bd6",
+    "source\\tools\\physics\\unsprung_world_check.py": "3a32cd399b457ba44f0a58c44861d3515717f5115833fe5e39732d96b36545d2"
+  }
+}

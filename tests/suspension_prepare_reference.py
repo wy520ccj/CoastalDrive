@@ -69,4 +69,3 @@ class ReferenceSuspension(Suspension):
         self.geometry = tuple(geometry)
         return SuspensionInput(tuple(initial), tuple(constraint_compression), tuple(gradients),
                                tuple(contacts), tuple(g[2] for g in geometry), config, tuple(planes), chassis.getAngularDamping())
-

@@ -1,0 +1,2638 @@
+{
+  "baseline": "c058cc4",
+  "baseline_peak_scope": "one previously saved maximum elastic-geometry sample per substep, not full-run force maxima",
+  "runs": {
+    "2": {
+      "summary": {
+        "status": "time_limit",
+        "reason": "time_limit",
+        "error": null,
+        "simulation_seconds": 2.4,
+        "compute_seconds": 89.2798859999964,
+        "distance_m": 11.605330206023366,
+        "stopping_distance_m": null,
+        "peak_deceleration_mps2": -0.7626289690155068,
+        "peak_lateral_acceleration_mps2": 0.2801765369472844,
+        "peak_yaw_rate_radps": 0.003830420937733628,
+        "mean_path_error_m": null,
+        "maximum_path_error_m": null,
+        "abs_ticks": 0,
+        "ticks": 288,
+        "initialization_ticks": 195,
+        "options": {
+          "vehicle_id": "reference-rwd",
+          "maneuver": "ride_bump",
+          "speed_kph": 18.0,
+          "friction": 1.1,
+          "abs_enabled": true,
+          "esc_enabled": false,
+          "duration": 2.4,
+          "steering_deg": 3.0,
+          "onset": 0.5,
+          "seed": 0,
+          "cg_height": null,
+          "radius_m": 60.0,
+          "right_friction": 0.3,
+          "tire_reference_load": null,
+          "bump_height_m": 0.01,
+          "bump_length_m": 0.9,
+          "bump_distance_m": 6.0
+        }
+      },
+      "sum": {
+        "kinetic_change": -2026.2525562791325,
+        "gravity_change": -0.1285658365649609,
+        "elastic_change": 0.14835628113729846,
+        "losses": 7340.526819762968,
+        "engine_work": 5428.429730837389,
+        "external_work": -114.13323584075812,
+        "steering_gyro_work": 0.0,
+        "contact_steering_work": 0.0,
+        "moving_road_work": 0.0,
+        "actual_energy_residual": -0.0024410682181905397,
+        "numerical_guide_work": 3.4566961066752e-05,
+        "energy_residual_after_guide_work": -0.0024756351792572934,
+        "energy_residual_after_guide_and_gyro_work": -0.002476212567246322,
+        "suspension_geometry_work": -0.0024762426181330044,
+        "energy_residual_after_all_geometry_work": 3.005088668084125e-08,
+        "suspension_force_end_error_max": 2.721580696503828e-05,
+        "suspension_velocity_end_error_max": 5.592628338463503e-09,
+        "suspension_compression_end_error_max": 2.331142223699345e-11,
+        "frozen_energy_residual": -1.8052980221838766e-08,
+        "native_kinetic_defect": 4.785124785300354e-08,
+        "native_body_translation_defect": 2.8735057807785742e-08,
+        "native_wheel_translation_defect": -6.4133480105971955e-09,
+        "native_body_angular_defect": 2.5535187498558623e-08,
+        "native_inertia_transport_defect": -2.837591043129612e-18,
+        "native_spin_defect": 0.0,
+        "float32_translation_rounding_defect": 0.00038426162521407306,
+        "native_translation_beyond_rounding": -0.00038423930350426445,
+        "native_body_velocity_error": 6.597357214630447e-11,
+        "native_wheel_velocity_error": 2.7668530292711548e-08,
+        "elastic_geometry_defect": 2.584449305716087e-10,
+        "geometry_work_defect": -5.805106395584403e-12,
+        "spring_geometry_defect": 2.632333462315728e-09,
+        "radial_geometry_defect": -2.3738948584650643e-09,
+        "tangent_geometry_defect": 5.873883249159729e-16,
+        "radial_deflection_defect_0": -1.9777929294306773e-13,
+        "radial_deflection_defect_1": 2.7144952952085077e-14,
+        "radial_deflection_defect_2": -5.277948217363715e-13,
+        "radial_deflection_defect_3": -2.0394796962364126e-13,
+        "spring_compression_defect_0": 4.801159469991489e-13,
+        "spring_compression_defect_1": 1.2732939702608803e-12,
+        "spring_compression_defect_2": -7.983960714774696e-13,
+        "spring_compression_defect_3": -6.035449917618507e-14,
+        "point_motion_defect_0": -2.4887336432586095e-13,
+        "point_motion_defect_1": 2.568147081268561e-14,
+        "point_motion_defect_2": -6.717608056561244e-13,
+        "point_motion_defect_3": -2.0478863424757788e-13,
+        "surface_shape_defect_0": 5.0680149664364325e-14,
+        "surface_shape_defect_1": 1.502620712401899e-15,
+        "surface_shape_defect_2": 1.440740420501733e-13,
+        "surface_shape_defect_3": 1.5027385638531163e-15,
+        "native_point_velocity_defect_0": -2.4814827210670374e-13,
+        "native_point_velocity_defect_1": 2.5472971934084195e-14,
+        "native_point_velocity_defect_2": -6.713934240624645e-13,
+        "native_point_velocity_defect_3": -2.0476101957129234e-13,
+        "native_point_position_defect_0": -7.25917354788928e-16,
+        "native_point_position_defect_1": 2.084905269034017e-16,
+        "native_point_position_defect_2": -3.6789411805581275e-16,
+        "native_point_position_defect_3": -2.7670934343454817e-17,
+        "normal_spin_radius_0": 0.0,
+        "normal_spin_radius_1": 0.0,
+        "normal_spin_radius_2": 0.0,
+        "normal_spin_radius_3": 0.0,
+        "body_gyro_work": 5.773879890320271e-07,
+        "continuous_bias_work_not_applied": -0.017562067775862045
+      },
+      "max_abs": {
+        "kinetic_change": 20.972400402705446,
+        "gravity_change": 1.8889315540734535,
+        "elastic_change": 13.614891461822227,
+        "losses": 16.159776132818802,
+        "engine_work": 9.444316533584866,
+        "external_work": 0.21874277420901422,
+        "steering_gyro_work": 0.0,
+        "contact_steering_work": 0.0,
+        "moving_road_work": 0.0,
+        "actual_energy_residual": 4.529626904203887e-05,
+        "numerical_guide_work": 8.82958780624201e-06,
+        "energy_residual_after_guide_work": 4.22245889307639e-05,
+        "energy_residual_after_guide_and_gyro_work": 4.434031139818374e-05,
+        "suspension_geometry_work": 4.435165222574869e-05,
+        "energy_residual_after_all_geometry_work": 1.2657625348924022e-08,
+        "suspension_force_end_error_max": 1.971988325522034e-06,
+        "suspension_velocity_end_error_max": 3.588352670558237e-10,
+        "suspension_compression_end_error_max": 1.4952553084590647e-12,
+        "frozen_energy_residual": 2.0615420481817637e-10,
+        "native_kinetic_defect": 1.2819213246473282e-08,
+        "native_body_translation_defect": 1.6357387015476685e-08,
+        "native_wheel_translation_defect": 1.564474298668125e-08,
+        "native_body_angular_defect": 1.2094355119221899e-08,
+        "native_inertia_transport_defect": 2.525268854769902e-16,
+        "native_spin_defect": 0.0,
+        "float32_translation_rounding_defect": 0.0013010659467378967,
+        "native_translation_beyond_rounding": 0.0013010661516248776,
+        "native_body_velocity_error": 3.2782665471131622e-12,
+        "native_wheel_velocity_error": 9.76531269909764e-10,
+        "elastic_geometry_defect": 3.851281843502368e-10,
+        "geometry_work_defect": 6.824540932370837e-13,
+        "spring_geometry_defect": 4.305888978706207e-10,
+        "radial_geometry_defect": 4.305462653064751e-10,
+        "tangent_geometry_defect": 6.938893903907228e-17,
+        "radial_deflection_defect_0": 9.864331573794516e-14,
+        "radial_deflection_defect_1": 9.975353876257032e-14,
+        "radial_deflection_defect_2": 1.473092481329985e-13,
+        "radial_deflection_defect_3": 9.808820422563258e-14,
+        "spring_compression_defect_0": 5.533282165792741e-13,
+        "spring_compression_defect_1": 1.4952483695651608e-12,
+        "spring_compression_defect_2": 1.4952553084590647e-12,
+        "spring_compression_defect_3": 5.533282165792741e-13,
+        "point_motion_defect_0": 9.861557905513472e-14,
+        "point_motion_defect_1": 9.973262460093213e-14,
+        "point_motion_defect_2": 2.539032224206439e-13,
+        "point_motion_defect_3": 9.809100620731338e-14,
+        "surface_shape_defect_0": 3.763531709042624e-14,
+        "surface_shape_defect_1": 1.2762342825069477e-15,
+        "surface_shape_defect_2": 2.5140552142800983e-13,
+        "surface_shape_defect_3": 1.2762446586605516e-15,
+        "native_point_velocity_defect_0": 9.861910632576137e-14,
+        "native_point_velocity_defect_1": 9.971900702219716e-14,
+        "native_point_velocity_defect_2": 2.5398565286942303e-13,
+        "native_point_velocity_defect_3": 9.807013170126521e-14,
+        "native_point_position_defect_0": 5.615025455126102e-17,
+        "native_point_position_defect_1": 2.7697765616978678e-17,
+        "native_point_position_defect_2": 9.389360385188812e-17,
+        "native_point_position_defect_3": 2.775557561565299e-17,
+        "normal_spin_radius_0": 0.0,
+        "normal_spin_radius_1": 0.0,
+        "normal_spin_radius_2": 0.0,
+        "normal_spin_radius_3": 0.0,
+        "body_gyro_work": 2.3907143283891466e-06,
+        "continuous_bias_work_not_applied": 0.00534954598460551
+      }
+    },
+    "4": {
+      "summary": {
+        "status": "time_limit",
+        "reason": "time_limit",
+        "error": null,
+        "simulation_seconds": 2.4,
+        "compute_seconds": 165.20323120000057,
+        "distance_m": 11.605758868240795,
+        "stopping_distance_m": null,
+        "peak_deceleration_mps2": -0.7476525017890499,
+        "peak_lateral_acceleration_mps2": 0.30508714774399753,
+        "peak_yaw_rate_radps": 0.00390177055021109,
+        "mean_path_error_m": null,
+        "maximum_path_error_m": null,
+        "abs_ticks": 0,
+        "ticks": 288,
+        "initialization_ticks": 195,
+        "options": {
+          "vehicle_id": "reference-rwd",
+          "maneuver": "ride_bump",
+          "speed_kph": 18.0,
+          "friction": 1.1,
+          "abs_enabled": true,
+          "esc_enabled": false,
+          "duration": 2.4,
+          "steering_deg": 3.0,
+          "onset": 0.5,
+          "seed": 0,
+          "cg_height": null,
+          "radius_m": 60.0,
+          "right_friction": 0.3,
+          "tire_reference_load": null,
+          "bump_height_m": 0.01,
+          "bump_length_m": 0.9,
+          "bump_distance_m": 6.0
+        }
+      },
+      "sum": {
+        "kinetic_change": -2025.6801940266503,
+        "gravity_change": -0.15744447825690341,
+        "elastic_change": 0.17716469281320138,
+        "losses": 7339.949024553051,
+        "engine_work": 5428.422196097007,
+        "external_work": -114.1323604290959,
+        "steering_gyro_work": 0.0,
+        "contact_steering_work": 0.0,
+        "moving_road_work": 0.0,
+        "actual_energy_residual": -0.0012849269598165236,
+        "numerical_guide_work": 2.3629143234724026e-05,
+        "energy_residual_after_guide_work": -0.0013085561030512477,
+        "energy_residual_after_guide_and_gyro_work": -0.0013091282535779606,
+        "suspension_geometry_work": -0.0013091435623439945,
+        "energy_residual_after_all_geometry_work": 1.530876603327867e-08,
+        "suspension_force_end_error_max": 1.6556555431108667e-05,
+        "suspension_velocity_end_error_max": 3.6085371498900346e-09,
+        "suspension_compression_end_error_max": 7.540849888965084e-12,
+        "frozen_energy_residual": -1.9898495406955874e-08,
+        "native_kinetic_defect": 3.5131437023383505e-08,
+        "native_body_translation_defect": 1.9936010343914743e-08,
+        "native_wheel_translation_defect": 2.2084096837296685e-09,
+        "native_body_angular_defect": 1.2985825570709452e-08,
+        "native_inertia_transport_defect": 1.1746385415473765e-17,
+        "native_spin_defect": 0.0,
+        "float32_translation_rounding_defect": 0.0072741049760962325,
+        "native_translation_beyond_rounding": -0.007274082831676204,
+        "native_body_velocity_error": 6.031367222942027e-11,
+        "native_wheel_velocity_error": 1.6174276271037677e-08,
+        "elastic_geometry_defect": 8.097564747910641e-11,
+        "geometry_work_defect": -5.148159676338082e-12,
+        "spring_geometry_defect": 1.8488321984477807e-10,
+        "radial_geometry_defect": -1.0390976967755705e-10,
+        "tangent_geometry_defect": 1.5485253053830973e-15,
+        "radial_deflection_defect_0": -2.2023181889263554e-14,
+        "radial_deflection_defect_1": 3.47499806707674e-14,
+        "radial_deflection_defect_2": -1.651109804434725e-13,
+        "radial_deflection_defect_3": 7.327471962526033e-14,
+        "spring_compression_defect_0": 1.8492152253912764e-14,
+        "spring_compression_defect_1": 1.0354217483410366e-13,
+        "spring_compression_defect_2": -1.3183898417423734e-14,
+        "spring_compression_defect_3": -7.836092885682433e-14,
+        "point_motion_defect_0": -2.5073791626875206e-14,
+        "point_motion_defect_1": 3.587202981123488e-14,
+        "point_motion_defect_2": -1.718748064384579e-13,
+        "point_motion_defect_3": 7.370176075206056e-14,
+        "surface_shape_defect_0": 4.574242010394603e-15,
+        "surface_shape_defect_1": 3.5361850851547253e-16,
+        "surface_shape_defect_2": 7.572200762669301e-15,
+        "surface_shape_defect_3": 3.540218682778732e-16,
+        "native_point_velocity_defect_0": -2.632562450627781e-14,
+        "native_point_velocity_defect_1": 3.5379318546045385e-14,
+        "native_point_velocity_defect_2": -1.7100925625999033e-13,
+        "native_point_velocity_defect_3": 7.376722804582647e-14,
+        "native_point_position_defect_0": 1.2525053258710178e-15,
+        "native_point_position_defect_1": 4.9274531193510955e-16,
+        "native_point_position_defect_2": -8.656344403988345e-16,
+        "native_point_position_defect_3": -6.546628249193361e-17,
+        "normal_spin_radius_0": 0.0,
+        "normal_spin_radius_1": 0.0,
+        "normal_spin_radius_2": 0.0,
+        "normal_spin_radius_3": 0.0,
+        "body_gyro_work": 5.721505267136439e-07,
+        "continuous_bias_work_not_applied": -0.01854074537942723
+      },
+      "max_abs": {
+        "kinetic_change": 11.237893537278339,
+        "gravity_change": 0.9770783094795542,
+        "elastic_change": 7.501140193522007,
+        "losses": 8.305226927501172,
+        "engine_work": 4.722733638428409,
+        "external_work": 0.10937392107784588,
+        "steering_gyro_work": 0.0,
+        "contact_steering_work": 0.0,
+        "moving_road_work": 0.0,
+        "actual_energy_residual": 1.2499298827350902e-05,
+        "numerical_guide_work": 3.0825223342187497e-06,
+        "energy_residual_after_guide_work": 1.1569493170482364e-05,
+        "energy_residual_after_guide_and_gyro_work": 1.2244599269517732e-05,
+        "suspension_geometry_work": 1.2248559147961475e-05,
+        "energy_residual_after_all_geometry_work": 4.052329509981456e-09,
+        "suspension_force_end_error_max": 5.656504526996287e-07,
+        "suspension_velocity_end_error_max": 1.0498793501234616e-10,
+        "suspension_compression_end_error_max": 2.1872781363896365e-13,
+        "frozen_energy_residual": 1.065714183567934e-10,
+        "native_kinetic_defect": 4.0771572784592536e-09,
+        "native_body_translation_defect": 4.786633503812032e-09,
+        "native_wheel_translation_defect": 4.620867136636931e-09,
+        "native_body_angular_defect": 3.830178204831101e-09,
+        "native_inertia_transport_defect": 2.8015021807372906e-16,
+        "native_spin_defect": 0.0,
+        "float32_translation_rounding_defect": 0.0013781916019754228,
+        "native_translation_beyond_rounding": 0.0013781916046071234,
+        "native_body_velocity_error": 1.9775234889913095e-12,
+        "native_wheel_velocity_error": 3.1975675449449903e-10,
+        "elastic_geometry_defect": 8.850532800538198e-11,
+        "geometry_work_defect": 3.0685176621858545e-13,
+        "spring_geometry_defect": 3.1513991416431963e-10,
+        "radial_geometry_defect": 3.148556970700156e-10,
+        "tangent_geometry_defect": 8.326672684693097e-17,
+        "radial_deflection_defect_0": 3.980149543281186e-14,
+        "radial_deflection_defect_1": 4.923839114212569e-14,
+        "radial_deflection_defect_2": 4.8128168117500536e-14,
+        "radial_deflection_defect_3": 5.057065877167588e-14,
+        "spring_compression_defect_0": 8.092831960127e-14,
+        "spring_compression_defect_1": 2.1872781363896365e-13,
+        "spring_compression_defect_2": 2.1872087474505975e-13,
+        "spring_compression_defect_3": 8.090750291955828e-14,
+        "point_motion_defect_0": 3.9800253139880705e-14,
+        "point_motion_defect_1": 4.9289695385110404e-14,
+        "point_motion_defect_2": 4.8146665756178754e-14,
+        "point_motion_defect_3": 5.058758397226968e-14,
+        "surface_shape_defect_0": 3.1330833923353535e-15,
+        "surface_shape_defect_1": 2.1451556728490425e-16,
+        "surface_shape_defect_2": 2.1648366421971738e-14,
+        "surface_shape_defect_3": 2.1451527611732863e-16,
+        "native_point_velocity_defect_0": 3.980936043724726e-14,
+        "native_point_velocity_defect_1": 4.9263428786654604e-14,
+        "native_point_velocity_defect_2": 4.815121940535834e-14,
+        "native_point_velocity_defect_3": 5.0592889334900376e-14,
+        "native_point_position_defect_0": 6.275074581181593e-17,
+        "native_point_position_defect_1": 2.774834936579765e-17,
+        "native_point_position_defect_2": 9.963817802434397e-17,
+        "native_point_position_defect_3": 2.7738634956616716e-17,
+        "normal_spin_radius_0": 0.0,
+        "normal_spin_radius_1": 0.0,
+        "normal_spin_radius_2": 0.0,
+        "normal_spin_radius_3": 0.0,
+        "body_gyro_work": 7.142499625517933e-07,
+        "continuous_bias_work_not_applied": 0.0028868474495929238
+      }
+    },
+    "8": {
+      "summary": {
+        "status": "time_limit",
+        "reason": "time_limit",
+        "error": null,
+        "simulation_seconds": 2.4,
+        "compute_seconds": 299.77738460000387,
+        "distance_m": 11.606099922168772,
+        "stopping_distance_m": null,
+        "peak_deceleration_mps2": -0.735991527432421,
+        "peak_lateral_acceleration_mps2": 0.3189678199694821,
+        "peak_yaw_rate_radps": 0.003930134314158012,
+        "mean_path_error_m": null,
+        "maximum_path_error_m": null,
+        "abs_ticks": 0,
+        "ticks": 288,
+        "initialization_ticks": 194,
+        "options": {
+          "vehicle_id": "reference-rwd",
+          "maneuver": "ride_bump",
+          "speed_kph": 18.0,
+          "friction": 1.1,
+          "abs_enabled": true,
+          "esc_enabled": false,
+          "duration": 2.4,
+          "steering_deg": 3.0,
+          "onset": 0.5,
+          "seed": 0,
+          "cg_height": null,
+          "radius_m": 60.0,
+          "right_friction": 0.3,
+          "tire_reference_load": null,
+          "bump_height_m": 0.01,
+          "bump_length_m": 0.9,
+          "bump_distance_m": 6.0
+        }
+      },
+      "sum": {
+        "kinetic_change": -2024.9051841558341,
+        "gravity_change": -0.18139560583240352,
+        "elastic_change": 0.20107716763937603,
+        "losses": 7339.167422844218,
+        "engine_work": 5428.418136177998,
+        "external_work": -114.13555644296466,
+        "steering_gyro_work": 0.0,
+        "contact_steering_work": 0.0,
+        "moving_road_work": 0.0,
+        "actual_energy_residual": -0.0006594848382691781,
+        "numerical_guide_work": 1.4104264774897563e-05,
+        "energy_residual_after_guide_work": -0.0006735891030440771,
+        "energy_residual_after_guide_and_gyro_work": -0.0006738674097757936,
+        "suspension_geometry_work": -0.0006738748396273478,
+        "energy_residual_after_all_geometry_work": 7.4298515538674185e-09,
+        "suspension_force_end_error_max": 1.1085838103365239e-05,
+        "suspension_velocity_end_error_max": 2.559680055180059e-09,
+        "suspension_compression_end_error_max": 2.7180133144177887e-12,
+        "frozen_energy_residual": -2.2152409795417327e-08,
+        "native_kinetic_defect": 2.9553458756603757e-08,
+        "native_body_translation_defect": 1.890952158886604e-08,
+        "native_wheel_translation_defect": 4.7068691469633315e-09,
+        "native_body_angular_defect": 5.919882160114354e-09,
+        "native_inertia_transport_defect": 1.8125656850031964e-17,
+        "native_spin_defect": 0.0,
+        "float32_translation_rounding_defect": 0.04668280311058999,
+        "native_translation_beyond_rounding": -0.0466827794941993,
+        "native_body_velocity_error": 7.078618064459896e-11,
+        "native_wheel_velocity_error": 9.359025641693191e-09,
+        "elastic_geometry_defect": 3.881201080406159e-11,
+        "geometry_work_defect": -9.99778038135446e-12,
+        "spring_geometry_defect": 8.206200163840549e-10,
+        "radial_geometry_defect": -7.818101721568382e-10,
+        "tangent_geometry_defect": 1.7497959772870936e-15,
+        "radial_deflection_defect_0": -4.313736867711526e-14,
+        "radial_deflection_defect_1": -2.958744360626042e-14,
+        "radial_deflection_defect_2": -1.2768171936405892e-13,
+        "radial_deflection_defect_3": -7.882583474838611e-14,
+        "spring_compression_defect_0": 3.269606807521086e-14,
+        "spring_compression_defect_1": 3.511774204767448e-14,
+        "spring_compression_defect_2": 1.3239409568654992e-13,
+        "spring_compression_defect_3": 1.0980799602933189e-13,
+        "point_motion_defect_0": -4.3901502570945453e-14,
+        "point_motion_defect_1": -3.0393815173686836e-14,
+        "point_motion_defect_2": -1.259689400649088e-13,
+        "point_motion_defect_3": -7.895243512241377e-14,
+        "surface_shape_defect_0": 2.8827578137886895e-16,
+        "surface_shape_defect_1": 7.35638141934385e-17,
+        "surface_shape_defect_2": -6.280022007661898e-16,
+        "surface_shape_defect_3": 7.395285398277702e-17,
+        "native_point_velocity_defect_0": -4.4289318472679746e-14,
+        "native_point_velocity_defect_1": -2.942277405533798e-14,
+        "native_point_velocity_defect_2": -1.2654103008125246e-13,
+        "native_point_velocity_defect_3": -7.824136368108301e-14,
+        "native_point_position_defect_0": 3.8775266239875745e-16,
+        "native_point_position_defect_1": -9.710275981265423e-16,
+        "native_point_position_defect_2": 5.720194740372145e-16,
+        "native_point_position_defect_3": -7.110817054309083e-16,
+        "normal_spin_radius_0": 0.0,
+        "normal_spin_radius_1": 0.0,
+        "normal_spin_radius_2": 0.0,
+        "normal_spin_radius_3": 0.0,
+        "body_gyro_work": 2.783067317181841e-07,
+        "continuous_bias_work_not_applied": -0.01918097198932418
+      },
+      "max_abs": {
+        "kinetic_change": 5.547347131739858,
+        "gravity_change": 0.49731479109514104,
+        "elastic_change": 3.7651249406847827,
+        "losses": 4.081003256817611,
+        "engine_work": 2.3615183131994595,
+        "external_work": 0.054687319029598426,
+        "steering_gyro_work": 0.0,
+        "contact_steering_work": 0.0,
+        "moving_road_work": 0.0,
+        "actual_energy_residual": 3.2215122798134876e-06,
+        "numerical_guide_work": 8.831843382954731e-07,
+        "energy_residual_after_guide_work": 3.031759550213141e-06,
+        "energy_residual_after_guide_and_gyro_work": 3.217659285634226e-06,
+        "suspension_geometry_work": 3.2187875956806943e-06,
+        "energy_residual_after_all_geometry_work": 1.1454407445004123e-09,
+        "suspension_force_end_error_max": 1.513167831035389e-07,
+        "suspension_velocity_end_error_max": 2.8369334659217316e-11,
+        "suspension_compression_end_error_max": 2.9552749136740886e-14,
+        "frozen_energy_residual": 1.3379131136304068e-10,
+        "native_kinetic_defect": 1.155921469653265e-09,
+        "native_body_translation_defect": 1.285369172724978e-09,
+        "native_wheel_translation_defect": 1.2512698271424637e-09,
+        "native_body_angular_defect": 1.0766719706212272e-09,
+        "native_inertia_transport_defect": 3.5053484434229877e-16,
+        "native_spin_defect": 0.0,
+        "float32_translation_rounding_defect": 0.0013485634005352895,
+        "native_translation_beyond_rounding": 0.0013485633941266659,
+        "native_body_velocity_error": 1.9684340328561905e-12,
+        "native_wheel_velocity_error": 9.182608536398296e-11,
+        "elastic_geometry_defect": 1.3727766386865888e-11,
+        "geometry_work_defect": 3.132563652918918e-13,
+        "spring_geometry_defect": 1.5700152289355174e-10,
+        "radial_geometry_defect": 1.5711520973127335e-10,
+        "tangent_geometry_defect": 1.1102230246251565e-16,
+        "radial_deflection_defect_0": 2.2426505097428162e-14,
+        "radial_deflection_defect_1": 2.403632848313464e-14,
+        "radial_deflection_defect_2": 2.5646151868841116e-14,
+        "radial_deflection_defect_3": 2.4646951146678475e-14,
+        "spring_compression_defect_0": 2.5500435096859064e-14,
+        "spring_compression_defect_1": 2.953887134893307e-14,
+        "spring_compression_defect_2": 2.9552749136740886e-14,
+        "spring_compression_defect_3": 2.7929047963226594e-14,
+        "point_motion_defect_0": 2.2424727661654076e-14,
+        "point_motion_defect_1": 2.4045186685868214e-14,
+        "point_motion_defect_2": 2.563905930814725e-14,
+        "point_motion_defect_3": 2.4668524062962382e-14,
+        "surface_shape_defect_0": 1.879355939907255e-16,
+        "surface_shape_defect_1": 1.5384857238466122e-16,
+        "surface_shape_defect_2": 1.150793871243053e-15,
+        "surface_shape_defect_3": 1.5384862620654636e-16,
+        "native_point_velocity_defect_0": 2.2412394862603797e-14,
+        "native_point_velocity_defect_1": 2.4039306696858137e-14,
+        "native_point_velocity_defect_2": 2.5651272845634084e-14,
+        "native_point_velocity_defect_3": 2.466651648191209e-14,
+        "native_point_position_defect_0": 9.414325471147523e-17,
+        "native_point_position_defect_1": 2.7733764517236638e-17,
+        "native_point_position_defect_2": 1.1585230628502747e-16,
+        "native_point_position_defect_3": 2.7744775945551378e-17,
+        "normal_spin_radius_0": 0.0,
+        "normal_spin_radius_1": 0.0,
+        "normal_spin_radius_2": 0.0,
+        "normal_spin_radius_3": 0.0,
+        "body_gyro_work": 1.9708340884035932e-07,
+        "continuous_bias_work_not_applied": 0.0015015102496737914
+      }
+    }
+  },
+  "baseline_peaks": {
+    "2": {
+      "force_error_N": [
+        0.00868577315031871,
+        0.013818140852436045,
+        0.007567959615698783,
+        0.0029502381967176916
+      ],
+      "max_abs_force_error_N": 0.013818140852436045,
+      "input": {
+        "ledger": {
+          "kinetic_change": -3.4287910487329922,
+          "gravity_change": 1.8719277516299115,
+          "elastic_change": -1.9732607683054655,
+          "losses": 12.781650459278733,
+          "engine_work": 9.444072328823072,
+          "external_work": -0.19250137556203564,
+          "steering_gyro_work": 0.0,
+          "contact_steering_work": -0.0,
+          "moving_road_work": 0.0,
+          "actual_energy_residual": -4.4559390850101854e-05,
+          "numerical_guide_work": -3.021729575722662e-06,
+          "energy_residual_after_guide_work": -4.153766127437919e-05,
+          "energy_residual_after_guide_and_gyro_work": -4.387159432354253e-05,
+          "frozen_energy_residual": -3.725908470642025e-12,
+          "native_kinetic_defect": 1.2823944572915025e-08,
+          "native_body_translation_defect": 9.90032101101936e-09,
+          "native_wheel_translation_defect": -9.170355867230388e-09,
+          "native_body_angular_defect": 1.2094302175318234e-08,
+          "native_inertia_transport_defect": -6.543668330718372e-17,
+          "native_spin_defect": 0.0,
+          "float32_translation_rounding_defect": -0.00012015362903761953,
+          "native_translation_beyond_rounding": 0.00012015435900276332,
+          "native_body_velocity_error": 1.9841905896100798e-12,
+          "native_wheel_velocity_error": 9.292329314868064e-10,
+          "elastic_geometry_defect": -4.3884414552053386e-05,
+          "geometry_work_defect": 1.1018963519404679e-14,
+          "spring_geometry_defect": -4.388441863056869e-05,
+          "radial_geometry_defect": 4.078515303262975e-12,
+          "tangent_geometry_defect": 1.3877787808063857e-17,
+          "radial_deflection_defect_0": -7.882583474838611e-15,
+          "radial_deflection_defect_1": 5.551115123125783e-16,
+          "radial_deflection_defect_2": 1.1102230246251565e-16,
+          "radial_deflection_defect_3": 8.548717289613705e-15,
+          "spring_compression_defect_0": -6.3148416148961495e-09,
+          "spring_compression_defect_1": -5.346229486891119e-09,
+          "spring_compression_defect_2": -2.9925935271513104e-09,
+          "spring_compression_defect_3": -2.144332857112463e-09,
+          "point_motion_defect_0": -8.334885522347775e-15,
+          "point_motion_defect_1": 1.192486924093618e-16,
+          "point_motion_defect_2": -3.59521446569321e-16,
+          "point_motion_defect_3": 8.097319885473582e-15,
+          "surface_shape_defect_0": 5.307368687059149e-16,
+          "surface_shape_defect_1": 5.307558210681097e-16,
+          "surface_shape_defect_2": 5.306302484336793e-16,
+          "surface_shape_defect_3": 5.307226279644892e-16,
+          "native_point_velocity_defect_0": -8.332917695403387e-15,
+          "native_point_velocity_defect_1": 1.0717700472086656e-16,
+          "native_point_velocity_defect_2": -3.428970132573538e-16,
+          "native_point_velocity_defect_3": 8.084541433493188e-15,
+          "native_point_position_defect_0": -1.965116438947775e-18,
+          "native_point_position_defect_1": 1.2075301695733538e-17,
+          "native_point_position_defect_2": -1.6696713456794733e-17,
+          "native_point_position_defect_3": 1.278003310856137e-17,
+          "normal_spin_radius_0": 0.0,
+          "normal_spin_radius_1": 0.0,
+          "normal_spin_radius_2": 0.0,
+          "normal_spin_radius_3": 0.0,
+          "body_gyro_work": 2.333933049163339e-06,
+          "continuous_bias_work_not_applied": -0.000460147174602666,
+          "substep": 355,
+          "time": 1.4791666666666667
+        },
+        "actual_before": {
+          "position": [
+            -0.000741876971388715,
+            7.227047088557366,
+            0.4266359013565538
+          ],
+          "rotation": [
+            [
+              0.9999994392265714,
+              -0.000203866486490045,
+              0.0010392232668325703
+            ],
+            [
+              0.00020237094135437477,
+              0.9999989441604362,
+              0.0014390010475541137
+            ],
+            [
+              -0.0010395155336671497,
+              -0.0014387899320097762,
+              0.9999984246442525
+            ]
+          ],
+          "centers": [
+            [
+              -0.8410802090428473,
+              8.326717253665212,
+              0.3156371918103205
+            ],
+            [
+              0.8389194987648475,
+              8.327058140484471,
+              0.31451979658654433
+            ],
+            [
+              -0.8406272729567638,
+              6.126726249783969,
+              0.32357937841313417
+            ],
+            [
+              0.839365916011919,
+              6.127057567445562,
+              0.31567190964383357
+            ]
+          ],
+          "velocity": [
+            0.010174430165267532,
+            4.791368575726562,
+            0.03715778641875626
+          ],
+          "angular": [
+            -0.022894747285369804,
+            0.06198239510520785,
+            0.00298502624643301
+          ],
+          "wheel_velocity": [
+            [
+              -1.6043315491110974e-05,
+              4.786271458499446,
+              0.028803433388895336
+            ],
+            [
+              -3.043702062032784e-05,
+              4.791339674456264,
+              -0.020047738830241062
+            ],
+            [
+              0.007092787188904931,
+              4.7865469184784795,
+              0.1491715983832413
+            ],
+            [
+              0.006581517150456796,
+              4.791330556591602,
+              0.004760299443108303
+            ]
+          ],
+          "spin": [
+            94.25054447296775,
+            2.9384077838663126e-16,
+            15.155441915579946,
+            15.211832348205204,
+            15.413367609926485,
+            15.175140821674725,
+            56.56604771337681,
+            0.0,
+            56.56604771337681
+          ],
+          "deflection": [
+            0.014363405780238647,
+            0.015480801004014833,
+            0.016421219177425003,
+            0.014328687946725593
+          ],
+          "compression": [
+            0.05355674653522981,
+            0.05418573839286431,
+            0.05833360196879846,
+            0.05217251043313284
+          ],
+          "normals": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "normal_offsets": [
+            [
+              0.001149748270771672,
+              2.3267577035501731e-07,
+              -0.3156371918103205
+            ],
+            [
+              0.001149748270771672,
+              2.3267577035501731e-07,
+              -0.31451979658654433
+            ],
+            [
+              0.001149748270771672,
+              2.3267577035501731e-07,
+              -0.31357937841313416
+            ],
+            [
+              0.001149748270771672,
+              2.3267577035501731e-07,
+              -0.31567190964383357
+            ]
+          ],
+          "axes": [
+            [
+              0.9999994392265715,
+              0.0002023709413543748,
+              -0.00103951553366715
+            ],
+            [
+              0.9999994392265715,
+              0.0002023709413543748,
+              -0.00103951553366715
+            ],
+            [
+              0.9999994392265715,
+              0.0002023709413543748,
+              -0.00103951553366715
+            ],
+            [
+              0.9999994392265715,
+              0.0002023709413543748,
+              -0.00103951553366715
+            ]
+          ],
+          "road_nodes": [
+            "test-ground",
+            "test-ground",
+            "lab-left-bump",
+            "test-ground"
+          ],
+          "contact_points": [
+            [
+              -0.8399304607720757,
+              8.326717486340982,
+              0.0
+            ],
+            [
+              0.8400692470356191,
+              8.327058373160241,
+              0.0
+            ],
+            [
+              -0.8394775246859921,
+              6.126726482459739,
+              0.010000000000000002
+            ],
+            [
+              0.8405156642826906,
+              6.1270578001213325,
+              0.0
+            ]
+          ]
+        },
+        "actual_after": {
+          "position": [
+            -0.0006952431371941215,
+            7.247009920055557,
+            0.42679625244062736
+          ],
+          "rotation": [
+            [
+              0.999999134165575,
+              -0.00021549713768769153,
+              0.001298163735483944
+            ],
+            [
+              0.00021350239810922334,
+              0.9999987967482423,
+              0.001536528162328475
+            ],
+            [
+              -0.0012984932908871056,
+              -0.001536249670878833,
+              0.9999979769240147
+            ]
+          ],
+          "centers": [
+            [
+              -0.8410748602797725,
+              8.346659582325671,
+              0.3157522838920946
+            ],
+            [
+              0.8389248056190384,
+              8.347019599755816,
+              0.31444088190684977
+            ],
+            [
+              -0.840594799330644,
+              6.146669704695406,
+              0.3241219127730009
+            ],
+            [
+              0.8393961432866496,
+              6.147018981415451,
+              0.3156945277786206
+            ]
+          ],
+          "velocity": [
+            0.011192120206702443,
+            4.791079559565952,
+            0.03848426017764894
+          ],
+          "angular": [
+            -0.023403395305198155,
+            0.06214983924319011,
+            0.0026989102016065207
+          ],
+          "wheel_velocity": [
+            [
+              0.00128370313793906,
+              4.78615887851036,
+              0.027622099625776525
+            ],
+            [
+              0.0012736450058159592,
+              4.790750225122801,
+              -0.018939523126692438
+            ],
+            [
+              0.0077936702687429775,
+              4.7864291787449424,
+              0.13020824636801143
+            ],
+            [
+              0.007254545935337128,
+              4.790739352773298,
+              0.005428352348893786
+            ]
+          ],
+          "spin": [
+            94.2521816186094,
+            2.9384077838663126e-16,
+            15.14887235740481,
+            15.214393520802046,
+            15.364538750049482,
+            15.174952546279322,
+            56.47365320170698,
+            0.0,
+            56.47365320170698
+          ],
+          "deflection": [
+            0.014248648548841059,
+            0.015560050534085879,
+            0.015879019667934754,
+            0.014306404662315031
+          ],
+          "compression": [
+            0.05340110227976577,
+            0.054271170766402144,
+            0.05839099102217539,
+            0.05214506306819937
+          ],
+          "normals": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "normal_offsets": [
+            [
+              0.0014361892119440357,
+              3.066301063795491e-07,
+              -0.3157522838920946
+            ],
+            [
+              0.0014361892119440357,
+              3.066301063795491e-07,
+              -0.31444088190684977
+            ],
+            [
+              0.0014361892119440357,
+              3.066301063795491e-07,
+              -0.3141219127730009
+            ],
+            [
+              0.0014361892119440357,
+              3.066301063795491e-07,
+              -0.3156945277786206
+            ]
+          ],
+          "axes": [
+            [
+              0.999999134165575,
+              0.00021350239810922334,
+              -0.0012984932908871056
+            ],
+            [
+              0.999999134165575,
+              0.00021350239810922334,
+              -0.0012984932908871056
+            ],
+            [
+              0.999999134165575,
+              0.00021350239810922334,
+              -0.0012984932908871056
+            ],
+            [
+              0.999999134165575,
+              0.00021350239810922334,
+              -0.0012984932908871056
+            ]
+          ],
+          "road_nodes": [
+            "test-ground",
+            "test-ground",
+            "lab-left-bump",
+            "test-ground"
+          ],
+          "contact_points": [
+            [
+              -0.8396386710678285,
+              8.346659888955777,
+              0.0
+            ],
+            [
+              0.8403609948309824,
+              8.347019906385922,
+              0.0
+            ],
+            [
+              -0.8391586101187,
+              6.146670011325512,
+              0.010000000000000002
+            ],
+            [
+              0.8408323324985936,
+              6.147019288045557,
+              0.0
+            ]
+          ]
+        },
+        "initial_velocity": [
+          0.010174430165267532,
+          4.791368575726562,
+          0.03715778641875626,
+          -0.022894747285369804,
+          0.06198239510520785,
+          0.00298502624643301,
+          -0.03526390673549428,
+          0.02002321582339,
+          0.0347641681874944,
+          -0.005509573368553974,
+          94.25054447296775,
+          2.9384077838663126e-16,
+          15.155441915579946,
+          15.211832348205204,
+          15.413367609926485,
+          15.175140821674725
+        ],
+        "predicted_velocity": [
+          0.011192120205515762,
+          4.7910795595639675,
+          0.038484260177653024,
+          -0.02340339516993139,
+          0.06214983916054469,
+          0.002698909363996328,
+          -0.037353105749380965,
+          0.020505052744156683,
+          0.013774091032909686,
+          -0.006586852944148389,
+          94.2521816186094,
+          2.9384077838663126e-16,
+          15.14887235740481,
+          15.214393520802046,
+          15.364538750049482,
+          15.174952546279322
+        ],
+        "normal_port": [
+          [
+            -5.566605580290718e-16,
+            -2.075606325315582e-12,
+            1.0,
+            1.0996704092727032,
+            0.8390454288433488,
+            1.7421401424780535e-12,
+            0.9999984246442495,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            -5.512501190879945e-16,
+            -2.073653096288391e-12,
+            1.0,
+            1.1000112975741185,
+            -0.8409542827202642,
+            -1.7432410708410728e-12,
+            0.0,
+            0.9999984246442495,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            -3.3770531557614903e-15,
+            -2.074020981723224e-12,
+            1.0,
+            -1.1003203939802673,
+            0.838591958353762,
+            1.7355414762712307e-12,
+            0.0,
+            0.0,
+            0.9999984246442495,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            -3.140103293479404e-15,
+            -2.0736825703477137e-12,
+            1.0,
+            -1.0999892766159818,
+            -0.841400696797205,
+            -1.7482520395770791e-12,
+            0.0,
+            0.0,
+            0.0,
+            0.9999984246442495,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "known_force": [
+          -0.020475428739645446,
+          -9.642341069140954,
+          -11772.074777810214,
+          0.24683497733366266,
+          -0.17826022569562383,
+          0.0,
+          -392.3993818304047,
+          -392.3993818304047,
+          -392.3993818304047,
+          -392.3993818304047,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predicted_compression": [
+          0.05340110859460739,
+          0.05427117611263163,
+          0.05839099401476892,
+          0.052145065212532225
+        ],
+        "predicted_deflection": [
+          0.014248648548848941,
+          0.015560050534085323,
+          0.015879019667934643,
+          0.014306404662306482
+        ],
+        "normal_force": [
+          2835.9588420029895,
+          3121.520050425549,
+          3110.7399924479096,
+          2858.606938330996
+        ],
+        "dt": 0.004166666666666667
+      }
+    },
+    "4": {
+      "force_error_N": [
+        0.00467412976149717,
+        0.007578437190659315,
+        0.0041447899102422525,
+        0.0016834593679959653
+      ],
+      "max_abs_force_error_N": 0.007578437190659315,
+      "input": {
+        "ledger": {
+          "kinetic_change": -1.715840088355221,
+          "gravity_change": 0.96117085057951,
+          "elastic_change": -0.9992566362071919,
+          "losses": 6.3802818225238145,
+          "engine_work": 4.722611891681709,
+          "external_work": -0.09624370632736369,
+          "steering_gyro_work": 0.0,
+          "contact_steering_work": -0.0,
+          "moving_road_work": 0.0,
+          "actual_energy_residual": -1.2236813433083582e-05,
+          "numerical_guide_work": -7.796372479922244e-07,
+          "energy_residual_after_guide_work": -1.1457176185091358e-05,
+          "energy_residual_after_guide_and_gyro_work": -1.2158599514275703e-05,
+          "frozen_energy_residual": -3.0166980025114754e-12,
+          "native_kinetic_defect": 4.078468229806731e-09,
+          "native_body_translation_defect": 2.9336899700148046e-09,
+          "native_wheel_translation_defect": -2.685470967214386e-09,
+          "native_body_angular_defect": 3.830169980905434e-09,
+          "native_inertia_transport_defect": -8.583238964412002e-17,
+          "native_spin_defect": 0.0,
+          "float32_translation_rounding_defect": -5.603535424514467e-05,
+          "native_translation_beyond_rounding": 5.6035602464147467e-05,
+          "native_body_velocity_error": 5.879741138414829e-13,
+          "native_wheel_velocity_error": 3.075561541554528e-10,
+          "elastic_geometry_defect": -1.2162674750015867e-05,
+          "geometry_work_defect": -2.1592450050178513e-13,
+          "spring_geometry_defect": -1.216267509107638e-05,
+          "radial_geometry_defect": 3.410605131648481e-13,
+          "tangent_geometry_defect": 6.165748908372868e-30,
+          "radial_deflection_defect_0": -1.3877787807814457e-15,
+          "radial_deflection_defect_1": 5.551115123125783e-17,
+          "radial_deflection_defect_2": 0.0,
+          "radial_deflection_defect_3": 1.4432899320127035e-15,
+          "spring_compression_defect_0": -1.7304807101159447e-09,
+          "spring_compression_defect_1": -1.4798355527090301e-09,
+          "spring_compression_defect_2": -8.191461606243955e-10,
+          "spring_compression_defect_3": -6.228933549512483e-10,
+          "point_motion_defect_0": -1.4403354813733612e-15,
+          "point_motion_defect_1": -5.1702888385955514e-18,
+          "point_motion_defect_2": -3.10081824128942e-17,
+          "point_motion_defect_3": 1.3967149786471612e-15,
+          "surface_shape_defect_0": 7.939883030258878e-17,
+          "surface_shape_defect_1": 7.938482778917949e-17,
+          "surface_shape_defect_2": 7.94286617441999e-17,
+          "surface_shape_defect_3": 7.940415072828872e-17,
+          "native_point_velocity_defect_0": -1.434580174841532e-15,
+          "native_point_velocity_defect_1": 6.873842045053051e-18,
+          "native_point_velocity_defect_2": -4.215378074615582e-17,
+          "native_point_velocity_defect_3": 1.3962735050749774e-15,
+          "native_point_position_defect_0": -5.759824040881878e-18,
+          "native_point_position_defect_1": -1.2041420378217456e-17,
+          "native_point_position_defect_2": 1.1167282376711263e-17,
+          "native_point_position_defect_3": 4.404571326472612e-19,
+          "normal_spin_radius_0": 0.0,
+          "normal_spin_radius_1": 0.0,
+          "normal_spin_radius_2": 0.0,
+          "normal_spin_radius_3": 0.0,
+          "body_gyro_work": 7.014233291843449e-07,
+          "continuous_bias_work_not_applied": 3.447616731709821e-05,
+          "substep": 710,
+          "time": 1.4791666666666667
+        },
+        "actual_before": {
+          "position": [
+            -0.0007433050215503209,
+            7.2372460170901505,
+            0.42666821458994864
+          ],
+          "rotation": [
+            [
+              0.9999993795908771,
+              -0.00020988982837206606,
+              0.0010939671479684087
+            ],
+            [
+              0.00020826882001851027,
+              0.9999988806325808,
+              0.0014816739466138311
+            ],
+            [
+              -0.001094276911707584,
+              -0.0014814451881227512,
+              0.9999983039376592
+            ]
+          ],
+          "centers": [
+            [
+              -0.84109427435334,
+              8.336906459340137,
+              0.31568432076606173
+            ],
+            [
+              0.8389053807415467,
+              8.33725729550097,
+              0.3144834896445377
+            ],
+            [
+              -0.8406272211958496,
+              6.136916246826701,
+              0.3239243502403075
+            ],
+            [
+              0.839364876515659,
+              6.1372566954513434,
+              0.3156760547240872
+            ]
+          ],
+          "velocity": [
+            0.010526027219863,
+            4.791181641620634,
+            0.03895886727164066
+          ],
+          "angular": [
+            -0.023625008720051726,
+            0.06575930207438571,
+            0.002888383852008009
+          ],
+          "wheel_velocity": [
+            [
+              1.4793426445875064e-05,
+              4.786078589900802,
+              0.030913923234421624
+            ],
+            [
+              -2.825167928530159e-06,
+              4.790987854379818,
+              -0.02192997789062423
+            ],
+            [
+              0.0069677314559090315,
+              4.78635902322097,
+              0.14173951670723303
+            ],
+            [
+              0.006402287087672355,
+              4.7909798323415,
+              0.004721672483640506
+            ]
+          ],
+          "spin": [
+            94.25122530997001,
+            2.2328899443698644e-14,
+            15.149945584529673,
+            15.21142377892836,
+            15.403062660225254,
+            15.177356642906238,
+            56.55216212022102,
+            0.0,
+            56.55216212022102
+          ],
+          "deflection": [
+            0.01431634144474242,
+            0.015517172566266446,
+            0.016076311970496634,
+            0.014324607486716934
+          ],
+          "compression": [
+            0.053572470132060915,
+            0.05421002530329243,
+            0.058553328390827095,
+            0.05214340746183041
+          ],
+          "normals": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "normal_offsets": [
+            [
+              0.001210316767266496,
+              2.52071401354608e-07,
+              -0.31568432076606173
+            ],
+            [
+              0.001210316767266496,
+              2.52071401354608e-07,
+              -0.3144834896445377
+            ],
+            [
+              0.001210316767266496,
+              2.52071401354608e-07,
+              -0.3139243502403075
+            ],
+            [
+              0.001210316767266496,
+              2.52071401354608e-07,
+              -0.3156760547240872
+            ]
+          ],
+          "axes": [
+            [
+              0.9999993795908771,
+              0.00020826882001851027,
+              -0.001094276911707584
+            ],
+            [
+              0.9999993795908771,
+              0.00020826882001851027,
+              -0.001094276911707584
+            ],
+            [
+              0.9999993795908771,
+              0.00020826882001851027,
+              -0.001094276911707584
+            ],
+            [
+              0.9999993795908771,
+              0.00020826882001851027,
+              -0.001094276911707584
+            ]
+          ],
+          "road_nodes": [
+            "test-ground",
+            "test-ground",
+            "lab-left-bump",
+            "test-ground"
+          ],
+          "contact_points": [
+            [
+              -0.8398839575860736,
+              8.336906711411538,
+              0.0
+            ],
+            [
+              0.8401156975088132,
+              8.337257547572372,
+              0.0
+            ],
+            [
+              -0.8394169044285832,
+              6.136916498898102,
+              0.010000000000000002
+            ],
+            [
+              0.8405751932829255,
+              6.1372569475227445,
+              0.0
+            ]
+          ]
+        },
+        "actual_after": {
+          "position": [
+            -0.0007202904545376194,
+            7.247227405929923,
+            0.4267507427000007
+          ],
+          "rotation": [
+            [
+              0.9999992189753673,
+              -0.00021577922436620585,
+              0.0012310515756188572
+            ],
+            [
+              0.00021389389499528743,
+              0.9999988045234361,
+              0.0015314049432622685
+            ],
+            [
+              -0.0012313805492963972,
+              -0.001531140432780836,
+              0.9999980696535958
+            ]
+          ],
+          "centers": [
+            [
+              -0.8410928166698308,
+              8.346877433407935,
+              0.3157472474967743
+            ],
+            [
+              0.838906806515879,
+              8.347237939579365,
+              0.3144392064638457
+            ],
+            [
+              -0.8406119889727871,
+              6.146887795852561,
+              0.32419888623868637
+            ],
+            [
+              0.8393789087616703,
+              6.147237320823306,
+              0.3156866113137726
+            ]
+          ],
+          "velocity": [
+            0.011046992166096717,
+            4.791066643090785,
+            0.0396134928249946
+          ],
+          "angular": [
+            -0.02386775054225094,
+            0.06580475399913818,
+            0.002727792001533436
+          ],
+          "wheel_velocity": [
+            [
+              0.0006996880844097574,
+              4.786067552542668,
+              0.030204830742028302
+            ],
+            [
+              0.0006843716795099869,
+              4.790709157629507,
+              -0.021255926732163484
+            ],
+            [
+              0.007311467069994897,
+              4.786343532412949,
+              0.1317772792218506
+            ],
+            [
+              0.006735478085382212,
+              4.790700178542061,
+              0.0050671630489953386
+            ]
+          ],
+          "spin": [
+            94.25209433230832,
+            2.2328899443698644e-14,
+            15.146653243215887,
+            15.213151475064679,
+            15.372624270948535,
+            15.177751395344027,
+            56.49572967385092,
+            0.0,
+            56.49572967385092
+          ],
+          "deflection": [
+            0.014253591048368597,
+            0.015561632081297183,
+            0.01580195230645653,
+            0.014314227231370269
+          ],
+          "compression": [
+            0.053492340483559414,
+            0.054253020239698,
+            0.05857547982849701,
+            0.0521319120411719
+          ],
+          "normals": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "normal_offsets": [
+            [
+              0.001361959495201114,
+              2.913150487786107e-07,
+              -0.3157472474967743
+            ],
+            [
+              0.001361959495201114,
+              2.913150487786107e-07,
+              -0.3144392064638457
+            ],
+            [
+              0.001361959495201114,
+              2.913150487786107e-07,
+              -0.31419888623868636
+            ],
+            [
+              0.001361959495201114,
+              2.913150487786107e-07,
+              -0.3156866113137726
+            ]
+          ],
+          "axes": [
+            [
+              0.9999992189753673,
+              0.00021389389499528743,
+              -0.0012313805492963972
+            ],
+            [
+              0.9999992189753673,
+              0.00021389389499528743,
+              -0.0012313805492963972
+            ],
+            [
+              0.9999992189753673,
+              0.00021389389499528743,
+              -0.0012313805492963972
+            ],
+            [
+              0.9999992189753673,
+              0.00021389389499528743,
+              -0.0012313805492963972
+            ]
+          ],
+          "road_nodes": [
+            "test-ground",
+            "test-ground",
+            "lab-left-bump",
+            "test-ground"
+          ],
+          "contact_points": [
+            [
+              -0.8397308571746297,
+              8.346877724722983,
+              0.0
+            ],
+            [
+              0.8402687660110801,
+              8.347238230894414,
+              0.0
+            ],
+            [
+              -0.839250029477586,
+              6.14688808716761,
+              0.010000000000000002
+            ],
+            [
+              0.8407408682568714,
+              6.147237612138355,
+              0.0
+            ]
+          ]
+        },
+        "initial_velocity": [
+          0.010526027219863,
+          4.791181641620634,
+          0.03895886727164066,
+          -0.023625008720051726,
+          0.06575930207438571,
+          0.002888383852008009,
+          -0.03732640637113713,
+          0.020313682439727424,
+          0.021555199430996503,
+          -0.004979527488208812,
+          94.25122530997001,
+          2.2328899443698644e-14,
+          15.149945584529673,
+          15.21142377892836,
+          15.403062660225254,
+          15.177356642906238
+        ],
+        "predicted_velocity": [
+          0.011046992165745279,
+          4.791066643090197,
+          0.039613492824995857,
+          -0.023867750502230983,
+          0.06580475397459629,
+          0.0027277917240589493,
+          -0.03846140064998087,
+          0.020638279795738006,
+          0.010633083271714576,
+          -0.0055175029272739205,
+          94.25209433230832,
+          2.2328899443698644e-14,
+          15.146653243215887,
+          15.213151475064679,
+          15.372624270948535,
+          15.177751395344027
+        ],
+        "normal_port": [
+          [
+            -8.321341445103803e-17,
+            -5.692845045230047e-13,
+            1.0,
+            1.0996607047238618,
+            0.8390648553708748,
+            4.777581269744528e-13,
+            0.9999983039376583,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            -8.123565638448595e-17,
+            -5.687449027223998e-13,
+            1.0,
+            1.1000115409903795,
+            -0.8409347998062111,
+            -4.781880207521015e-13,
+            0.0,
+            0.9999983039376583,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            -8.689308173000275e-16,
+            -5.688408292655754e-13,
+            1.0,
+            -1.1003294526598975,
+            0.8385976488531525,
+            4.7607247182319e-13,
+            0.0,
+            0.0,
+            0.9999983039376583,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            -7.996278707278904e-16,
+            -5.687549834642443e-13,
+            1.0,
+            -1.0999890584551113,
+            -0.8413942966166036,
+            -4.794267811677223e-13,
+            0.0,
+            0.0,
+            0.0,
+            0.9999983039376583,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "known_force": [
+          -0.021182236872822235,
+          -9.641619037618874,
+          -11772.078399564965,
+          0.2540206598324062,
+          -0.187551557747895,
+          0.0,
+          -392.3993344651375,
+          -392.3993344651375,
+          -392.3993344651375,
+          -392.3993344651375,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predicted_compression": [
+          0.053492342214040124,
+          0.05425302171953355,
+          0.05857548064764317,
+          0.05213191266406526
+        ],
+        "predicted_deflection": [
+          0.014253591048369985,
+          0.015561632081297128,
+          0.01580195230645653,
+          0.014314227231368826
+        ],
+        "normal_force": [
+          2835.6581145446025,
+          3122.996699866797,
+          3094.5441419216327,
+          2860.3541849902176
+        ],
+        "dt": 0.0020833333333333333
+      }
+    },
+    "8": {
+      "force_error_N": [
+        0.002429739648960094,
+        0.003975216087837907,
+        0.0021688655801881396,
+        0.0008976568233265425
+      ],
+      "max_abs_force_error_N": 0.003975216087837907,
+      "input": {
+        "ledger": {
+          "kinetic_change": -0.8584875667494131,
+          "gravity_change": 0.4870896777040303,
+          "elastic_change": -0.5023092628059046,
+          "losses": 3.187038279902044,
+          "engine_work": 2.361457524459503,
+          "external_work": -0.04812326610607359,
+          "steering_gyro_work": 0.0,
+          "contact_steering_work": -0.0,
+          "moving_road_work": 0.0,
+          "actual_energy_residual": -3.130302673015617e-06,
+          "numerical_guide_work": -1.1936959283020917e-07,
+          "energy_residual_after_guide_work": -3.010933080185408e-06,
+          "energy_residual_after_guide_and_gyro_work": -3.20429136196818e-06,
+          "frozen_energy_residual": 1.7101875471325911e-12,
+          "native_kinetic_defect": 1.1460516979866497e-09,
+          "native_body_translation_defect": 7.9325791012363e-10,
+          "native_wheel_translation_defect": -7.240255362445477e-10,
+          "native_body_angular_defect": 1.0766699221961627e-09,
+          "native_inertia_transport_defect": 1.3786520007747806e-16,
+          "native_spin_defect": 0.0,
+          "float32_translation_rounding_defect": 0.0008844415288217673,
+          "native_translation_beyond_rounding": -0.0008844414595893935,
+          "native_body_velocity_error": 1.5898393712632242e-13,
+          "native_wheel_velocity_error": 8.820631058241782e-11,
+          "elastic_geometry_defect": -3.2054392278269006e-06,
+          "geometry_work_defect": 1.042499420123022e-13,
+          "spring_geometry_defect": -3.2054398957370722e-06,
+          "radial_geometry_defect": 6.679101716144942e-13,
+          "tangent_geometry_defect": -1.3877787807814318e-17,
+          "radial_deflection_defect_0": -1.1102230246251565e-16,
+          "radial_deflection_defect_1": 5.551115123125783e-17,
+          "radial_deflection_defect_2": 5.551115123125783e-17,
+          "radial_deflection_defect_3": 2.220446049250313e-16,
+          "spring_compression_defect_0": -4.5405412069099427e-10,
+          "spring_compression_defect_1": -3.9006279456410553e-10,
+          "spring_compression_defect_2": -2.1394402222041364e-10,
+          "spring_compression_defect_3": -1.6768043203940763e-10,
+          "point_motion_defect_0": -1.9262206847981167e-16,
+          "point_motion_defect_1": 2.619025873929792e-17,
+          "point_motion_defect_2": 9.297033618452655e-18,
+          "point_motion_defect_3": 1.8952446899144227e-16,
+          "surface_shape_defect_0": 8.346097532449379e-17,
+          "surface_shape_defect_1": 8.347272790663695e-17,
+          "surface_shape_defect_2": 8.34329702976752e-17,
+          "surface_shape_defect_3": 8.34657266499323e-17,
+          "native_point_velocity_defect_0": -2.0925824731478696e-16,
+          "native_point_velocity_defect_1": -7.770115466896399e-19,
+          "native_point_velocity_defect_2": -3.556183136310363e-18,
+          "native_point_velocity_defect_3": 2.0547889924154294e-16,
+          "native_point_position_defect_0": 1.663572708407004e-17,
+          "native_point_position_defect_1": 2.696952904051358e-17,
+          "native_point_position_defect_2": 1.2874900798212798e-17,
+          "native_point_position_defect_3": -1.5953865561469185e-17,
+          "normal_spin_radius_0": 0.0,
+          "normal_spin_radius_1": 0.0,
+          "normal_spin_radius_2": 0.0,
+          "normal_spin_radius_3": 0.0,
+          "body_gyro_work": 1.9335828178277225e-07,
+          "continuous_bias_work_not_applied": 9.741635350198572e-05,
+          "substep": 1420,
+          "time": 1.4791666666666667
+        },
+        "actual_before": {
+          "position": [
+            -0.0007358910401334767,
+            7.242391693213746,
+            0.42668950605763956
+          ],
+          "rotation": [
+            [
+              0.999999339693857,
+              -0.00020974701198958148,
+              0.0011298752324145757
+            ],
+            [
+              0.00020804533421815575,
+              0.9999988443656874,
+              0.0015059828779126207
+            ],
+            [
+              -0.001130189802100738,
+              -0.0015057468182325228,
+              0.9999982276971948
+            ]
+          ],
+          "centers": [
+            [
+              -0.841090641364355,
+              8.342049602808112,
+              0.3157133338565656
+            ],
+            [
+              0.8389089791546368,
+              8.342400091696607,
+              0.314460527035411
+            ],
+            [
+              -0.8406234812284157,
+              6.1420597997284805,
+              0.3241170335296455
+            ],
+            [
+              0.8393680551765798,
+              6.142399479190553,
+              0.3156784471157899
+            ]
+          ],
+          "velocity": [
+            0.010722951319494087,
+            4.791199456275399,
+            0.03989920584439021
+          ],
+          "angular": [
+            -0.024025929274040667,
+            0.06773380970800874,
+            0.0028349461352147856
+          ],
+          "wheel_velocity": [
+            [
+              4.716905621064216e-05,
+              4.786093699027408,
+              0.032032693471355386
+            ],
+            [
+              2.752485663471988e-05,
+              4.790914848117335,
+              -0.022903559726776226
+            ],
+            [
+              0.006908216871534922,
+              4.786374019448114,
+              0.137002286986373
+            ],
+            [
+              0.006318385360416224,
+              4.790907436224387,
+              0.004721497619595007
+            ]
+          ],
+          "spin": [
+            94.25163048879311,
+            -2.924232212381267e-14,
+            15.147173076532397,
+            15.211764915841478,
+            15.397073709280841,
+            15.179279749379806,
+            56.545132805429475,
+            0.0,
+            56.545132805429475
+          ],
+          "deflection": [
+            0.014287372533492604,
+            0.015540179354647188,
+            0.015883672860412697,
+            0.014322259274268279
+          ],
+          "compression": [
+            0.05357674829303816,
+            0.054222661484191886,
+            0.05866781392986445,
+            0.052127934850843216
+          ],
+          "normals": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "normal_offsets": [
+            [
+              0.001250038014647967,
+              2.6006474826518704e-07,
+              -0.3157133338565656
+            ],
+            [
+              0.001250038014647967,
+              2.6006474826518704e-07,
+              -0.314460527035411
+            ],
+            [
+              0.001250038014647967,
+              2.6006474826518704e-07,
+              -0.3141170335296455
+            ],
+            [
+              0.001250038014647967,
+              2.6006474826518704e-07,
+              -0.3156784471157899
+            ]
+          ],
+          "axes": [
+            [
+              0.9999993396938571,
+              0.00020804533421815577,
+              -0.0011301898021007382
+            ],
+            [
+              0.9999993396938571,
+              0.00020804533421815577,
+              -0.0011301898021007382
+            ],
+            [
+              0.9999993396938571,
+              0.00020804533421815577,
+              -0.0011301898021007382
+            ],
+            [
+              0.9999993396938571,
+              0.00020804533421815577,
+              -0.0011301898021007382
+            ]
+          ],
+          "road_nodes": [
+            "test-ground",
+            "test-ground",
+            "lab-left-bump",
+            "test-ground"
+          ],
+          "contact_points": [
+            [
+              -0.839840603349707,
+              8.34204986287286,
+              0.0
+            ],
+            [
+              0.8401590171692848,
+              8.342400351761356,
+              0.0
+            ],
+            [
+              -0.8393734432137677,
+              6.142060059793229,
+              0.010000000000000002
+            ],
+            [
+              0.8406180931912277,
+              6.142399739255302,
+              0.0
+            ]
+          ]
+        },
+        "actual_after": {
+          "position": [
+            -0.0007244467916661233,
+            7.247382474855569,
+            0.42673140223850375
+          ],
+          "rotation": [
+            [
+              0.9999992568566833,
+              -0.00021271830048865878,
+              0.00120043200794449
+            ],
+            [
+              0.0002108801811854282,
+              0.9999988055788063,
+              0.0015311337335370983
+            ],
+            [
+              -0.0012007562742886771,
+              -0.0015308794483659613,
+              0.999998107294451
+            ]
+          ],
+          "centers": [
+            [
+              -0.8410902246623313,
+              8.347035125100765,
+              0.31574628929403614
+            ],
+            [
+              0.8389093766476075,
+              8.347390487838597,
+              0.31443706215003026
+            ],
+            [
+              -0.8406161077638944,
+              6.147045611249148,
+              0.32425445133408554
+            ],
+            [
+              0.8393748096826877,
+              6.14738986707992,
+              0.3156835471233149
+            ]
+          ],
+          "velocity": [
+            0.010986478528659301,
+            4.791150376149732,
+            0.04022033362961909
+          ],
+          "angular": [
+            -0.024141661931429872,
+            0.06773880402360836,
+            0.0027495914728418135
+          ],
+          "wheel_velocity": [
+            [
+              0.000400033942674041,
+              4.786101400947047,
+              0.03163721997175449
+            ],
+            [
+              0.0003815932517821103,
+              4.790780296310524,
+              -0.022526289965486203
+            ],
+            [
+              0.007078525940390237,
+              4.78637905984078,
+              0.13192109226245377
+            ],
+            [
+              0.006484325863614133,
+              4.790772373792016,
+              0.0048960072240003035
+            ]
+          ],
+          "spin": [
+            94.25207822873585,
+            -2.924232212381267e-14,
+            15.145513517348942,
+            15.212753673819053,
+            15.380079929757738,
+            15.17968036605013,
+            56.51401275148156,
+            0.0,
+            56.51401275148156
+          ],
+          "deflection": [
+            0.01425450806070322,
+            0.015563735204709106,
+            0.01574634602065383,
+            0.014317250231424439
+          ],
+          "compression": [
+            0.053536164253652097,
+            0.05424420899024966,
+            0.058676401177270285,
+            0.052122755160772
+          ],
+          "normals": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "normal_offsets": [
+            [
+              0.0013280876757770952,
+              2.8006757782835676e-07,
+              -0.31574628929403614
+            ],
+            [
+              0.0013280876757770952,
+              2.8006757782835676e-07,
+              -0.31443706215003026
+            ],
+            [
+              0.0013280876757770952,
+              2.8006757782835676e-07,
+              -0.3142544513340855
+            ],
+            [
+              0.0013280876757770952,
+              2.8006757782835676e-07,
+              -0.3156835471233149
+            ]
+          ],
+          "axes": [
+            [
+              0.9999992568566833,
+              0.0002108801811854282,
+              -0.0012007562742886771
+            ],
+            [
+              0.9999992568566833,
+              0.0002108801811854282,
+              -0.0012007562742886771
+            ],
+            [
+              0.9999992568566833,
+              0.0002108801811854282,
+              -0.0012007562742886771
+            ],
+            [
+              0.9999992568566833,
+              0.0002108801811854282,
+              -0.0012007562742886771
+            ]
+          ],
+          "road_nodes": [
+            "test-ground",
+            "test-ground",
+            "lab-left-bump",
+            "test-ground"
+          ],
+          "contact_points": [
+            [
+              -0.8397621369865542,
+              8.347035405168343,
+              0.0
+            ],
+            [
+              0.8402374643233845,
+              8.347390767906175,
+              0.0
+            ],
+            [
+              -0.8392880200881173,
+              6.147045891316726,
+              0.010000000000000002
+            ],
+            [
+              0.8407028973584648,
+              6.147390147147498,
+              0.0
+            ]
+          ]
+        },
+        "initial_velocity": [
+          0.010722951319494087,
+          4.791199456275399,
+          0.03989920584439021,
+          -0.024025929274040667,
+          0.06773380970800874,
+          0.0028349461352147856,
+          -0.03836670279675934,
+          0.020498343251519873,
+          0.013777819642374779,
+          -0.0047026082999531114,
+          94.25163048879311,
+          -2.924232212381267e-14,
+          15.147173076532397,
+          15.211764915841478,
+          15.397073709280841,
+          15.179279749379806
+        ],
+        "predicted_velocity": [
+          0.010986478528564068,
+          4.791150376149573,
+          0.040220333629619444,
+          -0.024141661920592604,
+          0.06773880401694747,
+          0.0027495913932298836,
+          -0.038960241918662805,
+          0.020685980275745443,
+          0.008243962895865854,
+          -0.004972341495151028,
+          94.25207822873585,
+          -2.924232212381267e-14,
+          15.145513517348942,
+          15.212753673819053,
+          15.380079929757738,
+          15.17968036605013
+        ],
+        "normal_port": [
+          [
+            -1.2516692581231852e-17,
+            -1.4979115386014626e-13,
+            1.0,
+            1.0996581768959066,
+            0.839065694893186,
+            1.2569838268586042e-13,
+            0.9999982276971946,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            -1.1916437251873169e-17,
+            -1.496473054373249e-13,
+            1.0,
+            1.1000086657915995,
+            -0.8409339255938106,
+            -1.258303878317032e-13,
+            0.0,
+            0.9999982276971946,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            -2.213517068987049e-16,
+            -1.4967654519528274e-13,
+            1.0,
+            -1.1003316136509251,
+            0.8385984991978395,
+            1.2527496588504545e-13,
+            0.0,
+            0.0,
+            0.9999982276971946,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            -2.0254903150923878e-16,
+            -1.4965046317824651e-13,
+            1.0,
+            -1.0999919464353565,
+            -0.841393002240446,
+            -1.2613765480363657e-13,
+            0.0,
+            0.0,
+            0.0,
+            0.9999982276971946,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "known_force": [
+          -0.021578637609013636,
+          -9.64170718480403,
+          -11772.08029230742,
+          0.2581197167249911,
+          -0.1936563019424966,
+          0.0,
+          -392.3993045483793,
+          -392.3993045483793,
+          -392.3993045483793,
+          -392.3993045483793,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predicted_compression": [
+          0.05353616470770622,
+          0.05424420938031246,
+          0.05867640139121431,
+          0.05212275532845243
+        ],
+        "predicted_deflection": [
+          0.01425450806070333,
+          0.01556373520470905,
+          0.015746346020653775,
+          0.014317250231424217
+        ],
+        "normal_force": [
+          2835.126665201812,
+          3124.0538489715063,
+          3083.3523210464596,
+          2861.045705719693
+        ],
+        "dt": 0.0010416666666666667
+      }
+    }
+  },
+  "braking": [
+    {
+      "mass_kg": 40.0,
+      "summary": {
+        "status": "stopped",
+        "reason": "stopped",
+        "error": null,
+        "simulation_seconds": 1.5416666666666667,
+        "compute_seconds": 73.7897443000004,
+        "distance_m": 8.994764699347616,
+        "stopping_distance_m": 4.0214026550933,
+        "peak_deceleration_mps2": -9.895504403866813,
+        "peak_lateral_acceleration_mps2": 0.30890867569266206,
+        "peak_yaw_rate_radps": 0.010345727443121712,
+        "mean_path_error_m": null,
+        "maximum_path_error_m": null,
+        "abs_ticks": 94,
+        "ticks": 185,
+        "initialization_ticks": 195,
+        "options": {
+          "vehicle_id": "reference-rwd",
+          "maneuver": "ride_braking",
+          "speed_kph": 30.0,
+          "friction": 1.1,
+          "abs_enabled": true,
+          "esc_enabled": false,
+          "duration": 3.0,
+          "steering_deg": 3.0,
+          "onset": 0.6,
+          "seed": 0,
+          "cg_height": null,
+          "radius_m": 60.0,
+          "right_friction": 0.3,
+          "tire_reference_load": null,
+          "bump_height_m": 0.01,
+          "bump_length_m": 0.9,
+          "bump_distance_m": 6.0
+        },
+        "braking_reference": {
+          "time_s": 0.6000000000000001,
+          "speed_mps": 8.238028836119042,
+          "distance_basis": "制动请求前样本至停止，整车质量加权CG水平路径"
+        }
+      },
+      "analysis": {
+        "version": "coastal-engineering-metrics-v3",
+        "metrics": [
+          {
+            "key": "mfdd",
+            "label": "充分发出平均减速度",
+            "unit": "m/s²",
+            "value": 8.778891641132839,
+            "status": "available",
+            "note": "按水平路径距离平均，80%→10%初速交点线性插值；不等于减速度峰值；凸起研究工况，以制动请求前样本为基准，不作为平路制动合格结果",
+            "window": {
+              "start_s": 0.8072263758007574,
+              "end_s": 1.4602612307779979,
+              "start_m": 1.5509053058249023,
+              "end_m": 3.9860091198219743,
+              "start_speed_mps": 6.590423068895234,
+              "end_speed_mps": 0.8238028836119042,
+              "reference_time_s": 0.6000000000000001,
+              "reference_speed_mps": 8.238028836119042
+            }
+          },
+          {
+            "key": "yaw_gain",
+            "label": "稳态横摆增益",
+            "unit": "1/s",
+            "value": null,
+            "status": "unavailable",
+            "note": "需要固定转角或定圆稳态工况",
+            "window": null
+          },
+          {
+            "key": "beta",
+            "label": "峰值车身侧偏",
+            "unit": "deg",
+            "value": 0.3430745155890453,
+            "status": "available",
+            "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+            "window": null
+          },
+          {
+            "key": "roll",
+            "label": "峰值车身侧倾",
+            "unit": "deg",
+            "value": 0.23762822768652153,
+            "status": "available",
+            "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+            "window": null
+          },
+          {
+            "key": "ltr_front",
+            "label": "峰值前轴左右轮荷差比",
+            "unit": "1",
+            "value": 0.39534076118143274,
+            "status": "available",
+            "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+            "window": null
+          },
+          {
+            "key": "ltr_rear",
+            "label": "峰值后轴左右轮荷差比",
+            "unit": "1",
+            "value": 0.6922213657531802,
+            "status": "available",
+            "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+            "window": null
+          },
+          {
+            "key": "utilization_fl",
+            "label": "峰值附着利用率 FL",
+            "unit": "1",
+            "value": 0.9954681466380624,
+            "status": "available",
+            "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+            "window": null
+          },
+          {
+            "key": "utilization_fr",
+            "label": "峰值附着利用率 FR",
+            "unit": "1",
+            "value": 0.9113945024138285,
+            "status": "available",
+            "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+            "window": null
+          },
+          {
+            "key": "utilization_rl",
+            "label": "峰值附着利用率 RL",
+            "unit": "1",
+            "value": 1.0000000000000084,
+            "status": "available",
+            "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+            "window": null
+          },
+          {
+            "key": "utilization_rr",
+            "label": "峰值附着利用率 RR",
+            "unit": "1",
+            "value": 0.9999999999999969,
+            "status": "available",
+            "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+            "window": null
+          }
+        ],
+        "ride": {
+          "metrics": [
+            {
+              "key": "ride.body_rms",
+              "label": "簧上垂向RMS",
+              "unit": "m/s²",
+              "value": 0.2852290781112957,
+              "status": "available",
+              "note": "簧上CG世界Z加速度RMS，未加权；不是座椅ISO舒适等级",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 1.5416666666666665,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.body_peak",
+              "label": "簧上垂向峰值",
+              "unit": "m/s²",
+              "value": 1.0817838755841687,
+              "status": "available",
+              "note": "簧上CG世界Z惯性加速度绝对峰值",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 1.5416666666666665,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.hub_peak",
+              "label": "轮心垂向峰值",
+              "unit": "m/s²",
+              "value": 23.50029555294269,
+              "status": "available",
+              "note": "四轮实际速度差的世界Z加速度绝对峰值",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 1.5416666666666665,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.max_travel",
+              "label": "最大压缩行程",
+              "unit": "m",
+              "value": 0.0780976144393845,
+              "status": "available",
+              "note": "实际轮心相对车身的压缩行程最大值",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 1.5416666666666665,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.unload_fraction",
+              "label": "零轮荷采样比例",
+              "unit": "1",
+              "value": 0.0,
+              "status": "available",
+              "note": "四轮Fn=0的完成步占比；不是插值后的精确离地时长",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 1.5416666666666665,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.min_load_fl",
+              "label": "最小施力轮荷 FL",
+              "unit": "N",
+              "value": 1554.7262281384842,
+              "status": "available",
+              "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 1.5416666666666665,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.min_load_fr",
+              "label": "最小施力轮荷 FR",
+              "unit": "N",
+              "value": 2938.065997059236,
+              "status": "available",
+              "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 1.5416666666666665,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.min_load_rl",
+              "label": "最小施力轮荷 RL",
+              "unit": "N",
+              "value": 344.17323645293095,
+              "status": "available",
+              "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 1.5416666666666665,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.min_load_rr",
+              "label": "最小施力轮荷 RR",
+              "unit": "N",
+              "value": 1375.103089572891,
+              "status": "available",
+              "note": "末机械子步实际Fn最小值；负荷预算另按同阶段Fn计算",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 1.5416666666666665,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            },
+            {
+              "key": "ride.load_cv_fl",
+              "label": "FL动态轮荷比",
+              "unit": "1",
+              "value": 0.2882103873584772,
+              "status": "available",
+              "note": "sqrt(mean((Fn_FL−初始Fn_FL)^2))/初始Fn_FL，完整区间",
+              "window": {
+                "start_s": 0.0,
+                "end_s": 1.5416666666666665,
+                "basis": "全部已完成步；世界Z惯性加速度，未做频率加权"
+              }
+            }
+          ]
+        }
+      },
+      "changed_conditions": {},
+      "record_roundtrip_exact": true,
+      "recalculate_exact": true
+    }
+  ]
+}

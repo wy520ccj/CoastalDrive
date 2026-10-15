@@ -1,0 +1,34 @@
+[
+  {
+    "name": "lab-origin-energy-2-r1",
+    "status": "time_limit",
+    "steps": 576,
+    "substeps": 2,
+    "peak_J": 0.0032959566463402756,
+    "cumulative_J": -0.04012992964040918
+  },
+  {
+    "name": "lab-origin-edge-energy-2-r1",
+    "status": "time_limit",
+    "steps": 576,
+    "substeps": 2,
+    "peak_J": 0.00330214066011858,
+    "cumulative_J": -0.040149565164041306
+  },
+  {
+    "name": "lab-origin-edge-energy-4-r1",
+    "status": "time_limit",
+    "steps": 1152,
+    "substeps": 4,
+    "peak_J": 0.0033124739536343067,
+    "cumulative_J": -0.12237368552588324
+  },
+  {
+    "name": "lab-origin-edge-energy-8-r1",
+    "status": "time_limit",
+    "steps": 2304,
+    "substeps": 8,
+    "peak_J": 0.003428184250406058,
+    "cumulative_J": 0.12942476429738128
+  }
+]

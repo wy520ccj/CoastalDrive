@@ -1,5 +1,6 @@
 """车辆动力学实验室窗口：配置、离线运行、真实曲线与记录分析。"""
 
+import json
 import math
 import os
 from datetime import UTC, datetime
@@ -21,10 +22,13 @@ from lab_experiment import MANEUVERS, LabExperiment, LabOptions
 from lab_records import LabRecord, changed_conditions, export_record, load_record, recalculate
 from lab_scene import LabScene
 from paths import user_data
+from suspension_bench import fit_bench
+from suspension_bench import validate_metadata as validate_suspension_metadata
+from tire_calibration import validate_fit_metadata
 from ui import theme
 from ui.lab_widgets import MUTED, LabOptionMenu, button_textures
 from vehicle_designs import DESIGN_VEHICLES, vehicle_design
-from vehicle_parameters import load_vehicle_config
+from vehicle_parameters import config_from_document, load_vehicle_config, save_vehicle_config
 from vehicle_state import VehicleCommand
 
 INK = theme.INK
@@ -53,6 +57,8 @@ class VehicleLab(ShowBase):
         self.output = Path(output) if output else user_data()/"experiments"
         self.next_workspace = None
         self.run_state = None
+        self.engineered_config = None
+        self.parameter_metadata = None
         self.record = None
         self.baseline = None
         self.playing = False
@@ -67,6 +73,8 @@ class VehicleLab(ShowBase):
         self.timeline_hover = False
         self.timeline_target = 0.
         self.entries = {}
+        self.hovered_parameter = None
+        self.focused_parameter = "speed"
         self.scene = LabScene(self)
         self.build_ui()
         self.scene.set_vehicle(vehicle_design("reference-rwd"))
@@ -75,6 +83,7 @@ class VehicleLab(ShowBase):
         self.accept("escape", self.escape)
         self.accept("space", self.hotkey, [self.toggle_pause])
         self.accept("period", self.hotkey, [self.single_step])
+        self.accept("f1", self.show_parameter_help)
         self.accept("mouse1", self.set_pointer, [True])
         self.accept("mouse1-up", self.set_pointer, [False])
         self.taskMgr.add(self.update, "lab-update")
@@ -96,14 +105,41 @@ class VehicleLab(ShowBase):
 
     def field(self, key, label, value, z, *, x=-1.61, width=.30, parent=None):
         self.text(label, x, z, .039, MUTED, parent=parent)
+        target = DirectFrame(parent=parent or self.root, frameColor=(0, 0, 0, 0), relief=None,
+                             frameSize=(0, .31, -.015, .045), pos=(x, 0, z), state=DGG.NORMAL)
+        self.bind_parameter(target, key)
         entry = DirectEntry(parent=parent or self.root, initialText=str(value), text_font=self.font,
             text_fg=INK, scale=.038, width=width/.038, numLines=1, focus=0,
             frameColor=(.94, .95, .92, 1), pos=(x+.34, 0, z-.003), relief=DGG.FLAT)
         self.entries[key] = entry
+        self.bind_parameter(entry, key, focus=True)
         return entry
 
-    def option(self, labels, x, z, width, command=None, parent=None):
-        return LabOptionMenu(parent=parent or self.root, items=labels, text_font=self.font,
+    def bind_parameter(self, widget, key, *, focus=False):
+        widget.bind(DGG.ENTER, self.enter_parameter, [key])
+        widget.bind(DGG.EXIT, self.leave_parameter, [key])
+        if focus:
+            widget["focusInCommand"] = self.focus_parameter
+            widget["focusInExtraArgs"] = [key]
+
+    def enter_parameter(self, key, event=None):
+        self.hovered_parameter = key
+
+    def leave_parameter(self, key, event=None):
+        if self.hovered_parameter == key:
+            self.hovered_parameter = None
+
+    def focus_parameter(self, key):
+        self.focused_parameter = key
+
+    def show_parameter_help(self):
+        key = self.hovered_parameter or self.focused_parameter
+        for menu in (self.vehicle_menu, self.maneuver_menu, self.abs_menu, self.esc_menu, self.plot_menu):
+            menu.hidePopupMenu()
+        self.parameter_help.show(key)
+
+    def option(self, labels, x, z, width, command=None, parent=None, parameter=None):
+        menu = LabOptionMenu(parent=parent or self.root, items=labels, text_font=self.font,
             item_text_font=self.font, item_text_scale=.038, item_text_fg=INK,
             item_text_pos=(.025, -.013), item_frameSize=(0, width, -.04, .04),
             item_frameColor=PANEL, item_relief=DGG.FLAT, item_borderWidth=(0, 0),
@@ -118,6 +154,9 @@ class VehicleLab(ShowBase):
             popupMarker_text="▼", popupMarker_text_font=self.font,
             popupMarker_text_fg=MUTED, popupMarker_text_scale=.7,
             popupMarkerBorder=(0, 0))
+        if parameter is not None:
+            self.bind_parameter(menu, parameter)
+        return menu
 
     def build_ui(self):
         from ui.lab_workbench import build_workbench
@@ -131,19 +170,101 @@ class VehicleLab(ShowBase):
             duration=float(self.entries["duration"].get()), steering_deg=float(self.entries["steer"].get()),
             onset=float(self.entries["onset"].get()), radius_m=float(self.entries["radius"].get()),
             right_friction=float(self.entries["right_mu"].get()),
+            bump_height_m=float(self.entries["bump_height"].get()),
+            bump_length_m=float(self.entries["bump_length"].get()),
+            bump_distance_m=float(self.entries["bump_distance"].get()),
             cg_height=float(self.entries["cg"].get()) if self.entries["cg"].get().strip() else None,
+            tire_reference_load=float(self.entries["tire_load"].get()) if self.entries["tire_load"].get().strip() else None,
             abs_enabled=self.abs_menu.selectedIndex == 0, esc_enabled=self.esc_menu.selectedIndex == 1)
+
+    def choose_vehicle(self, label):
+        self.engineered_config = None
+        self.parameter_metadata = None
+
+    def import_engineering(self, path):
+        try:
+            document = json.loads(Path(path).read_text(encoding="utf-8"))
+            design = DESIGN_VEHICLES[self.vehicle_menu.selectedIndex]
+            config = config_from_document(document, design.config)
+            metadata = document.get("metadata", {})
+            validate_fit_metadata(metadata)
+            validate_suspension_metadata(metadata)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            self.notice.setText(f"工程配置载入失败：{error}")
+            return
+        self.engineered_config, self.parameter_metadata = config, metadata
+        self.entries["mu"].enterText(str(config.road_friction))
+        self.entries["cg"].enterText("")
+        self.entries["tire_load"].enterText("")
+        basis = metadata.get("basis", "导入工程配置，来源按文件声明")
+        self.model_note.setText(f"{design.name} · 导入工程模型")
+        self.notice.setText(basis)
+        self.record_menu.hide()
+
+    def open_engineering(self):
+        import tkinter as tk
+        from tkinter import filedialog
+
+        dialog = tk.Tk()
+        dialog.withdraw()
+        try:
+            path = filedialog.askopenfilename(title="导入完整车辆工程模型", filetypes=[("车辆工程JSON", "*.json")])
+        finally:
+            dialog.destroy()
+        if path:
+            self.import_engineering(path)
+
+    def import_suspension_bench(self, path):
+        """对当前选定硬件换算部件数据；不触碰已运行记录或物理世界。"""
+        try:
+            raw = Path(path).read_bytes()
+            base = self.engineered_config or DESIGN_VEHICLES[self.vehicle_menu.selectedIndex].config
+            config, report = fit_bench(json.loads(raw), base)
+            folder = self.output/("suspension-bench-"+datetime.now(UTC).strftime("%Y%m%dT%H%M%S%fZ"))
+            folder.mkdir(parents=True, exist_ok=False)
+            (folder/"input.json").write_bytes(raw)
+            save_vehicle_config(folder/"base-vehicle.json", base, metadata=self.parameter_metadata)
+            (folder/"fit-report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2,
+                                                          allow_nan=False), encoding="utf-8")
+            if not report["passed"]:
+                self.notice.setText("部件数据不符合当前线性本构，未应用；验证误差见台架报告。")
+                return
+            metadata = dict(self.parameter_metadata or {})
+            metadata["suspension_calibration"] = report
+            metadata["basis"] = ("悬架合成数据验证，非实测；其他硬件沿用当前模型" if report["input"]["source_kind"] == "synthetic"
+                                 else "悬架台架拟合与安装运动比换算；其他硬件沿用当前模型")
+            save_vehicle_config(folder/"candidate-vehicle.json", config, metadata=metadata)
+            self.import_engineering(folder/"candidate-vehicle.json")
+            self.advanced_panel.hide()
+        except (OSError, ValueError, KeyError, TypeError, ArithmeticError) as error:
+            self.notice.setText(f"悬架台架载入失败：{error}")
+
+    def open_suspension_bench(self):
+        import tkinter as tk
+        from tkinter import filedialog
+
+        dialog = tk.Tk()
+        dialog.withdraw()
+        try:
+            path = filedialog.askopenfilename(title="导入悬架部件台架数据", filetypes=[("悬架台架JSON", "*.json")])
+        finally:
+            dialog.destroy()
+        if path:
+            self.import_suspension_bench(path)
 
     def set_options(self, options):
         self.vehicle_menu.set(next(i for i, design in enumerate(DESIGN_VEHICLES) if design.id == options.vehicle_id))
         self.maneuver_menu.set(tuple(MANEUVERS).index(options.maneuver))
         for key, value in (("speed", options.speed_kph), ("mu", options.friction),
                            ("duration", options.duration), ("steer", options.steering_deg),
-                           ("onset", options.onset), ("radius", options.radius_m), ("right_mu", options.right_friction)):
+                           ("onset", options.onset), ("radius", options.radius_m), ("right_mu", options.right_friction),
+                           ("bump_height", options.bump_height_m), ("bump_length", options.bump_length_m),
+                           ("bump_distance", options.bump_distance_m)):
             self.entries[key].enterText(str(value))
         self.abs_menu.set(0 if options.abs_enabled else 1)
         self.esc_menu.set(1 if options.esc_enabled else 0)
         self.entries["cg"].enterText("" if options.cg_height is None else str(options.cg_height))
+        self.entries["tire_load"].enterText("" if options.tire_reference_load is None else str(options.tire_reference_load))
 
     def start_experiment(self):
         try:
@@ -160,7 +281,8 @@ class VehicleLab(ShowBase):
         self.details_panel.hide()
         self.record_menu.hide()
         try:
-            self.run_state = LabExperiment(options)
+            self.run_state = LabExperiment(options, config=self.engineered_config,
+                                           parameter_metadata=self.parameter_metadata)
         except (ArithmeticError, ValueError, RuntimeError, OSError) as error:
             self.status.setText("初始化失败")
             self.notice.setText(str(error))
@@ -169,6 +291,8 @@ class VehicleLab(ShowBase):
         self.scene.set_vehicle(self.run_state.design, self.run_state.config)
         self.scene.set_trial(options, self.run_state.snapshots[0].player)
         basis = "工程初值" if options.vehicle_id.startswith("gr86") else "设计模型"
+        if self.engineered_config is not None:
+            basis = "导入工程模型（来源见F1）"
         self.model_note.setText(f"{self.run_state.design.name} · {basis}")
         self.notice.setText("离线计算真实固定步；暂停后可拖动时间轴分析")
         self.manual_panel.show() if options.maneuver == "manual" else self.manual_panel.hide()
@@ -186,6 +310,15 @@ class VehicleLab(ShowBase):
             self.set_plot_group("路径跟踪")
         elif mode in ("braking", "split_braking"):
             self.entries["speed"].enterText("100")
+            self.set_plot_group("制动响应")
+        elif mode=="ride_bump":
+            self.entries["speed"].enterText("18")
+            self.entries["duration"].enterText("3")
+            self.set_plot_group("车身 / 轮心振动")
+        elif mode=="ride_braking":
+            self.entries["speed"].enterText("30")
+            self.entries["duration"].enterText("3")
+            self.entries["onset"].enterText("0.6")
             self.set_plot_group("制动响应")
         else:
             self.set_plot_group("转向响应")
@@ -239,6 +372,9 @@ class VehicleLab(ShowBase):
     def toggle_details(self):
         self.details_panel.show() if self.details_panel.isHidden() else self.details_panel.hide()
 
+    def show_engineering(self):
+        self.engineering_panel.show()
+
     def toggle_record_menu(self):
         self.record_menu.show() if self.record_menu.isHidden() else self.record_menu.hide()
 
@@ -247,6 +383,12 @@ class VehicleLab(ShowBase):
             action()
 
     def escape(self):
+        if not self.parameter_help.root.isHidden():
+            self.parameter_help.hide()
+            return
+        if not self.engineering_panel.root.isHidden():
+            self.engineering_panel.hide()
+            return
         for panel in (self.manual_panel, self.details_panel, self.advanced_panel, self.record_menu):
             if not panel.isHidden():
                 panel.hide()
@@ -286,16 +428,29 @@ class VehicleLab(ShowBase):
             self.scene.trajectory(snapshots)
 
     def set_plot_group(self, selection):
+        self.plot_menu.set(self.plot_menu["items"].index(selection), fCommand=0)
         names = ("制动响应", "转向响应",
-                 "四轮法向载荷", "四轮滑移率", "轮胎力 / 轮速", "路径跟踪", "执行器响应")
+                 "四轮法向载荷", "四轮滑移率", "轮胎力 / 轮速", "路径跟踪", "执行器响应",
+                 "轮胎侧偏角", "附着利用率", "车身侧偏 / 侧倾", "左右载荷转移", "轮胎回正力矩",
+                 "质心运动", "车身 / 轮心振动", "悬架行程 / 速度", "轮胎径向压缩")
         groups = ((("speed",), ("ax",)), (("yaw",), ("steering_request", "steering")),
-                  (("load_fl", "load_fr"), ("load_rl", "load_rr")),
+                  (("sample_load_fl", "sample_load_fr"), ("sample_load_rl", "sample_load_rr")),
                   (("kappa_fl", "kappa_fr"), ("kappa_rl", "kappa_rr")),
                   (("fx_fl", "fy_fl"), ("omega_fl", "omega_rl")), (("path_error",), ("speed",)),
-                  (("throttle_request", "engine_throttle"), ("brake_request", "pressure_fl")))
+                  (("throttle_request", "engine_throttle"), ("brake_request", "pressure_fl")),
+                  (("alpha_fl", "alpha_fr"), ("alpha_rl", "alpha_rr")),
+                  (("utilization_fl", "utilization_fr"), ("utilization_rl", "utilization_rr")),
+                  (("beta",), ("roll",)), (("ltr_front",), ("ltr_rear",)),
+                  (("mz_fl", "mz_fr"), ("mz_rl", "mz_rr")),
+                  (("cg_ax", "cg_ay"), ("cg_beta",)),
+                  (("sprung_az",), ("hub_az_fl", "hub_az_rl")),
+                  (("travel_fl", "travel_rl"), ("travel_rate_fl", "travel_rate_rl")),
+                  (("radial_fl", "force_radial_fl"), ("radial_rl", "force_radial_rl")))
         for plot, keys in zip(self.plots, groups[names.index(selection)]):
             plot.keys = keys
         self.refresh_plots()
+        for plot in self.plots:
+            plot.seek(self.view_index/120)
 
     def show_sample(self, index):
         active = self.record if self.record is not None else self.run_state
@@ -327,7 +482,7 @@ class VehicleLab(ShowBase):
             f"滑移 FL/FR  {slips[0]} / {slips[1]}\n"
             f"       RL/RR  {slips[2]} / {slips[3]}\n"
             f"\n"
-            f"载荷 FL/FR  {loads[0]} / {loads[1]} N\n"
+            f"施力轮荷 FL/FR  {loads[0]} / {loads[1]} N\n"
             f"       RL/RR  {loads[2]} / {loads[3]} N\n\n"
             f"压力 FL/FR  {row['pressure_fl']:.0%} / {row['pressure_fr']:.0%}\n"
             f"       RL/RR  {row['pressure_rl']:.0%} / {row['pressure_rr']:.0%}")
@@ -421,6 +576,8 @@ class VehicleLab(ShowBase):
         self.playing = False
         self.manual_panel.hide()
         self.set_options(options)
+        self.engineered_config = config
+        self.parameter_metadata = record.metadata.get("parameter_metadata")
         self.scene.set_vehicle(design, config)
         self.scene.set_trial(options, record.snapshots[0].player)
         basis = "工程初值" if options.vehicle_id.startswith("gr86") else "设计模型"

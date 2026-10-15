@@ -1,0 +1,46 @@
+[
+  {
+    "name": "finite-radial-ride-r2",
+    "status": "time_limit",
+    "seconds": 2.4,
+    "substeps": 2,
+    "mechanical_steps": 576,
+    "peak_J": 0.0032305599127814555,
+    "cumulative_J": -0.05758576912699531,
+    "radial_cumulative_J": -0.001074151499452114,
+    "native_kinetic_cumulative_J": -0.038187269266337864
+  },
+  {
+    "name": "finite-radial-ride-4-r1",
+    "status": "time_limit",
+    "seconds": 2.4,
+    "substeps": 4,
+    "mechanical_steps": 1152,
+    "peak_J": 0.0029974585687626565,
+    "cumulative_J": -0.08412650292159075,
+    "radial_cumulative_J": -0.004059015666541654,
+    "native_kinetic_cumulative_J": -0.06523283065577541
+  },
+  {
+    "name": "finite-radial-ride-8-r1",
+    "status": "time_limit",
+    "seconds": 2.4,
+    "substeps": 8,
+    "mechanical_steps": 2304,
+    "peak_J": 0.005229576660164728,
+    "cumulative_J": 0.7230399181159063,
+    "radial_cumulative_J": -0.00300076382636405,
+    "native_kinetic_cumulative_J": 0.745283446510618
+  },
+  {
+    "name": "finite-radial-manual-r1",
+    "status": "time_limit",
+    "seconds": 0.125,
+    "substeps": 2,
+    "mechanical_steps": 30,
+    "peak_J": 0.025503272631155434,
+    "cumulative_J": -0.0025818717370534074,
+    "radial_cumulative_J": -0.0012569429495101758,
+    "native_kinetic_cumulative_J": -0.11480164780397217
+  }
+]

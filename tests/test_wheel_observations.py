@@ -34,7 +34,7 @@ def test_native_four_wheel_observations_match_original_formulas():
         width = config.wheel_width if trial%2 else None
         actual = wheel_observations(right,forward,angles,normals,points,velocity,angular,omega,loads,frictions,
             (config.wheel_radius,width,config.wheel_shoulder_radius,config.wheel_crown_height,
-             config.slip_speed,config.mass,config.tire_peak_load_exponent))
+             config.slip_speed,config.tire_reference_load,config.tire_peak_load_exponent))
         expected = []
         for angle,normal,point,speed,load,mu in zip(angles,normals,points,omega,loads,frictions):
             geometry = {} if width is None else {

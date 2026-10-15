@@ -1,0 +1,15 @@
+{
+  "load_equal": true,
+  "recalculate_equal": true,
+  "samples_equal": true,
+  "commands_equal": true,
+  "frames": 16,
+  "actual_mechanism": true,
+  "initial_normal_force": [
+    2942.8683121108666,
+    2942.8683121108666,
+    2942.8683121108656,
+    2942.8683121108656
+  ],
+  "peak_aligning_moment": 4.683644853082863
+}

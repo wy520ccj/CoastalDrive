@@ -1,0 +1,30 @@
+{
+  "braking-AB\\baseline-A": {
+    "samples": 379,
+    "validated": true
+  },
+  "braking-AB": {
+    "samples": 574,
+    "validated": true
+  },
+  "constant-radius": {
+    "samples": 961,
+    "validated": true
+  },
+  "dry-braking": {
+    "samples": 379,
+    "validated": true
+  },
+  "low-grip-braking": {
+    "samples": 574,
+    "validated": true
+  },
+  "split-braking": {
+    "samples": 502,
+    "validated": true
+  },
+  "steady-radius-12": {
+    "samples": 1441,
+    "validated": true
+  }
+}

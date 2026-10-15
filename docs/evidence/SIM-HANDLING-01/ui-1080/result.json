@@ -1,0 +1,15 @@
+{
+  "height": 1080,
+  "f1_metric": true,
+  "no_physics_world_started": true,
+  "screenshots": [
+    "01-braking-metrics.png",
+    "02-mfdd-formula.png",
+    "02b-ab-metrics.png",
+    "03-handling-metrics.png",
+    "04-0-engineering-curves.png",
+    "04-1-engineering-curves.png",
+    "04-2-engineering-curves.png",
+    "04-3-engineering-curves.png"
+  ]
+}

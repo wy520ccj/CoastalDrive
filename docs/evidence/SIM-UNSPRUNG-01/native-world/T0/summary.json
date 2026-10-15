@@ -1,0 +1,61 @@
+{
+  "started_utc": "2026-10-14T02:20:08.229062+00:00",
+  "git_head": "de56ab82dc835ca00fe439bc1c2fdf8695bc0c27",
+  "git_status": "M src/unsprung_drivetrain.py\n M src/unsprung_joint.py\n M tests/test_unsprung_joint.py\n?? src/unsprung_body.py\n?? src/unsprung_geometry.py\n?? tests/test_unsprung_body.py\n?? tests/test_unsprung_geometry.py\n?? tools/physics/unsprung_world_check.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_unsprung_dynamics.py",
+    "tests/test_unsprung_contact.py",
+    "tests/test_unsprung_modes.py",
+    "tests/test_unsprung_joint.py",
+    "tests/test_unsprung_body.py",
+    "tests/test_unsprung_geometry.py"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\logs\\validation\\SIM-UNSPRUNG-01-native-T0\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.114
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_unsprung_dynamics.py",
+        "tests/test_unsprung_contact.py",
+        "tests/test_unsprung_modes.py",
+        "tests/test_unsprung_joint.py",
+        "tests/test_unsprung_body.py",
+        "tests/test_unsprung_geometry.py"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\logs\\validation\\SIM-UNSPRUNG-01-native-T0\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.274
+    }
+  ]
+}

@@ -120,6 +120,7 @@ def audit(result, velocity, angular, spins, engine, contact_frames, deformation,
         contact_loss = dt * sum(w.fx * (f.rolling_radius * w.omega - w.vx) - w.fy * w.vy for f, w in zip(contact_frames, wheels))
     brake_heat = dt * sum(w.brake_torque * w.relative_omega for w in wheels)
     steering_work = dt * sum(dot(end_angular, value) for value in steering)
+    steering_work -= dt * sum(w.fy * f.steering_lateral_velocity for w, f in zip(wheels, contact_frames))
     energy_error = (kinetic + numerical + elastic + contact_loss + brake_heat + sum(w.rolling_dissipation for w in wheels) + result.engine_drag_heat
                     + result.clutch_heat + result.gear_heat + result.synchronizer_heat + dt * sum(t * s for t, s in zip(torques, slips))
                     - result.engine_work - steering_work)

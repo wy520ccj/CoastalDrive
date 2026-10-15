@@ -31,7 +31,10 @@ def test_modes_preserve_load_exponents_through_electronics_and_saved_selection(t
         session.start(countdown=False)
         assert exponents(session.vehicle_config) == (.90, .90, .85)
         assert session.simulation.player.config is session.vehicle_config
-        assert all(car.config is session.vehicle_config for car in session.simulation.npcs)
+        assert all(exponents(car.config) == exponents(session.vehicle_config)
+                   for car in session.simulation.npcs)
+        assert all(car.config.native_tire_forces == (mode is DrivingMode.GAME)
+                   for car in session.simulation.npcs)
         session.start(countdown=False)
         assert exponents(session.simulation.player.config) == (.90, .90, .85)
     finally:
@@ -49,7 +52,9 @@ def test_custom_load_exponents_json_and_reset_use_same_config(tmp_path, complete
     config = load_vehicle_config(path, selected)
     assert exponents(config) == expected
     assert exponents(load_vehicle_config(path, config)) == expected
-    simulation = Simulation(0, config=config, traffic_count=1)
+    simulation = Simulation(0, config=config, traffic_count=1,
+                            input_config=DrivingMode.SIMULATION.input_config,
+                            traffic_input_config=DrivingMode.SIMULATION.input_config)
     try:
         assert simulation.player.config is config
         assert simulation.npcs[0].config is config

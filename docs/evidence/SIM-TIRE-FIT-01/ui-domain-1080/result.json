@@ -1,0 +1,12 @@
+{
+  "height": 1080,
+  "import_did_not_start_world": true,
+  "actual_f1_source": true,
+  "solver_parameters_match": true,
+  "selector_clears_override": true,
+  "screenshots": [
+    "01-imported-engineering.png",
+    "02-effective-mu-source.png",
+    "03-applied-stiffness.png"
+  ]
+}

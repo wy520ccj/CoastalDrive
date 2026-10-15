@@ -21,7 +21,7 @@ class VehicleDesign:
 BODY_GEOMETRY = {"collision_half_width": .994, "collision_half_length": 2.128,
                  "collision_half_height": .671692818403244,
                  "body_center_height": .7716928255558014}
-REFERENCE_DESIGN = replace(REFERENCE_CAR, **BODY_GEOMETRY)
+REFERENCE_DESIGN = replace(REFERENCE_CAR, tire_aligning_enabled=True, **BODY_GEOMETRY)
 GAME_DESIGN = replace(CAR, body_inertia=REFERENCE_CAR.body_inertia, **BODY_GEOMETRY)
 GR86_PROFILE_PATH = resource_root() / "assets/game/vehicle-configs/gr86-2022-premium-6mt.json"
 GR86_DESIGN = load_vehicle_config(GR86_PROFILE_PATH, REFERENCE_CAR)

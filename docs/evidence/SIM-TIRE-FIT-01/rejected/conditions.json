@@ -1,0 +1,13 @@
+{
+  "tire_id": "algorithm-check-tire",
+  "surface_id": "synthetic-reference-surface",
+  "pressure_kpa": 230.0,
+  "temperature_c": 25.0,
+  "speed_mps": 20.0,
+  "camber_rad": 0.0,
+  "source": "tests/tire_bench_reference.py independent equations; not measured",
+  "source_kind": "synthetic",
+  "measurement_mode": "steady_state",
+  "installation": "same_tire_all_wheels",
+  "slip_convention": "drive_positive_alpha_right"
+}

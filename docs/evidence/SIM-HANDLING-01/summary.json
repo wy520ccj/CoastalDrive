@@ -1,0 +1,560 @@
+{
+  "dry-braking": {
+    "summary": {
+      "status": "stopped",
+      "reason": "stopped",
+      "error": null,
+      "simulation_seconds": 3.15,
+      "compute_seconds": 0.8354391000102623,
+      "distance_m": 44.113568425327074,
+      "stopping_distance_m": 44.113568425327074,
+      "peak_deceleration_mps2": -9.13040828704834,
+      "peak_lateral_acceleration_mps2": 0.019009940326213837,
+      "peak_yaw_rate_radps": 0.001238957978785038,
+      "mean_path_error_m": null,
+      "maximum_path_error_m": null,
+      "abs_ticks": 330,
+      "ticks": 378,
+      "initialization_ticks": 177,
+      "options": {
+        "vehicle_id": "reference-rwd",
+        "maneuver": "braking",
+        "speed_kph": 100.0,
+        "friction": 1.1,
+        "abs_enabled": true,
+        "esc_enabled": false,
+        "duration": 12.0,
+        "steering_deg": 3.0,
+        "onset": 0.5,
+        "seed": 0,
+        "cg_height": null,
+        "radius_m": 60.0,
+        "right_friction": 0.3,
+        "tire_reference_load": null
+      }
+    },
+    "analysis": {
+      "version": "coastal-engineering-metrics-v1",
+      "metrics": [
+        {
+          "key": "mfdd",
+          "label": "充分发出平均减速度",
+          "unit": "m/s²",
+          "value": 8.931190577092115,
+          "status": "available",
+          "note": "按水平路径距离平均，80%→10%初速交点线性插值；不等于减速度峰值",
+          "window": {
+            "start_s": 0.6558168662666009,
+            "end_s": 2.840605663404358,
+            "start_m": 16.46836334055277,
+            "end_m": 43.6826040727918,
+            "start_speed_mps": 22.222222900390626,
+            "end_speed_mps": 2.7777778625488283
+          }
+        },
+        {
+          "key": "yaw_gain",
+          "label": "稳态横摆增益",
+          "unit": "1/s",
+          "value": null,
+          "status": "unavailable",
+          "note": "需要固定转角或定圆稳态工况",
+          "window": null
+        },
+        {
+          "key": "beta",
+          "label": "峰值车身侧偏",
+          "unit": "deg",
+          "value": 0.012564181391576047,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "roll",
+          "label": "峰值车身侧倾",
+          "unit": "deg",
+          "value": 0.0042365132831037045,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "ltr_front",
+          "label": "峰值前轴左右轮荷差比",
+          "unit": "1",
+          "value": 0.001251529377131571,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "ltr_rear",
+          "label": "峰值后轴左右轮荷差比",
+          "unit": "1",
+          "value": 0.0024135556384771635,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "utilization_fl",
+          "label": "峰值附着利用率 FL",
+          "unit": "1",
+          "value": 0.8089744730671293,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        },
+        {
+          "key": "utilization_fr",
+          "label": "峰值附着利用率 FR",
+          "unit": "1",
+          "value": 0.8076257376275834,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        },
+        {
+          "key": "utilization_rl",
+          "label": "峰值附着利用率 RL",
+          "unit": "1",
+          "value": 0.9979578483462531,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        },
+        {
+          "key": "utilization_rr",
+          "label": "峰值附着利用率 RR",
+          "unit": "1",
+          "value": 0.9976528002851772,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        }
+      ]
+    },
+    "source_unchanged": true,
+    "export_load_exact": true
+  },
+  "low-grip-braking": {
+    "summary": {
+      "status": "stopped",
+      "reason": "stopped",
+      "error": null,
+      "simulation_seconds": 4.775,
+      "compute_seconds": 1.2504676000353356,
+      "distance_m": 66.3383916135814,
+      "stopping_distance_m": 66.3383916135814,
+      "peak_deceleration_mps2": -6.185319423675537,
+      "peak_lateral_acceleration_mps2": 0.025362633168697357,
+      "peak_yaw_rate_radps": 0.0013872996205464005,
+      "mean_path_error_m": null,
+      "maximum_path_error_m": null,
+      "abs_ticks": 535,
+      "ticks": 573,
+      "initialization_ticks": 177,
+      "options": {
+        "vehicle_id": "reference-rwd",
+        "maneuver": "braking",
+        "speed_kph": 100.0,
+        "friction": 0.6,
+        "abs_enabled": true,
+        "esc_enabled": false,
+        "duration": 12.0,
+        "steering_deg": 3.0,
+        "onset": 0.5,
+        "seed": 0,
+        "cg_height": null,
+        "radius_m": 60.0,
+        "right_friction": 0.3,
+        "tire_reference_load": null
+      }
+    },
+    "analysis": {
+      "version": "coastal-engineering-metrics-v1",
+      "metrics": [
+        {
+          "key": "mfdd",
+          "label": "充分发出平均减速度",
+          "unit": "m/s²",
+          "value": 5.888599621826536,
+          "status": "available",
+          "note": "按水平路径距离平均，80%→10%初速交点线性插值；不等于减速度峰值",
+          "window": {
+            "start_s": 0.973527736054416,
+            "end_s": 4.286343925782545,
+            "start_m": 24.384007077811507,
+            "end_m": 65.65962199474114,
+            "start_speed_mps": 22.222222900390626,
+            "end_speed_mps": 2.7777778625488283
+          }
+        },
+        {
+          "key": "yaw_gain",
+          "label": "稳态横摆增益",
+          "unit": "1/s",
+          "value": null,
+          "status": "unavailable",
+          "note": "需要固定转角或定圆稳态工况",
+          "window": null
+        },
+        {
+          "key": "beta",
+          "label": "峰值车身侧偏",
+          "unit": "deg",
+          "value": 0.01808717863962452,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "roll",
+          "label": "峰值车身侧倾",
+          "unit": "deg",
+          "value": 0.010413740761578083,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "ltr_front",
+          "label": "峰值前轴左右轮荷差比",
+          "unit": "1",
+          "value": 0.003303836000047806,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "ltr_rear",
+          "label": "峰值后轴左右轮荷差比",
+          "unit": "1",
+          "value": 0.005754836877957597,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "utilization_fl",
+          "label": "峰值附着利用率 FL",
+          "unit": "1",
+          "value": 1.0000000139683343,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        },
+        {
+          "key": "utilization_fr",
+          "label": "峰值附着利用率 FR",
+          "unit": "1",
+          "value": 1.0000000057436693,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        },
+        {
+          "key": "utilization_rl",
+          "label": "峰值附着利用率 RL",
+          "unit": "1",
+          "value": 1.0000000173194015,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        },
+        {
+          "key": "utilization_rr",
+          "label": "峰值附着利用率 RR",
+          "unit": "1",
+          "value": 1.0000000210989632,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        }
+      ]
+    },
+    "source_unchanged": true,
+    "export_load_exact": true
+  },
+  "split-braking": {
+    "summary": {
+      "status": "stopped",
+      "reason": "stopped",
+      "error": null,
+      "simulation_seconds": 4.175,
+      "compute_seconds": 1.4403503000175988,
+      "distance_m": 59.9335975864228,
+      "stopping_distance_m": 59.9335975864228,
+      "peak_deceleration_mps2": -6.079224109649658,
+      "peak_lateral_acceleration_mps2": 10.216715812683105,
+      "peak_yaw_rate_radps": 1.7115122079849243,
+      "mean_path_error_m": null,
+      "maximum_path_error_m": null,
+      "abs_ticks": 473,
+      "ticks": 501,
+      "initialization_ticks": 177,
+      "options": {
+        "vehicle_id": "reference-rwd",
+        "maneuver": "split_braking",
+        "speed_kph": 100.0,
+        "friction": 1.1,
+        "abs_enabled": true,
+        "esc_enabled": false,
+        "duration": 12.0,
+        "steering_deg": 3.0,
+        "onset": 0.5,
+        "seed": 0,
+        "cg_height": null,
+        "radius_m": 60.0,
+        "right_friction": 0.3,
+        "tire_reference_load": null
+      }
+    },
+    "analysis": {
+      "version": "coastal-engineering-metrics-v1",
+      "metrics": [
+        {
+          "key": "mfdd",
+          "label": "充分发出平均减速度",
+          "unit": "m/s²",
+          "value": 7.224920468641621,
+          "status": "available",
+          "note": "按水平路径距离平均，80%→10%初速交点线性插值；不等于减速度峰值",
+          "window": {
+            "start_s": 1.0322031595872976,
+            "end_s": 3.801915677431961,
+            "start_m": 25.769017732624658,
+            "end_m": 59.410297445726776,
+            "start_speed_mps": 22.222222900390626,
+            "end_speed_mps": 2.7777778625488283
+          }
+        },
+        {
+          "key": "yaw_gain",
+          "label": "稳态横摆增益",
+          "unit": "1/s",
+          "value": null,
+          "status": "unavailable",
+          "note": "需要固定转角或定圆稳态工况",
+          "window": null
+        },
+        {
+          "key": "beta",
+          "label": "峰值车身侧偏",
+          "unit": "deg",
+          "value": 89.82765209862181,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "roll",
+          "label": "峰值车身侧倾",
+          "unit": "deg",
+          "value": 1.7485989332199097,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "ltr_front",
+          "label": "峰值前轴左右轮荷差比",
+          "unit": "1",
+          "value": 0.6248367649891591,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "ltr_rear",
+          "label": "峰值后轴左右轮荷差比",
+          "unit": "1",
+          "value": 0.5650595303519761,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "utilization_fl",
+          "label": "峰值附着利用率 FL",
+          "unit": "1",
+          "value": 1.000000007058043,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        },
+        {
+          "key": "utilization_fr",
+          "label": "峰值附着利用率 FR",
+          "unit": "1",
+          "value": 1.0000000002172338,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        },
+        {
+          "key": "utilization_rl",
+          "label": "峰值附着利用率 RL",
+          "unit": "1",
+          "value": 1.0000000072714352,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        },
+        {
+          "key": "utilization_rr",
+          "label": "峰值附着利用率 RR",
+          "unit": "1",
+          "value": 1.0000000036270673,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        }
+      ]
+    },
+    "source_unchanged": true,
+    "export_load_exact": true
+  },
+  "constant-radius": {
+    "summary": {
+      "status": "time_limit",
+      "reason": "time_limit",
+      "error": null,
+      "simulation_seconds": 8.0,
+      "compute_seconds": 2.3757805000132066,
+      "distance_m": 131.63976583951734,
+      "stopping_distance_m": null,
+      "peak_deceleration_mps2": -4.687211990356445,
+      "peak_lateral_acceleration_mps2": 7.360840320587158,
+      "peak_yaw_rate_radps": 0.5189257264137268,
+      "mean_path_error_m": 0.4038938009469692,
+      "maximum_path_error_m": 0.9370844037166748,
+      "abs_ticks": 0,
+      "ticks": 960,
+      "initialization_ticks": 177,
+      "options": {
+        "vehicle_id": "reference-rwd",
+        "maneuver": "constant_radius",
+        "speed_kph": 60,
+        "friction": 1.1,
+        "abs_enabled": true,
+        "esc_enabled": false,
+        "duration": 8,
+        "steering_deg": 3.0,
+        "onset": 0.5,
+        "seed": 0,
+        "cg_height": null,
+        "radius_m": 60.0,
+        "right_friction": 0.3,
+        "tire_reference_load": null
+      }
+    },
+    "analysis": {
+      "version": "coastal-engineering-metrics-v1",
+      "metrics": [
+        {
+          "key": "mfdd",
+          "label": "充分发出平均减速度",
+          "unit": "m/s²",
+          "value": null,
+          "status": "unavailable",
+          "note": "仅适用于制动工况",
+          "window": null
+        },
+        {
+          "key": "yaw_gain",
+          "label": "稳态横摆增益",
+          "unit": "1/s",
+          "value": null,
+          "status": "unavailable",
+          "note": "尾窗未稳态：速度/转角峰峰变化须≤2%，横摆≤5%（角度绝对容差0.02°）",
+          "window": {
+            "start_s": 7.0,
+            "end_s": 8.0,
+            "mean_speed_mps": 16.879652500223123,
+            "speed_span_mps": 0.10340102374420113,
+            "mean_roadwheel_angle_rad": 0.037599786608958706,
+            "angle_span_rad": 0.0009089063637587038,
+            "mean_right_yaw_radps": 0.28045625307343225,
+            "yaw_span_radps": 0.007532000541687012
+          }
+        },
+        {
+          "key": "beta",
+          "label": "峰值车身侧偏",
+          "unit": "deg",
+          "value": 1.8100652317854526,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "roll",
+          "label": "峰值车身侧倾",
+          "unit": "deg",
+          "value": 1.2813409566879272,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "ltr_front",
+          "label": "峰值前轴左右轮荷差比",
+          "unit": "1",
+          "value": 0.4096864779882679,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "ltr_rear",
+          "label": "峰值后轴左右轮荷差比",
+          "unit": "1",
+          "value": 0.40122416798017185,
+          "status": "available",
+          "note": "已完成步记录的绝对峰值；轮荷差比是(R−L)/(R+L)，不作为翻车合格判据",
+          "window": null
+        },
+        {
+          "key": "utilization_fl",
+          "label": "峰值附着利用率 FL",
+          "unit": "1",
+          "value": 0.6157522526037813,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        },
+        {
+          "key": "utilization_fr",
+          "label": "峰值附着利用率 FR",
+          "unit": "1",
+          "value": 0.653399941857234,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        },
+        {
+          "key": "utilization_rl",
+          "label": "峰值附着利用率 RL",
+          "unit": "1",
+          "value": 0.9999983299268042,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        },
+        {
+          "key": "utilization_rr",
+          "label": "峰值附着利用率 RR",
+          "unit": "1",
+          "value": 0.9999369814465489,
+          "status": "available",
+          "note": "末机械子步hypot(Fx,Fy)/同阶段D，不限幅；残差单独记录，离地未定义",
+          "window": null
+        }
+      ]
+    },
+    "source_unchanged": true,
+    "export_load_exact": true
+  }
+}

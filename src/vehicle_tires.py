@@ -13,6 +13,7 @@ from wheel_contact_kernels import (
 )
 
 from suspension_kinematics import advance_contact_geometry
+from tire_aligning import aligning_frame
 from tire_compliance import project_deformation, world_deformation
 from tire_coupling import ContactFrame, advance_coupled, cross, dot
 from tire_drivetrain import DrivetrainInput, solve_drivetrain_stages
@@ -41,8 +42,8 @@ class Tires:
         """仅用于试验初始条件；运行中轮速始终由转矩方程积分。"""
         self.omega = [speed / self.config.wheel_radius] * 4
 
-    def driven_omega(self, chassis, angles=(0., 0.)):
-        orientation = chassis.getTransform().getQuat()
+    def driven_omega(self, chassis, angles=(0., 0.), *, orientation=None):
+        orientation = chassis.getTransform().getQuat() if orientation is None else orientation
         if self.config.front_drive_share == 0:
             return (self.omega[2] + self.omega[3]) / 2 + chassis.getAngularVelocity().dot(orientation.getRight())
         angular = tuple(chassis.getAngularVelocity())
@@ -176,6 +177,13 @@ class Tires:
             torques = ((0.0, 0.0, 0.0),) * 4
             if config.wheel_rotor_transport:
                 wheel_frames, torques = rotor_frames(fraction, substep / substeps)
+            if config.tire_aligning_enabled:
+                prior = self.states if substep == 0 else tuple(states)
+                wheel_frames = tuple(aligning_frame(frame, state,
+                    config if i < 2 else self.rear_config, tensor,
+                    tuple(-math.radians(base_frames[i].steering - initial_angles[i]) / dt * value
+                          for value in orientation.getUp()))
+                    for i, (frame, state) in enumerate(zip(wheel_frames, prior)))
             if config.tire_compliance or config.wheel_rotor_transport or config.finite_drivetrain:
                 projected = []
                 for i, frame in enumerate(wheel_frames):
@@ -242,6 +250,7 @@ class Tires:
             # 正反次序成对，避免固定左轮先积分产生持续偏航偏置。
             order = range(4) if substep % 2 == 0 else range(3, -1, -1)
             if config.finite_drivetrain:
+                previous_states = tuple(states)
                 omega, rotation, deformation, published, impulses = tire_publish(
                     _EMPTY_WHEEL_STATE, config, self.rear_config, tuple(wheel_frames), tuple(steps),
                     self.states if substep == 0 else tuple(states), tuple(self.rotation), tuple(self.deformation),
@@ -255,6 +264,19 @@ class Tires:
                         chassis.applyTorqueImpulse(Vec3(*impulse))
                 self.omega, self.rotation, self.deformation = list(omega), list(rotation), list(deformation)
                 states = published
+                if config.tire_aligning_enabled:
+                    prior = self.states if substep == 0 else previous_states
+                    states = tuple(replace(state,
+                        pneumatic_trail=frame.pneumatic_trail,
+                        aligning_moment=frame.pneumatic_trail * step.fy,
+                        aligning_angular_impulse=tuple(
+                            (old.aligning_angular_impulse[a] if accumulate or substep > 0 else 0.)
+                            + sub_dt * frame.pneumatic_trail * step.fy * frame.elastic_frame[2][a]
+                            for a in range(3)),
+                        contact_steering_work=(old.contact_steering_work if accumulate or substep > 0 else 0.)
+                            - sub_dt * step.fy * frame.steering_lateral_velocity,
+                        steering_lateral_velocity=frame.steering_lateral_velocity)
+                        for state, old, frame, step in zip(states, prior, wheel_frames, steps))
                 if suspension is not None:
                     final_normal_system = normal_system
                     if substep + 1 < substeps:
@@ -310,6 +332,7 @@ class Tires:
                 self.rotation[index] += sub_dt * step.relative_omega
                 wheel_config = config if index < 2 else self.rear_config
                 cx, cy = tire_stiffness(load, wheel_config)
+                old_state = self.states[index] if substep == 0 else states[index]
                 states[index] = wheel_state_update(_EMPTY_WHEEL_STATE,
                     omega=step.omega, rotation=self.rotation[index],
                     relative_omega=step.relative_omega,
@@ -348,6 +371,15 @@ class Tires:
                     rolling_angular_impulse=rolling_angular_impulses[index],
                     rolling_dissipation=rolling_dissipation[index],
                     force_rolling_radius=radius,
+                    pneumatic_trail=frame.pneumatic_trail,
+                    aligning_moment=frame.pneumatic_trail * step.fy,
+                    aligning_angular_impulse=tuple(
+                        (old_state.aligning_angular_impulse[a] if accumulate or substep > 0 else 0.)
+                        + sub_dt * frame.pneumatic_trail * step.fy * frame.elastic_frame[2][a]
+                        for a in range(3)) if config.tire_aligning_enabled else (0., 0., 0.),
+                    contact_steering_work=(old_state.contact_steering_work if accumulate or substep > 0 else 0.)
+                        - sub_dt * step.fy * frame.steering_lateral_velocity,
+                    steering_lateral_velocity=frame.steering_lateral_velocity,
                 )
             if suspension is not None:
                 final_normal_system = normal_system
@@ -423,7 +455,7 @@ class Tires:
             tuple(contact.normal_load for contact in contacts),
             tuple(config.road_friction if contact.surface=='asphalt' else config.grass_friction for contact in contacts),
             (config.wheel_radius,config.wheel_width if config.suspension_si_enabled and config.suspension_coupled_enabled else None,
-             config.wheel_shoulder_radius,config.wheel_crown_height,config.slip_speed,config.mass,config.tire_peak_load_exponent))
+             config.wheel_shoulder_radius,config.wheel_crown_height,config.slip_speed,config.tire_reference_load,config.tire_peak_load_exponent))
         states = []
         for state,support,values in zip(self.states,supported,observations):
             axis,radius,relative,vx,vy,kappa,alpha,grip = values
@@ -433,9 +465,9 @@ class Tires:
                 mechanical_axis=axis,rolling_radius=radius))
         self.states = tuple(states)
 
-    def wheel_poses(self, chassis, bullet_vehicle, *, positions=None):
+    def wheel_poses(self, chassis, bullet_vehicle, *, positions=None, orientation=None):
         """位置来自实际悬架；转向和滚动来自真实执行器及独立转角。"""
-        chassis_orientation = chassis.getTransform().getQuat()
+        chassis_orientation = chassis.getTransform().getQuat() if orientation is None else orientation
         wheels = []
         if positions is None:
             positions = tuple(tuple(wheel.getWorldTransform().getRow3(3)) for wheel in bullet_vehicle.getWheels())

@@ -1,0 +1,21 @@
+{
+  "height": 1080,
+  "hover_f1": true,
+  "focused_f1": true,
+  "invalid_pending_input_preserved": true,
+  "physics_started_by_help": false,
+  "explicit_context_trial": true,
+  "current_N": 4100.0,
+  "pending_N": 5000.0,
+  "parameter_count": 128,
+  "screenshots": [
+    "01-hover-tire-load.png",
+    "02-focused-unsubmitted-input.png",
+    "03-abs-response.png",
+    "04-inertia.png",
+    "04b-steering.png",
+    "04c-input-data.png",
+    "04d-manual-hover.png",
+    "05-running-config-vs-pending.png"
+  ]
+}

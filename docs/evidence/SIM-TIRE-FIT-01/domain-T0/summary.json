@@ -1,0 +1,53 @@
+{
+  "started_utc": "2026-10-13T08:54:45.406391+00:00",
+  "git_head": "bde41b64d6fe20312a406166e0ebfbb4995ebb45",
+  "git_status": "M docs/current-progress.md\n M docs/simulation-fidelity.md\n M docs/vehicle-lab.md\n M src/lab_application.py\n M src/lab_experiment.py\n M src/lab_records.py\n M src/ui/lab_workbench.py\n M src/ui/parameter_help.py\n M src/vehicle_parameters.py\n M tools/validate.py\n?? docs/evidence/SIM-TIRE-FIT-01/\n?? docs/tasks/SIM-TIRE-FIT-01.md\n?? docs/tire-calibration.md\n?? src/tire_calibration.py\n?? tests/test_tire_calibration.py\n?? tests/tire_bench_reference.py\n?? tools/design/plot_tire_calibration.py\n?? tools/physics/fit_tire_bench.py\n?? tools/physics/tire_calibration_check.py\n?? tools/tire_calibration_ui_check.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_tire_calibration.py",
+    "tests/test_parameter_help.py"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\logs\\validation\\SIM-TIRE-FIT-01-domain-T0\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.112
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_tire_calibration.py",
+        "tests/test_parameter_help.py"
+      ],
+      "reports": [],
+      "log": "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive\\logs\\validation\\SIM-TIRE-FIT-01-domain-T0\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.569
+    }
+  ]
+}

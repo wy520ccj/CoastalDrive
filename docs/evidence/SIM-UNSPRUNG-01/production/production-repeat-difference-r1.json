@@ -1,0 +1,10 @@
+{
+  "initial_differences": [
+    [
+      ".contact_epoch",
+      3,
+      2
+    ]
+  ],
+  "sample_equal": true
+}

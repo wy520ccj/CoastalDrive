@@ -71,10 +71,10 @@ class StabilityControl:
         self.config = vehicle_config.stability
         self.state = StabilityState()
 
-    def advance(self, chassis, wheels, contacts, requests, steering, dt):
+    def advance(self, chassis, wheels, contacts, requests, steering, dt, *, pose=None, yaw_inertia=None):
         """上一完成步的车身、轮速、法向支撑和路面μ均为仿真真值。"""
         vehicle, config = self.vehicle_config, self.config
-        pose = chassis.getTransform()
+        pose = chassis.getTransform() if pose is None else pose
         orientation = pose.getQuat()
         local_velocity = orientation.conjugate().xform(chassis.getLinearVelocity())
         speed = float(local_velocity.y)
@@ -103,7 +103,7 @@ class StabilityControl:
             arms.append(-math.copysign(1.0, wheel.longitudinal_speed)
                         * point.cross(tangent).dot(orientation.getUp()))
         supported = any(w.sample_support for w in wheels)
-        inertia = chassis.getInertia().z if abs(speed) >= config.minimum_speed and supported else 0.
+        inertia = (chassis.getInertia().z if yaw_inertia is None else yaw_inertia) if abs(speed) >= config.minimum_speed and supported else 0.
         self.state = stability_advance(config, vehicle, self.state, tuple(requests), speed, yaw, beta,
             inertia, steering, dt, tuple(capacities), tuple(limits), tuple(arms), grip_budget, supported,
             wheels[0].sample_tick)

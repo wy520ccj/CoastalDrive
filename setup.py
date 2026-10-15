@@ -36,6 +36,10 @@ setup(
                   extra_compile_args=compile_args),
         Extension("convex_cast_kernels", ["src/convex_cast_kernels.cpp", *["vendor/bullet-2.84/"+name for name in convex_sources]],
                   include_dirs=["vendor/bullet-2.84"], extra_compile_args=compile_args, language="c++"),
+        Extension("radial_contact_kernels", ["src/radial_contact_kernels.cpp","src/radial_contact_vendor.cpp"],
+                  include_dirs=["vendor/bullet-2.84","vendor/bullet-2.84/BulletCollision/NarrowPhaseCollision"],
+                  define_macros=[("BT_USE_DOUBLE_PRECISION","1")],depends=["src/radial_gjk_epa.cpp"],
+                  extra_compile_args=compile_args,language="c++"),
     ],
     options={
         "build_apps": {
@@ -71,6 +75,7 @@ setup(
                 "mechanical_kernels",
                 "wheel_contact_kernels",
                 "convex_cast_kernels",
+                "radial_contact_kernels",
                 "multiprocessing.spawn",
                 "multiprocessing.popen_spawn_win32",
                 "multiprocessing.shared_memory",

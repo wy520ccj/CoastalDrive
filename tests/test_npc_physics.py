@@ -18,6 +18,22 @@ from world_step import advance_world, physical_substeps
 CONFIG = vehicle_design('gr86-2022-premium-6mt').config
 
 
+@pytest.mark.parametrize('design', ['reference-rwd', 'reference-fwd', 'reference-awd'])
+def test_engineering_reference_keeps_player_aligning_and_native_traffic_independent(design):
+    config = DrivingMode.GAME.configured_vehicle(base_config=vehicle_design(design).config)
+    sim = Simulation(track='test', traffic_count=1, config=config,
+                     input_config=DrivingMode.GAME.input_config)
+    try:
+        assert sim.player.config.tire_aligning_enabled
+        assert not sim.npcs[0].config.tire_aligning_enabled
+        assert not sim.npcs[0].config.unsprung_enabled
+        assert not sim.npcs[0].config.tire_compliance
+        sim.step(Control(throttle=.2))
+        assert sim.snapshot().tick == 1
+    finally:
+        sim.close()
+
+
 def test_native_request_reuse_preserves_material_and_time_scaled_braking():
     sim = Simulation(track='test', traffic_count=1, config=CONFIG,
                      input_config=DrivingMode.GAME.input_config)

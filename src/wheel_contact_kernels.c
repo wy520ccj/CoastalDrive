@@ -1790,7 +1790,7 @@ static PyObject *wheel_observations(PyObject *self,PyObject *args) {
     double shoulder=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,2));
     double crown=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,3));
     double slip_speed=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,4));
-    double mass=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,5));
+    double reference_load=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,5));
     double peak_exponent=PyFloat_AsDouble(PyTuple_GET_ITEM(parameters,6));
     if (PyErr_Occurred()) return NULL;
     PyObject *result=PyTuple_New(4);
@@ -1827,8 +1827,8 @@ static PyObject *wheel_observations(PyObject *self,PyObject *args) {
         double relative=omega+dot(angular,axis);
         double grip=0.;
         if (load!=0.) {
-            if (load<0. || mass<=0.) { PyErr_SetString(PyExc_ValueError,"轮荷须非负且质量须为正"); goto failed; }
-            double ratio=load/(mass*9.81/4);
+            if (load<0. || reference_load<=0.) { PyErr_SetString(PyExc_ValueError,"轮荷须非负且轮胎标定基准须为正"); goto failed; }
+            double ratio=load/reference_load;
             grip=mu*load*pow(ratio,peak_exponent-1);
         }
         PyObject *row=Py_BuildValue("((ddd)ddddddd)",axis[0],axis[1],axis[2],rolling_radius,relative,

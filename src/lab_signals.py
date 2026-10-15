@@ -1,5 +1,6 @@
 """实验信号的单位和真实字段来源；接触未定义值保留None。"""
 
+import math
 from dataclasses import dataclass
 
 
@@ -11,6 +12,29 @@ class Signal:
     source: str
 
 
+UNSPRUNG_SIGNALS = (
+    Signal("cg_speed", "整车质心车速", "km/h", "mass-weighted actual CG velocity projected on body forward; rigid model uses existing CG speed"),
+    Signal("cg_ax", "质心纵向加速度", "m/s²", "Snapshot.player.unsprung_state.total_center_acceleration projected on current body forward; rigid model uses ax"),
+    Signal("cg_ay", "质心横向加速度", "m/s²", "Snapshot.player.unsprung_state.total_center_acceleration projected on current body right; rigid model uses ay"),
+    Signal("cg_beta", "质心侧偏角 / 右正", "deg", "atan2(CG velocity right, abs(forward)); horizontal speed<=1m/s undefined"),
+    Signal("sprung_z", "簧上质心高度", "m", "Snapshot.player.unsprung_state.sprung_position.z; independent wheel model only"),
+    Signal("sprung_vz", "簧上垂向速度", "m/s", "Snapshot.player.unsprung_state.sprung_velocity.z; world Z"),
+    Signal("sprung_az", "簧上垂向加速度", "m/s²", "Snapshot.player.unsprung_state.sprung_acceleration.z; inertial world Z, unweighted"),
+    *(Signal(f"{field}_{wheel}",f"{label} {wheel.upper()}",unit,
+             f"Snapshot.player.unsprung_state.{attribute}[{index}]{suffix}; independent wheel model only")
+      for field,label,unit,attribute,suffix in (
+          ("hub_z","轮心高度","m","wheel_positions",".z"),
+          ("hub_vz","轮心垂向速度","m/s","wheel_velocities",".z"),
+          ("hub_az","轮心垂向加速度","m/s²","wheel_accelerations",".z"),
+          ("travel_rate","悬架压缩速度","m/s","relative_velocity",""),
+          ("radial","实际径向压缩","m","radial_deflection",""),
+          ("force_radial","施力径向压缩","m","force_radial_deflection",""))
+      for index,wheel in enumerate(("fl","fr","rl","rr"))),
+    *(Signal(f"travel_{wheel}",f"悬架压缩行程 {wheel.upper()}","m",
+             f"Snapshot.player.wheel_contacts[{index}].compression; independent wheel model only")
+      for index,wheel in enumerate(("fl","fr","rl","rr"))),
+)
+
 SIGNALS = (
     Signal("time", "试验时间", "s", "Snapshot.time - initial.time"),
     Signal("tick", "物理拍", "1", "Snapshot.tick; includes initialization ticks"),
@@ -18,6 +42,11 @@ SIGNALS = (
     Signal("ax", "纵向加速度", "m/s²", "Snapshot.player.acceleration"),
     Signal("ay", "横向加速度", "m/s²", "Snapshot.player.lateral_acceleration"),
     Signal("yaw", "横摆角速度", "rad/s", "Snapshot.player.dynamics.yaw_rate"),
+    Signal("horizontal_speed", "水平速度模", "m/s", "hypot(Snapshot.player.velocity.x, velocity.y)"),
+    Signal("beta", "车身侧偏角", "deg", "Snapshot.player.dynamics.sideslip; horizontal_speed<=1m/s undefined"),
+    Signal("roll", "车身侧倾角", "deg", "Snapshot.player.roll"),
+    Signal("ltr_front", "前轴左右轮荷差比", "1", "(sample_load_fr-sample_load_fl)/(sample_load_fr+sample_load_fl)"),
+    Signal("ltr_rear", "后轴左右轮荷差比", "1", "(sample_load_rr-sample_load_rl)/(sample_load_rr+sample_load_rl)"),
     Signal("steering", "实际转角", "deg", "Snapshot.player.steering"),
     Signal("steering_request", "转角请求", "deg", "VehicleCommand.steering"),
     Signal("throttle", "油门踏板", "1", "Snapshot.player.throttle"),
@@ -34,9 +63,27 @@ SIGNALS = (
     *(Signal(f"{field}_{wheel}", f"{label} {wheel.upper()}", unit,
              f"Snapshot.player.wheel_dynamics[{index}].{attribute}")
       for field, label, unit, attribute in (
-          ("kappa", "滑移率", "1", "kappa"), ("load", "法向载荷", "N", "normal_load"),
+          ("kappa", "滑移率", "1", "kappa"), ("load", "施力阶段轮荷", "N", "normal_load"),
+          ("alpha", "轮胎侧偏角", "rad", "alpha"),
+          ("force_grip", "施力附着预算", "N", "force_grip"),
+          ("force_residual", "施力分量残差", "N", "force_residual"),
+          ("force_tick", "施力接点拍", "1", "force_contact_tick"),
+          ("sample_tick", "完成步接点拍", "1", "sample_tick"),
           ("omega", "轮速", "rad/s", "omega"), ("fx", "纵向力", "N", "fx"),
           ("fy", "侧向力", "N", "fy"), ("grip", "附着力上限", "N", "sample_grip"))
+      for index, wheel in enumerate(("fl", "fr", "rl", "rr"))),
+    *(Signal(f"{field}_{wheel}", f"{label} {wheel.upper()}", unit,
+             f"Snapshot.player.wheel_dynamics[{index}].{attribute}; final force substep except step work")
+      for field, label, unit, attribute in (
+          ("mz", "接触区回正力矩", "N·m", "aligning_moment"),
+          ("trail", "接触区拖距", "m", "pneumatic_trail"),
+          ("contact_steering_work", "本拍接触转向输入功", "J", "contact_steering_work"))
+      for index, wheel in enumerate(("fl", "fr", "rl", "rr"))),
+    *(Signal(f"sample_load_{wheel}", f"完成步轮荷 {wheel.upper()}", "N",
+             f"Snapshot.player.wheel_contacts[{index}].normal_load")
+      for index, wheel in enumerate(("fl", "fr", "rl", "rr"))),
+    *(Signal(f"utilization_{wheel}", f"末子步附着利用率 {wheel.upper()}", "1",
+             f"hypot(wheel_dynamics[{index}].fx, fy)/force_grip; road_support and grip>0 only")
       for index, wheel in enumerate(("fl", "fr", "rl", "rr"))),
     *(Signal(f"abs_{wheel}", f"ABS {wheel.upper()}", "bool",
              f"Snapshot.player.brake_states[{index}].abs_active")
@@ -44,27 +91,90 @@ SIGNALS = (
     *(Signal(f"pressure_{wheel}", f"制动压力比例 {wheel.upper()}", "1",
              f"Snapshot.player.brake_states[{index}].pressure")
       for index, wheel in enumerate(("fl", "fr", "rl", "rr"))),
+    *UNSPRUNG_SIGNALS,
 )
 SIGNAL_BY_KEY = {signal.key: signal for signal in SIGNALS}
+PRE_UNSPRUNG_SIGNAL_KEYS = set(SIGNAL_BY_KEY)-{s.key for s in UNSPRUNG_SIGNALS}
+PRE_ALIGN_SIGNAL_KEYS = PRE_UNSPRUNG_SIGNAL_KEYS - {f"{key}_{wheel}"
+    for key in ("mz", "trail", "contact_steering_work") for wheel in ("fl", "fr", "rl", "rr")}
+LEGACY_SIGNAL_KEYS = {"time", "tick", "speed", "ax", "ay", "yaw", "steering", "steering_request",
+                      "throttle", "brake", "engine_throttle", "throttle_request", "brake_request",
+                      "gear", "rpm", "clutch", "clutch_request", "gear_request", "path_error"} | {
+    f"{field}_{wheel}" for field in ("kappa", "load", "omega", "fx", "fy", "grip", "abs", "pressure")
+    for wheel in ("fl", "fr", "rl", "rr")}
 
 
 def sample_signals(snapshot, command, start_time):
     player = snapshot.player
+    horizontal_speed = math.hypot(*player.velocity[:2])
     values = {"time": snapshot.time-start_time, "tick": snapshot.tick, "speed": player.speed*3.6,
               "ax": player.acceleration, "ay": player.lateral_acceleration,
               "yaw": player.dynamics.yaw_rate, "steering": player.steering,
               "steering_request": command.steering, "throttle": player.throttle,
               "brake": player.brake, "throttle_request": command.throttle,
               "brake_request": command.brake, "gear": player.gear, "rpm": player.rpm}
+    values.update(horizontal_speed=horizontal_speed,
+                  beta=player.dynamics.sideslip if horizontal_speed > 1 else None, roll=player.roll)
     values["clutch"] = player.powertrain_state.clutch_position if player.powertrain_state is not None else None
     values["engine_throttle"] = player.powertrain_state.throttle if player.powertrain_state is not None else None
     values["clutch_request"], values["gear_request"] = command.clutch, command.gear
     for index, wheel in enumerate(("fl", "fr", "rl", "rr")):
         state = player.wheel_dynamics[index]
         for key, value in (("kappa", state.kappa), ("load", state.normal_load),
+                           ("alpha", state.alpha), ("force_grip", state.force_grip),
+                           ("force_residual", state.force_residual),
+                           ("force_tick", state.force_contact_tick), ("sample_tick", state.sample_tick),
                            ("omega", state.omega), ("fx", state.fx), ("fy", state.fy),
                            ("grip", state.sample_grip)):
             values[f"{key}_{wheel}"] = value
+        values[f"mz_{wheel}"] = state.aligning_moment
+        values[f"trail_{wheel}"] = state.pneumatic_trail
+        values[f"contact_steering_work_{wheel}"] = state.contact_steering_work
+        values[f"sample_load_{wheel}"] = player.wheel_contacts[index].normal_load
+        values[f"utilization_{wheel}"] = (math.hypot(state.fx, state.fy)/state.force_grip
+                                         if state.road_support and state.force_grip > 0 else None)
         values[f"abs_{wheel}"] = player.brake_states[index].abs_active
         values[f"pressure_{wheel}"] = player.brake_states[index].pressure
+    for axle, left, right in (("front", "fl", "fr"), ("rear", "rl", "rr")):
+        total = values[f"sample_load_{left}"] + values[f"sample_load_{right}"]
+        values[f"ltr_{axle}"] = ((values[f"sample_load_{right}"]-values[f"sample_load_{left}"])/total
+                                 if total > 0 else None)
+    sample_unsprung(player,values)
     return values
+
+
+def body_components(vector, quaternion):
+    """惯性向量投影到当前车身轴，不微分旋转坐标分量。"""
+    vector = tuple(map(float,vector))
+    w,x,y,z = map(float,quaternion)
+    norm = math.sqrt(w*w+x*x+y*y+z*z)
+    w,x,y,z = (v/norm for v in (w,x,y,z))
+    right = (1-2*(y*y+z*z),2*(x*y+z*w),2*(x*z-y*w))
+    forward = (2*(x*y-z*w),1-2*(x*x+z*z),2*(y*z+x*w))
+    return sum(a*b for a,b in zip(vector,right)),sum(a*b for a,b in zip(vector,forward))
+
+
+def sample_unsprung(player, values):
+    """工程后处理只读Snapshot；无新自由度的旧记录保留未定义轮跳量。"""
+    values.update({s.key:None for s in UNSPRUNG_SIGNALS})
+    observation = player.unsprung_state
+    if observation is None:
+        values.update(cg_speed=values["speed"],cg_ax=values["ax"],cg_ay=values["ay"],cg_beta=values["beta"])
+        return
+    vx,vy = body_components(observation.total_center_velocity,player.orientation)
+    values.update(cg_speed=vy*3.6,cg_beta=math.degrees(math.atan2(vx,abs(vy)))
+                  if math.hypot(*observation.total_center_velocity[:2])>1 else None,
+                  sprung_z=observation.sprung_position[2],sprung_vz=observation.sprung_velocity[2])
+    if observation.total_center_acceleration is not None:
+        ay,ax = body_components(observation.total_center_acceleration,player.orientation)
+        values.update(cg_ax=ax,cg_ay=ay)
+    if observation.sprung_acceleration is not None:
+        values["sprung_az"] = observation.sprung_acceleration[2]
+    for i,wheel in enumerate(("fl","fr","rl","rr")):
+        values.update({f"hub_z_{wheel}":observation.wheel_positions[i][2],
+                       f"hub_vz_{wheel}":observation.wheel_velocities[i][2],
+                       f"hub_az_{wheel}":None if observation.wheel_accelerations is None else observation.wheel_accelerations[i][2],
+                       f"travel_{wheel}":player.wheel_contacts[i].compression,
+                       f"travel_rate_{wheel}":observation.relative_velocity[i],
+                       f"radial_{wheel}":observation.radial_deflection[i],
+                       f"force_radial_{wheel}":observation.force_radial_deflection[i]})
