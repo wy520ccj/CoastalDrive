@@ -173,4 +173,73 @@ static PyObject *unsprung_body_torque_native(PyObject *self,PyObject *args) {
 error:
     lab_release(v,5); return NULL;
 }
+#include <limits.h>
+
+/* 矩阵变换留在原NumPy路径；批量执行相同局部平面支持距离与见证点公式。 */
+static PyObject *radial_plane_values_native(PyObject *self,PyObject *args) {
+    PyObject *inputs,*outputs;
+    Py_ssize_t count;
+    double radius,half_width,shoulder,crown,constant;
+    if (!PyArg_ParseTuple(args,"OOnddddd",&inputs,&outputs,&count,&radius,&half_width,&shoulder,&crown,&constant)) return NULL;
+    if (count<0 || count>INT_MAX) { PyErr_SetString(PyExc_ValueError,"径向查询批量尺寸超出本机索引范围"); return NULL; }
+    const int dimensions[6]={2,2,1,1,1,2};
+    const Py_ssize_t shapes[6][3]={{count,3},{count,3},{3},{3},{count},{count,3}};
+    Py_buffer v[6]={{0}};
+    if (!lab_buffers(inputs,outputs,v,4,2,dimensions,shapes,-1,-1)) goto error;
+    double normal[3],negative[3],translation[3];
+    for (int j=0;j<3;++j) { normal[j]=lab_get(v+2,j,0); negative[j]=-normal[j]; translation[j]=lab_get(v+3,j,0); }
+    for (int i=0;i<(int)count;++i) {
+        double center[3],axis[3],lower[3],wheel[3];
+        lab_row(v,i,center); lab_row(v+1,i,axis);
+        if (!support_values(negative,axis,radius,half_width,shoulder,crown,lower)) goto error;
+        for (int j=0;j<3;++j) wheel[j]=center[j]+lower[j];
+        double distance=lab_dot(normal,wheel)-constant;
+        lab_set(v+4,i,0,distance);
+        for (int j=0;j<3;++j) lab_set(v+5,i,j,(wheel[j]-distance*normal[j])-translation[j]);
+    }
+    lab_release(v,6); Py_RETURN_NONE;
+error:
+    lab_release(v,6); return NULL;
+}
+
+/* 保留原已选接触/腾空分支及算术顺序；不参与候选裁剪或支撑资格选择。 */
+static PyObject *radial_contact_frames_native(PyObject *self,PyObject *args) {
+    PyObject *inputs,*outputs;
+    Py_ssize_t count;
+    double radius,half_width,shoulder,crown,travel;
+    if (!PyArg_ParseTuple(args,"OOnddddd",&inputs,&outputs,&count,&radius,&half_width,&shoulder,&crown,&travel)) return NULL;
+    if (count<0 || count>INT_MAX) { PyErr_SetString(PyExc_ValueError,"径向查询批量尺寸超出本机索引范围"); return NULL; }
+    const int dimensions[13]={2,2,1,1,1,2,2,1,2,2,2,2,2};
+    const Py_ssize_t shapes[13][3]={{count,3},{count,3},{3},{count},{count},{count,3},{count,3},
+                                  {count},{count,3},{count,3},{count,3},{count,3},{count,3}};
+    Py_buffer v[13]={{0}};
+    if (!lab_buffers(inputs,outputs,v,7,6,dimensions,shapes,-1,-1)) goto error;
+    for (int i=0;i<(int)count;++i) {
+        double center[3],axis[3],normal[3],offset[3],negative[3],support_point[3],tangent[3],lateral[3];
+        lab_row(v,i,center); lab_row(v+1,i,axis);
+        double compression;
+        if (lab_get(v+3,i,0)==0.) {
+            compression=-radius-travel;
+            for (int j=0;j<3;++j) { normal[j]=lab_get(v+2,j,0); offset[j]=-radius*normal[j]; }
+        } else {
+            compression=-lab_get(v+4,i,0);
+            lab_row(v+6,i,normal);
+            for (int j=0;j<3;++j) offset[j]=lab_get(v+5,i,j)-center[j];
+        }
+        cross_regular(normal,axis,tangent);
+        double length=sqrt(lab_dot(tangent,tangent));
+        for (int j=0;j<3;++j) { tangent[j]/=length; negative[j]=-normal[j]; }
+        if (!support_values(negative,axis,radius,half_width,shoulder,crown,support_point)) goto error;
+        cross_regular(tangent,normal,lateral);
+        lab_set(v+7,i,0,compression);
+        for (int j=0;j<3;++j) {
+            lab_set(v+8,i,j,offset[j]); lab_set(v+9,i,j,normal[j]);
+            lab_set(v+10,i,j,tangent[j]); lab_set(v+11,i,j,lateral[j]);
+            lab_set(v+12,i,j,support_point[j]+compression*normal[j]);
+        }
+    }
+    lab_release(v,13); Py_RETURN_NONE;
+error:
+    lab_release(v,13); return NULL;
+}
 #endif
