@@ -13,6 +13,14 @@ from unsprung_dynamics import native_gyro_impulse
 from wheel_dynamics import WheelStep
 
 
+def dry_port_derivative(port, torque, speed, capacity, impulse_response):
+    """固定容量投影残差的分段导数；不让差分跨过静止/滑动边界。"""
+    # 残差为T-clip(T+v/(hR),-C,C)。静止分支解v=0，滑动分支解T=±C。
+    if capacity > 0. and abs(torque+speed/impulse_response) < capacity:
+        return -port/impulse_response, 0.
+    return np.zeros_like(port), 1.
+
+
 @dataclass(frozen=True)
 class UnsprungJointStep:
     velocity: np.ndarray
@@ -189,6 +197,17 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
             minus[i] -= epsilon
             columns.append((evaluate(plus)[0]-evaluate(minus)[0])/(2*epsilon)*scale/row_scale)
         jacobian = np.column_stack(columns)
+        # 轮速差分0.001rad/s可能跨过小制动容量的两个边界，给出不属于当前分支的割线。
+        # 固定容量端口使用精确分段导数；仍解原来的全部残差，不裁剪/覆写末状态。
+        fixed_ports = [(0, clutch_capacity), *((i+3, capacity) for i, capacity in enumerate(brakes))]
+        if ratio and synchronizing:
+            fixed_ports.append((1, config.synchronizer_capacity))
+        for index, capacity in fixed_ports:
+            speed_row, torque_derivative = dry_port_derivative(ports[index], values[24+index],
+                details[8][index], capacity, dt*response[index])
+            derivative = np.r_[speed_row, np.zeros(18)]
+            derivative[24+index] = torque_derivative
+            jacobian[24+index] = derivative*state_scale/row_scale[24+index]
         delta = np.linalg.solve(jacobian,residual/row_scale)*state_scale
         before = np.linalg.norm(residual/row_scale)
         for attempt in range(12):

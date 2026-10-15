@@ -94,8 +94,8 @@ class VehicleConfig:
     tire_radial_damping: tuple = (500.,) * 4  # N·s/m，正径向压缩阻尼设计初值。
     suspension_antiroll_rates: tuple = (6000., 4000.)  # N/m；前/后左右行程差的设计刚度，非实测标定。
     suspension_stop_rates: tuple = (480000.,) * 4  # N/m；行程边界外的渐进止挡设计刚度。
-    suspension_spring_rates: tuple = (48000.,) * 4  # N/m；四轮实际弹簧设计值，平路与旧1200kg参数相同。
-    suspension_compression_damping: tuple = (5280.,) * 4  # N·s/m；耦合分支的轴向压缩阻尼，原生对照为法向/射线速率。
+    suspension_spring_rates: tuple = (48000.,) * 4  # N/m；四轮轮心等效刚度，不是减振支柱部件原始刚度。
+    suspension_compression_damping: tuple = (5280.,) * 4  # N·s/m；轮心等效压缩阻尼，原生对照为法向/射线速率。
     suspension_extension_damping: tuple = (2760.,) * 4  # N·s/m；耦合分支的轴向伸张阻尼。
     suspension_stiffness: float = 40.0
     suspension_compression: float = 4.4

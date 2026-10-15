@@ -22,11 +22,13 @@ from lab_experiment import MANEUVERS, LabExperiment, LabOptions
 from lab_records import LabRecord, changed_conditions, export_record, load_record, recalculate
 from lab_scene import LabScene
 from paths import user_data
+from suspension_bench import fit_bench
+from suspension_bench import validate_metadata as validate_suspension_metadata
 from tire_calibration import validate_fit_metadata
 from ui import theme
 from ui.lab_widgets import MUTED, LabOptionMenu, button_textures
 from vehicle_designs import DESIGN_VEHICLES, vehicle_design
-from vehicle_parameters import config_from_document, load_vehicle_config
+from vehicle_parameters import config_from_document, load_vehicle_config, save_vehicle_config
 from vehicle_state import VehicleCommand
 
 INK = theme.INK
@@ -186,6 +188,7 @@ class VehicleLab(ShowBase):
             config = config_from_document(document, design.config)
             metadata = document.get("metadata", {})
             validate_fit_metadata(metadata)
+            validate_suspension_metadata(metadata)
         except (OSError, ValueError, KeyError, TypeError) as error:
             self.notice.setText(f"工程配置载入失败：{error}")
             return
@@ -210,6 +213,44 @@ class VehicleLab(ShowBase):
             dialog.destroy()
         if path:
             self.import_engineering(path)
+
+    def import_suspension_bench(self, path):
+        """对当前选定硬件换算部件数据；不触碰已运行记录或物理世界。"""
+        try:
+            raw = Path(path).read_bytes()
+            base = self.engineered_config or DESIGN_VEHICLES[self.vehicle_menu.selectedIndex].config
+            config, report = fit_bench(json.loads(raw), base)
+            folder = self.output/("suspension-bench-"+datetime.now(UTC).strftime("%Y%m%dT%H%M%S%fZ"))
+            folder.mkdir(parents=True, exist_ok=False)
+            (folder/"input.json").write_bytes(raw)
+            save_vehicle_config(folder/"base-vehicle.json", base, metadata=self.parameter_metadata)
+            (folder/"fit-report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2,
+                                                          allow_nan=False), encoding="utf-8")
+            if not report["passed"]:
+                self.notice.setText("部件数据不符合当前线性本构，未应用；验证误差见台架报告。")
+                return
+            metadata = dict(self.parameter_metadata or {})
+            metadata["suspension_calibration"] = report
+            metadata["basis"] = ("悬架合成数据验证，非实测；其他硬件沿用当前模型" if report["input"]["source_kind"] == "synthetic"
+                                 else "悬架台架拟合与安装运动比换算；其他硬件沿用当前模型")
+            save_vehicle_config(folder/"candidate-vehicle.json", config, metadata=metadata)
+            self.import_engineering(folder/"candidate-vehicle.json")
+            self.advanced_panel.hide()
+        except (OSError, ValueError, KeyError, TypeError, ArithmeticError) as error:
+            self.notice.setText(f"悬架台架载入失败：{error}")
+
+    def open_suspension_bench(self):
+        import tkinter as tk
+        from tkinter import filedialog
+
+        dialog = tk.Tk()
+        dialog.withdraw()
+        try:
+            path = filedialog.askopenfilename(title="导入悬架部件台架数据", filetypes=[("悬架台架JSON", "*.json")])
+        finally:
+            dialog.destroy()
+        if path:
+            self.import_suspension_bench(path)
 
     def set_options(self, options):
         self.vehicle_menu.set(next(i for i, design in enumerate(DESIGN_VEHICLES) if design.id == options.vehicle_id))

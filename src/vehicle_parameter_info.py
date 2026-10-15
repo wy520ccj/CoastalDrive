@@ -77,7 +77,7 @@ VEHICLE_FIELDS = {
     "suspension_coupled_enabled": ("bool", "SI法向弹簧/轴向阻尼/防倾共同末状态；false原生SI对照"),
     "suspension_antiroll_rates": ("N/m", "前/后防倾杆行程差刚度；设计值，非实车标定"),
     "suspension_stop_rates": ("N/m", "四轮行程边界外渐进止挡刚度；设计值"),
-    "suspension_spring_rates": ("N/m", "四轮真实弹簧设计值；质量变化时不自动改变硬件"),
+    "suspension_spring_rates": ("N/m", "四轮轮心等效弹簧刚度；部件原始值须按安装运动比换算"),
     "suspension_compression_damping": ("N·s/m", "四轮轴向压缩阻尼；关闭共同求解时为原生法向/射线速率系数"),
     "suspension_extension_damping": ("N·s/m", "四轮轴向伸张阻尼；非实车标定"),
     "suspension_stiffness": ("s⁻²", "si_enabled=false的旧归一化刚度；平路k=mass×值"),

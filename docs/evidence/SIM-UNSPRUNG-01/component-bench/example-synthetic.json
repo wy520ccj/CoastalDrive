@@ -1,0 +1,1059 @@
+{
+  "schema": "coastal-suspension-bench-v1",
+  "source": "analytic synthetic spring/damper fixture, NOT measured",
+  "source_kind": "synthetic",
+  "temperature_c": 20.0,
+  "units": {
+    "spring_input": "m",
+    "damper_input": "m/s",
+    "force": "N",
+    "temperature": "degC"
+  },
+  "definition": "positive_compression_resistance;spring_zero_at_free_length_and_zero_wheel_compression",
+  "corners": {
+    "FL": {
+      "spring_id": "synthetic-spring-front",
+      "damper_id": "synthetic-damper-front",
+      "spring_motion_ratio": 0.8,
+      "damper_motion_ratio": 0.75,
+      "installation_source": "synthetic constant linkage, zero preload; NOT measured K&C",
+      "rows": [
+        {
+          "series": "FL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.012,
+          "force_N": 720.0
+        },
+        {
+          "series": "FL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.035,
+          "force_N": 2100.0
+        },
+        {
+          "series": "FL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.08,
+          "force_N": 4800.0
+        },
+        {
+          "series": "FL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.14,
+          "force_N": 8400.0
+        },
+        {
+          "series": "FL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.22,
+          "force_N": 13200.0
+        },
+        {
+          "series": "FL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.009,
+          "force_N": 540.0
+        },
+        {
+          "series": "FL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.031,
+          "force_N": 1860.0
+        },
+        {
+          "series": "FL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.07,
+          "force_N": 4200.0
+        },
+        {
+          "series": "FL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.15,
+          "force_N": 9000.0
+        },
+        {
+          "series": "FL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.23,
+          "force_N": 13800.0
+        },
+        {
+          "series": "FL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.02,
+          "force_N": 120.0
+        },
+        {
+          "series": "FL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.05,
+          "force_N": 300.0
+        },
+        {
+          "series": "FL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.15,
+          "force_N": 900.0
+        },
+        {
+          "series": "FL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.35,
+          "force_N": 2100.0
+        },
+        {
+          "series": "FL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.8,
+          "force_N": 4800.0
+        },
+        {
+          "series": "FL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.015,
+          "force_N": 90.0
+        },
+        {
+          "series": "FL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.06,
+          "force_N": 360.0
+        },
+        {
+          "series": "FL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.2,
+          "force_N": 1200.0
+        },
+        {
+          "series": "FL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.4,
+          "force_N": 2400.0
+        },
+        {
+          "series": "FL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.85,
+          "force_N": 5100.0
+        },
+        {
+          "series": "FL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "FL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.02,
+          "force_N": -60.0
+        },
+        {
+          "series": "FL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.05,
+          "force_N": -150.0
+        },
+        {
+          "series": "FL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.15,
+          "force_N": -450.0
+        },
+        {
+          "series": "FL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.35,
+          "force_N": -1050.0
+        },
+        {
+          "series": "FL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.8,
+          "force_N": -2400.0
+        },
+        {
+          "series": "FL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "FL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.015,
+          "force_N": -45.0
+        },
+        {
+          "series": "FL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.06,
+          "force_N": -180.0
+        },
+        {
+          "series": "FL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.2,
+          "force_N": -600.0
+        },
+        {
+          "series": "FL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.4,
+          "force_N": -1200.0
+        },
+        {
+          "series": "FL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.85,
+          "force_N": -2550.0
+        }
+      ]
+    },
+    "FR": {
+      "spring_id": "synthetic-spring-front",
+      "damper_id": "synthetic-damper-front",
+      "spring_motion_ratio": 0.8,
+      "damper_motion_ratio": 0.75,
+      "installation_source": "synthetic constant linkage, zero preload; NOT measured K&C",
+      "rows": [
+        {
+          "series": "FR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.012,
+          "force_N": 720.0
+        },
+        {
+          "series": "FR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.035,
+          "force_N": 2100.0
+        },
+        {
+          "series": "FR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.08,
+          "force_N": 4800.0
+        },
+        {
+          "series": "FR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.14,
+          "force_N": 8400.0
+        },
+        {
+          "series": "FR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.22,
+          "force_N": 13200.0
+        },
+        {
+          "series": "FR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.009,
+          "force_N": 540.0
+        },
+        {
+          "series": "FR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.031,
+          "force_N": 1860.0
+        },
+        {
+          "series": "FR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.07,
+          "force_N": 4200.0
+        },
+        {
+          "series": "FR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.15,
+          "force_N": 9000.0
+        },
+        {
+          "series": "FR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.23,
+          "force_N": 13800.0
+        },
+        {
+          "series": "FR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.02,
+          "force_N": 120.0
+        },
+        {
+          "series": "FR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.05,
+          "force_N": 300.0
+        },
+        {
+          "series": "FR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.15,
+          "force_N": 900.0
+        },
+        {
+          "series": "FR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.35,
+          "force_N": 2100.0
+        },
+        {
+          "series": "FR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.8,
+          "force_N": 4800.0
+        },
+        {
+          "series": "FR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.015,
+          "force_N": 90.0
+        },
+        {
+          "series": "FR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.06,
+          "force_N": 360.0
+        },
+        {
+          "series": "FR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.2,
+          "force_N": 1200.0
+        },
+        {
+          "series": "FR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.4,
+          "force_N": 2400.0
+        },
+        {
+          "series": "FR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.85,
+          "force_N": 5100.0
+        },
+        {
+          "series": "FR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "FR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.02,
+          "force_N": -60.0
+        },
+        {
+          "series": "FR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.05,
+          "force_N": -150.0
+        },
+        {
+          "series": "FR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.15,
+          "force_N": -450.0
+        },
+        {
+          "series": "FR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.35,
+          "force_N": -1050.0
+        },
+        {
+          "series": "FR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.8,
+          "force_N": -2400.0
+        },
+        {
+          "series": "FR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "FR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.015,
+          "force_N": -45.0
+        },
+        {
+          "series": "FR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.06,
+          "force_N": -180.0
+        },
+        {
+          "series": "FR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.2,
+          "force_N": -600.0
+        },
+        {
+          "series": "FR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.4,
+          "force_N": -1200.0
+        },
+        {
+          "series": "FR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.85,
+          "force_N": -2550.0
+        }
+      ]
+    },
+    "RL": {
+      "spring_id": "synthetic-spring-rear",
+      "damper_id": "synthetic-damper-rear",
+      "spring_motion_ratio": 0.9,
+      "damper_motion_ratio": 0.85,
+      "installation_source": "synthetic constant linkage, zero preload; NOT measured K&C",
+      "rows": [
+        {
+          "series": "RL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.012,
+          "force_N": 600.0
+        },
+        {
+          "series": "RL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.035,
+          "force_N": 1750.0000000000002
+        },
+        {
+          "series": "RL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.08,
+          "force_N": 4000.0
+        },
+        {
+          "series": "RL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.14,
+          "force_N": 7000.000000000001
+        },
+        {
+          "series": "RL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.22,
+          "force_N": 11000.0
+        },
+        {
+          "series": "RL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.009,
+          "force_N": 449.99999999999994
+        },
+        {
+          "series": "RL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.031,
+          "force_N": 1550.0
+        },
+        {
+          "series": "RL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.07,
+          "force_N": 3500.0000000000005
+        },
+        {
+          "series": "RL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.15,
+          "force_N": 7500.0
+        },
+        {
+          "series": "RL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.23,
+          "force_N": 11500.0
+        },
+        {
+          "series": "RL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.02,
+          "force_N": 100.0
+        },
+        {
+          "series": "RL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.05,
+          "force_N": 250.0
+        },
+        {
+          "series": "RL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.15,
+          "force_N": 750.0
+        },
+        {
+          "series": "RL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.35,
+          "force_N": 1750.0
+        },
+        {
+          "series": "RL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.8,
+          "force_N": 4000.0
+        },
+        {
+          "series": "RL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.015,
+          "force_N": 75.0
+        },
+        {
+          "series": "RL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.06,
+          "force_N": 300.0
+        },
+        {
+          "series": "RL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.2,
+          "force_N": 1000.0
+        },
+        {
+          "series": "RL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.4,
+          "force_N": 2000.0
+        },
+        {
+          "series": "RL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.85,
+          "force_N": 4250.0
+        },
+        {
+          "series": "RL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "RL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.02,
+          "force_N": -50.0
+        },
+        {
+          "series": "RL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.05,
+          "force_N": -125.0
+        },
+        {
+          "series": "RL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.15,
+          "force_N": -375.0
+        },
+        {
+          "series": "RL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.35,
+          "force_N": -875.0
+        },
+        {
+          "series": "RL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.8,
+          "force_N": -2000.0
+        },
+        {
+          "series": "RL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "RL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.015,
+          "force_N": -37.5
+        },
+        {
+          "series": "RL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.06,
+          "force_N": -150.0
+        },
+        {
+          "series": "RL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.2,
+          "force_N": -500.0
+        },
+        {
+          "series": "RL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.4,
+          "force_N": -1000.0
+        },
+        {
+          "series": "RL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.85,
+          "force_N": -2125.0
+        }
+      ]
+    },
+    "RR": {
+      "spring_id": "synthetic-spring-rear",
+      "damper_id": "synthetic-damper-rear",
+      "spring_motion_ratio": 0.9,
+      "damper_motion_ratio": 0.85,
+      "installation_source": "synthetic constant linkage, zero preload; NOT measured K&C",
+      "rows": [
+        {
+          "series": "RR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.012,
+          "force_N": 600.0
+        },
+        {
+          "series": "RR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.035,
+          "force_N": 1750.0000000000002
+        },
+        {
+          "series": "RR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.08,
+          "force_N": 4000.0
+        },
+        {
+          "series": "RR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.14,
+          "force_N": 7000.000000000001
+        },
+        {
+          "series": "RR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.22,
+          "force_N": 11000.0
+        },
+        {
+          "series": "RR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.009,
+          "force_N": 449.99999999999994
+        },
+        {
+          "series": "RR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.031,
+          "force_N": 1550.0
+        },
+        {
+          "series": "RR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.07,
+          "force_N": 3500.0000000000005
+        },
+        {
+          "series": "RR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.15,
+          "force_N": 7500.0
+        },
+        {
+          "series": "RR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.23,
+          "force_N": 11500.0
+        },
+        {
+          "series": "RR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.02,
+          "force_N": 100.0
+        },
+        {
+          "series": "RR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.05,
+          "force_N": 250.0
+        },
+        {
+          "series": "RR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.15,
+          "force_N": 750.0
+        },
+        {
+          "series": "RR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.35,
+          "force_N": 1750.0
+        },
+        {
+          "series": "RR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.8,
+          "force_N": 4000.0
+        },
+        {
+          "series": "RR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.015,
+          "force_N": 75.0
+        },
+        {
+          "series": "RR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.06,
+          "force_N": 300.0
+        },
+        {
+          "series": "RR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.2,
+          "force_N": 1000.0
+        },
+        {
+          "series": "RR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.4,
+          "force_N": 2000.0
+        },
+        {
+          "series": "RR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.85,
+          "force_N": 4250.0
+        },
+        {
+          "series": "RR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "RR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.02,
+          "force_N": -50.0
+        },
+        {
+          "series": "RR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.05,
+          "force_N": -125.0
+        },
+        {
+          "series": "RR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.15,
+          "force_N": -375.0
+        },
+        {
+          "series": "RR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.35,
+          "force_N": -875.0
+        },
+        {
+          "series": "RR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.8,
+          "force_N": -2000.0
+        },
+        {
+          "series": "RR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "RR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.015,
+          "force_N": -37.5
+        },
+        {
+          "series": "RR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.06,
+          "force_N": -150.0
+        },
+        {
+          "series": "RR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.2,
+          "force_N": -500.0
+        },
+        {
+          "series": "RR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.4,
+          "force_N": -1000.0
+        },
+        {
+          "series": "RR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.85,
+          "force_N": -2125.0
+        }
+      ]
+    }
+  }
+}

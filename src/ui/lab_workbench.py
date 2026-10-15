@@ -122,6 +122,7 @@ def build_workbench(app):
     app.field("bump_height", "凸起高度 m", .01, -.08, x=-.82, parent=app.advanced_panel)
     app.field("bump_length", "凸起长度 m", .9, -.08, x=.44, parent=app.advanced_panel)
     app.field("bump_distance", "凸起距离 m", 6, -.20, x=-.82, parent=app.advanced_panel)
+    app.button("导入悬架台架", .94, -.20, .67, app.open_suspension_bench, parent=app.advanced_panel)
     app.text("凸起三项用于轮跳/颠簸制动；输入起始用于转向或颠簸制动请求。\n轮端参数在工程模型定义；质心/轮胎基准留空采用车型值。", -.82, -.34,
              .030, MUTED, parent=app.advanced_panel)
     app.advanced_panel.hide()

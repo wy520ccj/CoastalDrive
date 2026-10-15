@@ -18,6 +18,7 @@ from parameter_help import (
     parameter_group,
 )
 from paths import resource_root
+from suspension_bench import source_note as suspension_source_note
 from ui import theme
 from ui.lab_widgets import MUTED, rounded_panel
 from vehicle_designs import DESIGN_VEHICLES, GR86_PROFILE_PATH
@@ -31,6 +32,15 @@ BROWSER_LABELS = {"suspension_spring_rates":"轮心等效弹簧率",
 OPTION_FIELDS = {"speed": "speed_kph", "duration": "duration", "steer": "steering_deg",
                  "onset": "onset", "radius": "radius_m", "bump_height": "bump_height_m",
                  "bump_length": "bump_length_m", "bump_distance": "bump_distance_m"}
+
+
+def display_value(value):
+    """只格式化读数，保留工程文件和物理输入的完整精度。"""
+    if isinstance(value, float):
+        return f"{value:.6g}"
+    if isinstance(value, (tuple, list)):
+        return "("+", ".join(display_value(item) for item in value)+")"
+    return str(value)
 
 
 class ParameterHelp:
@@ -130,11 +140,12 @@ class ParameterHelp:
             design_id = design.id
             parameter_metadata = app.parameter_metadata
         field = ALIASES.get(key, key)
-        current = str(config[field]) if field in config else "旧记录未保存此字段"
+        current = display_value(config[field]) if field in config else "旧记录未保存此字段"
         if "." in field and not field.startswith("manual."):
             parent, child = field.split(".")
             current = str(config[parent][child])
         if field in config:
+            suspension_basis = suspension_source_note(parameter_metadata, field, config[field])
             fit = parameter_metadata["tire_calibration"] if parameter_metadata is not None and "tire_calibration" in parameter_metadata else None
             fitted = fit is not None and field in fit["parameters"]
             if fit is not None and field == "rear_lateral_stiffness":
@@ -157,6 +168,8 @@ class ParameterHelp:
                         basis += "\nμ为指定轮胎/表面条件下的有效峰值系数"
                 else:
                     basis += "\n已覆盖拟合值，不沿用其标定来源"
+            elif suspension_basis is not None:
+                basis += "\n"+suspension_basis
             elif design_id == "gr86-2022-premium-6mt":
                 ledger = json.loads(GR86_PROFILE_PATH.read_text(encoding="utf-8"))["metadata"]["vehicle_fields"][field]
                 if json.loads(json.dumps(config[field])) == ledger["value"]:

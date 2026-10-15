@@ -22,6 +22,8 @@ from lab_signals import (
 )
 from paths import resource_root
 from snapshot_wire import decode_snapshots, encode_snapshots
+from suspension_bench import record_coverage
+from suspension_bench import validate_metadata as validate_suspension_metadata
 from tire_calibration import validate_fit_metadata
 from vehicle_state import VehicleCommand
 
@@ -146,6 +148,10 @@ def export_record(record, folder, baseline=None):
                                                       "A" if baseline else "current": analyses[0],
                                                       **({"B": analyses[1]} if baseline else {})},
                                                      ensure_ascii=False, indent=2, allow_nan=False), encoding="utf-8")
+    coverage = {label: record_coverage(item.metadata.get("parameter_metadata"), item.metadata["vehicle_config"], item.samples)
+                for label, item in zip(("A", "B") if baseline else ("current",), records, strict=True)}
+    (folder/"suspension-bench-coverage.json").write_text(json.dumps(coverage, ensure_ascii=False, indent=2,
+                                                                allow_nan=False), encoding="utf-8")
     metrics_table = "".join(f'<tr><td>{html.escape(item["label"])}</td>'
                             + "".join(f'<td>{analysis["metrics"][index]["value"]:.4g}</td>'
                                       if analysis["metrics"][index]["value"] is not None else '<td>未满足条件</td>'
@@ -175,6 +181,7 @@ def export_record(record, folder, baseline=None):
             "A": baseline.metadata["summary"], "B": record.metadata["summary"]}, ensure_ascii=False,
             indent=2, allow_nan=False)+"\n", encoding="utf-8")
     change_text = html.escape(json.dumps(comparison, ensure_ascii=False, indent=2))
+    bench_text = html.escape(json.dumps(coverage, ensure_ascii=False, indent=2))
     catalog = "".join(f'<tr><td>{signal.key}</td><td>{html.escape(signal.label)}</td>'
                       f'<td>{signal.unit}</td><td>{html.escape(signal.source)}</td></tr>' for signal in SIGNALS)
     report = f'''<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>CoastalDrive 实验报告</title>
@@ -182,6 +189,7 @@ def export_record(record, folder, baseline=None):
 <h1>CoastalDrive · 车辆动力学实验</h1><p>{html.escape(record.metadata["vehicle_name"])} · 120 Hz · 离线固定步 · {html.escape(precision)}</p>
 <p>{html.escape(record.metadata["model_basis"])}</p><p>曲线来自真实物理记录。A 为海蓝，B 为橙色；单次记录为海蓝。制动距离使用完成步的三维行驶距离，停止阈值 |v| ≤ 0.1 m/s。</p>
 <h2>试验结果</h2><pre>{summary}</pre><h2>工程指标</h2><p>列顺序：{"A / B" if baseline else "本次"}。未满足条件的原因及计算区间见engineering.json。</p><table>{metrics_table}</table><h2>乘坐运动与接地</h2><p>世界Z质心/轮心惯性加速度，未作频率加权，不作为ISO座椅舒适等级。实体刺激未完成或旧记录缺少自由度时保留未定义值。</p><table>{ride_table}</table>{plots}<h2>比较条件</h2><pre>{change_text}</pre>
+<h2>悬架部件台架适用域</h2><p>只核对120Hz完成拍采样的行程/速度，不覆盖子步峰值或台架温度之外的条件。null表示未提供此类台架来源。</p><pre>{bench_text}</pre>
 <h2>信号单位与字段来源</h2><table>{catalog}</table><p>完整配置、命令序列与源码/原生模块摘要见 experiment.json；120 Hz 数据见 signals.csv，动画快照见 snapshots.bin。实际计算耗时不包含初始化与文件导出。</p></html>'''
     (folder/"report.html").write_text(report, encoding="utf-8")
     return folder/"report.html"
@@ -216,6 +224,7 @@ def load_record(folder):
         raise ValueError("车辆文件与实验中保存的完整配置不一致")
     if document.get("parameter_metadata") is not None:
         validate_fit_metadata(document["parameter_metadata"])
+        validate_suspension_metadata(document["parameter_metadata"])
     for index, (row, state, command) in enumerate(zip(samples, snapshots, commands)):
         if (state.tick != snapshots[0].tick+index or row["tick"] != state.tick
             or not math.isclose(row["time"], index/120, abs_tol=1e-9)

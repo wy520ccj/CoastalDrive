@@ -550,6 +550,15 @@
         "texture_width": 1024,
         "texture_height": 64,
         "sha256": "aa30ca81304fa2405d7a5011c2c365348fae3eb0d890092d9af22e48a452e8cd"
+      },
+      {
+        "file": "suspension_spring_rates-2.png",
+        "tex": "r_s=\\frac{\\mathrm{d}x_s}{\\mathrm{d}q},\\qquad k_w=r_s^2 k_s",
+        "width": 713,
+        "height": 116,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "4fa1d873cde18987438a100959f02df4978334a9e959a49d36678fb694b52ce5"
       }
     ],
     "suspension_compression_damping": [
@@ -570,6 +579,15 @@
         "texture_width": 2048,
         "texture_height": 256,
         "sha256": "7dccc6ce76fa9c7e26ced8a5c1bb27b393d39af1c735e9e5987f9d9575970f23"
+      },
+      {
+        "file": "suspension_compression_damping-2.png",
+        "tex": "r_d=\\frac{\\mathrm{d}x_d}{\\mathrm{d}q},\\qquad c_w^{\\pm}=r_d^2 c_d^{\\pm}",
+        "width": 750,
+        "height": 116,
+        "texture_width": 1024,
+        "texture_height": 128,
+        "sha256": "f24dd0cf1e2d12774700764e3e2488a7f9f36f444dfb4c5d657bb21349801561"
       }
     ],
     "suspension_antiroll_rates": [

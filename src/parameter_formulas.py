@@ -95,11 +95,13 @@ FORMULAS = {
     "suspension_spring_rates": ((
         r"U_s=\frac{1}{2}\sum_i k_i q_i^2,\qquad Q_i=-\frac{\partial U_s}{\partial q_i}",
         r"q_{i,1}=q_{i,0}+\mathbf{r}_{i,1}\cdot\mathbf{g}_1-\mathbf{r}_{i,0}\cdot\mathbf{g}_0",
-    ), "ki：弹簧刚度；qi：压缩行程。第二式为独立轮心末构型，ri是轮心相对簧上CG的世界向量，g为真实导向。止挡/防倾另由相应势能计算。"),
+        r"r_s=\frac{\mathrm{d}x_s}{\mathrm{d}q},\qquad k_w=r_s^2 k_s",
+    ), "q为轮心压缩；r向量从簧上CG指向轮心，g为导向。xs为部件压缩，rs为常运动比，ks为部件刚度、kw为轮心等效刚度。止挡/防倾另计。"),
     "suspension_compression_damping": ((
         r"\dot{q}_i=\mathbf{g}_1\cdot\left(\mathbf{v}_{i,1}-\mathbf{V}_{s,1}-\boldsymbol{\Omega}_1\times\mathbf{r}_{i,1}\right)",
         r"F_{d,i}=c_i^{\pm}\dot{q}_i,\qquad E_d=h\sum_i c_i^{\pm}\dot{q}_i^{\,2}\geq 0",
-    ), "独立轮心使用真实末姿态的相对速度；c+用于压缩，c−用于伸张。普通模型沿原法向/射线速率定义，计算来源可分别核对。"),
+        r"r_d=\frac{\mathrm{d}x_d}{\mathrm{d}q},\qquad c_w^{\pm}=r_d^2 c_d^{\pm}",
+    ), "独立轮心使用末姿态相对速度；c+压缩、c−伸张。xd为活塞行程，rd为常运动比，cd为部件阻尼、cw为轮心等效阻尼。普通模型沿原速率定义。"),
     "suspension_antiroll_rates": ((r"U_{\mathrm{bar}}=\frac{1}{2}k_{\mathrm{bar}}(q_L-q_R)^2",),
                                   "qL / qR：同轴左右行程；kbar：防倾刚度。"),
     "body_inertia": ((r"I_a=\sum_j\left(m_j d_{j,a}^{\,2}+I_{j,a}\right)",),
