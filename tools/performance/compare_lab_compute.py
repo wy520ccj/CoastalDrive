@@ -100,6 +100,8 @@ def compare(args):
              ("braking-B2", "braking", ROOT), ("braking-A2", "braking", args.baseline),
              ("turning-A", "turning", args.baseline), ("turning-B", "turning", ROOT),
              ("nonlinear-A", "nonlinear-bump", args.baseline), ("nonlinear-B", "nonlinear-bump", ROOT)]
+    if args.turning_abba:
+        cases[6:6] = [("turning-B2", "turning", ROOT), ("turning-A2", "turning", args.baseline)]
     reference, rows = {}, []
     for name, scenario, source in cases:
         command = [sys.executable, str(ROOT/"tools/physics/run_sim_double.py"), str(Path(__file__).resolve()),
@@ -124,9 +126,12 @@ def compare(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--worker", action="store_true")
+    parser.add_argument("--turning-abba", action="store_true", help="转向也按ABBA串行对照，原单次协议保留")
     parser.add_argument("--source", type=Path, default=ROOT)
-    parser.add_argument("--baseline", type=Path, default=ROOT/"builds/lab-perf-02/baseline")
+    parser.add_argument("--baseline", type=Path, help="完整对照必须显式指定本轮基线，避免误用旧版本")
     parser.add_argument("--scenario", choices=("braking", "turning", "nonlinear-bump"), default="braking")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    if not args.worker and args.baseline is None:
+        parser.error("完整对照必须用--baseline显式指定本轮基线目录")
     worker(args) if args.worker else compare(args)

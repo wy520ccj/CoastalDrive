@@ -105,6 +105,7 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
 
     configuration_key,configuration_data = None,None
     velocity_key,velocity_data = None,None
+    gyro_cache = {}
 
     def configuration(end):
         nonlocal configuration_key,configuration_data
@@ -189,7 +190,11 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
             body_torque = np.empty(3)
             unsprung_body_torque((hardware.mechanical.wheel_arms,wheel_force,reaction,rotor_bias),(body_torque,))
             free_angular = start[3:6]+dt*np.linalg.solve(hardware.mechanical.world_inertia,body_torque-external_torque)
-            gyro = native_gyro_impulse(hardware.mechanical.world_inertia,free_angular,dt)
+            # 本次共同解内惯量和dt固定；仅复用自由角速度字节完全相同的原隐式陀螺。
+            gyro_key = free_angular.tobytes()
+            if gyro_key not in gyro_cache:
+                gyro_cache[gyro_key] = native_gyro_impulse(hardware.mechanical.world_inertia,free_angular,dt)
+            gyro = gyro_cache[gyro_key]
             momentum_error[3:6] -= gyro
         # 残差维数由共同方程固定；直接装配，避免每次差分重新解释通用拼接规则。
         residual,details = np.empty(34),[]

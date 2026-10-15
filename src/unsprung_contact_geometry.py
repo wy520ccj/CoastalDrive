@@ -41,14 +41,15 @@ class FiniteRadialContact:
         if key==self.cache_key:
             return self.cached
         h,hardware,config = self.dt,self.hardware,self.config
-        wheel_velocity = hardware.mechanical.wheel_jacobians@velocity[:10]
-        if self.wheel_velocity_bias is not None:
-            wheel_velocity = wheel_velocity+self.wheel_velocity_bias
         middle_rotation = rotation_increment(.5*h*velocity[3:6])
-        end_rotation = rotation_increment(h*velocity[3:6])
         if self.finite_motion is not None:
             motion = self.finite_motion.evaluate(velocity)
             wheel_velocity,end_rotation = motion.wheel_velocity,motion.rotation_increment
+        else:
+            wheel_velocity = hardware.mechanical.wheel_jacobians@velocity[:10]
+            if self.wheel_velocity_bias is not None:
+                wheel_velocity = wheel_velocity+self.wheel_velocity_bias
+            end_rotation = rotation_increment(h*velocity[3:6])
         middle_axes = hardware.axes@middle_rotation.T
         end_axes = hardware.axes@end_rotation.T
         speed = np.linalg.norm(velocity[3:6])
