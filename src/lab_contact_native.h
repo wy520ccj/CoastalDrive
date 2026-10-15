@@ -363,4 +363,57 @@ static PyObject *radial_box_bounds_native(PyObject *self,PyObject *args) {
 error:
     lab_release(v,4); return NULL;
 }
+/* 面候选保持原dot、投影和资格判定；仍由Python按原轴序选择全局证明分支。 */
+static PyObject *box_face_candidates_native(PyObject *self,PyObject *args) {
+    PyObject *inputs,*outputs;
+    double radius,half_width,shoulder,crown,tolerance;
+    if (!PyArg_ParseTuple(args,"OOddddd",&inputs,&outputs,&radius,&half_width,&shoulder,&crown,&tolerance)) return NULL;
+    const int dimensions[8]={1,1,1,2,2,1,2,1};
+    const Py_ssize_t shapes[8][3]={{3},{3},{3},{6,3},{6,3},{6},{6,3},{6}};
+    Py_buffer v[8]={{0}};
+    if (!lab_buffers(inputs,outputs,v,3,5,dimensions,shapes,-1,-1)) goto error;
+    double center[3],axis[3],half[3],normals[6][3],wheels[6][3];
+    for (int j=0;j<3;++j) { center[j]=lab_get(v,j,0); axis[j]=lab_get(v+1,j,0); half[j]=lab_get(v+2,j,0); }
+    if (!lab_box_axis_values(center,axis,radius,half_width,shoulder,crown,normals,wheels)) goto error;
+    for (int row=0;row<6;++row) {
+        double distance=lab_dot(normals[row],wheels[row])-half[row/2];
+        int eligible=1;
+        for (int j=0;j<3;++j) {
+            double road=wheels[row][j]-distance*normals[row][j];
+            lab_set(v+3,row,j,normals[row][j]); lab_set(v+4,row,j,wheels[row][j]); lab_set(v+6,row,j,road);
+            if (j!=row/2 && !(fabs(road)<=half[j]+tolerance)) eligible=0;
+        }
+        lab_set(v+5,row,0,distance); lab_set(v+7,row,0,(double)eligible);
+    }
+    lab_release(v,8); Py_RETURN_NONE;
+error:
+    lab_release(v,8); return NULL;
+}
+/* 四条棱按--、-+、+-、++准备；范数与界限仍沿用原NumPy计算。 */
+static PyObject *box_edge_frames_native(PyObject *self,PyObject *args) {
+    PyObject *inputs,*outputs;
+    int free_axis;
+    if (!PyArg_ParseTuple(args,"OOi",&inputs,&outputs,&free_axis)) return NULL;
+    if (free_axis<0 || free_axis>2) { PyErr_SetString(PyExc_ValueError,"Box自由轴须为0至2"); return NULL; }
+    const int dimensions[5]={1,1,2,2,2};
+    const Py_ssize_t shapes[5][3]={{3},{3},{8,3},{4,3},{4,2}};
+    Py_buffer v[5]={{0}};
+    if (!lab_buffers(inputs,outputs,v,2,3,dimensions,shapes,-1,-1)) goto error;
+    int fixed[2],count=0;
+    for (int j=0;j<3;++j) if (j!=free_axis) fixed[count++]=j;
+    for (int row=0;row<4;++row) {
+        for (int j=0;j<3;++j) lab_set(v+3,row,j,0.);
+        for (int k=0;k<2;++k) {
+            double sign=(row & (k==0 ? 2 : 1)) ? 1. : -1.;
+            int index=fixed[k];
+            double edge=sign*lab_get(v+1,index,0);
+            lab_set(v+3,row,index,edge);
+            lab_set(v+4,row,k,(lab_get(v,index,0)-edge)*sign);
+            for (int j=0;j<3;++j) lab_set(v+2,2*row+k,j,sign*(j==index ? 1. : 0.));
+        }
+    }
+    lab_release(v,5); Py_RETURN_NONE;
+error:
+    lab_release(v,5); return NULL;
+}
 #endif

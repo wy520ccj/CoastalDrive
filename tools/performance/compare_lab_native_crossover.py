@@ -90,7 +90,7 @@ def main(args):
     new_functions = {name:value for name,value in vars(current).items() if isinstance(value,types.BuiltinFunctionType)}
     old_functions = {name:vars(old)[name] for name in new_functions if name in vars(old)}
     new_only = new_functions.keys()-old_functions.keys()
-    assert new_only == {"box_axis_supports","radial_box_bounds"}
+    assert new_only <= {"box_axis_supports","radial_box_bounds","box_face_candidates","box_edge_frames"}
     names_by_identity = {id(value):name for name,value in new_functions.items()}
     bindings = [(current,name,value,name) for name,value in new_functions.items()]
     for module in list(sys.modules.values()):

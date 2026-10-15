@@ -1,14 +1,14 @@
 """轮胎完全处于Box一个轴向区间内时，按支持函数证明剖面的真实有符号距离。"""
 
-from itertools import product
-
 import numpy as np
-from wheel_contact_kernels import box_axis_supports, box_cone_refine, box_cone_samples
+from wheel_contact_kernels import (
+    box_cone_refine,
+    box_cone_samples,
+    box_edge_frames,
+    box_face_candidates,
+)
 
 from wheel_envelope import cylinder_support
-
-_BOX_AXES = np.eye(3)
-_BOX_AXES.flags.writeable = False
 
 
 def wheel_support(normal,axis,config):
@@ -26,7 +26,11 @@ def box_section(center,axis,half,config):
     parameters = config.wheel_radius,config.wheel_width/2,config.wheel_shoulder_radius,config.wheel_crown_height,np.pi/2
     tolerance = 128*np.finfo(float).eps*max(1.,np.linalg.norm(center),max(half))
     axis_normals,axis_wheels = np.empty((6,3)),np.empty((6,3))
-    box_axis_supports((center_native,axis_native),(axis_normals,axis_wheels),*parameters[:4])
+    half_native = np.asarray(half,dtype=float)
+    face_distances,face_roads,face_eligible = np.empty(6),np.empty((6,3)),np.empty(6)
+    box_face_candidates((center_native,axis_native,half_native),
+                        (axis_normals,axis_wheels,face_distances,face_roads,face_eligible),
+                        *parameters[:4],tolerance)
     for free in range(3):
         positive,negative = axis_wheels[2*free],axis_wheels[2*free+1]
         clearance = min(half[free]-positive[free],negative[free]+half[free])
@@ -51,16 +55,16 @@ def box_section(center,axis,half,config):
 
         for index in fixed:
             for side in range(2):
-                normal,wheel = axis_normals[2*index+side],axis_wheels[2*index+side]
-                distance = float(np.dot(normal,wheel)-half[index])
-                road = wheel-distance*normal
-                if all(abs(road[j])<=half[j]+tolerance for j in range(3) if j!=index):
+                row = 2*index+side
+                normal,wheel = axis_normals[row],axis_wheels[row]
+                distance,road = float(face_distances[row]),face_roads[row]
+                if face_eligible[row]:
                     candidates.append((distance,normal,wheel,road,(tuple(normal),float(half[index]))))
 
-        for signs in product((-1.,1.),repeat=2):
-            basis = _BOX_AXES[fixed]*np.asarray(signs)[:,None]
-            edge = np.zeros(3);edge[fixed]=np.asarray(signs)*half[fixed]
-            delta = (center[fixed]-edge[fixed])*signs
+        bases,edges,deltas = np.empty((8,3)),np.empty((4,3)),np.empty((4,2))
+        box_edge_frames((center_native,half_native),(bases,edges,deltas),free)
+        for row in range(4):
+            basis,edge,delta = bases[2*row:2*row+2],edges[row],deltas[row]
             length = np.linalg.norm(delta)
 
             normals,wheels,values = np.empty((3,3)),np.empty((3,3)),np.empty((3,2))
