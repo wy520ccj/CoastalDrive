@@ -1,15 +1,21 @@
-"""线性部件台架拟合与常运动比换算；生成唯一VehicleConfig使用的轮心等效硬件。"""
+"""线性部件台架与安装位移换算；生成唯一VehicleConfig使用的参考硬件和曲线。"""
 
 import hashlib
 import json
 import math
 from dataclasses import replace
 
+from suspension_installation import installation_curve
+
 SCHEMA = "coastal-suspension-bench-v1"
 FIT_SCHEMA = "coastal-suspension-fit-v1"
 INSTALLED_SCHEMA = "coastal-suspension-bench-v2"
 INSTALLED_FIT_SCHEMA = "coastal-suspension-fit-v2"
 INSTALLED_DEFINITION = "positive_compression_resistance;spring_input_from_free_length;installed_compression_at_zero_wheel_travel"
+MOTION_SCHEMA = "coastal-suspension-bench-v3"
+MOTION_FIT_SCHEMA = "coastal-suspension-fit-v3"
+MOTION_DEFINITION = "positive_compression_resistance;installed_compression_at_zero_wheel_travel;curve_component_increments"
+GEOMETRY_LIMIT_M = .0002
 WHEELS = ("FL", "FR", "RL", "RR")
 KINDS = {"spring": "suspension_spring_rates",
          "compression": "suspension_compression_damping",
@@ -25,13 +31,29 @@ def _number(value, label):
     return value
 
 
+def _geometry_validation(rows, validation):
+    axes = installation_curve(rows)
+    if len(validation)<3 or any(len(row)!=3 for row in validation):
+        raise ValueError("安装几何留出须至少三个独立轮心位置及两部件增量")
+    for row in validation:
+        for value in row:_number(value,"几何留出坐标m")
+    qs = [row[0] for row in validation]
+    if (len(set(qs))!=len(qs) or not min(qs)<0.<max(qs)
+        or any(q in [row[0] for row in rows] or q<rows[0][0] or q>rows[-1][0] for q in qs)):
+        raise ValueError("几何留出位置须与插值节点分开，位于数据域内并覆盖正负行程")
+    errors = [max(abs(axis.at(row[0])[0]-row[i+1]) for row in validation) for i,axis in enumerate(axes)]
+    return {"passed":max(errors)<=GEOMETRY_LIMIT_M,"limit_m":GEOMETRY_LIMIT_M,
+            "max_position_error_m":errors,"count":len(validation),"derivatives_directly_measured":False}
+
+
 def _fit_document(document):
     """各部件独立过原点最小二乘；整序列留出只验证，不调整拟合值。"""
     if set(document) != {"schema", "source", "source_kind", "temperature_c", "units", "definition", "corners"}:
         raise ValueError("悬架台架文件字段不完整或含未知字段")
-    installed = document["schema"] == INSTALLED_SCHEMA
-    if (document["schema"] not in (SCHEMA,INSTALLED_SCHEMA) or document["units"] != UNITS
-        or document["definition"] != (INSTALLED_DEFINITION if installed else DEFINITION)):
+    curved = document["schema"]==MOTION_SCHEMA
+    installed = curved or document["schema"] == INSTALLED_SCHEMA
+    if (document["schema"] not in (SCHEMA,INSTALLED_SCHEMA,MOTION_SCHEMA) or document["units"] != UNITS
+        or document["definition"] != (MOTION_DEFINITION if curved else INSTALLED_DEFINITION if installed else DEFINITION)):
         raise ValueError("悬架台架版本、SI单位或零位/力方向定义不支持")
     if document["source_kind"] not in ("measured", "synthetic") or not isinstance(document["source"], str) or not document["source"].strip():
         raise ValueError("台架来源不能为空，须声明measured或synthetic")
@@ -41,19 +63,30 @@ def _fit_document(document):
     parameters = {field: [] for field in KINDS.values()}
     if installed:
         parameters.update(suspension_coil_enabled=True,suspension_spring_preloads=[])
-    results = {}
+    if curved:parameters["suspension_installation_curves"]=[]
+    results,geometry_checks = {},{}
     for wheel in WHEELS:
         corner = document["corners"][wheel]
         fields = {"spring_id", "damper_id", "spring_motion_ratio", "damper_motion_ratio", "installation_source", "rows"}
         if installed: fields.add("spring_installed_compression_m")
+        if curved:
+            fields -= {"spring_motion_ratio","damper_motion_ratio"}
+            fields |= {"installation_curve","installation_validation"}
         if set(corner) != fields:
             raise ValueError(f"{wheel}部件/安装字段不完整或含未知字段")
         for key in ("spring_id", "damper_id", "installation_source"):
             if not isinstance(corner[key], str) or not corner[key].strip():
                 raise ValueError(f"{wheel}的{key}不能为空")
-        for key in ("spring_motion_ratio", "damper_motion_ratio"):
-            if _number(corner[key], key) <= 0:
-                raise ValueError("压缩运动比须为有限正值；不支持变运动比或反向安装")
+        if curved:
+            rows = tuple(tuple(row) for row in corner["installation_curve"])
+            axes = installation_curve(rows)
+            ratios = [axis.reference_ratio for axis in axes]
+            parameters["suspension_installation_curves"].append([list(row) for row in rows])
+            geometry_checks[wheel]=_geometry_validation(rows,corner["installation_validation"])
+        else:
+            ratios = [corner[key] for key in ("spring_motion_ratio","damper_motion_ratio")]
+            if any(_number(ratio,"压缩运动比")<=0. for ratio in ratios):
+                raise ValueError("压缩运动比须为有限正值；反向安装不支持")
         if installed and _number(corner["spring_installed_compression_m"],"零行程处弹簧安装压缩m") < 0.:
             raise ValueError("安装压缩须为非负值；当前不支持带间隙的弹簧座安装")
         groups = {(kind, split): [] for kind in KINDS for split in ("train", "validation")}
@@ -84,7 +117,7 @@ def _fit_document(document):
             rate = sum(x*f for x, f in train)/sum(x*x for x, _ in train)
             if rate <= 0:
                 raise ValueError("当前线性部件拟合须得到正刚度/阻尼")
-            ratio = corner["spring_motion_ratio" if kind == "spring" else "damper_motion_ratio"]
+            ratio = ratios[0 if kind=="spring" else 1]
             parameters[field].append(rate*ratio**2)
             scale = max(abs(f) for _, f in train)
             checks = {}
@@ -103,10 +136,12 @@ def _fit_document(document):
                 results[wheel][kind].update(installed_compression_m=installed_compression,wheel_preload_N=preload)
     passed = all(check[key] <= limit for corner in results.values() for result in corner.values()
                  for check in result["checks"].values() for key, limit in LIMITS.items())
-    report = {"schema": INSTALLED_FIT_SCHEMA if installed else FIT_SCHEMA, "passed": passed, "limits": LIMITS, "results": results,
+    if curved:passed = passed and all(item["passed"] for item in geometry_checks.values())
+    report = {"schema": MOTION_FIT_SCHEMA if curved else INSTALLED_FIT_SCHEMA if installed else FIT_SCHEMA, "passed": passed, "limits": LIMITS, "results": results,
               "parameters": parameters, "input": document,
               "input_sha256": hashlib.sha256(json.dumps(document, sort_keys=True, ensure_ascii=False,
                     allow_nan=False).encode("utf-8")).hexdigest()}
+    if curved:report["installation_validation"]=geometry_checks
     return report
 
 
@@ -115,9 +150,12 @@ def fit_bench(document, base):
     report = _fit_document(document)
     parameters = report["parameters"]
     values = {field:tuple(parameters[field]) for field in KINDS.values()}
-    values.update(suspension_coil_enabled=report["schema"]==INSTALLED_FIT_SCHEMA,
+    installed = report["schema"] in (INSTALLED_FIT_SCHEMA,MOTION_FIT_SCHEMA)
+    values.update(suspension_coil_enabled=installed,
                   suspension_spring_preloads=tuple(parameters["suspension_spring_preloads"])
-                      if report["schema"]==INSTALLED_FIT_SCHEMA else (0.,)*4)
+                      if installed else (0.,)*4,
+                  suspension_installation_curves=tuple(tuple(tuple(row) for row in rows) for rows in parameters["suspension_installation_curves"])
+                      if report["schema"]==MOTION_FIT_SCHEMA else None)
     config = replace(base, **values, suspension_si_enabled=True)
     return config, report
 
@@ -127,7 +165,7 @@ def validate_metadata(metadata):
     if metadata is None or "suspension_calibration" not in metadata:
         return
     report = metadata["suspension_calibration"]
-    if report["schema"] not in (FIT_SCHEMA,INSTALLED_FIT_SCHEMA) or report["passed"] is not True:
+    if report["schema"] not in (FIT_SCHEMA,INSTALLED_FIT_SCHEMA,MOTION_FIT_SCHEMA) or report["passed"] is not True:
         raise ValueError("悬架台架报告未通过或版本不支持")
     recomputed = _fit_document(report["input"])
     if recomputed != report or not recomputed["passed"]:
@@ -138,6 +176,11 @@ def _installation_matches(report, config):
     # 旧保存记录的配置没有这两个字段，其明确语义是原双向弹性/零预载。
     coil = config.get("suspension_coil_enabled",False)
     preloads = config.get("suspension_spring_preloads",(0.,)*4)
+    curves = config.get("suspension_installation_curves")
+    if report["schema"]==MOTION_FIT_SCHEMA:
+        return (coil and list(preloads)==report["parameters"]["suspension_spring_preloads"] and
+                json.loads(json.dumps(curves))==report["parameters"]["suspension_installation_curves"])
+    if curves is not None:return False
     return ((coil and list(preloads)==report["parameters"]["suspension_spring_preloads"])
             if report["schema"]==INSTALLED_FIT_SCHEMA else not coil and not any(preloads))
 
@@ -150,20 +193,21 @@ def source_note(metadata, field, value, config):
     if field not in report["parameters"]:
         return None
     saved = report["parameters"][field]
-    if (value if isinstance(value,bool) else list(value)) != saved:
+    if json.loads(json.dumps(value)) != saved:
         return "已覆盖部件换算值，不沿用其台架来源"
     kind = next((kind for kind, key in KINDS.items() if key == field),"spring")
-    if kind=="spring" and not _installation_matches(report,config):
+    if (kind=="spring" or report["schema"]==MOTION_FIT_SCHEMA) and not _installation_matches(report,config):
         return "部件斜率来自原台架；安装值已覆盖，不沿用其安装来源/适用域"
     values = [report["results"][wheel][kind] for wheel in WHEELS]
     ratios = " / ".join(f"{item['motion_ratio']:g}" for item in values)
     rates = " / ".join(f"{item['component_rate']:.4g}" for item in values)
     source = "合成数据，非实测" if report["input"]["source_kind"] == "synthetic" else "按文件声明：部件台架拟合"
     installation = ("安装压缩m："+" / ".join(f"{report['results'][wheel]['spring']['installed_compression_m']:g}" for wheel in WHEELS)
-                    if report["schema"]==INSTALLED_FIT_SCHEMA and kind=="spring" else
+                    if report["schema"] in (INSTALLED_FIT_SCHEMA,MOTION_FIT_SCHEMA) and kind=="spring" else
                     "零预载" if kind=="spring" else "压缩/伸张分别拟合")
     return (f"{source}；{report['input']['temperature_c']:g}°C\n"
-            f"部件系数 {rates}；r={ratios}\n{installation}；范围见工程JSON")
+            f"部件系数 {rates}；r0={ratios}\n{installation}；"+
+            ("几何留出通过；区间外切线外推" if report["schema"]==MOTION_FIT_SCHEMA else "范围见工程JSON"))
 
 
 def record_coverage(metadata, config, samples):
@@ -172,11 +216,11 @@ def record_coverage(metadata, config, samples):
         return None
     report = metadata["suspension_calibration"]
     result = {"scope": "120Hz completed samples only; temperature fixed at bench condition", "corners": {}}
-    for wheel in WHEELS:
+    for index,wheel in enumerate(WHEELS):
         items = {}
         for kind, field in KINDS.items():
             fit = report["results"][wheel][kind]
-            if list(config[field]) != report["parameters"][field] or kind=="spring" and not _installation_matches(report,config):
+            if list(config[field]) != report["parameters"][field] or (kind=="spring" or report["schema"]==MOTION_FIT_SCHEMA) and not _installation_matches(report,config):
                 items[kind] = {"status": "overridden"}
                 continue
             key = ("travel_" if kind == "spring" else "travel_rate_")+wheel.lower()
@@ -184,10 +228,23 @@ def record_coverage(metadata, config, samples):
             if not inputs or any(value is None for value in inputs):
                 items[kind] = {"status": "missing_observation"}
                 continue
-            offset = fit["installed_compression_m"] if kind=="spring" and report["schema"]==INSTALLED_FIT_SCHEMA else 0.
-            inputs = [max(0.,offset+value*fit["motion_ratio"]) if kind=="spring" and report["schema"]==INSTALLED_FIT_SCHEMA
-                      else value*fit["motion_ratio"] for value in inputs
-                      if kind == "spring" or (value >= 0 if kind == "compression" else value <= 0)]
+            offset = fit["installed_compression_m"] if kind=="spring" and report["schema"] in (INSTALLED_FIT_SCHEMA,MOTION_FIT_SCHEMA) else 0.
+            installation_outside = 0
+            if report["schema"]==MOTION_FIT_SCHEMA:
+                curve_rows=tuple(tuple(row) for row in config["suspension_installation_curves"][index])
+                spring_axis,damper_axis=installation_curve(curve_rows)
+                q_values=[row.get("travel_"+wheel.lower()) for row in samples]
+                if any(q is None for q in q_values):
+                    items[kind]={"status":"missing_observation"}
+                    continue
+                installation_outside=sum(q<curve_rows[0][0] or q>curve_rows[-1][0] for q in q_values)
+                inputs=[max(0.,offset+spring_axis.at(q)[0]) if kind=="spring" else value*damper_axis.at(q)[1]
+                        for q,value in zip(q_values,inputs,strict=True)
+                        if kind=="spring" or (value>=0 if kind=="compression" else value<=0)]
+            else:
+                inputs = [max(0.,offset+value*fit["motion_ratio"]) if kind=="spring" and report["schema"]==INSTALLED_FIT_SCHEMA
+                          else value*fit["motion_ratio"] for value in inputs
+                          if kind == "spring" or (value >= 0 if kind == "compression" else value <= 0)]
             domains = [check["input_domain"] for check in fit["checks"].values()]
             domain = [min(d[0] for d in domains), max(d[1] for d in domains)]
             outside = sum(not domain[0] <= value <= domain[1] for value in inputs)
@@ -195,5 +252,9 @@ def record_coverage(metadata, config, samples):
                            "outside_bench_domain" if outside else "within_sampled_domain"),
                            "bench_input_domain": domain, "sampled_input_domain": [min(inputs), max(inputs)] if inputs else None,
                            "outside_samples": outside, "samples": len(inputs)}
+            if report["schema"]==MOTION_FIT_SCHEMA:
+                items[kind].update(installation_outside_samples=installation_outside,
+                    installation_q_domain_m=[curve_rows[0][0],curve_rows[-1][0]],
+                    extrapolation="endpoint_tangent_linear")
         result["corners"][wheel] = items
     return result

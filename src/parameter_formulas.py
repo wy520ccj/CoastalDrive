@@ -107,6 +107,15 @@ FORMULAS = {
         r"F_{c,i}=k_{w,i}[a_i]_+,\qquad k_{t,i}=k_{w,i}\,\mathbf{1}_{a_i>0}",
         r"F_{0,i}=r_{s,i}k_{s,i}x_{0,i},\qquad k_{w,i}=r_{s,i}^2k_{s,i}",
     ), "[a]+表示max(a,0)。q为轮心行程，x0为q=0处部件安装压缩，F0为等效预载。仅压缩螺旋模式启用；原双向模型保持½Σkq²。防倾/止挡另计。"),
+    "suspension_installation_curves": ((
+        r"x_s(q)=x_0+s(q),\qquad U_c=\frac{1}{2}k_s[x_s(q)]_+^2",
+        r"F_w=k_s[x_s]_+r_s,\qquad k_t=k_s(r_s^2+x_s r_s')\mathbf{1}_{x_s>0}",
+        r"k_s=\frac{k_{w,0}}{r_s(0)^2},\qquad x_0=\frac{F_0}{k_s r_s(0)}",
+    ), "s是弹簧位移增量，rs=s′(q)。总切线包含受载几何项ks·xs·rs′；kw,0只表示参考材料贡献。防倾/止挡另计；无曲线时使用常运动比。"),
+    "installation_damping": ((
+        r"v_d=r_d(q)\dot q,\qquad F_{d,w}=c_d^{\pm}r_d(q)^2\dot q",
+        r"c_d^{\pm}=\frac{c_{w,0}^{\pm}}{r_d(0)^2},\qquad P_d=c_d^{\pm}v_d^2\geq0",
+    ), "rd是减振器位移曲线对轮心行程的导数；参考轮心阻尼cw,0换回部件阻尼cd后，再由当前运动比映射。压缩/伸张各用其部件系数。"),
     "suspension_antiroll_rates": ((r"U_{\mathrm{bar}}=\frac{1}{2}k_{\mathrm{bar}}(q_L-q_R)^2",),
                                   "qL / qR：同轴左右行程；kbar：防倾刚度。"),
     "body_inertia": ((r"I_a=\sum_j\left(m_j d_{j,a}^{\,2}+I_{j,a}\right)",),

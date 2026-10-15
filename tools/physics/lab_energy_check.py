@@ -19,6 +19,7 @@ import simulation as simulation_module
 from lab_experiment import LabExperiment, LabOptions
 from lab_records import model_fingerprint
 from lab_runtime import runtime_fingerprint
+from suspension_installation import installation_curve
 from unsprung_contact import suspension_potential
 from unsprung_drivetrain import tire_ports
 from unsprung_dynamics import cross_matrix
@@ -156,8 +157,13 @@ def balance(source, step, old, new):
     native_velocity_error = h*np.einsum('ij,ij->i',normals,wheel_predicted-new["wheel_velocity"])
     native_position_error = np.einsum('ij,ij->i',normals,h*new["wheel_velocity"]-displacement[1:])
     actual_spring = suspension_potential(new["compression"],source.config)[1]
-    actual_damping = np.where(new["relative_velocity"]>=0.,source.config.suspension_compression_damping,
-                              source.config.suspension_extension_damping)*new["relative_velocity"]
+    actual_coefficient = np.where(new["relative_velocity"]>=0.,source.config.suspension_compression_damping,
+                                  source.config.suspension_extension_damping)
+    if source.config.suspension_installation_curves is not None:
+        axes=[installation_curve(rows)[1] for rows in source.config.suspension_installation_curves]
+        ratios=np.array([axis.at(q)[1]/axis.reference_ratio for axis,q in zip(axes,new["compression"],strict=True)])
+        actual_coefficient=actual_coefficient*ratios**2
+    actual_damping = actual_coefficient*new["relative_velocity"]
     return {"kinetic_change":kinetic,"gravity_change":gravity,"elastic_change":elastic,
             "losses":losses,"engine_work":step.engine_work,"external_work":external,
             "steering_gyro_work":steering_gyro,"contact_steering_work":step.steering_work,

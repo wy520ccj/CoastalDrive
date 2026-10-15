@@ -3,6 +3,7 @@
 import math
 from dataclasses import dataclass, field
 
+from suspension_installation import installation_curve
 from vehicle_brakes import BrakeConfig
 from vehicle_stability import StabilityConfig
 from vehicle_traction import TractionConfig
@@ -97,6 +98,7 @@ class VehicleConfig:
     suspension_spring_rates: tuple = (48000.,) * 4  # N/m；四轮轮心等效刚度，不是减振支柱部件原始刚度。
     suspension_coil_enabled: bool = False  # 独立轮心的压缩螺旋弹簧；松弛后不承受拉力。
     suspension_spring_preloads: tuple = (0.,) * 4  # N；q=0时的四轮轮心等效预载，不是附加外载荷。
+    suspension_installation_curves: tuple | None = None  # 四角(q,弹簧增量,减振器增量)m；PCHIP及端点切线外推。
     suspension_compression_damping: tuple = (5280.,) * 4  # N·s/m；轮心等效压缩阻尼，原生对照为法向/射线速率。
     suspension_extension_damping: tuple = (2760.,) * 4  # N·s/m；耦合分支的轴向伸张阻尼。
     suspension_stiffness: float = 40.0
@@ -130,6 +132,15 @@ class VehicleConfig:
     suspension_force_limit: float = 6000.0  # N；仅原生对照分支的数值力限，SI势能反力不作硬裁剪。
 
     def __post_init__(self):
+        if self.suspension_installation_curves is not None:
+            if not self.suspension_coil_enabled:
+                raise ValueError("部件安装曲线须显式启用独立轮心压缩螺旋弹簧")
+            if not isinstance(self.suspension_installation_curves,tuple) or len(self.suspension_installation_curves)!=4:
+                raise ValueError("须提供四角不可变安装曲线")
+            for rows in self.suspension_installation_curves:
+                if not isinstance(rows,tuple) or any(not isinstance(row,tuple) for row in rows):
+                    raise ValueError("安装曲线须为不可变坐标行")
+                installation_curve(rows)
         if type(self.suspension_coil_enabled) is not bool:
             raise ValueError("压缩螺旋弹簧开关须为bool")
         if len(self.suspension_spring_preloads)!=4 or any(isinstance(value,bool) or not math.isfinite(value) or value<0.

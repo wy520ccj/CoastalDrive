@@ -619,6 +619,55 @@
         "sha256": "be6ac7ff2ca46a612ff0416bd22ad48a72909439c15c4df864b063055fbfa03d"
       }
     ],
+    "suspension_installation_curves": [
+      {
+        "file": "suspension_installation_curves-0.png",
+        "tex": "x_s(q)=x_0+s(q),\\qquad U_c=\\frac{1}{2}k_s[x_s(q)]_+^2",
+        "width": 1266,
+        "height": 100,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "bcecca46db885cf05a2d34b305f36cad107ab05bba144fe2f75a528240a78122"
+      },
+      {
+        "file": "suspension_installation_curves-1.png",
+        "tex": "F_w=k_s[x_s]_+r_s,\\qquad k_t=k_s(r_s^2+x_s r_s')\\mathbf{1}_{x_s>0}",
+        "width": 1380,
+        "height": 100,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "785c54ef03222080f440c6ac5a714687eff1d96eb8b01edf24390fffe9aeb79e"
+      },
+      {
+        "file": "suspension_installation_curves-2.png",
+        "tex": "k_s=\\frac{k_{w,0}}{r_s(0)^2},\\qquad x_0=\\frac{F_0}{k_s r_s(0)}",
+        "width": 796,
+        "height": 130,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "6afc0dccc4afc0d3fad1b4f0ab0e90053ab6c340df32ae70c66a838916bf3614"
+      }
+    ],
+    "installation_damping": [
+      {
+        "file": "installation_damping-0.png",
+        "tex": "v_d=r_d(q)\\dot q,\\qquad F_{d,w}=c_d^{\\pm}r_d(q)^2\\dot q",
+        "width": 1093,
+        "height": 100,
+        "texture_width": 2048,
+        "texture_height": 128,
+        "sha256": "153dfbb051f6177f05782478d80b65f80ba062494db914af6493dc915204d45c"
+      },
+      {
+        "file": "installation_damping-1.png",
+        "tex": "c_d^{\\pm}=\\frac{c_{w,0}^{\\pm}}{r_d(0)^2},\\qquad P_d=c_d^{\\pm}v_d^2\\geq0",
+        "width": 960,
+        "height": 146,
+        "texture_width": 1024,
+        "texture_height": 256,
+        "sha256": "59889b22f232ec30546c44740ffabe2ca78ae497f5ea65d2876c4b020a3b22bc"
+      }
+    ],
     "suspension_antiroll_rates": [
       {
         "file": "suspension_antiroll_rates-0.png",

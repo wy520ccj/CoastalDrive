@@ -1,0 +1,1411 @@
+{
+  "schema": "coastal-suspension-bench-v3",
+  "source": "analytic synthetic spring/damper fixture, NOT measured",
+  "source_kind": "synthetic",
+  "temperature_c": 20.0,
+  "units": {
+    "spring_input": "m",
+    "damper_input": "m/s",
+    "force": "N",
+    "temperature": "degC"
+  },
+  "definition": "positive_compression_resistance;installed_compression_at_zero_wheel_travel;curve_component_increments",
+  "corners": {
+    "FL": {
+      "spring_id": "synthetic-spring-front",
+      "damper_id": "synthetic-damper-front",
+      "installation_source": "analytic synthetic installation curve; NOT measured K&C",
+      "rows": [
+        {
+          "series": "FL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.012,
+          "force_N": 900.0
+        },
+        {
+          "series": "FL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.035,
+          "force_N": 2625.0000000000005
+        },
+        {
+          "series": "FL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.08,
+          "force_N": 6000.0
+        },
+        {
+          "series": "FL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.14,
+          "force_N": 10500.000000000002
+        },
+        {
+          "series": "FL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.22,
+          "force_N": 16500.0
+        },
+        {
+          "series": "FL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.009,
+          "force_N": 675.0
+        },
+        {
+          "series": "FL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.031,
+          "force_N": 2325.0
+        },
+        {
+          "series": "FL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.07,
+          "force_N": 5250.000000000001
+        },
+        {
+          "series": "FL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.15,
+          "force_N": 11250.0
+        },
+        {
+          "series": "FL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.23,
+          "force_N": 17250.0
+        },
+        {
+          "series": "FL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.02,
+          "force_N": 187.73333333333332
+        },
+        {
+          "series": "FL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.05,
+          "force_N": 469.3333333333333
+        },
+        {
+          "series": "FL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.15,
+          "force_N": 1407.9999999999998
+        },
+        {
+          "series": "FL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.35,
+          "force_N": 3285.333333333333
+        },
+        {
+          "series": "FL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.8,
+          "force_N": 7509.333333333333
+        },
+        {
+          "series": "FL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.015,
+          "force_N": 140.79999999999998
+        },
+        {
+          "series": "FL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.06,
+          "force_N": 563.1999999999999
+        },
+        {
+          "series": "FL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.2,
+          "force_N": 1877.3333333333333
+        },
+        {
+          "series": "FL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.4,
+          "force_N": 3754.6666666666665
+        },
+        {
+          "series": "FL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.85,
+          "force_N": 7978.666666666666
+        },
+        {
+          "series": "FL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "FL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.02,
+          "force_N": -98.13333333333334
+        },
+        {
+          "series": "FL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.05,
+          "force_N": -245.33333333333337
+        },
+        {
+          "series": "FL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.15,
+          "force_N": -736.0
+        },
+        {
+          "series": "FL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.35,
+          "force_N": -1717.3333333333333
+        },
+        {
+          "series": "FL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.8,
+          "force_N": -3925.333333333334
+        },
+        {
+          "series": "FL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "FL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.015,
+          "force_N": -73.60000000000001
+        },
+        {
+          "series": "FL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.06,
+          "force_N": -294.40000000000003
+        },
+        {
+          "series": "FL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.2,
+          "force_N": -981.3333333333335
+        },
+        {
+          "series": "FL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.4,
+          "force_N": -1962.666666666667
+        },
+        {
+          "series": "FL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.85,
+          "force_N": -4170.666666666667
+        }
+      ],
+      "spring_installed_compression_m": 0.016,
+      "installation_curve": [
+        [
+          -0.2,
+          -0.12000000000000002,
+          -0.12600000000000003
+        ],
+        [
+          -0.15,
+          -0.0975,
+          -0.09899999999999999
+        ],
+        [
+          -0.1,
+          -0.07,
+          -0.069
+        ],
+        [
+          -0.05,
+          -0.037500000000000006,
+          -0.036000000000000004
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.05,
+          0.04250000000000001,
+          0.03900000000000001
+        ],
+        [
+          0.1,
+          0.09000000000000002,
+          0.08100000000000002
+        ],
+        [
+          0.15,
+          0.1425,
+          0.126
+        ],
+        [
+          0.2,
+          0.20000000000000004,
+          0.17400000000000002
+        ]
+      ],
+      "installation_validation": [
+        [
+          -0.175,
+          -0.10937499999999999,
+          -0.11287499999999998
+        ],
+        [
+          -0.125,
+          -0.084375,
+          -0.084375
+        ],
+        [
+          -0.075,
+          -0.054375,
+          -0.05287499999999999
+        ],
+        [
+          -0.025,
+          -0.019375000000000003,
+          -0.018375000000000002
+        ],
+        [
+          0.025,
+          0.020625000000000004,
+          0.019125000000000003
+        ],
+        [
+          0.075,
+          0.065625,
+          0.059625
+        ],
+        [
+          0.125,
+          0.115625,
+          0.103125
+        ],
+        [
+          0.175,
+          0.17062499999999997,
+          0.14962499999999998
+        ]
+      ]
+    },
+    "FR": {
+      "spring_id": "synthetic-spring-front",
+      "damper_id": "synthetic-damper-front",
+      "installation_source": "analytic synthetic installation curve; NOT measured K&C",
+      "rows": [
+        {
+          "series": "FR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.012,
+          "force_N": 900.0
+        },
+        {
+          "series": "FR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.035,
+          "force_N": 2625.0000000000005
+        },
+        {
+          "series": "FR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.08,
+          "force_N": 6000.0
+        },
+        {
+          "series": "FR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.14,
+          "force_N": 10500.000000000002
+        },
+        {
+          "series": "FR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.22,
+          "force_N": 16500.0
+        },
+        {
+          "series": "FR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.009,
+          "force_N": 675.0
+        },
+        {
+          "series": "FR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.031,
+          "force_N": 2325.0
+        },
+        {
+          "series": "FR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.07,
+          "force_N": 5250.000000000001
+        },
+        {
+          "series": "FR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.15,
+          "force_N": 11250.0
+        },
+        {
+          "series": "FR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.23,
+          "force_N": 17250.0
+        },
+        {
+          "series": "FR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.02,
+          "force_N": 187.73333333333332
+        },
+        {
+          "series": "FR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.05,
+          "force_N": 469.3333333333333
+        },
+        {
+          "series": "FR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.15,
+          "force_N": 1407.9999999999998
+        },
+        {
+          "series": "FR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.35,
+          "force_N": 3285.333333333333
+        },
+        {
+          "series": "FR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.8,
+          "force_N": 7509.333333333333
+        },
+        {
+          "series": "FR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "FR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.015,
+          "force_N": 140.79999999999998
+        },
+        {
+          "series": "FR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.06,
+          "force_N": 563.1999999999999
+        },
+        {
+          "series": "FR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.2,
+          "force_N": 1877.3333333333333
+        },
+        {
+          "series": "FR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.4,
+          "force_N": 3754.6666666666665
+        },
+        {
+          "series": "FR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.85,
+          "force_N": 7978.666666666666
+        },
+        {
+          "series": "FR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "FR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.02,
+          "force_N": -98.13333333333334
+        },
+        {
+          "series": "FR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.05,
+          "force_N": -245.33333333333337
+        },
+        {
+          "series": "FR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.15,
+          "force_N": -736.0
+        },
+        {
+          "series": "FR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.35,
+          "force_N": -1717.3333333333333
+        },
+        {
+          "series": "FR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.8,
+          "force_N": -3925.333333333334
+        },
+        {
+          "series": "FR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "FR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.015,
+          "force_N": -73.60000000000001
+        },
+        {
+          "series": "FR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.06,
+          "force_N": -294.40000000000003
+        },
+        {
+          "series": "FR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.2,
+          "force_N": -981.3333333333335
+        },
+        {
+          "series": "FR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.4,
+          "force_N": -1962.666666666667
+        },
+        {
+          "series": "FR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.85,
+          "force_N": -4170.666666666667
+        }
+      ],
+      "spring_installed_compression_m": 0.016,
+      "installation_curve": [
+        [
+          -0.2,
+          -0.12000000000000002,
+          -0.12600000000000003
+        ],
+        [
+          -0.15,
+          -0.0975,
+          -0.09899999999999999
+        ],
+        [
+          -0.1,
+          -0.07,
+          -0.069
+        ],
+        [
+          -0.05,
+          -0.037500000000000006,
+          -0.036000000000000004
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.05,
+          0.04250000000000001,
+          0.03900000000000001
+        ],
+        [
+          0.1,
+          0.09000000000000002,
+          0.08100000000000002
+        ],
+        [
+          0.15,
+          0.1425,
+          0.126
+        ],
+        [
+          0.2,
+          0.20000000000000004,
+          0.17400000000000002
+        ]
+      ],
+      "installation_validation": [
+        [
+          -0.175,
+          -0.10937499999999999,
+          -0.11287499999999998
+        ],
+        [
+          -0.125,
+          -0.084375,
+          -0.084375
+        ],
+        [
+          -0.075,
+          -0.054375,
+          -0.05287499999999999
+        ],
+        [
+          -0.025,
+          -0.019375000000000003,
+          -0.018375000000000002
+        ],
+        [
+          0.025,
+          0.020625000000000004,
+          0.019125000000000003
+        ],
+        [
+          0.075,
+          0.065625,
+          0.059625
+        ],
+        [
+          0.125,
+          0.115625,
+          0.103125
+        ],
+        [
+          0.175,
+          0.17062499999999997,
+          0.14962499999999998
+        ]
+      ]
+    },
+    "RL": {
+      "spring_id": "synthetic-spring-rear",
+      "damper_id": "synthetic-damper-rear",
+      "installation_source": "analytic synthetic installation curve; NOT measured K&C",
+      "rows": [
+        {
+          "series": "RL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.012,
+          "force_N": 900.0
+        },
+        {
+          "series": "RL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.035,
+          "force_N": 2625.0000000000005
+        },
+        {
+          "series": "RL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.08,
+          "force_N": 6000.0
+        },
+        {
+          "series": "RL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.14,
+          "force_N": 10500.000000000002
+        },
+        {
+          "series": "RL-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.22,
+          "force_N": 16500.0
+        },
+        {
+          "series": "RL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.009,
+          "force_N": 675.0
+        },
+        {
+          "series": "RL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.031,
+          "force_N": 2325.0
+        },
+        {
+          "series": "RL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.07,
+          "force_N": 5250.000000000001
+        },
+        {
+          "series": "RL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.15,
+          "force_N": 11250.0
+        },
+        {
+          "series": "RL-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.23,
+          "force_N": 17250.0
+        },
+        {
+          "series": "RL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.02,
+          "force_N": 187.73333333333332
+        },
+        {
+          "series": "RL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.05,
+          "force_N": 469.3333333333333
+        },
+        {
+          "series": "RL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.15,
+          "force_N": 1407.9999999999998
+        },
+        {
+          "series": "RL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.35,
+          "force_N": 3285.333333333333
+        },
+        {
+          "series": "RL-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.8,
+          "force_N": 7509.333333333333
+        },
+        {
+          "series": "RL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.015,
+          "force_N": 140.79999999999998
+        },
+        {
+          "series": "RL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.06,
+          "force_N": 563.1999999999999
+        },
+        {
+          "series": "RL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.2,
+          "force_N": 1877.3333333333333
+        },
+        {
+          "series": "RL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.4,
+          "force_N": 3754.6666666666665
+        },
+        {
+          "series": "RL-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.85,
+          "force_N": 7978.666666666666
+        },
+        {
+          "series": "RL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "RL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.02,
+          "force_N": -98.13333333333334
+        },
+        {
+          "series": "RL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.05,
+          "force_N": -245.33333333333337
+        },
+        {
+          "series": "RL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.15,
+          "force_N": -736.0
+        },
+        {
+          "series": "RL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.35,
+          "force_N": -1717.3333333333333
+        },
+        {
+          "series": "RL-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.8,
+          "force_N": -3925.333333333334
+        },
+        {
+          "series": "RL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "RL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.015,
+          "force_N": -73.60000000000001
+        },
+        {
+          "series": "RL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.06,
+          "force_N": -294.40000000000003
+        },
+        {
+          "series": "RL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.2,
+          "force_N": -981.3333333333335
+        },
+        {
+          "series": "RL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.4,
+          "force_N": -1962.666666666667
+        },
+        {
+          "series": "RL-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.85,
+          "force_N": -4170.666666666667
+        }
+      ],
+      "spring_installed_compression_m": 0.016,
+      "installation_curve": [
+        [
+          -0.2,
+          -0.12000000000000002,
+          -0.12600000000000003
+        ],
+        [
+          -0.15,
+          -0.0975,
+          -0.09899999999999999
+        ],
+        [
+          -0.1,
+          -0.07,
+          -0.069
+        ],
+        [
+          -0.05,
+          -0.037500000000000006,
+          -0.036000000000000004
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.05,
+          0.04250000000000001,
+          0.03900000000000001
+        ],
+        [
+          0.1,
+          0.09000000000000002,
+          0.08100000000000002
+        ],
+        [
+          0.15,
+          0.1425,
+          0.126
+        ],
+        [
+          0.2,
+          0.20000000000000004,
+          0.17400000000000002
+        ]
+      ],
+      "installation_validation": [
+        [
+          -0.175,
+          -0.10937499999999999,
+          -0.11287499999999998
+        ],
+        [
+          -0.125,
+          -0.084375,
+          -0.084375
+        ],
+        [
+          -0.075,
+          -0.054375,
+          -0.05287499999999999
+        ],
+        [
+          -0.025,
+          -0.019375000000000003,
+          -0.018375000000000002
+        ],
+        [
+          0.025,
+          0.020625000000000004,
+          0.019125000000000003
+        ],
+        [
+          0.075,
+          0.065625,
+          0.059625
+        ],
+        [
+          0.125,
+          0.115625,
+          0.103125
+        ],
+        [
+          0.175,
+          0.17062499999999997,
+          0.14962499999999998
+        ]
+      ]
+    },
+    "RR": {
+      "spring_id": "synthetic-spring-rear",
+      "damper_id": "synthetic-damper-rear",
+      "installation_source": "analytic synthetic installation curve; NOT measured K&C",
+      "rows": [
+        {
+          "series": "RR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.012,
+          "force_N": 900.0
+        },
+        {
+          "series": "RR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.035,
+          "force_N": 2625.0000000000005
+        },
+        {
+          "series": "RR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.08,
+          "force_N": 6000.0
+        },
+        {
+          "series": "RR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.14,
+          "force_N": 10500.000000000002
+        },
+        {
+          "series": "RR-spring-train",
+          "split": "train",
+          "kind": "spring",
+          "input": 0.22,
+          "force_N": 16500.0
+        },
+        {
+          "series": "RR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.009,
+          "force_N": 675.0
+        },
+        {
+          "series": "RR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.031,
+          "force_N": 2325.0
+        },
+        {
+          "series": "RR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.07,
+          "force_N": 5250.000000000001
+        },
+        {
+          "series": "RR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.15,
+          "force_N": 11250.0
+        },
+        {
+          "series": "RR-spring-validation",
+          "split": "validation",
+          "kind": "spring",
+          "input": 0.23,
+          "force_N": 17250.0
+        },
+        {
+          "series": "RR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.02,
+          "force_N": 187.73333333333332
+        },
+        {
+          "series": "RR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.05,
+          "force_N": 469.3333333333333
+        },
+        {
+          "series": "RR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.15,
+          "force_N": 1407.9999999999998
+        },
+        {
+          "series": "RR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.35,
+          "force_N": 3285.333333333333
+        },
+        {
+          "series": "RR-compression-train",
+          "split": "train",
+          "kind": "compression",
+          "input": 0.8,
+          "force_N": 7509.333333333333
+        },
+        {
+          "series": "RR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.0,
+          "force_N": 0.0
+        },
+        {
+          "series": "RR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.015,
+          "force_N": 140.79999999999998
+        },
+        {
+          "series": "RR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.06,
+          "force_N": 563.1999999999999
+        },
+        {
+          "series": "RR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.2,
+          "force_N": 1877.3333333333333
+        },
+        {
+          "series": "RR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.4,
+          "force_N": 3754.6666666666665
+        },
+        {
+          "series": "RR-compression-validation",
+          "split": "validation",
+          "kind": "compression",
+          "input": 0.85,
+          "force_N": 7978.666666666666
+        },
+        {
+          "series": "RR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "RR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.02,
+          "force_N": -98.13333333333334
+        },
+        {
+          "series": "RR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.05,
+          "force_N": -245.33333333333337
+        },
+        {
+          "series": "RR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.15,
+          "force_N": -736.0
+        },
+        {
+          "series": "RR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.35,
+          "force_N": -1717.3333333333333
+        },
+        {
+          "series": "RR-extension-train",
+          "split": "train",
+          "kind": "extension",
+          "input": -0.8,
+          "force_N": -3925.333333333334
+        },
+        {
+          "series": "RR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.0,
+          "force_N": -0.0
+        },
+        {
+          "series": "RR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.015,
+          "force_N": -73.60000000000001
+        },
+        {
+          "series": "RR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.06,
+          "force_N": -294.40000000000003
+        },
+        {
+          "series": "RR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.2,
+          "force_N": -981.3333333333335
+        },
+        {
+          "series": "RR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.4,
+          "force_N": -1962.666666666667
+        },
+        {
+          "series": "RR-extension-validation",
+          "split": "validation",
+          "kind": "extension",
+          "input": -0.85,
+          "force_N": -4170.666666666667
+        }
+      ],
+      "spring_installed_compression_m": 0.016,
+      "installation_curve": [
+        [
+          -0.2,
+          -0.12000000000000002,
+          -0.12600000000000003
+        ],
+        [
+          -0.15,
+          -0.0975,
+          -0.09899999999999999
+        ],
+        [
+          -0.1,
+          -0.07,
+          -0.069
+        ],
+        [
+          -0.05,
+          -0.037500000000000006,
+          -0.036000000000000004
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.05,
+          0.04250000000000001,
+          0.03900000000000001
+        ],
+        [
+          0.1,
+          0.09000000000000002,
+          0.08100000000000002
+        ],
+        [
+          0.15,
+          0.1425,
+          0.126
+        ],
+        [
+          0.2,
+          0.20000000000000004,
+          0.17400000000000002
+        ]
+      ],
+      "installation_validation": [
+        [
+          -0.175,
+          -0.10937499999999999,
+          -0.11287499999999998
+        ],
+        [
+          -0.125,
+          -0.084375,
+          -0.084375
+        ],
+        [
+          -0.075,
+          -0.054375,
+          -0.05287499999999999
+        ],
+        [
+          -0.025,
+          -0.019375000000000003,
+          -0.018375000000000002
+        ],
+        [
+          0.025,
+          0.020625000000000004,
+          0.019125000000000003
+        ],
+        [
+          0.075,
+          0.065625,
+          0.059625
+        ],
+        [
+          0.125,
+          0.115625,
+          0.103125
+        ],
+        [
+          0.175,
+          0.17062499999999997,
+          0.14962499999999998
+        ]
+      ]
+    }
+  }
+}

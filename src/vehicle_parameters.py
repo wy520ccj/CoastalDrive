@@ -38,6 +38,7 @@ PARAMETER_GROUPS = {
         "suspension_si_enabled", "suspension_coupled_enabled", "suspension_antiroll_rates",
         "suspension_stop_rates", "suspension_spring_rates", "suspension_compression_damping",
         "suspension_coil_enabled", "suspension_spring_preloads",
+        "suspension_installation_curves",
         "suspension_extension_damping", "suspension_stiffness", "suspension_compression",
         "suspension_relaxation", "suspension_travel", "suspension_force_limit",
     ),
@@ -95,6 +96,11 @@ def config_from_document(document, selected):
         values["suspension_coil_enabled"] = False
     if "suspension_spring_preloads" not in values:
         values["suspension_spring_preloads"] = (0.,)*4
+    if "suspension_installation_curves" not in values:
+        values["suspension_installation_curves"] = None
+    elif values["suspension_installation_curves"] is not None:
+        values["suspension_installation_curves"] = tuple(tuple(tuple(row) for row in rows)
+            for rows in values["suspension_installation_curves"])
     if "braking" in values:
         values["braking"] = replace(selected.braking, **values["braking"])
     if "stability" in values:

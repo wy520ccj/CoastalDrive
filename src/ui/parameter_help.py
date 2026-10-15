@@ -26,6 +26,7 @@ from vehicle_designs import DESIGN_VEHICLES, GR86_PROFILE_PATH
 GROUP_LABELS = {"chassis": "底盘与转向", "tires": "轮胎", "suspension": "悬架",
                 "powertrain": "动力与传动", "electronics": "制动与控制"}
 BROWSER_LABELS = {"suspension_spring_rates":"轮心等效弹簧率",
+                  "suspension_installation_curves":"部件安装位移曲线",
                   "suspension_spring_preloads":"轮心等效安装预载","suspension_coil_enabled":"压缩螺旋弹簧",
                   "suspension_compression_damping":"轮心等效压缩阻尼","suspension_extension_damping":"轮心等效伸张阻尼",
                   "suspension_stiffness":"质量归一化弹簧率",
@@ -148,6 +149,9 @@ class ParameterHelp:
         config,options,basis,design_id,parameter_metadata = self.configuration()
         field = ALIASES.get(key, key)
         current = display_value(config[field]) if field in config else "旧记录未保存此字段"
+        if field=="suspension_installation_curves" and field in config:
+            current = ("未提供，使用常运动比" if config[field] is None else
+                       "四角节点数 "+" / ".join(str(len(rows)) for rows in config[field])+"；完整坐标见工程JSON")
         if "." in field and not field.startswith("manual."):
             parent, child = field.split(".")
             current = str(config[parent][child])
@@ -230,6 +234,13 @@ class ParameterHelp:
             config = self.configuration()[0]
             if config.get("suspension_coil_enabled",False):
                 math_key = "suspension_spring_preloads"
+        field = ALIASES.get(key,key)
+        if field in ("suspension_spring_rates","suspension_spring_preloads","suspension_coil_enabled",
+                     "suspension_compression_damping","suspension_extension_damping"):
+            config=self.configuration()[0]
+            if config.get("suspension_installation_curves") is not None:
+                math_key="installation_damping" if field.endswith("damping") else "suspension_installation_curves"
+                if field=="suspension_spring_rates":self.title.setText("参考轮心材料刚度")
         if math_key is not None:
             # 图片保留数学字形比例；长公式只缩小到面板宽度，不拉伸或压扁。
             for entry in self.formula_manifest["formulas"][math_key]:
@@ -254,10 +265,13 @@ class ParameterHelp:
             algorithm = FORMULAS[math_key][1]
         else:
             algorithm = info.formula
-        if math_key=="suspension_spring_preloads":
+        if math_key in ("suspension_spring_preloads","suspension_installation_curves"):
             algorithm += "\nq=0沿用悬架参考长度处的轮心位置；x0不能直接填静载压缩。"
         if ALIASES.get(key,key) in ("suspension_spring_rates","suspension_compression_damping","suspension_extension_damping"):
-            algorithm += "\n参数按轮心行程等效；台架原始参数须按安装运动比换算。"
+            algorithm += "\n输入是q=0参考轮心等效值；有安装曲线时随行程换算。"
+        use=info.use
+        if math_key=="suspension_installation_curves" and field=="suspension_spring_preloads":
+            use="F0不改变部件ks；变运动比下，载荷通过几何项改变轮心总切线。松弛/防倾/止挡分别计算。"
         self.notes.setPos(-.45, bottom-.023)
-        self.notes.setText(f"{algorithm}\n{info.use}\n\n数值来源\n{basis}\n\n对应源码\n{info.source}")
+        self.notes.setText(f"{algorithm}\n{use}\n\n数值来源\n{basis}\n\n对应源码\n{info.source}")
         self.root.show()
