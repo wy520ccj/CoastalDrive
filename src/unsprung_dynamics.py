@@ -4,7 +4,14 @@ from dataclasses import dataclass
 
 import numpy as np
 from mechanical_kernels import cross
-from wheel_contact_kernels import ordinary_cross_rows
+from wheel_contact_kernels import ordinary_cross_rows, ordinary_small_norm
+
+
+def small_norm(vector):
+    """二/三维实数组的原点积开方；保留NumPy标量类型和低精度运算。"""
+    if vector.dtype!=np.float64:
+        return np.linalg.norm(vector)
+    return np.float64(ordinary_small_norm(vector))
 
 
 def ordinary_cross(first,second):

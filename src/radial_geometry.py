@@ -12,6 +12,7 @@ from wheel_contact_kernels import radial_box_bounds, radial_contact_frames, radi
 from box_radial_geometry import box_section
 from suspension_contacts import StaticSupportShapes, static_support_shapes
 from unsprung_body import quaternion_rotation
+from unsprung_dynamics import small_norm
 from vehicle_contacts import road_support
 from wheel_envelope import cylinder_support
 
@@ -64,7 +65,7 @@ class RadialSurface:
         """本子步只读平面的常量项；矩阵运算保留原布局和舍入。"""
         local_normal = np.asarray(self.plane[0])
         normal = self.frame.T@local_normal
-        normal /= np.linalg.norm(normal)
+        normal /= small_norm(normal)
         plane = tuple(normal),float(self.plane[1]-np.dot(self.plane[0],self.translation))
         return local_normal,normal,plane
 
@@ -90,7 +91,7 @@ class RadialSurface:
             half,gap = np.asarray(self.half,dtype=float),np.empty(3)
             radial_box_bounds((local_center,local_axis,half),(gap,),config.wheel_radius,config.wheel_width/2,
                 config.wheel_shoulder_radius,config.wheel_crown_height)
-            if np.linalg.norm(gap)>config.wheel_radius+config.suspension_travel:
+            if small_norm(gap)>config.wheel_radius+config.suspension_travel:
                 return
             section = box_section(local_center,local_axis,self.half,config)
         vertices = (self.vertices,)
@@ -118,7 +119,7 @@ class RadialSurface:
                         distance,normal,point = float(exact_distance),exact_normal,exact_point
                         plane = tuple(exact_normal),float(half[index])
             normal = self.frame.T@normal
-            normal /= np.linalg.norm(normal)
+            normal /= small_norm(normal)
             world_plane = None if plane is None else (tuple(normal),float(plane[1]-np.dot(plane[0],self.translation)))
             yield distance,normal,self.frame.T@(np.asarray(point)-self.translation),world_plane
 

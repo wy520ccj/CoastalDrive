@@ -8,9 +8,11 @@ from wheel_contact_kernels import (
     box_cone_refine,
     box_cone_samples,
     box_edge_frames,
+    box_edge_proof,
     box_face_candidates,
 )
 
+from unsprung_dynamics import small_norm
 from wheel_envelope import cylinder_support
 
 
@@ -24,7 +26,7 @@ def _axis_curvature(dtype,bits,wheel_radius,half_width,shoulder,crown,parameter_
     """原类型/原顺序的曲率界限；参数字节另区分正负零，typed区分标量强弱类型。"""
     axis = np.frombuffer(bits,dtype=np.dtype(dtype))
     fixed = [i for i in range(3) if i!=free]
-    rho = np.linalg.norm(axis[fixed])
+    rho = small_norm(axis[fixed])
     if rho>=1.:
         return None
     q = np.sqrt(1-rho*rho)
@@ -40,15 +42,31 @@ def _axis_curvature(dtype,bits,wheel_radius,half_width,shoulder,crown,parameter_
     return first_theta,second_theta,lower_support
 
 
+def _edge_proof(deltas,first_theta):
+    """仅批量原标量公式；低精度曲率平方仍按原NumPy类型计算。"""
+    if isinstance(first_theta,np.float64):
+        bounds=np.empty((4,3))
+        box_edge_proof((deltas,),(bounds,),first_theta)
+        return bounds
+    bounds=[]
+    for delta in deltas:
+        length=small_norm(delta)
+        critical=np.sqrt(max(length*length-first_theta*first_theta,0.))
+        minimum_dot=-small_norm(np.minimum(delta,0.)) if min(delta)<0. else min(delta)
+        maximum_dot=small_norm(np.maximum(delta,0.)) if max(delta)>0. else max(delta)
+        bounds.append((critical,minimum_dot,maximum_dot))
+    return np.asarray(bounds)
+
+
 def box_section(center,axis,half,config):
     """返回有全局距离证明的见证点；未能证明的构型仍交给一般凸体算法。"""
     half = np.asarray(half)
     if config.wheel_crown_height==0.:
         return None
-    axis = axis/np.linalg.norm(axis)
+    axis = axis/small_norm(axis)
     center_native,axis_native = np.asarray(center,dtype=float),np.asarray(axis,dtype=float)
     parameters = config.wheel_radius,config.wheel_width/2,config.wheel_shoulder_radius,config.wheel_crown_height,np.pi/2
-    tolerance = 128*np.finfo(float).eps*max(1.,np.linalg.norm(center),max(half))
+    tolerance = 128*np.finfo(float).eps*max(1.,small_norm(center),max(half))
     axis_normals,axis_wheels = np.empty((6,3)),np.empty((6,3))
     half_native = np.asarray(half,dtype=float)
     face_distances,face_roads,face_eligible = np.empty(6),np.empty((6,3)),np.empty(6)
@@ -77,17 +95,15 @@ def box_section(center,axis,half,config):
 
         bases,edges,deltas = np.empty((8,3)),np.empty((4,3)),np.empty((4,2))
         box_edge_frames((center_native,half_native),(bases,edges,deltas),free)
+        edge_bounds = _edge_proof(deltas,first_theta)
         for row in range(4):
-            basis,edge,delta = bases[2*row:2*row+2],edges[row],deltas[row]
-            length = np.linalg.norm(delta)
+            basis,edge = bases[2*row:2*row+2],edges[row]
 
             normals,wheels,values = np.empty((3,3)),np.empty((3,3)),np.empty((3,2))
             inputs,outputs = (center_native,axis_native,basis,edge),(normals,wheels,values)
             box_cone_samples(inputs,outputs,*parameters,np.cos,np.sin)
             upper = max(float(values[0,0]),float(values[1,0]))
-            critical = np.sqrt(max(length*length-first_theta*first_theta,0.))
-            minimum_dot = -np.linalg.norm(np.minimum(delta,0.)) if min(delta)<0. else min(delta)
-            maximum_dot = np.linalg.norm(np.maximum(delta,0.)) if max(delta)>0. else max(delta)
+            critical,minimum_dot,maximum_dot = edge_bounds[row]
             if critical>second_theta and minimum_dot>-critical:
                 # 所有驻点均为严格极大值，因此这一法线锥最多只有一个内部极大值。
                 if values[0,1]>0. and values[1,1]<0.:
@@ -96,7 +112,7 @@ def box_section(center,axis,half,config):
                     upper = max(upper,distance)
                     road = edge.copy();road[free]=wheel[free]
                     if (abs(road[free])<=half[free]+tolerance
-                            and np.linalg.norm(wheel-road-distance*normal)<=tolerance):
+                            and small_norm(wheel-road-distance*normal)<=tolerance):
                         candidates.append((distance,normal,wheel,road,None))
             elif not (critical>second_theta and maximum_dot<critical):
                 # 未能证明驻点类型时，保留整个法线锥的上界，不把一次局部根当全局距离。

@@ -585,4 +585,45 @@ static PyObject *ordinary_cross_rows_native(PyObject *self,PyObject *args) {
 error:
     lab_release(v,3); return NULL;
 }
+/* 二/三维实数范数仍为原逐项点积后开方，不能改用hypot或补偿求和。 */
+static PyObject *ordinary_small_norm_native(PyObject *self,PyObject *object) {
+    Py_buffer view={0};
+    if (PyObject_GetBuffer(object,&view,PyBUF_STRIDES|PyBUF_FORMAT)<0) return NULL;
+    if (view.ndim!=1 || view.itemsize!=sizeof(double) || strcmp(view.format,"d")
+        || (view.shape[0]!=2 && view.shape[0]!=3)) {
+        PyErr_SetString(PyExc_ValueError,"接触几何范数须为二/三维本机双精度向量");
+        PyBuffer_Release(&view); return NULL;
+    }
+    double squared=0.;
+    for (int i=0;i<view.shape[0];++i) {
+        double value=lab_get(&view,i,0);
+        squared+=value*value;
+    }
+    PyBuffer_Release(&view);
+    return PyFloat_FromDouble(sqrt(squared));
+}
+/* 原四棱的长度/临界值/投影界限，不改变驻点证明或52轮细化。 */
+static PyObject *box_edge_proof_native(PyObject *self,PyObject *args) {
+    PyObject *inputs,*outputs;
+    double first;
+    if (!PyArg_ParseTuple(args,"OOd",&inputs,&outputs,&first)) return NULL;
+    const int dimensions[2]={2,2};
+    const Py_ssize_t shapes[2][3]={{4,2},{4,3}};
+    Py_buffer v[2]={{0}};
+    if (!lab_buffers(inputs,outputs,v,1,1,dimensions,shapes,-1,-1)) goto error;
+    for (int row=0;row<4;++row) {
+        double a=lab_get(v,row,0),b=lab_get(v,row,1);
+        double length=sqrt((0.+a*a)+b*b),squared=length*length-first*first;
+        double minimum=b<a ? b : a,maximum=b>a ? b : a;
+        double negative_a=a<0. ? a : 0.,negative_b=b<0. ? b : 0.;
+        double positive_a=a>0. ? a : 0.,positive_b=b>0. ? b : 0.;
+        double low=minimum<0. ? -sqrt((0.+negative_a*negative_a)+negative_b*negative_b) : minimum;
+        double high=maximum>0. ? sqrt((0.+positive_a*positive_a)+positive_b*positive_b) : maximum;
+        lab_set(v+1,row,0,sqrt(squared<0. ? 0. : squared));
+        lab_set(v+1,row,1,low);lab_set(v+1,row,2,high);
+    }
+    lab_release(v,2); Py_RETURN_NONE;
+error:
+    lab_release(v,2); return NULL;
+}
 #endif

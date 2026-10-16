@@ -2025,6 +2025,8 @@ static PyObject *wheel_state_update(PyObject *self, PyObject *args, PyObject *up
 #include "suspension_prepare.h"
 #include "lab_contact_native.h"
 static PyMethodDef methods[] = {
+    {"box_edge_proof",box_edge_proof_native,METH_VARARGS,"试验台四棱原驻点界限批量准备"},
+    {"ordinary_small_norm",ordinary_small_norm_native,METH_O,"接触几何二/三维原普通范数"},
     {"ordinary_cross_rows",ordinary_cross_rows_native,METH_VARARGS,"独立轮心原普通三维叉积行批量"},
     {"finite_contact_averages",finite_contact_averages_native,METH_VARARGS,"试验台四轮原旋转路径平均批量准备"},
     {"finite_contact_frames",finite_contact_frames_native,METH_VARARGS,"试验台四轮材料投影与原法向转向速度"},
