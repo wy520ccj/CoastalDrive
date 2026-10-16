@@ -52,6 +52,13 @@ class RadialContactStep:
     rolling: np.ndarray
 
 
+def _copy_geometry(geometry):
+    """复用已完成的同构型查询；可变数组仍由每个物理输入各自持有。"""
+    return replace(geometry,deflection=geometry.deflection.copy(),offsets=geometry.offsets.copy(),
+                   normals=geometry.normals.copy(),tangents=geometry.tangents.copy(),
+                   laterals=geometry.laterals.copy(),normal_offsets=geometry.normal_offsets.copy())
+
+
 class FiniteRadialContact:
     wheel_velocity_bias = None
     finite_motion = None
@@ -65,14 +72,20 @@ class FiniteRadialContact:
         return [{} for _ in self.roads.surfaces]
 
     def __init__(self, roads, hardware, centers, rotation, old_axes, deformation, steering, trails, dt, config, on_asphalt,
-                 wheel_velocity_bias=None,finite_motion=None):
+                 wheel_velocity_bias=None,finite_motion=None,*,target_geometry=None):
         self.roads,self.hardware,self.centers,self.rotation = roads,hardware,np.asarray(centers),rotation
         self.deformation,self.steering,self.trails = np.asarray(deformation),steering,trails
         self.dt,self.config,self.on_asphalt = dt,config,on_asphalt
         self.wheel_velocity_bias = wheel_velocity_bias
         self.finite_motion = finite_motion
-        self.initial = roads.query(centers,rotation[:,2],old_axes,surface_cache=self.query_cache)
-        self.target = roads.query(centers,rotation[:,2],hardware.axes,surface_cache=self.query_cache)
+        old_axes = np.asarray(old_axes)
+        same_axes = (target_geometry is not None and old_axes.dtype==hardware.axes.dtype
+                     and old_axes.shape==hardware.axes.shape and old_axes.strides==hardware.axes.strides
+                     and old_axes.tobytes()==hardware.axes.tobytes())
+        self.initial = (_copy_geometry(target_geometry) if same_axes else
+                        roads.query(centers,rotation[:,2],old_axes,surface_cache=self.query_cache))
+        self.target = (_copy_geometry(target_geometry) if target_geometry is not None else
+                       roads.query(centers,rotation[:,2],hardware.axes,surface_cache=self.query_cache))
         self.cache_key,self.cached = None,None
 
     def evaluate(self, velocity):

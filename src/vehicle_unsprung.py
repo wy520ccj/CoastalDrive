@@ -143,7 +143,7 @@ class UnsprungAdvanceInput:
                               normal_offsets=geometry.normal_offsets,wheel_velocity_bias=guide_bias)
         old_axes = np.array([mechanical_axis(rotation[:,0],rotation[:,1],old.steering) for old in car.tires.states])
         finite = FiniteRadialContact(roads,hardware,centers,rotation,old_axes,car.tires.deformation,
-                                    steer,np.asarray(trails),dt,config,car.on_asphalt,guide_bias,motion)
+                                    steer,np.asarray(trails),dt,config,car.on_asphalt,guide_bias,motion,target_geometry=geometry)
         steering_torque = config.wheel_inertia*np.asarray(car.tires.omega)[:,None]*ordinary_cross(steer,hardware.axes)
         air_velocity,air_force = aerodynamic_load(tuple(body.getLinearVelocity()),tuple(car.wind),config)
         body.applyCentralForce(Vec3(*air_force))
