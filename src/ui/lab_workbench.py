@@ -46,7 +46,8 @@ def build_workbench(app):
     app.text("车辆模型", -1.62, .542, .032, MUTED)
     app.vehicle_menu = app.option(["游戏调校", "参考后驱 RWD", "参考前驱 FWD", "参考四驱 AWD", "GR86 Premium 6MT"],
                                  -1.63, .463, .60, command=app.choose_vehicle, parameter="vehicle")
-    app.vehicle_menu.set(1)
+    app.vehicle_menu.set(1, fCommand=0)
+    app.configuration_note = app.text("车型默认 · 无独立轮心", -1.62, .405, .035, MUTED)
     app.text("试验工况", -1.62, .360, .032, MUTED)
     app.maneuver_menu = app.option(list(MANEUVERS.values()), -1.63, .282, .60, app.apply_preset, parameter="maneuver")
     app.field("speed", "初速 km/h", 100, .168, width=.23)
@@ -101,14 +102,14 @@ def build_workbench(app):
     app.button("导出 CSV / 报告", 1.36, -.935, .62, app.export)
 
     app.record_menu = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
-                                 frameSize=(1.05, 1.71, .34, .83), sortOrder=60)
+                                 frameSize=(1.05, 1.71, .34, .83), sortOrder=60, state=DGG.NORMAL)
     for z, label, action in ((.76, "载入记录", app.open_record), (.65, "复算当前记录", app.recalculate_record),
                              (.54, "打开报告", app.open_report), (.43, "导入工程模型", app.open_engineering)):
         app.button(label, 1.38, z, .56, action, parent=app.record_menu)
     app.record_menu.hide()
 
     app.advanced_panel = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
-                                    frameSize=(-.94, 1.72, -.46, .69), sortOrder=70)
+                                    frameSize=(-.94, 1.72, -.46, .69), sortOrder=70, state=DGG.NORMAL)
     app.text("高级参数", -.82, .578, .047, parent=app.advanced_panel, font=app.heading_font)
     app.button("关闭", 1.52, .592, .26, app.toggle_advanced, parent=app.advanced_panel)
     app.field("duration", "时长 s", 12, .44, x=-.82, parent=app.advanced_panel)
@@ -128,7 +129,7 @@ def build_workbench(app):
     app.advanced_panel.hide()
 
     app.details_panel = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
-                                   frameSize=(-.84, 1.70, -.16, .70), sortOrder=80)
+                                   frameSize=(-.84, 1.70, -.16, .70), sortOrder=80, state=DGG.NORMAL)
     app.text("真实信号 / 当前时间游标", -.74, .602, .045,
              parent=app.details_panel, font=app.heading_font)
     app.button("关闭", 1.50, .622, .26, app.toggle_details, parent=app.details_panel)
@@ -137,7 +138,7 @@ def build_workbench(app):
     app.details_panel.hide()
 
     app.manual_panel = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
-                                  frameSize=(-.75, .94, -.02, .55), sortOrder=80)
+                                  frameSize=(-.75, .94, -.02, .55), sortOrder=80, state=DGG.NORMAL)
     app.text("执行器输入", -.65, .441, .045, parent=app.manual_panel, font=app.heading_font)
     app.manual_entries = {}
     for i, (key, label, value) in enumerate((("throttle", "油门 %", 0), ("brake", "制动 %", 0),

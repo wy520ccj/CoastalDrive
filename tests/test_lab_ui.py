@@ -2,7 +2,10 @@
 
 from types import SimpleNamespace
 
+import pytest
+
 from lab_application import VehicleLab
+from lab_experiment import LabOptions
 from ui.lab_widgets import LabOptionMenu
 
 
@@ -49,3 +52,111 @@ def test_switch_requests_exit_and_cleanup_releases_world_once():
     VehicleLab.close_game(fake)
     assert calls.count("world-close") == 1
     assert calls.index("world-close") < calls.index("window-close")
+
+
+@pytest.fixture(scope="module")
+def workbench(tmp_path_factory):
+    app = VehicleLab(offscreen=True, output=tmp_path_factory.mktemp("lab-ui"))
+    app.taskMgr.remove("lab-update")
+    yield app
+    app.close_game()
+
+
+def test_shortcuts_use_actual_mouse_focus_and_ignore_hidden_entries(workbench):
+    app = workbench
+    app.blur_entries()
+    entry = app.entries["speed"]
+    # 鼠标点击只更新PGEntry，不回写DirectEntry的focus选项。
+    entry.guiItem.setFocus(True)
+    assert entry["focus"] == 0 and entry.guiItem.getFocus()
+    calls = []
+    app.hotkey(lambda: calls.append("step"))
+    assert calls == []
+    entry.hide()
+    app.hotkey(lambda: calls.append("step"))
+    assert calls == ["step"]
+    entry.show()
+    app.blur_entries()
+
+
+def test_closing_advanced_releases_real_focus_and_tab_skips_hidden_fields(workbench):
+    app = workbench
+    app.toggle_advanced()
+    app.entries["duration"].guiItem.setFocus(True)
+    app.cycle_entry(1)
+    assert app.entries["steer"].guiItem.getFocus()
+    app.toggle_advanced()
+    assert not any(entry.guiItem.getFocus() for entry in app.entries.values())
+    app.cycle_entry(-1)
+    assert app.entries["mu"].guiItem.getFocus()
+    app.blur_entries()
+
+
+def test_modal_blocks_shortcuts_and_closes_other_input_panel(workbench):
+    app = workbench
+    app.manual_panel.show()
+    app.manual_entries["gear"].guiItem.setFocus(True)
+    app.toggle_advanced()
+    assert app.manual_panel.isHidden()
+    assert not app.manual_entries["gear"].guiItem.getFocus()
+    calls = []
+    app.hotkey(lambda: calls.append("pause"))
+    assert calls == []
+    app.escape()
+    assert app.advanced_panel.isHidden()
+    app.hotkey(lambda: calls.append("pause"))
+    assert calls == ["pause"]
+
+
+def test_engineering_configuration_status_changes_with_vehicle(workbench):
+    from pathlib import Path
+
+    app = workbench
+    path = Path(__file__).resolve().parents[1]/"docs/evidence/SIM-UNSPRUNG-01/production/engineering-preview.json"
+    app.import_engineering(path)
+    assert app.engineered_config.unsprung_enabled
+    assert app.configuration_note.getText() == "工程模型 · 独立轮心"
+    config = app.engineered_config
+    app.vehicle_menu.set(app.vehicle_menu.selectedIndex)
+    assert app.engineered_config is config
+    app.vehicle_menu.set(3)
+    assert app.engineered_config is None and app.parameter_metadata is None
+    assert app.configuration_note.getText() == "车型默认 · 无独立轮心"
+    assert "已解除" in app.notice.getText()
+
+
+@pytest.mark.parametrize("maneuver", ("ride_bump", "ride_braking"))
+def test_failed_initialization_clears_old_candidate_but_preserves_baseline(workbench, maneuver):
+    app = workbench
+    app.set_options(LabOptions(speed_kph=10, duration=1/120))
+    app.start_experiment()
+    app.toggle_pause()
+    app.single_step()
+    app.present_summary(app.run_state.summary())
+    app.pin_baseline()
+    baseline = app.baseline
+    assert app.candidate_value.getText() != "—"
+    app.set_options(LabOptions(maneuver=maneuver, speed_kph=18, duration=.1))
+    app.start_experiment()
+    assert app.run_state is None and app.record is None
+    assert app.baseline is baseline
+    assert app.status.getText() == "初始化失败"
+    assert app.metric.getText() == app.candidate_value.getText() == "—"
+    assert app.cursor_label.getText() == "t = —"
+    assert app.scene.path_bounds is None
+    assert "记录 → 导入工程模型" in app.notice.getText()
+    assert all(plot.series == [baseline.samples] for plot in app.plots)
+    app.clear_baseline()
+    assert app.baseline_value.getText() == "—"
+
+
+def test_focusing_entry_highlights_it_and_blur_restores_color(workbench):
+    app = workbench
+    entry = app.entries["duration"]
+    color = entry["frameColor"]
+    entry.guiItem.setFocus(True)
+    app.taskMgr.step()
+    assert entry["frameColor"] != color
+    app.blur_entries()
+    app.taskMgr.step()
+    assert entry["frameColor"] == color

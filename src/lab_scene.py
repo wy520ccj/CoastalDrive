@@ -108,6 +108,16 @@ class LabScene:
                             min(state.player.position[1] for state in snapshots)-5,
                             max(state.player.position[1] for state in snapshots)+5)
 
+    def clear_trial(self):
+        """初始化前清除上一试验的轨迹和路面标记。"""
+        self.path_node.removeNode()
+        self.reference_node.removeNode()
+        self.surface_node.removeNode()
+        self.path_node = self.root.attachNewNode("trajectory")
+        self.reference_node = self.root.attachNewNode("reference-path")
+        self.surface_node = self.root.attachNewNode("surface-markings")
+        self.path_bounds = None
+
     def set_trial(self, options, initial):
         """目标路径和对开附着分界与记录使用同一工况坐标。"""
         self.reference_node.removeNode()

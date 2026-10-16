@@ -58,6 +58,7 @@ class VehicleLab(ShowBase):
         self.next_workspace = None
         self.run_state = None
         self.engineered_config = None
+        self.engineered_vehicle_id = None
         self.parameter_metadata = None
         self.record = None
         self.baseline = None
@@ -83,6 +84,8 @@ class VehicleLab(ShowBase):
         self.accept("escape", self.escape)
         self.accept("space", self.hotkey, [self.toggle_pause])
         self.accept("period", self.hotkey, [self.single_step])
+        self.accept("tab", self.cycle_entry, [1])
+        self.accept("shift-tab", self.cycle_entry, [-1])
         self.accept("f1", self.show_parameter_help)
         self.accept("mouse1", self.set_pointer, [True])
         self.accept("mouse1-up", self.set_pointer, [False])
@@ -120,7 +123,9 @@ class VehicleLab(ShowBase):
         widget.bind(DGG.EXIT, self.leave_parameter, [key])
         if focus:
             widget["focusInCommand"] = self.focus_parameter
-            widget["focusInExtraArgs"] = [key]
+            widget["focusInExtraArgs"] = [key, widget]
+            widget["focusOutCommand"] = self.blur_parameter
+            widget["focusOutExtraArgs"] = [widget, widget["frameColor"]]
 
     def enter_parameter(self, key, event=None):
         self.hovered_parameter = key
@@ -129,11 +134,30 @@ class VehicleLab(ShowBase):
         if self.hovered_parameter == key:
             self.hovered_parameter = None
 
-    def focus_parameter(self, key):
+    def focus_parameter(self, key, entry):
         self.focused_parameter = key
+        entry["frameColor"] = (.86, .93, .94, 1)
+
+    def blur_parameter(self, entry, color):
+        entry["frameColor"] = color
+
+    def blur_entries(self):
+        for entry in (*self.entries.values(), *self.manual_entries.values()):
+            entry["focus"] = 0
+
+    def cycle_entry(self, direction):
+        if not self.parameter_help.root.isHidden() or not self.engineering_panel.root.isHidden():
+            return
+        entries = [entry for entry in (*self.entries.values(), *self.manual_entries.values())
+                   if not entry.isHidden()]
+        focused = next((i for i, entry in enumerate(entries) if entry.guiItem.getFocus()), None)
+        index = (focused+direction)%len(entries) if focused is not None else (0 if direction > 0 else -1)
+        self.blur_entries()
+        entries[index]["focus"] = 1
 
     def show_parameter_help(self):
         key = self.hovered_parameter or self.focused_parameter
+        self.blur_entries()
         for menu in (self.vehicle_menu, self.maneuver_menu, self.abs_menu, self.esc_menu, self.plot_menu):
             menu.hidePopupMenu()
         self.parameter_help.show(key)
@@ -178,8 +202,22 @@ class VehicleLab(ShowBase):
             abs_enabled=self.abs_menu.selectedIndex == 0, esc_enabled=self.esc_menu.selectedIndex == 1)
 
     def choose_vehicle(self, label):
+        imported = self.engineered_config is not None
+        if imported and DESIGN_VEHICLES[self.vehicle_menu.selectedIndex].id == self.engineered_vehicle_id:
+            self.refresh_configuration_note()
+            return
         self.engineered_config = None
+        self.engineered_vehicle_id = None
         self.parameter_metadata = None
+        self.refresh_configuration_note()
+        self.notice.setText("车型已切换，原导入工程配置已解除；凸起试验需重新导入独立轮心工程模型"
+                            if imported else "已选择车型；凸起试验需导入独立轮心工程模型")
+
+    def refresh_configuration_note(self):
+        config = self.engineered_config or DESIGN_VEHICLES[self.vehicle_menu.selectedIndex].config
+        source = "工程模型" if self.engineered_config is not None else "车型默认"
+        self.configuration_note.setText(f"{source} · 独立轮心" if config.unsprung_enabled
+                                       else f"{source} · 无独立轮心")
 
     def import_engineering(self, path):
         try:
@@ -193,6 +231,8 @@ class VehicleLab(ShowBase):
             self.notice.setText(f"工程配置载入失败：{error}")
             return
         self.engineered_config, self.parameter_metadata = config, metadata
+        self.engineered_vehicle_id = design.id
+        self.refresh_configuration_note()
         self.entries["mu"].enterText(str(config.road_friction))
         self.entries["cg"].enterText("")
         self.entries["tire_load"].enterText("")
@@ -270,22 +310,28 @@ class VehicleLab(ShowBase):
         try:
             options = self.read_options()
         except ValueError as error:
-            self.notice.setText(str(error))
+            self.notice.setText(f"新试验未开始：{error}；已有结果仍属于上次试验")
             return
         if self.run_state is not None:
             self.run_state.close()
             self.run_state = None
         self.record = None
         self.playing = False
+        self.blur_entries()
         self.advanced_panel.hide()
+        self.manual_panel.hide()
         self.details_panel.hide()
         self.record_menu.hide()
+        self.clear_current_result()
         try:
             self.run_state = LabExperiment(options, config=self.engineered_config,
                                            parameter_metadata=self.parameter_metadata)
         except (ArithmeticError, ValueError, RuntimeError, OSError) as error:
             self.status.setText("初始化失败")
-            self.notice.setText(str(error))
+            self.notice.setText(str(error)+"；工程模型入口：记录 → 导入工程模型"
+                                if options.maneuver in ("ride_bump", "ride_braking")
+                                and not (self.engineered_config or vehicle_design(options.vehicle_id).config).unsprung_enabled
+                                else str(error))
             return
         self.run_state.paused = False
         self.scene.set_vehicle(self.run_state.design, self.run_state.config)
@@ -358,31 +404,55 @@ class VehicleLab(ShowBase):
                 throttle=values["throttle"]/100, brake=values["brake"]/100,
                 gear=int(values["gear"]), clutch=values["clutch"]/100)
             self.notice.setText("执行器请求已更新；仪表分别显示请求与实际响应")
+            self.blur_entries()
             self.manual_panel.hide()
         except ValueError as error:
             self.notice.setText(str(error))
 
     def show_manual(self):
         if self.run_state is not None and self.run_state.options.maneuver == "manual":
+            self.blur_entries()
+            self.advanced_panel.hide()
+            self.details_panel.hide()
+            self.record_menu.hide()
             self.manual_panel.show()
 
     def toggle_advanced(self):
+        self.blur_entries()
+        self.manual_panel.hide()
+        self.details_panel.hide()
+        self.record_menu.hide()
         self.advanced_panel.show() if self.advanced_panel.isHidden() else self.advanced_panel.hide()
 
     def toggle_details(self):
+        self.blur_entries()
+        self.advanced_panel.hide()
+        self.manual_panel.hide()
+        self.record_menu.hide()
         self.details_panel.show() if self.details_panel.isHidden() else self.details_panel.hide()
 
     def show_engineering(self):
+        self.blur_entries()
         self.engineering_panel.show()
 
     def toggle_record_menu(self):
+        self.blur_entries()
+        self.advanced_panel.hide()
+        self.manual_panel.hide()
+        self.details_panel.hide()
         self.record_menu.show() if self.record_menu.isHidden() else self.record_menu.hide()
 
     def hotkey(self, action):
-        if not any(entry["focus"] for entry in (*self.entries.values(), *self.manual_entries.values())):
+        # DirectEntry的focus选项不随鼠标聚焦同步，必须读取PGEntry实际状态。
+        if any(not panel.isHidden() for panel in (self.advanced_panel, self.manual_panel,
+                self.details_panel, self.record_menu, self.parameter_help.root, self.engineering_panel.root)):
+            return
+        if not any(entry.guiItem.getFocus() and not entry.isHidden()
+                   for entry in (*self.entries.values(), *self.manual_entries.values())):
             action()
 
     def escape(self):
+        self.blur_entries()
         if not self.parameter_help.root.isHidden():
             self.parameter_help.hide()
             return
@@ -410,10 +480,18 @@ class VehicleLab(ShowBase):
         self.baseline = record
         self.notice.setText(f"A 已固定：μ={record.metadata['summary']['options']['friction']:.2f}；修改配置后开始 B")
         self.refresh_plots()
+        self.present_summary(record.metadata["summary"])
 
     def clear_baseline(self):
         self.baseline = None
         self.refresh_plots()
+        active = self.record if self.record is not None else self.run_state
+        if active is not None:
+            summary = active.metadata["summary"] if self.record is not None else active.summary()
+            self.present_summary(summary)
+        else:
+            self.baseline_value.setText("—")
+            self.result.setText("固定 A 后比较")
 
     def refresh_plots(self):
         # 运行中直接读取数组，避免10Hz重复生成完整配置/源码摘要。
@@ -426,6 +504,29 @@ class VehicleLab(ShowBase):
             self.timeline["range"] = (0, max(duration, 1/120))
             snapshots = active.snapshots
             self.scene.trajectory(snapshots)
+
+    def clear_current_result(self):
+        """新试验尚无有效B；A基线仍保留供后续比较。"""
+        self.view_index = 0
+        self.playhead = 0.
+        self.metric_label.setText("试验结果")
+        self.metric.setText("—")
+        self.candidate_value.setText("—")
+        self.timing.setText("仿真  —\n计算  —")
+        self.result.setText("等待有效 B" if self.baseline is not None else "固定 A 后比较")
+        self.telemetry.setText("等待真实实验信号")
+        self.wheel_telemetry.setText("")
+        self.model_note.setText("等待新试验初始化")
+        self._seeking = True
+        self.timeline["range"] = (0, 1)
+        self.timeline["value"] = 0
+        self.timeline_target = 0.
+        self._seeking = False
+        self.cursor_label.setText("t = —")
+        self.refresh_plots()
+        for plot in self.plots:
+            plot.seek(0.)
+        self.scene.clear_trial()
 
     def set_plot_group(self, selection):
         self.plot_menu.set(self.plot_menu["items"].index(selection), fCommand=0)
@@ -577,7 +678,9 @@ class VehicleLab(ShowBase):
         self.manual_panel.hide()
         self.set_options(options)
         self.engineered_config = config
+        self.engineered_vehicle_id = design.id
         self.parameter_metadata = record.metadata.get("parameter_metadata")
+        self.refresh_configuration_note()
         self.scene.set_vehicle(design, config)
         self.scene.set_trial(options, record.snapshots[0].player)
         basis = "工程初值" if options.vehicle_id.startswith("gr86") else "设计模型"
