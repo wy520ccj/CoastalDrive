@@ -14,7 +14,7 @@ from tire_properties import tire_grip, tire_stiffness
 from unsprung_body import NativeWheelGuides, SprungBodyFrame, apply_joint_forces
 from unsprung_contact_geometry import FiniteRadialContact
 from unsprung_drivetrain import drivetrain_ports, tire_ports
-from unsprung_dynamics import assemble_unsprung, partition_vehicle
+from unsprung_dynamics import assemble_unsprung, ordinary_cross, partition_vehicle
 from unsprung_geometry import read_unsprung_geometry
 from unsprung_joint import JointJacobianHint, solve_unsprung_joint
 from unsprung_motion import FiniteSuspensionMotion
@@ -49,13 +49,23 @@ def install_guides(car):
     car._unsprung_observation = None
 
 
-def read_mechanics(car, angles):
+def read_kinematics(car):
+    """读取真实车身/轮心及轴速；观测不需要重建完整力学端口。"""
     position,rotation = car._sprung_frame.read(car._chassis)
     centers,speeds,q,u,transverse = car._wheel_guides.read()
     velocity = np.r_[tuple(car._chassis.getLinearVelocity()),tuple(car._chassis.getAngularVelocity()),u,
                      car.powertrain.engine_omega,car.powertrain.shaft_omega,car.tires.omega]
+    return position,rotation,centers,speeds,q,u,transverse,velocity
+
+
+def wheel_axes(rotation,angles):
+    return np.array([mechanical_axis(rotation[:,0],rotation[:,1],a if i<2 else 0.) for i,a in enumerate((*angles,0.,0.))])
+
+
+def read_mechanics(car, angles):
+    position,rotation,centers,speeds,q,u,transverse,velocity = read_kinematics(car)
     mechanical = assemble_unsprung(car._sprung_frame.partition,rotation,q,((0.,0.,1.),)*4,velocity[:10])
-    axes = np.array([mechanical_axis(rotation[:,0],rotation[:,1],a if i<2 else 0.) for i,a in enumerate((*angles,0.,0.))])
+    axes = wheel_axes(rotation,angles)
     hardware = drivetrain_ports(mechanical,axes,rotation@car.config.engine_axis,rotation@car.config.input_shaft_axis,
                                 np.asarray(car.config.downstream_axes)@rotation.T,car.powertrain.mechanical_ratio,car.config)
     return position,rotation,centers,speeds,q,u,transverse,velocity,hardware
@@ -134,7 +144,7 @@ class UnsprungAdvanceInput:
         old_axes = np.array([mechanical_axis(rotation[:,0],rotation[:,1],old.steering) for old in car.tires.states])
         finite = FiniteRadialContact(roads,hardware,centers,rotation,old_axes,car.tires.deformation,
                                     steer,np.asarray(trails),dt,config,car.on_asphalt,guide_bias,motion)
-        steering_torque = config.wheel_inertia*np.asarray(car.tires.omega)[:,None]*np.cross(steer,hardware.axes)
+        steering_torque = config.wheel_inertia*np.asarray(car.tires.omega)[:,None]*ordinary_cross(steer,hardware.axes)
         air_velocity,air_force = aerodynamic_load(tuple(body.getLinearVelocity()),tuple(car.wind),config)
         body.applyCentralForce(Vec3(*air_force))
         mechanical = hardware.mechanical
@@ -202,8 +212,8 @@ def powertrain_result(source, step):
     down_wheels = -g.downstream[:,12:].T@down_torque
     down_spin = np.sum((g.downstream_inertias*step.downstream_omega)[:,None]*g.downstream_axes,axis=0)
     engine_body = (-source.engine_torque+source.engine_drag*np.dot(g.engine,z)+tc)*g.engine_axis
-    engine_body -= np.cross(z[3:6],source.config.engine_inertia*z[10]*g.engine_axis)
-    shaft_body = (-tc+tg)*g.shaft_axis-np.cross(z[3:6],source.config.input_shaft_inertia*z[11]*g.shaft_axis)
+    engine_body -= ordinary_cross(z[3:6],source.config.engine_inertia*z[10]*g.engine_axis)
+    shaft_body = (-tc+tg)*g.shaft_axis-ordinary_cross(z[3:6],source.config.input_shaft_inertia*z[11]*g.shaft_axis)
     return DrivetrainStep(wheels=step.wheels,velocity=tuple(z[:3]),angular=tuple(z[3:6]),engine_omega=z[10],
         engine_relative_omega=np.dot(g.engine,z),drive_torque=step.drive_torque,clutch_torque=tc,clutch_slip=speeds[0],
         gear_loss_torque=loss,gear_input_speed=speeds[2],engine_body_torque=tuple(engine_body),
@@ -214,7 +224,7 @@ def powertrain_result(source, step):
         shaft_omega=z[11],shaft_relative_omega=np.dot(g.shaft,z),gear_reaction=tg,
         synchronizer_slip=speeds[1] if source.synchronizing else 0.,synchronizer_heat=step.port_heat[1] if source.synchronizing else 0.,
         shaft_body_torque=tuple(shaft_body),downstream_omega=tuple(np.where(g.downstream_inertias>0.,step.downstream_omega,0.)),
-        downstream_body_torque=tuple(-down_torque@g.downstream_axes-np.cross(z[3:6],down_spin)),
+        downstream_body_torque=tuple(-down_torque@g.downstream_axes-ordinary_cross(z[3:6],down_spin)),
         downstream_wheel_torques=tuple(down_wheels),downstream_kinetic_energy=tuple(.5*g.downstream_inertias*step.downstream_omega**2),
         downstream_numerical_dissipation=tuple(.5*g.downstream_inertias*(step.downstream_omega-source.downstream)**2))
 
@@ -239,7 +249,7 @@ def publish_tires(car, source, result):
         basis = tuple(map(tuple,(source.geometry.tangents[i],source.geometry.laterals[i],source.geometry.normals[i])))
         car.tires.deformation[i] = world_deformation((wheel.deformation_x,wheel.deformation_y),basis)
         axis = source.hardware.axes[i]
-        gyro = source.config.wheel_inertia*wheel.omega*np.cross(result.velocity[3:6],axis)
+        gyro = source.config.wheel_inertia*wheel.omega*ordinary_cross(result.velocity[3:6],axis)
         steering = source.steering_torque[i]
         states.append(WheelDynamicsState(omega=wheel.omega,rotation=car.tires.rotation[i],relative_omega=wheel.relative_omega,
             longitudinal_speed=wheel.vx,lateral_speed=wheel.vy,kappa=wheel.kappa if supported else None,
@@ -273,8 +283,9 @@ def publish_tires(car, source, result):
 def observe_unsprung(car, tick):
     """只读真实车身/轮心与已积分轴速，采样不修改自由度。"""
     angles = tuple(s.steering for s in car.tires.states[:2])
-    position,rotation,centers,speeds,q,u,_xy,v,hardware = read_mechanics(car,angles)
-    geometry = read_unsprung_geometry(car._world,car._chassis,centers,rotation[:,2],hardware.axes,car.config)
+    position,rotation,centers,speeds,q,u,_xy,v = read_kinematics(car)
+    axes = wheel_axes(rotation,angles)
+    geometry = read_unsprung_geometry(car._world,car._chassis,centers,rotation[:,2],axes,car.config)
     pending = car._unsprung_pending
     loads = np.array([s.normal_load for s in car.tires.states]) if pending is None else pending[1].normal.normal_force
     axial = np.array([s.suspension_force for s in car._wheel_contacts]) if pending is None and car._wheel_contacts else (
@@ -282,13 +293,13 @@ def observe_unsprung(car, tick):
     car._wheel_contacts = wheel_contacts(car,geometry,loads,q+car._unsprung_reference,axial)
     states = []
     for i,old in enumerate(car.tires.states):
-        axis,offset = hardware.axes[i],geometry.offsets[i]-old.pneumatic_trail*geometry.tangents[i]
+        axis,offset = axes[i],geometry.offsets[i]-old.pneumatic_trail*geometry.tangents[i]
         relative = car.tires.omega[i]+np.dot(v[3:6],axis)
         steer = np.zeros(3) if pending is None else pending[0].steering_angular[i]
-        surface = speeds[i]+np.cross(v[3:6]+steer,offset)-relative*np.cross(axis,offset)
+        surface = speeds[i]+ordinary_cross(v[3:6]+steer,offset)-relative*ordinary_cross(axis,offset)
         offset_x = geometry.offsets[i]
-        surface_x = speeds[i]+np.cross(v[3:6]+steer,offset_x)-relative*np.cross(axis,offset_x)
-        radius = np.dot(axis,np.cross(offset_x,geometry.tangents[i]))
+        surface_x = speeds[i]+ordinary_cross(v[3:6]+steer,offset_x)-relative*ordinary_cross(axis,offset_x)
+        radius = np.dot(axis,ordinary_cross(offset_x,geometry.tangents[i]))
         vx = np.dot(surface_x,geometry.tangents[i])+radius*car.tires.omega[i]
         vy = np.dot(surface,geometry.laterals[i])
         supported = car._wheel_contacts[i].in_contact
@@ -300,10 +311,11 @@ def observe_unsprung(car, tick):
             mechanical_axis=tuple(axis),rolling_radius=radius))
     car.tires.states = tuple(states)
     partition = car._sprung_frame.partition
+    world_inertia = rotation@np.asarray(partition.inertia)@rotation.T
     masses = np.asarray(partition.wheel_masses)
     center_position = (partition.mass*position+np.sum(masses[:,None]*centers,axis=0))/car.config.mass
     center_velocity = (partition.mass*v[:3]+np.sum(masses[:,None]*speeds,axis=0))/car.config.mass
-    native_energy = (.5*partition.mass*np.dot(v[:3],v[:3])+.5*v[3:6]@hardware.mechanical.world_inertia@v[3:6]
+    native_energy = (.5*partition.mass*np.dot(v[:3],v[:3])+.5*v[3:6]@world_inertia@v[3:6]
                      +.5*np.sum(masses[:,None]*speeds**2))
     car._unsprung_observation = UnsprungState(partition.mass,partition.center,tuple(position),tuple(v[:3]),partition.wheel_masses,
         tuple(map(tuple,centers)),tuple(map(tuple,speeds)),tuple(q),tuple(u),tuple(geometry.deflection),
@@ -321,13 +333,13 @@ def initialize_rolling(car, speed):
     car._chassis.setLinearVelocity(pose.getQuat().getForward()*speed)
     v[:3] = tuple(car._chassis.getLinearVelocity())
     body_position = np.asarray(tuple(car._chassis.getTransform().getPos()))
-    point_velocities = v[:3]+np.cross(v[3:6],centers-body_position)+u[:,None]*rotation[:,2]
+    point_velocities = v[:3]+ordinary_cross(v[3:6],centers-body_position)+u[:,None]*rotation[:,2]
     for point,velocity in zip(car._wheel_guides.points,point_velocities):
         point.setLinearVelocity(Vec3(*velocity))
     geometry = read_unsprung_geometry(car._world,car._chassis,centers,rotation[:,2],hardware.axes,car.config)
     for i,(axis,offset,tangent) in enumerate(zip(hardware.axes,geometry.offsets,geometry.tangents)):
-        radius = np.dot(axis,np.cross(offset,tangent))
-        car.tires.omega[i] = np.dot(point_velocities[i]+np.cross(v[3:6],offset),tangent)/radius-np.dot(v[3:6],axis)
+        radius = np.dot(axis,ordinary_cross(offset,tangent))
+        car.tires.omega[i] = np.dot(point_velocities[i]+ordinary_cross(v[3:6],offset),tangent)/radius-np.dot(v[3:6],axis)
     v[12:] = car.tires.omega
     v[11] = np.dot(hardware.output,v)+np.dot(hardware.shaft_axis,v[3:6])
     car.powertrain.shaft_omega = v[11]

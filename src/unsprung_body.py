@@ -7,6 +7,7 @@ import numpy as np
 from panda3d.bullet import BulletGenericConstraint, BulletRigidBodyNode, BulletSphereShape
 from panda3d.core import BitMask32, Mat3, Quat, TransformState, Vec3
 
+from unsprung_dynamics import ordinary_cross
 from vehicle_collision import chassis_shapes
 
 
@@ -154,7 +155,7 @@ class NativeWheelGuides:
         arms = centers-position
         local = arms@rotation
         displacement = local[:,2]-np.asarray(self.frame.partition.wheel_arms)[:,2]
-        relative = (speeds-velocity-np.cross(angular,arms))@rotation[:,2]
+        relative = (speeds-velocity-ordinary_cross(angular,arms))@rotation[:,2]
         transverse = local[:,:2]-np.asarray(self.frame.partition.wheel_arms)[:,:2]
         return centers,speeds,displacement,relative,transverse
 
@@ -193,15 +194,15 @@ def apply_joint_forces(body, wheel_guides, hardware, contacts, step, engine_torq
         point.applyCentralImpulse(Vec3(*impulse))
     body.applyCentralImpulse(Vec3(*(dt*np.sum(spring,axis=0))))
     ports = np.vstack((hardware.clutch,hardware.gear,hardware.output,hardware.brakes,hardware.differential))
-    torque = np.sum(np.cross(hardware.mechanical.wheel_arms,spring),axis=0)
+    torque = np.sum(ordinary_cross(hardware.mechanical.wheel_arms,spring),axis=0)
     for rows,values in ((contacts.longitudinal,step.forces[:,0]),(contacts.lateral,step.forces[:,1]),
                         (contacts.normal,step.normal.normal_force)):
-        remainder = rows[:,3:6]-np.cross(hardware.mechanical.wheel_arms,rows[:,:3])
+        remainder = rows[:,3:6]-ordinary_cross(hardware.mechanical.wheel_arms,rows[:,:3])
         torque += remainder.T@values
     torque += engine_torque*hardware.engine[3:6]-engine_drag*np.dot(hardware.engine,step.velocity)*hardware.engine[3:6]
     torque -= ports[:,3:6].T@step.port_torques
     reaction = hardware.downstream_inertias*(step.downstream_omega-old_downstream_omega)/dt
     torque -= hardware.downstream[:,3:6].T@reaction
-    torque -= np.cross(step.velocity[3:6],hardware.spin(step.velocity,config))
+    torque -= ordinary_cross(step.velocity[3:6],hardware.spin(step.velocity,config))
     torque += steering_torque
     body.applyTorqueImpulse(Vec3(*(dt*torque)))

@@ -4,6 +4,20 @@ from dataclasses import dataclass
 
 import numpy as np
 from mechanical_kernels import cross
+from wheel_contact_kernels import ordinary_cross_rows
+
+
+def ordinary_cross(first,second):
+    """三个分量或逐行三维叉积；低精度继续原NumPy的类型/舍入规则。"""
+    first,second = np.asarray(first),np.asarray(second)
+    if first.dtype!=np.float64 or second.dtype!=np.float64:
+        return np.cross(first,second)
+    vectors = first.ndim==second.ndim==1
+    a,b = first.reshape(-1,3),second.reshape(-1,3)
+    count = len(b) if len(a)==1 else len(a)
+    result = np.empty((count,3))
+    ordinary_cross_rows((a,b),(result,),len(a),len(b))
+    return result[0] if vectors else result
 
 
 def cross_matrix(vector):

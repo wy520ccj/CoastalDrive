@@ -562,4 +562,27 @@ static PyObject *finite_contact_frames_native(PyObject *self,PyObject *args) {
 error:
     lab_release(v,11); return NULL;
 }
+/* 普通三维叉积按原两个乘法、一次减法；不能替换为补偿叉积或融合乘加。 */
+static PyObject *ordinary_cross_rows_native(PyObject *self,PyObject *args) {
+    PyObject *inputs,*outputs;
+    Py_ssize_t first,second;
+    if (!PyArg_ParseTuple(args,"OOnn",&inputs,&outputs,&first,&second)) return NULL;
+    Py_ssize_t count=first==1 ? second : first;
+    if (first<0 || second<0 || count>INT_MAX || (first!=1 && first!=count) || (second!=1 && second!=count)) {
+        PyErr_SetString(PyExc_ValueError,"三维叉积行数不能广播或超出本机索引范围"); return NULL;
+    }
+    const int dimensions[3]={2,2,2};
+    const Py_ssize_t shapes[3][3]={{first,3},{second,3},{count,3}};
+    Py_buffer v[3]={{0}};
+    if (!lab_buffers(inputs,outputs,v,2,1,dimensions,shapes,-1,-1)) goto error;
+    for (int i=0;i<count;++i) {
+        double a[3],b[3],product[3];
+        lab_row(v,first==1 ? 0 : i,a); lab_row(v+1,second==1 ? 0 : i,b);
+        cross_regular(a,b,product);
+        for (int j=0;j<3;++j) lab_set(v+2,i,j,product[j]);
+    }
+    lab_release(v,3); Py_RETURN_NONE;
+error:
+    lab_release(v,3); return NULL;
+}
 #endif
