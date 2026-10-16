@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+<rect width="1280" height="720" fill="#f3efe3"/>
+<style>text{font:18px 'Microsoft YaHei',sans-serif;fill:#102b3a}.small{font-size:14px}.card{fill:#fefcf5;stroke:#ccd6d2;stroke-width:2}.guide{fill:none;stroke:#247e96;stroke-dasharray:6 5}</style>
+<rect x="20" y="10" width="1240" height="70" rx="10" class="card"/><text x="42" y="52">COASTAL DRIVE　车辆实验室</text><text x="810" y="52">参数说明　　返回驾驶　　记录</text>
+<rect x="20" y="95" width="265" height="485" rx="12" class="card"/><text x="42" y="130">试验配置</text>
+<text x="42" y="169">车辆模型</text><rect x="42" y="181" width="220" height="34" class="guide"/><text x="42" y="240" class="small">模型来源 · 独立轮心状态</text>
+<text x="42" y="278">试验工况</text><rect x="42" y="290" width="220" height="34" class="guide"/>
+<text x="42" y="363">初速　　　　　参数框</text><text x="42" y="402">路面附着　　　参数框</text><text x="42" y="447">ABS　　高级参数</text><text x="42" y="506">开始试验</text><text x="42" y="548">固定当前为 A</text>
+<rect x="305" y="95" width="665" height="285" rx="12" class="card"/><text x="325" y="130">车辆视窗</text><rect x="325" y="147" width="625" height="215" fill="#b7bfbf"/><text x="510" y="261">真实三维车辆与道路</text>
+<rect x="305" y="390" width="665" height="82" rx="12" class="card"/><text x="325" y="416" class="small">车型与实际运行模型说明</text><text x="815" y="416" class="small">时间游标</text><text x="325" y="451">暂停　　　单步　　　回放　　　时间轴</text>
+<rect x="990" y="95" width="270" height="377" rx="12" class="card"/><text x="1012" y="132">试验结果</text><text x="1012" y="183">运行状态</text><text x="1012" y="235">距离与计时</text><text x="1012" y="290">A　　B　　差异</text><text x="1012" y="394">详细信号　工程指标</text><text x="1100" y="448">清除 A</text>
+<text x="780" y="497" class="small">A 海蓝　B 橙色（单次记录也标 B）</text>
+<rect x="305" y="510" width="468" height="153" rx="12" class="card"/><rect x="790" y="510" width="470" height="153" rx="12" class="card"/><text x="325" y="543">主信号曲线</text><text x="810" y="543">辅助信号曲线</text>
+<text x="40" y="630" class="small">运行精度与曲线组</text><text x="305" y="702" class="small">普通提示限制在自身区域；错误以最上层红色提示条显示并定位字段</text>
+</svg>

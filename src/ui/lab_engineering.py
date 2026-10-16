@@ -23,6 +23,8 @@ class EngineeringPanel:
         self.basis = app.text("", -1.35, .52, .034, MUTED, parent=self.root)
         self.rows = [app.text("", -1.35+(index//5)*1.43, .35-(index%5)*.155, .036,
                               parent=self.root) for index in range(10)]
+        for row in self.rows:
+            row.textNode.setWordwrap(35)
         self.notes = app.text("", -1.35, -.49, .032, MUTED, parent=self.root)
         self.notes.textNode.setWordwrap(79)
         self.targets = []
@@ -62,11 +64,11 @@ class EngineeringPanel:
                                + ("A 基线 / B 当前" if old else "当前记录"))
             for index, (text, item) in enumerate(zip(self.rows, items, strict=True)):
                 unit = "" if item["unit"] == "1" else " "+item["unit"]
-                value = f"{item['value']:.3f}{unit}" if item["value"] is not None else "— 未满足工况条件"
+                value = f"{item['value']:.4g}{unit}" if item["value"] is not None else "— 未满足工况条件"
                 if old is not None:
                     previous = previous_items[index]["value"]
-                    a = f"{previous:.3f}" if previous is not None else "—"
-                    b = f"{item['value']:.3f}" if item["value"] is not None else "—"
+                    a = f"{previous:.4g}" if previous is not None else "—"
+                    b = f"{item['value']:.4g}" if item["value"] is not None else "—"
                     value = f"A {a}    B {b}{unit}"
                 text.setText(f"{item['label']}\n{value}")
                 self.app.bind_parameter(self.targets[index],"metric."+item["key"])

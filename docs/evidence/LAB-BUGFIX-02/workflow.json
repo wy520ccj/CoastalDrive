@@ -1,0 +1,75 @@
+{
+  "passed": true,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "full": true,
+  "results": {
+    "game-tuned": 6,
+    "reference-rwd": 6,
+    "reference-fwd": 6,
+    "reference-awd": 6,
+    "gr86-2022-premium-6mt": 6,
+    "braking": {
+      "ticks": 12,
+      "reason": "time_limit"
+    },
+    "step_steer": {
+      "ticks": 12,
+      "reason": "time_limit"
+    },
+    "circle": {
+      "ticks": 12,
+      "reason": "time_limit"
+    },
+    "sine_steer": {
+      "ticks": 12,
+      "reason": "time_limit"
+    },
+    "manual": {
+      "ticks": 12,
+      "reason": "time_limit"
+    },
+    "constant_radius": {
+      "ticks": 12,
+      "reason": "time_limit"
+    },
+    "double_lane_change": {
+      "ticks": 12,
+      "reason": "time_limit"
+    },
+    "split_braking": {
+      "ticks": 12,
+      "reason": "time_limit"
+    },
+    "ride_bump": {
+      "ticks": 360,
+      "reason": "time_limit"
+    },
+    "ride_braking": {
+      "ticks": 141,
+      "reason": "stopped"
+    },
+    "help_fields": 138,
+    "longest_help": {
+      "key": "suspension_compression_damping",
+      "content_bottom": -0.5497978925704956
+    },
+    "record_export_load_replay": "passed"
+  },
+  "screenshots": [
+    "01-ready.png",
+    "02-chinese-error.png",
+    "03-completed-trial.png",
+    "04-advanced.png",
+    "05-signals.png",
+    "06-engineering.png",
+    "07-help-top.png",
+    "08-help-bottom.png",
+    "10-longest-help-top.png",
+    "11-longest-help-bottom.png",
+    "09-record-menu.png"
+  ],
+  "human_acceptance": "pending"
+}

@@ -31,12 +31,13 @@ def test_programmatic_slider_events_do_not_pause_computation_and_user_scrub_does
     shown = []
     run = SimpleNamespace(paused=False)
     fake = SimpleNamespace(_seeking=False, pointer_pressed=False,
-        run_state=run, timeline={"value": .25}, show_sample=shown.append)
+        run_state=run, timeline={"value": .25}, show_sample=shown.append, playing=True)
     VehicleLab.seek(fake)
     assert not run.paused and shown == []
     fake.pointer_pressed = True
     VehicleLab.seek(fake)
     assert run.paused and shown == [30]
+    assert not fake.playing
 
 
 def test_switch_requests_exit_and_cleanup_releases_world_once():
@@ -148,6 +149,7 @@ def test_failed_initialization_clears_old_candidate_but_preserves_baseline(workb
     assert all(plot.series == [baseline.samples] for plot in app.plots)
     app.clear_baseline()
     assert app.baseline_value.getText() == "—"
+    assert "已清除基线" in app.notice.getText()
 
 
 def test_focusing_entry_highlights_it_and_blur_restores_color(workbench):
@@ -160,3 +162,96 @@ def test_focusing_entry_highlights_it_and_blur_restores_color(workbench):
     app.blur_entries()
     app.taskMgr.step()
     assert entry["frameColor"] == color
+
+
+def test_invalid_text_opens_chinese_banner_and_focuses_exact_field(workbench):
+    app = workbench
+    app.set_options(LabOptions())
+    app.entries["duration"].enterText("22wd")
+    app.start_experiment()
+    assert not app.notice.root.isHidden() and not app.advanced_panel.isHidden()
+    assert app.entries["duration"].guiItem.getFocus()
+    assert app.entries["duration"].get() == "22wd"
+    assert "时长须填写数字" in app.notice.getText()
+    assert "could not" not in app.notice.getText()
+    app.set_options(LabOptions())
+    app.notice.dismiss()
+    app.advanced_panel.hide()
+    app.blur_entries()
+
+
+def test_bad_manual_input_does_not_close_or_replace_existing_world(workbench):
+    app = workbench
+    app.set_options(LabOptions(speed_kph=10, duration=.1))
+    app.start_experiment()
+    app.toggle_pause()
+    original = app.run_state
+    app.set_options(LabOptions(maneuver="manual", duration=.1))
+    app.manual_entries["throttle"].enterText("bad")
+    app.start_experiment()
+    assert app.run_state is original and not original.closed
+    assert "油门" in app.notice.getText() and not app.manual_panel.isHidden()
+    app.manual_entries["throttle"].enterText("0")
+    original.close()
+    app.run_state = None
+    app.manual_panel.hide()
+    app.notice.dismiss()
+
+
+def test_single_candidate_is_b_and_loaded_replay_pauses_and_steps_without_physics(workbench, tmp_path):
+    from lab_records import LabRecord, export_record
+
+    app = workbench
+    app.set_options(LabOptions(speed_kph=10, duration=.025))
+    app.start_experiment()
+    app.toggle_pause()
+    for _ in range(3):
+        app.single_step()
+    app.refresh_plots()
+    assert app.plots[0].labels == ["B"]
+    assert " B " in app.plots[0].readout.getText()
+    app.record = LabRecord.from_run(app.run_state)
+    app.run_state.close()
+    app.run_state = None
+    export_record(app.record, tmp_path/"loaded")
+    app.import_record(tmp_path/"loaded")
+    assert "已保存试验模型" in app.model_note.getText()
+    assert "已载入保存的试验" in app.notice.getText()
+    app.show_sample(0)
+    app.toggle_playback()
+    assert app.playing
+    app.toggle_pause()
+    assert not app.playing
+    app.single_step()
+    assert app.run_state is None and app.view_index == 1
+    assert app.playhead == app.record.samples[1]["time"]
+
+
+@pytest.mark.parametrize("document", ([], {"schema": "vehicle-engineering-v1", "parameters": []}))
+def test_malformed_engineering_files_keep_current_config_and_show_chinese(workbench, tmp_path, document):
+    import json
+
+    app = workbench
+    config = app.engineered_config
+    path = tmp_path/"wrong.json"
+    path.write_text(json.dumps(document), encoding="utf-8")
+    app.import_engineering(path)
+    assert app.engineered_config is config
+    assert not app.notice.root.isHidden()
+    assert "工程配置载入失败" in app.notice.getText()
+    app.notice.dismiss()
+
+
+def test_long_parameter_help_is_scrollable_and_preview_camera_works(workbench):
+    app = workbench
+    app.parameter_help.show("suspension_installation_curves")
+    lower = app.parameter_help.notes.getTightBounds(app.parameter_help.content)[0].z
+    assert app.parameter_help.content_scroll["canvasSize"][2] < lower
+    app.scroll_parameter_help(1)
+    assert app.parameter_help.content_scroll.verticalScroll["value"] > 0
+    app.parameter_help.hide()
+    app.run_state = None
+    app.record = None
+    previous = app.camera.getPos()
+    app.cycle_camera()
+    assert app.camera.getPos() != previous

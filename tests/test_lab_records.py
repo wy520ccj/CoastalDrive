@@ -82,6 +82,24 @@ def test_same_source_cannot_recalculate_with_different_or_unrecorded_runtime():
     assert changed_conditions(original,different).keys()=={"runtime_version"}
 
 
+def test_source_changed_during_run_cannot_be_declared_deterministic():
+    original = record(LabOptions(speed_kph=10, duration=1/120))
+    changed = replace(original, metadata={**original.metadata, "source_end": {"changed": "version"}})
+    with pytest.raises(ValueError, match="版本"):
+        recalculate(changed)
+
+
+def test_summary_time_must_match_actual_samples(tmp_path):
+    original = record(LabOptions(speed_kph=10, duration=.025))
+    export_record(original, tmp_path/"summary")
+    path = tmp_path/"summary/experiment.json"
+    document = json.loads(path.read_text(encoding="utf-8"))
+    document["summary"]["simulation_seconds"] = 99.
+    path.write_text(json.dumps(document), encoding="utf-8")
+    with pytest.raises(ValueError, match="汇总"):
+        load_record(path.parent)
+
+
 def test_external_record_rejects_malformed_runtime_precision(tmp_path):
     original = record(LabOptions(speed_kph=30,duration=.02))
     export_record(original,tmp_path/"runtime")

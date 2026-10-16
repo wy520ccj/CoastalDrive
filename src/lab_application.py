@@ -1,7 +1,6 @@
 """车辆动力学实验室窗口：配置、离线运行、真实曲线与记录分析。"""
 
 import json
-import math
 import os
 from datetime import UTC, datetime
 from pathlib import Path
@@ -19,6 +18,7 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import TextNode, TransparencyAttrib, loadPrcFileData
 
 from lab_experiment import MANEUVERS, LabExperiment, LabOptions
+from lab_inputs import LabInputError, read_number
 from lab_records import LabRecord, changed_conditions, export_record, load_record, recalculate
 from lab_scene import LabScene
 from paths import user_data
@@ -26,6 +26,7 @@ from suspension_bench import fit_bench
 from suspension_bench import validate_metadata as validate_suspension_metadata
 from tire_calibration import validate_fit_metadata
 from ui import theme
+from ui.lab_feedback import error_text, log_error
 from ui.lab_widgets import MUTED, LabOptionMenu, button_textures
 from vehicle_designs import DESIGN_VEHICLES, vehicle_design
 from vehicle_parameters import config_from_document, load_vehicle_config, save_vehicle_config
@@ -87,6 +88,8 @@ class VehicleLab(ShowBase):
         self.accept("tab", self.cycle_entry, [1])
         self.accept("shift-tab", self.cycle_entry, [-1])
         self.accept("f1", self.show_parameter_help)
+        self.accept("wheel_up", self.scroll_parameter_help, [-1])
+        self.accept("wheel_down", self.scroll_parameter_help, [1])
         self.accept("mouse1", self.set_pointer, [True])
         self.accept("mouse1-up", self.set_pointer, [False])
         self.taskMgr.add(self.update, "lab-update")
@@ -160,7 +163,15 @@ class VehicleLab(ShowBase):
         self.blur_entries()
         for menu in (self.vehicle_menu, self.maneuver_menu, self.abs_menu, self.esc_menu, self.plot_menu):
             menu.hidePopupMenu()
-        self.parameter_help.show(key)
+        try:
+            self.parameter_help.show(key)
+        except OSError as error:
+            self.show_error("参数说明资源未能打开", error)
+
+    def scroll_parameter_help(self, direction):
+        if not self.parameter_help.root.isHidden():
+            bar = self.parameter_help.content_scroll.verticalScroll
+            bar["value"] = min(1., max(0., bar["value"]+direction*.12))
 
     def option(self, labels, x, z, width, command=None, parent=None, parameter=None):
         menu = LabOptionMenu(parent=parent or self.root, items=labels, text_font=self.font,
@@ -188,18 +199,42 @@ class VehicleLab(ShowBase):
         build_workbench(self)
 
     def read_options(self):
+        config = self.engineered_config or DESIGN_VEHICLES[self.vehicle_menu.selectedIndex].config
         return LabOptions(vehicle_id=DESIGN_VEHICLES[self.vehicle_menu.selectedIndex].id,
             maneuver=tuple(MANEUVERS)[self.maneuver_menu.selectedIndex],
-            speed_kph=float(self.entries["speed"].get()), friction=float(self.entries["mu"].get()),
-            duration=float(self.entries["duration"].get()), steering_deg=float(self.entries["steer"].get()),
-            onset=float(self.entries["onset"].get()), radius_m=float(self.entries["radius"].get()),
-            right_friction=float(self.entries["right_mu"].get()),
-            bump_height_m=float(self.entries["bump_height"].get()),
-            bump_length_m=float(self.entries["bump_length"].get()),
-            bump_distance_m=float(self.entries["bump_distance"].get()),
-            cg_height=float(self.entries["cg"].get()) if self.entries["cg"].get().strip() else None,
-            tire_reference_load=float(self.entries["tire_load"].get()) if self.entries["tire_load"].get().strip() else None,
+            speed_kph=self.read_field("speed"), friction=self.read_field("mu"),
+            duration=self.read_field("duration"),
+            steering_deg=self.read_field("steer", bounds=(-config.steering_degrees, config.steering_degrees)),
+            onset=self.read_field("onset"), radius_m=self.read_field("radius"),
+            right_friction=self.read_field("right_mu"),
+            bump_height_m=self.read_field("bump_height"),
+            bump_length_m=self.read_field("bump_length"),
+            bump_distance_m=self.read_field("bump_distance"),
+            cg_height=self.read_field("cg", optional=True),
+            tire_reference_load=self.read_field("tire_load", optional=True),
             abs_enabled=self.abs_menu.selectedIndex == 0, esc_enabled=self.esc_menu.selectedIndex == 1)
+
+    def read_field(self, key, **options):
+        return read_number(self.entries[key].get(), key, **options)
+
+    def show_error(self, message, error=None):
+        """外部输入错误就地定位；旧试验数据保留，物理失败记录另由运行状态管理。"""
+        if error is not None:
+            log_error(message, error)
+            message += "："+error_text(error)
+        if isinstance(error, LabInputError):
+            self.blur_entries()
+            if error.key.startswith("manual."):
+                self.advanced_panel.hide()
+                self.manual_panel.show()
+                entry = self.manual_entries[error.key.split(".")[1]]
+            else:
+                self.manual_panel.hide()
+                if error.key not in ("speed", "mu"):
+                    self.advanced_panel.show()
+                entry = self.entries[error.key]
+            entry["focus"] = 1
+        self.notice.error(message)
 
     def choose_vehicle(self, label):
         imported = self.engineered_config is not None
@@ -225,11 +260,14 @@ class VehicleLab(ShowBase):
             design = DESIGN_VEHICLES[self.vehicle_menu.selectedIndex]
             config = config_from_document(document, design.config)
             metadata = document.get("metadata", {})
+            if not isinstance(metadata, dict):
+                raise TypeError("工程文件metadata须为对象，不能是数组或空值")
             validate_fit_metadata(metadata)
             validate_suspension_metadata(metadata)
         except (OSError, ValueError, KeyError, TypeError) as error:
-            self.notice.setText(f"工程配置载入失败：{error}")
+            self.show_error("工程配置载入失败，原配置未更改", error)
             return
+        self.notice.dismiss()
         self.engineered_config, self.parameter_metadata = config, metadata
         self.engineered_vehicle_id = design.id
         self.refresh_configuration_note()
@@ -237,7 +275,10 @@ class VehicleLab(ShowBase):
         self.entries["cg"].enterText("")
         self.entries["tire_load"].enterText("")
         basis = metadata.get("basis", "导入工程配置，来源按文件声明")
-        self.model_note.setText(f"{design.name} · 导入工程模型")
+        if self.run_state is None and self.record is None:
+            self.model_note.setText(f"{design.name} · 导入工程模型")
+        else:
+            basis += "；将用于下次试验，当前结果仍使用原配置。"
         self.notice.setText(basis)
         self.record_menu.hide()
 
@@ -267,7 +308,7 @@ class VehicleLab(ShowBase):
             (folder/"fit-report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2,
                                                           allow_nan=False), encoding="utf-8")
             if not report["passed"]:
-                self.notice.setText("部件数据不符合当前线性本构，未应用；验证误差见台架报告。")
+                self.show_error("部件数据不符合当前线性本构，未应用；验证误差见台架报告。")
                 return
             metadata = dict(self.parameter_metadata or {})
             metadata["suspension_calibration"] = report
@@ -277,7 +318,7 @@ class VehicleLab(ShowBase):
             self.import_engineering(folder/"candidate-vehicle.json")
             self.advanced_panel.hide()
         except (OSError, ValueError, KeyError, TypeError, ArithmeticError) as error:
-            self.notice.setText(f"悬架台架载入失败：{error}")
+            self.show_error("悬架台架载入失败，原配置未更改", error)
 
     def open_suspension_bench(self):
         import tkinter as tk
@@ -309,9 +350,12 @@ class VehicleLab(ShowBase):
     def start_experiment(self):
         try:
             options = self.read_options()
+            config = self.engineered_config or vehicle_design(options.vehicle_id).config
+            manual_command = self.read_manual_command(config) if options.maneuver == "manual" else None
         except ValueError as error:
-            self.notice.setText(f"新试验未开始：{error}；已有结果仍属于上次试验")
+            self.show_error("新试验未开始，已有结果仍属上次试验", error)
             return
+        self.notice.dismiss()
         if self.run_state is not None:
             self.run_state.close()
             self.run_state = None
@@ -328,23 +372,23 @@ class VehicleLab(ShowBase):
                                            parameter_metadata=self.parameter_metadata)
         except (ArithmeticError, ValueError, RuntimeError, OSError) as error:
             self.status.setText("初始化失败")
-            self.notice.setText(str(error)+"；工程模型入口：记录 → 导入工程模型"
+            self.show_error("试验初始化失败；工程模型入口：记录 → 导入工程模型"
                                 if options.maneuver in ("ride_bump", "ride_braking")
                                 and not (self.engineered_config or vehicle_design(options.vehicle_id).config).unsprung_enabled
-                                else str(error))
+                                else "试验初始化失败", error)
             return
         self.run_state.paused = False
         self.scene.set_vehicle(self.run_state.design, self.run_state.config)
         self.scene.set_trial(options, self.run_state.snapshots[0].player)
         basis = "工程初值" if options.vehicle_id.startswith("gr86") else "设计模型"
         if self.engineered_config is not None:
-            basis = "导入工程模型（来源见F1）"
+            basis = "导入工程模型"
         self.model_note.setText(f"{self.run_state.design.name} · {basis}")
         self.notice.setText("离线计算真实固定步；暂停后可拖动时间轴分析")
         self.manual_panel.show() if options.maneuver == "manual" else self.manual_panel.hide()
         self.manual_button.show() if options.maneuver == "manual" else self.manual_button.hide()
         if options.maneuver == "manual":
-            self.apply_manual()
+            self.run_state.manual_command = manual_command
         self.refresh_plots()
         self.show_sample(0)
 
@@ -370,6 +414,9 @@ class VehicleLab(ShowBase):
             self.set_plot_group("转向响应")
 
     def toggle_pause(self):
+        if self.playing:
+            self.playing = False
+            return
         if self.run_state is not None and not self.run_state.done:
             self.run_state.paused = not self.run_state.paused
             self.playing = False
@@ -377,7 +424,15 @@ class VehicleLab(ShowBase):
                 self.record = None
 
     def single_step(self):
-        if self.run_state is None or self.run_state.done:
+        if self.run_state is None:
+            if self.record is not None:
+                self.playing = False
+                self.show_sample(self.view_index+1)
+                self.playhead = self.record.samples[self.view_index]["time"]
+            else:
+                self.show_error("尚无试验数据，请先开始试验。")
+            return
+        if self.run_state.done:
             return
         self.run_state.paused = True
         self.playing = False
@@ -385,29 +440,36 @@ class VehicleLab(ShowBase):
         try:
             self.run_state.step()
         except (ArithmeticError, ValueError, RuntimeError) as error:
-            self.notice.setText(f"物理求解失败：{error}")
+            self.show_error("物理求解失败，已保留完成部分", error)
         self.refresh_plots()
         self.show_sample(len(self.run_state.samples)-1)
 
     def apply_manual(self):
         if self.run_state is None or self.run_state.options.maneuver != "manual":
+            self.show_error("请先开始“执行器输入”试验，再应用输入。")
+            return
+        if self.run_state.done:
+            self.show_error("试验已结束，请重新开始后再应用执行器输入。")
             return
         try:
-            values = {key: float(entry.get()) for key, entry in self.manual_entries.items()}
-            steering = float(self.entries["steer"].get())
-            if (any(not math.isfinite(value) for value in (*values.values(), steering))
-                or any(not 0 <= values[key] <= 100 for key in ("throttle", "brake", "clutch"))
-                or abs(steering) > self.run_state.config.steering_degrees
-                or values["gear"] not in range(-1, len(self.run_state.config.gear_ratios)+1)):
-                raise ValueError("踏板0～100%，挡位R=-1/N=0，转角须在车型范围内")
-            self.run_state.manual_command = VehicleCommand(steering=steering,
-                throttle=values["throttle"]/100, brake=values["brake"]/100,
-                gear=int(values["gear"]), clutch=values["clutch"]/100)
+            command = self.read_manual_command(self.run_state.config)
+            self.run_state.manual_command = command
+            self.record = None
+            self.notice.dismiss()
             self.notice.setText("执行器请求已更新；仪表分别显示请求与实际响应")
             self.blur_entries()
             self.manual_panel.hide()
         except ValueError as error:
-            self.notice.setText(str(error))
+            self.show_error("执行器输入未应用，原请求保持", error)
+
+    def read_manual_command(self, config):
+        values = {key: read_number(entry.get(), "manual."+key,
+                    **({"bounds": (-1, len(config.gear_ratios))} if key == "gear" else {}))
+                  for key, entry in self.manual_entries.items()}
+        steering = self.read_field("steer", bounds=(-config.steering_degrees, config.steering_degrees))
+        return VehicleCommand(steering=steering, throttle=values["throttle"]/100,
+                              brake=values["brake"]/100, gear=int(values["gear"]),
+                              clutch=values["clutch"]/100)
 
     def show_manual(self):
         if self.run_state is not None and self.run_state.options.maneuver == "manual":
@@ -445,13 +507,17 @@ class VehicleLab(ShowBase):
     def hotkey(self, action):
         # DirectEntry的focus选项不随鼠标聚焦同步，必须读取PGEntry实际状态。
         if any(not panel.isHidden() for panel in (self.advanced_panel, self.manual_panel,
-                self.details_panel, self.record_menu, self.parameter_help.root, self.engineering_panel.root)):
+                self.details_panel, self.record_menu, self.parameter_help.root, self.engineering_panel.root,
+                self.notice.root)):
             return
         if not any(entry.guiItem.getFocus() and not entry.isHidden()
                    for entry in (*self.entries.values(), *self.manual_entries.values())):
             action()
 
     def escape(self):
+        if not self.notice.root.isHidden():
+            self.notice.dismiss()
+            return
         self.blur_entries()
         if not self.parameter_help.root.isHidden():
             self.parameter_help.hide()
@@ -473,10 +539,12 @@ class VehicleLab(ShowBase):
     def pin_baseline(self):
         record = self.active_record()
         if record is None:
+            self.show_error("尚无试验结果，请先开始试验。")
             return
         if self.run_state is not None and not self.run_state.paused:
-            self.notice.setText("先暂停或完成实验，再固定基线 A")
+            self.show_error("先暂停或完成实验，再固定基线 A。")
             return
+        self.notice.dismiss()
         self.baseline = record
         self.notice.setText(f"A 已固定：μ={record.metadata['summary']['options']['friction']:.2f}；修改配置后开始 B")
         self.refresh_plots()
@@ -484,6 +552,8 @@ class VehicleLab(ShowBase):
 
     def clear_baseline(self):
         self.baseline = None
+        self.notice.dismiss()
+        self.notice.setText("已清除基线 A；当前 B 结果保留。")
         self.refresh_plots()
         active = self.record if self.record is not None else self.run_state
         if active is not None:
@@ -496,9 +566,8 @@ class VehicleLab(ShowBase):
     def refresh_plots(self):
         # 运行中直接读取数组，避免10Hz重复生成完整配置/源码摘要。
         active = self.record if self.record is not None else self.run_state
-        records = tuple(record for record in (self.baseline, active) if record is not None)
         for plot in self.plots:
-            plot.update(records)
+            plot.update((self.baseline, active))
         if active is not None:
             duration = active.samples[-1]["time"]
             self.timeline["range"] = (0, max(duration, 1/120))
@@ -599,6 +668,7 @@ class VehicleLab(ShowBase):
         # PGSlider的程序写值也会延迟发ADJUST；只有实际拖动才是分析输入。
         if self._seeking or not self.pointer_pressed:
             return
+        self.playing = False
         if self.run_state is not None and not self.run_state.paused:
             self.run_state.paused = True
         self.playhead = self.timeline["value"]
@@ -613,6 +683,7 @@ class VehicleLab(ShowBase):
     def toggle_playback(self):
         active = self.record if self.record is not None else self.run_state
         if active is None:
+            self.show_error("尚无可回放数据，请先运行或载入试验。")
             return
         if self.run_state is not None:
             self.run_state.paused = True
@@ -626,18 +697,23 @@ class VehicleLab(ShowBase):
 
     def cycle_camera(self):
         self.scene.camera_mode = (self.scene.camera_mode+1)%3
-        self.show_sample(self.view_index)
+        if self.run_state is None and self.record is None:
+            self.scene.frame_vehicle()
+        else:
+            self.show_sample(self.view_index)
 
     def export(self):
         record = self.active_record()
         if record is None:
+            self.show_error("尚无可导出数据，请先运行试验。")
             return
         try:
             folder = self.output/datetime.now(UTC).astimezone().strftime("%Y%m%d-%H%M%S-%f")
             self.last_report = export_record(record, folder, self.baseline)
+            self.notice.dismiss()
             self.notice.setText("已导出 CSV 和报告，可从“记录”菜单打开")
         except (OSError, ValueError) as error:
-            self.notice.setText(f"导出失败：{error}")
+            self.show_error("导出失败，请重试；未覆盖以前的导出", error)
 
     def open_report(self):
         self.record_menu.hide()
@@ -645,7 +721,9 @@ class VehicleLab(ShowBase):
             try:
                 os.startfile(self.last_report)
             except OSError as error:
-                self.notice.setText(str(error))
+                self.show_error("报告未能打开", error)
+        else:
+            self.show_error("尚无已导出报告，请先导出CSV和报告。")
 
     def open_record(self):
         import tkinter
@@ -668,13 +746,17 @@ class VehicleLab(ShowBase):
             design = vehicle_design(options.vehicle_id)
             config = load_vehicle_config(Path(folder)/"vehicle.json", design.config)
         except (OSError, ValueError, KeyError, TypeError) as error:
-            self.notice.setText(f"载入失败：{error}")
+            self.show_error("记录载入失败，当前试验仍保留", error)
             return
         if self.run_state is not None:
             self.run_state.close()
             self.run_state = None
         self.record = record
         self.playing = False
+        self.blur_entries()
+        self.advanced_panel.hide()
+        self.details_panel.hide()
+        self.notice.dismiss()
         self.manual_panel.hide()
         self.set_options(options)
         self.engineered_config = config
@@ -683,9 +765,9 @@ class VehicleLab(ShowBase):
         self.refresh_configuration_note()
         self.scene.set_vehicle(design, config)
         self.scene.set_trial(options, record.snapshots[0].player)
-        basis = "工程初值" if options.vehicle_id.startswith("gr86") else "设计模型"
-        self.model_note.setText(f"{record.metadata['vehicle_name']} · {basis}")
+        self.model_note.setText(f"{record.metadata['vehicle_name']} · 已保存试验模型")
         self.status.setText("记录分析")
+        self.notice.setText("已载入保存的试验；回放只读取记录，点击“开始试验”可按当前配置重新运行。")
         self.present_summary(record.metadata["summary"])
         self.refresh_plots()
         self.show_sample(0)
@@ -694,10 +776,12 @@ class VehicleLab(ShowBase):
         self.record_menu.hide()
         record = self.active_record()
         if record is None:
+            self.show_error("尚无可复算记录，请先运行或载入试验。")
             return
         if self.run_state is not None and not self.run_state.paused:
-            self.notice.setText("先暂停或完成实验再复算")
+            self.show_error("先暂停或完成实验再复算。")
             return
+        self.playing = False
         self.record = record
         if self.run_state is not None:
             self.run_state.close()
@@ -705,8 +789,9 @@ class VehicleLab(ShowBase):
         try:
             actual = recalculate(record)
         except (ArithmeticError, ValueError, RuntimeError, OSError) as error:
-            self.notice.setText(f"复算失败：{error}")
+            self.show_error("复算失败，原记录仍可查看和导出", error)
             return
+        self.notice.dismiss()
         self.baseline, self.record = record, actual
         exact = record.samples == actual.samples
         self.notice.setText("逐拍真实信号完全一致" if exact else "复算存在信号差异，A/B已保留")
@@ -751,7 +836,7 @@ class VehicleLab(ShowBase):
                 try:
                     run.advance()
                 except (ArithmeticError, ValueError, RuntimeError) as error:
-                    self.notice.setText(f"物理求解失败，已停止并保留记录：{error}")
+                    self.show_error("物理求解失败，已停止并保留记录", error)
                 self.show_sample(len(run.samples)-1)
             labels = {"stopped": "制动完成", "time_limit": "时长完成", "collision": "碰撞终止",
                       "reset": "复位终止", "failed": "求解失败"}

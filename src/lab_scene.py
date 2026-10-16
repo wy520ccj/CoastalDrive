@@ -71,7 +71,11 @@ class LabScene:
         for visual, wheel in zip(self.wheels, state.wheels):
             visual.setPos(*wheel.position)
             visual.setQuat(Quat(*wheel.orientation))
-        position = Vec3(*state.position)
+        self.frame_vehicle()
+
+    def frame_vehicle(self):
+        """预览和回放共用镜头摆位，只读取显示节点，不产生物理状态。"""
+        position = self.vehicle.getPos()
         offsets = (Vec3(6, -9, 4), Vec3(0, 0, 24), Vec3(15, 0, 3))
         self.base.camLens.setFov(48)
         if self.camera_mode == 1 and self.path_bounds is not None:

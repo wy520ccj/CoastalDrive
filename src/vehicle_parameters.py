@@ -49,6 +49,8 @@ PARAMETER_GROUPS = {
 
 def _parameters(document):
     """旧平面JSON保持原协议；工程文件按声明版本与分区恢复。"""
+    if not isinstance(document, dict):
+        raise TypeError("车辆工程文件须为JSON对象")
     if "schema" not in document:
         return document
     if document["schema"] != SCHEMA:
@@ -57,9 +59,13 @@ def _parameters(document):
     if unknown:
         raise ValueError(f"未知车辆工程文件字段：{sorted(unknown)}")
     values = {}
+    if not isinstance(document["parameters"], dict):
+        raise TypeError("车辆工程parameters须为分区对象")
     for group, parameters in document["parameters"].items():
         if group not in PARAMETER_GROUPS:
             raise ValueError(f"未知车辆参数分区：{group}")
+        if not isinstance(parameters, dict):
+            raise TypeError(f"车辆参数分区{group}须为对象")
         invalid = set(parameters) - set(PARAMETER_GROUPS[group])
         if invalid:
             raise ValueError(f"参数分区{group}包含不属于该分区的字段：{sorted(invalid)}")

@@ -105,8 +105,9 @@ def plot_svg(records, key, width=760, height=220):
         value = low+(high-low)*index/4
         y = height-32-index*(height-68)/4
         output += [f'<path d="M58 {y}H{width-16}" stroke="#c9d3cc"/>',
-                   f'<text x="5" y="{y+4}" fill="#455c63" font-size="11">{value:.2f}</text>']
-    for series, color in zip(rows, ("#247e96", "#f47c24")):
+                   f'<text x="5" y="{y+4}" fill="#455c63" font-size="11">{value:.4g}</text>']
+    colors = ("#247e96", "#f47c24") if len(records) == 2 else ("#f47c24",)
+    for series, color in zip(rows, colors):
         path = []
         connected = False
         for row in series:
@@ -187,7 +188,7 @@ def export_record(record, folder, baseline=None):
     report = f'''<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>CoastalDrive 实验报告</title>
 <style>body{{background:#f3efe3;color:#102b3a;font:15px system-ui;max-width:1000px;margin:40px auto;padding:0 24px}}svg{{width:100%;margin:10px 0}}pre{{white-space:pre-wrap;background:#fefcf5;padding:20px;border-radius:8px}}td{{border-bottom:1px solid #c9d3cc;padding:8px}}h1{{color:#247e96}}</style>
 <h1>CoastalDrive · 车辆动力学实验</h1><p>{html.escape(record.metadata["vehicle_name"])} · 120 Hz · 离线固定步 · {html.escape(precision)}</p>
-<p>{html.escape(record.metadata["model_basis"])}</p><p>曲线来自真实物理记录。A 为海蓝，B 为橙色；单次记录为海蓝。制动距离使用完成步的三维行驶距离，停止阈值 |v| ≤ 0.1 m/s。</p>
+<p>{html.escape(record.metadata["model_basis"])}</p><p>曲线来自真实物理记录。A 为海蓝，B 为橙色；单次记录为橙色。普通制动距离使用完成步的三维行驶距离；颠簸制动使用制动请求前样本至停止的整车质心水平路径。停止阈值水平速率 ≤ 0.1 m/s。</p>
 <h2>试验结果</h2><pre>{summary}</pre><h2>工程指标</h2><p>列顺序：{"A / B" if baseline else "本次"}。未满足条件的原因及计算区间见engineering.json。</p><table>{metrics_table}</table><h2>乘坐运动与接地</h2><p>世界Z质心/轮心惯性加速度，未作频率加权，不作为ISO座椅舒适等级。实体刺激未完成或旧记录缺少自由度时保留未定义值。</p><table>{ride_table}</table>{plots}<h2>比较条件</h2><pre>{change_text}</pre>
 <h2>悬架部件台架适用域</h2><p>只核对120Hz完成拍采样的行程/速度，不覆盖子步峰值或台架温度之外的条件。null表示未提供此类台架来源。</p><pre>{bench_text}</pre>
 <h2>信号单位与字段来源</h2><table>{catalog}</table><p>完整配置、命令序列与源码/原生模块摘要见 experiment.json；120 Hz 数据见 signals.csv，动画快照见 snapshots.bin。实际计算耗时不包含初始化与文件导出。</p></html>'''
@@ -200,6 +201,8 @@ def load_record(folder):
 
     folder = Path(folder)
     document = json.loads((folder/"experiment.json").read_text(encoding="utf-8"))
+    if not isinstance(document, dict):
+        raise TypeError("试验记录须为JSON对象")
     if document["schema"] != SCHEMA or document["physics_hz"] != 120:
         raise ValueError("只支持当前120Hz实验记录")
     if ("runtime_start" in document)!=("runtime_end" in document):raise ValueError("运行时首末摘要不完整")
@@ -214,6 +217,10 @@ def load_record(folder):
     commands = tuple(VehicleCommand(**command) for command in document.pop("commands"))
     if not len(samples) == len(snapshots) == len(commands) or not samples:
         raise ValueError("信号、快照与输入记录长度不一致")
+    summary = document["summary"]
+    if (summary["ticks"] != len(samples)-1
+            or not math.isclose(summary["simulation_seconds"], (len(samples)-1)/120, abs_tol=1e-9)):
+        raise ValueError("试验汇总的拍数或时长与实际记录不一致")
     declared = {item["key"] for item in document["signals"]}
     if (declared not in (LEGACY_SIGNAL_KEYS, PRE_ALIGN_SIGNAL_KEYS, PRE_UNSPRUNG_SIGNAL_KEYS,set(SIGNAL_BY_KEY))
         or any(set(row) != declared for row in samples)):
@@ -251,7 +258,7 @@ def recalculate(record):
 
     if record.metadata["summary"]["reason"] in ("failed", "collision", "reset"):
         raise ValueError("终止试验可分析已完成记录；自动复算仅接受暂停、停止或时长完成的试验")
-    if record.metadata["source_start"] != model_fingerprint():
+    if not record.metadata["source_start"] == record.metadata["source_end"] == model_fingerprint():
         raise ValueError("当前模型版本与记录不同，不能声明确定性重算")
     if "runtime_start" not in record.metadata or "runtime_end" not in record.metadata:
         raise ValueError("旧记录未保存实际运行时，不能声明确定性重算")

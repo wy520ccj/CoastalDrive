@@ -156,4 +156,7 @@ INPUT_FIELDS = {
     "brake_release": ("比例/s", "游戏制动释放速率；仿真渐变关闭时不使用"),
     "assisted_lateral_acceleration": ("m/s²", "游戏速度转向包络目标；仿真包络关闭时不使用"),
     "reverse_delay": ("s", "游戏辅助倒挡等待；仿真自动倒挡关闭时不使用"),
+    "keyboard_steering_rate": ("比例/s or None", "键盘归一化转向输入变化速率；None采用直接输入，实验台执行器不使用"),
+    "steering_response_time": ("s or None", "辅助键盘转向的无超调响应时间；None采用原执行器响应，实验台不使用"),
+    "steering_return_time": ("s", "辅助键盘转向松开时的回正响应时间；直接研究执行器不使用"),
 }

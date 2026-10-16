@@ -10,6 +10,7 @@ from panda3d.core import BitMask32, TransformState, Vec3
 
 from driving_experiment import DrivingExperiment, ExperimentOptions
 from driving_modes import DrivingMode
+from lab_inputs import validate_number
 from lab_maneuvers import bump_geometry, path_command, path_error
 from lab_metrics import brake_start_index
 from lab_records import model_fingerprint
@@ -49,20 +50,18 @@ class LabOptions:
         design = vehicle_design(self.vehicle_id)
         if self.maneuver not in MANEUVERS:
             raise ValueError("未知试验工况")
-        limits = ((self.speed_kph, 0, 200), (self.friction, .1, 2),
-                  (self.radius_m, 15, 150), (self.right_friction, .1, 2),
-                  (self.duration, FIXED_DT, 60), (self.onset, 0, 60),
-                  (self.steering_deg, -design.config.steering_degrees, design.config.steering_degrees))
-        if any(not math.isfinite(value) or not low <= value <= high for value, low, high in limits):
-            raise ValueError("初速0～200km/h、μ0.1～2、时长≤60s、转角须在车型范围内")
-        if self.cg_height is not None and (not math.isfinite(self.cg_height) or not .2 <= self.cg_height <= 1):
-            raise ValueError("质心高度须为0.2～1m")
-        if self.tire_reference_load is not None and (
-                not math.isfinite(self.tire_reference_load) or self.tire_reference_load <= 0):
-            raise ValueError("轮胎标定基准轮荷须为有限正值N；留空采用车型轮胎数据")
-        if (not all(math.isfinite(v) for v in (self.bump_height_m,self.bump_length_m,self.bump_distance_m))
-                or not .001<=self.bump_height_m<=.05 or not .1<=self.bump_length_m<=5. or not 2.<=self.bump_distance_m<=100.):
-            raise ValueError("凸起高度须为1～50mm、长度0.1～5m、距起点2～100m")
+        for key, value in (("speed", self.speed_kph), ("mu", self.friction),
+                ("radius", self.radius_m), ("right_mu", self.right_friction),
+                ("duration", self.duration), ("onset", self.onset),
+                ("bump_height", self.bump_height_m), ("bump_length", self.bump_length_m),
+                ("bump_distance", self.bump_distance_m)):
+            validate_number(key, value)
+        validate_number("steer", self.steering_deg,
+                        bounds=(-design.config.steering_degrees, design.config.steering_degrees))
+        if self.cg_height is not None:
+            validate_number("cg", self.cg_height)
+        if self.tire_reference_load is not None:
+            validate_number("tire_load", self.tire_reference_load)
 
 
 LAB_DEFAULTS = LabOptions()

@@ -32,7 +32,10 @@ class LabPlot:
     def update(self, records):
         self.lines.removeNode()
         self.lines = self.root.attachNewNode("curves")
-        series = [record.samples for record in records]
+        # 调用方固定传(A,B)槽；缺少A不能把当前B曲线错标成A。
+        indexed = [(index, record.samples) for index, record in enumerate(records) if record is not None]
+        series = [rows for _, rows in indexed]
+        self.labels = ["AB"[index] for index, _ in indexed]
         self.series = series
         values = [row[key] for rows in series for row in rows for key in self.keys if row[key] is not None]
         low, high = (min(values), max(values)) if values else (0., 1.)
@@ -55,7 +58,7 @@ class LabPlot:
             z = z0+(value-low)/(high-low)*(z1-z0)
             grid.moveTo(x0, 0, z)
             grid.drawTo(x1, 0, z)
-            label = f"{value:.2f}" if step < 1 else f"{value:g}"
+            label = f"{value:.4g}"
             self.axis_labels.append(OnscreenText(parent=self.root, font=self.font, text=label, fg=MUTED,
                 pos=(x0-.025, z-.009), scale=.034, align=TextNode.ARight))
         for index in range(5):
@@ -66,7 +69,8 @@ class LabPlot:
                 text=f"{self.duration*index/4:.1f}", fg=MUTED,
                 pos=(x, z0-.052), scale=.034))
         self.lines.attachNewNode(grid.create())
-        for rows, color in zip(series, COLORS):
+        for slot, rows in indexed:
+            color = COLORS[slot]
             for channel, key in enumerate(self.keys):
                 curve = LineSegs()
                 curve.setThickness(1.8)
@@ -107,6 +111,7 @@ class LabPlot:
         for index, rows in enumerate(self.series):
             sample = round(time*120)
             value = rows[sample][self.keys[0]] if sample < len(rows) else None
-            values.append(f"{'AB'[index]} {value:.2f}" if value is not None else f"{'AB'[index]} —")
+            label = self.labels[index]
+            values.append(f"{label} {value:.4g}" if value is not None else f"{label} —")
         suffix = "  实线 / 虚线" if len(self.keys) > 1 else ""
         self.readout.setText(f"t {time:.3f} s    {'   '.join(values)}{suffix}")

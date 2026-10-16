@@ -15,7 +15,7 @@ AREAS = {
     "workflow": ["test_validation_runner"],
     "estimation": ["test_state_estimation", "test_sensor_run"],
     "research": ["test_driving_experiment"],
-    "lab": ["test_lab_experiment", "test_lab_records", "test_lab_ui", "test_lab_maneuvers",
+    "lab": ["test_lab_experiment", "test_lab_inputs", "test_lab_records", "test_lab_ui", "test_lab_maneuvers",
             "test_lab_metrics", "test_parameter_help", "test_tire_calibration", "test_tire_aligning"],
     "core": ["test_core", "test_stage4"],
     "vehicle": ["test_h1_vehicle", "test_driving_response", "test_curved_driving",

@@ -1,0 +1,8 @@
+{
+  "baseline": "bd50d27",
+  "scope": "original UI and file-boundary methods, current imported backend",
+  "numeric_input_error": "could not convert string to float: '22wd'",
+  "seek_leaves_playback_running": true,
+  "pause_leaves_loaded_playback_running": true,
+  "malformed_engineering_uncaught_exception": "AttributeError: 'list' object has no attribute 'items'"
+}

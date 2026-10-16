@@ -1,0 +1,128 @@
+{
+  "started_utc": "2026-10-16T16:34:10.681770+00:00",
+  "git_head": "bd50d27fb20254cb0e8a4e7fade87705de6ee87b",
+  "git_status": "M src/lab_application.py\n M src/lab_experiment.py\n M src/lab_records.py\n M src/lab_scene.py\n M src/ui/lab_engineering.py\n M src/ui/lab_plot.py\n M src/ui/lab_workbench.py\n M src/ui/parameter_help.py\n M src/vehicle_parameter_info.py\n M src/vehicle_parameters.py\n M tests/test_lab_records.py\n M tests/test_lab_ui.py\n M tests/test_physics_config_io.py\n M tools/validate.py\n?? docs/evidence/LAB-BUGFIX-02/\n?? docs/tasks/LAB-BUGFIX-02.md\n?? src/lab_inputs.py\n?? src/ui/lab_feedback.py\n?? tests/test_lab_inputs.py\n?? tools/lab_workflow_check.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [
+    "lab"
+  ],
+  "tests": [
+    "tests/test_vehicle_parameters.py",
+    "tests/test_physics_config_io.py",
+    "tests/test_lab_ride.py",
+    "tests/test_lab_ride_braking.py"
+  ],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\LAB-BUGFIX-02-T1-double-final\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.163
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_lab_experiment.py",
+        "tests/test_lab_inputs.py",
+        "tests/test_lab_records.py",
+        "tests/test_lab_ui.py",
+        "tests/test_lab_maneuvers.py",
+        "tests/test_lab_metrics.py",
+        "tests/test_parameter_help.py",
+        "tests/test_tire_calibration.py",
+        "tests/test_tire_aligning.py",
+        "tests/test_vehicle_parameters.py",
+        "tests/test_physics_config_io.py",
+        "tests/test_lab_ride.py",
+        "tests/test_lab_ride_braking.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\LAB-BUGFIX-02-T1-double-final\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 26.01
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\LAB-BUGFIX-02-T1-double-final\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.644
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\LAB-BUGFIX-02-T1-double-final\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.61
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\LAB-BUGFIX-02-T1-double-final\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.604
+    }
+  ]
+}

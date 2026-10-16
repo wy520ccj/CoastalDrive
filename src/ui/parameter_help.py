@@ -4,7 +4,7 @@ import json
 from dataclasses import asdict
 
 from direct.gui import DirectGuiGlobals as DGG
-from direct.gui.DirectGui import DirectFrame, OnscreenText
+from direct.gui.DirectGui import DirectFrame, DirectScrolledFrame, OnscreenText
 from panda3d.core import CardMaker, Filename, Point2, TextNode, Texture, TransparencyAttrib
 
 from lab_metrics import engineering_analysis
@@ -68,13 +68,18 @@ class ParameterHelp:
         app.button("›", -.78, -.434, .24, lambda: self.turn(1), parent=self.root)
         self.page_label = app.text("", -1.33, -.525, .035, MUTED, parent=self.root)
         self.title = app.text("", -.45, .507, .043, parent=self.root, font=app.heading_font)
-        self.details = OnscreenText(parent=self.root, font=app.font, text="", fg=theme.INK,
+        self.content_scroll = DirectScrolledFrame(parent=self.root,
+            frameSize=(-.49, 1.49, -.58, .46), canvasSize=(-.49, 1.44, -.58, .46),
+            frameColor=(0, 0, 0, 0), relief=None, scrollBarWidth=.035,
+            horizontalScroll_scrollSize=.05, verticalScroll_scrollSize=.08)
+        self.content = self.content_scroll.getCanvas()
+        self.details = OnscreenText(parent=self.content, font=app.font, text="", fg=theme.INK,
                                    pos=(-.45, .408), scale=.035, align=TextNode.ALeft,
                                    wordwrap=53, mayChange=True)
-        self.notes = OnscreenText(parent=self.root, font=app.font, text="", fg=theme.INK,
+        self.notes = OnscreenText(parent=self.content, font=app.font, text="", fg=theme.INK,
                                  pos=(-.45, 0), scale=.033, align=TextNode.ALeft,
                                  wordwrap=57, mayChange=True)
-        self.equations = self.root.attachNewNode("typeset-equations")
+        self.equations = self.content.attachNewNode("typeset-equations")
         self.asset_dir = resource_root() / "assets/game/ui/formulas"
         self.formula_manifest = json.loads((self.asset_dir / "manifest.json").read_text(encoding="utf-8"))
         self.formula_nodes = []
@@ -232,7 +237,7 @@ class ParameterHelp:
         for node in self.formula_nodes:
             node.removeNode()
         self.formula_nodes.clear()
-        bottom = self.details.getTightBounds(self.root)[0].z - .035
+        bottom = self.details.getTightBounds(self.content)[0].z - .035
         math_key = formula_key(key)
         if math_key=="suspension_spring_rates":
             config = self.configuration()[0]
@@ -284,4 +289,7 @@ class ParameterHelp:
             use="当前系数只记录参考零速段斜率；实际受力由整张力速表决定，编辑此系数不改变表。"
         self.notes.setPos(-.45, bottom-.023)
         self.notes.setText(f"{algorithm}\n{use}\n\n数值来源\n{basis}\n\n对应源码\n{info.source}")
+        lower = min(-.58, self.notes.getTightBounds(self.content)[0].z-.04)
+        self.content_scroll["canvasSize"] = (-.49, 1.44, lower, .46)
+        self.content_scroll.verticalScroll["value"] = 0
         self.root.show()
