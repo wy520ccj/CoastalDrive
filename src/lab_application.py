@@ -15,7 +15,7 @@ from direct.gui.DirectGui import (
     OnscreenText,
 )
 from direct.showbase.ShowBase import ShowBase
-from panda3d.core import TextNode, TransparencyAttrib, loadPrcFileData
+from panda3d.core import GraphicsWindow, TextNode, TransparencyAttrib, loadPrcFileData
 
 from lab_experiment import MANEUVERS, LabExperiment, LabOptions
 from lab_inputs import LabInputError, read_number
@@ -139,6 +139,9 @@ class VehicleLab(ShowBase):
 
     def focus_parameter(self, key, entry):
         self.focused_parameter = key
+        # 数值框不需要中文组词；IME开启时窗口会过滤普通字符消息。
+        if isinstance(self.win, GraphicsWindow):
+            self.win.closeIme()
         entry["frameColor"] = (.86, .93, .94, 1)
 
     def blur_parameter(self, entry, color):

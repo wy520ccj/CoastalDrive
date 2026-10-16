@@ -164,6 +164,24 @@ def test_focusing_entry_highlights_it_and_blur_restores_color(workbench):
     assert entry["frameColor"] == color
 
 
+def test_numeric_focus_closes_window_ime_but_does_not_call_graphics_buffer_api(monkeypatch):
+    import lab_application
+
+    calls = []
+    class NumericWindow:
+        def closeIme(self):
+            calls.append("close-ime")
+
+    monkeypatch.setattr(lab_application, "GraphicsWindow", NumericWindow)
+    entry = {"frameColor": (1, 1, 1, 1)}
+    fake = SimpleNamespace(win=NumericWindow(), focused_parameter=None)
+    VehicleLab.focus_parameter(fake, "duration", entry)
+    assert calls == ["close-ime"] and fake.focused_parameter == "duration"
+    fake.win = object()
+    VehicleLab.focus_parameter(fake, "manual.gear", entry)
+    assert calls == ["close-ime"] and fake.focused_parameter == "manual.gear"
+
+
 def test_invalid_text_opens_chinese_banner_and_focuses_exact_field(workbench):
     app = workbench
     app.set_options(LabOptions())
