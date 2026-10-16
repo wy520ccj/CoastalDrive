@@ -14,6 +14,13 @@ from unsprung_dynamics import native_gyro_impulse
 from wheel_dynamics import WheelStep
 
 
+@dataclass
+class JointJacobianHint:
+    """一个子步的只读输入种子和独立输出；只给数值方向，不代表物理状态。"""
+    previous: np.ndarray | None = None
+    current: np.ndarray | None = None
+
+
 def dry_port_derivative(port, torque, speed, capacity, impulse_response):
     """固定容量投影残差的分段导数；不让差分跨过静止/滑动边界。"""
     # 残差为T-clip(T+v/(hR),-C,C)。静止分支解v=0，滑动分支解T=±C。
@@ -67,7 +74,8 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
                          friction, rolling_coefficients, engine_torque, engine_drag, clutch_capacity,
                          brake_capacities, ratio, synchronizing, dt, config, *, wheel_initial_velocity=None,
                          finite_contact=None, wheel_velocity_bias=None, wheel_known_force=None,
-                         native_body_gyro=False, body_external_torque=None,finite_motion=None,jacobian_updates=True):
+                         native_body_gyro=False, body_external_torque=None,finite_motion=None,jacobian_updates=True,
+                         jacobian_hint=None):
     """同时解十六速度、八接触力和十有限端口，不在结束后修补轮速/轮荷。
 
     本函数保持当前构型的质量/力端口，有限姿态与真实世界接点须由外层联立。
@@ -234,6 +242,11 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
     values = np.r_[start,np.asarray(initial_force).ravel(),np.zeros(10)]
     # 只更新数值Jacobian，原完整残差/精确端口行和收敛门槛不变。
     jacobian = None
+    if jacobian_hint is not None:
+        jacobian_hint.current = None
+        if jacobian_updates and jacobian_hint.previous is not None:
+            # 种子以未缩放物理坐标保存；这里换成当前质量/状态的缩放坐标。
+            jacobian = jacobian_hint.previous*state_scale[None,:]/row_scale[:,None]
     for iteration in range(30):
         residual,details = evaluate(values)
         momentum_error = float(np.max(np.abs(residual[:16])))
@@ -321,6 +334,9 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
             break
     else:
         raise ArithmeticError(f"簧下/轮胎/传动共同求解超过30轮：{momentum_error:g}Ns，{force_error:g}N，{port_error:g}Nm")
+    if jacobian_updates and jacobian_hint is not None and jacobian is not None:
+        jacobian_hint.current = jacobian*row_scale[:,None]/state_scale[None,:]
+        jacobian_hint.current.flags.writeable = False
     end,forces,torques = values[:16],values[16:24].reshape(4,2),values[24:]
     q,delta,normal,down,surface,rolling_torque,contact,parameters,speeds,drive,active,previous,coefficients,scale,kinematics,gyro,suspension_velocity = details
     wheels,contact_energy,material_heat,road_heat,tangent_numeric = [],0.,0.,0.,0.

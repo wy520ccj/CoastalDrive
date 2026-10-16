@@ -16,7 +16,7 @@ from unsprung_contact_geometry import FiniteRadialContact
 from unsprung_drivetrain import drivetrain_ports, tire_ports
 from unsprung_dynamics import assemble_unsprung, partition_vehicle
 from unsprung_geometry import read_unsprung_geometry
-from unsprung_joint import solve_unsprung_joint
+from unsprung_joint import JointJacobianHint, solve_unsprung_joint
 from unsprung_motion import FiniteSuspensionMotion
 from unsprung_state import UnsprungState
 from vehicle_config import wheel_hubs
@@ -45,6 +45,7 @@ def install_guides(car):
     car._unsprung_reference = reference
     car._wheel_guides = NativeWheelGuides(car._world,car._chassis,car._sprung_frame,-reference)
     car._unsprung_pending = None
+    car._unsprung_jacobian = None
     car._unsprung_observation = None
 
 
@@ -97,6 +98,7 @@ class UnsprungAdvanceInput:
     native_body_gyro: bool = False
     body_external_torque: np.ndarray | None = None
     finite_motion: object | None = None
+    jacobian_hint: JointJacobianHint | None = None
 
     @classmethod
     def read(cls, car, pressures, angles, tick, dt, accumulate, static_shapes):
@@ -145,12 +147,16 @@ class UnsprungAdvanceInput:
         known[3:6] += np.asarray(tuple(body.getTotalTorque()))+np.sum(steering_torque,axis=0)
         capacities = np.array([config.brake_torque*(config.front_brake_share if i<2 else 1-config.front_brake_share)/2*p
                                for i,p in enumerate(pressures)])
+        prior = car._unsprung_jacobian
+        key = dt,car.powertrain.mechanical_ratio,car.powertrain.synchronizing
+        seed = prior[2] if prior is not None and prior[0] is config and prior[1]==key else None
         return cls(config,hardware,contacts,geometry,v,speeds,np.asarray(car.powertrain.downstream_omega),
             q+car._unsprung_reference,np.asarray(local_deformation),np.array([(s.fx,s.fy) for s in car.tires.states]),
             known,friction,rolling,car.powertrain.engine_torque_request,car.powertrain.engine_drag_coefficient,
             car.powertrain.capacity,capacities,car.powertrain.mechanical_ratio,car.powertrain.synchronizing,
             steering_torque,steer,np.asarray(trails),tuple(angles),tick,dt,accumulate,np.asarray(frame_loss),
-            air_velocity,air_force,finite,guide_bias,wheel_known,True,np.asarray(tuple(body.getTotalTorque())),motion)
+            air_velocity,air_force,finite,guide_bias,wheel_known,True,np.asarray(tuple(body.getTotalTorque())),motion,
+            JointJacobianHint(seed))
 
     def solve(self, *, query_lock=None):
         """纯数值子步；真实世界查询已在read阶段完成。"""
@@ -162,7 +168,8 @@ class UnsprungAdvanceInput:
             self.engine_torque,self.engine_drag,self.clutch_capacity,self.brake_capacity,self.ratio,self.synchronizing,
             self.dt,self.config,wheel_initial_velocity=self.wheel_velocity,finite_contact=self.finite_contact,
             wheel_velocity_bias=self.guide_velocity_bias,wheel_known_force=self.wheel_known_force,
-            native_body_gyro=self.native_body_gyro,body_external_torque=self.body_external_torque,finite_motion=self.finite_motion)
+            native_body_gyro=self.native_body_gyro,body_external_torque=self.body_external_torque,finite_motion=self.finite_motion,
+            jacobian_hint=self.jacobian_hint)
 
     def resolved_source(self, result):
         source = self
@@ -174,6 +181,9 @@ class UnsprungAdvanceInput:
 
     def commit(self, car, result):
         source = self.resolved_source(result)
+        hint = self.jacobian_hint
+        car._unsprung_jacobian = (None if hint is None or hint.current is None else
+            (self.config,(self.dt,self.ratio,self.synchronizing),hint.current))
         apply_joint_forces(car._chassis,car._wheel_guides,source.hardware,source.contacts,result,
             source.engine_torque,source.engine_drag,source.downstream,np.sum(source.steering_torque,axis=0),source.dt,source.config)
         car.powertrain.accept_step(powertrain_result(source,result),source.dt)
@@ -305,6 +315,7 @@ def observe_unsprung(car, tick):
 
 def initialize_rolling(car, speed):
     """仅初始条件：保留实际悬架行程/相对运动，初始化无纵向滑移与实体轴储能。"""
+    car._unsprung_jacobian = None
     pose = car.reference_pose()
     _pos,rotation,centers,_speeds,_q,u,_xy,v,hardware = read_mechanics(car,(0.,0.))
     car._chassis.setLinearVelocity(pose.getQuat().getForward()*speed)

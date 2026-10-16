@@ -9,6 +9,8 @@ from lab_solver_model_reference import make_joint_model
 
 def model_for(arguments,keywords):
     options=keywords.copy()
+    # 搜索矩阵是算法输入，冻结的物理残差没有这个参数。
+    options.pop('jacobian_hint',None)
     motion=options.get('finite_motion')
     if motion is not None:
         motion=copy.copy(motion);motion.key,motion.cached=None,None

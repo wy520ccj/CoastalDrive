@@ -21,7 +21,8 @@ def save_step(source,path):
     finite.cache_key,finite.cached = None,None
     finite.query_cache = (None if all(surface.plane is not None for surface in roads.surfaces)
                           else [{} for _ in roads.surfaces])
-    value = replace(source,geometry=numeric_geometry(source.geometry),finite_contact=finite)
+    hint = None if source.jacobian_hint is None else replace(source.jacobian_hint,current=None)
+    value = replace(source,geometry=numeric_geometry(source.geometry),finite_contact=finite,jacobian_hint=hint)
     path.write_bytes(pickle.dumps(value,protocol=5))
 
 
