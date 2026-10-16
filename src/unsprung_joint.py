@@ -111,6 +111,9 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
     velocity_key,velocity_data = None,None
     force_key,force_data = None,None
     torque_key,torque_data = None,None
+    configuration_base_key,configuration_base_data = None,None
+    velocity_base_key,velocity_base_data = None,None
+    force_base_key,force_base_data = None,None
     gyro_cache = {}
 
     def configuration(end):
@@ -118,6 +121,9 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         # 有限接触/行程只依赖车身和轮心十速度；旧冻结法向端口仍可含自旋，须用全部速度。
         key = (end[:10] if finite_contact is not None else end).tobytes()
         if key==configuration_key:
+            return configuration_data
+        if key==configuration_base_key:
+            configuration_key,configuration_data = key,configuration_base_data
             return configuration_data
         kinematics = finite_contact.evaluate(end) if finite_contact is not None else None
         active = contacts if kinematics is None else kinematics.contacts
@@ -154,6 +160,9 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         key = end.tobytes()
         if key==velocity_key:
             return velocity_data
+        if key==velocity_base_key:
+            velocity_key,velocity_data = key,velocity_base_data
+            return velocity_data
         geometry = configuration(end)
         _kinematics,active,guide,_previous,local_rolling,_scale,_q,_u,_delta,_coefficients,normal,_parameters = geometry
         gx,gy,gn = active.longitudinal,active.lateral,active.normal
@@ -185,10 +194,14 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         # 扭矩扰动不改变本速度与八接触力的原反力前缀/轮心力；不跨共同解复用。
         current_force_key = velocity_key,forces.tobytes()
         if current_force_key!=force_key:
-            force_reaction = reaction_base+gx.T@forces[:,0]+gy.T@forces[:,1]
-            wheel_force = (forces[:,0,None]*gx[:,:3]+forces[:,1,None]*gy[:,:3]+normal.normal_force[:,None]*gn[:,:3]
-                           -normal.suspension_force[:,None]*hardware.mechanical.guides+wheel_known) if native_body_gyro else None
-            force_key,force_data = current_force_key,(force_reaction,wheel_force)
+            if current_force_key==force_base_key:
+                force_data = force_base_data
+            else:
+                force_reaction = reaction_base+gx.T@forces[:,0]+gy.T@forces[:,1]
+                wheel_force = (forces[:,0,None]*gx[:,:3]+forces[:,1,None]*gy[:,:3]+normal.normal_force[:,None]*gn[:,:3]
+                               -normal.suspension_force[:,None]*hardware.mechanical.guides+wheel_known) if native_body_gyro else None
+                force_data = force_reaction,wheel_force
+            force_key = current_force_key
         force_reaction,wheel_force = force_data
         # ports在本次共同解内固定，完整十扭矩字节相同才复用原矩阵投影。
         current_torque_key = torques.tobytes()
@@ -226,6 +239,11 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         port_error = float(np.max(np.abs(residual[24:])))
         if momentum_error<1e-9 and force_error<1e-5 and port_error<1e-9:
             break
+        # 一轮差分中会反复回到已算基点；只固定该点的完整字节项，不缓存新构型或跨子步复用。
+        configuration_base_key = (values[:10] if finite_contact is not None else values[:16]).tobytes()
+        configuration_base_data = velocity_data[0]
+        velocity_base_key,velocity_base_data = velocity_key,velocity_data
+        force_base_key,force_base_data = force_key,force_data
         columns = []
         for i,scale in enumerate(state_scale):
             plus,minus = values.copy(),values.copy()
