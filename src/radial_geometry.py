@@ -7,13 +7,17 @@ from itertools import product
 import numpy as np
 from panda3d.core import BitMask32
 from radial_contact_kernels import signed_distance
-from wheel_contact_kernels import radial_box_bounds, radial_contact_frames, radial_plane_values
+from wheel_contact_kernels import (
+    radial_box_bounds,
+    radial_contact_frames,
+    radial_plane_values,
+    radial_query_hits,
+)
 
 from box_radial_geometry import box_section
 from suspension_contacts import StaticSupportShapes, static_support_shapes
 from unsprung_body import quaternion_rotation
 from unsprung_dynamics import small_norm
-from vehicle_contacts import road_support
 from wheel_envelope import cylinder_support
 
 
@@ -167,34 +171,11 @@ class RadialRoads:
             keys = tuple((layout,center.tobytes(),axis.tobytes()) for center,axis in zip(centers,axes,strict=True))
             planes = tuple(_cached_plane(surface,centers,axes,config,keys,cache) if surface.plane is not None else None
                            for surface,cache in zip(self.surfaces,surface_cache,strict=True))
-        hits = []
         touch,distances = np.zeros(count),np.zeros(count)
         points,hit_normals = np.zeros((count,3)),np.zeros((count,3))
-        for i,(center,axis) in enumerate(zip(centers,axes)):
-            best = None
-            for index,(surface,values) in enumerate(zip(self.surfaces,planes)):
-                if values is not None:
-                    candidates = (values[i],)
-                elif surface_cache is None:
-                    candidates = surface.query(center,axis,config)
-                else:
-                    cache = surface_cache[index]
-                    candidates = cache.get(keys[i])
-                    if candidates is None:
-                        # 完整成功或空候选才写入；失败仍由原几何算法向上传播。
-                        candidates = tuple(surface.query(center,axis,config))
-                        cache[keys[i]] = candidates
-                for distance,normal,point,plane in candidates:
-                    if (distance<=config.wheel_radius+config.suspension_travel and road_support(normal)
-                            and (best is None or distance<best[0])):
-                        best = distance,normal,point,surface.body,plane
-            if best is None:
-                hit = None
-            else:
-                distance,normal,point,road,plane = best
-                touch[i],distances[i],points[i],hit_normals[i] = 1.,distance,point,normal
-                hit = RadialHit(road,tuple(point),tuple(normal),plane)
-            hits.append(hit)
+        hits = radial_query_hits((self.surfaces,planes,centers,axes,keys,surface_cache,config,RadialHit,
+                                  config.wheel_radius+config.suspension_travel),
+                                 (touch,distances,points,hit_normals),count)
         delta = np.empty(count)
         offsets,normals,tangents,laterals,normal_offsets = (np.empty((count,3)) for _ in range(5))
         radial_contact_frames((centers,axes,up,touch,distances,points,hit_normals),

@@ -626,4 +626,137 @@ static PyObject *box_edge_proof_native(PyObject *self,PyObject *args) {
 error:
     lab_release(v,2); return NULL;
 }
+/* 仍按原轮心/表面次序调用真实查询；只有完整成功的候选元组才进入本子步缓存。 */
+static PyObject *radial_surface_candidates(PyObject *surface,PyObject *values,Py_ssize_t row,
+        PyObject *center,PyObject *axis,PyObject *config,PyObject *cache,PyObject *key,PyObject *query_name) {
+    if (values!=Py_None) {
+        PyObject *value=PySequence_GetItem(values,row);
+        if (!value) return NULL;
+        PyObject *result=PyTuple_Pack(1,value); Py_DECREF(value); return result;
+    }
+    PyObject *arguments[4]={surface,center,axis,config};
+    if (cache==Py_None) return PyObject_VectorcallMethod(query_name,arguments,4,NULL);
+    PyObject *cached=PyDict_GetItemWithError(cache,key);
+    if (cached && cached!=Py_None) return Py_NewRef(cached);
+    if (PyErr_Occurred()) return NULL;
+    PyObject *query=PyObject_VectorcallMethod(query_name,arguments,4,NULL);
+    if (!query) return NULL;
+    PyObject *result=PySequence_Tuple(query); Py_DECREF(query);
+    if (result && PyDict_SetItem(cache,key,result)<0) Py_CLEAR(result);
+    return result;
+}
+static int radial_candidate_best(PyObject *candidate,PyObject *surface,PyObject *limit,
+        PyObject *slope,PyObject *vertical,PyObject *body_name,PyObject **best) {
+    PyObject *fields=PySequence_Fast(candidate,"真实接触候选须为四项");
+    if (!fields) return 0;
+    if (PySequence_Fast_GET_SIZE(fields)!=4) {
+        PyErr_SetString(PyExc_ValueError,"真实接触候选须为距离/法线/见证点/平面四项");
+        Py_DECREF(fields); return 0;
+    }
+    PyObject **parts=PySequence_Fast_ITEMS(fields);
+    int eligible=PyObject_RichCompareBool(parts[0],limit,Py_LE);
+    if (eligible>0) {
+        PyObject *component=PyObject_GetItem(parts[1],vertical);
+        if (!component) { Py_DECREF(fields); return 0; }
+        eligible=PyObject_RichCompareBool(component,slope,Py_GE); Py_DECREF(component);
+    }
+    if (eligible>0 && *best) eligible=PyObject_RichCompareBool(parts[0],PyTuple_GET_ITEM(*best,0),Py_LT);
+    if (eligible>0) {
+        PyObject *body=PyObject_GetAttr(surface,body_name);
+        if (!body) { Py_DECREF(fields); return 0; }
+        PyObject *next=PyTuple_Pack(5,parts[0],parts[1],parts[2],body,parts[3]); Py_DECREF(body);
+        if (!next) { Py_DECREF(fields); return 0; }
+        Py_XSETREF(*best,next);
+    }
+    Py_DECREF(fields); return eligible>=0;
+}
+static PyObject *radial_selected_hit(PyObject *best,PyObject *hit_type,Py_buffer *outputs,int row) {
+    if (!best) return Py_NewRef(Py_None);
+    PyObject *distance=PyTuple_GET_ITEM(best,0),*normal=PyTuple_GET_ITEM(best,1),*point=PyTuple_GET_ITEM(best,2);
+    PyObject *point_tuple=PySequence_Tuple(point),*normal_tuple=PySequence_Tuple(normal);
+    if (!point_tuple || !normal_tuple) { Py_XDECREF(point_tuple); Py_XDECREF(normal_tuple); return NULL; }
+    double normal_values[3],point_values[3],number=PyFloat_AsDouble(distance);
+    if (PyErr_Occurred() || !vector(normal_tuple,normal_values) || !vector(point_tuple,point_values)) {
+        Py_DECREF(point_tuple); Py_DECREF(normal_tuple); return NULL;
+    }
+    lab_set(outputs,row,0,1.); lab_set(outputs+1,row,0,number);
+    for (int j=0;j<3;++j) { lab_set(outputs+2,row,j,point_values[j]); lab_set(outputs+3,row,j,normal_values[j]); }
+    PyObject *hit=PyObject_CallFunctionObjArgs(hit_type,PyTuple_GET_ITEM(best,3),point_tuple,normal_tuple,PyTuple_GET_ITEM(best,4),NULL);
+    Py_DECREF(point_tuple); Py_DECREF(normal_tuple); return hit;
+}
+static PyObject *radial_query_hits_native(PyObject *self,PyObject *args) {
+    PyObject *objects,*outputs;
+    Py_ssize_t count;
+    if (!PyArg_ParseTuple(args,"OOn",&objects,&outputs,&count)) return NULL;
+    if (!PyTuple_Check(objects) || PyTuple_GET_SIZE(objects)!=9 || count<0 || count>INT_MAX) {
+        PyErr_SetString(PyExc_ValueError,"真实接触遍历参数数量或轮心数不符"); return NULL;
+    }
+    PyObject *surfaces=NULL,*planes=NULL,*caches=NULL,*centers=NULL,*axes=NULL,*center=NULL,*axis=NULL;
+    PyObject *candidates=NULL,*iterator=NULL,*candidate=NULL,*best=NULL,*hits=NULL,*slope=NULL,*vertical=NULL;
+    PyObject *query_name=NULL,*body_name=NULL;
+    PyObject *empty=PyTuple_New(0);
+    const int dimensions[4]={1,1,2,2};
+    const Py_ssize_t shapes[4][3]={{count},{count},{count,3},{count,3}};
+    Py_buffer v[4]={{0}};
+    if (!empty || !lab_buffers(empty,outputs,v,0,4,dimensions,shapes,-1,-1)) goto error;
+    Py_CLEAR(empty);
+    surfaces=PySequence_Fast(PyTuple_GET_ITEM(objects,0),"真实表面须为序列");
+    planes=PySequence_Fast(PyTuple_GET_ITEM(objects,1),"真实平面候选须为序列");
+    if (!surfaces || !planes) goto error;
+    Py_ssize_t surface_count=PySequence_Fast_GET_SIZE(surfaces);
+    if (PySequence_Fast_GET_SIZE(planes)!=surface_count) {
+        PyErr_SetString(PyExc_ValueError,"真实表面和平面候选数量不符"); goto error;
+    }
+    PyObject *keys=PyTuple_GET_ITEM(objects,4),*cache_input=PyTuple_GET_ITEM(objects,5);
+    PyObject *config=PyTuple_GET_ITEM(objects,6),*hit_type=PyTuple_GET_ITEM(objects,7),*limit=PyTuple_GET_ITEM(objects,8);
+    if (cache_input!=Py_None) {
+        caches=PySequence_Fast(cache_input,"本子步表面缓存须为序列");
+        if (!caches) goto error;
+        if (!PyTuple_Check(keys) || PyTuple_GET_SIZE(keys)!=count || PySequence_Fast_GET_SIZE(caches)!=surface_count) {
+            PyErr_SetString(PyExc_ValueError,"本子步几何键/缓存数量不符"); goto error;
+        }
+        for (Py_ssize_t i=0;i<surface_count;++i) if (!PyDict_Check(PySequence_Fast_GET_ITEM(caches,i))) {
+            PyErr_SetString(PyExc_ValueError,"本子步表面缓存须为字典"); goto error;
+        }
+    }
+    centers=PyObject_GetIter(PyTuple_GET_ITEM(objects,2)); axes=PyObject_GetIter(PyTuple_GET_ITEM(objects,3));
+    hits=PyList_New(0); slope=PyFloat_FromDouble(.5); vertical=PyLong_FromLong(2);
+    query_name=PyUnicode_InternFromString("query"); body_name=PyUnicode_InternFromString("body");
+    if (!centers || !axes || !hits || !slope || !vertical || !query_name || !body_name) goto error;
+    for (int row=0;row<count;++row) {
+        center=PyIter_Next(centers);
+        if (!center) { if (PyErr_Occurred()) goto error; break; }
+        axis=PyIter_Next(axes);
+        if (!axis) { if (PyErr_Occurred()) goto error; Py_CLEAR(center); break; }
+        for (Py_ssize_t index=0;index<surface_count;++index) {
+            PyObject *surface=PySequence_Fast_GET_ITEM(surfaces,index),*values=PySequence_Fast_GET_ITEM(planes,index);
+            PyObject *cache=caches ? PySequence_Fast_GET_ITEM(caches,index) : Py_None;
+            PyObject *key=caches ? PyTuple_GET_ITEM(keys,row) : Py_None;
+            candidates=radial_surface_candidates(surface,values,row,center,axis,config,cache,key,query_name);
+            if (!candidates) goto error;
+            iterator=PyObject_GetIter(candidates); Py_CLEAR(candidates);
+            if (!iterator) goto error;
+            while ((candidate=PyIter_Next(iterator))) {
+                if (!radial_candidate_best(candidate,surface,limit,slope,vertical,body_name,&best)) goto error;
+                Py_CLEAR(candidate);
+            }
+            if (PyErr_Occurred()) goto error;
+            Py_CLEAR(iterator);
+        }
+        PyObject *hit=radial_selected_hit(best,hit_type,v,row);
+        if (!hit) goto error;
+        int added=PyList_Append(hits,hit); Py_DECREF(hit);
+        if (added<0) goto error;
+        Py_CLEAR(best); Py_CLEAR(center); Py_CLEAR(axis);
+    }
+    lab_release(v,4); Py_DECREF(surfaces); Py_DECREF(planes); Py_XDECREF(caches);
+    Py_DECREF(centers); Py_DECREF(axes); Py_DECREF(slope); Py_DECREF(vertical);
+    Py_DECREF(query_name); Py_DECREF(body_name); return hits;
+error:
+    lab_release(v,4); Py_XDECREF(empty); Py_XDECREF(surfaces); Py_XDECREF(planes); Py_XDECREF(caches);
+    Py_XDECREF(centers); Py_XDECREF(axes); Py_XDECREF(center); Py_XDECREF(axis); Py_XDECREF(candidates);
+    Py_XDECREF(iterator); Py_XDECREF(candidate); Py_XDECREF(best); Py_XDECREF(hits); Py_XDECREF(slope); Py_XDECREF(vertical);
+    Py_XDECREF(query_name); Py_XDECREF(body_name);
+    return NULL;
+}
 #endif
