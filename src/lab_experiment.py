@@ -10,7 +10,7 @@ from panda3d.core import BitMask32, TransformState, Vec3
 
 from driving_experiment import DrivingExperiment, ExperimentOptions
 from driving_modes import DrivingMode
-from lab_inputs import validate_number
+from lab_inputs import LabInputError, active_fields, validate_number
 from lab_maneuvers import bump_geometry, path_command, path_error
 from lab_metrics import brake_start_index
 from lab_records import model_fingerprint
@@ -47,7 +47,7 @@ class LabOptions:
     bump_distance_m: float = 6.
 
     def __post_init__(self):
-        design = vehicle_design(self.vehicle_id)
+        vehicle_design(self.vehicle_id)
         if self.maneuver not in MANEUVERS:
             raise ValueError("未知试验工况")
         for key, value in (("speed", self.speed_kph), ("mu", self.friction),
@@ -56,8 +56,7 @@ class LabOptions:
                 ("bump_height", self.bump_height_m), ("bump_length", self.bump_length_m),
                 ("bump_distance", self.bump_distance_m)):
             validate_number(key, value)
-        validate_number("steer", self.steering_deg,
-                        bounds=(-design.config.steering_degrees, design.config.steering_degrees))
+        validate_number("steer", self.steering_deg)
         if self.cg_height is not None:
             validate_number("cg", self.cg_height)
         if self.tire_reference_load is not None:
@@ -83,6 +82,8 @@ class LabExperiment:
         if options.tire_reference_load is not None:
             config = replace(config, tire_reference_load=options.tire_reference_load)
         self.config = config
+        if "steer" in active_fields(options.maneuver) and abs(options.steering_deg) > config.steering_degrees:
+            raise LabInputError("steer", f"目标转角须在当前模型的±{config.steering_degrees:g}°范围内。")
         if options.maneuver in ("ride_bump","ride_braking") and not config.unsprung_enabled:
             raise ValueError("轮跳/颠簸制动需要独立轮心模型，请先导入对应工程配置")
         self.source_start = model_fingerprint()

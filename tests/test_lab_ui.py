@@ -85,7 +85,7 @@ def test_closing_advanced_releases_real_focus_and_tab_skips_hidden_fields(workbe
     app.toggle_advanced()
     app.entries["duration"].guiItem.setFocus(True)
     app.cycle_entry(1)
-    assert app.entries["steer"].guiItem.getFocus()
+    assert app.entries["cg"].guiItem.getFocus()
     app.toggle_advanced()
     assert not any(entry.guiItem.getFocus() for entry in app.entries.values())
     app.cycle_entry(-1)
@@ -127,7 +127,7 @@ def test_engineering_configuration_status_changes_with_vehicle(workbench):
 
 
 @pytest.mark.parametrize("maneuver", ("ride_bump", "ride_braking"))
-def test_failed_initialization_clears_old_candidate_but_preserves_baseline(workbench, maneuver):
+def test_missing_wheel_model_blocks_start_and_preserves_previous_result(workbench, maneuver):
     app = workbench
     app.set_options(LabOptions(speed_kph=10, duration=1/120))
     app.start_experiment()
@@ -136,17 +136,16 @@ def test_failed_initialization_clears_old_candidate_but_preserves_baseline(workb
     app.present_summary(app.run_state.summary())
     app.pin_baseline()
     baseline = app.baseline
+    run = app.run_state
+    value = app.metric.getText()
     assert app.candidate_value.getText() != "—"
-    app.set_options(LabOptions(maneuver=maneuver, speed_kph=18, duration=.1))
+    app.set_options(LabOptions(maneuver=maneuver, speed_kph=18, duration=.1, onset=.025))
+    assert not app.start_button.guiItem.getActive()
     app.start_experiment()
-    assert app.run_state is None and app.record is None
+    assert app.run_state is run and not run.closed
     assert app.baseline is baseline
-    assert app.status.getText() == "初始化失败"
-    assert app.metric.getText() == app.candidate_value.getText() == "—"
-    assert app.cursor_label.getText() == "t = —"
-    assert app.scene.path_bounds is None
+    assert app.metric.getText() == app.candidate_value.getText() == value
     assert "记录 → 导入工程模型" in app.notice.getText()
-    assert all(plot.series == [baseline.samples] for plot in app.plots)
     app.clear_baseline()
     assert app.baseline_value.getText() == "—"
     assert "已清除基线" in app.notice.getText()
@@ -173,7 +172,7 @@ def test_numeric_focus_closes_window_ime_but_does_not_call_graphics_buffer_api(m
             calls.append("close-ime")
 
     monkeypatch.setattr(lab_application, "GraphicsWindow", NumericWindow)
-    entry = {"frameColor": (1, 1, 1, 1)}
+    entry = {"frameColor": (1, 1, 1, 1), "state": "normal"}
     fake = SimpleNamespace(win=NumericWindow(), focused_parameter=None)
     VehicleLab.focus_parameter(fake, "duration", entry)
     assert calls == ["close-ime"] and fake.focused_parameter == "duration"
@@ -339,3 +338,120 @@ def test_long_parameter_help_is_scrollable_and_preview_camera_works(workbench):
     previous = app.camera.getPos()
     app.cycle_camera()
     assert app.camera.getPos() != previous
+
+
+@pytest.mark.parametrize("mode,extra", (
+    ("braking", set()), ("split_braking", {"right_mu"}),
+    ("step_steer", {"steer", "onset"}), ("circle", {"steer", "onset"}),
+    ("sine_steer", {"steer", "onset"}), ("constant_radius", {"radius"}),
+    ("double_lane_change", set()),
+    ("manual", {"steer", "manual.throttle", "manual.brake", "manual.gear", "manual.clutch"}),
+    ("ride_bump", {"bump_height", "bump_length", "bump_distance"}),
+    ("ride_braking", {"bump_height", "bump_length", "bump_distance", "onset"}),
+))
+def test_maneuver_only_enables_consumed_fields_and_ignores_inactive_invalid_text(workbench, mode, extra):
+    from lab_experiment import MANEUVERS
+    from lab_inputs import COMMON_FIELDS
+
+    app = workbench
+    app.set_options(LabOptions())
+    app.maneuver_menu.set(MANEUVERS[mode])
+    expected = COMMON_FIELDS | extra
+    for key, entry in (*app.entries.items(), *(("manual."+key, entry)
+                        for key, entry in app.manual_entries.items())):
+        assert entry.guiItem.getActive() == (key in expected)
+        if key not in expected:
+            entry.enterText("22wd")
+    assert app.read_options() == app.default_options(mode)
+    assert ("目标车速" in app.field_labels["speed"].getText()) == (mode in (
+        "constant_radius", "double_lane_change"))
+    app.set_options(LabOptions())
+
+
+def test_inactive_field_rejects_focus_and_tab_but_switching_back_restores_editing(workbench):
+    app = workbench
+    app.set_options(LabOptions(maneuver="step_steer"))
+    app.advanced_panel.show()
+    app.entries["steer"].guiItem.setFocus(True)
+    app.maneuver_menu.set("直线制动")
+    app.taskMgr.step()
+    assert not app.entries["steer"].guiItem.getFocus()
+    app.focus_parameter("steer", app.entries["steer"])
+    assert not app.entries["steer"].guiItem.getFocus()
+    seen = set()
+    for _ in range(10):
+        app.cycle_entry(1)
+        seen.update(key for key, entry in app.entries.items() if entry.guiItem.getFocus())
+    assert seen == {"speed", "mu", "duration", "cg", "tire_load"}
+    app.maneuver_menu.set("阶跃转向")
+    app.entries["steer"]["focus"] = 1
+    assert app.entries["steer"].guiItem.getFocus()
+    app.blur_entries()
+    app.advanced_panel.hide()
+
+
+def test_active_onset_must_precede_end_but_unused_onset_does_not_block_start(workbench):
+    from lab_inputs import LabInputError
+
+    app = workbench
+    app.set_options(LabOptions(maneuver="step_steer", duration=.5, onset=.5))
+    with pytest.raises(LabInputError, match="输入起始须小于"):
+        app.read_options()
+    app.maneuver_menu.set("直线制动")
+    app.entries["onset"].enterText("bad")
+    assert app.read_options().maneuver == "braking"
+    app.set_options(LabOptions())
+
+
+def test_manual_initial_inputs_can_be_confirmed_before_creating_world(workbench):
+    app = workbench
+    if app.run_state is not None:
+        app.run_state.close()
+    app.run_state = None
+    record, baseline = app.record, app.baseline
+    app.set_options(LabOptions(maneuver="manual", speed_kph=10, duration=.025))
+    assert not app.manual_button.isHidden()
+    app.show_manual()
+    assert not app.manual_panel.isHidden()
+    app.manual_entries["throttle"].enterText("25")
+    app.manual_entries["brake"].enterText("0")
+    app.manual_entries["gear"].enterText("1")
+    app.manual_entries["clutch"].enterText("100")
+    app.apply_manual()
+    assert app.run_state is None and app.record is record and app.baseline is baseline
+    assert "初始执行器输入已确认" in app.notice.getText()
+    app.start_experiment()
+    assert app.run_state.manual_command.throttle == .25
+    assert app.run_state.manual_command.gear == 1
+    app.run_state.close()
+    app.run_state = None
+    app.manual_entries["throttle"].enterText("0")
+    app.manual_panel.hide()
+    app.set_options(LabOptions())
+
+
+def test_no_finite_drivetrain_does_not_parse_gear_or_clutch_and_requests_forward(workbench):
+    from lab_inputs import active_fields
+
+    app = workbench
+    app.manual_entries["gear"].enterText("unused")
+    app.manual_entries["clutch"].enterText("unused")
+    command = app.read_manual_command(SimpleNamespace(finite_drivetrain=False, steering_degrees=90.))
+    assert command.gear is command.clutch is None and command.direction == 1
+    assert "manual.gear" not in active_fields("manual", finite_drivetrain=False)
+    app.reset_parameters()
+
+
+def test_ab_only_subtracts_matching_maneuver_and_distance_definition(workbench):
+    app = workbench
+    summary = {"stopping_distance_m": 10., "distance_m": 10., "simulation_seconds": 1.,
+               "compute_seconds": .1, "options": {"maneuver": "braking"}}
+    baseline = app.baseline
+    app.baseline = SimpleNamespace(metadata={"summary": summary})
+    app.present_summary({**summary, "stopping_distance_m": 12.})
+    assert "+2.00" in app.result.getText()
+    app.present_summary({**summary, "stopping_distance_m": None})
+    assert "仅并列展示" in app.result.getText()
+    app.present_summary({**summary, "options": {"maneuver": "split_braking"}})
+    assert "仅并列展示" in app.result.getText()
+    app.baseline = baseline

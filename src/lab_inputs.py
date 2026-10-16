@@ -23,6 +23,42 @@ FIELDS = {
     "manual.gear": ("挡位", "", -1., 20.),
 }
 
+COMMON_FIELDS = frozenset(("speed", "mu", "duration", "cg", "tire_load"))
+STEERING_FIELDS = frozenset(("steer", "onset"))
+BUMP_FIELDS = frozenset(("bump_height", "bump_length", "bump_distance"))
+MANUAL_FIELDS = frozenset(("manual.throttle", "manual.brake", "manual.gear", "manual.clutch"))
+MANEUVER_FIELDS = {
+    "braking": COMMON_FIELDS,
+    "split_braking": COMMON_FIELDS | {"right_mu"},
+    "step_steer": COMMON_FIELDS | STEERING_FIELDS,
+    "circle": COMMON_FIELDS | STEERING_FIELDS,
+    "sine_steer": COMMON_FIELDS | STEERING_FIELDS,
+    "manual": COMMON_FIELDS | {"steer"} | MANUAL_FIELDS,
+    "constant_radius": COMMON_FIELDS | {"radius"},
+    "double_lane_change": COMMON_FIELDS,
+    "ride_bump": COMMON_FIELDS | BUMP_FIELDS,
+    "ride_braking": COMMON_FIELDS | BUMP_FIELDS | {"onset"},
+}
+MANEUVER_HINTS = {
+    "braking": "直线制动：起点即全制动，转向和输入起始不参与。",
+    "split_braking": "对开附着制动：起点即全制动，右侧附着单独设定。",
+    "step_steer": "阶跃转向：到输入起始时刻后施加目标转角。",
+    "circle": "固定转角：到输入起始时刻后保持目标转角。",
+    "sine_steer": "正弦转向：目标转角为振幅，频率固定为0.5 Hz。",
+    "manual": "执行器输入：起点即施加输入，可在开始前配置执行器。",
+    "constant_radius": "定圆试验：自动控制转向和车速，使用定圆半径。",
+    "double_lane_change": "参考双移线：路径固定，自动控制转向和车速。",
+    "ride_bump": "单侧凸起/轮跳：空挡自由滚动，不施加转向或制动。",
+    "ride_braking": "单侧凸起/制动：到输入起始时刻后全制动。",
+}
+
+
+def active_fields(maneuver, *, finite_drivetrain=True):
+    fields = MANEUVER_FIELDS[maneuver]
+    if not finite_drivetrain:
+        fields = fields - {"manual.gear", "manual.clutch"}
+    return fields
+
 
 class LabInputError(ValueError):
     def __init__(self, key, message):

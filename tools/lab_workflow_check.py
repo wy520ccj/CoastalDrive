@@ -36,8 +36,9 @@ def check(output, width, height, full, maneuver):
         app.set_options(options)
         if engineering:
             app.import_engineering(ROOT/"docs/evidence/SIM-UNSPRUNG-01/production/engineering-preview.json")
+        effective_options = app.read_options()
         app.start_experiment()
-        assert app.run_state is not None and app.run_state.options == options
+        assert app.run_state is not None and app.run_state.options == effective_options
         while not app.run_state.done:
             app.run_state.step()
         assert app.run_state.error is None

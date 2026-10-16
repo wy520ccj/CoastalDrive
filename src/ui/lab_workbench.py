@@ -56,7 +56,7 @@ def build_workbench(app):
     app.abs_menu = app.option(["ABS 开启", "ABS 关闭"], -1.63, -.071, .60, parameter="abs")
     app.button("高级参数 ›", -1.49, -.173, .28, app.toggle_advanced)
     app.reset_button = app.button("重置参数", -1.17, -.173, .28, app.reset_parameters)
-    app.button("开始试验", -1.33, -.292, .60, app.start_experiment, accent=True)
+    app.start_button = app.button("开始试验", -1.33, -.292, .60, app.start_experiment, accent=True)
     app.button("固定当前为 A", -1.33, -.395, .60, app.pin_baseline)
     bits = runtime_fingerprint()["math_scalar_bits"]
     app.text(f"离线实验 / {bits} 位\n固定120 Hz / 平整试验场", -1.62, -.57, .035, MUTED)
@@ -129,8 +129,7 @@ def build_workbench(app):
     app.field("bump_length", "凸起长度 m", .9, -.08, x=.44, parent=app.advanced_panel)
     app.field("bump_distance", "凸起距离 m", 6, -.20, x=-.82, parent=app.advanced_panel)
     app.button("导入悬架台架", .94, -.20, .67, app.open_suspension_bench, parent=app.advanced_panel)
-    app.text("凸起三项用于轮跳/颠簸制动；输入起始用于转向或颠簸制动请求。\n轮端参数在工程模型定义；质心/轮胎基准留空采用车型值。", -.82, -.34,
-             .030, MUTED, parent=app.advanced_panel)
+    app.parameter_hint = app.text("", -.82, -.34, .030, MUTED, parent=app.advanced_panel)
     app.advanced_panel.hide()
 
     app.details_panel = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
@@ -149,7 +148,7 @@ def build_workbench(app):
     for i, (key, label, value) in enumerate((("throttle", "油门 %", 0), ("brake", "制动 %", 0),
                                            ("gear", "挡位", 1), ("clutch", "离合 %", 100))):
         x = -.65+i*.38
-        app.text(label, x, .312, .030, MUTED, parent=app.manual_panel)
+        app.field_labels["manual."+key] = app.text(label, x, .312, .030, MUTED, parent=app.manual_panel)
         target = DirectFrame(parent=app.manual_panel, relief=None, state=DGG.NORMAL,
                              frameColor=(0, 0, 0, 0),
                              frameSize=(0, .30, -.015, .045), pos=(x, 0, .312))
@@ -160,7 +159,7 @@ def build_workbench(app):
         app.bind_parameter(app.manual_entries[key], f"manual.{key}", focus=True)
     app.text("目标转角在高级参数中设置。R=-1 / N=0 / D=1…", -.65, .112,
              .028, MUTED, parent=app.manual_panel)
-    app.button("应用输入", .56, .052, .55, app.apply_manual, parent=app.manual_panel, accent=True)
+    app.button("确认输入", .56, .052, .55, app.apply_manual, parent=app.manual_panel, accent=True)
     app.manual_panel.hide()
     app.manual_button = app.button("执行器", .00, .674, .30, app.show_manual)
     app.manual_button.hide()

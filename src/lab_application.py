@@ -19,7 +19,7 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import GraphicsWindow, TextNode, TransparencyAttrib, loadPrcFileData
 
 from lab_experiment import MANEUVERS, LabExperiment, LabOptions
-from lab_inputs import LabInputError, read_number
+from lab_inputs import MANEUVER_HINTS, LabInputError, active_fields, read_number
 from lab_records import LabRecord, changed_conditions, export_record, load_record, recalculate
 from lab_scene import LabScene
 from paths import user_data
@@ -37,6 +37,8 @@ INK = theme.INK
 ACCENT = theme.SEA
 PANEL = theme.PAPER_LIGHT
 BUTTON = theme.PAPER
+DISABLED_FIELD = (.88, .90, .88, 1)
+DISABLED_INK = (.43, .49, .49, 1)
 
 
 class VehicleLab(ShowBase):
@@ -76,10 +78,12 @@ class VehicleLab(ShowBase):
         self.timeline_hover = False
         self.timeline_target = 0.
         self.entries = {}
+        self.field_labels = {}
         self.hovered_parameter = None
         self.focused_parameter = "speed"
         self.scene = LabScene(self)
         self.build_ui()
+        self.refresh_parameter_availability()
         self.scene.set_vehicle(vehicle_design("reference-rwd"))
         self.camera.setPos(102, -10, 5)
         self.camera.lookAt(95, 0, .45)
@@ -111,7 +115,7 @@ class VehicleLab(ShowBase):
         return button
 
     def field(self, key, label, value, z, *, x=-1.61, width=.30, parent=None):
-        self.text(label, x, z, .039, MUTED, parent=parent)
+        self.field_labels[key] = self.text(label, x, z, .039, MUTED, parent=parent)
         target = DirectFrame(parent=parent or self.root, frameColor=(0, 0, 0, 0), relief=None,
                              frameSize=(0, .31, -.015, .045), pos=(x, 0, z), state=DGG.NORMAL)
         self.bind_parameter(target, key)
@@ -144,6 +148,9 @@ class VehicleLab(ShowBase):
             self.hovered_parameter = None
 
     def focus_parameter(self, key, entry):
+        if entry["state"] == DGG.DISABLED:
+            entry["focus"] = 0
+            return
         self.focused_parameter = key
         # 数值框不需要中文组词；IME开启时窗口会过滤普通字符消息。
         if isinstance(self.win, GraphicsWindow):
@@ -151,7 +158,7 @@ class VehicleLab(ShowBase):
         entry["frameColor"] = (.86, .93, .94, 1)
 
     def blur_parameter(self, entry, color):
-        entry["frameColor"] = color
+        entry["frameColor"] = DISABLED_FIELD if entry["state"] == DGG.DISABLED else color
 
     def blur_entries(self):
         for entry in (*self.entries.values(), *self.manual_entries.values()):
@@ -161,7 +168,7 @@ class VehicleLab(ShowBase):
         if not self.parameter_help.root.isHidden() or not self.engineering_panel.root.isHidden():
             return
         entries = [entry for entry in (*self.entries.values(), *self.manual_entries.values())
-                   if not entry.isHidden()]
+                   if not entry.isHidden() and entry.guiItem.getActive()]
         focused = next((i for i, entry in enumerate(entries) if entry.guiItem.getFocus()), None)
         index = (focused+direction)%len(entries) if focused is not None else (0 if direction > 0 else -1)
         self.blur_entries()
@@ -209,19 +216,55 @@ class VehicleLab(ShowBase):
 
     def read_options(self):
         config = self.engineered_config or DESIGN_VEHICLES[self.vehicle_menu.selectedIndex].config
-        return LabOptions(vehicle_id=DESIGN_VEHICLES[self.vehicle_menu.selectedIndex].id,
-            maneuver=tuple(MANEUVERS)[self.maneuver_menu.selectedIndex],
-            speed_kph=self.read_field("speed"), friction=self.read_field("mu"),
-            duration=self.read_field("duration"),
-            steering_deg=self.read_field("steer", bounds=(-config.steering_degrees, config.steering_degrees)),
-            onset=self.read_field("onset"), radius_m=self.read_field("radius"),
-            right_friction=self.read_field("right_mu"),
-            bump_height_m=self.read_field("bump_height"),
-            bump_length_m=self.read_field("bump_length"),
-            bump_distance_m=self.read_field("bump_distance"),
+        mode = tuple(MANEUVERS)[self.maneuver_menu.selectedIndex]
+        defaults = self.default_options(mode)
+        available = active_fields(mode, finite_drivetrain=config.finite_drivetrain)
+
+        def read(key, default, **kwargs):
+            return self.read_field(key, **kwargs) if key in available else default
+
+        options = LabOptions(vehicle_id=defaults.vehicle_id, maneuver=mode,
+            speed_kph=self.read_field("speed"), friction=self.read_field("mu"), duration=self.read_field("duration"),
+            steering_deg=read("steer", defaults.steering_deg,
+                              bounds=(-config.steering_degrees, config.steering_degrees)),
+            onset=read("onset", defaults.onset), radius_m=read("radius", defaults.radius_m),
+            right_friction=read("right_mu", defaults.right_friction),
+            bump_height_m=read("bump_height", defaults.bump_height_m),
+            bump_length_m=read("bump_length", defaults.bump_length_m),
+            bump_distance_m=read("bump_distance", defaults.bump_distance_m),
             cg_height=self.read_field("cg", optional=True),
             tire_reference_load=self.read_field("tire_load", optional=True),
             abs_enabled=self.abs_menu.selectedIndex == 0, esc_enabled=self.esc_menu.selectedIndex == 1)
+        if "onset" in available and options.onset >= options.duration:
+            raise LabInputError("onset", "输入起始须小于试验时长，否则试验结束前不会施加输入。")
+        return options
+
+    def refresh_parameter_availability(self):
+        mode = tuple(MANEUVERS)[self.maneuver_menu.selectedIndex]
+        config = self.engineered_config or DESIGN_VEHICLES[self.vehicle_menu.selectedIndex].config
+        available = active_fields(mode, finite_drivetrain=config.finite_drivetrain)
+        for key, entry in (*self.entries.items(), *(("manual."+key, entry)
+                            for key, entry in self.manual_entries.items())):
+            enabled = key in available
+            if not enabled:
+                entry["focus"] = 0
+            entry["state"] = DGG.NORMAL if enabled else DGG.DISABLED
+            entry["frameColor"] = ((.86, .93, .94, 1) if entry.guiItem.getFocus()
+                                    else (.94, .95, .92, 1)) if enabled else DISABLED_FIELD
+            entry["text_fg"] = INK if enabled else DISABLED_INK
+            # PGEntry持有各状态TextNode的副本，组件颜色更改后需同步到这些副本。
+            for state in range(entry["numStates"]):
+                entry.guiItem.setTextDef(state, entry.onscreenText.textNode)
+            self.field_labels[key].setFg(MUTED if enabled else DISABLED_INK)
+        self.field_labels["speed"].setText("目标车速 km/h" if mode in (
+            "constant_radius", "double_lane_change") else "初速 km/h")
+        self.parameter_hint.setText(MANEUVER_HINTS[mode]+"\n灰色项不参与本工况；质心/轮胎基准留空采用模型值。")
+        ready = mode not in ("ride_bump", "ride_braking") or config.unsprung_enabled
+        self.start_button["state"] = DGG.NORMAL if ready else DGG.DISABLED
+        self.start_button["text"] = "开始试验" if ready else "需导入独立轮心模型"
+        self.manual_button.show() if mode == "manual" else self.manual_button.hide()
+        if mode != "manual":
+            self.manual_panel.hide()
 
     def read_field(self, key, **options):
         return read_number(self.entries[key].get(), key, **options)
@@ -262,6 +305,7 @@ class VehicleLab(ShowBase):
         source = "工程模型" if self.engineered_config is not None else "车型默认"
         self.configuration_note.setText(f"{source} · 独立轮心" if config.unsprung_enabled
                                        else f"{source} · 无独立轮心")
+        self.refresh_parameter_availability()
 
     def import_engineering(self, path):
         try:
@@ -357,11 +401,15 @@ class VehicleLab(ShowBase):
         self.esc_menu.set(1 if options.esc_enabled else 0)
         self.entries["cg"].enterText("" if options.cg_height is None else str(options.cg_height))
         self.entries["tire_load"].enterText("" if options.tire_reference_load is None else str(options.tire_reference_load))
+        self.refresh_parameter_availability()
 
     def start_experiment(self):
         try:
             options = self.read_options()
             config = self.engineered_config or vehicle_design(options.vehicle_id).config
+            if options.maneuver in ("ride_bump", "ride_braking") and not config.unsprung_enabled:
+                self.show_error("新试验未开始：当前车型没有独立轮心模型，请从“记录 → 导入工程模型”载入；已有结果保留。")
+                return
             manual_command = self.read_manual_command(config) if options.maneuver == "manual" else None
         except ValueError as error:
             self.show_error("新试验未开始，已有结果仍属上次试验", error)
@@ -411,6 +459,7 @@ class VehicleLab(ShowBase):
                            ("onset", options.onset)):
             self.entries[key].enterText(str(value))
         self.select_maneuver_plot(mode)
+        self.refresh_parameter_availability()
 
     def default_options(self, mode):
         design = DESIGN_VEHICLES[self.vehicle_menu.selectedIndex]
@@ -476,18 +525,22 @@ class VehicleLab(ShowBase):
         self.show_sample(len(self.run_state.samples)-1)
 
     def apply_manual(self):
-        if self.run_state is None or self.run_state.options.maneuver != "manual":
-            self.show_error("请先开始“执行器输入”试验，再应用输入。")
+        if tuple(MANEUVERS)[self.maneuver_menu.selectedIndex] != "manual":
+            self.show_error("当前工况不使用手动执行器，请先选择“执行器输入”。")
             return
-        if self.run_state.done:
-            self.show_error("试验已结束，请重新开始后再应用执行器输入。")
-            return
+        design = DESIGN_VEHICLES[self.vehicle_menu.selectedIndex]
+        run = self.run_state
+        live = (run is not None and not run.done and run.options.maneuver == "manual"
+                and run.options.vehicle_id == design.id)
+        config = run.config if live else self.engineered_config or design.config
         try:
-            command = self.read_manual_command(self.run_state.config)
-            self.run_state.manual_command = command
-            self.record = None
+            command = self.read_manual_command(config)
+            if live:
+                run.manual_command = command
+                self.record = None
             self.notice.dismiss()
-            self.notice.setText("执行器请求已更新；仪表分别显示请求与实际响应")
+            self.notice.setText("执行器请求已更新；仪表分别显示请求与实际响应" if live
+                                else "初始执行器输入已确认，开始新试验后生效；已有结果保留。")
             self.blur_entries()
             self.manual_panel.hide()
         except ValueError as error:
@@ -496,14 +549,17 @@ class VehicleLab(ShowBase):
     def read_manual_command(self, config):
         values = {key: read_number(entry.get(), "manual."+key,
                     **({"bounds": (-1, len(config.gear_ratios))} if key == "gear" else {}))
-                  for key, entry in self.manual_entries.items()}
+                  for key, entry in self.manual_entries.items()
+                  if config.finite_drivetrain or key not in ("gear", "clutch")}
         steering = self.read_field("steer", bounds=(-config.steering_degrees, config.steering_degrees))
         return VehicleCommand(steering=steering, throttle=values["throttle"]/100,
-                              brake=values["brake"]/100, gear=int(values["gear"]),
-                              clutch=values["clutch"]/100)
+                              brake=values["brake"]/100,
+                              direction=0 if config.finite_drivetrain else 1,
+                              gear=int(values["gear"]) if config.finite_drivetrain else None,
+                              clutch=values["clutch"]/100 if config.finite_drivetrain else None)
 
     def show_manual(self):
-        if self.run_state is not None and self.run_state.options.maneuver == "manual":
+        if tuple(MANEUVERS)[self.maneuver_menu.selectedIndex] == "manual":
             self.blur_entries()
             self.advanced_panel.hide()
             self.details_panel.hide()
@@ -856,7 +912,10 @@ class VehicleLab(ShowBase):
             old = old_summary["stopping_distance_m"]
             old_value = old if old is not None else old_summary["distance_m"]
             self.baseline_value.setText(f"{old_value:.2f} m")
-            self.result.setText(f"Δ (B − A)   {value-old_value:+.2f} m")
+            comparable = (old_summary["options"]["maneuver"] == summary["options"]["maneuver"]
+                          and (old is None) == (distance is None))
+            self.result.setText(f"Δ (B − A)   {value-old_value:+.2f} m" if comparable
+                                else "工况或距离定义不同，仅并列展示")
         self.timing.setText(f"仿真  {summary['simulation_seconds']:.2f} s\n计算  {summary['compute_seconds']:.2f} s")
 
     def update(self, task):

@@ -47,6 +47,17 @@ def check(output):
         path = output/f"{name}.png"
         assert app.win.saveScreenshot(Filename.fromOsSpecific(str(path)))
 
+    def blocked(entry):
+        app.blur_entries()
+        original = entry.get()
+        entry.guiItem.setFocus(True)
+        pump()
+        device.buttonDown(KeyboardButton.asciiKey("9"))
+        device.keystroke(ord("9"))
+        device.buttonUp(KeyboardButton.asciiKey("9"))
+        pump()
+        assert not entry.guiItem.getFocus() and entry.get() == original
+
     try:
         app.toggle_advanced()
         values = {"duration": "3.5", "steer": "-2.5", "cg": "0.45", "radius": "60",
@@ -55,12 +66,9 @@ def check(output):
         calls = []
         app.accept("period", app.hotkey, [lambda: calls.append("step")])
         app.accept("space", app.hotkey, [lambda: calls.append("pause")])
-        for key, value in values.items():
-            results[key] = type_keys(app.entries[key], value)
-        assert calls == []
         switches = []
         # 菜单开启、选择、面板开关后重新走窗口输入设备，检查连续切换后的编辑。
-        for _ in range(2):
+        for repeat in range(2):
             for mode, label in MANEUVERS.items():
                 app.entries["duration"].guiItem.setFocus(True)
                 app.maneuver_menu.showPopupMenu()
@@ -71,9 +79,15 @@ def check(output):
                 app.toggle_advanced()
                 app.toggle_advanced()
                 for key, value in values.items():
-                    assert type_keys(app.entries[key], value) == value
+                    entry = app.entries[key]
+                    if entry.guiItem.getActive():
+                        results[key] = type_keys(entry, value)
+                    else:
+                        blocked(entry)
                 app.reset_parameters()
                 assert app.read_options() == app.default_options(mode)
+                if repeat == 0:
+                    capture("mode-"+mode)
                 switches.append(mode)
         # 退格与重新输入走同一窗口输入设备，不能只验证enterText赋值。
         entry = app.entries["bump_distance"]
@@ -96,7 +110,8 @@ def check(output):
         app.blur_entries()
         app.messenger.send("period")
         assert calls == ["step"]
-        app.manual_panel.show()
+        app.maneuver_menu.set("执行器输入")
+        app.show_manual()
         for key, value in (("throttle", "25"), ("brake", "10"), ("gear", "-1"), ("clutch", "100")):
             results[f"manual.{key}"] = type_keys(app.manual_entries[key], value)
         capture("manual-input")

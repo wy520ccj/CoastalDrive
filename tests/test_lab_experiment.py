@@ -92,3 +92,20 @@ def test_missing_wheel_slip_remains_undefined_and_failure_keeps_completed_steps(
 def test_user_configuration_boundary_rejects_invalid_values(kwargs):
     with pytest.raises(ValueError):
         LabOptions(**kwargs)
+
+
+def test_steering_limit_uses_imported_hardware_instead_of_catalog_default():
+    from lab_inputs import LabInputError
+    from vehicle_designs import vehicle_design
+
+    config = vehicle_design("reference-rwd").config
+    options = LabOptions(maneuver="step_steer", steering_deg=30., onset=0., duration=FIXED_DT)
+    with pytest.raises(LabInputError, match="当前模型"):
+        LabExperiment(options, config=replace(config, steering_degrees=20.))
+    run = LabExperiment(options, config=replace(config, steering_degrees=40.))
+    try:
+        assert run.command_at(0.).steering == 30.
+        run.step()
+        assert run.commands[-1].steering == 30.
+    finally:
+        run.close()
