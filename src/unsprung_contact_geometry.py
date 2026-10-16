@@ -4,11 +4,41 @@ from dataclasses import dataclass, replace
 from functools import cached_property
 
 import numpy as np
-from wheel_contact_kernels import finite_radial_gradients, rotated_path
+from wheel_contact_kernels import (
+    finite_contact_averages,
+    finite_contact_frames,
+    finite_radial_gradients,
+    rotated_path,
+)
 
 from tire_compliance import project_deformation
 from unsprung_drivetrain import tire_ports
 from unsprung_motion import rotation_increment
+
+
+def _average_axes(axes,angular,speed,h):
+    if not speed:
+        return axes
+    if axes.dtype==np.float64 and angular.dtype==np.float64:
+        average = np.empty((4,3))
+        finite_contact_averages((axes,angular/speed),(average,),h*speed)
+        return average
+    # 原低精度除法与零角返回类型保持；不能先升精度再做归一化。
+    return np.asarray([rotated_path(tuple(axis),tuple(angular/speed),h*speed,1.)[1] for axis in axes])
+
+
+def _material_frame(previous,tangents,laterals,normals,target,initial,scales,steering,h,stiffness):
+    if previous.dtype==np.float64:
+        deformation,loss,velocities = np.empty((4,2)),np.empty(4),np.empty_like(steering)
+        finite_contact_frames((previous,tangents,laterals,normals,target,initial,scales,steering),
+                              (deformation,loss,velocities),h,.5*stiffness)
+        return deformation,loss,velocities
+    normal_steering = -(target-initial)/(h*scales)
+    deformation,loss = [],[]
+    for value,tangent,lateral,normal in zip(previous,tangents,laterals,normals):
+        projected,energy = project_deformation(value,tuple(map(tuple,(tangent,lateral,normal))),stiffness)
+        deformation.append(projected);loss.append(energy)
+    return np.asarray(deformation),np.asarray(loss),np.column_stack((steering[:,:2],normal_steering))
 
 
 @dataclass(frozen=True)
@@ -62,8 +92,7 @@ class FiniteRadialContact:
         middle_axes = hardware.axes@middle_rotation.T
         end_axes = hardware.axes@end_rotation.T
         speed = np.linalg.norm(velocity[3:6])
-        average_axes = np.asarray([rotated_path(tuple(axis),tuple(velocity[3:6]/speed),h*speed,1.)[1]
-                                  for axis in hardware.axes]) if speed else hardware.axes
+        average_axes = _average_axes(hardware.axes,velocity[3:6],speed,h)
         middle = self.roads.query(self.centers+.5*h*wheel_velocity,middle_rotation@self.rotation[:,2],middle_axes,
                                  surface_cache=self.query_cache)
         end = self.roads.query(self.centers+h*wheel_velocity,end_rotation@self.rotation[:,2],end_axes,
@@ -82,13 +111,10 @@ class FiniteRadialContact:
         contacts = tire_ports(hardware,middle.offsets,tangents,laterals,normals,self.steering,self.trails,
             normal_offsets=middle.normal_offsets,material_axes=middle_axes,wheel_velocity_bias=self.wheel_velocity_bias)
         # 指定转向先改变轮轴包络；这部分是执行器输入功，不充作道路输入或假耗散。
-        normal_steering = -(self.target.deflection-self.initial.deflection)/(h*scales)
+        deformation,frame_loss,steering_velocity = _material_frame(self.deformation,tangents,laterals,normals,
+            self.target.deflection,self.initial.deflection,scales,contacts.steering_velocity,h,config.tire_contact_stiffness)
         contacts = replace(contacts,normal=gradients,
-            steering_velocity=np.column_stack((contacts.steering_velocity[:,:2],normal_steering)))
-        deformation,frame_loss = [],[]
-        for previous,tangent,lateral,normal in zip(self.deformation,tangents,laterals,normals):
-            projected,loss = project_deformation(previous,tuple(map(tuple,(tangent,lateral,normal))),config.tire_contact_stiffness)
-            deformation.append(projected);frame_loss.append(loss)
+            steering_velocity=steering_velocity)
         friction,rolling = [],[]
         for hit in end.hits:
             asphalt = hit is None or self.on_asphalt(*hit.point[:2])
@@ -97,6 +123,6 @@ class FiniteRadialContact:
                            if config.wheel_rolling_resistance else 0.)
         geometry = replace(end,offsets=middle.offsets,normals=normals,tangents=tangents,laterals=laterals)
         self.cache_key = key
-        self.cached = RadialContactStep(geometry,contacts,scales,np.asarray(deformation),np.asarray(frame_loss),
+        self.cached = RadialContactStep(geometry,contacts,scales,deformation,frame_loss,
                                        np.asarray(friction),np.asarray(rolling))
         return self.cached

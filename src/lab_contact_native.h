@@ -513,4 +513,53 @@ static PyObject *unsprung_momentum_values_native(PyObject *self,PyObject *args) 
 error:
     lab_release(v,7); return NULL;
 }
+/* 四轮仍调用原rotated_path_values；只合并Python向量/返回元组的四次包装。 */
+static PyObject *finite_contact_averages_native(PyObject *self,PyObject *args) {
+    PyObject *inputs,*outputs;
+    double angle;
+    if (!PyArg_ParseTuple(args,"OOd",&inputs,&outputs,&angle)) return NULL;
+    const int dimensions[3]={2,1,2};
+    const Py_ssize_t shapes[3][3]={{4,3},{3},{4,3}};
+    Py_buffer v[3]={{0}};
+    if (!lab_buffers(inputs,outputs,v,2,1,dimensions,shapes,-1,-1)) goto error;
+    double axis[3];
+    for (int j=0;j<3;++j) axis[j]=lab_get(v+1,j,0);
+    for (int i=0;i<4;++i) {
+        double value[3],end[3],average[3];
+        lab_row(v,i,value);
+        rotated_path_values(value,axis,angle,1.,end,average);
+        if (PyErr_Occurred()) goto error;
+        for (int j=0;j<3;++j) lab_set(v+2,i,j,average[j]);
+    }
+    lab_release(v,3); Py_RETURN_NONE;
+error:
+    lab_release(v,3); return NULL;
+}
+/* 原三个顺序累加、平方与法向转向速度；不改变接触基或弹性储能模型。 */
+static PyObject *finite_contact_frames_native(PyObject *self,PyObject *args) {
+    PyObject *inputs,*outputs;
+    double h,half_stiffness;
+    if (!PyArg_ParseTuple(args,"OOdd",&inputs,&outputs,&h,&half_stiffness)) return NULL;
+    const int dimensions[11]={2,2,2,2,1,1,1,2,2,1,2};
+    const Py_ssize_t shapes[11][3]={{4,3},{4,3},{4,3},{4,3},{4},{4},{4},{4,3},{4,2},{4},{4,3}};
+    Py_buffer v[11]={{0}};
+    if (!lab_buffers(inputs,outputs,v,8,3,dimensions,shapes,-1,-1)) goto error;
+    for (int i=0;i<4;++i) {
+        double previous[3],projection[3];
+        lab_row(v,i,previous);
+        for (int k=0;k<3;++k) {
+            double axis[3];
+            lab_row(v+1+k,i,axis);
+            projection[k]=lab_dot(previous,axis);
+        }
+        lab_set(v+8,i,0,projection[0]); lab_set(v+8,i,1,projection[1]);
+        lab_set(v+9,i,0,half_stiffness*pow(projection[2],2.));
+        for (int j=0;j<2;++j) lab_set(v+10,i,j,lab_get(v+7,i,j));
+        double change=-(lab_get(v+4,i,0)-lab_get(v+5,i,0));
+        lab_set(v+10,i,2,change/(h*lab_get(v+6,i,0)));
+    }
+    lab_release(v,11); Py_RETURN_NONE;
+error:
+    lab_release(v,11); return NULL;
+}
 #endif
