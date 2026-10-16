@@ -54,7 +54,8 @@ def build_workbench(app):
     app.field("speed", "初速 km/h", 100, .128, width=.23)
     app.field("mu", "路面附着 μ", 1.1, .034, width=.23)
     app.abs_menu = app.option(["ABS 开启", "ABS 关闭"], -1.63, -.071, .60, parameter="abs")
-    app.button("高级参数  ›", -1.33, -.173, .60, app.toggle_advanced)
+    app.button("高级参数 ›", -1.49, -.173, .28, app.toggle_advanced)
+    app.reset_button = app.button("重置参数", -1.17, -.173, .28, app.reset_parameters)
     app.button("开始试验", -1.33, -.292, .60, app.start_experiment, accent=True)
     app.button("固定当前为 A", -1.33, -.395, .60, app.pin_baseline)
     bits = runtime_fingerprint()["math_scalar_bits"]
@@ -113,6 +114,8 @@ def build_workbench(app):
     app.advanced_panel = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
                                     frameSize=(-.94, 1.72, -.46, .76), sortOrder=70, state=DGG.NORMAL)
     app.text("高级参数", -.82, .638, .047, parent=app.advanced_panel, font=app.heading_font)
+    app.advanced_reset_button = app.button("重置参数", 1.10, .652, .36, app.reset_parameters,
+                                          parent=app.advanced_panel)
     app.button("关闭", 1.52, .652, .26, app.toggle_advanced, parent=app.advanced_panel)
     app.field("duration", "时长 s", 12, .44, x=-.82, parent=app.advanced_panel)
     app.field("steer", "目标转角 °", 3, .32, x=-.82, parent=app.advanced_panel)

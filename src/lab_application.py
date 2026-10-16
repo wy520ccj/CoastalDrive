@@ -2,6 +2,7 @@
 
 import json
 import os
+from dataclasses import replace
 from datetime import UTC, datetime
 from pathlib import Path
 from time import perf_counter
@@ -129,6 +130,11 @@ class VehicleLab(ShowBase):
             widget["focusInExtraArgs"] = [key, widget]
             widget["focusOutCommand"] = self.blur_parameter
             widget["focusOutExtraArgs"] = [widget, widget["frameColor"]]
+            widget.bind(DGG.B1PRESS, self.click_parameter, [key, widget])
+
+    def click_parameter(self, key, entry, event=None):
+        # 已有焦点时再点击不会触发focusIn，仍需重启数值编辑的窗口状态。
+        self.focus_parameter(key, entry)
 
     def enter_parameter(self, key, event=None):
         self.hovered_parameter = key
@@ -191,7 +197,7 @@ class VehicleLab(ShowBase):
             popupMarker_relief=DGG.FLAT, popupMarker_frameColor=(0, 0, 0, 0),
             popupMarker_text="▼", popupMarker_text_font=self.font,
             popupMarker_text_fg=MUTED, popupMarker_text_scale=.7,
-            popupMarkerBorder=(0, 0))
+            popupMarkerBorder=(0, 0), before_popup=self.blur_entries)
         if parameter is not None:
             self.bind_parameter(menu, parameter)
         return menu
@@ -338,7 +344,9 @@ class VehicleLab(ShowBase):
 
     def set_options(self, options):
         self.vehicle_menu.set(next(i for i, design in enumerate(DESIGN_VEHICLES) if design.id == options.vehicle_id))
-        self.maneuver_menu.set(tuple(MANEUVERS).index(options.maneuver))
+        self.blur_entries()
+        self.maneuver_menu.set(tuple(MANEUVERS).index(options.maneuver), fCommand=0)
+        self.select_maneuver_plot(options.maneuver)
         for key, value in (("speed", options.speed_kph), ("mu", options.friction),
                            ("duration", options.duration), ("steer", options.steering_deg),
                            ("onset", options.onset), ("radius", options.radius_m), ("right_mu", options.right_friction),
@@ -396,22 +404,42 @@ class VehicleLab(ShowBase):
         self.show_sample(0)
 
     def apply_preset(self, selection):
+        self.blur_entries()
         mode = tuple(MANEUVERS)[tuple(MANEUVERS.values()).index(selection)]
+        options = self.default_options(mode)
+        for key, value in (("speed", options.speed_kph), ("duration", options.duration),
+                           ("onset", options.onset)):
+            self.entries[key].enterText(str(value))
+        self.select_maneuver_plot(mode)
+
+    def default_options(self, mode):
+        design = DESIGN_VEHICLES[self.vehicle_menu.selectedIndex]
+        config = self.engineered_config or design.config
+        options = LabOptions(vehicle_id=design.id, maneuver=mode, friction=config.road_friction)
         if mode in ("constant_radius", "double_lane_change"):
-            self.entries["speed"].enterText("60")
-            self.entries["duration"].enterText("12")
+            return replace(options, speed_kph=60.)
+        if mode == "ride_bump":
+            return replace(options, speed_kph=18., duration=3.)
+        if mode == "ride_braking":
+            return replace(options, speed_kph=30., duration=3., onset=.6)
+        return options
+
+    def reset_parameters(self):
+        mode = tuple(MANEUVERS)[self.maneuver_menu.selectedIndex]
+        self.set_options(self.default_options(mode))
+        for key, value in (("throttle", "0"), ("brake", "0"), ("gear", "1"), ("clutch", "100")):
+            self.manual_entries[key].enterText(value)
+        self.notice.dismiss()
+        self.notice.setText("已重置当前工况参数；工程模型、已有结果和A保留，重新开始试验后生效。")
+
+    def select_maneuver_plot(self, mode):
+        if mode in ("constant_radius", "double_lane_change"):
             self.set_plot_group("路径跟踪")
         elif mode in ("braking", "split_braking"):
-            self.entries["speed"].enterText("100")
             self.set_plot_group("制动响应")
         elif mode=="ride_bump":
-            self.entries["speed"].enterText("18")
-            self.entries["duration"].enterText("3")
             self.set_plot_group("车身 / 轮心振动")
         elif mode=="ride_braking":
-            self.entries["speed"].enterText("30")
-            self.entries["duration"].enterText("3")
-            self.entries["onset"].enterText("0.6")
             self.set_plot_group("制动响应")
         else:
             self.set_plot_group("转向响应")

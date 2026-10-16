@@ -23,7 +23,8 @@ MUTED = (43 / 255, 64 / 255, 74 / 255, 1)
 class LabOptionMenu(DirectOptionMenu):
     """定高平面列表；悬停不改变文字或鼠标命中区域。"""
 
-    def __init__(self, parent=None, **options):
+    def __init__(self, parent=None, *, before_popup=None, **options):
+        self.before_popup = before_popup
         super().__init__(parent, **options)
         self.initialiseoptions(LabOptionMenu)
 
@@ -36,6 +37,8 @@ class LabOptionMenu(DirectOptionMenu):
         self.highlightedIndex = None
 
     def showPopupMenu(self, event=None):
+        if self.before_popup is not None:
+            self.before_popup()
         height = self.maxHeight * len(self["items"])
         self.popupMenu["frameSize"] = (-.002, self.maxWidth + .002, -height - .002, .002)
         super().showPopupMenu(event)

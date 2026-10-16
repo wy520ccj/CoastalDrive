@@ -182,6 +182,72 @@ def test_numeric_focus_closes_window_ime_but_does_not_call_graphics_buffer_api(m
     assert calls == ["close-ime"] and fake.focused_parameter == "manual.gear"
 
 
+def test_menu_open_cancel_and_every_maneuver_release_old_focus(workbench):
+    from lab_experiment import MANEUVERS
+
+    app = workbench
+    app.advanced_panel.show()
+    for mode, label in MANEUVERS.items():
+        entry = app.entries["duration"]
+        entry.guiItem.setFocus(True)
+        app.maneuver_menu.showPopupMenu()
+        assert not entry.guiItem.getFocus()
+        app.maneuver_menu.hidePopupMenu()
+        entry.guiItem.setFocus(True)
+        app.maneuver_menu.set(label)
+        assert not entry.guiItem.getFocus()
+        options = app.default_options(mode)
+        assert float(entry.get()) == options.duration
+        assert float(app.entries["speed"].get()) == options.speed_kph
+        assert float(app.entries["onset"].get()) == options.onset
+    app.advanced_panel.hide()
+
+
+def test_clicking_already_focused_entry_prepares_window_again(monkeypatch, workbench):
+    app = workbench
+    calls = []
+    monkeypatch.setattr(app, "focus_parameter", lambda key, entry: calls.append(key))
+    app.entries["speed"].guiItem.setFocus(True)
+    app.click_parameter("speed", app.entries["speed"])
+    app.click_parameter("speed", app.entries["speed"])
+    assert calls == ["speed", "speed"]
+    app.blur_entries()
+
+
+def test_reset_restores_all_fields_for_current_maneuver_and_preserves_engineering_and_results(workbench):
+    from pathlib import Path
+
+    from lab_records import LabRecord
+
+    app = workbench
+    app.set_options(LabOptions(speed_kph=10, duration=1/120))
+    app.start_experiment()
+    app.single_step()
+    app.record = LabRecord.from_run(app.run_state)
+    app.pin_baseline()
+    assert app.record.samples and app.baseline.samples and app.run_state is not None
+    app.import_engineering(Path(__file__).resolve().parents[1]/
+        "docs/evidence/SIM-UNSPRUNG-01/production/engineering-preview.json")
+    app.maneuver_menu.set("单侧凸起 / 制动")
+    config, metadata = app.engineered_config, app.parameter_metadata
+    run, record, baseline = app.run_state, app.record, app.baseline
+    for entry in (*app.entries.values(), *app.manual_entries.values()):
+        entry.enterText("invalid")
+    app.entries["duration"].guiItem.setFocus(True)
+    app.reset_parameters()
+    assert app.read_options() == app.default_options("ride_braking")
+    assert app.entries["cg"].get() == app.entries["tire_load"].get() == ""
+    assert {key: entry.get() for key, entry in app.manual_entries.items()} == {
+        "throttle": "0", "brake": "0", "gear": "1", "clutch": "100"}
+    assert app.engineered_config is config and app.parameter_metadata is metadata
+    assert app.run_state is run and app.record is record and app.baseline is baseline
+    assert not any(entry.guiItem.getFocus() for entry in app.entries.values())
+    assert "重新开始" in app.notice.getText()
+    app.engineered_config = app.engineered_vehicle_id = app.parameter_metadata = None
+    app.refresh_configuration_note()
+    app.clear_baseline()
+
+
 def test_invalid_text_opens_chinese_banner_and_focuses_exact_field(workbench):
     app = workbench
     app.set_options(LabOptions())

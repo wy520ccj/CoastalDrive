@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT/"src"))
 from panda3d.core import Filename, KeyboardButton
 
 from lab_application import VehicleLab
+from lab_experiment import MANEUVERS
 
 
 def check(output):
@@ -57,8 +58,26 @@ def check(output):
         for key, value in values.items():
             results[key] = type_keys(app.entries[key], value)
         assert calls == []
+        switches = []
+        # 菜单开启、选择、面板开关后重新走窗口输入设备，检查连续切换后的编辑。
+        for _ in range(2):
+            for mode, label in MANEUVERS.items():
+                app.entries["duration"].guiItem.setFocus(True)
+                app.maneuver_menu.showPopupMenu()
+                pump()
+                assert not app.entries["duration"].guiItem.getFocus()
+                app.maneuver_menu.set(label)
+                app.maneuver_menu.hidePopupMenu()
+                app.toggle_advanced()
+                app.toggle_advanced()
+                for key, value in values.items():
+                    assert type_keys(app.entries[key], value) == value
+                app.reset_parameters()
+                assert app.read_options() == app.default_options(mode)
+                switches.append(mode)
         # 退格与重新输入走同一窗口输入设备，不能只验证enterText赋值。
         entry = app.entries["bump_distance"]
+        type_keys(entry, "6")
         device.buttonDown(KeyboardButton.backspace())
         device.buttonUp(KeyboardButton.backspace())
         pump()
@@ -88,6 +107,7 @@ def check(output):
         capture("engineering-ready")
         report = {"passed": True, "input_path": "GraphicsWindowInputDevice → MouseWatcher → PGEntry",
                   "values": results, "hidden_focus_released": True,
+                  "maneuver_switches": switches,
                   "decimal_did_not_trigger_step": True, "human_acceptance": "pending"}
         (output/"summary.json").write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
         return report
