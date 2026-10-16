@@ -5,7 +5,7 @@ from dataclasses import dataclass, replace
 
 import numpy as np
 from mechanical_kernels import cross, unsprung_contact_residual, unsprung_port_residual
-from wheel_contact_kernels import unsprung_body_torque
+from wheel_contact_kernels import unsprung_body_torque, unsprung_momentum_values
 
 from tire_compliance import energy_terms
 from tire_properties import tire_grip, tire_stiffness
@@ -109,6 +109,8 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
 
     configuration_key,configuration_data = None,None
     velocity_key,velocity_data = None,None
+    force_key,force_data = None,None
+    torque_key,torque_data = None,None
     gyro_cache = {}
 
     def configuration(end):
@@ -162,28 +164,42 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         rolling_torque = local_rolling*normal.normal_force*active.radii**2*end[12:] / np.maximum(
             np.abs(active.radii*end[12:]),config.rolling_transition_speed)
         engine_reaction = known+engine_torque*hardware.engine-engine_drag*np.dot(hardware.engine,end)*hardware.engine
+        # 原反力表达式的连续前缀；只依赖本次完整速度/构型，保持矩阵及加减顺序。
+        reaction_base = engine_reaction-gs.T@normal.suspension_force+gn.T@normal.normal_force
         rotor_bias = np.zeros(16)
         rotor_bias[3:6] = cross(end[3:6],hardware.spin(end,config))
         free_momentum = inertia@end-momentum
         velocity_key = key
         velocity_data = (geometry,down,inertial_torques,speeds,contact_speeds,rolling_torque,
-                         engine_reaction,rotor_bias,free_momentum)
+                         reaction_base,rotor_bias,free_momentum)
         return velocity_data
 
     def evaluate(values):
+        nonlocal force_key,force_data,torque_key,torque_data
         end,forces,torques = values[:16],values[16:24].reshape(4,2),values[24:]
-        geometry,down,inertial_torques,speeds,contact_speeds,rolling_torque,engine_reaction,rotor_bias,free_momentum = velocity_terms(end)
+        geometry,down,inertial_torques,speeds,contact_speeds,rolling_torque,reaction_base,rotor_bias,free_momentum = velocity_terms(end)
         kinematics,active,_guide,local_previous,_rolling,scale,q,suspension_velocity,delta,coefficients,normal,parameters = geometry
         gx,gy,gn = active.longitudinal,active.lateral,active.normal
         loss = torques[2]
         output_torque = ratio*(torques[1]-loss)
-        reaction = engine_reaction-gs.T@normal.suspension_force+gn.T@normal.normal_force+gx.T@forces[:,0]+gy.T@forces[:,1]-ports.T@torques
-        reaction[12:] -= rolling_torque
-        momentum_error = free_momentum-dt*(reaction-rotor_bias)
+        # 扭矩扰动不改变本速度与八接触力的原反力前缀/轮心力；不跨共同解复用。
+        current_force_key = velocity_key,forces.tobytes()
+        if current_force_key!=force_key:
+            force_reaction = reaction_base+gx.T@forces[:,0]+gy.T@forces[:,1]
+            wheel_force = (forces[:,0,None]*gx[:,:3]+forces[:,1,None]*gy[:,:3]+normal.normal_force[:,None]*gn[:,:3]
+                           -normal.suspension_force[:,None]*hardware.mechanical.guides+wheel_known) if native_body_gyro else None
+            force_key,force_data = current_force_key,(force_reaction,wheel_force)
+        force_reaction,wheel_force = force_data
+        # ports在本次共同解内固定，完整十扭矩字节相同才复用原矩阵投影。
+        current_torque_key = torques.tobytes()
+        if current_torque_key!=torque_key:
+            torque_data = ports.T@torques
+            torque_key = current_torque_key
+        reaction,residual = np.empty(16),np.empty(34)
+        unsprung_momentum_values((force_reaction,torque_data,rolling_torque,rotor_bias,free_momentum),
+                                 (reaction,residual),dt)
         gyro = np.zeros(3)
         if native_body_gyro:
-            wheel_force = (forces[:,0,None]*gx[:,:3]+forces[:,1,None]*gy[:,:3]+normal.normal_force[:,None]*gn[:,:3]
-                           -normal.suspension_force[:,None]*hardware.mechanical.guides+wheel_known)
             body_torque = np.empty(3)
             unsprung_body_torque((hardware.mechanical.wheel_arms,wheel_force,reaction,rotor_bias),(body_torque,))
             free_angular = start[3:6]+dt*np.linalg.solve(hardware.mechanical.world_inertia,body_torque-external_torque)
@@ -192,10 +208,8 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
             if gyro_key not in gyro_cache:
                 gyro_cache[gyro_key] = native_gyro_impulse(hardware.mechanical.world_inertia,free_angular,dt)
             gyro = gyro_cache[gyro_key]
-            momentum_error[3:6] -= gyro
+            residual[3:6] -= gyro
         # 残差维数由共同方程固定；直接装配，避免每次差分重新解释通用拼接规则。
-        residual = np.empty(34)
-        residual[:16] = momentum_error
         details = unsprung_contact_residual((end,forces,local_previous,contact_speeds,active.radii,rolling_flags,parameters),
             residual,dt,config.tire_contact_stiffness,config.tire_contact_damping,config.tire_shape,config.tire_curvature,
             config.slip_speed,math.hypot)

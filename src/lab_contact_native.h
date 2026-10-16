@@ -466,4 +466,23 @@ static PyObject *finite_motion_vectors_native(PyObject *self,PyObject *args) {
 error:
     lab_release(v,7); return NULL;
 }
+/* 保留原端口反力、轮端滚阻与16维动量的逐项减/乘/减顺序；尾部由原材料和端口填写。 */
+static PyObject *unsprung_momentum_values_native(PyObject *self,PyObject *args) {
+    PyObject *inputs,*outputs;
+    double dt;
+    if (!PyArg_ParseTuple(args,"OOd",&inputs,&outputs,&dt)) return NULL;
+    const int dimensions[7]={1,1,1,1,1,1,1};
+    const Py_ssize_t shapes[7][3]={{16},{16},{4},{16},{16},{16},{34}};
+    Py_buffer v[7]={{0}};
+    if (!lab_buffers(inputs,outputs,v,5,2,dimensions,shapes,-1,-1)) goto error;
+    for (int i=0;i<16;++i) {
+        double reaction=lab_get(v,i,0)-lab_get(v+1,i,0);
+        if (i>=12) reaction-=lab_get(v+2,i-12,0);
+        double momentum=lab_get(v+4,i,0)-dt*(reaction-lab_get(v+3,i,0));
+        lab_set(v+5,i,0,reaction); lab_set(v+6,i,0,momentum);
+    }
+    lab_release(v,7); Py_RETURN_NONE;
+error:
+    lab_release(v,7); return NULL;
+}
 #endif
