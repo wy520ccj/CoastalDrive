@@ -1,5 +1,8 @@
 """轮胎完全处于Box一个轴向区间内时，按支持函数证明剖面的真实有符号距离。"""
 
+import struct
+from functools import lru_cache
+
 import numpy as np
 from wheel_contact_kernels import (
     box_cone_refine,
@@ -14,6 +17,27 @@ from wheel_envelope import cylinder_support
 def wheel_support(normal,axis,config):
     return np.asarray(cylinder_support(tuple(-normal),tuple(axis),config.wheel_radius,
         config.wheel_width/2,config.wheel_shoulder_radius,config.wheel_crown_height))
+
+
+@lru_cache(maxsize=512,typed=True)
+def _axis_curvature(dtype,bits,wheel_radius,half_width,shoulder,crown,parameter_bits,free):
+    """原类型/原顺序的曲率界限；参数字节另区分正负零，typed区分标量强弱类型。"""
+    axis = np.frombuffer(bits,dtype=np.dtype(dtype))
+    fixed = [i for i in range(3) if i!=free]
+    rho = np.linalg.norm(axis[fixed])
+    if rho>=1.:
+        return None
+    q = np.sqrt(1-rho*rho)
+    radius = wheel_radius-shoulder
+    width = half_width-shoulder
+    coefficient = width*width/(4*crown)
+    first = radius*rho/q+coefficient*(2*rho/q+rho**3/q**3)
+    second = radius/q**3+coefficient*(2+rho*rho)/q**5
+    if rho>2*crown/np.sqrt(width*width+4*crown*crown):
+        first = max(first,width+radius*rho/q)
+    first_theta,second_theta = first*rho,second*rho*rho+first*rho
+    lower_support = (radius-crown)*q+shoulder
+    return first_theta,second_theta,lower_support
 
 
 def box_section(center,axis,half,config):
@@ -37,20 +61,10 @@ def box_section(center,axis,half,config):
         if clearance<=0.:
             continue
         fixed = [i for i in range(3) if i!=free]
-        rho = np.linalg.norm(axis[fixed])
-        if rho>=1.:
+        curvature = _axis_curvature(axis.dtype.str,axis.tobytes(),*parameters[:4],struct.pack('=4d',*parameters[:4]),free)
+        if curvature is None:
             continue
-        q = np.sqrt(1-rho*rho)
-        radius = config.wheel_radius-config.wheel_shoulder_radius
-        crown = config.wheel_crown_height
-        width = config.wheel_width/2-config.wheel_shoulder_radius
-        coefficient = width*width/(4*crown)
-        first = radius*rho/q+coefficient*(2*rho/q+rho**3/q**3)
-        second = radius/q**3+coefficient*(2+rho*rho)/q**5
-        if rho>2*crown/np.sqrt(width*width+4*crown*crown):
-            first = max(first,width+radius*rho/q)
-        first_theta,second_theta = first*rho,second*rho*rho+first*rho
-        lower_support = (radius-crown)*q+config.wheel_shoulder_radius
+        first_theta,second_theta,lower_support = curvature
         candidates,bounds = [],[]
 
         for index in fixed:

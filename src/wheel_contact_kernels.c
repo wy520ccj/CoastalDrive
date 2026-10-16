@@ -2025,6 +2025,7 @@ static PyObject *wheel_state_update(PyObject *self, PyObject *args, PyObject *up
 #include "suspension_prepare.h"
 #include "lab_contact_native.h"
 static PyMethodDef methods[] = {
+    {"box_axis_cache_info",box_axis_cache_info_native,METH_VARARGS,"试验台纯轴向支持缓存计数与显式清空"},
     {"unsprung_momentum_values",unsprung_momentum_values_native,METH_VARARGS,"试验台原16维反力和动量批量组装"},
     {"rotation_increment_terms",rotation_increment_terms_native,METH_VARARGS,"试验台原旋转系数矩阵批量准备"},
     {"finite_motion_vectors",finite_motion_vectors_native,METH_VARARGS,"试验台原有限悬架四轮向量批量准备"},
@@ -2084,7 +2085,7 @@ static PyMethodDef methods[] = {
     {"cylinder_edge_distance", (PyCFunction)edge_distance_call, METH_VARARGS | METH_KEYWORDS, "原有限边胎冠驻点"},
     {NULL,NULL,0,NULL}
 };
-static struct PyModuleDef module = {PyModuleDef_HEAD_INIT, "wheel_contact_kernels", NULL, -1, methods};
+static struct PyModuleDef module = {PyModuleDef_HEAD_INIT, "wheel_contact_kernels", NULL, sizeof(LabBoxAxisCache), methods};
 PyMODINIT_FUNC PyInit_wheel_contact_kernels(void) {
     if(!control_keys_init()||!publish_keys_init()||!frame_keys_init()||!suspension_keys_init())return NULL;
     PyObject *result=PyModule_Create(&module); if(!result)return NULL;

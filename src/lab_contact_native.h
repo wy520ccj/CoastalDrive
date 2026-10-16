@@ -309,16 +309,44 @@ static PyObject *box_cone_samples_native(PyObject *self,PyObject *args) {
 static PyObject *box_cone_refine_native(PyObject *self,PyObject *args) {
     return lab_box_cone_call(args,1);
 }
-/* 六个轴向仍逐个调用原支持函数；负法线在前，保留零符号及每次支持运算的算术顺序。 */
-static int lab_box_axis_values(const double center[3],double axis[3],double radius,double half_width,double shoulder,
+/* 缓存只保存轴/四个形状参数的完整字节和原支持偏移；无中心、世界或节点。 */
+typedef struct {
+    int valid;
+    double key[7],offsets[6][3];
+} LabBoxAxisEntry;
+typedef struct {
+    LabBoxAxisEntry entries[512];
+    unsigned long long hits,misses;
+} LabBoxAxisCache;
+
+static PyObject *box_axis_cache_info_native(PyObject *self,PyObject *args) {
+    int clear=0;
+    if (!PyArg_ParseTuple(args,"|p",&clear)) return NULL;
+    LabBoxAxisCache *cache=PyModule_GetState(self);
+    if (clear) memset(cache,0,sizeof(*cache));
+    return Py_BuildValue("{sK,sK,si}","hits",cache->hits,"misses",cache->misses,"capacity",512);
+}
+
+/* 直接映射512槽；哈希冲突只会重算，复用前必须memcmp全部56字节，区分符号零。 */
+static int lab_box_axis_values(PyObject *self,const double center[3],double axis[3],double radius,double half_width,double shoulder,
                                double crown,double normals[6][3],double wheels[6][3]) {
+    LabBoxAxisCache *cache=PyModule_GetState(self);
+    double key[7]={axis[0],axis[1],axis[2],radius,half_width,shoulder,crown};
+    const unsigned char *bytes=(const unsigned char *)key;
+    unsigned long long hash=14695981039346656037ULL;
+    for (size_t i=0;i<sizeof(key);++i) { hash^=bytes[i]; hash*=1099511628211ULL; }
+    LabBoxAxisEntry *entry=cache->entries+(hash&511);
+    int hit=entry->valid && memcmp(entry->key,key,sizeof(key))==0;
+    if (hit) ++cache->hits;
+    else { ++cache->misses; entry->valid=0; }
     for (int index=0;index<3;++index) for (int side=0;side<2;++side) {
         int row=2*index+side;
-        double sign=side==0 ? -1. : 1.,direction[3],support_point[3];
+        double sign=side==0 ? -1. : 1.,direction[3];
         for (int j=0;j<3;++j) { normals[row][j]=sign*(j==index ? 1. : 0.); direction[j]=-normals[row][j]; }
-        if (!support_values(direction,axis,radius,half_width,shoulder,crown,support_point)) return 0;
-        for (int j=0;j<3;++j) wheels[row][j]=center[j]+support_point[j];
+        if (!hit && !support_values(direction,axis,radius,half_width,shoulder,crown,entry->offsets[row])) return 0;
+        for (int j=0;j<3;++j) wheels[row][j]=center[j]+entry->offsets[row][j];
     }
+    if (!hit) { memcpy(entry->key,key,sizeof(key)); entry->valid=1; }
     return 1;
 }
 static PyObject *box_axis_supports_native(PyObject *self,PyObject *args) {
@@ -331,7 +359,7 @@ static PyObject *box_axis_supports_native(PyObject *self,PyObject *args) {
     if (!lab_buffers(inputs,outputs,v,2,2,dimensions,shapes,-1,-1)) goto error;
     double center[3],axis[3],normals[6][3],wheels[6][3];
     for (int j=0;j<3;++j) { center[j]=lab_get(v,j,0); axis[j]=lab_get(v+1,j,0); }
-    if (!lab_box_axis_values(center,axis,radius,half_width,shoulder,crown,normals,wheels)) goto error;
+    if (!lab_box_axis_values(self,center,axis,radius,half_width,shoulder,crown,normals,wheels)) goto error;
     for (int i=0;i<6;++i) for (int j=0;j<3;++j) {
         lab_set(v+2,i,j,normals[i][j]); lab_set(v+3,i,j,wheels[i][j]);
     }
@@ -354,7 +382,7 @@ static PyObject *radial_box_bounds_native(PyObject *self,PyObject *args) {
     if (!lab_buffers(inputs,outputs,v,3,1,dimensions,shapes,-1,-1)) goto error;
     double center[3],axis[3],normals[6][3],wheels[6][3];
     for (int j=0;j<3;++j) { center[j]=lab_get(v,j,0); axis[j]=lab_get(v+1,j,0); }
-    if (!lab_box_axis_values(center,axis,radius,half_width,shoulder,crown,normals,wheels)) goto error;
+    if (!lab_box_axis_values(self,center,axis,radius,half_width,shoulder,crown,normals,wheels)) goto error;
     for (int j=0;j<3;++j) {
         double half=lab_get(v+2,j,0),minimum=wheels[2*j+1][j],maximum=wheels[2*j][j];
         lab_set(v+3,j,0,lab_box_maximum(lab_box_maximum(minimum-half,-half-maximum),0.));
@@ -374,7 +402,7 @@ static PyObject *box_face_candidates_native(PyObject *self,PyObject *args) {
     if (!lab_buffers(inputs,outputs,v,3,5,dimensions,shapes,-1,-1)) goto error;
     double center[3],axis[3],half[3],normals[6][3],wheels[6][3];
     for (int j=0;j<3;++j) { center[j]=lab_get(v,j,0); axis[j]=lab_get(v+1,j,0); half[j]=lab_get(v+2,j,0); }
-    if (!lab_box_axis_values(center,axis,radius,half_width,shoulder,crown,normals,wheels)) goto error;
+    if (!lab_box_axis_values(self,center,axis,radius,half_width,shoulder,crown,normals,wheels)) goto error;
     for (int row=0;row<6;++row) {
         double distance=lab_dot(normals[row],wheels[row])-half[row/2];
         int eligible=1;
