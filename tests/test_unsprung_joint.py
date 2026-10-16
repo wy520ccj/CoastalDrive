@@ -248,9 +248,12 @@ def test_reverse_lsd_rough_load_and_prior_actual_rotor_state_have_closed_energy(
             +friction_work+engine_heat-engine_work-input_work) == pytest.approx(0.,abs=3e-8)
 
 
-def test_saved_actual_prepared_input_replays_complete_joint_prediction():
+@pytest.mark.parametrize('jacobian_updates',[False,True])
+def test_saved_actual_prepared_input_replays_reference_or_satisfies_original_model(jacobian_updates):
     import json
     from pathlib import Path
+
+    from lab_solver_model_reference import make_joint_model
 
     from vehicle_parameters import config_from_document
 
@@ -262,12 +265,23 @@ def test_saved_actual_prepared_input_replays_complete_joint_prediction():
     mechanical = assemble_unsprung(partition,source["rotation"],source["displacement"],source["guides_local"],source["new_initial_velocity"][:10])
     graph = drivetrain_ports(mechanical,source["axes"],source["engine_axis"],source["shaft_axis"],source["downstream_axes"],source["ratio"],config)
     contact = tire_ports(graph,source["offsets"],source["tangents"],source["laterals"],source["normals"],source["steering_angular"],source["trails"])
-    result = solve_unsprung_joint(graph,contact,source["new_initial_velocity"],source["downstream_omega"],source["compression"],
+    arguments = (graph,contact,source["new_initial_velocity"],source["downstream_omega"],source["compression"],
         source["radial_deflection"],source["deformation"],source["initial_force"],source["known_force"],source["road_delta"],
         source["radial_rates"],source["radial_damping"],source["friction"],source["rolling_coefficients"],source["engine_torque"],
         source["engine_drag"],source["clutch_capacity"],source["brake_capacities"],source["ratio"],source["synchronizing"],source["dt"],config)
-    assert result.velocity == pytest.approx(expected["velocity"],abs=1e-13)
-    assert result.forces == pytest.approx(np.asarray(expected["forces"]),abs=1e-9)
-    assert result.port_torques == pytest.approx(expected["port_torques"],abs=1e-9)
+    result = solve_unsprung_joint(*arguments,jacobian_updates=jacobian_updates)
+    if not jacobian_updates:
+        # 旧预测文件由完整Newton生成，原精确重放门槛保留。
+        assert result.velocity == pytest.approx(expected["velocity"],abs=1e-13)
+        assert result.forces == pytest.approx(np.asarray(expected["forces"]),abs=1e-9)
+        assert result.port_torques == pytest.approx(expected["port_torques"],abs=1e-9)
+    else:
+        evaluate,finish,_state_scale,_row_scale = make_joint_model(*arguments)
+        values = np.r_[result.velocity,result.forces.ravel(),result.port_torques]
+        residual,details = evaluate(values)
+        errors = [float(np.max(np.abs(part))) for part in (residual[:16],residual[16:24],residual[24:])]
+        assert errors[0]<1e-9 and errors[1]<1e-5 and errors[2]<1e-9
+        independent = finish(values,details,result.iterations-1,*errors)
+        assert independent.energy_error == pytest.approx(0.,abs=3e-8)
     assert result.energy_error == pytest.approx(0.,abs=3e-8)
     assert source["ratio"]!=0. and source["clutch_capacity"]>0. and max(source["brake_capacities"])>0.

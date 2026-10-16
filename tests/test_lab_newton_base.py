@@ -18,7 +18,7 @@ from vehicle_designs import REFERENCE_DESIGN
 @pytest.mark.parametrize('gyro',[False,True])
 @pytest.mark.parametrize('motion',[False,True])
 @pytest.mark.parametrize('bias',[False,True])
-def test_real_finite_contact_reuses_only_current_base_and_matches_all_original_fields(monkeypatch,gyro,motion,bias):
+def test_full_newton_real_contact_reuses_only_current_base_and_matches_original_fields(monkeypatch,gyro,motion,bias):
     world,ground,bump,context=contact_case()
     try:
         def run(solver):
@@ -31,7 +31,8 @@ def test_real_finite_contact_reuses_only_current_base_and_matches_all_original_f
                 kwargs['finite_contact']=FiniteRadialContact(context.roads,hardware,context.centers,np.eye(3),
                     hardware.axes,np.zeros((4,3)),np.zeros((4,3)),np.full(4,.003),args[-2],args[-1],lambda x,y:True,
                     wheel_velocity_bias=kwargs['wheel_velocity_bias'],finite_motion=kwargs['finite_motion'])
-                return solver(*args,**kwargs,native_body_gyro=gyro)
+                options={} if solver is reference_solve else {'jacobian_updates':False}
+                return solver(*args,**kwargs,native_body_gyro=gyro,**options)
             with monkeypatch.context() as scope:
                 scope.setitem(namespace,'normal_material',material)
                 scope.setattr(case,'solve_unsprung_joint',selected)

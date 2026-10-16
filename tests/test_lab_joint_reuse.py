@@ -21,12 +21,13 @@ SCENARIOS += [({}, {'speed':-10.,'ratio':-3.2}),({}, {'road':(.0002,-.0001,.0003
 
 @pytest.mark.parametrize('changes,arguments',SCENARIOS)
 @pytest.mark.parametrize('gyro',[False,True])
-def test_complete_joint_matches_old_numeric_bits_and_does_not_share_cache_between_solves(monkeypatch,changes,arguments,gyro):
+def test_full_newton_joint_matches_old_numeric_bits_and_does_not_share_cache_between_solves(monkeypatch,changes,arguments,gyro):
     config = replace(REFERENCE_DESIGN,**changes)
 
     def run(solver):
         def selected(*args,**kwargs):
-            return solver(*args,**kwargs,native_body_gyro=gyro)
+            options={} if solver is reference_solve else {'jacobian_updates':False}
+            return solver(*args,**kwargs,native_body_gyro=gyro,**options)
 
         monkeypatch.setattr(case,'solve_unsprung_joint',selected)
         return case.solve(config,**arguments)[0]

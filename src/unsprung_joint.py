@@ -67,7 +67,7 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
                          friction, rolling_coefficients, engine_torque, engine_drag, clutch_capacity,
                          brake_capacities, ratio, synchronizing, dt, config, *, wheel_initial_velocity=None,
                          finite_contact=None, wheel_velocity_bias=None, wheel_known_force=None,
-                         native_body_gyro=False, body_external_torque=None,finite_motion=None):
+                         native_body_gyro=False, body_external_torque=None,finite_motion=None,jacobian_updates=True):
     """同时解十六速度、八接触力和十有限端口，不在结束后修补轮速/轮荷。
 
     本函数保持当前构型的质量/力端口，有限姿态与真实世界接点须由外层联立。
@@ -232,26 +232,32 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
 
     config_rear = replace(config,lateral_stiffness=config.rear_lateral_stiffness)
     values = np.r_[start,np.asarray(initial_force).ravel(),np.zeros(10)]
+    # 只更新数值Jacobian，原完整残差/精确端口行和收敛门槛不变。
+    jacobian = None
     for iteration in range(30):
         residual,details = evaluate(values)
         momentum_error = float(np.max(np.abs(residual[:16])))
         force_error = float(np.max(np.abs(residual[16:24])))
         port_error = float(np.max(np.abs(residual[24:])))
-        if momentum_error<1e-9 and force_error<1e-5 and port_error<1e-9:
+        # 达到原门槛后，只接受进一步下降且仍合格的一次校正。
+        polishing = momentum_error<1e-9 and force_error<1e-5 and port_error<1e-9
+        if polishing and (not jacobian_updates or jacobian is None):
             break
         # 一轮差分中会反复回到已算基点；只固定该点的完整字节项，不缓存新构型或跨子步复用。
         configuration_base_key = (values[:10] if finite_contact is not None else values[:16]).tobytes()
         configuration_base_data = velocity_data[0]
         velocity_base_key,velocity_base_data = velocity_key,velocity_data
         force_base_key,force_base_data = force_key,force_data
-        columns = []
-        for i,scale in enumerate(state_scale):
-            plus,minus = values.copy(),values.copy()
-            epsilon = 1e-5*scale
-            plus[i] += epsilon
-            minus[i] -= epsilon
-            columns.append((evaluate(plus)[0]-evaluate(minus)[0])/(2*epsilon)*scale/row_scale)
-        jacobian = np.column_stack(columns)
+        fresh_jacobian = jacobian is None
+        if fresh_jacobian:
+            columns = []
+            for i,scale in enumerate(state_scale):
+                plus,minus = values.copy(),values.copy()
+                epsilon = 1e-5*scale
+                plus[i] += epsilon
+                minus[i] -= epsilon
+                columns.append((evaluate(plus)[0]-evaluate(minus)[0])/(2*epsilon)*scale/row_scale)
+            jacobian = np.column_stack(columns)
         # 轮速差分0.001rad/s可能跨过小制动容量的两个边界，给出不属于当前分支的割线。
         # 固定容量端口使用精确分段导数；仍解原来的全部残差，不裁剪/覆写末状态。
         fixed_ports = [(0, clutch_capacity), *((i+3, capacity) for i, capacity in enumerate(brakes))]
@@ -263,15 +269,51 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
             derivative = np.r_[speed_row, np.zeros(18)]
             derivative[24+index] = torque_derivative
             jacobian[24+index] = derivative*state_scale/row_scale[24+index]
-        delta = np.linalg.solve(jacobian,residual/row_scale)*state_scale
+        try:
+            delta = np.linalg.solve(jacobian,residual/row_scale)*state_scale
+        except np.linalg.LinAlgError:
+            if polishing:
+                break
+            if fresh_jacobian:
+                raise
+            jacobian = None
+            continue
         before = np.linalg.norm(residual/row_scale)
         for attempt in range(12):
             candidate = values-2.**-attempt*delta
-            if np.linalg.norm(evaluate(candidate)[0]/row_scale)<before:
+            candidate_residual,_candidate_details = evaluate(candidate)
+            after = np.linalg.norm(candidate_residual/row_scale)
+            if after<before:
+                if polishing:
+                    candidate_errors = (float(np.max(np.abs(candidate_residual[:16]))),
+                        float(np.max(np.abs(candidate_residual[16:24]))),float(np.max(np.abs(candidate_residual[24:]))))
+                    if not (candidate_errors[0]<1e-9 and candidate_errors[1]<1e-5 and candidate_errors[2]<1e-9):
+                        continue
+                    values,residual,details = candidate,candidate_residual,_candidate_details
+                    momentum_error,force_error,port_error = candidate_errors
+                    break
+                if jacobian_updates and not attempt and after<.5*before:
+                    displacement = (candidate-values)/state_scale
+                    squared = np.dot(displacement,displacement)
+                    if squared>0.:
+                        # 在原状态/残差缩放坐标中满足Broyden割线条件。
+                        difference = (candidate_residual-residual)/row_scale
+                        jacobian = jacobian+np.outer(difference-jacobian@displacement,displacement)/squared
+                    else:
+                        jacobian = None
+                else:
+                    jacobian = None
                 values = candidate
                 break
         else:
+            if polishing:
+                break
+            if not fresh_jacobian:
+                jacobian = None
+                continue
             raise ArithmeticError(f"簧下/轮胎/传动共同线搜索不下降：{momentum_error:g}Ns，{force_error:g}N，{port_error:g}Nm")
+        if polishing:
+            break
     else:
         raise ArithmeticError(f"簧下/轮胎/传动共同求解超过30轮：{momentum_error:g}Ns，{force_error:g}N，{port_error:g}Nm")
     end,forces,torques = values[:16],values[16:24].reshape(4,2),values[24:]
