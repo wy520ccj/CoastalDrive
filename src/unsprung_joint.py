@@ -252,11 +252,16 @@ def solve_unsprung_joint(hardware, contacts, velocity, downstream_omega, compres
         if fresh_jacobian:
             columns = []
             for i,scale in enumerate(state_scale):
-                plus,minus = values.copy(),values.copy()
+                plus = values.copy()
                 epsilon = 1e-5*scale
                 plus[i] += epsilon
-                minus[i] -= epsilon
-                columns.append((evaluate(plus)[0]-evaluate(minus)[0])/(2*epsilon)*scale/row_scale)
+                if jacobian_updates:
+                    # Jacobian只给搜索方向；基点残差已知，候选仍按原完整方程验收。
+                    columns.append((evaluate(plus)[0]-residual)/epsilon*scale/row_scale)
+                else:
+                    minus = values.copy()
+                    minus[i] -= epsilon
+                    columns.append((evaluate(plus)[0]-evaluate(minus)[0])/(2*epsilon)*scale/row_scale)
             jacobian = np.column_stack(columns)
         # 轮速差分0.001rad/s可能跨过小制动容量的两个边界，给出不属于当前分支的割线。
         # 固定容量端口使用精确分段导数；仍解原来的全部残差，不裁剪/覆写末状态。

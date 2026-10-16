@@ -94,7 +94,7 @@ def test_stale_jacobian_is_rebuilt_when_its_direction_cannot_be_used(monkeypatch
     monkeypatch.setattr(case,'solve_unsprung_joint',selected)
     result=case.solve(REFERENCE_DESIGN)[0]
     assert checked and len(calls)>3 and result.iterations<30
-    assert len(residuals)>=2*68
+    assert len(residuals)>=2*34
 
 
 def test_singular_fresh_jacobian_propagates_original_failure(monkeypatch):
@@ -105,3 +105,21 @@ def test_singular_fresh_jacobian_propagates_original_failure(monkeypatch):
     monkeypatch.setattr(np.linalg,'solve',injected)
     with pytest.raises(np.linalg.LinAlgError,match='测试完整Jacobian退化'):
         case.solve(REFERENCE_DESIGN)
+
+
+@pytest.mark.parametrize('updates',[False,True])
+def test_first_search_matrix_uses_baseline_residual_and_all_original_unknowns(monkeypatch,updates):
+    namespace=solve_unsprung_joint.__globals__
+    original_kernel=namespace['unsprung_contact_residual'];original_solve=np.linalg.solve
+    evaluated=[];matrix_counts=[]
+    def kernel(*args,**kwargs):evaluated.append(True);return original_kernel(*args,**kwargs)
+    def matrix(value,right):
+        if value.shape==(34,34):matrix_counts.append(len(evaluated))
+        return original_solve(value,right)
+    def selected(*args,**kwargs):return solve_unsprung_joint(*args,**kwargs,jacobian_updates=updates)
+    monkeypatch.setitem(namespace,'unsprung_contact_residual',kernel)
+    monkeypatch.setattr(np.linalg,'solve',matrix)
+    monkeypatch.setattr(case,'solve_unsprung_joint',selected)
+    result=case.solve(REFERENCE_DESIGN)[0]
+    assert matrix_counts[0]==1+(34 if updates else 68)
+    assert result.momentum_error<1e-9 and result.force_error<1e-5 and result.port_error<1e-9
