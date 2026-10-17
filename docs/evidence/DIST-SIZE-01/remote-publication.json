@@ -1,0 +1,38 @@
+{
+  "tag_name": "v0.9.0-dev.20261017.1",
+  "html_url": "https://github.com/wy520ccj/CoastalDrive/releases/tag/v0.9.0-dev.20261017.1",
+  "draft": false,
+  "prerelease": true,
+  "published_at": "2026-10-17T06:17:08Z",
+  "tag_commit": "85167e7cb42af31a013be2edeb9f0b9aa42043b7",
+  "assets": [
+    {
+      "name": "CoastalDrive-0.9.0-dev.20261017.1-Windows-x64-Portable.zip",
+      "size": 165251074,
+      "state": "uploaded",
+      "digest": "sha256:fd657b5181fe0040e533860444b06abf6e34cee59ca82a4f88c47fa2ae5704ec",
+      "browser_download_url": "https://github.com/wy520ccj/CoastalDrive/releases/download/v0.9.0-dev.20261017.1/CoastalDrive-0.9.0-dev.20261017.1-Windows-x64-Portable.zip",
+      "public_http_status": 200,
+      "public_content_length": 165251074
+    },
+    {
+      "name": "CoastalDrive-0.9.0-dev.20261017.1-Windows-x64-Setup.exe",
+      "size": 141626321,
+      "state": "uploaded",
+      "digest": "sha256:f6853cb06df1d53a872b99eec2abe5adbd9c5b0f7678d9e27b784ac16690c615",
+      "browser_download_url": "https://github.com/wy520ccj/CoastalDrive/releases/download/v0.9.0-dev.20261017.1/CoastalDrive-0.9.0-dev.20261017.1-Windows-x64-Setup.exe",
+      "public_http_status": 200,
+      "public_content_length": 141626321
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "size": 249,
+      "state": "uploaded",
+      "digest": "sha256:b17be8bdb8eff8ddb5e251adadb6694926cac6f80259bcaf82aba9985826987c",
+      "browser_download_url": "https://github.com/wy520ccj/CoastalDrive/releases/download/v0.9.0-dev.20261017.1/SHA256SUMS.txt",
+      "public_http_status": 200,
+      "public_content_length": 249,
+      "download_digest_verified": true
+    }
+  ]
+}
