@@ -44,7 +44,8 @@ def prepare():
                         "sha256": hashlib.sha256(target.read_bytes()).hexdigest(),
                         "duration": duration})
         print(f"{track['title']}: {duration:.2f}s")
-    credits = {"tracks": tracks, "processing": "Full compositions; -18 LUFS / -4.5 dBTP, "
+    credits = {"runtime_files": ["music/sunset-run.wav", "music/midnight-circuit.wav", "music/home-coast.wav"],
+               "tracks": tracks, "processing": "Full compositions; -18 LUFS / -4.5 dBTP, "
                "40 ms attack fade; 44.1 kHz stereo 16-bit PCM; no radio/static effect"}
     (OUTPUT / "music-sources.json").write_text(json.dumps(credits, ensure_ascii=False, indent=2)
                                               + "\n", encoding="utf-8")

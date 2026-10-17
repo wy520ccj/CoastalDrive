@@ -1,0 +1,21 @@
+{
+  "sizes": {
+    "installed": {
+      "old_bytes": 366201959,
+      "new_bytes": 262715788,
+      "reduction_percent": 28.26
+    },
+    "Setup.exe": {
+      "old_bytes": 198305740,
+      "new_bytes": 141626321,
+      "reduction_percent": 28.58
+    },
+    "Portable.zip": {
+      "old_bytes": 241443252,
+      "new_bytes": 165251074,
+      "reduction_percent": 31.56
+    }
+  },
+  "unchanged_binary_assets": true,
+  "zip_all_file_sha256_equal": 371
+}

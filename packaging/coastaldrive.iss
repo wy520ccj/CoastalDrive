@@ -5,7 +5,7 @@
 #ifndef ReleaseDir
   #error ReleaseDir is required
 #endif
-#define AppVersion "0.9.0-dev.20261017"
+#define AppVersion "0.9.0-dev.20261017.1"
 #define RepoRoot SourcePath + ".."
 
 [Setup]
@@ -44,6 +44,16 @@ Name: "desktopicon"; Description: "创建桌面快捷方式 / Create a desktop s
 
 [Files]
 Source: "{#PackageDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+[InstallDelete]
+Type: files; Name: "{app}\coastaldrive-check.exe"
+Type: files; Name: "{app}\assets\game\ui\fonts\SourceHanSansSC-Regular.otf"
+Type: files; Name: "{app}\assets\game\ui\fonts\fusion-pixel-12px-proportional-zh_hans.ttf"
+Type: files; Name: "{app}\assets\game\ui\backgrounds\coastal-menu.png"
+Type: files; Name: "{app}\assets\game\ui\backgrounds\workspace-coast-v1.png"
+Type: files; Name: "{app}\assets\game\audio\music\sunset-run.wav"
+Type: files; Name: "{app}\assets\game\audio\music\midnight-circuit.wav"
+Type: files; Name: "{app}\assets\game\audio\music\home-coast.wav"
 
 [Icons]
 Name: "{group}\CoastalDrive (开发试玩版)"; Filename: "{app}\coastaldrive.exe"; WorkingDir: "{app}"

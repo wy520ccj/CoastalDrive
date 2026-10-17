@@ -4,7 +4,7 @@
 
 - **[完整程序介绍：玩法、实验台与工程车闭环](overview.md)**
 - **[下载、安装、卸载与常见问题](download.md)**
-- [当前开发版说明](releases/0.9.0-dev.20261017.md)
+- [当前开发版说明](releases/0.9.0-dev.20261017.1.md)
 - [车辆实验台](vehicle-lab.md)、[工程车设计与试驾](vehicle-design-loop.md)
 - [反馈问题](https://github.com/wy520ccj/CoastalDrive/issues)
 

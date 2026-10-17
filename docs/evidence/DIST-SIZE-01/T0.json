@@ -1,0 +1,55 @@
+{
+  "started_utc": "2026-10-17T06:09:45.488635+00:00",
+  "git_head": "71147d405b6f048aa38009ddece914e592267e04",
+  "git_status": "M assets/game/audio/music-sources.json\n M packaging/coastaldrive.iss\n M pyproject.toml\n M setup.py\n M src/audio/music.py\n M tools/audio/prepare_music.py\n M tools/build_release.py\n M tools/check_release_install.py\n M tools/workspace_transition_check.py\n?? docs/tasks/DIST-SIZE-01.md\n?? tools/release_assets.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_soundscape.py",
+    "tests/test_audio_upgrade.py",
+    "tests/test_ui_theme.py::test_distribution_includes_font_license_and_icon"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\DIST-SIZE-01-T0\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.114
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_soundscape.py",
+        "tests/test_audio_upgrade.py",
+        "tests/test_ui_theme.py::test_distribution_includes_font_license_and_icon"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\DIST-SIZE-01-T0\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 3.59
+    }
+  ]
+}

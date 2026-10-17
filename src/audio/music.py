@@ -1,5 +1,6 @@
 """双电台单曲切换、菜单BGM及暂停续播。"""
 
+import json
 import math
 
 from panda3d.core import AudioManager, Filename
@@ -9,10 +10,10 @@ STATIONS = ("关闭", "海岸 FM · Bossa Antigua", "夜驰 FM · Future Gladiat
 
 class MusicAudio:
     def __init__(self, base, directory, station=1):
-        # 电台与首页曲预载，避免流式WAV续播字节错位和切台时读盘填缓冲。
+        # 完整预载保持续播行为；源素材WAV与发行FLAC由资源清单明确选择。
+        files = json.loads((directory / "music-sources.json").read_text(encoding="utf-8"))["runtime_files"]
         self.tracks = tuple(base.musicManager.getSound(Filename.fromOsSpecific(
-            str(directory / "music" / f"{name}.wav")), False, AudioManager.SM_sample)
-                            for name in ("sunset-run", "midnight-circuit", "home-coast"))
+            str(directory / name)), False, AudioManager.SM_sample) for name in files)
         for sound in self.tracks:
             sound.setLoop(True)
             sound.setVolume(0)

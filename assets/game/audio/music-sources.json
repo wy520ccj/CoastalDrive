@@ -1,4 +1,5 @@
 {
+  "runtime_files": ["music/sunset-run.wav", "music/midnight-circuit.wav", "music/home-coast.wav"],
   "tracks": [
     {
       "station_asset": "sunset-run",

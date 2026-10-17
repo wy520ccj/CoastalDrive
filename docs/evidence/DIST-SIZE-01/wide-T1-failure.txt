@@ -1,0 +1,29 @@
+...........................................F..................           [100%]
+================================== FAILURES ===================================
+_________ test_real_challenge_impact_failure_frame_is_delivered_once __________
+
+    def test_real_challenge_impact_failure_frame_is_delivered_once():
+        session = Session(track="endless")
+        session.start(seed=11, countdown=False, mode=GameMode.DISTANCE_CHALLENGE,
+                      track="endless")
+        session._skip_frame = False
+        sim = session.simulation
+        rail = sim._world.rayTestClosest(Vec3(0, 30, .4), Vec3(10, 30, .4), BitMask32.bit(0))
+        assert rail.hasHit() and "rail" in rail.getNode().getName()
+        # 2cm真实间隙在8m/s的首个子步中闭合；不用已穿入护栏的起始姿态触发事件。
+        x = rail.getHitPos().x - sim.config.collision_half_width - .02
+        sim.player.reset((x, 30, .55))
+        assert all(hit.getManifoldPoint().getDistance() >= 0 for hit in
+                   sim._world.contactTestPair(sim.player._chassis, rail.getNode()).getContacts())
+        session.simulation.player._chassis.setLinearVelocity(Vec3(8, 0, 0))
+        try:
+            frame = session.frame(FIXED_DT)
+>           assert session.phase == Phase.RESULTS
+E           AssertionError: assert <Phase.DRIVING: 'driving'> == <Phase.RESULTS: 'results'>
+E            +  where <Phase.DRIVING: 'driving'> = <session.Session object at 0x000001756A011A90>.phase
+E            +  and   <Phase.RESULTS: 'results'> = Phase.RESULTS
+
+tests\test_impact_delivery.py:109: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_impact_delivery.py::test_real_challenge_impact_failure_frame_is_delivered_once
+1 failed, 61 passed in 25.69s

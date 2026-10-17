@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import time
 import winreg
@@ -22,7 +23,7 @@ def registry():
                 for name in ("DisplayName", "DisplayVersion", "InstallLocation", "UninstallString")}
 
 
-def check(installer, output, *, lifecycle_only=False):
+def check(installer, output, *, lifecycle_only=False, checker=None, previous=None, package=None):
     output.mkdir(parents=True, exist_ok=False)
     if registry() is not None:
         raise RuntimeError("已有同AppId安装；为保护用户安装，停止测试")
@@ -53,12 +54,23 @@ def check(installer, output, *, lifecycle_only=False):
     install_args = [str(installer), "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART",
                     "/LANG=chinesesimp", f"/DIR={install_dir}"]
     try:
+        if previous is not None:
+            run("previous-install", [str(previous), "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART",
+                                      f"/DIR={install_dir}"])
+            report["previous_version"] = registry()["DisplayVersion"]
         run("install", install_args + [f"/LOG={output / 'install-inno.log'}"])
         report["registry_after_install"] = registry()
         assert report["registry_after_install"] is not None
         expected = ("CoastalDrive (开发试玩版).lnk", "车辆实验台.lnk", "下载与使用说明.lnk", "卸载 CoastalDrive.lnk")
         assert all((shortcuts / name).is_file() for name in expected)
         report["shortcuts"] = list(expected)
+        if package is not None:
+            expected_files = {f.relative_to(package).as_posix(): hashlib.sha256(f.read_bytes()).hexdigest()
+                              for f in package.rglob("*") if f.is_file()}
+            actual_files = {f.relative_to(install_dir).as_posix(): hashlib.sha256(f.read_bytes()).hexdigest()
+                            for f in install_dir.rglob("*") if f.is_file() and not f.name.startswith("unins000.")}
+            assert actual_files == expected_files, "安装文件与发行输入不同，或存在旧版残留"
+            report["all_installed_files_equal"] = len(actual_files)
         executable = install_dir / "coastaldrive.exe"
         if lifecycle_only:
             report["runtime_checks"] = "not_run; reuse separately recorded results for identical installer SHA256"
@@ -69,7 +81,17 @@ def check(installer, output, *, lifecycle_only=False):
             smoke = output / "smoke"
             run("smoke", [str(executable), "--smoke", "--output", str(smoke)])
             assert json.loads((smoke / "h0-render-smoke.json").read_text(encoding="utf-8"))["passed"]
-            run("workspace", [str(install_dir / "coastaldrive-check.exe"), "--output", str(output / "workspace")], 420)
+            diagnostic = install_dir / "coastaldrive-check.exe"
+            if checker is not None:
+                if diagnostic.exists():
+                    raise FileExistsError(diagnostic)
+                shutil.copy2(checker, diagnostic)
+                report["external_diagnostic_sha256"] = hashlib.sha256(checker.read_bytes()).hexdigest()
+            try:
+                run("workspace", [str(diagnostic), "--output", str(output / "workspace")], 420)
+            finally:
+                if checker is not None:
+                    diagnostic.unlink()
             assert json.loads((output / "workspace/report.json").read_text(encoding="utf-8"))["passed"]
         run("upgrade", install_args + [f"/LOG={output / 'upgrade-inno.log'}"])
         assert executable.is_file() and registry() is not None
@@ -95,5 +117,11 @@ if __name__ == "__main__":
     parser.add_argument("--installer", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--lifecycle-only", action="store_true", help="只复测安装升级卸载，运行证据另行引用")
+    parser.add_argument("--checker", type=Path, help="不随玩家包分发的冻结诊断程序，仅测试时临时放入安装目录")
+    parser.add_argument("--previous", type=Path, help="先安装上一版，再验证升级后的资源清理")
+    parser.add_argument("--package", type=Path, help="发行文件目录；逐文件核对安装结果并拒绝旧版残留")
     args = parser.parse_args()
-    check(args.installer.resolve(), args.output.resolve(), lifecycle_only=args.lifecycle_only)
+    check(args.installer.resolve(), args.output.resolve(), lifecycle_only=args.lifecycle_only,
+          checker=args.checker.resolve() if args.checker else None,
+          previous=args.previous.resolve() if args.previous else None,
+          package=args.package.resolve() if args.package else None)

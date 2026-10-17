@@ -6,11 +6,13 @@
 
 ## ⬇ 下载游戏（Windows 64 位）
 
-### **[▶ 点击下载安装版 .exe（含卸载器）](https://github.com/wy520ccj/CoastalDrive/releases/download/v0.9.0-dev.20261017/CoastalDrive-0.9.0-dev.20261017-Windows-x64-Setup.exe)**
+### **[▶ 点击下载安装版 .exe（含卸载器）](https://github.com/wy520ccj/CoastalDrive/releases/download/v0.9.0-dev.20261017.1/CoastalDrive-0.9.0-dev.20261017.1-Windows-x64-Setup.exe)**
 
-**[免安装版 .zip](https://github.com/wy520ccj/CoastalDrive/releases/download/v0.9.0-dev.20261017/CoastalDrive-0.9.0-dev.20261017-Windows-x64-Portable.zip)** · **[版本说明 / 所有下载文件](https://github.com/wy520ccj/CoastalDrive/releases/tag/v0.9.0-dev.20261017)** · **[安装、卸载与常见问题](docs/download.md)**
+**[免安装版 .zip](https://github.com/wy520ccj/CoastalDrive/releases/download/v0.9.0-dev.20261017.1/CoastalDrive-0.9.0-dev.20261017.1-Windows-x64-Portable.zip)** · **[版本说明 / 所有下载文件](https://github.com/wy520ccj/CoastalDrive/releases/tag/v0.9.0-dev.20261017.1)** · **[安装、卸载与常见问题](docs/download.md)**
 
-当前下载版：**0.9.0-dev.20261017**，适用 Windows 10/11 x64，需支持 OpenGL 3.3 的显卡驱动。自带运行环境，无需安装 Python 或编译器。安装版双击安装后从开始菜单启动；免安装版须完整解压，再运行`win_amd64/coastaldrive.exe`。绿色 **Code → Download ZIP** 下载的是开发源码。
+当前下载版：**0.9.0-dev.20261017.1**，适用 Windows 10/11 x64，需支持 OpenGL 3.3 的显卡驱动。自带运行环境，无需安装 Python 或编译器。安装版双击安装后从开始菜单启动；免安装版须完整解压，再运行`win_amd64/coastaldrive.exe`。绿色 **Code → Download ZIP** 下载的是开发源码。
+
+空间精简版保留完整玩法、曲目和现用画面：**安装包约142MB、免安装包约165MB，安装后约263MB**，分别比首版减少29%、32%、28%。旧版安装用户可直接覆盖升级，自己的设置和工程数据保留。
 
 ## 这是什么程序
 

@@ -31,6 +31,8 @@ def check(output, *, onscreen=False, independent=False):
     app = CoastalDrive(smoke=True, smoke_audio=True, onscreen=onscreen, output=output, lab_output=output/"records",
                        render_size=(1100, 740), independent_clock=independent)
     app.taskMgr.remove("finish-smoke")
+    require(all(track.status() != track.BAD and track.length() > 1 for track in app.soundscape.music.tracks),
+            "音乐解码失败或曲目为空")
     app.audio_settings.master_volume = 0
     app.soundscape.set_volumes(0, 0, 0)
     window, pipeline = app.win, app.pipeline

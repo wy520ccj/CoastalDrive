@@ -27,7 +27,7 @@ convex_sources = [
 
 setup(
     name="coastaldrive",
-    version="0.9.0.dev20261017",
+    version="0.9.0.dev2026101701",
     package_dir={"": "src"},
     ext_modules=[
         Extension("physics_packet_kernels", ["src/physics_packet_kernels.c"], extra_compile_args=compile_args),

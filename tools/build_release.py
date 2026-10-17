@@ -8,8 +8,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+from release_assets import prepare_assets
+
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "0.9.0-dev.20261017"
+VERSION = "0.9.0-dev.20261017.1"
 NATIVE = ("physics_packet_kernels", "mechanical_kernels", "wheel_contact_kernels",
           "convex_cast_kernels", "radial_contact_kernels")
 
@@ -28,7 +30,7 @@ def inputs():
     return {path.relative_to(ROOT).as_posix(): sha(path) for path in sorted(paths)}
 
 
-def build(output, iscc):
+def build(output, iscc, ffmpeg):
     if Path(sys.executable).resolve() != (ROOT / ".venv/Scripts/python.exe").resolve():
         raise RuntimeError("请使用项目.venv/Scripts/python.exe")
     output.mkdir(parents=True, exist_ok=False)
@@ -68,6 +70,10 @@ def build(output, iscc):
             target = package / source.relative_to(ROOT)
             if not target.is_file() or sha(source) != sha(target):
                 raise RuntimeError(f"运行资源缺失或哈希不同：{source}")
+    resource_changes = prepare_assets(package, str(ffmpeg))
+    diagnostics = output / "diagnostics"
+    diagnostics.mkdir()
+    shutil.move(str(package / "coastaldrive-check.exe"), diagnostics / "coastaldrive-check.exe")
     shutil.copy2(ROOT / "packaging/development-notice.txt", package / "README.txt")
     shutil.copytree(ROOT / "licenses", package / "licenses", dirs_exist_ok=True)
     (package / "release.json").write_text(json.dumps(
@@ -85,7 +91,8 @@ def build(output, iscc):
         "".join(f"{sha(path)}  {path.name}\n" for path in files), encoding="utf-8")
     if inputs() != before:
         raise RuntimeError("构建期间源码或素材发生变化，请冻结后重新构建")
-    receipt.update(status="built", native_sha256=native,
+    receipt.update(status="built", native_sha256=native, resource_changes=resource_changes,
+                   installed_bytes=sum(path.stat().st_size for path in package.rglob("*") if path.is_file()),
                    artifacts={path.name: {"sha256": sha(path), "bytes": path.stat().st_size}
                               for path in artifacts.iterdir()})
     receipt_path.write_text(json.dumps(receipt, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -96,5 +103,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--iscc", type=Path, required=True)
+    parser.add_argument("--ffmpeg", type=Path, required=True, help="构建时无损压缩音乐，不随游戏分发")
     args = parser.parse_args()
-    build(args.output.resolve(), args.iscc.resolve())
+    build(args.output.resolve(), args.iscc.resolve(), args.ffmpeg.resolve())
