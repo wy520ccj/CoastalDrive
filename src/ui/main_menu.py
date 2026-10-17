@@ -13,7 +13,7 @@ class MainMenu:
         self.root.setTransparency(TransparencyAttrib.MAlpha)
         self.background = DirectFrame(
             parent=self.root, frameColor=(1, 1, 1, 1),
-            frameTexture=loader.loadTexture(theme.asset_filename("backgrounds/coastal-menu.png")),
+            frameTexture=loader.loadTexture(theme.asset_filename("backgrounds/coastal-menu-handdrawn-v2.png")),
             frameSize=(-16 / 9, 16 / 9, -1, 1), sortOrder=-10,
         )
         self.content = self.root.attachNewNode("menu-content")

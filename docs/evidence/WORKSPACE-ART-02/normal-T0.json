@@ -1,0 +1,51 @@
+{
+  "started_utc": "2026-10-17T05:37:16.062145+00:00",
+  "git_head": "9af5414b699c198172d7968ea1b514983130aaee",
+  "git_status": "M src/ui/lab_workbench.py\n M src/ui/main_menu.py\n M src/ui/workspace_loading.py\n M tests/test_ui_theme.py\n?? art/ui/\n?? assets/game/ui/backgrounds/coastal-menu-handdrawn-v2.png\n?? assets/game/ui/backgrounds/workspace-handdrawn-v2.png\n?? docs/tasks/WORKSPACE-ART-02.md\n?? tools/workspace_art_check.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_ui_theme.py::test_distribution_includes_font_license_and_icon"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\WORKSPACE-ART-02-handdrawn-T0\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.119
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_ui_theme.py::test_distribution_includes_font_license_and_icon"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\WORKSPACE-ART-02-handdrawn-T0\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.626
+    }
+  ]
+}

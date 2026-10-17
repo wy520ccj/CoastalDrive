@@ -15,7 +15,7 @@ class WorkspaceLoading:
         self.root = DirectFrame(parent=base.aspect2d, frameColor=theme.PAPER,
                                 frameSize=(-8, 8, -2, 2), state=DGG.NORMAL, sortOrder=1000)
         self.art = DirectFrame(parent=self.root, frameColor=(1, 1, 1, 1),
-            frameTexture=base.loader.loadTexture(theme.asset_filename("backgrounds/workspace-coast-v1.png")),
+            frameTexture=base.loader.loadTexture(theme.asset_filename("backgrounds/workspace-handdrawn-v2.png")),
             frameSize=(-16/9, 16/9, -1, 1))
         self.content = self.root.attachNewNode("loading-content")
         DirectFrame(parent=self.content, frameColor=theme.PAPER_LIGHT,

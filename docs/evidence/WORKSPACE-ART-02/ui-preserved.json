@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "baseline": "591a99a",
+  "scope": "All three UI source files identical after normalizing only new background paths",
+  "checks": [
+    {
+      "source": "src/ui/main_menu.py",
+      "only_change": [
+        "backgrounds/coastal-menu.png",
+        "backgrounds/coastal-menu-handdrawn-v2.png"
+      ]
+    },
+    {
+      "source": "src/ui/lab_workbench.py",
+      "only_change": [
+        "backgrounds/coastal-menu.png",
+        "backgrounds/coastal-menu-handdrawn-v2.png"
+      ]
+    },
+    {
+      "source": "src/ui/workspace_loading.py",
+      "only_change": [
+        "backgrounds/workspace-coast-v1.png",
+        "backgrounds/workspace-handdrawn-v2.png"
+      ]
+    }
+  ]
+}
