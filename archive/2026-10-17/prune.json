@@ -1,0 +1,2233 @@
+{
+  "roots": [
+    {
+      "path": "build/lib.win-amd64-cpython-314",
+      "reason": "可由保留源码重新编译的中间产物，src当前原生模块未移动"
+    },
+    {
+      "path": "build/temp.win-amd64-cpython-314",
+      "reason": "可由保留源码重新编译的中间产物，src当前原生模块未移动"
+    },
+    {
+      "path": "builds/native-temp",
+      "reason": "可由保留源码重新编译的中间产物，src当前原生模块未移动"
+    },
+    {
+      "path": "builds/new-lab-merge-native",
+      "reason": "可由保留源码重新编译的中间产物，src当前原生模块未移动"
+    },
+    {
+      "path": "builds/susp-prep-01-native",
+      "reason": "可由保留源码重新编译的中间产物，src当前原生模块未移动"
+    },
+    {
+      "path": "builds/0.4.0/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.4.1/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.5.0/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.5.1/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.6.0/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.6.1/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.6.2/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.6.3/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.7.0/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.7.1/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.8.0/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.8.1/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.8.3-audio01-fix/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.8.3-audio02/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.8.3-play01-fix/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.8.3-radio01/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/0.8.3-radio02/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-candidate-parallel-r1/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-candidate-parallel-r1b/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-candidate-parallel-r1c/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-candidate-parallel-r1d/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-candidate-r10/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-candidate-r6/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-candidate-r7/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-candidate-r8/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-candidate-r9/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-traffic-r1/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-traffic-r2/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-traffic-r3/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-traffic-r4/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-traffic-r5/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-traffic-r6/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-traffic-r7/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-traffic-r8/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/physics-native-traffic-r9/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/baseline-impact-check/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/lab-perf-12/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/lab-perf-13/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/lab-perf-14/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/lab-perf-15/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/lab-perf-16/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/lab-perf-20/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/lab-perf-21/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/lab-perf-22/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/lab-perf-23/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/lab-perf-24/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/lab-perf-25/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/lab-perf-26/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics-arch01-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics-baseline-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics-phys04-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics-phys04-synchronized-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/gr86-physics/.pytest_cache",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/gr86-physics/.ruff_cache",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/.pytest_cache",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/.ruff_cache",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/.pytest_cache",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/.ruff_cache",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "backups/CoastalDrive-before-AUDIO-01-20260930/preserved-local-experiment-files/.ruff_cache",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/archive/default-build-before-main-20260930/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/LAB-stage/baseline-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/RADIO-01/profile/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/RADIO-01/window-delivery/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/RADIO-01/window-final/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/RADIO-01/window-hud-fix/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/RADIO-01/window-static/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/RADIO-01/window/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/RADIO-02/key-window/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/before-npc-preparation/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-120mechanics/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-player/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-render75/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-stagger-cached/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-stagger/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-vehicle-batch/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/input-only/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r3/baseline-ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r5/render-pstats/raw.txt",
+      "reason": "已验证gzip解压SHA与原始日志完全一致，仅保留gzip"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/integration-20261015/source/.pytest_cache",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/integration-20261015/source/.ruff_cache",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics-phys05/split-preview-delay/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics-phys05/split-preview-original/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics-phys05/split-preview-yaw-tracking/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics/PHYS-DESIGN-01-common-geometry/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics/PHYS-DRIVE-02-baseline-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics/PHYS-DRIVE-03-baseline-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics/PHYS-DRIVE-04-baseline-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics/PHYS-DRIVE-05-baseline-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics/PHYS-SUSP-01-baseline-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics/PHYS-SUSP-01-coupled-baseline-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics/PHYS-SUSP-01-world-baseline-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/gr86-physics/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/gr86-physics/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/gr86-physics/tools/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/tools/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "backups/CoastalDrive-before-AUDIO-01-20260930/preserved-local-experiment-files/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "backups/CoastalDrive-before-AUDIO-01-20260930/preserved-local-experiment-files/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "backups/CoastalDrive-before-AUDIO-01-20260930/preserved-local-experiment-files/tools/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-01/2d45293/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-01/6306801/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-01/a71b313/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-01/c058cc4/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-01/dd1c9bf/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-01/f2df8d0/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-02/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-03/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-04/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-05/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-06/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-07/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-08/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-09/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-10/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-12/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-13/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-14/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-15/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-16/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-17/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-18/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-19/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-20/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-21/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-22/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-23/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-24/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-25/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "builds/lab-perf-26/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/before-npc-preparation/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/before-npc-preparation/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/before-npc-preparation/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-120mechanics/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-120mechanics/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-120mechanics/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-player/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-player/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-player/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-render75/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-render75/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-render75/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-stagger-cached/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-stagger-cached/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-stagger-cached/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-stagger/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-stagger/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-stagger/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-vehicle-batch/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-vehicle-batch/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/candidate-vehicle-batch/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/input-only/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/input-only/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/input-only/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r2/before/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/PIL/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/contourpy/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/cycler/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/dateutil/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/kiwisolver/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/matplotlib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/packaging/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/pyparsing/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/integration-20261015/source/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/integration-20261015/source/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/integration-20261015/source/tools/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r1/candidate/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r1/oracle/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r2/candidate/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r2/oracle/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r2/prepared/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r2/probe/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/anderson-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/baseline-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/early-newton-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/geometry-r1-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/lag-geometry-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/numeric-query-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/parallel-pool-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/query-packet-final-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/shared-memo-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/stages-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/warm-normal-src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/anderson-multi/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/baseline/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/compiled/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/coupled/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/newton-joint/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/nogil/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/npc-bullet/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/npc-nogil/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/records/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/surface-broadphase/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/traffic-native-r1-baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/traffic-native-r1/normal-actor/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics/PHYS-DRIVE-01-frozen-rot/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics/rail-baseline-9f2c142/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/validation/PHYS-CONTACT-02-baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/gr86-physics/builds/physics-native-candidate-r2/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/gr86-physics/builds/physics-native-candidate-r3/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/gr86-physics/builds/physics-native-candidate-r4/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/gr86-physics/builds/physics-native-candidate-r5/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/gr86-physics/builds/physics-native-candidate/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/gr86-physics/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/gr86-physics/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/gr86-physics/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/gr86-physics/tools/physics/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/tools/physics/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-audio01-fix/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-audio01/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-collision01/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-env01/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-env02/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-hwy01-polish/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-hwy01/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-hwy02/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-hwy03/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-hwy04/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-perf00/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-perf03/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-perf04-fix/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-perf04/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-play01-fix/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-ui02/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-ui03/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-ui04/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-veh01/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-veh02-catalog/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/builds/0.8.3-veh02/__whl_cache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/logs/audio-baseline/.pytest_cache",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/tools/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/tools/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/tools/performance/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "backups/CoastalDrive-before-AUDIO-01-20260930/preserved-local-experiment-files/visual-upgrade/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "backups/CoastalDrive-before-AUDIO-01-20260930/preserved-local-experiment-files/visual-upgrade/tools/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/baseline/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/baseline/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r1/baseline/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r2/before/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r2/before/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/game-drive-r2/before/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/contourpy/util/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/dateutil/parser/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/dateutil/tz/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/dateutil/zoneinfo/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/cffLib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/colorLib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/config/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/cu2qu/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/designspaceLib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/diff/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/encodings/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/feaLib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/merge/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/misc/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/mtiLib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/otlLib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/pens/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/qu2cu/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/subset/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/svgLib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/t1Lib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/ttLib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/ufoLib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/unicodedata/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/varLib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/voltLib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/matplotlib/_api/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/matplotlib/axes/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/matplotlib/backends/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/matplotlib/projections/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/matplotlib/sphinxext/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/matplotlib/style/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/matplotlib/testing/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/matplotlib/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/matplotlib/tri/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/mpl_toolkits/axes_grid1/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/mpl_toolkits/axisartist/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/mpl_toolkits/mplot3d/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/_core/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/_pyinstaller/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/_typing/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/_utils/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/char/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/core/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/ctypeslib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/doc/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/f2py/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/fft/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/lib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/linalg/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/ma/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/matrixlib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/polynomial/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/random/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/rec/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/strings/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/testing/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/typing/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/packaging/licenses/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/pyparsing/ai/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/pyparsing/diagram/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/pyparsing/tools/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/integration-20261015/source/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/integration-20261015/source/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/integration-20261015/source/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/integration-20261015/source/tools/physics/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/complete-tire-native-r1/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/controls-native-r1/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/baseline-src/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/compiled-src/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/geometry-transfer-src/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/hybrid-src/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/numeric-profile-src/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/prefetch-src/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/road-src/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/submit-wait-src/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/window-src/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/hard-drive-r1/owned/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/hard-drive-r1/road-revision/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/hard-drive-r1/threads/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/hard-drive-r1/uncached-owner/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/input-latency-r1/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/input-latency-r1/latency-new/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/input-latency-r1/latency-old/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/job-20261009/stream/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r1/candidate/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r1/candidate/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r1/candidate/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r1/oracle/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r1/oracle/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r1/oracle/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r2/oracle/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r2/oracle/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r2/oracle/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r2/prepared/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r2/prepared/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/native-r2/prepared/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/observation-native-r1/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/anderson-src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/anderson-src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/anderson-src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/baseline-src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/baseline-src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/baseline-src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/early-newton-src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/early-newton-src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/early-newton-src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/geometry-r1-src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/geometry-r1-src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/geometry-r1-src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/numeric-query-src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/numeric-query-src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/numeric-query-src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/parallel-pool-src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/parallel-pool-src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/parallel-pool-src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/query-packet-final-src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/query-packet-final-src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/query-packet-final-src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/stages-src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/stages-src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/optimize-20261008/stages-src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/anderson-multi/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/anderson-multi/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/anderson-multi/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/autonomous-session/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/baseline/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/baseline/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/baseline/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/compiled/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/compiled/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/compiled/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/coupled/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/coupled/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/coupled/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/newton-joint/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/newton-joint/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/newton-joint/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/nogil-original/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/npc-bullet/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/npc-bullet/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/npc-bullet/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/npc-nogil/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/npc-nogil/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/npc-nogil/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/records/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/records/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/records/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/surface-broadphase/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/surface-broadphase/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/surface-broadphase/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/synchronous-world/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/snapshot-wire-r1/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/static-read-r1/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/structural-20261009/batch-src/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/suspension-native-r1/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/traffic-native-r1/normal-actor/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/whole-step-r1/baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/whole-step-r1/baseline/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/physics/CTRL-02-mechanical/baseline-source/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/gr86-physics/logs/physics/PHYS-EST-01-staging/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/bootstrap/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/logs/audio-baseline/src/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/visual-identity-v1/logs/audio-baseline/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/misc/filesystem/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/misc/plistlib/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/otlLib/optimize/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/svgLib/path/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/ttLib/tables/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/varLib/avar/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/fontTools/varLib/instancer/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/matplotlib/backends/qt_editor/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/matplotlib/testing/jpl_units/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/mpl_toolkits/axes_grid1/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/mpl_toolkits/axisartist/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/mpl_toolkits/mplot3d/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/_core/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/_pyinstaller/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/f2py/_backends/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/f2py/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/fft/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/lib/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/linalg/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/ma/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/matrixlib/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/polynomial/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/random/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/testing/_private/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/testing/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/typing/tests/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/pyparsing/ai/show_best_practices/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/complete-tire-native-r1/baseline/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/complete-tire-native-r1/baseline/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/complete-tire-native-r1/baseline/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/controls-native-r1/baseline/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/controls-native-r1/baseline/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/controls-native-r1/baseline/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/baseline-src/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/baseline-src/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/baseline-src/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/compiled-src/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/compiled-src/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/compiled-src/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/geometry-transfer-src/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/geometry-transfer-src/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/geometry-transfer-src/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/hybrid-src/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/hybrid-src/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/hybrid-src/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/numeric-profile-src/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/numeric-profile-src/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/numeric-profile-src/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/prefetch-src/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/prefetch-src/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/prefetch-src/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/road-src/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/road-src/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/road-src/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/submit-wait-src/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/submit-wait-src/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/submit-wait-src/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/window-src/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/window-src/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/deep-20261009/window-src/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/hard-drive-r1/road-revision/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/hard-drive-r1/road-revision/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/hard-drive-r1/road-revision/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/hard-drive-r1/uncached-owner/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/hard-drive-r1/uncached-owner/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/hard-drive-r1/uncached-owner/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/input-latency-r1/baseline/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/input-latency-r1/baseline/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/input-latency-r1/baseline/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/observation-native-r1/baseline/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/observation-native-r1/baseline/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/observation-native-r1/baseline/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/autonomous-session/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/autonomous-session/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/autonomous-session/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/synchronous-world/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/synchronous-world/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/pipeline-r1/synchronous-world/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/snapshot-wire-r1/baseline/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/snapshot-wire-r1/baseline/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/snapshot-wire-r1/baseline/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/static-read-r1/baseline/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/static-read-r1/baseline/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/static-read-r1/baseline/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/structural-20261009/batch-src/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/structural-20261009/batch-src/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/structural-20261009/batch-src/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/suspension-native-r1/baseline/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/suspension-native-r1/baseline/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/suspension-native-r1/baseline/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/traffic-native-r1/normal-actor/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/traffic-native-r1/normal-actor/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/traffic-native-r1/normal-actor/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/whole-step-r1/baseline/src/audio/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/whole-step-r1/baseline/src/environment/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/performance/whole-step-r1/baseline/src/ui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/built-double-built-backup/direct/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/built-double-built-backup/panda3d/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/built-double-built-backup/simplepbr/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/panda-source/makepanda/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/random/_examples/cffi/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/random/_examples/numba/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/random/tests/data/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/built-double-built-backup/direct/directnotify/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/built-double-built-backup/direct/directtools/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/built-double-built-backup/direct/directutil/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/built-double-built-backup/direct/extensions_native/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/built-double-built-backup/direct/filter/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/built-double-built-backup/direct/fsm/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/built-double-built-backup/direct/gui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/built-double-built-backup/direct/interval/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/built-double-built-backup/direct/showbase/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/built-double-built-backup/direct/stdpy/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/built-double-built-backup/direct/task/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/panda-source/built-double/direct/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/panda-source/built-double/panda3d/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/panda-source/built-double/simplepbr/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/_core/tests/examples/cython/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/_core/tests/examples/limited_api/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "logs/handling-v2/plot-libs/numpy/typing/tests/data/pass/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/panda-source/built-double/direct/directnotify/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/panda-source/built-double/direct/directtools/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/panda-source/built-double/direct/directutil/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/panda-source/built-double/direct/extensions_native/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/panda-source/built-double/direct/filter/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/panda-source/built-double/direct/fsm/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/panda-source/built-double/direct/gui/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/panda-source/built-double/direct/interval/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/panda-source/built-double/direct/showbase/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/panda-source/built-double/direct/stdpy/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    },
+    {
+      "path": "worktrees/simulation-fidelity/build/sim-double-runtime/panda-source/built-double/direct/task/__pycache__",
+      "reason": "可重新生成/下载的Python、测试、Ruff或打包wheel缓存"
+    }
+  ],
+  "files": 11332,
+  "bytes": 7672147456,
+  "compressed_replacements": [
+    {
+      "original": "logs/game-drive-r5/render-pstats/raw.txt",
+      "retained": "logs/game-drive-r5/render-pstats/raw.txt.gz",
+      "sha256": "b12818eed7b5fef70338e8eca983ca0149fdea86ee7b12602eb15434b8445a04"
+    }
+  ]
+}

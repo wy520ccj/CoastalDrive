@@ -1,0 +1,68 @@
+{
+  "baseline": "b31f420c38eaa6d47f8f14cc0717d38ebf98fcf1",
+  "roots": [
+    {
+      "label": "visual-identity-v1",
+      "original": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive-VI-v1",
+      "archived": "worktrees/visual-identity-v1",
+      "git": true,
+      "links": [
+        {
+          "path": ".venv",
+          "target": "\\\\?\\B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv"
+        }
+      ],
+      "files": 10023,
+      "bytes": 8121868440,
+      "head": "7dcf30a451463172dbefb2317c71e4087c5edf5f",
+      "branch": "visual-identity-v1",
+      "unmerged_commits": 34
+    },
+    {
+      "label": "before-AUDIO-01",
+      "original": "B:\\AI agent\\暑期计算机程序设计\\backups\\CoastalDrive-before-AUDIO-01-20260930",
+      "archived": "backups/CoastalDrive-before-AUDIO-01-20260930",
+      "git": false,
+      "links": [],
+      "files": 26912,
+      "bytes": 686875212
+    },
+    {
+      "label": "gr86-physics",
+      "original": "C:\\Users\\15120\\.codex\\worktrees\\gr86-physics\\CoastalDrive",
+      "archived": "worktrees/gr86-physics",
+      "git": true,
+      "links": [
+        {
+          "path": ".venv",
+          "target": "\\\\?\\B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv"
+        }
+      ],
+      "files": 9838,
+      "bytes": 6541823601,
+      "head": "8deb721cd5b8d0499844f07ff6f68d7024dcc62c",
+      "branch": "codex/phys-real-01",
+      "unmerged_commits": 0
+    },
+    {
+      "label": "simulation-fidelity",
+      "original": "C:\\Users\\15120\\.codex\\worktrees\\simulation-fidelity\\CoastalDrive",
+      "archived": "worktrees/simulation-fidelity",
+      "git": true,
+      "links": [
+        {
+          "path": ".venv",
+          "target": "\\\\?\\B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv"
+        }
+      ],
+      "files": 101895,
+      "bytes": 9128188166,
+      "head": "094454121dc2848b86fc20260a2d285df1155728",
+      "branch": "codex/simulation-fidelity",
+      "unmerged_commits": 0
+    }
+  ],
+  "files": 148668,
+  "bytes": 24478755419,
+  "manifest_sha256": "7569a24c65ad9ed3c53837f163eb45edf7fc7c88bc3b1a6c9bde604a9aa70ef2"
+}

@@ -1,0 +1,8 @@
+[
+  {
+    "path": "launchers/README.md",
+    "before_sha256": "931e715ac91b8accc26dc1f70dfbf54d6e8ee15bfe49fcd68a366babdb4f43b2",
+    "after_sha256": "194f9850fda1782dbbb65d12d148a5322e9346e9d04e74e3b6c72e4241a0945c",
+    "reason": "更新当前入口说明，历史启动器已归档"
+  }
+]

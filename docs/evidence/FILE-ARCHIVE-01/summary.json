@@ -1,0 +1,29 @@
+{
+  "baseline": "b31f420c38eaa6d47f8f14cc0717d38ebf98fcf1",
+  "archived_files_retained": 194287,
+  "archived_bytes_retained": 38777013754,
+  "pruned_files": 11332,
+  "pruned_bytes": 7672147456,
+  "pruned_gib": 7.145244121551514,
+  "source_runtime_files_unchanged": 2179,
+  "intentional_metadata_edits": [
+    "launchers/README.md"
+  ],
+  "git_worktrees": 3,
+  "external_backup": 1,
+  "unmerged_vi_commits_preserved": 34,
+  "t1_tests_passed": 210,
+  "t1_seeds": [
+    0,
+    17,
+    23
+  ],
+  "original_git_history_bundle_bytes": 2780884526,
+  "not_run": [
+    "T2",
+    "T3",
+    "performance"
+  ],
+  "external_hash_evidence": "external-copy-verification.json",
+  "restoration_preview_entries": 949
+}

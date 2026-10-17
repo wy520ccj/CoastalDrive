@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "files": 148668,
+  "bytes": 24478755419,
+  "roots": 4,
+  "git_worktrees_preserved": 3,
+  "pruned_files": 0,
+  "pruned_bytes": 0,
+  "manifest_sha256": "7569a24c65ad9ed3c53837f163eb45edf7fc7c88bc3b1a6c9bde604a9aa70ef2"
+}

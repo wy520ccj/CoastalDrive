@@ -28,3 +28,6 @@ art/coastal/*.blend1
 art/vehicles/*.blend1
 
 art/expressway/*.blend1
+
+# 历史本地产物不参与默认扫描；索引、校验报告和历史文本由整理任务显式提交。
+archive/

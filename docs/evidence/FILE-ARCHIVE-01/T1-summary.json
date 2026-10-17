@@ -1,0 +1,124 @@
+{
+  "started_utc": "2026-10-17T02:37:01.690495+00:00",
+  "git_head": "b31f420c38eaa6d47f8f14cc0717d38ebf98fcf1",
+  "git_status": "M .gitignore\n M README.md\n M docs/release-main.md\n M launchers/README.md\n D launchers/archive/README.md\n D \"launchers/archive/\\350\\257\\225\\347\\216\\251-AUDIO-01-FIX.cmd\"\n D \"launchers/archive/\\350\\257\\225\\347\\216\\251-AUDIO-01.cmd\"\n D \"launchers/archive/\\350\\257\\225\\347\\216\\251-AUDIO-02.cmd\"\n D \"launchers/archive/\\350\\257\\225\\347\\216\\251-HWY-01.cmd\"\n D \"launchers/archive/\\350\\257\\225\\347\\216\\251-HWY-02.cmd\"\n D \"launchers/archive/\\350\\257\\225\\347\\216\\251-HWY-04.cmd\"\n D \"launchers/archive/\\350\\257\\225\\347\\216\\251-PERF-03.cmd\"\n D \"launchers/archive/\\350\\257\\225\\347\\216\\251-PERF-04.cmd\"\n D \"launchers/archive/\\350\\257\\225\\347\\216\\251-PLAY-01-FIX.cmd\"\n D \"launchers/archive/\\350\\257\\225\\347\\216\\251-RADIO-01.cmd\"\n D \"launchers/archive/\\350\\257\\225\\347\\216\\251-RADIO-02.cmd\"\n D launchers/physics-native-traffic-game.cmd\n D launchers/physics-native-traffic-simulation.cmd\n D launchers/physics-parallel-r1-game.cmd\n D launchers/physics-parallel-r1-simulation.cmd\n D launchers/physics-parallel-r1.md\n D launchers/physics-parallel-r2-game.cmd\n D launchers/physics-parallel-r2-simulation.cmd\n D launchers/physics-parallel-r2.md\n D launchers/physics-r10-game.cmd\n D launchers/physics-r10-simulation.cmd\n D launchers/physics-r10.md\n D legacy/ADAS/ADAS.cpp\n D legacy/ADAS/ADAS.h\n D legacy/ADAS/ADAS.rc\n D legacy/ADAS/ADAS.sln\n D legacy/ADAS/ADAS.vcxproj\n D legacy/ADAS/ADAS.vcxproj.filters\n D legacy/ADAS/ADASDlg.cpp\n D legacy/ADAS/ADASDlg.h\n D legacy/ADAS/CSimulationEngine.cpp\n D legacy/ADAS/CSimulationEngine.h\n D legacy/ADAS/Constants.h\n D legacy/ADAS/framework.h\n D legacy/ADAS/pch.cpp\n D legacy/ADAS/pch.h\n D legacy/ADAS/res/ADAS.ico\n D legacy/ADAS/res/ADAS.rc2\n D legacy/ADAS/resource.h\n D legacy/ADAS/targetver.h\n D legacy/README.md\n?? docs/tasks/FILE-ARCHIVE-01.md",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [
+    "core",
+    "lab",
+    "workflow"
+  ],
+  "tests": [],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\FILE-ARCHIVE-01-T1\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 2.919
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_core.py",
+        "tests/test_stage4.py",
+        "tests/test_lab_experiment.py",
+        "tests/test_lab_inputs.py",
+        "tests/test_lab_records.py",
+        "tests/test_lab_ui.py",
+        "tests/test_lab_maneuvers.py",
+        "tests/test_lab_metrics.py",
+        "tests/test_parameter_help.py",
+        "tests/test_tire_calibration.py",
+        "tests/test_tire_aligning.py",
+        "tests/test_validation_runner.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\FILE-ARCHIVE-01-T1\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 175.404
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\FILE-ARCHIVE-01-T1\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.765
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\FILE-ARCHIVE-01-T1\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.602
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\FILE-ARCHIVE-01-T1\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.568
+    }
+  ]
+}

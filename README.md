@@ -1,6 +1,6 @@
 # CoastalDrive
 
-当前开发版本（2026-10-15）：**main，游戏实时操控 + 车辆动力学实验台**。两个方向共用权威 Simulation；游戏使用120 Hz单次机械求解，实验台保留每拍两次机械子步和精确执行器。游戏操控与整体流畅已获用户验收，偶发绘制短停已披露并接受；实验台自动功能/渲染通过，人工体验待确认。
+当前开发版本（2026-10-17）：**main，游戏实时操控 + 车辆动力学实验台**。两个方向共用权威 Simulation；游戏使用120 Hz单次机械求解，实验台保留每拍两次机械子步和精确执行器。游戏操控与整体流畅已获用户验收，偶发绘制短停已披露并接受；实验台自动功能/渲染通过，人工体验待确认。
 
 [当前进度](docs/current-progress.md) · [真实新版合并](docs/tasks/INTEGRATE-NEW-LAB-01.md) · [实验台说明](docs/vehicle-lab.md) · [入口与历史版本](launchers/README.md)
 
@@ -8,7 +8,7 @@
 
 新版试验台真实来源为 `codex/simulation-fidelity` 的 `0944541`，包含参数悬停/F1数学公式、工程指标、轮胎标定、独立轮心与部件台架。`launchers/vehicle-lab-double-preview.cmd` 打开显式工程预览，`vehicle-lab-double.cmd` 使用双精度普通实验室；先恢复隔离SDK：`.venv/Scripts/python.exe tools/physics/restore_sim_double_runtime.py`，详见[双精度说明](docs/sim-double-runtime.md)。新机制按工程配置启用，游戏默认参数保持。
 
-历史独立包 **0.8.3 RADIO-02** 位于 `builds/0.8.3-radio02/win_amd64/`，从 `launchers/archive/试玩-RADIO-02.cmd` 启动；没有本次游戏与新版试验台成果。r9/r10/parallel是历史包。整体物理、实车标定及长期性能Gate仍按[物理路线](docs/physics-roadmap.md)和各任务记录推进。
+旧版构建包、历史启动器、旧工程、过期日志和独立工作树统一见[归档目录](archive/README.md)。其中 RADIO-02、r9/r10/parallel 没有当前游戏与新版试验台成果；原路径映射、分支提交和恢复说明随归档保存。整体物理、实车标定及长期性能Gate仍按[物理路线](docs/physics-roadmap.md)和各任务记录推进。
 
 ## 运行
 
@@ -57,11 +57,10 @@ PyCharm 选择 `.venv/Scripts/python.exe`，入口 `src/main.py`。Git仓库包�
 | `tests/` | 行为回归 |
 | `docs/` | 当前状态、设计、任务包与验证证据 |
 | `launchers/` | 当前源码游戏/实验台入口；历史包见入口说明 |
-| `launchers/archive/` | 历史独立包兼容入口，不代表当前源码 |
-| `builds/` | 本地独立包；历史默认构建移至 `builds/archive/` |
-| `logs/` | 本地日志与临时验证输出，早期smoke目录归入 `logs/archive/` |
+| `builds/` | 当前新构建的输出位置；既有历史包已归档 |
+| `logs/` | 当前验证与窗口日志；已结束阶段的旧输出已归档 |
 | `assets/source/` | 离线原始素材与缓存，不随Git提交 |
-| `legacy/` | 只读旧工程 |
+| `archive/` | 统一历史归档；旧包、旧入口、旧工程、日志、旧工作树和恢复索引 |
 
 `CoastalDrive` 的 `main` 为统一主目录；`simulation-fidelity` 是本次新版试验台的真实开发来源，已纳入当前合并；VI-v1/gr86-physics是历史/辅助工作树。上轮6ca4cb4误将simulation-fidelity归为历史、只发布主目录8个提交，本次纠正并合入其25个提交。旧main另有本地备份和Git历史。当前事实从 `docs/current-progress.md` 进入，旧任务/证据仅支持其记录的源码版本。
 
@@ -76,7 +75,7 @@ PyCharm 选择 `.venv/Scripts/python.exe`，入口 `src/main.py`。Git仓库包�
 .\.venv\Scripts\python.exe setup.py build_apps --build-base builds/0.8.3-current
 ```
 
-运行时保留完整 `win_amd64` 文件夹。旧阶段入口归档说明见 [launchers/archive/README.md](launchers/archive/README.md)。
+运行独立包时保留完整 `win_amd64` 文件夹。旧阶段入口及恢复说明见[统一归档](archive/README.md)。
 
 ## 素材与实现
 

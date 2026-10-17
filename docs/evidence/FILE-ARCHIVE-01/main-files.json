@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "files": 46525,
+  "bytes": 16260344753,
+  "roots": 954,
+  "pruned_files": 10426,
+  "pruned_bytes": 5710061038,
+  "links_unchanged": 15,
+  "protected_files_unchanged": 2179,
+  "intentional_metadata_edits": [
+    "launchers/README.md"
+  ],
+  "manifest_sha256": "0cd03f71eaba1b4fad219d145954666e345330de3c54af3285a7481be36f5642"
+}

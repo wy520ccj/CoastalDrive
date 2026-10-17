@@ -1,11 +1,10 @@
 # 当前主版本
 
-2026-09-30，main / 0.8.3 RADIO-02，包含UI-NOTICE-FIX，游戏实现基线92989b6。
+2026-10-17：主目录 `CoastalDrive`、分支 `main`，整理前代码基线 `b31f420`。游戏与新版车辆实验台已合并在同一源码树；当前开发与验收事实见[进度页](current-progress.md)。
 
-- 首页：原Sunset Run；驾驶：Bossa Antigua与Future Gladiator；实录引擎/车体碰撞。
-- UI：保留/Draw动态文字修订，左上深蓝提示底板固定实色。
-- 当前本地包：builds/0.8.3-radio02/win_amd64；入口试玩.cmd。
-- 可执行SHA256：2ec5bc01e8f25ae0e91bef767ebdf466b71671a240ec303d77137dd3c68177a1。
-- [游戏自动/实际输出检查](evidence/RADIO-02/README.md)、[底板连续帧检查](evidence/UI-NOTICE-FIX/README.md)、[整理任务](tasks/MAIN-20260930.md)。本轮整理不改变游戏实现，完整性能和用户试听结论仍按原任务记录。
+- 游戏：根目录 `试玩.cmd` 或 `launchers/game-current.cmd`。
+- 实验台：`launchers/vehicle-lab.cmd`；双精度用 `vehicle-lab-double.cmd` 或显式工程预览 `vehicle-lab-double-preview.cmd`。
+- 环境：项目 `.venv`、`src` 内5个当前原生扩展、`build/sim-double-runtime`；整理不替换这些文件。
+- RADIO-02、r9/r10、parallel等独立包均为历史版，统一见[归档入口](../archive/README.md)。旧发布说明保存在[2026-09-30记录](../archive/2026-10-17/docs/release-main-20260930.md)。
 
-独立包、虚拟环境与原始素材缓存不提交Git；仓库包含制作工具、运行素材、署名及验证证据。主目录CoastalDrive与保留的CoastalDrive-VI-v1同步源码和当前包。旧版本存于Git历史、builds历史目录及上级backup，不通过根目录多个试玩入口并列发布。
+历史工作树分支和未合入提交保留，不能把旧包或旧工作树当作当前主版本。用户实验记录仍位于 `%LOCALAPPDATA%/CoastalDrive/experiments`。

@@ -1,0 +1,100 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "launcher": "launchers/physics-native-traffic-game.cmd",
+      "target": "builds/physics-native-traffic-r9/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/physics-native-traffic-simulation.cmd",
+      "target": "builds/physics-native-traffic-r9/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/physics-parallel-r1-game.cmd",
+      "target": "builds/physics-native-candidate-parallel-r1b/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/physics-parallel-r1-simulation.cmd",
+      "target": "builds/physics-native-candidate-parallel-r1b/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/physics-parallel-r2-game.cmd",
+      "target": "builds/physics-native-candidate-parallel-r1d/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/physics-parallel-r2-simulation.cmd",
+      "target": "builds/physics-native-candidate-parallel-r1d/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/physics-r10-game.cmd",
+      "target": "builds/physics-native-candidate-r10/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/physics-r10-simulation.cmd",
+      "target": "builds/physics-native-candidate-r10/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/archive/试玩-AUDIO-01-FIX.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/archive/试玩-AUDIO-01.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/archive/试玩-AUDIO-02.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/archive/试玩-HWY-01.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/archive/试玩-HWY-02.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/archive/试玩-HWY-04.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/archive/试玩-PERF-03.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/archive/试玩-PERF-04.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/archive/试玩-PLAY-01-FIX.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/archive/试玩-RADIO-01.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    },
+    {
+      "launcher": "launchers/archive/试玩-RADIO-02.cmd",
+      "target": "builds/0.8.3-radio02/win_amd64/coastaldrive.exe",
+      "exists": true
+    }
+  ]
+}

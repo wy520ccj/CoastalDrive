@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "files": 147762,
+  "bytes": 22516669001,
+  "roots": 4,
+  "git_worktrees_preserved": 3,
+  "pruned_files": 906,
+  "pruned_bytes": 1962086418,
+  "manifest_sha256": "7569a24c65ad9ed3c53837f163eb45edf7fc7c88bc3b1a6c9bde604a9aa70ef2",
+  "full_hash_evidence": "external-copy-verification.json"
+}
