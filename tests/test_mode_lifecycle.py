@@ -11,16 +11,16 @@ from vehicle_config import CAR
 
 
 def assert_config(sim, mode):
-    assert sim.config is mode.vehicle_config
+    assert sim.config == mode.configured_vehicle()
     assert sim.input_config is mode.input_config
     for car in (sim.player, *sim.npcs):
-        assert car.config is mode.vehicle_config
+        assert car.config is sim.config
         for component in (car.assist, car.powertrain, car.steering, car.tires):
-            assert component.config is mode.vehicle_config
+            assert component.config is sim.config
     assert sim.player.input_config is mode.input_config
     for car, driver in zip(sim.npcs, sim.drivers):
         assert car.input_config is driver.input_config is GAME_INPUT
-        assert driver.config is mode.vehicle_config
+        assert driver.config is sim.config
 
 
 def test_switch_mode_restart_track_and_pause_keep_selected_configuration(tmp_path):
@@ -50,7 +50,7 @@ def test_switch_mode_restart_track_and_pause_keep_selected_configuration(tmp_pat
         session.set_driving_mode(DrivingMode.GAME)
         session.start(countdown=False, track="test")
         assert_config(session.simulation, DrivingMode.GAME)
-        assert session.simulation.config is CAR
+        assert session.simulation.config == DrivingMode.GAME.configured_vehicle(base_config=CAR)
     finally:
         session.close()
 

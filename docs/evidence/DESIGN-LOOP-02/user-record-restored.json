@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "source_report": "C:\\Users\\15120\\AppData\\Local\\CoastalDrive\\experiments\\20261017-041330-319663-applied-vehicle\\report.html",
+  "options": {
+    "vehicle_id": "reference-rwd",
+    "maneuver": "constant_radius",
+    "speed_kph": 60.0,
+    "friction": 1.1,
+    "abs_enabled": true,
+    "esc_enabled": false,
+    "duration": 12.0,
+    "steering_deg": 3.0,
+    "onset": 0.5,
+    "seed": 0,
+    "cg_height": 0.4,
+    "radius_m": 60.0,
+    "right_friction": 0.3,
+    "tire_reference_load": 3000.0,
+    "bump_height_m": 0.01,
+    "bump_length_m": 0.9,
+    "bump_distance_m": 6.0
+  },
+  "samples": 1441,
+  "baseline_available": false
+}

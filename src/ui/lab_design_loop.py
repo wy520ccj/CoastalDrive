@@ -120,7 +120,7 @@ class DesignLoopPanel:
     def drive(self):
         try:
             vehicle = reference_vehicle(self.record)
-            report = export_record(self.record, self.folder("-applied-vehicle"))
+            report = export_record(self.record, self.folder("-applied-vehicle"), baseline=self.app.baseline)
             vehicle = replace(vehicle, report_path=str(report))
             vehicle.save()
         except (OSError, ValueError, KeyError, TypeError) as error:

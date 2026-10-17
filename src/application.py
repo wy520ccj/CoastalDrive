@@ -485,6 +485,13 @@ class CoastalDrive(ShowBase):
                                    for state in ("normal", "pressed", "hover", "disabled"))
         self.primary_states = tuple(self.loader.loadTexture(theme.asset_filename(f"components/primary-{state}.png"))
                                     for state in ("normal", "pressed", "hover", "normal"))
+        self.lab_return_button = DirectButton(
+            parent=self.hud.root, text="返回实验台", text_font=self.ui_font,
+            text_fg=theme.INK, text_scale=.045, text_pos=(0, -.016),
+            frameSize=(-.34, .34, -.055, .055), pos=(1.34, 0, .86),
+            frameTexture=self.button_states, frameColor=(1, 1, 1, 1), relief=DGG.FLAT,
+            command=self.open_vehicle_lab, pressEffect=False,
+        )
         self.panel_accent = DirectFrame(
             parent=self.panel, frameColor=theme.ORANGE,
             frameSize=(-0.55, 0.55, -0.005, 0.005), pos=(0, 0, 0.61),
@@ -864,6 +871,7 @@ class CoastalDrive(ShowBase):
             self.panel_note.setText("切出窗口会自动暂停\n按 Enter 或 Esc 继续驾驶")
             options = [
                 ("继续驾驶  Enter", self.session.resume),
+                ("返回实验台", self.open_vehicle_lab),
                 ("设置", self.choose_audio_settings),
                 ("重新开始", self.session.start),
                 ("结束驾驶", self.session.finish),
@@ -968,7 +976,8 @@ class CoastalDrive(ShowBase):
                 label = TextNode("audio-button-width")
                 label.setFont(self.ui_font)
                 button["text_scale"] = min(0.055, 0.94 / label.calcWidth(button["text"]))
-            button.setZ(button_top - index * (0.115 if self.audio_settings_page or self.driving_mode_page else 0.17))
+            spacing = .115 if self.audio_settings_page or self.driving_mode_page else .155 if phase == Phase.PAUSED else .17
+            button.setZ(button_top - index * spacing)
         if phase == Phase.PAUSED:
             self.panel_title.setScale(0.14)
             self.panel_note.setPos(0, 0.27)

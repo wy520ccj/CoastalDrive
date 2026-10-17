@@ -99,3 +99,91 @@ def test_applied_vehicle_reaches_game_world_and_same_model_garage_keeps_it(tmp_p
         assert WorkspaceVehicle.load(app.workspace_path).design_id == "reference-fwd"
     finally:
         app.close_game()
+
+
+def test_return_restores_maneuver_drafts_ab_and_cursor(workbench, tmp_path):
+    app = workbench
+    app.baseline = completed_trial(app)
+    options = LabOptions(vehicle_id="reference-awd", maneuver="step_steer", speed_kph=42.5,
+                         duration=.1, onset=.025, steering_deg=2.4, cg_height=.43,
+                         tire_reference_load=3456.)
+    app.set_options(options)
+    app.start_experiment()
+    while not app.run_state.done:
+        app.run_state.step()
+    expected = LabRecord.from_run(app.run_state)
+    app.entries["cg"].enterText(".49")
+    app.entries["right_mu"].enterText("保留无效草稿")
+    app.set_plot_group("附着利用率")
+    app.show_sample(5)
+    app.scene.camera_mode, app.play_speed = 1, .5
+    state = app.capture_workspace()
+    baseline = app.baseline
+    app.close_game()
+    restored = VehicleLab(offscreen=True, output=tmp_path/"restored", lab_workspace=state)
+    restored.taskMgr.remove("lab-update")
+    try:
+        assert restored.read_options().maneuver == "step_steer"
+        assert restored.read_options().speed_kph == 42.5
+        assert restored.read_options().duration == .1
+        assert restored.entries["cg"].get() == ".49"
+        assert restored.entries["right_mu"].get() == "保留无效草稿"
+        assert restored.record.samples == expected.samples
+        assert restored.record.metadata["vehicle_config"]["center_of_mass_height"] == .43
+        assert restored.baseline is baseline and restored.plots[0].labels == ["A", "B"]
+        assert restored.view_index == 5 and restored.timeline["value"] == pytest.approx(5/120)
+        assert restored.scene.camera_mode == 1 and restored.play_speed == .5
+        assert restored.run_state is None and not restored.playing
+    finally:
+        restored.close_game()
+
+
+def test_restart_restores_applied_trial_parameters_and_baseline(workbench, monkeypatch, tmp_path):
+    app = workbench
+    app.baseline = completed_trial(app)
+    options = LabOptions(maneuver="sine_steer", speed_kph=48., duration=.075, onset=.025,
+                         steering_deg=2.5, cg_height=.41)
+    app.set_options(options)
+    app.start_experiment()
+    while not app.run_state.done:
+        app.run_state.step()
+    app.design_loop.show()
+    path = tmp_path/"vehicle.json"
+    monkeypatch.setattr("vehicle_workspace.workspace_vehicle_path", lambda: path)
+    monkeypatch.setattr(app, "userExit", lambda: None)
+    app.design_loop.drive()
+    vehicle = WorkspaceVehicle.load(path)
+    expected = app.design_loop.record
+    app.close_game()
+    restored = VehicleLab(offscreen=True, output=tmp_path/"restart", workspace_vehicle=vehicle)
+    restored.taskMgr.remove("lab-update")
+    try:
+        assert restored.read_options() == options
+        assert restored.record.samples == expected.samples
+        assert restored.baseline is not None and restored.plots[0].labels == ["A", "B"]
+    finally:
+        restored.close_game()
+
+
+def test_driving_and_pause_provide_direct_return_button(tmp_path, monkeypatch):
+    from session import Phase
+
+    app = CoastalDrive(smoke=True, output=tmp_path)
+    app.taskMgr.remove("finish-smoke")
+    monkeypatch.setattr(app, "userExit", lambda: None)
+    try:
+        app.refresh_panel()
+        assert not app.lab_return_button.isHidden()
+        assert app.lab_return_button["text"] == "返回实验台"
+        app.session.phase = Phase.PAUSED
+        app.refresh_panel()
+        last_button = app.buttons[app.panel_option_count-1]
+        assert last_button.getZ()+last_button["frameSize"][2] >= app.panel["frameSize"][2]
+        index = [button["text"] for button in app.buttons[:app.panel_option_count]].index("返回实验台")
+        app.buttons[index]["command"]()
+        assert app.next_workspace == "lab"
+        app.next_workspace = None
+        app.lab_return_button["command"]()
+        assert app.next_workspace == "lab"
+    finally:
+        app.close_game()

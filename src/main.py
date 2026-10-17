@@ -152,11 +152,13 @@ def main():
     if args.vehicle_design:
         workspace_vehicle = WorkspaceVehicle(args.vehicle_design, vehicle_design(args.vehicle_design).config)
     drive_vehicle = False
+    lab_workspace = None
     while workspace is not None:
+        in_lab = workspace == "lab"
         if workspace == "lab":
             from lab_application import VehicleLab
 
-            app = VehicleLab(output=args.output, workspace_vehicle=workspace_vehicle)
+            app = VehicleLab(output=args.output, workspace_vehicle=workspace_vehicle, lab_workspace=lab_workspace)
         else:
             app = CoastalDrive(
                 smoke=smoke, onscreen=args.window_smoke, output=args.output,
@@ -173,6 +175,8 @@ def main():
 
                 app.start_game(mode=GameMode.FREE_DRIVE, track="coastal")
             app.run()
+            if in_lab:
+                lab_workspace = app.capture_workspace()
             workspace = app.next_workspace
             workspace_vehicle = app.workspace_vehicle
             drive_vehicle = app.next_drive

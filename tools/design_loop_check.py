@@ -67,6 +67,7 @@ def check(output, ui_only=False):
         app.present_summary(app.run_state.summary())
         app.refresh_plots()
         app.show_sample(len(app.run_state.samples)-1)
+        app.pin_baseline()
         capture(app, output/"lab-trial.png")
         app.design_loop.show()
         capture(app, output/"lab-design-loop.png")
@@ -80,6 +81,10 @@ def check(output, ui_only=False):
         assert app.next_workspace == "game" and app.next_drive
         vehicle = WorkspaceVehicle.load()
         assert vehicle == app.workspace_vehicle
+        app.entries["speed"].enterText("65.5")
+        app.entries["cg"].enterText(".44")
+        app.show_sample(60)
+        saved_lab = app.capture_workspace()
     finally:
         app.close_game()
 
@@ -90,11 +95,24 @@ def check(output, ui_only=False):
         assert game.session.simulation.config == replace(vehicle.config, tire_substeps=1)
         assert game.session.current.tick >= 0
         capture(game, output/"game-drive.png")
+        assert not game.lab_return_button.isHidden()
+        game.userExit = lambda: None
+        game.lab_return_button["command"]()
+        assert game.next_workspace == "lab"
+        game.session.command("escape")
+        game.refresh_panel()
+        capture(game, output/"game-pause.png")
+        pause_return = next(button for button in game.buttons[:game.panel_option_count]
+                            if button["text"] == "返回实验台")
+        game.next_workspace = None
+        pause_return["command"]()
+        assert game.next_workspace == "lab"
         game.session.menu()
         game.refresh_panel()
         capture(game, output/"game-menu.png")
-        game.userExit = lambda: None
-        game.open_vehicle_lab()
+        game.next_workspace = None
+        game.main_menu.actions[-1]()
+        assert game.next_workspace == "lab"
         returned = game.workspace_vehicle
         assert returned.config == vehicle.config
         game_info = {"config": asdict(game.session.simulation.config), "tick": game.session.current.tick,
@@ -104,14 +122,27 @@ def check(output, ui_only=False):
     assert game.session.closed
 
     lab = VehicleLab(offscreen=True, output=output/"return-records", render_size=(1024, 768),
-                     workspace_vehicle=returned)
+                     workspace_vehicle=returned, lab_workspace=saved_lab)
     lab.taskMgr.remove("lab-update")
     try:
-        assert lab.engineered_config == vehicle.config
-        assert lab.read_options().friction == vehicle.config.road_friction
+        assert lab.read_options().maneuver == "step_steer"
+        assert lab.read_options().speed_kph == 65.5 and lab.read_options().cg_height == .44
+        assert lab.record.metadata["summary"]["options"]["speed_kph"] == 60
+        assert lab.record.metadata["vehicle_config"] == json.loads(json.dumps(asdict(vehicle.config)))
+        assert lab.baseline.samples == saved_lab.baseline.samples
+        assert lab.plots[0].labels == ["A", "B"] and lab.view_index == 60
         capture(lab, output/"lab-return-1024.png")
     finally:
         lab.close_game()
+    restarted = VehicleLab(offscreen=True, output=output/"restart-records", workspace_vehicle=WorkspaceVehicle.load())
+    restarted.taskMgr.remove("lab-update")
+    try:
+        assert restarted.read_options().maneuver == "step_steer"
+        assert restarted.read_options().speed_kph == 60 and restarted.read_options().cg_height == .42
+        assert restarted.record.samples == saved_lab.record.samples and restarted.baseline is not None
+        capture(restarted, output/"lab-restart.png")
+    finally:
+        restarted.close_game()
     (output/"summary.json").write_text(json.dumps({"passed": True, "comparisons": records,
         "game": game_info, "vehicle": asdict(vehicle.config), "human_driving": "pending"},
         ensure_ascii=False, indent=2, allow_nan=False), encoding="utf-8")

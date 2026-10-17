@@ -42,7 +42,7 @@ DISABLED_INK = (.43, .49, .49, 1)
 
 
 class VehicleLab(ShowBase):
-    def __init__(self, *, offscreen=False, output=None, render_size=(1280, 720), workspace_vehicle=None):
+    def __init__(self, *, offscreen=False, output=None, render_size=(1280, 720), workspace_vehicle=None, lab_workspace=None):
         loadPrcFileData("vehicle-lab", "\n".join(("window-title CoastalDrive · Vehicle Dynamics Lab",
             f"win-size {render_size[0]} {render_size[1]}", "sync-video 1", "threading-model /Draw",
             "window-type offscreen" if offscreen else "window-type onscreen", "audio-library-name null")))
@@ -87,7 +87,7 @@ class VehicleLab(ShowBase):
         self.build_ui()
         self.refresh_parameter_availability()
         self.scene.set_vehicle(vehicle_design("reference-rwd"))
-        if workspace_vehicle is not None:
+        if lab_workspace is None and workspace_vehicle is not None:
             config = workspace_vehicle.config
             self.set_options(LabOptions(vehicle_id=workspace_vehicle.design_id, friction=config.road_friction,
                                         abs_enabled=config.braking.abs_enabled, esc_enabled=config.stability.esc_enabled))
@@ -100,6 +100,19 @@ class VehicleLab(ShowBase):
             self.notice.setText("已带入当前驾驶车辆；完成试验后可对照游戏积分配置，或保存车辆并试驾。")
         self.camera.setPos(102, -10, 5)
         self.camera.lookAt(95, 0, .45)
+        if lab_workspace is not None:
+            lab_workspace.restore(self)
+        elif workspace_vehicle is not None and workspace_vehicle.report_path is not None:
+            folder = Path(workspace_vehicle.report_path).parent
+            self.import_record(folder)
+            self.last_report = Path(workspace_vehicle.report_path)
+            if self.record is not None and (folder/"baseline-A").is_dir():
+                try:
+                    self.baseline = load_record(folder/"baseline-A")
+                except (OSError, ValueError, KeyError, TypeError) as error:
+                    self.show_error("A基线载入失败，当前B记录已恢复", error)
+                self.present_summary(self.record.metadata["summary"])
+                self.refresh_plots()
         self.accept("escape", self.escape)
         self.accept("space", self.hotkey, [self.toggle_pause])
         self.accept("period", self.hotkey, [self.single_step])
@@ -972,6 +985,11 @@ class VehicleLab(ShowBase):
     def back_to_game(self):
         self.next_workspace = "game"
         self.userExit()
+
+    def capture_workspace(self):
+        from ui.lab_workspace import LabWorkspace
+
+        return LabWorkspace.capture(self)
 
     def finalizeExit(self):
         self.taskMgr.stop()

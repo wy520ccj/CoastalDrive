@@ -59,6 +59,7 @@ def test_workspace_dispatch_closes_previous_world_before_applying_trial(monkeypa
 
     vehicle = WorkspaceVehicle("reference-fwd", vehicle_design("reference-fwd").config)
     events = []
+    saved_workspace = object()
 
     class Lab:
         def __init__(self, **kwargs):
@@ -66,6 +67,7 @@ def test_workspace_dispatch_closes_previous_world_before_applying_trial(monkeypa
             self.next_workspace = None if events else "game"
             self.next_drive = self.next_workspace == "game"
             self.workspace_vehicle = vehicle
+            assert kwargs["lab_workspace"] is (saved_workspace if events else None)
             events.append("lab-open")
 
         def run(self):
@@ -73,6 +75,9 @@ def test_workspace_dispatch_closes_previous_world_before_applying_trial(monkeypa
 
         def close_game(self):
             events.append("lab-close")
+
+        def capture_workspace(self):
+            return saved_workspace
 
     class Game:
         def __init__(self, **kwargs):
