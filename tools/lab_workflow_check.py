@@ -20,16 +20,16 @@ from vehicle_designs import DESIGN_VEHICLES
 def check(output, width, height, full, maneuver):
     output.mkdir(parents=True, exist_ok=False)
     app = VehicleLab(offscreen=True, output=output/"records", render_size=(width, height))
-    app.taskMgr.remove("lab-update")
+    app.engine.taskMgr.remove("lab-update")
     screenshots = []
     results = {}
 
     def capture(name):
-        app.taskMgr.step()
-        app.graphicsEngine.renderFrame()
-        app.graphicsEngine.renderFrame()
+        app.engine.taskMgr.step()
+        app.engine.graphicsEngine.renderFrame()
+        app.engine.graphicsEngine.renderFrame()
         path = output/f"{name}.png"
-        assert app.win.saveScreenshot(Filename.fromOsSpecific(str(path)))
+        assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(path)))
         screenshots.append(path.name)
 
     def run(options, engineering=False):

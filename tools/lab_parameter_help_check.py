@@ -34,18 +34,18 @@ def check(output, height):
     mouse.setMouseOn(True)
     watcher = app.dataRoot.attachNewNode(mouse).attachNewNode(MouseWatcher("parameter-watcher"))
     watcher.attachNewNode(ButtonThrower("parameter-keys"))
-    app.mouseWatcherNode = watcher.node()
-    app.aspect2d.node().setMouseWatcher(watcher.node())
+    app.engine.mouseWatcherNode = watcher.node()
+    app.engine.aspect2d.node().setMouseWatcher(watcher.node())
     watcher.node().addRegion(PGMouseWatcherBackground())
     screenshots = []
 
     def step(count=4):
         for _ in range(count):
-            app.taskMgr.step()
-            app.graphicsEngine.renderFrame()
+            app.engine.taskMgr.step()
+            app.engine.graphicsEngine.renderFrame()
 
     def point(x, z):
-        pos = app.render2d.getRelativePoint(app.root, Point3(x, 0, z))
+        pos = app.engine.render2d.getRelativePoint(app.root, Point3(x, 0, z))
         mouse.setMousePos(round((pos.x + 1) * width / 2), round((1 - pos.z) * height / 2))
         step()
 
@@ -58,7 +58,7 @@ def check(output, height):
     def capture(name):
         step()
         screenshots.append(name + ".png")
-        assert app.win.saveScreenshot(Filename.fromOsSpecific(str(output / screenshots[-1])))
+        assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(output / screenshots[-1])))
 
     try:
         app.advanced_panel.show()

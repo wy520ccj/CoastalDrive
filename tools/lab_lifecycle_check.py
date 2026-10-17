@@ -42,15 +42,15 @@ def check(output):
             lab.start_experiment()
             lab.toggle_pause()
             lab.single_step()
-            lab.taskMgr.step()
+            lab.engine.taskMgr.step()
             lab_world = lab.run_state.experiment.simulation
             lab.back_to_game()
             assert lab.next_workspace == "game"
         finally:
             lab.close_game()
         assert lab_world.closed
-        assert not lab.taskMgr.getTasksNamed("lab-update")
-        assert not lab.taskMgr.getTasksNamed("simplepbr update")
+        assert not lab.engine.taskMgr.getTasksNamed("lab-update")
+        assert not lab.engine.taskMgr.getTasksNamed("simplepbr update")
         gui_after = len(DirectGuiWidget.guiDict)
         assert gui_after == gui_before
         rounds.append({"game_world_closed": world.closed, "lab_world_closed": lab_world.closed,

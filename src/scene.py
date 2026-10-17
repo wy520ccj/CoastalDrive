@@ -698,6 +698,7 @@ class Scene:
                     lamp.hide()
 
     def close(self):
+        self.sun_path.node().setShadowCaster(False)
         for root, steps in self.segment_builds.values():
             steps.close()
             root.removeNode()

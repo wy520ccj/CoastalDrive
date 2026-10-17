@@ -34,10 +34,10 @@ def check(output,height):
             texture=app.parameter_help.formula_nodes[0].getTexture().getFilename().getBasename()
             assert texture=="suspension_spring_preloads-0.png",texture
             assert "合成数据，非实测" in app.parameter_help.notes.getText()
-            for _ in range(4):app.taskMgr.step();app.graphicsEngine.renderFrame()
+            for _ in range(4):app.engine.taskMgr.step();app.engine.graphicsEngine.renderFrame()
             bottom=app.parameter_help.notes.getTightBounds(app.parameter_help.root)[0].z
             assert bottom>-.73,(key,bottom)
-            assert app.win.saveScreenshot(Filename.fromOsSpecific(str(output/(key+".png"))))
+            assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(output/(key+".png"))))
         # 已保存旧记录的配置优先；不能用待运行新硬件给旧结果换公式。
         for key in ("suspension_coil_enabled","suspension_spring_preloads"):
             del old_config[key]
@@ -51,8 +51,8 @@ def check(output,height):
         app.choose_vehicle("GR86")
         app.parameter_help.show("suspension_spring_preloads")
         assert "车型账本未提供" in app.parameter_help.notes.getText()
-        for _ in range(4):app.taskMgr.step();app.graphicsEngine.renderFrame()
-        assert app.win.saveScreenshot(Filename.fromOsSpecific(str(output/"gr86-unprovided.png")))
+        for _ in range(4):app.engine.taskMgr.step();app.engine.graphicsEngine.renderFrame()
+        assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(output/"gr86-unprovided.png")))
         assert app.run_state is None
         (output/"result.json").write_text(json.dumps({"height":height,"installed_formula_fields":3,
             "saved_legacy_uses_legacy_formula":True,"missing_oem_data_not_claimed_measured":True,

@@ -20,11 +20,11 @@ def check(record_folder, output, height):
     screenshots = []
 
     def capture(name):
-        app.taskMgr.step()
-        app.graphicsEngine.renderFrame()
-        app.graphicsEngine.renderFrame()
+        app.engine.taskMgr.step()
+        app.engine.graphicsEngine.renderFrame()
+        app.engine.graphicsEngine.renderFrame()
         path = output / f"{name}.png"
-        if not app.win.saveScreenshot(Filename.fromOsSpecific(str(path))):
+        if not app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(path))):
             raise RuntimeError(f"字体截图未保存：{path}")
         screenshots.append(path.name)
 

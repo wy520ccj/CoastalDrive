@@ -57,7 +57,7 @@ def check(output, engineering):
         started, started_cpu, frames, chunks = time.perf_counter(), time.process_time(), 0, []
         while not app.run_state.done:
             before = app.run_state.current.tick
-            app.taskMgr.step()
+            app.engine.taskMgr.step()
             chunks.append(app.run_state.current.tick-before)
             frames += 1
         gui_wall, gui_cpu = time.perf_counter()-started, time.process_time()-started_cpu

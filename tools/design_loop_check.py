@@ -22,11 +22,11 @@ from vehicle_designs import REFERENCE_DESIGN
 from vehicle_workspace import WorkspaceVehicle
 
 
-def capture(app, path):
-    app.taskMgr.step()
-    app.graphicsEngine.renderFrame()
-    app.graphicsEngine.renderFrame()
-    assert app.win.getScreenshot().write(Filename.fromOsSpecific(str(path)))
+def capture(engine, path):
+    engine.taskMgr.step()
+    engine.graphicsEngine.renderFrame()
+    engine.graphicsEngine.renderFrame()
+    assert engine.win.getScreenshot().write(Filename.fromOsSpecific(str(path)))
 
 
 def check(output, ui_only=False):
@@ -57,7 +57,7 @@ def check(output, ui_only=False):
                 comparison.close()
 
     app = VehicleLab(offscreen=True, output=output/"records")
-    app.taskMgr.remove("lab-update")
+    app.engine.taskMgr.remove("lab-update")
     try:
         app.set_options(LabOptions(maneuver="step_steer", speed_kph=60, duration=1., onset=.2,
                                    cg_height=.42, tire_reference_load=3600.))
@@ -68,13 +68,13 @@ def check(output, ui_only=False):
         app.refresh_plots()
         app.show_sample(len(app.run_state.samples)-1)
         app.pin_baseline()
-        capture(app, output/"lab-trial.png")
+        capture(app.engine, output/"lab-trial.png")
         app.design_loop.show()
-        capture(app, output/"lab-design-loop.png")
+        capture(app.engine, output/"lab-design-loop.png")
         app.design_loop.start_comparison()
         while app.design_loop.comparison is not None:
             app.design_loop.update()
-        capture(app, output/"lab-compared.png")
+        capture(app.engine, output/"lab-compared.png")
         assert app.last_report.exists()
         app.userExit = lambda: None
         app.design_loop.drive()
@@ -96,23 +96,17 @@ def check(output, ui_only=False):
         assert game.session.current.tick >= 0
         capture(game, output/"game-drive.png")
         assert not game.lab_return_button.isHidden()
-        game.userExit = lambda: None
-        game.lab_return_button["command"]()
-        assert game.next_workspace == "lab"
+        assert game.lab_return_button["command"] == game.open_vehicle_lab
         game.session.command("escape")
         game.refresh_panel()
         capture(game, output/"game-pause.png")
         pause_return = next(button for button in game.buttons[:game.panel_option_count]
                             if button["text"] == "返回实验台")
-        game.next_workspace = None
-        pause_return["command"]()
-        assert game.next_workspace == "lab"
+        assert pause_return["command"] == game.open_vehicle_lab
         game.session.menu()
         game.refresh_panel()
         capture(game, output/"game-menu.png")
-        game.next_workspace = None
-        game.main_menu.actions[-1]()
-        assert game.next_workspace == "lab"
+        assert game.main_menu.actions[-1] == game.open_vehicle_lab
         returned = game.workspace_vehicle
         assert returned.config == vehicle.config
         game_info = {"config": asdict(game.session.simulation.config), "tick": game.session.current.tick,
@@ -123,7 +117,7 @@ def check(output, ui_only=False):
 
     lab = VehicleLab(offscreen=True, output=output/"return-records", render_size=(1024, 768),
                      workspace_vehicle=returned, lab_workspace=saved_lab)
-    lab.taskMgr.remove("lab-update")
+    lab.engine.taskMgr.remove("lab-update")
     try:
         assert lab.read_options().maneuver == "step_steer"
         assert lab.read_options().speed_kph == 65.5 and lab.read_options().cg_height == .44
@@ -131,16 +125,16 @@ def check(output, ui_only=False):
         assert lab.record.metadata["vehicle_config"] == json.loads(json.dumps(asdict(vehicle.config)))
         assert lab.baseline.samples == saved_lab.baseline.samples
         assert lab.plots[0].labels == ["A", "B"] and lab.view_index == 60
-        capture(lab, output/"lab-return-1024.png")
+        capture(lab.engine, output/"lab-return-1024.png")
     finally:
         lab.close_game()
     restarted = VehicleLab(offscreen=True, output=output/"restart-records", workspace_vehicle=WorkspaceVehicle.load())
-    restarted.taskMgr.remove("lab-update")
+    restarted.engine.taskMgr.remove("lab-update")
     try:
         assert restarted.read_options().maneuver == "step_steer"
         assert restarted.read_options().speed_kph == 60 and restarted.read_options().cg_height == .42
         assert restarted.record.samples == saved_lab.record.samples and restarted.baseline is not None
-        capture(restarted, output/"lab-restart.png")
+        capture(restarted.engine, output/"lab-restart.png")
     finally:
         restarted.close_game()
     (output/"summary.json").write_text(json.dumps({"passed": True, "comparisons": records,

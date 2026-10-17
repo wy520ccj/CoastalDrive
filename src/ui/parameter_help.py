@@ -264,7 +264,7 @@ class ParameterHelp:
                 card.setUvRange(Point2(0, 1-entry["height"]/entry["texture_height"]),
                                 Point2(entry["width"]/entry["texture_width"], 1))
                 node = self.equations.attachNewNode(card.generate())
-                texture = self.app.loader.loadTexture(Filename.fromOsSpecific(str(self.asset_dir / entry["file"])))
+                texture = self.app.engine.loader.loadTexture(Filename.fromOsSpecific(str(self.asset_dir / entry["file"])))
                 if texture is None:
                     raise OSError(f"无法读取公式图片：{entry['file']}")
                 texture.setFormat(Texture.FSrgbAlpha)

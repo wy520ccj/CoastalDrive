@@ -17,13 +17,13 @@ from lab_experiment import MANEUVERS
 def check(output):
     output.mkdir(parents=True, exist_ok=False)
     app = VehicleLab(output=output/"records")
-    app.taskMgr.remove("lab-update")
-    device = app.win.getInputDevice(0)
+    app.engine.taskMgr.remove("lab-update")
+    device = app.engine.win.getInputDevice(0)
     results = {}
 
     def pump():
         for _ in range(3):
-            app.taskMgr.step()
+            app.engine.taskMgr.step()
 
     def type_keys(entry, value):
         app.blur_entries()
@@ -43,9 +43,9 @@ def check(output):
 
     def capture(name):
         pump()
-        app.graphicsEngine.renderFrame()
+        app.engine.graphicsEngine.renderFrame()
         path = output/f"{name}.png"
-        assert app.win.saveScreenshot(Filename.fromOsSpecific(str(path)))
+        assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(path)))
 
     def blocked(entry):
         app.blur_entries()
@@ -108,7 +108,7 @@ def check(output):
             results[key] = type_keys(app.entries[key], value)
         assert calls == []
         app.blur_entries()
-        app.messenger.send("period")
+        app.engine.messenger.send("period")
         assert calls == ["step"]
         app.maneuver_menu.set("执行器输入")
         app.show_manual()

@@ -23,18 +23,18 @@ def check(output, height):
         assert app.read_options().tire_reference_load == 4100.
         app.start_experiment()
         while not app.run_state.done:
-            app.taskMgr.step()
+            app.engine.taskMgr.step()
         assert app.run_state.config.tire_reference_load == 4100.
         app.export()
         record = load_record(app.last_report.parent)
         assert record.metadata["vehicle_config"]["tire_reference_load"] == 4100.
         assert record.metadata["summary"]["options"]["tire_reference_load"] == 4100.
         app.toggle_advanced()
-        app.taskMgr.step()
-        app.graphicsEngine.renderFrame()
-        app.graphicsEngine.renderFrame()
+        app.engine.taskMgr.step()
+        app.engine.graphicsEngine.renderFrame()
+        app.engine.graphicsEngine.renderFrame()
         path = output / "advanced-tire-reference.png"
-        assert app.win.saveScreenshot(Filename.fromOsSpecific(str(path)))
+        assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(path)))
         (output / "result.json").write_text(json.dumps(
             {"height": height, "gui_value_N": 4100., "physical_value_N": 4100.,
              "exported_value_N": 4100., "samples": len(record.samples)}, indent=2), encoding="utf-8")

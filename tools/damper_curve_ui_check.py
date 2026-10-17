@@ -37,10 +37,10 @@ def check(output,height):
             assert app.parameter_help.formula_nodes[0].getTexture().getFilename().getBasename()=="suspension_damper_curves-0.png"
             assert "合成数据，非实测" in app.parameter_help.notes.getText()
             assert "分段力速表生效" in app.parameter_help.notes.getText()
-            for _ in range(4):app.taskMgr.step();app.graphicsEngine.renderFrame()
+            for _ in range(4):app.engine.taskMgr.step();app.engine.graphicsEngine.renderFrame()
             bottom=app.parameter_help.notes.getTightBounds(app.parameter_help.root)[0].z
             assert bottom>-.73,(key,bottom)
-            assert app.win.saveScreenshot(Filename.fromOsSpecific(str(output/(key+".png"))))
+            assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(output/(key+".png"))))
         legacy=asdict(old)
         del legacy["suspension_damper_curves"]
         app.record=SimpleNamespace(metadata={"vehicle_config":legacy,"summary":{"options":{"vehicle_id":"reference-rwd"}},
@@ -52,8 +52,8 @@ def check(output,height):
         app.vehicle_menu.set(4)
         app.parameter_help.show("suspension_damper_curves")
         assert "车型账本未提供" in app.parameter_help.notes.getText()
-        for _ in range(4):app.taskMgr.step();app.graphicsEngine.renderFrame()
-        assert app.win.saveScreenshot(Filename.fromOsSpecific(str(output/"unprovided-oem.png")))
+        for _ in range(4):app.engine.taskMgr.step();app.engine.graphicsEngine.renderFrame()
+        assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(output/"unprovided-oem.png")))
         assert app.run_state is None
         (output/"result.json").write_text(json.dumps({"height":height,"formula_fields":3,
             "rejected_preserves_hardware":True,"accepted_table_imported":True,"legacy_uses_legacy_equation":True,

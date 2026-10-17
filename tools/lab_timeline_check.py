@@ -20,8 +20,8 @@ from lab_records import LabRecord, export_record
 def check(output, probe=False):
     output.mkdir(parents=True, exist_ok=False)
     app = VehicleLab(output=output/"records")
-    app.taskMgr.remove("lab-update")
-    device = app.win.getInputDevice(0)
+    app.engine.taskMgr.remove("lab-update")
+    device = app.engine.win.getInputDevice(0)
     device.enablePointerEvents()
     observed = []
     listener = DirectObject()
@@ -31,15 +31,15 @@ def check(output, probe=False):
 
     def pump():
         for _ in range(3):
-            app.taskMgr.step()
+            app.engine.taskMgr.step()
 
     def pixel(node, x=0, z=0):
-        point = app.render2d.getRelativePoint(node, Point3(x, 0, z))
-        return (point.x+1)*app.win.getXSize()/2, (1-point.z)*app.win.getYSize()/2
+        point = app.engine.render2d.getRelativePoint(node, Point3(x, 0, z))
+        return (point.x+1)*app.engine.win.getXSize()/2, (1-point.z)*app.engine.win.getYSize()/2
 
     def move(node, x=0, z=0):
         target = pixel(node, x, z)
-        assert app.win.movePointer(0, round(target[0]), round(target[1]))
+        assert app.engine.win.movePointer(0, round(target[0]), round(target[1]))
         pump()
 
     def drag(ratio, *, outside=False):
@@ -47,7 +47,7 @@ def check(output, probe=False):
         device.buttonDown(MouseButton.one())
         pump()
         pressed = app.pointer_pressed
-        button_down = app.mouseWatcherNode.isButtonDown(MouseButton.one())
+        button_down = app.engine.mouseWatcherNode.isButtonDown(MouseButton.one())
         start = -.266+.532*app.timeline.getRatio()
         target = -.266+.532*ratio
         for part in range(1, 49):
@@ -64,9 +64,9 @@ def check(output, probe=False):
 
     def capture(name):
         pump()
-        app.graphicsEngine.renderFrame()
-        app.graphicsEngine.renderFrame()
-        assert app.win.getScreenshot().write(Filename.fromOsSpecific(str(output/f"{name}.png")))
+        app.engine.graphicsEngine.renderFrame()
+        app.engine.graphicsEngine.renderFrame()
+        assert app.engine.win.getScreenshot().write(Filename.fromOsSpecific(str(output/f"{name}.png")))
 
     results = {}
     try:

@@ -23,19 +23,19 @@ def check(output, height):
     mouse.setMouseOn(True)
     watcher = app.dataRoot.attachNewNode(mouse).attachNewNode(MouseWatcher("aligning-watcher"))
     watcher.attachNewNode(ButtonThrower("aligning-keys"))
-    app.aspect2d.node().setMouseWatcher(watcher.node())
-    app.mouseWatcherNode = watcher.node()
+    app.engine.aspect2d.node().setMouseWatcher(watcher.node())
+    app.engine.mouseWatcherNode = watcher.node()
     images = []
 
     def step():
         for _ in range(4):
-            app.taskMgr.step()
-            app.graphicsEngine.renderFrame()
+            app.engine.taskMgr.step()
+            app.engine.graphicsEngine.renderFrame()
 
     def capture(name):
         step()
         images.append(name+".png")
-        assert app.win.saveScreenshot(Filename.fromOsSpecific(str(output/images[-1])))
+        assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(output/images[-1])))
 
     def press(key):
         mouse.pressButton(key)

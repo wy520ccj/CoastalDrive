@@ -24,19 +24,19 @@ def check(model, output, height):
     mouse.setMouseOn(True)
     watcher = app.dataRoot.attachNewNode(mouse).attachNewNode(MouseWatcher("calibration-watcher"))
     watcher.attachNewNode(ButtonThrower("calibration-keys"))
-    app.aspect2d.node().setMouseWatcher(watcher.node())
-    app.mouseWatcherNode = watcher.node()
+    app.engine.aspect2d.node().setMouseWatcher(watcher.node())
+    app.engine.mouseWatcherNode = watcher.node()
     screenshots = []
 
     def step():
         for _ in range(4):
-            app.taskMgr.step()
-            app.graphicsEngine.renderFrame()
+            app.engine.taskMgr.step()
+            app.engine.graphicsEngine.renderFrame()
 
     def capture(name):
         step()
         screenshots.append(name+".png")
-        assert app.win.saveScreenshot(Filename.fromOsSpecific(str(output/screenshots[-1])))
+        assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(output/screenshots[-1])))
 
     def press(button):
         mouse.pressButton(button)
@@ -58,7 +58,7 @@ def check(model, output, height):
         assert app.engineered_config is preserved and app.run_state is None
         assert "未通过" in app.notice.getText()
         app.import_engineering(model)
-        position = app.render2d.getRelativePoint(app.root, Point3(-1.59, 0, .074))
+        position = app.engine.render2d.getRelativePoint(app.root, Point3(-1.59, 0, .074))
         mouse.setMousePos(round((position.x+1)*width/2), round((1-position.z)*height/2))
         step()
         assert app.hovered_parameter == "mu"

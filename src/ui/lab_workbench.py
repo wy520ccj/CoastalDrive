@@ -24,7 +24,7 @@ def build_workbench(app):
     header.setFrame(-1.78, 1.78, .80, 1)
     header.setUvRange(Point2(0, .70), Point2(1, .83))
     art = root.attachNewNode(header.generate())
-    art.setTexture(app.loader.loadTexture(theme.asset_filename("backgrounds/coastal-menu.png")))
+    art.setTexture(app.engine.loader.loadTexture(theme.asset_filename("backgrounds/coastal-menu.png")))
     DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT, frameSize=(-1.78, -.23, .80, 1))
     app.text("COASTAL DRIVE", -1.65, .868, .092, font=app.display_font)
     app.text("车辆实验室", -.66, .894, .047, font=app.heading_font)

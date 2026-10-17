@@ -31,15 +31,15 @@ def check(output, height):
             assert "合成数据，非实测" in app.parameter_help.notes.getText()
             assert "部件系数" in app.parameter_help.notes.getText()
             for _ in range(4):
-                app.taskMgr.step(); app.graphicsEngine.renderFrame()
+                app.engine.taskMgr.step(); app.engine.graphicsEngine.renderFrame()
             bottom = app.parameter_help.notes.getTightBounds(app.parameter_help.root)[0].z
             assert bottom > -.73, (key, bottom)
-            assert app.win.saveScreenshot(Filename.fromOsSpecific(str(output/(key+".png"))))
+            assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(output/(key+".png"))))
         app.parameter_help.hide()
         app.advanced_panel.show()
         for _ in range(4):
-            app.taskMgr.step(); app.graphicsEngine.renderFrame()
-        assert app.win.saveScreenshot(Filename.fromOsSpecific(str(output/"advanced.png")))
+            app.engine.taskMgr.step(); app.engine.graphicsEngine.renderFrame()
+        assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(output/"advanced.png")))
         assert app.run_state is None
         (output/"result.json").write_text(json.dumps({"height": height, "rejected_preserves_base": True,
             "accepted_config_applied": True, "formulas_per_field": 3, "physics_world_started": False,

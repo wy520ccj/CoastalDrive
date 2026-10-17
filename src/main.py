@@ -145,46 +145,28 @@ def main():
             app.close_game()
 
     smoke = args.smoke or args.window_smoke
-    workspace = "lab" if args.lab else "game"
     from vehicle_workspace import WorkspaceVehicle
 
     workspace_vehicle = None if smoke else WorkspaceVehicle.load()
     if args.vehicle_design:
         workspace_vehicle = WorkspaceVehicle(args.vehicle_design, vehicle_design(args.vehicle_design).config)
-    drive_vehicle = False
-    lab_workspace = None
-    while workspace is not None:
-        in_lab = workspace == "lab"
-        if workspace == "lab":
-            from lab_application import VehicleLab
-
-            app = VehicleLab(output=args.output, workspace_vehicle=workspace_vehicle, lab_workspace=lab_workspace)
-        else:
-            app = CoastalDrive(
-                smoke=smoke, onscreen=args.window_smoke, output=args.output,
-                seed=args.seed, track=args.track, road_shape=args.road_shape,
-                driving_mode=driving_mode, vehicle_design_id=args.vehicle_design,
-                abs_enabled=abs_enabled, tcs_enabled=tcs_enabled, esc_enabled=esc_enabled,
-                physics_workers=args.physics_workers,
-                independent_clock=not (smoke or args.synchronous_physics),
-                workspace_vehicle=workspace_vehicle,
-            )
-        try:
-            if drive_vehicle:
-                from race import GameMode
-
-                app.start_game(mode=GameMode.FREE_DRIVE, track="coastal")
-            app.run()
-            if in_lab:
-                lab_workspace = app.capture_workspace()
-            workspace = app.next_workspace
-            workspace_vehicle = app.workspace_vehicle
-            drive_vehicle = app.next_drive
-            if smoke:
-                return 0 if app.smoke_passed else 1
-        finally:
-            app.close_game()
-    return 0
+    elif args.lab and workspace_vehicle is None:
+        workspace_vehicle = WorkspaceVehicle("reference-rwd", vehicle_design("reference-rwd").config)
+    app = CoastalDrive(
+        smoke=smoke, onscreen=args.window_smoke, output=args.output,
+        seed=args.seed, track=args.track, road_shape=args.road_shape,
+        driving_mode=driving_mode, vehicle_design_id=args.vehicle_design,
+        abs_enabled=abs_enabled, tcs_enabled=tcs_enabled, esc_enabled=esc_enabled,
+        physics_workers=args.physics_workers,
+        independent_clock=not (smoke or args.synchronous_physics),
+        workspace_vehicle=workspace_vehicle,
+        startup_workspace="lab" if args.lab else "game", lab_output=args.output,
+    )
+    try:
+        app.run()
+        return (0 if app.smoke_passed else 1) if smoke else 0
+    finally:
+        app.close_game()
 
 
 if __name__ == "__main__":

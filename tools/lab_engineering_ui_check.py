@@ -22,13 +22,13 @@ def check(output, records, steady_record, height):
 
     def step():
         for _ in range(4):
-            app.taskMgr.step()
-            app.graphicsEngine.renderFrame()
+            app.engine.taskMgr.step()
+            app.engine.graphicsEngine.renderFrame()
 
     def capture(name):
         step()
         screenshots.append(name+".png")
-        assert app.win.saveScreenshot(Filename.fromOsSpecific(str(output/screenshots[-1])))
+        assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(output/screenshots[-1])))
 
     try:
         app.import_record(records/"dry-braking")
@@ -42,9 +42,9 @@ def check(output, records, steady_record, height):
         mouse.setMouseOn(True)
         watcher = app.dataRoot.attachNewNode(mouse).attachNewNode(MouseWatcher("engineering-watcher"))
         watcher.attachNewNode(ButtonThrower("engineering-keys"))
-        app.aspect2d.node().setMouseWatcher(watcher.node())
-        app.mouseWatcherNode = watcher.node()
-        point = app.render2d.getRelativePoint(app.root, Point3(-1.15, 0, .35))
+        app.engine.aspect2d.node().setMouseWatcher(watcher.node())
+        app.engine.mouseWatcherNode = watcher.node()
+        point = app.engine.render2d.getRelativePoint(app.root, Point3(-1.15, 0, .35))
         mouse.setMousePos(round((point.x+1)*width/2), round((1-point.z)*height/2))
         step()
         assert app.hovered_parameter == "metric.mfdd"

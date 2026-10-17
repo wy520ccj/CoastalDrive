@@ -1,4 +1,4 @@
-"""车辆动力学实验室窗口：配置、离线运行、真实曲线与记录分析。"""
+"""车辆实验视图：使用主窗口的渲染环境，持有自己的离线试验与分析。"""
 
 import json
 import os
@@ -15,6 +15,7 @@ from direct.gui.DirectGui import (
     DirectFrame,
     OnscreenText,
 )
+from direct.showbase.DirectObject import DirectObject
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import GraphicsWindow, TextNode, TransparencyAttrib, loadPrcFileData
 
@@ -41,22 +42,28 @@ DISABLED_FIELD = (.88, .90, .88, 1)
 DISABLED_INK = (.43, .49, .49, 1)
 
 
-class VehicleLab(ShowBase):
-    def __init__(self, *, offscreen=False, output=None, render_size=(1280, 720), workspace_vehicle=None, lab_workspace=None):
-        loadPrcFileData("vehicle-lab", "\n".join(("window-title CoastalDrive · Vehicle Dynamics Lab",
+class VehicleLab(DirectObject):
+    def __init__(self, *, offscreen=False, output=None, render_size=(1280, 720), workspace_vehicle=None, lab_workspace=None, engine=None, on_back=None, activate=True):
+        self.owns_window = engine is None
+        self.on_back = on_back
+        if self.owns_window:
+            loadPrcFileData("vehicle-lab", "\n".join(("window-title CoastalDrive · Vehicle Dynamics Lab",
             f"win-size {render_size[0]} {render_size[1]}", "sync-video 1", "threading-model /Draw",
             "window-type offscreen" if offscreen else "window-type onscreen", "audio-library-name null")))
-        super().__init__()
-        self.disableMouse()
-        self.setBackgroundColor(*theme.PAPER)
-        self.pipeline = simplepbr.init(enable_shadows=True, max_lights=1, msaa_samples=4, shadow_bias=.0007)
-        self.camLens.setNearFar(.1, 1500)
+        self.engine = ShowBase() if engine is None else engine
+        if self.owns_window:
+            self.engine.finalizeExit = self.engine.taskMgr.stop
+        self.engine.disableMouse()
+        self.engine.setBackgroundColor(*theme.PAPER)
+        self.pipeline = (simplepbr.init(enable_shadows=True, max_lights=1, msaa_samples=4, shadow_bias=.0007)
+                         if self.owns_window else engine.pipeline)
+        self.engine.camLens.setNearFar(.1, 1500)
         self.font = theme.load_font("fonts/SourceHanSansSC-Bold.otf")
         # 正文按小字分辨率生成字形，避免160像素字形过度缩小时笔画忽细忽粗。
         self.font.setPixelsPerUnit(48)
         self.heading_font = theme.load_font()
         self.display_font = theme.load_font(theme.DISPLAY_FONT_FILE)
-        self.root = DirectFrame(parent=self.aspect2d, frameColor=(0, 0, 0, 0), relief=None,
+        self.root = DirectFrame(parent=self.engine.aspect2d, frameColor=(0, 0, 0, 0), relief=None,
                                 frameSize=(-1.78, 1.78, -1, 1), state=DGG.DISABLED)
         self.output = Path(output) if output else user_data()/"experiments"
         self.next_workspace = None
@@ -81,7 +88,7 @@ class VehicleLab(ShowBase):
         self.field_labels = {}
         self.hovered_parameter = None
         self.focused_parameter = "speed"
-        self.scene = LabScene(self)
+        self.scene = LabScene(self.engine)
         self.build_ui()
         self.refresh_parameter_availability()
         self.scene.set_vehicle(vehicle_design("reference-rwd"))
@@ -96,8 +103,8 @@ class VehicleLab(ShowBase):
             self.scene.set_vehicle(vehicle_design(workspace_vehicle.design_id), config)
             self.model_note.setText(f"{vehicle_design(workspace_vehicle.design_id).name} · 当前驾驶车辆")
             self.notice.setText("已带入当前驾驶车辆；完成试验后可对照游戏积分配置，或保存车辆并试驾。")
-        self.camera.setPos(102, -10, 5)
-        self.camera.lookAt(95, 0, .45)
+        self.engine.camera.setPos(102, -10, 5)
+        self.engine.camera.lookAt(95, 0, .45)
         if lab_workspace is not None:
             lab_workspace.restore(self)
         elif workspace_vehicle is not None and workspace_vehicle.report_path is not None:
@@ -111,6 +118,13 @@ class VehicleLab(ShowBase):
                     self.show_error("A基线载入失败，当前B记录已恢复", error)
                 self.present_summary(self.record.metadata["summary"])
                 self.refresh_plots()
+        if activate:
+            self.activate()
+        else:
+            self.root.hide()
+
+    def activate(self):
+        self.root.show()
         self.accept("escape", self.escape)
         self.accept("space", self.hotkey, [self.toggle_pause])
         self.accept("period", self.hotkey, [self.single_step])
@@ -120,7 +134,7 @@ class VehicleLab(ShowBase):
         self.accept("wheel_up", self.scroll_parameter_help, [-1])
         self.accept("wheel_down", self.scroll_parameter_help, [1])
         self.accept("mouse1-up", self.set_pointer, [False])
-        self.taskMgr.add(self.update, "lab-update")
+        self.engine.taskMgr.add(self.update, "lab-update")
         self.resize()
 
     def text(self, value, x, z, scale=.034, color=INK, parent=None, font=None):
@@ -176,8 +190,8 @@ class VehicleLab(ShowBase):
             return
         self.focused_parameter = key
         # 数值框不需要中文组词；IME开启时窗口会过滤普通字符消息。
-        if isinstance(self.win, GraphicsWindow):
-            self.win.closeIme()
+        if isinstance(self.engine.win, GraphicsWindow):
+            self.engine.win.closeIme()
         entry["frameColor"] = (.86, .93, .94, 1)
 
     def blur_parameter(self, entry, color):
@@ -916,14 +930,14 @@ class VehicleLab(ShowBase):
     def resize(self):
         from ui.lab_workbench import VIEWPORT
 
-        aspect = self.getAspectRatio()
+        aspect = self.engine.getAspectRatio()
         scale = min(1., aspect/(16/9))
         self.root.setScale(scale)
-        view = self.cam.node().getDisplayRegion(0)
+        view = self.engine.cam.node().getDisplayRegion(0)
         left, right, bottom, top = VIEWPORT
         view.setDimensions(.5+left*scale/(2*aspect), .5+right*scale/(2*aspect),
                            .5+bottom*scale/2, .5+top*scale/2)
-        self.camLens.setAspectRatio((right-left)/(top-bottom))
+        self.engine.camLens.setAspectRatio((right-left)/(top-bottom))
 
     def present_summary(self, summary):
         distance = summary["stopping_distance_m"]
@@ -972,7 +986,7 @@ class VehicleLab(ShowBase):
             self.last_plot = perf_counter()
         if self.playing:
             active = self.record if self.record is not None else run
-            self.playhead += self.clock.getDt()*self.play_speed
+            self.playhead += self.engine.clock.getDt()*self.play_speed
             self.show_sample(round(self.playhead*120))
             if self.playhead >= active.samples[-1]["time"]:
                 self.playing = False
@@ -980,26 +994,34 @@ class VehicleLab(ShowBase):
 
     def back_to_game(self):
         self.next_workspace = "game"
-        self.userExit()
+        if self.on_back is None:
+            self.userExit()
+        else:
+            self.on_back()
 
     def capture_workspace(self):
         from ui.lab_workspace import LabWorkspace
 
         return LabWorkspace.capture(self)
 
-    def finalizeExit(self):
-        self.taskMgr.stop()
+    def run(self):
+        self.engine.run()
+
+    def userExit(self):
+        self.engine.taskMgr.stop()
 
     def close_game(self):
         if self._closed:
             return
-        self.taskMgr.remove("lab-update")
-        self.taskMgr.remove("simplepbr update")
+        self.engine.taskMgr.remove("lab-update")
+        if self.owns_window:
+            self.engine.taskMgr.remove("simplepbr update")
         self.ignoreAll()
         self.design_loop.close()
         if self.run_state is not None:
             self.run_state.close()
         self.scene.close()
         self.root.destroy()
-        self.destroy()
+        if self.owns_window:
+            self.engine.destroy()
         self._closed = True

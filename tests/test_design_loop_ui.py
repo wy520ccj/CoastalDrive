@@ -15,7 +15,7 @@ from vehicle_workspace import WorkspaceVehicle
 @pytest.fixture
 def workbench(tmp_path_factory):
     app = VehicleLab(offscreen=True, output=tmp_path_factory.mktemp("design-ui"))
-    app.taskMgr.remove("lab-update")
+    app.engine.taskMgr.remove("lab-update")
     yield app
     app.close_game()
 
@@ -121,7 +121,7 @@ def test_return_restores_maneuver_drafts_ab_and_cursor(workbench, tmp_path):
     baseline = app.baseline
     app.close_game()
     restored = VehicleLab(offscreen=True, output=tmp_path/"restored", lab_workspace=state)
-    restored.taskMgr.remove("lab-update")
+    restored.engine.taskMgr.remove("lab-update")
     try:
         assert restored.read_options().maneuver == "step_steer"
         assert restored.read_options().speed_kph == 42.5
@@ -156,7 +156,7 @@ def test_restart_restores_applied_trial_parameters_and_baseline(workbench, monke
     expected = app.design_loop.record
     app.close_game()
     restored = VehicleLab(offscreen=True, output=tmp_path/"restart", workspace_vehicle=vehicle)
-    restored.taskMgr.remove("lab-update")
+    restored.engine.taskMgr.remove("lab-update")
     try:
         assert restored.read_options() == options
         assert restored.record.samples == expected.samples
@@ -182,8 +182,8 @@ def test_driving_and_pause_provide_direct_return_button(tmp_path, monkeypatch):
         index = [button["text"] for button in app.buttons[:app.panel_option_count]].index("返回实验台")
         app.buttons[index]["command"]()
         assert app.next_workspace == "lab"
-        app.next_workspace = None
+        pending = app._workspace_steps
         app.lab_return_button["command"]()
-        assert app.next_workspace == "lab"
+        assert app.next_workspace == "lab" and app._workspace_steps is pending
     finally:
         app.close_game()

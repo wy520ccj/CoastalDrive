@@ -21,17 +21,17 @@ def check(output, height):
     screenshots = []
 
     def capture(name):
-        app.taskMgr.step()
-        app.graphicsEngine.renderFrame()
-        app.graphicsEngine.renderFrame()
+        app.engine.taskMgr.step()
+        app.engine.graphicsEngine.renderFrame()
+        app.engine.graphicsEngine.renderFrame()
         path = output/f"{name}.png"
-        if not app.win.saveScreenshot(Filename.fromOsSpecific(str(path))):
+        if not app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(path))):
             raise RuntimeError("实验室截图未保存")
         screenshots.append(path.name)
 
     def finish():
         for _ in range(3000):
-            app.taskMgr.step()
+            app.engine.taskMgr.step()
             if app.run_state.done:
                 assert app.run_state.reason == "stopped"
                 return
@@ -43,7 +43,7 @@ def check(output, height):
         app.toggle_pause()
         tick = app.run_state.current.tick
         for _ in range(4):
-            app.taskMgr.step()
+            app.engine.taskMgr.step()
         assert app.run_state.current.tick == tick
         app.single_step()
         assert app.run_state.current.tick == tick+1
@@ -79,7 +79,7 @@ def check(output, height):
         assert app.run_state is None
         app.toggle_playback()
         for _ in range(10):
-            app.taskMgr.step()
+            app.engine.taskMgr.step()
         assert app.run_state is None
         app.playing = False
         loaded_replay_has_world = app.run_state is not None
@@ -103,7 +103,7 @@ def check(output, height):
             app.set_options(LabOptions(maneuver=mode, speed_kph=speed, duration=12))
             app.start_experiment()
             for _ in range(3000):
-                app.taskMgr.step()
+                app.engine.taskMgr.step()
                 if app.run_state.done:
                     break
             assert app.run_state.done and app.run_state.error is None
@@ -116,8 +116,8 @@ def check(output, height):
         app.toggle_details()
         app.toggle_advanced()
         capture("12-advanced-parameters")
-        report = {"passed": True, "resolution": [app.win.getXSize(), app.win.getYSize()],
-                  "renderer": app.win.getGsg().getDriverRenderer(), "screenshots": screenshots,
+        report = {"passed": True, "resolution": [app.engine.win.getXSize(), app.engine.win.getYSize()],
+                  "renderer": app.engine.win.getGsg().getDriverRenderer(), "screenshots": screenshots,
                   "A": baseline_summary, "B": candidate_summary,
                   "single_step_ticks": 1, "scrub_index": 120,
                   "loaded_replay_has_world": loaded_replay_has_world,

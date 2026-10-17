@@ -25,10 +25,10 @@ def check(output,height):
             app.parameter_help.show(key)
             assert len(app.parameter_help.formula_nodes)==count
             for _ in range(4):
-                app.taskMgr.step();app.graphicsEngine.renderFrame()
+                app.engine.taskMgr.step();app.engine.graphicsEngine.renderFrame()
             assert app.parameter_help.notes.getTightBounds(app.parameter_help.root)[0].z>-.73
             name=key+".png"
-            assert app.win.saveScreenshot(Filename.fromOsSpecific(str(output/name)))
+            assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(output/name)))
             screenshots.append(name)
         assert app.run_state is None
         (output/"result.json").write_text(json.dumps({"height":height,"screenshots":screenshots,

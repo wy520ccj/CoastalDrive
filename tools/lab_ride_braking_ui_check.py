@@ -22,11 +22,11 @@ def check(output,height,records,baseline=None,candidate=None):
     screenshots = []
 
     def step():
-        for _ in range(4):app.taskMgr.step();app.graphicsEngine.renderFrame()
+        for _ in range(4):app.engine.taskMgr.step();app.engine.graphicsEngine.renderFrame()
 
     def capture(name):
         step();screenshots.append(name+".png")
-        assert app.win.saveScreenshot(Filename.fromOsSpecific(str(output/screenshots[-1])))
+        assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(output/screenshots[-1])))
 
     try:
         app.import_engineering(ROOT/"docs/evidence/SIM-UNSPRUNG-01/production/engineering-preview.json")
@@ -40,8 +40,8 @@ def check(output,height,records,baseline=None,candidate=None):
         mouse.setWindowSize(width,height);mouse.setMouseOn(True)
         watcher = app.dataRoot.attachNewNode(mouse).attachNewNode(MouseWatcher("braking-watcher"))
         watcher.attachNewNode(ButtonThrower("braking-keys"))
-        app.aspect2d.node().setMouseWatcher(watcher.node());app.mouseWatcherNode = watcher.node()
-        point = app.render2d.getRelativePoint(app.root,Point3(.53,0,.22))
+        app.engine.aspect2d.node().setMouseWatcher(watcher.node());app.engine.mouseWatcherNode = watcher.node()
+        point = app.engine.render2d.getRelativePoint(app.root,Point3(.53,0,.22))
         mouse.setMousePos(round((point.x+1)*width/2),round((1-point.z)*height/2))
         step();assert app.hovered_parameter=="onset"
         mouse.pressButton(KeyboardButton.f1());step();mouse.releaseButton(KeyboardButton.f1());step()

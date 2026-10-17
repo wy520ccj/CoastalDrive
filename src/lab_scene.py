@@ -158,4 +158,6 @@ class LabScene:
                 side.setColor(*color)
 
     def close(self):
+        # 共享窗口继续存在，随实验视图一并释放独立阴影缓冲。
+        self.light.node().setShadowCaster(False)
         self.root.removeNode()

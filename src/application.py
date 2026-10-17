@@ -5,6 +5,7 @@ import time
 import simplepbr
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectButton, DirectFrame, OnscreenText
+from direct.showbase.DirectObject import DirectObject
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import (
     ClockObject,
@@ -34,14 +35,17 @@ from ui import theme
 from ui.countdown import Countdown
 from ui.hud import DrivingHUD
 from ui.main_menu import MainMenu
+from ui.workspace_loading import WorkspaceLoading
 from vehicle_designs import vehicle_design
 from vehicle_workspace import WorkspaceVehicle, workspace_vehicle_path
 
 
 class CoastalDrive(ShowBase):
-    def __init__(self, *, smoke=False, smoke_audio=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", sync_video=True, driving_mode=None, vehicle_design_id=None, abs_enabled=None, tcs_enabled=None, esc_enabled=None, physics_workers=None, independent_clock=None, workspace_vehicle=None):
+    def __init__(self, *, smoke=False, smoke_audio=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", sync_video=True, driving_mode=None, vehicle_design_id=None, abs_enabled=None, tcs_enabled=None, esc_enabled=None, physics_workers=None, independent_clock=None, workspace_vehicle=None, startup_workspace="game", lab_output=None):
         # 带声音的诊断仍隔离设置/成绩，只打开正式音频链路。
         audio_enabled = not smoke or smoke_audio
+        self.session = None
+        self.workspace = "startup"
         self.startup_trace = startup_trace
         loadPrcFileData(
             "coastaldrive",
@@ -60,6 +64,12 @@ class CoastalDrive(ShowBase):
             ),
         )
         super().__init__()
+        self.lab = None
+        self.lab_workspace = None
+        self._workspace_steps = None
+        self.lab_output = lab_output
+        self.audio_enabled = audio_enabled
+        self.game_input = DirectObject()
         # 物理独立120Hz；高精度等待交还GIL，Panda的忙等限帧会挤占物理准备/提交。
         ClockObject.getGlobalClock().setMode(ClockObject.MNormal)
         self._render_deadline = time.perf_counter()
@@ -73,6 +83,10 @@ class CoastalDrive(ShowBase):
                                       msaa_samples=4, shadow_bias=0.0007)
         if startup_trace is not None:
             startup_trace.mark("renderer_initialized")
+        self.workspace_loading = WorkspaceLoading(self)
+        self.workspace_loading.show("正在打开海岸驾驶", tip="车辆设计与公路试驾，共用一个窗口")
+        self.graphicsEngine.renderFrame()
+        self.graphicsEngine.renderFrame()
         self.camLens.setFov(68)
         self.camLens.setNearFar(0.15, 1500)
         self.smoke = smoke
@@ -98,23 +112,25 @@ class CoastalDrive(ShowBase):
             from session_process import SessionProcess
 
             session_type = SessionProcess
-        self.session = session_type(
-            seed,
-            track=track,
+        self.session_type = session_type
+        self.session_arguments = {
+            "seed": seed,
+            "track": track,
             # 交互游戏固定辅助输入；显式模式参数仅供诊断，实验室另走VehicleCommand。
-            driving_mode=driving_mode if driving_mode is not None else DrivingMode.GAME,
-            abs_enabled=abs_enabled if abs_enabled is not None else (
+            "driving_mode": driving_mode if driving_mode is not None else DrivingMode.GAME,
+            "abs_enabled": abs_enabled if abs_enabled is not None else (
                 workspace_vehicle.config.braking.abs_enabled if workspace_vehicle else self.driving_mode_settings.abs_enabled),
-            tcs_enabled=tcs_enabled if tcs_enabled is not None else (
+            "tcs_enabled": tcs_enabled if tcs_enabled is not None else (
                 workspace_vehicle.config.traction.tcs_enabled if workspace_vehicle else self.driving_mode_settings.tcs_enabled),
-            esc_enabled=esc_enabled if esc_enabled is not None else (
+            "esc_enabled": esc_enabled if esc_enabled is not None else (
                 workspace_vehicle.config.stability.esc_enabled if workspace_vehicle else self.driving_mode_settings.esc_enabled),
-            road_shape=road_shape,
-            scores=BestTimes(self.output / "test-best-times.json") if smoke else None,
-            vehicle_config=self.workspace_vehicle.config,
-            physics_workers=physics_workers,
-            independent_clock=use_clock,
-        )
+            "road_shape": road_shape,
+            "scores": BestTimes(self.output / "test-best-times.json") if smoke else None,
+            "vehicle_config": self.workspace_vehicle.config,
+            "physics_workers": physics_workers,
+            "independent_clock": use_clock,
+        }
+        self.session = session_type(**self.session_arguments)
         if startup_trace is not None:
             startup_trace.mark("simulation_initialized")
         self.skin_index = next(
@@ -173,39 +189,169 @@ class CoastalDrive(ShowBase):
         if startup_trace is not None:
             startup_trace.mark("ui_ready")
         self.taskMgr.add(self.update, "drive-update")
+        self.workspace = "game"
         if smoke:
             self.session.start(countdown=False)
             self.sync_scene()
             self.session.set_controller(ConstantController(Control(throttle=1)))
             self.taskMgr.doMethodLater(1.2, self.finish_smoke, "finish-smoke")
+        self.refresh_panel()
+        self.workspace_loading.hide()
+        if startup_workspace == "lab":
+            self.open_vehicle_lab()
 
     def start_game(self, *, mode, track="coastal"):
-        if not self.loading.isHidden():
+        if self._workspace_steps is not None:
             return
         if self.smoke or self.startup_trace is not None:
             self._enter_game(mode, track)
             return
-        self.loading_text.setText("正在加载滨海公路…" if track == "coastal" else "正在加载无限高速…")
-        self.loading.show()
-        self.taskMgr.add(lambda task: self._load_game(task, mode, track), "load-game")
+        self._begin_workspace(self._load_road(mode, track), "驶向滨海公路" if track == "coastal" else "进入无限高速",
+                              "方向盘后，继续检验这辆车")
+
+    def _load_road(self, mode, track):
+        yield 0, "准备驾驶工况"
+        yield 1, "准备道路与交通车辆"
+        self._enter_game(mode, track)
+        self.session.phase = Phase.LOADING
+        yield 3, "公路、车辆与相机已就绪"
+        self.render.prepareScene(self.win.getGsg())
+        yield 4, "完成画面资源准备"
+        self.workspace = "game"
+        yield 5, "可以出发"
 
     def open_vehicle_lab(self):
-        """主入口释放游戏会话后进入实验室，两个工作方式共用生产物理内核。"""
+        """保留窗口与渲染环境，只释放驾驶会话后进入工程视图。"""
+        if self._workspace_steps is not None:
+            return
         self.workspace_vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
         self.next_workspace = "lab"
-        self.userExit()
+        self._begin_workspace(self._load_lab(), "进入车辆实验室", "工况与A/B记录将保留")
 
-    def _load_game(self, task, mode, track):
+    def _begin_workspace(self, steps, title, tip):
+        self._workspace_steps = steps
+        self.workspace = "transition"
+        self.game_input.ignoreAll()
+        self.driving_keys_held.clear()
+        self.commands_held.clear()
+        self.taskMgr.remove("drive-update")
+        self.taskMgr.remove("load-game")
+        self.taskMgr.remove("lab-update")
+        if self.lab is not None:
+            self.lab.blur_entries()
+            self.lab.ignoreAll()
+        vehicle = self.workspace_vehicle
+        self.workspace_loading.show(title, f"{vehicle_design(vehicle.design_id).name}   ·   "
+                                    f"{vehicle.config.mass:g} kg   /   质心 {vehicle.config.center_of_mass_height:g} m", tip)
+        self.taskMgr.add(self._advance_workspace, "workspace-load", sort=-10)
+
+    def _advance_workspace(self, task):
+        self.workspace_loading.resize()
+        # 先让完整加载画面进入一次正常绘制，再执行可能阻塞的初始化。
         if task.frame == 0:
             return task.cont
-        if task.frame == 1:
-            self._enter_game(mode, track)
-            # 首次绘制仍覆盖加载画面，走正常PBR任务次序后再开始三秒倒计时。
+        try:
+            completed, stage = next(self._workspace_steps)
+        except StopIteration:
+            self._workspace_steps = None
+            if self.workspace == "lab":
+                self.lab.activate()
+            else:
+                self.setup_controls()
+                self.taskMgr.add(self.update, "drive-update")
+                if self.session.phase == Phase.LOADING:
+                    self.session.phase = Phase.COUNTDOWN
+                if not self.smoke:
+                    properties = self.win.getProperties()
+                    self.session.focus_changed(properties.getForeground() and not properties.getMinimized())
+                self._shown_phase = None
+                self.refresh_panel()
+            self.workspace_loading.hide()
+            return task.done
+        except (OSError, ValueError, RuntimeError):
+            logging.getLogger(__name__).exception("工作方式切换失败")
+            self._workspace_steps = None
+            self.workspace_loading.fail()
+            return task.done
+        self.workspace_loading.advance(completed, stage)
+        return task.cont
+
+    def _load_lab(self):
+        from lab_application import VehicleLab
+
+        yield 0, "整理驾驶车辆与工程配置"
+        self.session_arguments.update(seed=self.session.seed, track=self.session.simulation.track,
+                                      road_shape=self.session.road_shape, driving_mode=self.session.driving_mode)
+        if self.garage is not None:
+            self.close_garage()
+        self.session.close()
+        self.session = None
+        if self.soundscape is not None:
+            self.soundscape.close()
+            self.soundscape = None
+        yield 1, "道路物理会话已结束"
+        for node in (self.main_menu.root, self.hud.root, self.countdown.root, self.panel,
+                     self.diagnostics, self.loading):
+            node.hide()
+        if self.scene is not None:
+            self.scene.render.detachNode()
+        yield 2, "准备车辆实验视窗"
+        self.lab = VehicleLab(engine=self, output=self.lab_output, workspace_vehicle=self.workspace_vehicle,
+                              lab_workspace=self.lab_workspace, on_back=self.return_from_lab, activate=False)
+        yield 3, "工程参数与试验记录已恢复"
+        self.lab.root.prepareScene(self.win.getGsg())
+        self.render.prepareScene(self.win.getGsg())
+        yield 4, "准备车辆、字体与曲线画面"
+        self.workspace = "lab"
+        yield 5, "实验室准备完成"
+
+    def return_from_lab(self):
+        if self._workspace_steps is not None:
+            return
+        self.lab_workspace = self.lab.capture_workspace()
+        self.workspace_vehicle = self.lab.workspace_vehicle or self.workspace_vehicle
+        self.next_drive = self.lab.next_drive
+        self.next_workspace = "game"
+        self._begin_workspace(self._load_game_workspace(), "驶向海岸公路" if self.next_drive else "返回海岸驾驶",
+                              "实验记录与编辑参数已保留")
+
+    def _load_game_workspace(self):
+        yield 0, "保留工况、A/B曲线与时间游标"
+        self.lab.close_game()
+        self.lab = None
+        self.cam.node().getDisplayRegion(0).setDimensions(0, 1, 0, 1)
+        self.camLens.setFov(68)
+        self.camLens.setAspectRatio(self.getAspectRatio())
+        self.camLens.setNearFar(.15, 1500)
+        self.setBackgroundColor(.55, .73, .82)
+        yield 1, "实验物理会话已结束"
+        vehicle = self.workspace_vehicle
+        self.vehicle_model_id = vehicle_for_design(vehicle.design_id, self.vehicle_model_id).id
+        self.appearance.model_id = self.vehicle_model_id
+        self.session_arguments.update(vehicle_config=vehicle.config, abs_enabled=vehicle.config.braking.abs_enabled,
+                                      tcs_enabled=vehicle.config.traction.tcs_enabled,
+                                      esc_enabled=vehicle.config.stability.esc_enabled)
+        self.session = self.session_type(**self.session_arguments)
+        self._camera_time = self.session.current.time
+        self.highway_menu = self.audio_settings_page = self.driving_mode_page = False
+        self._audio_checkpoints = 0
+        self._audio_phase = Phase.MENU
+        self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
+        yield 2, "驾驶会话与车辆配置已就绪"
+        if self.audio_enabled:
+            self.soundscape = Soundscape(self, self.audio_settings.master_volume, self.audio_settings.effects_volume,
+                                         self.audio_settings.music_volume, self.audio_settings.radio_station)
+        yield 3, "准备公路场景与声音"
+        if self.scene is not None:
+            self.scene.render.reparentTo(self.render)
+        if self.next_drive:
+            self._enter_game(GameMode.FREE_DRIVE, "coastal")
             self.session.phase = Phase.LOADING
-            return task.cont
-        self.session.phase = Phase.COUNTDOWN
-        self.loading.hide()
-        return task.done
+        self.render.prepareScene(self.win.getGsg())
+        self.main_menu.root.prepareScene(self.win.getGsg())
+        yield 4, "完成画面资源准备"
+        self.workspace = "game"
+        yield 5, "可以出发"
 
     def _enter_game(self, mode, track):
         self.driving_keys_held.clear()
@@ -269,13 +415,13 @@ class CoastalDrive(ShowBase):
             "n",
             "m",
         ):
-            self.accept(key, self.key_down, [key])
-            self.accept(f"{key}-up", self.key_up, [key])
+            self.game_input.accept(key, self.key_down, [key])
+            self.game_input.accept(f"{key}-up", self.key_up, [key])
             if len(key) == 1:
-                self.accept(f"raw-{key}", self.key_down, [key])
-                self.accept(f"raw-{key}-up", self.key_up, [key])
-        self.accept("f2", self.choose_driving_mode)
-        self.accept("f3", self.toggle_diagnostics)
+                self.game_input.accept(f"raw-{key}", self.key_down, [key])
+                self.game_input.accept(f"raw-{key}-up", self.key_up, [key])
+        self.game_input.accept("f2", self.choose_driving_mode)
+        self.game_input.accept("f3", self.toggle_diagnostics)
 
     def audio_cue(self, name):
         if self.soundscape is not None:
@@ -429,7 +575,7 @@ class CoastalDrive(ShowBase):
 
     def windowEvent(self, win):
         super().windowEvent(win)
-        if hasattr(self, "session") and win == self.win and not self.smoke:
+        if self.session is not None and self.workspace == "game" and win == self.win and not self.smoke:
             properties = win.getProperties()
             self.session.focus_changed(properties.getForeground() and not properties.getMinimized())
             if not properties.getForeground():
@@ -1148,13 +1294,22 @@ class CoastalDrive(ShowBase):
             self.save_audio_settings()
         if self.garage is not None:
             self.close_garage()
+        self.taskMgr.remove("workspace-load")
+        if self._workspace_steps is not None:
+            self._workspace_steps.close()
+            self._workspace_steps = None
+        if self.lab is not None:
+            self.lab.close_game()
+            self.lab = None
         self.taskMgr.remove("drive-update")
         self.taskMgr.remove("render-frame-pacing")
         self.taskMgr.remove("simplepbr update")
         self.taskMgr.remove("finish-smoke")
         self.taskMgr.remove("load-game")
         self.ignoreAll()
-        self.session.close()
+        self.game_input.ignoreAll()
+        if self.session is not None:
+            self.session.close()
         if self.soundscape is not None:
             self.soundscape.close()
         if self.scene is not None:
@@ -1176,5 +1331,6 @@ class CoastalDrive(ShowBase):
         ):
             widget.destroy()
         self.result_glyph_geometry.removeNode()
+        self.workspace_loading.close()
         self.destroy()
         self._shutdown = True

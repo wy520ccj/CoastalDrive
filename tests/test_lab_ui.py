@@ -50,24 +50,26 @@ def test_widget_press_release_reads_last_native_value_before_queued_adjust(workb
         app.run_state.step()
     app.refresh_plots()
     app.show_sample(12)
-    app.messenger.send(DGG.B1PRESS+app.timeline.thumb.guiId, [None])
+    app.engine.messenger.send(DGG.B1PRESS+app.timeline.thumb.guiId, [None])
     assert app.pointer_pressed
     app.timeline.guiItem.setValue(.025)
-    app.messenger.send(DGG.B1RELEASE+app.timeline.thumb.guiId, [None])
+    app.engine.messenger.send(DGG.B1RELEASE+app.timeline.thumb.guiId, [None])
     assert not app.pointer_pressed and app.view_index == 3
     assert "0.025" in app.cursor_label.getText()
 
 
 def test_switch_requests_exit_and_cleanup_releases_world_once():
     calls = []
-    fake = SimpleNamespace(next_workspace=None, userExit=lambda: calls.append("exit"))
+    fake = SimpleNamespace(next_workspace=None, on_back=None, userExit=lambda: calls.append("exit"))
     VehicleLab.back_to_game(fake)
     assert fake.next_workspace == "game" and calls == ["exit"]
-    fake = SimpleNamespace(_closed=False, taskMgr=SimpleNamespace(remove=lambda _: None),
+    fake = SimpleNamespace(_closed=False, owns_window=True,
+        engine=SimpleNamespace(taskMgr=SimpleNamespace(remove=lambda _: None),
+                               destroy=lambda: calls.append("window-close")),
         ignoreAll=lambda: None, design_loop=SimpleNamespace(close=lambda: None),
         run_state=SimpleNamespace(close=lambda: calls.append("world-close")),
         scene=SimpleNamespace(close=lambda: calls.append("scene-close")),
-        root=SimpleNamespace(destroy=lambda: None), destroy=lambda: calls.append("window-close"))
+        root=SimpleNamespace(destroy=lambda: None))
     VehicleLab.close_game(fake)
     VehicleLab.close_game(fake)
     assert calls.count("world-close") == 1
@@ -77,7 +79,7 @@ def test_switch_requests_exit_and_cleanup_releases_world_once():
 @pytest.fixture(scope="module")
 def workbench(tmp_path_factory):
     app = VehicleLab(offscreen=True, output=tmp_path_factory.mktemp("lab-ui"))
-    app.taskMgr.remove("lab-update")
+    app.engine.taskMgr.remove("lab-update")
     yield app
     app.close_game()
 
@@ -175,10 +177,10 @@ def test_focusing_entry_highlights_it_and_blur_restores_color(workbench):
     entry = app.entries["duration"]
     color = entry["frameColor"]
     entry.guiItem.setFocus(True)
-    app.taskMgr.step()
+    app.engine.taskMgr.step()
     assert entry["frameColor"] != color
     app.blur_entries()
-    app.taskMgr.step()
+    app.engine.taskMgr.step()
     assert entry["frameColor"] == color
 
 
@@ -192,10 +194,10 @@ def test_numeric_focus_closes_window_ime_but_does_not_call_graphics_buffer_api(m
 
     monkeypatch.setattr(lab_application, "GraphicsWindow", NumericWindow)
     entry = {"frameColor": (1, 1, 1, 1), "state": "normal"}
-    fake = SimpleNamespace(win=NumericWindow(), focused_parameter=None)
+    fake = SimpleNamespace(engine=SimpleNamespace(win=NumericWindow()), focused_parameter=None)
     VehicleLab.focus_parameter(fake, "duration", entry)
     assert calls == ["close-ime"] and fake.focused_parameter == "duration"
-    fake.win = object()
+    fake.engine.win = object()
     VehicleLab.focus_parameter(fake, "manual.gear", entry)
     assert calls == ["close-ime"] and fake.focused_parameter == "manual.gear"
 
@@ -354,9 +356,9 @@ def test_long_parameter_help_is_scrollable_and_preview_camera_works(workbench):
     app.parameter_help.hide()
     app.run_state = None
     app.record = None
-    previous = app.camera.getPos()
+    previous = app.engine.camera.getPos()
     app.cycle_camera()
-    assert app.camera.getPos() != previous
+    assert app.engine.camera.getPos() != previous
 
 
 @pytest.mark.parametrize("mode,extra", (
@@ -393,7 +395,7 @@ def test_inactive_field_rejects_focus_and_tab_but_switching_back_restores_editin
     app.advanced_panel.show()
     app.entries["steer"].guiItem.setFocus(True)
     app.maneuver_menu.set("直线制动")
-    app.taskMgr.step()
+    app.engine.taskMgr.step()
     assert not app.entries["steer"].guiItem.getFocus()
     app.focus_parameter("steer", app.entries["steer"])
     assert not app.entries["steer"].guiItem.getFocus()

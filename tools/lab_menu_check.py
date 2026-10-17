@@ -28,18 +28,18 @@ def check(output, height):
     mouse.setWindowSize(width, height)
     mouse.setMouseOn(True)
     watcher = app.dataRoot.attachNewNode(mouse).attachNewNode(MouseWatcher("lab-menu-watcher"))
-    app.mouseWatcherNode = watcher.node()
-    app.aspect2d.node().setMouseWatcher(watcher.node())
+    app.engine.mouseWatcherNode = watcher.node()
+    app.engine.aspect2d.node().setMouseWatcher(watcher.node())
     watcher.node().addRegion(PGMouseWatcherBackground())
     results = {}
 
     def step(count=4):
         for _ in range(count):
-            app.taskMgr.step()
-            app.graphicsEngine.renderFrame()
+            app.engine.taskMgr.step()
+            app.engine.graphicsEngine.renderFrame()
 
     def point(node, x, z):
-        pos = app.render2d.getRelativePoint(node, Point3(x, 0, z))
+        pos = app.engine.render2d.getRelativePoint(node, Point3(x, 0, z))
         mouse.setMousePos(round((pos.x + 1) * width / 2), round((1 - pos.z) * height / 2))
         step()
 
@@ -60,8 +60,8 @@ def check(output, height):
             point(menu, .30, 0)
             click()
             assert not menu.popupMenu.isHidden(), name
-            popup_pos = menu.popupMenu.getPos(app.render2d)
-            popup_scale = menu.popupMenu.getScale(app.render2d)
+            popup_pos = menu.popupMenu.getPos(app.engine.render2d)
+            popup_scale = menu.popupMenu.getScale(app.engine.render2d)
             assert popup_pos.z <= .991 and popup_pos.z - menu.maxHeight * len(menu["items"]) * popup_scale.z >= -.991
             assert popup_pos.x >= -.991 and popup_pos.x + menu.maxWidth * popup_scale.x <= .991
             # 每行中心及靠右区域均持续悬停；捕捉命中区缩小导致的进出循环。
@@ -81,7 +81,7 @@ def check(output, height):
                 step(1)
                 assert menu.highlightedIndex == selected, name
             path = output / f"{name}-hover.png"
-            assert app.win.saveScreenshot(Filename.fromOsSpecific(str(path)))
+            assert app.engine.win.saveScreenshot(Filename.fromOsSpecific(str(path)))
             click()
             assert menu.selectedIndex == selected and menu.get() == menu["items"][selected]
             assert menu.popupMenu.isHidden() and menu.cancelFrame.isHidden()
