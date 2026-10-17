@@ -1,0 +1,63 @@
+{
+  "completed": {
+    "pressed": true,
+    "released": true,
+    "button_down": true,
+    "events": [
+      "thumb-press"
+    ],
+    "slider_seconds": 0.3499999940395355,
+    "display_index": 42,
+    "display_seconds": 0.35,
+    "cursor": "t = 0.350 s",
+    "global_mouse1_events": 0,
+    "position": [
+      0.0016249011969193816,
+      3.8786935806274414,
+      0.41875970363616943
+    ]
+  },
+  "track_click_index": 96,
+  "loaded_release_outside": {
+    "pressed": true,
+    "released": true,
+    "button_down": true,
+    "events": [
+      "thumb-press",
+      "slider-press",
+      "thumb-press"
+    ],
+    "slider_seconds": 0.6000000238418579,
+    "display_index": 72,
+    "display_seconds": 0.6,
+    "cursor": "t = 0.600 s",
+    "global_mouse1_events": 0,
+    "position": [
+      0.04360736533999443,
+      6.635617256164551,
+      0.41906872391700745
+    ]
+  },
+  "running": {
+    "pressed": true,
+    "released": true,
+    "button_down": true,
+    "events": [
+      "thumb-press",
+      "slider-press",
+      "thumb-press",
+      "thumb-press"
+    ],
+    "slider_seconds": 0.10000000149011612,
+    "display_index": 12,
+    "display_seconds": 0.1,
+    "cursor": "t = 0.100 s",
+    "global_mouse1_events": 0,
+    "position": [
+      1.123332609154204e-07,
+      1.110290765762329,
+      0.41868963837623596
+    ]
+  },
+  "passed": true
+}

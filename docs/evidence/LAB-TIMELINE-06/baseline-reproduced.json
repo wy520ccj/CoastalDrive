@@ -1,0 +1,21 @@
+{
+  "completed": {
+    "pressed": false,
+    "released": true,
+    "button_down": true,
+    "events": [
+      "thumb-press"
+    ],
+    "slider_seconds": 0.3473266363143921,
+    "display_index": 120,
+    "display_seconds": 1.0,
+    "cursor": "t = 1.000 s",
+    "global_mouse1_events": 0,
+    "position": [
+      0.35520946979522705,
+      11.008532524108887,
+      0.4188302755355835
+    ]
+  },
+  "broken_observed": true
+}

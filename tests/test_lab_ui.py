@@ -31,13 +31,31 @@ def test_programmatic_slider_events_do_not_pause_computation_and_user_scrub_does
     shown = []
     run = SimpleNamespace(paused=False)
     fake = SimpleNamespace(_seeking=False, pointer_pressed=False,
-        run_state=run, timeline={"value": .25}, show_sample=shown.append, playing=True)
+        run_state=run, timeline=SimpleNamespace(getValue=lambda: .25), show_sample=shown.append, playing=True)
     VehicleLab.seek(fake)
     assert not run.paused and shown == []
     fake.pointer_pressed = True
     VehicleLab.seek(fake)
     assert run.paused and shown == [30]
     assert not fake.playing
+
+
+def test_widget_press_release_reads_last_native_value_before_queued_adjust(workbench):
+    from direct.gui import DirectGuiGlobals as DGG
+
+    app = workbench
+    app.set_options(LabOptions(speed_kph=15, duration=.1))
+    app.start_experiment()
+    while not app.run_state.done:
+        app.run_state.step()
+    app.refresh_plots()
+    app.show_sample(12)
+    app.messenger.send(DGG.B1PRESS+app.timeline.thumb.guiId, [None])
+    assert app.pointer_pressed
+    app.timeline.guiItem.setValue(.025)
+    app.messenger.send(DGG.B1RELEASE+app.timeline.thumb.guiId, [None])
+    assert not app.pointer_pressed and app.view_index == 3
+    assert "0.025" in app.cursor_label.getText()
 
 
 def test_switch_requests_exit_and_cleanup_releases_world_once():

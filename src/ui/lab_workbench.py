@@ -79,16 +79,16 @@ def build_workbench(app):
     app.button("暂停", -.70, -.100, .30, app.toggle_pause)
     app.button("单步", -.34, -.100, .30, app.single_step)
     app.button("回放", .02, -.100, .30, app.toggle_playback)
-    app.timeline = DirectSlider(parent=root, range=(0, 1), value=0, pageSize=.001,
-        frameSize=(-.28, .28, -.009, .009), frameColor=(.77, .82, .80, 1),
+    app.timeline = DirectSlider(parent=root, range=(0, 1), value=0, pageSize=1, scrollSize=0,
+        frameSize=(-.28, .28, -.035, .035), frameVisibleScale=(1, .12), frameColor=(.77, .82, .80, 1),
         thumb_frameColor=theme.ORANGE, thumb_frameSize=(-.014, .014, -.025, .025),
         thumb_relief=DGG.FLAT, borderWidth=(0, 0), relief=DGG.FLAT,
         pos=(.55, 0, -.104), command=app.seek)
     app.cursor_label = app.text("0.000 s", .55, -.006, .035, MUTED)
-    app.timeline.bind(DGG.ENTER, app.set_timeline_hover, [True])
-    app.timeline.bind(DGG.EXIT, app.set_timeline_hover, [False])
-    app.timeline.thumb.bind(DGG.ENTER, app.set_timeline_hover, [True])
-    app.timeline.thumb.bind(DGG.EXIT, app.set_timeline_hover, [False])
+    app.text("时间轴 · 点击/拖动回看", .28, -.175, .030, MUTED)
+    for control in (app.timeline, app.timeline.thumb):
+        control.bind(DGG.B1PRESS, app.set_pointer, [True])
+        control.bind(DGG.B1RELEASE, app.set_pointer, [False])
 
     app.plots = [LabPlot(root, app.font, (-.94, .36, -.86, -.34), "speed"),
                  LabPlot(root, app.font, (.40, 1.72, -.86, -.34), "ax")]

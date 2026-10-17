@@ -77,8 +77,6 @@ class VehicleLab(ShowBase):
         self._closed = False
         self._seeking = False
         self.pointer_pressed = False
-        self.timeline_hover = False
-        self.timeline_target = 0.
         self.entries = {}
         self.field_labels = {}
         self.hovered_parameter = None
@@ -121,7 +119,6 @@ class VehicleLab(ShowBase):
         self.accept("f1", self.show_parameter_help)
         self.accept("wheel_up", self.scroll_parameter_help, [-1])
         self.accept("wheel_down", self.scroll_parameter_help, [1])
-        self.accept("mouse1", self.set_pointer, [True])
         self.accept("mouse1-up", self.set_pointer, [False])
         self.taskMgr.add(self.update, "lab-update")
         self.resize()
@@ -688,6 +685,7 @@ class VehicleLab(ShowBase):
         if active is not None:
             duration = active.samples[-1]["time"]
             self.timeline["range"] = (0, max(duration, 1/120))
+            self.timeline["pageSize"] = max(duration, 1/120)
             snapshots = active.snapshots
             self.scene.trajectory(snapshots)
 
@@ -706,7 +704,6 @@ class VehicleLab(ShowBase):
         self._seeking = True
         self.timeline["range"] = (0, 1)
         self.timeline["value"] = 0
-        self.timeline_target = 0.
         self._seeking = False
         self.cursor_label.setText("t = —")
         self.refresh_plots()
@@ -776,7 +773,6 @@ class VehicleLab(ShowBase):
         for plot in self.plots:
             plot.seek(row["time"])
         self._seeking = True
-        self.timeline_target = row["time"]
         self.timeline["value"] = row["time"]
         self._seeking = False
         self.cursor_label.setText(f"t = {row['time']:.3f} s")
@@ -788,14 +784,14 @@ class VehicleLab(ShowBase):
         self.playing = False
         if self.run_state is not None and not self.run_state.paused:
             self.run_state.paused = True
-        self.playhead = self.timeline["value"]
+        self.playhead = self.timeline.getValue()
         self.show_sample(round(self.playhead*120))
 
-    def set_pointer(self, pressed):
-        self.pointer_pressed = pressed and self.timeline_hover
-
-    def set_timeline_hover(self, hovered, event):
-        self.timeline_hover = hovered
+    def set_pointer(self, pressed, event=None):
+        # DirectGUI会屏蔽全局mouse1；按下从滑块自身进入，释放前消费最后位置。
+        if not pressed:
+            self.seek()
+        self.pointer_pressed = pressed
 
     def toggle_playback(self):
         active = self.record if self.record is not None else self.run_state

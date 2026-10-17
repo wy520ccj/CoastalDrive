@@ -64,7 +64,6 @@ def check(output, height):
         app.set_plot_group("制动响应")
         tick = app.run_state.current.tick
         app.timeline["value"] = 1.
-        app.timeline_hover = True
         app.set_pointer(True)
         app.seek()
         app.set_pointer(False)
