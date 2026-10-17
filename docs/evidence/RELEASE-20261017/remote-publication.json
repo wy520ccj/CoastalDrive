@@ -1,0 +1,40 @@
+{
+  "tag_name": "v0.9.0-dev.20261017",
+  "name": "CoastalDrive 0.9.0 开发试玩版（Windows 安装版 / 免安装版）",
+  "html_url": "https://github.com/wy520ccj/CoastalDrive/releases/tag/v0.9.0-dev.20261017",
+  "draft": false,
+  "prerelease": true,
+  "published_at": "2026-10-17T06:03:49Z",
+  "target_commitish": "main",
+  "tag_commit": "0e7670796886e31a107869c65b5f1ccbc58a5c32",
+  "assets": [
+    {
+      "name": "CoastalDrive-0.9.0-dev.20261017-Windows-x64-Portable.zip",
+      "size": 241443252,
+      "state": "uploaded",
+      "digest": "sha256:1e3ce296d3c7a24d3e2aa09e4d5ac3e589578223534c51464d2da28f8b6cf577",
+      "browser_download_url": "https://github.com/wy520ccj/CoastalDrive/releases/download/v0.9.0-dev.20261017/CoastalDrive-0.9.0-dev.20261017-Windows-x64-Portable.zip",
+      "public_http_status": 200,
+      "public_content_length": 241443252
+    },
+    {
+      "name": "CoastalDrive-0.9.0-dev.20261017-Windows-x64-Setup.exe",
+      "size": 198305740,
+      "state": "uploaded",
+      "digest": "sha256:c4f9856f67ff490930b1155fb88682b6289f726ff1a0282f82a06dd5145b38ca",
+      "browser_download_url": "https://github.com/wy520ccj/CoastalDrive/releases/download/v0.9.0-dev.20261017/CoastalDrive-0.9.0-dev.20261017-Windows-x64-Setup.exe",
+      "public_http_status": 200,
+      "public_content_length": 198305740
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "size": 245,
+      "state": "uploaded",
+      "digest": "sha256:13cc0c8224d85f1a9d908d24d4bab24b91d070834452a504a6356e6d770419bf",
+      "browser_download_url": "https://github.com/wy520ccj/CoastalDrive/releases/download/v0.9.0-dev.20261017/SHA256SUMS.txt",
+      "public_http_status": 200,
+      "public_content_length": 245,
+      "public_download_sha256_verified": true
+    }
+  ]
+}

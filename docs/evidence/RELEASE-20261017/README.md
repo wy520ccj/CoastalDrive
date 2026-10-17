@@ -8,5 +8,7 @@
 - `initial-lifecycle-race.json`、`initial-uninstall-tail.txt`：首次脚本过早检查导致失败；卸载日志实际Removed all=Yes，原失败不删除，完整原日志保留本地。
 - `lifecycle-final.json`：外部检查器等待临时卸载进程实际清理后，使用同一SHA安装器仅复测安装/覆盖升级/卸载；程序/注册项/快捷方式移除，用户数据保留。
 - `post-build-input-check.json`：最终构建后仅外部安装验证脚本改变，其不进入冻结包；其余760项输入保持。构建回执保留原始输入，不回填假快照。
+- `remote-publication.json`：公开prerelease、发行标签提交、三个资产远端SHA/大小及公开HTTP200；校验文件实际下载后SHA一致。
+- `remote-readme-check.json`：GitHub已渲染HTML的标题、2个直接下载入口和3张图片，首页介绍/下载导航已上线。
 
 完整日志/所有截图位于`logs/RELEASE-20261017/`，未上传大批本地日志。自动功能、实际渲染、人工体验分别记账；手感/声音/美术尚未全部获本版用户验收，不关闭原物理/长期性能Gate。
