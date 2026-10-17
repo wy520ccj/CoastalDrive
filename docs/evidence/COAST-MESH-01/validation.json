@@ -1,0 +1,116 @@
+{
+  "T0": {
+    "summary": "logs/validation/COAST-MESH-01-T0/summary.json",
+    "passed": true,
+    "checks": [
+      {
+        "name": "ruff",
+        "status": "passed",
+        "seconds": 0.143,
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ]
+      },
+      {
+        "name": "pytest",
+        "status": "passed",
+        "seconds": 5.862,
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_environment.py"
+        ]
+      }
+    ]
+  },
+  "T1": {
+    "summary": "logs/validation/COAST-MESH-01-T1-r4/summary.json",
+    "passed": true,
+    "checks": [
+      {
+        "name": "ruff",
+        "status": "passed",
+        "seconds": 0.194,
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ]
+      },
+      {
+        "name": "pytest",
+        "status": "passed",
+        "seconds": 22.598,
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_environment.py",
+          "tests/test_expressway.py",
+          "tests/test_expressway_route.py"
+        ]
+      },
+      {
+        "name": "headless-0",
+        "status": "passed",
+        "seconds": 1.885,
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "0"
+        ]
+      },
+      {
+        "name": "headless-17",
+        "status": "passed",
+        "seconds": 1.878,
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "17"
+        ]
+      },
+      {
+        "name": "headless-23",
+        "status": "passed",
+        "seconds": 1.823,
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "23"
+        ]
+      }
+    ]
+  }
+}

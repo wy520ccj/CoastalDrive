@@ -1,0 +1,12 @@
+{
+  "baseline": "591a99a",
+  "source_vertices_and_colors_identical": true,
+  "source_only_coast_winding_reversed": true,
+  "exported_triangle_positions_colors_uv_identical": true,
+  "triangle_counts": {
+    "coast": 6144,
+    "ground-cover": 1800,
+    "inland": 16270,
+    "lighthouse-reef": 576
+  }
+}

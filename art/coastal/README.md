@@ -51,3 +51,5 @@ python tools/environment/bake_shore_distance.py
 ```
 
 The terrain recipe lives in `src/environment/terrain.py` so placement and offline export share exactly the same visual surface. It does not define the Simulation surface. Preserve original road-edge vertices and collidable prop contact points when editing. Re-export terrain and rebake shoreline together. Local `.blend1` undo backups are ignored, not shipped.
+
+2026-10-17 COAST-MESH-01: corrected the winding of all 6,144 coast triangles, which previously faced downward and vanished from above under backface culling. Re-exported both editable source and GLB; positions, colors, UVs and the 24,790-triangle total are unchanged. Rebaking produced the identical shoreline PNG. Regression checks cover the recipe and actual exported coast orientation.

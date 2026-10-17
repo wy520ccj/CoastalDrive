@@ -5,7 +5,7 @@ from types import SimpleNamespace
 
 import pytest
 import test_expressway
-from panda3d.core import NodePath
+from panda3d.core import DirectionalLight, NodePath
 
 import curve_mesh
 from environment.expressway_mountains import mountain_point
@@ -79,6 +79,7 @@ def test_all_shapes_keep_physical_surfaces_and_stream_lifetime(kit, curve, monke
     monkeypatch.setattr(scene_module, "make_mesh", capture)
     scene = Scene.__new__(Scene)
     scene.render = NodePath("test-route")
+    scene.sun_path = NodePath(DirectionalLight("test-sun"))
     scene.segment_nodes = {}
     scene.segment_builds = {}
     scene.segment_work = {"frame_ms": 0, "max_step_ms": 0, "completed": 0,
@@ -200,6 +201,7 @@ def test_partial_segment_stays_detached_and_is_cancelled_on_unload(kit, monkeypa
     assets, _ = kit
     scene = Scene.__new__(Scene)
     scene.render = NodePath("budget-test")
+    scene.sun_path = NodePath(DirectionalLight("test-sun"))
     scene.segment_nodes = {}
     scene.segment_builds = {}
     scene.segment_work = {"frame_ms": 0, "max_step_ms": 0, "completed": 0,
@@ -244,6 +246,7 @@ def test_budgeted_completion_attaches_whole_segment_at_current_origin(kit, monke
     assets, _ = kit
     scene = Scene.__new__(Scene)
     scene.render = NodePath("completion-test")
+    scene.sun_path = NodePath(DirectionalLight("test-sun"))
     scene.segment_nodes = {}
     scene.segment_builds = {}
     scene.segment_work = {"frame_ms": 0, "max_step_ms": 0, "completed": 0,

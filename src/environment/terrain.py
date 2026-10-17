@@ -200,7 +200,8 @@ def landscape_meshes():
         for j in range(12):
             a = i * 13 + j
             b = ((i + 1) % count) * 13 + j
-            faces.extend(((a, b, a + 1), (a + 1, b, b + 1)))
+            # 沿路前进后再向海侧展开，原绕序朝下；正面须朝向岸坡上方。
+            faces.extend(((a, a + 1, b), (a + 1, b + 1, b)))
     result.append({"name": "coast", "vertices": vertices, "faces": faces, "colors": colors})
     vertices = []
     colors = []

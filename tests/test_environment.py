@@ -170,6 +170,36 @@ def test_terrain_export_and_texture_coordinate_binding():
     assert triangles == sum(len(mesh["faces"]) for mesh in landscape_meshes()) + 1800
 
 
+def test_coastal_slope_faces_the_sky_in_recipe_and_export():
+    # 道路上方必须看到岸坡正面；反向的面会被剔除，仅在弯道侧看时露出尖片。
+    coast = landscape_meshes()[1]
+    for face in coast["faces"]:
+        a, b, c = (coast["vertices"][index] for index in face)
+        assert (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]) > 0
+
+    model = build_terrain(NodePath("terrain-facing-test"))
+    paths = model.findAllMatches("**/coast/+GeomNode")
+    assert paths
+    count = 0
+    for path in paths:
+        transform = path.getMat(model)
+        for geom in path.node().getGeoms():
+            reader = GeomVertexReader(geom.getVertexData(), "vertex")
+            for primitive in geom.getPrimitives():
+                primitive = primitive.decompose()
+                for index in range(primitive.getNumPrimitives()):
+                    points = []
+                    for row in range(
+                        primitive.getPrimitiveStart(index), primitive.getPrimitiveEnd(index)
+                    ):
+                        reader.setRow(primitive.getVertex(row))
+                        points.append(transform.xformPoint(reader.getData3()))
+                    a, b, c = points
+                    assert (b - a).cross(c - a).z > 0
+                    count += 1
+    assert count == len(coast["faces"])
+
+
 @pytest.mark.parametrize(
     "filename,variant", [("tree_pineTallA.glb", "a"), ("tree_pineTallB.glb", "b")]
 )

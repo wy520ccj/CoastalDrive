@@ -5,7 +5,7 @@ from itertools import pairwise
 from types import SimpleNamespace
 
 import pytest
-from panda3d.core import GeomVertexReader, Loader, LoaderOptions, NodePath
+from panda3d.core import DirectionalLight, GeomVertexReader, Loader, LoaderOptions, NodePath
 
 from environment.expressway import (
     END,
@@ -131,6 +131,8 @@ def test_scene_segment_unload_reload_and_rebase(kit):
     assets, _ = kit
     scene = Scene.__new__(Scene)
     scene.render = NodePath("scene")
+    # 与真实Scene一样拥有太阳光，关闭时须释放其阴影资源。
+    scene.sun_path = NodePath(DirectionalLight("test-sun"))
     scene.segment_nodes = {}
     scene.segment_builds = {}
     scene.segment_work = {"frame_ms": 0, "max_step_ms": 0, "completed": 0,

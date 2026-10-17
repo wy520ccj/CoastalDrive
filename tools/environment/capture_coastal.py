@@ -20,6 +20,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--width", type=int, default=1920)
+    parser.add_argument("--distances", type=float, nargs="+", default=(0, 65, 140, 225, 315))
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     os.environ["LOCALAPPDATA"] = str(args.output.resolve() / "user-data")
@@ -32,7 +33,7 @@ def main():
     records = []
     try:
         app.scene.apply(app.session.current)
-        for distance in (0, 65, 140, 225, 315):
+        for distance in args.distances:
             p, q = point_at(distance), point_at(distance + 26)
             eye = Vec3(*offset_point(p, -1.0, 3.8))
             app.camera.setPos(eye)
@@ -43,7 +44,7 @@ def main():
             app.taskMgr.step()
             for _ in range(12):
                 app.graphicsEngine.renderFrame()
-            path = args.output / f"coast-{distance:03d}.png"
+            path = args.output / f"coast-{distance:03g}.png"
             assert app.win.saveScreenshot(Filename.fromOsSpecific(str(path)))
             samples = []
             for _ in range(45):
