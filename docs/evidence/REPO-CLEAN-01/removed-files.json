@@ -1,0 +1,54 @@
+{
+  "files": [
+    {
+      "path": "试玩.cmd",
+      "bytes": 51,
+      "sha256": "770f5cd561c9d327346d1315f2f0a158b5a66652eb8093d7727319921aff3ecd",
+      "restore_tag": "v0.9.0-dev.20261017.1"
+    },
+    {
+      "path": "试玩-物理开发.cmd",
+      "bytes": 228,
+      "sha256": "38e8ab470fd8a5c1cc3031c6c91637bcf8df540bd585d661380ce2a5d0060af9",
+      "restore_tag": "v0.9.0-dev.20261017.1"
+    },
+    {
+      "path": "assets/game/ui/fonts/SourceHanSansSC-Regular.otf",
+      "bytes": 16529832,
+      "sha256": "f1d8611151880c6c336aabeac4640ef434fa13cbfbf1ffe82d0a71b2a5637256",
+      "restore_tag": "v0.9.0-dev.20261017.1"
+    },
+    {
+      "path": "assets/game/ui/fonts/fusion-pixel-12px-proportional-zh_hans.ttf",
+      "bytes": 7001608,
+      "sha256": "1b423de0be589d159ef71af7d00530a7176e16af768a26adbc2e524e8817aad9",
+      "restore_tag": "v0.9.0-dev.20261017.1"
+    },
+    {
+      "path": "assets/game/ui/backgrounds/coastal-menu.png",
+      "bytes": 2089258,
+      "sha256": "00924e807400438461a5550db3a6377b6f5717666f968bf736dc625cbf74d5c3",
+      "restore_tag": "v0.9.0-dev.20261017.1"
+    },
+    {
+      "path": "assets/game/ui/backgrounds/workspace-coast-v1.png",
+      "bytes": 2413190,
+      "sha256": "a846745ceff49b81d16c0c235ead300e2aa28d1f5cb41822925afa3feb3352a0",
+      "restore_tag": "v0.9.0-dev.20261017.1"
+    },
+    {
+      "path": "assets/game/ui/fonts/font-source.json",
+      "bytes": 757,
+      "sha256": "33403f6da4612f81bea5a78668a32e3c26b6eb5de065a60d722794b94588df16",
+      "restore_tag": "v0.9.0-dev.20261017.1"
+    },
+    {
+      "path": "assets/game/ui/fonts/OFL.txt",
+      "bytes": 4418,
+      "sha256": "bc518cf64b8032c07690f33cc270c35c179255a6ac8efa7c165ebae7e8f76a63",
+      "restore_tag": "v0.9.0-dev.20261017.1"
+    }
+  ],
+  "bytes": 28039342,
+  "protected_archive_untouched": true
+}

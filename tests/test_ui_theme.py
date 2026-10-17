@@ -61,7 +61,7 @@ def test_distribution_includes_font_license_and_icon(monkeypatch):
     patterns = config["options"]["build_apps"]["include_patterns"]
     for name in (theme.FONT_FILE, theme.FONT_LICENSE, theme.DISPLAY_FONT_FILE,
                  "fonts/OFL-ChakraPetch.txt", "fonts/typography-sources.json",
-                 "coastal-drive.ico", "wordmark.png", "backgrounds/coastal-menu.png",
+                 "coastal-drive.ico", "wordmark.png",
                  "backgrounds/coastal-menu-handdrawn-v2.png", "backgrounds/workspace-handdrawn-v2.png",
                  "components/button-normal.png", "components/speed-panel.png"):
         relative = "assets/game/ui/" + name

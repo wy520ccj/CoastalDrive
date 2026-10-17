@@ -89,7 +89,7 @@ py -3.14 -m venv .venv
 .\.venv\Scripts\python.exe src/main.py
 ```
 
-配置完成后，双击根目录`试玩.cmd`运行源码游戏，`launchers/vehicle-lab.cmd`进入实验台。PyCharm解释器选择`.venv/Scripts/python.exe`，入口`src/main.py`。原生扩展须由当前源码编译，不能复制旧包内核。
+配置完成后，双击`launchers/game-current.cmd`运行源码游戏，`launchers/vehicle-lab.cmd`进入实验台。PyCharm解释器选择`.venv/Scripts/python.exe`，入口`src/main.py`。原生扩展须由当前源码编译，不能复制旧包内核。
 
 [启动器与双精度入口](launchers/README.md) · [双精度SDK](docs/sim-double-runtime.md) · [检查入口](docs/tasks/README.md) · [发行构建](packaging/README.md)
 

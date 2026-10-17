@@ -7,13 +7,6 @@ import wave
 
 from panda3d.core import Datagram, Filename, MovieAudio
 
-PRUNED_ASSETS = (
-    "ui/fonts/SourceHanSansSC-Regular.otf",
-    "ui/fonts/fusion-pixel-12px-proportional-zh_hans.ttf",
-    "ui/backgrounds/coastal-menu.png",
-    "ui/backgrounds/workspace-coast-v1.png",
-)
-
 
 def verify_audio(original, compressed):
     cursor = MovieAudio.get(Filename.from_os_specific(str(compressed))).open()
@@ -48,11 +41,6 @@ def verify_audio(original, compressed):
 
 def prepare_assets(package, ffmpeg):
     root = package / "assets/game"
-    removed = {}
-    for name in PRUNED_ASSETS:
-        path = root / name
-        removed[name] = path.stat().st_size
-        path.unlink()
     manifest = root / "audio/music-sources.json"
     metadata = json.loads(manifest.read_text(encoding="utf-8"))
     compressed = {}
@@ -72,4 +60,4 @@ def prepare_assets(package, ffmpeg):
     metadata["runtime_files"] = paths
     metadata["distribution_encoding"] = "FLAC lossless; decoded PCM identical to original WAV"
     manifest.write_text(json.dumps(metadata, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
-    return {"removed_unused_assets": removed, "lossless_music": compressed}
+    return {"lossless_music": compressed}

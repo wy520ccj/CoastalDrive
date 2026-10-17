@@ -1,0 +1,11 @@
+{
+  "all_deleted_files_recoverable_from_tag": true,
+  "current_launchers": [
+    "game-current.cmd",
+    "vehicle-lab-double-preview.cmd",
+    "vehicle-lab-double.cmd",
+    "vehicle-lab.cmd"
+  ],
+  "unchanged_runtime_assets": 226,
+  "source_gameplay_unchanged": true
+}

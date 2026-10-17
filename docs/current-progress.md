@@ -2,6 +2,8 @@
 
 更新：2026-10-17。**当前真实整合：游戏main/722ecfd + 新版试验台codex/simulation-fidelity/0944541，已在主目录main完成三方合并与相关验收。**
 
+最新[REPO-CLEAN-01](tasks/REPO-CLEAN-01.md)：清理根目录两个重复试玩脚本、旧字体/背景及其专属旧说明，共8文件/28.04MB；当前源码入口统一在launchers/，原文件可从Git标签恢复。40项/三种子、实际菜单/实验台往返、当前资源准备与226项保留资源SHA核对通过；游戏源码/已发布包/SDK/只读归档未改。
+
 最新[DIST-SIZE-01](tasks/DIST-SIZE-01.md)已发布：[0.9.0-dev.20261017.1空间精简版](https://github.com/wy520ccj/CoastalDrive/releases/tag/v0.9.0-dev.20261017.1)，发行提交85167e7/同名标签，首页入口已更新。保留完整音乐、现用字形/画质及玩法，三曲无损FLAC、四项旧素材发行裁剪、诊断exe移出玩家包；Setup198.3→141.6MB、ZIP241.4→165.3MB、安装366.2→262.7MB。26项音频针对T1/三种子、完整PCM/跳转、真实旧版升级371文件SHA、安装运行/三次实验台往返/覆盖升级/卸载及保留数据通过，主菜单RGBA完全相同；远端3资产SHA/公开HTTP200核对。扩大音频T1的旧护栏首拍碰撞失败在首版源码复现，原失败保留；本次不改物理。Git历史/原素材/原Gate保留。
 
 已完成[RELEASE-20261017](tasks/RELEASE-20261017.md)：以8b03e0f为游戏内容基线，发行提交/标签0e76707/v0.9.0-dev.20261017已推送，Windows普通精度游戏/实验台安装版（含卸载）和免安装包已[公开下载](https://github.com/wy520ccj/CoastalDrive/releases/tag/v0.9.0-dev.20261017)。源码T1 51项/三种子，安装后三种子、实际渲染/正常独立物理进程、三次实验台往返、中文空格路径安装/覆盖升级/卸载及保留数据通过；ZIP376文件与安装输入一致，远端3资产SHA/公开HTTP200核对。首页、[程序介绍](overview.md)、[下载说明](download.md)及安装向导明确开发中半成品、功能不全、潜在bug较多。原精度、性能和人工Gate不随发布关闭。
@@ -40,7 +42,7 @@
 
 | 方向 | 来源与入口 | 有效结论 |
 |---|---|---|
-| 游戏 | 生产ef6d377、验收722ecfd；根试玩.cmd / launchers/game-current.cmd | 保留已认可游戏调校、120Hz单机械求解、原生NPC、转向与时间欠账真实补算；2026-10-14用户接受偶发绘制短停；[任务](tasks/GAME-DRIVE-01.md) |
+| 游戏 | 生产ef6d377、验收722ecfd；launchers/game-current.cmd | 保留已认可游戏调校、120Hz单机械求解、原生NPC、转向与时间欠账真实补算；2026-10-14用户接受偶发绘制短停；[任务](tasks/GAME-DRIVE-01.md) |
 | 新版试验台 | 0944541；launchers/vehicle-lab.cmd、vehicle-lab-double.cmd、vehicle-lab-double-preview.cmd | 参数悬停/F1的LaTeX公式、工程分析/轮胎拟合留出、回正、独立轮心/真实凸起、部件台架/预载/变安装曲线/非线性减振器；双精度隔离Panda1.10.16/Bullet285；[运行说明](sim-double-runtime.md) |
 
 新版试验台最新同源能量细化原始累计2/4/8子步为−.002537/−.001334/−.000689J，速度相邻网格差未下降，完整能量/精度Gate开放。参数/工程/轮胎/簧下及每个节点的原始T0/T1、图像、真实复算和未完成项保存在[仿真线原进度](simulation-fidelity-progress-20261015.md)及SIM-UNSPRUNG-01任务，不把新增默认全开或宣称实车标定。

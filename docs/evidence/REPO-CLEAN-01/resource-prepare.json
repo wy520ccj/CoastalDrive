@@ -1,0 +1,53 @@
+{
+  "lossless_music": {
+    "music/sunset-run.wav": {
+      "pcm_sha256": "c3e5316e7bf98424f6e33865e8a1e8988ccaec0681af4e1f2336f9db88b16d25",
+      "full_pcm_equal": true,
+      "native_decoder": "FlacAudioCursor",
+      "seek_positions": [
+        0.0,
+        0.10123,
+        1.98765,
+        17.5317,
+        65.123
+      ],
+      "original_bytes": 49983200,
+      "compressed_bytes": 20531022,
+      "source_sha256": "3e24ed636cdd354dd5687bef67abc0e56c21132888dabc0cae19817e11b5fe38",
+      "compressed_sha256": "e563c84b43ccafad6131f70b2109de39d557aa18404367d6ac1b9aeb27775d01"
+    },
+    "music/midnight-circuit.wav": {
+      "pcm_sha256": "a9e2fdba9217c2c5436f7bd924b57862e529cc8af918ff19ba884aeff247b238",
+      "full_pcm_equal": true,
+      "native_decoder": "FlacAudioCursor",
+      "seek_positions": [
+        0.0,
+        0.10123,
+        1.98765,
+        17.5317,
+        65.123
+      ],
+      "original_bytes": 38283466,
+      "compressed_bytes": 22048302,
+      "source_sha256": "abe4e2f76e8667ae8b7f34b2db7c98e1f1a67d32322958a7734186e33c7bf949",
+      "compressed_sha256": "a7384aaa9f68dc75c6196012fc11ff140bc3961b2d0dada0e45d39f7c97c12df"
+    },
+    "music/home-coast.wav": {
+      "pcm_sha256": "d45a9abf1504af36ae708177328f668d5871705d470afba2f6736bd3691c34f7",
+      "full_pcm_equal": true,
+      "native_decoder": "FlacAudioCursor",
+      "seek_positions": [
+        0.0,
+        0.10123,
+        1.98765,
+        17.5317,
+        65.123
+      ],
+      "original_bytes": 13026504,
+      "compressed_bytes": 2144298,
+      "source_sha256": "c0a3a3cf5a528286bad98fea1104d5a68279e0f2c14e0db765d54703e44fbf0f",
+      "compressed_sha256": "05121e82928989b47fdacba4444b12f8192074fd87df7cd7d4be5b21c9076384"
+    }
+  },
+  "generated_files_equal_published_package": true
+}

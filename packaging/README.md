@@ -6,7 +6,7 @@
 .venv/Scripts/python.exe tools/build_release.py --output builds/release-20261017-slim --iscc "<Inno Setup 6.7.3安装目录>/ISCC.exe" --ffmpeg "<ffmpeg.exe路径>"
 ```
 
-输出目录必须不存在。脚本重编五个原生扩展，冻结游戏与技术检查器，逐文件核对全部运行素材和扩展；三首完整音乐无损转FLAC，使用原生Panda解码逐采样核对原WAV及非整秒跳转。源码仍保留WAV，发行资源清单明确选择FLAC，不追加FFmpeg运行插件。四项源码无引用的旧字体/背景仅在发行目录移除；诊断exe移至`diagnostics/`供验证，不随玩家包重复分发。
+输出目录必须不存在。脚本重编五个原生扩展，冻结游戏与技术检查器，逐文件核对全部运行素材和扩展；三首完整音乐无损转FLAC，使用原生Panda解码逐采样核对原WAV及非整秒跳转。源码仍保留WAV，发行资源清单明确选择FLAC，不追加FFmpeg运行插件。四项无运行源码引用的旧字体/背景已从当前素材树清理；诊断exe移至`diagnostics/`供验证，不随玩家包重复分发。安装器仍清理旧版遗留的过期发行文件，支持升级。
 
 `build-receipt.json`记录源码HEAD、构建时工作区、输入哈希、资源变换/PCM等价及产物哈希；修改版本号时同步setup.py、pyproject.toml、此脚本和iss。原始音频、字体、源码和历史包不由精简脚本删除。
 

@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "size": [
+    1280,
+    720
+  ],
+  "images": [
+    "menu.png",
+    "loading.png",
+    "lab.png",
+    "returned-menu.png"
+  ],
+  "single_window": true,
+  "human_visual_acceptance": "pending"
+}
