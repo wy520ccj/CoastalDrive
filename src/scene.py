@@ -156,8 +156,8 @@ def make_mesh(
         a, b, c = [Vec3(*vertices[i]) for i in triangle]
         normal = (b - a).cross(c - a).normalized()
         for point in (a, b, c):
-            vertex_writer.addData3f(point)
-            normal_writer.addData3f(normal)
+            vertex_writer.addData3f(*point)
+            normal_writer.addData3f(*normal)
             color_writer.addData4f(*color)
             uv_writer.addData2f(point.x / 2.5, point.y / 2.5)
         primitive.addVertices(index * 3, index * 3 + 1, index * 3 + 2)

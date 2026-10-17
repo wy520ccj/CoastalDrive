@@ -146,11 +146,17 @@ def main():
 
     smoke = args.smoke or args.window_smoke
     workspace = "lab" if args.lab else "game"
+    from vehicle_workspace import WorkspaceVehicle
+
+    workspace_vehicle = None if smoke else WorkspaceVehicle.load()
+    if args.vehicle_design:
+        workspace_vehicle = WorkspaceVehicle(args.vehicle_design, vehicle_design(args.vehicle_design).config)
+    drive_vehicle = False
     while workspace is not None:
         if workspace == "lab":
             from lab_application import VehicleLab
 
-            app = VehicleLab(output=args.output)
+            app = VehicleLab(output=args.output, workspace_vehicle=workspace_vehicle)
         else:
             app = CoastalDrive(
                 smoke=smoke, onscreen=args.window_smoke, output=args.output,
@@ -159,10 +165,17 @@ def main():
                 abs_enabled=abs_enabled, tcs_enabled=tcs_enabled, esc_enabled=esc_enabled,
                 physics_workers=args.physics_workers,
                 independent_clock=not (smoke or args.synchronous_physics),
+                workspace_vehicle=workspace_vehicle,
             )
         try:
+            if drive_vehicle:
+                from race import GameMode
+
+                app.start_game(mode=GameMode.FREE_DRIVE, track="coastal")
             app.run()
             workspace = app.next_workspace
+            workspace_vehicle = app.workspace_vehicle
+            drive_vehicle = app.next_drive
             if smoke:
                 return 0 if app.smoke_passed else 1
         finally:

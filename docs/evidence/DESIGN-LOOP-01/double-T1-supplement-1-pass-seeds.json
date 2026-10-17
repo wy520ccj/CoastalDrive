@@ -1,0 +1,111 @@
+{
+  "started_utc": "2026-10-17T03:34:55.584830+00:00",
+  "git_head": "72fabc1ed3aa1e0d4d33b3c0fc72a017b5366d13",
+  "git_status": "M README.md\n M docs/development-plan.md\n M docs/vehicle-lab.md\n M src/application.py\n M src/environment/expressway.py\n M src/environment/expressway_route.py\n M src/lab_application.py\n M src/lab_experiment.py\n M src/lab_records.py\n M src/main.py\n M src/scene.py\n M src/ui/lab_workbench.py\n M src/ui/main_menu.py\n M tests/test_expressway.py\n M tests/test_lab_ui.py\n M tests/test_vehicle_design_entry.py\n M tests/test_vehicle_designs.py\n M tools/validate.py\n?? docs/tasks/DESIGN-LOOP-01.md\n?? docs/vehicle-design-loop.md\n?? src/lab_game_comparison.py\n?? src/ui/lab_design_loop.py\n?? src/vehicle_workspace.py\n?? tests/test_design_loop_ui.py\n?? tests/test_lab_game_comparison.py\n?? tests/test_vehicle_workspace.py\n?? tools/design_loop_check.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_expressway.py::test_kit_clearance_uses_serialized_geometry"
+  ],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\DESIGN-LOOP-01-T1-double-supplement\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.23
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_expressway.py::test_kit_clearance_uses_serialized_geometry"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\DESIGN-LOOP-01-T1-double-supplement\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.241
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\DESIGN-LOOP-01-T1-double-supplement\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.538
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\DESIGN-LOOP-01-T1-double-supplement\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.436
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\DESIGN-LOOP-01-T1-double-supplement\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.407
+    }
+  ]
+}

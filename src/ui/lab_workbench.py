@@ -103,6 +103,10 @@ def build_workbench(app):
     app.button("清除 A", 1.50, -.225, .26, app.clear_baseline)
     app.notice = LabFeedback(app)
     app.button("导出 CSV / 报告", 1.36, -.935, .62, app.export)
+    from ui.lab_design_loop import DesignLoopPanel
+
+    app.design_loop = DesignLoopPanel(app)
+    app.button("游戏联动", .13, .90, .45, app.design_loop.show)
 
     app.record_menu = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
                                  frameSize=(1.05, 1.71, .34, .83), sortOrder=60, state=DGG.NORMAL)

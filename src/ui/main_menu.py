@@ -61,7 +61,7 @@ class MainMenu:
                                                  frameSize=(.52, 1.63, -.49, .07)))
             OnscreenText(parent=self.content, text="车辆动力学实验室", font=body_font,
                          fg=theme.INK, align=TextNode.ALeft, pos=(.60, -.06), scale=.072)
-            OnscreenText(parent=self.content, text="配置工况 · 真实曲线 · 参数对比\n120 Hz离线试验 / 精确输入 / 数据导出", font=body_font,
+            self.vehicle_note = OnscreenText(parent=self.content, text="配置工况 · 真实曲线 · 参数对比\n120 Hz离线试验 / 精确输入 / 数据导出", font=body_font,
                          fg=theme.MUTED, align=TextNode.ALeft, pos=(.60, -.16), scale=.036)
             button = DirectButton(parent=self.content, text="进入实验室  ›", text_font=body_font,
                 text_fg=theme.INK, text_scale=.049, text_pos=(0, -.017),

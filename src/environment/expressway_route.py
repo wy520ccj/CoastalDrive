@@ -226,7 +226,7 @@ def segment_steps(root, index, seed, kit, stabilize_rail, curve=None):
                     reader = GeomVertexReader(path.node().getGeom(geom_index).getVertexData(), "vertex")
                     coordinates = []
                     while not reader.isAtEnd():
-                        world = root.getRelativePoint(path, reader.getData3f()) + origin
+                        world = root.getRelativePoint(path, tuple(reader.getData3f())) + origin
                         key = world.x, world.y
                         if key not in projections:
                             distance, lateral = curve.project(tuple(world)) if curve else (world.y, world.x)

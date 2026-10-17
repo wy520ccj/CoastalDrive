@@ -42,7 +42,7 @@ DISABLED_INK = (.43, .49, .49, 1)
 
 
 class VehicleLab(ShowBase):
-    def __init__(self, *, offscreen=False, output=None, render_size=(1280, 720)):
+    def __init__(self, *, offscreen=False, output=None, render_size=(1280, 720), workspace_vehicle=None):
         loadPrcFileData("vehicle-lab", "\n".join(("window-title CoastalDrive · Vehicle Dynamics Lab",
             f"win-size {render_size[0]} {render_size[1]}", "sync-video 1", "threading-model /Draw",
             "window-type offscreen" if offscreen else "window-type onscreen", "audio-library-name null")))
@@ -60,6 +60,8 @@ class VehicleLab(ShowBase):
                                 frameSize=(-1.78, 1.78, -1, 1), state=DGG.DISABLED)
         self.output = Path(output) if output else user_data()/"experiments"
         self.next_workspace = None
+        self.next_drive = False
+        self.workspace_vehicle = workspace_vehicle
         self.run_state = None
         self.engineered_config = None
         self.engineered_vehicle_id = None
@@ -85,6 +87,17 @@ class VehicleLab(ShowBase):
         self.build_ui()
         self.refresh_parameter_availability()
         self.scene.set_vehicle(vehicle_design("reference-rwd"))
+        if workspace_vehicle is not None:
+            config = workspace_vehicle.config
+            self.set_options(LabOptions(vehicle_id=workspace_vehicle.design_id, friction=config.road_friction,
+                                        abs_enabled=config.braking.abs_enabled, esc_enabled=config.stability.esc_enabled))
+            self.engineered_config = config
+            self.engineered_vehicle_id = workspace_vehicle.design_id
+            self.parameter_metadata = workspace_vehicle.parameter_metadata
+            self.refresh_configuration_note()
+            self.scene.set_vehicle(vehicle_design(workspace_vehicle.design_id), config)
+            self.model_note.setText(f"{vehicle_design(workspace_vehicle.design_id).name} · 当前驾驶车辆")
+            self.notice.setText("已带入当前驾驶车辆；完成试验后可对照游戏积分配置，或保存车辆并试驾。")
         self.camera.setPos(102, -10, 5)
         self.camera.lookAt(95, 0, .45)
         self.accept("escape", self.escape)
@@ -165,7 +178,8 @@ class VehicleLab(ShowBase):
             entry["focus"] = 0
 
     def cycle_entry(self, direction):
-        if not self.parameter_help.root.isHidden() or not self.engineering_panel.root.isHidden():
+        if any(not panel.isHidden() for panel in (self.parameter_help.root, self.engineering_panel.root,
+                                                  self.design_loop.root)):
             return
         entries = [entry for entry in (*self.entries.values(), *self.manual_entries.values())
                    if not entry.isHidden() and entry.guiItem.getActive()]
@@ -595,7 +609,7 @@ class VehicleLab(ShowBase):
         # DirectEntry的focus选项不随鼠标聚焦同步，必须读取PGEntry实际状态。
         if any(not panel.isHidden() for panel in (self.advanced_panel, self.manual_panel,
                 self.details_panel, self.record_menu, self.parameter_help.root, self.engineering_panel.root,
-                self.notice.root)):
+                self.design_loop.root, self.notice.root)):
             return
         if not any(entry.guiItem.getFocus() and not entry.isHidden()
                    for entry in (*self.entries.values(), *self.manual_entries.values())):
@@ -606,6 +620,9 @@ class VehicleLab(ShowBase):
             self.notice.dismiss()
             return
         self.blur_entries()
+        if not self.design_loop.root.isHidden():
+            self.design_loop.hide()
+            return
         if not self.parameter_help.root.isHidden():
             self.parameter_help.hide()
             return
@@ -920,6 +937,7 @@ class VehicleLab(ShowBase):
 
     def update(self, task):
         self.resize()
+        self.design_loop.update()
         run = self.run_state
         if run is not None:
             if not run.paused and not run.done:
@@ -964,6 +982,7 @@ class VehicleLab(ShowBase):
         self.taskMgr.remove("lab-update")
         self.taskMgr.remove("simplepbr update")
         self.ignoreAll()
+        self.design_loop.close()
         if self.run_state is not None:
             self.run_state.close()
         self.scene.close()

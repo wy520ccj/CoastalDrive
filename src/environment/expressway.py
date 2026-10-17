@@ -257,7 +257,7 @@ def build_terrain(root, index, kit):
         for face in faces:
             for i in face:
                 color_writer.setData4f(*colors[i])
-                normal_writer.setData3f(normals[i])
+                normal_writer.setData3f(*normals[i])
                 # UV携带全局米制坐标，origin重定位不会拖动地表纹理。
                 uv_writer.setData2f(vertices[i][0], start + vertices[i][1])
         node.setTexture(kit["ground"])
@@ -382,7 +382,7 @@ def build_vista(root):
         for face in faces:
             for i in face:
                 writer.setData4f(*colors[i])
-                normal_writer.setData3f(normals[i].normalized())
+                normal_writer.setData3f(*normals[i].normalized())
     for number, (x, s, width, height) in enumerate((
         (82, 990, 17, 29), (109, 1005, 16, 47), (135, 1030, 21, 34),
         (163, 1045, 15, 57), (190, 1065, 24, 27), (215, 1078, 18, 43),

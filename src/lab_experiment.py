@@ -67,10 +67,13 @@ LAB_DEFAULTS = LabOptions()
 
 
 class LabExperiment:
-    def __init__(self, options=LAB_DEFAULTS, *, config=None, parameter_metadata=None):
+    def __init__(self, options=LAB_DEFAULTS, *, config=None, parameter_metadata=None, runtime_profile="reference"):
         self.options = options
         self.design = vehicle_design(options.vehicle_id)
         self.parameter_metadata = parameter_metadata
+        if runtime_profile not in ("reference", "game"):
+            raise ValueError("未知实验积分配置")
+        self.runtime_profile = runtime_profile
         config = DrivingMode.SIMULATION.configured_vehicle(options.abs_enabled,
             esc_enabled=options.esc_enabled, base_config=self.design.config if config is None else config)
         config = replace(config, road_friction=options.friction)
@@ -81,6 +84,8 @@ class LabExperiment:
             config = replace(config, center_of_mass_height=options.cg_height)
         if options.tire_reference_load is not None:
             config = replace(config, tire_reference_load=options.tire_reference_load)
+        if runtime_profile == "game":
+            config = DrivingMode.GAME.configured_vehicle(base_config=config)
         self.config = config
         if "steer" in active_fields(options.maneuver) and abs(options.steering_deg) > config.steering_degrees:
             raise LabInputError("steer", f"目标转角须在当前模型的±{config.steering_degrees:g}°范围内。")

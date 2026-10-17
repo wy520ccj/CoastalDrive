@@ -52,7 +52,7 @@ class LabRecord:
     @classmethod
     def from_run(cls, run):
         return cls({"schema": SCHEMA, "physics_hz": 120, "mode": "offline_fixed_step",
-                    "vehicle_name": run.design.name,
+                    "vehicle_name": run.design.name, "runtime_profile": run.runtime_profile,
                     "model_basis": (run.parameter_metadata["basis"] if run.parameter_metadata is not None
                                     and "basis" in run.parameter_metadata else run.design.basis),
                     "parameter_metadata": json.loads(json.dumps(run.parameter_metadata, allow_nan=False)),
@@ -267,7 +267,8 @@ def recalculate(record):
     options = LabOptions(**record.metadata["summary"]["options"])
     config = config_from_document(record.metadata["vehicle_config"], vehicle_design(options.vehicle_id).config)
     parameter_metadata = record.metadata.get("parameter_metadata")
-    run = LabExperiment(options, config=config, parameter_metadata=parameter_metadata)
+    run = LabExperiment(options, config=config, parameter_metadata=parameter_metadata,
+                        runtime_profile=record.metadata.get("runtime_profile", "reference"))
     try:
         for command in record.commands[1:]:
             run.step(command)

@@ -6,6 +6,8 @@
 
 双击根目录 **试玩.cmd** 或 `launchers/game-current.cmd` 启动当前源码游戏；双击 `launchers/vehicle-lab.cmd` 进入实验台，游戏主菜单也可进入。首次克隆须完成下文环境安装和原生编译。`试玩-物理开发.cmd` 是显式重新编译源码的开发入口，会包含本地未提交改动。
 
+游戏会把当前工程车带入实验室。完成试验后点顶部 **游戏联动**，可运行同命令的游戏积分对照，或 **保存车辆并试驾**；重启后保留已应用车辆。见[车辆设计闭环](docs/vehicle-design-loop.md)。
+
 新版试验台真实来源为 `codex/simulation-fidelity` 的 `0944541`，包含参数悬停/F1数学公式、工程指标、轮胎标定、独立轮心与部件台架。`launchers/vehicle-lab-double-preview.cmd` 打开显式工程预览，`vehicle-lab-double.cmd` 使用双精度普通实验室；先恢复隔离SDK：`.venv/Scripts/python.exe tools/physics/restore_sim_double_runtime.py`，详见[双精度说明](docs/sim-double-runtime.md)。新机制按工程配置启用，游戏默认参数保持。
 
 旧版构建包、历史启动器、旧工程、过期日志和独立工作树统一见[归档目录](archive/README.md)。其中 RADIO-02、r9/r10/parallel 没有当前游戏与新版试验台成果；原路径映射、分支提交和恢复说明随归档保存。整体物理、实车标定及长期性能Gate仍按[物理路线](docs/physics-roadmap.md)和各任务记录推进。

@@ -1,0 +1,1102 @@
+[
+  {
+    "path": "logs\\design-loop-01\\normal\\base-braking",
+    "comparison": {
+      "schema": "coastal-game-comparison-v1",
+      "assessment": "未设置合格阈值",
+      "reference_reason": "stopped",
+      "game_reason": "stopped",
+      "game_end_condition": "stopped",
+      "precision_bits": 32,
+      "reference_ticks": 378,
+      "game_ticks": 378,
+      "common_seconds": 3.15,
+      "same_command_prefix": true,
+      "config_changes": {
+        "tire_substeps": {
+          "reference": 2,
+          "game": 1
+        }
+      },
+      "common_signal_errors": {
+        "speed": {
+          "rmse": 0.029592534143794428,
+          "max_absolute": 0.03328170776366335
+        },
+        "ax": {
+          "rmse": 0.021691117065983066,
+          "max_absolute": 0.1959240436553955
+        },
+        "ay": {
+          "rmse": 0.00032768143759221216,
+          "max_absolute": 0.0005532111972570419
+        },
+        "yaw": {
+          "rmse": 2.1404497891854915e-05,
+          "max_absolute": 3.7552701542153955e-05
+        },
+        "roll": {
+          "rmse": 9.687849747447522e-05,
+          "max_absolute": 0.0004359076847322285
+        }
+      },
+      "metrics": [
+        {
+          "key": "stopping_distance_m",
+          "label": "停车距离",
+          "unit": "m",
+          "reference": 44.11357118097956,
+          "game": 44.03089822178008,
+          "delta": -0.08267295919948481
+        },
+        {
+          "key": "distance_m",
+          "label": "各自记录行驶距离",
+          "unit": "m",
+          "reference": 44.11357118097956,
+          "game": 44.03089822178008,
+          "delta": -0.08267295919948481
+        },
+        {
+          "key": "simulation_seconds",
+          "label": "记录时长",
+          "unit": "s",
+          "reference": 3.15,
+          "game": 3.15,
+          "delta": 0.0
+        },
+        {
+          "key": "peak_deceleration_mps2",
+          "label": "峰值纵向减速度",
+          "unit": "m/s²",
+          "reference": -9.13040828704834,
+          "game": -9.118830680847168,
+          "delta": 0.011577606201171875
+        },
+        {
+          "key": "peak_lateral_acceleration_mps2",
+          "label": "峰值横向加速度",
+          "unit": "m/s²",
+          "reference": 0.018062742426991463,
+          "game": 0.017509780824184418,
+          "delta": -0.000552961602807045
+        },
+        {
+          "key": "peak_yaw_rate_radps",
+          "label": "峰值横摆角速度",
+          "unit": "rad/s",
+          "reference": 0.00116300443187356,
+          "game": 0.0011260205646976829,
+          "delta": -3.6983867175877094e-05
+        },
+        {
+          "key": "compute_seconds",
+          "label": "离线计算耗时",
+          "unit": "s",
+          "reference": 0.8967635999997583,
+          "game": 0.49621399999386995,
+          "delta": -0.40054960000588835
+        }
+      ]
+    },
+    "source_fingerprint_sha256": "3560eb1affe720ceab7c34ef5ddbd29bdf65b45f5f231a7585750c89e85e5585",
+    "runtime": {
+      "panda_version": "1.10.16",
+      "bullet_version": 284,
+      "math_scalar_bits": 32,
+      "files": {
+        "panda3d/api-ms-win-crt-multibyte-l1-1-0.dll": "d7e676b9f1e162957d0549ab0b91e2cd754643490b0654bf9a86aa1e77cb3c37",
+        "panda3d/api-ms-win-crt-utility-l1-1-0.dll": "bba068f29609630e8c6547f1e9219e11077426c4f1e4a93b712bfba11a149358",
+        "panda3d/avcodec-55.dll": "3c1957be7a57a02f843f9d8074f0c9aad5329373b4b900be25904f1ea9355029",
+        "panda3d/avformat-55.dll": "4798d6b688729c2430c4803e65d5bf3c46b12b887467a72cc4a0c3b40891764e",
+        "panda3d/avutil-52.dll": "7237410f73c400190d82132d18115962e87466e4de8cf6a15c314d49cbfdb307",
+        "panda3d/bullet.cp314-win_amd64.pyd": "e547c56df54cf84540c30370343d42ed4fd34dd3e4837076fceb38558dadad5e",
+        "panda3d/cg.dll": "124c758001dd52bd6ef04db670fe93b2107c7d4c9930eed805b766f30418e8fd",
+        "panda3d/cgD3D9.dll": "ecebf858df311acbd4b1cb4847d9f59b719932616183d7c672492602ccbc86f5",
+        "panda3d/cgGL.dll": "4966d2f0eb64cd2802c22ede9ee73f3ae053eb24b47a9babe3bd41dbdf005caf",
+        "panda3d/core.cp314-win_amd64.pyd": "8c485c17aff46baff9d55b9e45aaf43676184adc30beb7766768e630eea9bad7",
+        "panda3d/d3dx9_43.dll": "84b900dbd7fa978d6e0caee26fc54f2f61d92c9c75d10b35f00e3e82cd1d67b4",
+        "panda3d/fmodex64.dll": "2a778ba3ffb6c3434a3e5003d4fbdc85c1c3a356208f53895b9c0bfbd9591bbe",
+        "panda3d/libp3assimp.dll": "a26c4c69026020adc4e033211fcfd4969a4fb76b3cfaae38af9e5c7ef8a06740",
+        "panda3d/libp3direct.dll": "0b09abf64d293e885e2bae1b8f3f66e45ba57afa22faef1d3593f8d558475933",
+        "panda3d/libp3dtool.dll": "d44139a3805b640b000d44c9ec17cc2f84daae13f8e92d915d4c9e759546d598",
+        "panda3d/libp3dtoolconfig.dll": "6ef8c6e6dfa4765d080ab1943c783d77b05bf13cb3a89eb43e58097e93a8f9fc",
+        "panda3d/libp3ffmpeg.dll": "422e4ba934a483b506aa10bfd7ee810af2dcd878b86be4680bf0ef28a85942d4",
+        "panda3d/libp3fmod_audio.dll": "99bed4cc688a84bfd743cbcf3bdb1cf5396134a841b8f6f2cdaa0bbda033f94c",
+        "panda3d/libp3interrogatedb.dll": "32ef30d97669c101de3c85ece3af944fe160003a1ac24e2a8b1bc872618235ee",
+        "panda3d/libp3openal_audio.dll": "1a57cb9bea38606b80bf4aa8c754200c165653e746898368380c216ec2b767c8",
+        "panda3d/libp3ptloader.dll": "3c3c933a4e10e8a5477aa8f63c3a9d5b300386cc88d2d86e80bab12bb073531c",
+        "panda3d/libp3tinydisplay.dll": "670fa06fcf483ef8748aeaade2a5ae0105f9079ffdc453f223406fbb2c098c26",
+        "panda3d/libp3vision.dll": "a5d4a8c2f28fbb81ac0c70bd2c79d7963765d6c412d2f6997159db5756b332fa",
+        "panda3d/libp3vrpn.dll": "f6d674a89ede7b1b63407fd1a8e074833cf86658ee80f6acddc84e322f46db4e",
+        "panda3d/libp3windisplay.dll": "ab7f6de572e1a822bca0a660466c8fd297383686f7eec186096762e7e79263f8",
+        "panda3d/libpanda.dll": "d66c766cf7806c9ac0f5c9ec4cc70aeac2d2252a621deeb9edf04e60e9a047e5",
+        "panda3d/libpandaai.dll": "ccff20e040e26b9f034ecc843364c4f5722a710f53ac825715539855e0c5022b",
+        "panda3d/libpandabullet.dll": "c380b7f958b52d3bab809fdf1e27b0297da48d4f02264bace9402e05de7be173",
+        "panda3d/libpandadx9.dll": "9c2bc0a82b71d234488ac351a9d4cff84ec2e74fe2bd74a6ab548ab4ec056bf2",
+        "panda3d/libpandaegg.dll": "af6f1123da22ebb3724d06a1381605638f9fc8f53dd24c679b967212938d4af4",
+        "panda3d/libpandaexpress.dll": "feeabb6ad24ebbf102d474135dabbcd6790e52624ff43a878aaec9bc34618f4a",
+        "panda3d/libpandafx.dll": "0968ff6a58d6ec2f6770d3bde1181448baf6cb9027785e29982494a5d16cf6f9",
+        "panda3d/libpandagl.dll": "d1697c95f95e143f1877152caa3804645c5e722d8595671810af7eb000df414f",
+        "panda3d/libpandaode.dll": "54bed5638c215d320d6f219286263d6e3c6856b5399929005a2ef065e17eca9f",
+        "panda3d/libpandaphysics.dll": "3c0fb0debdc2065ca4d150fc7e96f0611f16217d8283ac52c9661809fe32fa6c",
+        "panda3d/libpandaskel.dll": "61806616f7b5798d92febd13a917efc13a1cf3eb865c72d8dfa89a4a792fc588",
+        "panda3d/MSVCP140.dll": "d9fb383b33651cbbb9cf407f69dcaca6288e995555e02a9a7c9e81f8b9d5b1d3",
+        "panda3d/swresample-0.dll": "a1a3c9ee7f40f563a5b90ef688242f3bb824b336d57e8779abbbd854fc3a0b5b",
+        "panda3d/swscale-2.dll": "20c95e6a8a6c372ef098d65812d048fdc6bd90269f5738096272b89fc16d1d98"
+      }
+    }
+  },
+  {
+    "path": "logs\\design-loop-01\\normal\\base-step_steer",
+    "comparison": {
+      "schema": "coastal-game-comparison-v1",
+      "assessment": "未设置合格阈值",
+      "reference_reason": "time_limit",
+      "game_reason": "time_limit",
+      "game_end_condition": "time_limit",
+      "precision_bits": 32,
+      "reference_ticks": 360,
+      "game_ticks": 360,
+      "common_seconds": 3.0,
+      "same_command_prefix": true,
+      "config_changes": {
+        "tire_substeps": {
+          "reference": 2,
+          "game": 1
+        }
+      },
+      "common_signal_errors": {
+        "speed": {
+          "rmse": 0.013497240281917724,
+          "max_absolute": 0.02739715576171875
+        },
+        "ax": {
+          "rmse": 0.0038764426011738446,
+          "max_absolute": 0.0098419189453125
+        },
+        "ay": {
+          "rmse": 0.007687619630588758,
+          "max_absolute": 0.01743936538696289
+        },
+        "yaw": {
+          "rmse": 0.0002667592486368029,
+          "max_absolute": 0.0008456893265247345
+        },
+        "roll": {
+          "rmse": 0.00220838509637966,
+          "max_absolute": 0.005376338958740234
+        }
+      },
+      "metrics": [
+        {
+          "key": "stopping_distance_m",
+          "label": "停车距离",
+          "unit": "m",
+          "reference": null,
+          "game": null,
+          "delta": null
+        },
+        {
+          "key": "distance_m",
+          "label": "各自记录行驶距离",
+          "unit": "m",
+          "reference": 48.51832325448251,
+          "game": 48.50829426327127,
+          "delta": -0.01002899121124301
+        },
+        {
+          "key": "simulation_seconds",
+          "label": "记录时长",
+          "unit": "s",
+          "reference": 3.0,
+          "game": 3.0,
+          "delta": 0.0
+        },
+        {
+          "key": "peak_deceleration_mps2",
+          "label": "峰值纵向减速度",
+          "unit": "m/s²",
+          "reference": -0.3426370620727539,
+          "game": -0.33788859844207764,
+          "delta": 0.0047484636306762695
+        },
+        {
+          "key": "peak_lateral_acceleration_mps2",
+          "label": "峰值横向加速度",
+          "unit": "m/s²",
+          "reference": 5.83363151550293,
+          "game": 5.8295793533325195,
+          "delta": -0.004052162170410156
+        },
+        {
+          "key": "peak_yaw_rate_radps",
+          "label": "峰值横摆角速度",
+          "unit": "rad/s",
+          "reference": 0.361929714679718,
+          "game": 0.36175084114074707,
+          "delta": -0.00017887353897094727
+        },
+        {
+          "key": "compute_seconds",
+          "label": "离线计算耗时",
+          "unit": "s",
+          "reference": 0.8418756999958532,
+          "game": 0.4896487999985766,
+          "delta": -0.35222689999727663
+        }
+      ]
+    },
+    "source_fingerprint_sha256": "3560eb1affe720ceab7c34ef5ddbd29bdf65b45f5f231a7585750c89e85e5585",
+    "runtime": {
+      "panda_version": "1.10.16",
+      "bullet_version": 284,
+      "math_scalar_bits": 32,
+      "files": {
+        "panda3d/api-ms-win-crt-multibyte-l1-1-0.dll": "d7e676b9f1e162957d0549ab0b91e2cd754643490b0654bf9a86aa1e77cb3c37",
+        "panda3d/api-ms-win-crt-utility-l1-1-0.dll": "bba068f29609630e8c6547f1e9219e11077426c4f1e4a93b712bfba11a149358",
+        "panda3d/avcodec-55.dll": "3c1957be7a57a02f843f9d8074f0c9aad5329373b4b900be25904f1ea9355029",
+        "panda3d/avformat-55.dll": "4798d6b688729c2430c4803e65d5bf3c46b12b887467a72cc4a0c3b40891764e",
+        "panda3d/avutil-52.dll": "7237410f73c400190d82132d18115962e87466e4de8cf6a15c314d49cbfdb307",
+        "panda3d/bullet.cp314-win_amd64.pyd": "e547c56df54cf84540c30370343d42ed4fd34dd3e4837076fceb38558dadad5e",
+        "panda3d/cg.dll": "124c758001dd52bd6ef04db670fe93b2107c7d4c9930eed805b766f30418e8fd",
+        "panda3d/cgD3D9.dll": "ecebf858df311acbd4b1cb4847d9f59b719932616183d7c672492602ccbc86f5",
+        "panda3d/cgGL.dll": "4966d2f0eb64cd2802c22ede9ee73f3ae053eb24b47a9babe3bd41dbdf005caf",
+        "panda3d/core.cp314-win_amd64.pyd": "8c485c17aff46baff9d55b9e45aaf43676184adc30beb7766768e630eea9bad7",
+        "panda3d/d3dx9_43.dll": "84b900dbd7fa978d6e0caee26fc54f2f61d92c9c75d10b35f00e3e82cd1d67b4",
+        "panda3d/fmodex64.dll": "2a778ba3ffb6c3434a3e5003d4fbdc85c1c3a356208f53895b9c0bfbd9591bbe",
+        "panda3d/libp3assimp.dll": "a26c4c69026020adc4e033211fcfd4969a4fb76b3cfaae38af9e5c7ef8a06740",
+        "panda3d/libp3direct.dll": "0b09abf64d293e885e2bae1b8f3f66e45ba57afa22faef1d3593f8d558475933",
+        "panda3d/libp3dtool.dll": "d44139a3805b640b000d44c9ec17cc2f84daae13f8e92d915d4c9e759546d598",
+        "panda3d/libp3dtoolconfig.dll": "6ef8c6e6dfa4765d080ab1943c783d77b05bf13cb3a89eb43e58097e93a8f9fc",
+        "panda3d/libp3ffmpeg.dll": "422e4ba934a483b506aa10bfd7ee810af2dcd878b86be4680bf0ef28a85942d4",
+        "panda3d/libp3fmod_audio.dll": "99bed4cc688a84bfd743cbcf3bdb1cf5396134a841b8f6f2cdaa0bbda033f94c",
+        "panda3d/libp3interrogatedb.dll": "32ef30d97669c101de3c85ece3af944fe160003a1ac24e2a8b1bc872618235ee",
+        "panda3d/libp3openal_audio.dll": "1a57cb9bea38606b80bf4aa8c754200c165653e746898368380c216ec2b767c8",
+        "panda3d/libp3ptloader.dll": "3c3c933a4e10e8a5477aa8f63c3a9d5b300386cc88d2d86e80bab12bb073531c",
+        "panda3d/libp3tinydisplay.dll": "670fa06fcf483ef8748aeaade2a5ae0105f9079ffdc453f223406fbb2c098c26",
+        "panda3d/libp3vision.dll": "a5d4a8c2f28fbb81ac0c70bd2c79d7963765d6c412d2f6997159db5756b332fa",
+        "panda3d/libp3vrpn.dll": "f6d674a89ede7b1b63407fd1a8e074833cf86658ee80f6acddc84e322f46db4e",
+        "panda3d/libp3windisplay.dll": "ab7f6de572e1a822bca0a660466c8fd297383686f7eec186096762e7e79263f8",
+        "panda3d/libpanda.dll": "d66c766cf7806c9ac0f5c9ec4cc70aeac2d2252a621deeb9edf04e60e9a047e5",
+        "panda3d/libpandaai.dll": "ccff20e040e26b9f034ecc843364c4f5722a710f53ac825715539855e0c5022b",
+        "panda3d/libpandabullet.dll": "c380b7f958b52d3bab809fdf1e27b0297da48d4f02264bace9402e05de7be173",
+        "panda3d/libpandadx9.dll": "9c2bc0a82b71d234488ac351a9d4cff84ec2e74fe2bd74a6ab548ab4ec056bf2",
+        "panda3d/libpandaegg.dll": "af6f1123da22ebb3724d06a1381605638f9fc8f53dd24c679b967212938d4af4",
+        "panda3d/libpandaexpress.dll": "feeabb6ad24ebbf102d474135dabbcd6790e52624ff43a878aaec9bc34618f4a",
+        "panda3d/libpandafx.dll": "0968ff6a58d6ec2f6770d3bde1181448baf6cb9027785e29982494a5d16cf6f9",
+        "panda3d/libpandagl.dll": "d1697c95f95e143f1877152caa3804645c5e722d8595671810af7eb000df414f",
+        "panda3d/libpandaode.dll": "54bed5638c215d320d6f219286263d6e3c6856b5399929005a2ef065e17eca9f",
+        "panda3d/libpandaphysics.dll": "3c0fb0debdc2065ca4d150fc7e96f0611f16217d8283ac52c9661809fe32fa6c",
+        "panda3d/libpandaskel.dll": "61806616f7b5798d92febd13a917efc13a1cf3eb865c72d8dfa89a4a792fc588",
+        "panda3d/MSVCP140.dll": "d9fb383b33651cbbb9cf407f69dcaca6288e995555e02a9a7c9e81f8b9d5b1d3",
+        "panda3d/swresample-0.dll": "a1a3c9ee7f40f563a5b90ef688242f3bb824b336d57e8779abbbd854fc3a0b5b",
+        "panda3d/swscale-2.dll": "20c95e6a8a6c372ef098d65812d048fdc6bd90269f5738096272b89fc16d1d98"
+      }
+    }
+  },
+  {
+    "path": "logs\\design-loop-01\\normal\\lower-cg-braking",
+    "comparison": {
+      "schema": "coastal-game-comparison-v1",
+      "assessment": "未设置合格阈值",
+      "reference_reason": "stopped",
+      "game_reason": "stopped",
+      "game_end_condition": "stopped",
+      "precision_bits": 32,
+      "reference_ticks": 377,
+      "game_ticks": 377,
+      "common_seconds": 3.1416666666666666,
+      "same_command_prefix": true,
+      "config_changes": {
+        "tire_substeps": {
+          "reference": 2,
+          "game": 1
+        }
+      },
+      "common_signal_errors": {
+        "speed": {
+          "rmse": 0.026582904009391492,
+          "max_absolute": 0.02975234985352415
+        },
+        "ax": {
+          "rmse": 0.01994425302914735,
+          "max_absolute": 0.1959240436553955
+        },
+        "ay": {
+          "rmse": 0.00027905676140676416,
+          "max_absolute": 0.0004875822924077511
+        },
+        "yaw": {
+          "rmse": 1.6343757336499197e-05,
+          "max_absolute": 2.7225236408412457e-05
+        },
+        "roll": {
+          "rmse": 8.685861197222974e-05,
+          "max_absolute": 0.00040031158277997747
+        }
+      },
+      "metrics": [
+        {
+          "key": "stopping_distance_m",
+          "label": "停车距离",
+          "unit": "m",
+          "reference": 44.002667372379854,
+          "game": 43.92269177254561,
+          "delta": -0.07997559983424196
+        },
+        {
+          "key": "distance_m",
+          "label": "各自记录行驶距离",
+          "unit": "m",
+          "reference": 44.002667372379854,
+          "game": 43.92269177254561,
+          "delta": -0.07997559983424196
+        },
+        {
+          "key": "simulation_seconds",
+          "label": "记录时长",
+          "unit": "s",
+          "reference": 3.1416666666666666,
+          "game": 3.1416666666666666,
+          "delta": 0.0
+        },
+        {
+          "key": "peak_deceleration_mps2",
+          "label": "峰值纵向减速度",
+          "unit": "m/s²",
+          "reference": -9.18569278717041,
+          "game": -9.175264358520508,
+          "delta": 0.010428428649902344
+        },
+        {
+          "key": "peak_lateral_acceleration_mps2",
+          "label": "峰值横向加速度",
+          "unit": "m/s²",
+          "reference": 0.010371643118560314,
+          "game": 0.009918875992298126,
+          "delta": -0.00045276712626218796
+        },
+        {
+          "key": "peak_yaw_rate_radps",
+          "label": "峰值横摆角速度",
+          "unit": "rad/s",
+          "reference": 0.0006187441176734865,
+          "game": 0.0005916335503570735,
+          "delta": -2.7110567316412926e-05
+        },
+        {
+          "key": "compute_seconds",
+          "label": "离线计算耗时",
+          "unit": "s",
+          "reference": 0.870016900005794,
+          "game": 0.5061153000028753,
+          "delta": -0.3639016000029187
+        }
+      ]
+    },
+    "source_fingerprint_sha256": "3560eb1affe720ceab7c34ef5ddbd29bdf65b45f5f231a7585750c89e85e5585",
+    "runtime": {
+      "panda_version": "1.10.16",
+      "bullet_version": 284,
+      "math_scalar_bits": 32,
+      "files": {
+        "panda3d/api-ms-win-crt-multibyte-l1-1-0.dll": "d7e676b9f1e162957d0549ab0b91e2cd754643490b0654bf9a86aa1e77cb3c37",
+        "panda3d/api-ms-win-crt-utility-l1-1-0.dll": "bba068f29609630e8c6547f1e9219e11077426c4f1e4a93b712bfba11a149358",
+        "panda3d/avcodec-55.dll": "3c1957be7a57a02f843f9d8074f0c9aad5329373b4b900be25904f1ea9355029",
+        "panda3d/avformat-55.dll": "4798d6b688729c2430c4803e65d5bf3c46b12b887467a72cc4a0c3b40891764e",
+        "panda3d/avutil-52.dll": "7237410f73c400190d82132d18115962e87466e4de8cf6a15c314d49cbfdb307",
+        "panda3d/bullet.cp314-win_amd64.pyd": "e547c56df54cf84540c30370343d42ed4fd34dd3e4837076fceb38558dadad5e",
+        "panda3d/cg.dll": "124c758001dd52bd6ef04db670fe93b2107c7d4c9930eed805b766f30418e8fd",
+        "panda3d/cgD3D9.dll": "ecebf858df311acbd4b1cb4847d9f59b719932616183d7c672492602ccbc86f5",
+        "panda3d/cgGL.dll": "4966d2f0eb64cd2802c22ede9ee73f3ae053eb24b47a9babe3bd41dbdf005caf",
+        "panda3d/core.cp314-win_amd64.pyd": "8c485c17aff46baff9d55b9e45aaf43676184adc30beb7766768e630eea9bad7",
+        "panda3d/d3dx9_43.dll": "84b900dbd7fa978d6e0caee26fc54f2f61d92c9c75d10b35f00e3e82cd1d67b4",
+        "panda3d/fmodex64.dll": "2a778ba3ffb6c3434a3e5003d4fbdc85c1c3a356208f53895b9c0bfbd9591bbe",
+        "panda3d/libp3assimp.dll": "a26c4c69026020adc4e033211fcfd4969a4fb76b3cfaae38af9e5c7ef8a06740",
+        "panda3d/libp3direct.dll": "0b09abf64d293e885e2bae1b8f3f66e45ba57afa22faef1d3593f8d558475933",
+        "panda3d/libp3dtool.dll": "d44139a3805b640b000d44c9ec17cc2f84daae13f8e92d915d4c9e759546d598",
+        "panda3d/libp3dtoolconfig.dll": "6ef8c6e6dfa4765d080ab1943c783d77b05bf13cb3a89eb43e58097e93a8f9fc",
+        "panda3d/libp3ffmpeg.dll": "422e4ba934a483b506aa10bfd7ee810af2dcd878b86be4680bf0ef28a85942d4",
+        "panda3d/libp3fmod_audio.dll": "99bed4cc688a84bfd743cbcf3bdb1cf5396134a841b8f6f2cdaa0bbda033f94c",
+        "panda3d/libp3interrogatedb.dll": "32ef30d97669c101de3c85ece3af944fe160003a1ac24e2a8b1bc872618235ee",
+        "panda3d/libp3openal_audio.dll": "1a57cb9bea38606b80bf4aa8c754200c165653e746898368380c216ec2b767c8",
+        "panda3d/libp3ptloader.dll": "3c3c933a4e10e8a5477aa8f63c3a9d5b300386cc88d2d86e80bab12bb073531c",
+        "panda3d/libp3tinydisplay.dll": "670fa06fcf483ef8748aeaade2a5ae0105f9079ffdc453f223406fbb2c098c26",
+        "panda3d/libp3vision.dll": "a5d4a8c2f28fbb81ac0c70bd2c79d7963765d6c412d2f6997159db5756b332fa",
+        "panda3d/libp3vrpn.dll": "f6d674a89ede7b1b63407fd1a8e074833cf86658ee80f6acddc84e322f46db4e",
+        "panda3d/libp3windisplay.dll": "ab7f6de572e1a822bca0a660466c8fd297383686f7eec186096762e7e79263f8",
+        "panda3d/libpanda.dll": "d66c766cf7806c9ac0f5c9ec4cc70aeac2d2252a621deeb9edf04e60e9a047e5",
+        "panda3d/libpandaai.dll": "ccff20e040e26b9f034ecc843364c4f5722a710f53ac825715539855e0c5022b",
+        "panda3d/libpandabullet.dll": "c380b7f958b52d3bab809fdf1e27b0297da48d4f02264bace9402e05de7be173",
+        "panda3d/libpandadx9.dll": "9c2bc0a82b71d234488ac351a9d4cff84ec2e74fe2bd74a6ab548ab4ec056bf2",
+        "panda3d/libpandaegg.dll": "af6f1123da22ebb3724d06a1381605638f9fc8f53dd24c679b967212938d4af4",
+        "panda3d/libpandaexpress.dll": "feeabb6ad24ebbf102d474135dabbcd6790e52624ff43a878aaec9bc34618f4a",
+        "panda3d/libpandafx.dll": "0968ff6a58d6ec2f6770d3bde1181448baf6cb9027785e29982494a5d16cf6f9",
+        "panda3d/libpandagl.dll": "d1697c95f95e143f1877152caa3804645c5e722d8595671810af7eb000df414f",
+        "panda3d/libpandaode.dll": "54bed5638c215d320d6f219286263d6e3c6856b5399929005a2ef065e17eca9f",
+        "panda3d/libpandaphysics.dll": "3c0fb0debdc2065ca4d150fc7e96f0611f16217d8283ac52c9661809fe32fa6c",
+        "panda3d/libpandaskel.dll": "61806616f7b5798d92febd13a917efc13a1cf3eb865c72d8dfa89a4a792fc588",
+        "panda3d/MSVCP140.dll": "d9fb383b33651cbbb9cf407f69dcaca6288e995555e02a9a7c9e81f8b9d5b1d3",
+        "panda3d/swresample-0.dll": "a1a3c9ee7f40f563a5b90ef688242f3bb824b336d57e8779abbbd854fc3a0b5b",
+        "panda3d/swscale-2.dll": "20c95e6a8a6c372ef098d65812d048fdc6bd90269f5738096272b89fc16d1d98"
+      }
+    }
+  },
+  {
+    "path": "logs\\design-loop-01\\normal\\lower-cg-step_steer",
+    "comparison": {
+      "schema": "coastal-game-comparison-v1",
+      "assessment": "未设置合格阈值",
+      "reference_reason": "time_limit",
+      "game_reason": "time_limit",
+      "game_end_condition": "time_limit",
+      "precision_bits": 32,
+      "reference_ticks": 360,
+      "game_ticks": 360,
+      "common_seconds": 3.0,
+      "same_command_prefix": true,
+      "config_changes": {
+        "tire_substeps": {
+          "reference": 2,
+          "game": 1
+        }
+      },
+      "common_signal_errors": {
+        "speed": {
+          "rmse": 0.013463656342991705,
+          "max_absolute": 0.02735939025878764
+        },
+        "ax": {
+          "rmse": 0.003886618458928517,
+          "max_absolute": 0.0098419189453125
+        },
+        "ay": {
+          "rmse": 0.00765379934949401,
+          "max_absolute": 0.017439842224121094
+        },
+        "yaw": {
+          "rmse": 0.0002640412164476178,
+          "max_absolute": 0.0008459240198135376
+        },
+        "roll": {
+          "rmse": 0.0020950736389593987,
+          "max_absolute": 0.0051056742668151855
+        }
+      },
+      "metrics": [
+        {
+          "key": "stopping_distance_m",
+          "label": "停车距离",
+          "unit": "m",
+          "reference": null,
+          "game": null,
+          "delta": null
+        },
+        {
+          "key": "distance_m",
+          "label": "各自记录行驶距离",
+          "unit": "m",
+          "reference": 48.5188193771724,
+          "game": 48.50885793838098,
+          "delta": -0.009961438791421529
+        },
+        {
+          "key": "simulation_seconds",
+          "label": "记录时长",
+          "unit": "s",
+          "reference": 3.0,
+          "game": 3.0,
+          "delta": 0.0
+        },
+        {
+          "key": "peak_deceleration_mps2",
+          "label": "峰值纵向减速度",
+          "unit": "m/s²",
+          "reference": -0.3425302505493164,
+          "game": -0.33788001537323,
+          "delta": 0.004650235176086426
+        },
+        {
+          "key": "peak_lateral_acceleration_mps2",
+          "label": "峰值横向加速度",
+          "unit": "m/s²",
+          "reference": 5.835319995880127,
+          "game": 5.831384181976318,
+          "delta": -0.003935813903808594
+        },
+        {
+          "key": "peak_yaw_rate_radps",
+          "label": "峰值横摆角速度",
+          "unit": "rad/s",
+          "reference": 0.36203986406326294,
+          "game": 0.36186811327934265,
+          "delta": -0.00017175078392028809
+        },
+        {
+          "key": "compute_seconds",
+          "label": "离线计算耗时",
+          "unit": "s",
+          "reference": 0.8542117999991206,
+          "game": 0.4747913000001063,
+          "delta": -0.3794204999990143
+        }
+      ]
+    },
+    "source_fingerprint_sha256": "3560eb1affe720ceab7c34ef5ddbd29bdf65b45f5f231a7585750c89e85e5585",
+    "runtime": {
+      "panda_version": "1.10.16",
+      "bullet_version": 284,
+      "math_scalar_bits": 32,
+      "files": {
+        "panda3d/api-ms-win-crt-multibyte-l1-1-0.dll": "d7e676b9f1e162957d0549ab0b91e2cd754643490b0654bf9a86aa1e77cb3c37",
+        "panda3d/api-ms-win-crt-utility-l1-1-0.dll": "bba068f29609630e8c6547f1e9219e11077426c4f1e4a93b712bfba11a149358",
+        "panda3d/avcodec-55.dll": "3c1957be7a57a02f843f9d8074f0c9aad5329373b4b900be25904f1ea9355029",
+        "panda3d/avformat-55.dll": "4798d6b688729c2430c4803e65d5bf3c46b12b887467a72cc4a0c3b40891764e",
+        "panda3d/avutil-52.dll": "7237410f73c400190d82132d18115962e87466e4de8cf6a15c314d49cbfdb307",
+        "panda3d/bullet.cp314-win_amd64.pyd": "e547c56df54cf84540c30370343d42ed4fd34dd3e4837076fceb38558dadad5e",
+        "panda3d/cg.dll": "124c758001dd52bd6ef04db670fe93b2107c7d4c9930eed805b766f30418e8fd",
+        "panda3d/cgD3D9.dll": "ecebf858df311acbd4b1cb4847d9f59b719932616183d7c672492602ccbc86f5",
+        "panda3d/cgGL.dll": "4966d2f0eb64cd2802c22ede9ee73f3ae053eb24b47a9babe3bd41dbdf005caf",
+        "panda3d/core.cp314-win_amd64.pyd": "8c485c17aff46baff9d55b9e45aaf43676184adc30beb7766768e630eea9bad7",
+        "panda3d/d3dx9_43.dll": "84b900dbd7fa978d6e0caee26fc54f2f61d92c9c75d10b35f00e3e82cd1d67b4",
+        "panda3d/fmodex64.dll": "2a778ba3ffb6c3434a3e5003d4fbdc85c1c3a356208f53895b9c0bfbd9591bbe",
+        "panda3d/libp3assimp.dll": "a26c4c69026020adc4e033211fcfd4969a4fb76b3cfaae38af9e5c7ef8a06740",
+        "panda3d/libp3direct.dll": "0b09abf64d293e885e2bae1b8f3f66e45ba57afa22faef1d3593f8d558475933",
+        "panda3d/libp3dtool.dll": "d44139a3805b640b000d44c9ec17cc2f84daae13f8e92d915d4c9e759546d598",
+        "panda3d/libp3dtoolconfig.dll": "6ef8c6e6dfa4765d080ab1943c783d77b05bf13cb3a89eb43e58097e93a8f9fc",
+        "panda3d/libp3ffmpeg.dll": "422e4ba934a483b506aa10bfd7ee810af2dcd878b86be4680bf0ef28a85942d4",
+        "panda3d/libp3fmod_audio.dll": "99bed4cc688a84bfd743cbcf3bdb1cf5396134a841b8f6f2cdaa0bbda033f94c",
+        "panda3d/libp3interrogatedb.dll": "32ef30d97669c101de3c85ece3af944fe160003a1ac24e2a8b1bc872618235ee",
+        "panda3d/libp3openal_audio.dll": "1a57cb9bea38606b80bf4aa8c754200c165653e746898368380c216ec2b767c8",
+        "panda3d/libp3ptloader.dll": "3c3c933a4e10e8a5477aa8f63c3a9d5b300386cc88d2d86e80bab12bb073531c",
+        "panda3d/libp3tinydisplay.dll": "670fa06fcf483ef8748aeaade2a5ae0105f9079ffdc453f223406fbb2c098c26",
+        "panda3d/libp3vision.dll": "a5d4a8c2f28fbb81ac0c70bd2c79d7963765d6c412d2f6997159db5756b332fa",
+        "panda3d/libp3vrpn.dll": "f6d674a89ede7b1b63407fd1a8e074833cf86658ee80f6acddc84e322f46db4e",
+        "panda3d/libp3windisplay.dll": "ab7f6de572e1a822bca0a660466c8fd297383686f7eec186096762e7e79263f8",
+        "panda3d/libpanda.dll": "d66c766cf7806c9ac0f5c9ec4cc70aeac2d2252a621deeb9edf04e60e9a047e5",
+        "panda3d/libpandaai.dll": "ccff20e040e26b9f034ecc843364c4f5722a710f53ac825715539855e0c5022b",
+        "panda3d/libpandabullet.dll": "c380b7f958b52d3bab809fdf1e27b0297da48d4f02264bace9402e05de7be173",
+        "panda3d/libpandadx9.dll": "9c2bc0a82b71d234488ac351a9d4cff84ec2e74fe2bd74a6ab548ab4ec056bf2",
+        "panda3d/libpandaegg.dll": "af6f1123da22ebb3724d06a1381605638f9fc8f53dd24c679b967212938d4af4",
+        "panda3d/libpandaexpress.dll": "feeabb6ad24ebbf102d474135dabbcd6790e52624ff43a878aaec9bc34618f4a",
+        "panda3d/libpandafx.dll": "0968ff6a58d6ec2f6770d3bde1181448baf6cb9027785e29982494a5d16cf6f9",
+        "panda3d/libpandagl.dll": "d1697c95f95e143f1877152caa3804645c5e722d8595671810af7eb000df414f",
+        "panda3d/libpandaode.dll": "54bed5638c215d320d6f219286263d6e3c6856b5399929005a2ef065e17eca9f",
+        "panda3d/libpandaphysics.dll": "3c0fb0debdc2065ca4d150fc7e96f0611f16217d8283ac52c9661809fe32fa6c",
+        "panda3d/libpandaskel.dll": "61806616f7b5798d92febd13a917efc13a1cf3eb865c72d8dfa89a4a792fc588",
+        "panda3d/MSVCP140.dll": "d9fb383b33651cbbb9cf407f69dcaca6288e995555e02a9a7c9e81f8b9d5b1d3",
+        "panda3d/swresample-0.dll": "a1a3c9ee7f40f563a5b90ef688242f3bb824b336d57e8779abbbd854fc3a0b5b",
+        "panda3d/swscale-2.dll": "20c95e6a8a6c372ef098d65812d048fdc6bd90269f5738096272b89fc16d1d98"
+      }
+    }
+  },
+  {
+    "path": "logs\\design-loop-01\\double\\base-braking",
+    "comparison": {
+      "schema": "coastal-game-comparison-v1",
+      "assessment": "未设置合格阈值",
+      "reference_reason": "stopped",
+      "game_reason": "stopped",
+      "game_end_condition": "stopped",
+      "precision_bits": 64,
+      "reference_ticks": 378,
+      "game_ticks": 378,
+      "common_seconds": 3.15,
+      "same_command_prefix": true,
+      "config_changes": {
+        "tire_substeps": {
+          "reference": 2,
+          "game": 1
+        }
+      },
+      "common_signal_errors": {
+        "speed": {
+          "rmse": 0.029515599397853434,
+          "max_absolute": 0.03322092526863685
+        },
+        "ax": {
+          "rmse": 0.02168392556413227,
+          "max_absolute": 0.19578386460257713
+        },
+        "ay": {
+          "rmse": 0.00032686539935981206,
+          "max_absolute": 0.0005518783017532322
+        },
+        "yaw": {
+          "rmse": 2.1352113340568682e-05,
+          "max_absolute": 3.752099497421357e-05
+        },
+        "roll": {
+          "rmse": 9.678640373872124e-05,
+          "max_absolute": 0.0004358413714140364
+        }
+      },
+      "metrics": [
+        {
+          "key": "stopping_distance_m",
+          "label": "停车距离",
+          "unit": "m",
+          "reference": 44.113525838178965,
+          "game": 44.03092440082569,
+          "delta": -0.08260143735327574
+        },
+        {
+          "key": "distance_m",
+          "label": "各自记录行驶距离",
+          "unit": "m",
+          "reference": 44.113525838178965,
+          "game": 44.03092440082569,
+          "delta": -0.08260143735327574
+        },
+        {
+          "key": "simulation_seconds",
+          "label": "记录时长",
+          "unit": "s",
+          "reference": 3.15,
+          "game": 3.15,
+          "delta": 0.0
+        },
+        {
+          "key": "peak_deceleration_mps2",
+          "label": "峰值纵向减速度",
+          "unit": "m/s²",
+          "reference": -9.13028109521285,
+          "game": -9.118750447497414,
+          "delta": 0.011530647715435549
+        },
+        {
+          "key": "peak_lateral_acceleration_mps2",
+          "label": "峰值横向加速度",
+          "unit": "m/s²",
+          "reference": 0.01806148490528058,
+          "game": 0.017509760901503947,
+          "delta": -0.0005517240037766317
+        },
+        {
+          "key": "peak_yaw_rate_radps",
+          "label": "峰值横摆角速度",
+          "unit": "rad/s",
+          "reference": 0.0011629161097929707,
+          "game": 0.0011260355649795183,
+          "delta": -3.688054481345237e-05
+        },
+        {
+          "key": "compute_seconds",
+          "label": "离线计算耗时",
+          "unit": "s",
+          "reference": 0.8876918999994814,
+          "game": 0.4641779000057795,
+          "delta": -0.4235139999937019
+        }
+      ]
+    },
+    "source_fingerprint_sha256": "5f62c7239b5c941b02c3ddf32a80ce377838bdebdaf2bbb2b50cb1639accb236",
+    "runtime": {
+      "panda_version": "1.10.16",
+      "bullet_version": 285,
+      "math_scalar_bits": 64,
+      "files": {
+        "bin/d3dx9_43.dll": "84b900dbd7fa978d6e0caee26fc54f2f61d92c9c75d10b35f00e3e82cd1d67b4",
+        "bin/libp3direct.dll": "127a84f04e16280ec8cbc4439893d605c27c140a84c17f6aa88a9f59321e466f",
+        "bin/libp3dtool.dll": "e9a912e0742166ddc0b74e532160853753c7d1194d8d96dabc28390a0e5a13d5",
+        "bin/libp3dtoolconfig.dll": "0c45a336c087ad84bb831ddf5d56c6fd828ab467744b201f552e54fc5d052fc6",
+        "bin/libp3framework.dll": "7393d45ecaafc621d3430321cf0807cabefc0274dadeed383895d0178fdea6a2",
+        "bin/libp3interrogatedb.dll": "7b043cf017ff8b579e17899dfb1d34ce29ced29aa31eab72f7758634b48c6de7",
+        "bin/libp3openal_audio.dll": "919abf33167d89431977a7ad1275ddb8ec56fb409560205e367b61c55bce5cb0",
+        "bin/libp3windisplay.dll": "4bd3b5cf9388ebadf9c13466523592220393abeba4001600eaa9e32cc67c667b",
+        "bin/libpanda.dll": "10498c8138ff4c79410166e61b120f2c48ea0ab2248059b4096ab4062446d7c7",
+        "bin/libpandabullet.dll": "483ef5e561d75fe7191633731713eee5a3e163ee0f84bba5ce03a4decc0fb0fa",
+        "bin/libpandaegg.dll": "6033115bd3db949bdbbe337ff81817aea7a83fb35019c41cff2b83f44e6d8555",
+        "bin/libpandaexpress.dll": "5fd3c1a9f29ec00f0380e285f82ca81230b2bfde7f27bb8ecf6b414167c574f1",
+        "bin/libpandagl.dll": "fb0d9f1d23e14afb9fbac76c5d3b0c9e78e8c14e1b5b4819bf973c3390b261a3",
+        "bin/python314.dll": "7ffe3ab11342db03cc18b026f27485c0f74f5bf10f239f1f6573394900596394",
+        "bin/vcruntime140.dll": "052ad6a20d375957e82aa6a3c441ea548d89be0981516ca7eb306e063d5027f4",
+        "bin/vcruntime140_1.dll": "6a99bc0128e0c7d6cbbf615fcc26909565e17d4ca3451b97f8987f9c6acbc6c8",
+        "panda3d/bullet.cp314-win_amd64.pyd": "6e1f3b023d5060c39dd299f42ea423b005047eaa18f4fa2e962fa76381225154",
+        "panda3d/core.cp314-win_amd64.pyd": "92708c8b920fe01a27a46c4e2c09984bb8711995cbb8eb285b5f82e5c2fd8537"
+      }
+    }
+  },
+  {
+    "path": "logs\\design-loop-01\\double\\base-step_steer",
+    "comparison": {
+      "schema": "coastal-game-comparison-v1",
+      "assessment": "未设置合格阈值",
+      "reference_reason": "time_limit",
+      "game_reason": "time_limit",
+      "game_end_condition": "time_limit",
+      "precision_bits": 64,
+      "reference_ticks": 360,
+      "game_ticks": 360,
+      "common_seconds": 3.0,
+      "same_command_prefix": true,
+      "config_changes": {
+        "tire_substeps": {
+          "reference": 2,
+          "game": 1
+        }
+      },
+      "common_signal_errors": {
+        "speed": {
+          "rmse": 0.013173691732655186,
+          "max_absolute": 0.026958024477444553
+        },
+        "ax": {
+          "rmse": 0.0038825699203105415,
+          "max_absolute": 0.010006101638562026
+        },
+        "ay": {
+          "rmse": 0.0076657883590422115,
+          "max_absolute": 0.017399395483150393
+        },
+        "yaw": {
+          "rmse": 0.00026557232066036046,
+          "max_absolute": 0.0008458050532239442
+        },
+        "roll": {
+          "rmse": 0.0022044770444500975,
+          "max_absolute": 0.005371300220842534
+        }
+      },
+      "metrics": [
+        {
+          "key": "stopping_distance_m",
+          "label": "停车距离",
+          "unit": "m",
+          "reference": null,
+          "game": null,
+          "delta": null
+        },
+        {
+          "key": "distance_m",
+          "label": "各自记录行驶距离",
+          "unit": "m",
+          "reference": 48.51806555336342,
+          "game": 48.50838202518447,
+          "delta": -0.009683528178953793
+        },
+        {
+          "key": "simulation_seconds",
+          "label": "记录时长",
+          "unit": "s",
+          "reference": 3.0,
+          "game": 3.0,
+          "delta": 0.0
+        },
+        {
+          "key": "peak_deceleration_mps2",
+          "label": "峰值纵向减速度",
+          "unit": "m/s²",
+          "reference": -0.3424740790997048,
+          "game": -0.3377871858562068,
+          "delta": 0.004686893243497969
+        },
+        {
+          "key": "peak_lateral_acceleration_mps2",
+          "label": "峰值横向加速度",
+          "unit": "m/s²",
+          "reference": 5.833601979564337,
+          "game": 5.829611191140697,
+          "delta": -0.00399078842364009
+        },
+        {
+          "key": "peak_yaw_rate_radps",
+          "label": "峰值横摆角速度",
+          "unit": "rad/s",
+          "reference": 0.36192809838685364,
+          "game": 0.36175197827800154,
+          "delta": -0.00017612010885209584
+        },
+        {
+          "key": "compute_seconds",
+          "label": "离线计算耗时",
+          "unit": "s",
+          "reference": 0.8309322000004613,
+          "game": 0.4778748999997333,
+          "delta": -0.353057300000728
+        }
+      ]
+    },
+    "source_fingerprint_sha256": "5f62c7239b5c941b02c3ddf32a80ce377838bdebdaf2bbb2b50cb1639accb236",
+    "runtime": {
+      "panda_version": "1.10.16",
+      "bullet_version": 285,
+      "math_scalar_bits": 64,
+      "files": {
+        "bin/d3dx9_43.dll": "84b900dbd7fa978d6e0caee26fc54f2f61d92c9c75d10b35f00e3e82cd1d67b4",
+        "bin/libp3direct.dll": "127a84f04e16280ec8cbc4439893d605c27c140a84c17f6aa88a9f59321e466f",
+        "bin/libp3dtool.dll": "e9a912e0742166ddc0b74e532160853753c7d1194d8d96dabc28390a0e5a13d5",
+        "bin/libp3dtoolconfig.dll": "0c45a336c087ad84bb831ddf5d56c6fd828ab467744b201f552e54fc5d052fc6",
+        "bin/libp3framework.dll": "7393d45ecaafc621d3430321cf0807cabefc0274dadeed383895d0178fdea6a2",
+        "bin/libp3interrogatedb.dll": "7b043cf017ff8b579e17899dfb1d34ce29ced29aa31eab72f7758634b48c6de7",
+        "bin/libp3openal_audio.dll": "919abf33167d89431977a7ad1275ddb8ec56fb409560205e367b61c55bce5cb0",
+        "bin/libp3windisplay.dll": "4bd3b5cf9388ebadf9c13466523592220393abeba4001600eaa9e32cc67c667b",
+        "bin/libpanda.dll": "10498c8138ff4c79410166e61b120f2c48ea0ab2248059b4096ab4062446d7c7",
+        "bin/libpandabullet.dll": "483ef5e561d75fe7191633731713eee5a3e163ee0f84bba5ce03a4decc0fb0fa",
+        "bin/libpandaegg.dll": "6033115bd3db949bdbbe337ff81817aea7a83fb35019c41cff2b83f44e6d8555",
+        "bin/libpandaexpress.dll": "5fd3c1a9f29ec00f0380e285f82ca81230b2bfde7f27bb8ecf6b414167c574f1",
+        "bin/libpandagl.dll": "fb0d9f1d23e14afb9fbac76c5d3b0c9e78e8c14e1b5b4819bf973c3390b261a3",
+        "bin/python314.dll": "7ffe3ab11342db03cc18b026f27485c0f74f5bf10f239f1f6573394900596394",
+        "bin/vcruntime140.dll": "052ad6a20d375957e82aa6a3c441ea548d89be0981516ca7eb306e063d5027f4",
+        "bin/vcruntime140_1.dll": "6a99bc0128e0c7d6cbbf615fcc26909565e17d4ca3451b97f8987f9c6acbc6c8",
+        "panda3d/bullet.cp314-win_amd64.pyd": "6e1f3b023d5060c39dd299f42ea423b005047eaa18f4fa2e962fa76381225154",
+        "panda3d/core.cp314-win_amd64.pyd": "92708c8b920fe01a27a46c4e2c09984bb8711995cbb8eb285b5f82e5c2fd8537"
+      }
+    }
+  },
+  {
+    "path": "logs\\design-loop-01\\double\\lower-cg-braking",
+    "comparison": {
+      "schema": "coastal-game-comparison-v1",
+      "assessment": "未设置合格阈值",
+      "reference_reason": "stopped",
+      "game_reason": "stopped",
+      "game_end_condition": "stopped",
+      "precision_bits": 64,
+      "reference_ticks": 377,
+      "game_ticks": 377,
+      "common_seconds": 3.1416666666666666,
+      "same_command_prefix": true,
+      "config_changes": {
+        "tire_substeps": {
+          "reference": 2,
+          "game": 1
+        }
+      },
+      "common_signal_errors": {
+        "speed": {
+          "rmse": 0.02666458109706035,
+          "max_absolute": 0.0296990716154113
+        },
+        "ax": {
+          "rmse": 0.01993677068126521,
+          "max_absolute": 0.19580089340121232
+        },
+        "ay": {
+          "rmse": 0.0002788330857172485,
+          "max_absolute": 0.0004875059254140215
+        },
+        "yaw": {
+          "rmse": 1.633391559198967e-05,
+          "max_absolute": 2.7211848384831538e-05
+        },
+        "roll": {
+          "rmse": 8.694327228414088e-05,
+          "max_absolute": 0.00040054409760503383
+        }
+      },
+      "metrics": [
+        {
+          "key": "stopping_distance_m",
+          "label": "停车距离",
+          "unit": "m",
+          "reference": 44.00275404257642,
+          "game": 43.92270710083456,
+          "delta": -0.08004694174186255
+        },
+        {
+          "key": "distance_m",
+          "label": "各自记录行驶距离",
+          "unit": "m",
+          "reference": 44.00275404257642,
+          "game": 43.92270710083456,
+          "delta": -0.08004694174186255
+        },
+        {
+          "key": "simulation_seconds",
+          "label": "记录时长",
+          "unit": "s",
+          "reference": 3.1416666666666666,
+          "game": 3.1416666666666666,
+          "delta": 0.0
+        },
+        {
+          "key": "peak_deceleration_mps2",
+          "label": "峰值纵向减速度",
+          "unit": "m/s²",
+          "reference": -9.185727399743046,
+          "game": -9.17538050753424,
+          "delta": 0.01034689220880658
+        },
+        {
+          "key": "peak_lateral_acceleration_mps2",
+          "label": "峰值横向加速度",
+          "unit": "m/s²",
+          "reference": 0.01037112292759384,
+          "game": 0.009918923757975316,
+          "delta": -0.00045219916961852444
+        },
+        {
+          "key": "peak_yaw_rate_radps",
+          "label": "峰值横摆角速度",
+          "unit": "rad/s",
+          "reference": 0.000618717720717688,
+          "game": 0.0005916333822785333,
+          "delta": -2.7084338439154658e-05
+        },
+        {
+          "key": "compute_seconds",
+          "label": "离线计算耗时",
+          "unit": "s",
+          "reference": 0.8838057000202753,
+          "game": 0.5011655999796858,
+          "delta": -0.38264010004058946
+        }
+      ]
+    },
+    "source_fingerprint_sha256": "5f62c7239b5c941b02c3ddf32a80ce377838bdebdaf2bbb2b50cb1639accb236",
+    "runtime": {
+      "panda_version": "1.10.16",
+      "bullet_version": 285,
+      "math_scalar_bits": 64,
+      "files": {
+        "bin/d3dx9_43.dll": "84b900dbd7fa978d6e0caee26fc54f2f61d92c9c75d10b35f00e3e82cd1d67b4",
+        "bin/libp3direct.dll": "127a84f04e16280ec8cbc4439893d605c27c140a84c17f6aa88a9f59321e466f",
+        "bin/libp3dtool.dll": "e9a912e0742166ddc0b74e532160853753c7d1194d8d96dabc28390a0e5a13d5",
+        "bin/libp3dtoolconfig.dll": "0c45a336c087ad84bb831ddf5d56c6fd828ab467744b201f552e54fc5d052fc6",
+        "bin/libp3framework.dll": "7393d45ecaafc621d3430321cf0807cabefc0274dadeed383895d0178fdea6a2",
+        "bin/libp3interrogatedb.dll": "7b043cf017ff8b579e17899dfb1d34ce29ced29aa31eab72f7758634b48c6de7",
+        "bin/libp3openal_audio.dll": "919abf33167d89431977a7ad1275ddb8ec56fb409560205e367b61c55bce5cb0",
+        "bin/libp3windisplay.dll": "4bd3b5cf9388ebadf9c13466523592220393abeba4001600eaa9e32cc67c667b",
+        "bin/libpanda.dll": "10498c8138ff4c79410166e61b120f2c48ea0ab2248059b4096ab4062446d7c7",
+        "bin/libpandabullet.dll": "483ef5e561d75fe7191633731713eee5a3e163ee0f84bba5ce03a4decc0fb0fa",
+        "bin/libpandaegg.dll": "6033115bd3db949bdbbe337ff81817aea7a83fb35019c41cff2b83f44e6d8555",
+        "bin/libpandaexpress.dll": "5fd3c1a9f29ec00f0380e285f82ca81230b2bfde7f27bb8ecf6b414167c574f1",
+        "bin/libpandagl.dll": "fb0d9f1d23e14afb9fbac76c5d3b0c9e78e8c14e1b5b4819bf973c3390b261a3",
+        "bin/python314.dll": "7ffe3ab11342db03cc18b026f27485c0f74f5bf10f239f1f6573394900596394",
+        "bin/vcruntime140.dll": "052ad6a20d375957e82aa6a3c441ea548d89be0981516ca7eb306e063d5027f4",
+        "bin/vcruntime140_1.dll": "6a99bc0128e0c7d6cbbf615fcc26909565e17d4ca3451b97f8987f9c6acbc6c8",
+        "panda3d/bullet.cp314-win_amd64.pyd": "6e1f3b023d5060c39dd299f42ea423b005047eaa18f4fa2e962fa76381225154",
+        "panda3d/core.cp314-win_amd64.pyd": "92708c8b920fe01a27a46c4e2c09984bb8711995cbb8eb285b5f82e5c2fd8537"
+      }
+    }
+  },
+  {
+    "path": "logs\\design-loop-01\\double\\lower-cg-step_steer",
+    "comparison": {
+      "schema": "coastal-game-comparison-v1",
+      "assessment": "未设置合格阈值",
+      "reference_reason": "time_limit",
+      "game_reason": "time_limit",
+      "game_end_condition": "time_limit",
+      "precision_bits": 64,
+      "reference_ticks": 360,
+      "game_ticks": 360,
+      "common_seconds": 3.0,
+      "same_command_prefix": true,
+      "config_changes": {
+        "tire_substeps": {
+          "reference": 2,
+          "game": 1
+        }
+      },
+      "common_signal_errors": {
+        "speed": {
+          "rmse": 0.013199465683060848,
+          "max_absolute": 0.02701382000382324
+        },
+        "ax": {
+          "rmse": 0.0038840339743556134,
+          "max_absolute": 0.010007035499421862
+        },
+        "ay": {
+          "rmse": 0.007632899517441166,
+          "max_absolute": 0.017367674556721724
+        },
+        "yaw": {
+          "rmse": 0.00026362559408613887,
+          "max_absolute": 0.0008460505190440032
+        },
+        "roll": {
+          "rmse": 0.002091768756312589,
+          "max_absolute": 0.005101194170471834
+        }
+      },
+      "metrics": [
+        {
+          "key": "stopping_distance_m",
+          "label": "停车距离",
+          "unit": "m",
+          "reference": null,
+          "game": null,
+          "delta": null
+        },
+        {
+          "key": "distance_m",
+          "label": "各自记录行驶距离",
+          "unit": "m",
+          "reference": 48.51860977951279,
+          "game": 48.5089105476393,
+          "delta": -0.009699231873490533
+        },
+        {
+          "key": "simulation_seconds",
+          "label": "记录时长",
+          "unit": "s",
+          "reference": 3.0,
+          "game": 3.0,
+          "delta": 0.0
+        },
+        {
+          "key": "peak_deceleration_mps2",
+          "label": "峰值纵向减速度",
+          "unit": "m/s²",
+          "reference": -0.3424616837626753,
+          "game": -0.33777079067483795,
+          "delta": 0.004690893087837322
+        },
+        {
+          "key": "peak_lateral_acceleration_mps2",
+          "label": "峰值横向加速度",
+          "unit": "m/s²",
+          "reference": 5.835287547692327,
+          "game": 5.831361988872796,
+          "delta": -0.003925558819530828
+        },
+        {
+          "key": "peak_yaw_rate_radps",
+          "label": "峰值横摆角速度",
+          "unit": "rad/s",
+          "reference": 0.3620390679346958,
+          "game": 0.3618679740478161,
+          "delta": -0.00017109388687969185
+        },
+        {
+          "key": "compute_seconds",
+          "label": "离线计算耗时",
+          "unit": "s",
+          "reference": 0.9438930999922377,
+          "game": 0.48339129999476427,
+          "delta": -0.4605017999974734
+        }
+      ]
+    },
+    "source_fingerprint_sha256": "5f62c7239b5c941b02c3ddf32a80ce377838bdebdaf2bbb2b50cb1639accb236",
+    "runtime": {
+      "panda_version": "1.10.16",
+      "bullet_version": 285,
+      "math_scalar_bits": 64,
+      "files": {
+        "bin/d3dx9_43.dll": "84b900dbd7fa978d6e0caee26fc54f2f61d92c9c75d10b35f00e3e82cd1d67b4",
+        "bin/libp3direct.dll": "127a84f04e16280ec8cbc4439893d605c27c140a84c17f6aa88a9f59321e466f",
+        "bin/libp3dtool.dll": "e9a912e0742166ddc0b74e532160853753c7d1194d8d96dabc28390a0e5a13d5",
+        "bin/libp3dtoolconfig.dll": "0c45a336c087ad84bb831ddf5d56c6fd828ab467744b201f552e54fc5d052fc6",
+        "bin/libp3framework.dll": "7393d45ecaafc621d3430321cf0807cabefc0274dadeed383895d0178fdea6a2",
+        "bin/libp3interrogatedb.dll": "7b043cf017ff8b579e17899dfb1d34ce29ced29aa31eab72f7758634b48c6de7",
+        "bin/libp3openal_audio.dll": "919abf33167d89431977a7ad1275ddb8ec56fb409560205e367b61c55bce5cb0",
+        "bin/libp3windisplay.dll": "4bd3b5cf9388ebadf9c13466523592220393abeba4001600eaa9e32cc67c667b",
+        "bin/libpanda.dll": "10498c8138ff4c79410166e61b120f2c48ea0ab2248059b4096ab4062446d7c7",
+        "bin/libpandabullet.dll": "483ef5e561d75fe7191633731713eee5a3e163ee0f84bba5ce03a4decc0fb0fa",
+        "bin/libpandaegg.dll": "6033115bd3db949bdbbe337ff81817aea7a83fb35019c41cff2b83f44e6d8555",
+        "bin/libpandaexpress.dll": "5fd3c1a9f29ec00f0380e285f82ca81230b2bfde7f27bb8ecf6b414167c574f1",
+        "bin/libpandagl.dll": "fb0d9f1d23e14afb9fbac76c5d3b0c9e78e8c14e1b5b4819bf973c3390b261a3",
+        "bin/python314.dll": "7ffe3ab11342db03cc18b026f27485c0f74f5bf10f239f1f6573394900596394",
+        "bin/vcruntime140.dll": "052ad6a20d375957e82aa6a3c441ea548d89be0981516ca7eb306e063d5027f4",
+        "bin/vcruntime140_1.dll": "6a99bc0128e0c7d6cbbf615fcc26909565e17d4ca3451b97f8987f9c6acbc6c8",
+        "panda3d/bullet.cp314-win_amd64.pyd": "6e1f3b023d5060c39dd299f42ea423b005047eaa18f4fa2e962fa76381225154",
+        "panda3d/core.cp314-win_amd64.pyd": "92708c8b920fe01a27a46c4e2c09984bb8711995cbb8eb285b5f82e5c2fd8537"
+      }
+    }
+  }
+]

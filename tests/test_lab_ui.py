@@ -46,7 +46,8 @@ def test_switch_requests_exit_and_cleanup_releases_world_once():
     VehicleLab.back_to_game(fake)
     assert fake.next_workspace == "game" and calls == ["exit"]
     fake = SimpleNamespace(_closed=False, taskMgr=SimpleNamespace(remove=lambda _: None),
-        ignoreAll=lambda: None, run_state=SimpleNamespace(close=lambda: calls.append("world-close")),
+        ignoreAll=lambda: None, design_loop=SimpleNamespace(close=lambda: None),
+        run_state=SimpleNamespace(close=lambda: calls.append("world-close")),
         scene=SimpleNamespace(close=lambda: calls.append("scene-close")),
         root=SimpleNamespace(destroy=lambda: None), destroy=lambda: calls.append("window-close"))
     VehicleLab.close_game(fake)

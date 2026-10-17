@@ -59,7 +59,7 @@ def test_menu_selection_preserves_hardware_and_rebuilds_at_start():
         previous_hardware = session.vehicle_config
         simulation_score = session.score_variant()
         session.set_driving_mode(DrivingMode.GAME)
-        assert session.vehicle_config == previous_hardware
+        assert session.vehicle_config == replace(previous_hardware, tire_substeps=1)
         assert session.score_variant() != simulation_score
         session.set_vehicle_config(replace(chosen, mass=1500))
         assert session.score_variant().split(":hardware-")[1] != simulation_score.split(":hardware-")[1]

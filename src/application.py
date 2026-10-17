@@ -35,10 +35,11 @@ from ui.countdown import Countdown
 from ui.hud import DrivingHUD
 from ui.main_menu import MainMenu
 from vehicle_designs import vehicle_design
+from vehicle_workspace import WorkspaceVehicle, workspace_vehicle_path
 
 
 class CoastalDrive(ShowBase):
-    def __init__(self, *, smoke=False, smoke_audio=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", sync_video=True, driving_mode=None, vehicle_design_id=None, abs_enabled=None, tcs_enabled=None, esc_enabled=None, physics_workers=None, independent_clock=None):
+    def __init__(self, *, smoke=False, smoke_audio=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", sync_video=True, driving_mode=None, vehicle_design_id=None, abs_enabled=None, tcs_enabled=None, esc_enabled=None, physics_workers=None, independent_clock=None, workspace_vehicle=None):
         # 带声音的诊断仍隔离设置/成绩，只打开正式音频链路。
         audio_enabled = not smoke or smoke_audio
         self.startup_trace = startup_trace
@@ -77,10 +78,16 @@ class CoastalDrive(ShowBase):
         self.smoke = smoke
         self.onscreen = onscreen
         self.output = output or user_data()
+        self.workspace_path = self.output/"test-workspace-vehicle.json" if smoke else workspace_vehicle_path()
         appearance_path = self.output / "test-appearance.json" if smoke else None
         self.appearance = AppearanceStore(appearance_path)
+        if workspace_vehicle is not None:
+            vehicle_design_id = workspace_vehicle.design_id
         if vehicle_design_id is not None:
             self.appearance.model_id = vehicle_for_design(vehicle_design_id, self.appearance.model_id).id
+        self.workspace_vehicle = workspace_vehicle or WorkspaceVehicle(
+            vehicle_definition(self.appearance.model_id).physics_id,
+            vehicle_design(vehicle_definition(self.appearance.model_id).physics_id).config)
         audio_path = self.output / "test-audio.json" if smoke else None
         self.audio_settings = AudioSettingsStore(audio_path)
         mode_path = self.output / "test-driving-mode.json" if smoke else None
@@ -96,12 +103,15 @@ class CoastalDrive(ShowBase):
             track=track,
             # 交互游戏固定辅助输入；显式模式参数仅供诊断，实验室另走VehicleCommand。
             driving_mode=driving_mode if driving_mode is not None else DrivingMode.GAME,
-            abs_enabled=abs_enabled if abs_enabled is not None else self.driving_mode_settings.abs_enabled,
-            tcs_enabled=tcs_enabled if tcs_enabled is not None else self.driving_mode_settings.tcs_enabled,
-            esc_enabled=esc_enabled if esc_enabled is not None else self.driving_mode_settings.esc_enabled,
+            abs_enabled=abs_enabled if abs_enabled is not None else (
+                workspace_vehicle.config.braking.abs_enabled if workspace_vehicle else self.driving_mode_settings.abs_enabled),
+            tcs_enabled=tcs_enabled if tcs_enabled is not None else (
+                workspace_vehicle.config.traction.tcs_enabled if workspace_vehicle else self.driving_mode_settings.tcs_enabled),
+            esc_enabled=esc_enabled if esc_enabled is not None else (
+                workspace_vehicle.config.stability.esc_enabled if workspace_vehicle else self.driving_mode_settings.esc_enabled),
             road_shape=road_shape,
             scores=BestTimes(self.output / "test-best-times.json") if smoke else None,
-            vehicle_config=vehicle_design(vehicle_definition(self.appearance.model_id).physics_id).config,
+            vehicle_config=self.workspace_vehicle.config,
             physics_workers=physics_workers,
             independent_clock=use_clock,
         )
@@ -142,6 +152,7 @@ class CoastalDrive(ShowBase):
         self.driving_keys_held = set()
         self._shutdown = False
         self.next_workspace = None
+        self.next_drive = False
         self._audio_checkpoints = 0
         self._audio_phase = Phase.MENU
         self._radio_last_station = self.audio_settings.radio_station or 1
@@ -180,6 +191,7 @@ class CoastalDrive(ShowBase):
 
     def open_vehicle_lab(self):
         """主入口释放游戏会话后进入实验室，两个工作方式共用生产物理内核。"""
+        self.workspace_vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
         self.next_workspace = "lab"
         self.userExit()
 
@@ -448,6 +460,7 @@ class CoastalDrive(ShowBase):
             lambda: self.start_game(mode=GameMode.FREE_DRIVE),
             self.choose_highway, self.choose_garage, self.choose_audio_settings, self.userExit,
         ), driving_mode_action=self.choose_driving_mode, lab_action=self.open_vehicle_lab)
+        self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
         self.diagnostics = OnscreenText(
             **{**text_style, "fg": theme.DIAGNOSTIC_TEXT, "shadow": theme.DIAGNOSTIC_SHADOW},
             text="",
@@ -562,6 +575,7 @@ class CoastalDrive(ShowBase):
             return
         self.session.set_abs_enabled(not self.session.abs_enabled)
         self.driving_mode_settings.save(self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled, self.session.esc_enabled)
+        self.save_workspace_electronics()
         self._shown_phase = None
         self.refresh_panel()
 
@@ -570,6 +584,7 @@ class CoastalDrive(ShowBase):
             return
         self.session.set_tcs_enabled(not self.session.tcs_enabled)
         self.driving_mode_settings.save(self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled, self.session.esc_enabled)
+        self.save_workspace_electronics()
         self._shown_phase = None
         self.refresh_panel()
 
@@ -580,8 +595,17 @@ class CoastalDrive(ShowBase):
         self.driving_mode_settings.save(
             self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled,
             self.session.esc_enabled)
+        self.save_workspace_electronics()
         self._shown_phase = None
         self.refresh_panel()
+
+    def save_workspace_electronics(self):
+        self.workspace_vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
+        try:
+            self.workspace_vehicle.save(self.workspace_path)
+        except OSError:
+            logging.getLogger(__name__).exception("车辆工作区电子配置保存失败")
+            self.driving_mode_settings.notice = "车辆开关已改变，但工程车辆文件未保存。"
 
     def back_from_driving_mode(self):
         self.driving_mode_page = False
@@ -655,9 +679,23 @@ class CoastalDrive(ShowBase):
             self.refresh_panel()
             return
         self.vehicle_model_id = model_id
-        self.session.set_vehicle_config(vehicle_design(vehicle_definition(model_id).physics_id).config)
+        design_id = vehicle_definition(model_id).physics_id
+        if design_id != self.workspace_vehicle.design_id:
+            self.workspace_vehicle = WorkspaceVehicle(design_id, vehicle_design(design_id).config)
+            try:
+                self.workspace_vehicle.save(self.workspace_path)
+            except OSError as error:
+                logging.getLogger(__name__).exception("车库车辆工作区保存失败")
+                self.appearance.notice = f"车辆已切换，本次未保存：{error}"
+        self.session.set_vehicle_config(self.workspace_vehicle.config)
+        self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
         self.skin_index = self.garage_skin_index
         self.close_garage()
+
+    def workspace_vehicle_label(self):
+        vehicle = self.workspace_vehicle
+        source = "实验车" if vehicle.report_path else "目录车"
+        return f"{source} · {vehicle_design(vehicle.design_id).name}\n{vehicle.config.mass:g} kg · 质心 {vehicle.config.center_of_mass_height:g} m"
 
     def cancel_garage(self):
         self.close_garage()

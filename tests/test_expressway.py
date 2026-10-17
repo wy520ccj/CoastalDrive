@@ -45,7 +45,7 @@ def vertices(node):
         for geom in path.node().getGeoms():
             reader = GeomVertexReader(geom.getVertexData(), "vertex")
             while not reader.isAtEnd():
-                yield node.getRelativePoint(path, reader.getData3f())
+                yield node.getRelativePoint(path, tuple(reader.getData3f()))
 
 
 def test_kit_clearance_uses_serialized_geometry(kit):
@@ -65,7 +65,7 @@ def test_kit_clearance_uses_serialized_geometry(kit):
                         points = []
                         for j in range(tris.getPrimitiveStart(i), tris.getPrimitiveEnd(i)):
                             reader.setRow(tris.getVertex(j))
-                            points.append(assets[name].getRelativePoint(path, reader.getData3f()))
+                            points.append(assets[name].getRelativePoint(path, tuple(reader.getData3f())))
                         if min(p.x for p in points) < 8.5 and max(p.x for p in points) > -8.5:
                             over_road.extend(p.z for p in points)
         assert min(over_road) > 5.7
@@ -98,7 +98,7 @@ def test_collision_tree_roots_and_trunks_survive(kit):
                 if mat is not None and mat.getMaterial().getName() == "woodBarkDark":
                     reader = GeomVertexReader(mesh.getGeom(i).getVertexData(), "vertex")
                     while not reader.isAtEnd():
-                        result.append(tuple(node.getRelativePoint(path, reader.getData3f())))
+                        result.append(tuple(node.getRelativePoint(path, tuple(reader.getData3f()))))
         return result
 
     for i, original in enumerate(originals):
