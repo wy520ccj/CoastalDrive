@@ -1,0 +1,32 @@
+name: 游戏或实验台问题
+description: 开发试玩版问题反馈，请尽量提供可复现步骤。
+title: "[Bug] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: "CoastalDrive目前是开发中半成品，功能不齐全，潜在bug可能较多。感谢提供复现信息；上传日志前请检查私人路径或数据。"
+  - type: input
+    id: version
+    attributes:
+      label: 版本与下载方式
+      placeholder: 0.9.0-dev.20261017，安装版 / 免安装版 / 源码提交
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: 系统与硬件
+      placeholder: Windows版本、CPU、显卡、驱动版本
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 操作步骤、预期与实际结果
+      description: 说明发生在游戏还是实验台、车辆、道路或工况；如能稳定复现，请提供完整步骤。
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 截图、日志或工程文件
+      description: 可附%LOCALAPPDATA%/CoastalDrive中的crash.log、runtime.log、coastaldrive.log；分享前检查私人信息。

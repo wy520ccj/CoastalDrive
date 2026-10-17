@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 下载游戏与安装卸载说明
+    url: https://github.com/wy520ccj/CoastalDrive/blob/main/docs/download.md
+    about: 安装包、免安装包、运行要求及卸载方法。

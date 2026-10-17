@@ -1,0 +1,7 @@
+{
+  "unchanged_inputs": 760,
+  "delta": [
+    "tools/check_release_install.py"
+  ],
+  "reason": "External installer verification corrected asynchronous uninstall cleanup wait; this script is not imported or shipped in either frozen executable."
+}

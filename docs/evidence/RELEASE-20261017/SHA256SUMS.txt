@@ -1,0 +1,2 @@
+1e3ce296d3c7a24d3e2aa09e4d5ac3e589578223534c51464d2da28f8b6cf577  CoastalDrive-0.9.0-dev.20261017-Windows-x64-Portable.zip
+c4f9856f67ff490930b1155fb88682b6289f726ff1a0282f82a06dd5145b38ca  CoastalDrive-0.9.0-dev.20261017-Windows-x64-Setup.exe

@@ -20,6 +20,12 @@ from lab_records import LabRecord
 from session import Phase
 
 
+def require(condition, message):
+    # 冻结发行包启用优化，不能把真实检查或截图副作用放进assert。
+    if not condition:
+        raise AssertionError(message)
+
+
 def check(output, *, onscreen=False, independent=False):
     output.mkdir(parents=True, exist_ok=True)
     app = CoastalDrive(smoke=True, smoke_audio=True, onscreen=onscreen, output=output, lab_output=output/"records",
@@ -33,7 +39,7 @@ def check(output, *, onscreen=False, independent=False):
 
     def capture(name):
         app.graphicsEngine.syncFrame()
-        assert window.getScreenshot().write(Filename.fromOsSpecific(str(output/f"{name}.png")))
+        require(window.getScreenshot().write(Filename.fromOsSpecific(str(output/f"{name}.png"))), "截图保存失败")
 
     def edit(entry, value):
         app.lab.advanced_panel.show()
@@ -50,7 +56,7 @@ def check(output, *, onscreen=False, independent=False):
             device.buttonUp(key)
             for _ in range(3):
                 app.taskMgr.step()
-        assert entry.get() == value, entry.get()
+        require(entry.get() == value, entry.get())
         app.lab.blur_entries()
         app.lab.advanced_panel.hide()
 
@@ -58,11 +64,11 @@ def check(output, *, onscreen=False, independent=False):
         stages, times = [], []
         started = perf_counter()
         while app._workspace_steps is not None:
-            assert perf_counter()-started < 120, "切换超时"
+            require(perf_counter() - started < 120, '切换超时')
             before = perf_counter()
             app.taskMgr.step()
             times.append(perf_counter()-before)
-            assert app.win is window and app.pipeline is pipeline
+            require(app.win is window and app.pipeline is pipeline, "窗口或渲染管线被替换")
             if not app.workspace_loading.root.isHidden():
                 progress = app.workspace_loading.history[-1]
                 if not stages or stages[-1] != progress:
@@ -70,13 +76,13 @@ def check(output, *, onscreen=False, independent=False):
                     capture(f"{name}-{len(stages)-1}")
             elif app.workspace != target:
                 raise AssertionError(app.workspace_loading.stage.getText())
-        assert app.workspace == target
-        assert stages[-1][0] == 5 and [s[0] for s in stages] == sorted(s[0] for s in stages)
-        assert len(stages) >= 5
+        require(app.workspace == target, "未进入目标工作区")
+        require(stages[-1][0] == 5 and [s[0] for s in stages] == sorted(s[0] for s in stages), "加载阶段未顺序完成")
+        require(len(stages) >= 5, "加载阶段缺失")
         if handle is not None:
-            assert window.getWindowHandle().getIntHandle() == handle
+            require(window.getWindowHandle().getIntHandle() == handle, "原生窗口句柄改变")
         size = (window.getXSize(), window.getYSize())
-        assert size == expected_size, (name, size, expected_size)
+        require(size == expected_size, (name, size, expected_size))
         sizes.append(size)
         app.taskMgr.step()
         capture(name+"-ready")
@@ -90,7 +96,7 @@ def check(output, *, onscreen=False, independent=False):
             window.requestProperties(props)
             deadline = perf_counter()+5
             while (window.getXSize(), window.getYSize()) != (1180, 760):
-                assert perf_counter() < deadline, "窗口未完成用户尺寸请求"
+                require(perf_counter() < deadline, '窗口未完成用户尺寸请求')
                 app.taskMgr.step()
         for _ in range(5):
             app.taskMgr.step()
@@ -102,7 +108,7 @@ def check(output, *, onscreen=False, independent=False):
                 window.requestProperties(props)
                 deadline = perf_counter()+5
                 while (window.getXSize(), window.getYSize()) != (1600, 900):
-                    assert perf_counter() < deadline, "窗口未完成放大请求"
+                    require(perf_counter() < deadline, '窗口未完成放大请求')
                     app.taskMgr.step()
                 for _ in range(5):
                     app.taskMgr.step()
@@ -112,14 +118,14 @@ def check(output, *, onscreen=False, independent=False):
             game_world = app.session.simulation
             previous_process = app.session.process if independent else None
             app.open_vehicle_lab()
-            assert not app.workspace_loading.root.isHidden()
+            require(not app.workspace_loading.root.isHidden(), "加载界面未显示")
             pump(f"lab-{index}", "lab")
-            assert app.session is None and app.lab.engine is app and not app.lab.owns_window
-            assert previous_sound.closed and app.soundscape is None
+            require(app.session is None and app.lab.engine is app and not app.lab.owns_window, "实验台未复用窗口或旧会话未释放")
+            require(previous_sound.closed and app.soundscape is None, "旧声音会话未释放")
             if independent:
-                assert previous_session.closed and previous_process._closed
+                require(previous_session.closed and previous_process._closed, "旧独立物理进程未关闭")
             else:
-                assert game_world.closed
+                require(game_world.closed, "旧物理世界未关闭")
             lab = app.lab
             if index == 0:
                 lab.set_options(LabOptions(speed_kph=15, duration=.025, cg_height=.42))
@@ -136,24 +142,24 @@ def check(output, *, onscreen=False, independent=False):
                 lab.design_loop.show()
                 lab.design_loop.drive()
             else:
-                assert lab.entries["cg"].get() == ".47" and lab.view_index == 2
-                assert lab.baseline is not None and lab.record is not None
-                assert lab.workspace_vehicle.config.center_of_mass_height == .42
+                require(lab.entries["cg"].get() == ".47" and lab.view_index == 2, "输入草稿或时间游标未恢复")
+                require(lab.baseline is not None and lab.record is not None, "试验记录或A槽丢失")
+                require(lab.workspace_vehicle.config.center_of_mass_height == .42, "实验台工程车配置改变")
                 if onscreen:
                     edit(lab.entries["cg"], ".47")
                 lab.next_drive = True
                 lab.back_to_game()
             run = lab.run_state
             pump(f"drive-{index}", "game")
-            assert lab._closed and (run is None or run.closed)
-            assert app.session.base_vehicle_config.center_of_mass_height == .42
-            assert app.session.phase in (Phase.COUNTDOWN, Phase.DRIVING, Phase.PAUSED)
-            assert tuple(app.cam.node().getDisplayRegion(0).getDimensions()) == (0, 1, 0, 1)
-            assert app.render.findAllMatches("**/vehicle-lab-scene").getNumPaths() == 0
+            require(lab._closed and (run is None or run.closed), "实验台或试验物理世界未释放")
+            require(app.session.base_vehicle_config.center_of_mass_height == .42, "试驾未使用工程车")
+            require(app.session.phase in (Phase.COUNTDOWN, Phase.DRIVING, Phase.PAUSED), "未返回试驾")
+            require(tuple(app.cam.node().getDisplayRegion(0).getDimensions()) == (0, 1, 0, 1), "驾驶相机区域未恢复")
+            require(app.render.findAllMatches("**/vehicle-lab-scene").getNumPaths() == 0, "实验台场景残留")
             counts.append((len(app.taskMgr.getAllTasks()), app.win.getNumDisplayRegions(),
                            app.graphicsEngine.getNumWindows(), len(app.game_input.getAllAccepting()),
                            len(DirectGuiWidget.guiDict)))
-        assert counts[1:] == counts[:-1], counts
+        require(counts[1:] == counts[:-1], counts)
         app.back_to_menu()
         app.taskMgr.step()
         capture("returned-menu")

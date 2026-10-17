@@ -1,0 +1,10 @@
+2026-10-17 13:57:20.971   Deleting directory: B:\AI agent\暑期计算机程序设计\CoastalDrive\logs\RELEASE-20261017\install-final\中文路径 空格
+2026-10-17 13:57:20.971   Failed to delete directory (145). Will retry later.
+2026-10-17 13:57:20.971   Deleting Uninstall data files.
+2026-10-17 13:57:20.971   Creating "_unins-done.tmp" file.
+2026-10-17 13:57:21.499   Deleting directory: B:\AI agent\暑期计算机程序设计\CoastalDrive\logs\RELEASE-20261017\install-final\中文路径 空格\CoastalDrive
+2026-10-17 13:57:21.499   Deleting directory: B:\AI agent\暑期计算机程序设计\CoastalDrive\logs\RELEASE-20261017\install-final\中文路径 空格
+2026-10-17 13:57:21.563   Uninstallation process succeeded.
+2026-10-17 13:57:21.563   Removed all? Yes
+2026-10-17 13:57:21.563   Need to restart Windows? No
+2026-10-17 13:57:21.564   Log closed.

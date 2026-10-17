@@ -1,0 +1,14 @@
+CoastalDrive — 开发试玩版 / Development preview
+
+当前处于开发阶段，是半成品，功能不齐全，潜在 bug 可能较多。
+可能出现崩溃、卡顿、车辆/交通异常、界面或存档兼容问题。请按试玩版本体验，勿将工程试验结果视为实车标定或安全结论。
+
+本包包含普通精度游戏与车辆实验台；双精度隔离开发运行库不包含在此安装包内。
+实验台部分工况计算仍可能慢于实时，原物理精度、长期性能与人工体验验收尚未全部完成。
+
+安装后从开始菜单启动 CoastalDrive；可选择创建桌面快捷方式。
+卸载：Windows 设置 → 应用 → 已安装的应用 → CoastalDrive，或开始菜单“卸载 CoastalDrive”。
+卸载保留 %LOCALAPPDATA%\CoastalDrive 中的设置、成绩与工程数据。如需彻底清理，请先导出并备份自己的记录，再手动删除该目录。
+
+下载与反馈：https://github.com/wy520ccj/CoastalDrive/releases
+操作与已知限制：https://github.com/wy520ccj/CoastalDrive/blob/main/docs/download.md

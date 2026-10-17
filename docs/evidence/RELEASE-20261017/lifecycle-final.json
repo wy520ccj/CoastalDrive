@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "installer": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\builds\\release-20261017-final\\artifacts\\CoastalDrive-0.9.0-dev.20261017-Windows-x64-Setup.exe",
+  "install_dir": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\RELEASE-20261017\\lifecycle-final\\中文路径 空格\\CoastalDrive",
+  "checks": {
+    "install": {
+      "returncode": 0
+    },
+    "upgrade": {
+      "returncode": 0
+    },
+    "uninstall": {
+      "returncode": 0
+    }
+  },
+  "registry_after_install": {
+    "DisplayName": "CoastalDrive 0.9.0-dev.20261017 (开发试玩版)",
+    "DisplayVersion": "0.9.0-dev.20261017",
+    "InstallLocation": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\RELEASE-20261017\\lifecycle-final\\中文路径 空格\\CoastalDrive\\",
+    "UninstallString": "\"B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\RELEASE-20261017\\lifecycle-final\\中文路径 空格\\CoastalDrive\\unins000.exe\""
+  },
+  "shortcuts": [
+    "CoastalDrive (开发试玩版).lnk",
+    "车辆实验台.lnk",
+    "下载与使用说明.lnk",
+    "卸载 CoastalDrive.lnk"
+  ],
+  "runtime_checks": "not_run; reuse separately recorded results for identical installer SHA256",
+  "user_data_preserved": true,
+  "program_removed": true,
+  "registry_removed": true,
+  "shortcuts_removed": true
+}

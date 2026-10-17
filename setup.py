@@ -1,6 +1,12 @@
 import os
+import sys
+from pathlib import Path
 
 from setuptools import Extension, setup
+
+root = Path(__file__).resolve().parent
+# 两个冻结入口共享源码与检查工具，冻结器不会执行运行时的sys.path调整。
+sys.path[:0] = [str(root / "src"), str(root / "tools")]
 
 compile_args = (["/fp:strict", "/utf-8"] if os.name == "nt"
                 else ["-fno-fast-math", "-ffp-contract=off"])
@@ -21,7 +27,7 @@ convex_sources = [
 
 setup(
     name="coastaldrive",
-    version="0.8.3",
+    version="0.9.0.dev20261017",
     package_dir={"": "src"},
     ext_modules=[
         Extension("physics_packet_kernels", ["src/physics_packet_kernels.c"], extra_compile_args=compile_args),
@@ -46,6 +52,8 @@ setup(
     options={
         "build_apps": {
             "gui_apps": {"coastaldrive": "src/main.py"},
+            "console_apps": {"coastaldrive-check": "tools/release_check.py"},
+            "icons": {"coastaldrive": ["assets/game/ui/coastal-drive.ico"]},
             "platforms": ["win_amd64"],
             "log_filename": "$USER_APPDATA/CoastalDrive/coastaldrive.log",
             "log_append": False,
@@ -68,6 +76,8 @@ setup(
                 "assets/game/expressway/shaders/*.vert",
                 "assets/game/expressway/shaders/*.glsl",
                 "assets/game/**/License.txt",
+                "assets/game/**/*.txt",
+                "assets/game/**/*.md",
                 "licenses/CPython-LICENSE.txt",
                 "licenses/Bullet-LICENSE.txt",
             ],
