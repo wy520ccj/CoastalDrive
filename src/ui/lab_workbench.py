@@ -111,6 +111,13 @@ def build_workbench(app):
 
     app.workshop = WorkshopPanel(app)
     app.button("工坊挑战", -1.33, -.935, .60, app.workshop.show, accent=True)
+    from ui.lab_schemes import SchemesPanel
+
+    app.schemes = SchemesPanel(app)
+    app.button("方案库", -.58, -.935, .50, app.schemes.show)
+    app.notice.footer.setPos(-.23, -.905)
+    app.notice.footer.setScale(.030)
+    app.notice.footer.textNode.setWordwrap(39)
 
     app.record_menu = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
                                  frameSize=(1.05, 1.71, .34, .83), sortOrder=60, state=DGG.NORMAL)

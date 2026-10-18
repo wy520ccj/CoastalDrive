@@ -32,6 +32,7 @@ from ui.lab_feedback import error_text, log_error
 from ui.lab_widgets import MUTED, LabOptionMenu, button_textures
 from vehicle_designs import DESIGN_VEHICLES, vehicle_design
 from vehicle_parameters import config_from_document, load_vehicle_config, save_vehicle_config
+from vehicle_schemes import scheme_library_path
 from vehicle_state import VehicleCommand
 
 INK = theme.INK
@@ -43,7 +44,7 @@ DISABLED_INK = (.43, .49, .49, 1)
 
 
 class VehicleLab(DirectObject):
-    def __init__(self, *, offscreen=False, output=None, render_size=(1280, 720), workspace_vehicle=None, lab_workspace=None, engine=None, on_back=None, activate=True):
+    def __init__(self, *, offscreen=False, output=None, render_size=(1280, 720), workspace_vehicle=None, lab_workspace=None, engine=None, on_back=None, activate=True, scheme_root=None):
         self.owns_window = engine is None
         self.on_back = on_back
         if self.owns_window:
@@ -66,6 +67,7 @@ class VehicleLab(DirectObject):
         self.root = DirectFrame(parent=self.engine.aspect2d, frameColor=(0, 0, 0, 0), relief=None,
                                 frameSize=(-1.78, 1.78, -1, 1), state=DGG.DISABLED)
         self.output = Path(output) if output else user_data()/"experiments"
+        self.scheme_root = Path(scheme_root) if scheme_root is not None else scheme_library_path()
         self.next_workspace = None
         self.next_drive = False
         self.workspace_vehicle = workspace_vehicle
@@ -204,7 +206,7 @@ class VehicleLab(DirectObject):
 
     def cycle_entry(self, direction):
         if any(not panel.isHidden() for panel in (self.parameter_help.root, self.engineering_panel.root,
-                                                  self.design_loop.root, self.workshop.root)):
+                                                  self.design_loop.root, self.workshop.root, self.schemes.root)):
             return
         entries = [entry for entry in (*self.entries.values(), *self.manual_entries.values())
                    if not entry.isHidden() and entry.guiItem.getActive()]
@@ -214,7 +216,7 @@ class VehicleLab(DirectObject):
         entries[index]["focus"] = 1
 
     def show_parameter_help(self):
-        if not self.workshop.root.isHidden():
+        if not self.workshop.root.isHidden() or not self.schemes.root.isHidden():
             return
         key = self.hovered_parameter or self.focused_parameter
         self.blur_entries()
@@ -636,7 +638,7 @@ class VehicleLab(DirectObject):
         # DirectEntry的focus选项不随鼠标聚焦同步，必须读取PGEntry实际状态。
         if any(not panel.isHidden() for panel in (self.advanced_panel, self.manual_panel,
                 self.details_panel, self.record_menu, self.parameter_help.root, self.engineering_panel.root,
-                self.design_loop.root, self.workshop.root, self.notice.root)):
+                self.design_loop.root, self.workshop.root, self.schemes.root, self.notice.root)):
             return
         if not any(entry.guiItem.getFocus() and not entry.isHidden()
                    for entry in (*self.entries.values(), *self.manual_entries.values())):
@@ -647,6 +649,9 @@ class VehicleLab(DirectObject):
             self.notice.dismiss()
             return
         self.blur_entries()
+        if not self.schemes.root.isHidden():
+            self.schemes.hide()
+            return
         if not self.workshop.root.isHidden():
             self.workshop.hide()
             return
@@ -880,7 +885,7 @@ class VehicleLab(DirectObject):
             config = load_vehicle_config(Path(folder)/"vehicle.json", design.config)
         except (OSError, ValueError, KeyError, TypeError) as error:
             self.show_error("记录载入失败，当前试验仍保留", error)
-            return
+            return False
         if self.run_state is not None:
             self.run_state.close()
             self.run_state = None
@@ -904,6 +909,7 @@ class VehicleLab(DirectObject):
         self.present_summary(record.metadata["summary"])
         self.refresh_plots()
         self.show_sample(0)
+        return True
 
     def recalculate_record(self):
         self.record_menu.hide()
@@ -1026,6 +1032,7 @@ class VehicleLab(DirectObject):
         self.ignoreAll()
         self.design_loop.close()
         self.workshop.hide()
+        self.schemes.hide()
         if self.run_state is not None:
             self.run_state.close()
         self.scene.close()

@@ -1,0 +1,37 @@
+{
+  "schema": "coastal-scheme-v1",
+  "id": "d3dfd390d5604579acb67dc6018e6082",
+  "name": "轻预算45k",
+  "created": "2026-10-18T08:50:20.169738+00:00",
+  "challenge": {
+    "challenge_id": "coastal-cornering-v1",
+    "tire_index": 1,
+    "balanced_bar": false,
+    "lower_cg": false,
+    "cost": 1,
+    "baseline_metrics": {
+      "mean_error_m": 3.1752565293526427,
+      "mean_signed_error_m": 3.1752565293526427,
+      "mean_speed_kph": 60.02857503433641,
+      "max_speed_error_kph": 0.10326270427015771,
+      "mean_steering_deg": 4.353758550694997,
+      "peak_beta_deg": 2.28655982896616,
+      "peak_roll_deg": 1.100391403285223
+    },
+    "candidate_metrics": {
+      "mean_error_m": 1.4953677931885256,
+      "mean_signed_error_m": 1.4953677931885256,
+      "mean_speed_kph": 60.14107960448075,
+      "max_speed_error_kph": 0.2700343868722612,
+      "mean_steering_deg": 3.69975207392826,
+      "peak_beta_deg": 2.9797094294748843,
+      "peak_roll_deg": 1.211748778037075
+    },
+    "improvement_pct": 52.90560685837264,
+    "passed": true,
+    "medal": "铜",
+    "unmet": [],
+    "config_digest": "730e58623ee42edbd8e9238148791f1720eca6c1541b5ed76f00283a5cc3f568",
+    "road_validated": false
+  }
+}

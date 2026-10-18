@@ -1,0 +1,14 @@
+{
+  "src/application.py": "0c82d4ff2587e1d81bc5a9630c4c0d9f641fb55f8e758434e131289f1dba388b",
+  "src/lab_application.py": "05c628ae740eaf7e548078634ee85df13e9d9cb188095bd14cd9953dd4ce6724",
+  "src/ui/lab_workbench.py": "30154a1c6fc26fe9c381685afd5c87d11c081822fb8f22cce451e05a08907f36",
+  "src/ui/lab_workshop.py": "b3c2e6c387bc40f5642bf3f68ad9d694bb588d38afaddc618843188f94170f1d",
+  "src/ui/lab_schemes.py": "e39e4a84bad86c1399a73a270e015c336ac9e622e32dbbc0584dcd6008f13060",
+  "src/vehicle_workspace.py": "f8064846ffa1fe7fc13ac2bfde1d75dcfe476db2bd880de27a5dc797e1129e8f",
+  "src/vehicle_schemes.py": "a9ee4cdb599cffaf2c5dcc04e516b8c5afeaad5c2f5e402414b19d632287af76",
+  "tools/validate.py": "0bbd47dabba869c39553fcf142132106073dfa2154150d3339c4364dbecb6d91",
+  "tools/vehicle_schemes_check.py": "a1a6638c5840efc8e37cbc52616692631659bec28a8931de123f7bc932947fde",
+  "tests/test_vehicle_schemes.py": "13e21ae014481a3c075751d1a98b4a08405436126657f7dc0809729922e4841a",
+  "tests/test_vehicle_schemes_ui.py": "ed8b37da2d1aeedc71a9bd5e92823e596db2691e4665b0d5f42a727bba6160db",
+  "tests/test_lab_ui.py": "853e4ee0f45940f383ce8b3ac5bee1181e3ac09fc8a665e9e67cd8803ae9d631"
+}

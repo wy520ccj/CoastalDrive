@@ -1,0 +1,37 @@
+{
+  "schema": "coastal-scheme-v1",
+  "id": "e8009496ea504a31b63bdd5e754955b5",
+  "name": "循迹50k",
+  "created": "2026-10-18T08:46:33.477040+00:00",
+  "challenge": {
+    "challenge_id": "coastal-cornering-v1",
+    "tire_index": 2,
+    "balanced_bar": false,
+    "lower_cg": false,
+    "cost": 2,
+    "baseline_metrics": {
+      "mean_error_m": 3.175283242172368,
+      "mean_signed_error_m": 3.175283242172368,
+      "mean_speed_kph": 60.028583419673204,
+      "max_speed_error_kph": 0.10332730800143253,
+      "mean_steering_deg": 4.35379589379178,
+      "peak_beta_deg": 2.2865829029411766,
+      "peak_roll_deg": 1.1003941297531128
+    },
+    "candidate_metrics": {
+      "mean_error_m": 1.002885831488585,
+      "mean_signed_error_m": 1.002885831488585,
+      "mean_speed_kph": 60.19670057702792,
+      "max_speed_error_kph": 0.4054056132992443,
+      "mean_steering_deg": 3.493073510658322,
+      "peak_beta_deg": 3.4448997919096627,
+      "peak_roll_deg": 1.252902865409851
+    },
+    "improvement_pct": 68.41586230265048,
+    "passed": true,
+    "medal": "金",
+    "unmet": [],
+    "config_digest": "545153833c440c4ca923e02f100d60a8d6232560d06869f2a271d8a3d8322b3d",
+    "road_validated": false
+  }
+}

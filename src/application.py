@@ -41,6 +41,7 @@ from ui.main_menu import MainMenu
 from ui.race_feedback import result_columns
 from ui.workspace_loading import WorkspaceLoading
 from vehicle_designs import vehicle_design
+from vehicle_schemes import scheme_library_path, sync_road_progress
 from vehicle_workspace import WorkspaceVehicle, workspace_vehicle_path
 from workshop import road_result
 from workshop_cornering import CHALLENGE_ID as CORNERING_CHALLENGE_ID
@@ -99,6 +100,7 @@ class CoastalDrive(ShowBase):
         self.onscreen = onscreen
         self.output = output or user_data()
         self.workspace_path = self.output/"test-workspace-vehicle.json" if smoke else workspace_vehicle_path()
+        self.scheme_root = self.output/"test-schemes" if smoke else scheme_library_path()
         appearance_path = self.output / "test-appearance.json" if smoke else None
         self.appearance = AppearanceStore(appearance_path)
         if workspace_vehicle is not None:
@@ -307,6 +309,7 @@ class CoastalDrive(ShowBase):
             self.scene.render.detachNode()
         yield 2, "准备车辆实验视窗"
         self.lab = VehicleLab(engine=self, output=self.lab_output, workspace_vehicle=self.workspace_vehicle,
+                              scheme_root=self.scheme_root,
                               lab_workspace=self.lab_workspace, on_back=self.return_from_lab, activate=False)
         if self.workspace_vehicle.workshop_result is not None:
             self.lab.workshop.show()
@@ -1162,6 +1165,11 @@ class CoastalDrive(ShowBase):
                             else:
                                 self.workspace_vehicle = vehicle
                                 self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
+                                try:
+                                    sync_road_progress(self.scheme_root, vehicle)
+                                except (OSError, ValueError, KeyError, TypeError) as error:
+                                    logging.getLogger(__name__).warning("方案道路进度未同步: %s", error)
+                                    self.panel_note.setText("道路已完成；方案库同步失败，重开方案库可重试。")
                     if race.new_best:
                         message = "新个人最佳" if race.reference_lap is not None else "首个有效圈 · 已建立最佳参考"
                         self.panel_note.setText(self.panel_note.getText()+" · "+message if validated is not None else message)

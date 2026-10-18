@@ -26,6 +26,7 @@ class WorkshopPanel:
         app.text("海岸工坊", -1.52, .63, .062, parent=self.root, font=app.heading_font)
         self.topic_menu = app.option(["01 制动配方", "02 弯道循迹"], -.75, .64, 1.44,
                                      self.choose_topic, parent=self.root)
+        app.button("方案库", 1.02, .66, .32, lambda: app.schemes.show(), parent=self.root)
         app.button("关闭", 1.42, .66, .28, self.hide, parent=self.root)
         self.description = app.text("把车停得更短，也把预算用得更聪明。", -1.52, .51, .043, theme.SEA, parent=self.root)
         self.rules = app.text("任务  80–0 停车距离缩短 ≥10% · 峰值横摆 ≤0.05 rad/s · 预算3点\n"
