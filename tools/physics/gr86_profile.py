@@ -117,7 +117,7 @@ def generate(output):
                               "input_graph_sha256": hashlib.sha256((evidence / "torque-graphic-vectors.json").read_bytes()).hexdigest()},
         "suspension_prior": {"heave_frequency_hz": heave_hz, "compression_damping_ratio": compression_ratio,
                              "extension_damping_ratio": extension_ratio, "static_compression_m": static_compression,
-                             "rest_length_m": .4, "definition": "whole mass supported by four axial springs; current core has no independent unsprung mass"},
+                             "rest_length_m": .4, "definition": "whole mass supported by four axial springs; this GR86 profile keeps independent unsprung mass disabled"},
         "inertia_prior_sha256": hashlib.sha256((evidence / "inertia-partition.json").read_bytes()).hexdigest(),
         "rotor_prior": {"components_kg_m": rotor_parts, "axial_inertia_kg_m2": rotor_inertia,
                         "whole_vehicle_rigid_inertia_kg_m2": whole,

@@ -195,10 +195,11 @@ class ParameterHelp:
                 if field not in ledger:
                     basis += "\n车型账本未提供此参数；当前为模型值，不作原厂/实测归属"
                 elif json.loads(json.dumps(config[field])) == ledger[field]["value"]:
-                    statuses = {"measured": "实测", "oem": "原厂", "derived": "推导",
+                    statuses = {"measured": "实测", "oem": "原厂", "manufacturer": "原厂", "derived": "推导",
                                 "engineering_prior": "工程初值", "model_mechanism": "模型机制"}
                     status = ledger[field]["status"]
                     basis += f"\n当前车型账本分类：{statuses.get(status, status)}"
+                    basis += "\n来源说明："+ledger[field]["basis"]
                 else:
                     basis += "\n该值已覆盖车型原值，不沿用原来源分类"
             else:

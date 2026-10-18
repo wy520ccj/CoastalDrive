@@ -358,7 +358,7 @@
       "extension_damping_ratio": 0.6,
       "static_compression_m": 0.08598276916361018,
       "rest_length_m": 0.4,
-      "definition": "whole mass supported by four axial springs; current core has no independent unsprung mass"
+      "definition": "whole mass supported by four axial springs; this GR86 profile keeps independent unsprung mass disabled"
     },
     "inertia_prior_sha256": "bb9a2445ce9b41924ff3be55000178b2df2fa6ce116bc03c1e6b504991d01dc5",
     "rotor_prior": {
@@ -1328,6 +1328,96 @@
         "status": "model_mechanism",
         "value": false,
         "basis": "existing complete tire model configuration; metadata coverage repair"
+      },
+      "suspension_coil_enabled": {
+        "unit": "bool",
+        "definition": "独立轮心压缩螺旋弹簧；自由长度之外不承受拉力",
+        "status": "model_mechanism",
+        "value": false,
+        "basis": "旧文件按兼容语义保持压缩螺旋弹簧机制关闭，沿用原双向线性弹性；不假设实车部件已辨识。"
+      },
+      "suspension_damper_curves": {
+        "unit": "m/s,N",
+        "definition": "四角参考轮心速度—阻力表；启用时覆盖两项常阻尼，实际按当前安装比映射",
+        "status": "engineering_prior",
+        "value": null,
+        "basis": "未提供该车型减振器力速台架表；None沿用既有压缩/伸张常阻尼系数，不表示零阻尼。"
+      },
+      "suspension_installation_curves": {
+        "unit": "m",
+        "definition": "四角轮心/弹簧/减振器位移增量；PCHIP及端点切线外推，实测范围另记",
+        "status": "engineering_prior",
+        "value": null,
+        "basis": "未提供该车型安装运动学部件曲线；None沿用既有线性安装定义，不生成或声称实测曲线。"
+      },
+      "suspension_spring_preloads": {
+        "unit": "N",
+        "definition": "零轮心行程的等效安装预载；由部件刚度/运动比/安装压缩推导",
+        "status": "engineering_prior",
+        "value": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "basis": "四角零值是旧线性弹性模型兼容初值；当前压缩螺旋弹簧关闭，不代表实车安装预载实测为零。"
+      },
+      "tire_aligning_enabled": {
+        "unit": "bool",
+        "definition": "接触区刷毛受力中心；Mz参与共轭速度/实际车身冲量，不模拟自由转向或助力",
+        "status": "model_mechanism",
+        "value": false,
+        "basis": "旧GR86文件未声明接触区回正机制，config_from_document按兼容语义保持关闭；不是实车机制识别结果。"
+      },
+      "tire_contact_half_length": {
+        "unit": "m",
+        "definition": "接触区纵向半长设计输入；均布刷毛小滑移拖距a/3，需指定轮荷下Fx/Fy/Mz台架标定",
+        "status": "engineering_prior",
+        "value": 0.08,
+        "basis": "沿用通用设计初值0.08m；当前回正机制关闭。无该车型轮胎Mz台架数据，不能由Fx/Fy拟合冒充实测。"
+      },
+      "tire_radial_damping": {
+        "unit": "N·s/m",
+        "definition": "轮胎径向阻尼；正径向压缩变化的耗散，需要动态台架数据，不能由静载拟合阻尼",
+        "status": "engineering_prior",
+        "value": [
+          500.0,
+          500.0,
+          500.0,
+          500.0
+        ],
+        "basis": "当前独立轮心关闭；四角500N·s/m沿用通用径向阻尼初值，无该车型轮胎径向台架标定。"
+      },
+      "tire_radial_stiffness": {
+        "unit": "N/m",
+        "definition": "轮胎径向刚度；四轮法向压缩弹性，部件轮荷—加载半径曲线可辨识，当前为设计初值",
+        "status": "engineering_prior",
+        "value": [
+          200000.0,
+          200000.0,
+          200000.0,
+          200000.0
+        ],
+        "basis": "当前独立轮心关闭；四角200000N/m沿用通用径向材料设计初值，无该车型轮胎径向台架标定。"
+      },
+      "unsprung_enabled": {
+        "unit": "bool",
+        "definition": "独立轮心质量开关；径向轮胎与车身/传动共同求解，当前参考默认仍关闭，整车验收进行中",
+        "status": "model_mechanism",
+        "value": false,
+        "basis": "旧GR86文件按导入兼容语义保持独立轮心关闭；不据未公开部件数据默认启用。"
+      },
+      "unsprung_masses": {
+        "unit": "kg",
+        "definition": "四轮簧下平动质量；从锁止参考总量与惯量分出，不重复添加轴向自旋惯量；设计假设待称量/部件辨识",
+        "status": "engineering_prior",
+        "value": [
+          40.0,
+          40.0,
+          40.0,
+          40.0
+        ],
+        "basis": "当前独立轮心关闭；每轮40kg沿用通用试验设计初值，不是GR86簧下质量实测，启用时从整车总质量中分出。"
       }
     },
     "nested_field_metadata": {
@@ -1477,6 +1567,7 @@
           "status": "engineering_prior"
         }
       }
-    }
+    },
+    "source_coverage_revision": "2026-10-18"
   }
 }

@@ -2,7 +2,7 @@
 
 import json
 import math
-from dataclasses import asdict
+from dataclasses import asdict, replace
 
 import pytest
 from panda3d.core import NodePath
@@ -21,6 +21,8 @@ def test_source_fields_and_exact_rating_anchors():
     document = json.loads(GR86_PROFILE_PATH.read_text(encoding="utf-8"))
     metadata = document["metadata"]
     assert set(metadata["vehicle_fields"]) == set(asdict(GR86_DESIGN))
+    for name, value in json.loads(json.dumps(asdict(GR86_DESIGN))).items():
+        assert metadata["vehicle_fields"][name]["value"] == value, name
     assert metadata["candidate"]["model_year"] == 2022
     assert metadata["candidate"]["transmission"] == "TL70 six-speed manual"
     assert metadata["vehicle_fields"]["mass"]["status"] == "measured"
@@ -72,12 +74,33 @@ def test_menu_rebuild_and_input_modes_share_real_hardware():
         hardware_ids = []
         for mode in DrivingMode:
             session.set_driving_mode(mode)
-            assert session.vehicle_config == GR86_DESIGN
+            assert session.vehicle_config == mode.configured_vehicle(base_config=GR86_DESIGN)
+            assert replace(session.vehicle_config, tire_substeps=GR86_DESIGN.tire_substeps) == GR86_DESIGN
             hardware_ids.append(session.score_variant().split(":hardware-")[1])
-        assert hardware_ids[0] == hardware_ids[1]
+        assert hardware_ids[0] != hardware_ids[1]
         session.start(countdown=False)
         assert original.closed
         assert session.simulation.config == GR86_DESIGN
         assert session.simulation.player._chassis.getMass() == pytest.approx(1287.29514606)
     finally:
         session.close()
+
+
+def test_parameter_help_exposes_prior_basis_only_for_unchanged_gr86_value(tmp_path):
+    from lab_application import VehicleLab
+    from vehicle_workspace import WorkspaceVehicle
+
+    app = VehicleLab(offscreen=True, output=tmp_path,
+                     workspace_vehicle=WorkspaceVehicle("gr86-2022-premium-6mt", GR86_DESIGN))
+    app.engine.taskMgr.remove("lab-update")
+    try:
+        basis, _ = app.parameter_help.context("unsprung_masses")
+        assert "工程初值" in basis and "不是GR86簧下质量实测" in basis
+        assert "当前独立轮心关闭" in basis
+        basis, _ = app.parameter_help.context("wheelbase")
+        assert "车型账本分类：原厂" in basis
+        app.engineered_config = replace(GR86_DESIGN, unsprung_masses=(41.,)*4)
+        changed, _ = app.parameter_help.context("unsprung_masses")
+        assert "不沿用原来源分类" in changed and "不是GR86簧下质量实测" not in changed
+    finally:
+        app.close_game()

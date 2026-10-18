@@ -1,0 +1,119 @@
+{
+  "started_utc": "2026-10-18T04:36:26.764754+00:00",
+  "git_head": "15e083e337964012444990794b54edaf114bbf59",
+  "git_status": "M assets/game/vehicle-configs/gr86-2022-premium-6mt.json\n M src/ui/parameter_help.py\n M tests/test_gr86.py\n M tools/physics/gr86_profile.py\n M tools/validate.py\n?? docs/tasks/PROFILE-PROVENANCE-01.md",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_gr86.py",
+    "tests/test_parameter_help.py",
+    "tests/test_physics_config_io.py",
+    "tests/test_vehicle_designs.py",
+    "tests/test_vehicle_parameters.py"
+  ],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PROFILE-PROVENANCE-01-T1\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.096
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_gr86.py",
+        "tests/test_parameter_help.py",
+        "tests/test_physics_config_io.py",
+        "tests/test_vehicle_designs.py",
+        "tests/test_vehicle_parameters.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PROFILE-PROVENANCE-01-T1\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 4.495
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PROFILE-PROVENANCE-01-T1\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.394
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PROFILE-PROVENANCE-01-T1\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.4
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\PROFILE-PROVENANCE-01-T1\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.409
+    }
+  ]
+}
