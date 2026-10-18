@@ -34,7 +34,7 @@ tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest
             app.key_down("s")
             assert app.main_menu.selected == 1
             app.key_up("s")
-    
+
             app.choose_garage()
             original_model = app.garage_model_id
             original_skin = app.garage_skin_index
@@ -54,7 +54,7 @@ tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest
             app.key_down("escape")
             assert app.garage is None
             app.key_up("escape")
-    
+
             app.choose_audio_settings()
             master = app.audio_settings.master_volume
             app.key_down("arrow_right")
@@ -87,7 +87,7 @@ tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest
             app.key_down("escape")
             assert not app.audio_settings_page
             app.key_up("escape")
-    
+
             app.choose_highway()
             app.key_down("w")
             app.key_up("w")
@@ -98,7 +98,7 @@ tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest
             app.key_down("escape")
             assert not app.highway_menu
             app.key_up("escape")
-    
+
             app.session.start(mode=GameMode.FREE_DRIVE)
             app.session.pause()
             app._shown_phase = None
@@ -117,8 +117,8 @@ Known pipe types:
   wglGraphicsPipe
 (all display modules loaded.)
 :display(warning): FrameBufferProperties available less than requested.
-  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
-  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware
 =========================== short test summary info ===========================
 FAILED tests/test_traction_lifecycle.py::test_mode_abs_tcs_variants_get_distinct_score_keys
 FAILED tests/test_ui.py::test_keyboard_navigation_for_secondary_menus - asser...
