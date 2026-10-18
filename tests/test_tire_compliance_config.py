@@ -35,16 +35,24 @@ def test_compliance_json_preserves_explicit_selection_and_reset(tmp_path, mode, 
     simulation = Simulation(0, config=config, traffic_count=1, input_config=mode.input_config)
     try:
         assert simulation.player.config is config
-        assert simulation.npcs[0].config is config
+        traffic_config = simulation.npcs[0].config
+        traffic_expected = expected if mode is DrivingMode.SIMULATION else (False, *expected[1:])
+        if mode is DrivingMode.SIMULATION:
+            assert traffic_config is config
+        else:
+            assert traffic_config.native_tire_forces and not traffic_config.finite_drivetrain
+        assert compliance_values(traffic_config) == traffic_expected
         simulation.player.reset((0, 0, .55))
         simulation.npcs[0].reset((0, 2000, .55))
         assert compliance_values(simulation.player.config) == expected
-        assert compliance_values(simulation.npcs[0].config) == expected
+        assert compliance_values(simulation.npcs[0].config) == traffic_expected
         simulation.reset(1)
         assert simulation.player.config is config
-        assert simulation.npcs[0].config is config
+        assert simulation.npcs[0].config == traffic_config
+        if mode is DrivingMode.SIMULATION:
+            assert simulation.npcs[0].config is config
         assert compliance_values(simulation.player.config) == expected
-        assert compliance_values(simulation.npcs[0].config) == expected
+        assert compliance_values(simulation.npcs[0].config) == traffic_expected
     finally:
         simulation.close()
 

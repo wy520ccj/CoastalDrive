@@ -52,3 +52,6 @@
 - 再续跑`t2_resume_remainder.py --previous logs/validation/GAME-GHOST-01-T2-after-cli --supplement logs/validation/VALIDATION-SURFACE-01-T1 --output logs/validation/GAME-GHOST-01-T2-after-surface`：1907项显式复用，1609项与长测继续。
 
 - 最新活运行：fbe4208启动`GAME-GHOST-01-T2-after-surface`，执行会话84164；继续1609项，启动前源码干净。观察超时不重启；同一会话或活进程/summary确认终态。当前仍为pytest阶段，未得到完整T2通过结论。
+
+- after-surface终止：554通过/轮胎弹性配置旧Game交通身份首败，132.80秒；VALIDATION-COMPLIANCE-01完整10项/三种子通过，生产未改。
+- 再续跑`t2_resume_remainder.py --previous logs/validation/GAME-GHOST-01-T2-after-surface --supplement logs/validation/VALIDATION-COMPLIANCE-01-T1 --output logs/validation/GAME-GHOST-01-T2-after-compliance`，2471项显式复用，1045项与长测继续；旧活会话84164已终止，勿重启它。
