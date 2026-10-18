@@ -168,6 +168,7 @@ class CoastalDrive(ShowBase):
         self.chase_camera = ChaseCamera()
         self._camera_time = self.session.current.time
         self.commands_held = set()
+        self.ghost_enabled = True
         self.driving_keys_held = set()
         self._shutdown = False
         self.next_workspace = None
@@ -393,6 +394,7 @@ class CoastalDrive(ShowBase):
             self._scene_vehicle = (self.vehicle_model_id, self.session.simulation.config)
             self.chase_camera.position = None
         self.scene.set_checkpoint_visible(self.session.mode == GameMode.TIME_TRIAL)
+        self.scene.set_ghost(self.session.reference_ghost)
 
     def back_to_menu(self):
         self.session.menu()
@@ -420,6 +422,7 @@ class CoastalDrive(ShowBase):
             "enter",
             "n",
             "m",
+            "g",
         ):
             self.game_input.accept(key, self.key_down, [key])
             self.game_input.accept(f"{key}-up", self.key_up, [key])
@@ -462,6 +465,11 @@ class CoastalDrive(ShowBase):
 
     def key_down(self, key):
         if not self.loading.isHidden():
+            return
+        if key == "g" and self.session.phase in (Phase.DRIVING, Phase.COUNTDOWN, Phase.PAUSED):
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.toggle_ghost()
             return
         if key in ("n", "m"):
             if key not in self.commands_held:
@@ -644,6 +652,14 @@ class CoastalDrive(ShowBase):
             frameTexture=self.button_states, frameColor=(1, 1, 1, 1), relief=DGG.FLAT,
             command=self.open_vehicle_lab, pressEffect=False,
         )
+        self.ghost_button = DirectButton(
+            parent=self.hud.root, text="幽灵：暂无", text_font=self.ui_font,
+            text_fg=theme.INK, text_scale=.042, text_pos=(0, -.016),
+            frameSize=(-.34, .34, -.055, .055), pos=(1.34, 0, .71),
+            frameTexture=self.button_states, frameColor=(1, 1, 1, 1), relief=DGG.FLAT,
+            command=self.toggle_ghost, pressEffect=False,
+        )
+        self.ghost_button.hide()
         self.panel_accent = DirectFrame(
             parent=self.panel, frameColor=theme.ORANGE,
             frameSize=(-0.55, 0.55, -0.005, 0.005), pos=(0, 0, 0.61),
@@ -922,6 +938,21 @@ class CoastalDrive(ShowBase):
             return
         self.diagnostics.show() if self.diagnostics.isHidden() else self.diagnostics.hide()
 
+    def toggle_ghost(self):
+        self.ghost_enabled = not self.ghost_enabled
+        self.refresh_ghost_button()
+
+    def refresh_ghost_button(self):
+        if self.session.mode != GameMode.TIME_TRIAL:
+            self.ghost_button.hide()
+            return
+        available = self.session.reference_ghost is not None
+        text = "幽灵：暂无" if not available else "幽灵：开启  G" if self.ghost_enabled else "幽灵：关闭  G"
+        if self.ghost_button["text"] != text:
+            self.ghost_button["text"] = text
+        self.ghost_button["state"] = DGG.NORMAL if available else DGG.DISABLED
+        self.ghost_button.show()
+
     def refresh_panel(self):
         phase = self.session.phase
         panel_state = (phase, self.garage is not None, self.highway_menu, self.audio_settings_page, self.driving_mode_page)
@@ -1088,6 +1119,8 @@ class CoastalDrive(ShowBase):
                         self.panel_note.setText(f"{self.panel_note.getText()}\n{race.save_error}")
                     if race.score_notice and not race.save_error:
                         self.panel_note.setText(self.panel_note.getText()+"\n"+race.score_notice)
+                    if race.ghost_notice:
+                        self.panel_note.setText(self.panel_note.getText()+"\n"+race.ghost_notice)
                 elif self.session.mode == GameMode.FREE_DRIVE:
                     self.panel_title.setText("驾驶结束")
                     self.panel_note.setText("滨海自由驾驶")
@@ -1210,6 +1243,9 @@ class CoastalDrive(ShowBase):
             self.save_audio_settings()
         self.main_menu.resize(self.getAspectRatio())
         self.hud.resize(self.getAspectRatio())
+        self.lab_return_button.setX(self.getAspectRatio()-.44)
+        self.ghost_button.setX(self.getAspectRatio()-.44)
+        self.refresh_ghost_button()
         if self.session.phase == Phase.MENU and self.scene is not None:
             self.scene.close()
             self.scene = None
@@ -1258,6 +1294,8 @@ class CoastalDrive(ShowBase):
         countdown = ""  # 起步节拍由中央大数字表现，左上角只保留驾驶信息。
         surface = "asphalt" if state.player.surface == "asphalt" else "off-road"
         notice = self.session.notice
+        if self.scene.ghost_error:
+            notice += self.scene.ghost_error
         if (self.workspace_vehicle.workshop_result is not None and self.session.mode == GameMode.TIME_TRIAL
                 and self.session.simulation.track == "coastal"):
             notice = "工坊道路验证：按顺序通过检查点，完成有效圈。" + notice
@@ -1275,6 +1313,7 @@ class CoastalDrive(ShowBase):
     def apply_scene(self, state, camera_dt):
         """加载帧和驾驶帧共用相同的车辆表现、相机及光照。"""
         self.scene.apply(state)
+        self.scene.apply_ghost(state, self.session.race.snapshot, self.ghost_enabled)
         self.chase_camera.shift_origin(state.origin_y-self._camera_origin)
         self._camera_origin = state.origin_y
         self._camera_time = state.time

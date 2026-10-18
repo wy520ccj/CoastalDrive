@@ -119,13 +119,14 @@ def _output(session):
                          dropped, race, highway, notice, segments, collisions, rebases, cycles, initial,backlog)
 
 
-def _metadata(session):
+def _metadata(session, *, include_ghost=True):
     sim = session.simulation
     return (sim.track, sim.seed, sim.road_shape, tuple(sim.props), session.vehicle_config,
             session.abs_enabled, session.tcs_enabled, session.esc_enabled, session.mode,
             tuple(type(car).__name__ for car in sim.npcs),
             {name:import_module(name).__file__ for name in
-             ('session','session_clock','simulation','npc_physics','vehicle','world_step','tire_drivetrain')})
+             ('session','session_clock','simulation','npc_physics','vehicle','world_step','tire_drivetrain')},
+            include_ghost, session.reference_ghost if include_ghost else None)
 
 
 def _reply(connection, operation, *, frame_cache=None):
@@ -219,7 +220,7 @@ def _serve(connection, camera, input_word, seed, options, worker_loop):
                     raise ValueError('未知独立会话命令：' + command)
                 diagnostics = (session.simulation._physics_workers.diagnostics()
                                if session.simulation._physics_workers else None)
-                return _output(session), _metadata(session), diagnostics
+                return _output(session), _metadata(session, include_ghost=command in ('start', 'menu')), diagnostics
 
             _reply(connection, execute, frame_cache=frame_cache if command=='frame' else None)
     except Exception as error:  # noqa: BLE001 - 启动与通信失败须传回窗口。
@@ -262,6 +263,7 @@ class SessionProcess:
         self.history = deque(maxlen=12)
         self.frame_cache = {}
         self.received_impacts = []
+        self.reference_ghost = None
         self.simulation = SimulationView()
         self.simulation.input_config = driving_mode.input_config
         self.simulation._physics_workers = self.simulation if physics_workers else None
@@ -308,7 +310,9 @@ class SessionProcess:
 
     def _metadata(self, metadata):
         (track, seed, shape, props, config, self.abs_enabled, self.tcs_enabled,
-         self.esc_enabled, self.mode, traffic_models, self.source_modules) = metadata
+         self.esc_enabled, self.mode, traffic_models, self.source_modules, include_ghost, ghost) = metadata
+        if include_ghost:
+            self.reference_ghost = ghost
         self.seed, self.track_id = seed, track
         self.vehicle_config = config
         sim = self.simulation

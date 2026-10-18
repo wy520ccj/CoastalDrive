@@ -1,5 +1,6 @@
 import hashlib
 import json
+import logging
 import math
 import os
 from contextlib import nullcontext
@@ -10,6 +11,7 @@ from controls import Controller, KeyboardController
 from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
 from highway_run import TRAFFIC_DENSITIES, HighwayRun
+from lap_ghost import GhostRecorder, ghost_context, load_ghost, save_ghost
 from race import GameMode, RaceTracker
 from session_clock import SessionClock
 from simulation import FIXED_DT, Control, Simulation, interpolate
@@ -82,6 +84,9 @@ class Session:
         self.mode = GameMode.FREE_DRIVE
         self.notice = ""
         self.race = RaceTracker(self.mode, scores=scores)
+        self.reference_ghost = None
+        self.ghost_recording = None
+        self.ghost_conditions = None
         self.highway = HighwayRun()
         self.sync_snapshots()
 
@@ -192,6 +197,20 @@ class Session:
             self.mode, circuit=self.track.circuit,
             score_variant=self.score_variant(),
         )
+        self.reference_ghost = None
+        self.ghost_recording = None
+        self.ghost_conditions = None
+        if self.mode == GameMode.TIME_TRIAL:
+            try:
+                self.ghost_conditions = ghost_context(self.seed)
+                reference = self.race.snapshot
+                self.reference_ghost = load_ghost(self.race.scores, self.mode, self.race.score_id,
+                    self.ghost_conditions, reference.reference_lap, reference.reference_splits)
+                if self.reference_ghost is None and reference.reference_lap is not None:
+                    self.race.snapshot = replace(reference, ghost_notice="最佳圈暂无幽灵；新最佳圈将自动记录。")
+            except (OSError, ValueError, KeyError, TypeError) as error:
+                logging.getLogger(__name__).warning("幽灵载入失败: %s", error)
+                self.race.snapshot = replace(self.race.snapshot, ghost_notice="幽灵缺失、损坏或版本不兼容；成绩保留。")
         self.highway = HighwayRun(challenge=self.mode == GameMode.DISTANCE_CHALLENGE)
         self.keyboard.direction = 1
         self.keyboard.input_config = self.driving_mode.input_config
@@ -229,7 +248,10 @@ class Session:
                 self.highway_progress(), challenge=self.mode == GameMode.DISTANCE_CHALLENGE
             )
         else:
-            self.race.begin()
+            state = self.simulation.snapshot()
+            self.race.begin(start_time=state.time)
+            if self.mode == GameMode.TIME_TRIAL and self.ghost_conditions is not None:
+                self.ghost_recording = GhostRecorder(state, self.ghost_conditions)
 
     def tick(self):
         if self.phase == Phase.COUNTDOWN:
@@ -247,6 +269,7 @@ class Session:
                 self.race.update(self.current, FIXED_DT, reset=True)
             else:
                 self.race.update(self.current, FIXED_DT)
+            self.record_ghost_step()
             if self.simulation.track == "endless":
                 self.highway.update(
                     self.highway_progress(self.current), self.current.collisions, FIXED_DT,
@@ -261,6 +284,37 @@ class Session:
                 and self.current.player.position[1] >= HIGHWAY_LENGTH
             ):
                 self.finish()
+
+    def record_ghost_step(self):
+        recorder = self.ghost_recording
+        if recorder is None:
+            return
+        race = self.race.snapshot
+        if race.invalidated:
+            self.ghost_recording = None
+            return
+        recorder.append(self.current)
+        if recorder.notice:
+            self.race.snapshot = replace(race, ghost_notice=recorder.notice)
+            self.ghost_recording = None
+            return
+        if not race.finished:
+            return
+        self.ghost_recording = None
+        if race.save_error:
+            self.race.snapshot = replace(race, ghost_notice="成绩未保存，本次幽灵未关联。")
+            return
+        if not race.new_best:
+            return
+        try:
+            if ghost_context(self.seed) != recorder.context:
+                raise ValueError("试跑期间版本改变，成绩保留但未保存幽灵；请重开程序。")
+            lap = recorder.finish(self.race.score_id, race)
+            save_ghost(lap, self.race.scores, self.mode)
+            self.race.snapshot = replace(race, ghost_notice="最佳圈幽灵已保存，下次挑战可对照。")
+        except (OSError, ValueError) as error:
+            logging.getLogger(__name__).warning("幽灵保存失败: %s", error)
+            self.race.snapshot = replace(race, ghost_notice="幽灵未保存，成绩保留；请检查存储目录或版本。")
 
     def countdown_step(self, ticks):
         """未开放驾驶时只结算起步节拍，不施力、不记圈速。"""
@@ -365,6 +419,7 @@ class Session:
         self.mode = GameMode.FREE_DRIVE
         self.simulation.set_checkpoint_frames_enabled(False)
         self.race.start(self.mode)
+        self.reference_ghost = self.ghost_recording = None
         self.highway = HighwayRun()
         self.keyboard.clear()
         self.stepper.remainder = 0.0
@@ -373,6 +428,7 @@ class Session:
     def finish(self):
         self.stop_clock()
         self.race.stop()
+        self.ghost_recording = None
         self.highway.stop("挑战提前结束" if self.mode == GameMode.DISTANCE_CHALLENGE else "自由驾驶结束")
         self.phase = Phase.RESULTS
         self.keyboard.clear()

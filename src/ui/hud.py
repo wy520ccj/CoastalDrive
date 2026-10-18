@@ -28,7 +28,7 @@ def driving_help(mode, abs_label=None, tcs_label=None, esc_label=None):
     if esc_label is not None:
         electronics += f" ESC{esc_label}"
     return (f"驾驶输入：{mode.label}{direction}{electronics}\n"
-            f"W / ↑ 油门   S / ↓ {brake}   A D 转向   R 复位   C 视角   N 切台   M 音乐   Esc 暂停")
+            f"W / ↑ 油门   S / ↓ {brake}   A D 转向   R 复位   C 视角   N 切台   M 音乐   G 幽灵   Esc 暂停")
 
 
 class DrivingHUD:
@@ -156,6 +156,8 @@ class DrivingHUD:
             message = f"圈速无效：{race.invalid_reason}" if race.invalidated else "本圈有效"
             if race.score_notice:
                 message += " · "+race.score_notice
+            if race.ghost_notice:
+                message += " · "+race.ghost_notice
         else:
             set_text(self.mode, "滨海自由驾驶")
             set_text(self.status, "COASTAL CRUISE")

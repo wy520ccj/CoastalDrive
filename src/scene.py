@@ -1,5 +1,6 @@
 """Visual scene only; all moving transforms come from simulation snapshots."""
 
+import logging
 import math
 from functools import lru_cache
 from time import perf_counter
@@ -42,6 +43,7 @@ from coastal_map import (
 from environment import foundation
 from environment.coastal_slice import build_slice, build_terrain, dress_existing_tree
 from environment.water import style_water
+from ghost_visual import GHOST_MASK, GhostVisual
 from highway_map import HIGHWAY_LENGTH
 from highway_map import ROAD_WIDTH as HIGHWAY_ROAD_WIDTH
 from highway_map import meshes as highway_meshes
@@ -262,6 +264,9 @@ class Scene:
         self.endless_templates = None
         self.ocean = None
         self.checkpoint_nodes = []
+        self.ghost = None
+        self.ghost_lap = None
+        self.ghost_error = ""
         self.track_points = [Vec3(point.x, point.y, point.z) for point in MAP_POINTS]
         self.setup_lighting()
         self.setup_scene()
@@ -696,6 +701,28 @@ class Scene:
                     lamp.show()
                 else:
                     lamp.hide()
+
+    def set_ghost(self, lap):
+        if lap is self.ghost_lap:
+            return
+        self.ghost_lap = lap
+        self.ghost_error = ""
+        if lap is not None and self.ghost is None:
+            try:
+                self.ghost = GhostVisual(self.render, vehicle_definition(self.base.vehicle_model_id),
+                                         self.base.session.vehicle_config, self.sun_path)
+            except (OSError, ValueError, RuntimeError) as error:
+                logging.getLogger(__name__).warning("幽灵显示资源未加载: %s", error)
+                self.ghost_error = "幽灵显示资源未能加载；仍可继续驾驶。"
+        if self.ghost is not None:
+            self.ghost.root.hide(GHOST_MASK)
+
+    def apply_ghost(self, state, race, enabled):
+        if self.ghost is None:
+            return
+        pose = (self.ghost_lap.pose_at(state.time-race.start_time)
+                if self.ghost_lap is not None and race.start_time is not None and not race.invalidated else None)
+        self.ghost.apply(pose, state.player.position, enabled)
 
     def close(self):
         self.sun_path.node().setShadowCaster(False)
