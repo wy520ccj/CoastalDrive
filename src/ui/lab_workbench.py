@@ -107,6 +107,10 @@ def build_workbench(app):
 
     app.design_loop = DesignLoopPanel(app)
     app.button("游戏联动", .13, .90, .45, app.design_loop.show)
+    from ui.lab_workshop import WorkshopPanel
+
+    app.workshop = WorkshopPanel(app)
+    app.button("工坊挑战", -1.33, -.935, .60, app.workshop.show, accent=True)
 
     app.record_menu = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
                                  frameSize=(1.05, 1.71, .34, .83), sortOrder=60, state=DGG.NORMAL)

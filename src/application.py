@@ -1,6 +1,7 @@
 import json
 import logging
 import time
+from dataclasses import replace
 
 import simplepbr
 from direct.gui import DirectGuiGlobals as DGG
@@ -38,6 +39,7 @@ from ui.main_menu import MainMenu
 from ui.workspace_loading import WorkspaceLoading
 from vehicle_designs import vehicle_design
 from vehicle_workspace import WorkspaceVehicle, workspace_vehicle_path
+from workshop import road_result
 
 
 class CoastalDrive(ShowBase):
@@ -298,6 +300,8 @@ class CoastalDrive(ShowBase):
         yield 2, "准备车辆实验视窗"
         self.lab = VehicleLab(engine=self, output=self.lab_output, workspace_vehicle=self.workspace_vehicle,
                               lab_workspace=self.lab_workspace, on_back=self.return_from_lab, activate=False)
+        if self.workspace_vehicle.workshop_result is not None:
+            self.lab.workshop.show()
         yield 3, "工程参数与试验记录已恢复"
         self.lab.root.prepareScene(self.win.getGsg())
         self.render.prepareScene(self.win.getGsg())
@@ -345,7 +349,8 @@ class CoastalDrive(ShowBase):
         if self.scene is not None:
             self.scene.render.reparentTo(self.render)
         if self.next_drive:
-            self._enter_game(GameMode.FREE_DRIVE, "coastal")
+            mode = GameMode.TIME_TRIAL if vehicle.workshop_result is not None else GameMode.FREE_DRIVE
+            self._enter_game(mode, "coastal")
             self.session.phase = Phase.LOADING
         self.render.prepareScene(self.win.getGsg())
         self.main_menu.root.prepareScene(self.win.getGsg())
@@ -847,6 +852,10 @@ class CoastalDrive(ShowBase):
 
     def workspace_vehicle_label(self):
         vehicle = self.workspace_vehicle
+        if vehicle.workshop_result is not None:
+            result = vehicle.workshop_result
+            road = "道路已完成" if result["road_validated"] else "等待有效圈验证"
+            return f"制动工坊 · {result['medal']}牌 · {road}\n停车距离改善 {result['improvement_pct']:.1f}%"
         source = "实验车" if vehicle.report_path else "目录车"
         return f"{source} · {vehicle_design(vehicle.design_id).name}\n{vehicle.config.mass:g} kg · 质心 {vehicle.config.center_of_mass_height:g} m"
 
@@ -1049,6 +1058,20 @@ class CoastalDrive(ShowBase):
                     )
                     if race.save_error:
                         self.panel_note.setText(f"{self.panel_note.getText()}\n{race.save_error}")
+                    receipt = self.workspace_vehicle.workshop_result
+                    validated = road_result(receipt, race, self.session.simulation.track)
+                    if validated is not None:
+                        self.panel_note.setText(f"工坊道路验证完成 · 工程{receipt['medal']}牌")
+                        if not receipt["road_validated"]:
+                            vehicle = replace(self.workspace_vehicle, workshop_result=validated)
+                            try:
+                                vehicle.save(self.workspace_path)
+                            except (OSError, ValueError) as error:
+                                logging.getLogger(__name__).warning("工坊道路进度未保存: %s", error)
+                                self.panel_note.setText("道路验证完成，进度未保存；请检查存储目录。")
+                            else:
+                                self.workspace_vehicle = vehicle
+                                self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
                 elif self.session.mode == GameMode.FREE_DRIVE:
                     self.panel_title.setText("驾驶结束")
                     self.panel_note.setText("滨海自由驾驶")
@@ -1075,6 +1098,8 @@ class CoastalDrive(ShowBase):
                 ("返回主菜单", self.back_to_menu),
                 ("退出", self.userExit),
             ]
+            if self.workspace_vehicle.workshop_result is not None:
+                options[1] = ("返回工坊", self.open_vehicle_lab)
         else:
             self.panel.hide()
             return
@@ -1206,10 +1231,14 @@ class CoastalDrive(ShowBase):
         self.apply_scene(state,camera_dt)
         countdown = ""  # 起步节拍由中央大数字表现，左上角只保留驾驶信息。
         surface = "asphalt" if state.player.surface == "asphalt" else "off-road"
+        notice = self.session.notice
+        if (self.workspace_vehicle.workshop_result is not None and self.session.mode == GameMode.TIME_TRIAL
+                and self.session.simulation.track == "coastal"):
+            notice = "工坊道路验证：按顺序通过检查点，完成有效圈。" + notice
         self.hud.update(
             state, self.session.race.snapshot, self.session.highway.snapshot,
             track=self.session.simulation.track, countdown=countdown,
-            notice=self.session.notice,
+            notice=notice,
             driving_mode=self.session.driving_mode,
         )
         if not self.diagnostics.isHidden():

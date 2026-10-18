@@ -8,6 +8,7 @@ from paths import user_data
 from vehicle_config import VehicleConfig
 from vehicle_designs import vehicle_design
 from vehicle_parameters import config_from_document
+from workshop import validate_receipt
 
 
 def workspace_vehicle_path():
@@ -20,17 +21,21 @@ class WorkspaceVehicle:
     config: VehicleConfig
     parameter_metadata: dict | None = None
     report_path: str | None = None
+    workshop_result: dict | None = None
 
     def with_electronics(self, config):
         """带回游戏实际开关；保留原工程配置的机械子步数。"""
-        return replace(self, config=replace(self.config, braking=config.braking,
-                                           traction=config.traction, stability=config.stability))
+        updated = replace(self.config, braking=config.braking,
+                          traction=config.traction, stability=config.stability)
+        return replace(self, config=updated,
+                       workshop_result=self.workshop_result if updated == self.config else None)
 
     def save(self, path=None):
         path = workspace_vehicle_path() if path is None else Path(path)
+        validate_receipt(self.workshop_result, self.config)
         document = {"schema": "coastal-workspace-vehicle-v1", "design_id": self.design_id,
                     "vehicle_config": asdict(self.config), "parameter_metadata": self.parameter_metadata,
-                    "report_path": self.report_path}
+                    "report_path": self.report_path, "workshop_result": self.workshop_result}
         payload = json.dumps(document, ensure_ascii=False, indent=2, allow_nan=False)
         path.parent.mkdir(parents=True, exist_ok=True)
         temporary = path.with_suffix(".tmp")
@@ -53,4 +58,7 @@ class WorkspaceVehicle:
         report = document["report_path"]
         if report is not None and not isinstance(report, str):
             raise TypeError("车辆试验报告路径须为字符串")
-        return cls(design.id, config_from_document(document["vehicle_config"], design.config), metadata, report)
+        config = config_from_document(document["vehicle_config"], design.config)
+        receipt = document.get("workshop_result")
+        validate_receipt(receipt, config)
+        return cls(design.id, config, metadata, report, receipt)

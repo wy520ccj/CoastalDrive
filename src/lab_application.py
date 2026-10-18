@@ -118,6 +118,7 @@ class VehicleLab(DirectObject):
                     self.show_error("A基线载入失败，当前B记录已恢复", error)
                 self.present_summary(self.record.metadata["summary"])
                 self.refresh_plots()
+            self.workshop.restore_saved(workspace_vehicle)
         if activate:
             self.activate()
         else:
@@ -203,7 +204,7 @@ class VehicleLab(DirectObject):
 
     def cycle_entry(self, direction):
         if any(not panel.isHidden() for panel in (self.parameter_help.root, self.engineering_panel.root,
-                                                  self.design_loop.root)):
+                                                  self.design_loop.root, self.workshop.root)):
             return
         entries = [entry for entry in (*self.entries.values(), *self.manual_entries.values())
                    if not entry.isHidden() and entry.guiItem.getActive()]
@@ -213,6 +214,8 @@ class VehicleLab(DirectObject):
         entries[index]["focus"] = 1
 
     def show_parameter_help(self):
+        if not self.workshop.root.isHidden():
+            return
         key = self.hovered_parameter or self.focused_parameter
         self.blur_entries()
         for menu in (self.vehicle_menu, self.maneuver_menu, self.abs_menu, self.esc_menu, self.plot_menu):
@@ -633,7 +636,7 @@ class VehicleLab(DirectObject):
         # DirectEntry的focus选项不随鼠标聚焦同步，必须读取PGEntry实际状态。
         if any(not panel.isHidden() for panel in (self.advanced_panel, self.manual_panel,
                 self.details_panel, self.record_menu, self.parameter_help.root, self.engineering_panel.root,
-                self.design_loop.root, self.notice.root)):
+                self.design_loop.root, self.workshop.root, self.notice.root)):
             return
         if not any(entry.guiItem.getFocus() and not entry.isHidden()
                    for entry in (*self.entries.values(), *self.manual_entries.values())):
@@ -644,6 +647,9 @@ class VehicleLab(DirectObject):
             self.notice.dismiss()
             return
         self.blur_entries()
+        if not self.workshop.root.isHidden():
+            self.workshop.hide()
+            return
         if not self.design_loop.root.isHidden():
             self.design_loop.hide()
             return
@@ -990,6 +996,7 @@ class VehicleLab(DirectObject):
             self.show_sample(round(self.playhead*120))
             if self.playhead >= active.samples[-1]["time"]:
                 self.playing = False
+        self.workshop.update()
         return task.cont
 
     def back_to_game(self):
@@ -1018,6 +1025,7 @@ class VehicleLab(DirectObject):
             self.engine.taskMgr.remove("simplepbr update")
         self.ignoreAll()
         self.design_loop.close()
+        self.workshop.hide()
         if self.run_state is not None:
             self.run_state.close()
         self.scene.close()

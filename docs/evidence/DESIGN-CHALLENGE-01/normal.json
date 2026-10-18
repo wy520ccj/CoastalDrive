@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "precision_bits": 32,
+  "real_trials": [
+    {
+      "challenge_id": "coastal-braking-v1",
+      "share_index": 0,
+      "large_brakes": false,
+      "cost": 0,
+      "baseline_m": 32.406474258239136,
+      "candidate_m": 32.406474258239136,
+      "improvement_pct": 0.0,
+      "peak_yaw_radps": 0.0009722637478262186,
+      "passed": false,
+      "medal": null,
+      "config_digest": "edebd390c626dee26db2a275e18eb8cce7a1b613d419082b2dd60d8a6d2cdfbd",
+      "road_validated": false
+    },
+    {
+      "challenge_id": "coastal-braking-v1",
+      "share_index": 2,
+      "large_brakes": true,
+      "cost": 4,
+      "baseline_m": 32.406474258239136,
+      "candidate_m": 24.444595828958498,
+      "improvement_pct": 24.56878945186819,
+      "peak_yaw_radps": 0.0013252156786620617,
+      "passed": false,
+      "medal": null,
+      "config_digest": "ae0f67db70c302113ebca09a0230a6a3f20d9c9fea87b0da1c94ab0ffd369fcb",
+      "road_validated": false
+    },
+    {
+      "challenge_id": "coastal-braking-v1",
+      "share_index": 2,
+      "large_brakes": false,
+      "cost": 1,
+      "baseline_m": 32.406474258239136,
+      "candidate_m": 28.293529675218842,
+      "improvement_pct": 12.69173730608662,
+      "peak_yaw_radps": 0.00015352701302617788,
+      "passed": true,
+      "medal": "金",
+      "config_digest": "e651a3dfdaf09654182b378c7e5d9a1d9683e54ff97ecc34dc761680c8c6bd9c",
+      "road_validated": false
+    }
+  ],
+  "same_window": true,
+  "restart_from_record": true,
+  "road_result_fixture_only": true,
+  "human_driving": "not_run"
+}
