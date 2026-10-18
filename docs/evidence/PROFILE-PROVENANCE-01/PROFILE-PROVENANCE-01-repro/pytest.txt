@@ -1,0 +1,23 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_________________ test_source_fields_and_exact_rating_anchors _________________
+
+    def test_source_fields_and_exact_rating_anchors():
+        document = json.loads(GR86_PROFILE_PATH.read_text(encoding="utf-8"))
+        metadata = document["metadata"]
+>       assert set(metadata["vehicle_fields"]) == set(asdict(GR86_DESIGN))
+E       AssertionError: assert {'air_density...inertia', ...} == {'air_density...inertia', ...}
+E         
+E         Extra items in the right set:
+E         'unsprung_masses'
+E         'tire_radial_stiffness'
+E         'suspension_damper_curves'
+E         'suspension_spring_preloads'
+E         'tire_aligning_enabled'...
+E         
+E         ...Full output truncated (6 lines hidden), use '-vv' to show
+
+tests\test_gr86.py:23: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_gr86.py::test_source_fields_and_exact_rating_anchors - Asse...
+1 failed in 0.38s

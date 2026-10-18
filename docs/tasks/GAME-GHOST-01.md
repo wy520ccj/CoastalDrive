@@ -1,6 +1,6 @@
 # GAME-GHOST-01 同配置个人最佳幽灵
 
-- 状态：in_progress（功能250be45/T0/T1/真实回放渲染已完成，本批T2运行中；人工体验待确认）；前置GAME-FEEDBACK-01，基线main/634ffcd，开始前工作区干净，单条施工线。
+- 状态：in_progress（功能250be45/T0/T1/真实回放渲染已完成，本批T2首败后修复/续跑中；人工体验待确认）；前置GAME-FEEDBACK-01，基线main/634ffcd，开始前工作区干净，单条施工线。
 - 目标：计时挑战中看到自己同配置最佳有效圈的参考车，辅助辨认线路/制动/速度得失；可开关，不遮挡主车。
 - 先读：race/session/session_clock/session_process的真实固定步与传输，scene/vehicle_visual的显示状态；现有分段参考必须与幽灵来自同一整圈。
 - 范围：固定仿真时刻记录展示所需的位姿/轮胎信息、最佳有效圈持久化、只读插值显示与开关、相关测试/文档/证据。
@@ -27,5 +27,8 @@
 
 ## 本批T2
 
-- 已在250be45/干净工作区启动：`.venv/Scripts/python.exe tools/validate.py T2 --output logs/validation/GAME-GHOST-01-T2 --timeout 1800`。当前仍为全量pytest阶段，Ruff已通过；没有阶段通过结论，不重启这次检查。
-- 后续从该目录`summary.json`及活进程核对最终状态；失败/超时与未执行项原样保留。功能源码冻结，收尾文档提交不改被测代码。
+- 250be45/干净工作区：`.venv/Scripts/python.exe tools/validate.py T2 --output logs/validation/GAME-GHOST-01-T2 --timeout 1800`。Ruff通过，完整pytest在667通过后首败GR86来源字段，314.44秒；其余pytest与后续全部检查not_run，原结果[归档](../evidence/GAME-GHOST-01/T2-original/summary.json)，不改写为通过。
+- 修复包[PROFILE-PROVENANCE-01](PROFILE-PROVENANCE-01.md)/047dc11：补10项元数据与F1依据，完整实际配置/参数SHA保持；普通T1 22项/三种子、Double9项及实际渲染通过。
+- 续跑脚本[原始范围与复用断言](../evidence/GAME-GHOST-01/t2_continue.py)先核对首败前667节点/对应测试文件未改，仅src/ui/parameter_help变化、仅GR86元数据资产变化。当前3516节点含新增1项；从GR86首节点起2849项实际执行，前667明确复用。Ruff与T2后续全部命令仍实际跑，独立目录`logs/validation/GAME-GHOST-01-T2-continuation`，每条1800秒上限；fail-fast保持，不因续跑改变判据。
+- 命令：`.venv/Scripts/python.exe docs/evidence/GAME-GHOST-01/t2_continue.py`。范围不满足断言则停止，不能默认复用；本次原失败仍单独保留。续跑启动后以summary/live process读取结果，不启动重复任务。
+- 当前整批阶段与人工Gate尚未通过；功能可本地体验，趣味性待用户实际驾驶。
