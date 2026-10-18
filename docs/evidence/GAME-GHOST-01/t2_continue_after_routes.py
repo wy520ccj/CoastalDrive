@@ -11,8 +11,9 @@ from t2_continue import BASELINE, ROOT
 from validate import execute_plan, git_value, make_plan
 
 
-def main():
-    output = ROOT / "logs/validation/GAME-GHOST-01-T2-after-routes"
+def main(*, after_impact=False):
+    output = ROOT / ("logs/validation/GAME-GHOST-01-T2-after-impact" if after_impact
+                     else "logs/validation/GAME-GHOST-01-T2-after-routes")
     if output.exists():
         raise ValueError("不覆盖已有续跑")
     prior = ROOT / "logs/validation/GAME-GHOST-01-T2-after-h1"
@@ -26,8 +27,10 @@ def main():
     assert json.loads((supplement / "summary.json").read_text(encoding="utf-8"))["passed"] is True
     changed = git_value("diff", "--name-only", BASELINE, "HEAD").splitlines()
     assert [p for p in changed if p.startswith("src/")] == ["src/ui/parameter_help.py"]
-    assert [p for p in changed if p.startswith("tests/")] == [
-        "tests/test_gr86.py", "tests/test_h1_vehicle.py", "tests/test_h2_map.py", "tests/test_phase3_map.py"]
+    expected_tests = ["tests/test_gr86.py", "tests/test_h1_vehicle.py", "tests/test_h2_map.py", "tests/test_phase3_map.py"]
+    if after_impact:
+        expected_tests.append("tests/test_impact_delivery.py")
+    assert [p for p in changed if p.startswith("tests/")] == sorted(expected_tests)
     assert [p for p in changed if p.startswith("assets/")] == ["assets/game/vehicle-configs/gr86-2022-premium-6mt.json"]
     collection = subprocess.run([sys.executable, "-m", "pytest", "--collect-only", "-q", "tests"],
         cwd=ROOT, env={**os.environ, "PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8"},
@@ -38,23 +41,38 @@ def main():
     completed = [n for n in nodes if n.startswith(modules)]
     assert len(completed) == 54
     reused_set = set(prior_summary["reused_nodes"] + completed)
+    impact_sources = []
+    if after_impact:
+        impact_prior = ROOT / "logs/validation/GAME-GHOST-01-T2-after-routes"
+        impact_fixed = ROOT / "logs/validation/VALIDATION-IMPACT-01-T1"
+        impact_summary = json.loads((impact_prior / "summary.json").read_text(encoding="utf-8"))
+        assert impact_summary["status"] == "failed" and impact_summary["reused_pytest_passes"] == 740
+        assert "1 failed, 56 passed" in (impact_prior / "pytest.log").read_text(encoding="utf-8")
+        assert json.loads((impact_fixed / "summary.json").read_text(encoding="utf-8"))["passed"] is True
+        assert "4 passed" in (impact_fixed / "pytest.log").read_text(encoding="utf-8")
+        reused_set.update(impact_summary["remaining_nodes"][:56])
+        reused_set.update(n for n in nodes if n.startswith("tests/test_impact_delivery.py::"))
+        impact_sources = [impact_prior / "summary.json", impact_prior / "pytest.log",
+                          impact_fixed / "summary.json", impact_fixed / "pytest.log"]
     reused, remaining = [n for n in nodes if n in reused_set], [n for n in nodes if n not in reused_set]
-    assert len(reused) == 740 and len(remaining) == 2776
+    assert len(reused) == (797 if after_impact else 740)
+    assert len(remaining) == (2719 if after_impact else 2776)
     files = list(dict.fromkeys(n.split("::")[0] for n in remaining))
     checks = make_plan("T2", [], [], output)
     checks[1].args = ["-m", "pytest", "-q", "-x", *files]
     checks = [c for c in checks if not c.name.startswith("headless-") and c.name != "handling"]
     sources = [prior / "summary.json", prior / "pytest.log", routes / "summary.json", routes / "pytest.log",
-               supplement / "summary.json", supplement / "pytest.log"]
+               supplement / "summary.json", supplement / "pytest.log", *impact_sources]
     metadata = {"started_utc": datetime.now(UTC).isoformat(),
         "git_head": git_value("rev-parse", "HEAD"), "git_status": git_value("status", "--short"),
         "python": sys.version, "baseline": BASELINE, "reused_pytest_passes": len(reused),
         "remaining_pytest_items": len(remaining), "reused_nodes": reused, "remaining_nodes": remaining,
         "evidence_sha256": {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},
         "reused_checks": prior_summary["reused_checks"],
-        "reuse_basis": "此前686项+完整道路/H3模块54项，交通原生分支恢复原断言后单独通过；只改接触读取，生产物理不变；三种子/handling同源复用；余交通/道路长测实际执行"}
+        "reuse_basis": "此前686项+道路/H3模块54项；after-impact另加56已过+碰撞交付剩余1项，完整4项T1/三种子通过；仅测试实际碰撞时序，生产物理不变；余交通/道路长测实际执行"}
     return execute_plan(checks, output, "T2-continuation", 1800, metadata)
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    assert sys.argv[1:] in ([], ["--after-impact"])
+    raise SystemExit(main(after_impact=bool(sys.argv[1:])))

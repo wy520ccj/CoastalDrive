@@ -98,18 +98,25 @@ def test_real_challenge_impact_failure_frame_is_delivered_once():
     sim = session.simulation
     rail = sim._world.rayTestClosest(Vec3(0, 30, .4), Vec3(10, 30, .4), BitMask32.bit(0))
     assert rail.hasHit() and "rail" in rail.getNode().getName()
-    # 2cm真实间隙在8m/s的首个子步中闭合；不用已穿入护栏的起始姿态触发事件。
+    # 2cm真实间隙先闭合、随后求解冲量；不用已穿入护栏的起始姿态触发事件。
     x = rail.getHitPos().x - sim.config.collision_half_width - .02
     sim.player.reset((x, 30, .55))
     assert all(hit.getManifoldPoint().getDistance() >= 0 for hit in
                sim._world.contactTestPair(sim.player._chassis, rail.getNode()).getContacts())
     session.simulation.player._chassis.setLinearVelocity(Vec3(8, 0, 0))
     try:
-        frame = session.frame(FIXED_DT)
+        delivered = []
+        for _ in range(4):
+            frame = session.frame(FIXED_DT)
+            delivered.extend(frame.impacts)
+            if session.phase == Phase.RESULTS:
+                break
+            assert frame.collisions == 0 and frame.impacts == ()
         assert session.phase == Phase.RESULTS
         assert frame.collisions == 1
         assert len(frame.impacts) == 1
-        assert frame.impacts[0].tick == 1
+        assert delivered == list(frame.impacts)
+        assert frame.impacts[0].tick == session.current.tick
         assert frame.impacts[0].material == "metal_barrier"
         assert session.frame(FIXED_DT).impacts == ()
     finally:

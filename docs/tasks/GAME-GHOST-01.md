@@ -38,3 +38,6 @@
 
 - 第二次续跑2通过后首败H2路肩，5.18秒。VALIDATION-CONTACT-02补齐当前普通车的路肩/路线接触读数，54项完整模块复用53通过+交通原断言补验1通过；三种子/Double左右路肩通过。
 - 下一实际命令`.venv/Scripts/python.exe docs/evidence/GAME-GHOST-01/t2_continue_after_routes.py`，独立`logs/validation/GAME-GHOST-01-T2-after-routes`。740项明确复用，余2776项与未执行T2交通/道路检查继续；原失败不修改。所有生产物理/参数与幽灵功能提交保持。
+
+- after-routes已终止：56通过后首败真实碰撞首拍假设。VALIDATION-IMPACT-01证实事件在第2拍真实冲量时仅交付一次，未改生产代码；测试改等待真实终帧，完整4项/三种子与Double1项通过。
+- 再接续同脚本`--after-impact`，目录`logs/validation/GAME-GHOST-01-T2-after-impact`：797项显式复用，2719项及余T2检查实际执行，保持fail-fast。完整阶段仍未通过。
