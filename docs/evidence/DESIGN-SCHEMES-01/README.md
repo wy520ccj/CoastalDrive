@@ -9,5 +9,6 @@
 - `checks/`：T0/T1/Double/最终补测完整子命令与终态。首次相关T1为153 passed/1 failed（生命周期替身缺schemes），最终普通26项/三种子补覆盖保存路径与该替身；原未变路径结果明确复用，不称完整154项重新执行。Double原25项后补最终3项；普通最终选中状态1项另记。
 - 首次Double实际保存因WinError5拒绝目录改名终止，原失败见task与failure-notes，未进入道路圈，未覆盖旧数据。最终改为记录完成后原子提交scheme.json清单，Double真实流程r2通过。失败外部句柄来源未确定，未加重试/静默吞错。
 - `archive-manifest.json`保存复制来源、原始SHA与归档SHA；`source-manifest.json`记录施工源文件归一LF的SHA。原始标准导出及失败残留继续保留于logs/DESIGN-SCHEMES-01，不删除或覆盖用户方案。
+- 本目录JSON/TXT原样保留Windows换行，Git按CR行尾检查；pytest原始输出包含自身生成的行尾空格，单独免空白检查，不为通过检查而改写原始日志或哈希。源码仍按仓库正常规则检查。
 
 实际流程工具：`tools/vehicle_schemes_check.py --output <新目录>`；恢复用`--restore <既有流程目录> --output <新目录>`。Double经现有`tools/physics/run_sim_double.py`启动，检查隔离LOCALAPPDATA和方案库，不写用户存档。
