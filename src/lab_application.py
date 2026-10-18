@@ -650,7 +650,7 @@ class VehicleLab(DirectObject):
             return
         self.blur_entries()
         if not self.schemes.root.isHidden():
-            self.schemes.hide()
+            self.schemes.escape()
             return
         if not self.workshop.root.isHidden():
             self.workshop.hide()
@@ -973,6 +973,7 @@ class VehicleLab(DirectObject):
     def update(self, task):
         self.resize()
         self.design_loop.update()
+        self.schemes.virtual_driver.update()
         run = self.run_state
         if run is not None:
             if not run.paused and not run.done:

@@ -6,6 +6,7 @@ from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectEntry, DirectFrame
 
 from ui import theme
+from ui.virtual_driver import VirtualDriverPanel
 from vehicle_designs import vehicle_design
 from vehicle_schemes import compare_schemes, list_schemes, save_scheme, sync_road_progress
 
@@ -43,6 +44,8 @@ class SchemesPanel:
         for side, x in enumerate((-1.52, .13)):
             app.button("‹", x+.04, .14, .10, lambda s=side: self.move(s, -1), parent=self.root)
             app.button("›", x+1.42, .14, .10, lambda s=side: self.move(s, 1), parent=self.root)
+        self.virtual_driver = VirtualDriverPanel(app, self)
+        app.button("虚拟试车员 A/B", .63, .65, .92, self.virtual_driver.show, parent=self.root)
         self.root.hide()
 
     def show(self):
@@ -68,11 +71,15 @@ class SchemesPanel:
         self.root.show()
 
     def hide(self):
+        self.virtual_driver.hide()
         self.name_entry["focus"] = 0
         for menu in self.menus:
             if menu is not None:
                 menu.hidePopupMenu()
         self.root.hide()
+
+    def escape(self):
+        self.virtual_driver.hide() if not self.virtual_driver.root.isHidden() else self.hide()
 
     def refresh(self, selected=None):
         if selected is None:
