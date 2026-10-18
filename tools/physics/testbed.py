@@ -141,10 +141,8 @@ def _surface(case, x, _y):
 
 
 def _wheel_surface_types(vehicle):
-    return tuple(
-        "asphalt" if _surface("split_mu_braking", wheel.getRaycastInfo().getContactPointWs().x, 0) else "grass"
-        for wheel in vehicle._vehicle.getWheels()
-    )
+    # 与真实轮胎施力同源；耦合悬架不再更新原生射线的接触坐标。
+    return tuple(contact.surface for contact in vehicle.snapshot().wheel_contacts)
 
 
 def _initial_speed(case):

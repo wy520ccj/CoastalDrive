@@ -47,3 +47,6 @@
 
 - after-lab-ui在105通过后首败旧CLI默认Game要求工作进程；VALIDATION-CLI-01显式检查两种模式，完整4项/三种子通过，生产不改。
 - 下一`.venv/Scripts/python.exe docs/evidence/GAME-GHOST-01/t2_resume_remainder.py --previous logs/validation/GAME-GHOST-01-T2-after-lab-ui --supplement logs/validation/VALIDATION-CLI-01-T1 --output logs/validation/GAME-GHOST-01-T2-after-cli`。1897项去重复用、1619项与长测继续；严格校验节点集合及源差异白名单。原结果保留。
+
+- after-cli的6通过后首败旧对开附着报告射线标签；VALIDATION-SURFACE-01改读实际快照，完整6项/三种子及Double真实节点通过，施力/参数不改。
+- 再续跑`t2_resume_remainder.py --previous logs/validation/GAME-GHOST-01-T2-after-cli --supplement logs/validation/VALIDATION-SURFACE-01-T1 --output logs/validation/GAME-GHOST-01-T2-after-surface`：1907项显式复用，1609项与长测继续。

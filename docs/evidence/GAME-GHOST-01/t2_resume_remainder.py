@@ -15,7 +15,7 @@ from validate import execute_plan, git_value, make_plan
 ALLOWED_TESTS = {
     "tests/test_gr86.py", "tests/test_h1_vehicle.py", "tests/test_h2_map.py",
     "tests/test_phase3_map.py", "tests/test_impact_delivery.py", "tests/test_lab_ui.py",
-    "tests/test_physics_cli.py",
+    "tests/test_physics_cli.py", "tests/test_physics_testbed.py",
 }
 
 
@@ -41,7 +41,7 @@ def main():
     count = int(match[1])
     changed = git_value("diff", "--name-only", BASELINE, "HEAD").splitlines()
     assert [p for p in changed if p.startswith("src/")] == ["src/ui/parameter_help.py"]
-    assert set(p for p in changed if p.startswith("tests/")) == ALLOWED_TESTS
+    assert {p for p in changed if p.startswith("tests/")} == ALLOWED_TESTS
     assert [p for p in changed if p.startswith("assets/")] == ["assets/game/vehicle-configs/gr86-2022-premium-6mt.json"]
     collection = subprocess.run([sys.executable, "-m", "pytest", "--collect-only", "-q", "tests"],
         cwd=ROOT, env={**os.environ, "PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8"},

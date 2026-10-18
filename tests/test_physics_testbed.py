@@ -37,6 +37,7 @@ def test_split_mu_assigns_different_surfaces_to_each_side():
         assert surfaces.count("asphalt") == 2
         assert surfaces.count("grass") == 2
         contact_surfaces = tuple(contact.surface for contact in vehicle.snapshot().wheel_contacts)
+        assert surfaces == contact_surfaces
         assert contact_surfaces.count("asphalt") == 2
         assert contact_surfaces.count("grass") == 2
     finally:

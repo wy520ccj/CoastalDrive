@@ -1,0 +1,51 @@
+{
+  "started_utc": "2026-10-18T06:20:11.364368+00:00",
+  "git_head": "fc90d7f2a784dc178932aabc9ceda3be59a8f1c0",
+  "git_status": "M docs/evidence/GAME-GHOST-01/t2_resume_remainder.py\n M tests/test_physics_testbed.py\n M tools/physics/testbed.py\n?? docs/tasks/VALIDATION-SURFACE-01.md",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_physics_testbed.py::test_split_mu_assigns_different_surfaces_to_each_side"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\VALIDATION-SURFACE-01-double\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.139
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_physics_testbed.py::test_split_mu_assigns_different_surfaces_to_each_side"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\VALIDATION-SURFACE-01-double\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.814
+    }
+  ]
+}

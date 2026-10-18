@@ -1,0 +1,24 @@
+......F
+================================== FAILURES ===================================
+____________ test_split_mu_assigns_different_surfaces_to_each_side ____________
+
+    def test_split_mu_assigns_different_surfaces_to_each_side():
+        world = _world()
+        vehicle = Vehicle(world, lambda x, y: x < 0, (0, 0, 0.55), reverse_enabled=False)
+        try:
+            for _ in range(240):
+                previous = vehicle._chassis.getLinearVelocity()
+                vehicle.apply_control(Control())
+                world.doPhysics(FIXED_DT, 0, FIXED_DT)
+                vehicle.after_step(previous)
+            surfaces = _wheel_surface_types(vehicle)
+>           assert surfaces.count("asphalt") == 2
+E           AssertionError: assert 0 == 2
+E            +  where 0 = <built-in method count of tuple object at 0x00000168CAE2CA90>('asphalt')
+E            +    where <built-in method count of tuple object at 0x00000168CAE2CA90> = ('grass', 'grass', 'grass', 'grass').count
+
+tests\test_physics_testbed.py:37: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_physics_testbed.py::test_split_mu_assigns_different_surfaces_to_each_side
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 6 passed in 7.10s
