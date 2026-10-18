@@ -7,6 +7,7 @@ from direct.gui.DirectGui import DirectFrame
 
 from road_comparison import RoadComparison, comparison_rows, context_mismatches, export_comparison
 from ui import theme
+from ui.road_review import RoadReviewPanel
 from vehicle_schemes import load_scheme
 from vehicle_state import FIXED_DT
 
@@ -33,9 +34,11 @@ class VirtualDriverPanel:
         self.note.textNode.setWordwrap(88)
         self.failure = app.text("", -1.52, -.57, .031, theme.FAILURE, parent=self.root)
         self.failure.textNode.setWordwrap(85)
-        self.run_button = app.button("运行道路 A/B", -.94, -.73, .95, self.start, parent=self.root, accent=True)
-        self.report_button = app.button("导出/打开报告", .20, -.73, .88, self.open_report, parent=self.root)
-        self.stop_button = app.button("取消/返回方案", 1.20, -.73, .78, self.hide, parent=self.root)
+        self.run_button = app.button("运行道路 A/B", -1.18, -.73, .72, self.start, parent=self.root, accent=True)
+        self.review = RoadReviewPanel(app, self)
+        self.review_button = app.button("逐门复盘", -.37, -.73, .70, self.review.show, parent=self.root)
+        self.report_button = app.button("导出/打开报告", .45, -.73, .73, self.open_report, parent=self.root)
+        self.stop_button = app.button("取消/返回方案", 1.24, -.73, .72, self.hide, parent=self.root)
         self.root.hide()
 
     def show(self):
@@ -57,6 +60,8 @@ class VirtualDriverPanel:
             self.failure.setText("")
         self.scheme_names.setText(f"A：{self.names[0]}\nB：{self.names[1]}")
         self.report_button["state"] = DGG.NORMAL if self.comparison is not None and self.comparison.done else DGG.DISABLED
+        self.review_button["state"] = (DGG.NORMAL if self.comparison is not None
+            and self.comparison.done and self.comparison.records else DGG.DISABLED)
         self.root.show()
 
     def start(self):
@@ -84,6 +89,7 @@ class VirtualDriverPanel:
             app.show_error("道路试车未开始，原试验保留", error)
             return
         self.run_button["state"] = self.report_button["state"] = DGG.DISABLED
+        self.review_button["state"] = DGG.DISABLED
         self.failure.setText("")
         for column in self.columns:
             column.setText("")
@@ -122,6 +128,7 @@ class VirtualDriverPanel:
         self.progress.setText({"complete": "两次实际试车已结束", "cancelled": "已取消，当前已完成步保留",
                                "failed": "物理求解失败，已完成步保留"}[comparison.status])
         self.run_button["state"] = self.report_button["state"] = DGG.NORMAL
+        self.review_button["state"] = DGG.NORMAL if comparison.records else DGG.DISABLED
 
     def save_report(self):
         if self.comparison is None or not self.comparison.done:
@@ -142,11 +149,15 @@ class VirtualDriverPanel:
         self.app.open_report()
 
     def close(self):
+        self.review.hide()
         if self.comparison is not None:
             try:
                 self.comparison.close()
             except (OSError, ArithmeticError, ValueError, RuntimeError) as error:
                 self.app.show_error("道路试车已关闭，部分记录整理失败", error)
+
+    def escape(self):
+        self.hide() if self.review.root.isHidden() else self.review.hide()
 
     def hide(self):
         self.close()

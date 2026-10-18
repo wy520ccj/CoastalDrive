@@ -1,0 +1,38 @@
+F..                                                                      [100%]
+================================== FAILURES ===================================
+_____ test_review_scrubs_original_records_without_opening_a_physics_world _____
+
+lab = <lab_application.VehicleLab object at 0x00000203431BF4D0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x00000203432A90F0>
+
+    def test_review_scrubs_original_records_without_opening_a_physics_world(lab, monkeypatch):
+        import road_comparison
+        def forbidden(*args, **kwargs):
+            raise AssertionError("复盘不得新建物理世界")
+        monkeypatch.setattr(road_comparison, "Simulation", forbidden)
+        panel = prepare(lab)
+        records = archived_records("normal")
+        panel.comparison = SavedComparison(records)
+        panel.present()
+        lab.entries["cg"].enterText(".48")
+        panel.review_button["command"]()
+        review = panel.review
+        assert not review.root.isHidden() and review.slider["value"] == 240.
+>       assert "漏门" in review.details[0].getText() and "+0.793" in review.details[1].getText()
+E       AssertionError: assert ('漏门' in 'A · 59.58 km/h · t=17.579s\n漏门 · 整车余量 -0.340 m\n请求 -1.000 → 实际转角 -1.91°\n侧偏 +0.093° · 朝向 -11.98°' and '+0.793' in 'B · 59.58 km/h · t=17.557s\n通过 · 整车余量 +0.827 m\n请求 -0.936 → 实际转角 -1.87°\n侧偏 +0.473° · 朝向 -0.39°')
+E        +  where 'A · 59.58 km/h · t=17.579s\n漏门 · 整车余量 -0.340 m\n请求 -1.000 → 实际转角 -1.91°\n侧偏 +0.093° · 朝向 -11.98°' = getText()
+E        +    where getText = render2d/aspect2d/DirectFrame-pg0/DirectFrame-pg126/DirectFrame-pg138/DirectFrame-pg141/-TextNode.getText
+E        +  and   'B · 59.58 km/h · t=17.557s\n通过 · 整车余量 +0.827 m\n请求 -0.936 → 实际转角 -1.87°\n侧偏 +0.473° · 朝向 -0.39°' = getText()
+E        +    where getText = render2d/aspect2d/DirectFrame-pg0/DirectFrame-pg126/DirectFrame-pg138/DirectFrame-pg141/-TextNode.getText
+
+tests\test_virtual_driver_ui.py:144: AssertionError
+---------------------------- Captured stderr setup ----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+=========================== short test summary info ===========================
+FAILED tests/test_virtual_driver_ui.py::test_review_scrubs_original_records_without_opening_a_physics_world
+1 failed, 2 passed in 8.48s

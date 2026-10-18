@@ -1,0 +1,14 @@
+{
+  "normalization": "CRLF/CR to LF",
+  "files": {
+    "src/road_comparison.py": "1ae27f522a3485fc1283bab46bd07cfbc068da5f8472613c1030301881748632",
+    "src/road_review.py": "1a45589ecca8584d766bb5285b1e6456158f8128ea86a9ed42e761b7a77330a2",
+    "src/ui/road_review.py": "2d482cccf194fcbe2d12d2d949074e46d6b7bdd2edf446cd490850a70a130c5e",
+    "src/ui/lab_schemes.py": "489e05b01288e2ee115f68d6820129eeb62d7bbfbf93f48bef13f78b19868993",
+    "src/ui/virtual_driver.py": "7ed6bd4726814467190e4311af050bd1c6c79483ea5bdf82a67ff43fc3921ad3",
+    "tests/test_road_review.py": "162a1746258187dfd71b94b231b3bc31aa084096b623d5f008aee2b8f09f432c",
+    "tests/test_virtual_driver_ui.py": "7102ebc8064b6e926c17bbce225c19e4905b8474dcdb7c93506f58702a9b8868",
+    "tools/validate.py": "08dfcb29462347b8e33e33e0b7baee981c7726634ad458dd5e8a932197d916f6",
+    "tools/road_review_check.py": "6f03f469bbcaf930504382c8518598bd441c4a91c7fd9cfe440df628305af796"
+  }
+}

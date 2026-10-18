@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 from direct.gui import DirectGuiGlobals as DGG
+from road_review_check import SavedComparison, archived_records
 
 from lab_application import VehicleLab
 from lab_experiment import LabOptions
@@ -125,3 +126,67 @@ def test_closing_lab_mid_trial_releases_the_only_road_world(lab):
     world = panel.comparison.run.simulation
     lab.close_game()
     assert world.closed and panel.comparison.status == "cancelled"
+
+
+def test_review_scrubs_original_records_without_opening_a_physics_world(lab, monkeypatch):
+    import road_comparison
+    def forbidden(*args, **kwargs):
+        raise AssertionError("复盘不得新建物理世界")
+    monkeypatch.setattr(road_comparison, "Simulation", forbidden)
+    panel = prepare(lab)
+    records = archived_records("normal")
+    panel.comparison = SavedComparison(records)
+    panel.present()
+    lab.entries["cg"].enterText(".48")
+    panel.review_button["command"]()
+    review = panel.review
+    assert not review.root.isHidden() and review.slider["value"] == 240.
+    expected = records[1].metadata["result"]["clearances"][3]
+    assert "漏门" in review.details[0].getText() and f"{expected:+.3f}" in review.details[1].getText()
+    before = tuple(record.snapshots for record in records)
+    review.slider.guiItem.setValue(220.)
+    review.slider.commandFunc()
+    assert "220.0" in review.readout.getText() and review.slider["value"] == 220.
+    for distance in range(321):
+        review.slider["value"] = distance
+        review.seek()
+    review.gate_buttons[5]["command"]()
+    assert "未到达" in review.details[0].getText() and "通过" in review.details[1].getText()
+    assert lab.run_state is None and lab.entries["cg"].get() == ".48"
+    assert before == tuple(record.snapshots for record in records)
+    lab.escape()
+    assert review.root.isHidden() and not panel.root.isHidden()
+    lab.escape()
+    assert panel.root.isHidden() and not lab.schemes.root.isHidden()
+
+
+def test_review_single_partial_and_broken_gate_records_are_explicit(lab):
+    from dataclasses import replace
+    panel = prepare(lab)
+    original = archived_records("normal")[0]
+    partial = replace(original, snapshots=original.snapshots[:1], controls=(), rows=(),
+        metadata={**original.metadata, "result": {**original.metadata["result"], "clearances": [], "errors": [], "gates": 0}})
+    panel.comparison = SavedComparison((partial,))
+    panel.present()
+    panel.review.show()
+    assert all(button["state"] == DGG.DISABLED for button in panel.review.gate_buttons)
+    assert "尚无记录" in panel.review.details[1].getText()
+    assert "尚无控制" in panel.review.details[0].getText()
+    panel.review.hide()
+    panel.comparison = SavedComparison((replace(original, snapshots=original.snapshots[:1], controls=(), rows=()),))
+    panel.review.show()
+    assert panel.review.root.isHidden() and not panel.root.isHidden()
+
+
+def test_review_loads_selected_b_back_to_original_reference_trial(lab):
+    panel = prepare(lab)
+    expected = lab.schemes.selected(1)
+    panel.comparison = SavedComparison(archived_records("normal"))
+    panel.present()
+    panel.review.show()
+    baseline, record, _ = expected.records()
+    # 使用实际按钮事件；载回的是保存的参考试验，而非道路插值状态。
+    panel.review.load_button["command"]()
+    assert panel.review.root.isHidden() and panel.root.isHidden() and lab.schemes.root.isHidden()
+    assert lab.record.snapshots == record.snapshots and lab.baseline.snapshots == baseline.snapshots
+    assert lab.engineered_config == expected.vehicle.config and lab.run_state is None

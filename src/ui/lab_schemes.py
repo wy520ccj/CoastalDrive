@@ -79,7 +79,7 @@ class SchemesPanel:
         self.root.hide()
 
     def escape(self):
-        self.virtual_driver.hide() if not self.virtual_driver.root.isHidden() else self.hide()
+        self.virtual_driver.escape() if not self.virtual_driver.root.isHidden() else self.hide()
 
     def refresh(self, selected=None):
         if selected is None:

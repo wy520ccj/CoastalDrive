@@ -1,0 +1,53 @@
+{
+  "started_utc": "2026-10-18T10:16:52.011184+00:00",
+  "git_head": "e37d81ec46f7c08f1dd2bc377a51ce9e10d41a0c",
+  "git_status": "M src/road_comparison.py\n M src/ui/lab_schemes.py\n M src/ui/virtual_driver.py\n?? docs/tasks/ROAD-REVIEW-01.md\n?? src/road_review.py\n?? src/ui/road_review.py\n?? tests/test_road_review.py\n?? tools/road_review_check.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_road_review.py",
+    "tests/test_virtual_driver_ui.py"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\ROAD-REVIEW-01-initial\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.096
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_road_review.py",
+        "tests/test_virtual_driver_ui.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\ROAD-REVIEW-01-initial\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 26.479
+    }
+  ]
+}

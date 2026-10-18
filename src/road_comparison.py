@@ -11,8 +11,9 @@ from time import perf_counter
 from driving_modes import DrivingMode
 from lab_records import model_fingerprint
 from lab_runtime import runtime_fingerprint
+from road_review import gate_crossings
 from simulation import Simulation
-from slalom_lesson import SlalomLesson
+from slalom_lesson import GATES, SlalomLesson
 from snapshot_wire import encode_snapshots
 from vehicle_state import FIXED_DT
 from virtual_test_driver import POLICY, VirtualTestDriver, target_x
@@ -244,7 +245,8 @@ def export_comparison(comparison, folder, names):
         payload = encode_snapshots((record.snapshots, ()))
         (target/"snapshots.bin").write_bytes(payload)
         document = {**record.metadata, "snapshot_sha256": hashlib.sha256(payload).hexdigest(),
-                    "controls": [asdict(control) for control in record.controls], "rows": record.rows}
+                    "controls": [asdict(control) for control in record.controls], "rows": record.rows,
+                    "gate_crossings": gate_crossings(record)}
         (target/"trial.json").write_text(json.dumps(document, ensure_ascii=False, indent=2, allow_nan=False), encoding="utf-8")
         with (target/"signals.csv").open("w", encoding="utf-8-sig", newline="") as stream:
             writer = csv.DictWriter(stream, fieldnames=record.rows[0].keys() if record.rows else ("tick", "time"))
@@ -252,7 +254,8 @@ def export_comparison(comparison, folder, names):
             writer.writerows(record.rows)
     rows = comparison_rows(comparison.records)
     summary = {"status": comparison.status, "names": names, "rows": rows,
-               "context_mismatches": context_mismatches(comparison.records), "updates_player_progress": False}
+               "context_mismatches": context_mismatches(comparison.records), "updates_player_progress": False,
+               "gate_crossings": [gate_crossings(record) for record in comparison.records]}
     (folder/"comparison.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2, allow_nan=False), encoding="utf-8")
     def cell(value):
         return "未完成/无有效值" if value is None else f"{value:.3f}"
@@ -264,12 +267,25 @@ def export_comparison(comparison, folder, names):
         for index, (label, record) in enumerate(zip(("A", "B"), comparison.records)))
     conditions = "条件一致，可比较差值。" if not summary["context_mismatches"] else (
         "条件变化，不计算差值："+"、".join(summary["context_mismatches"]))
+    gates_table = ""
+    for index, (distance, target) in enumerate(GATES):
+        cells = []
+        for side in range(2):
+            gates = summary["gate_crossings"][side] if side < len(comparison.records) else []
+            gate = gates[index] if index < len(gates) else None
+            cells.append((f"{'通过' if gate['passed'] else '漏门'} / {gate['clearance_m']:+.3f}m / "
+                          f"{gate['speed_kph']:.2f}km/h / {gate['control']['steering']:+.3f} → {gate['steering_deg']:+.2f}°")
+                         if gate else "未判门 / 无数据")
+        gates_table += (f"<tr><td>{index+1} / {distance:g}m / 目标{target:+g}m</td>"
+                        f"<td>{cells[0]}</td><td>{cells[1]}</td></tr>")
     page = f'''<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>虚拟试车员 A/B</title>
 <style>body{{font:16px system-ui;background:#f3efe3;color:#102b3a;max-width:1100px;margin:40px auto;padding:24px}}td,th{{padding:10px;border-bottom:1px solid #bbc9c8}}pre{{white-space:pre-wrap;overflow-wrap:anywhere}}svg{{width:100%;margin:15px 0}}</style>
 <h1>虚拟试车员 · 连续过门 A/B</h1><p>状态：{comparison.status}。固定60km/h目标、20Hz闭环策略、120Hz完整物理；游戏单机械步/原输入辅助，μ=1.1、种子0、无车流。</p>
 <p>同一策略会按各车状态产生不同请求，不是相同命令回放或最优驾驶。只有完成课题者有有效用时；余量/侧偏等指标区间截止各自终点或失败步，失败者更短的采样窗不表示更好。不会更新玩家奖牌或道路进度。</p>
 <p>{html.escape(conditions)}</p><table><tr><th>指标</th><th>A</th><th>B</th><th>B−A</th><th>单位</th></tr>{table}</table>
 <h2>实际道路轨迹</h2><p>A海蓝 / B橙色 / 灰虚线为目标；横轴为行驶进度，纵轴为左右位置。失败步之后不补轨迹。</p>{path_svg(comparison.records)}
+<h2>逐门复盘</h2><p>同位置首次向前过门；车速、朝向与实际转角由相邻完成步插值，转向请求为该步保持值。余量沿用原整车判门结果；缺失处不补数据。不由单项变化推断改装因果。</p>
+<table><tr><th>门 / 位置 / 目标左右</th><th>A 状态 / 余量 / 车速 / 请求→转角</th><th>B 状态 / 余量 / 车速 / 请求→转角</th></tr>{gates_table}</table>
 <p>每拍完整快照、控制请求、硬件、策略、源码与SDK首末摘要见A/B目录。逐步计算时间与初始化分别记录，不是实时FPS基准；不是实车标定。</p>{details}</html>'''
     (folder/"report.html").write_text(page, encoding="utf-8")
     return folder/"report.html"
