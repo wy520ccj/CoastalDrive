@@ -28,5 +28,36 @@ def result_feedback(result):
     if result.errors:
         index = len(result.errors)
         lines.append(f"第{index}门中心误差 {result.errors[-1]:+.2f}m / 车身余量 {result.clearances[-1]:+.2f}m")
-    note = result.reason+("\n"+result.save_notice if result.save_notice else "")
+    note = ("个人新最佳 · " if result.new_best else "")+result.reason+("\n"+result.save_notice if result.save_notice else "")
     return note, "\n".join(lines)
+
+
+def gate_feedback(result):
+    if result is None or not result.gate_times:
+        return "等待首门逐门反馈\n同一配置的完整个人最佳作对照"
+    index = len(result.gate_times)-1
+    seconds = result.gate_times[index]-(result.gate_times[index-1] if index else 0.)
+    title = f"第{index+1}门 · 余量 {result.clearances[index]:+.2f}m"
+    if result.finished and not result.succeeded:
+        return title+"\n本次未完成，不更新个人最佳"
+    delta = (f"累计差 {result.gate_times[index]-result.reference_times[index]:+.3f}s"
+             if result.reference_times else "暂无同配置逐门最佳")
+    return title+f"\n本段 {seconds:.3f}s · {delta}"
+
+
+def gate_columns(result):
+    labels, times, margins = ["门 / 偏差m"], ["累计 / s"], ["余量m / ΔPBs"]
+    for index, (_, center) in enumerate(GATES):
+        direction = "左" if center < 0 else "右" if center > 0 else "中"
+        if index >= len(result.gate_times):
+            labels.append(f"{index+1}{direction} · 未到达")
+            times.append("—")
+            margins.append("— / —")
+            continue
+        failed = result.clearances[index] < 0
+        labels.append(f"{index+1}{direction}{'漏' if failed else ''} {result.errors[index]:+.2f}")
+        times.append(f"{result.gate_times[index]:.3f}")
+        delta = (f"{result.gate_times[index]-result.reference_times[index]:+.3f}"
+                 if result.reference_times and not (result.finished and not result.succeeded) else "—")
+        margins.append(f"{result.clearances[index]:+.2f} / {delta}")
+    return tuple("\n".join(column) for column in (labels, times, margins))

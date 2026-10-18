@@ -26,7 +26,10 @@ def test_independent_process_completes_real_slalom_and_keeps_best_on_restart(tmp
         result = app.highway.snapshot.slalom
         assert app.phase == Phase.RESULTS and result.succeeded and result.gates == 6
         assert result.medal == "金" and app.current.collisions == 0 and app.current.tick > 1200
+        assert len(result.gate_times) == 6 and result.gate_times[-1] == result.run_seconds
+        assert result.new_best and not result.reference_times
         app.start(countdown=False, mode=GameMode.SLALOM_LESSON)
         assert app.highway.snapshot.slalom.best_seconds == result.run_seconds
+        assert app.highway.snapshot.slalom.reference_times == result.gate_times
     finally:
         app.close()

@@ -1,0 +1,172 @@
+[
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-normal-drive/summary.json",
+    "path": "normal/summary.json",
+    "sha256": "4597ecbb4806c528bf13257169e3e8103ad448a4ef025c5fa8539e9cb91a5d05"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-normal-drive/run-1.json.gz",
+    "path": "normal/run-1.json.gz",
+    "sha256": "68ba6d901fbaddff1f9e5d0b5ff46d56eb407a0fa1173ca65e04a865fc8e01f4"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-normal-drive/run-2.json.gz",
+    "path": "normal/run-2.json.gz",
+    "sha256": "84f16db299b345a95569c6c80349499ecd6f4c77a39ebbf8fd6040596c2b0697"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-normal-drive/best-after-first.json",
+    "path": "normal/best-after-first.json",
+    "sha256": "f6c774dae45d8f57b3f3db9fca20476cb88524b4722e04bc3382e12ca7d92a76"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-normal-drive/best-after-retry.json",
+    "path": "normal/best-after-retry.json",
+    "sha256": "f6c774dae45d8f57b3f3db9fca20476cb88524b4722e04bc3382e12ca7d92a76"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-normal-drive/run-1-result.png",
+    "path": "normal/run-1-result.png",
+    "sha256": "9b46a6491210e651fb37242d89252793a9453e2eb42626b14104eea8ab7629ba"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-normal-drive/run-2-gate-3.png",
+    "path": "normal/run-2-gate-3.png",
+    "sha256": "e054fbd8818eaba3b68621d95c15467ed41a93c1b9fb9696b02fbd3fe9f56853"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-normal-drive/run-2-result.png",
+    "path": "normal/run-2-result.png",
+    "sha256": "dda178e5a8688b2f2612a368941b38eb6d727a4f6b063ea22e7a347e51a2506a"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-double-drive/summary.json",
+    "path": "double/summary.json",
+    "sha256": "6cb223a6d70e22240737e7372917f8cce527778a9c2bca4a741210a22d09bc1c"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-double-drive/run-1.json.gz",
+    "path": "double/run-1.json.gz",
+    "sha256": "036d5553f17b70782ba54524606463f68226006a6321de45cc0fe96e1500ed46"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-double-drive/run-2.json.gz",
+    "path": "double/run-2.json.gz",
+    "sha256": "9b7ef61061ac6fae47757b78ba1b6cffb292819fff2cb62dd00459183019f2d1"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-double-drive/best-after-first.json",
+    "path": "double/best-after-first.json",
+    "sha256": "a47526e64b1b304254dcfdf4825105d1c00193a5d14f53ad058e1b97f1a670cd"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-double-drive/best-after-retry.json",
+    "path": "double/best-after-retry.json",
+    "sha256": "a47526e64b1b304254dcfdf4825105d1c00193a5d14f53ad058e1b97f1a670cd"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-double-drive/run-1-result.png",
+    "path": "double/run-1-result.png",
+    "sha256": "4db076075a6c540f00a4b8c14760ce1834f68223bc567d99459afabc8ca45da9"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-double-drive/run-2-gate-3.png",
+    "path": "double/run-2-gate-3.png",
+    "sha256": "9789856fe75b4ef1566db09d51f366e6c0eb77508f7ede840fea650fb5a7350c"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-double-drive/run-2-result.png",
+    "path": "double/run-2-result.png",
+    "sha256": "f3e7ba0516502a9d3d5cf7fae4cad14acaf0701e3d5e13a95fb4a69ff96bcb32"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-initial/pytest.log",
+    "path": "checks/initial/pytest.log",
+    "sha256": "cb48651522b07007d0e9d89c8d222173ce85d554a9b2901de4224ad5b1f12800"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-initial/ruff.log",
+    "path": "checks/initial/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-initial/summary.json",
+    "path": "checks/initial/summary.json",
+    "sha256": "0c59ad4e4aca42c18291f3cc923bedb93913d846f8da5f79c811014bb899c3f2"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-core/pytest.log",
+    "path": "checks/core/pytest.log",
+    "sha256": "b15f723964962a957e001bea0b3830587c3e04cb10480ed7836f2faebe13634a"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-core/ruff.log",
+    "path": "checks/core/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-core/summary.json",
+    "path": "checks/core/summary.json",
+    "sha256": "8692c35ecef80a961eef072cf7db371f7b938d9eea401505825f1125fbeadce5"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-ui/pytest.log",
+    "path": "checks/ui/pytest.log",
+    "sha256": "00a346d2986b84c778873f68c9654f636855157e5fcb4a31d1835a3723bf8118"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-ui/ruff.log",
+    "path": "checks/ui/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-ui/summary.json",
+    "path": "checks/ui/summary.json",
+    "sha256": "ddb8773b5cc5eced5a1e64d18e98ba3ca8738badac9107ba9c11d92a0b63afe0"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-T1/headless-0.log",
+    "path": "checks/T1/headless-0.log",
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-T1/headless-17.log",
+    "path": "checks/T1/headless-17.log",
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-T1/headless-23.log",
+    "path": "checks/T1/headless-23.log",
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-T1/pytest.log",
+    "path": "checks/T1/pytest.log",
+    "sha256": "ba1a83fb5bc59d7e143a8527266b5787f8fe8f20ddf58958baae4b1ece884471"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-T1/ruff.log",
+    "path": "checks/T1/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-T1/summary.json",
+    "path": "checks/T1/summary.json",
+    "sha256": "25c48d12bc130b71a3e6bcbb712dd6d5208edf49a0f421d4900892312466e450"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-double-T0/pytest.log",
+    "path": "checks/double-T0/pytest.log",
+    "sha256": "8afb9873801944a9d79924781a01c3fbe37f2984289d73b40368eea2a14ee214"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-double-T0/ruff.log",
+    "path": "checks/double-T0/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/SLALOM-FEEDBACK-01-double-T0/summary.json",
+    "path": "checks/double-T0/summary.json",
+    "sha256": "7723b91c44226a181be2fdd7f57fe5ef2ad13d62a833b7653a0390c32bf475b5"
+  }
+]

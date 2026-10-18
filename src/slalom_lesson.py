@@ -3,6 +3,7 @@
 import json
 import math
 from dataclasses import dataclass, replace
+from itertools import pairwise
 from pathlib import Path
 
 from vehicle_config import body_center
@@ -19,13 +20,28 @@ def medal_for(seconds):
     return "金" if seconds <= 15 else "银" if seconds <= 18 else "铜" if seconds <= 24 else ""
 
 
+def checked_run(run, seconds):
+    """逐门详情只能对应这一整次成功最佳，不拼接更快的单门。"""
+    times, margins = run["gate_times"], run["clearances"]
+    if (type(run["seconds"]) not in (int, float) or run["seconds"] != seconds
+            or not isinstance(times, (list, tuple)) or not isinstance(margins, (list, tuple))
+            or len(times) != len(GATES) or len(margins) != len(GATES)
+            or any(type(value) not in (int, float) or not math.isfinite(value) for value in (*times, *margins))
+            or times[0] <= 0 or any(b <= a for a, b in pairwise(times))
+            or times[-1] != seconds or any(value < 0 for value in margins)):
+        raise ValueError("逐门详情与成功最佳不一致")
+    return {"seconds": seconds, "gate_times": list(times), "clearances": list(margins)}
+
+
 class SlalomScores:
     def __init__(self, path, key):
         self.path, self.key = Path(path), key
         self.notice = ""
-        self.best = self.load().get(key)
+        values, runs = self.read()
+        self.best = values.get(key)
+        self.best_run = self.read_run(runs)
 
-    def load(self):
+    def read(self):
         try:
             document = json.loads(self.path.read_text(encoding="utf-8"))
             if (not isinstance(document, dict) or type(document["version"]) is not int or document["version"] != 1
@@ -34,32 +50,55 @@ class SlalomScores:
                            or not math.isfinite(value) or not 0 < value <= 24
                            for key, value in document["scores"].items())):
                 raise ValueError("过门成绩格式错误")
-            return document["scores"]
+            runs = document.get("runs", {})
+            if not isinstance(runs, dict):
+                self.notice = "历史逐门详情未读取，总成绩保留。"
+                runs = {}
+            return document["scores"], runs
         except FileNotFoundError:
-            return {}
+            return {}, {}
         except (OSError, ValueError, KeyError, TypeError):
             self.notice = "历史过门成绩未读取，可继续练习。"
-            return {}
+            return {}, {}
 
-    def record(self, seconds):
+    def load(self):
+        return self.read()[0]
+
+    def read_run(self, runs):
+        if self.key not in runs:
+            return None
+        try:
+            return checked_run(runs[self.key], self.best)
+        except (ValueError, KeyError, TypeError, IndexError):
+            self.notice = "历史逐门详情未读取，总成绩保留。"
+            return None
+
+    def record(self, seconds, *, gate_times=(), clearances=()):
         if type(seconds) not in (int, float) or not math.isfinite(seconds) or not 0 < seconds <= 24:
             raise ValueError("只能保存已通过课题的有限正用时")
-        values = self.load()
+        detail = checked_run({"seconds": seconds, "gate_times": gate_times, "clearances": clearances}, seconds) if gate_times or clearances else None
+        values, runs = self.read()
         best = values.get(self.key)
         if best is not None and best <= seconds:
             self.best = best
-            return
+            self.best_run = self.read_run(runs)
+            return False
         values[self.key] = seconds
+        if detail is None:
+            runs.pop(self.key, None)
+        else:
+            runs[self.key] = detail
         try:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             temporary = self.path.with_suffix(".tmp")
-            temporary.write_text(json.dumps({"version": 1, "scores": values}, ensure_ascii=False,
+            temporary.write_text(json.dumps({"version": 1, "scores": values, "runs": runs}, ensure_ascii=False,
                                             indent=2, allow_nan=False), encoding="utf-8")
             temporary.replace(self.path)
-        except OSError:
+        except (OSError, ValueError):
             self.notice = "本次过门成绩未保存，请检查存储目录。"
-            return
-        self.best, self.notice = seconds, ""
+            return False
+        self.best, self.best_run, self.notice = seconds, detail, ""
+        return True
 
 
 @dataclass(frozen=True)
@@ -72,19 +111,23 @@ class SlalomResult:
     gates: int = 0
     errors: tuple = ()
     clearances: tuple = ()
+    gate_times: tuple = ()
+    reference_times: tuple = ()
     medal: str = ""
     finished: bool = False
     succeeded: bool = False
     reason: str = ""
     best_seconds: float | None = None
     save_notice: str = ""
+    new_best: bool = False
 
 
 class SlalomLesson:
     def __init__(self, start_progress, scores, config):
         self.scores, self.config = scores, config
         self.snapshot = SlalomResult(start_progress=start_progress, best_seconds=scores.best,
-                                     save_notice=scores.notice)
+            save_notice=scores.notice,
+            reference_times=tuple(scores.best_run["gate_times"]) if scores.best_run is not None else ())
         self._previous = (0., 0., 0., 0., 0.)
 
     def update(self, progress, forward_speed, elapsed, *, lateral=0., heading=0., collisions=0, reset=False):
@@ -127,7 +170,8 @@ class SlalomLesson:
             error = x-math.sin(yaw)*body_center(self.config)[1]-gate_x
             clearance = GATE_HALF_WIDTH-span-abs(error)
             self.snapshot = replace(self.snapshot, errors=(*self.snapshot.errors, error),
-                                    clearances=(*self.snapshot.clearances, clearance))
+                clearances=(*self.snapshot.clearances, clearance),
+                gate_times=(*self.snapshot.gate_times, pt+(elapsed-pt)*fraction-start))
             if clearance < 0:
                 self.stop(f"错过第{index+1}门；车身超出门线{-clearance:.2f}m，提前回正/稍早减速。")
                 break
@@ -137,9 +181,11 @@ class SlalomLesson:
                 medal = medal_for(seconds)
                 self.snapshot = replace(self.snapshot, run_seconds=seconds, medal=medal)
                 if medal:
-                    self.scores.record(seconds)
+                    improved = self.snapshot.best_seconds is None or seconds < self.snapshot.best_seconds
+                    saved = self.scores.record(seconds, gate_times=self.snapshot.gate_times,
+                                               clearances=self.snapshot.clearances)
                     self.snapshot = replace(self.snapshot, best_seconds=self.scores.best,
-                                            save_notice=self.scores.notice)
+                                            save_notice=self.scores.notice, new_best=saved and improved)
                     self.stop(f"{medal}牌 · 连续通过全部6道门", succeeded=True)
                 else:
                     self.stop("已过全部门但超过24秒；尝试更流畅的转向节奏。")

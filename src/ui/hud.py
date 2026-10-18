@@ -11,6 +11,7 @@ from ui import theme
 from ui.braking_feedback import driving_feedback
 from ui.race_feedback import split_feedback
 from ui.slalom_feedback import driving_feedback as slalom_driving_feedback
+from ui.slalom_feedback import gate_feedback
 
 
 def set_text(widget, value):
@@ -114,7 +115,8 @@ class DrivingHUD:
     def update(self, state, race, highway, *, track, countdown, notice,
                driving_mode=DrivingMode.GAME):
         player = state.player
-        timed = track != "endless" and race.mode == GameMode.TIME_TRIAL
+        timed = ((track != "endless" and race.mode == GameMode.TIME_TRIAL)
+                 or (track == "endless" and race.mode == GameMode.SLALOM_LESSON))
         if timed != self._timed:
             self._timed = timed
             self.split.show() if timed else self.split.hide()
@@ -154,6 +156,9 @@ class DrivingHUD:
             elif slalom:
                 detail, message = slalom_driving_feedback(highway.slalom)
                 set_text(self.detail, detail)
+                set_text(self.split, gate_feedback(highway.slalom))
+                self.split.setFg(theme.SEA)
+                self._split_invalidated = None
         elif race.mode == GameMode.TIME_TRIAL:
             set_text(self.mode, "计时挑战")
             set_text(self.status, f"{race.elapsed:07.3f} s")

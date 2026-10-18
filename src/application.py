@@ -43,6 +43,7 @@ from ui.hud import DrivingHUD
 from ui.main_menu import MainMenu
 from ui.race_feedback import result_columns
 from ui.slalom_feedback import RULES as SLALOM_RULES
+from ui.slalom_feedback import gate_columns
 from ui.slalom_feedback import result_feedback as slalom_result_feedback
 from ui.workshop_journey import WorkshopJourney
 from ui.workspace_loading import WorkspaceLoading
@@ -1402,6 +1403,21 @@ class CoastalDrive(ShowBase):
                     column.show()
                 for button in self.buttons[:3]:
                     button.setZ(-.61)
+            elif self.session.mode == GameMode.SLALOM_LESSON:
+                result = self.session.highway.snapshot.slalom
+                if result is not None and result.gate_times:
+                    self.panel["frameSize"] = (-.94, .94, -.80, .75)
+                    entry = f"{result.entry_kph:.1f}km/h" if result.entry_kph is not None else "未过入口"
+                    best = f"最佳{result.best_seconds:.3f}s" if result.best_seconds is not None else "暂无成功成绩"
+                    self.panel_detail.setText(f"入门{entry} · {result.gates}/6门 · 总{self.session.highway.snapshot.elapsed:.2f}s\n"
+                                              f"入口后{result.run_seconds:.3f}s · {best}")
+                    self.panel_detail.setScale(.043)
+                    for column, text in zip(self.result_sectors, gate_columns(result), strict=True):
+                        column.setText(text)
+                        column.setZ(-.17-.03*max(0, note_lines-1))
+                        column.show()
+                    for button in self.buttons[:3]:
+                        button.setZ(-.67)
         else:
             self.panel_accent.show()
 

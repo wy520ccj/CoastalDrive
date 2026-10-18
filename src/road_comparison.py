@@ -26,10 +26,12 @@ class TrialScores:
     """只供课题规则使用，不读写玩家成绩或奖牌。"""
     def __init__(self):
         self.best = None
+        self.best_run = None
         self.notice = ""
 
-    def record(self, seconds):
+    def record(self, seconds, *, gate_times=(), clearances=()):
         self.best = seconds
+        return False
 
 
 @dataclass(frozen=True)
