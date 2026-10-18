@@ -1,0 +1,4 @@
+Archive SHA and decompressed original SHA: 53 passed
+Source manifest: 8 files, normalized LF
+Final ruff check src tests tools: passed
+Final git diff --check: passed (only standard LF/CRLF notices)

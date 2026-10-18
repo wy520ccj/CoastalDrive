@@ -1,0 +1,320 @@
+[
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/normal-ui/reports/20261018-071436-480996-workshop/baseline-A/experiment.json",
+    "archive": "normal/A/experiment.json.gz",
+    "original_sha256": "a48e87358270c00b618ae96c873899403e6c843195be2734b0dd225e184f1e8c",
+    "archive_sha256": "9290bb682772f645c2e9c8719b6d644e9e6b3f35836b40e0732f6374d86ffca2"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/normal-ui/reports/20261018-071436-480996-workshop/baseline-A/snapshots.bin",
+    "archive": "normal/A/snapshots.bin.gz",
+    "original_sha256": "d3739f163fa162ea8eb7830330b31570542c654137219995fe296d25d0e57ba6",
+    "archive_sha256": "f39a6959abc68e37549535e0b70e006204411f2a7ad6b4dc6d38e9b5353a0fed"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/normal-ui/reports/20261018-071436-480996-workshop/experiment.json",
+    "archive": "normal/B/experiment.json.gz",
+    "original_sha256": "0a902c1f2e61966cba25e6039e2b4650aad198634f8d8afc76bb6f2e07f1ab25",
+    "archive_sha256": "d673b7a0d8eafbf0a7a71c2b0b491a51faff435ea5549c5eb79649014c1803f6"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/normal-ui/reports/20261018-071436-480996-workshop/snapshots.bin",
+    "archive": "normal/B/snapshots.bin.gz",
+    "original_sha256": "d4c8f38590ecb4c3d0b5128df7c330c58a6de535103a777c63c667e9edee5641",
+    "archive_sha256": "38eae455a63f99a00796adc8e0f436ebf8ed2a5dcee1c062af0ba0fa3ad95039"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/normal-ui/summary.json",
+    "archive": "normal/summary.json",
+    "original_sha256": "8aa0ecd3f02164652248116582f6c2974b2a5a8a9f2debaef40d4db7d8edbac6",
+    "archive_sha256": "8aa0ecd3f02164652248116582f6c2974b2a5a8a9f2debaef40d4db7d8edbac6"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/normal-ui/test-workspace-vehicle.json",
+    "archive": "normal/test-workspace-vehicle.json",
+    "original_sha256": "4e4384b7297651dcabc39c263f2deb98396bea7f9003740143db69266747845e",
+    "archive_sha256": "4e4384b7297651dcabc39c263f2deb98396bea7f9003740143db69266747845e"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/normal-ui/test-best-times.json",
+    "archive": "normal/test-best-times.json",
+    "original_sha256": "680847d7e47768ea4980fd8aaec598f70d0ca0706dad54b1d7187934932d7b48",
+    "archive_sha256": "680847d7e47768ea4980fd8aaec598f70d0ca0706dad54b1d7187934932d7b48"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/normal-ui/actual-road-result.png",
+    "archive": "normal/actual-road-result.png",
+    "original_sha256": "b74e38569bd6123865ea96d42205770940b8e914ed14ca8994eb35dece9d0441",
+    "archive_sha256": "b74e38569bd6123865ea96d42205770940b8e914ed14ca8994eb35dece9d0441"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/normal-ui/cornering-traces.png",
+    "archive": "normal/cornering-traces.png",
+    "original_sha256": "e8c6c3337bef866740a0396026a84276eaa691872c080520284eeb9dffc3ec72",
+    "archive_sha256": "e8c6c3337bef866740a0396026a84276eaa691872c080520284eeb9dffc3ec72"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/normal-ui/ghosts/477397664fef1a8564a619014f41ccd8cf4baca6a0c6a0403ee732cd94602754.cdg",
+    "archive": "normal/ghosts/477397664fef1a8564a619014f41ccd8cf4baca6a0c6a0403ee732cd94602754.cdg",
+    "original_sha256": "477397664fef1a8564a619014f41ccd8cf4baca6a0c6a0403ee732cd94602754",
+    "archive_sha256": "477397664fef1a8564a619014f41ccd8cf4baca6a0c6a0403ee732cd94602754"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/normal-restored-final/restored-cornering.png",
+    "archive": "normal/restored/restored-cornering.png",
+    "original_sha256": "b0c7cbf18a8c10ff03ecaff631767ee21bf55eee670450467da267f564240ae9",
+    "archive_sha256": "b0c7cbf18a8c10ff03ecaff631767ee21bf55eee670450467da267f564240ae9"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/normal-restored-final/restored-tyre-popup.png",
+    "archive": "normal/restored/restored-tyre-popup.png",
+    "original_sha256": "ec759b67ab515b91435ecb40a0359c7d3ea97e2050dbdacb826250dd9844edfe",
+    "archive_sha256": "ec759b67ab515b91435ecb40a0359c7d3ea97e2050dbdacb826250dd9844edfe"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/normal-restored-final/summary.json",
+    "archive": "normal/restored/summary.json",
+    "original_sha256": "d66f15bcfad93c48d4cfe3cb6abaf961548e4356be3ec8d3e59be323bfa6d078",
+    "archive_sha256": "d66f15bcfad93c48d4cfe3cb6abaf961548e4356be3ec8d3e59be323bfa6d078"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/double-ui/reports/20261018-071435-005591-workshop/baseline-A/experiment.json",
+    "archive": "double/A/experiment.json.gz",
+    "original_sha256": "50b98a6a87a6499632524fe7763d1a1b848bd64049fd887aa426a3b2a001e66a",
+    "archive_sha256": "c97cf34f90308f76602c39e29aced10ed1dd886d4e0212606f5ee58d4692fe2e"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/double-ui/reports/20261018-071435-005591-workshop/baseline-A/snapshots.bin",
+    "archive": "double/A/snapshots.bin.gz",
+    "original_sha256": "de6812656b9faaf206600812964bd0ef59a8cbf81e5e73ff5c30d58ee3b19e0f",
+    "archive_sha256": "0670c9253177eeb64d334787d659c179b7cb7889ba673016014775d013eff729"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/double-ui/reports/20261018-071435-005591-workshop/experiment.json",
+    "archive": "double/B/experiment.json.gz",
+    "original_sha256": "bd98db3d61c5528ad266854f374af99db97955e769dc0604784ae6729542d6ac",
+    "archive_sha256": "c35de4fe0be696e2170e9523a72eaacc3ead8b23f9c7d3185f57acec05309621"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/double-ui/reports/20261018-071435-005591-workshop/snapshots.bin",
+    "archive": "double/B/snapshots.bin.gz",
+    "original_sha256": "9dc865f076baa0be3c34651f440b94d4b51ec652e21617122a930b6d3db544c4",
+    "archive_sha256": "ec61916c57bfeaeba1c097c2cda8aecff76ff6178a970ec91fff420572dc9687"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/double-ui/summary.json",
+    "archive": "double/summary.json",
+    "original_sha256": "ed75d7324fd39c23b61bc34aecf76d6dc336418bee6f1ae72964cada4fe14e4f",
+    "archive_sha256": "ed75d7324fd39c23b61bc34aecf76d6dc336418bee6f1ae72964cada4fe14e4f"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/double-ui/test-workspace-vehicle.json",
+    "archive": "double/test-workspace-vehicle.json",
+    "original_sha256": "42acce28b2a31490c4902ffb35514a26174879a4556d8f857b1f0ba77e35566c",
+    "archive_sha256": "42acce28b2a31490c4902ffb35514a26174879a4556d8f857b1f0ba77e35566c"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/double-ui/test-best-times.json",
+    "archive": "double/test-best-times.json",
+    "original_sha256": "85ec1ef5f0fd3674fb73ac5f207ce63c2bff31ea0b88a4c4a63c4b4023f1d2bb",
+    "archive_sha256": "85ec1ef5f0fd3674fb73ac5f207ce63c2bff31ea0b88a4c4a63c4b4023f1d2bb"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/double-ui/actual-road-result.png",
+    "archive": "double/actual-road-result.png",
+    "original_sha256": "45aaf09a75c683654859b2631ef36655a69e0993fe94cfecbfac102584502a10",
+    "archive_sha256": "45aaf09a75c683654859b2631ef36655a69e0993fe94cfecbfac102584502a10"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/double-ui/cornering-traces.png",
+    "archive": "double/cornering-traces.png",
+    "original_sha256": "7c782a851854a5819f4160f00761e18c4aabd31de6189496d2cea0228a92fe45",
+    "archive_sha256": "7c782a851854a5819f4160f00761e18c4aabd31de6189496d2cea0228a92fe45"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/double-ui/ghosts/121d51e8a544904774b798c06d66e7416a8e5e697a933175a92853d2a8acfca6.cdg",
+    "archive": "double/ghosts/121d51e8a544904774b798c06d66e7416a8e5e697a933175a92853d2a8acfca6.cdg",
+    "original_sha256": "121d51e8a544904774b798c06d66e7416a8e5e697a933175a92853d2a8acfca6",
+    "archive_sha256": "121d51e8a544904774b798c06d66e7416a8e5e697a933175a92853d2a8acfca6"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/double-restored-final/restored-cornering.png",
+    "archive": "double/restored/restored-cornering.png",
+    "original_sha256": "0c5f7a6bfd7a4c70334e13baf859be54d2320a82f55337d4c182781affad54d1",
+    "archive_sha256": "0c5f7a6bfd7a4c70334e13baf859be54d2320a82f55337d4c182781affad54d1"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/double-restored-final/restored-tyre-popup.png",
+    "archive": "double/restored/restored-tyre-popup.png",
+    "original_sha256": "d75dc574345c23ce44719e383ea379a546d8f38df65a5f948854d581c8bdc134",
+    "archive_sha256": "d75dc574345c23ce44719e383ea379a546d8f38df65a5f948854d581c8bdc134"
+  },
+  {
+    "source": "logs/DESIGN-CHALLENGE-02/double-restored-final/summary.json",
+    "archive": "double/restored/summary.json",
+    "original_sha256": "c18d16ded1595531641b56c8007b7cd370b8b8f577d442b27f996e954cdaca7d",
+    "archive_sha256": "c18d16ded1595531641b56c8007b7cd370b8b8f577d442b27f996e954cdaca7d"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-double/pytest.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-double/pytest.txt",
+    "original_sha256": "5a2e9304db162db04ad1ac8f976e61991ed4a7e59dc389b86f373c0695222825",
+    "archive_sha256": "5a2e9304db162db04ad1ac8f976e61991ed4a7e59dc389b86f373c0695222825"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-double/ruff.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-double/ruff.txt",
+    "original_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-double/summary.json",
+    "archive": "checks/DESIGN-CHALLENGE-02-double/summary.json",
+    "original_sha256": "85daf09ecabc3d7825a3a25927d42a1451d3a7276c62ecdd3b707819c3a6dca3",
+    "archive_sha256": "85daf09ecabc3d7825a3a25927d42a1451d3a7276c62ecdd3b707819c3a6dca3"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-double-final/pytest.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-double-final/pytest.txt",
+    "original_sha256": "38dcd6645abaa6ceb825cd7715b9bd50f3b1762d4b0a43259155f0e1e9101702",
+    "archive_sha256": "38dcd6645abaa6ceb825cd7715b9bd50f3b1762d4b0a43259155f0e1e9101702"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-double-final/ruff.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-double-final/ruff.txt",
+    "original_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-double-final/summary.json",
+    "archive": "checks/DESIGN-CHALLENGE-02-double-final/summary.json",
+    "original_sha256": "c0c846e34acae45c4801a248cd9e85ca8dc1d5db6aca69b3aa54bee02cc17c86",
+    "archive_sha256": "c0c846e34acae45c4801a248cd9e85ca8dc1d5db6aca69b3aa54bee02cc17c86"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-final/pytest.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-final/pytest.txt",
+    "original_sha256": "e7cf132e248001043120f7a135248107fd9ee6c0d598e9194d2f33882ab58520",
+    "archive_sha256": "e7cf132e248001043120f7a135248107fd9ee6c0d598e9194d2f33882ab58520"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-final/ruff.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-final/ruff.txt",
+    "original_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-final/summary.json",
+    "archive": "checks/DESIGN-CHALLENGE-02-final/summary.json",
+    "original_sha256": "9493e9a1a21fd02536c219b4974bc8be12a5e88f935ab83d21ef9e8df4271302",
+    "archive_sha256": "9493e9a1a21fd02536c219b4974bc8be12a5e88f935ab83d21ef9e8df4271302"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-old-T0/pytest.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-old-T0/pytest.txt",
+    "original_sha256": "f7b711b6a6f06136f888b9c56cd0c7630029db6dc89f14d909fffc6b89115188",
+    "archive_sha256": "f7b711b6a6f06136f888b9c56cd0c7630029db6dc89f14d909fffc6b89115188"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-old-T0/ruff.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-old-T0/ruff.txt",
+    "original_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-old-T0/summary.json",
+    "archive": "checks/DESIGN-CHALLENGE-02-old-T0/summary.json",
+    "original_sha256": "d6ab0bdad16373df61ecefc88640f5084504e1193a965200da545612c44d6d9c",
+    "archive_sha256": "d6ab0bdad16373df61ecefc88640f5084504e1193a965200da545612c44d6d9c"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-popup/pytest.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-popup/pytest.txt",
+    "original_sha256": "ec969569698d57047a117161877cd54600eb38bdc0d2fe957aa8c2385014ae18",
+    "archive_sha256": "ec969569698d57047a117161877cd54600eb38bdc0d2fe957aa8c2385014ae18"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-popup/ruff.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-popup/ruff.txt",
+    "original_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-popup/summary.json",
+    "archive": "checks/DESIGN-CHALLENGE-02-popup/summary.json",
+    "original_sha256": "c6ce533d0544147cac88e2d9351a10615aabb5f5cf11a0a3d876b524c7905dcf",
+    "archive_sha256": "c6ce533d0544147cac88e2d9351a10615aabb5f5cf11a0a3d876b524c7905dcf"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-T0/pytest.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-T0/pytest.txt",
+    "original_sha256": "ee0608baf2e31ae648a9849330437598e7f3ffbb211cf4a8f965408524c7ba4b",
+    "archive_sha256": "ee0608baf2e31ae648a9849330437598e7f3ffbb211cf4a8f965408524c7ba4b"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-T0/ruff.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-T0/ruff.txt",
+    "original_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-T0/summary.json",
+    "archive": "checks/DESIGN-CHALLENGE-02-T0/summary.json",
+    "original_sha256": "5066461966ba15045d1da8f4d0cbba0eb4c87d6128b268ff45f1c63f9f993d09",
+    "archive_sha256": "5066461966ba15045d1da8f4d0cbba0eb4c87d6128b268ff45f1c63f9f993d09"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-T1/headless-0.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-T1/headless-0.txt",
+    "original_sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7",
+    "archive_sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-T1/headless-17.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-T1/headless-17.txt",
+    "original_sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7",
+    "archive_sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-T1/headless-23.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-T1/headless-23.txt",
+    "original_sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7",
+    "archive_sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-T1/pytest.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-T1/pytest.txt",
+    "original_sha256": "5fcb1ba5f752e128b5fc60ee55aa1ccc140cc6266caa4b37ba9f566698c62f4c",
+    "archive_sha256": "5fcb1ba5f752e128b5fc60ee55aa1ccc140cc6266caa4b37ba9f566698c62f4c"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-T1/ruff.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-T1/ruff.txt",
+    "original_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-T1/summary.json",
+    "archive": "checks/DESIGN-CHALLENGE-02-T1/summary.json",
+    "original_sha256": "60902a2f7dba8b50375cde77009dceb652c35035cc9c4e24b281bfd7d9e83df7",
+    "archive_sha256": "60902a2f7dba8b50375cde77009dceb652c35035cc9c4e24b281bfd7d9e83df7"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-ui-T0/pytest.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-ui-T0/pytest.txt",
+    "original_sha256": "32c080e5f3b1370ffdd720477dbcdb19c87593a2d9d1f230dfde98f985d0dd83",
+    "archive_sha256": "32c080e5f3b1370ffdd720477dbcdb19c87593a2d9d1f230dfde98f985d0dd83"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-ui-T0/ruff.log",
+    "archive": "checks/DESIGN-CHALLENGE-02-ui-T0/ruff.txt",
+    "original_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "archive_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/DESIGN-CHALLENGE-02-ui-T0/summary.json",
+    "archive": "checks/DESIGN-CHALLENGE-02-ui-T0/summary.json",
+    "original_sha256": "f9aa63448de47cb281eec00794ec2e9fdd5c99d31fcad3df6ac3a13c5b541ab4",
+    "archive_sha256": "f9aa63448de47cb281eec00794ec2e9fdd5c99d31fcad3df6ac3a13c5b541ab4"
+  }
+]

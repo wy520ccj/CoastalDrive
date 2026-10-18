@@ -1,0 +1,661 @@
+{
+  "base": {
+    "selection": [
+      0,
+      false,
+      false
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 0,
+      "balanced_bar": false,
+      "lower_cg": false,
+      "cost": 0,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "improvement_pct": 0.0,
+      "passed": false,
+      "medal": null,
+      "unmet": [
+        "误差改善不足50%",
+        "末窗误差超过1.6m"
+      ],
+      "config_digest": "c46836e76a507c310fb0164ff44b1238a98499010da3dfda4157c6248084f76d",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r1\\base"
+  },
+  "front_50k": {
+    "selection": [
+      2,
+      false,
+      false
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 2,
+      "balanced_bar": false,
+      "lower_cg": false,
+      "cost": 2,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 1.002885831488585,
+        "mean_signed_error_m": 1.002885831488585,
+        "mean_speed_kph": 60.19670057702792,
+        "max_speed_error_kph": 0.4054056132992443,
+        "mean_steering_deg": 3.493073510658322,
+        "peak_beta_deg": 3.4448997919096627,
+        "peak_roll_deg": 1.252902865409851
+      },
+      "improvement_pct": 68.41586230265048,
+      "passed": true,
+      "medal": "金",
+      "unmet": [],
+      "config_digest": "545153833c440c4ca923e02f100d60a8d6232560d06869f2a271d8a3d8322b3d",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r1\\front_50k"
+  },
+  "front_70k": {
+    "selection": [
+      3,
+      false,
+      false
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 3,
+      "balanced_bar": false,
+      "lower_cg": false,
+      "cost": 2,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 0.15258064474355765,
+        "mean_signed_error_m": -0.12890732271300792,
+        "mean_speed_kph": 60.45291635036497,
+        "max_speed_error_kph": 1.3845350383411912,
+        "mean_steering_deg": 2.7297464164115843,
+        "peak_beta_deg": 5.793474238313349,
+        "peak_roll_deg": 1.3544684648513794
+      },
+      "improvement_pct": 95.19473907974366,
+      "passed": false,
+      "medal": null,
+      "unmet": [
+        "末窗车速超出60±1.2km/h",
+        "峰值侧偏超过4°"
+      ],
+      "config_digest": "33f9ca66728db90a1048de3e7e673b4d8018c1e389500b7d2eedc632bca0bb00",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r1\\front_70k"
+  },
+  "bar_balance": {
+    "selection": [
+      0,
+      true,
+      false
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 0,
+      "balanced_bar": true,
+      "lower_cg": false,
+      "cost": 1,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 2.927609450351419,
+        "mean_signed_error_m": 2.927609450351419,
+        "mean_speed_kph": 60.04893842070383,
+        "max_speed_error_kph": 0.1317691427899419,
+        "mean_steering_deg": 4.269356886626835,
+        "peak_beta_deg": 1.9830604176004265,
+        "peak_roll_deg": 1.0742976665496826
+      },
+      "improvement_pct": 7.800053504880489,
+      "passed": false,
+      "medal": null,
+      "unmet": [
+        "误差改善不足50%",
+        "末窗误差超过1.6m"
+      ],
+      "config_digest": "43666c92bcf82d0ca25a46e7bbe189ddb0afb4273e3271ec81b2c98647c25edc",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r1\\bar_balance"
+  },
+  "low_cg": {
+    "selection": [
+      0,
+      false,
+      true
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 0,
+      "balanced_bar": false,
+      "lower_cg": true,
+      "cost": 3,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 3.0283735480517286,
+        "mean_signed_error_m": 3.0283735480517286,
+        "mean_speed_kph": 60.01847728409554,
+        "max_speed_error_kph": 0.09050079948940493,
+        "mean_steering_deg": 4.299106321867032,
+        "peak_beta_deg": 2.1913586255320108,
+        "peak_roll_deg": 0.846930980682373
+      },
+      "improvement_pct": 4.626664234845734,
+      "passed": false,
+      "medal": null,
+      "unmet": [
+        "误差改善不足50%",
+        "末窗误差超过1.6m"
+      ],
+      "config_digest": "960529dbd9a96562f9e062e3051806f7f97a22f5cf825b17ea5590779dbae411",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r1\\low_cg"
+  },
+  "front_and_bar": {
+    "selection": [
+      2,
+      true,
+      false
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 2,
+      "balanced_bar": true,
+      "lower_cg": false,
+      "cost": 3,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 0.9202721212303462,
+        "mean_signed_error_m": 0.9202721212303462,
+        "mean_speed_kph": 60.25551273469057,
+        "max_speed_error_kph": 0.5630639309939411,
+        "mean_steering_deg": 3.4408147613364504,
+        "peak_beta_deg": 3.181277808276515,
+        "peak_roll_deg": 1.2289834022521973
+      },
+      "improvement_pct": 71.01763682030638,
+      "passed": true,
+      "medal": "银",
+      "unmet": [],
+      "config_digest": "002f4a79d7732b7090fbaac02e8966fd21ef70f0a23546e2e00429ecc1d299d7",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r1\\front_and_bar"
+  },
+  "bar_and_cg": {
+    "selection": [
+      0,
+      true,
+      true
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 0,
+      "balanced_bar": true,
+      "lower_cg": true,
+      "cost": 4,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 2.8633908099578025,
+        "mean_signed_error_m": 2.8633908099578025,
+        "mean_speed_kph": 60.029828446104545,
+        "max_speed_error_kph": 0.10520892208196386,
+        "mean_steering_deg": 4.24133518033291,
+        "peak_beta_deg": 1.9111224994923481,
+        "peak_roll_deg": 0.8252139687538147
+      },
+      "improvement_pct": 9.8225074246033,
+      "passed": false,
+      "medal": null,
+      "unmet": [
+        "预算超出",
+        "误差改善不足50%",
+        "末窗误差超过1.6m"
+      ],
+      "config_digest": "01946924f59b10dc7cda930c6b8bfdde0ed514d47b6f3d842911296525915b13",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r2\\bar_and_cg"
+  },
+  "front_and_cg": {
+    "selection": [
+      2,
+      false,
+      true
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 2,
+      "balanced_bar": false,
+      "lower_cg": true,
+      "cost": 5,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 0.9375493490931933,
+        "mean_signed_error_m": 0.9375493490931933,
+        "mean_speed_kph": 60.19611075937872,
+        "max_speed_error_kph": 0.4312396645038774,
+        "mean_steering_deg": 3.4621291194647412,
+        "peak_beta_deg": 3.237130095767469,
+        "peak_roll_deg": 0.9668753147125244
+      },
+      "improvement_pct": 70.47352070387996,
+      "passed": false,
+      "medal": null,
+      "unmet": [
+        "预算超出"
+      ],
+      "config_digest": "105f01acb603374a9df1c0ef43f54c2f138756f87bbfc10be6a4c038ce2fb6aa",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r2\\front_and_cg"
+  },
+  "all_balanced": {
+    "selection": [
+      2,
+      true,
+      true
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 2,
+      "balanced_bar": true,
+      "lower_cg": true,
+      "cost": 6,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 0.8863228758999435,
+        "mean_signed_error_m": 0.8863228758999435,
+        "mean_speed_kph": 60.21553340741979,
+        "max_speed_error_kph": 0.5090424594377723,
+        "mean_steering_deg": 3.4197841653874756,
+        "peak_beta_deg": 2.992571917432713,
+        "peak_roll_deg": 0.9476142525672913
+      },
+      "improvement_pct": 72.08680900877471,
+      "passed": false,
+      "medal": null,
+      "unmet": [
+        "预算超出"
+      ],
+      "config_digest": "f3b81b1e208f88e7596987158a4703617b22c91d825bd2f23e61991c887e74e6",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r2\\all_balanced"
+  },
+  "sharp_and_cg": {
+    "selection": [
+      3,
+      false,
+      true
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 3,
+      "balanced_bar": false,
+      "lower_cg": true,
+      "cost": 5,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 0.2427193775274246,
+        "mean_signed_error_m": 0.009497191617769617,
+        "mean_speed_kph": 60.622589872457525,
+        "max_speed_error_kph": 1.9219265964079142,
+        "mean_steering_deg": 2.718201739314037,
+        "peak_beta_deg": 6.188842677187023,
+        "peak_roll_deg": 1.0486589670181274
+      },
+      "improvement_pct": 92.3559771202846,
+      "passed": false,
+      "medal": null,
+      "unmet": [
+        "预算超出",
+        "末窗车速超出60±1.2km/h",
+        "峰值侧偏超过4°"
+      ],
+      "config_digest": "1d2586a4205dea404f5b1522dcd5274c2221d69dcafafaf218f433de51b1bbd9",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r2\\sharp_and_cg"
+  },
+  "sharp_and_bar": {
+    "selection": [
+      3,
+      true,
+      false
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 3,
+      "balanced_bar": true,
+      "lower_cg": false,
+      "cost": 3,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 0.6931039083345427,
+        "mean_signed_error_m": 0.6332111860237342,
+        "mean_speed_kph": 60.520514197043525,
+        "max_speed_error_kph": 2.8420551270791137,
+        "mean_steering_deg": 2.872536936908802,
+        "peak_beta_deg": 6.747008179399929,
+        "peak_roll_deg": 1.3379936218261719
+      },
+      "improvement_pct": 78.17190293044987,
+      "passed": false,
+      "medal": null,
+      "unmet": [
+        "末窗车速超出60±1.2km/h",
+        "峰值侧偏超过4°"
+      ],
+      "config_digest": "597e22ea843fb18645ec3f3b25464cf5f7a2c6f85edc7d441baa19ea03aae3de",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r2\\sharp_and_bar"
+  },
+  "all_sharp": {
+    "selection": [
+      3,
+      true,
+      true
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 3,
+      "balanced_bar": true,
+      "lower_cg": true,
+      "cost": 6,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 1.5422444469895746,
+        "mean_signed_error_m": 1.4107788010578277,
+        "mean_speed_kph": 60.45673481686558,
+        "max_speed_error_kph": 3.202812585541885,
+        "mean_steering_deg": 3.9502076232994465,
+        "peak_beta_deg": 7.815260093622577,
+        "peak_roll_deg": 1.0474262237548828
+      },
+      "improvement_pct": 51.42970471086387,
+      "passed": false,
+      "medal": null,
+      "unmet": [
+        "预算超出",
+        "末窗车速超出60±1.2km/h",
+        "峰值侧偏超过4°"
+      ],
+      "config_digest": "bb81d08015c979b8c4dc40406165acec5e217d29c68721ec55a4828cc62660ae",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r2\\all_sharp"
+  },
+  "front_45k": {
+    "selection": [
+      1,
+      false,
+      false
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 1,
+      "balanced_bar": false,
+      "lower_cg": false,
+      "cost": 1,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 1.4960010669611705,
+        "mean_signed_error_m": 1.4960010669611705,
+        "mean_speed_kph": 60.143007086762466,
+        "max_speed_error_kph": 0.2716889244068881,
+        "mean_steering_deg": 3.7001532865797016,
+        "peak_beta_deg": 2.9797277511309344,
+        "peak_roll_deg": 1.2117499113082886
+      },
+      "improvement_pct": 52.88605919962962,
+      "passed": true,
+      "medal": "铜",
+      "unmet": [],
+      "config_digest": "730e58623ee42edbd8e9238148791f1720eca6c1541b5ed76f00283a5cc3f568",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r3\\front_45k"
+  },
+  "front_45k_bar": {
+    "selection": [
+      1,
+      true,
+      false
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 1,
+      "balanced_bar": true,
+      "lower_cg": false,
+      "cost": 2,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 1.3576391845144515,
+        "mean_signed_error_m": 1.3576391845144515,
+        "mean_speed_kph": 60.19175654148283,
+        "max_speed_error_kph": 0.3783714993132037,
+        "mean_steering_deg": 3.655450067183678,
+        "peak_beta_deg": 2.697939051683858,
+        "peak_roll_deg": 1.1866042613983154
+      },
+      "improvement_pct": 57.24352503477379,
+      "passed": true,
+      "medal": "银",
+      "unmet": [],
+      "config_digest": "e7fd0ad49586eca3ffa845734e1c65b5ed2f743783892e3aee04bab6b1d189c0",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r3\\front_45k_bar"
+  },
+  "front_45k_cg": {
+    "selection": [
+      1,
+      false,
+      true
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 1,
+      "balanced_bar": false,
+      "lower_cg": true,
+      "cost": 4,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 1.3992418796710653,
+        "mean_signed_error_m": 1.3992418796710653,
+        "mean_speed_kph": 60.1443045657422,
+        "max_speed_error_kph": 0.2858483476346265,
+        "mean_steering_deg": 3.6656094501940935,
+        "peak_beta_deg": 2.799015520084628,
+        "peak_roll_deg": 0.9343478083610535
+      },
+      "improvement_pct": 55.93332081097198,
+      "passed": false,
+      "medal": null,
+      "unmet": [
+        "预算超出"
+      ],
+      "config_digest": "c7731d1c0b4ae8b486e060a96a9cbcd6aa9ea53801bedc5152615295c821730e",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r3\\front_45k_cg"
+  },
+  "front_45k_all": {
+    "selection": [
+      1,
+      true,
+      true
+    ],
+    "result": {
+      "challenge_id": "coastal-cornering-v1",
+      "tire_index": 1,
+      "balanced_bar": true,
+      "lower_cg": true,
+      "cost": 5,
+      "baseline_metrics": {
+        "mean_error_m": 3.175283242172368,
+        "mean_signed_error_m": 3.175283242172368,
+        "mean_speed_kph": 60.028583419673204,
+        "max_speed_error_kph": 0.10332730800143253,
+        "mean_steering_deg": 4.35379589379178,
+        "peak_beta_deg": 2.2865829029411766,
+        "peak_roll_deg": 1.1003941297531128
+      },
+      "candidate_metrics": {
+        "mean_error_m": 1.3138744374498628,
+        "mean_signed_error_m": 1.3138744374498628,
+        "mean_speed_kph": 60.167063749155346,
+        "max_speed_error_kph": 0.3463284995757263,
+        "mean_steering_deg": 3.636662320764458,
+        "peak_beta_deg": 2.5155000183157976,
+        "peak_roll_deg": 0.9139407873153687
+      },
+      "improvement_pct": 58.62181930733913,
+      "passed": false,
+      "medal": null,
+      "unmet": [
+        "预算超出"
+      ],
+      "config_digest": "1b9bd6d28addb07bdb184b67016161736a585f5fe53240c102aa1c2816ddd319",
+      "road_validated": false
+    },
+    "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r3\\front_45k_all"
+  }
+}

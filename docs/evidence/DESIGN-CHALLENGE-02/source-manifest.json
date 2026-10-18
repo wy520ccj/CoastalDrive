@@ -1,0 +1,10 @@
+{
+  "src/application.py": "15f181b926c0700c5a3399545d6be9119fdcbdeab928a292be5aef2a766f0c60",
+  "src/ui/lab_workshop.py": "dc4d56e4bcffed7573655a847cf6a01cbb4d622756469a450701fe04df6ccb5a",
+  "src/workshop.py": "899083b9699ecc3c2876099bb8e801da0d44634b2a90c7c498e8f0572051b430",
+  "src/workshop_cornering.py": "8f8983e0550e68c4d5244842815ba2865c195ae1756a0a555691cee733477392",
+  "tools/validate.py": "0956451d9950649d2a4014e1e26a4f956a4b157368557d8ca9319ab0747e083f",
+  "tools/cornering_workshop_check.py": "c8092a999e607f3f3e268d911e61d14938e863d043b63a88ff1cb7f4125a2ad7",
+  "tests/test_cornering_workshop.py": "cd1b1bad8aef76d7657141d8fef635a2bd64a4bfe0b43ffe8039391808c199a1",
+  "tests/test_cornering_workshop_ui.py": "3ac5871096277ccbe9e1edaee61670de55af4caf86e284812b96986fe7fda4a8"
+}

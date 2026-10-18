@@ -1,0 +1,114 @@
+{
+  "base": {
+    "score_inputs_sha256": "dba6a73731c9250c99c42bffafe3f302bceea626bf953f0d105a9a2a90415ae0",
+    "archive_sha256": "03d3a4476c49097ac4cd620101b20be9fd7fafb09e74fd8bb312b30104ff3d72",
+    "original_experiment_sha256": "84e6077d5eaea4acad63d811f4237a68280866747725d34b1d8cdcb5ebdc0e19",
+    "original_snapshots_sha256": "7ce9c1fff8df6a23f1274f974249cca0bddfd11d55c0cde63bcc362b372e8f40",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r1\\base"
+  },
+  "front_50k": {
+    "score_inputs_sha256": "609d31a04a4b968d3c7565e1388dcf2775ef4db3edb2702e34d451c9272e99c8",
+    "archive_sha256": "86a272d6a945707a51ba4c904246fc80b3034e13038d2053889cbbc83ab7ad08",
+    "original_experiment_sha256": "dfe6ebe8a48dc97da52fdb423963c96c677bc6a4a9d2a9dd3a6c564a837346e9",
+    "original_snapshots_sha256": "2484196227983cb19712007862fc63707bbb3a11d1bb9b3c81d5c2a74778a6db",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r1\\front_50k"
+  },
+  "front_70k": {
+    "score_inputs_sha256": "313aaf24b991d77ef765c8c53cfbf91b41a47aea9fd9841a9e4c820e190288ac",
+    "archive_sha256": "2d1236774114ee0aa4e67e69a4e4089d4ccaa72cd574bc764cdb9a33e8907489",
+    "original_experiment_sha256": "1823c8e25d177dbefda2fcfd2f117740711dd04abd0d06580d11c572d6dcda37",
+    "original_snapshots_sha256": "63d968349a3ba52192392489159fed7a8d5309c4f8c8ffacf9bfdb994f62595c",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r1\\front_70k"
+  },
+  "bar_balance": {
+    "score_inputs_sha256": "d231f5760a521c292d7a5863536d7fced8973c4bdaabefc88705b6c97f900886",
+    "archive_sha256": "10bbf5247d857957f992a7e0cfb3cb73777fb764a82d6720e2de80c028e5f15d",
+    "original_experiment_sha256": "36e48275f1a449325d8a99d84bd96b7f5cb8227bf032e569b20a21c90ef0b104",
+    "original_snapshots_sha256": "bbe543f65338befbbab819e8c0f560308b2e38591e996e2de58685f1d3bf821c",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r1\\bar_balance"
+  },
+  "low_cg": {
+    "score_inputs_sha256": "3a4e452b882e28f35c91959e50dba97fb0563132130de35186f0ab78eee9d43d",
+    "archive_sha256": "883e80cc3899d666d402d99e4875423406ee9dcb10f4a7266eb7c5d22a30e23a",
+    "original_experiment_sha256": "11d74d55f3989c8ca674f76fb624ebb7cb8287355221a2254f1e1e1643ec470c",
+    "original_snapshots_sha256": "ce2a3ae4f4d3a423a3be25652ce4945eb10362536b69817788a40b72f9b60293",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r1\\low_cg"
+  },
+  "front_and_bar": {
+    "score_inputs_sha256": "a6de2d039cb787166a61e5227e23a0677f320f45131069f394167023684d2f0e",
+    "archive_sha256": "e7e4e42b75e14ba1b7a61a77eef6761f10c2cd64954dc0ce4160864b09f8e2d5",
+    "original_experiment_sha256": "ccee53aa283bcfb274001cc569c33049d860b6f98075e231fa868254db335c83",
+    "original_snapshots_sha256": "1999f441ad73774849ffe045dc9e5bc20265a7a5ccfba79f2dc87359bf90dd4d",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r1\\front_and_bar"
+  },
+  "bar_and_cg": {
+    "score_inputs_sha256": "cd052bd87c3e4209df7b287c1ea0cabc92935ef192a4739d196c14d460b7c953",
+    "archive_sha256": "2108726840489dbfe298f8524faa8bcc992018aa56ee8af912ee861a9215015f",
+    "original_experiment_sha256": "9814b44a2bef2d4da221f3cd4c2e4401dd2b1a514805b3691846b94cd42e7ef1",
+    "original_snapshots_sha256": "d09ed30b1ce08361576e6ce0dc79e6d4e21a88e560ee58d5e51c45721ee29b91",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r2\\bar_and_cg"
+  },
+  "front_and_cg": {
+    "score_inputs_sha256": "647c69d7a64e5ed6befcfcddec4a1384060aec705246880fbe9e7711cd2892a0",
+    "archive_sha256": "e1fd0892631759b7958d3452cae027935fab48c1d75fd2432fce03d0655d895d",
+    "original_experiment_sha256": "a8b68dcbd60d90196c39b59b8b71a7d7520065e12e919442e8e45e0b613eab77",
+    "original_snapshots_sha256": "f53c46b19fa1790aa06ebc678eb13d2c7c12fca8cf9e265cd6bf7ca341bad368",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r2\\front_and_cg"
+  },
+  "all_balanced": {
+    "score_inputs_sha256": "50f836bdd46aeba73dcdf808ba9c5d2eddabae3ce75b9c1a1aae7a762e2743f8",
+    "archive_sha256": "419c361201932c8fc5378158f568d7e93709d183dc8e1b11cae4cb79be63ef2e",
+    "original_experiment_sha256": "89ee171eb56cf83b12981055464cdde9f4ea42055f866a5e8fc8a36aaeff0ab3",
+    "original_snapshots_sha256": "36321c2fdab4180529ca4bda5c7aa19af7b2279b882f79cd7d40e7a7af65b87e",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r2\\all_balanced"
+  },
+  "sharp_and_cg": {
+    "score_inputs_sha256": "5525f307bf74d5e0dc3d2066024d212e851a7ca885ee7f2a4d698f6be4023dd0",
+    "archive_sha256": "765610bd99569414eaf120259dd08401ace1200259ffe5bf79dd884482c066fe",
+    "original_experiment_sha256": "e1c704dbc3edb0d538a28489f525d5604d4ba651cf2193362d40e27dc8ac184f",
+    "original_snapshots_sha256": "04ab79ec0731f43354fef70305ca7d530b387f0cba0ad5bd11cdccc698608df3",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r2\\sharp_and_cg"
+  },
+  "sharp_and_bar": {
+    "score_inputs_sha256": "351b7b22f5a48232535d0cd3e2d4710952d015bc3de95dc568398c41dbaae627",
+    "archive_sha256": "c0c806f54c94fe938f3bbd7758decdff41c48adef6410026b5e4e3b16fa9493f",
+    "original_experiment_sha256": "e7fba4b3554db0ce75d1d55f6f4ef5c84a56134d1bebbedf5e72698df409bd22",
+    "original_snapshots_sha256": "a8eb9c87d1465b507b0c9f24058e0a3db0cce5041782189f0cac8b782d98207e",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r2\\sharp_and_bar"
+  },
+  "all_sharp": {
+    "score_inputs_sha256": "d36f772703332b5f4579516bd2fca6a60fcfeb03c3e68dbc914bbb72b922e79e",
+    "archive_sha256": "ac5f6773f5f465ce7d2162f9069d70cd8588bc71b89031d0faf8afa4970ec4b7",
+    "original_experiment_sha256": "a508bdebcf6c35f8905dde3c3eaa4b97d6e06797b5a8befb18e045e87c4803ad",
+    "original_snapshots_sha256": "22d9e17b6ddd36e7d85d05465bc44917b8d8a68bdcb5070289b28812b6a96917",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r2\\all_sharp"
+  },
+  "front_45k": {
+    "score_inputs_sha256": "1b551080d199a1e6b22ce38614268b5e7f5d2d4760cec1102969f31f43614749",
+    "archive_sha256": "74e3f16cfa431460e8b16738620a489d0b05e8beff7904ef7c2770c8c5186778",
+    "original_experiment_sha256": "d2588d297599704200bbb56587f9557b24d238dba86e0d998d4f7fe9a6046f72",
+    "original_snapshots_sha256": "eaec1e4bf758c0a1ed6b83e6b7967a0ef6cfdcd9d64a3905fa04dafc93f75e87",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r3\\front_45k"
+  },
+  "front_45k_bar": {
+    "score_inputs_sha256": "6f05806ce5ac3130285738e935fe8efdff8f8b7a49646f7e401a0d7d9dc3c40d",
+    "archive_sha256": "815ae4f32c8ec7991f7179b6cf76c0cbacbc248539ec287803d8c8d80a1d36da",
+    "original_experiment_sha256": "d7d0347190e2c09b5f089e2d45049efcf76159274b4f0a5ba735a3f9584d94b6",
+    "original_snapshots_sha256": "4578c9cf3fb5e0768b622919fe72bda437c92c483d0ea468c114dbe80b16cca0",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r3\\front_45k_bar"
+  },
+  "front_45k_cg": {
+    "score_inputs_sha256": "70a9b4c9e2138eeca0174acde88af021ffc4d21a07307e544bd777f5cfb9f811",
+    "archive_sha256": "f4fa3c882e2d30a1e8e4fbb61942ae280607ebf34db87254a3efc6f92543ab4b",
+    "original_experiment_sha256": "fe4e147da79f1aab427716f2746862235da64363808e455074f951515b6be31f",
+    "original_snapshots_sha256": "e171610143890a23ec96375ce3b6485f26b9d1845f0c55068e39ba1c1f5f857e",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r3\\front_45k_cg"
+  },
+  "front_45k_all": {
+    "score_inputs_sha256": "40087821d1901ea72a534ddf6e80b3217671552f4ad045f698c0dbb6e7699035",
+    "archive_sha256": "26e8278c1702aab50457753df7732a3523b6d18693ccfe29ded8306f2b90118f",
+    "original_experiment_sha256": "a7e4ff9226a34bea67c8674f2140303aa8dd011fd513136c66e3b0d6b92c3c6e",
+    "original_snapshots_sha256": "ffca98340284fb418314da6e9d70c3ab777bee2ec66d71b4aca62cf75c922580",
+    "full_original_directory": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\preflight-r3\\front_45k_all"
+  }
+}

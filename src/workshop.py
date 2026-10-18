@@ -5,6 +5,7 @@ import json
 import math
 from dataclasses import asdict, replace
 
+import workshop_cornering
 from lab_experiment import LabOptions
 from race import GameMode
 from vehicle_designs import REFERENCE_DESIGN
@@ -73,6 +74,9 @@ def validate_receipt(receipt, config):
     """持久化边界检查；成绩只适用于实际通过的这套硬件。"""
     if receipt is None:
         return
+    if isinstance(receipt, dict) and receipt.get("challenge_id") == workshop_cornering.CHALLENGE_ID:
+        workshop_cornering.validate_receipt(receipt, config)
+        return
     if not isinstance(receipt, dict) or receipt["challenge_id"] != CHALLENGE_ID:
         raise ValueError("未知工程挑战成绩")
     expected = build_config(receipt["share_index"], receipt["large_brakes"])
@@ -93,7 +97,7 @@ def validate_receipt(receipt, config):
 
 
 def road_result(receipt, race, track):
-    """道路只验证有效圈；不把键盘驾驶圈速当作制动试验复算。"""
+    """道路只验证有效圈；不把键盘驾驶圈速当作参考试验复算。"""
     if (receipt is None or track != "coastal" or race.mode != GameMode.TIME_TRIAL
             or not race.finished or race.invalidated):
         return None

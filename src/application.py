@@ -43,6 +43,7 @@ from ui.workspace_loading import WorkspaceLoading
 from vehicle_designs import vehicle_design
 from vehicle_workspace import WorkspaceVehicle, workspace_vehicle_path
 from workshop import road_result
+from workshop_cornering import CHALLENGE_ID as CORNERING_CHALLENGE_ID
 
 
 class CoastalDrive(ShowBase):
@@ -894,6 +895,8 @@ class CoastalDrive(ShowBase):
         if vehicle.workshop_result is not None:
             result = vehicle.workshop_result
             road = "道路已完成" if result["road_validated"] else "等待有效圈验证"
+            if result["challenge_id"] == CORNERING_CHALLENGE_ID:
+                return f"操稳工坊 · {result['medal']}牌 · {road}\n循迹误差减少 {result['improvement_pct']:.1f}%"
             return f"制动工坊 · {result['medal']}牌 · {road}\n停车距离改善 {result['improvement_pct']:.1f}%"
         source = "实验车" if vehicle.report_path else "目录车"
         return f"{source} · {vehicle_design(vehicle.design_id).name}\n{vehicle.config.mass:g} kg · 质心 {vehicle.config.center_of_mass_height:g} m"
