@@ -1,0 +1,51 @@
+{
+  "started_utc": "2026-10-18T10:40:54.724558+00:00",
+  "git_head": "7b9fbf70f2f2a38bdc0c3633a8627b08c60011a1",
+  "git_status": "M src/application.py\n M src/lab_application.py\n M src/road_comparison.py\n M src/ui/lab_workspace.py\n M src/ui/road_review.py\n M src/ui/virtual_driver.py\n M tools/validate.py\n?? docs/tasks/SCHEME-SLALOM-01.md\n?? tests/test_scheme_slalom.py\n?? tools/scheme_slalom_check.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_scheme_slalom.py"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\SCHEME-SLALOM-01-route\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.099
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_scheme_slalom.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\SCHEME-SLALOM-01-route\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 93.015
+    }
+  ]
+}

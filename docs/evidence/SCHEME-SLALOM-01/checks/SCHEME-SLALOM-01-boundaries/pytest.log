@@ -1,0 +1,53 @@
+F.                                                                       [100%]
+================================== FAILURES ===================================
+___ test_success_display_fixture_does_not_award_unverified_coastal_progress ___
+
+app = <application.CoastalDrive object at 0x0000012BB74EEF90>
+
+    def test_success_display_fixture_does_not_award_unverified_coastal_progress(app):
+        from session import Phase
+        panel, better = prepare(app, "normal")
+        pending = replace(better.vehicle, workshop_result={**better.vehicle.workshop_result, "road_validated": False})
+        pending.save(better.folder/"vehicle.json")
+        original = (better.folder/"vehicle.json").read_bytes()
+        panel.drive_slalom()
+        finish(app, "game")
+        result = app.session.highway.snapshot
+>       passed = replace(result.slalom, finished=True, succeeded=True, gates=6, run_seconds=14., medal="金")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_scheme_slalom.py:167: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+obj = None
+changes = {'finished': True, 'gates': 6, 'medal': '金', 'run_seconds': 14.0, ...}
+
+    def replace(obj, /, **changes):
+        """Return a new object replacing specified fields with new values.
+    
+        This is especially useful for frozen classes.  Example usage::
+    
+          @dataclass(frozen=True)
+          class C:
+              x: int
+              y: int
+    
+          c = C(1, 2)
+          c1 = replace(c, x=3)
+          assert c1.x == 3 and c1.y == 2
+        """
+        if not _is_dataclass_instance(obj):
+>           raise TypeError("replace() should be called on dataclass instances")
+E           TypeError: replace() should be called on dataclass instances
+
+C:\Users\15120\AppData\Local\Python\pythoncore-3.14-64\Lib\dataclasses.py:1769: TypeError
+---------------------------- Captured stderr setup ----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+=========================== short test summary info ===========================
+FAILED tests/test_scheme_slalom.py::test_success_display_fixture_does_not_award_unverified_coastal_progress
+1 failed, 1 passed in 33.03s

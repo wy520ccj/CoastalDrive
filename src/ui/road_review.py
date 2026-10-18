@@ -38,9 +38,10 @@ class RoadReviewPanel:
             relief=DGG.FLAT, borderWidth=(0, 0), pos=(0., 0., -.51), command=self.seek)
         app.text("拖动比较同位置。请求−1…1为该步保持比例，响应为前轮等效转角；t从起步计。",
                  -1.52, -.61, .029, theme.SEA, parent=self.root)
-        self.load_button = app.button("载回 B 继续试验", .88, -.73, 1.12, owner.schemes.load_right,
+        self.load_button = app.button("载回 B 继续试验", 1.12, -.73, 1., owner.load_right,
                    parent=self.root, accent=True)
-        app.button("返回对比结果", -.88, -.73, 1.12, self.hide, parent=self.root)
+        self.drive_button = app.button("驾驶 B 过门", 0., -.73, .96, owner.drive_slalom, parent=self.root)
+        app.button("返回对比结果", -1.12, -.73, 1., self.hide, parent=self.root)
         self.root.hide()
 
     @staticmethod
@@ -53,6 +54,7 @@ class RoadReviewPanel:
             return
         self.records = tuple(comparison.records)
         self.names.setText(f"A：{self.owner.names[0][:18]} / B：{self.owner.names[1][:18]}")
+        self.load_button["state"] = self.drive_button["state"] = self.owner.drive_button["state"]
         try:
             self.gates = [gate_crossings(record) for record in self.records]
             focus = max(0., min(320., focus_position(self.records)))

@@ -40,6 +40,17 @@ class RoadRecord:
     rows: tuple
 
 
+@dataclass(frozen=True)
+class RoadResults:
+    """同窗交接只携带结束记录，不保留上一世界或试车控制器。"""
+    records: tuple
+    status: str
+    done: bool = True
+
+    def close(self):
+        pass
+
+
 class RoadTrial:
     def __init__(self, vehicle):
         self.original = vehicle

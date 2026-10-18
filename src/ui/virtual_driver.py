@@ -5,9 +5,16 @@ from datetime import UTC, datetime
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectFrame
 
-from road_comparison import RoadComparison, comparison_rows, context_mismatches, export_comparison
+from road_comparison import (
+    RoadComparison,
+    RoadResults,
+    comparison_rows,
+    context_mismatches,
+    export_comparison,
+)
 from ui import theme
 from ui.road_review import RoadReviewPanel
+from vehicle_parameters import config_from_document
 from vehicle_schemes import load_scheme
 from vehicle_state import FIXED_DT
 
@@ -34,6 +41,9 @@ class VirtualDriverPanel:
         self.note.textNode.setWordwrap(88)
         self.failure = app.text("", -1.52, -.57, .031, theme.FAILURE, parent=self.root)
         self.failure.textNode.setWordwrap(85)
+        self.drive_note = app.text("", -1.52, -.37, .029, theme.SEA, parent=self.root)
+        self.drive_button = app.button("驾驶 B 连续过门", 1., -.40, 1.10, self.drive_slalom,
+                                       parent=self.root, accent=True)
         self.run_button = app.button("运行道路 A/B", -1.18, -.73, .72, self.start, parent=self.root, accent=True)
         self.review = RoadReviewPanel(app, self)
         self.review_button = app.button("逐门复盘", -.37, -.73, .70, self.review.show, parent=self.root)
@@ -62,6 +72,7 @@ class VirtualDriverPanel:
         self.report_button["state"] = DGG.NORMAL if self.comparison is not None and self.comparison.done else DGG.DISABLED
         self.review_button["state"] = (DGG.NORMAL if self.comparison is not None
             and self.comparison.done and self.comparison.records else DGG.DISABLED)
+        self.set_drive_state()
         self.root.show()
 
     def start(self):
@@ -90,6 +101,7 @@ class VirtualDriverPanel:
             return
         self.run_button["state"] = self.report_button["state"] = DGG.DISABLED
         self.review_button["state"] = DGG.DISABLED
+        self.drive_button["state"] = DGG.DISABLED
         self.failure.setText("")
         for column in self.columns:
             column.setText("")
@@ -129,6 +141,78 @@ class VirtualDriverPanel:
                                "failed": "物理求解失败，已完成步保留"}[comparison.status])
         self.run_button["state"] = self.report_button["state"] = DGG.NORMAL
         self.review_button["state"] = DGG.NORMAL if comparison.records else DGG.DISABLED
+        self.set_drive_state()
+
+    def set_drive_state(self):
+        available = self.comparison is not None and self.comparison.done and len(self.comparison.records) == 2
+        self.drive_button["state"] = DGG.NORMAL if available else DGG.DISABLED
+        if available:
+            friction = self.comparison.records[1].metadata["original_vehicle"]["config"]["road_friction"]
+            self.drive_note.setText(f"亲自过门沿用方案路面 μ={friction:g} / 当前输入模式\n虚拟复测基准 μ=1.1，玩家成绩独立记录。")
+        else:
+            self.drive_note.setText("完成两侧试车后，可用原B硬件亲自练习同一门位。")
+
+    def checked_right(self):
+        if self.comparison is None or not self.comparison.done or len(self.comparison.records) != 2:
+            raise ValueError("B尚无冻结试车记录")
+        item = load_scheme(self.app.scheme_root, self.identities[1])
+        item.records()
+        original = self.comparison.records[1].metadata["original_vehicle"]
+        if (item.vehicle.design_id != original["design_id"]
+                or config_from_document(original["config"], item.vehicle.config) != item.vehicle.config):
+            raise ValueError("B硬件已经改变，请重新运行道路A/B")
+        return item
+
+    def drive_slalom(self):
+        try:
+            item = self.checked_right()
+            item.vehicle.save()
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            self.app.show_error("B未进入过门课题，原对比保留", error)
+            return
+        self.app.workspace_vehicle = item.vehicle
+        self.app.next_drive = self.app.next_slalom = True
+        self.app.back_to_game()
+
+    def load_right(self):
+        try:
+            item = self.checked_right()
+            self.schemes.refresh(item.id)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            self.app.show_error("原B方案未载回，对比保留", error)
+            return
+        self.schemes.load_right()
+
+    def capture(self):
+        if self.comparison is None:
+            return None
+        visible = not self.root.isHidden()
+        reviewing = not self.review.root.isHidden()
+        position = self.review.slider["value"]
+        self.close()
+        return {"identities": self.identities, "names": self.names,
+            "records": tuple(self.comparison.records), "status": self.comparison.status,
+            "report": self.report, "visible": visible, "reviewing": reviewing, "position": position}
+
+    def restore(self, state):
+        self.identities, self.names = state["identities"], state["names"]
+        self.comparison = RoadResults(state["records"], state["status"])
+        self.report = state["report"]
+        self.scheme_names.setText(f"A：{self.names[0]}\nB：{self.names[1]}")
+        self.present()
+        if state["visible"]:
+            self.schemes.show()
+            for side, identity in enumerate(self.identities):
+                matches = [i for i, item in enumerate(self.schemes.schemes) if item.id == identity]
+                if matches:
+                    self.schemes.indices[side] = matches[0]
+                    self.schemes.build_menu(side)
+            self.schemes.present()
+            self.root.show()
+            if state["reviewing"]:
+                self.review.show()
+                self.review.slider["value"] = state["position"]
+                self.review.seek()
 
     def save_report(self):
         if self.comparison is None or not self.comparison.done:

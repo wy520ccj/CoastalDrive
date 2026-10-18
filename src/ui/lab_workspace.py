@@ -28,6 +28,7 @@ class LabWorkspace:
     play_speed: float
     last_report: Path | None
     workshop_state: dict | None = None
+    road_state: dict | None = None
 
     @classmethod
     def capture(cls, app):
@@ -38,7 +39,7 @@ class LabWorkspace:
                    app.abs_menu.selectedIndex, app.esc_menu.selectedIndex, app.plot_menu.selectedIndex,
                    app.engineered_config, app.parameter_metadata, app.active_record(), app.baseline,
                    app.view_index, app.scene.camera_mode, app.play_speed, app.last_report,
-                   app.workshop.capture())
+                   app.workshop.capture(), app.schemes.virtual_driver.capture())
 
     def restore(self, app):
         app.set_options(LabOptions(vehicle_id=self.vehicle_id, maneuver=self.maneuver))
@@ -73,3 +74,5 @@ class LabWorkspace:
         app.notice.setText("已返回原实验台：工况、输入、A/B结果与时间游标已恢复；编辑值重新试验后生效。")
         if self.workshop_state is not None:
             app.workshop.restore(self.workshop_state)
+        if self.road_state is not None:
+            app.schemes.virtual_driver.restore(self.road_state)

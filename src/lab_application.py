@@ -70,6 +70,7 @@ class VehicleLab(DirectObject):
         self.scheme_root = Path(scheme_root) if scheme_root is not None else scheme_library_path()
         self.next_workspace = None
         self.next_drive = False
+        self.next_slalom = False
         self.workspace_vehicle = workspace_vehicle
         self.run_state = None
         self.engineered_config = None

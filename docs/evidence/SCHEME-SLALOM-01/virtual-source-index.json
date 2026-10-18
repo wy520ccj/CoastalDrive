@@ -1,0 +1,5 @@
+{
+  "source": "docs/evidence/VIRTUAL-DRIVER-01",
+  "archive_manifest_sha256": "8c650d7a6e68b5f280301a4cea818bb465b5fa16e0221682840005b0ce77dd10",
+  "scope": "旧虚拟A/B复用，未重新运行虚拟驾驶；本批player记录为新实际键盘驾驶"
+}

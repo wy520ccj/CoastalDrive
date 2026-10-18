@@ -350,11 +350,14 @@ class CoastalDrive(ShowBase):
         self.lab = VehicleLab(engine=self, output=self.lab_output, workspace_vehicle=self.workspace_vehicle,
                               scheme_root=self.scheme_root,
                               lab_workspace=self.lab_workspace, on_back=self.return_from_lab, activate=False)
-        if self.workspace_vehicle.workshop_result is not None:
+        if (self.workspace_vehicle.workshop_result is not None
+                and not (self.lab_workspace is not None and self.lab_workspace.road_state is not None
+                         and self.lab_workspace.road_state["visible"])):
             self.lab.workshop.show()
         request = self.lab_journey_request
         self.lab_journey_request = None
         if request is not None:
+            self.lab.schemes.virtual_driver.hide()
             if request["scheme_id"] is not None:
                 self.lab.schemes.show()
                 if any(item.id == request["scheme_id"] for item in self.lab.schemes.schemes):
@@ -384,8 +387,10 @@ class CoastalDrive(ShowBase):
             return
         self.lab_workspace = self.lab.capture_workspace()
         self.workspace_vehicle = self.lab.workspace_vehicle or self.workspace_vehicle
-        # 主动选择工坊道路验证时沿用工坊意图；普通返回/保存试驾接回当前刹停课题。
-        if self.lab.next_drive and self.workspace_vehicle.workshop_result is not None:
+        # 显式亲自过门优先；既有工坊滨海验证与普通课题返回分别保留。
+        if self.lab.next_slalom:
+            self.lab_return_slalom, self.lab_return_braking = True, False
+        elif self.lab.next_drive and self.workspace_vehicle.workshop_result is not None:
             self.lab_return_braking = False
             self.lab_return_slalom = False
         self.next_drive = self.lab.next_drive or self.lab_return_braking or self.lab_return_slalom
