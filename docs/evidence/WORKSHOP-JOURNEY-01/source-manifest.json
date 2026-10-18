@@ -1,0 +1,10 @@
+{
+  "src/application.py": "31ae787bc659bfd00f592cce778f38d996b0b0a13a81d6bea799a762356032e2",
+  "src/ui/main_menu.py": "cb21c8a42e76d8d7a9de2dd320a84ca98c7c03616df2c75a157c367d5977f93f",
+  "src/ui/workshop_journey.py": "1b7a07c4f8cfcd14ce8a969bf29609ffa60a872614c20c8d83557f70734962ef",
+  "src/workshop_journey.py": "bbc2b4d4fd98a7770d6c1bdfd48dbfc0ca03663724034d0fc39e2bf1c125466f",
+  "tools/validate.py": "a0ee006e69be1ec374c37575fa637bcd554c11137354487106c495a6cfb13b40",
+  "tools/workshop_journey_check.py": "5c41f69f1f0f2f74d52dc32291d01714e02519eee44d4d5671108d40cd8985f4",
+  "tests/test_workshop_journey.py": "df419d4e0dba04c49328a043296a438e171e2723673d207fd47efeebe27fc60a",
+  "tests/test_workshop_journey_ui.py": "7a1650a50b835a3b0693778c46062d22233f5927d1cfd79c4bc10baaa39abfa5"
+}

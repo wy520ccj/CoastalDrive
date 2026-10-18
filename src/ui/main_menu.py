@@ -8,7 +8,7 @@ from ui import theme
 
 
 class MainMenu:
-    def __init__(self, parent, loader, body_font, display_font, actions, *, driving_mode_action=None, lab_action=None):
+    def __init__(self, parent, loader, body_font, display_font, actions, *, driving_mode_action=None, lab_action=None, journey_action=None):
         self.root = parent.attachNewNode("main-menu")
         self.root.setTransparency(TransparencyAttrib.MAlpha)
         self.background = DirectFrame(
@@ -71,6 +71,18 @@ class MainMenu:
             button.bind(DGG.ENTER, lambda event: self.select(6))
             self.buttons.append(button)
             self.actions = (*actions, lab_action)
+        if journey_action is not None:
+            self.static_frames.append(DirectFrame(parent=self.content, frameColor=(*theme.PAPER[:3], .94),
+                                                 frameSize=(.52, 1.63, -.76, -.54)))
+            button = DirectButton(parent=self.content, text="海岸工坊 · 项目进度  ›", text_font=body_font,
+                text_fg=theme.INK, text_scale=.046, text_pos=(0, -.015),
+                frameSize=(-.51, .51, -.07, .07), frameTexture=self.textures,
+                frameColor=(1, 1, 1, 1), pos=(1.075, 0, -.65), relief=DGG.FLAT,
+                command=journey_action, pressEffect=False)
+            index = len(self.buttons)
+            button.bind(DGG.ENTER, lambda event: self.select(index))
+            self.buttons.append(button)
+            self.actions = (*self.actions, journey_action)
         self.static_frames.append(DirectFrame(parent=self.content, frameColor=(0.4, 0.46, 0.48, 0.35),
                                              frameSize=(-1.58, -0.58, -0.292, -0.289)))
         self.static_frames.append(DirectFrame(parent=self.content, frameColor=(*theme.PAPER[:3], 0.9),

@@ -1,0 +1,207 @@
+[
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/normal-ui/braking-rules.png",
+    "archive": "normal/ui/braking-rules.png",
+    "sha256": "bf2c45fdee00928b7429ea2447d95a823911d107c6d1dc35f45433c297f28784"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/normal-ui/continued-scheme.png",
+    "archive": "normal/ui/continued-scheme.png",
+    "sha256": "082bc5cabdd118eaea237ed1082e17fe6b130d7f5b40a504ac313ea07b0cc36a"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/normal-ui/continued-trial.png",
+    "archive": "normal/ui/continued-trial.png",
+    "sha256": "aec18424f6abe37d270fb0b5d30f93e7df387e5608eaf90e879bcbf4272550be"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/normal-ui/main-menu.png",
+    "archive": "normal/ui/main-menu.png",
+    "sha256": "2dd1b0dded9d568553659e8ad9bdbb73d48d0778d1640eb127062c05ddef4a28"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/normal-ui/new-journey.png",
+    "archive": "normal/ui/new-journey.png",
+    "sha256": "ebfc5879d749d05fd14c61a5ecb57ea3c2209c60bdbfa44bdf9a8203beb8b345"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/normal-ui/returned-journey.png",
+    "archive": "normal/ui/returned-journey.png",
+    "sha256": "d54c3aa928cca34cde31477357927c590ab655d3bada4d63e22be711a35e6138"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/normal-ui/saved-journey.png",
+    "archive": "normal/ui/saved-journey.png",
+    "sha256": "d54c3aa928cca34cde31477357927c590ab655d3bada4d63e22be711a35e6138"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/normal-ui/summary.json",
+    "archive": "normal/ui/summary.json",
+    "sha256": "92e2fb247f64d4f413e5387a30d6ac3addd32dc5a27e77257594196b411f1b94"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/normal-final/restarted-journey.png",
+    "archive": "normal/final/restarted-journey.png",
+    "sha256": "ddcaf35457ed2f9b6a8b9f0a415b9162b2288384d2bb67de944298cb0ef55c25"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/normal-final/summary.json",
+    "archive": "normal/final/summary.json",
+    "sha256": "e821dc970536aab9b9bc836a59b2190c4a81bc4947ac280d4e0930aade11d32c"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/double-ui/braking-rules.png",
+    "archive": "double/ui/braking-rules.png",
+    "sha256": "6a1f2e5a953fae5e9a8ee6c3f3c9ef9deaaf498813361b7b4b90154ca35679a5"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/double-ui/continued-scheme.png",
+    "archive": "double/ui/continued-scheme.png",
+    "sha256": "7c41cfe4ec1fa0dcd6c7d64f2e4c05cf17276eafdf05c21be146d9d51e4c06e7"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/double-ui/continued-trial.png",
+    "archive": "double/ui/continued-trial.png",
+    "sha256": "93e296b986a0de2bf116eb320d882f61e5f6d860450f5ff6c51e2e8918ce5398"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/double-ui/main-menu.png",
+    "archive": "double/ui/main-menu.png",
+    "sha256": "0f5eceea9552556fd5849c4c83fb0a01fe79dabda04de24691278bfc741b439b"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/double-ui/new-journey.png",
+    "archive": "double/ui/new-journey.png",
+    "sha256": "b4201bcfedaf3afb4e48b6bc67440ac17487f3eccb6a955fa49ece62757060de"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/double-ui/returned-journey.png",
+    "archive": "double/ui/returned-journey.png",
+    "sha256": "e88df15d56a340af674dfea65b6a4963294745161b9ebb2591f0177e778ba573"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/double-ui/saved-journey.png",
+    "archive": "double/ui/saved-journey.png",
+    "sha256": "e88df15d56a340af674dfea65b6a4963294745161b9ebb2591f0177e778ba573"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/double-ui/summary.json",
+    "archive": "double/ui/summary.json",
+    "sha256": "ae90fe91a08e4c1d2ef71552f1a7ad864669fed1307cb41adee43f685f8dc2a7"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/double-final/restarted-journey.png",
+    "archive": "double/final/restarted-journey.png",
+    "sha256": "3294c0b3ead42018422ee47b0fa21ea332703b3047c281c1d5998f198ce12c5c"
+  },
+  {
+    "source": "logs/WORKSHOP-JOURNEY-01/double-final/summary.json",
+    "archive": "double/final/summary.json",
+    "sha256": "90403ede844b6b940a79d17278dab2f0e5c13cf0b670ea502e5de91ad623c077"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-core/pytest.log",
+    "archive": "checks/WORKSHOP-JOURNEY-01-core/pytest.txt",
+    "sha256": "f65bf9e3fc7e6fc2819779112b36617fc82757e392d93e3d7e3fb647509c3a56"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-core/ruff.log",
+    "archive": "checks/WORKSHOP-JOURNEY-01-core/ruff.txt",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-core/summary.json",
+    "archive": "checks/WORKSHOP-JOURNEY-01-core/summary.json",
+    "sha256": "6c70ad62b726ad3b026e342ad4255f309204c5c2d604c581d4bcac682881b46c"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-double/pytest.log",
+    "archive": "checks/WORKSHOP-JOURNEY-01-double/pytest.txt",
+    "sha256": "299550e4f7e3706577c2a72869768667eeda37be87e0260b3e4d3c876436cd72"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-double/ruff.log",
+    "archive": "checks/WORKSHOP-JOURNEY-01-double/ruff.txt",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-double/summary.json",
+    "archive": "checks/WORKSHOP-JOURNEY-01-double/summary.json",
+    "sha256": "7df41f6629f0b1c3aeff1d63fa2e1d75bff8270221811bbafba748fc17ff3b80"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-double-final/pytest.log",
+    "archive": "checks/WORKSHOP-JOURNEY-01-double-final/pytest.txt",
+    "sha256": "ed1aa7cfea26b9bc3619ffd200fe5bce7bb990adc37ae165d19deecea8ec42ea"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-double-final/ruff.log",
+    "archive": "checks/WORKSHOP-JOURNEY-01-double-final/ruff.txt",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-double-final/summary.json",
+    "archive": "checks/WORKSHOP-JOURNEY-01-double-final/summary.json",
+    "sha256": "201d1db9e429aeede4e9f6c6b0e34f9a49d248c726cb94ca3b04281007019610"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-final/pytest.log",
+    "archive": "checks/WORKSHOP-JOURNEY-01-final/pytest.txt",
+    "sha256": "c2148901b58bd54ea6258a833ac8221426b608da1fb6cb569cb94842a94908de"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-final/ruff.log",
+    "archive": "checks/WORKSHOP-JOURNEY-01-final/ruff.txt",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-final/summary.json",
+    "archive": "checks/WORKSHOP-JOURNEY-01-final/summary.json",
+    "sha256": "92e83075cbbeae645505c3e4e7e36cad36a2a8d8bd1ae298b4a4d6057cb7cecd"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-T1/headless-0.log",
+    "archive": "checks/WORKSHOP-JOURNEY-01-T1/headless-0.txt",
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-T1/headless-17.log",
+    "archive": "checks/WORKSHOP-JOURNEY-01-T1/headless-17.txt",
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-T1/headless-23.log",
+    "archive": "checks/WORKSHOP-JOURNEY-01-T1/headless-23.txt",
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-T1/pytest.log",
+    "archive": "checks/WORKSHOP-JOURNEY-01-T1/pytest.txt",
+    "sha256": "6d375e2ca6360d621b2291f0e9db5e2fd4bfd132611679148beb9e47721afad7"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-T1/ruff.log",
+    "archive": "checks/WORKSHOP-JOURNEY-01-T1/ruff.txt",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-T1/summary.json",
+    "archive": "checks/WORKSHOP-JOURNEY-01-T1/summary.json",
+    "sha256": "51ed4f291a6aa7a2cc10b85385f4520215b2f2b5760653964ad4d08fcd8a5c12"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-ui/pytest.log",
+    "archive": "checks/WORKSHOP-JOURNEY-01-ui/pytest.txt",
+    "sha256": "fc8c8d94ba3bd6893b41b5072390d9f55c59da974c78668b136d3dc718ffc782"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-ui/ruff.log",
+    "archive": "checks/WORKSHOP-JOURNEY-01-ui/ruff.txt",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/WORKSHOP-JOURNEY-01-ui/summary.json",
+    "archive": "checks/WORKSHOP-JOURNEY-01-ui/summary.json",
+    "sha256": "ec068e40079bbbd28a446e9ffa8d0d02af307397a62d69cb75dfa4e1932faea8"
+  }
+]

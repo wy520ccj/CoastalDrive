@@ -2,6 +2,7 @@ import json
 import logging
 import time
 from dataclasses import replace
+from pathlib import Path
 
 import simplepbr
 from direct.gui import DirectGuiGlobals as DGG
@@ -19,11 +20,13 @@ from panda3d.core import (
 )
 
 from audio.music import STATIONS
+from braking_lesson import BrakingScores
 from chase_camera import ChaseCamera
 from controls import ConstantController
 from driving_modes import DrivingMode
 from garage import GaragePreview
 from highway_run import TRAFFIC_DENSITIES
+from lab_records import load_record
 from paths import user_data
 from race import BestTimes, GameMode
 from scene import Scene
@@ -39,12 +42,14 @@ from ui.countdown import Countdown
 from ui.hud import DrivingHUD
 from ui.main_menu import MainMenu
 from ui.race_feedback import result_columns
+from ui.workshop_journey import WorkshopJourney
 from ui.workspace_loading import WorkspaceLoading
 from vehicle_designs import vehicle_design
-from vehicle_schemes import scheme_library_path, sync_road_progress
+from vehicle_schemes import load_scheme, scheme_library_path, sync_road_progress
 from vehicle_workspace import WorkspaceVehicle, workspace_vehicle_path
 from workshop import road_result
 from workshop_cornering import CHALLENGE_ID as CORNERING_CHALLENGE_ID
+from workshop_journey import current_trial, read_journey
 
 
 class CoastalDrive(ShowBase):
@@ -160,6 +165,7 @@ class CoastalDrive(ShowBase):
         self.highway_menu = False
         self.braking_menu = False
         self.lab_return_braking = False
+        self.lab_journey_request = None
         self.audio_settings_page = False
         self.driving_mode_page = False
         self.highway_shape = "hills"
@@ -240,6 +246,34 @@ class CoastalDrive(ShowBase):
         self.next_workspace = "lab"
         self._begin_workspace(self._load_lab(), "进入车辆实验室", "工况与A/B记录将保留")
 
+    def open_workshop_journey(self):
+        scores = BrakingScores(self.session.race.scores.path.with_name("braking-best.json"),
+                               "braking-v1:"+self.session.score_variant())
+        try:
+            data = read_journey(self.scheme_root, self.workspace_vehicle, scores)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            self.main_menu.notice.setText("项目进度未读取，请检查方案目录。")
+            logging.getLogger(__name__).warning("工坊初章未读取: %s", error)
+            return
+        self.journey.show(data)
+
+    def continue_workshop_project(self, project):
+        if project["topic"] == 2:
+            self.journey.hide()
+            self.choose_braking_lesson()
+            return
+        try:
+            if project["scheme_id"] is not None:
+                load_scheme(self.scheme_root, project["scheme_id"]).records()
+            elif project["vehicle"] is not None:
+                current_trial(project["vehicle"])
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            self.journey.notice.setText("方案暂不可继续，其他数据保留："+str(error)[:65])
+            return
+        self.lab_journey_request = project
+        self.journey.hide()
+        self.open_vehicle_lab()
+
     def _begin_workspace(self, steps, title, tip):
         self._workspace_steps = steps
         self.workspace = "transition"
@@ -313,6 +347,26 @@ class CoastalDrive(ShowBase):
                               lab_workspace=self.lab_workspace, on_back=self.return_from_lab, activate=False)
         if self.workspace_vehicle.workshop_result is not None:
             self.lab.workshop.show()
+        request = self.lab_journey_request
+        self.lab_journey_request = None
+        if request is not None:
+            if request["scheme_id"] is not None:
+                self.lab.schemes.show()
+                if any(item.id == request["scheme_id"] for item in self.lab.schemes.schemes):
+                    self.lab.schemes.refresh(request["scheme_id"])
+                else:
+                    self.lab.show_error("目标方案已不在列表，未替换当前试验。")
+            else:
+                vehicle = request["vehicle"]
+                if vehicle is not None:
+                    folder = Path(vehicle.report_path).parent
+                    if self.lab.import_record(folder):
+                        self.lab.baseline = load_record(folder/"baseline-A")
+                        self.lab.workshop.restore_saved(vehicle)
+                        self.lab.refresh_plots()
+                if self.lab.workshop.topic != request["topic"]:
+                    self.lab.workshop.set_topic(request["topic"])
+                self.lab.workshop.show()
         yield 3, "工程参数与试验记录已恢复"
         self.lab.root.prepareScene(self.win.getGsg())
         self.render.prepareScene(self.win.getGsg())
@@ -482,6 +536,11 @@ class CoastalDrive(ShowBase):
     def key_down(self, key):
         if not self.loading.isHidden():
             return
+        if self.session.phase == Phase.MENU and not self.journey.root.isHidden():
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.journey.key(key)
+            return
         if key == "g" and self.session.phase in (Phase.DRIVING, Phase.COUNTDOWN, Phase.PAUSED):
             if key not in self.commands_held:
                 self.commands_held.add(key)
@@ -637,7 +696,10 @@ class CoastalDrive(ShowBase):
             lambda: self.start_game(mode=GameMode.TIME_TRIAL),
             lambda: self.start_game(mode=GameMode.FREE_DRIVE),
             self.choose_highway, self.choose_garage, self.choose_audio_settings, self.userExit,
-        ), driving_mode_action=self.choose_driving_mode, lab_action=self.open_vehicle_lab)
+        ), driving_mode_action=self.choose_driving_mode, lab_action=self.open_vehicle_lab,
+            journey_action=self.open_workshop_journey)
+        self.journey = WorkshopJourney(self.main_menu.content, self.ui_font, self.main_menu.textures,
+                                       self.continue_workshop_project)
         self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
         self.diagnostics = OnscreenText(
             **{**text_style, "fg": theme.DIAGNOSTIC_TEXT, "shadow": theme.DIAGNOSTIC_SHADOW},
@@ -1475,6 +1537,7 @@ class CoastalDrive(ShowBase):
         if self.scene is not None:
             self.scene.close()
             self.scene = None
+        self.journey.root.destroy()
         self.main_menu.destroy()
         self.hud.destroy()
         self.countdown.destroy()

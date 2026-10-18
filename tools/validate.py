@@ -13,7 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 AREAS = {
     "workflow": ["test_validation_runner"],
-    "design": ["test_workshop", "test_workshop_ui", "test_cornering_workshop", "test_cornering_workshop_ui", "test_vehicle_schemes", "test_vehicle_schemes_ui", "test_vehicle_workspace", "test_lab_game_comparison", "test_design_loop_ui",
+    "design": ["test_workshop", "test_workshop_ui", "test_cornering_workshop", "test_cornering_workshop_ui", "test_vehicle_schemes", "test_vehicle_schemes_ui", "test_workshop_journey", "test_workshop_journey_ui", "test_vehicle_workspace", "test_lab_game_comparison", "test_design_loop_ui",
                "test_vehicle_design_entry", "test_vehicle_designs", "test_gr86", "test_design_spawn", "test_workspace_transition"],
     "estimation": ["test_state_estimation", "test_sensor_run"],
     "research": ["test_driving_experiment"],
