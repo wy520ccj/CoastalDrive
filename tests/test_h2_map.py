@@ -59,7 +59,8 @@ def test_raised_shoulders_support_the_vehicle(sim, side):
     car = sim.snapshot().player
     assert abs(car.roll) < 3
     assert car.position[2] > point.z + 0.3
-    assert all(w.getRaycastInfo().isInContact() for w in sim._vehicle.getWheels())
+    assert len(car.wheel_contacts) == 4
+    assert all(contact.in_contact for contact in car.wheel_contacts)
 
 
 def test_sea_has_no_invisible_floor_and_old_test_obstacles_are_absent(sim):

@@ -41,6 +41,7 @@ def test_every_sampled_map_point_supports_the_car(index):
             simulation.step(Control())
         car = simulation.snapshot().player
         assert car.position[2] > point.z + 0.25
-        assert all(w.getRaycastInfo().isInContact() for w in simulation._vehicle.getWheels())
+        assert len(car.wheel_contacts) == 4
+        assert all(contact.in_contact for contact in car.wheel_contacts)
     finally:
         simulation.close()

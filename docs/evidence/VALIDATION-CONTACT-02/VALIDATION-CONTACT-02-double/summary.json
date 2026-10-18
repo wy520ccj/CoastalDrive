@@ -1,0 +1,51 @@
+{
+  "started_utc": "2026-10-18T04:45:39.623131+00:00",
+  "git_head": "3109a1a1c6acc590f90798385a5b4cf463859644",
+  "git_status": "M tests/test_h2_map.py\n M tests/test_h3_review.py\n M tests/test_phase3_map.py\n M tools/phase3_route_check.py\n?? docs/tasks/VALIDATION-CONTACT-02.md",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\VALIDATION-CONTACT-02-double\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.131
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_h2_map.py::test_raised_shoulders_support_the_vehicle"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\VALIDATION-CONTACT-02-double\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 2.861
+    }
+  ]
+}

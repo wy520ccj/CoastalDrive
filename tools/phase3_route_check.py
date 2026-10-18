@@ -33,7 +33,7 @@ def check_route(speed_kmh=90, laps=2):
             max_speed = max(max_speed, car.speed * 3.6)
             resets += bool(state.events)
             if tick > 120 and not any(
-                w.getRaycastInfo().isInContact() for w in simulation._vehicle.getWheels()
+                contact.in_contact for contact in car.wheel_contacts
             ):
                 airborne += 1
             if progress >= laps * map_length():
