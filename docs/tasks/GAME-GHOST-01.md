@@ -50,3 +50,5 @@
 
 - after-cli的6通过后首败旧对开附着报告射线标签；VALIDATION-SURFACE-01改读实际快照，完整6项/三种子及Double真实节点通过，施力/参数不改。
 - 再续跑`t2_resume_remainder.py --previous logs/validation/GAME-GHOST-01-T2-after-cli --supplement logs/validation/VALIDATION-SURFACE-01-T1 --output logs/validation/GAME-GHOST-01-T2-after-surface`：1907项显式复用，1609项与长测继续。
+
+- 最新活运行：fbe4208启动`GAME-GHOST-01-T2-after-surface`，执行会话84164；继续1609项，启动前源码干净。观察超时不重启；同一会话或活进程/summary确认终态。当前仍为pytest阶段，未得到完整T2通过结论。

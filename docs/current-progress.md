@@ -8,13 +8,7 @@
 
 当前[GAME-GHOST-01](tasks/GAME-GHOST-01.md)功能自动部分已完成：权威120Hz逐拍记录、同版本/SDK与同一最佳整圈关联、G/按钮开关、近车渐隐/无阴影。玩法T1 133项/三种子，Double最终9项和资源错误补验3项通过；本地/独立进程实际圈6074帧记录/回传/重开一致。普通与Double真实记录回放开关框外0像素，124刚体和物理快照保持；是静态预览，未冒充人工驾驶。原始两库记录与图像已归档，物理/原调校/原生扩展未改；功能提交后接续本批T2，人工趣味性仍待确认，持续目标active。
 
-最新[PROFILE-PROVENANCE-01](tasks/PROFILE-PROVENANCE-01.md)：整批T2在667通过后发现GR86来源表缺10项；已补齐110项与F1具体依据，改值不冒用原来源。原参数/实际配置完整SHA保持，未改车型数值或物理。普通T1 22项/三种子、Double9项与两库实际F1图通过；旧模式断言按现有积分差异修正。原T2失败保留，接续未执行范围，整批与人工Gate仍开放；仅本地提交。
-
-最新[VALIDATION-CONTACT-01](tasks/VALIDATION-CONTACT-01.md)：T2续跑9通过后遇旧H1原生射线断言；改为当前权威接触快照，原阈值保持并补四轮静载。完整H1 10项/三种子、Double接地与实际handling通过，0–100为9.64s/停车46.23m。物理未改；前667+9+10项及已完成同版启动/handling明确复用，接续其余2830项与交通/道路长测，原失败保留，整批Gate开放。
-
-最新[VALIDATION-CONTACT-02](tasks/VALIDATION-CONTACT-02.md)：路肩/沿线/路线离地统计改读普通车权威接触，原物理与阈值保持；54项模块以53通过+交通原断言补验1通过闭合，三种子/Double路肩2项通过。专用交通车保持原生悬架检查。整批T2接续2776项与交通道路长测，740项显式复用，原失败与人工Gate保留。
-
-最新[VALIDATION-IMPACT-01](tasks/VALIDATION-IMPACT-01.md)/[VALIDATION-LIFECYCLE-01](tasks/VALIDATION-LIFECYCLE-01.md)：真实碰撞第2拍唯一交付、旧实验台替身补工坊停止，生产物理/阈值保持。相关完整T1各4/36项及三种子、Double碰撞1项通过。T2续跑累计1788项有据覆盖，余1728项与长测继续，阶段仍未通过。下一短课题[定点刹停](tasks/DRIVING-STOP-01.md)已完成可行性采样/范围稿，待当前检查收尾实施。
+本批T2仍在收口：原667通过后发现GR86来源/旧验收入口问题，分别由[来源补齐](tasks/PROFILE-PROVENANCE-01.md)、[静载](tasks/VALIDATION-CONTACT-01.md)、[道路](tasks/VALIDATION-CONTACT-02.md)、[碰撞终帧](tasks/VALIDATION-IMPACT-01.md)、[关闭夹具](tasks/VALIDATION-LIFECYCLE-01.md)、[CLI模式](tasks/VALIDATION-CLI-01.md)、[对开标签](tasks/VALIDATION-SURFACE-01.md)修正。各自完整相关T1/三种子与所需Double检查通过，实际参数/物理/原阈值保持；所有原失败和未跑项分账保留。当前fbe4208/干净源码，`GAME-GHOST-01-T2-after-surface`复用1907项、继续1609项及未跑交通道路长测，仍在运行，阶段未通过；不得重复启动。下一短课题[定点刹停](tasks/DRIVING-STOP-01.md)仅完成可行性采样/范围稿，待当前检查收尾实施。仅本地提交，持续目标active，人工趣味性待确认。
 
 最新[REPO-CLEAN-01](tasks/REPO-CLEAN-01.md)：清理根目录两个重复试玩脚本、旧字体/背景及其专属旧说明，共8文件/28.04MB；当前源码入口统一在launchers/，原文件可从Git标签恢复。40项/三种子、实际菜单/实验台往返、当前资源准备与226项保留资源SHA核对通过；游戏源码/已发布包/SDK/只读归档未改。
 
