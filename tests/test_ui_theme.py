@@ -23,8 +23,12 @@ def test_font_covers_current_interface_and_matches_pinned_source():
     files.extend((ROOT / "src/ui").glob("*.py"))
     for path in files:
         tree = ast.parse(path.read_text(encoding="utf-8"))
+        # replace的首参数是输入匹配串，第二参数才可能出现在显示文字中。
+        match_literals = {id(node.args[0]) for node in ast.walk(tree)
+                          if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+                          and node.func.attr == "replace" and len(node.args) >= 2}
         for node in ast.walk(tree):
-            if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            if isinstance(node, ast.Constant) and isinstance(node.value, str) and id(node) not in match_literals:
                 characters.update(c for c in node.value if not c.isspace())
     missing = [c for c in sorted(characters)
                if not isinstance(font.getGlyph(ord(c)), DynamicTextGlyph)]

@@ -55,3 +55,6 @@
 
 - after-surface终止：554通过/轮胎弹性配置旧Game交通身份首败，132.80秒；VALIDATION-COMPLIANCE-01完整10项/三种子通过，生产未改。
 - 再续跑`t2_resume_remainder.py --previous logs/validation/GAME-GHOST-01-T2-after-surface --supplement logs/validation/VALIDATION-COMPLIANCE-01-T1 --output logs/validation/GAME-GHOST-01-T2-after-compliance`，2471项显式复用，1045项与长测继续；旧活会话84164已终止，勿重启它。
+
+- after-compliance在763通过后首败旧字体扫描误报；VALIDATION-FONT-01完整5项/三种子通过，字体与生产UI未改。
+- 再续跑`t2_resume_remainder.py --previous logs/validation/GAME-GHOST-01-T2-after-compliance --supplement logs/validation/VALIDATION-FONT-01-T1 --output logs/validation/GAME-GHOST-01-T2-after-font`，3239项显式复用，277项与长测继续。所有原结果保留。

@@ -17,6 +17,7 @@ ALLOWED_TESTS = {
     "tests/test_phase3_map.py", "tests/test_impact_delivery.py", "tests/test_lab_ui.py",
     "tests/test_physics_cli.py", "tests/test_physics_testbed.py",
     "tests/test_tire_compliance_config.py",
+    "tests/test_ui_theme.py",
 }
 
 
