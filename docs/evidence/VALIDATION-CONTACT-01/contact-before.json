@@ -1,0 +1,102 @@
+{
+  "position": [
+    180.0,
+    0.0,
+    0.4186878502368927
+  ],
+  "native_raycast": [
+    false,
+    false,
+    false,
+    false
+  ],
+  "authoritative_contacts": [
+    {
+      "in_contact": true,
+      "contact_point": [
+        179.16000002622604,
+        1.100000023841858,
+        5.551115123125783e-17
+      ],
+      "contact_normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "suspension_force": 2943.0005170047198,
+      "normal_load": 2943.0005170047198,
+      "suspension_length": 0.3386878502368927,
+      "compression": 0.06131215572357179,
+      "skid": null,
+      "surface": "asphalt"
+    },
+    {
+      "in_contact": true,
+      "contact_point": [
+        180.83999997377396,
+        1.100000023841858,
+        5.551115123125783e-17
+      ],
+      "contact_normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "suspension_force": 2943.0005170047198,
+      "normal_load": 2943.0005170047198,
+      "suspension_length": 0.3386878502368927,
+      "compression": 0.06131215572357179,
+      "skid": null,
+      "surface": "asphalt"
+    },
+    {
+      "in_contact": true,
+      "contact_point": [
+        179.16000002622604,
+        -1.100000023841858,
+        5.551115123125783e-17
+      ],
+      "contact_normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "suspension_force": 2943.0005170047198,
+      "normal_load": 2943.0005170047198,
+      "suspension_length": 0.3386878502368927,
+      "compression": 0.06131215572357179,
+      "skid": null,
+      "surface": "asphalt"
+    },
+    {
+      "in_contact": true,
+      "contact_point": [
+        180.83999997377396,
+        -1.100000023841858,
+        5.551115123125783e-17
+      ],
+      "contact_normal": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "suspension_force": 2943.0005170047198,
+      "normal_load": 2943.0005170047198,
+      "suspension_length": 0.3386878502368927,
+      "compression": 0.06131215572357179,
+      "skid": null,
+      "surface": "asphalt"
+    }
+  ],
+  "mass": 1200.0,
+  "coupled_enabled": true,
+  "static_load_ratio": 1.0000001756726877,
+  "unchanged_since_first_T2": {
+    "tests/test_h1_vehicle.py": true,
+    "src/vehicle.py": true,
+    "src/suspension.py": true,
+    "src/world_step.py": true,
+    "src/vehicle_config.py": true,
+    "tools/h1_benchmark.py": true
+  }
+}

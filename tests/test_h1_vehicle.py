@@ -31,11 +31,14 @@ def test_idle_car_has_four_ground_contacts_and_can_start(simulation):
     on_test_straight(simulation)
     idle = drive(simulation, 15)
     assert idle.position == pytest.approx((TEST_SPAWN[0], TEST_SPAWN[1], 0.419), abs=0.01)
-    for wheel in simulation._vehicle.getWheels():
-        ray = wheel.getRaycastInfo()
-        assert ray.isInContact()
-        assert tuple(ray.getContactPointWs())[2] == pytest.approx(0, abs=0.001)
-        assert 0.2 < ray.getSuspensionLength() < 0.4
+    # 当前耦合悬架的权威接触来自快照，原生射线不承担该模式的接地计算。
+    assert len(idle.wheel_contacts) == 4
+    assert sum(c.normal_load for c in idle.wheel_contacts) == pytest.approx(
+        simulation.config.mass * 9.81, rel=.002)
+    for contact in idle.wheel_contacts:
+        assert contact.in_contact
+        assert contact.contact_point[2] == pytest.approx(0, abs=0.001)
+        assert 0.2 < contact.suspension_length < 0.4
     car = drive(simulation, 3, Control(throttle=1))
     assert car.speed > 9
     assert car.position[1] > TEST_SPAWN[1] + 12

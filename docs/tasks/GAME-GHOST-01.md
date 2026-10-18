@@ -32,3 +32,6 @@
 - 续跑脚本[原始范围与复用断言](../evidence/GAME-GHOST-01/t2_continue.py)先核对首败前667节点/对应测试文件未改，仅src/ui/parameter_help变化、仅GR86元数据资产变化。当前3516节点含新增1项；从GR86首节点起2849项实际执行，前667明确复用。Ruff与T2后续全部命令仍实际跑，独立目录`logs/validation/GAME-GHOST-01-T2-continuation`，每条1800秒上限；fail-fast保持，不因续跑改变判据。
 - 命令：`.venv/Scripts/python.exe docs/evidence/GAME-GHOST-01/t2_continue.py`。范围不满足断言则停止，不能默认复用；本次原失败仍单独保留。续跑启动后以summary/live process读取结果，不启动重复任务。
 - 当前整批阶段与人工Gate尚未通过；功能可本地体验，趣味性待用户实际驾驶。
+
+- 首次续跑已结束：9通过后首败H1静止原生射线读数，7.76秒；后续not_run，完整结果T2-continuation已归档。修复包VALIDATION-CONTACT-01不改物理/阈值，完整H1十项与实际handling/三种子通过。
+- 再接续`docs/evidence/GAME-GHOST-01/t2_continue_after_h1.py`，目录`logs/validation/GAME-GHOST-01-T2-after-h1`。共3516项，667+9+10=686项显式复用，余2830项；同版headless三种子/handling明确引用新证据，其余T2检查照常执行。仍没有整批通过结论。

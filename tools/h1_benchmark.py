@@ -23,10 +23,12 @@ def main():
         sim.reset_player(TEST_SPAWN)
         for _ in range(1800):
             sim.step(Control())
-        result["idle_15s_position"] = sim.snapshot().player.position
-        result["idle_wheel_contacts"] = [
-            w.getRaycastInfo().isInContact() for w in sim._vehicle.getWheels()
-        ]
+        idle = sim.snapshot().player
+        result["idle_15s_position"] = idle.position
+        # 与实际车辆快照同源，兼容当前耦合悬架和显式原生射线模式。
+        result["idle_wheel_contacts"] = [contact.in_contact for contact in idle.wheel_contacts]
+        result["idle_contact_states"] = [asdict(contact) for contact in idle.wheel_contacts]
+        result["idle_static_load_ratio"] = sum(contact.normal_load for contact in idle.wheel_contacts) / (sim.config.mass * 9.81)
         for ticks in range(1, 1441):
             sim.step(Control(throttle=1))
             if sim.snapshot().player.speed >= 100 / 3.6:
@@ -50,7 +52,8 @@ def main():
     finally:
         sim.close()
     result["passed"] = (
-        all(result["idle_wheel_contacts"])
+        len(result["idle_wheel_contacts"]) == 4 and all(result["idle_wheel_contacts"])
+        and abs(result["idle_static_load_ratio"] - 1) <= .002
         and 8 <= result["zero_to_100_seconds"] <= 11
         and 35 <= result["braking_100_to_stop_metres"] <= 50
         and 150 <= result["speed_after_22_seconds_kmh"] <= 161
