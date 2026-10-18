@@ -11,8 +11,9 @@ from t2_continue import BASELINE, ROOT
 from validate import execute_plan, git_value, make_plan
 
 
-def main(*, after_impact=False):
-    output = ROOT / ("logs/validation/GAME-GHOST-01-T2-after-impact" if after_impact
+def main(*, after_impact=False, after_lab=False):
+    output = ROOT / ("logs/validation/GAME-GHOST-01-T2-after-lab-ui" if after_lab else
+                     "logs/validation/GAME-GHOST-01-T2-after-impact" if after_impact
                      else "logs/validation/GAME-GHOST-01-T2-after-routes")
     if output.exists():
         raise ValueError("不覆盖已有续跑")
@@ -30,6 +31,8 @@ def main(*, after_impact=False):
     expected_tests = ["tests/test_gr86.py", "tests/test_h1_vehicle.py", "tests/test_h2_map.py", "tests/test_phase3_map.py"]
     if after_impact:
         expected_tests.append("tests/test_impact_delivery.py")
+    if after_lab:
+        expected_tests.append("tests/test_lab_ui.py")
     assert [p for p in changed if p.startswith("tests/")] == sorted(expected_tests)
     assert [p for p in changed if p.startswith("assets/")] == ["assets/game/vehicle-configs/gr86-2022-premium-6mt.json"]
     collection = subprocess.run([sys.executable, "-m", "pytest", "--collect-only", "-q", "tests"],
@@ -54,9 +57,20 @@ def main(*, after_impact=False):
         reused_set.update(n for n in nodes if n.startswith("tests/test_impact_delivery.py::"))
         impact_sources = [impact_prior / "summary.json", impact_prior / "pytest.log",
                           impact_fixed / "summary.json", impact_fixed / "pytest.log"]
+    if after_lab:
+        lab_prior = ROOT / "logs/validation/GAME-GHOST-01-T2-after-impact"
+        lab_fixed = ROOT / "logs/validation/VALIDATION-LIFECYCLE-01-T1"
+        lab_summary = json.loads((lab_prior / "summary.json").read_text(encoding="utf-8"))
+        assert lab_summary["status"] == "failed" and lab_summary["reused_pytest_passes"] == 797
+        assert "1 failed, 958 passed" in (lab_prior / "pytest.log").read_text(encoding="utf-8")
+        assert json.loads((lab_fixed / "summary.json").read_text(encoding="utf-8"))["passed"] is True
+        reused_set.update(lab_summary["remaining_nodes"][:958])
+        reused_set.update(n for n in nodes if n.startswith("tests/test_lab_ui.py::"))
+        impact_sources.extend([lab_prior / "summary.json", lab_prior / "pytest.log",
+                               lab_fixed / "summary.json", lab_fixed / "pytest.log"])
     reused, remaining = [n for n in nodes if n in reused_set], [n for n in nodes if n not in reused_set]
-    assert len(reused) == (797 if after_impact else 740)
-    assert len(remaining) == (2719 if after_impact else 2776)
+    assert len(reused) == (1788 if after_lab else 797 if after_impact else 740)
+    assert len(remaining) == (1728 if after_lab else 2719 if after_impact else 2776)
     files = list(dict.fromkeys(n.split("::")[0] for n in remaining))
     checks = make_plan("T2", [], [], output)
     checks[1].args = ["-m", "pytest", "-q", "-x", *files]
@@ -69,10 +83,10 @@ def main(*, after_impact=False):
         "remaining_pytest_items": len(remaining), "reused_nodes": reused, "remaining_nodes": remaining,
         "evidence_sha256": {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},
         "reused_checks": prior_summary["reused_checks"],
-        "reuse_basis": "此前686项+道路/H3模块54项；after-impact另加56已过+碰撞交付剩余1项，完整4项T1/三种子通过；仅测试实际碰撞时序，生产物理不变；余交通/道路长测实际执行"}
+        "reuse_basis": "此前686项+道路/H3模块54项；after-impact另加57项；after-lab-ui再加958已过及完整lab_ui模块剩余项；各修复T1/三种子通过，生产物理不变；余交通/道路长测实际执行"}
     return execute_plan(checks, output, "T2-continuation", 1800, metadata)
 
 
 if __name__ == "__main__":
-    assert sys.argv[1:] in ([], ["--after-impact"])
-    raise SystemExit(main(after_impact=bool(sys.argv[1:])))
+    assert sys.argv[1:] in ([], ["--after-impact"], ["--after-lab-ui"])
+    raise SystemExit(main(after_impact=bool(sys.argv[1:]), after_lab=sys.argv[1:] == ["--after-lab-ui"]))

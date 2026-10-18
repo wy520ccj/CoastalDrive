@@ -41,3 +41,6 @@
 
 - after-routes已终止：56通过后首败真实碰撞首拍假设。VALIDATION-IMPACT-01证实事件在第2拍真实冲量时仅交付一次，未改生产代码；测试改等待真实终帧，完整4项/三种子与Double1项通过。
 - 再接续同脚本`--after-impact`，目录`logs/validation/GAME-GHOST-01-T2-after-impact`：797项显式复用，2719项及余T2检查实际执行，保持fail-fast。完整阶段仍未通过。
+
+- after-impact最终958通过后首败旧lab_ui关闭替身缺workshop；VALIDATION-LIFECYCLE-01补齐并检查停止/释放顺序，完整36项/三种子通过，生产未改。原失败及5项NumPy float16溢出警告保留。
+- 再接续同脚本`--after-lab-ui`，目录`logs/validation/GAME-GHOST-01-T2-after-lab-ui`：1788项复用、1728项继续，所有未跑T2长测仍实际执行。

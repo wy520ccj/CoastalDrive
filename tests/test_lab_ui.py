@@ -67,11 +67,14 @@ def test_switch_requests_exit_and_cleanup_releases_world_once():
         engine=SimpleNamespace(taskMgr=SimpleNamespace(remove=lambda _: None),
                                destroy=lambda: calls.append("window-close")),
         ignoreAll=lambda: None, design_loop=SimpleNamespace(close=lambda: None),
+        workshop=SimpleNamespace(hide=lambda: calls.append("workshop-stop")),
         run_state=SimpleNamespace(close=lambda: calls.append("world-close")),
         scene=SimpleNamespace(close=lambda: calls.append("scene-close")),
         root=SimpleNamespace(destroy=lambda: None))
     VehicleLab.close_game(fake)
     VehicleLab.close_game(fake)
+    assert calls.count("workshop-stop") == 1
+    assert calls.index("workshop-stop") < calls.index("world-close")
     assert calls.count("world-close") == 1
     assert calls.index("world-close") < calls.index("window-close")
 
