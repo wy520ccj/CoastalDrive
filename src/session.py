@@ -7,6 +7,7 @@ from contextlib import nullcontext
 from dataclasses import asdict, replace
 from enum import Enum
 
+from braking_lesson import BrakingScores
 from controls import Controller, KeyboardController
 from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
@@ -158,14 +159,16 @@ class Session:
         chosen_mode = self.mode if mode is None else mode
         if chosen_mode == GameMode.TIME_TRIAL and chosen_track.circuit is None:
             raise ValueError("Time trial requires a circuit")
-        if chosen_mode == GameMode.DISTANCE_CHALLENGE and chosen_track.id.value != "endless":
+        if chosen_mode in (GameMode.DISTANCE_CHALLENGE, GameMode.BRAKING_LESSON) and chosen_track.id.value != "endless":
             raise ValueError("Distance challenge requires the endless highway")
+        if chosen_mode == GameMode.BRAKING_LESSON and self.road_shape != "straight":
+            raise ValueError("定点刹停需要直线道路")
         track = chosen_track.id.value
         self.phase = Phase.LOADING
         self.notice = ""
         traffic_count = 8 if chosen_mode == GameMode.FREE_DRIVE and track != "test" else 0
         density = TRAFFIC_DENSITIES[self.traffic_density]
-        if track == "endless":
+        if track == "endless" and chosen_mode != GameMode.BRAKING_LESSON:
             traffic_count = density.cars
         if seed is not None:
             self.seed = seed
@@ -245,7 +248,10 @@ class Session:
     def begin_driving(self):
         if self.simulation.track == "endless":
             self.highway.start(
-                self.highway_progress(), challenge=self.mode == GameMode.DISTANCE_CHALLENGE
+                self.highway_progress(), challenge=self.mode == GameMode.DISTANCE_CHALLENGE,
+                braking_scores=(BrakingScores(self.race.scores.path.with_name("braking-best.json"),
+                                               "braking-v1:"+self.score_variant())
+                                if self.mode == GameMode.BRAKING_LESSON else None),
             )
         else:
             state = self.simulation.snapshot()
@@ -274,6 +280,9 @@ class Session:
                 self.highway.update(
                     self.highway_progress(self.current), self.current.collisions, FIXED_DT,
                     reset="player_reset" in self.current.events,
+                    forward_speed=self.current.player.velocity[1],
+                    speed=math.hypot(*self.current.player.velocity[:2]),
+                    lateral=self.current.player.position[0],
                 )
             if self.race.snapshot.finished or self.highway.snapshot.finished:
                 self.phase = Phase.RESULTS
@@ -429,7 +438,7 @@ class Session:
         self.stop_clock()
         self.race.stop()
         self.ghost_recording = None
-        self.highway.stop("挑战提前结束" if self.mode == GameMode.DISTANCE_CHALLENGE else "自由驾驶结束")
+        self.highway.stop("挑战提前结束" if self.mode in (GameMode.DISTANCE_CHALLENGE, GameMode.BRAKING_LESSON) else "自由驾驶结束")
         self.phase = Phase.RESULTS
         self.keyboard.clear()
         self.stepper.remainder = 0.0

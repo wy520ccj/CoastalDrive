@@ -1,0 +1,16 @@
+{
+  "src/application.py": "3461acc9a8c5e79af4a9136600fa6b999f1ee37538f45be99e488951531729bf",
+  "src/highway_run.py": "54a5ad82a24064531ce4b4829e5e42278061406f1320a1531613281978927ceb",
+  "src/race.py": "d680364c91eb8e7d6eb73ab395c378f8d9d82fb69651e3c10e0d1c76f04bd224",
+  "src/scene.py": "919223767b6db053dba2e9bfef9750ab3a311669f82bcc1d2d7f9f49e36522fe",
+  "src/session.py": "4580ff9be55ee32908a8bd7f9e3e2b3dc5f855e672da93fa2a48de83714653d5",
+  "src/ui/hud.py": "b32f8e88f9fab27fa2c8ff25c1f8a32e22253c369ce45d2c079091bbae27aeba",
+  "src/ui/main_menu.py": "e63909fcc22931c6217700b057f3ec930cfb193dc45643da0a63c5648b70096c",
+  "tools/validate.py": "0b4563f4c6777f0ccae8ead21ac6ed340b569483e6798767ef5dcaf0b40652c0",
+  "src/braking_lesson.py": "585e861fc0881d67f7fa8a3173cbcaaaf7afbb332a4445832224ca6bfc89dbaf",
+  "src/braking_markers.py": "a9cd5168207050c91c9f97621386bcb80dec2baf15963d300f6efaa3332aa8fa",
+  "src/ui/braking_feedback.py": "432b93d55f8c7445b0344b51352ce385098c3b5114b584b52b264dc3da74729d",
+  "tests/test_braking_lesson.py": "c3c6f6c63acd6cd88c198cf379fd82707f5dd782cbab5df0f7a4d1bf9a653d8c",
+  "tests/test_braking_lesson_ui.py": "6a45377ccdf8c775b2b0e6b2db87b49032ec1f50d4f79a799d79544323758ea3",
+  "tools/braking_lesson_check.py": "c6609e0a4fa39edd1f7ef293f3b8d3ed576645045701413237c82ac633562654"
+}

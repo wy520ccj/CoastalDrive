@@ -1,0 +1,38 @@
+[
+  {
+    "gate": 100.0,
+    "entry": {
+      "tick": 937,
+      "distance": 100.00613403320312,
+      "speed_kph": 87.24079742431641
+    },
+    "stop_distance": 135.9376220703125,
+    "elapsed": 10.65,
+    "collisions": 0,
+    "events": []
+  },
+  {
+    "gate": 120.0,
+    "entry": {
+      "tick": 1033,
+      "distance": 120.02851867675781,
+      "speed_kph": 92.9082389831543
+    },
+    "stop_distance": 160.2061309814453,
+    "elapsed": 11.608333333333333,
+    "collisions": 0,
+    "events": []
+  },
+  {
+    "gate": 140.0,
+    "entry": {
+      "tick": 1124,
+      "distance": 140.15704345703125,
+      "speed_kph": 98.15196533203125
+    },
+    "stop_distance": 184.75979614257812,
+    "elapsed": 12.525,
+    "collisions": 0,
+    "events": []
+  }
+]

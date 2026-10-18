@@ -28,6 +28,7 @@ from panda3d.core import (
     Vec4,
 )
 
+from braking_markers import BrakingMarkers
 from coastal_map import (
     MAP_POINTS,
     RAIL_OFFSET,
@@ -270,6 +271,7 @@ class Scene:
         self.track_points = [Vec3(point.x, point.y, point.z) for point in MAP_POINTS]
         self.setup_lighting()
         self.setup_scene()
+        self.braking_markers = BrakingMarkers(self.render, base.ui_font, self.sun_path)
         self.sky = make_sky(base, self.render, coastal=base.session.simulation.track == "coastal")
         if base.session.simulation.track == "endless":
             from environment.expressway_materials import style_sky
@@ -663,6 +665,7 @@ class Scene:
         return root
 
     def apply(self, state):
+        self.braking_markers.apply(self.base.session.highway.snapshot.braking, state.origin_y)
         self.sky.setPos(*state.player.position)
         if self.base.session.simulation.track == "coastal":
             self.ocean.setShaderInput("sea_time", state.time)

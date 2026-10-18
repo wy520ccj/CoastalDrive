@@ -1,0 +1,45 @@
+.................FF                                                      [100%]
+================================== FAILURES ===================================
+_______________ test_full_config_changes_isolate_braking_scores _______________
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-747/test_full_config_changes_isola0')
+
+    def test_full_config_changes_isolate_braking_scores(tmp_path):
+        session = Session(track="endless", scores=BestTimes(tmp_path/"scores.json"))
+        try:
+            first = session.score_variant()
+            session.set_vehicle_config(replace(DrivingMode.GAME.vehicle_config, front_brake_share=.6))
+>           assert session.score_variant() != first
+E           AssertionError: assert 'game-keyboard-v32:abs-on:tcs-on:esc-on:splits-v1:hardware-ba6898b70fc4c6a49f103ad6ae5838efe6a729d98fc506748c82b48995047221' != 'game-keyboard-v32:abs-on:tcs-on:esc-on:splits-v1:hardware-ba6898b70fc4c6a49f103ad6ae5838efe6a729d98fc506748c82b48995047221'
+E            +  where 'game-keyboard-v32:abs-on:tcs-on:esc-on:splits-v1:hardware-ba6898b70fc4c6a49f103ad6ae5838efe6a729d98fc506748c82b48995047221' = score_variant()
+E            +    where score_variant = <session.Session object at 0x0000026A7F31DD30>.score_variant
+
+tests\test_braking_lesson.py:144: AssertionError
+_________ test_actual_keyboard_drive_can_earn_medal_without_teleport __________
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-747/test_actual_keyboard_drive_can0')
+
+    def test_actual_keyboard_drive_can_earn_medal_without_teleport(tmp_path):
+        session = Session(track="endless", scores=BestTimes(tmp_path/"scores.json"))
+        try:
+            session.start(countdown=False, mode=GameMode.BRAKING_LESSON, track="endless")
+            initial = session.current.player.position
+            session.keyboard.press("w")
+            for _ in range(3601):
+                if session.highway.snapshot.braking.position >= 128.:
+                    session.keyboard.release("w")
+                    session.keyboard.press("s")
+                session.tick()
+                if session.phase == Phase.RESULTS:
+                    break
+            result = session.highway.snapshot.braking
+>           assert result.succeeded, result
+E           AssertionError: BrakingResult(start_progress=8.0, position=75.79487609863281, entry_kph=87.22623803982805, error_m=None, hold_seconds=0.0, medal='', finished=True, succeeded=False, reason='练习超时；在30秒内完成测速与停车。', best_error=None, save_notice='')
+E           assert False
+E            +  where False = BrakingResult(start_progress=8.0, position=75.79487609863281, entry_kph=87.22623803982805, error_m=None, hold_seconds=0.0, medal='', finished=True, succeeded=False, reason='练习超时；在30秒内完成测速与停车。', best_error=None, save_notice='').succeeded
+
+tests\test_braking_lesson.py:163: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_braking_lesson.py::test_full_config_changes_isolate_braking_scores
+FAILED tests/test_braking_lesson.py::test_actual_keyboard_drive_can_earn_medal_without_teleport
+2 failed, 17 passed in 5.76s

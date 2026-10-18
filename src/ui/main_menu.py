@@ -25,7 +25,7 @@ class MainMenu:
         self.static_frames = [self.wordmark]
         OnscreenText(parent=self.content, text="\u6d77 \u5cb8 \u9a7e \u9a76", font=body_font,
                      fg=theme.INK, align=TextNode.ARight, pos=(-0.40, 0.59), scale=0.058)
-        labels = ("计时挑战", "滨海自由驾驶", "无限高速", "车库", "声音设置", "退出")
+        labels = ("计时挑战", "滨海自由驾驶", "高速与驾驶课题", "车库", "声音设置", "退出")
         icons = ("stopwatch", "palm", "highway", "garage", "speaker", "exit")
         self.textures = tuple(loader.loadTexture(theme.asset_filename(f"components/button-{state}.png"))
                               for state in ("normal", "pressed", "hover", "disabled"))
