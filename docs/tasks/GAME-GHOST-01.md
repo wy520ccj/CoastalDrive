@@ -1,6 +1,6 @@
 # GAME-GHOST-01 同配置个人最佳幽灵
 
-- 状态：in_progress（功能/T0/T1/真实回放渲染已完成，接续本批T2；人工体验待确认）；前置GAME-FEEDBACK-01，基线main/634ffcd，开始前工作区干净，单条施工线。
+- 状态：in_progress（功能250be45/T0/T1/真实回放渲染已完成，本批T2运行中；人工体验待确认）；前置GAME-FEEDBACK-01，基线main/634ffcd，开始前工作区干净，单条施工线。
 - 目标：计时挑战中看到自己同配置最佳有效圈的参考车，辅助辨认线路/制动/速度得失；可开关，不遮挡主车。
 - 先读：race/session/session_clock/session_process的真实固定步与传输，scene/vehicle_visual的显示状态；现有分段参考必须与幽灵来自同一整圈。
 - 范围：固定仿真时刻记录展示所需的位姿/轮胎信息、最佳有效圈持久化、只读插值显示与开关、相关测试/文档/证据。
@@ -24,3 +24,8 @@
 - 早期工具暖帧不足导致路缘差异，通过同状态重复截图定位；最终先暖帧，并要求框外背景控制也为0差异，未放宽阴影条件。一次4:3静态工具没调用生产HUD.resize导致裁切，补调用后重拍；不是改全局UI布局来掩盖。
 - 命令与原日志：`logs/validation/GAME-GHOST-01-{T0,T0-r2,T1,double,double-final,assets}`；均经本地.venv Python，Double经run_sim_double。实际工具`tools/ghost_replay_check.py --scores <真实scores.json> --output <新目录> [--size 1024 768]`，最终图像/两库记录见[证据](../evidence/GAME-GHOST-01/README.md)。
 - 用户窗口/既有车辆/成绩未覆盖；本地功能提交后运行一次T2，阶段Gate/人工结论继续分账。
+
+## 本批T2
+
+- 已在250be45/干净工作区启动：`.venv/Scripts/python.exe tools/validate.py T2 --output logs/validation/GAME-GHOST-01-T2 --timeout 1800`。当前仍为全量pytest阶段，Ruff已通过；没有阶段通过结论，不重启这次检查。
+- 后续从该目录`summary.json`及活进程核对最终状态；失败/超时与未执行项原样保留。功能源码冻结，收尾文档提交不改被测代码。
