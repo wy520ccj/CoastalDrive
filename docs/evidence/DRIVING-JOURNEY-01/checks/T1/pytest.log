@@ -1,0 +1,102 @@
+........................F..........FF                                    [100%]
+================================== FAILURES ===================================
+___________________ test_ui_modes_results_and_existing_keys ___________________
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-814/test_ui_modes_results_and_exis0')
+
+    def test_ui_modes_results_and_existing_keys(tmp_path):
+        app = CoastalDrive(smoke=True, output=tmp_path)
+        app.taskMgr.remove("finish-smoke")
+        try:
+            app.session.menu()
+            app.refresh_panel()
+            assert not app.main_menu.root.isHidden()
+            assert app.panel.isHidden()
+>           assert [button["text"] for button in app.main_menu.buttons] == [
+                "计时挑战", "滨海自由驾驶", "无限高速", "车库", "声音设置", "退出", "进入实验室  ›",
+            ]
+E           AssertionError: assert ['计时挑战', '滨海自...置', '退出', ...] == ['计时挑战', '滨海自...置', '退出', ...]
+E             
+E             At index 2 diff: '高速与驾驶课题' != '无限高速'
+E             Left contains one more item: '海岸工坊 · 项目进度  ›'
+E             Use -v to get more diff
+
+tests\test_ui.py:53: AssertionError
+---------------------------- Captured stderr call -----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+_ test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics[700] __
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-814/test_game_ignores_stale_direct0')
+height = 700
+
+    @pytest.mark.parametrize("height", [700, 1080])
+    def test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics(tmp_path, height):
+        path = tmp_path / "test-driving-mode.json"
+        path.write_text(json.dumps({"mode": "simulation", "abs_enabled": True,
+                                   "tcs_enabled": True, "esc_enabled": True}), encoding="utf-8")
+        app = CoastalDrive(smoke=True, output=tmp_path, render_size=(round(height * 16 / 9), height))
+        app.taskMgr.remove("finish-smoke")
+        try:
+            app.session.menu()
+            app.refresh_panel()
+            assert app.session.driving_mode is DrivingMode.GAME
+            assert app.session.simulation.input_config is DrivingMode.GAME.input_config
+>           assert [b["text"] for b in app.main_menu.buttons] == [
+                "计时挑战", "滨海自由驾驶", "无限高速", "车库", "声音设置", "退出", "进入实验室  ›"]
+E               AssertionError: assert ['计时挑战', '滨海自...置', '退出', ...] == ['计时挑战', '滨海自...置', '退出', ...]
+E                 
+E                 At index 2 diff: '高速与驾驶课题' != '无限高速'
+E                 Left contains one more item: '海岸工坊 · 项目进度  ›'
+E                 Use -v to get more diff
+
+tests\test_driving_mode_ui.py:63: AssertionError
+---------------------------- Captured stderr call -----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+_ test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics[1080] _
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-814/test_game_ignores_stale_direct1')
+height = 1080
+
+    @pytest.mark.parametrize("height", [700, 1080])
+    def test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics(tmp_path, height):
+        path = tmp_path / "test-driving-mode.json"
+        path.write_text(json.dumps({"mode": "simulation", "abs_enabled": True,
+                                   "tcs_enabled": True, "esc_enabled": True}), encoding="utf-8")
+        app = CoastalDrive(smoke=True, output=tmp_path, render_size=(round(height * 16 / 9), height))
+        app.taskMgr.remove("finish-smoke")
+        try:
+            app.session.menu()
+            app.refresh_panel()
+            assert app.session.driving_mode is DrivingMode.GAME
+            assert app.session.simulation.input_config is DrivingMode.GAME.input_config
+>           assert [b["text"] for b in app.main_menu.buttons] == [
+                "计时挑战", "滨海自由驾驶", "无限高速", "车库", "声音设置", "退出", "进入实验室  ›"]
+E               AssertionError: assert ['计时挑战', '滨海自...置', '退出', ...] == ['计时挑战', '滨海自...置', '退出', ...]
+E                 
+E                 At index 2 diff: '高速与驾驶课题' != '无限高速'
+E                 Left contains one more item: '海岸工坊 · 项目进度  ›'
+E                 Use -v to get more diff
+
+tests\test_driving_mode_ui.py:63: AssertionError
+---------------------------- Captured stderr call -----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+=========================== short test summary info ===========================
+FAILED tests/test_ui.py::test_ui_modes_results_and_existing_keys - AssertionE...
+FAILED tests/test_driving_mode_ui.py::test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics[700]
+FAILED tests/test_driving_mode_ui.py::test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics[1080]
+3 failed, 34 passed in 160.39s (0:02:40)

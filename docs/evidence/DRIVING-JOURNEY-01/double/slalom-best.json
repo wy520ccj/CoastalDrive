@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "scores": {
+    "slalom-v1:game-keyboard-v32:abs-on:tcs-on:esc-on:splits-v1:hardware-6b54c358c828cccded0668afcc9fb3880df3efb3a5e3b4a60c5b99e477fb2d4c": 14.214750521562149
+  },
+  "runs": {
+    "slalom-v1:game-keyboard-v32:abs-on:tcs-on:esc-on:splits-v1:hardware-6b54c358c828cccded0668afcc9fb3880df3efb3a5e3b4a60c5b99e477fb2d4c": {
+      "seconds": 14.214750521562149,
+      "gate_times": [
+        2.363119596524464,
+        4.7364418544178415,
+        7.106922466860888,
+        9.480429731861332,
+        11.850570335499707,
+        14.214750521562149
+      ],
+      "clearances": [
+        0.6500381474986501,
+        0.5375836106022265,
+        0.5324853451319262,
+        0.5505928600141918,
+        0.6301031316805765,
+        0.8454909040084029
+      ]
+    }
+  }
+}

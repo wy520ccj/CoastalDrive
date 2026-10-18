@@ -13,7 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 AREAS = {
     "workflow": ["test_validation_runner"],
-    "design": ["test_workshop", "test_workshop_ui", "test_cornering_workshop", "test_cornering_workshop_ui", "test_vehicle_schemes", "test_vehicle_schemes_ui", "test_workshop_journey", "test_workshop_journey_ui", "test_vehicle_workspace", "test_lab_game_comparison", "test_design_loop_ui",
+    "design": ["test_workshop", "test_workshop_ui", "test_cornering_workshop", "test_cornering_workshop_ui", "test_vehicle_schemes", "test_vehicle_schemes_ui", "test_workshop_journey", "test_workshop_journey_ui", "test_driving_journey", "test_driving_journey_ui", "test_vehicle_workspace", "test_lab_game_comparison", "test_design_loop_ui",
                "test_vehicle_design_entry", "test_vehicle_designs", "test_gr86", "test_design_spawn", "test_workspace_transition", "test_road_comparison", "test_road_review", "test_virtual_driver_ui", "test_scheme_slalom"],
     "estimation": ["test_state_estimation", "test_sensor_run"],
     "research": ["test_driving_experiment"],
@@ -38,7 +38,7 @@ AREAS = {
                 "test_traffic_recovery"],
     "road": ["test_endless", "test_highway_segments", "test_highway_curve",
              "test_highway_surface", "test_curve_mesh", "test_curved_boundaries"],
-    "gameplay": ["test_race", "test_race_splits", "test_race_feedback_ui", "test_lap_ghost", "test_ghost_session", "test_ghost_visual", "test_highway_run", "test_braking_lesson", "test_braking_lesson_ui", "test_slalom_lesson", "test_slalom_session", "test_slalom_ui", "test_slalom_feedback", "test_slalom_feedback_ui", "test_slalom_process", "test_stage4", "test_h3_review", "test_mode_lifecycle", "test_session_clock", "test_session_process", "test_snapshot_wire", "test_keyboard_steering",
+    "gameplay": ["test_race", "test_race_splits", "test_race_feedback_ui", "test_lap_ghost", "test_ghost_session", "test_ghost_visual", "test_highway_run", "test_braking_lesson", "test_braking_lesson_ui", "test_driving_journey", "test_driving_journey_ui", "test_slalom_lesson", "test_slalom_session", "test_slalom_ui", "test_slalom_feedback", "test_slalom_feedback_ui", "test_slalom_process", "test_stage4", "test_h3_review", "test_mode_lifecycle", "test_session_clock", "test_session_process", "test_snapshot_wire", "test_keyboard_steering",
                  "test_brake_lifecycle", "test_traction_lifecycle", "test_drive_layout_lifecycle", "test_differential_lifecycle", "test_tire_compliance_lifecycle", "test_rotor_lifecycle"],
     "appearance": ["test_appearance", "test_chase_camera", "test_countdown", "test_driving_mode_ui", "test_vehicle_visual_parameters", "test_vehicle_visual_asset"],
     "environment": ["test_environment", "test_expressway", "test_expressway_route"],

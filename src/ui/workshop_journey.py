@@ -8,8 +8,9 @@ from ui import theme
 
 
 class WorkshopJourney:
-    def __init__(self, parent, font, textures, action):
+    def __init__(self, parent, font, textures, action, driving_action=None):
         self.action = action
+        self.driving_action = driving_action
         self.data = None
         self.selected = 0
         self.textures = textures
@@ -23,6 +24,11 @@ class WorkshopJourney:
         text("海岸工坊 · 初章", -1.52, .62, .080)
         text("设计它 → 验证它 → 驾驶它", -1.52, .49, .043, theme.SEA)
         self.progress = text("", .65, .62, .055, theme.SEA)
+        if driving_action is not None:
+            DirectButton(parent=self.root, text="驾驶进阶  Tab  ›", text_font=font, text_fg=theme.INK,
+                text_scale=.035, text_pos=(0, -.012), frameSize=(-.50, .50, -.045, .045),
+                frameTexture=textures, frameColor=(1, 1, 1, 1), pos=(1.03, 0, .47),
+                command=driving_action, relief=DGG.FLAT, pressEffect=False)
         self.summary = text("", -1.52, .35, .038)
         self.summary.textNode.setWordwrap(80)
         self.frames, self.details, self.buttons = [], [], []
@@ -100,6 +106,8 @@ class WorkshopJourney:
             self.select(self.selected+1)
         elif key == "enter":
             self.activate(self.selected)
+        elif key == "tab" and self.driving_action is not None:
+            self.driving_action()
         elif key == "escape":
             self.hide()
 

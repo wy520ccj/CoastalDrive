@@ -23,6 +23,7 @@ from audio.music import STATIONS
 from braking_lesson import BrakingScores
 from chase_camera import ChaseCamera
 from controls import ConstantController
+from driving_journey import read_driving_journey
 from driving_modes import DrivingMode
 from garage import GaragePreview
 from highway_run import TRAFFIC_DENSITIES
@@ -34,11 +35,13 @@ from session import Phase, Session
 from settings import AppearanceStore, AudioSettingsStore, DrivingModeStore
 from simulation import Control
 from skins import PLAYER_VEHICLES, SKINS, apply_skin, vehicle_definition, vehicle_for_design
+from slalom_lesson import SlalomScores
 from soundscape import Soundscape
 from ui import theme
 from ui.braking_feedback import RULES as BRAKING_RULES
 from ui.braking_feedback import result_feedback as braking_result_feedback
 from ui.countdown import Countdown
+from ui.driving_journey import DrivingJourney
 from ui.hud import DrivingHUD
 from ui.main_menu import MainMenu
 from ui.race_feedback import result_columns
@@ -168,6 +171,7 @@ class CoastalDrive(ShowBase):
         self.highway_menu = False
         self.braking_menu = False
         self.slalom_menu = False
+        self.driving_journey_return = False
         self.lab_return_braking = False
         self.lab_return_slalom = False
         self.lab_journey_request = None
@@ -262,6 +266,26 @@ class CoastalDrive(ShowBase):
             logging.getLogger(__name__).warning("工坊初章未读取: %s", error)
             return
         self.journey.show(data)
+        self.driving_journey.hide()
+
+    def open_driving_journey(self):
+        path = self.session.race.scores.path
+        variant = self.session.score_variant()
+        braking = BrakingScores(path.with_name("braking-best.json"), "braking-v1:"+variant)
+        slalom = SlalomScores(path.with_name("slalom-best.json"), "slalom-v1:"+variant)
+        self.journey.hide()
+        self.driving_journey.show(read_driving_journey(braking, slalom),
+                                  self.workspace_vehicle_label()+" · "+self.session.driving_mode.label)
+
+    def continue_driving_project(self, topic):
+        self.driving_journey_return = True
+        self.choose_braking_lesson() if topic == "braking" else self.choose_slalom_lesson()
+
+    def return_to_driving_journey(self):
+        self.back_to_menu()
+        self._shown_phase = None
+        self.refresh_panel()
+        self.open_driving_journey()
 
     def continue_workshop_project(self, project):
         if project["topic"] == 2:
@@ -446,6 +470,8 @@ class CoastalDrive(ShowBase):
         yield 5, "可以出发"
 
     def _enter_game(self, mode, track):
+        if mode not in (GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON):
+            self.driving_journey_return = False
         self.driving_keys_held.clear()
         self.hud.select_radio(None)
         if track == "endless":
@@ -482,6 +508,7 @@ class CoastalDrive(ShowBase):
         self.scene.set_ghost(self.session.reference_ghost)
 
     def back_to_menu(self):
+        self.driving_journey_return = False
         self.session.menu()
         if self.scene is not None:
             self.scene.close()
@@ -505,6 +532,7 @@ class CoastalDrive(ShowBase):
             "c",
             "escape",
             "enter",
+            "tab",
             "n",
             "m",
             "g",
@@ -550,6 +578,11 @@ class CoastalDrive(ShowBase):
 
     def key_down(self, key):
         if not self.loading.isHidden():
+            return
+        if self.session.phase == Phase.MENU and not self.driving_journey.root.isHidden():
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.driving_journey.key(key)
             return
         if self.session.phase == Phase.MENU and not self.journey.root.isHidden():
             if key not in self.commands_held:
@@ -717,7 +750,9 @@ class CoastalDrive(ShowBase):
         ), driving_mode_action=self.choose_driving_mode, lab_action=self.open_vehicle_lab,
             journey_action=self.open_workshop_journey)
         self.journey = WorkshopJourney(self.main_menu.content, self.ui_font, self.main_menu.textures,
-                                       self.continue_workshop_project)
+                                       self.continue_workshop_project, self.open_driving_journey)
+        self.driving_journey = DrivingJourney(self.main_menu.content, self.ui_font, self.main_menu.textures,
+                                              self.continue_driving_project, self.open_workshop_journey)
         self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
         self.diagnostics = OnscreenText(
             **{**text_style, "fg": theme.DIAGNOSTIC_TEXT, "shadow": theme.DIAGNOSTIC_SHADOW},
@@ -836,7 +871,8 @@ class CoastalDrive(ShowBase):
 
     def choose_driving_mode(self):
         if (self.session.phase != Phase.MENU or self.garage is not None
-                or self.audio_settings_page or self.highway_menu):
+                or self.audio_settings_page or self.highway_menu
+                or not self.journey.root.isHidden() or not self.driving_journey.root.isHidden()):
             return
         self.driving_mode_page = True
         self.panel_selection = 0
@@ -1006,6 +1042,7 @@ class CoastalDrive(ShowBase):
         self.refresh_panel()
 
     def choose_highway(self):
+        self.driving_journey_return = False
         self.braking_menu = False
         self.slalom_menu = False
         self.panel_selection = 2
@@ -1022,6 +1059,7 @@ class CoastalDrive(ShowBase):
         self.refresh_panel()
 
     def back_from_braking_lesson(self):
+        self.driving_journey_return = False
         self.braking_menu = False
         self.panel_selection = 4
         self._shown_phase = None
@@ -1036,6 +1074,7 @@ class CoastalDrive(ShowBase):
         self.refresh_panel()
 
     def back_from_slalom_lesson(self):
+        self.driving_journey_return = False
         self.slalom_menu = False
         self.panel_selection = 5
         self._shown_phase = None
@@ -1321,7 +1360,8 @@ class CoastalDrive(ShowBase):
             elif self.session.mode in (GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON):
                 options[1] = ("返回实验台", self.open_vehicle_lab)
             if self.session.mode in (GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON):
-                options[2] = ("返回主菜单", self.back_to_menu)
+                options[2] = (("查看驾驶进阶", self.return_to_driving_journey) if self.driving_journey_return
+                              else ("返回主菜单", self.back_to_menu))
         else:
             self.panel.hide()
             return
@@ -1602,6 +1642,7 @@ class CoastalDrive(ShowBase):
             self.scene.close()
             self.scene = None
         self.journey.root.destroy()
+        self.driving_journey.root.destroy()
         self.main_menu.destroy()
         self.hud.destroy()
         self.countdown.destroy()
