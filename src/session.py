@@ -16,6 +16,7 @@ from lap_ghost import GhostRecorder, ghost_context, load_ghost, save_ghost
 from race import GameMode, RaceTracker
 from session_clock import SessionClock
 from simulation import FIXED_DT, Control, Simulation, interpolate
+from slalom_lesson import SlalomScores
 from tracks import get_track
 
 
@@ -159,16 +160,16 @@ class Session:
         chosen_mode = self.mode if mode is None else mode
         if chosen_mode == GameMode.TIME_TRIAL and chosen_track.circuit is None:
             raise ValueError("Time trial requires a circuit")
-        if chosen_mode in (GameMode.DISTANCE_CHALLENGE, GameMode.BRAKING_LESSON) and chosen_track.id.value != "endless":
+        if chosen_mode in (GameMode.DISTANCE_CHALLENGE, GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON) and chosen_track.id.value != "endless":
             raise ValueError("Distance challenge requires the endless highway")
-        if chosen_mode == GameMode.BRAKING_LESSON and self.road_shape != "straight":
-            raise ValueError("定点刹停需要直线道路")
+        if chosen_mode in (GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON) and self.road_shape != "straight":
+            raise ValueError("驾驶课题需要直线道路")
         track = chosen_track.id.value
         self.phase = Phase.LOADING
         self.notice = ""
         traffic_count = 8 if chosen_mode == GameMode.FREE_DRIVE and track != "test" else 0
         density = TRAFFIC_DENSITIES[self.traffic_density]
-        if track == "endless" and chosen_mode != GameMode.BRAKING_LESSON:
+        if track == "endless" and chosen_mode not in (GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON):
             traffic_count = density.cars
         if seed is not None:
             self.seed = seed
@@ -252,6 +253,10 @@ class Session:
                 braking_scores=(BrakingScores(self.race.scores.path.with_name("braking-best.json"),
                                                "braking-v1:"+self.score_variant())
                                 if self.mode == GameMode.BRAKING_LESSON else None),
+                slalom_scores=(SlalomScores(self.race.scores.path.with_name("slalom-best.json"),
+                                             "slalom-v1:"+self.score_variant())
+                                if self.mode == GameMode.SLALOM_LESSON else None),
+                vehicle_config=self.vehicle_config,
             )
         else:
             state = self.simulation.snapshot()
@@ -283,6 +288,7 @@ class Session:
                     forward_speed=self.current.player.velocity[1],
                     speed=math.hypot(*self.current.player.velocity[:2]),
                     lateral=self.current.player.position[0],
+                    heading=self.current.player.heading,
                 )
             if self.race.snapshot.finished or self.highway.snapshot.finished:
                 self.phase = Phase.RESULTS
@@ -438,7 +444,7 @@ class Session:
         self.stop_clock()
         self.race.stop()
         self.ghost_recording = None
-        self.highway.stop("挑战提前结束" if self.mode in (GameMode.DISTANCE_CHALLENGE, GameMode.BRAKING_LESSON) else "自由驾驶结束")
+        self.highway.stop("挑战提前结束" if self.mode in (GameMode.DISTANCE_CHALLENGE, GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON) else "自由驾驶结束")
         self.phase = Phase.RESULTS
         self.keyboard.clear()
         self.stepper.remainder = 0.0

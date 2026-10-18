@@ -15,6 +15,7 @@ class GameMode(Enum):
     TIME_TRIAL = "time_trial"
     DISTANCE_CHALLENGE = "distance_challenge"
     BRAKING_LESSON = "braking_lesson"
+    SLALOM_LESSON = "slalom_lesson"
 
 
 @dataclass(frozen=True)

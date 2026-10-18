@@ -1,0 +1,10 @@
+初次预跑：借用BrakingLesson无交通世界，全部在入口被原80km/h规则拒绝；未覆盖旧规则。随后直接Simulation完整游戏输入/空直线测候选课题。
+配置复核发现早期预跑用DrivingMode.GAME.vehicle_config（CAR两机械子步），不是正式configured_vehicle()单机械步。两步输出另存preflight-two-substeps.json；最终preflight.json是正确单机械步8组。
+
+首规则T0：26 passed/1 failed，铜牌夹具11m/s=39.6km/h低于入口40km/h。改夹具11.2m/s，未改门槛；后规则/实际驾驶32项通过，再补车身中心偏置。
+首次UI：4 passed/1 failed，同窗返回处COUNTDOWN尚无SlalomResult，反馈函数错误读取None.entry_time。增加明确准备状态后4项通过，原日志保留。
+
+UI工具普通首版：菜单Scene已关闭却调用Scene.apply，exit1，无实际课题完成。
+UI工具普通二版：完成真实金牌和最佳/重试后，实验台Session=None却调用游戏refresh_panel，exit1；原始有效圈保留，但不算完整工具流程通过。
+按workspace正确处理所有捕获步骤后，普通r3/Double完整流程通过。Double旧移动截图因冻结采集漏调HUD.resize而裁切，补采集调用后layout-only两分辨率通过，未把它称为再次真实跑圈。
+此文件整理终态/原因，不冒充原始标准输出。

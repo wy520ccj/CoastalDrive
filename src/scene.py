@@ -51,6 +51,7 @@ from highway_map import meshes as highway_meshes
 from paths import resource_root
 from skins import apply_skin, traffic_models, traffic_skins, vehicle_definition
 from sky_dome import make_sky
+from slalom_markers import SlalomMarkers
 from test_track import OBSTACLES, TRACK_X
 from vehicle_visual import batch_driving_geometry, load_vehicle
 from world_props import collision_box
@@ -272,6 +273,7 @@ class Scene:
         self.setup_lighting()
         self.setup_scene()
         self.braking_markers = BrakingMarkers(self.render, base.ui_font, self.sun_path)
+        self.slalom_markers = SlalomMarkers(self.render, base.ui_font, self.sun_path)
         self.sky = make_sky(base, self.render, coastal=base.session.simulation.track == "coastal")
         if base.session.simulation.track == "endless":
             from environment.expressway_materials import style_sky
@@ -666,6 +668,7 @@ class Scene:
 
     def apply(self, state):
         self.braking_markers.apply(self.base.session.highway.snapshot.braking, state.origin_y)
+        self.slalom_markers.apply(self.base.session.highway.snapshot.slalom, state.origin_y)
         self.sky.setPos(*state.player.position)
         if self.base.session.simulation.track == "coastal":
             self.ocean.setShaderInput("sea_time", state.time)

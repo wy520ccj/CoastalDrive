@@ -3,6 +3,7 @@
 from dataclasses import dataclass, replace
 
 from braking_lesson import TARGET_DISTANCE, BrakingLesson, BrakingResult
+from slalom_lesson import GATES, SlalomLesson, SlalomResult
 
 
 @dataclass(frozen=True)
@@ -31,6 +32,7 @@ class HighwayResult:
     target: float = 5000.0
     collisions: int = 0
     braking: BrakingResult | None = None
+    slalom: SlalomResult | None = None
 
 
 class HighwayRun:
@@ -38,18 +40,30 @@ class HighwayRun:
         self.snapshot = HighwayResult(challenge=challenge)
         self._start = 0.0
         self.braking = None
+        self.slalom = None
 
-    def start(self, progress, *, challenge=False, braking_scores=None):
+    def start(self, progress, *, challenge=False, braking_scores=None, slalom_scores=None, vehicle_config=None):
         self._start = progress
         self.snapshot = HighwayResult(challenge=challenge, running=True)
         self.braking = None if braking_scores is None else BrakingLesson(progress, braking_scores)
+        self.slalom = None if slalom_scores is None else SlalomLesson(progress, slalom_scores, vehicle_config)
         if self.braking is not None:
             self.snapshot = replace(self.snapshot, challenge=True, target=TARGET_DISTANCE,
                                     braking=self.braking.snapshot)
+        if self.slalom is not None:
+            self.snapshot = replace(self.snapshot, challenge=True, target=GATES[-1][0], slalom=self.slalom.snapshot)
 
-    def update(self, progress, collisions, dt, *, reset=False, forward_speed=0., speed=0., lateral=0.):
+    def update(self, progress, collisions, dt, *, reset=False, forward_speed=0., speed=0., lateral=0., heading=0.):
         state = self.snapshot
         if not state.running:
+            return
+        if self.slalom is not None:
+            elapsed = state.elapsed+dt
+            result = self.slalom.update(progress, forward_speed, elapsed, lateral=lateral, heading=heading,
+                                        collisions=collisions, reset=reset)
+            self.snapshot = replace(state, elapsed=elapsed, distance=result.position, collisions=collisions,
+                slalom=result, finished=result.finished, running=not result.finished,
+                succeeded=result.succeeded, reason=result.reason)
             return
         if self.braking is not None:
             elapsed = state.elapsed + dt
@@ -76,6 +90,9 @@ class HighwayRun:
 
     def stop(self, reason="驾驶已结束", *, succeeded=False):
         if not self.snapshot.finished:
+            if self.slalom is not None:
+                self.slalom.stop(reason, succeeded=succeeded)
+                self.snapshot = replace(self.snapshot, slalom=self.slalom.snapshot)
             if self.braking is not None:
                 self.braking.stop(reason, succeeded=succeeded)
                 self.snapshot = replace(self.snapshot, braking=self.braking.snapshot)

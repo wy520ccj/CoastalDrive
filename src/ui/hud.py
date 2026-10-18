@@ -10,6 +10,7 @@ from race import GameMode
 from ui import theme
 from ui.braking_feedback import driving_feedback
 from ui.race_feedback import split_feedback
+from ui.slalom_feedback import driving_feedback as slalom_driving_feedback
 
 
 def set_text(widget, value):
@@ -141,13 +142,17 @@ class DrivingHUD:
             self._active_rpm = active
         if track == "endless":
             braking = race.mode == GameMode.BRAKING_LESSON
-            set_text(self.mode, "定点刹停" if braking else "5公里无碰撞挑战" if highway.challenge else "无限高速")
+            slalom = race.mode == GameMode.SLALOM_LESSON
+            set_text(self.mode, "连续过门" if slalom else "定点刹停" if braking else "5公里无碰撞挑战" if highway.challenge else "无限高速")
             set_text(self.status, f"{highway.elapsed:07.2f} s")
             distance = f"{highway.distance:.0f} / {highway.target:.0f} m" if highway.challenge else f"{highway.distance / 1000:.2f} km"
             set_text(self.detail, f"距离 {distance}\n碰撞 {highway.collisions} 次")
             message = "无碰撞行驶中" if highway.collisions == 0 else f"碰撞 {highway.collisions} 次"
             if braking:
                 detail, message = driving_feedback(highway.braking)
+                set_text(self.detail, detail)
+            elif slalom:
+                detail, message = slalom_driving_feedback(highway.slalom)
                 set_text(self.detail, detail)
         elif race.mode == GameMode.TIME_TRIAL:
             set_text(self.mode, "计时挑战")
