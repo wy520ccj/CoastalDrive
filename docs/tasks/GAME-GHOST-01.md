@@ -58,3 +58,9 @@
 
 - after-compliance在763通过后首败旧字体扫描误报；VALIDATION-FONT-01完整5项/三种子通过，字体与生产UI未改。
 - 再续跑`t2_resume_remainder.py --previous logs/validation/GAME-GHOST-01-T2-after-compliance --supplement logs/validation/VALIDATION-FONT-01-T1 --output logs/validation/GAME-GHOST-01-T2-after-font`，3239项显式复用，277项与长测继续。所有原结果保留。
+
+## 本批最终自动结论
+
+- after-font已终止failed：117通过后首败真实落地制动路径细化，18.44秒。普通/Double2/4/8/16复算均不单调；详见[T2-PHYS-AUDIT-01](T2-PHYS-AUDIT-01.md)。物理源码/测试/探针与250be45保持，不放宽判据。
+- 3516节点：3356有据通过、1失败、159未跑；后续11项道路/交通检查not_run。逐节点[覆盖账](../evidence/T2-PHYS-AUDIT-01/coverage.json)与所有原失败独立保留。**T2未通过**，不能以功能T1称整个阶段通过。
+- 功能代码/本地真实回放检查完成，人工趣味性pending。持续目标接入DRIVING-STOP-01短驾驶项目，现有精度Gate单独开放；本批T2不再处于运行状态。

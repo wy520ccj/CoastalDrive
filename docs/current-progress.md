@@ -8,7 +8,7 @@
 
 当前[GAME-GHOST-01](tasks/GAME-GHOST-01.md)功能自动部分已完成：权威120Hz逐拍记录、同版本/SDK与同一最佳整圈关联、G/按钮开关、近车渐隐/无阴影。玩法T1 133项/三种子，Double最终9项和资源错误补验3项通过；本地/独立进程实际圈6074帧记录/回传/重开一致。普通与Double真实记录回放开关框外0像素，124刚体和物理快照保持；是静态预览，未冒充人工驾驶。原始两库记录与图像已归档，物理/原调校/原生扩展未改；功能提交后接续本批T2，人工趣味性仍待确认，持续目标active。
 
-本批T2仍在收口：原667通过后发现GR86来源/旧验收入口问题，分别由[来源补齐](tasks/PROFILE-PROVENANCE-01.md)、[静载](tasks/VALIDATION-CONTACT-01.md)、[道路](tasks/VALIDATION-CONTACT-02.md)、[碰撞终帧](tasks/VALIDATION-IMPACT-01.md)、[关闭夹具](tasks/VALIDATION-LIFECYCLE-01.md)、[CLI模式](tasks/VALIDATION-CLI-01.md)、[对开标签](tasks/VALIDATION-SURFACE-01.md)修正。各自完整相关T1/三种子与所需Double检查通过，实际参数/物理/原阈值保持；所有原失败和未跑项分账保留。当前fbe4208/干净源码，`GAME-GHOST-01-T2-after-surface`复用1907项、继续1609项及未跑交通道路长测，仍在运行，阶段未通过；不得重复启动。下一短课题[定点刹停](tasks/DRIVING-STOP-01.md)仅完成可行性采样/范围稿，待当前检查收尾实施。仅本地提交，持续目标active，人工趣味性待确认。
+本批[GAME-GHOST-01 T2](tasks/GAME-GHOST-01.md)最终**failed**：3516项中3356项按明示复用/实际执行通过，1项落地制动路径细化失败，159项及11条后续道路/交通检查未跑。各旧配置/报告/夹具/字体入口已以相关完整T1闭合；真实失败由[T2-PHYS-AUDIT-01](tasks/T2-PHYS-AUDIT-01.md)普通/Double复算确认，物理源码/参数/原阈值未改，不称阶段通过。下一[定点刹停](tasks/DRIVING-STOP-01.md)实施为可快速重试的短驾驶课题，已有普通可行性采样；原精度/人工Gate单独开放，仅本地提交，持续目标active。
 
 最新[REPO-CLEAN-01](tasks/REPO-CLEAN-01.md)：清理根目录两个重复试玩脚本、旧字体/背景及其专属旧说明，共8文件/28.04MB；当前源码入口统一在launchers/，原文件可从Git标签恢复。40项/三种子、实际菜单/实验台往返、当前资源准备与226项保留资源SHA核对通过；游戏源码/已发布包/SDK/只读归档未改。
 

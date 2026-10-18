@@ -1,0 +1,26 @@
+........................................................................ [ 25%]
+.............................................F
+================================== FAILURES ===================================
+___ test_symmetric_airborne_braking_preserves_symmetry_as_tire_step_refines ___
+
+    def test_symmetric_airborne_braking_preserves_symmetry_as_tire_step_refines():
+        # 所有旋转轴都是轴向矢量；横向轴在左右镜像下不变，纵向旋向车不满足此前提。
+        trials = [esc_probe.run_trial("airborne-recontact", True, 6, "simulation",
+                  vehicle_config=replace(REFERENCE_CAR, engine_axis=(1., 0., 0.),
+                                         input_shaft_axis=(1., 0., 0.),
+                                         downstream_axes=((1., 0., 0.),) * 3,
+                                         tire_substeps=steps))[0]
+                  for steps in (2, 4, 8, 16)]
+        for trial in trials:
+            assert trial["peak_abs_unwrapped_heading_deg"] < .001
+            assert trial["esc_active_seconds"] == 0
+            assert trial["stopped"]
+        differences = [abs(b["path_distance_m"]-a["path_distance_m"]) for a, b in pairwise(trials)]
+>       assert differences[2] < differences[1] < differences[0]
+E       assert 0.2999916116738177 < 0.25041580251126305
+
+tests\test_vehicle_collision.py:187: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_vehicle_collision.py::test_symmetric_airborne_braking_preserves_symmetry_as_tire_step_refines
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 117 passed in 18.44s
