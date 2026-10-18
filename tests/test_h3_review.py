@@ -110,8 +110,11 @@ def test_actual_physics_lap_records_and_reloads(tmp_path):
         assert session.phase == Phase.RESULTS
         result = session.race.snapshot
         assert not result.invalidated and result.checkpoints == 4
+        assert len(result.splits) == 5 and result.splits[-1] == result.last_lap
+        assert all(a < b for a, b in zip((0., *result.splits), result.splits))
         assert 45 < result.last_lap < 65
         assert BestTimes(path).get(GameMode.TIME_TRIAL, session.race.score_id) == result.last_lap
+        assert BestTimes(path).get_splits(GameMode.TIME_TRIAL, session.race.score_id, 5) == result.splits
         assert BestTimes(path).get(GameMode.TIME_TRIAL) is None
         frozen = session.current
         for _ in range(100):

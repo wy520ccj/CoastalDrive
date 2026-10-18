@@ -208,6 +208,10 @@ def test_keyboard_navigation_for_secondary_menus(tmp_path):
         app.key_down("s")
         app.key_up("s")
         assert app.panel_selection == 1
+        assert app.buttons[app.panel_selection]["text"] == "返回实验台"
+        app.key_down("s")
+        app.key_up("s")
+        assert app.panel_selection == 2 and app.buttons[app.panel_selection]["text"] == "设置"
         app.key_down("enter")
         assert app.audio_settings_page
         assert app.panel_title.getText() == "设置"
@@ -225,7 +229,7 @@ def test_keyboard_navigation_for_secondary_menus(tmp_path):
         app.key_down("escape")
         app.key_up("escape")
         assert not app.audio_settings_page and app.session.phase == Phase.PAUSED
-        assert app.panel_selection == 1
+        assert app.panel_selection == 2 and app.buttons[app.panel_selection]["text"] == "设置"
         app.key_down("s")
         app.key_up("s")
         app.key_down("enter")

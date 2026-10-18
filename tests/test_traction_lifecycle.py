@@ -92,7 +92,7 @@ def test_mode_abs_tcs_variants_get_distinct_score_keys():
     }
     assert len(set(keys.values())) == 8
     assert all(":abs-" in value and ":tcs-" in value for value in keys.values())
-    assert DrivingMode.GAME.score_variant(True).startswith("game-native-traffic-v26:")
+    assert DrivingMode.GAME.score_variant(True).startswith("game-keyboard-v32:")
     assert DrivingMode.SIMULATION.score_variant(True).startswith("reference-keyboard-v30:")
 
 

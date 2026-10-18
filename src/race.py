@@ -1,4 +1,4 @@
-"""Fixed-step time trial rules. A lap requires crossing each gate on the road."""
+"""固定步计时与门线分段；只有完整有效圈可以更新个人最佳。"""
 
 import json
 import math
@@ -31,42 +31,96 @@ class RaceSnapshot:
     last_lap: float | None = None
     best_lap: float | None = None
     save_error: str = ""
+    splits: tuple[float, ...] = ()
+    reference_splits: tuple[float, ...] = ()
+    reference_lap: float | None = None
+    new_best: bool = False
+    score_notice: str = ""
 
 
 def valid_time(value):
     return type(value) in (int, float) and math.isfinite(value) and value > 0
 
 
+def valid_splits(values, seconds):
+    return (isinstance(values, (list, tuple)) and bool(values)
+            and all(valid_time(value) for value in values)
+            and all(a < b for a, b in zip((0., *values), values))
+            and valid_time(seconds) and math.isclose(values[-1], seconds, rel_tol=0., abs_tol=1e-9))
+
+
 class BestTimes:
     def __init__(self, path: Path | None = None):
         self.path = path or user_data() / "best-times.json"
-        self.times = self._load()
         self.error = ""
+        self.notice = ""
+        self.times = self._load()
 
     def _load(self):
         try:
             value = json.loads(self.path.read_text(encoding="utf-8"))
-        except OSError, ValueError:
+        except FileNotFoundError:
             return {}
-        return value if isinstance(value, dict) else {}
+        except (OSError, ValueError):
+            self.notice = "成绩文件未能读取，本次暂无可用参考；请检查存储目录。"
+            return {}
+        if not isinstance(value, dict):
+            self.notice = "成绩文件格式无效，本次暂无可用参考。"
+            return {}
+        times = {}
+        for key, seconds in value.items():
+            if key == "_splits_v1":
+                continue
+            if valid_time(seconds):
+                times[key] = seconds
+            else:
+                self.notice = "成绩文件含无效记录，已跳过；其余成绩保留。"
+        splits = value.get("_splits_v1", {})
+        if isinstance(splits, dict):
+            times["_splits_v1"] = {}
+            for key, row in splits.items():
+                if valid_splits(row, times.get(key)):
+                    times["_splits_v1"][key] = row
+                else:
+                    self.notice = "部分分段记录损坏，保留可用总成绩；请完成新最佳圈。"
+        else:
+            self.notice = "分段记录格式无效，保留可用总成绩；请完成新最佳圈。"
+        return times
 
     def get(self, mode, course_id="coastal-v2"):
         value = self.times.get(f"{course_id}:{mode.value}")
         return float(value) if valid_time(value) else None
 
-    def record(self, mode, seconds, course_id="coastal-v2"):
+    def get_splits(self, mode, course_id, count):
+        key = f"{course_id}:{mode.value}"
+        values = self.times.get("_splits_v1", {}).get(key, ())
+        if len(values) == count:
+            return tuple(values)
+        if values:
+            self.notice = "历史分段数量与当前赛道不同；仅显示总成绩。"
+        return ()
+
+    def record(self, mode, seconds, course_id="coastal-v2", *, splits=None):
         if not valid_time(seconds):
-            raise ValueError("A lap time must be finite and positive")
+            raise ValueError("圈速须为有限正数")
+        if splits is not None and not valid_splits(splits, seconds):
+            raise ValueError("分段须为递增门线时刻，并与整圈时间一致")
         self.times.update(self._load())
         old = self.get(mode, course_id)
         if old is not None and old <= seconds:
             return old, False
-        self.times[f"{course_id}:{mode.value}"] = seconds
+        key = f"{course_id}:{mode.value}"
+        self.times[key] = seconds
+        recorded = self.times.setdefault("_splits_v1", {})
+        if splits is None:
+            recorded.pop(key, None)
+        else:
+            recorded[key] = tuple(splits)
         self.error = ""
         try:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             temporary = self.path.with_suffix(".tmp")
-            temporary.write_text(json.dumps(self.times, indent=2), encoding="utf-8")
+            temporary.write_text(json.dumps(self.times, indent=2, allow_nan=False), encoding="utf-8")
             temporary.replace(self.path)
         except OSError:
             self.error = "成绩暂未保存，请检查存储空间或目录权限"
@@ -86,7 +140,10 @@ class RaceTracker:
         mode = self.snapshot.mode if mode is None else mode
         self.score_id = self.circuit.score_id + (":" + score_variant if score_variant else "")
         self.snapshot = RaceSnapshot(
-            mode=mode, best_lap=self.scores.get(mode, self.score_id)
+            mode=mode, best_lap=self.scores.get(mode, self.score_id),
+            reference_lap=self.scores.get(mode, self.score_id),
+            reference_splits=self.scores.get_splits(mode, self.score_id, len(self.circuit.checkpoints)+1),
+            score_notice=self.scores.notice,
         )
         self._distance = self._furthest = 0.0
         self._previous_progress = 0.0
@@ -148,14 +205,18 @@ class RaceTracker:
         self._distance += delta
         self._furthest = max(self._furthest, self._distance)
         passed = self.snapshot.checkpoints
+        splits = self.snapshot.splits
         for index, distance in enumerate(self.circuit.checkpoints):
-            if self._crossing(distance, position) is not None:
+            crossing = self._crossing(distance, position)
+            if crossing is not None:
                 if index == passed:
                     passed += 1
+                    splits += (self.snapshot.elapsed+dt*crossing,)
                 elif index > passed:
                     self._invalidate("检查点不完整")
         self.snapshot = replace(
-            self.snapshot, checkpoints=passed, next_checkpoint=passed + 1, progress=progress
+            self.snapshot, checkpoints=passed, next_checkpoint=passed + 1, progress=progress,
+            splits=splits,
         )
         finish = self._crossing(0, position)
         # Ignore the initial departure across the start line.
@@ -163,9 +224,13 @@ class RaceTracker:
             if passed != len(self.circuit.checkpoints) or self._distance < length - 2:
                 self._invalidate("检查点不完整")
             lap_time = self.snapshot.elapsed + dt * finish
+            splits += (lap_time,)
             best = self.snapshot.best_lap
+            new_best = False
             if not self.snapshot.invalidated:
-                best, _ = self.scores.record(self.snapshot.mode, lap_time, self.score_id)
+                best, _ = self.scores.record(self.snapshot.mode, lap_time, self.score_id, splits=splits)
+                new_best = best == lap_time and (self.snapshot.reference_lap is None
+                                                or lap_time < self.snapshot.reference_lap)
             self.snapshot = replace(
                 self.snapshot,
                 running=False,
@@ -174,6 +239,8 @@ class RaceTracker:
                 last_lap=lap_time,
                 best_lap=best,
                 save_error=self.scores.error,
+                splits=splits,
+                new_best=new_best,
             )
         else:
             self.snapshot = replace(self.snapshot, elapsed=self.snapshot.elapsed + dt)

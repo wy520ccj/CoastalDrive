@@ -8,6 +8,7 @@ from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
 from race import GameMode
 from ui import theme
+from ui.race_feedback import split_feedback
 
 
 def set_text(widget, value):
@@ -38,6 +39,8 @@ class DrivingHUD:
         self._notice_lines = 1
         self._radio_station = None
         self._aspect = None
+        self._timed = None
+        self._split_invalidated = None
         self.root = parent.attachNewNode("driving-hud")
         self.root.setTransparency(TransparencyAttrib.MAlpha)
         panel = loader.loadTexture(theme.asset_filename("components/panel.png"))
@@ -58,6 +61,10 @@ class DrivingHUD:
         self.detail = OnscreenText(parent=self.status_frame, text="", font=body_font,
                                   fg=theme.INK, pos=(0.055, -0.302), scale=0.041,
                                   align=TextNode.ALeft, mayChange=True)
+        self.split = OnscreenText(parent=self.status_frame, text="", font=body_font,
+                                  fg=theme.SEA, pos=(0.055, -0.422), scale=0.034,
+                                  align=TextNode.ALeft, mayChange=True)
+        self.split.hide()
         self.notice_frame = DirectFrame(parent=self.root, frameColor=(*theme.INK[:3], 1),
                                         frameSize=(0, 0.88, -0.18, 0), pos=(-1.70, 0, 0.50))
         # 底板固定实色，避免移动的树影/天空透进来形成明暗跳动。
@@ -105,6 +112,12 @@ class DrivingHUD:
     def update(self, state, race, highway, *, track, countdown, notice,
                driving_mode=DrivingMode.GAME):
         player = state.player
+        timed = track != "endless" and race.mode == GameMode.TIME_TRIAL
+        if timed != self._timed:
+            self._timed = timed
+            self.split.show() if timed else self.split.hide()
+            self.status_frame["frameSize"] = (0, .88, -.54 if timed else -.40, 0)
+            self.notice_frame.setZ(.36 if timed else .50)
         abs_label = "关闭" if not player.abs_enabled else (
             "介入" if any(brake.abs_active for brake in player.brake_states) else "待命"
         )
@@ -136,7 +149,13 @@ class DrivingHUD:
             set_text(self.status, f"{race.elapsed:07.3f} s")
             target = "终点" if race.checkpoints == 4 else f"检查点 {race.next_checkpoint}"
             set_text(self.detail, f"检查点  {race.checkpoints} / 4\n下一目标  {target}")
+            set_text(self.split, split_feedback(race))
+            if race.invalidated != self._split_invalidated:
+                self._split_invalidated = race.invalidated
+                self.split.setFg(theme.FAILURE if race.invalidated else theme.SEA)
             message = f"圈速无效：{race.invalid_reason}" if race.invalidated else "本圈有效"
+            if race.score_notice:
+                message += " · "+race.score_notice
         else:
             set_text(self.mode, "滨海自由驾驶")
             set_text(self.status, "COASTAL CRUISE")

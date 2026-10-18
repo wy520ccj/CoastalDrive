@@ -36,6 +36,7 @@ from ui import theme
 from ui.countdown import Countdown
 from ui.hud import DrivingHUD
 from ui.main_menu import MainMenu
+from ui.race_feedback import result_columns
 from ui.workspace_loading import WorkspaceLoading
 from vehicle_designs import vehicle_design
 from vehicle_workspace import WorkspaceVehicle, workspace_vehicle_path
@@ -657,6 +658,14 @@ class CoastalDrive(ShowBase):
             **text_style, parent=self.panel, text="", pos=(0, 0.12),
             scale=0.041, mayChange=True,
         )
+        self.sector_font = self.ui_font.makeCopy()
+        self.sector_font.setLineHeight(1.15)
+        self.result_sectors = tuple(OnscreenText(
+            parent=self.panel, font=self.sector_font, fg=theme.INK,
+            text="", pos=(x, -.11), scale=.038, mayChange=True,
+        ) for x in (-.65, -.22, .43))
+        for column in self.result_sectors:
+            column.hide()
         # 固定结算字形在加载时创建并上传；持有几何以免动态字体回收后再次栅格化。
         result_text = TextNode("result-glyphs")
         result_text.setFont(self.ui_font)
@@ -794,7 +803,7 @@ class CoastalDrive(ShowBase):
 
     def back_from_audio_settings(self):
         self.audio_settings_page = False
-        self.panel_selection = 1 if self.session.phase == Phase.PAUSED else 0
+        self.panel_selection = 2 if self.session.phase == Phase.PAUSED else 0
         self._shown_phase = None
         self.refresh_panel()
 
@@ -922,6 +931,8 @@ class CoastalDrive(ShowBase):
                 not (self.garage is not None or self.highway_menu or self.audio_settings_page or self.driving_mode_page)):
             self.panel_selection = 0
         self._shown_phase = panel_state
+        for column in self.result_sectors:
+            column.hide()
         self.main_menu.root.hide()
         if phase in (Phase.MENU, Phase.PAUSED, Phase.RESULTS):
             self.hud.root.hide()
@@ -1056,8 +1067,6 @@ class CoastalDrive(ShowBase):
                     self.panel_detail.setText(
                         f"本圈 {race.last_lap:.3f} 秒\n{best}"
                     )
-                    if race.save_error:
-                        self.panel_note.setText(f"{self.panel_note.getText()}\n{race.save_error}")
                     receipt = self.workspace_vehicle.workshop_result
                     validated = road_result(receipt, race, self.session.simulation.track)
                     if validated is not None:
@@ -1072,6 +1081,13 @@ class CoastalDrive(ShowBase):
                             else:
                                 self.workspace_vehicle = vehicle
                                 self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
+                    if race.new_best:
+                        message = "新个人最佳" if race.reference_lap is not None else "首个有效圈 · 已建立最佳参考"
+                        self.panel_note.setText(self.panel_note.getText()+" · "+message if validated is not None else message)
+                    if race.save_error:
+                        self.panel_note.setText(f"{self.panel_note.getText()}\n{race.save_error}")
+                    if race.score_notice and not race.save_error:
+                        self.panel_note.setText(self.panel_note.getText()+"\n"+race.score_notice)
                 elif self.session.mode == GameMode.FREE_DRIVE:
                     self.panel_title.setText("驾驶结束")
                     self.panel_note.setText("滨海自由驾驶")
@@ -1167,6 +1183,16 @@ class CoastalDrive(ShowBase):
                 button.setPos(x, 0, -0.47)
                 button["frameSize"] = (-width / 2, width / 2, -0.085, 0.085)
                 button["text_scale"] = 0.047
+            race = self.session.race.snapshot
+            if self.session.simulation.track != "endless" and race.finished and race.splits:
+                self.panel["frameSize"] = (-.94, .94, -.74, .75)
+                self.panel_detail.setScale(.043)
+                for column, text in zip(self.result_sectors, result_columns(race)):
+                    column.setText(text)
+                    column.setZ(.09-.065*note_lines-.13)
+                    column.show()
+                for button in self.buttons[:3]:
+                    button.setZ(-.61)
         else:
             self.panel_accent.show()
 

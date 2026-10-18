@@ -208,10 +208,8 @@ class Session:
     def score_variant(self):
         """工程硬件与输入模式/电子开关共同隔离成绩。"""
         variant = self.driving_mode.score_variant(self.abs_enabled, self.tcs_enabled, self.esc_enabled)
-        if self.base_vehicle_config is not None:
-            data = json.dumps(asdict(self.vehicle_config), sort_keys=True, separators=(",", ":"))
-            variant += ":hardware-"+hashlib.sha256(data.encode()).hexdigest()[:16]
-        return variant
+        data = json.dumps(asdict(self.vehicle_config), sort_keys=True, separators=(",", ":"), allow_nan=False)
+        return variant+":splits-v1:hardware-"+hashlib.sha256(data.encode()).hexdigest()
 
     def set_controller(self, controller: Controller):
         self.stop_clock()
