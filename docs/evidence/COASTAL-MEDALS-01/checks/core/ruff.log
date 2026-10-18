@@ -1,0 +1,28 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\test_coastal_medals.py:3:1
+   |
+ 1 |   """滨海玩法目标、有效圈边界与保存失败的整次参考一致性。"""
+ 2 |
+ 3 | / import json
+ 4 | | from dataclasses import replace
+ 5 | | from pathlib import Path
+ 6 | |
+ 7 | | import pytest
+ 8 | |
+ 9 | | from coastal_medals import driving_goal, medal_for, menu_goal, next_goal, result_goal, result_medal
+10 | | from race import BestTimes, GameMode, RaceSnapshot, RaceTracker
+11 | | from test_race_splits import lap
+   | |________________________________^
+help: Organize imports
+   |
+7  | import pytest
+8  + from test_race_splits import lap
+9  |
+10 | from coastal_medals import driving_goal, medal_for, menu_goal, next_goal, result_goal, result_medal
+11 | from race import BestTimes, GameMode, RaceSnapshot, RaceTracker
+   - from test_race_splits import lap
+12 |
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

@@ -1,0 +1,107 @@
+.F...F.F.....                                                            [100%]
+================================== FAILURES ===================================
+_ test_hud_target_fits_below_splits_uses_departure_reference_and_hides_elsewhere _
+
+app = <application.CoastalDrive object at 0x0000021A4A89DFD0>
+
+    def test_hud_target_fits_below_splits_uses_departure_reference_and_hides_elsewhere(app):
+        race = RaceSnapshot(mode=GameMode.TIME_TRIAL, elapsed=60., reference_lap=70., best_lap=50.,
+                            splits=(20., 40.), reference_splits=(21., 42., 50., 60., 70.))
+        app.hud.update(app.session.current, race, app.session.highway.snapshot, track="coastal", countdown="", notice="")
+>       assert "目标 银牌 · 还剩5.0s" in app.hud.goal.getText() and not app.hud.goal.isHidden()
+E       AssertionError: assert ('目标 银牌 · 还剩5.0s' in '金≤55s · 银≤65s · 铜≤80s\n目标 银牌 · 还剩5.0s' and not True)
+E        +  where '金≤55s · 银≤65s · 铜≤80s\n目标 银牌 · 还剩5.0s' = getText()
+E        +    where getText = render2d/aspect2d/driving-hud/DirectFrame-pg93/-TextNode.getText
+E        +      where render2d/aspect2d/driving-hud/DirectFrame-pg93/-TextNode = <ui.hud.DrivingHUD object at 0x0000021A95E52990>.goal
+E        +        where <ui.hud.DrivingHUD object at 0x0000021A95E52990> = <application.CoastalDrive object at 0x0000021A4A89DFD0>.hud
+E        +  and   True = <built-in method isHidden of OnscreenText object at 0x0000021A19FB28F0>()
+E        +    where <built-in method isHidden of OnscreenText object at 0x0000021A19FB28F0> = render2d/aspect2d/driving-hud/DirectFrame-pg93/-TextNode.isHidden
+E        +      where render2d/aspect2d/driving-hud/DirectFrame-pg93/-TextNode = <ui.hud.DrivingHUD object at 0x0000021A95E52990>.goal
+E        +        where <ui.hud.DrivingHUD object at 0x0000021A95E52990> = <application.CoastalDrive object at 0x0000021A4A89DFD0>.hud
+
+tests\test_coastal_medals_ui.py:54: AssertionError
+---------------------------- Captured stderr setup ----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+_ test_result_medal_next_gap_and_table_clear_each_other_with_warnings[90.0-False--\u672a\u8fbe\u94dc\u724c] _
+
+app = <application.CoastalDrive object at 0x0000021A4AA1BE00>, seconds = 90.0
+invalid = False, save_error = '', expected = '未达铜牌'
+
+    @pytest.mark.parametrize("seconds,invalid,save_error,expected", [(50., False, "", "滨海金牌"),
+        (60., False, "", "滨海银牌"), (75., False, "", "滨海铜牌"), (90., False, "", "未达铜牌"),
+        (50., True, "", "圈速无效"), (50., False, "成绩暂未保存，请检查存储空间或目录权限", "滨海金牌")])
+    def test_result_medal_next_gap_and_table_clear_each_other_with_warnings(app, seconds, invalid, save_error, expected):
+        race = RaceSnapshot(mode=GameMode.TIME_TRIAL, finished=True, elapsed=seconds, last_lap=seconds,
+            best_lap=70. if save_error or invalid else seconds, reference_lap=70.,
+            invalidated=invalid, invalid_reason="车辆复位" if invalid else "", save_error=save_error,
+            new_best=not (save_error or invalid) and seconds < 70.,
+            splits=tuple(seconds*index/5 for index in range(1, 6)),
+            ghost_notice="成绩未保存，本次幽灵未关联。" if save_error else "最佳圈幽灵已保存，下次挑战可对照。")
+        app.session.race.snapshot = race
+        app.session.phase = Phase.RESULTS
+        app._shown_phase = None
+        app.refresh_panel()
+>       assert expected in app.panel_note.getText()
+E       AssertionError: assert '未达铜牌' in '有效完成 · 尚未达到铜牌\n最佳圈幽灵已保存，下次挑战可对照。'
+E        +  where '有效完成 · 尚未达到铜牌\n最佳圈幽灵已保存，下次挑战可对照。' = getText()
+E        +    where getText = render2d/aspect2d/DirectFrame-pg509/-TextNode.getText
+E        +      where render2d/aspect2d/DirectFrame-pg509/-TextNode = <application.CoastalDrive object at 0x0000021A4AA1BE00>.panel_note
+
+tests\test_coastal_medals_ui.py:79: AssertionError
+---------------------------- Captured stderr setup ----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+_ test_result_medal_next_gap_and_table_clear_each_other_with_warnings[50.0-False-\u6210\u7ee9\u6682\u672a\u4fdd\u5b58\uff0c\u8bf7\u68c0\u67e5\u5b58\u50a8\u7a7a\u95f4\u6216\u76ee\u5f55\u6743\u9650-\u6ee8\u6d77\u91d1\u724c] _
+
+app = <application.CoastalDrive object at 0x0000021A4AA192B0>, seconds = 50.0
+invalid = False, save_error = '成绩暂未保存，请检查存储空间或目录权限', expected = '滨海金牌'
+
+    @pytest.mark.parametrize("seconds,invalid,save_error,expected", [(50., False, "", "滨海金牌"),
+        (60., False, "", "滨海银牌"), (75., False, "", "滨海铜牌"), (90., False, "", "未达铜牌"),
+        (50., True, "", "圈速无效"), (50., False, "成绩暂未保存，请检查存储空间或目录权限", "滨海金牌")])
+    def test_result_medal_next_gap_and_table_clear_each_other_with_warnings(app, seconds, invalid, save_error, expected):
+        race = RaceSnapshot(mode=GameMode.TIME_TRIAL, finished=True, elapsed=seconds, last_lap=seconds,
+            best_lap=70. if save_error or invalid else seconds, reference_lap=70.,
+            invalidated=invalid, invalid_reason="车辆复位" if invalid else "", save_error=save_error,
+            new_best=not (save_error or invalid) and seconds < 70.,
+            splits=tuple(seconds*index/5 for index in range(1, 6)),
+            ghost_notice="成绩未保存，本次幽灵未关联。" if save_error else "最佳圈幽灵已保存，下次挑战可对照。")
+        app.session.race.snapshot = race
+        app.session.phase = Phase.RESULTS
+        app._shown_phase = None
+        app.refresh_panel()
+        assert expected in app.panel_note.getText()
+        assert "目标" in app.panel_detail.getText()
+        if save_error:
+            assert "新个人最佳" not in app.panel_note.getText() and save_error in app.panel_note.getText()
+        for column in app.result_sectors:
+            assert not column.isHidden()
+            lower, upper = column.getTightBounds(app.panel)
+>           assert lower.z > app.buttons[0].getZ()+app.buttons[0]["frameSize"][3]+.01
+E           assert -0.6299999952316284 > ((-0.7099999785423279 + 0.085) + 0.01)
+E            +  where -0.6299999952316284 = LPoint3f(-0.68728744, 0, -0.63).z
+E            +  and   -0.7099999785423279 = <built-in method getZ of DirectButton object at 0x0000021A9ABF3070>()
+E            +    where <built-in method getZ of DirectButton object at 0x0000021A9ABF3070> = render2d/aspect2d/DirectFrame-pg683/DirectButton-pg688.getZ
+
+tests\test_coastal_medals_ui.py:86: AssertionError
+---------------------------- Captured stderr setup ----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+=========================== short test summary info ===========================
+FAILED tests/test_coastal_medals_ui.py::test_hud_target_fits_below_splits_uses_departure_reference_and_hides_elsewhere
+FAILED tests/test_coastal_medals_ui.py::test_result_medal_next_gap_and_table_clear_each_other_with_warnings[90.0-False--\u672a\u8fbe\u94dc\u724c]
+FAILED tests/test_coastal_medals_ui.py::test_result_medal_next_gap_and_table_clear_each_other_with_warnings[50.0-False-\u6210\u7ee9\u6682\u672a\u4fdd\u5b58\uff0c\u8bf7\u68c0\u67e5\u5b58\u50a8\u7a7a\u95f4\u6216\u76ee\u5f55\u6743\u9650-\u6ee8\u6d77\u91d1\u724c]
+3 failed, 10 passed in 57.80s

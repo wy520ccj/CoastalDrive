@@ -22,6 +22,7 @@ from panda3d.core import (
 from audio.music import STATIONS
 from braking_lesson import BrakingScores
 from chase_camera import ChaseCamera
+from coastal_medals import menu_goal, result_goal, result_medal
 from controls import ConstantController
 from driving_journey import read_driving_journey
 from driving_modes import DrivingMode
@@ -37,6 +38,7 @@ from simulation import Control
 from skins import PLAYER_VEHICLES, SKINS, apply_skin, vehicle_definition, vehicle_for_design
 from slalom_lesson import SlalomScores
 from soundscape import Soundscape
+from tracks import COASTAL_CIRCUIT
 from ui import theme
 from ui.braking_feedback import RULES as BRAKING_RULES
 from ui.braking_feedback import result_feedback as braking_result_feedback
@@ -1152,7 +1154,10 @@ class CoastalDrive(ShowBase):
         if phase == Phase.MENU and self.garage is None and not self.highway_menu and not self.audio_settings_page and not self.driving_mode_page:
             self.panel.hide()
             self.main_menu.set_driving_mode(self.session.driving_mode)
-            notice = self.appearance.notice or self.driving_mode_settings.notice
+            times = BestTimes(self.session.race.scores.path)
+            best = times.get(GameMode.TIME_TRIAL, COASTAL_CIRCUIT.score_id+":"+self.session.score_variant())
+            self.main_menu.time_goal.setText(menu_goal(best))
+            notice = self.appearance.notice or self.driving_mode_settings.notice or times.notice
             self.main_menu.notice.setText(self.fit_lines(notice, 1.0, 0.028))
             self.main_menu.root.show()
             return
@@ -1293,14 +1298,20 @@ class CoastalDrive(ShowBase):
             else:
                 race = self.session.race.snapshot
                 if race.finished and race.last_lap is not None:
+                    coastal = self.session.simulation.track == "coastal" and race.mode == GameMode.TIME_TRIAL
+                    award = result_medal(race, self.session.simulation.track)
                     self.panel_title.setText("挑战失败" if race.invalidated else "挑战成功")
                     self.panel_note.setText(
                         f"圈速无效：{race.invalid_reason}" if race.invalidated else "有效完成计时挑战"
                     )
+                    if coastal and not race.invalidated:
+                        self.panel_note.setText(f"滨海{award}牌 · 有效完成" if award else "有效完成 · 尚未达到铜牌")
                     best = f"最佳 {race.best_lap:.3f} 秒" if race.best_lap else "暂无最佳成绩"
                     self.panel_detail.setText(
                         f"本圈 {race.last_lap:.3f} 秒\n{best}"
                     )
+                    if coastal:
+                        self.panel_detail.setText(self.panel_detail.getText()+"\n"+result_goal(race))
                     receipt = self.workspace_vehicle.workshop_result
                     validated = road_result(receipt, race, self.session.simulation.track)
                     if validated is not None:
@@ -1322,6 +1333,8 @@ class CoastalDrive(ShowBase):
                                     self.panel_note.setText("道路已完成；方案库同步失败，重开方案库可重试。")
                     if race.new_best:
                         message = "新个人最佳" if race.reference_lap is not None else "首个有效圈 · 已建立最佳参考"
+                        if coastal:
+                            message = (f"滨海{award}牌 · " if award else "未达铜牌 · ")+message
                         self.panel_note.setText(self.panel_note.getText()+" · "+message if validated is not None else message)
                     if race.save_error:
                         self.panel_note.setText(f"{self.panel_note.getText()}\n{race.save_error}")
@@ -1435,14 +1448,17 @@ class CoastalDrive(ShowBase):
                 button["text_scale"] = 0.047
             race = self.session.race.snapshot
             if self.session.simulation.track != "endless" and race.finished and race.splits:
-                self.panel["frameSize"] = (-.94, .94, -.74, .75)
+                self.panel["frameSize"] = (-.94, .94, -.84, .75)
                 self.panel_detail.setScale(.043)
                 for column, text in zip(self.result_sectors, result_columns(race)):
                     column.setText(text)
-                    column.setZ(.09-.065*note_lines-.13)
+                    # OnscreenText自身还有文字坐标，按实际上沿安排，避免叠加两次偏移。
+                    column.setZ(0.)
+                    top = column.getTightBounds(self.panel)[1].z
+                    column.setZ(min(-.07, self.panel_detail.getTightBounds(self.panel)[0].z-.04)-top)
                     column.show()
                 for button in self.buttons[:3]:
-                    button.setZ(-.61)
+                    button.setZ(-.71)
             elif self.session.mode == GameMode.SLALOM_LESSON:
                 result = self.session.highway.snapshot.slalom
                 if result is not None and result.gate_times:

@@ -1,0 +1,15 @@
+{
+  "coastal-v2:game-keyboard-v32:abs-on:tcs-on:esc-on:splits-v1:hardware-ba6898b70fc4c6a49f103ad6ae5838efe6a729d98fc506748c82b48995047221:time_trial": 49.91896512298691,
+  "_splits_v1": {
+    "coastal-v2:game-keyboard-v32:abs-on:tcs-on:esc-on:splits-v1:hardware-ba6898b70fc4c6a49f103ad6ae5838efe6a729d98fc506748c82b48995047221:time_trial": [
+      12.439032349085775,
+      20.186559293359966,
+      32.114286833421524,
+      40.83010793314743,
+      49.91896512298691
+    ]
+  },
+  "_ghosts_v1": {
+    "coastal-v2:game-keyboard-v32:abs-on:tcs-on:esc-on:splits-v1:hardware-ba6898b70fc4c6a49f103ad6ae5838efe6a729d98fc506748c82b48995047221:time_trial": "15ca6a79c9edfea66777a79e5fff5c8c1a1b1a502002161107b962fb1b36ec22"
+  }
+}

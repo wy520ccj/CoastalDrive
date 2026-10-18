@@ -123,10 +123,14 @@ class BestTimes:
             raise ValueError("圈速须为有限正数")
         if splits is not None and not valid_splits(splits, seconds):
             raise ValueError("分段须为递增门线时刻，并与整圈时间一致")
+        self.error = ""
         self.times.update(self._load())
         old = self.get(mode, course_id)
         if old is not None and old <= seconds:
             return old, False
+        previous = self.times
+        self.times = {**previous, "_splits_v1": dict(previous.get("_splits_v1", {})),
+                      "_ghosts_v1": dict(previous.get("_ghosts_v1", {}))}
         key = f"{course_id}:{mode.value}"
         self.times[key] = seconds
         self.times.setdefault("_ghosts_v1", {}).pop(key, None)
@@ -135,7 +139,10 @@ class BestTimes:
             recorded.pop(key, None)
         else:
             recorded[key] = tuple(splits)
-        return seconds, self._save()
+        saved = self._save()
+        if not saved:
+            self.times = previous
+        return self.get(mode, course_id), saved
 
     def _save(self):
         self.error = ""
@@ -267,8 +274,8 @@ class RaceTracker:
             best = self.snapshot.best_lap
             new_best = False
             if not self.snapshot.invalidated:
-                best, _ = self.scores.record(self.snapshot.mode, lap_time, self.score_id, splits=splits)
-                new_best = best == lap_time and (self.snapshot.reference_lap is None
+                best, saved = self.scores.record(self.snapshot.mode, lap_time, self.score_id, splits=splits)
+                new_best = saved and best == lap_time and (self.snapshot.reference_lap is None
                                                 or lap_time < self.snapshot.reference_lap)
             self.snapshot = replace(
                 self.snapshot,

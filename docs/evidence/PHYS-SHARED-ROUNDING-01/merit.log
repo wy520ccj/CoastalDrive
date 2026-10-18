@@ -1,0 +1,25 @@
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+NEIGHBOR iteration=20 axis=0 side=0 old=4.0078886095224364 new=4.0078886090522383
+NEIGHBOR iteration=21 axis=1 side=0 old=4.0078886090522383 new=4.0078886090522099
+NEIGHBOR iteration=22 axis=4 side=1 old=4.0078886090522099 new=1.0078886090522101
+NEIGHBOR iteration=18 axis=0 side=0 old=4.0078886095224364 new=4.0078886090522383
+NEIGHBOR iteration=19 axis=1 side=0 old=4.0078886090522383 new=4.0078886090522099
+NEIGHBOR iteration=20 axis=4 side=1 old=4.0078886090522099 new=1.0078886090522101
+NEIGHBOR iteration=20 axis=0 side=0 old=4.0078886095224364 new=4.0078886090522383
+NEIGHBOR iteration=21 axis=1 side=0 old=4.0078886090522383 new=4.0078886090522099
+NEIGHBOR iteration=22 axis=4 side=1 old=4.0078886090522099 new=1.0078886090522101
+NEIGHBOR iteration=18 axis=0 side=0 old=4.0078886095224364 new=4.0078886090522383
+NEIGHBOR iteration=19 axis=1 side=0 old=4.0078886090522383 new=4.0078886090522099
+NEIGHBOR iteration=20 axis=4 side=1 old=4.0078886090522099 new=1.0078886090522101
+NEIGHBOR iteration=20 axis=0 side=0 old=4.0078886095224364 new=4.0078886090522383
+NEIGHBOR iteration=21 axis=1 side=0 old=4.0078886090522383 new=4.0078886090522099
+NEIGHBOR iteration=22 axis=4 side=1 old=4.0078886090522099 new=1.0078886090522101
+NEIGHBOR iteration=18 axis=0 side=0 old=4.0078886095224364 new=4.0078886090522383
+NEIGHBOR iteration=19 axis=1 side=0 old=4.0078886090522383 new=4.0078886090522099
+NEIGHBOR iteration=20 axis=4 side=1 old=4.0078886090522099 new=1.0078886090522101
+{"reproduced": false, "result": {"passed": true, "bits": 64, "seconds": [73.53052507792425, 59.70045261419741, 50.041664063881974]}, "calls": 22390}

@@ -4,6 +4,7 @@ from direct.gui.DirectGui import DirectFrame, OnscreenText
 from panda3d.core import TextNode, TransparencyAttrib
 
 from audio.music import STATIONS
+from coastal_medals import driving_goal
 from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
 from race import GameMode
@@ -43,6 +44,7 @@ class DrivingHUD:
         self._radio_station = None
         self._aspect = None
         self._timed = None
+        self._coastal = None
         self._split_invalidated = None
         self.root = parent.attachNewNode("driving-hud")
         self.root.setTransparency(TransparencyAttrib.MAlpha)
@@ -68,6 +70,9 @@ class DrivingHUD:
                                   fg=theme.SEA, pos=(0.055, -0.422), scale=0.034,
                                   align=TextNode.ALeft, mayChange=True)
         self.split.hide()
+        self.goal = OnscreenText(parent=self.status_frame, text="", font=body_font,
+            fg=theme.SEA, pos=(.055, -.535), scale=.031, align=TextNode.ALeft, mayChange=True)
+        self.goal.hide()
         self.notice_frame = DirectFrame(parent=self.root, frameColor=(*theme.INK[:3], 1),
                                         frameSize=(0, 0.88, -0.18, 0), pos=(-1.70, 0, 0.50))
         # 底板固定实色，避免移动的树影/天空透进来形成明暗跳动。
@@ -117,11 +122,15 @@ class DrivingHUD:
         player = state.player
         timed = ((track != "endless" and race.mode == GameMode.TIME_TRIAL)
                  or (track == "endless" and race.mode == GameMode.SLALOM_LESSON))
-        if timed != self._timed:
-            self._timed = timed
+        coastal = track == "coastal" and race.mode == GameMode.TIME_TRIAL
+        if timed != self._timed or coastal != self._coastal:
+            self._timed, self._coastal = timed, coastal
             self.split.show() if timed else self.split.hide()
-            self.status_frame["frameSize"] = (0, .88, -.54 if timed else -.40, 0)
-            self.notice_frame.setZ(.36 if timed else .50)
+            self.goal.show() if coastal else self.goal.hide()
+            self.status_frame["frameSize"] = (0, .88, -.64 if coastal else -.54 if timed else -.40, 0)
+            self.notice_frame.setZ(.26 if coastal else .36 if timed else .50)
+        if coastal:
+            set_text(self.goal, driving_goal(race))
         abs_label = "关闭" if not player.abs_enabled else (
             "介入" if any(brake.abs_active for brake in player.brake_states) else "待命"
         )

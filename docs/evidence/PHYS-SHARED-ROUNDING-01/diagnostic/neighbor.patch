@@ -1,0 +1,26 @@
+--- production-before.c
++++ neighbor.c
+@@ -2006,0 +2007,4 @@
++        if (iteration>=24) {
++            PySys_WriteStderr("TRACE iteration=%d error=%.17g branch=%d port=%d\n",iteration,error,branch_index,port_index);
++            for (int a=0;a<variables;++a) PySys_WriteStderr("COORD %d state=%.17g end=%.17g residual=%.17g tolerance=%.17g\n",a,state[a],end[a],residual[a],a<9?angular_tolerance(state[a],end[a]):PORT_TOLERANCE);
++        }
+@@ -2048,0 +2053,18 @@
++                }
++            }
++            if (!accepted && error<1e-10) {
++                int original_branch=branch_index,original_port=port_index;
++                for (int a=0;a<variables && !accepted;++a) for (int side=0;side<2 && !accepted;++side) {
++                    double candidate[11],target[11];
++                    for (int j=0;j<variables;++j) candidate[j]=state[j];
++                    candidate[a]=nextafter(candidate[a],side ? INFINITY : -INFINITY);
++                    int candidate_branch=original_branch,candidate_port=original_port;
++                    if (!shared_map_values(data,candidate,angular,normal,load,support,candidate_branch,
++                        target,road,active,port_values,&candidate_branch,&candidate_port)) return NULL;
++                    if (shared_residual_size(data,candidate,target)<before) {
++                        PySys_WriteStderr("NEIGHBOR iteration=%d axis=%d side=%d old=%.17g new=%.17g\n",iteration,a,side,before,shared_residual_size(data,candidate,target));
++                        for (int j=0;j<variables;++j) state[j]=candidate[j];
++                        branch_index=candidate_branch;port_index=candidate_port;
++                        if (data->bias) shared_active_limits(data,state,active);
++                        accepted=1;
++                    }

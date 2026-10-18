@@ -1,0 +1,6 @@
+{
+  "angular_tolerance_unchanged": true,
+  "all_original_convergence_and_feasibility_checks_unchanged": true,
+  "outer_30_iterations_unchanged": true,
+  "late_trial_only": "original line search exhausted, iteration >=24, raw residual <1e-10; original stopping criteria retained"
+}

@@ -1,0 +1,187 @@
+[
+  {
+    "source": "logs/validation/PHYS-SHARED-ROUNDING-01-original/pytest.log",
+    "path": "checks/original/pytest.log",
+    "sha256": "b04d6a5330e38b5f96504652c79027fdfd2b9f29f77698579198291e0c2538ce"
+  },
+  {
+    "source": "logs/validation/PHYS-SHARED-ROUNDING-01-original/ruff.log",
+    "path": "checks/original/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/PHYS-SHARED-ROUNDING-01-original/summary.json",
+    "path": "checks/original/summary.json",
+    "sha256": "26716af425b0c0900ff4050bb5e5f71ef29c56199ea80a5c45077da31f0c461f"
+  },
+  {
+    "source": "logs/validation/PHYS-SHARED-ROUNDING-01-fixed/pytest.log",
+    "path": "checks/fixed/pytest.log",
+    "sha256": "a718792f8fedd2af69bbe663a4452a517f07d719bd5235f699d64eec19886c58"
+  },
+  {
+    "source": "logs/validation/PHYS-SHARED-ROUNDING-01-fixed/ruff.log",
+    "path": "checks/fixed/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/PHYS-SHARED-ROUNDING-01-fixed/summary.json",
+    "path": "checks/fixed/summary.json",
+    "sha256": "36039aed0d75c66236ae6c914e960633124f6b8fb1a2a9e82da969f8015cd076"
+  },
+  {
+    "source": "logs/validation/PHYS-SHARED-ROUNDING-01-double-fixture-baseline/pytest.log",
+    "path": "checks/double-fixture-baseline/pytest.log",
+    "sha256": "c46b20d7552f4b5d9408a5ba84972acc91ad3ebb7bff4e01fa9db87de381ba92"
+  },
+  {
+    "source": "logs/validation/PHYS-SHARED-ROUNDING-01-double-fixture-baseline/ruff.log",
+    "path": "checks/double-fixture-baseline/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/PHYS-SHARED-ROUNDING-01-double-fixture-baseline/summary.json",
+    "path": "checks/double-fixture-baseline/summary.json",
+    "sha256": "ca87baed86d95038da52f01c91b880c7525d2de9d8a8765037a6d5d3c78e948e"
+  },
+  {
+    "source": "logs/validation/PHYS-SHARED-ROUNDING-01-double-final/pytest.log",
+    "path": "checks/double-final/pytest.log",
+    "sha256": "b5784d681afa5e727661bc746f438675592f74413ba7716ecad49eeb67822b8c"
+  },
+  {
+    "source": "logs/validation/PHYS-SHARED-ROUNDING-01-double-final/ruff.log",
+    "path": "checks/double-final/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/PHYS-SHARED-ROUNDING-01-double-final/summary.json",
+    "path": "checks/double-final/summary.json",
+    "sha256": "12908ffe9541c84b12788daa3052d3c795e2cf37cb5aa99fd749a6cf8c5cb99e"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/production-before.c",
+    "path": "production-before.c",
+    "sha256": "3167acfd48603f844356c560a58bed24193a34882f491d38d474fd9acb357692"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/setup_production.py",
+    "path": "setup_production.py",
+    "sha256": "6b53ea80b58e0fc2d1ba41dd3986cb3e4ede8edab31185edf051b99a9096e47b"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/production-native-before.json",
+    "path": "production-native-before.json",
+    "sha256": "8c53da8eec35674f01b1ca8cdeaf173cc0ddcd55cd0200d61a5955ee47f9f9f6"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/production-native-after.json",
+    "path": "production-native-after.json",
+    "sha256": "9d8d8754ad7215c2f95c7c21d597bfc69676bf7a909d967c5dcb6edc79497f56"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/criteria-check.json",
+    "path": "criteria-check.json",
+    "sha256": "e6ab6cc85bc1e4e79aaefc8e7772af94705c91636ab82c101f2d2191c3cc752d"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/normal-record-comparison.json",
+    "path": "normal-record-comparison.json",
+    "sha256": "acea98adaf9dc1ae2ea5d16ce251f52692f1b0fe96e98177db0197ca398a1d70"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/trace.log",
+    "path": "trace.log",
+    "sha256": "3f6178d5fa40832d8f9e8bc14a32713ddad8378fc15d078215858252c5a0d2be"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/candidate.log",
+    "path": "candidate.log",
+    "sha256": "dcc40420ed8470f6ff27cff0e50ab66ad8ab5850b512a73575250547a3f4a02a"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/merit.log",
+    "path": "merit.log",
+    "sha256": "3d2c6dca91cb9100137d2c5c946d3433ee26b3c32925038508e73d5a4741db58"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/local.log",
+    "path": "local.log",
+    "sha256": "911fe9de62f7d523d2ede8323fe25c899301ee5ed9a4cf00ac474ff0c64353d7"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/best.log",
+    "path": "best.log",
+    "sha256": "e128c30a19ad98f89562ce5e45d159c6683982414c924235160f80b075ed7c08"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/build-production.log",
+    "path": "build-production.log",
+    "sha256": "cb7c7dedc613f74d3a5d8a870c1d9fca5a7adfbda4dd00db96844d625e4c88ce"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/compare_production.py",
+    "path": "compare_production.py",
+    "sha256": "d26d1a04e0a40dab44a1aee0f70df28649420735c48b2f1d7ce771825101e14a"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/normal-production-comparison.log",
+    "path": "normal-production-comparison.log",
+    "sha256": "f33e1062520780bb0effb56797ad55a95d52cdc3646e945a86a24a19c5ab8951"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/normal-production-comparison.json",
+    "path": "normal-production-comparison.json",
+    "sha256": "10e645eba0f9de377367f6f8b809675163621e84d5e4e707c1899cfe00aff37e"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/double-production-comparison.log",
+    "path": "double-production-comparison.log",
+    "sha256": "88d196b51e137c474fec38932cc177cfa58b814524631d05fff1ffa3da610696"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/double-production-comparison.json",
+    "path": "double-production-comparison.json",
+    "sha256": "3777b05c8f2f6398f34074f435a09a0d99aa14e6bb9753d8d7fa2e5e342a4ba1"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/production-before-mechanical_kernels.cp314-win_amd64.pyd",
+    "path": "production-before-mechanical_kernels.cp314-win_amd64.pyd",
+    "sha256": "6ca08643bc79e1f614eb8bfe263bb45dc338de95902878ecb276b212032d99a6"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/production-bin/mechanical_kernels.cp314-win_amd64.pyd",
+    "path": "production-after-mechanical_kernels.cp314-win_amd64.pyd",
+    "sha256": "c84bfb06cae9d51a46f5cdff69107f96e73c6757d2853ef46673d0710010e7a2"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/capture/summary.json",
+    "path": "diagnostic/capture.json",
+    "sha256": "3a5b136307e84dc4babf0e956b5fecec23d329eb6baf7531f94062e7f0d6d5f5"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/candidate-capture/summary.json",
+    "path": "diagnostic/candidate-capture.json",
+    "sha256": "7f4a662023bf11df36afe6d33f88c9f709939b1f3f1d05a76f3f4243b0974bbb"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/merit-capture/summary.json",
+    "path": "diagnostic/merit-capture.json",
+    "sha256": "48797ca980602a471fad8330dccebc7cc6bbe9beab2e3222fe7c5a6d9e2fb724"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/local-capture/summary.json",
+    "path": "diagnostic/local-capture.json",
+    "sha256": "5186a2e9f08f40c4427abb137c2ebcb331d9dc2f11a6510510772845453072fc"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-solver-trace/best-capture/summary.json",
+    "path": "diagnostic/best-capture.json",
+    "sha256": "1a739c98f4c5184dc473caef004dd4548e51edb6d9c3acf73c6e7fe19cf4491b"
+  },
+  {
+    "source": "logs/validation/COASTAL-MEDALS-01-double-repro-frozen/summary.json",
+    "path": "diagnostic/original-repro.json",
+    "sha256": "3a5b136307e84dc4babf0e956b5fecec23d329eb6baf7531f94062e7f0d6d5f5"
+  }
+]

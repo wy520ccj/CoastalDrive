@@ -1985,6 +1985,16 @@ static double shared_residual_size(const SharedMap *data,const double state[11],
     }
     return maximum;
 }
+/* 只用于末期舍入停滞的择步；每个坐标仍使用原收敛容差。 */
+static double shared_rounding_merit(const SharedMap *data,const double state[11],const double end[11]) {
+    int variables=data->bias ? 11 : 9;
+    double total=0.;
+    for (int a=0;a<variables;++a) {
+        double value=(state[a]-end[a])/(a<9 ? angular_tolerance(state[a],end[a]) : PORT_TOLERANCE);
+        total+=value*value;
+    }
+    return total;
+}
 static PyObject *shared_solution_result(SharedMap *data,double state[11],const double angular[9],
     const double *normal,const double load[4],const double support[4],int warm,double ports[2],PyObject *velocity) {
     if (data->bias) {state[9]=ports[0]; state[10]=ports[1];}
@@ -2046,6 +2056,42 @@ static PyObject *shared_solution_result(SharedMap *data,double state[11],const d
                     for (int a=0; a<variables; ++a) state[a]=candidate[a];
                     if (data->bias) shared_active_limits(data,state,active);
                     accepted=1; break;
+                }
+            }
+            /* 原线搜索耗尽后，最后六轮比较Newton步与相邻表示；不是放宽停止门槛。 */
+            if (!accepted && iteration>=24 && error<1e-10) {
+                int original_branch=branch_index,original_port=port_index;
+                int best_branch=original_branch,best_port=original_port;
+                double best_merit=shared_rounding_merit(data,state,end),best_state[11];
+                for (int attempt=0;attempt<8;++attempt) {
+                    double candidate[11],target[11],step=ldexp(1.,-attempt);
+                    for (int a=0;a<variables;++a) candidate[a]=state[a]+step*delta[a];
+                    int candidate_branch=original_branch,candidate_port=original_port;
+                    if (!shared_map_values(data,candidate,angular,normal,load,support,candidate_branch,
+                        target,road,active,port_values,&candidate_branch,&candidate_port)) return NULL;
+                    double merit=shared_rounding_merit(data,candidate,target);
+                    if (merit<best_merit) {
+                        for (int a=0;a<variables;++a) best_state[a]=candidate[a];
+                        best_branch=candidate_branch;best_port=candidate_port;best_merit=merit;accepted=1;
+                    }
+                }
+                for (int a=0;a<variables;++a) for (int side=0;side<2;++side) {
+                    double candidate[11],target[11];
+                    for (int j=0;j<variables;++j) candidate[j]=state[j];
+                    candidate[a]=nextafter(candidate[a],side ? INFINITY : -INFINITY);
+                    int candidate_branch=original_branch,candidate_port=original_port;
+                    if (!shared_map_values(data,candidate,angular,normal,load,support,candidate_branch,
+                        target,road,active,port_values,&candidate_branch,&candidate_port)) return NULL;
+                    double merit=shared_rounding_merit(data,candidate,target);
+                    if (merit<best_merit) {
+                        for (int j=0;j<variables;++j) best_state[j]=candidate[j];
+                        best_branch=candidate_branch;best_port=candidate_port;best_merit=merit;accepted=1;
+                    }
+                }
+                if (accepted) {
+                    for (int a=0;a<variables;++a) state[a]=best_state[a];
+                    branch_index=best_branch;port_index=best_port;
+                    if (data->bias) shared_active_limits(data,state,active);
                 }
             }
             if (!accepted) {

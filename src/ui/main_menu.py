@@ -56,6 +56,9 @@ class MainMenu:
                              pos=(0.433, -0.030), scale=0.085)
             button.bind(DGG.ENTER, lambda event, i=index: self.select(i))
             self.buttons.append(button)
+            if index == 0:
+                self.time_goal = OnscreenText(parent=button, text="", font=body_font,
+                    fg=theme.SEA, align=TextNode.ALeft, pos=(-.205, -.083), scale=.026, mayChange=True)
         if lab_action is not None:
             self.static_frames.append(DirectFrame(parent=self.content, frameColor=(*theme.PAPER[:3], .94),
                                                  frameSize=(.52, 1.63, -.49, .07)))

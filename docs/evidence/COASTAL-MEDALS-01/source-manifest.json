@@ -1,0 +1,12 @@
+{
+  "src/application.py": "7cab188fb620511384953fc5d89945da5b7477d99e71f14974736567f9c1e9f6",
+  "src/coastal_medals.py": "ad3431fc074e54060b5b6ea44ff8d405ede92701c2e013ee6975ccfb4c5090ea",
+  "src/race.py": "907afecabda79c56011ed0706ba00b9c3b855bd27c3e84c7e6e9b9bcef527ef5",
+  "src/ui/hud.py": "c8df74d9936b64d7f1c5f8421232ba21f1111ee0741083cc26af4def4cb76a03",
+  "src/ui/main_menu.py": "a263abbea7a227ce2bd1d0fbe28e99b0e2c8299379cf7bfcc03f9892b667851a",
+  "tests/test_coastal_medals.py": "242508b7ec0c9dc424a94edf514c9c280aa5c18fc9385eb7901f1a85279bea6b",
+  "tests/test_coastal_medals_ui.py": "2ab62e658dd7fb743bd417f6997f07cc2b9bc2fc87d38867385f346e36c8f192",
+  "tools/coastal_medal_probe.py": "80b5882420b9d94c2f9e1b4e78020dfff9f0d812565335681e5a355f77609b8f",
+  "tools/coastal_medals_check.py": "4d63c0b28af34919cbc0e46c8887b72e4bb67774dd3c88e5492edc94309b58ca",
+  "tools/validate.py": "4a6e4c724da66da8ca77b81372274823568cc95e7b61795b98ec113b6b14a627"
+}

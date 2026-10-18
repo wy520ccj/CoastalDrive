@@ -1,0 +1,17 @@
+[
+  {
+    "run": 1,
+    "recorded_json_bytes": 6194181,
+    "recorded_fields_identical": true
+  },
+  {
+    "run": 2,
+    "recorded_json_bytes": 5894102,
+    "recorded_fields_identical": true
+  },
+  {
+    "run": 3,
+    "recorded_json_bytes": 4945461,
+    "recorded_fields_identical": true
+  }
+]

@@ -1,0 +1,84 @@
+FF                                                                       [100%]
+================================== FAILURES ===================================
+_____ test_real_complete_inputs_use_native_iteration_and_reset_workspace ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000024DAD4FD810>
+
+    def test_real_complete_inputs_use_native_iteration_and_reset_workspace(monkeypatch):
+        hardware = load_hardware()
+        payload = (FIXTURE/'geometry.pickle').read_bytes()
+        memory = SharedMemory(create=True, size=len(payload))
+        memory.buf[:] = payload
+        reference = physics_workers.GeometryRef(memory.name, len(payload), 1)
+        original = tire_drivetrain.joint_solve
+        original_prepare = tire_drivetrain.joint_mechanical_prepare
+        native_calls = []
+        prepare_calls = []
+    
+        def native(*args):
+            native_calls.append(args[0])
+            return original(*args)
+    
+        def python_iteration(*args, **kwargs):
+            raise AssertionError('真实输入不允许回到旧Python共同迭代或有限接触回调')
+    
+        def prepare(*args):
+            prepare_calls.append(args[0])
+            return original_prepare(*args)
+    
+        monkeypatch.setattr(tire_drivetrain, 'joint_solve', native)
+        monkeypatch.setattr(tire_drivetrain, 'joint_mechanical_prepare', prepare)
+        for name in ('shared_load_solution', 'loaded_wheel_force_solution', 'finite_contact_system',
+                     'wheel_residuals', 'suspension_residuals', 'differential_branches', 'shaft_brake_plans',
+                     'shared_map_coefficients', 'wheel_map_coefficients', 'load_coefficients', 'suspension_projection'):
+            monkeypatch.setattr(tire_drivetrain, name, python_iteration)
+        identifiers = sorted(int(path.stem.split('-')[1]) for path in FIXTURE.glob('input-*.bin'))
+        try:
+            # 同一工作区交错处理真实两子步/各车输入；改变次序不能带入上一车暖模式。
+            for index, identifier in enumerate((*identifiers, *reversed(identifiers))):
+                if index == len(identifiers):
+                    previous_geometry = physics_workers._worker_geometry
+                    reference = replace(reference, version=2)
+                request = replace(from_bytes((FIXTURE/f'input-{identifier}.bin').read_bytes()), config=hardware)
+                result = physics_workers._solve_vehicle(request, reference)
+                assert result is not None
+>               assert result_bytes(result) == (FIXTURE/f'result-{identifier}.bin').read_bytes()
+E               AssertionError: assert b'CDP1a\xc3\x...\x99\x99\xd9?' == b'CDP1a\xc3\x...\x99\x99\xd9?'
+E                 
+E                 At index 19 diff: b'{' != b'5'
+E                 Use -v to get more diff
+
+tests\test_continuous_solver.py:147: AssertionError
+__________ test_native_parallel_complete_results_and_error_recovery ___________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000024DAD4FCE90>
+
+    def test_native_parallel_complete_results_and_error_recovery(monkeypatch):
+        hardware = load_hardware()
+        payload = (FIXTURE/'geometry.pickle').read_bytes()
+        memory = SharedMemory(create=True, size=len(payload))
+        memory.buf[:] = payload
+        reference = physics_workers.GeometryRef(memory.name, len(payload), 1)
+        identifier = min(int(path.stem.split('-')[1]) for path in FIXTURE.glob('input-*.bin'))
+        request = replace(from_bytes((FIXTURE/f'input-{identifier}.bin').read_bytes()), config=hardware)
+        expected = (FIXTURE/f'result-{identifier}.bin').read_bytes()
+        native = tire_drivetrain.joint_solve
+        captured = []
+    
+        def capture(*args):
+            captured.append(args)
+            return native(*args)
+    
+        try:
+            monkeypatch.setattr(tire_drivetrain, 'joint_solve', capture)
+>           assert result_bytes(physics_workers._solve_vehicle(request, reference)) == expected
+E           AssertionError: assert b'CDP1a\xc3\x...\x99\x99\xd9?' == b'CDP1a\xc3\x...\x99\x99\xd9?'
+E             
+E             At index 19 diff: b'{' != b'5'
+E             Use -v to get more diff
+
+tests\test_continuous_solver.py:203: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_continuous_solver.py::test_real_complete_inputs_use_native_iteration_and_reset_workspace
+FAILED tests/test_continuous_solver.py::test_native_parallel_complete_results_and_error_recovery
+2 failed in 0.43s
