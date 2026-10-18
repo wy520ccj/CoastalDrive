@@ -1,7 +1,7 @@
 import sys,json,hashlib,subprocess
 from pathlib import Path
 from dataclasses import replace
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(__file__).resolve().parents[3]
 sys.path[:0]=[str(ROOT/'src'),str(ROOT/'tools')]
 from physics import esc_probe
 from driving_modes import REFERENCE_CAR
