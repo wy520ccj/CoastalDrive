@@ -44,3 +44,6 @@
 
 - after-impact最终958通过后首败旧lab_ui关闭替身缺workshop；VALIDATION-LIFECYCLE-01补齐并检查停止/释放顺序，完整36项/三种子通过，生产未改。原失败及5项NumPy float16溢出警告保留。
 - 再接续同脚本`--after-lab-ui`，目录`logs/validation/GAME-GHOST-01-T2-after-lab-ui`：1788项复用、1728项继续，所有未跑T2长测仍实际执行。
+
+- after-lab-ui在105通过后首败旧CLI默认Game要求工作进程；VALIDATION-CLI-01显式检查两种模式，完整4项/三种子通过，生产不改。
+- 下一`.venv/Scripts/python.exe docs/evidence/GAME-GHOST-01/t2_resume_remainder.py --previous logs/validation/GAME-GHOST-01-T2-after-lab-ui --supplement logs/validation/VALIDATION-CLI-01-T1 --output logs/validation/GAME-GHOST-01-T2-after-cli`。1897项去重复用、1619项与长测继续；严格校验节点集合及源差异白名单。原结果保留。

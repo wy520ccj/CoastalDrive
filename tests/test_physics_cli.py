@@ -11,15 +11,18 @@ MAIN = Path(__file__).resolve().parents[1]/'src/main.py'
 
 
 def test_short_cli_runs_actual_traffic_workers_from_external_directory(tmp_path):
-    completed = subprocess.run([sys.executable,str(MAIN),'--headless','--steps','3',
-        '--track','coastal','--traffic-count','2','--physics-workers','2'],
-        cwd=tmp_path,capture_output=True,text=True,timeout=15,check=False)
-    assert completed.returncode==0,completed.stderr
-    report = json.loads(completed.stdout)
-    assert report['tick']==3 and len(report['traffic'])==2
-    assert report['physics_workers']['processes']==2
-    assert report['physics_workers']['remote']==18
-    assert report['physics_workers']['world_required']==0
+    for mode, processes, remote in (('game', 0, 0), ('simulation', 2, 18)):
+        completed = subprocess.run([sys.executable,str(MAIN),'--headless','--steps','3',
+            '--track','coastal','--traffic-count','2','--physics-workers','2',
+            '--driving-mode',mode],
+            cwd=tmp_path,capture_output=True,text=True,timeout=15,check=False)
+        assert completed.returncode==0,completed.stderr
+        report = json.loads(completed.stdout)
+        assert report['driving_mode']==mode
+        assert report['tick']==3 and len(report['traffic'])==2
+        assert report['physics_workers']['processes']==processes
+        assert report['physics_workers']['remote']==remote
+        assert report['physics_workers']['world_required']==0
 
 
 @pytest.mark.parametrize('arguments',[
