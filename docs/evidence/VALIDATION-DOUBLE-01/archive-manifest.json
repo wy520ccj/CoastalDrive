@@ -1,0 +1,227 @@
+[
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/context.json",
+    "path": "reference/context.json",
+    "sha256": "fbc52cca75bbc2c63eca7a9783dff5f338e11addb9e03c0a0a9122172b0dbd46"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6240.bin",
+    "path": "reference/result-6240.bin",
+    "sha256": "02cf614f1cacb6d8bb6ab99811901884b6d38ca9e420167776effd4d156218fd"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6241.bin",
+    "path": "reference/result-6241.bin",
+    "sha256": "276dc2c2515ff5a1473cf0e1377349905c2bf47a2b577634fba13ad606c2f830"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6242.bin",
+    "path": "reference/result-6242.bin",
+    "sha256": "e87f49c1487b5a2420e5f574febd4eec93f31dd2595c1650b45e1c0f3216b35e"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6243.bin",
+    "path": "reference/result-6243.bin",
+    "sha256": "637ff49f60c6933a2ce2db7c274f41bede3c47dabd2ce45435737cd35ded0b3d"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6244.bin",
+    "path": "reference/result-6244.bin",
+    "sha256": "ba639f4ab91793788261713b0dcd33be668272aea3c13b25a325d6dc4e187ffd"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6245.bin",
+    "path": "reference/result-6245.bin",
+    "sha256": "e79cd80b87287909beca45e0179ab9a404f6af3d60051c6f6f95305c376810db"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6246.bin",
+    "path": "reference/result-6246.bin",
+    "sha256": "19e061600d5ae5d4694bf1492076e8703615fd00ac75f519c0733f3afdde0fd3"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6247.bin",
+    "path": "reference/result-6247.bin",
+    "sha256": "e0883b4f589ec245a370fdc155c3f3b79cfb5b377bfb69aa01a7239ea812fd01"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6248.bin",
+    "path": "reference/result-6248.bin",
+    "sha256": "192992ffc2ffd859cc34b774e80e0093aacda4568d099ca3590cdfced0beab06"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6249.bin",
+    "path": "reference/result-6249.bin",
+    "sha256": "88a21f56b3d8bcff8a6898408a51296728093b3678be630c6c6f203d96ff659c"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6250.bin",
+    "path": "reference/result-6250.bin",
+    "sha256": "17eff607e3e0816168c1afc62c6f88a3831312f5cfcdb913f15c46fee6c56c5d"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6251.bin",
+    "path": "reference/result-6251.bin",
+    "sha256": "610e5d5a12ee676d9df62fc0852e8cb52300e5481a76aaec5b6f5ccd79ad2497"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6252.bin",
+    "path": "reference/result-6252.bin",
+    "sha256": "10f53c8ae4b60ae0a7131bd92e315567b6fefa5585ace11390560cc19f729916"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6253.bin",
+    "path": "reference/result-6253.bin",
+    "sha256": "d14ce9ab149303da934cde05fb3fe9a95f47110397d4ae6d3198f4a8a2ea6f73"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6254.bin",
+    "path": "reference/result-6254.bin",
+    "sha256": "bc6a33e109ab5476d6e00bd06e9ce20a7801d0bce7d58daecff960a2367d71f6"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6255.bin",
+    "path": "reference/result-6255.bin",
+    "sha256": "c664d59c0ef8a35cdade2087d9b684e2fb6c5b8d8f369c4583ba151fe5d61bbf"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6256.bin",
+    "path": "reference/result-6256.bin",
+    "sha256": "73b64d5c6529566bcf9918207a3de25dda9f06776ff4f67b4c2e6aa71f77c088"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6257.bin",
+    "path": "reference/result-6257.bin",
+    "sha256": "c90c506b12ed96b30b0cada84bd6334421892341ffefc594bb1615f89b0b00be"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6258.bin",
+    "path": "reference/result-6258.bin",
+    "sha256": "771fe67812b461f18b4a96e3d87524bb6da5cb7b96d5993afb15b36faed8bbfb"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6259.bin",
+    "path": "reference/result-6259.bin",
+    "sha256": "877c6e719a85b26d3d5fb6bb9f5a7e7e7dd36a7ef29f8edcf42024e8bc53a613"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6260.bin",
+    "path": "reference/result-6260.bin",
+    "sha256": "4956f66b943494fa1d499c1910476dcf6f66e317a6cda68c76f0730ed5337b6c"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6261.bin",
+    "path": "reference/result-6261.bin",
+    "sha256": "ab81973cb71191088ebaa396677fe2e16962bb4f965b87b8adfd6c8260fa86fd"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6262.bin",
+    "path": "reference/result-6262.bin",
+    "sha256": "158e7c605f06c582a06ea3a1b7803e5f2d306f908f6d9561952342662f96a302"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6263.bin",
+    "path": "reference/result-6263.bin",
+    "sha256": "39e2aaf46525dc873a1f65e167079e53dc47903283b40c6f055c4789258af2b7"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6264.bin",
+    "path": "reference/result-6264.bin",
+    "sha256": "5d4d61d179bc4514dfc57efe7cad842b1259671bfe3887cb46dad9afeac271f8"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reference-final/result-6265.bin",
+    "path": "reference/result-6265.bin",
+    "sha256": "16cba11997aec39dec3cb97a8d3073df40e06dc9ed004cc63577f7cf95843a7b"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-T0/pytest.log",
+    "path": "checks/double-T0/pytest.log",
+    "sha256": "f138f71a59cf19872359e367cd34ece5cd422facede79f2e12f38e96876b7953"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-T0/ruff.log",
+    "path": "checks/double-T0/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-T0/summary.json",
+    "path": "checks/double-T0/summary.json",
+    "sha256": "937a02861b25e98d2552a8fbd0f85515f57570bcb67d98194e4b89c04c6e3680"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reader-T0/pytest.log",
+    "path": "checks/reader-T0/pytest.log",
+    "sha256": "96637d15d6e916a7c01fc562a6db2ef1c72c92666ad11b15aed077a2d234e989"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reader-T0/ruff.log",
+    "path": "checks/reader-T0/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-reader-T0/summary.json",
+    "path": "checks/reader-T0/summary.json",
+    "sha256": "569a046c6110d90907590b504e329c9886e9ef6ab2b7afe41fe70bf81fff1ad8"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-normal-T1/headless-0.log",
+    "path": "checks/normal-T1/headless-0.log",
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-normal-T1/headless-17.log",
+    "path": "checks/normal-T1/headless-17.log",
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-normal-T1/headless-23.log",
+    "path": "checks/normal-T1/headless-23.log",
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-normal-T1/pytest.log",
+    "path": "checks/normal-T1/pytest.log",
+    "sha256": "a0df6a43a66662cbbb7d81c0eca133eb23322676d81acd454b15436ba7dc4de8"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-normal-T1/ruff.log",
+    "path": "checks/normal-T1/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-normal-T1/summary.json",
+    "path": "checks/normal-T1/summary.json",
+    "sha256": "fd6c5aced8520dcdc24e253369649a7f374a2b61d6dd60667d51dbd52376c222"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-double-T1/headless-0.log",
+    "path": "checks/double-T1/headless-0.log",
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-double-T1/headless-17.log",
+    "path": "checks/double-T1/headless-17.log",
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-double-T1/headless-23.log",
+    "path": "checks/double-T1/headless-23.log",
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-double-T1/pytest.log",
+    "path": "checks/double-T1/pytest.log",
+    "sha256": "84ed756d6d210f840b50ccd52f07f4d6d1825a0986d37f335fd0d84245136aa7"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-double-T1/ruff.log",
+    "path": "checks/double-T1/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/VALIDATION-DOUBLE-01-double-T1/summary.json",
+    "path": "checks/double-T1/summary.json",
+    "sha256": "3ffa11497df86d9c434de78ad5ed7a58fdaedc6f1aed35578862dbf8bf69c090"
+  }
+]

@@ -1,28 +1,34 @@
 """连续内核实际执行、工作区重置及有限几何的小型SVD独立核对。"""
 
 import hashlib
+import json
 import math
 import pickle
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import replace
+from dataclasses import asdict, replace
+from functools import cache
 from multiprocessing.shared_memory import SharedMemory
 from pathlib import Path
 from threading import Barrier, get_ident
 
 import numpy as np
 import pytest
+from panda3d.core import LPoint3, LPoint3d, LPoint3f
 from physics_packet_kernels import decode, encode, layout
 from wheel_contact_kernels import _joint_contact_state, _joint_coordinates, convex_distance
 
 import physics_wire
 import physics_workers
 import tire_drivetrain
+from lab_runtime import runtime_fingerprint
 from suspension import SuspensionState
 from suspension_kinematics import finite_contact_system
 from vehicle_suspension import Suspension
 from vehicle_tire_step import TireBodyInput, TireWheelInput, tire_hardware
 
 FIXTURE = Path(__file__).resolve().parents[1]/'docs/evidence/PHYS-PERF-01/structural-20261009/native-input-fixture'
+DOUBLE_REFERENCE = Path(__file__).resolve().parents[1]/'docs/evidence/VALIDATION-DOUBLE-01/reference'
+PRIOR_REFERENCE = Path(__file__).resolve().parents[1]/'docs/evidence/PHYS-SHARED-ROUNDING-01/archive-manifest.json'
 
 # 归档夹具早于回正机制；只在测试中用其原签名读取，不改变生产数值包的版本拒绝。
 ALIGN_FIELDS = {'pneumatic_trail', 'aligning_moment', 'aligning_angular_impulse',
@@ -51,6 +57,51 @@ def result_bytes(result):
         assert state.pneumatic_trail == state.aligning_moment == state.contact_steering_work == state.steering_lateral_velocity == 0.
         assert state.aligning_angular_impulse == (0.,)*3
     return encode(FROZEN_LAYOUT,result)
+
+
+@cache
+def double_context():
+    document = json.loads((DOUBLE_REFERENCE/'context.json').read_text(encoding='utf-8'))
+    if document['schema'] != 'continuous-double-reference-v1':
+        raise ValueError('Double参考的格式版本不匹配')
+    if document['sdk'] != runtime_fingerprint():
+        raise ValueError('Double参考的SDK摘要不匹配')
+    prior = {item['path']: item['sha256'] for item in json.loads(PRIOR_REFERENCE.read_text(encoding='utf-8'))}
+    if (document['reference']['module_sha256'] != prior['production-before-mechanical_kernels.cp314-win_amd64.pyd']
+            or document['reference']['c_sha256'] != prior['production-before.c']):
+        raise ValueError('Double参考必须来自已归档的独立旧模块')
+    if document['codec_sha256'] != hashlib.sha256(FROZEN_SIGNATURE).hexdigest():
+        raise ValueError('Double参考的数值包格式不匹配')
+    inputs = sorted(FIXTURE.glob('input-*.bin'))
+    names = {'hardware.pickle', 'geometry.pickle', 'fixture.json', *[path.name for path in inputs],
+             *[path.name.replace('input-', 'result-') for path in inputs]}
+    if set(document['input_sha256']) != names:
+        raise ValueError('Double参考的原始输入集合不匹配')
+    if set(document['output_sha256']) != {path.name.replace('input-', 'result-') for path in inputs}:
+        raise ValueError('Double参考的结果集合不匹配')
+    for name, digest in document['input_sha256'].items():
+        if hashlib.sha256((FIXTURE/name).read_bytes()).hexdigest() != digest:
+            raise ValueError('Double参考的原始输入内容不匹配：'+name)
+    if document['effective_hardware'] != json.loads(json.dumps(asdict(load_hardware()))):
+        raise ValueError('Double参考的有效硬件不匹配')
+    return document
+
+
+def double_result(identifier):
+    document = double_context()
+    name = f'result-{identifier}.bin'
+    payload = (DOUBLE_REFERENCE/name).read_bytes()
+    if hashlib.sha256(payload).hexdigest() != document['output_sha256'][name]:
+        raise ValueError('Double参考的结果内容不匹配：'+name)
+    return payload
+
+
+def reference_result(identifier):
+    if LPoint3 is LPoint3f:
+        return (FIXTURE/f'result-{identifier}.bin').read_bytes()
+    if LPoint3 is LPoint3d:
+        return double_result(identifier)
+    raise ValueError('未识别的Panda数学标量，不能隐式回退到Normal参考')
 
 
 def test_complete_world_candidates_cover_crossings_and_preserve_finite_geometry():
@@ -144,7 +195,7 @@ def test_real_complete_inputs_use_native_iteration_and_reset_workspace(monkeypat
             request = replace(from_bytes((FIXTURE/f'input-{identifier}.bin').read_bytes()), config=hardware)
             result = physics_workers._solve_vehicle(request, reference)
             assert result is not None
-            assert result_bytes(result) == (FIXTURE/f'result-{identifier}.bin').read_bytes()
+            assert result_bytes(result) == reference_result(identifier)
             if index == len(identifiers):
                 assert physics_workers._worker_geometry is not previous_geometry
                 assert physics_workers._worker_geometry.joint_surfaces is not previous_geometry.joint_surfaces
@@ -190,7 +241,7 @@ def test_native_parallel_complete_results_and_error_recovery(monkeypatch):
     reference = physics_workers.GeometryRef(memory.name, len(payload), 1)
     identifier = min(int(path.stem.split('-')[1]) for path in FIXTURE.glob('input-*.bin'))
     request = replace(from_bytes((FIXTURE/f'input-{identifier}.bin').read_bytes()), config=hardware)
-    expected = (FIXTURE/f'result-{identifier}.bin').read_bytes()
+    expected = reference_result(identifier)
     native = tire_drivetrain.joint_solve
     captured = []
 
