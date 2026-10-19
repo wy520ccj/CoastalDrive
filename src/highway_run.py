@@ -3,6 +3,7 @@
 from dataclasses import dataclass, replace
 
 from braking_lesson import TARGET_DISTANCE, BrakingLesson, BrakingResult
+from overtake_run import DISTANCE_LIMIT, OvertakeResult, OvertakeRun
 from slalom_lesson import GATES, SlalomLesson, SlalomResult
 from sprint_run import SprintResult, SprintRun
 
@@ -35,6 +36,7 @@ class HighwayResult:
     braking: BrakingResult | None = None
     slalom: SlalomResult | None = None
     sprint: SprintResult | None = None
+    overtake: OvertakeResult | None = None
 
 
 class HighwayRun:
@@ -44,14 +46,19 @@ class HighwayRun:
         self.braking = None
         self.slalom = None
         self.sprint = None
+        self.overtake = None
 
     def start(self, progress, *, challenge=False, braking_scores=None, slalom_scores=None, vehicle_config=None,
-              sprint_mode=None, sprint_scores=None, score_variant=""):
+              sprint_mode=None, sprint_scores=None, score_variant="", overtake_initial=None, overtake_scores=None):
         self._start = progress
         self.snapshot = HighwayResult(challenge=challenge, running=True)
         self.braking = None if braking_scores is None else BrakingLesson(progress, braking_scores)
         self.slalom = None if slalom_scores is None else SlalomLesson(progress, slalom_scores, vehicle_config)
         self.sprint = None if sprint_mode is None else SprintRun(progress, sprint_mode, sprint_scores, score_variant, vehicle_config)
+        self.overtake = (None if overtake_initial is None else
+                         OvertakeRun(overtake_initial, vehicle_config, overtake_scores, score_variant))
+        if self.overtake is not None:
+            self.snapshot = replace(self.snapshot, challenge=True, target=DISTANCE_LIMIT, overtake=self.overtake.snapshot)
         if self.sprint is not None:
             self.snapshot = replace(self.snapshot, challenge=True, target=self.sprint.route.gates[-1], sprint=self.sprint.snapshot)
         if self.braking is not None:
@@ -60,9 +67,15 @@ class HighwayRun:
         if self.slalom is not None:
             self.snapshot = replace(self.snapshot, challenge=True, target=GATES[-1][0], slalom=self.slalom.snapshot)
 
-    def update(self, progress, collisions, dt, *, reset=False, forward_speed=0., speed=0., lateral=0., heading=0.):
+    def update(self, progress, collisions, dt, *, reset=False, forward_speed=0., speed=0., lateral=0., heading=0., traffic_state=None):
         state = self.snapshot
         if not state.running:
+            return
+        if self.overtake is not None:
+            result = self.overtake.update(traffic_state, state.elapsed+dt, reset=reset)
+            self.snapshot = replace(state, elapsed=result.seconds, distance=result.distance, collisions=collisions,
+                overtake=result, finished=result.finished, running=not result.finished,
+                succeeded=result.succeeded, reason=result.reason)
             return
         if self.sprint is not None:
             result = self.sprint.update(progress, state.elapsed+dt, lateral=lateral, heading=heading,
@@ -104,6 +117,9 @@ class HighwayRun:
 
     def stop(self, reason="驾驶已结束", *, succeeded=False):
         if not self.snapshot.finished:
+            if self.overtake is not None:
+                self.overtake.stop(reason, succeeded=succeeded)
+                self.snapshot = replace(self.snapshot, overtake=self.overtake.snapshot)
             if self.sprint is not None:
                 self.sprint.stop(reason, succeeded=succeeded)
                 self.snapshot = replace(self.snapshot, sprint=self.sprint.snapshot)

@@ -13,6 +13,7 @@ from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
 from highway_run import TRAFFIC_DENSITIES, HighwayRun
 from lap_ghost import GhostRecorder, ghost_context, load_ghost, save_ghost
+from overtake_run import SEED as OVERTAKE_SEED
 from race import BestTimes, GameMode, RaceTracker
 from session_clock import SessionClock
 from simulation import FIXED_DT, Control, Simulation, interpolate
@@ -161,7 +162,7 @@ class Session:
         chosen_mode = self.mode if mode is None else mode
         if chosen_mode == GameMode.TIME_TRIAL and chosen_track.circuit is None:
             raise ValueError("Time trial requires a circuit")
-        if (chosen_mode in (GameMode.DISTANCE_CHALLENGE, GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON)
+        if (chosen_mode in (GameMode.DISTANCE_CHALLENGE, GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON, GameMode.SAFE_OVERTAKE)
                 or chosen_mode in SPRINT_ROUTES) and chosen_track.id.value != "endless":
             raise ValueError("Distance challenge requires the endless highway")
         if chosen_mode in (GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON) and self.road_shape != "straight":
@@ -169,11 +170,15 @@ class Session:
         if chosen_mode in SPRINT_ROUTES:
             route = SPRINT_ROUTES[chosen_mode]
             self.road_shape, seed = route.shape, route.seed
+        if chosen_mode == GameMode.SAFE_OVERTAKE:
+            self.road_shape, seed = "straight", OVERTAKE_SEED
         track = chosen_track.id.value
         self.phase = Phase.LOADING
         self.notice = ""
         traffic_count = 8 if chosen_mode == GameMode.FREE_DRIVE and track != "test" else 0
         density = TRAFFIC_DENSITIES[self.traffic_density]
+        if chosen_mode == GameMode.SAFE_OVERTAKE:
+            density = TRAFFIC_DENSITIES["normal"]
         if (track == "endless" and chosen_mode not in (GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON)
                 and chosen_mode not in SPRINT_ROUTES):
             traffic_count = density.cars
@@ -266,6 +271,8 @@ class Session:
                 sprint_mode=self.mode if self.mode in SPRINT_ROUTES else None,
                 sprint_scores=BestTimes(self.race.scores.path.with_name("sprint-best.json")) if self.mode in SPRINT_ROUTES else None,
                 score_variant=self.score_variant(),
+                overtake_initial=self.simulation.snapshot() if self.mode == GameMode.SAFE_OVERTAKE else None,
+                overtake_scores=BestTimes(self.race.scores.path.with_name("overtake-best.json")) if self.mode == GameMode.SAFE_OVERTAKE else None,
             )
         else:
             state = self.simulation.snapshot()
@@ -301,6 +308,7 @@ class Session:
                     speed=math.hypot(*self.current.player.velocity[:2]),
                     lateral=car.position[0],
                     heading=car.heading,
+                    traffic_state=self.current if self.mode == GameMode.SAFE_OVERTAKE else None,
                 )
             if self.race.snapshot.finished or self.highway.snapshot.finished:
                 self.phase = Phase.RESULTS
@@ -432,7 +440,8 @@ class Session:
         self.race.reset_player(self.simulation.snapshot())
         if self.simulation.track == "endless":
             self.highway.update(
-                self.highway_progress(), self.simulation.player_collisions, 0, reset=True
+                self.highway_progress(), self.simulation.player_collisions, 0, reset=True,
+                traffic_state=self.simulation.snapshot() if self.mode == GameMode.SAFE_OVERTAKE else None,
             )
             if self.highway.snapshot.finished:
                 self.phase = Phase.RESULTS
@@ -456,7 +465,7 @@ class Session:
         self.stop_clock()
         self.race.stop()
         self.ghost_recording = None
-        self.highway.stop("挑战提前结束" if (self.mode in (GameMode.DISTANCE_CHALLENGE, GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON)
+        self.highway.stop("挑战提前结束" if (self.mode in (GameMode.DISTANCE_CHALLENGE, GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON, GameMode.SAFE_OVERTAKE)
                                            or self.mode in SPRINT_ROUTES) else "自由驾驶结束")
         self.phase = Phase.RESULTS
         self.keyboard.clear()

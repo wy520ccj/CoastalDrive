@@ -1,0 +1,7 @@
+{
+  "original_payload_sha256": "859732bcf1e2eaa0b2ec89f560e57341b4c1c5b135a3dc65945e2b4a2be42bae",
+  "final_payload_sha256": "859732bcf1e2eaa0b2ec89f560e57341b4c1c5b135a3dc65945e2b4a2be42bae",
+  "identical": true,
+  "rows": 9592,
+  "scope": "Normal只补UI/捕获的第二次实际驾驶，全部保存记录载荷字节相同；非额外规则覆盖"
+}
