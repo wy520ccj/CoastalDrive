@@ -1,0 +1,15 @@
+...............F.                                                        [100%]
+================================== FAILURES ===================================
+______________ test_process_returns_fixed_course_and_quit_state _______________
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-849/test_process_returns_fixed_cou0')
+
+    def test_process_returns_fixed_course_and_quit_state(tmp_path):
+>       session = SessionProcess(track='test', scores=BestTimes(tmp_path/'best.json'))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: SessionProcess.__init__() missing 1 required keyword-only argument: 'driving_mode'
+
+tests\test_overtake_session.py:44: TypeError
+=========================== short test summary info ===========================
+FAILED tests/test_overtake_session.py::test_process_returns_fixed_course_and_quit_state
+1 failed, 16 passed in 18.44s
