@@ -42,4 +42,4 @@ normal-final和double-planned另以真实独立SessionProcess从正常菜单重�
 .venv/Scripts/python.exe tools/physics/run_sim_double.py tools/overtake_check.py --output logs/validation/SAFE-OVERTAKE-01-double-planned --size 1024 768 --restore
 ```
 
-相应目录加`--verify`复算保存记录。`archive-manifest.json`固定94份原始文件/48160819字节，`source-manifest.json`固定24份最终相关源码LF归一SHA。源码与SDK信息均包含未提交内容；提交后另核对Git对象，原T2失败、实时和人工Gate不在本次短验收中闭合。
+相应目录加`--verify`复算保存记录。`archive-manifest.json`固定94份原始文件/48160819字节，`source-manifest.json`固定24份最终相关源码LF归一SHA。本目录禁用文本换行转换，保证Git对象与原始字节摘要一致；原始失败日志的两行Panda输出尾空格保留，diff空白提示不修改原证据。源码与SDK信息均包含未提交内容；提交后另核对Git对象，原T2失败、实时和人工Gate不在本次短验收中闭合。
