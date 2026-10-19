@@ -15,6 +15,7 @@ from types import SimpleNamespace
 from panda3d.core import Vec3
 
 from controls import KeyboardController
+from race import BestTimes
 from session import Phase, Session
 from session_clock import PRESENTATION_DELAY
 from simulation import FIXED_DT, interpolate, shift_snapshot
@@ -269,7 +270,7 @@ class SessionProcess:
         self.simulation._physics_workers = self.simulation if physics_workers else None
         self.simulation.worker_statistics = None
         self.stepper = SimpleNamespace(dropped_time=0.,backlog_time=0.)
-        self.race = SimpleNamespace(snapshot=None)
+        self.race = SimpleNamespace(snapshot=None, scores=BestTimes(scores.path if scores is not None else None))
         self.highway = SimpleNamespace(snapshot=None)
         context = get_context('spawn')
         self.keyboard.input_word = context.Value('I', 0)
@@ -313,7 +314,7 @@ class SessionProcess:
          self.esc_enabled, self.mode, traffic_models, self.source_modules, include_ghost, ghost) = metadata
         if include_ghost:
             self.reference_ghost = ghost
-        self.seed, self.track_id = seed, track
+        self.seed, self.track_id, self.road_shape = seed, track, shape
         self.vehicle_config = config
         sim = self.simulation
         if self.output is None or (sim.track, sim.seed, sim.road_shape) != (track, seed, shape):
@@ -409,6 +410,10 @@ class SessionProcess:
             self._command('controller', controller, bind_world)
         self.controller = controller
         self.keyboard.clear()
+
+    def score_variant(self):
+        """界面按已回传硬件计算同一成绩键；规则和保存仍由权威会话执行。"""
+        return Session.score_variant(self)
 
     def stop_clock(self):
         self._command('stop')

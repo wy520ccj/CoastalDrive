@@ -34,7 +34,7 @@ def finish(app, target):
 def test_rules_entry_preserves_car_and_highway_preferences_and_back_focus(app):
     original = app.session.vehicle_config
     app.choose_highway()
-    assert app.panel_option_count == 7
+    assert app.panel_option_count == 8
     app.buttons[5]["command"]()
     assert app.slalom_menu and "4米" in app.panel_note.getText() and "40km/h" in app.panel_note.getText()
     app.handle_panel_key("escape")

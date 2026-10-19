@@ -1,0 +1,24 @@
+.F......................                                                 [100%]
+================================== FAILURES ===================================
+_ test_routes_really_differ_in_geometry_length_and_profile[GameMode.RIDGE_SPRINT] _
+
+mode = <GameMode.RIDGE_SPRINT: 'ridge_sprint'>
+
+    @pytest.mark.parametrize('mode', SPRINT_ROUTES)
+    def test_routes_really_differ_in_geometry_length_and_profile(mode):
+        route = SPRINT_ROUTES[mode]
+        road = Road('endless', seed=route.seed, shape=route.shape)
+        samples = [road.sample_lateral(distance, 0.) for distance in (250., 500., 750., 1250.)]
+        assert max(abs(point.x) for point in samples) >= 60.
+        assert max(abs(point.heading) for point in samples) > 10.
+        heights = [point.z for point in samples]
+>       assert (max(heights)-min(heights) > 10.) == (mode == GameMode.RIDGE_SPRINT)
+E       AssertionError: assert ((28.0 - 21.0625) > 10.0) == (<GameMode.RIDGE_SPRINT: 'ridge_sprint'> == <GameMode.RIDGE_SPRINT: 'ridge_sprint'>)
+E        +  where 28.0 = max([21.0625, 28.0, 21.0625, 21.0625])
+E        +  and   21.0625 = min([21.0625, 28.0, 21.0625, 21.0625])
+E        +  and   <GameMode.RIDGE_SPRINT: 'ridge_sprint'> = GameMode.RIDGE_SPRINT
+
+tests\test_sprint_run.py:33: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_sprint_run.py::test_routes_really_differ_in_geometry_length_and_profile[GameMode.RIDGE_SPRINT]
+1 failed, 23 passed in 1.95s

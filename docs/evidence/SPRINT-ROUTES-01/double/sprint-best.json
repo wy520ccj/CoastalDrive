@@ -1,0 +1,19 @@
+{
+  "sprint-v1:bend_sprint:seed-17:game-keyboard-v32:abs-on:tcs-on:esc-on:splits-v1:hardware-6b54c358c828cccded0668afcc9fb3880df3efb3a5e3b4a60c5b99e477fb2d4c:bend_sprint": 75.14193691151378,
+  "_splits_v1": {
+    "sprint-v1:bend_sprint:seed-17:game-keyboard-v32:abs-on:tcs-on:esc-on:splits-v1:hardware-6b54c358c828cccded0668afcc9fb3880df3efb3a5e3b4a60c5b99e477fb2d4c:bend_sprint": [
+      21.678210658018862,
+      39.49899515031513,
+      57.32105285680719,
+      75.14193691151378
+    ],
+    "sprint-v1:ridge_sprint:seed-0:game-keyboard-v32:abs-on:tcs-on:esc-on:splits-v1:hardware-6b54c358c828cccded0668afcc9fb3880df3efb3a5e3b4a60c5b99e477fb2d4c:ridge_sprint": [
+      17.769198384623454,
+      31.628394111412696,
+      45.48264196773,
+      59.375632979855
+    ]
+  },
+  "_ghosts_v1": {},
+  "sprint-v1:ridge_sprint:seed-0:game-keyboard-v32:abs-on:tcs-on:esc-on:splits-v1:hardware-6b54c358c828cccded0668afcc9fb3880df3efb3a5e3b4a60c5b99e477fb2d4c:ridge_sprint": 59.375632979855
+}

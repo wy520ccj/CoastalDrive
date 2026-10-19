@@ -8,11 +8,13 @@ from coastal_medals import driving_goal
 from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
 from race import GameMode
+from sprint_routes import SPRINT_ROUTES
 from ui import theme
 from ui.braking_feedback import driving_feedback
 from ui.race_feedback import split_feedback
 from ui.slalom_feedback import driving_feedback as slalom_driving_feedback
 from ui.slalom_feedback import gate_feedback
+from ui.sprint_feedback import driving_feedback as sprint_driving_feedback
 
 
 def set_text(widget, value):
@@ -121,7 +123,7 @@ class DrivingHUD:
                driving_mode=DrivingMode.GAME):
         player = state.player
         timed = ((track != "endless" and race.mode == GameMode.TIME_TRIAL)
-                 or (track == "endless" and race.mode == GameMode.SLALOM_LESSON))
+                 or (track == "endless" and (race.mode == GameMode.SLALOM_LESSON or highway.sprint is not None)))
         coastal = track == "coastal" and race.mode == GameMode.TIME_TRIAL
         if timed != self._timed or coastal != self._coastal:
             self._timed, self._coastal = timed, coastal
@@ -168,6 +170,13 @@ class DrivingHUD:
                 set_text(self.split, gate_feedback(highway.slalom))
                 self.split.setFg(theme.SEA)
                 self._split_invalidated = None
+            elif highway.sprint is not None:
+                set_text(self.mode, SPRINT_ROUTES[race.mode].name)
+                detail, feedback = sprint_driving_feedback(highway.sprint)
+                set_text(self.detail, detail)
+                set_text(self.split, feedback)
+                self.split.setFg(theme.SEA)
+                message = "看远处弯势；坡顶确认方向，弯前松油或刹车"
         elif race.mode == GameMode.TIME_TRIAL:
             set_text(self.mode, "计时挑战")
             set_text(self.status, f"{race.elapsed:07.3f} s")

@@ -26,7 +26,7 @@ def test_menu_rules_start_and_back_preserve_highway_shape_and_current_car(app):
     app.session.menu()
     app._shown_phase = None
     app.choose_highway()
-    assert app.panel_option_count == 7
+    assert app.panel_option_count == 8
     app.buttons[4]["command"]()
     assert app.braking_menu and "无车流" in app.panel_note.getText()
     assert "100米" in app.panel_note.getText() and "170米" in app.panel_note.getText()

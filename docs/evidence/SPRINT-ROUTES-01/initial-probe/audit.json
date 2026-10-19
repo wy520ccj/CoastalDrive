@@ -1,0 +1,85 @@
+{
+  "passed": false,
+  "reason": "原测量器在完成6组记录后，源码首末一致性断言失败；期间新增赛事代码。没有原始首末摘要，不伪造。",
+  "use": "保存的真实距离/时间供初步定标；最终版本验收另跑，不把本次算作通过。",
+  "cases": [
+    {
+      "record": "bend_sprint-45.json.gz",
+      "sha256": "50a279f0fbe13869d0bd75cc6592e3fa3e1708ac74e043c7dad1602b98ca0930",
+      "rows": 17162,
+      "gate_times_recomputed": [
+        37.31917471989352,
+        72.54843206727203,
+        107.77899814910936,
+        143.00847467760286
+      ],
+      "collisions": 0,
+      "max_lateral": 0.16735915485798672
+    },
+    {
+      "record": "bend_sprint-65.json.gz",
+      "sha256": "e269459c4ff2c310cdf76e92d36bbc19c0cab03e446e4d6b3d566e6e368a038f",
+      "rows": 12124,
+      "gate_times_recomputed": [
+        27.351382509411955,
+        51.910708223078956,
+        76.47249261871426,
+        101.03319863755063
+      ],
+      "collisions": 0,
+      "max_lateral": 0.1744846548778079
+    },
+    {
+      "record": "bend_sprint-90.json.gz",
+      "sha256": "e2b96c65b6d719e28df0de3778e2dde09208242ad7e1f745d15f92742c5cebd8",
+      "rows": 9018,
+      "gate_times_recomputed": [
+        21.678202442676614,
+        39.49921087688868,
+        57.32101259347787,
+        75.1418029322535
+      ],
+      "collisions": 0,
+      "max_lateral": 0.20447903597373618
+    },
+    {
+      "record": "ridge_sprint-45.json.gz",
+      "sha256": "b81bbb5eb984a0218518006c143f4a95f351468ad5fddcaff7c292d3c50ed623",
+      "rows": 13402,
+      "gate_times_recomputed": [
+        29.494216390601064,
+        56.884126333755844,
+        84.28014976992941,
+        111.67692933272214
+      ],
+      "collisions": 0,
+      "max_lateral": 0.1786348975213642
+    },
+    {
+      "record": "ridge_sprint-65.json.gz",
+      "sha256": "aec940a3d876c3ffb11f030ab5d6e1258177874417a5939c97a6515276bfea55",
+      "rows": 9505,
+      "gate_times_recomputed": [
+        21.90352738749169,
+        40.99824800918306,
+        60.095880935469296,
+        79.20379946586068
+      ],
+      "collisions": 0,
+      "max_lateral": 0.17360951498635063
+    },
+    {
+      "record": "ridge_sprint-90.json.gz",
+      "sha256": "c4279eaa091d3cddb4df7786b182a1b7c7fd765868a64e8e83d884e7b7ce437d",
+      "rows": 7126,
+      "gate_times_recomputed": [
+        17.769197187359467,
+        31.628433622537965,
+        45.48332376595467,
+        59.37504111385869
+      ],
+      "collisions": 0,
+      "max_lateral": 0.19897893605462835
+    }
+  ]
+}

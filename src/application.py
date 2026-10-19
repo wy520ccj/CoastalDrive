@@ -38,6 +38,7 @@ from simulation import Control
 from skins import PLAYER_VEHICLES, SKINS, apply_skin, vehicle_definition, vehicle_for_design
 from slalom_lesson import SlalomScores
 from soundscape import Soundscape
+from sprint_routes import SPRINT_ROUTES
 from tracks import COASTAL_CIRCUIT
 from ui import theme
 from ui.braking_feedback import RULES as BRAKING_RULES
@@ -50,6 +51,9 @@ from ui.race_feedback import result_columns
 from ui.slalom_feedback import RULES as SLALOM_RULES
 from ui.slalom_feedback import gate_columns
 from ui.slalom_feedback import result_feedback as slalom_result_feedback
+from ui.sprint_feedback import goals as sprint_goals
+from ui.sprint_feedback import result_columns as sprint_columns
+from ui.sprint_feedback import result_feedback as sprint_result_feedback
 from ui.workshop_journey import WorkshopJourney
 from ui.workspace_loading import WorkspaceLoading
 from vehicle_designs import vehicle_design
@@ -173,9 +177,11 @@ class CoastalDrive(ShowBase):
         self.highway_menu = False
         self.braking_menu = False
         self.slalom_menu = False
+        self.sprint_menu = False
         self.driving_journey_return = False
         self.lab_return_braking = False
         self.lab_return_slalom = False
+        self.lab_return_sprint = None
         self.lab_journey_request = None
         self.audio_settings_page = False
         self.driving_mode_page = False
@@ -254,6 +260,7 @@ class CoastalDrive(ShowBase):
             return
         self.lab_return_braking = self.session.mode == GameMode.BRAKING_LESSON
         self.lab_return_slalom = self.session.mode == GameMode.SLALOM_LESSON
+        self.lab_return_sprint = self.session.mode if self.session.mode in SPRINT_ROUTES else None
         self.workspace_vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
         self.next_workspace = "lab"
         self._begin_workspace(self._load_lab(), "进入车辆实验室", "工况与A/B记录将保留")
@@ -417,10 +424,12 @@ class CoastalDrive(ShowBase):
         # 显式亲自过门优先；既有工坊滨海验证与普通课题返回分别保留。
         if self.lab.next_slalom:
             self.lab_return_slalom, self.lab_return_braking = True, False
+            self.lab_return_sprint = None
         elif self.lab.next_drive and self.workspace_vehicle.workshop_result is not None:
             self.lab_return_braking = False
             self.lab_return_slalom = False
-        self.next_drive = self.lab.next_drive or self.lab_return_braking or self.lab_return_slalom
+            self.lab_return_sprint = None
+        self.next_drive = bool(self.lab.next_drive or self.lab_return_braking or self.lab_return_slalom or self.lab_return_sprint)
         self.next_workspace = "game"
         self._begin_workspace(self._load_game_workspace(), "驶向海岸公路" if self.next_drive else "返回海岸驾驶",
                               "实验记录与编辑参数已保留")
@@ -455,7 +464,10 @@ class CoastalDrive(ShowBase):
         if self.scene is not None:
             self.scene.render.reparentTo(self.render)
         if self.next_drive:
-            if self.lab_return_slalom:
+            if self.lab_return_sprint is not None:
+                self.session.road_shape = SPRINT_ROUTES[self.lab_return_sprint].shape
+                self._enter_game(self.lab_return_sprint, "endless")
+            elif self.lab_return_slalom:
                 self.session.road_shape = "straight"
                 self._enter_game(GameMode.SLALOM_LESSON, "endless")
             elif self.lab_return_braking:
@@ -673,7 +685,9 @@ class CoastalDrive(ShowBase):
             elif self.audio_settings_page:
                 self.back_from_audio_settings()
             elif self.highway_menu:
-                if self.slalom_menu:
+                if self.sprint_menu:
+                    self.back_from_sprint_routes()
+                elif self.slalom_menu:
                     self.back_from_slalom_lesson()
                 else:
                     self.back_from_braking_lesson() if self.braking_menu else self.back_to_modes()
@@ -710,7 +724,7 @@ class CoastalDrive(ShowBase):
             elif self.panel_selection == 5:
                 self.cycle_radio(direction)
         elif self.highway_menu:
-            if self.braking_menu or self.slalom_menu:
+            if self.braking_menu or self.slalom_menu or self.sprint_menu:
                 return
             if self.panel_selection == 0:
                 self.cycle_highway_shape()
@@ -840,7 +854,7 @@ class CoastalDrive(ShowBase):
                 text_font=self.ui_font,
                 relief=DGG.FLAT,
             )
-            for i in range(7)
+            for i in range(8)
         ]
         for index, button in enumerate(self.buttons):
             button.bind(DGG.ENTER, lambda event, i=index: self.select_panel_option(i))
@@ -1047,12 +1061,14 @@ class CoastalDrive(ShowBase):
         self.driving_journey_return = False
         self.braking_menu = False
         self.slalom_menu = False
+        self.sprint_menu = False
         self.panel_selection = 2
         self.highway_menu = True
         self._shown_phase = None
         self.refresh_panel()
 
     def choose_braking_lesson(self):
+        self.sprint_menu = False
         self.slalom_menu = False
         self.braking_menu = True
         self.highway_menu = True
@@ -1068,6 +1084,7 @@ class CoastalDrive(ShowBase):
         self.refresh_panel()
 
     def choose_slalom_lesson(self):
+        self.sprint_menu = False
         self.braking_menu = False
         self.slalom_menu = True
         self.highway_menu = True
@@ -1086,6 +1103,24 @@ class CoastalDrive(ShowBase):
         self.slalom_menu = self.highway_menu = False
         self.session.road_shape = "straight"
         self.start_game(mode=GameMode.SLALOM_LESSON, track="endless")
+
+    def choose_sprint_routes(self):
+        self.sprint_menu, self.highway_menu = True, True
+        self.braking_menu = self.slalom_menu = False
+        self.panel_selection = 0
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def back_from_sprint_routes(self):
+        self.sprint_menu = False
+        self.panel_selection = 6
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def start_sprint(self, mode):
+        self.sprint_menu = self.highway_menu = False
+        self.session.road_shape = SPRINT_ROUTES[mode].shape
+        self.start_game(mode=mode, track="endless")
 
     def start_braking_lesson(self):
         self.braking_menu = False
@@ -1228,6 +1263,16 @@ class CoastalDrive(ShowBase):
                 (f"电台：{STATIONS[self.audio_settings.radio_station]}", self.cycle_radio),
                 ("返回", self.back_from_audio_settings),
             ]
+        elif phase == Phase.MENU and self.highway_menu and self.sprint_menu:
+            self.panel_title.setText("短途路线挑战")
+            bend, ridge = SPRINT_ROUTES.values()
+            self.panel_note.setText(
+                f"{bend.name} · {bend.description}\n{ridge.name} · {ridge.description}\n"
+                "封闭道路无车流 · 静止起步，依次过4门\n碰撞/驶离道路/复位失败；180秒内完成")
+            self.panel_detail.setText(f"平路 {sprint_goals(bend)}\n山脊 {sprint_goals(ridge)}")
+            options = [("平路连弯 · 1.8公里", lambda: self.start_sprint(GameMode.BEND_SPRINT)),
+                       ("山脊冲刺 · 1.4公里", lambda: self.start_sprint(GameMode.RIDGE_SPRINT)),
+                       ("返回高速与课题", self.back_from_sprint_routes)]
         elif phase == Phase.MENU and self.highway_menu and self.slalom_menu:
             self.panel_title.setText("驾驶课题 · 连续过门")
             self.panel_note.setText(SLALOM_RULES)
@@ -1260,6 +1305,7 @@ class CoastalDrive(ShowBase):
                 ),
                 ("驾驶课题 · 定点刹停", self.choose_braking_lesson),
                 ("驾驶课题 · 连续过门", self.choose_slalom_lesson),
+                ("短途路线 · 连弯 / 山脊", self.choose_sprint_routes),
                 ("返回", self.back_to_modes),
             ]
         elif phase == Phase.PAUSED:
@@ -1295,6 +1341,10 @@ class CoastalDrive(ShowBase):
                     note, detail = slalom_result_feedback(highway_snapshot.slalom)
                     self.panel_note.setText(note)
                     self.panel_detail.setText(detail+f"\n总用时 {highway_snapshot.elapsed:.2f} s")
+                elif highway_snapshot.sprint is not None:
+                    note, detail = sprint_result_feedback(highway_snapshot.sprint)
+                    self.panel_note.setText(note)
+                    self.panel_detail.setText(detail)
             else:
                 race = self.session.race.snapshot
                 if race.finished and race.last_lap is not None:
@@ -1370,11 +1420,13 @@ class CoastalDrive(ShowBase):
             ]
             if self.workspace_vehicle.workshop_result is not None:
                 options[1] = ("返回工坊", self.open_vehicle_lab)
-            elif self.session.mode in (GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON):
+            elif self.session.mode in (GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON) or self.session.mode in SPRINT_ROUTES:
                 options[1] = ("返回实验台", self.open_vehicle_lab)
             if self.session.mode in (GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON):
                 options[2] = (("查看驾驶进阶", self.return_to_driving_journey) if self.driving_journey_return
                               else ("返回主菜单", self.back_to_menu))
+            elif self.session.mode in SPRINT_ROUTES:
+                options[2] = ("返回主菜单", self.back_to_menu)
         else:
             self.panel.hide()
             return
@@ -1409,8 +1461,8 @@ class CoastalDrive(ShowBase):
         for index, button in enumerate(self.buttons[:len(options)]):
             button.setScale(1)
             half_height = 0.055 if self.audio_settings_page or self.driving_mode_page else 0.073
-            if self.highway_menu and not self.braking_menu and not self.slalom_menu:
-                half_height = .055
+            if self.highway_menu and not self.braking_menu and not self.slalom_menu and not self.sprint_menu:
+                half_height = .05 if len(options) == 8 else .055
             button["frameSize"] = (-0.51, 0.51, -half_height, half_height)
             button["text_scale"] = 0.055
             button["text_pos"] = (0, -0.018)
@@ -1425,10 +1477,17 @@ class CoastalDrive(ShowBase):
                 label.setFont(self.ui_font)
                 button["text_scale"] = min(0.055, 0.94 / label.calcWidth(button["text"]))
             spacing = .115 if self.audio_settings_page or self.driving_mode_page else .155 if phase == Phase.PAUSED else .17
-            if self.highway_menu and not self.braking_menu and not self.slalom_menu:
-                spacing = .115 if len(options) == 7 else .13
+            if self.highway_menu and not self.braking_menu and not self.slalom_menu and not self.sprint_menu:
+                spacing = .105 if len(options) == 8 else .115 if len(options) == 7 else .13
             button.setZ(button_top - index * spacing)
-        if phase == Phase.PAUSED:
+        if self.highway_menu and self.sprint_menu:
+            self.panel_note.setScale(.034)
+            self.panel_note.setPos(0, .34)
+            self.panel_detail.setScale(.034)
+            self.panel_detail.setPos(0, -.025)
+            for index, button in enumerate(self.buttons[:3]):
+                button.setZ(-.24-index*.17)
+        elif phase == Phase.PAUSED:
             self.panel_title.setScale(0.14)
             self.panel_note.setPos(0, 0.27)
         elif phase == Phase.RESULTS:
@@ -1459,6 +1518,18 @@ class CoastalDrive(ShowBase):
                     column.show()
                 for button in self.buttons[:3]:
                     button.setZ(-.71)
+            elif self.session.mode in SPRINT_ROUTES:
+                result = self.session.highway.snapshot.sprint
+                self.panel["frameSize"] = (-.94, .94, -.80, .75)
+                self.panel_detail.setScale(.043)
+                for column, text in zip(self.result_sectors, sprint_columns(result), strict=True):
+                    column.setText(text)
+                    column.setZ(0.)
+                    top = column.getTightBounds(self.panel)[1].z
+                    column.setZ(min(-.07, self.panel_detail.getTightBounds(self.panel)[0].z-.04)-top)
+                    column.show()
+                for button in self.buttons[:3]:
+                    button.setZ(-.67)
             elif self.session.mode == GameMode.SLALOM_LESSON:
                 result = self.session.highway.snapshot.slalom
                 if result is not None and result.gate_times:

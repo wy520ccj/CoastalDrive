@@ -1,0 +1,452 @@
+[
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/bend_sprint-descent.png",
+    "path": "normal/bend_sprint-descent.png",
+    "sha256": "5f2b480b4a2bc49d0b0b6a86ed2420f305027e2ee2561157a45252ef6d72467f"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/bend_sprint-first-bend.png",
+    "path": "normal/bend_sprint-first-bend.png",
+    "sha256": "dddb3f0b89730329818c6a6af2ac27c13a7f658090ca5471d6eef803b57e045c"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/bend_sprint-next-bend.png",
+    "path": "normal/bend_sprint-next-bend.png",
+    "sha256": "66eded2f24fbba175e177a76fe9b4e08151ee8a50109813890029775becd5587"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/bend_sprint-result.png",
+    "path": "normal/bend_sprint-result.png",
+    "sha256": "1f525e41ebc2fca9b72ae6edc7b20e6af8ef853fd76323c1d56825ce90c0d9e9"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/bend_sprint-retry.png",
+    "path": "normal/bend_sprint-retry.png",
+    "sha256": "0a8967876dff4d8dc3066ef3d13f4eb03d29a83cc3d19e13aca0ca51c365775b"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/bend_sprint.json.gz",
+    "path": "normal/bend_sprint.json.gz",
+    "sha256": "43d77e1f96d30960f846a8fdf23c5dd291e92cc3d3c2e97674826b0beffee316"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/highway-menu.png",
+    "path": "normal/highway-menu.png",
+    "sha256": "a9568885ce3f6da4097c747cbf70aff5d8bfe6283b9f5cf0af5334bc7da6003a"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/main-menu.png",
+    "path": "normal/main-menu.png",
+    "sha256": "a69409f04e8cb25856847e64688ba11c3f7cbbd1b8ecdac3e0c49431e1d6a0f4"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/recheck.json",
+    "path": "normal/recheck.json",
+    "sha256": "8c0dbe6138bc3f79f9a5159a0770c4ec77bae8dc0b3a3db3fe9830224f8a6cd7"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/restore-highway-menu.png",
+    "path": "normal/restore-highway-menu.png",
+    "sha256": "adb8f1b45e61ea6d506a6280a78afa792b269650883569ed8456549d2cfd2681"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/restore-main-menu.png",
+    "path": "normal/restore-main-menu.png",
+    "sha256": "a69409f04e8cb25856847e64688ba11c3f7cbbd1b8ecdac3e0c49431e1d6a0f4"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/restore-routes.png",
+    "path": "normal/restore-routes.png",
+    "sha256": "3212d4ecb8d2870c7eeb97630b58af7075e4de52a5546c317f58d20d3e37d343"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/restore-summary.json",
+    "path": "normal/restore-summary.json",
+    "sha256": "c4f7ca2c80b50bf7c9400565174853a973ebb2ec53f31abf2765056a577bb804"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/restored-bend_sprint.png",
+    "path": "normal/restored-bend_sprint.png",
+    "sha256": "dbf82b6e0cff2d3cd42623619f1267a0b1a1ac2fffa1c57987e6d4ccb199572e"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/restored-ridge_sprint.png",
+    "path": "normal/restored-ridge_sprint.png",
+    "sha256": "74f6ee90895a5c1e5c2378727146908a6931c794c95ba10f3068c2b859192e0d"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/ridge_sprint-descent.png",
+    "path": "normal/ridge_sprint-descent.png",
+    "sha256": "11c51c3212effda625236634fd4860ba6784bcac3d252e358d9e7f67ed902730"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/ridge_sprint-first-bend.png",
+    "path": "normal/ridge_sprint-first-bend.png",
+    "sha256": "8e9e9c2d65c9932d0fd0b728508c0fc1da957cba3fb34cf0b3cc4137bb8b1b43"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/ridge_sprint-next-bend.png",
+    "path": "normal/ridge_sprint-next-bend.png",
+    "sha256": "10d1bab6534a2a74fef93b1a6f93790a31be2dba5bd017d194b15cb3a9f413fe"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/ridge_sprint-result.png",
+    "path": "normal/ridge_sprint-result.png",
+    "sha256": "787155c7df69f5b28f9ba94c0fe0aa0079a3320eb343baf44b55fc42437d21e5"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/ridge_sprint-retry.png",
+    "path": "normal/ridge_sprint-retry.png",
+    "sha256": "78dc40d272ad734c602e46dcb46ab3aa8155d05ffb8698ef965281fa52cfc4d2"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/ridge_sprint.json.gz",
+    "path": "normal/ridge_sprint.json.gz",
+    "sha256": "43d01564b3106317f99462445d11a98b34ece7d36187c4279267c14d4c644368"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/routes.png",
+    "path": "normal/routes.png",
+    "sha256": "3212d4ecb8d2870c7eeb97630b58af7075e4de52a5546c317f58d20d3e37d343"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/sprint-best.json",
+    "path": "normal/sprint-best.json",
+    "sha256": "68fc803ab14a0c41d3c643e5b8a766124a50fd281b4e28c2972462881f1aa5a2"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-normal-drive/summary.json",
+    "path": "normal/summary.json",
+    "sha256": "9ff74e32b3863eb10e0b819c688ac0bc8669c230d1b93f15e2fb546d1884da05"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/bend_sprint-descent.png",
+    "path": "double/bend_sprint-descent.png",
+    "sha256": "52d64a98b65a78cb4c5219104a445de74df0ffab0a5a2a4d4cd6af19de201708"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/bend_sprint-first-bend.png",
+    "path": "double/bend_sprint-first-bend.png",
+    "sha256": "828d129ac318b841ebf444f006756d043e83111ad077a4e575a596d5d7a991b9"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/bend_sprint-next-bend.png",
+    "path": "double/bend_sprint-next-bend.png",
+    "sha256": "e9b09c0e0e7630a36175aeca291f1515c7ebd309d429b35021dbe56c1ca5eef9"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/bend_sprint-result.png",
+    "path": "double/bend_sprint-result.png",
+    "sha256": "640fc4509854da4f733f1d36cded1af03538d1e36ded034bf3d0afaabd61b37f"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/bend_sprint-retry.png",
+    "path": "double/bend_sprint-retry.png",
+    "sha256": "5a295370685bf2935004e09a7ec4998ef9aef97c814e412f5027e73b6b82aac3"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/bend_sprint.json.gz",
+    "path": "double/bend_sprint.json.gz",
+    "sha256": "33e5a7660d9b5ef848f9ab9d57ad8ead0b4346c04d098685d1ecf9239d6419be"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/highway-menu.png",
+    "path": "double/highway-menu.png",
+    "sha256": "817fc203b6b8d5dc94ef497a9f8bfed2134efd44e699a448acaa31707cb74c0b"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/main-menu.png",
+    "path": "double/main-menu.png",
+    "sha256": "137c2b289ad4f810e77ec12b854e44bd98cf23dac8f098103a33c9d7782f03d9"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/recheck.json",
+    "path": "double/recheck.json",
+    "sha256": "8c0dbe6138bc3f79f9a5159a0770c4ec77bae8dc0b3a3db3fe9830224f8a6cd7"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/restore-highway-menu.png",
+    "path": "double/restore-highway-menu.png",
+    "sha256": "d1322c8dcd29c01e6d092661e352402b6955d7dcda01439478a532398d8381a9"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/restore-main-menu.png",
+    "path": "double/restore-main-menu.png",
+    "sha256": "137c2b289ad4f810e77ec12b854e44bd98cf23dac8f098103a33c9d7782f03d9"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/restore-routes.png",
+    "path": "double/restore-routes.png",
+    "sha256": "087fb779e0c13f1cd0d9aba7e1b842c97ce88422e5dd60db8ad550bad43167bc"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/restore-summary.json",
+    "path": "double/restore-summary.json",
+    "sha256": "2147b1575c7bc8753f72beb33a2788a01ae4bb3fd596f579bc310d06b7984d4e"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/restored-bend_sprint.png",
+    "path": "double/restored-bend_sprint.png",
+    "sha256": "0153d58a86d7f1aba9b21407efb1cd69c5ba202225afdb313744d8308b29063e"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/restored-ridge_sprint.png",
+    "path": "double/restored-ridge_sprint.png",
+    "sha256": "bce21d52bfa3497958bb28727eb3bdf630e2943685ce025ed93650e7f0ddc3ce"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/ridge_sprint-descent.png",
+    "path": "double/ridge_sprint-descent.png",
+    "sha256": "d2a78efe971368245aff59533c0736f4eda31fc307fac435bad5b8b2d0b00ce3"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/ridge_sprint-first-bend.png",
+    "path": "double/ridge_sprint-first-bend.png",
+    "sha256": "40818f3c96724cbd1ed03870ac77fe4313b33f208ca781b9ab2025504fffd422"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/ridge_sprint-next-bend.png",
+    "path": "double/ridge_sprint-next-bend.png",
+    "sha256": "02cd1af1e42ca76511967e84c725648babf8bf5df95e09c28e7fe6e84dedfacb"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/ridge_sprint-result.png",
+    "path": "double/ridge_sprint-result.png",
+    "sha256": "51dd2468c3930e8545dca19a2093f565c63eaeef60e72a8cd0e32880e375d027"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/ridge_sprint-retry.png",
+    "path": "double/ridge_sprint-retry.png",
+    "sha256": "9b8a6acecae3e77abf3655d1f99b6650772565a0f51da9bf660a0012e05ddf08"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/ridge_sprint.json.gz",
+    "path": "double/ridge_sprint.json.gz",
+    "sha256": "2001a89499a167d30af99d97eb5f0885ebd8a6f1d4c89caee863cfa42d499cb8"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/routes.png",
+    "path": "double/routes.png",
+    "sha256": "087fb779e0c13f1cd0d9aba7e1b842c97ce88422e5dd60db8ad550bad43167bc"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/sprint-best.json",
+    "path": "double/sprint-best.json",
+    "sha256": "d2a04c0d5148302b3e570a6a1b82d4e7e6eed97dbcf407f2464bff4fe1053ac5"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-drive/summary.json",
+    "path": "double/summary.json",
+    "sha256": "0122add8d7bd4457af1de0949d0787ffcd20cf672c425f812ac1b3024a971b8d"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-rules-T0/pytest.log",
+    "path": "checks/rules-T0/pytest.log",
+    "sha256": "33b1ef2cbd0b5d6092418659a9a57d1dde1cb8c5d6569350d724dfcbe2784629"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-rules-T0/ruff.log",
+    "path": "checks/rules-T0/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-rules-T0/summary.json",
+    "path": "checks/rules-T0/summary.json",
+    "sha256": "79fee03d210f3734bcce31eb037415b4500d857c5cb1ac67c0122c848b34b6f5"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-core-T0/pytest.log",
+    "path": "checks/core-T0/pytest.log",
+    "sha256": "f4b2e42fd84750f08b9a7ad2c99cc717a427c681b1cba7a37264df8e54dfb06f"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-core-T0/ruff.log",
+    "path": "checks/core-T0/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-core-T0/summary.json",
+    "path": "checks/core-T0/summary.json",
+    "sha256": "251b6bd217cd028d58e8ad4e3cbf5c9b30d6b0f3231c52ebec4c2c0bcb411578"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-ui-T0/pytest.log",
+    "path": "checks/ui-T0/pytest.log",
+    "sha256": "b9415c095accce33659aaae9015da24b54dca9e933e3d2c75ab7adf9ac6d5442"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-ui-T0/ruff.log",
+    "path": "checks/ui-T0/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-ui-T0/summary.json",
+    "path": "checks/ui-T0/summary.json",
+    "sha256": "0a176566bc6a859c02eefff403bc1b0a1d224ec924d58af62201d45741e5f512"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-T1/headless-0.log",
+    "path": "checks/T1/headless-0.log",
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-T1/headless-17.log",
+    "path": "checks/T1/headless-17.log",
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-T1/headless-23.log",
+    "path": "checks/T1/headless-23.log",
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-T1/pytest.log",
+    "path": "checks/T1/pytest.log",
+    "sha256": "3cc47ffd673dfcc0681c2332c3d5f6c8abfcff96f4d2b8e393daa70d89d11f59"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-T1/ruff.log",
+    "path": "checks/T1/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-T1/summary.json",
+    "path": "checks/T1/summary.json",
+    "sha256": "fcc918acf06ebfb48726297b122ab6fae072adbbb5d43e51751bdbcb37b62311"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-T1/headless-0.log",
+    "path": "checks/double-T1/headless-0.log",
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-T1/headless-17.log",
+    "path": "checks/double-T1/headless-17.log",
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-T1/headless-23.log",
+    "path": "checks/double-T1/headless-23.log",
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-T1/pytest.log",
+    "path": "checks/double-T1/pytest.log",
+    "sha256": "d663f0dfd96a5fb70053a60cc92797f70a167b56a5e95a39a4cdf571ea398110"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-T1/ruff.log",
+    "path": "checks/double-T1/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-double-T1/summary.json",
+    "path": "checks/double-T1/summary.json",
+    "sha256": "3eb5efef5ae8d22a0aaceb219ce10e29cc9b50f2c25259a7930a3f461a7a831d"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-final-ui-T0/pytest.log",
+    "path": "checks/final-ui-T0/pytest.log",
+    "sha256": "4d886a090e4b2db2c3a41d9e84254cd565749d33a0ce646034617ce5e895c7fd"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-final-ui-T0/ruff.log",
+    "path": "checks/final-ui-T0/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-final-ui-T0/summary.json",
+    "path": "checks/final-ui-T0/summary.json",
+    "sha256": "1b7d34aa0eb67d6037c198576e6022ba8239d6542a32553d2d536b66c0baa006"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-final-double-ui-T0/pytest.log",
+    "path": "checks/final-double-ui-T0/pytest.log",
+    "sha256": "bd56b25218e1015df1656eb86cd319d8ff9d51eb84988248599206b12a6502d8"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-final-double-ui-T0/ruff.log",
+    "path": "checks/final-double-ui-T0/ruff.log",
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-final-double-ui-T0/summary.json",
+    "path": "checks/final-double-ui-T0/summary.json",
+    "sha256": "afec45c115a1c008bed261f3a3ea1868a197a350e072305f6273f3367edc4875"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-probe/audit.json",
+    "path": "initial-probe/audit.json",
+    "sha256": "21a4184259bcf568792e73fe84cc536dca8047947ecfc42d62ae5cf53481a9ba"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-probe/bend_sprint-45.json.gz",
+    "path": "initial-probe/bend_sprint-45.json.gz",
+    "sha256": "50a279f0fbe13869d0bd75cc6592e3fa3e1708ac74e043c7dad1602b98ca0930"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-probe/bend_sprint-65.json.gz",
+    "path": "initial-probe/bend_sprint-65.json.gz",
+    "sha256": "e269459c4ff2c310cdf76e92d36bbc19c0cab03e446e4d6b3d566e6e368a038f"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-probe/bend_sprint-90.json.gz",
+    "path": "initial-probe/bend_sprint-90.json.gz",
+    "sha256": "e2b96c65b6d719e28df0de3778e2dde09208242ad7e1f745d15f92742c5cebd8"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-probe/ridge_sprint-45.json.gz",
+    "path": "initial-probe/ridge_sprint-45.json.gz",
+    "sha256": "b81bbb5eb984a0218518006c143f4a95f351468ad5fddcaff7c292d3c50ed623"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-probe/ridge_sprint-65.json.gz",
+    "path": "initial-probe/ridge_sprint-65.json.gz",
+    "sha256": "aec940a3d876c3ffb11f030ab5d6e1258177874417a5939c97a6515276bfea55"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-probe/ridge_sprint-90.json.gz",
+    "path": "initial-probe/ridge_sprint-90.json.gz",
+    "sha256": "c4279eaa091d3cddb4df7786b182a1b7c7fd765868a64e8e83d884e7b7ce437d"
+  },
+  {
+    "source": "logs/sprint-routes-normal-drive.log",
+    "path": "diagnostics/sprint-routes-normal-drive.log",
+    "sha256": "263c7a4449a12981368b4ae36f17a5b2a8a8b33cf6cb2c552f664591a901cbfa"
+  },
+  {
+    "source": "logs/sprint-routes-double-drive.log",
+    "path": "diagnostics/sprint-routes-double-drive.log",
+    "sha256": "4629dd7393b5cd90732b5ffe89fe70845bfff55ed98d3791abae2879f1240d75"
+  },
+  {
+    "source": "logs/sprint-routes-normal-restore.log",
+    "path": "diagnostics/sprint-routes-normal-restore.log",
+    "sha256": "cecf6ffb50a1fe6628a4c2813abeaa6ca40bf6eaa0197d98b1d5a001702925a7"
+  },
+  {
+    "source": "logs/sprint-routes-double-restore.log",
+    "path": "diagnostics/sprint-routes-double-restore.log",
+    "sha256": "691f0a6b16e0d1516925de3f19962e816f628b56b11d707bf456ff841ca9feda"
+  },
+  {
+    "source": "logs/sprint-process-menu-original-2.py",
+    "path": "diagnostics/sprint-process-menu-original-2.py",
+    "sha256": "9a2dc2f8a4f2331639b1776fe4dc8e0b8ff5e1e4601c07cd830b02f5a9f8149e"
+  },
+  {
+    "source": "logs/sprint-process-menu-original-2.log",
+    "path": "diagnostics/sprint-process-menu-original-2.log",
+    "sha256": "3f07d0a0b51a00f2462f7b1cd34a658d85846fdb716749c938abeb16f5659c2b"
+  },
+  {
+    "source": "logs/sprint-process-menu-fixed.log",
+    "path": "diagnostics/sprint-process-menu-fixed.log",
+    "sha256": "96ad7268ba433fd4e55db0f9005b126cd98dfbd11c162d3bb7a01e511dfb3b1b"
+  },
+  {
+    "source": "logs/validation/SPRINT-ROUTES-01-application-before-layout.py",
+    "path": "diagnostics/application-before-layout.py",
+    "sha256": "62c2be10cc5ae4aded6c9061da5a36e0f7b122d63d10df152c0949dc4d23fe06"
+  }
+]
