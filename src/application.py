@@ -173,6 +173,7 @@ class CoastalDrive(ShowBase):
         )
         self._scene_track = None
         self._scene_shape = None
+        self._scene_seed = None
         self._scene_vehicle = None
         self.highway_menu = False
         self.braking_menu = False
@@ -508,6 +509,7 @@ class CoastalDrive(ShowBase):
             self.scene is None
             or track != self._scene_track
             or self.session.road_shape != self._scene_shape
+            or self.session.simulation.seed != self._scene_seed
             or len(self.scene.traffic) != len(self.session.current.traffic)
             or self._scene_vehicle != (self.vehicle_model_id, self.session.simulation.config)
         ):
@@ -516,6 +518,7 @@ class CoastalDrive(ShowBase):
             self.scene = Scene(self)
             self._scene_track = track
             self._scene_shape = self.session.road_shape
+            self._scene_seed = self.session.simulation.seed
             self._scene_vehicle = (self.vehicle_model_id, self.session.simulation.config)
             self.chase_camera.position = None
         self.scene.set_checkpoint_visible(self.session.mode == GameMode.TIME_TRIAL)
@@ -529,6 +532,7 @@ class CoastalDrive(ShowBase):
             self.scene = None
             self._scene_track = None
             self._scene_shape = None
+            self._scene_seed = None
 
     def setup_controls(self):
         for key in (
@@ -1265,13 +1269,15 @@ class CoastalDrive(ShowBase):
             ]
         elif phase == Phase.MENU and self.highway_menu and self.sprint_menu:
             self.panel_title.setText("短途路线挑战")
-            bend, ridge = SPRINT_ROUTES.values()
+            bend, ridge, valley = SPRINT_ROUTES.values()
             self.panel_note.setText(
-                f"{bend.name} · {bend.description}\n{ridge.name} · {ridge.description}\n"
-                "封闭道路无车流 · 静止起步，依次过4门\n碰撞/驶离道路/复位失败；180秒内完成")
-            self.panel_detail.setText(f"平路 {sprint_goals(bend)}\n山脊 {sprint_goals(ridge)}")
+                "平路连弯 · 1.8公里连续弯\n山脊冲刺 · 1.4公里起伏\n"
+                "山谷节奏 · 1公里，加速→控速→再加速\n250米≥60；400–650米全段35–50km/h\n"
+                "封闭无车流 · 碰撞/越界/复位失败 · 上限180秒")
+            self.panel_detail.setText(f"平路 {sprint_goals(bend)}\n山脊 {sprint_goals(ridge)}\n山谷 {sprint_goals(valley)}")
             options = [("平路连弯 · 1.8公里", lambda: self.start_sprint(GameMode.BEND_SPRINT)),
                        ("山脊冲刺 · 1.4公里", lambda: self.start_sprint(GameMode.RIDGE_SPRINT)),
+                       ("山谷节奏 · 1公里", lambda: self.start_sprint(GameMode.VALLEY_PACE)),
                        ("返回高速与课题", self.back_from_sprint_routes)]
         elif phase == Phase.MENU and self.highway_menu and self.slalom_menu:
             self.panel_title.setText("驾驶课题 · 连续过门")
@@ -1305,7 +1311,7 @@ class CoastalDrive(ShowBase):
                 ),
                 ("驾驶课题 · 定点刹停", self.choose_braking_lesson),
                 ("驾驶课题 · 连续过门", self.choose_slalom_lesson),
-                ("短途路线 · 连弯 / 山脊", self.choose_sprint_routes),
+                ("短途路线 · 3项挑战", self.choose_sprint_routes),
                 ("返回", self.back_to_modes),
             ]
         elif phase == Phase.PAUSED:
@@ -1484,9 +1490,10 @@ class CoastalDrive(ShowBase):
             self.panel_note.setScale(.034)
             self.panel_note.setPos(0, .34)
             self.panel_detail.setScale(.034)
-            self.panel_detail.setPos(0, -.025)
-            for index, button in enumerate(self.buttons[:3]):
-                button.setZ(-.24-index*.17)
+            self.panel_detail.setPos(0, .025)
+            for index, button in enumerate(self.buttons[:4]):
+                button.setZ(-.23-index*.15)
+                button["frameSize"] = (-.51, .51, -.062, .062)
         elif phase == Phase.PAUSED:
             self.panel_title.setScale(0.14)
             self.panel_note.setPos(0, 0.27)

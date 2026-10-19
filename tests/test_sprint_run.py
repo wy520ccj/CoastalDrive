@@ -18,7 +18,8 @@ def run(path, mode=GameMode.BEND_SPRINT, variant='car-A', config=CAR):
 
 def finish(item, seconds):
     for distance in item.route.gates:
-        item.update(8+distance, seconds*distance/item.route.gates[-1], lateral=0., heading=0.)
+        kph = 42. if item.route.speed_zone is not None and 400 <= distance <= 650 else 75.
+        item.update(8+distance, seconds*distance/item.route.gates[-1], lateral=0., heading=0., forward_speed=kph/3.6)
     return item.snapshot
 
 
@@ -30,8 +31,8 @@ def test_routes_really_differ_in_geometry_length_and_profile(mode):
     assert max(abs(point.x) for point in samples) >= 60.
     assert max(abs(point.heading) for point in samples) > 10.
     heights = [point.z for point in samples]
-    assert (max(heights)-min(heights) > 10.) == (mode == GameMode.RIDGE_SPRINT)
-    assert route.gates[-1] > 1000. and len(route.gates) == 4
+    assert (max(heights)-min(heights) > 10.) == (route.shape == 'hills')
+    assert route.gates[-1] >= 1000. and len(route.gates) == 4
 
 
 @pytest.mark.parametrize('mode', SPRINT_ROUTES)

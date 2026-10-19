@@ -66,7 +66,7 @@ class HighwayRun:
             return
         if self.sprint is not None:
             result = self.sprint.update(progress, state.elapsed+dt, lateral=lateral, heading=heading,
-                                        collisions=collisions, reset=reset)
+                                        forward_speed=forward_speed, collisions=collisions, reset=reset)
             self.snapshot = replace(state, elapsed=state.elapsed+dt, distance=result.position, collisions=collisions,
                 sprint=result, finished=result.finished, running=not result.finished,
                 succeeded=result.succeeded, reason=result.reason)

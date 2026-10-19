@@ -4,6 +4,7 @@ import argparse
 import gzip
 import hashlib
 import json
+import math
 import os
 import sys
 import tempfile
@@ -32,6 +33,14 @@ from vehicle_config import CAR
 from vehicle_parameters import config_from_document
 
 
+def capture_sources():
+    sources = model_fingerprint()
+    for name in ('src/ui/sprint_feedback.py', 'src/ui/hud.py', 'tools/sprint_routes_check.py',
+                 'tools/sprint_route_probe.py', 'tools/slalom_driver.py'):
+        sources[name] = hashlib.sha256((ROOT/name).read_bytes()).hexdigest()
+    return sources
+
+
 def recheck(folder):
     summary = json.loads((folder/'summary.json').read_text(encoding='utf-8'))
     checked = 0
@@ -50,13 +59,18 @@ def recheck(folder):
                 progress, lateral = road.curve.project((x, y+row['origin_y']))
                 point = road.curve.sample(progress)
                 heading = (row['heading']-point.heading+180)%360-180
+                angle, grade = math.radians(point.heading), math.radians(point.grade)
+                vx, vy, vz = row['velocity']
+                forward = (-vx*math.sin(angle)+vy*math.cos(angle))*math.cos(grade)+vz*math.sin(grade)
                 elapsed += FIXED_DT
                 state = item.update(progress, elapsed, lateral=lateral, heading=heading,
+                                    forward_speed=forward,
                                     collisions=row['collisions'], reset='player_reset' in row['events'])
                 assert json.loads(json.dumps(asdict(state))) == row['sprint'], (case['mode'], row['tick'])
                 assert len(row['keys']) == len(set(row['keys'])) and not set(row['keys'])-{'w', 's', 'a', 'd'}
             assert json.loads(json.dumps(asdict(state))) == case['result']
-            assert state.succeeded and state.medal == '金'
+            assert state.succeeded == case['expected_succeeded']
+            assert state.medal == case['result']['medal']
         for previous, current in pairwise(rows):
             assert current['tick'] == previous['tick']+1 and current['time'] > previous['time']
         assert rows[0]['tick'] == case['initial_tick']+1
@@ -65,10 +79,13 @@ def recheck(folder):
     return {'passed': True, 'rows': checked, 'scope': '从保存的真实位置/朝向重新投影道路并逐拍复算规则；不重跑物理'}
 
 
-def check(output, size, restore):
+def check(output, size, restore, modes=None, constant_speed=False):
     output.mkdir(parents=True, exist_ok=restore)
     os.environ['LOCALAPPDATA'] = str(output/'user-data')
-    source, runtime = model_fingerprint(), runtime_fingerprint()
+    source, runtime = capture_sources(), runtime_fingerprint()
+    context_path = output/('restore-capture-context.json' if restore else 'capture-context.json')
+    context_path.write_text(json.dumps({'source_start': source, 'runtime_start': runtime,
+                                      'status': 'capturing'}, ensure_ascii=False, indent=2), encoding='utf-8')
     prior = json.loads((output/'summary.json').read_text(encoding='utf-8')) if restore else None
     best_path = output/'sprint-best.json'
     old_bytes = best_path.read_bytes() if restore else None
@@ -105,8 +122,10 @@ def check(output, size, restore):
         capture('restore-highway-menu' if restore else 'highway-menu')
         app.buttons[6]['command']()
         capture('restore-routes' if restore else 'routes')
-        for index, (mode, route) in enumerate(SPRINT_ROUTES.items()):
-            if index:
+        routes = [(index, mode, route) for index, (mode, route) in enumerate(SPRINT_ROUTES.items())
+                  if modes is None or mode.value in modes]
+        for case_index, (index, mode, route) in enumerate(routes):
+            if case_index:
                 app.back_to_menu()
                 app.choose_sprint_routes()
             app.buttons[index]['command']()
@@ -133,7 +152,8 @@ def check(output, size, restore):
             config = app.session.vehicle_config
             start_progress = app.session.highway.snapshot.sprint.start_progress
             initial_tick = app.session.current.tick
-            driver = SprintDriver(app.session.simulation.road, config, 90.)
+            driver = SprintDriver(app.session.simulation.road, config, 90.,
+                                  route=None if constant_speed else route, start_progress=start_progress)
             rows, shown = [], set()
             for _ in range(180*120+2):
                 apply_keys(app.session.keyboard, driver.sample(app.session.current, FIXED_DT))
@@ -144,7 +164,9 @@ def check(output, size, restore):
                     'velocity': state.player.velocity, 'heading': state.player.heading, 'origin_y': state.origin_y,
                     'collisions': state.collisions, 'events': state.events, 'keys': keys,
                     'request': asdict(app.session.last_control), 'sprint': asdict(result)})
-                for label, progress in (('first-bend', 275.), ('descent', 650.), ('next-bend', 1150.)):
+                locations = (('approach-zone', 325.), ('inside-zone', 510.), ('exit-zone', 710.)) if route.speed_zone is not None else (
+                    ('first-bend', 275.), ('descent', 650.), ('next-bend', 1150.))
+                for label, progress in locations:
                     if result.position >= progress and label not in shown:
                         capture(mode.value+'-'+label)
                         shown.add(label)
@@ -156,24 +178,34 @@ def check(output, size, restore):
             case = {'mode': mode.value, 'route': asdict(route), 'config': asdict(config), 'variant': app.session.score_variant(),
                 'input': asdict(app.session.keyboard.input_config), 'start_progress': start_progress, 'initial_tick': initial_tick,
                 'record': name, 'record_sha256': hashlib.sha256((output/name).read_bytes()).hexdigest(),
-                'result': asdict(result), 'rows': len(rows), 'collisions': state.collisions}
+                'result': asdict(result), 'rows': len(rows), 'collisions': state.collisions,
+                'expected_succeeded': not constant_speed}
             cases.append(case)
-            assert result.succeeded and result.medal == '金' and result.new_best and state.collisions == 0, case
+            (output/(mode.value+'-case.json')).write_text(json.dumps(case, ensure_ascii=False, indent=2), encoding='utf-8')
             capture(mode.value+'-result')
+            if constant_speed:
+                assert route.speed_zone is not None
+                assert not result.succeeded and not result.medal and not result.new_best and '限速带' in result.reason, case
+                assert not best_path.exists() and state.collisions == 0
+            else:
+                assert result.succeeded and result.new_best and state.collisions == 0, case
             app.buttons[0]['command']()
             for _ in range(360):
                 app.session.tick()
             retry = app.session.highway.snapshot.sprint
-            assert retry.best_seconds == result.seconds and retry.reference_times == result.gate_times
+            if result.succeeded:
+                assert retry.best_seconds == result.seconds and retry.reference_times == result.gate_times
+            else:
+                assert retry.best_seconds is None and not retry.reference_times
             assert retry.gates == 0 and retry.seconds == 0.
             capture(mode.value+'-retry')
             print(json.dumps({'mode': mode.value, 'seconds': result.seconds, 'medal': result.medal, 'rows': len(rows)}), flush=True)
-        source_end, runtime_end = model_fingerprint(), runtime_fingerprint()
+        source_end, runtime_end = capture_sources(), runtime_fingerprint()
         summary = {'passed': source == source_end and runtime == runtime_end,
             'source_start': source, 'source_end': source_end, 'runtime_start': runtime, 'runtime_end': runtime_end,
             'size': size, 'cases': cases, 'captures': captures, 'human_gate': 'pending',
             'driver': '实际KeyboardController二值按键请求；非人工驾驶',
-            'scope': '独立物理进程重启/正常菜单/两赛事最佳恢复，无新完整驾驶' if restore else '两路线新实际键盘驾驶与实际离屏界面'}
+            'scope': '独立物理进程重启/正常菜单/选定赛事最佳恢复，无新完整驾驶' if restore else '选定路线新实际键盘驾驶与实际离屏界面'}
         if restore:
             assert best_path.read_bytes() == old_bytes
             summary['best_file_unchanged'] = True
@@ -185,6 +217,10 @@ def check(output, size, restore):
             (output/'recheck.json').write_text(json.dumps(verified, ensure_ascii=False, indent=2), encoding='utf-8')
         return {'passed': True, 'bits': runtime['math_scalar_bits'], 'cases': len(cases), 'restore': restore}
     finally:
+        context = {'source_start': source, 'source_end': capture_sources(),
+                   'runtime_start': runtime, 'runtime_end': runtime_fingerprint()}
+        context_path.write_text(
+            json.dumps(context, ensure_ascii=False, indent=2), encoding='utf-8')
         app.close_game()
 
 
@@ -194,5 +230,8 @@ if __name__ == '__main__':
     parser.add_argument('--size', nargs=2, type=int, default=(1280, 720))
     parser.add_argument('--restore', action='store_true')
     parser.add_argument('--verify', action='store_true')
+    parser.add_argument('--modes', nargs='+', choices=[mode.value for mode in SPRINT_ROUTES])
+    parser.add_argument('--constant-speed', action='store_true')
     args = parser.parse_args()
-    print(json.dumps(recheck(args.output.resolve()) if args.verify else check(args.output.resolve(), args.size, args.restore), ensure_ascii=False))
+    print(json.dumps(recheck(args.output.resolve()) if args.verify else check(
+        args.output.resolve(), args.size, args.restore, args.modes, args.constant_speed), ensure_ascii=False))

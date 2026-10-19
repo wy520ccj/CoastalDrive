@@ -176,7 +176,8 @@ class DrivingHUD:
                 set_text(self.detail, detail)
                 set_text(self.split, feedback)
                 self.split.setFg(theme.SEA)
-                message = "看远处弯势；坡顶确认方向，弯前松油或刹车"
+                message = ("提前刹车，限速带全段保持速度；出带再加速"
+                           if SPRINT_ROUTES[race.mode].speed_zone is not None else "看远处弯势；坡顶确认方向，弯前松油或刹车")
         elif race.mode == GameMode.TIME_TRIAL:
             set_text(self.mode, "计时挑战")
             set_text(self.status, f"{race.elapsed:07.3f} s")

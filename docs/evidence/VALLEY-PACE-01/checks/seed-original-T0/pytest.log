@@ -1,0 +1,32 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+__________ test_same_shape_different_seed_rebuilds_road_presentation __________
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-844/test_same_shape_different_seed0')
+
+    def test_same_shape_different_seed_rebuilds_road_presentation(tmp_path):
+        app = CoastalDrive(smoke=True, output=tmp_path)
+        app.taskMgr.remove('finish-smoke')
+        app.taskMgr.remove('drive-update')
+        try:
+            app.start_sprint(GameMode.RIDGE_SPRINT)
+            original = app.scene
+            assert app.session.simulation.seed == 0 and app.session.road_shape == 'hills'
+            # 直接切换两项弯坡赛事，不能依赖先关场景来碰巧清除旧几何。
+            app.start_sprint(GameMode.VALLEY_PACE)
+            assert app.session.simulation.seed == 17 and app.session.road_shape == 'hills'
+>           assert app.scene is not original
+E           assert <scene.Scene object at 0x00000263D1394050> is not <scene.Scene object at 0x00000263D1394050>
+E            +  where <scene.Scene object at 0x00000263D1394050> = <application.CoastalDrive object at 0x00000263861927B0>.scene
+
+tests\test_sprint_ui.py:99: AssertionError
+---------------------------- Captured stderr call -----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+=========================== short test summary info ===========================
+FAILED tests/test_sprint_ui.py::test_same_shape_different_seed_rebuilds_road_presentation
+1 failed in 13.74s

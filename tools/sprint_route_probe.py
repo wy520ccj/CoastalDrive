@@ -25,8 +25,9 @@ from sprint_routes import SPRINT_ROUTES
 
 
 class SprintDriver:
-    def __init__(self, road, config, speed_kph):
+    def __init__(self, road, config, speed_kph, *, route=None, start_progress=8.):
         self.road, self.config, self.speed = road, config, speed_kph/3.6
+        self.route, self.start_progress = route, start_progress
 
     def sample(self, state, dt):
         car = state.player
@@ -37,7 +38,13 @@ class SprintDriver:
         error = math.atan2(-dx, dy)-math.radians(car.heading)
         angle = math.degrees(math.atan2(5.4*math.sin(error), math.hypot(dx, dy)))
         steer = -angle/steering_limit(car.speed, self.config)
-        speed_error = self.speed-car.speed
+        target_speed = self.speed
+        if self.route is not None and self.route.speed_zone is not None:
+            zone = self.route.speed_zone
+            distance = progress-self.start_progress
+            target_speed = (75. if distance < zone.start-90. else
+                            (zone.minimum_kph+zone.maximum_kph)/2 if distance <= zone.end+2. else self.speed*3.6)/3.6
+        speed_error = target_speed-car.speed
         # 二值请求进入原KeyboardController，车速转向辅助及正常机械执行器保持。
         return Control(steering=0. if abs(steer) < .06 else math.copysign(1., steer),
                        throttle=float(speed_error > -.25), brake=float(speed_error < -1.))

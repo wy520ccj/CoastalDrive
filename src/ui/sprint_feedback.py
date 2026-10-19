@@ -19,6 +19,16 @@ def driving_feedback(result):
         index = len(result.gate_times)-1
         delta = f" · ΔPB {result.gate_times[index]-result.reference_times[index]:+.2f}s" if result.reference_times else ""
         remaining = f"第{index+1}门 {result.gate_times[index]:.2f}s"+delta
+    zone = route.speed_zone
+    if zone is not None:
+        if result.position < route.gates[0]:
+            remaining = f"首门至少{route.entry_kph:g}km/h · 当前{result.forward_kph:.1f}"
+        elif result.position < zone.start:
+            remaining = f"距限速带{zone.start-result.position:.0f}m · 提前减至{zone.minimum_kph:g}–{zone.maximum_kph:g}"
+        elif result.position <= zone.end:
+            remaining = f"限速带{zone.minimum_kph:g}–{zone.maximum_kph:g} · 当前{result.forward_kph:.1f}km/h"
+        else:
+            remaining = "已通过限速带 · 重新加速冲线"
     return detail, goals(route)+"\n"+remaining
 
 
@@ -28,15 +38,22 @@ def result_feedback(result):
     note = ("新个人最佳 · " if result.new_best else "")+result.reason
     if result.save_notice:
         note += "\n"+result.save_notice
-    return note, f"本次 {result.seconds:.3f}s · {best}\n{goals(route)}"
+    detail = f"本次 {result.seconds:.3f}s · {best}\n{goals(route)}"
+    if result.zone_min_kph is not None:
+        detail += f"\n限速带实测 {result.zone_min_kph:.2f}–{result.zone_max_kph:.2f}km/h"
+    return note, detail
 
 
 def result_columns(result):
     route = SPRINT_ROUTES[GameMode(result.route_id)]
     labels, times, deltas = ["道路门"], ["累计 / s"], ["比出发时最佳 / s"]
+    if route.speed_zone is not None:
+        deltas[0] = "过门 km/h / ΔPBs"
     for index, distance in enumerate(route.gates):
         labels.append(f"{index+1} · {distance:.0f}m")
         times.append(f"{result.gate_times[index]:.3f}" if index < len(result.gate_times) else "—")
-        deltas.append(f"{result.gate_times[index]-result.reference_times[index]:+.3f}"
-                      if result.reference_times and index < result.gates and not (result.finished and not result.succeeded) else "—")
+        delta = (f"{result.gate_times[index]-result.reference_times[index]:+.3f}"
+                 if result.reference_times and index < result.gates and not (result.finished and not result.succeeded) else "—")
+        deltas.append(f"{result.gate_kph[index]:.1f} / {delta}"
+                      if route.speed_zone is not None and index < len(result.gate_kph) else delta)
     return tuple("\n".join(column) for column in (labels, times, deltas))
