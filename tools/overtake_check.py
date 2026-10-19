@@ -22,10 +22,12 @@ from sprint_route_probe import SprintDriver
 from application import CoastalDrive
 from lab_records import model_fingerprint
 from lab_runtime import runtime_fingerprint
+from overtake_routes import OVERTAKE_ROUTES
 from overtake_run import OvertakeRun
-from race import BestTimes
+from race import BestTimes, GameMode
 from session import Phase
 from simulation import FIXED_DT, Snapshot
+from traffic import Road
 from vehicle_config import CAR
 from vehicle_parameters import config_from_document
 from vehicle_state import CarState
@@ -55,23 +57,31 @@ def recheck(folder):
     with gzip.open(folder/'raw.json.gz', 'rt', encoding='utf-8') as stream:
         rows = json.load(stream)
     config = config_from_document(summary['config'], CAR)
+    mode = GameMode(summary.get('mode', 'safe_overtake'))
+    route = OVERTAKE_ROUTES[mode]
+    road = Road('endless', seed=route.seed, shape=route.shape)
+    road.origin_y = summary['initial']['origin_y']
     with tempfile.TemporaryDirectory() as temporary:
-        item = OvertakeRun(snapshot(summary['initial']), config, BestTimes(Path(temporary)/'best.json'), summary['variant'])
+        item = OvertakeRun(snapshot(summary['initial']), config, BestTimes(Path(temporary)/'best.json'), summary['variant'], mode=mode, road=road)
         elapsed = 0.
         previous_tick = summary['initial']['tick']
         for row in rows:
             assert row['tick'] == previous_tick+1
             previous_tick = row['tick']
             elapsed += FIXED_DT
+            road.origin_y = row['origin_y']
             state = item.update(snapshot(row), elapsed, reset='player_reset' in row['events'])
-            assert json.loads(json.dumps(asdict(state))) == row['result'], row['tick']
-        assert json.loads(json.dumps(asdict(state))) == summary['result']
+            current = json.loads(json.dumps(asdict(state)))
+            assert set(current)-set(row['result']) <= {'route_id'}
+            assert {key: current[key] for key in row['result']} == row['result'], row['tick']
+        assert {key: current[key] for key in summary['result']} == summary['result']
         assert state.succeeded == summary['expected_succeeded']
     assert hashlib.sha256((folder/'raw.json.gz').read_bytes()).hexdigest() == summary['record_sha256']
     return {'passed': True, 'rows': len(rows), 'scope': '从保存真实位置/朝向/代次/速度逐拍重算规则，不重跑物理'}
 
 
-def check(output, size, unsafe, restore):
+def check(output, size, unsafe, restore, mode=GameMode.SAFE_OVERTAKE, follow=False):
+    route = OVERTAKE_ROUTES[mode]
     output.mkdir(parents=True, exist_ok=restore)
     os.environ['LOCALAPPDATA'] = str(output/'user-data')
     source, runtime = sources(), runtime_fingerprint()
@@ -111,7 +121,7 @@ def check(output, size, unsafe, restore):
         app.choose_highway()
         app.buttons[6]['command']()
         capture('restore-events' if restore else 'events')
-        app.buttons[3]['command']()
+        app.buttons[3 if mode == GameMode.SAFE_OVERTAKE else 4]['command']()
         capture('restore-rules' if restore else 'rules')
         app.buttons[0]['command']()
         if restore:
@@ -123,8 +133,9 @@ def check(output, size, unsafe, restore):
             assert app.session.phase == Phase.DRIVING
             result = app.session.highway.snapshot.overtake
             assert result.best_seconds == prior['result']['seconds']
-            assert list(result.reference_times) == prior['result']['pass_times']
-            assert len(app.session.current.traffic) == 12 and app.session.seed == 17
+            expected = prior['result']['pass_times']+([prior['result']['seconds']] if route.finish_at_end else [])
+            assert list(result.reference_times) == expected
+            assert len(app.session.current.traffic) == 12 and app.session.seed == route.seed and app.session.road_shape == route.shape
             capture('restored')
             assert best_path.read_bytes() == best_bytes
             summary = {'passed': True, 'pid': app.session.process.pid, 'result': asdict(result),
@@ -139,11 +150,11 @@ def check(output, size, unsafe, restore):
             if unsafe:
                 driver = SprintDriver(app.session.simulation.road, config, 130.)
             else:
-                driver = OvertakeDriver(app.session.simulation.road, config, app.session.keyboard.input_config)
+                driver = OvertakeDriver(app.session.simulation.road, config, app.session.keyboard.input_config, 20. if follow else 40.)
                 app.session.set_controller(driver)
             capture('driving')
-            rows, shown = [], False
-            for _ in range(150*120+2):
+            rows, shown, qualified, near_finish = [], False, False, False
+            for _ in range(round(route.seconds*120)+2):
                 if unsafe:
                     apply_keys(app.session.keyboard, driver.sample(app.session.current, FIXED_DT))
                 app.session.tick()
@@ -154,22 +165,35 @@ def check(output, size, unsafe, restore):
                 if result.passes and not shown and not result.finished:
                     capture('first-pass')
                     shown = True
+                if route.finish_at_end and not result.finished:
+                    if result.passes == route.passes and not qualified:
+                        capture('qualified-continue')
+                        qualified = True
+                    if result.distance >= route.distance-120. and not near_finish:
+                        capture('near-finish')
+                        near_finish = True
                 if result.finished:
                     break
             with gzip.open(output/'raw.json.gz', 'wt', encoding='utf-8') as stream:
                 json.dump(rows, stream, ensure_ascii=False)
             summary = {'initial': initial, 'config': asdict(config), 'variant': app.session.score_variant(),
-                'input': asdict(app.session.keyboard.input_config), 'expected_succeeded': not unsafe,
+                'mode': mode.value, 'route': asdict(route),
+                'input': asdict(app.session.keyboard.input_config), 'expected_succeeded': not (unsafe or follow),
                 'result': asdict(result), 'rows': len(rows), 'record_sha256': hashlib.sha256((output/'raw.json.gz').read_bytes()).hexdigest(),
                 'driver': '原KeyboardController持续直行请求' if unsafe else '固定意图的原HighwayDriver，仅试车工具输出Control',
-                'scope': '新实际原生交通驾驶/离屏图，非人工体验', 'human_gate': 'pending'}
+                'scope': '新实际原生交通驾驶/离屏图，非人工体验', 'human_gate': 'pending',
+                'qualified_before_finish': qualified, 'follow_only': follow, 'rebases': app.session.simulation.rebases}
             (output/'summary.json').write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding='utf-8')
             capture('result')
-            assert result.succeeded == (not unsafe) and app.session.current.collisions == 0, result
+            assert result.succeeded == (not (unsafe or follow)) and app.session.current.collisions == 0, result
             if unsafe:
                 assert '间距不足' in result.reason and not best_path.exists()
+            elif follow:
+                assert '仅安全超越' in result.reason and not best_path.exists()
             else:
-                assert result.new_best and result.passes == 2
+                assert result.new_best and result.passes == route.passes
+                if route.finish_at_end:
+                    assert qualified and result.distance >= route.distance
             app.buttons[0]['command']()
             for _ in range(360):
                 app.session.tick()
@@ -197,8 +221,10 @@ if __name__ == '__main__':
     parser.add_argument('--unsafe', action='store_true')
     parser.add_argument('--restore', action='store_true')
     parser.add_argument('--verify', action='store_true')
+    parser.add_argument('--mode', choices=[mode.value for mode in OVERTAKE_ROUTES], default=GameMode.SAFE_OVERTAKE.value)
+    parser.add_argument('--follow', action='store_true')
     args = parser.parse_args()
     if args.verify:
         print(json.dumps(recheck(args.output.resolve()), ensure_ascii=False))
     else:
-        check(args.output.resolve(), args.size, args.unsafe, args.restore)
+        check(args.output.resolve(), args.size, args.unsafe, args.restore, GameMode(args.mode), args.follow)

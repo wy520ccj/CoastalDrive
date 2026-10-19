@@ -3,19 +3,22 @@
 import pytest
 
 from driving_modes import DrivingMode
+from overtake_routes import OVERTAKE_ROUTES
 from race import BestTimes, GameMode
 from session import Phase, Session
 from session_process import SessionProcess, _decode_frame, _encode_frame, _output
 
 
-def test_fixed_traffic_course_and_reset_and_existing_free_density(tmp_path):
+@pytest.mark.parametrize('mode', OVERTAKE_ROUTES)
+def test_fixed_traffic_course_and_reset_and_existing_free_density(tmp_path, mode):
+    route = OVERTAKE_ROUTES[mode]
     session = Session(track='test', scores=BestTimes(tmp_path/'best.json'))
     try:
         with pytest.raises(ValueError):
-            session.start(mode=GameMode.SAFE_OVERTAKE, track='coastal')
+            session.start(mode=mode, track='coastal')
         session.traffic_density, session.road_shape = 'busy', 'hills'
-        session.start(mode=GameMode.SAFE_OVERTAKE, track='endless', countdown=False, settle_initial=True)
-        assert session.seed == 17 and session.road_shape == 'straight'
+        session.start(mode=mode, track='endless', countdown=False, settle_initial=True)
+        assert session.seed == route.seed and session.road_shape == route.shape
         assert len(session.current.traffic) == 12 and session.simulation.traffic_span == 540
         assert session.traffic_density == 'busy' and session.simulation.config.tire_substeps == 1
         assert session.highway.snapshot.overtake is not None and session.highway.snapshot.challenge
@@ -41,12 +44,14 @@ def test_fixed_traffic_course_and_reset_and_existing_free_density(tmp_path):
         session.close()
 
 
-def test_process_returns_fixed_course_and_quit_state(tmp_path):
+@pytest.mark.parametrize('mode', OVERTAKE_ROUTES)
+def test_process_returns_fixed_course_and_quit_state(tmp_path, mode):
+    route = OVERTAKE_ROUTES[mode]
     session = SessionProcess(track='test', driving_mode=DrivingMode.GAME, scores=BestTimes(tmp_path/'best.json'))
     try:
         session.traffic_density, session.road_shape = 'light', 'hills'
-        session.start(mode=GameMode.SAFE_OVERTAKE, track='endless', countdown=False, settle_initial=True)
-        assert session.seed == 17 and session.road_shape == 'straight'
+        session.start(mode=mode, track='endless', countdown=False, settle_initial=True)
+        assert session.seed == route.seed and session.road_shape == route.shape
         assert len(session.current.traffic) == 12 and session.highway.snapshot.overtake.passes == 0
         session.finish()
         assert not session.highway.snapshot.overtake.succeeded and '提前' in session.highway.snapshot.reason

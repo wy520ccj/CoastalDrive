@@ -1,0 +1,6 @@
+{
+  "passed": false,
+  "exception": "TypeError",
+  "cause": "诊断工具将BAM的Vec3f直接传给Double NodePath，必须传原始数值tuple；未产生几何结论或画面",
+  "physics_changed": false
+}

@@ -7,6 +7,7 @@ from audio.music import STATIONS
 from coastal_medals import driving_goal
 from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
+from overtake_routes import OVERTAKE_ROUTES
 from race import GameMode
 from sprint_routes import SPRINT_ROUTES
 from ui import theme
@@ -124,7 +125,7 @@ class DrivingHUD:
                driving_mode=DrivingMode.GAME):
         player = state.player
         timed = ((track != "endless" and race.mode == GameMode.TIME_TRIAL)
-                 or (track == "endless" and (race.mode in (GameMode.SLALOM_LESSON, GameMode.SAFE_OVERTAKE)
+                 or (track == "endless" and (race.mode in (GameMode.SLALOM_LESSON, *OVERTAKE_ROUTES)
                                              or highway.sprint is not None)))
         coastal = track == "coastal" and race.mode == GameMode.TIME_TRIAL
         if timed != self._timed or coastal != self._coastal:
@@ -164,12 +165,14 @@ class DrivingHUD:
             set_text(self.detail, f"距离 {distance}\n碰撞 {highway.collisions} 次")
             message = "无碰撞行驶中" if highway.collisions == 0 else f"碰撞 {highway.collisions} 次"
             if highway.overtake is not None:
-                set_text(self.mode, "车流安全超车")
+                route = OVERTAKE_ROUTES[race.mode]
+                set_text(self.mode, route.title)
                 detail, feedback = overtake_driving_feedback(highway.overtake)
                 set_text(self.detail, detail)
                 set_text(self.split, feedback)
                 self.split.setFg(theme.SEA)
-                message = "留出空间再择道；超出整车10米才计数 · 金85 / 银110 / 铜150秒"
+                message = ("弯前看清车流，留距择道；超车达标后仍需安全到终点" if route.finish_at_end else
+                           "留出空间再择道；超出整车10米才计数 · 金85 / 银110 / 铜150秒")
             elif braking:
                 detail, message = driving_feedback(highway.braking)
                 set_text(self.detail, detail)

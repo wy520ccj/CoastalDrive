@@ -1,0 +1,12 @@
+PLR1704 Redefining argument with the local name `parent`
+  --> src\overtake_markers.py:34:19
+   |
+32 |             node.setTwoSided(True)
+33 |         self.labels = []
+34 |         for name, parent in (('终点 · 安全超车至少3辆', self.finish), ('前方150米终点 · 保持安全间距', self.root)):
+   |                   ^^^^^^
+35 |             label = TextNode('overtake-finish-sign')
+36 |             label.setFont(font)
+   |
+
+Found 1 error.

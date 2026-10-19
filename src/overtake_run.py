@@ -3,6 +3,7 @@
 import math
 from dataclasses import dataclass, replace
 
+from overtake_routes import OVERTAKE_ROUTES
 from race import GameMode
 from vehicle_config import body_center
 
@@ -64,19 +65,32 @@ class OvertakeResult:
     reference_times: tuple = ()
     new_best: bool = False
     save_notice: str = ""
+    route_id: str = GameMode.SAFE_OVERTAKE.value
 
 
 class OvertakeRun:
-    def __init__(self, initial, config, scores, variant):
+    def __init__(self, initial, config, scores, variant, *, mode=GameMode.SAFE_OVERTAKE, road=None):
         self.config, self.scores = config, scores
-        self.score_id = "safe-overtake-v1:straight:seed-17:12-540:2-in-2000:1-10:"+variant
+        self.mode, self.route, self.road = mode, OVERTAKE_ROUTES[mode], road
+        if self.route.shape != "straight" and road is None:
+            raise ValueError("弯坡车流需要本次权威道路的只读坐标接口")
+        initial = self.local_state(initial)
+        self.score_id = (f"{self.route.score_prefix}:{self.route.shape}:seed-{self.route.seed}:"
+                         f"12-540:{self.route.passes}-in-{self.route.distance:g}:1-10:"+variant)
         self.snapshot = OvertakeResult(initial.player.position[1]+initial.origin_y,
-            best_seconds=scores.get(GameMode.SAFE_OVERTAKE, self.score_id),
-            reference_times=scores.get_splits(GameMode.SAFE_OVERTAKE, self.score_id, PASS_TARGET),
-            save_notice=scores.notice)
+            best_seconds=scores.get(mode, self.score_id),
+            reference_times=scores.get_splits(mode, self.score_id, self.route.passes+int(self.route.finish_at_end)),
+            save_notice=scores.notice, route_id=mode.value)
         self.previous = self.geometry(initial)
         self.candidates = {}
         self.seen = set()
+
+    def local_state(self, state):
+        """弯坡沿权威道路投影；只构造本拍规则输入，不写回物理快照。"""
+        if self.route.shape == "straight":
+            return state
+        return replace(state, player=self.road.lane_frame(state.player),
+                       traffic=tuple(self.road.lane_frame(car) for car in state.traffic), origin_y=0.)
 
     def geometry(self, state):
         own = body(state.player, self.config)
@@ -87,6 +101,7 @@ class OvertakeRun:
         result = self.snapshot
         if result.finished:
             return result
+        state = self.local_state(state)
         distance = state.player.position[1]+state.origin_y-result.start_progress
         self.snapshot = replace(result, distance=distance, seconds=elapsed)
         own, traffic = self.geometry(state)
@@ -130,28 +145,33 @@ class OvertakeRun:
                     completed.append((key, self.candidates.pop(key)))
         # 先检查所有车辆，再授予本拍超车；同拍别处贴身不能获得成功成绩。
         for key, clearance in completed:
+            if self.snapshot.passes >= self.route.passes:
+                break
             self.seen.add(key)
             if not math.isfinite(clearance):
                 continue
             now = self.snapshot
             self.snapshot = replace(now, passes=now.passes+1, pass_times=(*now.pass_times, elapsed),
                 pass_ids=(*now.pass_ids, key), pass_clearances=(*now.pass_clearances, clearance),
-                feedback=f"安全超车 {now.passes+1}/{PASS_TARGET} · 并排最小侧距{clearance:.2f}米")
-            if self.snapshot.passes == PASS_TARGET:
+                feedback=f"安全超车 {now.passes+1}/{self.route.passes} · 并排最小侧距{clearance:.2f}米")
+            if self.snapshot.passes == self.route.passes:
                 break
-        if distance > DISTANCE_LIMIT:
-            self.stop(f"已到2公里，仅安全超越{self.snapshot.passes}/{PASS_TARGET}辆；提前观察慢车与空车道。")
-        elif elapsed > TIME_LIMIT:
-            self.stop("超过150秒；保持节奏，在安全空隙完成超越。")
-        elif self.snapshot.passes == PASS_TARGET:
-            times = self.snapshot.pass_times
+        at_end = distance >= self.route.distance
+        if distance > self.route.distance and not self.route.finish_at_end:
+            self.stop(f"已到{self.route.distance/1000:g}公里，仅安全超越{self.snapshot.passes}/{self.route.passes}辆；提前观察慢车与空车道。")
+        elif elapsed > self.route.seconds:
+            self.stop(f"超过{self.route.seconds:g}秒；保持节奏，在安全空隙完成超越。")
+        elif at_end and self.route.finish_at_end and self.snapshot.passes < self.route.passes:
+            self.stop(f"已到{self.route.distance/1000:g}公里，仅安全超越{self.snapshot.passes}/{self.route.passes}辆；提前观察慢车与空车道。")
+        elif self.snapshot.passes == self.route.passes and (not self.route.finish_at_end or at_end):
+            times = (*self.snapshot.pass_times, elapsed) if self.route.finish_at_end else self.snapshot.pass_times
             # 两辆同拍完成时保留真实相同时间；旧最佳格式只接受严格递增分段。
             splits = times if all(a < b for a, b in zip((0., *times), times)) else None
-            best, saved = self.scores.record(GameMode.SAFE_OVERTAKE, elapsed, self.score_id, splits=splits)
-            self.snapshot = replace(self.snapshot, medal=next(m for m, t in TARGETS if elapsed <= t),
+            best, saved = self.scores.record(self.mode, elapsed, self.score_id, splits=splits)
+            self.snapshot = replace(self.snapshot, medal=next(m for m, t in self.route.targets if elapsed <= t),
                 best_seconds=best, new_best=saved and (result.best_seconds is None or elapsed < result.best_seconds),
                 save_notice=self.scores.error or self.scores.notice)
-            self.stop(f"安全超越{PASS_TARGET}辆 · {self.snapshot.medal}牌完成", succeeded=True)
+            self.stop(f"安全超越{self.route.passes}辆 · {self.snapshot.medal}牌完成", succeeded=True)
         return self.snapshot
 
     def stop(self, reason, *, succeeded=False):

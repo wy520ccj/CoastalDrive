@@ -3,7 +3,8 @@
 from dataclasses import dataclass, replace
 
 from braking_lesson import TARGET_DISTANCE, BrakingLesson, BrakingResult
-from overtake_run import DISTANCE_LIMIT, OvertakeResult, OvertakeRun
+from overtake_run import OvertakeResult, OvertakeRun
+from race import GameMode
 from slalom_lesson import GATES, SlalomLesson, SlalomResult
 from sprint_run import SprintResult, SprintRun
 
@@ -49,16 +50,18 @@ class HighwayRun:
         self.overtake = None
 
     def start(self, progress, *, challenge=False, braking_scores=None, slalom_scores=None, vehicle_config=None,
-              sprint_mode=None, sprint_scores=None, score_variant="", overtake_initial=None, overtake_scores=None):
+              sprint_mode=None, sprint_scores=None, score_variant="", overtake_initial=None, overtake_scores=None,
+              overtake_mode=GameMode.SAFE_OVERTAKE, overtake_road=None):
         self._start = progress
         self.snapshot = HighwayResult(challenge=challenge, running=True)
         self.braking = None if braking_scores is None else BrakingLesson(progress, braking_scores)
         self.slalom = None if slalom_scores is None else SlalomLesson(progress, slalom_scores, vehicle_config)
         self.sprint = None if sprint_mode is None else SprintRun(progress, sprint_mode, sprint_scores, score_variant, vehicle_config)
         self.overtake = (None if overtake_initial is None else
-                         OvertakeRun(overtake_initial, vehicle_config, overtake_scores, score_variant))
+                         OvertakeRun(overtake_initial, vehicle_config, overtake_scores, score_variant,
+                                     mode=overtake_mode, road=overtake_road))
         if self.overtake is not None:
-            self.snapshot = replace(self.snapshot, challenge=True, target=DISTANCE_LIMIT, overtake=self.overtake.snapshot)
+            self.snapshot = replace(self.snapshot, challenge=True, target=self.overtake.route.distance, overtake=self.overtake.snapshot)
         if self.sprint is not None:
             self.snapshot = replace(self.snapshot, challenge=True, target=self.sprint.route.gates[-1], sprint=self.sprint.snapshot)
         if self.braking is not None:

@@ -20,6 +20,7 @@ class GameMode(Enum):
     RIDGE_SPRINT = "ridge_sprint"
     VALLEY_PACE = "valley_pace"
     SAFE_OVERTAKE = "safe_overtake"
+    HILL_TRAFFIC = "hill_traffic"
 
 
 @dataclass(frozen=True)

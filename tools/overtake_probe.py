@@ -36,11 +36,11 @@ class OvertakeDriver:
                                    [self.road.locate(item) for item in (car, *traffic)])
 
 
-def probe(output, seed, speed):
+def probe(output, seed, speed, shape='straight', distance_limit=2000., seconds=120.):
     output.mkdir(parents=True, exist_ok=False)
     source, runtime = model_fingerprint(), runtime_fingerprint()
     config = DrivingMode.GAME.configured_vehicle()
-    sim = Simulation(seed, track='endless', road_shape='straight', traffic_count=12, traffic_span=540,
+    sim = Simulation(seed, track='endless', road_shape=shape, traffic_count=12, traffic_span=540,
                      config=config, input_config=DrivingMode.GAME.input_config)
     rows, passes, previous, seen = [], [], {}, set()
     started = time.perf_counter()
@@ -48,30 +48,32 @@ def probe(output, seed, speed):
         sim.settle_initial()
         state = sim.snapshot()
         driver = OvertakeDriver(sim.road, config, DrivingMode.GAME.input_config, speed)
-        origin = state.player.position[1]+state.origin_y
+        origin = sim.road.locate(state.player)[0]+(0. if sim.road.curve else state.origin_y)
         initial = asdict(state)
-        for _ in range(120*120):
+        for _ in range(round(seconds*120)):
             request = driver.sample(state, FIXED_DT)
             sim.step(request)
             state = sim.snapshot()
-            x, y, _ = state.player.position
+            progress, lateral = sim.road.locate(state.player)
+            distance = progress+(0. if sim.road.curve else state.origin_y)-origin
             for slot, other in enumerate(state.traffic):
                 key = slot, other.generation
-                delta = other.position[1]-y
+                other_progress, other_lateral = sim.road.locate(other)
+                delta = other_progress-progress
                 if key in previous and previous[key] > 0 >= delta and key not in seen:
-                    passes.append({'slot': slot, 'generation': other.generation, 'distance': y+state.origin_y-origin,
-                                   'lateral': abs(other.position[0]-x), 'seconds': state.time-initial['time']})
+                    passes.append({'slot': slot, 'generation': other.generation, 'distance': distance,
+                                   'lateral': abs(other_lateral-lateral), 'seconds': state.time-initial['time']})
                     seen.add(key)
                 previous[key] = delta
             rows.append({'tick': state.tick, 'time': state.time, 'origin_y': state.origin_y,
                          'player': car_record(state.player), 'traffic': [car_record(item) for item in state.traffic],
                          'collisions': state.collisions, 'control': asdict(request)})
-            if y+state.origin_y-origin >= 2000 or state.collisions:
+            if distance >= distance_limit or state.collisions:
                 break
         with gzip.open(output/'raw.json.gz', 'wt', encoding='utf-8') as stream:
             json.dump(rows, stream)
-        result = {'initial': initial, 'seed': seed, 'target_speed': speed, 'passes': passes,
-                  'rows': len(rows), 'distance': y+state.origin_y-origin, 'collisions': state.collisions,
+        result = {'initial': initial, 'seed': seed, 'shape': shape, 'target_speed': speed, 'passes': passes,
+                  'rows': len(rows), 'distance': distance, 'collisions': state.collisions,
                   'config': asdict(config), 'source_start': source, 'source_end': model_fingerprint(),
                   'runtime_start': runtime, 'runtime_end': runtime_fingerprint(),
                   'wall_seconds': time.perf_counter()-started, 'scope': '真实Control试车测量，非人工/非最终规则'}
@@ -92,5 +94,8 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--seed', type=int, default=17)
     parser.add_argument('--speed', type=float, default=40.)
+    parser.add_argument('--shape', choices=('straight', 'curve', 'hills'), default='straight')
+    parser.add_argument('--distance', type=float, default=2000.)
+    parser.add_argument('--seconds', type=float, default=120.)
     args = parser.parse_args()
-    probe(args.output.resolve(), args.seed, args.speed)
+    probe(args.output.resolve(), args.seed, args.speed, args.shape, args.distance, args.seconds)

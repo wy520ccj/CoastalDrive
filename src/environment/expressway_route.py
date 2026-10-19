@@ -62,6 +62,15 @@ def terrain_point(curve, d, s, seed):
     return p
 
 
+def sign_lateral(model, lateral, s, seed):
+    """隔音屏段的小牌放在路肩；实际1.96m宽牌面与屏障保留净距。"""
+    if model not in ('speed-limit', 'curve-left', 'curve-right', 'hill-warning', 'wind-warning'):
+        return lateral
+    zone, local = district(s, seed)
+    # 屏障每段从里程锚点向前延伸4米，边界也给牌面厚度留出空间。
+    return 8.8 if zone in (1, 3) and 519 <= local <= 981 else lateral
+
+
 def positions(index, seed, curve=None):
     """返回绝对里程设施；相邻分段不重复拥有同一节点。"""
     start, end = index * 200, (index + 1) * 200
@@ -101,7 +110,7 @@ def positions(index, seed, curve=None):
             items.append(("kilometer", 9.7, s, 0))
         if local == 1120:
             items.append(("equipment", -10.7, s, 0))
-    return items
+    return [(model, sign_lateral(model, d, s, seed), s, heading) for model, d, s, heading in items]
 
 
 def detail_group(root, curve, index, name="expressway-detail-distance", distance=700):

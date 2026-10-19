@@ -29,7 +29,7 @@ from driving_modes import DrivingMode
 from garage import GaragePreview
 from highway_run import TRAFFIC_DENSITIES
 from lab_records import load_record
-from overtake_run import RULES as OVERTAKE_RULES
+from overtake_routes import OVERTAKE_ROUTES
 from paths import user_data
 from race import BestTimes, GameMode
 from scene import Scene
@@ -182,11 +182,12 @@ class CoastalDrive(ShowBase):
         self.slalom_menu = False
         self.sprint_menu = False
         self.overtake_menu = False
+        self.overtake_mode = GameMode.SAFE_OVERTAKE
         self.driving_journey_return = False
         self.lab_return_braking = False
         self.lab_return_slalom = False
         self.lab_return_sprint = None
-        self.lab_return_overtake = False
+        self.lab_return_overtake = None
         self.lab_journey_request = None
         self.audio_settings_page = False
         self.driving_mode_page = False
@@ -266,7 +267,7 @@ class CoastalDrive(ShowBase):
         self.lab_return_braking = self.session.mode == GameMode.BRAKING_LESSON
         self.lab_return_slalom = self.session.mode == GameMode.SLALOM_LESSON
         self.lab_return_sprint = self.session.mode if self.session.mode in SPRINT_ROUTES else None
-        self.lab_return_overtake = self.session.mode == GameMode.SAFE_OVERTAKE
+        self.lab_return_overtake = self.session.mode if self.session.mode in OVERTAKE_ROUTES else None
         self.workspace_vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
         self.next_workspace = "lab"
         self._begin_workspace(self._load_lab(), "进入车辆实验室", "工况与A/B记录将保留")
@@ -429,11 +430,11 @@ class CoastalDrive(ShowBase):
         self.workspace_vehicle = self.lab.workspace_vehicle or self.workspace_vehicle
         # 显式亲自过门优先；既有工坊滨海验证与普通课题返回分别保留。
         if self.lab.next_slalom:
-            self.lab_return_overtake = False
+            self.lab_return_overtake = None
             self.lab_return_slalom, self.lab_return_braking = True, False
             self.lab_return_sprint = None
         elif self.lab.next_drive and self.workspace_vehicle.workshop_result is not None:
-            self.lab_return_overtake = False
+            self.lab_return_overtake = None
             self.lab_return_braking = False
             self.lab_return_slalom = False
             self.lab_return_sprint = None
@@ -473,7 +474,7 @@ class CoastalDrive(ShowBase):
             self.scene.render.reparentTo(self.render)
         if self.next_drive:
             if self.lab_return_overtake:
-                self._enter_game(GameMode.SAFE_OVERTAKE, "endless")
+                self._enter_game(self.lab_return_overtake, "endless")
             elif self.lab_return_sprint is not None:
                 self.session.road_shape = SPRINT_ROUTES[self.lab_return_sprint].shape
                 self._enter_game(self.lab_return_sprint, "endless")
@@ -1136,7 +1137,8 @@ class CoastalDrive(ShowBase):
         self._shown_phase = None
         self.refresh_panel()
 
-    def choose_overtake(self):
+    def choose_overtake(self, mode=GameMode.SAFE_OVERTAKE):
+        self.overtake_mode = mode
         self.sprint_menu, self.overtake_menu, self.highway_menu = False, True, True
         self.panel_selection = 0
         self._shown_phase = None
@@ -1144,11 +1146,11 @@ class CoastalDrive(ShowBase):
 
     def back_from_overtake(self):
         self.choose_sprint_routes()
-        self.select_panel_option(3)
+        self.select_panel_option(3 if self.overtake_mode == GameMode.SAFE_OVERTAKE else 4)
 
     def start_overtake(self):
         self.sprint_menu = self.overtake_menu = self.highway_menu = False
-        self.start_game(mode=GameMode.SAFE_OVERTAKE, track="endless")
+        self.start_game(mode=self.overtake_mode, track="endless")
 
     def start_sprint(self, mode):
         self.sprint_menu = self.highway_menu = False
@@ -1298,8 +1300,9 @@ class CoastalDrive(ShowBase):
                 ("返回", self.back_from_audio_settings),
             ]
         elif phase == Phase.MENU and self.highway_menu and self.overtake_menu:
-            self.panel_title.setText("车流安全超车")
-            self.panel_note.setText(OVERTAKE_RULES)
+            route = OVERTAKE_ROUTES[self.overtake_mode]
+            self.panel_title.setText(route.title)
+            self.panel_note.setText(route.rules)
             options = [("开始挑战  Enter", self.start_overtake), ("返回短途赛事", self.back_from_overtake)]
         elif phase == Phase.MENU and self.highway_menu and self.sprint_menu:
             self.panel_title.setText("短途路线与车流挑战")
@@ -1313,6 +1316,7 @@ class CoastalDrive(ShowBase):
                        ("山脊冲刺 · 1.4公里", lambda: self.start_sprint(GameMode.RIDGE_SPRINT)),
                        ("山谷节奏 · 1公里", lambda: self.start_sprint(GameMode.VALLEY_PACE)),
                        ("车流安全超车 · 2辆", self.choose_overtake),
+                       ("弯坡车流 · 2.4公里", lambda: self.choose_overtake(GameMode.HILL_TRAFFIC)),
                        ("返回高速与课题", self.back_from_sprint_routes)]
         elif phase == Phase.MENU and self.highway_menu and self.slalom_menu:
             self.panel_title.setText("驾驶课题 · 连续过门")
@@ -1346,7 +1350,7 @@ class CoastalDrive(ShowBase):
                 ),
                 ("驾驶课题 · 定点刹停", self.choose_braking_lesson),
                 ("驾驶课题 · 连续过门", self.choose_slalom_lesson),
-                ("短途赛事 · 4项挑战", self.choose_sprint_routes),
+                ("短途赛事 · 5项挑战", self.choose_sprint_routes),
                 ("返回", self.back_to_modes),
             ]
         elif phase == Phase.PAUSED:
@@ -1465,12 +1469,12 @@ class CoastalDrive(ShowBase):
             ]
             if self.workspace_vehicle.workshop_result is not None:
                 options[1] = ("返回工坊", self.open_vehicle_lab)
-            elif self.session.mode in (GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON, GameMode.SAFE_OVERTAKE) or self.session.mode in SPRINT_ROUTES:
+            elif self.session.mode in (GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON, *OVERTAKE_ROUTES) or self.session.mode in SPRINT_ROUTES:
                 options[1] = ("返回实验台", self.open_vehicle_lab)
             if self.session.mode in (GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON):
                 options[2] = (("查看驾驶进阶", self.return_to_driving_journey) if self.driving_journey_return
                               else ("返回主菜单", self.back_to_menu))
-            elif self.session.mode in SPRINT_ROUTES or self.session.mode == GameMode.SAFE_OVERTAKE:
+            elif self.session.mode in SPRINT_ROUTES or self.session.mode in OVERTAKE_ROUTES:
                 options[2] = ("返回主菜单", self.back_to_menu)
         else:
             self.panel.hide()
@@ -1536,9 +1540,9 @@ class CoastalDrive(ShowBase):
             self.panel_note.setPos(0, .34)
             self.panel_detail.setScale(.034)
             self.panel_detail.setPos(0, .025)
-            for index, button in enumerate(self.buttons[:5]):
-                button.setZ(-.19-index*.13)
-                button["frameSize"] = (-.51, .51, -.055, .055)
+            for index, button in enumerate(self.buttons[:6]):
+                button.setZ(-.16-index*.115)
+                button["frameSize"] = (-.51, .51, -.05, .05)
         elif phase == Phase.PAUSED:
             self.panel_title.setScale(0.14)
             self.panel_note.setPos(0, 0.27)

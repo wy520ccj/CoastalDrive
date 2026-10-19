@@ -48,6 +48,7 @@ from ghost_visual import GHOST_MASK, GhostVisual
 from highway_map import HIGHWAY_LENGTH
 from highway_map import ROAD_WIDTH as HIGHWAY_ROAD_WIDTH
 from highway_map import meshes as highway_meshes
+from overtake_markers import OvertakeMarkers
 from paths import resource_root
 from skins import apply_skin, traffic_models, traffic_skins, vehicle_definition
 from sky_dome import make_sky
@@ -276,6 +277,7 @@ class Scene:
         self.braking_markers = BrakingMarkers(self.render, base.ui_font, self.sun_path)
         self.slalom_markers = SlalomMarkers(self.render, base.ui_font, self.sun_path)
         self.sprint_markers = SprintMarkers(self.render, base.ui_font, self.sun_path)
+        self.overtake_markers = OvertakeMarkers(self.render, base.ui_font, self.sun_path)
         self.sky = make_sky(base, self.render, coastal=base.session.simulation.track == "coastal")
         if base.session.simulation.track == "endless":
             from environment.expressway_materials import style_sky
@@ -672,6 +674,7 @@ class Scene:
         self.braking_markers.apply(self.base.session.highway.snapshot.braking, state.origin_y)
         self.slalom_markers.apply(self.base.session.highway.snapshot.slalom, state.origin_y)
         self.sprint_markers.apply(self.base.session.highway.snapshot.sprint, self.base.session.simulation.road)
+        self.overtake_markers.apply(self.base.session.highway.snapshot.overtake, self.base.session.simulation.road)
         self.sky.setPos(*state.player.position)
         if self.base.session.simulation.track == "coastal":
             self.ocean.setShaderInput("sea_time", state.time)

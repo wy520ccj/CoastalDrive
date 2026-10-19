@@ -22,7 +22,7 @@ def test_menu_two_routes_markers_hud_result_and_same_window_lab_return(tmp_path)
         for first, second in zip(app.buttons[:7], app.buttons[1:8], strict=True):
             assert first.getZ()+first['frameSize'][2] > second.getZ()+second['frameSize'][3]
         app.buttons[6]['command']()
-        assert app.sprint_menu and app.panel_option_count == 5
+        assert app.sprint_menu and app.panel_option_count == 6
         assert '平路连弯' in app.panel_note.getText() and '山脊冲刺' in app.panel_note.getText()
         previous_shape = app.highway_shape
         app.adjust_panel_option(1)

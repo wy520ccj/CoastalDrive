@@ -1,0 +1,22 @@
+{
+  "normal-planned": {
+    "root_producers_exact": true,
+    "environment_followup": "仅嵌套environment/expressway_route.py小牌横坐标，另包完整源码/模型/前后图；无新驾驶声明"
+  },
+  "double-planned": {
+    "root_producers_exact": true,
+    "environment_followup": "仅嵌套environment/expressway_route.py小牌横坐标，另包完整源码/模型/前后图；无新驾驶声明"
+  },
+  "normal-unsafe": {
+    "root_producers_exact": true,
+    "environment_followup": "仅嵌套environment/expressway_route.py小牌横坐标，另包完整源码/模型/前后图；无新驾驶声明"
+  },
+  "double-unsafe": {
+    "root_producers_exact": true,
+    "environment_followup": "仅嵌套environment/expressway_route.py小牌横坐标，另包完整源码/模型/前后图；无新驾驶声明"
+  },
+  "normal-follow": {
+    "root_producers_exact": true,
+    "environment_followup": "仅嵌套environment/expressway_route.py小牌横坐标，另包完整源码/模型/前后图；无新驾驶声明"
+  }
+}
