@@ -64,6 +64,9 @@ def test_sharp_recipe_is_rejected_and_changing_topic_cancels_an_active_trial(lab
     panel.show()
     panel.show_insights()
     assert panel.insights.data['rows'][0][2] > 4
+    assert panel.insights.metric_rows[3][0].getText() == '末窗平均实际转角 / °'
+    assert panel.insights.metric_rows[0][2].getText() == f"{panel.insights.data['rows'][0][2]:.3f}"
+    assert panel.insights.prepare['state'] == DGG.NORMAL
     panel.prepare_next_trial()
     assert panel.selection() == (2, False, False) and panel.result is None and panel.phase is None
     assert panel.baseline is baseline and panel.candidate is candidate

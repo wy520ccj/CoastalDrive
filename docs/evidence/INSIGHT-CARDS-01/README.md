@@ -1,0 +1,1 @@
+工坊试验解读卡片。wide/4x3各4张最终实图，来源为WORKSHOP-INSIGHTS-01普通库归档真实解读JSON，新增物理0拍；输入SHA在各summary。原物理记录和算法不改。checks为本次真实工坊UI T0/T1，T0 2项、T1完整两模块6项和三种子通过，和静态图分别记账。旧版图位于WORKSHOP-INSIGHTS-01/normal；本次初宽屏三位横摆已由最终五位替换。人工体验待确认，原ABS精度与项目阶段Gate开放。

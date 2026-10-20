@@ -1,0 +1,9 @@
+{
+  "normalization": "CRLF to LF",
+  "sha256": {
+    "src/ui/workshop_insights.py": "681f91f730f430444f605aec382ad23e3a57cd0e0ca6cf779bad26f89dbd4211",
+    "tests/test_workshop_ui.py": "4ef5fbf43799b35496577ee24d3349bee9d6632c4834d86b8089248932e10598",
+    "tests/test_cornering_workshop_ui.py": "ffbbde6afcffb71b2ae3945f9bbb862e16cfabb549f1d5ff21142de9b0f2767b",
+    "tools/insight_cards_check.py": "277b96576f7c590b3af2161005331e554c7e0037b17b7806a44956af458e56e9"
+  }
+}

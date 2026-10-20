@@ -38,6 +38,10 @@ def test_challenge_uses_real_trials_and_invalidates_unrun_selection(workbench):
     assert panel.drive_button["state"] == DGG.NORMAL
     panel.show_insights()
     assert not panel.insights.root.isHidden() and panel.insights.data['passed']
+    data = panel.insights.data
+    assert panel.insights.primary_values[1].getText() == f"{data['primary'][2]:.3f} m"
+    assert panel.insights.metric_rows[0][3].getText() == f"{data['rows'][0][2]-data['rows'][0][1]:+.3f}"
+    assert panel.insights.budget_note.getText() == '预算内'
     state = app.capture_workspace()
     panel.brakes.set(1)
     assert panel.result is None and panel.drive_button["state"] == DGG.DISABLED
