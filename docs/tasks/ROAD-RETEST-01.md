@@ -23,3 +23,4 @@
 - 扩展相关T1 `logs/validation/ROAD-RETEST-01-final-T1`：Ruff通过，68过/2失败，pytest639.0秒；失败为旧工作区焦点/清理测试替身缺少road_retest字段，已补齐，三种子当时未跑，不把该批称为通过。按用户“不​​要过度检验边界”，后续只补本包/原失败和三种子，不重跑全部旧工坊物理试验。
 - 最终补验 `tools/validate.py T1 --tests tests/test_road_retest.py tests/test_road_retest_ui.py tests/test_workspace_transition.py tests/test_lab_ui.py::test_switch_requests_exit_and_cleanup_releases_world_once --output logs/validation/ROAD-RETEST-01-repair-T1`：Ruff、10项及seed0/17/23各1200拍通过，pytest80.9秒。原68项未改模块结果明确复用，不累加为本批新执行项；两个失败均已补验通过。
 - `docs/evidence/ROAD-RETEST-01`归档新物理/图像/原始失败与补验日志，清单逐项记录原始SHA，源码清单区分最终版本与实际运行版本。仅本地，无推送；持续目标active，原物理T2/实时/人工Gate开放。下一接续DRIVING-CARDS-01，改善高速与课题选择/说明页。
+- 本地功能提交 `9f11fc17`；110份原始文件与13份最终源码清单。后续文档提交补充本记录及被通用*.log忽略的检查原始日志，未改变已验功能。

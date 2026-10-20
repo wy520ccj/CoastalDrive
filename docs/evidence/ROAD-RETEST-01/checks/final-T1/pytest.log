@@ -1,0 +1,107 @@
+........F...................F.........................................   [100%]
+================================== FAILURES ===================================
+_ test_ready_session_receives_current_focus_when_loading_had_no_window_event __
+
+self = namespace(workspace='game', _workspace_steps=None, smoke=False, session=namespace(phase=<Phase.COUNTDOWN: 'countdown'>...on_receives_current_focus_when_loading_had_no_window_event.<locals>.<lambda> at 0x000002DB82C8CEB0>, _shown_phase=None)
+task = namespace(frame=1, done='done')
+
+    def _advance_workspace(self, task):
+        self.workspace_loading.resize()
+        # 先让完整加载画面进入一次正常绘制，再执行可能阻塞的初始化。
+        if task.frame == 0:
+            return task.cont
+        try:
+>           completed, stage = next(self._workspace_steps)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           StopIteration
+
+src\application.py:442: StopIteration
+
+During handling of the above exception, another exception occurred:
+
+    def test_ready_session_receives_current_focus_when_loading_had_no_window_event():
+        observed = []
+        session = SimpleNamespace(phase=Phase.LOADING, focus_changed=observed.append)
+        properties = SimpleNamespace(getForeground=lambda: False, getMinimized=lambda: False)
+        app = SimpleNamespace(workspace="game", _workspace_steps=iter(()), smoke=False,
+            session=session, win=SimpleNamespace(getProperties=lambda: properties),
+            workspace_loading=SimpleNamespace(resize=lambda: None, hide=lambda: observed.append("hidden")),
+            setup_controls=lambda: None, taskMgr=SimpleNamespace(add=lambda *args: None),
+            update=lambda task: None, refresh_panel=lambda: None)
+        task = SimpleNamespace(frame=1, done="done")
+>       assert CoastalDrive._advance_workspace(app, task) == "done"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_workspace_transition.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = namespace(workspace='game', _workspace_steps=None, smoke=False, session=namespace(phase=<Phase.COUNTDOWN: 'countdown'>...on_receives_current_focus_when_loading_had_no_window_event.<locals>.<lambda> at 0x000002DB82C8CEB0>, _shown_phase=None)
+task = namespace(frame=1, done='done')
+
+    def _advance_workspace(self, task):
+        self.workspace_loading.resize()
+        # 先让完整加载画面进入一次正常绘制，再执行可能阻塞的初始化。
+        if task.frame == 0:
+            return task.cont
+        try:
+            completed, stage = next(self._workspace_steps)
+        except StopIteration:
+            self._workspace_steps = None
+            if self.workspace == "lab":
+                self.lab.activate()
+            else:
+                self.setup_controls()
+                self.taskMgr.add(self.update, "drive-update")
+                if self.session.phase == Phase.LOADING:
+                    self.session.phase = Phase.COUNTDOWN
+                if not self.smoke:
+                    properties = self.win.getProperties()
+                    self.session.focus_changed(properties.getForeground() and not properties.getMinimized())
+                self._shown_phase = None
+                self.refresh_panel()
+>               if self.road_retest_return is not None:
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'types.SimpleNamespace' object has no attribute 'road_retest_return'
+
+src\application.py:457: AttributeError
+__________ test_switch_requests_exit_and_cleanup_releases_world_once __________
+
+    def test_switch_requests_exit_and_cleanup_releases_world_once():
+        calls = []
+        fake = SimpleNamespace(next_workspace=None, on_back=None, userExit=lambda: calls.append("exit"))
+        VehicleLab.back_to_game(fake)
+        assert fake.next_workspace == "game" and calls == ["exit"]
+        fake = SimpleNamespace(_closed=False, owns_window=True,
+            engine=SimpleNamespace(taskMgr=SimpleNamespace(remove=lambda _: None),
+                                   destroy=lambda: calls.append("window-close")),
+            ignoreAll=lambda: None, design_loop=SimpleNamespace(close=lambda: None),
+            road_retest=SimpleNamespace(close=lambda: calls.append("retest-stop")),
+            workshop=SimpleNamespace(hide=lambda: calls.append("workshop-stop")),
+            schemes=SimpleNamespace(hide=lambda: calls.append("schemes-stop")),
+            run_state=SimpleNamespace(close=lambda: calls.append("world-close")),
+            scene=SimpleNamespace(close=lambda: calls.append("scene-close")),
+>           root=SimpleNamespace(destroy=lambda: None))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_lab_ui.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = namespace(_closed=False, owns_window=True, engine=namespace(taskMgr=namespace(remove=<function test_switch_requests_ex...(destroy=<function test_switch_requests_exit_and_cleanup_releases_world_once.<locals>.<lambda> at 0x000002DC0458C3B0>))
+
+    def close_game(self):
+        if self._closed:
+            return
+        self.engine.taskMgr.remove("lab-update")
+        if self.owns_window:
+            self.engine.taskMgr.remove("simplepbr update")
+        self.ignoreAll()
+        self.design_loop.close()
+>       self.road_retest.close()
+        ^^^^^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'road_retest'
+
+src\lab_application.py:1072: AttributeError
+=========================== short test summary info ===========================
+FAILED tests/test_workspace_transition.py::test_ready_session_receives_current_focus_when_loading_had_no_window_event
+FAILED tests/test_lab_ui.py::test_switch_requests_exit_and_cleanup_releases_world_once
+2 failed, 68 passed in 636.21s (0:10:36)

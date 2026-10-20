@@ -1,0 +1,184 @@
+FFF.FF                                                                   [100%]
+================================== FAILURES ===================================
+____________ test_pair_is_frozen_and_missing_other_course_rejected ____________
+
+    def test_pair_is_frozen_and_missing_other_course_rejected():
+        a, b = attempt(), attempt(2, distance=35.)
+>       frozen = prepare_pair(a, b)
+                 ^^^^^^^^^^^^^^^^^^
+
+tests\test_road_retest.py:17: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+a = {'config': {'air_density': 1.225, 'angular_damping': 0.0, 'axle_torque_bias_ratios': [1.0, 1.0], 'axle_track_widths': ...-10-20T03:06:44+00:00', 'result': {'best_distance': None, 'best_error': None, 'entry_kph': 84.0, 'error_m': None, ...}}
+b = {'config': {'air_density': 1.225, 'angular_damping': 0.0, 'axle_torque_bias_ratios': [1.0, 1.0], 'axle_track_widths': ...-10-20T03:06:44+00:00', 'result': {'best_distance': None, 'best_error': None, 'entry_kph': 84.0, 'error_m': None, ...}}
+
+    def prepare_pair(a, b):
+        if a is None or b is None:
+            raise ValueError('请先在道路上完成或结束改装后同题，建立完整A/B。')
+        a, b = checked_record(a), checked_record(b)
+        if a['context']['mode'] != b['context']['mode']:
+            raise ValueError('两份道路结果不是同一道题，未开始参考复测。')
+        for item in (a, b):
+>           config_from_document(item['config'], REFERENCE_DESIGN.config)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'VehicleConfig' object has no attribute 'config'
+
+src\road_retest.py:25: AttributeError
+___ test_standard_environment_separate_from_saved_hardware_and_electronics ____
+
+    def test_standard_environment_separate_from_saved_hardware_and_electronics():
+>       source = pair()
+                 ^^^^^^
+
+tests\test_road_retest.py:29: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_road_retest.py:12: in pair
+    return prepare_pair(attempt(), attempt(2, distance=35.))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+a = {'config': {'air_density': 1.225, 'angular_damping': 0.0, 'axle_torque_bias_ratios': [1.0, 1.0], 'axle_track_widths': ...-10-20T03:06:44+00:00', 'result': {'best_distance': None, 'best_error': None, 'entry_kph': 84.0, 'error_m': None, ...}}
+b = {'config': {'air_density': 1.225, 'angular_damping': 0.0, 'axle_torque_bias_ratios': [1.0, 1.0], 'axle_track_widths': ...-10-20T03:06:44+00:00', 'result': {'best_distance': None, 'best_error': None, 'entry_kph': 84.0, 'error_m': None, ...}}
+
+    def prepare_pair(a, b):
+        if a is None or b is None:
+            raise ValueError('请先在道路上完成或结束改装后同题，建立完整A/B。')
+        a, b = checked_record(a), checked_record(b)
+        if a['context']['mode'] != b['context']['mode']:
+            raise ValueError('两份道路结果不是同一道题，未开始参考复测。')
+        for item in (a, b):
+>           config_from_document(item['config'], REFERENCE_DESIGN.config)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'VehicleConfig' object has no attribute 'config'
+
+src\road_retest.py:25: AttributeError
+___ test_cancel_preserves_actual_completed_steps_and_restores_without_world ___
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-909/test_cancel_preserves_actual_c0')
+
+    def test_cancel_preserves_actual_completed_steps_and_restores_without_world(tmp_path):
+>       result = RoadRetest(pair())
+                            ^^^^^^
+
+tests\test_road_retest.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_road_retest.py:12: in pair
+    return prepare_pair(attempt(), attempt(2, distance=35.))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+a = {'config': {'air_density': 1.225, 'angular_damping': 0.0, 'axle_torque_bias_ratios': [1.0, 1.0], 'axle_track_widths': ...-10-20T03:06:44+00:00', 'result': {'best_distance': None, 'best_error': None, 'entry_kph': 84.0, 'error_m': None, ...}}
+b = {'config': {'air_density': 1.225, 'angular_damping': 0.0, 'axle_torque_bias_ratios': [1.0, 1.0], 'axle_track_widths': ...-10-20T03:06:44+00:00', 'result': {'best_distance': None, 'best_error': None, 'entry_kph': 84.0, 'error_m': None, ...}}
+
+    def prepare_pair(a, b):
+        if a is None or b is None:
+            raise ValueError('请先在道路上完成或结束改装后同题，建立完整A/B。')
+        a, b = checked_record(a), checked_record(b)
+        if a['context']['mode'] != b['context']['mode']:
+            raise ValueError('两份道路结果不是同一道题，未开始参考复测。')
+        for item in (a, b):
+>           config_from_document(item['config'], REFERENCE_DESIGN.config)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'VehicleConfig' object has no attribute 'config'
+
+src\road_retest.py:25: AttributeError
+_______ test_retest_preserves_old_a_b_drafts_and_returns_original_pair ________
+
+app = <application.CoastalDrive object at 0x00000179487A4C20>
+
+    def test_retest_preserves_old_a_b_drafts_and_returns_original_pair(app):
+        old_car = app.workspace_path.read_bytes()
+        app.open_vehicle_lab()
+        finish(app, 'lab')
+        lab = app.lab
+        lab.set_options(LabOptions(speed_kph=20., duration=.1, friction=.6))
+        lab.start_experiment()
+        while not lab.run_state.done:
+            lab.run_state.step()
+        lab.run_state.paused = True
+        lab.record = lab.active_record()
+        lab.pin_baseline()
+        lab.show_sample(6)
+        lab.entries['cg'].enterText('.47')
+        old, baseline, cursor = lab.record, lab.baseline, lab.view_index
+        lab.back_to_game()
+        finish(app, 'game')
+        open_pair(app)
+        old_pair = app.player_brake_ab.path.read_bytes()
+>       app.player_road_panel.retest_button['command']()
+
+tests\test_road_retest_ui.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\application.py:1287: in open_road_retest
+    pair = prepare_pair(store.a, store.b)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+a = {'config': {'air_density': 1.225, 'angular_damping': 0.0, 'axle_torque_bias_ratios': [1.0, 1.0], 'axle_track_widths': ...esult': {'best_distance': 39.51597595214844, 'best_error': None, 'entry_kph': 83.96306572170047, 'error_m': None, ...}}
+b = {'config': {'air_density': 1.225, 'angular_damping': 0.0, 'axle_torque_bias_ratios': [1.0, 1.0], 'axle_track_widths': ...esult': {'best_distance': 35.19279479980469, 'best_error': None, 'entry_kph': 83.96399498375095, 'error_m': None, ...}}
+
+    def prepare_pair(a, b):
+        if a is None or b is None:
+            raise ValueError('请先在道路上完成或结束改装后同题，建立完整A/B。')
+        a, b = checked_record(a), checked_record(b)
+        if a['context']['mode'] != b['context']['mode']:
+            raise ValueError('两份道路结果不是同一道题，未开始参考复测。')
+        for item in (a, b):
+>           config_from_document(item['config'], REFERENCE_DESIGN.config)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'VehicleConfig' object has no attribute 'config'
+
+src\road_retest.py:25: AttributeError
+---------------------------- Captured stderr setup ----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+____________ test_export_error_keeps_frozen_pair_and_old_workspace ____________
+
+app = <application.CoastalDrive object at 0x0000017996237B60>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001799623D6D0>
+
+    def test_export_error_keeps_frozen_pair_and_old_workspace(app, monkeypatch):
+        open_pair(app)
+>       app.open_road_retest()
+
+tests\test_road_retest_ui.py:104: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\application.py:1287: in open_road_retest
+    pair = prepare_pair(store.a, store.b)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+a = {'config': {'air_density': 1.225, 'angular_damping': 0.0, 'axle_torque_bias_ratios': [1.0, 1.0], 'axle_track_widths': ...esult': {'best_distance': 39.51597595214844, 'best_error': None, 'entry_kph': 83.96306572170047, 'error_m': None, ...}}
+b = {'config': {'air_density': 1.225, 'angular_damping': 0.0, 'axle_torque_bias_ratios': [1.0, 1.0], 'axle_track_widths': ...esult': {'best_distance': 35.19279479980469, 'best_error': None, 'entry_kph': 83.96399498375095, 'error_m': None, ...}}
+
+    def prepare_pair(a, b):
+        if a is None or b is None:
+            raise ValueError('请先在道路上完成或结束改装后同题，建立完整A/B。')
+        a, b = checked_record(a), checked_record(b)
+        if a['context']['mode'] != b['context']['mode']:
+            raise ValueError('两份道路结果不是同一道题，未开始参考复测。')
+        for item in (a, b):
+>           config_from_document(item['config'], REFERENCE_DESIGN.config)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'VehicleConfig' object has no attribute 'config'
+
+src\road_retest.py:25: AttributeError
+---------------------------- Captured stderr setup ----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+=========================== short test summary info ===========================
+FAILED tests/test_road_retest.py::test_pair_is_frozen_and_missing_other_course_rejected
+FAILED tests/test_road_retest.py::test_standard_environment_separate_from_saved_hardware_and_electronics
+FAILED tests/test_road_retest.py::test_cancel_preserves_actual_completed_steps_and_restores_without_world
+FAILED tests/test_road_retest_ui.py::test_retest_preserves_old_a_b_drafts_and_returns_original_pair
+FAILED tests/test_road_retest_ui.py::test_export_error_keeps_frozen_pair_and_old_workspace
+5 failed, 1 passed in 46.04s
