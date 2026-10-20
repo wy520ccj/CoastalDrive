@@ -16,6 +16,7 @@ class GameMode(Enum):
     DISTANCE_CHALLENGE = "distance_challenge"
     BRAKING_LESSON = "braking_lesson"
     SLALOM_LESSON = "slalom_lesson"
+    FAST_SLALOM = "fast_slalom"
     BEND_SPRINT = "bend_sprint"
     RIDGE_SPRINT = "ridge_sprint"
     VALLEY_PACE = "valley_pace"

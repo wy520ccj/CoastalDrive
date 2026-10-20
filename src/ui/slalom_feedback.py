@@ -6,16 +6,28 @@ RULES = ("封闭直线 · 无车流 · 当前车辆/原驾驶辅助\n80米入口
          "整车俯视包络须在4米门宽内，碰撞/复位失败\n入口后≤15秒金 / ≤18秒银 / ≤24秒铜；全程40秒")
 
 
-def driving_feedback(result):
+FAST_RULES = ('高速验车 · 当前硬件与原驾驶辅助 · 无车流\n80米入口至320米终点，全段70–80km/h\n'
+              '原六门/4米门宽，整车留在线内；碰撞/复位失败\n入口后≤11.5秒金 / ≤12.5秒银 / ≤14秒铜\n'
+              '先在普通练习掌握路线，再比较轮胎/防倾配方\n更大刚度未必全面更好；返回实验台查看侧偏代价')
+
+
+def driving_feedback(result, *, fast=False):
     if result is None:
+        if fast:
+            return '80米入口 · 全段70–80km/h\n左右连续6门到320米', '准备高速验车；先看清入口和第1道左门'
         return "80米入口 ≥40km/h\n左右连续6门到320米", "准备出发；先看清入口和第1道左门"
     if result.entry_time is None:
-        return f"距入口 {max(0, ENTRY_DISTANCE-result.position):.0f} m\n入门要求 ≥40 km/h", "先加速，看到下一道门再转向"
+        entry = '70–80 km/h' if result.fast else '≥40 km/h'
+        return f"距入口 {max(0, ENTRY_DISTANCE-result.position):.0f} m\n入门要求 {entry}", "先加速，看到下一道门再转向"
     index = min(result.gates, len(GATES)-1)
     distance, center = GATES[index]
     direction = "终点居中" if index == len(GATES)-1 else "左侧" if center < 0 else "右侧"
     detail = f"已过 {result.gates} / 6门 · {result.run_seconds:.2f}s\n第{index+1}门 {direction} · 剩余{max(0, distance-result.position):.0f}m"
     message = "提前看下一门；过门前回正，急弯稍松油门"
+    if result.fast:
+        message = '全段70–80km/h；提前连贯转向，勿减到普通练习车速'
+        if result.zone_min_kph is not None:
+            message += f' · 实测{result.zone_min_kph:.1f}–{result.zone_max_kph:.1f}km/h'
     if result.save_notice:
         message += " · "+result.save_notice
     return detail, message
@@ -29,6 +41,8 @@ def result_feedback(result):
         index = len(result.errors)
         lines.append(f"第{index}门中心误差 {result.errors[-1]:+.2f}m / 车身余量 {result.clearances[-1]:+.2f}m")
     note = ("个人新最佳 · " if result.new_best else "")+result.reason+("\n"+result.save_notice if result.save_notice else "")
+    if result.fast and result.zone_min_kph is not None:
+        lines.append(f'全段实测 {result.zone_min_kph:.1f}–{result.zone_max_kph:.1f}km/h / 要求70–80')
     return note, "\n".join(lines)
 
 

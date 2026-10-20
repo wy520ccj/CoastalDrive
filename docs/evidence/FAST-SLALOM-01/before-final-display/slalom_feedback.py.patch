@@ -1,0 +1,14 @@
+--- before/src/ui/slalom_feedback.py
++++ final/src/ui/slalom_feedback.py
+@@ -11,8 +11,10 @@
+               '先在普通练习掌握路线，再比较轮胎/防倾配方\n更大刚度未必全面更好；返回实验台查看侧偏代价')
+ 
+ 
+-def driving_feedback(result):
++def driving_feedback(result, *, fast=False):
+     if result is None:
++        if fast:
++            return '80米入口 · 全段70–80km/h\n左右连续6门到320米', '准备高速验车；先看清入口和第1道左门'
+         return "80米入口 ≥40km/h\n左右连续6门到320米", "准备出发；先看清入口和第1道左门"
+     if result.entry_time is None:
+         entry = '70–80 km/h' if result.fast else '≥40 km/h'

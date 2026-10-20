@@ -9,6 +9,7 @@ from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
 from overtake_routes import OVERTAKE_ROUTES
 from race import GameMode
+from slalom_lesson import SLALOM_MODES
 from sprint_routes import SPRINT_ROUTES
 from ui import theme
 from ui.braking_feedback import driving_feedback
@@ -127,7 +128,7 @@ class DrivingHUD:
                driving_mode=DrivingMode.GAME):
         player = state.player
         timed = ((track != "endless" and race.mode == GameMode.TIME_TRIAL)
-                 or (track == "endless" and (race.mode in (GameMode.SLALOM_LESSON, *OVERTAKE_ROUTES)
+                 or (track == "endless" and (race.mode in (*SLALOM_MODES, *OVERTAKE_ROUTES)
                                              or highway.sprint is not None)))
         coastal = track == "coastal" and race.mode == GameMode.TIME_TRIAL
         overtaking = track == 'endless' and race.mode in OVERTAKE_ROUTES
@@ -163,8 +164,8 @@ class DrivingHUD:
             self._active_rpm = active
         if track == "endless":
             braking = race.mode == GameMode.BRAKING_LESSON
-            slalom = race.mode == GameMode.SLALOM_LESSON
-            set_text(self.mode, "连续过门" if slalom else "定点刹停" if braking else "5公里无碰撞挑战" if highway.challenge else "无限高速")
+            slalom = race.mode in SLALOM_MODES
+            set_text(self.mode, "高速验车" if race.mode == GameMode.FAST_SLALOM else "连续过门" if slalom else "定点刹停" if braking else "5公里无碰撞挑战" if highway.challenge else "无限高速")
             set_text(self.status, f"{highway.elapsed:07.2f} s")
             distance = f"{highway.distance:.0f} / {highway.target:.0f} m" if highway.challenge else f"{highway.distance / 1000:.2f} km"
             set_text(self.detail, f"距离 {distance}\n碰撞 {highway.collisions} 次")
@@ -185,7 +186,7 @@ class DrivingHUD:
                 detail, message = driving_feedback(highway.braking)
                 set_text(self.detail, detail)
             elif slalom:
-                detail, message = slalom_driving_feedback(highway.slalom)
+                detail, message = slalom_driving_feedback(highway.slalom, fast=race.mode == GameMode.FAST_SLALOM)
                 set_text(self.detail, detail)
                 set_text(self.split, gate_feedback(highway.slalom))
                 self.split.setFg(theme.SEA)

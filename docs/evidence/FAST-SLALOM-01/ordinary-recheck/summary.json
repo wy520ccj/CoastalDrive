@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "source": "logs/validation/MOD-ROAD-01-probe",
+      "tire_index": 0,
+      "rows": 2638,
+      "source_sha256": "2a3dbccec7faa9c0ff85075ebf7ce4c41181756b66cf087060f81410516248a5"
+    },
+    {
+      "source": "logs/validation/MOD-ROAD-01-probe",
+      "tire_index": 1,
+      "rows": 2637,
+      "source_sha256": "6173d29b2e554ca213b70d7a3254e36140539dcc6994ee936e0488a3e844362e"
+    },
+    {
+      "source": "logs/validation/MOD-ROAD-01-probe",
+      "tire_index": 2,
+      "rows": 2638,
+      "source_sha256": "fc2c5cbf5e85b7683455ac2a9af54ffd47355c6be8335c817bbe510b72f56234"
+    },
+    {
+      "source": "logs/validation/MOD-ROAD-01-probe",
+      "tire_index": 3,
+      "rows": 2638,
+      "source_sha256": "f86b1c11a4ed3cbca86942c8b931a0d917b80808dcf3c2b2cf88f0dce550a9e1"
+    },
+    {
+      "source": "logs/validation/MOD-ROAD-01-probe75",
+      "tire_index": 0,
+      "rows": 1587,
+      "source_sha256": "7502fab1e8441674befda18aad2c8867a28414449f3615c302deb96fe976578f"
+    },
+    {
+      "source": "logs/validation/MOD-ROAD-01-probe75",
+      "tire_index": 1,
+      "rows": 1816,
+      "source_sha256": "01413220f5f879836eae2ed954c0d8c36df1020cb4c06d8df51f484e75016aad"
+    },
+    {
+      "source": "logs/validation/MOD-ROAD-01-probe75",
+      "tire_index": 2,
+      "rows": 1817,
+      "source_sha256": "a35c285ed8baa37729b8e968a9f02841cfd43f37ccd1235c9a0e56171cfcc0d2"
+    },
+    {
+      "source": "logs/validation/MOD-ROAD-01-probe75",
+      "tire_index": 3,
+      "rows": 2272,
+      "source_sha256": "365fabaffc2f83e7815c3c13aeb5a50f5ca9792211b6b03d61e41a90a6ee6512"
+    }
+  ],
+  "rows": 18043
+}

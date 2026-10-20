@@ -6,6 +6,7 @@ from dataclasses import dataclass, replace
 from itertools import pairwise
 from pathlib import Path
 
+from race import GameMode
 from vehicle_config import body_center
 
 ENTRY_DISTANCE = 80.
@@ -14,9 +15,13 @@ GATES = ((120., -2.), (160., 2.), (200., -2.), (240., 2.), (280., -2.), (320., 0
 GATE_HALF_WIDTH = 2.
 TIME_LIMIT = 40.
 COURSE_HALF_WIDTH = 6.5
+SLALOM_MODES = (GameMode.SLALOM_LESSON, GameMode.FAST_SLALOM)
+FAST_MIN_KPH, FAST_MAX_KPH = 70., 80.
 
 
-def medal_for(seconds):
+def medal_for(seconds, *, fast=False):
+    if fast:
+        return "金" if seconds <= 11.5 else "银" if seconds <= 12.5 else "铜" if seconds <= 14 else ""
     return "金" if seconds <= 15 else "银" if seconds <= 18 else "铜" if seconds <= 24 else ""
 
 
@@ -120,12 +125,16 @@ class SlalomResult:
     best_seconds: float | None = None
     save_notice: str = ""
     new_best: bool = False
+    fast: bool = False
+    zone_min_kph: float | None = None
+    zone_max_kph: float | None = None
+    zone_error_at: float | None = None
 
 
 class SlalomLesson:
-    def __init__(self, start_progress, scores, config):
+    def __init__(self, start_progress, scores, config, *, fast=False):
         self.scores, self.config = scores, config
-        self.snapshot = SlalomResult(start_progress=start_progress, best_seconds=scores.best,
+        self.snapshot = SlalomResult(start_progress=start_progress, best_seconds=scores.best, fast=fast,
             save_notice=scores.notice,
             reference_times=tuple(scores.best_run["gate_times"]) if scores.best_run is not None else ())
         self._previous = (0., 0., 0., 0., 0.)
@@ -152,10 +161,14 @@ class SlalomLesson:
             self.stop("驶离课题道路；提前看下一道门。")
         elif elapsed > TIME_LIMIT:
             self.stop("课题超时；40秒内完成，入口后最多24秒。")
-        elif entry is not None and entry < ENTRY_KPH:
-            self.stop(f"入门仅{entry:.1f}km/h；至少40km/h通过80米入口。")
+        elif entry is not None and entry < (FAST_MIN_KPH if state.fast else ENTRY_KPH):
+            self.stop(f"入门仅{entry:.1f}km/h；至少{'70' if state.fast else '40'}km/h通过80米入口。")
         if self.snapshot.finished or start is None:
             return self.snapshot
+        if state.fast:
+            self.check_speed_band(py, distance, pv, forward_speed)
+            if self.snapshot.finished:
+                return self.snapshot
         while self.snapshot.gates < len(GATES):
             index = self.snapshot.gates
             gate_y, gate_x = GATES[index]
@@ -178,7 +191,7 @@ class SlalomLesson:
             self.snapshot = replace(self.snapshot, gates=index+1)
             if index+1 == len(GATES):
                 seconds = pt+(elapsed-pt)*fraction-start
-                medal = medal_for(seconds)
+                medal = medal_for(seconds, fast=state.fast)
                 self.snapshot = replace(self.snapshot, run_seconds=seconds, medal=medal)
                 if medal:
                     improved = self.snapshot.best_seconds is None or seconds < self.snapshot.best_seconds
@@ -188,8 +201,29 @@ class SlalomLesson:
                                             save_notice=self.scores.notice, new_best=saved and improved)
                     self.stop(f"{medal}牌 · 连续通过全部6道门", succeeded=True)
                 else:
-                    self.stop("已过全部门但超过24秒；尝试更流畅的转向节奏。")
+                    self.stop(f"已过全部门但超过{'14' if state.fast else '24'}秒；尝试更流畅的转向节奏。")
         return self.snapshot
+
+    def check_speed_band(self, previous, distance, old_speed, speed):
+        """只检查入口至终点的真实完成步，跨越边界时插值，不检查终点之后。"""
+        if distance <= previous:
+            if ENTRY_DISTANCE <= previous < GATES[-1][0]:
+                self.snapshot = replace(self.snapshot, zone_error_at=distance)
+                self.stop('高速验车带内未向前；保持70–80km/h连续过门。')
+            return
+        begin, end = max(previous, ENTRY_DISTANCE), min(distance, GATES[-1][0])
+        if end < begin:
+            return
+        for position in (begin, end):
+            kph = (old_speed+(speed-old_speed)*(position-previous)/(distance-previous))*3.6
+            state = self.snapshot
+            self.snapshot = replace(state,
+                zone_min_kph=kph if state.zone_min_kph is None else min(state.zone_min_kph, kph),
+                zone_max_kph=kph if state.zone_max_kph is None else max(state.zone_max_kph, kph))
+            if not FAST_MIN_KPH <= kph <= FAST_MAX_KPH:
+                self.snapshot = replace(self.snapshot, zone_error_at=position)
+                self.stop(f'高速验车{position:.1f}米处{kph:.1f}km/h；全段须保持70–80km/h。')
+                return
 
     def stop(self, reason, *, succeeded=False):
         if not self.snapshot.finished:

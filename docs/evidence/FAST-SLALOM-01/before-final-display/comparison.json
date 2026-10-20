@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "scope": "完整驾驶后仅倒计时空结果提示增加fast参数，驾驶/判定不变；最终双库倒计时另验",
+  "changes": {
+    "src/ui/hud.py": {
+      "before": "1d4bd2f4e3a74c0131ce18644e0b4441b8dc2b13f35a1e9ab883db5d21ca3d91",
+      "final": "cea83d0b7a04377aac81351582ba1c6ae0ea7fc0cd56b649f71213ceba4eb04b"
+    },
+    "src/ui/slalom_feedback.py": {
+      "before": "40e2e33a7ba14e9f3a22081c5411f952a17b0d7c0fc2215de106583ccc25df64",
+      "final": "aecb76f4148807fa0552e89f01f172b76a6f09eae41f33e4357e3ad65c72d4d1"
+    }
+  }
+}

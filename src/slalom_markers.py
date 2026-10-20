@@ -16,6 +16,8 @@ class SlalomMarkers:
         self.root.setLightOff(1)
         sun.node().setCameraMask(sun.node().getCameraMask() & ~MARKER_MASK)
         self.gates = []
+        self.entry_label = None
+        self.fast = False
         for index, (distance, center) in enumerate(((ENTRY_DISTANCE, 0.), *GATES)):
             gate = self.root.attachNewNode(f"gate-{index}")
             half = COURSE_HALF_WIDTH if index == 0 else GATE_HALF_WIDTH
@@ -34,6 +36,8 @@ class SlalomMarkers:
             label = TextNode("slalom-label")
             label.setText("入口 40 km/h" if index == 0 else f"{index} · "+("终点" if index == len(GATES) else "左" if center < 0 else "右"))
             label.setFont(font)
+            if index == 0:
+                self.entry_label = label
             label.setAlign(TextNode.ACenter)
             label.setTextColor(1., 1., 1., 1)
             node = gate.attachNewNode(label)
@@ -48,6 +52,9 @@ class SlalomMarkers:
             self.root.hide(MARKER_MASK)
             return
         self.root.setY(result.start_progress-origin_y)
+        if result.fast != self.fast:
+            self.fast = result.fast
+            self.entry_label.setText('入口 70–80 km/h' if self.fast else '入口 40 km/h')
         self.root.show(MARKER_MASK)
         next_index = 0 if result.entry_time is None else result.gates+1
         for index, gate in enumerate(self.gates):

@@ -1,0 +1,35 @@
+{
+  "scope": "执行中观察到的工具失败；未冒充有效驾驶或恢复结论",
+  "failures": [
+    {
+      "command": "tools/fast_slalom_check.py --output logs/validation/FAST-SLALOM-01-normal",
+      "error": "TypeError: 'NoneType' object is not callable at app.buttons[1]['command']()",
+      "cause": "smoke初始在驾驶阶段，工具漏回菜单；修复工具先back_to_menu，保留原输出目录。"
+    },
+    {
+      "command": "tools/fast_slalom_check.py --restore (Normal and Double)",
+      "error": "TypeError: SessionProcess.__init__() missing 1 required keyword-only argument: 'driving_mode'",
+      "cause": "工具缺少明确DrivingMode.GAME；未创建进程/未验证恢复。"
+    },
+    {
+      "command": "tools/fast_slalom_check.py --restore (Normal and Double)",
+      "error": "ValueError: 独立会话进程必须使用独立120Hz时钟",
+      "cause": "工具误传independent_clock=False；改回原True契约，生产接口未变。"
+    },
+    {
+      "command": "logs/validation/fast_slalom_layout.py first Normal and Double capture",
+      "error": "静态图仍为说明面板，尽管HUD文本断言通过",
+      "cause": "工具漏refresh_panel；旧图不验收，layout-fixed为实际最终HUD。"
+    },
+    {
+      "command": "logs/validation/mod_probe.py first attempt",
+      "error": "ImportError: cannot import name 'model_fingerprint' from 'lab_runtime'",
+      "cause": "改为从lab_records导入；失败时尚未创建输出/执行物理。"
+    },
+    {
+      "command": "logs/validation/fast_slalom_layout.py layout-fixed",
+      "error": "右上返回按钮裁切",
+      "cause": "工具遗漏原resize位置更新；layout-ready调用原布局API，最终生产源码未变。"
+    }
+  ]
+}
