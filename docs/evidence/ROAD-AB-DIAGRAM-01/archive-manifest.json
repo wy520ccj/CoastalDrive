@@ -1,0 +1,237 @@
+{
+  "normal/brake-distance.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-normal/brake-distance.png",
+    "bytes": 285880,
+    "sha256": "ff4723bce19a8c8b9609e9d31c4bb8e0cbd7be98d30a8635c2e7b9efb6cb250c"
+  },
+  "normal/brake-table.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-normal/brake-table.png",
+    "bytes": 282479,
+    "sha256": "ac2fb909f74e88c930bdf20e27ec8066029fca6edb7f5a847d6153f414546221"
+  },
+  "normal/fixture-before-gate.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-normal/fixture-before-gate.json",
+    "bytes": 22443,
+    "sha256": "23e64489eaec69bee34734f911cf908dbe19f2dee5f26f5b1c3aefc6b4a91fbb"
+  },
+  "normal/fixture-before-gate.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-normal/fixture-before-gate.png",
+    "bytes": 283866,
+    "sha256": "3ac5b0bf7dd00bc68d9b8787045ca0ae63b8f2ea877718bde671596d8de0a344"
+  },
+  "normal/fixture-overrun.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-normal/fixture-overrun.json",
+    "bytes": 38975,
+    "sha256": "add7cd4c662acb2e45218a845f7317d48aaeb14abbe53d930ec58a666ac88a9a"
+  },
+  "normal/fixture-overrun.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-normal/fixture-overrun.png",
+    "bytes": 285697,
+    "sha256": "8bb6c69ae3d1e0bdcf139695e0b171aea70a6e921b1a05eb244155f14566abdb"
+  },
+  "normal/fixture-precision.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-normal/fixture-precision.json",
+    "bytes": 38936,
+    "sha256": "559d69bffc9aa874975dcfb916f77366940615eadfa70be7847d71be17797642"
+  },
+  "normal/fixture-precision.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-normal/fixture-precision.png",
+    "bytes": 285426,
+    "sha256": "66d90aee61625574fc460507c51f363ea8c5eacf9f76c1c014cf8b66348cc05e"
+  },
+  "normal/player-braking-ab.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-normal/player-braking-ab.json",
+    "bytes": 39030,
+    "sha256": "72b7fe56554f3c98ee7b1016b8d41c000454205d233f930279f1b49477b70cad"
+  },
+  "normal/player-road-ab.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-normal/player-road-ab.json",
+    "bytes": 40195,
+    "sha256": "5c5c14352c183e0e51ceae1cd552390dcbf5074bce7b5d1db1c3e1d0d3069c17"
+  },
+  "normal/slalom-focus.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-normal/slalom-focus.png",
+    "bytes": 286436,
+    "sha256": "89ef5927ae9d6ea07411482b7587535add3afc7bf37b0b75e6e18c50d04d06b6"
+  },
+  "normal/slalom-next.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-normal/slalom-next.png",
+    "bytes": 286153,
+    "sha256": "d34c751ab1b55daa2d94ab144739bfe43ea584340ef652f6675351c03ba62f89"
+  },
+  "normal/slalom-table.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-normal/slalom-table.png",
+    "bytes": 286322,
+    "sha256": "0994eee5ab2c9b0c6b44a44c1d3959bc22dd04f9dfc3eb62ee1d5e12133d6a0f"
+  },
+  "normal/summary.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-normal/summary.json",
+    "bytes": 45963,
+    "sha256": "7df9a906da27bb46f0a1f391bc25254f9a5304cfbfee2dd40ec11bfbb1161360"
+  },
+  "normal/command.txt": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-normal.txt",
+    "bytes": 420,
+    "sha256": "162b83af8adedc1902e36f92ef8a261094fb7639ebc22a7c6985630b34650486"
+  },
+  "checks/T1-normal/headless-0.txt": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T1-normal/headless-0.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1-normal/headless-17.txt": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T1-normal/headless-17.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1-normal/headless-23.txt": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T1-normal/headless-23.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1-normal/pytest.txt": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T1-normal/pytest.log",
+    "bytes": 113,
+    "sha256": "03cbca02be836cd95622c47bd77a472c6b83be154e04ba7534a7a95e86336c6a"
+  },
+  "checks/T1-normal/ruff.txt": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T1-normal/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T1-normal/summary.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T1-normal/summary.json",
+    "bytes": 3698,
+    "sha256": "60e69f3f937d0c1857fa3243fe3030c9dae9fb5e21f4af3898e226065fea41ee"
+  },
+  "double/brake-distance.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-double/brake-distance.png",
+    "bytes": 452105,
+    "sha256": "cbd50ee2d286fac63d5d3aaec98bcdfe55ad3b0eef3167d0354b10a86972fb01"
+  },
+  "double/brake-table.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-double/brake-table.png",
+    "bytes": 450517,
+    "sha256": "6e5a88c5550d7e975ffbe8b19208dd7471d7c47246ea7319719c8d5b76762a59"
+  },
+  "double/fixture-before-gate.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-double/fixture-before-gate.json",
+    "bytes": 20139,
+    "sha256": "ad0e90e033ce04a9f28bebccdcc3949ff9e1fb32a332de88d376af69c7b8be56"
+  },
+  "double/fixture-before-gate.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-double/fixture-before-gate.png",
+    "bytes": 450546,
+    "sha256": "bd31f4175d76d98e01b60d4da3c8453735e5109649e90e49013d17c9466ee14f"
+  },
+  "double/fixture-overrun.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-double/fixture-overrun.json",
+    "bytes": 34367,
+    "sha256": "17e3c453691ae631fd0301f8189f5f07b40c9134f3aaa6c8dc78b190feaec845"
+  },
+  "double/fixture-overrun.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-double/fixture-overrun.png",
+    "bytes": 452110,
+    "sha256": "930ee25a8cd3c1b3dd81b366c9e5e7d62f9abc18ff06991fa60b21de519c359b"
+  },
+  "double/fixture-precision.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-double/fixture-precision.json",
+    "bytes": 34327,
+    "sha256": "225bc14d959fea8aeb8fc35620e5b399936fc8d9e72cdea58ee80699db9d0b59"
+  },
+  "double/fixture-precision.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-double/fixture-precision.png",
+    "bytes": 451749,
+    "sha256": "57dde815000fd25e2dfdec876f29e341615ec6b5d5e0cfcbc1a48cadfb333c73"
+  },
+  "double/player-braking-ab.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-double/player-braking-ab.json",
+    "bytes": 34422,
+    "sha256": "c13f68acf7edc97936b020251e408c79028badffe55418224bd8ee0fcabb82ca"
+  },
+  "double/player-road-ab.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-double/player-road-ab.json",
+    "bytes": 35583,
+    "sha256": "60187d7b903b0890610605a019c86fed78643276972a82a51d4402e8f57f7a86"
+  },
+  "double/slalom-focus.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-double/slalom-focus.png",
+    "bytes": 452578,
+    "sha256": "20d3c7a8a0fdcdb26fd76219987f9b97ea0f7cf86a76cfe6e0a54768cbfa7363"
+  },
+  "double/slalom-next.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-double/slalom-next.png",
+    "bytes": 452465,
+    "sha256": "c69ec242db2431d00c835e815b24b3a9befd3d7c98acc971784ab8053ce1a870"
+  },
+  "double/slalom-table.png": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-double/slalom-table.png",
+    "bytes": 452089,
+    "sha256": "5ec06604f9751b3c5e270cda013cccc791c3cf8e8a5e5b91dbc70db95d028d58"
+  },
+  "double/summary.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-double/summary.json",
+    "bytes": 41523,
+    "sha256": "51dc37c86305d8f62386ce7a2bfca8a557533f67a9a443696471118c656eae96"
+  },
+  "double/command.txt": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-double.txt",
+    "bytes": 420,
+    "sha256": "6cb8a9678c254a218664ac663a93423705e9177b3fad720987508978e2d458b2"
+  },
+  "checks/T1-double/headless-0.txt": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T1-double/headless-0.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/T1-double/headless-17.txt": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T1-double/headless-17.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/T1-double/headless-23.txt": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T1-double/headless-23.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/T1-double/pytest.txt": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T1-double/pytest.log",
+    "bytes": 113,
+    "sha256": "5bb6bce5dd165a769e27eef2c6035383c9c28ca3ee3e3672188f32c1a03e9e82"
+  },
+  "checks/T1-double/ruff.txt": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T1-double/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T1-double/summary.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T1-double/summary.json",
+    "bytes": 3698,
+    "sha256": "b726c0320a53a8eb1e1fe45f930b35f49176f78bbb7a6b12a4478c5373227424"
+  },
+  "checks/T0/ruff.txt": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T0/ruff.log",
+    "bytes": 2183,
+    "sha256": "06a0502f6c78fc5626fbb2a10149a60eae4cdd4223255f3a467d56431d9c1fee"
+  },
+  "checks/T0/summary.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T0/summary.json",
+    "bytes": 1679,
+    "sha256": "93ae7b98b9049490627f2234ed24257e1cae3121cacdcfdc39f7a84ba850945d"
+  },
+  "checks/T0-final/pytest.txt": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T0-final/pytest.log",
+    "bytes": 101,
+    "sha256": "ee5afa48bb195a8a15e4b1dba0821083b44f9d1e8e34a4f9b95c1cbb4b9e8f36"
+  },
+  "checks/T0-final/ruff.txt": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T0-final/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T0-final/summary.json": {
+    "source": "logs/validation/ROAD-AB-DIAGRAM-01-T0-final/summary.json",
+    "bytes": 1747,
+    "sha256": "bf99dd80604c8bf4f83d5a841982df5bda20d1c0d86ab3de074e7c825a4fda2f"
+  }
+}

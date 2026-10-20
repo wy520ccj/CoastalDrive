@@ -6,6 +6,7 @@ from panda3d.core import TextNode
 
 from player_road_ab import mismatches
 from ui import theme
+from ui.player_road_diagram import RoadDiagram
 
 
 class PlayerRoadPanel:
@@ -24,6 +25,10 @@ class PlayerRoadPanel:
         for card in self.cards:
             card.textNode.setWordwrap(37)
         self.columns = [text('', x, -.05, .035) for x in (-1.52, -.40, .55)]
+        self.diagram = RoadDiagram(self.root, font, textures)
+        self.view_button = DirectButton(parent=self.root, text='数值表 · 空格', text_font=font, text_fg=theme.INK,
+            text_scale=.032, frameTexture=textures, frameColor=(1, 1, 1, 1), relief=DGG.FLAT, pressEffect=False,
+            frameSize=(-.34, .34, -.050, .050), pos=(1.16, 0., .64), command=self.toggle_view)
         self.delta = text('', -1.52, -.40, .034, theme.SEA)
         self.notice = text('', -1.52, -.50, .029, theme.MUTED)
         self.notice.textNode.setWordwrap(102)
@@ -34,6 +39,9 @@ class PlayerRoadPanel:
         self.root.hide()
 
     def show(self, store):
+        self.diagram.show(store)
+        self.graph = True
+        self.refresh_view()
         self.back['text'] = '返回制动分配 · Esc' if store.brakes else '返回前胎配方 · Esc'
         if store.brakes:
             self.show_braking(store)
@@ -107,6 +115,20 @@ class PlayerRoadPanel:
     def key(self, key):
         if key in ('escape', 'enter'):
             self.hide()
+        elif key == 'space':
+            self.toggle_view()
+        elif self.graph:
+            self.diagram.key(key)
+
+    def refresh_view(self):
+        self.diagram.root.show() if self.graph else self.diagram.root.hide()
+        for column in self.columns:
+            column.hide() if self.graph else column.show()
+        self.view_button['text'] = '数值表 · 空格' if self.graph else '看图解 · 空格'
+
+    def toggle_view(self):
+        self.graph = not self.graph
+        self.refresh_view()
 
     def hide(self):
         self.root.hide()
