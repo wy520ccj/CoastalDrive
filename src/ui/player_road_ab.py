@@ -34,6 +34,11 @@ class PlayerRoadPanel:
         self.root.hide()
 
     def show(self, store):
+        self.back['text'] = '返回制动分配 · Esc' if store.brakes else '返回前胎配方 · Esc'
+        if store.brakes:
+            self.show_braking(store)
+            self.root.show()
+            return
         a, b = store.a, store.b
         self.status.setText('从结算安装不同前胎时固定A，重试后记录最近一次完整B。' if a is None else
             ('高速验车' if a['context']['mode'] == 'fast_slalom' else '连续过门')+' · A固定 / B取最近一次结束记录')
@@ -65,6 +70,39 @@ class PlayerRoadPanel:
             'A在下次结算改装时替换；B取同目标硬件最近整次记录，不拼接单门。')
         self.notice.setText(note[:150])
         self.root.show()
+
+    def show_braking(self, store):
+        a, b = store.a, store.b
+        short = a is None or a['result']['short']
+        self.status.setText('从制动题结算安装不同配方时固定A，重试后记录最近一次完整B。' if a is None else
+            ('短距制动验车' if short else '定点刹停')+' · A固定 / B取最近一次结束记录')
+        for side, item, label in zip(self.cards, (a, b), ('A · 安装前这一次', 'B · 安装后最近一次'), strict=True):
+            if item is None:
+                side.setText(label+'\n暂无记录\n亲自完成或结束同题后建立')
+                continue
+            result = item['result']
+            outcome = result['medal']+'牌' if result['succeeded'] else '未通过 · 无有效成绩'
+            side.setText(f"{label} · 前制动{item['config']['front_brake_share']:.0%}\n{outcome}\n"+result['reason'][:50])
+        rows = [['指标', '入门km/h', '最大前进m' if short else '停车误差m', '停稳s'], ['A'], ['B']]
+        for column, item in zip(rows[1:], (a, b), strict=True):
+            result = item['result'] if item else None
+            values = ([result['entry_kph'], result['stopping_m'] if short else result['error_m'], result['hold_seconds']]
+                      if result else [None]*3)
+            column.extend('未建立' if value is None else f'{value:.3f}' for value in values)
+        for column, row in zip(self.columns, rows, strict=True):
+            column.setText('\n'.join(row))
+        differences = mismatches(a, b) if a is not None and b is not None else []
+        if differences:
+            self.delta.setText('条件不同，不计算差值。')
+        elif a is not None and b is not None and a['result']['succeeded'] and b['result']['succeeded']:
+            old, new = a['result'], b['result']
+            delta = new['stopping_m']-old['stopping_m'] if short else abs(new['error_m'])-abs(old['error_m'])
+            self.delta.setText(f"{'最大前进' if short else '绝对误差'} B−A {delta:+.3f}m；负值表示本次B更好\n"
+                               f"入门速度 B−A {new['entry_kph']-old['entry_kph']:+.3f}km/h；含驾驶时机差异")
+        else:
+            self.delta.setText('双方有效完成后才比较成绩；失败时的已走距离不算成功成绩。')
+        self.notice.setText((store.notice or '；'.join(differences) or
+            (('A记录于'+a['created_at'][:19]+'；' if a else '')+'A在下次制动结算改装时替换，B取同题目标硬件最近整次记录。'))[:150])
 
     def key(self, key):
         if key in ('escape', 'enter'):

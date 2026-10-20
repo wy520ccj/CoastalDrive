@@ -17,20 +17,17 @@ from panda3d.core import Filename
 
 from application import CoastalDrive
 from braking_lesson import BrakingScores
-from driving_modes import DrivingMode
 from lab_records import model_fingerprint
 from lab_runtime import runtime_fingerprint
-from race import BestTimes, GameMode
+from race import GameMode
 from session import Phase
-from session_process import SessionProcess
 from short_braking import ShortBraking
-from tire_tuning import restore as restore_vehicle
 from vehicle_workspace import WorkspaceVehicle
 from workshop import build_config
 
 
 def sources():
-    names = ('src/ui/tire_tuning.py', 'src/ui/braking_feedback.py', 'src/ui/hud.py', 'tools/short_braking_check.py')
+    names = ('src/ui/player_road_ab.py', 'src/ui/tire_tuning.py', 'src/ui/braking_feedback.py', 'src/ui/hud.py', 'tools/short_braking_check.py')
     return {**model_fingerprint(), **{name: hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in names}}
 
 
@@ -58,33 +55,59 @@ def finish(app, workspace):
     app.taskMgr.remove('lab-update' if workspace == 'lab' else 'drive-update')
 
 
-def check(output, size, restore=False):
+def check(output, size, restore=False, road_ab=False):
     output.mkdir(parents=True, exist_ok=restore)
     os.environ['LOCALAPPDATA'] = str(output/'user-data')
     summary = {'passed': False, 'source_start': sources(), 'runtime_start': runtime_fingerprint(),
-               'restore': restore, 'cases': [], 'size': size, 'human_gate': 'pending'}
+               'restore': restore, 'road_ab': road_ab, 'cases': [], 'size': size, 'human_gate': 'pending'}
     path = output/'test-workspace-vehicle.json'
     if restore:
         car = WorkspaceVehicle.load(path)
         scores = output/'short-braking-best.json'
         old = scores.read_bytes()
-        session = SessionProcess(driving_mode=DrivingMode.GAME, vehicle_config=car.config,
-                                 scores=BestTimes(output/'test-best-times.json'))
+        app = CoastalDrive(smoke=True, output=output, workspace_vehicle=car,
+                           render_size=tuple(size), independent_clock=True)
+        app.taskMgr.remove('finish-smoke')
+        app.taskMgr.remove('drive-update')
         try:
-            session.start(countdown=False, mode=GameMode.SHORT_BRAKING, track='endless', settle_initial=True)
-            session.pause()
-            result = session.highway.snapshot.braking
+            app.session.start(countdown=False, mode=GameMode.SHORT_BRAKING, track='endless', settle_initial=True)
+            app.session.pause()
+            result = app.session.highway.snapshot.braking
             expected = json.loads((output/'summary.json').read_text(encoding='utf-8'))['cases'][-1]['result']['stopping_m']
             assert result.short and result.best_distance == expected and scores.read_bytes() == old
-            restored = restore_vehicle(car, path)
-            assert restored == WorkspaceVehicle.load(output/'original-vehicle.json')
-            summary.update(passed=True, pid=session.process.pid, best_restored=expected,
-                scores_unchanged=True, original_restored=True, scope='实际独立120Hz进程恢复新结果/最佳，再恢复完整原车；无新完整驾驶')
+            app.back_to_menu()
+            app.choose_braking_lesson(GameMode.SHORT_BRAKING)
+            app.open_brake_tuning()
+            if road_ab:
+                ab = app.player_brake_ab
+                old_ab, old_tires = ab.path.read_bytes(), app.player_road_ab.path.read_bytes()
+                assert ab.a['config']['front_brake_share'] == .45 and ab.b['config']['front_brake_share'] == .70
+                assert ab.b['result']['stopping_m'] == expected
+                app.tire_tuning.activate(7)
+                app.main_menu.resize(app.getAspectRatio())
+                for _ in range(6):
+                    app.taskMgr.step()
+                app.graphicsEngine.syncFrame()
+                assert app.win.getScreenshot().write(Filename.fromOsSpecific(str(output/'reopened-brake-ab.png')))
+                assert ab.path.read_bytes() == old_ab and app.player_road_ab.path.read_bytes() == old_tires
+                app.player_road_panel.hide()
+                summary.update(comparison_restored=True, comparison_unchanged=True, tires_unchanged=True)
+            app.tire_tuning.activate(5)
+            assert app.workspace_vehicle == WorkspaceVehicle.load(output/'original-vehicle.json')
+            assert scores.read_bytes() == old
+            summary.update(passed=True, pid=app.session.process.pid, best_restored=expected,
+                scores_unchanged=True, original_restored=True, scope='实际独立120Hz进程恢复新结果/最佳及对照，再恢复完整原车；无新完整驾驶')
         finally:
-            session.close()
+            app.close_game()
             summary.update(source_end=sources(), runtime_end=runtime_fingerprint())
+            assert summary['source_start'] == summary['source_end'] and summary['runtime_start'] == summary['runtime_end']
             (output/'restore-summary.json').write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding='utf-8')
         return {'passed': True, 'restore': True}
+    if road_ab:
+        sdk = 'normal' if summary['runtime_start']['math_scalar_bits'] == 32 else 'double'
+        source = ROOT/f'docs/evidence/PLAYER-ROAD-AB-01/{sdk}/player-road-ab.json'
+        (output/'player-road-ab.json').write_bytes(source.read_bytes())
+        summary['tire_input'] = {'source': str(source.relative_to(ROOT)), 'sha256': hashlib.sha256(source.read_bytes()).hexdigest()}
     car = WorkspaceVehicle('reference-rwd', build_config(0, False))
     car.save(output/'original-vehicle.json')
     car.save(path)
@@ -92,6 +115,7 @@ def check(output, size, restore=False):
     app.taskMgr.remove('finish-smoke')
     app.taskMgr.remove('drive-update')
     window = app.win
+    old_tires = app.player_road_ab.path.read_bytes() if road_ab else None
 
     def capture(name):
         if app.workspace == 'lab':
@@ -162,6 +186,19 @@ def check(output, size, restore=False):
             (folder/'recheck.json').write_text(json.dumps(checked, indent=2), encoding='utf-8')
             assert result.succeeded and result.medal == ('铜' if index == 0 else '银') and app.win is window
             capture(f'{index}-result')
+            if index == 2 and road_ab:
+                ab = app.player_brake_ab
+                assert ab.a['config']['front_brake_share'] == .45 and ab.b['config']['front_brake_share'] == .70
+                assert ab.a['result'] == summary['cases'][0]['result'] and ab.b['result'] == asdict(result)
+                old_ab, old_best = ab.path.read_bytes(), (output/'short-braking-best.json').read_bytes()
+                app.buttons[3]['command']()
+                app.tire_tuning.activate(7)
+                assert 'B−A -4.32' in app.player_road_panel.delta.getText()
+                capture('brake-road-ab')
+                app.player_road_panel.hide()
+                app.tire_tuning.activate(6)
+                assert ab.path.read_bytes() == old_ab and (output/'short-braking-best.json').read_bytes() == old_best
+                summary['comparison'] = {'A': ab.a, 'B': ab.b, 'read_only': True}
             if index == 0:
                 app.buttons[3]['command']()
                 app.tire_tuning.activate(2)
@@ -182,7 +219,11 @@ def check(output, size, restore=False):
         for _ in range(360):
             app.session.tick()
         assert app.session.highway.snapshot.braking.best_distance == result.stopping_m
-        assert not (output/'braking-best.json').exists() and app.player_road_ab.a is None
+        assert not (output/'braking-best.json').exists()
+        if road_ab:
+            assert app.player_road_ab.path.read_bytes() == old_tires
+        else:
+            assert app.player_road_ab.a is None
         summary.update(passed=True, same_window=True, returns_to_short=True,
             rows=sum(case['rows'] for case in summary['cases']),
             scope='新真实KeyboardController，同一82.5km/h目标/过门后制动，45%铜→结果改70%银；非人工驾驶或纯80–0试验')
@@ -199,5 +240,6 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--size', nargs=2, type=int, default=(1280, 720))
     parser.add_argument('--restore', action='store_true')
+    parser.add_argument('--road-ab', action='store_true')
     args = parser.parse_args()
-    print(json.dumps(check(args.output.resolve(), args.size, args.restore), ensure_ascii=False))
+    print(json.dumps(check(args.output.resolve(), args.size, args.restore, args.road_ab), ensure_ascii=False))

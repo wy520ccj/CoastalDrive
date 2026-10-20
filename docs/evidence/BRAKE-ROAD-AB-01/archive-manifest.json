@@ -1,0 +1,382 @@
+{
+  "normal/0-braking.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/0-braking.png",
+    "bytes": 671943,
+    "sha256": "14dda885c378621acc313f60777f13906a8b508f7fc41f151676769f367f2aa4"
+  },
+  "normal/0-result.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/0-result.png",
+    "bytes": 542593,
+    "sha256": "5cf37c059ea5dfc08525804b2d6756913daf3fa285e62e43c5720f07a44715bc"
+  },
+  "normal/2-braking.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/2-braking.png",
+    "bytes": 671419,
+    "sha256": "cb538961fcdda77efb941f0bfae44550083146b67e2950ae18db9ffa7cff5db5"
+  },
+  "normal/2-result.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/2-result.png",
+    "bytes": 546670,
+    "sha256": "1df60269fe970b0932aa1561798f6134d7ddf6707b9aeb148eac2c1a3014c225"
+  },
+  "normal/brake-road-ab.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/brake-road-ab.png",
+    "bytes": 281458,
+    "sha256": "eb9a959d8062316b3ff3560ada059bab6d2d2d45a08e2a675a31430c18368135"
+  },
+  "normal/installed-70.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/installed-70.png",
+    "bytes": 284466,
+    "sha256": "cacae417bd6dd87521a03f7f5debba6459c9484bc2e88a195339966d43a2b094"
+  },
+  "normal/lab-current-car.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/lab-current-car.png",
+    "bytes": 163456,
+    "sha256": "3f89327ed67f265f420b67acc8a0bb28fcee9d0740e9413fa83786eb62d2048c"
+  },
+  "normal/original-vehicle.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/original-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "normal/player-braking-ab.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/player-braking-ab.json",
+    "bytes": 39030,
+    "sha256": "72b7fe56554f3c98ee7b1016b8d41c000454205d233f930279f1b49477b70cad"
+  },
+  "normal/player-road-ab.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/player-road-ab.json",
+    "bytes": 40195,
+    "sha256": "5c5c14352c183e0e51ceae1cd552390dcbf5074bce7b5d1db1c3e1d0d3069c17"
+  },
+  "normal/precision-rules.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/precision-rules.png",
+    "bytes": 30573,
+    "sha256": "600a45d03c95aac2fc2c2bcf339e1ea45178eb6c0695db26788de52d6902aa2c"
+  },
+  "normal/preview-70.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/preview-70.png",
+    "bytes": 286663,
+    "sha256": "f3a0c71c02988707a8f00f9a98b846ad53fbc441554bec6f17a13552f1ef1b66"
+  },
+  "normal/reopened-brake-ab.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/reopened-brake-ab.png",
+    "bytes": 281458,
+    "sha256": "eb9a959d8062316b3ff3560ada059bab6d2d2d45a08e2a675a31430c18368135"
+  },
+  "normal/restore-summary.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/restore-summary.json",
+    "bytes": 44144,
+    "sha256": "e220db2c549d78f31d5cbe685fafc0e231b26ee6bf76946fc9aa0e7b97687cce"
+  },
+  "normal/short-braking-best.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/short-braking-best.json",
+    "bytes": 376,
+    "sha256": "8170ad894da8757328b00ce1f96e57a1cda868ab2d513a7267d412d5fc09900d"
+  },
+  "normal/short-rules.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/short-rules.png",
+    "bytes": 37856,
+    "sha256": "414b32f759ba14635f5338544403a5efe74feaab5fee1365417bcb78d11d2cbe"
+  },
+  "normal/summary.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/summary.json",
+    "bytes": 94594,
+    "sha256": "1175df68cd9b1242ad311bffebf3aa55d430dc9aa48e30c644d2bacdf27a96c8"
+  },
+  "normal/test-workspace-vehicle.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/test-workspace-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "normal/0/raw.json.gz": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/0/raw.json.gz",
+    "bytes": 219944,
+    "sha256": "0734d08a13e5f622c6a0e0a78d4df3214c92ccddccc737debdc52a8fb15ad29e"
+  },
+  "normal/0/recheck-best.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/0/recheck-best.json",
+    "bytes": 73,
+    "sha256": "a45a11a08a6975beec95ccf5c2f928de322fc1cffb993f637a367d6ad6558345"
+  },
+  "normal/0/recheck.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/0/recheck.json",
+    "bytes": 95,
+    "sha256": "d60fe54f48b9a4768c181e7c96941db9a7520baa0ca7b3c0fa5859d786012375"
+  },
+  "normal/0/summary.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/0/summary.json",
+    "bytes": 6574,
+    "sha256": "bdf7a9abf03cdb5bf59386864db6fedcbfc86d67ef79d7046fe9e692338886a0"
+  },
+  "normal/2/raw.json.gz": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/2/raw.json.gz",
+    "bytes": 214935,
+    "sha256": "c633f8c4a323da2992373134a65d75287d70853dedbdaf608369a164397928cb"
+  },
+  "normal/2/recheck-best.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/2/recheck-best.json",
+    "bytes": 73,
+    "sha256": "d2b3db1e8c691a1f25344ea5c64d6a45e4dbf418ca4335e5a155e8569fcdfd33"
+  },
+  "normal/2/recheck.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/2/recheck.json",
+    "bytes": 95,
+    "sha256": "04d4ad9bfb10f39e684d40e9a86e51361b9762b2c9090d57c03999c79da19167"
+  },
+  "normal/2/summary.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/2/summary.json",
+    "bytes": 6572,
+    "sha256": "9c455850ec988797b593023b4797c9bee9fe71d0202a4d87d2f8e529b81e90f9"
+  },
+  "normal/tuning-backups/528af4f6ca8a461889ad22a7a7af6fe8911d297e98fab4030a463dad3d6bc817.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal/tuning-backups/528af4f6ca8a461889ad22a7a7af6fe8911d297e98fab4030a463dad3d6bc817.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "normal/driving-command.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal.txt",
+    "bytes": 421,
+    "sha256": "4c2808047f0307fd4e8b92121fdc4826bb828b85da34f691e3540d8bc30efd06"
+  },
+  "normal/restore-command.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-normal-restore.txt",
+    "bytes": 412,
+    "sha256": "aba68ae19ba0c5ade663e50b2c8c36f02661b9d30bb2805abc9010b6ac1d038f"
+  },
+  "checks/T1-normal/headless-0.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T1-normal/headless-0.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1-normal/headless-17.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T1-normal/headless-17.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1-normal/headless-23.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T1-normal/headless-23.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1-normal/pytest.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T1-normal/pytest.log",
+    "bytes": 113,
+    "sha256": "c16cde98fa45ab84d133515b3288ca972658db55a212ef92a3b99ad0b76aeaac"
+  },
+  "checks/T1-normal/ruff.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T1-normal/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T1-normal/summary.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T1-normal/summary.json",
+    "bytes": 4066,
+    "sha256": "051d7916fc3960cadaf423211a6d9a707fcb1e6fe55781d4197b63e46e37f391"
+  },
+  "double/0-braking.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/0-braking.png",
+    "bytes": 539225,
+    "sha256": "e0f63ba76076d73e778b901d823963dfaed0958905c7d0966bdcca0dd856c15d"
+  },
+  "double/0-result.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/0-result.png",
+    "bytes": 362005,
+    "sha256": "525f3d1a3d35b57d013e5a7b68f682c3f26704ec16d859d0a1ff47e47e8b5d59"
+  },
+  "double/2-braking.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/2-braking.png",
+    "bytes": 538827,
+    "sha256": "e131e612ec518ee785918efa3e6c62b92eb0b7a6b2eaf793f1139b44ecf8ed14"
+  },
+  "double/2-result.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/2-result.png",
+    "bytes": 367623,
+    "sha256": "ba64dbcf90858d5c112205e3b9cee5977d219d7ac45520dfb6bf5f951c779ce4"
+  },
+  "double/brake-road-ab.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/brake-road-ab.png",
+    "bytes": 449951,
+    "sha256": "7e27d1607f1f7073a7b2b324dbef41152e8d996a93c7b2edf6410fd3f1b89890"
+  },
+  "double/installed-70.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/installed-70.png",
+    "bytes": 451931,
+    "sha256": "b99c6763f2fc4203b2aadc2f38421c65ad5099fd58d73102c0b449b6a6060ce0"
+  },
+  "double/lab-current-car.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/lab-current-car.png",
+    "bytes": 116418,
+    "sha256": "70eb16736f2afcaa089deb12a5fbb565266736db9fdb2e24fbe0cd4ff4c87497"
+  },
+  "double/original-vehicle.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/original-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "double/player-braking-ab.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/player-braking-ab.json",
+    "bytes": 34422,
+    "sha256": "c13f68acf7edc97936b020251e408c79028badffe55418224bd8ee0fcabb82ca"
+  },
+  "double/player-road-ab.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/player-road-ab.json",
+    "bytes": 35583,
+    "sha256": "60187d7b903b0890610605a019c86fed78643276972a82a51d4402e8f57f7a86"
+  },
+  "double/precision-rules.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/precision-rules.png",
+    "bytes": 33107,
+    "sha256": "503cd1aff3f50f5d98d066324da17e16f5523b18a2f8647bab56653e28436dd0"
+  },
+  "double/preview-70.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/preview-70.png",
+    "bytes": 453234,
+    "sha256": "f894c1a48be70e37585bea9a4e320736eb169538ed7093531c9f247064d4f4d1"
+  },
+  "double/reopened-brake-ab.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/reopened-brake-ab.png",
+    "bytes": 449951,
+    "sha256": "7e27d1607f1f7073a7b2b324dbef41152e8d996a93c7b2edf6410fd3f1b89890"
+  },
+  "double/restore-summary.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/restore-summary.json",
+    "bytes": 39704,
+    "sha256": "44820144783060e16b06a01a9c8882c6d2abcc33e4d38563bf56584572579522"
+  },
+  "double/short-braking-best.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/short-braking-best.json",
+    "bytes": 376,
+    "sha256": "0c100405377061af578ca7fbd60330b44cd752c6b1bbb14eabbae2433dbeef47"
+  },
+  "double/short-rules.png": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/short-rules.png",
+    "bytes": 40301,
+    "sha256": "25a04169cc00eba294b31d9784d25034b64e3fad4b83cc16b8a7219d339c61f1"
+  },
+  "double/summary.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/summary.json",
+    "bytes": 85462,
+    "sha256": "485d689613f5f4566d0297a1a1a29dacc43825287fff6455186d429b490d55d8"
+  },
+  "double/test-workspace-vehicle.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/test-workspace-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "double/0/raw.json.gz": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/0/raw.json.gz",
+    "bytes": 241233,
+    "sha256": "f6d8bfe9f9111176d79b4210142363cf60c170d751bfb9003c8b23b43ef47f67"
+  },
+  "double/0/recheck-best.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/0/recheck-best.json",
+    "bytes": 73,
+    "sha256": "9ba6a0e6ea49b60d5866e3e57248dfd3847e088b79aadd43c92bd6f9da3e2fa2"
+  },
+  "double/0/recheck.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/0/recheck.json",
+    "bytes": 95,
+    "sha256": "367738d352f30ca0c005ddded5697a0119542a68e455d0c10d5564bb31a1ed62"
+  },
+  "double/0/summary.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/0/summary.json",
+    "bytes": 6574,
+    "sha256": "b49ec192d77db39b1ec2d3089916e50a850219390ca527c6c7674895f4f1c0df"
+  },
+  "double/2/raw.json.gz": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/2/raw.json.gz",
+    "bytes": 233991,
+    "sha256": "865d4fd2452acece6f92e2db0959e703f6f38b423237e70de4753e4f5cc7e015"
+  },
+  "double/2/recheck-best.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/2/recheck-best.json",
+    "bytes": 73,
+    "sha256": "0a1bbc0122d4722fb131cef6c78ff28d9f953132dbbcca4dc331f0f40dd2a132"
+  },
+  "double/2/recheck.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/2/recheck.json",
+    "bytes": 95,
+    "sha256": "8bf430f05d23e65a19ce01b999f186da6da0ef16ecd0fec3c3856c3d73a69b3a"
+  },
+  "double/2/summary.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/2/summary.json",
+    "bytes": 6572,
+    "sha256": "6480a0801b8a5c59c47b26ed69710b245843925e755271d0b82638983476d22e"
+  },
+  "double/tuning-backups/528af4f6ca8a461889ad22a7a7af6fe8911d297e98fab4030a463dad3d6bc817.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double/tuning-backups/528af4f6ca8a461889ad22a7a7af6fe8911d297e98fab4030a463dad3d6bc817.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "double/driving-command.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double.txt",
+    "bytes": 421,
+    "sha256": "f1491df8d77dce8628e23036fc74cf2ca2a4f03f19a3afd464d684339cc3d4bd"
+  },
+  "double/restore-command.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-double-restore.txt",
+    "bytes": 412,
+    "sha256": "aba68ae19ba0c5ade663e50b2c8c36f02661b9d30bb2805abc9010b6ac1d038f"
+  },
+  "checks/T1-double/headless-0.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T1-double/headless-0.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/T1-double/headless-17.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T1-double/headless-17.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/T1-double/headless-23.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T1-double/headless-23.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/T1-double/pytest.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T1-double/pytest.log",
+    "bytes": 113,
+    "sha256": "5506ee5c334b3663ee24d29480f4fb06483ed0483cc454693b287f96b61a367a"
+  },
+  "checks/T1-double/ruff.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T1-double/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T1-double/summary.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T1-double/summary.json",
+    "bytes": 4065,
+    "sha256": "d188910415ac5689d6fefaf07f3ce084e0d2241fe3f1c9dee89432514c386a73"
+  },
+  "checks/T0/ruff.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T0/ruff.log",
+    "bytes": 987,
+    "sha256": "7b832962d8d64a649dc33863d38892f7e408346537a9623b7cd19f1e05548cdd"
+  },
+  "checks/T0/summary.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T0/summary.json",
+    "bytes": 1981,
+    "sha256": "daee34c8ea32f7ee990d9e50bf4ed08d8f11759fb3af650ca25a0858ffd13fa1"
+  },
+  "checks/T0-final/pytest.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T0-final/pytest.log",
+    "bytes": 113,
+    "sha256": "0f27a825e1ab0a2dfd0c1db70da3306ec1394daa803c07dde96f94167d544409"
+  },
+  "checks/T0-final/ruff.txt": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T0-final/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T0-final/summary.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-T0-final/summary.json",
+    "bytes": 2049,
+    "sha256": "9184f6298653b3f2bdd071b96da5ecf124b2358d2c56ef4d4e6e639044700cb2"
+  },
+  "old-new-records.json": {
+    "source": "logs/validation/BRAKE-ROAD-AB-01-old-new.json",
+    "bytes": 1961,
+    "sha256": "af6f57bf2b65c13cfe7b22491474ccd97d1d40a42387798dbe6d49b7766a8f55"
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "started_utc": "2026-10-20T02:32:24.595155+00:00",
+  "git_head": "c6920d30f5a4fea6fc6eebf245c9a55aafe78f5c",
+  "git_status": "M src/application.py\n M src/player_road_ab.py\n M src/ui/player_road_ab.py\n M src/ui/tire_tuning.py\n M tests/test_short_braking_ui.py\n M tools/short_braking_check.py\n M tools/validate.py\n?? docs/tasks/BRAKE-ROAD-AB-01.md\n?? tests/test_brake_road_ab.py\n?? tests/test_brake_road_ab_ui.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_brake_road_ab.py",
+    "tests/test_brake_road_ab_ui.py",
+    "tests/test_player_road_ab.py",
+    "tests/test_player_road_ab_ui.py",
+    "tests/test_short_braking_ui.py",
+    "tests/test_tire_tuning_ui.py",
+    "tests/test_result_tuning.py",
+    "tests/test_workspace_transition.py"
+  ],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\BRAKE-ROAD-AB-01-T1-double\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.166
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_brake_road_ab.py",
+        "tests/test_brake_road_ab_ui.py",
+        "tests/test_player_road_ab.py",
+        "tests/test_player_road_ab_ui.py",
+        "tests/test_short_braking_ui.py",
+        "tests/test_tire_tuning_ui.py",
+        "tests/test_result_tuning.py",
+        "tests/test_workspace_transition.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\BRAKE-ROAD-AB-01-T1-double\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 380.32
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\BRAKE-ROAD-AB-01-T1-double\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 2.262
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\BRAKE-ROAD-AB-01-T1-double\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 2.004
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\BRAKE-ROAD-AB-01-T1-double\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.958
+    }
+  ]
+}

@@ -39,7 +39,7 @@ def test_rules_toggle_and_preview_install_preserve_other_hardware_and_course(app
     assert app.braking_mode == GameMode.SHORT_BRAKING and '80–85' in app.panel_note.getText()
     original = app.workspace_vehicle
     app.buttons[2]['command']()
-    assert app.tire_tuning.topic == 'brakes' and app.tire_tuning.buttons[7].isHidden()
+    assert app.tire_tuning.topic == 'brakes' and not app.tire_tuning.buttons[7].isHidden()
     app.tire_tuning.activate(2)
     assert app.workspace_vehicle == original and '70%' in app.tire_tuning.preview.getText()
     app.tire_tuning.activate(4)

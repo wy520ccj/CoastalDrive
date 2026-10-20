@@ -59,12 +59,6 @@ class TireTuningPanel:
                             f'当前前胎 {vehicle.config.lateral_stiffness/1000:g}k · 后胎 {vehicle.config.rear_lateral_stiffness/1000:g}k')
         for index, button in enumerate(self.buttons[:4]):
             button['text'] = f'前制动 {BRAKE_SHARES[index]:.0%}' if brakes else f'前胎 {FRONT_STIFFNESS[index]/1000:g}k'
-        for index in range(4, 7):
-            self.buttons[index].setX((-1.05, 0., 1.05)[index-4] if brakes else (-1.20, -.40, 1.20)[index-4])
-            width = (.92, .98, .92)[index-4] if brakes else (.72, .76, .72)[index-4]
-            self.buttons[index]['frameSize'] = (-width/2, width/2, -.060, .060)
-        self.buttons[7]['state'] = DGG.DISABLED if brakes else DGG.NORMAL
-        self.buttons[7].hide() if brakes else self.buttons[7].show()
         self.notice.setText('先选配方，再确认安装；取消返回会保留当前车。')
         self.buttons[4]['state'] = DGG.DISABLED
         try:
@@ -77,7 +71,7 @@ class TireTuningPanel:
         self.root.show()
 
     def select(self, index):
-        self.selected = index % (7 if self.topic == 'brakes' else 8)
+        self.selected = index % 8
         for i, button in enumerate(self.buttons):
             button['frameTexture'] = ((self.textures[2], self.textures[1], self.textures[2], self.textures[3])
                                       if i == self.selected else self.textures)

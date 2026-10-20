@@ -200,8 +200,9 @@ class CoastalDrive(ShowBase):
         self.driving_journey_return = False
         self.tour_store = None
         self.player_road_ab = PlayerRoadAB(self.session.race.scores.path.with_name('player-road-ab.json'))
-        self.slalom_attempt = self.slalom_start_context = None
-        self.slalom_pending = False
+        self.player_brake_ab = PlayerRoadAB(self.session.race.scores.path.with_name('player-braking-ab.json'), brakes=True)
+        self.road_attempt = self.road_start_context = None
+        self.road_pending = False
         self.tour_active = self.tour_pending = False
         self.tour_round = 0
         self.tour_status = ''
@@ -596,9 +597,9 @@ class CoastalDrive(ShowBase):
         if track == "endless":
             self.session.traffic_density = self.highway_density_keys[self.highway_density_index]
         self.session.start(mode=mode, track=track,settle_initial=True)
-        self.slalom_attempt = None
-        self.slalom_pending = mode in SLALOM_MODES
-        self.slalom_start_context = player_road_context(self.session) if self.slalom_pending else None
+        self.road_attempt = None
+        self.road_pending = mode in (*SLALOM_MODES, *BRAKING_MODES)
+        self.road_start_context = player_road_context(self.session) if self.road_pending else None
         self.sync_scene()
         if track == "endless":
             # 重开复用Scene时，道路可能已回到起点；加载阶段补齐近景。
@@ -1256,7 +1257,7 @@ class CoastalDrive(ShowBase):
         self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label())
 
     def open_player_road_ab(self):
-        self.player_road_panel.show(self.player_road_ab)
+        self.player_road_panel.show(self.player_brake_ab if self.tire_tuning.topic == 'brakes' else self.player_road_ab)
 
     def open_brake_tuning(self):
         if self.session.phase == Phase.RESULTS and self.session.mode in BRAKING_MODES:
@@ -1272,25 +1273,29 @@ class CoastalDrive(ShowBase):
         self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label(), topic='brakes')
 
     def observe_player_road(self):
-        if self.session.phase != Phase.RESULTS or not self.slalom_pending:
+        if self.session.phase != Phase.RESULTS or not self.road_pending:
             return
-        self.slalom_pending = False
+        self.road_pending = False
+        brakes = self.session.mode in BRAKING_MODES
+        store = self.player_brake_ab if brakes else self.player_road_ab
+        result = self.session.highway.snapshot.braking if brakes else self.session.highway.snapshot.slalom
         try:
-            self.slalom_attempt = player_road_record(self.slalom_start_context, player_road_context(self.session),
-                self.session.vehicle_config, self.session.highway.snapshot.slalom)
-            self.player_road_ab.observe(self.slalom_attempt)
+            self.road_attempt = player_road_record(self.road_start_context, player_road_context(self.session),
+                self.session.vehicle_config, result)
+            store.observe(self.road_attempt)
         except (ValueError, TypeError, KeyError) as error:
-            self.player_road_ab.notice = '本次道路对照未记录：'+str(error)
+            store.notice = '本次道路对照未记录：'+str(error)
 
     def apply_tuning_vehicle(self, vehicle):
         """只在保存成功后交接菜单车辆；恢复完整原车时也恢复其电子开关。"""
         if self.session.phase == Phase.RESULTS:
             if vehicle == self.tire_tuning.original:
                 return
-            if self.session.mode in SLALOM_MODES and self.slalom_attempt is not None:
+            if self.road_attempt is not None:
                 target = self.session.driving_mode.configured_vehicle(vehicle.config.braking.abs_enabled,
                     vehicle.config.traction.tcs_enabled, vehicle.config.stability.esc_enabled, base_config=vehicle.config)
-                self.player_road_ab.freeze(self.slalom_attempt, target)
+                store = self.player_brake_ab if self.session.mode in BRAKING_MODES else self.player_road_ab
+                store.freeze(self.road_attempt, target)
             # 已结束的记录只属于旧车；保存成功后才回菜单准备同一道课题。
             mode, journey = self.session.mode, self.driving_journey_return
             self.session.menu()
@@ -1321,7 +1326,8 @@ class CoastalDrive(ShowBase):
             return
         self.apply_tuning_vehicle(vehicle)
         self.tire_tuning.notice.setText('已保存硬件配方；返回原课题亲自验车。' if vehicle != current else '与当前车相同，原方案关联保持。')
-        if self.tire_tuning.topic == 'tires' and self.player_road_ab.notice:
+        store = self.player_brake_ab if self.tire_tuning.topic == 'brakes' else self.player_road_ab
+        if store.notice:
             self.tire_tuning.notice.setText(self.tire_tuning.notice.getText()+' 道路对照有提示，请查看道路A/B。')
 
     def restore_tire_vehicle(self):
