@@ -27,3 +27,5 @@
 - 最终T1：`tools/validate.py T1 --tests tests/test_road_ab_diagram.py tests/test_road_ab_diagram_ui.py tests/test_player_road_ab_ui.py tests/test_brake_road_ab_ui.py`，Double同范围经原启动器；两库Ruff、各15项及seed0/17/23各1200步通过，pytest292.34/231.20秒。
 - 证据`docs/evidence/ROAD-AB-DIAGRAM-01`，清单47份原始文件、6,532,003字节及6源码LF SHA逐项可核对。原生机械模块SHA仍为c84bfb06cae9d51a46f5cdff69107f96e73c6757d2853ef46673d0710010e7a2。原持久化/物理/输入/评分/原生模块不改，T2/T3未跑；原物理T2失败、实时和人工Gate开放，持续目标active，无推送。
 - 下一步入口：道路并排页的选定结果，继续连接可明确复测的实验台操作，保留旧参考试验与当前驾驶车。
+
+- 本地功能提交：`4217abb7`（基线`e8a2d0cc`）；47份原始文件/6最终源码的Git索引SHA逐项保持，提交后工作区干净，无推送。后续只补提交记录与进度，不改变已验源码。
