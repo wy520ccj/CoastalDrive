@@ -2,12 +2,13 @@
 import json
 
 import pytest
+from direct.gui.DirectGuiBase import DirectGuiWidget
 from panda3d.core import TextNode
 
 from application import CoastalDrive
 from driving_modes import DrivingMode
 from session import Phase
-from settings import DrivingModeStore
+from settings import AudioSettingsStore, DrivingModeStore
 from ui.hud import driving_help
 from vehicle_designs import vehicle_design
 
@@ -68,8 +69,8 @@ def test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics(tmp_pa
         assert app.driving_mode_page and app.panel_option_count == 4
         assert [b["text"] for b in app.buttons[:4]] == [
             "车辆 ABS：开启", "驱动防滑 TCS：开启", "横摆稳定 ESC：开启", "返回"]
-        assert app.panel_note.getTightBounds(app.panel)[0].z > (
-            app.buttons[0].getZ() + app.buttons[0]["frameSize"][3])
+        assert app.driving_cards.active and app.panel_note.isHidden()
+        assert app.buttons[0].getZ() == app.buttons[1].getZ() == app.buttons[2].getZ()
         app.key_down("enter")
         app.key_up("enter")
         assert not app.session.abs_enabled and app.session.simulation is old_world
@@ -118,5 +119,52 @@ def test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics(tmp_pa
             node.setFont(app.ui_font)
             assert node.calcWidth(line) * .027 <= 1.5
         assert "刹车·倒车" in driving_help(DrivingMode.GAME)
+    finally:
+        app.close_game()
+
+
+def test_settings_cards_adjust_save_return_without_retaining_widgets(tmp_path):
+    app = CoastalDrive(smoke=True, output=tmp_path)
+    app.taskMgr.remove('finish-smoke')
+    app.taskMgr.remove('drive-update')
+    try:
+        app.back_to_menu()
+        snapshot, world = app.session.current, app.session.simulation
+        widget_count = len(DirectGuiWidget.guiDict)
+        app.choose_audio_settings()
+        assert app.panel_option_count == 8
+        for minus, plus, name in ((0, 1, 'master_volume'), (2, 3, 'effects_volume'), (4, 5, 'music_volume')):
+            before = getattr(app.audio_settings, name)
+            app.buttons[minus]['command']()
+            assert getattr(app.audio_settings, name) == before-10
+            app.buttons[plus]['command']()
+            assert getattr(app.audio_settings, name) == before
+        music = app.audio_settings.music_volume
+        app.select_panel_option(4)
+        app.adjust_panel_option(-1)
+        assert app.audio_settings.music_volume == music-10
+        app.adjust_panel_option(1)
+        app.select_panel_option(6)
+        station = app.audio_settings.radio_station
+        app.adjust_panel_option(1)
+        restored = AudioSettingsStore(app.audio_settings.path)
+        assert restored.radio_station == station+1
+        assert restored.music_volume == music
+        app.buttons[7]['command']()
+        assert not app.audio_settings_page and not app.main_menu.root.isHidden()
+        # 菜单装饰随普通节点移除，借用的原按钮返回panel，不能留在旧content中。
+        app.choose_highway()
+        app.choose_sprint_routes()
+        app.handle_panel_key('escape')
+        app.handle_panel_key('escape')
+        assert len(DirectGuiWidget.guiDict) == widget_count
+        assert all(button.getParent() == app.panel for button in app.buttons)
+        assert app.session.current == snapshot and app.session.simulation is world
+        app.session.phase = Phase.PAUSED
+        app.refresh_panel()
+        app.choose_audio_settings()
+        app.buttons[7]['command']()
+        assert app.session.phase == Phase.PAUSED and not app.audio_settings_page
+        assert len(DirectGuiWidget.guiDict) == widget_count
     finally:
         app.close_game()

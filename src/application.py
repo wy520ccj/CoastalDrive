@@ -873,9 +873,9 @@ class CoastalDrive(ShowBase):
                 self.adjust_audio_volume("master", direction * 10)
             elif self.panel_selection in (2, 3):
                 self.adjust_audio_volume("effects", direction * 10)
-            elif self.panel_selection == 4:
+            elif self.panel_selection in (4, 5):
                 self.adjust_audio_volume("music", direction * 10)
-            elif self.panel_selection == 5:
+            elif self.panel_selection == 6:
                 self.cycle_radio(direction)
         elif self.highway_menu:
             if self.braking_menu or self.slalom_menu or self.sprint_menu or self.overtake_menu:
@@ -1580,8 +1580,8 @@ class CoastalDrive(ShowBase):
                 ("主音量 +10%", lambda: self.adjust_audio_volume("master", 10)),
                 ("效果音量 -10%", lambda: self.adjust_audio_volume("effects", -10)),
                 ("效果音量 +10%", lambda: self.adjust_audio_volume("effects", 10)),
-                (f"音乐音量：{self.audio_settings.music_volume}%  ‹ / ›",
-                 lambda: self.adjust_audio_volume("music", 10)),
+                ("音乐音量 -10%", lambda: self.adjust_audio_volume("music", -10)),
+                ("音乐音量 +10%", lambda: self.adjust_audio_volume("music", 10)),
                 (f"电台：{STATIONS[self.audio_settings.radio_station]}", self.cycle_radio),
                 ("返回", self.back_from_audio_settings),
             ]
@@ -1946,7 +1946,11 @@ class CoastalDrive(ShowBase):
                     button['text_scale'] = .041
         else:
             self.panel_accent.show()
-        if phase == Phase.MENU and self.highway_menu:
+        if self.audio_settings_page:
+            self.driving_cards.audio(self, STATIONS[self.audio_settings.radio_station])
+        elif self.driving_mode_page:
+            self.driving_cards.assists(self)
+        elif phase == Phase.MENU and self.highway_menu:
             if self.overtake_menu:
                 self.driving_cards.overtake(self, OVERTAKE_ROUTES[self.overtake_mode])
             elif self.sprint_menu:

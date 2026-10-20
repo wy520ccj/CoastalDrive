@@ -22,3 +22,4 @@
 - 其后仅补固定按钮字形引用与成功底栏提示，`GAME-LINK-UI-01-final-T0`补验新增正常恢复流程，Ruff/1项通过，3.8秒；未改模块的T1明确复用。
 - 最终`tools/game_link_ui_check.py --output logs/validation/GAME-LINK-UI-01-verified-wide`及`--output logs/validation/GAME-LINK-UI-01-verified-4x3 --size 1024 768`：各4张实际准备/导出失败/重开/恢复图，短参考与实际游戏对照分别3拍；已查看宽屏恢复与4:3失败/恢复。关闭世界、完成记录/原参考/基线/驾驶车保持，重试期间禁止GameComparison构造，导出复载快照/命令精确相同。
 - 原图、中间缺字/采集问题、最终两画幅与原始检查日志在`docs/evidence/GAME-LINK-UI-01`；源清单4文件。没有新完整道路驾驶、物理/评分/当前车辆参数改变，T2/T3未跑，原物理/实时/人工Gate开放，整体目标active，仅本地不推送。
+- 本地提交`813a6825`，包含上述功能、回归、工具和原始证据。没有远端推送。

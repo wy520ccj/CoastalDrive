@@ -1,4 +1,4 @@
-"""声音设置最长电台名称、七行按钮及实际双分辨率截图。"""
+"""声音设置电台、八项卡片动作及实际双分辨率截图。"""
 
 import argparse
 import json
@@ -46,8 +46,10 @@ def main():
         app.graphicsEngine.renderFrame()
         app.graphicsEngine.renderFrame()
         app.win.saveScreenshot(Filename.fromOsSpecific(str(args.output / "settings.png")))
-        report = {"passed": app.panel_option_count == 7 and max(widths) <= .941
-                  and min(bottoms) >= -.78,
+        report = {"passed": app.panel_option_count == 8 and app.driving_cards.active
+                  and all(width <= button['frameSize'][1]-button['frameSize'][0]-.04
+                          for width, button in zip(widths, app.buttons))
+                  and min(bottoms) >= -.84,
                   "resolution": size, "text_widths": widths, "button_bottoms": bottoms,
                   "station": app.audio_settings.radio_station, "context": args.context}
         if args.context == "pause":

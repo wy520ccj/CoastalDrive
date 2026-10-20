@@ -1,0 +1,7 @@
+{
+  "src/application.py": "04258e5d077309a08f3f824e51c4b5d79aaca409391a2fe30d9e03c3d892d211",
+  "src/ui/driving_cards.py": "7495b824daa72c340ee07e2a7a0937acbf7c180336a5805524cb9be0857613ed",
+  "tests/test_driving_mode_ui.py": "ae2e1554b9401f0e16d06f66bf476f8d174640debe4ac657419da98aa3b2dba4",
+  "tools/settings_cards_check.py": "1413c7b16941818692c8dc9cfbf10e91a9c8f3dd45e0f2974b08fcb789a16cbd",
+  "tools/audio/check_settings.py": "ac933aa7e4f241102d7f1453b79f10911b71928be22647e08034eff20ec27f39"
+}
