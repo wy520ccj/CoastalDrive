@@ -10,7 +10,7 @@ from ui.player_road_diagram import RoadDiagram
 
 
 class PlayerRoadPanel:
-    def __init__(self, parent, font, textures):
+    def __init__(self, parent, font, textures, retest):
         self.root = DirectFrame(parent=parent, frameColor=theme.PAPER_LIGHT,
             frameSize=(-1.70, 1.70, -.86, .80), sortOrder=115, state=DGG.NORMAL)
 
@@ -35,10 +35,14 @@ class PlayerRoadPanel:
         text('同一道题与输入设置，驾驶操作仍可不同；本页不证明单一硬件因果，也不授奖。', -1.52, -.62, .028, theme.MUTED)
         self.back = DirectButton(parent=self.root, text='返回前胎配方 · Esc', text_font=font, text_fg=theme.INK,
             text_scale=.040, frameTexture=textures, frameColor=(1, 1, 1, 1), relief=DGG.FLAT, pressEffect=False,
-            frameSize=(-.65, .65, -.055, .055), pos=(0, 0, -.75), command=self.hide)
+            frameSize=(-.68, .68, -.055, .055), pos=(.86, 0, -.75), command=self.hide)
+        self.retest_button = DirectButton(parent=self.root, text='实验台复测 A/B', text_font=font, text_fg=theme.INK,
+            text_scale=.040, frameTexture=textures, frameColor=(1, 1, 1, 1), relief=DGG.FLAT, pressEffect=False,
+            frameSize=(-.68, .68, -.055, .055), pos=(-.86, 0, -.75), command=retest)
         self.root.hide()
 
     def show(self, store):
+        self.retest_button['state'] = DGG.NORMAL if store.a is not None and store.b is not None else DGG.DISABLED
         self.diagram.show(store)
         self.graph = True
         self.refresh_view()

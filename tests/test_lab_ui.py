@@ -67,6 +67,7 @@ def test_switch_requests_exit_and_cleanup_releases_world_once():
         engine=SimpleNamespace(taskMgr=SimpleNamespace(remove=lambda _: None),
                                destroy=lambda: calls.append("window-close")),
         ignoreAll=lambda: None, design_loop=SimpleNamespace(close=lambda: None),
+        road_retest=SimpleNamespace(close=lambda: calls.append("retest-stop")),
         workshop=SimpleNamespace(hide=lambda: calls.append("workshop-stop")),
         schemes=SimpleNamespace(hide=lambda: calls.append("schemes-stop")),
         run_state=SimpleNamespace(close=lambda: calls.append("world-close")),
@@ -78,6 +79,7 @@ def test_switch_requests_exit_and_cleanup_releases_world_once():
     assert calls.index("workshop-stop") < calls.index("world-close")
     assert calls.count("schemes-stop") == 1 and calls.index("schemes-stop") < calls.index("world-close")
     assert calls.count("world-close") == 1
+    assert calls.count("retest-stop") == 1 and calls.index("retest-stop") < calls.index("world-close")
     assert calls.index("world-close") < calls.index("window-close")
 
 

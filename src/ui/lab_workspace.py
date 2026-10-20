@@ -29,6 +29,7 @@ class LabWorkspace:
     last_report: Path | None
     workshop_state: dict | None = None
     road_state: dict | None = None
+    retest_state: dict | None = None
 
     @classmethod
     def capture(cls, app):
@@ -39,7 +40,7 @@ class LabWorkspace:
                    app.abs_menu.selectedIndex, app.esc_menu.selectedIndex, app.plot_menu.selectedIndex,
                    app.engineered_config, app.parameter_metadata, app.active_record(), app.baseline,
                    app.view_index, app.scene.camera_mode, app.play_speed, app.last_report,
-                   app.workshop.capture(), app.schemes.virtual_driver.capture())
+                   app.workshop.capture(), app.schemes.virtual_driver.capture(), app.road_retest.capture())
 
     def restore(self, app):
         app.set_options(LabOptions(vehicle_id=self.vehicle_id, maneuver=self.maneuver))
@@ -76,3 +77,5 @@ class LabWorkspace:
             app.workshop.restore(self.workshop_state)
         if self.road_state is not None:
             app.schemes.virtual_driver.restore(self.road_state)
+        if self.retest_state is not None:
+            app.road_retest.restore(self.retest_state)

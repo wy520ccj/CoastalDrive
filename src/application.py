@@ -38,6 +38,7 @@ from player_road_ab import PlayerRoadAB
 from player_road_ab import context as player_road_context
 from player_road_ab import record as player_road_record
 from race import BestTimes, GameMode
+from road_retest import prepare_pair
 from scene import Scene
 from session import Phase, Session
 from settings import AppearanceStore, AudioSettingsStore, DrivingModeStore
@@ -203,6 +204,7 @@ class CoastalDrive(ShowBase):
         self.player_brake_ab = PlayerRoadAB(self.session.race.scores.path.with_name('player-braking-ab.json'), brakes=True)
         self.road_attempt = self.road_start_context = None
         self.road_pending = False
+        self.road_retest_request = self.road_retest_return = None
         self.tour_active = self.tour_pending = False
         self.tour_round = 0
         self.tour_status = ''
@@ -452,6 +454,11 @@ class CoastalDrive(ShowBase):
                     self.session.focus_changed(properties.getForeground() and not properties.getMinimized())
                 self._shown_phase = None
                 self.refresh_panel()
+                if self.road_retest_return is not None:
+                    topic, _mode = self.road_retest_return
+                    self.road_retest_return = None
+                    self.open_brake_tuning() if topic == 'brakes' else self.open_tire_tuning()
+                    self.open_player_road_ab()
             self.workspace_loading.hide()
             return task.done
         except (OSError, ValueError, RuntimeError):
@@ -510,6 +517,9 @@ class CoastalDrive(ShowBase):
                 if self.lab.workshop.topic != request["topic"]:
                     self.lab.workshop.set_topic(request["topic"])
                 self.lab.workshop.show()
+        if self.road_retest_request is not None:
+            self.lab.road_retest.prepare(self.road_retest_request)
+            self.road_retest_request = None
         yield 3, "工程参数与试验记录已恢复"
         self.lab.root.prepareScene(self.win.getGsg())
         self.render.prepareScene(self.win.getGsg())
@@ -521,6 +531,8 @@ class CoastalDrive(ShowBase):
         if self._workspace_steps is not None:
             return
         self.lab_workspace = self.lab.capture_workspace()
+        if self.lab.next_drive or self.lab.next_slalom:
+            self.road_retest_return = None
         self.workspace_vehicle = self.lab.workspace_vehicle or self.workspace_vehicle
         # 显式亲自过门优先；既有工坊滨海验证与普通课题返回分别保留。
         if self.lab.next_slalom:
@@ -567,7 +579,13 @@ class CoastalDrive(ShowBase):
         yield 3, "准备公路场景与声音"
         if self.scene is not None:
             self.scene.render.reparentTo(self.render)
-        if self.next_drive:
+        if self.road_retest_return is not None:
+            topic, mode = self.road_retest_return
+            if topic == 'brakes':
+                self.choose_braking_lesson(mode)
+            else:
+                self.choose_slalom_lesson(mode)
+        elif self.next_drive:
             if self.lab_return_overtake:
                 self._enter_game(self.lab_return_overtake, "endless")
             elif self.lab_return_sprint is not None:
@@ -905,7 +923,8 @@ class CoastalDrive(ShowBase):
                                           self.start_tour_leg, self.back_from_driving_tour)
         self.tire_tuning = TireTuningPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
             self.install_driving_recipe, self.restore_tire_vehicle, self.back_from_tire_tuning, self.open_player_road_ab)
-        self.player_road_panel = PlayerRoadPanel(self.tire_tuning.root, self.ui_font, self.main_menu.textures)
+        self.player_road_panel = PlayerRoadPanel(self.tire_tuning.root, self.ui_font, self.main_menu.textures,
+                                               self.open_road_retest)
         self.tour_banner = DirectFrame(parent=self.aspect2d, frameColor=theme.PAPER_LIGHT,
             frameSize=(-.34, .34, -.105, 0), pos=(0, 0, .95), sortOrder=60)
         self.tour_title = OnscreenText(parent=self.tour_banner, text='', font=self.ui_font,
@@ -1258,6 +1277,20 @@ class CoastalDrive(ShowBase):
 
     def open_player_road_ab(self):
         self.player_road_panel.show(self.player_brake_ab if self.tire_tuning.topic == 'brakes' else self.player_road_ab)
+
+    def open_road_retest(self):
+        if self._workspace_steps is not None or self.session.phase not in (Phase.MENU, Phase.RESULTS):
+            return
+        topic = self.tire_tuning.topic
+        store = self.player_brake_ab if topic == 'brakes' else self.player_road_ab
+        try:
+            pair = prepare_pair(store.a, store.b)
+        except (ValueError, TypeError, KeyError) as error:
+            self.player_road_panel.notice.setText('未进入参考复测：'+str(error))
+            return
+        self.road_retest_request = pair
+        self.road_retest_return = (topic, GameMode(pair['A']['context']['mode']))
+        self.open_vehicle_lab()
 
     def open_brake_tuning(self):
         if self.session.phase == Phase.RESULTS and self.session.mode in BRAKING_MODES:

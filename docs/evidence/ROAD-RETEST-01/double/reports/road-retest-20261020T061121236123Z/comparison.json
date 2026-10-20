@@ -1,0 +1,80 @@
+{
+  "conditions": {
+    "vehicle.front_brake_share": {
+      "A": 0.45,
+      "B": 0.7
+    }
+  },
+  "A": {
+    "status": "stopped",
+    "reason": "stopped",
+    "error": null,
+    "simulation_seconds": 2.8833333333333333,
+    "compute_seconds": 1.3544506999314763,
+    "distance_m": 32.406443579045096,
+    "stopping_distance_m": 32.406443579045096,
+    "peak_deceleration_mps2": -8.265531840645368,
+    "peak_lateral_acceleration_mps2": 0.015812483799222274,
+    "peak_yaw_rate_radps": 0.0009722739466691937,
+    "mean_path_error_m": null,
+    "maximum_path_error_m": null,
+    "abs_ticks": 311,
+    "ticks": 346,
+    "initialization_ticks": 177,
+    "options": {
+      "vehicle_id": "reference-rwd",
+      "maneuver": "braking",
+      "speed_kph": 80.0,
+      "friction": 1.1,
+      "abs_enabled": true,
+      "esc_enabled": false,
+      "duration": 12.0,
+      "steering_deg": 3.0,
+      "onset": 0.5,
+      "seed": 0,
+      "cg_height": null,
+      "radius_m": 60.0,
+      "right_friction": 0.3,
+      "tire_reference_load": null,
+      "bump_height_m": 0.01,
+      "bump_length_m": 0.9,
+      "bump_distance_m": 6.0
+    }
+  },
+  "B": {
+    "status": "stopped",
+    "reason": "stopped",
+    "error": null,
+    "simulation_seconds": 2.525,
+    "compute_seconds": 1.233088899989525,
+    "distance_m": 28.293632315640398,
+    "stopping_distance_m": 28.293632315640398,
+    "peak_deceleration_mps2": -9.05977821886977,
+    "peak_lateral_acceleration_mps2": 0.0024944371600471756,
+    "peak_yaw_rate_radps": 0.00015353724736471557,
+    "mean_path_error_m": null,
+    "maximum_path_error_m": null,
+    "abs_ticks": 0,
+    "ticks": 303,
+    "initialization_ticks": 177,
+    "options": {
+      "vehicle_id": "reference-rwd",
+      "maneuver": "braking",
+      "speed_kph": 80.0,
+      "friction": 1.1,
+      "abs_enabled": true,
+      "esc_enabled": false,
+      "duration": 12.0,
+      "steering_deg": 3.0,
+      "onset": 0.5,
+      "seed": 0,
+      "cg_height": null,
+      "radius_m": 60.0,
+      "right_friction": 0.3,
+      "tire_reference_load": null,
+      "bump_height_m": 0.01,
+      "bump_length_m": 0.9,
+      "bump_distance_m": 6.0
+    }
+  }
+}

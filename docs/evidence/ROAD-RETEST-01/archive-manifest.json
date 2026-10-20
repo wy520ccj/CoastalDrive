@@ -1,0 +1,662 @@
+{
+  "normal/braking-completed.png": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/braking-completed.png",
+    "bytes": 108474,
+    "sha256": "589ff87acfb1ba83d78d6d079275ad4c36ee9a2a233d85417fa56d3f63dadd03",
+    "gzip": false
+  },
+  "normal/braking-conditions.png": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/braking-conditions.png",
+    "bytes": 119094,
+    "sha256": "429406132c41249a0ee78f0286bf15efba3f5451ffeee2cd14f978c03fe6bd94",
+    "gzip": false
+  },
+  "normal/braking-ready.png": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/braking-ready.png",
+    "bytes": 107806,
+    "sha256": "0cd507c4b1dc61c582a63dec3340668ea54a2bc70ac3ad703f066d58395d2648",
+    "gzip": false
+  },
+  "normal/braking-returned.png": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/braking-returned.png",
+    "bytes": 287690,
+    "sha256": "2df70630962d0fcba3cf9bee6568c872d97f7ff52d92d03ead2031d83b2cb761",
+    "gzip": false
+  },
+  "normal/braking-running.png": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/braking-running.png",
+    "bytes": 106231,
+    "sha256": "515604261efe5df53520fd7427bc01fd4ba34182c552f958aa9d10bd9b27c43d",
+    "gzip": false
+  },
+  "normal/circle-completed.png": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/circle-completed.png",
+    "bytes": 113934,
+    "sha256": "cd2fe9873a241899fd93ec76ee6a3242e525042dc79c63865362f4d66f9831e5",
+    "gzip": false
+  },
+  "normal/circle-conditions.png": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/circle-conditions.png",
+    "bytes": 123208,
+    "sha256": "fa8c9f0f5a025c5e61f9397ff13c31257ec5195d3224186a3bf287bf2871b35d",
+    "gzip": false
+  },
+  "normal/circle-ready.png": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/circle-ready.png",
+    "bytes": 111148,
+    "sha256": "073dda0b536b4303ef58fc5ab11db58d905147c0ded58e2e65a83395c67c7565",
+    "gzip": false
+  },
+  "normal/circle-returned.png": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/circle-returned.png",
+    "bytes": 288094,
+    "sha256": "8492c8ff03b003f87871237e9a1bd5779afa40c4650505e114bee88bffc5cb8b",
+    "gzip": false
+  },
+  "normal/circle-running.png": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/circle-running.png",
+    "bytes": 110833,
+    "sha256": "676784974a8d5bce39c6a47aed4e3f497eaacdfb186624d39d48dcfc5679c9b8",
+    "gzip": false
+  },
+  "normal/player-braking-ab.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/player-braking-ab.json",
+    "bytes": 39030,
+    "sha256": "72b7fe56554f3c98ee7b1016b8d41c000454205d233f930279f1b49477b70cad",
+    "gzip": false
+  },
+  "normal/player-road-ab.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/player-road-ab.json",
+    "bytes": 40195,
+    "sha256": "5c5c14352c183e0e51ceae1cd552390dcbf5074bce7b5d1db1c3e1d0d3069c17",
+    "gzip": false
+  },
+  "normal/summary.json.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/summary.json",
+    "bytes": 131764,
+    "sha256": "894c0141df285745026c1f7b6934797bdcf188e64a26f6d3293a2b1de316aea4",
+    "gzip": true
+  },
+  "normal/test-workspace-vehicle.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/test-workspace-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/comparison.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/comparison.json",
+    "bytes": 2234,
+    "sha256": "5700471765cdb3fb902d8077bbb601310ef2b2d8bf6ae9e5bf1b21f214f8c0bc",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/engineering.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/engineering.json",
+    "bytes": 33164,
+    "sha256": "f1ad5dd4f4d6254f81de805ba0d92f2dd25b377bafd957c7dd0d2a0a1f275a2a",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/experiment.json.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/experiment.json",
+    "bytes": 1529857,
+    "sha256": "e29c51a1b956c208b4da72ba844a09d849e11476b97bf3778a0f6d604969d5b8",
+    "gzip": true
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/report.html": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/report.html",
+    "bytes": 87028,
+    "sha256": "cac534e23831ed046e15631799f0bbbac2a3b8742d7fe219edf9de8e3458ff5e",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/retest.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/retest.json",
+    "bytes": 37123,
+    "sha256": "7f20a60e7bc1466bad798f2eac30ca06c7e642c69b5713085290c05736098c6f",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/signals.csv.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/signals.csv",
+    "bytes": 477431,
+    "sha256": "3230eb1df8135c35316dcdca5d157d779b513ad90fdec61639eda299f067dbc7",
+    "gzip": true
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/snapshots.bin.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/snapshots.bin",
+    "bytes": 1910155,
+    "sha256": "980374acf76ff6cec606876ac4eeddfdba1b11bad30849ff924f4bcb9fe15f37",
+    "gzip": true
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/suspension-bench-coverage.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/suspension-bench-coverage.json",
+    "bytes": 31,
+    "sha256": "b16ce85623eabc6a4d5fee1dbe1cef437360546bb9b8950eef8b906490bf3e76",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/vehicle.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/vehicle.json",
+    "bytes": 5392,
+    "sha256": "ab44491087419c3a7b7a67382b00627ca174214629b6ff81ee9be70f926f99a3",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/comparison.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/comparison.json",
+    "bytes": 2263,
+    "sha256": "d5714afb9143b72b3da566955d35b9d0cb61b3709f1847777a8051b2e0a72219",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/engineering.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/engineering.json",
+    "bytes": 33026,
+    "sha256": "b89367437699dadd7c3b6a5b8194cd8f6e9ec07cd4ed4fed33d65cbf74c28cbe",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/experiment.json.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/experiment.json",
+    "bytes": 5951832,
+    "sha256": "2c5c4a88793c9ce47f9b265fef3230e9235f5ea08a19b6dcde7f2641e858e3b3",
+    "gzip": true
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/report.html.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/report.html",
+    "bytes": 237621,
+    "sha256": "01c6210fccb76f72d22e64a4fc5f343a69552b3ee0048120d4c34ff8eae551dd",
+    "gzip": true
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/retest.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/retest.json",
+    "bytes": 38422,
+    "sha256": "7d25c0fddddf9ffb13185b29b5a95f60845343eb54b226723872a60df4c136c3",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/signals.csv.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/signals.csv",
+    "bytes": 1998287,
+    "sha256": "431939b9084c81241867acc4de22ac48a95f783ebfcfaf843c8b45517f0a1007",
+    "gzip": true
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/snapshots.bin.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/snapshots.bin",
+    "bytes": 7552091,
+    "sha256": "67b6645417bcc27bf756572af1839d21bb0bf13bf42e7d93e22a596170864b44",
+    "gzip": true
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/suspension-bench-coverage.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/suspension-bench-coverage.json",
+    "bytes": 31,
+    "sha256": "b16ce85623eabc6a4d5fee1dbe1cef437360546bb9b8950eef8b906490bf3e76",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/vehicle.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/vehicle.json",
+    "bytes": 5393,
+    "sha256": "01d521c8fe0e153762664d1b7b4865b83f5b6fd8031d9ef9807f765c1ca8942c",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/baseline-A/engineering.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/baseline-A/engineering.json",
+    "bytes": 25172,
+    "sha256": "3840a1f190a55433b8f08209a96cb8a2eb293cf2096626198265a78f45b0c689",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/baseline-A/experiment.json.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/baseline-A/experiment.json",
+    "bytes": 5951257,
+    "sha256": "41f457efb847e7e69f9d6cdaa77d8f1552c194e82dd7e9808638867d531872e0",
+    "gzip": true
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/baseline-A/report.html.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/baseline-A/report.html",
+    "bytes": 132127,
+    "sha256": "5bd960739624cbdafe5c2ac9d1d0f7baa9e6dbec746bbf299d82765e9c7838dc",
+    "gzip": true
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/baseline-A/signals.csv.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/baseline-A/signals.csv",
+    "bytes": 1998409,
+    "sha256": "333e68ac1d3c3c4b0c645976e9b87d02b901481ef53e5f1b51128030170308e4",
+    "gzip": true
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/baseline-A/snapshots.bin.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/baseline-A/snapshots.bin",
+    "bytes": 7552091,
+    "sha256": "e3dfcdceef2fc23e8cf5cc89667e2470b7057ea9d5b6b528e28442896c38ebc6",
+    "gzip": true
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/baseline-A/suspension-bench-coverage.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/baseline-A/suspension-bench-coverage.json",
+    "bytes": 23,
+    "sha256": "672933a145c7042f0f89b86760066de25b1867316b464fad75c213b00bbb5618",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061041725582Z/baseline-A/vehicle.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061041725582Z/baseline-A/vehicle.json",
+    "bytes": 5393,
+    "sha256": "3f35ec1ea9bad9d8e3d4075e169079777be4d35d067b25ce5fa04637d8a7c9e0",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/baseline-A/engineering.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/baseline-A/engineering.json",
+    "bytes": 25286,
+    "sha256": "cb492767b8558ece9074a1c9e2ef903602931e91efa17d6409f98ed722119399",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/baseline-A/experiment.json.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/baseline-A/experiment.json",
+    "bytes": 1728933,
+    "sha256": "7a34fd7bbca829d773ed9c93680e37424c915ec42054b5aa4bbd0c760a7d93bb",
+    "gzip": true
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/baseline-A/report.html": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/baseline-A/report.html",
+    "bytes": 59355,
+    "sha256": "787803ba0e2f48c9a1b1b186097b60c0b668ae7a1c50fba42161115d2612a249",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/baseline-A/signals.csv.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/baseline-A/signals.csv",
+    "bytes": 540174,
+    "sha256": "e068e7b3c13edce321a335e28f64e173899ee21bc23fe987b0049d49652779d6",
+    "gzip": true
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/baseline-A/snapshots.bin.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/baseline-A/snapshots.bin",
+    "bytes": 2180347,
+    "sha256": "695778241c34be9f220bb0a6e189ee0196ebf15d241d7e4510b0770d163bf7b9",
+    "gzip": true
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/baseline-A/suspension-bench-coverage.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/baseline-A/suspension-bench-coverage.json",
+    "bytes": 23,
+    "sha256": "672933a145c7042f0f89b86760066de25b1867316b464fad75c213b00bbb5618",
+    "gzip": false
+  },
+  "normal/reports/road-retest-20261020T061025737212Z/baseline-A/vehicle.json": {
+    "source": "logs/validation/ROAD-RETEST-01-normal/reports/road-retest-20261020T061025737212Z/baseline-A/vehicle.json",
+    "bytes": 5393,
+    "sha256": "a77cd808fd1e9c92809fe6a58e4d243ff47d5404b7ca90427fc996e6af4f5eec",
+    "gzip": false
+  },
+  "double/braking-completed.png": {
+    "source": "logs/validation/ROAD-RETEST-01-double/braking-completed.png",
+    "bytes": 79223,
+    "sha256": "63ac60f7b22f0c4a50ea32db447211ed7189d480fce551808c29bb1d8c7ec46c",
+    "gzip": false
+  },
+  "double/braking-conditions.png": {
+    "source": "logs/validation/ROAD-RETEST-01-double/braking-conditions.png",
+    "bytes": 87188,
+    "sha256": "a26397e77b0e108c6304f49a8704dfb6cd42e488b65ab7183a0e11332e5cd92b",
+    "gzip": false
+  },
+  "double/braking-ready.png": {
+    "source": "logs/validation/ROAD-RETEST-01-double/braking-ready.png",
+    "bytes": 78436,
+    "sha256": "25d7755e6ff63d1d2e0b843a6807861439860d497efb33a56d1f463549e1124d",
+    "gzip": false
+  },
+  "double/braking-returned.png": {
+    "source": "logs/validation/ROAD-RETEST-01-double/braking-returned.png",
+    "bytes": 453057,
+    "sha256": "63ac4f786694a17e409fa9b48681f2e19ae3c2a490245cd2b240abca909da4e3",
+    "gzip": false
+  },
+  "double/braking-running.png": {
+    "source": "logs/validation/ROAD-RETEST-01-double/braking-running.png",
+    "bytes": 77582,
+    "sha256": "adeb0ed21365f66dbb31f8a4c6784d08c8f0fee41aef7d302b1ff586532f8ac1",
+    "gzip": false
+  },
+  "double/circle-completed.png": {
+    "source": "logs/validation/ROAD-RETEST-01-double/circle-completed.png",
+    "bytes": 82478,
+    "sha256": "8e3e6363f8843718db50427e476d0585eca82b5ed4e74c4589a78a40c19bf088",
+    "gzip": false
+  },
+  "double/circle-conditions.png": {
+    "source": "logs/validation/ROAD-RETEST-01-double/circle-conditions.png",
+    "bytes": 89680,
+    "sha256": "a4ebddb348f94d186add7cc2c31f94b052396a1305acfe6a30aa9fb82723ee00",
+    "gzip": false
+  },
+  "double/circle-ready.png": {
+    "source": "logs/validation/ROAD-RETEST-01-double/circle-ready.png",
+    "bytes": 80208,
+    "sha256": "9a6d52a13fa6984b5ed88fd3d369293635fd357d116d7c73e4b9d60522374c03",
+    "gzip": false
+  },
+  "double/circle-returned.png": {
+    "source": "logs/validation/ROAD-RETEST-01-double/circle-returned.png",
+    "bytes": 453620,
+    "sha256": "2db36ebdcf23646ff9da482a0893df529a6c33944de70ad79f31c5b18ec338c7",
+    "gzip": false
+  },
+  "double/circle-running.png": {
+    "source": "logs/validation/ROAD-RETEST-01-double/circle-running.png",
+    "bytes": 79810,
+    "sha256": "047786014161b33ea7c24751153dc14482f64b16f53c3c5ca4d6ce6600330ce0",
+    "gzip": false
+  },
+  "double/player-braking-ab.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/player-braking-ab.json",
+    "bytes": 34422,
+    "sha256": "c13f68acf7edc97936b020251e408c79028badffe55418224bd8ee0fcabb82ca",
+    "gzip": false
+  },
+  "double/player-road-ab.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/player-road-ab.json",
+    "bytes": 35583,
+    "sha256": "60187d7b903b0890610605a019c86fed78643276972a82a51d4402e8f57f7a86",
+    "gzip": false
+  },
+  "double/summary.json.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-double/summary.json",
+    "bytes": 117434,
+    "sha256": "374f3a0ee0d975bc09bbb7dd7951c30fd3905527126ecdad7232f1f6a6762d59",
+    "gzip": true
+  },
+  "double/test-workspace-vehicle.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/test-workspace-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061121236123Z/comparison.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/comparison.json",
+    "bytes": 2232,
+    "sha256": "ef064b06065014d7276d063c71c30ebb71c2397a55feab8e8d6e87429809ff9e",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061121236123Z/engineering.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/engineering.json",
+    "bytes": 33166,
+    "sha256": "904074ebb3a2bb285a1b40d6b5db48136354de8655db62ea2931d30089037ea1",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061121236123Z/experiment.json.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/experiment.json",
+    "bytes": 1522962,
+    "sha256": "cb3d0070973102d002f19ab080d266c58dd3471e538f597352871c1ae560521a",
+    "gzip": true
+  },
+  "double/reports/road-retest-20261020T061121236123Z/report.html": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/report.html",
+    "bytes": 87026,
+    "sha256": "dd08b41bffee4d57575147eb9e433c157c8a3f32b8346bc2592dbe7a09e68bf8",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061121236123Z/retest.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/retest.json",
+    "bytes": 32433,
+    "sha256": "0c6c48b47125328ccce10801d816aba38555ba68f3a8f8f223a40bc9c4fa4f86",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061121236123Z/signals.csv.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/signals.csv",
+    "bytes": 477282,
+    "sha256": "0759be4711c00e37acb0e4e5d98122c39dcc1a91724243b3a0aaf9ed069edaff",
+    "gzip": true
+  },
+  "double/reports/road-retest-20261020T061121236123Z/snapshots.bin.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/snapshots.bin",
+    "bytes": 1910155,
+    "sha256": "a51bc6c89163d7a922611734d1b1d0ddb29c9d5186464a48e8e309679c4c0954",
+    "gzip": true
+  },
+  "double/reports/road-retest-20261020T061121236123Z/suspension-bench-coverage.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/suspension-bench-coverage.json",
+    "bytes": 31,
+    "sha256": "b16ce85623eabc6a4d5fee1dbe1cef437360546bb9b8950eef8b906490bf3e76",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061121236123Z/vehicle.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/vehicle.json",
+    "bytes": 5392,
+    "sha256": "ab44491087419c3a7b7a67382b00627ca174214629b6ff81ee9be70f926f99a3",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061137063624Z/comparison.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/comparison.json",
+    "bytes": 2265,
+    "sha256": "89fee003f71cf245c695932c830a23f0de7aaf5e5b5047227d32d1b2c5eff3ce",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061137063624Z/engineering.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/engineering.json",
+    "bytes": 33020,
+    "sha256": "ef529d1ce0d6019ffc52a00711bf7396583a40c5d677cee975e6896666bdefa9",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061137063624Z/experiment.json.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/experiment.json",
+    "bytes": 5945595,
+    "sha256": "d58097b674444905e7067a8645a25cf97bf8f647a31b404f31ec10d5fe238f19",
+    "gzip": true
+  },
+  "double/reports/road-retest-20261020T061137063624Z/report.html.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/report.html",
+    "bytes": 237621,
+    "sha256": "dc0b8fba3381f0b9f007775196fc1bdc0b3c84b8bb0dc27aeb7dff0a1db94341",
+    "gzip": true
+  },
+  "double/reports/road-retest-20261020T061137063624Z/retest.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/retest.json",
+    "bytes": 33726,
+    "sha256": "f890104312dee459fa5496222a10c173ef6962c2e05da8b85bbe3c48aa602cb3",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061137063624Z/signals.csv.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/signals.csv",
+    "bytes": 1998808,
+    "sha256": "db9448a0cc820886ac31e019c794c5cf8d426078416f027311bd980c54df3572",
+    "gzip": true
+  },
+  "double/reports/road-retest-20261020T061137063624Z/snapshots.bin.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/snapshots.bin",
+    "bytes": 7552091,
+    "sha256": "22705b8bc8d3ee887ec3388f01634b608f43b96968439aedb2eb6882e8cba7d4",
+    "gzip": true
+  },
+  "double/reports/road-retest-20261020T061137063624Z/suspension-bench-coverage.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/suspension-bench-coverage.json",
+    "bytes": 31,
+    "sha256": "b16ce85623eabc6a4d5fee1dbe1cef437360546bb9b8950eef8b906490bf3e76",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061137063624Z/vehicle.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/vehicle.json",
+    "bytes": 5393,
+    "sha256": "01d521c8fe0e153762664d1b7b4865b83f5b6fd8031d9ef9807f765c1ca8942c",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061137063624Z/baseline-A/engineering.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/baseline-A/engineering.json",
+    "bytes": 25165,
+    "sha256": "beeb2eaf34cd8339463ea8ca414c88559c2db70e1f161a8eac5b2a855b892d32",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061137063624Z/baseline-A/experiment.json.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/baseline-A/experiment.json",
+    "bytes": 5944730,
+    "sha256": "12a545f9613a428c9a9de53777935b1f69929a21762f205b042927f1457e119c",
+    "gzip": true
+  },
+  "double/reports/road-retest-20261020T061137063624Z/baseline-A/report.html.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/baseline-A/report.html",
+    "bytes": 132130,
+    "sha256": "da9f3338ebd72f6776d1fa1baefdf5e214ae3ed98ec93a14acbaa75548c5ab82",
+    "gzip": true
+  },
+  "double/reports/road-retest-20261020T061137063624Z/baseline-A/signals.csv.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/baseline-A/signals.csv",
+    "bytes": 1998593,
+    "sha256": "076141308fa4fb27034b7cc196810b12081146d52c688d05f2554dbc2f511379",
+    "gzip": true
+  },
+  "double/reports/road-retest-20261020T061137063624Z/baseline-A/snapshots.bin.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/baseline-A/snapshots.bin",
+    "bytes": 7552091,
+    "sha256": "03a66910837f889fe07312ec99150fbea1ac85bdf2506c3de311e4e17e46a8bd",
+    "gzip": true
+  },
+  "double/reports/road-retest-20261020T061137063624Z/baseline-A/suspension-bench-coverage.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/baseline-A/suspension-bench-coverage.json",
+    "bytes": 23,
+    "sha256": "672933a145c7042f0f89b86760066de25b1867316b464fad75c213b00bbb5618",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061137063624Z/baseline-A/vehicle.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061137063624Z/baseline-A/vehicle.json",
+    "bytes": 5393,
+    "sha256": "3f35ec1ea9bad9d8e3d4075e169079777be4d35d067b25ce5fa04637d8a7c9e0",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061121236123Z/baseline-A/engineering.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/baseline-A/engineering.json",
+    "bytes": 25287,
+    "sha256": "4aae96d42d3b94c265157cf6faea39e54e4c28b86cd60203e8e1950061863ce5",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061121236123Z/baseline-A/experiment.json.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/baseline-A/experiment.json",
+    "bytes": 1722042,
+    "sha256": "b1d0672b6d011a5ca9722b630933a7fa4a2609fcba2baab58535a2e3ddb5f9e7",
+    "gzip": true
+  },
+  "double/reports/road-retest-20261020T061121236123Z/baseline-A/report.html": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/baseline-A/report.html",
+    "bytes": 59355,
+    "sha256": "b2e8dca37ed5b36d9ad5df39727ec354ba6d240b27cadce82b437cb377cd6aa8",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061121236123Z/baseline-A/signals.csv.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/baseline-A/signals.csv",
+    "bytes": 540027,
+    "sha256": "9c9378c8aa211981e2e485a5e6097c223d3250719096caf2845122598eec1bb7",
+    "gzip": true
+  },
+  "double/reports/road-retest-20261020T061121236123Z/baseline-A/snapshots.bin.gz": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/baseline-A/snapshots.bin",
+    "bytes": 2180347,
+    "sha256": "c65d4f68e23da2113ffb8ba3d0364e1dc8a6d38bb95df31d8bdd0a6ef2dd2be8",
+    "gzip": true
+  },
+  "double/reports/road-retest-20261020T061121236123Z/baseline-A/suspension-bench-coverage.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/baseline-A/suspension-bench-coverage.json",
+    "bytes": 23,
+    "sha256": "672933a145c7042f0f89b86760066de25b1867316b464fad75c213b00bbb5618",
+    "gzip": false
+  },
+  "double/reports/road-retest-20261020T061121236123Z/baseline-A/vehicle.json": {
+    "source": "logs/validation/ROAD-RETEST-01-double/reports/road-retest-20261020T061121236123Z/baseline-A/vehicle.json",
+    "bytes": 5393,
+    "sha256": "a77cd808fd1e9c92809fe6a58e4d243ff47d5404b7ca90427fc996e6af4f5eec",
+    "gzip": false
+  },
+  "checks/T0/pytest.log": {
+    "source": "logs/validation/ROAD-RETEST-01-T0/pytest.log",
+    "bytes": 11243,
+    "sha256": "91ab5c631e3905955949c93ac6594055bb9d9ddd9ce9989f6a522022f0131640",
+    "gzip": false
+  },
+  "checks/T0/ruff.log": {
+    "source": "logs/validation/ROAD-RETEST-01-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "gzip": false
+  },
+  "checks/T0/summary.json": {
+    "source": "logs/validation/ROAD-RETEST-01-T0/summary.json",
+    "bytes": 1839,
+    "sha256": "71caaf3a69000c9cdf57e4643ea1954fa3ff351caf25be2bc227851de58bde32",
+    "gzip": false
+  },
+  "checks/review-T0/pytest.log": {
+    "source": "logs/validation/ROAD-RETEST-01-review-T0/pytest.log",
+    "bytes": 11243,
+    "sha256": "4d97df3a814dc72637994b6e03a0a65889051668664a4223faf97721e627eaa2",
+    "gzip": false
+  },
+  "checks/review-T0/ruff.log": {
+    "source": "logs/validation/ROAD-RETEST-01-review-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "gzip": false
+  },
+  "checks/review-T0/summary.json": {
+    "source": "logs/validation/ROAD-RETEST-01-review-T0/summary.json",
+    "bytes": 1853,
+    "sha256": "545a882e840393e78a272859441b4f4682dad5b89aed22f7280d046e41b2d877",
+    "gzip": false
+  },
+  "checks/fixed-T0/pytest.log": {
+    "source": "logs/validation/ROAD-RETEST-01-fixed-T0/pytest.log",
+    "bytes": 101,
+    "sha256": "f5298a7e9b11a94d2519082e81e49afbddf37f15b229db31299eaa22688904b9",
+    "gzip": false
+  },
+  "checks/fixed-T0/ruff.log": {
+    "source": "logs/validation/ROAD-RETEST-01-fixed-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "gzip": false
+  },
+  "checks/fixed-T0/summary.json": {
+    "source": "logs/validation/ROAD-RETEST-01-fixed-T0/summary.json",
+    "bytes": 1836,
+    "sha256": "ca0943213708a63ac279823a61e6e3e361c41dbb8e3f0a1c58493c70c243a690",
+    "gzip": false
+  },
+  "checks/final-T1/pytest.log": {
+    "source": "logs/validation/ROAD-RETEST-01-final-T1/pytest.log",
+    "bytes": 5983,
+    "sha256": "b171d81c653481741bd6c95c4405f1ea0e9bd1d6b3c63bb3667ab96ae2dc9223",
+    "gzip": false
+  },
+  "checks/final-T1/ruff.log": {
+    "source": "logs/validation/ROAD-RETEST-01-final-T1/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "gzip": false
+  },
+  "checks/final-T1/summary.json": {
+    "source": "logs/validation/ROAD-RETEST-01-final-T1/summary.json",
+    "bytes": 3962,
+    "sha256": "80c81e7f719fb85d71e37b04791dce46f2a4134418a8d53a3ff90da157f79017",
+    "gzip": false
+  },
+  "checks/repair-T1/headless-0.log": {
+    "source": "logs/validation/ROAD-RETEST-01-repair-T1/headless-0.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7",
+    "gzip": false
+  },
+  "checks/repair-T1/headless-17.log": {
+    "source": "logs/validation/ROAD-RETEST-01-repair-T1/headless-17.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7",
+    "gzip": false
+  },
+  "checks/repair-T1/headless-23.log": {
+    "source": "logs/validation/ROAD-RETEST-01-repair-T1/headless-23.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7",
+    "gzip": false
+  },
+  "checks/repair-T1/pytest.log": {
+    "source": "logs/validation/ROAD-RETEST-01-repair-T1/pytest.log",
+    "bytes": 112,
+    "sha256": "4355c29a6e19ac0992ebc596fa5dc0ef18eb7374e505dbc7cc9174d45db277f4",
+    "gzip": false
+  },
+  "checks/repair-T1/ruff.log": {
+    "source": "logs/validation/ROAD-RETEST-01-repair-T1/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "gzip": false
+  },
+  "checks/repair-T1/summary.json": {
+    "source": "logs/validation/ROAD-RETEST-01-repair-T1/summary.json",
+    "bytes": 4064,
+    "sha256": "a26ba24ed6c1ca6d8e77e8fcecd99393965dd52a928e0703957a0512bf387fcd",
+    "gzip": false
+  }
+}

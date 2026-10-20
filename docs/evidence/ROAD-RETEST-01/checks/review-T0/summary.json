@@ -1,0 +1,53 @@
+{
+  "started_utc": "2026-10-20T06:06:48.304221+00:00",
+  "git_head": "c10b2261ef0d8ec9f4c5ec30e2db9b4ed296f8c9",
+  "git_status": "M src/application.py\n M src/lab_application.py\n M src/ui/lab_workbench.py\n M src/ui/lab_workspace.py\n M src/ui/player_road_ab.py\n M tools/validate.py\n?? docs/tasks/ROAD-RETEST-01.md\n?? src/road_retest.py\n?? src/ui/lab_road_retest.py\n?? tests/test_road_retest.py\n?? tests/test_road_retest_ui.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_road_retest.py",
+    "tests/test_road_retest_ui.py"
+  ],
+  "tier": "T0",
+  "status": "failed",
+  "passed": false,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\ROAD-RETEST-01-review-T0\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.299
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_road_retest.py",
+        "tests/test_road_retest_ui.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\ROAD-RETEST-01-review-T0\\pytest.log",
+      "status": "failed",
+      "returncode": 1,
+      "error": "process exited 1",
+      "seconds": 32.013
+    }
+  ]
+}

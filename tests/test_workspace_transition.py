@@ -66,7 +66,7 @@ def test_ready_session_receives_current_focus_when_loading_had_no_window_event()
     observed = []
     session = SimpleNamespace(phase=Phase.LOADING, focus_changed=observed.append)
     properties = SimpleNamespace(getForeground=lambda: False, getMinimized=lambda: False)
-    app = SimpleNamespace(workspace="game", _workspace_steps=iter(()), smoke=False,
+    app = SimpleNamespace(workspace="game", _workspace_steps=iter(()), smoke=False, road_retest_return=None,
         session=session, win=SimpleNamespace(getProperties=lambda: properties),
         workspace_loading=SimpleNamespace(resize=lambda: None, hide=lambda: observed.append("hidden")),
         setup_controls=lambda: None, taskMgr=SimpleNamespace(add=lambda *args: None),

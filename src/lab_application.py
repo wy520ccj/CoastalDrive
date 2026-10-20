@@ -207,7 +207,8 @@ class VehicleLab(DirectObject):
 
     def cycle_entry(self, direction):
         if any(not panel.isHidden() for panel in (self.parameter_help.root, self.engineering_panel.root,
-                                                  self.design_loop.root, self.workshop.root, self.schemes.root)):
+                                                  self.design_loop.root, self.workshop.root, self.schemes.root,
+                                                  self.road_retest.root)):
             return
         entries = [entry for entry in (*self.entries.values(), *self.manual_entries.values())
                    if not entry.isHidden() and entry.guiItem.getActive()]
@@ -217,7 +218,7 @@ class VehicleLab(DirectObject):
         entries[index]["focus"] = 1
 
     def show_parameter_help(self):
-        if not self.workshop.root.isHidden() or not self.schemes.root.isHidden():
+        if any(not panel.isHidden() for panel in (self.workshop.root, self.schemes.root, self.road_retest.root)):
             return
         key = self.hovered_parameter or self.focused_parameter
         self.blur_entries()
@@ -668,7 +669,7 @@ class VehicleLab(DirectObject):
         # DirectEntry的focus选项不随鼠标聚焦同步，必须读取PGEntry实际状态。
         if any(not panel.isHidden() for panel in (self.advanced_panel, self.manual_panel,
                 self.details_panel, self.record_menu, self.parameter_help.root, self.engineering_panel.root,
-                self.design_loop.root, self.workshop.root, self.schemes.root, self.notice.root)):
+                self.design_loop.root, self.workshop.root, self.schemes.root, self.road_retest.root, self.notice.root)):
             return
         if not any(entry.guiItem.getFocus() and not entry.isHidden()
                    for entry in (*self.entries.values(), *self.manual_entries.values())):
@@ -679,6 +680,9 @@ class VehicleLab(DirectObject):
             self.notice.dismiss()
             return
         self.blur_entries()
+        if not self.road_retest.root.isHidden():
+            self.road_retest.hide()
+            return
         if not self.schemes.root.isHidden():
             self.schemes.escape()
             return
@@ -1005,6 +1009,7 @@ class VehicleLab(DirectObject):
 
     def update(self, task):
         self.resize()
+        self.road_retest.update()
         self.design_loop.update()
         self.schemes.virtual_driver.update()
         run = self.run_state
@@ -1065,6 +1070,7 @@ class VehicleLab(DirectObject):
             self.engine.taskMgr.remove("simplepbr update")
         self.ignoreAll()
         self.design_loop.close()
+        self.road_retest.close()
         self.workshop.hide()
         self.schemes.hide()
         if self.run_state is not None:
