@@ -13,3 +13,4 @@
 - 相关完整模块T1：`tools/validate.py T1 --tests tests/test_tire_tuning_ui.py --output logs/validation/TUNING-CARDS-01-T1`，Ruff/6项、三种子各1200拍通过，pytest88.3秒，含实际安装与同窗返回。制动共享UI原正常安装在本包T0通过，其完整模块在上一包T1已过，明确复用。
 - 之后仅补标题字形引用，原动作未改；`TUNING-CARDS-01-title-T0`补验原预览/取消正常流程，Ruff/1项通过，16.8秒。最终`tools/tuning_cards_check.py`在`TUNING-CARDS-01-verified-wide`及`TUNING-CARDS-01-verified-4x3 --size 1024 768`各4张实际图、原车/Snapshot保持、两类标题逐像素一致通过；已查看最终宽屏前胎预览与4:3制动预览，无裁切/缺字。
 - 原图、失败显示、中间采集、最终两画幅与原始检查日志见`docs/evidence/TUNING-CARDS-01`。没有新完整道路驾驶、物理或评分改变。T2/T3未跑，原物理T2/实时/人工Gate开放，持续目标active，仅本地无推送。
+- 本地功能提交`4135bc8c`，42份原始文件与2份最终源码SHA；后续文档只补提交记录，不改变已验源码。
