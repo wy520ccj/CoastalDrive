@@ -19,8 +19,7 @@ def test_menu_two_routes_markers_hud_result_and_same_window_lab_return(tmp_path)
         app.back_to_menu()
         app.choose_highway()
         assert app.panel_option_count == 8
-        for first, second in zip(app.buttons[:7], app.buttons[1:8], strict=True):
-            assert first.getZ()+first['frameSize'][2] > second.getZ()+second['frameSize'][3]
+        assert app.driving_cards.active and all(not button.isHidden() for button in app.buttons[:8])
         app.buttons[6]['command']()
         assert app.sprint_menu and app.panel_option_count == 7
         assert '平路连弯' in app.panel_note.getText() and '山脊冲刺' in app.panel_note.getText()

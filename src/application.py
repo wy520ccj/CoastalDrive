@@ -56,6 +56,7 @@ from ui.braking_feedback import RULES as BRAKING_RULES
 from ui.braking_feedback import SHORT_RULES as SHORT_BRAKING_RULES
 from ui.braking_feedback import result_feedback as braking_result_feedback
 from ui.countdown import Countdown
+from ui.driving_cards import DrivingCards
 from ui.driving_journey import DrivingJourney
 from ui.driving_tour import DrivingTourPanel
 from ui.hud import DrivingHUD
@@ -848,6 +849,9 @@ class CoastalDrive(ShowBase):
 
     def select_panel_option(self, index):
         self.panel_selection = index % self.panel_option_count
+        if self.driving_cards.active:
+            self.driving_cards.select(self.panel_selection)
+            return
         for option_index, button in enumerate(self.buttons[:self.panel_option_count]):
             states = self.primary_states if option_index == 0 else self.button_states
             button["frameTexture"] = (
@@ -1019,6 +1023,7 @@ class CoastalDrive(ShowBase):
             )
             for i in range(8)
         ]
+        self.driving_cards = DrivingCards(self.panel, self.ui_font, self.buttons)
         for index, button in enumerate(self.buttons):
             button.bind(DGG.ENTER, lambda event, i=index: self.select_panel_option(i))
             button.bind(DGG.B1PRESS, lambda event: self.audio_cue("confirm"))
@@ -1490,6 +1495,12 @@ class CoastalDrive(ShowBase):
                 not (self.garage is not None or self.highway_menu or self.audio_settings_page or self.driving_mode_page)):
             self.panel_selection = 0
         self._shown_phase = panel_state
+        self.driving_cards.hide()
+        self.panel.setScale(1.)
+        self.panel['frameTexture'] = self.panel_texture
+        self.panel_title['align'] = TextNode.ACenter
+        self.panel_note.show()
+        self.panel_detail.show()
         for column in self.result_sectors:
             column.hide()
         self.main_menu.root.hide()
@@ -1814,6 +1825,7 @@ class CoastalDrive(ShowBase):
             button["frameSize"] = (-0.51, 0.51, -half_height, half_height)
             button["text_scale"] = 0.055
             button["text_pos"] = (0, -0.018)
+            button['text_align'] = TextNode.ACenter
             button["frameColor"] = (1, 1, 1, 1)
             button["frameTexture"] = self.primary_states if index == 0 else self.button_states
             button["text_fg"] = theme.INK
@@ -1934,6 +1946,17 @@ class CoastalDrive(ShowBase):
                     button['text_scale'] = .041
         else:
             self.panel_accent.show()
+        if phase == Phase.MENU and self.highway_menu:
+            if self.overtake_menu:
+                self.driving_cards.overtake(self, OVERTAKE_ROUTES[self.overtake_mode])
+            elif self.sprint_menu:
+                self.driving_cards.routes(self, tuple(sprint_goals(route) for route in SPRINT_ROUTES.values()))
+            elif self.slalom_menu or self.braking_menu:
+                self.driving_cards.lesson(self, braking=self.braking_menu,
+                    fast=self.braking_mode == GameMode.SHORT_BRAKING if self.braking_menu else
+                         self.slalom_mode == GameMode.FAST_SLALOM)
+            else:
+                self.driving_cards.highway(self)
 
     def pace_frame(self, task):
         remaining = self._render_deadline-time.perf_counter()
@@ -1948,6 +1971,7 @@ class CoastalDrive(ShowBase):
         if self._radio_dirty and self.session.phase not in (Phase.DRIVING, Phase.COUNTDOWN):
             self.save_audio_settings()
         self.main_menu.resize(self.getAspectRatio())
+        self.driving_cards.resize(self.getAspectRatio())
         self.hud.resize(self.getAspectRatio())
         self.lab_return_button.setX(self.getAspectRatio()-.44)
         self.ghost_button.setX(self.getAspectRatio()-.44)

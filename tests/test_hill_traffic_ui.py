@@ -19,8 +19,7 @@ def test_hill_menu_markers_results_and_lab_return(tmp_path):
         app.back_to_menu()
         app.choose_sprint_routes()
         assert app.panel_option_count == 7
-        for first, second in zip(app.buttons[:5], app.buttons[1:6], strict=True):
-            assert first.getZ()+first['frameSize'][2] > second.getZ()+second['frameSize'][3]
+        assert app.driving_cards.active and all(not button.isHidden() for button in app.buttons[:7])
         app.buttons[4]['command']()
         assert app.overtake_mode == GameMode.HILL_TRAFFIC and '跑完2.4公里' in app.panel_note.getText()
         assert app.panel_note.getTightBounds(app.panel)[0].z > app.buttons[0].getZ()+app.buttons[0]['frameSize'][3]
