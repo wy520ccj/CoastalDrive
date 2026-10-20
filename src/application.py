@@ -692,7 +692,7 @@ class CoastalDrive(ShowBase):
     def key_down(self, key):
         if not self.loading.isHidden():
             return
-        if self.session.phase == Phase.MENU and not self.tire_tuning.root.isHidden():
+        if self.session.phase in (Phase.MENU, Phase.RESULTS) and not self.tire_tuning.root.isHidden():
             if key not in self.commands_held:
                 self.commands_held.add(key)
                 self.tire_tuning.key(key)
@@ -1221,15 +1221,29 @@ class CoastalDrive(ShowBase):
         self.refresh_panel()
 
     def open_tire_tuning(self):
-        if self.session.phase != Phase.MENU or not self.slalom_menu:
+        if self.session.phase == Phase.RESULTS and self.session.mode in SLALOM_MODES:
+            self.slalom_mode = self.session.mode
+        elif self.session.phase != Phase.MENU or not self.slalom_menu:
             return
         self.panel.hide()
+        for column in self.result_sectors:
+            column.hide()
         self.main_menu.root.show()
         vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
         self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label())
 
     def apply_tuning_vehicle(self, vehicle):
         """只在保存成功后交接菜单车辆；恢复完整原车时也恢复其电子开关。"""
+        if self.session.phase == Phase.RESULTS:
+            if vehicle == self.tire_tuning.original:
+                return
+            # 已结束的记录只属于旧车；保存成功后才回菜单准备同一道课题。
+            mode, journey = self.session.mode, self.driving_journey_return
+            self.session.menu()
+            self.choose_slalom_lesson(mode)
+            self.driving_journey_return = journey
+            self.panel.hide()
+            self.main_menu.root.show()
         self.workspace_vehicle = vehicle
         self.session.set_vehicle_config(vehicle.config)
         self.session.set_abs_enabled(vehicle.config.braking.abs_enabled)
@@ -1239,7 +1253,7 @@ class CoastalDrive(ShowBase):
         self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label())
 
     def install_tire_recipe(self, index):
-        if self.session.phase != Phase.MENU:
+        if self.session.phase not in (Phase.MENU, Phase.RESULTS):
             return
         current = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
         if current != self.tire_tuning.original:
@@ -1254,7 +1268,7 @@ class CoastalDrive(ShowBase):
         self.tire_tuning.notice.setText('已保存前胎配方；返回原课题亲自验车。' if vehicle != current else '与当前车相同，原方案关联保持。')
 
     def restore_tire_vehicle(self):
-        if self.session.phase != Phase.MENU:
+        if self.session.phase not in (Phase.MENU, Phase.RESULTS):
             return
         current = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
         if current != self.tire_tuning.original:
@@ -1272,7 +1286,7 @@ class CoastalDrive(ShowBase):
         self.tire_tuning.hide()
         self._shown_phase = None
         self.refresh_panel()
-        self.select_panel_option(2)
+        self.select_panel_option(3 if self.session.phase == Phase.RESULTS else 2)
 
     def back_from_slalom_lesson(self):
         self.driving_journey_return = False
@@ -1645,6 +1659,8 @@ class CoastalDrive(ShowBase):
                               else ("返回主菜单", self.back_to_menu))
             elif self.session.mode in SPRINT_ROUTES or self.session.mode in OVERTAKE_ROUTES:
                 options[2] = ("返回主菜单", self.back_to_menu)
+            if self.session.mode in SLALOM_MODES:
+                options.append(('改装前胎再试', self.open_tire_tuning))
             if self.tour_active:
                 if self.tour_store.variant != self.session.score_variant():
                     options[0] = ('查看巡回', self.open_driving_tour)
@@ -1801,6 +1817,12 @@ class CoastalDrive(ShowBase):
                         column.show()
                     for button in self.buttons[:3]:
                         button.setZ(-.67)
+                # 六门结果表下方用两列，保留重试/实验台/主菜单原入口。
+                self.panel['frameSize'] = (-.94, .94, -.92, .75)
+                for index, button in enumerate(self.buttons[:4]):
+                    button.setPos(-.45 if index % 2 == 0 else .45, 0, -.67-(index//2)*.13)
+                    button['frameSize'] = (-.41, .41, -.053, .053)
+                    button['text_scale'] = .041
         else:
             self.panel_accent.show()
 

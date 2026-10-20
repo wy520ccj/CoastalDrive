@@ -35,7 +35,7 @@ def files(root):
             for path in root.rglob('*') if path.is_file()}
 
 
-def check(output, size, restore=False):
+def check(output, size, restore=False, from_results=False):
     output.mkdir(parents=True, exist_ok=restore)
     os.environ['LOCALAPPDATA'] = str(output/'user-data')
     path = output/'test-workspace-vehicle.json'
@@ -54,7 +54,7 @@ def check(output, size, restore=False):
         original = WorkspaceVehicle.load(output/'original-vehicle.json')
     car = WorkspaceVehicle.load(path)
     summary = {'passed': False, 'source_start': sources(), 'runtime_start': runtime_fingerprint(),
-               'restore': restore, 'cases': [], 'size': size, 'human_gate': 'pending'}
+               'restore': restore, 'from_results': from_results, 'cases': [], 'size': size, 'human_gate': 'pending'}
     app = CoastalDrive(smoke=True, output=output, render_size=tuple(size), workspace_vehicle=car, independent_clock=restore)
     app.taskMgr.remove('finish-smoke')
     app.taskMgr.remove('drive-update')
@@ -95,7 +95,16 @@ def check(output, size, restore=False):
                 scope='实际独立SessionProcess菜单读取70k，再恢复35k及完整原50k/方案关联；无新完整驾驶')
         else:
             for index in (0, 3):
-                app.open_tire_tuning()
+                if from_results and index == 3:
+                    previous = app.session.highway.snapshot
+                    before = app.session.current
+                    app.buttons[3]['command']()
+                    app.tire_tuning.activate(6)
+                    assert app.session.highway.snapshot is previous and app.session.current == before
+                    capture('cancel-restores-original-result')
+                    app.buttons[3]['command']()
+                else:
+                    app.open_tire_tuning()
                 capture(f'{index}-tuning')
                 before = app.workspace_vehicle
                 app.tire_tuning.activate(index)
@@ -137,10 +146,13 @@ def check(output, size, restore=False):
                 app._shown_phase = None
                 app.refresh_panel()
                 capture(f'{index}-result')
-                app.back_to_menu()
-                app.choose_slalom_lesson(GameMode.FAST_SLALOM)
+                if not from_results or index == 3:
+                    app.back_to_menu()
+                    app.choose_slalom_lesson(GameMode.FAST_SLALOM)
             summary.update(rows=sum(case['rows'] for case in summary['cases']), same_window=True,
                 scope='新真实二值KeyboardController，游戏内前胎35k失败→70k成功；同一原75km/h策略，非人工驾驶')
+            if from_results:
+                summary['scope'] += '；失败结算直接打开配方，取消保留原结果，再安装70k准备同题重试'
         assert files(output/'test-schemes') == frozen_schemes
         summary.update(scheme_files_unchanged=True, source_end=sources(), runtime_end=runtime_fingerprint(), passed=True)
         assert summary['source_start'] == summary['source_end'] and summary['runtime_start'] == summary['runtime_end']
@@ -156,5 +168,6 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--size', nargs=2, type=int, default=(1280, 720))
     parser.add_argument('--restore', action='store_true')
+    parser.add_argument('--from-results', action='store_true')
     args = parser.parse_args()
-    print(json.dumps(check(args.output.resolve(), args.size, args.restore), ensure_ascii=False))
+    print(json.dumps(check(args.output.resolve(), args.size, args.restore, args.from_results), ensure_ascii=False))

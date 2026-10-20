@@ -1,0 +1,38 @@
+.....................F........................                           [100%]
+================================== FAILURES ===================================
+_ test_six_gate_table_with_notice_clears_detail_and_buttons_and_retry[False] __
+
+app = <application.CoastalDrive object at 0x0000014E441ED6A0>, failed = False
+
+    @pytest.mark.parametrize("failed", [False, True])
+    def test_six_gate_table_with_notice_clears_detail_and_buttons_and_retry(app, failed):
+        state = result(save_notice="本次过门成绩未保存，请检查存储目录。", new_best=False)
+        if failed:
+            state = result(gates=2, gate_times=(2., 4., 6.), clearances=(.9, .8, -.3),
+                           errors=(.1, -.2, 1.3), succeeded=False, new_best=False, reason="错过第3门；车身超出门线0.30m，提前回正/稍早减速。")
+        app.session.highway.snapshot = replace(app.session.highway.snapshot, slalom=state,
+            running=False, finished=True, reason=state.reason, succeeded=state.succeeded)
+        app.session.phase = Phase.RESULTS
+        app._shown_phase = None
+        app.refresh_panel()
+        assert "个人新最佳" not in app.panel_note.getText()
+        for column in app.result_sectors:
+            assert not column.isHidden() and len(column.getText().splitlines()) == 7
+            lower, upper = column.getTightBounds(app.panel)
+>           assert lower.z > app.buttons[0].getZ()+app.buttons[0]["frameSize"][3]
+E           assert -0.5768312215805054 > (-0.6100000143051147 + 0.053)
+E            +  where -0.5768312215805054 = LPoint3f(-0.73882496, 0, -0.5768312).z
+E            +  and   -0.6100000143051147 = <built-in method getZ of DirectButton object at 0x0000014E790952B0>()
+E            +    where <built-in method getZ of DirectButton object at 0x0000014E790952B0> = render2d/aspect2d/DirectFrame-pg3603/DirectButton-pg3608.getZ
+
+tests\test_slalom_feedback_ui.py:63: AssertionError
+---------------------------- Captured stderr setup ----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+=========================== short test summary info ===========================
+FAILED tests/test_slalom_feedback_ui.py::test_six_gate_table_with_notice_clears_detail_and_buttons_and_retry[False]
+1 failed, 45 passed in 661.04s (0:11:01)

@@ -1,0 +1,457 @@
+{
+  "normal/0/raw.json.gz": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/0/raw.json.gz",
+    "bytes": 152936,
+    "sha256": "235ff012a4863811772605018005b19dfddd5abe26e42fcf38751eb3a16b5ef9"
+  },
+  "normal/0/recheck.json": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/0/recheck.json",
+    "bytes": 62,
+    "sha256": "1a6b0ed18a182b5008e2b2441aa37ca40847ce3baf7cfedec58c8513c9ca93d5"
+  },
+  "normal/0/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/0/summary.json",
+    "bytes": 7033,
+    "sha256": "5dbb57f7db4327800a91d5dbec206a2730ff5cad6e10cbe2a88bb2317d2e1b35"
+  },
+  "normal/0-installed.png": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/0-installed.png",
+    "bytes": 281090,
+    "sha256": "424ebcc29719da7d37655c4c97f40550eedb078160d667920c170eff22585566"
+  },
+  "normal/0-preview.png": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/0-preview.png",
+    "bytes": 284699,
+    "sha256": "dddbf7d411e711d8696c0bebabce220cf76b9ff22004e425fdd6f502b90c1155"
+  },
+  "normal/0-result.png": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/0-result.png",
+    "bytes": 553584,
+    "sha256": "a4c1e6e344501a1cbb0d687159d18f724bfdb76424995737458cc98a6ee00667"
+  },
+  "normal/0-tuning.png": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/0-tuning.png",
+    "bytes": 282173,
+    "sha256": "6322aefce4897f4c57224cdffe85ba494aab0832b5864da9b7fded206ecafd76"
+  },
+  "normal/3/raw.json.gz": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/3/raw.json.gz",
+    "bytes": 222036,
+    "sha256": "c654c576280e3c4ceaa83d62d9c2622be3f7e0a4178c1457f99176541e20ee3e"
+  },
+  "normal/3/recheck-best.json": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/3/recheck-best.json",
+    "bytes": 566,
+    "sha256": "204e53a13a834e66c307f70369b5a305f91e75866cf5693e9837c38694b76bc1"
+  },
+  "normal/3/recheck.json": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/3/recheck.json",
+    "bytes": 61,
+    "sha256": "ebda0fe5a0bf0222e24f7bf1abde33886ffca4fe3a5f24bac8ff29a9ac7c0ec3"
+  },
+  "normal/3/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/3/summary.json",
+    "bytes": 7260,
+    "sha256": "547f283e669b3827f2d2273a59717152a76e8873cc4769bf559d16223c7ea7df"
+  },
+  "normal/3-installed.png": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/3-installed.png",
+    "bytes": 281040,
+    "sha256": "7881c0274666c9c79b536eb8ea28956d616f43002c0bff8bc8e9c250787502e3"
+  },
+  "normal/3-preview.png": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/3-preview.png",
+    "bytes": 284196,
+    "sha256": "999c968e5a8c9e7517fece4e33bff940ba12c9e36d447ff7b6cf1c9789d46861"
+  },
+  "normal/3-result.png": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/3-result.png",
+    "bytes": 538667,
+    "sha256": "3e6fba97666bc9014fb76477a639c6fff691d39853ecbd9b78fa678ebd2a5733"
+  },
+  "normal/3-tuning.png": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/3-tuning.png",
+    "bytes": 281778,
+    "sha256": "0b8d48e63c414a99ade8153cab43b28baef459f536995aa7701ac65094e342e3"
+  },
+  "normal/cancel-restores-original-result.png": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/cancel-restores-original-result.png",
+    "bytes": 553763,
+    "sha256": "3db028b8f376f0181878fbd5198f341af210fcd966a6d1d073e79fc9983455b8"
+  },
+  "normal/original-vehicle.json": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/original-vehicle.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "normal/slalom-best.json": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/slalom-best.json",
+    "bytes": 828,
+    "sha256": "86b4394c6528f622cd930b39f0f875a494a87e6011f2127b27b3b516b70e7129"
+  },
+  "normal/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/summary.json",
+    "bytes": 60279,
+    "sha256": "deaa7e6103963df737a3c73b5a869927104ce63649cf4a54c124139b53ff7632"
+  },
+  "normal/test-workspace-vehicle.json": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/test-workspace-vehicle.json",
+    "bytes": 6334,
+    "sha256": "689e33cbfd807ee86bbc7a6d1a9e622cda4673388cf367c720e6bfee3bd88970"
+  },
+  "normal/tuning-backups/251790df1d23345aaa80698b8fd8b29498f2691eb9474ed1a4a11ec3c862ec4f.json": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/tuning-backups/251790df1d23345aaa80698b8fd8b29498f2691eb9474ed1a4a11ec3c862ec4f.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "normal/tuning-backups/891a251f7448f204f95bd8cbc402bfd1698589a60adccc06edc9e22e67edc8bb.json": {
+    "source": "logs/validation/RESULT-TUNING-01-normal/tuning-backups/891a251f7448f204f95bd8cbc402bfd1698589a60adccc06edc9e22e67edc8bb.json",
+    "bytes": 6334,
+    "sha256": "3832c701027493648b277065a4dd82ac99228faea72c8132163d66053d012d5d"
+  },
+  "double/0/raw.json.gz": {
+    "source": "logs/validation/RESULT-TUNING-01-double/0/raw.json.gz",
+    "bytes": 155404,
+    "sha256": "00c90c2eaf92ce546ab665cfd0a1aef6df02e85998e29b4574dfa169bbd49c5d"
+  },
+  "double/0/recheck.json": {
+    "source": "logs/validation/RESULT-TUNING-01-double/0/recheck.json",
+    "bytes": 62,
+    "sha256": "1a6b0ed18a182b5008e2b2441aa37ca40847ce3baf7cfedec58c8513c9ca93d5"
+  },
+  "double/0/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-double/0/summary.json",
+    "bytes": 7032,
+    "sha256": "041cc2c3db49b51afcaa64f19a008c16f016ff0faf57d891ea4505325bcfe9ee"
+  },
+  "double/0-installed.png": {
+    "source": "logs/validation/RESULT-TUNING-01-double/0-installed.png",
+    "bytes": 449382,
+    "sha256": "f13cbd09354a509331697c5efaa196cfcbb3b8e96780c244664cadd8aa08c253"
+  },
+  "double/0-preview.png": {
+    "source": "logs/validation/RESULT-TUNING-01-double/0-preview.png",
+    "bytes": 451347,
+    "sha256": "aaf8249abe50c364afbe8437e6b521ba751fe16701ec8a6ed21d13238a4fe0bd"
+  },
+  "double/0-result.png": {
+    "source": "logs/validation/RESULT-TUNING-01-double/0-result.png",
+    "bytes": 362500,
+    "sha256": "b6e4c51a956dfcd0e7cea32e88abec5f929a60ca7187ab7e8558cbdcf24441c7"
+  },
+  "double/0-tuning.png": {
+    "source": "logs/validation/RESULT-TUNING-01-double/0-tuning.png",
+    "bytes": 450073,
+    "sha256": "21921d855a67408268fbcd4173a2abe9f6e5fded4eb3a1f619c73035e0d64439"
+  },
+  "double/3/raw.json.gz": {
+    "source": "logs/validation/RESULT-TUNING-01-double/3/raw.json.gz",
+    "bytes": 226059,
+    "sha256": "f956122d37f9c19f80e27cec1e920c10d69f6b951b9c3197813506a6cdc9f0f9"
+  },
+  "double/3/recheck-best.json": {
+    "source": "logs/validation/RESULT-TUNING-01-double/3/recheck-best.json",
+    "bytes": 564,
+    "sha256": "4d5ffdf810cfdce3fc16ff4d3296f53ee032a9ee2abb786c22ce3029698bbed1"
+  },
+  "double/3/recheck.json": {
+    "source": "logs/validation/RESULT-TUNING-01-double/3/recheck.json",
+    "bytes": 61,
+    "sha256": "ebda0fe5a0bf0222e24f7bf1abde33886ffca4fe3a5f24bac8ff29a9ac7c0ec3"
+  },
+  "double/3/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-double/3/summary.json",
+    "bytes": 7257,
+    "sha256": "5bd30e1e182e10dd82af017c4f8d2ef45c3307b17c004505c148609b7c29ec7e"
+  },
+  "double/3-installed.png": {
+    "source": "logs/validation/RESULT-TUNING-01-double/3-installed.png",
+    "bytes": 449352,
+    "sha256": "db37d90b185979812e1d6396264ef7abecd7669e9f85b2198b7bcc382b059477"
+  },
+  "double/3-preview.png": {
+    "source": "logs/validation/RESULT-TUNING-01-double/3-preview.png",
+    "bytes": 450917,
+    "sha256": "3987a642fe0cb8e1abb91d34bdbbd84dc49c7ce291f07ff9f3f1e8fb63a97457"
+  },
+  "double/3-result.png": {
+    "source": "logs/validation/RESULT-TUNING-01-double/3-result.png",
+    "bytes": 363399,
+    "sha256": "882b9ad5971b0b22ba9c7dbd5c4f92a601c93f33d8ae0db10ce15ed04b35a592"
+  },
+  "double/3-tuning.png": {
+    "source": "logs/validation/RESULT-TUNING-01-double/3-tuning.png",
+    "bytes": 449720,
+    "sha256": "a225e14dd06d2782b44106ffa8e755eee4389130dedcde3c2e88385e591db63c"
+  },
+  "double/cancel-restores-original-result.png": {
+    "source": "logs/validation/RESULT-TUNING-01-double/cancel-restores-original-result.png",
+    "bytes": 362614,
+    "sha256": "1da644c342f2ac1f926b5acdbb5c163ab09f911dd2235a8f2aa7cbb42544abe1"
+  },
+  "double/original-vehicle.json": {
+    "source": "logs/validation/RESULT-TUNING-01-double/original-vehicle.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "double/slalom-best.json": {
+    "source": "logs/validation/RESULT-TUNING-01-double/slalom-best.json",
+    "bytes": 826,
+    "sha256": "cd8c4fa3ebe460bf611a1d9b3022b5beb1847e5d745db4e2b6d0b1d28b24dd4e"
+  },
+  "double/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-double/summary.json",
+    "bytes": 55835,
+    "sha256": "93d7956de51466acd16e10690f3f87c4a278d7618ffcfdddcdc3d7cd1d111bba"
+  },
+  "double/test-workspace-vehicle.json": {
+    "source": "logs/validation/RESULT-TUNING-01-double/test-workspace-vehicle.json",
+    "bytes": 6334,
+    "sha256": "689e33cbfd807ee86bbc7a6d1a9e622cda4673388cf367c720e6bfee3bd88970"
+  },
+  "double/tuning-backups/251790df1d23345aaa80698b8fd8b29498f2691eb9474ed1a4a11ec3c862ec4f.json": {
+    "source": "logs/validation/RESULT-TUNING-01-double/tuning-backups/251790df1d23345aaa80698b8fd8b29498f2691eb9474ed1a4a11ec3c862ec4f.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "double/tuning-backups/891a251f7448f204f95bd8cbc402bfd1698589a60adccc06edc9e22e67edc8bb.json": {
+    "source": "logs/validation/RESULT-TUNING-01-double/tuning-backups/891a251f7448f204f95bd8cbc402bfd1698589a60adccc06edc9e22e67edc8bb.json",
+    "bytes": 6334,
+    "sha256": "3832c701027493648b277065a4dd82ac99228faea72c8132163d66053d012d5d"
+  },
+  "normal-preview/0-result.png": {
+    "source": "logs/validation/RESULT-TUNING-01-normal-preview/0-result.png",
+    "bytes": 521940,
+    "sha256": "dd8459937ae6fbd7a3f752eb588b721783ce603c146d27f238044defb9b7cbf7"
+  },
+  "normal-preview/3-result.png": {
+    "source": "logs/validation/RESULT-TUNING-01-normal-preview/3-result.png",
+    "bytes": 520393,
+    "sha256": "1124b77a9030bc40fb02c2a9d95d347497a1267a4fa72c8267dc78de16f80bff"
+  },
+  "normal-preview/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-normal-preview/summary.json",
+    "bytes": 42669,
+    "sha256": "b7697966835e9dbfe590f02753790664678a9a73ea93781c97decd9575075d49"
+  },
+  "double-preview/0-result.png": {
+    "source": "logs/validation/RESULT-TUNING-01-double-preview/0-result.png",
+    "bytes": 342714,
+    "sha256": "aac1121b8be0e8e8c56afde7e7fc6a8fbf6fd667100c7a820b1a45f98d927151"
+  },
+  "double-preview/3-result.png": {
+    "source": "logs/validation/RESULT-TUNING-01-double-preview/3-result.png",
+    "bytes": 341153,
+    "sha256": "60256d6d1791193a9962c9a9966a61b4370986893d071d1618334b88c694cac5"
+  },
+  "double-preview/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-double-preview/summary.json",
+    "bytes": 38229,
+    "sha256": "95d312b9466b116ad28cc1fee1fd33b284894a74cc1ed2e23a94098ace015132"
+  },
+  "normal-final-preview/0-result.png": {
+    "source": "logs/validation/RESULT-TUNING-01-normal-final-preview/0-result.png",
+    "bytes": 511403,
+    "sha256": "ababb2e312eb7e1a4eb9e0c7f0cee3a28a73bae806c8f2ee745933811a700de6"
+  },
+  "normal-final-preview/3-result.png": {
+    "source": "logs/validation/RESULT-TUNING-01-normal-final-preview/3-result.png",
+    "bytes": 511501,
+    "sha256": "ce0bb0c105c0a17f9ce791e7378a51f98f64b78d51640ed6088d7d4004a32beb"
+  },
+  "normal-final-preview/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-normal-final-preview/summary.json",
+    "bytes": 42669,
+    "sha256": "9f0a6fb3ee562114045c36dd8cd49c660d861c1e358cfea6a271b6e8afaae04c"
+  },
+  "double-final-preview/0-result.png": {
+    "source": "logs/validation/RESULT-TUNING-01-double-final-preview/0-result.png",
+    "bytes": 327641,
+    "sha256": "dedd9548e63d8e5d1872940461d190949a82a970e2e8eeb8b052c4e361983e46"
+  },
+  "double-final-preview/3-result.png": {
+    "source": "logs/validation/RESULT-TUNING-01-double-final-preview/3-result.png",
+    "bytes": 328824,
+    "sha256": "aa34cbd61cf725c1365a6ce60fa10d2604187a9e061ff8d4c92c4f83343d31b1"
+  },
+  "double-final-preview/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-double-final-preview/summary.json",
+    "bytes": 38229,
+    "sha256": "94795d3d78acc5cecf4290e0c60b57c03c732badc5ad2aea6dbaf3201e587a3b"
+  },
+  "before-display/application.py": {
+    "source": "logs/validation/RESULT-TUNING-01-before-display/application.py",
+    "bytes": 104842,
+    "sha256": "0cabf72e1018426d80323e8825fd328beb3ca490be116971155432a1a3c71e54"
+  },
+  "before-display/comparison.json": {
+    "source": "logs/validation/RESULT-TUNING-01-before-display/comparison.json",
+    "bytes": 429,
+    "sha256": "66ab3a55c69b8b96428dd3e136857b205b2e57281cfa556a7f62d23605b32a87"
+  },
+  "before-display/final-display.patch": {
+    "source": "logs/validation/RESULT-TUNING-01-before-display/final-display.patch",
+    "bytes": 723,
+    "sha256": "fd78088a5290642c219d1c922709217352fa3eca40c6073b18de0f9f556c3ff9"
+  },
+  "before-display/intermediate-application.py": {
+    "source": "logs/validation/RESULT-TUNING-01-before-display/intermediate-application.py",
+    "bytes": 104908,
+    "sha256": "48725749e9fea5551f5f85e2eabd81bd988bb0f01c5c42dba97652b103c200e5"
+  },
+  "before-display/manifest.json": {
+    "source": "logs/validation/RESULT-TUNING-01-before-display/manifest.json",
+    "bytes": 90,
+    "sha256": "c0f0ce33f8167acec0b0fea9b81fd604b369616b2c4faf703f63fd2e1a5861cd"
+  },
+  "before-display/preview-tool-before-final.py": {
+    "source": "logs/validation/RESULT-TUNING-01-before-display/preview-tool-before-final.py",
+    "bytes": 2464,
+    "sha256": "4bb1e5776ad06856d5feb079d24d77c939c97050d080d7d98f92ad2a75a2e076"
+  },
+  "checks/T0/pytest.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-T0/pytest.log",
+    "bytes": 113,
+    "sha256": "9f16d5ed424edbbd45dfd04c6c4ec58d3af9d99d442ec8531c08fb5ff5983fda"
+  },
+  "checks/T0/ruff.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T0/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-T0/summary.json",
+    "bytes": 1685,
+    "sha256": "92ced5eb297fba120365508d90b7148b6c12b01bfa63f351093be1d1dace1d4c"
+  },
+  "checks/T1/pytest.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-T1/pytest.log",
+    "bytes": 2663,
+    "sha256": "29809883c1a666e2f635660717dc6bdeffa3cefa20d3905c33a2d5b45f940fc7"
+  },
+  "checks/T1/ruff.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-T1/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T1/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-T1/summary.json",
+    "bytes": 3753,
+    "sha256": "722800ccfa06ae675437d22cebb36b6bc4fe9af5847f5232f9c849241711b84c"
+  },
+  "checks/double-T1/pytest.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-double-T1/pytest.log",
+    "bytes": 2652,
+    "sha256": "56ba20d3bc72d8e2cf34dce57e284ca6ba7434ed1547bde24fe25b7492f4f30a"
+  },
+  "checks/double-T1/ruff.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-double-T1/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/double-T1/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-double-T1/summary.json",
+    "bytes": 3788,
+    "sha256": "87b9feed2a0f0da92da73e5b7148a43c9e1f94e1d7db77f96dbf9e42e1b411f9"
+  },
+  "checks/final-T0/pytest.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-final-T0/pytest.log",
+    "bytes": 111,
+    "sha256": "af1de32b5149d45de00baca599eea1b4a3fc909955a59481a982421a7063f642"
+  },
+  "checks/final-T0/ruff.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-final-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/final-T0/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-final-T0/summary.json",
+    "bytes": 1603,
+    "sha256": "99c8e409d0cf5540c94eb4a03459ceee27b418f9d33eb7c864b15b1788db61d9"
+  },
+  "checks/layout-repro-T0/pytest.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-layout-repro-T0/pytest.log",
+    "bytes": 2649,
+    "sha256": "2b7f673d7d3d1befca2090450d1ac1811d9cb2b08e80b191a9afb7dd84fdedc8"
+  },
+  "checks/layout-repro-T0/ruff.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-layout-repro-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/layout-repro-T0/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-layout-repro-T0/summary.json",
+    "bytes": 1671,
+    "sha256": "cc275d5736331d76a6b932856b21cd3f964cd15e3897aa70cb17ab8a8f097000"
+  },
+  "checks/final-layout-T1/headless-0.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-final-layout-T1/headless-0.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/final-layout-T1/headless-17.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-final-layout-T1/headless-17.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/final-layout-T1/headless-23.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-final-layout-T1/headless-23.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/final-layout-T1/pytest.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-final-layout-T1/pytest.log",
+    "bytes": 113,
+    "sha256": "8d903f3a9fcdff0009f2ab435af7c521bdaf0e25f9b9f3fff12e96e688ea802f"
+  },
+  "checks/final-layout-T1/ruff.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-final-layout-T1/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/final-layout-T1/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-final-layout-T1/summary.json",
+    "bytes": 3565,
+    "sha256": "a2048b55214fe11dc6bf5e00af4bc31e8b058348ff3d4dff1dd1ac787d6d4a2d"
+  },
+  "checks/double-final-layout-T1/headless-0.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-double-final-layout-T1/headless-0.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/double-final-layout-T1/headless-17.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-double-final-layout-T1/headless-17.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/double-final-layout-T1/headless-23.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-double-final-layout-T1/headless-23.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/double-final-layout-T1/pytest.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-double-final-layout-T1/pytest.log",
+    "bytes": 113,
+    "sha256": "a98bfa7aa58e09f574ab82a558a0d1f2a4f1a2f9313e129270802968aadd0641"
+  },
+  "checks/double-final-layout-T1/ruff.txt": {
+    "source": "logs/validation/RESULT-TUNING-01-double-final-layout-T1/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/double-final-layout-T1/summary.json": {
+    "source": "logs/validation/RESULT-TUNING-01-double-final-layout-T1/summary.json",
+    "bytes": 3601,
+    "sha256": "ee9b9983132493f754788867e56247aac2f8a1f0938fa14cd95ce707841dbc57"
+  },
+  "reused-scheme-inputs.json": {
+    "source": "docs/evidence/TIRE-TUNING-01/reused-scheme-inputs.json",
+    "bytes": 7117,
+    "sha256": "9d44f0f35ea7938cde4ad9e16f43e2c9cfac0cb06bf4a95623c61243e496612e"
+  },
+  "preview-tool.py": {
+    "source": "logs/validation/result_tuning_preview.py",
+    "bytes": 2651,
+    "sha256": "9d8fabc5dc1d632958e08da83eb3b0c1002e40bf99a22730353db975b9a74b81"
+  }
+}

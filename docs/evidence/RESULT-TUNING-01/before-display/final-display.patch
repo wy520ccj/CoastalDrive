@@ -1,0 +1,13 @@
+--- before/src/application.py
++++ final/src/application.py
+@@ -1818,8 +1818,9 @@
+                     for button in self.buttons[:3]:
+                         button.setZ(-.67)
+                 # 六门结果表下方用两列，保留重试/实验台/主菜单原入口。
++                self.panel['frameSize'] = (-.94, .94, -.92, .75)
+                 for index, button in enumerate(self.buttons[:4]):
+-                    button.setPos(-.45 if index % 2 == 0 else .45, 0, -.61-(index//2)*.13)
++                    button.setPos(-.45 if index % 2 == 0 else .45, 0, -.67-(index//2)*.13)
+                     button['frameSize'] = (-.41, .41, -.053, .053)
+                     button['text_scale'] = .041
+         else:
