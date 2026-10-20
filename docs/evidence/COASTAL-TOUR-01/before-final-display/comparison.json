@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "scope": "最终仅按钮属性、重复文本刷新条件和无铜牌提示改变；完整驾驶保持复用，最终独立进程界面重验",
+  "changes": {
+    "src/application.py": {
+      "before_sha256": "740f2e4f2efc2b884758c2515789116c4715a5d2e8e3138ac74b45405f5f2584",
+      "final_sha256": "57e1e99e0b2709d13794930aade5d51fddf78ca8ecea4212a3baa9c6427e08e8"
+    },
+    "src/ui/driving_tour.py": {
+      "before_sha256": "1b1ffc4045ce59c25d0312bfb96237a926f80d43c157f20b33a64bcb35c80910",
+      "final_sha256": "ee1a2c9ee665d769d8e46278a9d49313ba050a90a418130cd17486aafa637f79"
+    }
+  }
+}

@@ -26,6 +26,9 @@ from coastal_medals import menu_goal, result_goal, result_medal
 from controls import ConstantController
 from driving_journey import read_driving_journey
 from driving_modes import DrivingMode
+from driving_tour import LEGS as TOUR_LEGS
+from driving_tour import TITLES as TOUR_TITLES
+from driving_tour import DrivingTour, overall_medal, points
 from garage import GaragePreview
 from highway_run import TRAFFIC_DENSITIES
 from lab_records import load_record
@@ -46,6 +49,7 @@ from ui.braking_feedback import RULES as BRAKING_RULES
 from ui.braking_feedback import result_feedback as braking_result_feedback
 from ui.countdown import Countdown
 from ui.driving_journey import DrivingJourney
+from ui.driving_tour import DrivingTourPanel
 from ui.hud import DrivingHUD
 from ui.main_menu import MainMenu
 from ui.overtake_feedback import result_feedback as overtake_result_feedback
@@ -184,6 +188,10 @@ class CoastalDrive(ShowBase):
         self.overtake_menu = False
         self.overtake_mode = GameMode.SAFE_OVERTAKE
         self.driving_journey_return = False
+        self.tour_store = None
+        self.tour_active = self.tour_pending = False
+        self.tour_round = 0
+        self.tour_status = ''
         self.lab_return_braking = False
         self.lab_return_slalom = False
         self.lab_return_sprint = None
@@ -240,9 +248,10 @@ class CoastalDrive(ShowBase):
         if startup_workspace == "lab":
             self.open_vehicle_lab()
 
-    def start_game(self, *, mode, track="coastal"):
+    def start_game(self, *, mode, track="coastal", tour=False):
         if self._workspace_steps is not None:
             return
+        self.tour_active = self.tour_pending = tour
         if self.smoke or self.startup_trace is not None:
             self._enter_game(mode, track)
             return
@@ -264,6 +273,8 @@ class CoastalDrive(ShowBase):
         """保留窗口与渲染环境，只释放驾驶会话后进入工程视图。"""
         if self._workspace_steps is not None:
             return
+        self.tour_active = self.tour_pending = False
+        self.tour_banner.hide()
         self.lab_return_braking = self.session.mode == GameMode.BRAKING_LESSON
         self.lab_return_slalom = self.session.mode == GameMode.SLALOM_LESSON
         self.lab_return_sprint = self.session.mode if self.session.mode in SPRINT_ROUTES else None
@@ -271,6 +282,68 @@ class CoastalDrive(ShowBase):
         self.workspace_vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
         self.next_workspace = "lab"
         self._begin_workspace(self._load_lab(), "进入车辆实验室", "工况与A/B记录将保留")
+
+    def open_driving_tour(self):
+        self.back_to_menu()
+        self.highway_menu = self.braking_menu = self.slalom_menu = self.sprint_menu = self.overtake_menu = False
+        self.audio_settings_page = self.driving_mode_page = False
+        self.journey.hide()
+        self.driving_journey.hide()
+        variant = self.session.score_variant()
+        if self.tour_store is None or self.tour_store.variant != variant:
+            self.tour_store = DrivingTour(self.session.race.scores.path.with_name('driving-tour.json'), variant)
+        self._shown_phase = None
+        self.refresh_panel()
+        self.tour_panel.show(self.tour_store, self.workspace_vehicle_label())
+
+    def back_from_driving_tour(self):
+        self.tour_panel.hide()
+        self.choose_sprint_routes()
+        self.select_panel_option(5)
+
+    def start_tour_leg(self, restart=False):
+        if self.tour_store.variant != self.session.score_variant():
+            self.open_driving_tour()
+            return
+        if restart:
+            self.tour_store.restart()
+        if len(self.tour_store.current) == 3:
+            self.open_driving_tour()
+            return
+        self.tour_panel.hide()
+        self.tour_round = len(self.tour_store.current)
+        self.tour_status = ''
+        mode = TOUR_LEGS[self.tour_round]
+        if mode in SPRINT_ROUTES:
+            self.session.road_shape = SPRINT_ROUTES[mode].shape
+        self.start_game(mode=mode, track='endless', tour=True)
+
+    def refresh_tour_banner(self):
+        phase = self.session.phase
+        if not self.tour_active or phase == Phase.MENU:
+            self.tour_banner.hide()
+            return
+        if phase == Phase.RESULTS and self.tour_pending:
+            self.tour_pending = False
+            self.tour_status = self.tour_store.accept(self.session.mode, self.session.score_variant(), self.session.highway.snapshot)
+        title = f'巡回 {self.tour_round+1}/3 · {points(self.tour_store.current)}/9分'
+        if self.tour_title.getText() != title:
+            self.tour_title.setText(title)
+        if phase != Phase.RESULTS:
+            message = '本站至少铜牌 · 失败可重试'
+        elif self.tour_store.variant != self.session.score_variant():
+            message = '配方已变 · 原进度保留'
+        elif self.tour_store.notice:
+            message = '进度未保存 · 总览查看'
+        elif len(self.tour_store.current) == 3:
+            message = f'全程{overall_medal(self.tour_store.current)}牌'+(' · 综合新最佳' if self.tour_store.new_best else '')
+        elif phase == Phase.RESULTS and self.session.highway.snapshot.succeeded and len(self.tour_store.current) == self.tour_round:
+            message = '有效完成 · 仍需铜牌'
+        else:
+            message = '本站已过 · 可继续下一站' if len(self.tour_store.current) > self.tour_round else '本站未过 · 重试当前站'
+        if self.tour_message.getText() != message:
+            self.tour_message.setText(message)
+        self.tour_banner.show()
 
     def open_workshop_journey(self):
         scores = BrakingScores(self.session.race.scores.path.with_name("braking-best.json"),
@@ -536,6 +609,8 @@ class CoastalDrive(ShowBase):
 
     def back_to_menu(self):
         self.driving_journey_return = False
+        self.tour_active = self.tour_pending = False
+        self.tour_banner.hide()
         self.session.menu()
         if self.scene is not None:
             self.scene.close()
@@ -606,6 +681,11 @@ class CoastalDrive(ShowBase):
 
     def key_down(self, key):
         if not self.loading.isHidden():
+            return
+        if self.session.phase == Phase.MENU and not self.tour_panel.root.isHidden():
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.tour_panel.key(key)
             return
         if self.session.phase == Phase.MENU and not self.driving_journey.root.isHidden():
             if key not in self.commands_held:
@@ -785,6 +865,15 @@ class CoastalDrive(ShowBase):
                                        self.continue_workshop_project, self.open_driving_journey)
         self.driving_journey = DrivingJourney(self.main_menu.content, self.ui_font, self.main_menu.textures,
                                               self.continue_driving_project, self.open_workshop_journey)
+        self.tour_panel = DrivingTourPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
+                                          self.start_tour_leg, self.back_from_driving_tour)
+        self.tour_banner = DirectFrame(parent=self.aspect2d, frameColor=theme.PAPER_LIGHT,
+            frameSize=(-.34, .34, -.105, 0), pos=(0, 0, .95), sortOrder=60)
+        self.tour_title = OnscreenText(parent=self.tour_banner, text='', font=self.ui_font,
+            fg=theme.SEA, scale=.03, pos=(0, -.04), mayChange=True)
+        self.tour_message = OnscreenText(parent=self.tour_banner, text='', font=self.ui_font,
+            fg=theme.INK, scale=.025, pos=(0, -.08), mayChange=True)
+        self.tour_banner.hide()
         self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
         self.diagnostics = OnscreenText(
             **{**text_style, "fg": theme.DIAGNOSTIC_TEXT, "shadow": theme.DIAGNOSTIC_SHADOW},
@@ -904,7 +993,8 @@ class CoastalDrive(ShowBase):
     def choose_driving_mode(self):
         if (self.session.phase != Phase.MENU or self.garage is not None
                 or self.audio_settings_page or self.highway_menu
-                or not self.journey.root.isHidden() or not self.driving_journey.root.isHidden()):
+                or not self.journey.root.isHidden() or not self.driving_journey.root.isHidden()
+                or not self.tour_panel.root.isHidden()):
             return
         self.driving_mode_page = True
         self.panel_selection = 0
@@ -1208,6 +1298,7 @@ class CoastalDrive(ShowBase):
 
     def refresh_panel(self):
         phase = self.session.phase
+        self.refresh_tour_banner()
         panel_state = (phase, self.garage is not None, self.highway_menu, self.audio_settings_page, self.driving_mode_page)
         if panel_state == self._shown_phase:
             return
@@ -1317,6 +1408,7 @@ class CoastalDrive(ShowBase):
                        ("山谷节奏 · 1公里", lambda: self.start_sprint(GameMode.VALLEY_PACE)),
                        ("车流安全超车 · 2辆", self.choose_overtake),
                        ("弯坡车流 · 2.4公里", lambda: self.choose_overtake(GameMode.HILL_TRAFFIC)),
+                       ('海岸巡回 · 三站连跑', self.open_driving_tour),
                        ("返回高速与课题", self.back_from_sprint_routes)]
         elif phase == Phase.MENU and self.highway_menu and self.slalom_menu:
             self.panel_title.setText("驾驶课题 · 连续过门")
@@ -1350,7 +1442,7 @@ class CoastalDrive(ShowBase):
                 ),
                 ("驾驶课题 · 定点刹停", self.choose_braking_lesson),
                 ("驾驶课题 · 连续过门", self.choose_slalom_lesson),
-                ("短途赛事 · 5项挑战", self.choose_sprint_routes),
+                ("短途赛事 · 单项/巡回", self.choose_sprint_routes),
                 ("返回", self.back_to_modes),
             ]
         elif phase == Phase.PAUSED:
@@ -1476,6 +1568,17 @@ class CoastalDrive(ShowBase):
                               else ("返回主菜单", self.back_to_menu))
             elif self.session.mode in SPRINT_ROUTES or self.session.mode in OVERTAKE_ROUTES:
                 options[2] = ("返回主菜单", self.back_to_menu)
+            if self.tour_active:
+                if self.tour_store.variant != self.session.score_variant():
+                    options[0] = ('查看巡回', self.open_driving_tour)
+                    options[1] = ('返回实验台', self.open_vehicle_lab)
+                else:
+                    complete = len(self.tour_store.current) == 3
+                    advanced = len(self.tour_store.current) > self.tour_round
+                    options[0] = (('再跑一轮' if complete else '下一站 · '+TOUR_TITLES[len(self.tour_store.current)] if advanced else '重试当前站'),
+                                  (lambda: self.start_tour_leg(True)) if complete else self.start_tour_leg)
+                    options[1] = ('巡回总览', self.open_driving_tour)
+                options[2] = ('返回主菜单', self.back_to_menu)
         else:
             self.panel.hide()
             return
@@ -1540,9 +1643,9 @@ class CoastalDrive(ShowBase):
             self.panel_note.setPos(0, .34)
             self.panel_detail.setScale(.034)
             self.panel_detail.setPos(0, .025)
-            for index, button in enumerate(self.buttons[:6]):
-                button.setZ(-.16-index*.115)
-                button["frameSize"] = (-.51, .51, -.05, .05)
+            for index, button in enumerate(self.buttons[:7]):
+                button.setZ(-.12-index*.10)
+                button["frameSize"] = (-.51, .51, -.043, .043)
         elif phase == Phase.PAUSED:
             self.panel_title.setScale(0.14)
             self.panel_note.setPos(0, 0.27)
@@ -1797,6 +1900,8 @@ class CoastalDrive(ShowBase):
             self.scene = None
         self.journey.root.destroy()
         self.driving_journey.root.destroy()
+        self.tour_panel.root.destroy()
+        self.tour_banner.destroy()
         self.main_menu.destroy()
         self.hud.destroy()
         self.countdown.destroy()

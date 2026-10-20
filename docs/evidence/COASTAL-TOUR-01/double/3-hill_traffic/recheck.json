@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "rows": 11128,
+  "reading_kinds": [
+    "approach",
+    "clear",
+    "front",
+    "parallel"
+  ],
+  "incident": null,
+  "scope": "从保存真实位置/朝向/代次/速度逐拍重算规则，不重跑物理"
+}

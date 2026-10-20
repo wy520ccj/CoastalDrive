@@ -1,0 +1,473 @@
+..........F.F                                                            [100%]
+================================== FAILURES ===================================
+______ test_tour_entry_keyboard_round_retry_and_deduplicated_completion _______
+
+app = <application.CoastalDrive object at 0x00000255670E4590>
+
+    def test_tour_entry_keyboard_round_retry_and_deduplicated_completion(app):
+        app.back_to_menu()
+        assert len(app.main_menu.buttons) == 8
+        app.choose_sprint_routes()
+        assert app.panel_option_count == 7
+        app.select_panel_option(5)
+        app.handle_panel_key('enter')
+        assert not app.tour_panel.root.isHidden() and app.main_menu.root.isHidden() is False
+        app.key_down('escape')
+        app.key_up('escape')
+        assert app.sprint_menu and app.panel_selection == 5
+        app.open_driving_tour()
+        app.tour_panel.activate(0)
+        drive(app)
+        assert app.tour_active and app.session.mode == LEGS[0] and not app.tour_banner.isHidden()
+        config = app.session.vehicle_config
+        finish_fixture(app, passed=False)
+        assert app.tour_store.current == () and '重试' in app.buttons[0]['text']
+        app.buttons[0]['command']()
+        drive(app)
+        for index, mode in enumerate(LEGS):
+            assert app.session.mode == mode and app.session.vehicle_config == config
+>           finish_fixture(app)
+
+tests\test_driving_tour_ui.py:63: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_driving_tour_ui.py:38: in finish_fixture
+    game.refresh_panel()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <application.CoastalDrive object at 0x00000255670E4590>
+
+    def refresh_panel(self):
+        phase = self.session.phase
+        self.refresh_tour_banner()
+        panel_state = (phase, self.garage is not None, self.highway_menu, self.audio_settings_page, self.driving_mode_page)
+        if panel_state == self._shown_phase:
+            return
+        if (phase != Phase.PAUSED and
+                not (self.garage is not None or self.highway_menu or self.audio_settings_page or self.driving_mode_page)):
+            self.panel_selection = 0
+        self._shown_phase = panel_state
+        for column in self.result_sectors:
+            column.hide()
+        self.main_menu.root.hide()
+        if phase in (Phase.MENU, Phase.PAUSED, Phase.RESULTS):
+            self.hud.root.hide()
+        else:
+            self.hud.root.show()
+        if phase == Phase.MENU and self.garage is None and not self.highway_menu and not self.audio_settings_page and not self.driving_mode_page:
+            self.panel.hide()
+            self.main_menu.set_driving_mode(self.session.driving_mode)
+            times = BestTimes(self.session.race.scores.path)
+            best = times.get(GameMode.TIME_TRIAL, COASTAL_CIRCUIT.score_id+":"+self.session.score_variant())
+            self.main_menu.time_goal.setText(menu_goal(best))
+            notice = self.appearance.notice or self.driving_mode_settings.notice or times.notice
+            self.main_menu.notice.setText(self.fit_lines(notice, 1.0, 0.028))
+            self.main_menu.root.show()
+            return
+        for button in self.buttons:
+            button.hide()
+        self.panel.show()
+        self.panel_accent.show()
+        self.result_icon.hide()
+        self.panel_title.setPos(0, 0.46)
+        self.panel_title.textNode.setSlant(0.14)
+        self.panel_detail.setScale(0.041)
+        self.panel["frameSize"] = (-0.61, 0.61, -0.80, 0.68) if self.garage is not None else (-0.8, 0.8, -0.80, 0.68)
+        self.panel_title.setText(theme.BRAND_NAME)
+        self.panel_note.setText("滨海环路 · 4 个检查点\n按 Enter 开始计时挑战")
+        self.panel_detail.setText("")
+        self.panel_title["fg"] = theme.INK
+        self.panel_title.setScale(0.07)
+        self.panel_note.setScale(0.040)
+        self.panel_note.setPos(0, 0.29)
+        self.panel_detail.setPos(0, 0.10)
+        self.panel["frameColor"] = (1, 1, 1, 1)
+        if self.garage is not None:
+            model = next(model for model in PLAYER_VEHICLES if model.id == self.garage_model_id)
+            skin = SKINS[self.garage_skin_index]
+            self.panel_title.setText("车库")
+            note = f"车型：{model.name}\n车漆：{skin.name}\nEnter 应用并返回 · Esc 取消"
+            if self.appearance.notice:
+                note += f"\n{self.appearance.notice}"
+            self.panel_note.setText(note)
+            options = [
+                ("车型下一款", self.cycle_garage_model),
+                ("下一种颜色", lambda: self.cycle_garage_skin(1)),
+                ("上一种颜色", lambda: self.cycle_garage_skin(-1)),
+                ("应用并返回  Enter", self.apply_garage),
+                ("取消返回  Esc", self.cancel_garage),
+            ]
+        elif self.driving_mode_page:
+            self.panel_title.setText("驾驶辅助")
+            self.panel_note.setText(
+                "游戏使用车速转向辅助 · 下次起步应用\n"
+                "车辆硬件由车库选择，完整物理实验在实验室设置"
+                + (f"\n{self.driving_mode_settings.notice}" if self.driving_mode_settings.notice else "")
+            )
+            options = [
+                (f"车辆 ABS：{'开启' if self.session.abs_enabled else '关闭'}", self.toggle_abs),
+                (f"驱动防滑 TCS：{'开启' if self.session.tcs_enabled else '关闭'}", self.toggle_tcs),
+                (f"横摆稳定 ESC：{'开启' if self.session.esc_enabled else '关闭'}", self.toggle_esc),
+                ("返回", self.back_from_driving_mode),
+            ]
+        elif self.audio_settings_page:
+            self.panel_title.setText("设置")
+            note = (
+                f"主音量：{self.audio_settings.master_volume}%    "
+                f"效果音量：{self.audio_settings.effects_volume}%\n"
+                f"音乐：{self.audio_settings.music_volume}% · {STATIONS[self.audio_settings.radio_station]}\n"
+                "左右键调音量 · N 切台 · M 开关车载音乐"
+            )
+            if self.audio_settings.notice:
+                note += f"\n{self.audio_settings.notice}"
+            self.panel_note.setText(note)
+            options = [
+                ("主音量 -10%", lambda: self.adjust_audio_volume("master", -10)),
+                ("主音量 +10%", lambda: self.adjust_audio_volume("master", 10)),
+                ("效果音量 -10%", lambda: self.adjust_audio_volume("effects", -10)),
+                ("效果音量 +10%", lambda: self.adjust_audio_volume("effects", 10)),
+                (f"音乐音量：{self.audio_settings.music_volume}%  ‹ / ›",
+                 lambda: self.adjust_audio_volume("music", 10)),
+                (f"电台：{STATIONS[self.audio_settings.radio_station]}", self.cycle_radio),
+                ("返回", self.back_from_audio_settings),
+            ]
+        elif phase == Phase.MENU and self.highway_menu and self.overtake_menu:
+            route = OVERTAKE_ROUTES[self.overtake_mode]
+            self.panel_title.setText(route.title)
+            self.panel_note.setText(route.rules)
+            options = [("开始挑战  Enter", self.start_overtake), ("返回短途赛事", self.back_from_overtake)]
+        elif phase == Phase.MENU and self.highway_menu and self.sprint_menu:
+            self.panel_title.setText("短途路线与车流挑战")
+            bend, ridge, valley = SPRINT_ROUTES.values()
+            self.panel_note.setText(
+                "平路连弯 · 1.8公里连续弯\n山脊冲刺 · 1.4公里起伏\n"
+                "山谷节奏 · 1公里，加速→控速→再加速\n250米≥60；400–650米全段35–50km/h\n"
+                "前三项封闭无车流 · 碰撞/越界/复位失败 · 上限180秒")
+            self.panel_detail.setText(f"平路 {sprint_goals(bend)}\n山脊 {sprint_goals(ridge)}\n山谷 {sprint_goals(valley)}")
+            options = [("平路连弯 · 1.8公里", lambda: self.start_sprint(GameMode.BEND_SPRINT)),
+                       ("山脊冲刺 · 1.4公里", lambda: self.start_sprint(GameMode.RIDGE_SPRINT)),
+                       ("山谷节奏 · 1公里", lambda: self.start_sprint(GameMode.VALLEY_PACE)),
+                       ("车流安全超车 · 2辆", self.choose_overtake),
+                       ("弯坡车流 · 2.4公里", lambda: self.choose_overtake(GameMode.HILL_TRAFFIC)),
+                       ('海岸巡回 · 三站连跑', self.open_driving_tour),
+                       ("返回高速与课题", self.back_from_sprint_routes)]
+        elif phase == Phase.MENU and self.highway_menu and self.slalom_menu:
+            self.panel_title.setText("驾驶课题 · 连续过门")
+            self.panel_note.setText(SLALOM_RULES)
+            options = [("开始练习  Enter", self.start_slalom_lesson),
+                       ("返回高速", self.back_from_slalom_lesson)]
+        elif phase == Phase.MENU and self.highway_menu and self.braking_menu:
+            self.panel_title.setText("驾驶课题 · 定点刹停")
+            self.panel_note.setText(BRAKING_RULES)
+            options = [
+                ("开始练习  Enter", self.start_braking_lesson),
+                ("返回高速", self.back_from_braking_lesson),
+            ]
+        elif phase == Phase.MENU and self.highway_menu:
+            self.panel_title.setText("无限高速")
+            density = self.highway_density_keys[self.highway_density_index]
+            density_label = TRAFFIC_DENSITIES[density].label
+            shape_label = "弯坡高速" if self.highway_shape == "hills" else "直线高速"
+            self.panel_note.setText(
+                f"{shape_label} · {density_label}\nEnter 启动自由驾驶 · Esc 返回\n"
+                "5公里挑战可倒车调整，复位会结束挑战\n"
+                "定点刹停：封闭直线无车流，使用当前车辆"
+            )
+            options = [
+                (f"道路：{shape_label}  >", self.cycle_highway_shape),
+                (f"车流：{density_label}  >", self.cycle_highway_density),
+                ("自由驾驶  Enter", lambda: self.start_highway(self.highway_shape)),
+                (
+                    "5公里无碰撞挑战",
+                    lambda: self.start_highway(self.highway_shape, mode=GameMode.DISTANCE_CHALLENGE),
+                ),
+                ("驾驶课题 · 定点刹停", self.choose_braking_lesson),
+                ("驾驶课题 · 连续过门", self.choose_slalom_lesson),
+                ("短途赛事 · 单项/巡回", self.choose_sprint_routes),
+                ("返回", self.back_to_modes),
+            ]
+        elif phase == Phase.PAUSED:
+            self.driving_keys_held.clear()
+            self.panel_title.setText("已暂停")
+            self.panel_note.setText("切出窗口会自动暂停\n按 Enter 或 Esc 继续驾驶")
+            options = [
+                ("继续驾驶  Enter", self.session.resume),
+                ("返回实验台", self.open_vehicle_lab),
+                ("设置", self.choose_audio_settings),
+                ("重新开始", self.session.start),
+                ("结束驾驶", self.session.finish),
+                ("返回主菜单", self.back_to_menu),
+            ]
+        elif phase == Phase.RESULTS:
+            if self.session.simulation.track == "endless":
+                highway_snapshot = self.session.highway.snapshot
+                if highway_snapshot.challenge:
+                    self.panel_title.setText("挑战成功" if highway_snapshot.succeeded else "挑战失败")
+                    self.panel_note.setText(highway_snapshot.reason)
+                else:
+                    self.panel_title.setText("驾驶结束")
+                    self.panel_note.setText("无限高速自由驾驶")
+                self.panel_detail.setText(
+                    f"距离 {highway_snapshot.distance:.0f} m   用时 {highway_snapshot.elapsed:.2f} s\n"
+                    f"碰撞 {highway_snapshot.collisions} 次"
+                )
+                if highway_snapshot.overtake is not None:
+                    note, detail = overtake_result_feedback(highway_snapshot.overtake)
+                    self.panel_note.setText(note)
+                    self.panel_detail.setText(detail)
+                elif highway_snapshot.braking is not None:
+                    note, detail = braking_result_feedback(highway_snapshot.braking)
+                    self.panel_note.setText(note)
+                    self.panel_detail.setText(detail+f"\n用时 {highway_snapshot.elapsed:.2f} s")
+                elif highway_snapshot.slalom is not None:
+                    note, detail = slalom_result_feedback(highway_snapshot.slalom)
+                    self.panel_note.setText(note)
+                    self.panel_detail.setText(detail+f"\n总用时 {highway_snapshot.elapsed:.2f} s")
+                elif highway_snapshot.sprint is not None:
+                    note, detail = sprint_result_feedback(highway_snapshot.sprint)
+                    self.panel_note.setText(note)
+                    self.panel_detail.setText(detail)
+            else:
+                race = self.session.race.snapshot
+                if race.finished and race.last_lap is not None:
+                    coastal = self.session.simulation.track == "coastal" and race.mode == GameMode.TIME_TRIAL
+                    award = result_medal(race, self.session.simulation.track)
+                    self.panel_title.setText("挑战失败" if race.invalidated else "挑战成功")
+                    self.panel_note.setText(
+                        f"圈速无效：{race.invalid_reason}" if race.invalidated else "有效完成计时挑战"
+                    )
+                    if coastal and not race.invalidated:
+                        self.panel_note.setText(f"滨海{award}牌 · 有效完成" if award else "有效完成 · 尚未达到铜牌")
+                    best = f"最佳 {race.best_lap:.3f} 秒" if race.best_lap else "暂无最佳成绩"
+                    self.panel_detail.setText(
+                        f"本圈 {race.last_lap:.3f} 秒\n{best}"
+                    )
+                    if coastal:
+                        self.panel_detail.setText(self.panel_detail.getText()+"\n"+result_goal(race))
+                    receipt = self.workspace_vehicle.workshop_result
+                    validated = road_result(receipt, race, self.session.simulation.track)
+                    if validated is not None:
+                        self.panel_note.setText(f"工坊道路验证完成 · 工程{receipt['medal']}牌")
+                        if not receipt["road_validated"]:
+                            vehicle = replace(self.workspace_vehicle, workshop_result=validated)
+                            try:
+                                vehicle.save(self.workspace_path)
+                            except (OSError, ValueError) as error:
+                                logging.getLogger(__name__).warning("工坊道路进度未保存: %s", error)
+                                self.panel_note.setText("道路验证完成，进度未保存；请检查存储目录。")
+                            else:
+                                self.workspace_vehicle = vehicle
+                                self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
+                                try:
+                                    sync_road_progress(self.scheme_root, vehicle)
+                                except (OSError, ValueError, KeyError, TypeError) as error:
+                                    logging.getLogger(__name__).warning("方案道路进度未同步: %s", error)
+                                    self.panel_note.setText("道路已完成；方案库同步失败，重开方案库可重试。")
+                    if race.new_best:
+                        message = "新个人最佳" if race.reference_lap is not None else "首个有效圈 · 已建立最佳参考"
+                        if coastal:
+                            message = (f"滨海{award}牌 · " if award else "未达铜牌 · ")+message
+                        self.panel_note.setText(self.panel_note.getText()+" · "+message if validated is not None else message)
+                    if race.save_error:
+                        self.panel_note.setText(f"{self.panel_note.getText()}\n{race.save_error}")
+                    if race.score_notice and not race.save_error:
+                        self.panel_note.setText(self.panel_note.getText()+"\n"+race.score_notice)
+                    if race.ghost_notice:
+                        self.panel_note.setText(self.panel_note.getText()+"\n"+race.ghost_notice)
+                elif self.session.mode == GameMode.FREE_DRIVE:
+                    self.panel_title.setText("驾驶结束")
+                    self.panel_note.setText("滨海自由驾驶")
+                    self.panel_detail.setText("可重新出发或返回菜单")
+                else:
+                    self.panel_title.setText("挑战失败")
+                    self.panel_note.setText("挑战提前结束，本次不记录圈速")
+            self.panel_title.setScale(0.10)
+            if self.panel_title.getText() == "挑战成功":
+                self.panel_title["fg"] = theme.SUCCESS
+            elif self.panel_title.getText() == "挑战失败":
+                self.panel_title["fg"] = theme.FAILURE
+            else:
+                self.panel_title["fg"] = theme.INK
+            self.panel_note.setPos(0, 0.24)
+            self.panel_detail.setPos(0, 0.04)
+            options = [
+                (
+                    "重新出发  Enter" if self.session.mode == GameMode.FREE_DRIVE else "重新挑战  Enter",
+                    lambda: self.start_game(
+                        mode=self.session.mode, track=self.session.simulation.track
+                    ),
+                ),
+                ("返回主菜单", self.back_to_menu),
+                ("退出", self.userExit),
+            ]
+            if self.workspace_vehicle.workshop_result is not None:
+                options[1] = ("返回工坊", self.open_vehicle_lab)
+            elif self.session.mode in (GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON, *OVERTAKE_ROUTES) or self.session.mode in SPRINT_ROUTES:
+                options[1] = ("返回实验台", self.open_vehicle_lab)
+            if self.session.mode in (GameMode.BRAKING_LESSON, GameMode.SLALOM_LESSON):
+                options[2] = (("查看驾驶进阶", self.return_to_driving_journey) if self.driving_journey_return
+                              else ("返回主菜单", self.back_to_menu))
+            elif self.session.mode in SPRINT_ROUTES or self.session.mode in OVERTAKE_ROUTES:
+                options[2] = ("返回主菜单", self.back_to_menu)
+            if self.tour_active:
+                if self.tour_store.variant != self.session.score_variant():
+                    options[0] = ('查看巡回', self.open_driving_tour)
+                    options[1] = ('返回实验台', self.open_vehicle_lab)
+                else:
+                    complete = len(self.tour_store.current) == 3
+                    advanced = len(self.tour_store.current) > self.tour_round
+                    options[0] = (('再跑一轮' if complete else '下一站 · '+TOUR_TITLES[len(self.tour_store.current)] if advanced else '重试当前站'),
+                                  (lambda: self.start_tour_leg(True)) if complete else self.start_tour_leg)
+                    options[1] = ('巡回总览', self.open_driving_tour)
+                options[2] = ('返回主菜单', self.back_to_menu)
+        else:
+            self.panel.hide()
+            return
+        note_width = 0.99 if self.garage is not None else 1.37
+        self.panel_note.setText(self.fit_lines(self.panel_note.getText(), note_width, 0.040))
+        self.panel_detail.setText(self.fit_lines(self.panel_detail.getText(), 1.36, 0.041))
+        note_lines = self.panel_note.getText().count("\n") + 1
+        if phase == Phase.RESULTS:
+            self.panel_detail.setPos(0, 0.19 - 0.060 * note_lines)
+        if phase == Phase.RESULTS:
+            button_top = -0.16 if note_lines <= 2 else -0.23
+        elif self.audio_settings_page:
+            button_top = 0.0
+        elif self.garage is not None:
+            button_top = -0.03
+        else:
+            button_top = 0.02 if note_lines > 2 else 0.10
+        for index, button in enumerate(self.buttons):
+            button.setPos(0, 0, button_top - index * 0.145)
+            button["frameColor"] = (
+                theme.SECONDARY_BUTTON_TINT if phase == Phase.MENU and self.garage is None
+                and not self.highway_menu and not self.audio_settings_page and index >= 3
+                else theme.BUTTON_TINT
+            )
+        for button, (label, action) in zip(self.buttons, options):
+            button["text"] = label
+            button["command"] = action
+            button.show()
+        self.panel_option_count = len(options)
+        self.panel_selection %= self.panel_option_count
+        # 页面只安排现有动作，不在这里计算或改写比赛结果。
+        for index, button in enumerate(self.buttons[:len(options)]):
+            button.setScale(1)
+            half_height = 0.055 if self.audio_settings_page or self.driving_mode_page else 0.073
+            if self.highway_menu and not self.braking_menu and not self.slalom_menu and not self.sprint_menu:
+                half_height = .05 if len(options) == 8 else .055
+            button["frameSize"] = (-0.51, 0.51, -half_height, half_height)
+            button["text_scale"] = 0.055
+            button["text_pos"] = (0, -0.018)
+            button["frameColor"] = (1, 1, 1, 1)
+            button["frameTexture"] = self.primary_states if index == 0 else self.button_states
+            button["text_fg"] = theme.INK
+            if index == self.panel_selection:
+                states = self.primary_states if index == 0 else self.button_states
+                button["frameTexture"] = (states[2], states[1], states[2], states[3])
+            if self.audio_settings_page:
+                label = TextNode("audio-button-width")
+                label.setFont(self.ui_font)
+                button["text_scale"] = min(0.055, 0.94 / label.calcWidth(button["text"]))
+            spacing = .115 if self.audio_settings_page or self.driving_mode_page else .155 if phase == Phase.PAUSED else .17
+            if self.highway_menu and not self.braking_menu and not self.slalom_menu and not self.sprint_menu:
+                spacing = .105 if len(options) == 8 else .115 if len(options) == 7 else .13
+            button.setZ(button_top - index * spacing)
+        if self.highway_menu and self.overtake_menu:
+            self.panel_note.setScale(.038)
+            self.panel_note.setPos(0, .30)
+            for index, button in enumerate(self.buttons[:2]):
+                button.setZ(-.20-index*.17)
+                button["frameSize"] = (-.51, .51, -.062, .062)
+        elif self.highway_menu and self.sprint_menu:
+            self.panel_note.setScale(.034)
+            self.panel_note.setPos(0, .34)
+            self.panel_detail.setScale(.034)
+            self.panel_detail.setPos(0, .025)
+            for index, button in enumerate(self.buttons[:7]):
+                button.setZ(-.12-index*.10)
+                button["frameSize"] = (-.51, .51, -.043, .043)
+        elif phase == Phase.PAUSED:
+            self.panel_title.setScale(0.14)
+            self.panel_note.setPos(0, 0.27)
+        elif phase == Phase.RESULTS:
+            self.panel["frameSize"] = (-0.94, 0.94, -0.62, 0.75)
+            self.panel_accent.hide()
+            self.result_icon.show()
+            icon = "trophy" if self.panel_title.getText() == "挑战成功" else "car"
+            self.result_icon["frameTexture"] = self.loader.loadTexture(theme.asset_filename(f"components/icon-{icon}.png"))
+            self.panel_title.setScale(0.18)
+            self.panel_title.setPos(0, 0.32)
+            self.panel_note.setPos(0, 0.18)
+            self.panel_detail.setScale(0.058)
+            self.panel_detail.setPos(0, 0.09 - 0.065 * note_lines)
+            for button, x, width in zip(self.buttons, (-0.56, 0.12, 0.69), (0.64, 0.64, 0.40)):
+                button.setPos(x, 0, -0.47)
+                button["frameSize"] = (-width / 2, width / 2, -0.085, 0.085)
+                button["text_scale"] = 0.047
+            race = self.session.race.snapshot
+            if self.session.simulation.track != "endless" and race.finished and race.splits:
+                self.panel["frameSize"] = (-.94, .94, -.84, .75)
+                self.panel_detail.setScale(.043)
+                for column, text in zip(self.result_sectors, result_columns(race)):
+                    column.setText(text)
+                    # OnscreenText自身还有文字坐标，按实际上沿安排，避免叠加两次偏移。
+                    column.setZ(0.)
+                    top = column.getTightBounds(self.panel)[1].z
+                    column.setZ(min(-.07, self.panel_detail.getTightBounds(self.panel)[0].z-.04)-top)
+                    column.show()
+                for button in self.buttons[:3]:
+                    button.setZ(-.71)
+            elif self.session.mode in OVERTAKE_ROUTES:
+                self.panel['frameSize'] = (-.94, .94, -.82, .75)
+                self.panel_note.setScale(.035)
+                self.panel_note.setText(self.fit_lines(self.session.highway.snapshot.overtake.reason, 1.66, .035))
+                self.panel_detail.setScale(.038)
+                self.panel_detail.setText(self.fit_lines(overtake_result_feedback(self.session.highway.snapshot.overtake)[1], 1.68, .038))
+                self.panel_detail.setPos(0, 0)
+                top = self.panel_detail.getTightBounds(self.panel)[1].z
+>               self.panel_detail.setZ(min(.04, self.panel_note.getTightBounds(self.panel)[0].z-.045)-top)
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               TypeError: 'NoneType' object is not subscriptable
+
+src\application.py:1683: TypeError
+---------------------------- Captured stderr setup ----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+__________ test_changed_inputs_cannot_credit_a_different_tour_group ___________
+
+app = <application.CoastalDrive object at 0x000002556715B380>
+
+    def test_changed_inputs_cannot_credit_a_different_tour_group(app):
+        app.open_driving_tour()
+        app.start_tour_leg()
+        drive(app)
+        original_variant = app.tour_store.variant
+>       app.session.set_abs_enabled(not app.session.abs_enabled)
+
+tests\test_driving_tour_ui.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <session.Session object at 0x000002556715B230>, enabled = False
+
+    def set_abs_enabled(self, enabled):
+        """菜单选择车辆电子配置；不替换正在运行的刚体参数。"""
+        if self.phase != Phase.MENU:
+>           raise ValueError("车辆电子配置只能在主菜单选择")
+E           ValueError: 车辆电子配置只能在主菜单选择
+
+src\session.py:133: ValueError
+---------------------------- Captured stderr setup ----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+=========================== short test summary info ===========================
+FAILED tests/test_driving_tour_ui.py::test_tour_entry_keyboard_round_retry_and_deduplicated_completion
+FAILED tests/test_driving_tour_ui.py::test_changed_inputs_cannot_credit_a_different_tour_group
+2 failed, 11 passed in 57.49s

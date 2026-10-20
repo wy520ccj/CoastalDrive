@@ -14,7 +14,7 @@ def test_overtake_menu_hud_result_retry_and_same_window_lab_return(tmp_path):
         app.choose_highway()
         assert app.panel_option_count == 8
         app.buttons[6]['command']()
-        assert app.panel_option_count == 6
+        assert app.panel_option_count == 7
         app.buttons[3]['command']()
         assert app.overtake_menu and '10米' in app.panel_note.getText() and app.panel_option_count == 2
         assert app.panel_note.getTightBounds(app.panel)[0].z > app.buttons[0].getZ()+app.buttons[0]['frameSize'][3]

@@ -18,7 +18,7 @@ def test_hill_menu_markers_results_and_lab_return(tmp_path):
     try:
         app.back_to_menu()
         app.choose_sprint_routes()
-        assert app.panel_option_count == 6
+        assert app.panel_option_count == 7
         for first, second in zip(app.buttons[:5], app.buttons[1:6], strict=True):
             assert first.getZ()+first['frameSize'][2] > second.getZ()+second['frameSize'][3]
         app.buttons[4]['command']()

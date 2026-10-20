@@ -1,0 +1,12 @@
+TRY004 Prefer `TypeError` exception for invalid type
+  --> src\driving_tour.py:49:13
+   |
+47 |     for index, row in enumerate(rows):
+48 |         if not isinstance(row, dict):
+49 |             raise ValueError('巡回记录须为对象')
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+50 |         entry = TourEntry(row['mode'], row['seconds'], row['medal'])
+51 |         if (entry.mode != LEGS[index].value or type(entry.seconds) not in (int, float)
+   |
+
+Found 1 error.
