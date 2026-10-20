@@ -1,6 +1,6 @@
 {
   "review_base": "c10b2261 and preserved uncommitted ROAD-RETEST-01 work",
-  "review_head": "7371d1b07d22820670f348da36826271e880c42b",
+  "review_head": "ed22f85acdcb6cc79073ee56c296da80b1cd9b76",
   "changed_production_files": [
     "src/application.py",
     "src/lab_application.py",
@@ -14,7 +14,9 @@
     "src/ui/lab_workspace.py",
     "src/ui/player_road_ab.py",
     "src/ui/tire_tuning.py",
-    "src/vehicle_controls_native.h"
+    "src/vehicle_controls_native.h",
+    "src/ui/virtual_driver.py",
+    "src/ui/workshop_insights.py"
   ],
   "changed_python_empty_stubs": [],
   "cached_checks": {
@@ -94,6 +96,28 @@
         "passed",
         "passed"
       ]
+    },
+    "VIRTUAL-CARDS-01": {
+      "report": "docs/evidence/VIRTUAL-CARDS-01/checks/T1/summary.json",
+      "passed": true,
+      "check_statuses": [
+        "passed",
+        "passed",
+        "passed",
+        "passed",
+        "passed"
+      ]
+    },
+    "INSIGHT-CARDS-01": {
+      "report": "docs/evidence/INSIGHT-CARDS-01/checks/T1/summary.json",
+      "passed": true,
+      "check_statuses": [
+        "passed",
+        "passed",
+        "passed",
+        "passed",
+        "passed"
+      ]
     }
   },
   "cached_final_views": {
@@ -114,6 +138,14 @@
       "4x3": true
     },
     "SCHEME-CARDS-01": {
+      "wide": true,
+      "4x3": true
+    },
+    "VIRTUAL-CARDS-01": {
+      "wide": true,
+      "4x3": true
+    },
+    "INSIGHT-CARDS-01": {
       "wide": true,
       "4x3": true
     }
@@ -156,7 +188,9 @@
     "src/ui/lab_workspace.py": "6c9a7cb8cc62245773ae25e0cd182ea5462467dcd22281977b4656cd6e7c2da4",
     "src/ui/player_road_ab.py": "625469f7d3281ebc02422316546f7f46fe7942dfc14d83baa400a74608cdf0ef",
     "src/ui/tire_tuning.py": "e15b1c1babf815caad82832b4bcf6f0b182445709e87760966a5d6b30b705d20",
-    "src/vehicle_controls_native.h": "917278216b914f37a688bd155a3f218f3ee9939e3b915511bf6dc319e45af033"
+    "src/vehicle_controls_native.h": "917278216b914f37a688bd155a3f218f3ee9939e3b915511bf6dc319e45af033",
+    "src/ui/virtual_driver.py": "3de4c5127572f593246637c822b11458b980b81e5101e5bbe6bf3af851cfe98b",
+    "src/ui/workshop_insights.py": "681f91f730f430444f605aec382ad23e3a57cd0e0ca6cf779bad26f89dbd4211"
   },
   "limitations": [
     "原ABS闭环细化T2仍失败；用户明确选择继续界面和正常功能，保留该项目精度待办",
