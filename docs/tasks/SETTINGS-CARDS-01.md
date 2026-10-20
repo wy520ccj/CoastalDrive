@@ -15,3 +15,4 @@
 - 短T0新增正常调节/落盘/电台/返回/控件释放流程：Ruff/1项通过，17.5秒。
 - `tools/validate.py T1 --tests tests/test_driving_mode_ui.py tests/test_audio_settings.py tests/test_sprint_ui.py --output logs/validation/SETTINGS-CARDS-01-T1`：Ruff/10项及seed0/17/23各1200步通过，pytest140.9秒。覆盖原辅助保存/车库、音量保存、当前复用按钮和道路页/同窗返回；只跑一组相关模块，不扩大为全量T2。未重跑旧完整道路驾驶，物理/评分/参数未改。
 - 原两页与最终两画幅、T0/T1原件和5份最终源码SHA在`docs/evidence/SETTINGS-CARDS-01`。本包自动部分完成，原物理精度/实时/人工Gate仍开放；整体目标active，仅本地无推送。
+- 功能本地提交`d5269552`；原始检查日志按仓库`.log`忽略规则单独纳入后续证据提交。源和29份证据原件SHA核对通过，未追加测试，未推送。
