@@ -1,0 +1,28 @@
+[
+  {
+    "substeps": 2,
+    "max_replayed_pressure_error": 0.0,
+    "max_abs_predicted_slip": 1.1130201287937906,
+    "first_phase_difference_to_16_tick": 91,
+    "different_phase_ticks": 24
+  },
+  {
+    "substeps": 4,
+    "max_replayed_pressure_error": 0.0,
+    "max_abs_predicted_slip": 1.1898080393569277,
+    "first_phase_difference_to_16_tick": 91,
+    "different_phase_ticks": 15
+  },
+  {
+    "substeps": 8,
+    "max_replayed_pressure_error": 0.0,
+    "max_abs_predicted_slip": 1.2134002791956302,
+    "first_phase_difference_to_16_tick": 139,
+    "different_phase_ticks": 6
+  },
+  {
+    "substeps": 16,
+    "max_replayed_pressure_error": 0.0,
+    "max_abs_predicted_slip": 1.264637680720325
+  }
+]

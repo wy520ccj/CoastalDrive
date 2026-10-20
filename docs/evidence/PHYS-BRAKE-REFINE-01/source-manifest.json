@@ -1,0 +1,5 @@
+{
+  "src/vehicle_controls_native.h": "917278216b914f37a688bd155a3f218f3ee9939e3b915511bf6dc319e45af033",
+  "tests/test_vehicle_brakes.py": "4d8c53a23c553a8786cdf411f4d8fe0d85bb4dd3f4884beded7f486dc3504489",
+  "tools/physics/brake_refinement_check.py": "f4f04b6d4aadbee244a56f1d3a83aadb491d26bf2630ac15bb1a9bbd05a4e72a"
+}

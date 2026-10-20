@@ -87,6 +87,16 @@ def test_slip_trend_distinguishes_imminent_lock_from_recovery():
     assert commands[0] < .6 < commands[1]
 
 
+def test_abs_reports_hold_while_preserving_command_and_pressure():
+    brakes = Brakes(BrakeConfig())
+    brakes.states = tuple(replace(state, commanded=.6, pressure=.6, abs_active=True,
+                                 braking_slip=.12, predicted_slip=.12) for state in brakes.states)
+    pressures = brakes.advance((1,)*4, (observed_wheel(20., .12, tick=2),)*4, RADIUS, FIXED_DT)
+    assert pressures == (.6,)*4
+    assert all(state.abs_active and state.commanded == .6 and state.phase == 'hold'
+               for state in brakes.states)
+
+
 @pytest.mark.parametrize("requests", [(0, 1), (0, 0, 0, -1), (0, 0, 0, float("nan"))])
 def test_invalid_research_wheel_requests_are_rejected_at_command_boundary(requests):
     with pytest.raises(ValueError, match="分轮制动"):

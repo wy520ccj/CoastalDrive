@@ -1,0 +1,19 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_________ test_abs_reports_hold_while_preserving_command_and_pressure _________
+
+    def test_abs_reports_hold_while_preserving_command_and_pressure():
+        brakes = Brakes(BrakeConfig())
+        brakes.states = tuple(replace(state, commanded=.6, pressure=.6, abs_active=True,
+                                     braking_slip=.12, predicted_slip=.12) for state in brakes.states)
+        pressures = brakes.advance((1,)*4, (observed_wheel(20., .12, tick=2),)*4, RADIUS, FIXED_DT)
+        assert pressures == (.6,)*4
+>       assert all(state.abs_active and state.commanded == .6 and state.phase == 'hold'
+                   for state in brakes.states)
+E       assert False
+E        +  where False = all(<generator object test_abs_reports_hold_while_preserving_command_and_pressure.<locals>.<genexpr> at 0x000002E706AB4FB0>)
+
+tests\test_vehicle_brakes.py:96: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_vehicle_brakes.py::test_abs_reports_hold_while_preserving_command_and_pressure
+1 failed in 0.42s

@@ -88,7 +88,8 @@ static PyObject *brakes_advance_native(PyObject *self,PyObject *args) {
                 Py_SETREF(command_object,PyFloat_FromDouble(command));if(!command_object)goto failed;}
             else if(error>hysteresis){double candidate=command+control_min(apply,gain*error)*dt;
                 command=control_min(request,candidate);phase=C_APPLY_PHASE;
-                Py_SETREF(command_object,candidate<request?PyFloat_FromDouble(command):Py_NewRef(request_object));if(!command_object)goto failed;}}
+                Py_SETREF(command_object,candidate<request?PyFloat_FromDouble(command):Py_NewRef(request_object));if(!command_object)goto failed;}
+            else phase=C_HOLD_PHASE;}
         PyObject *pressure_object=response==0.?Py_NewRef(command_object):PyFloat_FromDouble(
             pressure+(command-pressure)*(1-exp(-dt/response)));
         if(!pressure_object)goto failed;
