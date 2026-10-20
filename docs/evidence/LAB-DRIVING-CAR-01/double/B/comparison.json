@@ -1,0 +1,80 @@
+{
+  "conditions": {
+    "vehicle.lateral_stiffness": {
+      "A": 35000.0,
+      "B": 70000.0
+    }
+  },
+  "A": {
+    "status": "time_limit",
+    "reason": "time_limit",
+    "error": null,
+    "simulation_seconds": 10.0,
+    "compute_seconds": 2.909716700012723,
+    "distance_m": 163.92594913896139,
+    "stopping_distance_m": null,
+    "peak_deceleration_mps2": -4.749796048204711,
+    "peak_lateral_acceleration_mps2": 8.267652159983946,
+    "peak_yaw_rate_radps": 0.5969909528380426,
+    "mean_path_error_m": 2.9076179375815916,
+    "maximum_path_error_m": 3.914461923145474,
+    "abs_ticks": 0,
+    "ticks": 1200,
+    "initialization_ticks": 177,
+    "options": {
+      "vehicle_id": "reference-rwd",
+      "maneuver": "constant_radius",
+      "speed_kph": 60.0,
+      "friction": 1.1,
+      "abs_enabled": true,
+      "esc_enabled": false,
+      "duration": 10.0,
+      "steering_deg": 3.0,
+      "onset": 0.5,
+      "seed": 0,
+      "cg_height": null,
+      "radius_m": 40.0,
+      "right_friction": 0.3,
+      "tire_reference_load": null,
+      "bump_height_m": 0.01,
+      "bump_length_m": 0.9,
+      "bump_distance_m": 6.0
+    }
+  },
+  "B": {
+    "status": "time_limit",
+    "reason": "time_limit",
+    "error": null,
+    "simulation_seconds": 10.0,
+    "compute_seconds": 2.6079949000031775,
+    "distance_m": 164.46694596689798,
+    "stopping_distance_m": null,
+    "peak_deceleration_mps2": -4.727946617193351,
+    "peak_lateral_acceleration_mps2": 10.25126500962465,
+    "peak_yaw_rate_radps": 0.8572550149753486,
+    "mean_path_error_m": 0.8774556496588496,
+    "maximum_path_error_m": 2.451418534734863,
+    "abs_ticks": 0,
+    "ticks": 1200,
+    "initialization_ticks": 177,
+    "options": {
+      "vehicle_id": "reference-rwd",
+      "maneuver": "constant_radius",
+      "speed_kph": 60.0,
+      "friction": 1.1,
+      "abs_enabled": true,
+      "esc_enabled": false,
+      "duration": 10.0,
+      "steering_deg": 3.0,
+      "onset": 0.5,
+      "seed": 0,
+      "cg_height": null,
+      "radius_m": 40.0,
+      "right_friction": 0.3,
+      "tire_reference_load": null,
+      "bump_height_m": 0.01,
+      "bump_length_m": 0.9,
+      "bump_distance_m": 6.0
+    }
+  }
+}

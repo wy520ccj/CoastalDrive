@@ -351,6 +351,35 @@ class VehicleLab(DirectObject):
                                        else f"{source} · 无独立轮心")
         self.refresh_parameter_availability()
 
+    def stage_driving_vehicle(self):
+        """载入下一次试验的驾驶车；当前曲线与可见回放仍属于旧试验。"""
+        vehicle = self.workspace_vehicle
+        if vehicle is None:
+            self.show_error('当前没有驾驶车辆，请先从游戏携带车辆进入实验台。')
+            return
+        design = vehicle_design(vehicle.design_id)
+        if self.run_state is not None:
+            self.run_state.paused = True
+        self.playing = False
+        self.blur_entries()
+        self.vehicle_menu.set(next(i for i, item in enumerate(DESIGN_VEHICLES) if item.id == design.id), fCommand=0)
+        self.engineered_config = vehicle.config
+        self.engineered_vehicle_id = design.id
+        self.parameter_metadata = vehicle.parameter_metadata
+        self.entries['cg'].enterText('')
+        self.entries['tire_load'].enterText('')
+        self.abs_menu.set(0 if vehicle.config.braking.abs_enabled else 1)
+        self.esc_menu.set(1 if vehicle.config.stability.esc_enabled else 0)
+        self.refresh_configuration_note()
+        self.record_menu.hide()
+        if self.record is None and self.run_state is None:
+            self.scene.set_vehicle(design, vehicle.config)
+            self.model_note.setText(f'{design.name} · 当前驾驶车，待开始试验')
+        else:
+            self.model_note.setText('显示旧试验 · 驾驶车将在下次开始生效')
+        self.notice.dismiss()
+        self.notice.setText('已准备驾驶车硬件；工况/路面保持，ABS/ESC取驾驶车，质心/载荷覆盖清空。旧A/B保留；按需固定A，再开始新试验。')
+
     def import_engineering(self, path):
         try:
             document = json.loads(Path(path).read_text(encoding="utf-8"))

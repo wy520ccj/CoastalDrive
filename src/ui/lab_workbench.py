@@ -120,10 +120,13 @@ def build_workbench(app):
     app.notice.footer.textNode.setWordwrap(39)
 
     app.record_menu = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
-                                 frameSize=(1.05, 1.71, .34, .83), sortOrder=60, state=DGG.NORMAL)
+                                 frameSize=(1.05, 1.71, .23, .83), sortOrder=60, state=DGG.NORMAL)
     for z, label, action in ((.76, "载入记录", app.open_record), (.65, "复算当前记录", app.recalculate_record),
                              (.54, "打开报告", app.open_report), (.43, "导入工程模型", app.open_engineering)):
         app.button(label, 1.38, z, .56, action, parent=app.record_menu)
+    app.driving_car_button = app.button('载入驾驶车硬件', 1.38, .32, .56,
+                                        app.stage_driving_vehicle, parent=app.record_menu)
+    app.driving_car_button['state'] = DGG.NORMAL if app.workspace_vehicle is not None else DGG.DISABLED
     app.record_menu.hide()
 
     app.advanced_panel = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
