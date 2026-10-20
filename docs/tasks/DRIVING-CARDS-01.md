@@ -14,3 +14,4 @@
 - 相关T1：`tools/validate.py T1 --tests tests/test_sprint_ui.py tests/test_fast_slalom_ui.py tests/test_short_braking_ui.py tests/test_overtake_ui.py tests/test_hill_traffic_ui.py --output logs/validation/DRIVING-CARDS-01-T1`，Ruff/10项与三种子各1200拍通过，pytest317.7秒。只调整两处旧“所有按钮竖排”的断言，原真实开始/同窗返回/改装/结算用例保持。
 - `tools/driving_cards_check.py --output logs/validation/DRIVING-CARDS-01-final-wide` 及 `--output logs/validation/DRIVING-CARDS-01-final-4x3 --size 1024 768`，最终各8张实际静态图和正常返回通过，Snapshot保持。已查看宽屏高速/短途/短距/高速验车及4:3短途/弯坡页。最终山谷卡只补速度区间文字，其他功能未改；没有新完整驾驶或重复旧物理长测。
 - 原图、最终两画幅、检查日志和源码SHA见`docs/evidence/DRIVING-CARDS-01`。T2/T3未跑，原物理T2失败、实时/人工Gate开放；仅本地不推送，整体持续目标active。下一TUNING-CARDS-01配方选择页。
+- 本地功能提交`1e7bc80f`，36份原始文件及5份源码SHA；收尾文档由下一包补记，功能未改。

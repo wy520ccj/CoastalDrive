@@ -1,0 +1,212 @@
+{
+  "before/brakes-current.png": {
+    "source": "logs/validation/TUNING-CARDS-01-before/brakes-current.png",
+    "bytes": 284772,
+    "sha256": "34a89b528497ce289823be2822f73f775c46d0626a74621b942ebca0eab50085"
+  },
+  "before/brakes-preview.png": {
+    "source": "logs/validation/TUNING-CARDS-01-before/brakes-preview.png",
+    "bytes": 286555,
+    "sha256": "93d756342768cad94b1e8547c779ec222b935ecaf7ea766d8ffb4cf76e2d5b69"
+  },
+  "before/summary.json": {
+    "source": "logs/validation/TUNING-CARDS-01-before/summary.json",
+    "bytes": 278,
+    "sha256": "80726873b2dd3a784936378a656f9ca7ebfd42d58586a2e5a787fafc09a1c1cb"
+  },
+  "before/tires-current.png": {
+    "source": "logs/validation/TUNING-CARDS-01-before/tires-current.png",
+    "bytes": 281973,
+    "sha256": "ab0bd13247fac4603cb19aa3bde438370a5125994efcad59fb00b5fa2d3a2477"
+  },
+  "before/tires-preview.png": {
+    "source": "logs/validation/TUNING-CARDS-01-before/tires-preview.png",
+    "bytes": 284485,
+    "sha256": "8b3108b962f59972057a0f73abe42d66ba3a7a007d0816b8363f6781098182d0"
+  },
+  "first-wide/brakes-current.png": {
+    "source": "logs/validation/TUNING-CARDS-01-wide/brakes-current.png",
+    "bytes": 205333,
+    "sha256": "12cfa0bbcc1dd44453022b2097f915df91f10a089518df101c7400558cb40330"
+  },
+  "first-wide/brakes-preview.png": {
+    "source": "logs/validation/TUNING-CARDS-01-wide/brakes-preview.png",
+    "bytes": 206879,
+    "sha256": "dd07d8825c6fce7bc39d98418a8419d2570d7bf0bcec561f78bdc5b39814c168"
+  },
+  "first-wide/summary.json": {
+    "source": "logs/validation/TUNING-CARDS-01-wide/summary.json",
+    "bytes": 278,
+    "sha256": "80726873b2dd3a784936378a656f9ca7ebfd42d58586a2e5a787fafc09a1c1cb"
+  },
+  "first-wide/tires-current.png": {
+    "source": "logs/validation/TUNING-CARDS-01-wide/tires-current.png",
+    "bytes": 202475,
+    "sha256": "87eaa2399574983e040170dd551f5f528efa6f0e3f49aa7159add8b0dfb383f5"
+  },
+  "first-wide/tires-preview.png": {
+    "source": "logs/validation/TUNING-CARDS-01-wide/tires-preview.png",
+    "bytes": 204510,
+    "sha256": "3187e3471cd12daa0c2ca057cf0c389a7cef610813871698806ff5c6a13053bb"
+  },
+  "first-4x3/brakes-current.png": {
+    "source": "logs/validation/TUNING-CARDS-01-4x3/brakes-current.png",
+    "bytes": 146792,
+    "sha256": "1e32d181956199d88839d292d5fbaab70045abc01e1608c703e92535a2a8ab83"
+  },
+  "first-4x3/brakes-preview.png": {
+    "source": "logs/validation/TUNING-CARDS-01-4x3/brakes-preview.png",
+    "bytes": 148123,
+    "sha256": "cbe801e1bec3d3ddeb72d40cc8965f8fce49aadee02068f6651a559bde846aa9"
+  },
+  "first-4x3/summary.json": {
+    "source": "logs/validation/TUNING-CARDS-01-4x3/summary.json",
+    "bytes": 278,
+    "sha256": "c723013b995daabe74abfadc1c3c7e9a2abbe85d64dea801b05fd963b0a6f009"
+  },
+  "first-4x3/tires-current.png": {
+    "source": "logs/validation/TUNING-CARDS-01-4x3/tires-current.png",
+    "bytes": 143849,
+    "sha256": "d572544c18e9791e7ece066a2de8894f9782974e1492a89cca9829b7455900c3"
+  },
+  "first-4x3/tires-preview.png": {
+    "source": "logs/validation/TUNING-CARDS-01-4x3/tires-preview.png",
+    "bytes": 145952,
+    "sha256": "d66f501807593569c7f2721cb1e879f91f7bfcaa1f276c3c3352fd0106c933fc"
+  },
+  "timing-wide/brakes-current.png": {
+    "source": "logs/validation/TUNING-CARDS-01-final-wide/brakes-current.png",
+    "bytes": 205333,
+    "sha256": "12cfa0bbcc1dd44453022b2097f915df91f10a089518df101c7400558cb40330"
+  },
+  "timing-wide/brakes-preview.png": {
+    "source": "logs/validation/TUNING-CARDS-01-final-wide/brakes-preview.png",
+    "bytes": 206879,
+    "sha256": "dd07d8825c6fce7bc39d98418a8419d2570d7bf0bcec561f78bdc5b39814c168"
+  },
+  "timing-wide/summary.json": {
+    "source": "logs/validation/TUNING-CARDS-01-final-wide/summary.json",
+    "bytes": 278,
+    "sha256": "80726873b2dd3a784936378a656f9ca7ebfd42d58586a2e5a787fafc09a1c1cb"
+  },
+  "timing-wide/tires-current.png": {
+    "source": "logs/validation/TUNING-CARDS-01-final-wide/tires-current.png",
+    "bytes": 202475,
+    "sha256": "87eaa2399574983e040170dd551f5f528efa6f0e3f49aa7159add8b0dfb383f5"
+  },
+  "timing-wide/tires-preview.png": {
+    "source": "logs/validation/TUNING-CARDS-01-final-wide/tires-preview.png",
+    "bytes": 204510,
+    "sha256": "3187e3471cd12daa0c2ca057cf0c389a7cef610813871698806ff5c6a13053bb"
+  },
+  "wide/brakes-current.png": {
+    "source": "logs/validation/TUNING-CARDS-01-verified-wide/brakes-current.png",
+    "bytes": 205333,
+    "sha256": "12cfa0bbcc1dd44453022b2097f915df91f10a089518df101c7400558cb40330"
+  },
+  "wide/brakes-preview.png": {
+    "source": "logs/validation/TUNING-CARDS-01-verified-wide/brakes-preview.png",
+    "bytes": 206879,
+    "sha256": "dd07d8825c6fce7bc39d98418a8419d2570d7bf0bcec561f78bdc5b39814c168"
+  },
+  "wide/summary.json": {
+    "source": "logs/validation/TUNING-CARDS-01-verified-wide/summary.json",
+    "bytes": 321,
+    "sha256": "182d78fb7776456e5b0f0692ed2d700d9c8ded19e4e2669fa9841d6f0deebe08"
+  },
+  "wide/tires-current.png": {
+    "source": "logs/validation/TUNING-CARDS-01-verified-wide/tires-current.png",
+    "bytes": 202475,
+    "sha256": "87eaa2399574983e040170dd551f5f528efa6f0e3f49aa7159add8b0dfb383f5"
+  },
+  "wide/tires-preview.png": {
+    "source": "logs/validation/TUNING-CARDS-01-verified-wide/tires-preview.png",
+    "bytes": 204510,
+    "sha256": "3187e3471cd12daa0c2ca057cf0c389a7cef610813871698806ff5c6a13053bb"
+  },
+  "4x3/brakes-current.png": {
+    "source": "logs/validation/TUNING-CARDS-01-verified-4x3/brakes-current.png",
+    "bytes": 402128,
+    "sha256": "a809c4d93b199c67bd5a8d42055b963e112169e26089729c8304033768b9a448"
+  },
+  "4x3/brakes-preview.png": {
+    "source": "logs/validation/TUNING-CARDS-01-verified-4x3/brakes-preview.png",
+    "bytes": 403414,
+    "sha256": "fd51d5600ea1da3b1eece6a0eeb184914b3e1cd7ecc80ec06d59738f9c48d568"
+  },
+  "4x3/summary.json": {
+    "source": "logs/validation/TUNING-CARDS-01-verified-4x3/summary.json",
+    "bytes": 321,
+    "sha256": "b6f4de7e24e3dfd321c83f7e18621c9894248d751fc376beafd562db0158d2fc"
+  },
+  "4x3/tires-current.png": {
+    "source": "logs/validation/TUNING-CARDS-01-verified-4x3/tires-current.png",
+    "bytes": 400465,
+    "sha256": "bda672bf293b1ccc35467dc70765a573da16a8331e788fb0c0da6ae9cbe2a133"
+  },
+  "4x3/tires-preview.png": {
+    "source": "logs/validation/TUNING-CARDS-01-verified-4x3/tires-preview.png",
+    "bytes": 401916,
+    "sha256": "072fcc3e2ba805c9919c840a3206773f2f1da93f902681f60b02e249bf2b6d87"
+  },
+  "checks/T0/pytest.log": {
+    "source": "logs/validation/TUNING-CARDS-01-T0/pytest.log",
+    "bytes": 101,
+    "sha256": "62f7aaabdabaca86bb61c1a458ec9c8024628b1fa4cc3cb255a01d47799e5069"
+  },
+  "checks/T0/ruff.log": {
+    "source": "logs/validation/TUNING-CARDS-01-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T0/summary.json": {
+    "source": "logs/validation/TUNING-CARDS-01-T0/summary.json",
+    "bytes": 1892,
+    "sha256": "aa0dce435ca862773a66147ef28133737107ff03cb3ad029048bbd74544a6468"
+  },
+  "checks/T1/headless-0.log": {
+    "source": "logs/validation/TUNING-CARDS-01-T1/headless-0.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1/headless-17.log": {
+    "source": "logs/validation/TUNING-CARDS-01-T1/headless-17.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1/headless-23.log": {
+    "source": "logs/validation/TUNING-CARDS-01-T1/headless-23.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1/pytest.log": {
+    "source": "logs/validation/TUNING-CARDS-01-T1/pytest.log",
+    "bytes": 111,
+    "sha256": "091958bfb0a69a1e5599f00137245af5ded7ab05e49a6dc6be59415a73d552d6"
+  },
+  "checks/T1/ruff.log": {
+    "source": "logs/validation/TUNING-CARDS-01-T1/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T1/summary.json": {
+    "source": "logs/validation/TUNING-CARDS-01-T1/summary.json",
+    "bytes": 3253,
+    "sha256": "722de0f61fe3fdfc01192d4a4a07995aeb34ac8f3c10bab2e68229a9da3204df"
+  },
+  "checks/title-T0/pytest.log": {
+    "source": "logs/validation/TUNING-CARDS-01-title-T0/pytest.log",
+    "bytes": 101,
+    "sha256": "1bc92f63a5a2d7f37b2b65619383e86eb486a3c7862f8c2cede56bdfeeb87fba"
+  },
+  "checks/title-T0/ruff.log": {
+    "source": "logs/validation/TUNING-CARDS-01-title-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/title-T0/summary.json": {
+    "source": "logs/validation/TUNING-CARDS-01-title-T0/summary.json",
+    "bytes": 1674,
+    "sha256": "9da68706af511f133567bff4f0386a3685711d57198ce8ff94b95848540e35d0"
+  }
+}
