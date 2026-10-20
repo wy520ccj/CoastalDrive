@@ -34,6 +34,9 @@ from highway_run import TRAFFIC_DENSITIES
 from lab_records import load_record
 from overtake_routes import OVERTAKE_ROUTES
 from paths import user_data
+from player_road_ab import PlayerRoadAB
+from player_road_ab import context as player_road_context
+from player_road_ab import record as player_road_record
 from race import BestTimes, GameMode
 from scene import Scene
 from session import Phase, Session
@@ -55,6 +58,7 @@ from ui.driving_tour import DrivingTourPanel
 from ui.hud import DrivingHUD
 from ui.main_menu import MainMenu
 from ui.overtake_feedback import result_feedback as overtake_result_feedback
+from ui.player_road_ab import PlayerRoadPanel
 from ui.race_feedback import result_columns
 from ui.slalom_feedback import FAST_RULES as FAST_SLALOM_RULES
 from ui.slalom_feedback import RULES as SLALOM_RULES
@@ -193,6 +197,9 @@ class CoastalDrive(ShowBase):
         self.overtake_mode = GameMode.SAFE_OVERTAKE
         self.driving_journey_return = False
         self.tour_store = None
+        self.player_road_ab = PlayerRoadAB(self.session.race.scores.path.with_name('player-road-ab.json'))
+        self.slalom_attempt = self.slalom_start_context = None
+        self.slalom_pending = False
         self.tour_active = self.tour_pending = False
         self.tour_round = 0
         self.tour_status = ''
@@ -584,6 +591,9 @@ class CoastalDrive(ShowBase):
         if track == "endless":
             self.session.traffic_density = self.highway_density_keys[self.highway_density_index]
         self.session.start(mode=mode, track=track,settle_initial=True)
+        self.slalom_attempt = None
+        self.slalom_pending = mode in SLALOM_MODES
+        self.slalom_start_context = player_road_context(self.session) if self.slalom_pending else None
         self.sync_scene()
         if track == "endless":
             # 重开复用Scene时，道路可能已回到起点；加载阶段补齐近景。
@@ -691,6 +701,11 @@ class CoastalDrive(ShowBase):
 
     def key_down(self, key):
         if not self.loading.isHidden():
+            return
+        if self.session.phase in (Phase.MENU, Phase.RESULTS) and not self.player_road_panel.root.isHidden():
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.player_road_panel.key(key)
             return
         if self.session.phase in (Phase.MENU, Phase.RESULTS) and not self.tire_tuning.root.isHidden():
             if key not in self.commands_held:
@@ -883,7 +898,8 @@ class CoastalDrive(ShowBase):
         self.tour_panel = DrivingTourPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
                                           self.start_tour_leg, self.back_from_driving_tour)
         self.tire_tuning = TireTuningPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
-            self.install_tire_recipe, self.restore_tire_vehicle, self.back_from_tire_tuning)
+            self.install_tire_recipe, self.restore_tire_vehicle, self.back_from_tire_tuning, self.open_player_road_ab)
+        self.player_road_panel = PlayerRoadPanel(self.tire_tuning.root, self.ui_font, self.main_menu.textures)
         self.tour_banner = DirectFrame(parent=self.aspect2d, frameColor=theme.PAPER_LIGHT,
             frameSize=(-.34, .34, -.105, 0), pos=(0, 0, .95), sortOrder=60)
         self.tour_title = OnscreenText(parent=self.tour_banner, text='', font=self.ui_font,
@@ -1229,14 +1245,33 @@ class CoastalDrive(ShowBase):
         for column in self.result_sectors:
             column.hide()
         self.main_menu.root.show()
+        self.player_road_panel.hide()
         vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
         self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label())
+
+    def open_player_road_ab(self):
+        self.player_road_panel.show(self.player_road_ab)
+
+    def observe_player_road(self):
+        if self.session.phase != Phase.RESULTS or not self.slalom_pending:
+            return
+        self.slalom_pending = False
+        try:
+            self.slalom_attempt = player_road_record(self.slalom_start_context, player_road_context(self.session),
+                self.session.vehicle_config, self.session.highway.snapshot.slalom)
+            self.player_road_ab.observe(self.slalom_attempt)
+        except (ValueError, TypeError, KeyError) as error:
+            self.player_road_ab.notice = '本次道路对照未记录：'+str(error)
 
     def apply_tuning_vehicle(self, vehicle):
         """只在保存成功后交接菜单车辆；恢复完整原车时也恢复其电子开关。"""
         if self.session.phase == Phase.RESULTS:
             if vehicle == self.tire_tuning.original:
                 return
+            if self.slalom_attempt is not None:
+                target = self.session.driving_mode.configured_vehicle(vehicle.config.braking.abs_enabled,
+                    vehicle.config.traction.tcs_enabled, vehicle.config.stability.esc_enabled, base_config=vehicle.config)
+                self.player_road_ab.freeze(self.slalom_attempt, target)
             # 已结束的记录只属于旧车；保存成功后才回菜单准备同一道课题。
             mode, journey = self.session.mode, self.driving_journey_return
             self.session.menu()
@@ -1266,6 +1301,8 @@ class CoastalDrive(ShowBase):
             return
         self.apply_tuning_vehicle(vehicle)
         self.tire_tuning.notice.setText('已保存前胎配方；返回原课题亲自验车。' if vehicle != current else '与当前车相同，原方案关联保持。')
+        if self.player_road_ab.notice:
+            self.tire_tuning.notice.setText(self.tire_tuning.notice.getText()+' 道路对照有提示，请查看道路A/B。')
 
     def restore_tire_vehicle(self):
         if self.session.phase not in (Phase.MENU, Phase.RESULTS):
@@ -1385,6 +1422,7 @@ class CoastalDrive(ShowBase):
 
     def refresh_panel(self):
         phase = self.session.phase
+        self.observe_player_road()
         self.refresh_tour_banner()
         panel_state = (phase, self.garage is not None, self.highway_menu, self.audio_settings_page, self.driving_mode_page)
         if panel_state == self._shown_phase:

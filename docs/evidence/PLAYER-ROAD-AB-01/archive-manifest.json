@@ -1,0 +1,362 @@
+{
+  "normal/0/raw.json.gz": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/0/raw.json.gz",
+    "bytes": 152936,
+    "sha256": "61095ff46c09e9a65f5e59c065d25b287ebabd26b61e56565177d4ef3e4fb725"
+  },
+  "normal/0/recheck.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/0/recheck.json",
+    "bytes": 62,
+    "sha256": "1a6b0ed18a182b5008e2b2441aa37ca40847ce3baf7cfedec58c8513c9ca93d5"
+  },
+  "normal/0/summary.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/0/summary.json",
+    "bytes": 7033,
+    "sha256": "5dbb57f7db4327800a91d5dbec206a2730ff5cad6e10cbe2a88bb2317d2e1b35"
+  },
+  "normal/0-installed.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/0-installed.png",
+    "bytes": 281663,
+    "sha256": "0c4319346b84dda8615843a9b7799eea97befc026b1eb90c0c3d46213cc71096"
+  },
+  "normal/0-preview.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/0-preview.png",
+    "bytes": 285320,
+    "sha256": "3b1e2fd7d741ab29e024934df3e84f3d2065d66f0095b9a7ddf9b2bd56f9a6ee"
+  },
+  "normal/0-result.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/0-result.png",
+    "bytes": 531095,
+    "sha256": "16536e5966654c5c6deb60fd09e7e6a934cdf7740040342b72aa9da6de1c424a"
+  },
+  "normal/0-tuning.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/0-tuning.png",
+    "bytes": 282801,
+    "sha256": "51be43daf396ab537e35b9d971b5d9882afc5e7678f6209229b90fa5f3000dce"
+  },
+  "normal/3/raw.json.gz": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/3/raw.json.gz",
+    "bytes": 222036,
+    "sha256": "e12f8435e933feb7c4fd7958eb488985871056ff558fe87b5b9bd718ae84b7ab"
+  },
+  "normal/3/recheck-best.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/3/recheck-best.json",
+    "bytes": 566,
+    "sha256": "204e53a13a834e66c307f70369b5a305f91e75866cf5693e9837c38694b76bc1"
+  },
+  "normal/3/recheck.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/3/recheck.json",
+    "bytes": 61,
+    "sha256": "ebda0fe5a0bf0222e24f7bf1abde33886ffca4fe3a5f24bac8ff29a9ac7c0ec3"
+  },
+  "normal/3/summary.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/3/summary.json",
+    "bytes": 7260,
+    "sha256": "547f283e669b3827f2d2273a59717152a76e8873cc4769bf559d16223c7ea7df"
+  },
+  "normal/3-installed.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/3-installed.png",
+    "bytes": 281612,
+    "sha256": "d1447fdd359062aee08af78e1580afd4a2c9971ec5090253d3600c47af6cf7ae"
+  },
+  "normal/3-preview.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/3-preview.png",
+    "bytes": 284808,
+    "sha256": "c19237b2b1acf02359498ecddcb3a1b7a78d6d6dfd53574b171454d5c4bf32d2"
+  },
+  "normal/3-result.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/3-result.png",
+    "bytes": 517296,
+    "sha256": "359a8af27b60e90072d29e098a8da75ed9ef984f7e2cc0a64735af2f287ad8ba"
+  },
+  "normal/3-tuning.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/3-tuning.png",
+    "bytes": 282371,
+    "sha256": "cb8ee84e82da23986c0e5dc323e889e4a2d36ca307fceeb068d74258195e2f2b"
+  },
+  "normal/cancel-restores-original-result.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/cancel-restores-original-result.png",
+    "bytes": 531352,
+    "sha256": "91bfecb204ba5e26439ae94920611bd6f910fd99df8349070377a75ba8ee19d5"
+  },
+  "normal/original-vehicle.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/original-vehicle.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "normal/player-road-ab.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/player-road-ab.json",
+    "bytes": 40195,
+    "sha256": "5c5c14352c183e0e51ceae1cd552390dcbf5074bce7b5d1db1c3e1d0d3069c17"
+  },
+  "normal/reopened-road-ab.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/reopened-road-ab.png",
+    "bytes": 285276,
+    "sha256": "b6fc70808a55ebc3a5163ff4bb7d5b1b6f30c424985ab34c2da4cf40fcff7f9d"
+  },
+  "normal/reopened-tuning.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/reopened-tuning.png",
+    "bytes": 282310,
+    "sha256": "de31d3fa9d4abe1ce28f31abf3a9b4abe485fcb5505edc2de3de881dc8015b7c"
+  },
+  "normal/restore-summary.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/restore-summary.json",
+    "bytes": 43940,
+    "sha256": "726967c2adcb72d9c4dfc2a1e3a2aeebb0d3814a481f44532871fa17e3b59f40"
+  },
+  "normal/restored-original.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/restored-original.png",
+    "bytes": 283275,
+    "sha256": "a35145737563be362423836e416993c2e4568d0aad614b6fd5e5142d5755c408"
+  },
+  "normal/road-ab.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/road-ab.png",
+    "bytes": 285276,
+    "sha256": "b6fc70808a55ebc3a5163ff4bb7d5b1b6f30c424985ab34c2da4cf40fcff7f9d"
+  },
+  "normal/slalom-best.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/slalom-best.json",
+    "bytes": 828,
+    "sha256": "86b4394c6528f622cd930b39f0f875a494a87e6011f2127b27b3b516b70e7129"
+  },
+  "normal/summary.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/summary.json",
+    "bytes": 96906,
+    "sha256": "315e8bbf7d91a07b93c5229988b06069a3566d3728771e3764069582c5b5341e"
+  },
+  "normal/test-workspace-vehicle.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/test-workspace-vehicle.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "normal/tuning-backups/251790df1d23345aaa80698b8fd8b29498f2691eb9474ed1a4a11ec3c862ec4f.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/tuning-backups/251790df1d23345aaa80698b8fd8b29498f2691eb9474ed1a4a11ec3c862ec4f.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "normal/tuning-backups/891a251f7448f204f95bd8cbc402bfd1698589a60adccc06edc9e22e67edc8bb.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-normal/tuning-backups/891a251f7448f204f95bd8cbc402bfd1698589a60adccc06edc9e22e67edc8bb.json",
+    "bytes": 6334,
+    "sha256": "3832c701027493648b277065a4dd82ac99228faea72c8132163d66053d012d5d"
+  },
+  "double/0/raw.json.gz": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/0/raw.json.gz",
+    "bytes": 155404,
+    "sha256": "6baff4493d48da3c83be3cdafd61b393293a449d2bf1f77e7a82af7906626171"
+  },
+  "double/0/recheck.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/0/recheck.json",
+    "bytes": 62,
+    "sha256": "1a6b0ed18a182b5008e2b2441aa37ca40847ce3baf7cfedec58c8513c9ca93d5"
+  },
+  "double/0/summary.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/0/summary.json",
+    "bytes": 7032,
+    "sha256": "041cc2c3db49b51afcaa64f19a008c16f016ff0faf57d891ea4505325bcfe9ee"
+  },
+  "double/0-installed.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/0-installed.png",
+    "bytes": 450233,
+    "sha256": "2d17f62f81813df85dfa00faf96492636c8bc854188c9916f93ba89fc3ac7bfd"
+  },
+  "double/0-preview.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/0-preview.png",
+    "bytes": 452228,
+    "sha256": "64e28f36434a394bdd955ba44d398be1bfb07b0791ee4631235f76eddb9ed7ab"
+  },
+  "double/0-result.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/0-result.png",
+    "bytes": 331863,
+    "sha256": "ae0791de3d4cbfe52498dfb168ffd43c91f18dc1961fdf262e913d9114db552e"
+  },
+  "double/0-tuning.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/0-tuning.png",
+    "bytes": 450942,
+    "sha256": "8853d0f02ad276f567a03dd2e5da95f8c345c8f22c2f031e7fe51c07130d8701"
+  },
+  "double/3/raw.json.gz": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/3/raw.json.gz",
+    "bytes": 226059,
+    "sha256": "ea23b411f6c4aa80cf5d0dc6b6f081f6cc043ca0368e019c1f3eeda3b79f37d3"
+  },
+  "double/3/recheck-best.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/3/recheck-best.json",
+    "bytes": 564,
+    "sha256": "4d5ffdf810cfdce3fc16ff4d3296f53ee032a9ee2abb786c22ce3029698bbed1"
+  },
+  "double/3/recheck.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/3/recheck.json",
+    "bytes": 61,
+    "sha256": "ebda0fe5a0bf0222e24f7bf1abde33886ffca4fe3a5f24bac8ff29a9ac7c0ec3"
+  },
+  "double/3/summary.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/3/summary.json",
+    "bytes": 7257,
+    "sha256": "5bd30e1e182e10dd82af017c4f8d2ef45c3307b17c004505c148609b7c29ec7e"
+  },
+  "double/3-installed.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/3-installed.png",
+    "bytes": 450194,
+    "sha256": "04b1e22385a56376b83ef8db55b08783d2b929d511b043ab6823991bad058806"
+  },
+  "double/3-preview.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/3-preview.png",
+    "bytes": 451804,
+    "sha256": "794419a2ef177d3c147a61d8afd39b796576c432d0ba9522c45cefd90aba6803"
+  },
+  "double/3-result.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/3-result.png",
+    "bytes": 332788,
+    "sha256": "4610c741cb4196a0be7e83a0ee194dcdbe05db3cfc55e1a0ec5c98dcf3aa54f2"
+  },
+  "double/3-tuning.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/3-tuning.png",
+    "bytes": 450572,
+    "sha256": "7caf4ea963524647004df44274d4d5004f2475a591706ddf6dacea63dcc1ab4d"
+  },
+  "double/cancel-restores-original-result.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/cancel-restores-original-result.png",
+    "bytes": 331924,
+    "sha256": "c4824c77b409b2ac0c05e89b70d1aec83f60ca56df21e86dace9ade2da675014"
+  },
+  "double/original-vehicle.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/original-vehicle.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "double/player-road-ab.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/player-road-ab.json",
+    "bytes": 35583,
+    "sha256": "60187d7b903b0890610605a019c86fed78643276972a82a51d4402e8f57f7a86"
+  },
+  "double/reopened-road-ab.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/reopened-road-ab.png",
+    "bytes": 451507,
+    "sha256": "229f1e7860ada532fe96970eee26d13d09a3bd8ebb083dea6802a24b9e6e0bb6"
+  },
+  "double/reopened-tuning.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/reopened-tuning.png",
+    "bytes": 450550,
+    "sha256": "9078af35fabd5ef47b9f68483f7dc5a72dc7a0fc20bd2f436db9ae835e41163a"
+  },
+  "double/restore-summary.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/restore-summary.json",
+    "bytes": 39499,
+    "sha256": "cbdd7c8c37f82563af900771858686800388db17ed5f48d8a458335d1f5aaeb6"
+  },
+  "double/restored-original.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/restored-original.png",
+    "bytes": 450929,
+    "sha256": "efc1fc04f6e0cb3b2277a1032c59585d24277f0a6be43224728a140f879a1c9e"
+  },
+  "double/road-ab.png": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/road-ab.png",
+    "bytes": 451507,
+    "sha256": "229f1e7860ada532fe96970eee26d13d09a3bd8ebb083dea6802a24b9e6e0bb6"
+  },
+  "double/slalom-best.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/slalom-best.json",
+    "bytes": 826,
+    "sha256": "cd8c4fa3ebe460bf611a1d9b3022b5beb1847e5d745db4e2b6d0b1d28b24dd4e"
+  },
+  "double/summary.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/summary.json",
+    "bytes": 87766,
+    "sha256": "1836f96254e08414b2cbbb5b52a748a11d0147abc9edd60e38794901255e9b14"
+  },
+  "double/test-workspace-vehicle.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/test-workspace-vehicle.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "double/tuning-backups/251790df1d23345aaa80698b8fd8b29498f2691eb9474ed1a4a11ec3c862ec4f.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/tuning-backups/251790df1d23345aaa80698b8fd8b29498f2691eb9474ed1a4a11ec3c862ec4f.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "double/tuning-backups/891a251f7448f204f95bd8cbc402bfd1698589a60adccc06edc9e22e67edc8bb.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double/tuning-backups/891a251f7448f204f95bd8cbc402bfd1698589a60adccc06edc9e22e67edc8bb.json",
+    "bytes": 6334,
+    "sha256": "3832c701027493648b277065a4dd82ac99228faea72c8132163d66053d012d5d"
+  },
+  "checks/T0/pytest.txt": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-T0/pytest.log",
+    "bytes": 2324,
+    "sha256": "8b2caf3135086ea687e7e7a947ecbe071aa41a3446783df0def0ab1762bdb375"
+  },
+  "checks/T0/ruff.txt": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T0/summary.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-T0/summary.json",
+    "bytes": 1760,
+    "sha256": "a0a7d2cc4af4d6cb2d4259d2f3b12dbd257eb9c9a468d69613b1eae2701caf9d"
+  },
+  "checks/T1/headless-0.txt": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-T1/headless-0.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1/headless-17.txt": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-T1/headless-17.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1/headless-23.txt": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-T1/headless-23.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1/pytest.txt": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-T1/pytest.log",
+    "bytes": 113,
+    "sha256": "0528d6b2689ad06750f798159fd7c0662b04816c0b83b0ba294039d975c6d6d0"
+  },
+  "checks/T1/ruff.txt": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-T1/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T1/summary.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-T1/summary.json",
+    "bytes": 3840,
+    "sha256": "ecc62bcb2063434caef9e90050324cbdb118b58a77b49cc07497a54db37dec98"
+  },
+  "checks/double-T1/headless-0.txt": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double-T1/headless-0.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/double-T1/headless-17.txt": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double-T1/headless-17.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/double-T1/headless-23.txt": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double-T1/headless-23.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/double-T1/pytest.txt": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double-T1/pytest.log",
+    "bytes": 113,
+    "sha256": "66e19e8236910298572d5ff7e788d6be7e4732a9d1cf381c02f58d391301d2fc"
+  },
+  "checks/double-T1/ruff.txt": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double-T1/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/double-T1/summary.json": {
+    "source": "logs/validation/PLAYER-ROAD-AB-01-double-T1/summary.json",
+    "bytes": 3874,
+    "sha256": "8d6ee40be6d6d88308c52389415f98f162be0f737ca8c25f735efa94231156a6"
+  },
+  "reused-scheme-inputs.json": {
+    "source": "docs/evidence/TIRE-TUNING-01/reused-scheme-inputs.json",
+    "bytes": 7117,
+    "sha256": "9d44f0f35ea7938cde4ad9e16f43e2c9cfac0cb06bf4a95623c61243e496612e"
+  }
+}

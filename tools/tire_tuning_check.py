@@ -26,7 +26,8 @@ from vehicle_workspace import WorkspaceVehicle
 
 
 def sources():
-    paths = ('src/ui/tire_tuning.py', 'tools/tire_tuning_check.py', 'tools/fast_slalom_check.py', 'tools/slalom_driver.py')
+    paths = ('src/ui/tire_tuning.py', 'src/ui/player_road_ab.py', 'tools/tire_tuning_check.py',
+             'tools/fast_slalom_check.py', 'tools/slalom_driver.py')
     return {**model_fingerprint(), **{name: hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in paths}}
 
 
@@ -84,6 +85,15 @@ def check(output, size, restore=False, from_results=False):
             app.open_tire_tuning()
             assert car.config.lateral_stiffness == 70000.
             capture('reopened-tuning')
+            if from_results:
+                ab = app.player_road_ab
+                old_ab = ab.path.read_bytes()
+                assert ab.a['config']['lateral_stiffness'] == 35000. and ab.b['result']['succeeded']
+                app.tire_tuning.activate(7)
+                capture('reopened-road-ab')
+                app.player_road_panel.hide()
+                assert ab.path.read_bytes() == old_ab
+                summary.update(road_ab_restored=True, road_ab_file_unchanged=True)
             app.tire_tuning.activate(5)
             assert app.workspace_vehicle.config.lateral_stiffness == 35000.
             app.tire_tuning.activate(5)
@@ -146,6 +156,21 @@ def check(output, size, restore=False, from_results=False):
                 app._shown_phase = None
                 app.refresh_panel()
                 capture(f'{index}-result')
+                if from_results and index == 3:
+                    ab = app.player_road_ab
+                    assert ab.a['config']['lateral_stiffness'] == 35000. and not ab.a['result']['succeeded']
+                    assert ab.b['config']['lateral_stiffness'] == 70000. and ab.b['result']['succeeded']
+                    assert ab.b['result'] == json.loads(json.dumps(asdict(result)))
+                    old_ab, old_best = ab.path.read_bytes(), (output/'slalom-best.json').read_bytes()
+                    app.buttons[3]['command']()
+                    app.tire_tuning.activate(7)
+                    assert '无有效总时间' in app.player_road_panel.cards[0].getText()
+                    assert 'B−A' not in app.player_road_panel.delta.getText()
+                    capture('road-ab')
+                    app.player_road_panel.hide()
+                    app.tire_tuning.activate(6)
+                    assert old_ab == ab.path.read_bytes() and old_best == (output/'slalom-best.json').read_bytes()
+                    summary.update(road_ab={'A': ab.a, 'B': ab.b}, comparison_read_only=True)
                 if not from_results or index == 3:
                     app.back_to_menu()
                     app.choose_slalom_lesson(GameMode.FAST_SLALOM)

@@ -10,8 +10,9 @@ from workshop_cornering import FRONT_STIFFNESS
 
 
 class TireTuningPanel:
-    def __init__(self, parent, font, textures, apply, undo, back):
+    def __init__(self, parent, font, textures, apply, undo, back, compare):
         self.apply, self.undo, self.back = apply, undo, back
+        self.compare = compare
         self.textures, self.selected, self.recipe = textures, 6, None
         self.root = DirectFrame(parent=parent, frameColor=theme.PAPER_LIGHT,
             frameSize=(-1.70, 1.70, -.86, .80), sortOrder=112, state=DGG.NORMAL)
@@ -32,7 +33,8 @@ class TireTuningPanel:
         self.notice.textNode.setWordwrap(92)
         self.buttons = []
         choices = [(f'前胎 {value/1000:g}k', -1.14+i*.76, .16, .68) for i, value in enumerate(FRONT_STIFFNESS)]
-        choices.extend((('确认安装', -1.05, -.72, .92), ('恢复安装前车辆', 0., -.72, .98), ('返回课题', 1.05, -.72, .92)))
+        choices.extend((('确认安装', -1.20, -.72, .72), ('恢复安装前车辆', -.40, -.72, .76),
+                        ('返回课题', 1.20, -.72, .72), ('道路 A/B', .40, -.72, .72)))
         for index, (label, x, z, width) in enumerate(choices):
             self.buttons.append(DirectButton(parent=self.root, text=label, text_font=font, text_fg=theme.INK,
                 text_scale=.039, frameTexture=textures, frameColor=(1, 1, 1, 1), relief=DGG.FLAT, pressEffect=False,
@@ -76,8 +78,10 @@ class TireTuningPanel:
             self.apply(self.recipe)
         elif index == 5:
             self.undo()
-        else:
+        elif index == 6:
             self.back()
+        else:
+            self.compare()
 
     def key(self, key):
         if key in ('arrow_up', 'arrow_left', 'w', 'a'):
