@@ -64,7 +64,7 @@ def check(output, sdk, size):
         lab = app.lab
         panel = lab.schemes.virtual_driver
         panel.names = ("原配35k · 归档真实记录", "循迹50k · 归档真实记录")
-        panel.scheme_names.setText(f"A：{panel.names[0]}\nB：{panel.names[1]}")
+        panel.set_scheme_names()
         panel.comparison = SavedComparison(records)
         lab.schemes.root.show()
         panel.root.show()

@@ -65,9 +65,18 @@ def test_actual_road_comparison_preserves_trial_draft_and_player_progress(lab):
     panel.start()
     assert old_run.closed and lab.run_state is None and lab.record.snapshots == record.snapshots
     assert panel.run_button["state"] == DGG.DISABLED
-    finish(panel)
+    saw_left = False
+    while not panel.comparison.done:
+        panel.update()
+        if len(panel.comparison.records) == 1 and not panel.comparison.done:
+            saw_left = True
+            assert '试车中' in panel.result_labels[1].getText()
+            assert panel.metric_rows[1][1].getText() != '待完成'
+            assert panel.metric_rows[1][2].getText() == '待完成'
+            assert len(panel.paths) == 1
+    assert saw_left
     assert panel.comparison.status == "complete" and panel.comparison.run.closed
-    assert "有效用时" in panel.columns[0].getText() and "B−A" in panel.columns[3].getText()
+    assert "有效用时" in panel.metric_rows[0][0].getText() and "B−A" in panel.metric_headers[3].getText()
     assert panel.report.is_file() and lab.entries["cg"].get() == ".48"
     assert all(path.read_bytes() == data for path, data in original_files.items())
     assert not list(lab.scheme_root.parent.rglob("*best*.json"))
@@ -76,6 +85,12 @@ def test_actual_road_comparison_preserves_trial_draft_and_player_progress(lab):
     panel.hide()
     assert not lab.schemes.root.isHidden() and panel.root.isHidden()
     assert lab.record.snapshots == record.snapshots
+    panel.show()
+    assert '报告已保存' in panel.note.getText()
+    panel.start()
+    assert '报告已保存' not in panel.note.getText() and panel.report is None
+    assert len(panel.paths) == 0 and panel.metric_rows[0][1].getText() == '待完成'
+    panel.hide()
 
 
 def test_escape_cancels_and_closes_world_then_returns_to_scheme_list(lab):
@@ -137,6 +152,7 @@ def test_review_scrubs_original_records_without_opening_a_physics_world(lab, mon
     records = archived_records("normal")
     panel.comparison = SavedComparison(records)
     panel.present()
+    assert panel.paths[0].getTightBounds(panel.root)[1].x < panel.point(320., 0.)[0]
     lab.entries["cg"].enterText(".48")
     panel.review_button["command"]()
     review = panel.review
@@ -165,9 +181,14 @@ def test_review_single_partial_and_broken_gate_records_are_explicit(lab):
     panel = prepare(lab)
     original = archived_records("normal")[0]
     partial = replace(original, snapshots=original.snapshots[:1], controls=(), rows=(),
-        metadata={**original.metadata, "result": {**original.metadata["result"], "clearances": [], "errors": [], "gates": 0}})
+        metadata={**original.metadata, "result": {**original.metadata["result"], "clearances": [], "errors": [], "gates": 0},
+                  "metrics": {**original.metadata['metrics'], 'gates': 0, 'reason': '已取消',
+                              'valid_seconds': None, 'minimum_clearance_m': None}})
     panel.comparison = SavedComparison((partial,))
     panel.present()
+    assert panel.metric_rows[1][1].getText() == '0'
+    assert panel.metric_rows[1][2].getText() == '待完成'
+    assert all(row[3].getText() == '—' for row in panel.metric_rows)
     panel.review.show()
     assert all(button["state"] == DGG.DISABLED for button in panel.review.gate_buttons)
     assert "尚无记录" in panel.review.details[1].getText()
