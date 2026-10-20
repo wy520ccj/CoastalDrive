@@ -1,0 +1,11 @@
+{
+  "source_differences_from_original_baseline": [
+    "src\\application.py",
+    "src\\lab_game_comparison.py",
+    "src\\vehicle_controls_native.h",
+    "src\\wheel_contact_kernels.cp314-win_amd64.pyd"
+  ],
+  "fixed_16_non_brake_field_mismatches": 0,
+  "fixed_16_ticks": 720,
+  "scope": "同压力因果诊断；不宣称原闭环T2通过；生产未改"
+}
