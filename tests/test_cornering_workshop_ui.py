@@ -60,6 +60,13 @@ def test_sharp_recipe_is_rejected_and_changing_topic_cancels_an_active_trial(lab
     finish(lab)
     assert not panel.result["passed"] and "侧偏" in panel.feedback.getText()
     assert panel.drive_button["state"] == DGG.DISABLED
+    baseline, candidate = panel.baseline, panel.candidate
+    panel.show()
+    panel.show_insights()
+    assert panel.insights.data['rows'][0][2] > 4
+    panel.prepare_next_trial()
+    assert panel.selection() == (2, False, False) and panel.result is None and panel.phase is None
+    assert panel.baseline is baseline and panel.candidate is candidate
     panel.start()
     run = lab.run_state
     panel.set_topic(0)

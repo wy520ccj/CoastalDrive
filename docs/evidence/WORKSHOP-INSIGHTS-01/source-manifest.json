@@ -1,0 +1,14 @@
+{
+  "src/workshop_insights.py": "ae448bde5b7c82036ae0c0264764a9ce475fb5b89b963498ab3bab16ccdb6e5c",
+  "src/ui/workshop_insights.py": "a6e83bddcc27acac48a0bf73c6a6adc4d4780ea42b330d7da24ac70aaab3ac20",
+  "src/ui/lab_workshop.py": "653e7f2d73dbf02a8441a6df0f10c167d8cf8e41cf4d056dfb4a2c1ca2161973",
+  "src/lab_application.py": "385a9a1d6464ec0d4c6e0307c143acf28e7a7126331f67c345124f6447941c34",
+  "src/workshop.py": "899083b9699ecc3c2876099bb8e801da0d44634b2a90c7c498e8f0572051b430",
+  "src/workshop_cornering.py": "8f8983e0550e68c4d5244842815ba2865c195ae1756a0a555691cee733477392",
+  "src/lab_experiment.py": "420578b727405ffd311c462e0978c760246529209eed9976dd9ec17dde046b36",
+  "tools/workshop_insights_check.py": "f02f22178ffd465e8cff922c0fc7a9d4805fc37f57585e6dbd088316b2f2a4ce",
+  "tests/test_workshop.py": "be13d6be1ae128a2cec4c1dc96bcc85a5c83a9bac0fd51e23b2722b5b2b78f49",
+  "tests/test_cornering_workshop.py": "48b8ec0960f6088849c00f02cf7a7b2b995d7b62882abaf659a906a964d8b29f",
+  "tests/test_workshop_ui.py": "deb91a1b477d4ee3dc3e5b93f31bfa27799a1af4c4c571c4931f5697b9cc97f4",
+  "tests/test_cornering_workshop_ui.py": "942dd6a08e233fce736687449b85105aba99c43086cf33f784e569db54a00124"
+}

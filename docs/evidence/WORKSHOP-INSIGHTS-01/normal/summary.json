@@ -1,0 +1,416 @@
+{
+  "passed": true,
+  "runtime": {
+    "panda_version": "1.10.16",
+    "bullet_version": 284,
+    "math_scalar_bits": 32,
+    "files": {
+      "panda3d/api-ms-win-crt-multibyte-l1-1-0.dll": "d7e676b9f1e162957d0549ab0b91e2cd754643490b0654bf9a86aa1e77cb3c37",
+      "panda3d/api-ms-win-crt-utility-l1-1-0.dll": "bba068f29609630e8c6547f1e9219e11077426c4f1e4a93b712bfba11a149358",
+      "panda3d/avcodec-55.dll": "3c1957be7a57a02f843f9d8074f0c9aad5329373b4b900be25904f1ea9355029",
+      "panda3d/avformat-55.dll": "4798d6b688729c2430c4803e65d5bf3c46b12b887467a72cc4a0c3b40891764e",
+      "panda3d/avutil-52.dll": "7237410f73c400190d82132d18115962e87466e4de8cf6a15c314d49cbfdb307",
+      "panda3d/bullet.cp314-win_amd64.pyd": "e547c56df54cf84540c30370343d42ed4fd34dd3e4837076fceb38558dadad5e",
+      "panda3d/cg.dll": "124c758001dd52bd6ef04db670fe93b2107c7d4c9930eed805b766f30418e8fd",
+      "panda3d/cgD3D9.dll": "ecebf858df311acbd4b1cb4847d9f59b719932616183d7c672492602ccbc86f5",
+      "panda3d/cgGL.dll": "4966d2f0eb64cd2802c22ede9ee73f3ae053eb24b47a9babe3bd41dbdf005caf",
+      "panda3d/core.cp314-win_amd64.pyd": "8c485c17aff46baff9d55b9e45aaf43676184adc30beb7766768e630eea9bad7",
+      "panda3d/d3dx9_43.dll": "84b900dbd7fa978d6e0caee26fc54f2f61d92c9c75d10b35f00e3e82cd1d67b4",
+      "panda3d/fmodex64.dll": "2a778ba3ffb6c3434a3e5003d4fbdc85c1c3a356208f53895b9c0bfbd9591bbe",
+      "panda3d/libp3assimp.dll": "a26c4c69026020adc4e033211fcfd4969a4fb76b3cfaae38af9e5c7ef8a06740",
+      "panda3d/libp3direct.dll": "0b09abf64d293e885e2bae1b8f3f66e45ba57afa22faef1d3593f8d558475933",
+      "panda3d/libp3dtool.dll": "d44139a3805b640b000d44c9ec17cc2f84daae13f8e92d915d4c9e759546d598",
+      "panda3d/libp3dtoolconfig.dll": "6ef8c6e6dfa4765d080ab1943c783d77b05bf13cb3a89eb43e58097e93a8f9fc",
+      "panda3d/libp3ffmpeg.dll": "422e4ba934a483b506aa10bfd7ee810af2dcd878b86be4680bf0ef28a85942d4",
+      "panda3d/libp3fmod_audio.dll": "99bed4cc688a84bfd743cbcf3bdb1cf5396134a841b8f6f2cdaa0bbda033f94c",
+      "panda3d/libp3interrogatedb.dll": "32ef30d97669c101de3c85ece3af944fe160003a1ac24e2a8b1bc872618235ee",
+      "panda3d/libp3openal_audio.dll": "1a57cb9bea38606b80bf4aa8c754200c165653e746898368380c216ec2b767c8",
+      "panda3d/libp3ptloader.dll": "3c3c933a4e10e8a5477aa8f63c3a9d5b300386cc88d2d86e80bab12bb073531c",
+      "panda3d/libp3tinydisplay.dll": "670fa06fcf483ef8748aeaade2a5ae0105f9079ffdc453f223406fbb2c098c26",
+      "panda3d/libp3vision.dll": "a5d4a8c2f28fbb81ac0c70bd2c79d7963765d6c412d2f6997159db5756b332fa",
+      "panda3d/libp3vrpn.dll": "f6d674a89ede7b1b63407fd1a8e074833cf86658ee80f6acddc84e322f46db4e",
+      "panda3d/libp3windisplay.dll": "ab7f6de572e1a822bca0a660466c8fd297383686f7eec186096762e7e79263f8",
+      "panda3d/libpanda.dll": "d66c766cf7806c9ac0f5c9ec4cc70aeac2d2252a621deeb9edf04e60e9a047e5",
+      "panda3d/libpandaai.dll": "ccff20e040e26b9f034ecc843364c4f5722a710f53ac825715539855e0c5022b",
+      "panda3d/libpandabullet.dll": "c380b7f958b52d3bab809fdf1e27b0297da48d4f02264bace9402e05de7be173",
+      "panda3d/libpandadx9.dll": "9c2bc0a82b71d234488ac351a9d4cff84ec2e74fe2bd74a6ab548ab4ec056bf2",
+      "panda3d/libpandaegg.dll": "af6f1123da22ebb3724d06a1381605638f9fc8f53dd24c679b967212938d4af4",
+      "panda3d/libpandaexpress.dll": "feeabb6ad24ebbf102d474135dabbcd6790e52624ff43a878aaec9bc34618f4a",
+      "panda3d/libpandafx.dll": "0968ff6a58d6ec2f6770d3bde1181448baf6cb9027785e29982494a5d16cf6f9",
+      "panda3d/libpandagl.dll": "d1697c95f95e143f1877152caa3804645c5e722d8595671810af7eb000df414f",
+      "panda3d/libpandaode.dll": "54bed5638c215d320d6f219286263d6e3c6856b5399929005a2ef065e17eca9f",
+      "panda3d/libpandaphysics.dll": "3c0fb0debdc2065ca4d150fc7e96f0611f16217d8283ac52c9661809fe32fa6c",
+      "panda3d/libpandaskel.dll": "61806616f7b5798d92febd13a917efc13a1cf3eb865c72d8dfa89a4a792fc588",
+      "panda3d/MSVCP140.dll": "d9fb383b33651cbbb9cf407f69dcaca6288e995555e02a9a7c9e81f8b9d5b1d3",
+      "panda3d/swresample-0.dll": "a1a3c9ee7f40f563a5b90ef688242f3bb824b336d57e8779abbbd854fc3a0b5b",
+      "panda3d/swscale-2.dll": "20c95e6a8a6c372ef098d65812d048fdc6bd90269f5738096272b89fc16d1d98"
+    }
+  },
+  "source_start": {
+    "src/workshop_insights.py": "ae448bde5b7c82036ae0c0264764a9ce475fb5b89b963498ab3bab16ccdb6e5c",
+    "src/ui/workshop_insights.py": "a6e83bddcc27acac48a0bf73c6a6adc4d4780ea42b330d7da24ac70aaab3ac20",
+    "src/ui/lab_workshop.py": "653e7f2d73dbf02a8441a6df0f10c167d8cf8e41cf4d056dfb4a2c1ca2161973",
+    "src/lab_application.py": "e66930997ee9b98783d1c54a79ded9fe37f700ce3e608de63996426aa6636284",
+    "src/workshop.py": "899083b9699ecc3c2876099bb8e801da0d44634b2a90c7c498e8f0572051b430",
+    "src/workshop_cornering.py": "8f8983e0550e68c4d5244842815ba2865c195ae1756a0a555691cee733477392",
+    "src/lab_experiment.py": "140c359574a057ba5a5c913b3241fe77bfbd23eed3e6bf49de1ae84d561fd188",
+    "tools/workshop_insights_check.py": "f02f22178ffd465e8cff922c0fc7a9d4805fc37f57585e6dbd088316b2f2a4ce"
+  },
+  "size": [
+    1280,
+    720
+  ],
+  "cases": [
+    {
+      "name": "brake-original",
+      "data": {
+        "version": "workshop-insights-v1",
+        "topic": 0,
+        "selection": [
+          0,
+          false
+        ],
+        "challenge_id": "coastal-braking-v1",
+        "outcome": "未达标 · 缩距不足10%",
+        "passed": false,
+        "changes": [
+          "保留原配"
+        ],
+        "primary": [
+          "停车距离",
+          32.406474258239136,
+          32.406474258239136,
+          "m"
+        ],
+        "improvement_pct": 0.0,
+        "rows": [
+          [
+            "前轴ABS介入采样",
+            0.0,
+            0.0,
+            "%"
+          ],
+          [
+            "后轴ABS介入采样",
+            89.88439306358381,
+            89.88439306358381,
+            "%"
+          ],
+          [
+            "峰值横摆",
+            0.0009722637478262186,
+            0.0009722637478262186,
+            "rad/s"
+          ]
+        ],
+        "cost": 0,
+        "budget": 3,
+        "attribution": "本次保留原配，用于确认基线表现。",
+        "basis": "ABS为完成拍至少一轮介入的轴比例，排除初始拍；介入更多不直接等于制动更好。路径与横摆由快照复算。",
+        "next": {
+          "text": "下一次只调整前制动份额，比较前后轴ABS介入与停车距离。只改当前B一项，A仍为固定原车；重跑后才有新结论。下一B预算1/3。",
+          "selection": [
+            1,
+            false
+          ],
+          "cost": 1
+        },
+        "config_digest": "edebd390c626dee26db2a275e18eb8cce7a1b613d419082b2dd60d8a6d2cdfbd",
+        "record_ticks": [
+          346,
+          346
+        ]
+      },
+      "reused_record": null,
+      "physical_ticks": [
+        346,
+        346
+      ]
+    },
+    {
+      "name": "brake-over",
+      "data": {
+        "version": "workshop-insights-v1",
+        "topic": 0,
+        "selection": [
+          2,
+          true
+        ],
+        "challenge_id": "coastal-braking-v1",
+        "outcome": "未达标 · 预算超出",
+        "passed": false,
+        "changes": [
+          "前制动份额 45% → 70%",
+          "制动扭矩 3643.2 → 5100.48 N·m"
+        ],
+        "primary": [
+          "停车距离",
+          32.406474258239136,
+          24.444595828958498,
+          "m"
+        ],
+        "improvement_pct": 24.56878945186819,
+        "rows": [
+          [
+            "前轴ABS介入采样",
+            0.0,
+            93.07692307692308,
+            "%"
+          ],
+          [
+            "后轴ABS介入采样",
+            89.88439306358381,
+            86.15384615384616,
+            "%"
+          ],
+          [
+            "峰值横摆",
+            0.0009722637478262186,
+            0.0013252156786620617,
+            "rad/s"
+          ]
+        ],
+        "cost": 4,
+        "budget": 3,
+        "attribution": "本次同时改了2项，只能解释组合结果；不能把全部收益归给其中一项。",
+        "basis": "ABS为完成拍至少一轮介入的轴比例，排除初始拍；介入更多不直接等于制动更好。路径与横摆由快照复算。",
+        "next": {
+          "text": "先撤回大制动器，释放3点预算，验证现有制动分配能否独立达标。只改当前B一项，A仍为固定原车；重跑后才有新结论。下一B预算1/3。",
+          "selection": [
+            2,
+            false
+          ],
+          "cost": 1
+        },
+        "config_digest": "ae0f67db70c302113ebca09a0230a6a3f20d9c9fea87b0da1c94ab0ffd369fcb",
+        "record_ticks": [
+          346,
+          260
+        ]
+      },
+      "reused_record": null,
+      "physical_ticks": [
+        346,
+        260
+      ]
+    },
+    {
+      "name": "brake-gold",
+      "data": {
+        "version": "workshop-insights-v1",
+        "topic": 0,
+        "selection": [
+          2,
+          false
+        ],
+        "challenge_id": "coastal-braking-v1",
+        "outcome": "通过 · 金牌",
+        "passed": true,
+        "changes": [
+          "前制动份额 45% → 70%"
+        ],
+        "primary": [
+          "停车距离",
+          32.406474258239136,
+          28.293529675218842,
+          "m"
+        ],
+        "improvement_pct": 12.69173730608662,
+        "rows": [
+          [
+            "前轴ABS介入采样",
+            0.0,
+            0.0,
+            "%"
+          ],
+          [
+            "后轴ABS介入采样",
+            89.88439306358381,
+            0.0,
+            "%"
+          ],
+          [
+            "峰值横摆",
+            0.0009722637478262186,
+            0.00015352701302617788,
+            "rad/s"
+          ]
+        ],
+        "cost": 1,
+        "budget": 3,
+        "attribution": "同条件只改一项，本模型内差值对应这项改动。",
+        "basis": "ABS为完成拍至少一轮介入的轴比例，排除初始拍；介入更多不直接等于制动更好。路径与横摆由快照复算。",
+        "next": {
+          "text": "本次已达标；先保存并道路验证，观察同一套硬件的实际驾驶表现。",
+          "selection": null,
+          "cost": null
+        },
+        "config_digest": "e651a3dfdaf09654182b378c7e5d9a1d9683e54ff97ecc34dc761680c8c6bd9c",
+        "record_ticks": [
+          346,
+          303
+        ]
+      },
+      "reused_record": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-01\\normal\\records\\20261018-032538-729436-workshop",
+      "physical_ticks": [
+        346,
+        303
+      ]
+    },
+    {
+      "name": "corner-sharp",
+      "data": {
+        "version": "workshop-insights-v1",
+        "topic": 1,
+        "selection": [
+          3,
+          false,
+          false
+        ],
+        "challenge_id": "coastal-cornering-v1",
+        "outcome": "未达标 · 末窗车速超出60±1.2km/h / 峰值侧偏超过4°",
+        "passed": false,
+        "changes": [
+          "前轴侧偏刚度 35 → 70 kN/rad"
+        ],
+        "primary": [
+          "末2秒平均循迹误差",
+          3.175283242172368,
+          0.15258064474355765,
+          "m"
+        ],
+        "improvement_pct": 95.19473907974366,
+        "rows": [
+          [
+            "峰值车身侧偏",
+            2.2865829029411766,
+            5.793474238313349,
+            "°"
+          ],
+          [
+            "峰值车身侧倾",
+            1.1003941297531128,
+            1.3544684648513794,
+            "°"
+          ],
+          [
+            "末窗最大车速偏差",
+            0.10332730800143253,
+            1.3845350383411912,
+            "km/h"
+          ],
+          [
+            "末窗平均实际转角",
+            4.35379589379178,
+            2.7297464164115843,
+            "°"
+          ]
+        ],
+        "cost": 2,
+        "budget": 3,
+        "attribution": "同条件只改一项，本模型内差值对应这项改动。",
+        "basis": "循迹/车速/实际转角取8–10秒末窗，侧偏/侧倾取全程快照绝对峰值；末窗车速条件单独检查。",
+        "next": {
+          "text": "侧偏超过4°；下一次只降低一档前胎配方，核对侧偏和循迹误差的取舍。只改当前B一项，A仍为固定原车；重跑后才有新结论。下一B预算2/3。",
+          "selection": [
+            2,
+            false,
+            false
+          ],
+          "cost": 2
+        },
+        "config_digest": "33f9ca66728db90a1048de3e7e673b4d8018c1e389500b7d2eedc632bca0bb00",
+        "record_ticks": [
+          1200,
+          1200
+        ]
+      },
+      "reused_record": null,
+      "physical_ticks": [
+        1200,
+        1200
+      ]
+    },
+    {
+      "name": "corner-gold",
+      "data": {
+        "version": "workshop-insights-v1",
+        "topic": 1,
+        "selection": [
+          2,
+          false,
+          false
+        ],
+        "challenge_id": "coastal-cornering-v1",
+        "outcome": "通过 · 金牌",
+        "passed": true,
+        "changes": [
+          "前轴侧偏刚度 35 → 50 kN/rad"
+        ],
+        "primary": [
+          "末2秒平均循迹误差",
+          3.175283242172368,
+          1.002885831488585,
+          "m"
+        ],
+        "improvement_pct": 68.41586230265048,
+        "rows": [
+          [
+            "峰值车身侧偏",
+            2.2865829029411766,
+            3.4448997919096627,
+            "°"
+          ],
+          [
+            "峰值车身侧倾",
+            1.1003941297531128,
+            1.252902865409851,
+            "°"
+          ],
+          [
+            "末窗最大车速偏差",
+            0.10332730800143253,
+            0.4054056132992443,
+            "km/h"
+          ],
+          [
+            "末窗平均实际转角",
+            4.35379589379178,
+            3.493073510658322,
+            "°"
+          ]
+        ],
+        "cost": 2,
+        "budget": 3,
+        "attribution": "同条件只改一项，本模型内差值对应这项改动。",
+        "basis": "循迹/车速/实际转角取8–10秒末窗，侧偏/侧倾取全程快照绝对峰值；末窗车速条件单独检查。",
+        "next": {
+          "text": "本次已达标；先保存并道路验证，把循迹改善与实际驾驶表现对照。",
+          "selection": null,
+          "cost": null
+        },
+        "config_digest": "545153833c440c4ca923e02f100d60a8d6232560d06869f2a271d8a3d8322b3d",
+        "record_ticks": [
+          1200,
+          1200
+        ]
+      },
+      "reused_record": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\normal-ui\\reports\\20261018-071436-480996-workshop",
+      "physical_ticks": [
+        1200,
+        1200
+      ]
+    }
+  ],
+  "human_gate": "pending",
+  "source_end": {
+    "src/workshop_insights.py": "ae448bde5b7c82036ae0c0264764a9ce475fb5b89b963498ab3bab16ccdb6e5c",
+    "src/ui/workshop_insights.py": "a6e83bddcc27acac48a0bf73c6a6adc4d4780ea42b330d7da24ac70aaab3ac20",
+    "src/ui/lab_workshop.py": "653e7f2d73dbf02a8441a6df0f10c167d8cf8e41cf4d056dfb4a2c1ca2161973",
+    "src/lab_application.py": "e66930997ee9b98783d1c54a79ded9fe37f700ce3e608de63996426aa6636284",
+    "src/workshop.py": "899083b9699ecc3c2876099bb8e801da0d44634b2a90c7c498e8f0572051b430",
+    "src/workshop_cornering.py": "8f8983e0550e68c4d5244842815ba2865c195ae1756a0a555691cee733477392",
+    "src/lab_experiment.py": "140c359574a057ba5a5c913b3241fe77bfbd23eed3e6bf49de1ae84d561fd188",
+    "tools/workshop_insights_check.py": "f02f22178ffd465e8cff922c0fc7a9d4805fc37f57585e6dbd088316b2f2a4ce"
+  }
+}

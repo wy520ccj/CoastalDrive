@@ -12,6 +12,7 @@ from lab_records import LabRecord
 from race import GameMode, RaceSnapshot
 from vehicle_workspace import WorkspaceVehicle
 from workshop import road_result, validate_receipt
+from workshop_insights import describe
 
 
 @pytest.fixture(scope="module")
@@ -46,6 +47,21 @@ def test_actual_records_offer_all_medals_and_real_rejected_tradeoffs(trials):
     combined = cornering.evaluate(base, trials[2, True, False], 2, True, False)
     assert combined["cost"] > tire["cost"]
     assert combined["candidate_metrics"]["peak_beta_deg"] < tire["candidate_metrics"]["peak_beta_deg"]
+
+
+def test_insights_explain_side_slip_and_only_stage_one_candidate_option(trials):
+    base = trials[0, False, False]
+    sharp = describe(base, trials[3, False, False], 1, (3, False, False))
+    gold = describe(base, trials[2, False, False], 1, (2, False, False))
+    over = describe(base, trials[2, False, True], 1, (2, False, True))
+    assert not sharp['passed'] and sharp['rows'][0][2] > 4
+    assert sharp['next']['selection'] == (2, False, False)
+    assert gold['passed'] and gold['next']['selection'] is None
+    assert '组合结果' in over['attribution'] and over['next']['selection'] == (2, False, False)
+    for selection, record in trials.items():
+        data = describe(base, record, 1, selection)
+        proposed = data['next']['selection']
+        assert proposed is None or sum(a != b for a, b in zip(selection, proposed, strict=True)) == 1
 
 
 @pytest.mark.parametrize("tire", range(4))

@@ -11,6 +11,7 @@ from lab_records import LabRecord
 from race import GameMode, RaceSnapshot
 from vehicle_workspace import WorkspaceVehicle
 from workshop import BASE_CONFIG, OPTIONS, build_config, evaluate, road_result
+from workshop_insights import braking_observations, describe, export_insights
 
 
 @pytest.fixture(scope="module")
@@ -89,3 +90,56 @@ def test_only_valid_coastal_lap_completes_road_validation(trials):
         assert road_result(receipt, invalid, "coastal") is None
     assert road_result(receipt, race, "endless") is None
     assert road_result(receipt, replace(race, mode=GameMode.FREE_DRIVE), "coastal") is None
+
+
+def test_insights_explain_real_single_and_combined_tradeoffs_and_export_failure(trials, tmp_path):
+    base = trials[0, False]
+    original = describe(base, base, 0, (0, False))
+    gold = describe(base, trials[2, False], 0, (2, False))
+    over = describe(base, trials[2, True], 0, (2, True))
+    assert original['next']['selection'] == (1, False)
+    assert gold['passed'] and gold['next']['selection'] is None
+    assert '只改一项' in gold['attribution']
+    assert not over['passed'] and '组合结果' in over['attribution']
+    assert over['next']['selection'] == (2, False) and over['next']['cost'] == 1
+    assert over['improvement_pct'] > gold['improvement_pct']
+    for row in gold['rows'][:2]:
+        assert 0 <= row[1] <= 100 and 0 <= row[2] <= 100
+    (tmp_path/'report.html').write_text('<html>raw</html>', encoding='utf-8')
+    export_insights({**over, 'changes': ['<script>unsafe</script>']}, tmp_path)
+    assert json.loads((tmp_path/'insights.json').read_text(encoding='utf-8'))['passed'] is False
+    assert '预算超出' in (tmp_path/'insights.txt').read_text(encoding='utf-8')
+    assert '&lt;script&gt;' in (tmp_path/'report.html').read_text(encoding='utf-8')
+
+
+@pytest.mark.parametrize('kind', ['summary', 'command', 'truncated', 'time', 'collision', 'reset', 'source', 'unfinished'])
+def test_insights_reject_inconsistent_raw_braking_protocol(trials, kind):
+    base, record = trials[0, False], trials[2, False]
+    metadata = copy.deepcopy(record.metadata)
+    states, commands = list(record.snapshots), list(record.commands)
+    if kind == 'summary':
+        metadata['summary']['stopping_distance_m'] -= 1
+    elif kind == 'command':
+        commands[20] = replace(commands[20], steering=.1)
+    elif kind == 'truncated':
+        states.pop()
+    elif kind == 'time':
+        states[20] = replace(states[20], time=states[20].time+.001)
+    elif kind == 'collision':
+        states[20] = replace(states[20], collisions=states[20].collisions+1)
+    elif kind == 'reset':
+        states[20] = replace(states[20], events=('player_reset',))
+    elif kind == 'source':
+        metadata['source_end'] = {}
+    elif kind == 'unfinished':
+        metadata['summary']['reason'] = 'time_limit'
+    with pytest.raises(ValueError):
+        describe(base, replace(record, metadata=metadata, snapshots=tuple(states), commands=tuple(commands)), 0, (2, False))
+
+
+def test_insights_ignore_csv_and_report_undefined_legacy_abs(trials):
+    record = trials[2, False]
+    edited = replace(record, samples=tuple({**row, 'distance': 0, 'abs_active': 0} for row in record.samples))
+    assert braking_observations(edited) == braking_observations(record)
+    legacy = replace(record, snapshots=tuple(replace(state, player=replace(state.player, brake_states=())) for state in record.snapshots))
+    assert braking_observations(legacy)['front_abs_pct'] is None

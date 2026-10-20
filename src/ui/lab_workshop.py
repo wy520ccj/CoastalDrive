@@ -9,8 +9,10 @@ from direct.gui.DirectGui import DirectFrame
 import workshop_cornering as cornering
 from lab_records import export_record
 from ui import theme
+from ui.workshop_insights import WorkshopInsightsPanel
 from vehicle_workspace import WorkspaceVehicle
 from workshop import BASE_CONFIG, BUDGET, OPTIONS, build_config, cost, evaluate
+from workshop_insights import describe, export_insights
 
 
 class WorkshopPanel:
@@ -49,10 +51,13 @@ class WorkshopPanel:
         self.hint = app.text("提示：制动时前后轮荷不同，分配不合适可能让某一轴先用满附着。\n"
                  "查看四轮滑移与ABS介入，比较不同方案的轮胎利用情况。",
                  -1.52, -.49, .035, theme.SEA, parent=self.root)
-        self.run_button = app.button("运行 A/B", -1.12, -.71, .70, self.start, parent=self.root, accent=True)
-        self.analyze_button = app.button("查看曲线", -.22, -.71, .65, self.hide, parent=self.root)
-        self.drive_button = app.button("保存并道路验证", .86, -.71, 1.00, self.drive, parent=self.root)
+        self.run_button = app.button("运行 A/B", -1.15, -.71, .64, self.start, parent=self.root, accent=True)
+        self.analyze_button = app.button("查看曲线", -.39, -.71, .64, self.hide, parent=self.root)
+        self.insight_button = app.button("试验解读", .37, -.71, .64, self.show_insights, parent=self.root)
+        self.drive_button = app.button("保存并道路验证", 1.18, -.71, .82, self.drive, parent=self.root)
         self.drive_button["state"] = DGG.DISABLED
+        self.insight_button['state'] = DGG.DISABLED
+        self.insights = WorkshopInsightsPanel(self)
         self.root.hide()
 
     def selection(self):
@@ -124,6 +129,9 @@ class WorkshopPanel:
                               if topic == 1 else "先保留原方案试一次，再选择改装。\n金：改善≥12%且只用1点；银：改善≥12%；铜：达到任务目标。")
 
     def changed(self, label):
+        self.insights.hide()
+        self.insights.data = None
+        self.insight_button['state'] = DGG.DISABLED
         self.result = None
         self.drive_button["state"] = DGG.DISABLED
         points = self.selected_cost()
@@ -142,6 +150,7 @@ class WorkshopPanel:
         self.root.show()
 
     def hide(self):
+        self.insights.hide()
         if self.phase is not None:
             self.cancel()
         self.share.hidePopupMenu()
@@ -151,6 +160,8 @@ class WorkshopPanel:
         self.root.hide()
 
     def cancel(self):
+        self.insights.hide()
+        self.insight_button['state'] = DGG.DISABLED
         if self.app.run_state is not None:
             self.app.run_state.paused = True
         self.phase = None
@@ -159,6 +170,8 @@ class WorkshopPanel:
         self.feedback.setText("挑战已停止；已有曲线保留，重新运行 A/B 才能获奖。")
 
     def set_running(self, running):
+        self.insights.hide()
+        self.insight_button['state'] = DGG.DISABLED
         for widget in (self.share, self.brakes, self.lower_cg, self.topic_menu, self.run_button):
             widget["state"] = DGG.DISABLED if running else DGG.NORMAL
         self.drive_button["state"] = DGG.DISABLED
@@ -215,6 +228,7 @@ class WorkshopPanel:
 
     def present_result(self):
         result = self.result
+        self.insight_button['state'] = DGG.NORMAL
         if self.topic == 1:
             measured = result["candidate_metrics"]
             outcome = f"通过 · {result['medal']}牌" if result["passed"] else "未达标 · "+" / ".join(result["unmet"])
@@ -240,6 +254,42 @@ class WorkshopPanel:
                               "查看曲线比较速度、减速度和四轮滑移；改变选项可以再试。")
         self.drive_button["state"] = DGG.NORMAL if result["passed"] else DGG.DISABLED
 
+    def show_insights(self):
+        if self.result is None or self.phase is not None:
+            return
+        try:
+            data = describe(self.baseline, self.candidate, self.topic, self.selection())
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            self.app.show_error('试验解读未生成，原始记录保留', error)
+            return
+        self.insights.show(data)
+
+    def prepare_next_trial(self):
+        data = self.insights.data
+        if data is None or data['next']['selection'] is None or self.result is None:
+            return
+        selection = data['next']['selection']
+        self.share.set(selection[0], fCommand=0)
+        self.brakes.set(int(selection[1]), fCommand=0)
+        if self.topic == 1:
+            self.lower_cg.set(int(selection[2]), fCommand=0)
+        self.changed('')
+        self.feedback.setText('已准备下一次B，只改变一项；固定原车A不变。\n旧A/B曲线保留，点击运行A/B才会生成新结论。')
+
+    def export_interpretation(self):
+        if self.result is None or self.phase is not None:
+            return
+        try:
+            data = describe(self.baseline, self.candidate, self.topic, self.selection())
+            folder = self.app.output/(datetime.now(UTC).strftime('%Y%m%d-%H%M%S-%f')+'-workshop-insights')
+            report = export_record(self.candidate, folder, baseline=self.baseline)
+            export_insights(data, folder)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            self.app.show_error('解读未导出，原试验与成绩保留', error)
+            return
+        self.app.last_report = report
+        self.insights.basis.setText('已导出完整A/B与insights.json / insights.txt：'+folder.name)
+
     def drive(self):
         if self.result is None or not self.result["passed"]:
             return
@@ -248,6 +298,7 @@ class WorkshopPanel:
             result = self.evaluate_records()
             folder = self.app.output/(datetime.now(UTC).strftime("%Y%m%d-%H%M%S-%f")+"-workshop")
             report = export_record(self.candidate, folder, baseline=self.baseline)
+            export_insights(describe(self.baseline, self.candidate, self.topic, self.selection()), folder)
             (folder/"challenge.json").write_text(json.dumps(result, ensure_ascii=False, indent=2,
                                                            allow_nan=False), encoding="utf-8")
             vehicle = WorkspaceVehicle(OPTIONS.vehicle_id, self.selected_config(),
@@ -262,7 +313,7 @@ class WorkshopPanel:
 
     def capture(self):
         return {"topic": self.topic, "selection": self.selection(), "baseline": self.baseline, "candidate": self.candidate,
-                "result": self.result, "text": self.feedback.getText()}
+                "result": self.result, "text": self.feedback.getText(), 'insight_open': not self.insights.root.isHidden()}
 
     def restore(self, state):
         self.set_topic(state.get("topic", 0))
@@ -274,6 +325,9 @@ class WorkshopPanel:
         self.budget.setText(f"预算 {self.selected_cost()} / 3")
         self.feedback.setText(state["text"])
         self.drive_button["state"] = DGG.NORMAL if self.result is not None and self.result["passed"] else DGG.DISABLED
+        self.insight_button['state'] = DGG.NORMAL if self.result is not None else DGG.DISABLED
+        if state.get('insight_open', False):
+            self.show_insights()
 
     def restore_saved(self, vehicle):
         if vehicle.workshop_result is None or self.app.record is None or self.app.baseline is None:

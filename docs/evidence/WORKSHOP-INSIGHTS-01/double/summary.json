@@ -1,0 +1,395 @@
+{
+  "passed": true,
+  "runtime": {
+    "panda_version": "1.10.16",
+    "bullet_version": 285,
+    "math_scalar_bits": 64,
+    "files": {
+      "bin/d3dx9_43.dll": "84b900dbd7fa978d6e0caee26fc54f2f61d92c9c75d10b35f00e3e82cd1d67b4",
+      "bin/libp3direct.dll": "127a84f04e16280ec8cbc4439893d605c27c140a84c17f6aa88a9f59321e466f",
+      "bin/libp3dtool.dll": "e9a912e0742166ddc0b74e532160853753c7d1194d8d96dabc28390a0e5a13d5",
+      "bin/libp3dtoolconfig.dll": "0c45a336c087ad84bb831ddf5d56c6fd828ab467744b201f552e54fc5d052fc6",
+      "bin/libp3framework.dll": "7393d45ecaafc621d3430321cf0807cabefc0274dadeed383895d0178fdea6a2",
+      "bin/libp3interrogatedb.dll": "7b043cf017ff8b579e17899dfb1d34ce29ced29aa31eab72f7758634b48c6de7",
+      "bin/libp3openal_audio.dll": "919abf33167d89431977a7ad1275ddb8ec56fb409560205e367b61c55bce5cb0",
+      "bin/libp3windisplay.dll": "4bd3b5cf9388ebadf9c13466523592220393abeba4001600eaa9e32cc67c667b",
+      "bin/libpanda.dll": "10498c8138ff4c79410166e61b120f2c48ea0ab2248059b4096ab4062446d7c7",
+      "bin/libpandabullet.dll": "483ef5e561d75fe7191633731713eee5a3e163ee0f84bba5ce03a4decc0fb0fa",
+      "bin/libpandaegg.dll": "6033115bd3db949bdbbe337ff81817aea7a83fb35019c41cff2b83f44e6d8555",
+      "bin/libpandaexpress.dll": "5fd3c1a9f29ec00f0380e285f82ca81230b2bfde7f27bb8ecf6b414167c574f1",
+      "bin/libpandagl.dll": "fb0d9f1d23e14afb9fbac76c5d3b0c9e78e8c14e1b5b4819bf973c3390b261a3",
+      "bin/python314.dll": "7ffe3ab11342db03cc18b026f27485c0f74f5bf10f239f1f6573394900596394",
+      "bin/vcruntime140.dll": "052ad6a20d375957e82aa6a3c441ea548d89be0981516ca7eb306e063d5027f4",
+      "bin/vcruntime140_1.dll": "6a99bc0128e0c7d6cbbf615fcc26909565e17d4ca3451b97f8987f9c6acbc6c8",
+      "panda3d/bullet.cp314-win_amd64.pyd": "6e1f3b023d5060c39dd299f42ea423b005047eaa18f4fa2e962fa76381225154",
+      "panda3d/core.cp314-win_amd64.pyd": "92708c8b920fe01a27a46c4e2c09984bb8711995cbb8eb285b5f82e5c2fd8537"
+    }
+  },
+  "source_start": {
+    "src/workshop_insights.py": "ae448bde5b7c82036ae0c0264764a9ce475fb5b89b963498ab3bab16ccdb6e5c",
+    "src/ui/workshop_insights.py": "a6e83bddcc27acac48a0bf73c6a6adc4d4780ea42b330d7da24ac70aaab3ac20",
+    "src/ui/lab_workshop.py": "653e7f2d73dbf02a8441a6df0f10c167d8cf8e41cf4d056dfb4a2c1ca2161973",
+    "src/lab_application.py": "e66930997ee9b98783d1c54a79ded9fe37f700ce3e608de63996426aa6636284",
+    "src/workshop.py": "899083b9699ecc3c2876099bb8e801da0d44634b2a90c7c498e8f0572051b430",
+    "src/workshop_cornering.py": "8f8983e0550e68c4d5244842815ba2865c195ae1756a0a555691cee733477392",
+    "src/lab_experiment.py": "140c359574a057ba5a5c913b3241fe77bfbd23eed3e6bf49de1ae84d561fd188",
+    "tools/workshop_insights_check.py": "f02f22178ffd465e8cff922c0fc7a9d4805fc37f57585e6dbd088316b2f2a4ce"
+  },
+  "size": [
+    1024,
+    768
+  ],
+  "cases": [
+    {
+      "name": "brake-original",
+      "data": {
+        "version": "workshop-insights-v1",
+        "topic": 0,
+        "selection": [
+          0,
+          false
+        ],
+        "challenge_id": "coastal-braking-v1",
+        "outcome": "未达标 · 缩距不足10%",
+        "passed": false,
+        "changes": [
+          "保留原配"
+        ],
+        "primary": [
+          "停车距离",
+          32.406443579045096,
+          32.406443579045096,
+          "m"
+        ],
+        "improvement_pct": 0.0,
+        "rows": [
+          [
+            "前轴ABS介入采样",
+            0.0,
+            0.0,
+            "%"
+          ],
+          [
+            "后轴ABS介入采样",
+            89.88439306358381,
+            89.88439306358381,
+            "%"
+          ],
+          [
+            "峰值横摆",
+            0.0009722739466691937,
+            0.0009722739466691937,
+            "rad/s"
+          ]
+        ],
+        "cost": 0,
+        "budget": 3,
+        "attribution": "本次保留原配，用于确认基线表现。",
+        "basis": "ABS为完成拍至少一轮介入的轴比例，排除初始拍；介入更多不直接等于制动更好。路径与横摆由快照复算。",
+        "next": {
+          "text": "下一次只调整前制动份额，比较前后轴ABS介入与停车距离。只改当前B一项，A仍为固定原车；重跑后才有新结论。下一B预算1/3。",
+          "selection": [
+            1,
+            false
+          ],
+          "cost": 1
+        },
+        "config_digest": "edebd390c626dee26db2a275e18eb8cce7a1b613d419082b2dd60d8a6d2cdfbd",
+        "record_ticks": [
+          346,
+          346
+        ]
+      },
+      "reused_record": null,
+      "physical_ticks": [
+        346,
+        346
+      ]
+    },
+    {
+      "name": "brake-over",
+      "data": {
+        "version": "workshop-insights-v1",
+        "topic": 0,
+        "selection": [
+          2,
+          true
+        ],
+        "challenge_id": "coastal-braking-v1",
+        "outcome": "未达标 · 预算超出",
+        "passed": false,
+        "changes": [
+          "前制动份额 45% → 70%",
+          "制动扭矩 3643.2 → 5100.48 N·m"
+        ],
+        "primary": [
+          "停车距离",
+          32.406443579045096,
+          24.444620868335495,
+          "m"
+        ],
+        "improvement_pct": 24.568640774447513,
+        "rows": [
+          [
+            "前轴ABS介入采样",
+            0.0,
+            93.07692307692308,
+            "%"
+          ],
+          [
+            "后轴ABS介入采样",
+            89.88439306358381,
+            86.15384615384616,
+            "%"
+          ],
+          [
+            "峰值横摆",
+            0.0009722739466691937,
+            0.0013252185382696543,
+            "rad/s"
+          ]
+        ],
+        "cost": 4,
+        "budget": 3,
+        "attribution": "本次同时改了2项，只能解释组合结果；不能把全部收益归给其中一项。",
+        "basis": "ABS为完成拍至少一轮介入的轴比例，排除初始拍；介入更多不直接等于制动更好。路径与横摆由快照复算。",
+        "next": {
+          "text": "先撤回大制动器，释放3点预算，验证现有制动分配能否独立达标。只改当前B一项，A仍为固定原车；重跑后才有新结论。下一B预算1/3。",
+          "selection": [
+            2,
+            false
+          ],
+          "cost": 1
+        },
+        "config_digest": "ae0f67db70c302113ebca09a0230a6a3f20d9c9fea87b0da1c94ab0ffd369fcb",
+        "record_ticks": [
+          346,
+          260
+        ]
+      },
+      "reused_record": null,
+      "physical_ticks": [
+        346,
+        260
+      ]
+    },
+    {
+      "name": "brake-gold",
+      "data": {
+        "version": "workshop-insights-v1",
+        "topic": 0,
+        "selection": [
+          2,
+          false
+        ],
+        "challenge_id": "coastal-braking-v1",
+        "outcome": "通过 · 金牌",
+        "passed": true,
+        "changes": [
+          "前制动份额 45% → 70%"
+        ],
+        "primary": [
+          "停车距离",
+          32.406443579045096,
+          28.293632315640398,
+          "m"
+        ],
+        "improvement_pct": 12.691337922881965,
+        "rows": [
+          [
+            "前轴ABS介入采样",
+            0.0,
+            0.0,
+            "%"
+          ],
+          [
+            "后轴ABS介入采样",
+            89.88439306358381,
+            0.0,
+            "%"
+          ],
+          [
+            "峰值横摆",
+            0.0009722739466691937,
+            0.00015353724736471557,
+            "rad/s"
+          ]
+        ],
+        "cost": 1,
+        "budget": 3,
+        "attribution": "同条件只改一项，本模型内差值对应这项改动。",
+        "basis": "ABS为完成拍至少一轮介入的轴比例，排除初始拍；介入更多不直接等于制动更好。路径与横摆由快照复算。",
+        "next": {
+          "text": "本次已达标；先保存并道路验证，观察同一套硬件的实际驾驶表现。",
+          "selection": null,
+          "cost": null
+        },
+        "config_digest": "e651a3dfdaf09654182b378c7e5d9a1d9683e54ff97ecc34dc761680c8c6bd9c",
+        "record_ticks": [
+          346,
+          303
+        ]
+      },
+      "reused_record": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-01\\double\\records\\20261018-032808-310603-workshop",
+      "physical_ticks": [
+        346,
+        303
+      ]
+    },
+    {
+      "name": "corner-sharp",
+      "data": {
+        "version": "workshop-insights-v1",
+        "topic": 1,
+        "selection": [
+          3,
+          false,
+          false
+        ],
+        "challenge_id": "coastal-cornering-v1",
+        "outcome": "未达标 · 末窗车速超出60±1.2km/h / 峰值侧偏超过4°",
+        "passed": false,
+        "changes": [
+          "前轴侧偏刚度 35 → 70 kN/rad"
+        ],
+        "primary": [
+          "末2秒平均循迹误差",
+          3.1752565293526427,
+          0.15258760991763803,
+          "m"
+        ],
+        "improvement_pct": 95.19447929617368,
+        "rows": [
+          [
+            "峰值车身侧偏",
+            2.28655982896616,
+            5.793384639376223,
+            "°"
+          ],
+          [
+            "峰值车身侧倾",
+            1.100391403285223,
+            1.3544651116625956,
+            "°"
+          ],
+          [
+            "末窗最大车速偏差",
+            0.10326270427015771,
+            1.3844974970225508,
+            "km/h"
+          ],
+          [
+            "末窗平均实际转角",
+            4.353758550694997,
+            2.7297206966792995,
+            "°"
+          ]
+        ],
+        "cost": 2,
+        "budget": 3,
+        "attribution": "同条件只改一项，本模型内差值对应这项改动。",
+        "basis": "循迹/车速/实际转角取8–10秒末窗，侧偏/侧倾取全程快照绝对峰值；末窗车速条件单独检查。",
+        "next": {
+          "text": "侧偏超过4°；下一次只降低一档前胎配方，核对侧偏和循迹误差的取舍。只改当前B一项，A仍为固定原车；重跑后才有新结论。下一B预算2/3。",
+          "selection": [
+            2,
+            false,
+            false
+          ],
+          "cost": 2
+        },
+        "config_digest": "33f9ca66728db90a1048de3e7e673b4d8018c1e389500b7d2eedc632bca0bb00",
+        "record_ticks": [
+          1200,
+          1200
+        ]
+      },
+      "reused_record": null,
+      "physical_ticks": [
+        1200,
+        1200
+      ]
+    },
+    {
+      "name": "corner-gold",
+      "data": {
+        "version": "workshop-insights-v1",
+        "topic": 1,
+        "selection": [
+          2,
+          false,
+          false
+        ],
+        "challenge_id": "coastal-cornering-v1",
+        "outcome": "通过 · 金牌",
+        "passed": true,
+        "changes": [
+          "前轴侧偏刚度 35 → 50 kN/rad"
+        ],
+        "primary": [
+          "末2秒平均循迹误差",
+          3.1752565293526427,
+          1.0028928213427102,
+          "m"
+        ],
+        "improvement_pct": 68.4153764563024,
+        "rows": [
+          [
+            "峰值车身侧偏",
+            2.28655982896616,
+            3.444853261186391,
+            "°"
+          ],
+          [
+            "峰值车身侧倾",
+            1.100391403285223,
+            1.2528996428020966,
+            "°"
+          ],
+          [
+            "末窗最大车速偏差",
+            0.10326270427015771,
+            0.40527428194521065,
+            "km/h"
+          ],
+          [
+            "末窗平均实际转角",
+            4.353758550694997,
+            3.4931331365777014,
+            "°"
+          ]
+        ],
+        "cost": 2,
+        "budget": 3,
+        "attribution": "同条件只改一项，本模型内差值对应这项改动。",
+        "basis": "循迹/车速/实际转角取8–10秒末窗，侧偏/侧倾取全程快照绝对峰值；末窗车速条件单独检查。",
+        "next": {
+          "text": "本次已达标；先保存并道路验证，把循迹改善与实际驾驶表现对照。",
+          "selection": null,
+          "cost": null
+        },
+        "config_digest": "545153833c440c4ca923e02f100d60a8d6232560d06869f2a271d8a3d8322b3d",
+        "record_ticks": [
+          1200,
+          1200
+        ]
+      },
+      "reused_record": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\DESIGN-CHALLENGE-02\\double-ui\\reports\\20261018-071435-005591-workshop",
+      "physical_ticks": [
+        1200,
+        1200
+      ]
+    }
+  ],
+  "human_gate": "pending",
+  "source_end": {
+    "src/workshop_insights.py": "ae448bde5b7c82036ae0c0264764a9ce475fb5b89b963498ab3bab16ccdb6e5c",
+    "src/ui/workshop_insights.py": "a6e83bddcc27acac48a0bf73c6a6adc4d4780ea42b330d7da24ac70aaab3ac20",
+    "src/ui/lab_workshop.py": "653e7f2d73dbf02a8441a6df0f10c167d8cf8e41cf4d056dfb4a2c1ca2161973",
+    "src/lab_application.py": "e66930997ee9b98783d1c54a79ded9fe37f700ce3e608de63996426aa6636284",
+    "src/workshop.py": "899083b9699ecc3c2876099bb8e801da0d44634b2a90c7c498e8f0572051b430",
+    "src/workshop_cornering.py": "8f8983e0550e68c4d5244842815ba2865c195ae1756a0a555691cee733477392",
+    "src/lab_experiment.py": "140c359574a057ba5a5c913b3241fe77bfbd23eed3e6bf49de1ae84d561fd188",
+    "tools/workshop_insights_check.py": "f02f22178ffd465e8cff922c0fc7a9d4805fc37f57585e6dbd088316b2f2a4ce"
+  }
+}

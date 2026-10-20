@@ -654,6 +654,9 @@ class VehicleLab(DirectObject):
             self.schemes.escape()
             return
         if not self.workshop.root.isHidden():
+            if not self.workshop.insights.root.isHidden():
+                self.workshop.insights.hide()
+                return
             self.workshop.hide()
             return
         if not self.design_loop.root.isHidden():

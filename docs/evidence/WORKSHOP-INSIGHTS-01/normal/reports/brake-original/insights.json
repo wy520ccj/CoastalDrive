@@ -1,0 +1,58 @@
+{
+  "version": "workshop-insights-v1",
+  "topic": 0,
+  "selection": [
+    0,
+    false
+  ],
+  "challenge_id": "coastal-braking-v1",
+  "outcome": "未达标 · 缩距不足10%",
+  "passed": false,
+  "changes": [
+    "保留原配"
+  ],
+  "primary": [
+    "停车距离",
+    32.406474258239136,
+    32.406474258239136,
+    "m"
+  ],
+  "improvement_pct": 0.0,
+  "rows": [
+    [
+      "前轴ABS介入采样",
+      0.0,
+      0.0,
+      "%"
+    ],
+    [
+      "后轴ABS介入采样",
+      89.88439306358381,
+      89.88439306358381,
+      "%"
+    ],
+    [
+      "峰值横摆",
+      0.0009722637478262186,
+      0.0009722637478262186,
+      "rad/s"
+    ]
+  ],
+  "cost": 0,
+  "budget": 3,
+  "attribution": "本次保留原配，用于确认基线表现。",
+  "basis": "ABS为完成拍至少一轮介入的轴比例，排除初始拍；介入更多不直接等于制动更好。路径与横摆由快照复算。",
+  "next": {
+    "text": "下一次只调整前制动份额，比较前后轴ABS介入与停车距离。只改当前B一项，A仍为固定原车；重跑后才有新结论。下一B预算1/3。",
+    "selection": [
+      1,
+      false
+    ],
+    "cost": 1
+  },
+  "config_digest": "edebd390c626dee26db2a275e18eb8cce7a1b613d419082b2dd60d8a6d2cdfbd",
+  "record_ticks": [
+    346,
+    346
+  ]
+}
