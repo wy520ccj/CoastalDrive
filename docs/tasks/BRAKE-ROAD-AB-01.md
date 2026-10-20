@@ -29,3 +29,5 @@
 - 最终T1：`tools/validate.py T1 --tests tests/test_brake_road_ab.py tests/test_brake_road_ab_ui.py tests/test_player_road_ab.py tests/test_player_road_ab_ui.py tests/test_short_braking_ui.py tests/test_tire_tuning_ui.py tests/test_result_tuning.py tests/test_workspace_transition.py`，Double同范围经原启动器；两库Ruff、各58项及seed0/17/23各1200步通过，pytest474.60/377.54秒。
 - 原始证据`docs/evidence/BRAKE-ROAD-AB-01`，清单76份原始文件、9,201,425字节及9源码LF SHA逐项可核对；原生机械模块SHA仍为c84bfb06cae9d51a46f5cdff69107f96e73c6757d2853ef46673d0710010e7a2。T2/T3未跑；原T2物理失败、实时/人工趣味性Gate开放，持续目标active，仅本地无推送。
 - 下一步：在当前对照中更直观地定位改装收益与失败发生位置，继续围绕驾驶中的可观察选择完善体验。
+
+- 本地功能提交：`731cad69`（基线`c6920d30`）；76份原始文件与9最终源码的Git索引SHA逐项保持，提交后工作区干净，无推送。后续只补本条提交记录与进度，不改已验源码。
