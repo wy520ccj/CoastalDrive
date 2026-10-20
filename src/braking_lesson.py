@@ -5,6 +5,8 @@ import math
 from dataclasses import dataclass, replace
 from pathlib import Path
 
+from race import GameMode
+
 ENTRY_DISTANCE = 100.
 TARGET_DISTANCE = 170.
 ENTRY_KPH = 80.
@@ -12,6 +14,7 @@ TIME_LIMIT = 30.
 STOP_SPEED = .15
 HOLD_SECONDS = 1.
 COURSE_HALF_WIDTH = 6.5
+BRAKING_MODES = (GameMode.BRAKING_LESSON, GameMode.SHORT_BRAKING)
 
 
 def medal_for(error):
@@ -19,13 +22,14 @@ def medal_for(error):
     return "金" if error <= 2 else "银" if error <= 5 else "铜" if error <= 10 else ""
 
 
-def valid_error(value):
-    return type(value) in (int, float) and math.isfinite(value) and 0 <= value <= 10
+def valid_error(value, maximum=10):
+    return type(value) in (int, float) and math.isfinite(value) and 0 <= value <= maximum
 
 
 class BrakingScores:
-    def __init__(self, path: Path, key: str):
+    def __init__(self, path: Path, key: str, *, maximum=10):
         self.path, self.key = path, key
+        self.maximum = maximum
         self.notice = ""
         self.values = self.load()
         self.best = self.values.get(key)
@@ -35,7 +39,7 @@ class BrakingScores:
             data = json.loads(self.path.read_text(encoding="utf-8"))
             if (not isinstance(data, dict) or type(data.get("version")) is not int or data["version"] != 1
                     or not isinstance(data.get("scores"), dict)
-                    or any(not isinstance(key, str) or not valid_error(value)
+                    or any(not isinstance(key, str) or not valid_error(value, self.maximum)
                            for key, value in data["scores"].items())):
                 raise ValueError("刹停成绩格式错误")
             return data["scores"]
@@ -47,7 +51,7 @@ class BrakingScores:
 
     def record(self, error):
         """只保存成功且更准的停车误差；写入失败保留已显示的驾驶结果。"""
-        if not valid_error(error):
+        if not valid_error(error, self.maximum):
             raise ValueError("只能保存成功的有限停车误差")
         values = self.load()
         best = values.get(self.key)
@@ -81,6 +85,9 @@ class BrakingResult:
     reason: str = ""
     best_error: float | None = None
     save_notice: str = ""
+    short: bool = False
+    stopping_m: float | None = None
+    best_distance: float | None = None
 
 
 class BrakingLesson:
@@ -91,7 +98,7 @@ class BrakingLesson:
         self._previous_distance = 0.
         self._previous_forward_speed = 0.
 
-    def update(self, progress, forward_speed, speed, elapsed, dt, *, collisions=0, reset=False, lateral=0.):
+    def update(self, progress, forward_speed, speed, elapsed, dt, *, collisions=0, reset=False, lateral=0., heading=0.):
         state = self.snapshot
         if state.finished:
             return state

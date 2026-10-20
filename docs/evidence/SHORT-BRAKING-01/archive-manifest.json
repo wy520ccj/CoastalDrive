@@ -1,0 +1,777 @@
+{
+  "normal/0-braking.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/0-braking.png",
+    "bytes": 671759,
+    "sha256": "b70bb16a970ae9c1087e7f8f752429e4e7156ae9ed8f50d2948b3b9e2f2a1fe8"
+  },
+  "normal/0-result.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/0-result.png",
+    "bytes": 560112,
+    "sha256": "a70cb84b0f00a8736c1504c7f998ff176c88beb353a6b805c11a7e4e61ee207e"
+  },
+  "normal/2-braking.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/2-braking.png",
+    "bytes": 671446,
+    "sha256": "930d0daf8f6e55ef887447c4baebcca0cd7489fab5a290a35fbdb36844e343a7"
+  },
+  "normal/2-result.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/2-result.png",
+    "bytes": 560214,
+    "sha256": "62ce41077680294bd507c3d9afdb25db069859ed188ef4ec41a861389e84c5d2"
+  },
+  "normal/installed-70.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/installed-70.png",
+    "bytes": 587554,
+    "sha256": "b564e162193ab5ce5dd7b992bd5095e94c56cb826a646c3b2dbbd05a6184a5ee"
+  },
+  "normal/lab-current-car.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/lab-current-car.png",
+    "bytes": 163455,
+    "sha256": "ed856a97f2680abdf38bbf0a086da1a807ff3eddbb59c8ea72dec1f21851f289"
+  },
+  "normal/original-vehicle.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/original-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "normal/precision-rules.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/precision-rules.png",
+    "bytes": 30573,
+    "sha256": "600a45d03c95aac2fc2c2bcf339e1ea45178eb6c0695db26788de52d6902aa2c"
+  },
+  "normal/preview-70.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/preview-70.png",
+    "bytes": 560112,
+    "sha256": "a70cb84b0f00a8736c1504c7f998ff176c88beb353a6b805c11a7e4e61ee207e"
+  },
+  "normal/restore-summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/restore-summary.json",
+    "bytes": 43820,
+    "sha256": "987cc871819479ebfbbc3d84c78dfd09992f1c172f2b03c229ab33cd03530705"
+  },
+  "normal/short-braking-best.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/short-braking-best.json",
+    "bytes": 376,
+    "sha256": "8170ad894da8757328b00ce1f96e57a1cda868ab2d513a7267d412d5fc09900d"
+  },
+  "normal/short-rules.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/short-rules.png",
+    "bytes": 37856,
+    "sha256": "414b32f759ba14635f5338544403a5efe74feaab5fee1365417bcb78d11d2cbe"
+  },
+  "normal/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/summary.json",
+    "bytes": 59218,
+    "sha256": "ff896c8f0e15fcff9fec799dee0840793e4dc2712640896f8bc40f3a1906700d"
+  },
+  "normal/test-workspace-vehicle.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/test-workspace-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "normal/0/raw.json.gz": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/0/raw.json.gz",
+    "bytes": 219944,
+    "sha256": "6d2178e4f6f7dd4884a6261c0411563b87d2dc68807595c3d8fe013b6434f3d3"
+  },
+  "normal/0/recheck-best.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/0/recheck-best.json",
+    "bytes": 73,
+    "sha256": "a45a11a08a6975beec95ccf5c2f928de322fc1cffb993f637a367d6ad6558345"
+  },
+  "normal/0/recheck.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/0/recheck.json",
+    "bytes": 95,
+    "sha256": "d60fe54f48b9a4768c181e7c96941db9a7520baa0ca7b3c0fa5859d786012375"
+  },
+  "normal/0/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/0/summary.json",
+    "bytes": 6574,
+    "sha256": "bdf7a9abf03cdb5bf59386864db6fedcbfc86d67ef79d7046fe9e692338886a0"
+  },
+  "normal/2/raw.json.gz": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/2/raw.json.gz",
+    "bytes": 214935,
+    "sha256": "66309b8f63bf7546eb436b54eb3cbca238264e32f6f1a15dd85a98a69488a250"
+  },
+  "normal/2/recheck-best.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/2/recheck-best.json",
+    "bytes": 73,
+    "sha256": "d2b3db1e8c691a1f25344ea5c64d6a45e4dbf418ca4335e5a155e8569fcdfd33"
+  },
+  "normal/2/recheck.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/2/recheck.json",
+    "bytes": 95,
+    "sha256": "04d4ad9bfb10f39e684d40e9a86e51361b9762b2c9090d57c03999c79da19167"
+  },
+  "normal/2/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/2/summary.json",
+    "bytes": 6572,
+    "sha256": "9c455850ec988797b593023b4797c9bee9fe71d0202a4d87d2f8e529b81e90f9"
+  },
+  "normal/tuning-backups/528af4f6ca8a461889ad22a7a7af6fe8911d297e98fab4030a463dad3d6bc817.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted/tuning-backups/528af4f6ca8a461889ad22a7a7af6fe8911d297e98fab4030a463dad3d6bc817.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "normal/command.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-accepted.txt",
+    "bytes": 421,
+    "sha256": "4c2808047f0307fd4e8b92121fdc4826bb828b85da34f691e3540d8bc30efd06"
+  },
+  "failed-pulse/normal/0-braking.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-final/0-braking.png",
+    "bytes": 671752,
+    "sha256": "7e533af1cb0c7b6fb90ecd5f7e971d6b490c576b852c8fdbc6c3bc2585e8fdc5"
+  },
+  "failed-pulse/normal/original-vehicle.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-final/original-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "failed-pulse/normal/precision-rules.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-final/precision-rules.png",
+    "bytes": 30573,
+    "sha256": "600a45d03c95aac2fc2c2bcf339e1ea45178eb6c0695db26788de52d6902aa2c"
+  },
+  "failed-pulse/normal/short-rules.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-final/short-rules.png",
+    "bytes": 37856,
+    "sha256": "414b32f759ba14635f5338544403a5efe74feaab5fee1365417bcb78d11d2cbe"
+  },
+  "failed-pulse/normal/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-final/summary.json",
+    "bytes": 51272,
+    "sha256": "21b54af42746242eb13c936c8239cc6d6b4a15d97caa15de927c32d71769de18"
+  },
+  "failed-pulse/normal/test-workspace-vehicle.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-final/test-workspace-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "failed-pulse/normal/0/raw.json.gz": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-final/0/raw.json.gz",
+    "bytes": 137478,
+    "sha256": "1ab741d46cd7e0264d27d64982250e65c8649aa983053ffb2769eb347cd5f1b6"
+  },
+  "failed-pulse/normal/0/recheck.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-final/0/recheck.json",
+    "bytes": 90,
+    "sha256": "9b3ab1833939a49e86817970f38eae295c5239a8b14bb30b3a52a72b14c0aca6"
+  },
+  "failed-pulse/normal/0/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-final/0/summary.json",
+    "bytes": 6541,
+    "sha256": "14fe5806d2dce726b7bc65b454e37e6419680a6dc15a8d479d18babff889ffd1"
+  },
+  "failed-pulse/normal/command.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-final.txt",
+    "bytes": 1072,
+    "sha256": "64eb699d26c793836a753a2eae525f46d097ca12d000b180d60851280fe87154"
+  },
+  "failed-early-release/normal/0-braking.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal/0-braking.png",
+    "bytes": 671834,
+    "sha256": "4762ce87f4aaad61be89d460d69928a671695594c3e002f3d1a98f02342395dd"
+  },
+  "failed-early-release/normal/original-vehicle.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal/original-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "failed-early-release/normal/precision-rules.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal/precision-rules.png",
+    "bytes": 30573,
+    "sha256": "600a45d03c95aac2fc2c2bcf339e1ea45178eb6c0695db26788de52d6902aa2c"
+  },
+  "failed-early-release/normal/short-rules.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal/short-rules.png",
+    "bytes": 37856,
+    "sha256": "414b32f759ba14635f5338544403a5efe74feaab5fee1365417bcb78d11d2cbe"
+  },
+  "failed-early-release/normal/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal/summary.json",
+    "bytes": 51272,
+    "sha256": "d83f45334f533bfcd6788d79d35e6222a6358a6f9ddf5f25c41072e848f5356c"
+  },
+  "failed-early-release/normal/test-workspace-vehicle.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal/test-workspace-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "failed-early-release/normal/0/raw.json.gz": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal/0/raw.json.gz",
+    "bytes": 132644,
+    "sha256": "44d868a73e57bab8a5b47ee03c5604a90f28a962d038f3491691c12bf86fafec"
+  },
+  "failed-early-release/normal/0/recheck.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal/0/recheck.json",
+    "bytes": 89,
+    "sha256": "9510be1c939a0c511c1b9c719c27633f226a3662cbadc523d5fa2179f8479c9c"
+  },
+  "failed-early-release/normal/0/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal/0/summary.json",
+    "bytes": 6541,
+    "sha256": "ad486a0d258b6d5ff76b4e7ae75a0d88d67863d76ce32ecbb11e375bc1b65f0a"
+  },
+  "checks/T1-normal/headless-0.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-T1-normal/headless-0.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1-normal/headless-17.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-T1-normal/headless-17.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1-normal/headless-23.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-T1-normal/headless-23.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1-normal/pytest.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-T1-normal/pytest.log",
+    "bytes": 194,
+    "sha256": "daa1d8ea177a05a05233b0ff0c6fcb0c96b056d0500a330a7038eecfa9a42979"
+  },
+  "checks/T1-normal/ruff.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-T1-normal/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T1-normal/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-T1-normal/summary.json",
+    "bytes": 4422,
+    "sha256": "c548b0fe7422ca8dae0329c3a095b33f0803021a4cb25268c16b9c2c63f5d7a4"
+  },
+  "checks/layout-normal/headless-0.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-layout-normal/headless-0.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/layout-normal/headless-17.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-layout-normal/headless-17.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/layout-normal/headless-23.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-layout-normal/headless-23.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/layout-normal/pytest.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-layout-normal/pytest.log",
+    "bytes": 112,
+    "sha256": "b347abe5495553b8625b30f81d58bf7752978790c415a5fbc51d1b0270182fa9"
+  },
+  "checks/layout-normal/ruff.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-layout-normal/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/layout-normal/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-layout-normal/summary.json",
+    "bytes": 3724,
+    "sha256": "da18673939062089b38d7947ee69e706b642bc532002f7abb328e4a34ff20e55"
+  },
+  "final-images/normal/actual-result.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-final-images-normal/actual-result.png",
+    "bytes": 538278,
+    "sha256": "b440b9759a4f7e19128d2851a86be25a476c43aeccf755d2ff54b0bb0b121ee4"
+  },
+  "final-images/normal/brake-preview.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-final-images-normal/brake-preview.png",
+    "bytes": 284696,
+    "sha256": "06c1a093330994a3ba755da4b3deda63af1797b29c95675fc627be577cd35fe2"
+  },
+  "final-images/normal/save-warning.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-final-images-normal/save-warning.png",
+    "bytes": 542331,
+    "sha256": "e0f3e87ece676543a4fdd7cdc1ea52b9253afc85c43cbf13211d5ce139b7183f"
+  },
+  "final-images/normal/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-final-images-normal/summary.json",
+    "bytes": 244,
+    "sha256": "40f46dbfa6709cb8b243344ca845547f04da7e0960c6453cd5ee8d02b1c01ab4"
+  },
+  "normal/restore-command.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-restore.txt",
+    "bytes": 35,
+    "sha256": "3078e67432cb503cec0650159270310de2857fc1ea05029448d16bb446c3820e"
+  },
+  "double/0-braking.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/0-braking.png",
+    "bytes": 539216,
+    "sha256": "d953203cd65fac8fef554d467eb2146ea5e014a5c28ba7c78d475c5945d56ed9"
+  },
+  "double/0-result.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/0-result.png",
+    "bytes": 377255,
+    "sha256": "b1d648a3f0a9dbe9dc97c3fc7858229f8c35d00e7bfdd01e71a82d4eec8156dc"
+  },
+  "double/2-braking.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/2-braking.png",
+    "bytes": 538789,
+    "sha256": "9e08611da2b08d3fc098bd618b79e9130abdc638953b216f619b1b2e9ab52e9e"
+  },
+  "double/2-result.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/2-result.png",
+    "bytes": 386514,
+    "sha256": "94f21a825b9e4e5ceaf09c70c5550e99d2fcbe5541984a3c7efac555e4b04652"
+  },
+  "double/installed-70.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/installed-70.png",
+    "bytes": 409958,
+    "sha256": "89b414e62c77f8b28ecb4e07ecdfffddd866e73f4099e40958627e35c199da2f"
+  },
+  "double/lab-current-car.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/lab-current-car.png",
+    "bytes": 116428,
+    "sha256": "cdf954fa725aab66c229385e629b30bf18105246d33ba14aea03fb28a46a59cb"
+  },
+  "double/original-vehicle.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/original-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "double/precision-rules.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/precision-rules.png",
+    "bytes": 33107,
+    "sha256": "503cd1aff3f50f5d98d066324da17e16f5523b18a2f8647bab56653e28436dd0"
+  },
+  "double/preview-70.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/preview-70.png",
+    "bytes": 377255,
+    "sha256": "b1d648a3f0a9dbe9dc97c3fc7858229f8c35d00e7bfdd01e71a82d4eec8156dc"
+  },
+  "double/restore-summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/restore-summary.json",
+    "bytes": 39380,
+    "sha256": "9c777b99261d10aab1a7dd074fe207c061f390b110a21e26da2180e5254371d4"
+  },
+  "double/short-braking-best.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/short-braking-best.json",
+    "bytes": 376,
+    "sha256": "0c100405377061af578ca7fbd60330b44cd752c6b1bbb14eabbae2433dbeef47"
+  },
+  "double/short-rules.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/short-rules.png",
+    "bytes": 40301,
+    "sha256": "25a04169cc00eba294b31d9784d25034b64e3fad4b83cc16b8a7219d339c61f1"
+  },
+  "double/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/summary.json",
+    "bytes": 54778,
+    "sha256": "60b5a0cfc69d8c02d5aedfbf4cd709dcc1d04daf5e1bffb10fdf61e64663db6b"
+  },
+  "double/test-workspace-vehicle.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/test-workspace-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "double/0/raw.json.gz": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/0/raw.json.gz",
+    "bytes": 241233,
+    "sha256": "6b48d8b6f799e59fca3e117e25b7f63d76e961af37dfcf9a7430174ffa811bd1"
+  },
+  "double/0/recheck-best.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/0/recheck-best.json",
+    "bytes": 73,
+    "sha256": "9ba6a0e6ea49b60d5866e3e57248dfd3847e088b79aadd43c92bd6f9da3e2fa2"
+  },
+  "double/0/recheck.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/0/recheck.json",
+    "bytes": 95,
+    "sha256": "367738d352f30ca0c005ddded5697a0119542a68e455d0c10d5564bb31a1ed62"
+  },
+  "double/0/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/0/summary.json",
+    "bytes": 6574,
+    "sha256": "b49ec192d77db39b1ec2d3089916e50a850219390ca527c6c7674895f4f1c0df"
+  },
+  "double/2/raw.json.gz": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/2/raw.json.gz",
+    "bytes": 233991,
+    "sha256": "b26fb1a998a53af3da2d908ce1d16094e66f905bde521a44e321e6adceea28c4"
+  },
+  "double/2/recheck-best.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/2/recheck-best.json",
+    "bytes": 73,
+    "sha256": "0a1bbc0122d4722fb131cef6c78ff28d9f953132dbbcca4dc331f0f40dd2a132"
+  },
+  "double/2/recheck.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/2/recheck.json",
+    "bytes": 95,
+    "sha256": "8bf430f05d23e65a19ce01b999f186da6da0ef16ecd0fec3c3856c3d73a69b3a"
+  },
+  "double/2/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/2/summary.json",
+    "bytes": 6572,
+    "sha256": "6480a0801b8a5c59c47b26ed69710b245843925e755271d0b82638983476d22e"
+  },
+  "double/tuning-backups/528af4f6ca8a461889ad22a7a7af6fe8911d297e98fab4030a463dad3d6bc817.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted/tuning-backups/528af4f6ca8a461889ad22a7a7af6fe8911d297e98fab4030a463dad3d6bc817.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "double/command.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-accepted.txt",
+    "bytes": 421,
+    "sha256": "f1491df8d77dce8628e23036fc74cf2ca2a4f03f19a3afd464d684339cc3d4bd"
+  },
+  "failed-pulse/double/0-braking.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-final/0-braking.png",
+    "bytes": 539207,
+    "sha256": "46e33cb60a0b451f886bb548fe01fe803c78c02c05dd9e06614f51a52201b662"
+  },
+  "failed-pulse/double/original-vehicle.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-final/original-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "failed-pulse/double/precision-rules.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-final/precision-rules.png",
+    "bytes": 33107,
+    "sha256": "503cd1aff3f50f5d98d066324da17e16f5523b18a2f8647bab56653e28436dd0"
+  },
+  "failed-pulse/double/short-rules.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-final/short-rules.png",
+    "bytes": 40301,
+    "sha256": "25a04169cc00eba294b31d9784d25034b64e3fad4b83cc16b8a7219d339c61f1"
+  },
+  "failed-pulse/double/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-final/summary.json",
+    "bytes": 46832,
+    "sha256": "c5f8b84d4752cd35f8dd80452a63ade8b12023603969a4960525a554154c079c"
+  },
+  "failed-pulse/double/test-workspace-vehicle.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-final/test-workspace-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "failed-pulse/double/0/raw.json.gz": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-final/0/raw.json.gz",
+    "bytes": 140015,
+    "sha256": "90f7528f7594c1edf36478307cc27dab923a1957616c33dcf075f0a55b3ac710"
+  },
+  "failed-pulse/double/0/recheck.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-final/0/recheck.json",
+    "bytes": 89,
+    "sha256": "be5e55c9574da2562869d401e97ee6815840848bb71e4fb3096ebf52036f7f06"
+  },
+  "failed-pulse/double/0/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-final/0/summary.json",
+    "bytes": 6541,
+    "sha256": "cef509812d835da599c7b06108176a2673f61ebc161035f8d465933ea3f9387f"
+  },
+  "failed-pulse/double/command.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-final.txt",
+    "bytes": 1463,
+    "sha256": "b77e2e85566d7d780cac24e9d3e95199f1b0817b1289966d902e7f41c72b5939"
+  },
+  "failed-early-release/double/0-braking.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-double/0-braking.png",
+    "bytes": 539207,
+    "sha256": "0eeeb8d56f3a607897595057af7fbf8bd6099765285cf7b96853352b894844d3"
+  },
+  "failed-early-release/double/original-vehicle.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double/original-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "failed-early-release/double/precision-rules.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-double/precision-rules.png",
+    "bytes": 33107,
+    "sha256": "503cd1aff3f50f5d98d066324da17e16f5523b18a2f8647bab56653e28436dd0"
+  },
+  "failed-early-release/double/short-rules.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-double/short-rules.png",
+    "bytes": 40301,
+    "sha256": "25a04169cc00eba294b31d9784d25034b64e3fad4b83cc16b8a7219d339c61f1"
+  },
+  "failed-early-release/double/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double/summary.json",
+    "bytes": 46832,
+    "sha256": "3de73864502e4c244bef4b12d563bc6af3f1f52d9206b4bc1a743d030f4f244f"
+  },
+  "failed-early-release/double/test-workspace-vehicle.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double/test-workspace-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "failed-early-release/double/0/raw.json.gz": {
+    "source": "logs/validation/SHORT-BRAKING-01-double/0/raw.json.gz",
+    "bytes": 139763,
+    "sha256": "7a2d6fbbaa4c03aab6adf13f2e5046877ae37d441bfb8c38f8f499468d118504"
+  },
+  "failed-early-release/double/0/recheck.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double/0/recheck.json",
+    "bytes": 89,
+    "sha256": "6a5917a4c942333833685af2d4199267ee0e8dcde47f4b65ecbba43d3028ddbf"
+  },
+  "failed-early-release/double/0/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-double/0/summary.json",
+    "bytes": 6541,
+    "sha256": "e7ffbfc14339ce894e79b36c59d5452ac9bdad3d4df6abe6cf3048ab20255a09"
+  },
+  "checks/T1-double/headless-0.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-T1-double/headless-0.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/T1-double/headless-17.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-T1-double/headless-17.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/T1-double/headless-23.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-T1-double/headless-23.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/T1-double/pytest.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-T1-double/pytest.log",
+    "bytes": 194,
+    "sha256": "f6844deb166a9391dde5136c4bf1f8ce3d2ab0a392070661684c8c047f435289"
+  },
+  "checks/T1-double/ruff.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-T1-double/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T1-double/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-T1-double/summary.json",
+    "bytes": 4421,
+    "sha256": "6902e1203df716a751ab75b9eea74c176bec93a91d164291dba5fc62a5f07e73"
+  },
+  "checks/layout-double/headless-0.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-layout-double/headless-0.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/layout-double/headless-17.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-layout-double/headless-17.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/layout-double/headless-23.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-layout-double/headless-23.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/layout-double/pytest.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-layout-double/pytest.log",
+    "bytes": 111,
+    "sha256": "71b7a1e219122d65b328de847e6eb3b5582673c546835c6a942a68231eff2b69"
+  },
+  "checks/layout-double/ruff.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-layout-double/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/layout-double/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-layout-double/summary.json",
+    "bytes": 3723,
+    "sha256": "b54b42a3953df3b0650a8b2a7a755002332fde669a139868cf32c5dbbbfa2469"
+  },
+  "final-images/double/actual-result.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-final-images-double/actual-result.png",
+    "bytes": 364365,
+    "sha256": "1f389c4baee84eda6f286813042e3f0dcbb543bddd91b9b6caf014ca061bbd6d"
+  },
+  "final-images/double/brake-preview.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-final-images-double/brake-preview.png",
+    "bytes": 451612,
+    "sha256": "e88c19454b66fc08073d80d190f8bfee4703fd25cc894a332236f266c8d415a3"
+  },
+  "final-images/double/save-warning.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-final-images-double/save-warning.png",
+    "bytes": 368672,
+    "sha256": "37c2c81478d5d0e505ab118bff25b744687b1b796d60fcac6e1475f36574071b"
+  },
+  "final-images/double/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-final-images-double/summary.json",
+    "bytes": 244,
+    "sha256": "30504b4f92a6f64f9388691dfc4793e5bf88a324c74c5e8d3b6d391f3ee80f69"
+  },
+  "double/restore-command.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-double-restore.txt",
+    "bytes": 35,
+    "sha256": "3078e67432cb503cec0650159270310de2857fc1ea05029448d16bb446c3820e"
+  },
+  "failed-gold-expectation/normal/0-braking.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/0-braking.png",
+    "bytes": 671867,
+    "sha256": "5acd88e737ffd9e96551e081cb38e682d414874f10344c49e9eb41d61b3a3981"
+  },
+  "failed-gold-expectation/normal/0-result.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/0-result.png",
+    "bytes": 560117,
+    "sha256": "84cc6b7b0d4e4e4a9b58ee5de223f757fb718c2fdb437324ef0701c2d501a06f"
+  },
+  "failed-gold-expectation/normal/2-braking.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/2-braking.png",
+    "bytes": 671466,
+    "sha256": "34ec55757f01a8f4a811429c8c5e5917d2a73c054afedae815a292166fd8012e"
+  },
+  "failed-gold-expectation/normal/installed-70.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/installed-70.png",
+    "bytes": 587513,
+    "sha256": "3a62f76e955b78c04b1c40a37b3b8cb433f898d915e3764c5ec00ee53398eeeb"
+  },
+  "failed-gold-expectation/normal/original-vehicle.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/original-vehicle.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "failed-gold-expectation/normal/precision-rules.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/precision-rules.png",
+    "bytes": 30573,
+    "sha256": "600a45d03c95aac2fc2c2bcf339e1ea45178eb6c0695db26788de52d6902aa2c"
+  },
+  "failed-gold-expectation/normal/preview-70.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/preview-70.png",
+    "bytes": 560117,
+    "sha256": "84cc6b7b0d4e4e4a9b58ee5de223f757fb718c2fdb437324ef0701c2d501a06f"
+  },
+  "failed-gold-expectation/normal/short-braking-best.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/short-braking-best.json",
+    "bytes": 376,
+    "sha256": "8170ad894da8757328b00ce1f96e57a1cda868ab2d513a7267d412d5fc09900d"
+  },
+  "failed-gold-expectation/normal/short-rules.png": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/short-rules.png",
+    "bytes": 37856,
+    "sha256": "414b32f759ba14635f5338544403a5efe74feaab5fee1365417bcb78d11d2cbe"
+  },
+  "failed-gold-expectation/normal/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/summary.json",
+    "bytes": 59004,
+    "sha256": "f61606e433d1556f71d3feaf3507b6f373ec9219556fbf688bd439c5360317e6"
+  },
+  "failed-gold-expectation/normal/test-workspace-vehicle.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/test-workspace-vehicle.json",
+    "bytes": 6334,
+    "sha256": "62c4a2d4e8cf4316d02384cb3025b50ff3d0fd49dacba15ebfe710d31428c0c0"
+  },
+  "failed-gold-expectation/normal/0/raw.json.gz": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/0/raw.json.gz",
+    "bytes": 219944,
+    "sha256": "601e28ffaa3755efa8153fe2c670ddb11709e485b224cede5a1db24db84c7a74"
+  },
+  "failed-gold-expectation/normal/0/recheck-best.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/0/recheck-best.json",
+    "bytes": 73,
+    "sha256": "a45a11a08a6975beec95ccf5c2f928de322fc1cffb993f637a367d6ad6558345"
+  },
+  "failed-gold-expectation/normal/0/recheck.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/0/recheck.json",
+    "bytes": 95,
+    "sha256": "d60fe54f48b9a4768c181e7c96941db9a7520baa0ca7b3c0fa5859d786012375"
+  },
+  "failed-gold-expectation/normal/0/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/0/summary.json",
+    "bytes": 6574,
+    "sha256": "bdf7a9abf03cdb5bf59386864db6fedcbfc86d67ef79d7046fe9e692338886a0"
+  },
+  "failed-gold-expectation/normal/2/raw.json.gz": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/2/raw.json.gz",
+    "bytes": 214935,
+    "sha256": "0e262e7f09bd22b2d7e5f00f07efb32631499c4c0f2896c5f3083100b3db747c"
+  },
+  "failed-gold-expectation/normal/2/recheck-best.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/2/recheck-best.json",
+    "bytes": 73,
+    "sha256": "d2b3db1e8c691a1f25344ea5c64d6a45e4dbf418ca4335e5a155e8569fcdfd33"
+  },
+  "failed-gold-expectation/normal/2/recheck.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/2/recheck.json",
+    "bytes": 95,
+    "sha256": "04d4ad9bfb10f39e684d40e9a86e51361b9762b2c9090d57c03999c79da19167"
+  },
+  "failed-gold-expectation/normal/2/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/2/summary.json",
+    "bytes": 6572,
+    "sha256": "9c455850ec988797b593023b4797c9bee9fe71d0202a4d87d2f8e529b81e90f9"
+  },
+  "failed-gold-expectation/normal/tuning-backups/528af4f6ca8a461889ad22a7a7af6fe8911d297e98fab4030a463dad3d6bc817.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast/tuning-backups/528af4f6ca8a461889ad22a7a7af6fe8911d297e98fab4030a463dad3d6bc817.json",
+    "bytes": 6120,
+    "sha256": "5a7007ca72419985f9ed080d9caaaf02c74616af68bc052c9b5de99dee18c123"
+  },
+  "failed-gold-expectation/normal/command.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-normal-coast.txt",
+    "bytes": 1072,
+    "sha256": "64eb699d26c793836a753a2eae525f46d097ca12d000b180d60851280fe87154"
+  },
+  "checks/T0/pytest.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-T0/pytest.log",
+    "bytes": 102,
+    "sha256": "67908886180b98c53571fffb4d0b8f3b4314ba5c8ee319f78499144cdfbead35"
+  },
+  "checks/T0/ruff.txt": {
+    "source": "logs/validation/SHORT-BRAKING-01-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T0/summary.json": {
+    "source": "logs/validation/SHORT-BRAKING-01-T0/summary.json",
+    "bytes": 2039,
+    "sha256": "6d45c83297c7b253098b00b2f0cb30fc81c53f46d92b61ec254294bc202b6a08"
+  },
+  "measurement/0-raw.json.gz": {
+    "source": "logs/validation/BRAKE-ROAD-01-probe/0-raw.json.gz",
+    "bytes": 149083,
+    "sha256": "338507121fe97aee267b831a9a1631a88df6e7a89804a9d641fac8368a093e07"
+  },
+  "measurement/1-raw.json.gz": {
+    "source": "logs/validation/BRAKE-ROAD-01-probe/1-raw.json.gz",
+    "bytes": 150202,
+    "sha256": "54f26b6d2b9ac7a130ea85318e41af4068eafb041348e9236e5f595394d0594e"
+  },
+  "measurement/2-raw.json.gz": {
+    "source": "logs/validation/BRAKE-ROAD-01-probe/2-raw.json.gz",
+    "bytes": 152858,
+    "sha256": "b73e68f399b84694f5e977df48e5a4dce476405f68b5414f74409b5bdc5fe3d3"
+  },
+  "measurement/3-raw.json.gz": {
+    "source": "logs/validation/BRAKE-ROAD-01-probe/3-raw.json.gz",
+    "bytes": 147284,
+    "sha256": "3ad06ba7c255451baf05f66444c36b6471ff0c8bdb9a061be959a23a3f6024e1"
+  },
+  "measurement/old-rule-recheck.json": {
+    "source": "logs/validation/BRAKE-ROAD-01-probe/old-rule-recheck.json",
+    "bytes": 18594,
+    "sha256": "2c45fc78ed3ec80cf8faca6b3bc65f78bb98d31d6e0d7aa6c3ec051325d91cf8"
+  },
+  "measurement/summary.json": {
+    "source": "logs/validation/BRAKE-ROAD-01-probe/summary.json",
+    "bytes": 72451,
+    "sha256": "65dc3837b82b66733775d285d5291d34f3ff987e2a02e087d92a9153b9147e26"
+  },
+  "scripts/brake_road_probe.py": {
+    "source": "logs/validation/brake_road_probe.py",
+    "bytes": 2055,
+    "sha256": "a37f4283971aa684a076641480910e76df9ccd8911d90fea46aa19b3a90240fa"
+  },
+  "scripts/short_braking_old_recheck.py": {
+    "source": "logs/validation/short_braking_old_recheck.py",
+    "bytes": 1206,
+    "sha256": "1a2cc133ce173d31a31b952d75422981b29c4ac3376b2f3533e2800140651a44"
+  },
+  "scripts/short_braking_layout.py": {
+    "source": "logs/validation/short_braking_layout.py",
+    "bytes": 2328,
+    "sha256": "a4cb74c64b1ac77045801c4bc0a3419a78742aa901b85832cfdee7524d59ce3f"
+  },
+  "scripts/driving-checker-used.py": {
+    "source": "logs/validation/short-braking-checker-used.py",
+    "bytes": 10565,
+    "sha256": "a54d19f55cf0880c7ac3d201073dc907847e3d86da2f5bbf4d86a955c022cd1a"
+  },
+  "scripts/application-at-driving.py": {
+    "source": "logs/validation/short-braking-application-driving.py",
+    "bytes": 109364,
+    "sha256": "c54f5fc80876b2da41c4101987b5675254fe41b62b5449371e2bfa863b489989"
+  }
+}

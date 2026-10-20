@@ -4,6 +4,7 @@ from direct.gui.DirectGui import DirectFrame, OnscreenText
 from panda3d.core import TextNode, TransparencyAttrib
 
 from audio.music import STATIONS
+from braking_lesson import BRAKING_MODES
 from coastal_medals import driving_goal
 from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
@@ -163,9 +164,9 @@ class DrivingHUD:
                 segment["frameColor"] = color if i < active else (0.34, 0.41, 0.46, 1)
             self._active_rpm = active
         if track == "endless":
-            braking = race.mode == GameMode.BRAKING_LESSON
+            braking = race.mode in BRAKING_MODES
             slalom = race.mode in SLALOM_MODES
-            set_text(self.mode, "高速验车" if race.mode == GameMode.FAST_SLALOM else "连续过门" if slalom else "定点刹停" if braking else "5公里无碰撞挑战" if highway.challenge else "无限高速")
+            set_text(self.mode, "短距制动验车" if race.mode == GameMode.SHORT_BRAKING else "高速验车" if race.mode == GameMode.FAST_SLALOM else "连续过门" if slalom else "定点刹停" if braking else "5公里无碰撞挑战" if highway.challenge else "无限高速")
             set_text(self.status, f"{highway.elapsed:07.2f} s")
             distance = f"{highway.distance:.0f} / {highway.target:.0f} m" if highway.challenge else f"{highway.distance / 1000:.2f} km"
             set_text(self.detail, f"距离 {distance}\n碰撞 {highway.collisions} 次")
@@ -183,7 +184,7 @@ class DrivingHUD:
                 message = ("弯前看清车流，留距择道；超车达标后仍需安全到终点" if route.finish_at_end else
                            "留出空间再择道；超出整车10米才计数 · 金85 / 银110 / 铜150秒")
             elif braking:
-                detail, message = driving_feedback(highway.braking)
+                detail, message = driving_feedback(highway.braking, short=race.mode == GameMode.SHORT_BRAKING)
                 set_text(self.detail, detail)
             elif slalom:
                 detail, message = slalom_driving_feedback(highway.slalom, fast=race.mode == GameMode.FAST_SLALOM)

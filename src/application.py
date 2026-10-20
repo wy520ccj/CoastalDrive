@@ -20,7 +20,7 @@ from panda3d.core import (
 )
 
 from audio.music import STATIONS
-from braking_lesson import BrakingScores
+from braking_lesson import BRAKING_MODES, BrakingScores
 from chase_camera import ChaseCamera
 from coastal_medals import menu_goal, result_goal, result_medal
 from controls import ConstantController
@@ -47,10 +47,12 @@ from slalom_lesson import SLALOM_MODES, SlalomScores
 from soundscape import Soundscape
 from sprint_routes import SPRINT_ROUTES
 from tire_tuning import install as install_front_tires
+from tire_tuning import install_brakes
 from tire_tuning import restore as restore_pre_tuning_vehicle
 from tracks import COASTAL_CIRCUIT
 from ui import theme
 from ui.braking_feedback import RULES as BRAKING_RULES
+from ui.braking_feedback import SHORT_RULES as SHORT_BRAKING_RULES
 from ui.braking_feedback import result_feedback as braking_result_feedback
 from ui.countdown import Countdown
 from ui.driving_journey import DrivingJourney
@@ -204,6 +206,7 @@ class CoastalDrive(ShowBase):
         self.tour_round = 0
         self.tour_status = ''
         self.lab_return_braking = False
+        self.braking_mode = GameMode.BRAKING_LESSON
         self.lab_return_slalom = False
         self.slalom_mode = GameMode.SLALOM_LESSON
         self.lab_return_sprint = None
@@ -288,7 +291,9 @@ class CoastalDrive(ShowBase):
         self.tour_active = self.tour_pending = False
         self.tour_banner.hide()
         self.tire_tuning.hide()
-        self.lab_return_braking = self.session.mode == GameMode.BRAKING_LESSON
+        self.lab_return_braking = self.session.mode in BRAKING_MODES
+        if self.lab_return_braking:
+            self.braking_mode = self.session.mode
         self.lab_return_slalom = self.session.mode in SLALOM_MODES
         if self.lab_return_slalom:
             self.slalom_mode = self.session.mode
@@ -572,7 +577,7 @@ class CoastalDrive(ShowBase):
                 self._enter_game(self.slalom_mode, "endless")
             elif self.lab_return_braking:
                 self.session.road_shape = "straight"
-                self._enter_game(GameMode.BRAKING_LESSON, "endless")
+                self._enter_game(self.braking_mode, "endless")
             else:
                 mode = GameMode.TIME_TRIAL if vehicle.workshop_result is not None else GameMode.FREE_DRIVE
                 self._enter_game(mode, "coastal")
@@ -584,7 +589,7 @@ class CoastalDrive(ShowBase):
         yield 5, "可以出发"
 
     def _enter_game(self, mode, track):
-        if mode not in (GameMode.BRAKING_LESSON, *SLALOM_MODES):
+        if mode not in (*BRAKING_MODES, *SLALOM_MODES):
             self.driving_journey_return = False
         self.driving_keys_held.clear()
         self.hud.select_radio(None)
@@ -898,7 +903,7 @@ class CoastalDrive(ShowBase):
         self.tour_panel = DrivingTourPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
                                           self.start_tour_leg, self.back_from_driving_tour)
         self.tire_tuning = TireTuningPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
-            self.install_tire_recipe, self.restore_tire_vehicle, self.back_from_tire_tuning, self.open_player_road_ab)
+            self.install_driving_recipe, self.restore_tire_vehicle, self.back_from_tire_tuning, self.open_player_road_ab)
         self.player_road_panel = PlayerRoadPanel(self.tire_tuning.root, self.ui_font, self.main_menu.textures)
         self.tour_banner = DirectFrame(parent=self.aspect2d, frameColor=theme.PAPER_LIGHT,
             frameSize=(-.34, .34, -.105, 0), pos=(0, 0, .95), sortOrder=60)
@@ -1172,7 +1177,7 @@ class CoastalDrive(ShowBase):
             if result["challenge_id"] == CORNERING_CHALLENGE_ID:
                 return f"操稳工坊 · {result['medal']}牌 · {road}\n循迹误差减少 {result['improvement_pct']:.1f}%"
             return f"制动工坊 · {result['medal']}牌 · {road}\n停车距离改善 {result['improvement_pct']:.1f}%"
-        source = ('改装车' if vehicle.parameter_metadata is not None and 'tire_tuning_previous' in vehicle.parameter_metadata
+        source = ('改装车' if vehicle.parameter_metadata is not None and bool({'tuning_previous', 'tire_tuning_previous'} & vehicle.parameter_metadata.keys())
                   else "实验车" if vehicle.report_path else "目录车")
         return f"{source} · {vehicle_design(vehicle.design_id).name}\n{vehicle.config.mass:g} kg · 质心 {vehicle.config.center_of_mass_height:g} m"
 
@@ -1208,7 +1213,8 @@ class CoastalDrive(ShowBase):
         self._shown_phase = None
         self.refresh_panel()
 
-    def choose_braking_lesson(self):
+    def choose_braking_lesson(self, mode=GameMode.BRAKING_LESSON):
+        self.braking_mode = mode
         self.overtake_menu = False
         self.sprint_menu = False
         self.slalom_menu = False
@@ -1252,6 +1258,19 @@ class CoastalDrive(ShowBase):
     def open_player_road_ab(self):
         self.player_road_panel.show(self.player_road_ab)
 
+    def open_brake_tuning(self):
+        if self.session.phase == Phase.RESULTS and self.session.mode in BRAKING_MODES:
+            self.braking_mode = self.session.mode
+        elif self.session.phase != Phase.MENU or not self.braking_menu:
+            return
+        self.panel.hide()
+        for column in self.result_sectors:
+            column.hide()
+        self.main_menu.root.show()
+        self.player_road_panel.hide()
+        vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
+        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label(), topic='brakes')
+
     def observe_player_road(self):
         if self.session.phase != Phase.RESULTS or not self.slalom_pending:
             return
@@ -1268,14 +1287,14 @@ class CoastalDrive(ShowBase):
         if self.session.phase == Phase.RESULTS:
             if vehicle == self.tire_tuning.original:
                 return
-            if self.slalom_attempt is not None:
+            if self.session.mode in SLALOM_MODES and self.slalom_attempt is not None:
                 target = self.session.driving_mode.configured_vehicle(vehicle.config.braking.abs_enabled,
                     vehicle.config.traction.tcs_enabled, vehicle.config.stability.esc_enabled, base_config=vehicle.config)
                 self.player_road_ab.freeze(self.slalom_attempt, target)
             # 已结束的记录只属于旧车；保存成功后才回菜单准备同一道课题。
             mode, journey = self.session.mode, self.driving_journey_return
             self.session.menu()
-            self.choose_slalom_lesson(mode)
+            self.choose_slalom_lesson(mode) if mode in SLALOM_MODES else self.choose_braking_lesson(mode)
             self.driving_journey_return = journey
             self.panel.hide()
             self.main_menu.root.show()
@@ -1285,9 +1304,9 @@ class CoastalDrive(ShowBase):
         self.session.set_tcs_enabled(vehicle.config.traction.tcs_enabled)
         self.session.set_esc_enabled(vehicle.config.stability.esc_enabled)
         self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
-        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label())
+        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label(), topic=self.tire_tuning.topic)
 
-    def install_tire_recipe(self, index):
+    def install_driving_recipe(self, index):
         if self.session.phase not in (Phase.MENU, Phase.RESULTS):
             return
         current = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
@@ -1295,13 +1314,14 @@ class CoastalDrive(ShowBase):
             self.tire_tuning.notice.setText('当前车辆已改变，请返回课题再打开配方。')
             return
         try:
-            vehicle = install_front_tires(current, index, self.workspace_path)
+            vehicle = (install_brakes(current, index, self.workspace_path) if self.tire_tuning.topic == 'brakes' else
+                       install_front_tires(current, index, self.workspace_path))
         except (OSError, ValueError, KeyError, TypeError) as error:
             self.tire_tuning.notice.setText('配方未安装，当前车保留：'+str(error))
             return
         self.apply_tuning_vehicle(vehicle)
-        self.tire_tuning.notice.setText('已保存前胎配方；返回原课题亲自验车。' if vehicle != current else '与当前车相同，原方案关联保持。')
-        if self.player_road_ab.notice:
+        self.tire_tuning.notice.setText('已保存硬件配方；返回原课题亲自验车。' if vehicle != current else '与当前车相同，原方案关联保持。')
+        if self.tire_tuning.topic == 'tires' and self.player_road_ab.notice:
             self.tire_tuning.notice.setText(self.tire_tuning.notice.getText()+' 道路对照有提示，请查看道路A/B。')
 
     def restore_tire_vehicle(self):
@@ -1375,7 +1395,7 @@ class CoastalDrive(ShowBase):
         self.braking_menu = False
         self.highway_menu = False
         self.session.road_shape = "straight"
-        self.start_game(mode=GameMode.BRAKING_LESSON, track="endless")
+        self.start_game(mode=self.braking_mode, track="endless")
 
     def start_highway(self, shape, mode=GameMode.FREE_DRIVE):
         self.highway_menu = False
@@ -1545,10 +1565,14 @@ class CoastalDrive(ShowBase):
                        ('前胎配方 · 改装验车', self.open_tire_tuning),
                        ("返回高速", self.back_from_slalom_lesson)]
         elif phase == Phase.MENU and self.highway_menu and self.braking_menu:
-            self.panel_title.setText("驾驶课题 · 定点刹停")
-            self.panel_note.setText(BRAKING_RULES)
+            short = self.braking_mode == GameMode.SHORT_BRAKING
+            self.panel_title.setText("驾驶课题 · "+("短距制动验车" if short else "定点刹停"))
+            self.panel_note.setText(SHORT_BRAKING_RULES if short else BRAKING_RULES)
             options = [
                 ("开始练习  Enter", self.start_braking_lesson),
+                ("切换定点刹停" if short else "短距制动验车 · 80–85km/h",
+                 lambda: self.choose_braking_lesson(GameMode.BRAKING_LESSON if short else GameMode.SHORT_BRAKING)),
+                ("前制动分配 · 改装验车", self.open_brake_tuning),
                 ("返回高速", self.back_from_braking_lesson),
             ]
         elif phase == Phase.MENU and self.highway_menu:
@@ -1690,15 +1714,17 @@ class CoastalDrive(ShowBase):
             ]
             if self.workspace_vehicle.workshop_result is not None:
                 options[1] = ("返回工坊", self.open_vehicle_lab)
-            elif self.session.mode in (GameMode.BRAKING_LESSON, *SLALOM_MODES, *OVERTAKE_ROUTES) or self.session.mode in SPRINT_ROUTES:
+            elif self.session.mode in (*BRAKING_MODES, *SLALOM_MODES, *OVERTAKE_ROUTES) or self.session.mode in SPRINT_ROUTES:
                 options[1] = ("返回实验台", self.open_vehicle_lab)
-            if self.session.mode in (GameMode.BRAKING_LESSON, *SLALOM_MODES):
+            if self.session.mode in (*BRAKING_MODES, *SLALOM_MODES):
                 options[2] = (("查看驾驶进阶", self.return_to_driving_journey) if self.driving_journey_return
                               else ("返回主菜单", self.back_to_menu))
             elif self.session.mode in SPRINT_ROUTES or self.session.mode in OVERTAKE_ROUTES:
                 options[2] = ("返回主菜单", self.back_to_menu)
             if self.session.mode in SLALOM_MODES:
                 options.append(('改装前胎再试', self.open_tire_tuning))
+            elif self.session.mode in BRAKING_MODES:
+                options.append(('调整制动分配', self.open_brake_tuning))
             if self.tour_active:
                 if self.tour_store.variant != self.session.score_variant():
                     options[0] = ('查看巡回', self.open_driving_tour)
@@ -1777,7 +1803,7 @@ class CoastalDrive(ShowBase):
             for index, button in enumerate(self.buttons[:7]):
                 button.setZ(-.12-index*.10)
                 button["frameSize"] = (-.51, .51, -.043, .043)
-        elif self.highway_menu and self.slalom_menu:
+        elif self.highway_menu and (self.slalom_menu or self.braking_menu):
             self.panel_note.setScale(.038)
             self.panel_note.setPos(0, .30)
             for index, button in enumerate(self.buttons[:4]):
@@ -1837,6 +1863,12 @@ class CoastalDrive(ShowBase):
                     column.show()
                 for button in self.buttons[:3]:
                     button.setZ(-.67)
+            elif self.session.mode in BRAKING_MODES:
+                self.panel['frameSize'] = (-.94, .94, -.74, .75)
+                for index, button in enumerate(self.buttons[:4]):
+                    button.setPos(-.40 if index % 2 == 0 else .40, 0, -.47-(index//2)*.15)
+                    button['frameSize'] = (-.36, .36, -.060, .060)
+                    button['text_scale'] = .040
             elif self.session.mode in SLALOM_MODES:
                 result = self.session.highway.snapshot.slalom
                 if result is not None and result.gate_times:

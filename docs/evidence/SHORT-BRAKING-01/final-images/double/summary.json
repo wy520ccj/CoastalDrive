@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "scope": "已保存实际银牌结算静态复载；长保存失败文字为明确UI夹具，无新完整驾驶",
+  "input": "logs\\validation\\SHORT-BRAKING-01-double-accepted",
+  "size": [
+    1024,
+    768
+  ]
+}

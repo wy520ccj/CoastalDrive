@@ -7,7 +7,7 @@ from contextlib import nullcontext
 from dataclasses import asdict, replace
 from enum import Enum
 
-from braking_lesson import BrakingScores
+from braking_lesson import BRAKING_MODES, BrakingScores
 from controls import Controller, KeyboardController
 from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
@@ -162,10 +162,10 @@ class Session:
         chosen_mode = self.mode if mode is None else mode
         if chosen_mode == GameMode.TIME_TRIAL and chosen_track.circuit is None:
             raise ValueError("Time trial requires a circuit")
-        if (chosen_mode in (GameMode.DISTANCE_CHALLENGE, GameMode.BRAKING_LESSON, *SLALOM_MODES, *OVERTAKE_ROUTES)
+        if (chosen_mode in (GameMode.DISTANCE_CHALLENGE, *BRAKING_MODES, *SLALOM_MODES, *OVERTAKE_ROUTES)
                 or chosen_mode in SPRINT_ROUTES) and chosen_track.id.value != "endless":
             raise ValueError("Distance challenge requires the endless highway")
-        if chosen_mode in (GameMode.BRAKING_LESSON, *SLALOM_MODES) and self.road_shape != "straight":
+        if chosen_mode in (*BRAKING_MODES, *SLALOM_MODES) and self.road_shape != "straight":
             raise ValueError("驾驶课题需要直线道路")
         if chosen_mode in SPRINT_ROUTES:
             route = SPRINT_ROUTES[chosen_mode]
@@ -180,7 +180,7 @@ class Session:
         density = TRAFFIC_DENSITIES[self.traffic_density]
         if chosen_mode in OVERTAKE_ROUTES:
             density = TRAFFIC_DENSITIES["normal"]
-        if (track == "endless" and chosen_mode not in (GameMode.BRAKING_LESSON, *SLALOM_MODES)
+        if (track == "endless" and chosen_mode not in (*BRAKING_MODES, *SLALOM_MODES)
                 and chosen_mode not in SPRINT_ROUTES):
             traffic_count = density.cars
         if seed is not None:
@@ -262,12 +262,15 @@ class Session:
         if self.simulation.track == "endless":
             self.highway.start(
                 self.highway_progress(), challenge=self.mode == GameMode.DISTANCE_CHALLENGE,
-                braking_scores=(BrakingScores(self.race.scores.path.with_name("braking-best.json"),
-                                               "braking-v1:"+self.score_variant())
-                                if self.mode == GameMode.BRAKING_LESSON else None),
+                braking_scores=(BrakingScores(self.race.scores.path.with_name(
+                                    "short-braking-best.json" if self.mode == GameMode.SHORT_BRAKING else "braking-best.json"),
+                                    ("short-braking-v1:" if self.mode == GameMode.SHORT_BRAKING else "braking-v1:")+self.score_variant(),
+                                    maximum=42 if self.mode == GameMode.SHORT_BRAKING else 10)
+                                if self.mode in BRAKING_MODES else None),
                 slalom_scores=(SlalomScores(self.race.scores.path.with_name("slalom-best.json"),
                                              ("fast-slalom-v1:" if self.mode == GameMode.FAST_SLALOM else "slalom-v1:")+self.score_variant())
                                 if self.mode in SLALOM_MODES else None),
+                short_braking=self.mode == GameMode.SHORT_BRAKING,
                 vehicle_config=self.vehicle_config, fast_slalom=self.mode == GameMode.FAST_SLALOM,
                 sprint_mode=self.mode if self.mode in SPRINT_ROUTES else None,
                 sprint_scores=BestTimes(self.race.scores.path.with_name("sprint-best.json")) if self.mode in SPRINT_ROUTES else None,
@@ -467,7 +470,7 @@ class Session:
         self.stop_clock()
         self.race.stop()
         self.ghost_recording = None
-        self.highway.stop("挑战提前结束" if (self.mode in (GameMode.DISTANCE_CHALLENGE, GameMode.BRAKING_LESSON, *SLALOM_MODES, *OVERTAKE_ROUTES)
+        self.highway.stop("挑战提前结束" if (self.mode in (GameMode.DISTANCE_CHALLENGE, *BRAKING_MODES, *SLALOM_MODES, *OVERTAKE_ROUTES)
                                            or self.mode in SPRINT_ROUTES) else "自由驾驶结束")
         self.phase = Phase.RESULTS
         self.keyboard.clear()

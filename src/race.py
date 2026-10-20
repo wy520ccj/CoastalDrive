@@ -15,6 +15,7 @@ class GameMode(Enum):
     TIME_TRIAL = "time_trial"
     DISTANCE_CHALLENGE = "distance_challenge"
     BRAKING_LESSON = "braking_lesson"
+    SHORT_BRAKING = "short_braking"
     SLALOM_LESSON = "slalom_lesson"
     FAST_SLALOM = "fast_slalom"
     BEND_SPRINT = "bend_sprint"
