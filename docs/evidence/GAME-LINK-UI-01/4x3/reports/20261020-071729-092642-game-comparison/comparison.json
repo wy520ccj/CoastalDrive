@@ -1,0 +1,98 @@
+{
+  "schema": "coastal-game-comparison-v1",
+  "assessment": "未设置合格阈值",
+  "reference_reason": "time_limit",
+  "game_reason": "time_limit",
+  "game_end_condition": "time_limit",
+  "precision_bits": 32,
+  "reference_ticks": 3,
+  "game_ticks": 3,
+  "common_seconds": 0.025,
+  "same_command_prefix": true,
+  "config_changes": {
+    "tire_substeps": {
+      "reference": 2,
+      "game": 1
+    }
+  },
+  "common_signal_errors": {
+    "speed": {
+      "rmse": 0.009361686497494087,
+      "max_absolute": 0.012551879882812145
+    },
+    "ax": {
+      "rmse": 0.1502243539780696,
+      "max_absolute": 0.24221444129943848
+    },
+    "ay": {
+      "rmse": 4.935800928441042e-05,
+      "max_absolute": 8.332007564604282e-05
+    },
+    "yaw": {
+      "rmse": 3.0600381526218373e-07,
+      "max_absolute": 5.578021955443546e-07
+    },
+    "roll": {
+      "rmse": 1.552782625068115e-05,
+      "max_absolute": 2.914635115303099e-05
+    }
+  },
+  "metrics": [
+    {
+      "key": "stopping_distance_m",
+      "label": "停车距离",
+      "unit": "m",
+      "reference": null,
+      "game": null,
+      "delta": null
+    },
+    {
+      "key": "distance_m",
+      "label": "各自记录行驶距离",
+      "unit": "m",
+      "reference": 0.10338091954462572,
+      "game": 0.10313260726126941,
+      "delta": -0.00024831228335631117
+    },
+    {
+      "key": "simulation_seconds",
+      "label": "记录时长",
+      "unit": "s",
+      "reference": 0.025,
+      "game": 0.025,
+      "delta": 0.0
+    },
+    {
+      "key": "peak_deceleration_mps2",
+      "label": "峰值纵向减速度",
+      "unit": "m/s²",
+      "reference": -4.885847568511963,
+      "game": -4.8621625900268555,
+      "delta": 0.023684978485107422
+    },
+    {
+      "key": "peak_lateral_acceleration_mps2",
+      "label": "峰值横向加速度",
+      "unit": "m/s²",
+      "reference": 0.0012588686076924205,
+      "game": 0.0011755485320463777,
+      "delta": -8.332007564604282e-05
+    },
+    {
+      "key": "peak_yaw_rate_radps",
+      "label": "峰值横摆角速度",
+      "unit": "rad/s",
+      "reference": 9.370289717480773e-07,
+      "game": 1.494831167292432e-06,
+      "delta": 5.578021955443546e-07
+    },
+    {
+      "key": "compute_seconds",
+      "label": "离线计算耗时",
+      "unit": "s",
+      "reference": 0.011139900005218806,
+      "game": 0.00627590000294731,
+      "delta": -0.004864000002271496
+    }
+  ]
+}

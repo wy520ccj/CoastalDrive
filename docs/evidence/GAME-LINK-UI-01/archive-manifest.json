@@ -1,0 +1,440 @@
+{
+  "before/export-failed.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-before/export-failed.png",
+    "bytes": 142283,
+    "sha256": "e2f021dd4d57ce748d24cef6a615cb167fb61df1ecf94c586891befd95162606",
+    "gzip": false
+  },
+  "before/ready.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-before/ready.png",
+    "bytes": 143317,
+    "sha256": "294ee9df2f72153dd567536cf10a70f9a4058e1fc7ec14a01cc7c6956c2a2918",
+    "gzip": false
+  },
+  "before/summary.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-before/summary.json",
+    "bytes": 210,
+    "sha256": "3939f51066c83c83bba1edff10588337f387e759a74aef4c3921cd17037c279b",
+    "gzip": false
+  },
+  "initial-wide/export-failed.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-wide/export-failed.png",
+    "bytes": 134572,
+    "sha256": "19d301072891126e7cc0efebb45279e39300f7c5a48b01cf1674299b15012d12",
+    "gzip": false
+  },
+  "initial-wide/export-recovered.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-wide/export-recovered.png",
+    "bytes": 129390,
+    "sha256": "a1b318ddc6ee704c53dc7f342555b9c2459686e5bca5c5d920fc3e2b82d9e0b2",
+    "gzip": false
+  },
+  "initial-wide/ready.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-wide/ready.png",
+    "bytes": 124584,
+    "sha256": "ab1575d34f658e28fe8a93f20a2c08433a777bbb0736bef9d6905874f6284d89",
+    "gzip": false
+  },
+  "initial-wide/reopened-pending-export.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-wide/reopened-pending-export.png",
+    "bytes": 134572,
+    "sha256": "19d301072891126e7cc0efebb45279e39300f7c5a48b01cf1674299b15012d12",
+    "gzip": false
+  },
+  "initial-wide/summary.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-wide/summary.json",
+    "bytes": 421,
+    "sha256": "9a62086b3937019545f7f4b6ba6588605c8f322490cdbb02e4e2af37cf38d4b6",
+    "gzip": false
+  },
+  "initial-4x3/export-failed.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-4x3/export-failed.png",
+    "bytes": 95431,
+    "sha256": "0981afd082d754601bfb248cd680c02c5284faa082daa540cd8fd84639b26ec0",
+    "gzip": false
+  },
+  "initial-4x3/export-recovered.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-4x3/export-recovered.png",
+    "bytes": 91950,
+    "sha256": "1ffdf2a2a061b560e85c10220402418e9f30549d5179463bf65f0810f0c33afd",
+    "gzip": false
+  },
+  "initial-4x3/ready.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-4x3/ready.png",
+    "bytes": 88761,
+    "sha256": "4a302b502b8eca1fbae8e4c7ee289cf015b4f30d1f299623c57c121fa8c71206",
+    "gzip": false
+  },
+  "initial-4x3/reopened-pending-export.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-4x3/reopened-pending-export.png",
+    "bytes": 95431,
+    "sha256": "0981afd082d754601bfb248cd680c02c5284faa082daa540cd8fd84639b26ec0",
+    "gzip": false
+  },
+  "initial-4x3/summary.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-4x3/summary.json",
+    "bytes": 421,
+    "sha256": "a90e2082308172856eda70f73ae473f053474d22598b7feff52ded50330f7662",
+    "gzip": false
+  },
+  "capture-wide/ready.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-final-wide/ready.png",
+    "bytes": 124584,
+    "sha256": "ab1575d34f658e28fe8a93f20a2c08433a777bbb0736bef9d6905874f6284d89",
+    "gzip": false
+  },
+  "capture-4x3/ready.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-final-4x3/ready.png",
+    "bytes": 88760,
+    "sha256": "c6d1f5b40498fdbff96a1b2a1239749bbf6dcb98fd2d6b05ba0be8744d5b570a",
+    "gzip": false
+  },
+  "wide/export-failed.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/export-failed.png",
+    "bytes": 134574,
+    "sha256": "a404e6eb617ae3e3966df605a074726c5e6565f204854b60fd5232594c3de0cb",
+    "gzip": false
+  },
+  "wide/export-recovered.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/export-recovered.png",
+    "bytes": 130970,
+    "sha256": "0d3b01649973329cbe78c9212c470a90296fbefec05841652092256635aaca93",
+    "gzip": false
+  },
+  "wide/ready.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/ready.png",
+    "bytes": 124584,
+    "sha256": "ab1575d34f658e28fe8a93f20a2c08433a777bbb0736bef9d6905874f6284d89",
+    "gzip": false
+  },
+  "wide/reopened-pending-export.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reopened-pending-export.png",
+    "bytes": 134574,
+    "sha256": "a404e6eb617ae3e3966df605a074726c5e6565f204854b60fd5232594c3de0cb",
+    "gzip": false
+  },
+  "wide/summary.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/summary.json",
+    "bytes": 421,
+    "sha256": "06220faa7205a784c5d62aed415d7de5c25a1fd26f5263084166a2eab4b790dc",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/comparison.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/comparison.json",
+    "bytes": 2511,
+    "sha256": "1414ccfa617acdc839f773fdb3ce37b73259a19bd50a7491752b633d7f12b8c6",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/report.html": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/report.html",
+    "bytes": 7761,
+    "sha256": "f1bd91cbca94c9f9c21a962884701b1a4f1127092d8a9cf4e58e29d11217e94e",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/game/engineering.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/game/engineering.json",
+    "bytes": 24866,
+    "sha256": "2d7ccfa4881954174727fb77ffb8f6aa70b2343bb50fa81680b52ee48c250f1e",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/game/experiment.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/game/experiment.json",
+    "bytes": 92194,
+    "sha256": "b643b1d7f69fcc408b40ab9ed076086950faad898a5694e01c80abc74555fc2a",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/game/report.html": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/game/report.html",
+    "bytes": 28968,
+    "sha256": "ac656ea2bdbf27b06595b879a456545350bbaa97c036aa6659e58b75690a7b6a",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/game/signals.csv": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/game/signals.csv",
+    "bytes": 7101,
+    "sha256": "0c6baa55828e29da1e2511db0b4ccee693efb7abbeb87106531e3a9d07fb3d04",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/game/snapshots.bin": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/game/snapshots.bin",
+    "bytes": 23867,
+    "sha256": "a18e6a7c89687fd21480ccdabf54d9bc2420ad4e9c2310821bbf1c2faac074b8",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/game/suspension-bench-coverage.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/game/suspension-bench-coverage.json",
+    "bytes": 23,
+    "sha256": "672933a145c7042f0f89b86760066de25b1867316b464fad75c213b00bbb5618",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/game/vehicle.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/game/vehicle.json",
+    "bytes": 5392,
+    "sha256": "11304f8e70ff2842c67802ff1fd4b3da214ea8b3a126de46cca5dc9330e87a6d",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/reference/engineering.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/reference/engineering.json",
+    "bytes": 24865,
+    "sha256": "c3b7c0f5b498c0b60d1e92d1b62579eaf211185d55c9b426e12a1d87daf8ec5a",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/reference/experiment.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/reference/experiment.json",
+    "bytes": 92183,
+    "sha256": "032e04556342c433468e0802a71a6eb0507a37280531693bc6d5a6371c933e8f",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/reference/report.html": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/reference/report.html",
+    "bytes": 28966,
+    "sha256": "dd68184095193131edd8e9293506d3d543d6de7a23512fbf9118bbc83f9c32b1",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/reference/signals.csv": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/reference/signals.csv",
+    "bytes": 7086,
+    "sha256": "a3152ff93aa81a5eee060d0573e9fb4662526b64624098189ee0b89433cef657",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/reference/snapshots.bin": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/reference/snapshots.bin",
+    "bytes": 24963,
+    "sha256": "240a677f6861770731c2cb6fe8a2d3cc73f842a2be84b4014f013978e8475f86",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/reference/suspension-bench-coverage.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/reference/suspension-bench-coverage.json",
+    "bytes": 23,
+    "sha256": "672933a145c7042f0f89b86760066de25b1867316b464fad75c213b00bbb5618",
+    "gzip": false
+  },
+  "wide/reports/20261020-071724-192017-game-comparison/reference/vehicle.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-wide/reports/20261020-071724-192017-game-comparison/reference/vehicle.json",
+    "bytes": 5392,
+    "sha256": "04b890231e04f8dc3ac1a0e3f84245cdb220fa235efe89de409815b7437a0239",
+    "gzip": false
+  },
+  "4x3/export-failed.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/export-failed.png",
+    "bytes": 95430,
+    "sha256": "26609862ece610a2e3118c9961e20c728608e8cbee103898057fca7ba00b1b9d",
+    "gzip": false
+  },
+  "4x3/export-recovered.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/export-recovered.png",
+    "bytes": 92962,
+    "sha256": "fca1e79e0cc46941b639ea5dddae5dbcda343b0779411d0e01616a5f6b8f31d4",
+    "gzip": false
+  },
+  "4x3/ready.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/ready.png",
+    "bytes": 88760,
+    "sha256": "c6d1f5b40498fdbff96a1b2a1239749bbf6dcb98fd2d6b05ba0be8744d5b570a",
+    "gzip": false
+  },
+  "4x3/reopened-pending-export.png": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reopened-pending-export.png",
+    "bytes": 95430,
+    "sha256": "26609862ece610a2e3118c9961e20c728608e8cbee103898057fca7ba00b1b9d",
+    "gzip": false
+  },
+  "4x3/summary.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/summary.json",
+    "bytes": 421,
+    "sha256": "1aa2497f6165c3cfa59132c141d28203ed5689c78f502c27047d062e2c0e001a",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/comparison.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/comparison.json",
+    "bytes": 2510,
+    "sha256": "9f4dda8e9d46c60791db8f9d4472a36cbdbb6fbdb05eed9d654b915d2fddca28",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/report.html": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/report.html",
+    "bytes": 7760,
+    "sha256": "b94edbf33766fcf28cfac40dc18ca4ef691f365368d133c04b0cb72e3cc3e067",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/game/engineering.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/game/engineering.json",
+    "bytes": 24866,
+    "sha256": "2d7ccfa4881954174727fb77ffb8f6aa70b2343bb50fa81680b52ee48c250f1e",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/game/experiment.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/game/experiment.json",
+    "bytes": 92193,
+    "sha256": "c0c4af804581d794c0bca6664eea8958f7a5140b1ef1dd1632dba85ce265f80d",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/game/report.html": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/game/report.html",
+    "bytes": 28967,
+    "sha256": "1dfe261b57a48b60834a0c57d4055cf8cd34c8d052921f014f22e7456669fde2",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/game/signals.csv": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/game/signals.csv",
+    "bytes": 7101,
+    "sha256": "0c6baa55828e29da1e2511db0b4ccee693efb7abbeb87106531e3a9d07fb3d04",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/game/snapshots.bin": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/game/snapshots.bin",
+    "bytes": 23867,
+    "sha256": "a18e6a7c89687fd21480ccdabf54d9bc2420ad4e9c2310821bbf1c2faac074b8",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/game/suspension-bench-coverage.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/game/suspension-bench-coverage.json",
+    "bytes": 23,
+    "sha256": "672933a145c7042f0f89b86760066de25b1867316b464fad75c213b00bbb5618",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/game/vehicle.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/game/vehicle.json",
+    "bytes": 5392,
+    "sha256": "11304f8e70ff2842c67802ff1fd4b3da214ea8b3a126de46cca5dc9330e87a6d",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/reference/engineering.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/reference/engineering.json",
+    "bytes": 24865,
+    "sha256": "c3b7c0f5b498c0b60d1e92d1b62579eaf211185d55c9b426e12a1d87daf8ec5a",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/reference/experiment.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/reference/experiment.json",
+    "bytes": 92183,
+    "sha256": "ade04aa0bf46dfde8aa63e225ea034bbed9d771ce037d36fe3393ae356aedc29",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/reference/report.html": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/reference/report.html",
+    "bytes": 28966,
+    "sha256": "8548a2fb63eacd5e01f3fe9b9aa68f3fa23bdbe3c3c08a48072fe18954aee05e",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/reference/signals.csv": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/reference/signals.csv",
+    "bytes": 7086,
+    "sha256": "a3152ff93aa81a5eee060d0573e9fb4662526b64624098189ee0b89433cef657",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/reference/snapshots.bin": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/reference/snapshots.bin",
+    "bytes": 24963,
+    "sha256": "240a677f6861770731c2cb6fe8a2d3cc73f842a2be84b4014f013978e8475f86",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/reference/suspension-bench-coverage.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/reference/suspension-bench-coverage.json",
+    "bytes": 23,
+    "sha256": "672933a145c7042f0f89b86760066de25b1867316b464fad75c213b00bbb5618",
+    "gzip": false
+  },
+  "4x3/reports/20261020-071729-092642-game-comparison/reference/vehicle.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-verified-4x3/reports/20261020-071729-092642-game-comparison/reference/vehicle.json",
+    "bytes": 5392,
+    "sha256": "04b890231e04f8dc3ac1a0e3f84245cdb220fa235efe89de409815b7437a0239",
+    "gzip": false
+  },
+  "checks/T0/ruff.log": {
+    "source": "logs/validation/GAME-LINK-UI-01-T0/ruff.log",
+    "bytes": 1584,
+    "sha256": "f10e68475603babb3b6938ae53e6310d3f0670a0970f2e78e9036f92ddb4be45",
+    "gzip": false
+  },
+  "checks/T0/summary.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-T0/summary.json",
+    "bytes": 1710,
+    "sha256": "f37d7cad6f9ee05454b36983592286a833eb95893baabe7a02e4f8c6200be567",
+    "gzip": false
+  },
+  "checks/fixed-T0/ruff.log": {
+    "source": "logs/validation/GAME-LINK-UI-01-fixed-T0/ruff.log",
+    "bytes": 1155,
+    "sha256": "f918c63e61b0177ca5a9163794446276125948ee940c9894db3032b7a19e8896",
+    "gzip": false
+  },
+  "checks/fixed-T0/summary.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-fixed-T0/summary.json",
+    "bytes": 1722,
+    "sha256": "998782a79346b73ad41af19a7f085e6860a3063d5f8af2db37efca5e173bf7f3",
+    "gzip": false
+  },
+  "checks/export-T0/pytest.log": {
+    "source": "logs/validation/GAME-LINK-UI-01-export-T0/pytest.log",
+    "bytes": 100,
+    "sha256": "e7c96cbf8643fb358467d26b067d6c1a813c605a78776ade8803019775135628",
+    "gzip": false
+  },
+  "checks/export-T0/ruff.log": {
+    "source": "logs/validation/GAME-LINK-UI-01-export-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "gzip": false
+  },
+  "checks/export-T0/summary.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-export-T0/summary.json",
+    "bytes": 1779,
+    "sha256": "5d9d155a4f17e5639a1f0891a45c8fa2cbcb89e07727b8ba9d483647adbba727",
+    "gzip": false
+  },
+  "checks/T1/headless-0.log": {
+    "source": "logs/validation/GAME-LINK-UI-01-T1/headless-0.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7",
+    "gzip": false
+  },
+  "checks/T1/headless-17.log": {
+    "source": "logs/validation/GAME-LINK-UI-01-T1/headless-17.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7",
+    "gzip": false
+  },
+  "checks/T1/headless-23.log": {
+    "source": "logs/validation/GAME-LINK-UI-01-T1/headless-23.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7",
+    "gzip": false
+  },
+  "checks/T1/pytest.log": {
+    "source": "logs/validation/GAME-LINK-UI-01-T1/pytest.log",
+    "bytes": 102,
+    "sha256": "6cfc2593e80ed4f8e3291a884cd462b03b8103dbae55df4b9b813a54936bd83f",
+    "gzip": false
+  },
+  "checks/T1/ruff.log": {
+    "source": "logs/validation/GAME-LINK-UI-01-T1/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "gzip": false
+  },
+  "checks/T1/summary.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-T1/summary.json",
+    "bytes": 3408,
+    "sha256": "b79197dec906e0e69f4375beb937bd43a837bc9d70c6f0dc7cc2c782e9ce3cbd",
+    "gzip": false
+  },
+  "checks/final-T0/pytest.log": {
+    "source": "logs/validation/GAME-LINK-UI-01-final-T0/pytest.log",
+    "bytes": 100,
+    "sha256": "4f1444ac362c6456bf3794390e9011892ec0f6f72ac41252f6facdca1c37456a",
+    "gzip": false
+  },
+  "checks/final-T0/ruff.log": {
+    "source": "logs/validation/GAME-LINK-UI-01-final-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "gzip": false
+  },
+  "checks/final-T0/summary.json": {
+    "source": "logs/validation/GAME-LINK-UI-01-final-T0/summary.json",
+    "bytes": 1776,
+    "sha256": "e5a795d1ee5c8105db464cf8c58eee498356d567d66d72988178f6ec5c27a5e9",
+    "gzip": false
+  }
+}

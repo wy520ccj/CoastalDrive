@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "comparison_finished": true,
+  "world_closed": true,
+  "size": [
+    1024,
+    768
+  ],
+  "scope": "实际短参考/游戏对照，真实导出接口失败；无新道路驾驶或成绩",
+  "completed_records_preserved": true,
+  "exported_without_new_physics": true,
+  "reference_and_vehicle_unchanged": true,
+  "export": "reports\\20261020-071351-078496-game-comparison\\report.html"
+}

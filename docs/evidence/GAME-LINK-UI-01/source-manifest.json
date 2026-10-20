@@ -1,0 +1,6 @@
+{
+  "src/lab_game_comparison.py": "f13f8f5e5ae95dcc548275b2d220ab95459d1eb92830fa9ce2c3dc818508bbfc",
+  "src/ui/lab_design_loop.py": "f1f189b1df8ab3a00301247a95f4c9a23b5a15a8ab320e23679933606eb54e4e",
+  "tests/test_design_loop_ui.py": "92e6f60f07117e1096e97968d642ec5a034385fe85ee09a200b0dbb6ffa1f2f7",
+  "tools/game_link_ui_check.py": "d3f3ac51b68e4b9aa41b70d2555aaf3f4a4fbc14a4daf76fa8888c27c70ed882"
+}

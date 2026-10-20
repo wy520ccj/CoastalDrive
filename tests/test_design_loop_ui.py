@@ -76,6 +76,50 @@ def test_comparison_releases_reference_world_and_close_cancels(workbench):
     assert app.record.metadata["summary"]["reason"] == "time_limit"
 
 
+def test_completed_export_failure_retries_without_new_physics_and_survives_reopen(workbench, monkeypatch):
+    import lab_game_comparison
+    from lab_records import load_record
+
+    app = workbench
+    completed_trial(app)
+    app.design_loop.show()
+    panel = app.design_loop
+    reference, baseline, vehicle = panel.record, app.baseline, app.workspace_vehicle
+    panel.start_comparison()
+    run = panel.comparison.run
+
+    def fail(*args, **kwargs):
+        raise OSError('文件暂不可写')
+
+    with monkeypatch.context() as blocked:
+        blocked.setattr(lab_game_comparison, 'export_record', fail)
+        while panel.comparison is not None:
+            panel.update()
+    assert run.closed and panel.completed_records is not None and panel.report_path is None
+    completed = panel.completed_records
+    assert panel.retry_button['state'] == 'normal'
+    panel.hide()
+    panel.show()
+    assert panel.completed_records is completed and panel.retry_button['state'] == 'normal'
+
+    def no_recalculation(*args, **kwargs):
+        pytest.fail('重试导出不应新建物理试验')
+
+    monkeypatch.setattr(lab_game_comparison.GameComparison, '__init__', no_recalculation)
+    panel.retry_button['command']()
+    assert panel.report_path.is_file() and panel.report_button['state'] == 'normal'
+    assert panel.retry_button['state'] == 'disabled' and app.notice.root.isHidden()
+    assert '已导出' in app.notice.getText() and '失败' not in app.notice.getText()
+    saved = load_record(panel.report_path.parent/'game')
+    assert saved.snapshots == completed[1].snapshots and saved.commands == completed[1].commands
+    path = panel.report_path
+    panel.update()
+    panel.hide()
+    panel.show()
+    assert panel.report_path == path and panel.completed_records is completed
+    assert app.active_record() is reference and app.baseline is baseline and app.workspace_vehicle is vehicle
+
+
 def test_applied_vehicle_reaches_game_world_and_same_model_garage_keeps_it(tmp_path):
     config = replace(REFERENCE_DESIGN, mass=1440., center_of_mass_height=.41, tire_substeps=2)
     vehicle = WorkspaceVehicle("reference-rwd", config, report_path="reference/report.html")

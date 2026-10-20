@@ -52,22 +52,26 @@ class GameComparison:
         self.run.close()
 
     def export(self, folder):
-        game = LabRecord.from_run(self.run)
-        export_record(self.reference, folder/"reference")
-        export_record(game, folder/"game")
-        report = comparison_report(self.reference, game)
-        (folder/"comparison.json").write_text(json.dumps(report, ensure_ascii=False, indent=2,
-                                                        allow_nan=False)+"\n", encoding="utf-8")
-        def cell(value):
-            return "未满足条件" if value is None else f"{value:.5g}"
+        return export_comparison(self.reference, LabRecord.from_run(self.run), folder)
 
-        rows = "".join(f"<tr><td>{html.escape(item['label'])}</td><td>{cell(item['reference'])}</td>"
-                       f"<td>{cell(item['game'])}</td><td>{cell(item['delta'])}</td><td>{item['unit']}</td></tr>"
-                       for item in report["metrics"])
-        plots = "".join(plot_svg((self.reference, game), key) for key in ("speed", "ax", "yaw", "steering"))
-        details = html.escape(json.dumps({k: v for k, v in report.items() if k != "metrics"},
-                                        ensure_ascii=False, indent=2))
-        page = f'''<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>车辆游戏对照</title>
+
+def export_comparison(reference, game, folder):
+    """已完成的两份纯记录可重复导出，不依赖存活的物理世界。"""
+    export_record(reference, folder/"reference")
+    export_record(game, folder/"game")
+    report = comparison_report(reference, game)
+    (folder/"comparison.json").write_text(json.dumps(report, ensure_ascii=False, indent=2,
+                                                    allow_nan=False)+"\n", encoding="utf-8")
+    def cell(value):
+        return "未满足条件" if value is None else f"{value:.5g}"
+
+    rows = "".join(f"<tr><td>{html.escape(item['label'])}</td><td>{cell(item['reference'])}</td>"
+                   f"<td>{cell(item['game'])}</td><td>{cell(item['delta'])}</td><td>{item['unit']}</td></tr>"
+                   for item in report["metrics"])
+    plots = "".join(plot_svg((reference, game), key) for key in ("speed", "ax", "yaw", "steering"))
+    details = html.escape(json.dumps({k: v for k, v in report.items() if k != "metrics"},
+                                    ensure_ascii=False, indent=2))
+    page = f'''<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>车辆游戏对照</title>
 <style>body{{font:16px system-ui;background:#f3efe3;color:#102b3a;max-width:1000px;margin:40px auto;padding:24px}}td,th{{padding:10px;border-bottom:1px solid #bbc9c8}}svg{{width:100%}}pre{{white-space:pre-wrap}}</style>
 <h1>同一车辆 · 参考实验 / 游戏积分对照</h1>
 <p>海蓝：参考；橙色：游戏。两者均为120Hz、直接VehicleCommand输入。仅游戏配置使用每拍一次机械求解。
@@ -78,9 +82,9 @@ class GameComparison:
 <table><tr><th>指标</th><th>参考</th><th>游戏</th><th>游戏−参考</th><th>单位</th></tr>{rows}</table>{plots}
 <h2>运行条件与公共时间段误差</h2><pre>{details}</pre>
 <p><a href="reference/report.html">参考完整记录</a> · <a href="game/report.html">游戏完整记录</a></p></html>'''
-        path = folder/"report.html"
-        path.write_text(page, encoding="utf-8")
-        return path
+    path = folder/"report.html"
+    path.write_text(page, encoding="utf-8")
+    return path
 
 
 def comparison_report(reference, game):
