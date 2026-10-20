@@ -1,0 +1,74 @@
+F.F.                                                                     [100%]
+================================== FAILURES ===================================
+_ test_fixed_traffic_course_and_reset_and_existing_free_density[GameMode.SAFE_OVERTAKE] _
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-866/test_fixed_traffic_course_and_0')
+mode = <GameMode.SAFE_OVERTAKE: 'safe_overtake'>
+
+    @pytest.mark.parametrize('mode', OVERTAKE_ROUTES)
+    def test_fixed_traffic_course_and_reset_and_existing_free_density(tmp_path, mode):
+        route = OVERTAKE_ROUTES[mode]
+        session = Session(track='test', scores=BestTimes(tmp_path/'best.json'))
+        try:
+            with pytest.raises(ValueError):
+                session.start(mode=mode, track='coastal')
+            session.traffic_density, session.road_shape = 'busy', 'hills'
+            session.start(mode=mode, track='endless', countdown=False, settle_initial=True)
+            assert session.seed == route.seed and session.road_shape == route.shape
+            assert len(session.current.traffic) == 12 and session.simulation.traffic_span == 540
+            assert session.traffic_density == 'busy' and session.simulation.config.tire_substeps == 1
+            assert session.highway.snapshot.overtake is not None and session.highway.snapshot.challenge
+            session.tick()
+            result = session.highway.snapshot.overtake
+            assert result.seconds == 1/120 and result.passes == 0
+            output = _output(session)
+            assert _decode_frame(_encode_frame(output)).highway == output.highway
+            session.pause()
+            before = session.current
+            session.frame(1.)
+            assert session.current == before and session.phase == Phase.PAUSED
+            session.resume()
+            session.reset_player()
+            assert session.phase == Phase.RESULTS and '复位' in session.highway.snapshot.overtake.reason
+            session.start(countdown=False, settle_initial=True)
+            assert len(session.current.traffic) == 12 and session.highway.snapshot.overtake.passes == 0
+            session.tick()
+>           assert session.highway.snapshot.overtake.traffic_reading is not None
+E           AssertionError: assert None is not None
+E            +  where None = OvertakeResult(start_progress=8.0, distance=0.0, seconds=0.008333333333333333, passes=0, pass_times=(), pass_ids=(), p...one, reference_times=(), new_best=False, save_notice='', route_id='safe_overtake', traffic_reading=None, incident=None).traffic_reading
+E            +    where OvertakeResult(start_progress=8.0, distance=0.0, seconds=0.008333333333333333, passes=0, pass_times=(), pass_ids=(), p...one, reference_times=(), new_best=False, save_notice='', route_id='safe_overtake', traffic_reading=None, incident=None) = HighwayResult(challenge=True, running=True, finished=False, succeeded=False, reason='', elapsed=0.008333333333333333, ...ne, reference_times=(), new_best=False, save_notice='', route_id='safe_overtake', traffic_reading=None, incident=None)).overtake
+E            +      where HighwayResult(challenge=True, running=True, finished=False, succeeded=False, reason='', elapsed=0.008333333333333333, ...ne, reference_times=(), new_best=False, save_notice='', route_id='safe_overtake', traffic_reading=None, incident=None)) = <highway_run.HighwayRun object at 0x00000291C61F39D0>.snapshot
+E            +        where <highway_run.HighwayRun object at 0x00000291C61F39D0> = <session.Session object at 0x00000291C50BBCB0>.highway
+
+tests\test_overtake_session.py:42: AssertionError
+__ test_process_returns_fixed_course_and_quit_state[GameMode.SAFE_OVERTAKE] ___
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-866/test_process_returns_fixed_cou0')
+mode = <GameMode.SAFE_OVERTAKE: 'safe_overtake'>
+
+    @pytest.mark.parametrize('mode', OVERTAKE_ROUTES)
+    def test_process_returns_fixed_course_and_quit_state(tmp_path, mode):
+        route = OVERTAKE_ROUTES[mode]
+        session = SessionProcess(track='test', driving_mode=DrivingMode.GAME, scores=BestTimes(tmp_path/'best.json'))
+        try:
+            session.traffic_density, session.road_shape = 'light', 'hills'
+            session.start(mode=mode, track='endless', countdown=False, settle_initial=True)
+            assert session.seed == route.seed and session.road_shape == route.shape
+            assert len(session.current.traffic) == 12 and session.highway.snapshot.overtake.passes == 0
+            deadline = time.monotonic()+10.
+            while session.highway.snapshot.overtake.traffic_reading is None and time.monotonic() < deadline:
+                session.frame(0.)
+                time.sleep(.005)
+            session.pause()
+>           assert session.highway.snapshot.overtake.traffic_reading is not None
+E           AssertionError: assert None is not None
+E            +  where None = OvertakeResult(start_progress=8.0, distance=0.0, seconds=10.000000000000073, passes=0, pass_times=(), pass_ids=(), pas...one, reference_times=(), new_best=False, save_notice='', route_id='safe_overtake', traffic_reading=None, incident=None).traffic_reading
+E            +    where OvertakeResult(start_progress=8.0, distance=0.0, seconds=10.000000000000073, passes=0, pass_times=(), pass_ids=(), pas...one, reference_times=(), new_best=False, save_notice='', route_id='safe_overtake', traffic_reading=None, incident=None) = HighwayResult(challenge=True, running=True, finished=False, succeeded=False, reason='', elapsed=10.000000000000073, di...ne, reference_times=(), new_best=False, save_notice='', route_id='safe_overtake', traffic_reading=None, incident=None)).overtake
+E            +      where HighwayResult(challenge=True, running=True, finished=False, succeeded=False, reason='', elapsed=10.000000000000073, di...ne, reference_times=(), new_best=False, save_notice='', route_id='safe_overtake', traffic_reading=None, incident=None)) = namespace(snapshot=HighwayResult(challenge=True, running=True, finished=False, succeeded=False, reason='', elapsed=10....e, reference_times=(), new_best=False, save_notice='', route_id='safe_overtake', traffic_reading=None, incident=None))).snapshot
+E            +        where namespace(snapshot=HighwayResult(challenge=True, running=True, finished=False, succeeded=False, reason='', elapsed=10....e, reference_times=(), new_best=False, save_notice='', route_id='safe_overtake', traffic_reading=None, incident=None))) = <session_process.SessionProcess object at 0x00000291C616D010>.highway
+
+tests\test_overtake_session.py:65: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_overtake_session.py::test_fixed_traffic_course_and_reset_and_existing_free_density[GameMode.SAFE_OVERTAKE]
+FAILED tests/test_overtake_session.py::test_process_returns_fixed_course_and_quit_state[GameMode.SAFE_OVERTAKE]
+2 failed, 2 passed in 16.40s

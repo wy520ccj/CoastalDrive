@@ -6,7 +6,7 @@ from dataclasses import replace
 import pytest
 
 from overtake_routes import OVERTAKE_ROUTES
-from overtake_run import OvertakeRun
+from overtake_run import OvertakeRun, body
 from race import BestTimes, GameMode
 from simulation import Snapshot
 from traffic import Road
@@ -73,6 +73,10 @@ def test_road_local_coordinates_not_world_x_y_and_heading(tmp_path):
     before = current
     result = run.update(current, 1.)
     assert not result.finished and result.distance == pytest.approx(20., abs=1e-4)
+    localized = run.local_state(current)
+    own, other = body(localized.player, CAR), body(localized.traffic[0], CAR)
+    assert result.traffic_reading.kind == 'front'
+    assert result.traffic_reading.end_m == pytest.approx(other[1]-own[1]-own[3]-other[3])
     assert current == before and run.snapshot.route_id == MODE.value
     # 世界X很接近，俯视沿路坐标仍须按完整车身检查跟车10米。
     result = run.update(state(road, 420., (car(road, 430., 0.),)), 2.)

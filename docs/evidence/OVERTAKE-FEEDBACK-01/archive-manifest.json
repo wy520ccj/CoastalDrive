@@ -1,0 +1,247 @@
+{
+  "normal/capture-context.json": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-normal-unsafe/capture-context.json",
+    "bytes": 43099,
+    "sha256": "09745784cbfcf5b40b294142d0ec920f567ba338c39f31ba3fc6fb7a461e6945"
+  },
+  "normal/clearance-warning.png": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-normal-unsafe/clearance-warning.png",
+    "bytes": 661179,
+    "sha256": "f47935a1cb451a8470ff2ab5e793efe87c91b083fd5453d92017edeed1e09f13"
+  },
+  "normal/driving.png": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-normal-unsafe/driving.png",
+    "bytes": 662038,
+    "sha256": "c58890a1df686fe4674bb4381c8a13ee5cf8540886ce9db3a5de9369d78fdfba"
+  },
+  "normal/events.png": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-normal-unsafe/events.png",
+    "bytes": 39419,
+    "sha256": "c9e3200a956fd7d0262063b9a98247ce197798528d0c322cec4b04e0f7252976"
+  },
+  "normal/main.png": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-normal-unsafe/main.png",
+    "bytes": 1024803,
+    "sha256": "a69409f04e8cb25856847e64688ba11c3f7cbbd1b8ecdac3e0c49431e1d6a0f4"
+  },
+  "normal/raw.json.gz": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-normal-unsafe/raw.json.gz",
+    "bytes": 1067883,
+    "sha256": "69961d598490a017baaad2839f4d92570cf0d97644b50b98564b341707f0559a"
+  },
+  "normal/recheck.json": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-normal-unsafe/recheck.json",
+    "bytes": 433,
+    "sha256": "e9dd3f83350b6c0afee11d7bc92160a4d63d7286cb69b6bbee9b34861a02c413"
+  },
+  "normal/result.png": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-normal-unsafe/result.png",
+    "bytes": 531835,
+    "sha256": "acf7bd0f1c78241b9e22de482b74f46ab6abc1c3fb59a583efd5d20484cceb34"
+  },
+  "normal/retry.png": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-normal-unsafe/retry.png",
+    "bytes": 662047,
+    "sha256": "29ba186cfaaaa78a5abf88e4743c6ca5cc606ab4915662e22b0a0fad074ae49b"
+  },
+  "normal/rules.png": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-normal-unsafe/rules.png",
+    "bytes": 26726,
+    "sha256": "1e83fdef43365ee5f18d2ecee92ac91d2a3e97821514cd369a91bce551d7f07b"
+  },
+  "normal/summary.json": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-normal-unsafe/summary.json",
+    "bytes": 56250,
+    "sha256": "3e2e7a516a792d50138ca5aefba9e12bc4e98e91adaa2287d239a8dff807fd71"
+  },
+  "double/capture-context.json": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-unsafe/capture-context.json",
+    "bytes": 38659,
+    "sha256": "8bff561c20f646855ecf372f02cfe51cfff5d50ee372c073a7e62f3bbd78a4a2"
+  },
+  "double/clearance-warning.png": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-unsafe/clearance-warning.png",
+    "bytes": 518289,
+    "sha256": "054b555ad0e5ae3c0ec5edbdf6372a976ba2b2cc9b8a80afee1c51bf0037ece8"
+  },
+  "double/driving.png": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-unsafe/driving.png",
+    "bytes": 513154,
+    "sha256": "e4a8788a9cb2ba69105e968b87f3e59b3aed96d56d8e0ec93320fb872232d5d6"
+  },
+  "double/events.png": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-unsafe/events.png",
+    "bytes": 42709,
+    "sha256": "2820c1a22574e94b804ecea0ba3499f41f2a3d340757af5815ba4a2b492a8767"
+  },
+  "double/main.png": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-unsafe/main.png",
+    "bytes": 951022,
+    "sha256": "137c2b289ad4f810e77ec12b854e44bd98cf23dac8f098103a33c9d7782f03d9"
+  },
+  "double/raw.json.gz": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-unsafe/raw.json.gz",
+    "bytes": 1129775,
+    "sha256": "4058fe617638d99f759e992641be33454a4586a52436957871fe59136911bdf5"
+  },
+  "double/recheck.json": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-unsafe/recheck.json",
+    "bytes": 429,
+    "sha256": "79ea681058b5a2451aaadca4b5b7abff097026cf29fc5415b8ad960c2ea6e9f9"
+  },
+  "double/result.png": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-unsafe/result.png",
+    "bytes": 335967,
+    "sha256": "5b966904faee4807d8a7cacf9273eb109eb1d8071aea3d53817ca8b8b9ec57c7"
+  },
+  "double/retry.png": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-unsafe/retry.png",
+    "bytes": 513154,
+    "sha256": "e4a8788a9cb2ba69105e968b87f3e59b3aed96d56d8e0ec93320fb872232d5d6"
+  },
+  "double/rules.png": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-unsafe/rules.png",
+    "bytes": 28645,
+    "sha256": "e169980f4460be783837bd29cb7f55d25d2fda078885c170afb117d9e78d49bf"
+  },
+  "double/summary.json": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-unsafe/summary.json",
+    "bytes": 51802,
+    "sha256": "41a610048ead4656d30905870193ce503c3e42abfe23ecbfec79bd672bce1eda"
+  },
+  "legacy/summary.json": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-legacy/summary.json",
+    "bytes": 39944,
+    "sha256": "b4b7ebc9964f452c7923314b58539edb8f2b55aedfcea49499d0d51ff57d9a69"
+  },
+  "checks/T0/pytest.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-T0/pytest.log",
+    "bytes": 101,
+    "sha256": "b0ec4a3da3d35d45ff1b1fda0a666cb6e7b4441733f42c19b7bc1cb1d595da4a"
+  },
+  "checks/T0/ruff.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T0/summary.json": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-T0/summary.json",
+    "bytes": 1913,
+    "sha256": "388a278391e9274945ef46283857282989f8d01e7e463a199d8d71e804791184"
+  },
+  "checks/integration-T0/pytest.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-integration-T0/pytest.log",
+    "bytes": 7960,
+    "sha256": "5cd265c24da531d137bf7152c14c1e914b8e8c288c1cce2a66769798a4c5cee5"
+  },
+  "checks/integration-T0/ruff.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-integration-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/integration-T0/summary.json": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-integration-T0/summary.json",
+    "bytes": 2215,
+    "sha256": "56b8c0dcae1da52cd88060fb04345171f911d5d4edbce0c80b06224080d1aae3"
+  },
+  "checks/process-T0/pytest.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-process-T0/pytest.log",
+    "bytes": 7030,
+    "sha256": "9398f66cfc55339f7dedd4e21d2edd02ee1f2901c85345e31f8862d77d4b1d45"
+  },
+  "checks/process-T0/ruff.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-process-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/process-T0/summary.json": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-process-T0/summary.json",
+    "bytes": 1924,
+    "sha256": "a5a4242da42b9491c11a8de5783581345826daa560d589fc74c89f42b83bf74d"
+  },
+  "checks/process-fixed-T0/ruff.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-process-fixed-T0/ruff.log",
+    "bytes": 1111,
+    "sha256": "c93355eababfb58361b80a02bc8d4831154031320b02bcb06fc51323c5639e4b"
+  },
+  "checks/process-fixed-T0/summary.json": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-process-fixed-T0/summary.json",
+    "bytes": 1865,
+    "sha256": "e4f3930037d391d89097a304749822c5276743af4cdcf9fd7dac95ecb48aa2fd"
+  },
+  "checks/process-final-T0/pytest.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-process-final-T0/pytest.log",
+    "bytes": 100,
+    "sha256": "4739c83667b2253b8ab70c475d2358a50065ad6a8094ccf96f710baac0c68f3c"
+  },
+  "checks/process-final-T0/ruff.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-process-final-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/process-final-T0/summary.json": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-process-final-T0/summary.json",
+    "bytes": 1920,
+    "sha256": "3e54b794e36dec8a7e9de24424e80a70d98b6f12927965cd64d53c8cc79094f6"
+  },
+  "checks/T1/headless-0.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-T1/headless-0.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1/headless-17.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-T1/headless-17.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1/headless-23.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-T1/headless-23.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1/pytest.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-T1/pytest.log",
+    "bytes": 113,
+    "sha256": "ab772934bef517664505f36ea4d65c5ac4762dca3a5310d8809cb4148762f37b"
+  },
+  "checks/T1/ruff.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-T1/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T1/summary.json": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-T1/summary.json",
+    "bytes": 4396,
+    "sha256": "238ca8819d5b1aa07a199e1eb13e9b6b28c65ff533671a8ff138a2baa4ecca4d"
+  },
+  "checks/double-T1/headless-0.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-T1/headless-0.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/double-T1/headless-17.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-T1/headless-17.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/double-T1/headless-23.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-T1/headless-23.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/double-T1/pytest.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-T1/pytest.log",
+    "bytes": 113,
+    "sha256": "7ef3d6e1fa7b5616fd6f7b2726487dfb0c903cc4f3ce745c47e1b7a73dab3406"
+  },
+  "checks/double-T1/ruff.txt": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-T1/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/double-T1/summary.json": {
+    "source": "logs/validation/OVERTAKE-FEEDBACK-01-double-T1/summary.json",
+    "bytes": 4431,
+    "sha256": "f1ed6f321666264cf764cf2a87807a742e553ca3e21889f8b8a7f9cd92d6947d"
+  }
+}

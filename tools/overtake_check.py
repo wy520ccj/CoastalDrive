@@ -64,6 +64,7 @@ def recheck(folder):
     with tempfile.TemporaryDirectory() as temporary:
         item = OvertakeRun(snapshot(summary['initial']), config, BestTimes(Path(temporary)/'best.json'), summary['variant'], mode=mode, road=road)
         elapsed = 0.
+        reading_kinds = set()
         previous_tick = summary['initial']['tick']
         for row in rows:
             assert row['tick'] == previous_tick+1
@@ -71,13 +72,17 @@ def recheck(folder):
             elapsed += FIXED_DT
             road.origin_y = row['origin_y']
             state = item.update(snapshot(row), elapsed, reset='player_reset' in row['events'])
+            if state.traffic_reading is not None:
+                reading_kinds.add(state.traffic_reading.kind)
             current = json.loads(json.dumps(asdict(state)))
-            assert set(current)-set(row['result']) <= {'route_id'}
+            assert set(current)-set(row['result']) <= {'route_id', 'traffic_reading', 'incident'}
             assert {key: current[key] for key in row['result']} == row['result'], row['tick']
         assert {key: current[key] for key in summary['result']} == summary['result']
         assert state.succeeded == summary['expected_succeeded']
     assert hashlib.sha256((folder/'raw.json.gz').read_bytes()).hexdigest() == summary['record_sha256']
-    return {'passed': True, 'rows': len(rows), 'scope': '从保存真实位置/朝向/代次/速度逐拍重算规则，不重跑物理'}
+    return {'passed': True, 'rows': len(rows), 'reading_kinds': sorted(reading_kinds),
+            'incident': asdict(state.incident) if state.incident is not None else None,
+            'scope': '从保存真实位置/朝向/代次/速度逐拍重算规则，不重跑物理'}
 
 
 def check(output, size, unsafe, restore, mode=GameMode.SAFE_OVERTAKE, follow=False):
@@ -153,7 +158,7 @@ def check(output, size, unsafe, restore, mode=GameMode.SAFE_OVERTAKE, follow=Fal
                 driver = OvertakeDriver(app.session.simulation.road, config, app.session.keyboard.input_config, 20. if follow else 40.)
                 app.session.set_controller(driver)
             capture('driving')
-            rows, shown, qualified, near_finish = [], False, False, False
+            rows, shown, qualified, near_finish, warned = [], False, False, False, False
             for _ in range(round(route.seconds*120)+2):
                 if unsafe:
                     apply_keys(app.session.keyboard, driver.sample(app.session.current, FIXED_DT))
@@ -162,6 +167,9 @@ def check(output, size, unsafe, restore, mode=GameMode.SAFE_OVERTAKE, follow=Fal
                 row = record(app.session.current)
                 row.update(control=asdict(app.session.last_control), result=asdict(result))
                 rows.append(row)
+                if result.traffic_reading is not None and result.traffic_reading.warning and not result.finished and not warned:
+                    capture('clearance-warning')
+                    warned = True
                 if result.passes and not shown and not result.finished:
                     capture('first-pass')
                     shown = True

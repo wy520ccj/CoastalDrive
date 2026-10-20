@@ -5,6 +5,7 @@ from dataclasses import replace
 import pytest
 
 from application import CoastalDrive
+from overtake_observations import GapIncident, TrafficReading
 from race import GameMode
 from session import Phase
 from traffic import Road
@@ -49,6 +50,11 @@ def test_hill_menu_markers_results_and_lab_return(tmp_path):
         app.refresh_panel()
         app.hud.update(before, app.session.race.snapshot, app.session.highway.snapshot, track='endless', countdown='', notice='')
         assert app.hud.mode.getText() == '弯坡车流' and '0/3' in app.hud.detail.getText() and not app.hud.split.isHidden()
+        observed = replace(result, traffic_reading=TrafficReading((0, 3), 'front', -2.1, 15., 18., 1., True))
+        app.hud.update(before, app.session.race.snapshot, replace(app.session.highway.snapshot, overtake=observed),
+                       track='endless', countdown='', notice='')
+        assert not app.hud.goal.isHidden() and '匀速' in app.hud.goal.getText()
+        assert app.hud.goal.getTightBounds(app.hud.status_frame)[0].z > app.hud.status_frame['frameSize'][2]
         complete = replace(result, passes=3, distance=2400., seconds=100., medal='金', finished=True, succeeded=True,
             pass_times=(30., 45., 70.), pass_ids=((0, 0), (4, 0), (9, 0)), pass_clearances=(2., 3., 2.5), reason='安全超越3辆 · 金牌完成')
         app.session.highway.snapshot = replace(app.session.highway.snapshot, overtake=complete, finished=True, succeeded=True)
@@ -57,6 +63,15 @@ def test_hill_menu_markers_results_and_lab_return(tmp_path):
         app.refresh_panel()
         assert '3/3' in app.panel_detail.getText() and '第3辆' in app.panel_detail.getText()
         assert app.panel_detail.getTightBounds(app.panel)[0].z > app.buttons[0].getZ()+app.buttons[0]['frameSize'][3]
+        failure = replace(complete, succeeded=False, reason='与车流#12间距不足；侧距2.40米 / 前后距-4.40米。并行留1米，跟车或切回留10米。',
+            incident=GapIncident((11, 2), 'parallel', -2., -4., 100., 2300., True),
+            save_notice='已有最佳详情无法读取，完整用时保持。')
+        app.session.highway.snapshot = replace(app.session.highway.snapshot, overtake=failure, succeeded=False)
+        app._shown_phase = None
+        app.refresh_panel()
+        assert '拍间触发' in app.panel_detail.getText() and '下次' in app.panel_detail.getText()
+        assert app.panel_detail.getTightBounds(app.panel)[0].z > app.buttons[0].getZ()+app.buttons[0]['frameSize'][3]
+        assert app.session.current == before
         window, config = app.win, app.session.vehicle_config
         app.open_vehicle_lab()
         for _ in range(30):

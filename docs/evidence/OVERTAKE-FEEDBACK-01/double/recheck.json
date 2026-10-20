@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "rows": 1036,
+  "reading_kinds": [
+    "front"
+  ],
+  "incident": {
+    "identity": [
+      0,
+      0
+    ],
+    "kind": "front",
+    "side_m": -1.667709824239473,
+    "end_m": 9.97191470284428,
+    "seconds": 8.6309953818396,
+    "distance": 119.92198702109897,
+    "between_ticks": true
+  },
+  "scope": "从保存真实位置/朝向/代次/速度逐拍重算规则，不重跑物理"
+}

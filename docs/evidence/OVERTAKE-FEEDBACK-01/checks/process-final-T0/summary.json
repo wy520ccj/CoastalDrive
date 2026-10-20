@@ -1,0 +1,51 @@
+{
+  "started_utc": "2026-10-20T00:14:27.741952+00:00",
+  "git_head": "83fb54b5aefd70814de11826bb37d74bcaaa3384",
+  "git_status": "M src/application.py\n M src/overtake_run.py\n M src/ui/hud.py\n M src/ui/overtake_feedback.py\n M tests/test_hill_traffic.py\n M tests/test_hill_traffic_ui.py\n M tests/test_overtake_session.py\n M tools/overtake_check.py\n M tools/overtake_legacy_check.py\n M tools/validate.py\n?? docs/tasks/OVERTAKE-FEEDBACK-01.md\n?? src/overtake_observations.py\n?? tests/test_overtake_observations.py\n?? tools/overtake_feedback_check.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_overtake_session.py"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\OVERTAKE-FEEDBACK-01-process-final-T0\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.114
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_overtake_session.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\OVERTAKE-FEEDBACK-01-process-final-T0\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 6.866
+    }
+  ]
+}

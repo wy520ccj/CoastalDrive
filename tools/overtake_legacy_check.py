@@ -22,12 +22,12 @@ def check(output):
             relative = name+'/'+filename
             assert hashlib.sha256((archive/relative).read_bytes()).hexdigest() == manifest[relative]['sha256']
         result = recheck(archive/name)
-        cases.append({'archive': name, **result, 'new_result_fields': ['route_id'],
+        cases.append({'archive': name, **result, 'new_result_fields': ['route_id', 'traffic_reading', 'incident'],
                       'input_sha256': manifest[name+'/raw.json.gz']['sha256']})
     assert start == sources()
     result = {'passed': True, 'source_start': start, 'source_end': sources(), 'cases': cases,
               'rows': sum(case['rows'] for case in cases),
-              'scope': '四份历史实际直线记录的全部原规则字段精确保持，只新增route_id观测；非新物理/SDK执行'}
+              'scope': '四份历史实际直线记录的全部原规则字段精确保持，只新增路线/近车/触发点观测；非新物理/SDK执行'}
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
     return {'passed': True, 'rows': result['rows']}

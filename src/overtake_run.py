@@ -3,6 +3,7 @@
 import math
 from dataclasses import dataclass, replace
 
+from overtake_observations import GapIncident, TrafficReading, gap_incident, nearby
 from overtake_routes import OVERTAKE_ROUTES
 from race import GameMode
 from vehicle_config import body_center
@@ -66,6 +67,8 @@ class OvertakeResult:
     new_best: bool = False
     save_notice: str = ""
     route_id: str = GameMode.SAFE_OVERTAKE.value
+    traffic_reading: TrafficReading | None = None
+    incident: GapIncident | None = None
 
 
 class OvertakeRun:
@@ -105,6 +108,7 @@ class OvertakeRun:
         distance = state.player.position[1]+state.origin_y-result.start_progress
         self.snapshot = replace(result, distance=distance, seconds=elapsed)
         own, traffic = self.geometry(state)
+        self.snapshot = replace(self.snapshot, traffic_reading=nearby(state, own, traffic, SIDE_GAP, END_GAP))
         old_own, old_traffic = self.previous
         self.previous = own, traffic
         if state.collisions:
@@ -132,6 +136,8 @@ class OvertakeRun:
             swept_length = length if old is None else max(length, old_own[3]+old[3])
             if swept_close(previous, (dx, dy), swept_width+SIDE_GAP, swept_length+END_GAP):
                 side, end = abs(dx)-width, abs(dy)-length
+                self.snapshot = replace(self.snapshot, incident=gap_incident(key, previous, (dx, dy),
+                    swept_width, swept_length, SIDE_GAP, END_GAP, result, self.snapshot, old is not None))
                 self.stop(f"与车流#{key[0]+1}间距不足；侧距{side:.2f}米 / 前后距{end:.2f}米。"
                           "并行留1米，跟车或切回留10米。")
                 return self.snapshot

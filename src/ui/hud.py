@@ -13,6 +13,7 @@ from sprint_routes import SPRINT_ROUTES
 from ui import theme
 from ui.braking_feedback import driving_feedback
 from ui.overtake_feedback import driving_feedback as overtake_driving_feedback
+from ui.overtake_feedback import traffic_feedback
 from ui.race_feedback import split_feedback
 from ui.slalom_feedback import driving_feedback as slalom_driving_feedback
 from ui.slalom_feedback import gate_feedback
@@ -50,6 +51,7 @@ class DrivingHUD:
         self._timed = None
         self._coastal = None
         self._split_invalidated = None
+        self._overtaking = False
         self.root = parent.attachNewNode("driving-hud")
         self.root.setTransparency(TransparencyAttrib.MAlpha)
         panel = loader.loadTexture(theme.asset_filename("components/panel.png"))
@@ -128,14 +130,17 @@ class DrivingHUD:
                  or (track == "endless" and (race.mode in (GameMode.SLALOM_LESSON, *OVERTAKE_ROUTES)
                                              or highway.sprint is not None)))
         coastal = track == "coastal" and race.mode == GameMode.TIME_TRIAL
-        if timed != self._timed or coastal != self._coastal:
+        overtaking = track == 'endless' and race.mode in OVERTAKE_ROUTES
+        if timed != self._timed or coastal != self._coastal or overtaking != self._overtaking:
             self._timed, self._coastal = timed, coastal
+            self._overtaking = overtaking
             self.split.show() if timed else self.split.hide()
-            self.goal.show() if coastal else self.goal.hide()
-            self.status_frame["frameSize"] = (0, .88, -.64 if coastal else -.54 if timed else -.40, 0)
-            self.notice_frame.setZ(.26 if coastal else .36 if timed else .50)
+            self.goal.show() if coastal or overtaking else self.goal.hide()
+            self.status_frame["frameSize"] = (0, .88, -.68 if overtaking else -.64 if coastal else -.54 if timed else -.40, 0)
+            self.notice_frame.setZ(.22 if overtaking else .26 if coastal else .36 if timed else .50)
         if coastal:
             set_text(self.goal, driving_goal(race))
+            self.goal.setFg(theme.SEA)
         abs_label = "关闭" if not player.abs_enabled else (
             "介入" if any(brake.abs_active for brake in player.brake_states) else "待命"
         )
@@ -171,6 +176,9 @@ class DrivingHUD:
                 set_text(self.detail, detail)
                 set_text(self.split, feedback)
                 self.split.setFg(theme.SEA)
+                reading, warning = traffic_feedback(highway.overtake)
+                set_text(self.goal, reading)
+                self.goal.setFg(theme.ORANGE if warning else theme.SEA)
                 message = ("弯前看清车流，留距择道；超车达标后仍需安全到终点" if route.finish_at_end else
                            "留出空间再择道；超出整车10米才计数 · 金85 / 银110 / 铜150秒")
             elif braking:

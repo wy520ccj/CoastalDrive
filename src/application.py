@@ -1574,6 +1574,17 @@ class CoastalDrive(ShowBase):
                     column.show()
                 for button in self.buttons[:3]:
                     button.setZ(-.71)
+            elif self.session.mode in OVERTAKE_ROUTES:
+                self.panel['frameSize'] = (-.94, .94, -.82, .75)
+                self.panel_note.setScale(.035)
+                self.panel_note.setText(self.fit_lines(self.session.highway.snapshot.overtake.reason, 1.66, .035))
+                self.panel_detail.setScale(.038)
+                self.panel_detail.setText(self.fit_lines(overtake_result_feedback(self.session.highway.snapshot.overtake)[1], 1.68, .038))
+                self.panel_detail.setPos(0, 0)
+                top = self.panel_detail.getTightBounds(self.panel)[1].z
+                self.panel_detail.setZ(min(.04, self.panel_note.getTightBounds(self.panel)[0].z-.045)-top)
+                for button in self.buttons[:3]:
+                    button.setZ(-.68)
             elif self.session.mode in SPRINT_ROUTES:
                 result = self.session.highway.snapshot.sprint
                 self.panel["frameSize"] = (-.94, .94, -.80, .75)
