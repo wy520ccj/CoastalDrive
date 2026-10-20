@@ -4,8 +4,10 @@ from dataclasses import replace
 
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectEntry, DirectFrame
+from panda3d.core import TextNode
 
 from ui import theme
+from ui.lab_widgets import rounded_panel
 from ui.virtual_driver import VirtualDriverPanel
 from vehicle_designs import vehicle_design
 from vehicle_schemes import compare_schemes, list_schemes, save_scheme, sync_road_progress
@@ -19,33 +21,62 @@ class SchemesPanel:
         self.menus = [None, None]
         self.root = DirectFrame(parent=app.root, frameColor=(.04, .10, .14, .70),
                                 frameSize=(-1.78, 1.78, -1, 1), sortOrder=97, state=DGG.NORMAL)
-        DirectFrame(parent=self.root, frameColor=theme.PAPER_LIGHT, frameSize=(-1.70, 1.70, -.86, .79))
-        app.text("工程方案库", -1.52, .63, .062, parent=self.root, font=app.heading_font)
-        app.button("关闭", 1.42, .66, .28, self.hide, parent=self.root)
-        app.text("方案名", -1.52, .48, .037, parent=self.root)
+        DirectFrame(parent=self.root, frameColor=theme.PAPER_LIGHT, frameSize=(-1.70, 1.70, -.93, .79))
+        glyphs = TextNode('scheme-button-glyphs')
+        glyphs.setFont(app.font)
+        glyphs.setText('关闭保存当前试验为新方案载回B方案比较AB曲线驾驶虚拟试车员‹›')
+        self.button_geometry = glyphs.generate()
+        app.text("工程方案库", -1.50, .70, .062, parent=self.root, font=app.heading_font)
+        app.button("关闭", 1.47, .73, .28, self.hide, parent=self.root)
+        app.text("方案名", -1.50, .54, .037, parent=self.root)
         self.name_entry = DirectEntry(parent=self.root, initialText="我的方案", text_font=app.font,
             text_fg=theme.INK, scale=.038, width=1.6/.038, numLines=1, focus=0,
-            frameColor=(.94, .95, .92, 1), pos=(-1.24, 0, .48), relief=DGG.FLAT,
+            frameColor=(.94, .95, .92, 1), pos=(-1.20, 0, .54), relief=DGG.FLAT,
             focusInCommand=app.blur_entries)
-        app.button("保存当前试验为新方案", .99, .49, 1.10, self.save_current, parent=self.root, accent=True)
-        app.text("每次保存建立独立方案；同名保留多个版本。编辑草稿须重新试验。", -1.52, .37, .034,
+        app.button("保存当前试验为新方案", 1.00, .55, 1.10, self.save_current, parent=self.root, accent=True)
+        app.text("每次保存保留独立版本 · 编辑草稿须重新试验", -1.50, .43, .035,
                  theme.SEA, parent=self.root)
-        self.left_text = app.text("", -1.52, .03, .035, parent=self.root)
-        self.right_text = app.text("", .13, .03, .035, parent=self.root)
+        for left in (-1.50, .07):
+            rounded_panel(self.root, 'scheme-card', (left, left+1.43, -.005, .37), theme.PAPER)
+        self.left_text = app.text("", -1.42, .17, .035, parent=self.root)
+        self.right_text = app.text("", .15, .17, .035, parent=self.root)
         for target in (self.left_text, self.right_text):
-            target.textNode.setWordwrap(37)
-        self.comparison = app.text("", -1.52, -.18, .035, parent=self.root)
-        self.comparison.textNode.setWordwrap(82)
-        self.status = app.text("", -1.52, -.55, .033, theme.SEA, parent=self.root)
-        self.status.textNode.setWordwrap(88)
-        self.load_button = app.button("载回 B 方案", -1.10, -.73, .76, self.load_right, parent=self.root)
-        self.curves_button = app.button("比较 A/B 曲线", -.10, -.73, .84, self.show_curves, parent=self.root)
-        self.drive_button = app.button("驾驶 B 方案", 1.00, -.73, .84, self.drive_right, parent=self.root, accent=True)
-        for side, x in enumerate((-1.52, .13)):
-            app.button("‹", x+.04, .14, .10, lambda s=side: self.move(s, -1), parent=self.root)
-            app.button("›", x+1.42, .14, .10, lambda s=side: self.move(s, 1), parent=self.root)
+            target.textNode.setWordwrap(35)
+        rounded_panel(self.root, 'scheme-metrics', (-1.50, 1.50, -.63, -.05), theme.PAPER)
+        self.comparison = app.text("", -1.42, -.13, .040, theme.SEA, parent=self.root)
+        self.metric_headers = []
+        for label, x in (('指标', -1.42), ('方案 A', -.22), ('方案 B', .58), ('差值 B−A', 1.38)):
+            node = app.text(label, x, -.22, .035, theme.MUTED, parent=self.root)
+            if label != '指标':
+                node['align'] = TextNode.ARight
+            self.metric_headers.append(node)
+        self.metric_rows, self.metric_bands = [], []
+        for index in range(5):
+            z = -.30-index*.065
+            if index % 2 == 0:
+                self.metric_bands.append(rounded_panel(self.root, 'metric-row',
+                    (-1.45, 1.45, z-.018, z+.038), theme.PAPER_LIGHT, .008))
+            row = []
+            for x in (-1.42, -.22, .58, 1.38):
+                node = app.text('', x, z, .035, theme.INK if x != 1.38 else theme.SEA, parent=self.root)
+                if x != -1.42:
+                    node['align'] = TextNode.ARight
+                row.append(node)
+            self.metric_rows.append(row)
+        self.empty_guide = [app.text(label, x, -.37, .040, theme.MUTED, parent=self.root)
+                           for x, label in ((-1.38, '01 完成试验'), (-.38, '02 命名保存'), (.62, '03 改装再试'))]
+        self.comparison_note = app.text('', -1.50, -.69, .035, theme.MUTED, parent=self.root)
+        self.comparison_note.textNode.setWordwrap(85)
+        self.status = app.text("", -1.50, -.75, .035, theme.SEA, parent=self.root)
+        self.status.textNode.setWordwrap(85)
+        self.load_button = app.button("载回 B 方案", -1.05, -.85, .84, self.load_right, parent=self.root)
+        self.curves_button = app.button("比较 A/B 曲线", 0., -.85, .88, self.show_curves, parent=self.root)
+        self.drive_button = app.button("驾驶 B 方案", 1.05, -.85, .84, self.drive_right, parent=self.root, accent=True)
+        for side, x in enumerate((-1.50, .07)):
+            app.button("‹", x+.065, .29, .10, lambda s=side: self.move(s, -1), parent=self.root)
+            app.button("›", x+1.365, .29, .10, lambda s=side: self.move(s, 1), parent=self.root)
         self.virtual_driver = VirtualDriverPanel(app, self)
-        app.button("虚拟试车员 A/B", .63, .65, .92, self.virtual_driver.show, parent=self.root)
+        app.button("虚拟试车员 A/B", .75, .73, 1.06, self.virtual_driver.show, parent=self.root)
         self.root.hide()
 
     def show(self):
@@ -102,7 +133,7 @@ class SchemesPanel:
         offset = self.indices[side]//6*6
         items = [f"{'A' if side == 0 else 'B'} · {item.name[:14]} · {item.id[:4]}"
                  for item in self.schemes[offset:offset+6]] or ["暂无方案"]
-        menu = self.app.option(items, -1.52 if side == 0 else .13, .24, 1.40,
+        menu = self.app.option(items, -1.35 if side == 0 else .22, .29, 1.13,
                                lambda label: self.choose(side, offset), parent=self.root)
         self.menus[side] = menu
         menu.set(self.indices[side]-offset, fCommand=0)
@@ -126,10 +157,20 @@ class SchemesPanel:
     def present(self):
         for button in (self.load_button, self.curves_button, self.drive_button):
             button["state"] = DGG.NORMAL if self.schemes else DGG.DISABLED
+        for row in self.metric_rows:
+            for node in row:
+                node.setText('')
+        for band in self.metric_bands:
+            band.hide()
+        for node in self.metric_headers:
+            node.show() if self.schemes else node.hide()
+        for node in self.empty_guide:
+            node.hide() if self.schemes else node.show()
         if not self.schemes:
             self.left_text.setText("A · 暂无保存")
             self.right_text.setText("B · 暂无保存")
-            self.comparison.setText("完成一次试验后，保存方案；再改另一处、试验并保存，就能比较。")
+            self.comparison.setText("还没有保存的方案")
+            self.comparison_note.setText("完成一次试验并命名保存，再改另一处、试验并保存，就能比较。")
             return
         for side, target in enumerate((self.left_text, self.right_text)):
             item = self.selected(side)
@@ -140,18 +181,24 @@ class SchemesPanel:
                         f"{config.suspension_antiroll_rates[0]/1000:g}/{config.suspension_antiroll_rates[1]/1000:g}k · 重心{config.center_of_mass_height:g}m"
                         if item.challenge is not None and "tire_index" in item.challenge else
                         f"前制动 {config.front_brake_share:.0%} · 质心 {config.center_of_mass_height:g}m")
-            target.setText(f"{item.name}\n{vehicle_design(item.vehicle.design_id).name}\n{hardware}\n{award}")
+            target.setText(f"{vehicle_design(item.vehicle.design_id).name}\n{hardware}\n{award}")
         try:
             result = compare_schemes(self.selected(0), self.selected(1))
-            lines = ["同条件指标：A / B / B−A" if result["comparable"] else
-                     "条件不同："+"、".join(result["mismatches"])+"；不计算收益"]
-            for label, a, b, unit in result["rows"]:
-                delta = f" / {b-a:+.3f}" if result["comparable"] else ""
-                lines.append(f"{label}  {a:.3f} / {b:.3f}{delta} {unit}")
-            lines.append(result["note"] if result["comparable"] else "可分别载回原始试验；保持同条件再比较改装。")
-            self.comparison.setText("\n".join(lines))
+            self.comparison.setText("同条件指标 · 差值 B−A" if result["comparable"] else "条件不同 · 仅并列查看")
+            self.comparison_note.setText(result["note"] if result["comparable"] else
+                "、".join(result["mismatches"])+"；不计算收益，可载回B试验后统一条件。")
+            self.curves_button['state'] = DGG.NORMAL if result['comparable'] else DGG.DISABLED
+            for index, (label, a, b, unit) in enumerate(result["rows"]):
+                if index % 2 == 0:
+                    self.metric_bands[index//2].show()
+                values = (f'{label} ({unit})', f'{a:.3f}', f'{b:.3f}', f'{b-a:+.3f}' if result['comparable'] else '—')
+                for node, value in zip(self.metric_rows[index], values, strict=True):
+                    node.setText(value)
+            if not result['rows']:
+                self.comparison_note.setText(self.comparison_note.getText()+" 当前试验窗没有可比较的有效指标。")
         except (OSError, ValueError, KeyError, TypeError) as error:
-            self.comparison.setText("原始记录不可用："+str(error))
+            self.comparison.setText("原始记录不可用")
+            self.comparison_note.setText(str(error))
             self.curves_button["state"] = DGG.DISABLED
             try:
                 self.selected(1).records()

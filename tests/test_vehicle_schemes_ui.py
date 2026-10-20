@@ -7,7 +7,7 @@ from direct.gui import DirectGuiGlobals as DGG
 
 import workshop_cornering as cornering
 from lab_application import VehicleLab
-from vehicle_schemes import list_schemes, load_scheme
+from vehicle_schemes import compare_schemes, list_schemes, load_scheme
 from vehicle_workspace import WorkspaceVehicle
 
 
@@ -49,9 +49,23 @@ def test_two_real_recipes_compare_load_and_drive_frozen_hardware(lab, tmp_path, 
     trial(lab, 2)
     b = save(lab, "循迹50k")
     assert len(panel.schemes) == 2
-    assert "B−A" in panel.comparison.getText() and "峰值侧偏" in panel.comparison.getText()
+    assert "B−A" in panel.comparison.getText()
+    assert "峰值侧偏" in panel.metric_rows[1][0].getText()
+    assert panel.metric_rows[0][1].getText() == f"{a.challenge['candidate_metrics']['mean_error_m']:.3f}"
+    assert panel.metric_rows[0][2].getText() == f"{b.challenge['candidate_metrics']['mean_error_m']:.3f}"
     assert "铜牌" in panel.left_text.getText() and "金牌" in panel.right_text.getText()
     assert panel.menus[1].component("item0")["text_font"] == lab.font
+    comparison = compare_schemes(a, b)
+    with monkeypatch.context() as patch:
+        patch.setattr('ui.lab_schemes.compare_schemes', lambda _a, _b:
+            {**comparison, 'comparable': False, 'mismatches': ['试验工况/车型/路面']})
+        panel.present()
+        assert panel.curves_button['state'] == DGG.DISABLED
+        assert panel.load_button['state'] == panel.drive_button['state'] == DGG.NORMAL
+        assert all(row[3].getText() == '—' for row in panel.metric_rows)
+        assert '条件不同' in panel.comparison.getText()
+    panel.present()
+    assert panel.curves_button['state'] == DGG.NORMAL and panel.metric_rows[0][3].getText() != '—'
     panel.show_curves()
     assert panel.root.isHidden()
     assert lab.baseline.snapshots == a.records()[1].snapshots

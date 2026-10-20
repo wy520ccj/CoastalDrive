@@ -1,0 +1,5 @@
+{
+  "src/ui/lab_schemes.py": "132974ff643b92ffca756ed30fe584a93b316695270dc051ce40e6241935f750",
+  "tests/test_vehicle_schemes_ui.py": "2690b3c545674741ba8617163bf11b61b15b2e93c07344481a42b36a08d6826a",
+  "tools/scheme_cards_check.py": "d5c9758881736fafc0ab7f558df80ce15d0b34cfb2db1661c0486c175e2be00c"
+}

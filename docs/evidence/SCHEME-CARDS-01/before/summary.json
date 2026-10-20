@@ -1,0 +1,66 @@
+{
+  "passed": true,
+  "size": [
+    1280,
+    720
+  ],
+  "before": true,
+  "source": "docs\\evidence\\DESIGN-SCHEMES-01\\normal\\schemes",
+  "original_record_sha256": {
+    "478e948fce8948cda1ae3888241f4ef4\\scheme.json": "ad4303ffe5f662cfb042a559d3af580ca8fefabac7bfd6eb98508044a5824a70",
+    "478e948fce8948cda1ae3888241f4ef4\\vehicle.json": "0aee916b290725c0fbd9acf8d8d1395187bf868b2e61fb46f27ae2fe51d33974",
+    "e8009496ea504a31b63bdd5e754955b5\\scheme.json": "4228d5add2773fdcf215f382b906c53c317381b9c34de1bb2a930c166643a73e",
+    "e8009496ea504a31b63bdd5e754955b5\\vehicle.json": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07",
+    "e8009496ea504a31b63bdd5e754955b5\\trial\\experiment.json.gz": "962d7d1fda959ce266a7e2a0e08275a28c8f1c442159b664440d89db23c14212",
+    "e8009496ea504a31b63bdd5e754955b5\\trial\\snapshots.bin.gz": "7b134035dfae61c55c74246c5dbaab59b81cb26f2ad8402520535412bb3808e3",
+    "e8009496ea504a31b63bdd5e754955b5\\trial\\vehicle.json.gz": "60ed89194d82442d636c564fce2c9eb8d5d1401900f66e7d7cc523348ea23af7",
+    "e8009496ea504a31b63bdd5e754955b5\\trial\\baseline-A\\experiment.json.gz": "461a95edb80eab4bbf8bc3a978eb5f559479dbccc4ed79a9dc39700c293abbc4",
+    "e8009496ea504a31b63bdd5e754955b5\\trial\\baseline-A\\snapshots.bin.gz": "e884a5583ddbaa0bda5f31f7393a90703c6c4a750337095ea681dc5cc62ccd82",
+    "e8009496ea504a31b63bdd5e754955b5\\trial\\baseline-A\\vehicle.json.gz": "3c639039a2d8a1152c757312eb6db09c7519781483605b80d80ac53a915a8c61",
+    "478e948fce8948cda1ae3888241f4ef4\\trial\\experiment.json.gz": "4e95d206b00cc1bcc3d044c57b0051c48b25c71db278d4d83a3e6a53a4fd634a",
+    "478e948fce8948cda1ae3888241f4ef4\\trial\\snapshots.bin.gz": "3e07d3696d0c2659ca61f30438385a305355735ab62f3a78e7bb93305d98881c",
+    "478e948fce8948cda1ae3888241f4ef4\\trial\\vehicle.json.gz": "8a023dad71a870172576ade2dd357dc3d9204d166bf3c343fd5c69da45beef44",
+    "478e948fce8948cda1ae3888241f4ef4\\trial\\baseline-A\\experiment.json.gz": "43570021f5bcea66368aa4cac802a91c420b011b2f8d9a56c175dd6490c3d823",
+    "478e948fce8948cda1ae3888241f4ef4\\trial\\baseline-A\\snapshots.bin.gz": "f39a6959abc68e37549535e0b70e006204411f2a7ad6b4dc6d38e9b5353a0fed",
+    "478e948fce8948cda1ae3888241f4ef4\\trial\\baseline-A\\vehicle.json.gz": "3c639039a2d8a1152c757312eb6db09c7519781483605b80d80ac53a915a8c61"
+  },
+  "identities": [
+    "478e948fce8948cda1ae3888241f4ef4",
+    "e8009496ea504a31b63bdd5e754955b5"
+  ],
+  "metrics": [
+    [
+      "循迹误差",
+      1.4960010669611705,
+      1.002885831488585,
+      "m"
+    ],
+    [
+      "峰值侧偏",
+      2.9797277511309344,
+      3.4448997919096627,
+      "°"
+    ],
+    [
+      "峰值侧倾",
+      1.2117499113082886,
+      1.252902865409851,
+      "°"
+    ],
+    [
+      "速度偏差",
+      0.2716889244068881,
+      0.4054056132992443,
+      "km/h"
+    ],
+    [
+      "预算",
+      1,
+      2,
+      "点"
+    ]
+  ],
+  "records_and_workspace_unchanged": true,
+  "mismatch_uses_explicit_ui_fixture": true,
+  "scope": "历史两真实方案静态复载，不新跑物理；条件不一致仅UI数据注入"
+}
