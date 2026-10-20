@@ -28,3 +28,4 @@
 - 旧/新原生模块读取同一批2880次真实冻结反馈：压力以及除phase外全部制动字段pickle字节相同，仅50条轮记录normal→hold且ABS活动。隔离新模块的制动/原生控制完整模块36项通过后，才发布到本地主目录；没有关闭用户应用。
 - 旧复现T0 `PHYS-BRAKE-REFINE-01-hold-before-T0` Ruff通过/1项失败保留。正式相关T1 `tools/validate.py T1 --tests tests/test_vehicle_brakes.py tests/test_native_vehicle_controls.py tests/test_brake_lifecycle.py --output logs/validation/PHYS-BRAKE-REFINE-01-hold-T1`：Ruff/40项、seed0/17/23各1200步通过，pytest7.4秒。Double仅新增保持节点T0 Ruff/1项通过，未重复整套旧机械/驾驶测试。
 - 正式模型只改状态标签，未采用诊断候选、改变参数或修复原细化失败；无需以标签修复重新执行原四组长物理。原T2 failed与后续not_run保持，整体目标active。本包保持in_progress；本轮诊断与关联标签修复分别记账。
+- 本地提交`83cefe72`：诊断工具/原始对照与拒绝候选、保持阶段修复和短回归。45份原件/3份最终源码SHA核对通过；初次“其他模块”清单检查误用正斜杠匹配Windows原路径而误含已更新的wheel，改按文件名识别后其余4模块SHA保持。该清单脚本问题不涉及生产/控制数值，未重跑物理或修改证据。无推送。
