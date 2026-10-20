@@ -1,0 +1,367 @@
+{
+  "normal/0/raw.json.gz": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/0/raw.json.gz",
+    "bytes": 152936,
+    "sha256": "9a25062fbcc4551af186d78a4683c102aaba986ba1d7133f6058cdeeb3f63873"
+  },
+  "normal/0/recheck.json": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/0/recheck.json",
+    "bytes": 62,
+    "sha256": "1a6b0ed18a182b5008e2b2441aa37ca40847ce3baf7cfedec58c8513c9ca93d5"
+  },
+  "normal/0/summary.json": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/0/summary.json",
+    "bytes": 7033,
+    "sha256": "5dbb57f7db4327800a91d5dbec206a2730ff5cad6e10cbe2a88bb2317d2e1b35"
+  },
+  "normal/0-installed.png": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/0-installed.png",
+    "bytes": 281090,
+    "sha256": "424ebcc29719da7d37655c4c97f40550eedb078160d667920c170eff22585566"
+  },
+  "normal/0-preview.png": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/0-preview.png",
+    "bytes": 284699,
+    "sha256": "dddbf7d411e711d8696c0bebabce220cf76b9ff22004e425fdd6f502b90c1155"
+  },
+  "normal/0-result.png": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/0-result.png",
+    "bytes": 552949,
+    "sha256": "ce967fac2c87b3133a09a17aaca2079756a671e301853a6d254a5d4724a2f4f3"
+  },
+  "normal/0-tuning.png": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/0-tuning.png",
+    "bytes": 282173,
+    "sha256": "6322aefce4897f4c57224cdffe85ba494aab0832b5864da9b7fded206ecafd76"
+  },
+  "normal/3/raw.json.gz": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/3/raw.json.gz",
+    "bytes": 222036,
+    "sha256": "34d8a8d3a16b5f0248ed2b3b13247ff221a77166f838ab275a5524a1b5aa6647"
+  },
+  "normal/3/recheck-best.json": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/3/recheck-best.json",
+    "bytes": 566,
+    "sha256": "204e53a13a834e66c307f70369b5a305f91e75866cf5693e9837c38694b76bc1"
+  },
+  "normal/3/recheck.json": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/3/recheck.json",
+    "bytes": 61,
+    "sha256": "ebda0fe5a0bf0222e24f7bf1abde33886ffca4fe3a5f24bac8ff29a9ac7c0ec3"
+  },
+  "normal/3/summary.json": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/3/summary.json",
+    "bytes": 7260,
+    "sha256": "547f283e669b3827f2d2273a59717152a76e8873cc4769bf559d16223c7ea7df"
+  },
+  "normal/3-installed.png": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/3-installed.png",
+    "bytes": 281040,
+    "sha256": "7881c0274666c9c79b536eb8ea28956d616f43002c0bff8bc8e9c250787502e3"
+  },
+  "normal/3-preview.png": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/3-preview.png",
+    "bytes": 284196,
+    "sha256": "999c968e5a8c9e7517fece4e33bff940ba12c9e36d447ff7b6cf1c9789d46861"
+  },
+  "normal/3-result.png": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/3-result.png",
+    "bytes": 538113,
+    "sha256": "6bc60b06a315f6076e71460fa8bdda9c41f9d7b1528ec40457bd6bf55700eb76"
+  },
+  "normal/3-tuning.png": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/3-tuning.png",
+    "bytes": 281778,
+    "sha256": "0b8d48e63c414a99ade8153cab43b28baef459f536995aa7701ac65094e342e3"
+  },
+  "normal/original-vehicle.json": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/original-vehicle.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "normal/reopened-tuning.png": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/reopened-tuning.png",
+    "bytes": 281724,
+    "sha256": "39d2e85bbb836e92d9d5787765210adfff626c953ad99b94a28d2721648164d9"
+  },
+  "normal/restore-summary.json": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/restore-summary.json",
+    "bytes": 43451,
+    "sha256": "ad00e58b740b7e1d37ee04d27ac1260703e80c1a2b25ef9bd2287bb069a4e978"
+  },
+  "normal/restored-original.png": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/restored-original.png",
+    "bytes": 282671,
+    "sha256": "43a7f2add9cf0d36169193c72d33a4215e3f657f4cefcd3722b63419299cd3b2"
+  },
+  "normal/slalom-best.json": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/slalom-best.json",
+    "bytes": 828,
+    "sha256": "86b4394c6528f622cd930b39f0f875a494a87e6011f2127b27b3b516b70e7129"
+  },
+  "normal/summary.json": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/summary.json",
+    "bytes": 60164,
+    "sha256": "ebd88479d954b94c3b6e7b6ae3086680afef2e14330ff9bd6d106c40f4a743e2"
+  },
+  "normal/test-workspace-vehicle.json": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/test-workspace-vehicle.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "normal/tuning-backups/251790df1d23345aaa80698b8fd8b29498f2691eb9474ed1a4a11ec3c862ec4f.json": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/tuning-backups/251790df1d23345aaa80698b8fd8b29498f2691eb9474ed1a4a11ec3c862ec4f.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "normal/tuning-backups/891a251f7448f204f95bd8cbc402bfd1698589a60adccc06edc9e22e67edc8bb.json": {
+    "source": "logs/validation/TIRE-TUNING-01-normal/tuning-backups/891a251f7448f204f95bd8cbc402bfd1698589a60adccc06edc9e22e67edc8bb.json",
+    "bytes": 6334,
+    "sha256": "3832c701027493648b277065a4dd82ac99228faea72c8132163d66053d012d5d"
+  },
+  "double/0/raw.json.gz": {
+    "source": "logs/validation/TIRE-TUNING-01-double/0/raw.json.gz",
+    "bytes": 155404,
+    "sha256": "c12fe9555cb47046e12f472c774b93df98d0cc9111955803dd33e86559a0f3f7"
+  },
+  "double/0/recheck.json": {
+    "source": "logs/validation/TIRE-TUNING-01-double/0/recheck.json",
+    "bytes": 62,
+    "sha256": "1a6b0ed18a182b5008e2b2441aa37ca40847ce3baf7cfedec58c8513c9ca93d5"
+  },
+  "double/0/summary.json": {
+    "source": "logs/validation/TIRE-TUNING-01-double/0/summary.json",
+    "bytes": 7032,
+    "sha256": "041cc2c3db49b51afcaa64f19a008c16f016ff0faf57d891ea4505325bcfe9ee"
+  },
+  "double/0-installed.png": {
+    "source": "logs/validation/TIRE-TUNING-01-double/0-installed.png",
+    "bytes": 449382,
+    "sha256": "f13cbd09354a509331697c5efaa196cfcbb3b8e96780c244664cadd8aa08c253"
+  },
+  "double/0-preview.png": {
+    "source": "logs/validation/TIRE-TUNING-01-double/0-preview.png",
+    "bytes": 451347,
+    "sha256": "aaf8249abe50c364afbe8437e6b521ba751fe16701ec8a6ed21d13238a4fe0bd"
+  },
+  "double/0-result.png": {
+    "source": "logs/validation/TIRE-TUNING-01-double/0-result.png",
+    "bytes": 361202,
+    "sha256": "8034009cdc88e50cd137214d45318d37b70c9042fc2fbd446f5a07fb7126a01c"
+  },
+  "double/0-tuning.png": {
+    "source": "logs/validation/TIRE-TUNING-01-double/0-tuning.png",
+    "bytes": 450073,
+    "sha256": "21921d855a67408268fbcd4173a2abe9f6e5fded4eb3a1f619c73035e0d64439"
+  },
+  "double/3/raw.json.gz": {
+    "source": "logs/validation/TIRE-TUNING-01-double/3/raw.json.gz",
+    "bytes": 226059,
+    "sha256": "ca92893cf3dd63b5a848bdb25ef510e5b94624ccaa63de215d3b8aa539fc7462"
+  },
+  "double/3/recheck-best.json": {
+    "source": "logs/validation/TIRE-TUNING-01-double/3/recheck-best.json",
+    "bytes": 564,
+    "sha256": "4d5ffdf810cfdce3fc16ff4d3296f53ee032a9ee2abb786c22ce3029698bbed1"
+  },
+  "double/3/recheck.json": {
+    "source": "logs/validation/TIRE-TUNING-01-double/3/recheck.json",
+    "bytes": 61,
+    "sha256": "ebda0fe5a0bf0222e24f7bf1abde33886ffca4fe3a5f24bac8ff29a9ac7c0ec3"
+  },
+  "double/3/summary.json": {
+    "source": "logs/validation/TIRE-TUNING-01-double/3/summary.json",
+    "bytes": 7257,
+    "sha256": "5bd30e1e182e10dd82af017c4f8d2ef45c3307b17c004505c148609b7c29ec7e"
+  },
+  "double/3-installed.png": {
+    "source": "logs/validation/TIRE-TUNING-01-double/3-installed.png",
+    "bytes": 449352,
+    "sha256": "db37d90b185979812e1d6396264ef7abecd7669e9f85b2198b7bcc382b059477"
+  },
+  "double/3-preview.png": {
+    "source": "logs/validation/TIRE-TUNING-01-double/3-preview.png",
+    "bytes": 450917,
+    "sha256": "3987a642fe0cb8e1abb91d34bdbbd84dc49c7ce291f07ff9f3f1e8fb63a97457"
+  },
+  "double/3-result.png": {
+    "source": "logs/validation/TIRE-TUNING-01-double/3-result.png",
+    "bytes": 362144,
+    "sha256": "8193729205ff9bed98a1b09aafcb1b23a5e4a3aaa0e6ab8aa712c316b05e3c15"
+  },
+  "double/3-tuning.png": {
+    "source": "logs/validation/TIRE-TUNING-01-double/3-tuning.png",
+    "bytes": 449720,
+    "sha256": "a225e14dd06d2782b44106ffa8e755eee4389130dedcde3c2e88385e591db63c"
+  },
+  "double/original-vehicle.json": {
+    "source": "logs/validation/TIRE-TUNING-01-double/original-vehicle.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "double/reopened-tuning.png": {
+    "source": "logs/validation/TIRE-TUNING-01-double/reopened-tuning.png",
+    "bytes": 449697,
+    "sha256": "585831143989261862615b7e0830b49d9d33036ee42c8059be88e204e08eb71c"
+  },
+  "double/restore-summary.json": {
+    "source": "logs/validation/TIRE-TUNING-01-double/restore-summary.json",
+    "bytes": 39010,
+    "sha256": "1ed22788b1c3c2cc2f72ccf205cc9445b68c070a1e6afc9135175a9ca53115aa"
+  },
+  "double/restored-original.png": {
+    "source": "logs/validation/TIRE-TUNING-01-double/restored-original.png",
+    "bytes": 450064,
+    "sha256": "965a86ebbd4cdf47a57221ebb14103c4cfed7690e66c0a1376d3c11f3832f8d1"
+  },
+  "double/slalom-best.json": {
+    "source": "logs/validation/TIRE-TUNING-01-double/slalom-best.json",
+    "bytes": 826,
+    "sha256": "cd8c4fa3ebe460bf611a1d9b3022b5beb1847e5d745db4e2b6d0b1d28b24dd4e"
+  },
+  "double/summary.json": {
+    "source": "logs/validation/TIRE-TUNING-01-double/summary.json",
+    "bytes": 55720,
+    "sha256": "38c38b7a672d8960d9c055316a7b73243fe49245034f42901a20f01dd6d00dbe"
+  },
+  "double/test-workspace-vehicle.json": {
+    "source": "logs/validation/TIRE-TUNING-01-double/test-workspace-vehicle.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "double/tuning-backups/251790df1d23345aaa80698b8fd8b29498f2691eb9474ed1a4a11ec3c862ec4f.json": {
+    "source": "logs/validation/TIRE-TUNING-01-double/tuning-backups/251790df1d23345aaa80698b8fd8b29498f2691eb9474ed1a4a11ec3c862ec4f.json",
+    "bytes": 7453,
+    "sha256": "aca175917c0395f5a1e62aaec2937707c87295e6649e5282c2702b209a488c07"
+  },
+  "double/tuning-backups/891a251f7448f204f95bd8cbc402bfd1698589a60adccc06edc9e22e67edc8bb.json": {
+    "source": "logs/validation/TIRE-TUNING-01-double/tuning-backups/891a251f7448f204f95bd8cbc402bfd1698589a60adccc06edc9e22e67edc8bb.json",
+    "bytes": 6334,
+    "sha256": "3832c701027493648b277065a4dd82ac99228faea72c8132163d66053d012d5d"
+  },
+  "checks/core-T0/pytest.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-core-T0/pytest.log",
+    "bytes": 101,
+    "sha256": "7bab60e0f8a1cd5dc0b7f368bdf00c823352375ffab483ad40cb3b4d97ecb3b7"
+  },
+  "checks/core-T0/ruff.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-core-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/core-T0/summary.json": {
+    "source": "logs/validation/TIRE-TUNING-01-core-T0/summary.json",
+    "bytes": 1584,
+    "sha256": "5a5974a525961cc5bc76ff68dc22f3bb0cfbf0ff95dc1aa2006b916b7ad937f6"
+  },
+  "checks/ui-T0/pytest.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-ui-T0/pytest.log",
+    "bytes": 1393,
+    "sha256": "0c7fb7b5aea4f7d1267fbc1bbe25167c0ad4f9cc4c1eb5de1ea594a5df3d72ba"
+  },
+  "checks/ui-T0/ruff.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-ui-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/ui-T0/summary.json": {
+    "source": "logs/validation/TIRE-TUNING-01-ui-T0/summary.json",
+    "bytes": 1853,
+    "sha256": "6e6d5e22c34e07fcdea93909843b2fca90bfbb0a149059ce982e3b738f6032ae"
+  },
+  "checks/T1/headless-0.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-T1/headless-0.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1/headless-17.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-T1/headless-17.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1/headless-23.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-T1/headless-23.log",
+    "bytes": 32715,
+    "sha256": "50f78fb0a2de3fe9f7ea91fbf0861d46f4dc615836de5c8d4b590a07a46393f7"
+  },
+  "checks/T1/pytest.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-T1/pytest.log",
+    "bytes": 194,
+    "sha256": "88251be654109c3d0a2c7d127953a3764599f0f882a7fc4c31715a916f99c3eb"
+  },
+  "checks/T1/ruff.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-T1/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/T1/summary.json": {
+    "source": "logs/validation/TIRE-TUNING-01-T1/summary.json",
+    "bytes": 4211,
+    "sha256": "b44fa51d46bb8cfa7253c74a52df32dce2a52943f0dd0ec0011755793ff168aa"
+  },
+  "checks/double-T1/headless-0.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-double-T1/headless-0.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/double-T1/headless-17.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-double-T1/headless-17.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/double-T1/headless-23.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-double-T1/headless-23.log",
+    "bytes": 32436,
+    "sha256": "19c85aaf545359a6a7a988f6849dfe80eb4b8b90d4200e113da701b4ca839758"
+  },
+  "checks/double-T1/pytest.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-double-T1/pytest.log",
+    "bytes": 194,
+    "sha256": "36583ad216e0f77de322c66d23afb925d7a80100d2b51ed63dad40391e3e81b1"
+  },
+  "checks/double-T1/ruff.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-double-T1/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/double-T1/summary.json": {
+    "source": "logs/validation/TIRE-TUNING-01-double-T1/summary.json",
+    "bytes": 4246,
+    "sha256": "6f6cb32fbadad91171d2aebb380beac941e295635cd9428ca1b65208da6216aa"
+  },
+  "checks/draft-T0/pytest.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-draft-T0/pytest.log",
+    "bytes": 101,
+    "sha256": "5f829eb8b1c994c025a223fcf2fdf62a5fbdfca24c69507680b0e4eee2e3ed5f"
+  },
+  "checks/draft-T0/ruff.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-draft-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/draft-T0/summary.json": {
+    "source": "logs/validation/TIRE-TUNING-01-draft-T0/summary.json",
+    "bytes": 1884,
+    "sha256": "6a4862c0dfff741d699cc9d82eb0d302514b5ace02a9e8db654daf46836c782c"
+  },
+  "checks/double-draft-T0/pytest.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-double-draft-T0/pytest.log",
+    "bytes": 101,
+    "sha256": "637799c5840dcc4c421d22cd2067e32bc6bff71b62c3ed142b88619a461ab3cb"
+  },
+  "checks/double-draft-T0/ruff.txt": {
+    "source": "logs/validation/TIRE-TUNING-01-double-draft-T0/ruff.log",
+    "bytes": 19,
+    "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "checks/double-draft-T0/summary.json": {
+    "source": "logs/validation/TIRE-TUNING-01-double-draft-T0/summary.json",
+    "bytes": 1899,
+    "sha256": "fa8cfc7f64ff0a12777564d765de5c9758c6d55938b010f65e0e08417ec50239"
+  },
+  "reused-scheme-inputs.json": {
+    "source": "logs/validation/TIRE-TUNING-01-scheme-inputs.json",
+    "bytes": 7117,
+    "sha256": "9d44f0f35ea7938cde4ad9e16f43e2c9cfac0cb06bf4a95623c61243e496612e"
+  }
+}

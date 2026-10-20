@@ -43,6 +43,8 @@ from skins import PLAYER_VEHICLES, SKINS, apply_skin, vehicle_definition, vehicl
 from slalom_lesson import SLALOM_MODES, SlalomScores
 from soundscape import Soundscape
 from sprint_routes import SPRINT_ROUTES
+from tire_tuning import install as install_front_tires
+from tire_tuning import restore as restore_pre_tuning_vehicle
 from tracks import COASTAL_CIRCUIT
 from ui import theme
 from ui.braking_feedback import RULES as BRAKING_RULES
@@ -61,6 +63,7 @@ from ui.slalom_feedback import result_feedback as slalom_result_feedback
 from ui.sprint_feedback import goals as sprint_goals
 from ui.sprint_feedback import result_columns as sprint_columns
 from ui.sprint_feedback import result_feedback as sprint_result_feedback
+from ui.tire_tuning import TireTuningPanel
 from ui.workshop_journey import WorkshopJourney
 from ui.workspace_loading import WorkspaceLoading
 from vehicle_designs import vehicle_design
@@ -277,6 +280,7 @@ class CoastalDrive(ShowBase):
             return
         self.tour_active = self.tour_pending = False
         self.tour_banner.hide()
+        self.tire_tuning.hide()
         self.lab_return_braking = self.session.mode == GameMode.BRAKING_LESSON
         self.lab_return_slalom = self.session.mode in SLALOM_MODES
         if self.lab_return_slalom:
@@ -616,6 +620,7 @@ class CoastalDrive(ShowBase):
         self.driving_journey_return = False
         self.tour_active = self.tour_pending = False
         self.tour_banner.hide()
+        self.tire_tuning.hide()
         self.session.menu()
         if self.scene is not None:
             self.scene.close()
@@ -686,6 +691,11 @@ class CoastalDrive(ShowBase):
 
     def key_down(self, key):
         if not self.loading.isHidden():
+            return
+        if self.session.phase == Phase.MENU and not self.tire_tuning.root.isHidden():
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.tire_tuning.key(key)
             return
         if self.session.phase == Phase.MENU and not self.tour_panel.root.isHidden():
             if key not in self.commands_held:
@@ -872,6 +882,8 @@ class CoastalDrive(ShowBase):
                                               self.continue_driving_project, self.open_workshop_journey)
         self.tour_panel = DrivingTourPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
                                           self.start_tour_leg, self.back_from_driving_tour)
+        self.tire_tuning = TireTuningPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
+            self.install_tire_recipe, self.restore_tire_vehicle, self.back_from_tire_tuning)
         self.tour_banner = DirectFrame(parent=self.aspect2d, frameColor=theme.PAPER_LIGHT,
             frameSize=(-.34, .34, -.105, 0), pos=(0, 0, .95), sortOrder=60)
         self.tour_title = OnscreenText(parent=self.tour_banner, text='', font=self.ui_font,
@@ -999,7 +1011,7 @@ class CoastalDrive(ShowBase):
         if (self.session.phase != Phase.MENU or self.garage is not None
                 or self.audio_settings_page or self.highway_menu
                 or not self.journey.root.isHidden() or not self.driving_journey.root.isHidden()
-                or not self.tour_panel.root.isHidden()):
+                or not self.tour_panel.root.isHidden() or not self.tire_tuning.root.isHidden()):
             return
         self.driving_mode_page = True
         self.panel_selection = 0
@@ -1144,7 +1156,8 @@ class CoastalDrive(ShowBase):
             if result["challenge_id"] == CORNERING_CHALLENGE_ID:
                 return f"操稳工坊 · {result['medal']}牌 · {road}\n循迹误差减少 {result['improvement_pct']:.1f}%"
             return f"制动工坊 · {result['medal']}牌 · {road}\n停车距离改善 {result['improvement_pct']:.1f}%"
-        source = "实验车" if vehicle.report_path else "目录车"
+        source = ('改装车' if vehicle.parameter_metadata is not None and 'tire_tuning_previous' in vehicle.parameter_metadata
+                  else "实验车" if vehicle.report_path else "目录车")
         return f"{source} · {vehicle_design(vehicle.design_id).name}\n{vehicle.config.mass:g} kg · 质心 {vehicle.config.center_of_mass_height:g} m"
 
     def cancel_garage(self):
@@ -1206,6 +1219,60 @@ class CoastalDrive(ShowBase):
         self.panel_selection = 0
         self._shown_phase = None
         self.refresh_panel()
+
+    def open_tire_tuning(self):
+        if self.session.phase != Phase.MENU or not self.slalom_menu:
+            return
+        self.panel.hide()
+        self.main_menu.root.show()
+        vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
+        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label())
+
+    def apply_tuning_vehicle(self, vehicle):
+        """只在保存成功后交接菜单车辆；恢复完整原车时也恢复其电子开关。"""
+        self.workspace_vehicle = vehicle
+        self.session.set_vehicle_config(vehicle.config)
+        self.session.set_abs_enabled(vehicle.config.braking.abs_enabled)
+        self.session.set_tcs_enabled(vehicle.config.traction.tcs_enabled)
+        self.session.set_esc_enabled(vehicle.config.stability.esc_enabled)
+        self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
+        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label())
+
+    def install_tire_recipe(self, index):
+        if self.session.phase != Phase.MENU:
+            return
+        current = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
+        if current != self.tire_tuning.original:
+            self.tire_tuning.notice.setText('当前车辆已改变，请返回课题再打开配方。')
+            return
+        try:
+            vehicle = install_front_tires(current, index, self.workspace_path)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            self.tire_tuning.notice.setText('配方未安装，当前车保留：'+str(error))
+            return
+        self.apply_tuning_vehicle(vehicle)
+        self.tire_tuning.notice.setText('已保存前胎配方；返回原课题亲自验车。' if vehicle != current else '与当前车相同，原方案关联保持。')
+
+    def restore_tire_vehicle(self):
+        if self.session.phase != Phase.MENU:
+            return
+        current = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
+        if current != self.tire_tuning.original:
+            self.tire_tuning.notice.setText('当前车辆已改变，请返回课题再打开配方。')
+            return
+        try:
+            vehicle = restore_pre_tuning_vehicle(current, self.workspace_path)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            self.tire_tuning.notice.setText('原车未恢复，当前车保留：'+str(error))
+            return
+        self.apply_tuning_vehicle(vehicle)
+        self.tire_tuning.notice.setText('已恢复完整安装前车辆与原关联；返回原课题继续。')
+
+    def back_from_tire_tuning(self):
+        self.tire_tuning.hide()
+        self._shown_phase = None
+        self.refresh_panel()
+        self.select_panel_option(2)
 
     def back_from_slalom_lesson(self):
         self.driving_journey_return = False
@@ -1423,6 +1490,7 @@ class CoastalDrive(ShowBase):
             options = [("开始练习  Enter", self.start_slalom_lesson),
                        ("切换普通练习" if fast else "高速验车 · 70–80km/h",
                         lambda: self.choose_slalom_lesson(GameMode.SLALOM_LESSON if fast else GameMode.FAST_SLALOM)),
+                       ('前胎配方 · 改装验车', self.open_tire_tuning),
                        ("返回高速", self.back_from_slalom_lesson)]
         elif phase == Phase.MENU and self.highway_menu and self.braking_menu:
             self.panel_title.setText("驾驶课题 · 定点刹停")
@@ -1658,8 +1726,9 @@ class CoastalDrive(ShowBase):
         elif self.highway_menu and self.slalom_menu:
             self.panel_note.setScale(.038)
             self.panel_note.setPos(0, .30)
-            for index, button in enumerate(self.buttons[:3]):
-                button.setZ(-.23-index*.17)
+            for index, button in enumerate(self.buttons[:4]):
+                button.setZ(-.18-index*.14)
+                button['frameSize'] = (-.51, .51, -.056, .056)
         elif phase == Phase.PAUSED:
             self.panel_title.setScale(0.14)
             self.panel_note.setPos(0, 0.27)
@@ -1918,6 +1987,7 @@ class CoastalDrive(ShowBase):
         self.journey.root.destroy()
         self.driving_journey.root.destroy()
         self.tour_panel.root.destroy()
+        self.tire_tuning.root.destroy()
         self.tour_banner.destroy()
         self.main_menu.destroy()
         self.hud.destroy()

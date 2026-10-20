@@ -30,7 +30,7 @@ def finish(app, workspace):
 def test_keyboard_toggle_rules_preserves_car_and_old_entry(app):
     config = app.session.vehicle_config
     app.choose_slalom_lesson()
-    assert app.panel_option_count == 3 and '40km/h' in app.panel_note.getText()
+    assert app.panel_option_count == 4 and '40km/h' in app.panel_note.getText()
     app.select_panel_option(1)
     app.handle_panel_key('enter')
     assert app.slalom_mode == GameMode.FAST_SLALOM and '70–80' in app.panel_note.getText()
