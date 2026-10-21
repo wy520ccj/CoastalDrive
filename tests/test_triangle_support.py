@@ -23,6 +23,32 @@ from vehicle_config import CAR, wheel_hubs
 from wheel_envelope import _simplex_coordinates, cylinder_box_entry
 
 
+def test_prepared_build_preserves_real_road_tree_and_query_order():
+    import curve_mesh
+    from highway_curve import HighwayCurve
+
+    def legacy(triangles):
+        points = tuple(p for triangle in triangles for p in triangle)
+        low = tuple(min(p[i] for p in points) for i in range(3))
+        high = tuple(max(p[i] for p in points) for i in range(3))
+        if len(triangles) <= 8:
+            return TriangleSupport(low, high, tuple(triangles))
+        axis = max(range(3), key=lambda i: high[i]-low[i])
+        ordered = sorted(triangles, key=lambda triangle: sum(p[axis] for p in triangle))
+        middle = len(ordered)//2
+        return TriangleSupport(low, high, children=(legacy(ordered[:middle]), legacy(ordered[middle:])))
+
+    curve = HighwayCurve(23, hills=True)
+    for index in (8, 9):
+        for vertices, faces in curve_mesh.surfaces(curve, index).values():
+            triangles = tuple(tuple(vertices[i] for i in face) for face in faces)
+            old, new = legacy(triangles), TriangleSupport.build(triangles)
+            assert pickle.dumps(old, protocol=5) == pickle.dumps(new, protocol=5)
+            for y in (0., 75., 150., 200.):
+                args = ((0., y, 4.), (0., y, -4.), .01, (1., 0., 0.), .33, .205, .01, .003)
+                assert old.entry(*args) == new.entry(*args)
+
+
 def test_native_window_preserves_order_source_identity_nested_windows_and_lifetime():
     triangles = []
     for x in range(12):

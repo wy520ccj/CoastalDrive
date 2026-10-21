@@ -9,6 +9,7 @@ import sys
 import zlib
 from array import array
 from dataclasses import dataclass
+from functools import lru_cache
 
 from panda3d import bullet, core
 
@@ -28,14 +29,34 @@ def covers_lap(frames, seconds):
             and seconds <= (frames-1)*FIXED_DT+1e-7)
 
 
+@lru_cache(maxsize=128)
+def source_imports(text, package):
+    """按完整源码内容复用依赖解析；每次版本核对仍重读文件并哈希。"""
+    imports = []
+    for node in ast.walk(ast.parse(text)):
+        if isinstance(node, ast.Import):
+            imports.extend(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom):
+            prefix = package[:len(package)-node.level+1] if node.level else ()
+            name = ".".join((*prefix, *((node.module or "").split(".") if node.module else ())))
+            if name:
+                imports.append(name)
+            imports.extend(".".join(filter(None, (name, alias.name))) for alias in node.names)
+    return tuple(imports)
+
+
 def ghost_context(seed):
     """覆盖物理/输入/判圈依赖及实际SDK；纯表现改动不使有效记录失效。"""
     root = resource_root()
     source = root/"src"
     pending = ["session", "simulation", "driving_modes", "controls", "race"]
     paths = set()
+    visited = set()
     while pending:
         module = pending.pop()
+        if module in visited:
+            continue
+        visited.add(module)
         path = source.joinpath(*module.split(".")).with_suffix(".py")
         if not path.is_file():
             path = source.joinpath(*module.split("."))/"__init__.py"
@@ -43,15 +64,7 @@ def ghost_context(seed):
             continue
         paths.add(path)
         package = path.parent.relative_to(source).parts
-        for node in ast.walk(ast.parse(path.read_text(encoding="utf-8-sig"))):
-            if isinstance(node, ast.Import):
-                pending.extend(alias.name for alias in node.names)
-            elif isinstance(node, ast.ImportFrom):
-                prefix = package[:len(package)-node.level+1] if node.level else ()
-                name = ".".join((*prefix, *((node.module or "").split(".") if node.module else ())))
-                if name:
-                    pending.append(name)
-                pending.extend(".".join(filter(None, (name, alias.name))) for alias in node.names)
+        pending.extend(source_imports(path.read_text(encoding="utf-8-sig"), package))
     paths.update(path for path in source.glob("*") if path.suffix in (".c", ".cpp", ".h", ".pyd"))
     if not paths:
         paths.update((*root.glob("*.exe"), *root.glob("*.pyd")))
@@ -152,7 +165,8 @@ def save_ghost(lap, scores, mode):
     header = json.dumps(metadata, ensure_ascii=False, sort_keys=True, allow_nan=False).encode()
     if len(header) > 65536:
         raise ValueError("幽灵头信息超出记录格式范围")
-    blob = b"CDG1"+zlib.compress(HEADER.pack(len(header))+header+lap.data, level=5)
+    # 终点仍同步确认保存；快速无损压缩避免此时长占相机查询所需的世界锁。
+    blob = b"CDG1"+zlib.compress(HEADER.pack(len(header))+header+lap.data, level=1)
     digest = hashlib.sha256(blob).hexdigest()
     folder = scores.path.parent/"ghosts"
     folder.mkdir(parents=True, exist_ok=True)

@@ -42,6 +42,7 @@ def physics_progress(session):
 
 def traced_authority(output, *arguments):
     """诊断实际权威进程；分项包含调用，不能将嵌套耗时相加。"""
+    import session as session_module
     import session_process
     import tire_drivetrain
     import world_step
@@ -110,6 +111,9 @@ def traced_authority(output, *arguments):
         (tire_drivetrain, 'joint_solve', 'native-joint-solve'),
         (Session, 'camera_position', 'camera-query'),
         (BestTimes, 'record', 'score-file-update'),
+        (Session, 'record_ghost_step', 'ghost-record-step'),
+        (session_module, 'ghost_context', 'ghost-version-check'),
+        (session_module, 'save_ghost', 'ghost-file-update'),
     ):
         setattr(owner, attribute, timed(name, getattr(owner, attribute)))
     # Simulation在导入时绑定函数，诊断覆写须指向同一个计时入口。
@@ -151,7 +155,10 @@ def main():
     parser.add_argument("--source", type=Path, default=ROOT / "src")
     parser.add_argument("--trace-streaming", action="store_true")
     parser.add_argument("--profile", action="store_true")
-    parser.add_argument("--independent-clock", action="store_true")
+    parser.add_argument("--independent-clock", action="store_true", default=True,
+                        help="默认匹配正式游戏的独立120Hz会话")
+    parser.add_argument("--inline-clock", dest="independent_clock", action="store_false",
+                        help="仅诊断：显式在窗口线程推进物理")
     parser.add_argument("--steering", type=float, default=0., help="车尾运动画面复核用恒定转向")
     parser.add_argument("--gc-rate",type=float,help="Panda状态缓存分批回收诊断")
     parser.add_argument("--switch-interval",type=float,help="Python物理/绘制线程切换间隔诊断")

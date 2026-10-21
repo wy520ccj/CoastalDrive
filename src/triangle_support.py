@@ -60,15 +60,22 @@ class TriangleSupport:
     @classmethod
     def build(cls, triangles):
         triangles = tuple(tuple(tuple(p) for p in triangle) for triangle in triangles)
-        points = tuple(p for triangle in triangles for p in triangle)
-        low = tuple(min(p[i] for p in points) for i in range(3))
-        high = tuple(max(p[i] for p in points) for i in range(3))
-        if len(triangles) <= 8:
-            return cls(low, high, triangles)
-        axis = max(range(3), key=lambda i: high[i] - low[i])
-        ordered = sorted(triangles, key=lambda triangle: sum(p[axis] for p in triangle))
-        middle = len(ordered) // 2
-        return cls(low, high, children=(cls.build(ordered[:middle]), cls.build(ordered[middle:])))
+        # 同一网格的顶点、面界和排序键只准备一次；递归保留原稳定排序和二分顺序。
+        bounds = [(tuple(min(p[i] for p in triangle) for i in range(3)),
+                   tuple(max(p[i] for p in triangle) for i in range(3))) for triangle in triangles]
+        keys = [tuple(sum(p[i] for p in triangle) for i in range(3)) for triangle in triangles]
+
+        def partition(indices):
+            low = tuple(min(bounds[index][0][i] for index in indices) for i in range(3))
+            high = tuple(max(bounds[index][1][i] for index in indices) for i in range(3))
+            if len(indices) <= 8:
+                return cls(low, high, tuple(triangles[index] for index in indices))
+            axis = max(range(3), key=lambda i: high[i] - low[i])
+            ordered = sorted(indices, key=lambda index: keys[index][axis])
+            middle = len(ordered) // 2
+            return cls(low, high, children=(partition(ordered[:middle]), partition(ordered[middle:])))
+
+        return partition(range(len(triangles)))
 
     def candidates(self, start, end, padding):
         center = self.center

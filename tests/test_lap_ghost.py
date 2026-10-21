@@ -144,3 +144,9 @@ def test_compatibility_tracks_model_dependencies_but_not_presentation(tmp_path, 
     assert ghost_context(0) == original
     (source/"model.py").write_text("stiffness = 2\n", encoding="utf-8")
     assert ghost_context(0) != original
+    (source/"model.py").write_text("import extra\nstiffness = 2\n", encoding="utf-8")
+    (source/"extra.py").write_text("ratio = 1\n", encoding="utf-8")
+    expanded = ghost_context(0)
+    assert str((source/'extra.py').relative_to(tmp_path)) in expanded['source_files']
+    (source/"extra.py").write_text("ratio = 2\n", encoding="utf-8")
+    assert ghost_context(0) != expanded

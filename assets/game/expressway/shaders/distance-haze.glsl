@@ -19,7 +19,9 @@ vec3 expressway_haze(vec3 color, vec3 world_position) {
     float haze = smoothstep(350.0, 850.0, distance);
     if (haze <= 0.0) return color;
     vec3 sky_direction = normalize((expressway_sky_inverse * vec4(direction, 0.0)).xyz);
-    vec2 uv = vec2(atan(sky_direction.y, sky_direction.x) / 6.28318530718, 0.5);
+    // 与天空球相同的经纬映射；高处远景不能拿地平线颜色覆盖云层。
+    vec2 uv = vec2(atan(sky_direction.y, sky_direction.x) / 6.28318530718,
+                   0.5 + asin(clamp(sky_direction.z, -1.0, 1.0)) / 3.14159265359);
     vec3 sky = clamp(texture(expressway_sky, uv).rgb, 0.01, 0.96);
     vec3 a = 6.2 * (sky - 1.0);
     vec3 b = 1.7 * sky - 0.5;

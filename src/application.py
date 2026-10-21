@@ -72,6 +72,7 @@ from ui.sprint_feedback import goals as sprint_goals
 from ui.sprint_feedback import result_columns as sprint_columns
 from ui.sprint_feedback import result_feedback as sprint_result_feedback
 from ui.tire_tuning import TireTuningPanel
+from ui.window_icon import load_window_icon, release_window_icon
 from ui.workshop_journey import WorkshopJourney
 from ui.workspace_loading import WorkspaceLoading
 from vehicle_designs import vehicle_design
@@ -94,7 +95,7 @@ class CoastalDrive(ShowBase):
             "\n".join(
                 [
                     "window-title CoastalDrive",
-                    'icon-filename assets/game/ui/coastal-drive.ico',
+                    "icon-filename",
                     f"win-size {render_size[0]} {render_size[1]}",
                     f"sync-video {int(sync_video)}",
                     # 高频车辆变换几乎不命中全局缓存；保留RenderState缓存和线程安全回收。
@@ -106,6 +107,7 @@ class CoastalDrive(ShowBase):
             ),
         )
         super().__init__()
+        self.window_icon = load_window_icon(self.win)
         self.lab = None
         self.lab_workspace = None
         self._workspace_steps = None
@@ -999,14 +1001,19 @@ class CoastalDrive(ShowBase):
         for column in self.result_sectors:
             column.hide()
         # 固定结算字形在加载时创建并上传；持有几何以免动态字体回收后再次栅格化。
-        result_text = TextNode("result-glyphs")
-        result_text.setFont(self.ui_font)
-        result_text.setText("".join(dict.fromkeys(
+        result_characters = "".join(dict.fromkeys(
             "挑战成功失败驾驶结束无限高速自由滨海有效完成计时圈无效错过检查点车辆复位提前"
             "本次不记录速暂无最佳成绩可重新出发或返回菜单距离用时碰撞发生公里"
             "重新挑战出发  Enter返回主菜单退出本圈最佳秒0123456789.ms"
-        )))
-        self.result_glyph_geometry = NodePath(result_text.generate())
+            "有效完赛本次未达到铜银金牌下一目标个人还差幽灵已保存下次可对照"
+            "路段比出发时最佳累计负值领先改装前胎制动再试查看驾驶进阶实验台Δ—≤/+"
+        ))
+        self.result_glyph_geometry = NodePath('result-glyphs')
+        for font in (self.ui_font, self.sector_font):
+            result_text = TextNode('result-font-glyphs')
+            result_text.setFont(font)
+            result_text.setText(result_characters)
+            self.result_glyph_geometry.attachNewNode(result_text.generate())
         self.result_glyph_geometry.prepareScene(self.win.getGsg())
         self.buttons = [
             DirectButton(
@@ -2166,4 +2173,5 @@ class CoastalDrive(ShowBase):
         self.result_glyph_geometry.removeNode()
         self.workspace_loading.close()
         self.destroy()
+        release_window_icon(self.window_icon)
         self._shutdown = True

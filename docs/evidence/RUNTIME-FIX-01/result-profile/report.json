@@ -1,0 +1,21 @@
+{
+  "kind": "offscreen completed-race fixture; not a performance gate",
+  "source": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\src",
+  "panel_ms_with_profile": 22.141800000099465,
+  "first_render_frames_ms": [
+    78.6991000004491,
+    108.24409999986528,
+    3.8942000001043198,
+    2.636499999425723
+  ],
+  "title": "挑战成功",
+  "note": "有效完成 · 尚未达到铜牌",
+  "detail": "本圈 87.123 秒\n最佳 87.123 秒\n下一目标 铜牌 ≤80s · 还差7.123s",
+  "buttons": [
+    "重新挑战  Enter",
+    "返回主菜单",
+    "退出"
+  ],
+  "physics_frozen": true,
+  "wrapping_identical_cases": 100
+}

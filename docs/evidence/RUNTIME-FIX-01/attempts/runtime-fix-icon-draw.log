@@ -1,0 +1,11 @@
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+Traceback (most recent call last):
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\tools\performance\check_window_icon.py", line 49, in <module>
+    main()
+    ~~~~^^
+  File "B:\AI agent\���ڼ�����������\CoastalDrive\tools\performance\check_window_icon.py", line 39, in main
+    assert user32.SendMessageTimeoutW(hwnd, 0x7f, size, 0, 2, 1000, ctypes.byref(value))
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

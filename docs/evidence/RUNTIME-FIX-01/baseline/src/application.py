@@ -1,0 +1,2169 @@
+import json
+import logging
+import time
+from dataclasses import replace
+from pathlib import Path
+
+import simplepbr
+from direct.gui import DirectGuiGlobals as DGG
+from direct.gui.DirectGui import DirectButton, DirectFrame, OnscreenText
+from direct.showbase.DirectObject import DirectObject
+from direct.showbase.ShowBase import ShowBase
+from panda3d.core import (
+    ClockObject,
+    Filename,
+    NodePath,
+    TextNode,
+    TransparencyAttrib,
+    Vec3,
+    loadPrcFileData,
+)
+
+from audio.music import STATIONS
+from braking_lesson import BRAKING_MODES, BrakingScores
+from chase_camera import ChaseCamera
+from coastal_medals import menu_goal, result_goal, result_medal
+from controls import ConstantController
+from driving_journey import read_driving_journey
+from driving_modes import DrivingMode
+from driving_tour import LEGS as TOUR_LEGS
+from driving_tour import TITLES as TOUR_TITLES
+from driving_tour import DrivingTour, overall_medal, points
+from garage import GaragePreview
+from highway_run import TRAFFIC_DENSITIES
+from lab_records import load_record
+from overtake_routes import OVERTAKE_ROUTES
+from paths import user_data
+from player_road_ab import PlayerRoadAB
+from player_road_ab import context as player_road_context
+from player_road_ab import record as player_road_record
+from race import BestTimes, GameMode
+from road_retest import prepare_pair
+from scene import Scene
+from session import Phase, Session
+from settings import AppearanceStore, AudioSettingsStore, DrivingModeStore
+from simulation import Control
+from skins import PLAYER_VEHICLES, SKINS, apply_skin, vehicle_definition, vehicle_for_design
+from slalom_lesson import SLALOM_MODES, SlalomScores
+from soundscape import Soundscape
+from sprint_routes import SPRINT_ROUTES
+from tire_tuning import install as install_front_tires
+from tire_tuning import install_brakes
+from tire_tuning import restore as restore_pre_tuning_vehicle
+from tracks import COASTAL_CIRCUIT
+from ui import theme
+from ui.braking_feedback import RULES as BRAKING_RULES
+from ui.braking_feedback import SHORT_RULES as SHORT_BRAKING_RULES
+from ui.braking_feedback import result_feedback as braking_result_feedback
+from ui.countdown import Countdown
+from ui.driving_cards import DrivingCards
+from ui.driving_journey import DrivingJourney
+from ui.driving_tour import DrivingTourPanel
+from ui.hud import DrivingHUD
+from ui.main_menu import MainMenu
+from ui.overtake_feedback import result_feedback as overtake_result_feedback
+from ui.player_road_ab import PlayerRoadPanel
+from ui.race_feedback import result_columns
+from ui.slalom_feedback import FAST_RULES as FAST_SLALOM_RULES
+from ui.slalom_feedback import RULES as SLALOM_RULES
+from ui.slalom_feedback import gate_columns
+from ui.slalom_feedback import result_feedback as slalom_result_feedback
+from ui.sprint_feedback import goals as sprint_goals
+from ui.sprint_feedback import result_columns as sprint_columns
+from ui.sprint_feedback import result_feedback as sprint_result_feedback
+from ui.tire_tuning import TireTuningPanel
+from ui.workshop_journey import WorkshopJourney
+from ui.workspace_loading import WorkspaceLoading
+from vehicle_designs import vehicle_design
+from vehicle_schemes import load_scheme, scheme_library_path, sync_road_progress
+from vehicle_workspace import WorkspaceVehicle, workspace_vehicle_path
+from workshop import road_result
+from workshop_cornering import CHALLENGE_ID as CORNERING_CHALLENGE_ID
+from workshop_journey import current_trial, read_journey
+
+
+class CoastalDrive(ShowBase):
+    def __init__(self, *, smoke=False, smoke_audio=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", sync_video=True, driving_mode=None, vehicle_design_id=None, abs_enabled=None, tcs_enabled=None, esc_enabled=None, physics_workers=None, independent_clock=None, workspace_vehicle=None, startup_workspace="game", lab_output=None):
+        # 带声音的诊断仍隔离设置/成绩，只打开正式音频链路。
+        audio_enabled = not smoke or smoke_audio
+        self.session = None
+        self.workspace = "startup"
+        self.startup_trace = startup_trace
+        loadPrcFileData(
+            "coastaldrive",
+            "\n".join(
+                [
+                    "window-title CoastalDrive",
+                    'icon-filename assets/game/ui/coastal-drive.ico',
+                    f"win-size {render_size[0]} {render_size[1]}",
+                    f"sync-video {int(sync_video)}",
+                    # 高频车辆变换几乎不命中全局缓存；保留RenderState缓存和线程安全回收。
+                    "transform-cache false",
+                    f"threading-model {threading_model}",
+                    "window-type offscreen" if smoke and not onscreen else "window-type onscreen",
+                    "audio-library-name p3openal_audio" if audio_enabled else "audio-library-name null",
+                ]
+            ),
+        )
+        super().__init__()
+        self.lab = None
+        self.lab_workspace = None
+        self._workspace_steps = None
+        self.lab_output = lab_output
+        self.audio_enabled = audio_enabled
+        self.game_input = DirectObject()
+        # 物理独立120Hz；高精度等待交还GIL，Panda的忙等限帧会挤占物理准备/提交。
+        ClockObject.getGlobalClock().setMode(ClockObject.MNormal)
+        self._render_deadline = time.perf_counter()
+        self.taskMgr.add(self.pace_frame,"render-frame-pacing",sort=-100)
+        if startup_trace is not None:
+            startup_trace.mark("window_initialized")
+        self.disableMouse()
+        # The default bias detaches contact shadows at our light's depth range.
+        # 驾驶场景和车库都只使用一束直射光，避免为七个空光槽处理阴影坐标。
+        self.pipeline = simplepbr.init(enable_shadows=True, max_lights=1,
+                                      msaa_samples=4, shadow_bias=0.0007)
+        if startup_trace is not None:
+            startup_trace.mark("renderer_initialized")
+        self.workspace_loading = WorkspaceLoading(self)
+        self.workspace_loading.show("正在打开海岸驾驶", tip="车辆设计与公路试驾，共用一个窗口")
+        self.graphicsEngine.renderFrame()
+        self.graphicsEngine.renderFrame()
+        self.camLens.setFov(68)
+        self.camLens.setNearFar(0.15, 1500)
+        self.smoke = smoke
+        self.onscreen = onscreen
+        self.output = output or user_data()
+        self.workspace_path = self.output/"test-workspace-vehicle.json" if smoke else workspace_vehicle_path()
+        self.scheme_root = self.output/"test-schemes" if smoke else scheme_library_path()
+        appearance_path = self.output / "test-appearance.json" if smoke else None
+        self.appearance = AppearanceStore(appearance_path)
+        if workspace_vehicle is not None:
+            vehicle_design_id = workspace_vehicle.design_id
+        if vehicle_design_id is not None:
+            self.appearance.model_id = vehicle_for_design(vehicle_design_id, self.appearance.model_id).id
+        self.workspace_vehicle = workspace_vehicle or WorkspaceVehicle(
+            vehicle_definition(self.appearance.model_id).physics_id,
+            vehicle_design(vehicle_definition(self.appearance.model_id).physics_id).config)
+        audio_path = self.output / "test-audio.json" if smoke else None
+        self.audio_settings = AudioSettingsStore(audio_path)
+        mode_path = self.output / "test-driving-mode.json" if smoke else None
+        self.driving_mode_settings = DrivingModeStore(mode_path)
+        use_clock = not smoke if independent_clock is None else independent_clock
+        session_type = Session
+        if use_clock:
+            from session_process import SessionProcess
+
+            session_type = SessionProcess
+        self.session_type = session_type
+        self.session_arguments = {
+            "seed": seed,
+            "track": track,
+            # 交互游戏固定辅助输入；显式模式参数仅供诊断，实验室另走VehicleCommand。
+            "driving_mode": driving_mode if driving_mode is not None else DrivingMode.GAME,
+            "abs_enabled": abs_enabled if abs_enabled is not None else (
+                workspace_vehicle.config.braking.abs_enabled if workspace_vehicle else self.driving_mode_settings.abs_enabled),
+            "tcs_enabled": tcs_enabled if tcs_enabled is not None else (
+                workspace_vehicle.config.traction.tcs_enabled if workspace_vehicle else self.driving_mode_settings.tcs_enabled),
+            "esc_enabled": esc_enabled if esc_enabled is not None else (
+                workspace_vehicle.config.stability.esc_enabled if workspace_vehicle else self.driving_mode_settings.esc_enabled),
+            "road_shape": road_shape,
+            "scores": BestTimes(self.output / "test-best-times.json") if smoke else None,
+            "vehicle_config": self.workspace_vehicle.config,
+            "physics_workers": physics_workers,
+            "independent_clock": use_clock,
+        }
+        self.session = session_type(**self.session_arguments)
+        if startup_trace is not None:
+            startup_trace.mark("simulation_initialized")
+        self.skin_index = next(
+            (i for i, skin in enumerate(SKINS) if skin.id == self.appearance.skin_id), 0
+        )
+        self.vehicle_model_id = self.appearance.model_id
+        self.scene = None
+        self.soundscape = (
+            None
+            if not audio_enabled
+            else Soundscape(
+                self, self.audio_settings.master_volume, self.audio_settings.effects_volume,
+                self.audio_settings.music_volume, self.audio_settings.radio_station,
+            )
+        )
+        self._scene_track = None
+        self._scene_shape = None
+        self._scene_seed = None
+        self._scene_vehicle = None
+        self.highway_menu = False
+        self.braking_menu = False
+        self.slalom_menu = False
+        self.sprint_menu = False
+        self.overtake_menu = False
+        self.overtake_mode = GameMode.SAFE_OVERTAKE
+        self.driving_journey_return = False
+        self.tour_store = None
+        self.player_road_ab = PlayerRoadAB(self.session.race.scores.path.with_name('player-road-ab.json'))
+        self.player_brake_ab = PlayerRoadAB(self.session.race.scores.path.with_name('player-braking-ab.json'), brakes=True)
+        self.road_attempt = self.road_start_context = None
+        self.road_pending = False
+        self.road_retest_request = self.road_retest_return = None
+        self.tour_active = self.tour_pending = False
+        self.tour_round = 0
+        self.tour_status = ''
+        self.lab_return_braking = False
+        self.braking_mode = GameMode.BRAKING_LESSON
+        self.lab_return_slalom = False
+        self.slalom_mode = GameMode.SLALOM_LESSON
+        self.lab_return_sprint = None
+        self.lab_return_overtake = None
+        self.lab_journey_request = None
+        self.audio_settings_page = False
+        self.driving_mode_page = False
+        self.highway_shape = "hills"
+        self.highway_density_keys = tuple(TRAFFIC_DENSITIES)
+        self.highway_density_index = self.highway_density_keys.index(self.session.traffic_density)
+        self.garage = None
+        self.garage_model_id = self.vehicle_model_id
+        self.garage_skin_index = self.skin_index
+        self.panel_selection = 0
+        self.panel_option_count = 0
+        self._diagnostics_was_visible = False
+        self._camera_origin = 0.0
+        self.chase_camera = ChaseCamera()
+        self._camera_time = self.session.current.time
+        self.commands_held = set()
+        self.ghost_enabled = True
+        self.driving_keys_held = set()
+        self._shutdown = False
+        self.next_workspace = None
+        self.next_drive = False
+        self._audio_checkpoints = 0
+        self._audio_phase = Phase.MENU
+        self._radio_last_station = self.audio_settings.radio_station or 1
+        self._radio_dirty = False
+        self._shown_phase = None
+        self.setup_controls()
+        self.setup_hud()
+        self.loading = DirectFrame(
+            parent=self.aspect2d, frameColor=(1, 1, 1, 0.94),
+            frameSize=(-0.62, 0.62, -0.13, 0.13), relief=DGG.FLAT,
+        )
+        self.loading.setTransparency(TransparencyAttrib.MAlpha)
+        self.loading_text = OnscreenText(
+            parent=self.loading, text="", font=self.ui_font, fg=theme.INK,
+            pos=(0, -0.026), scale=0.075, mayChange=True,
+        )
+        self.loading.hide()
+        if startup_trace is not None:
+            startup_trace.mark("ui_ready")
+        self.taskMgr.add(self.update, "drive-update")
+        self.workspace = "game"
+        if smoke:
+            self.session.start(countdown=False)
+            self.sync_scene()
+            self.session.set_controller(ConstantController(Control(throttle=1)))
+            self.taskMgr.doMethodLater(1.2, self.finish_smoke, "finish-smoke")
+        self.refresh_panel()
+        self.workspace_loading.hide()
+        if startup_workspace == "lab":
+            self.open_vehicle_lab()
+
+    def start_game(self, *, mode, track="coastal", tour=False):
+        if self._workspace_steps is not None:
+            return
+        self.tour_active = self.tour_pending = tour
+        if self.smoke or self.startup_trace is not None:
+            self._enter_game(mode, track)
+            return
+        self._begin_workspace(self._load_road(mode, track), "驶向滨海公路" if track == "coastal" else "进入无限高速",
+                              "方向盘后，继续检验这辆车")
+
+    def _load_road(self, mode, track):
+        yield 0, "准备驾驶工况"
+        yield 1, "准备道路与交通车辆"
+        self._enter_game(mode, track)
+        self.session.phase = Phase.LOADING
+        yield 3, "公路、车辆与相机已就绪"
+        self.render.prepareScene(self.win.getGsg())
+        yield 4, "完成画面资源准备"
+        self.workspace = "game"
+        yield 5, "可以出发"
+
+    def open_vehicle_lab(self):
+        """保留窗口与渲染环境，只释放驾驶会话后进入工程视图。"""
+        if self._workspace_steps is not None:
+            return
+        self.tour_active = self.tour_pending = False
+        self.tour_banner.hide()
+        self.tire_tuning.hide()
+        self.lab_return_braking = self.session.mode in BRAKING_MODES
+        if self.lab_return_braking:
+            self.braking_mode = self.session.mode
+        self.lab_return_slalom = self.session.mode in SLALOM_MODES
+        if self.lab_return_slalom:
+            self.slalom_mode = self.session.mode
+        self.lab_return_sprint = self.session.mode if self.session.mode in SPRINT_ROUTES else None
+        self.lab_return_overtake = self.session.mode if self.session.mode in OVERTAKE_ROUTES else None
+        self.workspace_vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
+        self.next_workspace = "lab"
+        self._begin_workspace(self._load_lab(), "进入车辆实验室", "工况与A/B记录将保留")
+
+    def open_driving_tour(self):
+        self.back_to_menu()
+        self.highway_menu = self.braking_menu = self.slalom_menu = self.sprint_menu = self.overtake_menu = False
+        self.audio_settings_page = self.driving_mode_page = False
+        self.journey.hide()
+        self.driving_journey.hide()
+        variant = self.session.score_variant()
+        if self.tour_store is None or self.tour_store.variant != variant:
+            self.tour_store = DrivingTour(self.session.race.scores.path.with_name('driving-tour.json'), variant)
+        self._shown_phase = None
+        self.refresh_panel()
+        self.tour_panel.show(self.tour_store, self.workspace_vehicle_label())
+
+    def back_from_driving_tour(self):
+        self.tour_panel.hide()
+        self.choose_sprint_routes()
+        self.select_panel_option(5)
+
+    def start_tour_leg(self, restart=False):
+        if self.tour_store.variant != self.session.score_variant():
+            self.open_driving_tour()
+            return
+        if restart:
+            self.tour_store.restart()
+        if len(self.tour_store.current) == 3:
+            self.open_driving_tour()
+            return
+        self.tour_panel.hide()
+        self.tour_round = len(self.tour_store.current)
+        self.tour_status = ''
+        mode = TOUR_LEGS[self.tour_round]
+        if mode in SPRINT_ROUTES:
+            self.session.road_shape = SPRINT_ROUTES[mode].shape
+        self.start_game(mode=mode, track='endless', tour=True)
+
+    def refresh_tour_banner(self):
+        phase = self.session.phase
+        if not self.tour_active or phase == Phase.MENU:
+            self.tour_banner.hide()
+            return
+        if phase == Phase.RESULTS and self.tour_pending:
+            self.tour_pending = False
+            self.tour_status = self.tour_store.accept(self.session.mode, self.session.score_variant(), self.session.highway.snapshot)
+        title = f'巡回 {self.tour_round+1}/3 · {points(self.tour_store.current)}/9分'
+        if self.tour_title.getText() != title:
+            self.tour_title.setText(title)
+        if phase != Phase.RESULTS:
+            message = '本站至少铜牌 · 失败可重试'
+        elif self.tour_store.variant != self.session.score_variant():
+            message = '配方已变 · 原进度保留'
+        elif self.tour_store.notice:
+            message = '进度未保存 · 总览查看'
+        elif len(self.tour_store.current) == 3:
+            message = f'全程{overall_medal(self.tour_store.current)}牌'+(' · 综合新最佳' if self.tour_store.new_best else '')
+        elif phase == Phase.RESULTS and self.session.highway.snapshot.succeeded and len(self.tour_store.current) == self.tour_round:
+            message = '有效完成 · 仍需铜牌'
+        else:
+            message = '本站已过 · 可继续下一站' if len(self.tour_store.current) > self.tour_round else '本站未过 · 重试当前站'
+        if self.tour_message.getText() != message:
+            self.tour_message.setText(message)
+        self.tour_banner.show()
+
+    def open_workshop_journey(self):
+        scores = BrakingScores(self.session.race.scores.path.with_name("braking-best.json"),
+                               "braking-v1:"+self.session.score_variant())
+        try:
+            data = read_journey(self.scheme_root, self.workspace_vehicle, scores)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            self.main_menu.notice.setText("项目进度未读取，请检查方案目录。")
+            logging.getLogger(__name__).warning("工坊初章未读取: %s", error)
+            return
+        self.journey.show(data)
+        self.driving_journey.hide()
+
+    def open_driving_journey(self):
+        path = self.session.race.scores.path
+        variant = self.session.score_variant()
+        braking = BrakingScores(path.with_name("braking-best.json"), "braking-v1:"+variant)
+        slalom = SlalomScores(path.with_name("slalom-best.json"), "slalom-v1:"+variant)
+        self.journey.hide()
+        self.driving_journey.show(read_driving_journey(braking, slalom),
+                                  self.workspace_vehicle_label()+" · "+self.session.driving_mode.label)
+
+    def continue_driving_project(self, topic):
+        self.driving_journey_return = True
+        self.choose_braking_lesson() if topic == "braking" else self.choose_slalom_lesson()
+
+    def return_to_driving_journey(self):
+        self.back_to_menu()
+        self._shown_phase = None
+        self.refresh_panel()
+        self.open_driving_journey()
+
+    def continue_workshop_project(self, project):
+        if project["topic"] == 2:
+            self.journey.hide()
+            self.choose_braking_lesson()
+            return
+        try:
+            if project["scheme_id"] is not None:
+                load_scheme(self.scheme_root, project["scheme_id"]).records()
+            elif project["vehicle"] is not None:
+                current_trial(project["vehicle"])
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            self.journey.notice.setText("方案暂不可继续，其他数据保留："+str(error)[:65])
+            return
+        self.lab_journey_request = project
+        self.journey.hide()
+        self.open_vehicle_lab()
+
+    def _begin_workspace(self, steps, title, tip):
+        self._workspace_steps = steps
+        self.workspace = "transition"
+        self.game_input.ignoreAll()
+        self.driving_keys_held.clear()
+        self.commands_held.clear()
+        self.taskMgr.remove("drive-update")
+        self.taskMgr.remove("load-game")
+        self.taskMgr.remove("lab-update")
+        if self.lab is not None:
+            self.lab.blur_entries()
+            self.lab.ignoreAll()
+        vehicle = self.workspace_vehicle
+        self.workspace_loading.show(title, f"{vehicle_design(vehicle.design_id).name}   ·   "
+                                    f"{vehicle.config.mass:g} kg   /   质心 {vehicle.config.center_of_mass_height:g} m", tip)
+        self.taskMgr.add(self._advance_workspace, "workspace-load", sort=-10)
+
+    def _advance_workspace(self, task):
+        self.workspace_loading.resize()
+        # 先让完整加载画面进入一次正常绘制，再执行可能阻塞的初始化。
+        if task.frame == 0:
+            return task.cont
+        try:
+            completed, stage = next(self._workspace_steps)
+        except StopIteration:
+            self._workspace_steps = None
+            if self.workspace == "lab":
+                self.lab.activate()
+            else:
+                self.setup_controls()
+                self.taskMgr.add(self.update, "drive-update")
+                if self.session.phase == Phase.LOADING:
+                    self.session.phase = Phase.COUNTDOWN
+                if not self.smoke:
+                    properties = self.win.getProperties()
+                    self.session.focus_changed(properties.getForeground() and not properties.getMinimized())
+                self._shown_phase = None
+                self.refresh_panel()
+                if self.road_retest_return is not None:
+                    topic, _mode = self.road_retest_return
+                    self.road_retest_return = None
+                    self.open_brake_tuning() if topic == 'brakes' else self.open_tire_tuning()
+                    self.open_player_road_ab()
+            self.workspace_loading.hide()
+            return task.done
+        except (OSError, ValueError, RuntimeError):
+            logging.getLogger(__name__).exception("工作方式切换失败")
+            self._workspace_steps = None
+            self.workspace_loading.fail()
+            return task.done
+        self.workspace_loading.advance(completed, stage)
+        return task.cont
+
+    def _load_lab(self):
+        from lab_application import VehicleLab
+
+        yield 0, "整理驾驶车辆与工程配置"
+        self.session_arguments.update(seed=self.session.seed, track=self.session.simulation.track,
+                                      road_shape=self.session.road_shape, driving_mode=self.session.driving_mode)
+        if self.garage is not None:
+            self.close_garage()
+        self.session.close()
+        self.session = None
+        if self.soundscape is not None:
+            self.soundscape.close()
+            self.soundscape = None
+        yield 1, "道路物理会话已结束"
+        for node in (self.main_menu.root, self.hud.root, self.countdown.root, self.panel,
+                     self.diagnostics, self.loading):
+            node.hide()
+        if self.scene is not None:
+            self.scene.render.detachNode()
+        yield 2, "准备车辆实验视窗"
+        self.lab = VehicleLab(engine=self, output=self.lab_output, workspace_vehicle=self.workspace_vehicle,
+                              scheme_root=self.scheme_root,
+                              lab_workspace=self.lab_workspace, on_back=self.return_from_lab, activate=False)
+        if (self.workspace_vehicle.workshop_result is not None
+                and not (self.lab_workspace is not None and self.lab_workspace.road_state is not None
+                         and self.lab_workspace.road_state["visible"])):
+            self.lab.workshop.show()
+        request = self.lab_journey_request
+        self.lab_journey_request = None
+        if request is not None:
+            self.lab.schemes.virtual_driver.hide()
+            if request["scheme_id"] is not None:
+                self.lab.schemes.show()
+                if any(item.id == request["scheme_id"] for item in self.lab.schemes.schemes):
+                    self.lab.schemes.refresh(request["scheme_id"])
+                else:
+                    self.lab.show_error("目标方案已不在列表，未替换当前试验。")
+            else:
+                vehicle = request["vehicle"]
+                if vehicle is not None:
+                    folder = Path(vehicle.report_path).parent
+                    if self.lab.import_record(folder):
+                        self.lab.baseline = load_record(folder/"baseline-A")
+                        self.lab.workshop.restore_saved(vehicle)
+                        self.lab.refresh_plots()
+                if self.lab.workshop.topic != request["topic"]:
+                    self.lab.workshop.set_topic(request["topic"])
+                self.lab.workshop.show()
+        if self.road_retest_request is not None:
+            self.lab.road_retest.prepare(self.road_retest_request)
+            self.road_retest_request = None
+        yield 3, "工程参数与试验记录已恢复"
+        self.lab.root.prepareScene(self.win.getGsg())
+        self.render.prepareScene(self.win.getGsg())
+        yield 4, "准备车辆、字体与曲线画面"
+        self.workspace = "lab"
+        yield 5, "实验室准备完成"
+
+    def return_from_lab(self):
+        if self._workspace_steps is not None:
+            return
+        self.lab_workspace = self.lab.capture_workspace()
+        if self.lab.next_drive or self.lab.next_slalom:
+            self.road_retest_return = None
+        self.workspace_vehicle = self.lab.workspace_vehicle or self.workspace_vehicle
+        # 显式亲自过门优先；既有工坊滨海验证与普通课题返回分别保留。
+        if self.lab.next_slalom:
+            self.lab_return_overtake = None
+            self.lab_return_slalom, self.lab_return_braking = True, False
+            self.slalom_mode = GameMode.SLALOM_LESSON
+            self.lab_return_sprint = None
+        elif self.lab.next_drive and self.workspace_vehicle.workshop_result is not None:
+            self.lab_return_overtake = None
+            self.lab_return_braking = False
+            self.lab_return_slalom = False
+            self.lab_return_sprint = None
+        self.next_drive = bool(self.lab.next_drive or self.lab_return_braking or self.lab_return_slalom or self.lab_return_sprint or self.lab_return_overtake)
+        self.next_workspace = "game"
+        self._begin_workspace(self._load_game_workspace(), "驶向海岸公路" if self.next_drive else "返回海岸驾驶",
+                              "实验记录与编辑参数已保留")
+
+    def _load_game_workspace(self):
+        yield 0, "保留工况、A/B曲线与时间游标"
+        self.lab.close_game()
+        self.lab = None
+        self.cam.node().getDisplayRegion(0).setDimensions(0, 1, 0, 1)
+        self.camLens.setFov(68)
+        self.camLens.setAspectRatio(self.getAspectRatio())
+        self.camLens.setNearFar(.15, 1500)
+        self.setBackgroundColor(.55, .73, .82)
+        yield 1, "实验物理会话已结束"
+        vehicle = self.workspace_vehicle
+        self.vehicle_model_id = vehicle_for_design(vehicle.design_id, self.vehicle_model_id).id
+        self.appearance.model_id = self.vehicle_model_id
+        self.session_arguments.update(vehicle_config=vehicle.config, abs_enabled=vehicle.config.braking.abs_enabled,
+                                      tcs_enabled=vehicle.config.traction.tcs_enabled,
+                                      esc_enabled=vehicle.config.stability.esc_enabled)
+        self.session = self.session_type(**self.session_arguments)
+        self._camera_time = self.session.current.time
+        self.highway_menu = self.audio_settings_page = self.driving_mode_page = False
+        self._audio_checkpoints = 0
+        self._audio_phase = Phase.MENU
+        self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
+        yield 2, "驾驶会话与车辆配置已就绪"
+        if self.audio_enabled:
+            self.soundscape = Soundscape(self, self.audio_settings.master_volume, self.audio_settings.effects_volume,
+                                         self.audio_settings.music_volume, self.audio_settings.radio_station)
+        yield 3, "准备公路场景与声音"
+        if self.scene is not None:
+            self.scene.render.reparentTo(self.render)
+        if self.road_retest_return is not None:
+            topic, mode = self.road_retest_return
+            if topic == 'brakes':
+                self.choose_braking_lesson(mode)
+            else:
+                self.choose_slalom_lesson(mode)
+        elif self.next_drive:
+            if self.lab_return_overtake:
+                self._enter_game(self.lab_return_overtake, "endless")
+            elif self.lab_return_sprint is not None:
+                self.session.road_shape = SPRINT_ROUTES[self.lab_return_sprint].shape
+                self._enter_game(self.lab_return_sprint, "endless")
+            elif self.lab_return_slalom:
+                self.session.road_shape = "straight"
+                self._enter_game(self.slalom_mode, "endless")
+            elif self.lab_return_braking:
+                self.session.road_shape = "straight"
+                self._enter_game(self.braking_mode, "endless")
+            else:
+                mode = GameMode.TIME_TRIAL if vehicle.workshop_result is not None else GameMode.FREE_DRIVE
+                self._enter_game(mode, "coastal")
+            self.session.phase = Phase.LOADING
+        self.render.prepareScene(self.win.getGsg())
+        self.main_menu.root.prepareScene(self.win.getGsg())
+        yield 4, "完成画面资源准备"
+        self.workspace = "game"
+        yield 5, "可以出发"
+
+    def _enter_game(self, mode, track):
+        if mode not in (*BRAKING_MODES, *SLALOM_MODES):
+            self.driving_journey_return = False
+        self.driving_keys_held.clear()
+        self.hud.select_radio(None)
+        if track == "endless":
+            self.session.traffic_density = self.highway_density_keys[self.highway_density_index]
+        self.session.start(mode=mode, track=track,settle_initial=True)
+        self.road_attempt = None
+        self.road_pending = mode in (*SLALOM_MODES, *BRAKING_MODES)
+        self.road_start_context = player_road_context(self.session) if self.road_pending else None
+        self.sync_scene()
+        if track == "endless":
+            # 重开复用Scene时，道路可能已回到起点；加载阶段补齐近景。
+            self.scene.sync_segments()
+        self.chase_camera.position = None
+        self._camera_origin = self.session.simulation.origin_y
+        self.apply_scene(self.session.current,0.)
+        # 首次显存上传/绘制准备留在加载画面；倒计时开始后只切换已生成的数字。
+        self.render.prepareScene(self.win.getGsg())
+        self.countdown.root.prepareScene(self.win.getGsg())
+
+    def sync_scene(self):
+        track = self.session.simulation.track
+        if (
+            self.scene is None
+            or track != self._scene_track
+            or self.session.road_shape != self._scene_shape
+            or self.session.simulation.seed != self._scene_seed
+            or len(self.scene.traffic) != len(self.session.current.traffic)
+            or self._scene_vehicle != (self.vehicle_model_id, self.session.simulation.config)
+        ):
+            if self.scene is not None:
+                self.scene.close()
+            self.scene = Scene(self)
+            self._scene_track = track
+            self._scene_shape = self.session.road_shape
+            self._scene_seed = self.session.simulation.seed
+            self._scene_vehicle = (self.vehicle_model_id, self.session.simulation.config)
+            self.chase_camera.position = None
+        self.scene.set_checkpoint_visible(self.session.mode == GameMode.TIME_TRIAL)
+        self.scene.set_ghost(self.session.reference_ghost)
+
+    def back_to_menu(self):
+        self.driving_journey_return = False
+        self.tour_active = self.tour_pending = False
+        self.tour_banner.hide()
+        self.tire_tuning.hide()
+        self.session.menu()
+        if self.scene is not None:
+            self.scene.close()
+            self.scene = None
+            self._scene_track = None
+            self._scene_shape = None
+            self._scene_seed = None
+
+    def setup_controls(self):
+        for key in (
+            "w",
+            "a",
+            "s",
+            "d",
+            "q",
+            "e",
+            "arrow_up",
+            "arrow_down",
+            "arrow_left",
+            "arrow_right",
+            "r",
+            "c",
+            "escape",
+            "enter",
+            "tab",
+            "n",
+            "m",
+            "g",
+        ):
+            self.game_input.accept(key, self.key_down, [key])
+            self.game_input.accept(f"{key}-up", self.key_up, [key])
+            if len(key) == 1:
+                self.game_input.accept(f"raw-{key}", self.key_down, [key])
+                self.game_input.accept(f"raw-{key}-up", self.key_up, [key])
+        self.game_input.accept("f2", self.choose_driving_mode)
+        self.game_input.accept("f3", self.toggle_diagnostics)
+
+    def audio_cue(self, name):
+        if self.soundscape is not None:
+            self.soundscape.cues.play(name)
+
+    def cycle_radio(self, direction=1):
+        station = (self.audio_settings.radio_station + direction) % len(STATIONS)
+        if station:
+            self._radio_last_station = station
+        self.audio_settings.radio_station = station
+        self._radio_dirty = True
+        if self.soundscape is not None:
+            self.soundscape.music.select(station)
+        if self.session.phase in (Phase.DRIVING, Phase.COUNTDOWN):
+            self.hud.select_radio(station)
+        else:
+            self.save_audio_settings()
+        if self.audio_settings_page:
+            self._shown_phase = None
+            self.refresh_panel()
+
+    def save_audio_settings(self):
+        self.audio_settings.save(self.audio_settings.master_volume,
+                                 self.audio_settings.effects_volume,
+                                 self.audio_settings.music_volume,
+                                 self.audio_settings.radio_station)
+        self._radio_dirty = False
+
+    def toggle_radio(self):
+        self.cycle_radio(-self.audio_settings.radio_station
+                         if self.audio_settings.radio_station else self._radio_last_station)
+
+    def key_down(self, key):
+        if not self.loading.isHidden():
+            return
+        if self.session.phase in (Phase.MENU, Phase.RESULTS) and not self.player_road_panel.root.isHidden():
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.player_road_panel.key(key)
+            return
+        if self.session.phase in (Phase.MENU, Phase.RESULTS) and not self.tire_tuning.root.isHidden():
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.tire_tuning.key(key)
+            return
+        if self.session.phase == Phase.MENU and not self.tour_panel.root.isHidden():
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.tour_panel.key(key)
+            return
+        if self.session.phase == Phase.MENU and not self.driving_journey.root.isHidden():
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.driving_journey.key(key)
+            return
+        if self.session.phase == Phase.MENU and not self.journey.root.isHidden():
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.journey.key(key)
+            return
+        if key == "g" and self.session.phase in (Phase.DRIVING, Phase.COUNTDOWN, Phase.PAUSED):
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.toggle_ghost()
+            return
+        if key in ("n", "m"):
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.cycle_radio() if key == "n" else self.toggle_radio()
+            return
+        if (self.session.phase == Phase.MENU and self.garage is None
+                and not self.audio_settings_page and not self.driving_mode_page and not self.highway_menu
+                and key in ("arrow_up", "arrow_down", "w", "s", "enter")):
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                if key == "enter":
+                    self.audio_cue("confirm")
+                    self.main_menu.activate()
+                else:
+                    self.audio_cue("select")
+                    self.main_menu.move(-1 if key in ("arrow_up", "w") else 1)
+            return
+        if self.has_panel_navigation():
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                # 状态可能刚从驾驶切到暂停/结算，先绑定当前页动作再处理按键。
+                self.refresh_panel()
+                self.handle_panel_key(key)
+                self.refresh_panel()
+            return
+        if key in ("r", "c", "escape", "enter"):
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                if self.session.phase == Phase.MENU and self.highway_menu:
+                    if key == "enter":
+                        self.start_highway(self.highway_shape)
+                        return
+                    if key == "escape":
+                        self.back_to_modes()
+                        return
+                self.session.command(key)
+                if key in ("r", "escape", "enter"):
+                    self.driving_keys_held.clear()
+        elif self.session.phase in (Phase.DRIVING, Phase.COUNTDOWN):
+            self.driving_keys_held.add(key)
+            if self.session.phase == Phase.DRIVING:
+                self.session.keyboard.press(key)
+
+    def key_up(self, key):
+        self.commands_held.discard(key)
+        self.driving_keys_held.discard(key)
+        self.session.keyboard.release(key)
+
+    def has_panel_navigation(self):
+        return (
+            self.garage is not None
+            or self.driving_mode_page
+            or self.audio_settings_page
+            or self.highway_menu
+            or self.session.phase in (Phase.PAUSED, Phase.RESULTS)
+        )
+
+    def handle_panel_key(self, key):
+        self.audio_cue("confirm" if key == "enter" else "select")
+        if key in ("arrow_up", "w"):
+            self.select_panel_option(self.panel_selection - 1)
+        elif key in ("arrow_down", "s"):
+            self.select_panel_option(self.panel_selection + 1)
+        elif key in ("arrow_left", "a"):
+            self.adjust_panel_option(-1)
+        elif key in ("arrow_right", "d"):
+            self.adjust_panel_option(1)
+        elif key == "enter":
+            self.buttons[self.panel_selection]["command"]()
+        elif key == "escape":
+            if self.garage is not None:
+                self.cancel_garage()
+            elif self.driving_mode_page:
+                self.back_from_driving_mode()
+            elif self.audio_settings_page:
+                self.back_from_audio_settings()
+            elif self.highway_menu:
+                if self.overtake_menu:
+                    self.back_from_overtake()
+                elif self.sprint_menu:
+                    self.back_from_sprint_routes()
+                elif self.slalom_menu:
+                    self.back_from_slalom_lesson()
+                else:
+                    self.back_from_braking_lesson() if self.braking_menu else self.back_to_modes()
+            elif self.session.phase == Phase.PAUSED:
+                self.session.resume()
+                self._shown_phase = None
+                self.refresh_panel()
+
+    def select_panel_option(self, index):
+        self.panel_selection = index % self.panel_option_count
+        if self.driving_cards.active:
+            self.driving_cards.select(self.panel_selection)
+            return
+        for option_index, button in enumerate(self.buttons[:self.panel_option_count]):
+            states = self.primary_states if option_index == 0 else self.button_states
+            button["frameTexture"] = (
+                (states[2], states[1], states[2], states[3])
+                if option_index == self.panel_selection else states
+            )
+
+    def adjust_panel_option(self, direction):
+        if self.session.phase == Phase.RESULTS:
+            # 结算按钮横排，左右键与A/D移动焦点；设置页仍按原逻辑调值。
+            self.select_panel_option(self.panel_selection + direction)
+        elif self.garage is not None:
+            if self.panel_selection == 0:
+                self.cycle_garage_model(direction)
+            elif self.panel_selection in (1, 2):
+                self.cycle_garage_skin(direction)
+        elif self.audio_settings_page:
+            if self.panel_selection in (0, 1):
+                self.adjust_audio_volume("master", direction * 10)
+            elif self.panel_selection in (2, 3):
+                self.adjust_audio_volume("effects", direction * 10)
+            elif self.panel_selection in (4, 5):
+                self.adjust_audio_volume("music", direction * 10)
+            elif self.panel_selection == 6:
+                self.cycle_radio(direction)
+        elif self.highway_menu:
+            if self.braking_menu or self.slalom_menu or self.sprint_menu or self.overtake_menu:
+                return
+            if self.panel_selection == 0:
+                self.cycle_highway_shape()
+            elif self.panel_selection == 1:
+                self.cycle_highway_density(direction)
+
+    def windowEvent(self, win):
+        super().windowEvent(win)
+        if self.session is not None and self.workspace == "game" and win == self.win and not self.smoke:
+            properties = win.getProperties()
+            self.session.focus_changed(properties.getForeground() and not properties.getMinimized())
+            if not properties.getForeground():
+                self.commands_held.clear()
+                self.driving_keys_held.clear()
+
+    def setup_hud(self):
+        self.ui_font = theme.load_font()
+        if self.startup_trace is not None:
+            self.startup_trace.mark("primary_font_loaded")
+        text_style = theme.text_style(self.ui_font)
+        self.panel_texture = self.loader.loadTexture(theme.asset_filename("components/panel.png"))
+        self.button_texture = self.loader.loadTexture(theme.asset_filename("components/button-normal.png"))
+        self.display_font = theme.load_font(theme.DISPLAY_FONT_FILE)
+        if self.startup_trace is not None:
+            self.startup_trace.mark("display_font_loaded")
+        self.hud = DrivingHUD(self.aspect2d, self.loader, self.ui_font, self.display_font)
+        self.countdown = Countdown(self.aspect2d)
+        self.status_frame = self.hud.status_frame
+        self.status = self.hud.status
+        self.status_notice = self.hud.status_notice
+        self.speed = self.hud.speed
+        self.gear_rpm = self.hud.gear_rpm
+        self.help_frame = self.hud.help_frame
+        self.help = self.hud.help
+        self.main_menu = MainMenu(self.aspect2d, self.loader, self.ui_font, self.display_font, (
+            lambda: self.start_game(mode=GameMode.TIME_TRIAL),
+            lambda: self.start_game(mode=GameMode.FREE_DRIVE),
+            self.choose_highway, self.choose_garage, self.choose_audio_settings, self.userExit,
+        ), driving_mode_action=self.choose_driving_mode, lab_action=self.open_vehicle_lab,
+            journey_action=self.open_workshop_journey)
+        self.journey = WorkshopJourney(self.main_menu.content, self.ui_font, self.main_menu.textures,
+                                       self.continue_workshop_project, self.open_driving_journey)
+        self.driving_journey = DrivingJourney(self.main_menu.content, self.ui_font, self.main_menu.textures,
+                                              self.continue_driving_project, self.open_workshop_journey)
+        self.tour_panel = DrivingTourPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
+                                          self.start_tour_leg, self.back_from_driving_tour)
+        self.tire_tuning = TireTuningPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
+            self.install_driving_recipe, self.restore_tire_vehicle, self.back_from_tire_tuning, self.open_player_road_ab)
+        self.player_road_panel = PlayerRoadPanel(self.tire_tuning.root, self.ui_font, self.main_menu.textures,
+                                               self.open_road_retest)
+        self.tour_banner = DirectFrame(parent=self.aspect2d, frameColor=theme.PAPER_LIGHT,
+            frameSize=(-.34, .34, -.105, 0), pos=(0, 0, .95), sortOrder=60)
+        self.tour_title = OnscreenText(parent=self.tour_banner, text='', font=self.ui_font,
+            fg=theme.SEA, scale=.03, pos=(0, -.04), mayChange=True)
+        self.tour_message = OnscreenText(parent=self.tour_banner, text='', font=self.ui_font,
+            fg=theme.INK, scale=.025, pos=(0, -.08), mayChange=True)
+        self.tour_banner.hide()
+        self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
+        self.diagnostics = OnscreenText(
+            **{**text_style, "fg": theme.DIAGNOSTIC_TEXT, "shadow": theme.DIAGNOSTIC_SHADOW},
+            text="",
+            pos=(-1.62, 0.37),
+            scale=0.035,
+            align=TextNode.ALeft,
+            mayChange=True,
+        )
+        self.diagnostics.hide()
+        self.panel = DirectFrame(
+            frameColor=(1, 1, 1, 1), frameTexture=self.panel_texture,
+            frameSize=(-0.8, 0.8, -0.80, 0.68)
+        )
+        self.panel.setTransparency(TransparencyAttrib.MAlpha)
+        self.result_icon = DirectFrame(
+            parent=self.panel, frameColor=(1, 1, 1, 1),
+            frameTexture=self.loader.loadTexture(theme.asset_filename("components/icon-trophy.png")),
+            frameSize=(-0.09, 0.09, -0.09, 0.09), pos=(0, 0, 0.56),
+        )
+        self.result_icon.hide()
+        self.button_states = tuple(self.loader.loadTexture(theme.asset_filename(f"components/button-{state}.png"))
+                                   for state in ("normal", "pressed", "hover", "disabled"))
+        self.primary_states = tuple(self.loader.loadTexture(theme.asset_filename(f"components/primary-{state}.png"))
+                                    for state in ("normal", "pressed", "hover", "normal"))
+        self.lab_return_button = DirectButton(
+            parent=self.hud.root, text="返回实验台", text_font=self.ui_font,
+            text_fg=theme.INK, text_scale=.045, text_pos=(0, -.016),
+            frameSize=(-.34, .34, -.055, .055), pos=(1.34, 0, .86),
+            frameTexture=self.button_states, frameColor=(1, 1, 1, 1), relief=DGG.FLAT,
+            command=self.open_vehicle_lab, pressEffect=False,
+        )
+        self.ghost_button = DirectButton(
+            parent=self.hud.root, text="幽灵：暂无", text_font=self.ui_font,
+            text_fg=theme.INK, text_scale=.042, text_pos=(0, -.016),
+            frameSize=(-.34, .34, -.055, .055), pos=(1.34, 0, .71),
+            frameTexture=self.button_states, frameColor=(1, 1, 1, 1), relief=DGG.FLAT,
+            command=self.toggle_ghost, pressEffect=False,
+        )
+        self.ghost_button.hide()
+        self.panel_accent = DirectFrame(
+            parent=self.panel, frameColor=theme.ORANGE,
+            frameSize=(-0.55, 0.55, -0.005, 0.005), pos=(0, 0, 0.61),
+        )
+        self.panel_title = OnscreenText(
+            **text_style, parent=self.panel, text="", pos=(0, 0.46), scale=0.07, mayChange=True
+        )
+        self.panel_note = OnscreenText(
+            **text_style, parent=self.panel, text="", pos=(0, 0.29), scale=0.040, mayChange=True
+        )
+        self.panel_detail = OnscreenText(
+            **text_style, parent=self.panel, text="", pos=(0, 0.12),
+            scale=0.041, mayChange=True,
+        )
+        self.sector_font = self.ui_font.makeCopy()
+        self.sector_font.setLineHeight(1.15)
+        self.result_sectors = tuple(OnscreenText(
+            parent=self.panel, font=self.sector_font, fg=theme.INK,
+            text="", pos=(x, -.11), scale=.038, mayChange=True,
+        ) for x in (-.65, -.22, .43))
+        for column in self.result_sectors:
+            column.hide()
+        # 固定结算字形在加载时创建并上传；持有几何以免动态字体回收后再次栅格化。
+        result_text = TextNode("result-glyphs")
+        result_text.setFont(self.ui_font)
+        result_text.setText("".join(dict.fromkeys(
+            "挑战成功失败驾驶结束无限高速自由滨海有效完成计时圈无效错过检查点车辆复位提前"
+            "本次不记录速暂无最佳成绩可重新出发或返回菜单距离用时碰撞发生公里"
+            "重新挑战出发  Enter返回主菜单退出本圈最佳秒0123456789.ms"
+        )))
+        self.result_glyph_geometry = NodePath(result_text.generate())
+        self.result_glyph_geometry.prepareScene(self.win.getGsg())
+        self.buttons = [
+            DirectButton(
+                parent=self.panel,
+                text="",
+                scale=0.055,
+                pos=(0, 0, 0.12 - i * 0.145),
+                frameSize=(-5, 5, -0.5, 1),
+                frameColor=theme.BUTTON_TINT,
+                frameTexture=self.button_texture,
+                text_fg=theme.INK,
+                text_font=self.ui_font,
+                relief=DGG.FLAT,
+            )
+            for i in range(8)
+        ]
+        self.driving_cards = DrivingCards(self.panel, self.ui_font, self.buttons)
+        for index, button in enumerate(self.buttons):
+            button.bind(DGG.ENTER, lambda event, i=index: self.select_panel_option(i))
+            button.bind(DGG.B1PRESS, lambda event: self.audio_cue("confirm"))
+        for button in self.main_menu.buttons:
+            button.bind(DGG.B1PRESS, lambda event: self.audio_cue("confirm"))
+
+    def fit_lines(self, value, width, scale, max_lines=None):
+        """按实际字体宽度换行，避免中文 notice 超出底板。"""
+        probe = TextNode("ui-line-measure")
+        probe.setFont(self.ui_font)
+        lines = []
+        for source in value.split("\n"):
+            probe.setText(source)
+            if probe.getWidth() * scale <= width:
+                lines.append(source)
+                continue
+            line = ""
+            for char in source:
+                probe.setText(line + char)
+                if line and probe.getWidth() * scale > width:
+                    lines.append(line)
+                    line = char
+                else:
+                    line += char
+            lines.append(line)
+        if max_lines is not None:
+            lines = lines[:max_lines]
+        return "\n".join(lines)
+
+    def choose_driving_mode(self):
+        if (self.session.phase != Phase.MENU or self.garage is not None
+                or self.audio_settings_page or self.highway_menu
+                or not self.journey.root.isHidden() or not self.driving_journey.root.isHidden()
+                or not self.tour_panel.root.isHidden() or not self.tire_tuning.root.isHidden()):
+            return
+        self.driving_mode_page = True
+        self.panel_selection = 0
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def set_driving_mode(self, mode):
+        if self.session.phase != Phase.MENU:
+            return
+        self.session.set_driving_mode(mode)
+        self.driving_mode_settings.save(mode, self.session.abs_enabled, self.session.tcs_enabled, self.session.esc_enabled)
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def toggle_abs(self):
+        if self.session.phase != Phase.MENU:
+            return
+        self.session.set_abs_enabled(not self.session.abs_enabled)
+        self.driving_mode_settings.save(self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled, self.session.esc_enabled)
+        self.save_workspace_electronics()
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def toggle_tcs(self):
+        if self.session.phase != Phase.MENU:
+            return
+        self.session.set_tcs_enabled(not self.session.tcs_enabled)
+        self.driving_mode_settings.save(self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled, self.session.esc_enabled)
+        self.save_workspace_electronics()
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def toggle_esc(self):
+        if self.session.phase != Phase.MENU:
+            return
+        self.session.set_esc_enabled(not self.session.esc_enabled)
+        self.driving_mode_settings.save(
+            self.session.driving_mode, self.session.abs_enabled, self.session.tcs_enabled,
+            self.session.esc_enabled)
+        self.save_workspace_electronics()
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def save_workspace_electronics(self):
+        self.workspace_vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
+        try:
+            self.workspace_vehicle.save(self.workspace_path)
+        except OSError:
+            logging.getLogger(__name__).exception("车辆工作区电子配置保存失败")
+            self.driving_mode_settings.notice = "车辆开关已改变，但工程车辆文件未保存。"
+
+    def back_from_driving_mode(self):
+        self.driving_mode_page = False
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def choose_audio_settings(self):
+        self.panel_selection = 0
+        self.audio_settings_page = True
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def adjust_audio_volume(self, setting, step):
+        master = self.audio_settings.master_volume
+        effects = self.audio_settings.effects_volume
+        music = self.audio_settings.music_volume
+        if setting == "master":
+            master = max(0, min(100, master + step))
+        elif setting == "effects":
+            effects = max(0, min(100, effects + step))
+        else:
+            music = max(0, min(100, music + step))
+        self.audio_settings.save(master, effects, music)
+        if self.soundscape is not None:
+            self.soundscape.set_volumes(master, effects, music)
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def back_from_audio_settings(self):
+        self.audio_settings_page = False
+        self.panel_selection = 2 if self.session.phase == Phase.PAUSED else 0
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def choose_garage(self):
+        if self.session.phase != Phase.MENU:
+            return
+        self.panel_selection = 3
+        self.garage_model_id = self.vehicle_model_id
+        self.garage_skin_index = self.skin_index
+        self._diagnostics_was_visible = not self.diagnostics.isHidden()
+        self.diagnostics.hide()
+        if self.scene is not None:
+            self.scene.render.hide()
+        self.help_frame.hide()
+        self.panel.setPos(0.72, 0, 0)
+        self.panel_note.setPos(0, 0.35)
+        self.panel["frameSize"] = (-0.61, 0.61, -0.80, 0.68)
+        self.garage = GaragePreview(self, self.garage_model_id, self.garage_skin_index)
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def cycle_garage_model(self, step=1):
+        index = next(i for i, model in enumerate(PLAYER_VEHICLES) if model.id == self.garage_model_id)
+        self.garage_model_id = PLAYER_VEHICLES[(index + step) % len(PLAYER_VEHICLES)].id
+        self.garage.set_vehicle(self.garage_model_id, self.garage_skin_index)
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def cycle_garage_skin(self, step):
+        self.garage_skin_index = (self.garage_skin_index + step) % len(SKINS)
+        apply_skin(self.garage.body.getChild(0), self.garage_skin_index)
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def apply_garage(self):
+        model_id = self.garage_model_id
+        skin_id = SKINS[self.garage_skin_index].id
+        if not self.appearance.save(model_id, skin_id):
+            self._shown_phase = None
+            self.refresh_panel()
+            return
+        self.vehicle_model_id = model_id
+        design_id = vehicle_definition(model_id).physics_id
+        if design_id != self.workspace_vehicle.design_id:
+            self.workspace_vehicle = WorkspaceVehicle(design_id, vehicle_design(design_id).config)
+            try:
+                self.workspace_vehicle.save(self.workspace_path)
+            except OSError as error:
+                logging.getLogger(__name__).exception("车库车辆工作区保存失败")
+                self.appearance.notice = f"车辆已切换，本次未保存：{error}"
+        self.session.set_vehicle_config(self.workspace_vehicle.config)
+        self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
+        self.skin_index = self.garage_skin_index
+        self.close_garage()
+
+    def workspace_vehicle_label(self):
+        vehicle = self.workspace_vehicle
+        if vehicle.workshop_result is not None:
+            result = vehicle.workshop_result
+            road = "道路已完成" if result["road_validated"] else "等待有效圈验证"
+            if result["challenge_id"] == CORNERING_CHALLENGE_ID:
+                return f"操稳工坊 · {result['medal']}牌 · {road}\n循迹误差减少 {result['improvement_pct']:.1f}%"
+            return f"制动工坊 · {result['medal']}牌 · {road}\n停车距离改善 {result['improvement_pct']:.1f}%"
+        source = ('改装车' if vehicle.parameter_metadata is not None and bool({'tuning_previous', 'tire_tuning_previous'} & vehicle.parameter_metadata.keys())
+                  else "实验车" if vehicle.report_path else "目录车")
+        return f"{source} · {vehicle_design(vehicle.design_id).name}\n{vehicle.config.mass:g} kg · 质心 {vehicle.config.center_of_mass_height:g} m"
+
+    def cancel_garage(self):
+        self.close_garage()
+
+    def close_garage(self):
+        if self.garage is None:
+            return
+        self.garage.close()
+        self.garage = None
+        if self.scene is not None:
+            self.scene.render.show()
+        self.setBackgroundColor(0.55, 0.73, 0.82)
+        self.help_frame.show()
+        if self._diagnostics_was_visible:
+            self.diagnostics.show()
+        self.panel.setPos(0, 0, 0)
+        self.panel_note.setPos(0, 0.29)
+        self.panel["frameSize"] = (-0.8, 0.8, -0.80, 0.68)
+        self.chase_camera.position = None
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def choose_highway(self):
+        self.overtake_menu = False
+        self.driving_journey_return = False
+        self.braking_menu = False
+        self.slalom_menu = False
+        self.sprint_menu = False
+        self.panel_selection = 2
+        self.highway_menu = True
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def choose_braking_lesson(self, mode=GameMode.BRAKING_LESSON):
+        self.braking_mode = mode
+        self.overtake_menu = False
+        self.sprint_menu = False
+        self.slalom_menu = False
+        self.braking_menu = True
+        self.highway_menu = True
+        self.panel_selection = 0
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def back_from_braking_lesson(self):
+        self.driving_journey_return = False
+        self.braking_menu = False
+        self.panel_selection = 4
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def choose_slalom_lesson(self, mode=GameMode.SLALOM_LESSON):
+        self.slalom_mode = mode
+        self.overtake_menu = False
+        self.sprint_menu = False
+        self.braking_menu = False
+        self.slalom_menu = True
+        self.highway_menu = True
+        self.panel_selection = 0
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def open_tire_tuning(self):
+        if self.session.phase == Phase.RESULTS and self.session.mode in SLALOM_MODES:
+            self.slalom_mode = self.session.mode
+        elif self.session.phase != Phase.MENU or not self.slalom_menu:
+            return
+        self.panel.hide()
+        for column in self.result_sectors:
+            column.hide()
+        self.main_menu.root.show()
+        self.player_road_panel.hide()
+        vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
+        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label())
+
+    def open_player_road_ab(self):
+        self.player_road_panel.show(self.player_brake_ab if self.tire_tuning.topic == 'brakes' else self.player_road_ab)
+
+    def open_road_retest(self):
+        if self._workspace_steps is not None or self.session.phase not in (Phase.MENU, Phase.RESULTS):
+            return
+        topic = self.tire_tuning.topic
+        store = self.player_brake_ab if topic == 'brakes' else self.player_road_ab
+        try:
+            pair = prepare_pair(store.a, store.b)
+        except (ValueError, TypeError, KeyError) as error:
+            self.player_road_panel.notice.setText('未进入参考复测：'+str(error))
+            return
+        self.road_retest_request = pair
+        self.road_retest_return = (topic, GameMode(pair['A']['context']['mode']))
+        self.open_vehicle_lab()
+
+    def open_brake_tuning(self):
+        if self.session.phase == Phase.RESULTS and self.session.mode in BRAKING_MODES:
+            self.braking_mode = self.session.mode
+        elif self.session.phase != Phase.MENU or not self.braking_menu:
+            return
+        self.panel.hide()
+        for column in self.result_sectors:
+            column.hide()
+        self.main_menu.root.show()
+        self.player_road_panel.hide()
+        vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
+        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label(), topic='brakes')
+
+    def observe_player_road(self):
+        if self.session.phase != Phase.RESULTS or not self.road_pending:
+            return
+        self.road_pending = False
+        brakes = self.session.mode in BRAKING_MODES
+        store = self.player_brake_ab if brakes else self.player_road_ab
+        result = self.session.highway.snapshot.braking if brakes else self.session.highway.snapshot.slalom
+        try:
+            self.road_attempt = player_road_record(self.road_start_context, player_road_context(self.session),
+                self.session.vehicle_config, result)
+            store.observe(self.road_attempt)
+        except (ValueError, TypeError, KeyError) as error:
+            store.notice = '本次道路对照未记录：'+str(error)
+
+    def apply_tuning_vehicle(self, vehicle):
+        """只在保存成功后交接菜单车辆；恢复完整原车时也恢复其电子开关。"""
+        if self.session.phase == Phase.RESULTS:
+            if vehicle == self.tire_tuning.original:
+                return
+            if self.road_attempt is not None:
+                target = self.session.driving_mode.configured_vehicle(vehicle.config.braking.abs_enabled,
+                    vehicle.config.traction.tcs_enabled, vehicle.config.stability.esc_enabled, base_config=vehicle.config)
+                store = self.player_brake_ab if self.session.mode in BRAKING_MODES else self.player_road_ab
+                store.freeze(self.road_attempt, target)
+            # 已结束的记录只属于旧车；保存成功后才回菜单准备同一道课题。
+            mode, journey = self.session.mode, self.driving_journey_return
+            self.session.menu()
+            self.choose_slalom_lesson(mode) if mode in SLALOM_MODES else self.choose_braking_lesson(mode)
+            self.driving_journey_return = journey
+            self.panel.hide()
+            self.main_menu.root.show()
+        self.workspace_vehicle = vehicle
+        self.session.set_vehicle_config(vehicle.config)
+        self.session.set_abs_enabled(vehicle.config.braking.abs_enabled)
+        self.session.set_tcs_enabled(vehicle.config.traction.tcs_enabled)
+        self.session.set_esc_enabled(vehicle.config.stability.esc_enabled)
+        self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
+        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label(), topic=self.tire_tuning.topic)
+
+    def install_driving_recipe(self, index):
+        if self.session.phase not in (Phase.MENU, Phase.RESULTS):
+            return
+        current = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
+        if current != self.tire_tuning.original:
+            self.tire_tuning.notice.setText('当前车辆已改变，请返回课题再打开配方。')
+            return
+        try:
+            vehicle = (install_brakes(current, index, self.workspace_path) if self.tire_tuning.topic == 'brakes' else
+                       install_front_tires(current, index, self.workspace_path))
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            self.tire_tuning.notice.setText('配方未安装，当前车保留：'+str(error))
+            return
+        self.apply_tuning_vehicle(vehicle)
+        self.tire_tuning.notice.setText('已保存硬件配方；返回原课题亲自验车。' if vehicle != current else '与当前车相同，原方案关联保持。')
+        store = self.player_brake_ab if self.tire_tuning.topic == 'brakes' else self.player_road_ab
+        if store.notice:
+            self.tire_tuning.notice.setText(self.tire_tuning.notice.getText()+' 道路对照有提示，请查看道路A/B。')
+
+    def restore_tire_vehicle(self):
+        if self.session.phase not in (Phase.MENU, Phase.RESULTS):
+            return
+        current = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
+        if current != self.tire_tuning.original:
+            self.tire_tuning.notice.setText('当前车辆已改变，请返回课题再打开配方。')
+            return
+        try:
+            vehicle = restore_pre_tuning_vehicle(current, self.workspace_path)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            self.tire_tuning.notice.setText('原车未恢复，当前车保留：'+str(error))
+            return
+        self.apply_tuning_vehicle(vehicle)
+        self.tire_tuning.notice.setText('已恢复完整安装前车辆与原关联；返回原课题继续。')
+
+    def back_from_tire_tuning(self):
+        self.tire_tuning.hide()
+        self._shown_phase = None
+        self.refresh_panel()
+        self.select_panel_option(3 if self.session.phase == Phase.RESULTS else 2)
+
+    def back_from_slalom_lesson(self):
+        self.driving_journey_return = False
+        self.slalom_menu = False
+        self.panel_selection = 5
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def start_slalom_lesson(self):
+        self.slalom_menu = self.highway_menu = False
+        self.session.road_shape = "straight"
+        self.start_game(mode=self.slalom_mode, track="endless")
+
+    def choose_sprint_routes(self):
+        self.overtake_menu = False
+        self.sprint_menu, self.highway_menu = True, True
+        self.braking_menu = self.slalom_menu = False
+        self.panel_selection = 0
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def back_from_sprint_routes(self):
+        self.sprint_menu = False
+        self.panel_selection = 6
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def choose_overtake(self, mode=GameMode.SAFE_OVERTAKE):
+        self.overtake_mode = mode
+        self.sprint_menu, self.overtake_menu, self.highway_menu = False, True, True
+        self.panel_selection = 0
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def back_from_overtake(self):
+        self.choose_sprint_routes()
+        self.select_panel_option(3 if self.overtake_mode == GameMode.SAFE_OVERTAKE else 4)
+
+    def start_overtake(self):
+        self.sprint_menu = self.overtake_menu = self.highway_menu = False
+        self.start_game(mode=self.overtake_mode, track="endless")
+
+    def start_sprint(self, mode):
+        self.sprint_menu = self.highway_menu = False
+        self.session.road_shape = SPRINT_ROUTES[mode].shape
+        self.start_game(mode=mode, track="endless")
+
+    def start_braking_lesson(self):
+        self.braking_menu = False
+        self.highway_menu = False
+        self.session.road_shape = "straight"
+        self.start_game(mode=self.braking_mode, track="endless")
+
+    def start_highway(self, shape, mode=GameMode.FREE_DRIVE):
+        self.highway_menu = False
+        self.highway_shape = shape
+        self.session.road_shape = shape
+        self.start_game(mode=mode, track="endless")
+
+    def cycle_highway_shape(self):
+        self.highway_shape = "straight" if self.highway_shape == "hills" else "hills"
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def cycle_highway_density(self, step=1):
+        self.highway_density_index = (self.highway_density_index + step) % len(self.highway_density_keys)
+        self.session.traffic_density = self.highway_density_keys[self.highway_density_index]
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def back_to_modes(self):
+        self.overtake_menu = False
+        self.highway_menu = False
+        self._shown_phase = None
+        self.refresh_panel()
+
+    def toggle_diagnostics(self):
+        if self.garage is not None:
+            return
+        self.diagnostics.show() if self.diagnostics.isHidden() else self.diagnostics.hide()
+
+    def toggle_ghost(self):
+        self.ghost_enabled = not self.ghost_enabled
+        self.refresh_ghost_button()
+
+    def refresh_ghost_button(self):
+        if self.session.mode != GameMode.TIME_TRIAL:
+            self.ghost_button.hide()
+            return
+        available = self.session.reference_ghost is not None
+        text = "幽灵：暂无" if not available else "幽灵：开启  G" if self.ghost_enabled else "幽灵：关闭  G"
+        if self.ghost_button["text"] != text:
+            self.ghost_button["text"] = text
+        self.ghost_button["state"] = DGG.NORMAL if available else DGG.DISABLED
+        self.ghost_button.show()
+
+    def refresh_panel(self):
+        phase = self.session.phase
+        self.observe_player_road()
+        self.refresh_tour_banner()
+        panel_state = (phase, self.garage is not None, self.highway_menu, self.audio_settings_page, self.driving_mode_page)
+        if panel_state == self._shown_phase:
+            return
+        if (phase != Phase.PAUSED and
+                not (self.garage is not None or self.highway_menu or self.audio_settings_page or self.driving_mode_page)):
+            self.panel_selection = 0
+        self._shown_phase = panel_state
+        self.driving_cards.hide()
+        self.panel.setScale(1.)
+        self.panel['frameTexture'] = self.panel_texture
+        self.panel_title['align'] = TextNode.ACenter
+        self.panel_note.show()
+        self.panel_detail.show()
+        for column in self.result_sectors:
+            column.hide()
+        self.main_menu.root.hide()
+        if phase in (Phase.MENU, Phase.PAUSED, Phase.RESULTS):
+            self.hud.root.hide()
+        else:
+            self.hud.root.show()
+        if phase == Phase.MENU and self.garage is None and not self.highway_menu and not self.audio_settings_page and not self.driving_mode_page:
+            self.panel.hide()
+            self.main_menu.set_driving_mode(self.session.driving_mode)
+            times = BestTimes(self.session.race.scores.path)
+            best = times.get(GameMode.TIME_TRIAL, COASTAL_CIRCUIT.score_id+":"+self.session.score_variant())
+            self.main_menu.time_goal.setText(menu_goal(best))
+            notice = self.appearance.notice or self.driving_mode_settings.notice or times.notice
+            self.main_menu.notice.setText(self.fit_lines(notice, 1.0, 0.028))
+            self.main_menu.root.show()
+            return
+        for button in self.buttons:
+            button.hide()
+        self.panel.show()
+        self.panel_accent.show()
+        self.result_icon.hide()
+        self.panel_title.setPos(0, 0.46)
+        self.panel_title.textNode.setSlant(0.14)
+        self.panel_detail.setScale(0.041)
+        self.panel["frameSize"] = (-0.61, 0.61, -0.80, 0.68) if self.garage is not None else (-0.8, 0.8, -0.80, 0.68)
+        self.panel_title.setText(theme.BRAND_NAME)
+        self.panel_note.setText("滨海环路 · 4 个检查点\n按 Enter 开始计时挑战")
+        self.panel_detail.setText("")
+        self.panel_title["fg"] = theme.INK
+        self.panel_title.setScale(0.07)
+        self.panel_note.setScale(0.040)
+        self.panel_note.setPos(0, 0.29)
+        self.panel_detail.setPos(0, 0.10)
+        self.panel["frameColor"] = (1, 1, 1, 1)
+        if self.garage is not None:
+            model = next(model for model in PLAYER_VEHICLES if model.id == self.garage_model_id)
+            skin = SKINS[self.garage_skin_index]
+            self.panel_title.setText("车库")
+            note = f"车型：{model.name}\n车漆：{skin.name}\nEnter 应用并返回 · Esc 取消"
+            if self.appearance.notice:
+                note += f"\n{self.appearance.notice}"
+            self.panel_note.setText(note)
+            options = [
+                ("车型下一款", self.cycle_garage_model),
+                ("下一种颜色", lambda: self.cycle_garage_skin(1)),
+                ("上一种颜色", lambda: self.cycle_garage_skin(-1)),
+                ("应用并返回  Enter", self.apply_garage),
+                ("取消返回  Esc", self.cancel_garage),
+            ]
+        elif self.driving_mode_page:
+            self.panel_title.setText("驾驶辅助")
+            self.panel_note.setText(
+                "游戏使用车速转向辅助 · 下次起步应用\n"
+                "车辆硬件由车库选择，完整物理实验在实验室设置"
+                + (f"\n{self.driving_mode_settings.notice}" if self.driving_mode_settings.notice else "")
+            )
+            options = [
+                (f"车辆 ABS：{'开启' if self.session.abs_enabled else '关闭'}", self.toggle_abs),
+                (f"驱动防滑 TCS：{'开启' if self.session.tcs_enabled else '关闭'}", self.toggle_tcs),
+                (f"横摆稳定 ESC：{'开启' if self.session.esc_enabled else '关闭'}", self.toggle_esc),
+                ("返回", self.back_from_driving_mode),
+            ]
+        elif self.audio_settings_page:
+            self.panel_title.setText("设置")
+            note = (
+                f"主音量：{self.audio_settings.master_volume}%    "
+                f"效果音量：{self.audio_settings.effects_volume}%\n"
+                f"音乐：{self.audio_settings.music_volume}% · {STATIONS[self.audio_settings.radio_station]}\n"
+                "左右键调音量 · N 切台 · M 开关车载音乐"
+            )
+            if self.audio_settings.notice:
+                note += f"\n{self.audio_settings.notice}"
+            self.panel_note.setText(note)
+            options = [
+                ("主音量 -10%", lambda: self.adjust_audio_volume("master", -10)),
+                ("主音量 +10%", lambda: self.adjust_audio_volume("master", 10)),
+                ("效果音量 -10%", lambda: self.adjust_audio_volume("effects", -10)),
+                ("效果音量 +10%", lambda: self.adjust_audio_volume("effects", 10)),
+                ("音乐音量 -10%", lambda: self.adjust_audio_volume("music", -10)),
+                ("音乐音量 +10%", lambda: self.adjust_audio_volume("music", 10)),
+                (f"电台：{STATIONS[self.audio_settings.radio_station]}", self.cycle_radio),
+                ("返回", self.back_from_audio_settings),
+            ]
+        elif phase == Phase.MENU and self.highway_menu and self.overtake_menu:
+            route = OVERTAKE_ROUTES[self.overtake_mode]
+            self.panel_title.setText(route.title)
+            self.panel_note.setText(route.rules)
+            options = [("开始挑战  Enter", self.start_overtake), ("返回短途赛事", self.back_from_overtake)]
+        elif phase == Phase.MENU and self.highway_menu and self.sprint_menu:
+            self.panel_title.setText("短途路线与车流挑战")
+            bend, ridge, valley = SPRINT_ROUTES.values()
+            self.panel_note.setText(
+                "平路连弯 · 1.8公里连续弯\n山脊冲刺 · 1.4公里起伏\n"
+                "山谷节奏 · 1公里，加速→控速→再加速\n250米≥60；400–650米全段35–50km/h\n"
+                "前三项封闭无车流 · 碰撞/越界/复位失败 · 上限180秒")
+            self.panel_detail.setText(f"平路 {sprint_goals(bend)}\n山脊 {sprint_goals(ridge)}\n山谷 {sprint_goals(valley)}")
+            options = [("平路连弯 · 1.8公里", lambda: self.start_sprint(GameMode.BEND_SPRINT)),
+                       ("山脊冲刺 · 1.4公里", lambda: self.start_sprint(GameMode.RIDGE_SPRINT)),
+                       ("山谷节奏 · 1公里", lambda: self.start_sprint(GameMode.VALLEY_PACE)),
+                       ("车流安全超车 · 2辆", self.choose_overtake),
+                       ("弯坡车流 · 2.4公里", lambda: self.choose_overtake(GameMode.HILL_TRAFFIC)),
+                       ('海岸巡回 · 三站连跑', self.open_driving_tour),
+                       ("返回高速与课题", self.back_from_sprint_routes)]
+        elif phase == Phase.MENU and self.highway_menu and self.slalom_menu:
+            fast = self.slalom_mode == GameMode.FAST_SLALOM
+            self.panel_title.setText("驾驶课题 · "+("高速验车" if fast else "连续过门"))
+            self.panel_note.setText(FAST_SLALOM_RULES if fast else SLALOM_RULES)
+            options = [("开始练习  Enter", self.start_slalom_lesson),
+                       ("切换普通练习" if fast else "高速验车 · 70–80km/h",
+                        lambda: self.choose_slalom_lesson(GameMode.SLALOM_LESSON if fast else GameMode.FAST_SLALOM)),
+                       ('前胎配方 · 改装验车', self.open_tire_tuning),
+                       ("返回高速", self.back_from_slalom_lesson)]
+        elif phase == Phase.MENU and self.highway_menu and self.braking_menu:
+            short = self.braking_mode == GameMode.SHORT_BRAKING
+            self.panel_title.setText("驾驶课题 · "+("短距制动验车" if short else "定点刹停"))
+            self.panel_note.setText(SHORT_BRAKING_RULES if short else BRAKING_RULES)
+            options = [
+                ("开始练习  Enter", self.start_braking_lesson),
+                ("切换定点刹停" if short else "短距制动验车 · 80–85km/h",
+                 lambda: self.choose_braking_lesson(GameMode.BRAKING_LESSON if short else GameMode.SHORT_BRAKING)),
+                ("前制动分配 · 改装验车", self.open_brake_tuning),
+                ("返回高速", self.back_from_braking_lesson),
+            ]
+        elif phase == Phase.MENU and self.highway_menu:
+            self.panel_title.setText("无限高速")
+            density = self.highway_density_keys[self.highway_density_index]
+            density_label = TRAFFIC_DENSITIES[density].label
+            shape_label = "弯坡高速" if self.highway_shape == "hills" else "直线高速"
+            self.panel_note.setText(
+                f"{shape_label} · {density_label}\nEnter 启动自由驾驶 · Esc 返回\n"
+                "5公里挑战可倒车调整，复位会结束挑战\n"
+                "定点刹停：封闭直线无车流，使用当前车辆"
+            )
+            options = [
+                (f"道路：{shape_label}  >", self.cycle_highway_shape),
+                (f"车流：{density_label}  >", self.cycle_highway_density),
+                ("自由驾驶  Enter", lambda: self.start_highway(self.highway_shape)),
+                (
+                    "5公里无碰撞挑战",
+                    lambda: self.start_highway(self.highway_shape, mode=GameMode.DISTANCE_CHALLENGE),
+                ),
+                ("驾驶课题 · 定点刹停", self.choose_braking_lesson),
+                ("驾驶课题 · 连续过门", self.choose_slalom_lesson),
+                ("短途赛事 · 单项/巡回", self.choose_sprint_routes),
+                ("返回", self.back_to_modes),
+            ]
+        elif phase == Phase.PAUSED:
+            self.driving_keys_held.clear()
+            self.panel_title.setText("已暂停")
+            self.panel_note.setText("切出窗口会自动暂停\n按 Enter 或 Esc 继续驾驶")
+            options = [
+                ("继续驾驶  Enter", self.session.resume),
+                ("返回实验台", self.open_vehicle_lab),
+                ("设置", self.choose_audio_settings),
+                ("重新开始", self.session.start),
+                ("结束驾驶", self.session.finish),
+                ("返回主菜单", self.back_to_menu),
+            ]
+        elif phase == Phase.RESULTS:
+            if self.session.simulation.track == "endless":
+                highway_snapshot = self.session.highway.snapshot
+                if highway_snapshot.challenge:
+                    self.panel_title.setText("挑战成功" if highway_snapshot.succeeded else "挑战失败")
+                    self.panel_note.setText(highway_snapshot.reason)
+                else:
+                    self.panel_title.setText("驾驶结束")
+                    self.panel_note.setText("无限高速自由驾驶")
+                self.panel_detail.setText(
+                    f"距离 {highway_snapshot.distance:.0f} m   用时 {highway_snapshot.elapsed:.2f} s\n"
+                    f"碰撞 {highway_snapshot.collisions} 次"
+                )
+                if highway_snapshot.overtake is not None:
+                    note, detail = overtake_result_feedback(highway_snapshot.overtake)
+                    self.panel_note.setText(note)
+                    self.panel_detail.setText(detail)
+                elif highway_snapshot.braking is not None:
+                    note, detail = braking_result_feedback(highway_snapshot.braking)
+                    self.panel_note.setText(note)
+                    self.panel_detail.setText(detail+f"\n用时 {highway_snapshot.elapsed:.2f} s")
+                elif highway_snapshot.slalom is not None:
+                    note, detail = slalom_result_feedback(highway_snapshot.slalom)
+                    self.panel_note.setText(note)
+                    self.panel_detail.setText(detail+f"\n总用时 {highway_snapshot.elapsed:.2f} s")
+                elif highway_snapshot.sprint is not None:
+                    note, detail = sprint_result_feedback(highway_snapshot.sprint)
+                    self.panel_note.setText(note)
+                    self.panel_detail.setText(detail)
+            else:
+                race = self.session.race.snapshot
+                if race.finished and race.last_lap is not None:
+                    coastal = self.session.simulation.track == "coastal" and race.mode == GameMode.TIME_TRIAL
+                    award = result_medal(race, self.session.simulation.track)
+                    self.panel_title.setText("挑战失败" if race.invalidated else "挑战成功")
+                    self.panel_note.setText(
+                        f"圈速无效：{race.invalid_reason}" if race.invalidated else "有效完成计时挑战"
+                    )
+                    if coastal and not race.invalidated:
+                        self.panel_note.setText(f"滨海{award}牌 · 有效完成" if award else "有效完成 · 尚未达到铜牌")
+                    best = f"最佳 {race.best_lap:.3f} 秒" if race.best_lap else "暂无最佳成绩"
+                    self.panel_detail.setText(
+                        f"本圈 {race.last_lap:.3f} 秒\n{best}"
+                    )
+                    if coastal:
+                        self.panel_detail.setText(self.panel_detail.getText()+"\n"+result_goal(race))
+                    receipt = self.workspace_vehicle.workshop_result
+                    validated = road_result(receipt, race, self.session.simulation.track)
+                    if validated is not None:
+                        self.panel_note.setText(f"工坊道路验证完成 · 工程{receipt['medal']}牌")
+                        if not receipt["road_validated"]:
+                            vehicle = replace(self.workspace_vehicle, workshop_result=validated)
+                            try:
+                                vehicle.save(self.workspace_path)
+                            except (OSError, ValueError) as error:
+                                logging.getLogger(__name__).warning("工坊道路进度未保存: %s", error)
+                                self.panel_note.setText("道路验证完成，进度未保存；请检查存储目录。")
+                            else:
+                                self.workspace_vehicle = vehicle
+                                self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
+                                try:
+                                    sync_road_progress(self.scheme_root, vehicle)
+                                except (OSError, ValueError, KeyError, TypeError) as error:
+                                    logging.getLogger(__name__).warning("方案道路进度未同步: %s", error)
+                                    self.panel_note.setText("道路已完成；方案库同步失败，重开方案库可重试。")
+                    if race.new_best:
+                        message = "新个人最佳" if race.reference_lap is not None else "首个有效圈 · 已建立最佳参考"
+                        if coastal:
+                            message = (f"滨海{award}牌 · " if award else "未达铜牌 · ")+message
+                        self.panel_note.setText(self.panel_note.getText()+" · "+message if validated is not None else message)
+                    if race.save_error:
+                        self.panel_note.setText(f"{self.panel_note.getText()}\n{race.save_error}")
+                    if race.score_notice and not race.save_error:
+                        self.panel_note.setText(self.panel_note.getText()+"\n"+race.score_notice)
+                    if race.ghost_notice:
+                        self.panel_note.setText(self.panel_note.getText()+"\n"+race.ghost_notice)
+                elif self.session.mode == GameMode.FREE_DRIVE:
+                    self.panel_title.setText("驾驶结束")
+                    self.panel_note.setText("滨海自由驾驶")
+                    self.panel_detail.setText("可重新出发或返回菜单")
+                else:
+                    self.panel_title.setText("挑战失败")
+                    self.panel_note.setText("挑战提前结束，本次不记录圈速")
+            self.panel_title.setScale(0.10)
+            if self.panel_title.getText() == "挑战成功":
+                self.panel_title["fg"] = theme.SUCCESS
+            elif self.panel_title.getText() == "挑战失败":
+                self.panel_title["fg"] = theme.FAILURE
+            else:
+                self.panel_title["fg"] = theme.INK
+            self.panel_note.setPos(0, 0.24)
+            self.panel_detail.setPos(0, 0.04)
+            options = [
+                (
+                    "重新出发  Enter" if self.session.mode == GameMode.FREE_DRIVE else "重新挑战  Enter",
+                    lambda: self.start_game(
+                        mode=self.session.mode, track=self.session.simulation.track
+                    ),
+                ),
+                ("返回主菜单", self.back_to_menu),
+                ("退出", self.userExit),
+            ]
+            if self.workspace_vehicle.workshop_result is not None:
+                options[1] = ("返回工坊", self.open_vehicle_lab)
+            elif self.session.mode in (*BRAKING_MODES, *SLALOM_MODES, *OVERTAKE_ROUTES) or self.session.mode in SPRINT_ROUTES:
+                options[1] = ("返回实验台", self.open_vehicle_lab)
+            if self.session.mode in (*BRAKING_MODES, *SLALOM_MODES):
+                options[2] = (("查看驾驶进阶", self.return_to_driving_journey) if self.driving_journey_return
+                              else ("返回主菜单", self.back_to_menu))
+            elif self.session.mode in SPRINT_ROUTES or self.session.mode in OVERTAKE_ROUTES:
+                options[2] = ("返回主菜单", self.back_to_menu)
+            if self.session.mode in SLALOM_MODES:
+                options.append(('改装前胎再试', self.open_tire_tuning))
+            elif self.session.mode in BRAKING_MODES:
+                options.append(('调整制动分配', self.open_brake_tuning))
+            if self.tour_active:
+                if self.tour_store.variant != self.session.score_variant():
+                    options[0] = ('查看巡回', self.open_driving_tour)
+                    options[1] = ('返回实验台', self.open_vehicle_lab)
+                else:
+                    complete = len(self.tour_store.current) == 3
+                    advanced = len(self.tour_store.current) > self.tour_round
+                    options[0] = (('再跑一轮' if complete else '下一站 · '+TOUR_TITLES[len(self.tour_store.current)] if advanced else '重试当前站'),
+                                  (lambda: self.start_tour_leg(True)) if complete else self.start_tour_leg)
+                    options[1] = ('巡回总览', self.open_driving_tour)
+                options[2] = ('返回主菜单', self.back_to_menu)
+        else:
+            self.panel.hide()
+            return
+        note_width = 0.99 if self.garage is not None else 1.37
+        self.panel_note.setText(self.fit_lines(self.panel_note.getText(), note_width, 0.040))
+        self.panel_detail.setText(self.fit_lines(self.panel_detail.getText(), 1.36, 0.041))
+        note_lines = self.panel_note.getText().count("\n") + 1
+        if phase == Phase.RESULTS:
+            self.panel_detail.setPos(0, 0.19 - 0.060 * note_lines)
+        if phase == Phase.RESULTS:
+            button_top = -0.16 if note_lines <= 2 else -0.23
+        elif self.audio_settings_page:
+            button_top = 0.0
+        elif self.garage is not None:
+            button_top = -0.03
+        else:
+            button_top = 0.02 if note_lines > 2 else 0.10
+        for index, button in enumerate(self.buttons):
+            button.setPos(0, 0, button_top - index * 0.145)
+            button["frameColor"] = (
+                theme.SECONDARY_BUTTON_TINT if phase == Phase.MENU and self.garage is None
+                and not self.highway_menu and not self.audio_settings_page and index >= 3
+                else theme.BUTTON_TINT
+            )
+        for button, (label, action) in zip(self.buttons, options):
+            button["text"] = label
+            button["command"] = action
+            button.show()
+        self.panel_option_count = len(options)
+        self.panel_selection %= self.panel_option_count
+        # 页面只安排现有动作，不在这里计算或改写比赛结果。
+        for index, button in enumerate(self.buttons[:len(options)]):
+            button.setScale(1)
+            half_height = 0.055 if self.audio_settings_page or self.driving_mode_page else 0.073
+            if self.highway_menu and not self.braking_menu and not self.slalom_menu and not self.sprint_menu:
+                half_height = .05 if len(options) == 8 else .055
+            button["frameSize"] = (-0.51, 0.51, -half_height, half_height)
+            button["text_scale"] = 0.055
+            button["text_pos"] = (0, -0.018)
+            button['text_align'] = TextNode.ACenter
+            button["frameColor"] = (1, 1, 1, 1)
+            button["frameTexture"] = self.primary_states if index == 0 else self.button_states
+            button["text_fg"] = theme.INK
+            if index == self.panel_selection:
+                states = self.primary_states if index == 0 else self.button_states
+                button["frameTexture"] = (states[2], states[1], states[2], states[3])
+            if self.audio_settings_page:
+                label = TextNode("audio-button-width")
+                label.setFont(self.ui_font)
+                button["text_scale"] = min(0.055, 0.94 / label.calcWidth(button["text"]))
+            spacing = .115 if self.audio_settings_page or self.driving_mode_page else .155 if phase == Phase.PAUSED else .17
+            if self.highway_menu and not self.braking_menu and not self.slalom_menu and not self.sprint_menu:
+                spacing = .105 if len(options) == 8 else .115 if len(options) == 7 else .13
+            button.setZ(button_top - index * spacing)
+        if self.highway_menu and self.overtake_menu:
+            self.panel_note.setScale(.038)
+            self.panel_note.setPos(0, .30)
+            for index, button in enumerate(self.buttons[:2]):
+                button.setZ(-.20-index*.17)
+                button["frameSize"] = (-.51, .51, -.062, .062)
+        elif self.highway_menu and self.sprint_menu:
+            self.panel_note.setScale(.034)
+            self.panel_note.setPos(0, .34)
+            self.panel_detail.setScale(.034)
+            self.panel_detail.setPos(0, .025)
+            for index, button in enumerate(self.buttons[:7]):
+                button.setZ(-.12-index*.10)
+                button["frameSize"] = (-.51, .51, -.043, .043)
+        elif self.highway_menu and (self.slalom_menu or self.braking_menu):
+            self.panel_note.setScale(.038)
+            self.panel_note.setPos(0, .30)
+            for index, button in enumerate(self.buttons[:4]):
+                button.setZ(-.18-index*.14)
+                button['frameSize'] = (-.51, .51, -.056, .056)
+        elif phase == Phase.PAUSED:
+            self.panel_title.setScale(0.14)
+            self.panel_note.setPos(0, 0.27)
+        elif phase == Phase.RESULTS:
+            self.panel["frameSize"] = (-0.94, 0.94, -0.62, 0.75)
+            self.panel_accent.hide()
+            self.result_icon.show()
+            icon = "trophy" if self.panel_title.getText() == "挑战成功" else "car"
+            self.result_icon["frameTexture"] = self.loader.loadTexture(theme.asset_filename(f"components/icon-{icon}.png"))
+            self.panel_title.setScale(0.18)
+            self.panel_title.setPos(0, 0.32)
+            self.panel_note.setPos(0, 0.18)
+            self.panel_detail.setScale(0.058)
+            self.panel_detail.setPos(0, 0.09 - 0.065 * note_lines)
+            for button, x, width in zip(self.buttons, (-0.56, 0.12, 0.69), (0.64, 0.64, 0.40)):
+                button.setPos(x, 0, -0.47)
+                button["frameSize"] = (-width / 2, width / 2, -0.085, 0.085)
+                button["text_scale"] = 0.047
+            race = self.session.race.snapshot
+            if self.session.simulation.track != "endless" and race.finished and race.splits:
+                self.panel["frameSize"] = (-.94, .94, -.84, .75)
+                self.panel_detail.setScale(.043)
+                for column, text in zip(self.result_sectors, result_columns(race)):
+                    column.setText(text)
+                    # OnscreenText自身还有文字坐标，按实际上沿安排，避免叠加两次偏移。
+                    column.setZ(0.)
+                    top = column.getTightBounds(self.panel)[1].z
+                    column.setZ(min(-.07, self.panel_detail.getTightBounds(self.panel)[0].z-.04)-top)
+                    column.show()
+                for button in self.buttons[:3]:
+                    button.setZ(-.71)
+            elif self.session.mode in OVERTAKE_ROUTES:
+                self.panel['frameSize'] = (-.94, .94, -.82, .75)
+                self.panel_note.setScale(.035)
+                self.panel_note.setText(self.fit_lines(self.session.highway.snapshot.overtake.reason, 1.66, .035))
+                self.panel_detail.setScale(.038)
+                self.panel_detail.setText(self.fit_lines(overtake_result_feedback(self.session.highway.snapshot.overtake)[1], 1.68, .038))
+                self.panel_detail.setPos(0, 0)
+                top = self.panel_detail.getTightBounds(self.panel)[1].z
+                self.panel_detail.setZ(min(.04, self.panel_note.getTightBounds(self.panel)[0].z-.045)-top)
+                for button in self.buttons[:3]:
+                    button.setZ(-.68)
+            elif self.session.mode in SPRINT_ROUTES:
+                result = self.session.highway.snapshot.sprint
+                self.panel["frameSize"] = (-.94, .94, -.80, .75)
+                self.panel_detail.setScale(.043)
+                for column, text in zip(self.result_sectors, sprint_columns(result), strict=True):
+                    column.setText(text)
+                    column.setZ(0.)
+                    top = column.getTightBounds(self.panel)[1].z
+                    column.setZ(min(-.07, self.panel_detail.getTightBounds(self.panel)[0].z-.04)-top)
+                    column.show()
+                for button in self.buttons[:3]:
+                    button.setZ(-.67)
+            elif self.session.mode in BRAKING_MODES:
+                self.panel['frameSize'] = (-.94, .94, -.74, .75)
+                for index, button in enumerate(self.buttons[:4]):
+                    button.setPos(-.40 if index % 2 == 0 else .40, 0, -.47-(index//2)*.15)
+                    button['frameSize'] = (-.36, .36, -.060, .060)
+                    button['text_scale'] = .040
+            elif self.session.mode in SLALOM_MODES:
+                result = self.session.highway.snapshot.slalom
+                if result is not None and result.gate_times:
+                    self.panel["frameSize"] = (-.94, .94, -.80, .75)
+                    entry = f"{result.entry_kph:.1f}km/h" if result.entry_kph is not None else "未过入口"
+                    best = f"最佳{result.best_seconds:.3f}s" if result.best_seconds is not None else "暂无成功成绩"
+                    self.panel_detail.setText(f"入门{entry} · {result.gates}/6门 · 总{self.session.highway.snapshot.elapsed:.2f}s\n"
+                                              f"入口后{result.run_seconds:.3f}s · {best}")
+                    if result.fast and result.zone_min_kph is not None:
+                        self.panel_detail.setText(self.panel_detail.getText()+
+                            f'\n全段实测{result.zone_min_kph:.1f}–{result.zone_max_kph:.1f}km/h / 要求70–80')
+                    self.panel_detail.setScale(.043)
+                    for column, text in zip(self.result_sectors, gate_columns(result), strict=True):
+                        column.setText(text)
+                        column.setZ(-.17-.03*max(0, note_lines-1))
+                        column.show()
+                    for button in self.buttons[:3]:
+                        button.setZ(-.67)
+                # 六门结果表下方用两列，保留重试/实验台/主菜单原入口。
+                self.panel['frameSize'] = (-.94, .94, -.92, .75)
+                for index, button in enumerate(self.buttons[:4]):
+                    button.setPos(-.45 if index % 2 == 0 else .45, 0, -.67-(index//2)*.13)
+                    button['frameSize'] = (-.41, .41, -.053, .053)
+                    button['text_scale'] = .041
+        else:
+            self.panel_accent.show()
+        if self.audio_settings_page:
+            self.driving_cards.audio(self, STATIONS[self.audio_settings.radio_station])
+        elif self.driving_mode_page:
+            self.driving_cards.assists(self)
+        elif phase == Phase.MENU and self.highway_menu:
+            if self.overtake_menu:
+                self.driving_cards.overtake(self, OVERTAKE_ROUTES[self.overtake_mode])
+            elif self.sprint_menu:
+                self.driving_cards.routes(self, tuple(sprint_goals(route) for route in SPRINT_ROUTES.values()))
+            elif self.slalom_menu or self.braking_menu:
+                self.driving_cards.lesson(self, braking=self.braking_menu,
+                    fast=self.braking_mode == GameMode.SHORT_BRAKING if self.braking_menu else
+                         self.slalom_mode == GameMode.FAST_SLALOM)
+            else:
+                self.driving_cards.highway(self)
+
+    def pace_frame(self, task):
+        remaining = self._render_deadline-time.perf_counter()
+        if remaining > 0:
+            time.sleep(remaining)
+        self._render_deadline = time.perf_counter()+1/90
+        self.clock.syncFrameTime()
+        return task.cont
+
+    def update(self, task):
+        # 驾驶切台只改内存状态，进入暂停/菜单/结算再保存选择。
+        if self._radio_dirty and self.session.phase not in (Phase.DRIVING, Phase.COUNTDOWN):
+            self.save_audio_settings()
+        self.main_menu.resize(self.getAspectRatio())
+        self.driving_cards.resize(self.getAspectRatio())
+        self.hud.resize(self.getAspectRatio())
+        self.lab_return_button.setX(self.getAspectRatio()-.44)
+        self.ghost_button.setX(self.getAspectRatio()-.44)
+        self.refresh_ghost_button()
+        if self.session.phase == Phase.MENU and self.scene is not None:
+            self.scene.close()
+            self.scene = None
+            self._scene_track = None
+            self._scene_shape = None
+        if self.garage is not None:
+            self.countdown.update('menu',0,0.)
+            if self.soundscape is not None:
+                self.soundscape.update(self.session.current, self.session.phase, None,
+                                       self.clock.getDt())
+            self.garage.update(self.clock.getDt())
+            self.refresh_panel()
+            return task.cont
+        if self.session.phase == Phase.DRIVING and self.session.controller is self.session.keyboard:
+            self.session.keyboard.pressed = self.driving_keys_held.copy()
+        dropped = self.session.stepper.dropped_time
+        # Panda帧起点是整帧共同的显示时刻；不能用执行到这里时的随机线程调度时刻。
+        sampled_at = time.perf_counter()-(self.clock.getRealTime()-self.clock.getFrameTime())
+        state = self.session.frame(self.clock.getDt(),sampled_at=sampled_at)
+        self.countdown.update(self.session.phase.value,self.session.countdown_ticks,self.clock.getDt())
+        if self.soundscape is not None:
+            self.soundscape.update(state, self.session.phase, None, self.clock.getDt(),
+                                   countdown_ticks=self.session.countdown_ticks,
+                                   music_preview=self.audio_settings_page)
+            checkpoints = self.session.race.snapshot.checkpoints
+            if checkpoints > self._audio_checkpoints:
+                self.audio_cue("checkpoint")
+            self._audio_checkpoints = checkpoints
+            if self.session.phase == Phase.RESULTS and self._audio_phase != Phase.RESULTS:
+                race, highway = self.session.race.snapshot, self.session.highway.snapshot
+                failed = race.invalidated or (highway.challenge and not highway.succeeded)
+                self.audio_cue("failure" if failed else "success" if (
+                    race.finished or highway.succeeded) else "finish")
+            self._audio_phase = self.session.phase
+        if self.session.phase == Phase.MENU:
+            self.refresh_panel()
+            return task.cont
+        if self.session.stepper.dropped_time > dropped:
+            logging.getLogger(__name__).warning(
+                "Simulation catch-up dropped %.6f seconds",
+                self.session.stepper.dropped_time - dropped,
+            )
+        self.sync_scene()
+        camera_dt = max(0.,state.time-self._camera_time) if self.session.phase == Phase.DRIVING else 0
+        self.apply_scene(state,camera_dt)
+        countdown = ""  # 起步节拍由中央大数字表现，左上角只保留驾驶信息。
+        surface = "asphalt" if state.player.surface == "asphalt" else "off-road"
+        notice = self.session.notice
+        if self.scene.ghost_error:
+            notice += self.scene.ghost_error
+        if (self.workspace_vehicle.workshop_result is not None and self.session.mode == GameMode.TIME_TRIAL
+                and self.session.simulation.track == "coastal"):
+            notice = "工坊道路验证：按顺序通过检查点，完成有效圈。" + notice
+        self.hud.update(
+            state, self.session.race.snapshot, self.session.highway.snapshot,
+            track=self.session.simulation.track, countdown=countdown,
+            notice=notice,
+            driving_mode=self.session.driving_mode,
+        )
+        if not self.diagnostics.isHidden():
+            self.update_diagnostics(state, surface)
+        self.refresh_panel()
+        return task.cont
+
+    def apply_scene(self, state, camera_dt):
+        """加载帧和驾驶帧共用相同的车辆表现、相机及光照。"""
+        self.scene.apply(state)
+        self.scene.apply_ghost(state, self.session.race.snapshot, self.ghost_enabled)
+        self.chase_camera.shift_origin(state.origin_y-self._camera_origin)
+        self._camera_origin = state.origin_y
+        self._camera_time = state.time
+        position = Vec3(*state.player.position)
+        snap = state.tick == 0 or "player_reset" in state.events
+        camera_position, look_at = self.chase_camera.update(
+            state.player, self.session.camera_distance, camera_dt, snap=snap
+        )
+        camera_position = self.session.camera_position(
+            position + Vec3(0, 0, 1.4), camera_position, state.origin_y
+        )
+        self.camera.setPos(camera_position)
+        self.camera.lookAt(look_at)
+        self.camLens.setFov(self.chase_camera.fov)
+        self.scene.update_lighting(position)
+
+    def update_diagnostics(self, state, surface):
+        self.diagnostics.setText(
+            f"Tick {self.session.current.tick}   Simulation 120 Hz\n"
+            f"物理落后 {self.session.stepper.backlog_time*1000:.1f} ms\n"
+            f"油门 {state.player.throttle:.0%}   刹车 {state.player.brake:.0%}   {surface}\n"
+            f"加速度 {self.chase_camera.acceleration:+.1f} m/s²\n"
+            f"转向 {state.player.steering:+.1f}°    横向 {state.player.lateral_acceleration / 9.81:+.2f} g\n"
+            f"风阻 {state.player.dynamics.aerodynamic_force:.0f} N    滚阻 {state.player.dynamics.rolling_force:.0f} N\n"
+            f"前/后轴载荷 {state.player.dynamics.front_load:.0f} / {state.player.dynamics.rear_load:.0f} N\n"
+            f"横摆 {state.player.dynamics.yaw_rate:.2f} rad/s    侧偏 {state.player.dynamics.sideslip:.1f}°"
+        )
+    def finish_smoke(self, task):
+        # Shader startup can consume the first second without advancing the car.
+        if self.session.current.tick < 240 and task.time < 10:
+            return task.again
+        self.output.mkdir(parents=True, exist_ok=True)
+        state = self.session.current
+        self.graphicsEngine.renderFrame()
+        screenshot = self.output / ("h0-window.png" if self.onscreen else "h0-offscreen.png")
+        captured = self.win.saveScreenshot(Filename.fromOsSpecific(str(screenshot)))
+        nodes = self.scene.render.findAllMatches("**").getNumPaths()
+        tasks = len(self.taskMgr.getAllTasks())
+        events = len(self.getAllAccepting())
+        for _ in range(20):
+            self.session.start(countdown=False)
+        report = {
+            "passed": state.tick > 0 and state.player.position[1] > 0.5 and captured,
+            "tick": state.tick,
+            "player_position": state.player.position,
+            "traffic_count": len(state.traffic),
+            "renderer": self.win.getGsg().getDriverRenderer(),
+            "screenshot": str(screenshot),
+            "restart_20_nodes_stable": nodes
+            == self.scene.render.findAllMatches("**").getNumPaths(),
+            "restart_20_tasks_stable": tasks == len(self.taskMgr.getAllTasks()),
+            "restart_20_events_stable": events == len(self.getAllAccepting()),
+        }
+        report["passed"] = report["passed"] and all(
+            report[k] for k in report if k.endswith("_stable")
+        )
+        (self.output / "h0-render-smoke.json").write_text(
+            json.dumps(report, indent=2), encoding="utf-8"
+        )
+        print(json.dumps(report, indent=2))
+        self.smoke_passed = report["passed"]
+        self.userExit()
+        return task.done
+
+    def finalizeExit(self):
+        self.taskMgr.stop()
+
+    def close_game(self):
+        if self._shutdown:
+            return
+        if self._radio_dirty:
+            self.save_audio_settings()
+        if self.garage is not None:
+            self.close_garage()
+        self.taskMgr.remove("workspace-load")
+        if self._workspace_steps is not None:
+            self._workspace_steps.close()
+            self._workspace_steps = None
+        if self.lab is not None:
+            self.lab.close_game()
+            self.lab = None
+        self.taskMgr.remove("drive-update")
+        self.taskMgr.remove("render-frame-pacing")
+        self.taskMgr.remove("simplepbr update")
+        self.taskMgr.remove("finish-smoke")
+        self.taskMgr.remove("load-game")
+        self.ignoreAll()
+        self.game_input.ignoreAll()
+        if self.session is not None:
+            self.session.close()
+        if self.soundscape is not None:
+            self.soundscape.close()
+        if self.scene is not None:
+            self.scene.close()
+            self.scene = None
+        self.journey.root.destroy()
+        self.driving_journey.root.destroy()
+        self.tour_panel.root.destroy()
+        self.tire_tuning.root.destroy()
+        self.tour_banner.destroy()
+        self.main_menu.destroy()
+        self.hud.destroy()
+        self.countdown.destroy()
+        self.loading.destroy()
+        for widget in (
+            self.diagnostics,
+            self.result_icon,
+            self.panel_title,
+            self.panel_note,
+            self.panel_detail,
+            self.panel_accent,
+            *self.buttons,
+            self.panel,
+        ):
+            widget.destroy()
+        self.result_glyph_geometry.removeNode()
+        self.workspace_loading.close()
+        self.destroy()
+        self._shutdown = True
