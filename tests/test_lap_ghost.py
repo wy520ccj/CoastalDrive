@@ -150,3 +150,12 @@ def test_compatibility_tracks_model_dependencies_but_not_presentation(tmp_path, 
     assert str((source/'extra.py').relative_to(tmp_path)) in expanded['source_files']
     (source/"extra.py").write_text("ratio = 2\n", encoding="utf-8")
     assert ghost_context(0) != expanded
+    package = source/'package'
+    package.mkdir()
+    (package/'__init__.py').write_text('from . import part\n', encoding='utf-8')
+    (package/'part.py').write_text('ratio = 1\n', encoding='utf-8')
+    (source/'model.py').write_text('import package\n', encoding='utf-8')
+    packaged = ghost_context(0)
+    assert str((package/'part.py').relative_to(tmp_path)) in packaged['source_files']
+    (package/'part.py').write_text('ratio = 2\n', encoding='utf-8')
+    assert ghost_context(0) != packaged

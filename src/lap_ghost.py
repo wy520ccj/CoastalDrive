@@ -4,6 +4,7 @@ import ast
 import hashlib
 import json
 import math
+import os
 import struct
 import sys
 import zlib
@@ -49,6 +50,9 @@ def ghost_context(seed):
     """覆盖物理/输入/判圈依赖及实际SDK；纯表现改动不使有效记录失效。"""
     root = resource_root()
     source = root/"src"
+    # 每次重建实际文件目录，外部包/属性名只查一次集合，不反复向磁盘询问不存在的路径。
+    available = {os.path.normcase(".".join(path.relative_to(source).with_suffix("").parts))
+                 for path in source.rglob("*.py") if path.is_file()}
     pending = ["session", "simulation", "driving_modes", "controls", "race"]
     paths = set()
     visited = set()
@@ -57,10 +61,13 @@ def ghost_context(seed):
         if module in visited:
             continue
         visited.add(module)
-        path = source.joinpath(*module.split(".")).with_suffix(".py")
-        if not path.is_file():
+        if os.path.normcase(module) in available:
+            path = source.joinpath(*module.split(".")).with_suffix(".py")
+        elif os.path.normcase(module+".__init__") in available:
             path = source.joinpath(*module.split("."))/"__init__.py"
-        if not path.is_file() or path in paths:
+        else:
+            continue
+        if path in paths:
             continue
         paths.add(path)
         package = path.parent.relative_to(source).parts

@@ -1,0 +1,7 @@
+{
+  "started": false,
+  "runtime_exit": null,
+  "stop_exit": null,
+  "etl_exists": false,
+  "scope": "系统GPU/桌面合成诊断，仅本地保存；不作为无插桩性能Gate。"
+}

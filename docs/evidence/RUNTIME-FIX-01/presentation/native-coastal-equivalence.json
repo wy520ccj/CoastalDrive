@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "frames": 6074,
+  "seconds": 50.60595505566297,
+  "raw_pose_sha256": "8ce9cd0d1572b7bbdc77e283f9f18f2fe5f4f7cd122af49fa538b9366d5695f4",
+  "splits": [
+    12.456921703748776,
+    20.341220074369797,
+    32.485909517447716,
+    41.33343274788016,
+    50.60595505566297
+  ],
+  "compare": "logs\\validation\\RUNTIME-FIX-01-coastal-results-final\\ghosts\\f689461083a3b3f7fe3893637e866106423ceebc6b8707459843840322aadfe9.cdg",
+  "current_record": "logs\\validation\\RUNTIME-FIX-01-native-coastal\\ghosts\\ed95c1beb813bd7fa1b00a39dd7d0dce1fdbcece429e2e0557c385012569ff96.cdg",
+  "raw_poses_identical": true,
+  "current_context_and_reload": true
+}

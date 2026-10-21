@@ -114,10 +114,11 @@ class CoastalDrive(ShowBase):
         self.lab_output = lab_output
         self.audio_enabled = audio_enabled
         self.game_input = DirectObject()
-        # 物理独立120Hz；高精度等待交还GIL，Panda的忙等限帧会挤占物理准备/提交。
+        # 正式窗口由垂直同步调度；额外90Hz睡眠会打断其节奏。离屏/关闭同步诊断仍限帧。
         ClockObject.getGlobalClock().setMode(ClockObject.MNormal)
         self._render_deadline = time.perf_counter()
-        self.taskMgr.add(self.pace_frame,"render-frame-pacing",sort=-100)
+        if not sync_video or (smoke and not onscreen):
+            self.taskMgr.add(self.pace_frame,"render-frame-pacing",sort=-100)
         if startup_trace is not None:
             startup_trace.mark("window_initialized")
         self.disableMouse()

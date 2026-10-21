@@ -8,6 +8,7 @@ import json
 import os
 import subprocess
 import sys
+import threading
 import time
 from collections import Counter, deque
 from ctypes import wintypes
@@ -146,6 +147,8 @@ def main():
     parser.add_argument("--baseline-compute", action="store_true")
     parser.add_argument("--pipeline", choices=("single", "draw", "cull-draw"), default="draw")
     parser.add_argument('--vsync', choices=('on', 'off'), default='on', help='只在诊断进程改变垂直同步，正式入口保持开启')
+    parser.add_argument('--pacing', choices=('default', 'sleep', 'video'), default='default',
+                        help='默认沿用生产入口；sleep显式保留旧90Hz睡眠以作对照')
     parser.add_argument("--track", choices=("coastal", "endless"), default="endless")
     parser.add_argument("--vehicle-design")
     parser.add_argument("--driving-mode", choices=("game", "simulation"), default="game")
@@ -166,7 +169,11 @@ def main():
     parser.add_argument('--physics-workers',type=int,help='显式数值进程数，默认沿用游戏设置')
     parser.add_argument('--traffic-count',type=int,help='固定实测交通车辆数，模型沿用所选驾驶模式')
     parser.add_argument('--trace-draw-poses',action='store_true',help='记录实际Draw线程的车身/相机变换')
+    parser.add_argument('--trace-draw-stages', action='store_true', help='诊断各实际显示区绘制耗时；不启用PStats/GPU查询')
+    parser.add_argument('--thread-probe', type=Path, help='自有进程的Windows x64诊断DLL；超过40ms才抓栈，不作性能Gate')
     args = parser.parse_args()
+    if args.thread_probe is not None and not args.trace_phases:
+        parser.error('线程抓栈须同时启用--trace-phases')
     if args.extended and not 60 < args.seconds <= 300:
         parser.error('延长窗口须在60秒以上、300秒以内')
     if not args.extended and not 30 <= args.seconds <= 60:
@@ -182,6 +189,7 @@ def main():
     if args.switch_interval is not None:
         sys.setswitchinterval(args.switch_interval)
     args.output.mkdir(parents=True, exist_ok=False)
+    (args.output/'runtime-tool.py').write_bytes(Path(__file__).read_bytes())
     os.environ["LOCALAPPDATA"] = str(args.output.resolve() / "user-data")
     sys.path.insert(0, str(args.source.resolve()))
     import paths
@@ -297,6 +305,8 @@ def main():
         physics_workers._worker_loop = partial(audited_worker, str(args.output.resolve()))
 
     phase_samples = {}
+    pacing_calls = []
+    blocked_stage = [None]
     measuring_phases = False
 
     def timed(name, function):
@@ -305,9 +315,13 @@ def main():
             if not measuring_phases:
                 return function(*arguments,**keywords)
             wall,cpu = time.perf_counter(),time.thread_time()
+            if name in ('render-frame', 'frame-pacing'):
+                blocked_stage[0] = name, wall
             try:
                 return function(*arguments,**keywords)
             finally:
+                if blocked_stage[0] == (name, wall):
+                    blocked_stage[0] = None
                 durations = time.perf_counter()-wall,time.thread_time()-cpu
                 record = phase_samples.setdefault(name,{'count':0,'wall':0.,'cpu':0.,'samples':deque(maxlen=4096),
                                                         'slow_calls':deque(maxlen=16), 'wall_max':0.})
@@ -360,6 +374,23 @@ def main():
         ):
             setattr(owner,attribute,timed(name,getattr(owner,attribute)))
 
+        def traced_pacing(app, task):
+            # 与正式pace_frame同顺序，仅拆开等待和Panda时钟同步的实际耗时。
+            remaining = app._render_deadline-time.perf_counter()
+            started = time.perf_counter()
+            if remaining > 0:
+                time.sleep(remaining)
+            slept_at = time.perf_counter()
+            app._render_deadline = slept_at+1/90
+            app.clock.syncFrameTime()
+            finished = time.perf_counter()
+            if measuring_phases and finished-started >= .020:
+                pacing_calls.append({'started_at': started, 'requested_ms': max(0., remaining)*1000,
+                    'sleep_ms': (slept_at-started)*1000, 'clock_sync_ms': (finished-slept_at)*1000})
+            return task.cont
+
+        CoastalDrive.pace_frame = timed('frame-pacing', traced_pacing)
+
     pipelines = {"single": "", "draw": "/Draw", "cull-draw": "Cull/Draw"}
     loadPrcFileData("performance-pipeline", "threading-model " + pipelines[args.pipeline])
     if args.gc_rate is not None:
@@ -370,6 +401,12 @@ def main():
                        sync_video=args.vsync == 'on',
                        vehicle_design_id=args.vehicle_design, driving_mode=DrivingMode(args.driving_mode),
                        physics_workers=args.physics_workers)
+    if args.pacing == 'video':
+        app.taskMgr.remove('render-frame-pacing')
+    elif args.pacing == 'sleep':
+        app.taskMgr.remove('render-frame-pacing')
+        app._render_deadline = time.perf_counter()
+        app.taskMgr.add(app.pace_frame, 'render-frame-pacing', sort=-100)
     audio_managers = [{'type': manager.getType().getName(), 'valid': manager.isValid()}
                       for manager in app.sfxManagerList]
     if args.audio and not all(manager['type'] == 'OpenALAudioManager' and manager['valid']
@@ -447,8 +484,10 @@ def main():
     draw_times = []
     draw_poses = []
     measuring_draw = False
+    draw_thread_id = [None]
 
     def count_draw(data):
+        draw_thread_id[0] = threading.get_native_id()
         if measuring_draw:
             now = time.perf_counter()
             draw_times.append(now)
@@ -461,6 +500,68 @@ def main():
     region = max((r for r in app.win.getDisplayRegions() if r.isActive()),
                  key=lambda r: r.getSort())
     region.setDrawCallback(CallbackObject.make(count_draw))
+    draw_stages, draw_stage_skipped = {}, []
+    traced_regions = set()
+    if args.trace_draw_stages:
+        def trace_draw(label, last_region, data):
+            if not measuring_draw:
+                count_draw(data) if last_region else data.upcall()
+                return
+            started, cpu = time.perf_counter(), time.thread_time()
+            try:
+                count_draw(data) if last_region else data.upcall()
+            finally:
+                wall_ms, cpu_ms = (time.perf_counter()-started)*1000, (time.thread_time()-cpu)*1000
+                record = draw_stages.setdefault(label, {'count': 0, 'max_ms': 0., 'slow_calls': []})
+                record['count'] += 1
+                record['max_ms'] = max(record['max_ms'], wall_ms)
+                if wall_ms >= 10.:
+                    record['slow_calls'].append({'started_at': started, 'wall_ms': wall_ms, 'cpu_ms': cpu_ms})
+
+    def install_draw_tracing():
+        for output in app.graphicsEngine.getWindows():
+            for index, target in enumerate(output.getDisplayRegions()):
+                if not target.isActive() or target in traced_regions:
+                    continue
+                label = f'{output.getName()}:{index}:sort{target.getSort()}'
+                if target != region and target.getDrawCallback() is not None:
+                    draw_stage_skipped.append(label)
+                    continue
+                target.setDrawCallback(CallbackObject.make(partial(trace_draw, label, target == region)))
+                traced_regions.add(target)
+
+    if args.trace_draw_stages:
+        install_draw_tracing()
+
+    probe_stop, probe_rows, probe_errors = threading.Event(), [], []
+    probe_thread = None
+    if args.thread_probe is not None:
+        from thread_stack_probe import capture, load_probe
+
+        probe = load_probe(args.thread_probe)
+        main_thread_id = threading.get_native_id()
+
+        def watch_stall():
+            seen = set()
+            while not probe_stop.wait(.002):
+                stage = blocked_stage[0]
+                if stage is None or stage[1] in seen or time.perf_counter()-stage[1] < .040:
+                    continue
+                seen.add(stage[1])
+                started = time.perf_counter()
+                row = {'stage': stage[0], 'stage_started_at': stage[1], 'captured_at': started, 'threads': {}}
+                try:
+                    for name, identifier in (('main', main_thread_id), ('draw', draw_thread_id[0])):
+                        if identifier is not None:
+                            row['threads'][name] = capture(probe, identifier)
+                except OSError as error:
+                    probe_errors.append(str(error))
+                    return
+                row['capture_wall_ms'] = (time.perf_counter()-started)*1000
+                probe_rows.append(row)
+
+        probe_thread = threading.Thread(target=watch_stall, name='CoastalDrive stall probe', daemon=True)
+        probe_thread.start()
 
     def observe(task):
         nonlocal previous, last_second, start_dropped, start_tick, sample_started_at, measuring_draw, tracing, measuring_phases, previous_progress, route_distance
@@ -472,6 +573,9 @@ def main():
         previous_progress = progress
         if task.time >= 3:
             if start_dropped is None:
+                if args.trace_draw_stages:
+                    # 阴影缓冲在首帧延迟创建，预热后才有完整显示区列表。
+                    install_draw_tracing()
                 start_tick, start_dropped, sample_started_at = physics_progress(app.session)
                 app.scene.segment_work["max_step_ms"] = 0
                 measuring_draw = True
@@ -551,6 +655,9 @@ def main():
                 "transform_cache":ConfigVariableBool('transform-cache').getValue(),
                 "sync_video_requested":args.vsync,
                 "sync_video_configured":ConfigVariableBool('sync-video').getValue(),
+                "render_pacing": args.pacing,
+                "render_pacing_sleep_task": any(task.getName() == 'render-frame-pacing'
+                                                 for task in app.taskMgr.getAllTasks()),
                 "render_clock_mode":int(ClockObject.getGlobalClock().getMode()),
                 "render_clock_average_rate":ClockObject.getGlobalClock().getAverageFrameRate(),
                 "traffic_models":(dict(Counter(app.session.simulation.traffic_models))
@@ -565,11 +672,22 @@ def main():
                 "traffic_count": len(state.traffic), "pipeline": args.pipeline,
                 "baseline_compute": args.baseline_compute, "window_sampling_valid": valid,
                 "renderer": app.win.getGsg().getDriverRenderer(),
+                "window_process_id": os.getpid(),
+                "authority_process_id": app.session.process.pid if isinstance(app.session, SessionProcess) else os.getpid(),
+                "window_main_thread_id": threading.get_native_id(),
+                "draw_thread_id": draw_thread_id[0],
                 "profile": args.profile,
                 "draw_thread":Thread.getCurrentThread().getName() if args.trace_draw_poses else None,
                 "source_modules":source_modules,
                 "authority_source_modules":app.session.source_modules if isinstance(app.session,SessionProcess) else source_modules,
                 "trace_phases":args.trace_phases,
+                "draw_stage_timing": draw_stages,
+                "draw_stage_existing_callbacks_skipped": draw_stage_skipped,
+                "pacing_slow_calls": pacing_calls,
+                "native_stack_diagnostic": args.thread_probe is not None,
+                "native_stack_scope": '短暂挂起自有诊断线程取地址栈，此运行不用于性能通过结论',
+                "native_stacks": probe_rows,
+                "native_stack_errors": probe_errors,
                 "python_gc_pauses":gc_pauses,
                 "observation_time_origin":now-task.time,
                 "phase_timing":{
@@ -641,6 +759,11 @@ def main():
         app.graphicsEngine.syncFrame()
         app.win.saveScreenshot(Filename.fromOsSpecific(str(args.output / "final.png")))
     finally:
+        probe_stop.set()
+        if probe_thread is not None:
+            probe_thread.join(2.)
+            if probe_thread.is_alive():
+                raise RuntimeError('诊断线程未结束，不能在其采样期间销毁窗口')
         gc.callbacks.remove(cyclic_collection)
         app.close_game()
     final["git_head"] = subprocess.check_output(

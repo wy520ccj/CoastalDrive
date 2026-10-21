@@ -1,0 +1,118 @@
+{
+  "passed": true,
+  "stack": [
+    {
+      "module": "ntdll.dll",
+      "offset": "0x1628a4"
+    },
+    {
+      "module": "KERNELBASE.dll",
+      "offset": "0x22773"
+    },
+    {
+      "module": "KERNELBASE.dll",
+      "offset": "0x22641"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0xfd93d"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0xfd8b3"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0xfd7a5"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x6eefb"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x1b059b"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0xdfdb3"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x1d45f"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x1d3c9"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x20dc1"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x5ca39"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x506db"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x1b5819"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x1b578f"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x101467"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x1d45f"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x1d3c9"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x20dc1"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x5ca39"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x506db"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x45c6a"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x10e92c"
+    },
+    {
+      "module": "python314.dll",
+      "offset": "0x10e7fe"
+    },
+    {
+      "module": "ucrtbase.dll",
+      "offset": "0x2cd30"
+    },
+    {
+      "module": "KERNEL32.DLL",
+      "offset": "0x2dda7"
+    },
+    {
+      "module": "ntdll.dll",
+      "offset": "0x7ee4c"
+    }
+  ],
+  "capture_ms_including_module_lookup": 1.765700000760262
+}
