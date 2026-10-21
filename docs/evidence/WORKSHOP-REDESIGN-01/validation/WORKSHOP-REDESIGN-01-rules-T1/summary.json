@@ -1,0 +1,125 @@
+{
+  "started_utc": "2026-10-21T16:42:21.701315+00:00",
+  "git_head": "d898c98389d552bd6c8266265265515d186a0470",
+  "git_status": "M docs/asset-register.csv\n M src/application.py\n M src/highway_run.py\n M src/player_road_ab.py\n M src/race.py\n M src/session.py\n M src/slalom_lesson.py\n M src/slalom_markers.py\n M src/ui/driving_cards.py\n M src/ui/hud.py\n M src/ui/slalom_feedback.py\n M src/ui/tire_tuning.py\n M src/ui/workshop_journey.py\n M tests/test_tire_tuning_ui.py\n M tests/test_workshop_journey_ui.py\n?? docs/design/workshop-garage/\n?? docs/tasks/WORKSHOP-REDESIGN-01.md\n?? src/ui/workshop_garage.py\n?? src/ui/workshop_vehicle.py\n?? tests/test_slalom_practice.py\n?? tests/test_workshop_garage_ui.py\n?? tools/workshop_garage_check.py\n?? tools/workshop_launch_probe.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_slalom_practice.py",
+    "tests/test_slalom_lesson.py",
+    "tests/test_fast_slalom.py",
+    "tests/test_slalom_session.py",
+    "tests/test_slalom_process.py",
+    "tests/test_slalom_feedback.py",
+    "tests/test_tire_tuning.py",
+    "tests/test_player_road_ab.py"
+  ],
+  "tier": "T1",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\WORKSHOP-REDESIGN-01-rules-T1\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.165
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_slalom_practice.py",
+        "tests/test_slalom_lesson.py",
+        "tests/test_fast_slalom.py",
+        "tests/test_slalom_session.py",
+        "tests/test_slalom_process.py",
+        "tests/test_slalom_feedback.py",
+        "tests/test_tire_tuning.py",
+        "tests/test_player_road_ab.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\WORKSHOP-REDESIGN-01-rules-T1\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 49.603
+    },
+    {
+      "name": "headless-0",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "0"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\WORKSHOP-REDESIGN-01-rules-T1\\headless-0.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.462
+    },
+    {
+      "name": "headless-17",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "17"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\WORKSHOP-REDESIGN-01-rules-T1\\headless-17.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.5
+    },
+    {
+      "name": "headless-23",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "src/main.py",
+        "--headless",
+        "--track",
+        "test",
+        "--steps",
+        "1200",
+        "--seed",
+        "23"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\WORKSHOP-REDESIGN-01-rules-T1\\headless-23.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.496
+    }
+  ]
+}

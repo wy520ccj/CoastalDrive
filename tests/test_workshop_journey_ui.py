@@ -60,15 +60,15 @@ def test_menu_keyboard_mouse_close_and_original_choices_remain(app):
     assert len(app.main_menu.buttons) == 8
     app.main_menu.select(7)
     press(app, "enter")
-    assert not app.journey.root.isHidden() and "0 / 3" in app.journey.progress.getText()
+    assert not app.workshop_garage.root.isHidden()
     original = app.main_menu.selected
     press(app, "arrow_right")
-    assert app.journey.selected == 1 and app.main_menu.selected == original
+    assert app.workshop_garage.selected == 1 and app.main_menu.selected == original
     press(app, "escape")
-    assert app.journey.root.isHidden() and app.session.phase == Phase.MENU
+    assert app.workshop_garage.root.isHidden() and app.session.phase == Phase.MENU
     app.main_menu.buttons[7]["command"]()
-    app.journey.buttons[3]["command"]()
-    assert app.journey.root.isHidden()
+    app.workshop_garage.activate(5)
+    assert app.workshop_garage.root.isHidden()
     app.main_menu.select(1)
     app.main_menu.activate()
     assert app.session.mode == GameMode.FREE_DRIVE

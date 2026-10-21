@@ -15,7 +15,7 @@ GATES = ((120., -2.), (160., 2.), (200., -2.), (240., 2.), (280., -2.), (320., 0
 GATE_HALF_WIDTH = 2.
 TIME_LIMIT = 40.
 COURSE_HALF_WIDTH = 6.5
-SLALOM_MODES = (GameMode.SLALOM_LESSON, GameMode.FAST_SLALOM)
+SLALOM_MODES = (GameMode.SLALOM_LESSON, GameMode.FAST_SLALOM, GameMode.SLALOM_PRACTICE)
 FAST_MIN_KPH, FAST_MAX_KPH = 70., 80.
 
 
@@ -126,15 +126,16 @@ class SlalomResult:
     save_notice: str = ""
     new_best: bool = False
     fast: bool = False
+    practice: bool = False
     zone_min_kph: float | None = None
     zone_max_kph: float | None = None
     zone_error_at: float | None = None
 
 
 class SlalomLesson:
-    def __init__(self, start_progress, scores, config, *, fast=False):
+    def __init__(self, start_progress, scores, config, *, fast=False, practice=False):
         self.scores, self.config = scores, config
-        self.snapshot = SlalomResult(start_progress=start_progress, best_seconds=scores.best, fast=fast,
+        self.snapshot = SlalomResult(start_progress=start_progress, best_seconds=scores.best, fast=fast, practice=practice,
             save_notice=scores.notice,
             reference_times=tuple(scores.best_run["gate_times"]) if scores.best_run is not None else ())
         self._previous = (0., 0., 0., 0., 0.)
@@ -161,7 +162,7 @@ class SlalomLesson:
             self.stop("驶离课题道路；提前看下一道门。")
         elif elapsed > TIME_LIMIT:
             self.stop("课题超时；40秒内完成，入口后最多24秒。")
-        elif entry is not None and entry < (FAST_MIN_KPH if state.fast else ENTRY_KPH):
+        elif not state.practice and entry is not None and entry < (FAST_MIN_KPH if state.fast else ENTRY_KPH):
             self.stop(f"入门仅{entry:.1f}km/h；至少{'70' if state.fast else '40'}km/h通过80米入口。")
         if self.snapshot.finished or start is None:
             return self.snapshot
@@ -169,8 +170,8 @@ class SlalomLesson:
             self.check_speed_band(py, distance, pv, forward_speed)
             if self.snapshot.finished:
                 return self.snapshot
-        while self.snapshot.gates < len(GATES):
-            index = self.snapshot.gates
+        while len(self.snapshot.gate_times) < len(GATES):
+            index = len(self.snapshot.gate_times)
             gate_y, gate_x = GATES[index]
             if not py < gate_y <= distance:
                 break
@@ -185,12 +186,16 @@ class SlalomLesson:
             self.snapshot = replace(self.snapshot, errors=(*self.snapshot.errors, error),
                 clearances=(*self.snapshot.clearances, clearance),
                 gate_times=(*self.snapshot.gate_times, pt+(elapsed-pt)*fraction-start))
-            if clearance < 0:
+            if clearance < 0 and not state.practice:
                 self.stop(f"错过第{index+1}门；车身超出门线{-clearance:.2f}m，提前回正/稍早减速。")
                 break
-            self.snapshot = replace(self.snapshot, gates=index+1)
+            self.snapshot = replace(self.snapshot, gates=self.snapshot.gates+int(clearance >= 0))
             if index+1 == len(GATES):
                 seconds = pt+(elapsed-pt)*fraction-start
+                if state.practice:
+                    self.snapshot = replace(self.snapshot, run_seconds=seconds)
+                    self.stop(f'练习完成 · 通过{self.snapshot.gates}/6门；可回工坊调整前轮再试。', succeeded=True)
+                    break
                 medal = medal_for(seconds, fast=state.fast)
                 self.snapshot = replace(self.snapshot, run_seconds=seconds, medal=medal)
                 if medal:

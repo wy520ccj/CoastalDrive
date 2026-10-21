@@ -73,7 +73,9 @@ from ui.sprint_feedback import result_columns as sprint_columns
 from ui.sprint_feedback import result_feedback as sprint_result_feedback
 from ui.tire_tuning import TireTuningPanel
 from ui.window_icon import load_window_icon, release_window_icon
+from ui.workshop_garage import WorkshopGarage
 from ui.workshop_journey import WorkshopJourney
+from ui.workshop_vehicle import WorkshopVehicle
 from ui.workspace_loading import WorkspaceLoading
 from vehicle_designs import vehicle_design
 from vehicle_schemes import load_scheme, scheme_library_path, sync_road_progress
@@ -219,6 +221,9 @@ class CoastalDrive(ShowBase):
         self.lab_return_sprint = None
         self.lab_return_overtake = None
         self.lab_journey_request = None
+        self.workshop_garage_return = False
+        self.workshop_schemes_request = False
+        self.workshop_lab_return = False
         self.audio_settings_page = False
         self.driving_mode_page = False
         self.highway_shape = "hills"
@@ -384,6 +389,48 @@ class CoastalDrive(ShowBase):
         self.journey.show(data)
         self.driving_journey.hide()
 
+    def open_workshop_garage(self):
+        self.back_to_menu()
+        self.highway_menu = self.braking_menu = self.slalom_menu = self.sprint_menu = self.overtake_menu = False
+        self.audio_settings_page = self.driving_mode_page = False
+        self.journey.hide()
+        self.driving_journey.hide()
+        self._shown_phase = None
+        self.refresh_panel()
+        self.workshop_garage_return = True
+        self.workshop_garage.show(self.workspace_vehicle)
+
+    def workshop_garage_action(self, index):
+        if index == 0:
+            self.choose_slalom_lesson(GameMode.SLALOM_PRACTICE)
+            self.open_tire_tuning()
+        elif index == 1:
+            self.choose_braking_lesson(GameMode.SHORT_BRAKING)
+            self.open_brake_tuning()
+        elif index == 2:
+            self.choose_highway()
+        elif index == 3:
+            self.workshop_schemes_request = True
+            self.workshop_lab_return = True
+            self.open_vehicle_lab()
+        elif index == 4:
+            self.open_workshop_journey()
+        else:
+            self.workshop_garage_return = False
+
+    def back_from_workshop_journey(self):
+        if self.workshop_garage_return:
+            self.open_workshop_garage()
+        else:
+            self.journey.hide()
+
+    def drive_from_tuning(self):
+        if self.tire_tuning.recipe is not None or self.session.phase != Phase.MENU:
+            return
+        brakes = self.tire_tuning.topic == 'brakes'
+        self.tire_tuning.hide()
+        self.start_braking_lesson() if brakes else self.start_slalom_lesson()
+
     def open_driving_journey(self):
         path = self.session.race.scores.path
         variant = self.session.score_variant()
@@ -417,6 +464,7 @@ class CoastalDrive(ShowBase):
             self.journey.notice.setText("方案暂不可继续，其他数据保留："+str(error)[:65])
             return
         self.lab_journey_request = project
+        self.workshop_lab_return = self.workshop_garage_return
         self.journey.hide()
         self.open_vehicle_lab()
 
@@ -502,6 +550,10 @@ class CoastalDrive(ShowBase):
             self.lab.workshop.show()
         request = self.lab_journey_request
         self.lab_journey_request = None
+        if self.workshop_schemes_request:
+            self.workshop_schemes_request = False
+            self.lab.workshop.hide()
+            self.lab.schemes.show()
         if request is not None:
             self.lab.schemes.virtual_driver.hide()
             if request["scheme_id"] is not None:
@@ -550,6 +602,8 @@ class CoastalDrive(ShowBase):
             self.lab_return_slalom = False
             self.lab_return_sprint = None
         self.next_drive = bool(self.lab.next_drive or self.lab_return_braking or self.lab_return_slalom or self.lab_return_sprint or self.lab_return_overtake)
+        if self.workshop_lab_return and not (self.lab.next_drive or self.lab.next_slalom):
+            self.next_drive = False
         self.next_workspace = "game"
         self._begin_workspace(self._load_game_workspace(), "驶向海岸公路" if self.next_drive else "返回海岸驾驶",
                               "实验记录与编辑参数已保留")
@@ -609,6 +663,9 @@ class CoastalDrive(ShowBase):
         self.main_menu.root.prepareScene(self.win.getGsg())
         yield 4, "完成画面资源准备"
         self.workspace = "game"
+        if self.workshop_lab_return and not self.next_drive:
+            self.workshop_lab_return = False
+            self.open_workshop_garage()
         yield 5, "可以出发"
 
     def _enter_game(self, mode, track):
@@ -655,10 +712,13 @@ class CoastalDrive(ShowBase):
         self.scene.set_ghost(self.session.reference_ghost)
 
     def back_to_menu(self):
+        self.workshop_garage_return = False
+        self.workshop_lab_return = False
         self.driving_journey_return = False
         self.tour_active = self.tour_pending = False
         self.tour_banner.hide()
         self.tire_tuning.hide()
+        self.workshop_garage.hide()
         self.session.menu()
         if self.scene is not None:
             self.scene.close()
@@ -739,6 +799,11 @@ class CoastalDrive(ShowBase):
             if key not in self.commands_held:
                 self.commands_held.add(key)
                 self.tire_tuning.key(key)
+            return
+        if self.session.phase == Phase.MENU and not self.workshop_garage.root.isHidden():
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.workshop_garage.key(key)
             return
         if self.session.phase == Phase.MENU and not self.tour_panel.root.isHidden():
             if key not in self.commands_held:
@@ -921,15 +986,20 @@ class CoastalDrive(ShowBase):
             lambda: self.start_game(mode=GameMode.FREE_DRIVE),
             self.choose_highway, self.choose_garage, self.choose_audio_settings, self.userExit,
         ), driving_mode_action=self.choose_driving_mode, lab_action=self.open_vehicle_lab,
-            journey_action=self.open_workshop_journey)
+            journey_action=self.open_workshop_garage)
         self.journey = WorkshopJourney(self.main_menu.content, self.ui_font, self.main_menu.textures,
-                                       self.continue_workshop_project, self.open_driving_journey)
+                                       self.continue_workshop_project, self.open_driving_journey,
+                                       on_back=self.back_from_workshop_journey)
         self.driving_journey = DrivingJourney(self.main_menu.content, self.ui_font, self.main_menu.textures,
                                               self.continue_driving_project, self.open_workshop_journey)
         self.tour_panel = DrivingTourPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
                                           self.start_tour_leg, self.back_from_driving_tour)
+        self.workshop_vehicle = WorkshopVehicle(self)
+        self.workshop_garage = WorkshopGarage(self.main_menu.content, self.ui_font, self.workshop_vehicle,
+                                             self.workshop_garage_action)
         self.tire_tuning = TireTuningPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
-            self.install_driving_recipe, self.restore_tire_vehicle, self.back_from_tire_tuning, self.open_player_road_ab)
+            self.install_driving_recipe, self.restore_tire_vehicle, self.back_from_tire_tuning, self.open_player_road_ab,
+            vehicle_view=self.workshop_vehicle, drive=self.drive_from_tuning)
         self.player_road_panel = PlayerRoadPanel(self.tire_tuning.root, self.ui_font, self.main_menu.textures,
                                                self.open_road_retest)
         self.tour_banner = DirectFrame(parent=self.aspect2d, frameColor=theme.PAPER_LIGHT,
@@ -1065,7 +1135,8 @@ class CoastalDrive(ShowBase):
         if (self.session.phase != Phase.MENU or self.garage is not None
                 or self.audio_settings_page or self.highway_menu
                 or not self.journey.root.isHidden() or not self.driving_journey.root.isHidden()
-                or not self.tour_panel.root.isHidden() or not self.tire_tuning.root.isHidden()):
+                or not self.tour_panel.root.isHidden() or not self.tire_tuning.root.isHidden()
+                or not self.workshop_garage.root.isHidden()):
             return
         self.driving_mode_page = True
         self.panel_selection = 0
@@ -1258,6 +1329,9 @@ class CoastalDrive(ShowBase):
         self.refresh_panel()
 
     def back_from_braking_lesson(self):
+        if self.workshop_garage_return:
+            self.open_workshop_garage()
+            return
         self.driving_journey_return = False
         self.braking_menu = False
         self.panel_selection = 4
@@ -1322,6 +1396,8 @@ class CoastalDrive(ShowBase):
         if self.session.phase != Phase.RESULTS or not self.road_pending:
             return
         self.road_pending = False
+        if self.session.mode == GameMode.SLALOM_PRACTICE:
+            return
         brakes = self.session.mode in BRAKING_MODES
         store = self.player_brake_ab if brakes else self.player_road_ab
         result = self.session.highway.snapshot.braking if brakes else self.session.highway.snapshot.slalom
@@ -1356,6 +1432,7 @@ class CoastalDrive(ShowBase):
         self.session.set_esc_enabled(vehicle.config.stability.esc_enabled)
         self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
         self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label(), topic=self.tire_tuning.topic)
+        self.tire_tuning.select(8)
 
     def install_driving_recipe(self, index):
         if self.session.phase not in (Phase.MENU, Phase.RESULTS):
@@ -1393,11 +1470,17 @@ class CoastalDrive(ShowBase):
 
     def back_from_tire_tuning(self):
         self.tire_tuning.hide()
+        if self.workshop_garage_return and self.session.phase == Phase.MENU:
+            self.open_workshop_garage()
+            return
         self._shown_phase = None
         self.refresh_panel()
         self.select_panel_option(3 if self.session.phase == Phase.RESULTS else 2)
 
     def back_from_slalom_lesson(self):
+        if self.workshop_garage_return:
+            self.open_workshop_garage()
+            return
         self.driving_journey_return = False
         self.slalom_menu = False
         self.panel_selection = 5
@@ -1467,6 +1550,9 @@ class CoastalDrive(ShowBase):
         self.refresh_panel()
 
     def back_to_modes(self):
+        if self.workshop_garage_return:
+            self.open_workshop_garage()
+            return
         self.overtake_menu = False
         self.highway_menu = False
         self._shown_phase = None
@@ -1504,6 +1590,7 @@ class CoastalDrive(ShowBase):
             self.panel_selection = 0
         self._shown_phase = panel_state
         self.driving_cards.hide()
+        self.panel_title.show()
         self.panel.setScale(1.)
         self.panel['frameTexture'] = self.panel_texture
         self.panel_title['align'] = TextNode.ACenter
@@ -1615,11 +1702,13 @@ class CoastalDrive(ShowBase):
                        ("返回高速与课题", self.back_from_sprint_routes)]
         elif phase == Phase.MENU and self.highway_menu and self.slalom_menu:
             fast = self.slalom_mode == GameMode.FAST_SLALOM
+            practice = self.slalom_mode == GameMode.SLALOM_PRACTICE
             self.panel_title.setText("驾驶课题 · "+("高速验车" if fast else "连续过门"))
-            self.panel_note.setText(FAST_SLALOM_RULES if fast else SLALOM_RULES)
+            self.panel_note.setText('过门练习：不限入口速度，漏门可继续；不记奖牌。' if practice else
+                                    FAST_SLALOM_RULES if fast else SLALOM_RULES)
             options = [("开始练习  Enter", self.start_slalom_lesson),
-                       ("切换普通练习" if fast else "高速验车 · 70–80km/h",
-                        lambda: self.choose_slalom_lesson(GameMode.SLALOM_LESSON if fast else GameMode.FAST_SLALOM)),
+                       ('正式过门挑战 · ≥40km/h' if practice else "切换普通练习" if fast else "高速验车 · 70–80km/h",
+                        lambda: self.choose_slalom_lesson(GameMode.SLALOM_LESSON if fast or practice else GameMode.FAST_SLALOM)),
                        ('前胎配方 · 改装验车', self.open_tire_tuning),
                        ("返回高速", self.back_from_slalom_lesson)]
         elif phase == Phase.MENU and self.highway_menu and self.braking_menu:
@@ -1691,6 +1780,8 @@ class CoastalDrive(ShowBase):
                     self.panel_detail.setText(detail+f"\n用时 {highway_snapshot.elapsed:.2f} s")
                 elif highway_snapshot.slalom is not None:
                     note, detail = slalom_result_feedback(highway_snapshot.slalom)
+                    if highway_snapshot.slalom.practice:
+                        self.panel_title.setText('练习完成' if highway_snapshot.succeeded else '练习结束')
                     self.panel_note.setText(note)
                     self.panel_detail.setText(detail+f"\n总用时 {highway_snapshot.elapsed:.2f} s")
                 elif highway_snapshot.sprint is not None:
@@ -1783,6 +1874,8 @@ class CoastalDrive(ShowBase):
                 options.append(('改装前胎再试', self.open_tire_tuning))
             elif self.session.mode in BRAKING_MODES:
                 options.append(('调整制动分配', self.open_brake_tuning))
+            if self.workshop_garage_return and self.session.mode in (*BRAKING_MODES, *SLALOM_MODES):
+                options[1] = ('返回海岸工坊', self.open_workshop_garage)
             if self.tour_active:
                 if self.tour_store.variant != self.session.score_variant():
                     options[0] = ('查看巡回', self.open_driving_tour)
@@ -1936,6 +2029,8 @@ class CoastalDrive(ShowBase):
                     best = f"最佳{result.best_seconds:.3f}s" if result.best_seconds is not None else "暂无成功成绩"
                     self.panel_detail.setText(f"入门{entry} · {result.gates}/6门 · 总{self.session.highway.snapshot.elapsed:.2f}s\n"
                                               f"入口后{result.run_seconds:.3f}s · {best}")
+                    if result.practice:
+                        self.panel_detail.setText(f'通过 {result.gates}/6门 · 漏门 {len(result.clearances)-result.gates}\n练习不记录奖牌，漏门可继续')
                     if result.fast and result.zone_min_kph is not None:
                         self.panel_detail.setText(self.panel_detail.getText()+
                             f'\n全段实测{result.zone_min_kph:.1f}–{result.zone_max_kph:.1f}km/h / 要求70–80')
@@ -1969,6 +2064,13 @@ class CoastalDrive(ShowBase):
                          self.slalom_mode == GameMode.FAST_SLALOM)
             else:
                 self.driving_cards.highway(self)
+        elif phase == Phase.RESULTS and self.session.mode == GameMode.SLALOM_PRACTICE:
+            result = self.session.highway.snapshot.slalom
+            if result is not None:
+                self.result_icon.hide()
+                for column in self.result_sectors:
+                    column.hide()
+                self.driving_cards.practice_result(self, result)
 
     def pace_frame(self, task):
         remaining = self._render_deadline-time.perf_counter()
@@ -2152,6 +2254,8 @@ class CoastalDrive(ShowBase):
             self.scene.close()
             self.scene = None
         self.journey.root.destroy()
+        self.workshop_vehicle.close()
+        self.workshop_garage.root.destroy()
         self.driving_journey.root.destroy()
         self.tour_panel.root.destroy()
         self.tire_tuning.root.destroy()

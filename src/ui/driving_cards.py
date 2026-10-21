@@ -8,6 +8,7 @@ from panda3d.core import LineSegs, TextNode
 from ui import theme
 from ui.lab_diagrams import car
 from ui.lab_widgets import button_textures, rounded_panel
+from ui.tire_tuning import AMBER, BACKGROUND, MUTED, SELECTED, SURFACE, TEXT
 
 
 class DrivingCards:
@@ -16,6 +17,7 @@ class DrivingCards:
         self.root = panel.attachNewNode('driving-cards')
         self.content = self.root.attachNewNode('content')
         self.active = False
+        self.dark = False
         self.labels, self.primary = [], set()
 
     def hide(self):
@@ -29,21 +31,27 @@ class DrivingCards:
         self.root.hide()
         self.active = False
 
-    def begin(self, app, title, subtitle):
+    def begin(self, app, title, subtitle, *, dark=False):
+        self.dark = dark
         self.active, self.primary = True, set()
         self.root.show()
         app.panel['frameSize'] = (-1.70, 1.70, -.89, .86)
         app.panel['frameTexture'] = None
-        app.panel['frameColor'] = theme.PAPER_LIGHT
+        app.panel['frameColor'] = BACKGROUND if dark else theme.PAPER_LIGHT
+        app.panel_title['fg'] = TEXT if dark else theme.INK
         app.panel_accent.hide()
         app.panel_title.setText(title)
         app.panel_title['align'] = TextNode.ALeft
         app.panel_title.setPos(-1.50, .68)
         app.panel_title.setScale(.075)
         app.panel_title.textNode.setSlant(0.)
+        app.panel_title.hide() if dark else app.panel_title.show()
         app.panel_note.hide()
         app.panel_detail.hide()
-        self.text(subtitle, -1.50, .555, .037, theme.MUTED)
+        if dark:
+            rounded_panel(self.content, 'garage-page-background', (-2.6, 2.6, -2., 2.), BACKGROUND, 0.)
+            self.text(title, -1.50, .68, .075)
+        self.text(subtitle, -1.50, .555, .043 if dark else .037, theme.MUTED)
         self.text('COASTAL DRIVE', .84, .74, .036, theme.SEA)
         rounded_panel(self.content, 'accent', (-1.50, -1.38, .785, .797), theme.ORANGE, 0.)
         self.text('↑ ↓ 选择 · Enter确认 · Esc返回', -1.50, -.79, .031, theme.MUTED)
@@ -54,6 +62,8 @@ class DrivingCards:
             self.panel.setScale(min(1., aspect/(16/9)))
 
     def text(self, value, x, z, scale=.035, color=theme.INK):
+        if self.dark:
+            color = {theme.INK: TEXT, theme.MUTED: MUTED, theme.SEA: (.38, .75, .79, 1), theme.ORANGE: AMBER}.get(color, color)
         label = OnscreenText(parent=self.content, text=value, font=self.font, fg=color,
             align=TextNode.ALeft, pos=(x, z), scale=scale, mayChange=True)
         self.labels.append(label)
@@ -102,7 +112,13 @@ class DrivingCards:
 
     def select(self, index):
         for i, button in enumerate(self.buttons):
+            if self.dark:
+                button['frameTexture'] = None
+                button['frameColor'] = AMBER if i in self.primary else SELECTED if i == index else SURFACE
+                button['text_fg'] = BACKGROUND if i in self.primary else TEXT
+                continue
             states = button_textures(i in self.primary)
+            button['frameColor'] = (1, 1, 1, 1)
             button['frameTexture'] = (states[2], states[1], states[2], states[3]) if i == index else states
             button['text_fg'] = theme.INK
 
@@ -183,7 +199,7 @@ class DrivingCards:
         self.select(app.panel_selection)
 
     def highway(self, app):
-        self.begin(app, '高速与驾驶课题', '选择自由驾驶或驾驶课题')
+        self.begin(app, '高速与驾驶课题', '选择自由驾驶或驾驶课题', dark=app.workshop_garage_return)
         for index, x in enumerate((-.79, .79)):
             self.button(index, x, .40, 1.48, .12, compact=True)
         for index, x, kind, description in (
@@ -204,10 +220,14 @@ class DrivingCards:
         self.select(app.panel_selection)
 
     def lesson(self, app, *, braking, fast):
+        from race import GameMode
+        practice = not braking and app.slalom_mode == GameMode.SLALOM_PRACTICE
         title = ('短距制动验车' if fast else '定点刹停') if braking else ('高速验车' if fast else '连续过门')
-        self.begin(app, title, '使用当前车辆 · 封闭场地无车流 · 改装后可以直接同题再试')
-        rounded_panel(self.content, 'course-diagram', (-1.50, .48, -.30, .43), theme.PAPER)
-        rounded_panel(self.content, 'course-targets', (.56, 1.50, -.30, .43), theme.PAPER)
+        if practice:
+            title = '过门练习'
+        self.begin(app, title, '使用当前车辆 · 封闭场地无车流 · 改装后可以直接同题再试', dark=app.workshop_garage_return)
+        rounded_panel(self.content, 'course-diagram', (-1.50, .48, -.30, .43), SURFACE if self.dark else theme.PAPER)
+        rounded_panel(self.content, 'course-targets', (.56, 1.50, -.30, .43), SURFACE if self.dark else theme.PAPER)
         self.text('场地示意', -1.38, .32, .035, theme.MUTED)
         if braking:
             self.line([(-1.32, .02), (.28, .02)], theme.SEA, 5.)
@@ -227,11 +247,15 @@ class DrivingCards:
                 z = .04+math.sin(index*math.pi/2)*.035
                 self.line([(x, z-.055), (x, z+.055)], theme.ORANGE, 3.)
                 self.text(str(index+1), x-.015, -.10, .034)
-            self.text('全段 70–80 km/h' if fast else '入门 ≥40 km/h', -1.35, .17, .045, theme.SEA)
+            self.text('不限入口速度' if practice else '全段 70–80 km/h' if fast else '入门 ≥40 km/h', -1.35, .17, .045, theme.SEA)
             self.text('80m入门 → 120–320m六门', -1.35, -.25, .037)
             target = '有效六门总用时'
             medals = ('金 ≤11.5s', '银 ≤12.5s', '铜 ≤14s') if fast else ('金 ≤15s', '银 ≤18s', '铜 ≤24s')
             rule = '整车依次过门 · 门宽4米\n漏门/碰撞/越界/复位结束 · 上限40秒'
+            if practice:
+                target = '先找到过门节奏'
+                medals = ('漏门可继续', '逐门看余量', '不记录奖牌')
+                rule = 'W加速 · S刹车 · A/D转向 · 漏门可继续\n碰撞/越界/复位结束 · 上限40秒'
         self.text(target, .65, .32, .038, theme.MUTED)
         for z, label, color in zip((.18, .02, -.14), medals, (theme.ORANGE, theme.SEA, theme.INK), strict=True):
             self.text(label, .66, z, .055, color)
@@ -240,6 +264,28 @@ class DrivingCards:
         self.button(2, .30, -.69, 1.28, .14, compact=True)
         self.button(1, -.77, -.12-.41, 1.46, .10, compact=True)
         self.button(3, 1.25, -.69, .50, .14, compact=True)
+        self.select(app.panel_selection)
+
+    def practice_result(self, app, result):
+        self.begin(app, '练习完成' if result.succeeded else '练习结束',
+                   f'通过 {result.gates}/6门 · 漏门可继续练习 · 不记录正式奖牌', dark=True)
+        for index in range(6):
+            x, z = (-1.04, 0., 1.04)[index % 3], .20 if index < 3 else -.20
+            reached = index < len(result.clearances)
+            passed = reached and result.clearances[index] >= 0
+            color = (.38, .78, .60, 1) if passed else (.98, .46, .33, 1) if reached else MUTED
+            rounded_panel(self.content, 'practice-gate', (x-.47, x+.47, z-.17, z+.17), SURFACE)
+            self.text(f'第 {index+1} 门', x-.37, z+.075, .050)
+            self.text('通过' if passed else '漏门' if reached else '未到达', x+.12, z+.075, .045, color)
+            self.text(f'车身余量 {result.clearances[index]:+.2f}m' if reached else '继续练习，尝试跑到这里',
+                      x-.37, z-.07, .040, MUTED)
+        if not result.succeeded:
+            self.text(app.fit_lines(result.reason, 2.8, .032), -1.50, -.47, .032, AMBER)
+        for index, x, label in ((0, -1.13, '重新练习'), (3, -.37, '改装前轮'),
+                                (1, .40, '返回工坊'), (2, 1.17, '主菜单')):
+            self.buttons[index]['text'] = label
+            self.button(index, x, -.69, .70, .14, primary=index == 0, compact=True)
+            self.buttons[index]['text_scale'] = .050
         self.select(app.panel_selection)
 
     def overtake(self, app, route):

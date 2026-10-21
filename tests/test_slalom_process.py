@@ -33,3 +33,22 @@ def test_independent_process_completes_real_slalom_and_keeps_best_on_restart(tmp
         assert app.highway.snapshot.slalom.reference_times == result.gate_times
     finally:
         app.close()
+
+
+def test_independent_process_practice_continues_misses_without_saving_medal(tmp_path):
+    app = SessionProcess(track='endless', road_shape='straight', driving_mode=DrivingMode.GAME,
+                         scores=BestTimes(tmp_path/'best.json'), independent_clock=True)
+    try:
+        app.start(countdown=False, mode=GameMode.SLALOM_PRACTICE, settle_initial=True)
+        app.set_controller(SlalomDriver(35., app.vehicle_config, origin=8., straight=True))
+        deadline = time.monotonic()+65.
+        while time.monotonic() < deadline and app.phase != Phase.RESULTS:
+            app.frame(0.)
+            time.sleep(.01)
+        result = app.highway.snapshot.slalom
+        assert app.phase == Phase.RESULTS and result.practice and result.succeeded
+        assert result.entry_kph < 40 and result.gates == 1 and len(result.gate_times) == 6
+        assert not result.medal and not result.new_best
+        assert not (tmp_path/'slalom-best.json').exists()
+    finally:
+        app.close()

@@ -18,6 +18,7 @@ class GameMode(Enum):
     SHORT_BRAKING = "short_braking"
     SLALOM_LESSON = "slalom_lesson"
     FAST_SLALOM = "fast_slalom"
+    SLALOM_PRACTICE = "slalom_practice"
     BEND_SPRINT = "bend_sprint"
     RIDGE_SPRINT = "ridge_sprint"
     VALLEY_PACE = "valley_pace"

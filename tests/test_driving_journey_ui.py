@@ -38,7 +38,9 @@ def save(app, error, seconds):
 def test_registered_tab_enters_progress_without_moving_menu_and_returns_to_original_chapter(app):
     app.main_menu.select(7)
     key(app, "enter")
-    assert "0 / 5" in app.journey.progress.getText()
+    assert not app.workshop_garage.root.isHidden()
+    app.workshop_garage.activate(4)
+    assert "0 / 3" in app.journey.progress.getText()
     key(app, "tab")
     assert app.journey.root.isHidden() and not app.driving_journey.root.isHidden()
     assert "0 / 6" in app.driving_journey.progress.getText() and len(app.main_menu.buttons) == 8
@@ -48,7 +50,7 @@ def test_registered_tab_enters_progress_without_moving_menu_and_returns_to_origi
     key(app, "arrow_right")
     assert app.driving_journey.selected == 1 and app.main_menu.selected == selected
     key(app, "tab")
-    assert app.driving_journey.root.isHidden() and "0 / 5" in app.journey.progress.getText()
+    assert app.driving_journey.root.isHidden() and "0 / 3" in app.journey.progress.getText()
     app.messenger.send("f2")
     assert not app.driving_mode_page
     app.open_driving_journey()
@@ -88,7 +90,7 @@ def test_best_gaps_balanced_recommendation_and_visible_bounds(app):
     assert "6 / 6" in panel.progress.getText() and "双项金牌达成" in panel.summary.getText()
     assert all("刷新最佳" in button["text"] for button in panel.buttons[:2])
     app.open_workshop_journey()
-    assert app.journey.data["steps"] == 1 and "1 / 5" in app.journey.progress.getText()
+    assert app.journey.data["steps"] == 1 and "1 / 3" in app.journey.progress.getText()
 
 
 def test_hardware_electronics_input_groups_keep_other_progress_without_rewriting_files(app):

@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "size": [
+    1024,
+    768
+  ],
+  "captures": [
+    "01-garage",
+    "02-front-wheels",
+    "03-front-preview",
+    "04-brakes",
+    "05-brakes-installed",
+    "06-ended-trial",
+    "07-returned-garage",
+    "09-practice-finished"
+  ],
+  "vehicle_restored": true,
+  "render_snapshot_unchanged": true,
+  "new_driving_steps": 0,
+  "reused_practice_steps": 4083,
+  "scope": "真实UI/车模/安装恢复/同题起步与返回；可选低速直行完整练习，无正式成功成绩",
+  "human_gate": "pending"
+}

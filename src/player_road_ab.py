@@ -29,7 +29,7 @@ def checked_record(value):
     if not isinstance(value, dict) or not isinstance(value['context'], dict) or not isinstance(value['config'], dict):
         raise TypeError('道路对照记录格式无效')
     mode = GameMode(value['context']['mode'])
-    if mode not in (*SLALOM_MODES, *BRAKING_MODES) or not isinstance(value['created_at'], str):
+    if mode == GameMode.SLALOM_PRACTICE or mode not in (*SLALOM_MODES, *BRAKING_MODES) or not isinstance(value['created_at'], str):
         raise ValueError('道路对照题目或时间无效')
     if (value['context']['driving_mode'] not in ('game', 'simulation')
             or not isinstance(value['context']['input'], dict) or not isinstance(value['context']['world'], dict)):

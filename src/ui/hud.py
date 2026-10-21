@@ -107,6 +107,17 @@ class DrivingHUD:
         self.speed = OnscreenText(parent=self.speed_frame, text="000", font=number_font,
                                  fg=theme.PAPER_LIGHT, pos=(-0.89, 0.117), scale=0.165,
                                  align=TextNode.ALeft, mayChange=True)
+        self.course_speed_frame = DirectFrame(parent=self.speed_frame, frameColor=(.04, .07, .09, 1),
+            frameSize=(-.98, 0, .36, .54))
+        self.course_speed_label = OnscreenText(parent=self.course_speed_frame, text='', font=body_font,
+            fg=theme.PAPER_LIGHT, pos=(-.92, .475), scale=.031, align=TextNode.ALeft, mayChange=True)
+        DirectFrame(parent=self.course_speed_frame, frameColor=(.23, .30, .33, 1),
+                    frameSize=(-.90, -.08, .405, .425))
+        DirectFrame(parent=self.course_speed_frame, frameColor=(.24, .65, .45, 1),
+                    frameSize=(-.90+.82*.70, -.90+.82*.80, .395, .435))
+        self.course_speed_needle = DirectFrame(parent=self.course_speed_frame, frameColor=(1, .67, .20, 1),
+                                              frameSize=(-.004, .004, .39, .44))
+        self.course_speed_frame.hide()
         OnscreenText(parent=self.speed_frame, text="km/h", font=body_font,
                      fg=theme.PAPER_LIGHT, pos=(-0.36, 0.125), scale=0.042)
         self.gear_box = DirectFrame(parent=self.speed_frame, frameColor=(1, 0.73, 0.15, 1),
@@ -154,6 +165,14 @@ class DrivingHUD:
         )
         set_text(self.help, driving_help(driving_mode, abs_label, tcs_label, esc_label))
         set_text(self.speed, f"{abs(state.player.speed) * 3.6:03.0f}")
+        if race.mode == GameMode.FAST_SLALOM:
+            kph = state.player.velocity[1]*3.6
+            action = '继续加速' if kph < 70 else '松油门 / 轻刹' if kph > 80 else '速度合适'
+            set_text(self.course_speed_label, f'目标 70–80 km/h · {action}')
+            self.course_speed_needle.setX(-.90+.82*max(0., min(1., kph/100)))
+            self.course_speed_frame.show()
+        else:
+            self.course_speed_frame.hide()
         set_text(self.gear, "R" if state.player.gear < 0 else "N" if state.player.gear == 0 else f"D{state.player.gear}")
         set_text(self.gear_rpm, f"{state.player.rpm:4.0f} rpm")
         # 色条直接表示当前发动机转速，末端标尺 7000 rpm；不改变物理转速。
@@ -166,7 +185,7 @@ class DrivingHUD:
         if track == "endless":
             braking = race.mode in BRAKING_MODES
             slalom = race.mode in SLALOM_MODES
-            set_text(self.mode, "短距制动验车" if race.mode == GameMode.SHORT_BRAKING else "高速验车" if race.mode == GameMode.FAST_SLALOM else "连续过门" if slalom else "定点刹停" if braking else "5公里无碰撞挑战" if highway.challenge else "无限高速")
+            set_text(self.mode, '过门练习' if race.mode == GameMode.SLALOM_PRACTICE else "短距制动验车" if race.mode == GameMode.SHORT_BRAKING else "高速验车" if race.mode == GameMode.FAST_SLALOM else "连续过门" if slalom else "定点刹停" if braking else "5公里无碰撞挑战" if highway.challenge else "无限高速")
             set_text(self.status, f"{highway.elapsed:07.2f} s")
             distance = f"{highway.distance:.0f} / {highway.target:.0f} m" if highway.challenge else f"{highway.distance / 1000:.2f} km"
             set_text(self.detail, f"距离 {distance}\n碰撞 {highway.collisions} 次")

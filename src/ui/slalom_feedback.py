@@ -17,13 +17,17 @@ def driving_feedback(result, *, fast=False):
             return '80米入口 · 全段70–80km/h\n左右连续6门到320米', '准备高速验车；先看清入口和第1道左门'
         return "80米入口 ≥40km/h\n左右连续6门到320米", "准备出发；先看清入口和第1道左门"
     if result.entry_time is None:
+        if result.practice:
+            return f'过门练习 · 距入口 {max(0, ENTRY_DISTANCE-result.position):.0f}m\n不限起步速度', '按W加速，A/D转向；漏门可继续练习'
         entry = '70–80 km/h' if result.fast else '≥40 km/h'
         return f"距入口 {max(0, ENTRY_DISTANCE-result.position):.0f} m\n入门要求 {entry}", "先加速，看到下一道门再转向"
-    index = min(result.gates, len(GATES)-1)
+    index = min(len(result.gate_times), len(GATES)-1)
     distance, center = GATES[index]
     direction = "终点居中" if index == len(GATES)-1 else "左侧" if center < 0 else "右侧"
     detail = f"已过 {result.gates} / 6门 · {result.run_seconds:.2f}s\n第{index+1}门 {direction} · 剩余{max(0, distance-result.position):.0f}m"
     message = "提前看下一门；过门前回正，急弯稍松油门"
+    if result.practice:
+        message = '漏门可继续；先找到节奏，再挑战奖牌'
     if result.fast:
         message = '全段70–80km/h；提前连贯转向，勿减到普通练习车速'
         if result.zone_min_kph is not None:
@@ -34,6 +38,8 @@ def driving_feedback(result, *, fast=False):
 
 
 def result_feedback(result):
+    if result.practice:
+        return result.reason, f'通过 {result.gates}/6门 · 本次漏门 {len(result.clearances)-result.gates}\n练习不记录奖牌，可用不同配方再试'
     entry = f"{result.entry_kph:.1f}km/h" if result.entry_kph is not None else "未过入口"
     best = f"最佳 {result.best_seconds:.3f}s" if result.best_seconds is not None else "暂无成功成绩"
     lines = [f"入门 {entry} · 已过 {result.gates}/6门", f"入口后 {result.run_seconds:.3f}s · {best}"]
@@ -54,6 +60,8 @@ def gate_feedback(result):
     title = f"第{index+1}门 · 余量 {result.clearances[index]:+.2f}m"
     if result.finished and not result.succeeded:
         return title+"\n本次未完成，不更新个人最佳"
+    if result.practice:
+        return title+f'\n本次通过 {result.gates}/6门 · 漏门可继续'
     delta = (f"累计差 {result.gate_times[index]-result.reference_times[index]:+.3f}s"
              if result.reference_times else "暂无同配置逐门最佳")
     return title+f"\n本段 {seconds:.3f}s · {delta}"

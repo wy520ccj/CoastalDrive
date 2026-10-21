@@ -44,7 +44,7 @@ def test_preview_cancel_and_keyboard_modal_preserve_current_car(app):
     app.key_up('arrow_right')
     app.key_down('enter')
     app.key_up('enter')
-    assert panel.recipe == 1 and '45k' in panel.preview.getText()
+    assert panel.recipe == 1 and '待安装 45' in panel.preview.getText()
     assert app.workspace_vehicle == before and not app.workspace_path.exists()
     app.key_down('f2')
     app.key_up('f2')

@@ -9,8 +9,9 @@ from ui.lab_diagrams import course
 
 
 class WorkshopJourney:
-    def __init__(self, parent, font, textures, action, driving_action=None):
+    def __init__(self, parent, font, textures, action, driving_action=None, on_back=None):
         self.action = action
+        self.on_back = on_back
         self.driving_action = driving_action
         self.data = None
         self.selected = 0
@@ -56,7 +57,7 @@ class WorkshopJourney:
         close = DirectButton(parent=self.root, text="返回主菜单  Esc", text_font=font, text_fg=theme.INK,
             text_scale=.039, text_pos=(0, -.013), frameSize=(-.51, .51, -.06, .06),
             frameTexture=textures, frameColor=(1, 1, 1, 1), pos=(1.02, 0, -.73),
-            command=self.hide, relief=DGG.FLAT, pressEffect=False)
+            command=lambda: self.activate(3), relief=DGG.FLAT, pressEffect=False)
         close.bind(DGG.ENTER, lambda event: self.select(3))
         self.buttons.append(close)
         text("方向键选择 · Enter 进入 · Esc 返回", -1.52, -.77, .029, theme.MUTED)
@@ -101,7 +102,7 @@ class WorkshopJourney:
 
     def activate(self, index):
         if index == 3:
-            self.hide()
+            self.hide() if self.on_back is None else self.on_back()
         else:
             self.action(self.data["projects"][index])
 
@@ -115,7 +116,7 @@ class WorkshopJourney:
         elif key == "tab" and self.driving_action is not None:
             self.driving_action()
         elif key == "escape":
-            self.hide()
+            self.hide() if self.on_back is None else self.on_back()
 
     def hide(self):
         self.root.hide()

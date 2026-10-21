@@ -52,13 +52,15 @@ class HighwayRun:
 
     def start(self, progress, *, challenge=False, braking_scores=None, slalom_scores=None, vehicle_config=None,
               sprint_mode=None, sprint_scores=None, score_variant="", overtake_initial=None, overtake_scores=None,
-              overtake_mode=GameMode.SAFE_OVERTAKE, overtake_road=None, fast_slalom=False, short_braking=False):
+              overtake_mode=GameMode.SAFE_OVERTAKE, overtake_road=None, fast_slalom=False, short_braking=False,
+              practice_slalom=False):
         self._start = progress
         self.snapshot = HighwayResult(challenge=challenge, running=True)
         self.braking = None if braking_scores is None else BrakingLesson(progress, braking_scores)
         if braking_scores is not None and short_braking:
             self.braking = ShortBraking(progress, braking_scores)
-        self.slalom = None if slalom_scores is None else SlalomLesson(progress, slalom_scores, vehicle_config, fast=fast_slalom)
+        self.slalom = None if slalom_scores is None else SlalomLesson(progress, slalom_scores, vehicle_config,
+                                                                   fast=fast_slalom, practice=practice_slalom)
         self.sprint = None if sprint_mode is None else SprintRun(progress, sprint_mode, sprint_scores, score_variant, vehicle_config)
         self.overtake = (None if overtake_initial is None else
                          OvertakeRun(overtake_initial, vehicle_config, overtake_scores, score_variant,

@@ -18,6 +18,7 @@ class SlalomMarkers:
         self.gates = []
         self.entry_label = None
         self.fast = False
+        self.practice = False
         for index, (distance, center) in enumerate(((ENTRY_DISTANCE, 0.), *GATES)):
             gate = self.root.attachNewNode(f"gate-{index}")
             half = COURSE_HALF_WIDTH if index == 0 else GATE_HALF_WIDTH
@@ -52,11 +53,15 @@ class SlalomMarkers:
             self.root.hide(MARKER_MASK)
             return
         self.root.setY(result.start_progress-origin_y)
-        if result.fast != self.fast:
+        if (result.fast, result.practice) != (self.fast, self.practice):
             self.fast = result.fast
-            self.entry_label.setText('入口 70–80 km/h' if self.fast else '入口 40 km/h')
+            self.practice = result.practice
+            self.entry_label.setText('练习入口 · 不限速度' if self.practice else '入口 70–80 km/h' if self.fast else '入口 40 km/h')
         self.root.show(MARKER_MASK)
-        next_index = 0 if result.entry_time is None else result.gates+1
+        attempted = len(result.gate_times)
+        next_index = 0 if result.entry_time is None else attempted+1
         for index, gate in enumerate(self.gates):
-            passed = result.entry_time is not None if index == 0 else index <= result.gates
-            gate.setColor(*((.23, .64, .43, 1) if passed else (1., .62, .16, 1) if index == next_index else (.22, .65, .76, 1)))
+            passed = result.entry_time is not None if index == 0 else index <= attempted
+            missed = index > 0 and passed and result.clearances[index-1] < 0
+            gate.setColor(*((.95, .25, .15, 1) if missed else (.23, .64, .43, 1) if passed else
+                           (1., .62, .16, 1) if index == next_index else (.22, .65, .76, 1)))

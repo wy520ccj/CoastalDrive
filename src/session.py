@@ -268,10 +268,12 @@ class Session:
                                     maximum=42 if self.mode == GameMode.SHORT_BRAKING else 10)
                                 if self.mode in BRAKING_MODES else None),
                 slalom_scores=(SlalomScores(self.race.scores.path.with_name("slalom-best.json"),
-                                             ("fast-slalom-v1:" if self.mode == GameMode.FAST_SLALOM else "slalom-v1:")+self.score_variant())
+                                             ("practice-slalom-v1:" if self.mode == GameMode.SLALOM_PRACTICE else
+                                              "fast-slalom-v1:" if self.mode == GameMode.FAST_SLALOM else "slalom-v1:")+self.score_variant())
                                 if self.mode in SLALOM_MODES else None),
                 short_braking=self.mode == GameMode.SHORT_BRAKING,
                 vehicle_config=self.vehicle_config, fast_slalom=self.mode == GameMode.FAST_SLALOM,
+                practice_slalom=self.mode == GameMode.SLALOM_PRACTICE,
                 sprint_mode=self.mode if self.mode in SPRINT_ROUTES else None,
                 sprint_scores=BestTimes(self.race.scores.path.with_name("sprint-best.json")) if self.mode in SPRINT_ROUTES else None,
                 score_variant=self.score_variant(),
