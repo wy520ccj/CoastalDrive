@@ -1,0 +1,144 @@
+...........F...........F........................................FF....   [100%]
+================================== FAILURES ===================================
+____ test_actual_road_comparison_preserves_trial_draft_and_player_progress ____
+
+lab = <lab_application.VehicleLab object at 0x0000022068BBBA10>
+
+    def test_actual_road_comparison_preserves_trial_draft_and_player_progress(lab):
+        lab.set_options(LabOptions(duration=.1, speed_kph=20))
+        lab.start_experiment()
+        while not lab.run_state.done:
+            lab.run_state.step()
+        old_run, record = lab.run_state, lab.active_record()
+        lab.entries["cg"].enterText(".48")
+        panel = prepare(lab)
+        original_files = {p: p.read_bytes() for p in lab.scheme_root.rglob("*") if p.is_file()}
+        panel.start()
+        assert old_run.closed and lab.run_state is None and lab.record.snapshots == record.snapshots
+        assert panel.run_button["state"] == DGG.DISABLED
+        saw_left = False
+        while not panel.comparison.done:
+            panel.update()
+            if len(panel.comparison.records) == 1 and not panel.comparison.done:
+                saw_left = True
+                assert '试车中' in panel.result_labels[1].getText()
+                assert panel.metric_rows[1][1].getText() != '待完成'
+                assert panel.metric_rows[1][2].getText() == '待完成'
+                assert len(panel.paths) == 1
+        assert saw_left
+        assert panel.comparison.status == "complete" and panel.comparison.run.closed
+>       assert "有效用时" in panel.metric_rows[0][0].getText() and "B−A" in panel.metric_headers[3].getText()
+E       AssertionError: assert ('有效用时' in '有效用时 (s)' and 'B−A' in '变化')
+E        +  where '有效用时 (s)' = getText()
+E        +    where getText = render2d/aspect2d/DirectFrame-pg4569/DirectFrame-pg4724/DirectFrame-pg4742/DirectFrame-pg4744/-TextNode.getText
+E        +  and   '变化' = getText()
+E        +    where getText = render2d/aspect2d/DirectFrame-pg4569/DirectFrame-pg4724/DirectFrame-pg4742/DirectFrame-pg4744/-TextNode.getText
+
+tests\test_virtual_driver_ui.py:79: AssertionError
+---------------------------- Captured stderr setup ----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+______ test_braking_card_uses_current_hardware_and_opens_original_rules _______
+
+app = <application.CoastalDrive object at 0x0000022068CD23C0>
+
+    def test_braking_card_uses_current_hardware_and_opens_original_rules(app):
+        key = "braking-v1:"+app.session.score_variant()
+        scores = BrakingScores(app.session.race.scores.path.with_name("braking-best.json"), key)
+        scores.record(1.5)
+        app.open_workshop_journey()
+        assert "金牌" in app.journey.details[2].getText()
+        app.journey.buttons[2]["command"]()
+        assert app.braking_menu and "170米" in app.panel_note.getText()
+        app.back_to_modes()
+        app.session.set_esc_enabled(not app.session.esc_enabled)
+        app.open_workshop_journey()
+>       assert "尚无成功成绩" in app.journey.details[2].getText()
+E       AssertionError: assert '尚无成功成绩' in '先试着停在目标线附近'
+E        +  where '先试着停在目标线附近' = getText()
+E        +    where getText = render2d/aspect2d/main-menu/menu-content/DirectFrame-pg8932/-TextNode.getText
+
+tests\test_workshop_journey_ui.py:132: AssertionError
+---------------------------- Captured stderr setup ----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+_ test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics[700] __
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-940/test_game_ignores_stale_direct0')
+height = 700
+
+    @pytest.mark.parametrize("height", [700, 1080])
+    def test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics(tmp_path, height):
+        path = tmp_path / "test-driving-mode.json"
+        path.write_text(json.dumps({"mode": "simulation", "abs_enabled": True,
+                                   "tcs_enabled": True, "esc_enabled": True}), encoding="utf-8")
+        app = CoastalDrive(smoke=True, output=tmp_path, render_size=(round(height * 16 / 9), height))
+        app.taskMgr.remove("finish-smoke")
+        try:
+            app.session.menu()
+            app.refresh_panel()
+            assert app.session.driving_mode is DrivingMode.GAME
+            assert app.session.simulation.input_config is DrivingMode.GAME.input_config
+>           assert [b["text"] for b in app.main_menu.buttons] == [
+                "计时挑战", "滨海自由驾驶", "高速与驾驶课题", "车库", "声音设置", "退出", "进入实验室  ›",
+                "海岸工坊 · 项目进度  ›"]
+E               AssertionError: assert ['计时挑战', '滨海自...置', '退出', ...] == ['计时挑战', '滨海自...置', '退出', ...]
+E                 
+E                 At index 6 diff: '设置一个试验  ›' != '进入实验室  ›'
+E                 Use -v to get more diff
+
+tests\test_driving_mode_ui.py:64: AssertionError
+---------------------------- Captured stderr call -----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+_ test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics[1080] _
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-940/test_game_ignores_stale_direct1')
+height = 1080
+
+    @pytest.mark.parametrize("height", [700, 1080])
+    def test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics(tmp_path, height):
+        path = tmp_path / "test-driving-mode.json"
+        path.write_text(json.dumps({"mode": "simulation", "abs_enabled": True,
+                                   "tcs_enabled": True, "esc_enabled": True}), encoding="utf-8")
+        app = CoastalDrive(smoke=True, output=tmp_path, render_size=(round(height * 16 / 9), height))
+        app.taskMgr.remove("finish-smoke")
+        try:
+            app.session.menu()
+            app.refresh_panel()
+            assert app.session.driving_mode is DrivingMode.GAME
+            assert app.session.simulation.input_config is DrivingMode.GAME.input_config
+>           assert [b["text"] for b in app.main_menu.buttons] == [
+                "计时挑战", "滨海自由驾驶", "高速与驾驶课题", "车库", "声音设置", "退出", "进入实验室  ›",
+                "海岸工坊 · 项目进度  ›"]
+E               AssertionError: assert ['计时挑战', '滨海自...置', '退出', ...] == ['计时挑战', '滨海自...置', '退出', ...]
+E                 
+E                 At index 6 diff: '设置一个试验  ›' != '进入实验室  ›'
+E                 Use -v to get more diff
+
+tests\test_driving_mode_ui.py:64: AssertionError
+---------------------------- Captured stderr call -----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+=========================== short test summary info ===========================
+FAILED tests/test_virtual_driver_ui.py::test_actual_road_comparison_preserves_trial_draft_and_player_progress
+FAILED tests/test_workshop_journey_ui.py::test_braking_card_uses_current_hardware_and_opens_original_rules
+FAILED tests/test_driving_mode_ui.py::test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics[700]
+FAILED tests/test_driving_mode_ui.py::test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics[1080]
+4 failed, 66 passed in 296.08s (0:04:56)
