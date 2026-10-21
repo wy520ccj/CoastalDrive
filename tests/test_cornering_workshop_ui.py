@@ -39,7 +39,7 @@ def test_real_gold_result_survives_workspace_and_topic_switch_but_changed_select
     finish(lab)
     assert panel.result["passed"] and panel.result["medal"] == "金"
     assert panel.drive_button["state"] == DGG.NORMAL
-    assert "路径跟踪" in panel.feedback.getText()
+    assert f"{panel.result['improvement_pct']:.2f}%" in panel.feedback.getText()
     saved = lab.capture_workspace()
     panel.topic_menu.set(0)
     assert panel.topic == 0 and panel.lower_cg.isHidden() and panel.result is None
@@ -49,7 +49,7 @@ def test_real_gold_result_survives_workspace_and_topic_switch_but_changed_select
     assert panel.result["passed"] and panel.drive_button["state"] == DGG.NORMAL
     panel.lower_cg.set(1)
     assert panel.result is None and panel.selected_cost() == 5
-    assert "超出预算" in panel.budget.getText() and panel.drive_button["state"] == DGG.DISABLED
+    assert "超支" in panel.budget.getText() and panel.drive_button["state"] == DGG.DISABLED
 
 
 def test_sharp_recipe_is_rejected_and_changing_topic_cancels_an_active_trial(lab):

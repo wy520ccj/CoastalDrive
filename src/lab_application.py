@@ -148,7 +148,7 @@ class VehicleLab(DirectObject):
 
     def button(self, label, x, z, width, action, parent=None, accent=False):
         button = DirectButton(parent=parent or self.root, text=label, text_font=self.font,
-            text_scale=.035, text_fg=(1, 1, 1, 1) if accent else INK, text_pos=(0, -.012),
+            text_scale=.041, text_fg=(1, 1, 1, 1) if accent else INK, text_pos=(0, -.012),
             frameColor=(1, 1, 1, 1), frameTexture=button_textures(accent),
             frameSize=(-width/2, width/2, -.045, .045), borderWidth=(0, 0),
             relief=DGG.FLAT, pos=(x, 0, z), command=action, pressEffect=False)
@@ -687,10 +687,7 @@ class VehicleLab(DirectObject):
             self.schemes.escape()
             return
         if not self.workshop.root.isHidden():
-            if not self.workshop.insights.root.isHidden():
-                self.workshop.insights.hide()
-                return
-            self.workshop.hide()
+            self.workshop.escape()
             return
         if not self.design_loop.root.isHidden():
             self.design_loop.hide()
@@ -987,6 +984,7 @@ class VehicleLab(DirectObject):
         view.setDimensions(.5+left*scale/(2*aspect), .5+right*scale/(2*aspect),
                            .5+bottom*scale/2, .5+top*scale/2)
         self.engine.camLens.setAspectRatio((right-left)/(top-bottom))
+        self.scene.frame_vehicle()
 
     def present_summary(self, summary):
         distance = summary["stopping_distance_m"]

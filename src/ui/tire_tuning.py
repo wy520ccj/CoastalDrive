@@ -29,9 +29,9 @@ class TireTuningPanel:
         # 保持固定标题字形引用，防止动态说明重排时字体回收影响仍显示的标题。
         title_glyphs = TextNode('tuning-title-glyphs')
         title_glyphs.setFont(font)
-        title_glyphs.setText('前胎配方 · 改装后亲自验车制动分配')
+        title_glyphs.setText('前轮改装制动分配')
         self.title_geometry = title_glyphs.generate()
-        self.title = text('前胎配方 · 改装后亲自验车', -1.52, .62, .062)
+        self.title = text('前轮改装', -1.52, .62, .062)
         self.vehicle = text('', -1.52, .48, .034, theme.MUTED)
         self.vehicle.textNode.setWordwrap(88)
         self.hardware_note = text('', -1.52, .35, .034, theme.SEA)
@@ -67,7 +67,7 @@ class TireTuningPanel:
         self.vehicle.setText(label)
         self.recipe = None
         brakes = topic == 'brakes'
-        self.title.setText('制动分配 · 改装后亲自验车' if brakes else '前胎配方 · 改装后亲自验车')
+        self.title.setText('制动改装' if brakes else '前轮改装')
         self.hardware_note.setText('前轴份额海蓝 / 后轴份额橙色；总制动扭矩、轮胎与路面保持。' if brakes else
                                   '前轴侧偏刚度 kN/rad；条长表示刚度数值，后胎与路面保持。')
         self.advice.setText('制动时前后轮荷不同；更大的前轴份额并不总是更好。\n'

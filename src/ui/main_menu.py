@@ -62,11 +62,11 @@ class MainMenu:
         if lab_action is not None:
             self.static_frames.append(DirectFrame(parent=self.content, frameColor=(*theme.PAPER[:3], .94),
                                                  frameSize=(.52, 1.63, -.49, .07)))
-            OnscreenText(parent=self.content, text="车辆动力学实验室", font=body_font,
+            OnscreenText(parent=self.content, text="专家试验台", font=body_font,
                          fg=theme.INK, align=TextNode.ALeft, pos=(.60, -.06), scale=.072)
-            self.vehicle_note = OnscreenText(parent=self.content, text="配置工况 · 真实曲线 · 参数对比\n120 Hz离线试验 / 精确输入 / 数据导出", font=body_font,
+            self.vehicle_note = OnscreenText(parent=self.content, text="自定义试验，回看车辆，对比曲线", font=body_font,
                          fg=theme.MUTED, align=TextNode.ALeft, pos=(.60, -.16), scale=.036)
-            button = DirectButton(parent=self.content, text="进入实验室  ›", text_font=body_font,
+            button = DirectButton(parent=self.content, text="进入试验台  ›", text_font=body_font,
                 text_fg=theme.INK, text_scale=.049, text_pos=(0, -.017),
                 frameSize=(-.46, .46, -.06, .06), frameTexture=self.textures,
                 frameColor=(1, 1, 1, 1), pos=(1.075, 0, -.36), relief=DGG.FLAT,
@@ -77,7 +77,7 @@ class MainMenu:
         if journey_action is not None:
             self.static_frames.append(DirectFrame(parent=self.content, frameColor=(*theme.PAPER[:3], .94),
                                                  frameSize=(.52, 1.63, -.76, -.54)))
-            button = DirectButton(parent=self.content, text="海岸工坊 · 项目进度  ›", text_font=body_font,
+            button = DirectButton(parent=self.content, text="海岸工坊  ›", text_font=body_font,
                 text_fg=theme.INK, text_scale=.046, text_pos=(0, -.015),
                 frameSize=(-.51, .51, -.07, .07), frameTexture=self.textures,
                 frameColor=(1, 1, 1, 1), pos=(1.075, 0, -.65), relief=DGG.FLAT,

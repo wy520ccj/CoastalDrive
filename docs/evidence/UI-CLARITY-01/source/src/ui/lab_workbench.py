@@ -1,0 +1,183 @@
+"""按已认可设计图排版：配置、车辆、核心结果及两张主要曲线。"""
+
+from direct.gui import DirectGuiGlobals as DGG
+from direct.gui.DirectGui import DirectEntry, DirectFrame, DirectSlider
+
+from lab_experiment import MANEUVERS
+from ui import theme
+from ui.lab_feedback import LabFeedback
+from ui.lab_plot import LabPlot
+from ui.lab_widgets import MUTED, rounded_panel
+
+VIEWPORT = (-.88, .90, .04, .62)
+
+
+def build_workbench(app):
+    root = app.root
+    # 背景围绕真正的3D视窗绘制，不用静态设计图覆盖车辆。
+    for box in ((-1.78, 1.78, .62, 1.5), (-1.78, 1.78, -1.5, -.02),
+                (-1.78, -.88, -.02, .62), (.90, 1.78, -.02, .62)):
+        DirectFrame(parent=root, frameColor=theme.PAPER, frameSize=box, sortOrder=-100)
+    app.text("专家试验台", -1.63, .863, .074, font=app.heading_font)
+    app.text("设置试验  →  回看车辆  →  分析数据", -.76, .812, .035, theme.SEA)
+    app.button("返回驾驶", 1.15, .90, .36, app.back_to_game)
+    app.button("记录", 1.57, .90, .28, app.toggle_record_menu)
+    app.button("参数说明 F1", .65, .90, .43, app.show_parameter_help)
+
+    rounded_panel(root, "trial-card", (-1.72, -.98, -.47, .75), theme.PAPER_LIGHT)
+    rounded_panel(root, "result-card", (.98, 1.72, -.29, .75), theme.PAPER_LIGHT)
+    rounded_panel(root, "viewport-header", (-.94, .94, .62, .75), theme.PAPER_LIGHT)
+    rounded_panel(root, "viewport-controls", (-.94, .94, -.19, .04), theme.PAPER_LIGHT)
+    DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT, frameSize=(-.94, -.88, -.02, .63))
+    DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT, frameSize=(.90, .94, -.02, .63))
+    for x, label in ((-1.63, "试验配置"), (-.84, "车辆视窗"), (1.07, "试验结果")):
+        DirectFrame(parent=root, frameColor=theme.ORANGE, frameSize=(x-.045, x-.035, .638, .695))
+        app.text(label, x, .646, .047, font=app.heading_font)
+
+    app.text("车辆模型", -1.62, .542, .032, MUTED)
+    app.vehicle_menu = app.option(["游戏调校", "参考后驱 RWD", "参考前驱 FWD", "参考四驱 AWD", "GR86 Premium 6MT"],
+                                 -1.63, .463, .60, command=app.choose_vehicle, parameter="vehicle")
+    app.vehicle_menu.set(1, fCommand=0)
+    app.configuration_note = app.text("车型默认 · 无独立轮心", -1.62, .374, .035, MUTED)
+    app.text("试验工况", -1.62, .318, .035, MUTED)
+    app.maneuver_menu = app.option(list(MANEUVERS.values()), -1.63, .242, .60, app.apply_preset, parameter="maneuver")
+    app.field("speed", "初速 km/h", 100, .128, width=.23)
+    app.field("mu", "路面附着 μ", 1.1, .034, width=.23)
+    app.abs_menu = app.option(["ABS 开启", "ABS 关闭"], -1.63, -.071, .60, parameter="abs")
+    app.button("高级参数 ›", -1.49, -.173, .28, app.toggle_advanced)
+    app.reset_button = app.button("重置参数", -1.17, -.173, .28, app.reset_parameters)
+    app.start_button = app.button("开始试验", -1.33, -.292, .60, app.start_experiment, accent=True)
+    app.button("固定当前为 A", -1.33, -.395, .60, app.pin_baseline)
+    app.text("先选工况，再开始试验。\n下方曲线可点击回看。", -1.62, -.57, .035, MUTED)
+
+    app.model_note = app.text("设计参考车 RWD", -.84, -.006, .035, MUTED)
+    app.model_note.textNode.setWordwrap(34)
+    app.button("切换视角", .73, .674, .29, app.cycle_camera)
+    app.status = app.text("等待试验", 1.07, .552, .033, theme.SEA)
+    app.metric_label = app.text("停车距离", 1.07, .456, .035, MUTED)
+    app.metric = app.text("—", 1.07, .328, .110, theme.ORANGE, font=app.heading_font)
+    app.text("对照 A", 1.07, .235, .031, theme.SEA)
+    app.text("本次 B", 1.43, .235, .031, theme.ORANGE)
+    app.baseline_value = app.text("—", 1.07, .158, .052, theme.SEA, font=app.heading_font)
+    app.candidate_value = app.text("—", 1.43, .158, .052, theme.ORANGE, font=app.heading_font)
+    app.result = app.text("固定 A 后比较", 1.07, .077, .029, MUTED)
+    app.timing = app.text("仿真  —\n计算  —", 1.07, -.008, .030, MUTED)
+    app.button("详细信号", 1.20, -.115, .27, app.toggle_details)
+    app.button("工程指标", 1.50, -.115, .27, app.show_engineering)
+
+    app.button("暂停", -.70, -.100, .30, app.toggle_pause)
+    app.button("单步", -.34, -.100, .30, app.single_step)
+    app.button("回放", .02, -.100, .30, app.toggle_playback)
+    app.timeline = DirectSlider(parent=root, range=(0, 1), value=0, pageSize=1, scrollSize=0,
+        frameSize=(-.28, .28, -.035, .035), frameVisibleScale=(1, .12), frameColor=(.77, .82, .80, 1),
+        thumb_frameColor=theme.ORANGE, thumb_frameSize=(-.014, .014, -.025, .025),
+        thumb_relief=DGG.FLAT, borderWidth=(0, 0), relief=DGG.FLAT,
+        pos=(.55, 0, -.104), command=app.seek)
+    app.cursor_label = app.text("0.000 s", .55, -.006, .035, MUTED)
+    app.text("时间轴 · 点击/拖动回看", .28, -.175, .030, MUTED)
+    for control in (app.timeline, app.timeline.thumb):
+        control.bind(DGG.B1PRESS, app.set_pointer, [True])
+        control.bind(DGG.B1RELEASE, app.set_pointer, [False])
+
+    app.plots = [LabPlot(root, app.font, (-.94, .36, -.86, -.34), "speed"),
+                 LabPlot(root, app.font, (.40, 1.72, -.86, -.34), "ax")]
+    for plot in app.plots:
+        plot.update(())
+    app.plot_menu = app.option(["制动响应", "转向响应", "四轮法向载荷", "四轮滑移率", "轮胎力 / 轮速", "路径跟踪", "执行器响应",
+                               "轮胎侧偏角", "附着利用率", "车身侧偏 / 侧倾", "左右载荷转移", "轮胎回正力矩",
+                               "质心运动", "车身 / 轮心振动", "悬架行程 / 速度", "轮胎径向压缩"],
+                              -1.63, -.785, .60, app.set_plot_group, parameter="plot")
+    app.text("曲线组", -1.62, -.700, .030, MUTED)
+    app.text("A 海蓝   B 橙色", .60, -.238, .026, MUTED)
+    app.button("清除 A", 1.50, -.225, .26, app.clear_baseline)
+    app.notice = LabFeedback(app)
+    app.button("导出 CSV / 报告", 1.36, -.935, .62, app.export)
+    from ui.lab_design_loop import DesignLoopPanel
+
+    app.design_loop = DesignLoopPanel(app)
+    app.button("保存与试驾", .13, .90, .45, app.design_loop.show)
+    from ui.lab_workshop import WorkshopPanel
+
+    app.workshop = WorkshopPanel(app)
+    app.button("新手工坊", -1.33, -.935, .60, app.workshop.show)
+    from ui.lab_schemes import SchemesPanel
+
+    app.schemes = SchemesPanel(app)
+    from ui.lab_road_retest import RoadRetestPanel
+
+    app.road_retest = RoadRetestPanel(app)
+    app.button("方案库", -.58, -.935, .50, app.schemes.show)
+    app.notice.footer.setPos(-.23, -.905)
+    app.notice.footer.setScale(.030)
+    app.notice.footer.textNode.setWordwrap(39)
+
+    app.record_menu = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
+                                 frameSize=(1.05, 1.71, .12, .83), sortOrder=60, state=DGG.NORMAL)
+    for z, label, action in ((.76, "载入记录", app.open_record), (.65, "复算当前记录", app.recalculate_record),
+                             (.54, "打开报告", app.open_report), (.43, "导入工程模型", app.open_engineering)):
+        app.button(label, 1.38, z, .56, action, parent=app.record_menu)
+    app.driving_car_button = app.button('载入驾驶车硬件', 1.38, .32, .56,
+                                        app.stage_driving_vehicle, parent=app.record_menu)
+    app.driving_car_button['state'] = DGG.NORMAL if app.workspace_vehicle is not None else DGG.DISABLED
+    app.road_retest_button = app.button('道路A/B复测', 1.38, .21, .56, app.road_retest.show, parent=app.record_menu)
+    app.road_retest_button['state'] = DGG.DISABLED
+    app.record_menu.hide()
+
+    app.advanced_panel = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
+                                    frameSize=(-.94, 1.72, -.46, .76), sortOrder=70, state=DGG.NORMAL)
+    app.text("高级参数", -.82, .638, .047, parent=app.advanced_panel, font=app.heading_font)
+    app.advanced_reset_button = app.button("重置参数", 1.10, .652, .36, app.reset_parameters,
+                                          parent=app.advanced_panel)
+    app.button("关闭", 1.52, .652, .26, app.toggle_advanced, parent=app.advanced_panel)
+    app.field("duration", "时长 s", 12, .44, x=-.82, parent=app.advanced_panel)
+    app.field("steer", "目标转角 °", 3, .32, x=-.82, parent=app.advanced_panel)
+    app.field("cg", "质心高度 m", "", .20, x=-.82, parent=app.advanced_panel)
+    app.field("radius", "定圆半径 m", 60, .44, x=.44, parent=app.advanced_panel)
+    app.field("right_mu", "右侧附着 μ", .3, .32, x=.44, parent=app.advanced_panel)
+    app.field("onset", "输入起始 s", .5, .20, x=.44, parent=app.advanced_panel)
+    app.esc_menu = app.option(["ESC 关闭", "ESC 开启"], -.82, .071, .62, parent=app.advanced_panel, parameter="esc")
+    app.field("tire_load", "轮胎基准 N", "", .075, x=.44, parent=app.advanced_panel)
+    app.field("bump_height", "凸起高度 m", .01, -.08, x=-.82, parent=app.advanced_panel)
+    app.field("bump_length", "凸起长度 m", .9, -.08, x=.44, parent=app.advanced_panel)
+    app.field("bump_distance", "凸起距离 m", 6, -.20, x=-.82, parent=app.advanced_panel)
+    app.button("导入悬架台架", .94, -.20, .67, app.open_suspension_bench, parent=app.advanced_panel)
+    app.parameter_hint = app.text("", -.82, -.34, .030, MUTED, parent=app.advanced_panel)
+    app.advanced_panel.hide()
+
+    app.details_panel = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
+                                   frameSize=(-.94, 1.72, -.19, .76), sortOrder=80, state=DGG.NORMAL)
+    app.text("真实信号 / 当前时间游标", -.74, .602, .045,
+             parent=app.details_panel, font=app.heading_font)
+    app.button("关闭", 1.50, .622, .26, app.toggle_details, parent=app.details_panel)
+    app.telemetry = app.text("等待真实实验信号", -.74, .506, .034, parent=app.details_panel)
+    app.wheel_telemetry = app.text("", .55, .506, .034, parent=app.details_panel)
+    app.details_panel.hide()
+
+    app.manual_panel = DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT,
+                                  frameSize=(-.75, .94, -.02, .55), sortOrder=80, state=DGG.NORMAL)
+    app.text("执行器输入", -.65, .441, .045, parent=app.manual_panel, font=app.heading_font)
+    app.manual_entries = {}
+    for i, (key, label, value) in enumerate((("throttle", "油门 %", 0), ("brake", "制动 %", 0),
+                                           ("gear", "挡位", 1), ("clutch", "离合 %", 100))):
+        x = -.65+i*.38
+        app.field_labels["manual."+key] = app.text(label, x, .312, .030, MUTED, parent=app.manual_panel)
+        target = DirectFrame(parent=app.manual_panel, relief=None, state=DGG.NORMAL,
+                             frameColor=(0, 0, 0, 0),
+                             frameSize=(0, .30, -.015, .045), pos=(x, 0, .312))
+        app.bind_parameter(target, f"manual.{key}")
+        app.manual_entries[key] = DirectEntry(parent=app.manual_panel, initialText=str(value),
+            text_font=app.font, text_fg=theme.INK, scale=.038, width=7,
+            frameColor=theme.PAPER, pos=(x, 0, .22), relief=DGG.FLAT)
+        app.bind_parameter(app.manual_entries[key], f"manual.{key}", focus=True)
+    app.text("目标转角在高级参数中设置。R=-1 / N=0 / D=1…", -.65, .112,
+             .028, MUTED, parent=app.manual_panel)
+    app.button("确认输入", .56, .052, .55, app.apply_manual, parent=app.manual_panel, accent=True)
+    app.manual_panel.hide()
+    app.manual_button = app.button("执行器", .00, .674, .30, app.show_manual)
+    app.manual_button.hide()
+    from ui.parameter_help import ParameterHelp
+
+    app.parameter_help = ParameterHelp(app)
+    from ui.lab_engineering import EngineeringPanel
+
+    app.engineering_panel = EngineeringPanel(app)

@@ -76,7 +76,7 @@ def test_actual_road_comparison_preserves_trial_draft_and_player_progress(lab):
             assert len(panel.paths) == 1
     assert saw_left
     assert panel.comparison.status == "complete" and panel.comparison.run.closed
-    assert "有效用时" in panel.metric_rows[0][0].getText() and "B−A" in panel.metric_headers[3].getText()
+    assert "有效用时" in panel.metric_rows[0][0].getText() and "变化" in panel.metric_headers[3].getText()
     assert panel.report.is_file() and lab.entries["cg"].get() == ".48"
     assert all(path.read_bytes() == data for path, data in original_files.items())
     assert not list(lab.scheme_root.parent.rglob("*best*.json"))

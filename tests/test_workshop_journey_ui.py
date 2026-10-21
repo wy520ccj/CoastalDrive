@@ -60,7 +60,7 @@ def test_menu_keyboard_mouse_close_and_original_choices_remain(app):
     assert len(app.main_menu.buttons) == 8
     app.main_menu.select(7)
     press(app, "enter")
-    assert not app.journey.root.isHidden() and "0 / 5" in app.journey.progress.getText()
+    assert not app.journey.root.isHidden() and "0 / 3" in app.journey.progress.getText()
     original = app.main_menu.selected
     press(app, "arrow_right")
     assert app.journey.selected == 1 and app.main_menu.selected == original
@@ -129,7 +129,8 @@ def test_braking_card_uses_current_hardware_and_opens_original_rules(app):
     app.back_to_modes()
     app.session.set_esc_enabled(not app.session.esc_enabled)
     app.open_workshop_journey()
-    assert "尚无成功成绩" in app.journey.details[2].getText()
+    assert app.journey.data["projects"][2]["steps"] == 0
+    assert "尚无停车成绩" in app.journey.details[2].getText()
 
 
 def test_legacy_single_vehicle_restores_its_real_award_without_a_scheme_library(app):

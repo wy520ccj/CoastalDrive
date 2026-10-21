@@ -2,10 +2,8 @@
 
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectEntry, DirectFrame, DirectSlider
-from panda3d.core import CardMaker, Point2
 
 from lab_experiment import MANEUVERS
-from lab_runtime import runtime_fingerprint
 from ui import theme
 from ui.lab_feedback import LabFeedback
 from ui.lab_plot import LabPlot
@@ -17,20 +15,12 @@ VIEWPORT = (-.88, .90, .04, .62)
 def build_workbench(app):
     root = app.root
     # 背景围绕真正的3D视窗绘制，不用静态设计图覆盖车辆。
-    for box in ((-1.78, 1.78, .62, 1), (-1.78, 1.78, -1, -.02),
+    for box in ((-1.78, 1.78, .62, 1.5), (-1.78, 1.78, -1.5, -.02),
                 (-1.78, -.88, -.02, .62), (.90, 1.78, -.02, .62)):
         DirectFrame(parent=root, frameColor=theme.PAPER, frameSize=box, sortOrder=-100)
-    header = CardMaker("lab-coastal-header")
-    header.setFrame(-1.78, 1.78, .80, 1)
-    header.setUvRange(Point2(0, .70), Point2(1, .83))
-    art = root.attachNewNode(header.generate())
-    art.setTexture(app.engine.loader.loadTexture(theme.asset_filename("backgrounds/coastal-menu-handdrawn-v2.png")))
-    DirectFrame(parent=root, frameColor=theme.PAPER_LIGHT, frameSize=(-1.78, -.23, .80, 1))
-    app.text("COASTAL DRIVE", -1.65, .868, .092, font=app.display_font)
-    app.text("车辆实验室", -.66, .894, .047, font=app.heading_font)
-    app.text("VEHICLE DYNAMICS LAB", -.66, .837, .035, MUTED)
-    DirectFrame(parent=root, frameColor=theme.ORANGE, frameSize=(-1.78, 1.78, .793, .798))
-    app.button("‹  返回驾驶", 1.15, .90, .36, app.back_to_game)
+    app.text("专家试验台", -1.63, .863, .074, font=app.heading_font)
+    app.text("设置试验  →  回看车辆  →  分析数据", -.76, .812, .035, theme.SEA)
+    app.button("返回驾驶", 1.15, .90, .36, app.back_to_game)
     app.button("记录", 1.57, .90, .28, app.toggle_record_menu)
     app.button("参数说明 F1", .65, .90, .43, app.show_parameter_help)
 
@@ -58,8 +48,7 @@ def build_workbench(app):
     app.reset_button = app.button("重置参数", -1.17, -.173, .28, app.reset_parameters)
     app.start_button = app.button("开始试验", -1.33, -.292, .60, app.start_experiment, accent=True)
     app.button("固定当前为 A", -1.33, -.395, .60, app.pin_baseline)
-    bits = runtime_fingerprint()["math_scalar_bits"]
-    app.text(f"离线实验 / {bits} 位\n固定120 Hz / 平整试验场", -1.62, -.57, .035, MUTED)
+    app.text("先选工况，再开始试验。\n下方曲线可点击回看。", -1.62, -.57, .035, MUTED)
 
     app.model_note = app.text("设计参考车 RWD", -.84, -.006, .035, MUTED)
     app.model_note.textNode.setWordwrap(34)
@@ -67,8 +56,8 @@ def build_workbench(app):
     app.status = app.text("等待试验", 1.07, .552, .033, theme.SEA)
     app.metric_label = app.text("停车距离", 1.07, .456, .035, MUTED)
     app.metric = app.text("—", 1.07, .328, .110, theme.ORANGE, font=app.heading_font)
-    app.text("方案 A", 1.07, .235, .031, theme.SEA)
-    app.text("方案 B", 1.43, .235, .031, theme.ORANGE)
+    app.text("对照 A", 1.07, .235, .031, theme.SEA)
+    app.text("本次 B", 1.43, .235, .031, theme.ORANGE)
     app.baseline_value = app.text("—", 1.07, .158, .052, theme.SEA, font=app.heading_font)
     app.candidate_value = app.text("—", 1.43, .158, .052, theme.ORANGE, font=app.heading_font)
     app.result = app.text("固定 A 后比较", 1.07, .077, .029, MUTED)
@@ -106,11 +95,11 @@ def build_workbench(app):
     from ui.lab_design_loop import DesignLoopPanel
 
     app.design_loop = DesignLoopPanel(app)
-    app.button("游戏联动", .13, .90, .45, app.design_loop.show)
+    app.button("保存与试驾", .13, .90, .45, app.design_loop.show)
     from ui.lab_workshop import WorkshopPanel
 
     app.workshop = WorkshopPanel(app)
-    app.button("工坊挑战", -1.33, -.935, .60, app.workshop.show, accent=True)
+    app.button("新手工坊", -1.33, -.935, .60, app.workshop.show)
     from ui.lab_schemes import SchemesPanel
 
     app.schemes = SchemesPanel(app)

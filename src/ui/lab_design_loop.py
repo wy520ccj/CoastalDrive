@@ -35,11 +35,11 @@ class DesignLoopPanel:
         glyphs.setText('关闭返回工作台运行游戏对照保存车辆并试驾打开报告重试导出')
         self.button_geometry = glyphs.generate()
         DirectFrame(parent=self.root, frameColor=theme.PAPER_LIGHT, frameSize=(-1.70, 1.70, -.86, .79))
-        app.text("把试验接到驾驶", -1.52, .64, .060, parent=self.root, font=app.heading_font)
+        app.text("保存与试驾", -1.52, .64, .060, parent=self.root, font=app.heading_font)
         self.close_button = app.button("关闭", 1.50, .65, .27, self.hide, parent=self.root)
         self.info = app.text("", -1.52, .49, .036, theme.MUTED, parent=self.root)
-        for x, title, note in ((-1.56, '01 · 对照计算配置', '同一工况与直接命令\n游戏每拍1次机械求解'),
-                               (.04, '02 · 保存这次试验的车', '保留本次完整硬件\n进入滨海公路辅助驾驶')):
+        for x, title, note in ((-1.56, '游戏计算对照', '同一工况与直接命令\n游戏每拍1次机械求解'),
+                               (.04, '保存试验车辆', '保留本次完整硬件\n进入滨海公路辅助驾驶')):
             rounded_panel(self.root, 'link-action', (x, x+1.52, -.06, .32), theme.PAPER)
             app.text(title, x+.08, .23, .044, parent=self.root, font=app.heading_font)
             app.text(note, x+.08, .14, .035, theme.MUTED, parent=self.root)

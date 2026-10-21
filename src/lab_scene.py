@@ -76,8 +76,11 @@ class LabScene:
     def frame_vehicle(self):
         """预览和回放共用镜头摆位，只读取显示节点，不产生物理状态。"""
         position = self.vehicle.getPos()
-        offsets = (Vec3(6, -9, 4), Vec3(0, 0, 24), Vec3(15, 0, 3))
-        self.base.camLens.setFov(48)
+        offsets = (Vec3(4, -6, 2.6), Vec3(0, 0, 24), Vec3(10, 0, 2.5))
+        # 预览和载入回放统一竖向视野；宽视窗不再把车辆下半部裁掉。
+        lens = self.base.camLens
+        horizontal = math.degrees(2*math.atan(lens.getAspectRatio()*math.tan(math.radians(15))))
+        lens.setFov(horizontal, 30)
         if self.camera_mode == 1 and self.path_bounds is not None:
             left, right, bottom, top = self.path_bounds
             center = Vec3((left+right)/2, (bottom+top)/2, 0)

@@ -1,0 +1,28 @@
+{
+  "baseline": "353260a7914558f226ca03661c372a9d0ea780e7",
+  "normalization": "LF",
+  "sha256": {
+    "src/lab_application.py": "ef80ec4782c4970ebc8f8d14aa42b2afb247ce856a731760194710660cea53ca",
+    "src/lab_scene.py": "5c4f8660860687c57054ae73e8cc2b0bac6ae556a07cea48df9c635a579769dc",
+    "src/ui/lab_diagrams.py": "a07dfb85afff1e21701f98b826b71cd58f6389d286b67e41bf14311eb818e064",
+    "src/ui/lab_workshop.py": "9bc4f56bd9b743c9bcb27520f1d3160271df4af47e3b81fe31d2a48aeb6af900",
+    "src/ui/lab_schemes.py": "c3801ae59268777c7fd0db07991894b5015b10af2c2d697526b5bf50ef14e1c4",
+    "src/ui/workshop_insights.py": "471645da27a0b8d266d183974f8b5ebb59298d3e57b90cbfbeaea48a36e43484",
+    "src/ui/virtual_driver.py": "2c783099187a68df689d477a9bc7228fb0c0c0df0d2171a4ff5c9fc6c7d92899",
+    "src/ui/workshop_journey.py": "a6663a71c5784dc82a9c8bda04b941f7b1eb62b7ed516c7e415484f0ada8c008",
+    "src/ui/lab_workbench.py": "dfe7f79cd9828cd40f43369054d664384164bbed19ad4c875d31abf1037b759d",
+    "src/ui/main_menu.py": "01f9addc574b9527c5562ad2c8950cbc7f5f1b60f7e1b829c2917b7dbcf9351e",
+    "src/ui/driving_cards.py": "a588c8b7e61845ac7f3e666ac9954116eff87096a8ceb2855ef45cf0c68e9a1c",
+    "src/ui/lab_design_loop.py": "410c82e6e2c1a677ff127b21987a02db8368e2992c2d0b6380549aea14790d90",
+    "src/ui/tire_tuning.py": "4118bae02aac36f04623166004fe5ed9e63846b73bf1b4794def8a7a6a8ac7ef",
+    "tests/test_ui_clarity.py": "89771d714ab3583abedd0c3d9c8b5357a4670e9688b8fc2aa0f059a5142fec17",
+    "tests/test_cornering_workshop_ui.py": "8ec9eb1147e165b7a842d6ca9ea71df9e9afb20fc2f004a62489210b635c8492",
+    "tests/test_driving_mode_ui.py": "434c924e86d3f6421c74cd20af44f4809ef2c7848625bdaf07d4c8ca3d880418",
+    "tests/test_virtual_driver_ui.py": "520e19832fda46449d8e1ef8ecbb4d3345e9bd1e3ab1f48fd1780b0026493767",
+    "tests/test_workshop_journey_ui.py": "2c258ddd7a47713d665eee56b325782fdde88a41019f38482e9057113fd990aa",
+    "tools/ui_clarity_check.py": "a1d8598c6615f129b133b0c5638ece7af494db89ba99e00ec568bb840ce062f4",
+    "tools/workshop_journey_check.py": "5c41f69f1f0f2f74d52dc32291d01714e02519eee44d4d5671108d40cd8985f4",
+    "tools/settings_cards_check.py": "1413c7b16941818692c8dc9cfbf10e91a9c8f3dd45e0f2974b08fcb789a16cbd",
+    "tools/tuning_cards_check.py": "9de2f0afe303a14da137025985b98aeb4258c07a0d24bb68b8d6ada7bf9fb364"
+  }
+}

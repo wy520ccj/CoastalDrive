@@ -6,6 +6,7 @@ from direct.gui.DirectGui import OnscreenText
 from panda3d.core import LineSegs, TextNode
 
 from ui import theme
+from ui.lab_diagrams import car
 from ui.lab_widgets import button_textures, rounded_panel
 
 
@@ -106,7 +107,7 @@ class DrivingCards:
             button['text_fg'] = theme.INK
 
     def audio(self, app, station):
-        self.begin(app, '让海岸有自己的声音', '三个通道独立调整 · 立即试听并保存')
+        self.begin(app, '声音设置', '三个通道独立调整 · 立即试听并保存')
         settings = app.audio_settings
         for index, (title, description, value) in enumerate((
                 ('主音量', '整体播放音量', settings.master_volume),
@@ -136,27 +137,34 @@ class DrivingCards:
 
     def assists(self, app):
         self.begin(app, '驾驶辅助', '游戏使用车速转向辅助 · 以下车辆开关在下次起步应用')
-        for index, (name, description, purpose, enabled) in enumerate((
-                ('ABS', '制动防抱死', '制动时调节轮端压力', app.session.abs_enabled),
-                ('TCS', '驱动防滑', '加速时抑制驱动轮空转', app.session.tcs_enabled),
-                ('ESC', '横摆稳定', '通过差动制动修正横摆', app.session.esc_enabled))):
+        for index, (title, abbreviation, enabled) in enumerate((
+                ('制动防抱死', 'ABS · 调节制动压力', app.session.abs_enabled),
+                ('加速防打滑', 'TCS · 抑制驱动轮空转', app.session.tcs_enabled),
+                ('车身稳定', 'ESC · 修正车身偏转', app.session.esc_enabled))):
             x = (-1.03, 0., 1.03)[index]
             color = theme.SEA if enabled else theme.MUTED
             rounded_panel(self.content, 'assist-card', (x-.47, x+.47, -.29, .43), theme.PAPER)
-            self.text(name, x-.37, .27, .10, color)
-            self.text(description, x-.37, .15, .041)
-            self.text('已开启' if enabled else '已关闭', x-.37, .025, .051, color)
-            self.text(purpose, x-.37, -.075, .030, theme.MUTED)
-            self.button(index, x, -.20, .78, .11, compact=True)
+            self.text(title, x-.37, .31, .050)
+            self.text(abbreviation, x-.37, .22, .031, theme.MUTED)
+            car(self.content, x, -.015, .62, color)
+            if index == 0:
+                self.line([(x+.31, .00), (x+.31, .12)], theme.ORANGE, 3.)
+            elif index == 1:
+                for dz in (-.035, -.055):
+                    self.line([(x-.28, dz), (x-.12, dz)], theme.ORANGE, 2.)
+            else:
+                self.route(x, -.045, .64, 'bend')
+            self.text('已开启' if enabled else '已关闭', x-.37, -.12, .040, color)
+            self.button(index, x, -.22, .78, .10, compact=True)
         self.text('点击卡片底部切换开关 · 车辆硬件在车库选择', -1.50, -.44, .034, theme.MUTED)
-        self.text('完整工况、参数与精确试验 → 实验室', -1.50, -.54, .034, theme.SEA)
+        self.text('车辆数据可在试验台查看。', -1.50, -.54, .034, theme.SEA)
         if app.driving_mode_settings.notice:
             self.text(app.fit_lines(app.driving_mode_settings.notice, 2.5, .032), -1.50, -.66, .032, theme.ORANGE)
         self.button(3, 1.13, -.78, .86, .10, compact=True)
         self.select(app.panel_selection)
 
     def routes(self, app, goals):
-        self.begin(app, '挑一条路，出发', '封闭短途 / 安全超车 / 三站巡回 · 使用当前驾驶车辆')
+        self.begin(app, '路线选择', '封闭短途 / 安全超车 / 三站巡回 · 使用当前驾驶车辆')
         rows = (
             ('bend', '1.8公里 · 连贯通过四门', goals[0]),
             ('hill', '1.4公里 · 起伏路面冲刺', goals[1]),
@@ -175,7 +183,7 @@ class DrivingCards:
         self.select(app.panel_selection)
 
     def highway(self, app):
-        self.begin(app, '高速与驾驶课题', '自在巡航，或用一个短目标检验你的驾驶与改装')
+        self.begin(app, '高速与驾驶课题', '选择自由驾驶或驾驶课题')
         for index, x in enumerate((-.79, .79)):
             self.button(index, x, .40, 1.48, .12, compact=True)
         for index, x, kind, description in (
