@@ -1,0 +1,22 @@
+{
+  "images": {
+    "hud-proof-1280/01-sprint-layout.png": "logs/validation/GARAGE-DESIGN-02-hud-proof-1280/01-sprint-layout.png",
+    "hud-proof-1280/02-parking-layout.png": "logs/validation/GARAGE-DESIGN-02-hud-proof-1280/02-parking-layout.png",
+    "hud-proof-1280/03-slalom-layout.png": "logs/validation/GARAGE-DESIGN-02-hud-proof-1280/03-slalom-layout.png",
+    "hud-proof-1280/04-simulation-controls.png": "logs/validation/GARAGE-DESIGN-02-hud-proof-1280/04-simulation-controls.png",
+    "hud-proof-1280/07-recorded-result.png": "logs/validation/GARAGE-DESIGN-02-hud-proof-1280/07-recorded-result.png",
+    "hud-proof-1280/08-recorded-garage-return.png": "logs/validation/GARAGE-DESIGN-02-hud-proof-1280/08-recorded-garage-return.png",
+    "hud-proof-1024/01-sprint-layout.png": "logs/validation/GARAGE-DESIGN-02-hud-proof-1024/01-sprint-layout.png",
+    "hud-proof-1024/02-parking-layout.png": "logs/validation/GARAGE-DESIGN-02-hud-proof-1024/02-parking-layout.png",
+    "hud-proof-1024/03-slalom-layout.png": "logs/validation/GARAGE-DESIGN-02-hud-proof-1024/03-slalom-layout.png",
+    "hud-proof-1024/04-simulation-controls.png": "logs/validation/GARAGE-DESIGN-02-hud-proof-1024/04-simulation-controls.png",
+    "hud-proof-1024/07-recorded-result.png": "logs/validation/GARAGE-DESIGN-02-hud-proof-1024/07-recorded-result.png",
+    "hud-proof-1024/08-recorded-garage-return.png": "logs/validation/GARAGE-DESIGN-02-hud-proof-1024/08-recorded-garage-return.png",
+    "hud-brief-1280/02-brief-first-drive.png": "logs/validation/GARAGE-DESIGN-02-hud-brief-new-1280/02-brief-first-drive.png",
+    "hud-brief-1024/02-brief-first-drive.png": "logs/validation/GARAGE-DESIGN-02-hud-brief-new-1024/02-brief-first-drive.png",
+    "hud-actual/05-actual-drive-240.png": "logs/validation/GARAGE-DESIGN-02-hud-final-1280/05-actual-drive-240.png",
+    "hud-actual/06-actual-pause.png": "logs/validation/GARAGE-DESIGN-02-hud-final-1280/06-actual-pause.png",
+    "hud-actual/07-actual-result.png": "logs/validation/GARAGE-DESIGN-02-hud-final-1280/07-actual-result.png"
+  },
+  "omitted": "proof报告中的09旧简报图片不归档，由最后两画幅hud-brief的新预览代替；actual900拍图为稀疏相机采样，不当连续相机证据。"
+}

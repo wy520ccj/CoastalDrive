@@ -42,7 +42,7 @@ def capture(output, size, only=()):
     try:
         app.open_career()
         shot('01-events-new')
-        for event in ('slalom', 'parking', 'coastal-cup'):
+        for event in ('first-drive', 'slalom', 'parking', 'coastal-cup'):
             app.career_action('brief', event)
             shot('02-brief-'+event)
         result = CareerResult('first-drive', 8., elapsed=16.71, finished=True, succeeded=True, stars=3)

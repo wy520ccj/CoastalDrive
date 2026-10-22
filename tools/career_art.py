@@ -15,12 +15,15 @@ from panda3d.core import Filename
 from application import CoastalDrive
 from career import EVENTS
 from race import GameMode
+from vehicle_designs import vehicle_design
+from vehicle_workspace import WorkspaceVehicle
 
 
-def capture(output, events):
+def capture(output, events, design_id):
     output.mkdir(parents=True, exist_ok=False)
     os.environ['LOCALAPPDATA'] = str(output/'isolated-user')
-    app = CoastalDrive(smoke=True, output=output/'runtime', render_size=(1280, 720))
+    app = CoastalDrive(smoke=True, output=output/'runtime', render_size=(1280, 720),
+        workspace_vehicle=WorkspaceVehicle(design_id, vehicle_design(design_id).config))
     app.taskMgr.remove('finish-smoke')
     app.taskMgr.remove('drive-update')
     rows = []
@@ -52,13 +55,16 @@ def capture(output, events):
                 app.camera.setPos(car.position[0]+5.5, car.position[1]+8., car.position[2]+3.2)
                 app.camera.lookAt(car.position[0], car.position[1]+1., car.position[2]+.4)
             app.aspect2d.hide()
+            before = app.session.current
             for _ in range(8):
                 app.taskMgr.step()
             path = output/(event.id+'.png')
             app.win.getScreenshot().write(Filename.fromOsSpecific(str(path)))
+            assert app.session.current == before
             rows.append({'event': event.id, 'image': path.name, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
                          'initialisation_ticks': app.session.simulation.initialisation_ticks,
-                         'driving_steps': 0, 'tick': app.session.current.tick})
+                         'driving_steps': 0, 'tick': app.session.current.tick,
+                         'design_id': design_id, 'visual': app.vehicle_model_id})
         (output/'manifest.json').write_text(json.dumps({'source': 'CoastalDrive Panda3D renderer; existing project vehicles and roads',
             'process': 'Fixed camera capture with no UI; original PNGs copied without pixel edits', 'cases': rows},
             ensure_ascii=False, indent=2), encoding='utf-8')
@@ -71,5 +77,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--events', nargs='*')
+    parser.add_argument('--car', default='game-tuned')
     args = parser.parse_args()
-    capture(args.output.resolve(), args.events)
+    capture(args.output.resolve(), args.events, args.car)

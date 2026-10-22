@@ -1,0 +1,25 @@
+{
+  "baseline": "0ea945bf",
+  "files": {
+    "src/application.py": "bca0566d2463a66185e4b8e46273219cb81d028a31987f9c3c3e9e0c7de111a4",
+    "src/ui/hud.py": "ada6b5dc5a2827cf9473e819f3f5cddca5300496176e19287cb9372d733db524",
+    "src/ui/career_hud.py": "df2da92f62ed4c188212afd90d33a06c16701a801f447bbabd465acdca84f4be",
+    "tests/test_career_ui.py": "51dda84af1b99de43a83fbe9311e0ac7eefd7957b26602f0d0167f45d33d9b6b",
+    "tests/test_driving_mode_ui.py": "d7a00c63f11422e77f923933db56ead883c9a4532233ee54c33abc1e236e51ce",
+    "tests/test_ui_theme.py": "dadc80f9d05693149939f719e329732ed1a4bae94285636e5cd18bb7ca6fee1e",
+    "tools/career_hud_check.py": "e96d7d9772a6b7f7a057d90fa863fcd0dbc31e1d43cd8b0c26264269baff290d",
+    "tools/career_art.py": "09cf7641224232e4acf6389e39f9b749a12a12c7a187fd69fb89e87e9d3fb950",
+    "tools/career_design_capture.py": "9cc6ee43e7a3cdb169a8e1c31cdc0b3c5d5b26beee020de68a76ffe88e53edf7",
+    "docs/design/garage-v2/11-driving-hud.png": "a5880b2147a27bd2dbf456080d35a57d20f19eb9634ccf826882937382d7b6eb",
+    "docs/design/garage-v2/11-driving-hud-prompt.txt": "1b99a5b0f8ae5ff4b765cfec5ab1c0028496ecf15b4ff72b9477f8f5a912d595",
+    "assets/game/ui/career/coast-sprint.png": "de6ef72c02a547262abb12c7a6aff041394256a07aaf8783be6b45bc25e945ce",
+    "assets/game/ui/career/coastal-cup.png": "35d7f40c4af43852a44cd1c3a6d519dbd399a02baaa43d03587d22a8ec966c53",
+    "assets/game/ui/career/first-drive.png": "209e0a814dde2ab95ae523895083e141d886d6580207155fc660099ef287812f",
+    "assets/game/ui/career/parking.png": "e41edcf72a507f12056787c0b0ec41780146375b2446c7a478e3970dcd1fc831",
+    "assets/game/ui/career/Preview-License.txt": "af9b76e807196c0df112cfe34b9bd27cd61c1deed2222ff8ffcd04c363260205",
+    "assets/game/ui/career/preview-manifest.json": "a3860aac95899fa453a8e7320403beaec5ebbf4d705eb6219192a52f2f700ae4",
+    "assets/game/ui/career/ridge-run.png": "efe9a13377b3c3664d47c55acfebe3b7a92a721906dc842bf66e46a55301b46f",
+    "assets/game/ui/career/slalom.png": "d44cd405780a83f3c3b4e09e0faf3077921b0fc052930309bd068a22e15d5d06",
+    "assets/game/ui/career/source-manifest.json": "c7e4628efe32b7ca18fdd6bac53a8e160ca0c6ab50a65e77f9f8614576240f18"
+  }
+}

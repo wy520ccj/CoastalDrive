@@ -15,6 +15,7 @@ from slalom_lesson import SLALOM_MODES
 from sprint_routes import SPRINT_ROUTES
 from ui import theme
 from ui.braking_feedback import driving_feedback
+from ui.career_hud import CareerDrivingHUD
 from ui.overtake_feedback import driving_feedback as overtake_driving_feedback
 from ui.overtake_feedback import traffic_feedback
 from ui.race_feedback import split_feedback
@@ -44,7 +45,7 @@ def driving_help(mode, abs_label=None, tcs_label=None, esc_label=None):
 
 
 class DrivingHUD:
-    def __init__(self, parent, loader, body_font, number_font):
+    def __init__(self, parent, loader, body_font, number_font, career_action):
         self._active_rpm = None
         self._notice_source = None
         self._notice_height = None
@@ -136,9 +137,21 @@ class DrivingHUD:
         self.help = OnscreenText(parent=self.help_frame,
                                 text="W / ↑ 油门    S / ↓ 刹车·倒车    A D 转向    R 复位    C 视角    N 切台    M 音乐    Esc 暂停",
                                 font=body_font, fg=theme.PAPER_LIGHT, pos=(0, 0.009), scale=0.027, mayChange=True)
+        self.career = CareerDrivingHUD(self.root, body_font, number_font, career_action)
+        self._career_active = False
 
     def update(self, state, race, highway, *, track, countdown, notice,
                driving_mode=DrivingMode.GAME):
+        career_active = track == 'endless' and highway.career is not None
+        if career_active != self._career_active:
+            self._career_active = career_active
+            for widget in (self.status_frame, self.notice_frame, self.speed_frame, self.help_frame):
+                widget.hide() if career_active else widget.show()
+            self.career.root.show() if career_active else self.career.root.hide()
+        if career_active:
+            self.career.update(state.player, highway.career, notice=notice,
+                driving_mode=driving_mode, station=self._radio_station)
+            return
         player = state.player
         timed = ((track != "endless" and race.mode == GameMode.TIME_TRIAL)
                  or (track == "endless" and (race.mode in (*SLALOM_MODES, *OVERTAKE_ROUTES)
@@ -279,8 +292,10 @@ class DrivingHUD:
         self.status_frame.setX(-aspect + 0.075)
         self.notice_frame.setX(-aspect + 0.075)
         self.speed_frame.setX(aspect - 0.075)
+        self.career.resize(aspect)
 
     def destroy(self):
+        self.career.destroy()
         for widget in (self.status_frame, self.notice_frame, self.speed_frame, self.help_frame):
             widget.destroy()
         self.root.removeNode()

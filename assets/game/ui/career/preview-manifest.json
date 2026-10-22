@@ -1,0 +1,66 @@
+{
+  "source": "CoastalDrive Panda3D renderer; existing project vehicles and roads",
+  "process": "Fixed camera capture with no UI; original PNGs copied without pixel edits",
+  "cases": [
+    {
+      "event": "first-drive",
+      "image": "first-drive.png",
+      "sha256": "209e0a814dde2ab95ae523895083e141d886d6580207155fc660099ef287812f",
+      "initialisation_ticks": 132,
+      "driving_steps": 0,
+      "tick": 132,
+      "design_id": "game-tuned",
+      "visual": "sports"
+    },
+    {
+      "event": "parking",
+      "image": "parking.png",
+      "sha256": "e41edcf72a507f12056787c0b0ec41780146375b2446c7a478e3970dcd1fc831",
+      "initialisation_ticks": 132,
+      "driving_steps": 0,
+      "tick": 132,
+      "design_id": "game-tuned",
+      "visual": "sports"
+    },
+    {
+      "event": "slalom",
+      "image": "slalom.png",
+      "sha256": "d44cd405780a83f3c3b4e09e0faf3077921b0fc052930309bd068a22e15d5d06",
+      "initialisation_ticks": 132,
+      "driving_steps": 0,
+      "tick": 132,
+      "design_id": "game-tuned",
+      "visual": "sports"
+    },
+    {
+      "event": "coast-sprint",
+      "image": "coast-sprint.png",
+      "sha256": "de6ef72c02a547262abb12c7a6aff041394256a07aaf8783be6b45bc25e945ce",
+      "initialisation_ticks": 132,
+      "driving_steps": 0,
+      "tick": 132,
+      "design_id": "game-tuned",
+      "visual": "sports"
+    },
+    {
+      "event": "ridge-run",
+      "image": "ridge-run.png",
+      "sha256": "efe9a13377b3c3664d47c55acfebe3b7a92a721906dc842bf66e46a55301b46f",
+      "initialisation_ticks": 132,
+      "driving_steps": 0,
+      "tick": 132,
+      "design_id": "game-tuned",
+      "visual": "sports"
+    },
+    {
+      "event": "coastal-cup",
+      "image": "coastal-cup.png",
+      "sha256": "35d7f40c4af43852a44cd1c3a6d519dbd399a02baaa43d03587d22a8ec966c53",
+      "initialisation_ticks": 132,
+      "driving_steps": 0,
+      "tick": 132,
+      "design_id": "game-tuned",
+      "visual": "sports"
+    }
+  ]
+}

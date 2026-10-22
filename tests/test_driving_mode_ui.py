@@ -62,8 +62,7 @@ def test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics(tmp_pa
         assert app.session.driving_mode is DrivingMode.GAME
         assert app.session.simulation.input_config is DrivingMode.GAME.input_config
         assert [b["text"] for b in app.main_menu.buttons] == [
-            "计时挑战", "滨海自由驾驶", "高速与驾驶课题", "车库", "声音设置", "退出", "进入试验台  ›",
-            "海岸工坊  ›"]
+            "计时挑战", "滨海自由驾驶", "海岸生涯", "车库", "声音设置", "退出", "进入试验台  ›"]
         old_world = app.session.simulation
         app.messenger.send("f2")
         assert app.driving_mode_page and app.panel_option_count == 4

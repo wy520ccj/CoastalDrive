@@ -1,0 +1,115 @@
+{
+  "passed": true,
+  "size": [
+    1024,
+    768
+  ],
+  "captures": [
+    {
+      "image": "01-sprint-layout.png",
+      "fixture": true,
+      "result": {
+        "event_id": "first-drive",
+        "start_progress": 8.0,
+        "position": 4.8,
+        "elapsed": 2.0,
+        "passed": [],
+        "stopping_ticks": 0,
+        "parking_error": null,
+        "finished": false,
+        "succeeded": false,
+        "stars": 0,
+        "reason": ""
+      }
+    },
+    {
+      "image": "02-parking-layout.png",
+      "fixture": true,
+      "result": {
+        "event_id": "parking",
+        "start_progress": 8.0,
+        "position": 197.5,
+        "elapsed": 17.3,
+        "passed": [],
+        "stopping_ticks": 24,
+        "parking_error": null,
+        "finished": false,
+        "succeeded": false,
+        "stars": 0,
+        "reason": ""
+      }
+    },
+    {
+      "image": "03-slalom-layout.png",
+      "fixture": true,
+      "result": {
+        "event_id": "slalom",
+        "start_progress": 8.0,
+        "position": 300.0,
+        "elapsed": 25.0,
+        "passed": [
+          true,
+          false,
+          true
+        ],
+        "stopping_ticks": 0,
+        "parking_error": null,
+        "finished": false,
+        "succeeded": false,
+        "stars": 0,
+        "reason": ""
+      }
+    },
+    {
+      "image": "04-simulation-controls.png",
+      "fixture": true,
+      "result": {
+        "event_id": "first-drive",
+        "start_progress": 8.0,
+        "position": 4.8,
+        "elapsed": 2.0,
+        "passed": [],
+        "stopping_ticks": 0,
+        "parking_error": null,
+        "finished": false,
+        "succeeded": false,
+        "stars": 0,
+        "reason": ""
+      }
+    },
+    {
+      "image": "07-recorded-result.png",
+      "fixture": false,
+      "result": null
+    },
+    {
+      "image": "08-recorded-garage-return.png",
+      "fixture": false,
+      "result": null
+    },
+    {
+      "image": "09-recorded-brief-return.png",
+      "fixture": false,
+      "result": null
+    }
+  ],
+  "new_driving_steps": 0,
+  "result": {
+    "event_id": "first-drive",
+    "start_progress": 8.0,
+    "position": 400.33453369140625,
+    "elapsed": 16.233333333333054,
+    "passed": [],
+    "stopping_ticks": 0,
+    "parking_error": null,
+    "finished": true,
+    "succeeded": true,
+    "stars": 3,
+    "reason": "完成赛事。"
+  },
+  "display_worlds": 0,
+  "reused_actual_run": "logs\\validation\\GARAGE-DESIGN-02-hud-final-1280\\actual-drive.json.gz",
+  "windows_after_first_draw": 3,
+  "windows_after_navigation": 4,
+  "scope": "前四图为只读HUD夹具；可选一次真实GR86全油门400米/原世界暂停恢复/实际领奖与车库往返；采图不推进物理，不替代人工审美或完整阶段性能"
+}

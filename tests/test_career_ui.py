@@ -4,7 +4,7 @@ import time
 from dataclasses import replace
 
 import pytest
-from panda3d.core import Point2
+from panda3d.core import Point2, Point3
 
 from application import CoastalDrive
 from career import EVENT_BY_ID, PART_BY_ID, CareerProgress
@@ -242,6 +242,63 @@ def test_pause_retry_and_return_keep_original_world_until_explicit_restart(app):
     app.return_from_test_drive()
     assert app.career_panel.page == 'board' and app.session.phase == Phase.MENU
     assert app.career_progress.stars == 0 and not app.career_progress.path.exists()
+
+
+def test_driving_hud_reads_current_event_and_pause_button_keeps_the_world(app):
+    app.career_action('start', 'first-drive')
+    app.refresh_panel()
+    app.hud.resize(16/9)
+    before, simulation = app.session.current, app.session.simulation
+    app.hud.update(before, app.session.race.snapshot, app.session.highway.snapshot,
+        track='endless', countdown='', notice='', driving_mode=app.session.driving_mode)
+    view = app.hud.career
+    assert not view.root.isHidden() and app.hud.status_frame.isHidden()
+    assert app.lab_return_button.isHidden()
+    assert view.title.getText() == '海岸初驶'
+    assert view.goal_text.getText() == '三星目标 27 秒'
+    assert view.timer.getText() == '00:00.00'
+    assert app.session.current == before
+    view.pause['command'](*view.pause['extraArgs'])
+    assert app.session.phase == Phase.PAUSED and app.career_panel.page == 'pause'
+    assert app.session.simulation is simulation and app.session.current == before
+    app.career_action('resume')
+    assert app.session.phase == Phase.COUNTDOWN and app.session.simulation is simulation
+    assert app.session.current == before
+
+
+def test_driving_hud_event_details_and_two_aspects_do_not_write_or_leave_old_panels(app):
+    app.career_action('start', 'first-drive')
+    app.refresh_panel()
+    before, vehicle = app.session.current, app.workspace_vehicle
+    view = app.hud.career
+    for event_id in EVENT_BY_ID:
+        event = EVENT_BY_ID[event_id]
+        result = CareerResult(event_id, 8., position=event.distance*.4, elapsed=65.25,
+                              passed=(True, False) if event.kind == 'slalom' else (), stopping_ticks=24)
+        highway = replace(app.session.highway.snapshot, career=result)
+        app.hud.update(before, app.session.race.snapshot, highway, track='endless', countdown='', notice='')
+        assert view.title.getText() == event.name and view.timer.getText() == '01:05.25'
+        assert view.primary.getText() == ('1/5' if event.kind == 'slalom' else '120 m' if event.kind == 'parking' else '40%')
+        if event.kind == 'parking':
+            assert '0.2 秒' in view.detail.getText() and '3 米' in view.goal_text.getText()
+        for aspect in (16/9, 4/3):
+            app.hud.resize(aspect)
+            for card in (view.status, view.goal, view.hints, view.speed_card, view.pause):
+                left, right, bottom, top = card['frameSize']
+                low = app.aspect2d.getRelativePoint(card, Point3(left, 0, bottom))
+                high = app.aspect2d.getRelativePoint(card, Point3(right, 0, top))
+                assert -aspect <= low.x < high.x <= aspect
+                assert -1 <= low.z < high.z <= 1
+            hint_high = app.aspect2d.getRelativePoint(view.hints, Point3(view.hints['frameSize'][1], 0, 0))
+            speed_low = app.aspect2d.getRelativePoint(view.speed_card, Point3(0, 0, 0))
+            assert hint_high.x < speed_low.x
+    assert app.session.current == before and app.workspace_vehicle == vehicle
+    assert app.career_progress.credits == 0 and not app.career_progress.path.exists()
+    app.hud.update(before, app.session.race.snapshot, replace(highway, career=None),
+        track='endless', countdown='', notice='')
+    assert view.root.isHidden()
+    assert all(not widget.isHidden() for widget in
+               (app.hud.status_frame, app.hud.notice_frame, app.hud.speed_frame, app.hud.help_frame))
 
 
 def test_redesigned_pages_keep_keyboard_actions_and_resize_without_writing_progress(app, monkeypatch):

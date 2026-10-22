@@ -534,6 +534,10 @@ class CoastalDrive(ShowBase):
             self.back_to_menu()
             self._shown_phase = None
             self.refresh_panel()
+        elif action == 'pause':
+            self.session.pause()
+            self._shown_phase = None
+            self.refresh_panel()
         elif action == 'resume':
             self.career_panel.hide()
             self.driving_keys_held.clear()
@@ -1183,7 +1187,7 @@ class CoastalDrive(ShowBase):
         self.display_font = theme.load_font(theme.DISPLAY_FONT_FILE)
         if self.startup_trace is not None:
             self.startup_trace.mark("display_font_loaded")
-        self.hud = DrivingHUD(self.aspect2d, self.loader, self.ui_font, self.display_font)
+        self.hud = DrivingHUD(self.aspect2d, self.loader, self.ui_font, self.display_font, self.career_action)
         self.countdown = Countdown(self.aspect2d)
         self.status_frame = self.hud.status_frame
         self.status = self.hud.status
@@ -1833,6 +1837,7 @@ class CoastalDrive(ShowBase):
         self._shown_phase = panel_state
         self.lab_return_button['text'] = ('返回赛事' if self.career_active else
                                         '返回海岸工坊' if self.workshop_garage_return else '返回实验台')
+        self.lab_return_button.hide() if self.career_active else self.lab_return_button.show()
         self.driving_cards.hide()
         self.panel_title.show()
         self.panel.setScale(1.)
