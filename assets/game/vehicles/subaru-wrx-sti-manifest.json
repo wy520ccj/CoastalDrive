@@ -1,8 +1,8 @@
 {
   "source": "art\\vehicles\\subaru_wrx_sti.glb",
-  "source_sha256": "67bbaa71f5584b75354be77dd20653eba4b57e2e8e65f9cff603e7972de83a55",
+  "source_sha256": "f17f5545424dc4501930ba7d5bcb6b7e18abb908cb347a112b2e9334e5f035b7",
   "output": "assets\\game\\vehicles\\subaru_wrx_sti.bam",
-  "output_sha256": "2ace24962f9491832b50a831bea8bbb50fbe6a1b88f724539ae403e2e4887772",
+  "output_sha256": "4a2c5398a2213b5832163d18cdf22371f6ccdf562ba1b9bd288cfcd4212fc8e9",
   "triangles": 157165,
   "author": "lubomircenovsky",
   "license": "CC-BY-SA-3.0",

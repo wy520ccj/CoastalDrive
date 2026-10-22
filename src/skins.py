@@ -34,7 +34,7 @@ SKINS = (
 # 全部车型集中描述；质量等级只决定资产表现，不改变车辆物理。
 VEHICLES = (
     VehicleDefinition(
-        "sports", "经典双门 · 游戏调校", "vehicles/classic_coupe_v1.glb", "hero", True, False
+        "sports", "Subaru BRZ · 项目调校", "vehicles/subaru_brz.bam", "hero", True, False
     ),
     VehicleDefinition(
         "sedan",
@@ -145,7 +145,7 @@ def apply_skin(model, index):
     material.setName("vehicle-paint")
     quality = model.getPythonTag("vehicle-quality") or "legacy"
     material.setBaseColor(Vec4(*paint_color(index, quality=quality), 1))
-    concept = model.getName() in ('car-concept', 'club-coupe', 'racing-hatch', 'subaru-wrx-sti')
+    concept = model.getName() in ('car-concept', 'club-coupe', 'racing-hatch', 'subaru-wrx-sti', 'subaru-brz')
     material.setRoughness(.12 if concept else {"hero": 0.32, "traffic": 0.36}.get(quality, 0.45))
     material.setMetallic(.65 if concept else 0)
     for part in model.findAllMatches("**/paint"):

@@ -1,0 +1,52 @@
+{
+  "uid": "8fecd93279644ada9111c5bfa2226327",
+  "name": "Subaru BRZ Varis",
+  "license": {
+    "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+    "label": "CC Attribution",
+    "fullName": "Creative Commons Attribution",
+    "requirements": "Author must be credited. Commercial use is allowed.",
+    "url": "http://creativecommons.org/licenses/by/4.0/",
+    "slug": "by"
+  },
+  "user": {
+    "uid": "3e37bac2927849f99d99a68c9f76e848",
+    "username": "Socksthecat",
+    "displayName": "Socksthecat",
+    "account": "basic",
+    "profileUrl": "https://sketchfab.com/Socksthecat",
+    "avatar": {
+      "uid": "bb21f3acbd78404aab920f404958cf50",
+      "uri": "https://api.sketchfab.com/v3/avatars/bb21f3acbd78404aab920f404958cf50",
+      "images": [
+        {
+          "width": 32,
+          "height": 32,
+          "size": 2462,
+          "url": "https://media.sketchfab.com/avatars/bb21f3acbd78404aab920f404958cf50/f1bd804398d142c1be3d79b04735c257.png"
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "size": 4841,
+          "url": "https://media.sketchfab.com/avatars/bb21f3acbd78404aab920f404958cf50/8720bbc34ec8488998f3c84c722de71b.png"
+        },
+        {
+          "width": 90,
+          "height": 90,
+          "size": 14532,
+          "url": "https://media.sketchfab.com/avatars/bb21f3acbd78404aab920f404958cf50/3bfb82ec5c4d412298a1efcf5ba46e3b.png"
+        },
+        {
+          "width": 100,
+          "height": 100,
+          "size": 17366,
+          "url": "https://media.sketchfab.com/avatars/bb21f3acbd78404aab920f404958cf50/94397e456c0f44eb8a04958eb1ca3969.png"
+        }
+      ]
+    },
+    "uri": "https://api.sketchfab.com/v3/users/3e37bac2927849f99d99a68c9f76e848"
+  },
+  "description": "",
+  "publishedAt": "2017-12-14T14:03:41.304631"
+}

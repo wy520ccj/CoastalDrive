@@ -11,7 +11,10 @@
 | ToyCar | Khronos glTF Sample Assets；CC0 | 玩具车用途，不拿来替换真实可驾驶车型 |
 | HI掀背 | stuntrally/blendfiles/cars/HI；ANDREO12；about.txt标CC-BY-4.0 | 已接入Hyundai i20，96542三角形、原内饰/灯组/轮胎贴图；替换H1显示资源，沿用原coastal-hatch存档及参数，非Hyundai原厂标定 |
 | FR4 | stuntrally/blendfiles/cars/FR4；computergeekman；CC-BY-SA | 已取得候选，许可具体版本和实际画面仍待核对，尚未使用 |
-| S8 | stuntrally/blendfiles/cars/S8；lubomircenovsky；CC-BY-SA-3.0 | 已取得候选，源文件含备用网格与参考图，需明确提取范围，尚未使用 |
+| S8 | stuntrally/blendfiles/cars/S8；lubomircenovsky；CC-BY-SA-3.0 | 已接入第7款Subaru WRX STI，5星解锁；157165源三角形，原件与同许可衍生文件随库保留；后灯独立材质分区已修复 |
+| SX | stuntrally/blendfiles/cars/SX；Socksthecat；CC-BY-4.0 | 已替换默认经典车为Subaru BRZ Varis，103071三角形；实际作者API确认车身及原S15轮来源均CC-BY-4.0，保留原game-tuned硬件与存档键，其他工程参考车仍用原模型 |
+| Opel GT | https://blendswap.com/blend/6919；rogper / Rogério Perdiz；CC0 | 作者页及本人评论确认公共领域；官方免费下载页要求登录，尚未取得源文件，不提前接入；避免混用作者后来另售的116MB商业版本 |
+| VDrift Elise / S2000 | VDrift数据镜像逐车about只有作者信息 | 没有取得明确的逐模型许可，不使用；不因游戏代码开放而推断素材开放 |
 
 BMW实际源场景下载：<https://download.blender.org/demo/test/BMW27.blend.zip>；作者：<https://mikepan.com/bmw.html>；模型许可目录：<https://casual-effects.com/g3d/data10/index.html>。
 

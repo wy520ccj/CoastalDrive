@@ -62,12 +62,15 @@ def prepare():
     }
     transform = Matrix.Rotation(-math.pi/2, 4, 'Z')@Matrix.Rotation(math.pi, 4, 'X')
     for name, mesh in records:
+        face_materials = [face.material_index for face in mesh.polygons]
         for layer in tuple(mesh.color_attributes):
             mesh.color_attributes.remove(layer)
         mesh.transform(transform)
         mesh.materials.clear()
         for entry in materials[name]:
             mesh.materials.append(entry)
+        for face, index in zip(mesh.polygons, face_materials, strict=True):
+            face.material_index = index
         obj = bpy.data.objects.new(name, mesh)
         obj.parent = root
         scene.collection.objects.link(obj)

@@ -1,0 +1,167 @@
+[
+  {
+    "path": "art/vehicles/sources/subaru-brz/2c3481e502c24d818d23a5eb2be8dac9-source.json",
+    "sha256": "b7f29695a3c32d88d94d9f56b1ace560d123b73d5e573a9aa3b55f34ccacfc50",
+    "size": 1884
+  },
+  {
+    "path": "art/vehicles/sources/subaru-brz/8fecd93279644ada9111c5bfa2226327-source.json",
+    "sha256": "262c2e96fd1cb36b32cf285840e1814fd8fff6fb11f8623bdcc5826285507306",
+    "size": 1876
+  },
+  {
+    "path": "art/vehicles/sources/subaru-brz/about.txt",
+    "sha256": "f48c21a18176b54209f9afa184dfc401db6741bd7453b77760f72c01ca22f755",
+    "size": 361
+  },
+  {
+    "path": "art/vehicles/sources/subaru-brz/LICENSE.txt",
+    "sha256": "086760abc181910256dbc6498d014889b58e3b49f49e5daf1150095064312dc2",
+    "size": 1363
+  },
+  {
+    "path": "art/vehicles/sources/subaru-brz/sx.blend",
+    "sha256": "78aa9ceaad97ee0c9a8349881c229f076a367a1920f91f19f4717a6171945f12",
+    "size": 12381212
+  },
+  {
+    "path": "art/vehicles/sources/subaru-brz/SX_body_red.png",
+    "sha256": "740f72aa3e010c7d38f1c5e86679eeb526c581b3d990a8b7e77920d83aa6d4f1",
+    "size": 434602
+  },
+  {
+    "path": "art/vehicles/sources/subaru-brz/SX_exterior.png",
+    "sha256": "b71db034de17d2d453f4060edbde38b98379651dc4ce88646707e6cd9a789dcc",
+    "size": 503482
+  },
+  {
+    "path": "art/vehicles/sources/subaru-brz/SX_glass.png",
+    "sha256": "0693c46c00da64b7b115f78486e16df051cf1772fd965d163a3799943c64ddeb",
+    "size": 183
+  },
+  {
+    "path": "art/vehicles/sources/subaru-brz/SX_interior.png",
+    "sha256": "e66d56a1441101aa25a6f63183c73f7bdee3820b17f7bc7e8b4593a929024183",
+    "size": 521581
+  },
+  {
+    "path": "art/vehicles/sources/subaru-brz/SX_wheel.png",
+    "sha256": "6bba8073978cf74a3283dbb7adb18c120c08976d7e826ac4991d9299549172d5",
+    "size": 373767
+  },
+  {
+    "path": "art/vehicles/sources/subaru-brz/SX_wheel_refl.png",
+    "sha256": "07553c62129c5974cf6a61d3edfebed48b882c14610e1d305c1575cd5acda5aa",
+    "size": 8941
+  },
+  {
+    "path": "art/vehicles/sources/subaru-brz/SX_wheel_spec.png",
+    "sha256": "99ea322057794d5ddbcda200912121458b31481f9bbd37783d6f6fc5c5a23ca9",
+    "size": 8844
+  },
+  {
+    "path": "art/vehicles/sources/subaru-brz/wheel.blend",
+    "sha256": "99f435c44e914a37fd92ddca14622be5f6135bd50f3198f46fee969b2eb8419d",
+    "size": 2515124
+  },
+  {
+    "path": "art/vehicles/brz-fit.json",
+    "sha256": "b05d6debe48b64c9d8435c0d5c72c1c4d2e968bbe6d7a63576507514c3104461",
+    "size": 5409
+  },
+  {
+    "path": "art/vehicles/brz-source.json",
+    "sha256": "3d09801fae946cd74ab78b93e0c2309ff4baef4e0c56fc84c02a680a28f58b9c",
+    "size": 877
+  },
+  {
+    "path": "art/vehicles/brz-body-ao.png",
+    "sha256": "40d3a035f1c52dc45d01691572bec8a204142a77e948ab30884c6b6cbb6ab56d",
+    "size": 458976
+  },
+  {
+    "path": "art/vehicles/subaru_brz.blend",
+    "sha256": "8168966272fa63631e57eeeda39120e4528a0ea205c6235c05d5aab752041322",
+    "size": 11583924
+  },
+  {
+    "path": "art/vehicles/subaru_brz.glb",
+    "sha256": "022ae9fce9386bca2ef75c024013421d6667a0cebf7fe29e09b4644bb0a07ae0",
+    "size": 5232720
+  },
+  {
+    "path": "tools/blender/prepare_brz.py",
+    "sha256": "d93921f7ccccc63f3796beda4c882c140870c4aea3b016a1c30223221dfbe803",
+    "size": 8075
+  },
+  {
+    "path": "tools/vehicles/prepare_brz.py",
+    "sha256": "2dfe9819b462116087e35a142ac364db8841e271fc12a47df175bbe52c5ca2d6",
+    "size": 2374
+  },
+  {
+    "path": "tools/blender/prepare_subaru.py",
+    "sha256": "f2b9bbe93470007442be7ec0a030b76fd071a1cd0f60baee1a2285c9951695df",
+    "size": 6647
+  },
+  {
+    "path": "art/vehicles/subaru-source.json",
+    "sha256": "f4e1276b1eca7cd47c5db9f816e66ecef49499429a75cd8e18de071b7904172d",
+    "size": 748
+  },
+  {
+    "path": "art/vehicles/subaru_wrx_sti.blend",
+    "sha256": "ea01159bc1ea703b87c0428cd2f1502e364f463b7959a2ca5e6e29a01d06879d",
+    "size": 3322417
+  },
+  {
+    "path": "art/vehicles/subaru_wrx_sti.glb",
+    "sha256": "f17f5545424dc4501930ba7d5bcb6b7e18abb908cb347a112b2e9334e5f035b7",
+    "size": 4045432
+  },
+  {
+    "path": "assets/game/vehicles/subaru_brz.bam",
+    "sha256": "36b8840ef85f959b56b61b810749ee4cf10c85ac36738c8ee8e4e47342aa8718",
+    "size": 19774512
+  },
+  {
+    "path": "assets/game/vehicles/brz-manifest.json",
+    "sha256": "6d9fd51abd2ab4876836e4f3ccace3966a0be1e020cf61e7efdff232bcea6552",
+    "size": 561
+  },
+  {
+    "path": "assets/game/vehicles/Subaru-BRZ-License.txt",
+    "sha256": "086760abc181910256dbc6498d014889b58e3b49f49e5daf1150095064312dc2",
+    "size": 1363
+  },
+  {
+    "path": "assets/game/ui/garage-v2/car-game-tuned.png",
+    "sha256": "a6a9d73e61b507d3350afd2556fefb059a90edb8cbf2b4bbedcd17372f365f7c",
+    "size": 97947
+  },
+  {
+    "path": "assets/game/ui/garage-v2/contact-shadow-brz.png",
+    "sha256": "674259bdcfdea00a8e41edf8d2a463b753a32c3c8b99834de3516420fd3d5bb0",
+    "size": 97334
+  },
+  {
+    "path": "assets/game/vehicles/subaru_wrx_sti.bam",
+    "sha256": "4a2c5398a2213b5832163d18cdf22371f6ccdf562ba1b9bd288cfcd4212fc8e9",
+    "size": 10369049
+  },
+  {
+    "path": "assets/game/vehicles/subaru-wrx-sti-manifest.json",
+    "sha256": "a95327fdf266f30573e5e4f39be50c147383eda3ba25e3654076b3d766b10787",
+    "size": 579
+  },
+  {
+    "path": "assets/game/ui/garage-v2/car-subaru-wrx-sti.png",
+    "sha256": "278f70ac43c2d6380aa1509888a278688c3eaeea885beb72a6a0e553b9fb847e",
+    "size": 101364
+  },
+  {
+    "path": "assets/game/ui/garage-v2/contact-shadow-subaru.png",
+    "sha256": "8ca1bc6cb3752dd525a66e7c734c10609a9e1f54bef17695d1010e5e9e634c2e",
+    "size": 98483
+  }
+]

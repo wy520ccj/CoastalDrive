@@ -3,7 +3,7 @@
   "license": "CC-BY-SA-3.0",
   "source": "https://github.com/stuntrally/blendfiles/blob/master/cars/S8/wrx_08.blend",
   "source_sha256": "c2889c719d9ccdeeb9fae7bc4d80aedb8d4ff1013a98103540d91c0b5c14a988",
-  "output_sha256": "67bbaa71f5584b75354be77dd20653eba4b57e2e8e65f9cff603e7972de83a55",
+  "output_sha256": "f17f5545424dc4501930ba7d5bcb6b7e18abb908cb347a112b2e9334e5f035b7",
   "source_geometry": [
     "S8_body",
     "S8_glass",

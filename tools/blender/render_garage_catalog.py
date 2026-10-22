@@ -123,7 +123,9 @@ def main():
         if selected and name not in selected:
             continue
         scene, camera = setup(384, 216)
-        if name == 'subaru-wrx-sti':
+        if name == 'game-tuned':
+            path = ROOT/'art/vehicles/subaru_brz.glb'
+        elif name == 'subaru-wrx-sti':
             path = ROOT/'art/vehicles/subaru_wrx_sti.glb'
         elif name == 'club-coupe':
             path = ROOT/'art/vehicles/club_coupe.glb'
@@ -138,6 +140,8 @@ def main():
             (-1, -1.6, .8) if filename is None else (1, 1.6, .8))
         output(scene, 'car-'+name)
     if selected:
+        if 'game-tuned' in selected:
+            render_shadow('contact-shadow-brz', ROOT/'art/vehicles/subaru_brz.glb')
         if 'subaru-wrx-sti' in selected:
             render_shadow('contact-shadow-subaru', ROOT/'art/vehicles/subaru_wrx_sti.glb')
         if 'club-coupe' in selected:

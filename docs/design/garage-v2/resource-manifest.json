@@ -27,8 +27,8 @@
     },
     {
       "path": "assets/game/ui/garage-v2/car-game-tuned.png",
-      "sha256": "d26df8efc252eff546468a76c3d493ed52baa075b5ca12da5d28de444e99e807",
-      "size": 100627
+      "sha256": "a6a9d73e61b507d3350afd2556fefb059a90edb8cbf2b4bbedcd17372f365f7c",
+      "size": 97947
     },
     {
       "path": "assets/game/ui/garage-v2/car-gr86-2022-premium-6mt.png",
@@ -142,12 +142,12 @@
     },
     {
       "path": "assets/game/vehicles/subaru_wrx_sti.bam",
-      "sha256": "2ace24962f9491832b50a831bea8bbb50fbe6a1b88f724539ae403e2e4887772",
-      "size": 10171978
+      "sha256": "4a2c5398a2213b5832163d18cdf22371f6ccdf562ba1b9bd288cfcd4212fc8e9",
+      "size": 10369049
     },
     {
       "path": "assets/game/vehicles/subaru-wrx-sti-manifest.json",
-      "sha256": "465e12c18568462c8c516d559ae8f8103718e1e442142b3c70170bc8159e3ad5",
+      "sha256": "a95327fdf266f30573e5e4f39be50c147383eda3ba25e3654076b3d766b10787",
       "size": 579
     },
     {
@@ -157,13 +157,33 @@
     },
     {
       "path": "assets/game/ui/garage-v2/car-subaru-wrx-sti.png",
-      "sha256": "1eada0a888ed84d974fc4b916241e4c0053664b160e62d50fdc3515a100bcfea",
-      "size": 101360
+      "sha256": "278f70ac43c2d6380aa1509888a278688c3eaeea885beb72a6a0e553b9fb847e",
+      "size": 101364
     },
     {
       "path": "assets/game/ui/garage-v2/contact-shadow-subaru.png",
-      "sha256": "20ac75a72c97d7d25e8a2d4dc4a0807adbd41af99909423e5544cb963f61f5ab",
-      "size": 98503
+      "sha256": "8ca1bc6cb3752dd525a66e7c734c10609a9e1f54bef17695d1010e5e9e634c2e",
+      "size": 98483
+    },
+    {
+      "path": "assets/game/vehicles/subaru_brz.bam",
+      "sha256": "36b8840ef85f959b56b61b810749ee4cf10c85ac36738c8ee8e4e47342aa8718",
+      "size": 19774512
+    },
+    {
+      "path": "assets/game/vehicles/brz-manifest.json",
+      "sha256": "6d9fd51abd2ab4876836e4f3ccace3966a0be1e020cf61e7efdff232bcea6552",
+      "size": 561
+    },
+    {
+      "path": "assets/game/vehicles/Subaru-BRZ-License.txt",
+      "sha256": "086760abc181910256dbc6498d014889b58e3b49f49e5daf1150095064312dc2",
+      "size": 1363
+    },
+    {
+      "path": "assets/game/ui/garage-v2/contact-shadow-brz.png",
+      "sha256": "674259bdcfdea00a8e41edf8d2a463b753a32c3c8b99834de3516420fd3d5bb0",
+      "size": 97334
     }
   ],
   "generated_background_source": "exec-aa329be9-5774-4f9a-888c-34cf71f3979b.png",

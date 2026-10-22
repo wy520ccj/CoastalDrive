@@ -3,7 +3,7 @@
 from dataclasses import replace
 
 import pytest
-from panda3d.core import NodePath
+from panda3d.core import MaterialAttrib, NodePath
 
 from career_garage import (
     CAR_BY_DESIGN,
@@ -74,6 +74,11 @@ def test_new_models_load_with_configured_body_and_four_independent_wheels(design
     body, wheels = load_vehicle(parent, definition, config=config)
     assert len(wheels) == 4 and len({wheel.getName() for wheel in wheels}) == 4
     assert not body.find('**/paint').isEmpty()
+    if design_id == 'subaru-wrx-sti':
+        # 源后灯是独立贴图分区，转换材质时不能把它归到内饰图上。
+        names = {state.getAttrib(MaterialAttrib).getMaterial().getName()
+                 for part in body.findAllMatches('**/+GeomNode') for state in part.node().getGeomStates()}
+        assert 'Rear lamps' in names
     low, high = body.getTightBounds(parent)
     if definition.id in ('coastal-hatch', 'coastal-gt', 'club-coupe', 'subaru-wrx-sti'):
         # 外购低矮车身按轮拱装配，后视镜允许伸出不含镜片的车身碰撞盒。

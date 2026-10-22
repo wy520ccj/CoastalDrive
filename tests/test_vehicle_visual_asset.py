@@ -65,26 +65,21 @@ def test_export_has_distinct_materials_and_bounded_geometry():
         for geom, state in zip(node.getGeoms(), node.getGeomStates()):
             material = state.getAttrib(MaterialAttrib).getMaterial()
             materials.add(material.getName())
-            if material.getName() == "Tire Rubber":
-                assert material.getRoughness() >= 0.85
-                assert material.getMetallic() == 0
             if material.getName() == "Blue Grey Glass":
                 assert material.getBaseColor().z > material.getBaseColor().x
             triangles += sum(p.decompose().getNumPrimitives() for p in geom.getPrimitives())
     assert {
         "Body Paint",
         "Blue Grey Glass",
-        "Satin Black Plastic",
-        "Tire Rubber",
-        "Brushed Wheel Metal",
-        "Tail Light",
-        "Head Light",
+        "Exterior lamps and trim",
+        "Cabin upholstery",
+        "Source wheel and tire",
     } <= materials
     manifest = json.loads(
-        (resource_root() / "assets/game/vehicles/classic-coupe-manifest.json").read_text()
+        (resource_root() / "assets/game/vehicles/brz-manifest.json").read_text()
     )
     assert triangles == manifest["triangles"]
-    assert triangles <= manifest["triangle_budget"]
+    assert 50000 < triangles <= 200000
 
 
 def test_legacy_sedan_keeps_body_and_wheel_geometry():
