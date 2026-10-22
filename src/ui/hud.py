@@ -5,6 +5,7 @@ from panda3d.core import TextNode, TransparencyAttrib
 
 from audio.music import STATIONS
 from braking_lesson import BRAKING_MODES
+from career import EVENT_BY_ID
 from coastal_medals import driving_goal
 from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
@@ -190,7 +191,17 @@ class DrivingHUD:
             distance = f"{highway.distance:.0f} / {highway.target:.0f} m" if highway.challenge else f"{highway.distance / 1000:.2f} km"
             set_text(self.detail, f"距离 {distance}\n碰撞 {highway.collisions} 次")
             message = "无碰撞行驶中" if highway.collisions == 0 else f"碰撞 {highway.collisions} 次"
-            if highway.overtake is not None:
+            if highway.career is not None:
+                result = highway.career
+                event = EVENT_BY_ID[result.event_id]
+                set_text(self.mode, event.name)
+                detail = (f'停车区 {event.distance:g}米 · 距中心 {abs(result.position-event.distance):.0f}米'
+                          if event.kind == 'parking' else
+                          f'通过 {sum(result.passed)} / 5 门 · 漏门可以继续' if event.kind == 'slalom' else
+                          f'距终点 {max(0, event.distance-result.position):.0f} 米')
+                set_text(self.detail, detail)
+                message = event.tip
+            elif highway.overtake is not None:
                 route = OVERTAKE_ROUTES[race.mode]
                 set_text(self.mode, route.title)
                 detail, feedback = overtake_driving_feedback(highway.overtake)

@@ -29,6 +29,7 @@ from panda3d.core import (
 )
 
 from braking_markers import BrakingMarkers
+from career_markers import CareerMarkers
 from coastal_map import (
     MAP_POINTS,
     RAIL_OFFSET,
@@ -276,6 +277,7 @@ class Scene:
         self.setup_scene()
         self.braking_markers = BrakingMarkers(self.render, base.ui_font, self.sun_path)
         self.slalom_markers = SlalomMarkers(self.render, base.ui_font, self.sun_path)
+        self.career_markers = CareerMarkers(self.render, base.ui_font, self.sun_path)
         self.sprint_markers = SprintMarkers(self.render, base.ui_font, self.sun_path)
         self.overtake_markers = OvertakeMarkers(self.render, base.ui_font, self.sun_path)
         self.sky = make_sky(base, self.render, coastal=base.session.simulation.track == "coastal")
@@ -673,6 +675,7 @@ class Scene:
     def apply(self, state):
         self.braking_markers.apply(self.base.session.highway.snapshot.braking, state.origin_y)
         self.slalom_markers.apply(self.base.session.highway.snapshot.slalom, state.origin_y)
+        self.career_markers.apply(self.base.session.highway.snapshot.career, self.base.session.simulation.road)
         self.sprint_markers.apply(self.base.session.highway.snapshot.sprint, self.base.session.simulation.road)
         self.overtake_markers.apply(self.base.session.highway.snapshot.overtake, self.base.session.simulation.road)
         self.sky.setPos(*state.player.position)

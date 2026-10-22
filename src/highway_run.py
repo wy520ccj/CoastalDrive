@@ -3,6 +3,8 @@
 from dataclasses import dataclass, replace
 
 from braking_lesson import TARGET_DISTANCE, BrakingLesson, BrakingResult
+from career import EVENT_BY_ID
+from career_run import CareerResult, CareerRun
 from overtake_run import OvertakeResult, OvertakeRun
 from race import GameMode
 from short_braking import MAX_DISTANCE, ShortBraking
@@ -39,6 +41,7 @@ class HighwayResult:
     slalom: SlalomResult | None = None
     sprint: SprintResult | None = None
     overtake: OvertakeResult | None = None
+    career: CareerResult | None = None
 
 
 class HighwayRun:
@@ -49,13 +52,18 @@ class HighwayRun:
         self.slalom = None
         self.sprint = None
         self.overtake = None
+        self.career = None
 
     def start(self, progress, *, challenge=False, braking_scores=None, slalom_scores=None, vehicle_config=None,
               sprint_mode=None, sprint_scores=None, score_variant="", overtake_initial=None, overtake_scores=None,
               overtake_mode=GameMode.SAFE_OVERTAKE, overtake_road=None, fast_slalom=False, short_braking=False,
-              practice_slalom=False):
+              practice_slalom=False, career_event_id=None):
         self._start = progress
         self.snapshot = HighwayResult(challenge=challenge, running=True)
+        self.career = None if career_event_id is None else CareerRun(career_event_id, progress, vehicle_config)
+        if self.career is not None:
+            self.snapshot = replace(self.snapshot, challenge=True, target=EVENT_BY_ID[career_event_id].distance,
+                                    career=self.career.snapshot)
         self.braking = None if braking_scores is None else BrakingLesson(progress, braking_scores)
         if braking_scores is not None and short_braking:
             self.braking = ShortBraking(progress, braking_scores)
@@ -78,6 +86,13 @@ class HighwayRun:
     def update(self, progress, collisions, dt, *, reset=False, forward_speed=0., speed=0., lateral=0., heading=0., traffic_state=None):
         state = self.snapshot
         if not state.running:
+            return
+        if self.career is not None:
+            result = self.career.update(progress, state.elapsed+dt, lateral=lateral, heading=heading,
+                                        speed=speed, collisions=collisions, reset=reset)
+            self.snapshot = replace(state, elapsed=result.elapsed, distance=result.position, collisions=collisions,
+                career=result, finished=result.finished, running=not result.finished,
+                succeeded=result.succeeded, reason=result.reason)
             return
         if self.overtake is not None:
             result = self.overtake.update(traffic_state, state.elapsed+dt, reset=reset)
@@ -125,6 +140,9 @@ class HighwayRun:
 
     def stop(self, reason="驾驶已结束", *, succeeded=False):
         if not self.snapshot.finished:
+            if self.career is not None:
+                self.career.stop(reason)
+                self.snapshot = replace(self.snapshot, career=self.career.snapshot)
             if self.overtake is not None:
                 self.overtake.stop(reason, succeeded=succeeded)
                 self.snapshot = replace(self.snapshot, overtake=self.overtake.snapshot)

@@ -395,9 +395,10 @@ class SessionProcess:
         self.received_impacts.clear()
         return replace(state, impacts=impacts, contacts=output.current.contacts)
 
-    def start(self, seed=None, *, countdown=True, mode=None, track=None, settle_initial=False):
+    def start(self, seed=None, *, countdown=True, mode=None, track=None, settle_initial=False, career_event_id=None):
         self._command('start', {'seed':seed, 'countdown':countdown, 'mode':mode, 'track':track,
-                               'settle_initial':settle_initial}, self.road_shape, self.traffic_density)
+                               'settle_initial':settle_initial, 'career_event_id':career_event_id},
+                      self.road_shape, self.traffic_density)
         self.keyboard.clear()
         self.keyboard.direction = 1
         self.controller = self.keyboard

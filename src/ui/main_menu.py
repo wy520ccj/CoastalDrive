@@ -25,7 +25,7 @@ class MainMenu:
         self.static_frames = [self.wordmark]
         OnscreenText(parent=self.content, text="\u6d77 \u5cb8 \u9a7e \u9a76", font=body_font,
                      fg=theme.INK, align=TextNode.ARight, pos=(-0.40, 0.59), scale=0.058)
-        labels = ("计时挑战", "滨海自由驾驶", "高速与驾驶课题", "车库", "声音设置", "退出")
+        labels = ("计时挑战", "滨海自由驾驶", "海岸生涯", "车辆与涂装", "声音设置", "退出")
         icons = ("stopwatch", "palm", "highway", "garage", "speaker", "exit")
         self.textures = tuple(loader.loadTexture(theme.asset_filename(f"components/button-{state}.png"))
                               for state in ("normal", "pressed", "hover", "disabled"))
@@ -77,7 +77,7 @@ class MainMenu:
         if journey_action is not None:
             self.static_frames.append(DirectFrame(parent=self.content, frameColor=(*theme.PAPER[:3], .94),
                                                  frameSize=(.52, 1.63, -.76, -.54)))
-            button = DirectButton(parent=self.content, text="海岸工坊  ›", text_font=body_font,
+            button = DirectButton(parent=self.content, text="生涯车库  ›", text_font=body_font,
                 text_fg=theme.INK, text_scale=.046, text_pos=(0, -.015),
                 frameSize=(-.51, .51, -.07, .07), frameTexture=self.textures,
                 frameColor=(1, 1, 1, 1), pos=(1.075, 0, -.65), relief=DGG.FLAT,

@@ -21,6 +21,7 @@ from panda3d.core import (
 
 from audio.music import STATIONS
 from braking_lesson import BRAKING_MODES, BrakingScores
+from career import EVENT_BY_ID, PART_BY_ID, CareerProgress
 from chase_camera import ChaseCamera
 from coastal_medals import menu_goal, result_goal, result_medal
 from controls import ConstantController
@@ -55,6 +56,7 @@ from ui import theme
 from ui.braking_feedback import RULES as BRAKING_RULES
 from ui.braking_feedback import SHORT_RULES as SHORT_BRAKING_RULES
 from ui.braking_feedback import result_feedback as braking_result_feedback
+from ui.career import CareerPanel
 from ui.countdown import Countdown
 from ui.driving_cards import DrivingCards
 from ui.driving_journey import DrivingJourney
@@ -224,6 +226,8 @@ class CoastalDrive(ShowBase):
         self.workshop_garage_return = False
         self.workshop_schemes_request = False
         self.workshop_lab_return = False
+        self.career_progress = CareerProgress(self.session.race.scores.path.with_name('career-progress.json'))
+        self.career_active, self.career_event_id, self.career_award = False, None, None
         self.audio_settings_page = False
         self.driving_mode_page = False
         self.highway_shape = "hills"
@@ -289,7 +293,8 @@ class CoastalDrive(ShowBase):
         yield 0, "准备驾驶工况"
         yield 1, "准备道路与交通车辆"
         self._enter_game(mode, track)
-        self.session.phase = Phase.LOADING
+        if mode != GameMode.CAREER:
+            self.session.phase = Phase.LOADING
         yield 3, "公路、车辆与相机已就绪"
         self.render.prepareScene(self.win.getGsg())
         yield 4, "完成画面资源准备"
@@ -400,6 +405,80 @@ class CoastalDrive(ShowBase):
         self.workshop_garage_return = True
         self.workshop_garage.show(self.workspace_vehicle)
 
+    def open_career(self):
+        self.back_to_menu()
+        self.highway_menu = self.audio_settings_page = self.driving_mode_page = False
+        self.journey.hide()
+        self.driving_journey.hide()
+        self._shown_phase = None
+        self.refresh_panel()
+        self.career_panel.show_board(self.career_progress)
+
+    def open_career_garage(self, notice=''):
+        self.open_career()
+        self.career_panel.show_garage(self.career_progress, self.workspace_vehicle, notice)
+
+    def start_career_event(self, event_id):
+        event = EVENT_BY_ID[event_id]
+        if not self.career_progress.available(event):
+            return
+        self.career_panel.hide()
+        self.career_active, self.career_event_id, self.career_award = True, event_id, None
+        self.highway_menu = self.slalom_menu = self.braking_menu = self.sprint_menu = self.overtake_menu = False
+        self.session.road_shape = event.shape
+        self.start_game(mode=GameMode.CAREER, track='endless')
+
+    def career_action(self, action, value=None):
+        if action == 'board':
+            self.open_career()
+        elif action == 'brief':
+            self.career_panel.show_brief(self.career_progress, EVENT_BY_ID[value])
+        elif action == 'start':
+            self.start_career_event(value)
+        elif action == 'garage':
+            self.open_career_garage()
+        elif action == 'exit':
+            self.back_to_menu()
+            self._shown_phase = None
+            self.refresh_panel()
+        elif action == 'resume':
+            self.career_panel.hide()
+            self.driving_keys_held.clear()
+            self.session.resume()
+            self._shown_phase = None
+            self.refresh_panel()
+        elif action == 'retry':
+            self.start_career_event(self.career_event_id)
+        elif action == 'save':
+            self.career_award = self.career_progress.record(self.session.highway.snapshot.career)
+            self.career_panel.show_result(self.career_progress, self.session.highway.snapshot.career, self.career_award)
+        elif action in ('part', 'restore'):
+            self.install_career_part(value, restore=action == 'restore')
+
+    def install_career_part(self, part_id, *, restore=False):
+        if self.session.phase != Phase.MENU:
+            return
+        if not restore:
+            part = PART_BY_ID[part_id]
+            if not self.career_progress.buy(part):
+                self.open_career_garage(self.career_progress.notice)
+                return
+        current = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
+        try:
+            vehicle = (restore_pre_tuning_vehicle(current, self.workspace_path) if restore else
+                       install_front_tires(current, part.recipe, self.workspace_path) if part.topic == 'tires' else
+                       install_brakes(current, part.recipe, self.workspace_path))
+        except (OSError, ValueError, TypeError, KeyError) as error:
+            self.open_career_garage(('车辆未恢复：' if restore else '零件已拥有，车辆未安装，可重试：')+str(error))
+            return
+        self.workspace_vehicle = vehicle
+        self.session.set_vehicle_config(vehicle.config)
+        self.session.set_abs_enabled(vehicle.config.braking.abs_enabled)
+        self.session.set_tcs_enabled(vehicle.config.traction.tcs_enabled)
+        self.session.set_esc_enabled(vehicle.config.stability.esc_enabled)
+        self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
+        self.open_career_garage('已恢复改装前车辆。' if restore else '已安装，可以返回赛事检验手感。')
+
     def workshop_garage_action(self, index):
         if index == 0:
             self.choose_slalom_lesson(GameMode.SLALOM_PRACTICE)
@@ -444,6 +523,9 @@ class CoastalDrive(ShowBase):
         self.workshop_garage_action(index)
 
     def return_from_test_drive(self):
+        if self.career_active:
+            self.open_career()
+            return
         self.open_workshop_garage() if self.workshop_garage_return else self.open_vehicle_lab()
 
     def open_driving_journey(self):
@@ -514,7 +596,9 @@ class CoastalDrive(ShowBase):
             else:
                 self.setup_controls()
                 self.taskMgr.add(self.update, "drive-update")
-                if self.session.phase == Phase.LOADING:
+                if self.career_active and self.session.mode == GameMode.CAREER and self.session.phase == Phase.PAUSED:
+                    self.session.resume()
+                elif self.session.phase == Phase.LOADING:
                     self.session.phase = Phase.COUNTDOWN
                 if not self.smoke:
                     properties = self.win.getProperties()
@@ -690,7 +774,11 @@ class CoastalDrive(ShowBase):
         self.hud.select_radio(None)
         if track == "endless":
             self.session.traffic_density = self.highway_density_keys[self.highway_density_index]
-        self.session.start(mode=mode, track=track,settle_initial=True)
+        options = {'career_event_id': self.career_event_id} if mode == GameMode.CAREER else {}
+        self.session.start(mode=mode, track=track,settle_initial=True, **options)
+        if mode == GameMode.CAREER and self._workspace_steps is not None:
+            # 正式加载可能超过三秒，先暂停权威会话，资源就绪后再开始可见倒计时。
+            self.session.pause()
         self.road_attempt = None
         self.road_pending = mode in (*SLALOM_MODES, *BRAKING_MODES)
         self.road_start_context = player_road_context(self.session) if self.road_pending else None
@@ -727,6 +815,8 @@ class CoastalDrive(ShowBase):
         self.scene.set_ghost(self.session.reference_ghost)
 
     def back_to_menu(self):
+        self.career_active = False
+        self.career_panel.hide()
         self.workshop_garage_return = False
         self.workshop_lab_return = False
         self.driving_journey_return = False
@@ -804,6 +894,13 @@ class CoastalDrive(ShowBase):
 
     def key_down(self, key):
         if not self.loading.isHidden():
+            return
+        if self.career_active and self.session.phase in (Phase.PAUSED, Phase.RESULTS):
+            self.refresh_panel()
+        if not self.career_panel.root.isHidden():
+            if key not in self.commands_held:
+                self.commands_held.add(key)
+                self.career_panel.key(key)
             return
         if self.session.phase in (Phase.MENU, Phase.RESULTS) and not self.player_road_panel.root.isHidden():
             if key not in self.commands_held:
@@ -999,9 +1096,9 @@ class CoastalDrive(ShowBase):
         self.main_menu = MainMenu(self.aspect2d, self.loader, self.ui_font, self.display_font, (
             lambda: self.start_game(mode=GameMode.TIME_TRIAL),
             lambda: self.start_game(mode=GameMode.FREE_DRIVE),
-            self.choose_highway, self.choose_garage, self.choose_audio_settings, self.userExit,
+            self.open_career, self.choose_garage, self.choose_audio_settings, self.userExit,
         ), driving_mode_action=self.choose_driving_mode, lab_action=self.open_vehicle_lab,
-            journey_action=self.open_workshop_garage)
+            journey_action=self.open_career_garage)
         self.journey = WorkshopJourney(self.main_menu.content, self.ui_font, self.main_menu.textures,
                                        self.continue_workshop_project, self.open_driving_journey,
                                        on_back=self.back_from_workshop_journey)
@@ -1011,6 +1108,8 @@ class CoastalDrive(ShowBase):
                                           self.start_tour_leg, self.back_from_driving_tour)
         self.workshop_vehicle = WorkshopVehicle(self)
         workshop_font = theme.load_font('fonts/SourceHanSansSC-Bold.otf')
+        self.career_panel = CareerPanel(self.main_menu.content, workshop_font, self.workshop_vehicle,
+                                        self.career_action, self.loader)
         self.workshop_garage = WorkshopGarage(self.main_menu.content, workshop_font, self.workshop_vehicle,
                                              self.workshop_garage_action)
         self.tire_tuning = TireTuningPanel(self.main_menu.content, workshop_font, self.main_menu.textures,
@@ -1148,6 +1247,8 @@ class CoastalDrive(ShowBase):
         return "\n".join(lines)
 
     def choose_driving_mode(self):
+        if not self.career_panel.root.isHidden():
+            return
         if (self.session.phase != Phase.MENU or self.garage is not None
                 or self.audio_settings_page or self.highway_menu
                 or not self.journey.root.isHidden() or not self.driving_journey.root.isHidden()
@@ -1611,11 +1712,28 @@ class CoastalDrive(ShowBase):
         panel_state = (phase, self.garage is not None, self.highway_menu, self.audio_settings_page, self.driving_mode_page)
         if panel_state == self._shown_phase:
             return
+        if self.career_active and phase in (Phase.RESULTS, Phase.PAUSED):
+            self._shown_phase = panel_state
+            self.panel.hide()
+            self.hud.root.hide()
+            self.main_menu.root.show()
+            self.driving_cards.hide()
+            for column in self.result_sectors:
+                column.hide()
+            if phase == Phase.PAUSED:
+                self.career_panel.show_pause(self.career_progress)
+            else:
+                result = self.session.highway.snapshot.career
+                if self.career_award is None:
+                    self.career_award = self.career_progress.record(result)
+                self.career_panel.show_result(self.career_progress, result, self.career_award)
+            return
         if (phase != Phase.PAUSED and
                 not (self.garage is not None or self.highway_menu or self.audio_settings_page or self.driving_mode_page)):
             self.panel_selection = 0
         self._shown_phase = panel_state
-        self.lab_return_button['text'] = '返回海岸工坊' if self.workshop_garage_return else '返回实验台'
+        self.lab_return_button['text'] = ('返回赛事' if self.career_active else
+                                        '返回海岸工坊' if self.workshop_garage_return else '返回实验台')
         self.driving_cards.hide()
         self.panel_title.show()
         self.panel.setScale(1.)
@@ -2282,6 +2400,7 @@ class CoastalDrive(ShowBase):
             self.scene = None
         self.journey.root.destroy()
         self.workshop_vehicle.close()
+        self.career_panel.destroy()
         self.workshop_garage.root.destroy()
         self.driving_journey.root.destroy()
         self.tour_panel.root.destroy()

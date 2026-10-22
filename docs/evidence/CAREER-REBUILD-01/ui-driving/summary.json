@@ -1,0 +1,63 @@
+{
+  "passed": true,
+  "captures": [
+    "01-events",
+    "02-first-brief",
+    "03-parking-brief",
+    "04-locked-cup",
+    "05-garage-locked",
+    "06-reward",
+    "07-unlocked-events",
+    "08-parking-reward",
+    "09-shop",
+    "10-installed",
+    "11-progress-after-reload"
+  ],
+  "size": [
+    1280,
+    720
+  ],
+  "new_driving_steps": 4500,
+  "cases": [
+    {
+      "event": "first-drive",
+      "steps": 2166,
+      "result": {
+        "event_id": "first-drive",
+        "start_progress": 8.0,
+        "position": 400.1044006347656,
+        "elapsed": 18.049999999999617,
+        "passed": [],
+        "stopping_ticks": 0,
+        "parking_error": null,
+        "finished": true,
+        "succeeded": true,
+        "stars": 3,
+        "reason": "完成赛事。"
+      }
+    },
+    {
+      "event": "parking",
+      "steps": 2334,
+      "result": {
+        "event_id": "parking",
+        "start_progress": 8.0,
+        "position": 197.47520446777344,
+        "elapsed": 19.449999999999537,
+        "passed": [],
+        "stopping_ticks": 60,
+        "parking_error": 2.5247955322265625,
+        "finished": true,
+        "succeeded": true,
+        "stars": 3,
+        "reason": "车辆已在停车区停稳。"
+      }
+    }
+  ],
+  "stars": 6,
+  "credits": 250,
+  "owned": [
+    "sport-front"
+  ],
+  "scope": "真实UI/实际入门两赛/领奖/存档复载/购买安装恢复；非人工试玩"
+}

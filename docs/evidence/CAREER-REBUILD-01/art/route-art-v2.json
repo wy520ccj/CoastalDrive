@@ -1,0 +1,30 @@
+{
+  "source": "CoastalDrive Panda3D renderer; existing project vehicles and roads",
+  "process": "Fixed camera capture with no UI; original PNGs copied without pixel edits",
+  "cases": [
+    {
+      "event": "coast-sprint",
+      "image": "coast-sprint.png",
+      "sha256": "94a93da1a647b5a9c230a23bf5daaad072fc5784cec798949c405bbe68b6f334",
+      "initialisation_ticks": 132,
+      "driving_steps": 0,
+      "tick": 132
+    },
+    {
+      "event": "ridge-run",
+      "image": "ridge-run.png",
+      "sha256": "04d26ce67fd69786856896ac449da9ba4123bab603303ec4c37bd08774a77c20",
+      "initialisation_ticks": 132,
+      "driving_steps": 0,
+      "tick": 132
+    },
+    {
+      "event": "coastal-cup",
+      "image": "coastal-cup.png",
+      "sha256": "ba73612cb4fac789ae31c31845ad321a699f273ce54a129e7c7111d199023c21",
+      "initialisation_ticks": 132,
+      "driving_steps": 0,
+      "tick": 132
+    }
+  ]
+}

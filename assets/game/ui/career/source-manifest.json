@@ -1,0 +1,62 @@
+{
+  "source": "CoastalDrive Panda3D renderer; existing project vehicles and roads",
+  "process": "Fixed camera capture with no UI; original PNGs copied without pixel edits",
+  "cases": [
+    {
+      "event": "first-drive",
+      "image": "first-drive.png",
+      "sha256": "d27fd55b0049c9ad7997ea9865f6b185c21270e8797f538f318ff6781d681c0e",
+      "initialisation_ticks": 132,
+      "driving_steps": 0,
+      "tick": 132,
+      "capture_run": "CAREER-REBUILD-01-art"
+    },
+    {
+      "event": "parking",
+      "image": "parking.png",
+      "sha256": "adcaeee6c3386a040a6e45322ea2be619beed39d295a24164ece4444cadf45bd",
+      "initialisation_ticks": 132,
+      "driving_steps": 0,
+      "tick": 132,
+      "capture_run": "CAREER-REBUILD-01-parking-art-v2"
+    },
+    {
+      "event": "slalom",
+      "image": "slalom.png",
+      "sha256": "6828689dbfeeff70e12eafe80d8daf508a0472e124a3088f07fc7c129e5d62e7",
+      "initialisation_ticks": 132,
+      "driving_steps": 0,
+      "tick": 132,
+      "capture_run": "CAREER-REBUILD-01-art"
+    },
+    {
+      "event": "coast-sprint",
+      "image": "coast-sprint.png",
+      "sha256": "94a93da1a647b5a9c230a23bf5daaad072fc5784cec798949c405bbe68b6f334",
+      "initialisation_ticks": 132,
+      "driving_steps": 0,
+      "tick": 132,
+      "capture_run": "CAREER-REBUILD-01-route-art-v2"
+    },
+    {
+      "event": "ridge-run",
+      "image": "ridge-run.png",
+      "sha256": "04d26ce67fd69786856896ac449da9ba4123bab603303ec4c37bd08774a77c20",
+      "initialisation_ticks": 132,
+      "driving_steps": 0,
+      "tick": 132,
+      "capture_run": "CAREER-REBUILD-01-route-art-v2"
+    },
+    {
+      "event": "coastal-cup",
+      "image": "coastal-cup.png",
+      "sha256": "ba73612cb4fac789ae31c31845ad321a699f273ce54a129e7c7111d199023c21",
+      "initialisation_ticks": 132,
+      "driving_steps": 0,
+      "tick": 132,
+      "capture_run": "CAREER-REBUILD-01-route-art-v2"
+    }
+  ],
+  "script": "tools/career_art.py",
+  "script_sha256": "70acc6e8f9a5669081c2318ca91030523473f5dbf4e4bd069693b534b70c93ea"
+}

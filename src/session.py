@@ -8,6 +8,8 @@ from dataclasses import asdict, replace
 from enum import Enum
 
 from braking_lesson import BRAKING_MODES, BrakingScores
+from career import EVENT_BY_ID
+from career_run import CareerResult
 from controls import Controller, KeyboardController
 from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
@@ -86,6 +88,7 @@ class Session:
         self._resume_phase = Phase.DRIVING
         self._skip_frame = True
         self.mode = GameMode.FREE_DRIVE
+        self.career_event_id = None
         self.notice = ""
         self.race = RaceTracker(self.mode, scores=scores)
         self.reference_ghost = None
@@ -156,13 +159,20 @@ class Session:
         self.vehicle_config = self.driving_mode.configured_vehicle(
             self.abs_enabled, self.tcs_enabled, enabled, base_config=self.base_vehicle_config)
 
-    def start(self, seed=None, *, countdown=True, mode=None, track=None, settle_initial=False):
+    def start(self, seed=None, *, countdown=True, mode=None, track=None, settle_initial=False, career_event_id=None):
         self.stop_clock()
         chosen_track = get_track(track) if track is not None else self.track
         chosen_mode = self.mode if mode is None else mode
+        self.career_event_id = (career_event_id if career_event_id is not None else self.career_event_id
+                                if chosen_mode == GameMode.CAREER else None)
+        if chosen_mode == GameMode.CAREER:
+            if self.career_event_id not in EVENT_BY_ID:
+                raise ValueError('生涯赛事未指定')
+            event = EVENT_BY_ID[self.career_event_id]
+            self.road_shape, seed = event.shape, event.seed
         if chosen_mode == GameMode.TIME_TRIAL and chosen_track.circuit is None:
             raise ValueError("Time trial requires a circuit")
-        if (chosen_mode in (GameMode.DISTANCE_CHALLENGE, *BRAKING_MODES, *SLALOM_MODES, *OVERTAKE_ROUTES)
+        if (chosen_mode in (GameMode.CAREER, GameMode.DISTANCE_CHALLENGE, *BRAKING_MODES, *SLALOM_MODES, *OVERTAKE_ROUTES)
                 or chosen_mode in SPRINT_ROUTES) and chosen_track.id.value != "endless":
             raise ValueError("Distance challenge requires the endless highway")
         if chosen_mode in (*BRAKING_MODES, *SLALOM_MODES) and self.road_shape != "straight":
@@ -180,7 +190,7 @@ class Session:
         density = TRAFFIC_DENSITIES[self.traffic_density]
         if chosen_mode in OVERTAKE_ROUTES:
             density = TRAFFIC_DENSITIES["normal"]
-        if (track == "endless" and chosen_mode not in (*BRAKING_MODES, *SLALOM_MODES)
+        if (track == "endless" and chosen_mode not in (GameMode.CAREER, *BRAKING_MODES, *SLALOM_MODES)
                 and chosen_mode not in SPRINT_ROUTES):
             traffic_count = density.cars
         if seed is not None:
@@ -228,6 +238,10 @@ class Session:
                 logging.getLogger(__name__).warning("幽灵载入失败: %s", error)
                 self.race.snapshot = replace(self.race.snapshot, ghost_notice="幽灵缺失、损坏或版本不兼容；成绩保留。")
         self.highway = HighwayRun(challenge=self.mode == GameMode.DISTANCE_CHALLENGE)
+        if self.mode == GameMode.CAREER:
+            self.highway.snapshot = replace(self.highway.snapshot, challenge=True,
+                target=EVENT_BY_ID[self.career_event_id].distance,
+                career=CareerResult(self.career_event_id, self.highway_progress()))
         self.keyboard.direction = 1
         self.keyboard.input_config = self.driving_mode.input_config
         self.keyboard.clear()
@@ -280,6 +294,7 @@ class Session:
                 overtake_initial=self.simulation.snapshot() if self.mode in OVERTAKE_ROUTES else None,
                 overtake_scores=BestTimes(self.race.scores.path.with_name("overtake-best.json")) if self.mode in OVERTAKE_ROUTES else None,
                 overtake_mode=self.mode, overtake_road=self.simulation.road,
+                career_event_id=self.career_event_id,
             )
         else:
             state = self.simulation.snapshot()
@@ -307,7 +322,7 @@ class Session:
             if self.simulation.track == "endless":
                 # 起伏赛事使用同一权威道路的局部标架；不能用世界X/朝向判弯道门。
                 car = (self.simulation.road.lane_frame(self.current.player)
-                       if self.mode in SPRINT_ROUTES else self.current.player)
+                       if self.mode in SPRINT_ROUTES or self.mode == GameMode.CAREER else self.current.player)
                 self.highway.update(
                     self.highway_progress(self.current), self.current.collisions, FIXED_DT,
                     reset="player_reset" in self.current.events,
@@ -472,7 +487,7 @@ class Session:
         self.stop_clock()
         self.race.stop()
         self.ghost_recording = None
-        self.highway.stop("挑战提前结束" if (self.mode in (GameMode.DISTANCE_CHALLENGE, *BRAKING_MODES, *SLALOM_MODES, *OVERTAKE_ROUTES)
+        self.highway.stop("挑战提前结束" if (self.mode in (GameMode.CAREER, GameMode.DISTANCE_CHALLENGE, *BRAKING_MODES, *SLALOM_MODES, *OVERTAKE_ROUTES)
                                            or self.mode in SPRINT_ROUTES) else "自由驾驶结束")
         self.phase = Phase.RESULTS
         self.keyboard.clear()
