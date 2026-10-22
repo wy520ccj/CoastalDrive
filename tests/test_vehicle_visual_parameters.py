@@ -2,11 +2,13 @@
 
 from dataclasses import replace
 from types import SimpleNamespace
+from unittest.mock import Mock
 
 import pytest
 from panda3d.core import NodePath, Quat
 from physics.export_reference import shape_axis_limits, shape_volume_center
 
+from highway_run import HighwayRun
 from scene import Scene
 from simulation import Simulation
 from skins import vehicle_definition
@@ -27,6 +29,9 @@ def test_modified_geometry_matches_native_shape_and_snapshot(model_id):
     scene.render = NodePath("engineering-geometry")
     scene.sky = scene.render.attachNewNode("sky")
     scene.base = SimpleNamespace(session=SimpleNamespace(simulation=world))
+    scene.base.session.highway = HighwayRun()
+    scene.braking_markers = scene.slalom_markers = scene.career_markers = Mock(spec=['apply'])
+    scene.sprint_markers = scene.overtake_markers = Mock(spec=['apply'])
     scene.player, scene.wheels = load_vehicle(scene.render, vehicle_definition(model_id), config=config)
     scene.traffic, scene.traffic_wheels, scene.traffic_signals = [], [], []
     try:

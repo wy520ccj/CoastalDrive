@@ -53,6 +53,12 @@ VEHICLES = (
                       True, False, physics_id="reference-awd"),
     VehicleDefinition("gr86-2022", "GR86 Premium · 6MT", "vehicles/gr86_2022_premium.glb", "hero",
                       True, False, physics_id="gr86-2022-premium-6mt"),
+    VehicleDefinition('coastal-hatch', '潮汐 H1', 'vehicles/coastal_hatch.glb', 'hero',
+                      True, False, physics_id='coastal-hatch'),
+    VehicleDefinition('coastal-roadster', '晴岚 R2', 'vehicles/coastal_roadster.glb', 'hero',
+                      True, False, physics_id='coastal-roadster'),
+    VehicleDefinition('coastal-gt', '远航 GT', 'vehicles/coastal_gt.glb', 'hero',
+                      True, False, physics_id='coastal-gt'),
     VehicleDefinition(
         "traffic-compact",
         "轻巧掀背",

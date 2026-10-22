@@ -25,6 +25,25 @@ REFERENCE_DESIGN = replace(REFERENCE_CAR, tire_aligning_enabled=True, **BODY_GEO
 GAME_DESIGN = replace(CAR, body_inertia=REFERENCE_CAR.body_inertia, **BODY_GEOMETRY)
 GR86_PROFILE_PATH = resource_root() / "assets/game/vehicle-configs/gr86-2022-premium-6mt.json"
 GR86_DESIGN = load_vehicle_config(GR86_PROFILE_PATH, REFERENCE_CAR)
+
+
+def coastal_design(*, mass, length, width, height, wheelbase, radius, drive, torque, cg, weight):
+    """原创车型的明确设计值；沿用同一机械模型，不冒充原厂实测。"""
+    inertia = (mass*((2*length)**2+(2*height)**2)/12,
+               mass*((2*width)**2+(2*height)**2)/12,
+               mass*((2*length)**2+(2*width)**2)/12)
+    return replace(REFERENCE_DESIGN, mass=mass, body_inertia=inertia,
+        collision_half_length=length, collision_half_width=width, collision_half_height=height,
+        body_center_height=height+.17, wheelbase=wheelbase, track_width=width*1.72,
+        wheel_radius=radius, wheel_width=.215 if mass < 1200 else .245,
+        wheel_connection_height=radius+.26, center_of_mass_height=cg,
+        front_drive_share=drive, front_weight_share=weight,
+        torque_curve=tuple((rpm, value*torque) for rpm, value in REFERENCE_DESIGN.torque_curve),
+        suspension_spring_rates=(mass*35.,)*4,
+        suspension_compression_damping=(mass*3.5,)*4,
+        suspension_extension_damping=(mass*2.1,)*4)
+
+
 DESIGN_VEHICLES = (
     VehicleDesign("game-tuned", "游戏调校", GAME_DESIGN, "保留已认可的动力/输入轴调校；车身外廓取现有模型"),
     VehicleDesign("reference-rwd", "设计参考车 RWD", REFERENCE_DESIGN, "reference-v28完整设计，模型外廓同步"),
@@ -34,6 +53,15 @@ DESIGN_VEHICLES = (
                   "同一参考硬件，前后开放中差几何份额各50%"),
     VehicleDesign("gr86-2022-premium-6mt", "GR86 Premium · 6MT", GR86_DESIGN,
                   "2022美国Premium公开来源硬件；未公开参数为明确工程初值，标定版本随文件保存"),
+    VehicleDesign('coastal-hatch', '潮汐 H1', coastal_design(mass=1080., length=1.93, width=.90,
+        height=.62, wheelbase=2.48, radius=.305, drive=1., torque=.82, cg=.43, weight=.60),
+        '原创轻型前驱掀背；通用完整机械模型上的设计参数，非量产车型标定'),
+    VehicleDesign('coastal-roadster', '晴岚 R2', coastal_design(mass=1040., length=1.98, width=.90,
+        height=.49, wheelbase=2.34, radius=.31, drive=0., torque=1.02, cg=.38, weight=.50),
+        '原创双座后驱敞篷；通用完整机械模型上的设计参数，非量产车型标定'),
+    VehicleDesign('coastal-gt', '远航 GT', coastal_design(mass=1450., length=2.28, width=.99,
+        height=.55, wheelbase=2.75, radius=.34, drive=.5, torque=1.50, cg=.43, weight=.54),
+        '原创四驱旅行GT；通用完整机械模型上的设计参数，非量产车型标定'),
 )
 
 

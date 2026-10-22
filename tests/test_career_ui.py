@@ -3,6 +3,7 @@
 import time
 
 import pytest
+from panda3d.core import Point2
 
 from application import CoastalDrive
 from career import CareerProgress
@@ -63,6 +64,47 @@ def test_purchase_install_failure_preserves_owned_part_and_retry_is_free(app, mo
     assert CareerProgress(app.career_progress.path).owned == {'sport-front'}
     app.career_action('restore')
     assert app.workspace_vehicle == before
+
+
+def test_collection_preview_lock_and_selection_preserve_actual_vehicle_until_confirmation(app):
+    original, snapshot = app.workspace_vehicle, app.session.current
+    app.career_action('garage')
+    app.career_action('garage-car', 'coastal-gt')
+    app.career_action('garage-select')
+    assert app.workspace_vehicle == original and app.session.current == snapshot
+    app.career_action('garage-car', 'coastal-hatch')
+    assert app.workspace_vehicle == original
+    app.career_action('garage-select')
+    assert app.workspace_vehicle.design_id == 'coastal-hatch'
+    assert app.session.base_vehicle_config == app.workspace_vehicle.config
+    assert app.vehicle_model_id == 'coastal-hatch'
+    assert app.session.current == snapshot
+    app.career_action('garage-car', original.design_id)
+    app.career_action('garage-select')
+    assert app.workspace_vehicle == original
+
+
+def test_garage_reserves_vehicle_area_and_directional_focus_follows_the_layout(app):
+    app.career_action('garage')
+    view, panel = app.workshop_vehicle, app.career_panel
+    for tab in ('cars', 'upgrade', 'paint'):
+        app.career_action('garage-tab', tab)
+        left, right, bottom, top = view.frame['frameSize']
+        for button in panel.buttons:
+            x, z = button.getX(), button.getZ()
+            l, r, b, t = button['frameSize']
+            assert min(right, x+r)-max(left, x+l) <= 0 or min(top, z+t)-max(bottom, z+b) <= 0
+        for angle in (25, -25):
+            view.orbit(angle)
+            for corner in view.framing_points:
+                point = Point2()
+                assert view.camera.node().getLens().project(
+                    view.camera.getRelativePoint(view.scene, corner), point)
+                assert abs(point.x) <= .85 and abs(point.y) <= .79
+    # 从页尾向上，应进入同一列的颜色应用，而不是跳到左侧车模角度按钮。
+    panel.select(len(panel.buttons)-1)
+    panel.key('arrow_up')
+    assert panel.buttons[panel.selected]['extraArgs'][0] == 'garage-paint-save'
 
 
 def test_pause_retry_and_return_keep_original_world_until_explicit_restart(app):

@@ -58,14 +58,14 @@ class CareerDriver:
         return self.driver.sample(state, 1/120)
 
 
-def check(output, event_ids):
+def check(output, event_ids, design_id='reference-rwd'):
     output.mkdir(parents=True, exist_ok=False)
     cases = []
     for event in EVENTS:
         if event_ids and event.id not in event_ids:
             continue
         session = Session(track='endless', scores=BestTimes(output/'unused-best.json'),
-                          vehicle_config=vehicle_design('reference-rwd').config)
+                          vehicle_config=vehicle_design(design_id).config)
         try:
             session.start(mode=GameMode.CAREER, track='endless', career_event_id=event.id,
                           countdown=False, settle_initial=True)
@@ -95,7 +95,7 @@ def check(output, event_ids):
             print(event.id, result.stars, round(result.elapsed, 3), result.reason, flush=True)
         finally:
             session.close()
-    summary = {'passed': all(case['result']['succeeded'] for case in cases), 'cases': cases,
+    summary = {'passed': all(case['result']['succeeded'] for case in cases), 'design_id': design_id, 'cases': cases,
                'scope': '静止起步/正常二值输入/唯一物理世界，每拍独立复核新规则；非人工试玩'}
     (output/'summary.json').write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding='utf-8')
     return summary['passed']
@@ -105,5 +105,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--events', nargs='*')
+    parser.add_argument('--design', default='reference-rwd')
     args = parser.parse_args()
-    raise SystemExit(0 if check(args.output.resolve(), args.events) else 1)
+    raise SystemExit(0 if check(args.output.resolve(), args.events, args.design) else 1)

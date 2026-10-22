@@ -3,6 +3,7 @@
 import json
 import math
 from types import SimpleNamespace
+from unittest.mock import Mock
 
 import pytest
 from panda3d.core import GeomVertexReader, MaterialAttrib, NodePath, Quat
@@ -145,6 +146,7 @@ def test_traffic_family_fits_existing_collision_and_snapshot_wheels():
 
 
 def test_traffic_family_wheels_follow_frozen_snapshot():
+    from highway_run import HighwayRun
     from skins import traffic_models
 
     simulation = Simulation(seed=23, track="coastal", traffic_count=3)
@@ -153,6 +155,9 @@ def test_traffic_family_wheels_follow_frozen_snapshot():
     scene.sky = scene.render.attachNewNode("sky")
     scene.ocean = scene.render.attachNewNode("ocean")
     scene.base = SimpleNamespace(session=SimpleNamespace(simulation=simulation))
+    scene.base.session.highway = HighwayRun()
+    scene.braking_markers = scene.slalom_markers = scene.career_markers = Mock(spec=['apply'])
+    scene.sprint_markers = scene.overtake_markers = Mock(spec=['apply'])
     scene.player, scene.wheels = load_vehicle(scene.render, vehicle_definition("sports"))
     scene.traffic = []
     scene.traffic_wheels = []
@@ -175,11 +180,16 @@ def test_traffic_family_wheels_follow_frozen_snapshot():
 
 
 def test_scene_applies_actual_bullet_wheel_positions_and_quaternions():
+    from highway_run import HighwayRun
+
     simulation = Simulation(track="test", traffic_count=0)
     scene = Scene.__new__(Scene)
     scene.render = NodePath("wheel-sync")
     scene.sky = scene.render.attachNewNode("sky")
     scene.base = SimpleNamespace(session=SimpleNamespace(simulation=simulation))
+    scene.base.session.highway = HighwayRun()
+    scene.braking_markers = scene.slalom_markers = scene.career_markers = Mock(spec=['apply'])
+    scene.sprint_markers = scene.overtake_markers = Mock(spec=['apply'])
     scene.player, scene.wheels = load_vehicle(scene.render, vehicle_definition("sports"))
     scene.traffic, scene.traffic_wheels, scene.traffic_signals = [], [], []
     try:

@@ -22,6 +22,7 @@ from panda3d.core import (
 from audio.music import STATIONS
 from braking_lesson import BRAKING_MODES, BrakingScores
 from career import EVENT_BY_ID, PART_BY_ID, CareerProgress
+from career_garage import garage_cars, save_paint, saved_paint, saved_vehicle, select_vehicle
 from chase_camera import ChaseCamera
 from coastal_medals import menu_goal, result_goal, result_medal
 from controls import ConstantController
@@ -228,6 +229,15 @@ class CoastalDrive(ShowBase):
         self.workshop_lab_return = False
         self.career_progress = CareerProgress(self.session.race.scores.path.with_name('career-progress.json'))
         self.career_active, self.career_event_id, self.career_award = False, None, None
+        self.career_garage_tab = 'cars'
+        self.career_preview = self.workspace_vehicle
+        self.career_preview_skin = self.skin_index
+        self.career_garage_return = None
+        self.career_garage_folder = self.career_progress.path.parent/'career-garage'
+        try:
+            self.skin_index = saved_paint(self.career_garage_folder, self.workspace_vehicle.design_id, self.skin_index)
+        except (OSError, ValueError, TypeError) as error:
+            self.career_progress.notice = '车库颜色未读取，原文件已保留：'+str(error)
         self.audio_settings_page = False
         self.driving_mode_page = False
         self.highway_shape = "hills"
@@ -414,9 +424,18 @@ class CoastalDrive(ShowBase):
         self.refresh_panel()
         self.career_panel.show_board(self.career_progress)
 
-    def open_career_garage(self, notice=''):
+    def open_career_collection(self):
+        self.career_garage_tab, self.career_garage_return = 'cars', None
+        self.open_career_garage()
+
+    def open_career_garage(self, notice='', *, reset=True):
+        if reset:
+            self.career_preview = self.workspace_vehicle
+            self.career_preview_skin = self.skin_index
         self.open_career()
-        self.career_panel.show_garage(self.career_progress, self.workspace_vehicle, notice)
+        self.career_panel.show_garage(self.career_progress, self.workspace_vehicle, notice,
+            tab=self.career_garage_tab, preview=self.career_preview, skin_index=self.career_preview_skin,
+            cars=garage_cars(self.workspace_vehicle, self.career_garage_folder))
 
     def start_career_event(self, event_id):
         event = EVENT_BY_ID[event_id]
@@ -436,7 +455,67 @@ class CoastalDrive(ShowBase):
         elif action == 'start':
             self.start_career_event(value)
         elif action == 'garage':
+            self.career_garage_return = (self.career_panel.event_id
+                if self.career_panel.page in ('brief', 'result') else None)
             self.open_career_garage()
+        elif action == 'garage-back':
+            if self.career_garage_return is None:
+                self.open_career()
+            else:
+                self.open_career()
+                self.career_panel.show_brief(self.career_progress, EVENT_BY_ID[self.career_garage_return])
+        elif action == 'garage-tab':
+            self.career_garage_tab = value
+            self.open_career_garage()
+        elif action == 'garage-car':
+            if value not in {car.design_id for car in garage_cars(self.workspace_vehicle, self.career_garage_folder)}:
+                return
+            try:
+                self.career_preview = saved_vehicle(self.workspace_vehicle, value, self.career_garage_folder)
+                self.career_preview_skin = (self.skin_index if value == self.workspace_vehicle.design_id else
+                    saved_paint(self.career_garage_folder, value))
+            except (OSError, ValueError, TypeError, KeyError) as error:
+                self.open_career_garage('车辆未读取：'+str(error))
+                return
+            self.open_career_garage(reset=False)
+        elif action == 'garage-select':
+            candidate = self.career_preview
+            car = next(car for car in garage_cars(self.workspace_vehicle, self.career_garage_folder)
+                       if car.design_id == candidate.design_id)
+            if candidate.design_id != self.workspace_vehicle.design_id and self.career_progress.stars < car.unlock:
+                return
+            current = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
+            try:
+                paint = saved_paint(self.career_garage_folder, candidate.design_id)
+                save_paint(self.career_garage_folder, current.design_id, self.skin_index)
+                vehicle = select_vehicle(current, candidate, self.career_garage_folder, self.workspace_path)
+            except (OSError, ValueError, TypeError, KeyError) as error:
+                self.open_career_garage('车辆未切换，原车保留：'+str(error))
+                return
+            self.workspace_vehicle = vehicle
+            self.vehicle_model_id = vehicle_for_design(vehicle.design_id, self.vehicle_model_id).id
+            self.appearance.model_id = self.vehicle_model_id
+            self.skin_index = paint
+            self.session.set_vehicle_config(vehicle.config)
+            self.session.set_abs_enabled(vehicle.config.braking.abs_enabled)
+            self.session.set_tcs_enabled(vehicle.config.traction.tcs_enabled)
+            self.session.set_esc_enabled(vehicle.config.stability.esc_enabled)
+            self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
+            self.open_career_garage('已选择驾驶；每辆车的改装会分别保留。')
+        elif action == 'garage-orbit':
+            self.workshop_vehicle.orbit(value)
+        elif action == 'garage-paint':
+            self.career_preview_skin = value
+            self.open_career_garage(reset=False)
+        elif action == 'garage-paint-save':
+            try:
+                save_paint(self.career_garage_folder, self.workspace_vehicle.design_id, self.career_preview_skin)
+            except (OSError, ValueError, TypeError) as error:
+                self.open_career_garage('颜色未保存，原色保留：'+str(error))
+                return
+            self.skin_index = self.career_preview_skin
+            saved = self.appearance.save(self.vehicle_model_id, SKINS[self.skin_index].id)
+            self.open_career_garage('已为这辆车保存颜色。'+('' if saved else self.appearance.notice))
         elif action == 'exit':
             self.back_to_menu()
             self._shown_phase = None
@@ -458,6 +537,7 @@ class CoastalDrive(ShowBase):
     def install_career_part(self, part_id, *, restore=False):
         if self.session.phase != Phase.MENU:
             return
+        self.career_garage_tab = 'upgrade'
         if not restore:
             part = PART_BY_ID[part_id]
             if not self.career_progress.buy(part):
@@ -1096,9 +1176,9 @@ class CoastalDrive(ShowBase):
         self.main_menu = MainMenu(self.aspect2d, self.loader, self.ui_font, self.display_font, (
             lambda: self.start_game(mode=GameMode.TIME_TRIAL),
             lambda: self.start_game(mode=GameMode.FREE_DRIVE),
-            self.open_career, self.choose_garage, self.choose_audio_settings, self.userExit,
+            self.open_career, self.open_career_collection, self.choose_audio_settings, self.userExit,
         ), driving_mode_action=self.choose_driving_mode, lab_action=self.open_vehicle_lab,
-            journey_action=self.open_career_garage)
+            journey_action=None)
         self.journey = WorkshopJourney(self.main_menu.content, self.ui_font, self.main_menu.textures,
                                        self.continue_workshop_project, self.open_driving_journey,
                                        on_back=self.back_from_workshop_journey)

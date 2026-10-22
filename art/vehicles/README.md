@@ -33,3 +33,8 @@
 `gr86_2022_premium.blend` 是项目原创程序网格生成的近似低模可编辑源，运行网格为 `assets/game/vehicles/gr86_2022_premium.glb`，由 `tools/blender/build_gr86.py` 制作。模型尚未完成游戏装配或最终外观验收；重跑脚本会覆盖对应模型文件，离线预览写入 `logs/physics/PHYS-REAL-01-appearance/`。文件 SHA、生成来源和来源边界见 `gr86-source-manifest.json`。
 
 Toyota 2022 GR86 手册仅作尺寸、比例和外形参考，不是官方 CAD 或授权 Toyota 模型。该近似低模由本项目脚本生成；不声称 Toyota 对模型提供授权或认可。
+
+
+## 生涯车库与原创可驾驶车型
+
+`tools/blender/build_coastal_garage.py`只生成`coastal_hatch / coastal_roadster / coastal_gt / coastal_garage`四组新Blend与GLB，不重建旧车型。后台用项目现有Blender运行；手工修改前请另存源文件。新车为原创通用设计，不是量产车型实测；独立配置在`src/vehicle_designs.py`，清单和SHA在`assets/game/vehicles/coastal-garage-manifest.json`。车库仅为显示场景，不创建第二物理世界。
