@@ -67,7 +67,8 @@ def test_distribution_includes_font_license_and_icon(monkeypatch):
                  "fonts/OFL-ChakraPetch.txt", "fonts/typography-sources.json",
                  "coastal-drive.ico", "wordmark.png",
                  "backgrounds/coastal-menu-handdrawn-v2.png", "backgrounds/workspace-handdrawn-v2.png",
-                 "components/button-normal.png", "components/speed-panel.png"):
+                 "components/button-normal.png", "components/speed-panel.png",
+                 "garage-v2/power-part.png", "garage-v2/suspension-part.png", "garage-v2/Parts-License.txt"):
         relative = "assets/game/ui/" + name
         assert (ROOT / relative).is_file()
         assert any(fnmatch.fnmatchcase(relative, pattern) for pattern in patterns), relative

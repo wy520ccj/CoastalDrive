@@ -71,6 +71,10 @@ PARTS = (
                '提高前轮侧向响应，去绕桩赛试试手感。', '前轴侧偏刚度 70 kN/rad'),
     CareerPart('sport-brakes', '制动平衡套件', 'brakes', 2, 250, 5,
                '更多制动力分给前轮，去停车赛练习刹车。', '前轴制动份额 70%'),
+    CareerPart('street-power', '街道动力套件', 'power', 0, 450, 8,
+               '扭矩提升12%，去沿海冲刺感受加速变化。', '整条扭矩曲线 ×1.12'),
+    CareerPart('sport-suspension', '运动悬架', 'suspension', 0, 400, 12,
+               '弹簧更硬，阻尼同步调整；去山脊赛感受车身响应。', '弹簧刚度 +15% / 阻尼同步匹配'),
 )
 PART_BY_ID = {part.id: part for part in PARTS}
 

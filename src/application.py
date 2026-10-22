@@ -23,6 +23,7 @@ from audio.music import STATIONS
 from braking_lesson import BRAKING_MODES, BrakingScores
 from career import EVENT_BY_ID, PART_BY_ID, CareerProgress
 from career_garage import garage_cars, save_paint, saved_paint, saved_vehicle, select_vehicle
+from career_tuning import install as install_career_upgrade
 from chase_camera import ChaseCamera
 from coastal_medals import menu_goal, result_goal, result_medal
 from controls import ConstantController
@@ -558,9 +559,14 @@ class CoastalDrive(ShowBase):
                 return
         current = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
         try:
-            vehicle = (restore_pre_tuning_vehicle(current, self.workspace_path) if restore else
-                       install_front_tires(current, part.recipe, self.workspace_path) if part.topic == 'tires' else
-                       install_brakes(current, part.recipe, self.workspace_path))
+            if restore:
+                vehicle = restore_pre_tuning_vehicle(current, self.workspace_path)
+            elif part.topic == 'tires':
+                vehicle = install_front_tires(current, part.recipe, self.workspace_path)
+            elif part.topic == 'brakes':
+                vehicle = install_brakes(current, part.recipe, self.workspace_path)
+            else:
+                vehicle = install_career_upgrade(current, part.id, self.workspace_path)
         except (OSError, ValueError, TypeError, KeyError) as error:
             self.open_career_garage(('车辆未恢复：' if restore else '零件已拥有，车辆未安装，可重试：')+str(error))
             return

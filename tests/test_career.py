@@ -46,6 +46,24 @@ def test_purchase_once_ownership_and_money_preserved_on_write_failure(tmp_path, 
     assert store.path.read_bytes() == before
 
 
+def test_all_parts_unlock_in_steps_and_full_career_can_afford_them_once(tmp_path):
+    store = CareerProgress(tmp_path/'career.json')
+    awards = []
+    for event in EVENT_BY_ID.values():
+        awards.append(store.record(finished(event.id)))
+    assert store.stars == 18 and store.credits == 2460
+    assert {name for award in awards for name in award['unlocked'] if name.startswith('零件：')} == {
+        '零件：'+part.name for part in PARTS}
+    for part in PARTS:
+        assert store.buy(part)
+    credits = store.credits
+    assert credits == 1010
+    for part in PARTS:
+        assert store.buy(part) and store.credits == credits
+    reloaded = CareerProgress(store.path)
+    assert reloaded.owned == {part.id for part in PARTS} and reloaded.credits == credits
+
+
 def test_corrupt_save_and_locked_or_incomplete_results_cannot_overwrite(tmp_path):
     path = tmp_path/'career.json'
     path.write_text('old-invalid-file', encoding='utf-8')

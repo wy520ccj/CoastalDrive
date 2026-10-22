@@ -5,6 +5,7 @@ from direct.gui.DirectGui import DirectFrame
 from panda3d.core import TextNode, TextureStage, TransparencyAttrib
 
 from career import PARTS
+from career_tuning import is_installed, upgraded_config
 from skins import SKINS
 from ui import theme
 from ui.lab_widgets import rounded_panel
@@ -14,6 +15,25 @@ GRAY = (.36, .39, .45, 1)
 WHITE = (1, 1, 1, 1)
 ORANGE = (1, .31, .12, 1)
 LINE = (.79, .81, .84, 1)
+PART_IMAGES = {'tires': 'tire', 'brakes': 'brake', 'power': 'power-part', 'suspension': 'suspension-part'}
+
+
+def part_readout(vehicle, part, installed):
+    config = vehicle.config
+    if part.topic == 'tires':
+        return '提升前轮转向响应', '前轴侧偏刚度', '70 kN/rad'
+    if part.topic == 'brakes':
+        return '制动力偏向前轮', '前轴制动力分配', '70%'
+    target = config if installed else upgraded_config(config, part.id)
+    if part.topic == 'power':
+        before = max(rpm*torque/9549.3 for rpm, torque in config.torque_curve)
+        after = max(rpm*torque/9549.3 for rpm, torque in target.torque_curve)
+        return ('加速动力提升', '当前峰值功率' if installed else '峰值功率',
+                f'{after:.0f} kW' if installed else f'{before:.0f} → {after:.0f} kW')
+    before = sum(config.suspension_spring_rates)/4000
+    after = sum(target.suspension_spring_rates)/4000
+    return ('减小车身摇摆', '当前弹簧刚度' if installed else '平均弹簧刚度',
+            f'{after:.1f} kN/m' if installed else f'{before:.1f} → {after:.1f} kN/m')
 
 
 def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
@@ -120,21 +140,19 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
             if active:
                 fill(x-2, y-2, w+4, 120, ORANGE)
             button('', x, y, w, 116, 'garage-topic', topic,
-                   role='category-active' if active else 'category', enabled=index < 2)
-            image('garage-v2/'+icon+'.png', x+w/2-24, y+15, 48, 48,
-                  WHITE if index < 2 else (.50, .52, .57, 1))
-            label(name, x+w/2-24, y+91, 23, INK if index < 2 else GRAY, True)
-            if index >= 2:
-                label('即将开放', x+w/2-35, y+113, 17, GRAY)
+                   role='category-active' if active else 'category')
+            image('garage-v2/'+icon+'.png', x+w/2-24, y+15, 48, 48)
+            label(name, x+w/2-24, y+91, 23, INK, True)
         fill(left+inset, 522, inner, 1, LINE, 0)
         part = next(part for part in PARTS if part.topic == panel.garage_topic)
-        image('garage-v2/'+('tire' if part.topic == 'tires' else 'brake')+'.png', left+inset, 539, 154, 154)
+        image('garage-v2/'+PART_IMAGES[part.topic]+'.png', left+inset, 539, 154, 154)
         detail_x = left+inset+175
+        installed = is_installed(vehicle, part)
+        benefit, metric, value = part_readout(vehicle, part, installed)
         label(part.name, detail_x, 569, 24, bold=True)
-        label('提升前轮转向响应' if part.topic == 'tires' else '制动力偏向前轮', detail_x, 599, 17, GRAY, wrap=inner-175)
-        label('前轴侧偏刚度' if part.topic == 'tires' else '前轴制动力分配', detail_x, 642, 16, GRAY)
-        label('70 kN/rad' if part.topic == 'tires' else '70%', left+wide-inset, 666, 19, GRAY, right=True)
-        installed = vehicle.config.lateral_stiffness == 70000. if part.topic == 'tires' else vehicle.config.front_brake_share == .7
+        label(benefit, detail_x, 599, 17, GRAY, wrap=inner-175)
+        label(metric, detail_x, 642, 16, GRAY)
+        label(value, left+wide-inset, 666, 19, GRAY, right=True)
         owned, unlocked = part.id in progress.owned, progress.stars >= part.unlock
         affordable = owned or progress.credits >= part.price
         label('已购零件' if owned else f'{part.price} 积分', detail_x, 695, 28, ORANGE, True)

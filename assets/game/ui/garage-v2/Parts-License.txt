@@ -1,0 +1,28 @@
+CoastalDrive garage part illustrations
+
+suspension-part.png
+Original: Coilovers.jpg by Cameron Chapman (camthman)
+https://commons.wikimedia.org/wiki/File:Coilovers.jpg
+https://www.flickr.com/photos/camthman/258310455/
+License: Creative Commons Attribution 2.0 Generic
+https://creativecommons.org/licenses/by/2.0/
+Changes: background removal and exposure/color adjustment with OpenAI imagegen,
+2026-10-22. Original photograph and Commons metadata retained in
+art/ui/garage-upgrades/coilovers.jpg and coilovers-source.json.
+
+power-part.png
+Original: 2008-04-01 Cold air intake tube with filter.jpg
+Author: Ildar Sagdejev (Specious)
+https://commons.wikimedia.org/wiki/File:2008-04-01_Cold_air_intake_tube_with_filter.jpg
+License selected from author's dual license: Creative Commons Attribution
+ShareAlike 3.0 Unported
+https://creativecommons.org/licenses/by-sa/3.0/
+Derivative power-part.png remains CC-BY-SA-3.0.
+Changes: background removal and exposure/color adjustment with OpenAI imagegen,
+2026-10-22. Original photograph and Commons metadata retained in
+art/ui/garage-upgrades/intake.jpg and intake-source.json.
+
+These pictures illustrate generic upgrade categories. The photographed intake
+assembly is not a measured performance kit for any catalog vehicle. Upgrade
+parameters are CoastalDrive project settings; no vehicle or parts manufacturer
+endorsement is asserted. Model-photo licenses do not assert brand licenses.

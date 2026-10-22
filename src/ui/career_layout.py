@@ -4,10 +4,10 @@ from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectFrame
 from panda3d.core import TextNode, TextureStage, TransparencyAttrib
 
-from career import CHAPTERS, EVENTS
+from career import CHAPTERS, EVENTS, PARTS
 from career_garage import GARAGE_CARS, garage_cars
 from ui import theme
-from ui.garage_layout import GRAY, INK, ORANGE, WHITE
+from ui.garage_layout import GRAY, INK, ORANGE, PART_IMAGES, WHITE
 from ui.lab_widgets import rounded_panel
 
 GOLD = (1, .73, .25, 1)
@@ -211,29 +211,33 @@ def result(panel, progress, race_result, award):
     cars = [car for car in GARAGE_CARS if car.design_id in award['vehicles']]
     parts = [name for name in award['unlocked'] if name.startswith('零件：')]
     events = [name for name in award['unlocked'] if not name.startswith(('零件：', '新车：'))]
-    label('保存失败' if not award['saved'] else '新解锁' if award['unlocked'] else '本场记录',
-          x, 696, 23, bold=True)
+    heading = '保存失败' if not award['saved'] else '新解锁' if award['unlocked'] else '本场记录'
+    if award['saved'] and events and (cars or parts):
+        heading += ' · '+'、'.join(events)
+    label(heading, x, 696, 17 if events and (cars or parts) else 23, bold=True)
     if not award['saved']:
         message = progress.notice[:40]+'…' if len(progress.notice) > 40 else progress.notice
         label(message, x, 732, 18, GRAY, wrap=inner)
         button('重试保存奖励', x, 780, inner, 38, 'save', role='primary', primary=True)
-    elif cars or parts:
+    elif cars or parts or events:
         # 按新车、零件分成相邻两行，多个解锁仍完整显示名称。
         y = 708
         if cars:
-            fill(x, y, inner, 50, (.91, .92, .94, .85))
+            car_height = 64 if len(cars) > 2 else 50
+            fill(x, y, inner, car_height, (.91, .92, .94, .85))
             image('garage-v2/car-'+cars[-1].design_id+'.png', x+4, y+2, 85, 46)
             label(cars[-1].name+' · 新车', x+103, y+23, 21, bold=True)
             if len(cars) > 1:
                 label('同时解锁：'+'、'.join(car.name for car in cars[:-1]),
                       x+103, y+44, 16, GRAY, wrap=inner-108)
-            y += 57
+            y += car_height+7
         if parts:
-            fill(x, y, inner, 39, (.91, .92, .94, .85))
-            image('garage-v2/'+('tire' if '前轮' in parts[0] else 'brake')+'.png', x+18, y+1, 38, 38)
-            label('、'.join(name[3:] for name in parts)+' · 零件', x+103, y+27, 19, wrap=inner-108)
-        if events:
-            label('赛事：'+'、'.join(events), x, 822, 16, GRAY, wrap=inner)
+            fill(x, y, inner, 46, (.91, .92, .94, .85))
+            part = next(part for part in PARTS if part.name == parts[0][3:])
+            image('garage-v2/'+PART_IMAGES[part.topic]+'.png', x+18, y+4, 38, 38)
+            label('、'.join(name[3:] for name in parts), x+103, y+28, 17, wrap=inner-108)
+        if events and not (cars or parts):
+            label('赛事：'+'、'.join(events), x, 742, 21, GRAY, wrap=inner)
     else:
         detail = race_result.reason or ('星级未提高，本场不重复发放积分。' if award['credits'] == 0 else '完成赛事。')
         detail = detail.rstrip('。')

@@ -7,8 +7,9 @@ import pytest
 from panda3d.core import Point2
 
 from application import CoastalDrive
-from career import EVENT_BY_ID, CareerProgress
+from career import EVENT_BY_ID, PART_BY_ID, CareerProgress
 from career_run import CareerResult
+from career_tuning import installed_parts
 from race import GameMode
 from session import Phase
 from vehicle_designs import vehicle_design
@@ -85,6 +86,91 @@ def test_purchase_install_failure_preserves_owned_part_and_retry_is_free(app, mo
     assert CareerProgress(app.career_progress.path).owned == {'sport-front'}
     app.career_action('restore')
     assert app.workspace_vehicle == before
+
+
+def test_power_suspension_mixed_install_reload_and_restore_use_actual_session_config(app):
+    before, snapshot = app.workspace_vehicle, app.session.current
+    app.career_action('garage')
+    app.career_action('garage-tab', 'upgrade')
+    app.career_action('garage-topic', 'power')
+    primary = app.career_panel.buttons[app.career_panel.primary]
+    assert primary['text'] == '8星解锁'
+    app.career_action('part', 'street-power')
+    assert app.workspace_vehicle == before and app.career_progress.credits == 0
+    for event in EVENT_BY_ID:
+        app.career_progress.record(CareerResult(event, 8., elapsed=25., finished=True, succeeded=True, stars=3))
+    versions = [before]
+    for part_id in ('street-power', 'sport-suspension', 'sport-front', 'sport-brakes'):
+        part = PART_BY_ID[part_id]
+        app.career_action('garage-topic', part.topic)
+        app.career_panel.select(app.career_panel.primary)
+        app.career_panel.key('enter')
+        versions.append(app.workspace_vehicle)
+        assert app.session.base_vehicle_config == app.workspace_vehicle.config
+        assert app.career_panel.buttons[app.career_panel.primary]['text'] == '已安装'
+    assert installed_parts(app.workspace_vehicle) == {'street-power', 'sport-suspension'}
+    assert app.career_progress.credits == 1010
+    app.career_action('garage-car', 'coastal-hatch')
+    app.career_action('garage-select')
+    app.career_action('garage-car', before.design_id)
+    app.career_action('garage-select')
+    assert WorkspaceVehicle.load(app.workspace_path) == versions[-1]
+    assert app.workspace_vehicle == versions[-1]
+    for part_id in ('street-power', 'sport-suspension'):
+        app.career_action('part', part_id)
+        assert app.workspace_vehicle == versions[-1] and app.career_progress.credits == 1010
+    for expected in reversed(versions[:-1]):
+        app.career_action('restore')
+        assert app.workspace_vehicle == expected and app.session.base_vehicle_config == expected.config
+    assert app.session.current == snapshot
+
+
+@pytest.mark.parametrize('part_id', ['street-power', 'sport-suspension'])
+def test_new_part_write_failure_can_retry_without_paying_twice(app, monkeypatch, part_id):
+    for event in EVENT_BY_ID:
+        app.career_progress.record(CareerResult(event, 8., elapsed=25., finished=True, succeeded=True, stars=3))
+    before = app.workspace_vehicle
+
+    def fail(self, path=None):
+        raise OSError('测试保存失败')
+
+    with monkeypatch.context() as patch:
+        patch.setattr(WorkspaceVehicle, 'save', fail)
+        app.career_action('part', part_id)
+        assert app.workspace_vehicle == before
+        assert part_id in app.career_progress.owned
+    app.career_action('part', part_id)
+    assert installed_parts(app.workspace_vehicle) == {part_id}
+    assert app.career_progress.credits == 2460-PART_BY_ID[part_id].price
+    app.career_action('restore')
+    assert app.workspace_vehicle == before
+
+
+def test_multiple_car_and_part_rewards_fit_narrow_result_panel(app, monkeypatch):
+    progress = app.career_progress
+    progress.record(CareerResult('first-drive', 8., elapsed=30., finished=True, succeeded=True, stars=2))
+    result = CareerResult('parking', 8., elapsed=21., finished=True, succeeded=True, stars=3)
+    award = progress.record(result)
+    assert len(award['vehicles']) == 4
+    assert sum(name.startswith('零件：') for name in award['unlocked']) == 2
+    monkeypatch.setattr(app, 'getAspectRatio', lambda: 4/3)
+    panel = app.career_panel
+    panel.show_result(progress, result, award)
+    rewards = [label for label in panel.labels if any(token in label.getText()
+        for token in ('新解锁', '· 新车', '同时解锁：', '运动前轮'))]
+    assert len(rewards) == 4
+    bounds = [label.getTightBounds(panel.content) for label in rewards]
+    for low, high in bounds:
+        assert low.z >= 1-828*2/941
+    for index, (low, high) in enumerate(bounds):
+        for other_low, other_high in bounds[index+1:]:
+            assert min(high.z, other_high.z) <= max(low.z, other_low.z)
+    only_event = CareerProgress(progress.path.with_name('event-only.json'))
+    result = CareerResult('first-drive', 8., elapsed=30., finished=True, succeeded=True, stars=2)
+    award = only_event.record(result)
+    assert award['unlocked'] == ('穿过海风',)
+    panel.show_result(only_event, result, award)
+    assert any(label.getText() == '赛事：穿过海风' for label in panel.labels)
 
 
 def test_collection_preview_lock_and_selection_preserve_actual_vehicle_until_confirmation(app):

@@ -38,7 +38,7 @@ def install_brakes(vehicle, index, workspace_path):
     return _install_config(vehicle, replace(vehicle.config, front_brake_share=BRAKE_SHARES[index]), workspace_path, '制动分配')
 
 
-def _install_config(vehicle, config, workspace_path, topic):
+def _install_config(vehicle, config, workspace_path, topic, *, career_parts=None):
     if config == vehicle.config:
         return vehicle
     digest = vehicle_digest(vehicle)
@@ -51,6 +51,10 @@ def _install_config(vehicle, config, workspace_path, topic):
         vehicle.save(backup)
     metadata = {'basis': f'游戏{topic}教学配方；原标定与成绩留在原车副本，当前车须重新验证。',
                 'tuning_previous': backup.name}
+    if career_parts is not None:
+        metadata['career_parts'] = sorted(career_parts)
+    elif vehicle.parameter_metadata is not None and 'career_parts' in vehicle.parameter_metadata:
+        metadata['career_parts'] = vehicle.parameter_metadata['career_parts']
     candidate = replace(vehicle, config=config,
         parameter_metadata=metadata, report_path=None, workshop_result=None, scheme_id=None)
     candidate.save(workspace_path)

@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "size": [
+    1024,
+    768
+  ],
+  "captures": [
+    "upgrade-power.png",
+    "upgrade-suspension.png"
+  ],
+  "orbit": 0.0,
+  "stars": 18,
+  "new_driving_steps": 0,
+  "scope": "隔离星级夹具，仅采集静态页面；不重复道路驾驶，不替代原功能T1或人工观感"
+}

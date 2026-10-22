@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "baseline": "fcad47e0",
+  "design_count": 10,
+  "stock_configs_unchanged": true,
+  "scope": "all full dataclass fields; explicit purchased upgrades tested separately"
+}

@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT/'src'))
 from panda3d.core import Filename
 
 from application import CoastalDrive
-from career import EVENT_BY_ID
+from career import EVENT_BY_ID, CareerProgress
 from career_run import CareerResult
 from vehicle_designs import vehicle_design
 from vehicle_workspace import WorkspaceVehicle
@@ -53,6 +53,11 @@ def capture(output, size, only=()):
         award = app.career_progress.record(parking)
         app.career_panel.show_result(app.career_progress, parking, award)
         shot('03-result-five-stars')
+        multi = CareerProgress(output/'multi-career.json')
+        multi.record(CareerResult('first-drive', 8., elapsed=30., finished=True, succeeded=True, stars=2))
+        three = CareerResult('parking', 8., elapsed=21., finished=True, succeeded=True, stars=3)
+        app.career_panel.show_result(multi, three, multi.record(three))
+        shot('03-result-multiple-unlocks')
         app.open_career()
         shot('04-events-progress')
         panel = app.career_panel

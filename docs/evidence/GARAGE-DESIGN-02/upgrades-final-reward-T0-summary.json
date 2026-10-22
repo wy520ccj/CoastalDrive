@@ -1,0 +1,51 @@
+{
+  "started_utc": "2026-10-22T11:31:36.045509+00:00",
+  "git_head": "fcad47e0d83cd2bf4f64157c5edb0cadc43d86a0",
+  "git_status": "M docs/asset-register.csv\n M docs/current-progress.md\n M docs/design/garage-v2/layout-contract.md\n M docs/tasks/GARAGE-DESIGN-02.md\n M src/application.py\n M src/career.py\n M src/tire_tuning.py\n M src/ui/career_layout.py\n M src/ui/garage_layout.py\n M tests/test_career.py\n M tests/test_career_ui.py\n M tests/test_ui_theme.py\n M tools/career_design_capture.py\n M tools/garage_design_capture.py\n M tools/validate.py\n?? art/ui/garage-upgrades/\n?? assets/game/ui/garage-v2/Parts-License.txt\n?? assets/game/ui/garage-v2/power-part.png\n?? assets/game/ui/garage-v2/suspension-part.png\n?? docs/design/garage-v2/09-power-License.txt\n?? docs/design/garage-v2/09-power-prompt.txt\n?? docs/design/garage-v2/09-power.png\n?? docs/design/garage-v2/10-suspension-prompt.txt\n?? docs/design/garage-v2/10-suspension.png\n?? docs/evidence/GARAGE-DESIGN-02/upgrades.md\n?? src/career_tuning.py\n?? tests/test_career_tuning.py\n?? tools/career_upgrade_check.py\n?? tools/career_upgrade_ui_check.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_career_ui.py::test_multiple_car_and_part_rewards_fit_narrow_result_panel"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\GARAGE-DESIGN-02-upgrades-final-reward-T0\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.164
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_career_ui.py::test_multiple_car_and_part_rewards_fit_narrow_result_panel"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\GARAGE-DESIGN-02-upgrades-final-reward-T0\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 9.285
+    }
+  ]
+}
