@@ -53,6 +53,18 @@ def bounds(objects):
     return low, high
 
 
+def fit_catalog_camera(scene, camera, objects):
+    """目录图按真实网格投影统一留边，不让近端车头或轮胎被裁掉。"""
+    bpy.context.view_layer.update()
+    inverse = camera.matrix_world.inverted()
+    points = [inverse@(obj.matrix_world@Vector(p)) for obj in objects for p in obj.bound_box]
+    left, right = min(p.x for p in points), max(p.x for p in points)
+    bottom, top = min(p.y for p in points), max(p.y for p in points)
+    camera.data.type = 'ORTHO'
+    camera.data.ortho_scale = max(right-left, (top-bottom)*scene.render.resolution_x/scene.render.resolution_y)/.88
+    camera.location += camera.matrix_world.to_quaternion()@Vector(((left+right)/2, (bottom+top)/2, 0))
+
+
 def output(scene, name):
     scene.render.filepath = str(OUT/(name+'.png'))
     bpy.ops.render.render(write_still=True)
@@ -115,6 +127,9 @@ def render_shadow(name, path, scale=1.):
 
 def main():
     selected = sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
+    thumbnails_only = '--thumbnails-only' in selected
+    if thumbnails_only:
+        selected.remove('--thumbnails-only')
     for name, filename in (('game-tuned', 'classic_coupe_v1.glb'), ('coastal-hatch', 'coastal_hatch.glb'),
                            ('coastal-roadster', 'coastal_roadster.glb'),
                            ('gr86-2022-premium-6mt', 'gr86_2022_premium.glb'),
@@ -131,6 +146,8 @@ def main():
             path = ROOT/'art/vehicles/club_coupe.glb'
         elif name == 'coastal-hatch':
             path = ROOT/'art/vehicles/racing_hatch.glb'
+        elif name == 'coastal-roadster':
+            path = ROOT/'art/vehicles/lotus_elise.glb'
         else:
             path = ROOT/'assets/game/vehicles'/filename if filename else ROOT/'art/vehicles/sources/car-concept/CarConcept.glb'
         objects = import_car(path)
@@ -138,7 +155,10 @@ def main():
         low, high = bounds(objects)
         aim(camera, (low+high)/2, (high-low).length*1.1,
             (-1, -1.6, .8) if filename is None else (1, 1.6, .8))
+        fit_catalog_camera(scene, camera, objects)
         output(scene, 'car-'+name)
+    if thumbnails_only:
+        return
     if selected:
         if 'game-tuned' in selected:
             render_shadow('contact-shadow-brz', ROOT/'art/vehicles/subaru_brz.glb')
@@ -148,6 +168,8 @@ def main():
             render_shadow('contact-shadow-club-coupe', ROOT/'art/vehicles/club_coupe.glb', .75)
         if 'coastal-hatch' in selected:
             render_shadow('contact-shadow-hatch', ROOT/'art/vehicles/racing_hatch.glb')
+        if 'coastal-roadster' in selected:
+            render_shadow('contact-shadow-elise', ROOT/'art/vehicles/lotus_elise.glb')
         if 'paint' not in selected:
             return
     for name, object_name in (() if selected else (('tire', 'WheelFrontL'), ('brake', 'WheelFrontLBrakeDisc'))):

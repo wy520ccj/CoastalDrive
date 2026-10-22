@@ -1,0 +1,138 @@
+[
+  {
+    "path": "art/vehicles/elise-fit.json",
+    "sha256": "6f89f375787f52b844f52f7354d6f31a0f4b3c69be3ad3f823ad6e4cc511d7c9"
+  },
+  {
+    "path": "art/vehicles/elise-source.json",
+    "sha256": "d00ec3b60b9d31530561a84d62a1fddeed4285f5e83f03b9fa452b53c9b428c3"
+  },
+  {
+    "path": "art/vehicles/lotus_elise.blend",
+    "sha256": "6f7bc662b80c2003e9b88717811e0106962a3f2dcaa85dad97aa4b4fe34021f3"
+  },
+  {
+    "path": "art/vehicles/lotus_elise.glb",
+    "sha256": "0e80adeaece0a3c93139686bbd483373628f44a345a217da73d088305833c845"
+  },
+  {
+    "path": "art/vehicles/sources/lotus-elise/README.md",
+    "sha256": "0992463685d9e38f6860d007f04d56646637fdf42226f827877df7b5bf1885a2"
+  },
+  {
+    "path": "art/vehicles/sources/lotus-elise/download-record.json",
+    "sha256": "6d1a4dc084c4c138b96c00d57ecda4b5f4c080e1534e45536d0353c9ee77eefa"
+  },
+  {
+    "path": "art/vehicles/sources/lotus-elise/lotus-elise-original.glb",
+    "sha256": "b08d16684febd7cb541ffb870df304b985cc7e9337e8d010cc3d4d665f3ff19a"
+  },
+  {
+    "path": "art/vehicles/sources/lotus-elise/sketchfab-metadata.json",
+    "sha256": "2240f691f4779defd7bbb7ba16877010a07bd8cadc4e2dfef4e92890bc467e34"
+  },
+  {
+    "path": "assets/game/ui/garage-v2/car-club-coupe.png",
+    "sha256": "dc5256d692639e1d178520a99998ea994de9984d431edb63283925f307b9cb18"
+  },
+  {
+    "path": "assets/game/ui/garage-v2/car-coastal-gt.png",
+    "sha256": "ce5308346bf775f5d553dc499b4ef587071c64fe0c47f4291d7c07e78e778625"
+  },
+  {
+    "path": "assets/game/ui/garage-v2/car-coastal-hatch.png",
+    "sha256": "473eb86d0ffd92016d21d1fb8d43fff8264f27498e52711b480a80f1c91dd806"
+  },
+  {
+    "path": "assets/game/ui/garage-v2/car-coastal-roadster.png",
+    "sha256": "a6b19646c09be83087b4b0a169a1d3a085af6079a6b25161e94988cd8d3acbbf"
+  },
+  {
+    "path": "assets/game/ui/garage-v2/car-game-tuned.png",
+    "sha256": "45e26332c208f37e808d81d348f153b37af9fc30c100d5bcc6cc380456e37c26"
+  },
+  {
+    "path": "assets/game/ui/garage-v2/car-gr86-2022-premium-6mt.png",
+    "sha256": "55b4da2ec71a4bab9a57a1ea92834a8b15a037a1c359bcfd75f5c44b2844002c"
+  },
+  {
+    "path": "assets/game/ui/garage-v2/car-subaru-wrx-sti.png",
+    "sha256": "a0d1797e0320d0a2d7aa79fd7c1d1eae26b70e6229b144aa57d7bfafb0b0bc68"
+  },
+  {
+    "path": "assets/game/ui/garage-v2/contact-shadow-elise.png",
+    "sha256": "fad1947782ff66a135a025d64488ca485c869f2a46c26cf34cff6c4e23941957"
+  },
+  {
+    "path": "assets/game/vehicles/Lotus-Elise-License.txt",
+    "sha256": "336dca03ce2ab9b7d07352cb01d32407685a6ebb621ae3f81fe66d8f30a89cc9"
+  },
+  {
+    "path": "assets/game/vehicles/elise-manifest.json",
+    "sha256": "c889899a940f955c9823427aa4e8ed36be98e74d9fb0e0365b872ba0145c39a6"
+  },
+  {
+    "path": "assets/game/vehicles/lotus_elise.bam",
+    "sha256": "ab158e48c01d7c62646474dd2a3a2caa91314e4cf4f6ac87c4a95cd139f0656d"
+  },
+  {
+    "path": "docs/asset-register.csv",
+    "sha256": "f9aa6313954563028febcd97130b44c876c37fe693da1be7dc6955edab2fad57"
+  },
+  {
+    "path": "docs/current-progress.md",
+    "sha256": "cc9ca1aa4a7d56d28ae4e5701d3221d16e7419221d8b70e96e089c7372df79a3"
+  },
+  {
+    "path": "docs/design/garage-v2/layout-contract.md",
+    "sha256": "86185e2e6bad98a41a53972b52cfefa0d14c0ae6a28fda0df02835b243518962"
+  },
+  {
+    "path": "docs/design/garage-v2/resource-candidates.md",
+    "sha256": "e191455ac5977fb48c9fd08655930dece8c7ca8c7d9798852ec49326cf41fab3"
+  },
+  {
+    "path": "docs/tasks/GARAGE-DESIGN-02.md",
+    "sha256": "101a6a90f65a8dca0de18ffbb185e242266b0d21eb2b3be6729cca60315be3d0"
+  },
+  {
+    "path": "src/career_garage.py",
+    "sha256": "895d3449aacb897ca4d3e4ed8e824d367038519950d038240a9f29561948ae49"
+  },
+  {
+    "path": "src/skins.py",
+    "sha256": "322d79b280c49b06cd50142483d581dfd3b12b67332e091a1b95f9a4bd48bdfe"
+  },
+  {
+    "path": "src/ui/garage_layout.py",
+    "sha256": "8221d149f18342833033459d9aff23035e50d69765a8225a697d53ab7d4de2bc"
+  },
+  {
+    "path": "src/ui/workshop_vehicle.py",
+    "sha256": "e64ed79f127315b643955bc388fd76f5711eee7da2df995da266daeae30a7324"
+  },
+  {
+    "path": "src/vehicle_designs.py",
+    "sha256": "98f2d9d267f8769535913d393dab3282d9d3923ad6745539e3c23ea3c10fe81a"
+  },
+  {
+    "path": "tests/test_career_garage.py",
+    "sha256": "2e07bfc1af69b7dbe13b4f4c2b88433a268bb668213dac4b93a696a917d6797d"
+  },
+  {
+    "path": "tests/test_ui_theme.py",
+    "sha256": "3c97f35b0ffa8a8f849b904e462a679bc808483d78cf59d45f4bf6a748543b13"
+  },
+  {
+    "path": "tools/blender/prepare_elise.py",
+    "sha256": "520011e7df3df18caf97bf626f2648ceabfa950e8722879ef9312df417e9d45e"
+  },
+  {
+    "path": "tools/blender/render_garage_catalog.py",
+    "sha256": "45c6baea5c3f4cff26834c28bfc9b8a6af5188fac7dfe13f3b69665da2baab65"
+  },
+  {
+    "path": "tools/vehicles/prepare_elise.py",
+    "sha256": "439b0e91400cfbc4273a9837d4ef49f16b6048998993f0b3670604bac586aeef"
+  }
+]

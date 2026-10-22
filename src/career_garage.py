@@ -21,7 +21,8 @@ class GarageCar:
 GARAGE_CARS = (
     GarageCar('game-tuned', 'sports', 'Subaru BRZ', '双门 / 后轮驱动', 'BRZ Varis开放车模，保留熟悉的项目后驱调校。', 0),
     GarageCar('coastal-hatch', 'coastal-hatch', 'Hyundai i20', '掀背 / 前轮驱动', '开放车模；沿用项目轻型前驱调校，适合入门与绕桩。', 0),
-    GarageCar('coastal-roadster', 'coastal-roadster', '晴岚 R2', '敞篷 / 后轮驱动', '轻量双座，享受沿海连续弯道。', 3),
+    GarageCar('coastal-roadster', 'coastal-roadster', 'Lotus Elise', '敞篷 / 后轮驱动',
+              '开放的Elise车模，沿用项目轻量后驱调校。', 3),
     GarageCar('gr86-2022-premium-6mt', 'gr86-2022', 'GR86 Premium', '跑车 / 后轮驱动', '六速手动硬件设计，体验另一种驾驶节奏。', 5),
     GarageCar('coastal-gt', 'coastal-gt', '远航 GT', 'GT / 四轮驱动', '更强动力与四驱，迎接海岸杯。', 9),
     GarageCar('club-coupe', 'club-coupe', 'BMW 1M Coupé', '双门 / 后轮驱动', '开放车模；项目通用后驱调校，非原厂参数。', 3),

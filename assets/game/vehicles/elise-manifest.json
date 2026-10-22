@@ -1,0 +1,16 @@
+{
+  "source": "art\\vehicles\\lotus_elise.glb",
+  "source_sha256": "0e80adeaece0a3c93139686bbd483373628f44a345a217da73d088305833c845",
+  "output": "assets\\game\\vehicles\\lotus_elise.bam",
+  "output_sha256": "ab158e48c01d7c62646474dd2a3a2caa91314e4cf4f6ac87c4a95cd139f0656d",
+  "triangles": 396170,
+  "author": "Stéphane Agullo",
+  "license": "CC-BY-4.0",
+  "source_scene_manifest": "art/vehicles/elise-source.json",
+  "changes": [
+    "保留完整车身/灯组/内饰源网格",
+    "四轮独立根",
+    "车漆分区命名paint",
+    "法线与材质按离线源导出"
+  ]
+}

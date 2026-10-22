@@ -1,0 +1,10 @@
+{
+  "wheelbase": 2.34,
+  "track_width": 1.548,
+  "wheel_radius": 0.31,
+  "wheel_width": 0.215,
+  "collision_half_width": 0.9,
+  "collision_half_length": 1.98,
+  "collision_half_height": 0.49,
+  "body_center_height": 0.66
+}

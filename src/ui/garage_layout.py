@@ -128,7 +128,7 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
     power = max(rpm*torque/9549.3 for rpm, torque in config.torque_curve)
     fill(width-195, 126, 2, 62, (.98, .98, .98, .95), 0)
     label(car.name, width-55, 150, 25, WHITE, True, right=True)
-    tuning = '项目调校 · ' if preview.design_id in ('game-tuned', 'coastal-hatch', 'club-coupe', 'subaru-wrx-sti') else ''
+    tuning = '项目调校 · ' if preview.design_id in ('game-tuned', 'coastal-hatch', 'coastal-roadster', 'club-coupe', 'subaru-wrx-sti') else ''
     label(f'{tuning}{power:.0f} kW  /  {config.mass:.0f} kg', width-55, 183, 17, WHITE, right=True)
     if tab == 'upgrade':
         label(car.name+' · '+car.category.split('/')[-1].strip(), left+inset, 223, 20, GRAY)

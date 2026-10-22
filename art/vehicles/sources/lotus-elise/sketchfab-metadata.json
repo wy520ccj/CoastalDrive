@@ -1,0 +1,262 @@
+{
+  "animationCount": 1,
+  "categories": [
+    {
+      "uid": "22a2f677efad4d7bbca5ad45f9b5868e",
+      "name": "Cars & Vehicles",
+      "slug": "cars-vehicles",
+      "uri": "https://api.sketchfab.com/v3/categories/22a2f677efad4d7bbca5ad45f9b5868e",
+      "icon": "https://static.sketchfab.com/static/builds/web/dist/static/assets/images/icons/categories/45dd0cc0860ac57fcd63bde1cc3f2b7c-v2.svg",
+      "thumbnails": [
+        {
+          "width": "512",
+          "height": "288",
+          "url": "https://static.sketchfab.com/categories/22a2f677efad4d7bbca5ad45f9b5868e/512x288.png"
+        },
+        {
+          "width": "800",
+          "height": "450",
+          "url": "https://static.sketchfab.com/categories/22a2f677efad4d7bbca5ad45f9b5868e/800x450.png"
+        }
+      ]
+    }
+  ],
+  "commentCount": 55,
+  "createdAt": "2016-05-25T05:19:15.951491",
+  "embedUrl": "https://sketchfab.com/models/75e9045ac1af4cdbb69318108c81edfd/embed",
+  "faceCount": 434935,
+  "isAgeRestricted": false,
+  "license": {
+    "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+    "label": "CC Attribution",
+    "fullName": "Creative Commons Attribution",
+    "requirements": "Author must be credited. Commercial use is allowed.",
+    "url": "http://creativecommons.org/licenses/by/4.0/",
+    "slug": "by"
+  },
+  "likeCount": 1446,
+  "name": "LOTUS ÉLISE",
+  "publishedAt": "2016-05-25T10:43:20.785948",
+  "soundCount": 1,
+  "staffpickedAt": "2017-07-12T11:23:10.318705",
+  "tags": [
+    {
+      "name": "virtual",
+      "slug": "virtual",
+      "uri": "https://api.sketchfab.com/v3/tags/virtual"
+    },
+    {
+      "name": "lightwave",
+      "slug": "lightwave",
+      "uri": "https://api.sketchfab.com/v3/tags/lightwave"
+    },
+    {
+      "name": "drive",
+      "slug": "drive",
+      "uri": "https://api.sketchfab.com/v3/tags/drive"
+    },
+    {
+      "name": "sound",
+      "slug": "sound",
+      "uri": "https://api.sketchfab.com/v3/tags/sound"
+    },
+    {
+      "name": "study",
+      "slug": "study",
+      "uri": "https://api.sketchfab.com/v3/tags/study"
+    },
+    {
+      "name": "webgl",
+      "slug": "webgl",
+      "uri": "https://api.sketchfab.com/v3/tags/webgl"
+    },
+    {
+      "name": "experimental",
+      "slug": "experimental",
+      "uri": "https://api.sketchfab.com/v3/tags/experimental"
+    },
+    {
+      "name": "bake",
+      "slug": "bake",
+      "uri": "https://api.sketchfab.com/v3/tags/bake"
+    },
+    {
+      "name": "vr",
+      "slug": "vr",
+      "uri": "https://api.sketchfab.com/v3/tags/vr"
+    },
+    {
+      "name": "simulation",
+      "slug": "simulation",
+      "uri": "https://api.sketchfab.com/v3/tags/simulation"
+    },
+    {
+      "name": "fbx",
+      "slug": "fbx",
+      "uri": "https://api.sketchfab.com/v3/tags/fbx"
+    },
+    {
+      "name": "lotus",
+      "slug": "lotus",
+      "uri": "https://api.sketchfab.com/v3/tags/lotus"
+    },
+    {
+      "name": "sim",
+      "slug": "sim",
+      "uri": "https://api.sketchfab.com/v3/tags/sim"
+    },
+    {
+      "name": "Elise",
+      "slug": "elise",
+      "uri": "https://api.sketchfab.com/v3/tags/elise"
+    },
+    {
+      "name": "experience",
+      "slug": "experience",
+      "uri": "https://api.sketchfab.com/v3/tags/experience"
+    },
+    {
+      "name": "royalty",
+      "slug": "royalty",
+      "uri": "https://api.sketchfab.com/v3/tags/royalty"
+    },
+    {
+      "name": "octane",
+      "slug": "octane",
+      "uri": "https://api.sketchfab.com/v3/tags/octane"
+    },
+    {
+      "name": "gltf",
+      "slug": "gltf",
+      "uri": "https://api.sketchfab.com/v3/tags/gltf"
+    },
+    {
+      "name": "virtuality",
+      "slug": "virtuality",
+      "uri": "https://api.sketchfab.com/v3/tags/virtuality"
+    },
+    {
+      "name": "clearcoat",
+      "slug": "clearcoat",
+      "uri": "https://api.sketchfab.com/v3/tags/clearcoat"
+    },
+    {
+      "name": "3d",
+      "slug": "3d",
+      "uri": "https://api.sketchfab.com/v3/tags/3d"
+    },
+    {
+      "name": "car",
+      "slug": "car",
+      "uri": "https://api.sketchfab.com/v3/tags/car"
+    },
+    {
+      "name": "animation",
+      "slug": "animation",
+      "uri": "https://api.sketchfab.com/v3/tags/animation"
+    },
+    {
+      "name": "free",
+      "slug": "free",
+      "uri": "https://api.sketchfab.com/v3/tags/free"
+    }
+  ],
+  "thumbnails": {
+    "images": [
+      {
+        "uid": "877a23e692584a8f83dc2073b5413597",
+        "width": 1920,
+        "height": 1080,
+        "size": 408230,
+        "url": "https://media.sketchfab.com/models/75e9045ac1af4cdbb69318108c81edfd/thumbnails/fc825d813794415bbfc38dddb5cb088f/20909996d83e4130ab9c990db2a7a5d6.jpeg"
+      },
+      {
+        "uid": "06bc4d6229214b13b4a566c223537430",
+        "width": 1024,
+        "height": 576,
+        "size": 66307,
+        "url": "https://media.sketchfab.com/models/75e9045ac1af4cdbb69318108c81edfd/thumbnails/fc825d813794415bbfc38dddb5cb088f/f6a1ce40d0014407817f24a77ad310a5.jpeg"
+      },
+      {
+        "uid": "399aa33a185b4db6b86ea40dcd37a30c",
+        "width": 720,
+        "height": 405,
+        "size": 33587,
+        "url": "https://media.sketchfab.com/models/75e9045ac1af4cdbb69318108c81edfd/thumbnails/fc825d813794415bbfc38dddb5cb088f/2f665c71471f40fc8e16efef30758170.jpeg"
+      },
+      {
+        "uid": "f4695f6503704162ad2b15e6f53c5219",
+        "width": 256,
+        "height": 144,
+        "size": 5821,
+        "url": "https://media.sketchfab.com/models/75e9045ac1af4cdbb69318108c81edfd/thumbnails/fc825d813794415bbfc38dddb5cb088f/0a37bc05a9de4c659274d010a8077a88.jpeg"
+      },
+      {
+        "uid": "160ddfd626c64527a21b69fc94a741ae",
+        "width": 64,
+        "height": 36,
+        "size": 901,
+        "url": "https://media.sketchfab.com/models/75e9045ac1af4cdbb69318108c81edfd/thumbnails/fc825d813794415bbfc38dddb5cb088f/92da3583642a4a02afe3ee47919372b0.jpeg"
+      }
+    ]
+  },
+  "uid": "75e9045ac1af4cdbb69318108c81edfd",
+  "uri": "https://api.sketchfab.com/v3/models/75e9045ac1af4cdbb69318108c81edfd",
+  "user": {
+    "uid": "2eed75cc8ee34092965575cfeb290074",
+    "username": "sa3d",
+    "displayName": "Stéphane Agullo",
+    "account": "pro",
+    "profileUrl": "https://sketchfab.com/sa3d",
+    "avatar": {
+      "uid": "30c0e7cae4cb42569c37e1c3510bcafc",
+      "uri": "https://api.sketchfab.com/v3/avatars/30c0e7cae4cb42569c37e1c3510bcafc",
+      "images": [
+        {
+          "width": 32,
+          "height": 32,
+          "size": 1000,
+          "url": "https://media.sketchfab.com/avatars/30c0e7cae4cb42569c37e1c3510bcafc/a10aa53c240043918255849b0fc662fb.jpeg"
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "size": 1219,
+          "url": "https://media.sketchfab.com/avatars/30c0e7cae4cb42569c37e1c3510bcafc/ee0c9ee4c9fe46f0bc35f0a8d40f99a4.jpeg"
+        },
+        {
+          "width": 90,
+          "height": 90,
+          "size": 2139,
+          "url": "https://media.sketchfab.com/avatars/30c0e7cae4cb42569c37e1c3510bcafc/0cf6c05ef031482bb4319c683698c1ef.jpeg"
+        },
+        {
+          "width": 100,
+          "height": 100,
+          "size": 2532,
+          "url": "https://media.sketchfab.com/avatars/30c0e7cae4cb42569c37e1c3510bcafc/e44c433339f54ae7a17791b8f00cbb06.jpeg"
+        }
+      ]
+    },
+    "uri": "https://api.sketchfab.com/v3/users/2eed75cc8ee34092965575cfeb290074"
+  },
+  "vertexCount": 238486,
+  "viewCount": 115432,
+  "viewerUrl": "https://sketchfab.com/3d-models/lotus-elise-75e9045ac1af4cdbb69318108c81edfd",
+  "isDownloadable": true,
+  "isProtected": false,
+  "description": "**Thank you all for your comments !**\n\nModel + .zip *(297MB)* now available in Royalty Free !\n\nDesigned on blueprint, bake sim, free for pro use, do what you want !\n\n*Study | Modeling | Surfacing | Lighting | Setup | Simulation | Animation | Sound | Web*\n___\n**SKETCHFAB FBX / gLTF  **+**  LIGHTWAVE 3D PROJECT  **+**  DAE / OBJ / FBX EXPORTS  **+**  LOW / HIGH POLYGONS  **+**  BASE / FIXE / ANIM / SWITCH SCENES**\n___\n![](http://www.stephane-agullo.fr/files/sketchfab/LOTUS_01.jpg)\n![](http://www.stephane-agullo.fr/files/sketchfab/LOTUS_02.jpg)\n![](http://www.stephane-agullo.fr/files/sketchfab/LOTUS_03.jpg)\n___\n[** ✓ **] *Free for commercial use.*\n\n[** ✓ **] *No attribution required.*\n\n[** ✓ **] *Copyright-free.*\n___",
+  "price": null,
+  "downloadCount": 27665,
+  "editorUrl": "https://sketchfab.com/models/75e9045ac1af4cdbb69318108c81edfd/edit",
+  "status": {
+    "warning": {},
+    "processing": "SUCCEEDED"
+  },
+  "source": "website",
+  "hasCommentsDisabled": false,
+  "updatedAt": "2022-07-20T15:18:53.405766",
+  "pbrType": null,
+  "textureCount": 9,
+  "materialCount": 25
+}

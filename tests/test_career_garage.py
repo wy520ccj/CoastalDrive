@@ -1,9 +1,12 @@
 """车库的逐车配置与保存失败，不修改工程历史或已有车型。"""
 
+import hashlib
+import json
 from dataclasses import replace
+from pathlib import Path
 
 import pytest
-from panda3d.core import MaterialAttrib, NodePath
+from panda3d.core import Filename, MaterialAttrib, NodePath, PNMImage
 
 from career_garage import (
     CAR_BY_DESIGN,
@@ -80,7 +83,7 @@ def test_new_models_load_with_configured_body_and_four_independent_wheels(design
                  for part in body.findAllMatches('**/+GeomNode') for state in part.node().getGeomStates()}
         assert 'Rear lamps' in names
     low, high = body.getTightBounds(parent)
-    if definition.id in ('coastal-hatch', 'coastal-gt', 'club-coupe', 'subaru-wrx-sti'):
+    if definition.id in ('coastal-hatch', 'coastal-roadster', 'coastal-gt', 'club-coupe', 'subaru-wrx-sti'):
         # 外购低矮车身按轮拱装配，后视镜允许伸出不含镜片的车身碰撞盒。
         assert high.x-low.x <= config.collision_half_width*2+.12
         assert high.y-low.y <= config.collision_half_length*2
@@ -91,3 +94,46 @@ def test_new_models_load_with_configured_body_and_four_independent_wheels(design
             config.collision_half_length*2, config.collision_half_height*2), abs=1e-5)
     assert CAR_BY_DESIGN[design_id].model_id == definition.id
     parent.removeNode()
+
+
+def test_elise_retains_source_vehicle_geometry_and_current_author_license():
+    root = Path(__file__).resolve().parents[1]
+    source = root/'art/vehicles/sources/lotus-elise'
+    metadata = json.loads((source/'sketchfab-metadata.json').read_text(encoding='utf-8'))
+    assert metadata['uid'] == '75e9045ac1af4cdbb69318108c81edfd'
+    assert metadata['license']['slug'] == 'by' and metadata['user']['username'] == 'sa3d'
+    manifest = json.loads((root/'assets/game/vehicles/elise-manifest.json').read_text(encoding='utf-8'))
+    extraction = json.loads((root/'art/vehicles/elise-source.json').read_text(encoding='utf-8'))
+    assert hashlib.sha256((source/'lotus-elise-original.glb').read_bytes()).hexdigest() == extraction['source_sha256']
+    assert hashlib.sha256((root/'art/vehicles/lotus_elise.glb').read_bytes()).hexdigest() == manifest['source_sha256']
+    assert hashlib.sha256((root/'assets/game/vehicles/lotus_elise.bam').read_bytes()).hexdigest() == manifest['output_sha256']
+    parent = NodePath('elise-source-check')
+    car, wheels = load_vehicle(parent, vehicle_for_design('coastal-roadster', 'sports'),
+                              config=vehicle_design('coastal-roadster').config)
+    triangles = sum(primitive.decompose().getNumPrimitives() for part in car.findAllMatches('**/+GeomNode')
+        for geom in part.node().getGeoms() for primitive in geom.getPrimitives())
+    triangles += sum(primitive.decompose().getNumPrimitives() for wheel in wheels
+        for part in wheel.findAllMatches('**/+GeomNode') for geom in part.node().getGeoms()
+        for primitive in geom.getPrimitives())
+    assert triangles == manifest['triangles'] == extraction['triangles']
+    assert 350000 < triangles < metadata['faceCount']
+    names = {part.getName() for part in car.findAllMatches('**/+GeomNode')}
+    assert not any('NANA' in name or 'SOL' in name or 'Layer11_' in name for name in names)
+    materials = {state.getAttrib(MaterialAttrib).getMaterial().getName()
+        for part in car.findAllMatches('**/+GeomNode') for state in part.node().getGeomStates()}
+    assert {'Body Paint', 'Elise cabin upholstery', 'Elise clear glass',
+            'Elise red tail lamps', 'Elise headlamp lenses', 'Elise mirrors'} <= materials
+    assert CAR_BY_DESIGN['coastal-roadster'].name == 'Lotus Elise'
+    assert (root/'assets/game/vehicles/Lotus-Elise-License.txt').is_file()
+    parent.removeNode()
+
+
+@pytest.mark.parametrize('design_id', list(CAR_BY_DESIGN))
+def test_catalog_thumbnail_keeps_the_whole_car_inside_its_frame(design_id):
+    root = Path(__file__).resolve().parents[1]
+    thumbnail = PNMImage()
+    path = root/'assets/game/ui/garage-v2'/('car-'+design_id+'.png')
+    assert thumbnail.read(Filename.fromOsSpecific(str(path)))
+    width, height = thumbnail.getXSize(), thumbnail.getYSize()
+    assert max(thumbnail.getAlpha(x, y) for x in range(width) for y in (0, height-1)) < .01
+    assert max(thumbnail.getAlpha(x, y) for y in range(height) for x in (0, width-1)) < .01

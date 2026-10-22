@@ -55,7 +55,7 @@ VEHICLES = (
                       True, False, physics_id="gr86-2022-premium-6mt"),
     VehicleDefinition('coastal-hatch', 'Hyundai i20', 'vehicles/racing_hatch.bam', 'hero',
                       True, False, physics_id='coastal-hatch'),
-    VehicleDefinition('coastal-roadster', '晴岚 R2', 'vehicles/coastal_roadster.glb', 'hero',
+    VehicleDefinition('coastal-roadster', 'Lotus Elise', 'vehicles/lotus_elise.bam', 'hero',
                       True, False, physics_id='coastal-roadster'),
     VehicleDefinition('coastal-gt', '远航 GT', 'vehicles/car_concept.bam', 'hero',
                       True, False, physics_id='coastal-gt'),
@@ -145,7 +145,7 @@ def apply_skin(model, index):
     material.setName("vehicle-paint")
     quality = model.getPythonTag("vehicle-quality") or "legacy"
     material.setBaseColor(Vec4(*paint_color(index, quality=quality), 1))
-    concept = model.getName() in ('car-concept', 'club-coupe', 'racing-hatch', 'subaru-wrx-sti', 'subaru-brz')
+    concept = model.getName() in ('car-concept', 'club-coupe', 'racing-hatch', 'subaru-wrx-sti', 'subaru-brz', 'lotus-elise')
     material.setRoughness(.12 if concept else {"hero": 0.32, "traffic": 0.36}.get(quality, 0.45))
     material.setMetallic(.65 if concept else 0)
     for part in model.findAllMatches("**/paint"):

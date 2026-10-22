@@ -1,0 +1,30 @@
+LOTUS ELISE model
+Author: Stéphane Agullo (sa3d)
+Author profile: https://sketchfab.com/sa3d
+Source: https://sketchfab.com/3d-models/lotus-elise-75e9045ac1af4cdbb69318108c81edfd
+License: Creative Commons Attribution 4.0 International
+https://creativecommons.org/licenses/by/4.0/
+
+Original source GLB was obtained from the publicly downloadable Ai2 Objaverse
+archive. Its embedded asset extras identify the same author, source UID and
+CC-BY-4.0 license; the author's current primary Sketchfab API confirms that
+license. Individual objects retain their own licenses. Objaverse dataset citation:
+Deitke et al., Objaverse: A Universe of Annotated 3D Objects, arXiv:2212.08051.
+https://huggingface.co/datasets/allenai/objaverse
+
+CoastalDrive changes: extract the complete vehicle body, cabin, lamps, mirrors
+and modeled wheels; omit the presentation environment, figure, baked animation,
+removable soft top and antenna; adapt mesh proportions and rebuild normals for
+the existing coastal-roadster hardware; convert materials to PBR and variable
+paint; remove badges and blank the plate/hub textures; export four independent
+wheel roots to BAM. No primitive body or wheel substitutes are used.
+Thumbnail and contact shadow are rendered from this mesh using the project's
+Poly Haven Skylit Garage CC0 HDRI (Greg Zaal).
+
+Original source and primary metadata: art/vehicles/sources/lotus-elise/
+Editable derivative: art/vehicles/lotus_elise.blend
+Reproduction tools: tools/blender/prepare_elise.py, tools/vehicles/prepare_elise.py
+
+The vehicle retains CoastalDrive's existing generic lightweight roadster
+configuration and is labeled project tuning, not Lotus factory calibration.
+No endorsement by Lotus or the model author is asserted.

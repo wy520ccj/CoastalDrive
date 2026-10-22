@@ -1,0 +1,11 @@
+{
+  "source_uid": "75e9045ac1af4cdbb69318108c81edfd",
+  "source_api": "https://api.sketchfab.com/v3/models/75e9045ac1af4cdbb69318108c81edfd",
+  "public_archive_url": "https://huggingface.co/datasets/allenai/objaverse/resolve/main/glbs/000-056/75e9045ac1af4cdbb69318108c81edfd.glb",
+  "object_paths_index": "https://huggingface.co/datasets/allenai/objaverse/resolve/main/object-paths.json.gz",
+  "fetched": "2026-10-22",
+  "bytes": 24492596,
+  "sha256": "b08d16684febd7cb541ffb870df304b985cc7e9337e8d010cc3d4d665f3ff19a",
+  "license_confirmed": "CC-BY-4.0 in current author API and embedded asset.extras",
+  "dataset_citation": "Deitke et al. Objaverse: A Universe of Annotated 3D Objects. arXiv:2212.08051"
+}
