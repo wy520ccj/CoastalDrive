@@ -26,6 +26,7 @@ from simplepbr.envmap import EnvMap
 from paths import resource_root
 from skins import apply_skin, vehicle_for_design
 from ui import theme
+from ui.garage_paint import garage_paint_shader
 from vehicle_visual import load_vehicle, set_vehicle_reflection, vehicle_reflection
 
 
@@ -143,6 +144,11 @@ class WorkshopVehicle:
             self.garage_environment = EnvMap.from_file_path(Filename.fromOsSpecific(
                 str(resource_root()/'assets/game/vehicles/garage-skylit.env')))
         self.pipeline.env_map = self.garage_environment if studio else None
+        for part in self.car_root.findAllMatches('**/paint'):
+            if studio:
+                part.setShader(garage_paint_shader(self.pipeline.use_330), 2)
+            else:
+                part.clearShader()
         for node in (self.car_root.getChild(0), *self.wheels):
             set_vehicle_reflection(node, self.garage_environment if studio else vehicle_reflection())
         if studio and self.contact_shadow is None:

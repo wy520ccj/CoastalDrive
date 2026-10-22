@@ -75,6 +75,7 @@ setup(
                 "assets/game/expressway/shaders/*.frag",
                 "assets/game/expressway/shaders/*.vert",
                 "assets/game/expressway/shaders/*.glsl",
+                "assets/game/shaders/*.glsl",
                 "assets/game/**/License.txt",
                 "assets/game/**/*.txt",
                 "assets/game/**/*.md",

@@ -131,7 +131,7 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
         image('garage-v2/'+('tire' if part.topic == 'tires' else 'brake')+'.png', left+inset, 539, 154, 154)
         detail_x = left+inset+175
         label(part.name, detail_x, 569, 24, bold=True)
-        label('提升前轮转向响应' if part.topic == 'tires' else '更多制动力分给前轮', detail_x, 599, 17, GRAY, wrap=inner-175)
+        label('提升前轮转向响应' if part.topic == 'tires' else '制动力偏向前轮', detail_x, 599, 17, GRAY, wrap=inner-175)
         label('前轴侧偏刚度' if part.topic == 'tires' else '前轴制动力分配', detail_x, 642, 16, GRAY)
         label('70 kN/rad' if part.topic == 'tires' else '70%', left+wide-inset, 666, 19, GRAY, right=True)
         installed = vehicle.config.lateral_stiffness == 70000. if part.topic == 'tires' else vehicle.config.front_brake_share == .7

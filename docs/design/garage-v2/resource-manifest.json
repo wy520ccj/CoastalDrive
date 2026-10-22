@@ -102,7 +102,7 @@
     },
     {
       "path": "assets/game/vehicles/garage-skylit.env",
-      "sha256": "392692301af10138e66392086d16a0fe15f9c4f26e7045c8f43a972132e255b8",
+      "sha256": "2c132aa38ba188ecf34c7ee554875d20d0d209d99b52d62aa7ea0974b8fb2174",
       "size": 3140130
     },
     {
@@ -184,6 +184,11 @@
       "path": "assets/game/ui/garage-v2/contact-shadow-brz.png",
       "sha256": "674259bdcfdea00a8e41edf8d2a463b753a32c3c8b99834de3516420fd3d5bb0",
       "size": 97334
+    },
+    {
+      "path": "assets/game/shaders/garage-clearcoat.glsl",
+      "sha256": "8776d70462b74f6699e270fe3fb188cb72beb600863bde34f800392a24008670",
+      "size": 1009
     }
   ],
   "generated_background_source": "exec-aa329be9-5774-4f9a-888c-34cf71f3979b.png",

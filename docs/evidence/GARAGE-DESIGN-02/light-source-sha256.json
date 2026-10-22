@@ -1,0 +1,38 @@
+[
+  {
+    "path": "assets/game/vehicles/garage-skylit.env",
+    "sha256": "2c132aa38ba188ecf34c7ee554875d20d0d209d99b52d62aa7ea0974b8fb2174"
+  },
+  {
+    "path": "assets/game/shaders/garage-clearcoat.glsl",
+    "sha256": "8776d70462b74f6699e270fe3fb188cb72beb600863bde34f800392a24008670"
+  },
+  {
+    "path": "src/ui/garage_paint.py",
+    "sha256": "1c73a548d0ab0bd1740dcb202736cef9f30e54e43ac9a1605efe7d028cf7d22f"
+  },
+  {
+    "path": "src/ui/workshop_vehicle.py",
+    "sha256": "7ecbbdcb0b9f86a1811314648d44ebfea919d154d7f4163366362b17f72df995"
+  },
+  {
+    "path": "tools/vehicles/prepare_garage_environment.py",
+    "sha256": "2ccfc8a9239c5376f9476a928211a077736dc83d0daa4b79554d7197c6ffacd3"
+  },
+  {
+    "path": "tools/garage_lighting_probe.py",
+    "sha256": "cf4273ebea7063dcd1b57d2634665e6f920734057262166a68fa9d83ea9e3ef2"
+  },
+  {
+    "path": "src/ui/garage_layout.py",
+    "sha256": "eb60359c284f4fc57e424014b9902cba95e2cc17a774cb4b3769ab071502059b"
+  },
+  {
+    "path": "src/skins.py",
+    "sha256": "b99567729151b816548484486b20abc33697d803d9a9d2f5ef46e7546515a1e1"
+  },
+  {
+    "path": "setup.py",
+    "sha256": "3100dc5433d2d9ffcdba64473bbda809e759d4db8ba4bec5ae9c86c91d0e348d"
+  }
+]

@@ -24,7 +24,7 @@ class VehicleDefinition:
 
 
 SKINS = (
-    Skin("orange", "原厂橙", (0.8, 0.12, 0.025)),
+    Skin("orange", "日落橙", (0.8, 0.12, 0.025)),
     Skin("blue", "海湾蓝", (0.08, 0.38, 0.8)),
     Skin("red", "赛车红", (0.75, 0.07, 0.05)),
     Skin("green", "松林绿", (0.1, 0.46, 0.25)),

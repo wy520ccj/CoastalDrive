@@ -45,6 +45,26 @@ def test_locked_entry_modal_and_garage_are_separate_from_reports(app):
     assert app.career_panel.page == 'board' and app.session.current == before
 
 
+def test_garage_paint_coat_stays_on_paint_and_clears_for_engineering_preview(app):
+    app.career_action('garage')
+    app.career_action('garage-car', 'game-tuned')
+    view = app.workshop_vehicle
+    paint = view.car_root.find('**/paint')
+    assert paint.getShader() is not None
+    assert all(part.getShader() is None for part in view.car_root.findAllMatches('**/+GeomNode')
+               if part.getName() != 'paint' and part.getName() != 'part-highlight')
+    before, vehicle = app.session.current, app.workspace_vehicle
+    app.career_action('garage-tab', 'paint')
+    app.career_action('garage-paint', 2)
+    assert view.car_root.find('**/paint').getShader() is not None
+    assert app.session.current == before and app.workspace_vehicle == vehicle
+    box = tuple(view.frame['frameSize'])
+    view.show(app.career_panel.root, box, app.career_preview, studio=False,
+              skin_index=app.career_preview_skin)
+    assert view.car_root.find('**/paint').getShader() is None
+    assert app.session.current == before and app.workspace_vehicle == vehicle
+
+
 def test_purchase_install_failure_preserves_owned_part_and_retry_is_free(app, monkeypatch):
     for event in ('first-drive', 'parking'):
         app.career_progress.record(CareerResult(event, 8., elapsed=25., finished=True, succeeded=True, stars=3))

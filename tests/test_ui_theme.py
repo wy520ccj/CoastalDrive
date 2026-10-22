@@ -71,6 +71,9 @@ def test_distribution_includes_font_license_and_icon(monkeypatch):
         relative = "assets/game/ui/" + name
         assert (ROOT / relative).is_file()
         assert any(fnmatch.fnmatchcase(relative, pattern) for pattern in patterns), relative
+    relative = 'assets/game/shaders/garage-clearcoat.glsl'
+    assert (ROOT / relative).is_file()
+    assert any(fnmatch.fnmatchcase(relative, pattern) for pattern in patterns)
 
 
 def test_icon_contains_valid_native_sizes():
