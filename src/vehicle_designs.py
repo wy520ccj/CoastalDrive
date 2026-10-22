@@ -27,14 +27,14 @@ GR86_PROFILE_PATH = resource_root() / "assets/game/vehicle-configs/gr86-2022-pre
 GR86_DESIGN = load_vehicle_config(GR86_PROFILE_PATH, REFERENCE_CAR)
 
 
-def coastal_design(*, mass, length, width, height, wheelbase, radius, drive, torque, cg, weight):
+def coastal_design(*, mass, length, width, height, wheelbase, radius, drive, torque, cg, weight, track=None):
     """原创车型的明确设计值；沿用同一机械模型，不冒充原厂实测。"""
     inertia = (mass*((2*length)**2+(2*height)**2)/12,
                mass*((2*width)**2+(2*height)**2)/12,
                mass*((2*length)**2+(2*width)**2)/12)
     return replace(REFERENCE_DESIGN, mass=mass, body_inertia=inertia,
         collision_half_length=length, collision_half_width=width, collision_half_height=height,
-        body_center_height=height+.17, wheelbase=wheelbase, track_width=width*1.72,
+        body_center_height=height+.17, wheelbase=wheelbase, track_width=width*1.72 if track is None else track,
         wheel_radius=radius, wheel_width=.215 if mass < 1200 else .245,
         wheel_connection_height=radius+.26, center_of_mass_height=cg,
         front_drive_share=drive, front_weight_share=weight,
@@ -62,6 +62,9 @@ DESIGN_VEHICLES = (
     VehicleDesign('coastal-gt', '远航 GT', coastal_design(mass=1450., length=2.28, width=.99,
         height=.55, wheelbase=2.75, radius=.34, drive=.5, torque=1.50, cg=.43, weight=.54),
         '原创四驱旅行GT；通用完整机械模型上的设计参数，非量产车型标定'),
+    VehicleDesign('club-coupe', '俱乐部 C1', coastal_design(mass=1350., length=2.24, width=.95,
+        height=.60, wheelbase=2.72, radius=.325, drive=0., torque=1.35, cg=.43, weight=.53, track=1.50),
+        '通用后驱双门设计；外观改编自Mike Pan开放模型，非BMW原厂参数或标定'),
 )
 
 

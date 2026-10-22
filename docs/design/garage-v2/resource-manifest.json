@@ -104,11 +104,57 @@
       "path": "assets/game/vehicles/garage-skylit.env",
       "sha256": "392692301af10138e66392086d16a0fe15f9c4f26e7045c8f43a972132e255b8",
       "size": 3140130
+    },
+    {
+      "path": "assets/game/vehicles/club_coupe.bam",
+      "sha256": "b973c933dff6fbf14985d1b703889a9d45ac28ac875fd5cdacceb99a4eab0226",
+      "size": 10068477
+    },
+    {
+      "path": "assets/game/vehicles/ClubCoupe-License.txt",
+      "sha256": "918f2090dc7077231ac44b49f3298ece543d7b3825164a2045f3fb87af79bb8f",
+      "size": 1020
+    },
+    {
+      "path": "assets/game/ui/garage-v2/car-club-coupe.png",
+      "sha256": "6ad328fee19793b93b43f5afa7c751e1119c28ef2561fdf6b315a2dd2dcac551",
+      "size": 96102
+    },
+    {
+      "path": "assets/game/ui/garage-v2/contact-shadow-club-coupe.png",
+      "sha256": "0099d247a4cc3adaf82c0769f404a249fcd42ed7365b8285472d9d63878c877e",
+      "size": 105168
     }
   ],
   "generated_background_source": "exec-aa329be9-5774-4f9a-888c-34cf71f3979b.png",
   "catalog_generator": "tools/blender/render_garage_catalog.py",
   "model_generator": "tools/vehicles/prepare_concept_car.py",
   "environment_generator": "tools/vehicles/prepare_garage_environment.py",
-  "visual_status": "in_progress; actual render differs from concept; not human accepted"
+  "visual_status": "in_progress; actual render differs from concept; not human accepted",
+  "career_designs": [
+    {
+      "path": "docs/design/garage-v2/05-results.png",
+      "sha256": "820052fda912b339480f5687ce8cc71be6b92e1d2833e91b8ecdb0311c0d1931",
+      "generator": "built-in ImageGen",
+      "reference": "01-upgrades.png"
+    },
+    {
+      "path": "docs/design/garage-v2/06-events.png",
+      "sha256": "0c62e02eb0458b102e0efacf500c9bc8fd7436e5df9108b124dd59a31ea9b5fd",
+      "generator": "built-in ImageGen",
+      "reference": "01-upgrades.png"
+    },
+    {
+      "path": "docs/design/garage-v2/07-briefing.png",
+      "sha256": "8c0d4cdb411ac3c66193e5e7cec6c50f29fc582923a82e6b0b4a74b3b29c2a09",
+      "generator": "built-in ImageGen",
+      "reference": "01-upgrades.png"
+    },
+    {
+      "path": "docs/design/garage-v2/08-pause.png",
+      "sha256": "8dd3ff65afa8a564d09088cf28fd36cf1757aa9eb1506f5bd30e26f312c21ecf",
+      "generator": "built-in ImageGen",
+      "reference": "01-upgrades.png"
+    }
+  ]
 }

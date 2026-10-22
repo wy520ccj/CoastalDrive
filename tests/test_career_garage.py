@@ -66,7 +66,7 @@ def test_each_car_paint_is_saved_separately_without_creating_fake_vehicle_slots(
     assert garage_cars(current, tmp_path) == garage_cars(current)
 
 
-@pytest.mark.parametrize('design_id', ['coastal-hatch', 'coastal-roadster', 'coastal-gt'])
+@pytest.mark.parametrize('design_id', ['coastal-hatch', 'coastal-roadster', 'coastal-gt', 'club-coupe'])
 def test_new_models_load_with_configured_body_and_four_independent_wheels(design_id):
     config = vehicle_design(design_id).config
     parent = NodePath('asset-check')
@@ -75,7 +75,7 @@ def test_new_models_load_with_configured_body_and_four_independent_wheels(design
     assert len(wheels) == 4 and len({wheel.getName() for wheel in wheels}) == 4
     assert not body.find('**/paint').isEmpty()
     low, high = body.getTightBounds(parent)
-    if definition.id == 'coastal-gt':
+    if definition.id in ('coastal-gt', 'club-coupe'):
         # 外购低矮车身按轮拱装配，后视镜允许伸出不含镜片的车身碰撞盒。
         assert high.x-low.x <= config.collision_half_width*2+.12
         assert high.y-low.y <= config.collision_half_length*2

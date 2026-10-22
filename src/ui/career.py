@@ -28,6 +28,8 @@ class CareerPanel:
         self.garage_textures = {}
         self.garage_topic = 'tires'
         self.garage_aspect = None
+        self.layout_aspect = None
+        self.page_progress = self.result_data = self.pause_event = None
         self.parent, self.screen_parent = parent, vehicle_view.base.aspect2d
         self.root = DirectFrame(parent=parent, frameSize=(-1.78, 1.78, -1.5, 1.5),
             frameColor=PAPER, sortOrder=300, state=DGG.NORMAL)
@@ -53,16 +55,9 @@ class CareerPanel:
         self.content.removeNode()
         self.content = self.root.attachNewNode('career-content')
         self.page, self.primary = page, -1
-        self.root.reparentTo(self.screen_parent if page == 'garage' else self.parent)
-        if page == 'garage':
-            self.root.show()
-            return
-        self.label('COASTAL / 生涯', -1.55, .84, .065)
-        self.label('海岸杯车手' if progress.stars >= 9 else '俱乐部车手' if progress.stars >= 5 else
-                   '新手车手', -.22, .85, .038, MUTED)
-        self.label(f'{progress.stars} / 18 星', .66, .85, .045, BLUE)
-        self.label(f'{progress.credits} 积分', 1.20, .85, .045)
-        rounded_panel(self.content, 'header-line', (-1.58, 1.58, .75, .754), (.75, .80, .82, 1), 0.)
+        self.page_progress = progress
+        self.root.reparentTo(self.screen_parent)
+        self.root['frameColor'] = (0, 0, 0, 0)
         self.root.show()
 
     def label(self, text, x, z, size=.04, color=INK, parent=None, wrap=None, font=None):
@@ -103,50 +98,19 @@ class CareerPanel:
         self.frames.append(frame)
 
     def show_board(self, progress):
+        from ui.career_layout import board
+
         self.clear('board', progress)
         self.back = 'exit'
-        self.label('赛事', -1.55, .60, .052, BLUE)
-        self.button('车库改装', -.82, .62, .60, .10, 'garage')
-        self.button('主菜单', 1.27, .62, .60, .10, 'exit')
-        self.label('01  初次上路', -1.55, .45, .040)
-        self.label('02  俱乐部挑战 · 5星解锁', -1.55, -.13, .035)
-        self.label('03  海岸杯 · 9星解锁', .61, -.13, .035)
-        for index, event in enumerate(EVENTS):
-            x, z = (-1.06, 0., 1.06)[index % 3], .16 if index < 3 else -.43
-            unlocked = progress.available(event)
-            card = self.button('', x, z, 1.0, .46, 'brief', event.id)
-            self.label(event.name, -.42, .135, .052, INK if unlocked else MUTED, parent=card)
-            self.photo(event, card, (-.46, .46, -.09, .075), unlocked=unlocked)
-            stars = progress.records.get(event.id, {'stars': 0})['stars']
-            self.label('★'*stars+'☆'*(3-stars) if unlocked else f'还需{event.unlock-progress.stars}星',
-                       -.41, -.16, .038, GOLD if unlocked else MUTED, parent=card)
-            self.label(f'{event.distance:g}米', .24, -.16, .031, MUTED, parent=card)
-        next_event = progress.recommended()
-        self.button('继续：'+next_event.name, .85, -.84, 1.35, .14, 'brief', next_event.id, primary=True)
-        self.label(progress.notice or '提高星级可获得积分，解锁赛事和车库零件。', -1.55, -.82, .030, MUTED, wrap=1.55)
-        self.select(self.primary)
+        board(self, progress)
 
     def show_brief(self, progress, event):
+        from ui.career_layout import brief
+
         self.event_id = event.id
         self.clear('brief', progress)
         self.back = 'board'
-        self.button('‹  赛事', -1.28, .62, .54, .10, 'board')
-        self.label(event.name, -1.50, .36, .090)
-        self.label(event.goal, -1.50, .19, .048, BLUE)
-        self.photo(event, self.content, (-1.50, .20, -.39, .12))
-        self.label(f'静止起步  /  {event.distance:g}米  /  时限{event.limit:g}秒', -1.50, -.49, .035, MUTED)
-        self.label(event.tip, -1.50, -.61, .040, MUTED, wrap=1.65)
-        for index, target in enumerate(event.targets):
-            z = .32-index*.22
-            self.label('★'*(index+1), .48, z, .052, GOLD)
-            self.label(target, .48, z-.09, .042)
-        self.label(f'每提高1星奖励 {event.reward} 积分', .48, -.43, .035, BLUE)
-        self.label('碰撞、复位或驶离赛道\n会结束本场。', .48, -.58, .029, MUTED)
-        self.button('车库', -.95, -.82, 1.1, .14, 'garage')
-        available = progress.available(event)
-        self.button('开始比赛' if available else f'需要{event.unlock}星', .91, -.82, 1.3, .14,
-                    'start', event.id, primary=True, enabled=available)
-        self.select(self.primary if available else 0)
+        brief(self, progress, event)
 
     def show_garage(self, progress, vehicle, notice='', *, tab='cars', preview=None, skin_index=None, cars=None):
         from ui.garage_layout import show
@@ -162,65 +126,38 @@ class CareerPanel:
 
 
     def show_result(self, progress, result, award):
+        from ui.career_layout import result as draw_result
+
         self.event_id = result.event_id
+        self.result_data = result, award
         self.clear('result', progress)
         self.back = 'board'
-        event = next(event for event in EVENTS if event.id == result.event_id)
-        self.label(event.name, -1.48, .61, .048, MUTED)
-        self.label('赛事完成' if result.succeeded else '再试一次', -1.48, .35, .105)
-        self.label('★'*result.stars+'☆'*(3-result.stars), -1.48, .08, .15, GOLD)
-        detail = f'用时 {result.elapsed:.2f} 秒'
-        if event.kind == 'parking' and result.parking_error is not None:
-            detail += f'  /  距中心 {result.parking_error:.1f} 米'
-        if event.kind == 'slalom':
-            detail += f'  /  通过 {sum(result.passed)} / 5 门'
-        self.label(detail, -1.48, -.12, .044)
-        self.label(result.reason, -1.48, -.29, .040, MUTED, wrap=1.65)
-        rounded_panel(self.content, 'reward-card', (.48, 1.57, -.43, .46), WHITE)
-        self.label('本场奖励', .59, .31, .042, MUTED)
-        self.label(f'+{award["credits"]}', .59, .08, .12, BLUE)
-        self.label('积分', 1.22, .09, .04, MUTED)
-        self.label('解锁：'+ '、'.join(award['unlocked']) if award['unlocked'] else
-                   '提高个人星级后领取差额奖励。', .59, -.13, .034, MUTED, wrap=.85)
-        if not award['saved']:
-            self.label(progress.notice, -1.48, -.52, .033, ORANGE, wrap=2.9)
-            self.button('重试保存奖励', 1.03, -.35, .9, .10, 'save')
-        self.button('重试本场', -1.01, -.81, 1.0, .15, 'start', event.id)
-        self.button('车库', .06, -.81, .85, .15, 'garage')
-        self.button('继续赛事', 1.09, -.81, 1.0, .15, 'board', primary=True)
-        self.select(self.primary)
+        draw_result(self, progress, result, award)
 
-    def show_pause(self, progress):
+    def show_pause(self, progress, event):
+        from ui.career_layout import pause
+
+        self.pause_event = event
         self.clear('pause', progress)
         self.back = 'resume'
-        self.label('比赛已暂停', -1.15, .30, .10)
-        self.button('继续驾驶', 0, -.02, 1.5, .18, 'resume', primary=True)
-        self.button('重新开始', 0, -.30, 1.5, .15, 'retry')
-        self.button('退出本场', 0, -.56, 1.5, .15, 'board')
-        self.select(self.primary)
+        pause(self, progress, event)
 
     def select(self, index):
         self.selected = index % len(self.buttons)
-        if self.page == 'garage':
-            from ui.garage_layout import style
+        from ui.garage_layout import style
 
-            style(self)
-            return
-        for i, button in enumerate(self.buttons):
-            disabled = button['state'] == DGG.DISABLED
-            button['geom_color'] = (WHITE if disabled else ORANGE if i == self.primary else
-                                   PALE if i == self.selected or i in self.accents else WHITE)
-            if i in self.flat:
-                button['geom_color'] = (0, 0, 0, 0)
-            button['text_fg'] = (MUTED if disabled else WHITE if i == self.primary else
-                                 BLUE if i in self.accents or i == self.selected and i in self.flat else INK)
+        style(self)
+        if self.page != 'garage':
+            for i, edge in self.card_edges.items():
+                edge.setColor((1, .31, .12, 1) if i == self.selected else (1, 1, 1, 0))
 
     def key(self, key):
         directions = {'arrow_left': (-1, 0), 'a': (-1, 0), 'arrow_right': (1, 0), 'd': (1, 0),
                       'arrow_up': (0, 1), 'w': (0, 1), 'arrow_down': (0, -1), 's': (0, -1)}
-        if self.page == 'garage' and key in directions:
+        if key in directions:
             vx, vz = directions[key]
-            if vz == 1 and self.garage_roles[self.selected] == 'footer':
+            if (vz == 1 and self.garage_roles[self.selected] == 'footer'
+                    and self.buttons[self.primary]['state'] != DGG.DISABLED):
                 self.select(self.primary)
                 return
             current, candidates = self.buttons[self.selected], []
@@ -246,8 +183,24 @@ class CareerPanel:
         self.vehicle_view.hide()
 
     def resize(self, aspect):
-        if self.page == 'garage' and not self.root.isHidden() and self.garage_aspect != aspect:
+        if self.root.isHidden():
+            return
+        if self.page == 'garage' and self.garage_aspect != aspect:
             self.action('garage-redraw', None)
+        elif self.page != 'garage' and self.layout_aspect != aspect:
+            selected = self.buttons[self.selected]['extraArgs']
+            if self.page == 'board':
+                self.show_board(self.page_progress)
+            elif self.page == 'brief':
+                self.show_brief(self.page_progress, next(event for event in EVENTS if event.id == self.event_id))
+            elif self.page == 'result':
+                self.show_result(self.page_progress, *self.result_data)
+            elif self.page == 'pause':
+                self.show_pause(self.page_progress, self.pause_event)
+            for index, button in enumerate(self.buttons):
+                if button['extraArgs'] == selected:
+                    self.select(index)
+                    break
 
     def destroy(self):
         for widget in (*self.labels, *self.buttons, *self.frames):

@@ -156,7 +156,7 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
             button('', x, y, inner, 90, 'garage-car', item.design_id, role='category-active' if active else 'category')
             # 工程存档沿用其实际经典双门外观，不用虚构缩略图。
             thumbnail = item.design_id if item.design_id in ('game-tuned', 'coastal-hatch', 'coastal-roadster',
-                'gr86-2022-premium-6mt', 'coastal-gt') else 'game-tuned'
+                'gr86-2022-premium-6mt', 'coastal-gt', 'club-coupe') else 'game-tuned'
             image('garage-v2/car-'+thumbnail+'.png', x+5, y+5, 136, 76)
             label(item.name, x+148, y+33, 22, bold=True)
             label('驾驶中' if item.design_id == vehicle.design_id else '已解锁' if progress.stars >= item.unlock else
@@ -203,13 +203,15 @@ def style(panel):
     for index, button in enumerate(panel.buttons):
         role = panel.garage_roles[index]
         disabled, focused = button['state'] == DGG.DISABLED, index == panel.selected
-        transparent = role in ('tab', 'tab-active', 'footer', 'quiet')
+        transparent = role in ('tab', 'tab-active', 'footer', 'quiet', 'event-card')
         color = ((1, .93, .90, 1) if role == 'category-active' else (.97, .97, .98, 1))
         if role == 'primary':
             color = (.78, .80, .83, 1) if disabled else ORANGE
+        elif role == 'secondary':
+            color = (.18, .22, .28, .95) if focused else (.04, .055, .075, .96)
         elif transparent:
             color = (1, 1, 1, .12) if focused else (0, 0, 0, 0)
         elif focused:
             color = (1, .87, .80, 1)
         button['geom_color'] = color
-        button['text_fg'] = (GRAY if disabled else WHITE if role in ('primary', 'tab', 'tab-active', 'footer') else INK)
+        button['text_fg'] = (GRAY if disabled else WHITE if role in ('primary', 'secondary', 'tab', 'tab-active', 'footer') else INK)

@@ -16,7 +16,7 @@ from application import CoastalDrive
 from career_run import CareerResult
 
 
-def capture(output, size):
+def capture(output, size, design_id='coastal-gt'):
     output.mkdir(parents=True, exist_ok=False)
     os.environ['LOCALAPPDATA'] = str(output/'user')
     app = CoastalDrive(smoke=True, output=output, render_size=size)
@@ -28,7 +28,7 @@ def capture(output, size):
         app.open_career_collection()
         for event in ('first-drive', 'parking', 'slalom'):
             app.career_progress.record(CareerResult(event, 8., elapsed=25., finished=True, succeeded=True, stars=3))
-        app.career_action('garage-car', 'coastal-gt')
+        app.career_action('garage-car', design_id)
         app.career_action('garage-select')
         for tab, topic in (('cars', None), ('upgrade', 'tires'), ('upgrade', 'brakes'), ('paint', None)):
             app.career_action('garage-tab', tab)
@@ -53,5 +53,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--size', nargs=2, type=int, default=(1280, 720))
+    parser.add_argument('--car', default='coastal-gt')
     args = parser.parse_args()
-    capture(args.output.resolve(), tuple(args.size))
+    capture(args.output.resolve(), tuple(args.size), args.car)

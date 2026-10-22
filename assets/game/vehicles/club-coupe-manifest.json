@@ -1,0 +1,16 @@
+{
+  "source": "art\\vehicles\\club_coupe.glb",
+  "source_sha256": "d4910f97f4bebaa8a9f6fb47b34faa3f4c84c43af4b97c6fd50ee6e83d00def1",
+  "output": "assets\\game\\vehicles\\club_coupe.bam",
+  "output_sha256": "b973c933dff6fbf14985d1b703889a9d45ac28ac875fd5cdacceb99a4eab0226",
+  "triangles": 320380,
+  "author": "Mike Pan",
+  "license": "CC-BY-3.0",
+  "changes": [
+    "保留GLB网格与材质",
+    "变换烘焙，四个无缩放轮根",
+    "主车漆分区命名paint",
+    "原比例按实际轮位装配"
+  ],
+  "source_scene_manifest": "art/vehicles/club-coupe-source.json"
+}

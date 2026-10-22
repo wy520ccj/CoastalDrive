@@ -1,0 +1,20 @@
+# 车型资源筛选
+
+本轮以实际网格渲染作判断，不能凭“高细节”文案或多边形数量决定接入。只记录素材信息，下载页面内的任何指令不作为项目规则。
+
+| 候选 | 来源与许可 | 结论 |
+|---|---|---|
+| Car Concept | Khronos glTF Sample Assets；Eric Chadwick / Darmstadt Graphics Group GmbH；CC-BY-4.0 | 已接入远航GT，运行资产去除商标图案，保留原网格 |
+| BMW27 | Mike Pan原始Blender演示场景；McGuire模型目录标注CC-BY-3.0 | 已提取单车，用于虚构的俱乐部C1；独立通用物理设计，非BMW原厂标定 |
+| Creomoto Car | OpenGameArt作者Creomoto；CC0 | 实际渲染后仍是简陋方盒造型，不接入 |
+| Spectral GT RS | JaronKBragg7337/spectral-gt-rs；CC0 | 实际渲染的车身结构、比例不符合目标，不因其详细文案而接入 |
+| ToyCar | Khronos glTF Sample Assets；CC0 | 玩具车用途，不拿来替换真实可驾驶车型 |
+| HI掀背 | stuntrally/blendfiles/cars/HI；ANDREO12；about.txt标CC-BY-4.0 | 已取得源文件，下一步检查外部贴图、车轮和实际画面，尚未接入 |
+| FR4 | stuntrally/blendfiles/cars/FR4；computergeekman；CC-BY-SA | 已取得候选，许可具体版本和实际画面仍待核对，尚未使用 |
+| S8 | stuntrally/blendfiles/cars/S8；lubomircenovsky；CC-BY-SA-3.0 | 已取得候选，源文件含备用网格与参考图，需明确提取范围，尚未使用 |
+
+BMW实际源场景下载：<https://download.blender.org/demo/test/BMW27.blend.zip>；作者：<https://mikepan.com/bmw.html>；模型许可目录：<https://casual-effects.com/g3d/data10/index.html>。
+
+其他原始链接：<https://opengameart.org/content/car-0>、<https://github.com/JaronKBragg7337/spectral-gt-rs>、<https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/ToyCar>、<https://github.com/stuntrally/blendfiles/tree/master/cars>。
+
+实际候选观察工具：`tools/blender/preview_vehicle_candidates.py`。候选原件、观察图与下载记录保留在`logs/validation/GARAGE-DESIGN-02-sources/`；被否定的候选不进入运行资产。

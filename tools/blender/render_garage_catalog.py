@@ -1,6 +1,7 @@
 """使用实际车型和实拍HDRI离线渲染车库缩略图、零件与车漆样本。"""
 
 import math
+import sys
 from pathlib import Path
 
 import bpy
@@ -88,19 +89,48 @@ def import_car(path):
     return [obj for obj in bpy.context.scene.objects if obj.type == 'MESH']
 
 
+def render_shadow(name, path, scale=1.):
+    scene, camera = setup(512, 512)
+    objects = import_car(path)
+    bpy.context.view_layer.update()
+    low, _ = bounds(objects)
+    for root in (obj for obj in scene.objects if obj.parent is None and obj.type != 'CAMERA'):
+        root.scale *= scale
+        root.location *= scale
+        root.location.z -= low.z*scale
+    for obj in objects:
+        obj.visible_camera = False
+    bpy.ops.mesh.primitive_plane_add(size=8)
+    bpy.context.object.is_shadow_catcher = True
+    camera.data.type = 'ORTHO'
+    camera.data.ortho_scale = 8
+    aim(camera, (0, 0, 0), 10, (0, 0, 1))
+    output(scene, name)
+
+
 def main():
+    selected = sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
     for name, filename in (('game-tuned', 'classic_coupe_v1.glb'), ('coastal-hatch', 'coastal_hatch.glb'),
                            ('coastal-roadster', 'coastal_roadster.glb'),
                            ('gr86-2022-premium-6mt', 'gr86_2022_premium.glb'),
-                           ('coastal-gt', None)):
+                           ('coastal-gt', None), ('club-coupe', 'club_coupe.glb')):
+        if selected and name not in selected:
+            continue
         scene, camera = setup(384, 216)
-        path = ROOT/'assets/game/vehicles'/filename if filename else ROOT/'art/vehicles/sources/car-concept/CarConcept.glb'
+        if name == 'club-coupe':
+            path = ROOT/'art/vehicles/club_coupe.glb'
+        else:
+            path = ROOT/'assets/game/vehicles'/filename if filename else ROOT/'art/vehicles/sources/car-concept/CarConcept.glb'
         objects = import_car(path)
         bpy.context.view_layer.update()
         low, high = bounds(objects)
         aim(camera, (low+high)/2, (high-low).length*1.1,
             (-1, -1.6, .8) if filename is None else (1, 1.6, .8))
         output(scene, 'car-'+name)
+    if selected:
+        if 'club-coupe' in selected:
+            render_shadow('contact-shadow-club-coupe', ROOT/'art/vehicles/club_coupe.glb', .75)
+        return
     for name, object_name in (('tire', 'WheelFrontL'), ('brake', 'WheelFrontLBrakeDisc')):
         scene, camera = setup(320, 320)
         import_car(ROOT/'art/vehicles/sources/car-concept/CarConcept.glb')
@@ -130,17 +160,8 @@ def main():
         sphere.data.materials.append(material)
         aim(camera, (0, 0, 0), 3.7)
         output(scene, 'paint-'+str(index))
-    scene, camera = setup(512, 512)
-    objects = import_car(ROOT/'art/vehicles/sources/car-concept/CarConcept.glb')
-    for obj in objects:
-        obj.visible_camera = False
-    bpy.ops.mesh.primitive_plane_add(size=8)
-    floor = bpy.context.object
-    floor.is_shadow_catcher = True
-    camera.data.type = 'ORTHO'
-    camera.data.ortho_scale = 8
-    aim(camera, (0, 0, 0), 10, (0, 0, 1))
-    output(scene, 'contact-shadow')
+    render_shadow('contact-shadow', ROOT/'art/vehicles/sources/car-concept/CarConcept.glb')
+    render_shadow('contact-shadow-club-coupe', ROOT/'art/vehicles/club_coupe.glb', .75)
 
 
 if __name__ == '__main__':

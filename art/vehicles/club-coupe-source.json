@@ -1,0 +1,24 @@
+{
+  "source": "art\\vehicles\\sources\\bmw27\\BMW27.blend",
+  "source_sha256": "98306c8affc0a4513e6998a1c2813a66083264e7e28b5e853975555b55c308e4",
+  "output": "art\\vehicles\\club_coupe.glb",
+  "sha256": "d4910f97f4bebaa8a9f6fb47b34faa3f4c84c43af4b97c6fd50ee6e83d00def1",
+  "author": "Mike Pan",
+  "license": "CC-BY-3.0",
+  "extracted_meshes": 43,
+  "removed_marks": [
+    "MStreak",
+    "RoundelBack",
+    "RoundelFront",
+    "TireRoundel",
+    "plate"
+  ],
+  "changes": [
+    "提取单车与四轮实例",
+    "源网格保留，变换烘焙",
+    "旧Cycles节点转换PBR",
+    "移除标志和车牌",
+    "负缩放绕序修正，前右轮外侧归一"
+  ],
+  "physics": "CoastalDrive generic club coupe; no source/OEM physical data inferred"
+}

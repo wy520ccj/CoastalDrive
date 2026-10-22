@@ -5,6 +5,8 @@ import math
 from dataclasses import dataclass
 from pathlib import Path
 
+from career_garage import GARAGE_CARS
+
 
 @dataclass(frozen=True)
 class CareerEvent:
@@ -126,17 +128,20 @@ class CareerProgress:
     def record(self, result):
         event = EVENT_BY_ID[result.event_id]
         if not result.finished or not result.succeeded or not 1 <= result.stars <= 3 or not self.available(event):
-            return {'credits': 0, 'unlocked': (), 'saved': True}
+            return {'credits': 0, 'unlocked': (), 'vehicles': (), 'saved': True}
         old = self.records.get(event.id)
         delta = max(0, result.stars-(old['stars'] if old is not None else 0))
         reward = delta*event.reward
         records = dict(self.records)
         if old is None or (result.stars, -result.elapsed) > (old['stars'], -old['seconds']):
             records[event.id] = {'stars': result.stars, 'seconds': result.elapsed}
-        before = {item.id for item in EVENTS if self.available(item)}
+        before = self.stars
         saved = self.save(records, set(self.owned), self.credits+reward)
-        unlocked = tuple(item.name for item in EVENTS if self.available(item) and item.id not in before)
-        return {'credits': reward if saved else 0, 'unlocked': unlocked, 'saved': saved}
+        unlocked = tuple(item.name for item in EVENTS if before < item.unlock <= self.stars)
+        unlocked += tuple('零件：'+part.name for part in PARTS if before < part.unlock <= self.stars)
+        vehicles = tuple(car.design_id for car in GARAGE_CARS if before < car.unlock <= self.stars)
+        unlocked += tuple('新车：'+car.name for car in GARAGE_CARS if car.design_id in vehicles)
+        return {'credits': reward if saved else 0, 'unlocked': unlocked, 'vehicles': vehicles, 'saved': saved}
 
     def buy(self, part):
         if part.id in self.owned:

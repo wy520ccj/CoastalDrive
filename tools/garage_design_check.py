@@ -18,7 +18,7 @@ from session import Phase
 from vehicle_workspace import WorkspaceVehicle
 
 
-def check(output, size):
+def check(output, size, design_id='coastal-gt'):
     output.mkdir(parents=True, exist_ok=False)
     os.environ['LOCALAPPDATA'] = str(output/'user')
     app = CoastalDrive(smoke=True, output=output, render_size=size)
@@ -56,13 +56,13 @@ def check(output, size):
         app.open_career_collection()
         capture('01-collection-locked')
         original, snapshot = app.workspace_vehicle, app.session.current
-        app.career_action('garage-car', 'coastal-gt')
+        app.career_action('garage-car', design_id)
         app.career_action('garage-select')
         assert app.workspace_vehicle == original and app.session.current == snapshot
         for event in ('first-drive', 'parking', 'slalom'):
             app.career_progress.record(CareerResult(event, 8., elapsed=25., finished=True, succeeded=True, stars=3))
         app.career_action('garage-select')
-        assert app.workspace_vehicle.design_id == 'coastal-gt'
+        assert app.workspace_vehicle.design_id == design_id
         selected = app.workspace_vehicle
         capture('02-collection-concept')
         app.career_action('garage-tab', 'upgrade')
@@ -130,5 +130,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--size', nargs=2, type=int, default=(1280, 720))
+    parser.add_argument('--car', default='coastal-gt')
     args = parser.parse_args()
-    check(args.output.resolve(), tuple(args.size))
+    check(args.output.resolve(), tuple(args.size), args.car)

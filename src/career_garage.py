@@ -24,6 +24,7 @@ GARAGE_CARS = (
     GarageCar('coastal-roadster', 'coastal-roadster', '晴岚 R2', '敞篷 / 后轮驱动', '轻量双座，享受沿海连续弯道。', 3),
     GarageCar('gr86-2022-premium-6mt', 'gr86-2022', 'GR86 Premium', '跑车 / 后轮驱动', '六速手动硬件设计，体验另一种驾驶节奏。', 5),
     GarageCar('coastal-gt', 'coastal-gt', '远航 GT', 'GT / 四轮驱动', '更强动力与四驱，迎接海岸杯。', 9),
+    GarageCar('club-coupe', 'club-coupe', '俱乐部 C1', '双门 / 后轮驱动', '前置后驱双门，适合俱乐部赛道。', 3),
 )
 CAR_BY_DESIGN = {car.design_id: car for car in GARAGE_CARS}
 DEFAULT_PAINT = {'coastal-hatch': 4, 'coastal-roadster': 2, 'coastal-gt': 2, 'gr86-2022-premium-6mt': 4}

@@ -458,6 +458,11 @@ class CoastalDrive(ShowBase):
             self.career_garage_return = (self.career_panel.event_id
                 if self.career_panel.page in ('brief', 'result') else None)
             self.open_career_garage()
+        elif action == 'garage-new':
+            self.career_garage_return = self.career_panel.event_id
+            self.career_garage_tab = 'cars'
+            self.open_career_garage()
+            self.career_action('garage-car', value)
         elif action == 'garage-back':
             if self.career_garage_return is None:
                 self.open_career()
@@ -1809,7 +1814,7 @@ class CoastalDrive(ShowBase):
             for column in self.result_sectors:
                 column.hide()
             if phase == Phase.PAUSED:
-                self.career_panel.show_pause(self.career_progress)
+                self.career_panel.show_pause(self.career_progress, EVENT_BY_ID[self.career_event_id])
             else:
                 result = self.session.highway.snapshot.career
                 if self.career_award is None:

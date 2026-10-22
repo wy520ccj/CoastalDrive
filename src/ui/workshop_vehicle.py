@@ -151,13 +151,16 @@ class WorkshopVehicle:
             self.contact_shadow = self.scene.attachNewNode(card.generate())
             self.contact_shadow.setP(-90)
             self.contact_shadow.setZ(.001)
-            self.contact_shadow.setTexture(self.base.loader.loadTexture(theme.asset_filename('garage-v2/contact-shadow.png')))
             self.contact_shadow.setTransparency(TransparencyAttrib.MAlpha)
             self.contact_shadow.setShaderOff()
             self.contact_shadow.setLightOff()
             self.contact_shadow.setDepthWrite(False)
         if self.contact_shadow is not None:
             self.contact_shadow.show() if studio else self.contact_shadow.hide()
+            if studio:
+                shadow = 'contact-shadow-club-coupe.png' if vehicle.design_id == 'club-coupe' else 'contact-shadow.png'
+                self.contact_shadow.setTexture(self.base.loader.loadTexture(theme.asset_filename('garage-v2/'+shadow)))
+                self.contact_shadow.setH(0 if vehicle.design_id == 'club-coupe' else 180)
         for shadow in self.shadows:
             shadow.hide() if studio else shadow.show()
         self.studio_active = studio

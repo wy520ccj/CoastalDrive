@@ -1,12 +1,13 @@
 """生涯正常导航、保存边界与暂停返回；合成解锁仅用于界面测试。"""
 
 import time
+from dataclasses import replace
 
 import pytest
 from panda3d.core import Point2
 
 from application import CoastalDrive
-from career import CareerProgress
+from career import EVENT_BY_ID, CareerProgress
 from career_run import CareerResult
 from race import GameMode
 from session import Phase
@@ -84,6 +85,21 @@ def test_collection_preview_lock_and_selection_preserve_actual_vehicle_until_con
     assert app.workspace_vehicle == original
 
 
+def test_new_car_reward_opens_its_preview_and_returns_to_the_earned_event(app):
+    original = app.workspace_vehicle
+    result = CareerResult('first-drive', 8., elapsed=25., finished=True, succeeded=True, stars=3)
+    award = app.career_progress.record(result)
+    app.career_panel.show_result(app.career_progress, result, award)
+    button = next(button for button in app.career_panel.buttons if button['extraArgs'][0] == 'garage-new')
+    button['command'](*button['extraArgs'])
+    assert app.career_panel.page == 'garage' and app.career_garage_tab == 'cars'
+    assert app.career_preview.design_id == 'club-coupe' and app.workspace_vehicle == original
+    app.career_action('garage-select')
+    assert app.workspace_vehicle.design_id == 'club-coupe'
+    app.career_action('garage-back')
+    assert app.career_panel.page == 'brief' and app.career_panel.event_id == 'first-drive'
+
+
 def test_garage_reserves_vehicle_area_and_directional_focus_follows_the_layout(app):
     app.career_action('garage')
     view, panel = app.workshop_vehicle, app.career_panel
@@ -120,6 +136,67 @@ def test_pause_retry_and_return_keep_original_world_until_explicit_restart(app):
     app.return_from_test_drive()
     assert app.career_panel.page == 'board' and app.session.phase == Phase.MENU
     assert app.career_progress.stars == 0 and not app.career_progress.path.exists()
+
+
+def test_redesigned_pages_keep_keyboard_actions_and_resize_without_writing_progress(app, monkeypatch):
+    panel = app.career_panel
+    snapshot, vehicle = app.session.current, app.workspace_vehicle
+    # 向上进入同列赛事卡，Enter真正进入简报；锁定赛事仍不能起跑。
+    panel.key('arrow_up')
+    assert panel.buttons[panel.selected]['extraArgs'] == ['brief', 'coastal-cup']
+    panel.key('enter')
+    assert panel.page == 'brief' and panel.event_id == 'coastal-cup'
+    panel.select(panel.primary)
+    panel.key('enter')
+    assert app.session.current == snapshot and not app.career_active
+    result = CareerResult('first-drive', 8., elapsed=25., finished=True, succeeded=True, stars=3)
+    award = app.career_progress.record(result)
+    records, credits = dict(app.career_progress.records), app.career_progress.credits
+    monkeypatch.setattr(app, 'getAspectRatio', lambda: 4/3)
+    for page in ('board', 'brief', 'result', 'pause'):
+        if page == 'board':
+            panel.show_board(app.career_progress)
+        elif page == 'brief':
+            panel.show_brief(app.career_progress, EVENT_BY_ID['parking'])
+        elif page == 'result':
+            panel.show_result(app.career_progress, result, award)
+        else:
+            panel.show_pause(app.career_progress, EVENT_BY_ID['first-drive'])
+        selected = panel.buttons[panel.selected]['extraArgs']
+        panel.layout_aspect = 16/9
+        panel.resize(4/3)
+        assert panel.page == page and panel.layout_aspect == 4/3
+        assert panel.buttons[panel.selected]['extraArgs'] == selected
+        assert app.session.current == snapshot and app.workspace_vehicle == vehicle
+        assert app.career_progress.records == records and app.career_progress.credits == credits
+    panel.show_result(app.career_progress, result, award)
+    panel.key('enter')
+    assert panel.page == 'board' and app.career_progress.credits == credits
+
+
+def test_result_save_retry_awards_once_and_exposes_the_real_new_car(app, monkeypatch):
+    app.career_action('start', 'first-drive')
+    result = CareerResult('first-drive', 8., elapsed=25., finished=True, succeeded=True, stars=3)
+    app.session.highway.snapshot = replace(app.session.highway.snapshot, career=result)
+    save = CareerProgress.save
+
+    def fail(self, records, owned, credits):
+        self.notice = '生涯进度未保存：测试文件访问失败。'
+        return False
+
+    monkeypatch.setattr(CareerProgress, 'save', fail)
+    app.career_action('save')
+    assert app.career_progress.credits == 0 and app.career_progress.stars == 0
+    assert not app.career_award['saved'] and not app.career_award['vehicles']
+    assert app.career_panel.buttons[app.career_panel.primary]['extraArgs'][0] == 'save'
+    monkeypatch.setattr(CareerProgress, 'save', save)
+    app.career_panel.key('enter')
+    assert app.career_panel.page == 'result' and app.career_award['saved']
+    assert app.career_progress.credits == 300 and app.career_progress.stars == 3
+    assert 'club-coupe' in app.career_award['vehicles']
+    app.career_action('save')
+    assert app.career_award['credits'] == 0 and not app.career_award['vehicles']
+    assert app.career_progress.credits == 300
 
 
 def test_production_loader_holds_independent_countdown_until_ready(tmp_path, monkeypatch):
