@@ -57,7 +57,7 @@ VEHICLES = (
                       True, False, physics_id='coastal-hatch'),
     VehicleDefinition('coastal-roadster', '晴岚 R2', 'vehicles/coastal_roadster.glb', 'hero',
                       True, False, physics_id='coastal-roadster'),
-    VehicleDefinition('coastal-gt', '远航 GT', 'vehicles/coastal_gt.glb', 'hero',
+    VehicleDefinition('coastal-gt', '远航 GT', 'vehicles/car_concept.bam', 'hero',
                       True, False, physics_id='coastal-gt'),
     VehicleDefinition(
         "traffic-compact",
@@ -141,7 +141,8 @@ def apply_skin(model, index):
     material.setName("vehicle-paint")
     quality = model.getPythonTag("vehicle-quality") or "legacy"
     material.setBaseColor(Vec4(*paint_color(index, quality=quality), 1))
-    material.setRoughness({"hero": 0.32, "traffic": 0.36}.get(quality, 0.45))
-    material.setMetallic(0)
+    concept = model.getName() == 'car-concept'
+    material.setRoughness(.23 if concept else {"hero": 0.32, "traffic": 0.36}.get(quality, 0.45))
+    material.setMetallic(.45 if concept else 0)
     for part in model.findAllMatches("**/paint"):
         part.setMaterial(material, 1)

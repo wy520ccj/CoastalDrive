@@ -2,7 +2,6 @@
 
 import math
 
-import gltf
 import simplepbr
 from direct.gui.DirectGui import DirectFrame
 from panda3d.core import (
@@ -22,11 +21,12 @@ from panda3d.core import (
     Point3,
     TransparencyAttrib,
 )
+from simplepbr.envmap import EnvMap
 
 from paths import resource_root
 from skins import apply_skin, vehicle_for_design
 from ui import theme
-from vehicle_visual import load_vehicle
+from vehicle_visual import load_vehicle, set_vehicle_reflection, vehicle_reflection
 
 
 class WorkshopVehicle:
@@ -37,12 +37,13 @@ class WorkshopVehicle:
         self.identity = None
         self.framing_identity = None
         self.framing_points = []
+        self.garage_environment = None
 
     def show(self, parent, box, vehicle, *, studio=False, skin_index=None):
         skin_index = self.base.skin_index if skin_index is None else skin_index
         if self.buffer is None:
             self.scene = NodePath('workshop-display-only')
-            self.buffer = self.base.win.makeTextureBuffer('workshop-vehicle', 1280, 600)
+            self.buffer = self.base.win.makeTextureBuffer('workshop-vehicle', 1280, 720)
             self.buffer.setClearColor((.84, .93, .98, 1))
             lens = PerspectiveLens()
             lens.setFov(46)
@@ -74,6 +75,7 @@ class WorkshopVehicle:
             self.backplate.setBin('background', 0)
             self.backplate.setDepthWrite(False)
             # 柔和接地阴影属于展台表现，不向Simulation创建额外物体。
+            self.shadows = []
             for layer in range(18):
                 radius = 1.0-layer*.025
                 data = GeomVertexData('contact-shadow', GeomVertexFormat.getV3(), Geom.UHStatic)
@@ -96,8 +98,10 @@ class WorkshopVehicle:
                 node.setLightOff()
                 node.setShaderOff()
                 node.setDepthWrite(False)
+                self.shadows.append(node)
             self.car_root = self.scene.attachNewNode('current-vehicle')
             self.studio = None
+            self.contact_shadow = None
             self.studio_angle = 35.
             previous_tasks = self.base.taskMgr.getTasksNamed('simplepbr update')
             self.pipeline = simplepbr.init(render_node=self.scene, window=self.buffer,
@@ -129,16 +133,33 @@ class WorkshopVehicle:
         self.frame = DirectFrame(parent=parent, frameSize=box, frameColor=(1, 1, 1, 1),
                                  frameTexture=self.buffer.getTexture())
         self.camera.node().getLens().setAspectRatio((box[1]-box[0])/(box[3]-box[2]))
-        self.camera.node().getLens().setFov(70 if studio else 46)
-        if studio and self.studio is None:
+        self.camera.node().getLens().setFov(46)
+        self.camera.node().getLens().setFilmOffset(0, 0)
+        self.backplate.hide() if studio else self.backplate.show()
+        self.buffer.setClearColor((0, 0, 0, 0) if studio else (.84, .93, .98, 1))
+        if studio and self.garage_environment is None:
             from panda3d.core import Filename
 
-            self.studio = NodePath(gltf.load_model(Filename.fromOsSpecific(
-                str(resource_root()/'assets/game/vehicles/coastal_garage.glb'))))
-            self.studio.reparentTo(self.scene)
-        self.backplate.hide() if studio else self.backplate.show()
-        if self.studio is not None:
-            self.studio.show() if studio else self.studio.hide()
+            self.garage_environment = EnvMap.from_file_path(Filename.fromOsSpecific(
+                str(resource_root()/'assets/game/vehicles/garage-skylit.env')))
+        self.pipeline.env_map = self.garage_environment if studio else None
+        for node in (self.car_root.getChild(0), *self.wheels):
+            set_vehicle_reflection(node, self.garage_environment if studio else vehicle_reflection())
+        if studio and self.contact_shadow is None:
+            card = CardMaker('garage-model-shadow')
+            card.setFrame(-4, 4, -4, 4)
+            self.contact_shadow = self.scene.attachNewNode(card.generate())
+            self.contact_shadow.setP(-90)
+            self.contact_shadow.setZ(.001)
+            self.contact_shadow.setTexture(self.base.loader.loadTexture(theme.asset_filename('garage-v2/contact-shadow.png')))
+            self.contact_shadow.setTransparency(TransparencyAttrib.MAlpha)
+            self.contact_shadow.setShaderOff()
+            self.contact_shadow.setLightOff()
+            self.contact_shadow.setDepthWrite(False)
+        if self.contact_shadow is not None:
+            self.contact_shadow.show() if studio else self.contact_shadow.hide()
+        for shadow in self.shadows:
+            shadow.hide() if studio else shadow.show()
         self.studio_active = studio
         if studio:
             self.orbit(0)
@@ -156,24 +177,36 @@ class WorkshopVehicle:
         angle = math.radians(self.studio_angle)
         low, high = self.car_root.getTightBounds(self.scene)
         center = (low+high)/2
+        lens = self.camera.node().getLens()
+        lens.setFilmOffset(0, 0)
         near, far = 2., 30.
         # 依据真实网格和视口留边；车顶、车轮完整放在展示区，不向物理配置反写。
         for _ in range(12):
             radius = (near+far)/2
-            self.camera.setPos(math.sin(angle)*radius, math.cos(angle)*radius, center.z+radius*.30)
+            self.camera.setPos(math.sin(angle)*radius, math.cos(angle)*radius, center.z+radius*.16)
             self.camera.lookAt(center)
-            ratio = 0.
+            projected_points = []
             for point in self.framing_points:
                 projected = Point2()
-                visible = self.camera.node().getLens().project(
+                visible = lens.project(
                     self.camera.getRelativePoint(self.scene, point), projected)
-                ratio = max(ratio, abs(projected.x)/.84, abs(projected.y)/.78) if visible else float('inf')
+                if not visible:
+                    break
+                projected_points.append(projected)
+            ratio = float('inf')
+            if len(projected_points) == len(self.framing_points):
+                low_x, high_x = min(p.x for p in projected_points), max(p.x for p in projected_points)
+                low_y, high_y = min(p.y for p in projected_points), max(p.y for p in projected_points)
+                ratio = max((high_x-low_x)/1.8, (high_y-low_y)/1.50)
             if ratio <= 1.:
                 far = radius
             else:
                 near = radius
-        self.camera.setPos(math.sin(angle)*far, math.cos(angle)*far, center.z+far*.30)
+        self.camera.setPos(math.sin(angle)*far, math.cos(angle)*far, center.z+far*.16)
         self.camera.lookAt(center)
+        # 镜头偏移居中实际投影，避免近端车头使单侧留白迫使整车缩小。
+        size = lens.getFilmSize()
+        lens.setFilmOffset((low_x+high_x)*size.x/4, ((low_y+high_y)/2+.08)*size.y/2)
 
     def highlight(self, topic):
         for index, wheel in enumerate(self.wheels):

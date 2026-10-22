@@ -26,7 +26,7 @@ GARAGE_CARS = (
     GarageCar('coastal-gt', 'coastal-gt', '远航 GT', 'GT / 四轮驱动', '更强动力与四驱，迎接海岸杯。', 9),
 )
 CAR_BY_DESIGN = {car.design_id: car for car in GARAGE_CARS}
-DEFAULT_PAINT = {'coastal-hatch': 4, 'coastal-roadster': 2, 'coastal-gt': 1, 'gr86-2022-premium-6mt': 4}
+DEFAULT_PAINT = {'coastal-hatch': 4, 'coastal-roadster': 2, 'coastal-gt': 2, 'gr86-2022-premium-6mt': 4}
 
 
 def garage_cars(current, folder=None):

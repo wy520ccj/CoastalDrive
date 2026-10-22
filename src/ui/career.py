@@ -4,9 +4,8 @@ from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectButton, DirectFrame, OnscreenText
 from panda3d.core import TextNode, TextureStage
 
-from career import EVENTS, PARTS
+from career import EVENTS
 from career_garage import garage_cars
-from skins import SKINS
 from ui import theme
 from ui.lab_widgets import rounded_panel
 
@@ -23,6 +22,13 @@ GOLD = (.78, .49, .05, 1)
 class CareerPanel:
     def __init__(self, parent, font, vehicle_view, action, loader):
         self.font, self.vehicle_view, self.action = font, vehicle_view, action
+        self.loader = loader
+        self.garage_font = theme.load_font('fonts/SourceHanSansSC-Regular.otf')
+        self.garage_display_font = theme.load_font(theme.DISPLAY_FONT_FILE)
+        self.garage_textures = {}
+        self.garage_topic = 'tires'
+        self.garage_aspect = None
+        self.parent, self.screen_parent = parent, vehicle_view.base.aspect2d
         self.root = DirectFrame(parent=parent, frameSize=(-1.78, 1.78, -1.5, 1.5),
             frameColor=PAPER, sortOrder=300, state=DGG.NORMAL)
         self.content = self.root.attachNewNode('career-content')
@@ -47,6 +53,10 @@ class CareerPanel:
         self.content.removeNode()
         self.content = self.root.attachNewNode('career-content')
         self.page, self.primary = page, -1
+        self.root.reparentTo(self.screen_parent if page == 'garage' else self.parent)
+        if page == 'garage':
+            self.root.show()
+            return
         self.label('COASTAL / 生涯', -1.55, .84, .065)
         self.label('海岸杯车手' if progress.stars >= 9 else '俱乐部车手' if progress.stars >= 5 else
                    '新手车手', -.22, .85, .038, MUTED)
@@ -55,16 +65,16 @@ class CareerPanel:
         rounded_panel(self.content, 'header-line', (-1.58, 1.58, .75, .754), (.75, .80, .82, 1), 0.)
         self.root.show()
 
-    def label(self, text, x, z, size=.04, color=INK, parent=None, wrap=None):
-        item = OnscreenText(parent=self.content if parent is None else parent, text=text, font=self.font,
+    def label(self, text, x, z, size=.04, color=INK, parent=None, wrap=None, font=None):
+        item = OnscreenText(parent=self.content if parent is None else parent, text=text, font=self.font if font is None else font,
             fg=color, align=TextNode.ALeft, pos=(x, z), scale=size, mayChange=True)
         if wrap is not None:
             item.textNode.setWordwrap(wrap/size)
         self.labels.append(item)
         return item
 
-    def button(self, text, x, z, width, height, command, value=None, *, primary=False, enabled=True, accent=False, flat=False):
-        node = rounded_panel(self.content, 'button-fill', (-width/2, width/2, -height/2, height/2), WHITE)
+    def button(self, text, x, z, width, height, command, value=None, *, primary=False, enabled=True, accent=False, flat=False, radius=.025):
+        node = rounded_panel(self.content, 'button-fill', (-width/2, width/2, -height/2, height/2), WHITE, radius)
         node.detachNode()
         index = len(self.buttons)
         item = DirectButton(parent=self.content, text=text, text_font=self.font,
@@ -139,84 +149,12 @@ class CareerPanel:
         self.select(self.primary if available else 0)
 
     def show_garage(self, progress, vehicle, notice='', *, tab='cars', preview=None, skin_index=None, cars=None):
+        from ui.garage_layout import show
+
         self.clear('garage', progress)
         self.back = 'garage-back'
-        preview = vehicle if preview is None or tab != 'cars' else preview
-        self.button('‹  赛事', -1.28, .62, .54, .10, 'board', flat=True)
-        for index, (key, title) in enumerate((('cars', '我的车辆'), ('upgrade', '升级改装'), ('paint', '车身颜色'))):
-            x = -.48+index*.72
-            self.button(title, x, .62, .64, .10, 'garage-tab', key, accent=key == tab, flat=True)
-            if key == tab:
-                rounded_panel(self.content, 'active-tab', (x-.24, x+.24, .548, .557), BLUE, .004)
-        layer = self.content.attachNewNode('garage-vehicle')
-        self.vehicle_view.show(layer, (-1.56, .42, -.30, .47), preview, studio=True, skin_index=skin_index)
-        self.vehicle_view.highlight(None)
-        self.label('查看车身', -1.55, -.40, .032, MUTED)
-        self.button('‹', .02, -.39, .15, .09, 'garage-orbit', -25, flat=True)
-        self.button('›', .29, -.39, .15, .09, 'garage-orbit', 25, flat=True)
-        cars = garage_cars(vehicle) if cars is None else cars
-        car = next(item for item in cars if item.design_id == preview.design_id)
-        config = preview.config
-        self.label(car.name, .62, .37, .075)
-        self.label(car.category, .62, .25, .034, MUTED)
-        if tab == 'cars':
-            self.label(car.description, .62, .08, .038, MUTED, wrap=.88)
-            power = max(rpm*torque/9549.3 for rpm, torque in config.torque_curve)
-            self.label(f'{power:.0f}', .62, -.16, .070)
-            self.label('kW', .82, -.16, .033, MUTED)
-            self.label(f'{config.mass:.0f}', 1.07, -.16, .070)
-            self.label('kg', 1.39, -.16, .033, MUTED)
-            current = preview.design_id == vehicle.design_id
-            unlocked = current or progress.stars >= car.unlock
-            self.button('当前驾驶' if current else '选择驾驶' if unlocked else f'获得{car.unlock}星解锁',
-                1.10, -.36, .96, .14, 'garage-select', primary=unlocked and not current,
-                enabled=unlocked and not current)
-            count = sum(progress.stars >= item.unlock or item.design_id == vehicle.design_id for item in cars)
-            self.label(f'我的车辆  /  已解锁 {count} / {len(cars)}', -1.55, -.54, .035, MUTED)
-            width = 1.98/len(cars)
-            for index, item in enumerate(cars):
-                unlocked = progress.stars >= item.unlock or item.design_id == vehicle.design_id
-                title = item.name+'\n'+('驾驶中' if item.design_id == vehicle.design_id else
-                    '已解锁' if unlocked else f'{item.unlock}星解锁')
-                button = self.button(title, -1.56+width*(index+.5), -.67, width-.025, .18,
-                    'garage-car', item.design_id, accent=item.design_id == preview.design_id)
-                button['text_scale'] = .030 if len(cars) > 5 else .033
-                button['text_pos'] = (0, .008)
-        elif tab == 'upgrade':
-            for index, part in enumerate(PARTS):
-                z = .10-index*.36
-                self.label(part.name, .62, z, .045)
-                self.label('转向响应更利落' if part.topic == 'tires' else '更多制动力分给前轮',
-                           .62, z-.08, .032, MUTED)
-                installed = (vehicle.config.lateral_stiffness == 70000. if part.topic == 'tires' else
-                             vehicle.config.front_brake_share == .7)
-                owned, unlocked = part.id in progress.owned, progress.stars >= part.unlock
-                affordable = owned or progress.credits >= part.price
-                text = ('已安装' if installed else '安装已购零件' if owned else f'{part.unlock}星解锁' if not unlocked else
-                        f'购买并安装  {part.price}' if affordable else f'还差{part.price-progress.credits}积分')
-                button = self.button(text, 1.10, z-.18, .96, .10, 'part', part.id,
-                    accent=True, enabled=not installed and unlocked and affordable)
-                button_index = len(self.buttons)-1
-                button.bind(DGG.ENTER, lambda event, i=button_index, topic=part.topic: self.part_focus(i, topic))
-                button.bind(DGG.EXIT, lambda event: self.vehicle_view.highlight(None))
-            self.label('当前车辆配置', -1.55, -.54, .035, MUTED)
-            self.label(f'前轮 {config.lateral_stiffness/1000:g} kN/rad   /   前轴制动 {config.front_brake_share:.0%}',
-                       -1.55, -.65, .036)
-            self.button('恢复改装前车辆', -.88, -.75, 1.34, .09, 'restore', flat=True)
-        else:
-            self.label('车身颜色', .62, .10, .045)
-            for index, skin in enumerate(SKINS):
-                z = -.015-index*.105
-                self.button(skin.name, 1.10, z, .96, .085, 'garage-paint', index, accent=index == skin_index)
-                rounded_panel(self.content, 'paint-chip', (.67, .75, z-.022, z+.022), (*skin.color, 1), .012)
-            self.button('应用颜色', 1.10, -.65, .96, .13, 'garage-paint-save', primary=True)
-            self.label('预览颜色', -1.55, -.54, .035, MUTED)
-            self.label('点击“应用颜色”后为这辆车保存。', -1.55, -.65, .036)
-        rounded_panel(self.content, 'footer-line', (-1.56, 1.58, -.81, -.808), (.80, .84, .84, 1), 0.)
-        self.label(notice or progress.notice or '换车保留各自改装；Esc 返回赛事。',
-                   -1.55, -.90, .030, MUTED, wrap=2.10)
-        self.button('返回赛事', 1.10, -.89, .96, .12, 'garage-back', primary=self.primary < 0)
-        self.select(self.primary)
+        show(self, progress, vehicle, notice, tab, preview, skin_index,
+             garage_cars(vehicle) if cars is None else cars)
 
     def part_focus(self, index, topic):
         self.select(index)
@@ -263,6 +201,11 @@ class CareerPanel:
 
     def select(self, index):
         self.selected = index % len(self.buttons)
+        if self.page == 'garage':
+            from ui.garage_layout import style
+
+            style(self)
+            return
         for i, button in enumerate(self.buttons):
             disabled = button['state'] == DGG.DISABLED
             button['geom_color'] = (WHITE if disabled else ORANGE if i == self.primary else
@@ -277,6 +220,9 @@ class CareerPanel:
                       'arrow_up': (0, 1), 'w': (0, 1), 'arrow_down': (0, -1), 's': (0, -1)}
         if self.page == 'garage' and key in directions:
             vx, vz = directions[key]
+            if vz == 1 and self.garage_roles[self.selected] == 'footer':
+                self.select(self.primary)
+                return
             current, candidates = self.buttons[self.selected], []
             for index, button in enumerate(self.buttons):
                 dx, dz = button.getX()-current.getX(), button.getZ()-current.getZ()
@@ -298,6 +244,10 @@ class CareerPanel:
     def hide(self):
         self.root.hide()
         self.vehicle_view.hide()
+
+    def resize(self, aspect):
+        if self.page == 'garage' and not self.root.isHidden() and self.garage_aspect != aspect:
+            self.action('garage-redraw', None)
 
     def destroy(self):
         for widget in (*self.labels, *self.buttons, *self.frames):

@@ -1,0 +1,23 @@
+{
+  "source": "art\\vehicles\\sources\\car-concept\\CarConcept.glb",
+  "source_sha256": "c272098089d78c5cd9fd9f24ff50ee8acf8d932c55f2d55fc10adb6c8998966b",
+  "output": "assets\\game\\vehicles\\car_concept.bam",
+  "output_sha256": "eb747b0b7128e656a2b7459bcd6f07b774c78a264438651c396c61fc5ed9954e",
+  "triangles": 213195,
+  "removed": [
+    "License Plate",
+    "InteriorSteeringEmblem"
+  ],
+  "changes": [
+    "逐网格烘焙节点变换，保持源几何/贴图；朝向转为+Y",
+    "统一四轮根名",
+    "主车漆命名paint",
+    "透射玻璃适配为Panda透明PBR",
+    "删除许可排除的车牌/方向盘标志及共享标志纹理",
+    "源文件前轮30度展示舵角归零；轮拱按实际轮位装配，物理参数不变"
+  ],
+  "license": "CC-BY-4.0",
+  "artist": "Eric Chadwick",
+  "owner": "Darmstadt Graphics Group GmbH",
+  "year": 2024
+}

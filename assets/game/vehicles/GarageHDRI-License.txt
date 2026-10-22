@@ -1,0 +1,5 @@
+Skylit Garage HDRI by Greg Zaal / Poly Haven. CC0.
+https://polyhaven.com/a/skylit_garage
+https://polyhaven.com/license
+Source: https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/skylit_garage_2k.hdr
+Converted to an offline filtered cubemap and spherical harmonic lighting for the garage display.

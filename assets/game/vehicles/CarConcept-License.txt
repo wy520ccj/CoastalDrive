@@ -1,0 +1,7 @@
+Car Concept model and textures
+Copyright 2024 Eric Chadwick / Darmstadt Graphics Group GmbH.
+Licensed under Creative Commons Attribution 4.0 International (CC-BY-4.0).
+https://creativecommons.org/licenses/by/4.0/
+Source: https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/CarConcept
+Changes: coordinate/wheel pivot conversion, steering pose reset, paint partition, Panda3D transparency and material adaptation. Trademark graphics removed from runtime geometry and material maps. Physics is a CoastalDrive generic GT design, not creator or manufacturer data.
+Source model and textures are not endorsed by Khronos or the artist.

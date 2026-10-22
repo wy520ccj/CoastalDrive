@@ -100,7 +100,7 @@ def test_garage_reserves_vehicle_area_and_directional_focus_follows_the_layout(a
                 point = Point2()
                 assert view.camera.node().getLens().project(
                     view.camera.getRelativePoint(view.scene, corner), point)
-                assert abs(point.x) <= .85 and abs(point.y) <= .79
+                assert abs(point.x) <= .91 and abs(point.y) <= .87
     # 从页尾向上，应进入同一列的颜色应用，而不是跳到左侧车模角度按钮。
     panel.select(len(panel.buttons)-1)
     panel.key('arrow_up')

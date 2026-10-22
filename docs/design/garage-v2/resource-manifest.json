@@ -1,0 +1,114 @@
+{
+  "assets": [
+    {
+      "path": "assets/game/ui/backgrounds/garage-coastal-v2.png",
+      "sha256": "11b4a60c473940c83d4e64b5e520c5c2e824cf8d3f556230ae977b0320149074",
+      "size": 2304298
+    },
+    {
+      "path": "assets/game/ui/garage-v2/brake.png",
+      "sha256": "b27acf79fb1e72a6160809ffdb0089d237a9647477ba6f62612828a1d084c39a",
+      "size": 91052
+    },
+    {
+      "path": "assets/game/ui/garage-v2/car-coastal-gt.png",
+      "sha256": "919fe44deb61d8b14ef28b54728abc99341b5d7f29a2955140a9828d3f7faad3",
+      "size": 104288
+    },
+    {
+      "path": "assets/game/ui/garage-v2/car-coastal-hatch.png",
+      "sha256": "11b94c20ee3d039ef6cdd08f0da22ff40e10ecbb39c1855c12d7b65ab0b62963",
+      "size": 90425
+    },
+    {
+      "path": "assets/game/ui/garage-v2/car-coastal-roadster.png",
+      "sha256": "48858d34b42344c371bafa3aa664ea418724ebe67ae68faa7ccea911280d91ef",
+      "size": 84255
+    },
+    {
+      "path": "assets/game/ui/garage-v2/car-game-tuned.png",
+      "sha256": "d26df8efc252eff546468a76c3d493ed52baa075b5ca12da5d28de444e99e807",
+      "size": 100627
+    },
+    {
+      "path": "assets/game/ui/garage-v2/car-gr86-2022-premium-6mt.png",
+      "sha256": "7055f6281050e3333f01cf1cabefbce936842a72a393ec56f551a8df3bacb2b7",
+      "size": 81522
+    },
+    {
+      "path": "assets/game/ui/garage-v2/car-suspension.png",
+      "sha256": "0d7cebc8225efca783fdfce8414ae1c82e44381a8eda9321d9488edfdacf4a99",
+      "size": 1416
+    },
+    {
+      "path": "assets/game/ui/garage-v2/contact-shadow.png",
+      "sha256": "6981c39d637dd5822b9a6454d9b1fb3cdc135d53691e8c08d78b093d0268dfa1",
+      "size": 107266
+    },
+    {
+      "path": "assets/game/ui/garage-v2/disc.png",
+      "sha256": "e48a008fab94631ea107efabe18e0bb23d42a4e39abf35cd8b27ab259435abca",
+      "size": 3299
+    },
+    {
+      "path": "assets/game/ui/garage-v2/engine.png",
+      "sha256": "3c5c7944ccc2aeab275e064ecc98ccaa5badeb1d0cf51f912a92b7b9545cf9f5",
+      "size": 1493
+    },
+    {
+      "path": "assets/game/ui/garage-v2/License-Tabler.txt",
+      "sha256": "b740a1d46122672da62833e97f7e7c8a13fa85cbc7445b584b297cc00dde93db",
+      "size": 1073
+    },
+    {
+      "path": "assets/game/ui/garage-v2/paint-0.png",
+      "sha256": "02d5f1ad7cd263f9c6aa0f8bd2e15b2d54c665c569f1f787e3838b7ab382ee13",
+      "size": 61422
+    },
+    {
+      "path": "assets/game/ui/garage-v2/paint-1.png",
+      "sha256": "993fd03c4438bcc2d8b10c2ae2dc1f84d456d5ae74bb4d2d6e0f114df472a237",
+      "size": 60923
+    },
+    {
+      "path": "assets/game/ui/garage-v2/paint-2.png",
+      "sha256": "6df52909a58cfb9c14a6100d88e2ca7927bc52383585bc756a75224162f6e50c",
+      "size": 64029
+    },
+    {
+      "path": "assets/game/ui/garage-v2/paint-3.png",
+      "sha256": "601d567857867bef3088d0d626157a56360277987ccae4b90633aac7f3a63952",
+      "size": 59688
+    },
+    {
+      "path": "assets/game/ui/garage-v2/paint-4.png",
+      "sha256": "ba7b9d09e1668e69b272ef8c62c707932e235c57c44a465fcc66d72ae999f8ad",
+      "size": 54088
+    },
+    {
+      "path": "assets/game/ui/garage-v2/tire.png",
+      "sha256": "2c4a735d23c43eab8502e650db5c2ea692645e7f9aec5cbc975cf1b83e06253b",
+      "size": 85708
+    },
+    {
+      "path": "assets/game/ui/garage-v2/wheel.png",
+      "sha256": "83176be272d504cd67df1fc1a6285bc42234890ee3a1afee6f6364ab3ddaa7bb",
+      "size": 2781
+    },
+    {
+      "path": "assets/game/vehicles/car_concept.bam",
+      "sha256": "eb747b0b7128e656a2b7459bcd6f07b774c78a264438651c396c61fc5ed9954e",
+      "size": 12401181
+    },
+    {
+      "path": "assets/game/vehicles/garage-skylit.env",
+      "sha256": "392692301af10138e66392086d16a0fe15f9c4f26e7045c8f43a972132e255b8",
+      "size": 3140130
+    }
+  ],
+  "generated_background_source": "exec-aa329be9-5774-4f9a-888c-34cf71f3979b.png",
+  "catalog_generator": "tools/blender/render_garage_catalog.py",
+  "model_generator": "tools/vehicles/prepare_concept_car.py",
+  "environment_generator": "tools/vehicles/prepare_garage_environment.py",
+  "visual_status": "in_progress; actual render differs from concept; not human accepted"
+}

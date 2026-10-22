@@ -31,6 +31,21 @@
       "license_file": "OFL-ChakraPetch.txt",
       "license_url": "https://raw.githubusercontent.com/google/fonts/23e54b51ddffbc7713c583748e3bd86f62b1fa4a/ofl/chakrapetch/OFL.txt",
       "license_sha256": "13831d02389d917d22fcfa6c79f98f8acbf61d230add0e73a4d4dc5f3bfb9e56"
+    },
+    {
+      "family": "Source Han Sans SC",
+      "style": "Regular",
+      "role": "Garage body copy and secondary controls",
+      "file": "SourceHanSansSC-Regular.otf",
+      "source_repository": "https://github.com/adobe-fonts/source-han-sans",
+      "source_path": "OTF/SimplifiedChinese/SourceHanSansSC-Regular.otf",
+      "source_url": "https://raw.githubusercontent.com/adobe-fonts/source-han-sans/release/OTF/SimplifiedChinese/SourceHanSansSC-Regular.otf",
+      "sha256": "f1d8611151880c6c336aabeac4640ef434fa13cbfbf1ffe82d0a71b2a5637256",
+      "size_bytes": 16529832,
+      "license": "SIL Open Font License 1.1",
+      "license_file": "OFL-SourceHanSans.txt",
+      "license_url": "https://github.com/adobe-fonts/source-han-sans/blob/release/LICENSE.txt",
+      "license_sha256": "fcac737e761ec63dbfbdce11030a1780161920d80315edba9c8beff1c2bac5a2"
     }
   ]
 }

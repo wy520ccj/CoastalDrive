@@ -1,0 +1,14 @@
+{
+  "src/ui/career.py": "696f2c56739a942bc6b0de61660e38c82ea0e540534cd84f012f781d6d839629",
+  "src/ui/garage_layout.py": "cb16f3c5c3d250873604520840ba62cbf24b7b6f2ecdd837e9c52fd445046b75",
+  "src/ui/workshop_vehicle.py": "cda97f5ef89b0b1bbb9d5ff2270893a799875c6825781be698582dd8b4b403fc",
+  "src/application.py": "6974fc34a9986e4a29c50bb7edd927de7c676104face5c71b357d8a9f8bf8a2a",
+  "src/vehicle_visual.py": "2cbb079f5fbb11e31c5cd5998e0c99fc58d67f52a2d06eaf363a571898ea7755",
+  "src/skins.py": "3db6ab2bab193098f647d834e2422465a590bb6c8edb5a98a0f4ae5d8184cc1e",
+  "src/career_garage.py": "70407c0788ab0f894dc21f7954c8f8ed0e3d4d81d758675362d5383b51ceb82c",
+  "tools/garage_design_check.py": "ab78eb9a56127995f1a50b786323d0190e1eb02a67302942d98df6e41e2c63fc",
+  "tools/vehicles/prepare_concept_car.py": "58d4405f3c8be9548b56fcd2c8a86e4507bbabd29fd2d5c8209e27665b1b9919",
+  "tools/vehicles/prepare_garage_environment.py": "a74dcba1d5ca946301efd381ce424ade43465da2ee8209934763d8c13d520ae6",
+  "tools/blender/render_garage_catalog.py": "678e1f2646ce400b74d13d431ebd0ee3d076cce8d103e3a9274220bc57da1f4e",
+  "tools/garage_design_capture.py": "596de69ad6a3f4310803ca2c519401d536698dea62764d452df8a3dd0edd6824"
+}

@@ -467,6 +467,14 @@ class CoastalDrive(ShowBase):
         elif action == 'garage-tab':
             self.career_garage_tab = value
             self.open_career_garage()
+        elif action == 'garage-topic':
+            self.career_panel.garage_topic = value
+            self.open_career_garage(reset=False)
+        elif action == 'garage-redraw':
+            self.open_career_garage(reset=False)
+        elif action == 'garage-confirm':
+            self.career_panel.select(self.career_panel.primary)
+            self.career_panel.key('enter')
         elif action == 'garage-car':
             if value not in {car.design_id for car in garage_cars(self.workspace_vehicle, self.career_garage_folder)}:
                 return
@@ -2310,6 +2318,7 @@ class CoastalDrive(ShowBase):
         if self._radio_dirty and self.session.phase not in (Phase.DRIVING, Phase.COUNTDOWN):
             self.save_audio_settings()
         self.main_menu.resize(self.getAspectRatio())
+        self.career_panel.resize(self.getAspectRatio())
         self.driving_cards.resize(self.getAspectRatio())
         self.hud.resize(self.getAspectRatio())
         self.lab_return_button.setX(self.getAspectRatio()-.44)

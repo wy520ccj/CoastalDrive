@@ -30,7 +30,7 @@ def load_vehicle(parent, definition: VehicleDefinition, *, trace=None, config=No
     if config is None:
         config = vehicle_design(definition.physics_id).config
     path = resource_root() / "assets/game" / definition.visual
-    if path.suffix == ".glb":
+    if path.suffix == ".glb" or path.suffix == ".bam" and definition.quality == "hero":
         return load_gltf_vehicle(parent, definition, path, trace=trace, config=config)
 
     root = parent.attachNewNode(definition.id)
@@ -54,7 +54,8 @@ def load_vehicle(parent, definition: VehicleDefinition, *, trace=None, config=No
 def load_gltf_vehicle(parent, definition, path, *, trace=None, config):
     """米制 GLB 共用 Snapshot 的四个世界轮姿。"""
     root = parent.attachNewNode(definition.id)
-    body = NodePath(gltf.load_model(Filename.fromOsSpecific(str(path))))
+    filename = Filename.fromOsSpecific(str(path))
+    body = NodePath(gltf.load_model(filename) if path.suffix == '.glb' else Loader.getGlobalPtr().loadSync(filename))
     body.setPythonTag("vehicle-quality", definition.quality)
     if definition.quality == "hero":
         body.setName(path.stem.replace("_", "-"))
@@ -62,6 +63,11 @@ def load_gltf_vehicle(parent, definition, path, *, trace=None, config):
             trace.mark("hero_mesh_loaded")
     body.reparentTo(root)
     environment = None
+    authored_hubs = []
+    if body.getTag('authored-proportions') == 'wheel-hubs':
+        for name in WHEEL_NAMES:
+            low, high = body.find('**/'+name).getTightBounds(body)
+            authored_hubs.append(((low+high)/2, (high.z-low.z)/2))
     if definition.quality == "hero":
         environment = vehicle_reflection()
         if trace is not None:
@@ -76,10 +82,25 @@ def load_gltf_vehicle(parent, definition, path, *, trace=None, config):
         if environment is not None:
             set_vehicle_reflection(wheel, environment)
         wheels.append(pivot)
-    fit_body(body, root, config)
+    if authored_hubs:
+        fit_authored_body(body, authored_hubs, config)
+    else:
+        fit_body(body, root, config)
     if definition.quality == "hero":
         balance_vehicle_ambient(parent, root, wheels)
     return root, wheels
+
+
+def fit_authored_body(body, hubs, config):
+    """外购车保留原轮拱比例，按实际轴距/轮距/轮径装配；不反写物理。"""
+    targets = wheel_hubs(config)
+    scale = Vec3(config.track_width/abs(hubs[2][0].x-hubs[3][0].x),
+        config.wheelbase/abs(hubs[0][0].y-hubs[2][0].y), config.wheel_radius/hubs[2][1])
+    body.setScale(scale)
+    source_mid = (hubs[0][0]+hubs[2][0])/2
+    target_mid = (Vec3(*targets[0])+Vec3(*targets[2]))/2
+    body.setPos(target_mid-Vec3(*(source_mid[a]*scale[a] for a in range(3))))
+    body.setZ(config.wheel_radius-config.center_of_mass_height-source_mid.z*scale.z)
 
 
 def fit_wheel(parent, mesh, name, hub, config):
