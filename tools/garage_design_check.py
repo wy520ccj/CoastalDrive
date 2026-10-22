@@ -56,11 +56,13 @@ def check(output, size, design_id='coastal-gt'):
         app.open_career_collection()
         capture('01-collection-locked')
         original, snapshot = app.workspace_vehicle, app.session.current
-        app.career_action('garage-car', design_id)
+        # 锁定分支固定用9星车型，低星/初始车型也能复用完整采集流程。
+        app.career_action('garage-car', 'coastal-gt')
         app.career_action('garage-select')
         assert app.workspace_vehicle == original and app.session.current == snapshot
         for event in ('first-drive', 'parking', 'slalom'):
             app.career_progress.record(CareerResult(event, 8., elapsed=25., finished=True, succeeded=True, stars=3))
+        app.career_action('garage-car', design_id)
         app.career_action('garage-select')
         assert app.workspace_vehicle.design_id == design_id
         selected = app.workspace_vehicle

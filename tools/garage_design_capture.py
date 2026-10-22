@@ -16,7 +16,7 @@ from application import CoastalDrive
 from career_run import CareerResult
 
 
-def capture(output, size, design_id='coastal-gt'):
+def capture(output, size, design_id='coastal-gt', only=()):
     output.mkdir(parents=True, exist_ok=False)
     os.environ['LOCALAPPDATA'] = str(output/'user')
     app = CoastalDrive(smoke=True, output=output, render_size=size)
@@ -31,13 +31,15 @@ def capture(output, size, design_id='coastal-gt'):
         app.career_action('garage-car', design_id)
         app.career_action('garage-select')
         for tab, topic in (('cars', None), ('upgrade', 'tires'), ('upgrade', 'brakes'), ('paint', None)):
+            name = tab+('-'+topic if topic else '')+'.png'
+            if only and name[:-4] not in only:
+                continue
             app.career_action('garage-tab', tab)
             if topic is not None:
                 app.career_action('garage-topic', topic)
             for _ in range(8):
                 app.taskMgr.step()
             app.graphicsEngine.syncFrame()
-            name = tab+('-'+topic if topic else '')+'.png'
             app.win.getScreenshot().write(Filename.fromOsSpecific(str(output/name)))
             names.append(name)
             assert asdict(app.session.current) == before
@@ -54,5 +56,6 @@ if __name__ == '__main__':
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--size', nargs=2, type=int, default=(1280, 720))
     parser.add_argument('--car', default='coastal-gt')
+    parser.add_argument('--only', nargs='+', default=())
     args = parser.parse_args()
-    capture(args.output.resolve(), tuple(args.size), args.car)
+    capture(args.output.resolve(), tuple(args.size), args.car, args.only)

@@ -1,0 +1,16 @@
+{
+  "source": "art\\vehicles\\racing_hatch.glb",
+  "source_sha256": "195b4b7f6726785e8cda393a6e6318f16645357061abf32fdc50fed1f448fe7b",
+  "output": "assets\\game\\vehicles\\racing_hatch.bam",
+  "output_sha256": "aaf295d59f4b3f0fd9a9b9eec16e5f09e0b0b6c42fdf191c6e9da2c25b900477",
+  "triangles": 96542,
+  "author": "ANDREO12",
+  "license": "CC-BY-4.0",
+  "source_scene_manifest": "art/vehicles/racing-hatch-source.json",
+  "changes": [
+    "保留源网格与贴图",
+    "四个独立轮根",
+    "车漆分区命名paint",
+    "所有贴图内嵌"
+  ]
+}

@@ -1,0 +1,8 @@
+[
+  {
+    "name": "paint",
+    "vertex_format": "Array 0:\n  Array format (stride = 24):\n    vertex(3f) float32 point start at 0\n    normal(3f) float32 normal start at 12\nArray 1:\n  Array format (stride = 8):\n    texcoord.0(2f) float32 texcoord start at 0\nArray 2:\n  Array format (stride = 16):\n    tangent(4f) float32 other start at 0\n",
+    "net_state": "AntialiasAttrib: auto\nLightAttrib:on\n  workshop-display-only/workshop-key\n  workshop-display-only/current-vehicle/club-coupe/vehicle-ambient-fill\nMaterialAttrib:Material vehicle-paint c(0.787412 0.154872 0.0100228 1) r0.23 m0.45 l0 t0\nShaderAttrib:pbr,6 inputs\n",
+    "geom_state": "CullFaceAttrib:cull_none\nMaterialAttrib:Material Body Paint c(0.62 0.13 0.025 1) ior1.5 e(0 0 0 0) r0.24 m0.45 l0 t1\nTextureAttrib:identity\n"
+  }
+]

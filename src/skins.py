@@ -53,13 +53,13 @@ VEHICLES = (
                       True, False, physics_id="reference-awd"),
     VehicleDefinition("gr86-2022", "GR86 Premium · 6MT", "vehicles/gr86_2022_premium.glb", "hero",
                       True, False, physics_id="gr86-2022-premium-6mt"),
-    VehicleDefinition('coastal-hatch', '潮汐 H1', 'vehicles/coastal_hatch.glb', 'hero',
+    VehicleDefinition('coastal-hatch', 'Hyundai i20', 'vehicles/racing_hatch.bam', 'hero',
                       True, False, physics_id='coastal-hatch'),
     VehicleDefinition('coastal-roadster', '晴岚 R2', 'vehicles/coastal_roadster.glb', 'hero',
                       True, False, physics_id='coastal-roadster'),
     VehicleDefinition('coastal-gt', '远航 GT', 'vehicles/car_concept.bam', 'hero',
                       True, False, physics_id='coastal-gt'),
-    VehicleDefinition('club-coupe', '俱乐部 C1', 'vehicles/club_coupe.bam', 'hero',
+    VehicleDefinition('club-coupe', 'BMW 1M Coupé', 'vehicles/club_coupe.bam', 'hero',
                       True, False, physics_id='club-coupe'),
     VehicleDefinition(
         "traffic-compact",
@@ -143,8 +143,8 @@ def apply_skin(model, index):
     material.setName("vehicle-paint")
     quality = model.getPythonTag("vehicle-quality") or "legacy"
     material.setBaseColor(Vec4(*paint_color(index, quality=quality), 1))
-    concept = model.getName() in ('car-concept', 'club-coupe')
-    material.setRoughness(.23 if concept else {"hero": 0.32, "traffic": 0.36}.get(quality, 0.45))
-    material.setMetallic(.45 if concept else 0)
+    concept = model.getName() in ('car-concept', 'club-coupe', 'racing-hatch')
+    material.setRoughness(.12 if concept else {"hero": 0.32, "traffic": 0.36}.get(quality, 0.45))
+    material.setMetallic(.65 if concept else 0)
     for part in model.findAllMatches("**/paint"):
         part.setMaterial(material, 1)

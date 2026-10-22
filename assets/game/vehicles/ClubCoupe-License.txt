@@ -1,4 +1,4 @@
-Club coupe visual asset
+BMW 1 Series M Coupé visual asset
 
 Original BMW 1 Series M model by Mike Pan, created for the Blender 2.7 demo.
 Source: https://download.blender.org/demo/test/BMW27.blend.zip
@@ -10,4 +10,4 @@ https://creativecommons.org/licenses/by/3.0/
 CoastalDrive changes: extracted one car from the original Blender scene; converted legacy Cycles materials to glTF PBR; removed badges and registration plate; normalized the wheel display pose, mirrored wheel orientation and winding; provided four independent wheel pivots and paint partitions; exported a self-contained Panda3D asset.
 Editable source and scripts are in art/vehicles/club_coupe.blend and tools/blender/prepare_club_coupe.py.
 
-The fictional Club C1 uses CoastalDrive generic simulation parameters, not BMW factory data. No endorsement by the artist or manufacturer is asserted.
+The displayed source model name is BMW 1M Coupé. CoastalDrive retains the existing generic simulation configuration, not BMW factory data. No endorsement by the artist or manufacturer is asserted.

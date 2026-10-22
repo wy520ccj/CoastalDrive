@@ -60,6 +60,11 @@ def output(scene, name):
 
 def import_car(path):
     bpy.ops.import_scene.gltf(filepath=str(path))
+    for material in bpy.data.materials:
+        if material.name.startswith(('Body Paint', 'Paint 1 Carmine')) and material.use_nodes:
+            shader = next(node for node in material.node_tree.nodes if node.type == 'BSDF_PRINCIPLED')
+            shader.inputs['Metallic'].default_value = .65
+            shader.inputs['Roughness'].default_value = .12
     for name in ('License Plate', 'InteriorSteeringEmblem'):
         obj = bpy.data.objects.get(name)
         if obj is not None:
@@ -119,6 +124,8 @@ def main():
         scene, camera = setup(384, 216)
         if name == 'club-coupe':
             path = ROOT/'art/vehicles/club_coupe.glb'
+        elif name == 'coastal-hatch':
+            path = ROOT/'art/vehicles/racing_hatch.glb'
         else:
             path = ROOT/'assets/game/vehicles'/filename if filename else ROOT/'art/vehicles/sources/car-concept/CarConcept.glb'
         objects = import_car(path)
@@ -130,8 +137,11 @@ def main():
     if selected:
         if 'club-coupe' in selected:
             render_shadow('contact-shadow-club-coupe', ROOT/'art/vehicles/club_coupe.glb', .75)
-        return
-    for name, object_name in (('tire', 'WheelFrontL'), ('brake', 'WheelFrontLBrakeDisc')):
+        if 'coastal-hatch' in selected:
+            render_shadow('contact-shadow-hatch', ROOT/'art/vehicles/racing_hatch.glb')
+        if 'paint' not in selected:
+            return
+    for name, object_name in (() if selected else (('tire', 'WheelFrontL'), ('brake', 'WheelFrontLBrakeDisc'))):
         scene, camera = setup(320, 320)
         import_car(ROOT/'art/vehicles/sources/car-concept/CarConcept.glb')
         root = bpy.data.objects[object_name]
@@ -154,14 +164,16 @@ def main():
         material.use_nodes = True
         shader = material.node_tree.nodes['Principled BSDF']
         shader.inputs['Base Color'].default_value = (*(c/12.92 if c <= .04045 else ((c+.055)/1.055)**2.4 for c in color), 1)
-        shader.inputs['Metallic'].default_value = .45
-        shader.inputs['Roughness'].default_value = .23
+        shader.inputs['Metallic'].default_value = .65
+        shader.inputs['Roughness'].default_value = .12
         shader.inputs['Coat Weight'].default_value = 1.
         sphere.data.materials.append(material)
         aim(camera, (0, 0, 0), 3.7)
         output(scene, 'paint-'+str(index))
-    render_shadow('contact-shadow', ROOT/'art/vehicles/sources/car-concept/CarConcept.glb')
-    render_shadow('contact-shadow-club-coupe', ROOT/'art/vehicles/club_coupe.glb', .75)
+    if not selected:
+        render_shadow('contact-shadow', ROOT/'art/vehicles/sources/car-concept/CarConcept.glb')
+        render_shadow('contact-shadow-club-coupe', ROOT/'art/vehicles/club_coupe.glb', .75)
+        render_shadow('contact-shadow-hatch', ROOT/'art/vehicles/racing_hatch.glb')
 
 
 if __name__ == '__main__':

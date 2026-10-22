@@ -1,0 +1,18 @@
+{
+  "author": "ANDREO12",
+  "source_import_fixes": "CryHam / Stunt Rally",
+  "license": "CC-BY-4.0",
+  "source": "https://github.com/stuntrally/blendfiles/tree/master/cars/HI",
+  "textures": "https://github.com/stuntrally/stuntrally3/tree/main/data/cars/HI/textures",
+  "fit": "art\\vehicles\\hatch-fit.json",
+  "fit_sha256": "c3676b84a05ab3092235120b8e900be2c24f7eac9322d6bcab129f12ca1ae5be",
+  "sha256": "195b4b7f6726785e8cda393a6e6318f16645357061abf32fdc50fed1f448fe7b",
+  "changes": [
+    "原车身/内饰/玻璃/轮胎/制动网格保留",
+    "源轴向转换",
+    "按现有H1轮位和显示边界适配",
+    "原AO及内饰/车轮贴图接入PBR",
+    "未使用带赞助商字样的拉力涂装图"
+  ],
+  "physics": "Unchanged CoastalDrive coastal-hatch setup; not Hyundai OEM calibration"
+}

@@ -5,11 +5,11 @@
 | 候选 | 来源与许可 | 结论 |
 |---|---|---|
 | Car Concept | Khronos glTF Sample Assets；Eric Chadwick / Darmstadt Graphics Group GmbH；CC-BY-4.0 | 已接入远航GT，运行资产去除商标图案，保留原网格 |
-| BMW27 | Mike Pan原始Blender演示场景；McGuire模型目录标注CC-BY-3.0 | 已提取单车，用于虚构的俱乐部C1；独立通用物理设计，非BMW原厂标定 |
+| BMW27 | Mike Pan原始Blender演示场景；McGuire模型目录标注CC-BY-3.0 | 已提取单车；用户要求现实车型后恢复显示名BMW 1M Coupé，保留原存档键club-coupe及项目通用参数，非原厂标定 |
 | Creomoto Car | OpenGameArt作者Creomoto；CC0 | 实际渲染后仍是简陋方盒造型，不接入 |
 | Spectral GT RS | JaronKBragg7337/spectral-gt-rs；CC0 | 实际渲染的车身结构、比例不符合目标，不因其详细文案而接入 |
 | ToyCar | Khronos glTF Sample Assets；CC0 | 玩具车用途，不拿来替换真实可驾驶车型 |
-| HI掀背 | stuntrally/blendfiles/cars/HI；ANDREO12；about.txt标CC-BY-4.0 | 已取得源文件，下一步检查外部贴图、车轮和实际画面，尚未接入 |
+| HI掀背 | stuntrally/blendfiles/cars/HI；ANDREO12；about.txt标CC-BY-4.0 | 已接入Hyundai i20，96542三角形、原内饰/灯组/轮胎贴图；替换H1显示资源，沿用原coastal-hatch存档及参数，非Hyundai原厂标定 |
 | FR4 | stuntrally/blendfiles/cars/FR4；computergeekman；CC-BY-SA | 已取得候选，许可具体版本和实际画面仍待核对，尚未使用 |
 | S8 | stuntrally/blendfiles/cars/S8；lubomircenovsky；CC-BY-SA-3.0 | 已取得候选，源文件含备用网格与参考图，需明确提取范围，尚未使用 |
 
@@ -18,3 +18,5 @@ BMW实际源场景下载：<https://download.blender.org/demo/test/BMW27.blend.z
 其他原始链接：<https://opengameart.org/content/car-0>、<https://github.com/JaronKBragg7337/spectral-gt-rs>、<https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/ToyCar>、<https://github.com/stuntrally/blendfiles/tree/master/cars>。
 
 实际候选观察工具：`tools/blender/preview_vehicle_candidates.py`。候选原件、观察图与下载记录保留在`logs/validation/GARAGE-DESIGN-02-sources/`；被否定的候选不进入运行资产。
+
+用户最新方向：优先现实中存在、具有明确开放许可的完整车型。显示名称对应实际来源车辆，游戏通用参数明确标“项目调校”；作者许可和车厂授权分别记录，不把开放模型称为官方授权产品。未获得的新候选不提前加入车库。

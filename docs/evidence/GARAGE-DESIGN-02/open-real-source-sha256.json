@@ -1,0 +1,94 @@
+[
+  {
+    "path": "src/career_garage.py",
+    "sha256": "1d9298eee84a3795bda55fe4d0b0de7bbf3e162fb01642ccdb92b130efaabace"
+  },
+  {
+    "path": "src/skins.py",
+    "sha256": "4fbf7a4476bdcee11c0a98579ebf7c40ed8818d17a82736789a1993797acc0a0"
+  },
+  {
+    "path": "src/ui/garage_layout.py",
+    "sha256": "233091224b0afe68a682b0ec692776b6c2eb4049150c50a7844243829b95d2f9"
+  },
+  {
+    "path": "src/ui/workshop_vehicle.py",
+    "sha256": "605b899795bc7bf9e66200956c6f8432be6c9d04a895f96e0f803a3e77c56191"
+  },
+  {
+    "path": "src/vehicle_designs.py",
+    "sha256": "96ec04ef19f8295a02d77b2902fbd5dad34e73b522a8dab502bec91c2f663e24"
+  },
+  {
+    "path": "tests/test_career.py",
+    "sha256": "1251f28f563056dd8c98d58d5bb6bc1500a42ab552015d09fafafb3c3a1b5e23"
+  },
+  {
+    "path": "tests/test_career_garage.py",
+    "sha256": "383e0403cd14a2231a9330579ddd1410d39825a35fd2b2fdb4c5f15273a6f2d2"
+  },
+  {
+    "path": "tools/blender/prepare_racing_hatch.py",
+    "sha256": "f4bdd0ff54bf8b5e5850d4949ffdf27d8b42641a363145eae3c7e0ad1345672c"
+  },
+  {
+    "path": "tools/vehicles/prepare_racing_hatch.py",
+    "sha256": "71f91ba32eb79ab286db3cd1f3a626dd63ce7f4a080c3194c75119b6f123f0c1"
+  },
+  {
+    "path": "tools/blender/render_garage_catalog.py",
+    "sha256": "f26429ed824719e53d05909e7fbd1a6394869dda96b64cc4cebef8a451b90809"
+  },
+  {
+    "path": "tools/garage_design_check.py",
+    "sha256": "0fe79e0efa01826ddaf4e930e0765ec4d049bd657fbeaa5a6ed7d59a91a52a0b"
+  },
+  {
+    "path": "tools/garage_design_capture.py",
+    "sha256": "d3808bfe90131f9e948e4195a7cf3c0bd2a2fb9bfa5e1f33c206c9f51a3280b5"
+  },
+  {
+    "path": "assets/game/vehicles/racing_hatch.bam",
+    "sha256": "aaf295d59f4b3f0fd9a9b9eec16e5f09e0b0b6c42fdf191c6e9da2c25b900477"
+  },
+  {
+    "path": "assets/game/vehicles/Hyundai-i20-License.txt",
+    "sha256": "9f5532931950ed766c9de72aa66b6c6e80b194fa0e97f83aa30270ecac4295fd"
+  },
+  {
+    "path": "assets/game/vehicles/ClubCoupe-License.txt",
+    "sha256": "c9263e757c30eedec91d692fdcd226e280b60a78e375c3d7e865f09f7ca9c6a3"
+  },
+  {
+    "path": "art/vehicles/sources/hyundai-i20/about.txt",
+    "sha256": "a2b2fd073abc42aa2bcb72c8c57c9151cb224e0fb23b78dec37abca628933244"
+  },
+  {
+    "path": "art/vehicles/sources/hyundai-i20/hi-wheel.blend",
+    "sha256": "9bc1e585cd92d09c39183e30502d6d1543a082662acc2e5ea0658b9aebb2ff45"
+  },
+  {
+    "path": "art/vehicles/sources/hyundai-i20/hi.blend",
+    "sha256": "5794cd5cf555f1acb658192fa7b32c56f2ebded08e0b46d42bb256f78aafd8d3"
+  },
+  {
+    "path": "art/vehicles/sources/hyundai-i20/HI_body_red.png",
+    "sha256": "0ec21ee0e10cbc22c28805e86fa8a9909af6eb68e5b363c069dbd816c8c1a053"
+  },
+  {
+    "path": "art/vehicles/sources/hyundai-i20/HI_interior.png",
+    "sha256": "5cab4ef7a2693b4e135d684245607e90c783bb945906e06f1128ff1b3294c7e5"
+  },
+  {
+    "path": "art/vehicles/sources/hyundai-i20/HI_wheel.png",
+    "sha256": "db0046003e0b108b8df139e069706531a4795103adcc833d8fdbe632585ceb7e"
+  },
+  {
+    "path": "art/vehicles/sources/hyundai-i20/HI_wheel_refl.png",
+    "sha256": "bb9e8ae1231519a9ccb51c89a040f51d8de38e6691e4de3c7001a25ca62e638b"
+  },
+  {
+    "path": "art/vehicles/sources/hyundai-i20/LICENSE-SOURCE.md",
+    "sha256": "092435bb78923b027b168c3de5eca0a849f700a9be16a4e8f0d05d6bb510a4ee"
+  }
+]

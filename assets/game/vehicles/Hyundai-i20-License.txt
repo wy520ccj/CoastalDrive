@@ -1,0 +1,14 @@
+Hyundai i20 visual asset
+
+Model author: ANDREO12
+Import, fixes and Stunt Rally settings: CryHam
+Model and texture license: Creative Commons Attribution 4.0 International (CC-BY-4.0)
+https://creativecommons.org/licenses/by/4.0/
+
+Author model: https://sketchfab.com/3d-models/hyundai-i20-c1f8bb74d4ef4ec9aa56a6ad159476c3
+Blender sources: https://github.com/stuntrally/blendfiles/tree/master/cars/HI
+Textures and license record: https://github.com/stuntrally/stuntrally3/tree/main/data/cars/HI
+
+CoastalDrive changes: retained the authored body, cabin, glass, wheel, disc and caliper meshes; converted axes; adapted overhangs, roof and mirror envelope to the existing project's hatchback dimensions and wheel positions; converted materials to PBR with original texture atlases; provided four independent wheel roots and a paint partition; embedded textures in the Panda3D asset. The sponsor livery texture was not used.
+
+The displayed model name identifies the source vehicle. Its driving configuration remains the project's existing hatchback setup, not a Hyundai factory specification or WRC calibration. Model author licensing is not presented as manufacturer endorsement.

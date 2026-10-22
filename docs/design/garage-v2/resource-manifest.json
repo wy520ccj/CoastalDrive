@@ -12,13 +12,13 @@
     },
     {
       "path": "assets/game/ui/garage-v2/car-coastal-gt.png",
-      "sha256": "919fe44deb61d8b14ef28b54728abc99341b5d7f29a2955140a9828d3f7faad3",
-      "size": 104288
+      "sha256": "0281a8c0fe0527b62d48f7800bd70fb8bd825dd83c6eeebcfa656a2a9557b3dc",
+      "size": 105156
     },
     {
       "path": "assets/game/ui/garage-v2/car-coastal-hatch.png",
-      "sha256": "11b94c20ee3d039ef6cdd08f0da22ff40e10ecbb39c1855c12d7b65ab0b62963",
-      "size": 90425
+      "sha256": "ddb3cf1b354ce0750e0a497885c74c7fcfb81299b1c1851798f6d77e6e786d02",
+      "size": 103530
     },
     {
       "path": "assets/game/ui/garage-v2/car-coastal-roadster.png",
@@ -62,28 +62,28 @@
     },
     {
       "path": "assets/game/ui/garage-v2/paint-0.png",
-      "sha256": "02d5f1ad7cd263f9c6aa0f8bd2e15b2d54c665c569f1f787e3838b7ab382ee13",
-      "size": 61422
+      "sha256": "4f7e0f282a0c383905dee970a397db1d72bbb7a2a8c92f21956c8539a8805618",
+      "size": 66651
     },
     {
       "path": "assets/game/ui/garage-v2/paint-1.png",
-      "sha256": "993fd03c4438bcc2d8b10c2ae2dc1f84d456d5ae74bb4d2d6e0f114df472a237",
-      "size": 60923
+      "sha256": "f02eb887ba697743c20c8ee7d9ed5ca4bb4789b1097753ab42c8d72b8e7ab6a6",
+      "size": 66235
     },
     {
       "path": "assets/game/ui/garage-v2/paint-2.png",
-      "sha256": "6df52909a58cfb9c14a6100d88e2ca7927bc52383585bc756a75224162f6e50c",
-      "size": 64029
+      "sha256": "5fd90606bad98832ef0c1757f0b81e4880a60786bf44424b838627d068c841f0",
+      "size": 68163
     },
     {
       "path": "assets/game/ui/garage-v2/paint-3.png",
-      "sha256": "601d567857867bef3088d0d626157a56360277987ccae4b90633aac7f3a63952",
-      "size": 59688
+      "sha256": "f50ded967b23d976da91d235e328c75a5f42a0808bf4c609273e0f1a976878c6",
+      "size": 64142
     },
     {
       "path": "assets/game/ui/garage-v2/paint-4.png",
-      "sha256": "ba7b9d09e1668e69b272ef8c62c707932e235c57c44a465fcc66d72ae999f8ad",
-      "size": 54088
+      "sha256": "c26721b618e45706d53d5442074601901736b4ec23d7c0d62f3198000838c855",
+      "size": 59467
     },
     {
       "path": "assets/game/ui/garage-v2/tire.png",
@@ -112,18 +112,33 @@
     },
     {
       "path": "assets/game/vehicles/ClubCoupe-License.txt",
-      "sha256": "918f2090dc7077231ac44b49f3298ece543d7b3825164a2045f3fb87af79bb8f",
-      "size": 1020
+      "sha256": "c9263e757c30eedec91d692fdcd226e280b60a78e375c3d7e865f09f7ca9c6a3",
+      "size": 1078
     },
     {
       "path": "assets/game/ui/garage-v2/car-club-coupe.png",
-      "sha256": "6ad328fee19793b93b43f5afa7c751e1119c28ef2561fdf6b315a2dd2dcac551",
-      "size": 96102
+      "sha256": "e5556ddabb040514dfdb9e226936ec0b3fcf56ff24e7ac371e89469a9f3e6011",
+      "size": 98824
     },
     {
       "path": "assets/game/ui/garage-v2/contact-shadow-club-coupe.png",
-      "sha256": "0099d247a4cc3adaf82c0769f404a249fcd42ed7365b8285472d9d63878c877e",
-      "size": 105168
+      "sha256": "8a756fc917ad5959fc80c7f0275b91e3d8c86fbccea67da043756ecab194a5c0",
+      "size": 105867
+    },
+    {
+      "path": "assets/game/vehicles/racing_hatch.bam",
+      "sha256": "aaf295d59f4b3f0fd9a9b9eec16e5f09e0b0b6c42fdf191c6e9da2c25b900477",
+      "size": 36181579
+    },
+    {
+      "path": "assets/game/vehicles/Hyundai-i20-License.txt",
+      "sha256": "9f5532931950ed766c9de72aa66b6c6e80b194fa0e97f83aa30270ecac4295fd",
+      "size": 1172
+    },
+    {
+      "path": "assets/game/ui/garage-v2/contact-shadow-hatch.png",
+      "sha256": "1e7a4fad0030053918fbe8ec2fbdea1283d3590ddfef525705049d048d0f112f",
+      "size": 95233
     }
   ],
   "generated_background_source": "exec-aa329be9-5774-4f9a-888c-34cf71f3979b.png",
@@ -156,5 +171,6 @@
       "generator": "built-in ImageGen",
       "reference": "01-upgrades.png"
     }
-  ]
+  ],
+  "vehicle_policy": "Prefer real vehicle models with clear open author licenses; real names and explicit project tuning; no manufacturer endorsement inferred"
 }

@@ -1,5 +1,7 @@
 """仅离线观察候选资源的实际几何与材质，不运行下载资源中的脚本。"""
 
+import argparse
+import sys
 from pathlib import Path
 
 import bpy
@@ -47,6 +49,10 @@ def capture(name, path, direction):
     print(name, tuple(low), tuple(high))
 
 
-capture('club-coupe', ROOT/'art/vehicles/club_coupe.glb', (1, 1.6, .7))
-capture('creomoto', OUT/'creomoto-car.blend', (1, 1.6, .7))
-capture('spectral', OUT/'spectral-gt.glb', (1.6, -1, .7))
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--source', type=Path, required=True)
+    parser.add_argument('--name', required=True)
+    parser.add_argument('--direction', nargs=3, type=float, default=(1, 1.6, .7))
+    args = parser.parse_args(sys.argv[sys.argv.index('--')+1:])
+    capture(args.name, args.source.resolve(), args.direction)

@@ -20,7 +20,7 @@ def test_unlock_and_reward_only_improved_stars_survive_reload(tmp_path):
     award = store.record(finished())
     assert award['credits'] == 200
     assert 'club-coupe' in award['vehicles']
-    assert '新车：俱乐部 C1' in award['unlocked']
+    assert '新车：BMW 1M Coupé' in award['unlocked']
     assert '零件：运动前轮' in award['unlocked']
     assert store.record(finished())['vehicles'] == ()
     assert store.available(EVENT_BY_ID['slalom'])
