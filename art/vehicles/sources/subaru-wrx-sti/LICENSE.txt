@@ -1,0 +1,20 @@
+Subaru Impreza WRX STI model
+Author: lubomircenovsky
+License: Creative Commons Attribution-ShareAlike 3.0 Unported
+https://creativecommons.org/licenses/by-sa/3.0/
+
+Original author page: https://www.blendswap.com/blends/view/47523
+Source Blender scene: https://github.com/stuntrally/blendfiles/blob/master/cars/S8/wrx_08.blend
+Source textures and per-car license: https://github.com/stuntrally/stuntrally3/tree/main/data/cars/S8
+Stunt Rally modifications: Tapio (subdivision/decimation), CryHam (normals/faces/join/export).
+
+CoastalDrive adaptation: selected body/glass/interior and complete source wheel geometry;
+coordinate conversion; four independent wheel roots; PBR materials; extracted red-channel
+body occlusion for tintable paint; embedded textures; runtime BAM; thumbnail and shadow.
+These model adaptations and derived images remain CC-BY-SA-3.0.
+Original sources, editable adapted Blender scene and conversion tools are included in
+art/vehicles/sources/subaru-wrx-sti/, art/vehicles/subaru_wrx_sti.blend,
+tools/blender/prepare_subaru.py and tools/vehicles/prepare_subaru.py.
+
+Vehicle performance is CoastalDrive project tuning, not manufacturer calibration.
+No endorsement by Subaru or the model author is asserted.

@@ -61,6 +61,8 @@ VEHICLES = (
                       True, False, physics_id='coastal-gt'),
     VehicleDefinition('club-coupe', 'BMW 1M Coupé', 'vehicles/club_coupe.bam', 'hero',
                       True, False, physics_id='club-coupe'),
+    VehicleDefinition('subaru-wrx-sti', 'Subaru WRX STI', 'vehicles/subaru_wrx_sti.bam', 'hero',
+                      True, False, physics_id='subaru-wrx-sti'),
     VehicleDefinition(
         "traffic-compact",
         "轻巧掀背",
@@ -143,7 +145,7 @@ def apply_skin(model, index):
     material.setName("vehicle-paint")
     quality = model.getPythonTag("vehicle-quality") or "legacy"
     material.setBaseColor(Vec4(*paint_color(index, quality=quality), 1))
-    concept = model.getName() in ('car-concept', 'club-coupe', 'racing-hatch')
+    concept = model.getName() in ('car-concept', 'club-coupe', 'racing-hatch', 'subaru-wrx-sti')
     material.setRoughness(.12 if concept else {"hero": 0.32, "traffic": 0.36}.get(quality, 0.45))
     material.setMetallic(.65 if concept else 0)
     for part in model.findAllMatches("**/paint"):

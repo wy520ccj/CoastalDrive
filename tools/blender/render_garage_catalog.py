@@ -118,11 +118,14 @@ def main():
     for name, filename in (('game-tuned', 'classic_coupe_v1.glb'), ('coastal-hatch', 'coastal_hatch.glb'),
                            ('coastal-roadster', 'coastal_roadster.glb'),
                            ('gr86-2022-premium-6mt', 'gr86_2022_premium.glb'),
-                           ('coastal-gt', None), ('club-coupe', 'club_coupe.glb')):
+                           ('coastal-gt', None), ('club-coupe', 'club_coupe.glb'),
+                           ('subaru-wrx-sti', 'subaru_wrx_sti.glb')):
         if selected and name not in selected:
             continue
         scene, camera = setup(384, 216)
-        if name == 'club-coupe':
+        if name == 'subaru-wrx-sti':
+            path = ROOT/'art/vehicles/subaru_wrx_sti.glb'
+        elif name == 'club-coupe':
             path = ROOT/'art/vehicles/club_coupe.glb'
         elif name == 'coastal-hatch':
             path = ROOT/'art/vehicles/racing_hatch.glb'
@@ -135,6 +138,8 @@ def main():
             (-1, -1.6, .8) if filename is None else (1, 1.6, .8))
         output(scene, 'car-'+name)
     if selected:
+        if 'subaru-wrx-sti' in selected:
+            render_shadow('contact-shadow-subaru', ROOT/'art/vehicles/subaru_wrx_sti.glb')
         if 'club-coupe' in selected:
             render_shadow('contact-shadow-club-coupe', ROOT/'art/vehicles/club_coupe.glb', .75)
         if 'coastal-hatch' in selected:

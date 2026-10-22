@@ -26,7 +26,7 @@ from vehicle_visual import load_vehicle
 def test_vehicle_catalog_separates_selection_from_asset_quality():
     assert [vehicle.id for vehicle in PLAYER_VEHICLES] == [
         "sports", "sedan", "reference-rwd", "reference-fwd", "reference-awd", "gr86-2022",
-        "coastal-hatch", "coastal-roadster", "coastal-gt", "club-coupe"]
+        "coastal-hatch", "coastal-roadster", "coastal-gt", "club-coupe", "subaru-wrx-sti"]
     assert [vehicle.id for vehicle in VEHICLES if vehicle.traffic_allowed] == [
         "traffic-compact",
         "traffic-sedan",

@@ -25,9 +25,11 @@ GARAGE_CARS = (
     GarageCar('gr86-2022-premium-6mt', 'gr86-2022', 'GR86 Premium', '跑车 / 后轮驱动', '六速手动硬件设计，体验另一种驾驶节奏。', 5),
     GarageCar('coastal-gt', 'coastal-gt', '远航 GT', 'GT / 四轮驱动', '更强动力与四驱，迎接海岸杯。', 9),
     GarageCar('club-coupe', 'club-coupe', 'BMW 1M Coupé', '双门 / 后轮驱动', '开放车模；项目通用后驱调校，非原厂参数。', 3),
+    GarageCar('subaru-wrx-sti', 'subaru-wrx-sti', 'Subaru WRX STI', '掀背 / 四轮驱动', '开放的Impreza WRX STI车模，搭配项目四驱调校。', 5),
 )
 CAR_BY_DESIGN = {car.design_id: car for car in GARAGE_CARS}
-DEFAULT_PAINT = {'coastal-hatch': 4, 'coastal-roadster': 2, 'coastal-gt': 2, 'gr86-2022-premium-6mt': 4}
+DEFAULT_PAINT = {'coastal-hatch': 4, 'coastal-roadster': 2, 'coastal-gt': 2, 'gr86-2022-premium-6mt': 4,
+                 'subaru-wrx-sti': 1}
 
 
 def garage_cars(current, folder=None):

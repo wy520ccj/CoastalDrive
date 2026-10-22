@@ -108,7 +108,7 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
     power = max(rpm*torque/9549.3 for rpm, torque in config.torque_curve)
     fill(width-195, 126, 2, 62, (.98, .98, .98, .95), 0)
     label(car.name, width-55, 150, 25, WHITE, True, right=True)
-    tuning = '项目调校 · ' if preview.design_id in ('coastal-hatch', 'club-coupe') else ''
+    tuning = '项目调校 · ' if preview.design_id in ('coastal-hatch', 'club-coupe', 'subaru-wrx-sti') else ''
     label(f'{tuning}{power:.0f} kW  /  {config.mass:.0f} kg', width-55, 183, 17, WHITE, right=True)
     if tab == 'upgrade':
         label(car.name+' · '+car.category.split('/')[-1].strip(), left+inset, 223, 20, GRAY)
@@ -157,7 +157,7 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
             button('', x, y, inner, 90, 'garage-car', item.design_id, role='category-active' if active else 'category')
             # 工程存档沿用其实际经典双门外观，不用虚构缩略图。
             thumbnail = item.design_id if item.design_id in ('game-tuned', 'coastal-hatch', 'coastal-roadster',
-                'gr86-2022-premium-6mt', 'coastal-gt', 'club-coupe') else 'game-tuned'
+                'gr86-2022-premium-6mt', 'coastal-gt', 'club-coupe', 'subaru-wrx-sti') else 'game-tuned'
             image('garage-v2/car-'+thumbnail+'.png', x+5, y+5, 136, 76)
             label(item.name, x+148, y+33, 22, bold=True)
             label('驾驶中' if item.design_id == vehicle.design_id else '已解锁' if progress.stars >= item.unlock else

@@ -139,6 +139,31 @@
       "path": "assets/game/ui/garage-v2/contact-shadow-hatch.png",
       "sha256": "1e7a4fad0030053918fbe8ec2fbdea1283d3590ddfef525705049d048d0f112f",
       "size": 95233
+    },
+    {
+      "path": "assets/game/vehicles/subaru_wrx_sti.bam",
+      "sha256": "2ace24962f9491832b50a831bea8bbb50fbe6a1b88f724539ae403e2e4887772",
+      "size": 10171978
+    },
+    {
+      "path": "assets/game/vehicles/subaru-wrx-sti-manifest.json",
+      "sha256": "465e12c18568462c8c516d559ae8f8103718e1e442142b3c70170bc8159e3ad5",
+      "size": 579
+    },
+    {
+      "path": "assets/game/vehicles/Subaru-WRX-STI-License.txt",
+      "sha256": "390949441e5c0f08263774d51e88f7e8fd40fd4286035e46237ec03a939c8fb5",
+      "size": 1227
+    },
+    {
+      "path": "assets/game/ui/garage-v2/car-subaru-wrx-sti.png",
+      "sha256": "1eada0a888ed84d974fc4b916241e4c0053664b160e62d50fdc3515a100bcfea",
+      "size": 101360
+    },
+    {
+      "path": "assets/game/ui/garage-v2/contact-shadow-subaru.png",
+      "sha256": "20ac75a72c97d7d25e8a2d4dc4a0807adbd41af99909423e5544cb963f61f5ab",
+      "size": 98503
     }
   ],
   "generated_background_source": "exec-aa329be9-5774-4f9a-888c-34cf71f3979b.png",

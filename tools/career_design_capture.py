@@ -49,6 +49,10 @@ def capture(output, size, only=()):
         award = app.career_progress.record(result)
         app.career_panel.show_result(app.career_progress, result, award)
         shot('03-result-unlocks')
+        parking = CareerResult('parking', 8., elapsed=21., finished=True, succeeded=True, stars=2)
+        award = app.career_progress.record(parking)
+        app.career_panel.show_result(app.career_progress, parking, award)
+        shot('03-result-five-stars')
         app.open_career()
         shot('04-events-progress')
         panel = app.career_panel

@@ -1,0 +1,22 @@
+{
+  "author": "lubomircenovsky",
+  "license": "CC-BY-SA-3.0",
+  "source": "https://github.com/stuntrally/blendfiles/blob/master/cars/S8/wrx_08.blend",
+  "source_sha256": "c2889c719d9ccdeeb9fae7bc4d80aedb8d4ff1013a98103540d91c0b5c14a988",
+  "output_sha256": "67bbaa71f5584b75354be77dd20653eba4b57e2e8e65f9cff603e7972de83a55",
+  "source_geometry": [
+    "S8_body",
+    "S8_glass",
+    "S8_interior",
+    "subaru_wheel.F.L.001",
+    "subaru_wheel_tire.007"
+  ],
+  "changes": [
+    "仅提取单车主网格和完整源车轮",
+    "轴向转换",
+    "原纹理接入PBR",
+    "红通道遮蔽转中性色",
+    "独立四轮和可变车漆"
+  ],
+  "adaptation_license": "CC-BY-SA-3.0; source and editable derivative included"
+}

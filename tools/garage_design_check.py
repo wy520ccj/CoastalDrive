@@ -75,8 +75,8 @@ def check(output, size, design_id='coastal-gt'):
         app.career_action('garage-topic', 'brakes')
         capture('05-upgrade-brakes')
         app.career_action('garage-tab', 'paint')
-        app.career_action('garage-paint', 1)
         old_skin = app.skin_index
+        app.career_action('garage-paint', (old_skin+1) % 5)
         assert old_skin != app.career_preview_skin
         capture('06-paint-preview')
         app.career_action('garage-tab', 'paint')
