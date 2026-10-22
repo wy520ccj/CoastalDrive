@@ -148,6 +148,8 @@ def main():
             path = ROOT/'art/vehicles/racing_hatch.glb'
         elif name == 'coastal-roadster':
             path = ROOT/'art/vehicles/lotus_elise.glb'
+        elif name == 'gr86-2022-premium-6mt':
+            path = ROOT/'art/vehicles/gr86_community.glb'
         else:
             path = ROOT/'assets/game/vehicles'/filename if filename else ROOT/'art/vehicles/sources/car-concept/CarConcept.glb'
         objects = import_car(path)
@@ -170,6 +172,8 @@ def main():
             render_shadow('contact-shadow-hatch', ROOT/'art/vehicles/racing_hatch.glb')
         if 'coastal-roadster' in selected:
             render_shadow('contact-shadow-elise', ROOT/'art/vehicles/lotus_elise.glb')
+        if 'gr86-2022-premium-6mt' in selected:
+            render_shadow('contact-shadow-gr86', ROOT/'art/vehicles/gr86_community.glb')
         if 'paint' not in selected:
             return
     for name, object_name in (() if selected else (('tire', 'WheelFrontL'), ('brake', 'WheelFrontLBrakeDisc'))):

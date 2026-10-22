@@ -6,7 +6,7 @@ from dataclasses import replace
 from pathlib import Path
 
 import pytest
-from panda3d.core import Filename, MaterialAttrib, NodePath, PNMImage
+from panda3d.core import Filename, Loader, MaterialAttrib, NodePath, PNMImage
 
 from career_garage import (
     CAR_BY_DESIGN,
@@ -69,7 +69,7 @@ def test_each_car_paint_is_saved_separately_without_creating_fake_vehicle_slots(
     assert garage_cars(current, tmp_path) == garage_cars(current)
 
 
-@pytest.mark.parametrize('design_id', ['coastal-hatch', 'coastal-roadster', 'coastal-gt', 'club-coupe', 'subaru-wrx-sti'])
+@pytest.mark.parametrize('design_id', ['coastal-hatch', 'coastal-roadster', 'coastal-gt', 'club-coupe', 'subaru-wrx-sti', 'gr86-2022-premium-6mt'])
 def test_new_models_load_with_configured_body_and_four_independent_wheels(design_id):
     config = vehicle_design(design_id).config
     parent = NodePath('asset-check')
@@ -94,6 +94,30 @@ def test_new_models_load_with_configured_body_and_four_independent_wheels(design
             config.collision_half_length*2, config.collision_half_height*2), abs=1e-5)
     assert CAR_BY_DESIGN[design_id].model_id == definition.id
     parent.removeNode()
+
+
+def test_gr86_community_retains_source_geometry_textures_and_credits():
+    root = Path(__file__).resolve().parents[1]
+    source = root/'art/vehicles/sources/gr86-community'
+    metadata = json.loads((source/'sketchfab-primary-api.json').read_text(encoding='utf-8'))
+    assert metadata['uid'] == '4919d14eba9640599e838230e8e5ed74'
+    assert metadata['license']['slug'] == 'by' and metadata['user']['username'] == 'Car2022'
+    extraction = json.loads((root/'art/vehicles/gr86-community-source.json').read_text(encoding='utf-8'))
+    manifest = json.loads((root/'assets/game/vehicles/gr86-community-manifest.json').read_text(encoding='utf-8'))
+    assert hashlib.sha256((source/'gr86-runtime.js').read_bytes()).hexdigest() == extraction['source_sha256']
+    assert hashlib.sha256((root/'art/vehicles/gr86_community.glb').read_bytes()).hexdigest() == manifest['source_sha256']
+    assert hashlib.sha256((root/'assets/game/vehicles/gr86_community.bam').read_bytes()).hexdigest() == manifest['output_sha256']
+    car = NodePath(Loader.getGlobalPtr().loadSync(Filename.fromOsSpecific(str(root/'assets/game/vehicles/gr86_community.bam'))))
+    triangles = sum(primitive.decompose().getNumPrimitives() for part in car.findAllMatches('**/+GeomNode')
+        for geom in part.node().getGeoms() for primitive in geom.getPrimitives())
+    assert triangles == manifest['triangles'] == extraction['triangles'] == 163931
+    assert extraction['removed_identical_index_faces'] == 2738
+    assert {texture.getName() for texture in car.findAllTextures()} == {f'texture-{index:02}' for index in range(14)}
+    assert all(not car.find('**/'+name).isEmpty() for name in
+               ('wheel-front-left', 'wheel-front-right', 'wheel-back-left', 'wheel-back-right', 'paint'))
+    credits = (root/'assets/game/vehicles/GR86-Community-License.txt').read_text(encoding='utf-8')
+    assert 'Kazutoshi Mods' in credits and 'CC-BY-4.0' in credits and 'not acquired' in credits
+    car.removeNode()
 
 
 def test_elise_retains_source_vehicle_geometry_and_current_author_license():

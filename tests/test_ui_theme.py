@@ -69,12 +69,14 @@ def test_distribution_includes_font_license_and_icon(monkeypatch):
                  "backgrounds/coastal-menu-handdrawn-v2.png", "backgrounds/workspace-handdrawn-v2.png",
                  "components/button-normal.png", "components/speed-panel.png",
                  "garage-v2/power-part.png", "garage-v2/suspension-part.png", "garage-v2/Parts-License.txt",
-                 "garage-v2/car-coastal-roadster.png", "garage-v2/contact-shadow-elise.png"):
+                 "garage-v2/car-coastal-roadster.png", "garage-v2/contact-shadow-elise.png",
+                 "garage-v2/car-gr86-2022-premium-6mt.png", "garage-v2/contact-shadow-gr86.png"):
         relative = "assets/game/ui/" + name
         assert (ROOT / relative).is_file()
         assert any(fnmatch.fnmatchcase(relative, pattern) for pattern in patterns), relative
     for relative in ('assets/game/shaders/garage-clearcoat.glsl',
-                     'assets/game/vehicles/lotus_elise.bam', 'assets/game/vehicles/Lotus-Elise-License.txt'):
+                     'assets/game/vehicles/lotus_elise.bam', 'assets/game/vehicles/Lotus-Elise-License.txt',
+                     'assets/game/vehicles/gr86_community.bam', 'assets/game/vehicles/GR86-Community-License.txt'):
         assert (ROOT / relative).is_file()
         assert any(fnmatch.fnmatchcase(relative, pattern) for pattern in patterns)
 

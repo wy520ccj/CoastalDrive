@@ -1,0 +1,30 @@
+..........F.............                                                 [100%]
+================================== FAILURES ===================================
+______ test_gr86_community_retains_source_geometry_textures_and_credits _______
+
+    def test_gr86_community_retains_source_geometry_textures_and_credits():
+        root = Path(__file__).resolve().parents[1]
+        source = root/'art/vehicles/sources/gr86-community'
+        metadata = json.loads((source/'sketchfab-primary-api.json').read_text(encoding='utf-8'))
+        assert metadata['uid'] == '4919d14eba9640599e838230e8e5ed74'
+        assert metadata['license']['slug'] == 'by' and metadata['user']['username'] == 'Car2022'
+        extraction = json.loads((root/'art/vehicles/gr86-community-source.json').read_text(encoding='utf-8'))
+        manifest = json.loads((root/'assets/game/vehicles/gr86-community-manifest.json').read_text(encoding='utf-8'))
+        assert hashlib.sha256((source/'gr86-runtime.js').read_bytes()).hexdigest() == extraction['source_sha256']
+        assert hashlib.sha256((root/'art/vehicles/gr86_community.glb').read_bytes()).hexdigest() == manifest['source_sha256']
+        assert hashlib.sha256((root/'assets/game/vehicles/gr86_community.bam').read_bytes()).hexdigest() == manifest['output_sha256']
+        car = NodePath(Loader.getGlobalPtr().loadSync(Filename.fromOsSpecific(str(root/'assets/game/vehicles/gr86_community.bam'))))
+        triangles = sum(primitive.decompose().getNumPrimitives() for part in car.findAllMatches('**/+GeomNode')
+            for geom in part.node().getGeoms() for primitive in geom.getPrimitives())
+        assert triangles == manifest['triangles'] == extraction['triangles'] == 163931
+        assert extraction['removed_identical_index_faces'] == 2738
+>       assert len(car.findAllTextures()) == 14
+E       assert 28 == 14
+E        +  where 28 = len(28 Textures)
+E        +    where 28 Textures = <built-in method findAllTextures of panda3d.core.NodePath object at 0x000002A2B3D5FAB0>()
+E        +      where <built-in method findAllTextures of panda3d.core.NodePath object at 0x000002A2B3D5FAB0> = gr86-community.findAllTextures
+
+tests\test_career_garage.py:115: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_career_garage.py::test_gr86_community_retains_source_geometry_textures_and_credits
+1 failed, 23 passed in 3.46s

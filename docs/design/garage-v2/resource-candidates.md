@@ -14,6 +14,7 @@
 | S8 | stuntrally/blendfiles/cars/S8；lubomircenovsky；CC-BY-SA-3.0 | 已接入第7款Subaru WRX STI，5星解锁；157165源三角形，原件与同许可衍生文件随库保留；后灯独立材质分区已修复 |
 | SX | stuntrally/blendfiles/cars/SX；Socksthecat；CC-BY-4.0 | 已替换默认经典车为Subaru BRZ Varis，103071三角形；实际作者API确认车身及原S15轮来源均CC-BY-4.0，保留原game-tuned硬件与存档键，其他工程参考车仍用原模型 |
 | Lotus Elise | Stéphane Agullo / sa3d；Sketchfab UID 75e9045ac1af4cdbb69318108c81edfd；CC-BY-4.0 | 已从Ai2 Objaverse公开档案取得原始GLB，原件嵌入许可与当前主站作者API一致；396170三角形完整车身/内饰/四轮，替换原R2外观，原硬件与存档键保持 |
+| Toyota GR86 ZN8 | Mona x Supercars / Car2022；Sketchfab UID 4919d14eba9640599e838230e8e5ed74；上传者CC-BY-4.0；公开WebSim衍生网格 | 已替换旧GR86显示，163931面/14图/四轮；固定下载提交与当前作者API一致，原件未取得，附加Kazutoshi Mods署名及组件复用记录保留；非Premium原厂轮精确复制。Racing Master来源候选不使用 |
 | Opel GT | https://blendswap.com/blend/6919；rogper / Rogério Perdiz；CC0 | 作者页及本人评论确认公共领域；官方免费下载页要求登录，尚未取得源文件，不提前接入；避免混用作者后来另售的116MB商业版本 |
 | VDrift Elise / S2000 | VDrift数据镜像逐车about只有作者信息 | 没有取得明确的逐模型许可，不使用；不因游戏代码开放而推断素材开放 |
 

@@ -59,7 +59,8 @@ def test_imported_appearance_preserves_nominal_body_and_actual_axle_tracks():
     low, high = body.getTightBounds(body)
     assert tuple(high - low) == pytest.approx((2.03, 4.26512, 1.18), abs=2e-6)
     paint_low, paint_high = body.find("**/paint").getTightBounds(body)
-    assert paint_high.x - paint_low.x == pytest.approx(1.775, abs=2e-6)
+    # 新源车身曲面含社区宽度差异；后视镜外廓、轮距和物理配置仍按原装配。
+    assert 1.77 < paint_high.x-paint_low.x < 1.82
     assert tuple(w.getX() for w in wheels) == pytest.approx((-.76, .76, -.775, .775))
     assert tuple(w.getY() for w in wheels) == pytest.approx((1.21025, 1.21025, -1.36475, -1.36475))
     for wheel in wheels:

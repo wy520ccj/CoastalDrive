@@ -1,0 +1,19 @@
+{
+  "author": "Mona x Supercars",
+  "license": "CC BY 4.0",
+  "source": "https://sketchfab.com/3d-models/toyota-gr86-zn8-4919d14eba9640599e838230e8e5ed74",
+  "triangles": 163931,
+  "textures": 14,
+  "source_triangles": 166669,
+  "removed_identical_index_faces": 2738,
+  "source_sha256": "78f96033bb8de2437317e2c52f610a6a0a984e437824313b77aa5013613f619b",
+  "output_sha256": "166fa63607d87a339cd33dee5216f2df1582f6495c0c1a6d83c210041d588aaa",
+  "changes": [
+    "读取公开衍生网格，不执行外部脚本",
+    "坐标转换与面序修正",
+    "移除2738个相同顶点索引的重合三角面",
+    "保留源UV/法线/贴图与四轮",
+    "车漆PBR分区/玻璃透明",
+    "道路与车库共用资产；物理配置不变"
+  ]
+}

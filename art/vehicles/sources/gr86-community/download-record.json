@@ -1,0 +1,11 @@
+{
+  "repository": "https://github.com/prozac0401/WebSim",
+  "commit": "3d00ddc9665f0ae7efcaf00cad11e4064d7e7345",
+  "path": "evolving_vehicles_2/assets/models/gr86-runtime.js",
+  "download_url": "https://raw.githubusercontent.com/prozac0401/WebSim/3d00ddc9665f0ae7efcaf00cad11e4064d7e7345/evolving_vehicles_2/assets/models/gr86-runtime.js",
+  "bytes": 9054089,
+  "sha256": "78f96033bb8de2437317e2c52f610a6a0a984e437824313b77aa5013613f619b",
+  "primary_api": "https://api.sketchfab.com/v3/models/4919d14eba9640599e838230e8e5ed74",
+  "retrieved": "2026-10-22",
+  "scope": "公开衍生完整主网格，非原始GLB；不执行JS；作者标注CC BY 4.0，源资源复用与附加署名按原记录保留。"
+}

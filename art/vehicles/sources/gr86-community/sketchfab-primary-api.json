@@ -1,0 +1,152 @@
+{
+  "animationCount": 0,
+  "categories": [
+    {
+      "uid": "22a2f677efad4d7bbca5ad45f9b5868e",
+      "name": "Cars & Vehicles",
+      "slug": "cars-vehicles",
+      "uri": "https://api.sketchfab.com/v3/categories/22a2f677efad4d7bbca5ad45f9b5868e",
+      "icon": "https://static.sketchfab.com/static/builds/web/dist/static/assets/images/icons/categories/45dd0cc0860ac57fcd63bde1cc3f2b7c-v2.svg",
+      "thumbnails": [
+        {
+          "width": "512",
+          "height": "288",
+          "url": "https://static.sketchfab.com/categories/22a2f677efad4d7bbca5ad45f9b5868e/512x288.png"
+        },
+        {
+          "width": "800",
+          "height": "450",
+          "url": "https://static.sketchfab.com/categories/22a2f677efad4d7bbca5ad45f9b5868e/800x450.png"
+        }
+      ]
+    }
+  ],
+  "commentCount": 0,
+  "createdAt": "2025-05-07T09:06:03.033704",
+  "embedUrl": "https://sketchfab.com/models/4919d14eba9640599e838230e8e5ed74/embed",
+  "faceCount": 284062,
+  "isAgeRestricted": false,
+  "license": {
+    "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+    "label": "CC Attribution",
+    "fullName": "Creative Commons Attribution",
+    "requirements": "Author must be credited. Commercial use is allowed.",
+    "url": "http://creativecommons.org/licenses/by/4.0/",
+    "slug": "by"
+  },
+  "likeCount": 39,
+  "name": "Toyota GR86 (ZN8)",
+  "publishedAt": "2025-05-07T09:17:22.301042",
+  "soundCount": 0,
+  "staffpickedAt": null,
+  "tags": [
+    {
+      "name": "unity",
+      "slug": "unity",
+      "uri": "https://api.sketchfab.com/v3/tags/unity"
+    },
+    {
+      "name": "unity3d",
+      "slug": "unity3d",
+      "uri": "https://api.sketchfab.com/v3/tags/unity3d"
+    }
+  ],
+  "thumbnails": {
+    "images": [
+      {
+        "uid": "2e72b9961d14444cbe88158ff27545b5",
+        "width": 1920,
+        "height": 1080,
+        "size": 132312,
+        "url": "https://media.sketchfab.com/models/4919d14eba9640599e838230e8e5ed74/thumbnails/759e30b96e304ac1acb6f8c986c425d6/89d8dbec51214c2aaa162668a5f697a7.jpeg"
+      },
+      {
+        "uid": "42d019ee4a274c45987bc6c2eb1582a8",
+        "width": 1024,
+        "height": 576,
+        "size": 49137,
+        "url": "https://media.sketchfab.com/models/4919d14eba9640599e838230e8e5ed74/thumbnails/759e30b96e304ac1acb6f8c986c425d6/bf3d0479796947fe8435b588718eec1a.jpeg"
+      },
+      {
+        "uid": "36308e97bacf41dfa4737f581938b2a4",
+        "width": 720,
+        "height": 405,
+        "size": 28638,
+        "url": "https://media.sketchfab.com/models/4919d14eba9640599e838230e8e5ed74/thumbnails/759e30b96e304ac1acb6f8c986c425d6/8b3cd03ba8374fca8910e1c0a542bcf8.jpeg"
+      },
+      {
+        "uid": "dc11266279474162b1640b571deddbce",
+        "width": 256,
+        "height": 144,
+        "size": 5931,
+        "url": "https://media.sketchfab.com/models/4919d14eba9640599e838230e8e5ed74/thumbnails/759e30b96e304ac1acb6f8c986c425d6/c0c26a22f6ff44f8b5bff88d8c001c01.jpeg"
+      },
+      {
+        "uid": "6410361a59bc4d5c927084c3acd56338",
+        "width": 64,
+        "height": 36,
+        "size": 1226,
+        "url": "https://media.sketchfab.com/models/4919d14eba9640599e838230e8e5ed74/thumbnails/759e30b96e304ac1acb6f8c986c425d6/9205db18598f4e62b71c780c2315de52.jpeg"
+      }
+    ]
+  },
+  "uid": "4919d14eba9640599e838230e8e5ed74",
+  "uri": "https://api.sketchfab.com/v3/models/4919d14eba9640599e838230e8e5ed74",
+  "user": {
+    "uid": "355459d1f7dc4556941652d314621675",
+    "username": "Car2022",
+    "displayName": "Mona x Supercars",
+    "account": "basic",
+    "profileUrl": "https://sketchfab.com/Car2022",
+    "avatar": {
+      "uid": "c23e89f9132347ffaca1d854cc8818a6",
+      "uri": "https://api.sketchfab.com/v3/avatars/c23e89f9132347ffaca1d854cc8818a6",
+      "images": [
+        {
+          "width": 32,
+          "height": 32,
+          "size": 1005,
+          "url": "https://media.sketchfab.com/avatars/c23e89f9132347ffaca1d854cc8818a6/3403cd2dd19b4aec8acf01ad4e880995.jpeg"
+        },
+        {
+          "width": 48,
+          "height": 48,
+          "size": 1323,
+          "url": "https://media.sketchfab.com/avatars/c23e89f9132347ffaca1d854cc8818a6/b6920b4c8f6441c3a5c04cd3d24c8184.jpeg"
+        },
+        {
+          "width": 90,
+          "height": 90,
+          "size": 2541,
+          "url": "https://media.sketchfab.com/avatars/c23e89f9132347ffaca1d854cc8818a6/386ed5ca1b344227a88be60073bba0e5.jpeg"
+        },
+        {
+          "width": 100,
+          "height": 100,
+          "size": 2949,
+          "url": "https://media.sketchfab.com/avatars/c23e89f9132347ffaca1d854cc8818a6/6b5ff429633a459686f7dcd142bd11c5.jpeg"
+        }
+      ]
+    },
+    "uri": "https://api.sketchfab.com/v3/users/355459d1f7dc4556941652d314621675"
+  },
+  "vertexCount": 161029,
+  "viewCount": 3744,
+  "viewerUrl": "https://sketchfab.com/3d-models/toyota-gr86-zn8-4919d14eba9640599e838230e8e5ed74",
+  "isDownloadable": true,
+  "isProtected": false,
+  "description": "Years: 2023\nClass: B\nWeight: Medium\nBody Style: Coupe\nSize: Small",
+  "price": null,
+  "downloadCount": 749,
+  "editorUrl": "https://sketchfab.com/models/4919d14eba9640599e838230e8e5ed74/edit",
+  "status": {
+    "warning": {},
+    "processing": "SUCCEEDED"
+  },
+  "source": "website",
+  "hasCommentsDisabled": false,
+  "updatedAt": "2025-05-07T09:17:22.772118",
+  "pbrType": null,
+  "textureCount": 19,
+  "materialCount": 29
+}

@@ -1,0 +1,14 @@
+{
+  "source": "art\\vehicles\\gr86_community.glb",
+  "source_sha256": "166fa63607d87a339cd33dee5216f2df1582f6495c0c1a6d83c210041d588aaa",
+  "output": "assets\\game\\vehicles\\gr86_community.bam",
+  "output_sha256": "fca951da296c332d738e995d1caaca6c02ed3eaf815615d3d18845a5ada6dcce",
+  "triangles": 163931,
+  "author": "Mona x Supercars (Car2022)",
+  "license": "CC-BY-4.0",
+  "changes": [
+    "独立四轮与paint分区",
+    "保留完整主网格/源法线/UV/14张贴图",
+    "使用原GR86显示外廓装配，十套物理配置保持"
+  ]
+}
