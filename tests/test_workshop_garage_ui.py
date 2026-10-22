@@ -20,12 +20,14 @@ def app(tmp_path, monkeypatch):
 
 def test_current_vehicle_preview_cancel_and_same_course_trial_return(app):
     original, snapshot, window = app.workspace_vehicle, app.session.current, app.win
+    preview_camera = app.workshop_vehicle.camera.getMat(app.workshop_vehicle.scene)
     app.workshop_garage.activate(0)
     assert app.slalom_mode == GameMode.SLALOM_PRACTICE
     assert app.workshop_vehicle.identity[1] == original.config
     app.tire_tuning.activate(3)
-    app.tire_tuning.activate(8)
     assert app.session.phase == Phase.MENU and app.workspace_vehicle == original
+    app.tire_tuning.activate(9)
+    assert app.tire_tuning.recipe is None and app.workspace_vehicle == original
     app.tire_tuning.activate(6)
     assert not app.workshop_garage.root.isHidden() and app.session.current == snapshot
     app.workshop_garage.activate(0)
@@ -46,6 +48,7 @@ def test_current_vehicle_preview_cancel_and_same_course_trial_return(app):
     app.tire_tuning.activate(6)
     app.buttons[1]['command']()
     assert not app.workshop_garage.root.isHidden() and app.win is window
+    assert app.workshop_vehicle.camera.getMat(app.workshop_vehicle.scene) == preview_camera
     assert not app.player_road_ab.path.exists()
     app.back_to_menu()
     app.session.finish()
@@ -69,6 +72,43 @@ def test_brakes_route_and_repeated_preview_reuses_one_buffer(app):
     app.tire_tuning.activate(6)
     app.workshop_garage.activate(5)
     assert not buffer.isActive()
+    assert all(not item.isActive() for item in app.workshop_vehicle.pipeline._filtermgr.buffers)
+
+
+@pytest.mark.parametrize('part,mode', [(0, GameMode.SLALOM_PRACTICE), (1, GameMode.SHORT_BRAKING)])
+def test_primary_install_and_drive_uses_saved_hardware_on_same_course(app, part, mode):
+    from vehicle_workspace import WorkspaceVehicle
+
+    app.workshop_garage.activate(part)
+    app.tire_tuning.activate(3)
+    app.tire_tuning.activate(8)
+    assert app.session.phase == Phase.COUNTDOWN and app.session.mode == mode
+    assert app.tire_tuning.root.isHidden()
+    assert WorkspaceVehicle.load(app.workspace_path) == app.workspace_vehicle
+    expected = app.session.driving_mode.configured_vehicle(base_config=app.workspace_vehicle.config)
+    assert app.session.simulation.config == expected
+    saved = app.workspace_vehicle
+    assert app.lab_return_button['text'] == '返回海岸工坊'
+    app.lab_return_button['command']()
+    assert app.session.phase == Phase.MENU and not app.workshop_garage.root.isHidden()
+    assert app.workspace_vehicle == saved
+
+
+def test_primary_install_failure_keeps_car_preview_and_menu(app, monkeypatch):
+    from vehicle_workspace import WorkspaceVehicle
+
+    before = app.workspace_vehicle
+    app.workshop_garage.activate(0)
+    app.tire_tuning.activate(3)
+
+    def fail(self, path=None):
+        raise OSError('测试只读')
+
+    monkeypatch.setattr(WorkspaceVehicle, 'save', fail)
+    app.tire_tuning.activate(8)
+    assert app.session.phase == Phase.MENU and app.workspace_vehicle == before
+    assert app.tire_tuning.recipe == 3 and not app.tire_tuning.root.isHidden()
+    assert '未安装' in app.tire_tuning.notice.getText()
 
 
 def test_scheme_library_returns_to_same_garage_and_preserves_car(app):
@@ -102,3 +142,13 @@ def test_trial_and_engineering_menus_return_to_garage_without_stale_context(app)
     app.workshop_garage.activate(5)
     app.back_to_menu()
     assert not app.workshop_garage_return
+
+
+def test_tuning_trial_navigation_discards_preview_and_returns_to_current_car(app):
+    original = app.workspace_vehicle
+    app.workshop_garage.activate(0)
+    app.tire_tuning.activate(3)
+    app.tire_tuning.activate(10)
+    assert app.tire_tuning.root.isHidden() and app.highway_menu
+    app.back_to_modes()
+    assert not app.workshop_garage.root.isHidden() and app.workspace_vehicle == original

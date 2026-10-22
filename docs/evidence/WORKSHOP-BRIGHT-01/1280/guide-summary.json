@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "size": [
+    1280,
+    720
+  ],
+  "captures": [
+    "12-trial-selection",
+    "10-fast-rules",
+    "11-fast-guide"
+  ],
+  "new_driving_steps": 0,
+  "scope": "真实规则页与静止起步的实时速度带；只执行倒计时，无新道路驾驶"
+}

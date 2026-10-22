@@ -1,0 +1,51 @@
+{
+  "started_utc": "2026-10-22T04:31:36.578981+00:00",
+  "git_head": "7b2d592728f1d7e8279f22e5e8a937757f4f021e",
+  "git_status": "A  assets/game/ui/backgrounds/workshop-bright-v1.png\nM  docs/asset-register.csv\nM  docs/current-progress.md\nA  docs/design/workshop-garage/02-bright-garage-concept.png\nA  docs/design/workshop-garage/bright-assets.json\nA  docs/design/workshop-garage/bright-backplate-prompt.txt\nA  docs/evidence/WORKSHOP-BRIGHT-01/1024/01-garage.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1024/02-front-wheels.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1024/03-front-preview.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1024/04-brakes.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1024/05-brakes-installed.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1024/06-ended-trial.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1024/07-returned-garage.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1024/09-practice-finished.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1024/10-fast-rules.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1024/11-fast-guide.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1024/12-trial-selection.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1024/guide-summary.json\nA  docs/evidence/WORKSHOP-BRIGHT-01/1024/return-summary.json\nA  docs/evidence/WORKSHOP-BRIGHT-01/1280/01-garage.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1280/02-front-wheels.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1280/03-front-preview.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1280/04-brakes.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1280/05-brakes-installed.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1280/06-ended-trial.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1280/07-returned-garage.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1280/09-practice-finished.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1280/10-fast-rules.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1280/11-fast-guide.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1280/12-trial-selection.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/1280/guide-summary.json\nA  docs/evidence/WORKSHOP-BRIGHT-01/1280/return-summary.json\nA  docs/evidence/WORKSHOP-BRIGHT-01/WORKSHOP-BRIGHT-01-T0/pytest.log.gz\nA  docs/evidence/WORKSHOP-BRIGHT-01/WORKSHOP-BRIGHT-01-T0/ruff.log.gz\nA  docs/evidence/WORKSHOP-BRIGHT-01/WORKSHOP-BRIGHT-01-T0/summary.json\nA  docs/evidence/WORKSHOP-BRIGHT-01/WORKSHOP-BRIGHT-01-T1/headless-0.log.gz\nA  docs/evidence/WORKSHOP-BRIGHT-01/WORKSHOP-BRIGHT-01-T1/headless-17.log.gz\nA  docs/evidence/WORKSHOP-BRIGHT-01/WORKSHOP-BRIGHT-01-T1/headless-23.log.gz\nA  docs/evidence/WORKSHOP-BRIGHT-01/WORKSHOP-BRIGHT-01-T1/pytest.log.gz\nA  docs/evidence/WORKSHOP-BRIGHT-01/WORKSHOP-BRIGHT-01-T1/ruff.log.gz\nA  docs/evidence/WORKSHOP-BRIGHT-01/WORKSHOP-BRIGHT-01-T1/summary.json\nA  docs/evidence/WORKSHOP-BRIGHT-01/WORKSHOP-BRIGHT-01-final-T0/pytest.log.gz\nA  docs/evidence/WORKSHOP-BRIGHT-01/WORKSHOP-BRIGHT-01-final-T0/ruff.log.gz\nA  docs/evidence/WORKSHOP-BRIGHT-01/WORKSHOP-BRIGHT-01-final-T0/summary.json\nA  docs/evidence/WORKSHOP-BRIGHT-01/WORKSHOP-BRIGHT-01-return-camera-T0/pytest.log.gz\nA  docs/evidence/WORKSHOP-BRIGHT-01/WORKSHOP-BRIGHT-01-return-camera-T0/ruff.log.gz\nA  docs/evidence/WORKSHOP-BRIGHT-01/WORKSHOP-BRIGHT-01-return-camera-T0/summary.json\nA  docs/evidence/WORKSHOP-BRIGHT-01/game_current_slalom_probe.py\nA  docs/evidence/WORKSHOP-BRIGHT-01/launch-ready-v4-result.png\nA  docs/evidence/WORKSHOP-BRIGHT-01/launch-ready-v4.json.gz\nA  docs/evidence/WORKSHOP-BRIGHT-01/manifest.json\nA  docs/evidence/WORKSHOP-BRIGHT-01/workshop_garage_check.py\nM  docs/tasks/WORKSHOP-REDESIGN-01.md\nMM src/application.py\nM  src/ui/driving_cards.py\nM  src/ui/tire_tuning.py\nM  src/ui/workshop_garage.py\nM  src/ui/workshop_vehicle.py\nM  tests/test_result_tuning.py\nMM tests/test_workshop_garage_ui.py\nA  tools/game_current_slalom_probe.py\nMM tools/workshop_garage_check.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_workshop_garage_ui.py::test_primary_install_and_drive_uses_saved_hardware_on_same_course"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\WORKSHOP-BRIGHT-01-direct-return-T0\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.102
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_workshop_garage_ui.py::test_primary_install_and_drive_uses_saved_hardware_on_same_course"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\WORKSHOP-BRIGHT-01-direct-return-T0\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 18.697
+    }
+  ]
+}

@@ -8,7 +8,7 @@ from panda3d.core import LineSegs, TextNode
 from ui import theme
 from ui.lab_diagrams import car
 from ui.lab_widgets import button_textures, rounded_panel
-from ui.tire_tuning import AMBER, BACKGROUND, MUTED, SELECTED, SURFACE, TEXT
+from ui.tire_tuning import AMBER, BACKGROUND, BLUE, MUTED, SELECTED, SURFACE, TEXT
 
 
 class DrivingCards:
@@ -63,7 +63,7 @@ class DrivingCards:
 
     def text(self, value, x, z, scale=.035, color=theme.INK):
         if self.dark:
-            color = {theme.INK: TEXT, theme.MUTED: MUTED, theme.SEA: (.38, .75, .79, 1), theme.ORANGE: AMBER}.get(color, color)
+            color = {theme.INK: TEXT, theme.MUTED: MUTED, theme.SEA: BLUE, theme.ORANGE: AMBER}.get(color, color)
         label = OnscreenText(parent=self.content, text=value, font=self.font, fg=color,
             align=TextNode.ALeft, pos=(x, z), scale=scale, mayChange=True)
         self.labels.append(label)
@@ -273,7 +273,7 @@ class DrivingCards:
             x, z = (-1.04, 0., 1.04)[index % 3], .20 if index < 3 else -.20
             reached = index < len(result.clearances)
             passed = reached and result.clearances[index] >= 0
-            color = (.38, .78, .60, 1) if passed else (.98, .46, .33, 1) if reached else MUTED
+            color = theme.SUCCESS if passed else theme.FAILURE if reached else MUTED
             rounded_panel(self.content, 'practice-gate', (x-.47, x+.47, z-.17, z+.17), SURFACE)
             self.text(f'第 {index+1} 门', x-.37, z+.075, .050)
             self.text('通过' if passed else '漏门' if reached else '未到达', x+.12, z+.075, .045, color)

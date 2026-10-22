@@ -2,17 +2,26 @@
 
 import math
 
+import simplepbr
 from direct.gui.DirectGui import DirectFrame
 from panda3d.core import (
     AmbientLight,
     CardMaker,
     DirectionalLight,
+    Geom,
+    GeomNode,
+    GeomTriangles,
+    GeomVertexData,
+    GeomVertexFormat,
+    GeomVertexWriter,
     LineSegs,
     NodePath,
     PerspectiveLens,
+    TransparencyAttrib,
 )
 
 from skins import apply_skin, vehicle_for_design
+from ui import theme
 from vehicle_visual import load_vehicle
 
 
@@ -27,60 +36,68 @@ class WorkshopVehicle:
         skin_index = self.base.skin_index
         if self.buffer is None:
             self.scene = NodePath('workshop-display-only')
-            self.scene.setShaderAuto()
-            self.buffer = self.base.win.makeTextureBuffer('workshop-vehicle', 960, 600)
-            self.buffer.setClearColor((.055, .078, .092, 1))
+            self.buffer = self.base.win.makeTextureBuffer('workshop-vehicle', 1280, 600)
+            self.buffer.setClearColor((.84, .93, .98, 1))
             lens = PerspectiveLens()
-            lens.setFov(38)
+            lens.setFov(46)
             lens.setAspectRatio(1.6)
             lens.setNearFar(.1, 80)
             self.camera = self.base.makeCamera(self.buffer, scene=self.scene, lens=lens)
-            self.camera.setPos(5.0, 6.0, 2.8)
+            self.camera.reparentTo(self.scene)
+            self.camera.setPos(5.4, 7.5, 3.0)
             self.camera.lookAt(0, 0, .60)
             ambient = AmbientLight('workshop-ambient')
-            ambient.setColor((1.6, 1.7, 1.8, 1))
+            ambient.setColor((.45, .50, .58, 1))
             self.scene.setLight(self.scene.attachNewNode(ambient))
             key = DirectionalLight('workshop-key')
-            key.setColor((1.2, 1.05, .83, 1))
+            key.setColor((3.0, 2.85, 2.65, 1))
             light = self.scene.attachNewNode(key)
             light.setPos(4, 8, 9)
             light.lookAt(0, 0, .5)
             self.scene.setLight(light)
-            wall = CardMaker('workshop-back-wall')
-            wall.setFrame(-10, 10, 0, 6)
-            wall_node = self.scene.attachNewNode(wall.generate())
-            wall_node.setY(-6)
-            wall_node.setTwoSided(True)
-            wall_node.setColor(.075, .10, .12, 1)
-            wall_node.setLightOff()
-            floor = CardMaker('workshop-floor')
-            floor.setFrame(-15, 15, -15, 15)
-            surface = self.scene.attachNewNode(floor.generate())
-            surface.setP(-90)
-            surface.setZ(-.025)
-            surface.setColor(.09, .12, .14, 1)
-            lines = LineSegs('workshop-floor-joints')
-            lines.setColor(.11, .15, .17, 1)
-            for index in range(-6, 7):
-                for a, b in (((index*2, -12, -.018), (index*2, 12, -.018)),
-                             ((-12, index*2, -.018), (12, index*2, -.018))):
-                    lines.moveTo(*a)
-                    lines.drawTo(*b)
-            self.scene.attachNewNode(lines.create())
-            trim = LineSegs('workshop-bay')
-            trim.setThickness(2)
-            trim.setColor(.75, .48, .19, 1)
-            for x in (-2., 2.):
-                trim.moveTo(x, -3.5, 0)
-                trim.drawTo(x, 3.5, 0)
-            for x in (-7., -4., 4., 7.):
-                trim.moveTo(x, -5.98, 0)
-                trim.drawTo(x, -5.98, 5)
-            trim.moveTo(-8, -5.98, 4.7)
-            trim.drawTo(8, -5.98, 4.7)
-            trim_node = self.scene.attachNewNode(trim.create())
-            trim_node.setLightOff()
+            # 空车库底图只作展示布景；真实车模和零件仍在其前方独立渲染。
+            card = CardMaker('workshop-backplate')
+            card.setFrame(-1, 1, -1, 1)
+            self.backplate = self.scene.attachNewNode(card.generate())
+            self.backplate.setTexture(self.base.loader.loadTexture(
+                theme.asset_filename('backgrounds/workshop-bright-v1.png')))
+            self.backplate.setMat(self.camera.getMat(self.scene))
+            self.backplate.setPos(self.backplate, 0, 30, 0)
+            self.backplate.setShaderOff()
+            self.backplate.setLightOff()
+            self.backplate.setBin('background', 0)
+            self.backplate.setDepthWrite(False)
+            # 柔和接地阴影属于展台表现，不向Simulation创建额外物体。
+            for layer in range(18):
+                radius = 1.0-layer*.025
+                data = GeomVertexData('contact-shadow', GeomVertexFormat.getV3(), Geom.UHStatic)
+                writer = GeomVertexWriter(data, 'vertex')
+                writer.addData3f(0, 0, -.013+layer*.0001)
+                for step in range(49):
+                    phase = step*math.pi/24
+                    writer.addData3f(1.65*radius*math.cos(phase),
+                                     3.2*radius*math.sin(phase), -.013+layer*.0001)
+                triangles = GeomTriangles(Geom.UHStatic)
+                for index in range(1, 49):
+                    triangles.addVertices(0, index, index+1)
+                geom = Geom(data)
+                geom.addPrimitive(triangles)
+                shadow = GeomNode('contact-shadow')
+                shadow.addGeom(geom)
+                node = self.scene.attachNewNode(shadow)
+                node.setColor(.08, .16, .21, .03)
+                node.setTransparency(TransparencyAttrib.MAlpha)
+                node.setLightOff()
+                node.setShaderOff()
+                node.setDepthWrite(False)
             self.car_root = self.scene.attachNewNode('current-vehicle')
+            previous_tasks = self.base.taskMgr.getTasksNamed('simplepbr update')
+            self.pipeline = simplepbr.init(render_node=self.scene, window=self.buffer,
+                camera_node=self.camera, taskmgr=self.base.taskMgr, max_lights=1,
+                enable_shadows=False, msaa_samples=4)
+            self.update_task = next(task for task in self.base.taskMgr.getTasksNamed('simplepbr update')
+                                    if task not in previous_tasks)
+            self.update_task.setName('workshop-pbr-update')
         identity = (vehicle.design_id, vehicle.config, skin_index)
         if identity != self.identity:
             for child in self.car_root.getChildren():
@@ -96,7 +113,11 @@ class WorkshopVehicle:
         self.frame = DirectFrame(parent=parent, frameSize=box, frameColor=(1, 1, 1, 1),
                                  frameTexture=self.buffer.getTexture())
         self.camera.node().getLens().setAspectRatio((box[1]-box[0])/(box[3]-box[2]))
+        half_width = 30*math.tan(math.radians(self.camera.node().getLens().getHfov()/2))
+        self.backplate.setScale(half_width, 1, half_width/(box[1]-box[0])*(box[3]-box[2]))
         self.buffer.setActive(True)
+        for buffer in self.pipeline._filtermgr.buffers:
+            buffer.setActive(True)
 
     def highlight(self, topic):
         for index, wheel in enumerate(self.wheels):
@@ -118,13 +139,19 @@ class WorkshopVehicle:
                 ring.moveTo(*point) if step == 0 else ring.drawTo(*point)
         node = self.car_root.attachNewNode(ring.create())
         node.setLightOff()
+        node.setShaderOff()
 
     def hide(self):
         if self.buffer is not None:
             self.buffer.setActive(False)
+            for buffer in self.pipeline._filtermgr.buffers:
+                buffer.setActive(False)
 
     def close(self):
         if self.buffer is not None:
+            self.update_task.remove()
+            # simplepbr未提供销毁入口；其Panda FilterManager持有的HDR缓冲必须同步释放。
+            self.pipeline._filtermgr.cleanup()
             self.frame.destroy()
             self.camera.removeNode()
             self.scene.removeNode()

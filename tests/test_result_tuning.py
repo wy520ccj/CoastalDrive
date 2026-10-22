@@ -55,8 +55,7 @@ def test_cancel_and_same_recipe_preserve_exact_result_car_and_snapshot(app, succ
     app.key_down('enter')
     app.key_up('enter')
     assert app.tire_tuning.recipe == 0
-    app.key_down('enter')
-    app.key_up('enter')
+    app.tire_tuning.activate(4)
     assert app.session.phase == Phase.RESULTS and app.session.highway.snapshot is result
     app.key_down('escape')
     app.key_up('escape')
@@ -127,3 +126,13 @@ def test_active_driving_cannot_open_tuning(app):
     app.start_slalom_lesson()
     app.open_tire_tuning()
     assert app.tire_tuning.root.isHidden()
+
+
+def test_explicit_primary_retry_with_same_recipe_starts_new_same_course(app):
+    result_fixture(app)
+    before = app.workspace_vehicle
+    app.open_tire_tuning()
+    app.tire_tuning.activate(0)
+    app.tire_tuning.activate(8)
+    assert app.session.phase == Phase.COUNTDOWN and app.session.mode == GameMode.FAST_SLALOM
+    assert app.workspace_vehicle == before and app.tire_tuning.root.isHidden()

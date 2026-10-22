@@ -36,6 +36,9 @@ def check(output, size, practice_run=False, practice_record=None, fast_only=Fals
     def capture(name):
         before = asdict(app.session.current)
         app.main_menu.resize(app.getAspectRatio())
+        app.hud.resize(app.getAspectRatio())
+        app.lab_return_button.setX(app.getAspectRatio()-.44)
+        app.ghost_button.setX(app.getAspectRatio()-.44)
         if app.session.phase in (Phase.DRIVING, Phase.COUNTDOWN):
             app._shown_phase = None
             app.refresh_panel()
@@ -55,6 +58,8 @@ def check(output, size, practice_run=False, practice_record=None, fast_only=Fals
         if fast_only:
             app.back_to_menu()
             app.workshop_garage_return = True
+            app.choose_highway()
+            capture('12-trial-selection')
             app.choose_slalom_lesson(GameMode.FAST_SLALOM)
             capture('10-fast-rules')
             app.start_slalom_lesson()
@@ -109,6 +114,8 @@ def check(output, size, practice_run=False, practice_record=None, fast_only=Fals
         assert app.workspace_vehicle == vehicle
         app.tire_tuning.activate(8)
         assert app.session.phase == Phase.COUNTDOWN and app.session.mode == GameMode.SHORT_BRAKING
+        for _ in range(360):
+            app.session.tick()
         app.session.finish()
         app._shown_phase = None
         app.refresh_panel()

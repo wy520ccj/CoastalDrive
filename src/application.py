@@ -425,11 +425,26 @@ class CoastalDrive(ShowBase):
             self.journey.hide()
 
     def drive_from_tuning(self):
-        if self.tire_tuning.recipe is not None or self.session.phase != Phase.MENU:
+        if self.tire_tuning.recipe is not None and not self.install_driving_recipe(self.tire_tuning.recipe):
+            return
+        if self.session.phase == Phase.RESULTS:
+            # 同一配方也允许显式重试；旧成绩只在新一轮启动时退出。
+            mode = self.session.mode
+            self.session.menu()
+            self.choose_slalom_lesson(mode) if mode in SLALOM_MODES else self.choose_braking_lesson(mode)
+        if self.session.phase != Phase.MENU:
             return
         brakes = self.tire_tuning.topic == 'brakes'
         self.tire_tuning.hide()
         self.start_braking_lesson() if brakes else self.start_slalom_lesson()
+
+    def navigate_from_tuning(self, index):
+        self.open_workshop_garage()
+        self.workshop_garage.hide()
+        self.workshop_garage_action(index)
+
+    def return_from_test_drive(self):
+        self.open_workshop_garage() if self.workshop_garage_return else self.open_vehicle_lab()
 
     def open_driving_journey(self):
         path = self.session.race.scores.path
@@ -995,11 +1010,12 @@ class CoastalDrive(ShowBase):
         self.tour_panel = DrivingTourPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
                                           self.start_tour_leg, self.back_from_driving_tour)
         self.workshop_vehicle = WorkshopVehicle(self)
-        self.workshop_garage = WorkshopGarage(self.main_menu.content, self.ui_font, self.workshop_vehicle,
+        workshop_font = theme.load_font('fonts/SourceHanSansSC-Bold.otf')
+        self.workshop_garage = WorkshopGarage(self.main_menu.content, workshop_font, self.workshop_vehicle,
                                              self.workshop_garage_action)
-        self.tire_tuning = TireTuningPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
+        self.tire_tuning = TireTuningPanel(self.main_menu.content, workshop_font, self.main_menu.textures,
             self.install_driving_recipe, self.restore_tire_vehicle, self.back_from_tire_tuning, self.open_player_road_ab,
-            vehicle_view=self.workshop_vehicle, drive=self.drive_from_tuning)
+            vehicle_view=self.workshop_vehicle, drive=self.drive_from_tuning, navigate=self.navigate_from_tuning)
         self.player_road_panel = PlayerRoadPanel(self.tire_tuning.root, self.ui_font, self.main_menu.textures,
                                                self.open_road_retest)
         self.tour_banner = DirectFrame(parent=self.aspect2d, frameColor=theme.PAPER_LIGHT,
@@ -1039,7 +1055,7 @@ class CoastalDrive(ShowBase):
             text_fg=theme.INK, text_scale=.045, text_pos=(0, -.016),
             frameSize=(-.34, .34, -.055, .055), pos=(1.34, 0, .86),
             frameTexture=self.button_states, frameColor=(1, 1, 1, 1), relief=DGG.FLAT,
-            command=self.open_vehicle_lab, pressEffect=False,
+            command=self.return_from_test_drive, pressEffect=False,
         )
         self.ghost_button = DirectButton(
             parent=self.hud.root, text="幽灵：暂无", text_font=self.ui_font,
@@ -1360,7 +1376,14 @@ class CoastalDrive(ShowBase):
         self.main_menu.root.show()
         self.player_road_panel.hide()
         vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
-        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label())
+        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label(),
+                             trial_label=self.tuning_trial_label('tires'))
+
+    def tuning_trial_label(self, topic):
+        if topic == 'brakes':
+            return '短距制动' if self.braking_mode == GameMode.SHORT_BRAKING else '定点制动'
+        return {GameMode.SLALOM_PRACTICE: '六门自由练习', GameMode.SLALOM_LESSON: '六门挑战',
+                GameMode.FAST_SLALOM: '高速六门挑战'}[self.slalom_mode]
 
     def open_player_road_ab(self):
         self.player_road_panel.show(self.player_brake_ab if self.tire_tuning.topic == 'brakes' else self.player_road_ab)
@@ -1390,7 +1413,8 @@ class CoastalDrive(ShowBase):
         self.main_menu.root.show()
         self.player_road_panel.hide()
         vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
-        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label(), topic='brakes')
+        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label(), topic='brakes',
+                             trial_label='短距制动' if self.braking_mode == GameMode.SHORT_BRAKING else '定点制动')
 
     def observe_player_road(self):
         if self.session.phase != Phase.RESULTS or not self.road_pending:
@@ -1431,7 +1455,8 @@ class CoastalDrive(ShowBase):
         self.session.set_tcs_enabled(vehicle.config.traction.tcs_enabled)
         self.session.set_esc_enabled(vehicle.config.stability.esc_enabled)
         self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
-        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label(), topic=self.tire_tuning.topic)
+        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label(), topic=self.tire_tuning.topic,
+                             trial_label=self.tuning_trial_label(self.tire_tuning.topic))
         self.tire_tuning.select(8)
 
     def install_driving_recipe(self, index):
@@ -1452,6 +1477,7 @@ class CoastalDrive(ShowBase):
         store = self.player_brake_ab if self.tire_tuning.topic == 'brakes' else self.player_road_ab
         if store.notice:
             self.tire_tuning.notice.setText(self.tire_tuning.notice.getText()+' 道路对照有提示，请查看道路A/B。')
+        return True
 
     def restore_tire_vehicle(self):
         if self.session.phase not in (Phase.MENU, Phase.RESULTS):
@@ -1589,6 +1615,7 @@ class CoastalDrive(ShowBase):
                 not (self.garage is not None or self.highway_menu or self.audio_settings_page or self.driving_mode_page)):
             self.panel_selection = 0
         self._shown_phase = panel_state
+        self.lab_return_button['text'] = '返回海岸工坊' if self.workshop_garage_return else '返回实验台'
         self.driving_cards.hide()
         self.panel_title.show()
         self.panel.setScale(1.)
