@@ -214,7 +214,8 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
     button('←', width*.43, 880, 46, 42, 'garage-orbit', -25, role='footer')
     button('→', width*.475, 880, 46, 42, 'garage-orbit', 25, role='footer')
     label('查看车辆', width*.52, 910, 20, WHITE)
-    button('返回赛事', width-170, 880, 140, 42, 'garage-back', role='footer')
+    back_title = '返回首页' if panel.vehicle_view.base.career_garage_return == 'home' else '返回赛事'
+    button(back_title, width-170, 880, 140, 42, 'garage-back', role='footer')
     panel.select(panel.primary)
 
 

@@ -1,23 +1,35 @@
 from dataclasses import replace
 from types import SimpleNamespace
 
+from direct.gui import DirectGuiGlobals as DGG
+
 from application import CoastalDrive
 from race import GameMode
 from session import Phase
 
 
-def test_menu_navigation_and_overlay_lifecycle(tmp_path):
+def test_menu_navigation_and_overlay_lifecycle(tmp_path, monkeypatch):
     app = CoastalDrive(smoke=True, output=tmp_path)
     app.taskMgr.remove("finish-smoke")
     try:
         app.session.menu()
         app.refresh_panel()
+        cues = []
+        monkeypatch.setattr(app, 'audio_cue', cues.append)
+        app.main_menu.resize(4/3)
+        app.messenger.send(DGG.B1PRESS+app.main_menu.buttons[3].guiId, [None])
+        assert cues == ['confirm']
+        app.main_menu.resize(app.getAspectRatio())
         frozen = app.session.current
+        # 默认聚焦主线赛事；先向下到车库，再到自由驾驶，按住只移动一次。
         app.key_down("arrow_down")
         app.key_down("arrow_down")  # 按住只移动一次，沿用去重规则。
-        assert app.main_menu.selected == 1
+        assert app.main_menu.selected == 3
         assert app.session.current == frozen
         app.key_up("arrow_down")
+        app.key_down("arrow_down")
+        app.key_up("arrow_down")
+        assert app.main_menu.selected == 1
         app.key_down("enter")
         app.key_up("enter")
         app.refresh_panel()
@@ -37,13 +49,14 @@ def test_menu_navigation_and_overlay_lifecycle(tmp_path):
         app.refresh_panel()
         # DirectButton 的同一命令也用于鼠标点击，不增加另一套游戏动作。
         app.main_menu.buttons[2]["command"]()
-        assert app.highway_menu
-        assert app.main_menu.root.isHidden()
-        app.back_to_modes()
+        assert app.career_panel.page == 'board' and not app.career_panel.root.isHidden()
+        assert not app.workshop_vehicle.buffer.isActive()
+        app.career_action('exit')
         app.main_menu.buttons[3]["command"]()
-        assert app.garage is not None
-        assert app.main_menu.root.isHidden()
-        app.cancel_garage()
+        assert app.career_panel.page == 'garage' and app.career_garage_return == 'home'
+        assert app.career_panel.buttons[-1]['text'] == '返回首页'
+        app.career_action('garage-back')
+        assert app.career_panel.root.isHidden() and app.main_menu.selected == 3
         assert not app.main_menu.root.isHidden()
         app.main_menu.buttons[4]["command"]()
         before = app.audio_settings.master_volume

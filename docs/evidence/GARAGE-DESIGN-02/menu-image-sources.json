@@ -1,0 +1,103 @@
+{
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1280\\01-home.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-final-1280\\01-home.png",
+    "sha256": "b2e84e53997d01b4fa9e82376dd0790464453a093c6644be7a16f912bd325d84",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1280\\02-garage-focus.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-final-1280\\02-garage-focus.png",
+    "sha256": "f6d1d57664d0d42996f04b7ca5f857e200cbf05f2c4deab04badc0a8fc6d99f1",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1280\\03-garage-0.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-back-final-1280\\03-garage-0.png",
+    "sha256": "159883329d1cb5581c3263265ef8f7fdf5b6d85b9d91489b87edaa1eb6d826e8",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1280\\04-upgrades-0.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-back-final-1280\\04-upgrades-0.png",
+    "sha256": "b0de3a42b7eb47f4132d2c864a98a2ef50223e797ff9727685624a67d42937ec",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1280\\05-paint-0.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-back-final-1280\\05-paint-0.png",
+    "sha256": "9bc7aad77b352654d37b054494ef536197d6bf6a5d856112108f0ee95473f022",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1280\\08-footer-focus.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-final-1280\\08-footer-focus.png",
+    "sha256": "2607484fb4dcb3371fe75d980781dd3f9e1b4d5d65e3cead31ddcd9582929ecc",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1280\\09-audio.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-final-1280\\09-audio.png",
+    "sha256": "5507874fb35bc406aba60198c0ee37b8110ca31c814803f79625197f87452a5a",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1280\\10-assists.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-final-1280\\10-assists.png",
+    "sha256": "f58de4f38456168c2ca569a8d1c0d5a52f7bf4889216e7fdc823602596c81c05",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1280\\11-events.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-final-1280\\11-events.png",
+    "sha256": "e52f79f3267e4aac92c76062c26f979910409b255421457f21fbb789e139c494",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1280\\12-home-final.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-final-1280\\12-home-final.png",
+    "sha256": "b2e84e53997d01b4fa9e82376dd0790464453a093c6644be7a16f912bd325d84",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1024\\01-home.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-final-1024\\01-home.png",
+    "sha256": "869d25124ee3cfeb8635759f850c133789f479534a5c06b99ec8abdede80a41a",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1024\\02-garage-focus.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-final-1024\\02-garage-focus.png",
+    "sha256": "873776a6a4dbead2b159a0cb1cd4ae023a33a5c3cf8560e12782310030a1ee5a",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1024\\03-garage-0.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-back-final-1024\\03-garage-0.png",
+    "sha256": "3a4efb6081874a04fd9eb41c21dd7ddc8f78810eec4a72a04988121f4a0c16b1",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1024\\04-upgrades-0.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-back-final-1024\\04-upgrades-0.png",
+    "sha256": "ec29bb0939a2d250c2faecde2c289ee4eebfb1c7c575a0d45f841072ca31848a",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1024\\05-paint-0.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-back-final-1024\\05-paint-0.png",
+    "sha256": "72e55d096f1d313e35c77ef71cf79ad8bfd76f2a33603fba998e6a28fe507fd3",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1024\\08-footer-focus.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-final-1024\\08-footer-focus.png",
+    "sha256": "c29bf1b077c453872ed78c154e4065b67832a61b929335b6890156937f2ff944",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1024\\09-audio.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-final-1024\\09-audio.png",
+    "sha256": "aba5315f7b844e921deb244ce58249547911bb12b7e3d139d3277f9cff7a6cc9",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1024\\10-assists.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-final-1024\\10-assists.png",
+    "sha256": "63383aceadaef5289e9607901c9d012237eb15952cac938f45c3de30d96714b1",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1024\\11-events.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-final-1024\\11-events.png",
+    "sha256": "84a239dbcb016d6427b572fd42ec2dd0c89f0b79701743cf5c0202dd903fd5ae",
+    "new_driving_steps": 0
+  },
+  "docs\\evidence\\GARAGE-DESIGN-02\\menu-home-1024\\12-home-final.png": {
+    "source": "logs\\validation\\GARAGE-DESIGN-02-menu-final-1024\\12-home-final.png",
+    "sha256": "ea00959f6b6e5fe2396b44083fb781b811526e13422d66eb593a57b0aa2ceb05",
+    "new_driving_steps": 0
+  },
+  "scope": "Only ten selected final images per aspect archived; full-flow summaries name six additional images retained at source log paths. Three garage images use final back-label recapture. Other final images precede keyboard-row-only change; no visual code difference there. 1024 font before source timestamp preservation has identical glyphs."
+}

@@ -62,14 +62,14 @@ def test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics(tmp_pa
         assert app.session.driving_mode is DrivingMode.GAME
         assert app.session.simulation.input_config is DrivingMode.GAME.input_config
         assert [b["text"] for b in app.main_menu.buttons] == [
-            "计时挑战", "滨海自由驾驶", "海岸生涯", "车库", "声音设置", "退出", "进入试验台  ›"]
+            "计时挑战", "滨海自由驾驶", "海岸生涯", "我的车库", "声音设置", "退出游戏", "专家试验台", "驾驶辅助  F2"]
         old_world = app.session.simulation
         app.messenger.send("f2")
         assert app.driving_mode_page and app.panel_option_count == 4
-        assert [b["text"] for b in app.buttons[:4]] == [
-            "车辆 ABS：开启", "驱动防滑 TCS：开启", "横摆稳定 ESC：开启", "返回"]
+        assert [b["text"] for b in app.buttons[:4]] == ["开启", "开启", "开启", "Esc   返回首页"]
         assert app.driving_cards.active and app.panel_note.isHidden()
-        assert app.buttons[0].getZ() == app.buttons[1].getZ() == app.buttons[2].getZ()
+        assert app.buttons[0].getX() == app.buttons[1].getX() == app.buttons[2].getX()
+        assert app.buttons[0].getZ() > app.buttons[1].getZ() > app.buttons[2].getZ()
         app.key_down("enter")
         app.key_up("enter")
         assert not app.session.abs_enabled and app.session.simulation is old_world
@@ -78,8 +78,7 @@ def test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics(tmp_pa
         app.toggle_tcs()
         app.toggle_esc()
         assert not app.session.tcs_enabled and not app.session.esc_enabled
-        assert [b["text"] for b in app.buttons[:3]] == [
-            "车辆 ABS：关闭", "驱动防滑 TCS：关闭", "横摆稳定 ESC：关闭"]
+        assert [b["text"] for b in app.buttons[:3]] == ["关闭", "关闭", "关闭"]
         app.toggle_abs()
         blocked = tmp_path / "blocked-settings"
         blocked.write_text("not a directory", encoding="utf-8")
@@ -128,6 +127,7 @@ def test_settings_cards_adjust_save_return_without_retaining_widgets(tmp_path):
     app.taskMgr.remove('drive-update')
     try:
         app.back_to_menu()
+        app.refresh_panel()
         snapshot, world = app.session.current, app.session.simulation
         widget_count = len(DirectGuiWidget.guiDict)
         app.choose_audio_settings()
@@ -143,6 +143,13 @@ def test_settings_cards_adjust_save_return_without_retaining_widgets(tmp_path):
         app.adjust_panel_option(-1)
         assert app.audio_settings.music_volume == music-10
         app.adjust_panel_option(1)
+        app.select_panel_option(0)
+        app.key_down('arrow_down')
+        app.key_up('arrow_down')
+        assert app.panel_selection == 2
+        app.key_down('arrow_down')
+        app.key_up('arrow_down')
+        assert app.panel_selection == 4
         app.select_panel_option(6)
         station = app.audio_settings.radio_station
         app.adjust_panel_option(1)

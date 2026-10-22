@@ -6,7 +6,6 @@ from direct.gui.DirectGui import OnscreenText
 from panda3d.core import LineSegs, TextNode
 
 from ui import theme
-from ui.lab_diagrams import car
 from ui.lab_widgets import button_textures, rounded_panel
 from ui.tire_tuning import AMBER, BACKGROUND, BLUE, MUTED, SELECTED, SURFACE, TEXT
 
@@ -19,8 +18,24 @@ class DrivingCards:
         self.active = False
         self.dark = False
         self.labels, self.primary = [], set()
+        self.frames, self.settings_knobs = [], []
+        self.settings_page = self.settings_app = self.settings_aspect = None
 
     def hide(self):
+        if self.settings_page is not None:
+            view = self.settings_app.workshop_vehicle
+            if view.frame is not None and view.frame.getParent() == self.content:
+                view.hide()
+            for button in self.buttons:
+                button['geom'] = None
+                button['text_font'] = self.font
+        self.settings_page = None
+        for knob in self.settings_knobs:
+            knob.removeNode()
+        self.settings_knobs.clear()
+        for frame in self.frames:
+            frame.destroy()
+        self.frames.clear()
         for button in self.buttons:
             button.reparentTo(self.panel)
         for label in self.labels:
@@ -58,6 +73,11 @@ class DrivingCards:
         self.resize(app.getAspectRatio())
 
     def resize(self, aspect):
+        if self.settings_page is not None:
+            if aspect != self.settings_aspect:
+                self.settings_app._shown_phase = None
+                self.settings_app.refresh_panel()
+            return
         if self.active:
             self.panel.setScale(min(1., aspect/(16/9)))
 
@@ -111,6 +131,11 @@ class DrivingCards:
         return button
 
     def select(self, index):
+        if self.settings_page is not None:
+            from ui.menu_settings import style
+
+            style(self, index)
+            return
         for i, button in enumerate(self.buttons):
             if self.dark:
                 button['frameTexture'] = None
@@ -123,61 +148,14 @@ class DrivingCards:
             button['text_fg'] = theme.INK
 
     def audio(self, app, station):
-        self.begin(app, '声音设置', '三个通道独立调整 · 立即试听并保存')
-        settings = app.audio_settings
-        for index, (title, description, value) in enumerate((
-                ('主音量', '整体播放音量', settings.master_volume),
-                ('效果音', '引擎 / 轮胎 / 环境', settings.effects_volume),
-                ('车载音乐', '电台与背景音乐', settings.music_volume))):
-            x = (-1.03, 0., 1.03)[index]
-            rounded_panel(self.content, 'volume-card', (x-.47, x+.47, -.20, .43), theme.PAPER)
-            self.text(title, x-.37, .31, .048)
-            self.text(description, x-.37, .225, .030, theme.MUTED)
-            self.text(f'{value}%', x-.37, .075, .090, theme.SEA)
-            rounded_panel(self.content, 'volume-track', (x-.37, x+.37, -.005, .025), (.80, .85, .83, 1.), .015)
-            if value:
-                rounded_panel(self.content, 'volume-fill',
-                    (x-.37, x-.37+.74*value/100, -.005, .025), theme.SEA, .015)
-            for offset, label in enumerate(('−10%', '+10%')):
-                button = self.button(index*2+offset, x-.20+offset*.40, -.115, .34, .095, compact=True)
-                button['text'] = label
-        self.text('当前电台', -1.50, -.34, .033, theme.MUTED)
-        self.text(station, -1.50, -.43, .042, theme.SEA)
-        self.buttons[6]['text'] = '切换电台  ›'
-        self.button(6, 1.10, -.39, .80, .12, compact=True)
-        self.text('↑ ↓ 选择 · ← → 调整音量或电台 · N切台 · M开关车载音乐', -1.50, -.61, .031, theme.MUTED)
-        if settings.notice:
-            self.text(app.fit_lines(settings.notice, 2.5, .032), -1.50, -.70, .032, theme.ORANGE)
-        self.button(7, 1.13, -.78, .86, .10, compact=True)
-        self.select(app.panel_selection)
+        from ui.menu_settings import audio
+
+        audio(self, app, station)
 
     def assists(self, app):
-        self.begin(app, '驾驶辅助', '游戏使用车速转向辅助 · 以下车辆开关在下次起步应用')
-        for index, (title, abbreviation, enabled) in enumerate((
-                ('制动防抱死', 'ABS · 调节制动压力', app.session.abs_enabled),
-                ('加速防打滑', 'TCS · 抑制驱动轮空转', app.session.tcs_enabled),
-                ('车身稳定', 'ESC · 修正车身偏转', app.session.esc_enabled))):
-            x = (-1.03, 0., 1.03)[index]
-            color = theme.SEA if enabled else theme.MUTED
-            rounded_panel(self.content, 'assist-card', (x-.47, x+.47, -.29, .43), theme.PAPER)
-            self.text(title, x-.37, .31, .050)
-            self.text(abbreviation, x-.37, .22, .031, theme.MUTED)
-            car(self.content, x, -.015, .62, color)
-            if index == 0:
-                self.line([(x+.31, .00), (x+.31, .12)], theme.ORANGE, 3.)
-            elif index == 1:
-                for dz in (-.035, -.055):
-                    self.line([(x-.28, dz), (x-.12, dz)], theme.ORANGE, 2.)
-            else:
-                self.route(x, -.045, .64, 'bend')
-            self.text('已开启' if enabled else '已关闭', x-.37, -.12, .040, color)
-            self.button(index, x, -.22, .78, .10, compact=True)
-        self.text('点击卡片底部切换开关 · 车辆硬件在车库选择', -1.50, -.44, .034, theme.MUTED)
-        self.text('车辆数据可在试验台查看。', -1.50, -.54, .034, theme.SEA)
-        if app.driving_mode_settings.notice:
-            self.text(app.fit_lines(app.driving_mode_settings.notice, 2.5, .032), -1.50, -.66, .032, theme.ORANGE)
-        self.button(3, 1.13, -.78, .86, .10, compact=True)
-        self.select(app.panel_selection)
+        from ui.menu_settings import assists
+
+        assists(self, app)
 
     def routes(self, app, goals):
         self.begin(app, '路线选择', '封闭短途 / 安全超车 / 三站巡回 · 使用当前驾驶车辆')

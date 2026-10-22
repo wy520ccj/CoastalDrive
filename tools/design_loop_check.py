@@ -106,7 +106,7 @@ def check(output, ui_only=False):
         game.session.menu()
         game.refresh_panel()
         capture(game, output/"game-menu.png")
-        assert game.main_menu.actions[-1] == game.open_vehicle_lab
+        assert game.main_menu.actions[6] == game.open_vehicle_lab
         returned = game.workspace_vehicle
         assert returned.config == vehicle.config
         game_info = {"config": asdict(game.session.simulation.config), "tick": game.session.current.tick,

@@ -46,6 +46,22 @@
       "license_file": "OFL-SourceHanSans.txt",
       "license_url": "https://github.com/adobe-fonts/source-han-sans/blob/release/LICENSE.txt",
       "license_sha256": "fcac737e761ec63dbfbdce11030a1780161920d80315edba9c8beff1c2bac5a2"
+    },
+    {
+      "family": "Tabler Icons",
+      "style": "Outline subset",
+      "role": "Five native main-menu icons",
+      "file": "Tabler-Menu.ttf",
+      "source_repository": "https://github.com/tabler/tabler-icons",
+      "source_url": "https://registry.npmjs.org/@tabler/icons-webfont/-/icons-webfont-3.49.0.tgz",
+      "source_path": "package/dist/fonts/tabler-icons.ttf",
+      "source_version": "3.49.0",
+      "sha256": "67e3e8ccc721c5f0170618330b9f835a1a68c284d34ac69a60e45af96497bbfa",
+      "size_bytes": 2428,
+      "license": "MIT",
+      "license_file": "License-Tabler-Menu.txt",
+      "license_sha256": "dbfa6cff2e8426878267c6719ff68dcd8bc3dadaffb2207f5c46ce939c4becd3",
+      "processing": "fontTools subset five glyphs; preserve source timestamp; tools/prepare_menu_icons.py; source archive and manifest in art/ui/menu-icons"
     }
   ]
 }

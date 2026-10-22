@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "size": [
+    1024,
+    768
+  ],
+  "captures": [
+    "01-home.png",
+    "02-garage-focus.png",
+    "03-garage-0.png",
+    "04-upgrades-0.png",
+    "05-paint-0.png",
+    "06-home-return-0.png",
+    "07-garage-focus-return.png",
+    "03-garage-1.png",
+    "04-upgrades-1.png",
+    "05-paint-1.png",
+    "06-home-return-1.png",
+    "08-footer-focus.png",
+    "09-audio.png",
+    "10-assists.png",
+    "11-events.png",
+    "12-home-final.png"
+  ],
+  "new_driving_steps": 0,
+  "snapshot_unchanged": true,
+  "display_windows_unchanged": 4,
+  "scope": "真实原生菜单与键盘往返；隔离空进度，0新驾驶拍，非人工审美验收"
+}

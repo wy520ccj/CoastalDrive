@@ -1,0 +1,14 @@
+{
+  "url": "https://registry.npmjs.org/@tabler/icons-webfont/-/icons-webfont-3.49.0.tgz",
+  "version": "3.49.0",
+  "source_sha256": "48c69c65a5f9013d482a17cab8899a09dcaec50750d1ac7324eb63a061fffb82",
+  "font_sha256": "67e3e8ccc721c5f0170618330b9f835a1a68c284d34ac69a60e45af96497bbfa",
+  "codepoints": {
+    "trophy": 60229,
+    "car": 60347,
+    "beach": 61245,
+    "stopwatch": 65435,
+    "chart-dots": 60975
+  },
+  "process": "Extract font data without running package code; fontTools subset retains five glyphs."
+}

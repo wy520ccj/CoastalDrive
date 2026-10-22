@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "size": [
+    1280,
+    720
+  ],
+  "captures": [
+    "03-garage-0.png",
+    "04-upgrades-0.png",
+    "05-paint-0.png"
+  ],
+  "new_driving_steps": 0,
+  "initial_snapshot_tick": 0,
+  "snapshot_unchanged": true,
+  "display_windows_unchanged": 4,
+  "scope": "真实原生菜单与键盘往返；隔离空进度，0新驾驶拍，非人工审美验收"
+}

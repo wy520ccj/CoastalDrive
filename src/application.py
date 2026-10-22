@@ -426,7 +426,7 @@ class CoastalDrive(ShowBase):
         self.career_panel.show_board(self.career_progress)
 
     def open_career_collection(self):
-        self.career_garage_tab, self.career_garage_return = 'cars', None
+        self.career_garage_tab, self.career_garage_return = 'cars', 'home'
         self.open_career_garage()
 
     def open_career_garage(self, notice='', *, reset=True):
@@ -465,7 +465,9 @@ class CoastalDrive(ShowBase):
             self.open_career_garage()
             self.career_action('garage-car', value)
         elif action == 'garage-back':
-            if self.career_garage_return is None:
+            if self.career_garage_return == 'home':
+                self.career_action('exit')
+            elif self.career_garage_return is None:
                 self.open_career()
             else:
                 self.open_career()
@@ -1047,7 +1049,7 @@ class CoastalDrive(ShowBase):
             return
         if (self.session.phase == Phase.MENU and self.garage is None
                 and not self.audio_settings_page and not self.driving_mode_page and not self.highway_menu
-                and key in ("arrow_up", "arrow_down", "w", "s", "enter")):
+                and key in ("arrow_up", "arrow_down", "arrow_left", "arrow_right", "w", "s", "a", "d", "enter")):
             if key not in self.commands_held:
                 self.commands_held.add(key)
                 if key == "enter":
@@ -1055,7 +1057,10 @@ class CoastalDrive(ShowBase):
                     self.main_menu.activate()
                 else:
                     self.audio_cue("select")
-                    self.main_menu.move(-1 if key in ("arrow_up", "w") else 1)
+                    if key in ('arrow_left', 'arrow_right', 'a', 'd'):
+                        self.main_menu.horizontal(-1 if key in ('arrow_left', 'a') else 1)
+                    else:
+                        self.main_menu.move(-1 if key in ("arrow_up", "w") else 1)
             return
         if self.has_panel_navigation():
             if key not in self.commands_held:
@@ -1099,7 +1104,12 @@ class CoastalDrive(ShowBase):
 
     def handle_panel_key(self, key):
         self.audio_cue("confirm" if key == "enter" else "select")
-        if key in ("arrow_up", "w"):
+        if self.audio_settings_page and key in ('arrow_up', 'w', 'arrow_down', 's'):
+            rows = (0, 2, 4, 6, 7)
+            row = self.panel_selection//2*2 if self.panel_selection < 6 else self.panel_selection
+            direction = -1 if key in ('arrow_up', 'w') else 1
+            self.select_panel_option(rows[(rows.index(row)+direction) % len(rows)])
+        elif key in ("arrow_up", "w"):
             self.select_panel_option(self.panel_selection - 1)
         elif key in ("arrow_down", "s"):
             self.select_panel_option(self.panel_selection + 1)
@@ -1196,11 +1206,13 @@ class CoastalDrive(ShowBase):
         self.gear_rpm = self.hud.gear_rpm
         self.help_frame = self.hud.help_frame
         self.help = self.hud.help
+        self.workshop_vehicle = WorkshopVehicle(self)
         self.main_menu = MainMenu(self.aspect2d, self.loader, self.ui_font, self.display_font, (
             lambda: self.start_game(mode=GameMode.TIME_TRIAL),
             lambda: self.start_game(mode=GameMode.FREE_DRIVE),
             self.open_career, self.open_career_collection, self.choose_audio_settings, self.userExit,
-        ), driving_mode_action=self.choose_driving_mode, lab_action=self.open_vehicle_lab,
+        ), vehicle_view=self.workshop_vehicle, confirm_action=lambda: self.audio_cue('confirm'),
+            driving_mode_action=self.choose_driving_mode, lab_action=self.open_vehicle_lab,
             journey_action=None)
         self.journey = WorkshopJourney(self.main_menu.content, self.ui_font, self.main_menu.textures,
                                        self.continue_workshop_project, self.open_driving_journey,
@@ -1209,7 +1221,6 @@ class CoastalDrive(ShowBase):
                                               self.continue_driving_project, self.open_workshop_journey)
         self.tour_panel = DrivingTourPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
                                           self.start_tour_leg, self.back_from_driving_tour)
-        self.workshop_vehicle = WorkshopVehicle(self)
         workshop_font = theme.load_font('fonts/SourceHanSansSC-Bold.otf')
         self.career_panel = CareerPanel(self.main_menu.content, workshop_font, self.workshop_vehicle,
                                         self.career_action, self.loader)
@@ -1322,8 +1333,6 @@ class CoastalDrive(ShowBase):
         self.driving_cards = DrivingCards(self.panel, self.ui_font, self.buttons)
         for index, button in enumerate(self.buttons):
             button.bind(DGG.ENTER, lambda event, i=index: self.select_panel_option(i))
-            button.bind(DGG.B1PRESS, lambda event: self.audio_cue("confirm"))
-        for button in self.main_menu.buttons:
             button.bind(DGG.B1PRESS, lambda event: self.audio_cue("confirm"))
 
     def fit_lines(self, value, width, scale, max_lines=None):
@@ -1815,6 +1824,7 @@ class CoastalDrive(ShowBase):
         panel_state = (phase, self.garage is not None, self.highway_menu, self.audio_settings_page, self.driving_mode_page)
         if panel_state == self._shown_phase:
             return
+        self.main_menu.hide_home()
         if self.career_active and phase in (Phase.RESULTS, Phase.PAUSED):
             self._shown_phase = panel_state
             self.panel.hide()
@@ -1860,6 +1870,7 @@ class CoastalDrive(ShowBase):
             self.main_menu.time_goal.setText(menu_goal(best))
             notice = self.appearance.notice or self.driving_mode_settings.notice or times.notice
             self.main_menu.notice.setText(self.fit_lines(notice, 1.0, 0.028))
+            self.main_menu.show_home(self.career_progress, self.workspace_vehicle)
             self.main_menu.root.show()
             return
         for button in self.buttons:
@@ -2504,6 +2515,7 @@ class CoastalDrive(ShowBase):
             self.scene.close()
             self.scene = None
         self.journey.root.destroy()
+        self.driving_cards.hide()
         self.workshop_vehicle.close()
         self.career_panel.destroy()
         self.workshop_garage.root.destroy()

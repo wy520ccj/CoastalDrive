@@ -1,0 +1,56 @@
+......F........                                                          [100%]
+================================== FAILURES ===================================
+______ test_settings_cards_adjust_save_return_without_retaining_widgets _______
+
+tmp_path = WindowsPath('C:/Users/15120/AppData/Local/Temp/pytest-of-15120/pytest-1018/test_settings_cards_adjust_sav0')
+
+    def test_settings_cards_adjust_save_return_without_retaining_widgets(tmp_path):
+        app = CoastalDrive(smoke=True, output=tmp_path)
+        app.taskMgr.remove('finish-smoke')
+        app.taskMgr.remove('drive-update')
+        try:
+            app.back_to_menu()
+            snapshot, world = app.session.current, app.session.simulation
+            widget_count = len(DirectGuiWidget.guiDict)
+            app.choose_audio_settings()
+            assert app.panel_option_count == 8
+            for minus, plus, name in ((0, 1, 'master_volume'), (2, 3, 'effects_volume'), (4, 5, 'music_volume')):
+                before = getattr(app.audio_settings, name)
+                app.buttons[minus]['command']()
+                assert getattr(app.audio_settings, name) == before-10
+                app.buttons[plus]['command']()
+                assert getattr(app.audio_settings, name) == before
+            music = app.audio_settings.music_volume
+            app.select_panel_option(4)
+            app.adjust_panel_option(-1)
+            assert app.audio_settings.music_volume == music-10
+            app.adjust_panel_option(1)
+            app.select_panel_option(6)
+            station = app.audio_settings.radio_station
+            app.adjust_panel_option(1)
+            restored = AudioSettingsStore(app.audio_settings.path)
+            assert restored.radio_station == station+1
+            assert restored.music_volume == music
+            app.buttons[7]['command']()
+            assert not app.audio_settings_page and not app.main_menu.root.isHidden()
+            # 菜单装饰随普通节点移除，借用的原按钮返回panel，不能留在旧content中。
+            app.choose_highway()
+            app.choose_sprint_routes()
+            app.handle_panel_key('escape')
+            app.handle_panel_key('escape')
+>           assert len(DirectGuiWidget.guiDict) == widget_count
+E           AssertionError: assert 207 == 206
+E            +  where 207 = len({'pg134': DirectFrame-pg133/road-result-diagram/DirectButton-pg134, 'pg135': DirectFrame-pg133/road-result-diagram/Dir...e-pg133/road-result-diagram/DirectButton-pg136, 'pg137': DirectFrame-pg133/road-result-diagram/DirectButton-pg137, ...})
+E            +    where {'pg134': DirectFrame-pg133/road-result-diagram/DirectButton-pg134, 'pg135': DirectFrame-pg133/road-result-diagram/Dir...e-pg133/road-result-diagram/DirectButton-pg136, 'pg137': DirectFrame-pg133/road-result-diagram/DirectButton-pg137, ...} = DirectGuiWidget.guiDict
+
+tests\test_driving_mode_ui.py:159: AssertionError
+---------------------------- Captured stderr call -----------------------------
+Known pipe types:
+  wglGraphicsPipe
+(all display modules loaded.)
+:display(warning): FrameBufferProperties available less than requested.
+  requested: depth_bits=1 color_bits=3 red_bits=1 green_bits=1 blue_bits=1 alpha_bits=1 back_buffers=1 force_hardware 
+  got: depth_bits=24 color_bits=24 red_bits=8 green_bits=8 blue_bits=8 alpha_bits=8 accum_bits=64 force_hardware 
+=========================== short test summary info ===========================
+FAILED tests/test_driving_mode_ui.py::test_settings_cards_adjust_save_return_without_retaining_widgets
+1 failed, 14 passed in 86.46s (0:01:26)
