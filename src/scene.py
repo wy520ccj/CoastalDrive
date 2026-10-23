@@ -690,7 +690,7 @@ class Scene:
             simulation = self.base.session.simulation
             curve = simulation.stream.curve
             global_y = state.player.position[1] + state.origin_y
-            distance = curve.distance_at_y(global_y) if curve else global_y
+            distance = curve.project((state.player.position[0], global_y))[0] if curve else global_y
             self.sync_segments(budget_ms=3, distance=distance)
             if self.ocean is not None:
                 self.ocean.setY(state.player.position[1])

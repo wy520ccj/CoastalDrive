@@ -181,7 +181,7 @@ class DrivingCards:
         self.select(app.panel_selection)
 
     def highway(self, app):
-        self.begin(app, '高速与驾驶课题', '选择自由驾驶或驾驶课题', dark=app.workshop_garage_return)
+        self.begin(app, '无限高速', '选择自由驾驶或驾驶课题', dark=app.workshop_garage_return)
         for index, x in enumerate((-.79, .79)):
             self.button(index, x, .40, 1.48, .12, compact=True)
         for index, x, kind, description in (

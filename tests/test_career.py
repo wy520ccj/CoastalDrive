@@ -84,6 +84,28 @@ def test_recommendation_stays_available_if_further_chapters_locked(tmp_path):
     assert store.recommended().chapter == 0
 
 
+def test_new_course_keeps_earned_unlocks_and_legacy_time_but_records_new_medals(tmp_path):
+    store = CareerProgress(tmp_path/'career.json')
+    for event in EVENT_BY_ID.values():
+        store.record(finished(event.id))
+    legacy = {'stars': 3, 'seconds': 23.}
+    records = dict(store.records, **{'coast-sprint': legacy})
+    assert store.save(records, store.owned, store.credits)
+    before, credits = store.path.read_bytes(), store.credits
+    event = EVENT_BY_ID['coast-sprint']
+    assert store.course_record(event) is None and store.stars == 18
+    assert store.path.read_bytes() == before
+    award = store.record(replace(finished(event.id, 1), elapsed=80.))
+    assert award['credits'] == 0 and store.credits == credits and store.stars == 18
+    assert store.records[event.id]['previous_course'] == legacy
+    assert store.course_record(event) == {'stars': 1, 'seconds': 80.}
+    store.record(replace(finished(event.id, 3), elapsed=54.))
+    assert store.course_record(event) == {'stars': 3, 'seconds': 54.}
+    restored = CareerProgress(store.path)
+    assert restored.course_record(event) == store.course_record(event)
+    assert restored.records[event.id]['previous_course'] == legacy
+
+
 def test_first_drive_has_no_entry_speed_failure_and_parking_requires_rest():
     config = vehicle_design('reference-rwd').config
     run = CareerRun('first-drive', 8., config)

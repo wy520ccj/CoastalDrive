@@ -5,7 +5,7 @@ import gzip
 import json
 import math
 import sys
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +15,7 @@ from slalom_driver import apply_keys
 from sprint_route_probe import SprintDriver
 
 from career import EVENTS
+from career_courses import COURSES
 from career_run import CareerRun
 from driver_assist import steering_limit
 from race import BestTimes, GameMode
@@ -24,9 +25,11 @@ from vehicle_designs import vehicle_design
 
 
 class CareerDriver:
-    def __init__(self, session, event):
+    def __init__(self, session, event, pace=70., *, full_throttle=False):
         self.session, self.event = session, event
-        self.driver = SprintDriver(session.simulation.road, session.vehicle_config, 70.)
+        self.pace = pace/3.6
+        self.full_throttle = full_throttle
+        self.driver = SprintDriver(session.simulation.road, session.vehicle_config, pace)
 
     def sample(self):
         session, event = self.session, self.event
@@ -55,10 +58,20 @@ class CareerDriver:
             speed_error = 45./3.6-car.speed
             return Control(steering=0. if abs(steer) < .08 else math.copysign(1., steer),
                            throttle=float(speed_error > -.25), brake=float(speed_error < -1.))
-        return self.driver.sample(state, 1/120)
+        if event.shape in COURSES and not self.full_throttle:
+            progress = session.highway_progress(state)
+            target_speed = self.pace
+            for ahead in range(0, 151, 5):
+                a, b = (session.simulation.road.sample_lateral(progress+ahead+offset, 0.) for offset in (-2., 2.))
+                curvature = abs(math.radians((b.heading-a.heading+180)%360-180))/4
+                if curvature > 1e-6:
+                    target_speed = min(target_speed, math.sqrt(3./curvature+2*3.*ahead))
+            self.driver.speed = target_speed
+        control = self.driver.sample(state, 1/120)
+        return replace(control, throttle=1., brake=0.) if self.full_throttle else control
 
 
-def check(output, event_ids, design_id='reference-rwd'):
+def check(output, event_ids, design_id='reference-rwd', pace=70., *, full_throttle=False):
     output.mkdir(parents=True, exist_ok=False)
     cases = []
     for event in EVENTS:
@@ -69,7 +82,7 @@ def check(output, event_ids, design_id='reference-rwd'):
         try:
             session.start(mode=GameMode.CAREER, track='endless', career_event_id=event.id,
                           countdown=False, settle_initial=True)
-            driver = CareerDriver(session, event)
+            driver = CareerDriver(session, event, pace, full_throttle=full_throttle)
             initial = session.current.tick
             check_run = CareerRun(event.id, session.highway.snapshot.career.start_progress, session.vehicle_config)
             rows = []
@@ -95,7 +108,8 @@ def check(output, event_ids, design_id='reference-rwd'):
             print(event.id, result.stars, round(result.elapsed, 3), result.reason, flush=True)
         finally:
             session.close()
-    summary = {'passed': all(case['result']['succeeded'] for case in cases), 'design_id': design_id, 'cases': cases,
+    summary = {'passed': all(case['result']['succeeded'] for case in cases), 'design_id': design_id, 'pace_kph': pace,
+               'full_throttle': full_throttle, 'cases': cases,
                'scope': '静止起步/正常二值输入/唯一物理世界，每拍独立复核新规则；非人工试玩'}
     (output/'summary.json').write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding='utf-8')
     return summary['passed']
@@ -106,5 +120,8 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--events', nargs='*')
     parser.add_argument('--design', default='reference-rwd')
+    parser.add_argument('--pace', type=float, default=70.)
+    parser.add_argument('--full-throttle', action='store_true')
     args = parser.parse_args()
-    raise SystemExit(0 if check(args.output.resolve(), args.events, args.design) else 1)
+    raise SystemExit(0 if check(args.output.resolve(), args.events, args.design, args.pace,
+                               full_throttle=args.full_throttle) else 1)

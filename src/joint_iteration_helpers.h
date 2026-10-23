@@ -55,6 +55,42 @@ static int joint_shared_values(SharedMap *data,double state[11],const double ang
                     accepted=1; break;
                 }
             }
+            /* 原线搜索耗尽后，最后六轮比较Newton步与相邻表示；不是放宽停止门槛。 */
+            if (!accepted && iteration>=24 && error<1e-10) {
+                int original_branch=branch_index,original_port=port_index;
+                int best_branch=original_branch,best_port=original_port;
+                double best_merit=shared_rounding_merit(data,state,end),best_state[11];
+                for (int attempt=0;attempt<8;++attempt) {
+                    double candidate[11],target[11],step=ldexp(1.,-attempt);
+                    for (int a=0;a<variables;++a) candidate[a]=state[a]+step*delta[a];
+                    int candidate_branch=original_branch,candidate_port=original_port;
+                    if (!shared_map_values(data,candidate,angular,normal,load,support,candidate_branch,
+                        target,road,active,port_values,&candidate_branch,&candidate_port)) return 0;
+                    double merit=shared_rounding_merit(data,candidate,target);
+                    if (merit<best_merit) {
+                        for (int a=0;a<variables;++a) best_state[a]=candidate[a];
+                        best_branch=candidate_branch;best_port=candidate_port;best_merit=merit;accepted=1;
+                    }
+                }
+                for (int a=0;a<variables;++a) for (int side=0;side<2;++side) {
+                    double candidate[11],target[11];
+                    for (int j=0;j<variables;++j) candidate[j]=state[j];
+                    candidate[a]=nextafter(candidate[a],side ? INFINITY : -INFINITY);
+                    int candidate_branch=original_branch,candidate_port=original_port;
+                    if (!shared_map_values(data,candidate,angular,normal,load,support,candidate_branch,
+                        target,road,active,port_values,&candidate_branch,&candidate_port)) return 0;
+                    double merit=shared_rounding_merit(data,candidate,target);
+                    if (merit<best_merit) {
+                        for (int j=0;j<variables;++j) best_state[j]=candidate[j];
+                        best_branch=candidate_branch;best_port=candidate_port;best_merit=merit;accepted=1;
+                    }
+                }
+                if (accepted) {
+                    for (int a=0;a<variables;++a) state[a]=best_state[a];
+                    branch_index=best_branch;port_index=best_port;
+                    if (data->bias) shared_active_limits(data,state,active);
+                }
+            }
             if (!accepted) {
                 for (int a=0; a<variables; ++a) {
                     double pair[2]={state[a],end[a]};

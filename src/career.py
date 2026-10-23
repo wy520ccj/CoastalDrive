@@ -5,6 +5,7 @@ import math
 from dataclasses import dataclass
 from pathlib import Path
 
+from career_courses import COURSES
 from career_garage import GARAGE_CARS
 
 
@@ -44,12 +45,12 @@ EVENTS = (
     CareerEvent('slalom', '穿过海风', 0, 'slalom', 'straight', 0, 420., 80., 2, 120, 0., 36.,
                 '穿过至少3道宽门', '松油门控制车速，提前看下一道门；漏门可以继续。',
                 ((140., -3.2), (210., 3.2), (280., -3.2), (350., 3.2), (420., 0.))),
-    CareerEvent('coast-sprint', '沿海冲刺', 1, 'sprint', 'curve', 17, 800., 120., 5, 150, 65., 48.,
-                '完成800米连续弯道', '弯前松油，出弯再加速。'),
-    CareerEvent('ridge-run', '山脊穿行', 1, 'sprint', 'hills', 0, 1000., 150., 5, 150, 85., 64.,
-                '跑完1公里起伏道路', '坡顶看远处，落坡后留出转向余量。'),
-    CareerEvent('coastal-cup', '海岸杯决赛', 2, 'sprint', 'hills', 17, 1500., 180., 9, 200, 110., 90.,
-                '完成1.5公里海岸杯赛段', '把加速、刹车和连续转向串起来。'),
+    CareerEvent('coast-sprint', '沿海冲刺', 1, 'sprint', 'coast-club', 17, 900., 120., 5, 150, 65., 55.,
+                '完成900米沿海组合弯', '长右弯后接紧凑左右弯，入弯前刹车，出弯再加速。'),
+    CareerEvent('ridge-run', '山脊穿行', 1, 'sprint', 'ridge-club', 0, 1000., 150., 5, 150, 75., 60.,
+                '翻越山脊，完成两处回头弯', '连续上坡后是下坡回头弯；坡顶先收油，入弯前刹车。'),
+    CareerEvent('coastal-cup', '海岸杯决赛', 2, 'sprint', 'coast-final', 17, 1800., 180., 9, 200, 120., 103.,
+                '完成组合弯与回头弯的1.8公里决赛', '沿海组合弯、上坡和双回头弯连跑；按弯势安排加减速。'),
 )
 EVENT_BY_ID = {event.id: event for event in EVENTS}
 
@@ -95,6 +96,9 @@ class CareerProgress:
                         or type(record['seconds']) not in (int, float) or not math.isfinite(record['seconds'])
                         or not 0 < record['seconds'] <= EVENT_BY_ID[key].limit):
                     raise ValueError('生涯成绩无效')
+                if ('course' in record and (not isinstance(record['course'], str)
+                        or type(record['course_stars']) is not int or not 1 <= record['course_stars'] <= 3)):
+                    raise ValueError('赛道成绩版本无效')
             self.records, self.owned, self.credits = data['records'], set(data['owned']), data['credits']
         except FileNotFoundError:
             pass
@@ -108,8 +112,15 @@ class CareerProgress:
     def available(self, event):
         return self.stars >= event.unlock
 
+    def course_record(self, event):
+        record = self.records.get(event.id)
+        if record is None or (event.shape in COURSES and record.get('course') != event.shape):
+            return None
+        return {'stars': record['course_stars'] if event.shape in COURSES else record['stars'],
+                'seconds': record['seconds']}
+
     def recommended(self):
-        return next((event for event in EVENTS if self.available(event) and event.id not in self.records),
+        return next((event for event in EVENTS if self.available(event) and self.course_record(event) is None),
                     min((event for event in EVENTS if self.available(event)),
                         key=lambda event: self.records.get(event.id, {'stars': 0})['stars']))
 
@@ -137,8 +148,15 @@ class CareerProgress:
         delta = max(0, result.stars-(old['stars'] if old is not None else 0))
         reward = delta*event.reward
         records = dict(self.records)
-        if old is None or (result.stars, -result.elapsed) > (old['stars'], -old['seconds']):
-            records[event.id] = {'stars': result.stars, 'seconds': result.elapsed}
+        current = self.course_record(event)
+        if current is None or (result.stars, -result.elapsed) > (current['stars'], -current['seconds']):
+            updated = dict(old) if old is not None else {}
+            if event.shape in COURSES:
+                if current is None and old is not None:
+                    updated['previous_course'] = dict(old)
+                updated.update(course=event.shape, course_stars=result.stars)
+            updated.update(stars=max(result.stars, old['stars'] if old is not None else 0), seconds=result.elapsed)
+            records[event.id] = updated
         before = self.stars
         saved = self.save(records, set(self.owned), self.credits+reward)
         unlocked = tuple(item.name for item in EVENTS if before < item.unlock <= self.stars)

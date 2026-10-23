@@ -116,6 +116,7 @@ class Simulation:
         self._next_body_source_id = 1
         self._impact_events = ()
         self._contact_states = ()
+        self._collision_refinement_ticks = 0
         self._impact_diagnostic = None
         self._impact_scenario = None
         self._diagnostic_contact_keys = set()
@@ -214,6 +215,7 @@ class Simulation:
         self._next_body_source_id = 1
         self._impact_events = ()
         self._contact_states = ()
+        self._collision_refinement_ticks = 0
         self._diagnostic_contact_keys.clear()
         if old_epoch and self._impact_diagnostic is not None:
             self._impact_diagnostic.write(json.dumps({
@@ -770,6 +772,24 @@ class Simulation:
         self.player = None
         self._chassis = self._vehicle = None
 
+    def _approaching_body_contact(self):
+        """对车身边缘做100ms前视；射线只决定积分细分，不施力或替代真实碰撞。"""
+        body = self._chassis
+        velocity = body.getLinearVelocity()
+        if velocity.lengthSquared() < 4:
+            return False
+        pose = body.getTransform().getMat()
+        center = Vec3(*body_center(self.config))
+        # 低护栏常低于高车身中心，前视取车身下部，覆盖实际可碰撞的护栏高度。
+        center.z -= self.config.collision_half_height*.65
+        origin = pose.xformPoint(center)
+        half_x, half_y = self.config.collision_half_width, self.config.collision_half_length
+        for x, y in ((-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)):
+            target = pose.xformPoint(center+Vec3(x*half_x, y*half_y, 0))+velocity*.1
+            if any(hit.getNode() != body for hit in self._world.rayTestAll(origin, target, BitMask32.bit(1)).getHits()):
+                return True
+        return False
+
     def step(self, control: Control | VehicleCommand, dt=FIXED_DT, *, traffic_controls=None):
         if self.closed:
             raise RuntimeError("Simulation is closed")
@@ -802,7 +822,15 @@ class Simulation:
                                     and self._world.contactTestPair(self._chassis, body).getNumContacts() > 0)
             self._count_player_collisions(manifolds)
 
-        advance_world(self._world, cars, substeps=physical_substeps(self.config), observe=observe,
+        # 车身撞击带来速度/姿态突变，单个8.33ms机械步会使接触活动集交替发散。
+        # 真实碰撞后短时细分同一个120Hz拍；不改变输入采样、碰撞、物理方程或验收门槛。
+        if self._impact_events or (not self._collision_refinement_ticks and self._approaching_body_contact()):
+            self._collision_refinement_ticks = 120
+        substeps = physical_substeps(self.config)
+        if self._collision_refinement_ticks and self.player.coupled_suspension and self.config.finite_drivetrain:
+            substeps = max(4, substeps)
+            self._collision_refinement_ticks -= 1
+        advance_world(self._world, cars, substeps=substeps, observe=observe,
                       static_cache=self._static_support_cache, packet_cache=self._static_support_packet,
                       workers=self._physics_workers, material=(self.track,self.road.curve,self.origin_y),query_lock=self._query_lock)
         self.collision_count += len(traffic_contacts)

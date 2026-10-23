@@ -2,9 +2,10 @@
 
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectFrame
-from panda3d.core import TextNode, TextureStage, TransparencyAttrib
+from panda3d.core import LineSegs, TextNode, TextureStage, TransparencyAttrib
 
 from career import CHAPTERS, EVENTS, PARTS
+from career_courses import COURSES, CareerCourse
 from career_garage import GARAGE_CARS, garage_cars
 from ui import theme
 from ui.garage_layout import GRAY, INK, ORANGE, PART_IMAGES, WHITE
@@ -139,7 +140,8 @@ def board(panel, progress):
             label('推荐', x+card_w-62, y+34, 17, WHITE, bold=True)
         label(event.name, x+17, y+181, 28 if width > 1400 else 25, WHITE, bold=True)
         label(f'{event.distance:g} 米', x+17, y+215, 21, WHITE)
-        stars = progress.records.get(event.id, {'stars': 0})['stars']
+        record = progress.course_record(event)
+        stars = 0 if record is None else record['stars']
         label('★'*stars+'☆'*(3-stars) if unlocked else f'还需{event.unlock-progress.stars}星',
               x+card_w-16, y+215, 22, GOLD if unlocked else WHITE, right=True)
     if progress.notice:
@@ -157,6 +159,8 @@ def brief(panel, progress, event):
     right_w = span*.33
     photo_w, right = span-right_w-gap, width-left-right_w
     image('career/'+event.id+'.png', left, 122, photo_w, 550, crop=True)
+    if event.shape in COURSES:
+        course_map(panel, event, fill, label, left, 122, photo_w, 406)
     fill(left, 528, photo_w, 144, DARK, 0)
     label(f'{event.chapter+1:02}  /  {CHAPTERS[event.chapter]}', left+30, 573, 24, ORANGE, bold=True)
     label(event.name, left+30, 639, 52, WHITE, bold=True)
@@ -176,7 +180,8 @@ def brief(panel, progress, event):
     label('每提高1星', right+30, 646, 21, GRAY)
     label(f'+{event.reward} 积分', right+right_w-28, 695, 34, ORANGE, bold=True, right=True)
     fill(right+28, 716, right_w-56, 1, LINE, 0)
-    stars = progress.records.get(event.id, {'stars': 0})['stars']
+    record = progress.course_record(event)
+    stars = 0 if record is None else record['stars']
     label('最佳成绩', right+30, 751, 20, GRAY)
     label('★'*stars+'☆'*(3-stars), right+right_w-28, 751, 27, GOLD, right=True)
     label('碰撞、复位或驶离赛道\n会结束本场。', right+30, 793, 18, GRAY, wrap=right_w-60)
@@ -186,6 +191,40 @@ def brief(panel, progress, event):
     button('开始比赛' if available else f'需要{event.unlock}星', width-left-220, 877, 220, 52,
            'start', event.id, role='primary', primary=True, enabled=available)
     panel.select(panel.primary if available else len(panel.buttons)-2)
+
+
+def course_map(panel, event, fill, label, x, y, width, height):
+    """从实际路线画俯视和高程，赛前就能辨认弯型，不使用另一条路的照片。"""
+    course = CareerCourse(event.shape, event.seed)
+    points = course.points
+    fill(x, y, width, height, (.035, .08, .12, .97), 0)
+    label('赛道路线', x+24, y+42, 24, WHITE, bold=True)
+    low_x, high_x = min(p.x for p in points), max(p.x for p in points)
+    low_y, high_y = min(p.y for p in points), max(p.y for p in points)
+    scale = min((width-110)/max(1, high_x-low_x), (height-150)/max(1, high_y-low_y))
+    cx, cy = x+width/2, y+height/2-5
+    canvas_width, unit = 941*panel.vehicle_view.base.getAspectRatio(), 2/941
+    line = LineSegs('actual-career-course')
+    line.setThickness(4)
+    line.setColor(.85, .93, 1, 1)
+    projected = []
+    for p in points[::3]:
+        px, py = cx+(p.x-(low_x+high_x)/2)*scale, cy-(p.y-(low_y+high_y)/2)*scale
+        projected.append(((px-canvas_width/2)*unit, 0, 1-py*unit))
+    line.moveTo(*projected[0])
+    for position in projected[1:]:
+        line.drawTo(*position)
+    panel.content.attachNewNode(line.create())
+    low_z, high_z = min(p.z for p in points), max(p.z for p in points)
+    elevation = LineSegs('actual-career-elevation')
+    elevation.setThickness(2)
+    elevation.setColor(1, .45, .18, 1)
+    for index in range(0, len(points), 5):
+        px, py = x+30+(width-60)*index/course.length, y+height-27-(points[index].z-low_z)*.8
+        position = ((px-canvas_width/2)*unit, 0, 1-py*unit)
+        elevation.moveTo(*position) if index == 0 else elevation.drawTo(*position)
+    panel.content.attachNewNode(elevation.create())
+    label(f'{event.distance:g}米  /  高差{high_z-low_z:.0f}米', x+24, y+height-53, 19, WHITE)
 
 
 def result(panel, progress, race_result, award):

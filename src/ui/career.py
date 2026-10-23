@@ -42,9 +42,16 @@ class CareerPanel:
         self.photos = {event.id: loader.loadTexture(theme.asset_filename('career/'+event.id+'.png')) for event in EVENTS}
         self.page, self.selected, self.primary, self.back = '', 0, -1, 'board'
         self.event_id = None
+        self.setup_group = 'tires'
+        self.setup_vehicle = None
+        self.setup_draft, self.setup_entries = {}, {}
         self.root.hide()
 
     def clear(self, page, progress):
+        self.capture_setup()
+        for entry in self.setup_entries.values():
+            entry.destroy()
+        self.setup_entries.clear()
         self.vehicle_view.hide()
         for widget in (*self.labels, *self.buttons, *self.frames):
             widget.destroy()
@@ -154,6 +161,11 @@ class CareerPanel:
                 edge.setColor((1, .31, .12, 1) if i == self.selected else (1, 1, 1, 0))
 
     def key(self, key):
+        if any(entry['focus'] for entry in self.setup_entries.values()):
+            if key in ('escape', 'enter'):
+                for entry in self.setup_entries.values():
+                    entry['focus'] = 0
+            return
         directions = {'arrow_left': (-1, 0), 'a': (-1, 0), 'arrow_right': (1, 0), 'd': (1, 0),
                       'arrow_up': (0, 1), 'w': (0, 1), 'arrow_down': (0, -1), 's': (0, -1)}
         if key in directions:
@@ -181,8 +193,21 @@ class CareerPanel:
             self.action(self.back, None)
 
     def hide(self):
+        for entry in self.setup_entries.values():
+            entry['focus'] = 0
         self.root.hide()
         self.vehicle_view.hide()
+
+    def capture_setup(self):
+        for key, entry in self.setup_entries.items():
+            self.setup_draft[key] = entry.get()
+
+    def setup_changes(self):
+        from garage_setup import values
+
+        self.capture_setup()
+        original = values(self.setup_vehicle.config)
+        return {key: raw for key, raw in self.setup_draft.items() if raw != f'{original[key]:.8g}'}
 
     def resize(self, aspect):
         if self.root.isHidden():
@@ -205,6 +230,8 @@ class CareerPanel:
                     break
 
     def destroy(self):
+        for entry in self.setup_entries.values():
+            entry.destroy()
         for widget in (*self.labels, *self.buttons, *self.frames):
             widget.destroy()
         self.root.destroy()

@@ -225,6 +225,7 @@ class CoastalDrive(ShowBase):
         self.lab_return_sprint = None
         self.lab_return_overtake = None
         self.lab_journey_request = None
+        self.garage_setup_lab_request = False
         self.workshop_garage_return = False
         self.workshop_schemes_request = False
         self.workshop_lab_return = False
@@ -478,6 +479,18 @@ class CoastalDrive(ShowBase):
         elif action == 'garage-topic':
             self.career_panel.garage_topic = value
             self.open_career_garage(reset=False)
+        elif action == 'setup-group':
+            self.career_panel.setup_group = value
+            self.open_career_garage(reset=False)
+        elif action == 'setup-reset':
+            self.career_panel.setup_vehicle = None
+            self.open_career_garage(reset=False)
+        elif action in ('setup-save', 'setup-lab'):
+            if self.save_garage_setup() and action == 'setup-lab':
+                self.career_active = False
+                self.career_panel.hide()
+                self.garage_setup_lab_request = True
+                self.open_vehicle_lab()
         elif action == 'garage-redraw':
             self.open_career_garage(reset=False)
         elif action == 'garage-confirm':
@@ -553,6 +566,21 @@ class CoastalDrive(ShowBase):
             self.career_panel.show_result(self.career_progress, self.session.highway.snapshot.career, self.career_award)
         elif action in ('part', 'restore'):
             self.install_career_part(value, restore=action == 'restore')
+
+    def save_garage_setup(self):
+        from garage_setup import install
+
+        current = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
+        try:
+            vehicle = install(current, self.career_panel.setup_changes(), self.workspace_path)
+        except (OSError, ValueError, TypeError, KeyError) as error:
+            self.open_career_garage('调校未保存：'+str(error), reset=False)
+            return False
+        self.workspace_vehicle = vehicle
+        self.session.set_vehicle_config(vehicle.config)
+        self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
+        self.open_career_garage('调校已保存；赛事与工坊使用同一辆车。', reset=False)
+        return True
 
     def install_career_part(self, part_id, *, restore=False):
         if self.session.phase != Phase.MENU:
@@ -780,6 +808,9 @@ class CoastalDrive(ShowBase):
         if self.road_retest_request is not None:
             self.lab.road_retest.prepare(self.road_retest_request)
             self.road_retest_request = None
+        if self.garage_setup_lab_request:
+            self.lab.stage_driving_vehicle()
+            self.garage_setup_lab_request = False
         yield 3, "工程参数与试验记录已恢复"
         self.lab.root.prepareScene(self.win.getGsg())
         self.render.prepareScene(self.win.getGsg())
@@ -1217,7 +1248,7 @@ class CoastalDrive(ShowBase):
             self.open_career, self.open_career_collection, self.choose_audio_settings, self.userExit,
         ), vehicle_view=self.workshop_vehicle, confirm_action=lambda: self.audio_cue('confirm'),
             driving_mode_action=self.choose_driving_mode, lab_action=self.open_vehicle_lab,
-            journey_action=None)
+            highway_action=self.choose_highway)
         self.journey = WorkshopJourney(self.main_menu.content, self.ui_font, self.main_menu.textures,
                                        self.continue_workshop_project, self.open_driving_journey,
                                        on_back=self.back_from_workshop_journey)

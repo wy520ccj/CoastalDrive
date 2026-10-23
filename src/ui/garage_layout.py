@@ -1,11 +1,13 @@
 """车库三页的固定构图；坐标直接对应garage-v2设计图。"""
 
 from direct.gui import DirectGuiGlobals as DGG
-from direct.gui.DirectGui import DirectFrame
+from direct.gui.DirectGui import DirectEntry, DirectFrame
 from panda3d.core import TextNode, TextureStage, TransparencyAttrib
 
 from career import EVENT_BY_ID, PARTS
 from career_tuning import is_installed, upgraded_config
+from garage_setup import FIELDS, GROUPS, HELP
+from garage_setup import values as setup_values
 from skins import SKINS
 from ui import theme
 from ui.lab_widgets import rounded_panel
@@ -120,9 +122,9 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
     brand['font'] = panel.garage_display_font
     if aspect > 1.6:
         label('│  海岸车库', width*.185, 49, 20, WHITE)
-    nav_width = 145 if aspect > 1.5 else 130
-    for i, (key, title) in enumerate((('cars', '我的车辆'), ('upgrade', '升级改装'), ('paint', '车身颜色'))):
-        x = width*(.40+i*.098)-nav_width/2
+    nav_width = 138 if aspect > 1.5 else 112
+    for i, (key, title) in enumerate((('cars', '我的车辆'), ('upgrade', '升级改装'), ('paint', '车身颜色'), ('setup', '手动调校'))):
+        x = width*(.36+i*.098)-nav_width/2
         button(title, x, 12, nav_width, 50, 'garage-tab', key, role='tab-active' if key == tab else 'tab')
         if key == tab:
             fill(x, 59, nav_width, 4, ORANGE, 0)
@@ -133,16 +135,50 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
         label(f'★ {progress.stars} / 18 星', width-35, 30, 18, WHITE, right=True)
         label(f'{progress.credits} 积分', width-35, 58, 18, WHITE, right=True)
     fill(left, top, wide, 706, (.98, .98, .99, .94))
-    titles = {'cars': '我的车辆', 'upgrade': '升级改装', 'paint': '车身颜色'}
+    titles = {'cars': '我的车辆', 'upgrade': '升级改装', 'paint': '车身颜色', 'setup': '手动调校'}
     label(titles[tab], left+inset, 189, 43, bold=True)
     car = next(item for item in cars if item.design_id == preview.design_id)
     config = preview.config
     power = max(rpm*torque/9549.3 for rpm, torque in config.torque_curve)
-    fill(width-195, 126, 2, 62, (.98, .98, .98, .95), 0)
-    label(car.name, width-55, 150, 25, WHITE, True, right=True)
+    if tab != 'setup':
+        fill(width-195, 126, 2, 62, (.98, .98, .98, .95), 0)
+        label(car.name, width-55, 150, 25, WHITE, True, right=True)
     tuning = '项目调校 · ' if preview.design_id in ('game-tuned', 'coastal-hatch', 'coastal-roadster', 'club-coupe', 'subaru-wrx-sti', 'porsche-930') else ''
-    label(f'{tuning}{power:.0f} kW  /  {config.mass:.0f} kg', width-55, 183, 17, WHITE, right=True)
-    if tab == 'upgrade':
+    if tab != 'setup':
+        label(f'{tuning}{power:.0f} kW  /  {config.mass:.0f} kg', width-55, 183, 17, WHITE, right=True)
+    if tab == 'setup':
+        panel.vehicle_view.hide()
+        if panel.setup_vehicle != vehicle:
+            panel.setup_vehicle = vehicle
+            panel.setup_draft = {key: f'{value:.8g}' for key, value in setup_values(vehicle.config).items()}
+        label('调校当前驾驶的车辆', left+inset, 226, 20, GRAY)
+        for index, (group, title) in enumerate(GROUPS.items()):
+            button(title, left+inset, 254+index*62, inner, 50, 'setup-group', group,
+                   role='category-active' if panel.setup_group == group else 'category')
+        label(HELP[panel.setup_group], left+inset, 610, 21, GRAY, wrap=inner)
+        button('应用并保存', left+inset, 711, inner, 55, 'setup-save', role='primary', primary=True)
+        button('撤销未应用修改', left+inset, 783, inner, 34, 'setup-reset', role='quiet')
+        right, right_w = view_left, view_right-view_left
+        fill(right, top, right_w, 706, (.98, .98, .99, .97))
+        label(GROUPS[panel.setup_group]+'调校', right+26, 184, 34, INK, True)
+        label('输入数值，保存后可去工坊对比试验。', right+26, 225, 20, GRAY)
+        label('当前', right+right_w*.47, 280, 19, GRAY)
+        label('设定', right+right_w*.70, 280, 19, ORANGE)
+        current = setup_values(vehicle.config)
+        for index, field in enumerate(FIELDS[panel.setup_group]):
+            y = 330+index*69
+            label(field.title, right+26, y, 23, INK, True)
+            label(field.unit, right+26, y+25, 16, GRAY)
+            label(f'{current[field.key]:.6g}', right+right_w*.47, y+8, 24)
+            px, pz = point(right+right_w*.70, y+8)
+            entry = DirectEntry(parent=panel.content, initialText=panel.setup_draft[field.key],
+                text_font=panel.garage_font, text_fg=INK, text_scale=23*unit,
+                frameColor=(.86, .90, .94, 1), frameSize=(-.015, right_w*.24*unit, -.018, .055),
+                pos=(px, 0, pz), width=8, numLines=1, focus=0, relief=DGG.FLAT)
+            panel.setup_entries[field.key] = entry
+            label(f'{field.low:g}–{field.high:g}', right+right_w*.70, y+34, 15, GRAY)
+        button('保存并进入工坊', right+26, 732, right_w-52, 55, 'setup-lab', role='secondary')
+    elif tab == 'upgrade':
         label(car.name+' · '+car.category.split('/')[-1].strip(), left+inset, 223, 20, GRAY)
         categories = (('tires', '轮胎', 'wheel'), ('brakes', '制动', 'disc'),
                       ('suspension', '悬架', 'car-suspension'), ('power', '动力', 'engine'))
@@ -247,14 +283,16 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
     # 通知只占面板与底栏之间的一条状态位，不覆盖车辆。
     message = notice or progress.notice
     if message:
-        fill(left, 832, wide, 26, (.04, .055, .075, .90), 2)
-        line = panel.vehicle_view.base.fit_lines(message, (inner-16)*unit, 16*unit, max_lines=1)
+        message_width = width-2*left if tab == 'setup' else wide
+        fill(left, 832, message_width, 26, (.04, .055, .075, .90), 2)
+        line = panel.vehicle_view.base.fit_lines(message, (message_width-48)*unit, 16*unit, max_lines=1)
         label(line+('…' if line != message else ''), left+inset, 850, 16, WHITE)
     button('Enter   确认', width*.027, 880, 145, 42, 'garage-confirm', role='footer')
     button('Esc   返回', width*.125, 880, 135, 42, 'garage-back', role='footer')
-    button('←', width*.43, 880, 46, 42, 'garage-orbit', -25, role='footer')
-    button('→', width*.475, 880, 46, 42, 'garage-orbit', 25, role='footer')
-    label('查看车辆', width*.52, 910, 20, WHITE)
+    if tab != 'setup':
+        button('←', width*.43, 880, 46, 42, 'garage-orbit', -25, role='footer')
+        button('→', width*.475, 880, 46, 42, 'garage-orbit', 25, role='footer')
+        label('查看车辆', width*.52, 910, 20, WHITE)
     back_title = '返回首页' if panel.vehicle_view.base.career_garage_return == 'home' else '返回赛事'
     button(back_title, width-170, 880, 140, 42, 'garage-back', role='footer')
     panel.select(panel.primary)

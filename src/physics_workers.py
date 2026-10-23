@@ -14,6 +14,7 @@ from multiprocessing.shared_memory import SharedMemory
 
 from wheel_contact_kernels import cached_surface_entry, prepared_support_candidates
 
+from career_courses import CareerCourse
 from coastal_map import on_road
 from convex_queries import wheel_hull
 from highway_curve import HighwayCurve
@@ -178,9 +179,15 @@ def _load_geometry(reference):
     track,curve_values,origin = material
     curve = None
     if curve_values is not None:
-        curve = HighwayCurve.__new__(HighwayCurve)
-        curve.seed,curve.height,curve.base_height,curve.y_table,curve.advance = curve_values
-        curve.sample = lru_cache(maxsize=8192)(curve.sample)
+        if len(curve_values) == 2:
+            kind, values = curve_values
+            if kind != 'career':
+                raise ValueError('未知道路几何类型：'+str(kind))
+            curve = CareerCourse(*values)
+        else:
+            curve = HighwayCurve.__new__(HighwayCurve)
+            curve.seed,curve.height,curve.base_height,curve.y_table,curve.advance = curve_values
+            curve.sample = lru_cache(maxsize=8192)(curve.sample)
     _worker_material = track,curve,origin
     _worker_version = reference
 
@@ -475,7 +482,8 @@ class PhysicsWorkers:
                 del self.mesh_payloads[key]
         meshes = tuple((identifier,payload) for _mesh,identifier,payload in self.mesh_payloads.values())
         track,curve,origin = material
-        curve_values = (curve.seed,curve.height,curve.base_height,tuple(curve.y_table),curve.advance) if curve is not None else None
+        curve_values = (('career', (curve.course_id, curve.seed)) if isinstance(curve, CareerCourse) else
+                        (curve.seed,curve.height,curve.base_height,tuple(curve.y_table),curve.advance)) if curve is not None else None
         hulls = tuple((index,shapes.hulls[body]) for index,(body,_supported,_parts) in enumerate(shapes) if body in shapes.hulls)
         payload = pickle.dumps((groups,(track,curve_values,origin),hulls,meshes), protocol=pickle.HIGHEST_PROTOCOL)
         self.memory = SharedMemory(create=True, size=len(payload))

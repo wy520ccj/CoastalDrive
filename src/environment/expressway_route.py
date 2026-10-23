@@ -5,6 +5,7 @@ import math
 from panda3d.core import GeomVertexReader, GeomVertexWriter, LODNode, Vec3, Vec4
 
 import curve_mesh
+from career_courses import CareerCourse
 from environment.expressway import WHITE, smooth
 from environment.expressway_signs import SIGN_MODELS, kilometer_face
 from environment.expressway_vegetation import (
@@ -307,6 +308,23 @@ def landscape_steps(root, index, seed, curve, kit, detail_parent):
 
     start = index * 200
     origin = Vec3(*anchor(curve, index))
+    if isinstance(curve, CareerCourse):
+        from environment.surface_mesh import surface_mesh
+
+        vertices, faces = curve_mesh.surfaces(curve,index)['ground']
+        normals = []
+        for a, b, c in faces:
+            normal = (Vec3(*vertices[b])-Vec3(*vertices[a])).cross(Vec3(*vertices[c])-Vec3(*vertices[a])).normalized()
+            normals.extend((normal,normal,normal))
+        uv = [(p[0]+origin.x, p[1]+origin.y) for p in vertices]
+        node = surface_mesh('course-landscape', vertices, faces, normals, [(.24,.34,.08,0)]*len(vertices), uv)
+        node.setTexture(kit['ground'])
+        node.setShader(kit['route-terrain-shader'], 1)
+        node.setShaderInput('expressway_rock', kit['rock'])
+        node.setMaterial(kit['surface-material'])
+        node.reparentTo(root)
+        yield 'course-terrain'
+        return
     columns = TERRAIN_COLUMNS
     beds = understory(index,seed)
     for side in (-1, 1):

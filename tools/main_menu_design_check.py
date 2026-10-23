@@ -50,7 +50,7 @@ def check(output, size, only=()):
         count = app.graphicsEngine.getNumWindows()
         assert menu.selected == 2 and view.frame.getParent() == menu.home
         # 左列所有控件与车辆展示区互不覆盖，文字必须落在各自命中区域内。
-        for index in (2, 3, 1, 0, 6):
+        for index in (2, 3, 1, 8, 0, 6):
             button = menu.buttons[index]
             left, right, bottom, top = button['frameSize']
             width = button.component('text0').textNode.calcWidth(button['text'])*button['text_scale'][0]

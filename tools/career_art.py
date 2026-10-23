@@ -36,6 +36,7 @@ def capture(output, events, design_id):
             for _ in range(360):
                 app.session.tick()
             app.scene.apply(app.session.current)
+            app.scene.sync_segments()
             road = app.session.simulation.road
             progress = app.session.highway.snapshot.career.start_progress
             if event.kind in ('slalom', 'parking'):

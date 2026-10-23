@@ -4,6 +4,7 @@ import math
 from dataclasses import dataclass, replace
 from functools import lru_cache
 
+from career_courses import COURSES, CareerCourse
 from coastal_map import MapPoint, map_length, offset_point, point_at, project
 from driver_assist import GAME_INPUT, InputConfig, steering_limit
 from highway_curve import HighwayCurve
@@ -23,7 +24,8 @@ class Road:
         self.endless = track == "endless"
         self.length = map_length() if self.closed else HIGHWAY_LENGTH
         self.lanes = (-2.15, 2.15) if self.closed else tuple(lane_x(i) for i in range(3))
-        self.curve = HighwayCurve(seed, hills=shape == "hills") if self.endless and shape != "straight" else None
+        self.curve = (CareerCourse(shape, seed) if shape in COURSES else
+                      HighwayCurve(seed, hills=shape == "hills")) if self.endless and shape != "straight" else None
         self.origin_y = 0.0
 
     def sample(self, distance, lane):

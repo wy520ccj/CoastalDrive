@@ -17,7 +17,7 @@ DARK = (.04, .055, .075, .86)
 
 class MainMenu:
     def __init__(self, parent, loader, body_font, display_font, actions, *, vehicle_view, confirm_action,
-                 driving_mode_action=None, lab_action=None, journey_action=None):
+                 driving_mode_action=None, lab_action=None, highway_action=None):
         self.root = parent.attachNewNode('main-menu')
         self.root.setTransparency(TransparencyAttrib.MAlpha)
         # 旧工具页仍使用原父节点；首页不随这些工具页整体缩小。
@@ -30,9 +30,9 @@ class MainMenu:
         self.confirm_action = confirm_action
         self.actions = (*actions, lab_action, driving_mode_action)
         self.order = (2, 3, 1, 0, 6, 7, 4, 5)
-        if journey_action is not None:
-            self.actions = (*self.actions, journey_action)
-            self.order = (2, 3, 1, 0, 6, 8, 7, 4, 5)
+        if highway_action is not None:
+            self.actions = (*self.actions, highway_action)
+            self.order = (2, 3, 1, 8, 0, 6, 7, 4, 5)
         self.selected, self.aspect = 2, None
         self.widgets, self.subtitles, self.symbols = [], {}, {}
         self.buttons = []
@@ -140,20 +140,21 @@ class MainMenu:
         self.fill(margin, 122, panel_width, 706, (.98, .98, .99, .96))
         self.place_label('出发', margin+28, 194, 48, bold=True)
         self.place_label('选一场比赛，或开车去兜风', margin+28, 231, 20)
-        for index, title, subtitle, y, height, icon in (
-            (2, '海岸生涯', '赛事 · 赢取星级与积分', 254, 96, 0xeb45),
-            (3, '我的车库', '选车 · 升级 · 车身颜色', 366, 96, 0xebbb),
-            (1, '滨海自由驾驶', '无计时 · 自由探索', 478, 96, 0xef3d),
-            (0, '计时挑战', old_goal, 590, 96, 0xff9b),
-            (6, '专家试验台', '车辆实验与曲线', 728, 78, 0xee2f)):
+        entries = [
+            (2, '海岸生涯', '赛事 · 赢取星级与积分', 254, 82, 0xeb45),
+            (3, '我的车库', '选车 · 升级 · 车身颜色', 348, 82, 0xebbb),
+            (1, '滨海自由驾驶', '无计时 · 自由探索', 442, 82, 0xef3d),
+            (0, '计时挑战', old_goal, 630, 82, 0xff9b),
+            (6, '专家试验台', '车辆实验与曲线', 736, 78, 0xee2f)]
+        if len(self.actions) > 8:
+            entries.append((8, '无限高速', '自由驾驶 · 五公里挑战', 536, 82, 0xef3d))
+        for index, title, subtitle, y, height, icon in entries:
             self.button(index, title, subtitle, margin+inset, y, inner, height, icon=icon)
-        self.fill(margin+24, 707, inner, 1, (.75, .78, .82, 1), 0)
+        self.fill(margin+24, 730, inner, 1, (.75, .78, .82, 1), 0)
         self.button(7, '驾驶辅助  F2', None, self.width-520, 883, 183, 42, footer=True)
         self.button(4, '声音设置', None, self.width-313, 883, 143, 42, footer=True)
         self.button(5, '退出游戏', None, self.width-146, 883, 116, 42, footer=True)
         self.driving_mode_button = self.buttons[7]
-        if len(self.actions) > 8:
-            self.button(8, '生涯车库', None, margin+panel_width+25, 777, 150, 42, footer=True)
         for text, x, width in (('↑', margin, 46), ('↓', margin+60, 46), ('Enter', margin+196, 75)):
             self.fill(x, 881, width, 40, (.95, .96, 1, .15))
             self.place_label(text, x+11, 911, 21, WHITE)
@@ -192,7 +193,7 @@ class MainMenu:
     def select(self, index):
         self.selected = index % len(self.buttons)
         for i, button in enumerate(self.buttons):
-            focused, primary, footer = i == self.selected, i == 2, i in (7, 4, 5, 8)
+            focused, primary, footer = i == self.selected, i == 2, i in (7, 4, 5)
             self.edges[i].show() if focused else self.edges[i].hide()
             button['geom_color'] = ORANGE if primary else ((1, .90, .85, 1) if focused else (.98, .98, .99, 1))
             if footer:

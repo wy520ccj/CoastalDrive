@@ -1,5 +1,6 @@
 """Shared display/collision geometry in coordinates relative to a segment anchor."""
 
+from career_courses import CareerCourse
 from highway_segments import SEGMENT_LENGTH, segment
 
 MESH_STEP = 5
@@ -44,7 +45,7 @@ def rail(curve, index, lateral):
 
 
 def surfaces(curve, index):
-    return {
+    result = {
         "road": strip(curve, index, -6.75, 6.75),
         "shoulder-left": strip(curve, index, -8.5, -6.75),
         "shoulder-right": strip(curve, index, 6.75, 8.5),
@@ -52,6 +53,14 @@ def surfaces(curve, index):
         "rail-left": rail(curve, index, -8),
         "rail-right": rail(curve, index, 8),
     }
+    if isinstance(curve, CareerCourse):
+        from career_terrain import segment_ground
+
+        vertices, faces = segment_ground(curve, index)
+        x, y, z = anchor(curve, index)
+        if faces:
+            result['ground'] = ([(px-x, py-y, pz-z) for px, py, pz in vertices], faces)
+    return result
 
 
 def markings(curve, index):
