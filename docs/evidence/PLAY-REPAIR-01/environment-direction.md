@@ -89,3 +89,18 @@
 5. 最终r3：`logs/play-repair-source-review/render-r3/summary.json`，0新驾驶拍，仅初始化后固定快照原件审看；工具Ruff通过。没有生产行为变更，未重复物理T0/T1。原生模块、认可的天空、间接光和原生产植被SHA均与冻结账本相同。
 
 下一块应将本机研究转成完整样板：按图24先确定林缘/岩岸/地被共同的颜色与空间关系，使用带枝叶簇的树冠素材和多种连续低草图集，草根与真实地表颜色/遮蔽同步；先用普通追车视角及30–150m中景判断整体，再看近景。单件预览、下载和研究均不等于已经完成运行场景，总目标继续active。
+
+
+## 2026-10-24 本机KCD2原始资源试用
+
+用户明确要求直接用本机天国美术试一下。上一版自制树冠卡片/短草完整样板r2仍失败：树冠生硬，草投影时GLTF的`texcoord.0`被转换格式丢失，采样落在透明区，实图无草；未采用。对应工具和候选保留，不冒充最终效果。
+
+本次`tools/environment/kcd_local_assets.py`只读本机安装的标准ZIP资源包，按CrCh 0x746/mesh 0x801/stream 0x800解析实际半精度坐标、索引、UV和切线法线；BC1/BC3分级DDS解码为PNG。格式核对来源为AWS Lumberyard的[官方CryHeaders.h](https://raw.githubusercontent.com/aws/lumberyard/master/dev/Code/CryEngine/CryCommon/CryHeaders.h)及[VertexFormats.h](https://raw.githubusercontent.com/aws/lumberyard/master/dev/Code/CryEngine/CryCommon/VertexFormats.h)。不是从截图反推或重新仿造模型。
+
+实际使用三种quercus橡树（可见6095/5182/3058三角形）、三种grass_green短草（34/30/30三角形）、原始枝叶/草图集，以及grass_pasture_a地表贴图。原始几何内的shadowproxy子材质不作为可见几何；枝叶颜色与投影均Alpha裁切。本地样板依图24的左侧连续林缘、近路低草、右侧看海开口组织，119棵树、432个合并草格，岩岸仍用前述有许可扫描。KCD来源和网格SHA在`logs/play-repair-kcd-local/assets/local-source.json`；KCD纹理只存Git忽略的logs，未加入生产资源或发布包，不把安装游戏等同于获得资源再分发许可。
+
+命令：`.venv/Scripts/python.exe tools/environment/check_coastal_sample.py --output logs/play-repair-kcd-local/render-r3`。每轮240新真实起步物理步后固定同一Snapshot；切换样板/镜头时断言快照完全不变。r1在第二树种的shadowproxy材质校验处明确失败；修正可见子集后r2完成6图但旧地表偏黄；r3增加对应牧草地和Alpha阴影后完成6图并实际查看驾驶/路边/树冠。原图、日志、summary保留在对应logs目录。最终两工具Ruff通过；未跑生产T0/T1或性能Gate，未称人工审美通过。草层约140米，当前工具用于同快照视觉对照，尚未接入正式流送道路。
+
+已核对runtime-sha256.json的原生求解器、天空HDR、daylight.env和生产植被BAM四项全部保持。没有修改生产场景或物理。样板显示出原件完整枝叶和连续草层，但沿海地形、远山、海水、道路质感与原KCD渲染仍有明显差距；不称天国画面已复现，不称完整美术任务完成。仅本地，未推送。
+
+复现前置：若本地没有岩岸候选，先用Blender执行`tools/blender/prepare_coastal_rocks.py`，从已记录的CC0源扫描重建三个距离档。候选输出不含KCD原件；KCD纹理由对照工具从指定安装目录只读解码。
