@@ -46,7 +46,7 @@ def main():
 
         from environment import expressway_materials
 
-        def original_shadow_shader():
+        def original_shadow_shader(*, asphalt=False):
             defines = {"MAX_LIGHTS": 8, "ENABLE_SHADOWS": True, "USE_330": True}
             return Shader.make(Shader.SLGLSL, _load_shader_str("simplepbr.vert", defines.copy()),
                                _load_shader_str("simplepbr.frag", defines.copy()))

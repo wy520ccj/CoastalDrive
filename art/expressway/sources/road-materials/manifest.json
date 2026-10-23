@@ -1,0 +1,39 @@
+{
+  "fetched": "2026-10-23",
+  "license": "CC0-1.0",
+  "license_url": "https://polyhaven.com/license",
+  "powered_by": "Poly Haven https://polyhaven.com",
+  "files": {
+    "asphalt_03_diff_2k.jpg": {
+      "runtime": "assets/game/materials/asphalt_03_diff_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/asphalt_03/asphalt_03_diff_2k.jpg",
+      "bytes": 3723686,
+      "sha256": "12621c0ec24e4dd3c51a2598483b87a5925212b1db125dd5dfcfbd0226a06922"
+    },
+    "asphalt_03_nor_gl_2k.jpg": {
+      "runtime": "assets/game/materials/asphalt_03_nor_gl_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/asphalt_03/asphalt_03_nor_gl_2k.jpg",
+      "bytes": 4336458,
+      "sha256": "73416b96bf9524e4dc09f8e16e6b04875e8c90991a44286f36bd87f26415ee5d"
+    },
+    "asphalt_03_rough_2k.jpg": {
+      "runtime": "assets/game/materials/asphalt_03_rough_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/asphalt_03/asphalt_03_rough_2k.jpg",
+      "bytes": 2918347,
+      "sha256": "86b95e4004b01437aa165a4c68903b3fb28eff9e88815dcb6bc9f11a29b08c42"
+    },
+    "leafy_grass_diff_2k.jpg": {
+      "runtime": "assets/game/materials/leafy_grass_diff_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/leafy_grass/leafy_grass_diff_2k.jpg",
+      "bytes": 4766204,
+      "sha256": "8e1c6d21365d4b89bc5a35ab664da98a78dbc3ab9ba6100474881c8619a5b113"
+    }
+  },
+  "appearance_changes": [
+    "sRGB albedo; linear normal and scalar data retain original channel format",
+    "85 percent asphalt desaturation in shader; original downloaded pixels unchanged",
+    "asphalt repeat 2m (source 2.05m); grass repeat 2m",
+    "normal XY strength 0.45; dry perceptual roughness floor 0.55"
+  ],
+  "source_pixels_modified": false
+}

@@ -1,0 +1,47 @@
+{
+  "date_published": 1685145600,
+  "name": "Leafy Grass",
+  "categories": [
+    "outdoor",
+    "floor"
+  ],
+  "type": 1,
+  "staging": null,
+  "tags": [
+    "grass",
+    "green",
+    "nature",
+    "ground",
+    "foliage",
+    "leaves",
+    "plants",
+    "outdoors",
+    "twigs",
+    "sticks",
+    "trampled"
+  ],
+  "authors": {
+    "Charlotte Baglioni": "All"
+  },
+  "info": null,
+  "dimensions": [
+    2000,
+    2000
+  ],
+  "max_resolution": [
+    8192,
+    8192
+  ],
+  "files_hash": "90fd49a21ddface404d32d9956c3a9f3ca8e0679",
+  "description": "Free 8K leafy grass texture: trampled green blades with scattered brown leaves and twigs, low-relief rough soil surface with a natural matte finish.",
+  "attributes": {
+    "surface_use": "ground",
+    "origin": "natural",
+    "setting": "outdoor"
+  },
+  "category_id": "21e06d88-2ab6-5bdd-ad11-869b7ff0b573",
+  "category": "Ground & Terrain/Grass & Vegetation/Lush & Green Grass",
+  "img_version": "8866acdc",
+  "download_count": 95680,
+  "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/leafy_grass.png?width=256&height=256&format=webp&v=8866acdc"
+}

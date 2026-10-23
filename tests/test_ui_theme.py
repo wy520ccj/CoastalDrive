@@ -78,7 +78,13 @@ def test_distribution_includes_font_license_and_icon(monkeypatch):
     for relative in ('assets/game/shaders/garage-clearcoat.glsl',
                      'assets/game/vehicles/lotus_elise.bam', 'assets/game/vehicles/Lotus-Elise-License.txt',
                      'assets/game/vehicles/gr86_community.bam', 'assets/game/vehicles/GR86-Community-License.txt',
-                     'assets/game/vehicles/porsche_930.bam', 'assets/game/vehicles/Porsche-930-License.txt'):
+                     'assets/game/vehicles/porsche_930.bam', 'assets/game/vehicles/Porsche-930-License.txt',
+                     'assets/game/expressway/shaders/asphalt-material.glsl',
+                     'assets/game/materials/asphalt_03_diff_2k.jpg',
+                     'assets/game/materials/asphalt_03_nor_gl_2k.jpg',
+                     'assets/game/materials/asphalt_03_rough_2k.jpg',
+                     'assets/game/materials/leafy_grass_diff_2k.jpg',
+                     'assets/game/materials/License-Road-Surfaces.txt'):
         assert (ROOT / relative).is_file()
         assert any(fnmatch.fnmatchcase(relative, pattern) for pattern in patterns)
 

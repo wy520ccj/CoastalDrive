@@ -26,6 +26,21 @@ def texture(name):
     return result
 
 
+def photographed_surface(name, *, color=False):
+    """有来源的实拍材质；底色用sRGB，法线/粗糙度保持线性数据。"""
+    path = resource_root() / 'assets/game/materials' / name
+    result = Texture(path.stem)
+    if not result.read(Filename.fromOsSpecific(str(path))):
+        raise OSError(f'无法读取道路实拍材质：{path}')
+    if color:
+        result.setFormat(Texture.FSrgb)
+    result.setWrapU(Texture.WMRepeat)
+    result.setWrapV(Texture.WMRepeat)
+    result.setMinfilter(Texture.FTLinearMipmapLinear)
+    result.setAnisotropicDegree(8)
+    return result
+
+
 def style_sky(sky, loader):
     image = texture("expressway-sky")
     image.setWrapV(Texture.WMClamp)
@@ -49,7 +64,7 @@ def style_water(water):
 
 
 def surface_textures():
-    return {"ground": texture("grass-albedo"), "rock": texture("strata-albedo"),
+    return {"ground": photographed_surface('leafy_grass_diff_2k.jpg', color=True), "rock": texture("strata-albedo"),
             "asphalt": texture("aggregate")}
 
 
@@ -71,7 +86,7 @@ def terrain_shader(name="terrain-material.frag"):
     return Shader.make(Shader.SLGLSL, vertex, add_distance_haze(add_shadow_transition(fragment)))
 
 
-def road_shadow_shader():
+def road_shadow_shader(*, asphalt=False):
     """固定护栏遮蔽跨越实时阴影范围，车辆与设施仍使用原有PCF投影。"""
     from simplepbr._shaderutils import _load_shader_str
 
@@ -88,6 +103,17 @@ def road_shadow_shader():
     fragment = fragment.replace("float shadow = shadowSpot * shadow_caster * attenuation_factor;",
                                 "float shadow = shadowSpot * min(shadow_caster, "
                                 "expressway_rail_shadow()) * attenuation_factor;")
+    if asphalt:
+        detail = Path(shader_path('asphalt-material.glsl').toOsSpecific()).read_text(encoding='utf-8')
+        fragment = fragment.replace('void main() {', detail+'\nvoid main() {')
+        fragment = fragment.replace('(texture2D(p3d_TextureBaseColor, v_texcoord) + p3d_TexAlphaOnly)',
+                                    'asphalt_color()')
+        fragment = fragment.replace('p3d_Material.roughness * metal_rough.g',
+            'max(0.55, texture2D(asphalt_roughness, v_texcoord).r)')
+        fragment = fragment.replace('normalize(v_view_tbn * normalmap)',
+            'asphalt_normal(v_view_tbn[2], v_view_position)')
+        fragment = fragment.replace('normalize(v_world_tbn * normalmap)',
+            'asphalt_normal(v_world_tbn[2], v_world_position)')
     return Shader.make(Shader.SLGLSL, vertex, add_distance_haze(fragment))
 
 

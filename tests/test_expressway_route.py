@@ -63,6 +63,65 @@ def test_static_rail_coordinates_preserve_existing_geometry_and_material_channel
     node.removeNode()
 
 
+def test_photographed_maps_keep_color_and_scalar_formats_separate(kit, tmp_path, monkeypatch):
+    from panda3d.core import Filename, PNMImage, Texture, TexturePool
+
+    from environment import expressway_materials
+    from paths import resource_root
+
+    assets, _ = kit
+    path = resource_root()/'assets/game/materials/asphalt_03_rough_2k.jpg'
+    original = TexturePool.loadTexture(Filename.fromOsSpecific(str(path)))
+    rough = assets['road-roughness']
+    # 灰度JPEG必须保留单通道；强改RGB会使原始RAM长度与GPU上传格式冲突。
+    assert rough.getNumComponents() == original.getNumComponents()
+    assert rough.getFormat() == original.getFormat()
+    assert rough.getRamImageSize() == rough.getXSize()*rough.getYSize()*rough.getNumComponents()
+    assert assets['road-albedo'].getFormat() == assets['ground'].getFormat() == Texture.FSrgb
+    assert assets['road-normal'].getFormat() != Texture.FSrgb
+    gray_path = tmp_path/'assets/game/materials/gray.jpg'
+    gray_path.parent.mkdir(parents=True)
+    pixels = PNMImage(8, 8, 1)
+    pixels.fill(.5)
+    assert pixels.write(Filename.fromOsSpecific(str(gray_path)))
+    monkeypatch.setattr(expressway_materials, 'resource_root', lambda: tmp_path)
+    gray = expressway_materials.photographed_surface('gray.jpg')
+    assert gray.getNumComponents() == 1 and gray.getRamImageSize() == 64
+
+
+def test_real_road_uv_scale_and_texture_phase_survive_segment_reset(kit):
+    from panda3d.core import GeomVertexReader, ShaderAttrib
+
+    assets, _ = kit
+    seam = []
+    for index in (2, 3):
+        root = NodePath('texture-seam')
+        build_segment(root, index, 23, assets, lambda node: None)
+        found = 0
+        for part in root.findAllMatches('**/+GeomNode'):
+            for geom, state in zip(part.node().getGeoms(), part.node().getGeomStates(), strict=True):
+                shader = state.getAttrib(ShaderAttrib)
+                if shader is None or shader.getShader() != assets['road-asphalt-shader']:
+                    continue
+                found += 1
+                positions = GeomVertexReader(geom.getVertexData(), 'vertex')
+                uv = GeomVertexReader(geom.getVertexData(), 'texcoord')
+                used = {primitive.decompose().getVertex(i) for primitive in geom.getPrimitives()
+                        for i in range(primitive.decompose().getNumVertices())}
+                for row in used:
+                    positions.setRow(row)
+                    uv.setRow(row)
+                    point = root.getRelativePoint(part, tuple(positions.getData3f()))
+                    texcoord = uv.getData2f()
+                    assert texcoord.x == pytest.approx(point.x/2., abs=1e-5)
+                    if abs(point.y+index*200-600) < .001:
+                        seam.append((index, texcoord.y))
+        assert found
+        root.removeNode()
+    assert {index for index, _ in seam} == {2, 3}
+    assert all(value == pytest.approx(round(value), abs=1e-5) for _, value in seam)
+
+
 @pytest.mark.parametrize("curve", [None, HighwayCurve(23), HighwayCurve(23, hills=True)])
 def test_all_shapes_keep_physical_surfaces_and_stream_lifetime(kit, curve, monkeypatch):
     import scene as scene_module

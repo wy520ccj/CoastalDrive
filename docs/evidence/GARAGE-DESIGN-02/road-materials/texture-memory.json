@@ -1,0 +1,46 @@
+{
+  "maps": [
+    {
+      "file": "asphalt_03_diff_2k.jpg",
+      "dimensions": [
+        2048,
+        2048
+      ],
+      "components": 3,
+      "format": 30,
+      "base_ram_bytes": 12582912
+    },
+    {
+      "file": "asphalt_03_nor_gl_2k.jpg",
+      "dimensions": [
+        2048,
+        2048
+      ],
+      "components": 3,
+      "format": 7,
+      "base_ram_bytes": 12582912
+    },
+    {
+      "file": "asphalt_03_rough_2k.jpg",
+      "dimensions": [
+        2048,
+        2048
+      ],
+      "components": 3,
+      "format": 7,
+      "base_ram_bytes": 12582912
+    },
+    {
+      "file": "leafy_grass_diff_2k.jpg",
+      "dimensions": [
+        2048,
+        2048
+      ],
+      "components": 3,
+      "format": 30,
+      "base_ram_bytes": 12582912
+    }
+  ],
+  "base_ram_bytes": 50331648,
+  "mipmap_note": "A complete uncompressed mip chain adds approximately one third. These are asset RAM bytes, not measured runtime GPU or total memory."
+}

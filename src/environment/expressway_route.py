@@ -176,21 +176,34 @@ def segment_steps(root, index, seed, kit, stabilize_rail, curve=None):
         if curve and rail:
             # 原曲线碰撞盒的三角形朝内；显示副本翻面，避免朝上的底面与路肩争深度。
             faces = [(a, c, b) for a, b, c in faces]
-        node = make_mesh(f"expressway-{name}", vertices, faces,
-                         Vec4(*((.53, .59, .56, 1) if rail else (.11, .13, .14, 1))))
+        color = (1, 1, 1, 1) if name == 'road' else ((.53, .59, .56, 1) if rail else (.11, .13, .14, 1))
+        node = make_mesh(f"expressway-{name}", vertices, faces, Vec4(*color))
         node.setMaterial(kit["surface-material"])
         node.reparentTo(root)
         if rail:
             stabilize_rail(node)
         else:
             coordinates = []
+            road_uv = []
             for vertex in vertices:
                 world = Vec3(*vertex) + origin
                 distance, lateral = curve.project(tuple(world)) if curve else (world.y, world.x)
                 coordinates.append(rail_shadow_coordinate(curve, distance, lateral))
+                # 2米实拍范围；每600米周期重置，段末保留连续坐标避免插值跨越接缝。
+                road_uv.append((lateral/2., (start % 600+distance-start)/2.))
             set_rail_shadow_coordinates(node, coordinates, faces)
             node.setTexture(kit["aggregate"])
             node.setShader(kit["road-shadow-shader"])
+            if name == 'road':
+                data = node.node().modifyGeom(0).modifyVertexData()
+                writer = GeomVertexWriter(data, 'texcoord')
+                for face in faces:
+                    for number in face:
+                        writer.addData2f(*road_uv[number])
+                node.setTexture(kit['road-albedo'])
+                node.setShader(kit['road-asphalt-shader'])
+                node.setShaderInput('asphalt_normals', kit['road-normal'])
+                node.setShaderInput('asphalt_roughness', kit['road-roughness'])
         yield "surface"
     for s in range(start, start + 200, 8):
         for d in (-2.25, 2.25):

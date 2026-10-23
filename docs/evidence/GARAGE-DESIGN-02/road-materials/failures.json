@@ -1,0 +1,9 @@
+{
+  "source": "Observed command outputs transcribed for audit; original T0 logs stay in their run directories.",
+  "items": [
+    "First T0: Texture(source) is not a supported Panda constructor: 14 passed, 13 setup errors. Fixed with documented makeCopy; finally replaced pooled copy with direct Texture.read to avoid retaining a redundant source copy.",
+    "First rendering tool omitted HUD.resize; overlapping HUD in first capture excluded. Production HUD was unchanged.",
+    "Third render using Asphalt02 grayscale roughness: GPU upload assertion because RGB format was forced onto one-channel image. Fixed by retaining source format; grayscale JPEG regression fixture added. No successful third-run summary.",
+    "Initial UV seam test read unused vertices in a shared flattened vertex table: one passed, one failed. Corrected to inspect only primitive-referenced vertices."
+  ]
+}

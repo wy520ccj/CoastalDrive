@@ -71,6 +71,7 @@ def load_kit(loader, parent, old_trees):
     kit["sky"] = loader.loadTexture(Filename.fromOsSpecific(str(folder / "expressway-sky.png")))
     from environment.expressway_materials import (
         distance_shader,
+        photographed_surface,
         road_shadow_shader,
         route_water_shader,
         surface_textures,
@@ -78,8 +79,12 @@ def load_kit(loader, parent, old_trees):
     )
 
     kit.update(surface_textures())
+    kit['road-albedo'] = photographed_surface('asphalt_03_diff_2k.jpg', color=True)
+    kit['road-normal'] = photographed_surface('asphalt_03_nor_gl_2k.jpg')
+    kit['road-roughness'] = photographed_surface('asphalt_03_rough_2k.jpg')
     kit["terrain-shader"] = terrain_shader()
     kit["road-shadow-shader"] = road_shadow_shader()
+    kit['road-asphalt-shader'] = road_shadow_shader(asphalt=True)
     kit["route-water-shader"] = route_water_shader()
     kit["distance-shader"] = distance_shader()
     kit["detail-shader"] = distance_shader(details=True)

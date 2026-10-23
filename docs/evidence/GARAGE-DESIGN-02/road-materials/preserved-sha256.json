@@ -1,0 +1,21 @@
+{
+  "src/simulation.py": "769a8ac93c08e48545f5a0af26ad5b5ddc81201dd5f083af0a120675769743ee",
+  "src/vehicle.py": "a2a53598b373b308123aa402adf533a8306f7e81d2cdd39827875ba9c226f1dc",
+  "src/vehicle_dynamics.py": "56564b31ed5e8c29a2063d95cb28c17c5b13cc41d1b9c15ca4e12a23a288c140",
+  "src/driver_assist.py": "302238901a35d73e9bb139420310a50fc52e2b7f6f75a0a168f6cfeb2844b4f3",
+  "src/powertrain.py": "9e058c885a41b840fe1aa0844dfaadda96b71bbe9fece323f6aae91cde961b9d",
+  "src/career_run.py": "5cca857c2b95470fdbc603e260b2dcdcd0272f03686c9630c7dd7fad90e62b58",
+  "src/career.py": "03826f41247ea55dd19309d5766162c638ce31fb77e74fd3ab94a70f9a07824b",
+  "src/session.py": "c3b9f6eb1c7400e6b8a7dd97afc2798f7ab815c02ec7e28d5917b76ac15d4b20",
+  "src/vehicle_designs.py": "e685b3fbd7dcfbc082559b6b7517fd0f86559bd5c388773d371604e676f37ebc",
+  "src/ui/career_layout.py": "47dab083b65c20eaa1af0442d0c3ef4649521698799273e4196348141cda09b5",
+  "src/ui/garage_layout.py": "aa8e3c25f5ea0c6789ae188031c2006ea91489d2f7dbd15369bd42272066d957",
+  "src/ui/theme.py": "885a67050180dc48cd87e5469f0c5ef92ba2b62ee9e6abef824c3248b8cd7ba3",
+  "src/highway_segments.py": "ba5494eb325e107d1a40477272db799d4fd26f8cfb7ec8b265c038ff39b1da40",
+  "src/highway_curve.py": "30b2a7c6d75a38bbce538198e1e53295d1afa6dd14d05760d085d3d150a4e64e",
+  "src/streamed_road.py": "8c9d2279c34e5e5e280166ef19187f4a454917981a9f6af0dca00d9542eecd9a",
+  "src/curve_mesh.py": "105d779c136301731934b22530bb30ce1c4aa3235edb04d8ed472a13ec9e2ff2",
+  "assets/game/vehicles/porsche_930.bam": "ef411af578d703b649070a8e1a3102d8843a359302ecc36ad2975b9198981bcc",
+  "assets/game/expressway/expressway-sky.png": "cc6eb00db52f92889211f0d3aeea6013782d62d6df850bf0ded3a6f28ac2fbe1",
+  "art/coastal/coastal_terrain.blend": "8d01b008616fd1daedb419de812b8a39c4e4a887f99d3caa5f46ee7337d75836"
+}

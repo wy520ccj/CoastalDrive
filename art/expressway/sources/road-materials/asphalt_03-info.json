@@ -1,0 +1,52 @@
+{
+  "name": "Asphalt 03",
+  "categories": [
+    "outdoor",
+    "man made",
+    "dirty",
+    "road",
+    "asphalt"
+  ],
+  "type": 1,
+  "tags": [
+    "rough",
+    "worn",
+    "dirty",
+    "floor",
+    "road",
+    "asphalt",
+    "city",
+    "urban"
+  ],
+  "info": null,
+  "dimensions": [
+    2049.999713897705,
+    2049.999713897705
+  ],
+  "date_published": 1675900800,
+  "staging": null,
+  "max_resolution": [
+    8192,
+    8192
+  ],
+  "files_hash": "43fb4f1e6c03b6cff2ae0783f403d5b9e52268be",
+  "description": "Free 8K worn asphalt texture with rough, matte surface, fine granular grit and subtle dirt staining across a dark brown-black urban road material.",
+  "authors": {
+    "Dario Barresi": "processing",
+    "Charlotte Baglioni": "photography"
+  },
+  "category_id": "8871debe-40cf-5e4d-a5e5-1ddfe979f14f",
+  "category": "Asphalt & Bitumen/Asphalt/Worn Road Surface",
+  "attributes": {
+    "surface_use": "floor",
+    "condition": [
+      "weathered",
+      "worn"
+    ],
+    "origin": "man_made",
+    "setting": "outdoor"
+  },
+  "img_version": "277de809",
+  "download_count": 14458,
+  "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/asphalt_03.png?width=256&height=256&format=webp&v=277de809"
+}
