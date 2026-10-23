@@ -4,6 +4,7 @@ import time
 from dataclasses import replace
 
 import pytest
+from direct.gui import DirectGuiGlobals as DGG
 from panda3d.core import Point3
 
 from application import CoastalDrive
@@ -114,7 +115,9 @@ def test_power_suspension_mixed_install_reload_and_restore_use_actual_session_co
         app.career_panel.key('enter')
         versions.append(app.workspace_vehicle)
         assert app.session.base_vehicle_config == app.workspace_vehicle.config
-        assert app.career_panel.buttons[app.career_panel.primary]['text'] == '已安装'
+        from ui.garage_layout import TRIAL_EVENTS
+
+        assert app.career_panel.buttons[app.career_panel.primary]['extraArgs'] == ['brief', TRIAL_EVENTS[part.topic]]
     assert installed_parts(app.workspace_vehicle) == {'street-power', 'sport-suspension'}
     assert app.career_progress.credits == 1010
     app.career_action('garage-car', 'coastal-hatch')
@@ -130,6 +133,66 @@ def test_power_suspension_mixed_install_reload_and_restore_use_actual_session_co
         app.career_action('restore')
         assert app.workspace_vehicle == expected and app.session.base_vehicle_config == expected.config
     assert app.session.current == snapshot
+
+
+def test_upgrade_comparison_purchase_restore_free_reinstall_and_trial_start(app):
+    for event in ('first-drive', 'parking', 'slalom'):
+        app.career_progress.record(CareerResult(event, 8., elapsed=25., finished=True, succeeded=True, stars=3))
+    app.open_career_collection()
+    app.career_action('garage-car', 'game-tuned')
+    app.career_action('garage-select')
+    app.career_action('garage-tab', 'upgrade')
+    panel = app.career_panel
+    before, snapshot = app.workspace_vehicle, app.session.current
+    credits = app.career_progress.credits
+    assert next(button for button in panel.buttons if button['extraArgs'][0] == 'restore')['state'] == DGG.DISABLED
+    assert panel.garage_values['current'].getText() == '50'
+    assert panel.garage_values['target'].getText() == '70'
+    panel.key('enter')
+    assert app.workspace_vehicle.config.lateral_stiffness == 70000.
+    assert app.career_progress.credits == credits-350
+    assert panel.garage_values['current'].getText() == '70'
+    assert panel.garage_values['target'].getText() == '套件已安装'
+    assert next(button for button in panel.buttons if button['extraArgs'][0] == 'restore')['state'] == DGG.NORMAL
+    panel.key('enter')
+    assert panel.page == 'brief' and panel.event_id == 'slalom'
+    assert not app.workshop_vehicle.buffer.isActive() and not panel.garage_values
+    assert app.session.current == snapshot and app.career_progress.credits == credits-350
+    app.career_action('garage')
+    app.career_action('restore')
+    assert app.workspace_vehicle == before
+    assert panel.garage_values['current'].getText() == '50'
+    assert panel.buttons[panel.primary]['text'] == '安装已购零件'
+    panel.key('enter')
+    assert app.career_progress.credits == credits-350
+    panel.key('enter')
+    panel.key('enter')
+    assert app.career_active and app.career_event_id == 'slalom'
+    assert app.session.mode == GameMode.CAREER and app.session.base_vehicle_config.lateral_stiffness == 70000.
+
+
+@pytest.mark.parametrize('owned', [False, True])
+def test_stock_gr86_brake_setting_is_not_reported_as_a_purchased_part(app, owned):
+    for event in ('first-drive', 'parking'):
+        app.career_progress.record(CareerResult(event, 8., elapsed=25., finished=True, succeeded=True, stars=3))
+    if owned:
+        assert app.career_progress.buy(PART_BY_ID['sport-brakes'])
+    app.career_action('garage')
+    app.career_action('garage-car', 'gr86-2022-premium-6mt')
+    app.career_action('garage-select')
+    app.career_action('garage-tab', 'upgrade')
+    app.career_action('garage-topic', 'brakes')
+    panel = app.career_panel
+    credits, snapshot = app.career_progress.credits, app.session.current
+    assert panel.garage_values['current'].getText() == '70'
+    assert panel.garage_values['target'].getText() == '当前已是该设定'
+    assert any(label.getText() == '无需更换' for label in panel.labels)
+    assert next(button for button in panel.buttons if button['extraArgs'][0] == 'restore')['state'] == DGG.DISABLED
+    assert ('sport-brakes' in app.career_progress.owned) == owned
+    panel.key('enter')
+    assert panel.page == 'brief' and panel.event_id == 'parking'
+    assert app.career_progress.credits == credits and app.session.current == snapshot
+    assert ('sport-brakes' in app.career_progress.owned) == owned
 
 
 @pytest.mark.parametrize('part_id', ['street-power', 'sport-suspension'])

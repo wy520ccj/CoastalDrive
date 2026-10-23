@@ -1,0 +1,9 @@
+{
+  "accepted": false,
+  "original_report_passed": true,
+  "source": "logs\\validation\\GARAGE-DESIGN-02-upgrade-final-1024",
+  "expected_stars": 18,
+  "observed_stars": 15,
+  "missing_event": "ridge-run",
+  "reason": "fixture award save return not checked; final record missing; exact cause not captured; excluded from accepted images"
+}

@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "records": {
+    "first-drive": {
+      "stars": 3,
+      "seconds": 25.0
+    },
+    "parking": {
+      "stars": 3,
+      "seconds": 25.0
+    },
+    "slalom": {
+      "stars": 3,
+      "seconds": 25.0
+    },
+    "coast-sprint": {
+      "stars": 3,
+      "seconds": 25.0
+    },
+    "ridge-run": {
+      "stars": 3,
+      "seconds": 25.0
+    },
+    "coastal-cup": {
+      "stars": 3,
+      "seconds": 25.0
+    }
+  },
+  "owned": [
+    "sport-brakes",
+    "sport-front",
+    "sport-suspension",
+    "street-power"
+  ],
+  "credits": 1010
+}

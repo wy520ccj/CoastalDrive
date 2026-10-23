@@ -24,6 +24,7 @@ class CareerPanel:
         self.font, self.vehicle_view, self.action = font, vehicle_view, action
         self.loader = loader
         self.garage_font = theme.load_font('fonts/SourceHanSansSC-Regular.otf')
+        self.garage_values = {}
         self.garage_display_font = theme.load_font(theme.DISPLAY_FONT_FILE)
         self.garage_textures = {}
         self.garage_topic = 'tires'
@@ -48,6 +49,7 @@ class CareerPanel:
         for widget in (*self.labels, *self.buttons, *self.frames):
             widget.destroy()
         self.labels.clear()
+        self.garage_values.clear()
         self.buttons.clear()
         self.frames.clear()
         self.accents.clear()

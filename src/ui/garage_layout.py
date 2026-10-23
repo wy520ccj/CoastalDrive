@@ -4,11 +4,14 @@ from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectFrame
 from panda3d.core import TextNode, TextureStage, TransparencyAttrib
 
-from career import PARTS
+from career import EVENT_BY_ID, PARTS
 from career_tuning import is_installed, upgraded_config
 from skins import SKINS
 from ui import theme
 from ui.lab_widgets import rounded_panel
+from vehicle_designs import vehicle_design
+from workshop import BRAKE_SHARES
+from workshop_cornering import FRONT_STIFFNESS
 
 INK = (.055, .075, .13, 1)
 GRAY = (.36, .39, .45, 1)
@@ -16,30 +19,39 @@ WHITE = (1, 1, 1, 1)
 ORANGE = (1, .31, .12, 1)
 LINE = (.79, .81, .84, 1)
 PART_IMAGES = {'tires': 'tire', 'brakes': 'brake', 'power': 'power-part', 'suspension': 'suspension-part'}
+TRIAL_EVENTS = {'tires': 'slalom', 'brakes': 'parking', 'power': 'coast-sprint', 'suspension': 'ridge-run'}
+SUCCESS = (.12, .48, .26, 1)
 
 
 def part_readout(vehicle, part, installed):
     config = vehicle.config
     if part.topic == 'tires':
-        return '提升前轮转向响应', '前轴侧偏刚度', '70 kN/rad'
+        before, after = config.lateral_stiffness/1000, FRONT_STIFFNESS[part.recipe]/1000
+        benefit = ('前轮响应更直接' if after > before else
+                   '前轮响应更柔和' if after < before else '前轮响应调校已应用')
+        return (benefit, '前轴侧偏刚度', 'kN/rad',
+                f'{before:.1f}'.removesuffix('.0'), f'{after:.1f}'.removesuffix('.0'))
     if part.topic == 'brakes':
-        return '制动力偏向前轮', '前轴制动力分配', '70%'
+        before, after = config.front_brake_share*100, BRAKE_SHARES[part.recipe]*100
+        benefit = ('更多制动力分给前轮' if after > before else
+                   '更多制动力分给后轮' if after < before else '前后制动力分配设定')
+        return (benefit, '前轴制动力分配', '%',
+                f'{before:.1f}'.removesuffix('.0'), f'{after:.1f}'.removesuffix('.0'))
     target = config if installed else upgraded_config(config, part.id)
     if part.topic == 'power':
         before = max(rpm*torque/9549.3 for rpm, torque in config.torque_curve)
         after = max(rpm*torque/9549.3 for rpm, torque in target.torque_curve)
-        return ('加速动力提升', '当前峰值功率' if installed else '峰值功率',
-                f'{after:.0f} kW' if installed else f'{before:.0f} → {after:.0f} kW')
+        return '全段扭矩提升12%', '峰值功率', 'kW', f'{before:.0f}', f'{after:.0f}'
     before = sum(config.suspension_spring_rates)/4000
     after = sum(target.suspension_spring_rates)/4000
-    return ('减小车身摇摆', '当前弹簧刚度' if installed else '平均弹簧刚度',
-            f'{after:.1f} kN/m' if installed else f'{before:.1f} → {after:.1f} kN/m')
+    return '弹簧与阻尼同步调整', '平均弹簧刚度', 'kN/m', f'{before:.1f}', f'{after:.1f}'
 
 
 def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
     aspect = panel.vehicle_view.base.getAspectRatio()
     panel.garage_aspect = aspect
     panel.garage_roles = {}
+    panel.garage_values = {}
     height, width = 941., 941.*aspect
     unit = 2/height
     left, top, wide = width*.031, 122., min(462., width*.295)
@@ -135,33 +147,56 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
         categories = (('tires', '轮胎', 'wheel'), ('brakes', '制动', 'disc'),
                       ('suspension', '悬架', 'car-suspension'), ('power', '动力', 'engine'))
         for index, (topic, name, icon) in enumerate(categories):
-            x, y, w = left+inset+(index % 2)*(inner+12)/2, 248+(index//2)*132, (inner-12)/2
+            x, y, w = left+inset+(index % 2)*(inner+12)/2, 248+(index//2)*112, (inner-12)/2
             active = topic == panel.garage_topic
             if active:
-                fill(x-2, y-2, w+4, 120, ORANGE)
-            button('', x, y, w, 116, 'garage-topic', topic,
+                fill(x-2, y-2, w+4, 108, ORANGE)
+            button('', x, y, w, 104, 'garage-topic', topic,
                    role='category-active' if active else 'category')
-            image('garage-v2/'+icon+'.png', x+w/2-24, y+15, 48, 48)
-            label(name, x+w/2-24, y+91, 23, INK, True)
-        fill(left+inset, 522, inner, 1, LINE, 0)
+            image('garage-v2/'+icon+'.png', x+w/2-24, y+10, 48, 48)
+            label(name, x+w/2-24, y+87, 23, INK, True)
+        fill(left+inset, 480, inner, 1, LINE, 0)
         part = next(part for part in PARTS if part.topic == panel.garage_topic)
-        image('garage-v2/'+PART_IMAGES[part.topic]+'.png', left+inset, 539, 154, 154)
-        detail_x = left+inset+175
+        part_image = image('garage-v2/'+PART_IMAGES[part.topic]+'.png', left+inset, 490, 116, 116)
+        if part.topic in ('tires', 'brakes'):
+            # 源渲染留有透明边，裁入中央区域以保持零件的实际可见尺寸。
+            part_image.setTexScale(TextureStage.getDefault(), .75, .75)
+            part_image.setTexOffset(TextureStage.getDefault(), .125, .125)
+        detail_x = left+inset+134
         installed = is_installed(vehicle, part)
-        benefit, metric, value = part_readout(vehicle, part, installed)
-        label(part.name, detail_x, 569, 24, bold=True)
-        label(benefit, detail_x, 599, 17, GRAY, wrap=inner-175)
-        label(metric, detail_x, 642, 16, GRAY)
-        label(value, left+wide-inset, 666, 19, GRAY, right=True)
+        benefit, metric, unit_name, before, after = part_readout(vehicle, part, installed)
+        label(part.name, detail_x, 518, 24, bold=True)
+        label(benefit, detail_x, 550, 17, GRAY, wrap=inner-134)
         owned, unlocked = part.id in progress.owned, progress.stars >= part.unlock
         affordable = owned or progress.credits >= part.price
-        label('已购零件' if owned else f'{part.price} 积分', detail_x, 695, 28, ORANGE, True)
-        text = ('已安装' if installed else '安装已购零件' if owned else f'{part.unlock}星解锁' if not unlocked else
+        original = vehicle_design(vehicle.design_id).config
+        stock_match = installed and part.topic in ('tires', 'brakes') and (not owned or
+            (part.topic == 'tires' and original.lateral_stiffness == vehicle.config.lateral_stiffness) or
+            (part.topic == 'brakes' and original.front_brake_share == vehicle.config.front_brake_share))
+        label('无需更换' if stock_match else '已安装' if installed else '已购 · 免费安装' if owned else
+              f'{part.price} 积分', detail_x, 600, 24, SUCCESS if installed else ORANGE, True)
+        fill(left+inset, 614, inner, 90, (.91, .92, .94, 1))
+        values = panel.garage_values
+        values['metric'] = label(metric+' · '+unit_name, left+inset+12, 637, 18, INK, True)
+        label('当前', left+inset+12, 660, 17, GRAY)
+        values['current'] = label(before, left+inset+12, 693, 30, INK, True)
+        fill(left+inset+inner/2, 646, 1, 45, LINE, 0)
+        label('已应用' if installed else '安装后', left+inset+inner/2+12, 660, 17, GRAY)
+        values['target'] = label('当前已是该设定' if stock_match else '套件已安装' if installed else after,
+            left+inset+inner/2+12, 693, 17 if installed else 30, SUCCESS if installed else ORANGE,
+            not installed)
+        text = ('安装已购零件' if owned else f'{part.unlock}星解锁' if not unlocked else
                 '购买并安装' if affordable else f'还差{part.price-progress.credits}积分')
-        button(text, left+inset, 711, inner, 55, 'part', part.id,
-               role='primary', primary=True, enabled=not installed and unlocked and affordable)
+        trial = EVENT_BY_ID[TRIAL_EVENTS[part.topic]]
+        if not progress.available(trial):
+            trial = EVENT_BY_ID['first-drive']
+        button('去试车 · '+trial.name if installed else text, left+inset, 711, inner, 55,
+               'brief' if installed else 'part', trial.id if installed else part.id,
+               role='primary', primary=True, enabled=installed or unlocked and affordable)
         fill(left+inset, 777, inner, 1, LINE, 0)
-        button('恢复改装前车辆', left+inset, 784, inner, 34, 'restore', role='quiet')
+        metadata = vehicle.parameter_metadata
+        restorable = metadata is not None and bool({'tuning_previous', 'tire_tuning_previous'} & metadata.keys())
+        button('恢复改装前车辆', left+inset, 784, inner, 34, 'restore', role='quiet', enabled=restorable)
     elif tab == 'cars':
         count = sum(progress.stars >= item.unlock or item.design_id == vehicle.design_id for item in cars)
         label(f'已解锁 {count} / {len(cars)}', left+inset, 223, 20, GRAY)
@@ -208,7 +243,9 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
     # 通知只占面板与底栏之间的一条状态位，不覆盖车辆。
     message = notice or progress.notice
     if message:
-        label(message, left+inset, 849, 16, WHITE)
+        fill(left, 832, wide, 26, (.04, .055, .075, .90), 2)
+        line = panel.vehicle_view.base.fit_lines(message, (inner-16)*unit, 16*unit, max_lines=1)
+        label(line+('…' if line != message else ''), left+inset, 850, 16, WHITE)
     button('Enter   确认', width*.027, 880, 145, 42, 'garage-confirm', role='footer')
     button('Esc   返回', width*.125, 880, 135, 42, 'garage-back', role='footer')
     button('←', width*.43, 880, 46, 42, 'garage-orbit', -25, role='footer')
