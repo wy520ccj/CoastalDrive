@@ -1,0 +1,89 @@
+{
+  "provider": "Daniel Greenheck / EZ-Tree",
+  "license": "MIT (code, leaves, grass, flowers); CC0-1.0 (ambientCG bark)",
+  "license_files": [
+    "LICENSE",
+    "textures-LICENSE.md"
+  ],
+  "source": "https://github.com/dgreenheck/ez-tree",
+  "source_revision": "dcf309bd86bd521083d9c70f01f2de45fdc7c457",
+  "retrieved": "2026-10-23",
+  "status": "source review, not runtime approved",
+  "files": [
+    {
+      "path": "ez-tree/LICENSE",
+      "url": "https://raw.githubusercontent.com/dgreenheck/ez-tree/dcf309bd86bd521083d9c70f01f2de45fdc7c457/LICENSE",
+      "bytes": 1073,
+      "sha256": "20e4afadfb10c67952b3d73cd2982d21d165ab4ae82b0dd9e4d6f2166ee349b6"
+    },
+    {
+      "path": "ez-tree/textures-LICENSE.md",
+      "url": "https://raw.githubusercontent.com/dgreenheck/ez-tree/dcf309bd86bd521083d9c70f01f2de45fdc7c457/src/app/public/textures/LICENSE.md",
+      "bytes": 1378,
+      "sha256": "c4c67cf955536e61d9ac3fdf13830114edcd4c19c9aa0356ed0862cedf64140a"
+    },
+    {
+      "path": "ez-tree/grass.glb",
+      "url": "https://raw.githubusercontent.com/dgreenheck/ez-tree/dcf309bd86bd521083d9c70f01f2de45fdc7c457/src/app/public/models/grass.glb",
+      "bytes": 63236,
+      "sha256": "13f83e0a6b7a8756642e030bcbe7e335092a1bad3d6f42a3d65f422a25016c28"
+    },
+    {
+      "path": "ez-tree/flower_white.glb",
+      "url": "https://raw.githubusercontent.com/dgreenheck/ez-tree/dcf309bd86bd521083d9c70f01f2de45fdc7c457/src/app/public/models/flower_white.glb",
+      "bytes": 153248,
+      "sha256": "b38fd66e59764f21c2ed1054717817161bf8bbc28c7947e7f3a5f3fa6fdaea9b"
+    },
+    {
+      "path": "ez-tree/flower_yellow.glb",
+      "url": "https://raw.githubusercontent.com/dgreenheck/ez-tree/dcf309bd86bd521083d9c70f01f2de45fdc7c457/src/app/public/models/flower_yellow.glb",
+      "bytes": 158712,
+      "sha256": "778351964bf00f586a86280c9324376e9be845703d65566e24c74374cdd04f81"
+    },
+    {
+      "path": "ez-tree/grass.blend",
+      "url": "https://raw.githubusercontent.com/dgreenheck/ez-tree/dcf309bd86bd521083d9c70f01f2de45fdc7c457/assets/grass.blend",
+      "bytes": 1312868,
+      "sha256": "2cfe914a458d521aa60e64fa53be0c1d4453cf59b850d3f9fd7d0b566271a734"
+    },
+    {
+      "path": "ez-tree/oak-large.glb",
+      "origin": "https://www.eztree.dev/",
+      "export": "Oak Large, seed 23399, built-in export",
+      "bytes": 5569880,
+      "sha256": "a61e2c66c11ac28e97373efa4ecdf8a3cdd0ee9858746046f8bbf4ab5b57f6bc"
+    },
+    {
+      "path": "ez-tree/oak-large-lods.zip",
+      "origin": "https://www.eztree.dev/",
+      "export": "Oak Large, seed 23399, built-in export",
+      "bytes": 14571773,
+      "sha256": "8a4072f4d8ef1caea38b6fd673a6816dbe395bbfc20cad237a73b761e51263c2"
+    },
+    {
+      "path": "ez-tree/oak-large-preset.json",
+      "origin": "https://www.eztree.dev/",
+      "export": "Oak Large, seed 23399, built-in export",
+      "bytes": 5249,
+      "sha256": "0ebf5f5b361adf7dff03b242d93a66d11f8c06f8115cded5a1bcaff924ffba79"
+    },
+    {
+      "path": "ez-tree/lods/tree_LOD0.glb",
+      "archive_member": "tree_LOD0.glb",
+      "bytes": 5569928,
+      "sha256": "f77d54a8071736a9729ff5bbbe9a8d526ff17c22d07bd83d65e7b38732addb98"
+    },
+    {
+      "path": "ez-tree/lods/tree_LOD1.glb",
+      "archive_member": "tree_LOD1.glb",
+      "bytes": 4988128,
+      "sha256": "9ffd7e916a8cd1ea450468af2e431bb5ec6bff5396bf7de07dccd4e96b1177fb"
+    },
+    {
+      "path": "ez-tree/lods/tree_LOD2.glb",
+      "archive_member": "tree_LOD2.glb",
+      "bytes": 4770304,
+      "sha256": "264da1c31b94c24c24f6e84773d608aa5594d2fe2ec77bdfecda7e851c3f0475"
+    }
+  ]
+}

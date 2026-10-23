@@ -1,0 +1,93 @@
+{
+  "provider": "Poly Haven",
+  "license": "CC0-1.0",
+  "license_url": "https://polyhaven.com/license",
+  "authors": [
+    "Rob Tuytel",
+    "Rico Cilliers"
+  ],
+  "retrieved": "2026-10-23",
+  "status": "source review, not runtime approved",
+  "files": [
+    {
+      "asset": "coastal_cliff_01",
+      "path": "coastal-scans/coastal_cliff_01/coastal_cliff_01_2k.gltf",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/2k/coastal_cliff_01/coastal_cliff_01_2k.gltf",
+      "md5": "b740b84cdc6d7acb5274361b594f5e3a",
+      "bytes": 2825,
+      "sha256": "8e82762ae04616a4c383cf9b91ee42d01852c07445c7b66fcc199fc635024d47"
+    },
+    {
+      "asset": "coastal_cliff_01",
+      "path": "coastal-scans/coastal_cliff_01/coastal_cliff_01.bin",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/coastal_cliff_01/coastal_cliff_01.bin",
+      "md5": "d9f1e368b18c018e158d06ab9d924646",
+      "bytes": 13179840,
+      "sha256": "6833dfaf75e0d039e64bc09ad642c4be3361739f20048af32ad50fd8e6471a65"
+    },
+    {
+      "asset": "coastal_cliff_01",
+      "path": "coastal-scans/coastal_cliff_01/textures/coastal_cliff_01_nor_gl_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/coastal_cliff_01/coastal_cliff_01_nor_gl_2k.jpg",
+      "md5": "54f0fed4e2ee6893c8c114c4ec1bf66a",
+      "bytes": 3054804,
+      "sha256": "fea5db5ea6e3ae3f8dcaeb759b8a2395685c92f460e2f30c8edaef7216b1c027"
+    },
+    {
+      "asset": "coastal_cliff_01",
+      "path": "coastal-scans/coastal_cliff_01/textures/coastal_cliff_01_diff_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/coastal_cliff_01/coastal_cliff_01_diff_2k.jpg",
+      "md5": "9e1adf2e9f996d85c40f7dde57a97de8",
+      "bytes": 2465846,
+      "sha256": "ff7b68ec580561f0c5abeb3b269d746428f69260fc353e637a3cc69953a736b6"
+    },
+    {
+      "asset": "coastal_cliff_01",
+      "path": "coastal-scans/coastal_cliff_01/textures/coastal_cliff_01_arm_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/coastal_cliff_01/coastal_cliff_01_arm_2k.jpg",
+      "md5": "b4c23c612a9c38fa794d05a67857a645",
+      "bytes": 2181608,
+      "sha256": "1627b66d30b7a4b557856daa77a0d6f3d62bd722f3d79fa7a0b82fa9f03e0bd3"
+    },
+    {
+      "asset": "coast_rocks_01",
+      "path": "coastal-scans/coast_rocks_01/coast_rocks_01_2k.gltf",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/2k/coast_rocks_01/coast_rocks_01_2k.gltf",
+      "md5": "d763b6ff59061342a2e0b85c43abecf6",
+      "bytes": 2810,
+      "sha256": "9e75ec94594ce0a2e7625ed4339e2f2b35da192eb41630c59aaa8ccaa9e49240"
+    },
+    {
+      "asset": "coast_rocks_01",
+      "path": "coastal-scans/coast_rocks_01/coast_rocks_01.bin",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/coast_rocks_01/coast_rocks_01.bin",
+      "md5": "4cf9d5009388434a0520e1643127a725",
+      "bytes": 19320352,
+      "sha256": "3d1c33b18fdcf0efebab46526e94d17efccbc3c9a06dc14b89b04b93109fa3d2"
+    },
+    {
+      "asset": "coast_rocks_01",
+      "path": "coastal-scans/coast_rocks_01/textures/coast_rocks_01_diff_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/coast_rocks_01/coast_rocks_01_diff_2k.jpg",
+      "md5": "3f00b2ef63ccea7952236f1c6e32fa58",
+      "bytes": 3153413,
+      "sha256": "6c0f25720f0fa2142a569b5516a3539cd2cb3f02dc2312b3c1d2a9ae156d42fc"
+    },
+    {
+      "asset": "coast_rocks_01",
+      "path": "coastal-scans/coast_rocks_01/textures/coast_rocks_01_arm_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/coast_rocks_01/coast_rocks_01_arm_2k.jpg",
+      "md5": "e29f84556de4da79f3c08ddee3b7ad42",
+      "bytes": 2284440,
+      "sha256": "3bccfb7e593a7944b1a3564170206765a98f0669a78ba9167b483fb3a6b109f0"
+    },
+    {
+      "asset": "coast_rocks_01",
+      "path": "coastal-scans/coast_rocks_01/textures/coast_rocks_01_nor_gl_2k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/coast_rocks_01/coast_rocks_01_nor_gl_2k.jpg",
+      "md5": "1a06be557b5709d355e20a3fea390c2a",
+      "bytes": 3846383,
+      "sha256": "eb65a0b9f916825538471777f12c42ce20fd3fe59849d582d1557ea410e66dae"
+    }
+  ]
+}

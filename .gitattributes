@@ -2,3 +2,7 @@ assets/game/ui/fonts/OFL.txt -text
 assets/game/ui/fonts/OFL-*.txt -text
 art/vehicles/sources/gr86-community/gr86-runtime.js -text
 art/expressway/sources/vegetation/**/*.gltf -text
+art/expressway/sources/coastal-scans/**/*.gltf -text
+art/expressway/sources/ez-tree/LICENSE -text
+art/expressway/sources/ez-tree/textures-LICENSE.md -text
+art/expressway/sources/ez-tree/oak-large-preset.json -text
