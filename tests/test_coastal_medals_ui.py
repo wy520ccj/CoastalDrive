@@ -74,19 +74,22 @@ def test_result_medal_next_gap_and_table_clear_each_other_with_warnings(app, sec
         splits=tuple(seconds*index/5 for index in range(1, 6)),
         ghost_notice="成绩未保存，本次幽灵未关联。" if save_error else "最佳圈幽灵已保存，下次挑战可对照。")
     app.session.race.snapshot = race
+    app.session.mode = GameMode.TIME_TRIAL
     app.session.phase = Phase.RESULTS
     app._shown_phase = None
     app.refresh_panel()
-    assert expected in app.panel_note.getText()
-    assert "目标" in app.panel_detail.getText()
+    summary = app.driving_cards.summary_values
+    visible = summary['outcome'].getText()+summary['title']
+    assert expected in visible
+    assert "目标" in summary['goal'].getText()
     if save_error:
-        assert "新个人最佳" not in app.panel_note.getText() and save_error in app.panel_note.getText()
-    for column in app.result_sectors:
-        assert not column.isHidden()
-        lower, upper = column.getTightBounds(app.panel)
-        assert lower.z > app.buttons[0].getZ()+app.buttons[0]["frameSize"][3]+.01
-        assert upper.z < app.panel_detail.getTightBounds(app.panel)[0].z-.01
-        assert lower.x > -.94 and upper.x < .94
+        assert "新个人最佳" not in summary['notice'].getText() and save_error in summary['notice'].getText()
+    for label in summary['sectors']:
+        assert not label.isHidden()
+        lower, upper = label.getTightBounds(app.driving_cards.content)
+        assert upper.z < app.workshop_vehicle.frame['frameSize'][2]
+        assert lower.z > 1-860*2/941
+    assert all(column.isHidden() for column in app.result_sectors)
     app.buttons[0]["command"]()
     app.refresh_panel()
     assert all(column.isHidden() for column in app.result_sectors)

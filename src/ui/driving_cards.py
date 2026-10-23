@@ -18,21 +18,23 @@ class DrivingCards:
         self.active = False
         self.dark = False
         self.labels, self.primary = [], set()
-        self.frames, self.settings_knobs = [], []
-        self.settings_page = self.settings_app = self.settings_aspect = None
+        self.frames, self.garage_knobs = [], []
+        self.garage_page = self.garage_app = self.garage_aspect = None
+        self.summary_order, self.summary_values = (), {}
 
     def hide(self):
-        if self.settings_page is not None:
-            view = self.settings_app.workshop_vehicle
+        if self.garage_page is not None:
+            view = self.garage_app.workshop_vehicle
             if view.frame is not None and view.frame.getParent() == self.content:
                 view.hide()
             for button in self.buttons:
                 button['geom'] = None
                 button['text_font'] = self.font
-        self.settings_page = None
-        for knob in self.settings_knobs:
+        self.garage_page = None
+        self.summary_order, self.summary_values = (), {}
+        for knob in self.garage_knobs:
             knob.removeNode()
-        self.settings_knobs.clear()
+        self.garage_knobs.clear()
         for frame in self.frames:
             frame.destroy()
         self.frames.clear()
@@ -73,10 +75,12 @@ class DrivingCards:
         self.resize(app.getAspectRatio())
 
     def resize(self, aspect):
-        if self.settings_page is not None:
-            if aspect != self.settings_aspect:
-                self.settings_app._shown_phase = None
-                self.settings_app.refresh_panel()
+        if self.garage_page is not None:
+            if aspect != self.garage_aspect:
+                selected = self.garage_app.panel_selection
+                self.garage_app._shown_phase = None
+                self.garage_app.refresh_panel()
+                self.garage_app.select_panel_option(selected)
             return
         if self.active:
             self.panel.setScale(min(1., aspect/(16/9)))
@@ -131,8 +135,8 @@ class DrivingCards:
         return button
 
     def select(self, index):
-        if self.settings_page is not None:
-            from ui.menu_settings import style
+        if self.garage_page is not None:
+            from ui.menu_layout import style
 
             style(self, index)
             return

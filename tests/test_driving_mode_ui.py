@@ -168,9 +168,10 @@ def test_settings_cards_adjust_save_return_without_retaining_widgets(tmp_path):
         assert app.session.current == snapshot and app.session.simulation is world
         app.session.phase = Phase.PAUSED
         app.refresh_panel()
+        pause_count = len(DirectGuiWidget.guiDict)
         app.choose_audio_settings()
         app.buttons[7]['command']()
         assert app.session.phase == Phase.PAUSED and not app.audio_settings_page
-        assert len(DirectGuiWidget.guiDict) == widget_count
+        assert len(DirectGuiWidget.guiDict) == pause_count
     finally:
         app.close_game()

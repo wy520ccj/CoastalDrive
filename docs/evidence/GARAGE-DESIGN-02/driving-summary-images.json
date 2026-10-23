@@ -1,0 +1,158 @@
+{
+  "baseline": "28ce9e23e2863f9c438426356da38aa94bdede41",
+  "images": {
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\01-pause-time-trial.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\01-pause-time-trial.png",
+      "sha256": "ab5ca73350913e2d83e31966b4afa6bd321dad1ce24835fe54a60982365d240b"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\02-pause-audio.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\02-pause-audio.png",
+      "sha256": "2d08ba614b413235de7d09f0a11fb6eecd4ef38930403070f4ec93782b661eeb"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\03-pause-return-focus.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\03-pause-return-focus.png",
+      "sha256": "34db914e4618a509e23db70ddbc3360e5cce46453f626ac8b124670480727a1a"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\04-result-silver.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\04-result-silver.png",
+      "sha256": "a85b4a85684d72c8b5d6e8c3bf9a360ef31b423565a7a0f38ae357dcdb9637df"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\05-result-gold.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\05-result-gold.png",
+      "sha256": "eb24f2c992602e7dee68eb40b8af9f60fb870db89f6cbd43f5ea37a516641d2a"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\06-result-bronze.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\06-result-bronze.png",
+      "sha256": "5be8ce86155f1f52695751703d26b6960fca43dab73b4b0092cc69d47f399019"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\07-result-no-medal.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\07-result-no-medal.png",
+      "sha256": "4a8de4579afcde09a97e594a3350c342b2c93a847c4d999ac72612b988c52949"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\08-result-invalid.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\08-result-invalid.png",
+      "sha256": "dd533873f8e1743110bde51e15f46740760ca4fb59377be33537f5303c367333"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\09-result-save-failed.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\09-result-save-failed.png",
+      "sha256": "0fdc4f8f368cd30808f29cccef67343aaf7254bcaeeed86d5d6f6d64d1511726"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\10-result-ended-early.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\10-result-ended-early.png",
+      "sha256": "c170bd461be6b7f07a29965fb9dbaeb3287cf922e578d62ad60c65511b20e0e4"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\11-return-home.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\11-return-home.png",
+      "sha256": "9d5a8e9fd988c2f3dd2c9bf38f2624f6ac2249ebb7998ba01e15a4179adedcf6"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\12-pause-free-drive.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\12-pause-free-drive.png",
+      "sha256": "79d9b9ebfd5adf4ef054ddfb9c39c70609a3fdaaadd2379159618684373e1837"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\13-free-drive-ended.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\13-free-drive-ended.png",
+      "sha256": "ec45946a687710528bc5c5e7cf07fe652acae0e05e7c9afc7eecd24ac636561b"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\14-endless-free-drive.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\14-endless-free-drive.png",
+      "sha256": "e23227faa8c1ab7dc092c79ca2cbabc8149f5b0be91219a9b3b19892d32fc7ff"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\15-distance-failed.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\15-distance-failed.png",
+      "sha256": "acd021cc9260e9d8f45ee6da142b59b3de8bd61b911f22c774636eba2aac2ec2"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\16-distance-success.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\16-distance-success.png",
+      "sha256": "4ab82c150e171c830d0d367468ed1d58bcecfc19125ed2decfe9b242bd83617d"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\17-home-final.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\17-home-final.png",
+      "sha256": "a26a6f5bd8eec0436425f6a1944973b2318a2b267a4e7b1084dfd6c04ae36acb"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\summary.json": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\summary.json",
+      "sha256": "c890103d1bf09a039110b9796b38e7bc5f85a2585e9c36328f97654a67a56d1f"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1280\\contact-sheet.jpg": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1280\\contact-sheet.jpg",
+      "sha256": "787b472d68d84412d42a5ee4856f11639bc7e25a61945ae2a8df01ebf3219d47"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\01-pause-time-trial.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\01-pause-time-trial.png",
+      "sha256": "2b2e89af722471f31c25c52649f8c99b5ada6a46badf83f217d2ac4835e14969"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\02-pause-audio.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\02-pause-audio.png",
+      "sha256": "2bd746428473f6d8e3374075d216d37aa55a0221292b7d46994741a128d23a0c"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\03-pause-return-focus.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\03-pause-return-focus.png",
+      "sha256": "52b49ec609e0aa3ddc1bc9766d0cfdcdf2041673bba690fd3780b7fd52ee8b4d"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\04-result-silver.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\04-result-silver.png",
+      "sha256": "4625168ac67eec90f53572b23df01b4aa7cd6075d15175dae1d6ec41757befe6"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\05-result-gold.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\05-result-gold.png",
+      "sha256": "37555dc62f709b33eb598a90d17e4be22a8ed93aef5cac68afa77b013a5c008f"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\06-result-bronze.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\06-result-bronze.png",
+      "sha256": "2dd0ce2d33f79804ef9e69c8fe533d61ed4806ffaaac2d3b67081d4a178929bc"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\07-result-no-medal.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\07-result-no-medal.png",
+      "sha256": "238956f42315f694c07b99fe9bac33d6053b9f42b246d7f17e5d1e75a7a29ed3"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\08-result-invalid.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\08-result-invalid.png",
+      "sha256": "4032214918ef900b61b3a45976bd9761ca5b33d9213bea0dbf37fa3c9d806f40"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\09-result-save-failed.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\09-result-save-failed.png",
+      "sha256": "3ae3f3795540a177e3a6afc70f59b2e0fd53d5efce86226bff1648071889ff15"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\10-result-ended-early.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\10-result-ended-early.png",
+      "sha256": "6cff39947976d15d8fab1501542e357f4352a5ce1f3ba8d3187d6a24d7b0f55a"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\11-return-home.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\11-return-home.png",
+      "sha256": "01d759a1560f9b30a4629aaa382549dbf73e154a1f0b5fda0f25da84c5e5b859"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\12-pause-free-drive.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\12-pause-free-drive.png",
+      "sha256": "0bbd3a71add667fd7357cd0c71968b481e98445c980be0062575638c7f52fcd0"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\13-free-drive-ended.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\13-free-drive-ended.png",
+      "sha256": "5d4a7d4c4720fddd9fd1489c3be64d1952a1c30607e7ac4ae163eb94c6be2c1c"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\14-endless-free-drive.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\14-endless-free-drive.png",
+      "sha256": "dace0606c5e577b0869a3588e8342c3ebf113aa371d5712e0108cf7548f14610"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\15-distance-failed.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\15-distance-failed.png",
+      "sha256": "fd96fb78f9ad7ccaa246162dcd6d9670473e1cbf2c94ad74669031fd3e8164a0"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\16-distance-success.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\16-distance-success.png",
+      "sha256": "eba45ff082dab98f6290f2d962cae8248d67efa772c7ba29838444dcf137be09"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\17-home-final.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\17-home-final.png",
+      "sha256": "76f3c745e29009605514f7756a0f7374f256f4a0d94586ba8b1a3b07f3dbc73c"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\summary.json": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\summary.json",
+      "sha256": "6d7a29897caae1170c34b37ba89c77a45835c64084490109dbf25b33f74b2f96"
+    },
+    "docs\\evidence\\GARAGE-DESIGN-02\\driving-summary-1024\\contact-sheet.jpg": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-summary-delivery-1024\\contact-sheet.jpg",
+      "sha256": "0d5cd8cc56cb8967f49f6da3bcea312aa7c207fe42abf9d1d19e4a472ec40a4d"
+    }
+  },
+  "scope": "All 17 final native UI fixture captures per aspect archived. Each picture freezes the Snapshot; 0 new driving steps; four 60-tick loading initializations per final command are separate from driving."
+}

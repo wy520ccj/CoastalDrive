@@ -53,7 +53,7 @@ def test_results_horizontal_keys_and_selected_action(tmp_path, mode, track):
             app.messenger.send("arrow_right-up")
             app.refresh_panel()
             assert app.panel_selection == 1
-            assert app.buttons[1]["frameTexture"][0] == app.button_states[2]
+            assert not app.driving_cards.garage_edges[1].isHidden()
             press("d")
             assert app.panel_selection == 2
             press("arrow_right")
@@ -86,6 +86,47 @@ def test_results_horizontal_keys_and_selected_action(tmp_path, mode, track):
         assert app.session.phase == Phase.COUNTDOWN
         assert app.session.mode == mode
         assert app.session.simulation.track == track
+    finally:
+        app.close_game()
+
+
+def test_pause_groups_follow_screen_and_sound_returns_to_pause(tmp_path, monkeypatch):
+    app = CoastalDrive(smoke=True, output=tmp_path)
+    app.taskMgr.remove('finish-smoke')
+    app.taskMgr.remove('drive-update')
+    try:
+        app.session.phase = Phase.DRIVING
+        app.refresh_panel()
+        frozen, world = app.session.current, app.session.simulation
+        app.key_down('escape')
+        app.key_up('escape')
+        app.refresh_panel()
+        assert app.driving_cards.summary_order == (0, 2, 3, 4, 1, 5)
+        app.key_down('arrow_down')
+        app.key_up('arrow_down')
+        assert app.panel_selection == 2 and app.buttons[2]['text'].startswith('声音设置')
+        app.key_down('enter')
+        app.key_up('enter')
+        assert app.audio_settings_page
+        app.key_down('escape')
+        app.key_up('escape')
+        assert app.session.phase == Phase.PAUSED and app.panel_selection == 2
+        aspect = app.getAspectRatio()
+        monkeypatch.setattr(app, 'getAspectRatio', lambda: 4/3)
+        app.driving_cards.resize(4/3)
+        # simplepbr的显示缓冲在下一次正常渲染任务中激活。
+        for _ in range(3):
+            app.taskMgr.step()
+        assert app.panel_selection == 2 and app.workshop_vehicle.buffer.isActive()
+        monkeypatch.setattr(app, 'getAspectRatio', lambda: aspect)
+        app.driving_cards.resize(aspect)
+        for _ in range(3):
+            app.taskMgr.step()
+        assert app.panel_selection == 2 and app.session.simulation is world
+        app.key_down('escape')
+        app.key_up('escape')
+        assert app.session.phase == Phase.DRIVING and app.session.current == frozen
+        assert app.session.simulation is world and not app.workshop_vehicle.buffer.isActive()
     finally:
         app.close_game()
 

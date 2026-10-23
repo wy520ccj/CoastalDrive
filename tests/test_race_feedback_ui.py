@@ -45,20 +45,22 @@ def test_result_table_stays_clear_of_total_and_buttons_even_with_warning(app, in
                            new_best=not invalid, invalidated=invalid, invalid_reason="车辆复位" if invalid else "",
                            save_error="成绩暂未保存，请检查存储空间或目录权限")
     app.session.phase = Phase.RESULTS
+    app.session.mode = GameMode.TIME_TRIAL
     app.session.race.snapshot = state
     app._shown_phase = None
     app.refresh_panel()
-    for column in app.result_sectors:
-        assert not column.isHidden()
-        lower, upper = column.getTightBounds(app.panel)
-        assert lower.z > app.buttons[0].getZ()+app.buttons[0]["frameSize"][3]
-        assert upper.z < app.panel_detail.getTightBounds(app.panel)[0].z-.01
-        assert lower.x > -.94 and upper.x < .94
+    summary = app.driving_cards.summary_values
+    for label in summary['sectors']:
+        assert not label.isHidden()
+        lower, upper = label.getTightBounds(app.driving_cards.content)
+        assert upper.z < app.workshop_vehicle.frame['frameSize'][2]
+        assert lower.z > 1-860*2/941
+    deltas = [label.getText() for label in summary['sectors'][2::3]]
     if invalid:
-        assert all(value == "—" for value in app.result_sectors[2].getText().splitlines()[1:])
+        assert all(value == "—" for value in deltas)
     else:
-        assert "新个人最佳" in app.panel_note.getText()
-        assert app.result_sectors[2].getText().splitlines()[1] == "+1.000"
+        assert "本圈更快 · 尚未保存" in summary['notice'].getText()
+        assert deltas[0] == "+1.000"
     app.session.phase = Phase.MENU
     app.refresh_panel()
     assert all(column.isHidden() for column in app.result_sectors)

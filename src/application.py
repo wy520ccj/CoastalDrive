@@ -1104,7 +1104,11 @@ class CoastalDrive(ShowBase):
 
     def handle_panel_key(self, key):
         self.audio_cue("confirm" if key == "enter" else "select")
-        if self.audio_settings_page and key in ('arrow_up', 'w', 'arrow_down', 's'):
+        order = self.driving_cards.summary_order
+        if order and key in ('arrow_up', 'w', 'arrow_down', 's', 'arrow_left', 'a', 'arrow_right', 'd'):
+            direction = -1 if key in ('arrow_up', 'w', 'arrow_left', 'a') else 1
+            self.select_panel_option(order[(order.index(self.panel_selection)+direction) % len(order)])
+        elif self.audio_settings_page and key in ('arrow_up', 'w', 'arrow_down', 's'):
             rows = (0, 2, 4, 6, 7)
             row = self.panel_selection//2*2 if self.panel_selection < 6 else self.panel_selection
             direction = -1 if key in ('arrow_up', 'w') else 1
@@ -2150,6 +2154,7 @@ class CoastalDrive(ShowBase):
         else:
             self.panel.hide()
             return
+        summary_note = self.panel_note.getText()
         note_width = 0.99 if self.garage is not None else 1.37
         self.panel_note.setText(self.fit_lines(self.panel_note.getText(), note_width, 0.040))
         self.panel_detail.setText(self.fit_lines(self.panel_detail.getText(), 1.36, 0.041))
@@ -2331,6 +2336,20 @@ class CoastalDrive(ShowBase):
                 for column in self.result_sectors:
                     column.hide()
                 self.driving_cards.practice_result(self, result)
+        # 首页的普通驾驶使用同一车库构图；工程课题保留自身结果图表。
+        if (self.session.mode in (GameMode.TIME_TRIAL, GameMode.FREE_DRIVE, GameMode.DISTANCE_CHALLENGE)
+                and not (self.audio_settings_page or self.driving_mode_page or self.career_active)
+                and phase in (Phase.PAUSED, Phase.RESULTS)):
+            from ui.driving_summary import pause as draw_pause
+            from ui.driving_summary import result as draw_result
+
+            self.result_icon.hide()
+            for column in self.result_sectors:
+                column.hide()
+            if phase == Phase.PAUSED:
+                draw_pause(self.driving_cards, self)
+            else:
+                draw_result(self.driving_cards, self, summary_note)
 
     def pace_frame(self, task):
         remaining = self._render_deadline-time.perf_counter()
