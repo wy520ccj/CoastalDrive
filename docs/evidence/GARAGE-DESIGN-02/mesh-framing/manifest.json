@@ -1,0 +1,72 @@
+{
+  "baseline": "85c24ca6",
+  "sources": {
+    "src/ui/workshop_vehicle.py": "99cfff1d815156439909394fcadb48df34b7ade231b1087812fac88f4247fcb5",
+    "src/ui/garage_framing.py": "158cde5418ba34f8233f73f48ce1d6f4a1dfcacef7b6dc8cd500714682bfaf63",
+    "tests/test_garage_framing.py": "4d0f1e4377a3bc275edc6f127dae9c57a4a424f846f6da82eab1f21a27879037",
+    "tests/test_career_ui.py": "38c85d2d56768db2f337125d05a1c4e29d6bc1dd5f6a9fe4f626439bac2afd3b",
+    "tools/garage_design_check.py": "d4d31b9e16427c61bcc14d8ad08c7866accc59d4406b60a72d7fd0af4b11f9a8"
+  },
+  "images": {
+    "flow-1280\\01-collection-locked.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-mesh-framing-flow\\01-collection-locked.png",
+      "sha256": "e92172951821e9c9c10b5c5851063c97e70cc6eebe716b0c52f2a04bdf7c278f"
+    },
+    "flow-1280\\03-upgrade-tires.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-mesh-framing-flow\\03-upgrade-tires.png",
+      "sha256": "6c8e7489171516722d16488fcde30c28bbce424ebec332bf2b4010de49849555"
+    },
+    "flow-1280\\07-paint-saved.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-mesh-framing-flow\\07-paint-saved.png",
+      "sha256": "d877d3c73dc92c1fba7ae96158e3ad16b6510b730cdb7e72f762b962d2199cff"
+    },
+    "flow-1280\\08-orbit-0.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-mesh-framing-flow\\08-orbit-0.png",
+      "sha256": "45596af72123f97594fce12a5588d95b334d1024ff8a85fdb8f6bd8fabc1095c"
+    },
+    "flow-1280\\08-orbit-1.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-mesh-framing-flow\\08-orbit-1.png",
+      "sha256": "b89f5b3b3a2345b5ddee92103481de854bb09257150592f65d2e08429eff839d"
+    },
+    "flow-1280\\08-orbit-2.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-mesh-framing-flow\\08-orbit-2.png",
+      "sha256": "ad01e323fbc8105465da58420bba49ffc1bd290117bbb18ceae351c51f68d5c6"
+    },
+    "garage-1024\\cars.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-mesh-framing-1024\\cars.png",
+      "sha256": "a9256db0e6a3aa940516d9aa30f12025992bc3b4ee2fdf9f23a8ebb11c22967e"
+    },
+    "garage-1024\\upgrade-suspension.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-mesh-framing-1024\\upgrade-suspension.png",
+      "sha256": "22ba3d2c29190ea796420203a25faa58674ebfbfe3ce0fedf55268311d4cd22d"
+    },
+    "garage-1024\\paint.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-mesh-framing-1024\\paint.png",
+      "sha256": "8839bbf11075af87cdf5942692e41e68b722503af0ef6ead25cf7222357c2a37"
+    },
+    "summary-1024\\01-pause-time-trial.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-mesh-framing-summary\\01-pause-time-trial.png",
+      "sha256": "1f6314d2365802cad03e752e3e9a6073024cf0e55aeb5ec88a506ad13cc72be5"
+    },
+    "summary-1024\\04-result-silver.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-mesh-framing-summary\\04-result-silver.png",
+      "sha256": "21950323398c8801dd12ded7417382b9e8fdd6b43526bc7ff05211a55d46d504"
+    },
+    "summary-1024\\17-home-final.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-mesh-framing-summary\\17-home-final.png",
+      "sha256": "c20e177db15f9abbf80b3ef24c22cb6660dafd115e80ad3158495b492677a8c4"
+    }
+  },
+  "unchanged": {
+    "src/session.py": "035f882a78452df861bc43a7da4f13858c1ce80f86eb18ab441545680e90cc7c",
+    "src/simulation.py": "c2079fe1b7ba78e1dd7172f133dda982d6c5fd720f8bd760a2ffd42efbf05749",
+    "src/vehicle.py": "8c54c9e3107587fbd24dcb527702e0097cd395d1368c9936864939a58652b95f",
+    "src/vehicle_designs.py": "becc4c2c2fc41482b7340175d0bb3fcf35da35f233735d847105f85c161611f0",
+    "src/vehicle_workspace.py": "f8064846ffa1fe7fc13ac2bfde1d75dcfe476db2bd880de27a5dc797e1129e8f",
+    "src/career.py": "03826f41247ea55dd19309d5766162c638ce31fb77e74fd3ab94a70f9a07824b",
+    "src/career_run.py": "5cca857c2b95470fdbc603e260b2dcdcd0272f03686c9630c7dd7fad90e62b58",
+    "src/vehicle_visual.py": "8daa6a753990ddd7e4b6e19a8f3a1f77cf091668253c1be6f9ed294bbf06f1ae",
+    "src/skins.py": "8440fa33f65fff6be19a1034f857a48c255b6445b4a8b0ea5e3381aa3cfef519",
+    "src/career_garage.py": "895d3449aacb897ca4d3e4ed8e824d367038519950d038240a9f29561948ae49"
+  }
+}

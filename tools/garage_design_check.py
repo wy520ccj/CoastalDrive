@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'src'))
 
-from panda3d.core import Filename, Point2
+from panda3d.core import Filename
 
 from application import CoastalDrive
 from career_run import CareerResult
@@ -42,12 +42,11 @@ def check(output, size, design_id='coastal-gt'):
             x, z = button.getX(), button.getZ()
             l, r, b, t = button['frameSize']
             assert min(right, x+r) <= max(left, x+l) or min(top, z+t) <= max(bottom, z+b)
-        points = []
-        for corner in view.framing_points:
-            point = Point2()
-            assert view.camera.node().getLens().project(view.camera.getRelativePoint(view.scene, corner), point)
-            assert abs(point.x) <= .91 and abs(point.y) <= .87
-            points.append(tuple(point))
+        from ui.garage_framing import project_vertices
+
+        points = project_vertices(view.framing_vertices, view.scene, view.camera)
+        assert points is not None
+        assert (abs(points[:, 0]) <= .91).all() and (abs(points[:, 1]) <= .87).all()
         bounds.append({'page': name, 'vehicle_frame': list(view.frame['frameSize']),
             'projected_x': [min(p[0] for p in points), max(p[0] for p in points)],
             'projected_y': [min(p[1] for p in points), max(p[1] for p in points)]})

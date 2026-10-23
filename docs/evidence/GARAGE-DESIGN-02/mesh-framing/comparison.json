@@ -1,0 +1,80 @@
+{
+  "baseline": "85c24ca6",
+  "baseline_source_sha256": "e3a7080a40ee3fd61ecf24e102d6c4e1bca3a7b97c151521776928bfee22f130",
+  "unique_vertices": 56204,
+  "measurements": [
+    {
+      "aspect": 1.3,
+      "method": "baseline-box",
+      "angle": 35.0,
+      "width_fraction": 0.7045279971757215,
+      "height_fraction": 0.5269439863205414,
+      "orbit_seconds": 0.004702200007159263
+    },
+    {
+      "aspect": 1.3,
+      "method": "mesh-same-angle",
+      "angle": 35.0,
+      "width_fraction": 0.899126665294188,
+      "height_fraction": 0.7048761741494707,
+      "orbit_seconds": 0.04124700000102166
+    },
+    {
+      "aspect": 1.3,
+      "method": "mesh-default",
+      "angle": 55.0,
+      "width_fraction": 0.8992817605022813,
+      "height_fraction": 0.5512813718678472,
+      "orbit_seconds": 0.03797260001010727
+    },
+    {
+      "aspect": 1.6,
+      "method": "baseline-box",
+      "angle": 35.0,
+      "width_fraction": 0.7045279971757215,
+      "height_fraction": 0.6485464393968949,
+      "orbit_seconds": 0.0037874999979976565
+    },
+    {
+      "aspect": 1.6,
+      "method": "mesh-same-angle",
+      "angle": 35.0,
+      "width_fraction": 0.7963251378985543,
+      "height_fraction": 0.7496121690630082,
+      "orbit_seconds": 0.036332599993329495
+    },
+    {
+      "aspect": 1.6,
+      "method": "mesh-default",
+      "angle": 55.0,
+      "width_fraction": 0.8992817605022813,
+      "height_fraction": 0.6785001725657949,
+      "orbit_seconds": 0.039119499997468665
+    },
+    {
+      "aspect": 2.17,
+      "method": "baseline-box",
+      "angle": 35.0,
+      "width_fraction": 0.5605127483198488,
+      "height_fraction": 0.6730263877694092,
+      "orbit_seconds": 0.003937500005122274
+    },
+    {
+      "aspect": 2.17,
+      "method": "mesh-same-angle",
+      "angle": 35.0,
+      "width_fraction": 0.6146818774815728,
+      "height_fraction": 0.7496363470272889,
+      "orbit_seconds": 0.03834679999272339
+    },
+    {
+      "aspect": 2.17,
+      "method": "mesh-default",
+      "angle": 55.0,
+      "width_fraction": 0.755090085077861,
+      "height_fraction": 0.7492590511146393,
+      "orbit_seconds": 0.036391800007550046
+    }
+  ],
+  "scope": "headless projection diagnostic; one timing sample per case, not a runtime performance gate"
+}

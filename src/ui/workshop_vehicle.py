@@ -2,6 +2,7 @@
 
 import math
 
+import numpy as np
 import simplepbr
 from direct.gui.DirectGui import DirectFrame
 from panda3d.core import (
@@ -17,8 +18,6 @@ from panda3d.core import (
     LineSegs,
     NodePath,
     PerspectiveLens,
-    Point2,
-    Point3,
     TransparencyAttrib,
 )
 from simplepbr.envmap import EnvMap
@@ -26,6 +25,7 @@ from simplepbr.envmap import EnvMap
 from paths import resource_root
 from skins import apply_skin, vehicle_for_design
 from ui import theme
+from ui.garage_framing import mesh_vertices, project_vertices
 from ui.garage_paint import garage_paint_shader
 from vehicle_visual import load_vehicle, set_vehicle_reflection, vehicle_reflection
 
@@ -37,7 +37,7 @@ class WorkshopVehicle:
         self.frame = None
         self.identity = None
         self.framing_identity = None
-        self.framing_points = []
+        self.framing_vertices = None
         self.garage_environment = None
 
     def show(self, parent, box, vehicle, *, studio=False, skin_index=None):
@@ -103,7 +103,7 @@ class WorkshopVehicle:
             self.car_root = self.scene.attachNewNode('current-vehicle')
             self.studio = None
             self.contact_shadow = None
-            self.studio_angle = 35.
+            self.studio_angle = 55.
             previous_tasks = self.base.taskMgr.getTasksNamed('simplepbr update')
             self.pipeline = simplepbr.init(render_node=self.scene, window=self.buffer,
                 camera_node=self.camera, taskmgr=self.base.taskMgr, max_lights=1,
@@ -123,14 +123,10 @@ class WorkshopVehicle:
             self.wheel_radius = vehicle.config.wheel_radius+.035
         if self.frame is not None:
             self.frame.destroy()
-        if studio and self.framing_identity != identity:
-            self.framing_points = []
-            # 按各网格部件外廓取景，避免整车空盒角点把敞篷/长车的镜头推得过远。
-            for part in self.car_root.findAllMatches('**/+GeomNode'):
-                low, high = part.getTightBounds(self.scene)
-                self.framing_points.extend(Point3(x, y, z) for x in (low.x, high.x)
-                    for y in (low.y, high.y) for z in (low.z, high.z))
-            self.framing_identity = identity
+        geometry = (vehicle.design_id, vehicle.config)
+        if studio and self.framing_identity != geometry:
+            self.framing_vertices = mesh_vertices(self.car_root, self.scene)
+            self.framing_identity = geometry
         self.frame = DirectFrame(parent=parent, frameSize=box, frameColor=(1, 1, 1, 1),
                                  frameTexture=self.buffer.getTexture())
         self.camera.node().getLens().setAspectRatio((box[1]-box[0])/(box[3]-box[2]))
@@ -200,18 +196,11 @@ class WorkshopVehicle:
             radius = (near+far)/2
             self.camera.setPos(math.sin(angle)*radius, math.cos(angle)*radius, center.z+radius*.16)
             self.camera.lookAt(center)
-            projected_points = []
-            for point in self.framing_points:
-                projected = Point2()
-                visible = lens.project(
-                    self.camera.getRelativePoint(self.scene, point), projected)
-                if not visible:
-                    break
-                projected_points.append(projected)
+            projected = project_vertices(self.framing_vertices, self.scene, self.camera)
             ratio = float('inf')
-            if len(projected_points) == len(self.framing_points):
-                low_x, high_x = min(p.x for p in projected_points), max(p.x for p in projected_points)
-                low_y, high_y = min(p.y for p in projected_points), max(p.y for p in projected_points)
+            if projected is not None:
+                low_x, low_y = np.min(projected, axis=0)
+                high_x, high_y = np.max(projected, axis=0)
                 ratio = max((high_x-low_x)/1.8, (high_y-low_y)/1.50)
             if ratio <= 1.:
                 far = radius
@@ -219,6 +208,9 @@ class WorkshopVehicle:
                 near = radius
         self.camera.setPos(math.sin(angle)*far, math.cos(angle)*far, center.z+far*.16)
         self.camera.lookAt(center)
+        projected = project_vertices(self.framing_vertices, self.scene, self.camera)
+        low_x, low_y = np.min(projected, axis=0)
+        high_x, high_y = np.max(projected, axis=0)
         # 镜头偏移居中实际投影，避免近端车头使单侧留白迫使整车缩小。
         size = lens.getFilmSize()
         lens.setFilmOffset((low_x+high_x)*size.x/4, ((low_y+high_y)/2+.08)*size.y/2)
