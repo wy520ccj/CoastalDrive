@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "mode": "linear",
+  "size": [
+    1280,
+    720
+  ],
+  "font": {
+    "pixels_per_unit": 160.0,
+    "scale": 2.0,
+    "texture_margin": 2,
+    "poly_margin": 0.0,
+    "minfilter": 1
+  },
+  "new_driving_steps": 0
+}

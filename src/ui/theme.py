@@ -43,7 +43,11 @@ def load_font(filename=FONT_FILE):
     if not font.isValid():
         raise OSError(f"无法读取界面字体：{filename}")
     font.setPixelsPerUnit(FONT_PIXELS_PER_UNIT)
-    font.setMinfilter(SamplerState.FTLinear)
+    # 同一字形用于大标题和小提示，多级缩小采样避免细笔画漏采。
+    # 图集留边覆盖小字号的采样范围，几何留边防止抗锯齿边缘被截断。
+    font.setTextureMargin(16)
+    font.setPolyMargin(4)
+    font.setMinfilter(SamplerState.FTLinearMipmapLinear)
     font.setMagfilter(SamplerState.FTLinear)
     return font
 

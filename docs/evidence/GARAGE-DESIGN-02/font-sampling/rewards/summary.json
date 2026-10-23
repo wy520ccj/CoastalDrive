@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "new_driving_steps": 0,
+  "fixture_stars": 5,
+  "source": "isolated reward fixture; not completed race",
+  "font_atlases": {
+    "bold": {
+      "pages": 272,
+      "base_bytes": 17825792
+    },
+    "garage-regular": {
+      "pages": 51,
+      "base_bytes": 3342336
+    },
+    "display": {
+      "pages": 9,
+      "base_bytes": 589824
+    },
+    "icons": {
+      "pages": 5,
+      "base_bytes": 327680
+    }
+  }
+}

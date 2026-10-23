@@ -1,0 +1,174 @@
+{
+  "scope": "same UI source literal corpus; full font atlas stress not runtime memory benchmark",
+  "characters": 846,
+  "fonts": {
+    "fonts/SourceHanSansSC-Heavy.otf": {
+      "atlases": {
+        "linear": {
+          "pages": 746,
+          "atlas_base_bytes": 48889856,
+          "mipmaps_estimated_bytes": null
+        },
+        "mipmap": {
+          "pages": 769,
+          "atlas_base_bytes": 50397184,
+          "mipmaps_estimated_bytes": 67196245
+        }
+      },
+      "metrics_unchanged": true,
+      "metrics": [
+        {
+          "text": "升级改装",
+          "width": 4.0,
+          "height": 1.4500000476837158
+        },
+        {
+          "text": "运动前轮",
+          "width": 4.0,
+          "height": 1.4500000476837158
+        },
+        {
+          "text": "去试车 · 穿过海风",
+          "width": 8.449999809265137,
+          "height": 1.4500000476837158
+        },
+        {
+          "text": "0123456789 99.000 km/h",
+          "width": 12.603124618530273,
+          "height": 1.4500000476837158
+        },
+        {
+          "text": "COASTAL DRIVE",
+          "width": 7.934375286102295,
+          "height": 1.4500000476837158
+        }
+      ]
+    },
+    "fonts/SourceHanSansSC-Regular.otf": {
+      "atlases": {
+        "linear": {
+          "pages": 737,
+          "atlas_base_bytes": 48300032,
+          "mipmaps_estimated_bytes": null
+        },
+        "mipmap": {
+          "pages": 765,
+          "atlas_base_bytes": 50135040,
+          "mipmaps_estimated_bytes": 66846720
+        }
+      },
+      "metrics_unchanged": true,
+      "metrics": [
+        {
+          "text": "升级改装",
+          "width": 4.0,
+          "height": 1.4500000476837158
+        },
+        {
+          "text": "运动前轮",
+          "width": 4.0,
+          "height": 1.4500000476837158
+        },
+        {
+          "text": "去试车 · 穿过海风",
+          "width": 8.449999809265137,
+          "height": 1.4500000476837158
+        },
+        {
+          "text": "0123456789 99.000 km/h",
+          "width": 11.546875953674316,
+          "height": 1.4500000476837158
+        },
+        {
+          "text": "COASTAL DRIVE",
+          "width": 7.3406243324279785,
+          "height": 1.4500000476837158
+        }
+      ]
+    },
+    "fonts/ChakraPetch-BoldItalic.ttf": {
+      "atlases": {
+        "linear": {
+          "pages": 20,
+          "atlas_base_bytes": 1310720,
+          "mipmaps_estimated_bytes": null
+        },
+        "mipmap": {
+          "pages": 38,
+          "atlas_base_bytes": 2490368,
+          "mipmaps_estimated_bytes": 3320490
+        }
+      },
+      "metrics_unchanged": true,
+      "metrics": [
+        {
+          "text": "升级改装",
+          "width": 2.5223372357846707e-44,
+          "height": -2.5223372357846707e-44
+        },
+        {
+          "text": "运动前轮",
+          "width": 2.5223372357846707e-44,
+          "height": -2.5223372357846707e-44
+        },
+        {
+          "text": "去试车 · 穿过海风",
+          "width": 0.512499988079071,
+          "height": 1.3000000715255737
+        },
+        {
+          "text": "0123456789 99.000 km/h",
+          "width": 12.35312557220459,
+          "height": 1.3000000715255737
+        },
+        {
+          "text": "COASTAL DRIVE",
+          "width": 7.60312557220459,
+          "height": 1.3000000715255737
+        }
+      ]
+    },
+    "fonts/Tabler-Menu.ttf": {
+      "atlases": {
+        "linear": {
+          "pages": 3,
+          "atlas_base_bytes": 196608,
+          "mipmaps_estimated_bytes": null
+        },
+        "mipmap": {
+          "pages": 5,
+          "atlas_base_bytes": 327680,
+          "mipmaps_estimated_bytes": 436906
+        }
+      },
+      "metrics_unchanged": true,
+      "metrics": [
+        {
+          "text": "升级改装",
+          "width": 7.60312557220459,
+          "height": 1.3000000715255737
+        },
+        {
+          "text": "运动前轮",
+          "width": 7.60312557220459,
+          "height": 1.3000000715255737
+        },
+        {
+          "text": "去试车 · 穿过海风",
+          "width": 0.0,
+          "height": 1.0
+        },
+        {
+          "text": "0123456789 99.000 km/h",
+          "width": 0.0,
+          "height": 1.0
+        },
+        {
+          "text": "COASTAL DRIVE",
+          "width": 0.0,
+          "height": 1.0
+        }
+      ]
+    }
+  }
+}
