@@ -56,7 +56,7 @@ from sky_dome import make_sky
 from slalom_markers import SlalomMarkers
 from sprint_markers import SprintMarkers
 from test_track import OBSTACLES, TRACK_X
-from vehicle_visual import batch_driving_geometry, load_vehicle
+from vehicle_visual import batch_driving_geometry, load_vehicle, set_vehicle_reflection
 from world_props import collision_box
 
 
@@ -284,7 +284,12 @@ class Scene:
         if base.session.simulation.track == "endless":
             from environment.expressway_materials import style_sky
 
-            style_sky(self.sky, base.loader)
+            style_sky(self.sky, self.expressway_kit)
+            environment = self.expressway_kit['daylight-environment']
+            self.render.setShaderInput('sh_coeffs', environment.sh_coefficients)
+            set_vehicle_reflection(self.render, environment)
+            for part in (self.player, *self.wheels):
+                set_vehicle_reflection(part, environment)
             rotation = Mat4()
             self.sky.getQuat().conjugate().extractToMatrix(rotation)
             self.render.setShaderInput("expressway_sky", self.expressway_kit["sky"])
@@ -321,9 +326,9 @@ class Scene:
             fog.setExpDensity(foundation.FOG_DENSITY)
             self.base.setBackgroundColor(*foundation.HAZE)
         elif self.base.session.simulation.track == "endless":
-            ambient.setColor((0.18, 0.24, 0.30, 1))
-            sun.setColor((2.15, 2.18, 2.20, 1))
-            rail_sun.setColor((2.15, 2.18, 2.20, 1))
+            ambient.setColor((0.12, 0.17, 0.23, 1))
+            sun.setColor((3.1, 2.9, 2.6, 1))
+            rail_sun.setColor((3.1, 2.9, 2.6, 1))
             fog.setExpDensity(0.0015)
 
     def update_lighting(self, position):

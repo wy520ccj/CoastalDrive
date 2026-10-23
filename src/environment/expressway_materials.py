@@ -1,5 +1,7 @@
 """快速路独立的晴空、路堑表面和海湾材质。"""
 
+import json
+from functools import lru_cache
 from pathlib import Path
 
 from panda3d.core import Filename, Shader, Texture, TexturePool
@@ -41,10 +43,31 @@ def photographed_surface(name, *, color=False):
     return result
 
 
-def style_sky(sky, loader):
-    image = texture("expressway-sky")
-    image.setWrapV(Texture.WMClamp)
-    sky.setTexture(image, 2)
+@lru_cache(maxsize=1)
+def daylight_assets():
+    """天空、空气透视和照明共用同一实拍；源图是线性HDR，不能再按sRGB解码。"""
+    from simplepbr.envmap import EnvMap
+
+    folder = resource_root()/'assets/game/expressway'
+    for name in ('daylight-sky.hdr', 'daylight.env', 'daylight-manifest.json'):
+        if not (folder/name).is_file():
+            raise FileNotFoundError(f'缺少晴天环境资源：{folder/name}')
+    sky = Texture('coastal-daylight-sky')
+    if not sky.read(Filename.fromOsSpecific(str(folder/'daylight-sky.hdr'))):
+        raise OSError('无法读取晴天HDR天空')
+    sky.setFormat(Texture.FRgb16)
+    sky.setWrapU(Texture.WMRepeat)
+    sky.setWrapV(Texture.WMClamp)
+    sky.setMinfilter(Texture.FTLinearMipmapLinear)
+    sky.setAnisotropicDegree(4)
+    environment = EnvMap.from_file_path(Filename.fromOsSpecific(str(folder/'daylight.env')))
+    metadata = json.loads((folder/'daylight-manifest.json').read_text(encoding='utf-8'))
+    return sky, environment, metadata
+
+
+def style_sky(sky, kit):
+    sky.setTexture(kit['sky'], 2)
+    sky.setH(kit['daylight-metadata']['sky_heading_degrees'])
     sky.setShader(Shader.load(Shader.SLGLSL, shader_path("sky.vert"),
                              shader_path("sky.frag")), 2)
 
@@ -148,6 +171,21 @@ def distance_shader(*, details=False):
     expressway_dither(coverage);
 """
         fragment = fragment.replace("void main() {", "void main() {\n" + fade)
+    return Shader.make(Shader.SLGLSL, vertex, fragment)
+
+
+def foliage_shader():
+    """薄叶使用源遮罩和双面透光近似，仍接受同一太阳/阴影/空气透视。"""
+    from simplepbr._shaderutils import _load_shader_str
+
+    defines = {'MAX_LIGHTS': 1, 'ENABLE_SHADOWS': True, 'USE_330': True}
+    vertex = _load_shader_str('simplepbr.vert', defines.copy())
+    fragment = add_distance_haze(add_shadow_transition(_load_shader_str('simplepbr.frag', defines.copy())))
+    fragment = fragment.replace('void main() {', 'uniform float foliage_alpha_cutoff;\nvoid main() {')
+    fragment = fragment.replace('vec3 diffuse_color =',
+        'if (base_color.a < foliage_alpha_cutoff) discard;\n    vec3 diffuse_color =')
+    fragment = fragment.replace('func_params.n_dot_l = clamp(dot(n, l), 0.0, 1.0);',
+        'float nl = dot(n, l);\n        func_params.n_dot_l = max(nl, 0.0) + max(-nl, 0.0)*0.35;')
     return Shader.make(Shader.SLGLSL, vertex, fragment)
 
 

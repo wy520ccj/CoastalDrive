@@ -1,0 +1,24 @@
+{
+  "source": {
+    "size": 18429221,
+    "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/kloofendal_43d_clear_puresky_4k.hdr",
+    "md5": "4e0af6bcab0e373639f3b48b6677a2c1",
+    "file": "kloofendal_43d_clear_puresky_4k.hdr",
+    "sha256": "1f92cbf17e46659ff37c9770d065280da226896b0f56091c4c1fca071da7fbeb",
+    "source": "https://polyhaven.com/a/kloofendal_43d_clear_puresky",
+    "author": "Greg Zaal",
+    "license": "CC0-1.0"
+  },
+  "sky_heading_degrees": 17.53522476255523,
+  "source_sun_elevation_degrees": 42.890625,
+  "directional_sun": [
+    -0.3530068099498749,
+    -0.4813729226589203,
+    0.8022881746292114
+  ],
+  "cube_size": 128,
+  "prefiltered_samples": 64,
+  "indirect_radiance_limit": 4.0,
+  "sky_sha256": "1f92cbf17e46659ff37c9770d065280da226896b0f56091c4c1fca071da7fbeb",
+  "environment_sha256": "277f5d31d085c235ab4abdfcbbde9f5533e01dc711e3dc65c1ac57aacddbf319"
+}

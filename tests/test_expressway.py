@@ -85,30 +85,123 @@ def test_kit_clearance_uses_serialized_geometry(kit):
             assert low.x > 8.5 or high.x < -8.5
 
 
-def test_collision_tree_roots_and_trunks_survive(kit):
+def test_whole_source_trees_reach_original_roots(kit):
     assets, originals = kit
-    from panda3d.core import MaterialAttrib
-
-    def trunk(node):
-        result = []
-        for path in node.findAllMatches("**/+GeomNode"):
-            mesh = path.node()
-            for i in range(mesh.getNumGeoms()):
-                mat = mesh.getGeomState(i).getAttrib(MaterialAttrib)
-                if mat is not None and mat.getMaterial().getName() == "woodBarkDark":
-                    reader = GeomVertexReader(mesh.getGeom(i).getVertexData(), "vertex")
-                    while not reader.isAtEnd():
-                        result.append(tuple(node.getRelativePoint(path, tuple(reader.getData3f()))))
-        return result
-
-    for i, original in enumerate(originals):
-        assert trunk(assets[f"tree-{i}"]) == trunk(original)
-        assert trunk(original)
+    for i in range(len(originals)):
+        tree = assets[f'tree-{i}']
+        # 仅检查实际近景网格；远景卡片的透明留白不属于树根。
+        lod = tree.find('**/+LODNode')
+        low, high = lod.getChild(0).getTightBounds(tree)
+        assert low.z == pytest.approx(-.05, abs=.001)
+        assert high.z-low.z > 4
+        assert low.x < 0 < high.x
+        assert low.y < 0 < high.y
     for seed in (0, 17, 23):
         for index in range(4):
             for x, y, _, _ in segment(seed, index).trees:
                 for dx in (-0.3, 0, 0.3):
                     assert terrain_height(x + dx, index * 200 + y) == pytest.approx(-0.32)
+
+
+@pytest.mark.parametrize('curved', [False, True])
+def test_tree_physics_stays_at_original_centers_and_dimensions(curved):
+    from panda3d.bullet import BulletWorld
+
+    from highway_curve import HighwayCurve
+    from streamed_road import StreamedRoad
+
+    curve = HighwayCurve(23, hills=True) if curved else None
+    world = BulletWorld()
+    road = StreamedRoad(world, 23, curve)
+    index, origin = 12, 2000
+    road.add(index, origin)
+    trunks = [body for body in road.segments[index] if '-tree-' in body.getName()]
+    for body, (x, y, scale, heading) in zip(trunks, segment(23, index).trees, strict=True):
+        s = index*200+y
+        point = curve.sample(s, x) if curve else SimpleNamespace(x=x, y=s, z=0)
+        assert tuple(body.getTransform().getPos()) == pytest.approx(
+            (point.x, point.y-origin, point.z-.32+.7*scale), abs=.001)
+        assert tuple(body.getShape(0).getHalfExtentsWithMargin()) == pytest.approx(
+            (.09*scale, .09*scale, .65*scale), abs=.00001)
+        assert (body.getTransform().getHpr().x-heading+180)%360-180 == pytest.approx(0, abs=.0001)
+    assert trunks
+
+
+def test_source_foliage_keeps_alpha_masks_and_three_dimensional_distance_models(kit):
+    from panda3d.core import AlphaTestAttrib, PNMImage, TextureAttrib, TransparencyAttrib
+
+    assets, _ = kit
+    for name in ('broadleaf-a', 'fine-shrubs', 'source-grass'):
+        masks = []
+        for path in assets[name].findAllMatches('**/+GeomNode'):
+            for state in path.node().getGeomStates():
+                state = path.getNetState().compose(state)
+                assert not state.hasAttrib(TransparencyAttrib)
+                assert state.getAttrib(AlphaTestAttrib).getMode() == AlphaTestAttrib.MGreaterEqual
+                textures = state.getAttrib(TextureAttrib)
+                assert textures.getNumOnStages() == 1
+                texture = textures.getOnTexture(textures.getOnStage(0))
+                if texture.getNumComponents() == 4:
+                    pixels = PNMImage()
+                    assert texture.store(pixels)
+                    alpha = [pixels.getAlpha(x, y) for x in range(0, pixels.getXSize(), 32)
+                             for y in range(0, pixels.getYSize(), 32)]
+                    assert min(alpha) == 0
+                    assert max(alpha) > .9
+                    masks.append(texture.getName())
+        assert masks
+    for name in ('broadleaf-a', 'fine-shrubs'):
+        for child in assets[name].getChildren():
+            low, high = child.getTightBounds()
+            assert min(high-low) > .4
+
+
+def test_daylight_uses_same_original_linear_hdr_for_sky_and_environment(kit):
+    import hashlib
+
+    from panda3d.core import Texture
+
+    from paths import resource_root
+
+    assets, _ = kit
+    report = assets['daylight-metadata']
+    folder = resource_root()/'assets/game/expressway'
+    assert hashlib.sha256((folder/'daylight-sky.hdr').read_bytes()).hexdigest() == report['source']['sha256']
+    assert hashlib.sha256((folder/'daylight.env').read_bytes()).hexdigest() == report['environment_sha256']
+    assert assets['sky'].getFormat() == Texture.FRgb16
+    assert (assets['sky'].getXSize(), assets['sky'].getYSize()) == (4096, 2048)
+    assert report['source']['license'] == 'CC0-1.0'
+    coefficients = assets['daylight-environment'].sh_coefficients
+    assert max(coefficients[0]) > 0
+    assert all(math.isfinite(component) for value in coefficients for component in value)
+
+
+def test_photographed_sky_mesh_and_environment_share_actual_world_directions(kit):
+    from panda3d.core import LColor
+
+    from environment.expressway_materials import style_sky
+    from sky_dome import make_sky
+
+    assets, _ = kit
+    parent = NodePath('sky-probe')
+    sky = make_sky(SimpleNamespace(loader=AssetLoader()), parent)
+    style_sky(sky, assets)
+    geometry = sky.node().getGeom(0).getVertexData()
+    positions = GeomVertexReader(geometry, 'vertex')
+    coordinates = GeomVertexReader(geometry, 'texcoord')
+    panorama = assets['sky'].peek()
+    cube = assets['daylight-environment'].cubemap.peek()
+    for row, column in ((4, 3), (7, 13), (9, 24), (11, 38), (14, 43), (18, 30)):
+        positions.setRow(row*49+column)
+        coordinates.setRow(row*49+column)
+        direction = sky.getQuat().xform(positions.getData3f()).normalized()
+        uv = coordinates.getData2f()
+        shown, reflected = LColor(), LColor()
+        panorama.lookup(shown, uv.x, uv.y, 0)
+        cube.lookup(reflected, *direction)
+        expected = shown.xyz*min(1, 4/max(shown.xyz))
+        assert tuple(reflected.xyz) == pytest.approx(tuple(expected), abs=.04)
+    parent.removeNode()
 
 
 def test_scope_spacing_and_global_boundary():

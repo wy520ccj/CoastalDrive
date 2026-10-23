@@ -61,3 +61,5 @@ UI v1 已获用户观感认可并暂时冻结。环境开发从保留侧碰修�
 2026-10-19：用户指出弯道警示牌与隔音屏同位穿模，见[ENV-SIGN-CLEARANCE-01](tasks/ENV-SIGN-CLEARANCE-01.md)。屏障覆盖段含面板边缘的警示/限速小牌置于8.8米路肩，保留里程/模型/杆体与其他设施；实际BAM顶点投影与同视角前后图验证净距。只改表现布置，未改变道路/树木碰撞、车辆或交通。
 
 2026-10-23：按用户继续提升实际驾驶场景的要求，GARAGE-DESIGN-02将高速路面改为Poly Haven Asphalt03的CC0实拍底色/GL法线/粗糙度，地面改为Leafy Grass实拍底色；原始像素、作者、下载SHA及独立工具保留。原生PBR、物理表面与全图几何保持；路边土带从岩壁竖向坐标改为地面平铺，原海岸网格不修改。目标设计20与实际差距、T1/图像/失败见[evidence/GARAGE-DESIGN-02/road-materials.md](evidence/GARAGE-DESIGN-02/road-materials.md)。不以表面材质增量宣布全场景完成。
+
+2026-10-23接续：用户否定植被候选“一眼假”和整体阴暗后，实际查看Xbox官方FH5海岸截图，再生成23晴天目标。高速接入同一张Poly Haven CC0晴空HDRI的天空/间接光/车身反射；驾驶HUD减少深底遮挡。植被改用完整Island Tree、Rooibos b/e与Grass Medium真实网格，保留原种植点/物理碰撞，拒绝远景剪贴树和过度减面后的秃树；原生LOD共享网格，设施合批不展开其内部几何。来源/失败/差距见[daylight-vegetation证据](evidence/GARAGE-DESIGN-02/daylight-vegetation.md)。这仍是进行中的候选：地面密度、山海细节、植被材质完整性和整体自然感尚未达到参考图，不能把功能通过记为美术通过。

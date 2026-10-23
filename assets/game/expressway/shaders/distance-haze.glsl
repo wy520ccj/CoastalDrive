@@ -22,9 +22,6 @@ vec3 expressway_haze(vec3 color, vec3 world_position) {
     // 与天空球相同的经纬映射；高处远景不能拿地平线颜色覆盖云层。
     vec2 uv = vec2(atan(sky_direction.y, sky_direction.x) / 6.28318530718,
                    0.5 + asin(clamp(sky_direction.z, -1.0, 1.0)) / 3.14159265359);
-    vec3 sky = clamp(texture(expressway_sky, uv).rgb, 0.01, 0.96);
-    vec3 a = 6.2 * (sky - 1.0);
-    vec3 b = 1.7 * sky - 0.5;
-    vec3 radiance = (-b - sqrt(b*b - 4.0*a*0.06*sky))/(2.0*a) + 0.004;
+    vec3 radiance = texture(expressway_sky, uv).rgb;
     return mix(color, radiance, haze);
 }

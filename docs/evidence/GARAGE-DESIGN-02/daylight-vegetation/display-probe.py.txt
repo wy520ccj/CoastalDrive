@@ -1,0 +1,122 @@
+"""同镜位冻结快照的显示短窗，不能替代驾驶性能Gate。"""
+
+import argparse
+import ctypes
+import hashlib
+import json
+import os
+import subprocess
+import sys
+import time
+from dataclasses import asdict
+from pathlib import Path
+from types import ModuleType
+
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT/'src'))
+parser = argparse.ArgumentParser()
+parser.add_argument('--output', type=Path, required=True)
+parser.add_argument('--baseline-ref')
+args = parser.parse_args()
+args.output.mkdir(parents=True, exist_ok=False)
+os.environ['LOCALAPPDATA'] = str(args.output/'user')
+sources = {}
+for name in ('expressway_materials', 'expressway_vegetation', 'expressway', 'expressway_route'):
+    file = 'src/environment/'+name+'.py'
+    data = (subprocess.check_output(['git', 'show', args.baseline_ref+':'+file], cwd=ROOT)
+            if args.baseline_ref else (ROOT/file).read_bytes())
+    sources[file] = hashlib.sha256(data).hexdigest()
+    if args.baseline_ref:
+        module = ModuleType('environment.'+name)
+        module.__file__ = str(ROOT/file)
+        sys.modules[module.__name__] = module
+        exec(compile(data, file, 'exec'), module.__dict__)
+
+from panda3d.core import Filename
+
+from application import CoastalDrive
+from session import Phase
+from vehicle_designs import vehicle_design
+from vehicle_workspace import WorkspaceVehicle
+
+
+class Memory(ctypes.Structure):
+    _fields_ = [('cb', ctypes.c_ulong), ('faults', ctypes.c_ulong),
+                ('peak_rss', ctypes.c_size_t), ('rss', ctypes.c_size_t),
+                ('peak_paged', ctypes.c_size_t), ('paged', ctypes.c_size_t),
+                ('peak_nonpaged', ctypes.c_size_t), ('nonpaged', ctypes.c_size_t),
+                ('pagefile', ctypes.c_size_t), ('peak_pagefile', ctypes.c_size_t)]
+
+
+def memory():
+    row = Memory()
+    row.cb = ctypes.sizeof(row)
+    kernel = ctypes.windll.kernel32
+    kernel.GetCurrentProcess.restype = ctypes.c_void_p
+    psapi = ctypes.windll.psapi
+    psapi.GetProcessMemoryInfo.argtypes = [ctypes.c_void_p, ctypes.POINTER(Memory), ctypes.c_ulong]
+    if not psapi.GetProcessMemoryInfo(kernel.GetCurrentProcess(), ctypes.byref(row), row.cb):
+        raise ctypes.WinError()
+    return {'rss_mib': row.rss/2**20, 'peak_rss_mib': row.peak_rss/2**20,
+            'pagefile_mib': row.pagefile/2**20}
+
+
+def stats(values):
+    ordered = sorted(values)
+    return {'mean_ms': sum(values)/len(values), 'p95_ms': ordered[int((len(values)-1)*.95)],
+            'p99_ms': ordered[int((len(values)-1)*.99)], 'max_ms': max(values)}
+
+
+started = time.perf_counter()
+app = CoastalDrive(smoke=True, output=args.output, render_size=(1280, 720),
+    workspace_vehicle=WorkspaceVehicle('porsche-930', vehicle_design('porsche-930').config))
+app.taskMgr.remove('finish-smoke')
+app.taskMgr.remove('drive-update')
+try:
+    app.skin_index = 4
+    app.open_career()
+    app.career_action('start', 'first-drive')
+    while app.session.phase == Phase.COUNTDOWN:
+        app.session.tick()
+    first = app.session.current.tick
+    app.session.keyboard.press('w')
+    for _ in range(240):
+        app.session.tick()
+    app.session.keyboard.clear()
+    app.refresh_panel()
+    app.apply_scene(app.session.current, 0.)
+    app.hud.resize(app.getAspectRatio())
+    app.hud.update(app.session.current, app.session.race.snapshot, app.session.highway.snapshot,
+                  track=app.session.simulation.track, countdown='', notice='', driving_mode=app.session.driving_mode)
+    init_wall = time.perf_counter()-started
+    state = asdict(app.session.current)
+    for _ in range(60):
+        app.taskMgr.step()
+        app.graphicsEngine.syncFrame()
+    rows = []
+    for _ in range(180):
+        wall, cpu = time.perf_counter(), time.process_time()
+        app.taskMgr.step()
+        app.graphicsEngine.syncFrame()
+        rows.append({'wall_ms': (time.perf_counter()-wall)*1000,
+                     'process_cpu_ms': (time.process_time()-cpu)*1000})
+    assert asdict(app.session.current) == state
+    textures = []
+    if not args.baseline_ref:
+        for texture in app.scene.expressway_kit['broadleaf-a'].findAllTextures():
+            textures.append({'name': texture.getName(), 'ram_bytes': texture.getRamImageSize(),
+                             'width': texture.getXSize(), 'height': texture.getYSize(),
+                             'components': texture.getNumComponents()})
+    app.win.getScreenshot().write(Filename.fromOsSpecific(str(args.output/'display.png')))
+    report = {'baseline_ref': args.baseline_ref, 'sources': sources, 'size': [1280, 720],
+              'frames': len(rows), 'warmup_frames': 60, 'snapshot_tick': state['tick'],
+              'new_driving_steps': app.session.current.tick-first,
+              'initialization_and_240_steps_wall_seconds': init_wall,
+              'frame_wall': stats([r['wall_ms'] for r in rows]),
+              'frame_process_cpu': stats([r['process_cpu_ms'] for r in rows]),
+              'memory': memory(), 'tree_textures': textures,
+              'scope': '固定快照/固定镜位/同步显示短窗；非实际驾驶FPS、GPU计时或性能Gate。', 'samples': rows}
+    (args.output/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+    print(json.dumps({k:v for k,v in report.items() if k not in ('samples','sources','tree_textures')},ensure_ascii=False))
+finally:
+    app.close_game()

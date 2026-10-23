@@ -1,0 +1,36 @@
+CoastalDrive photographed vegetation
+
+Sources: Poly Haven, CC0 1.0 Universal
+https://polyhaven.com/license
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Island Tree 01
+https://polyhaven.com/a/island_tree_01
+Rob Tuytel: scanning, processing
+Rico Cilliers: cleanup, processing
+
+Wild Rooibos Bush
+https://polyhaven.com/a/wild_rooibos_bush
+James Ray Cock: modeling
+Jenelle van Heerden: photography
+
+Grass Medium 01
+https://polyhaven.com/a/grass_medium_01
+Rob Tuytel: photography
+Rico Cilliers: modeling
+
+Powered by Poly Haven. Original downloads and author metadata are preserved in
+art/expressway/sources/vegetation, with URLs and SHA256 in manifest.json.
+
+CoastalDrive processing: select Island Tree LOD0 / Rooibos variant b /
+Grass small a and tiny c; apply source transforms; fit to local meter units;
+join separately published original alpha maps to base color; tree mesh
+decimation to 5.5 percent (87967 triangles), shared between near and far;
+retain source shrub b / e variants and
+grass small a / tiny c variants. Earlier flat distant billboard experiments
+were rejected as visually implausible and are not used. Runtime includes
+base color plus alpha only, roughness 1, nonmetallic, native distance LOD.
+Original PBR maps and complete source models remain in art sources.
+No hand-drawn plant images or generated art are used as runtime vegetation.
+Existing planting centers and independent physical tree collisions unchanged.
+The final runtime uses three-dimensional near and far source meshes only.

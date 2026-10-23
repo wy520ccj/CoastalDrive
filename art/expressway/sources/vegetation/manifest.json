@@ -1,0 +1,201 @@
+{
+  "provider": "Poly Haven",
+  "license": "CC0-1.0",
+  "license_url": "https://polyhaven.com/license",
+  "credit": "Powered by Poly Haven",
+  "retrieved": "2026-10-23",
+  "files": [
+    {
+      "asset": "island_tree_01",
+      "path": "art/expressway/sources/vegetation/island_tree_01/island_tree_01.bin",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/island_tree_01/island_tree_01.bin",
+      "bytes": 60709812,
+      "md5": "8271f2d12c2727bd647ce0c242acdcec",
+      "sha256": "1faa817b46e24ed6fc90d3ec72188a0dc5ac75e82c89b3dd3c5fdaecf7cc005c"
+    },
+    {
+      "asset": "island_tree_01",
+      "path": "art/expressway/sources/vegetation/island_tree_01/island_tree_01_1k.gltf",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/island_tree_01/island_tree_01_1k.gltf",
+      "bytes": 8576,
+      "md5": "fbc0c570ebd71ea88cedc1f9d5edb835",
+      "sha256": "78e905a40670bfabb2760601d4d9a6c17193a50d68e6271c66893eb7bd75906d"
+    },
+    {
+      "asset": "island_tree_01",
+      "path": "art/expressway/sources/vegetation/island_tree_01/textures/island_tree_01_arm_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/island_tree_01/island_tree_01_arm_1k.jpg",
+      "bytes": 727403,
+      "md5": "8077da7d1a001867c0da0cde6bc807f2",
+      "sha256": "bf972dff0fbc71f146b4c02103fc3596477a49a9eff46b87b13c89b7b90d18ca"
+    },
+    {
+      "asset": "island_tree_01",
+      "path": "art/expressway/sources/vegetation/island_tree_01/textures/island_tree_01_branches_arm_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/island_tree_01/island_tree_01_branches_arm_1k.jpg",
+      "bytes": 484806,
+      "md5": "5b6f5b3838f4a8f60fea14fa3a3fef9f",
+      "sha256": "9e3f82263247ce4f619692cea4c4f6fe9936ff465a86623481849062642c7d05"
+    },
+    {
+      "asset": "island_tree_01",
+      "path": "art/expressway/sources/vegetation/island_tree_01/textures/island_tree_01_branches_diff_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/island_tree_01/island_tree_01_branches_diff_1k.jpg",
+      "bytes": 528304,
+      "md5": "7792907fe2b2b748c129a2384192a579",
+      "sha256": "bee5ec22196e9e31ad0c95a5a9b4636571cc0124d5bb27a92f1e307d289cc60d"
+    },
+    {
+      "asset": "island_tree_01",
+      "path": "art/expressway/sources/vegetation/island_tree_01/textures/island_tree_01_branches_nor_gl_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/island_tree_01/island_tree_01_branches_nor_gl_1k.jpg",
+      "bytes": 819101,
+      "md5": "789084affb01f4a22290a848558f5e12",
+      "sha256": "2d67393ba76a0f49cf965fa0c99d8c16268e71e87b1203d35539bfdb971a514e"
+    },
+    {
+      "asset": "island_tree_01",
+      "path": "art/expressway/sources/vegetation/island_tree_01/textures/island_tree_01_diff_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/island_tree_01/island_tree_01_diff_1k.jpg",
+      "bytes": 791327,
+      "md5": "8a67489846657df6b859d97e0b80fcf4",
+      "sha256": "51bff9a3a6ed7d89ff4c73f01708b7267ed8d7a82b0cb12343741894f708218f"
+    },
+    {
+      "asset": "island_tree_01",
+      "path": "art/expressway/sources/vegetation/island_tree_01/textures/island_tree_01_leaves_alpha_1k.png",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/island_tree_01/island_tree_01_leaves_alpha_1k.png",
+      "bytes": 57438,
+      "md5": "5ad9fb9a06e70c069bd3d3ba23577375",
+      "sha256": "f4341f147988dbe6b58d9ca841a8f0e4bcff25bc40d05f9877da82006d489c39"
+    },
+    {
+      "asset": "island_tree_01",
+      "path": "art/expressway/sources/vegetation/island_tree_01/textures/island_tree_01_leaves_arm_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/island_tree_01/island_tree_01_leaves_arm_1k.jpg",
+      "bytes": 489476,
+      "md5": "27b06c4a53ff115ed7d51ee94e417257",
+      "sha256": "90da3a072dbcb052715b1313b9dbc69a4aa8a09a31a4b3868411a2bb51d72037"
+    },
+    {
+      "asset": "island_tree_01",
+      "path": "art/expressway/sources/vegetation/island_tree_01/textures/island_tree_01_leaves_diff_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/island_tree_01/island_tree_01_leaves_diff_1k.jpg",
+      "bytes": 191886,
+      "md5": "1356cbb5a5dd1318f9f2a01eddbf03e1",
+      "sha256": "f56d762a1507754752abf164cc12acbc1e87ce87fa609ac44b98a1b0037c89d8"
+    },
+    {
+      "asset": "island_tree_01",
+      "path": "art/expressway/sources/vegetation/island_tree_01/textures/island_tree_01_leaves_nor_gl_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/island_tree_01/island_tree_01_leaves_nor_gl_1k.jpg",
+      "bytes": 379443,
+      "md5": "a08ffb98b5ffb7dfa682e05a1639c642",
+      "sha256": "07ba461c0c95da4e49a42981766bdb6191d4c3c4d815796c082266dcc3cecdb8"
+    },
+    {
+      "asset": "island_tree_01",
+      "path": "art/expressway/sources/vegetation/island_tree_01/textures/island_tree_01_nor_gl_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/island_tree_01/island_tree_01_nor_gl_1k.jpg",
+      "bytes": 1207134,
+      "md5": "3871f67863453a16b866950202fa2b7f",
+      "sha256": "ca22e428e1b1ebac47b2fc67ec355700c8779d6628d2fc6c3ebae9002988f63e"
+    },
+    {
+      "asset": "wild_rooibos_bush",
+      "path": "art/expressway/sources/vegetation/wild_rooibos_bush/textures/wild_rooibos_bush_alpha_1k.png",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/wild_rooibos_bush/wild_rooibos_bush_alpha_1k.png",
+      "bytes": 90888,
+      "md5": "f58e9c4d8874751b2a02dcc65c11c655",
+      "sha256": "6a9fcd7a62aab1366b0ae50273c4a638591e932049a647ccadce6687ce657b72"
+    },
+    {
+      "asset": "wild_rooibos_bush",
+      "path": "art/expressway/sources/vegetation/wild_rooibos_bush/textures/wild_rooibos_bush_arm_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_arm_1k.jpg",
+      "bytes": 367273,
+      "md5": "bd65f1b013b7df7d75ef87d9a66b669c",
+      "sha256": "e0e512f263b8f1fe1c485e61912ba1ce5d42b397cf9a4e2b1786677e732bb84b"
+    },
+    {
+      "asset": "wild_rooibos_bush",
+      "path": "art/expressway/sources/vegetation/wild_rooibos_bush/textures/wild_rooibos_bush_diff_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_diff_1k.jpg",
+      "bytes": 374003,
+      "md5": "47ee13b7a87d2aff07c0ec708a33f6ab",
+      "sha256": "d963cdaf769bc39bb57295d518b37cd9456168cf5e3b82fd59f58c98d3faf596"
+    },
+    {
+      "asset": "wild_rooibos_bush",
+      "path": "art/expressway/sources/vegetation/wild_rooibos_bush/textures/wild_rooibos_bush_nor_gl_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_1k.jpg",
+      "bytes": 463170,
+      "md5": "78a6bd59ce4a2e21fb01cadf382a1338",
+      "sha256": "ffd557b4cb732d24988d41741398df150567f3ac9d1433f11b88d60158c953d4"
+    },
+    {
+      "asset": "wild_rooibos_bush",
+      "path": "art/expressway/sources/vegetation/wild_rooibos_bush/wild_rooibos_bush.bin",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/wild_rooibos_bush/wild_rooibos_bush.bin",
+      "bytes": 1236928,
+      "md5": "0d6c39ac444bac0381ecdff32a191a9c",
+      "sha256": "7a3471b4d110fe9927f4a200191eae86fa3c0a08f8e8e797d22e94a1703322e1"
+    },
+    {
+      "asset": "wild_rooibos_bush",
+      "path": "art/expressway/sources/vegetation/wild_rooibos_bush/wild_rooibos_bush_1k.gltf",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/wild_rooibos_bush/wild_rooibos_bush_1k.gltf",
+      "bytes": 23122,
+      "md5": "589911681acc2ebac68ff12ded20460d",
+      "sha256": "7f3fb17e4606e33d0bc4239c4901c9610b4bd17fe26b6780ba11ab4493f25d29"
+    },
+    {
+      "asset": "grass_medium_01",
+      "path": "art/expressway/sources/vegetation/grass_medium_01/grass_medium_01.bin",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/grass_medium_01/grass_medium_01.bin",
+      "bytes": 1006632,
+      "md5": "e0527a0561c2dae5b7b5c1b478d8c6bf",
+      "sha256": "f4587cabdb96a2e96d8be644923dc954a248edfaaa717a0ff224cacb898bee1f"
+    },
+    {
+      "asset": "grass_medium_01",
+      "path": "art/expressway/sources/vegetation/grass_medium_01/grass_medium_01_1k.gltf",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/grass_medium_01/grass_medium_01_1k.gltf",
+      "bytes": 27110,
+      "md5": "28dd8247f3faa749bf87a0b84be01e7e",
+      "sha256": "3e5e2a314c94e16de54fd7c28e41709731fbd2b1613ab539f1544f622ddb6a85"
+    },
+    {
+      "asset": "grass_medium_01",
+      "path": "art/expressway/sources/vegetation/grass_medium_01/textures/grass_medium_01_alpha_1k.png",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/grass_medium_01/grass_medium_01_alpha_1k.png",
+      "bytes": 648718,
+      "md5": "6b5b251ef1ca9a69ab9f49def66d758a",
+      "sha256": "711a8e49af758d6a6ce1f610db858899a27be19da6d1866bd35c13bc7b8ffeff"
+    },
+    {
+      "asset": "grass_medium_01",
+      "path": "art/expressway/sources/vegetation/grass_medium_01/textures/grass_medium_01_arm_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/grass_medium_01/grass_medium_01_arm_1k.jpg",
+      "bytes": 679518,
+      "md5": "37ed2730a507b681af2e9f9f7ef3ae5e",
+      "sha256": "9a3a30f72bc02f4398967c5b08f2d20cce30bd423a2613b42a727034296fa3ae"
+    },
+    {
+      "asset": "grass_medium_01",
+      "path": "art/expressway/sources/vegetation/grass_medium_01/textures/grass_medium_01_diff_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/grass_medium_01/grass_medium_01_diff_1k.jpg",
+      "bytes": 395673,
+      "md5": "6b18ed50d776fd20c1304d9994bd764e",
+      "sha256": "71495bd6a11fddcab0aaff38246fea1a7b802a705483f1c7cbca53955daa8050"
+    },
+    {
+      "asset": "grass_medium_01",
+      "path": "art/expressway/sources/vegetation/grass_medium_01/textures/grass_medium_01_nor_gl_1k.jpg",
+      "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/grass_medium_01/grass_medium_01_nor_gl_1k.jpg",
+      "bytes": 956166,
+      "md5": "fcf43dd1253f56e4c361079f34155c37",
+      "sha256": "cae298d3d1d7ff7c7e210ad8ac772b96706e356f9315a6b04fde373ce01ccf1e"
+    }
+  ]
+}

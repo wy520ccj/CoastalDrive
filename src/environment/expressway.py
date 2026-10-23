@@ -8,7 +8,6 @@ from panda3d.core import (
     Filename,
     GeomVertexWriter,
     Material,
-    MaterialAttrib,
     NodePath,
     Texture,
     Vec3,
@@ -24,7 +23,7 @@ END = 800
 KIT_NAMES = ("lamp", "reflector", "gantry", "advance-sign", "soundwall",
              "crash-cushion", "drain-grate", "kilometer", "equipment", "overpass",
              "broadleaf-crown", "shrub-bank")
-LANDSCAPE_NAMES = ("broadleaf-a", "broadleaf-b", "fine-crown", "fine-shrubs", "strata-shelf")
+LANDSCAPE_NAMES = ("strata-shelf",)
 GRASS = (0.25, 0.34, 0.13, 1)
 ROCK = (0.49, 0.46, 0.34, 1)
 SOIL = (0.36, 0.30, 0.18, 1)
@@ -68,9 +67,10 @@ def load_kit(loader, parent, old_trees):
     kit["aggregate"].setWrapV(Texture.WMRepeat)
     kit["aggregate"].setMinfilter(Texture.FTLinearMipmapLinear)
     kit["aggregate"].setAnisotropicDegree(8)
-    kit["sky"] = loader.loadTexture(Filename.fromOsSpecific(str(folder / "expressway-sky.png")))
     from environment.expressway_materials import (
+        daylight_assets,
         distance_shader,
+        foliage_shader,
         photographed_surface,
         road_shadow_shader,
         route_water_shader,
@@ -78,6 +78,7 @@ def load_kit(loader, parent, old_trees):
         terrain_shader,
     )
 
+    kit['sky'], kit['daylight-environment'], kit['daylight-metadata'] = daylight_assets()
     kit.update(surface_textures())
     kit['road-albedo'] = photographed_surface('asphalt_03_diff_2k.jpg', color=True)
     kit['road-normal'] = photographed_surface('asphalt_03_nor_gl_2k.jpg')
@@ -98,20 +99,28 @@ def load_kit(loader, parent, old_trees):
             raise FileNotFoundError(f"缺少高速Blender资产：{path}")
         kit[name] = NodePath(gltf.load_model(Filename.fromOsSpecific(str(path))))
         kit[name].reparentTo(parent)
-    for variant, source in enumerate(old_trees):
-        # 深拷贝几何节点后只移除叶片，保留碰撞树干的网格和导入变换。
-        tree = source.copyTo(parent)
-        for path in tree.findAllMatches("**/+GeomNode"):
-            node = path.node()
-            for i in reversed(range(node.getNumGeoms())):
-                mat = node.getGeomState(i).getAttrib(MaterialAttrib).getMaterial()
-                if mat.getName() == "leafsDark":
-                    node.removeGeom(i)
-        _, trunk_top = tree.getTightBounds()
-        crown = kit["fine-crown"].copyTo(tree)
-        crown.setScale(0.58, 0.62, 0.65)
-        crown_low, _ = crown.getTightBounds(tree)
-        crown.setZ(trunk_top.z - 0.12 - crown_low.z)
+    path = folder/'photographed-vegetation.bam'
+    if not path.is_file():
+        raise FileNotFoundError(f'缺少源植物资源：{path}')
+    plants = loader.loadModel(Filename.fromOsSpecific(str(path)))
+    leaf_shader = foliage_shader()
+    # 旧布局键保留，植物改为有来源的完整网格，不移动原种植点。
+    kit['foliage-shader'] = leaf_shader
+    for name in ('broadleaf-a', 'broadleaf-b', 'fine-shrubs', 'source-grass'):
+        model = plants.find('**/'+name)
+        if model.isEmpty():
+            raise ValueError(f'源植物包缺少模型：{name}')
+        kit[name] = model.copyTo(parent)
+        kit[name].setShader(leaf_shader, 2)
+        kit[name].setShaderInput('foliage_alpha_cutoff', .4)
+        for distant in kit[name].findAllMatches('**/=distant-plant'):
+            distant.setShaderInput('foliage_alpha_cutoff', .12)
+    for variant in range(len(old_trees)):
+        # 整株源树从根部落地，物理树干仍由streamed_road独立维护。
+        tree = parent.attachNewNode(f'tree-{variant}')
+        body = kit['broadleaf-a'].copyTo(tree)
+        body.setScale(.78, .78, .88)
+        body.setZ(-.05)
         kit[f"tree-{variant}"] = tree
     # 工程模块使用顶点色；共享同一个白色粗糙材质，避免每根杆件拆成绘制调用。
     surface = Material("expressway-surface")

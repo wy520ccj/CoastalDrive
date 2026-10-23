@@ -1,0 +1,73 @@
+{
+  "date_published": 1666310400,
+  "sponsors": [
+    "78546118"
+  ],
+  "name": "Island Tree 01",
+  "type": 2,
+  "staging": null,
+  "info": null,
+  "authors": {
+    "Rob Tuytel": "scanning, processing",
+    "Rico Cilliers": "cleanup, processing"
+  },
+  "tags": [
+    "tree",
+    "natural",
+    "nature",
+    "green",
+    "plant",
+    "outdoor",
+    "leaf",
+    "botany",
+    "leaves",
+    "forest",
+    "bush",
+    "jungle",
+    "foliage",
+    "island",
+    "coastal",
+    "geometry nodes",
+    "trunk",
+    "bark"
+  ],
+  "geonodes": true,
+  "categories": [
+    "nature",
+    "plants",
+    "trees",
+    "collection: verdant_trail"
+  ],
+  "max_resolution": [
+    8192,
+    8192
+  ],
+  "polycount": 3729692,
+  "files_hash": "29bbda3fd0ebe9974d015ba2a9d939525eb6811b",
+  "texel_density": 41158.77489289984,
+  "dimensions": [
+    12464.419603347778,
+    4818.506717681885,
+    5027.44660153985
+  ],
+  "lods": true,
+  "description": "Free 8K tree model with twisted gnarled trunk, high-detail bark, exposed roots and a dense, wind-sculpted coastal canopy of small green leaves.",
+  "category_id": "6f8ff47d-ba79-5786-8199-a90ccceb01fd",
+  "category": "Nature/Trees/Coastal Trees",
+  "collections": [
+    "verdant_trail"
+  ],
+  "attributes": {
+    "condition": [
+      "weathered"
+    ],
+    "material": [
+      "wood"
+    ],
+    "lods": true,
+    "geonodes": true
+  },
+  "img_version": "39983d06",
+  "download_count": 72542,
+  "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/island_tree_01.png?width=256&height=256&format=webp&v=39983d06"
+}

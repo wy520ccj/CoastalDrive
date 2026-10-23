@@ -1,0 +1,38 @@
+[
+  {
+    "file": "textures/wild_rooibos_bush_alpha_1k.png",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/wild_rooibos_bush/wild_rooibos_bush_alpha_1k.png",
+    "md5": "f58e9c4d8874751b2a02dcc65c11c655",
+    "sha256": "6a9fcd7a62aab1366b0ae50273c4a638591e932049a647ccadce6687ce657b72"
+  },
+  {
+    "file": "textures/wild_rooibos_bush_arm_1k.jpg",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_arm_1k.jpg",
+    "md5": "bd65f1b013b7df7d75ef87d9a66b669c",
+    "sha256": "e0e512f263b8f1fe1c485e61912ba1ce5d42b397cf9a4e2b1786677e732bb84b"
+  },
+  {
+    "file": "textures/wild_rooibos_bush_diff_1k.jpg",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_diff_1k.jpg",
+    "md5": "47ee13b7a87d2aff07c0ec708a33f6ab",
+    "sha256": "d963cdaf769bc39bb57295d518b37cd9456168cf5e3b82fd59f58c98d3faf596"
+  },
+  {
+    "file": "textures/wild_rooibos_bush_nor_gl_1k.jpg",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_1k.jpg",
+    "md5": "78a6bd59ce4a2e21fb01cadf382a1338",
+    "sha256": "ffd557b4cb732d24988d41741398df150567f3ac9d1433f11b88d60158c953d4"
+  },
+  {
+    "file": "wild_rooibos_bush.bin",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/wild_rooibos_bush/wild_rooibos_bush.bin",
+    "md5": "0d6c39ac444bac0381ecdff32a191a9c",
+    "sha256": "7a3471b4d110fe9927f4a200191eae86fa3c0a08f8e8e797d22e94a1703322e1"
+  },
+  {
+    "file": "wild_rooibos_bush_1k.gltf",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/wild_rooibos_bush/wild_rooibos_bush_1k.gltf",
+    "md5": "589911681acc2ebac68ff12ded20460d",
+    "sha256": "7f3fb17e4606e33d0bc4239c4901c9610b4bd17fe26b6780ba11ab4493f25d29"
+  }
+]

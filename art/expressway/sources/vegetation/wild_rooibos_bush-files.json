@@ -1,0 +1,964 @@
+{
+  "Diffuse": {
+    "8k": {
+      "jpg": {
+        "size": 19634724,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/wild_rooibos_bush/wild_rooibos_bush_diff_8k.jpg",
+        "md5": "5466203914f5e0a3f18aea1a1538cdf7"
+      },
+      "png": {
+        "size": 155279827,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/wild_rooibos_bush/wild_rooibos_bush_diff_8k.png",
+        "md5": "aad1fe9a0de389e255c8dc88995ec085"
+      },
+      "exr": {
+        "size": 40746346,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/wild_rooibos_bush/wild_rooibos_bush_diff_8k.exr",
+        "md5": "8719a8f64b3a2fddc97ed68e60eddbdf"
+      }
+    },
+    "4k": {
+      "jpg": {
+        "size": 5368181,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/wild_rooibos_bush/wild_rooibos_bush_diff_4k.jpg",
+        "md5": "d11cf6506dc763b30b570d24343c7b29"
+      },
+      "png": {
+        "size": 41674682,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/wild_rooibos_bush/wild_rooibos_bush_diff_4k.png",
+        "md5": "cc5f848af3a45d14d76342aa9882a560"
+      },
+      "exr": {
+        "size": 11807565,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/wild_rooibos_bush/wild_rooibos_bush_diff_4k.exr",
+        "md5": "a9243768bb68192294fdf16c1e4c97e0"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 1383104,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/wild_rooibos_bush/wild_rooibos_bush_diff_2k.jpg",
+        "md5": "620baee5986d736ab68603c4a2e938eb"
+      },
+      "png": {
+        "size": 10529435,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/wild_rooibos_bush/wild_rooibos_bush_diff_2k.png",
+        "md5": "a41d2f228facd4fe3ef65a27b0144ae3"
+      },
+      "exr": {
+        "size": 3107892,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/wild_rooibos_bush/wild_rooibos_bush_diff_2k.exr",
+        "md5": "ae4d65c2d55def23b7b32d30f4fb90c9"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 374003,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_diff_1k.jpg",
+        "md5": "47ee13b7a87d2aff07c0ec708a33f6ab"
+      },
+      "png": {
+        "size": 2684480,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/wild_rooibos_bush/wild_rooibos_bush_diff_1k.png",
+        "md5": "a0c518f348769e2ca6f27c213fdd6ebc"
+      },
+      "exr": {
+        "size": 881259,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/wild_rooibos_bush/wild_rooibos_bush_diff_1k.exr",
+        "md5": "de3a4e2237d1835b95315730a5d9c967"
+      }
+    }
+  },
+  "nor_dx": {
+    "8k": {
+      "jpg": {
+        "size": 32116159,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/wild_rooibos_bush/wild_rooibos_bush_nor_dx_8k.jpg",
+        "md5": "5b125126618c6785bfe475c962a62392"
+      },
+      "png": {
+        "size": 165764218,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/wild_rooibos_bush/wild_rooibos_bush_nor_dx_8k.png",
+        "md5": "4d485524014ae0c66c0029e155217e9b"
+      },
+      "exr": {
+        "size": 61925141,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/wild_rooibos_bush/wild_rooibos_bush_nor_dx_8k.exr",
+        "md5": "79ed0c8e5b072dd57084ec13dde89a94"
+      }
+    },
+    "4k": {
+      "jpg": {
+        "size": 7827197,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/wild_rooibos_bush/wild_rooibos_bush_nor_dx_4k.jpg",
+        "md5": "d090e2f9c2354f8759bf769bc2a38550"
+      },
+      "png": {
+        "size": 44231437,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/wild_rooibos_bush/wild_rooibos_bush_nor_dx_4k.png",
+        "md5": "6c97fa5c35837072768af32db9b38901"
+      },
+      "exr": {
+        "size": 15527236,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/wild_rooibos_bush/wild_rooibos_bush_nor_dx_4k.exr",
+        "md5": "3aeb008bad2458ce767c0b6485669a38"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 1911811,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/wild_rooibos_bush/wild_rooibos_bush_nor_dx_2k.jpg",
+        "md5": "27b7b00c9b8d1dfa7b2d4a43719e1525"
+      },
+      "png": {
+        "size": 11200517,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/wild_rooibos_bush/wild_rooibos_bush_nor_dx_2k.png",
+        "md5": "5ade290ad24922b3515666eeb82a7a8e"
+      },
+      "exr": {
+        "size": 3965372,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/wild_rooibos_bush/wild_rooibos_bush_nor_dx_2k.exr",
+        "md5": "beba7935310c381dbc307fd571a8f8ed"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 460436,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_nor_dx_1k.jpg",
+        "md5": "c1d3b8740b602e33f1037d8e4c057904"
+      },
+      "png": {
+        "size": 2847894,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/wild_rooibos_bush/wild_rooibos_bush_nor_dx_1k.png",
+        "md5": "c841cdfce5795f5c5bd33456e2d552f6"
+      },
+      "exr": {
+        "size": 1012992,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/wild_rooibos_bush/wild_rooibos_bush_nor_dx_1k.exr",
+        "md5": "2eb516c32996afcbec0ab78dcadd1cbd"
+      }
+    }
+  },
+  "nor_gl": {
+    "8k": {
+      "jpg": {
+        "size": 31263058,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_8k.jpg",
+        "md5": "57d7aaf31baf6b3d932c6d433641b824"
+      },
+      "png": {
+        "size": 176736449,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_8k.png",
+        "md5": "ae9619db9973d87c8dd5be3fca9595c2"
+      },
+      "exr": {
+        "size": 61987535,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_8k.exr",
+        "md5": "cf463e356391492dd97f1fca9b4c6317"
+      }
+    },
+    "4k": {
+      "jpg": {
+        "size": 7798741,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_4k.jpg",
+        "md5": "2752bdf8c02249e0f4eb5f52c52f060a"
+      },
+      "png": {
+        "size": 44175896,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_4k.png",
+        "md5": "ff6c86cc657cfe0800ec919e292f9fdb"
+      },
+      "exr": {
+        "size": 15533620,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_4k.exr",
+        "md5": "41ad01ce2279209001f735dabca7a885"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 1916171,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_2k.jpg",
+        "md5": "d03a229d64ce136e9bd1b8f723b41d6a"
+      },
+      "png": {
+        "size": 11187650,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_2k.png",
+        "md5": "53b106ee8de8445aaef78ffa10ac8af0"
+      },
+      "exr": {
+        "size": 3964292,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_2k.exr",
+        "md5": "0c96a1a600118156ae8bdb21ba40e727"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 463170,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_1k.jpg",
+        "md5": "78a6bd59ce4a2e21fb01cadf382a1338"
+      },
+      "png": {
+        "size": 2842696,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_1k.png",
+        "md5": "9ea66d40b184d62612007db9b483d861"
+      },
+      "exr": {
+        "size": 1012009,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_1k.exr",
+        "md5": "e81fd1e445061580aa3999a839ad6f2c"
+      }
+    }
+  },
+  "blend": {
+    "8k": {
+      "blend": {
+        "include": {
+          "textures/wild_rooibos_bush_nor_gl_8k.exr": {
+            "size": 61987535,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_8k.exr",
+            "md5": "cf463e356391492dd97f1fca9b4c6317"
+          },
+          "textures/wild_rooibos_bush_alpha_8k.png": {
+            "size": 2247851,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/wild_rooibos_bush/wild_rooibos_bush_alpha_8k.png",
+            "md5": "010e08524b051f7c92c2533ce88b1bbe"
+          },
+          "textures/wild_rooibos_bush_rough_8k.exr": {
+            "size": 12920761,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/wild_rooibos_bush/wild_rooibos_bush_rough_8k.exr",
+            "md5": "83c9b2b11bf7aa45b1bf7e101f4a4234"
+          },
+          "textures/wild_rooibos_bush_diff_8k.jpg": {
+            "size": 19634724,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/wild_rooibos_bush/wild_rooibos_bush_diff_8k.jpg",
+            "md5": "5466203914f5e0a3f18aea1a1538cdf7"
+          }
+        },
+        "size": 2607640,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/8k/wild_rooibos_bush/wild_rooibos_bush_8k.blend",
+        "md5": "066f0cfea010e3317eca3761bc598958"
+      }
+    },
+    "4k": {
+      "blend": {
+        "include": {
+          "textures/wild_rooibos_bush_rough_4k.exr": {
+            "size": 3277570,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/wild_rooibos_bush/wild_rooibos_bush_rough_4k.exr",
+            "md5": "6370d24565f119d26c19d8b8ff4c6075"
+          },
+          "textures/wild_rooibos_bush_alpha_4k.png": {
+            "size": 497878,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/wild_rooibos_bush/wild_rooibos_bush_alpha_4k.png",
+            "md5": "6d65814b29af4c092c69314307712450"
+          },
+          "textures/wild_rooibos_bush_nor_gl_4k.exr": {
+            "size": 15533620,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_4k.exr",
+            "md5": "41ad01ce2279209001f735dabca7a885"
+          },
+          "textures/wild_rooibos_bush_diff_4k.jpg": {
+            "size": 5368181,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/wild_rooibos_bush/wild_rooibos_bush_diff_4k.jpg",
+            "md5": "d11cf6506dc763b30b570d24343c7b29"
+          }
+        },
+        "size": 2607477,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/4k/wild_rooibos_bush/wild_rooibos_bush_4k.blend",
+        "md5": "cccfdb8f32e422dee2ba1a3e6a335863"
+      }
+    },
+    "2k": {
+      "blend": {
+        "include": {
+          "textures/wild_rooibos_bush_diff_2k.jpg": {
+            "size": 1383104,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/wild_rooibos_bush/wild_rooibos_bush_diff_2k.jpg",
+            "md5": "620baee5986d736ab68603c4a2e938eb"
+          },
+          "textures/wild_rooibos_bush_nor_gl_2k.exr": {
+            "size": 3964292,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_2k.exr",
+            "md5": "0c96a1a600118156ae8bdb21ba40e727"
+          },
+          "textures/wild_rooibos_bush_rough_2k.exr": {
+            "size": 879422,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/wild_rooibos_bush/wild_rooibos_bush_rough_2k.exr",
+            "md5": "bb9c3883d45c843834abbb1a302645d4"
+          },
+          "textures/wild_rooibos_bush_alpha_2k.png": {
+            "size": 206554,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/wild_rooibos_bush/wild_rooibos_bush_alpha_2k.png",
+            "md5": "54f2820a6fce80d83ce013f57ce6421a"
+          }
+        },
+        "size": 2607728,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/2k/wild_rooibos_bush/wild_rooibos_bush_2k.blend",
+        "md5": "97b42f62432e25d6bb1a02c2a05c20d6"
+      }
+    },
+    "1k": {
+      "blend": {
+        "include": {
+          "textures/wild_rooibos_bush_alpha_1k.png": {
+            "size": 90888,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/wild_rooibos_bush/wild_rooibos_bush_alpha_1k.png",
+            "md5": "f58e9c4d8874751b2a02dcc65c11c655"
+          },
+          "textures/wild_rooibos_bush_rough_1k.exr": {
+            "size": 255509,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/wild_rooibos_bush/wild_rooibos_bush_rough_1k.exr",
+            "md5": "0705d2442f2ca907b6b3fd6733ec6ca2"
+          },
+          "textures/wild_rooibos_bush_diff_1k.jpg": {
+            "size": 374003,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_diff_1k.jpg",
+            "md5": "47ee13b7a87d2aff07c0ec708a33f6ab"
+          },
+          "textures/wild_rooibos_bush_nor_gl_1k.exr": {
+            "size": 1012009,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_1k.exr",
+            "md5": "e81fd1e445061580aa3999a839ad6f2c"
+          }
+        },
+        "size": 2607466,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/1k/wild_rooibos_bush/wild_rooibos_bush_1k.blend",
+        "md5": "52f5c5df8e8068b48012d3c09b455141"
+      }
+    }
+  },
+  "gltf": {
+    "8k": {
+      "gltf": {
+        "include": {
+          "textures/wild_rooibos_bush_arm_8k.jpg": {
+            "size": 20497796,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/wild_rooibos_bush/wild_rooibos_bush_arm_8k.jpg",
+            "md5": "a6ae6822180a6d781a53fc6c0584ea89"
+          },
+          "textures/wild_rooibos_bush_diff_8k.jpg": {
+            "size": 19634724,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/wild_rooibos_bush/wild_rooibos_bush_diff_8k.jpg",
+            "md5": "5466203914f5e0a3f18aea1a1538cdf7"
+          },
+          "textures/wild_rooibos_bush_nor_gl_8k.jpg": {
+            "size": 31263058,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_8k.jpg",
+            "md5": "57d7aaf31baf6b3d932c6d433641b824"
+          },
+          "wild_rooibos_bush.bin": {
+            "size": 1236928,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/wild_rooibos_bush/wild_rooibos_bush.bin",
+            "md5": "0d6c39ac444bac0381ecdff32a191a9c"
+          }
+        },
+        "size": 23122,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/wild_rooibos_bush/wild_rooibos_bush_8k.gltf",
+        "md5": "e8a7e9702f614af01bcfbf0fc5dd747d"
+      }
+    },
+    "4k": {
+      "gltf": {
+        "include": {
+          "textures/wild_rooibos_bush_arm_4k.jpg": {
+            "size": 5436923,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/wild_rooibos_bush/wild_rooibos_bush_arm_4k.jpg",
+            "md5": "a2da998acecae3326bcfde82c41491e6"
+          },
+          "textures/wild_rooibos_bush_diff_4k.jpg": {
+            "size": 5368181,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/wild_rooibos_bush/wild_rooibos_bush_diff_4k.jpg",
+            "md5": "d11cf6506dc763b30b570d24343c7b29"
+          },
+          "textures/wild_rooibos_bush_nor_gl_4k.jpg": {
+            "size": 7798741,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_4k.jpg",
+            "md5": "2752bdf8c02249e0f4eb5f52c52f060a"
+          },
+          "wild_rooibos_bush.bin": {
+            "size": 1236928,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/wild_rooibos_bush/wild_rooibos_bush.bin",
+            "md5": "0d6c39ac444bac0381ecdff32a191a9c"
+          }
+        },
+        "size": 23122,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/wild_rooibos_bush/wild_rooibos_bush_4k.gltf",
+        "md5": "ffe600769d74983ef454eb1cfba77d50"
+      }
+    },
+    "2k": {
+      "gltf": {
+        "include": {
+          "textures/wild_rooibos_bush_diff_2k.jpg": {
+            "size": 1383104,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/wild_rooibos_bush/wild_rooibos_bush_diff_2k.jpg",
+            "md5": "620baee5986d736ab68603c4a2e938eb"
+          },
+          "textures/wild_rooibos_bush_arm_2k.jpg": {
+            "size": 1415231,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/wild_rooibos_bush/wild_rooibos_bush_arm_2k.jpg",
+            "md5": "0934d20e828feefac3ca5accb3aca52f"
+          },
+          "textures/wild_rooibos_bush_nor_gl_2k.jpg": {
+            "size": 1916171,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_2k.jpg",
+            "md5": "d03a229d64ce136e9bd1b8f723b41d6a"
+          },
+          "wild_rooibos_bush.bin": {
+            "size": 1236928,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/wild_rooibos_bush/wild_rooibos_bush.bin",
+            "md5": "0d6c39ac444bac0381ecdff32a191a9c"
+          }
+        },
+        "size": 23122,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/2k/wild_rooibos_bush/wild_rooibos_bush_2k.gltf",
+        "md5": "72698fe321de65c3958cbc6d53bfe887"
+      }
+    },
+    "1k": {
+      "gltf": {
+        "include": {
+          "textures/wild_rooibos_bush_nor_gl_1k.jpg": {
+            "size": 463170,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_1k.jpg",
+            "md5": "78a6bd59ce4a2e21fb01cadf382a1338"
+          },
+          "textures/wild_rooibos_bush_diff_1k.jpg": {
+            "size": 374003,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_diff_1k.jpg",
+            "md5": "47ee13b7a87d2aff07c0ec708a33f6ab"
+          },
+          "textures/wild_rooibos_bush_arm_1k.jpg": {
+            "size": 367273,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_arm_1k.jpg",
+            "md5": "bd65f1b013b7df7d75ef87d9a66b669c"
+          },
+          "wild_rooibos_bush.bin": {
+            "size": 1236928,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/wild_rooibos_bush/wild_rooibos_bush.bin",
+            "md5": "0d6c39ac444bac0381ecdff32a191a9c"
+          }
+        },
+        "size": 23122,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/wild_rooibos_bush/wild_rooibos_bush_1k.gltf",
+        "md5": "589911681acc2ebac68ff12ded20460d"
+      }
+    }
+  },
+  "usd": {
+    "8k": {
+      "usd": {
+        "include": {
+          "textures/wild_rooibos_bush_nor_gl_8k.exr": {
+            "size": 61987535,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_8k.exr",
+            "md5": "cf463e356391492dd97f1fca9b4c6317"
+          },
+          "textures/wild_rooibos_bush_alpha_8k.png": {
+            "size": 2247851,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/wild_rooibos_bush/wild_rooibos_bush_alpha_8k.png",
+            "md5": "010e08524b051f7c92c2533ce88b1bbe"
+          },
+          "textures/wild_rooibos_bush_rough_8k.exr": {
+            "size": 12920761,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/wild_rooibos_bush/wild_rooibos_bush_rough_8k.exr",
+            "md5": "83c9b2b11bf7aa45b1bf7e101f4a4234"
+          },
+          "textures/wild_rooibos_bush_diff_8k.jpg": {
+            "size": 19634724,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/wild_rooibos_bush/wild_rooibos_bush_diff_8k.jpg",
+            "md5": "5466203914f5e0a3f18aea1a1538cdf7"
+          }
+        },
+        "size": 2344653,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/usd/8k/wild_rooibos_bush/wild_rooibos_bush_8k.usdc",
+        "md5": "dd62ea520ca3cab49b3d37057510f57b"
+      }
+    },
+    "4k": {
+      "usd": {
+        "include": {
+          "textures/wild_rooibos_bush_rough_4k.exr": {
+            "size": 3277570,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/wild_rooibos_bush/wild_rooibos_bush_rough_4k.exr",
+            "md5": "6370d24565f119d26c19d8b8ff4c6075"
+          },
+          "textures/wild_rooibos_bush_alpha_4k.png": {
+            "size": 497878,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/wild_rooibos_bush/wild_rooibos_bush_alpha_4k.png",
+            "md5": "6d65814b29af4c092c69314307712450"
+          },
+          "textures/wild_rooibos_bush_nor_gl_4k.exr": {
+            "size": 15533620,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_4k.exr",
+            "md5": "41ad01ce2279209001f735dabca7a885"
+          },
+          "textures/wild_rooibos_bush_diff_4k.jpg": {
+            "size": 5368181,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/wild_rooibos_bush/wild_rooibos_bush_diff_4k.jpg",
+            "md5": "d11cf6506dc763b30b570d24343c7b29"
+          }
+        },
+        "size": 2344591,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/usd/4k/wild_rooibos_bush/wild_rooibos_bush_4k.usdc",
+        "md5": "a923b781f50d23b21f50eb949de65dfc"
+      }
+    },
+    "2k": {
+      "usd": {
+        "include": {
+          "textures/wild_rooibos_bush_diff_2k.jpg": {
+            "size": 1383104,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/wild_rooibos_bush/wild_rooibos_bush_diff_2k.jpg",
+            "md5": "620baee5986d736ab68603c4a2e938eb"
+          },
+          "textures/wild_rooibos_bush_nor_gl_2k.exr": {
+            "size": 3964292,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_2k.exr",
+            "md5": "0c96a1a600118156ae8bdb21ba40e727"
+          },
+          "textures/wild_rooibos_bush_rough_2k.exr": {
+            "size": 879422,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/wild_rooibos_bush/wild_rooibos_bush_rough_2k.exr",
+            "md5": "bb9c3883d45c843834abbb1a302645d4"
+          },
+          "textures/wild_rooibos_bush_alpha_2k.png": {
+            "size": 206554,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/wild_rooibos_bush/wild_rooibos_bush_alpha_2k.png",
+            "md5": "54f2820a6fce80d83ce013f57ce6421a"
+          }
+        },
+        "size": 2344591,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/usd/2k/wild_rooibos_bush/wild_rooibos_bush_2k.usdc",
+        "md5": "03ba2fd181f9d97995a41c58ddf7c0fb"
+      }
+    },
+    "1k": {
+      "usd": {
+        "include": {
+          "textures/wild_rooibos_bush_alpha_1k.png": {
+            "size": 90888,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/wild_rooibos_bush/wild_rooibos_bush_alpha_1k.png",
+            "md5": "f58e9c4d8874751b2a02dcc65c11c655"
+          },
+          "textures/wild_rooibos_bush_rough_1k.exr": {
+            "size": 255509,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/wild_rooibos_bush/wild_rooibos_bush_rough_1k.exr",
+            "md5": "0705d2442f2ca907b6b3fd6733ec6ca2"
+          },
+          "textures/wild_rooibos_bush_diff_1k.jpg": {
+            "size": 374003,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_diff_1k.jpg",
+            "md5": "47ee13b7a87d2aff07c0ec708a33f6ab"
+          },
+          "textures/wild_rooibos_bush_nor_gl_1k.exr": {
+            "size": 1012009,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_1k.exr",
+            "md5": "e81fd1e445061580aa3999a839ad6f2c"
+          }
+        },
+        "size": 2344591,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/usd/1k/wild_rooibos_bush/wild_rooibos_bush_1k.usdc",
+        "md5": "42c3866246f808d4de140c790c585354"
+      }
+    }
+  },
+  "Alpha": {
+    "8k": {
+      "jpg": {
+        "size": 1977937,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/wild_rooibos_bush/wild_rooibos_bush_alpha_8k.jpg",
+        "md5": "069f8ac0de6cd43cb1be9d16692f91ca"
+      },
+      "png": {
+        "size": 2247851,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/wild_rooibos_bush/wild_rooibos_bush_alpha_8k.png",
+        "md5": "010e08524b051f7c92c2533ce88b1bbe"
+      },
+      "exr": {
+        "size": 1580273,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/wild_rooibos_bush/wild_rooibos_bush_alpha_8k.exr",
+        "md5": "3db4b0bf77d6cc8380d1386125da196e"
+      }
+    },
+    "4k": {
+      "jpg": {
+        "size": 746316,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/wild_rooibos_bush/wild_rooibos_bush_alpha_4k.jpg",
+        "md5": "5d8e692972ed3f460278af5ae9d9875f"
+      },
+      "png": {
+        "size": 497878,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/wild_rooibos_bush/wild_rooibos_bush_alpha_4k.png",
+        "md5": "6d65814b29af4c092c69314307712450"
+      },
+      "exr": {
+        "size": 769301,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/wild_rooibos_bush/wild_rooibos_bush_alpha_4k.exr",
+        "md5": "2f08d02e7697a69ce556791873662c80"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 304641,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/wild_rooibos_bush/wild_rooibos_bush_alpha_2k.jpg",
+        "md5": "96938766600d37c86ca88a69fa7fc84f"
+      },
+      "png": {
+        "size": 206554,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/wild_rooibos_bush/wild_rooibos_bush_alpha_2k.png",
+        "md5": "54f2820a6fce80d83ce013f57ce6421a"
+      },
+      "exr": {
+        "size": 369191,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/wild_rooibos_bush/wild_rooibos_bush_alpha_2k.exr",
+        "md5": "955228b3c3922d37f041f774f731917e"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 115572,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_alpha_1k.jpg",
+        "md5": "eceda19cdb5c6026a721b4bdb908a181"
+      },
+      "png": {
+        "size": 90888,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/wild_rooibos_bush/wild_rooibos_bush_alpha_1k.png",
+        "md5": "f58e9c4d8874751b2a02dcc65c11c655"
+      },
+      "exr": {
+        "size": 156011,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/wild_rooibos_bush/wild_rooibos_bush_alpha_1k.exr",
+        "md5": "819f33e5d512fe6e7245c1678c2a8909"
+      }
+    }
+  },
+  "arm": {
+    "8k": {
+      "jpg": {
+        "size": 20497796,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/wild_rooibos_bush/wild_rooibos_bush_arm_8k.jpg",
+        "md5": "a6ae6822180a6d781a53fc6c0584ea89"
+      },
+      "png": {
+        "size": 99586826,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/wild_rooibos_bush/wild_rooibos_bush_arm_8k.png",
+        "md5": "4cebb95f7cf6df117f5ddb6d5b66fadf"
+      },
+      "exr": {
+        "size": 36772223,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/wild_rooibos_bush/wild_rooibos_bush_arm_8k.exr",
+        "md5": "d214a5f17f4a6309be7ab9d4edbc14e1"
+      }
+    },
+    "4k": {
+      "jpg": {
+        "size": 5436923,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/wild_rooibos_bush/wild_rooibos_bush_arm_4k.jpg",
+        "md5": "a2da998acecae3326bcfde82c41491e6"
+      },
+      "png": {
+        "size": 32677322,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/wild_rooibos_bush/wild_rooibos_bush_arm_4k.png",
+        "md5": "11b250ecdd5026b9c6e65cbac9a7920b"
+      },
+      "exr": {
+        "size": 9551497,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/wild_rooibos_bush/wild_rooibos_bush_arm_4k.exr",
+        "md5": "e6645ae36f956fc897b6bfa5aed4a241"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 1415231,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/wild_rooibos_bush/wild_rooibos_bush_arm_2k.jpg",
+        "md5": "0934d20e828feefac3ca5accb3aca52f"
+      },
+      "png": {
+        "size": 9660560,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/wild_rooibos_bush/wild_rooibos_bush_arm_2k.png",
+        "md5": "55b96c83c6397145c4dc06525769412f"
+      },
+      "exr": {
+        "size": 2539777,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/wild_rooibos_bush/wild_rooibos_bush_arm_2k.exr",
+        "md5": "e9a9c6ca8af21c5bd19c91f316b4d05c"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 367273,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_arm_1k.jpg",
+        "md5": "bd65f1b013b7df7d75ef87d9a66b669c"
+      },
+      "png": {
+        "size": 2638047,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/wild_rooibos_bush/wild_rooibos_bush_arm_1k.png",
+        "md5": "a61fbaeae1ed103623bcceeb75a546ba"
+      },
+      "exr": {
+        "size": 677770,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/wild_rooibos_bush/wild_rooibos_bush_arm_1k.exr",
+        "md5": "f0723c8c96134cb15fc7d786991663f7"
+      }
+    }
+  },
+  "fbx": {
+    "8k": {
+      "fbx": {
+        "include": {
+          "textures/wild_rooibos_bush_nor_gl_8k.exr": {
+            "size": 61987535,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_8k.exr",
+            "md5": "cf463e356391492dd97f1fca9b4c6317"
+          },
+          "textures/wild_rooibos_bush_alpha_8k.png": {
+            "size": 2247851,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/wild_rooibos_bush/wild_rooibos_bush_alpha_8k.png",
+            "md5": "010e08524b051f7c92c2533ce88b1bbe"
+          },
+          "textures/wild_rooibos_bush_rough_8k.exr": {
+            "size": 12920761,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/wild_rooibos_bush/wild_rooibos_bush_rough_8k.exr",
+            "md5": "83c9b2b11bf7aa45b1bf7e101f4a4234"
+          },
+          "textures/wild_rooibos_bush_diff_8k.jpg": {
+            "size": 19634724,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/wild_rooibos_bush/wild_rooibos_bush_diff_8k.jpg",
+            "md5": "5466203914f5e0a3f18aea1a1538cdf7"
+          }
+        },
+        "size": 1037820,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/8k/wild_rooibos_bush/wild_rooibos_bush_8k.fbx",
+        "md5": "5cd91d785f03e19cad1470b06e594f8a"
+      }
+    },
+    "4k": {
+      "fbx": {
+        "include": {
+          "textures/wild_rooibos_bush_rough_4k.exr": {
+            "size": 3277570,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/wild_rooibos_bush/wild_rooibos_bush_rough_4k.exr",
+            "md5": "6370d24565f119d26c19d8b8ff4c6075"
+          },
+          "textures/wild_rooibos_bush_alpha_4k.png": {
+            "size": 497878,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/wild_rooibos_bush/wild_rooibos_bush_alpha_4k.png",
+            "md5": "6d65814b29af4c092c69314307712450"
+          },
+          "textures/wild_rooibos_bush_nor_gl_4k.exr": {
+            "size": 15533620,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_4k.exr",
+            "md5": "41ad01ce2279209001f735dabca7a885"
+          },
+          "textures/wild_rooibos_bush_diff_4k.jpg": {
+            "size": 5368181,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/wild_rooibos_bush/wild_rooibos_bush_diff_4k.jpg",
+            "md5": "d11cf6506dc763b30b570d24343c7b29"
+          }
+        },
+        "size": 1037820,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/4k/wild_rooibos_bush/wild_rooibos_bush_4k.fbx",
+        "md5": "d635026ee56090bbb500155b98e4201c"
+      }
+    },
+    "2k": {
+      "fbx": {
+        "include": {
+          "textures/wild_rooibos_bush_diff_2k.jpg": {
+            "size": 1383104,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/wild_rooibos_bush/wild_rooibos_bush_diff_2k.jpg",
+            "md5": "620baee5986d736ab68603c4a2e938eb"
+          },
+          "textures/wild_rooibos_bush_nor_gl_2k.exr": {
+            "size": 3964292,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_2k.exr",
+            "md5": "0c96a1a600118156ae8bdb21ba40e727"
+          },
+          "textures/wild_rooibos_bush_rough_2k.exr": {
+            "size": 879422,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/wild_rooibos_bush/wild_rooibos_bush_rough_2k.exr",
+            "md5": "bb9c3883d45c843834abbb1a302645d4"
+          },
+          "textures/wild_rooibos_bush_alpha_2k.png": {
+            "size": 206554,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/wild_rooibos_bush/wild_rooibos_bush_alpha_2k.png",
+            "md5": "54f2820a6fce80d83ce013f57ce6421a"
+          }
+        },
+        "size": 1037820,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/2k/wild_rooibos_bush/wild_rooibos_bush_2k.fbx",
+        "md5": "57959797e321810b7518b4ded4ccedf7"
+      }
+    },
+    "1k": {
+      "fbx": {
+        "include": {
+          "textures/wild_rooibos_bush_alpha_1k.png": {
+            "size": 90888,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/wild_rooibos_bush/wild_rooibos_bush_alpha_1k.png",
+            "md5": "f58e9c4d8874751b2a02dcc65c11c655"
+          },
+          "textures/wild_rooibos_bush_rough_1k.exr": {
+            "size": 255509,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/wild_rooibos_bush/wild_rooibos_bush_rough_1k.exr",
+            "md5": "0705d2442f2ca907b6b3fd6733ec6ca2"
+          },
+          "textures/wild_rooibos_bush_diff_1k.jpg": {
+            "size": 374003,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_diff_1k.jpg",
+            "md5": "47ee13b7a87d2aff07c0ec708a33f6ab"
+          },
+          "textures/wild_rooibos_bush_nor_gl_1k.exr": {
+            "size": 1012009,
+            "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/wild_rooibos_bush/wild_rooibos_bush_nor_gl_1k.exr",
+            "md5": "e81fd1e445061580aa3999a839ad6f2c"
+          }
+        },
+        "size": 1037820,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/fbx/1k/wild_rooibos_bush/wild_rooibos_bush_1k.fbx",
+        "md5": "82b7e210b3a0b2b8648f1a78fc355bde"
+      }
+    }
+  },
+  "AO": {
+    "8k": {
+      "jpg": {
+        "size": 19446037,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/wild_rooibos_bush/wild_rooibos_bush_ao_8k.jpg",
+        "md5": "216204695ea2bcf7d38bbcbcfea73e83"
+      },
+      "png": {
+        "size": 54577725,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/wild_rooibos_bush/wild_rooibos_bush_ao_8k.png",
+        "md5": "c299a35b5ea1324595790ced3418c760"
+      },
+      "exr": {
+        "size": 17921753,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/wild_rooibos_bush/wild_rooibos_bush_ao_8k.exr",
+        "md5": "e6bc52cbae0e7fa1d80b2f7f9630c1a9"
+      }
+    },
+    "4k": {
+      "jpg": {
+        "size": 5461769,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/wild_rooibos_bush/wild_rooibos_bush_ao_4k.jpg",
+        "md5": "f38e588a961672fe73c9939cebf954d0"
+      },
+      "png": {
+        "size": 17873950,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/wild_rooibos_bush/wild_rooibos_bush_ao_4k.png",
+        "md5": "0b87db5607030f78c49da13a51918137"
+      },
+      "exr": {
+        "size": 5150056,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/wild_rooibos_bush/wild_rooibos_bush_ao_4k.exr",
+        "md5": "2239cef0383ec291c8d6df592e39b997"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 1425474,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/wild_rooibos_bush/wild_rooibos_bush_ao_2k.jpg",
+        "md5": "b44e5657e567178a186d218c960ac873"
+      },
+      "png": {
+        "size": 5237298,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/wild_rooibos_bush/wild_rooibos_bush_ao_2k.png",
+        "md5": "d0d57633cccb685a756691f8e9a1df9c"
+      },
+      "exr": {
+        "size": 1393867,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/wild_rooibos_bush/wild_rooibos_bush_ao_2k.exr",
+        "md5": "f2c3a412e3d6dd200a969872f11ebb6e"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 355212,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_ao_1k.jpg",
+        "md5": "70b7be1493b01330ea3f24da3fe50644"
+      },
+      "png": {
+        "size": 1410057,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/wild_rooibos_bush/wild_rooibos_bush_ao_1k.png",
+        "md5": "10da99626067333fb295d65b88c10987"
+      },
+      "exr": {
+        "size": 364765,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/wild_rooibos_bush/wild_rooibos_bush_ao_1k.exr",
+        "md5": "e7df743eb23289070230c617d0db2fa3"
+      }
+    }
+  },
+  "Rough": {
+    "8k": {
+      "jpg": {
+        "size": 13032979,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/8k/wild_rooibos_bush/wild_rooibos_bush_rough_8k.jpg",
+        "md5": "10c8670cc3d60662a4d9c2fad60a8231"
+      },
+      "png": {
+        "size": 26241557,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/8k/wild_rooibos_bush/wild_rooibos_bush_rough_8k.png",
+        "md5": "e552fb45a14d9645431fb5c141e9ad67"
+      },
+      "exr": {
+        "size": 12920761,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/8k/wild_rooibos_bush/wild_rooibos_bush_rough_8k.exr",
+        "md5": "83c9b2b11bf7aa45b1bf7e101f4a4234"
+      }
+    },
+    "4k": {
+      "jpg": {
+        "size": 3237810,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/4k/wild_rooibos_bush/wild_rooibos_bush_rough_4k.jpg",
+        "md5": "88b39a0e4b7f23d92ec5cd9b4212a6d7"
+      },
+      "png": {
+        "size": 8816388,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/4k/wild_rooibos_bush/wild_rooibos_bush_rough_4k.png",
+        "md5": "3902f5aee8a23095f5a59fc42583694b"
+      },
+      "exr": {
+        "size": 3277570,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/4k/wild_rooibos_bush/wild_rooibos_bush_rough_4k.exr",
+        "md5": "6370d24565f119d26c19d8b8ff4c6075"
+      }
+    },
+    "2k": {
+      "jpg": {
+        "size": 847086,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/2k/wild_rooibos_bush/wild_rooibos_bush_rough_2k.jpg",
+        "md5": "ddcc763df855f6b654aae1ffdbe5d8e4"
+      },
+      "png": {
+        "size": 2512426,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/2k/wild_rooibos_bush/wild_rooibos_bush_rough_2k.png",
+        "md5": "1310e510dcdd93f058375a5ab1876731"
+      },
+      "exr": {
+        "size": 879422,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/2k/wild_rooibos_bush/wild_rooibos_bush_rough_2k.exr",
+        "md5": "bb9c3883d45c843834abbb1a302645d4"
+      }
+    },
+    "1k": {
+      "jpg": {
+        "size": 232122,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wild_rooibos_bush/wild_rooibos_bush_rough_1k.jpg",
+        "md5": "1fdc5f75b7aeb2a1e4d043d97e319a88"
+      },
+      "png": {
+        "size": 688856,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/wild_rooibos_bush/wild_rooibos_bush_rough_1k.png",
+        "md5": "b3a5d79255fb687f2617235a5a5b6f4c"
+      },
+      "exr": {
+        "size": 255509,
+        "url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/wild_rooibos_bush/wild_rooibos_bush_rough_1k.exr",
+        "md5": "0705d2442f2ca907b6b3fd6733ec6ca2"
+      }
+    }
+  }
+}

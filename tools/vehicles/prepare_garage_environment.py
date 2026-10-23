@@ -12,7 +12,7 @@ SOURCE = ROOT/'art/vehicles/sources/skylit_garage_2k.hdr'
 OUTPUT = ROOT/'assets/game/vehicles/garage-skylit.env'
 
 
-def equirectangular_cube(image, size):
+def equirectangular_cube(image, size, *, longitude_offset=0., radiance_limit=None):
     """经纬图顶行为天顶；PfmFile到Texture会翻转图像行，按原生取样方向展开。"""
     cube = Texture('polyhaven-skylit-garage')
     cube.setupCubeMap(size, Texture.TFloat, Texture.FRgb16)
@@ -25,7 +25,7 @@ def equirectangular_cube(image, size):
                 x, y, z = ((1, v, -u), (-1, v, u), (u, 1, -v),
                            (u, -1, v), (u, v, 1), (-u, v, -1))[face]
                 length = math.sqrt(x*x+y*y+z*z)
-                longitude = (math.atan2(y, x)/(2*math.pi)+.5) % 1
+                longitude = (math.atan2(y, x)/(2*math.pi)+.5+longitude_offset) % 1
                 latitude = .5-math.asin(z/length)/math.pi
                 # 经度环绕、纬度夹边，双线性采样避免反射里出现原图像素跳变。
                 sx, sy = longitude*image.getXSize()-.5, latitude*image.getYSize()-.5
@@ -36,6 +36,8 @@ def equirectangular_cube(image, size):
                     for dx, dy, weight in ((0, 0, (1-fx)*(1-fy)), (1, 0, fx*(1-fy)),
                                           (0, 1, (1-fx)*fy), (1, 1, fx*fy))),
                     Vec3())
+                if radiance_limit is not None and max(color) > radiance_limit:
+                    color *= radiance_limit/max(color)
                 pixels.setPoint3(col, row, color)
         assert cube.load(pixels, face, 0)
     cube.generateRamMipmapImages()

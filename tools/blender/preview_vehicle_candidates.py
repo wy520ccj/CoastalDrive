@@ -44,6 +44,10 @@ def capture(name, path, direction):
     camera.rotation_euler = (center-camera.location).to_track_quat('-Z', 'Y').to_euler()
     camera.data.lens = 48
     scene.camera = camera
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from render_garage_catalog import fit_catalog_camera
+
+    fit_catalog_camera(scene, camera, meshes)
     scene.render.filepath = str(OUT/(name+'-preview.png'))
     bpy.ops.render.render(write_still=True)
     print(name, tuple(low), tuple(high))

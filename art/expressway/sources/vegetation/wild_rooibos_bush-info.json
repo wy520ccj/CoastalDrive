@@ -1,0 +1,54 @@
+{
+  "lods": true,
+  "name": "Wild Rooibos Bush",
+  "categories": [
+    "nature",
+    "plants",
+    "collection: namaqualand"
+  ],
+  "type": 2,
+  "tags": [
+    "karoo",
+    "south africa",
+    "desert",
+    "dried",
+    "dry",
+    "shrub"
+  ],
+  "max_resolution": [
+    8192,
+    8192
+  ],
+  "polycount": 76521,
+  "texel_density": 17748.299962122845,
+  "dimensions": [
+    2285.276174545288,
+    854.104071855545,
+    543.936595087871
+  ],
+  "staging": null,
+  "date_published": 1728345600,
+  "files_hash": "e36b891edee5f1133d3d05b0707a690f8a078f6c",
+  "description": "Free 8K model of a dried wild rooibos shrub from South Africa's Karoo/Namaqualand - low, multi-stemmed desert bush with needle-like leaves, perfect for arid scenes.",
+  "authors": {
+    "James Ray Cock": "modeling",
+    "Jenelle van Heerden": "photography"
+  },
+  "category_id": "b05588cc-d537-59b4-a609-a3b076b80e5f",
+  "category": "Nature/Plants/Desert & Arid Plants",
+  "collections": [
+    "namaqualand"
+  ],
+  "attributes": {
+    "condition": [
+      "weathered"
+    ],
+    "lods": true,
+    "material": [
+      "wood"
+    ]
+  },
+  "img_version": "17366077",
+  "download_count": 7654,
+  "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/wild_rooibos_bush.png?width=256&height=256&format=webp&v=17366077"
+}

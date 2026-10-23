@@ -61,6 +61,7 @@ setup(
                 "assets/game/**/*.glb",
                 "assets/game/**/*.bam",
                 "assets/game/**/*.env",
+                "assets/game/**/*.hdr",
                 "assets/game/**/*.png",
                 "assets/game/**/*.ico",
                 "assets/game/**/*.ttf",

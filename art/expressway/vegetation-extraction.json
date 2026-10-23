@@ -1,0 +1,42 @@
+[
+  {
+    "name": "tree-lod0",
+    "triangles": 87967,
+    "source": "tree",
+    "ratio": 0.055,
+    "height": 5.4,
+    "cutoff_z": null
+  },
+  {
+    "name": "shrub-lod0",
+    "triangles": 6287,
+    "source": "shrub",
+    "ratio": 1.0,
+    "height": 0.85,
+    "cutoff_z": null
+  },
+  {
+    "name": "shrub-far-lod0",
+    "triangles": 1193,
+    "source": "shrub-far",
+    "ratio": 1.0,
+    "height": 0.85,
+    "cutoff_z": null
+  },
+  {
+    "name": "grass-lod0",
+    "triangles": 833,
+    "source": "grass",
+    "ratio": 1.0,
+    "height": 0.45,
+    "cutoff_z": null
+  },
+  {
+    "name": "grass-far-lod0",
+    "triangles": 40,
+    "source": "grass-far",
+    "ratio": 1.0,
+    "height": 0.45,
+    "cutoff_z": null
+  }
+]

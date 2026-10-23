@@ -84,6 +84,13 @@ def test_distribution_includes_font_license_and_icon(monkeypatch):
                      'assets/game/materials/asphalt_03_nor_gl_2k.jpg',
                      'assets/game/materials/asphalt_03_rough_2k.jpg',
                      'assets/game/materials/leafy_grass_diff_2k.jpg',
+                     'assets/game/expressway/photographed-vegetation.bam',
+                     'assets/game/expressway/vegetation-manifest.json',
+                     'assets/game/expressway/License-Vegetation.txt',
+                     'assets/game/expressway/daylight-sky.hdr',
+                     'assets/game/expressway/daylight.env',
+                     'assets/game/expressway/daylight-manifest.json',
+                     'assets/game/expressway/License-Daylight.txt',
                      'assets/game/materials/License-Road-Surfaces.txt'):
         assert (ROOT / relative).is_file()
         assert any(fnmatch.fnmatchcase(relative, pattern) for pattern in patterns)

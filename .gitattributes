@@ -1,3 +1,4 @@
 assets/game/ui/fonts/OFL.txt -text
 assets/game/ui/fonts/OFL-*.txt -text
 art/vehicles/sources/gr86-community/gr86-runtime.js -text
+art/expressway/sources/vegetation/**/*.gltf -text

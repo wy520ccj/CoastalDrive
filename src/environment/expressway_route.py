@@ -288,8 +288,13 @@ def segment_steps(root, index, seed, kit, stabilize_rail, curve=None):
     road_batch.flattenStrong()
     yield "road-batch"
     for cell in cells.values():
-        cell.clearModelNodes()
-        cell.flattenStrong()
+        # 距离档内部保持共享网格；递归flatten会把每株完整针叶复制进独立顶点表。
+        batch = cell.attachNewNode('static-details')
+        for child in tuple(cell.getChildren()):
+            if child != batch and child.find('**/+LODNode').isEmpty() and not isinstance(child.node(), LODNode):
+                child.reparentTo(batch)
+        batch.clearModelNodes()
+        batch.flattenStrong()
         yield "detail-batch"
     signs.clearModelNodes()
     signs.flattenStrong()

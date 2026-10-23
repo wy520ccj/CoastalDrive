@@ -2,6 +2,8 @@
 
 更新：2026-10-23。**当前真实整合：游戏main/722ecfd + 新版试验台codex/simulation-fidelity/0944541，已在主目录main完成三方合并与相关验收。**
 
+接续[GARAGE-DESIGN-02](tasks/GARAGE-DESIGN-02.md)：用户否定假感/阴暗后，实际看FH5官方海岸图再生成23；同一CC0实拍晴空接天空/间接光/车漆反射，HUD缩为四角小组；完整源树/灌木/草取代剪贴与拼接，原生LOD共享网格。相关T1 88项/三种子通过，末次方向1项T0通过；已知4080新起步显示拍，最终两画幅480拍，整场赛事复用；8张原图含旧基线。26项保持、失败/内存代价及验证后另施工线的菜单/碰撞修改分列于[证据](evidence/GARAGE-DESIGN-02/daylight-vegetation.md)。**仍in_progress：草地/山海/植被PBR与自然感明显不足，人工审美未通过；下一继续按23完善实际场景。**仅本地，无推送。
+
 接续[GARAGE-DESIGN-02](tasks/GARAGE-DESIGN-02.md)：先生成20材质目标，再以CC0实拍Asphalt03/Leafy Grass替换高速道路/地面材质，接法线/粗糙度/米制UV并修路边岩壁坐标拉伸。原几何/物理/车型/UI保持。T1 60项/三种子、末次打包1项T0通过；最终两画幅480新起步显示拍，26次本轮GUI采集，精选7+原版1图；其他轮次/中断与48MiB顶层纹理代价见[证据](evidence/GARAGE-DESIGN-02/road-materials.md)。**总包仍in_progress：植被/天空/远景、整体光照及人工审美/趣味性。**仅本地，无推送。
 
 接续[GARAGE-DESIGN-02](tasks/GARAGE-DESIGN-02.md)：新增CC-BY-4.0的1975 Porsche 911 Turbo，9星解锁，第8车/第7款现实车型，源曲面/四轮/署名与独立项目调校齐全；原10配置保持。修4:3选车/结算长名溢出。主T1 56项与末次UI20项/各三种子通过，其他37项复用，成长7项另T0；最终三赛8498新拍3/2/3星，车库另240道路显示拍，30次GUI采集精选9图。来源/初失败/夹具/保持SHA见[证据](evidence/GARAGE-DESIGN-02/porsche-930.md)。**总包仍in_progress：道路/光照细节及人工审美/趣味性。**仅本地，无推送。

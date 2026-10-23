@@ -5,7 +5,7 @@ import random
 from functools import lru_cache
 from itertools import pairwise
 
-from panda3d.core import Vec3, Vec4
+from panda3d.core import Vec3
 
 from highway_segments import SEGMENT_LENGTH, segment
 
@@ -74,10 +74,8 @@ def planting(index, seed):
 
 def vegetation_steps(root, index, seed, curve, kit, detail_parent):
     from environment.expressway_route import anchor
-    from scene import make_mesh
 
     origin = Vec3(*anchor(curve,index))
-    grass_vertices, grass_faces = [], []
     for number,(model,d,s,scale,heading) in enumerate(planting(index,seed)):
         point = ground_point(curve,d,s,seed)-origin
         if point.z+origin.z < -2:
@@ -94,15 +92,11 @@ def vegetation_steps(root, index, seed, curve, kit, detail_parent):
                 base = ground_point(curve,x,y,seed)-origin-Vec3(0,0,.03)
                 height = rng.uniform(.22,.55)
                 angle = rng.uniform(0,math.tau)
-                dx,dy = math.cos(angle)*.10,math.sin(angle)*.10
-                i = len(grass_vertices)
-                grass_vertices.extend((tuple(base+Vec3(-dx,-dy,0)),tuple(base+Vec3(dx,dy,0)),
-                                       tuple(base+Vec3(dx*.4,dy*.4,height))))
-                grass_faces.append((i,i+1,i+2))
+                grass = kit['source-grass'].copyTo(detail_parent(s))
+                grass.setPos(base)
+                grass.setScale(height/.45)
+                grass.setH(math.degrees(angle))
         yield "vegetation"
-    grass = make_mesh("forest-ground-cover",grass_vertices,grass_faces,Vec4(.22,.31,.08,1))
-    grass.setTwoSided(True)
-    grass.reparentTo(detail_parent(index*SEGMENT_LENGTH+100))
     yield "ground-cover"
 
 

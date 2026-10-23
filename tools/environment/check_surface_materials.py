@@ -34,6 +34,11 @@ def check(output, size):
         app.graphicsEngine.syncFrame()
         assert asdict(app.session.current) == state
         assert not app.scene.expressway_kit['road-asphalt-shader'].getErrorFlag()
+        if 'foliage-shader' in app.scene.expressway_kit:
+            assert not app.scene.expressway_kit['foliage-shader'].getErrorFlag()
+        environment = app.scene.expressway_kit['daylight-environment']
+        for part in (app.scene.render, app.scene.player, *app.scene.wheels):
+            assert part.getShaderInput('filtered_env_map').getTexture() == environment.filtered_env_map
         app.win.getScreenshot().write(Filename.fromOsSpecific(str(output/(name+'.png'))))
         rows.append({'file': name+'.png', 'camera': list(app.camera.getPos()),
                      'snapshot_tick': app.session.current.tick})

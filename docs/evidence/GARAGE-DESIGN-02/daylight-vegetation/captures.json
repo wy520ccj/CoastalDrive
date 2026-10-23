@@ -1,0 +1,42 @@
+[
+  {
+    "file": "01-before.png",
+    "source": "docs/evidence/GARAGE-DESIGN-02/road-materials/02-driving-1280.png",
+    "sha256": "266ad4ff4d44a5edfb5fd27bfd51cfb86ebcb1f73e9a5a3b08aae50746124cd0"
+  },
+  {
+    "file": "02-driving-1280.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-daylight-balanced-1280/01-driving.png",
+    "sha256": "55832d27048ef2c24a36849716442464f372344b61861e207f181da664b618ca"
+  },
+  {
+    "file": "03-driving-1024.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-daylight-final-1024/01-driving.png",
+    "sha256": "482a9ad20539614ca427b9601f51d48ea2c02703c541caab6bbcc466a17d428c"
+  },
+  {
+    "file": "04-verge.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-daylight-balanced-1280/03-verge.png",
+    "sha256": "10bab1c7699184a8f58f5b04a7e4537a5f7c1720c72fa4c2a1a205383d118282"
+  },
+  {
+    "file": "05-road-close.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-daylight-balanced-1280/02-road-close.png",
+    "sha256": "5839e3144c5907efb6e3d280b147b52c5ea6d3ba5c7d4b28f6ab5c54dc94933c"
+  },
+  {
+    "file": "06-segment-seam.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-daylight-balanced-1280/04-segment-seam.png",
+    "sha256": "a7ea3ca4956e10f2d8417e298e9ebdc6886f05f7490a9952854a1d4461828cfd"
+  },
+  {
+    "file": "07-curves.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-daylight-curves/frame-002.png",
+    "sha256": "fcf9b7bafdb83d9549d2ea5b17823cc017e0ccb2be566f5f3b42f263a514936a"
+  },
+  {
+    "file": "08-hills.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-daylight-hills/frame-002.png",
+    "sha256": "ec0f75253cc009465e49e76e48e7ea2fd8fde23914b7371ad7be7b41d17dfdfd"
+  }
+]

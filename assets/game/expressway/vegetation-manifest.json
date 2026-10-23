@@ -1,0 +1,9 @@
+{
+  "source": "art\\expressway\\photographed_vegetation.glb",
+  "source_sha256": "5fa13c7eb56cead3a33b48edc4fa2977b0af4876419a904beb01a8480df238bd",
+  "output_sha256": "88820231ff0a58ae5440432a6c2d078823af9dc9bb2f800ad39dfa325d5030be",
+  "textures": 11,
+  "author": "Poly Haven: Rob Tuytel / Rico Cilliers / James Ray Cock / Jenelle van Heerden",
+  "license": "CC0-1.0",
+  "note": "Island Tree / Wild Rooibos Bush / Grass Medium；原种植点与物理碰撞保持，整株外观替换。"
+}

@@ -7,7 +7,8 @@ from panda3d.core import LColor, PfmFile, Vec3
 from vehicles.prepare_garage_environment import equirectangular_cube
 
 
-def test_environment_roundtrip_keeps_world_directions_across_all_faces():
+@pytest.mark.parametrize('longitude_offset', [0., .25])
+def test_environment_roundtrip_keeps_world_directions_across_all_faces(longitude_offset):
     image = PfmFile()
     image.clear(256, 128, 3)
     for row in range(128):
@@ -17,7 +18,7 @@ def test_environment_roundtrip_keeps_world_directions_across_all_faces():
             direction = Vec3(math.cos(latitude)*math.cos(longitude),
                              math.cos(latitude)*math.sin(longitude), math.sin(latitude))
             image.setPoint3(col, row, (direction+Vec3(1, 1, 1))*.5)
-    cube = equirectangular_cube(image, 64)
+    cube = equirectangular_cube(image, 64, longitude_offset=longitude_offset)
     peeker = cube.peek()
     # 由Panda原生TexturePeeker按世界向量选面；不复制转换工具的面向公式作判定。
     for axis in range(3):
@@ -29,4 +30,17 @@ def test_environment_roundtrip_keeps_world_directions_across_all_faces():
                 direction.normalize()
                 color = LColor()
                 peeker.lookup(color, *direction)
-                assert tuple(color.xyz) == pytest.approx(tuple((direction+Vec3(1, 1, 1))*.5), abs=.015)
+                expected = direction if longitude_offset == 0 else Vec3(-direction.y, direction.x, direction.z)
+                assert tuple(color.xyz) == pytest.approx(tuple((expected+Vec3(1, 1, 1))*.5), abs=.015)
+
+
+def test_indirect_environment_caps_solar_energy_without_changing_color_ratios():
+    image = PfmFile()
+    image.clear(32, 16, 3)
+    image.fill((16, 8, 4))
+    cube = equirectangular_cube(image, 8, radiance_limit=4)
+    peeker = cube.peek()
+    for direction in ((1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, 0, 1), (0, 0, -1)):
+        color = LColor()
+        peeker.lookup(color, *direction)
+        assert tuple(color.xyz) == pytest.approx((4, 2, 1))

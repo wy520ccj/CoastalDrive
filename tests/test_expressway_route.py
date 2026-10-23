@@ -219,6 +219,26 @@ def test_far_segment_build_does_not_depend_on_history(kit):
     root.removeNode()
 
 
+def test_completed_detail_batches_keep_shared_native_vegetation_lods(kit):
+    assets, _ = kit
+
+    def vertex_tables(node):
+        return {int(geom.getVertexData().this)
+                for path in node.findAllMatches('**/+GeomNode')
+                for geom in path.node().getGeoms()}
+
+    root = NodePath('shared-plants')
+    build_segment(root, 0, 23, assets, lambda node: None)
+    for name in ('source-grass', 'fine-shrubs', 'broadleaf-a'):
+        copies = root.findAllMatches('**/'+name)
+        assert len(copies) > 1
+        expected = vertex_tables(assets[name])
+        for copy in copies:
+            assert copy.node().getNumSwitches() == 2
+            assert vertex_tables(copy) == expected
+    root.removeNode()
+
+
 def test_indexed_surface_preserves_triangle_attributes():
     from panda3d.core import GeomVertexReader
 
