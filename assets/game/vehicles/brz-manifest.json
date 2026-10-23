@@ -1,8 +1,8 @@
 {
   "source": "art\\vehicles\\subaru_brz.glb",
-  "source_sha256": "022ae9fce9386bca2ef75c024013421d6667a0cebf7fe29e09b4644bb0a07ae0",
+  "source_sha256": "46ffcea8015f76f56879fabea5520ec3a5e962c030add03b0514bd623eb78a92",
   "output": "assets\\game\\vehicles\\subaru_brz.bam",
-  "output_sha256": "36b8840ef85f959b56b61b810749ee4cf10c85ac36738c8ee8e4e47342aa8718",
+  "output_sha256": "48c2b3e7a77b737bbb17f9ec1fd3c640d7abff09fad80a7ab635fadbfda575cd",
   "triangles": 103071,
   "author": "Socksthecat",
   "license": "CC-BY-4.0",

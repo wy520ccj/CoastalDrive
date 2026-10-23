@@ -1,0 +1,69 @@
+{
+  "baseline": "07384654",
+  "updated": {
+    "tools/blender/prepare_brz.py": "ae3e6021221c3f21c27bc09849b925a44cbb36ff4c9a10642c842ca5371014ad",
+    "art/vehicles/subaru_brz.glb": "46ffcea8015f76f56879fabea5520ec3a5e962c030add03b0514bd623eb78a92",
+    "art/vehicles/subaru_brz.blend": "6b54410b67b4bac74d2419f60a0489e950faa30c35e935905a8a08cb21c012fc",
+    "art/vehicles/brz-source.json": "14608897873e7b3b804accdc35a9614d4fa2846da364dcb1c484c381fac0f3f7",
+    "assets/game/vehicles/subaru_brz.bam": "48c2b3e7a77b737bbb17f9ec1fd3c640d7abff09fad80a7ab635fadbfda575cd",
+    "assets/game/vehicles/brz-manifest.json": "d2358d06abdb49f3cee7b6f22868c99ec7329358c386a0185005f1754025902b",
+    "assets/game/vehicles/Subaru-BRZ-License.txt": "167cbaf6d0606fd3fe2480e6609eadcb7ffa970452b6574710b2980c3af1a179",
+    "assets/game/ui/garage-v2/car-game-tuned.png": "43e2ae82266c083ddf31754d678283869f93b403618f5e1ea5ff6a3001ca1987"
+  },
+  "images": {
+    "candidate\\baseline-55.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-paint-normals\\render\\baseline-55.png",
+      "sha256": "c6d6b0441e6791a247fee312f132fdc428bec2ab2ef964640967c868e81740a9"
+    },
+    "candidate\\baseline-35.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-paint-normals\\render\\baseline-35.png",
+      "sha256": "2a9ff4a557b74802deb1106320ac5e4d4a006b98c3a1d5b62939bcfd2aa66d9e"
+    },
+    "candidate\\authored-55.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-paint-normals\\render\\authored-55.png",
+      "sha256": "4d118e837e485075e4712dbeee1f274c73ed55d88ff2afddf934f3064b21dbe4"
+    },
+    "candidate\\authored-35.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-paint-normals\\render\\authored-35.png",
+      "sha256": "0a988b199e667a9ec2bd9d0978dcc8f3260d0eda79626ac41b818e241612e2da"
+    },
+    "flow-1280\\03-upgrade-tires.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-authored-normals-flow\\03-upgrade-tires.png",
+      "sha256": "380b44953ac0aad673e4235b17ce1a646086e86108a5cbfbc6da7d13ca08961b"
+    },
+    "flow-1280\\08-orbit-0.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-authored-normals-flow\\08-orbit-0.png",
+      "sha256": "d81f029401ff792d5f7ebdac9621ba705be357b6b8017f7c25e539e5590495be"
+    },
+    "flow-1280\\10-concept-road.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-authored-normals-flow\\10-concept-road.png",
+      "sha256": "bbb18ada0a5471f271d393f558463a8fdc27ec386eb5e0fefcb8d2ffad7f0db4"
+    },
+    "garage-1024\\cars.png": {
+      "source": "logs\\validation\\GARAGE-DESIGN-02-authored-normals-1024\\cars.png",
+      "sha256": "20eebed4f5d70a5d52340d05b052a876c3024c2e5ef1b9eeae9f4b3b6949257b"
+    }
+  },
+  "unchanged": {
+    "src/session.py": "035f882a78452df861bc43a7da4f13858c1ce80f86eb18ab441545680e90cc7c",
+    "src/simulation.py": "c2079fe1b7ba78e1dd7172f133dda982d6c5fd720f8bd760a2ffd42efbf05749",
+    "src/vehicle.py": "8c54c9e3107587fbd24dcb527702e0097cd395d1368c9936864939a58652b95f",
+    "src/vehicle_designs.py": "becc4c2c2fc41482b7340175d0bb3fcf35da35f233735d847105f85c161611f0",
+    "src/vehicle_workspace.py": "f8064846ffa1fe7fc13ac2bfde1d75dcfe476db2bd880de27a5dc797e1129e8f",
+    "src/career.py": "03826f41247ea55dd19309d5766162c638ce31fb77e74fd3ab94a70f9a07824b",
+    "src/career_run.py": "5cca857c2b95470fdbc603e260b2dcdcd0272f03686c9630c7dd7fad90e62b58",
+    "src/vehicle_visual.py": "8daa6a753990ddd7e4b6e19a8f3a1f77cf091668253c1be6f9ed294bbf06f1ae",
+    "src/skins.py": "8440fa33f65fff6be19a1034f857a48c255b6445b4a8b0ea5e3381aa3cfef519",
+    "src/career_garage.py": "895d3449aacb897ca4d3e4ed8e824d367038519950d038240a9f29561948ae49",
+    "src/ui/workshop_vehicle.py": "fb241f3610ce39b64d2b38cb46e49604fb5fab80d9ded65fa04591f8c6ef7108",
+    "src/ui/garage_paint.py": "1c73a548d0ab0bd1740dcb202736cef9f30e54e43ac9a1605efe7d028cf7d22f",
+    "src/ui/garage_reflection.py": "f1b50289e0d0470f77a0e1d318bbfe9f5a98f72222b89916df456c42191c3a0a",
+    "src/scene.py": "0af6cf68dc56c4e44e737559cf67c135c42817f7541e77d994635bfa8692a135",
+    "assets/game/shaders/garage-clearcoat.glsl": "8776d70462b74f6699e270fe3fb188cb72beb600863bde34f800392a24008670",
+    "launchers/game-current.cmd": "2c7956fcc94c790ac1bc42539891d90d888fe89297dfbcc5d003402bf20e92a3",
+    "art/vehicles/sources/subaru-brz/sx.blend": "78aa9ceaad97ee0c9a8349881c229f076a367a1920f91f19f4717a6171945f12",
+    "art/vehicles/brz-fit.json": "04f725f9f71c8eaec3e03991e437b9e30f623d5a7cffa7b9858ca46c47b53ca9",
+    "art/vehicles/brz-body-ao.png": "40d3a035f1c52dc45d01691572bec8a204142a77e948ab30884c6b6cbb6ab56d",
+    "assets/game/ui/garage-v2/contact-shadow-brz.png": "674259bdcfdea00a8e41edf8d2a463b753a32c3c8b99834de3516420fd3d5bb0"
+  }
+}

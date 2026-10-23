@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "captures": [
+    "baseline-55.png",
+    "baseline-35.png",
+    "authored-55.png",
+    "authored-35.png"
+  ],
+  "new_driving_steps": 0,
+  "scope": "isolated authored normal candidate; no runtime files or physics changed"
+}

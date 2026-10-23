@@ -62,6 +62,13 @@ def prepare():
     }
     transform = Matrix.Rotation(-math.pi/2, 4, 'Z')@Matrix.Rotation(math.pi, 4, 'X')
 
+    def fit_scale(y):
+        length_scale = (fit['wheelbase']/2/1.275 if abs(y) <= 1.275 else
+            (fit['collision_half_length']-fit['wheelbase']/2)/
+            ((2.291652679 if y > 0 else 2.177099943)-1.275))
+        return Vector((fit['collision_half_width']/.978189647, length_scale,
+                       2*fit['collision_half_height']/1.312586397))
+
     def fit_point(point):
         x, y, z = point
         # 前后轮拱随现有2.2m轴距移动，前后悬独立适配既有4.256m外廓。
@@ -79,11 +86,20 @@ def prepare():
 
     for name, mesh in records:
         indices = [face.material_index for face in mesh.polygons]
+        authored_normals = ([transform.to_3x3()@normal.vector for normal in mesh.corner_normals]
+                            if name == 'SX_body' else [])
         mesh.transform(transform)
+        if name == 'SX_body':
+            # 轴距适配分段缩放，作者面角法线须按局部Jacobian的逆转置变换。
+            for index, loop in enumerate(mesh.loops):
+                normal = authored_normals[index]
+                scale = fit_scale(mesh.vertices[loop.vertex_index].co.y)
+                authored_normals[index] = tuple(Vector(tuple(
+                    normal[a]/scale[a] for a in range(3))).normalized())
         for vertex in mesh.vertices:
             vertex.co = fit_point(vertex.co)
         if name == 'SX_body':
-            # 变形后原自定义法线已不对应曲面；重算平滑面并保留大角度折边。
+            corner_positions = [mesh.vertices[loop.vertex_index].co.copy() for loop in mesh.loops]
             mesh.attributes.remove(mesh.attributes['custom_normal'])
             edit = bmesh.new()
             edit.from_mesh(mesh)
@@ -94,6 +110,11 @@ def prepare():
             edit.to_mesh(mesh)
             edit.free()
             mesh.update()
+            if len(corner_positions) != len(mesh.loops) or any(
+                (mesh.vertices[loop.vertex_index].co-before).length > .000002
+                for loop, before in zip(mesh.loops, corner_positions, strict=True)):
+                raise RuntimeError('合并重合点改变了原面角对应，不能恢复作者法线')
+            mesh.normals_split_custom_set(authored_normals)
         for layer in tuple(mesh.color_attributes):
             mesh.color_attributes.remove(layer)
         mesh.materials.clear()
@@ -150,7 +171,7 @@ def prepare():
         'output_sha256': hashlib.sha256(OUTPUT.read_bytes()).hexdigest(),
         'fit_sha256': hashlib.sha256(FIT.read_bytes()).hexdigest(),
         'geometry': [*names, 'SX_wheel'], 'changes': ['只提取主车与完整源轮网格', '按已有经典车外廓/轮位适配',
-            '中性遮蔽和PBR材质', '保留内外饰两套原材质分区', '变形后重建车漆曲面法线', '四轮独立由Snapshot驱动'],
+            '中性遮蔽和PBR材质', '保留内外饰两套原材质分区', '按局部逆转置保留作者车漆面角法线', '四轮独立由Snapshot驱动'],
         'physics': 'Unchanged game-tuned config; not Subaru OEM calibration'}
     (ROOT/'art/vehicles/brz-source.json').write_text(json.dumps(report, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     print(json.dumps(report, ensure_ascii=False))

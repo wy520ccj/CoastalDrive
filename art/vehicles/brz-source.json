@@ -4,7 +4,7 @@
   "license": "CC-BY-4.0",
   "source": "https://github.com/stuntrally/blendfiles/tree/master/cars/SX",
   "source_sha256": "78aa9ceaad97ee0c9a8349881c229f076a367a1920f91f19f4717a6171945f12",
-  "output_sha256": "022ae9fce9386bca2ef75c024013421d6667a0cebf7fe29e09b4644bb0a07ae0",
+  "output_sha256": "46ffcea8015f76f56879fabea5520ec3a5e962c030add03b0514bd623eb78a92",
   "fit_sha256": "b05d6debe48b64c9d8435c0d5c72c1c4d2e968bbe6d7a63576507514c3104461",
   "geometry": [
     "SX_body",
@@ -17,7 +17,7 @@
     "按已有经典车外廓/轮位适配",
     "中性遮蔽和PBR材质",
     "保留内外饰两套原材质分区",
-    "变形后重建车漆曲面法线",
+    "按局部逆转置保留作者车漆面角法线",
     "四轮独立由Snapshot驱动"
   ],
   "physics": "Unchanged game-tuned config; not Subaru OEM calibration"

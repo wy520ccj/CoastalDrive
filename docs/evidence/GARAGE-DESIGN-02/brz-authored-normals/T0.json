@@ -1,0 +1,53 @@
+{
+  "started_utc": "2026-10-23T03:12:54.829575+00:00",
+  "git_head": "0738465490922cec496a3191a2c3467edf26afb8",
+  "git_status": "M art/vehicles/brz-source.json\n M art/vehicles/subaru_brz.blend\n M art/vehicles/subaru_brz.glb\n M assets/game/vehicles/brz-manifest.json\n M assets/game/vehicles/subaru_brz.bam\n M tools/blender/prepare_brz.py",
+  "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+  "areas": [],
+  "tests": [
+    "tests/test_vehicle_visual_asset.py",
+    "tests/test_career_garage.py"
+  ],
+  "tier": "T0",
+  "status": "passed",
+  "passed": true,
+  "stage_gate": "not_assessed",
+  "human_gate": "pending",
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\GARAGE-DESIGN-02-authored-normals-T0\\ruff.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.104
+    },
+    {
+      "name": "pytest",
+      "command": [
+        "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_vehicle_visual_asset.py",
+        "tests/test_career_garage.py"
+      ],
+      "reports": [],
+      "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\validation\\GARAGE-DESIGN-02-authored-normals-T0\\pytest.log",
+      "status": "passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 4.421
+    }
+  ]
+}

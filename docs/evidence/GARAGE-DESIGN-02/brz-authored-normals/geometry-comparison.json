@@ -1,0 +1,233 @@
+{
+  "passed": true,
+  "baseline": {
+    "Body Paint": {
+      "textures": [
+        [
+          "Base Color",
+          1024,
+          1024,
+          "55880fa814619664b03145eea5778ba7861fbf89c9268c54591784d998b78a54"
+        ]
+      ],
+      "material": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        0.6499999761581421,
+        0.11999999731779099
+      ],
+      "triangles": 27313,
+      "geometry_uv_sha256": "f3ed7088d2ce33823be44752b611f8f9d34ee19e103f5b8e7e19e405b5c3d77f"
+    },
+    "Blue Grey Glass": {
+      "textures": [],
+      "material": [
+        [
+          0.10000000149011612,
+          0.1599999964237213,
+          0.2199999988079071,
+          0.30000001192092896
+        ],
+        0.10000000149011612,
+        0.10000000149011612
+      ],
+      "triangles": 2764,
+      "geometry_uv_sha256": "b04ca442daf7c1ba4e06f41a4eb452911029a6c94012d9d18555d64f2b4d4ece"
+    },
+    "Exterior lamps and trim": {
+      "textures": [
+        [
+          "Base Color",
+          1024,
+          1024,
+          "5e5b3e70fbf6dc9936296c8ca244a204a0d526ef2345eb59b3e9c04d386f2163"
+        ]
+      ],
+      "material": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        0.0,
+        0.3400000035762787
+      ],
+      "triangles": 29455,
+      "geometry_uv_sha256": "87569d32b4a1c1aca7085b18557e047ab5331022ae59fdfc626f7a4c8bc5c3d0"
+    },
+    "Cabin upholstery": {
+      "textures": [
+        [
+          "Base Color",
+          1024,
+          1024,
+          "d69f8bd4883dbb966de6758f2ec7f68f68e42a2e5acc982e41fbdbb4429a2df7"
+        ]
+      ],
+      "material": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        0.0,
+        0.6499999761581421
+      ],
+      "triangles": 8491,
+      "geometry_uv_sha256": "89da99053a47f31983cb763b14f8a17924744066c2d2f78b414ce69aa3cf9194"
+    },
+    "Source wheel and tire": {
+      "textures": [
+        [
+          "Base Color",
+          1024,
+          1024,
+          "bbef85a1b6baf46308cc4a4cf99170f57850b39c40f4fda8e6b22ec19ba0f10a"
+        ],
+        [
+          "Metal Rough",
+          256,
+          256,
+          "17d80b45b54d9502c7f13edea3cce351f38f4a25ecf45c8a7b9c82b24bf272f0"
+        ]
+      ],
+      "material": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        1.0,
+        0.5600000023841858
+      ],
+      "triangles": 35048,
+      "geometry_uv_sha256": "4f1554865e4ac8d97ddc3cb4ec4a2a60c76c6ed08d6f8e8f31e3db9d6a2756f4"
+    }
+  },
+  "final": {
+    "Body Paint": {
+      "textures": [
+        [
+          "Base Color",
+          1024,
+          1024,
+          "55880fa814619664b03145eea5778ba7861fbf89c9268c54591784d998b78a54"
+        ]
+      ],
+      "material": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        0.6499999761581421,
+        0.11999999731779099
+      ],
+      "triangles": 27313,
+      "geometry_uv_sha256": "f3ed7088d2ce33823be44752b611f8f9d34ee19e103f5b8e7e19e405b5c3d77f"
+    },
+    "Blue Grey Glass": {
+      "textures": [],
+      "material": [
+        [
+          0.10000000149011612,
+          0.1599999964237213,
+          0.2199999988079071,
+          0.30000001192092896
+        ],
+        0.10000000149011612,
+        0.10000000149011612
+      ],
+      "triangles": 2764,
+      "geometry_uv_sha256": "b04ca442daf7c1ba4e06f41a4eb452911029a6c94012d9d18555d64f2b4d4ece"
+    },
+    "Exterior lamps and trim": {
+      "textures": [
+        [
+          "Base Color",
+          1024,
+          1024,
+          "5e5b3e70fbf6dc9936296c8ca244a204a0d526ef2345eb59b3e9c04d386f2163"
+        ]
+      ],
+      "material": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        0.0,
+        0.3400000035762787
+      ],
+      "triangles": 29455,
+      "geometry_uv_sha256": "87569d32b4a1c1aca7085b18557e047ab5331022ae59fdfc626f7a4c8bc5c3d0"
+    },
+    "Cabin upholstery": {
+      "textures": [
+        [
+          "Base Color",
+          1024,
+          1024,
+          "d69f8bd4883dbb966de6758f2ec7f68f68e42a2e5acc982e41fbdbb4429a2df7"
+        ]
+      ],
+      "material": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        0.0,
+        0.6499999761581421
+      ],
+      "triangles": 8491,
+      "geometry_uv_sha256": "89da99053a47f31983cb763b14f8a17924744066c2d2f78b414ce69aa3cf9194"
+    },
+    "Source wheel and tire": {
+      "textures": [
+        [
+          "Base Color",
+          1024,
+          1024,
+          "bbef85a1b6baf46308cc4a4cf99170f57850b39c40f4fda8e6b22ec19ba0f10a"
+        ],
+        [
+          "Metal Rough",
+          256,
+          256,
+          "17d80b45b54d9502c7f13edea3cce351f38f4a25ecf45c8a7b9c82b24bf272f0"
+        ]
+      ],
+      "material": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        1.0,
+        0.5600000023841858
+      ],
+      "triangles": 35048,
+      "geometry_uv_sha256": "4f1554865e4ac8d97ddc3cb4ec4a2a60c76c6ed08d6f8e8f31e3db9d6a2756f4"
+    }
+  },
+  "normal_changes_6_decimals": {
+    "Body Paint": true,
+    "Blue Grey Glass": false,
+    "Exterior lamps and trim": false,
+    "Cabin upholstery": false,
+    "Source wheel and tire": false
+  },
+  "scope": "per material triangle position/winding/UV rounded 7 decimals; decoded texture pixels and material values exact; normals measured separately at 6 decimals"
+}

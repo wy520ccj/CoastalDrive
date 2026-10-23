@@ -13,6 +13,8 @@ CoastalDrive changes: select complete source body/interior/glass and source whee
 preserve face material partitions; convert axes and adapt visible body/wheel placement
 to the existing game-tuned configuration; neutral body occlusion from red channel;
 PBR materials, four independent wheel roots, embedded textures and runtime BAM.
+Authored body corner normals are retained through the inverse transpose of the
+local fitting transform; positions, triangle winding, UVs and texture pixels stay unchanged.
 Thumbnail and contact shadow rendered from the adapted model with Poly Haven CC0 HDRI.
 Original sources and editable adaptation are included under art/vehicles/sources/subaru-brz/
 and art/vehicles/subaru_brz.blend; conversion tools under tools/blender/ and tools/vehicles/.
