@@ -25,3 +25,10 @@ BMW实际源场景下载：<https://download.blender.org/demo/test/BMW27.blend.z
 实际候选观察工具：`tools/blender/preview_vehicle_candidates.py`。候选原件、观察图与下载记录保留在`logs/validation/GARAGE-DESIGN-02-sources/`；被否定的候选不进入运行资产。
 
 用户最新方向：优先现实中存在、具有明确开放许可的完整车型。显示名称对应实际来源车辆，游戏通用参数明确标“项目调校”；作者许可和车厂授权分别记录，不把开放模型称为官方授权产品。未获得的新候选不提前加入车库。
+
+## 第八车筛选（2026-10-23）
+
+- 已接入 Lionsharp Studios / Karol Miklas 的 1975 Porsche 911 (930) Turbo；主站模型 UID `8568d9d14a994b9cae59499f0dbed21e`，当前作者 API 与 Objaverse 原件嵌入信息均为 CC-BY-4.0。原件、下载记录、作者数据及可编辑衍生保留，194453三角形；9星解锁。新硬件明确为项目调校，非原厂标定。
+- FR4实际观察后细节不足；HR Hummer实际预览的车体不符合目标；XZ BMW候选因旧材质与渲染状态尚未完成质量核对。三者均未接入。
+- Stunt Rally Y7 文件实际为 hasapeta 的 Veneno，与作者另一款 Mustang 不能混为一物。Tryder 的1968 Mustang官方页标CC0，但下载需登录，未取得原件；未采用不明来源镜像。
+- 筛选原始数据和候选图：`logs/validation/GARAGE-DESIGN-02-eighth-car/`、`logs/validation/GARAGE-DESIGN-02-sources/`。本轮没有替换源车模的手工几何。

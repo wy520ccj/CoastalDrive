@@ -68,6 +68,9 @@ DESIGN_VEHICLES = (
     VehicleDesign('subaru-wrx-sti', 'Subaru WRX STI · 项目调校', coastal_design(mass=1480., length=2.27, width=1.,
         height=.70, wheelbase=2.603, radius=.34, drive=.5, torque=1.75, cg=.49, weight=.58, track=1.54),
         'lubomircenovsky开放Impreza WRX STI外观；项目通用四驱配置，非Subaru原厂参数或标定'),
+    VehicleDesign('porsche-930', 'Porsche 911 Turbo · 项目调校', coastal_design(mass=1200., length=2.35, width=1.,
+        height=.82, wheelbase=2.343, radius=.323, drive=0., torque=1.20, cg=.45, weight=.40, track=1.57),
+        'Lionsharp Studios开放1975 Porsche 930外观；项目后驱配置，非Porsche原厂参数或标定'),
 )
 
 

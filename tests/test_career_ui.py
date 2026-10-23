@@ -261,19 +261,39 @@ def test_collection_preview_lock_and_selection_preserve_actual_vehicle_until_con
     assert app.workspace_vehicle == original
 
 
-def test_new_car_reward_opens_its_preview_and_returns_to_the_earned_event(app):
+@pytest.mark.parametrize('event_id,car_id', [('first-drive', 'club-coupe'), ('slalom', 'porsche-930')])
+def test_new_car_reward_opens_its_preview_and_returns_to_the_earned_event(app, monkeypatch, event_id, car_id):
     original = app.workspace_vehicle
-    result = CareerResult('first-drive', 8., elapsed=25., finished=True, succeeded=True, stars=3)
+    if event_id == 'slalom':
+        for previous in ('first-drive', 'parking'):
+            app.career_progress.record(CareerResult(previous, 8., elapsed=25., finished=True, succeeded=True, stars=3))
+    result = CareerResult(event_id, 8., elapsed=25., finished=True, succeeded=True, stars=3)
     award = app.career_progress.record(result)
+    monkeypatch.setattr(app, 'getAspectRatio', lambda: 4/3)
     app.career_panel.show_result(app.career_progress, result, award)
+    reward_title = next(label for label in app.career_panel.labels if '· 新车' in label.getText())
+    low, high = reward_title.getTightBounds(app.career_panel.content)
+    assert high.x <= -4/3+(941.*4/3*.031+941.*4/3*.32-24)*2/941
     button = next(button for button in app.career_panel.buttons if button['extraArgs'][0] == 'garage-new')
     button['command'](*button['extraArgs'])
     assert app.career_panel.page == 'garage' and app.career_garage_tab == 'cars'
-    assert app.career_preview.design_id == 'club-coupe' and app.workspace_vehicle == original
+    assert app.career_preview.design_id == car_id and app.workspace_vehicle == original
+    panel = app.career_panel
+    for aspect in (4/3, 16/9):
+        monkeypatch.setattr(app, 'getAspectRatio', lambda current=aspect: current)
+        app.career_action('garage-tab', 'cars')
+        app.career_action('garage-car', car_id)
+        for label in panel.labels:
+            if label.getText() in ('Porsche 911 Turbo', 'BMW 1M Coupé', 'Subaru WRX STI', '远航 GT'):
+                low, high = label.getTightBounds(panel.content)
+                # 只检查列表内车名；右侧展示标题有独立对齐区域。
+                if low.x < 0:
+                    wide = min(462., 941.*aspect*.295)
+                    assert high.x <= -aspect+(941.*aspect*.031+wide-24)*2/941
     app.career_action('garage-select')
-    assert app.workspace_vehicle.design_id == 'club-coupe'
+    assert app.workspace_vehicle.design_id == car_id
     app.career_action('garage-back')
-    assert app.career_panel.page == 'brief' and app.career_panel.event_id == 'first-drive'
+    assert app.career_panel.page == 'brief' and app.career_panel.event_id == event_id
 
 
 def test_garage_reserves_vehicle_area_and_directional_focus_follows_the_layout(app):

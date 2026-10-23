@@ -140,7 +140,7 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
     power = max(rpm*torque/9549.3 for rpm, torque in config.torque_curve)
     fill(width-195, 126, 2, 62, (.98, .98, .98, .95), 0)
     label(car.name, width-55, 150, 25, WHITE, True, right=True)
-    tuning = '项目调校 · ' if preview.design_id in ('game-tuned', 'coastal-hatch', 'coastal-roadster', 'club-coupe', 'subaru-wrx-sti') else ''
+    tuning = '项目调校 · ' if preview.design_id in ('game-tuned', 'coastal-hatch', 'coastal-roadster', 'club-coupe', 'subaru-wrx-sti', 'porsche-930') else ''
     label(f'{tuning}{power:.0f} kW  /  {config.mass:.0f} kg', width-55, 183, 17, WHITE, right=True)
     if tab == 'upgrade':
         label(car.name+' · '+car.category.split('/')[-1].strip(), left+inset, 223, 20, GRAY)
@@ -210,11 +210,15 @@ def show(panel, progress, vehicle, notice, tab, preview, skin_index, cars):
             button('', x, y, inner, 90, 'garage-car', item.design_id, role='category-active' if active else 'category')
             # 工程存档沿用其实际经典双门外观，不用虚构缩略图。
             thumbnail = item.design_id if item.design_id in ('game-tuned', 'coastal-hatch', 'coastal-roadster',
-                'gr86-2022-premium-6mt', 'coastal-gt', 'club-coupe', 'subaru-wrx-sti') else 'game-tuned'
-            image('garage-v2/car-'+thumbnail+'.png', x+5, y+5, 136, 76)
-            label(item.name, x+148, y+33, 22, bold=True)
+                'gr86-2022-premium-6mt', 'coastal-gt', 'club-coupe', 'subaru-wrx-sti', 'porsche-930') else 'game-tuned'
+            thumbnail_width = min(136., inner*.35)
+            thumbnail_height = thumbnail_width*9/16
+            text_offset = thumbnail_width+12
+            image('garage-v2/car-'+thumbnail+'.png', x+5, y+(90-thumbnail_height)/2,
+                  thumbnail_width, thumbnail_height)
+            label(item.name, x+text_offset, y+33, 22 if inner >= 360 else 20, bold=True)
             label('驾驶中' if item.design_id == vehicle.design_id else '已解锁' if progress.stars >= item.unlock else
-                  f'{item.unlock}星解锁', x+148, y+62, 16, ORANGE if active else GRAY)
+                  f'{item.unlock}星解锁', x+text_offset, y+62, 16, ORANGE if active else GRAY)
         if len(cars) > 4:
             button('‹', left+inset, 648, 42, 34, 'garage-car', cars[(selected-1) % len(cars)].design_id, role='quiet')
             label(f'{selected+1} / {len(cars)}', left+wide/2-20, 672, 17, GRAY)

@@ -1,0 +1,22 @@
+{
+  "author": "Lionsharp Studios / Karol Miklas",
+  "license": "CC-BY-4.0",
+  "source_sha256": "ad7cb84e3bcf65eee57fdf99316f8fe0985906d876faa7581b2b169c2298885e",
+  "output_sha256": "2fa849114b5bdb141aef6332d29b4b4c7202d2c10db1120af498e4565c72048d",
+  "triangles": 194453,
+  "uniform_scale": 0.90240719379997,
+  "excluded_objects": [
+    "Object_32",
+    "Object_49",
+    "Object_122",
+    "Object_140"
+  ],
+  "changes": [
+    "保留源曲面、贴图、UV与面角法线",
+    "归正源展示舵角，四轮独立",
+    "统一米制/车头朝向",
+    "排除独立覆漆/源阴影平面/天线/挂件",
+    "车漆接入游戏涂装",
+    "前灯罩体透射转换为运行着色器支持的薄层透明"
+  ]
+}

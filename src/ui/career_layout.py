@@ -226,7 +226,8 @@ def result(panel, progress, race_result, award):
             car_height = 64 if len(cars) > 2 else 50
             fill(x, y, inner, car_height, (.91, .92, .94, .85))
             image('garage-v2/car-'+cars[-1].design_id+'.png', x+4, y+2, 85, 46)
-            label(cars[-1].name+' · 新车', x+103, y+23, 21, bold=True)
+            title = label(cars[-1].name+' · 新车', x+103, y+23, 21, bold=True)
+            title.setScale(min(21., (inner-113)/title.textNode.getWidth())*2/941)
             if len(cars) > 1:
                 label('同时解锁：'+'、'.join(car.name for car in cars[:-1]),
                       x+103, y+44, 16, GRAY, wrap=inner-108)

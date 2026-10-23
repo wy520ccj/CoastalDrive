@@ -134,12 +134,14 @@ def main():
                            ('coastal-roadster', 'coastal_roadster.glb'),
                            ('gr86-2022-premium-6mt', 'gr86_2022_premium.glb'),
                            ('coastal-gt', None), ('club-coupe', 'club_coupe.glb'),
-                           ('subaru-wrx-sti', 'subaru_wrx_sti.glb')):
+                           ('subaru-wrx-sti', 'subaru_wrx_sti.glb'), ('porsche-930', 'porsche_930.glb')):
         if selected and name not in selected:
             continue
         scene, camera = setup(384, 216)
         if name == 'game-tuned':
             path = ROOT/'art/vehicles/subaru_brz.glb'
+        elif name == 'porsche-930':
+            path = ROOT/'art/vehicles/porsche_930.glb'
         elif name == 'subaru-wrx-sti':
             path = ROOT/'art/vehicles/subaru_wrx_sti.glb'
         elif name == 'club-coupe':
@@ -164,6 +166,8 @@ def main():
     if selected:
         if 'game-tuned' in selected:
             render_shadow('contact-shadow-brz', ROOT/'art/vehicles/subaru_brz.glb')
+        if 'porsche-930' in selected:
+            render_shadow('contact-shadow-porsche-930', ROOT/'art/vehicles/porsche_930.glb')
         if 'subaru-wrx-sti' in selected:
             render_shadow('contact-shadow-subaru', ROOT/'art/vehicles/subaru_wrx_sti.glb')
         if 'club-coupe' in selected:

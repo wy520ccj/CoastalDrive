@@ -1,0 +1,16 @@
+{
+  "source": "art\\vehicles\\porsche_930.glb",
+  "source_sha256": "2fa849114b5bdb141aef6332d29b4b4c7202d2c10db1120af498e4565c72048d",
+  "output": "assets\\game\\vehicles\\porsche_930.bam",
+  "output_sha256": "ef411af578d703b649070a8e1a3102d8843a359302ecc36ad2975b9198981bcc",
+  "triangles": 194453,
+  "author": "Lionsharp Studios / Karol Miklas",
+  "license": "CC-BY-4.0",
+  "source_scene_manifest": "art/vehicles/porsche-930-source.json",
+  "changes": [
+    "保留完整车身/灯组/内饰源网格",
+    "四轮独立根",
+    "车漆分区命名paint",
+    "法线与材质按离线源导出"
+  ]
+}

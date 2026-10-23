@@ -171,14 +171,15 @@ class WorkshopVehicle:
         if self.contact_shadow is not None:
             self.contact_shadow.show() if studio else self.contact_shadow.hide()
             if studio:
-                shadow = ('contact-shadow-club-coupe.png' if vehicle.design_id == 'club-coupe' else
+                shadow = ('contact-shadow-porsche-930.png' if vehicle.design_id == 'porsche-930' else
+                          'contact-shadow-club-coupe.png' if vehicle.design_id == 'club-coupe' else
                           'contact-shadow-brz.png' if vehicle.design_id == 'game-tuned' else
                           'contact-shadow-subaru.png' if vehicle.design_id == 'subaru-wrx-sti' else
                           'contact-shadow-elise.png' if vehicle.design_id == 'coastal-roadster' else
                           'contact-shadow-gr86.png' if vehicle.design_id == 'gr86-2022-premium-6mt' else
                           'contact-shadow-hatch.png' if vehicle.design_id == 'coastal-hatch' else 'contact-shadow.png')
                 self.contact_shadow.setTexture(self.base.loader.loadTexture(theme.asset_filename('garage-v2/'+shadow)))
-                self.contact_shadow.setH(0 if vehicle.design_id in ('game-tuned', 'club-coupe', 'coastal-hatch', 'coastal-roadster', 'subaru-wrx-sti', 'gr86-2022-premium-6mt') else 180)
+                self.contact_shadow.setH(0 if vehicle.design_id in ('game-tuned', 'club-coupe', 'coastal-hatch', 'coastal-roadster', 'subaru-wrx-sti', 'gr86-2022-premium-6mt', 'porsche-930') else 180)
         for shadow in self.shadows:
             shadow.hide() if studio else shadow.show()
         self.studio_active = studio

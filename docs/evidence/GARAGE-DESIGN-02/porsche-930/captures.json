@@ -1,0 +1,47 @@
+[
+  {
+    "file": "01-collection-1280.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-porsche-final-1280/cars.png",
+    "sha256": "d9627d845d53db7b000dbe5369d18fe392780e35b7a2984fbd08a8dd1ab347eb"
+  },
+  {
+    "file": "02-collection-1024.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-porsche-final-1024/cars.png",
+    "sha256": "92e4eb61ab0faf1264ed7074471ef8386dda5829899d665f74a1211ffdeeaa4f"
+  },
+  {
+    "file": "03-upgrade-1024.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-porsche-final-1024/upgrade-tires.png",
+    "sha256": "4e1e40499b9d289aa50d5ebd87320b4fbe631bc990a050572b0399a10f526678"
+  },
+  {
+    "file": "04-paint-1024.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-porsche-final-1024/paint.png",
+    "sha256": "6e4c3c37abde626374d3ee99e49cfeb008d28c488c032cc74c17dd4d2ba2906f"
+  },
+  {
+    "file": "05-side-1280.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-porsche-flow/08-orbit-0.png",
+    "sha256": "c63db3f5cd345bc73671f2e90f480a1ecbacf09a3d36f7a572945b75685ab02c"
+  },
+  {
+    "file": "06-road-1280.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-porsche-flow/10-concept-road.png",
+    "sha256": "4157779ae55efb67427f5d25df10e3e1e66edf46f2948af9db3869c3dab44fe9"
+  },
+  {
+    "file": "07-nine-star-reward-1024.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-porsche-reward-final-1024/01-nine-star-reward.png",
+    "sha256": "02d23e5c455418bf3a5d39ddb9934413f359d0c839832b2195832e278881150e"
+  },
+  {
+    "file": "08-new-car-preview-1024.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-porsche-reward-final-1024/02-new-car-preview.png",
+    "sha256": "dda8972602fbebd8cb4132419fab5b18e04eb2e839686e8183dec6d947ae9d31"
+  },
+  {
+    "file": "09-return-event-1024.png",
+    "source": "logs/validation/GARAGE-DESIGN-02-porsche-reward-final-1024/03-return-to-event.png",
+    "sha256": "9117fdc46d6c261f95eb04e2b22787275d41d8e8c9becbb695a367202564b46e"
+  }
+]

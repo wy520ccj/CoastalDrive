@@ -69,7 +69,7 @@ def test_each_car_paint_is_saved_separately_without_creating_fake_vehicle_slots(
     assert garage_cars(current, tmp_path) == garage_cars(current)
 
 
-@pytest.mark.parametrize('design_id', ['coastal-hatch', 'coastal-roadster', 'coastal-gt', 'club-coupe', 'subaru-wrx-sti', 'gr86-2022-premium-6mt'])
+@pytest.mark.parametrize('design_id', ['coastal-hatch', 'coastal-roadster', 'coastal-gt', 'club-coupe', 'subaru-wrx-sti', 'gr86-2022-premium-6mt', 'porsche-930'])
 def test_new_models_load_with_configured_body_and_four_independent_wheels(design_id):
     config = vehicle_design(design_id).config
     parent = NodePath('asset-check')
@@ -83,7 +83,7 @@ def test_new_models_load_with_configured_body_and_four_independent_wheels(design
                  for part in body.findAllMatches('**/+GeomNode') for state in part.node().getGeomStates()}
         assert 'Rear lamps' in names
     low, high = body.getTightBounds(parent)
-    if definition.id in ('coastal-hatch', 'coastal-roadster', 'coastal-gt', 'club-coupe', 'subaru-wrx-sti'):
+    if definition.id in ('coastal-hatch', 'coastal-roadster', 'coastal-gt', 'club-coupe', 'subaru-wrx-sti', 'porsche-930'):
         # 外购低矮车身按轮拱装配，后视镜允许伸出不含镜片的车身碰撞盒。
         assert high.x-low.x <= config.collision_half_width*2+.12
         assert high.y-low.y <= config.collision_half_length*2
@@ -150,6 +150,34 @@ def test_elise_retains_source_vehicle_geometry_and_current_author_license():
     assert CAR_BY_DESIGN['coastal-roadster'].name == 'Lotus Elise'
     assert (root/'assets/game/vehicles/Lotus-Elise-License.txt').is_file()
     parent.removeNode()
+
+
+def test_porsche_source_license_geometry_and_independent_wheels_are_preserved():
+    root = Path(__file__).resolve().parents[1]
+    source = root/'art/vehicles/sources/porsche-930'
+    metadata = json.loads((source/'sketchfab-metadata.json').read_text(encoding='utf-8'))
+    assert metadata['uid'] == '8568d9d14a994b9cae59499f0dbed21e'
+    assert metadata['license']['url'].rstrip('/') == 'http://creativecommons.org/licenses/by/4.0'
+    extraction = json.loads((root/'art/vehicles/porsche-930-source.json').read_text(encoding='utf-8'))
+    manifest = json.loads((root/'assets/game/vehicles/porsche-930-manifest.json').read_text(encoding='utf-8'))
+    assert hashlib.sha256((source/'porsche-930-original.glb').read_bytes()).hexdigest() == extraction['source_sha256']
+    assert hashlib.sha256((root/'art/vehicles/porsche_930.glb').read_bytes()).hexdigest() == manifest['source_sha256']
+    asset = root/'assets/game/vehicles/porsche_930.bam'
+    assert hashlib.sha256(asset.read_bytes()).hexdigest() == manifest['output_sha256']
+    car = NodePath(Loader.getGlobalPtr().loadSync(Filename.fromOsSpecific(str(asset))))
+    triangles = sum(primitive.decompose().getNumPrimitives() for part in car.findAllMatches('**/+GeomNode')
+        for geom in part.node().getGeoms() for primitive in geom.getPrimitives())
+    assert triangles == extraction['triangles'] == manifest['triangles'] == 194453
+    assert car.findAllTextures().getNumTextures() >= 15
+    for name in ('front-left', 'front-right', 'back-left', 'back-right'):
+        low, high = car.find('**/wheel-'+name).getTightBounds()
+        # 源前轮18度展示转角已经归正，轮胎厚度不再包含斜向直径。
+        assert high.x-low.x < (high.y-low.y)*.65
+        assert abs((high.y-low.y)-(high.z-low.z)) < .015
+    credits = (root/'assets/game/vehicles/Porsche-930-License.txt').read_text(encoding='utf-8')
+    assert 'Lionsharp Studios' in credits and 'Karol Miklas' in credits and 'CC-BY-4.0' in credits
+    assert CAR_BY_DESIGN['porsche-930'].unlock == 9
+    car.removeNode()
 
 
 @pytest.mark.parametrize('design_id', list(CAR_BY_DESIGN))

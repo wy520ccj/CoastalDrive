@@ -1,0 +1,19 @@
+{
+  "baseline": "c84e8923",
+  "preserved_configs": {
+    "game-tuned": true,
+    "reference-rwd": true,
+    "reference-fwd": true,
+    "reference-awd": true,
+    "gr86-2022-premium-6mt": true,
+    "coastal-hatch": true,
+    "coastal-roadster": true,
+    "coastal-gt": true,
+    "club-coupe": true,
+    "subaru-wrx-sti": true
+  },
+  "new_ids": [
+    "porsche-930"
+  ],
+  "passed": true
+}

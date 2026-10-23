@@ -1,0 +1,11 @@
+{
+  "source_uid": "8568d9d14a994b9cae59499f0dbed21e",
+  "source_api": "https://api.sketchfab.com/v3/models/8568d9d14a994b9cae59499f0dbed21e",
+  "public_archive_url": "https://huggingface.co/datasets/allenai/objaverse/resolve/main/glbs/000-042/8568d9d14a994b9cae59499f0dbed21e.glb",
+  "object_paths_index": "https://huggingface.co/datasets/allenai/objaverse/resolve/main/object-paths.json.gz",
+  "fetched": "2026-10-23",
+  "bytes": 21969080,
+  "sha256": "ad7cb84e3bcf65eee57fdf99316f8fe0985906d876faa7581b2b169c2298885e",
+  "license_confirmed": "CC-BY-4.0 in current author API and original GLB asset extras; current profile Lionsharp Studios, original Karol Miklas",
+  "dataset_citation": "Deitke et al. Objaverse: A Universe of Annotated 3D Objects. arXiv:2212.08051"
+}
