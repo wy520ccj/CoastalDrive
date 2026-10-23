@@ -1,0 +1,86 @@
+{
+  "passed": true,
+  "size": [
+    1024,
+    768
+  ],
+  "captures": [
+    "game-tuned.png",
+    "coastal-hatch.png",
+    "coastal-roadster.png",
+    "gr86-2022-premium-6mt.png",
+    "coastal-gt.png",
+    "club-coupe.png",
+    "subaru-wrx-sti.png",
+    "reflection-on.png",
+    "reflection-off.png"
+  ],
+  "models": [
+    {
+      "design": "game-tuned",
+      "reflection_passes": 2
+    },
+    {
+      "design": "coastal-hatch",
+      "reflection_passes": 2
+    },
+    {
+      "design": "coastal-roadster",
+      "reflection_passes": 2
+    },
+    {
+      "design": "gr86-2022-premium-6mt",
+      "reflection_passes": 2
+    },
+    {
+      "design": "coastal-gt",
+      "reflection_passes": 2
+    },
+    {
+      "design": "club-coupe",
+      "reflection_passes": 2
+    },
+    {
+      "design": "subaru-wrx-sti",
+      "reflection_passes": 2
+    }
+  ],
+  "changed_buffer_pixels": 129414,
+  "unchanged_above_ground_row": 390,
+  "timings": {
+    "game-tuned": {
+      "off": {
+        "samples": 48,
+        "wall_median_ms": 11.57680000324035,
+        "wall_p95_ms": 13.634034999267897,
+        "main_thread_cpu_median_ms": 0.0,
+        "main_thread_cpu_total_ms": 93.75
+      },
+      "on": {
+        "samples": 48,
+        "wall_median_ms": 11.419750000641216,
+        "wall_p95_ms": 13.753794997319346,
+        "main_thread_cpu_median_ms": 0.0,
+        "main_thread_cpu_total_ms": 46.875
+      }
+    },
+    "coastal-roadster": {
+      "off": {
+        "samples": 48,
+        "wall_median_ms": 11.505249996844213,
+        "wall_p95_ms": 13.719749999290798,
+        "main_thread_cpu_median_ms": 0.0,
+        "main_thread_cpu_total_ms": 46.875
+      },
+      "on": {
+        "samples": 48,
+        "wall_median_ms": 11.501900000439491,
+        "wall_p95_ms": 13.875595003628405,
+        "main_thread_cpu_median_ms": 0.0,
+        "main_thread_cpu_total_ms": 78.125
+      }
+    }
+  },
+  "new_driving_steps": 0,
+  "scope": "隔离18星夹具；静态显示开关诊断，不是正式运行性能或人工审美验收"
+}

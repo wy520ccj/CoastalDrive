@@ -49,20 +49,27 @@ def test_locked_entry_modal_and_garage_are_separate_from_reports(app):
 def test_garage_paint_coat_stays_on_paint_and_clears_for_engineering_preview(app):
     app.career_action('garage')
     app.career_action('garage-car', 'game-tuned')
+    app.career_action('garage-select')
     view = app.workshop_vehicle
+    reflection = view.floor_reflection
+    assert len(view.scene.findAllMatches('garage-floor-reflection')) == 1
     paint = view.car_root.find('**/paint')
     assert paint.getShader() is not None
     assert all(part.getShader() is None for part in view.car_root.findAllMatches('**/+GeomNode')
                if part.getName() != 'paint' and part.getName() != 'part-highlight')
     before, vehicle = app.session.current, app.workspace_vehicle
     app.career_action('garage-tab', 'paint')
+    assert view.floor_reflection == reflection
     app.career_action('garage-paint', 2)
+    assert reflection.isEmpty() and view.floor_reflection != reflection
+    assert len(view.scene.findAllMatches('garage-floor-reflection')) == 1
     assert view.car_root.find('**/paint').getShader() is not None
     assert app.session.current == before and app.workspace_vehicle == vehicle
     box = tuple(view.frame['frameSize'])
     view.show(app.career_panel.root, box, app.career_preview, studio=False,
               skin_index=app.career_preview_skin)
     assert view.car_root.find('**/paint').getShader() is None
+    assert view.floor_reflection is None
     assert app.session.current == before and app.workspace_vehicle == vehicle
 
 

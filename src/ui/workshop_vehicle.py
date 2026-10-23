@@ -27,6 +27,7 @@ from skins import apply_skin, vehicle_for_design
 from ui import theme
 from ui.garage_framing import mesh_vertices, project_vertices
 from ui.garage_paint import garage_paint_shader
+from ui.garage_reflection import reflect_vehicle
 from vehicle_visual import load_vehicle, set_vehicle_reflection, vehicle_reflection
 
 
@@ -103,6 +104,8 @@ class WorkshopVehicle:
             self.car_root = self.scene.attachNewNode('current-vehicle')
             self.studio = None
             self.contact_shadow = None
+            self.floor_reflection = None
+            self.reflection_identity = None
             self.studio_angle = 55.
             previous_tasks = self.base.taskMgr.getTasksNamed('simplepbr update')
             self.pipeline = simplepbr.init(render_node=self.scene, window=self.buffer,
@@ -147,6 +150,13 @@ class WorkshopVehicle:
                 part.clearShader()
         for node in (self.car_root.getChild(0), *self.wheels):
             set_vehicle_reflection(node, self.garage_environment if studio else vehicle_reflection())
+        if self.floor_reflection is not None and (not studio or self.reflection_identity != identity):
+            self.floor_reflection.removeNode()
+            self.floor_reflection = None
+            self.reflection_identity = None
+        if studio and self.floor_reflection is None:
+            self.floor_reflection = reflect_vehicle(self.car_root, self.scene, self.pipeline.use_330)
+            self.reflection_identity = identity
         if studio and self.contact_shadow is None:
             card = CardMaker('garage-model-shadow')
             card.setFrame(-4, 4, -4, 4)

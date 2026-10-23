@@ -1,0 +1,6 @@
+Built-in image_gen, edit mode, transparent_background=false.
+Reference: docs/evidence/GARAGE-DESIGN-02/mesh-framing/flow-1280/03-upgrade-tires.png
+
+Edit this exact Coastal Drive game UI screenshot into a restrained production art direction reference for integrating the existing orange Subaru BRZ with the polished concrete garage floor. Preserve ALL text, controls, their positions, the exact existing car model, camera angle, scale, background architecture and bright coastal garage. Do not improve or replace the car mesh. Add only a subtle, geometrically accurate upside-down floor reflection directly attached to the tire contact points, at about 15-20% opacity, rapidly fading into the floor within half a car height. It must look like polished concrete, not a perfect mirror or wet puddle. Keep the contact shadow soft and grounded, dark immediately below the tires, restrained under the chassis. No new UI, no extra props, no glows, no car changes. The reference is for implementing a real-time reflection from the actual runtime mesh, so keep it feasible and restrained. Output a single same-aspect 16:9 screen.
+
+输出：17-floor-integration.png，1672×941。生成图擅自平滑了部分车身细节，不作为运行模型变化要求；本轮只取轮胎接地/低强度反射及淡出方向。设计图不是运行资产，程序复用原车模，不把图中车辆/反射烘焙进背景。
