@@ -4,6 +4,10 @@ import math
 
 from vehicle_state import VehicleCommand
 
+CIRCLE_BRAKING_MANEUVERS = ("cornering_braking", "mu_jump_cornering_braking")
+CIRCLE_MANEUVERS = ("constant_radius", *CIRCLE_BRAKING_MANEUVERS)
+PATH_MANEUVERS = (*CIRCLE_MANEUVERS, "double_lane_change")
+
 
 def bump_geometry(options, origin, config):
     """真实实体和视窗标记共用几何，左轮轨迹上固定矩形凸起。"""
@@ -32,7 +36,7 @@ def target_point(options, state, initial):
     x, y, _ = state.position
     x0, y0, _ = initial.position
     preview = max(6., abs(state.speed)*1.2)
-    if options.maneuver == "constant_radius":
+    if options.maneuver in CIRCLE_MANEUVERS:
         center_x, center_y = x0+options.radius_m, y0
         phase = math.atan2(y-center_y, center_x-x)+preview/options.radius_m
         return center_x-options.radius_m*math.cos(phase), center_y+options.radius_m*math.sin(phase)
@@ -56,7 +60,7 @@ def path_command(options, state, initial, config, speed_integral=0.):
 def path_error(options, state, initial):
     x, y, _ = state.position
     x0, y0, _ = initial.position
-    if options.maneuver == "constant_radius":
+    if options.maneuver in CIRCLE_MANEUVERS:
         return math.hypot(x-x0-options.radius_m, y-y0)-options.radius_m
     if options.maneuver == "double_lane_change":
         return x-x0-lane_offset(y-y0)
@@ -65,7 +69,7 @@ def path_error(options, state, initial):
 
 def reference_path(options, initial):
     x0, y0, _ = initial.position
-    if options.maneuver == "constant_radius":
+    if options.maneuver in CIRCLE_MANEUVERS:
         radius = options.radius_m
         return tuple((x0+radius-radius*math.cos(index*2*math.pi/180),
                       y0+radius*math.sin(index*2*math.pi/180)) for index in range(181))

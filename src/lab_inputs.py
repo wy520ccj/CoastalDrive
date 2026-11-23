@@ -38,6 +38,9 @@ MANEUVER_FIELDS = {
     "double_lane_change": COMMON_FIELDS,
     "ride_bump": COMMON_FIELDS | BUMP_FIELDS,
     "ride_braking": COMMON_FIELDS | BUMP_FIELDS | {"onset"},
+    "cornering_braking": COMMON_FIELDS | {"radius", "onset"},
+    "step_steer_braking": COMMON_FIELDS | STEERING_FIELDS,
+    "mu_jump_cornering_braking": COMMON_FIELDS | {"radius", "onset", "right_mu"},
 }
 MANEUVER_HINTS = {
     "braking": "直线制动：起点即全制动，转向和输入起始不参与。",
@@ -50,6 +53,9 @@ MANEUVER_HINTS = {
     "double_lane_change": "参考双移线：路径固定，自动控制转向和车速。",
     "ride_bump": "单侧凸起/轮跳：空挡自由滚动，不施加转向或制动。",
     "ride_braking": "单侧凸起/制动：到输入起始时刻后全制动。",
+    "cornering_braking": "沿定圆入弯，到输入起始时刻锁定转角并全制动。",
+    "step_steer_braking": "直线滚动，到输入起始时刻同时施加转向和全制动。",
+    "mu_jump_cornering_braking": "沿定圆入弯并锁角制动，制动后行驶10 m切换附着系数。",
 }
 
 

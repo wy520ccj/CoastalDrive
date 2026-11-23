@@ -7,7 +7,6 @@ from datetime import UTC, datetime
 from pathlib import Path
 from time import perf_counter
 
-import simplepbr
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import (
     DirectButton,
@@ -21,9 +20,12 @@ from panda3d.core import GraphicsWindow, TextNode, TransparencyAttrib, loadPrcFi
 
 from lab_experiment import MANEUVERS, LabExperiment, LabOptions
 from lab_inputs import MANEUVER_HINTS, LabInputError, active_fields, read_number
+from lab_maneuvers import CIRCLE_BRAKING_MANEUVERS, PATH_MANEUVERS
+from lab_metrics import BRAKING_MANEUVERS, NEW_BRAKING_MANEUVERS
 from lab_records import LabRecord, changed_conditions, export_record, load_record, recalculate
 from lab_scene import LabScene
 from paths import user_data
+from rendering import ScenePipeline
 from suspension_bench import fit_bench
 from suspension_bench import validate_metadata as validate_suspension_metadata
 from tire_calibration import validate_fit_metadata
@@ -44,7 +46,7 @@ DISABLED_INK = (.43, .49, .49, 1)
 
 
 class VehicleLab(DirectObject):
-    def __init__(self, *, offscreen=False, output=None, render_size=(1280, 720), workspace_vehicle=None, lab_workspace=None, engine=None, on_back=None, activate=True, scheme_root=None):
+    def __init__(self, *, offscreen=False, output=None, render_size=(1280, 720), workspace_vehicle=None, lab_workspace=None, engine=None, on_back=None, activate=True, scheme_root=None, workspace_path=None):
         self.owns_window = engine is None
         self.on_back = on_back
         if self.owns_window:
@@ -56,7 +58,7 @@ class VehicleLab(DirectObject):
             self.engine.finalizeExit = self.engine.taskMgr.stop
         self.engine.disableMouse()
         self.engine.setBackgroundColor(*theme.PAPER)
-        self.pipeline = (simplepbr.init(enable_shadows=True, max_lights=1, msaa_samples=4, shadow_bias=.0007)
+        self.pipeline = (ScenePipeline(enable_shadows=True, max_lights=1, msaa_samples=4, shadow_bias=.0007)
                          if self.owns_window else engine.pipeline)
         self.engine.camLens.setNearFar(.1, 1500)
         self.font = theme.load_font("fonts/SourceHanSansSC-Bold.otf")
@@ -72,6 +74,7 @@ class VehicleLab(DirectObject):
         self.next_drive = False
         self.next_slalom = False
         self.workspace_vehicle = workspace_vehicle
+        self.workspace_path = None if workspace_path is None else Path(workspace_path)
         self.run_state = None
         self.engineered_config = None
         self.engineered_vehicle_id = None
@@ -114,13 +117,6 @@ class VehicleLab(DirectObject):
             folder = Path(workspace_vehicle.report_path).parent
             self.import_record(folder)
             self.last_report = Path(workspace_vehicle.report_path)
-            if self.record is not None and (folder/"baseline-A").is_dir():
-                try:
-                    self.baseline = load_record(folder/"baseline-A")
-                except (OSError, ValueError, KeyError, TypeError) as error:
-                    self.show_error("A基线载入失败，当前B记录已恢复", error)
-                self.present_summary(self.record.metadata["summary"])
-                self.refresh_plots()
             self.workshop.restore_saved(workspace_vehicle)
         if activate:
             self.activate()
@@ -138,6 +134,8 @@ class VehicleLab(DirectObject):
         self.accept("wheel_up", self.scroll_parameter_help, [-1])
         self.accept("wheel_down", self.scroll_parameter_help, [1])
         self.accept("mouse1-up", self.set_pointer, [False])
+        for key in ('arrow_up', 'arrow_down', 'arrow_left', 'arrow_right', 'enter'):
+            self.accept(key, self.workshop.key, [key])
         self.engine.taskMgr.add(self.update, "lab-update")
         self.resize()
 
@@ -268,6 +266,7 @@ class VehicleLab(DirectObject):
         def read(key, default, **kwargs):
             return self.read_field(key, **kwargs) if key in available else default
 
+        coordinated = self.esc_menu.selectedIndex == 2
         options = LabOptions(vehicle_id=defaults.vehicle_id, maneuver=mode,
             speed_kph=self.read_field("speed"), friction=self.read_field("mu"), duration=self.read_field("duration"),
             steering_deg=read("steer", defaults.steering_deg,
@@ -279,7 +278,9 @@ class VehicleLab(DirectObject):
             bump_distance_m=read("bump_distance", defaults.bump_distance_m),
             cg_height=self.read_field("cg", optional=True),
             tire_reference_load=self.read_field("tire_load", optional=True),
-            abs_enabled=self.abs_menu.selectedIndex == 0, esc_enabled=self.esc_menu.selectedIndex == 1)
+            abs_enabled=self.abs_menu.selectedIndex == 0 and not coordinated,
+            esc_enabled=self.esc_menu.selectedIndex == 1,
+            controller_mode="coord_abs_dyc" if coordinated else "native")
         if "onset" in available and options.onset >= options.duration:
             raise LabInputError("onset", "输入起始须小于试验时长，否则试验结束前不会施加输入。")
         return options
@@ -301,8 +302,10 @@ class VehicleLab(DirectObject):
             for state in range(entry["numStates"]):
                 entry.guiItem.setTextDef(state, entry.onscreenText.textNode)
             self.field_labels[key].setFg(MUTED if enabled else DISABLED_INK)
-        self.field_labels["speed"].setText("目标车速 km/h" if mode in (
-            "constant_radius", "double_lane_change") else "初速 km/h")
+        maintains_speed = mode in PATH_MANEUVERS and mode not in CIRCLE_BRAKING_MANEUVERS
+        self.field_labels["speed"].setText("目标车速 km/h" if maintains_speed else "初速 km/h")
+        self.field_labels["right_mu"].setText("突变后附着 μ" if mode == "mu_jump_cornering_braking"
+                                             else "右侧附着 μ")
         self.parameter_hint.setText(MANEUVER_HINTS[mode]+"\n灰色项不参与本工况；质心/轮胎基准留空采用模型值。")
         ready = mode not in ("ride_bump", "ride_braking") or config.unsprung_enabled
         self.start_button["state"] = DGG.NORMAL if ready else DGG.DISABLED
@@ -310,6 +313,14 @@ class VehicleLab(DirectObject):
         self.manual_button.show() if mode == "manual" else self.manual_button.hide()
         if mode != "manual":
             self.manual_panel.hide()
+
+    def select_stability_control(self, _selection):
+        coordinated = self.esc_menu.selectedIndex == 2
+        state = DGG.DISABLED if coordinated else DGG.NORMAL
+        self.abs_menu["state"] = state
+        self.abs_menu["popupMarker_state"] = state
+        self.abs_menu["text"] = "ABS 由协调控制" if coordinated else self.abs_menu.get()
+        self.abs_menu["text_fg"] = DISABLED_INK if coordinated else INK
 
     def read_field(self, key, **options):
         return read_number(self.entries[key].get(), key, **options)
@@ -472,7 +483,7 @@ class VehicleLab(DirectObject):
                            ("bump_distance", options.bump_distance_m)):
             self.entries[key].enterText(str(value))
         self.abs_menu.set(0 if options.abs_enabled else 1)
-        self.esc_menu.set(1 if options.esc_enabled else 0)
+        self.esc_menu.set(2 if options.controller_mode == "coord_abs_dyc" else int(options.esc_enabled))
         self.entries["cg"].enterText("" if options.cg_height is None else str(options.cg_height))
         self.entries["tire_load"].enterText("" if options.tire_reference_load is None else str(options.tire_reference_load))
         self.refresh_parameter_availability()
@@ -532,6 +543,12 @@ class VehicleLab(DirectObject):
         for key, value in (("speed", options.speed_kph), ("duration", options.duration),
                            ("onset", options.onset)):
             self.entries[key].enterText(str(value))
+        if mode in NEW_BRAKING_MANEUVERS:
+            available = active_fields(mode)
+            for key, value in (("mu", options.friction), ("radius", options.radius_m),
+                               ("right_mu", options.right_friction), ("steer", options.steering_deg)):
+                if key in available:
+                    self.entries[key].enterText(str(value))
         self.select_maneuver_plot(mode)
         self.refresh_parameter_availability()
 
@@ -545,6 +562,13 @@ class VehicleLab(DirectObject):
             return replace(options, speed_kph=18., duration=3.)
         if mode == "ride_braking":
             return replace(options, speed_kph=30., duration=3., onset=.6)
+        if mode == "cornering_braking":
+            return replace(options, speed_kph=85., friction=.85, radius_m=80., onset=2., duration=10.)
+        if mode == "mu_jump_cornering_braking":
+            return replace(options, speed_kph=80., friction=.85, right_friction=.35,
+                           radius_m=80., onset=2., duration=12.)
+        if mode == "step_steer_braking":
+            return replace(options, speed_kph=90., friction=.70, duration=8., steering_deg=3.5)
         return options
 
     def reset_parameters(self):
@@ -556,14 +580,12 @@ class VehicleLab(DirectObject):
         self.notice.setText("已重置当前工况参数；工程模型、已有结果和A保留，重新开始试验后生效。")
 
     def select_maneuver_plot(self, mode):
-        if mode in ("constant_radius", "double_lane_change"):
+        if mode in PATH_MANEUVERS:
             self.set_plot_group("路径跟踪")
-        elif mode in ("braking", "split_braking"):
+        elif mode in BRAKING_MANEUVERS:
             self.set_plot_group("制动响应")
         elif mode=="ride_bump":
             self.set_plot_group("车身 / 轮心振动")
-        elif mode=="ride_braking":
-            self.set_plot_group("制动响应")
         else:
             self.set_plot_group("转向响应")
 
@@ -931,6 +953,13 @@ class VehicleLab(DirectObject):
         self.notice.dismiss()
         self.manual_panel.hide()
         self.set_options(options)
+        baseline_path = Path(folder)/"baseline-A"
+        baseline_error = None
+        if baseline_path.is_dir():
+            try:
+                self.baseline = load_record(baseline_path)
+            except (OSError, ValueError, KeyError, TypeError) as error:
+                baseline_error = error
         self.engineered_config = config
         self.engineered_vehicle_id = design.id
         self.parameter_metadata = record.metadata.get("parameter_metadata")
@@ -943,6 +972,8 @@ class VehicleLab(DirectObject):
         self.present_summary(record.metadata["summary"])
         self.refresh_plots()
         self.show_sample(0)
+        if baseline_error is not None:
+            self.show_error("A 基线载入失败，B 记录已载入", baseline_error)
         return True
 
     def recalculate_record(self):
@@ -1069,7 +1100,7 @@ class VehicleLab(DirectObject):
         self.ignoreAll()
         self.design_loop.close()
         self.road_retest.close()
-        self.workshop.hide()
+        self.workshop.close()
         self.schemes.hide()
         if self.run_state is not None:
             self.run_state.close()

@@ -6,10 +6,10 @@ import html
 import json
 import math
 import platform
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 
-from lab_maneuvers import path_error, reference_path
+from lab_maneuvers import CIRCLE_BRAKING_MANEUVERS, PATH_MANEUVERS, path_error, reference_path
 from lab_metrics import engineering_analysis
 from lab_runtime import runtime_fingerprint, validate_runtime_document
 from lab_signals import (
@@ -51,6 +51,13 @@ class LabRecord:
 
     @classmethod
     def from_run(cls, run):
+        maneuver = run.options.maneuver
+        driver = None
+        if maneuver in PATH_MANEUVERS:
+            driver = {"kind": "pure_pursuit_speed_pi", "preview_seconds": 1.2, "minimum_preview_m": 6.,
+                      "speed_p": .2, "speed_i": .08, "lane_change_m": [20, 30, 20, 30], "lane_offset_m": 3.5}
+        if maneuver in CIRCLE_BRAKING_MANEUVERS:
+            driver.update(steering_hold="actual_center_angle", onset_s=run.options.onset)
         return cls({"schema": SCHEMA, "physics_hz": 120, "mode": "offline_fixed_step",
                     "vehicle_name": run.design.name, "runtime_profile": run.runtime_profile,
                     "model_basis": (run.parameter_metadata["basis"] if run.parameter_metadata is not None
@@ -59,10 +66,7 @@ class LabRecord:
                     "vehicle_config": json.loads(json.dumps(asdict(run.config), allow_nan=False)),
                     "summary": run.summary(),
                     "reference_path": reference_path(run.options, run.snapshots[0].player),
-                    "driver": {"kind": "pure_pursuit_speed_pi", "preview_seconds": 1.2,
-                               "minimum_preview_m": 6., "speed_p": .2, "speed_i": .08,
-                               "lane_change_m": [20, 30, 20, 30], "lane_offset_m": 3.5}
-                              if run.options.maneuver in ("constant_radius", "double_lane_change") else None,
+                    "driver": driver,
                     "source_start": run.source_start, "source_end": model_fingerprint(),
                     "runtime_start": run.runtime_start, "runtime_end": runtime_fingerprint(),
                     "python": platform.python_version(), "hardware": platform.machine()},
@@ -188,7 +192,7 @@ def export_record(record, folder, baseline=None):
     report = f'''<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>CoastalDrive 实验报告</title>
 <style>body{{background:#f3efe3;color:#102b3a;font:15px system-ui;max-width:1000px;margin:40px auto;padding:0 24px}}svg{{width:100%;margin:10px 0}}pre{{white-space:pre-wrap;background:#fefcf5;padding:20px;border-radius:8px}}td{{border-bottom:1px solid #c9d3cc;padding:8px}}h1{{color:#247e96}}</style>
 <h1>CoastalDrive · 车辆动力学实验</h1><p>{html.escape(record.metadata["vehicle_name"])} · 120 Hz · 离线固定步 · {html.escape(precision)}</p>
-<p>{html.escape(record.metadata["model_basis"])}</p><p>曲线来自真实物理记录。A 为海蓝，B 为橙色；单次记录为橙色。普通制动距离使用完成步的三维行驶距离；颠簸制动使用制动请求前样本至停止的整车质心水平路径。停止阈值水平速率 ≤ 0.1 m/s。</p>
+<p>{html.escape(record.metadata["model_basis"])}</p><p>曲线来自真实物理记录。A 为海蓝，B 为橙色；单次记录为橙色。即时制动距离使用完成步的三维行驶距离；延迟制动使用制动请求前样本至停止的整车质心水平路径。停止阈值水平速率 ≤ 0.1 m/s。</p>
 <h2>试验结果</h2><pre>{summary}</pre><h2>工程指标</h2><p>列顺序：{"A / B" if baseline else "本次"}。未满足条件的原因及计算区间见engineering.json。</p><table>{metrics_table}</table><h2>乘坐运动与接地</h2><p>世界Z质心/轮心惯性加速度，未作频率加权，不作为ISO座椅舒适等级。实体刺激未完成或旧记录缺少自由度时保留未定义值。</p><table>{ride_table}</table>{plots}<h2>比较条件</h2><pre>{change_text}</pre>
 <h2>悬架部件台架适用域</h2><p>只核对120Hz完成拍采样的行程/速度，不覆盖子步峰值或台架温度之外的条件。null表示未提供此类台架来源。</p><pre>{bench_text}</pre>
 <h2>信号单位与字段来源</h2><table>{catalog}</table><p>完整配置、命令序列与源码/原生模块摘要见 experiment.json；120 Hz 数据见 signals.csv，动画快照见 snapshots.bin。实际计算耗时不包含初始化与文件导出。</p></html>'''
@@ -214,7 +218,12 @@ def load_record(folder):
         raise ValueError("动画快照文件损坏或与记录不一致")
     snapshots, _ = decode_snapshots(payload)
     samples = tuple(document.pop("samples"))
-    commands = tuple(VehicleCommand(**command) for command in document.pop("commands"))
+    commands = []
+    for command in document.pop("commands"):
+        if command.get("wheel_brakes") is not None:
+            command["wheel_brakes"] = tuple(command["wheel_brakes"])
+        commands.append(VehicleCommand(**command))
+    commands = tuple(commands)
     if not len(samples) == len(snapshots) == len(commands) or not samples:
         raise ValueError("信号、快照与输入记录长度不一致")
     summary = document["summary"]
@@ -267,11 +276,16 @@ def recalculate(record):
     options = LabOptions(**record.metadata["summary"]["options"])
     config = config_from_document(record.metadata["vehicle_config"], vehicle_design(options.vehicle_id).config)
     parameter_metadata = record.metadata.get("parameter_metadata")
-    run = LabExperiment(options, config=config, parameter_metadata=parameter_metadata,
+    # 自定义控制器的命令已保存，复算采用当时生效的车辆电子开关。
+    effective = replace(options, controller_mode="native", abs_enabled=config.braking.abs_enabled,
+                        esc_enabled=config.stability.esc_enabled)
+    run = LabExperiment(effective, config=config, parameter_metadata=parameter_metadata,
                         runtime_profile=record.metadata.get("runtime_profile", "reference"))
     try:
         for command in record.commands[1:]:
             run.step(command)
-        return LabRecord.from_run(run)
+        repeated = LabRecord.from_run(run)
+        repeated.metadata["summary"]["options"] = asdict(options)
+        return repeated
     finally:
         run.close()

@@ -4,8 +4,13 @@ import math
 from itertools import pairwise
 from statistics import mean
 
+from lab_maneuvers import CIRCLE_BRAKING_MANEUVERS
+
 VERSION = "coastal-engineering-metrics-v3"
 WHEELS = ("fl", "fr", "rl", "rr")
+NEW_BRAKING_MANEUVERS = (*CIRCLE_BRAKING_MANEUVERS, "step_steer_braking")
+DELAYED_BRAKING_MANEUVERS = ("ride_braking", *NEW_BRAKING_MANEUVERS)
+BRAKING_MANEUVERS = ("braking", "split_braking", *DELAYED_BRAKING_MANEUVERS)
 
 
 def metric(key, label, unit, value, note, window=None):
@@ -16,7 +21,7 @@ def metric(key, label, unit, value, note, window=None):
 
 def brake_start_index(rows,maneuver):
     """延迟制动取首次请求前的真实样本；原立即制动协议保留初样本。"""
-    if maneuver!="ride_braking":
+    if maneuver not in DELAYED_BRAKING_MANEUVERS:
         return 0
     return next((index-1 for index,row in enumerate(rows[1:],1) if row["brake_request"]>0.),None)
 
@@ -24,7 +29,7 @@ def brake_start_index(rows,maneuver):
 def mfdd(rows, positions, maneuver, reason):
     """速度/路径交点线性插值，80%→10%区间内不能反向增速。"""
     invalid = lambda note: metric("mfdd", "充分发出平均减速度", "m/s²", None, note)
-    if maneuver not in ("braking", "split_braking", "ride_braking"):
+    if maneuver not in BRAKING_MANEUVERS:
         return invalid("仅适用于制动工况")
     if reason in ("failed", "collision", "reset"):
         return invalid("试验异常终止，保留信号但不发布有效指标")
@@ -95,14 +100,22 @@ def yaw_gain(rows, maneuver, onset, reason):
                   "右转为正：−世界z横摆率 / 实际中心前轮角；不是方向盘增益，也不是不足转向梯度", window)
 
 
+def cg_motion(player):
+    """取整车质心位置与速度，兼容刚体和独立轮心模型。"""
+    state = player.unsprung_state
+    if state is None:
+        return player.position, player.velocity
+    return state.total_center_position, state.total_center_velocity
+
+
 def engineering_analysis(rows, snapshots, options, reason):
     # 原记录的刚体通道保持；新模型的制动距离/稳态速度取整车质量加权CG。
     motion_rows, positions = [], []
     for row, snapshot in zip(rows, snapshots, strict=True):
-        state = snapshot.player.unsprung_state
-        motion_rows.append({**row, "horizontal_speed": math.hypot(*state.total_center_velocity[:2])}
-                           if state is not None else row)
-        positions.append(state.total_center_position if state is not None else snapshot.player.position)
+        position, velocity = cg_motion(snapshot.player)
+        motion_rows.append({**row, "horizontal_speed": math.hypot(*velocity[:2])}
+                           if snapshot.player.unsprung_state is not None else row)
+        positions.append(position)
     results = [mfdd(motion_rows, positions, options["maneuver"], reason),
                yaw_gain(motion_rows, options["maneuver"], options["onset"], reason)]
     for key, label, unit in (("beta", "峰值车身侧偏", "deg"), ("roll", "峰值车身侧倾", "deg"),

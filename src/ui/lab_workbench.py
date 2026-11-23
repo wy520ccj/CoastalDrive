@@ -135,7 +135,8 @@ def build_workbench(app):
     app.field("radius", "定圆半径 m", 60, .44, x=.44, parent=app.advanced_panel)
     app.field("right_mu", "右侧附着 μ", .3, .32, x=.44, parent=app.advanced_panel)
     app.field("onset", "输入起始 s", .5, .20, x=.44, parent=app.advanced_panel)
-    app.esc_menu = app.option(["ESC 关闭", "ESC 开启"], -.82, .071, .62, parent=app.advanced_panel, parameter="esc")
+    app.esc_menu = app.option(["ESC 关闭", "ESC 开启", "协调控制（ABS–DYC）"], -.82, .071, .62,
+                              command=app.select_stability_control, parent=app.advanced_panel, parameter="esc")
     app.field("tire_load", "轮胎基准 N", "", .075, x=.44, parent=app.advanced_panel)
     app.field("bump_height", "凸起高度 m", .01, -.08, x=-.82, parent=app.advanced_panel)
     app.field("bump_length", "凸起长度 m", .9, -.08, x=.44, parent=app.advanced_panel)
