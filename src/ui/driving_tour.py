@@ -9,7 +9,7 @@ from challenge_catalog import ROAD_CHALLENGES
 from driving_tour import LEGS, TITLES, points, read_entries
 from tour_budget import tour_is_ranked, tour_medal, tour_points
 from ui import theme
-from ui.garage_layout import GRAY, INK, ORANGE, WHITE
+from ui.garage_layout import ORANGE, WHITE
 from ui.lab_widgets import rounded_panel
 from vehicle_workspace import WorkspaceVehicle
 
@@ -42,7 +42,7 @@ class DrivingTourPanel:
         node.setTransparency(TransparencyAttrib.MAlpha)
         return node
 
-    def text(self, value, x, y, size=22, color=INK, *, bold=False, right=False, wrap=None):
+    def text(self, value, x, y, size=22, color=theme.TEXT_LIGHT, *, bold=False, right=False, wrap=None):
         item = OnscreenText(parent=self.content, text=value, font=self.font if bold else self.regular,
             fg=color, align=TextNode.ARight if right else TextNode.ALeft, pos=self.point(x, y),
             scale=size*2/941, mayChange=True)
@@ -54,13 +54,11 @@ class DrivingTourPanel:
 
     def button(self, index, value, x, y, width, height, *, role='plain', enabled=True):
         unit, pxz = 2/941, self.point(x+width/2, y+height/2)
-        if role == 'secondary':
-            self.fill(x-1, y-1, width+2, height+2, (.75, .78, .82, 1))
-        elif role == 'practice':
-            self.fill(x-2, y-2, width+4, height+4, (.72, .75, .79, 1))
+        if role in ('secondary', 'practice'):
+            self.fill(x-1, y-1, width+2, height+2, theme.SLATE_BORDER, 6)
         button = DirectButton(parent=self.content, text=value, text_font=self.regular,
-            text_fg=WHITE if role in ('primary', 'secondary', 'footer', 'active') else INK,
-            text_scale=(24 if height > 50 else 20)*unit, text_pos=(0, -8*unit),
+            text_fg=theme.TEXT_LIGHT,
+            text_scale=(23 if height > 50 else 19)*unit, text_pos=(0, -7*unit),
             pos=(pxz[0], 0, pxz[1]), frameSize=(-width*unit/2, width*unit/2, -height*unit/2, height*unit/2),
             relief=DGG.FLAT, pressEffect=False, command=self.activate, extraArgs=[index],
             state=DGG.NORMAL if enabled else DGG.DISABLED)
@@ -110,12 +108,15 @@ class DrivingTourPanel:
         self.vehicle_view.show(self.content, self.box(self.left+self.wide+18, 220,
             self.width-2*self.left-self.wide-18, 450), WorkspaceVehicle(spec.design_id, spec.configuration(BuildDraft())), studio=True)
         self.vehicle_view.frame.setTransparency(TransparencyAttrib.MAlpha)
-        self.fill(0, 0, self.width, 110, (.04, .055, .075, .9), 0)
-        self.fill(0, 846, self.width, 95, (.04, .055, .075, .94), 0)
-        self.text('海岸巡回', self.left+12, 61, 40, WHITE, bold=True)
-        self.text('三站独立预算', self.left+12, 96, 22, WHITE)
-        self.progress = self.text('历史记录' if self.page else f'已完成 {len(self.store.current)} / 3站',
-                                  self.width-self.left, 58, 30, WHITE, bold=True, right=True)
+        self.fill(0, 0, self.width, 110, theme.SLATE_BAR, 0)
+        self.fill(0, 110, self.width, 1.5, theme.SLATE_BORDER, 0)
+        self.fill(0, 846, self.width, 95, theme.SLATE_BAR, 0)
+        self.fill(0, 845, self.width, 1.5, theme.SLATE_BORDER, 0)
+        self.fill(self.left, 24, 4, 62, ORANGE, 2)
+        self.text('海岸巡回', self.left+18, 58, 36, theme.TEXT_LIGHT, bold=True)
+        self.text('三站独立预算', self.left+18, 92, 20, theme.TEXT_SUB)
+        self.progress = self.text('历史记录' if self.page else f'已完成 {len(self.store.current)} / 3 站',
+                                  self.width-self.left, 56, 28, theme.TEXT_LIGHT, bold=True, right=True)
         legacy = self.page == 1 and self.history == 4
         shown = self.rows()
         medal = tour_medal(shown)
@@ -123,45 +124,46 @@ class DrivingTourPanel:
         round_kind = ('旧规则 · 仅圈速' if legacy else
                       medal+'牌 · '+str(tour_points(shown))+'/9分' if medal else
                       '暂无完整记录' if self.page and not shown else '计分轮次' if ranked else '试跑轮次')
-        self.text(round_kind, self.width-self.left, 95, 20, WHITE, right=True)
-        self.fill(self.left, 126, self.wide, 695, (.985, .982, .975, 1))
+        self.text(round_kind, self.width-self.left, 92, 19, theme.GOLD if medal else theme.TEXT_SUB, right=True)
+        self.fill(self.left-1, 125, self.wide+2, 697, theme.SLATE_BORDER, 13)
+        self.fill(self.left, 126, self.wide, 695, theme.SLATE_GLASS, 12)
         tab_w = min(250., self.wide*.28)
         for index, title in enumerate(('本轮巡回', '历史轮次')):
             x = self.left+22+index*tab_w
-            self.button(4+index, title, x, 152, tab_w, 62, role='active' if index == self.page else 'plain')
+            self.button(4+index, title, x, 148, tab_w-6, 56, role='active' if index == self.page else 'plain')
             if index == self.page:
-                self.fill(x, 210, tab_w, 4, ORANGE, 0)
+                self.fill(x+14, 204, tab_w-34, 3, ORANGE, 1.5)
         if self.page == 0:
-            self.text('全程  5.2公里', self.left+self.wide-30, 193, 24, right=True)
+            self.text('全程  5.2 公里', self.left+self.wide-30, 188, 22, theme.TEXT_SUB, right=True)
         else:
             filter_w = (self.wide-44)/5
             for index, title in enumerate(FILTERS):
                 x = self.left+22+index*filter_w
-                self.button(6+index, title, x, 232, filter_w, 49, role='filter-active' if index == self.history else 'plain')
+                self.button(6+index, title, x, 228, filter_w-4, 46, role='filter-active' if index == self.history else 'plain')
                 if index == self.history:
-                    self.fill(x+4, 278, filter_w-8, 3, ORANGE, 0)
-        header = 330 if self.page else 273
+                    self.fill(x+6, 274, filter_w-16, 3, ORANGE, 1.5)
+        header = 326 if self.page else 270
         columns = (self.left+self.wide*.50, self.left+self.wide*.63,
                    self.left+self.wide*.77, self.left+self.wide-.025*self.wide)
-        self.text('站点', self.left+40, header, 21)
+        self.text('站点', self.left+40, header, 19, theme.TEXT_SUB)
         for title, x in zip(('预算', '用时 / s', 'L/100km', '评价'), columns, strict=True):
-            self.text(title, x, header, 19, right=True)
+            self.text(title, x, header, 18, theme.TEXT_SUB, right=True)
         rows = self.rows()
         self.details, self.frames = [], []
         for index, mode in enumerate(LEGS):
             spec = ROAD_CHALLENGES[mode]
-            top = (350+index*128) if self.page else (295+index*146)
+            top = (348+index*128) if self.page else (294+index*146)
             current = self.page == 0 and index == len(self.store.current)
             if current:
-                self.fill(self.left+12, top, self.wide-30, 140, (1, .94, .9, 1))
-                self.fill(self.left+12, top, 4, 140, ORANGE, 0)
-            self.text(f'{index+1:02d}', self.left+37, top+53, 35, bold=True)
-            self.text(TITLES[index], self.left+115, top+47, 27 if self.wide > 850 else 24, bold=True)
-            self.text(DESCRIPTIONS[index], self.left+115, top+80, 18 if self.wide > 850 else 16)
+                self.fill(self.left+14, top, self.wide-28, 138, (.22, .15, .14, .92), 8)
+                self.fill(self.left+14, top, 5, 138, ORANGE, 2)
+            self.text(f'{index+1:02d}', self.left+37, top+53, 33, ORANGE if current else theme.TEXT_SUB, bold=True)
+            self.text(TITLES[index], self.left+115, top+47, 25 if self.wide > 850 else 22, theme.TEXT_LIGHT, bold=True)
+            self.text(DESCRIPTIONS[index], self.left+115, top+80, 17 if self.wide > 850 else 15, theme.TEXT_SUB)
             if index == 0:
-                self.text('250米≥60km/h · 400—650米35—50km/h', self.left+115, top+111, 16, GRAY)
+                self.text('250米≥60km/h · 400—650米35—50km/h', self.left+115, top+110, 15, theme.TEXT_SUB)
             elif spec.provisional and not self.page:
-                self.text('过站需试行铜牌', self.left+115, top+111, 16, GRAY)
+                self.text('过站需试行铜牌', self.left+115, top+110, 15, theme.TEXT_SUB)
             entry = rows[index] if index < len(rows) else None
             budget = '—' if legacy else str(spec.budget)
             time = '—' if entry is None else f'{entry.seconds:.1f}'
@@ -170,28 +172,33 @@ class DrivingTourPanel:
             status = ('无记录' if self.page else '待发车' if current else '等待上一站') if entry is None else (
                       medal_prefix+entry.medal+'牌' if entry.medal else '试跑完成')
             for value, x in zip((budget, time, oil), columns[:3], strict=True):
-                self.text(value, x, top+64, 25, right=True)
-            self.details.append(self.text(status, columns[3], top+64, 19, ORANGE if current else INK, right=True))
+                self.text(value, x, top+64, 24, theme.TEXT_LIGHT if value != '—' else theme.TEXT_SUB, right=True)
+            self.details.append(self.text(status, columns[3], top+64, 19,
+                                          ORANGE if current else theme.GOLD if entry and entry.medal == '金' else theme.TEXT_LIGHT,
+                                          right=True))
             if not self.page or entry is not None and not legacy:
                 self.button(11+index, '单站练习', columns[3]-104, top+83, 104, 33, role='practice')
-            self.fill(self.left+22, top+(122 if self.page else 140), self.wide-44, 1, (.79, .81, .84, 1), 0)
+            self.fill(self.left+22, top+(122 if self.page else 140), self.wide-44, 1, theme.SLATE_BORDER, 0)
         note = (self.legacy.notice or '旧规则整轮最佳 · 不补油耗，不换算新奖牌' if legacy else self.store.notice or
                 '单站练习独立计成绩 · 巡回进度保留')
-        self.notice = self.text(note, self.left+30, 797, 17, ORANGE if self.store.notice and not legacy else GRAY, wrap=self.wide-60)
+        self.notice = self.text(note, self.left+30, 797, 17, ORANGE if self.store.notice and not legacy else theme.TEXT_SUB, wrap=self.wide-60)
         right = self.left+self.wide+22
         span = self.width-self.left-right
-        self.text('固定原车 · 游戏调校 RWD', self.width-self.left, 165, 21, WHITE, right=True)
-        self.fill(right, 678, span, 143, (.04, .055, .075, .94))
+        self.fill(right-1, 125, span+2, 62, theme.SLATE_BORDER, 11)
+        self.fill(right, 126, span, 60, theme.SLATE_GLASS, 10)
+        self.text('固定原车 · 游戏调校 RWD', self.width-self.left-16, 164, 19, theme.TEXT_LIGHT, right=True)
+        self.fill(right-1, 677, span+2, 145, theme.SLATE_BORDER, 11)
+        self.fill(right, 678, span, 143, theme.SLATE_GLASS, 10)
         metric = self.page and self.history in (1, 2, 3)
         self.text('旧规则记录' if legacy else FILTERS[self.history]+'整轮纪录' if metric else '联合评价',
-                  right+22, 714, 27, WHITE, bold=True)
+                  right+22, 714, 25, theme.TEXT_LIGHT, bold=True)
         self.text('保留原轮次的时间与奖牌' if legacy else
                   ('同积分比较全轮'+('用时', '耗油量', '改装费')[self.history-1]) if metric else
                   '每站用时与油耗同次达铜牌' if ranked else '试跑记录用时与赛段油耗',
-                  right+22, 756, 20, WHITE, wrap=span-44)
+                  right+22, 754, 19, theme.TEXT_LIGHT, wrap=span-44)
         self.text('与预算巡回分别保存' if legacy else
                   '铜1 / 银2 / 金3分\n总分 3铜 / 6银 / 8金' if ranked else '整轮目标标定中，暂不授奖',
-                  right+22, 783 if ranked and not legacy else 800, 17, (.77, .80, .83, 1), wrap=span-44)
+                  right+22, 783 if ranked and not legacy else 800, 16, theme.TEXT_SUB, wrap=span-44)
         self.button(2, '‹  返回路线', self.left, 862, 230, 58, role='footer')
         self.button(1, '重开三站', self.left+260, 862, 200, 58, role='secondary', enabled=bool(self.store.current))
         self.button(3, '重试保存', self.left+480, 862, 200, 58, role='secondary', enabled=self.store.unsaved)
@@ -206,10 +213,19 @@ class DrivingTourPanel:
             if button is None:
                 continue
             role, disabled = self.roles[i], button['state'] == DGG.DISABLED
-            color = ORANGE if role == 'primary' else (.055, .075, .13, 1) if role in ('secondary', 'active') else (0, 0, 0, 0) if role == 'footer' else (.97, .97, .98, 1)
-            button['frameColor'] = (.32, .35, .40, 1) if disabled else color
-            button['text_fg'] = (.64, .67, .71, 1) if disabled else ORANGE if role == 'filter-active' else WHITE if role in ('primary', 'secondary', 'active', 'footer') else INK
-            button.setColorScale(.92, .94, .96, 1) if i == index and role != 'primary' else button.clearColorScale()
+            focused = i == index
+            if role == 'primary':
+                color = (.22, .27, .34, 1) if disabled else (theme.ORANGE_BRIGHT if focused else ORANGE)
+            elif role in ('secondary', 'active', 'practice', 'filter-active'):
+                color = theme.SLATE_CARD_HI if focused else theme.SLATE_CARD
+            elif role == 'footer':
+                color = (1, 1, 1, .12) if focused else (0, 0, 0, 0)
+            else:
+                color = theme.SLATE_CARD if focused else (.07, .10, .14, .78)
+            button['frameColor'] = (.18, .22, .28, .8) if disabled else color
+            button['text_fg'] = (theme.TEXT_LOCKED if disabled else ORANGE if role == 'filter-active'
+                                 else theme.TEXT_SUB if role == 'plain' and not focused else theme.TEXT_LIGHT)
+            button.clearColorScale()
 
     def activate(self, index):
         if self.buttons[index] is None or self.buttons[index]['state'] == DGG.DISABLED:

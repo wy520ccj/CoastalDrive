@@ -6,8 +6,8 @@ from direct.gui.DirectGui import OnscreenText
 from panda3d.core import LineSegs, TextNode
 
 from ui import theme
-from ui.lab_widgets import button_textures, rounded_panel
-from ui.tire_tuning import AMBER, BACKGROUND, BLUE, MUTED, SELECTED, SURFACE, TEXT
+from ui.lab_widgets import rounded_panel
+from ui.tire_tuning import AMBER, MUTED, SURFACE
 
 
 class DrivingCards:
@@ -48,30 +48,32 @@ class DrivingCards:
         self.root.hide()
         self.active = False
 
-    def begin(self, app, title, subtitle, *, dark=False):
-        self.dark = dark
+    def begin(self, app, title, subtitle, *, dark=True):
+        self.dark = True
         self.active, self.primary = True, set()
         self.root.show()
-        app.panel['frameSize'] = (-1.70, 1.70, -.89, .86)
+        app.panel['frameSize'] = (-1.78, 1.78, -1.0, 1.0)
         app.panel['frameTexture'] = None
-        app.panel['frameColor'] = BACKGROUND if dark else theme.PAPER_LIGHT
-        app.panel_title['fg'] = TEXT if dark else theme.INK
+        app.panel['frameColor'] = theme.SLATE_BG
+        app.panel_title['fg'] = theme.TEXT_LIGHT
         app.panel_accent.hide()
         app.panel_title.setText(title)
         app.panel_title['align'] = TextNode.ALeft
         app.panel_title.setPos(-1.50, .68)
         app.panel_title.setScale(.075)
         app.panel_title.textNode.setSlant(0.)
-        app.panel_title.hide() if dark else app.panel_title.show()
+        app.panel_title.hide()
         app.panel_note.hide()
         app.panel_detail.hide()
-        if dark:
-            rounded_panel(self.content, 'garage-page-background', (-2.6, 2.6, -2., 2.), BACKGROUND, 0.)
-            self.text(title, -1.50, .68, .075)
-        self.text(subtitle, -1.50, .555, .043 if dark else .037, theme.MUTED)
-        self.text('COASTAL DRIVE', .84, .74, .036, theme.SEA)
-        rounded_panel(self.content, 'accent', (-1.50, -1.38, .785, .797), theme.ORANGE, 0.)
-        self.text('↑ ↓ 选择 · Enter确认 · Esc返回', -1.50, -.79, .031, theme.MUTED)
+        rounded_panel(self.content, 'garage-page-background', (-2.6, 2.6, -2., 2.), theme.SLATE_BG, 0.)
+        rounded_panel(self.content, 'cards-header-bar', (-2.6, 2.6, .82, 1.2), theme.SLATE_BAR, 0.)
+        rounded_panel(self.content, 'cards-header-line', (-2.6, 2.6, .815, .82), theme.SLATE_BORDER, 0.)
+        rounded_panel(self.content, 'accent', (-1.50, -1.48, .66, .745), theme.ORANGE, .005)
+        self.text(title, -1.44, .675, .072, theme.TEXT_LIGHT)
+        self.text(subtitle, -1.50, .565, .038, theme.TEXT_SUB)
+        brand = self.text('COASTAL DRIVE', -1.50, .88, .042, theme.TEXT_LIGHT)
+        brand['font'] = app.display_font
+        self.text('↑ ↓ 选择 · Enter 确认 · Esc 返回', -1.50, -.84, .030, theme.TEXT_SUB)
         self.resize(app.getAspectRatio())
 
     def resize(self, aspect):
@@ -87,7 +89,8 @@ class DrivingCards:
 
     def text(self, value, x, z, scale=.035, color=theme.INK):
         if self.dark:
-            color = {theme.INK: TEXT, theme.MUTED: MUTED, theme.SEA: BLUE, theme.ORANGE: AMBER}.get(color, color)
+            color = {theme.INK: theme.TEXT_LIGHT, theme.MUTED: theme.TEXT_SUB,
+                     theme.SEA: (.25, .76, .95, 1), theme.ORANGE: theme.ORANGE}.get(color, color)
         label = OnscreenText(parent=self.content, text=value, font=self.font, fg=color,
             align=TextNode.ALeft, pos=(x, z), scale=scale, mayChange=True)
         self.labels.append(label)
@@ -141,15 +144,16 @@ class DrivingCards:
             style(self, index)
             return
         for i, button in enumerate(self.buttons):
-            if self.dark:
-                button['frameTexture'] = None
-                button['frameColor'] = AMBER if i in self.primary else SELECTED if i == index else SURFACE
-                button['text_fg'] = BACKGROUND if i in self.primary else TEXT
-                continue
-            states = button_textures(i in self.primary)
-            button['frameColor'] = (1, 1, 1, 1)
-            button['frameTexture'] = (states[2], states[1], states[2], states[3]) if i == index else states
-            button['text_fg'] = theme.INK
+            button['frameTexture'] = None
+            if i in self.primary:
+                button['frameColor'] = theme.ORANGE_BRIGHT if i == index else theme.ORANGE
+                button['text_fg'] = (1, 1, 1, 1)
+            elif i == index:
+                button['frameColor'] = theme.SLATE_CARD_HI
+                button['text_fg'] = theme.TEXT_LIGHT
+            else:
+                button['frameColor'] = theme.SLATE_CARD
+                button['text_fg'] = theme.TEXT_LIGHT
 
     def audio(self, app, station):
         from ui.menu_settings import audio
@@ -209,8 +213,8 @@ class DrivingCards:
             title = '过门练习'
         self.begin(app, title, '当前车辆 · 自由练习不授奖' if practice else
                    '固定原车 · 独立预算设置 · 封闭场地无车流', dark=app.workshop_garage_return)
-        rounded_panel(self.content, 'course-diagram', (-1.50, .48, -.30, .43), SURFACE if self.dark else theme.PAPER)
-        rounded_panel(self.content, 'course-targets', (.56, 1.50, -.30, .43), SURFACE if self.dark else theme.PAPER)
+        rounded_panel(self.content, 'course-diagram', (-1.50, .48, -.30, .43), theme.SLATE_CARD, .022)
+        rounded_panel(self.content, 'course-targets', (.56, 1.50, -.30, .43), theme.SLATE_CARD, .022)
         self.text('场地示意', -1.38, .32, .035, theme.MUTED)
         if braking:
             self.line([(-1.32, .02), (.28, .02)], theme.SEA, 5.)
@@ -273,8 +277,8 @@ class DrivingCards:
 
     def overtake(self, app, route):
         self.begin(app, route.title, f'{route.distance/1000:g}公里 · 固定原车 · 独立预算5000')
-        rounded_panel(self.content, 'gap-diagram', (-1.50, .48, -.30, .43), theme.PAPER)
-        rounded_panel(self.content, 'pass-targets', (.56, 1.50, -.30, .43), theme.PAPER)
+        rounded_panel(self.content, 'gap-diagram', (-1.50, .48, -.30, .43), theme.SLATE_CARD, .022)
+        rounded_panel(self.content, 'pass-targets', (.56, 1.50, -.30, .43), theme.SLATE_CARD, .022)
         self.text('换道与净距示意', -1.38, .32, .035, theme.MUTED)
         for z in (.05, .22):
             self.line([(-1.35, z), (.30, z)], theme.SEA, 1.)

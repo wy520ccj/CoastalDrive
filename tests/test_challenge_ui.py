@@ -566,6 +566,7 @@ def test_budget_hud_uses_real_allowance_handles_missing_sensor_and_restores_coas
         (EnergySplit(450., 14., .0324), EnergySplit(900., 29., .0657)),
         targets=(MedalTarget('铜', 90., 10.), MedalTarget('银', 75., 8.2), MedalTarget('金', 65., 7.)),
         distance_m=1800., reference_splits=(EnergySplit(450., 14., .0324), EnergySplit(900., 30., .0639)))
+    app.hud.root.show()
     app.hud.resize(app.getAspectRatio())
     road = replace(app.session.highway.snapshot, engineering=status)
     app.hud.update(app.session.current, app.session.race.snapshot, road,

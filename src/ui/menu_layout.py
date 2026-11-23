@@ -1,4 +1,4 @@
-"""车库场景菜单的坐标与原生控件；业务页面直接安排自身内容。"""
+"""车库场景菜单的坐标与原生控件；统一 Dark Atelier 深海磨砂玻璃母版。"""
 
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectFrame
@@ -8,12 +8,12 @@ from career_garage import garage_cars
 from session import Phase
 from ui import theme
 from ui.lab_widgets import rounded_panel
-from ui.main_menu import DARK, GRAY, INK, ORANGE, WHITE
+from ui.main_menu import ORANGE, WHITE
 
 
 def canvas(cards, app, page, title, subtitle, back, *, panel_limit=620, footer=True, car_y=220, car_height=620):
     cards.active, cards.garage_page, cards.garage_app = True, page, app
-    cards.dark = False
+    cards.dark = True
     aspect = cards.garage_aspect = app.getAspectRatio()
     width, unit = 941*aspect, 2/941
     margin, panel_width = width*.031, min(panel_limit, width*(.355 if panel_limit == 462 else .46))
@@ -36,17 +36,19 @@ def canvas(cards, app, page, title, subtitle, back, *, panel_limit=620, footer=T
         return a[0], b[0], a[1], b[1]
 
     def fill(x, y, w, h, color, radius=4, parent=None):
-        return rounded_panel(cards.content if parent is None else parent, 'menu-fill',
+        node = rounded_panel(cards.content if parent is None else parent, 'menu-fill',
                              box(x, y, w, h), color, radius*unit)
+        node.setTransparency(TransparencyAttrib.MAlpha)
+        return node
 
-    def text(value, x, y, size=22, color=INK, *, bold=False, right=False):
+    def text(value, x, y, size=22, color=theme.TEXT_LIGHT, *, bold=False, right=False):
         label = cards.text(value, *point(x, y), size*unit, color)
         label['font'] = app.ui_font if bold else app.main_menu.regular
         label.textNode.setAlign(TextNode.ARight if right else TextNode.ALeft)
         return label
 
     def button(index, title, x, y, w, h, *, toggle=None):
-        edge = fill(x-2, y-2, w+4, h+4, ORANGE, h/2 if toggle is not None else 4)
+        edge = fill(x-2, y-2, w+4, h+4, ORANGE, h/2 if toggle is not None else 7)
         cards.garage_edges[index] = edge
         item = cards.buttons[index]
         item.reparentTo(cards.content)
@@ -55,10 +57,10 @@ def canvas(cards, app, page, title, subtitle, back, *, panel_limit=620, footer=T
         item.setPos(px, 0, pz)
         item['frameSize'], item['frameTexture'] = (-w*unit/2, w*unit/2, -h*unit/2, h*unit/2), None
         item['frameColor'], item['text'] = (0, 0, 0, 0), title
-        item['text_font'], item['text_scale'] = app.main_menu.regular, (22 if h < 60 else 24)*unit
+        item['text_font'], item['text_scale'] = app.main_menu.regular, (21 if h < 60 else 23)*unit
         item['text_align'], item['text_pos'] = TextNode.ACenter, (0, -7*unit)
         geom = rounded_panel(cards.content, 'menu-control', item['frameSize'], WHITE,
-                             (h/2 if toggle is not None else 4)*unit)
+                             (h/2 if toggle is not None else 6)*unit)
         geom.detachNode()
         item['geom'] = geom
         item.setTransparency(TransparencyAttrib.MAlpha)
@@ -82,25 +84,41 @@ def canvas(cards, app, page, title, subtitle, back, *, panel_limit=620, footer=T
         box(margin+panel_width+18, car_y, width-2*margin-panel_width-18, car_height), app.workspace_vehicle, studio=True)
     app.workshop_vehicle.frame.setTransparency(TransparencyAttrib.MAlpha)
     app.workshop_vehicle.highlight(None)
-    fill(0, 0, width, 74, DARK, 0)
-    fill(0, 860, width, 81, DARK, 0)
-    fill(margin, 122, panel_width, 706, (.98, .98, .99, .96))
-    brand = text('COASTAL DRIVE', margin+10, 50, 34, WHITE, bold=True)
+
+    fill(0, 0, width, 74, theme.SLATE_BAR, 0)
+    fill(0, 74, width, 1.5, theme.SLATE_BORDER, 0)
+    fill(0, 860, width, 81, theme.SLATE_BAR, 0)
+    fill(0, 859, width, 1.5, theme.SLATE_BORDER, 0)
+
+    # 左侧 Dark Atelier 磨砂主卡。
+    fill(margin-1, 113, panel_width+2, 718, theme.SLATE_BORDER, 13)
+    fill(margin, 114, panel_width, 716, theme.SLATE_GLASS, 12)
+    fill(margin+28, 144, 4, 38, ORANGE, 2)
+
+    brand = text('COASTAL DRIVE', margin, 49, 32, theme.TEXT_LIGHT, bold=True)
     brand['font'] = app.display_font
     if aspect > 1.5:
-        text('/  '+title, margin+267, 49, 21, WHITE)
-    text(f'★  {app.career_progress.stars} / 18 星', width-350, 49, 23, (1, .75, .31, 1))
-    text(f'{app.career_progress.credits} 积分', width-55, 49, 23, WHITE, right=True)
+        fill(margin+254, 22, 2, 30, ORANGE, 1)
+        text(title, margin+274, 48, 22, theme.TEXT_SUB)
+    text(f'★  {app.career_progress.stars} / 18 星', width-margin, 48, 22, theme.GOLD, bold=True, right=True)
+
+    # 右上角车辆暗玻璃铭牌。
     car = next(item for item in garage_cars(app.workspace_vehicle) if item.design_id == app.workspace_vehicle.design_id)
-    text('当前车辆', width-margin-180, 148, 20, WHITE)
-    text(car.name, width-margin, 191, 28, WHITE, bold=True, right=True)
-    text(title, margin+30, 194, 44, bold=True)
-    text(subtitle, margin+30, 234, 21, GRAY)
+    badge_w = 300
+    bx = width-margin-badge_w
+    fill(bx-1, 113, badge_w+2, 82, theme.SLATE_BORDER, 11)
+    fill(bx, 114, badge_w, 80, theme.SLATE_GLASS, 10)
+    fill(bx+badge_w-4, 126, 4, 56, ORANGE, 2)
+    text('当前车辆', width-margin-18, 144, 16, theme.TEXT_SUB, right=True)
+    text(car.name, width-margin-18, 180, 25, theme.TEXT_LIGHT, bold=True, right=True)
+
+    text(title, margin+46, 178, 40, theme.TEXT_LIGHT, bold=True)
+    text(subtitle, margin+30, 220, 19, theme.TEXT_SUB)
     if footer:
         text('↑ ↓ 选择    ← → 调整    Enter 确认' if page == 'audio' else '↑ ↓ 选择    Enter 切换',
-             margin, 911, 20, WHITE)
-        button(back, 'Esc   返回首页' if app.session.phase == Phase.MENU else 'Esc   返回暂停',
-               width-220, 881, 181, 44)
+             margin, 910, 19, theme.TEXT_SUB)
+        button(back, 'Esc  返回首页' if app.session.phase == Phase.MENU else 'Esc  返回暂停',
+               width-margin-184, 880, 184, 44)
     return margin, panel_width, fill, text, button
 
 
@@ -111,11 +129,12 @@ def style(cards, selected):
         primary = index == cards.garage_primary
         if index in cards.garage_toggles:
             enabled = cards.garage_toggles[index]
-            button['geom_color'] = ORANGE if enabled else (.43, .46, .51, 1)
+            button['geom_color'] = ORANGE if enabled else (.24, .29, .36, 1)
             button['text_fg'] = WHITE
         elif index in cards.garage_quiet:
-            button['geom_color'] = (.25, .27, .30, 1) if index == selected else (.10, .12, .15, .80)
-            button['text_fg'] = WHITE
+            button['geom_color'] = theme.SLATE_CARD_HI if index == selected else theme.SLATE_CARD
+            button['text_fg'] = theme.TEXT_LIGHT
         else:
-            button['geom_color'] = ORANGE if primary else (1, .88, .82, 1) if index == selected else (.90, .91, .94, 1)
-            button['text_fg'] = WHITE if primary else INK
+            button['geom_color'] = (theme.ORANGE_BRIGHT if index == selected else ORANGE) if primary else (
+                theme.SLATE_CARD_HI if index == selected else theme.SLATE_CARD)
+            button['text_fg'] = WHITE if primary else theme.TEXT_LIGHT

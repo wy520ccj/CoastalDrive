@@ -13,8 +13,11 @@ from challenge_build import HARDWARE
 from race import GameMode
 from road_test_driver import TRIAL_POLICIES
 from sprint_routes import VALLEY_BRAKING
-from ui.career_layout import GRAY, INK, ORANGE, WHITE
+from ui import theme
+from ui.career_layout import ORANGE, WHITE
 from ui.career_layout import canvas as career_canvas
+
+SUCCESS = (.32, .86, .54, 1)
 from ui.lab_widgets import rounded_panel
 from ui.race_feedback import energy_segment, energy_segment_delta
 from ui.sprint_feedback import valley_braking_feedback
@@ -133,12 +136,14 @@ def _vehicle(panel, spec, draft, width, left, wide, label, fill=None):
     panel.vehicle_view.frame.setTransparency(TransparencyAttrib.MAlpha)
     panel.vehicle_view.highlight(None)
     if fill is not None:
-        fill(width-margin-356, 120, 356, 80, (.04, .055, .075, .78))
-    tx = width-margin-16 if fill is not None else width-margin
-    label('本关原车 · '+vehicle_design(spec.design_id).name, tx, 152, 23, WHITE, right=True, bold=True)
+        fill(width-margin-358, 121, 358, 82, theme.SLATE_BORDER, 11)
+        fill(width-margin-357, 122, 356, 80, theme.SLATE_GLASS, 10)
+        fill(width-margin-5, 134, 4, 56, ORANGE, 2)
+    tx = width-margin-18 if fill is not None else width-margin
+    label('本关原车 · '+vehicle_design(spec.design_id).name, tx, 152, 22, theme.TEXT_LIGHT, right=True, bold=True)
     power = max(rpm*torque/9549.3 for rpm, torque in config.torque_curve)
     panel.challenge_readouts['vehicle'] = label(f'{config.mass:.0f} kg · {power:.0f} kW',
-                                               tx, 184, 19, (.84, .88, .92, 1), right=True)
+                                               tx, 184, 18, theme.TEXT_SUB, right=True)
 
 
 def _reference_setups(panel, spec, width, x, fill, label, button):
@@ -146,17 +151,18 @@ def _reference_setups(panel, spec, width, x, fill, label, button):
     if not choices:
         return
     span = width*.969-x
-    fill(x, 582, span, 92, (.04, .055, .075, .88))
-    panel.challenge_readouts['preset-title'] = label('参考方案', x+18, 609, 22, WHITE, bold=True)
+    fill(x-1, 581, span+2, 94, theme.SLATE_BORDER, 11)
+    fill(x, 582, span, 92, theme.SLATE_GLASS, 10)
+    panel.challenge_readouts['preset-title'] = label('参考方案', x+18, 609, 21, theme.TEXT_LIGHT, bold=True)
     gap = 12
     w = (span-gap*(len(choices)+1))/len(choices)
     measure = TextNode('reference-label-width')
     measure.setFont(panel.garage_font)
     titles = [f'{setup.title} · {setup.build.cost}' for setup in choices]
-    size = min(22., (w-16)/max(measure.calcWidth(title) for title in titles))
+    size = min(21., (w-16)/max(measure.calcWidth(title) for title in titles))
     for index, title in enumerate(titles):
         left = x+gap+index*(w+gap)
-        panel.challenge_readouts[f'preset:{index}'] = fill(left-1, 617, w+2, 45, WHITE)
+        panel.challenge_readouts[f'preset:{index}'] = fill(left-1, 617, w+2, 45, theme.SLATE_BORDER, 7)
         item = button(title, left, 618, w, 43, 'challenge-preset', index, role='setup-preset')
         item['text_scale'] = size*2/941
 
@@ -165,43 +171,45 @@ def _targets(panel, spec, width, left, fill, label):
     span = width-left-width*.031
     if spec.assessment == 'reference':
         x, y = width-width*.031-span, 640.
-        fill(x, y, span, 188, (.04, .055, .075, .88))
-        label('固定参考A/B', x+18, y+30, 22, WHITE, bold=True)
-        label(spec.conditions, x+18, y+61, 17, WHITE, wrap=span-36)
+        fill(x-1, y-1, span+2, 190, theme.SLATE_BORDER, 11)
+        fill(x, y, span, 188, theme.SLATE_GLASS, 10)
+        label('固定参考 A/B', x+18, y+30, 21, theme.TEXT_LIGHT, bold=True)
+        label(spec.conditions, x+18, y+61, 16, theme.TEXT_SUB, wrap=span-36)
         for index, requirement in enumerate(spec.requirements):
             yy = y+108+index*30
-            label(('铜', '银', '金')[index], x+18, yy, 20, WHITE)
-            label(requirement, x+span-18, yy, 20, WHITE, right=True)
+            label(('铜', '银', '金')[index], x+18, yy, 19, (theme.BRONZE, theme.SILVER, theme.GOLD)[index], bold=True)
+            label(requirement, x+span-18, yy, 19, theme.TEXT_LIGHT, right=True)
         return
     x, y = width-width*.031-span, 686.
-    fill(x, y, span, 142, (.04, .055, .075, .88))
+    fill(x-1, y-1, span+2, 144, theme.SLATE_BORDER, 11)
+    fill(x, y, span, 142, theme.SLATE_GLASS, 10)
     distance = spec.id == GameMode.DISTANCE_CHALLENGE.value
     label('车道内完赛' if distance else '完赛目标 · 试行' if spec.provisional else '完赛目标',
-          x+18, y+30, 22, WHITE, bold=True)
+          x+18, y+30, 21, theme.TEXT_LIGHT, bold=True)
     if spec.assessment != 'road':
-        label(spec.metric_label+' / '+spec.metric_unit, x+span-18, y+29, 18, WHITE, right=True)
+        label(spec.metric_label+' / '+spec.metric_unit, x+span-18, y+29, 17, theme.TEXT_SUB, right=True)
         values = ([f'≤ {limit:g}' for limit in spec.metric_limits] if spec.assessment == 'lower' else
-                  ['至少3门', '全部5门', f'全5门且≤{spec.metric_limits[0]:g}s'])
+                  ['至少 3 门', '全部 5 门', f'全 5 门且 ≤ {spec.metric_limits[0]:g}s'])
         for index, value in enumerate(values):
             yy = y+62+index*30
-            label(('铜', '银', '金')[index], x+18, yy, 20, WHITE)
-            label(value, x+span-18, yy, 20, WHITE, right=True)
+            label(('铜', '银', '金')[index], x+18, yy, 19, (theme.BRONZE, theme.SILVER, theme.GOLD)[index], bold=True)
+            label(value, x+span-18, yy, 19, theme.TEXT_LIGHT, right=True)
         return
     if distance and not spec.targets:
-        label('无碰撞驶满 5 公里', x+18, y+72, 22, WHITE)
-        label('倒车可调姿，复位结束本次', x+18, y+111, 19, (.77, .80, .83, 1))
+        label('无碰撞驶满 5 公里', x+18, y+72, 21, theme.TEXT_LIGHT)
+        label('倒车可调姿，复位结束本次', x+18, y+111, 18, theme.TEXT_SUB)
         return
     if not spec.targets:
-        label('用时与赛段油耗同次达标', x+18, y+72, 22, WHITE)
-        label('目标标定中 · 当前可试跑', x+18, y+111, 19, (.77, .80, .83, 1))
+        label('用时与赛段油耗同次达标', x+18, y+72, 21, theme.TEXT_LIGHT)
+        label('目标标定中 · 当前可试跑', x+18, y+111, 18, theme.TEXT_SUB)
         return
-    label('用时 / s', x+span*.55, y+29, 18, WHITE, right=True)
-    label('L/100km', x+span-18, y+29, 18, WHITE, right=True)
+    label('用时 / s', x+span*.55, y+29, 17, theme.TEXT_SUB, right=True)
+    label('L/100km', x+span-18, y+29, 17, theme.TEXT_SUB, right=True)
     for index, target in enumerate(spec.targets):
         yy = y+62+index*30
-        label(target.medal, x+18, yy, 20, WHITE)
-        label(f'≤ {target.seconds:.1f}', x+span*.55, yy, 20, WHITE, right=True)
-        label(f'≤ {target.consumption:.1f}', x+span-18, yy, 20, WHITE, right=True)
+        label(target.medal, x+18, yy, 19, (theme.BRONZE, theme.SILVER, theme.GOLD)[min(index, 2)], bold=True)
+        label(f'≤ {target.seconds:.1f}', x+span*.55, yy, 19, theme.TEXT_LIGHT, right=True)
+        label(f'≤ {target.consumption:.1f}', x+span-18, yy, 19, theme.TEXT_LIGHT, right=True)
 
 
 def _slide(panel, key):
@@ -218,26 +226,30 @@ def _slide(panel, key):
 def canvas(panel, progress, title, *, budget):
     width, left, fill, label, image, button = career_canvas(panel, progress, '', budget=budget, chrome=False)
     panel.challenge_readouts['budget'].hide()
-    fill(0, 0, width, 110, (.04, .055, .075, .90), 0)
-    fill(0, 846, width, 95, (.04, .055, .075, .94), 0)
+    fill(0, 0, width, 110, theme.SLATE_BAR, 0)
+    fill(0, 110, width, 1.5, theme.SLATE_BORDER, 0)
+    fill(0, 846, width, 95, theme.SLATE_BAR, 0)
+    fill(0, 845, width, 1.5, theme.SLATE_BORDER, 0)
     heading, _, subtitle = title.partition(' · ')
-    label(heading, left, 58, 36, WHITE, bold=True)
-    label(subtitle, left, 94, 22, WHITE)
+    fill(left, 24, 4, 62, ORANGE, 2)
+    label(heading, left+16, 56, 34, theme.TEXT_LIGHT, bold=True)
+    label(subtitle, left+16, 90, 20, theme.TEXT_SUB)
     x = width-left-374
     for index, (key, name) in enumerate((('limit', '预算'), ('used', '已用'), ('remaining', '剩余'))):
         xx = x+index*132
-        label(name, xx, 36, 17, WHITE)
-        panel.challenge_readouts[key] = label(str(budget) if key in ('limit', 'remaining') else '0', xx, 72, 28, WHITE, bold=True)
-    fill(x, 85, 374, 7, (.44, .46, .50, 1))
-    panel.challenge_readouts['budget-bar'] = fill(x, 85, 374, 7, ORANGE)
+        label(name, xx, 35, 16, theme.TEXT_SUB)
+        panel.challenge_readouts[key] = label(str(budget) if key in ('limit', 'remaining') else '0',
+                                              xx, 71, 27, theme.TEXT_LIGHT, bold=True)
+    fill(x, 85, 374, 7, (.20, .25, .32, 1), 3.5)
+    panel.challenge_readouts['budget-bar'] = fill(x, 85, 374, 7, ORANGE, 3.5)
     panel.challenge_readouts['budget-left'] = (x-width/2)*2/941
     return width, left, fill, label, image, button
 
 
 def _focus_row(panel, key, focused):
-    panel.challenge_readouts['row:'+key].setColor((1, .94, .90, 1) if focused else (1, 1, 1, 0))
-    panel.challenge_readouts['row-edge:'+key].setColor(ORANGE if focused else (1, 1, 1, 0))
-    panel.challenge_readouts['entry-edge:'+key].setColor(ORANGE if focused else (.65, .68, .73, 1))
+    panel.challenge_readouts['row:'+key].setColor((.22, .16, .14, .88) if focused else (0, 0, 0, 0))
+    panel.challenge_readouts['row-edge:'+key].setColor(ORANGE if focused else (0, 0, 0, 0))
+    panel.challenge_readouts['entry-edge:'+key].setColor(ORANGE if focused else theme.SLATE_BORDER)
 
 
 def _blur_entry(panel, key):
@@ -249,8 +261,8 @@ def _blur_entry(panel, key):
 
 def _reset_icon(button, unit):
     line = LineSegs()
-    line.setColor(*INK)
-    line.setThickness(1.5)
+    line.setColor(*theme.TEXT_SUB)
+    line.setThickness(1.6)
     for index in range(25):
         angle = math.radians(135+index*300/24)
         point = (9*math.cos(angle)*unit, 0, 9*math.sin(angle)*unit)
@@ -272,42 +284,42 @@ def build_page(panel, spec, draft, tab, notice):
     width, left, fill, label, _, button = canvas(panel, None, spec.name+' · '+subtitle, budget=spec.budget)
     unit, wide = 2/941, min(790., width*.53)
     keys = tuple(key for key in GROUPS[tab][1] if key in spec.allowed)
-    fill(left, 126, wide, 694, (.985, .982, .975, 1))
+    fill(left-1, 125, wide+2, 696, theme.SLATE_BORDER, 13)
+    fill(left, 126, wide, 694, theme.SLATE_GLASS, 12)
     tab_width = (wide-40)/3
     for index, (title, _) in enumerate(GROUPS):
         x = left+20+index*tab_width
-        button(title, x, 148, tab_width, 56, 'challenge-tab', index,
+        button(title, x, 146, tab_width-6, 52, 'challenge-tab', index,
                role='setup-active' if index == tab else 'setup-tab',
                enabled=any(key in spec.allowed for key in GROUPS[index][1]))
         if index == tab:
-            fill(x, 202, tab_width, 4, ORANGE, 0)
-    # 窄画幅收紧列宽，不缩放整页；五行保持相同操作尺度。
+            fill(x+14, 198, tab_width-34, 3, ORANGE, 1.5)
     control = left+wide*.47
     control_width = wide*.37
     stock_x = left+wide*.36
-    label('参数', left+30, 250, 20, bold=True)
-    label('原车', stock_x, 250, 20, GRAY, right=True)
-    label('调节', control, 250, 20, GRAY)
-    label('费用', left+wide-24, 250, 20, bold=True, right=True)
+    label('参数', left+30, 246, 18, theme.TEXT_SUB, bold=True)
+    label('原车', stock_x, 246, 18, theme.TEXT_SUB, right=True)
+    label('调节', control, 246, 18, theme.TEXT_SUB)
+    label('费用', left+wide-24, 246, 18, theme.TEXT_SUB, bold=True, right=True)
     for index, key in enumerate(keys):
-        y = 270+index*98
+        y = 266+index*98
         title, stock, low, high, value = field_values(spec, draft, key)
-        panel.challenge_readouts['row:'+key] = fill(left+10, y-2, wide-20, 91, (1, 1, 1, 0))
-        panel.challenge_readouts['row-edge:'+key] = fill(left+6, y-2, 4, 91, (1, 1, 1, 0), 0)
-        label(title, left+30, y+32, 21 if wide >= 740 else 18, bold=True)
-        label(UNITS[key][0], left+30, y+63, 17, GRAY)
+        panel.challenge_readouts['row:'+key] = fill(left+12, y-2, wide-24, 91, (0, 0, 0, 0), 8)
+        panel.challenge_readouts['row-edge:'+key] = fill(left+8, y-2, 4, 91, (0, 0, 0, 0), 2)
+        label(title, left+30, y+32, 20 if wide >= 740 else 18, theme.TEXT_LIGHT, bold=True)
+        label(UNITS[key][0], left+30, y+62, 16, theme.TEXT_SUB)
         reset = button('', left+wide*.23, y+(47 if wide < 740 else 15), 32, 34,
                        'challenge-reset', key, role='quiet')
         _reset_icon(reset, unit)
-        label(formatted(key, stock), stock_x, y+33, 21, GRAY, right=True)
-        number_x, number_w = control+55, control_width-110
-        panel.challenge_readouts['entry-edge:'+key] = fill(number_x-1, y+6, number_w+2, 36, (.65, .68, .73, 1), 2)
-        fill(number_x, y+7, number_w, 34, WHITE, 2)
+        label(formatted(key, stock), stock_x, y+33, 20, theme.TEXT_SUB, right=True)
+        number_x, number_w = control+52, control_width-104
+        panel.challenge_readouts['entry-edge:'+key] = fill(number_x-1, y+6, number_w+2, 36, theme.SLATE_BORDER, 5)
+        fill(number_x, y+7, number_w, 34, (.05, .075, .11, 1), 4)
         button('−', control, y+7, 40, 34, 'challenge-step', (key, -1), role='setup-step')
         button('+', control+control_width-40, y+7, 40, 34, 'challenge-step', (key, 1), role='setup-step')
         entry = DirectEntry(parent=panel.content, initialText=formatted(key, value),
-            pos=((number_x+number_w/2-width/2)*unit, 0, 1-(y+32)*unit), scale=22*unit,
-            text_font=panel.garage_font, text_fg=INK, text_align=2,
+            pos=((number_x+number_w/2-width/2)*unit, 0, 1-(y+32)*unit), scale=21*unit,
+            text_font=panel.garage_font, text_fg=theme.TEXT_LIGHT, text_align=2,
             frameColor=(0, 0, 0, 0), frameSize=(-number_w/44, number_w/44, -.35, 1.1),
             relief=DGG.FLAT, width=number_w/22, numLines=1,
             focusInCommand=lambda k=key: _focus_row(panel, k, True),
@@ -317,7 +329,7 @@ def build_page(panel, spec, draft, tab, notice):
         slider = DirectSlider(parent=panel.content, range=(low, high), value=value,
             pos=((control+control_width/2-width/2)*unit, 0, 1-track_y*unit),
             frameSize=(-control_width*unit/2, control_width*unit/2, -2*unit, 2*unit),
-            frameColor=(.77, .78, .80, 1), relief=DGG.FLAT,
+            frameColor=(.22, .28, .36, 1), relief=DGG.FLAT,
             thumb_frameSize=(-6*unit, 6*unit, -8*unit, 8*unit), thumb_frameColor=ORANGE,
             thumb_relief=DGG.FLAT, pageSize=UNITS[key][2], scrollSize=UNITS[key][2],
             command=lambda k=key: _slide(panel, k))
@@ -328,16 +340,16 @@ def build_page(panel, spec, draft, tab, notice):
         slider.thumb['frameColor'] = (0, 0, 0, 0)
         panel.challenge_readouts['track:'+key] = fill(control, track_y-2, control_width, 4, ORANGE, 0)
         for tick in range(5):
-            fill(control+control_width*tick/4, track_y+7, 1, 5, (.68, .70, .73, 1), 0)
-        fill(control+control_width*(stock-low)/(high-low), track_y-5, 2, 12, INK, 0)
-        label(formatted(key, low), control, y+83, 14, GRAY)
-        label(formatted(key, high), control+control_width, y+83, 14, GRAY, right=True)
+            fill(control+control_width*tick/4, track_y+7, 1, 5, theme.SLATE_BORDER, 0)
+        fill(control+control_width*(stock-low)/(high-low), track_y-5, 2, 12, theme.TEXT_LIGHT, 0)
+        label(formatted(key, low), control, y+83, 14, theme.TEXT_SUB)
+        label(formatted(key, high), control+control_width, y+83, 14, theme.TEXT_SUB, right=True)
         panel.challenge_widgets.extend((entry, slider))
         panel.challenge_entries[key], panel.challenge_sliders[key] = entry, slider
-        panel.challenge_readouts['cost:'+key] = label('', left+wide-24, y+33, 22, ORANGE, right=True)
-        fill(left+20, y+91, wide-40, 1, (.79, .81, .84, 1), radius=0)
-    panel.challenge_readouts['other'] = label('', left+30, 797, 19, GRAY)
-    button('恢复原车', left+wide-170, 768, 150, 40, 'challenge-reset', None, role='quiet')
+        panel.challenge_readouts['cost:'+key] = label('', left+wide-24, y+33, 21, theme.GOLD, bold=True, right=True)
+        fill(left+20, y+91, wide-40, 1, theme.SLATE_BORDER, radius=0)
+    panel.challenge_readouts['other'] = label('', left+30, 797, 18, theme.TEXT_SUB)
+    button('恢复原车', left+wide-170, 766, 150, 40, 'challenge-reset', None, role='secondary')
     _vehicle(panel, spec, draft, width, left, wide, label, fill=fill)
     _reference_setups(panel, spec, width, left+wide+18, fill, label, button)
     _targets(panel, spec, width, left+wide+18, fill, label)
@@ -377,13 +389,13 @@ def _result_segments(spec, status, left, wide, fill, label, *, automatic=False, 
     braking = spec.id == GameMode.SHORT_BRAKING.value
     reference = status.reference_splits if road and status.result.valid else ()
     career_sections = CAREER_ROAD_SEGMENTS.get(spec.id)
-    fill(left+24, 598, wide-48, 39, (.91, .92, .94, 1))
+    fill(left+24, 598, wide-48, 38, theme.SLATE_CARD, 6)
     heading = '检查点' if circuit else '路段' if road else '里程点' if braking else '道路门'
     if reference and status.splits:
         heading += ' · 括号较对照' if automatic or status.reference_label else ' · 括号较最快'
-    label(heading, left+36, 625, 18)
-    label('本段用时 / s' if road else '累计用时 / s', left+wide*.57, 625, 18, right=True)
-    label('本段 L/100km' if road else '累计 L/100km', left+wide-30, 625, 18, right=True)
+    label(heading, left+36, 624, 17, theme.TEXT_SUB)
+    label('本段用时 / s' if road else '累计用时 / s', left+wide*.57, 624, 17, theme.TEXT_SUB, right=True)
+    label('本段 L/100km' if road else '累计 L/100km', left+wide-30, 624, 17, theme.TEXT_SUB, right=True)
     for index, split in enumerate(status.splits):
         y = 660+index*(29 if len(status.splits) > 4 else 36)
         name = '终点' if split.distance_m == spec.distance_m else str(index+1)
@@ -405,41 +417,41 @@ def _result_segments(spec, status, left, wide, fill, label, *, automatic=False, 
         if delta is not None:
             values = tuple(f'{value} ({change:+.1f})' if abs(change) >= .05 else f'{value} (0.0)'
                            for value, change in zip(values, delta, strict=True))
-        label(name, left+36, y, 17 if valley_labels else 20)
-        label(values[0], left+wide*.57, y, 20, right=True)
-        label(values[1], left+wide-30, y, 20, right=True)
+        label(name, left+36, y, 17 if valley_labels else 19, theme.TEXT_LIGHT)
+        label(values[0], left+wide*.57, y, 19, theme.TEXT_LIGHT, right=True)
+        label(values[1], left+wide-30, y, 19, theme.TEXT_LIGHT, right=True)
 
 
 def _career_slalom_segments(event, run, left, wide, fill, label):
-    fill(left+24, 598, wide-48, 39, (.91, .92, .94, 1))
-    label('道路门', left+36, 625, 18)
-    label('距起点 / m', left+wide*.57, 625, 18, right=True)
-    label('本次通过', left+wide-30, 625, 18, right=True)
+    fill(left+24, 598, wide-48, 38, theme.SLATE_CARD, 6)
+    label('道路门', left+36, 624, 17, theme.TEXT_SUB)
+    label('距起点 / m', left+wide*.57, 624, 17, theme.TEXT_SUB, right=True)
+    label('本次通过', left+wide-30, 624, 17, theme.TEXT_SUB, right=True)
     for index, (distance, _) in enumerate(event.gates):
         y = 651+index*29
         state = '未到达'
         if index < len(run.passed):
             state = '通过' if run.passed[index] else '漏门'
-        label(f'第{index+1}门', left+36, y, 20)
-        label(f'{distance:g}', left+wide*.57, y, 20, right=True)
-        label(state, left+wide-30, y, 20, ORANGE if state == '漏门' else INK, right=True)
+        label(f'第{index+1}门', left+36, y, 19, theme.TEXT_LIGHT)
+        label(f'{distance:g}', left+wide*.57, y, 19, theme.TEXT_SUB, right=True)
+        label(state, left+wide-30, y, 19, ORANGE if state == '漏门' else SUCCESS if state == '通过' else theme.TEXT_SUB, right=True)
 
 
 def _slalom_trial_segments(run, reference, left, wide, fill, label):
     previous = () if reference is None or not run.succeeded else reference.clearances
-    fill(left+24, 598, wide-48, 39, (.91, .92, .94, 1))
-    label('门位' if not previous else '门位 · 括号较对照', left+36, 625, 18)
-    label('累计用时 / s', left+wide*.57, 625, 18, right=True)
-    label('车身余量 / m', left+wide-30, 625, 18, right=True)
+    fill(left+24, 598, wide-48, 38, theme.SLATE_CARD, 6)
+    label('门位' if not previous else '门位 · 括号较对照', left+36, 624, 17, theme.TEXT_SUB)
+    label('累计用时 / s', left+wide*.57, 624, 17, theme.TEXT_SUB, right=True)
+    label('车身余量 / m', left+wide-30, 624, 17, theme.TEXT_SUB, right=True)
     for index, (seconds, clearance) in enumerate(zip(run.gate_times, run.clearances, strict=True)):
         y = 651+index*28
         value = f'{clearance:.2f}'
         if previous:
             difference = clearance-previous[index]
             value += f' ({difference:+.2f})' if abs(difference) >= .005 else ' (0.00)'
-        label(f'第{index+1}门', left+36, y, 20)
-        label(f'{seconds:.2f}', left+wide*.57, y, 20, right=True)
-        label(value, left+wide-30, y, 20, right=True)
+        label(f'第{index+1}门', left+36, y, 19, theme.TEXT_LIGHT)
+        label(f'{seconds:.2f}', left+wide*.57, y, 19, theme.TEXT_LIGHT, right=True)
+        label(value, left+wide-30, y, 19, theme.TEXT_LIGHT, right=True)
 
 
 def _result_build_or_unlocks(result, award, left, right, fill, label, button):
@@ -447,22 +459,25 @@ def _result_build_or_unlocks(result, award, left, right, fill, label, button):
     if award is None or not award['saved'] or not award['unlocked']:
         costs = result.build.costs()
         changed = [f'{item.title} {costs[item.key]}' for item in HARDWARE if costs[item.key]]
-        fill(left, 710, span, 118, (.04, .055, .075, .88))
+        fill(left-1, 709, span+2, 120, theme.SLATE_BORDER, 11)
+        fill(left, 710, span, 118, theme.SLATE_GLASS, 10)
         label('本次方案  '+(' · '.join(changed) if changed else '原车硬件'),
-              left+22, 758, 20, WHITE, wrap=span-44)
+              left+22, 758, 19, theme.TEXT_LIGHT, wrap=span-44)
         return
 
     events = [event for event in EVENTS if event.name in award['unlocked']]
     cars = [CAR_BY_DESIGN[design_id] for design_id in award['vehicles']]
-    fill(left, 653, span, 175, (.04, .055, .075, .92))
-    label('新解锁', left+22, 693, 25, WHITE, bold=True)
+    fill(left-1, 652, span+2, 177, theme.SLATE_BORDER, 11)
+    fill(left, 653, span, 175, theme.SLATE_GLASS, 10)
+    fill(left, 653, 5, 175, ORANGE, 2)
+    label('新解锁', left+22, 693, 24, theme.GOLD, bold=True)
     y = 736
     if events:
-        label('赛事 · '+' / '.join(event.name for event in events), left+22, y, 19, WHITE, wrap=span-188)
+        label('赛事 · '+' / '.join(event.name for event in events), left+22, y, 19, theme.TEXT_LIGHT, wrap=span-188)
         button('查看赛事', right-148, y-25, 128, 33, 'brief', events[0].id, role='secondary')
         y += 49
     if cars:
-        label('车辆 · '+' / '.join(car.name for car in cars), left+22, y, 19, WHITE, wrap=span-188)
+        label('车辆 · '+' / '.join(car.name for car in cars), left+22, y, 19, theme.TEXT_LIGHT, wrap=span-188)
         button('查看新车', right-148, y-25, 128, 33, 'garage-new', cars[-1].design_id, role='secondary')
 
 
@@ -478,10 +493,12 @@ def result_page(panel, spec, status):
     width, left, fill, label, _, button = canvas(panel, None, spec.name+' · '+subtitle, budget=spec.budget)
     _budget(panel, spec, result.cost)
     wide = _result_width(width)
-    fill(left, 122, wide, 706, (.98, .98, .98, .98))
+    fill(left-1, 121, wide+2, 708, theme.SLATE_BORDER, 13)
+    fill(left, 122, wide, 706, theme.SLATE_GLASS, 12)
+    fill(left+24, 162, 5, 46, ORANGE, 2)
     title = (result.medal+'牌完成' if result.medal else '有效完赛' if result.official and spec.targets else
              '试跑完成' if result.valid else '挑战未完成')
-    label(title, left+24, 208, 48, bold=True)
+    label(title, left+40, 204, 44, theme.GOLD if result.medal == '金' else theme.TEXT_LIGHT, bold=True)
     target = result.next_target or (spec.targets[-1] if result.medal == '金' and spec.targets else None)
     target_name = (target.medal+'牌目标' if target is not None else '专项要求' if spec.assessment != 'road'
                    else '目标待标定' if not spec.targets else '本场要求')
@@ -504,13 +521,13 @@ def result_page(panel, spec, status):
             detail = f'入门 {entry:.1f} km/h'
             if reference is not None and result.valid:
                 detail += f' · 较对照 {result.metric_value-reference.metric_value:+.2f} m'
-            label(detail, left+24, 244, 20, GRAY)
+            label(detail, left+24, 244, 19, theme.TEXT_SUB)
     if slalom is not None and slalom.clearances:
-        label(f'通过 {slalom.gates}/6 门 · 最小余量 {min(slalom.clearances):.2f} m', left+24, 244, 20, GRAY)
+        label(f'通过 {slalom.gates}/6 门 · 最小余量 {min(slalom.clearances):.2f} m', left+24, 244, 19, theme.TEXT_SUB)
     if retry_hint:
-        label(retry_hint, left+24, 244, 20, GRAY)
+        label(retry_hint, left+24, 244, 19, theme.TEXT_SUB)
     if result.valid and road.overtake is not None and reference is None and not app.budget_auto:
-        label(f'安全超越 {road.overtake.passes} 辆', left+24, 244, 20, GRAY)
+        label(f'安全超越 {road.overtake.passes} 辆', left+24, 244, 19, theme.TEXT_SUB)
     if reference is not None:
         if app.budget_auto:
             target_name = next((setup.title for setup in app.challenge_presets(spec) if setup.build == reference.build),
@@ -519,7 +536,7 @@ def result_page(panel, spec, status):
             target_name = '个人最佳'
             if result.valid and result.metric_value is not None:
                 difference = result.metric_value-reference.metric_value
-                label(f'较个人最佳 {difference:+.2f} {spec.metric_unit}', left+24, 244, 20, GRAY)
+                label(f'较个人最佳 {difference:+.2f} {spec.metric_unit}', left+24, 244, 19, theme.TEXT_SUB)
         elif status.reference_label:
             target_name = status.reference_label
         elif not spec.targets:
@@ -530,15 +547,15 @@ def result_page(panel, spec, status):
             time_text = f'{time_delta:+.1f}' if abs(time_delta) >= .05 else '0.0'
             oil_text = f'{oil_delta:+.{oil_precision}f}' if oil_delta else f'{0:.{oil_precision}f}'
             name = '较对照' if app.budget_auto else '较'+(status.reference_label or '最快完赛')
-            label(f'{name}  {time_text} s · {oil_text} L/100km', left+24, 244, 20, GRAY)
+            label(f'{name}  {time_text} s · {oil_text} L/100km', left+24, 244, 19, theme.TEXT_SUB)
         elif spec.targets and not app.budget_auto and reference.build != result.build and not retry_hint:
             label(f'最快完赛对照  {reference.seconds:.1f} s · {reference.consumption:.1f} L/100km',
-                  left+24, 244, 20, GRAY)
+                  left+24, 244, 19, theme.TEXT_SUB)
     if spec.provisional:
         target_name += ' · 试行'
-    fill(left+24, 264, wide-48, 44, (.91, .92, .94, 1))
-    label('本次', left+wide*.60, 295, 22, right=True)
-    label(target_name, left+wide-24, 295, 22, right=True)
+    fill(left+24, 264, wide-48, 42, theme.SLATE_CARD, 6)
+    label('本次', left+wide*.60, 293, 20, theme.TEXT_SUB, right=True)
+    label(target_name, left+wide-24, 293, 20, theme.TEXT_SUB, right=True)
     oil = result.consumption if result.valid else None
     rows = (('用时 / s', f'{result.seconds:.1f}', f'≤ {target.seconds:.1f}' if target else '—',
              target is not None and result.seconds <= target.seconds),
@@ -576,10 +593,10 @@ def result_page(panel, spec, status):
                 (spec.metric_label+' / '+spec.metric_unit, actual, required, met), rows[-1])
     for index, (name, current, required, met) in enumerate(rows):
         y = 353+index*68
-        label(name, left+24, y, 21)
-        label(current, left+wide*.60, y, 27, (.12, .48, .26, 1) if met else ORANGE, bold=True, right=True)
-        label(required, left+wide-24, y, 23, GRAY, right=True)
-        fill(left+24, y+20, wide-48, 1, (.79, .81, .84, 1), radius=0)
+        label(name, left+24, y, 20, theme.TEXT_LIGHT)
+        label(current, left+wide*.60, y, 26, SUCCESS if met else ORANGE, bold=True, right=True)
+        label(required, left+wide-24, y, 22, theme.TEXT_SUB, right=True)
+        fill(left+24, y+20, wide-48, 1, theme.SLATE_BORDER, radius=0)
     record_feedback = _record_feedback(status, spec.provisional)
     feedback = result.notice if result.notice != title else ''
     if app.budget_auto and result.valid:
@@ -613,13 +630,13 @@ def result_page(panel, spec, status):
     if spec.assessment == 'career-slalom' and career_run is not None:
         _career_slalom_segments(EVENT_BY_ID[spec.id], career_run, left, wide, fill, label)
     elif spec.id == 'parking' and career_run is not None and result.valid:
-        fill(left+24, 598, wide-48, 39, (.91, .92, .94, 1))
-        label('停车位置', left+36, 625, 18)
-        label('距起点 / m', left+wide-30, 625, 18, right=True)
-        label('停车区中心', left+36, 660, 20)
-        label(f'{spec.distance_m:.1f}', left+wide-30, 660, 20, right=True)
-        label('本次停稳', left+36, 696, 20)
-        label(f'{career_run.position:.1f}', left+wide-30, 696, 20, right=True)
+        fill(left+24, 598, wide-48, 38, theme.SLATE_CARD, 6)
+        label('停车位置', left+36, 624, 17, theme.TEXT_SUB)
+        label('距起点 / m', left+wide-30, 624, 17, theme.TEXT_SUB, right=True)
+        label('停车区中心', left+36, 660, 19, theme.TEXT_LIGHT)
+        label(f'{spec.distance_m:.1f}', left+wide-30, 660, 19, theme.TEXT_SUB, right=True)
+        label('本次停稳', left+36, 696, 19, theme.TEXT_LIGHT)
+        label(f'{career_run.position:.1f}', left+wide-30, 696, 19, theme.TEXT_LIGHT, right=True)
     elif spec.id != 'parking' and slalom is None:
         _result_segments(spec, status, left, wide, fill, label, automatic=app.budget_auto,
                          valley_labels=valley_labels)
@@ -666,25 +683,26 @@ def result_page(panel, spec, status):
 
 
 def pause_page(panel, spec, draft, status):
-    # 沿用既有暂停页的左侧操作列与预算页的原车预览。
     width, left, fill, label, _, button = canvas(panel, None, spec.name+' · 已暂停', budget=spec.budget)
     _budget(panel, spec, draft.cost)
     wide = min(462., width*.32)
-    fill(left, 122, wide, 706, (.98, .98, .98, .98))
-    x, inner = left+24, wide-48
-    label('已暂停', x, 187, 45, bold=True)
+    fill(left-1, 121, wide+2, 708, theme.SLATE_BORDER, 13)
+    fill(left, 122, wide, 706, theme.SLATE_GLASS, 12)
+    x, inner = left+28, wide-56
+    fill(x, 152, 4, 38, ORANGE, 2)
+    label('已暂停', x+16, 184, 42, theme.TEXT_LIGHT, bold=True)
     seconds = 0. if status is None else status.seconds
     progress = 0. if status is None else status.progress_m
-    label(f'{seconds:.1f} s · {progress:.0f} / {spec.distance_m:.0f} m', x, 258, 22, GRAY)
-    label(f'本场改装 {draft.cost} / {spec.budget}', x, 300, 22)
+    label(f'{seconds:.1f} s · {progress:.0f} / {spec.distance_m:.0f} m', x, 252, 20, theme.TEXT_SUB)
+    label(f'本场改装 {draft.cost} / {spec.budget}', x, 294, 20, theme.TEXT_LIGHT)
     origin = panel.vehicle_view.base.budget_origin
     back = '返回综合杯' if origin == 'cup' else '返回巡回' if origin in ('tour', 'tour-practice') else '返回挑战'
-    for title, y, action in (('继续驾驶', 350, 'challenge-resume'),
-                             ('从起点重试', 458, 'challenge-retry'),
-                             ('调整方案', 566, 'challenge-adjust'),
-                             (back, 674, 'challenge-back')):
-        button(title, x, y, inner, 72, action, role='primary' if y == 350 else 'secondary', primary=y == 350)
-    label('Esc 继续驾驶', left, 910, 20, WHITE)
+    for title, y, action in (('继续驾驶', 348, 'challenge-resume'),
+                             ('从起点重试', 456, 'challenge-retry'),
+                             ('调整方案', 564, 'challenge-adjust'),
+                             (back, 672, 'challenge-back')):
+        button(title, x, y, inner, 72, action, role='primary' if y == 348 else 'secondary', primary=y == 348)
+    label('Esc 继续驾驶', left, 910, 19, theme.TEXT_SUB)
     panel.challenge_readouts['budget'].setText(f'本场预算 {spec.budget}')
     _vehicle(panel, spec, draft, width, left, wide, label, fill=fill)
     panel.select(panel.primary)
@@ -695,22 +713,25 @@ def reference_result_page(panel, spec, draft, data, notice=''):
     width, left, fill, label, _, button = canvas(panel, None, spec.name+' · 试验结果', budget=spec.budget)
     _budget(panel, spec, draft.cost)
     wide = min(680., width*.43)
-    fill(left, 122, wide, 706, (.98, .98, .98, .98))
-    label(data['medal']+'牌完成' if data['passed'] else '试验完成', left+24, 208, 48, bold=True)
-    fill(left+24, 264, wide-48, 44, (.91, .92, .94, 1))
-    label('指标', left+24, 295, 22)
-    label('原车 A', left+wide*.66, 295, 22, right=True)
-    label('方案 B', left+wide-24, 295, 22, right=True)
+    fill(left-1, 121, wide+2, 708, theme.SLATE_BORDER, 13)
+    fill(left, 122, wide, 706, theme.SLATE_GLASS, 12)
+    fill(left+24, 162, 5, 46, ORANGE, 2)
+    label(data['medal']+'牌完成' if data['passed'] else '试验完成', left+40, 204, 44,
+          theme.GOLD if data['passed'] and data['medal'] == '金' else theme.TEXT_LIGHT, bold=True)
+    fill(left+24, 264, wide-48, 42, theme.SLATE_CARD, 6)
+    label('指标', left+32, 293, 20, theme.TEXT_SUB)
+    label('原车 A', left+wide*.66, 293, 20, theme.TEXT_SUB, right=True)
+    label('方案 B', left+wide-24, 293, 20, theme.TEXT_SUB, right=True)
     for index, (name, a, b, unit) in enumerate((data['primary'], *data['rows'])):
         yy = 350+index*54
-        label(name+' / '+unit, left+24, yy, 19)
-        label('—' if a is None else f'{a:.3f}', left+wide*.66, yy, 23, GRAY, right=True)
-        label('—' if b is None else f'{b:.3f}', left+wide-24, yy, 23, bold=True, right=True)
-        fill(left+24, yy+16, wide-48, 1, (.79, .81, .84, 1), radius=0)
-    label(f"改善 {data['improvement_pct']:.2f}%", left+24, 652, 28, ORANGE, bold=True)
+        label(name+' / '+unit, left+24, yy, 19, theme.TEXT_LIGHT)
+        label('—' if a is None else f'{a:.3f}', left+wide*.66, yy, 22, theme.TEXT_SUB, right=True)
+        label('—' if b is None else f'{b:.3f}', left+wide-24, yy, 22, theme.TEXT_LIGHT, bold=True, right=True)
+        fill(left+24, yy+16, wide-48, 1, theme.SLATE_BORDER, radius=0)
+    label(f"改善 {data['improvement_pct']:.2f}%", left+24, 652, 28, SUCCESS if data['passed'] else ORANGE, bold=True)
     label('全部专项约束达标' if data['passed'] else ' · '.join(data['unmet']),
-          left+24, 700, 20, ORANGE, wrap=wide-48)
-    label(f'本场改装 {draft.cost} / {spec.budget}', left+24, 774, 25)
+          left+24, 700, 19, SUCCESS if data['passed'] else ORANGE, wrap=wide-48)
+    label(f'本场改装 {draft.cost} / {spec.budget}', left+24, 774, 24, theme.TEXT_LIGHT)
     label(notice, left+24, 814, 17, ORANGE, wrap=wide-48)
     _vehicle(panel, spec, draft, width, left, wide, label, fill=fill)
     _targets(panel, spec, width, left+wide+18, fill, label)
@@ -749,7 +770,7 @@ def update_build(panel, spec, draft, notice=''):
     for index, setup in enumerate(setups):
         edge = panel.challenge_readouts[f'preset:{index}']
         selected = draft == setup.build
-        edge.setColor(ORANGE if selected else (.65, .68, .73, 1))
+        edge.setColor(ORANGE if selected else theme.SLATE_BORDER)
         if selected:
             measured = setup.measured
     if setups:

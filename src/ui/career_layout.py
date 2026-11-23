@@ -10,7 +10,7 @@ from career_garage import GARAGE_CARS, garage_cars
 from highway_curve import HighwayCurve
 from ui import theme
 from ui.career_events import BOARD_EVENTS, ClubEvent
-from ui.garage_layout import GRAY, INK, ORANGE, WHITE
+from ui.garage_layout import INK, ORANGE, WHITE
 from ui.lab_widgets import rounded_panel
 
 GOLD = (1, .73, .25, 1)
@@ -47,8 +47,9 @@ def canvas(panel, progress, title, *, car=False, budget=None, chrome=True, seaso
         node.setTransparency(TransparencyAttrib.MAlpha)
         return node
 
-    def label(text, x, y, size=22, color=INK, *, bold=False, right=False, wrap=None):
-        item = panel.label(text, *point(x, y), size*unit, color,
+    def label(text, x, y, size=22, color=None, *, bold=False, right=False, wrap=None):
+        fg = (theme.TEXT_LIGHT if season else INK) if color is None else color
+        item = panel.label(text, *point(x, y), size*unit, fg,
                            font=panel.font if bold else panel.garage_font)
         if right:
             item.textNode.setAlign(TextNode.ARight)
@@ -77,13 +78,13 @@ def canvas(panel, progress, title, *, car=False, budget=None, chrome=True, seaso
 
     def button(text, x, y, w, h, command, value=None, *, role='plain', primary=False, enabled=True):
         if role == 'secondary':
-            fill(x-1, y-1, w+2, h+2, (.86, .88, .91, .80))
+            fill(x-1, y-1, w+2, h+2, theme.SLATE_BORDER, 7)
         px, pz = point(x+w/2, y+h/2)
         item = panel.button(text, px, pz, w*unit, h*unit, command, value,
-                            primary=primary, enabled=enabled, radius=4*unit)
+                            primary=primary, enabled=enabled, radius=6*unit)
         item['text_font'] = panel.font if role == 'primary' else panel.garage_font
-        size = 22 if h < 44 else 28 if role == 'primary' else 24 if aspect > 1.5 else 22
-        item['text_scale'], item['text_pos'] = size*unit, (0, -8*unit)
+        size = 21 if h < 44 else 26 if role == 'primary' else 22 if aspect > 1.5 else 20
+        item['text_scale'], item['text_pos'] = size*unit, (0, -7*unit)
         item.setTransparency(TransparencyAttrib.MAlpha)
         panel.garage_roles[len(panel.buttons)-1] = role
         return item
@@ -109,29 +110,31 @@ def canvas(panel, progress, title, *, car=False, budget=None, chrome=True, seaso
         panel.vehicle_view.frame.setTransparency(TransparencyAttrib.MAlpha)
         panel.vehicle_view.highlight(None)
         name = next(item.name for item in garage_cars(vehicle) if item.design_id == vehicle.design_id)
-        fill(width-197, 126, 2, 64, WHITE, 0)
-        label('当前车辆', width-margin, 149, 19, WHITE, right=True)
-        label(name, width-margin, 184, 26, WHITE, bold=True, right=True)
+        badge_w = 300
+        bx = width-margin-badge_w
+        fill(bx-1, 113, badge_w+2, 82, theme.SLATE_BORDER, 11)
+        fill(bx, 114, badge_w, 80, theme.SLATE_GLASS, 10)
+        fill(bx+badge_w-4, 126, 4, 56, ORANGE, 2)
+        label('当前车辆', width-margin-18, 144, 16, theme.TEXT_SUB, right=True)
+        label(name, width-margin-18, 180, 25, theme.TEXT_LIGHT, bold=True, right=True)
     if chrome:
-        fill(0, 0, width, 74, (.04, .055, .075, .78), 0)
-        fill(0, 860, width, 81, (.04, .055, .075, .86), 0)
+        fill(0, 0, width, 74, theme.SLATE_BAR, 0)
+        fill(0, 74, width, 1.5, theme.SLATE_BORDER, 0)
+        fill(0, 860, width, 81, theme.SLATE_BAR, 0)
+        fill(0, 859, width, 1.5, theme.SLATE_BORDER, 0)
     if budget is not None:
-        label(title, margin, 50, 32 if aspect > 1.5 else 26, WHITE, bold=True)
+        label(title, margin, 50, 32 if aspect > 1.5 else 26, theme.TEXT_LIGHT, bold=True)
         panel.challenge_readouts['budget'] = label('', width-margin, 49 if aspect > 1.5 else 29,
-                                                   22 if aspect > 1.5 else 18, WHITE, right=True)
+                                                   22 if aspect > 1.5 else 18, theme.TEXT_LIGHT, right=True)
         return width, margin, fill, label, image, button
-    brand = label('COASTAL DRIVE', width*.037, 50, 34 if aspect > 1.5 else 28, WHITE, bold=True)
+    brand = label('COASTAL DRIVE', width*.031, 49, 32 if aspect > 1.5 else 26, theme.TEXT_LIGHT, bold=True)
     brand['font'] = panel.garage_display_font
-    # 页名与车库导航占同一中栏；4:3不再把品牌、副标题挤在一行。
     button('赛事', width*.41-60, 12, 120, 50, 'board', role='tab-active' if title == '生涯赛事' else 'tab')
     button('海岸车库' if title == '生涯赛事' else title, width*.55-85, 12, 170, 50,
            'garage' if title == '生涯赛事' else 'board', role='tab' if title == '生涯赛事' else 'tab-active')
-    fill(width*(.41 if title == '生涯赛事' else .55)-(60 if title == '生涯赛事' else 85),
-         59, 120 if title == '生涯赛事' else 170, 4, ORANGE, 0)
-    if aspect > 1.5:
-        label(f'★  {progress.stars} / 18 星', width-350, 49, 23, WHITE)
-    else:
-        label(f'★ {progress.stars} / 18 星', width-35, 30, 18, WHITE, right=True)
+    fill(width*(.41 if title == '生涯赛事' else .55)-(60 if title == '生涯赛事' else 85)+14,
+         62, (120 if title == '生涯赛事' else 170)-28, 3, ORANGE, 1.5)
+    label(f'★  {progress.stars} / 18 星', width-margin, 48, 22 if aspect > 1.5 else 18, theme.GOLD, bold=True, right=True)
     return width, margin, fill, label, image, button
 
 
@@ -375,52 +378,51 @@ def result(panel, progress, race_result, award):
     event = next(event for event in EVENTS if event.id == race_result.event_id)
     wide = min(462., width*.32)
     inner, x = wide-48, left+24
-    fill(left, 122, wide, 706)
-    label(f'{event.chapter+1:02} / {event.name}', x, 166, 23, ORANGE, bold=True)
-    label('赛事完成' if race_result.succeeded else '再试一次', x, 230, 51, bold=True)
-    label('★'*race_result.stars+'☆'*(3-race_result.stars), x, 326, 84, GOLD)
-    label('完赛用时' if race_result.succeeded else '本场用时', x, 380, 22, GRAY)
-    label(f'{race_result.elapsed:.2f} 秒', x, 440, 54, bold=True)
-    fill(x, 465, inner, 1, LINE, 0)
-    label('本场奖励' if award['saved'] else '奖励尚未保存', x, 502, 23, GRAY)
-    label(f'+{award["credits"]} 积分', x, 564, 48, ORANGE, bold=True)
-    label(f'{progress.stars} / 18 星', x, 612, 26, bold=True)
-    fill(x, 630, inner, 12, (.82, .83, .85, 1))
+    fill(left-1, 113, wide+2, 718, theme.SLATE_BORDER, 13)
+    fill(left, 114, wide, 716, theme.SLATE_GLASS, 12)
+    label(f'{event.chapter+1:02} / {event.name}', x, 160, 21, ORANGE, bold=True)
+    label('赛事完成' if race_result.succeeded else '再试一次', x, 222, 46, theme.TEXT_LIGHT, bold=True)
+    label('★'*race_result.stars+'☆'*(3-race_result.stars), x, 316, 78, GOLD)
+    label('完赛用时' if race_result.succeeded else '本场用时', x, 372, 20, theme.TEXT_SUB)
+    label(f'{race_result.elapsed:.2f} 秒', x, 432, 50, theme.TEXT_LIGHT, bold=True)
+    fill(x, 458, inner, 1, theme.SLATE_BORDER, 0)
+    label('本场奖励' if award['saved'] else '奖励尚未保存', x, 496, 20, theme.TEXT_SUB)
+    label(f'+{award["credits"]} 积分', x, 554, 44, ORANGE, bold=True)
+    label(f'{progress.stars} / 18 星', x, 602, 24, theme.GOLD, bold=True)
+    fill(x, 620, inner, 10, (.18, .23, .30, 1), 5)
     if progress.stars:
-        fill(x, 630, inner*progress.stars/18, 12, ORANGE)
-    fill(x, 665, inner, 1, LINE, 0)
-    # 解锁项全部保留在面板内；车型/零件优先带真实资产缩略图，赛事合并一行。
+        fill(x, 620, inner*progress.stars/18, 10, ORANGE, 5)
+    fill(x, 654, inner, 1, theme.SLATE_BORDER, 0)
     cars = [car for car in GARAGE_CARS if car.design_id in award['vehicles']]
     parts = [name for name in award['unlocked'] if name.startswith('零件：')]
     events = [name for name in award['unlocked'] if not name.startswith(('零件：', '新车：'))]
     heading = '保存失败' if not award['saved'] else '新解锁' if award['unlocked'] else '本场记录'
     if award['saved'] and events and (cars or parts):
         heading += ' · '+'、'.join(events)
-    label(heading, x, 696, 17 if events and (cars or parts) else 23, bold=True)
+    label(heading, x, 688, 17 if events and (cars or parts) else 22, theme.TEXT_LIGHT, bold=True)
     if not award['saved']:
         message = progress.notice[:40]+'…' if len(progress.notice) > 40 else progress.notice
-        label(message, x, 732, 18, GRAY, wrap=inner)
-        button('重试保存奖励', x, 780, inner, 38, 'save', role='primary', primary=True)
+        label(message, x, 724, 17, theme.TEXT_SUB, wrap=inner)
+        button('重试保存奖励', x, 774, inner, 40, 'save', role='primary', primary=True)
     elif cars or parts or events:
-        # 按新车、零件分成相邻两行，多个解锁仍完整显示名称。
-        y = 708
+        y = 702
         if cars:
             car_height = 64 if len(cars) > 2 else 50
-            fill(x, y, inner, car_height, (.91, .92, .94, .85))
-            image('garage-v2/car-'+cars[-1].design_id+'.png', x+4, y+2, 85, 46)
-            title = label(cars[-1].name+' · 新车', x+103, y+23, 21, bold=True)
-            title.setScale(min(21., (inner-113)/title.textNode.getWidth())*2/941)
+            fill(x, y, inner, car_height, theme.SLATE_CARD, 8)
+            image('garage-v2/car-'+cars[-1].design_id+'.png', x+6, y+2, 85, 46)
+            title = label(cars[-1].name+' · 新车', x+103, y+23, 20, theme.TEXT_LIGHT, bold=True)
+            title.setScale(min(20., (inner-113)/title.textNode.getWidth())*2/941)
             if len(cars) > 1:
                 label('同时解锁：'+'、'.join(car.name for car in cars[:-1]),
-                      x+103, y+44, 16, GRAY, wrap=inner-108)
+                      x+103, y+44, 15, theme.TEXT_SUB, wrap=inner-108)
             y += car_height+7
         if parts:
-            fill(x, y, inner, 46, (.91, .92, .94, .85))
+            fill(x, y, inner, 46, theme.SLATE_CARD, 8)
             part = next(part for part in PARTS if part.name == parts[0][3:])
             image('garage-v2/'+HISTORICAL_PART_IMAGES[part.topic]+'.png', x+18, y+4, 38, 38)
-            label('、'.join(name[3:] for name in parts), x+103, y+28, 17, wrap=inner-108)
+            label('、'.join(name[3:] for name in parts), x+103, y+28, 17, theme.TEXT_LIGHT, wrap=inner-108)
         if events and not (cars or parts):
-            label('赛事：'+'、'.join(events), x, 742, 21, GRAY, wrap=inner)
+            label('赛事：'+'、'.join(events), x, 734, 20, theme.TEXT_SUB, wrap=inner)
     else:
         detail = race_result.reason or ('星级未提高，本场不重复发放积分。' if award['credits'] == 0 else '完成赛事。')
         detail = detail.rstrip('。')
@@ -428,27 +430,27 @@ def result(panel, progress, race_result, award):
             detail = f'距停车中心 {race_result.parking_error:.1f} 米\n'+detail
         elif event.kind == 'slalom':
             detail = f'通过 {sum(race_result.passed)} / 5 道门\n'+detail
-        label(detail, x, 742, 21, GRAY, wrap=inner)
+        label(detail, x, 734, 20, theme.TEXT_SUB, wrap=inner)
     next_event = progress.recommended()
     strip_w = min(462, width-left-wide-40)
     strip_x = width-left-strip_w
-    fill(strip_x, 746, strip_w, 82, DARK)
+    fill(strip_x-1, 745, strip_w+2, 84, theme.SLATE_BORDER, 11)
+    fill(strip_x, 746, strip_w, 82, theme.SLATE_GLASS, 10)
     image('career/'+next_event.id+'.png', strip_x+12, 756, 96, 62, crop=True)
-    label('下一场', strip_x+126, 777, 17, WHITE)
-    label(next_event.name, strip_x+126, 811, 26, WHITE, bold=True)
-    label('Enter  确认    Esc  返回赛事', left, 911, 20, WHITE)
+    label('下一场', strip_x+126, 777, 16, theme.TEXT_SUB)
+    label(next_event.name, strip_x+126, 811, 25, theme.TEXT_LIGHT, bold=True)
+    label('Enter  确认    Esc  返回赛事', left, 910, 19, theme.TEXT_SUB)
     primary_w, secondary_w, gap = 240, 190, 18
     start_x = width-left-primary_w-2*secondary_w-2*gap
-    # 4:3底栏收短提示，三个操作始终在同一行而不相互覆盖。
     if width < 1400:
         panel.labels[-1].setText('Esc  返回赛事')
         primary_w, secondary_w, gap = 210, 170, 14
         start_x = width-left-primary_w-2*secondary_w-2*gap
-    button('重试本场', start_x, 877, secondary_w, 52, 'start', event.id, role='secondary')
-    button('查看新车' if award['vehicles'] else '车库改装', start_x+secondary_w+gap, 877,
+    button('重试本场', start_x, 876, secondary_w, 52, 'start', event.id, role='secondary')
+    button('查看新车' if award['vehicles'] else '车库改装', start_x+secondary_w+gap, 876,
            secondary_w, 52, 'garage-new' if award['vehicles'] else 'garage',
            award['vehicles'][-1] if award['vehicles'] else None, role='secondary')
-    button('继续赛事', width-left-primary_w, 877, primary_w, 52, 'board',
+    button('继续赛事', width-left-primary_w, 876, primary_w, 52, 'board',
            role='primary' if award['saved'] else 'secondary', primary=award['saved'])
     panel.select(panel.primary)
 
@@ -456,22 +458,26 @@ def result(panel, progress, race_result, award):
 def pause(panel, progress, event):
     width, left, fill, label, _image, button = canvas(panel, progress, '比赛暂停', car=True)
     wide = min(462., width*.32)
-    x, inner = left+24, wide-48
-    fill(left, 122, wide, 706)
-    label('正在比赛', x, 176, 23, ORANGE, bold=True)
-    label(event.name, x, 215, 26, GRAY)
-    label('比赛已暂停', x, 290, 49, bold=True)
-    label('当前进度已保留', x, 333, 23, GRAY)
+    x, inner = left+28, wide-56
+    fill(left-1, 113, wide+2, 718, theme.SLATE_BORDER, 13)
+    fill(left, 114, wide, 716, theme.SLATE_GLASS, 12)
+    fill(x, 146, 4, 32, ORANGE, 2)
+    label('正在比赛', x+16, 172, 22, ORANGE, bold=True)
+    label(event.name, x, 212, 25, theme.TEXT_SUB)
+    label('比赛已暂停', x, 286, 44, theme.TEXT_LIGHT, bold=True)
+    label('当前进度已保留', x, 326, 20, theme.TEXT_SUB)
     for index, (name, command) in enumerate((('继续驾驶', 'resume'), ('重新开始', 'retry'), ('退出本场', 'board'))):
-        fill(x-1, 373+index*92-1, inner+2, 72, LINE)
-        button(name, x, 373+index*92, inner, 70, command,
-               role='primary' if index == 0 else 'plain', primary=index == 0)
-    fill(x, 663, inner, 1, LINE, 0)
-    label('重新开始将从起点发车。\n未完成本场不会获得星级或积分。', x, 710, 22, GRAY, wrap=inner)
+        if index > 0:
+            fill(x-1, 368+index*90-1, inner+2, 72, theme.SLATE_BORDER, 7)
+        button(name, x, 368+index*90, inner, 70, command,
+               role='primary' if index == 0 else 'secondary', primary=index == 0)
+    fill(x, 654, inner, 1, theme.SLATE_BORDER, 0)
+    label('重新开始将从起点发车。\n未完成本场不会获得星级或积分。', x, 702, 20, theme.TEXT_SUB, wrap=inner)
     strip_w = min(360, width-left-wide-40)
-    fill(width-left-strip_w, 744, strip_w, 84, DARK)
-    fill(width-left-strip_w, 744, 6, 84, ORANGE, 0)
-    label(event.name, width-left-strip_w+24, 782, 25, WHITE, bold=True)
-    label(f'{event.distance:g} 米 · {event.limit:g}秒时限', width-left-strip_w+24, 813, 19, WHITE)
-    label('Enter  确认    Esc  继续驾驶', left, 911, 21, WHITE)
+    fill(width-left-strip_w-1, 743, strip_w+2, 86, theme.SLATE_BORDER, 11)
+    fill(width-left-strip_w, 744, strip_w, 84, theme.SLATE_GLASS, 10)
+    fill(width-left-strip_w, 744, 5, 84, ORANGE, 2)
+    label(event.name, width-left-strip_w+24, 782, 24, theme.TEXT_LIGHT, bold=True)
+    label(f'{event.distance:g} 米 · {event.limit:g} 秒时限', width-left-strip_w+24, 813, 18, theme.TEXT_SUB)
+    label('Enter  确认    Esc  继续驾驶', left, 910, 19, theme.TEXT_SUB)
     panel.select(panel.primary)
