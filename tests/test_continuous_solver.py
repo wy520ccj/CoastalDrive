@@ -22,6 +22,7 @@ import physics_workers
 import tire_drivetrain
 from fuel import FuelMeter
 from lab_runtime import runtime_fingerprint
+from streamed_road import ROAD_EDGE_ADJUSTMENT_AVAILABLE
 from suspension import SuspensionState
 from suspension_kinematics import finite_contact_system
 from vehicle_suspension import Suspension
@@ -163,6 +164,25 @@ def test_complete_world_candidates_cover_crossings_and_preserve_finite_geometry(
         memory.unlink()
 
 
+def assert_road_edge_matches_normal_reference(actual_bytes, expected_bytes):
+    """本地自编 road-edge-sdk 允许与旧预编译 Normal SDK 存在 ULP 级舍入差，但须严格满足纳米/微弧度内一致。"""
+    if actual_bytes == expected_bytes:
+        return
+    actual = decode(FROZEN_LAYOUT, actual_bytes)
+    expected = decode(FROZEN_LAYOUT, expected_bytes)
+    assert actual.compression == pytest.approx(expected.compression, rel=0., abs=1e-11)
+    assert actual.omega == pytest.approx(expected.omega, rel=0., abs=1e-9)
+    assert actual.rotation == pytest.approx(expected.rotation, rel=0., abs=1e-9)
+    assert actual.powertrain['gear'] == expected.powertrain['gear']
+    assert actual.powertrain['rpm'] == pytest.approx(expected.powertrain['rpm'], rel=0., abs=1e-6)
+    assert actual.powertrain['drive_torque'] == pytest.approx(expected.powertrain['drive_torque'], rel=0., abs=1e-6)
+    for got_c, exp_c in zip(actual.contacts, expected.contacts, strict=True):
+        assert got_c.in_contact == exp_c.in_contact
+        if exp_c.in_contact:
+            assert got_c.contact_point == pytest.approx(exp_c.contact_point, rel=0., abs=1e-9)
+            assert got_c.contact_normal == pytest.approx(exp_c.contact_normal, rel=0., abs=1e-9)
+
+
 def test_real_complete_inputs_use_native_iteration_and_reset_workspace(monkeypatch):
     hardware = load_hardware()
     payload = (FIXTURE/'geometry.pickle').read_bytes()
@@ -192,6 +212,8 @@ def test_real_complete_inputs_use_native_iteration_and_reset_workspace(monkeypat
                  'shared_map_coefficients', 'wheel_map_coefficients', 'load_coefficients', 'suspension_projection'):
         monkeypatch.setattr(tire_drivetrain, name, python_iteration)
     identifiers = sorted(int(path.stem.split('-')[1]) for path in FIXTURE.glob('input-*.bin'))
+    road_edge_single = LPoint3 is LPoint3f and ROAD_EDGE_ADJUSTMENT_AVAILABLE
+    first_pass = {}
     try:
         # 同一工作区交错处理真实两子步/各车输入；改变次序不能带入上一车暖模式。
         for index, identifier in enumerate((*identifiers, *reversed(identifiers))):
@@ -201,7 +223,16 @@ def test_real_complete_inputs_use_native_iteration_and_reset_workspace(monkeypat
             request = replace(from_bytes((FIXTURE/f'input-{identifier}.bin').read_bytes()), config=hardware)
             result = physics_workers._solve_vehicle(request, reference)
             assert result is not None
-            assert result_bytes(result) == reference_result(identifier)
+            encoded = result_bytes(result)
+            if road_edge_single:
+                if index < len(identifiers):
+                    assert_road_edge_matches_normal_reference(encoded, reference_result(identifier))
+                    first_pass[identifier] = encoded
+                else:
+                    # 倒序交错及几何重建后仍须与首轮逐字节完全一致。
+                    assert encoded == first_pass[identifier]
+            else:
+                assert encoded == reference_result(identifier)
             if index == len(identifiers):
                 assert physics_workers._worker_geometry is not previous_geometry
                 assert physics_workers._worker_geometry.joint_surfaces is not previous_geometry.joint_surfaces
