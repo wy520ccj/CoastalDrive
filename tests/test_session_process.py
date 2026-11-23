@@ -180,3 +180,32 @@ def test_switching_back_to_shared_keyboard_keeps_the_authoritative_controller_an
         assert remote.phase == Phase.RESULTS and remote.highway.snapshot == snapshot
     finally:
         remote.close()
+
+
+def test_receive_pumps_on_wait_callback_while_waiting_for_worker_reply():
+    import pickle
+    from multiprocessing import Pipe
+    from threading import Thread
+
+    parent, child = Pipe()
+    pumps = []
+    fake = SessionProcess.__new__(SessionProcess)
+    fake.connection = parent
+    fake.on_wait = lambda: pumps.append(1)
+    fake.pending_frame = True
+    fake.frame_cache = {}
+
+    def delayed_reply():
+        time.sleep(0.16)
+        child.send_bytes(b'\0' + pickle.dumps((True, 'ok', '')))
+
+    worker = Thread(target=delayed_reply)
+    worker.start()
+    try:
+        assert fake._receive() == 'ok'
+        assert not fake.pending_frame
+        assert len(pumps) >= 2
+    finally:
+        worker.join()
+        parent.close()
+        child.close()

@@ -7,8 +7,8 @@
 项目于 2026-11-23 重启正轨，按单条施工线顺序推进（每阶段独立验收并本地提交）：
 1. **阶段 0（已完成）**：拆分本地安全提交、归档瘦身进度页、修正过期 T2 状态。
 2. **阶段 1（已完成）**：`LAB-M3` 试验台宿主闭环验收 + 试验台前端工作台精修。
-3. **阶段 2（当前推进）**：定位并修复第一季 `r3` 的 T2 阻断项，拿回完整 T2 绿灯。
-4. **阶段 3**：第一季前端/UI 精修 + 玩家人工试玩闭环，收官 `CAREER-SEASON-01`。
+3. **阶段 2（已完成）**：定位并修复 `test_continuous_solver.py` 在 `road-edge-sdk` 下的 ULP 校验，T2 全部 14 项物理/道路/交通场景检查 `passed=True`，并完成测试体系整顿与按需分层。
+4. **阶段 3（前端精修已完成，待人工试玩收官）**：已解决启动/建图等待期间窗口短暂无响应并精修第一季核心界面，待你实机体验反馈后收官 `CAREER-SEASON-01`。
 5. **阶段 4**：定向攻克高速撞后物理积压与最显眼视觉硬伤（山体 UV 误平铺、木本阴影代理与近景融洽度）。
 
 ## 持续生效的用户人工红线
@@ -25,7 +25,7 @@
 | 任务包 | 状态 | 最新核实事实 | 当前待办 / 阻断 |
 | --- | --- | --- | --- |
 | [LAB-M3](tasks/LAB-M3.md) | `done`（人工桌面随时复核） | 2026-11-23 宿主闭环与前端精修全部通过：课程单测 12 passed、五工况闭环及 S2 A/B 读回通过（S2 停距 38.30→32.70 m、侧偏 10.53°→3.64°）、试验台 UI 43 passed、Ruff 与 0/17/23 三种子通过，已修复结果卡压字并补齐 A/B 控制策略标识（16:9/4:3 实图核对） | 无自动阻塞；可随时经 `launchers/vehicle-lab.cmd` 桌面复核 |
-| [CAREER-SEASON-01](tasks/CAREER-SEASON-01.md) | `in_progress` | 7 项清单已完 6 项；独立候选 `builds/season-20261118-r3/app/win_amd64/coastaldrive.exe` 通过新档 9 场重放（15 星 + 综合杯 9 分）、跨进程续杯、旧版山谷读回与前台核对 | **r3 整包 T2 已实际失败**：2026-11-18 19:42 Ruff 通过，但 pytest 跑至第 418 项（417 passed）触发 `-x` 失败：`tests/test_continuous_solver.py::test_real_complete_inputs_use_native_iteration_and_reset_workspace`（index 19 `0xce != 0xd4`），后续 14+ 项 `not_run`；缺物理手柄实测与人工试玩结论 |
+| [CAREER-SEASON-01](tasks/CAREER-SEASON-01.md) | `in_progress`（待人工试玩验收） | 2026-11-23 已完成阶段 2–3：① 修复 `test_continuous_solver.py` 在 `road-edge-sdk` 下的 ULP 校验并全通 T2 全部 14 项场景检查（`headless` / `handling` / `surface` / `interactions` / `finite` / 6 项 120 s 高速均 `passed=True`）；② 修复 `SessionProcess` 阻塞等待与启动同步初始化期间窗口无响应问题；③ 精修首页分割线/主副标题、加载页标题落位、赛事板锁定底栏对比度与调校页右上角车辆底卡（实图核对通过） | 待用户通过 `launchers/game-current.cmd` 实机试玩给出手感、画面、声音与流畅度验收结论（物理手柄实测待外设） |
 | [PERF-SMOOTH-01](tasks/PERF-SMOOTH-01.md) | `in_progress` | 3.2 m 追车镜位已人工验收；1 m 加密路面、ShaderInput 复用、状态回收 0.5、分帧合批、护栏原生内核与 GIL 交接、结算预热（山脊结算首帧 364→91 ms）已落地；720p 滨海常态 P95 8.63 / 7.12 ms | 高速 12 车撞栏后 5 秒仍有 385 ms 峰值 / 304 ms 尾帧积压；加载短暂无响应、旧悬空制动失败与稳定 60 FPS / 人工流畅度 Gate 开放 |
 | [VISUAL-EXTEND-01](tasks/VISUAL-EXTEND-01.md) | `in_progress` | 试验台光照（设计 36）、滨海 8K 落日天空/动态水面/草地贴图/新版 HUD（设计 40）、流送海面时间、沿海生涯光照、城市近中景与林缘重组已落地 | 高速山体 UV 误平铺待修；城市木本阴影代理未接入；海岸近中景层次未达设计 38；全场景推广与人工画面验收开放 |
 | [CHALLENGE-REBUILD-01](tasks/CHALLENGE-REBUILD-01.md) | 已并入第一季 | 统一预算报价、子步燃油计量、联合奖牌（10 固定路线 + 五公里 6 路况）、自动试车、滨海幽灵与山脊内部边修正均已合入主线并支撑第一季 | 剩余部分路况改装平衡与整包/人工验收统一随 `CAREER-SEASON-01` 收口 |
@@ -34,4 +34,4 @@
 
 - 阶段 0 本地拆分基线：在原 `15c321f5` 上按性能核心、视觉环境、预算挑战与第一季玩法、`LAB-M3` 试验台接入及文档归档整理为清晰本地提交（详见 `git log -n 6 --oneline`）。
 - 第一季 `r3` 独立候选与真实 T2 失败日志：`builds/season-20261118-r3/build-receipt.json`、`logs/season-20261118/final-candidate-T2-r3/summary.json`、`logs/season-20261118/final-candidate-T2-r3/pytest.log`。
-- 下一步执行：复现并定位 `tests/test_continuous_solver.py::test_real_complete_inputs_use_native_iteration_and_reset_workspace` 的字节差异，修复后补跑完整 T2。
+- 下一步执行：由用户运行 `launchers/game-current.cmd` 实机试玩第一季（含启动加载、首页/赛事板/调校界面及赛道手感），根据真实反馈决定是小修收官还是切入阶段 4（高速撞后物理积压 + 山体 UV 误平铺修复）。

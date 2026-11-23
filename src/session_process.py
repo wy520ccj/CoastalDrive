@@ -255,11 +255,12 @@ class SimulationView:
 class SessionProcess:
     def __init__(self, seed=0, *, track='coastal', road_shape='straight', driving_mode,
                  vehicle_config=None, scores=None, abs_enabled=None, tcs_enabled=None,
-                 esc_enabled=None, physics_workers=0, independent_clock=True):
+                 esc_enabled=None, physics_workers=0, independent_clock=True, on_wait=None):
         import physics_workers as workers
 
         if not independent_clock:
             raise ValueError('独立会话进程必须使用独立120Hz时钟')
+        self.on_wait = on_wait
         self.seed, self.road_shape = seed, road_shape
         self.track_id = track
         self.driving_mode = driving_mode
@@ -303,7 +304,16 @@ class SessionProcess:
             raise
 
     def _receive(self):
-        if not self.connection.poll(60.):
+        if self.on_wait is None:
+            ready = self.connection.poll(60.)
+        else:
+            # 阻塞等待子进程初始化或建图时，每50ms让主窗口处理一次系统事件，避免报“未响应”。
+            deadline = perf_counter() + 60.
+            ready = self.connection.poll(0.05)
+            while not ready and perf_counter() < deadline:
+                self.on_wait()
+                ready = self.connection.poll(min(0.05, max(0., deadline - perf_counter())))
+        if not ready:
             raise TimeoutError('独立会话未返回结果')
         try:
             payload = self.connection.recv_bytes()

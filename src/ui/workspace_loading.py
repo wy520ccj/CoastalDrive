@@ -22,9 +22,9 @@ class WorkspaceLoading:
                     frameSize=(-1.60, -.57, .65, .92))
         self.text("COASTAL DRIVE", -1.53, .79, .085, self.display_font)
         self.text("车辆设计  /  工程验证  /  海岸试驾", -1.52, .70, .031)
-        self.title = self.text("正在准备海岸驾驶", -1.50, -.52, .067)
-        self.stage = self.text("准备窗口与车辆", -1.50, -.66, .036, color=theme.MUTED)
-        self.counter = self.text("", 1.50, -.66, .038, align=TextNode.ARight)
+        self.title = self.text("正在准备海岸驾驶", -1.50, -.56, .064)
+        self.stage = self.text("准备窗口与车辆", -1.50, -.675, .035, color=theme.MUTED)
+        self.counter = self.text("", 1.50, -.675, .037, align=TextNode.ARight)
         DirectFrame(parent=self.content, frameColor=(.78, .83, .81, 1),
                     frameSize=(-1.50, 1.50, -.76, -.744))
         self.bar = DirectFrame(parent=self.content, frameColor=theme.ORANGE,
@@ -55,7 +55,11 @@ class WorkspaceLoading:
     def advance(self, completed, stage, total=5):
         self.stage.setText(stage)
         self.counter.setText(f"{completed} / {total}")
-        self.bar.setSx(3*completed/total)
+        if completed <= 0:
+            self.bar.hide()
+        else:
+            self.bar.show()
+            self.bar.setSx(3*completed/total)
         self.history.append((completed, total, stage))
 
     def resize(self):

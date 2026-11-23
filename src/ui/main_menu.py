@@ -94,7 +94,8 @@ class MainMenu:
         node.bind(DGG.B1PRESS, lambda event: self.confirm_action())
         self.buttons[index] = node
         if subtitle is not None:
-            sub = self.label(subtitle, tx/unit, 27, 19, GRAY, parent=node)
+            sub = self.label(subtitle, tx/unit, 29, 21 if index == self.continue_index else 19,
+                             WHITE if index == self.continue_index else GRAY, parent=node)
             self.subtitles[index] = sub
             if index == 0:
                 self.time_goal = sub
@@ -141,9 +142,9 @@ class MainMenu:
                    0: '计时挑战', 6: '专家试验台'}
         for row, index in enumerate(i for i in self.order[1:] if i in entries):
             y = 366+row*73
-            self.fill(margin, y, inner, 1, (.8, .82, .85, 1), 0)
+            self.fill(margin, y, inner, 1.5, (.8, .82, .85, 1), 0)
             self.button(index, entries[index], old_goal if index == 0 else None, margin, y+2, inner, 69)
-        self.fill(margin, 805, inner, 1, (.8, .82, .85, 1), 0)
+        self.fill(margin, 805, inner, 1.5, (.8, .82, .85, 1), 0)
         self.button(7, '驾驶辅助  F2', None, self.width-503, 883, 177, 42, footer=True)
         self.button(4, '声音设置', None, self.width-313, 883, 143, 42, footer=True)
         self.button(5, '退出游戏', None, self.width-146, 883, 116, 42, footer=True)
@@ -189,11 +190,11 @@ class MainMenu:
             self.edges[i].show() if focused else self.edges[i].hide()
             button['geom_color'] = ORANGE if primary else ((1, .90, .85, 1) if focused else (0, 0, 0, 0))
             if footer:
-                button['geom_color'] = (.25, .27, .30, 1) if focused else (.10, .12, .15, .80)
+                button['geom_color'] = (.25, .29, .35, 1) if focused else (.12, .16, .22, .92)
             color = WHITE if primary or footer else INK
             button['text_fg'] = color
             if i in self.subtitles:
-                self.subtitles[i]['fg'] = WHITE if primary else GRAY
+                self.subtitles[i].setFg(WHITE if primary else GRAY)
 
     def move(self, direction):
         if self.selected in (7, 4, 5):

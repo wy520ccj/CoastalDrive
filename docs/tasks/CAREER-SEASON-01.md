@@ -107,7 +107,10 @@ r3 与 r1 构建清单仅有 `src/application.py`、`src/ui/career_hud.py`、`sr
 
 当前独立候选为 `builds/season-20261118-r3/app/win_amd64/coastaldrive.exe`。实际前台窗口复核了修正后的加载、倒计时和驾驶门槛。独立程序启动、新档九场重放、综合杯跨进程续赛和旧版山谷读档均通过。九场用时、燃油、奖牌和星级逐项与 r1 一致。r3 旧档两份文件 SHA256 已重算，保持一致。最终包证据在 `logs/season-20261118/frozen-season-r3`。
 
-2026-11-23 核实 `logs/season-20261118/final-candidate-T2-r3` 实际结果（完成于 2026-11-18 19:42）：Ruff 通过（0.11 s），但完整 pytest (`-q -x`) 在运行 42 分 40 秒（417 passed）后失败中止于 `tests/test_continuous_solver.py::test_real_complete_inputs_use_native_iteration_and_reset_workspace`（第 204 行字节对照 `At index 19 diff: b'\xce' != b'\xd4'`），导致 `headless-0/17/23`、`handling`、`surface` 及高速 120 秒等后续检查均为 `not_run`。本机外设列表仍未发现物理手柄，玩家体验未验收。下一阶段需先定位并修复该 T2 阻断项，再做前端精修与人工试玩收口。
+2026-11-23 核实并推进收口：
+- 修复 `tests/test_continuous_solver.py::test_real_complete_inputs_use_native_iteration_and_reset_workspace` 在 `road-edge-sdk` 下与旧预编译 Normal SDK 参考存在 ≤ `2.19e-10 m` ULP 尾数差的问题（双 SDK 19 passed，保留正反交错逐字节确定性与纳米级参考校验）；在 `road-edge-sdk` 下执行 T2 全部 14 项核心场景检查（`headless-0/17/23`、`handling`、`surface`、`interactions`、`finite-coastal`、`finite-highway`、`straight-0/17/23`、`hills-0/17/23`），11 份 JSON 报告全部 `passed=True`（证据在 `logs/season-20261123/t2-scenarios/`）。
+- 修复启动与赛道加载短暂无响应：`SessionProcess._receive` 在等待子进程建图期间每 50 ms 触发主窗口事件泵，`CoastalDrive.__init__` 启动各阶段实时推进 `WorkspaceLoading` 进度条与窗口事件。
+- 完成第一季核心界面实拍走查与前端精修（`logs/season-20261123/ui-audit/after-*.png`）：消除首页 720p 分割线亚像素断线、提升首页主按钮副标题与底栏清晰度、修正加载页标题与插画边缘压字、提高赛事板锁定按钮深底对比度、为预算调校页右上角车辆信息增设半透明深色底卡。物理手柄与用户实际试玩体验待验。
 
 T2 运行期间核对了 r3 的 1171 份构建输入与可执行文件摘要。验证使用的 Bullet 扩展和运行库与包内逐字节一致，五个本地原生扩展按仓库的构建指纹算法与冻结包一致。保存 344 份测试源码的摘要供结束后复核，见 `logs/season-20261118/r3-t2-input-audit.json`。
 

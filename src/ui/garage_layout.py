@@ -196,4 +196,5 @@ def style(panel):
             color = (1, .87, .80, 1)
         button['geom_color'] = color
         white_text = ('primary', 'secondary', 'tab', 'tab-active', 'footer', 'setup-active', 'setup-preset')
-        button['text_fg'] = GRAY if disabled else WHITE if role in white_text else INK
+        disabled_ink = (.58, .66, .74, 1) if role == 'footer' else GRAY
+        button['text_fg'] = disabled_ink if disabled else WHITE if role in white_text else INK

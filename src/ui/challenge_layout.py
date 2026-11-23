@@ -121,7 +121,7 @@ def result_vehicle_box(aspect):
     return _vehicle_box(width, width*.031, _result_width(width))
 
 
-def _vehicle(panel, spec, draft, width, left, wide, label):
+def _vehicle(panel, spec, draft, width, left, wide, label, fill=None):
     margin, bottom = width*.031, 670.
     if panel.page == 'challenge' and panel.vehicle_view.base.challenge_presets(spec):
         # 宽屏车辆随展示区变大，收起视口下缘为参考方案留出间距。
@@ -132,10 +132,13 @@ def _vehicle(panel, spec, draft, width, left, wide, label):
                             skin_index=0 if spec.assessment == 'reference' else None)
     panel.vehicle_view.frame.setTransparency(TransparencyAttrib.MAlpha)
     panel.vehicle_view.highlight(None)
-    label('本关原车 · '+vehicle_design(spec.design_id).name, width-margin, 150, 24, WHITE, right=True)
+    if fill is not None:
+        fill(width-margin-356, 120, 356, 80, (.04, .055, .075, .78))
+    tx = width-margin-16 if fill is not None else width-margin
+    label('本关原车 · '+vehicle_design(spec.design_id).name, tx, 152, 23, WHITE, right=True, bold=True)
     power = max(rpm*torque/9549.3 for rpm, torque in config.torque_curve)
     panel.challenge_readouts['vehicle'] = label(f'{config.mass:.0f} kg · {power:.0f} kW',
-                                               width-margin, 183, 20, WHITE, right=True)
+                                               tx, 184, 19, (.84, .88, .92, 1), right=True)
 
 
 def _reference_setups(panel, spec, width, x, fill, label, button):
@@ -335,7 +338,7 @@ def build_page(panel, spec, draft, tab, notice):
         fill(left+20, y+91, wide-40, 1, (.79, .81, .84, 1), radius=0)
     panel.challenge_readouts['other'] = label('', left+30, 797, 19, GRAY)
     button('恢复原车', left+wide-170, 768, 150, 40, 'challenge-reset', None, role='quiet')
-    _vehicle(panel, spec, draft, width, left, wide, label)
+    _vehicle(panel, spec, draft, width, left, wide, label, fill=fill)
     _reference_setups(panel, spec, width, left+wide+18, fill, label, button)
     _targets(panel, spec, width, left+wide+18, fill, label)
     reference = spec.assessment == 'reference'
@@ -622,7 +625,7 @@ def result_page(panel, spec, status):
                          valley_labels=valley_labels)
     elif slalom is not None:
         _slalom_trial_segments(slalom, app.auto_trial_reference, left, wide, fill, label)
-    _vehicle(panel, spec, result.build, width, left, wide, label)
+    _vehicle(panel, spec, result.build, width, left, wide, label, fill=fill)
     award = app.career_award
     _result_build_or_unlocks(result, award, left+wide+18, width-left, fill, label, button)
     tour = app.tour_active
@@ -683,7 +686,7 @@ def pause_page(panel, spec, draft, status):
         button(title, x, y, inner, 72, action, role='primary' if y == 350 else 'secondary', primary=y == 350)
     label('Esc 继续驾驶', left, 910, 20, WHITE)
     panel.challenge_readouts['budget'].setText(f'本场预算 {spec.budget}')
-    _vehicle(panel, spec, draft, width, left, wide, label)
+    _vehicle(panel, spec, draft, width, left, wide, label, fill=fill)
     panel.select(panel.primary)
 
 
@@ -709,7 +712,7 @@ def reference_result_page(panel, spec, draft, data, notice=''):
           left+24, 700, 20, ORANGE, wrap=wide-48)
     label(f'本场改装 {draft.cost} / {spec.budget}', left+24, 774, 25)
     label(notice, left+24, 814, 17, ORANGE, wrap=wide-48)
-    _vehicle(panel, spec, draft, width, left, wide, label)
+    _vehicle(panel, spec, draft, width, left, wide, label, fill=fill)
     _targets(panel, spec, width, left+wide+18, fill, label)
     button('Esc 返回参数', left, 880, 190, 42, 'challenge-adjust', role='footer')
     button('导出报告', left+210, 877, 150, 48, 'reference-export', role='secondary')

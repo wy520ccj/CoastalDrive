@@ -159,11 +159,10 @@ class CoastalDrive(ShowBase):
             startup_trace.mark("renderer_initialized")
         self.workspace_loading = WorkspaceLoading(self)
         self.workspace_loading.show("正在打开海岸驾驶", tip="车辆设计与公路试驾，共用一个窗口")
-        self.graphicsEngine.renderFrame()
-        self.graphicsEngine.renderFrame()
+        self.smoke = smoke
+        self._pump_startup(0, "正在初始化车辆与物理会话")
         self.camLens.setFov(68)
         self.camLens.setNearFar(0.15, 1500)
-        self.smoke = smoke
         self.onscreen = onscreen
         self.output = output or user_data()
         self.workspace_path = self.output/"test-workspace-vehicle.json" if smoke else workspace_vehicle_path()
@@ -205,9 +204,12 @@ class CoastalDrive(ShowBase):
             "physics_workers": physics_workers,
             "independent_clock": use_clock,
         }
+        if use_clock and not smoke:
+            self.session_arguments["on_wait"] = self._pump_window
         self.session = session_type(**self.session_arguments)
         if startup_trace is not None:
             startup_trace.mark("simulation_initialized")
+        self._pump_startup(1, "物理世界就绪，正在准备音频与声景")
         self.skin_index = next(
             (i for i, skin in enumerate(SKINS) if skin.id == self.appearance.skin_id), 0
         )
@@ -221,6 +223,7 @@ class CoastalDrive(ShowBase):
                 self.audio_settings.music_volume, self.audio_settings.radio_station,
             )
         )
+        self._pump_startup(2, "正在加载界面与车库视窗")
         self._scene_track = None
         self._scene_shape = None
         self._scene_seed = None
@@ -325,6 +328,7 @@ class CoastalDrive(ShowBase):
         self.loading.hide()
         if startup_trace is not None:
             startup_trace.mark("ui_ready")
+        self._pump_startup(3, "正在准备首屏画面")
         self.taskMgr.add(self.update, "drive-update")
         self.workspace = "game"
         if smoke and load_initial_scene:
@@ -333,9 +337,22 @@ class CoastalDrive(ShowBase):
             self.session.set_controller(ConstantController(Control(throttle=1)))
             self.taskMgr.doMethodLater(1.2, self.finish_smoke, "finish-smoke")
         self.refresh_panel()
+        self._pump_startup(4, "准备就绪")
         self.workspace_loading.hide()
         if startup_workspace == "lab":
             self.open_vehicle_lab()
+
+    def _pump_window(self):
+        """等待子进程回包期间泵出窗口消息，防止系统将窗口标为未响应。"""
+        if self.win is not None and not self.smoke:
+            self.win.processEvents()
+
+    def _pump_startup(self, completed, stage, total=4):
+        """同步启动阶段推进真实加载进度，并在可见窗口下刷新一次绘制与事件。"""
+        self.workspace_loading.advance(completed, stage, total=total)
+        if not self.smoke and self.win is not None:
+            self.win.processEvents()
+            self.graphicsEngine.renderFrame()
 
     def start_game(self, *, mode, track="coastal", tour=False):
         if self._workspace_steps is not None:
