@@ -19,7 +19,7 @@ from vehicle_workspace import WorkspaceVehicle
 @pytest.fixture
 def app(tmp_path, monkeypatch):
     monkeypatch.setenv('LOCALAPPDATA', str(tmp_path/'user'))
-    game = CoastalDrive(smoke=True, output=tmp_path/'game',
+    game = CoastalDrive(smoke=True, load_initial_scene=False, output=tmp_path/'game',
         workspace_vehicle=WorkspaceVehicle('reference-rwd', vehicle_design('reference-rwd').config))
     game.taskMgr.remove('finish-smoke')
     game.taskMgr.remove('drive-update')

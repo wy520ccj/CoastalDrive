@@ -7,7 +7,7 @@ from pathlib import Path
 
 import numpy as np
 
-SPEC = importlib.util.spec_from_file_location("lab_crossover",Path(__file__).resolve().parents[1]/
+SPEC = importlib.util.spec_from_file_location("lab_crossover",Path(__file__).resolve().parents[2]/
     "tools/performance/compare_lab_native_crossover.py")
 DIAGNOSTIC = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(DIAGNOSTIC)

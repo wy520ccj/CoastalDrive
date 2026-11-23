@@ -19,7 +19,7 @@ from tour_budget import BudgetTour
 @pytest.fixture
 def app(tmp_path, monkeypatch):
     monkeypatch.setenv('LOCALAPPDATA', str(tmp_path/'user'))
-    game = CoastalDrive(smoke=True, output=tmp_path/'game')
+    game = CoastalDrive(smoke=True, load_initial_scene=False, output=tmp_path/'game')
     game.taskMgr.remove('finish-smoke')
     game.taskMgr.remove('drive-update')
     yield game

@@ -110,7 +110,7 @@ from workshop_journey import current_trial, read_journey
 
 
 class CoastalDrive(ShowBase):
-    def __init__(self, *, smoke=False, smoke_audio=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", sync_video=True, driving_mode=None, vehicle_design_id=None, abs_enabled=None, tcs_enabled=None, esc_enabled=None, physics_workers=None, independent_clock=None, workspace_vehicle=None, startup_workspace="game", lab_output=None):
+    def __init__(self, *, smoke=False, smoke_audio=False, onscreen=False, output=None, seed=0, track="coastal", road_shape="straight", render_size=(1280, 720), startup_trace=None, threading_model="/Draw", sync_video=True, driving_mode=None, vehicle_design_id=None, abs_enabled=None, tcs_enabled=None, esc_enabled=None, physics_workers=None, independent_clock=None, workspace_vehicle=None, startup_workspace="game", lab_output=None, load_initial_scene=True):
         # 带声音的诊断仍隔离设置/成绩，只打开正式音频链路。
         audio_enabled = not smoke or smoke_audio
         self.session = None
@@ -327,7 +327,7 @@ class CoastalDrive(ShowBase):
             startup_trace.mark("ui_ready")
         self.taskMgr.add(self.update, "drive-update")
         self.workspace = "game"
-        if smoke:
+        if smoke and load_initial_scene:
             self.session.start(countdown=False)
             self.sync_scene()
             self.session.set_controller(ConstantController(Control(throttle=1)))

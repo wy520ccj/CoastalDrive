@@ -20,6 +20,10 @@ design = ["matplotlib==3.11.2"]
 [tool.pytest.ini_options]
 pythonpath = ["src", "tools"]
 testpaths = ["tests"]
+norecursedirs = ["deep_native", "data", ".git", "build", "builds", "logs", "archive", "vendor"]
+markers = [
+    "ui: tests that initialize a Panda3D/OpenGL window or application",
+]
 
 [tool.ruff]
 line-length = 100

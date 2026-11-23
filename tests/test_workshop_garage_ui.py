@@ -10,7 +10,7 @@ from session import Phase
 @pytest.fixture
 def app(tmp_path, monkeypatch):
     monkeypatch.setenv('LOCALAPPDATA', str(tmp_path/'user'))
-    game = CoastalDrive(smoke=True, output=tmp_path/'game', lab_output=tmp_path/'reports')
+    game = CoastalDrive(smoke=True, load_initial_scene=False, output=tmp_path/'game', lab_output=tmp_path/'reports')
     game.taskMgr.remove('finish-smoke')
     game.taskMgr.remove('drive-update')
     game.open_workshop_garage()
