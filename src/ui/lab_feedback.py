@@ -16,16 +16,16 @@ ERROR = (.65, .13, .10, 1)
 class LabFeedback:
     def __init__(self, app):
         self.footer = OnscreenText(parent=app.root, font=app.font, fg=MUTED,
-            text="选择工况，开始第一次试验", pos=(-.88, -.925), scale=.035,
-            wordwrap=51, align=TextNode.ALeft, mayChange=True)
-        self.root = DirectFrame(parent=app.root, frameColor=(1., .94, .90, 1),
-            frameSize=(-.94, 1.72, -.99, -.73), sortOrder=130, state=DGG.NORMAL)
+            text="选择工况后点击开始试验，拖动时间轴可逐帧分析", pos=(-.92, -.948), scale=.030,
+            wordwrap=80, align=TextNode.ALeft, mayChange=True)
+        self.root = DirectFrame(parent=app.root, frameColor=(.995, .945, .935, 1),
+            frameSize=(-.94, 1.72, -.98, -.74), sortOrder=130, state=DGG.NORMAL)
         DirectFrame(parent=self.root, frameColor=ERROR,
-                    frameSize=(-.94, -.925, -.99, -.73))
-        app.text("请检查以下问题", -.86, -.79, .043, ERROR, parent=self.root)
+                    frameSize=(-.94, -.924, -.98, -.74))
+        app.text("请检查以下问题", -.87, -.795, .040, ERROR, parent=self.root)
         self.message = OnscreenText(parent=self.root, font=app.font, fg=ERROR, text="",
-            pos=(-.86, -.855), scale=.037, wordwrap=64, align=TextNode.ALeft, mayChange=True)
-        app.button("收起提示", 1.48, -.785, .34, self.dismiss, parent=self.root)
+            pos=(-.87, -.855), scale=.034, wordwrap=68, align=TextNode.ALeft, mayChange=True)
+        app.button("收起提示", 1.50, -.795, .32, self.dismiss, parent=self.root)
         self.root.hide()
 
     def setText(self, text):

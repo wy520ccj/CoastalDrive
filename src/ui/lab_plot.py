@@ -7,7 +7,7 @@ from panda3d.core import LineSegs, TextNode
 
 from lab_signals import SIGNAL_BY_KEY
 from ui import theme
-from ui.lab_widgets import MUTED, rounded_panel
+from ui.lab_widgets import BORDER, MUTED, rounded_panel
 
 TEXT = theme.INK
 COLORS = (theme.SEA, theme.ORANGE)
@@ -17,12 +17,13 @@ class LabPlot:
     def __init__(self, parent, font, box, key):
         self.root = parent.attachNewNode("lab-plot")
         self.font, self.box, self.keys = font, box, (key,)
-        left, _right, bottom, top = box
-        rounded_panel(self.root, "signal-card", box, theme.PAPER_LIGHT)
+        left, right, bottom, top = box
+        rounded_panel(self.root, "signal-border", (left-.004, right+.004, bottom-.004, top+.004), BORDER, .024)
+        rounded_panel(self.root, "signal-card", box, theme.PAPER_LIGHT, .022)
         self.title = OnscreenText(parent=self.root, font=font, text="", fg=TEXT,
-            pos=(left+.06, top-.065), scale=.039, align=TextNode.ALeft, mayChange=True)
+            pos=(left+.055, top-.062), scale=.036, align=TextNode.ALeft, mayChange=True)
         self.readout = OnscreenText(parent=self.root, font=font, text="", fg=MUTED,
-            pos=(left+.06, bottom+.020), scale=.034, align=TextNode.ALeft, mayChange=True)
+            pos=(left+.055, bottom+.022), scale=.031, align=TextNode.ALeft, mayChange=True)
         self.axis_labels = []
         self.lines = self.root.attachNewNode("curves")
         self.cursor = self.root.attachNewNode("cursor")
@@ -52,7 +53,7 @@ class LabPlot:
             label.destroy()
         self.axis_labels.clear()
         grid = LineSegs()
-        grid.setColor(.79, .83, .80, 1)
+        grid.setColor(.86, .89, .92, 1)
         for index in range(round((high-low)/step)+1):
             value = low+index*step
             z = z0+(value-low)/(high-low)*(z1-z0)
@@ -60,20 +61,20 @@ class LabPlot:
             grid.drawTo(x1, 0, z)
             label = f"{value:.4g}"
             self.axis_labels.append(OnscreenText(parent=self.root, font=self.font, text=label, fg=MUTED,
-                pos=(x0-.025, z-.009), scale=.034, align=TextNode.ARight))
+                pos=(x0-.022, z-.008), scale=.030, align=TextNode.ARight))
         for index in range(5):
             x = x0+index*(x1-x0)/4
             grid.moveTo(x, 0, z0)
             grid.drawTo(x, 0, z1)
             self.axis_labels.append(OnscreenText(parent=self.root, font=self.font,
                 text=f"{self.duration*index/4:.1f}", fg=MUTED,
-                pos=(x, z0-.052), scale=.034))
+                pos=(x, z0-.046), scale=.030))
         self.lines.attachNewNode(grid.create())
         for slot, rows in indexed:
             color = COLORS[slot]
             for channel, key in enumerate(self.keys):
                 curve = LineSegs()
-                curve.setThickness(1.8)
+                curve.setThickness(2.2)
                 curve.setColor(*color)
                 connected = False
                 for index, row in enumerate(rows):

@@ -41,8 +41,8 @@ INK = theme.INK
 ACCENT = theme.SEA
 PANEL = theme.PAPER_LIGHT
 BUTTON = theme.PAPER
-DISABLED_FIELD = (.88, .90, .88, 1)
-DISABLED_INK = (.43, .49, .49, 1)
+DISABLED_FIELD = (.91, .925, .945, 1)
+DISABLED_INK = (.56, .62, .69, 1)
 
 
 def control_mode_label(options):
@@ -111,6 +111,7 @@ class VehicleLab(DirectObject):
         self.pointer_pressed = False
         self.entries = {}
         self.field_labels = {}
+        self._option_menus = []
         self.hovered_parameter = None
         self.focused_parameter = "speed"
         self.scene = LabScene(self.engine)
@@ -158,28 +159,30 @@ class VehicleLab(DirectObject):
         self.engine.taskMgr.add(self.update, "lab-update")
         self.resize()
 
-    def text(self, value, x, z, scale=.034, color=INK, parent=None, font=None):
-        scale = max(.035, scale)
+    def text(self, value, x, z, scale=.034, color=INK, parent=None, font=None, align=TextNode.ALeft):
+        scale = max(.028, scale)
         return OnscreenText(parent=parent or self.root, text=value, font=font or self.font, fg=color,
-            pos=(x, z), scale=scale, align=TextNode.ALeft, mayChange=True)
+            pos=(x, z), scale=scale, align=align, mayChange=True)
 
-    def button(self, label, x, z, width, action, parent=None, accent=False):
+    def button(self, label, x, z, width, action, parent=None, accent=False, dark=False):
+        variant = "primary" if accent else "dark" if dark else False
+        fg = theme.TEXT_LIGHT if (accent or dark) else INK
         button = DirectButton(parent=parent or self.root, text=label, text_font=self.font,
-            text_scale=.041, text_fg=(1, 1, 1, 1) if accent else INK, text_pos=(0, -.012),
-            frameColor=(1, 1, 1, 1), frameTexture=button_textures(accent),
-            frameSize=(-width/2, width/2, -.045, .045), borderWidth=(0, 0),
+            text_scale=.037, text_fg=fg, text_pos=(0, -.011),
+            frameColor=(1, 1, 1, 1), frameTexture=button_textures(variant),
+            frameSize=(-width/2, width/2, -.042, .042), borderWidth=(0, 0),
             relief=DGG.FLAT, pos=(x, 0, z), command=action, pressEffect=False)
         button.setTransparency(TransparencyAttrib.MAlpha)
         return button
 
     def field(self, key, label, value, z, *, x=-1.61, width=.30, parent=None):
-        self.field_labels[key] = self.text(label, x, z, .039, MUTED, parent=parent)
+        self.field_labels[key] = self.text(label, x, z, .034, MUTED, parent=parent)
         target = DirectFrame(parent=parent or self.root, frameColor=(0, 0, 0, 0), relief=None,
                              frameSize=(0, .31, -.015, .045), pos=(x, 0, z), state=DGG.NORMAL)
         self.bind_parameter(target, key)
         entry = DirectEntry(parent=parent or self.root, initialText=str(value), text_font=self.font,
-            text_fg=INK, scale=.038, width=width/.038, numLines=1, focus=0,
-            frameColor=(.94, .95, .92, 1), pos=(x+.34, 0, z-.003), relief=DGG.FLAT)
+            text_fg=INK, scale=.035, width=width/.035, numLines=1, focus=0,
+            frameColor=(.935, .950, .965, 1), pos=(x+.34, 0, z-.003), relief=DGG.FLAT)
         self.entries[key] = entry
         self.bind_parameter(entry, key, focus=True)
         return entry
@@ -239,8 +242,7 @@ class VehicleLab(DirectObject):
             return
         key = self.hovered_parameter or self.focused_parameter
         self.blur_entries()
-        for menu in (self.vehicle_menu, self.maneuver_menu, self.abs_menu, self.esc_menu, self.plot_menu):
-            menu.hidePopupMenu()
+        self.close_option_menus()
         try:
             self.parameter_help.show(key)
         except OSError as error:
@@ -251,22 +253,31 @@ class VehicleLab(DirectObject):
             bar = self.parameter_help.content_scroll.verticalScroll
             bar["value"] = min(1., max(0., bar["value"]+direction*.12))
 
+    def close_option_menus(self):
+        for menu in self._option_menus:
+            menu.hidePopupMenu()
+
+    def _prepare_popup(self):
+        self.blur_entries()
+        self.close_option_menus()
+
     def option(self, labels, x, z, width, command=None, parent=None, parameter=None):
         menu = LabOptionMenu(parent=parent or self.root, items=labels, text_font=self.font,
-            item_text_font=self.font, item_text_scale=.038, item_text_fg=INK,
-            item_text_pos=(.025, -.013), item_frameSize=(0, width, -.04, .04),
-            item_frameColor=PANEL, item_relief=DGG.FLAT, item_borderWidth=(0, 0),
+            item_text_font=self.font, item_text_scale=.034, item_text_fg=INK,
+            item_text_pos=(.026, -.011), item_frameSize=(0, width, -.036, .036),
+            item_frameColor=theme.PAPER_LIGHT, item_relief=DGG.FLAT, item_borderWidth=(0, 0),
             item_pad=(0, 0), item_pressEffect=False,
-            popupMenu_relief=DGG.FLAT, popupMenu_frameColor=(.68, .75, .75, 1),
-            popupMenu_borderWidth=(0, 0),
-            text_scale=.038, text_fg=INK, text_align=TextNode.ALeft, text_pos=(.025, -.013),
-            frameSize=(0, width, -.04, .04), frameColor=BUTTON, relief=DGG.FLAT,
-            pos=(x, 0, z), command=command, highlightColor=(.85, .91, .91, 1),
-            popupMarker_pos=(width-.025, 0, 0), popupMarker_scale=.03,
+            popupMenu_relief=DGG.FLAT, popupMenu_frameColor=(.74, .80, .86, 1),
+            popupMenu_borderWidth=(0, 0), popupMenu_sortOrder=120,
+            text_scale=.034, text_fg=INK, text_align=TextNode.ALeft, text_pos=(.026, -.011),
+            frameSize=(0, width, -.036, .036), frameColor=(.935, .950, .965, 1), relief=DGG.FLAT,
+            pos=(x, 0, z), command=command, highlightColor=(.86, .93, .96, 1),
+            popupMarker_pos=(width-.026, 0, 0), popupMarker_scale=.028,
             popupMarker_relief=DGG.FLAT, popupMarker_frameColor=(0, 0, 0, 0),
             popupMarker_text="▼", popupMarker_text_font=self.font,
-            popupMarker_text_fg=MUTED, popupMarker_text_scale=.7,
-            popupMarkerBorder=(0, 0), before_popup=self.blur_entries)
+            popupMarker_text_fg=MUTED, popupMarker_text_scale=.65,
+            popupMarkerBorder=(0, 0), before_popup=self._prepare_popup)
+        self._option_menus.append(menu)
         if parameter is not None:
             self.bind_parameter(menu, parameter)
         return menu
@@ -314,8 +325,8 @@ class VehicleLab(DirectObject):
             if not enabled:
                 entry["focus"] = 0
             entry["state"] = DGG.NORMAL if enabled else DGG.DISABLED
-            entry["frameColor"] = ((.86, .93, .94, 1) if entry.guiItem.getFocus()
-                                    else (.94, .95, .92, 1)) if enabled else DISABLED_FIELD
+            entry["frameColor"] = ((.86, .93, .96, 1) if entry.guiItem.getFocus()
+                                    else (.935, .950, .965, 1)) if enabled else DISABLED_FIELD
             entry["text_fg"] = INK if enabled else DISABLED_INK
             # PGEntry持有各状态TextNode的副本，组件颜色更改后需同步到这些副本。
             for state in range(entry["numStates"]):
@@ -677,6 +688,7 @@ class VehicleLab(DirectObject):
     def show_manual(self):
         if tuple(MANEUVERS)[self.maneuver_menu.selectedIndex] == "manual":
             self.blur_entries()
+            self.close_option_menus()
             self.advanced_panel.hide()
             self.details_panel.hide()
             self.record_menu.hide()
@@ -684,6 +696,7 @@ class VehicleLab(DirectObject):
 
     def toggle_advanced(self):
         self.blur_entries()
+        self.close_option_menus()
         self.manual_panel.hide()
         self.details_panel.hide()
         self.record_menu.hide()
@@ -691,6 +704,7 @@ class VehicleLab(DirectObject):
 
     def toggle_details(self):
         self.blur_entries()
+        self.close_option_menus()
         self.advanced_panel.hide()
         self.manual_panel.hide()
         self.record_menu.hide()
@@ -698,10 +712,16 @@ class VehicleLab(DirectObject):
 
     def show_engineering(self):
         self.blur_entries()
+        self.close_option_menus()
+        self.advanced_panel.hide()
+        self.manual_panel.hide()
+        self.details_panel.hide()
+        self.record_menu.hide()
         self.engineering_panel.show()
 
     def toggle_record_menu(self):
         self.blur_entries()
+        self.close_option_menus()
         self.advanced_panel.hide()
         self.manual_panel.hide()
         self.details_panel.hide()
@@ -718,6 +738,7 @@ class VehicleLab(DirectObject):
             action()
 
     def escape(self):
+        self.close_option_menus()
         if not self.notice.root.isHidden():
             self.notice.dismiss()
             return

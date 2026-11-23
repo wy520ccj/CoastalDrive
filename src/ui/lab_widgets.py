@@ -16,8 +16,9 @@ from panda3d.core import (
     Texture,
 )
 
-# 辅助文字保持层级，但在奶白底上保留清晰、扎实的笔画。
-MUTED = (43 / 255, 64 / 255, 74 / 255, 1)
+# 辅助文字：精密冷灰，在纯白与冷瓷灰底上保持高可读性。
+MUTED = (0.36, 0.43, 0.51, 1)
+BORDER = (0.82, 0.86, 0.90, 1)
 
 
 class LabOptionMenu(DirectOptionMenu):
@@ -82,16 +83,23 @@ def rounded_panel(parent, name, box, color, radius=.025):
     return result
 
 
-@lru_cache(maxsize=2)
-def button_textures(primary):
-    """程序绘制圆角和悬停色，避免沿用旧按钮的硬边框。"""
-    fills = ((.96, .49, .14), (1., .58, .22), (.88, .39, .09), (.83, .79, .70)) if primary else (
-        (.985, .98, .95), (.90, .95, .94), (.85, .91, .90), (.91, .91, .87))
+@lru_cache(maxsize=4)
+def button_textures(variant):
+    """程序绘制现代圆角按钮材质：primary(橙) / dark(顶栏深海) / secondary(冷白描边)。"""
+    if variant is True or variant == "primary":
+        fills = ((.95, .36, .14), (1.0, .44, .22), (.84, .30, .10), (.78, .81, .85))
+        border_rgb = (.95, .36, .14)
+    elif variant == "dark":
+        fills = ((.11, .15, .21), (.17, .23, .31), (.08, .11, .16), (.09, .12, .16))
+        border_rgb = (.24, .31, .40)
+    else:
+        fills = ((.985, .99, .996), (.91, .95, .97), (.86, .91, .94), (.93, .94, .95))
+        border_rgb = (.78, .83, .88)
     textures = []
-    width, height, radius = 256, 64, 10
+    width, height, radius = 256, 64, 12
     for index, fill in enumerate(fills):
         image = PNMImage(width, height, 4)
-        border = fill if primary else (.72, .79, .78)
+        border = fill if (variant is True or variant == "primary") else border_rgb
         for y in range(height):
             for x in range(width):
                 dx = max(radius-x-.5, x+.5-(width-radius), 0.)
@@ -99,9 +107,9 @@ def button_textures(primary):
                 distance = math.hypot(dx, dy)
                 alpha = min(1., max(0., radius+.5-distance))
                 edge = min(x+.5, width-x-.5, y+.5, height-y-.5, radius-distance)
-                color = border if edge < 1.2 else fill
+                color = border if edge < 1.3 else fill
                 image.setXelA(x, y, *color, alpha)
-        texture = Texture(f"lab-button-{primary}-{index}")
+        texture = Texture(f"lab-button-{variant}-{index}")
         texture.load(image)
         textures.append(texture)
     return tuple(textures)

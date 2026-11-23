@@ -6,20 +6,22 @@ from panda3d.core import TransparencyAttrib
 
 from lab_metrics import engineering_analysis
 from ui import theme
-from ui.lab_widgets import MUTED, rounded_panel
+from ui.lab_widgets import BORDER, MUTED, rounded_panel
 
 
 class EngineeringPanel:
     def __init__(self, app):
         self.app = app
-        self.root = DirectFrame(parent=app.root, frameColor=(.04, .10, .14, .55),
+        self.root = DirectFrame(parent=app.root, frameColor=(.04, .06, .09, .58),
                                 frameSize=(-1.78, 1.78, -1, 1), sortOrder=100, state=DGG.NORMAL)
         self.root.setTransparency(TransparencyAttrib.MAlpha)
-        rounded_panel(self.root, "engineering-card", (-1.48, 1.55, -.76, .74), theme.PAPER_LIGHT)
+        rounded_panel(self.root, "engineering-edge", (-1.484, 1.554, -.764, .744), BORDER, .028)
+        rounded_panel(self.root, "engineering-card", (-1.48, 1.55, -.76, .74), theme.PAPER_LIGHT, .026)
+        DirectFrame(parent=self.root, frameColor=theme.SEA, frameSize=(-1.40, -1.39, .615, .675))
         app.text("工程指标", -1.35, .63, .048, parent=self.root, font=app.heading_font)
-        app.button("关闭 · Esc", 1.27, .65, .40, self.hide, parent=self.root)
-        self.group_menu = app.option(["操稳 / 制动","乘坐 / 接地"],-.45,.61,.60,
-                                     lambda selection:self.show(group=selection),parent=self.root)
+        app.button("关闭 · Esc", 1.27, .645, .36, self.hide, parent=self.root)
+        self.group_menu = app.option(["操稳 / 制动", "乘坐 / 接地"], -.45, .645, .58,
+                                     lambda selection: self.show(group=selection), parent=self.root)
         self.basis = app.text("", -1.35, .52, .034, MUTED, parent=self.root)
         self.rows = [app.text("", -1.35+(index//5)*1.43, .35-(index%5)*.155, .036,
                               parent=self.root) for index in range(10)]
