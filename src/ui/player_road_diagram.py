@@ -2,12 +2,10 @@
 
 import math
 
-from direct.gui import DirectGuiGlobals as DGG
-from direct.gui.DirectGui import DirectButton, OnscreenText
-from panda3d.core import LineSegs, TextNode
+from panda3d.core import LineSegs
 
 from slalom_lesson import GATES
-from ui import theme
+from ui.garage_layout import GRAY, INK, ORANGE, WHITE
 
 
 def gate_focus(a, b):
@@ -33,35 +31,45 @@ def brake_range(a, b, short):
 
 
 class RoadDiagram:
-    def __init__(self, parent, font, textures):
-        self.root = parent.attachNewNode('road-result-diagram')
-        self.font, self.labels = font, []
+    def __init__(self, panel):
+        self.panel = panel
+        self.root = panel.content.attachNewNode('road-result-diagram')
         self.plot = self.root.attachNewNode('recorded-values')
-        self.legend = self.text('', -1.52, .12, .025, theme.MUTED)
-        self.detail = self.text('', -1.52, -.30, .029, theme.INK)
-        self.buttons = []
+        self.labels, self.selected = [], 0
+        left, wide = panel.left, panel.wide
+        self.legend = panel.text('', left+36, 432, 15, GRAY, parent=self.root)
+        self.detail = panel.text('', left+wide*.64, 684, 18, parent=self.root, wrap=wide*.32)
+        self.buttons, self.edges = [], []
+        start, step = left+92, (wide*.53-92)/6
         for index in range(6):
-            self.buttons.append(DirectButton(parent=self.root, text=f'{index+1}门', text_font=font,
-                text_fg=theme.INK, text_scale=.029, frameTexture=textures, frameColor=(1, 1, 1, 1),
-                relief=DGG.FLAT, pressEffect=False, frameSize=(-.15, .15, -.028, .028),
-                pos=(-1.10+index*.44, 0., .065), command=self.select, extraArgs=[index]))
+            button = panel.button(f'第{index+1}门', start+index*step, 673, step, 44,
+                                  self.select, args=(index,))
+            button.reparentTo(self.root)
+            self.buttons.append(button)
+            self.edges.append(panel.fill(start+index*step+5, 715, step-10, 4, ORANGE,
+                                         parent=self.root, radius=0))
+        self.arrows = [panel.button(label, x, 673, 44, 44, self.change, args=(delta,))
+                       for label, x, delta in (('‹', left+36, -1), ('›', left+wide*.55, 1))]
+        for button in self.arrows:
+            button.reparentTo(self.root)
         self.root.hide()
 
-    def text(self, value, x, z, scale=.027, color=theme.INK, *, plot=False):
-        label = OnscreenText(parent=self.plot if plot else self.root, text=value, font=self.font, fg=color,
-            align=TextNode.ALeft, pos=(x, z), scale=scale, mayChange=True)
-        if plot:
-            self.labels.append(label)
-        return label
+    def text(self, value, x, y, size=18, color=INK):
+        item = self.panel.text(value, x, y, size, color, parent=self.plot)
+        self.labels.append(item)
+        return item
 
     def line(self, points, color, width=1.):
         line = LineSegs()
         line.setColor(*color)
         line.setThickness(width)
-        line.moveTo(points[0][0], 0., points[0][1])
-        for x, z in points[1:]:
-            line.drawTo(x, 0., z)
+        for index, (x, y) in enumerate(points):
+            px, pz = self.panel.point(x, y)
+            line.moveTo(px, 0, pz) if index == 0 else line.drawTo(px, 0, pz)
         self.plot.attachNewNode(line.create())
+
+    def fill(self, x, y, width, height, color, radius=0):
+        return self.panel.fill(x, y, width, height, color, parent=self.plot, radius=radius)
 
     def clear(self):
         for label in self.labels:
@@ -70,11 +78,19 @@ class RoadDiagram:
         self.plot.removeNode()
         self.plot = self.root.attachNewNode('recorded-values')
 
+    def destroy(self):
+        self.clear()
+        self.legend.destroy()
+        self.detail.destroy()
+        self.root.removeNode()
+
     def show(self, store):
         self.a, self.b, self.brakes = store.a, store.b, store.brakes
         self.clear()
-        for button in self.buttons:
+        for button in (*self.buttons, *self.arrows):
             button.hide() if self.brakes else button.show()
+        for edge in self.edges:
+            edge.hide()
         if self.brakes:
             self.draw_braking()
         else:
@@ -83,74 +99,80 @@ class RoadDiagram:
         self.root.show()
 
     def draw_gates(self):
-        self.legend.setText('A海蓝 / B橙色 · 整车余量（米），负值超线 · —未到达')
-        values = [value for item in (self.a, self.b) if item is not None for value in item['result']['clearances']]
-        low, high = min(-.5, math.floor(min(values, default=0.)*2)/2), max(1., math.ceil(max(values, default=0.)*2)/2)
+        left, wide = self.panel.left, self.panel.wide
+        self.detail.setPos(*self.panel.point(left+wide*.64, 684))
+        self.detail.textNode.setWordwrap(wide*.32/18)
+        self.legend.setText('')
+        for side, item, y in zip('AB', (self.a, self.b), (501, 600), strict=True):
+            self.text(side, left+48, y+10, 28)
+            self.fill(left+98, y-15, wide-142, 30, (.68, .70, .73, 1))
+            for index in range(24):
+                x = left+105+index*(wide-163)/24
+                self.fill(x, y-1, (wide-163)/48, 2, WHITE)
+            margins = item['result']['clearances'] if item else ()
+            for index in range(6):
+                x = left+wide*.14+index*wide*.147
+                if side == 'A':
+                    self.text(f'第{index+1}门', x-27, y-63, 18)
+                reached = index < len(margins)
+                color = (.1, .64, .24, 1) if reached and margins[index] >= 0 else ORANGE if reached else GRAY
+                self.fill(x-3, y-27, 6, 43, INK)
+                self.fill(x-9, y-45, 18, 18, color, 9)
+                value = f'{margins[index]:+.3f}m' if reached else '未到达'
+                self.text(value, x-35, y+43, 16, color)
+        self.line([(left+36, 651), (left+wide-36, 651)], (.79, .81, .84, 1))
 
-        def height(value):
-            return -.235+(value-low)/(high-low)*.25
-
-        for value in (low, 0., high):
-            z = height(value)
-            self.line([(-1.26, z), (1.34, z)], theme.FAILURE if value == 0 else theme.MUTED)
-            self.text(f'{value:g}', -1.51, z-.008, .025, plot=True)
-        for index in range(6):
-            for side, item, color in zip((-.05, .05), (self.a, self.b), (theme.SEA, theme.ORANGE), strict=True):
-                margins = item['result']['clearances'] if item else ()
-                x = -1.10+index*.44+side
-                if index < len(margins):
-                    z = height(margins[index])
-                    self.line([(x, height(0.)), (x, z)], color, 8.)
-                    self.line([(x-.025, z), (x+.025, z)], color, 2.)
-                else:
-                    self.text('—', x-.02, -.266, .025, theme.MUTED, plot=True)
+    def change(self, direction):
+        self.select(self.selected+direction)
 
     def select(self, index):
         self.selected = index % 6
         for i, button in enumerate(self.buttons):
-            button['text_fg'] = theme.SEA if i == self.selected else theme.INK
-            button['frameColor'] = theme.PAPER if i == self.selected else (1, 1, 1, 1)
+            button['text_fg'] = ORANGE if i == self.selected else INK
+            self.edges[i].show() if i == self.selected else self.edges[i].hide()
         parts = []
         for name, item in zip('AB', (self.a, self.b), strict=True):
             margins = item['result']['clearances'] if item else ()
             value = margins[self.selected] if self.selected < len(margins) else None
             parts.append(name+' 未到达' if value is None else f'{name} {value:+.3f}m'+(' 超线' if value < 0 else ' 门内'))
-        self.detail.setText(f'第{self.selected+1}门 · {GATES[self.selected][0]:g}m · '+' / '.join(parts)+
-                            '\n点击门号或←→切门；空格切换数值表')
+        self.detail.setText(f'第{self.selected+1}门 · {GATES[self.selected][0]:g}m\n'+' / '.join(parts))
 
     def draw_braking(self):
+        left, wide = self.panel.left, self.panel.wide
         short = self.a is None or self.a['result']['short']
         low, high = brake_range(self.a, self.b, short)
-        self.legend.setText('A海蓝 / B橙色 · 实心完成 / 空心未通过 · '+('过门后最大前进（米）' if short else '车身中心位置（米），金±2 / 银±5 / 铜±10'))
+        self.legend.setText('实心为有效结束，空心为未通过 · '+('过门后最大前进距离 / m' if short else '车身中心位置 / m'))
 
         def x_at(value):
-            return -1.12+(value-low)/(high-low)*2.46
+            return left+140+(value-low)/(high-low)*(wide-220)
 
         ticks = (0., 33., 36., 42.) if short else (160., 165., 168., 170., 172., 175., 180.)
         for value in ticks:
-            self.line([(x_at(value), .01), (x_at(value), -.235)], theme.SUCCESS if value in (33., 170.) else theme.MUTED)
+            x = x_at(value)
+            self.line([(x, 469), (x, 635)], (.73, .76, .79, 1))
             if short or value in (160., 170., 180.):
-                label = ('门0' if value == 0 else f'{value:g}') if short else f'{value:g}'
-                self.text(label, x_at(value)-.025, .045, .025, plot=True)
-        for name, item, color, z in zip('AB', (self.a, self.b), (theme.SEA, theme.ORANGE), (-.065, -.185), strict=True):
-            self.text(name, -1.50, z-.01, .031, color, plot=True)
-            self.line([(-1.12, z), (1.34, z)], theme.MUTED)
+                self.text(('门0' if value == 0 else f'{value:g}'), x-16, 461, 17, GRAY)
+        for name, item, color, y in zip('AB', (self.a, self.b), (INK, ORANGE), (506, 605), strict=True):
+            self.text(name, left+48, y+10, 28, color)
+            self.line([(left+140, y), (left+wide-80, y)], (.66, .69, .73, 1), 3)
             point = brake_position(item, short)
             if point is None:
-                self.text('未建立', -.15, z+.015, .029, theme.MUTED, plot=True)
+                self.text('未建立', left+wide*.46, y-16, 20, GRAY)
             else:
                 x = x_at(point)
                 if item['result']['succeeded']:
-                    self.line([(x-.022, z), (x+.022, z)], color, 8.)
+                    self.fill(x-8, y-8, 16, 16, color, 8)
                 else:
-                    self.line([(x-.027, z-.018), (x+.027, z-.018), (x+.027, z+.018),
-                               (x-.027, z+.018), (x-.027, z-.018)], color, 2.)
-                self.text(f'{point:.3f}m', x-.07, z+.035, .027, color, plot=True)
+                    self.line([(x-8, y-8), (x+8, y-8), (x+8, y+8),
+                               (x-8, y+8), (x-8, y-8)], color, 2)
+                self.text(f'{point:.3f}m', min(left+wide-140, max(left+140, x-40)), y-19, 20, color)
         speeds = []
         for name, item in zip('AB', (self.a, self.b), strict=True):
             speed = item['result']['entry_kph'] if item else None
             speeds.append(name+' 未过门' if speed is None else f'{name}入门 {speed:.3f}km/h')
-        self.detail.setText(' / '.join(speeds)+'\n'+('短距标线：金33 / 银36 / 铜42m' if short else '目标170m；点为结束时位置，失败不算成绩')+' · 空格看数值表')
+        self.detail.setPos(*self.panel.point(left+36, 682))
+        self.detail.textNode.setWordwrap((wide-72)/18)
+        self.detail.setText(' / '.join(speeds)+'\n'+('短距标线：金33 / 银36 / 铜42m' if short else '目标170m；点为结束时位置，失败不算成绩'))
 
     def key(self, key):
         if not self.brakes and key in ('arrow_left', 'arrow_right'):

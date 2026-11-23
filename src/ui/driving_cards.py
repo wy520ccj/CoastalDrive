@@ -161,15 +161,15 @@ class DrivingCards:
 
         assists(self, app)
 
-    def routes(self, app, goals):
-        self.begin(app, '路线选择', '封闭短途 / 安全超车 / 三站巡回 · 使用当前驾驶车辆')
+    def routes(self, app):
+        self.begin(app, '路线选择', '固定原车 · 每关独立预算 · 用时与赛段油耗联合评价')
         rows = (
-            ('bend', '1.8公里 · 连贯通过四门', goals[0]),
-            ('hill', '1.4公里 · 起伏路面冲刺', goals[1]),
-            ('valley', '250m ≥60 km/h\n400–650m · 35–50 km/h', goals[2]),
+            ('bend', '1.8公里 · 连贯通过四门', '预算5000 · 联合目标（试行）'),
+            ('hill', '1.4公里 · 起伏路面冲刺', '预算5000 · 联合目标标定中'),
+            ('valley', '375m ≥80 km/h\n400–650m · 35–50 km/h', '预算5000 · 联合评价'),
             ('traffic', '2公里 · 安全超越2辆', '并行 ≥1m · 前后 ≥10m'),
-            ('hill', '2.4公里 · 安全超越3辆', '金110 / 银140 / 铜180秒'),
-            ('tour', '山谷 → 连弯 → 弯坡车流', '每站至少铜牌 · 断点续跑'))
+            ('hill', '2.4公里 · 安全超越3辆', '预算5000 · 固定终点结算'),
+            ('tour', '山谷 → 连弯 → 弯坡车流', '每站独立预算 · 联合评价'))
         for index, (kind, description, target) in enumerate(rows):
             x, z = (-1.08, 0., 1.08)[index % 3], .22 if index < 3 else -.31
             self.button(index, x, z, 1.00, .46)
@@ -186,13 +186,13 @@ class DrivingCards:
             self.button(index, x, .40, 1.48, .12, compact=True)
         for index, x, kind, description in (
                 (2, -.79, 'bend', '没有计时压力 · 按选择的道路与车流出发'),
-                (3, .79, 'traffic', '5公里无碰撞 · 可以倒车调整，复位结束')):
+                (3, .79, 'traffic', '车道内完成5公里 · 碰撞、越界或复位结束')):
             self.button(index, x, .075, 1.48, .40)
             self.route(x, .09, 1.20, kind)
             self.text(description, x-.66, -.055, .030, theme.MUTED)
         for index, x, title, description in (
-                (4, -1.08, '制动与停车', '定点精度 / 短距制动 / 分配配方'),
-                (5, 0., '转向与过门', '连续六门 / 高速验车 / 前胎配方'),
+                (4, -1.08, '制动与停车', '定点精度 / 短距制动 / 预算设置'),
+                (5, 0., '转向与过门', '连续六门 / 高速验车 / 预算设置'),
                 (6, 1.08, '路线与巡回', '山谷 / 连弯 / 弯坡车流 / 三站')):
             self.button(index, x, -.39, 1.00, .30)
             self.text(title, x-.43, -.41, .037, theme.SEA)
@@ -207,7 +207,8 @@ class DrivingCards:
         title = ('短距制动验车' if fast else '定点刹停') if braking else ('高速验车' if fast else '连续过门')
         if practice:
             title = '过门练习'
-        self.begin(app, title, '使用当前车辆 · 封闭场地无车流 · 改装后可以直接同题再试', dark=app.workshop_garage_return)
+        self.begin(app, title, '当前车辆 · 自由练习不授奖' if practice else
+                   '固定原车 · 独立预算设置 · 封闭场地无车流', dark=app.workshop_garage_return)
         rounded_panel(self.content, 'course-diagram', (-1.50, .48, -.30, .43), SURFACE if self.dark else theme.PAPER)
         rounded_panel(self.content, 'course-targets', (.56, 1.50, -.30, .43), SURFACE if self.dark else theme.PAPER)
         self.text('场地示意', -1.38, .32, .035, theme.MUTED)
@@ -271,7 +272,7 @@ class DrivingCards:
         self.select(app.panel_selection)
 
     def overtake(self, app, route):
-        self.begin(app, route.title, f'{route.distance/1000:g}公里 · 原生12车 · 使用当前驾驶车辆')
+        self.begin(app, route.title, f'{route.distance/1000:g}公里 · 固定原车 · 独立预算5000')
         rounded_panel(self.content, 'gap-diagram', (-1.50, .48, -.30, .43), theme.PAPER)
         rounded_panel(self.content, 'pass-targets', (.56, 1.50, -.30, .43), theme.PAPER)
         self.text('换道与净距示意', -1.38, .32, .035, theme.MUTED)
@@ -283,10 +284,10 @@ class DrivingCards:
         self.text('并行侧距 ≥1m', -1.35, -.09, .043)
         self.text('跟车 / 切回前后净距 ≥10m', -1.35, -.24, .039, theme.SEA)
         self.text(f'安全超越 {route.passes} 辆', .65, .32, .043)
-        for z, (medal, seconds), color in zip((.18, .02, -.14), route.targets,
-                                             (theme.ORANGE, theme.SEA, theme.INK), strict=True):
-            self.text(f'{medal} ≤{seconds:g}s', .66, z, .055, color)
-        self.text(('超车达标后，仍须安全跑到终点。' if route.finish_at_end else '达标即完成；先观察，再留距换道。')+
+        self.text('用时与赛段油耗', .66, .18, .045, theme.SEA)
+        self.text('联合目标标定中', .66, .02, .045)
+        self.text('当前可试跑', .66, -.14, .040, theme.MUTED)
+        self.text(f'超车达标后，仍须在{route.seconds:g}秒内安全到终点。'+
                   '\n从后方接近并整车领先10米才计数；贴身/碰撞/越界/逆向/复位结束。',
                   -1.50, -.42, .035, theme.MUTED)
         self.button(0, -.94, -.69, 1.12, .14, primary=True, compact=True)

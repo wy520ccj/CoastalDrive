@@ -6,6 +6,7 @@ import pytest
 
 from application import CoastalDrive
 from braking_lesson import BrakingScores
+from challenge_catalog import ROAD_CHALLENGES
 from driving_modes import DrivingMode
 from race import GameMode
 from session import Phase
@@ -36,14 +37,13 @@ def save(app, error, seconds):
 
 
 def test_registered_tab_enters_progress_without_moving_menu_and_returns_to_original_chapter(app):
-    app.main_menu.select(7)
-    key(app, "enter")
+    app.open_workshop_garage()
     assert not app.workshop_garage.root.isHidden()
     app.workshop_garage.activate(4)
     assert "0 / 3" in app.journey.progress.getText()
     key(app, "tab")
     assert app.journey.root.isHidden() and not app.driving_journey.root.isHidden()
-    assert "0 / 6" in app.driving_journey.progress.getText() and len(app.main_menu.buttons) == 8
+    assert "0 / 6" in app.driving_journey.progress.getText() and len(app.main_menu.buttons) == 9
     app.messenger.send("f2")
     assert not app.driving_mode_page
     selected = app.main_menu.selected
@@ -71,7 +71,11 @@ def test_card_opens_existing_rules_preserves_hardware_and_cancel_clears_return(a
     app.open_driving_journey()
     app.driving_journey.buttons[index]["command"]()
     app.buttons[0]["command"]()
-    assert app.session.mode == mode and app.session.vehicle_config == config
+    assert app.career_panel.page == 'challenge' and app.session.vehicle_config == config
+    app.challenge_action('challenge-start')
+    assert app.session.mode == mode and app.session.vehicle_config == ROAD_CHALLENGES[mode].base_config
+    app.challenge_action('challenge-back')
+    assert app.session.vehicle_config == config and not app.driving_journey.root.isHidden()
 
 
 def test_best_gaps_balanced_recommendation_and_visible_bounds(app):
@@ -120,16 +124,15 @@ def test_failed_course_returns_to_progress_without_new_award_and_old_entry_keeps
     app.open_driving_journey()
     app.driving_journey.activate(1)
     app.buttons[0]["command"]()
+    app.challenge_action('challenge-start')
     for _ in range(360):
         app.session.tick()
-    highway = app.session.highway.snapshot
-    failed = replace(highway.slalom, finished=True, reason="车辆复位", succeeded=False)
-    app.session.highway.snapshot = replace(highway, slalom=failed, finished=True, running=False, reason=failed.reason)
-    app.session.phase = Phase.RESULTS
+    app.session.reset_player()
+    assert app.session.phase == Phase.RESULTS
     app._shown_phase = None
     app.refresh_panel()
-    assert app.buttons[2]["text"] == "查看驾驶进阶"
-    app.buttons[2]["command"]()
+    assert app.career_panel.page == 'challenge-result' and app.budget_origin == 'journey'
+    app.challenge_action('challenge-back')
     assert app.session.phase == Phase.MENU and not app.driving_journey.root.isHidden()
     assert app.driving_journey.data["steps"] == 3 and not app.driving_journey_return
     app.driving_journey.hide()
@@ -144,7 +147,8 @@ def test_same_window_lab_return_keeps_explicit_progress_origin(app):
     app.driving_journey.activate(1)
     app.buttons[0]["command"]()
     window = app.win
-    app.open_vehicle_lab()
+    assert app.budget_origin == 'journey'
+    app.challenge_action('challenge-lab')
     for target in ("lab", "game"):
         if target == "game":
             app.lab.back_to_game()

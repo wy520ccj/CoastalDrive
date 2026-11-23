@@ -183,26 +183,32 @@ class BestTimes:
 
 
 class RaceTracker:
-    def __init__(self, mode=GameMode.FREE_DRIVE, scores=None, circuit=COASTAL_CIRCUIT):
-        self.scores = scores if scores is not None else BestTimes()
+    def __init__(self, mode=GameMode.FREE_DRIVE, scores=None, circuit=COASTAL_CIRCUIT, *, record_scores=True):
+        self.scores = scores if scores is not None or not record_scores else BestTimes()
         self.circuit = circuit
         self.snapshot = RaceSnapshot(mode=mode)
-        self.start(mode)
+        self.start(mode, record_scores=record_scores)
 
-    def start(self, mode=None, circuit=None, *, score_variant=""):
+    def start(self, mode=None, circuit=None, *, score_variant="", record_scores=True):
+        self.record_scores = record_scores
         if circuit is not None:
             self.circuit = circuit
         mode = self.snapshot.mode if mode is None else mode
         self.score_id = self.circuit.score_id + (":" + score_variant if score_variant else "")
         self.snapshot = RaceSnapshot(
-            mode=mode, best_lap=self.scores.get(mode, self.score_id),
-            reference_lap=self.scores.get(mode, self.score_id),
-            reference_splits=self.scores.get_splits(mode, self.score_id, len(self.circuit.checkpoints)+1),
-            score_notice=self.scores.notice,
+            mode=mode, best_lap=self.scores.get(mode, self.score_id) if record_scores else None,
+            reference_lap=self.scores.get(mode, self.score_id) if record_scores else None,
+            reference_splits=self.scores.get_splits(mode, self.score_id, len(self.circuit.checkpoints)+1) if record_scores else (),
+            score_notice=self.scores.notice if record_scores else '',
         )
         self._distance = self._furthest = 0.0
         self._previous_progress = 0.0
         self._previous_position = None
+
+    @property
+    def distance(self):
+        """沿环路展开的有符号进度；倒车不会增加规定圈长。"""
+        return self._distance
 
     def begin(self, progress=0.0, *, start_time=None):
         point = self.circuit.point_at(progress)
@@ -282,7 +288,7 @@ class RaceTracker:
             splits += (lap_time,)
             best = self.snapshot.best_lap
             new_best = False
-            if not self.snapshot.invalidated:
+            if not self.snapshot.invalidated and self.record_scores:
                 best, saved = self.scores.record(self.snapshot.mode, lap_time, self.score_id, splits=splits)
                 new_best = saved and best == lap_time and (self.snapshot.reference_lap is None
                                                 or lap_time < self.snapshot.reference_lap)
@@ -293,7 +299,7 @@ class RaceTracker:
                 elapsed=lap_time,
                 last_lap=lap_time,
                 best_lap=best,
-                save_error=self.scores.error,
+                save_error=self.scores.error if self.record_scores else '',
                 splits=splits,
                 new_best=new_best,
             )

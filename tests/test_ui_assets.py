@@ -21,9 +21,12 @@ def test_menu_navigation_and_overlay_lifecycle(tmp_path, monkeypatch):
         assert cues == ['confirm']
         app.main_menu.resize(app.getAspectRatio())
         frozen = app.session.current
-        # 默认聚焦主线赛事；先向下到车库，再到自由驾驶，按住只移动一次。
+        # 从继续赛季依次到赛事板、车库、自由驾驶，按住只移动一次。
         app.key_down("arrow_down")
         app.key_down("arrow_down")  # 按住只移动一次，沿用去重规则。
+        assert app.main_menu.selected == 2
+        app.key_up("arrow_down")
+        app.key_down("arrow_down")
         assert app.main_menu.selected == 3
         assert app.session.current == frozen
         app.key_up("arrow_down")
@@ -66,6 +69,8 @@ def test_menu_navigation_and_overlay_lifecycle(tmp_path, monkeypatch):
         app.back_from_audio_settings()
         app.main_menu.select(0)
         app.main_menu.activate()
+        assert app.career_panel.page == 'challenge' and app.budget_mode == GameMode.TIME_TRIAL
+        app.challenge_action('challenge-start')
         assert app.session.mode == GameMode.TIME_TRIAL
     finally:
         app.close_game()

@@ -2,9 +2,8 @@
 
 from panda3d.core import BitMask32, CardMaker, TextNode
 
-from race import GameMode
 from slalom_markers import MARKER_MASK
-from sprint_routes import SPRINT_ROUTES
+from sprint_routes import sprint_result_route
 from sprint_run import ROAD_HALF_WIDTH
 
 
@@ -14,6 +13,7 @@ class SprintMarkers:
         self.root.hide(BitMask32.allOn())
         self.gates = []
         self.labels = []
+        self.label_nodes = []
         self.zone_root = self.root.attachNewNode('speed-zone-band')
         self.zone_key = None
         sun.node().setCameraMask(sun.node().getCameraMask() & ~MARKER_MASK)
@@ -43,6 +43,7 @@ class SprintMarkers:
             node.setPos(0, 0, 2.5)
             node.setScale(.65)
             node.setBillboardPointEye()
+            self.label_nodes.append(node)
             self.gates.append(gate)
         self.font = font
 
@@ -52,7 +53,7 @@ class SprintMarkers:
             self.zone_root.getChildren().detach()
             self.zone_key = key
             zone = route.speed_zone
-            names = ('测速 ≥60km/h', '限速带入口 35–50', '限速带出口', '终点') if zone is not None else (
+            names = (f'测速 ≥{route.entry_kph:g}km/h', '限速带入口 35–50', '限速带出口', '终点') if zone is not None else (
                 '1 · 道路门', '2 · 道路门', '3 · 道路门', '终点')
             for label, name in zip(self.labels, names, strict=True):
                 label.setText(name)
@@ -69,8 +70,12 @@ class SprintMarkers:
                         node.setP(-90)
                         node.setColor(.18, .69, .78, 1.)
                         node.setDepthOffset(1)
-                for distance, text in ((zone.start-90., '前方控速带 35–50 km/h'),
-                                       (zone.start, '保持 35–50 km/h'), (zone.end, '控速结束 · 重新加速')):
+                approach = (f'{route.gates[0]:g}米测速 ≥{route.entry_kph:g}km/h' if route.version
+                            else '前方控速带 35–50 km/h')
+                signs = ((zone.start-90., approach),)
+                if not route.version:
+                    signs += ((zone.start, '保持 35–50 km/h'), (zone.end, '控速结束 · 重新加速'))
+                for distance, text in signs:
                     point = road.sample_lateral(result.start_progress+distance, 0.)
                     label = TextNode('speed-zone-sign')
                     label.setText(text)
@@ -87,7 +92,7 @@ class SprintMarkers:
         if result is None:
             self.root.hide(MARKER_MASK)
             return
-        route = SPRINT_ROUTES[GameMode(result.route_id)]
+        route = sprint_result_route(result)
         self.show_zone(result, route, road)
         self.root.show(MARKER_MASK)
         for index, (gate, distance) in enumerate(zip(self.gates, route.gates, strict=True)):
@@ -96,3 +101,9 @@ class SprintMarkers:
             gate.setHpr(point.heading, point.grade, 0.)
             gate.setColor(*((.23, .64, .43, 1) if index < result.gates else
                            (1., .62, .16, 1) if index == result.gates else (.22, .65, .76, 1)))
+            # 山谷的测速门紧邻限速带，依次显示牌面，避免两个提示叠在视线正中。
+            label = self.label_nodes[index]
+            if route.version and index != result.gates:
+                label.hide()
+            else:
+                label.show()

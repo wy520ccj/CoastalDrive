@@ -7,6 +7,7 @@ from panda3d.core import TextNode, TextureStage
 from career import EVENTS
 from career_garage import garage_cars
 from ui import theme
+from ui.career_events import BOARD_EVENTS, CLUB_EVENTS
 from ui.lab_widgets import rounded_panel
 
 PAPER = (.96, .965, .95, 1)
@@ -40,18 +41,25 @@ class CareerPanel:
         self.accents = set()
         self.flat = set()
         self.photos = {event.id: loader.loadTexture(theme.asset_filename('career/'+event.id+'.png')) for event in EVENTS}
+        self.photos.update({key: loader.loadTexture(theme.asset_filename('career/'+event.photo))
+                            for key, event in CLUB_EVENTS.items()})
         self.page, self.selected, self.primary, self.back = '', 0, -1, 'board'
         self.event_id = None
-        self.setup_group = 'tires'
-        self.setup_vehicle = None
-        self.setup_draft, self.setup_entries = {}, {}
+        self.board_event, self.board_preview = None, None
+        self.challenge_widgets, self.challenge_entries, self.challenge_sliders = [], {}, {}
+        self.challenge_readouts, self.challenge_data = {}, None
+        self.challenge_updating = False
         self.root.hide()
 
     def clear(self, page, progress):
-        self.capture_setup()
-        for entry in self.setup_entries.values():
-            entry.destroy()
-        self.setup_entries.clear()
+        self.challenge_updating = True
+        self.board_preview = None
+        for widget in self.challenge_widgets:
+            widget.destroy()
+        self.challenge_widgets.clear()
+        self.challenge_entries.clear()
+        self.challenge_sliders.clear()
+        self.challenge_readouts.clear()
         self.vehicle_view.hide()
         for widget in (*self.labels, *self.buttons, *self.frames):
             widget.destroy()
@@ -106,12 +114,12 @@ class CareerPanel:
         frame.setTexOffset(TextureStage.getDefault(), 0., (1.-scale_v)*.5)
         self.frames.append(frame)
 
-    def show_board(self, progress):
+    def show_board(self, progress, *, chapter=None, event=None):
         from ui.career_layout import board
 
         self.clear('board', progress)
         self.back = 'exit'
-        board(self, progress)
+        board(self, progress, chapter=chapter, event=event)
 
     def show_brief(self, progress, event):
         from ui.career_layout import brief
@@ -159,11 +167,91 @@ class CareerPanel:
         if self.page != 'garage':
             for i, edge in self.card_edges.items():
                 edge.setColor((1, .31, .12, 1) if i == self.selected else (1, 1, 1, 0))
+        if self.page == 'board' and self.board_preview is not None:
+            action, event_id = self.buttons[self.selected]['extraArgs']
+            if action == 'brief' and event_id != self.board_event.id:
+                self.board_preview(BOARD_EVENTS[event_id])
+
+    def show_challenge(self, progress, spec, draft, tab=0, notice=''):
+        from ui.challenge_layout import build_page
+
+        self.clear('challenge', progress)
+        self.back = 'challenge-back'
+        self.challenge_data = (spec, draft, tab, notice)
+        build_page(self, spec, draft, tab, notice)
+
+    def update_challenge(self, draft, notice=''):
+        from ui.challenge_layout import update_build
+
+        spec, _, tab, _ = self.challenge_data
+        self.challenge_data = spec, draft, tab, notice
+        update_build(self, spec, draft, notice)
+
+    def show_challenge_result(self, progress, spec, status):
+        from ui.challenge_layout import result_page
+
+        self.clear('challenge-result', progress)
+        self.back = 'challenge-back'
+        self.challenge_result_data = spec, status
+        result_page(self, spec, status)
+
+    def show_sector_chase(self, progress, mode, compatible):
+        from ui.sector_chase import selection
+
+        self.clear('sector-chase', progress)
+        self.back = 'board'
+        self.chase_page = mode, compatible
+        selection(self, progress, mode, compatible)
+
+    def show_sector_chase_result(self, progress, mode, status):
+        from ui.sector_chase import result
+
+        self.clear('sector-chase-result', progress)
+        self.back = 'challenge-back'
+        self.chase_page = mode, status
+        result(self, progress, mode, status)
+
+    def show_season_cup(self, progress, store, *, picking=False, recap=False, preview=None):
+        from ui.season_cup import draw
+
+        self.clear('season-cup', progress)
+        self.back = 'cup-menu' if picking and store is not None else 'board'
+        self.cup_page = {'store': store, 'picking': picking, 'recap': recap, 'preview': preview}
+        draw(self, progress, store, picking=picking, recap=recap, preview=preview)
+
+    def show_challenge_pause(self, progress, spec, draft, status):
+        from ui.challenge_layout import pause_page
+
+        self.clear('challenge-pause', progress)
+        self.back = 'challenge-resume'
+        self.challenge_pause_data = spec, draft, status
+        pause_page(self, spec, draft, status)
+
+    def show_reference_result(self, spec, draft, data, notice=''):
+        from ui.challenge_layout import reference_result_page
+
+        self.clear('reference-result', None)
+        self.back = 'challenge-adjust'
+        self.reference_result_data = spec, draft, data, notice
+        reference_result_page(self, spec, draft, data, notice)
 
     def key(self, key):
-        if any(entry['focus'] for entry in self.setup_entries.values()):
+        entries = tuple(self.challenge_entries.values())
+        if any(entry['focus'] for entry in entries):
+            if key == 'control-a':
+                # DirectEntry不支持文字选择；数值框用此快捷键开始整值替换，Esc仍可还原。
+                next(entry for entry in entries if entry['focus']).enterText('')
+                return
+            if self.page == 'challenge' and key in ('arrow_up', 'arrow_down'):
+                name = next(name for name, entry in self.challenge_entries.items() if entry['focus'])
+                self.action('challenge-step', (name, 1 if key == 'arrow_up' else -1))
+                return
+            if key == 'enter' and not self.action('challenge-commit'):
+                return
+            if key == 'escape':
+                self.update_challenge(self.challenge_data[1])
             if key in ('escape', 'enter'):
-                for entry in self.setup_entries.values():
+                for entry in entries:
                     entry['focus'] = 0
             return
         directions = {'arrow_left': (-1, 0), 'a': (-1, 0), 'arrow_right': (1, 0), 'd': (1, 0),
@@ -193,21 +281,14 @@ class CareerPanel:
             self.action(self.back, None)
 
     def hide(self):
-        for entry in self.setup_entries.values():
+        self.challenge_updating = True
+        for entry in self.challenge_entries.values():
             entry['focus'] = 0
         self.root.hide()
         self.vehicle_view.hide()
+        self.challenge_updating = False
 
-    def capture_setup(self):
-        for key, entry in self.setup_entries.items():
-            self.setup_draft[key] = entry.get()
 
-    def setup_changes(self):
-        from garage_setup import values
-
-        self.capture_setup()
-        original = values(self.setup_vehicle.config)
-        return {key: raw for key, raw in self.setup_draft.items() if raw != f'{original[key]:.8g}'}
 
     def resize(self, aspect):
         if self.root.isHidden():
@@ -217,21 +298,41 @@ class CareerPanel:
         elif self.page != 'garage' and self.layout_aspect != aspect:
             selected = self.buttons[self.selected]['extraArgs']
             if self.page == 'board':
-                self.show_board(self.page_progress)
+                self.show_board(self.page_progress, event=self.board_event)
             elif self.page == 'brief':
-                self.show_brief(self.page_progress, next(event for event in EVENTS if event.id == self.event_id))
+                self.show_brief(self.page_progress, BOARD_EVENTS[self.event_id])
             elif self.page == 'result':
                 self.show_result(self.page_progress, *self.result_data)
             elif self.page == 'pause':
                 self.show_pause(self.page_progress, self.pause_event)
+            elif self.page == 'challenge':
+                pending = {key: entry.get() for key, entry in self.challenge_entries.items()}
+                focused = next((key for key, entry in self.challenge_entries.items() if entry['focus']), None)
+                self.show_challenge(self.page_progress, *self.challenge_data)
+                for key, raw in pending.items():
+                    self.challenge_entries[key].enterText(raw)
+                if focused is not None:
+                    self.challenge_entries[focused]['focus'] = 1
+            elif self.page == 'challenge-result':
+                self.show_challenge_result(self.page_progress, *self.challenge_result_data)
+            elif self.page == 'sector-chase':
+                self.show_sector_chase(self.page_progress, *self.chase_page)
+            elif self.page == 'sector-chase-result':
+                self.show_sector_chase_result(self.page_progress, *self.chase_page)
+            elif self.page == 'season-cup':
+                self.show_season_cup(self.page_progress, **self.cup_page)
+            elif self.page == 'challenge-pause':
+                self.show_challenge_pause(self.page_progress, *self.challenge_pause_data)
+            elif self.page == 'reference-result':
+                self.show_reference_result(*self.reference_result_data)
             for index, button in enumerate(self.buttons):
                 if button['extraArgs'] == selected:
                     self.select(index)
                     break
 
     def destroy(self):
-        for entry in self.setup_entries.values():
-            entry.destroy()
+        for widget in self.challenge_widgets:
+            widget.destroy()
         for widget in (*self.labels, *self.buttons, *self.frames):
             widget.destroy()
         self.root.destroy()

@@ -40,14 +40,12 @@ def open_pair(app):
     source = Path('docs/evidence/BRAKE-ROAD-AB-01/normal/player-braking-ab.json')
     app.player_brake_ab.path.write_bytes(source.read_bytes())
     app.player_brake_ab = PlayerRoadAB(app.player_brake_ab.path, brakes=True)
-    app.open_brake_tuning()
-    app.tire_tuning.activate(7)
+    app.open_player_road_ab('brakes')
 
 
 def test_missing_b_cannot_leave_game_or_change_car(app):
     app.choose_braking_lesson()
-    app.open_brake_tuning()
-    app.tire_tuning.activate(7)
+    app.open_player_road_ab('brakes')
     before = app.session.current
     assert app.player_road_panel.retest_button['state'] == 'disabled'
     app.open_road_retest()
@@ -98,7 +96,7 @@ def test_retest_preserves_old_a_b_drafts_and_returns_original_pair(app):
     retest.back()
     finish(app, 'game')
     assert app.session.phase == Phase.MENU and app.braking_mode == GameMode.SHORT_BRAKING
-    assert not app.player_road_panel.root.isHidden() and app.tire_tuning.topic == 'brakes'
+    assert not app.player_road_panel.root.isHidden() and app.road_ab_topic == 'brakes'
     assert app.player_brake_ab.path.read_bytes() == old_pair and app.workspace_path.read_bytes() == old_car
     assert app.lab_workspace.record.snapshots == old.snapshots and app.lab_workspace.retest_state is not None
 

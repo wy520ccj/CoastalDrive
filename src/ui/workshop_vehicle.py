@@ -39,6 +39,8 @@ class WorkshopVehicle:
         self.identity = None
         self.framing_identity = None
         self.framing_vertices = None
+        self.framing_cache = {}
+        self.highlight_topic = None
         self.garage_environment = None
 
     def show(self, parent, box, vehicle, *, studio=False, skin_index=None):
@@ -116,6 +118,8 @@ class WorkshopVehicle:
             self.update_task.setName('workshop-pbr-update')
         identity = (vehicle.design_id, vehicle.config, skin_index)
         if identity != self.identity:
+            self.framing_cache.clear()
+            self.highlight_topic = None
             for child in self.car_root.getChildren():
                 child.removeNode()
             definition = vehicle_for_design(vehicle.design_id, 'sports')
@@ -196,11 +200,18 @@ class WorkshopVehicle:
 
     def orbit(self, step):
         self.studio_angle = (self.studio_angle+step) % 360
+        lens = self.camera.node().getLens()
+        lens.setFilmOffset(0, 0)
+        projection = tuple(value for row in lens.getProjectionMat() for value in row)
+        key = self.studio_angle, projection, self.highlight_topic
+        if key in self.framing_cache:
+            transform, offset = self.framing_cache[key]
+            self.camera.setTransform(self.scene, transform)
+            lens.setFilmOffset(*offset)
+            return
         angle = math.radians(self.studio_angle)
         low, high = self.car_root.getTightBounds(self.scene)
         center = (low+high)/2
-        lens = self.camera.node().getLens()
-        lens.setFilmOffset(0, 0)
         near, far = 2., 30.
         # 依据真实网格和视口留边；车顶、车轮完整放在展示区，不向物理配置反写。
         for _ in range(12):
@@ -225,8 +236,11 @@ class WorkshopVehicle:
         # 镜头偏移居中实际投影，避免近端车头使单侧留白迫使整车缩小。
         size = lens.getFilmSize()
         lens.setFilmOffset((low_x+high_x)*size.x/4, ((low_y+high_y)/2+.08)*size.y/2)
+        # 同车、同镜头和同零件标记复用精确结果；不重新投影整车网格。
+        self.framing_cache[key] = self.camera.getTransform(self.scene), tuple(lens.getFilmOffset())
 
     def highlight(self, topic):
+        self.highlight_topic = topic
         for index, wheel in enumerate(self.wheels):
             wheel.setColorScale(1, .72, .30, 1) if topic == 'tires' and index < 2 else wheel.clearColorScale()
         old = self.car_root.find('part-highlight')

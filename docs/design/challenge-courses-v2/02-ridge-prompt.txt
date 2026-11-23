@@ -1,0 +1,20 @@
+原生image_gen；以02-ridge-geometry-reference.png为数值参考，制作独立山脊路线设计板。
+专业赛车工程资料风格，暖灰纸底/深蓝/灰色道路/克制蓝赭标注，不加卡片、光效、虚构成绩。
+保持准确路线轮廓和350/700/1050/1400米门位；1400米/5000预算/13.5米路宽。
+六工况：0—380加速爬升、380—530坡顶转向、530—650连续缓起伏、650—940下坡制动、940—1140左右组合弯、1140—1400上坡出口。
+高程：16米起点，380米30米，470米35米，530—650米六段20米±0.3米，即三次上升/下降，710米前35米，860米20米，1040米18米，1140米20米，1400米24米。
+首图局部起伏放大示意多画波峰，须原生图像编辑只修为三个波峰、六段，严格保留其它部分。
+
+完整首次生成提示：
+Use case: infographic-diagram. Create a polished Chinese game course DESIGN BOARD for CoastalDrive's budget mountain challenge. The attached image is a numerical geometry reference, NOT the desired finished graphic. Recompose its typography and hierarchy beautifully, but preserve its route topology EXACTLY and preserve the lower elevation curve accurately. Landscape professional motorsport engineering document, warm ivory paper #eeede7, restrained navy #101727 headings, slate grey road with fine white center line, muted blue driving sections and burnt orange braking sections. Flat, precise editorial design, not futuristic sci-fi. No card grid, no fake chrome, no gradients, no glow, no arbitrary icons, no fantasy mountains or cars, no promotional slogans. An airy yet purposeful two-tier layout: upper approximately two thirds large accurate course plan and six compact numbered segment annotations, lower third full-width elevation strip. The plan is rotated for the page as in the reference; don't add curves or change directions. Start is at the far LEFT, a straight leads into a shallow downward turn; then a long rising diagonal on the PAGE up-right to the big smooth crest in the plan silhouette; then it turns down-right into a short shallow S, then the final long diagonal to the bottom-right endpoint. This describes the PLAN VIEW only; don't confuse it with elevation. Need accurate start/finish direction arrow on road and original gates at 350,700,1050,1400 metres. NO unprovided performance estimates, lap times, medals, price comparisons or claimed upgrade benefit.
+Exact title: 山脊冲刺
+Small subtitle: 路线设计
+Metadata: 1.4 公里  /  预算 5000
+Six labels, exact ranges:
+01 加速爬升 / 0–380 m
+02 坡顶转向 / 380–530 m
+03 连续缓起伏 / 530–650 m
+04 下坡制动 / 650–940 m
+05 左右组合弯 / 940–1140 m
+06 上坡出口 / 1140–1400 m
+Elevation panel title 高程. Real elevation starts16m, rises to30m by380m then35m by470m, near-level to530m, six20m smooth rises/falls of0.3m between530 and650, level to710, downhill to20m at860, level to940,18m at1040,20m at1140,24m at1400. A tiny precise enlarged side detail of the 0.3m gentle undulations is welcome if it fits without crowding. Clearly label it as 纵向示意 so it cannot be mistaken for an extra road curve. Footer: 13.5米路面 · 19米爬升 · 0.3米缓起伏. Keep all text crisp and correct, no duplicated labels. Use real calm product design, not an AI poster. This is a design specification, NOT a game screenshot.

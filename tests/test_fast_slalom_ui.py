@@ -3,6 +3,7 @@
 import pytest
 
 from application import CoastalDrive
+from challenge_catalog import ROAD_CHALLENGES
 from race import GameMode
 from slalom_lesson import SLALOM_MODES
 
@@ -45,6 +46,9 @@ def test_fast_scene_and_same_window_lab_return_preserve_course_and_mode(app):
     app.choose_slalom_lesson(GameMode.FAST_SLALOM)
     config, window = app.session.vehicle_config, app.win
     app.buttons[0]['command']()
+    assert app.career_panel.page == 'challenge' and app.session.vehicle_config == config
+    app.challenge_action('challenge-start')
+    candidate = ROAD_CHALLENGES[GameMode.FAST_SLALOM].configuration(app.budget_drafts[GameMode.FAST_SLALOM])
     for _ in range(360):
         app.session.tick()
     result = app.session.highway.snapshot.slalom
@@ -57,5 +61,7 @@ def test_fast_scene_and_same_window_lab_return_preserve_course_and_mode(app):
     app.lab.back_to_game()
     finish(app, 'game')
     assert app.win is window and app.session.mode == GameMode.FAST_SLALOM
-    assert app.session.vehicle_config == config and app.lab_workspace.fields['cg'] == '.47'
+    assert app.session.vehicle_config == candidate and app.lab_workspace.fields['cg'] == '.47'
     assert app.session.mode in SLALOM_MODES
+    app.challenge_action('challenge-back')
+    assert app.session.vehicle_config == config

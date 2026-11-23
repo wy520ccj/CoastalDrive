@@ -1,13 +1,13 @@
-"""结算夹具只检查导航/保存边界，真实课题驾驶由专项工具记录。"""
+"""预算结算与重试回归；合成终态只检验导航/保存，不是驾驶成绩。"""
 
 from dataclasses import replace
 
 import pytest
 
 from application import CoastalDrive
+from challenge_build import BuildDraft
 from race import GameMode
 from session import Phase
-from tire_tuning import previous_path
 from vehicle_workspace import WorkspaceVehicle
 from workshop_cornering import build_config
 
@@ -27,17 +27,23 @@ def app(tmp_path, monkeypatch):
 
 def result_fixture(app, mode=GameMode.FAST_SLALOM, succeeded=False):
     app.slalom_mode = mode
-    app.start_slalom_lesson()
-    for _ in range(360):
-        app.session.tick()
+    if (app.session.mode != mode or app.session.phase not in (Phase.COUNTDOWN, Phase.DRIVING)
+            or app.session.challenge_spec is None):
+        app.start_slalom_lesson()
+        app.challenge_action('challenge-start')
+    while app.session.phase == Phase.COUNTDOWN:
+        app.session.countdown_step(360)
     highway = app.session.highway.snapshot
     stage = replace(highway.slalom, gates=6 if succeeded else 2, entry_kph=75., entry_time=5.,
         gate_times=(2., 4., 6., 8., 10., 11.4) if succeeded else (2., 4., 6.),
         clearances=(.5,)*6 if succeeded else (.5, .5, -.3), errors=(.2,)*6 if succeeded else (.2, .2, 1.2),
         run_seconds=11.4 if succeeded else 6., finished=True, succeeded=succeeded,
         medal='金' if succeeded else '', reason='金牌 · 连续通过全部6道门' if succeeded else '错过第3门；车身超出门线0.30m')
+    spec, build = app.session.challenge_spec, app.session.challenge_build
+    result = spec.evaluate(build, 20., .05, valid=succeeded, reason=stage.reason, metric_value=stage.run_seconds)
+    status = replace(highway.engineering, result=result, seconds=20., litres=.05, consumption=result.consumption)
     app.session.highway.snapshot = replace(highway, finished=True, running=False, slalom=stage,
-        succeeded=succeeded, reason=stage.reason)
+        elapsed=20., succeeded=succeeded, reason=stage.reason, engineering=status)
     app.session.phase = Phase.RESULTS
     app._shown_phase = None
     app.refresh_panel()
@@ -45,94 +51,66 @@ def result_fixture(app, mode=GameMode.FAST_SLALOM, succeeded=False):
 
 
 @pytest.mark.parametrize('succeeded', [False, True])
-def test_cancel_and_same_recipe_preserve_exact_result_car_and_snapshot(app, succeeded):
-    result = result_fixture(app, succeeded=succeeded)
-    before, car = app.session.current, app.workspace_vehicle
-    assert app.panel_option_count == 4 and app.buttons[3]['text'] == '改装前胎再试'
-    app.buttons[3]['command']()
-    assert not app.tire_tuning.root.isHidden() and app.panel.isHidden()
-    assert all(column.isHidden() for column in app.result_sectors)
-    app.key_down('enter')
-    app.key_up('enter')
-    assert app.tire_tuning.recipe == 0
-    app.tire_tuning.activate(4)
-    assert app.session.phase == Phase.RESULTS and app.session.highway.snapshot is result
-    app.key_down('escape')
-    app.key_up('escape')
-    assert app.tire_tuning.root.isHidden() and app.main_menu.root.isHidden()
-    assert app.panel_selection == 3 and app.session.highway.snapshot is result
-    assert app.session.current == before and app.workspace_vehicle == car and not app.workspace_path.exists()
+def test_adjustment_returns_to_same_draft_and_never_overwrites_owned_vehicle(app, succeeded):
+    result_fixture(app, succeeded=succeeded)
+    before = app.workspace_vehicle
+    app.challenge_action('challenge-adjust')
+    assert app.career_panel.page == 'challenge' and app.session.phase == Phase.MENU
+    assert app.budget_mode == GameMode.FAST_SLALOM
+    app.challenge_action('challenge-value', ('front_tire', '65'))
+    assert app.workspace_vehicle == before and not app.workspace_path.exists()
+    app.challenge_action('challenge-back')
+    assert app.slalom_menu and app.slalom_mode == GameMode.FAST_SLALOM
+    assert app.workspace_vehicle == before
 
 
 @pytest.mark.parametrize('mode', [GameMode.SLALOM_LESSON, GameMode.FAST_SLALOM])
-def test_successful_install_prepares_same_course_with_new_hardware_without_old_result(app, mode):
+def test_changed_budget_hardware_only_applies_to_explicit_same_course_retry(app, mode):
     result_fixture(app, mode)
-    app.driving_journey_return = mode == GameMode.SLALOM_LESSON
-    input_mode = app.session.driving_mode
-    app.open_tire_tuning()
-    app.tire_tuning.activate(3)
-    app.tire_tuning.activate(4)
-    assert app.session.phase == Phase.MENU and app.slalom_mode == mode and app.slalom_menu
-    assert app.session.vehicle_config.lateral_stiffness == 70000.
-    assert app.session.driving_mode == input_mode
-    assert app.driving_journey_return == (mode == GameMode.SLALOM_LESSON)
-    assert app.session.highway.snapshot.slalom is None
-    assert WorkspaceVehicle.load(app.workspace_path) == app.workspace_vehicle
-    app.back_from_tire_tuning()
-    app.buttons[0]['command']()
-    assert app.session.mode == mode and app.session.simulation.config.lateral_stiffness == 70000.
+    original = app.workspace_vehicle
+    app.challenge_action('challenge-adjust')
+    app.challenge_action('challenge-value', ('front_tire', '65'))
+    app.challenge_action('challenge-start')
+    assert app.session.phase == Phase.COUNTDOWN and app.session.mode == mode
+    assert app.session.vehicle_config.lateral_stiffness == 65000.
+    assert app.workspace_vehicle == original and not app.workspace_path.exists()
+    app.back_to_menu()
+    assert app.session.base_vehicle_config == original.config
 
 
-def test_failed_write_keeps_result_and_preview(app, monkeypatch):
-    result = result_fixture(app)
-    before = app.session.current
-    car = app.workspace_vehicle
-    app.open_tire_tuning()
-    app.tire_tuning.activate(3)
-
-    def fail(self, path=None):
-        raise OSError('测试只读')
-
-    monkeypatch.setattr(WorkspaceVehicle, 'save', fail)
-    app.tire_tuning.activate(4)
-    assert app.session.phase == Phase.RESULTS and app.session.highway.snapshot is result
-    assert app.workspace_vehicle == car and app.session.current == before
-    assert app.tire_tuning.recipe == 3 and '未安装' in app.tire_tuning.notice.getText()
-
-
-@pytest.mark.parametrize('missing', [False, True])
-def test_restore_saved_original_from_result_and_failed_missing_backup(app, missing):
-    app.open_tire_tuning()
-    app.tire_tuning.activate(3)
-    app.tire_tuning.activate(4)
-    tuned = app.workspace_vehicle
-    app.back_from_tire_tuning()
-    result = result_fixture(app)
-    old_bytes = app.workspace_path.read_bytes()
-    if missing:
-        previous_path(tuned, app.workspace_path).unlink()
-    app.open_tire_tuning()
-    app.tire_tuning.activate(5)
-    if missing:
-        assert app.session.phase == Phase.RESULTS and app.session.highway.snapshot is result
-        assert app.workspace_vehicle == tuned and app.workspace_path.read_bytes() == old_bytes
-        assert '未恢复' in app.tire_tuning.notice.getText()
-        return
-    assert app.session.phase == Phase.MENU and app.workspace_vehicle.config.lateral_stiffness == 35000.
-    assert tuned != app.workspace_vehicle and app.slalom_mode == GameMode.FAST_SLALOM
-
-
-def test_active_driving_cannot_open_tuning(app):
-    app.start_slalom_lesson()
-    app.open_tire_tuning()
-    assert app.tire_tuning.root.isHidden()
-
-
-def test_explicit_primary_retry_with_same_recipe_starts_new_same_course(app):
+def test_plan_write_failure_keeps_candidate_and_surfaces_error_without_touching_vehicle(app, tmp_path):
     result_fixture(app)
-    before = app.workspace_vehicle
+    app.challenge_action('challenge-adjust')
+    app.challenge_action('challenge-value', ('front_tire', '65'))
+    blocked = tmp_path/'blocked'
+    blocked.write_text('原文件', encoding='utf-8')
+    app.budget_plans.path = blocked/'plans.json'
+    app.challenge_action('challenge-save')
+    assert app.budget_drafts[GameMode.FAST_SLALOM].front_tire == 1.3
+    assert '未保存' in app.career_panel.challenge_readouts['notice'].getText()
+    assert blocked.read_text(encoding='utf-8') == '原文件'
+    assert not app.workspace_path.exists()
+
+
+def test_restore_original_is_free_and_retry_with_same_build_starts_new_attempt(app):
+    result_fixture(app)
+    original = app.workspace_vehicle
+    app.challenge_action('challenge-adjust')
+    app.challenge_action('challenge-value', ('front_tire', '65'))
+    app.challenge_action('challenge-reset')
+    assert app.budget_drafts[GameMode.FAST_SLALOM] == BuildDraft()
+    app.challenge_action('challenge-start')
+    assert app.session.phase == Phase.COUNTDOWN and app.workspace_vehicle == original
+    assert not app.workspace_path.exists()
+
+
+def test_legacy_tuning_and_ab_actions_cannot_interrupt_live_driving(app):
+    app.start_slalom_lesson()
+    app.challenge_action('challenge-start')
+    before, simulation = app.session.current, app.session.simulation
     app.open_tire_tuning()
-    app.tire_tuning.activate(0)
-    app.tire_tuning.activate(8)
-    assert app.session.phase == Phase.COUNTDOWN and app.session.mode == GameMode.FAST_SLALOM
-    assert app.workspace_vehicle == before and app.tire_tuning.root.isHidden()
+    app.open_brake_tuning()
+    app.open_player_road_ab('tires')
+    assert app.session.phase == Phase.COUNTDOWN and app.session.simulation is simulation
+    assert app.session.current == before and app.career_panel.root.isHidden()
+    assert app.player_road_panel.root.isHidden()

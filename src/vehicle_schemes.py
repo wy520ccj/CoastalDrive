@@ -34,11 +34,18 @@ def scheme_folder(root, identity):
 
 
 def checked_challenge(receipt, baseline, record):
+    from challenge_build import BuildDraft
+    from workshop_budget import REFERENCE_BY_ID, REFERENCE_CHALLENGES
+    from workshop_budget import evaluate as evaluate_budget
+
     if receipt is None:
         return None
     if baseline is None:
         raise ValueError("工坊方案缺少原始A基线")
-    if receipt["challenge_id"] == cornering.CHALLENGE_ID:
+    if receipt['challenge_id'] in REFERENCE_BY_ID:
+        topic = REFERENCE_CHALLENGES.index(REFERENCE_BY_ID[receipt['challenge_id']])
+        actual = evaluate_budget(topic, baseline, record, BuildDraft(**receipt['build']))
+    elif receipt["challenge_id"] == cornering.CHALLENGE_ID:
         actual = cornering.evaluate(baseline, record, receipt["tire_index"],
                                     receipt["balanced_bar"], receipt["lower_cg"])
     elif receipt["challenge_id"] == workshop.CHALLENGE_ID:
@@ -144,6 +151,8 @@ def sync_road_progress(root, vehicle):
 
 def compare_schemes(left, right):
     """原始试验可比条件与硬件差异分开；不跨工况/控制器/版本生成收益。"""
+    from workshop_budget import REFERENCE_BY_ID, REFERENCE_CHALLENGES
+
     _, a, ca = left.records()
     _, b, cb = right.records()
     mismatches = []
@@ -169,14 +178,18 @@ def compare_schemes(left, right):
                 if left["key"] == right["key"] and left["value"] is not None and right["value"] is not None][:5]
         return {"comparable": not mismatches, "mismatches": mismatches, "rows": rows,
                 "note": "工程指标按原有适用窗计算；缺少有效窗的指标不生成数值。"}
-    if ca["challenge_id"] == cornering.CHALLENGE_ID:
+    if ca["challenge_id"] in (cornering.CHALLENGE_ID, REFERENCE_CHALLENGES[1].id):
         rows = [("循迹误差", ca["candidate_metrics"]["mean_error_m"], cb["candidate_metrics"]["mean_error_m"], "m"),
                 ("峰值侧偏", ca["candidate_metrics"]["peak_beta_deg"], cb["candidate_metrics"]["peak_beta_deg"], "°"),
                 ("峰值侧倾", ca["candidate_metrics"]["peak_roll_deg"], cb["candidate_metrics"]["peak_roll_deg"], "°"),
                 ("速度偏差", ca["candidate_metrics"]["max_speed_error_kph"], cb["candidate_metrics"]["max_speed_error_kph"], "km/h")]
+    elif ca['challenge_id'] == REFERENCE_CHALLENGES[0].id:
+        rows = [('停车距离', ca['candidate_metrics']['distance_m'], cb['candidate_metrics']['distance_m'], 'm'),
+                ('峰值横摆', ca['candidate_metrics']['peak_yaw'], cb['candidate_metrics']['peak_yaw'], 'rad/s')]
     else:
         rows = [("停车距离", ca["candidate_m"], cb["candidate_m"], "m"),
                 ("峰值横摆", ca["peak_yaw_radps"], cb["peak_yaw_radps"], "rad/s")]
-    rows.append(("预算", ca["cost"], cb["cost"], "点"))
+    rows.append(("改装费" if ca['challenge_id'] in REFERENCE_BY_ID else "预算", ca["cost"], cb["cost"],
+                 "" if ca['challenge_id'] in REFERENCE_BY_ID else "点"))
     return {"comparable": not mismatches, "mismatches": mismatches,
             "rows": rows, "note": "差值为B−A，同时比较副作用与预算。"}

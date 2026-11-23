@@ -129,7 +129,7 @@ class CareerDrivingHUD:
         self.speed_card.setPos(right-315, 0, -941/2+36+160)
         self.pause.setPos(right-126, 0, 941/2-40)
 
-    def update(self, player, result, *, notice, driving_mode, station):
+    def update(self, player, result, *, notice, driving_mode, station, road_gold=None, automatic=False):
         event = EVENT_BY_ID[result.event_id]
         self.text(self.chapter, f'{event.chapter+1:02} / {CHAPTERS[event.chapter]}')
         self.text(self.title, event.name)
@@ -153,7 +153,15 @@ class CareerDrivingHUD:
         centiseconds = int(result.elapsed*100)
         minutes, seconds = divmod(centiseconds, 6000)
         self.text(self.timer, f'{minutes:02}:{seconds/100:05.2f}')
-        self.text(self.goal_text, '三星目标 '+target)
+        if automatic:
+            goal = '自动试车 · 不计成绩'
+        elif road_gold is not None:
+            goal = f'金牌 ≤{road_gold.seconds:g}s · ≤{road_gold.consumption:g} L/100km'
+        else:
+            goal = '三星目标 '+target
+        if self.goal_text.getText() != goal:
+            self.goal_text.setText(goal)
+            self.goal_text.setScale(min(21., 270/self.goal_text.textNode.getWidth()))
         self.text(self.tip, notice or event.tip)
         brake = '刹车' if driving_mode == DrivingMode.SIMULATION else '刹车·倒车'
         self.text(self.brake_key, brake)

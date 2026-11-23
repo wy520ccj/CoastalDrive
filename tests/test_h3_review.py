@@ -12,7 +12,7 @@ from route_driver import RouteDriver
 
 from coastal_map import ROAD_WIDTH, map_length, nearest_point, offset_point, point_at
 from highway_map import HIGHWAY_LENGTH, lane_x
-from lap_ghost import ghost_context, load_ghost
+from lap_ghost import ghost_context, load_ghost, record_context
 from race import BestTimes, GameMode, RaceTracker
 from session import Phase, Session
 from simulation import Control, Simulation
@@ -117,7 +117,8 @@ def test_actual_physics_lap_records_and_reloads(tmp_path):
         assert BestTimes(path).get(GameMode.TIME_TRIAL, session.race.score_id) == result.last_lap
         assert BestTimes(path).get_splits(GameMode.TIME_TRIAL, session.race.score_id, 5) == result.splits
         ghost = load_ghost(BestTimes(path), GameMode.TIME_TRIAL, session.race.score_id,
-                           ghost_context(session.seed), result.last_lap, result.splits)
+                           record_context(ghost_context(session.seed), GameMode.TIME_TRIAL),
+                           result.last_lap, result.splits)
         assert ghost is not None and ghost.frames == session.current.tick+1
         assert ghost.pose_at(result.last_lap) is not None
         assert BestTimes(path).get(GameMode.TIME_TRIAL) is None

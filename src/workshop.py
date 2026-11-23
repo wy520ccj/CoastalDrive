@@ -74,6 +74,12 @@ def validate_receipt(receipt, config):
     """持久化边界检查；成绩只适用于实际通过的这套硬件。"""
     if receipt is None:
         return
+    from workshop_budget import REFERENCE_BY_ID
+    from workshop_budget import validate_receipt as validate_budget_receipt
+
+    if isinstance(receipt, dict) and receipt.get('challenge_id') in REFERENCE_BY_ID:
+        validate_budget_receipt(receipt, config)
+        return
     if isinstance(receipt, dict) and receipt.get("challenge_id") == workshop_cornering.CHALLENGE_ID:
         workshop_cornering.validate_receipt(receipt, config)
         return

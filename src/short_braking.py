@@ -13,10 +13,11 @@ def medal_for(distance):
 
 
 class ShortBraking:
-    def __init__(self, start_progress, scores):
+    def __init__(self, start_progress, scores, *, record_scores=True):
         self.scores = scores
+        self.record_scores = record_scores
         self.snapshot = BrakingResult(start_progress=start_progress, short=True,
-                                      best_distance=scores.best, save_notice=scores.notice)
+                                      best_distance=scores.best if record_scores else None, save_notice=scores.notice)
         self.previous = self.previous_speed = self.maximum = 0.
 
     def update(self, progress, forward_speed, speed, elapsed, dt, *, collisions=0, reset=False, lateral=0., heading=0.):
@@ -50,8 +51,9 @@ class ShortBraking:
             self.stop('验车超时；30秒内过门并停稳。')
         elif held >= HOLD_SECONDS-1e-9:
             medal = medal_for(self.maximum)
-            self.scores.record(self.maximum)
-            self.snapshot = replace(self.snapshot, medal=medal, best_distance=self.scores.best,
+            if self.record_scores:
+                self.scores.record(self.maximum)
+            self.snapshot = replace(self.snapshot, medal=medal, best_distance=self.scores.best if self.record_scores else None,
                                     save_notice=self.scores.notice)
             self.stop(f'{medal}牌 · 过门后{self.maximum:.2f}米，已停稳1秒', succeeded=True)
         return self.snapshot

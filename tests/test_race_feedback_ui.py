@@ -29,13 +29,14 @@ def test_hud_shows_sector_and_total_deltas_within_card_and_hides_for_cruise(app)
     race = feedback_state()
     app.hud.update(app.session.current, race, app.session.highway.snapshot,
                    track="coastal", countdown="", notice="")
-    assert "Δ -2.000" in app.hud.split.getText()
-    assert "累计差 -1.000" in app.hud.split.getText()
-    bounds = app.hud.split.getTightBounds(app.hud.status_frame)
-    assert bounds[0].z > -.54 and bounds[1].x < .84
+    view = app.hud.coastal
+    assert "Δ -2.000" in view.sector.getText()
+    assert "累计差 -1.000" in view.cumulative.getText()
+    bounds = view.cumulative.getTightBounds(view.status)
+    assert bounds[0].z > -276 and bounds[1].x < 360
     app.hud.update(app.session.current, replace(race, mode=GameMode.FREE_DRIVE), app.session.highway.snapshot,
                    track="coastal", countdown="", notice="")
-    assert app.hud.split.isHidden() and app.hud.status_frame["frameSize"][2] == -.40
+    assert view.sector.isHidden() and view.status['frameSize'][2] == -48
 
 
 @pytest.mark.parametrize("invalid", [False, True])

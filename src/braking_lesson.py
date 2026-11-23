@@ -91,9 +91,10 @@ class BrakingResult:
 
 
 class BrakingLesson:
-    def __init__(self, start_progress, scores):
+    def __init__(self, start_progress, scores, *, record_scores=True):
         self.scores = scores
-        self.snapshot = BrakingResult(start_progress=start_progress, best_error=scores.best,
+        self.record_scores = record_scores
+        self.snapshot = BrakingResult(start_progress=start_progress, best_error=scores.best if record_scores else None,
                                       save_notice=scores.notice)
         self._previous_distance = 0.
         self._previous_forward_speed = 0.
@@ -127,9 +128,10 @@ class BrakingLesson:
             medal = medal_for(abs(error))
             self.snapshot = replace(self.snapshot, error_m=error, medal=medal)
             if medal:
-                self.scores.record(abs(error))
+                if self.record_scores:
+                    self.scores.record(abs(error))
                 self.stop(f"{medal}牌 · 已停稳1秒", succeeded=True)
-                self.snapshot = replace(self.snapshot, best_error=self.scores.best,
+                self.snapshot = replace(self.snapshot, best_error=self.scores.best if self.record_scores else None,
                                         save_notice=self.scores.notice)
             else:
                 self.stop("停得过早；下次稍晚开始制动。" if error < 0 else "停车误差超过10米。")

@@ -5,6 +5,24 @@ def sector_times(splits):
     return tuple(end-start for start, end in zip((0., *splits), splits))
 
 
+def energy_segment(splits, index):
+    split = splits[index]
+    previous = splits[index-1] if index else None
+    start = previous.distance_m if previous else 0.
+    seconds = split.seconds-(previous.seconds if previous else 0.)
+    litres = split.litres-(previous.litres if previous else 0.)
+    return start, split.distance_m, seconds, litres*100_000/(split.distance_m-start)
+
+
+def energy_segment_delta(segment, reference_splits, index):
+    if index >= len(reference_splits):
+        return None
+    reference = energy_segment(reference_splits, index)
+    if segment[:2] != reference[:2]:
+        return None
+    return segment[2]-reference[2], segment[3]-reference[3]
+
+
 def split_feedback(race):
     if not race.splits:
         return "等待首个检查点\n" + ("对照出发时的整圈最佳" if race.reference_splits else "暂无同配置最佳分段")

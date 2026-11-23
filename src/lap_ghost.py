@@ -3,6 +3,7 @@
 import ast
 import hashlib
 import json
+import logging
 import math
 import os
 import struct
@@ -16,7 +17,7 @@ from panda3d import bullet, core
 
 from lab_runtime import library_hashes
 from paths import resource_root
-from race import valid_splits
+from race import GameMode, valid_digest, valid_splits
 from vehicle_state import FIXED_DT, WheelState
 
 ROW = struct.Struct("<34d")
@@ -46,9 +47,8 @@ def source_imports(text, package):
     return tuple(imports)
 
 
-def ghost_context(seed):
-    """覆盖物理/输入/判圈依赖及实际SDK；纯表现改动不使有效记录失效。"""
-    root = resource_root()
+def gameplay_source_paths(root):
+    """源码与打包共用的玩法依赖范围。"""
     source = root/"src"
     # 每次重建实际文件目录，外部包/属性名只查一次集合，不反复向磁盘询问不存在的路径。
     available = {os.path.normcase(".".join(path.relative_to(source).with_suffix("").parts))
@@ -73,16 +73,83 @@ def ghost_context(seed):
         package = path.parent.relative_to(source).parts
         pending.extend(source_imports(path.read_text(encoding="utf-8-sig"), package))
     paths.update(path for path in source.glob("*") if path.suffix in (".c", ".cpp", ".h", ".pyd"))
-    if not paths:
-        paths.update((*root.glob("*.exe"), *root.glob("*.pyd")))
+    return paths
+
+
+def packaged_source_paths(root):
+    game = root/"coastaldrive.exe"
+    launchers = (game,) if game.is_file() else tuple(root.glob("*.exe"))
+    return {*launchers, *root.glob("*.pyd")}
+
+
+def source_digest(root, paths):
     digest = hashlib.sha256()
     for path in sorted(paths):
         digest.update(str(path.relative_to(root)).encode())
         digest.update(hashlib.sha256(path.read_bytes()).digest())
-    return {"source": digest.hexdigest(), "seed": seed, "panda": core.PandaSystem.getVersionString(),
+    return digest.hexdigest()
+
+
+def ghost_context(seed):
+    """逐拍记录按实际源码或包内程序和扩展校验。"""
+    root = resource_root()
+    paths = gameplay_source_paths(root) or packaged_source_paths(root)
+    return {"source": source_digest(root, paths), "seed": seed, "panda": core.PandaSystem.getVersionString(),
             "bullet": bullet.getBulletVersion(), "bits": 64 if core.LPoint3 is core.LPoint3d else 32,
             "runtime_files": dict(library_hashes()),
             "source_files": [str(path.relative_to(root)) for path in sorted(paths)]}
+
+
+@lru_cache(maxsize=4)
+def _record_aliases(root):
+    path = root/"assets"/"game"/"rules"/"record-context-aliases.json"
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(data, dict) or any(
+            not valid_digest(source) or not isinstance(groups, dict)
+            or set(groups) != {"default", GameMode.DISTANCE_CHALLENGE.value}
+            or not all(valid_digest(value) for value in groups.values())
+            for source, groups in data.items()
+        ):
+            raise ValueError("成绩兼容版本表无效")
+        return data
+    except FileNotFoundError:
+        return {}
+    except (OSError, ValueError) as error:
+        logging.getLogger(__name__).warning("成绩兼容版本表未读取: %s", error)
+        return {}
+
+
+@lru_cache(maxsize=4)
+def _packaged_record_source(root):
+    try:
+        release = json.loads((root/"release.json").read_text(encoding="utf-8"))
+        manifest = release.get("record_source") if isinstance(release, dict) else None
+        if manifest is None:
+            return None
+        if (not isinstance(manifest, dict) or not valid_digest(manifest.get("package"))
+                or not valid_digest(manifest.get("gameplay"))):
+            raise ValueError("包内成绩分组摘要无效")
+        return manifest["package"], manifest["gameplay"]
+    except FileNotFoundError:
+        return None
+    except (OSError, ValueError) as error:
+        logging.getLogger(__name__).warning("包内成绩分组未读取: %s", error)
+        return None
+
+
+def record_context(source, mode, *, package_root=None):
+    """按已核对的玩法版本沿用分组，原始实跑仍保留实际源码指纹。"""
+    root = resource_root() if package_root is None else package_root
+    if package_root is not None or getattr(sys, "frozen", False):
+        manifest = _packaged_record_source(root)
+        if manifest is not None and manifest[0] == source["source"]:
+            source = {**source, "source": manifest[1]}
+    groups = _record_aliases(root).get(source["source"])
+    if groups is None:
+        return source
+    key = mode.value if mode == GameMode.DISTANCE_CHALLENGE else "default"
+    return {**source, "source": groups[key]}
 
 
 @dataclass(frozen=True)
@@ -155,15 +222,20 @@ class GhostRecorder:
     def finish(self, score_id, race):
         if self.notice:
             raise ValueError(self.notice)
-        if (not race.finished or race.invalidated or not race.new_best
-                or not valid_splits(race.splits, race.last_lap)
-                or not covers_lap(self.frames, race.last_lap)):
+        if not race.finished or race.invalidated or not race.new_best:
+            raise ValueError("只有覆盖完整有效最佳圈的连续记录可以保存幽灵")
+        return self.finish_lap(score_id, race.last_lap, race.splits)
+
+    def finish_lap(self, score_id, seconds, splits):
+        if self.notice:
+            raise ValueError(self.notice)
+        if not valid_splits(splits, seconds) or not covers_lap(self.frames, seconds):
             raise ValueError("只有覆盖完整有效最佳圈的连续记录可以保存幽灵")
         values = self.values
         if sys.byteorder != "little":
             values = array("d", values)
             values.byteswap()
-        return GhostLap(score_id, race.last_lap, race.splits, self.context, values.tobytes())
+        return GhostLap(score_id, seconds, splits, self.context, values.tobytes())
 
 
 def save_ghost(lap, scores, mode):

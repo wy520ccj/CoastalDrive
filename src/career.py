@@ -2,7 +2,7 @@
 
 import json
 import math
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from career_courses import COURSES
@@ -84,10 +84,11 @@ class CareerProgress:
     def __init__(self, path):
         self.path = Path(path)
         self.records, self.owned, self.credits = {}, set(), 0
+        self.budget_records = {}
         self.notice, self.blocked = '', False
         try:
             data = json.loads(self.path.read_text(encoding='utf-8'))
-            if (data['version'] != 1 or type(data['credits']) is not int or data['credits'] < 0
+            if (data['version'] not in (1, 2) or type(data['credits']) is not int or data['credits'] < 0
                     or not isinstance(data['records'], dict) or not isinstance(data['owned'], list)
                     or any(part not in PART_BY_ID for part in data['owned'])):
                 raise ValueError('生涯文件格式无效')
@@ -100,6 +101,17 @@ class CareerProgress:
                         or type(record['course_stars']) is not int or not 1 <= record['course_stars'] <= 3)):
                     raise ValueError('赛道成绩版本无效')
             self.records, self.owned, self.credits = data['records'], set(data['owned']), data['credits']
+            budget_records = data.get('challenges', {})
+            if not isinstance(budget_records, dict):
+                raise TypeError('预算挑战成长记录须为对象')
+            for key, row in budget_records.items():
+                if (key not in EVENT_BY_ID or row['medal'] not in ('铜', '银', '金')
+                        or not isinstance(row['build'], dict)
+                        or type(row['seconds']) not in (int, float)
+                        or not math.isfinite(row['seconds']) or row['seconds'] <= 0
+                        or not isinstance(row['rules_version'], str)):
+                    raise ValueError('预算挑战成长记录无效')
+            self.budget_records = budget_records
         except FileNotFoundError:
             pass
         except (OSError, ValueError, KeyError, TypeError) as error:
@@ -107,12 +119,17 @@ class CareerProgress:
 
     @property
     def stars(self):
-        return sum(record['stars'] for record in self.records.values())
+        return sum(max(self.records.get(event.id, {}).get('stars', 0),
+                       ('', '铜', '银', '金').index(self.budget_records[event.id]['medal'])
+                       if event.id in self.budget_records else 0) for event in EVENTS)
 
     def available(self, event):
         return self.stars >= event.unlock
 
     def course_record(self, event):
+        if event.id in self.budget_records:
+            row = self.budget_records[event.id]
+            return {'stars': ('', '铜', '银', '金').index(row['medal']), 'seconds': row['seconds']}
         record = self.records.get(event.id)
         if record is None or (event.shape in COURSES and record.get('course') != event.shape):
             return None
@@ -120,25 +137,56 @@ class CareerProgress:
                 'seconds': record['seconds']}
 
     def recommended(self):
-        return next((event for event in EVENTS if self.available(event) and self.course_record(event) is None),
-                    min((event for event in EVENTS if self.available(event)),
-                        key=lambda event: self.records.get(event.id, {'stars': 0})['stars']))
+        def current_stars(event):
+            record = self.course_record(event)
+            return 0 if record is None else record['stars']
 
-    def save(self, records, owned, credits):
+        stars = self.stars
+        return min((event for event in EVENTS if stars >= event.unlock), key=current_stars)
+
+    def save(self, records, owned, credits, *, budget_records=None):
+        budget_records = self.budget_records if budget_records is None else budget_records
         try:
             if self.blocked:
                 raise ValueError('原生涯文件未能读取，未覆盖原文件')
             self.path.parent.mkdir(parents=True, exist_ok=True)
             temporary = self.path.with_suffix('.tmp')
-            temporary.write_text(json.dumps({'version': 1, 'records': records, 'owned': sorted(owned),
-                                             'credits': credits}, ensure_ascii=False, indent=2, allow_nan=False),
+            temporary.write_text(json.dumps({'version': 2, 'records': records, 'owned': sorted(owned),
+                                             'credits': credits, 'challenges': budget_records},
+                                            ensure_ascii=False, indent=2, allow_nan=False),
                                  encoding='utf-8')
             temporary.replace(self.path)
         except (OSError, ValueError) as error:
             self.notice = '生涯进度未保存：'+str(error)
             return False
         self.records, self.owned, self.credits, self.notice = records, owned, credits, ''
+        self.budget_records = budget_records
         return True
+
+    def record_challenge(self, result):
+        from challenge_catalog import CAREER_CHALLENGES
+        from challenge_rules import MEDALS
+
+        empty = {'credits': 0, 'unlocked': (), 'vehicles': (), 'saved': True}
+        if not result.official or result.challenge_id not in CAREER_CHALLENGES or result.medal not in MEDALS:
+            return empty
+        event, spec = EVENT_BY_ID[result.challenge_id], CAREER_CHALLENGES[result.challenge_id]
+        expected = spec.evaluate(result.build, result.seconds, result.litres, metric_value=result.metric_value)
+        if result != expected:
+            raise ValueError('生涯成长须来自本关本次真实预算结果')
+        if not self.available(event):
+            return empty
+        old = self.budget_records.get(event.id)
+        if old is not None and (MEDALS.index(result.medal), -result.seconds) <= (MEDALS.index(old['medal']), -old['seconds']):
+            return empty
+        before = self.stars
+        records = dict(self.budget_records)
+        records[event.id] = asdict(result)
+        saved = self.save(dict(self.records), set(self.owned), self.credits, budget_records=records)
+        vehicles = tuple(car.design_id for car in GARAGE_CARS if before < car.unlock <= self.stars)
+        unlocked = tuple(item.name for item in EVENTS if before < item.unlock <= self.stars)
+        unlocked += tuple('新车：'+car.name for car in GARAGE_CARS if car.design_id in vehicles)
+        return {'credits': 0, 'unlocked': unlocked, 'vehicles': vehicles, 'saved': saved}
 
     def record(self, result):
         event = EVENT_BY_ID[result.event_id]
@@ -166,9 +214,5 @@ class CareerProgress:
         return {'credits': reward if saved else 0, 'unlocked': unlocked, 'vehicles': vehicles, 'saved': saved}
 
     def buy(self, part):
-        if part.id in self.owned:
-            return True
-        if self.stars < part.unlock or self.credits < part.price:
-            self.notice = '星级或积分不足，先完成其他赛事。'
-            return False
-        return self.save(dict(self.records), self.owned | {part.id}, self.credits-part.price)
+        self.notice = '改装已改为每场独立预算，请从挑战准备车辆方案。'
+        return False

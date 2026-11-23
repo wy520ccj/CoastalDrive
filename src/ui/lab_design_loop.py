@@ -206,7 +206,7 @@ class DesignLoopPanel:
             vehicle = reference_vehicle(self.record)
             report = export_record(self.record, self.folder("-applied-vehicle"), baseline=self.app.baseline)
             vehicle = replace(vehicle, report_path=str(report))
-            vehicle.save()
+            vehicle.save(self.app.workspace_path)
         except (OSError, ValueError, KeyError, TypeError) as error:
             self.app.show_error("车辆未应用，当前试验保留", error)
             return

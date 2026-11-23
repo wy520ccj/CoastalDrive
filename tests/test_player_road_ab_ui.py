@@ -1,4 +1,4 @@
-"""真实控件/结算夹具，分别检查失败无时间差、同题完整B与重开。"""
+"""道路完整A/B从预算方案启动建立，保存失败不阻止实际试跑。"""
 
 from pathlib import Path
 from unittest.mock import patch
@@ -28,58 +28,48 @@ def app(tmp_path, monkeypatch):
 
 
 def fit(app, index=3):
-    app.open_tire_tuning()
-    app.tire_tuning.activate(index)
-    app.tire_tuning.activate(4)
+    app.challenge_action('challenge-adjust')
+    app.challenge_action('challenge-tab', 1)
+    app.challenge_action('challenge-value', ('front_tire', '50' if index == 0 else '65'))
+    app.challenge_action('challenge-start')
 
 
-def test_result_install_freezes_actual_fixture_a_and_observes_once_complete_b(app):
+def test_changed_budget_build_freezes_whole_a_and_observes_one_whole_b(app):
     a_result = result_fixture(app)
+    original = app.workspace_vehicle
     fit(app)
-    assert app.player_road_ab.a['result']['reason'] == a_result.slalom.reason
-    assert app.player_road_ab.a['config']['lateral_stiffness'] == 35000. and app.player_road_ab.b is None
-    app.tire_tuning.activate(7)
-    assert '暂无记录' in app.player_road_panel.cards[1].getText()
-    app.key_down('escape')
-    app.key_up('escape')
-    assert app.player_road_panel.root.isHidden() and not app.tire_tuning.root.isHidden()
-    app.back_from_tire_tuning()
+    store = app.player_road_ab
+    assert store.a['result']['reason'] == a_result.slalom.reason
+    assert store.a['config']['lateral_stiffness'] == 50000. and store.b is None
     b_result = result_fixture(app, succeeded=True)
-    saved = app.player_road_ab.path.read_bytes()
+    saved = store.path.read_bytes()
     app.refresh_panel()
-    assert app.player_road_ab.path.read_bytes() == saved
-    assert app.player_road_ab.b['result']['run_seconds'] == b_result.slalom.run_seconds
-    app.open_tire_tuning()
-    app.tire_tuning.activate(7)
+    assert store.path.read_bytes() == saved
+    assert store.b['result']['run_seconds'] == b_result.slalom.run_seconds
+    app.open_player_road_ab('tires')
     panel = app.player_road_panel
     assert '无有效总时间' in panel.cards[0].getText() and '有效11.400s' in panel.cards[1].getText()
     assert 'B−A' not in panel.delta.getText() and '未到达' in panel.columns[1].getText()
-    for column in panel.columns:
-        lower, upper = column.getTightBounds(panel.root)
-        assert lower.z > -.37 and upper.x < 1.60
-    loaded = PlayerRoadAB(app.player_road_ab.path)
-    assert loaded.a == app.player_road_ab.a and loaded.b == app.player_road_ab.b
+    loaded = PlayerRoadAB(store.path)
+    assert (loaded.a, loaded.b) == (store.a, store.b)
+    assert app.workspace_vehicle == original and not app.workspace_path.exists()
+    panel.key('escape')
+    assert panel.root.isHidden() and app.career_panel.page == 'challenge-result'
 
 
-def test_same_recipe_cancel_and_failed_vehicle_save_never_freeze_a(app, monkeypatch):
+def test_same_build_and_cancel_do_not_replace_a(app):
+    result_fixture(app)
+    app.challenge_action('challenge-adjust')
+    app.challenge_action('challenge-back')
+    assert app.player_road_ab.a is None
     result_fixture(app)
     fit(app, 0)
     assert app.player_road_ab.a is None and not app.player_road_ab.path.exists()
-    app.back_from_tire_tuning()
-    app.open_tire_tuning()
-
-    def fail(self, path=None):
-        raise OSError('只读')
-
-    monkeypatch.setattr(WorkspaceVehicle, 'save', fail)
-    app.tire_tuning.activate(3)
-    app.tire_tuning.activate(4)
-    assert app.player_road_ab.a is None and not app.player_road_ab.path.exists()
-    assert app.session.phase == Phase.RESULTS
 
 
-def test_ab_write_failure_still_allows_saved_hardware_and_reports_notice(app):
+def test_ab_write_failure_keeps_player_car_and_allows_temporary_challenge(app):
     result_fixture(app)
+    original = app.workspace_vehicle
     replace_file = Path.replace
 
     def fail_comparison(path, target):
@@ -89,21 +79,23 @@ def test_ab_write_failure_still_allows_saved_hardware_and_reports_notice(app):
 
     with patch.object(Path, 'replace', fail_comparison):
         fit(app)
-    assert app.session.vehicle_config.lateral_stiffness == 70000.
-    assert app.session.phase == Phase.MENU and app.player_road_ab.a is None
-    assert app.player_road_ab.capture_blocked
-    assert '未保存' in app.player_road_ab.notice and '道路对照有提示' in app.tire_tuning.notice.getText()
+    assert app.session.vehicle_config.lateral_stiffness == 65000.
+    assert app.session.phase == Phase.COUNTDOWN and app.player_road_ab.a is None
+    assert app.player_road_ab.capture_blocked and '未保存' in app.player_road_ab.notice
+    assert app.workspace_vehicle == original and not app.workspace_path.exists()
+    result_fixture(app, succeeded=True)
+    assert any('未保存' in label.getText() for label in app.career_panel.labels)
 
 
-def test_different_input_settings_only_show_values_without_time_delta(app):
+def test_different_input_settings_show_values_without_time_delta(app):
+    from driving_modes import DrivingMode
+
     result_fixture(app, succeeded=True)
     fit(app)
-    app.back_from_tire_tuning()
-    from driving_modes import DrivingMode
-    app.session.set_vehicle_config(app.session.vehicle_config)
+    app.session.finish()
+    app.session.menu()
     app.session.set_driving_mode(DrivingMode.SIMULATION)
     result_fixture(app, succeeded=True)
-    app.open_tire_tuning()
-    app.tire_tuning.activate(7)
+    app.open_player_road_ab('tires')
     assert '条件不同' in app.player_road_panel.delta.getText()
     assert 'B−A' not in app.player_road_panel.delta.getText()

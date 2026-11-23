@@ -236,7 +236,8 @@ class SchemesPanel:
             config = item.vehicle.config
             hardware = (f"前胎 {config.lateral_stiffness/1000:g}k · 防倾 "
                         f"{config.suspension_antiroll_rates[0]/1000:g}/{config.suspension_antiroll_rates[1]/1000:g}k · 重心{config.center_of_mass_height:g}m"
-                        if item.challenge is not None and "tire_index" in item.challenge else
+                        if item.challenge is not None and ("tire_index" in item.challenge
+                            or item.challenge['challenge_id'] == 'reference-cornering-budget-v1') else
                         f"前制动 {config.front_brake_share:.0%} · 质心 {config.center_of_mass_height:g}m")
             target.setText(f"{vehicle_design(item.vehicle.design_id).name}\n{hardware}\n{award}")
         try:
@@ -325,7 +326,7 @@ class SchemesPanel:
             item = self.restore_right()
             if item is None:
                 return
-            item.vehicle.save()
+            item.vehicle.save(self.app.workspace_path)
         except (OSError, ValueError, KeyError, TypeError) as error:
             self.app.show_error("方案未应用，当前试验与车辆保留", error)
             return

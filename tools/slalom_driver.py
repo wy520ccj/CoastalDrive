@@ -3,18 +3,8 @@
 import math
 
 from driver_assist import steering_limit
+from road_test_driver import slalom_path_lateral
 from simulation import Control
-from slalom_lesson import ENTRY_DISTANCE, GATES
-
-
-def path_x(distance):
-    old_y, old_x = ENTRY_DISTANCE, 0.
-    for y, x in GATES:
-        if distance <= y:
-            fraction = max(0., min(1., (distance-old_y)/(y-old_y)))
-            return old_x+(x-old_x)*.5*(1-math.cos(math.pi*fraction))
-        old_y, old_x = y, x
-    return 0.
 
 
 class SlalomDriver:
@@ -26,7 +16,7 @@ class SlalomDriver:
         car = state.player
         x, y = car.position[:2]
         look = 5+abs(car.speed)*.45
-        dx, dy = (0. if self.straight else path_x(y-self.origin+look))-x, look
+        dx, dy = (0. if self.straight else slalom_path_lateral(y-self.origin+look))-x, look
         error = math.atan2(-dx, dy)-math.radians(car.heading)
         angle = math.degrees(math.atan2(5.4*math.sin(error), math.hypot(dx, dy)))
         steer = max(-1., min(1., -angle/steering_limit(car.speed, self.config)))

@@ -5,6 +5,7 @@ from dataclasses import replace
 import pytest
 
 from application import CoastalDrive
+from challenge_build import BuildDraft
 from overtake_observations import GapIncident, TrafficReading
 from race import GameMode
 from session import Phase
@@ -27,6 +28,11 @@ def test_hill_menu_markers_results_and_lab_return(tmp_path):
         assert app.sprint_menu and app.panel_selection == 4
         app.buttons[4]['command']()
         app.buttons[0]['command']()
+        assert app.career_panel.page == 'challenge' and app.budget_mode == GameMode.HILL_TRAFFIC
+        choice = next(button for button in app.career_panel.buttons if button['extraArgs'] == ['challenge-preset', 0])
+        choice['command'](*choice['extraArgs'])
+        app.challenge_action('challenge-start')
+        assert app.session.challenge_build == BuildDraft(power=1.15)
         for _ in range(360):
             app.session.tick()
         assert app.session.mode == GameMode.HILL_TRAFFIC and app.session.phase == Phase.DRIVING
@@ -48,12 +54,26 @@ def test_hill_menu_markers_results_and_lab_return(tmp_path):
         app._shown_phase = None
         app.refresh_panel()
         app.hud.update(before, app.session.race.snapshot, app.session.highway.snapshot, track='endless', countdown='', notice='')
-        assert app.hud.mode.getText() == '弯坡车流' and '0/3' in app.hud.detail.getText() and not app.hud.split.isHidden()
+        assert app.hud.coastal.title.getText() == '弯坡车流' and '0/3' in app.hud.coastal.notice.getText()
+        assert '分段 0 / 4' in app.hud.coastal.checkpoints.getText()
         observed = replace(result, traffic_reading=TrafficReading((0, 3), 'front', -2.1, 15., 18., 1., True))
         app.hud.update(before, app.session.race.snapshot, replace(app.session.highway.snapshot, overtake=observed),
                        track='endless', countdown='', notice='')
-        assert not app.hud.goal.isHidden() and '匀速' in app.hud.goal.getText()
-        assert app.hud.goal.getTightBounds(app.hud.status_frame)[0].z > app.hud.status_frame['frameSize'][2]
+        assert not app.hud.coastal.notice_frame.isHidden() and '匀速' in app.hud.coastal.notice.getText()
+        assert app.hud.coastal.notice.getTightBounds(app.hud.coastal.notice_frame)[0].z > app.hud.coastal.notice_frame['frameSize'][2]
+        assert tuple(app.hud.coastal.notice.textNode.getTextColor())[:3] == pytest.approx((1, .48, .34))
+        app.hud.update(before, app.session.race.snapshot,
+                       replace(app.session.highway.snapshot, overtake=replace(observed, passes=3)),
+                       track='endless', countdown='', notice='')
+        assert '3/3 · 安全驶至终点' in app.hud.coastal.notice.getText()
+        # 旧专家路径的详细安全事件展示继续只读保留，不冒充预算奖牌。
+        app.back_to_menu()
+        app.session.road_shape = 'hills'
+        app.start_game(mode=GameMode.HILL_TRAFFIC, track='endless')
+        for _ in range(360):
+            app.session.tick()
+        before = app.session.current
+        result = app.session.highway.snapshot.overtake
         complete = replace(result, passes=3, distance=2400., seconds=100., medal='金', finished=True, succeeded=True,
             pass_times=(30., 45., 70.), pass_ids=((0, 0), (4, 0), (9, 0)), pass_clearances=(2., 3., 2.5), reason='安全超越3辆 · 金牌完成')
         app.session.highway.snapshot = replace(app.session.highway.snapshot, overtake=complete, finished=True, succeeded=True)

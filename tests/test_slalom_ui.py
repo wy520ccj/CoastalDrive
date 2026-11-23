@@ -5,6 +5,7 @@ from dataclasses import replace
 import pytest
 
 from application import CoastalDrive
+from challenge_catalog import ROAD_CHALLENGES
 from race import GameMode
 from session import Phase
 from slalom_markers import MARKER_MASK
@@ -42,12 +43,18 @@ def test_rules_entry_preserves_car_and_highway_preferences_and_back_focus(app):
     shape = app.highway_shape
     app.choose_slalom_lesson()
     app.buttons[0]["command"]()
+    assert app.career_panel.page == 'challenge' and app.session.vehicle_config == original
+    app.challenge_action('challenge-start')
     assert app.session.mode == GameMode.SLALOM_LESSON and not app.session.simulation.npcs
-    assert app.session.vehicle_config == original and app.highway_shape == shape
+    assert app.session.vehicle_config == ROAD_CHALLENGES[GameMode.SLALOM_LESSON].base_config
+    assert app.highway_shape == shape
+    app.challenge_action('challenge-back')
+    assert app.session.vehicle_config == original
 
 
 def test_markers_only_render_do_not_affect_world_and_rebase_display_only(app):
     app.start_slalom_lesson()
+    app.challenge_action('challenge-start')
     for _ in range(360):
         app.session.tick()
     app.apply_scene(app.session.current, 0.)
@@ -64,21 +71,26 @@ def test_markers_only_render_do_not_affect_world_and_rebase_display_only(app):
 
 
 def test_actual_same_window_lab_return_restarts_slalom_instead_of_coastal(app):
+    owned = app.workspace_vehicle
     app.start_slalom_lesson()
-    config = app.workspace_vehicle.config
+    app.challenge_action('challenge-start')
+    config = app.session.vehicle_config
     window = app.win
     app.open_vehicle_lab()
     finish(app, "lab")
-    assert app.lab_return_slalom and app.lab.engineered_config == config
+    assert app.budget_active and app.budget_mode == GameMode.SLALOM_LESSON
+    assert app.lab.engineered_config == config
     app.lab.entries["cg"].enterText(".47")
     app.lab.back_to_game()
     finish(app, "game")
     assert app.win is window and app.session.mode == GameMode.SLALOM_LESSON
-    assert app.workspace_vehicle.config == config and app.lab_workspace.fields["cg"] == ".47"
+    assert app.workspace_vehicle == owned and app.session.vehicle_config == config
+    assert app.lab_workspace.fields["cg"] == ".47"
 
 
 def test_display_fixture_shows_gate_error_and_retry_without_claiming_actual_drive(app):
-    app.start_slalom_lesson()
+    # 专家自由试验的旧结果展示仍保留，夹具不冒充新预算驾驶。
+    app.start_game(mode=GameMode.SLALOM_LESSON, track='endless')
     for _ in range(360):
         app.session.tick()
     actual = app.session.highway.snapshot

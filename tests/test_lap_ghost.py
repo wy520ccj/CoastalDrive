@@ -1,12 +1,17 @@
 """轻量记录、插值、版本与文件边界；规则夹具不冒充真实物理圈。"""
 
 import hashlib
+import json
 import zlib
 from dataclasses import replace
 
 import pytest
 
-from lap_ghost import GhostRecorder, ghost_context, load_ghost, save_ghost
+from challenge_build import BuildDraft
+from challenge_catalog import ROAD_CHALLENGES
+from challenge_run import EnergySplit
+from challenge_scores import ChallengeScores
+from lap_ghost import GhostRecorder, ghost_context, load_ghost, record_context, save_ghost
 from race import BestTimes, GameMode, RaceSnapshot
 from simulation import Snapshot
 from vehicle_state import FIXED_DT, CarState, WheelState
@@ -90,6 +95,32 @@ def test_ghost_cannot_attach_to_another_lap_and_slower_lap_keeps_link(tmp_path):
         scores.attach_ghost(GameMode.TIME_TRIAL, lap.score_id, .03, (.01, .03), digest)
 
 
+def test_budget_ghost_follows_fastest_complete_run_across_builds(tmp_path):
+    mode = GameMode.TIME_TRIAL
+    spec = ROAD_CHALLENGES[mode]
+    lap = recorded_lap()
+    scores = ChallengeScores(tmp_path/'challenge-best.json', spec, 'keyboard', lap.context)
+    splits = (EnergySplit(spec.distance_m/2, lap.splits[0], .03),
+              EnergySplit(spec.distance_m, lap.seconds, .06))
+    assert scores.record(spec.evaluate(BuildDraft(), lap.seconds, .06), splits=splits)
+    best = scores.completed['fastest']
+    lap = replace(lap, score_id=best['run_id'])
+    save_ghost(lap, scores, mode)
+    scores.record(spec.evaluate(BuildDraft(mass=.96), .03, .05))
+    restored = ChallengeScores(scores.path, spec, 'keyboard', lap.context)
+    assert restored.completed['economy']['build']['mass'] == .96
+    assert load_ghost(restored, mode, lap.score_id, lap.context, lap.seconds, lap.splits) == lap
+    other_input = ChallengeScores(scores.path, spec, 'gamepad', lap.context)
+    assert load_ghost(other_input, mode, lap.score_id, lap.context, lap.seconds, lap.splits) is None
+    restored.record(spec.evaluate(BuildDraft(front_tire=1.3), .022, .07))
+    assert not restored.ghost_digest(mode, restored.completed['fastest']['run_id'])
+    assert not restored.ghost_digest(mode, lap.score_id)
+    before = restored.path.read_bytes()
+    with pytest.raises(ValueError, match='最快完赛已改变'):
+        restored.attach_ghost(mode, lap.score_id, lap.seconds, lap.splits, 'f'*64)
+    assert restored.path.read_bytes() == before
+
+
 def test_sampling_requires_consecutive_authority_ticks_and_full_valid_finish(monkeypatch):
     recorder = GhostRecorder(sample(0), {})
     with pytest.raises(ValueError, match="连续"):
@@ -159,3 +190,38 @@ def test_compatibility_tracks_model_dependencies_but_not_presentation(tmp_path, 
     assert str((package/'part.py').relative_to(tmp_path)) in packaged['source_files']
     (package/'part.py').write_text('ratio = 2\n', encoding='utf-8')
     assert ghost_context(0) != packaged
+
+
+def test_record_context_only_reuses_the_verified_source_for_each_rule(tmp_path, monkeypatch):
+    monkeypatch.setattr("lap_ghost.resource_root", lambda: tmp_path)
+    folder = tmp_path/"assets"/"game"/"rules"
+    folder.mkdir(parents=True)
+    (folder/"record-context-aliases.json").write_text(
+        json.dumps({"a"*64: {"default": "b"*64, GameMode.DISTANCE_CHALLENGE.value: "c"*64}}),
+        encoding="utf-8",
+    )
+    source = {"source": "a"*64, "seed": 17, "bits": 64, "runtime_files": {"library": "d"*64}}
+    assert record_context(source, GameMode.TIME_TRIAL) == {**source, "source": "b"*64}
+    assert record_context(source, GameMode.DISTANCE_CHALLENGE) == {**source, "source": "c"*64}
+    assert source["source"] == "a"*64
+    different = {**source, "source": "e"*64}
+    assert record_context(different, GameMode.TIME_TRIAL) == different
+
+
+def test_packaged_record_context_reuses_group_only_for_matching_program(tmp_path, monkeypatch):
+    monkeypatch.setattr("lap_ghost.resource_root", lambda: tmp_path)
+    monkeypatch.setattr("lap_ghost.sys.frozen", True, raising=False)
+    game = tmp_path/"coastaldrive.exe"
+    game.write_bytes(b"first package")
+    first = ghost_context(0)
+    (tmp_path/"coastaldrive-check.exe").write_bytes(b"diagnostic")
+    assert ghost_context(0) == first
+    (tmp_path/"release.json").write_text(json.dumps({
+        "record_source": {"package": first["source"], "gameplay": "a"*64},
+    }), encoding="utf-8")
+    assert record_context(first, GameMode.TIME_TRIAL) == {**first, "source": "a"*64}
+
+    game.write_bytes(b"different package")
+    different = ghost_context(0)
+    assert different["source"] != first["source"]
+    assert record_context(different, GameMode.TIME_TRIAL) == different

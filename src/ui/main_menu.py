@@ -12,12 +12,12 @@ INK = (.04, .07, .12, 1)
 GRAY = (.35, .39, .46, 1)
 WHITE = (1, 1, 1, 1)
 ORANGE = (1, .31, .12, 1)
-DARK = (.04, .055, .075, .86)
+DARK = (.055, .088, .132, 1)
 
 
 class MainMenu:
     def __init__(self, parent, loader, body_font, display_font, actions, *, vehicle_view, confirm_action,
-                 driving_mode_action=None, lab_action=None, highway_action=None):
+                 continue_action, driving_mode_action=None, lab_action=None, highway_action=None):
         self.root = parent.attachNewNode('main-menu')
         self.root.setTransparency(TransparencyAttrib.MAlpha)
         # 旧工具页仍使用原父节点；首页不随这些工具页整体缩小。
@@ -25,7 +25,6 @@ class MainMenu:
         self.home = self.root.attachNewNode('menu-home')
         self.loader, self.font, self.display_font = loader, body_font, display_font
         self.regular = theme.load_font('fonts/SourceHanSansSC-Regular.otf')
-        self.icon_font = theme.load_font('fonts/Tabler-Menu.ttf')
         self.vehicle_view = vehicle_view
         self.confirm_action = confirm_action
         self.actions = (*actions, lab_action, driving_mode_action)
@@ -33,8 +32,11 @@ class MainMenu:
         if highway_action is not None:
             self.actions = (*self.actions, highway_action)
             self.order = (2, 3, 1, 8, 0, 6, 7, 4, 5)
-        self.selected, self.aspect = 2, None
-        self.widgets, self.subtitles, self.symbols = [], {}, {}
+        self.continue_index = len(self.actions)
+        self.actions = (*self.actions, continue_action)
+        self.order = (self.continue_index, *self.order)
+        self.selected, self.aspect = self.continue_index, None
+        self.widgets, self.subtitles = [], {}
         self.buttons = []
         self.textures = tuple(loader.loadTexture(theme.asset_filename(f'components/button-{state}.png'))
                               for state in ('normal', 'pressed', 'hover', 'disabled'))
@@ -42,12 +44,12 @@ class MainMenu:
             frameTexture=loader.loadTexture(theme.asset_filename('backgrounds/garage-coastal-v2.png')),
             frameSize=(-16/9, 16/9, -1, 1), sortOrder=-10, state=DGG.DISABLED)
         self.notice = self.label('', 0, 0, 16, (1, .86, .70, 1))
-        self.stars = self.label('', 0, 0, 23, (1, .75, .31, 1))
+        self.stars = self.label('', 0, 0, 26, WHITE)
         self.credits = self.label('', 0, 0, 23, WHITE)
         self.car_name = self.label('', 0, 0, 28, WHITE, bold=True)
         self.vehicle_note = self.label('', 0, 0, 17, WHITE)
         self.time_goal = None
-        self.resize(16/9)
+        self.resize(vehicle_view.base.getAspectRatio())
         self.root.hide()
 
     def label(self, text, x, y, size, color=INK, *, bold=False, parent=None):
@@ -72,18 +74,18 @@ class MainMenu:
         node.setPos(*self.point(x, y))
         return node
 
-    def button(self, index, title, subtitle, x, y, width, height, *, icon=None, footer=False):
+    def button(self, index, title, subtitle, x, y, width, height, *, footer=False):
         unit = 2/941
         self.edges[index] = self.fill(x-2, y-2, width+4, height+4, ORANGE)
         geom = rounded_panel(self.layout, 'menu-control',
             (-width*unit/2, width*unit/2, -height*unit/2, height*unit/2), WHITE, 4*unit)
         geom.detachNode()
-        tx = 0 if footer else (-width/2+110 if icon else -width/2+22)*unit
+        tx = 0 if footer else (-width/2+22)*unit
         px, pz = self.point(x+width/2, y+height/2)
         node = DirectButton(parent=self.layout, text=title, text_font=self.font,
-            text_fg=INK, text_scale=(20 if footer else 27)*unit,
+            text_fg=INK, text_scale=(20 if footer else 39 if index == self.continue_index else 27)*unit,
             text_align=TextNode.ACenter if footer else TextNode.ALeft,
-            text_pos=(tx, -7*unit if footer else 7*unit), pos=(px, 0, pz),
+            text_pos=(tx, (7 if subtitle is not None else -7)*unit), pos=(px, 0, pz),
             frameSize=(-width*unit/2, width*unit/2, -height*unit/2, height*unit/2),
             frameColor=(0, 0, 0, 0), geom=geom, relief=DGG.FLAT, pressEffect=False,
             command=lambda: self.activate(index))
@@ -96,17 +98,14 @@ class MainMenu:
             self.subtitles[index] = sub
             if index == 0:
                 self.time_goal = sub
-        if icon is not None:
-            symbol = self.label(chr(icon), -width/2+29, 18, 50, INK, parent=node)
-            symbol['font'] = self.icon_font
-            arrow = self.label('›', width/2-33, 9, 34, INK, parent=node)
-            self.symbols[index] = (symbol, arrow)
 
     def resize(self, aspect):
         if self.aspect == aspect:
             return
         owns_car = self.vehicle_view.frame is not None and self.vehicle_view.frame.getParent() == self.home
         old_goal = '' if self.time_goal is None else self.time_goal.getText()
+        next_event = self.subtitles.get(self.continue_index)
+        next_name = '' if next_event is None else next_event.getText()
         self.aspect, self.width = aspect, 941*aspect
         self.content.setScale(min(1, aspect/(16/9)))
         self.background['frameSize'] = (-aspect, aspect, -1, 1)
@@ -128,54 +127,45 @@ class MainMenu:
             self.layout.removeNode()
         self.layout = self.home.attachNewNode('menu-layout')
         self.buttons, self.edges = [None]*len(self.actions), [None]*len(self.actions)
-        self.subtitles, self.symbols = {}, {}
-        margin, panel_width = self.width*.031, min(462, self.width*.355)
-        inset, inner = 24, panel_width-48
-        self.fill(0, 0, self.width, 74, DARK, 0)
-        self.fill(0, 860, self.width, 81, DARK, 0)
-        brand = self.place_label('COASTAL DRIVE', margin+10, 50, 34, WHITE, bold=True)
+        self.subtitles = {}
+        margin, panel_width = self.width*.031, self.width*.352
+        inner = panel_width-2*margin
+        self.fill(0, 0, self.width, 68, DARK, 0)
+        self.fill(0, 866, self.width, 75, DARK, 0)
+        brand = self.place_label('COASTAL DRIVE', margin, 44, 28, WHITE, bold=True)
         brand['font'] = self.display_font
-        if aspect > 1.5:
-            self.place_label('/  海岸驾驶', margin+267, 49, 21, WHITE)
-        self.fill(margin, 122, panel_width, 706, (.98, .98, .99, .96))
-        self.place_label('出发', margin+28, 194, 48, bold=True)
-        self.place_label('选一场比赛，或开车去兜风', margin+28, 231, 20)
-        entries = [
-            (2, '海岸生涯', '赛事 · 赢取星级与积分', 254, 82, 0xeb45),
-            (3, '我的车库', '选车 · 升级 · 车身颜色', 348, 82, 0xebbb),
-            (1, '滨海自由驾驶', '无计时 · 自由探索', 442, 82, 0xef3d),
-            (0, '计时挑战', old_goal, 630, 82, 0xff9b),
-            (6, '专家试验台', '车辆实验与曲线', 736, 78, 0xee2f)]
-        if len(self.actions) > 8:
-            entries.append((8, '无限高速', '自由驾驶 · 五公里挑战', 536, 82, 0xef3d))
-        for index, title, subtitle, y, height, icon in entries:
-            self.button(index, title, subtitle, margin+inset, y, inner, height, icon=icon)
-        self.fill(margin+24, 730, inner, 1, (.75, .78, .82, 1), 0)
-        self.button(7, '驾驶辅助  F2', None, self.width-520, 883, 183, 42, footer=True)
+        self.fill(0, 68, panel_width, 798, (.966, .961, .949, 1), 0)
+        self.place_label('海岸驾驶', margin, 160, 60, bold=True)
+        self.button(self.continue_index, '继续赛季', next_name, margin, 212, inner, 121)
+        entries = {2: '生涯赛事', 3: '我的车库', 1: '滨海自由驾驶', 8: '无限高速',
+                   0: '计时挑战', 6: '专家试验台'}
+        for row, index in enumerate(i for i in self.order[1:] if i in entries):
+            y = 366+row*73
+            self.fill(margin, y, inner, 1, (.8, .82, .85, 1), 0)
+            self.button(index, entries[index], old_goal if index == 0 else None, margin, y+2, inner, 69)
+        self.fill(margin, 805, inner, 1, (.8, .82, .85, 1), 0)
+        self.button(7, '驾驶辅助  F2', None, self.width-503, 883, 177, 42, footer=True)
         self.button(4, '声音设置', None, self.width-313, 883, 143, 42, footer=True)
         self.button(5, '退出游戏', None, self.width-146, 883, 116, 42, footer=True)
         self.driving_mode_button = self.buttons[7]
-        for text, x, width in (('↑', margin, 46), ('↓', margin+60, 46), ('Enter', margin+196, 75)):
-            self.fill(x, 881, width, 40, (.95, .96, 1, .15))
-            self.place_label(text, x+11, 911, 21, WHITE)
-        self.place_label('选择', margin+124, 911, 20, WHITE)
-        self.place_label('确认', margin+287, 911, 20, WHITE)
-        for node, x, y, right in ((self.stars, self.width-350, 49, False),
-                (self.credits, self.width-55, 49, True), (self.car_name, self.width-margin, 191, True),
-                (self.vehicle_note, self.width-margin, 228, True), (self.notice, margin+24, 849, False)):
+        self.fill(self.width-margin-314, 152, 314, 88, DARK, 0)
+        for node, x, y, right in ((self.stars, self.width-margin, 44, True),
+                (self.credits, self.width-55, 49, True), (self.car_name, self.width-margin-16, 185, True),
+                (self.vehicle_note, self.width-margin-16, 221, True), (self.notice, margin, 896, False)):
             node.reparentTo(self.layout)
             node.setPos(*self.point(x, y))
             node.textNode.setAlign(TextNode.ARight if right else TextNode.ALeft)
-        self.place_label('当前车辆', self.width-margin-180, 148, 20, WHITE)
-        self.car_box = self.box(margin+panel_width+18, 220, self.width-margin*2-panel_width-18, 620)
+        self.car_box = self.box(panel_width+12, 251, self.width-margin-panel_width-12, 597)
         if owns_car:
             self.vehicle_view.show(self.home, self.car_box, self.vehicle_view.base.workspace_vehicle, studio=True)
             self.vehicle_view.frame.setTransparency(TransparencyAttrib.MAlpha)
         self.select(self.selected)
 
-    def show_home(self, progress, vehicle):
-        self.stars.setText(f'★  {progress.stars} / 18 星')
-        self.credits.setText(f'{progress.credits} 积分')
+    def show_home(self, progress, vehicle, continuation):
+        self.home.show()
+        self.stars.setText(f'{progress.stars} / 18 星')
+        self.subtitles[self.continue_index].setText(continuation)
+        self.credits.setText('')
         car = next(car for car in garage_cars(vehicle) if car.design_id == vehicle.design_id)
         self.car_name.setText(car.name)
         self.vehicle_note.setText(car.category)
@@ -184,6 +174,7 @@ class MainMenu:
         self.vehicle_view.highlight(None)
 
     def hide_home(self):
+        self.home.hide()
         if self.vehicle_view.frame is not None and self.vehicle_view.frame.getParent() == self.home:
             self.vehicle_view.hide()
 
@@ -193,21 +184,20 @@ class MainMenu:
     def select(self, index):
         self.selected = index % len(self.buttons)
         for i, button in enumerate(self.buttons):
-            focused, primary, footer = i == self.selected, i == 2, i in (7, 4, 5)
+            focused, primary, footer = i == self.selected, i == self.continue_index, i in (7, 4, 5)
+            self.edges[i].setColor(DARK if primary else ORANGE)
             self.edges[i].show() if focused else self.edges[i].hide()
-            button['geom_color'] = ORANGE if primary else ((1, .90, .85, 1) if focused else (.98, .98, .99, 1))
+            button['geom_color'] = ORANGE if primary else ((1, .90, .85, 1) if focused else (0, 0, 0, 0))
             if footer:
                 button['geom_color'] = (.25, .27, .30, 1) if focused else (.10, .12, .15, .80)
             color = WHITE if primary or footer else INK
             button['text_fg'] = color
             if i in self.subtitles:
                 self.subtitles[i]['fg'] = WHITE if primary else GRAY
-            for symbol in self.symbols.get(i, ()):
-                symbol['fg'] = color
 
     def move(self, direction):
         if self.selected in (7, 4, 5):
-            self.select(6 if direction < 0 else 2)
+            self.select(6 if direction < 0 else self.continue_index)
         else:
             self.select(self.order[(self.order.index(self.selected)+direction) % len(self.order)])
 

@@ -6,7 +6,6 @@ from panda3d.core import TextNode, TransparencyAttrib
 from audio.music import STATIONS
 from braking_lesson import BRAKING_MODES
 from career import EVENT_BY_ID
-from coastal_medals import driving_goal
 from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
 from overtake_routes import OVERTAKE_ROUTES
@@ -16,6 +15,7 @@ from sprint_routes import SPRINT_ROUTES
 from ui import theme
 from ui.braking_feedback import driving_feedback
 from ui.career_hud import CareerDrivingHUD
+from ui.coastal_hud import CoastalDrivingHUD
 from ui.overtake_feedback import driving_feedback as overtake_driving_feedback
 from ui.overtake_feedback import traffic_feedback
 from ui.race_feedback import split_feedback
@@ -53,7 +53,6 @@ class DrivingHUD:
         self._radio_station = None
         self._aspect = None
         self._timed = None
-        self._coastal = None
         self._split_invalidated = None
         self._overtaking = False
         self.root = parent.attachNewNode("driving-hud")
@@ -138,36 +137,66 @@ class DrivingHUD:
                                 text="W / ↑ 油门    S / ↓ 刹车·倒车    A D 转向    R 复位    C 视角    N 切台    M 音乐    Esc 暂停",
                                 font=body_font, fg=theme.PAPER_LIGHT, pos=(0, 0.009), scale=0.027, mayChange=True)
         self.career = CareerDrivingHUD(self.root, body_font, number_font, career_action)
+        self.coastal = CoastalDrivingHUD(self.root, body_font, number_font, self.career.regular)
         self._career_active = False
+        self._coastal_active = False
 
     def update(self, state, race, highway, *, track, countdown, notice,
-               driving_mode=DrivingMode.GAME):
-        career_active = track == 'endless' and highway.career is not None
-        if career_active != self._career_active:
-            self._career_active = career_active
+               driving_mode=DrivingMode.GAME, automatic=False, automatic_splits=(), career_gold=None):
+        budget_active = highway.engineering is not None and highway.engineering.assessment == 'road'
+        career_active = track == 'endless' and highway.career is not None and not budget_active
+        coastal_active = track == 'coastal' or budget_active
+        if (career_active, coastal_active) != (self._career_active, self._coastal_active):
+            self._career_active, self._coastal_active = career_active, coastal_active
             for widget in (self.status_frame, self.notice_frame, self.speed_frame, self.help_frame):
-                widget.hide() if career_active else widget.show()
+                widget.hide() if career_active or coastal_active else widget.show()
             self.career.root.show() if career_active else self.career.root.hide()
+            self.coastal.root.show() if coastal_active else self.coastal.root.hide()
         if career_active:
             self.career.update(state.player, highway.career, notice=notice,
-                driving_mode=driving_mode, station=self._radio_station)
+                driving_mode=driving_mode, station=self._radio_station, road_gold=career_gold,
+                automatic=automatic)
+            return
+        if coastal_active:
+            if budget_active:
+                feedback, warning = '', False
+                circuit = track == 'coastal' and race.mode == GameMode.TIME_TRIAL
+                invalid_reason = race.invalid_reason if circuit and race.invalidated else ''
+                if highway.overtake is not None:
+                    reading, warning = traffic_feedback(highway.overtake)
+                    required = OVERTAKE_ROUTES[race.mode].passes
+                    passes = highway.overtake.passes
+                    goal = ' · 安全驶至终点' if passes >= required else ''
+                    feedback = f'安全超车 {passes}/{required}{goal}\n{reading}'
+                elif highway.sprint is not None and SPRINT_ROUTES[race.mode].speed_zone is not None:
+                    _, feedback = sprint_driving_feedback(highway.sprint)
+                    feedback = feedback.split('\n')[-1]
+                elif highway.career is not None:
+                    feedback = EVENT_BY_ID[highway.career.event_id].tip
+                elif circuit and not race.invalidated and race.checkpoints == highway.engineering.gate_count-1:
+                    feedback = '检查点已齐，驶过终点线'
+                self.coastal.update_challenge(state.player, highway.engineering, countdown=countdown,
+                    notice='\n'.join(value for value in (notice, feedback) if value),
+                    driving_mode=driving_mode, station=self._radio_station, warning=warning,
+                    split_label='分段' if circuit or race.mode == GameMode.DISTANCE_CHALLENGE or highway.overtake is not None
+                    else '道路门',
+                    invalid_reason=invalid_reason, automatic=automatic, automatic_splits=automatic_splits)
+                return
+            self.coastal.update(state.player, race, countdown=countdown, notice=notice,
+                                driving_mode=driving_mode, station=self._radio_station)
             return
         player = state.player
         timed = ((track != "endless" and race.mode == GameMode.TIME_TRIAL)
                  or (track == "endless" and (race.mode in (*SLALOM_MODES, *OVERTAKE_ROUTES)
                                              or highway.sprint is not None)))
-        coastal = track == "coastal" and race.mode == GameMode.TIME_TRIAL
         overtaking = track == 'endless' and race.mode in OVERTAKE_ROUTES
-        if timed != self._timed or coastal != self._coastal or overtaking != self._overtaking:
-            self._timed, self._coastal = timed, coastal
+        if timed != self._timed or overtaking != self._overtaking:
+            self._timed = timed
             self._overtaking = overtaking
             self.split.show() if timed else self.split.hide()
-            self.goal.show() if coastal or overtaking else self.goal.hide()
-            self.status_frame["frameSize"] = (0, .88, -.68 if overtaking else -.64 if coastal else -.54 if timed else -.40, 0)
-            self.notice_frame.setZ(.22 if overtaking else .26 if coastal else .36 if timed else .50)
-        if coastal:
-            set_text(self.goal, driving_goal(race))
-            self.goal.setFg(theme.SEA)
+            self.goal.show() if overtaking else self.goal.hide()
+            self.status_frame["frameSize"] = (0, .88, -.68 if overtaking else -.54 if timed else -.40, 0)
+            self.notice_frame.setZ(.22 if overtaking else .36 if timed else .50)
         abs_label = "关闭" if not player.abs_enabled else (
             "介入" if any(brake.abs_active for brake in player.brake_states) else "待命"
         )
@@ -266,7 +295,7 @@ class DrivingHUD:
             message = "享受海岸之旅"
         if track == "endless" or race.mode == GameMode.TIME_TRIAL:
             self.status.setScale(0.071)
-        value = " · ".join(item for item in (countdown, notice, message) if item)
+        value = " · ".join(item for item in (countdown, '自动试车' if automatic else '', notice, message) if item)
         if value != self._notice_source:
             self._notice_source = value
             self.status_notice.setText(value)
@@ -293,9 +322,11 @@ class DrivingHUD:
         self.notice_frame.setX(-aspect + 0.075)
         self.speed_frame.setX(aspect - 0.075)
         self.career.resize(aspect)
+        self.coastal.resize(aspect)
 
     def destroy(self):
         self.career.destroy()
+        self.coastal.destroy()
         for widget in (self.status_frame, self.notice_frame, self.speed_frame, self.help_frame):
             widget.destroy()
         self.root.removeNode()

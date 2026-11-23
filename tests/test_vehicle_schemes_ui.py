@@ -5,14 +5,19 @@ from types import SimpleNamespace
 import pytest
 from direct.gui import DirectGuiGlobals as DGG
 
-import workshop_cornering as cornering
+from challenge_build import BuildDraft
 from lab_application import VehicleLab
 from vehicle_schemes import compare_schemes, list_schemes, load_scheme
 from vehicle_workspace import WorkspaceVehicle
+from workshop_budget import REFERENCE_CHALLENGES
+
+BUILDS = {1: BuildDraft(front_tire=1.25, antiroll_share=8/30),
+          2: BuildDraft(front_tire=1.3, rear_tire=.9, antiroll_share=8/30), 3: BuildDraft()}
 
 
 @pytest.fixture
-def lab(tmp_path):
+def lab(tmp_path, monkeypatch):
+    monkeypatch.setenv('LOCALAPPDATA', str(tmp_path/'user'))
     app = VehicleLab(offscreen=True, output=tmp_path/"reports", scheme_root=tmp_path/"schemes")
     app.engine.taskMgr.remove("lab-update")
     yield app
@@ -22,7 +27,7 @@ def lab(tmp_path):
 def trial(app, index):
     panel = app.workshop
     panel.set_topic(1)
-    panel.share.set(index)
+    panel.drafts[1] = BUILDS[index]
     panel.start()
     while panel.phase is not None:
         while not app.run_state.done:
@@ -44,16 +49,18 @@ def test_two_real_recipes_compare_load_and_drive_frozen_hardware(lab, tmp_path, 
     panel.show()
     assert panel.drive_button["state"] == DGG.DISABLED
     trial(lab, 1)
-    a = save(lab, "轻预算45k")
+    a = save(lab, "低成本前胎")
     panel.hide()
     trial(lab, 2)
-    b = save(lab, "循迹50k")
+    b = save(lab, "前后胎组合")
     assert len(panel.schemes) == 2
     assert "B−A" in panel.comparison.getText()
     assert "峰值侧偏" in panel.metric_rows[1][0].getText()
     assert panel.metric_rows[0][1].getText() == f"{a.challenge['candidate_metrics']['mean_error_m']:.3f}"
     assert panel.metric_rows[0][2].getText() == f"{b.challenge['candidate_metrics']['mean_error_m']:.3f}"
-    assert "铜牌" in panel.left_text.getText() and "金牌" in panel.right_text.getText()
+    assert a.challenge['passed'] and b.challenge['passed']
+    assert a.challenge['medal']+'牌' in panel.left_text.getText()
+    assert b.challenge['medal']+'牌' in panel.right_text.getText()
     assert panel.menus[1].component("item0")["text_font"] == lab.font
     comparison = compare_schemes(a, b)
     with monkeypatch.context() as patch:
@@ -72,11 +79,11 @@ def test_two_real_recipes_compare_load_and_drive_frozen_hardware(lab, tmp_path, 
     assert lab.record.snapshots == b.records()[1].snapshots
     assert lab.workshop.baseline.snapshots == b.records()[0].snapshots
     # 曲线A改为另一方案，不应使工坊原始A基线丢失或失去奖牌。
-    assert lab.workshop.result["medal"] == "金"
+    assert lab.workshop.result['medal'] == b.challenge['medal']
     panel.show()
     panel.load_right()
-    assert lab.engineered_config == cornering.build_config(2, False, False)
-    assert lab.workshop.selection() == (2, False, False)
+    assert lab.engineered_config == REFERENCE_CHALLENGES[1].configuration(BUILDS[2])
+    assert lab.workshop.measured_build == BUILDS[2]
     path = tmp_path/"current.json"
     monkeypatch.setattr("vehicle_workspace.workspace_vehicle_path", lambda: path)
     monkeypatch.setattr(lab, "userExit", lambda: None)
@@ -100,12 +107,13 @@ def test_two_real_recipes_compare_load_and_drive_frozen_hardware(lab, tmp_path, 
 
 def test_failed_recipe_is_saved_for_analysis_without_forged_award(lab):
     trial(lab, 3)
-    item = save(lab, "侧偏超限")
+    item = save(lab, "原装未达标")
     assert item.vehicle.workshop_result is None and not item.challenge["passed"]
     assert "未获工坊" in lab.schemes.right_text.getText()
     lab.schemes.load_right()
     assert lab.workshop.result is not None and not lab.workshop.result["passed"]
-    assert lab.workshop.drive_button["state"] == DGG.DISABLED
+    lab.workshop.show()
+    assert lab.workshop.editor.buttons[lab.workshop.editor.primary]['state'] == DGG.DISABLED
 
 
 def test_missing_record_and_write_failure_preserve_trial_and_other_schemes(lab, tmp_path, monkeypatch):

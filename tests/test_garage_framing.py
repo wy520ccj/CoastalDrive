@@ -15,7 +15,14 @@ from vehicle_visual import load_vehicle
 
 
 @pytest.mark.parametrize('design_id', [car.design_id for car in GARAGE_CARS])
-def test_actual_cars_fit_garage_and_short_result_viewports(design_id):
+def test_actual_cars_fit_garage_and_short_result_viewports(design_id, monkeypatch):
+    projections = []
+
+    def record_projection(*args):
+        projections.append(1)
+        return project_vertices(*args)
+
+    monkeypatch.setattr('ui.workshop_vehicle.project_vertices', record_projection)
     scene = NodePath('framing-contract')
     root = scene.attachNewNode('car')
     config = vehicle_design(design_id).config
@@ -27,7 +34,8 @@ def test_actual_cars_fit_garage_and_short_result_viewports(design_id):
     camera = scene.attachNewNode(Camera('framing-camera', lens))
     vertices = mesh_vertices(root, scene)
     view = SimpleNamespace(car_root=root, scene=scene, camera=camera,
-                           framing_vertices=vertices, studio_angle=55.)
+                           framing_vertices=vertices, studio_angle=55.,
+                           framing_cache={}, highlight_topic=None)
     try:
         for aspect in (1.3, 1.6, 2.17):
             lens.setAspectRatio(aspect)
@@ -45,5 +53,13 @@ def test_actual_cars_fit_garage_and_short_result_viewports(design_id):
                 if design_id == 'game-tuned' and aspect == 2.17 and angle == 55.:
                     # 旧35度/包围盒算法在同一短视口仅占56%宽，保留可感知的改善。
                     assert np.ptp(projected[:, 0])/2 > .70
+                transform, offset = camera.getTransform(scene), tuple(lens.getFilmOffset())
+                count = len(projections)
+                camera.setPos(1, 2, 3)
+                lens.setFilmOffset(.2, .3)
+                WorkshopVehicle.orbit(view, 0)
+                assert len(projections) == count
+                assert camera.getTransform(scene) == transform
+                assert tuple(lens.getFilmOffset()) == offset
     finally:
         scene.removeNode()

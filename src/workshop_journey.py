@@ -8,6 +8,7 @@ from braking_lesson import medal_for
 from lab_records import load_record
 from vehicle_schemes import checked_challenge, list_schemes
 from workshop import CHALLENGE_ID as BRAKING_ID
+from workshop_budget import REFERENCE_CHALLENGES
 from workshop_cornering import CHALLENGE_ID as CORNERING_ID
 
 
@@ -26,10 +27,11 @@ def read_journey(root, vehicle, scores):
     schemes, errors = list_schemes(root)
     projects = []
     for topic, challenge_id, title in ((0, BRAKING_ID, "01 制动配方"), (1, CORNERING_ID, "02 弯道循迹")):
+        ids = (challenge_id, REFERENCE_CHALLENGES[topic].id)
         candidates = [(item.name, item.vehicle, item.id, item) for item in schemes
                       if item.vehicle.workshop_result is not None
-                      and item.vehicle.workshop_result["challenge_id"] == challenge_id]
-        if (vehicle.workshop_result is not None and vehicle.workshop_result["challenge_id"] == challenge_id
+                      and item.vehicle.workshop_result["challenge_id"] in ids]
+        if (vehicle.workshop_result is not None and vehicle.workshop_result["challenge_id"] in ids
                 and all(item[1] != vehicle for item in candidates)):
             candidates.append(("当前工程车", vehicle, vehicle.scheme_id, None))
         candidates.sort(key=lambda item: (item[1].workshop_result["road_validated"],

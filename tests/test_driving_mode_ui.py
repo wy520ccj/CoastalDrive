@@ -9,6 +9,7 @@ from application import CoastalDrive
 from driving_modes import DrivingMode
 from session import Phase
 from settings import AudioSettingsStore, DrivingModeStore
+from ui.coastal_hud import SOFT
 from ui.hud import driving_help
 from vehicle_designs import vehicle_design
 
@@ -110,12 +111,13 @@ def test_game_ignores_stale_direct_mode_and_menu_only_changes_electronics(tmp_pa
         app.hud.update(app.session.frame(0), app.session.race.snapshot, app.session.highway.snapshot,
                        track=app.session.simulation.track, countdown="", notice="",
                        driving_mode=app.session.driving_mode)
-        assert "刹车·倒车" in app.hud.help.getText()
-        assert "ABS待命 TCS关闭 ESC关闭" in app.hud.help.getText()
-        for line in app.hud.help.getText().splitlines():
-            node = TextNode("mode-help-width")
-            node.setFont(app.ui_font)
-            assert node.calcWidth(line) * .027 <= 1.5
+        view = app.hud.coastal
+        assert "刹车·倒车" in view.primary_keys.getText()
+        assert view.assist_lights[0]['frameColor'] == SOFT
+        assert all(light['frameColor'] == (.38,.44,.47,1) for light in view.assist_lights[1:])
+        for widget in (view.primary_keys,view.secondary_keys):
+            lower,upper = widget.getTightBounds(view.help_frame)
+            assert lower.x >= 0 and upper.x <= 510
         assert "刹车·倒车" in driving_help(DrivingMode.GAME)
     finally:
         app.close_game()

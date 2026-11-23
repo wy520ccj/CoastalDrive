@@ -13,11 +13,13 @@ def test_details_and_naming_return_one_level_without_losing_draft(tmp_path, monk
         app.entries['cg'].enterText('.46')
         panel = app.workshop
         panel.show()
-        panel.share.set(2)
-        panel.toggle_details()
+        panel.action('challenge-tab', 2)
+        panel.action('challenge-value', ('brake_share', '70'))
+        entry = panel.editor.challenge_entries['brake_share']
+        entry['focus'] = 1
         app.escape()
-        assert panel.details.isHidden() and not panel.root.isHidden()
-        assert panel.selection() == (2, False)
+        assert not entry['focus'] and not panel.root.isHidden()
+        assert panel.draft.brake_share == .7
         assert app.run_state is None and app.record is None
         app.escape()
         assert panel.root.isHidden()

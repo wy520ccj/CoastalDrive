@@ -1,7 +1,6 @@
 """规则/成长/经济的确定性测试；合成判定输入不充当真实驾驶证据。"""
 
 from dataclasses import replace
-from pathlib import Path
 
 from career import EVENT_BY_ID, PARTS, CareerProgress
 from career_run import CareerResult, CareerRun
@@ -29,24 +28,20 @@ def test_unlock_and_reward_only_improved_stars_survive_reload(tmp_path):
     assert restored.recommended().id == 'parking'
 
 
-def test_purchase_once_ownership_and_money_preserved_on_write_failure(tmp_path, monkeypatch):
+def test_permanent_purchase_is_retired_without_modifying_owned_parts_or_money(tmp_path):
     store = CareerProgress(tmp_path/'career.json')
     store.record(finished())
     store.record(finished('parking', 3))
-    assert store.buy(PARTS[0]) and store.credits == 250
-    assert store.buy(PARTS[0]) and store.credits == 250
+    credits = store.credits
     before = store.path.read_bytes()
 
-    def fail(self, target):
-        raise OSError('测试只读')
-
-    monkeypatch.setattr(Path, 'replace', fail)
-    assert not store.buy(PARTS[1])
-    assert store.credits == 250 and PARTS[1].id not in store.owned
+    for part in PARTS:
+        assert not store.buy(part)
+    assert store.credits == credits and not store.owned
     assert store.path.read_bytes() == before
 
 
-def test_all_parts_unlock_in_steps_and_full_career_can_afford_them_once(tmp_path):
+def test_historical_growth_and_currency_survive_reload_but_do_not_buy_new_performance(tmp_path):
     store = CareerProgress(tmp_path/'career.json')
     awards = []
     for event in EVENT_BY_ID.values():
@@ -55,13 +50,13 @@ def test_all_parts_unlock_in_steps_and_full_career_can_afford_them_once(tmp_path
     assert {name for award in awards for name in award['unlocked'] if name.startswith('零件：')} == {
         '零件：'+part.name for part in PARTS}
     for part in PARTS:
-        assert store.buy(part)
+        assert not store.buy(part)
     credits = store.credits
-    assert credits == 1010
+    assert credits == 2460
     for part in PARTS:
-        assert store.buy(part) and store.credits == credits
+        assert not store.buy(part) and store.credits == credits
     reloaded = CareerProgress(store.path)
-    assert reloaded.owned == {part.id for part in PARTS} and reloaded.credits == credits
+    assert not reloaded.owned and reloaded.credits == credits
 
 
 def test_corrupt_save_and_locked_or_incomplete_results_cannot_overwrite(tmp_path):
@@ -82,6 +77,25 @@ def test_recommendation_stays_available_if_further_chapters_locked(tmp_path):
         store.record(finished(event, 1))
     assert store.available(store.recommended())
     assert store.recommended().chapter == 0
+
+
+def test_recommendation_prioritizes_unplayed_then_lowest_current_medal(tmp_path):
+    store = CareerProgress(tmp_path/'career.json')
+    legacy_gold = {'stars': 3, 'seconds': 25.}
+    records = {'parking': legacy_gold}
+    budget_records = {
+        event_id: {'medal': '铜' if event_id == 'parking' else '金', 'seconds': 25.,
+                   'build': {}, 'rules_version': 'test'}
+        for event_id in EVENT_BY_ID if event_id != 'coastal-cup'
+    }
+    assert store.save(records, set(), 0, budget_records=budget_records)
+    assert CareerProgress(store.path).recommended().id == 'coastal-cup'
+
+    budget_records['coastal-cup'] = dict(budget_records['first-drive'])
+    assert store.save(records, set(), 0, budget_records=budget_records)
+    restored = CareerProgress(store.path)
+    assert restored.course_record(EVENT_BY_ID['parking'])['stars'] == 1
+    assert restored.recommended().id == 'parking'
 
 
 def test_new_course_keeps_earned_unlocks_and_legacy_time_but_records_new_medals(tmp_path):

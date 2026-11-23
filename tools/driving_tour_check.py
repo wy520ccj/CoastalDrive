@@ -14,7 +14,6 @@ sys.path.insert(0, str(ROOT/'src'))
 
 from overtake_check import recheck as recheck_overtake
 from overtake_check import record
-from overtake_probe import OvertakeDriver
 from panda3d.core import Filename
 from slalom_driver import apply_keys
 from sprint_route_probe import SprintDriver
@@ -25,6 +24,7 @@ from driving_tour import LEGS, DrivingTour, overall_medal, points
 from lab_records import model_fingerprint
 from lab_runtime import runtime_fingerprint
 from overtake_routes import OVERTAKE_ROUTES
+from road_test_driver import OvertakeDriver
 from session import Phase
 from sprint_routes import SPRINT_ROUTES
 from vehicle_state import FIXED_DT

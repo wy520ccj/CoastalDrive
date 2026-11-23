@@ -56,22 +56,21 @@ def press(app, key):
     app.key_up(key)
 
 
-def test_menu_keyboard_mouse_close_and_original_choices_remain(app):
-    assert len(app.main_menu.buttons) == 8
-    app.main_menu.select(7)
-    press(app, "enter")
+def test_workshop_modal_keyboard_close_and_main_free_choice_remain(app):
+    assert len(app.main_menu.buttons) == len(app.main_menu.actions) == 9
+    app.open_workshop_garage()
     assert not app.workshop_garage.root.isHidden()
     original = app.main_menu.selected
     press(app, "arrow_right")
     assert app.workshop_garage.selected == 1 and app.main_menu.selected == original
     press(app, "escape")
     assert app.workshop_garage.root.isHidden() and app.session.phase == Phase.MENU
-    app.main_menu.buttons[7]["command"]()
+    app.open_workshop_garage()
     app.workshop_garage.activate(5)
     assert app.workshop_garage.root.isHidden()
     app.main_menu.select(1)
     app.main_menu.activate()
-    assert app.session.mode == GameMode.FREE_DRIVE
+    assert app.session.mode == GameMode.TIME_TRIAL
 
 
 def test_new_project_opens_correct_workshop_and_returns_same_window(app):
@@ -105,7 +104,7 @@ def test_saved_pending_project_locates_exact_scheme_and_drives_frozen_hardware(a
     finish(app, "game")
     assert app.workspace_vehicle.scheme_id == CORNER_ID
     assert app.workspace_vehicle.config == item.vehicle.config
-    assert app.session.mode == GameMode.TIME_TRIAL
+    assert app.session.mode == GameMode.FREE_DRIVE
 
 
 def test_file_corruption_after_open_does_not_replace_current_world_or_vehicle(app):
@@ -147,7 +146,7 @@ def test_legacy_single_vehicle_restores_its_real_award_without_a_scheme_library(
     app.journey.buttons[1]["command"]()
     finish(app, "lab")
     assert not app.lab.workshop.root.isHidden() and app.lab.workshop.topic == 1
-    assert app.lab.workshop.result["medal"] == "金"
+    assert app.lab.workshop.historical['medal'] == '金' and app.lab.workshop.result is None
     assert app.lab.record.snapshots == item.records()[1].snapshots
 
 
@@ -168,4 +167,5 @@ def test_unsaved_trial_survives_returning_to_the_same_project(app):
     finish(app, "lab")
     assert app.lab.workshop.result == before["result"]
     assert app.lab.workshop.candidate.snapshots == before["candidate"].snapshots
-    assert app.lab.workshop.selection() == before["selection"]
+    assert app.lab.workshop.historical == before['historical']
+    assert app.lab.workshop.capture()['drafts'] == before['drafts']

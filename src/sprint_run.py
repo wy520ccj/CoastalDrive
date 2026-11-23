@@ -3,7 +3,7 @@
 import math
 from dataclasses import dataclass, replace
 
-from sprint_routes import SPRINT_ROUTES
+from sprint_routes import VALLEY_BRAKING_VERSION, sprint_route
 from vehicle_config import body_center
 
 TIME_LIMIT = 180.
@@ -23,6 +23,8 @@ class SprintResult:
     zone_min_kph: float | None = None
     zone_max_kph: float | None = None
     zone_error_at: float | None = None
+    zone_entry_kph: float | None = None
+    braking_request: float | None = None
     reference_times: tuple = ()
     clearances: tuple = ()
     medal: str = ""
@@ -32,18 +34,37 @@ class SprintResult:
     best_seconds: float | None = None
     new_best: bool = False
     save_notice: str = ""
+    rules_version: str = ""
 
 
 class SprintRun:
-    def __init__(self, progress, mode, scores, variant, config):
+    def __init__(self, progress, mode, scores, variant, config, *, record_scores=True, rules_version=''):
         self.mode, self.scores, self.config = mode, scores, config
-        self.route = SPRINT_ROUTES[mode]
-        self.score_id = f"sprint-v1:{mode.value}:seed-{self.route.seed}:"+variant
-        self.snapshot = SprintResult(mode.value, progress, best_seconds=scores.get(mode, self.score_id),
-            reference_times=scores.get_splits(mode, self.score_id, len(self.route.gates)), save_notice=scores.notice)
+        self.record_scores = record_scores
+        self.route = sprint_route(mode, rules_version)
+        version = self.route.version or 'sprint-v1'
+        self.score_id = f"{version}:{mode.value}:seed-{self.route.seed}:"+variant
+        self.snapshot = SprintResult(mode.value, progress, rules_version=self.route.version)
+        if record_scores:
+            self.snapshot = replace(self.snapshot, best_seconds=scores.get(mode, self.score_id),
+                reference_times=scores.get_splits(mode, self.score_id, len(self.route.gates)), save_notice=scores.notice)
         self.previous = (0., 0., 0., 0., 0.)
+        self.braking_time = self.braking_integral = 0.
 
-    def update(self, progress, elapsed, *, lateral, heading, forward_speed=0., collisions=0, reset=False):
+    def _measure_braking(self, previous, position, dt, request):
+        start, end = self.route.gates[:2]
+        if previous == position:
+            duration = dt if start <= position < end else 0.
+        else:
+            low, high = sorted((previous, position))
+            duration = dt*max(0., min(high, end)-max(low, start))/(high-low)
+        if duration > 0.:
+            self.braking_time += duration
+            self.braking_integral += duration*request
+            self.snapshot = replace(self.snapshot, braking_request=self.braking_integral/self.braking_time)
+
+    def update(self, progress, elapsed, *, lateral, heading, forward_speed=0., collisions=0, reset=False,
+               brake_request=None):
         state = self.snapshot
         if state.finished:
             return state
@@ -60,6 +81,9 @@ class SprintRun:
             self.stop("驶离赛事道路；提前看清弯势再加速。")
         if self.snapshot.finished:
             return self.snapshot
+        if (self.route.version == VALLEY_BRAKING_VERSION and state.gates < 2
+                and brake_request is not None):
+            self._measure_braking(py, position, elapsed-pt, brake_request)
         zone = self.route.speed_zone
         if zone is not None:
             low, high = max(min(py, position), zone.start), min(max(py, position), zone.end)
@@ -69,7 +93,9 @@ class SprintRun:
                            (high, pv+(kph-pv)*(high-py)/(position-py))) if position != py else ((position, pv), (position, kph))
                 values = tuple(value for _, value in samples)
                 minimum, maximum = min(values), max(values)
+                entry = samples[0][1] if py < zone.start <= position else state.zone_entry_kph
                 self.snapshot = replace(self.snapshot,
+                    zone_entry_kph=state.zone_entry_kph if state.zone_entry_kph is not None else entry,
                     zone_min_kph=minimum if state.zone_min_kph is None else min(state.zone_min_kph, minimum),
                     zone_max_kph=maximum if state.zone_max_kph is None else max(state.zone_max_kph, maximum))
                 if minimum < zone.minimum_kph or maximum > zone.maximum_kph:
@@ -106,8 +132,9 @@ class SprintRun:
                 break
             self.snapshot = replace(self.snapshot, gates=index+1)
             if index+1 == len(self.route.gates):
-                best, saved = self.scores.record(self.mode, seconds, self.score_id, splits=self.snapshot.gate_times)
-                medal = self.route.medal_for(seconds)
+                best, saved = (self.scores.record(self.mode, seconds, self.score_id, splits=self.snapshot.gate_times)
+                               if self.record_scores else (None, False))
+                medal = self.route.medal_for(seconds) if self.record_scores else ''
                 self.snapshot = replace(self.snapshot, seconds=seconds, medal=medal, best_seconds=best,
                     new_best=saved and (state.best_seconds is None or seconds < state.best_seconds),
                     save_notice=self.scores.error or self.scores.notice)

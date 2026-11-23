@@ -1,10 +1,10 @@
 import json
 import logging
 import time
-from dataclasses import replace
+import traceback
+from dataclasses import asdict, replace
 from pathlib import Path
 
-import simplepbr
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectButton, DirectFrame, OnscreenText
 from direct.showbase.DirectObject import DirectObject
@@ -12,6 +12,7 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import (
     ClockObject,
     Filename,
+    InputDevice,
     NodePath,
     TextNode,
     TransparencyAttrib,
@@ -21,50 +22,70 @@ from panda3d.core import (
 
 from audio.music import STATIONS
 from braking_lesson import BRAKING_MODES, BrakingScores
-from career import EVENT_BY_ID, PART_BY_ID, CareerProgress
-from career_garage import garage_cars, save_paint, saved_paint, saved_vehicle, select_vehicle
-from career_tuning import install as install_career_upgrade
+from career import EVENT_BY_ID, CareerProgress
+from career_garage import (
+    CAR_BY_DESIGN,
+    garage_cars,
+    save_paint,
+    saved_paint,
+    saved_vehicle,
+    select_vehicle,
+)
+from challenge_build import ADJUSTMENTS, BuildDraft
+from challenge_catalog import (
+    ROAD_CHALLENGES,
+    course_gates,
+    course_mode,
+    course_shape,
+    course_track,
+    distance_challenge_spec,
+)
+from challenge_plans import ChallengePlans
 from chase_camera import ChaseCamera
-from coastal_medals import menu_goal, result_goal, result_medal
+from coastal_medals import result_goal, result_medal
 from controls import ConstantController
 from driving_journey import read_driving_journey
 from driving_modes import DrivingMode
 from driving_tour import LEGS as TOUR_LEGS
-from driving_tour import TITLES as TOUR_TITLES
-from driving_tour import DrivingTour, overall_medal, points
+from driving_tour import DrivingTour
 from garage import GaragePreview
 from highway_run import TRAFFIC_DENSITIES
 from lab_records import load_record
+from lap_ghost import ghost_context, record_context
 from overtake_routes import OVERTAKE_ROUTES
 from paths import user_data
 from player_road_ab import PlayerRoadAB
 from player_road_ab import context as player_road_context
 from player_road_ab import record as player_road_record
 from race import BestTimes, GameMode
+from rendering import ScenePipeline
 from road_retest import prepare_pair
+from road_test_driver import TRIAL_POLICIES, TRIAL_POLICY_VERSION, RoadTestDriver
 from scene import Scene
+from season_cup import CUP_INPUT, CUP_LEGS, CUP_UNLOCK, cup_specs
+from sector_chase import CHASE_COURSES, CHASE_INPUT
 from session import Phase, Session
 from settings import AppearanceStore, AudioSettingsStore, DrivingModeStore
 from simulation import Control
 from skins import PLAYER_VEHICLES, SKINS, apply_skin, vehicle_definition, vehicle_for_design
 from slalom_lesson import SLALOM_MODES, SlalomScores
 from soundscape import Soundscape
-from sprint_routes import SPRINT_ROUTES
-from tire_tuning import install as install_front_tires
-from tire_tuning import install_brakes
-from tire_tuning import restore as restore_pre_tuning_vehicle
-from tracks import COASTAL_CIRCUIT
+from sprint_routes import SPRINT_ROUTES, VALLEY_BRAKING
+from tour_budget import BudgetTour, read_tour
+from trial_references import TrialReferences, ValleyTrial
 from ui import theme
 from ui.braking_feedback import RULES as BRAKING_RULES
 from ui.braking_feedback import SHORT_RULES as SHORT_BRAKING_RULES
 from ui.braking_feedback import result_feedback as braking_result_feedback
 from ui.career import CareerPanel
+from ui.career_events import BOARD_EVENTS, CLUB_EVENTS
 from ui.countdown import Countdown
 from ui.driving_cards import DrivingCards
 from ui.driving_journey import DrivingJourney
 from ui.driving_tour import DrivingTourPanel
 from ui.hud import DrivingHUD
 from ui.main_menu import MainMenu
+from ui.overtake_feedback import budget_rules as overtake_budget_rules
 from ui.overtake_feedback import result_feedback as overtake_result_feedback
 from ui.player_road_ab import PlayerRoadPanel
 from ui.race_feedback import result_columns
@@ -72,10 +93,8 @@ from ui.slalom_feedback import FAST_RULES as FAST_SLALOM_RULES
 from ui.slalom_feedback import RULES as SLALOM_RULES
 from ui.slalom_feedback import gate_columns
 from ui.slalom_feedback import result_feedback as slalom_result_feedback
-from ui.sprint_feedback import goals as sprint_goals
 from ui.sprint_feedback import result_columns as sprint_columns
 from ui.sprint_feedback import result_feedback as sprint_result_feedback
-from ui.tire_tuning import TireTuningPanel
 from ui.window_icon import load_window_icon, release_window_icon
 from ui.workshop_garage import WorkshopGarage
 from ui.workshop_journey import WorkshopJourney
@@ -85,6 +104,7 @@ from vehicle_designs import vehicle_design
 from vehicle_schemes import load_scheme, scheme_library_path, sync_road_progress
 from vehicle_workspace import WorkspaceVehicle, workspace_vehicle_path
 from workshop import road_result
+from workshop_budget import REFERENCE_CHALLENGES
 from workshop_cornering import CHALLENGE_ID as CORNERING_CHALLENGE_ID
 from workshop_journey import current_trial, read_journey
 
@@ -106,6 +126,8 @@ class CoastalDrive(ShowBase):
                     f"sync-video {int(sync_video)}",
                     # 高频车辆变换几乎不命中全局缓存；保留RenderState缓存和线程安全回收。
                     "transform-cache false",
+                    # 分帧清理已废弃的渲染状态，避免每帧扫描整张静态场景缓存表。
+                    "garbage-collect-states-rate 0.5",
                     f"threading-model {threading_model}",
                     "window-type offscreen" if smoke and not onscreen else "window-type onscreen",
                     "audio-library-name p3openal_audio" if audio_enabled else "audio-library-name null",
@@ -120,6 +142,7 @@ class CoastalDrive(ShowBase):
         self.lab_output = lab_output
         self.audio_enabled = audio_enabled
         self.game_input = DirectObject()
+        self.menu_gamepads = set()
         # 正式窗口由垂直同步调度；额外90Hz睡眠会打断其节奏。离屏/关闭同步诊断仍限帧。
         ClockObject.getGlobalClock().setMode(ClockObject.MNormal)
         self._render_deadline = time.perf_counter()
@@ -130,7 +153,7 @@ class CoastalDrive(ShowBase):
         self.disableMouse()
         # The default bias detaches contact shadows at our light's depth range.
         # 驾驶场景和车库都只使用一束直射光，避免为七个空光槽处理阴影坐标。
-        self.pipeline = simplepbr.init(enable_shadows=True, max_lights=1,
+        self.pipeline = ScenePipeline(enable_shadows=True, max_lights=1,
                                       msaa_samples=4, shadow_bias=0.0007)
         if startup_trace is not None:
             startup_trace.mark("renderer_initialized")
@@ -210,6 +233,11 @@ class CoastalDrive(ShowBase):
         self.overtake_mode = GameMode.SAFE_OVERTAKE
         self.driving_journey_return = False
         self.tour_store = None
+        self.cup_store = None
+        self.cup_notice = ''
+        self.cup_drafts = {}
+        self.cup_plans = ChallengePlans(self.session.race.scores.path.with_name('season-cup-plans.json'))
+        self.tour_unsaved = {}
         self.player_road_ab = PlayerRoadAB(self.session.race.scores.path.with_name('player-road-ab.json'))
         self.player_brake_ab = PlayerRoadAB(self.session.race.scores.path.with_name('player-braking-ab.json'), brakes=True)
         self.road_attempt = self.road_start_context = None
@@ -218,6 +246,7 @@ class CoastalDrive(ShowBase):
         self.tour_active = self.tour_pending = False
         self.tour_round = 0
         self.tour_status = ''
+        self.tour_practice_original = None
         self.lab_return_braking = False
         self.braking_mode = GameMode.BRAKING_LESSON
         self.lab_return_slalom = False
@@ -230,6 +259,23 @@ class CoastalDrive(ShowBase):
         self.workshop_schemes_request = False
         self.workshop_lab_return = False
         self.career_progress = CareerProgress(self.session.race.scores.path.with_name('career-progress.json'))
+        self.budget_plans = ChallengePlans(self.session.race.scores.path.with_name('challenge-plans.json'))
+        self.budget_drafts = {}
+        self.budget_mode, self.budget_tab = None, 0
+        self.budget_auto, self.budget_stock = False, False
+        self.auto_trials = TrialReferences(self.session.race.scores.path.with_name('trial-references'))
+        self.auto_trial_group = None
+        self.auto_trial_saved = False
+        self.auto_trial_reference = None
+        self.budget_origin = None
+        self.chase_practice_sector = None
+        self.road_ab_topic = 'tires'
+        self.road_ab_return = ''
+        self.career_lab_return = False
+        self.budget_active, self.budget_model_before = False, None
+        self.budget_lab_original = None
+        self.budget_electronics = None
+        self.driving_error = ''
         self.career_active, self.career_event_id, self.career_award = False, None, None
         self.career_garage_tab = 'cars'
         self.career_preview = self.workspace_vehicle
@@ -294,18 +340,30 @@ class CoastalDrive(ShowBase):
     def start_game(self, *, mode, track="coastal", tour=False):
         if self._workspace_steps is not None:
             return
+        self.driving_error = ''
         self.tour_active = self.tour_pending = tour
         if self.smoke or self.startup_trace is not None:
             self._enter_game(mode, track)
             return
-        self._begin_workspace(self._load_road(mode, track), "驶向滨海公路" if track == "coastal" else "进入无限高速",
-                              "方向盘后，继续检验这辆车")
+        if self.budget_active and mode == course_mode(self.budget_mode):
+            title = self._budget_editor_spec(self.budget_mode).name
+        elif mode == GameMode.CAREER:
+            title = EVENT_BY_ID[self.career_event_id].name
+        else:
+            title = "驶向滨海公路" if track == "coastal" else "进入无限高速"
+        self._begin_workspace(self._load_road(mode, track), title, "方向盘后，继续检验这辆车")
 
     def _load_road(self, mode, track):
         yield 0, "准备驾驶工况"
         yield 1, "准备道路与交通车辆"
-        self._enter_game(mode, track)
+        for stage in self._enter_game_steps(mode, track, initial_stream_budget_ms=4):
+            yield 1, stage
+        if track == "endless":
+            while set(self.session.render_segments()) - self.scene.segment_nodes.keys():
+                self.scene.sync_segments(budget_ms=4)
+                yield 2, "生成道路与路旁景物"
         if mode != GameMode.CAREER:
+            self.session.resume()
             self.session.phase = Phase.LOADING
         yield 3, "公路、车辆与相机已就绪"
         self.render.prepareScene(self.win.getGsg())
@@ -319,7 +377,8 @@ class CoastalDrive(ShowBase):
             return
         self.tour_active = self.tour_pending = False
         self.tour_banner.hide()
-        self.tire_tuning.hide()
+        self.tour_panel.hide()
+        self.player_road_panel.hide()
         self.lab_return_braking = self.session.mode in BRAKING_MODES
         if self.lab_return_braking:
             self.braking_mode = self.session.mode
@@ -328,71 +387,178 @@ class CoastalDrive(ShowBase):
             self.slalom_mode = self.session.mode
         self.lab_return_sprint = self.session.mode if self.session.mode in SPRINT_ROUTES else None
         self.lab_return_overtake = self.session.mode if self.session.mode in OVERTAKE_ROUTES else None
-        self.workspace_vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
+        if self.budget_active:
+            self.career_panel.hide()
+            self.budget_lab_original = self.workspace_vehicle
+            spec = self._budget_base_spec(self.budget_mode)
+            self.workspace_vehicle = WorkspaceVehicle(spec.design_id,
+                spec.configuration(self._budget_driving_build()),
+                parameter_metadata={'basis': spec.name+' · 本关预算工程方案，参考试验不修改参赛草稿。'})
+            self.lab_return_sprint = self.budget_mode if self.budget_mode in SPRINT_ROUTES else None
+            self.lab_return_braking = self.lab_return_slalom = False
+            self.lab_return_overtake = self.road_retest_return = None
+            self.garage_setup_lab_request = True
+        else:
+            self.workspace_vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
         self.next_workspace = "lab"
         self._begin_workspace(self._load_lab(), "进入车辆实验室", "工况与A/B记录将保留")
 
-    def open_driving_tour(self):
+    def tour_physics(self):
+        context = record_context(ghost_context(0), TOUR_LEGS[0])
+        return {key: value for key, value in context.items() if key != 'seed'}
+
+    def tour_input(self, *, actual=False):
+        config = self.session.vehicle_config if actual else ROAD_CHALLENGES[TOUR_LEGS[0]].base_config
+        return self.session.driving_mode.score_variant(config.braking.abs_enabled,
+            config.traction.tcs_enabled, config.stability.esc_enabled)
+
+    def open_driving_tour(self, *, keep_view=False):
         self.back_to_menu()
         self.highway_menu = self.braking_menu = self.slalom_menu = self.sprint_menu = self.overtake_menu = False
         self.audio_settings_page = self.driving_mode_page = False
         self.journey.hide()
         self.driving_journey.hide()
-        variant = self.session.score_variant()
-        if self.tour_store is None or self.tour_store.variant != variant:
-            self.tour_store = DrivingTour(self.session.race.scores.path.with_name('driving-tour.json'), variant)
+        physics, variant = self.tour_physics(), self.tour_input()
+        if self.tour_store is None or self.tour_store.variant != variant or self.tour_store.context['physics'] != physics:
+            if self.tour_store is not None and self.tour_store.unsaved:
+                self.tour_unsaved[self.tour_store.key] = self.tour_store
+            store = BudgetTour(self.session.race.scores.path.with_name('budget-tour.json'), variant, physics)
+            self.tour_store = self.tour_unsaved.pop(store.key, store)
+        legacy = DrivingTour(self.session.race.scores.path.with_name('driving-tour.json'), self.session.score_variant())
         self._shown_phase = None
         self.refresh_panel()
-        self.tour_panel.show(self.tour_store, self.workspace_vehicle_label())
+        self.main_menu.hide_home()
+        self.tour_panel.show(self.tour_store, legacy, keep_view=keep_view)
 
     def back_from_driving_tour(self):
         self.tour_panel.hide()
         self.choose_sprint_routes()
         self.select_panel_option(5)
 
+    def prepare_tour_practice(self, mode, build):
+        from ui.challenge_layout import GROUPS
+
+        self.tour_practice_original = (mode, self.budget_drafts.get(mode))
+        tab = None
+        if build is not None:
+            self.budget_drafts[mode] = build
+            changed = build.changed()
+            tab = next((index for index, (_, keys) in enumerate(GROUPS) if any(key in changed for key in keys)), None)
+        self.open_budget_challenge(mode, origin='tour-practice', tab=tab)
+
     def start_tour_leg(self, restart=False):
-        if self.tour_store.variant != self.session.score_variant():
+        if self.tour_store.variant != self.tour_input() or self.tour_store.context['physics'] != self.tour_physics():
             self.open_driving_tour()
             return
-        if restart:
-            self.tour_store.restart()
+        if restart and not self.tour_store.restart():
+            self.open_driving_tour()
+            return
         if len(self.tour_store.current) == 3:
             self.open_driving_tour()
             return
         self.tour_panel.hide()
         self.tour_round = len(self.tour_store.current)
         self.tour_status = ''
-        mode = TOUR_LEGS[self.tour_round]
-        if mode in SPRINT_ROUTES:
-            self.session.road_shape = SPRINT_ROUTES[mode].shape
-        self.start_game(mode=mode, track='endless', tour=True)
+        self.open_budget_challenge(TOUR_LEGS[self.tour_round], origin='tour')
 
     def refresh_tour_banner(self):
         phase = self.session.phase
         if not self.tour_active or phase == Phase.MENU:
             self.tour_banner.hide()
             return
+        store = self.active_series
         if phase == Phase.RESULTS and self.tour_pending:
             self.tour_pending = False
-            self.tour_status = self.tour_store.accept(self.session.mode, self.session.score_variant(), self.session.highway.snapshot)
-        title = f'巡回 {self.tour_round+1}/3 · {points(self.tour_store.current)}/9分'
-        if self.tour_title.getText() != title:
-            self.tour_title.setText(title)
-        if phase != Phase.RESULTS:
-            message = '本站至少铜牌 · 失败可重试'
-        elif self.tour_store.variant != self.session.score_variant():
-            message = '配方已变 · 原进度保留'
-        elif self.tour_store.notice:
-            message = '进度未保存 · 总览查看'
-        elif len(self.tour_store.current) == 3:
-            message = f'全程{overall_medal(self.tour_store.current)}牌'+(' · 综合新最佳' if self.tour_store.new_best else '')
-        elif phase == Phase.RESULTS and self.session.highway.snapshot.succeeded and len(self.tour_store.current) == self.tour_round:
-            message = '有效完成 · 仍需铜牌'
-        else:
-            message = '本站已过 · 可继续下一站' if len(self.tour_store.current) > self.tour_round else '本站未过 · 重试当前站'
-        if self.tour_message.getText() != message:
-            self.tour_message.setText(message)
+            highway = self.session.highway.snapshot
+            if store.cup and self.session.mode == GameMode.TIME_TRIAL:
+                lap = self.session.race.snapshot
+                highway = replace(highway, finished=lap.finished, succeeded=lap.finished and not lap.invalidated,
+                                  collisions=self.session.current.collisions)
+            self.tour_status = store.accept(self.session.mode, self.tour_input(actual=True),
+                self.tour_physics(), highway, vehicle_config=self.session.vehicle_config)
+        name = '综合杯' if store.cup else '巡回'
+        title = f'{name} {self.tour_round+1}/3 · 已完成{len(store.current)}站'
+        self.tour_title.setText(title)
+        message = ('本站独立预算 · 用时与油耗同次达标' if phase != Phase.RESULTS else
+                   store.notice or self.tour_status)
+        self.tour_message.setText(message)
         self.tour_banner.show()
+
+    @property
+    def active_series(self):
+        return self.cup_store if self.budget_origin == 'cup' else self.tour_store
+
+    def _cup_path(self):
+        return self.session.race.scores.path.with_name('season-cup.json')
+
+    def _cup_available(self):
+        config = self.session.vehicle_config
+        group = self.session.driving_mode.score_variant(config.braking.abs_enabled,
+            config.traction.tcs_enabled, config.stability.esc_enabled)
+        return self.career_progress.stars >= CUP_UNLOCK and group == CUP_INPUT
+
+    def _read_cup(self, pointer='active'):
+        path = self._cup_path()
+        try:
+            document = read_tour(path)
+            key = document.get(pointer, {}).get(CUP_INPUT)
+            if key is None:
+                return None
+            design_id = document['groups'][key]['context']['rules'][0]['design_id']
+            store = BudgetTour(path, CUP_INPUT, self.tour_physics(), specs=cup_specs(design_id))
+            if store.blocked:
+                self.cup_notice = store.notice
+                return None
+            return store if store.key == key else None
+        except (OSError, ValueError, TypeError, KeyError, IndexError, AttributeError) as error:
+            self.cup_notice = '综合杯档案未读取，原文件保留：'+str(error)
+            return None
+
+    def open_cup(self, *, picking=False):
+        if self.career_progress.stars < CUP_UNLOCK:
+            return
+        self.open_career()
+        if self.cup_store is None or not self.cup_store.unsaved:
+            self.cup_store = self._read_cup()
+        self.career_panel.show_season_cup(self.career_progress, self.cup_store,
+                                          picking=picking or self.cup_store is None)
+
+    def select_cup_car(self, design_id):
+        car = CAR_BY_DESIGN.get(design_id)
+        if not self._cup_available() or car is None or self.career_progress.stars < car.unlock:
+            return
+        if self.cup_store is not None and self.cup_store.unsaved and not self.cup_store.save():
+            self.open_cup()
+            return
+        try:
+            chosen = BudgetTour(self._cup_path(), CUP_INPUT, self.tour_physics(), specs=cup_specs(design_id))
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            self.cup_notice = '该车型杯赛目标未就绪：'+str(error)
+            self.open_cup(picking=True)
+            return
+        if chosen.save():
+            self.cup_notice = ''
+            self.cup_store = chosen
+            self.open_cup()
+            return True
+        else:
+            self.cup_notice = chosen.notice
+            self.open_cup(picking=True)
+        return False
+
+    def start_cup_leg(self, *, restart=False):
+        if not self._cup_available() or self.cup_store is None:
+            return
+        store = self.cup_store
+        if restart and not store.restart():
+            self.open_cup()
+            return
+        if store.unsaved and not store.save() or len(store.current) == len(store.legs):
+            self.open_cup()
+            return
+        self.tour_round = len(store.current)
+        self.tour_status = ''
+        self.open_budget_challenge(store.legs[self.tour_round], origin='cup')
 
     def open_workshop_journey(self):
         scores = BrakingScores(self.session.race.scores.path.with_name("braking-best.json"),
@@ -415,16 +581,54 @@ class CoastalDrive(ShowBase):
         self._shown_phase = None
         self.refresh_panel()
         self.workshop_garage_return = True
+        self.main_menu.hide_home()
         self.workshop_garage.show(self.workspace_vehicle)
 
-    def open_career(self):
-        self.back_to_menu()
+    def open_career(self, *, keep_tour_practice=False, event=None):
+        self.back_to_menu(keep_tour_practice=keep_tour_practice)
         self.highway_menu = self.audio_settings_page = self.driving_mode_page = False
         self.journey.hide()
         self.driving_journey.hide()
         self._shown_phase = None
         self.refresh_panel()
-        self.career_panel.show_board(self.career_progress)
+        self.career_panel.show_board(self.career_progress, event=event)
+
+    def continue_career(self):
+        _, action, value = self.season_continuation()
+        if action == 'brief':
+            self.open_career(event=EVENT_BY_ID[value])
+        self.career_action(action, value)
+
+    def season_continuation(self):
+        if self.career_progress.stars >= CUP_UNLOCK:
+            active = self.cup_store if self.cup_store is not None and self.cup_store.unsaved else self._read_cup()
+            completed = self._read_cup('completed')
+            if active is not None and len(active.current) < len(active.legs):
+                return f'综合杯 · 第 {len(active.current)+1} 站', 'cup-menu', None
+            if completed is not None and completed.best:
+                final = EVENT_BY_ID['coastal-cup']
+                if self.career_progress.course_record(final) is None:
+                    return final.name, 'brief', final.id
+                return '第一季结算', 'cup-season-result', None
+            if self.career_progress.course_record(EVENT_BY_ID['coastal-cup']) is not None:
+                return '自选车综合杯', 'cup-menu', None
+        event = self.career_progress.recommended()
+        return event.name, 'brief', event.id
+
+    def show_season_result(self):
+        completed = self._read_cup('completed')
+        if completed is not None and completed.best and self.career_progress.course_record(EVENT_BY_ID['coastal-cup']):
+            self.open_career()
+            self.career_panel.show_season_cup(self.career_progress, completed, recap=True)
+
+    def open_sector_chase(self, mode=GameMode.TIME_TRIAL):
+        if self.career_progress.stars < 5 or mode not in CHASE_COURSES:
+            return
+        self.open_career()
+        self.chase_practice_sector = None
+        group = self.session.driving_mode.score_variant(self.session.abs_enabled, self.session.tcs_enabled,
+                                                        self.session.esc_enabled)
+        self.career_panel.show_sector_chase(self.career_progress, mode, group == CHASE_INPUT)
 
     def open_career_collection(self):
         self.career_garage_tab, self.career_garage_return = 'cars', 'home'
@@ -439,9 +643,16 @@ class CoastalDrive(ShowBase):
             tab=self.career_garage_tab, preview=self.career_preview, skin_index=self.career_preview_skin,
             cars=garage_cars(self.workspace_vehicle, self.career_garage_folder))
 
-    def start_career_event(self, event_id):
-        event = EVENT_BY_ID[event_id]
+    def start_career_event(self, event_id, *, stock=False):
+        event = BOARD_EVENTS[event_id]
         if not self.career_progress.available(event):
+            return
+        if event_id in CLUB_EVENTS:
+            self.open_budget_challenge(event_id, origin='club', stock=stock)
+            return
+        if event_id in ROAD_CHALLENGES:
+            self.career_event_id = event_id
+            self.open_budget_challenge(event_id, origin='career', stock=stock)
             return
         self.career_panel.hide()
         self.career_active, self.career_event_id, self.career_award = True, event_id, None
@@ -450,18 +661,59 @@ class CoastalDrive(ShowBase):
         self.start_game(mode=GameMode.CAREER, track='endless')
 
     def career_action(self, action, value=None):
+        if action.startswith(('challenge-', 'tour-')):
+            self.challenge_action(action, value)
+            return
         if action == 'board':
-            self.open_career()
+            event = BOARD_EVENTS[self.career_panel.event_id] if self.career_panel.page == 'brief' else None
+            self.open_career(event=event)
+        elif action == 'board-chapter':
+            self.career_panel.show_board(self.career_progress, chapter=value)
+        elif action == 'chase-menu':
+            self.open_sector_chase(GameMode.TIME_TRIAL if value is None else value)
+        elif action == 'chase-prepare':
+            group = self.session.driving_mode.score_variant(self.session.abs_enabled, self.session.tcs_enabled,
+                                                            self.session.esc_enabled)
+            if self.career_progress.stars >= 5 and value in CHASE_COURSES and group == CHASE_INPUT:
+                self.open_budget_challenge(value, origin='chase')
+        elif action in ('chase-practice', 'chase-full'):
+            if self.budget_active and self.budget_origin == 'chase' and self.session.phase == Phase.RESULTS:
+                self.chase_practice_sector = value if action == 'chase-practice' else None
+                self.challenge_action('challenge-retry')
+        elif action == 'cup-menu':
+            self.open_cup()
+        elif action == 'cup-pick':
+            self.open_cup(picking=True)
+        elif action == 'cup-preview':
+            self.career_panel.show_season_cup(self.career_progress, self.cup_store, picking=True, preview=value)
+        elif action == 'cup-select':
+            self.select_cup_car(value)
+        elif action == 'cup-rerun':
+            if self.select_cup_car(value):
+                self.start_cup_leg(restart=True)
+        elif action == 'cup-stage':
+            self.start_cup_leg(restart=bool(value))
+        elif action == 'cup-save':
+            if self.cup_store is not None:
+                self.cup_store.save()
+            self.open_cup()
+        elif action == 'cup-season-result':
+            self.show_season_result()
         elif action == 'brief':
-            self.career_panel.show_brief(self.career_progress, EVENT_BY_ID[value])
+            if self.career_panel.page == 'challenge-result':
+                self.open_career()
+            self.career_panel.show_brief(self.career_progress, BOARD_EVENTS[value])
         elif action == 'start':
             self.start_career_event(value)
+        elif action == 'start-stock':
+            self.start_career_event(value, stock=True)
         elif action == 'garage':
             self.career_garage_return = (self.career_panel.event_id
                 if self.career_panel.page in ('brief', 'result') else None)
             self.open_career_garage()
         elif action == 'garage-new':
-            self.career_garage_return = self.career_panel.event_id
+            self.career_garage_return = (self.career_event_id if self.career_panel.page == 'challenge-result'
+                                         else self.career_panel.event_id)
             self.career_garage_tab = 'cars'
             self.open_career_garage()
             self.career_action('garage-car', value)
@@ -469,28 +721,24 @@ class CoastalDrive(ShowBase):
             if self.career_garage_return == 'home':
                 self.career_action('exit')
             elif self.career_garage_return is None:
-                self.open_career()
+                self.open_career(event=self.career_panel.board_event)
             else:
                 self.open_career()
-                self.career_panel.show_brief(self.career_progress, EVENT_BY_ID[self.career_garage_return])
+                self.career_panel.show_brief(self.career_progress, BOARD_EVENTS[self.career_garage_return])
         elif action == 'garage-tab':
+            if value == 'upgrade':
+                self.open_budget_challenge(self.career_progress.recommended().id)
+                return
+            if value == 'setup':
+                self.open_expert_parameters()
+                return
             self.career_garage_tab = value
             self.open_career_garage()
         elif action == 'garage-topic':
             self.career_panel.garage_topic = value
             self.open_career_garage(reset=False)
-        elif action == 'setup-group':
-            self.career_panel.setup_group = value
-            self.open_career_garage(reset=False)
-        elif action == 'setup-reset':
-            self.career_panel.setup_vehicle = None
-            self.open_career_garage(reset=False)
-        elif action in ('setup-save', 'setup-lab'):
-            if self.save_garage_setup() and action == 'setup-lab':
-                self.career_active = False
-                self.career_panel.hide()
-                self.garage_setup_lab_request = True
-                self.open_vehicle_lab()
+        elif action in ('setup-group', 'setup-reset', 'setup-save', 'setup-lab'):
+            self.open_expert_parameters()
         elif action == 'garage-redraw':
             self.open_career_garage(reset=False)
         elif action == 'garage-confirm':
@@ -562,63 +810,28 @@ class CoastalDrive(ShowBase):
         elif action == 'retry':
             self.start_career_event(self.career_event_id)
         elif action == 'save':
-            self.career_award = self.career_progress.record(self.session.highway.snapshot.career)
-            self.career_panel.show_result(self.career_progress, self.session.highway.snapshot.career, self.career_award)
-        elif action in ('part', 'restore'):
-            self.install_career_part(value, restore=action == 'restore')
-
-    def save_garage_setup(self):
-        from garage_setup import install
-
-        current = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
-        try:
-            vehicle = install(current, self.career_panel.setup_changes(), self.workspace_path)
-        except (OSError, ValueError, TypeError, KeyError) as error:
-            self.open_career_garage('调校未保存：'+str(error), reset=False)
-            return False
-        self.workspace_vehicle = vehicle
-        self.session.set_vehicle_config(vehicle.config)
-        self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
-        self.open_career_garage('调校已保存；赛事与工坊使用同一辆车。', reset=False)
-        return True
-
-    def install_career_part(self, part_id, *, restore=False):
-        if self.session.phase != Phase.MENU:
-            return
-        self.career_garage_tab = 'upgrade'
-        if not restore:
-            part = PART_BY_ID[part_id]
-            if not self.career_progress.buy(part):
-                self.open_career_garage(self.career_progress.notice)
-                return
-        current = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
-        try:
-            if restore:
-                vehicle = restore_pre_tuning_vehicle(current, self.workspace_path)
-            elif part.topic == 'tires':
-                vehicle = install_front_tires(current, part.recipe, self.workspace_path)
-            elif part.topic == 'brakes':
-                vehicle = install_brakes(current, part.recipe, self.workspace_path)
+            if self.budget_active:
+                self.retry_budget_result()
             else:
-                vehicle = install_career_upgrade(current, part.id, self.workspace_path)
-        except (OSError, ValueError, TypeError, KeyError) as error:
-            self.open_career_garage(('车辆未恢复：' if restore else '零件已拥有，车辆未安装，可重试：')+str(error))
+                self.career_award = self.career_progress.record(self.session.highway.snapshot.career)
+                self.career_panel.show_result(self.career_progress, self.session.highway.snapshot.career, self.career_award)
+        elif action in ('part', 'restore'):
+            self.open_budget_challenge(self.career_progress.recommended().id)
+
+    def open_expert_parameters(self):
+        if self._workspace_steps is not None:
             return
-        self.workspace_vehicle = vehicle
-        self.session.set_vehicle_config(vehicle.config)
-        self.session.set_abs_enabled(vehicle.config.braking.abs_enabled)
-        self.session.set_tcs_enabled(vehicle.config.traction.tcs_enabled)
-        self.session.set_esc_enabled(vehicle.config.stability.esc_enabled)
-        self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
-        self.open_career_garage('已恢复改装前车辆。' if restore else '已安装，可以返回赛事检验手感。')
+        self.back_to_menu()
+        self.career_lab_return = True
+        self.road_retest_return = None
+        self.garage_setup_lab_request = True
+        self.open_vehicle_lab()
 
     def workshop_garage_action(self, index):
         if index == 0:
-            self.choose_slalom_lesson(GameMode.SLALOM_PRACTICE)
-            self.open_tire_tuning()
+            self.open_budget_challenge(GameMode.FAST_SLALOM, origin='workshop')
         elif index == 1:
-            self.choose_braking_lesson(GameMode.SHORT_BRAKING)
-            self.open_brake_tuning()
+            self.open_budget_challenge(GameMode.SHORT_BRAKING, origin='workshop')
         elif index == 2:
             self.choose_highway()
         elif index == 3:
@@ -636,26 +849,12 @@ class CoastalDrive(ShowBase):
         else:
             self.journey.hide()
 
-    def drive_from_tuning(self):
-        if self.tire_tuning.recipe is not None and not self.install_driving_recipe(self.tire_tuning.recipe):
-            return
-        if self.session.phase == Phase.RESULTS:
-            # 同一配方也允许显式重试；旧成绩只在新一轮启动时退出。
-            mode = self.session.mode
-            self.session.menu()
-            self.choose_slalom_lesson(mode) if mode in SLALOM_MODES else self.choose_braking_lesson(mode)
-        if self.session.phase != Phase.MENU:
-            return
-        brakes = self.tire_tuning.topic == 'brakes'
-        self.tire_tuning.hide()
-        self.start_braking_lesson() if brakes else self.start_slalom_lesson()
 
-    def navigate_from_tuning(self, index):
-        self.open_workshop_garage()
-        self.workshop_garage.hide()
-        self.workshop_garage_action(index)
 
     def return_from_test_drive(self):
+        if self.budget_active:
+            self.open_budget_challenge(self.budget_mode)
+            return
         if self.career_active:
             self.open_career()
             return
@@ -729,7 +928,8 @@ class CoastalDrive(ShowBase):
             else:
                 self.setup_controls()
                 self.taskMgr.add(self.update, "drive-update")
-                if self.career_active and self.session.mode == GameMode.CAREER and self.session.phase == Phase.PAUSED:
+                if ((self.career_active or self.budget_active) and self.session.mode == GameMode.CAREER
+                        and self.session.phase == Phase.PAUSED):
                     self.session.resume()
                 elif self.session.phase == Phase.LOADING:
                     self.session.phase = Phase.COUNTDOWN
@@ -741,8 +941,7 @@ class CoastalDrive(ShowBase):
                 if self.road_retest_return is not None:
                     topic, _mode = self.road_retest_return
                     self.road_retest_return = None
-                    self.open_brake_tuning() if topic == 'brakes' else self.open_tire_tuning()
-                    self.open_player_road_ab()
+                    self.open_player_road_ab(topic)
             self.workspace_loading.hide()
             return task.done
         except (OSError, ValueError, RuntimeError):
@@ -775,7 +974,9 @@ class CoastalDrive(ShowBase):
         yield 2, "准备车辆实验视窗"
         self.lab = VehicleLab(engine=self, output=self.lab_output, workspace_vehicle=self.workspace_vehicle,
                               scheme_root=self.scheme_root,
-                              lab_workspace=self.lab_workspace, on_back=self.return_from_lab, activate=False)
+                              lab_workspace=self.lab_workspace, on_back=self.return_from_lab, activate=False,
+                              workspace_path=(self.budget_plans.path.with_name('challenge-lab-vehicle.json')
+                                              if self.budget_lab_original is not None else None))
         if (self.workspace_vehicle.workshop_result is not None
                 and not (self.lab_workspace is not None and self.lab_workspace.road_state is not None
                          and self.lab_workspace.road_state["visible"])):
@@ -824,7 +1025,14 @@ class CoastalDrive(ShowBase):
         self.lab_workspace = self.lab.capture_workspace()
         if self.lab.next_drive or self.lab.next_slalom:
             self.road_retest_return = None
-        self.workspace_vehicle = self.lab.workspace_vehicle or self.workspace_vehicle
+        if self.budget_lab_original is not None:
+            self.workspace_vehicle, self.budget_lab_original = self.budget_lab_original, None
+            self.lab.next_drive = self.lab.next_slalom = False
+            self.lab_return_sprint = self.budget_mode if self.budget_mode in SPRINT_ROUTES else None
+            self.lab_return_braking = self.lab_return_slalom = False
+            self.lab_return_overtake = None
+        else:
+            self.workspace_vehicle = self.lab.workspace_vehicle or self.workspace_vehicle
         # 显式亲自过门优先；既有工坊滨海验证与普通课题返回分别保留。
         if self.lab.next_slalom:
             self.lab_return_overtake = None
@@ -836,7 +1044,7 @@ class CoastalDrive(ShowBase):
             self.lab_return_braking = False
             self.lab_return_slalom = False
             self.lab_return_sprint = None
-        self.next_drive = bool(self.lab.next_drive or self.lab_return_braking or self.lab_return_slalom or self.lab_return_sprint or self.lab_return_overtake)
+        self.next_drive = bool(self.budget_active or self.lab.next_drive or self.lab_return_braking or self.lab_return_slalom or self.lab_return_sprint or self.lab_return_overtake)
         if self.workshop_lab_return and not (self.lab.next_drive or self.lab.next_slalom):
             self.next_drive = False
         self.next_workspace = "game"
@@ -856,9 +1064,12 @@ class CoastalDrive(ShowBase):
         vehicle = self.workspace_vehicle
         self.vehicle_model_id = vehicle_for_design(vehicle.design_id, self.vehicle_model_id).id
         self.appearance.model_id = self.vehicle_model_id
-        self.session_arguments.update(vehicle_config=vehicle.config, abs_enabled=vehicle.config.braking.abs_enabled,
-                                      tcs_enabled=vehicle.config.traction.tcs_enabled,
-                                      esc_enabled=vehicle.config.stability.esc_enabled)
+        electronics = (vehicle.config.braking.abs_enabled, vehicle.config.traction.tcs_enabled,
+                       vehicle.config.stability.esc_enabled)
+        if self.budget_active and self.budget_electronics is not None:
+            electronics = self.budget_electronics
+        self.session_arguments.update(vehicle_config=vehicle.config, abs_enabled=electronics[0],
+                                      tcs_enabled=electronics[1], esc_enabled=electronics[2])
         self.session = self.session_type(**self.session_arguments)
         self._camera_time = self.session.current.time
         self.highway_menu = self.audio_settings_page = self.driving_mode_page = False
@@ -879,7 +1090,10 @@ class CoastalDrive(ShowBase):
             else:
                 self.choose_slalom_lesson(mode)
         elif self.next_drive:
-            if self.lab_return_overtake:
+            if self.budget_active:
+                self.tour_active = self.tour_pending = self.budget_origin in ('tour', 'cup') and not self.budget_auto
+                self._enter_game(course_mode(self.budget_mode), course_track(self.budget_mode))
+            elif self.lab_return_overtake:
                 self._enter_game(self.lab_return_overtake, "endless")
             elif self.lab_return_sprint is not None:
                 self.session.road_shape = SPRINT_ROUTES[self.lab_return_sprint].shape
@@ -898,12 +1112,21 @@ class CoastalDrive(ShowBase):
         self.main_menu.root.prepareScene(self.win.getGsg())
         yield 4, "完成画面资源准备"
         self.workspace = "game"
-        if self.workshop_lab_return and not self.next_drive:
+        if self.career_lab_return:
+            self.career_lab_return = False
+            if not self.next_drive:
+                self.open_career_collection()
+        elif self.workshop_lab_return and not self.next_drive:
             self.workshop_lab_return = False
             self.open_workshop_garage()
         yield 5, "可以出发"
 
-    def _enter_game(self, mode, track):
+    def _enter_game(self, mode, track, *, initial_stream_budget_ms=None):
+        for _ in self._enter_game_steps(mode, track, initial_stream_budget_ms=initial_stream_budget_ms):
+            pass
+
+    def _enter_game_steps(self, mode, track, *, initial_stream_budget_ms=None):
+        """加载页在会话、地形和场景之间正常出帧；同步入口沿用同一条准备路径。"""
         if mode not in (*BRAKING_MODES, *SLALOM_MODES):
             self.driving_journey_return = False
         self.driving_keys_held.clear()
@@ -911,25 +1134,70 @@ class CoastalDrive(ShowBase):
         if track == "endless":
             self.session.traffic_density = self.highway_density_keys[self.highway_density_index]
         options = {'career_event_id': self.career_event_id} if mode == GameMode.CAREER else {}
+        spec = None
+        if self.budget_active and mode == course_mode(self.budget_mode):
+            spec = self._budget_base_spec(self.budget_mode)
+            self.session.road_shape = self.highway_shape if mode == GameMode.DISTANCE_CHALLENGE else course_shape(self.budget_mode)
+            self.vehicle_model_id = vehicle_for_design(spec.design_id, self.vehicle_model_id).id
+            if mode == GameMode.CAREER:
+                options['career_event_id'] = self.budget_mode
+            options.update(challenge_spec=spec, build=self._budget_driving_build())
+            if self.budget_origin == 'chase':
+                options.update(sector_chase=True, practice_sector=self.chase_practice_sector)
+            elif self.budget_origin == 'cup' and mode == GameMode.TIME_TRIAL:
+                options['seed'] = 0
         self.session.start(mode=mode, track=track,settle_initial=True, **options)
-        if mode == GameMode.CAREER and self._workspace_steps is not None:
-            # 正式加载可能超过三秒，先暂停权威会话，资源就绪后再开始可见倒计时。
+        if self._workspace_steps is not None:
+            # 正式加载分帧生成景物；所有模式都在资源就绪后才开始可见倒计时。
             self.session.pause()
+        if spec is not None and self.budget_auto:
+            self.auto_trial_group = self._automatic_trial_group()
+            self.auto_trial_saved = False
+            self.auto_trial_reference = self.auto_trials.load(self.auto_trial_group,
+                self._budget_editor_spec(self.budget_mode), course_gates(self.budget_mode), build=options['build'])
+            driver = RoadTestDriver(mode, spec.id, self.session.road_shape, sprint_version=spec.version)
+            if isinstance(self.session, Session):
+                driver.bind(self.session.simulation)
+                self.session.set_controller(driver)
+            else:
+                self.session.set_controller(driver, bind_world=True)
         self.road_attempt = None
-        self.road_pending = mode in (*SLALOM_MODES, *BRAKING_MODES)
+        self.road_pending = not self.budget_auto and mode in (*SLALOM_MODES, *BRAKING_MODES)
         self.road_start_context = player_road_context(self.session) if self.road_pending else None
-        self.sync_scene()
+        yield "准备道路表面"
+        if track == 'endless':
+            Scene.prepare_course_terrain(self.session.simulation.stream.curve)
+        yield "准备车辆与路旁景物"
+        self.sync_scene(initial_stream_budget_ms=initial_stream_budget_ms)
         if track == "endless":
             # 重开复用Scene时，道路可能已回到起点；加载阶段补齐近景。
-            self.scene.sync_segments()
+            self.scene.sync_segments(budget_ms=initial_stream_budget_ms)
         self.chase_camera.position = None
         self._camera_origin = self.session.simulation.origin_y
         self.apply_scene(self.session.current,0.)
+        preview = None
+        if spec is not None and self._workspace_steps is not None and self.budget_origin != 'chase':
+            from ui.challenge_layout import result_vehicle_box
+
+            box = result_vehicle_box(self.getAspectRatio())
+            preview = box, WorkspaceVehicle(spec.design_id, spec.configuration(options['build']))
+        elif mode == GameMode.CAREER and spec is None:
+            from ui.career_layout import vehicle_box
+
+            preview = vehicle_box(self.getAspectRatio()), self.workspace_vehicle
+        if preview is not None:
+            # 用实际结算的车型和视口准备取景，加载期间隐藏预览。
+            box, vehicle = preview
+            self.workshop_vehicle.show(self.hidden, box, vehicle, studio=True)
+            self.workshop_vehicle.scene.prepareScene(self.win.getGsg())
+            yield "准备车辆展示"
+            self.workshop_vehicle.hide()
         # 首次显存上传/绘制准备留在加载画面；倒计时开始后只切换已生成的数字。
         self.render.prepareScene(self.win.getGsg())
         self.countdown.root.prepareScene(self.win.getGsg())
+        yield "正在完成路旁景物"
 
-    def sync_scene(self):
+    def sync_scene(self, *, initial_stream_budget_ms=None):
         track = self.session.simulation.track
         if (
             self.scene is None
@@ -941,16 +1209,29 @@ class CoastalDrive(ShowBase):
         ):
             if self.scene is not None:
                 self.scene.close()
-            self.scene = Scene(self)
+            self.scene = Scene(self, initial_stream_budget_ms=initial_stream_budget_ms)
             self._scene_track = track
             self._scene_shape = self.session.road_shape
             self._scene_seed = self.session.simulation.seed
             self._scene_vehicle = (self.vehicle_model_id, self.session.simulation.config)
             self.chase_camera.position = None
         self.scene.set_checkpoint_visible(self.session.mode == GameMode.TIME_TRIAL)
-        self.scene.set_ghost(self.session.reference_ghost)
+        self.scene.set_ghost(None if self.budget_auto else self.session.reference_ghost)
 
-    def back_to_menu(self):
+    def back_to_menu(self, *, keep_tour_practice=False):
+        if self.tour_practice_original is not None and not keep_tour_practice:
+            mode, draft = self.tour_practice_original
+            if draft is None:
+                self.budget_drafts.pop(mode, None)
+            else:
+                self.budget_drafts[mode] = draft
+            self.tour_practice_original = None
+        self.budget_active = False
+        self.budget_auto, self.budget_stock = False, False
+        self.auto_trial_reference = None
+        self.career_lab_return = False
+        if self.budget_model_before is not None:
+            self.vehicle_model_id, self.budget_model_before = self.budget_model_before, None
         self.career_active = False
         self.career_panel.hide()
         self.workshop_garage_return = False
@@ -958,9 +1239,11 @@ class CoastalDrive(ShowBase):
         self.driving_journey_return = False
         self.tour_active = self.tour_pending = False
         self.tour_banner.hide()
-        self.tire_tuning.hide()
         self.workshop_garage.hide()
+        self.tour_panel.hide()
+        self.player_road_panel.hide()
         self.session.menu()
+        self.budget_electronics = None
         if self.scene is not None:
             self.scene.close()
             self.scene = None
@@ -988,6 +1271,7 @@ class CoastalDrive(ShowBase):
             "n",
             "m",
             "g",
+            "control-a",
         ):
             self.game_input.accept(key, self.key_down, [key])
             self.game_input.accept(f"{key}-up", self.key_up, [key])
@@ -996,6 +1280,37 @@ class CoastalDrive(ShowBase):
                 self.game_input.accept(f"raw-{key}-up", self.key_up, [key])
         self.game_input.accept("f2", self.choose_driving_mode)
         self.game_input.accept("f3", self.toggle_diagnostics)
+        self.accept('connect-device', self.attach_menu_gamepad)
+        self.accept('disconnect-device', self.detach_menu_gamepad)
+        for device in self.devices.getDevices(InputDevice.DeviceClass.gamepad):
+            self.attach_menu_gamepad(device)
+        for button, key in (('dpad_up', 'arrow_up'), ('dpad_down', 'arrow_down'),
+                            ('dpad_left', 'arrow_left'), ('dpad_right', 'arrow_right'),
+                            ('face_a', 'enter'), ('face_b', 'escape'), ('start', 'escape')):
+            self.game_input.accept('menu-pad-'+button, self.gamepad_navigation, [button, key])
+
+    def attach_menu_gamepad(self, device):
+        if device.device_class == InputDevice.DeviceClass.gamepad and device not in self.menu_gamepads:
+            self.attachInputDevice(device, prefix='menu-pad')
+            self.menu_gamepads.add(device)
+
+    def detach_menu_gamepad(self, device):
+        if device in self.menu_gamepads:
+            self.detachInputDevice(device)
+            self.menu_gamepads.remove(device)
+
+    def gamepad_navigation(self, button, key):
+        if self.workspace != 'game' or (not self.smoke and not self.win.getProperties().getForeground()):
+            return
+        phase = self.session.phase
+        if button == 'start':
+            if phase not in (Phase.DRIVING, Phase.COUNTDOWN, Phase.PAUSED):
+                return
+        elif phase not in (Phase.MENU, Phase.PAUSED, Phase.RESULTS):
+            return
+        if key not in self.commands_held:
+            self.key_down(key)
+            self.key_up(key)
 
     def audio_cue(self, name):
         if self.soundscape is not None:
@@ -1031,7 +1346,7 @@ class CoastalDrive(ShowBase):
     def key_down(self, key):
         if not self.loading.isHidden():
             return
-        if self.career_active and self.session.phase in (Phase.PAUSED, Phase.RESULTS):
+        if (self.career_active or self.budget_active) and self.session.phase in (Phase.PAUSED, Phase.RESULTS):
             self.refresh_panel()
         if not self.career_panel.root.isHidden():
             if key not in self.commands_held:
@@ -1042,11 +1357,6 @@ class CoastalDrive(ShowBase):
             if key not in self.commands_held:
                 self.commands_held.add(key)
                 self.player_road_panel.key(key)
-            return
-        if self.session.phase in (Phase.MENU, Phase.RESULTS) and not self.tire_tuning.root.isHidden():
-            if key not in self.commands_held:
-                self.commands_held.add(key)
-                self.tire_tuning.key(key)
             return
         if self.session.phase == Phase.MENU and not self.workshop_garage.root.isHidden():
             if key not in self.commands_held:
@@ -1243,29 +1553,26 @@ class CoastalDrive(ShowBase):
         self.help = self.hud.help
         self.workshop_vehicle = WorkshopVehicle(self)
         self.main_menu = MainMenu(self.aspect2d, self.loader, self.ui_font, self.display_font, (
-            lambda: self.start_game(mode=GameMode.TIME_TRIAL),
+            lambda: self.open_budget_challenge(GameMode.TIME_TRIAL, origin='coastal'),
             lambda: self.start_game(mode=GameMode.FREE_DRIVE),
             self.open_career, self.open_career_collection, self.choose_audio_settings, self.userExit,
         ), vehicle_view=self.workshop_vehicle, confirm_action=lambda: self.audio_cue('confirm'),
             driving_mode_action=self.choose_driving_mode, lab_action=self.open_vehicle_lab,
-            highway_action=self.choose_highway)
+            highway_action=self.choose_highway, continue_action=self.continue_career)
         self.journey = WorkshopJourney(self.main_menu.content, self.ui_font, self.main_menu.textures,
                                        self.continue_workshop_project, self.open_driving_journey,
                                        on_back=self.back_from_workshop_journey)
         self.driving_journey = DrivingJourney(self.main_menu.content, self.ui_font, self.main_menu.textures,
                                               self.continue_driving_project, self.open_workshop_journey)
-        self.tour_panel = DrivingTourPanel(self.main_menu.content, self.ui_font, self.main_menu.textures,
-                                          self.start_tour_leg, self.back_from_driving_tour)
         workshop_font = theme.load_font('fonts/SourceHanSansSC-Bold.otf')
+        self.tour_panel = DrivingTourPanel(self.aspect2d, workshop_font, self.workshop_vehicle,
+                                          self.start_tour_leg, self.back_from_driving_tour, self.prepare_tour_practice)
         self.career_panel = CareerPanel(self.main_menu.content, workshop_font, self.workshop_vehicle,
                                         self.career_action, self.loader)
         self.workshop_garage = WorkshopGarage(self.main_menu.content, workshop_font, self.workshop_vehicle,
                                              self.workshop_garage_action)
-        self.tire_tuning = TireTuningPanel(self.main_menu.content, workshop_font, self.main_menu.textures,
-            self.install_driving_recipe, self.restore_tire_vehicle, self.back_from_tire_tuning, self.open_player_road_ab,
-            vehicle_view=self.workshop_vehicle, drive=self.drive_from_tuning, navigate=self.navigate_from_tuning)
-        self.player_road_panel = PlayerRoadPanel(self.tire_tuning.root, self.ui_font, self.main_menu.textures,
-                                               self.open_road_retest)
+        self.player_road_panel = PlayerRoadPanel(self.aspect2d, workshop_font, self.main_menu.textures,
+            self.open_road_retest, on_back=self.back_from_player_road_ab, vehicle_view=self.workshop_vehicle)
         self.tour_banner = DirectFrame(parent=self.aspect2d, frameColor=theme.PAPER_LIGHT,
             frameSize=(-.34, .34, -.105, 0), pos=(0, 0, .95), sortOrder=60)
         self.tour_title = OnscreenText(parent=self.tour_banner, text='', font=self.ui_font,
@@ -1313,6 +1620,8 @@ class CoastalDrive(ShowBase):
             command=self.toggle_ghost, pressEffect=False,
         )
         self.ghost_button.hide()
+        self._driving_buttons_coastal = None
+        self._coastal_ghost_available = None
         self.panel_accent = DirectFrame(
             parent=self.panel, frameColor=theme.ORANGE,
             frameSize=(-0.55, 0.55, -0.005, 0.005), pos=(0, 0, 0.61),
@@ -1399,7 +1708,7 @@ class CoastalDrive(ShowBase):
         if (self.session.phase != Phase.MENU or self.garage is not None
                 or self.audio_settings_page or self.highway_menu
                 or not self.journey.root.isHidden() or not self.driving_journey.root.isHidden()
-                or not self.tour_panel.root.isHidden() or not self.tire_tuning.root.isHidden()
+                or not self.tour_panel.root.isHidden() or not self.player_road_panel.root.isHidden()
                 or not self.workshop_garage.root.isHidden()):
             return
         self.driving_mode_page = True
@@ -1542,7 +1851,7 @@ class CoastalDrive(ShowBase):
         if vehicle.workshop_result is not None:
             result = vehicle.workshop_result
             road = "道路已完成" if result["road_validated"] else "等待有效圈验证"
-            if result["challenge_id"] == CORNERING_CHALLENGE_ID:
+            if result["challenge_id"] in (CORNERING_CHALLENGE_ID, REFERENCE_CHALLENGES[1].id):
                 return f"操稳工坊 · {result['medal']}牌 · {road}\n循迹误差减少 {result['improvement_pct']:.1f}%"
             return f"制动工坊 · {result['medal']}牌 · {road}\n停车距离改善 {result['improvement_pct']:.1f}%"
         source = ('改装车' if vehicle.parameter_metadata is not None and bool({'tuning_previous', 'tire_tuning_previous'} & vehicle.parameter_metadata.keys())
@@ -1614,32 +1923,40 @@ class CoastalDrive(ShowBase):
         self.refresh_panel()
 
     def open_tire_tuning(self):
-        if self.session.phase == Phase.RESULTS and self.session.mode in SLALOM_MODES:
-            self.slalom_mode = self.session.mode
-        elif self.session.phase != Phase.MENU or not self.slalom_menu:
+        if self.session.phase not in (Phase.MENU, Phase.RESULTS):
             return
+        mode = self.session.mode if self.session.phase == Phase.RESULTS and self.session.mode in SLALOM_MODES else self.slalom_mode
+        self.open_budget_challenge(GameMode.FAST_SLALOM if mode == GameMode.SLALOM_PRACTICE else mode,
+                                   origin='workshop' if self.workshop_garage_return else 'slalom')
+
+
+    def open_player_road_ab(self, topic=None):
+        if self.session.phase not in (Phase.MENU, Phase.RESULTS):
+            return
+        if topic is not None:
+            self.road_ab_topic = topic
+        self.road_ab_return = self.career_panel.page if not self.career_panel.root.isHidden() else ''
+        self.career_panel.hide()
         self.panel.hide()
-        for column in self.result_sectors:
-            column.hide()
+        self.main_menu.hide_home()
         self.main_menu.root.show()
-        self.player_road_panel.hide()
-        vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
-        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label(),
-                             trial_label=self.tuning_trial_label('tires'))
+        self.player_road_panel.show(self.player_brake_ab if self.road_ab_topic == 'brakes' else self.player_road_ab)
 
-    def tuning_trial_label(self, topic):
-        if topic == 'brakes':
-            return '短距制动' if self.braking_mode == GameMode.SHORT_BRAKING else '定点制动'
-        return {GameMode.SLALOM_PRACTICE: '六门自由练习', GameMode.SLALOM_LESSON: '六门挑战',
-                GameMode.FAST_SLALOM: '高速六门挑战'}[self.slalom_mode]
-
-    def open_player_road_ab(self):
-        self.player_road_panel.show(self.player_brake_ab if self.tire_tuning.topic == 'brakes' else self.player_road_ab)
+    def back_from_player_road_ab(self):
+        if self.road_ab_return == 'challenge':
+            self.open_budget_challenge(self.budget_mode)
+        elif self.budget_active or self.session.phase == Phase.RESULTS:
+            self._shown_phase = None
+            self.refresh_panel()
+        elif self.road_ab_topic == 'brakes':
+            self.choose_braking_lesson(self.braking_mode)
+        else:
+            self.choose_slalom_lesson(self.slalom_mode)
 
     def open_road_retest(self):
         if self._workspace_steps is not None or self.session.phase not in (Phase.MENU, Phase.RESULTS):
             return
-        topic = self.tire_tuning.topic
+        topic = self.road_ab_topic
         store = self.player_brake_ab if topic == 'brakes' else self.player_road_ab
         try:
             pair = prepare_pair(store.a, store.b)
@@ -1651,18 +1968,10 @@ class CoastalDrive(ShowBase):
         self.open_vehicle_lab()
 
     def open_brake_tuning(self):
-        if self.session.phase == Phase.RESULTS and self.session.mode in BRAKING_MODES:
-            self.braking_mode = self.session.mode
-        elif self.session.phase != Phase.MENU or not self.braking_menu:
+        if self.session.phase not in (Phase.MENU, Phase.RESULTS):
             return
-        self.panel.hide()
-        for column in self.result_sectors:
-            column.hide()
-        self.main_menu.root.show()
-        self.player_road_panel.hide()
-        vehicle = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
-        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label(), topic='brakes',
-                             trial_label='短距制动' if self.braking_mode == GameMode.SHORT_BRAKING else '定点制动')
+        mode = self.session.mode if self.session.phase == Phase.RESULTS and self.session.mode in BRAKING_MODES else self.braking_mode
+        self.open_budget_challenge(mode, origin='workshop' if self.workshop_garage_return else 'braking')
 
     def observe_player_road(self):
         if self.session.phase != Phase.RESULTS or not self.road_pending:
@@ -1680,76 +1989,9 @@ class CoastalDrive(ShowBase):
         except (ValueError, TypeError, KeyError) as error:
             store.notice = '本次道路对照未记录：'+str(error)
 
-    def apply_tuning_vehicle(self, vehicle):
-        """只在保存成功后交接菜单车辆；恢复完整原车时也恢复其电子开关。"""
-        if self.session.phase == Phase.RESULTS:
-            if vehicle == self.tire_tuning.original:
-                return
-            if self.road_attempt is not None:
-                target = self.session.driving_mode.configured_vehicle(vehicle.config.braking.abs_enabled,
-                    vehicle.config.traction.tcs_enabled, vehicle.config.stability.esc_enabled, base_config=vehicle.config)
-                store = self.player_brake_ab if self.session.mode in BRAKING_MODES else self.player_road_ab
-                store.freeze(self.road_attempt, target)
-            # 已结束的记录只属于旧车；保存成功后才回菜单准备同一道课题。
-            mode, journey = self.session.mode, self.driving_journey_return
-            self.session.menu()
-            self.choose_slalom_lesson(mode) if mode in SLALOM_MODES else self.choose_braking_lesson(mode)
-            self.driving_journey_return = journey
-            self.panel.hide()
-            self.main_menu.root.show()
-        self.workspace_vehicle = vehicle
-        self.session.set_vehicle_config(vehicle.config)
-        self.session.set_abs_enabled(vehicle.config.braking.abs_enabled)
-        self.session.set_tcs_enabled(vehicle.config.traction.tcs_enabled)
-        self.session.set_esc_enabled(vehicle.config.stability.esc_enabled)
-        self.main_menu.vehicle_note.setText(self.workspace_vehicle_label())
-        self.tire_tuning.show(vehicle, self.workspace_path, self.workspace_vehicle_label(), topic=self.tire_tuning.topic,
-                             trial_label=self.tuning_trial_label(self.tire_tuning.topic))
-        self.tire_tuning.select(8)
 
-    def install_driving_recipe(self, index):
-        if self.session.phase not in (Phase.MENU, Phase.RESULTS):
-            return
-        current = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
-        if current != self.tire_tuning.original:
-            self.tire_tuning.notice.setText('当前车辆已改变，请返回课题再打开配方。')
-            return
-        try:
-            vehicle = (install_brakes(current, index, self.workspace_path) if self.tire_tuning.topic == 'brakes' else
-                       install_front_tires(current, index, self.workspace_path))
-        except (OSError, ValueError, KeyError, TypeError) as error:
-            self.tire_tuning.notice.setText('配方未安装，当前车保留：'+str(error))
-            return
-        self.apply_tuning_vehicle(vehicle)
-        self.tire_tuning.notice.setText('已保存硬件配方；返回原课题亲自验车。' if vehicle != current else '与当前车相同，原方案关联保持。')
-        store = self.player_brake_ab if self.tire_tuning.topic == 'brakes' else self.player_road_ab
-        if store.notice:
-            self.tire_tuning.notice.setText(self.tire_tuning.notice.getText()+' 道路对照有提示，请查看道路A/B。')
-        return True
 
-    def restore_tire_vehicle(self):
-        if self.session.phase not in (Phase.MENU, Phase.RESULTS):
-            return
-        current = self.workspace_vehicle.with_electronics(self.session.vehicle_config)
-        if current != self.tire_tuning.original:
-            self.tire_tuning.notice.setText('当前车辆已改变，请返回课题再打开配方。')
-            return
-        try:
-            vehicle = restore_pre_tuning_vehicle(current, self.workspace_path)
-        except (OSError, ValueError, KeyError, TypeError) as error:
-            self.tire_tuning.notice.setText('原车未恢复，当前车保留：'+str(error))
-            return
-        self.apply_tuning_vehicle(vehicle)
-        self.tire_tuning.notice.setText('已恢复完整安装前车辆与原关联；返回原课题继续。')
 
-    def back_from_tire_tuning(self):
-        self.tire_tuning.hide()
-        if self.workshop_garage_return and self.session.phase == Phase.MENU:
-            self.open_workshop_garage()
-            return
-        self._shown_phase = None
-        self.refresh_panel()
-        self.select_panel_option(3 if self.session.phase == Phase.RESULTS else 2)
 
     def back_from_slalom_lesson(self):
         if self.workshop_garage_return:
@@ -1762,6 +2004,10 @@ class CoastalDrive(ShowBase):
         self.refresh_panel()
 
     def start_slalom_lesson(self):
+        if self.slalom_mode in ROAD_CHALLENGES:
+            self.open_budget_challenge(self.slalom_mode,
+                origin='workshop' if self.workshop_garage_return else 'journey' if self.driving_journey_return else 'slalom')
+            return
         self.slalom_menu = self.highway_menu = False
         self.session.road_shape = "straight"
         self.start_game(mode=self.slalom_mode, track="endless")
@@ -1792,23 +2038,304 @@ class CoastalDrive(ShowBase):
         self.select_panel_option(3 if self.overtake_mode == GameMode.SAFE_OVERTAKE else 4)
 
     def start_overtake(self):
-        self.sprint_menu = self.overtake_menu = self.highway_menu = False
-        self.start_game(mode=self.overtake_mode, track="endless")
+        self.open_budget_challenge(self.overtake_mode, origin='sprint')
 
     def start_sprint(self, mode):
-        self.sprint_menu = self.highway_menu = False
-        self.session.road_shape = SPRINT_ROUTES[mode].shape
-        self.start_game(mode=mode, track="endless")
+        self.open_budget_challenge(mode, origin='sprint')
+
+    def challenge_presets(self, spec):
+        from challenge_presets import road_setups
+
+        if self.budget_origin == 'cup':
+            return ()
+        conditions = self.highway_shape, self.highway_density_keys[self.highway_density_index]
+        return road_setups(spec, distance_conditions=conditions)
+
+    def _budget_editor_spec(self, mode):
+        if mode == GameMode.DISTANCE_CHALLENGE:
+            return distance_challenge_spec(self.highway_shape, self.highway_density_keys[self.highway_density_index])
+        if self.budget_origin == 'chase':
+            return replace(ROAD_CHALLENGES[mode], name=CHASE_COURSES[mode].name)
+        return self._budget_base_spec(mode)
+
+    def _budget_base_spec(self, mode):
+        return self.cup_store.specs[mode] if self.budget_origin == 'cup' else ROAD_CHALLENGES[mode]
+
+    def _budget_setup(self):
+        if self.budget_origin == 'cup':
+            design_id = self.cup_store.specs[CUP_LEGS[0]].design_id
+            return self.cup_drafts.setdefault(design_id, {}), self.cup_plans
+        return self.budget_drafts, self.budget_plans
+
+    def _budget_driving_build(self):
+        return BuildDraft() if self.budget_stock else self._budget_setup()[0][self.budget_mode]
+
+    def open_budget_challenge(self, mode, *, origin=None, notice=None, tab=None, stock=False):
+        if self._workspace_steps is not None:
+            return
+        if origin is not None:
+            self.budget_origin = origin
+        elif self.budget_mode != mode or self.budget_origin is None:
+            self.budget_origin = ('career' if isinstance(mode, str) else 'braking' if mode in BRAKING_MODES else
+                                  'slalom' if mode in SLALOM_MODES else
+                                  'highway' if mode == GameMode.DISTANCE_CHALLENGE else
+                                  'coastal' if mode == GameMode.TIME_TRIAL else 'sprint')
+        spec = self._budget_base_spec(mode)
+        if tab is not None:
+            self.budget_tab = tab
+        elif self.budget_mode != mode:
+            from ui.challenge_layout import GROUPS
+
+            self.budget_tab = next(index for index, (_, keys) in enumerate(GROUPS)
+                                   if any(key in spec.allowed for key in keys))
+        self.budget_mode = mode
+        self.open_career(keep_tour_practice=self.budget_origin == 'tour-practice')
+        drafts, plans = self._budget_setup()
+        if mode not in drafts:
+            drafts[mode] = plans.load(spec)
+        self.driving_journey_return = self.budget_origin == 'journey'
+        if stock:
+            self.challenge_action('challenge-stock')
+            return
+        self.career_panel.show_challenge(self.career_progress, self._budget_editor_spec(mode), drafts[mode],
+                                         self.budget_tab, plans.notice if notice is None else notice)
+
+    def challenge_action(self, action, value=None):
+        from ui.challenge_layout import ENTRY_ACTIONS, GROUPS, read_build, read_value, step_value
+
+        mode = self.budget_mode
+        drafts, plans = self._budget_setup()
+        spec, draft = self._budget_base_spec(mode), drafts[mode]
+        if self.career_panel.page == 'challenge' and action in ENTRY_ACTIONS:
+            try:
+                changed = read_build(self.career_panel, value if action == 'challenge-value' else None)
+            except (ValueError, TypeError, OverflowError) as error:
+                self.career_panel.challenge_readouts['notice'].setText(str(error))
+                return False
+            if changed != draft:
+                drafts[mode] = draft = changed
+                self.career_panel.update_challenge(changed)
+        if action == 'challenge-commit':
+            return True
+        if action == 'challenge-tab':
+            self.budget_tab = value
+            self.career_panel.show_challenge(self.career_progress, self._budget_editor_spec(mode), draft, value)
+        elif action == 'challenge-preset':
+            setup = self.challenge_presets(spec)[value]
+            changed, tab = setup.build, setup.tab
+            drafts[mode] = changed
+            if tab == self.budget_tab:
+                self.career_panel.update_challenge(changed)
+            else:
+                self.budget_tab = tab
+                self.career_panel.show_challenge(self.career_progress, self._budget_editor_spec(mode), changed, tab)
+                self.career_panel.select(next(index for index, button in enumerate(self.career_panel.buttons)
+                                              if button['extraArgs'] == [action, value]))
+        elif action in ('challenge-value', 'challenge-step'):
+            key, raw = value
+            try:
+                number = (step_value(spec, draft, key, raw) if action == 'challenge-step'
+                          else read_value(spec, draft, key, raw))
+                changed = replace(draft, **{key: number})
+                spec.configuration(changed)
+            except (ValueError, TypeError, OverflowError) as error:
+                self.career_panel.challenge_readouts['notice'].setText(str(error))
+                return
+            if changed == draft:
+                return
+            drafts[mode] = changed
+            self.career_panel.update_challenge(changed)
+        elif action == 'challenge-reset':
+            changed = (BuildDraft() if value is None else
+                       replace(draft, **{value: None if value in ADJUSTMENTS else 1.}))
+            drafts[mode] = changed
+            self.career_panel.update_challenge(changed)
+        elif action == 'challenge-save':
+            saved = plans.save(spec, draft)
+            if saved and self.tour_practice_original is not None:
+                self.tour_practice_original = (mode, draft)
+            self.career_panel.update_challenge(draft, plans.notice)
+        elif action == 'challenge-import' and self.budget_origin == 'cup':
+            changed = self.budget_plans.load(ROAD_CHALLENGES[mode])
+            if self.budget_plans.notice:
+                self.career_panel.update_challenge(draft, self.budget_plans.notice)
+                return
+            spec.configuration(changed)
+            drafts[mode] = changed
+            self.career_panel.update_challenge(changed, f'已按参赛车辆重新核价 · {changed.cost}')
+        elif action == 'challenge-lab':
+            if not self.budget_active:
+                self.budget_electronics = self.session.abs_enabled, self.session.tcs_enabled, self.session.esc_enabled
+            if self.budget_model_before is None:
+                self.budget_model_before = self.vehicle_model_id
+            self.budget_active = True
+            self.open_vehicle_lab()
+        elif action in ('challenge-start', 'challenge-retry', 'challenge-auto', 'challenge-stock'):
+            if action == 'challenge-auto' and (spec.id not in TRIAL_POLICIES or self.budget_origin in ('chase', 'cup')):
+                return
+            if action != 'challenge-retry':
+                self.budget_auto = action == 'challenge-auto'
+                self.budget_stock = action == 'challenge-stock'
+            draft = self._budget_driving_build()
+            candidate = spec.configuration(draft)
+            if (not self.budget_auto and self.road_attempt is not None and course_mode(mode) in (*BRAKING_MODES, *SLALOM_MODES)
+                    and self.road_attempt['context']['mode'] == course_mode(mode).value
+                    and self.road_attempt['config'] != json.loads(json.dumps(asdict(candidate)))):
+                store = self.player_brake_ab if course_mode(mode) in BRAKING_MODES else self.player_road_ab
+                store.freeze(self.road_attempt, candidate)
+            if not self.budget_active:
+                self.budget_electronics = self.session.abs_enabled, self.session.tcs_enabled, self.session.esc_enabled
+            if (not self.budget_auto and not self.budget_stock and self.budget_origin != 'tour-practice'
+                    and (self.budget_origin != 'chase' or self.chase_practice_sector is None)):
+                plans.save(spec, draft)
+            if self.budget_model_before is None:
+                self.budget_model_before = self.vehicle_model_id
+            self.vehicle_model_id = vehicle_for_design(spec.design_id, self.vehicle_model_id).id
+            self.budget_active = True
+            self.career_award = None
+            self.career_panel.hide()
+            self.sprint_menu = self.highway_menu = self.overtake_menu = False
+            if course_mode(mode) == GameMode.CAREER:
+                self.career_event_id = mode
+            self.start_game(mode=course_mode(mode), track=course_track(mode),
+                            tour=self.budget_origin in ('tour', 'cup') and not self.budget_auto)
+        elif action in ('challenge-adjust', 'challenge-apply-reference'):
+            if self.budget_origin in ('tour', 'cup') and len(self.active_series.current) > self.tour_round:
+                self.start_cup_leg() if self.budget_origin == 'cup' else self.start_tour_leg()
+            else:
+                notice = None
+                if action == 'challenge-apply-reference':
+                    spec.configuration(value)
+                    self.budget_tab = next((index for index, (_, keys) in enumerate(GROUPS)
+                                            if any(value.value(key) != draft.value(key) for key in keys)), self.budget_tab)
+                    drafts[mode] = value
+                    notice = '已套用对照方案'
+                self.open_budget_challenge(mode, notice=notice)
+        elif action == 'tour-next':
+            if self.budget_origin == 'cup':
+                if self.cup_store.unsaved:
+                    self.cup_store.save()
+                    self.show_budget_result(self.session.highway.snapshot.engineering)
+                elif len(self.cup_store.current) == len(self.cup_store.legs):
+                    if self.career_progress.course_record(EVENT_BY_ID['coastal-cup']):
+                        self.show_season_result()
+                    else:
+                        self.open_cup()
+                else:
+                    self.start_cup_leg()
+            else:
+                self.open_driving_tour() if len(self.tour_store.current) == 3 else self.start_tour_leg()
+        elif action in ('tour-save', 'challenge-save-score'):
+            self.retry_budget_result()
+        elif action == 'challenge-resume':
+            self.career_panel.hide()
+            self.driving_keys_held.clear()
+            self.session.resume()
+            self._shown_phase = None
+            self.refresh_panel()
+        elif action == 'challenge-back':
+            origin = self.budget_origin
+            self.back_to_menu()
+            if origin in ('tour', 'tour-practice'):
+                self.open_driving_tour(keep_view=origin == 'tour-practice')
+            elif origin == 'cup':
+                self.open_cup()
+            elif origin == 'chase':
+                self.open_sector_chase(course_mode(mode))
+            elif origin == 'journey':
+                self.return_to_driving_journey()
+            elif origin == 'coastal':
+                self._shown_phase = None
+                self.refresh_panel()
+            elif origin == 'workshop':
+                self.open_workshop_garage()
+            elif origin == 'club' or course_mode(mode) == GameMode.CAREER:
+                self.open_career(event=BOARD_EVENTS[mode])
+                self.career_panel.show_brief(self.career_progress, BOARD_EVENTS[mode])
+            elif course_mode(mode) in BRAKING_MODES:
+                self.choose_braking_lesson(course_mode(mode))
+            elif course_mode(mode) in SLALOM_MODES:
+                self.choose_slalom_lesson(course_mode(mode))
+            elif course_mode(mode) == GameMode.DISTANCE_CHALLENGE:
+                self.choose_highway()
+            else:
+                self.choose_sprint_routes()
 
     def start_braking_lesson(self):
-        self.braking_menu = False
-        self.highway_menu = False
-        self.session.road_shape = "straight"
-        self.start_game(mode=self.braking_mode, track="endless")
+        self.open_budget_challenge(self.braking_mode,
+            origin='workshop' if self.workshop_garage_return else 'journey' if self.driving_journey_return else 'braking')
+
+    def _automatic_trial_group(self):
+        shape, seed = self.session.road_shape, self.session.seed
+        if self.budget_mode == GameMode.DISTANCE_CHALLENGE:
+            density = self.session.traffic_density
+            spec = distance_challenge_spec(shape, density, seed)
+        else:
+            density = None
+            spec = ROAD_CHALLENGES[self.budget_mode]
+        return (spec.id, spec.version, shape, density, self.tour_input(actual=True),
+                TRIAL_POLICY_VERSION, record_context(ghost_context(seed), self.session.mode))
+
+    def retry_budget_result(self):
+        status = self.session.highway.snapshot.engineering
+        if status.score_pending:
+            self.session.retry_challenge_score()
+            status = self.session.highway.snapshot.engineering
+        if self.tour_active and self.active_series.unsaved:
+            self.active_series.save()
+        if self.career_award is not None and not self.career_award['saved']:
+            self.career_award = self.career_progress.record_challenge(status.result)
+        self.show_budget_result(status)
+
+    def show_budget_result(self, status):
+        if status.chase is not None:
+            self.career_panel.show_sector_chase_result(self.career_progress, self.budget_mode, status)
+            return
+        if isinstance(self.budget_mode, str) and not self.budget_auto and self.career_award is None:
+            self.career_award = self.career_progress.record_challenge(status.result)
+        if self.career_award is not None and not self.career_award['saved']:
+            status = replace(status, save_notice=' · '.join(value for value in
+                (status.save_notice, self.career_progress.notice) if value))
+        notices = [status.save_notice]
+        if self.budget_origin in ('tour', 'cup') and self.active_series is not None:
+            notices.append(self.active_series.notice)
+            if self.tour_active and len(self.active_series.current) == self.tour_round and status.result.valid:
+                notices.append(self.tour_status)
+        mode = course_mode(self.budget_mode)
+        if mode == GameMode.TIME_TRIAL and not self.budget_auto:
+            notices.append(self.session.race.snapshot.ghost_notice)
+        if not self.budget_auto and mode in (*BRAKING_MODES, *SLALOM_MODES):
+            notices.append((self.player_brake_ab if mode in BRAKING_MODES else self.player_road_ab).notice)
+        plans = self._budget_setup()[1]
+        if plans.notice.startswith('方案未保存'):
+            notices.append(plans.notice)
+        spec = self._budget_base_spec(self.budget_mode)
+        if mode == GameMode.DISTANCE_CHALLENGE:
+            spec = replace(spec, targets=status.targets, version=status.result.rules_version)
+        if self.budget_auto:
+            previous = self.auto_trial_reference
+            if (not self.auto_trial_saved and status.result.valid and status.result.litres is not None
+                    and (spec.assessment != 'road' or len(status.splits) == status.gate_count)):
+                clearances = self.session.highway.snapshot.slalom.clearances if mode == GameMode.FAST_SLALOM else ()
+                valley = None
+                if spec.version == VALLEY_BRAKING.version:
+                    run = self.session.highway.snapshot.sprint
+                    if run is not None and run.succeeded and run.braking_request is not None:
+                        valley = ValleyTrial(run.gate_kph[0], run.braking_request, run.zone_entry_kph)
+                self.auto_trial_saved = self.auto_trials.save(self.auto_trial_group, spec, course_gates(self.budget_mode),
+                                                             status, clearances=clearances, valley=valley)
+            notices.append(self.auto_trials.notice)
+            status = replace(status, reference_result=None if previous is None else previous.result,
+                             reference_splits=() if previous is None else previous.splits)
+        status = replace(status, save_notice=' · '.join(value for value in notices if value))
+        self.career_panel.show_challenge_result(self.career_progress, spec, status)
 
     def start_highway(self, shape, mode=GameMode.FREE_DRIVE):
-        self.highway_menu = False
         self.highway_shape = shape
+        if mode == GameMode.DISTANCE_CHALLENGE:
+            self.open_budget_challenge(mode, origin='highway')
+            return
+        self.highway_menu = False
         self.session.road_shape = shape
         self.start_game(mode=mode, track="endless")
 
@@ -1816,6 +2343,10 @@ class CoastalDrive(ShowBase):
         self.highway_shape = "straight" if self.highway_shape == "hills" else "hills"
         self._shown_phase = None
         self.refresh_panel()
+
+    def highway_conditions(self):
+        density = self.highway_density_keys[self.highway_density_index]
+        return ('弯坡高速' if self.highway_shape == 'hills' else '直线高速'), TRAFFIC_DENSITIES[density].label
 
     def cycle_highway_density(self, step=1):
         self.highway_density_index = (self.highway_density_index + step) % len(self.highway_density_keys)
@@ -1838,11 +2369,14 @@ class CoastalDrive(ShowBase):
         self.diagnostics.show() if self.diagnostics.isHidden() else self.diagnostics.hide()
 
     def toggle_ghost(self):
+        if self.budget_auto:
+            return
         self.ghost_enabled = not self.ghost_enabled
         self.refresh_ghost_button()
 
     def refresh_ghost_button(self):
-        if self.session.mode != GameMode.TIME_TRIAL:
+        if (self.session.mode != GameMode.TIME_TRIAL or self.budget_auto
+                or self.budget_active and self.budget_origin == 'chase'):
             self.ghost_button.hide()
             return
         available = self.session.reference_ghost is not None
@@ -1852,6 +2386,31 @@ class CoastalDrive(ShowBase):
         self.ghost_button["state"] = DGG.NORMAL if available else DGG.DISABLED
         self.ghost_button.show()
 
+    def layout_driving_buttons(self):
+        """滨海小按钮沿用原回调；其它入口保留原样式和位置。"""
+        coastal = self.session.simulation.track == 'coastal' or self.budget_active
+        if coastal != self._driving_buttons_coastal:
+            self._driving_buttons_coastal = coastal
+            self._coastal_ghost_available = None
+            for button, scale, height in ((self.lab_return_button, .045, .86),
+                                          (self.ghost_button, .042, .71)):
+                button['frameTexture'] = None if coastal else self.button_states
+                button['frameColor'] = ((.035, .075, .10, .68), (.08, .16, .20, .85),
+                                        (.13, .24, .28, .85), (.035, .075, .10, .40)) if coastal else (1, 1, 1, 1)
+                button['text_fg'] = (1, 1, 1, 1) if coastal else theme.INK
+                button['text_scale'] = .035 if coastal else scale
+                button['text_pos'] = (0, -.012 if coastal else -.016)
+                button['frameSize'] = (-.25, .25, -.048, .048) if coastal else (-.34, .34, -.055, .055)
+                button.setZ((.87 if button is self.lab_return_button else .74) if coastal else height)
+        x = self.getAspectRatio()-(.325 if coastal else .44)
+        self.lab_return_button.setX(x)
+        self.ghost_button.setX(x)
+        if coastal:
+            available = self.session.reference_ghost is not None
+            if available != self._coastal_ghost_available:
+                self.ghost_button['text_fg'] = (1, 1, 1, 1) if available else (.60, .65, .68, 1)
+                self._coastal_ghost_available = available
+
     def refresh_panel(self):
         phase = self.session.phase
         self.observe_player_road()
@@ -1860,6 +2419,29 @@ class CoastalDrive(ShowBase):
         if panel_state == self._shown_phase:
             return
         self.main_menu.hide_home()
+        if self.budget_active and phase == Phase.PAUSED and not (self.audio_settings_page or self.driving_mode_page):
+            self._shown_phase = panel_state
+            self.panel.hide()
+            self.hud.root.hide()
+            self.main_menu.root.show()
+            self.driving_cards.hide()
+            self.career_panel.show_challenge_pause(self.career_progress, self._budget_editor_spec(self.budget_mode),
+                self._budget_driving_build(), self.session.highway.snapshot.engineering)
+            return
+        if self.budget_active and phase == Phase.RESULTS:
+            status = self.session.highway.snapshot.engineering
+            if status is None:
+                self.open_budget_challenge(self.budget_mode)
+                return
+            self._shown_phase = panel_state
+            self.panel.hide()
+            self.hud.root.hide()
+            self.main_menu.root.show()
+            self.driving_cards.hide()
+            for column in self.result_sectors:
+                column.hide()
+            self.show_budget_result(status)
+            return
         if self.career_active and phase in (Phase.RESULTS, Phase.PAUSED):
             self._shown_phase = panel_state
             self.panel.hide()
@@ -1880,7 +2462,7 @@ class CoastalDrive(ShowBase):
                 not (self.garage is not None or self.highway_menu or self.audio_settings_page or self.driving_mode_page)):
             self.panel_selection = 0
         self._shown_phase = panel_state
-        self.lab_return_button['text'] = ('返回赛事' if self.career_active else
+        self.lab_return_button['text'] = ('返回方案' if self.budget_active else '返回赛事' if self.career_active else
                                         '返回海岸工坊' if self.workshop_garage_return else '返回实验台')
         self.lab_return_button.hide() if self.career_active else self.lab_return_button.show()
         self.driving_cards.hide()
@@ -1900,12 +2482,10 @@ class CoastalDrive(ShowBase):
         if phase == Phase.MENU and self.garage is None and not self.highway_menu and not self.audio_settings_page and not self.driving_mode_page:
             self.panel.hide()
             self.main_menu.set_driving_mode(self.session.driving_mode)
-            times = BestTimes(self.session.race.scores.path)
-            best = times.get(GameMode.TIME_TRIAL, COASTAL_CIRCUIT.score_id+":"+self.session.score_variant())
-            self.main_menu.time_goal.setText(menu_goal(best))
-            notice = self.appearance.notice or self.driving_mode_settings.notice or times.notice
+            self.main_menu.time_goal.setText('独立预算 5000 · 用时与油耗')
+            notice = self.driving_error or self.appearance.notice or self.driving_mode_settings.notice or self.budget_plans.notice
             self.main_menu.notice.setText(self.fit_lines(notice, 1.0, 0.028))
-            self.main_menu.show_home(self.career_progress, self.workspace_vehicle)
+            self.main_menu.show_home(self.career_progress, self.workspace_vehicle, self.season_continuation()[0])
             self.main_menu.root.show()
             return
         for button in self.buttons:
@@ -1978,16 +2558,15 @@ class CoastalDrive(ShowBase):
         elif phase == Phase.MENU and self.highway_menu and self.overtake_menu:
             route = OVERTAKE_ROUTES[self.overtake_mode]
             self.panel_title.setText(route.title)
-            self.panel_note.setText(route.rules)
-            options = [("开始挑战  Enter", self.start_overtake), ("返回短途赛事", self.back_from_overtake)]
+            self.panel_note.setText(overtake_budget_rules(route))
+            options = [("准备车辆方案  Enter", self.start_overtake), ("返回短途赛事", self.back_from_overtake)]
         elif phase == Phase.MENU and self.highway_menu and self.sprint_menu:
             self.panel_title.setText("短途路线与车流挑战")
-            bend, ridge, valley = SPRINT_ROUTES.values()
             self.panel_note.setText(
                 "平路连弯 · 1.8公里连续弯\n山脊冲刺 · 1.4公里起伏\n"
-                "山谷节奏 · 1公里，加速→控速→再加速\n250米≥60；400–650米全段35–50km/h\n"
+                "山谷节奏 · 1公里，下谷制动再爬坡\n375米≥80；400–650米全段35–50km/h\n"
                 "前三项封闭无车流 · 碰撞/越界/复位失败 · 上限180秒")
-            self.panel_detail.setText(f"平路 {sprint_goals(bend)}\n山脊 {sprint_goals(ridge)}\n山谷 {sprint_goals(valley)}")
+            self.panel_detail.setText('每关独立预算5000 · 固定原车\n用时与赛段油耗须同次达标\n联合目标标定中，当前可试跑')
             options = [("平路连弯 · 1.8公里", lambda: self.start_sprint(GameMode.BEND_SPRINT)),
                        ("山脊冲刺 · 1.4公里", lambda: self.start_sprint(GameMode.RIDGE_SPRINT)),
                        ("山谷节奏 · 1公里", lambda: self.start_sprint(GameMode.VALLEY_PACE)),
@@ -2001,31 +2580,29 @@ class CoastalDrive(ShowBase):
             self.panel_title.setText("驾驶课题 · "+("高速验车" if fast else "连续过门"))
             self.panel_note.setText('过门练习：不限入口速度，漏门可继续；不记奖牌。' if practice else
                                     FAST_SLALOM_RULES if fast else SLALOM_RULES)
-            options = [("开始练习  Enter", self.start_slalom_lesson),
+            options = [("开始练习  Enter" if practice else "准备车辆方案  Enter", self.start_slalom_lesson),
                        ('正式过门挑战 · ≥40km/h' if practice else "切换普通练习" if fast else "高速验车 · 70–80km/h",
                         lambda: self.choose_slalom_lesson(GameMode.SLALOM_LESSON if fast or practice else GameMode.FAST_SLALOM)),
-                       ('前胎配方 · 改装验车', self.open_tire_tuning),
+                       ('道路A/B记录', lambda: self.open_player_road_ab('tires')),
                        ("返回高速", self.back_from_slalom_lesson)]
         elif phase == Phase.MENU and self.highway_menu and self.braking_menu:
             short = self.braking_mode == GameMode.SHORT_BRAKING
             self.panel_title.setText("驾驶课题 · "+("短距制动验车" if short else "定点刹停"))
             self.panel_note.setText(SHORT_BRAKING_RULES if short else BRAKING_RULES)
             options = [
-                ("开始练习  Enter", self.start_braking_lesson),
+                ("准备车辆方案  Enter", self.start_braking_lesson),
                 ("切换定点刹停" if short else "短距制动验车 · 80–85km/h",
                  lambda: self.choose_braking_lesson(GameMode.BRAKING_LESSON if short else GameMode.SHORT_BRAKING)),
-                ("前制动分配 · 改装验车", self.open_brake_tuning),
+                ('道路A/B记录', lambda: self.open_player_road_ab('brakes')),
                 ("返回高速", self.back_from_braking_lesson),
             ]
         elif phase == Phase.MENU and self.highway_menu:
             self.panel_title.setText("无限高速")
-            density = self.highway_density_keys[self.highway_density_index]
-            density_label = TRAFFIC_DENSITIES[density].label
-            shape_label = "弯坡高速" if self.highway_shape == "hills" else "直线高速"
+            shape_label, density_label = self.highway_conditions()
             self.panel_note.setText(
                 f"{shape_label} · {density_label}\nEnter 启动自由驾驶 · Esc 返回\n"
-                "5公里挑战可倒车调整，复位会结束挑战\n"
-                "定点刹停：封闭直线无车流，使用当前车辆"
+                "5公里挑战可倒车调姿，碰撞、越界或复位结束\n"
+                "定点刹停：固定原车、独立预算、封闭直线"
             )
             options = [
                 (f"道路：{shape_label}  >", self.cycle_highway_shape),
@@ -2166,22 +2743,11 @@ class CoastalDrive(ShowBase):
             elif self.session.mode in SPRINT_ROUTES or self.session.mode in OVERTAKE_ROUTES:
                 options[2] = ("返回主菜单", self.back_to_menu)
             if self.session.mode in SLALOM_MODES:
-                options.append(('改装前胎再试', self.open_tire_tuning))
+                options.append(('调整参数再试', self.open_tire_tuning))
             elif self.session.mode in BRAKING_MODES:
-                options.append(('调整制动分配', self.open_brake_tuning))
+                options.append(('调整参数再试', self.open_brake_tuning))
             if self.workshop_garage_return and self.session.mode in (*BRAKING_MODES, *SLALOM_MODES):
                 options[1] = ('返回海岸工坊', self.open_workshop_garage)
-            if self.tour_active:
-                if self.tour_store.variant != self.session.score_variant():
-                    options[0] = ('查看巡回', self.open_driving_tour)
-                    options[1] = ('返回实验台', self.open_vehicle_lab)
-                else:
-                    complete = len(self.tour_store.current) == 3
-                    advanced = len(self.tour_store.current) > self.tour_round
-                    options[0] = (('再跑一轮' if complete else '下一站 · '+TOUR_TITLES[len(self.tour_store.current)] if advanced else '重试当前站'),
-                                  (lambda: self.start_tour_leg(True)) if complete else self.start_tour_leg)
-                    options[1] = ('巡回总览', self.open_driving_tour)
-                options[2] = ('返回主菜单', self.back_to_menu)
         else:
             self.panel.hide()
             return
@@ -2353,7 +2919,7 @@ class CoastalDrive(ShowBase):
             if self.overtake_menu:
                 self.driving_cards.overtake(self, OVERTAKE_ROUTES[self.overtake_mode])
             elif self.sprint_menu:
-                self.driving_cards.routes(self, tuple(sprint_goals(route) for route in SPRINT_ROUTES.values()))
+                self.driving_cards.routes(self)
             elif self.slalom_menu or self.braking_menu:
                 self.driving_cards.lesson(self, braking=self.braking_menu,
                     fast=self.braking_mode == GameMode.SHORT_BRAKING if self.braking_menu else
@@ -2390,16 +2956,42 @@ class CoastalDrive(ShowBase):
         self.clock.syncFrameTime()
         return task.cont
 
+    def recover_driving_error(self, error):
+        """中止数值异常的驾驶并保留原错误；不继续推进失败世界或将本次当成功。"""
+        trace = ''.join(traceback.format_exception(error))
+        logging.getLogger(__name__).error('驾驶数值异常，本次已中止\n%s', trace)
+        try:
+            path = self.output/'drive-errors'/f'{time.time_ns()}.log'
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(trace, encoding='utf-8')
+            saved = True
+        except OSError:
+            logging.getLogger(__name__).exception('驾驶错误记录未能保存')
+            saved = False
+        mode = self.budget_mode if self.budget_active else None
+        self.driving_keys_held.clear()
+        self.driving_error = ('驾驶计算出错，本次已中止。'+('方案已保留。' if mode is not None else '')
+                              +('错误记录已保存。' if saved else '错误记录未能保存。'))
+        if mode is not None:
+            self.open_budget_challenge(mode, origin=self.budget_origin)
+            self.career_panel.update_challenge(self._budget_setup()[0][mode], self.driving_error)
+        else:
+            self.back_to_menu()
+            self._shown_phase = None
+            self.refresh_panel()
+        self.countdown.update('menu', 0, 0.)
+
     def update(self, task):
         # 驾驶切台只改内存状态，进入暂停/菜单/结算再保存选择。
         if self._radio_dirty and self.session.phase not in (Phase.DRIVING, Phase.COUNTDOWN):
             self.save_audio_settings()
         self.main_menu.resize(self.getAspectRatio())
         self.career_panel.resize(self.getAspectRatio())
+        self.player_road_panel.resize(self.getAspectRatio())
         self.driving_cards.resize(self.getAspectRatio())
+        self.tour_panel.resize(self.getAspectRatio())
         self.hud.resize(self.getAspectRatio())
-        self.lab_return_button.setX(self.getAspectRatio()-.44)
-        self.ghost_button.setX(self.getAspectRatio()-.44)
+        self.layout_driving_buttons()
         self.refresh_ghost_button()
         if self.session.phase == Phase.MENU and self.scene is not None:
             self.scene.close()
@@ -2419,7 +3011,11 @@ class CoastalDrive(ShowBase):
         dropped = self.session.stepper.dropped_time
         # Panda帧起点是整帧共同的显示时刻；不能用执行到这里时的随机线程调度时刻。
         sampled_at = time.perf_counter()-(self.clock.getRealTime()-self.clock.getFrameTime())
-        state = self.session.frame(self.clock.getDt(),sampled_at=sampled_at)
+        try:
+            state = self.session.frame(self.clock.getDt(),sampled_at=sampled_at)
+        except ArithmeticError as error:
+            self.recover_driving_error(error)
+            return task.cont
         self.countdown.update(self.session.phase.value,self.session.countdown_ticks,self.clock.getDt())
         if self.soundscape is not None:
             self.soundscape.update(state, self.session.phase, None, self.clock.getDt(),
@@ -2454,11 +3050,19 @@ class CoastalDrive(ShowBase):
         if (self.workspace_vehicle.workshop_result is not None and self.session.mode == GameMode.TIME_TRIAL
                 and self.session.simulation.track == "coastal"):
             notice = "工坊道路验证：按顺序通过检查点，完成有效圈。" + notice
+        career_gold = None
+        if self.session.phase == Phase.COUNTDOWN and self.budget_active and isinstance(self.budget_mode, str):
+            targets = self._budget_base_spec(self.budget_mode).targets
+            if targets:
+                career_gold = targets[-1]
         self.hud.update(
             state, self.session.race.snapshot, self.session.highway.snapshot,
             track=self.session.simulation.track, countdown=countdown,
             notice=notice,
             driving_mode=self.session.driving_mode,
+            automatic=self.budget_auto,
+            automatic_splits=() if self.auto_trial_reference is None else self.auto_trial_reference.splits,
+            career_gold=career_gold,
         )
         if not self.diagnostics.isHidden():
             self.update_diagnostics(state, surface)
@@ -2474,8 +3078,12 @@ class CoastalDrive(ShowBase):
         self._camera_time = state.time
         position = Vec3(*state.player.position)
         snap = state.tick == 0 or "player_reset" in state.events
+        road = self.session.simulation.road
+        progress, _lateral = road.locate(state.player)
+        road_pose = road.sample_lateral(progress, 0.)
         camera_position, look_at = self.chase_camera.update(
-            state.player, self.session.camera_distance, camera_dt, snap=snap
+            state.player, self.session.camera_distance, camera_dt, snap=snap,
+            road_grade=road_pose.grade, road_heading=road_pose.heading,
         )
         camera_position = self.session.camera_position(
             position + Vec3(0, 0, 1.4), camera_position, state.origin_y
@@ -2557,6 +3165,8 @@ class CoastalDrive(ShowBase):
         self.taskMgr.remove("load-game")
         self.ignoreAll()
         self.game_input.ignoreAll()
+        for device in tuple(self.menu_gamepads):
+            self.detach_menu_gamepad(device)
         if self.session is not None:
             self.session.close()
         if self.soundscape is not None:
@@ -2571,7 +3181,7 @@ class CoastalDrive(ShowBase):
         self.workshop_garage.root.destroy()
         self.driving_journey.root.destroy()
         self.tour_panel.root.destroy()
-        self.tire_tuning.root.destroy()
+        self.player_road_panel.root.destroy()
         self.tour_banner.destroy()
         self.main_menu.destroy()
         self.hud.destroy()

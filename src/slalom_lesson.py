@@ -133,11 +133,12 @@ class SlalomResult:
 
 
 class SlalomLesson:
-    def __init__(self, start_progress, scores, config, *, fast=False, practice=False):
+    def __init__(self, start_progress, scores, config, *, fast=False, practice=False, record_scores=True):
         self.scores, self.config = scores, config
-        self.snapshot = SlalomResult(start_progress=start_progress, best_seconds=scores.best, fast=fast, practice=practice,
+        self.record_scores = record_scores
+        self.snapshot = SlalomResult(start_progress=start_progress, best_seconds=scores.best if record_scores else None, fast=fast, practice=practice,
             save_notice=scores.notice,
-            reference_times=tuple(scores.best_run["gate_times"]) if scores.best_run is not None else ())
+            reference_times=tuple(scores.best_run["gate_times"]) if record_scores and scores.best_run is not None else ())
         self._previous = (0., 0., 0., 0., 0.)
 
     def update(self, progress, forward_speed, elapsed, *, lateral=0., heading=0., collisions=0, reset=False):
@@ -200,9 +201,9 @@ class SlalomLesson:
                 self.snapshot = replace(self.snapshot, run_seconds=seconds, medal=medal)
                 if medal:
                     improved = self.snapshot.best_seconds is None or seconds < self.snapshot.best_seconds
-                    saved = self.scores.record(seconds, gate_times=self.snapshot.gate_times,
-                                               clearances=self.snapshot.clearances)
-                    self.snapshot = replace(self.snapshot, best_seconds=self.scores.best,
+                    saved = (self.scores.record(seconds, gate_times=self.snapshot.gate_times,
+                                               clearances=self.snapshot.clearances) if self.record_scores else False)
+                    self.snapshot = replace(self.snapshot, best_seconds=self.scores.best if self.record_scores else None,
                                             save_notice=self.scores.notice, new_best=saved and improved)
                     self.stop(f"{medal}牌 · 连续通过全部6道门", succeeded=True)
                 else:

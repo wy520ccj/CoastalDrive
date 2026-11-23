@@ -135,7 +135,7 @@ def test_keyboard_navigation_for_secondary_menus(tmp_path):
         app.session.menu()
         app.refresh_panel()
         app.key_down("s")
-        assert app.main_menu.selected == 1
+        assert app.main_menu.selected == 2
         app.key_up("s")
 
         app.choose_garage()
@@ -163,8 +163,6 @@ def test_keyboard_navigation_for_secondary_menus(tmp_path):
         app.key_down("arrow_right")
         assert app.audio_settings.master_volume == min(100, master + 10)
         app.key_up("arrow_right")
-        app.key_down("s")
-        app.key_up("s")
         app.key_down("arrow_left")
         assert app.audio_settings.master_volume == max(0, min(100, master + 10) - 10)
         app.key_up("arrow_left")
@@ -179,7 +177,7 @@ def test_keyboard_navigation_for_secondary_menus(tmp_path):
         app.key_down("a")
         app.key_up("a")
         assert app.audio_settings.music_volume == max(0, music - 10)
-        app.select_panel_option(5)
+        app.select_panel_option(6)
         app.key_down("d")
         app.key_up("d")
         assert app.audio_settings.radio_station == 2
@@ -208,11 +206,7 @@ def test_keyboard_navigation_for_secondary_menus(tmp_path):
         app.refresh_panel()
         app.key_down("s")
         app.key_up("s")
-        assert app.panel_selection == 1
-        assert app.buttons[app.panel_selection]["text"] == "返回实验台"
-        app.key_down("s")
-        app.key_up("s")
-        assert app.panel_selection == 2 and app.buttons[app.panel_selection]["text"] == "设置"
+        assert app.panel_selection == 2 and app.buttons[app.panel_selection]["text"] == "声音设置"
         app.key_down("enter")
         assert app.audio_settings_page
         assert app.panel_title.getText() == "设置"
@@ -230,7 +224,7 @@ def test_keyboard_navigation_for_secondary_menus(tmp_path):
         app.key_down("escape")
         app.key_up("escape")
         assert not app.audio_settings_page and app.session.phase == Phase.PAUSED
-        assert app.panel_selection == 2 and app.buttons[app.panel_selection]["text"] == "设置"
+        assert app.panel_selection == 2 and app.buttons[app.panel_selection]["text"] == "声音设置"
         app.key_down("s")
         app.key_up("s")
         app.key_down("enter")

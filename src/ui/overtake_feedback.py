@@ -4,6 +4,13 @@ from overtake_routes import OVERTAKE_ROUTES
 from race import GameMode
 
 
+def budget_rules(route):
+    return (f'{route.seconds:g}秒内跑完{route.distance/1000:g}公里，安全超越{route.passes}辆\n'
+            '并行侧距至少1米，跟车和切回净距至少10米\n'
+            '从后方接近，冲线前整车领先10米才计数\n'
+            '贴身、碰撞、越界、逆向或复位结束')
+
+
 def driving_feedback(result):
     route = OVERTAKE_ROUTES[GameMode(result.route_id)]
     remaining = max(0., route.distance-result.distance)
@@ -23,7 +30,10 @@ def traffic_feedback(result):
                   else trend+' · 至少留10m')
         return f'前方#{number} · 净距{reading.end_m:.1f}m\n'+second, reading.warning
     if reading.kind == 'clear':
-        return f'后方#{number} · 整车领先{reading.end_m:.1f}m\n切回前至少拉开10m', reading.warning
+        missing = 10.-reading.end_m
+        gap = '不到0.1' if missing < .1 else f'{missing:.1f}'
+        return (f'后方#{number} · 整车领先{reading.end_m:.1f}m\n'
+                f'切回前还差{gap}m'), reading.warning
     return (f"{'并行' if reading.kind == 'parallel' else '接近并排'}#{number} · 侧距{reading.side_m:.2f}m\n"
             f'距1m侧距线余{reading.side_m-1.:+.2f}m'), reading.warning
 

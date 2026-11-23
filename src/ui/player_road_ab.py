@@ -2,66 +2,172 @@
 
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectButton, DirectFrame, OnscreenText
-from panda3d.core import TextNode
+from panda3d.core import TextNode, TextureStage, TransparencyAttrib
 
 from player_road_ab import mismatches
 from ui import theme
+from ui.garage_layout import GRAY, INK, ORANGE, WHITE
+from ui.lab_widgets import rounded_panel
 from ui.player_road_diagram import RoadDiagram
 
 
 class PlayerRoadPanel:
-    def __init__(self, parent, font, textures, retest):
-        self.root = DirectFrame(parent=parent, frameColor=theme.PAPER_LIGHT,
-            frameSize=(-1.70, 1.70, -.86, .80), sortOrder=115, state=DGG.NORMAL)
-
-        def text(value, x, z, scale=.038, color=theme.INK):
-            return OnscreenText(parent=self.root, text=value, font=font, fg=color, align=TextNode.ALeft,
-                pos=(x, z), scale=scale, mayChange=True)
-
-        text('亲自驾驶 · 改装前后道路对照', -1.52, .62, .060)
-        self.status = text('', -1.52, .48, .035, theme.SEA)
-        self.status.textNode.setWordwrap(86)
-        self.cards = [text('', x, .28, .038, color) for x, color in ((-1.52, theme.SEA), (.12, theme.INK))]
-        for card in self.cards:
-            card.textNode.setWordwrap(37)
-        self.columns = [text('', x, -.05, .035) for x in (-1.52, -.40, .55)]
-        self.diagram = RoadDiagram(self.root, font, textures)
-        self.view_button = DirectButton(parent=self.root, text='数值表 · 空格', text_font=font, text_fg=theme.INK,
-            text_scale=.032, frameTexture=textures, frameColor=(1, 1, 1, 1), relief=DGG.FLAT, pressEffect=False,
-            frameSize=(-.34, .34, -.050, .050), pos=(1.16, 0., .64), command=self.toggle_view)
-        self.delta = text('', -1.52, -.40, .034, theme.SEA)
-        self.notice = text('', -1.52, -.50, .029, theme.MUTED)
-        self.notice.textNode.setWordwrap(102)
-        text('同一道题与输入设置，驾驶操作仍可不同；本页不证明单一硬件因果，也不授奖。', -1.52, -.62, .028, theme.MUTED)
-        self.back = DirectButton(parent=self.root, text='返回前胎配方 · Esc', text_font=font, text_fg=theme.INK,
-            text_scale=.040, frameTexture=textures, frameColor=(1, 1, 1, 1), relief=DGG.FLAT, pressEffect=False,
-            frameSize=(-.68, .68, -.055, .055), pos=(.86, 0, -.75), command=self.hide)
-        self.retest_button = DirectButton(parent=self.root, text='实验台复测 A/B', text_font=font, text_fg=theme.INK,
-            text_scale=.040, frameTexture=textures, frameColor=(1, 1, 1, 1), relief=DGG.FLAT, pressEffect=False,
-            frameSize=(-.68, .68, -.055, .055), pos=(-.86, 0, -.75), command=retest)
+    def __init__(self, parent, font, textures, retest, *, on_back=None, vehicle_view):
+        self.on_back, self.retest = on_back, retest
+        self.font, self.textures, self.vehicle_view = font, textures, vehicle_view
+        self.regular = theme.load_font('fonts/SourceHanSansSC-Regular.otf')
+        self.base = vehicle_view.base
+        self.root = DirectFrame(parent=parent, frameColor=(0, 0, 0, 0),
+                                frameSize=(-2.5, 2.5, -1, 1), sortOrder=315, state=DGG.NORMAL)
+        self.content, self.aspect, self.store = None, None, None
+        self.widgets = []
         self.root.hide()
 
+    def point(self, x, y):
+        return (x-self.width/2)*2/941, 1-y*2/941
+
+    def box(self, x, y, width, height):
+        a, b = self.point(x, y+height), self.point(x+width, y)
+        return a[0], b[0], a[1], b[1]
+
+    def fill(self, x, y, width, height, color, *, parent=None, radius=4):
+        node = rounded_panel(self.content if parent is None else parent, 'ab-surface',
+                             self.box(x, y, width, height), color, radius*2/941)
+        node.setTransparency(TransparencyAttrib.MAlpha)
+        return node
+
+    def text(self, value, x, y, size=22, color=INK, *, parent=None, bold=False, wrap=None):
+        item = OnscreenText(parent=self.content if parent is None else parent, text=value,
+            font=self.font if bold else self.regular, fg=color, align=TextNode.ALeft,
+            pos=self.point(x, y), scale=size*2/941, mayChange=True)
+        if wrap:
+            item.textNode.setWordwrap(wrap/size)
+        if parent is None:
+            self.widgets.append(item)
+        return item
+
+    def button(self, value, x, y, width, height, command, *, args=(), dark=False, primary=False):
+        unit = 2/941
+        if dark and not primary:
+            self.fill(x-1, y-1, width+2, height+2, (.72, .75, .79, 1), radius=3)
+        px, pz = self.point(x+width/2, y+height/2)
+        node = DirectButton(parent=self.content, text=value, text_font=self.regular,
+            text_fg=WHITE if dark or primary else INK, text_scale=(24 if height > 50 else 21)*unit,
+            text_pos=(0, -8*unit), frameColor=ORANGE if primary else (.05, .075, .11, 1) if dark else WHITE,
+            relief=DGG.FLAT, frameSize=(-width*unit/2, width*unit/2, -height*unit/2, height*unit/2),
+            pos=(px, 0, pz),
+            pressEffect=False, command=command, extraArgs=list(args))
+        node.bind(DGG.ENTER, lambda event: node.setColorScale(.92, .94, .96, 1))
+        node.bind(DGG.EXIT, lambda event: node.clearColorScale())
+        self.widgets.append(node)
+        return node
+
+    def layout(self):
+        if self.content is not None:
+            self.vehicle_view.hide()
+            self.diagram.destroy()
+            for widget in self.widgets:
+                widget.destroy()
+            self.widgets.clear()
+            self.content.removeNode()
+        self.content = self.root.attachNewNode('road-ab-content')
+        self.aspect = self.base.getAspectRatio()
+        self.width, self.left = 941*self.aspect, 941*self.aspect*.029
+        self.wide = min(1326., self.width-2*self.left)
+        texture = self.base.loader.loadTexture(theme.asset_filename('backgrounds/garage-coastal-v2.png'))
+        background = DirectFrame(parent=self.content, frameSize=self.box(0, 0, self.width, 941),
+                                 frameTexture=texture, frameColor=WHITE)
+        self.widgets.append(background)
+        ratio = self.aspect/(texture.getXSize()/texture.getYSize())
+        background.setTexScale(TextureStage.getDefault(), ratio, 1)
+        background.setTexOffset(TextureStage.getDefault(), (1-ratio)/2, 0)
+        # 展示车只是车库布景；道路成绩与参数始终从两份冻结记录读取。
+        if self.aspect > 1.5:
+            self.vehicle_view.show(self.content, self.box(self.width*.53, 250, self.width*.44, 445),
+                                   self.base.workspace_vehicle, studio=True)
+            self.vehicle_view.frame.setTransparency(TransparencyAttrib.MAlpha)
+        self.fill(0, 0, self.width, 110, (.04, .055, .075, .9), radius=0)
+        self.fill(0, 846, self.width, 95, (.04, .055, .075, .94), radius=0)
+        self.text('道路 A/B 对照', self.left+12, 61, 36, WHITE, bold=True)
+        self.status = self.text('', self.left+12, 96, 20, WHITE, wrap=self.width*.60)
+        self.text('整次记录 · 不参与授奖', self.width-280, 86, 19, WHITE)
+        self.fill(self.left, 126, self.wide, 695, (.985, .982, .975, 1))
+        x, span = self.left+36, self.wide-72
+        self.tabs = []
+        tab_w = min(270., span*.215)
+        for index, title in enumerate(('过门图解', '数值表', '车辆参数')):
+            self.tabs.append(self.button(title, x+index*tab_w, 150, tab_w, 56, self.set_view, args=(index,)))
+        self.active_tab = self.fill(x, 202, tab_w, 4, ORANGE, radius=0)
+        self.text('A 固定 / B 最近一次', self.left+self.wide-278, 185, 20)
+        self.fill(self.left+self.wide*.515, 244, 1, 137, (.81, .82, .84, 1), radius=0)
+        self.cards, self.badges, self.reasons = [], [], []
+        for index, title in enumerate(('A · 调整前', 'B · 调整后')):
+            xx = x+index*span*.54
+            self.text(title, xx+26, 280, 31, bold=True)
+            self.cards.append(self.text('', xx+26, 316, 22, wrap=span*.43))
+            self.reasons.append(self.text('', xx+26, 379, 18, GRAY, wrap=span*.43))
+            self.fill(xx+span*.37-18, 249, 120, 44, INK, radius=3)
+            self.fill(xx+span*.37-16, 251, 116, 40, (.985, .982, .975, 1), radius=2)
+            self.badges.append(self.text('', xx+span*.37, 278, 20))
+        self.fill(x, 402, span, 1, (.79, .81, .84, 1), radius=0)
+        self.columns = [self.text('', xx, 445, 22) for xx in (x+26, x+span*.47, x+span*.76)]
+        self.parameters = [self.text('', xx, 431, 17) for xx in (x+26, x+span*.47, x+span*.76)]
+        self.metadata = self.text('', x+26, 765, 15, GRAY, wrap=span-52)
+        self.diagram = RoadDiagram(self)
+        self.view_button = self.tabs[1]
+        self.delta = self.text('', x, 748, 20, wrap=span)
+        self.notice = self.text('', x, 806, 15, GRAY, wrap=span)
+        self.back = self.button('‹  返回课题', self.left, 862, 230, 58, self.close, dark=True)
+        self.text('Esc 返回', self.left+250, 898, 17, WHITE)
+        self.info_button = self.button('查看记录信息', self.width-self.left-655, 862, 260, 58,
+                                       self.show_record_info, dark=True)
+        self.retest_button = self.button('实验台复测 A/B', self.width-self.left-370, 862, 370, 58,
+                                         self.run_retest, primary=True)
+        self.text('Enter 复测', self.width-self.left-115, 938, 14, WHITE)
+        self.tab_width = tab_w
+
+    def run_retest(self):
+        if self.retest_button['state'] != DGG.DISABLED:
+            self.retest()
+
+    def resize(self, aspect):
+        if not self.root.isHidden() and self.aspect != aspect:
+            view, selected = self.view, self.diagram.selected
+            self.show(self.store)
+            self.set_view(view)
+            if not self.store.brakes:
+                self.diagram.select(selected)
+
     def show(self, store):
+        self.store = store
+        if self.aspect != self.base.getAspectRatio():
+            self.layout()
+        for badge, item in zip(self.badges, (store.a, store.b), strict=True):
+            badge.setText('暂无记录' if item is None else '完成' if item['result']['succeeded'] else '未完成')
+        for reason, item in zip(self.reasons, (store.a, store.b), strict=True):
+            reason.setText('' if item is None else item['result']['reason'][:26])
+        self.tabs[0]['text'] = '制动图解' if store.brakes else '过门图解'
+        self.prepare_parameters(store)
         self.retest_button['state'] = DGG.NORMAL if store.a is not None and store.b is not None else DGG.DISABLED
+        self.retest_button['frameColor'] = ORANGE if self.retest_button['state'] == DGG.NORMAL else GRAY
         self.diagram.show(store)
-        self.graph = True
-        self.refresh_view()
-        self.back['text'] = '返回制动分配 · Esc' if store.brakes else '返回前胎配方 · Esc'
+        self.set_view(0)
+        self.back['text'] = '‹  返回制动课题' if store.brakes else '‹  返回过门课题'
         if store.brakes:
             self.show_braking(store)
             self.root.show()
             return
         a, b = store.a, store.b
-        self.status.setText('从结算安装不同前胎时固定A，重试后记录最近一次完整B。' if a is None else
-            ('高速验车' if a['context']['mode'] == 'fast_slalom' else '连续过门')+' · A固定 / B取最近一次结束记录')
-        for side, item, label in zip(self.cards, (a, b), ('A · 安装前这一次', 'B · 安装后最近一次'), strict=True):
+        self.status.setText('同题改装前后 · 最近完整记录' if a is None else
+            ('高速验车' if a['context']['mode'] == 'fast_slalom' else '连续过门')+' · 最近完整记录')
+        for side, item, label in zip(self.cards, (a, b), ('A · 调整前这一次', 'B · 新方案最近一次'), strict=True):
             if item is None:
-                side.setText(label+'\n暂无记录'+('\n亲自完成或结束同题后建立' if label.startswith('B') else ''))
+                side.setText('暂无记录\n完成或结束同题后建立')
                 continue
             result = item['result']
             elapsed = f"有效{result['run_seconds']:.3f}s" if result['succeeded'] else '未通过 · 无有效总时间'
-            side.setText(f"{label} · 前胎{item['config']['lateral_stiffness']/1000:g}k\n"
-                         f"{result['gates']}/6门 · {elapsed}\n"+result['reason'][:50])
+            side.setText(f"前轮 {item['config']['lateral_stiffness']/1000:g} kN/rad\n"
+                         f"{result['gates']}/6门 · {elapsed}")
         rows = [['门'], ['A余量m'], ['B余量m']]
         for index in range(6):
             rows[0].append(str(index+1))
@@ -79,22 +185,22 @@ class PlayerRoadPanel:
             self.delta.setText('双方都有效完成后才比较总用时；漏门记录只看已到达的门。')
         note = store.notice or '；'.join(differences) or (
             ('A记录于'+a['created_at'][:19]+'；' if a else '')+
-            'A在下次结算改装时替换；B取同目标硬件最近整次记录，不拼接单门。')
+            '换方案出发时固定A；B取同目标硬件最近整次记录，不拼接单门。')
         self.notice.setText(note[:150])
         self.root.show()
 
     def show_braking(self, store):
         a, b = store.a, store.b
         short = a is None or a['result']['short']
-        self.status.setText('从制动题结算安装不同配方时固定A，重试后记录最近一次完整B。' if a is None else
-            ('短距制动验车' if short else '定点刹停')+' · A固定 / B取最近一次结束记录')
+        self.status.setText('同题制动改装前后 · 最近完整记录' if a is None else
+            ('短距制动验车' if short else '定点刹停')+' · 最近完整记录')
         for side, item, label in zip(self.cards, (a, b), ('A · 安装前这一次', 'B · 安装后最近一次'), strict=True):
             if item is None:
-                side.setText(label+'\n暂无记录\n亲自完成或结束同题后建立')
+                side.setText('暂无记录\n完成或结束同题后建立')
                 continue
             result = item['result']
             outcome = result['medal']+'牌' if result['succeeded'] else '未通过 · 无有效成绩'
-            side.setText(f"{label} · 前制动{item['config']['front_brake_share']:.0%}\n{outcome}\n"+result['reason'][:50])
+            side.setText(f"前制动{item['config']['front_brake_share']:.0%}\n{outcome}")
         rows = [['指标', '入门km/h', '最大前进m' if short else '停车误差m', '停稳s'], ['A'], ['B']]
         for column, item in zip(rows[1:], (a, b), strict=True):
             result = item['result'] if item else None
@@ -116,23 +222,85 @@ class PlayerRoadPanel:
         self.notice.setText((store.notice or '；'.join(differences) or
             (('A记录于'+a['created_at'][:19]+'；' if a else '')+'A在下次制动结算改装时替换，B取同题目标硬件最近整次记录。'))[:150])
 
+    def prepare_parameters(self, store):
+        fields = (('质量 / kg', 'mass', 1.), ('前侧偏刚度 / kN/rad', 'lateral_stiffness', .001),
+                  ('后侧偏刚度 / kN/rad', 'rear_lateral_stiffness', .001),
+                  ('制动扭矩 / N·m', 'brake_torque', 1.), ('前制动份额 / %', 'front_brake_share', 100.),
+                  ('终传比', 'final_drive', 1.), ('CdA / m²', 'cda', 1.),
+                  ('路面附着', 'road_friction', 1.), ('弹簧均值 / kN/m', 'suspension_spring_rates', .001),
+                  ('压缩阻尼均值 / kN·s/m', 'suspension_compression_damping', .001),
+                  ('伸张阻尼均值 / kN·s/m', 'suspension_extension_damping', .001),
+                  ('前防倾份额 / %', 'antiroll_share', 100.))
+        rows = [['记录参数'], ['A'], ['B']]
+        for title, key, scale in fields:
+            rows[0].append(title)
+            for values, item in zip(rows[1:], (store.a, store.b), strict=True):
+                if item is None:
+                    values.append('—')
+                    continue
+                config = item['config']
+                if key == 'cda':
+                    value = config['drag_coefficient']*config['frontal_area']
+                elif key == 'antiroll_share':
+                    rates = config['suspension_antiroll_rates']
+                    value = rates[0]/sum(rates) if sum(rates) else 0.
+                elif key.startswith('suspension_'):
+                    value = sum(config[key])/len(config[key])
+                else:
+                    value = config[key]
+                values.append(f'{value*scale:.3f}')
+        for column, values in zip(self.parameters, rows, strict=True):
+            column.setText('\n'.join(values))
+        context = []
+        for side, item in zip('AB', (store.a, store.b), strict=True):
+            mode = ('短距制动' if item and item['result']['short'] else '定点刹停') if store.brakes else (
+                '高速验车' if item and item['result']['fast'] else '连续过门')
+            context.append(side+' 暂无记录' if item is None else
+                f"{side} {item['created_at'][:19]} UTC · {mode} · "+
+                ('游戏驾驶' if item['context']['driving_mode'] == 'game' else '工程驾驶'))
+        self.metadata.setText('\n'.join(context))
+
     def key(self, key):
-        if key in ('escape', 'enter'):
-            self.hide()
+        if key == 'escape':
+            self.close()
+        elif key == 'enter':
+            self.run_retest()
         elif key == 'space':
             self.toggle_view()
+        elif key == 'tab':
+            self.set_view((self.view+1) % 3)
         elif self.graph:
             self.diagram.key(key)
+
+    def set_view(self, index):
+        self.view, self.graph = index, index == 0
+        self.refresh_view()
+
+    def show_record_info(self):
+        self.set_view(2)
 
     def refresh_view(self):
         self.diagram.root.show() if self.graph else self.diagram.root.hide()
         for column in self.columns:
-            column.hide() if self.graph else column.show()
-        self.view_button['text'] = '数值表 · 空格' if self.graph else '看图解 · 空格'
+            column.show() if self.view == 1 else column.hide()
+        for column in self.parameters:
+            column.show() if self.view == 2 else column.hide()
+        self.metadata.show() if self.view == 2 else self.metadata.hide()
+        self.delta.hide() if self.view == 2 else self.delta.show()
+        for index, tab in enumerate(self.tabs):
+            tab['frameColor'] = (.055, .075, .13, 1) if index == self.view else (.97, .97, .98, 1)
+            tab['text_fg'] = WHITE if index == self.view else INK
+        self.active_tab.setX(self.view*self.tab_width*2/941)
 
     def toggle_view(self):
-        self.graph = not self.graph
-        self.refresh_view()
+        self.set_view(1 if self.view == 0 else 0)
 
     def hide(self):
+        if not self.root.isHidden():
+            self.vehicle_view.hide()
         self.root.hide()
+
+    def close(self):
+        self.hide()
+        if self.on_back is not None:
+            self.on_back()

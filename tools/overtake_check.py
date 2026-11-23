@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'src'))
 
-from overtake_probe import OvertakeDriver, car_record
+from overtake_probe import car_record
 from panda3d.core import Filename
 from slalom_driver import apply_keys
 from sprint_route_probe import SprintDriver
@@ -25,6 +25,7 @@ from lab_runtime import runtime_fingerprint
 from overtake_routes import OVERTAKE_ROUTES
 from overtake_run import OvertakeRun
 from race import BestTimes, GameMode
+from road_test_driver import OvertakeDriver
 from session import Phase
 from simulation import FIXED_DT, Snapshot
 from traffic import Road

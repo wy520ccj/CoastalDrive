@@ -2,15 +2,14 @@
 
 import time
 from dataclasses import replace
+from types import SimpleNamespace
 
 import pytest
-from direct.gui import DirectGuiGlobals as DGG
 from panda3d.core import Point3
 
 from application import CoastalDrive
-from career import EVENT_BY_ID, PART_BY_ID, CareerProgress
+from career import EVENT_BY_ID, CareerProgress
 from career_run import CareerResult
-from career_tuning import installed_parts
 from race import GameMode
 from session import Phase
 from vehicle_designs import vehicle_design
@@ -47,6 +46,202 @@ def test_locked_entry_modal_and_garage_are_separate_from_reports(app):
     assert app.career_panel.page == 'board' and app.session.current == before
 
 
+def test_season_board_preview_follows_focus_and_returns_to_same_event(app, monkeypatch):
+    panel = app.career_panel
+    assert panel.board_event.id == 'first-drive'
+    panel.key('arrow_down')
+    assert panel.board_event.id == 'parking'
+    assert panel.buttons[panel.primary]['extraArgs'] == ['brief', 'parking']
+    panel.key('enter')
+    assert panel.page == 'brief' and panel.event_id == 'parking'
+    panel.key('escape')
+    assert panel.page == 'board' and panel.board_event.id == 'parking'
+
+    app.career_action('board-chapter', 2)
+    assert panel.board_event.id == 'coastal-cup'
+    assert any(label.getText() == '9 星解锁' for label in panel.labels)
+    monkeypatch.setattr(app, 'getAspectRatio', lambda: 4/3)
+    panel.resize(4/3)
+    assert panel.board_event.id == 'coastal-cup'
+    panel.key('enter')
+    assert panel.page == 'brief'
+    assert not app.career_progress.available(EVENT_BY_ID[panel.event_id])
+
+
+def test_home_continue_opens_the_event_named_on_the_button(app):
+    progress = app.career_progress
+    progress.record(CareerResult('first-drive', 8., elapsed=25., finished=True, succeeded=True, stars=3))
+    app.career_action('exit')
+    index = app.main_menu.continue_index
+    assert app.main_menu.subtitles[index].getText() == EVENT_BY_ID['parking'].name
+    app.main_menu.select(index)
+    app.key_down('enter')
+    app.key_up('enter')
+    assert app.career_panel.page == 'brief' and app.career_panel.event_id == 'parking'
+
+
+def test_club_races_follow_normal_focus_and_keep_the_independent_rules(app):
+    panel = app.career_panel
+    valley, traffic = GameMode.VALLEY_PACE, GameMode.HILL_TRAFFIC
+    app.career_action('board-chapter', 1)
+    for _ in range(2):
+        app.key_down('arrow_down')
+        app.key_up('arrow_down')
+    assert panel.board_event.id == valley
+    panel.key('enter')
+    assert panel.page == 'brief' and panel.event_id == valley
+    app.start_career_event(valley, stock=True)
+    assert app.session.phase == Phase.MENU and panel.page == 'brief'
+    panel.key('escape')
+    assert panel.page == 'board' and panel.board_event.id == valley
+
+    for event_id in ('first-drive', 'parking'):
+        app.career_progress.record(CareerResult(event_id, 8., elapsed=20., finished=True, succeeded=True, stars=3))
+    app.open_career(event=panel.board_event)
+    panel.key('arrow_down')
+    assert panel.board_event.id == traffic
+    panel.key('enter')
+    assert any('前后净距≥10米' in label.getText() for label in panel.labels)
+    panel.key('enter')
+    assert app.session.phase == Phase.COUNTDOWN and app.session.mode == traffic
+    assert app.session.seed == 23 and app.session.simulation.traffic_count == 12
+    assert app.budget_origin == 'club' and app.career_progress.stars == 6
+    app.challenge_action('challenge-back')
+    assert panel.page == 'brief' and panel.event_id == traffic
+    panel.key('escape')
+    assert panel.board_event.id == traffic
+    app.start_sprint(valley)
+    app.challenge_action('challenge-back')
+    assert app.sprint_menu and panel.root.isHidden()
+
+
+def test_gamepad_events_can_navigate_the_season_and_pause_without_driving(app):
+    panel = app.career_panel
+    app.career_action('exit')
+    app.messenger.send('menu-pad-face_a')
+    assert panel.page == 'brief' and panel.event_id == 'first-drive'
+    app.messenger.send('menu-pad-face_b')
+    assert panel.page == 'board' and panel.board_event.id == 'first-drive'
+    app.messenger.send('menu-pad-dpad_down')
+    app.messenger.send('menu-pad-face_a')
+    assert panel.page == 'brief' and panel.event_id == 'parking'
+    app.messenger.send('menu-pad-face_a')
+    assert app.session.phase == Phase.COUNTDOWN
+    app.messenger.send('menu-pad-dpad_left')
+    app.messenger.send('menu-pad-face_b')
+    assert not app.driving_keys_held and app.session.phase == Phase.COUNTDOWN
+    app.messenger.send('menu-pad-start')
+    assert app.session.phase == Phase.PAUSED
+    app.messenger.send('menu-pad-start')
+    assert app.session.phase == Phase.COUNTDOWN
+
+
+def test_sector_chase_selection_and_practice_use_the_same_valley_route(app):
+    from sector_chase import CHASE_COURSES
+    from sprint_routes import VALLEY_BRAKING_VERSION
+
+    mode = GameMode.VALLEY_PACE
+    app.career_action('chase-menu', mode)
+    assert app.career_panel.page == 'board'
+    for event_id in ('first-drive', 'parking'):
+        app.career_progress.record(
+            CareerResult(event_id, 8., elapsed=25., finished=True, succeeded=True, stars=3))
+    app.career_action('chase-menu', mode)
+    assert app.career_panel.page == 'sector-chase'
+    app.career_panel.key('enter')
+    assert app.career_panel.page == 'challenge'
+    assert not any(button['extraArgs'][0] == 'challenge-auto' for button in app.career_panel.buttons)
+    app.challenge_action('challenge-start')
+    for _ in range(360):
+        app.session.tick()
+    assert app.session.highway.snapshot.sprint.rules_version == VALLEY_BRAKING_VERSION
+    assert app.session.highway.snapshot.engineering.chase == CHASE_COURSES[mode]
+    app.session.finish()
+    app.refresh_panel()
+    assert app.career_panel.page == 'sector-chase-result'
+    app.career_action('chase-practice', 1)
+    for _ in range(360):
+        app.session.tick()
+    assert app.session.highway.snapshot.engineering.practice_sector == 1
+    assert app.session.engineering.scores is None
+    app.session.finish()
+    app.refresh_panel()
+    app.career_action('chase-full')
+    assert app.session.practice_sector is None
+    app.challenge_action('challenge-back')
+    assert app.career_panel.page == 'sector-chase'
+
+
+def test_cup_uses_selected_car_and_resumes_between_app_views(app):
+    from challenge_build import BuildDraft
+    from season_cup import CUP_LEGS
+
+    for event_id in ('first-drive', 'parking', 'slalom'):
+        app.career_progress.record(
+            CareerResult(event_id, 8., elapsed=25., finished=True, succeeded=True, stars=3))
+    original = app.workspace_vehicle
+    original_model = app.vehicle_model_id
+    car = 'coastal-hatch'
+    app.career_action('cup-menu')
+    assert app.career_panel.page == 'season-cup'
+    app.career_action('cup-preview', car)
+    app.career_panel.key('enter')
+    assert app.cup_store.current == ()
+    app.career_panel.key('enter')
+    assert app.budget_mode == GameMode.TIME_TRIAL
+    spec = app.cup_store.specs[GameMode.TIME_TRIAL]
+    assert spec.design_id == car and spec.budget == 5000
+    app.challenge_action('challenge-start')
+    assert app.session.vehicle_config == spec.base_config
+    assert app.vehicle_model_id == car and app.workspace_vehicle == original
+    for _ in range(360):
+        app.session.tick()
+    target = spec.targets[-1]
+    result = spec.evaluate(BuildDraft(), target.seconds, target.consumption*spec.distance_m/100_000)
+    status = replace(app.session.highway.snapshot.engineering, result=result)
+    app.session.highway.snapshot = replace(app.session.highway.snapshot, engineering=status)
+    app.session.race.snapshot = replace(app.session.race.snapshot, finished=True, invalidated=False)
+    app.session.phase = Phase.RESULTS
+    app.refresh_panel()
+    assert len(app.cup_store.current) == 1
+    assert app.career_progress.stars == 9
+
+    app.challenge_action('challenge-back')
+    assert app.vehicle_model_id == original_model and app.workspace_vehicle == original
+    app.cup_store = None
+    app.continue_career()
+    assert len(app.cup_store.current) == 1 and app.cup_store.legs == CUP_LEGS
+    app.select_cup_car('game-tuned')
+    assert app.cup_store.current == ()
+    app.select_cup_car(car)
+    assert len(app.cup_store.current) == 1
+    app.start_cup_leg()
+    assert app.budget_mode == GameMode.RIDGE_SPRINT and app.tour_round == 1
+
+
+def test_brief_stock_start_and_retry_keep_saved_setup(app):
+    from challenge_build import BuildDraft
+    from challenge_catalog import CAREER_CHALLENGES
+
+    spec = CAREER_CHALLENGES['first-drive']
+    draft = BuildDraft(power=1.1)
+    assert app.budget_plans.save(spec, draft)
+    original = app.budget_plans.path.read_bytes()
+    app.career_action('brief', spec.id)
+    app.career_panel.key('enter')
+    assert app.budget_active and app.session.vehicle_config == spec.configuration(BuildDraft())
+    app.challenge_action('challenge-retry')
+    assert app.session.vehicle_config == spec.configuration(BuildDraft())
+    assert app.budget_plans.path.read_bytes() == original
+
+    app.challenge_action('challenge-back')
+    assert app.career_panel.page == 'brief' and app.career_panel.event_id == spec.id
+    app.career_action('start', spec.id)
+    assert app.career_panel.page == 'challenge' and app.budget_drafts[spec.id] == draft
+    app.challenge_action('challenge-start')
+    assert app.session.vehicle_config == spec.configuration(draft)
+
+
 def test_garage_paint_coat_stays_on_paint_and_clears_for_engineering_preview(app):
     app.career_action('garage')
     app.career_action('garage-car', 'game-tuned')
@@ -74,146 +269,66 @@ def test_garage_paint_coat_stays_on_paint_and_clears_for_engineering_preview(app
     assert app.session.current == before and app.workspace_vehicle == vehicle
 
 
-def test_purchase_install_failure_preserves_owned_part_and_retry_is_free(app, monkeypatch):
-    for event in ('first-drive', 'parking'):
-        app.career_progress.record(CareerResult(event, 8., elapsed=25., finished=True, succeeded=True, stars=3))
-    before = app.workspace_vehicle
-    save = WorkspaceVehicle.save
-
-    def fail(self, path=None):
-        raise OSError('测试保存失败')
-
-    monkeypatch.setattr(WorkspaceVehicle, 'save', fail)
+def test_retired_purchase_entry_preserves_historical_ownership_money_and_vehicle(app):
+    progress = app.career_progress
+    assert progress.save({}, {'sport-front'}, 500)
+    original, snapshot = app.workspace_vehicle, app.session.current
+    saved = progress.path.read_bytes()
     app.career_action('part', 'sport-front')
-    assert app.workspace_vehicle == before
-    assert app.career_progress.credits == 250 and 'sport-front' in app.career_progress.owned
-    assert app.career_panel.page == 'garage'
-    monkeypatch.setattr(WorkspaceVehicle, 'save', save)
-    app.career_action('part', 'sport-front')
-    assert app.workspace_vehicle.config.lateral_stiffness == 70000. and app.career_progress.credits == 250
-    assert CareerProgress(app.career_progress.path).owned == {'sport-front'}
+    assert app.career_panel.page == 'challenge'
+    assert app.budget_mode == progress.recommended().id
+    assert progress.credits == 500 and progress.owned == {'sport-front'}
+    assert progress.path.read_bytes() == saved
+    app.challenge_action('challenge-value', ('power', '110'))
+    app.challenge_action('challenge-save')
     app.career_action('restore')
-    assert app.workspace_vehicle == before
+    assert app.career_panel.page == 'challenge'
+    assert app.workspace_vehicle == original and app.session.current == snapshot
+    assert progress.path.read_bytes() == saved
 
 
-def test_power_suspension_mixed_install_reload_and_restore_use_actual_session_config(app):
-    before, snapshot = app.workspace_vehicle, app.session.current
+def test_upgrade_navigation_uses_independent_challenge_plans_and_handles_save_failure(app, tmp_path):
+    from challenge_build import BuildDraft
+    from challenge_catalog import CAREER_CHALLENGES
+
     app.career_action('garage')
     app.career_action('garage-tab', 'upgrade')
-    app.career_action('garage-topic', 'power')
-    primary = app.career_panel.buttons[app.career_panel.primary]
-    assert primary['text'] == '8星解锁'
-    app.career_action('part', 'street-power')
-    assert app.workspace_vehicle == before and app.career_progress.credits == 0
-    for event in EVENT_BY_ID:
-        app.career_progress.record(CareerResult(event, 8., elapsed=25., finished=True, succeeded=True, stars=3))
-    versions = [before]
-    for part_id in ('street-power', 'sport-suspension', 'sport-front', 'sport-brakes'):
-        part = PART_BY_ID[part_id]
-        app.career_action('garage-topic', part.topic)
-        app.career_panel.select(app.career_panel.primary)
-        app.career_panel.key('enter')
-        versions.append(app.workspace_vehicle)
-        assert app.session.base_vehicle_config == app.workspace_vehicle.config
-        from ui.garage_layout import TRIAL_EVENTS
-
-        assert app.career_panel.buttons[app.career_panel.primary]['extraArgs'] == ['brief', TRIAL_EVENTS[part.topic]]
-    assert installed_parts(app.workspace_vehicle) == {'street-power', 'sport-suspension'}
-    assert app.career_progress.credits == 1010
-    app.career_action('garage-car', 'coastal-hatch')
-    app.career_action('garage-select')
-    app.career_action('garage-car', before.design_id)
-    app.career_action('garage-select')
-    assert WorkspaceVehicle.load(app.workspace_path) == versions[-1]
-    assert app.workspace_vehicle == versions[-1]
-    for part_id in ('street-power', 'sport-suspension'):
-        app.career_action('part', part_id)
-        assert app.workspace_vehicle == versions[-1] and app.career_progress.credits == 1010
-    for expected in reversed(versions[:-1]):
-        app.career_action('restore')
-        assert app.workspace_vehicle == expected and app.session.base_vehicle_config == expected.config
-    assert app.session.current == snapshot
+    assert app.career_panel.page == 'challenge'
+    app.challenge_action('challenge-value', ('power', '110'))
+    app.challenge_action('challenge-save')
+    assert app.budget_plans.load(CAREER_CHALLENGES['first-drive']) == BuildDraft(power=1.1)
+    app.open_budget_challenge('parking')
+    assert app.budget_drafts['parking'] == BuildDraft()
+    app.open_budget_challenge('first-drive')
+    assert app.budget_drafts['first-drive'].power == 1.1
+    blocked = tmp_path/'file-instead-of-folder'
+    blocked.write_text('原文件', encoding='utf-8')
+    app.budget_plans.path = blocked/'plans.json'
+    app.challenge_action('challenge-save')
+    assert '未保存' in app.career_panel.challenge_readouts['notice'].getText()
+    assert blocked.read_text(encoding='utf-8') == '原文件'
+    assert app.budget_drafts['first-drive'].power == 1.1
+    assert app.career_progress.credits == 0 and not app.career_progress.path.exists()
 
 
-def test_upgrade_comparison_purchase_restore_free_reinstall_and_trial_start(app):
-    for event in ('first-drive', 'parking', 'slalom'):
-        app.career_progress.record(CareerResult(event, 8., elapsed=25., finished=True, succeeded=True, stars=3))
-    app.open_career_collection()
-    app.career_action('garage-car', 'game-tuned')
-    app.career_action('garage-select')
-    app.career_action('garage-tab', 'upgrade')
-    panel = app.career_panel
-    before, snapshot = app.workspace_vehicle, app.session.current
-    credits = app.career_progress.credits
-    assert next(button for button in panel.buttons if button['extraArgs'][0] == 'restore')['state'] == DGG.DISABLED
-    assert panel.garage_values['current'].getText() == '50'
-    assert panel.garage_values['target'].getText() == '70'
-    panel.key('enter')
-    assert app.workspace_vehicle.config.lateral_stiffness == 70000.
-    assert app.career_progress.credits == credits-350
-    assert panel.garage_values['current'].getText() == '70'
-    assert panel.garage_values['target'].getText() == '套件已安装'
-    assert next(button for button in panel.buttons if button['extraArgs'][0] == 'restore')['state'] == DGG.NORMAL
-    panel.key('enter')
-    assert panel.page == 'brief' and panel.event_id == 'slalom'
-    assert not app.workshop_vehicle.buffer.isActive() and not panel.garage_values
-    assert app.session.current == snapshot and app.career_progress.credits == credits-350
-    app.career_action('garage')
-    app.career_action('restore')
-    assert app.workspace_vehicle == before
-    assert panel.garage_values['current'].getText() == '50'
-    assert panel.buttons[panel.primary]['text'] == '安装已购零件'
-    panel.key('enter')
-    assert app.career_progress.credits == credits-350
-    panel.key('enter')
-    panel.key('enter')
-    assert app.career_active and app.career_event_id == 'slalom'
-    assert app.session.mode == GameMode.CAREER and app.session.base_vehicle_config.lateral_stiffness == 70000.
+def test_selected_collection_vehicle_is_preserved_when_challenge_uses_its_fixed_car(app):
+    from challenge_catalog import CAREER_CHALLENGES
 
-
-@pytest.mark.parametrize('owned', [False, True])
-def test_stock_gr86_brake_setting_is_not_reported_as_a_purchased_part(app, owned):
     for event in ('first-drive', 'parking'):
         app.career_progress.record(CareerResult(event, 8., elapsed=25., finished=True, succeeded=True, stars=3))
-    if owned:
-        assert app.career_progress.buy(PART_BY_ID['sport-brakes'])
     app.career_action('garage')
     app.career_action('garage-car', 'gr86-2022-premium-6mt')
     app.career_action('garage-select')
-    app.career_action('garage-tab', 'upgrade')
-    app.career_action('garage-topic', 'brakes')
-    panel = app.career_panel
-    credits, snapshot = app.career_progress.credits, app.session.current
-    assert panel.garage_values['current'].getText() == '70'
-    assert panel.garage_values['target'].getText() == '当前已是该设定'
-    assert any(label.getText() == '无需更换' for label in panel.labels)
-    assert next(button for button in panel.buttons if button['extraArgs'][0] == 'restore')['state'] == DGG.DISABLED
-    assert ('sport-brakes' in app.career_progress.owned) == owned
-    panel.key('enter')
-    assert panel.page == 'brief' and panel.event_id == 'parking'
-    assert app.career_progress.credits == credits and app.session.current == snapshot
-    assert ('sport-brakes' in app.career_progress.owned) == owned
-
-
-@pytest.mark.parametrize('part_id', ['street-power', 'sport-suspension'])
-def test_new_part_write_failure_can_retry_without_paying_twice(app, monkeypatch, part_id):
-    for event in EVENT_BY_ID:
-        app.career_progress.record(CareerResult(event, 8., elapsed=25., finished=True, succeeded=True, stars=3))
-    before = app.workspace_vehicle
-
-    def fail(self, path=None):
-        raise OSError('测试保存失败')
-
-    with monkeypatch.context() as patch:
-        patch.setattr(WorkspaceVehicle, 'save', fail)
-        app.career_action('part', part_id)
-        assert app.workspace_vehicle == before
-        assert part_id in app.career_progress.owned
-    app.career_action('part', part_id)
-    assert installed_parts(app.workspace_vehicle) == {part_id}
-    assert app.career_progress.credits == 2460-PART_BY_ID[part_id].price
-    app.career_action('restore')
-    assert app.workspace_vehicle == before
+    original = app.workspace_vehicle
+    original_bytes = app.workspace_path.read_bytes()
+    app.start_career_event('parking')
+    assert app.career_panel.page == 'challenge'
+    assert app.budget_drafts['parking'].cost == 0
+    app.challenge_action('challenge-start')
+    assert app.session.vehicle_config == CAREER_CHALLENGES['parking'].base_config
+    assert app.workspace_vehicle == original
+    app.back_to_menu()
+    assert app.workspace_path.read_bytes() == original_bytes and app.workspace_vehicle == original
 
 
 def test_multiple_car_and_part_rewards_fit_narrow_result_panel(app, monkeypatch):
@@ -321,21 +436,23 @@ def test_garage_reserves_vehicle_area_and_directional_focus_follows_the_layout(a
 
 def test_pause_retry_and_return_keep_original_world_until_explicit_restart(app):
     app.career_action('start', 'first-drive')
+    app.challenge_action('challenge-start')
     simulation = app.session.simulation
     app.session.pause()
     app._shown_phase = None
     app.key_down('arrow_down')
     app.key_up('arrow_down')
-    assert app.career_panel.page == 'pause'
+    assert app.career_panel.page == 'challenge-pause'
     app.career_action('resume')
     assert app.session.phase == Phase.COUNTDOWN and app.session.simulation is simulation
     app.return_from_test_drive()
-    assert app.career_panel.page == 'board' and app.session.phase == Phase.MENU
+    assert app.career_panel.page == 'challenge' and app.session.phase == Phase.MENU
     assert app.career_progress.stars == 0 and not app.career_progress.path.exists()
 
 
 def test_driving_hud_reads_current_event_and_pause_button_keeps_the_world(app):
-    app.career_action('start', 'first-drive')
+    app.career_active, app.career_event_id = True, 'first-drive'
+    app.session.start(mode=GameMode.CAREER, track='endless', career_event_id='first-drive')
     app.refresh_panel()
     app.hud.resize(16/9)
     before, simulation = app.session.current, app.session.simulation
@@ -356,8 +473,23 @@ def test_driving_hud_reads_current_event_and_pause_button_keeps_the_world(app):
     assert app.session.current == before
 
 
-def test_driving_hud_event_details_and_two_aspects_do_not_write_or_leave_old_panels(app):
+def test_budget_career_countdown_displays_current_joint_gold_target(app):
+    app.start_career_event('first-drive', stock=True)
+    app.update(SimpleNamespace(cont=None))
+    assert app.session.phase == Phase.COUNTDOWN and app.session.highway.snapshot.engineering is None
+    assert not app.hud.career.root.isHidden()
+    assert app.hud.career.goal_text.getText() == '金牌 ≤22.2s · ≤17.9 L/100km'
+    app.challenge_action('challenge-back')
     app.career_action('start', 'first-drive')
+    app.challenge_action('challenge-auto')
+    app.update(SimpleNamespace(cont=None))
+    assert app.session.phase == Phase.COUNTDOWN and app.budget_auto
+    assert app.hud.career.goal_text.getText() == '自动试车 · 不计成绩'
+
+
+def test_driving_hud_event_details_and_two_aspects_do_not_write_or_leave_old_panels(app):
+    app.career_active, app.career_event_id = True, 'first-drive'
+    app.session.start(mode=GameMode.CAREER, track='endless', career_event_id='first-drive')
     app.refresh_panel()
     before, vehicle = app.session.current, app.workspace_vehicle
     view = app.hud.career
@@ -394,8 +526,11 @@ def test_driving_hud_event_details_and_two_aspects_do_not_write_or_leave_old_pan
 def test_redesigned_pages_keep_keyboard_actions_and_resize_without_writing_progress(app, monkeypatch):
     panel = app.career_panel
     snapshot, vehicle = app.session.current, app.workspace_vehicle
-    # 向上进入同列赛事卡，Enter真正进入简报；锁定赛事仍不能起跑。
+    # 从列表进入章节栏，切到海岸杯后打开锁定赛事的简报。
     panel.key('arrow_up')
+    panel.key('arrow_right')
+    assert panel.buttons[panel.selected]['extraArgs'] == ['board-chapter', 2]
+    panel.key('enter')
     assert panel.buttons[panel.selected]['extraArgs'] == ['brief', 'coastal-cup']
     panel.key('enter')
     assert panel.page == 'brief' and panel.event_id == 'coastal-cup'
@@ -452,15 +587,26 @@ def test_result_save_retry_awards_once_and_exposes_the_real_new_car(app, monkeyp
     assert app.career_progress.credits == 300
 
 
-def test_production_loader_holds_independent_countdown_until_ready(tmp_path, monkeypatch):
+@pytest.mark.parametrize(('mode', 'budget'), [(GameMode.CAREER, False), (GameMode.FREE_DRIVE, False),
+                                            (GameMode.CAREER, True)], ids=('career', 'free', 'budget-career'))
+def test_production_loader_holds_independent_countdown_until_ready(tmp_path, monkeypatch, mode, budget):
     monkeypatch.setenv('LOCALAPPDATA', str(tmp_path/'user'))
     game = CoastalDrive(smoke=True, independent_clock=True, output=tmp_path/'game')
     game.taskMgr.remove('finish-smoke')
     game.taskMgr.remove('drive-update')
     try:
-        game.open_career()
-        game.career_active, game.career_event_id = True, 'first-drive'
-        game._begin_workspace(game._load_road(GameMode.CAREER, 'endless'), '加载赛事', '测试')
+        if budget:
+            def load_from_start(*, mode, track, tour=False):
+                game._begin_workspace(game._load_road(mode, track), '加载赛事', '测试')
+
+            monkeypatch.setattr(game, 'start_game', load_from_start)
+            game.start_career_event('first-drive', stock=True)
+            assert game.budget_active and not game.career_active
+        else:
+            if mode == GameMode.CAREER:
+                game.open_career()
+                game.career_active, game.career_event_id = True, 'first-drive'
+            game._begin_workspace(game._load_road(mode, 'endless'), '加载赛事', '测试')
         for _ in range(12):
             game.taskMgr.step()
             if game.session.phase == Phase.PAUSED:
@@ -469,12 +615,17 @@ def test_production_loader_holds_independent_countdown_until_ready(tmp_path, mon
         before = game.session.progress()[0]
         time.sleep(.15)
         assert game.session.progress()[0] == before
-        for _ in range(16):
+        deadline = time.monotonic() + 20
+        while time.monotonic() < deadline:
             game.taskMgr.step()
             if game._workspace_steps is None:
                 break
         game.taskMgr.remove('drive-update')
+        assert game._workspace_steps is None
+        assert not game.scene.segment_builds
+        assert set(game.session.render_segments()) == game.scene.segment_nodes.keys()
         assert game.session.phase == Phase.COUNTDOWN and game.session.countdown_ticks > 330
-        assert game.session.highway.snapshot.career.elapsed == 0
+        if mode == GameMode.CAREER:
+            assert game.session.highway.snapshot.career.elapsed == 0
     finally:
         game.close_game()

@@ -72,17 +72,22 @@ class OvertakeResult:
 
 
 class OvertakeRun:
-    def __init__(self, initial, config, scores, variant, *, mode=GameMode.SAFE_OVERTAKE, road=None):
+    def __init__(self, initial, config, scores, variant, *, mode=GameMode.SAFE_OVERTAKE, road=None,
+                 record_scores=True):
         self.config, self.scores = config, scores
         self.mode, self.route, self.road = mode, OVERTAKE_ROUTES[mode], road
+        self.record_scores = record_scores
+        if not record_scores:
+            self.route = replace(self.route, finish_at_end=True)
         if self.route.shape != "straight" and road is None:
             raise ValueError("弯坡车流需要本次权威道路的只读坐标接口")
         initial = self.local_state(initial)
         self.score_id = (f"{self.route.score_prefix}:{self.route.shape}:seed-{self.route.seed}:"
                          f"12-540:{self.route.passes}-in-{self.route.distance:g}:1-10:"+variant)
         self.snapshot = OvertakeResult(initial.player.position[1]+initial.origin_y,
-            best_seconds=scores.get(mode, self.score_id),
-            reference_times=scores.get_splits(mode, self.score_id, self.route.passes+int(self.route.finish_at_end)),
+            best_seconds=scores.get(mode, self.score_id) if record_scores else None,
+            reference_times=(scores.get_splits(mode, self.score_id, self.route.passes+int(self.route.finish_at_end))
+                             if record_scores else ()),
             save_notice=scores.notice, route_id=mode.value)
         self.previous = self.geometry(initial)
         self.candidates = {}
@@ -121,6 +126,14 @@ class OvertakeRun:
             self.stop("逆向行驶；本挑战须沿车流前进。")
         if self.snapshot.finished:
             return self.snapshot
+        at_end = distance >= self.route.distance
+        finish = deadline = 1.
+        if not self.record_scores:
+            if at_end and result.distance < self.route.distance:
+                finish = (self.route.distance-result.distance)/(distance-result.distance)
+            if elapsed > self.route.seconds:
+                deadline = (self.route.seconds-result.seconds)/(elapsed-result.seconds)
+        pass_window = min(finish, deadline)
         # 只比较同一槽位同一代次。回收/消失后不延续旧候选或跨位置插值。
         self.candidates = {key: value for key, value in self.candidates.items() if key in traffic and key in old_traffic}
         completed = []
@@ -135,11 +148,12 @@ class OvertakeRun:
             swept_width = width if old is None else max(width, old_own[2]+old[2])
             swept_length = length if old is None else max(length, old_own[3]+old[3])
             if swept_close(previous, (dx, dy), swept_width+SIDE_GAP, swept_length+END_GAP):
-                side, end = abs(dx)-width, abs(dy)-length
-                self.snapshot = replace(self.snapshot, incident=gap_incident(key, previous, (dx, dy),
-                    swept_width, swept_length, SIDE_GAP, END_GAP, result, self.snapshot, old is not None))
-                self.stop(f"与车流#{key[0]+1}间距不足；侧距{side:.2f}米 / 前后距{end:.2f}米。"
-                          "并行留1米，跟车或切回留10米。")
+                incident = gap_incident(key, previous, (dx, dy),
+                    swept_width, swept_length, SIDE_GAP, END_GAP, result, self.snapshot, old is not None)
+                self.snapshot = replace(self.snapshot, incident=incident)
+                label, gap, minimum = (("并行侧距", incident.side_m, SIDE_GAP) if incident.kind == 'parallel'
+                    else ("前方净距" if incident.kind == 'front' else "后方净距", incident.end_m, END_GAP))
+                self.stop(f"与#{key[0]+1}间距不足 · {label}{gap:.2f}m，至少{minimum:g}m")
                 return self.snapshot
             if key in eligible and key not in self.seen and dy >= length+END_GAP:
                 self.candidates.setdefault(key, math.inf)
@@ -148,24 +162,34 @@ class OvertakeRun:
                 if abs(dy) < length:
                     self.candidates[key] = min(self.candidates[key], abs(dx)-width)
                 if dy <= -length-END_GAP and previous[1] > -swept_length-END_GAP:
-                    completed.append((key, self.candidates.pop(key)))
+                    clearance = self.candidates.pop(key)
+                    pass_seconds = elapsed
+                    if pass_window < 1.:
+                        # 在终点或截止时刻采样完整车身净距，之后才达到10米的超车不计入。
+                        old_gap = -previous[1]-old_own[3]-old[3]
+                        gain = -dy-length-old_gap
+                        gap = old_gap+gain*pass_window
+                        if gap < END_GAP:
+                            continue
+                        fraction = (END_GAP-old_gap)/gain if old_gap < END_GAP else 0.
+                        pass_seconds = result.seconds+(elapsed-result.seconds)*fraction
+                    completed.append((pass_seconds, key, clearance))
         # 先检查所有车辆，再授予本拍超车；同拍别处贴身不能获得成功成绩。
-        for key, clearance in completed:
+        for pass_seconds, key, clearance in sorted(completed):
             if self.snapshot.passes >= self.route.passes:
                 break
             self.seen.add(key)
             if not math.isfinite(clearance):
                 continue
             now = self.snapshot
-            self.snapshot = replace(now, passes=now.passes+1, pass_times=(*now.pass_times, elapsed),
+            self.snapshot = replace(now, passes=now.passes+1, pass_times=(*now.pass_times, pass_seconds),
                 pass_ids=(*now.pass_ids, key), pass_clearances=(*now.pass_clearances, clearance),
                 feedback=f"安全超车 {now.passes+1}/{self.route.passes} · 并排最小侧距{clearance:.2f}米")
             if self.snapshot.passes == self.route.passes:
                 break
-        at_end = distance >= self.route.distance
         if distance > self.route.distance and not self.route.finish_at_end:
             self.stop(f"已到{self.route.distance/1000:g}公里，仅安全超越{self.snapshot.passes}/{self.route.passes}辆；提前观察慢车与空车道。")
-        elif elapsed > self.route.seconds:
+        elif elapsed > self.route.seconds and not (not self.record_scores and at_end and finish <= deadline):
             self.stop(f"超过{self.route.seconds:g}秒；保持节奏，在安全空隙完成超越。")
         elif at_end and self.route.finish_at_end and self.snapshot.passes < self.route.passes:
             self.stop(f"已到{self.route.distance/1000:g}公里，仅安全超越{self.snapshot.passes}/{self.route.passes}辆；提前观察慢车与空车道。")
@@ -173,11 +197,14 @@ class OvertakeRun:
             times = (*self.snapshot.pass_times, elapsed) if self.route.finish_at_end else self.snapshot.pass_times
             # 两辆同拍完成时保留真实相同时间；旧最佳格式只接受严格递增分段。
             splits = times if all(a < b for a, b in zip((0., *times), times)) else None
-            best, saved = self.scores.record(self.mode, elapsed, self.score_id, splits=splits)
-            self.snapshot = replace(self.snapshot, medal=next(m for m, t in self.route.targets if elapsed <= t),
+            best, saved = (self.scores.record(self.mode, elapsed, self.score_id, splits=splits)
+                           if self.record_scores else (None, False))
+            medal = next(m for m, t in self.route.targets if elapsed <= t) if self.record_scores else ''
+            self.snapshot = replace(self.snapshot, medal=medal,
                 best_seconds=best, new_best=saved and (result.best_seconds is None or elapsed < result.best_seconds),
                 save_notice=self.scores.error or self.scores.notice)
-            self.stop(f"安全超越{self.route.passes}辆 · {self.snapshot.medal}牌完成", succeeded=True)
+            award = f" · {medal}牌完成" if medal else ""
+            self.stop(f"安全超越{self.route.passes}辆"+award, succeeded=True)
         return self.snapshot
 
     def stop(self, reason, *, succeeded=False):

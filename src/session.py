@@ -10,13 +10,25 @@ from enum import Enum
 from braking_lesson import BRAKING_MODES, BrakingScores
 from career import EVENT_BY_ID
 from career_run import CareerResult
+from challenge_build import BuildDraft
+from challenge_catalog import (
+    ROAD_CHALLENGES,
+    course_gates,
+    course_key,
+    course_track,
+    distance_challenge_spec,
+)
+from challenge_run import ChallengeRun
+from challenge_scores import ChallengeScores
+from challenge_trace import ChallengeTrace
 from controls import Controller, KeyboardController
 from driving_modes import DrivingMode
 from highway_map import HIGHWAY_LENGTH
 from highway_run import TRAFFIC_DENSITIES, HighwayRun
-from lap_ghost import GhostRecorder, ghost_context, load_ghost, save_ghost
+from lap_ghost import GhostRecorder, ghost_context, load_ghost, record_context, save_ghost
 from overtake_routes import OVERTAKE_ROUTES
 from race import BestTimes, GameMode, RaceTracker
+from sector_chase import CHASE_COURSES, CHASE_INPUT, CHASE_VERSION
 from session_clock import SessionClock
 from simulation import FIXED_DT, Control, Simulation, interpolate
 from slalom_lesson import SLALOM_MODES, SlalomScores
@@ -89,11 +101,17 @@ class Session:
         self._skip_frame = True
         self.mode = GameMode.FREE_DRIVE
         self.career_event_id = None
+        self.challenge_spec = self.challenge_build = self.engineering = None
+        self.sector_chase, self.practice_sector = False, None
+        self._challenge_original = None
+        self._pending_score_stores = []
         self.notice = ""
         self.race = RaceTracker(self.mode, scores=scores)
         self.reference_ghost = None
         self.ghost_recording = None
         self.ghost_conditions = None
+        self._coastal_source = None
+        self._coastal_challenge_scores = None
         self.highway = HighwayRun()
         self.sync_snapshots()
 
@@ -159,10 +177,55 @@ class Session:
         self.vehicle_config = self.driving_mode.configured_vehicle(
             self.abs_enabled, self.tcs_enabled, enabled, base_config=self.base_vehicle_config)
 
-    def start(self, seed=None, *, countdown=True, mode=None, track=None, settle_initial=False, career_event_id=None):
+    def start(self, seed=None, *, countdown=True, mode=None, track=None, settle_initial=False, career_event_id=None,
+              challenge_spec=None, build=None, sector_chase=False, practice_sector=None):
         self.stop_clock()
         chosen_track = get_track(track) if track is not None else self.track
         chosen_mode = self.mode if mode is None else mode
+        same_event = chosen_mode != GameMode.CAREER or career_event_id in (None, self.career_event_id)
+        if challenge_spec is None and self.challenge_spec is not None and chosen_mode == self.mode and same_event:
+            challenge_spec = self.challenge_spec
+            build = self.challenge_build if build is None else build
+            sector_chase, practice_sector = self.sector_chase, self.practice_sector
+        if sector_chase:
+            chase = CHASE_COURSES.get(chosen_mode)
+            group = self.driving_mode.score_variant(self.abs_enabled, self.tcs_enabled, self.esc_enabled)
+            if (chase is None or challenge_spec != ROAD_CHALLENGES[chosen_mode]
+                    or group != CHASE_INPUT or chosen_mode == GameMode.TIME_TRIAL and seed not in (None, 0)):
+                raise ValueError('追时须使用指定赛道、车辆和游戏驾驶辅助')
+            if practice_sector is not None and (type(practice_sector) is not int
+                                               or not 0 <= practice_sector < len(chase.reference)):
+                raise ValueError('练习赛段不存在')
+            seed = 0 if chosen_mode == GameMode.TIME_TRIAL else SPRINT_ROUTES[chosen_mode].seed
+        elif practice_sector is not None:
+            raise ValueError('单段练习须指定追时赛事')
+        if challenge_spec is not None:
+            event_id = career_event_id if career_event_id is not None else self.career_event_id
+            key = course_key(chosen_mode, event_id)
+            expected = ROAD_CHALLENGES.get(key)
+            if (expected is None or challenge_spec.id != expected.id
+                    or challenge_spec.distance_m != expected.distance_m
+                    or chosen_track.id.value != course_track(key)):
+                raise ValueError('工程挑战与实际驾驶路线不一致')
+            if chosen_mode == GameMode.DISTANCE_CHALLENGE:
+                seed = 0 if seed is None else seed
+                challenge_spec = distance_challenge_spec(self.road_shape, self.traffic_density, seed)
+            build = BuildDraft() if build is None else build
+            candidate = challenge_spec.configuration(build)
+            actual = self.driving_mode.configured_vehicle(base_config=candidate)
+            if actual != candidate:
+                raise ValueError('挑战原车须使用本次实际驾驶的机械细分配置')
+            if self._challenge_original is None:
+                self._challenge_original = self.base_vehicle_config, self.vehicle_config
+            self.base_vehicle_config = self.vehicle_config = candidate
+            self._end_challenge_run('重新准备车辆')
+        else:
+            if build is not None:
+                raise ValueError('改装方案须指定所属挑战')
+            self.leave_challenge()
+        self.challenge_spec, self.challenge_build = challenge_spec, build
+        self.sector_chase, self.practice_sector = sector_chase, practice_sector
+        self.engineering = None
         self.career_event_id = (career_event_id if career_event_id is not None else self.career_event_id
                                 if chosen_mode == GameMode.CAREER else None)
         if chosen_mode == GameMode.CAREER:
@@ -179,7 +242,8 @@ class Session:
             raise ValueError("驾驶课题需要直线道路")
         if chosen_mode in SPRINT_ROUTES:
             route = SPRINT_ROUTES[chosen_mode]
-            self.road_shape, seed = route.shape, route.seed
+            self.road_shape = challenge_spec.road_shape if challenge_spec is not None and challenge_spec.road_shape else route.shape
+            seed = route.seed
         if chosen_mode in OVERTAKE_ROUTES:
             route = OVERTAKE_ROUTES[chosen_mode]
             self.road_shape, seed = route.shape, route.seed
@@ -221,22 +285,15 @@ class Session:
         self.simulation.set_checkpoint_frames_enabled(self.mode == GameMode.TIME_TRIAL)
         self.race.start(
             self.mode, circuit=self.track.circuit,
-            score_variant=self.score_variant(),
+            score_variant=self.score_variant(), record_scores=challenge_spec is None,
         )
         self.reference_ghost = None
         self.ghost_recording = None
         self.ghost_conditions = None
-        if self.mode == GameMode.TIME_TRIAL:
-            try:
-                self.ghost_conditions = ghost_context(self.seed)
-                reference = self.race.snapshot
-                self.reference_ghost = load_ghost(self.race.scores, self.mode, self.race.score_id,
-                    self.ghost_conditions, reference.reference_lap, reference.reference_splits)
-                if self.reference_ghost is None and reference.reference_lap is not None:
-                    self.race.snapshot = replace(reference, ghost_notice="最佳圈暂无幽灵；新最佳圈将自动记录。")
-            except (OSError, ValueError, KeyError, TypeError) as error:
-                logging.getLogger(__name__).warning("幽灵载入失败: %s", error)
-                self.race.snapshot = replace(self.race.snapshot, ghost_notice="幽灵缺失、损坏或版本不兼容；成绩保留。")
+        self._coastal_source = None
+        self._coastal_challenge_scores = None
+        if self.mode == GameMode.TIME_TRIAL and not self.sector_chase:
+            self.prepare_coastal_ghost()
         self.highway = HighwayRun(challenge=self.mode == GameMode.DISTANCE_CHALLENGE)
         if self.mode == GameMode.CAREER:
             self.highway.snapshot = replace(self.highway.snapshot, challenge=True,
@@ -260,11 +317,54 @@ class Session:
         data = json.dumps(asdict(self.vehicle_config), sort_keys=True, separators=(",", ":"), allow_nan=False)
         return variant+":splits-v1:hardware-"+hashlib.sha256(data.encode()).hexdigest()
 
+    def challenge_scores(self, source=None):
+        group = self.driving_mode.score_variant(self.abs_enabled, self.tcs_enabled, self.esc_enabled)
+        if self.mode == GameMode.DISTANCE_CHALLENGE:
+            # 可选路况各自保存完赛和标定样本。
+            sim = self.simulation
+            group += f':road-{sim.road_shape}:traffic-{sim.traffic_count}-{sim.traffic_span:g}'
+        if self.sector_chase:
+            group += ':'+CHASE_VERSION
+        source = ghost_context(self.seed) if source is None else source
+        scores = ChallengeScores(self.race.scores.path.with_name('challenge-best.json'),
+                                 self.challenge_spec, group, record_context(source, self.mode))
+        if not any(pending.key == scores.key for pending in self._pending_score_stores):
+            scores.recover_pending()
+        return scores
+
+    def prepare_coastal_ghost(self):
+        reference = self.race.snapshot
+        try:
+            self._coastal_source = ghost_context(self.seed)
+            if self.challenge_spec is None:
+                self.ghost_conditions = record_context(self._coastal_source, self.mode)
+                self.reference_ghost = load_ghost(self.race.scores, self.mode, self.race.score_id,
+                    self.ghost_conditions, reference.reference_lap, reference.reference_splits)
+                has_best = reference.reference_lap is not None
+            else:
+                scores = self._coastal_challenge_scores = self.challenge_scores(self._coastal_source)
+                best = scores.completed.get('fastest')
+                has_best = best is not None
+                if has_best:
+                    self.reference_ghost = load_ghost(scores, self.mode, best['run_id'], scores.context['physics'],
+                        best['seconds'], tuple(row['seconds'] for row in best.get('splits', ())))
+            if self.reference_ghost is None and has_best:
+                self.race.snapshot = replace(reference, ghost_notice="最佳圈暂无幽灵；新最佳圈将自动记录。")
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            logging.getLogger(__name__).warning("幽灵载入失败: %s", error)
+            self.race.snapshot = replace(reference, ghost_notice="幽灵缺失、损坏或版本不兼容；成绩保留。")
+
     def set_controller(self, controller: Controller):
         self.stop_clock()
         self.keyboard.clear()
         self.last_control = Control()
         self.controller = controller
+        if self.engineering is not None and controller is not self.keyboard:
+            self.engineering.player_driven = False
+            self.engineering.scores = None
+            self.ghost_recording = None
+            if self.engineering.trace is not None:
+                self.engineering.trace.controller = type(controller).__module__+'.'+type(controller).__name__
 
     def highway_progress(self, state=None):
         if state is None:
@@ -290,17 +390,45 @@ class Session:
                 practice_slalom=self.mode == GameMode.SLALOM_PRACTICE,
                 sprint_mode=self.mode if self.mode in SPRINT_ROUTES else None,
                 sprint_scores=BestTimes(self.race.scores.path.with_name("sprint-best.json")) if self.mode in SPRINT_ROUTES else None,
+                sprint_rules_version='' if self.challenge_spec is None else self.challenge_spec.version,
                 score_variant=self.score_variant(),
                 overtake_initial=self.simulation.snapshot() if self.mode in OVERTAKE_ROUTES else None,
                 overtake_scores=BestTimes(self.race.scores.path.with_name("overtake-best.json")) if self.mode in OVERTAKE_ROUTES else None,
                 overtake_mode=self.mode, overtake_road=self.simulation.road,
                 career_event_id=self.career_event_id,
+                record_scores=self.challenge_spec is None,
             )
         else:
             state = self.simulation.snapshot()
             self.race.begin(start_time=state.time)
             if self.mode == GameMode.TIME_TRIAL and self.ghost_conditions is not None:
                 self.ghost_recording = GhostRecorder(state, self.ghost_conditions)
+        if self.challenge_spec is not None:
+            initial = self.simulation.snapshot()
+            train = initial.player.powertrain_state
+            source = self._coastal_source if self._coastal_source is not None else ghost_context(self.seed)
+            scores = None if self.practice_sector is not None else self._coastal_challenge_scores or self.challenge_scores(source)
+            self.engineering = ChallengeRun(self.challenge_spec, self.challenge_build,
+                None if train is None else train.fuel,
+                gates=(self.highway.sprint.route.gates if self.highway.sprint is not None
+                       else course_gates(course_key(self.mode, self.career_event_id))), scores=scores,
+                chase=CHASE_COURSES[self.mode] if self.sector_chase else None, practice_sector=self.practice_sector)
+            if self.practice_sector is not None and train is not None and train.fuel is not None:
+                self.simulation.player.powertrain.fuel.samples = None
+            if scores is not None and train is not None and train.fuel is not None:
+                self.simulation.player.powertrain.fuel.samples = []
+                self.engineering.trace = ChallengeTrace(self.race.scores.path.parent/'challenge-runs',
+                    self.challenge_spec, self.challenge_build, initial,
+                    source, 'keyboard', scores.context['input'],
+                    circuit=self.mode == GameMode.TIME_TRIAL)
+                if self._coastal_challenge_scores is not None and self.controller is self.keyboard:
+                    self.ghost_recording = GhostRecorder(initial, scores.context['physics'])
+            if self.controller is not self.keyboard:
+                self.engineering.player_driven = False
+                self.engineering.scores = None
+                if self.engineering.trace is not None:
+                    self.engineering.trace.controller = type(self.controller).__module__+'.'+type(self.controller).__name__
+            self.highway.snapshot = replace(self.highway.snapshot, engineering=self.engineering.snapshot)
 
     def tick(self):
         if self.phase == Phase.COUNTDOWN:
@@ -318,20 +446,77 @@ class Session:
                 self.race.update(self.current, FIXED_DT, reset=True)
             else:
                 self.race.update(self.current, FIXED_DT)
-            self.record_ghost_step()
+            finish_context = None
             if self.simulation.track == "endless":
-                # 起伏赛事使用同一权威道路的局部标架；不能用世界X/朝向判弯道门。
-                car = (self.simulation.road.lane_frame(self.current.player)
-                       if self.mode in SPRINT_ROUTES or self.mode == GameMode.CAREER else self.current.player)
+                # 弯道门和五公里车道边界都按权威道路的局部标架判定。
+                road, player = self.simulation.road, self.current.player
+                location = road.locate(player)
+                progress = location[0] if road.curve else location[0]+self.current.origin_y
+                car = (road.lane_frame(player, location) if self.mode in SPRINT_ROUTES
+                       or self.mode in (GameMode.CAREER, GameMode.DISTANCE_CHALLENGE) else player)
                 self.highway.update(
-                    self.highway_progress(self.current), self.current.collisions, FIXED_DT,
+                    progress, self.current.collisions, FIXED_DT,
                     reset="player_reset" in self.current.events,
                     forward_speed=car.velocity[1],
                     speed=math.hypot(*self.current.player.velocity[:2]),
                     lateral=car.position[0],
                     heading=car.heading,
+                    brake_request=self.last_control.brake,
                     traffic_state=self.current if self.mode in OVERTAKE_ROUTES else None,
                 )
+            if self.engineering is not None:
+                road = self.highway.snapshot
+                crossing_times = None
+                if self.mode == GameMode.TIME_TRIAL:
+                    lap = self.race.snapshot
+                    progress = self.race.distance
+                    seconds = self.current.time-lap.start_time
+                    finished, succeeded = lap.finished, lap.finished and not lap.invalidated
+                    reason = lap.invalid_reason if lap.invalidated else '完成滨海环路'
+                    if self.sector_chase and (lap.invalidated or self.current.collisions):
+                        finished, succeeded = True, False
+                        reason = lap.invalid_reason or '发生碰撞'
+                    crossing_times = lap.splits if succeeded or not lap.finished else lap.splits[:lap.checkpoints]
+                    passed = len(crossing_times)
+                else:
+                    progress, seconds = road.distance, road.elapsed
+                    finished, succeeded, reason = road.finished, road.succeeded, road.reason
+                    passed = (road.sprint.gates if road.sprint is not None else
+                              sum(distance <= progress for distance in self.engineering.gates))
+                    passed = max(len(self.engineering.splits), passed)
+                if 'player_reset' in self.current.events:
+                    self.engineering.stop('车辆复位')
+                else:
+                    if self.engineering.trace is not None and not self.engineering.trace.closed:
+                        meter = self.simulation.player.powertrain.fuel
+                        self.engineering.trace.append(self.current, self.last_control, progress, meter.samples)
+                        meter.samples.clear()
+                    train = self.current.player.powertrain_state
+                    metric = None
+                    if self.challenge_spec.assessment != 'road':
+                        if road.career is not None:
+                            metric = (road.career.parking_error if self.challenge_spec.assessment == 'lower'
+                                      else sum(road.career.passed))
+                        elif road.braking is not None:
+                            metric = (road.braking.stopping_m if self.mode == GameMode.SHORT_BRAKING
+                                      else abs(road.braking.error_m) if road.braking.error_m is not None else None)
+                        elif road.slalom is not None:
+                            metric = road.slalom.run_seconds
+                    self.engineering.sample(None if train is None else train.fuel, progress, seconds,
+                        passed=passed, finished=finished, succeeded=succeeded, reason=reason,
+                        metric_value=metric, crossing_times=crossing_times)
+                if (self.practice_sector is not None and self.engineering.result is None
+                        and len(self.engineering.splits) > self.practice_sector):
+                    self.engineering.stop('本段练习完成', succeeded=True,
+                                          seconds=self.engineering.splits[self.practice_sector].seconds)
+                if self.engineering.result is not None:
+                    finish_context = ghost_context(self.seed)
+                    self.engineering.save_trace(finish_context)
+                    if self.sector_chase:
+                        result = self.engineering.result
+                        road = replace(road, finished=True, running=False, succeeded=result.valid, reason=result.notice)
+                self.highway.snapshot = replace(road, engineering=self.engineering.snapshot)
+            self.record_ghost_step(finish_context)
             if self.race.snapshot.finished or self.highway.snapshot.finished:
                 self.phase = Phase.RESULTS
                 self.keyboard.clear()
@@ -342,7 +527,7 @@ class Session:
             ):
                 self.finish()
 
-    def record_ghost_step(self):
+    def record_ghost_step(self, finish_context=None):
         recorder = self.ghost_recording
         if recorder is None:
             return
@@ -357,21 +542,48 @@ class Session:
             return
         if not race.finished:
             return
+        if self.engineering is not None and self.engineering.score_pending and finish_context == self._coastal_source:
+            return
         self.ghost_recording = None
-        if race.save_error:
+        self._save_finished_ghost(recorder, finish_context)
+
+    def _save_finished_ghost(self, recorder, finish_context=None):
+        race = self.race.snapshot
+        engineering = self.engineering
+        if engineering is None and race.save_error:
             self.race.snapshot = replace(race, ghost_notice="成绩未保存，本次幽灵未关联。")
             return
-        if not race.new_best:
+        if engineering is None and not race.new_best:
+            return
+        if engineering is not None and ('完赛', 'fastest') not in engineering.record_updates:
             return
         try:
-            if ghost_context(self.seed) != recorder.context:
+            if (finish_context if finish_context is not None else ghost_context(self.seed)) != self._coastal_source:
                 raise ValueError("试跑期间版本改变，成绩保留但未保存幽灵；请重开程序。")
-            lap = recorder.finish(self.race.score_id, race)
-            save_ghost(lap, self.race.scores, self.mode)
-            self.race.snapshot = replace(race, ghost_notice="最佳圈幽灵已保存，下次挑战可对照。")
-        except (OSError, ValueError) as error:
+            if engineering is None:
+                lap = recorder.finish(self.race.score_id, race)
+                save_ghost(lap, self.race.scores, self.mode)
+                self.race.snapshot = replace(race, ghost_notice="最佳圈幽灵已保存，下次挑战可对照。")
+            else:
+                scores = engineering.scores
+                best = scores.completed['fastest']
+                lap = recorder.finish_lap(best['run_id'], engineering.result.seconds,
+                                          tuple(row.seconds for row in engineering.splits))
+                save_ghost(lap, scores, self.mode)
+                self.race.snapshot = replace(race, ghost_notice='')
+        except (OSError, ValueError, KeyError, TypeError) as error:
             logging.getLogger(__name__).warning("幽灵保存失败: %s", error)
             self.race.snapshot = replace(race, ghost_notice="幽灵未保存，成绩保留；请检查存储目录或版本。")
+
+    def retry_challenge_score(self):
+        engineering = self.engineering
+        if self.phase != Phase.RESULTS or engineering is None or not engineering.score_pending:
+            return
+        engineering.retry_score()
+        if not engineering.score_pending and self.ghost_recording is not None:
+            recorder, self.ghost_recording = self.ghost_recording, None
+            self._save_finished_ghost(recorder)
+        self.highway.snapshot = replace(self.highway.snapshot, engineering=engineering.snapshot)
 
     def countdown_step(self, ticks):
         """未开放驾驶时只结算起步节拍，不施力、不记圈速。"""
@@ -467,12 +679,17 @@ class Session:
             )
             if self.highway.snapshot.finished:
                 self.phase = Phase.RESULTS
+        if self.engineering is not None:
+            self.engineering.stop('车辆复位')
+            self.engineering.save_trace(ghost_context(self.seed))
+            self.highway.snapshot = replace(self.highway.snapshot, engineering=self.engineering.snapshot)
         self.keyboard.clear()
         self.stepper.remainder = 0.0
         self.sync_snapshots()
 
     def menu(self):
         self.stop_clock()
+        self.leave_challenge()
         self.phase = Phase.MENU
         self.mode = GameMode.FREE_DRIVE
         self.simulation.set_checkpoint_frames_enabled(False)
@@ -485,6 +702,10 @@ class Session:
 
     def finish(self):
         self.stop_clock()
+        if self.engineering is not None:
+            self.engineering.stop('挑战提前结束')
+            self.engineering.save_trace(ghost_context(self.seed))
+            self.highway.snapshot = replace(self.highway.snapshot, engineering=self.engineering.snapshot)
         self.race.stop()
         self.ghost_recording = None
         self.highway.stop("挑战提前结束" if (self.mode in (GameMode.CAREER, GameMode.DISTANCE_CHALLENGE, *BRAKING_MODES, *SLALOM_MODES, *OVERTAKE_ROUTES)
@@ -493,6 +714,32 @@ class Session:
         self.keyboard.clear()
         self.stepper.remainder = 0.0
         self.sync_snapshots()
+
+    def _end_challenge_run(self, reason):
+        pending, self._pending_score_stores = self._pending_score_stores, []
+        for scores in pending:
+            scores.retry_pending()
+            if scores.pending_score is not None:
+                self._pending_score_stores.append(scores)
+        if self.engineering is not None:
+            self.engineering.stop(reason)
+            if self.engineering.score_pending:
+                self.retry_challenge_score()
+                if self.engineering.score_pending:
+                    self._pending_score_stores.append(self.engineering.scores)
+            self.engineering.save_trace(ghost_context(self.seed))
+
+    def leave_challenge(self):
+        """本关候选只在驾驶会话生效；不覆写玩家工程车或原电子设置。"""
+        self._end_challenge_run('已退出本次挑战')
+        if self.engineering is not None:
+            self.simulation.player.powertrain.fuel.samples = None
+        if self._challenge_original is not None:
+            self.base_vehicle_config, self.vehicle_config = self._challenge_original
+        self._challenge_original = None
+        self._coastal_challenge_scores = None
+        self.challenge_spec = self.challenge_build = self.engineering = None
+        self.sector_chase, self.practice_sector = False, None
 
     def command(self, key):
         if key == "enter":
@@ -511,6 +758,7 @@ class Session:
 
     def close(self):
         self.stop_clock()
+        self.leave_challenge()
         self.keyboard.clear()
         self.simulation.close()
 
@@ -529,7 +777,8 @@ class Session:
 
     def camera_position(self, start, end, origin_y):
         """世界查询与推进互斥；重定位期间将当帧相机转换到当前世界再转回。"""
-        with self._clock.world_lock if self._clock is not None else nullcontext():
+        clock = self._clock
+        with clock.world_lock if clock is not None else nullcontext():
             offset = origin_y-self.simulation.origin_y
             start,end = type(start)(start),type(end)(end)
             start.y += offset

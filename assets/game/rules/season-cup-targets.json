@@ -1,0 +1,770 @@
+{
+  "game-tuned": {
+    "time_trial": {
+      "budget-energy-medals-v1": {
+        "rules": "budget-energy-medals-v1",
+        "shape": "",
+        "base_sha256": "6b54c358c828cccded0668afcc9fb3880df3efb3a5e3b4a60c5b99e477fb2d4c",
+        "sample_sha256": "25a440dccd9472793187da928f7ca523a1bbd6c2be5299f8e852f25bba638f6a",
+        "sample_seconds": 55.29519448037533,
+        "sample_consumption": 21.16769866142166,
+        "targets": [
+          [
+            69.2,
+            26.5
+          ],
+          [
+            62.0,
+            23.8
+          ],
+          [
+            57.0,
+            21.9
+          ]
+        ]
+      }
+    },
+    "ridge_sprint": {
+      "budget-route-v5-medals-v1": {
+        "rules": "budget-route-v5-medals-v1",
+        "shape": "budget-ridge-long-waves",
+        "base_sha256": "6b54c358c828cccded0668afcc9fb3880df3efb3a5e3b4a60c5b99e477fb2d4c",
+        "sample_sha256": "8b565ed97614040ce5726639f532012e5d104de1f4850a7217355baecccb0b9e",
+        "sample_seconds": 72.93860159617148,
+        "sample_consumption": 21.7067418176133,
+        "targets": [
+          [
+            91.2,
+            27.2
+          ],
+          [
+            81.7,
+            24.4
+          ],
+          [
+            75.2,
+            22.4
+          ]
+        ]
+      },
+      "budget-route-v4-medals-v1": {
+        "rules": "budget-route-v4-medals-v1",
+        "shape": "budget-ridge-suspension",
+        "base_sha256": "6b54c358c828cccded0668afcc9fb3880df3efb3a5e3b4a60c5b99e477fb2d4c",
+        "sample_sha256": "5ba83d2e6c7b2139bcade1fc193aa62cdf42e8ed4cd4e4687fec4d8523492867",
+        "sample_seconds": 72.29531554348527,
+        "sample_consumption": 20.31484293647427,
+        "targets": [
+          [
+            90.4,
+            25.4
+          ],
+          [
+            81.0,
+            22.8
+          ],
+          [
+            74.5,
+            21.0
+          ]
+        ]
+      }
+    },
+    "hill_traffic": {
+      "budget-overtake-finish-v1": {
+        "rules": "budget-overtake-finish-v1",
+        "shape": "",
+        "base_sha256": "6b54c358c828cccded0668afcc9fb3880df3efb3a5e3b4a60c5b99e477fb2d4c",
+        "sample_sha256": "6a6da0d4025a2981844bbf26ab51166f8d997c0184e034792cd864655ef98e27",
+        "sample_seconds": 93.07504657274072,
+        "sample_consumption": 12.554039402199301,
+        "targets": [
+          [
+            116.4,
+            15.7
+          ],
+          [
+            104.3,
+            14.1
+          ],
+          [
+            95.9,
+            13.0
+          ]
+        ]
+      }
+    }
+  },
+  "coastal-hatch": {
+    "time_trial": {
+      "budget-energy-medals-v1": {
+        "rules": "budget-energy-medals-v1",
+        "shape": "",
+        "base_sha256": "9ec618ca1df23c1a486a32ac7940cb36534ed8bec4d8e707b88b2298059019be",
+        "sample_sha256": "c84fb8882e05bd18479949263fb47cf0939a2ea119f5d4e0730a38811baf26e0",
+        "sample_seconds": 56.76967474009293,
+        "sample_consumption": 17.37628716308343,
+        "targets": [
+          [
+            71.0,
+            21.8
+          ],
+          [
+            63.6,
+            19.5
+          ],
+          [
+            58.5,
+            17.9
+          ]
+        ]
+      }
+    },
+    "ridge_sprint": {
+      "budget-route-v5-medals-v1": {
+        "rules": "budget-route-v5-medals-v1",
+        "shape": "budget-ridge-long-waves",
+        "base_sha256": "9ec618ca1df23c1a486a32ac7940cb36534ed8bec4d8e707b88b2298059019be",
+        "sample_sha256": "3c60d51b6ec91721cc3a9284a638d0cb72f720abafec9cecea91a76b7d02da10",
+        "sample_seconds": 75.75980792207925,
+        "sample_consumption": 20.07525603461022,
+        "targets": [
+          [
+            94.7,
+            25.1
+          ],
+          [
+            84.9,
+            22.5
+          ],
+          [
+            78.1,
+            20.7
+          ]
+        ]
+      },
+      "budget-route-v4-medals-v1": {
+        "rules": "budget-route-v4-medals-v1",
+        "shape": "budget-ridge-suspension",
+        "base_sha256": "9ec618ca1df23c1a486a32ac7940cb36534ed8bec4d8e707b88b2298059019be",
+        "sample_sha256": "b94de6ce4540bafe1bde26eb5db2dfe70d5f0354c7b30e78e12c1784dc7caf32",
+        "sample_seconds": 75.33693351453533,
+        "sample_consumption": 17.90518206903438,
+        "targets": [
+          [
+            94.2,
+            22.4
+          ],
+          [
+            84.4,
+            20.1
+          ],
+          [
+            77.6,
+            18.5
+          ]
+        ]
+      }
+    },
+    "hill_traffic": {
+      "budget-overtake-finish-v1": {
+        "rules": "budget-overtake-finish-v1",
+        "shape": "",
+        "base_sha256": "9ec618ca1df23c1a486a32ac7940cb36534ed8bec4d8e707b88b2298059019be",
+        "sample_sha256": "47c4338d05fe41e343fc7738709bba68285d92e23604880a7e499206c9aa3ee2",
+        "sample_seconds": 86.62644036919325,
+        "sample_consumption": 9.953245368962872,
+        "targets": [
+          [
+            108.3,
+            12.5
+          ],
+          [
+            97.1,
+            11.2
+          ],
+          [
+            89.3,
+            10.3
+          ]
+        ]
+      }
+    }
+  },
+  "coastal-roadster": {
+    "time_trial": {
+      "budget-energy-medals-v1": {
+        "rules": "budget-energy-medals-v1",
+        "shape": "",
+        "base_sha256": "9397162a4bb32d393ef93e8ffba61f307c4e6d222117a4475dd2e04eb6ee7d1f",
+        "sample_sha256": "72ce86aa7c90c38cf9b7236df5f4a09148b76815d1db4f254e38a33fb49d84c4",
+        "sample_seconds": 55.58180716523864,
+        "sample_consumption": 18.653935006515827,
+        "targets": [
+          [
+            69.5,
+            23.4
+          ],
+          [
+            62.3,
+            20.9
+          ],
+          [
+            57.3,
+            19.3
+          ]
+        ]
+      }
+    },
+    "ridge_sprint": {
+      "budget-route-v5-medals-v1": {
+        "rules": "budget-route-v5-medals-v1",
+        "shape": "budget-ridge-long-waves",
+        "base_sha256": "9397162a4bb32d393ef93e8ffba61f307c4e6d222117a4475dd2e04eb6ee7d1f",
+        "sample_sha256": "3da4eae75950d21c65f8176d36e331d45605db08abdcd7253027728e628cf29e",
+        "sample_seconds": 72.97245761895583,
+        "sample_consumption": 20.618936534275267,
+        "targets": [
+          [
+            91.3,
+            25.8
+          ],
+          [
+            81.8,
+            23.1
+          ],
+          [
+            75.2,
+            21.3
+          ]
+        ]
+      },
+      "budget-route-v4-medals-v1": {
+        "rules": "budget-route-v4-medals-v1",
+        "shape": "budget-ridge-suspension",
+        "base_sha256": "9397162a4bb32d393ef93e8ffba61f307c4e6d222117a4475dd2e04eb6ee7d1f",
+        "sample_sha256": "e94a7df8beb5978f6421099edeff7569fad213a85dbf1c154b309e723ffad042",
+        "sample_seconds": 72.33774057216839,
+        "sample_consumption": 19.633199062365215,
+        "targets": [
+          [
+            90.5,
+            24.6
+          ],
+          [
+            81.1,
+            22.0
+          ],
+          [
+            74.6,
+            20.3
+          ]
+        ]
+      }
+    },
+    "hill_traffic": {
+      "budget-overtake-finish-v1": {
+        "rules": "budget-overtake-finish-v1",
+        "shape": "",
+        "base_sha256": "9397162a4bb32d393ef93e8ffba61f307c4e6d222117a4475dd2e04eb6ee7d1f",
+        "sample_sha256": "8bac9deb26ea75aacd59d00620116b51835a26c13cbe0d61471bb90043647acf",
+        "sample_seconds": 86.48047649831545,
+        "sample_consumption": 10.981672921978104,
+        "targets": [
+          [
+            108.2,
+            13.8
+          ],
+          [
+            96.9,
+            12.3
+          ],
+          [
+            89.1,
+            11.4
+          ]
+        ]
+      }
+    }
+  },
+  "gr86-2022-premium-6mt": {
+    "time_trial": {
+      "budget-energy-medals-v1": {
+        "rules": "budget-energy-medals-v1",
+        "shape": "",
+        "base_sha256": "afd51830db5025e41f8925fa3e27eee60152302c93d32758b190da6378fc3e38",
+        "sample_sha256": "25413e3eaf9419f74c6ca073496d9d8571535cf3deff029aba321babc845d3e7",
+        "sample_seconds": 55.368286845056886,
+        "sample_consumption": 22.634622576922734,
+        "targets": [
+          [
+            69.3,
+            28.3
+          ],
+          [
+            62.1,
+            25.4
+          ],
+          [
+            57.1,
+            23.4
+          ]
+        ]
+      }
+    },
+    "ridge_sprint": {
+      "budget-route-v5-medals-v1": {
+        "rules": "budget-route-v5-medals-v1",
+        "shape": "budget-ridge-long-waves",
+        "base_sha256": "afd51830db5025e41f8925fa3e27eee60152302c93d32758b190da6378fc3e38",
+        "sample_sha256": "bd62decceebbee176609be127c979562819784e36ce44e585ee14049e14008f3",
+        "sample_seconds": 73.56796047679704,
+        "sample_consumption": 22.839679624545564,
+        "targets": [
+          [
+            92.0,
+            28.6
+          ],
+          [
+            82.4,
+            25.6
+          ],
+          [
+            75.8,
+            23.6
+          ]
+        ]
+      },
+      "budget-route-v4-medals-v1": {
+        "rules": "budget-route-v4-medals-v1",
+        "shape": "budget-ridge-suspension",
+        "base_sha256": "afd51830db5025e41f8925fa3e27eee60152302c93d32758b190da6378fc3e38",
+        "sample_sha256": "07029aa3c87f6c0a5122f488c47de60282cd7cf87b393d27e476d646b0754084",
+        "sample_seconds": 73.19818275578407,
+        "sample_consumption": 21.713452761170664,
+        "targets": [
+          [
+            91.5,
+            27.2
+          ],
+          [
+            82.0,
+            24.4
+          ],
+          [
+            75.4,
+            22.4
+          ]
+        ]
+      }
+    },
+    "hill_traffic": {
+      "budget-overtake-finish-v1": {
+        "rules": "budget-overtake-finish-v1",
+        "shape": "",
+        "base_sha256": "afd51830db5025e41f8925fa3e27eee60152302c93d32758b190da6378fc3e38",
+        "sample_sha256": "b38a89c62ec5c42d42d8d3791d175cad29598d1e6ec5f962244e0f60410cfb6b",
+        "sample_seconds": 91.5170015578543,
+        "sample_consumption": 10.856731549016432,
+        "targets": [
+          [
+            114.4,
+            13.6
+          ],
+          [
+            102.5,
+            12.2
+          ],
+          [
+            94.3,
+            11.2
+          ]
+        ]
+      }
+    }
+  },
+  "coastal-gt": {
+    "time_trial": {
+      "budget-energy-medals-v1": {
+        "rules": "budget-energy-medals-v1",
+        "shape": "",
+        "base_sha256": "5fba77759545b48f03409c113ffdb2248bee9066a3999f3e87d9fbb3c87bbf3c",
+        "sample_sha256": "8d68baaf98fdfef4dd486f8e1692cd71de70369d774bb9e2738621c4cd5f51f5",
+        "sample_seconds": 54.25561827517764,
+        "sample_consumption": 24.935925951172102,
+        "targets": [
+          [
+            67.9,
+            31.2
+          ],
+          [
+            60.8,
+            28.0
+          ],
+          [
+            55.9,
+            25.7
+          ]
+        ]
+      }
+    },
+    "ridge_sprint": {
+      "budget-route-v5-medals-v1": {
+        "rules": "budget-route-v5-medals-v1",
+        "shape": "budget-ridge-long-waves",
+        "base_sha256": "5fba77759545b48f03409c113ffdb2248bee9066a3999f3e87d9fbb3c87bbf3c",
+        "sample_sha256": "1ffabc08ba0ef2630b2fa7d9b536faca1bd6693515044581e0b2606c6c37c8da",
+        "sample_seconds": 71.53414704944414,
+        "sample_consumption": 27.655843100475053,
+        "targets": [
+          [
+            89.5,
+            34.6
+          ],
+          [
+            80.2,
+            31.0
+          ],
+          [
+            73.7,
+            28.5
+          ]
+        ]
+      },
+      "budget-route-v4-medals-v1": {
+        "rules": "budget-route-v4-medals-v1",
+        "shape": "budget-ridge-suspension",
+        "base_sha256": "5fba77759545b48f03409c113ffdb2248bee9066a3999f3e87d9fbb3c87bbf3c",
+        "sample_sha256": "5721170d8a28fd02c18144c9db1efa57141f92cef53b8d525eb3052990a09210",
+        "sample_seconds": 71.3594841439779,
+        "sample_consumption": 25.95038602158662,
+        "targets": [
+          [
+            89.2,
+            32.5
+          ],
+          [
+            80.0,
+            29.1
+          ],
+          [
+            73.6,
+            26.8
+          ]
+        ]
+      }
+    },
+    "hill_traffic": {
+      "budget-overtake-finish-v1": {
+        "rules": "budget-overtake-finish-v1",
+        "shape": "",
+        "base_sha256": "5fba77759545b48f03409c113ffdb2248bee9066a3999f3e87d9fbb3c87bbf3c",
+        "sample_sha256": "c2be820f7d13a8e300b672c1570b7b6f921b1b965cf78cb4fdb0b132ca914a63",
+        "sample_seconds": 87.8502017637327,
+        "sample_consumption": 13.07614264563609,
+        "targets": [
+          [
+            109.9,
+            16.4
+          ],
+          [
+            98.4,
+            14.7
+          ],
+          [
+            90.5,
+            13.5
+          ]
+        ]
+      }
+    }
+  },
+  "club-coupe": {
+    "time_trial": {
+      "budget-energy-medals-v1": {
+        "rules": "budget-energy-medals-v1",
+        "shape": "",
+        "base_sha256": "9d2d0a54ea20b1185dbd57fa9018386ca26561e1daa632a5ceb29800de38964d",
+        "sample_sha256": "4b53a30bd62839c6f0b97cde7c44e5ca66d89e7babe576fd1764cd73b7a006c0",
+        "sample_seconds": 54.8358830935893,
+        "sample_consumption": 22.971650899762786,
+        "targets": [
+          [
+            68.6,
+            28.8
+          ],
+          [
+            61.5,
+            25.8
+          ],
+          [
+            56.5,
+            23.7
+          ]
+        ]
+      }
+    },
+    "ridge_sprint": {
+      "budget-route-v5-medals-v1": {
+        "rules": "budget-route-v5-medals-v1",
+        "shape": "budget-ridge-long-waves",
+        "base_sha256": "9d2d0a54ea20b1185dbd57fa9018386ca26561e1daa632a5ceb29800de38964d",
+        "sample_sha256": "b9e1372a0a7e9b7e3b20a3ddc2c0405609593954ddff5422df892611377bdabc",
+        "sample_seconds": 71.88189300346244,
+        "sample_consumption": 26.370702764444037,
+        "targets": [
+          [
+            89.9,
+            33.0
+          ],
+          [
+            80.6,
+            29.6
+          ],
+          [
+            74.1,
+            27.2
+          ]
+        ]
+      },
+      "budget-route-v4-medals-v1": {
+        "rules": "budget-route-v4-medals-v1",
+        "shape": "budget-ridge-suspension",
+        "base_sha256": "9d2d0a54ea20b1185dbd57fa9018386ca26561e1daa632a5ceb29800de38964d",
+        "sample_sha256": "7039a4c85fcdd421cd8784eb8e38841fd11f52294ec07d374c9ea6044d6ce211",
+        "sample_seconds": 71.73340765203857,
+        "sample_consumption": 24.643546005163547,
+        "targets": [
+          [
+            89.7,
+            30.9
+          ],
+          [
+            80.4,
+            27.7
+          ],
+          [
+            73.9,
+            25.4
+          ]
+        ]
+      }
+    },
+    "hill_traffic": {
+      "budget-overtake-finish-v1": {
+        "rules": "budget-overtake-finish-v1",
+        "shape": "",
+        "base_sha256": "9d2d0a54ea20b1185dbd57fa9018386ca26561e1daa632a5ceb29800de38964d",
+        "sample_sha256": "5c023b008d1c22915a47692ac299f7753b62d6408f95dc72076c933f1d2d42f6",
+        "sample_seconds": 95.60227775441798,
+        "sample_consumption": 12.708428440640631,
+        "targets": [
+          [
+            119.6,
+            15.9
+          ],
+          [
+            107.1,
+            14.3
+          ],
+          [
+            98.5,
+            13.1
+          ]
+        ]
+      }
+    }
+  },
+  "subaru-wrx-sti": {
+    "time_trial": {
+      "budget-energy-medals-v1": {
+        "rules": "budget-energy-medals-v1",
+        "shape": "",
+        "base_sha256": "aa49cc3f17f41b6acb8155258b4ccad829c19d7fa81184415c953811d8b1d10b",
+        "sample_sha256": "0324aab54d3eedd07717b8f652a73f1847f4bc4d5cee7e4433a95c9561c452a2",
+        "sample_seconds": 53.85827911527549,
+        "sample_consumption": 29.14878372469066,
+        "targets": [
+          [
+            67.4,
+            36.5
+          ],
+          [
+            60.4,
+            32.7
+          ],
+          [
+            55.5,
+            30.1
+          ]
+        ]
+      }
+    },
+    "ridge_sprint": {
+      "budget-route-v5-medals-v1": {
+        "rules": "budget-route-v5-medals-v1",
+        "shape": "budget-ridge-long-waves",
+        "base_sha256": "aa49cc3f17f41b6acb8155258b4ccad829c19d7fa81184415c953811d8b1d10b",
+        "sample_sha256": "c3f14cfaa6a45cf4bf7c3dee3c72145da0cb1bfcd1edde8289b32a41a6ed8b01",
+        "sample_seconds": 71.5409090943198,
+        "sample_consumption": 34.864168256636724,
+        "targets": [
+          [
+            89.5,
+            43.6
+          ],
+          [
+            80.2,
+            39.1
+          ],
+          [
+            73.7,
+            36.0
+          ]
+        ]
+      },
+      "budget-route-v4-medals-v1": {
+        "rules": "budget-route-v4-medals-v1",
+        "shape": "budget-ridge-suspension",
+        "base_sha256": "aa49cc3f17f41b6acb8155258b4ccad829c19d7fa81184415c953811d8b1d10b",
+        "sample_sha256": "820a48102a9da8661d384755ab10f022be859af478aa48128314988a4530dabd",
+        "sample_seconds": 75.05695479672293,
+        "sample_consumption": 26.734300986171434,
+        "targets": [
+          [
+            93.9,
+            33.5
+          ],
+          [
+            84.1,
+            30.0
+          ],
+          [
+            77.4,
+            27.6
+          ]
+        ]
+      }
+    },
+    "hill_traffic": {
+      "budget-overtake-finish-v1": {
+        "rules": "budget-overtake-finish-v1",
+        "shape": "",
+        "base_sha256": "aa49cc3f17f41b6acb8155258b4ccad829c19d7fa81184415c953811d8b1d10b",
+        "sample_sha256": "af513a0ed50fa6816821b2b95289ceb3dc12bf5c7211bb9692c4a47dd187d094",
+        "sample_seconds": 88.88945172997305,
+        "sample_consumption": 12.57761910618621,
+        "targets": [
+          [
+            111.2,
+            15.8
+          ],
+          [
+            99.6,
+            14.1
+          ],
+          [
+            91.6,
+            13.0
+          ]
+        ]
+      }
+    }
+  },
+  "porsche-930": {
+    "time_trial": {
+      "budget-energy-medals-v1": {
+        "rules": "budget-energy-medals-v1",
+        "shape": "",
+        "base_sha256": "a5c7c0126f8348971c353a5199d841d201470b794c2fd4b6c4b3aa18d5ea6625",
+        "sample_sha256": "06e9ea934542471405d99468e847d1bcd6b3c95f02cec473d2faf1f8125f703b",
+        "sample_seconds": 55.608203280995305,
+        "sample_consumption": 20.951720356149202,
+        "targets": [
+          [
+            69.6,
+            26.2
+          ],
+          [
+            62.3,
+            23.5
+          ],
+          [
+            57.3,
+            21.6
+          ]
+        ]
+      }
+    },
+    "ridge_sprint": {
+      "budget-route-v5-medals-v1": {
+        "rules": "budget-route-v5-medals-v1",
+        "shape": "budget-ridge-long-waves",
+        "base_sha256": "a5c7c0126f8348971c353a5199d841d201470b794c2fd4b6c4b3aa18d5ea6625",
+        "sample_sha256": "0b2c3fefd9ee28b88979482b8ba57666d16c847b20107203809accc335dee47c",
+        "sample_seconds": 73.26890960776781,
+        "sample_consumption": 23.2840356785525,
+        "targets": [
+          [
+            91.6,
+            29.2
+          ],
+          [
+            82.1,
+            26.1
+          ],
+          [
+            75.5,
+            24.0
+          ]
+        ]
+      },
+      "budget-route-v4-medals-v1": {
+        "rules": "budget-route-v4-medals-v1",
+        "shape": "budget-ridge-suspension",
+        "base_sha256": "a5c7c0126f8348971c353a5199d841d201470b794c2fd4b6c4b3aa18d5ea6625",
+        "sample_sha256": "b72f97dab42643a69f4c7a011279dbecd4819e06928c0af18253ed01a81fc693",
+        "sample_seconds": 72.11877350367614,
+        "sample_consumption": 22.169104165900325,
+        "targets": [
+          [
+            90.2,
+            27.8
+          ],
+          [
+            80.8,
+            24.9
+          ],
+          [
+            74.3,
+            22.9
+          ]
+        ]
+      }
+    },
+    "hill_traffic": {
+      "budget-overtake-finish-v1": {
+        "rules": "budget-overtake-finish-v1",
+        "shape": "",
+        "base_sha256": "a5c7c0126f8348971c353a5199d841d201470b794c2fd4b6c4b3aa18d5ea6625",
+        "sample_sha256": "ddbac12827679dd4d945a3b8033312b059a1a0644489fcd98afec7807522adbc",
+        "sample_seconds": 102.20529093339168,
+        "sample_consumption": 11.14729709024695,
+        "targets": [
+          [
+            127.8,
+            14.0
+          ],
+          [
+            114.5,
+            12.5
+          ],
+          [
+            105.3,
+            11.5
+          ]
+        ]
+      }
+    }
+  }
+}

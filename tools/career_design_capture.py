@@ -26,6 +26,9 @@ def capture(output, size, only=()):
     app = CoastalDrive(smoke=True, output=output, render_size=size, workspace_vehicle=vehicle)
     app.taskMgr.remove('finish-smoke')
     app.taskMgr.remove('drive-update')
+    app.back_to_menu()
+    app._shown_phase = None
+    app.refresh_panel()
     names = []
     before = asdict(app.session.current)
 
@@ -40,8 +43,14 @@ def capture(output, size, only=()):
         names.append(name+'.png')
 
     try:
+        shot('00-home-new')
         app.open_career()
         shot('01-events-new')
+        app.key_down('arrow_down')
+        app.key_up('arrow_down')
+        shot('01-events-parking')
+        app.career_action('board-chapter', 2)
+        shot('01-events-locked-final')
         for event in ('first-drive', 'slalom', 'parking', 'coastal-cup'):
             app.career_action('brief', event)
             shot('02-brief-'+event)
@@ -60,6 +69,10 @@ def capture(output, size, only=()):
         shot('03-result-multiple-unlocks')
         app.open_career()
         shot('04-events-progress')
+        if '00-home-progress' in only:
+            app.career_action('exit')
+            shot('00-home-progress')
+            app.open_career()
         panel = app.career_panel
         panel.select(next(i for i, item in enumerate(panel.buttons) if item['extraArgs'] == ['brief', 'parking']))
         shot('04-events-focus')

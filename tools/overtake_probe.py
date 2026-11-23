@@ -12,28 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'src'))
 
 from driving_modes import DrivingMode
-from highway_driver import HighwayDriver
 from lab_records import model_fingerprint
 from lab_runtime import runtime_fingerprint
+from road_test_driver import OvertakeDriver
 from simulation import FIXED_DT, Simulation
-
-
-class OvertakeDriver:
-    def __init__(self, road, config, input_config, speed=40.):
-        self.road = road
-        self.driver = HighwayDriver(1, 41, config=config, input_config=input_config)
-        self.driver.cruise = self.driver.preferred_speed = self.driver.target_speed = speed
-        # 只固定试车员的意图；道路交通仍执行各自原始风格和随机变速。
-        self.driver.speed_clock = 1e9
-        self.steps = 0
-
-    def sample(self, state, dt):
-        car, traffic = state.player, state.traffic
-        if self.steps % 6 == 0:
-            self.driver.plan(car, traffic, self.road, [])
-        self.steps += 1
-        return self.driver.control(car, traffic, self.road,
-                                   [self.road.locate(item) for item in (car, *traffic)])
 
 
 def probe(output, seed, speed, shape='straight', distance_limit=2000., seconds=120.):

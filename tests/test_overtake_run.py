@@ -102,6 +102,31 @@ def test_limits_precede_award(tmp_path, flag, reason):
     assert not (tmp_path/'best.json').exists()
 
 
+@pytest.mark.parametrize('gap_offset, previous_time, succeeded, reason', [
+    (-.2, 30., True, '安全超越2辆'),
+    (.2, 30., False, '仅安全超越1/2辆'),
+    (-.2, 149.995, True, '安全超越2辆'),
+    (.2, 149.995, False, '仅安全超越1/2辆'),
+    (-.2, 149.998, False, '超过150秒'),
+])
+def test_budget_overtake_respects_order_inside_finish_tick(tmp_path, gap_offset, previous_time, succeeded, reason):
+    item = OvertakeRun(state(0., (car(25.),)), CAR, BestTimes(tmp_path/'best.json'), 'budget', record_scores=False)
+    assert pass_one(item).passes == 1
+    finish = item.route.distance
+    other = finish-2*CAR.collision_half_length-10.+gap_offset
+    others = car(5000.), car(other)
+    item.update(state(other-25., others), 20.)
+    item.update(state(other, others), 21.)
+    item.update(state(finish-.5, others), previous_time)
+    result = item.update(state(finish+.5, others), previous_time+1/120)
+    assert result.finished and result.succeeded is succeeded and reason in result.reason
+    assert result.passes == (2 if succeeded else 1)
+    if succeeded:
+        assert result.pass_times[-1] == pytest.approx(previous_time+(.5+gap_offset)/120)
+        assert result.pass_times[-1] <= min(previous_time+.5/120, item.route.seconds)
+    assert not (tmp_path/'best.json').exists()
+
+
 def test_full_body_yaw_and_atomic_save_failure(tmp_path):
     own = state(0., (), heading=30.).player
     assert body(own, CAR)[2] > CAR.collision_half_width

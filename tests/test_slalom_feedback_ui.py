@@ -16,7 +16,8 @@ def app(tmp_path):
     game.taskMgr.remove("finish-smoke")
     game.taskMgr.remove("drive-update")
     game.back_to_menu()
-    game.start_slalom_lesson()
+    # 这里核对专家自由试验的逐门原始结果；预算结算另有覆盖。
+    game.start_game(mode=GameMode.SLALOM_LESSON, track='endless')
     for _ in range(360):
         game.session.tick()
     yield game

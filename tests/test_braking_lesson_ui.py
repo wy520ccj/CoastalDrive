@@ -7,6 +7,7 @@ import pytest
 from application import CoastalDrive
 from braking_lesson import BrakingResult
 from braking_markers import MARKER_MASK
+from challenge_catalog import ROAD_CHALLENGES
 from race import GameMode
 from session import Phase, Session
 from session_process import _decode_frame, _encode_frame, _output
@@ -35,9 +36,15 @@ def test_menu_rules_start_and_back_preserve_highway_shape_and_current_car(app):
     previous_shape = app.highway_shape
     app.choose_braking_lesson()
     app.buttons[0]["command"]()
+    assert app.career_panel.page == 'challenge' and app.session.phase == Phase.MENU
+    assert app.session.vehicle_config == original
+    app.challenge_action('challenge-start')
     assert app.session.mode == GameMode.BRAKING_LESSON and app.session.road_shape == "straight"
-    assert app.highway_shape == previous_shape and app.session.vehicle_config == original
+    assert app.highway_shape == previous_shape
+    assert app.session.vehicle_config == ROAD_CHALLENGES[GameMode.BRAKING_LESSON].base_config
     assert not app.session.simulation.npcs
+    app.challenge_action('challenge-back')
+    assert app.session.vehicle_config == original and app.braking_menu
 
 
 def test_markers_follow_lesson_origin_without_any_rigid_body_or_physical_change(app):

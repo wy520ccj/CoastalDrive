@@ -1,4 +1,4 @@
-"""生涯四页的构图，对应garage-v2的05至08设计图。"""
+"""生涯赛事板、简报和结算的构图。"""
 
 from direct.gui import DirectGuiGlobals as DGG
 from direct.gui.DirectGui import DirectFrame
@@ -7,17 +7,28 @@ from panda3d.core import LineSegs, TextNode, TextureStage, TransparencyAttrib
 from career import CHAPTERS, EVENTS, PARTS
 from career_courses import COURSES, CareerCourse
 from career_garage import GARAGE_CARS, garage_cars
+from highway_curve import HighwayCurve
 from ui import theme
-from ui.garage_layout import GRAY, INK, ORANGE, PART_IMAGES, WHITE
+from ui.career_events import BOARD_EVENTS, ClubEvent
+from ui.garage_layout import GRAY, INK, ORANGE, WHITE
 from ui.lab_widgets import rounded_panel
 
 GOLD = (1, .73, .25, 1)
 DARK = (.04, .055, .075, .88)
 PAPER = (.98, .98, .99, .96)
 LINE = (.80, .82, .85, 1)
+HISTORICAL_PART_IMAGES = {'tires': 'tire', 'brakes': 'brake', 'power': 'power-part', 'suspension': 'suspension-part'}
 
 
-def canvas(panel, progress, title, *, car=False):
+def vehicle_box(aspect):
+    """生涯车辆展示区；加载准备与实际页面使用同一视口。"""
+    width, unit = 941*aspect, 2/941
+    margin, wide = width*.031, min(462., width*.32)
+    return ((margin+wide+18-width/2)*unit, (width-margin-width/2)*unit,
+            1-(205+541)*unit, 1-205*unit)
+
+
+def canvas(panel, progress, title, *, car=False, budget=None, chrome=True, season=False):
     """四页共用同一画布、字体、栏位；具体页面仍由独立业务函数绘制。"""
     aspect = panel.vehicle_view.base.getAspectRatio()
     panel.layout_aspect, panel.garage_roles, panel.card_edges = aspect, {}, {}
@@ -77,11 +88,21 @@ def canvas(panel, progress, title, *, car=False):
         panel.garage_roles[len(panel.buttons)-1] = role
         return item
 
+    if season:
+        fill(0, 0, width, 941, (.966, .961, .949, 1), 0)
+        fill(0, 0, width, 68, (.055, .088, .132, 1), 0)
+        fill(0, 848, width, 93, (.055, .088, .132, 1), 0)
+        brand = label('COASTAL DRIVE', margin, 44, 28, WHITE, bold=True)
+        brand['font'] = panel.garage_display_font
+        fill(margin+260, 19, 1, 31, WHITE, 0)
+        label(title, margin+285, 44, 30, WHITE, bold=True)
+        label(f'{progress.stars} / 18 星', width-margin, 44, 26, WHITE, right=True)
+        return width, margin, fill, label, image, button
+
     image('backgrounds/garage-coastal-v2.png', 0, 0, width, 941, crop=True)
     if car:
-        wide = min(462., width*.32)
         vehicle = panel.vehicle_view.base.workspace_vehicle
-        panel.vehicle_view.show(panel.content, box(margin+wide+18, 205, width-2*margin-wide-18, 541),
+        panel.vehicle_view.show(panel.content, vehicle_box(aspect),
                                 vehicle, studio=True)
         panel.vehicle_view.frame.setTransparency(TransparencyAttrib.MAlpha)
         panel.vehicle_view.highlight(None)
@@ -89,8 +110,14 @@ def canvas(panel, progress, title, *, car=False):
         fill(width-197, 126, 2, 64, WHITE, 0)
         label('当前车辆', width-margin, 149, 19, WHITE, right=True)
         label(name, width-margin, 184, 26, WHITE, bold=True, right=True)
-    fill(0, 0, width, 74, (.04, .055, .075, .78), 0)
-    fill(0, 860, width, 81, (.04, .055, .075, .86), 0)
+    if chrome:
+        fill(0, 0, width, 74, (.04, .055, .075, .78), 0)
+        fill(0, 860, width, 81, (.04, .055, .075, .86), 0)
+    if budget is not None:
+        label(title, margin, 50, 32 if aspect > 1.5 else 26, WHITE, bold=True)
+        panel.challenge_readouts['budget'] = label('', width-margin, 49 if aspect > 1.5 else 29,
+                                                   22 if aspect > 1.5 else 18, WHITE, right=True)
+        return width, margin, fill, label, image, button
     brand = label('COASTAL DRIVE', width*.037, 50, 34 if aspect > 1.5 else 28, WHITE, bold=True)
     brand['font'] = panel.garage_display_font
     # 页名与车库导航占同一中栏；4:3不再把品牌、副标题挤在一行。
@@ -101,130 +128,205 @@ def canvas(panel, progress, title, *, car=False):
          59, 120 if title == '生涯赛事' else 170, 4, ORANGE, 0)
     if aspect > 1.5:
         label(f'★  {progress.stars} / 18 星', width-350, 49, 23, WHITE)
-        label(f'{progress.credits} 积分', width-55, 49, 23, WHITE, right=True)
     else:
         label(f'★ {progress.stars} / 18 星', width-35, 30, 18, WHITE, right=True)
-        label(f'{progress.credits} 积分', width-35, 58, 18, WHITE, right=True)
     return width, margin, fill, label, image, button
 
 
-def board(panel, progress):
-    width, left, fill, label, image, button = canvas(panel, progress, '生涯赛事')
-    span = width-2*left
-    fill(left, 122, span, 706)
-    label('生涯赛事', left+24, 187, 45, bold=True)
-    label('提高星级，解锁下一段海岸旅程。', left+25, 226, 21, GRAY)
-    cell = (span-48)/3
-    for i, title in enumerate(CHAPTERS):
-        x, locked = left+24+i*cell, progress.stars < (0, 5, 9)[i]
-        fill(x, 247, 52, 38, (.67, .69, .73, 1) if locked else ORANGE)
-        label(f'{i+1:02}', x+10, 275, 24, WHITE, bold=True)
-        label(title, x+65, 274, 23, GRAY if locked else INK, bold=True)
-        if i:
-            label(f'{(0, 5, 9)[i]}星解锁', x+65, 300, 17, GRAY)
-    gap, card_w = 18, (span-48-36)/3
-    next_event = progress.recommended()
-    for index, event in enumerate(EVENTS):
-        x, y = left+24+(index % 3)*(card_w+gap), 320+(index//3)*246
-        edge = fill(x-3, y-3, card_w+6, 238, (0, 0, 0, 0))
-        button('', x, y, card_w, 232, 'brief', event.id, role='event-card')
-        panel.card_edges[len(panel.buttons)-1] = edge
-        unlocked = progress.available(event)
-        image('career/'+event.id+'.png', x, y, card_w, 232, crop=True,
-              tint=WHITE if unlocked else (.47, .50, .54, 1))
-        fill(x, y+146, card_w, 86, DARK, 0)
-        fill(x+12, y+12, min(168, card_w-24), 29, DARK)
-        label(f'{event.chapter+1:02}  {CHAPTERS[event.chapter]}', x+22, y+34, 17, WHITE)
-        if event.id == next_event.id:
-            fill(x+card_w-70, y+12, 58, 29, ORANGE)
-            label('推荐', x+card_w-62, y+34, 17, WHITE, bold=True)
-        label(event.name, x+17, y+181, 28 if width > 1400 else 25, WHITE, bold=True)
-        label(f'{event.distance:g} 米', x+17, y+215, 21, WHITE)
-        record = progress.course_record(event)
-        stars = 0 if record is None else record['stars']
-        label('★'*stars+'☆'*(3-stars) if unlocked else f'还需{event.unlock-progress.stars}星',
-              x+card_w-16, y+215, 22, GOLD if unlocked else WHITE, right=True)
+def board(panel, progress, *, chapter=None, event=None):
+    from challenge_catalog import ROAD_CHALLENGES
+
+    recommended = progress.recommended()
+    if chapter is None:
+        chapter = (event or recommended).chapter
+    events = tuple(item for item in BOARD_EVENTS.values() if item.chapter == chapter)
+    event = event or (recommended if recommended in events else events[0])
+    width, left, fill, label, image, button = canvas(panel, progress, '生涯赛季', season=True)
+    listing = width*.38
+    right, preview_width = left+listing+24, width-2*left-listing-24
+    label('海岸生涯', left, 154, 48, bold=True)
+    tab_width = listing/len(CHAPTERS)
+    for index, title in enumerate(CHAPTERS):
+        x = left+index*tab_width
+        button(title, x, 198, tab_width, 56, 'board-chapter', index,
+               role='setup-active' if index == chapter else 'plain')
+        if index == chapter:
+            fill(x, 252, tab_width, 5, ORANGE, 0)
+    fill(left, 257, listing, 1, LINE, 0)
+
+    rows = {}
+    stars = progress.stars
+    for index, item in enumerate(events):
+        y = 298+index*86
+        fill(left, y, listing, 1, LINE, 0)
+        background = fill(left, y+1, listing, 85, WHITE, 0)
+        edge = fill(left, y+1, 6, 85, ORANGE, 0)
+        button('', left, y, listing, 86, 'brief', item.id, role='event-card')
+        rows[item.id] = background, edge, len(panel.buttons)-1
+        label(item.name, left+20, y+54, 29, bold=True)
+        if stars < item.unlock:
+            status = f'还需 {item.unlock-stars} 星'
+        elif isinstance(item, ClubEvent):
+            record = item.best(panel.vehicle_view.base.session)
+            status = f'{record["medal"] or "完赛"} · {record["seconds"]:.2f} s' if record else '未完成'
+        else:
+            status = '未完成'
+            record = progress.course_record(item)
+            if record is not None:
+                medal = ('', '铜', '银', '金')[record['stars']]
+                historic = '历史 · ' if item.id not in progress.budget_records else ''
+                status = f'{historic}{medal} · {record["seconds"]:.2f} s'
+        label(status, left+listing-20, y+54, 23, GRAY, right=True)
+    fill(left, 298+len(events)*86, listing, 1, LINE, 0)
     if progress.notice:
-        label(progress.notice, left+24, 849, 16, WHITE, wrap=span-48)
-    label('Enter  查看赛事    Esc  主菜单', left, 911, 20, WHITE)
-    button('车库改装', width-left-440, 877, 180, 52, 'garage', role='secondary')
-    button('继续：'+next_event.name, width-left-240, 877, 240, 52, 'brief', next_event.id,
-           role='primary', primary=True)
-    panel.select(panel.primary)
+        label(progress.notice, left, 795, 18, GRAY, wrap=listing)
+
+    photo_name = event.photo if isinstance(event, ClubEvent) else event.id+'.png'
+    photo = image('career/'+photo_name, right, 107, preview_width, 409, crop=True)
+    title = label('', right+22, 580, 46, bold=True)
+    goal = label('', right+22, 623, 25, wrap=preview_width-44)
+    route_root = panel.content.attachNewNode('career-board-route')
+    start_label = label('起点', right+58, 724, 21, GRAY)
+    end_label = label('', right+preview_width-57, 724, 21, GRAY, right=True)
+    fill(right, 749, preview_width, 1, LINE, 0)
+    car = label('', right+22, 797, 23, bold=True)
+    requirement = label('', width-left-20, 797, 21, GRAY, right=True)
+    button('返回', left, 866, 104, 56, 'exit', role='footer')
+    button('车库', left+118, 866, 104, 56, 'garage', role='footer')
+    button('赛段追时' if stars >= 5 else '追时 · 需 5 星', left+240, 866, 198, 56,
+           'chase-menu', role='footer', enabled=stars >= 5)
+    button('自选车综合杯' if stars >= 9 else '综合杯 · 需 9 星', left+448, 866, 212, 56,
+           'cup-menu', role='footer', enabled=stars >= 9)
+    details = button('赛事简报', width-left-250, 864, 250, 60, 'brief', event.id,
+                     role='primary', primary=True)
+
+    def preview(item):
+        panel.board_event = item
+        for event_id, (background, edge, _) in rows.items():
+            if event_id == item.id:
+                background.setColor(1, .91, .85, 1)
+                background.show()
+                edge.show()
+            else:
+                background.hide()
+                edge.hide()
+        photo['frameTexture'] = panel.photos[item.id]
+        title.setText(item.name)
+        goal.setText(item.goal)
+        spec = ROAD_CHALLENGES[item.id]
+        car.setText('指定车辆 · '+next(car.name for car in GARAGE_CARS if car.design_id == spec.design_id))
+        if stars < item.unlock:
+            condition = f'{item.unlock} 星解锁'
+        elif spec.assessment == 'lower':
+            condition = '  /  '.join(f'{medal} {value:g} m' for medal, value in
+                                      zip(('铜', '银', '金'), spec.metric_limits, strict=True))
+        elif spec.assessment == 'career-slalom':
+            condition = f'{len(item.gates)} 道门'
+        else:
+            condition = f'{item.distance:g} m  /  预算 {spec.budget}'
+        requirement.setText(condition)
+        details['extraArgs'] = ['brief', item.id]
+        if item.shape in COURSES or isinstance(item, ClubEvent):
+            start_label.hide()
+            end_label.hide()
+        else:
+            start_label.show()
+            end_label.show()
+            end_label.setText('停车区' if item.kind == 'parking' else '终点')
+        board_route(route_root, item, width, right, preview_width)
+
+    panel.board_preview = preview
+    preview(event)
+    panel.select(rows[event.id][2])
+
+
+def board_route(root, event, width, left, span, *, center=681):
+    """用关卡几何绘制预览路径。"""
+    root.getChildren().detach()
+    points = ()
+    if event.shape in COURSES:
+        points = CareerCourse(event.shape, event.seed).points[::3]
+    elif isinstance(event, ClubEvent):
+        curve = HighwayCurve(event.seed, hills=True)
+        points = tuple(curve.sample(8+distance) for distance in range(0, int(event.distance)+1, 12))
+    if points:
+        min_x, max_x = min(point.y for point in points), max(point.y for point in points)
+        min_y, max_y = min(point.x for point in points), max(point.x for point in points)
+        scale = min((span-100)/max(1, max_x-min_x), 70/max(1, max_y-min_y))
+        positions = [(left+span/2+(point.y-(min_x+max_x)/2)*scale,
+                      center+(point.x-(min_y+max_y)/2)*scale) for point in points]
+    else:
+        positions = [(left+80, center), (left+span-80, center)]
+    unit = 2/941
+    line = LineSegs('career-board-outline')
+    line.setThickness(3)
+    line.setColor(.38, .41, .45, 1)
+    for index, (x, y) in enumerate(positions):
+        point = ((x-width/2)*unit, 0, 1-y*unit)
+        line.moveTo(*point) if index == 0 else line.drawTo(*point)
+    root.attachNewNode(line.create())
+    markers = LineSegs('career-board-endpoints')
+    markers.setColor(*ORANGE)
+    markers.setThickness(7)
+    for x, y in (positions[0], positions[-1]):
+        markers.moveTo((x-width/2-3)*unit, 0, 1-y*unit)
+        markers.drawTo((x-width/2+3)*unit, 0, 1-y*unit)
+    root.attachNewNode(markers.create())
 
 
 def brief(panel, progress, event):
-    width, left, fill, label, image, button = canvas(panel, progress, '赛前简报')
-    span, gap = width-2*left, 22
-    right_w = span*.33
-    photo_w, right = span-right_w-gap, width-left-right_w
-    image('career/'+event.id+'.png', left, 122, photo_w, 550, crop=True)
-    if event.shape in COURSES:
-        course_map(panel, event, fill, label, left, 122, photo_w, 406)
-    fill(left, 528, photo_w, 144, DARK, 0)
-    label(f'{event.chapter+1:02}  /  {CHAPTERS[event.chapter]}', left+30, 573, 24, ORANGE, bold=True)
-    label(event.name, left+30, 639, 52, WHITE, bold=True)
-    fill(left, 672, photo_w, 156)
-    label('比赛信息', left+26, 718, 29, bold=True)
-    label(f'{event.distance:g}米   /   静止起步   /   {event.limit:g}秒时限', left+26, 754, 23, GRAY)
-    label(event.tip, left+26, 795, 21 if width > 1400 else 19, GRAY, wrap=photo_w-52)
-    fill(right, 122, right_w, 706)
-    label('星级目标', right+30, 187, 40, bold=True)
-    for index, target in enumerate(event.targets):
-        y = 260+index*111
-        label('★', right+26, y+12, 48, GOLD)
-        label(str(index+1), right+44, y+2, 19, INK, bold=True)
-        label(target, right+95, y, 25 if width > 1400 else 23, wrap=right_w-121)
-        fill(right+28, y+57, right_w-56, 1, LINE, 0)
-    label('奖励', right+30, 603, 34, bold=True)
-    label('每提高1星', right+30, 646, 21, GRAY)
-    label(f'+{event.reward} 积分', right+right_w-28, 695, 34, ORANGE, bold=True, right=True)
-    fill(right+28, 716, right_w-56, 1, LINE, 0)
-    record = progress.course_record(event)
-    stars = 0 if record is None else record['stars']
-    label('最佳成绩', right+30, 751, 20, GRAY)
-    label('★'*stars+'☆'*(3-stars), right+right_w-28, 751, 27, GOLD, right=True)
-    label('碰撞、复位或驶离赛道\n会结束本场。', right+30, 793, 18, GRAY, wrap=right_w-60)
-    label('Esc  返回赛事', left, 911, 21, WHITE)
-    button('车库改装', width-left-440, 877, 200, 52, 'garage', role='secondary')
+    from challenge_catalog import ROAD_CHALLENGES
+
+    spec = ROAD_CHALLENGES[event.id]
+    club = isinstance(event, ClubEvent)
+    width, left, fill, label, image, button = canvas(panel, progress, '赛前简报', season=True)
+    span = width-2*left
+    photo_width = span*.62
+    right = left+photo_width+38
+    columns = width-left-right
+    image('career/'+(event.photo if club else event.id+'.png'), left, 115, photo_width, 546, crop=True)
+    route = panel.content.attachNewNode('career-brief-route')
+    board_route(route, event, width, left, photo_width, center=726)
+    if event.shape not in COURSES and not club:
+        label('起点', left+58, 770, 22, GRAY)
+    end = '停车区' if not club and event.kind == 'parking' else '终点'
+    label(f'{end} {event.distance:g} m', left+photo_width-20, 770, 22, GRAY, right=True)
+    label(event.tip, left, 821, 21, GRAY, wrap=photo_width)
+
+    label(event.name, right, 172, 48, bold=True)
+    label(event.goal, right, 234, 25, wrap=columns)
+    car = next(car for car in GARAGE_CARS if car.design_id == spec.design_id)
+    label('指定车辆 · '+car.name, right, 318, 26, bold=True)
+    if spec.assessment == 'road':
+        targets = [f'≤ {target.seconds:g} s  /  ≤ {target.consumption:g} L/100km' for target in spec.targets]
+    elif spec.assessment == 'lower':
+        targets = [f'≤ {limit:g} m' for limit in spec.metric_limits]
+    else:
+        targets = event.targets
+    for index, (medal, target) in enumerate(zip(('铜', '银', '金'), targets, strict=True)):
+        y = 358+index*74
+        fill(right, y, columns, 1, LINE, 0)
+        label(medal, right+12, y+51, 28, ((.53, .32, .15, 1), GRAY, (.62, .39, .08, 1))[index], bold=True)
+        label(target, right+70, y+51, 25 if width > 1400 else 22, wrap=columns-70)
+    fill(right, 580, columns, 1, LINE, 0)
+    label(event.rules if club else '碰撞、复位或驶离赛道会结束本场。', right, 643, 23, GRAY, wrap=columns)
+    label(f'预算 {spec.budget}', right, 746, 29, bold=True)
+    if club:
+        record = event.best(panel.vehicle_view.base.session) if progress.available(event) else None
+    else:
+        record = progress.course_record(event)
+    if record is not None:
+        medal = (record['medal'] or '完赛') if club else ('', '铜', '银', '金')[record['stars']]
+        title = '历史成绩' if not club and event.id not in progress.budget_records else '最佳成绩'
+        label(f'{title} · {medal} / {record["seconds"]:.2f} s', right, 793, 21, GRAY)
+
     available = progress.available(event)
-    button('开始比赛' if available else f'需要{event.unlock}星', width-left-220, 877, 220, 52,
-           'start', event.id, role='primary', primary=True, enabled=available)
-    panel.select(panel.primary if available else len(panel.buttons)-2)
-
-
-def course_map(panel, event, fill, label, x, y, width, height):
-    """从实际路线画俯视和高程，赛前就能辨认弯型，不使用另一条路的照片。"""
-    course = CareerCourse(event.shape, event.seed)
-    points = course.points
-    fill(x, y, width, height, (.035, .08, .12, .97), 0)
-    label('赛道路线', x+24, y+42, 24, WHITE, bold=True)
-    low_x, high_x = min(p.x for p in points), max(p.x for p in points)
-    low_y, high_y = min(p.y for p in points), max(p.y for p in points)
-    scale = min((width-110)/max(1, high_x-low_x), (height-150)/max(1, high_y-low_y))
-    cx, cy = x+width/2, y+height/2-5
-    canvas_width, unit = 941*panel.vehicle_view.base.getAspectRatio(), 2/941
-    line = LineSegs('actual-career-course')
-    line.setThickness(4)
-    line.setColor(.85, .93, 1, 1)
-    projected = []
-    for p in points[::3]:
-        px, py = cx+(p.x-(low_x+high_x)/2)*scale, cy-(p.y-(low_y+high_y)/2)*scale
-        projected.append(((px-canvas_width/2)*unit, 0, 1-py*unit))
-    line.moveTo(*projected[0])
-    for position in projected[1:]:
-        line.drawTo(*position)
-    panel.content.attachNewNode(line.create())
-    low_z, high_z = min(p.z for p in points), max(p.z for p in points)
-    elevation = LineSegs('actual-career-elevation')
-    elevation.setThickness(2)
-    elevation.setColor(1, .45, .18, 1)
-    for index in range(0, len(points), 5):
-        px, py = x+30+(width-60)*index/course.length, y+height-27-(points[index].z-low_z)*.8
-        position = ((px-canvas_width/2)*unit, 0, 1-py*unit)
-        elevation.moveTo(*position) if index == 0 else elevation.drawTo(*position)
-    panel.content.attachNewNode(elevation.create())
-    label(f'{event.distance:g}米  /  高差{high_z-low_z:.0f}米', x+24, y+height-53, 19, WHITE)
+    button('返回赛事', left, 865, 166, 59, 'board', role='footer')
+    button('调整方案', width-left-460, 865, 200, 59, 'start', event.id,
+           role='secondary', enabled=available)
+    button('原车发车' if available else f'需要 {event.unlock} 星', width-left-240, 865, 240, 59,
+           'start-stock', event.id, role='primary', primary=True, enabled=available)
+    panel.select(panel.primary if available else 0)
 
 
 def result(panel, progress, race_result, award):
@@ -274,7 +376,7 @@ def result(panel, progress, race_result, award):
         if parts:
             fill(x, y, inner, 46, (.91, .92, .94, .85))
             part = next(part for part in PARTS if part.name == parts[0][3:])
-            image('garage-v2/'+PART_IMAGES[part.topic]+'.png', x+18, y+4, 38, 38)
+            image('garage-v2/'+HISTORICAL_PART_IMAGES[part.topic]+'.png', x+18, y+4, 38, 38)
             label('、'.join(name[3:] for name in parts), x+103, y+28, 17, wrap=inner-108)
         if events and not (cars or parts):
             label('赛事：'+'、'.join(events), x, 742, 21, GRAY, wrap=inner)

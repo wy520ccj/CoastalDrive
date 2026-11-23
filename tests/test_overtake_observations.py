@@ -49,8 +49,15 @@ def test_parallel_and_pull_away_readings_and_safe_boundary(tmp_path, y, kind):
     assert reading.kind == kind and reading.warning and not result.finished
     assert reading.side_m == pytest.approx(1.1)
     if kind == 'clear':
-        assert '后方' in traffic_feedback(result)[0] and '计数' not in traffic_feedback(result)[0]
+        assert f'切回前还差{END_GAP-reading.end_m:.1f}m' in traffic_feedback(result)[0]
     assert result.passes == 0
+
+
+def test_sub_decimetre_return_gap_never_displays_zero_remaining(tmp_path):
+    current = state((car(-2*CAR.collision_half_length-END_GAP+.02, 3.2),))
+    result = run(tmp_path, current).update(current, 1.)
+    assert result.traffic_reading.kind == 'clear'
+    assert '切回前还差不到0.1m' in traffic_feedback(result)[0]
 
 
 def test_readings_ignore_far_adjacent_reverse_and_inactive_and_refresh_identity(tmp_path):
@@ -71,10 +78,11 @@ def test_cross_tick_cut_across_has_real_trigger_even_when_endpoint_safe(tmp_path
     initial = state((car(0., -4.5),))
     item = run(tmp_path, initial)
     result = item.update(state((car(0., 4.5),)), .01)
-    assert result.finished and not result.succeeded and '侧距2.40' in result.reason
+    assert result.finished and not result.succeeded
     event = result.incident
     assert event.between_ticks and 0. < event.seconds < .01
     assert event.side_m < SIDE_GAP and event.end_m < END_GAP and event.kind == 'parallel'
+    assert f'并行侧距{event.side_m:.2f}m，至少1m' in result.reason
     assert '拍间触发' in result_feedback(result)[1] and '保守包络' in result_feedback(result)[1]
     assert '1m侧距' in result_feedback(result)[1]
     assert item.update(state(()), 10.) is result

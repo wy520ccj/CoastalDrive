@@ -68,7 +68,7 @@ def test_switch_requests_exit_and_cleanup_releases_world_once():
                                destroy=lambda: calls.append("window-close")),
         ignoreAll=lambda: None, design_loop=SimpleNamespace(close=lambda: None),
         road_retest=SimpleNamespace(close=lambda: calls.append("retest-stop")),
-        workshop=SimpleNamespace(hide=lambda: calls.append("workshop-stop")),
+        workshop=SimpleNamespace(close=lambda: calls.append("workshop-stop")),
         schemes=SimpleNamespace(hide=lambda: calls.append("schemes-stop")),
         run_state=SimpleNamespace(close=lambda: calls.append("world-close")),
         scene=SimpleNamespace(close=lambda: calls.append("scene-close")),
@@ -89,6 +89,36 @@ def workbench(tmp_path_factory):
     app.engine.taskMgr.remove("lab-update")
     yield app
     app.close_game()
+
+
+def test_lab_environment_is_scoped_to_scene_and_shadow_tracks_on_texel_grid(workbench):
+    from panda3d.core import Vec3
+
+    from rendering import ScenePipeline
+
+    app = workbench
+    scene = app.scene
+    assert isinstance(app.pipeline, ScenePipeline)
+    texture = scene.environment.filtered_env_map
+    assert scene.root.getShaderInput('filtered_env_map').getTexture() == texture
+    for node in (scene.vehicle, *scene.wheels):
+        assert node.getShaderInput('filtered_env_map').getTexture() == texture
+    # 窗口关闭后仍复用主渲染器，实验环境不能写到共享render上。
+    assert app.engine.render.getShaderInput('filtered_env_map').getTexture() != texture
+    original = scene.vehicle.getPos()
+    try:
+        for distance in (0, .001, .02):
+            scene.vehicle.setPos(original+Vec3(distance, 0, 0))
+            scene.frame_vehicle()
+            light = scene.light
+            position = light.getQuat().conjugate().xform(light.getPos())
+            lens = light.node().getLens()
+            size = light.node().getShadowBufferSize()
+            for axis, step in ((0, lens.getFilmSize().x/size.x), (2, lens.getFilmSize().y/size.y)):
+                assert abs(position[axis]/step-round(position[axis]/step)) < .002
+    finally:
+        scene.vehicle.setPos(original)
+        scene.frame_vehicle()
 
 
 def test_shortcuts_use_actual_mouse_focus_and_ignore_hidden_entries(workbench):

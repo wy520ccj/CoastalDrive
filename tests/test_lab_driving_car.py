@@ -115,31 +115,30 @@ def test_empty_trial_can_prepare_different_design_without_default_override(app):
     assert lab.read_options().vehicle_id == 'reference-fwd'
 
 
-def test_actual_game_tuning_stages_new_car_after_old_workspace_return(app):
+def test_budget_candidate_stages_new_config_after_old_workspace_return(app):
+    from challenge_catalog import ROAD_CHALLENGES
+
     lab = app.lab
     old = trial(lab)
     lab.pin_baseline()
     lab.entries['cg'].enterText('.47')
     lab.back_to_game()
     finish(app, 'game')
-    app.back_to_menu()
+    original = app.workspace_vehicle
+    original.save(app.workspace_path)
+    before = app.workspace_path.read_bytes()
     app.choose_slalom_lesson(GameMode.FAST_SLALOM)
     app.open_tire_tuning()
-    app.tire_tuning.activate(3)
-    app.tire_tuning.activate(4)
-    fitted = app.workspace_vehicle
-    before_file = app.workspace_path.read_bytes()
-    app.back_from_tire_tuning()
-    app.start_slalom_lesson()
-    app.open_vehicle_lab()
+    app.challenge_action('challenge-value', ('front_tire', '65'))
+    draft = app.budget_drafts[GameMode.FAST_SLALOM]
+    app.challenge_action('challenge-lab')
     finish(app, 'lab')
     lab = app.lab
-    assert lab.engineered_config.lateral_stiffness == 35000.
-    lab.stage_driving_vehicle()
-    assert lab.engineered_config == fitted.config and lab.record.snapshots == old.snapshots
-    assert lab.baseline.snapshots == old.snapshots and lab.entries['cg'].get() == ''
-    assert app.workspace_path.read_bytes() == before_file
+    expected = ROAD_CHALLENGES[GameMode.FAST_SLALOM].configuration(draft)
+    assert lab.engineered_config == expected
+    assert lab.record.snapshots == old.snapshots and lab.baseline.snapshots == old.snapshots
+    assert lab.entries['cg'].get() == '' and app.workspace_path.read_bytes() == before
     lab.back_to_game()
     finish(app, 'game')
-    assert app.workspace_vehicle == fitted and app.session.mode == GameMode.FAST_SLALOM
-    assert asdict(app.lab_workspace.config) == asdict(fitted.config)
+    assert app.workspace_vehicle == original and app.session.mode == GameMode.FAST_SLALOM
+    assert asdict(app.lab_workspace.config) == asdict(expected)

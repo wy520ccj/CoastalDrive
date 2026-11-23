@@ -30,10 +30,10 @@ class WorkshopGarage:
         self.hardware = text('', -1.52, .40, .033, MUTED)
         self.hardware.textNode.setWordwrap(28)
         rounded_panel(self.root, 'parts-tray', (-1.68, 1.68, -.76, -.25), SURFACE, .04)
-        text('从一个零件开始', -1.53, -.35, .043)
-        text('选零件  →  安装  →  去试车', -1.53, -.89, .033, MUTED)
+        text('准备本场方案', -1.53, -.35, .043)
+        text('选挑战  →  调参数  →  去试车', -1.53, -.89, .033, MUTED)
         self.buttons, self.button_surfaces = [], []
-        labels = ('前轮配方', '制动分配', '试车', '方案', '工程课题  ›', '‹  主菜单')
+        labels = ('轮胎与底盘', '制动设置', '自由试车', '方案', '参考试验  ›', '‹  主菜单')
         positions = ((-.83, -.53), (.30, -.53), (.90, .88), (1.31, .88), (1.20, -.58), (-1.32, .75))
         for index, (label, (x, z)) in enumerate(zip(labels, positions, strict=True)):
             width, height = ((1.04, .29) if index < 2 else (.34, .10) if index < 4 else (.64, .10))
@@ -52,7 +52,7 @@ class WorkshopGarage:
             self.button_surfaces.append(surface)
             if index < 2:
                 part_icon(button, -.34, 0, brakes=index == 1, scale=.65)
-                OnscreenText(parent=button, text='转向响应' if index == 0 else '前后轮制动力',
+                OnscreenText(parent=button, text='本关预算改装',
                     font=font, fg=MUTED, align=TextNode.ACenter, pos=(.07, -.077), scale=.029)
         text('完整车辆设置', .91, -.70, .026, MUTED)
         self.root.hide()

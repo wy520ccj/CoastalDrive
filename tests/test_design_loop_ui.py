@@ -223,7 +223,7 @@ def test_driving_and_pause_provide_direct_return_button(tmp_path, monkeypatch):
         app.refresh_panel()
         last_button = app.buttons[app.panel_option_count-1]
         assert last_button.getZ()+last_button["frameSize"][2] >= app.panel["frameSize"][2]
-        index = [button["text"] for button in app.buttons[:app.panel_option_count]].index("返回实验台")
+        index = [button["text"] for button in app.buttons[:app.panel_option_count]].index("专家试验台")
         app.buttons[index]["command"]()
         assert app.next_workspace == "lab"
         pending = app._workspace_steps

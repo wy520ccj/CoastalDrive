@@ -3,8 +3,14 @@
 import pytest
 
 from race import BestTimes, GameMode
+from sprint_routes import VALLEY_BRAKING_VERSION
 from sprint_run import SprintRun
-from ui.sprint_feedback import driving_feedback, result_columns, result_feedback
+from ui.sprint_feedback import (
+    driving_feedback,
+    result_columns,
+    result_feedback,
+    valley_braking_feedback,
+)
 from vehicle_config import CAR
 
 
@@ -24,12 +30,16 @@ def enter(item):
 
 def test_accelerate_slow_hold_then_accelerate_again_saves_complete_valid_best(tmp_path):
     item = run(tmp_path)
-    assert '首门至少60' in driving_feedback(item.snapshot)[1]
-    assert enter(item).gates == 2
-    assert '限速带35–50' in driving_feedback(item.snapshot)[1]
+    assert '测速门250m · ≥60km/h' in driving_feedback(item.snapshot)[1]
+    update(item, 250., 75., 15.)
+    assert '距限速带150m · 入带35–50km/h' in driving_feedback(item.snapshot)[1]
+    update(item, 390., 42., 24.)
+    assert update(item, 400., 42., 25.).gates == 2
+    assert '限速35–50 · 42.0km/h · 出口250m' in driving_feedback(item.snapshot)[1]
     update(item, 500., 43., 34.)
     state = update(item, 650., 41., 47.)
     assert state.gates == 3 and state.zone_min_kph == 41. and state.zone_max_kph == 43.
+    assert '出口0m' in driving_feedback(state)[1]
     update(item, 660., 55., 48.)
     assert '重新加速' in driving_feedback(item.snapshot)[1]
     state = update(item, 1000., 90., 65.)
@@ -39,6 +49,45 @@ def test_accelerate_slow_hold_then_accelerate_again_saves_complete_valid_best(tm
     assert '75.0' in result_columns(state)[2]
     restored = run(tmp_path).snapshot
     assert restored.best_seconds == 65. and restored.reference_times == state.gate_times
+
+
+def test_budget_braking_gate_enforces_speed_and_keeps_speed_zone_limits(tmp_path):
+    def budget_run():
+        return SprintRun(8., GameMode.VALLEY_PACE, BestTimes(tmp_path/'best.json'), 'hardware-A', CAR,
+                         record_scores=False, rules_version=VALLEY_BRAKING_VERSION)
+
+    item = budget_run()
+    assert '测速门375m · ≥80km/h' in driving_feedback(item.snapshot)[1]
+    too_slow = update(item, 375., 79.99, 20.)
+    assert too_slow.finished and not too_slow.succeeded and '375米门至少80' in too_slow.reason
+    item = budget_run()
+    assert update(item, 375., 80., 20.).gates == 1
+    assert '距限速带25m' in driving_feedback(item.snapshot)[1]
+    assert update(item, 400., 50., 22.).gates == 2
+    update(item, 650., 35., 45.)
+    assert update(item, 1000., 80., 62.).succeeded
+    over = budget_run()
+    update(over, 375., 85., 20.)
+    assert '超过50' in update(over, 400., 50.01, 22.).reason
+    assert not (tmp_path/'best.json').exists()
+
+
+@pytest.mark.parametrize('entry, hint', [(45., ''), (52., '过测速门后尽快加大制动')])
+def test_budget_braking_feedback_uses_only_window_and_reports_failed_entry(tmp_path, entry, hint):
+    item = SprintRun(8., GameMode.VALLEY_PACE, BestTimes(tmp_path/'best.json'), 'hardware-A', CAR,
+                     record_scores=False, rules_version=VALLEY_BRAKING_VERSION)
+    item.update(378., 18., lateral=0., heading=0., forward_speed=90./3.6, brake_request=0.)
+    item.update(388., 20., lateral=0., heading=0., forward_speed=82./3.6, brake_request=1.)
+    state = item.update(408., 22., lateral=0., heading=0., forward_speed=entry/3.6, brake_request=.25)
+    assert state.braking_request == pytest.approx(.5)
+    assert state.zone_entry_kph == pytest.approx(entry)
+    assert state.finished is bool(hint)
+    if not state.finished:
+        state = item.update(658., 45., lateral=0., heading=0., forward_speed=42./3.6, brake_request=0.)
+        assert state.braking_request == pytest.approx(.5)
+    labels, actual_hint = valley_braking_feedback(state)
+    assert labels[:3] == ('测速 86.0km/h', '平均踏板 50%', f'入带 {entry:.1f}km/h')
+    assert actual_hint == hint
 
 
 @pytest.mark.parametrize('kph,kind', [(34.999, '低于35'), (50.001, '超过50'), (0., '低于35'), (-20., '低于35')])

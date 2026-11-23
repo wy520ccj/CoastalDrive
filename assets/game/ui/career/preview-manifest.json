@@ -35,7 +35,7 @@
     {
       "event": "coast-sprint",
       "image": "coast-sprint.png",
-      "sha256": "de6ef72c02a547262abb12c7a6aff041394256a07aaf8783be6b45bc25e945ce",
+      "sha256": "23eddc69b0965ab4aa9688fd3890c526226341b17af7d924177247bc07818933",
       "initialisation_ticks": 132,
       "driving_steps": 0,
       "tick": 132,
@@ -45,17 +45,17 @@
     {
       "event": "ridge-run",
       "image": "ridge-run.png",
-      "sha256": "efe9a13377b3c3664d47c55acfebe3b7a92a721906dc842bf66e46a55301b46f",
-      "initialisation_ticks": 132,
+      "sha256": "8d97e5250614715e2522d02012f4f3d4e27dd4b60e714a6506ac05accfffc76e",
+      "initialisation_ticks": 152,
       "driving_steps": 0,
-      "tick": 132,
+      "tick": 152,
       "design_id": "game-tuned",
       "visual": "sports"
     },
     {
       "event": "coastal-cup",
       "image": "coastal-cup.png",
-      "sha256": "35d7f40c4af43852a44cd1c3a6d519dbd399a02baaa43d03587d22a8ec966c53",
+      "sha256": "5267da6345c8cddef491606fd8d2f2ef7fe0bc3348ef48de235a17d25aec9940",
       "initialisation_ticks": 132,
       "driving_steps": 0,
       "tick": 132,
