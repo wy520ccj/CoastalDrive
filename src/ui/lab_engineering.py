@@ -60,8 +60,14 @@ class EngineeringPanel:
             self.group_menu.set(1 if group=="乘坐 / 接地" else 0, fCommand=0)
             items = analysis["ride"]["metrics"] if group=="乘坐 / 接地" else analysis["metrics"]
             previous_items = (old["ride"]["metrics"] if group=="乘坐 / 接地" else old["metrics"]) if old else None
+            from lab_application import control_mode_label
+
+            a_tag = control_mode_label(baseline.metadata["summary"]["options"]) if baseline is not None else None
+            b_tag = control_mode_label(summary["options"])
+            compare_text = (f"A {a_tag or '基线'} / B {b_tag or '当前'}" if old
+                            else f"当前记录{f' · {b_tag}' if b_tag else ''}")
             self.basis.setText(f"{record.metadata['vehicle_name']} · 已完成 {summary['simulation_seconds']:.3f} s · "
-                               + ("A 基线 / B 当前" if old else "当前记录"))
+                               + compare_text)
             for index, (text, item) in enumerate(zip(self.rows, items, strict=True)):
                 unit = "" if item["unit"] == "1" else " "+item["unit"]
                 value = f"{item['value']:.4g}{unit}" if item["value"] is not None else "— 未满足工况条件"

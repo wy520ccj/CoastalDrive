@@ -45,6 +45,25 @@ DISABLED_FIELD = (.88, .90, .88, 1)
 DISABLED_INK = (.43, .49, .49, 1)
 
 
+def control_mode_label(options):
+    """根据试验选项字典返回简洁的电子稳定控制短标；缺省键时返回 None。"""
+    if not isinstance(options, dict):
+        return None
+    if options.get("controller_mode") == "coord_abs_dyc":
+        return "ABS–DYC"
+    if "abs_enabled" not in options and "esc_enabled" not in options:
+        return None
+    abs_on = bool(options.get("abs_enabled", False))
+    esc_on = bool(options.get("esc_enabled", False))
+    if abs_on and esc_on:
+        return "ABS+ESC"
+    if abs_on:
+        return "ABS"
+    if esc_on:
+        return "ESC"
+    return "无控"
+
+
 class VehicleLab(DirectObject):
     def __init__(self, *, offscreen=False, output=None, render_size=(1280, 720), workspace_vehicle=None, lab_workspace=None, engine=None, on_back=None, activate=True, scheme_root=None, workspace_path=None):
         self.owns_window = engine is None
@@ -321,6 +340,7 @@ class VehicleLab(DirectObject):
         self.abs_menu["popupMarker_state"] = state
         self.abs_menu["text"] = "ABS 由协调控制" if coordinated else self.abs_menu.get()
         self.abs_menu["text_fg"] = DISABLED_INK if coordinated else INK
+        self.advanced_button["text"] = "高级/DYC ›" if coordinated else "高级参数 ›"
 
     def read_field(self, key, **options):
         return read_number(self.entries[key].get(), key, **options)
@@ -741,7 +761,10 @@ class VehicleLab(DirectObject):
             return
         self.notice.dismiss()
         self.baseline = record
-        self.notice.setText(f"A 已固定：μ={record.metadata['summary']['options']['friction']:.2f}；修改配置后开始 B")
+        opts = record.metadata["summary"]["options"]
+        tag = control_mode_label(opts)
+        prefix = f"{tag} · " if tag else ""
+        self.notice.setText(f"A 已固定（{prefix}μ={opts['friction']:.2f}）；修改配置后开始 B")
         self.refresh_plots()
         self.present_summary(record.metadata["summary"])
 
@@ -755,6 +778,7 @@ class VehicleLab(DirectObject):
             summary = active.metadata["summary"] if self.record is not None else active.summary()
             self.present_summary(summary)
         else:
+            self.baseline_label.setText("对照 A")
             self.baseline_value.setText("—")
             self.result.setText("固定 A 后比较")
 
@@ -776,8 +800,9 @@ class VehicleLab(DirectObject):
         self.playhead = 0.
         self.metric_label.setText("试验结果")
         self.metric.setText("—")
+        self.candidate_label.setText("本次 B")
         self.candidate_value.setText("—")
-        self.timing.setText("仿真  —\n计算  —")
+        self.timing.setText("仿真 — · 计算 —")
         self.result.setText("等待有效 B" if self.baseline is not None else "固定 A 后比较")
         self.telemetry.setText("等待真实实验信号")
         self.wheel_telemetry.setText("")
@@ -968,7 +993,12 @@ class VehicleLab(DirectObject):
         self.scene.set_trial(options, record.snapshots[0].player)
         self.model_note.setText(f"{record.metadata['vehicle_name']} · 已保存试验模型")
         self.status.setText("记录分析")
-        self.notice.setText("已载入保存的试验；回放只读取记录，点击“开始试验”可按当前配置重新运行。")
+        if baseline_path.is_dir() and baseline_error is None and self.baseline is not None:
+            a_tag = control_mode_label(self.baseline.metadata["summary"]["options"]) or "基线"
+            b_tag = control_mode_label(record.metadata["summary"]["options"]) or "当前"
+            self.notice.setText(f"已载入保存的试验与同包 A 基线（A {a_tag} / B {b_tag}）；点击“开始试验”可重跑。")
+        else:
+            self.notice.setText("已载入保存的试验；回放只读取记录，点击“开始试验”可按当前配置重新运行。")
         self.present_summary(record.metadata["summary"])
         self.refresh_plots()
         self.show_sample(0)
@@ -1022,19 +1052,29 @@ class VehicleLab(DirectObject):
         value = distance if distance is not None else summary["distance_m"]
         self.metric_label.setText("停车距离" if distance is not None else "行驶距离")
         self.metric.setText(f"{value:.2f} m")
+        b_tag = control_mode_label(summary["options"])
+        self.candidate_label.setText(f"B · {b_tag}" if b_tag else "本次 B")
         self.candidate_value.setText(f"{value:.2f} m")
+        self.baseline_label.setText("对照 A")
         self.baseline_value.setText("—")
         self.result.setText("固定 A 后比较")
+        self.result.setFg(MUTED)
         if self.baseline is not None:
             old_summary = self.baseline.metadata["summary"]
             old = old_summary["stopping_distance_m"]
             old_value = old if old is not None else old_summary["distance_m"]
+            a_tag = control_mode_label(old_summary["options"])
+            self.baseline_label.setText(f"A · {a_tag}" if a_tag else "对照 A")
             self.baseline_value.setText(f"{old_value:.2f} m")
             comparable = (old_summary["options"]["maneuver"] == summary["options"]["maneuver"]
                           and (old is None) == (distance is None))
-            self.result.setText(f"Δ (B − A)   {value-old_value:+.2f} m" if comparable
-                                else "工况或距离定义不同，仅并列展示")
-        self.timing.setText(f"仿真  {summary['simulation_seconds']:.2f} s\n计算  {summary['compute_seconds']:.2f} s")
+            if comparable:
+                delta = value-old_value
+                self.result.setText(f"Δ (B − A)   {delta:+.2f} m")
+                self.result.setFg(theme.SEA if distance is not None and delta < 0 else INK)
+            else:
+                self.result.setText("工况或距离定义不同，仅并列展示")
+        self.timing.setText(f"仿真 {summary['simulation_seconds']:.2f} s · 计算 {summary['compute_seconds']:.2f} s")
 
     def update(self, task):
         self.resize()

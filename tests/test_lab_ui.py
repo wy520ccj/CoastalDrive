@@ -513,3 +513,25 @@ def test_ab_only_subtracts_matching_maneuver_and_distance_definition(workbench):
     app.present_summary({**summary, "options": {"maneuver": "split_braking"}})
     assert "仅并列展示" in app.result.getText()
     app.baseline = baseline
+
+
+def test_coordinated_abs_dyc_control_updates_main_indicator_and_ab_labels(workbench):
+    app = workbench
+    app.set_options(LabOptions(controller_mode="coord_abs_dyc", abs_enabled=False, esc_enabled=False))
+    assert app.abs_menu["text"] == "ABS 由协调控制"
+    assert app.advanced_button["text"] == "高级/DYC ›"
+    summary_a = {"stopping_distance_m": 38.3, "distance_m": 38.3, "simulation_seconds": 6.5,
+                 "compute_seconds": 3.5, "options": {"maneuver": "cornering_braking",
+                 "controller_mode": "native", "abs_enabled": True, "esc_enabled": True}}
+    summary_b = {**summary_a, "stopping_distance_m": 32.7, "options": {
+                 "maneuver": "cornering_braking", "controller_mode": "coord_abs_dyc",
+                 "abs_enabled": False, "esc_enabled": False}}
+    baseline = app.baseline
+    app.baseline = SimpleNamespace(metadata={"summary": summary_a})
+    app.present_summary(summary_b)
+    assert app.baseline_label.getText() == "A · ABS+ESC"
+    assert app.candidate_label.getText() == "B · ABS–DYC"
+    assert "\n" not in app.timing.getText()
+    app.baseline = baseline
+    app.set_options(LabOptions())
+    assert app.advanced_button["text"] == "高级参数 ›"

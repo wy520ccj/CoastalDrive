@@ -4,10 +4,10 @@
 
 ## 当前恢复路线与协作方式
 
-项目于 2026-11-23 重启正轨，采用**主控规划/前端视觉（Gemini）+ 后端微工单（本机 Codex 6.2solhigh，白名单 + 单一验收命令 + 两轮熔断）**单条施工线推进：
-1. **阶段 0（本轮）**：拆分本地安全提交、归档瘦身进度页、修正过期 T2 状态。
-2. **阶段 1（当前下一步）**：`LAB-M3` 试验台宿主闭环验收 + 试验台前端工作台精修。
-3. **阶段 2**：定位并修复第一季 `r3` 的 T2 阻断项，拿回完整 T2 绿灯。
+项目于 2026-11-23 重启正轨，按单条施工线顺序推进（每阶段独立验收并本地提交）：
+1. **阶段 0（已完成）**：拆分本地安全提交、归档瘦身进度页、修正过期 T2 状态。
+2. **阶段 1（已完成）**：`LAB-M3` 试验台宿主闭环验收 + 试验台前端工作台精修。
+3. **阶段 2（当前推进）**：定位并修复第一季 `r3` 的 T2 阻断项，拿回完整 T2 绿灯。
 4. **阶段 3**：第一季前端/UI 精修 + 玩家人工试玩闭环，收官 `CAREER-SEASON-01`。
 5. **阶段 4**：定向攻克高速撞后物理积压与最显眼视觉硬伤（山体 UV 误平铺、木本阴影代理与近景融洽度）。
 
@@ -23,7 +23,7 @@
 
 | 任务包 | 状态 | 最新核实事实 | 当前待办 / 阻断 |
 | --- | --- | --- | --- |
-| [LAB-M3](tasks/LAB-M3.md) | `in_progress` | 2026-11-23 试验台已接入课程 ABS–DYC 协调模式与原生 A/B 记录包载入（改 7 个 `src/lab_*` 与 `src/ui/lab_workbench.py`）；沙盒静态检查通过；课程工作区位于 `B:\AI agent\暑期计算机程序设计\汽车理论\作业\cornering_braking_control` | 宿主单测、五工况闭环、A/B 读回（后端微工单 #1）+ 试验台前端交互精修与实机启动 |
+| [LAB-M3](tasks/LAB-M3.md) | `done`（人工桌面随时复核） | 2026-11-23 宿主闭环与前端精修全部通过：课程单测 12 passed、五工况闭环及 S2 A/B 读回通过（S2 停距 38.30→32.70 m、侧偏 10.53°→3.64°）、试验台 UI 43 passed、Ruff 与 0/17/23 三种子通过，已修复结果卡压字并补齐 A/B 控制策略标识（16:9/4:3 实图核对） | 无自动阻塞；可随时经 `launchers/vehicle-lab.cmd` 桌面复核 |
 | [CAREER-SEASON-01](tasks/CAREER-SEASON-01.md) | `in_progress` | 7 项清单已完 6 项；独立候选 `builds/season-20261118-r3/app/win_amd64/coastaldrive.exe` 通过新档 9 场重放（15 星 + 综合杯 9 分）、跨进程续杯、旧版山谷读回与前台核对 | **r3 整包 T2 已实际失败**：2026-11-18 19:42 Ruff 通过，但 pytest 跑至第 418 项（417 passed）触发 `-x` 失败：`tests/test_continuous_solver.py::test_real_complete_inputs_use_native_iteration_and_reset_workspace`（index 19 `0xce != 0xd4`），后续 14+ 项 `not_run`；缺物理手柄实测与人工试玩结论 |
 | [PERF-SMOOTH-01](tasks/PERF-SMOOTH-01.md) | `in_progress` | 3.2 m 追车镜位已人工验收；1 m 加密路面、ShaderInput 复用、状态回收 0.5、分帧合批、护栏原生内核与 GIL 交接、结算预热（山脊结算首帧 364→91 ms）已落地；720p 滨海常态 P95 8.63 / 7.12 ms | 高速 12 车撞栏后 5 秒仍有 385 ms 峰值 / 304 ms 尾帧积压；加载短暂无响应、旧悬空制动失败与稳定 60 FPS / 人工流畅度 Gate 开放 |
 | [VISUAL-EXTEND-01](tasks/VISUAL-EXTEND-01.md) | `in_progress` | 试验台光照（设计 36）、滨海 8K 落日天空/动态水面/草地贴图/新版 HUD（设计 40）、流送海面时间、沿海生涯光照、城市近中景与林缘重组已落地 | 高速山体 UV 误平铺待修；城市木本阴影代理未接入；海岸近中景层次未达设计 38；全场景推广与人工画面验收开放 |
@@ -33,4 +33,4 @@
 
 - 阶段 0 本地拆分基线：在原 `15c321f5` 上按性能核心、视觉环境、预算挑战与第一季玩法、`LAB-M3` 试验台接入及文档归档整理为清晰本地提交（详见 `git log -n 6 --oneline`）。
 - 第一季 `r3` 独立候选与真实 T2 失败日志：`builds/season-20261118-r3/build-receipt.json`、`logs/season-20261118/final-candidate-T2-r3/summary.json`、`logs/season-20261118/final-candidate-T2-r3/pytest.log`。
-- 下一步执行：先投喂 **LAB-M3 后端微工单 #1** 至本机 Codex 执行宿主单测与五工况闭环，同步启动试验台前端优化。
+- 下一步执行：复现并定位 `tests/test_continuous_solver.py::test_real_complete_inputs_use_native_iteration_and_reset_workspace` 的字节差异，修复后补跑完整 T2。
