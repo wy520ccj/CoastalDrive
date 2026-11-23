@@ -8,8 +8,16 @@ from ui import theme
 from ui.lab_feedback import LabFeedback
 from ui.lab_plot import LabPlot
 from ui.lab_widgets import MUTED, rounded_panel
+from vehicle_designs import DESIGN_VEHICLES
 
 VIEWPORT = (-.88, .90, .04, .62)
+_VEHICLE_LABELS = {
+    "game-tuned": "游戏调校",
+    "reference-rwd": "参考后驱 RWD",
+    "reference-fwd": "参考前驱 FWD",
+    "reference-awd": "参考四驱 AWD",
+    "gr86-2022-premium-6mt": "GR86 Premium 6MT",
+}
 
 
 def build_workbench(app):
@@ -35,8 +43,10 @@ def build_workbench(app):
         app.text(label, x, .646, .047, font=app.heading_font)
 
     app.text("车辆模型", -1.62, .542, .032, MUTED)
-    app.vehicle_menu = app.option(["游戏调校", "参考后驱 RWD", "参考前驱 FWD", "参考四驱 AWD", "GR86 Premium 6MT"],
-                                 -1.63, .463, .60, command=app.choose_vehicle, parameter="vehicle")
+    vehicle_items = [_VEHICLE_LABELS.get(design.id, design.name.split(" · ")[0])
+                     for design in DESIGN_VEHICLES]
+    app.vehicle_menu = app.option(vehicle_items, -1.63, .463, .60,
+                                  command=app.choose_vehicle, parameter="vehicle")
     app.vehicle_menu.set(1, fCommand=0)
     app.configuration_note = app.text("车型默认 · 无独立轮心", -1.62, .392, .032, MUTED)
     app.text("试验工况", -1.62, .318, .032, MUTED)

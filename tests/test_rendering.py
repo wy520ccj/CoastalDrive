@@ -44,3 +44,19 @@ def test_camera_input_reuses_states_and_preserves_inflight_frames(monkeypatch, m
             assert pipeline._camera_positions[queued % (depth+1)][0] == positions[queued]
     assert len(updates) == 90
     assert len(states) == depth+1
+
+
+def test_camera_input_accepts_double_precision_point(monkeypatch):
+    from panda3d.core import LPoint3d, LVecBase3f
+
+    engine = SimpleNamespace(getThreadingModel=lambda: GraphicsThreadingModel('/Draw'))
+    monkeypatch.setattr(rendering, 'GraphicsEngine', SimpleNamespace(getGlobalPtr=lambda: engine))
+    root = NodePath('render')
+    camera = SimpleNamespace(getPos=lambda _node: LPoint3d(1.5, -2.5, 3.5))
+    monkeypatch.setattr(rendering.Pipeline, '__init__',
+                        lambda self, **kwargs: (setattr(self, 'render_node', root), setattr(self, 'camera_node', camera)))
+    monkeypatch.setattr(rendering.Pipeline, '_update', lambda self, task: task.DS_cont)
+    pipeline = ScenePipeline()
+    pipeline.sync_frame()
+    stored = pipeline._camera_positions[ClockObject.getGlobalClock().getFrameCount() % len(pipeline._camera_positions)][0]
+    assert stored == LVecBase3f(1.5, -2.5, 3.5)

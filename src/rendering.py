@@ -2,7 +2,7 @@
 
 from types import SimpleNamespace
 
-from panda3d.core import ClockObject, GraphicsEngine, PTALVecBase3f, ShaderInput
+from panda3d.core import ClockObject, GraphicsEngine, LVecBase3f, PTALVecBase3f, ShaderInput
 from simplepbr import Pipeline
 
 _SYNC_TASK = SimpleNamespace(DS_cont=1)
@@ -24,7 +24,9 @@ class ScenePipeline(Pipeline):
     def _update(self, task):
         result = super()._update(task)
         index = ClockObject.getGlobalClock().getFrameCount() % len(self._camera_positions)
-        self._camera_positions[index][0] = self.camera_node.getPos(self.render_node)
+        pos = self.camera_node.getPos(self.render_node)
+        # 双精度运行库返回 LPoint3d；着色器输入为单精度 vec3，显式转换以兼容全精度 SDK。
+        self._camera_positions[index][0] = LVecBase3f(pos.x, pos.y, pos.z)
         # 仍保留原库的灯光/背景更新，只替换本帧相机输入的存储身份。
         self.render_node.setShaderInput(self._camera_inputs[index])
         return result

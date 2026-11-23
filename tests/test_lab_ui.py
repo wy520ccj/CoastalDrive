@@ -535,3 +535,13 @@ def test_coordinated_abs_dyc_control_updates_main_indicator_and_ab_labels(workbe
     app.baseline = baseline
     app.set_options(LabOptions())
     assert app.advanced_button["text"] == "高级参数 ›"
+
+
+def test_vehicle_menu_covers_every_design_vehicle(workbench):
+    from vehicle_designs import DESIGN_VEHICLES
+
+    app = workbench
+    assert len(app.vehicle_menu["items"]) == len(DESIGN_VEHICLES)
+    app.set_options(LabOptions(vehicle_id=DESIGN_VEHICLES[-1].id))
+    assert app.vehicle_menu.selectedIndex == len(DESIGN_VEHICLES) - 1
+    app.set_options(LabOptions())
