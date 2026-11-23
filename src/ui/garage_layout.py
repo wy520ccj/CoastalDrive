@@ -183,18 +183,26 @@ def style(panel):
         transparent = role in ('tab', 'tab-active', 'footer', 'quiet', 'event-card')
         color = ((1, .93, .90, 1) if role == 'category-active' else (.97, .97, .98, 1))
         if role == 'primary':
-            color = (.78, .80, .83, 1) if disabled else ORANGE
-        elif role in ('secondary', 'setup-preset'):
-            color = (.18, .22, .28, .95) if focused else (.04, .055, .075, .96)
+            color = (.24, .29, .36, 1) if disabled else (theme.ORANGE_BRIGHT if focused else ORANGE)
+        elif role in ('secondary', 'setup-preset', 'season-tab-active'):
+            color = theme.SLATE_CARD_HI if focused else theme.SLATE_CARD
+        elif role == 'season-tab':
+            color = theme.SLATE_CARD if focused else (.07, .10, .14, .75)
         elif role == 'setup-active':
             color = (.055, .075, .13, 1)
         elif role in ('setup-tab', 'setup-step'):
             color = (.90, .92, .94, 1) if focused else (.97, .97, .98, 1)
         elif transparent:
-            color = (1, 1, 1, .12) if focused else (0, 0, 0, 0)
+            color = (1, 1, 1, .11) if focused else (0, 0, 0, 0)
         elif focused:
             color = (1, .87, .80, 1)
         button['geom_color'] = color
-        white_text = ('primary', 'secondary', 'tab', 'tab-active', 'footer', 'setup-active', 'setup-preset')
-        disabled_ink = (.58, .66, .74, 1) if role == 'footer' else GRAY
-        button['text_fg'] = disabled_ink if disabled else WHITE if role in white_text else INK
+        white_text = ('primary', 'secondary', 'tab', 'tab-active', 'footer',
+                      'setup-active', 'setup-preset', 'season-tab-active', 'season-tab')
+        disabled_ink = theme.TEXT_LOCKED if role in ('footer', 'primary', 'secondary') else GRAY
+        if disabled:
+            button['text_fg'] = disabled_ink
+        elif role == 'season-tab' and not focused:
+            button['text_fg'] = theme.TEXT_SUB
+        else:
+            button['text_fg'] = WHITE if role in white_text else INK
