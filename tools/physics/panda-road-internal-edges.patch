@@ -1,0 +1,115 @@
+--- a/panda/src/bullet/bulletTriangleMeshShape.h
++++ b/panda/src/bullet/bulletTriangleMeshShape.h
+@@ -36,6 +36,7 @@
+   BulletTriangleMeshShape(const BulletTriangleMeshShape &copy);
+   INLINE ~BulletTriangleMeshShape();
+ 
++  bool enable_internal_edge_adjustment();
+   void refit_tree(const LPoint3 &aabb_min, const LPoint3 &aabb_max);
+ 
+   INLINE bool is_static() const;
+--- a/panda/src/bullet/bulletTriangleMeshShape.I
++++ b/panda/src/bullet/bulletTriangleMeshShape.I
+@@ -11,6 +11,10 @@
+  * @date 2010-02-09
+  */
+ 
++#ifndef CPPPARSER
++#include "BulletCollision/CollisionShapes/btTriangleInfoMap.h"
++#endif
++
+ /**
+  *
+  */
+@@ -18,6 +22,7 @@
+ ~BulletTriangleMeshShape() {
+ 
+   if (_bvh_shape) {
++    delete _bvh_shape->getTriangleInfoMap();
+     delete _bvh_shape;
+   }
+ 
+--- a/panda/src/bullet/bulletTriangleMeshShape.cxx
++++ b/panda/src/bullet/bulletTriangleMeshShape.cxx
+@@ -17,6 +17,9 @@
+ 
+ #include "bulletTriangleMesh.h"
+ #include "bulletWorld.h"
++#ifndef CPPPARSER
++#include "BulletCollision/CollisionDispatch/btInternalEdgeUtility.h"
++#endif
+ 
+ #include "nodePathCollection.h"
+ #include "geomNode.h"
+@@ -103,8 +106,27 @@
+   } else {
+     _bvh_shape = new btBvhTriangleMeshShape(_mesh->ptr(), _compress, _bvh);
+     _bvh_shape->setUserPointer(this);
++    if (copy._bvh_shape->getTriangleInfoMap() != nullptr) {
++      btGenerateInternalEdgeInfo(_bvh_shape, new btTriangleInfoMap);
++    }
+     _gimpact_shape = nullptr;
+   }
++}
++
++/**
++ * Enables internal edge correction for this runtime BVH mesh. Its single-shape
++ * rigid body must enable collision notification to call the contact hook.
++ */
++bool BulletTriangleMeshShape::
++enable_internal_edge_adjustment() {
++  LightMutexHolder holder(BulletWorld::get_global_lock());
++  if (_bvh_shape == nullptr || _bvh_shape->getOptimizedBvh() == nullptr) {
++    return false;
++  }
++  if (_bvh_shape->getTriangleInfoMap() == nullptr) {
++    btGenerateInternalEdgeInfo(_bvh_shape, new btTriangleInfoMap);
++  }
++  return true;
+ }
+ 
+ /**
+--- a/panda/src/bullet/bulletContactCallbacks.h
++++ b/panda/src/bullet/bulletContactCallbacks.h
+@@ -19,6 +19,9 @@
+ #include "bullet_includes.h"
+ #include "bulletWorld.h"
+ #include "bulletContactCallbackData.h"
++#ifndef CPPPARSER
++#include "BulletCollision/CollisionDispatch/btInternalEdgeUtility.h"
++#endif
+ #include "config_bullet.h" // required for: bullet_cat.debug()
+ 
+ #include "event.h"
+@@ -50,6 +53,15 @@
+ #endif
+                        int id1,
+                        int index1) {
++
++#if BT_BULLET_VERSION >= 281
++  // The utility expects the mesh on manifold side B and a BVH root shape.
++  // Meshes with no edge map keep their original contacts.
++  if (wrap1->getCollisionShape()->getShapeType() == TRIANGLE_SHAPE_PROXYTYPE &&
++      wrap1->getCollisionObject()->getCollisionShape()->getShapeType() == TRIANGLE_MESH_SHAPE_PROXYTYPE) {
++    btAdjustInternalEdgeContacts(cp, wrap1, wrap0, id1, index1);
++  }
++#endif
+ 
+   if (cp.m_userPersistentData == nullptr) {
+ 
+--- a/panda/src/bullet/bulletTriangleMesh.cxx
++++ b/panda/src/bullet/bulletTriangleMesh.cxx
+@@ -476,10 +476,11 @@
+ fillin(DatagramIterator &scan, BamReader *manager) {
+   set_welding_distance(scan.get_stdfloat());
+ 
+-  nassertv(scan.get_int32() == 1);
++  // Read the BAM fields even in builds where ordinary assertions are disabled.
++  nassertv_always(scan.get_int32() == 1);
+   int num_vertices = scan.get_int32();
+   int num_triangles = scan.get_int32();
+-  nassertv(scan.get_bool() == true);
++  nassertv_always(scan.get_bool() == true);
+ 
+   btIndexedMesh &mesh = _mesh.getIndexedMeshArray()[0];
+   mesh.m_numVertices = num_vertices;

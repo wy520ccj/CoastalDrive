@@ -188,7 +188,8 @@ def test_first_substep_impact_survives_contact_ending_before_final_substep(monke
         sim.player._chassis.setLinearVelocity(Vec3(30, 0, 0))
         sim.step(VehicleCommand(gear=0))
         state = sim.snapshot()
-        assert calls == [1, 1]
+        # 撞击预测已把整拍分为四步；接触消失后仍需保留第一次真实撞击。
+        assert calls == [1, 1, 1, 1]
         assert len(state.impacts) == 1
         assert state.impacts[0].raw_impulse > 0.
         assert state.impacts[0].tick == 1

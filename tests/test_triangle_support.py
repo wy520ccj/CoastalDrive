@@ -202,7 +202,8 @@ def test_end_pose_queries_adjacent_world_segment_and_its_actual_height(height):
         count = world.getNumRigidBodies()
         plane = system.kinematics[0]
         point = plane.surface.local(plane.hub)
-        assert point[1] == pytest.approx(-.5, abs=2e-7)
+        # Panda单精度变换可保留约2.4e-7米的初始位置舍入。
+        assert point[1] == pytest.approx(-.5, abs=2**-22)
         endpoint = finite_contact_system(system, (0., 10., 0.), (0., 0., 0.), .1)
         assert endpoint.touching[0]
         delta_length = .1 * sum(g*v for g,v in zip(endpoint.gradients[0], (0.,10.,0.,0.,0.,0.)))

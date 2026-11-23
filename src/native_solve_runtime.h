@@ -1,8 +1,13 @@
 #ifndef COASTAL_NATIVE_SOLVE_RUNTIME_H
 #define COASTAL_NATIVE_SOLVE_RUNTIME_H
 #include <string.h>
-/* 纯数值区只记录原异常；恢复线程状态之后再创建Python异常。 */
-typedef struct { PyObject *type; char message[512]; } NativeSolveError;
+/* 纯数值区记录原错误；Python查询保留原异常对象，接回线程状态后向上传递。 */
+typedef struct NativeSolveError {
+    PyObject *type; char message[512];
+    PyObject *exception;
+    PyThreadState *thread_state;
+    struct NativeSolveError **owner; /* 机械模块的本线程记录；查询时两个模块同时暂停记录。 */
+} NativeSolveError;
 #ifdef _MSC_VER
 static __declspec(thread) NativeSolveError *native_solve_error;
 #else
@@ -16,7 +21,8 @@ static void native_error_set(PyObject *type,const char *message) {
     memcpy(native_solve_error->message,message,length);native_solve_error->message[length]=0;
 }
 static PyObject *native_error_occurred(void) {
-    return native_solve_error ? native_solve_error->type : PyErr_Occurred();
+    return native_solve_error ? (native_solve_error->exception ? (PyObject *)Py_TYPE(native_solve_error->exception)
+                                : native_solve_error->type) : PyErr_Occurred();
 }
 static PyObject *native_no_memory(void) {
     if(!native_solve_error)return PyErr_NoMemory();

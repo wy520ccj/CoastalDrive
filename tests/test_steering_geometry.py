@@ -7,8 +7,8 @@ import pytest
 from simulation import Simulation
 from test_track import TEST_SPAWN
 from vehicle_config import CAR
-from vehicle_state import VehicleCommand
-from vehicle_steering import wheel_angles
+from vehicle_state import FIXED_DT, VehicleCommand
+from vehicle_steering import SteeringRack, wheel_angles
 
 
 @pytest.mark.parametrize("angle", [-26, -20, -5, 5, 20, 26])
@@ -26,6 +26,18 @@ def test_front_wheel_axes_meet_on_same_rear_axle_center(angle):
 
 def test_straight_wheels_are_parallel():
     assert wheel_angles(0) == (0, 0)
+
+
+@pytest.mark.parametrize('sign', (-1., 1.))
+def test_rack_return_can_cross_radian_underflow_without_crashing(sign):
+    rack = SteeringRack()
+    rack.angle = sign
+    for _ in range(12000):
+        angle = rack.advance(0., FIXED_DT)
+        wheels = wheel_angles(angle)
+        assert all(math.isfinite(value) for value in wheels)
+    assert wheels == (0., 0.)
+    assert wheel_angles(sign*math.nextafter(0., 1.)) == (0., 0.)
 
 
 @pytest.mark.parametrize("direction", [-1, 1])

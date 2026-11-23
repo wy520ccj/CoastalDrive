@@ -1,0 +1,15 @@
+{
+  "scope": "同一轮已记录真实车身姿态/显示时间，分别重放原相机与道路纵坡相机；非另一套物理，无修改相机距离或响应常数",
+  "replay": {
+    "original": {
+      "body_relative_pitch_range_deg": 6.823698007737947,
+      "camera_pitch_range_deg": 0.3438114906897187,
+      "samples": 569
+    },
+    "road_grade": {
+      "body_relative_pitch_range_deg": 0.9614864823257445,
+      "camera_pitch_range_deg": 6.633361692128071,
+      "samples": 569
+    }
+  }
+}

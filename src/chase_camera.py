@@ -16,19 +16,24 @@ class ChaseCamera:
         self.fov = 68.0
         self.acceleration = 0.0
 
-    def update(self, car, distance, dt, *, snap=False):
+    def update(self, car, distance, dt, *, snap=False, road_grade=0., road_heading=0.):
         position = Vec3(*car.position)
-        if self.position is None or snap:
+        reset = self.position is None or snap
+        if reset:
             self.heading = car.heading
             self.distance = distance
-            self.position = position - Vec3(*forward(self.heading)) * distance + Vec3(0, 0, 4.2)
-            self.target_position = Vec3(self.position)
             self.acceleration = car.acceleration
         angle = (car.heading - self.heading + 180) % 360 - 180
         self.heading += angle * (1 - math.exp(-dt / 0.22))
         self.distance += (distance - self.distance) * (1 - math.exp(-dt / 0.22))
         direction = Vec3(*forward(self.heading))
-        desired = position - direction * self.distance + Vec3(0, 0, 4.2)
+        # 沿道路纵坡取景，悬架俯仰仍完整可见；倒车/横穿时按镜头朝向投影坡度。
+        direction.z = math.tan(math.radians(road_grade))*math.cos(math.radians(self.heading-road_heading))
+        # 略低的追车位露出后轮下缘，避免车顶和车尾暗部压成悬浮轮廓。
+        desired = position - direction * self.distance + Vec3(0, 0, 3.2)
+        if reset:
+            self.position = Vec3(desired)
+            self.target_position = Vec3(desired)
         if dt > 0:
             # 目标在两次真实显示状态间线性移动；精确积分保留原0.08s跟随时间常数。
             response = -math.expm1(-dt / 0.08)

@@ -1,0 +1,10 @@
+{
+  "sha256": "fe77e5cfcaeeb1841d04c4c846cc482cc0bcb7298e77e1a857434edd62624d2d",
+  "source": "logs/challenge-rebuild-20261101/core-rolling-input/failed-input.pkl",
+  "trigger": "tests/test_core.py::test_render_rates_use_identical_simulation",
+  "seed": 17,
+  "fps": 30,
+  "last_valid_tick": 673,
+  "solve_calls": 947,
+  "scope": "本项目可信冻结输入和完整支持几何，原候选盒未保存；不宣称逐值等价原世界查询。"
+}

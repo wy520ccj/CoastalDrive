@@ -1,0 +1,76 @@
+{
+  "r06": {
+    "completed": false,
+    "target_distance": 450,
+    "phase": "paused",
+    "recorded_frames": 1803,
+    "views": [
+      {
+        "tick": 679,
+        "progress_m": 40.20155452700634,
+        "speed_mps": 13.48910903930664,
+        "collisions": 0
+      },
+      {
+        "tick": 1374,
+        "progress_m": 120.07657567527394,
+        "speed_mps": 13.995721817016602,
+        "collisions": 0
+      },
+      {
+        "tick": 1973,
+        "progress_m": 190.1852404894429,
+        "speed_mps": 13.464706420898438,
+        "collisions": 0
+      },
+      {
+        "tick": 2665,
+        "progress_m": 270.15628344736075,
+        "speed_mps": 14.082158088684082,
+        "collisions": 0
+      }
+    ],
+    "reason": "窗口在目标行驶完成前结束；不能作为该距离或性能通过证据"
+  },
+  "scope": "提前结束原因未确认，不归因机械或用户；已完成的900m独立记账。",
+  "r07": {
+    "display_frames": 1098,
+    "foreground_frames": 1098,
+    "minimized_frames": 0,
+    "views": [
+      {
+        "tick": 678,
+        "progress_m": 40.088870343921506,
+        "speed_mps": 13.485867500305176,
+        "collisions": 0
+      },
+      {
+        "tick": 1374,
+        "progress_m": 120.07657567527394,
+        "speed_mps": 13.995721817016602,
+        "collisions": 0
+      },
+      {
+        "tick": 1972,
+        "progress_m": 190.0722105117494,
+        "speed_mps": 13.46673583984375,
+        "collisions": 0
+      },
+      {
+        "tick": 2665,
+        "progress_m": 270.15628344736075,
+        "speed_mps": 14.082158088684082,
+        "collisions": 0
+      }
+    ],
+    "owner_end": {
+      "tick": 2714,
+      "dropped_time": 0.0,
+      "monotonic": 32676.1506211
+    },
+    "vehicle_model": "coastal-gt",
+    "road_shape": "ridge-club",
+    "vehicle_config_sha256": "e5f1d2807c83b0429228c4caf377a72b787a4e0c3b71f7b09aee86aae7af8954",
+    "scope": "270m完成后切回键盘并暂停，进程窗口仍在；本样本用于体验交接，不代替最终900m性能记录。用户反馈pending。"
+  }
+}

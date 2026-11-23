@@ -7,10 +7,18 @@ import pytest
 from convex_cast_kernels import hull, support
 from panda3d.bullet import BulletConvexHullShape, BulletRigidBodyNode, BulletWorld
 from panda3d.core import BitMask32, Quat, TransformState, Vec3
+from wheel_contact_kernels import cached_surface_entry
 
 from convex_queries import HullGeometry, native_transform, wheel_hull
 from simulation import Simulation
-from suspension_contacts import cylinder_suspension_rays, static_support_shapes, wheel_sweep_shape
+from suspension_contacts import (
+    cached_hull_entry,
+    cylinder_suspension_rays,
+    static_support_shapes,
+    wheel_sweep_shape,
+)
+from triangle_support import triangle_entry
+from wheel_envelope import _simplex_coordinates, cylinder_box_entry
 
 
 def test_crowned_support_retains_all_original_vertices_and_float_tie_order():
@@ -94,5 +102,34 @@ def test_actual_coastal_hulls_query_same_geometry_without_changing_collision_mas
                         count += 1
         assert count>30
         assert tuple(body.getIntoCollideMask() for body in bodies)==masks
+    finally:
+        sim.close()
+
+
+def test_cached_mixed_rail_and_road_entry_equals_complete_query():
+    sim = Simulation(seed=17,traffic_count=0)
+    try:
+        car,world = sim.player,sim._world
+        shapes = static_support_shapes(world,car._chassis,BitMask32.bit(0),cache={},packet_cache={})
+        compared = 0
+        for parts in shapes.hulls.values():
+            for shape in parts[::23]:
+                center = shape.shape_pose[:3]
+                for offset in (-.3,0.,.3):
+                    start = (center[0]+offset,center[1],center[2]+1.)
+                    end = (start[0],start[1],center[2]-.8)
+                    cache = {}
+                    expected, = cylinder_suspension_rays(world,car._chassis,((start,end),),((1.,0.,0.),),
+                        .33,.205,.01,.004,static_shapes=shapes,candidate_cache=cache,ray_origin=(0.,0.,0.))
+                    assert cache['hulls']
+                    covered,entry = cached_surface_entry(cache,start,end,(1.,0.,0.),(0.,0.,0.),
+                        .33,.205,.01,.004,triangle_entry,cylinder_box_entry,_simplex_coordinates)
+                    assert covered
+                    actual = cached_hull_entry(cache['hulls'],start,end,(1.,0.,0.),(0.,0.,0.),
+                        .33,.205,.01,.004,entry)
+                    reference = (expected.fraction,expected.normal,expected.point,expected.support_face) if expected else None
+                    assert actual == reference
+                    compared += 1
+        assert compared >= 60
     finally:
         sim.close()

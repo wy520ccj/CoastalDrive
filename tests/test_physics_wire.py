@@ -69,6 +69,8 @@ def test_complete_body_packet_uses_same_panda_pose_tensor_and_solver_result():
     try:
         sim.step(Control(throttle=.3,steering=.1))
         car = sim.player
+        car.powertrain.fuel.samples = []
+        before_fuel = car.powertrain.fuel.values()
         request = car.prepare_control(Control(throttle=.4,steering=-.2))
         stages = car.physics_stages(request,1/240,tire_substeps=1,complete_tires=True)
         original = next(stages)
@@ -77,9 +79,18 @@ def test_complete_body_packet_uses_same_panda_pose_tensor_and_solver_result():
         assert tuple(restored.body.pose.getQuat()) == tuple(original.body.pose.getQuat())
         assert restored.body.inverse_inertia == original.body.inverse_inertia
         result = original.solve()
+        assert car.powertrain.fuel.values() == before_fuel
+        assert original.powertrain['fuel'] == before_fuel
+        assert result.powertrain['fuel']['litres'] > before_fuel['litres']
+        assert result.powertrain['fuel']['samples']
         assert restored.solve() == result
         assert isinstance(result,TireAdvanceResult)
         assert from_bytes(result_bytes(result)) == result
+        with pytest.raises(StopIteration):
+            stages.send(result)
+        assert car.powertrain.fuel.values() == result.powertrain['fuel']
+        car.powertrain.fuel.samples.clear()
+        assert result.powertrain['fuel']['samples']
         stages.close()
     finally:
         sim.close()

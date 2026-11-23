@@ -1,0 +1,96 @@
+{
+  "gpu-single": {
+    "threading_model": "",
+    "frames": 174,
+    "position_buffers": 1,
+    "root_states": 1,
+    "maximum_rgb8_matrix_error": 0,
+    "passed": true
+  },
+  "gpu-draw-r2": {
+    "threading_model": "/Draw",
+    "frames": 174,
+    "position_buffers": 2,
+    "root_states": 2,
+    "maximum_rgb8_matrix_error": 0,
+    "passed": true
+  },
+  "gpu-cull-draw": {
+    "threading_model": "Cull/Draw",
+    "frames": 174,
+    "position_buffers": 3,
+    "root_states": 3,
+    "maximum_rgb8_matrix_error": 0,
+    "passed": true
+  },
+  "scene-r1": {
+    "scope": "沿海120m原随车完整场景，同一位置/时间/几何/着色器，直接比较相机输入存储",
+    "differences": [
+      {
+        "pair": [
+          0,
+          1
+        ],
+        "max_rgb8": 19,
+        "changed_channels": 31
+      },
+      {
+        "pair": [
+          0,
+          2
+        ],
+        "max_rgb8": 0,
+        "changed_channels": 0
+      },
+      {
+        "pair": [
+          1,
+          3
+        ],
+        "max_rgb8": 0,
+        "changed_channels": 0
+      }
+    ],
+    "passed": false
+  },
+  "scene-r2": {
+    "scope": "沿海120m原随车完整场景，同一位置/时间/几何/着色器，直接比较相机输入存储",
+    "differences": [
+      {
+        "pair": [
+          "original",
+          "buffered"
+        ],
+        "max_rgb8": 43,
+        "changed_channels": 23
+      },
+      {
+        "pair": [
+          "original",
+          "original-repeat"
+        ],
+        "max_rgb8": 0,
+        "changed_channels": 0
+      },
+      {
+        "pair": [
+          "buffered",
+          "buffered-repeat"
+        ],
+        "max_rgb8": 0,
+        "changed_channels": 0
+      },
+      {
+        "pair": [
+          "ordered-original",
+          "ordered-buffered"
+        ],
+        "max_rgb8": 1,
+        "changed_channels": 5
+      }
+    ],
+    "natural_order_identical": false,
+    "passed": false,
+    "limits": "原排序差异完整保留；固定顺序仅检查uniform数值等价，不能冒称自然排序全帧零差"
+  }
+}

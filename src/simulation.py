@@ -827,6 +827,12 @@ class Simulation:
         if self._impact_events or (not self._collision_refinement_ticks and self._approaching_body_contact()):
             self._collision_refinement_ticks = 120
         substeps = physical_substeps(self.config)
+        # 弯坡折面上四轮支撑方向不同，细分真实机械步以解析接点变化。
+        # 使用上一完成拍的接触；平整路面仍单步，控制/快照仍为120Hz。
+        if self.road.curve is not None and self.player.coupled_suspension and self.config.finite_drivetrain:
+            normals = {contact.contact_normal for contact in self.player._wheel_contacts if contact.in_contact}
+            if len(normals) > 1:
+                substeps = max(2, substeps)
         if self._collision_refinement_ticks and self.player.coupled_suspension and self.config.finite_drivetrain:
             substeps = max(4, substeps)
             self._collision_refinement_ticks -= 1

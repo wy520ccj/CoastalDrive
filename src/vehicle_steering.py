@@ -7,9 +7,11 @@ from vehicle_config import CAR
 
 def wheel_angles(center_angle, config=CAR):
     """虚拟前轴中心角转为左、右前轮角；正角右转，后轴中心是共同圆心的基准。"""
-    if center_angle == 0:
+    tangent = math.tan(math.radians(center_angle))
+    # 长时间回正后的非零微小角度，度转弧度也可能下溢成零。
+    if tangent == 0:
         return 0.0, 0.0
-    radius = config.wheelbase / math.tan(math.radians(center_angle))
+    radius = config.wheelbase / tangent
     return tuple(math.degrees(math.atan(config.wheelbase / (radius + offset)))
                  for offset in (config.wheel_track_widths[0] / 2, -config.wheel_track_widths[0] / 2))
 

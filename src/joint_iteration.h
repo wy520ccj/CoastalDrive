@@ -227,11 +227,13 @@ static PyObject *joint_solve(PyObject *self,PyObject *args) {
     memset(w->normal,0,sizeof(w->normal));memset(w->road,0,sizeof(w->road));memset(w->bias_ports,0,sizeof(w->bias_ports));memset(w->warm_branches,0,sizeof(w->warm_branches));
     for(int i=0;i<27;++i)for(int j=0;j<4;++j)w->warm_modes[i][j]=-1;
     w->cache_count=0;w->shared_branch=0;w->shared_port=-1;w->busy=1;
-    NativeSolveError error={0};native_solve_error=&error;w->api->begin(&error);
+    NativeSolveError error={0};error.thread_state=PyThreadState_Get();error.owner=&native_solve_error;
+    native_solve_error=&error;w->api->begin(&error);
     PyThreadState *saved=PyEval_SaveThread();
     int success=joint_iterate(w);
-    PyEval_RestoreThread(saved);
+    if(saved)PyEval_RestoreThread(saved);
     w->api->end();native_solve_error=NULL;w->busy=0;
+    if(error.exception){PyErr_SetRaisedException(error.exception);return NULL;}
     if(error.type){
         if(error.type==PyExc_MemoryError&&error.message[0]==0)PyErr_NoMemory();
         else PyErr_SetString(error.type,error.message);

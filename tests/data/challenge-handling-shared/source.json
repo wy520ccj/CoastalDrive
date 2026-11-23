@@ -1,0 +1,13 @@
+{
+  "schema": "challenge-handling-shared-v1",
+  "source": "bend-v2-mechanical-input/failed-input.pkl",
+  "sha256": "fbe0d793b769672faf6c08b35c90d8a4a174a917c35de9521e1b7ec4bf9dcb33",
+  "physical_tick": 7470,
+  "build": {
+    "front_tire": 1.15,
+    "rear_tire": 1.15,
+    "springs": 1.125,
+    "dampers": 1.125
+  },
+  "note": "本项目捕获的可信机械输入和182组完整支持几何。原候选盒未保存，重放清空缓存；并非原世界所有查询逐值等价证明。"
+}

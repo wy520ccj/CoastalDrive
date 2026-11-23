@@ -149,7 +149,10 @@ def main():
     parser.add_argument('--traffic-input-mode', choices=('game', 'simulation'), help='显式匹配窗口交通输入；省略时沿用旧基准同模式口径')
     parser.add_argument('--track', choices=('test', 'coastal', 'endless'), default='coastal')
     parser.add_argument('--shape', choices=('straight', 'curves', 'hills'), default='straight')
-    parser.add_argument('--driver', choices=('sequence','endurance'), default='sequence')
+    parser.add_argument('--driver', choices=('sequence','endurance','coastal'), default='sequence')
+    parser.add_argument('--vehicle-design', default='gr86-2022-premium-6mt')
+    parser.add_argument('--checkpoint-frames', choices=('on','off'), help='显式匹配滨海计时/自由模式的原检查点碰撞资格')
+    parser.add_argument('--settle-initial', action='store_true', help='按正式入口先真实落地，不计入驾驶样本')
     parser.add_argument('--seed', type=int, default=17)
     parser.add_argument('--warmup', type=int, default=240)
     parser.add_argument('--steps', type=int, default=480)
@@ -171,6 +174,8 @@ def main():
         parser.error('原生计数须同时启用--worker-profile并指定隔离内核源码目录')
     if args.driver == 'endurance' and args.track != 'endless':
         parser.error('已有耐久控制器使用无限高速赛道')
+    if args.driver == 'coastal' and args.track != 'coastal':
+        parser.error('海岸循线控制器仅用于海岸基准')
     args.output.mkdir(parents=True, exist_ok=False)
     if args.cpu_mask is not None:
         kernel = ctypes.WinDLL('kernel32', use_last_error=True)
@@ -189,7 +194,7 @@ def main():
     from powertrain import Powertrain
     from simulation import Control, Simulation
     from vehicle import Vehicle
-    from vehicle_designs import GR86_DESIGN
+    from vehicle_designs import vehicle_design
     from vehicle_suspension import Suspension
     from vehicle_tire_step import TireAdvanceInput, TireAdvanceResult
 
@@ -252,13 +257,15 @@ def main():
                     timers.samples['bullet'].append(time.perf_counter()-start)
 
     mode = DrivingMode(args.mode)
-    config = mode.configured_vehicle(base_config=GR86_DESIGN)
+    config = mode.configured_vehicle(base_config=vehicle_design(args.vehicle_design).config)
     hashes = {path.name: hashlib.sha256(path.read_bytes()).hexdigest()
               for path in args.source.iterdir() if path.suffix in ('.py', '.c', '.cpp', '.h', '.pyd')}
     sim = Simulation(seed=args.seed, track=args.track, road_shape=args.shape,
                      traffic_count=args.traffic, config=config, input_config=mode.input_config,
                      traffic_input_config=DrivingMode(args.traffic_input_mode).input_config if args.traffic_input_mode else mode.input_config,
                      physics_workers=args.workers)
+    if args.checkpoint_frames is not None:
+        sim.set_checkpoint_frames_enabled(args.checkpoint_frames == 'on')
     driver = None
     if args.driver == 'endurance':
         sys.path.insert(0, str(ROOT/'tools'))
@@ -266,6 +273,12 @@ def main():
 
         driver = EnduranceDriver(sim, args.seed+701)
         sys.path.insert(0, str(args.source.resolve()))
+    elif args.driver == 'coastal':
+        sys.path.insert(0, str(ROOT/'tools/environment'))
+        from check_driving_composition import ViewDriver
+
+        driver = ViewDriver()
+        driver.bind(sim)
     state = sim.snapshot()
     if args.trace:
         sim._world = TimedWorld(sim._world)
@@ -274,13 +287,19 @@ def main():
     report = {'arguments': {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()},
               'head': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
               'python': sys.version, 'machine': platform.platform(), 'source_hashes': hashes,
-              'vehicle_design':'gr86-2022-premium-6mt',
+              'vehicle_design':args.vehicle_design,
+              'vehicle_config':asdict(config),
               'vehicle_config_sha256':hashlib.sha256(json.dumps(asdict(config),sort_keys=True).encode()).hexdigest(),
               'physical_substeps':world_step.physical_substeps(config),
               'budget_ms': 1000/120, 'passed': False}
     try:
         start = time.perf_counter()
-        sim.prepare_physics()
+        if args.settle_initial:
+            if sim.settle_initial() is None:
+                raise RuntimeError('基准初始落地未完成')
+            state = sim.snapshot()
+        else:
+            sim.prepare_physics()
         report['preparation_seconds'] = time.perf_counter()-start
 
         def control(tick):
@@ -360,6 +379,11 @@ def main():
         report['average_cpu_cores'] = report['total_cpu_seconds']/sum(elapsed)
         report['passed'] = True
         report['measurement_complete'] = True
+        if 'prepared' in sim._static_support_packet:
+            shapes = sim._static_support_packet['prepared']
+            report['static_support'] = {'joint_supported':shapes.joint_supported,
+                'unsupported':[{'name':body.getName(),'shapes':[type(shape).__name__ for shape in body.getShapes()]}
+                               for body,supported,_parts in shapes if not supported]}
     except Exception as error:
         report['error'] = repr(error)
         report['completed_samples'] = len(elapsed)

@@ -5,6 +5,39 @@ static PyObject *support_read_tag(PyObject *body,PyObject *has,PyObject *get,PyO
     return yes?PyObject_CallMethodOneArg(body,get,tag):Py_NewRef(Py_None);
 }
 
+
+/* 逐值核对已有签名；未改变时不再分配各形状数组和整份签名。 */
+static int support_signature_same(PyObject *old,PyObject *body,PyObject *shapes,PyObject *mesh,
+                                 PyObject *bounds,PyObject *vertices,PyObject *matrix,PyObject **names,
+                                 PyObject *convex_type,PyObject *bounds_function) {
+    if(!PyTuple_Check(old)||PyTuple_GET_SIZE(old)!=8)return 0;
+    for(int i=0;i<2;++i){int same=PyObject_RichCompareBool(PyTuple_GET_ITEM(old,i),i==0?matrix:shapes,Py_EQ);
+        if(same<=0)return same;}
+    const int indices[]={4,5,7};PyObject *tags[]={mesh,bounds,vertices};
+    for(int i=0;i<3;++i){PyObject *saved=PyTuple_GET_ITEM(old,indices[i]);
+        if(!PyLong_Check(saved))return 0;
+        void *pointer=PyLong_AsVoidPtr(saved);if(PyErr_Occurred())return -1;
+        if(pointer!=(void *)tags[i])return 0;}
+    Py_ssize_t count=PyTuple_GET_SIZE(shapes);
+    PyObject *mats=PyTuple_GET_ITEM(old,2),*margins=PyTuple_GET_ITEM(old,3),*mutable=PyTuple_GET_ITEM(old,6);
+    if(!PyTuple_Check(mats)||!PyTuple_Check(margins)||!PyTuple_Check(mutable)
+       ||PyTuple_GET_SIZE(mats)!=count||PyTuple_GET_SIZE(margins)!=count||PyTuple_GET_SIZE(mutable)!=count)return 0;
+    for(Py_ssize_t j=0;j<count;++j){
+        PyObject *index=PyLong_FromSsize_t(j);if(!index)return -1;
+        PyObject *pose=PyObject_CallMethodOneArg(body,names[0],index);Py_DECREF(index);if(!pose)return -1;
+        PyObject *mat=PyObject_CallMethodNoArgs(pose,names[1]);Py_DECREF(pose);if(!mat)return -1;
+        int same=PyObject_RichCompareBool(mat,PyTuple_GET_ITEM(mats,j),Py_EQ);Py_DECREF(mat);if(same<=0)return same;
+        PyObject *shape=PyTuple_GET_ITEM(shapes,j);
+        PyObject *margin=PyObject_CallMethodNoArgs(shape,names[2]);if(!margin)return -1;
+        same=PyObject_RichCompareBool(margin,PyTuple_GET_ITEM(margins,j),Py_EQ);Py_DECREF(margin);if(same<=0)return same;
+        int convex=bounds==Py_None?PyObject_IsInstance(shape,convex_type):0;if(convex<0)return -1;
+        PyObject *actual=convex?PyObject_CallFunctionObjArgs(bounds_function,shape,Py_None,NULL):Py_NewRef(Py_None);
+        if(!actual)return -1;
+        same=PyObject_RichCompareBool(actual,PyTuple_GET_ITEM(mutable,j),Py_EQ);Py_DECREF(actual);if(same<=0)return same;
+    }
+    return 1;
+}
+
 static PyObject *static_support_read(PyObject *self,PyObject *args) {
     PyObject *world,*chassis,*mask,*cache,*node_path,*types,*unit_scale,*bounds_function;
     if(!PyArg_ParseTuple(args,"OOOOOOOO",&world,&chassis,&mask,&cache,&node_path,&types,&unit_scale,&bounds_function))return NULL;
@@ -46,14 +79,33 @@ static PyObject *static_support_read(PyObject *self,PyObject *args) {
         Py_ssize_t count=PyTuple_GET_SIZE(v[1]);
         v[2]=support_read_tag(body,names[HAS_TAG],names[GET_TAG],names[MESH_TAG]);
         v[3]=support_read_tag(body,names[HAS_TAG],names[GET_TAG],names[BOUNDS_TAG]);if(!v[2]||!v[3])goto failed;
+        v[4]=PyObject_CallOneArg(node_path,body);if(!v[4])goto failed;
+        v[5]=PyObject_CallMethodNoArgs(v[4],names[NET]);Py_CLEAR(v[4]);if(!v[5])goto failed;
+        v[8]=PyObject_CallMethodOneArg(body,names[HAS_TAG],names[VERTICES_TAG]);if(!v[8])goto failed;
+        int has_vertices=PyObject_IsTrue(v[8]);Py_CLEAR(v[8]);if(has_vertices<0)goto failed;
+        v[10]=Py_NewRef(Py_None);
+        if(has_vertices){v[8]=PyObject_CallMethodOneArg(body,names[GET_TAG],names[HULLS_TAG]);if(!v[8])goto failed;
+            int same=PyObject_RichCompareBool(v[1],v[8],Py_EQ);Py_CLEAR(v[8]);if(same<0)goto failed;
+            if(same){v[8]=PyObject_CallMethodNoArgs(v[5],names[SCALE]);if(!v[8])goto failed;
+                int unit=PyObject_RichCompareBool(v[8],unit_scale,Py_EQ);Py_CLEAR(v[8]);if(unit<0)goto failed;
+                if(unit){Py_CLEAR(v[10]);v[10]=PyObject_CallMethodOneArg(body,names[GET_TAG],names[VERTICES_TAG]);if(!v[10])goto failed;}}}
+        v[11]=PyObject_CallMethodNoArgs(v[5],names[MAT]);if(!v[11])goto failed;
+        PyObject *previous=cache==Py_None?NULL:PyDict_GetItemWithError(cache,body);if(!previous&&PyErr_Occurred())goto failed;
+        if(previous&&(!PyTuple_Check(previous)||PyTuple_GET_SIZE(previous)!=3)){
+            PyErr_SetString(PyExc_ValueError,"静态缓存记录须含签名/几何/凸体");goto failed;}
+        if(previous){PyObject *methods[]={names[SHAPE_POSE],names[MAT],names[MARGIN]};
+            int same=support_signature_same(PyTuple_GET_ITEM(previous,0),body,v[1],v[2],v[3],v[10],v[11],methods,
+                                            PyTuple_GET_ITEM(types,3),bounds_function);
+            if(same<0)goto failed;
+            if(same){PyList_SET_ITEM(groups,i,Py_NewRef(PyTuple_GET_ITEM(previous,1)));
+                if(PyTuple_GET_ITEM(previous,2)!=Py_None&&PyDict_SetItem(hulls,body,PyTuple_GET_ITEM(previous,2))<0)goto failed;
+                for(int j=0;j<15;++j)Py_CLEAR(v[j]);continue;}}
         int supported=count!=0;
         for(Py_ssize_t j=0;j<count&&supported;++j){PyObject *shape=PyTuple_GET_ITEM(v[1],j);
             int box=PyObject_IsInstance(shape,PyTuple_GET_ITEM(types,0));if(box<0)goto failed;
             int plane=box?0:PyObject_IsInstance(shape,PyTuple_GET_ITEM(types,1));if(plane<0)goto failed;
             int mesh=(box||plane)?0:PyObject_IsInstance(shape,PyTuple_GET_ITEM(types,2));if(mesh<0)goto failed;
             supported=box||plane||(mesh&&v[2]!=Py_None&&count==1);}
-        v[4]=PyObject_CallOneArg(node_path,body);if(!v[4])goto failed;
-        v[5]=PyObject_CallMethodNoArgs(v[4],names[NET]);Py_CLEAR(v[4]);if(!v[5])goto failed;
         v[6]=PyTuple_New(count);v[7]=PyTuple_New(count);shape_mats=PyTuple_New(count);mutable_bounds=PyTuple_New(count);
         if(!v[6]||!v[7]||!shape_mats||!mutable_bounds)goto failed;
         for(Py_ssize_t j=0;j<count;++j){PyObject *shape=PyTuple_GET_ITEM(v[1],j);
@@ -67,21 +119,9 @@ static PyObject *static_support_read(PyObject *self,PyObject *args) {
             v[8]=convex?PyObject_CallFunctionObjArgs(bounds_function,shape,Py_None,NULL):Py_NewRef(Py_None);
             if(!v[8])goto failed;PyTuple_SET_ITEM(mutable_bounds,j,v[8]);v[8]=NULL;
         }
-        v[8]=PyObject_CallMethodOneArg(body,names[HAS_TAG],names[VERTICES_TAG]);if(!v[8])goto failed;
-        int has_vertices=PyObject_IsTrue(v[8]);Py_CLEAR(v[8]);if(has_vertices<0)goto failed;
-        v[10]=Py_NewRef(Py_None);
-        if(has_vertices){v[8]=PyObject_CallMethodOneArg(body,names[GET_TAG],names[HULLS_TAG]);if(!v[8])goto failed;
-            int same=PyObject_RichCompareBool(v[1],v[8],Py_EQ);Py_CLEAR(v[8]);if(same<0)goto failed;
-            if(same){v[8]=PyObject_CallMethodNoArgs(v[5],names[SCALE]);if(!v[8])goto failed;
-                int unit=PyObject_RichCompareBool(v[8],unit_scale,Py_EQ);Py_CLEAR(v[8]);if(unit<0)goto failed;
-                if(unit){Py_CLEAR(v[10]);v[10]=PyObject_CallMethodOneArg(body,names[GET_TAG],names[VERTICES_TAG]);if(!v[10])goto failed;}}}
-        v[11]=PyObject_CallMethodNoArgs(v[5],names[MAT]);if(!v[11])goto failed;
         v[12]=PyLong_FromVoidPtr(v[2]);v[13]=PyLong_FromVoidPtr(v[3]);v[14]=PyLong_FromVoidPtr(v[10]);
         if(!v[12]||!v[13]||!v[14])goto failed;
         signature=PyTuple_Pack(8,v[11],v[1],shape_mats,v[7],v[12],v[13],mutable_bounds,v[14]);if(!signature)goto failed;
-        PyObject *previous=cache==Py_None?NULL:PyDict_GetItemWithError(cache,body);if(!previous&&PyErr_Occurred())goto failed;
-        if(previous&&(!PyTuple_Check(previous)||PyTuple_GET_SIZE(previous)!=3)){
-            PyErr_SetString(PyExc_ValueError,"静态缓存记录须含签名/几何/凸体");goto failed;}
         int unchanged=previous?PyObject_RichCompareBool(PyTuple_GET_ITEM(previous,0),signature,Py_EQ):0;if(unchanged<0)goto failed;
         if(unchanged){PyList_SET_ITEM(groups,i,Py_NewRef(PyTuple_GET_ITEM(previous,1)));
             if(PyTuple_GET_ITEM(previous,2)!=Py_None&&PyDict_SetItem(hulls,body,PyTuple_GET_ITEM(previous,2))<0)goto failed;}

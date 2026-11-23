@@ -49,7 +49,7 @@ static int joint_shared_values(SharedMap *data,double state[11],const double ang
                 for (int a=0; a<variables; ++a) candidate[a]=state[a]+step*delta[a];
                 if (!shared_map_values(data,candidate,angular,normal,load,support,branch_index,
                     target,road,active,port_values,&branch_index,&port_index)) return 0;
-                if (shared_residual_size(data,candidate,target)<before) {
+                if (shared_residual_size(data,candidate,target)<before || shared_state_converged(data,candidate,target)) {
                     for (int a=0; a<variables; ++a) state[a]=candidate[a];
                     if (data->bias) shared_active_limits(data,state,active);
                     accepted=1; break;

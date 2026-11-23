@@ -2,7 +2,7 @@
 
 import time
 from dataclasses import replace
-from threading import Event, get_ident
+from threading import Event, Thread, get_ident
 
 import pytest
 
@@ -10,6 +10,58 @@ from impact_events import ImpactEvent
 from session import Phase, Session
 from session_clock import PRESENTATION_DELAY, SessionClock
 from simulation import FIXED_DT, Control
+
+
+@pytest.mark.parametrize('fail_query',(False,True))
+def test_direct_camera_query_keeps_world_lock_and_error_releases_it(monkeypatch, fail_query):
+    from panda3d.core import Vec3
+
+    session = Session(track='test')
+    session.start(countdown=False)
+    clock = SessionClock(session)
+    session._clock = clock
+    entered,finish_query,ticked = Event(),Event(),Event()
+    errors = []
+
+    def query(start,end):
+        entered.set()
+        assert not ticked.is_set()
+        assert finish_query.wait(2.)
+        if fail_query:
+            raise ValueError('相机查询失败')
+        return end
+
+    def camera():
+        try:
+            session.camera_position(Vec3(0,0,1),Vec3(0,-3,1),0.)
+        except ValueError as error:
+            errors.append(error)
+
+    def tick():
+        clock.tick()
+        ticked.set()
+
+    monkeypatch.setattr(session.simulation,'camera_position',query)
+    camera_thread,tick_thread = Thread(target=camera),Thread(target=tick)
+    try:
+        camera_thread.start()
+        assert entered.wait(1.)
+        tick_thread.start()
+        assert not ticked.wait(.05)
+        finish_query.set()
+        camera_thread.join(2.)
+        tick_thread.join(2.)
+        assert ticked.is_set() and clock.camera_idle.is_set()
+        assert len(errors)==int(fail_query)
+    finally:
+        finish_query.set()
+        clock.camera_idle.set()
+        camera_thread.join(2.)
+        if tick_thread.ident is not None:
+            tick_thread.join(2.)
+        session._clock = None
+        session.simulation._query_lock = None
+        session.close()
 
 
 class RecordedController:

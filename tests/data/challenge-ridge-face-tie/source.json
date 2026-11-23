@@ -1,0 +1,7 @@
+{
+  "sha256": "d6a37feedfaa2188b04865ddc4f5d0a2ff0c14197b808ac039b30ace0783ccb4",
+  "course": "ridge-run",
+  "seed": 0,
+  "tick_before_failure": 1739,
+  "scope": "原机械输入，仅保留支撑查询涉及的两段真实铺装，缩小后与原世界同残差失败。"
+}

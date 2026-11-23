@@ -1985,6 +1985,13 @@ static double shared_residual_size(const SharedMap *data,const double state[11],
     }
     return maximum;
 }
+/* 高速转子的一个ULP可能大于车身角速度的绝对误差；已达原逐坐标精度的步不能被最大绝对误差拒绝。 */
+static int shared_state_converged(const SharedMap *data,const double state[11],const double end[11]) {
+    int variables=data->bias ? 11 : 9;
+    for (int a=0;a<variables;++a)
+        if (!(fabs(state[a]-end[a])<=(a<9 ? angular_tolerance(state[a],end[a]) : PORT_TOLERANCE))) return 0;
+    return 1;
+}
 /* 只用于末期舍入停滞的择步；每个坐标仍使用原收敛容差。 */
 static double shared_rounding_merit(const SharedMap *data,const double state[11],const double end[11]) {
     int variables=data->bias ? 11 : 9;
@@ -2052,7 +2059,7 @@ static PyObject *shared_solution_result(SharedMap *data,double state[11],const d
                 for (int a=0; a<variables; ++a) candidate[a]=state[a]+step*delta[a];
                 if (!shared_map_values(data,candidate,angular,normal,load,support,branch_index,
                     target,road,active,port_values,&branch_index,&port_index)) return NULL;
-                if (shared_residual_size(data,candidate,target)<before) {
+                if (shared_residual_size(data,candidate,target)<before || shared_state_converged(data,candidate,target)) {
                     for (int a=0; a<variables; ++a) state[a]=candidate[a];
                     if (data->bias) shared_active_limits(data,state,active);
                     accepted=1; break;
@@ -2495,7 +2502,12 @@ static int rolling_root_values(ForceEvaluation evaluate,void *context,double gri
         for (lateral = 0; lateral < 20; ++lateral) {
             if (!evaluate(context,force[0],force[1],0,r)
                 || !evaluate(context,force[0],force[1],1,matrix)) return 0;
-            if (fabs(r[1]) < tolerance) break;
+            if (fabs(r[1]) < tolerance) {
+                double joint_error;
+                if (!tire_norm(hypot_function,r[0],r[1],&joint_error)) return 0;
+                /* 总残差未达标时，不能把上轮保留的近似横向根当精确零。 */
+                if (outer==0 || lateral>0 || joint_error<tolerance) break;
+            }
             if (r[1] > 0.) upper_y = force[1]; else lower_y = force[1];
             if (matrix[3] == 0.) { PyErr_SetString(PyExc_ZeroDivisionError, "横向根导数为零"); return 0; }
             double candidate = force[1] - r[1] / matrix[3];

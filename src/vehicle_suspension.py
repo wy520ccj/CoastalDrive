@@ -16,7 +16,12 @@ from suspension import (
     dot,
     elastic_terms,
 )
-from suspension_contacts import cylinder_suspension_rays, static_support_shapes, wheel_sweep_shape
+from suspension_contacts import (
+    cached_hull_entry,
+    cylinder_suspension_rays,
+    static_support_shapes,
+    wheel_sweep_shape,
+)
 from suspension_geometry import CylinderSurface
 from suspension_kinematics import SupportPlane
 from triangle_support import triangle_entry
@@ -46,8 +51,9 @@ class WorldSurface(CylinderSurface):
             covered, entry = cached_surface_entry(self.candidates, start, end, axis, self.offset,
                 self.wheel_radius, self.width, self.shoulder, self.crown, triangle_entry, cylinder_box_entry,
                 _simplex_coordinates)
-            if self.candidates.get('hulls'):
-                covered = False
+            if covered and self.candidates['hulls']:
+                entry = cached_hull_entry(self.candidates['hulls'],start,end,axis,self.offset,
+                    self.wheel_radius,self.width,self.shoulder,self.crown,entry)
             if not covered:
                 hit, = cylinder_suspension_rays(self.world,self.chassis,((start,end),),(axis,),
                     self.wheel_radius,self.width,self.shoulder,self.crown,envelope=self.envelope,ray_origin=self.offset,
@@ -98,6 +104,11 @@ class Suspension:
             self.state.normal_force, (tuple(origin), tuple(direction), hub_arms, axes, lengths, rests, hits),
             (world, chassis, self.envelope, static_shapes, candidates, chassis.getAngularDamping()),
             (WorldSurface, SupportPlane, SuspensionInput))
+        # 四轮共用的大盒可能包含护栏；迭代时各轮重取自己的覆盖盒，避免远侧轮反复扫栏。
+        if candidates['hulls']:
+            for plane in system.kinematics:
+                if plane is not None:
+                    plane.surface.candidates.clear()
         return system
 
     def advance(self, world, chassis, wheels, on_asphalt, tick, dt,

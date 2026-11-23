@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "runs": [
+    {
+      "index": 7,
+      "original_ms": 9.80749999996533,
+      "stages_ms": {
+        "mesh-batch-attributes": 1.2245000000348227,
+        "mesh-batch-nodes": 2.1997000000055777,
+        "mesh-batch-compatible": 0.028400000019246363,
+        "mesh-batch-vertices": 1.72870000005787,
+        "mesh-batch-primitives": 6.147100000021055
+      },
+      "identical": true,
+      "geoms": 5
+    },
+    {
+      "index": 8,
+      "original_ms": 9.44460000005165,
+      "stages_ms": {
+        "mesh-batch-attributes": 1.1687999999594467,
+        "mesh-batch-nodes": 1.758599999902799,
+        "mesh-batch-compatible": 0.02069999993636884,
+        "mesh-batch-vertices": 1.2763999999378939,
+        "mesh-batch-primitives": 4.984700000022713
+      },
+      "identical": true,
+      "geoms": 5
+    },
+    {
+      "index": 10,
+      "original_ms": 9.01279999993676,
+      "stages_ms": {
+        "mesh-batch-attributes": 1.272900000003574,
+        "mesh-batch-nodes": 2.2342999999409585,
+        "mesh-batch-compatible": 0.024400000029345392,
+        "mesh-batch-vertices": 1.6230999999606865,
+        "mesh-batch-primitives": 4.708599999958096
+      },
+      "identical": true,
+      "geoms": 5
+    }
+  ],
+  "scope": "真实原资源/1m路网的离场节点，原生flattenStrong对照当前产品分项；非正常帧时或完整场景GPU验收。",
+  "reference": "https://github.com/panda3d/panda3d/blob/v1.10.16/panda/src/pgraph/nodePath.cxx#L5211-L5222"
+}

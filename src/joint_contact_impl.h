@@ -8,7 +8,7 @@ typedef struct {
     SurfacePacket *candidate;
     double candidate_low[3],candidate_high[3];
 } JointPlane;
-typedef struct { JointPlane planes[4]; double damping; PyObject *complete_owners; } JointContacts;
+typedef struct { JointPlane planes[4]; double damping; PyObject *complete_owners,*query; } JointContacts;
 static void joint_candidate_free(SurfacePacket *packet) {
     PyMem_RawFree(packet->parts);PyMem_RawFree(packet);
 }
@@ -37,7 +37,25 @@ static void joint_contacts_free(PyObject *capsule) {
         if(data->planes[i].candidate)joint_candidate_free(data->planes[i].candidate);
     }
     Py_XDECREF(data->complete_owners);
+    Py_XDECREF(data->query);
     PyMem_Free(data);
+}
+
+/* 原世界查询保留在持锁/GIL区；机械迭代仍用原共同数值内核。 */
+static PyObject *joint_contact_query_prepare(PyObject *self,PyObject *query) {
+    if(!PyCallable_Check(query)){PyErr_SetString(PyExc_TypeError,"有限接触查询必须可调用");return NULL;}
+    JointContacts *data=PyMem_Calloc(1,sizeof(*data));if(!data)return PyErr_NoMemory();
+    data->query=Py_NewRef(query);
+    PyObject *capsule=PyCapsule_New(data,JOINT_CONTACT_PACKET_NAME,joint_contacts_free);
+    if(!capsule){Py_DECREF(data->query);PyMem_Free(data);return NULL;}
+    return capsule;
+}
+static int joint_contact_queries_world_values(void *packet) {
+    return ((JointContacts *)packet)->query!=NULL;
+}
+static PyObject *joint_contact_queries_world(PyObject *self,PyObject *capsule) {
+    JointContacts *data=PyCapsule_GetPointer(capsule,JOINT_CONTACT_PACKET_NAME);if(!data)return NULL;
+    return PyBool_FromLong(joint_contact_queries_world_values(data));
 }
 
 static PyObject *joint_contact_prepare(PyObject *self,PyObject *args) {
@@ -135,9 +153,44 @@ static int joint_complete_candidates(JointPlane *p,const double start[3],const d
     return 1;
 }
 
+/* 仅在原世界查询和结果解包期间接回同一个解释器线程状态。 */
+static int joint_python_query(JointContacts *data,const double *velocity,const double *angular,double dt,
+                             double *gradients,double *alignment,double *touching) {
+    PyObject *result=PyObject_CallFunction(data->query,"(ddd)(ddd)d",velocity[0],velocity[1],velocity[2],
+        angular[0],angular[1],angular[2],dt);
+    if(!result)return 0;
+    int ok=PyTuple_Check(result)&&PyTuple_GET_SIZE(result)==3;
+    if(!ok)PyErr_SetString(PyExc_ValueError,"有限接触查询须返回梯度、对齐和接触四轮元组");
+    if(ok)for(int j=0;j<3;++j)if(!PyTuple_Check(PyTuple_GET_ITEM(result,j))||PyTuple_GET_SIZE(PyTuple_GET_ITEM(result,j))!=4){
+        PyErr_SetString(PyExc_ValueError,"有限接触查询须返回四轮结果");ok=0;break;}
+    if(ok)for(int i=0;i<4;++i){
+        PyObject *g=PyTuple_GET_ITEM(PyTuple_GET_ITEM(result,0),i);
+        if(!PyTuple_Check(g)||PyTuple_GET_SIZE(g)!=6){PyErr_SetString(PyExc_ValueError,"接触梯度须为六维");ok=0;break;}
+        for(int a=0;a<6;++a)gradients[6*i+a]=PyFloat_AsDouble(PyTuple_GET_ITEM(g,a));
+        PyObject *aligned=PyTuple_GET_ITEM(PyTuple_GET_ITEM(result,1),i);
+        alignment[i]=aligned==Py_None?0.:PyFloat_AsDouble(aligned);
+        int present=PyObject_IsTrue(PyTuple_GET_ITEM(PyTuple_GET_ITEM(result,2),i));
+        if(present<0||PyErr_Occurred()){ok=0;break;}touching[i]=present;
+    }
+    Py_DECREF(result);return ok;
+}
 static int joint_contact_evaluate(void *packet,const double *velocity,const double *angular,double dt,
                                  double *gradients,double *alignment,double *touching) {
     JointContacts *data=packet;double axis[3]={0.},angle=0.,scale=1.;
+    if(data->query) {
+        NativeSolveError *error=native_solve_error;
+        if(error){
+            PyEval_RestoreThread(error->thread_state);
+            native_solve_error=NULL;*error->owner=NULL;
+        }
+        int ok=joint_python_query(data,velocity,angular,dt,gradients,alignment,touching);
+        if(error){
+            if(!ok)error->exception=PyErr_GetRaisedException();
+            *error->owner=error;native_solve_error=error;
+            PyEval_SaveThread();
+        }
+        return ok;
+    }
     double omega[3]={angular[0],angular[1],angular[2]},v[3]={velocity[0],velocity[1],velocity[2]};
     double speed=sqrt(dot(omega,omega));
     if(speed!=0.) {
@@ -208,7 +261,7 @@ static int joint_contact_evaluate(void *packet,const double *velocity,const doub
 }
 static void joint_contact_begin(NativeSolveError *error){native_solve_error=error;}
 static void joint_contact_end(void){native_solve_error=NULL;}
-static JointContactApi joint_contact_api={joint_contact_evaluate,joint_contact_begin,joint_contact_end};
+static JointContactApi joint_contact_api={joint_contact_evaluate,joint_contact_begin,joint_contact_end,joint_contact_queries_world_values};
 
 static PyObject *joint_contact_state(PyObject *self,PyObject *args) {
     PyObject *capsule,*linear,*rotation;double dt,velocity[3],angular[3],gradients[24],alignment[4],touching[4];

@@ -146,8 +146,16 @@ def _camera_loop(connection, session):
             if message is None:
                 return
             start, end, origin = message
-            _reply(connection, lambda start=start, end=end, origin=origin:
-                   tuple(session.camera_position(Vec3(*start), Vec3(*end), origin)))
+            # 查询与回包共用一次交接；结果未送出前不放行下一追赶拍。
+            clock = session._clock
+            if clock is not None:
+                clock.camera_idle.clear()
+            try:
+                _reply(connection, lambda start=start, end=end, origin=origin:
+                       tuple(session.camera_position(Vec3(*start), Vec3(*end), origin)))
+            finally:
+                if clock is not None:
+                    clock.camera_idle.set()
     except EOFError:
         return
     finally:
@@ -205,6 +213,8 @@ def _serve(connection, camera, input_word, seed, options, worker_loop):
                     session.menu()
                 elif command == 'finish':
                     session.finish()
+                elif command == 'retry_challenge_score':
+                    session.retry_challenge_score()
                 elif command == 'reset_player':
                     session.reset_player()
                 elif command == 'driving_mode':
@@ -297,6 +307,8 @@ class SessionProcess:
             raise TimeoutError('独立会话未返回结果')
         try:
             payload = self.connection.recv_bytes()
+            # 已收走的错误回包也结束这次请求；等待超时则仍保留pending。
+            self.pending_frame = False
             if payload[0] == 1:
                 return _decode_frame(payload,self.frame_cache)
             if payload[0] != 0:
@@ -352,7 +364,6 @@ class SessionProcess:
     def _finish_frame(self):
         if self.pending_frame:
             self._update(self._receive())
-            self.pending_frame = False
 
     def _command(self, command, *arguments):
         self._finish_frame()
@@ -370,6 +381,14 @@ class SessionProcess:
         if not self.pending_frame and self.phase in (Phase.DRIVING, Phase.COUNTDOWN):
             self.connection.send(('frame', ()))
             self.pending_frame = True
+            # 领取本次请求的完成步，再按原显示时间插值，保留低帧率下的及时交接。
+            self._finish_frame()
+        elif self.pending_frame:
+            requested_at = perf_counter() if sampled_at is None else sampled_at
+            display_time = requested_at-self.output.timeline_origin-(self.output.dropped_time-self.output.dropped_epoch)-PRESENTATION_DELAY
+            # 上帧请求仍在途且历史已耗尽时，也必须领取完成步，避免停在旧轨迹末端。
+            if display_time > self.history[-1].time:
+                self._finish_frame()
         if not self.process.is_alive():
             self._finish_frame()
             raise RuntimeError('独立会话进程意外退出')
@@ -395,9 +414,12 @@ class SessionProcess:
         self.received_impacts.clear()
         return replace(state, impacts=impacts, contacts=output.current.contacts)
 
-    def start(self, seed=None, *, countdown=True, mode=None, track=None, settle_initial=False, career_event_id=None):
+    def start(self, seed=None, *, countdown=True, mode=None, track=None, settle_initial=False, career_event_id=None,
+              challenge_spec=None, build=None, sector_chase=False, practice_sector=None):
         self._command('start', {'seed':seed, 'countdown':countdown, 'mode':mode, 'track':track,
-                               'settle_initial':settle_initial, 'career_event_id':career_event_id},
+                               'settle_initial':settle_initial, 'career_event_id':career_event_id,
+                               'challenge_spec':challenge_spec, 'build':build,
+                               'sector_chase':sector_chase, 'practice_sector':practice_sector},
                       self.road_shape, self.traffic_density)
         self.keyboard.clear()
         self.keyboard.direction = 1
@@ -440,6 +462,9 @@ class SessionProcess:
     def finish(self):
         self._command('finish')
         self.keyboard.clear()
+
+    def retry_challenge_score(self):
+        self._command('retry_challenge_score')
 
     def reset_player(self):
         self._command('reset_player')

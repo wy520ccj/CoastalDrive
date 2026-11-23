@@ -1,0 +1,57 @@
+{
+  "scope": "2640新120Hz拍、同一原GT配置和循线控制器，无交通；范围150–240m。1m路面保持5m护栏和远地形，双子步仅诊断未采用",
+  "runs": [
+    {
+      "scope": "真实无交通山脊2640新子步，原GT参数，120Hz；substeps=2仅诊断积分精度，不接入游戏",
+      "substeps": 1,
+      "vehicle": "coastal-gt",
+      "compute_wall_s": 9.522901899999852,
+      "pitch_minus_road_percentiles_deg": [
+        -0.5118074966186494,
+        -0.44604066524468083,
+        -0.1493840388063825,
+        0.3247631411428756,
+        0.3982510256003158
+      ],
+      "run": "pitch-1step",
+      "body_road_pitch_range_deg": 0.9100585222189652,
+      "pitch_error_velocity_p95_deg_per_s": 7.221036133263804,
+      "dominant_frequency_above_2_hz": 2.7551020408163267
+    },
+    {
+      "scope": "真实无交通山脊2640新子步，原GT参数，120Hz；substeps=2仅诊断积分精度，不接入游戏",
+      "substeps": 2,
+      "vehicle": "coastal-gt",
+      "compute_wall_s": 12.78331210000033,
+      "pitch_minus_road_percentiles_deg": [
+        -0.5267688824669898,
+        -0.4608096507677642,
+        -0.15207058649355432,
+        0.33496219401909233,
+        0.4143018431779968
+      ],
+      "run": "pitch-2step",
+      "body_road_pitch_range_deg": 0.9410707256449866,
+      "pitch_error_velocity_p95_deg_per_s": 7.474115043908105,
+      "dominant_frequency_above_2_hz": 2.7586206896551726
+    },
+    {
+      "scope": "真实无交通山脊2640新子步，原GT参数，120Hz；substeps=2仅诊断积分精度，不接入游戏",
+      "substeps": 1,
+      "mesh_step": 1,
+      "vehicle": "coastal-gt",
+      "compute_wall_s": 10.782700200001273,
+      "pitch_minus_road_percentiles_deg": [
+        -0.20149175171967437,
+        -0.18206915720020792,
+        -0.07604964118640534,
+        -0.05145979439745237,
+        -0.024319453966910876
+      ],
+      "run": "pitch-road-only-1m",
+      "body_road_pitch_range_deg": 0.1771722977527635,
+      "pitch_error_velocity_p95_deg_per_s": 0.6689680427380509,
+      "dominant_frequency_above_2_hz": 13.622448979591837
+    }
+  ]
+}

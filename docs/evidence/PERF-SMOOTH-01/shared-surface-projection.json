@@ -1,0 +1,242 @@
+{
+  "scope": "真实原资源/山脊1m路面/两侧路肩，原/新/新/原；顶点数组/索引/格式/状态精确一致。含冷启动首项，非正常驾驶或GPU性能Gate。",
+  "baseline": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance-20261027\\baseline-source\\expressway-route-before-shared-projection.py",
+  "runs": [
+    {
+      "segment": 0,
+      "mode": "original",
+      "wall_ms": 1632.017399999313,
+      "project_calls": 1206,
+      "geometry_and_states_equal": true
+    },
+    {
+      "segment": 0,
+      "mode": "shared",
+      "wall_ms": 27.17829999892274,
+      "project_calls": 804,
+      "geometry_and_states_equal": true
+    },
+    {
+      "segment": 0,
+      "mode": "shared",
+      "wall_ms": 27.22369999901275,
+      "project_calls": 804,
+      "geometry_and_states_equal": true
+    },
+    {
+      "segment": 0,
+      "mode": "original",
+      "wall_ms": 34.94709999904444,
+      "project_calls": 1206,
+      "geometry_and_states_equal": true
+    },
+    {
+      "segment": 2,
+      "mode": "original",
+      "wall_ms": 38.03209999932733,
+      "project_calls": 1206,
+      "geometry_and_states_equal": true
+    },
+    {
+      "segment": 2,
+      "mode": "shared",
+      "wall_ms": 26.521899999352172,
+      "project_calls": 804,
+      "geometry_and_states_equal": true
+    },
+    {
+      "segment": 2,
+      "mode": "shared",
+      "wall_ms": 30.22400000008929,
+      "project_calls": 804,
+      "geometry_and_states_equal": true
+    },
+    {
+      "segment": 2,
+      "mode": "original",
+      "wall_ms": 35.09269999995013,
+      "project_calls": 1206,
+      "geometry_and_states_equal": true
+    },
+    {
+      "segment": 4,
+      "mode": "original",
+      "wall_ms": 41.44989999986137,
+      "project_calls": 1206,
+      "geometry_and_states_equal": true
+    },
+    {
+      "segment": 4,
+      "mode": "shared",
+      "wall_ms": 29.148600000553415,
+      "project_calls": 804,
+      "geometry_and_states_equal": true
+    },
+    {
+      "segment": 4,
+      "mode": "shared",
+      "wall_ms": 28.687199999694712,
+      "project_calls": 804,
+      "geometry_and_states_equal": true
+    },
+    {
+      "segment": 4,
+      "mode": "original",
+      "wall_ms": 36.53839999969932,
+      "project_calls": 1206,
+      "geometry_and_states_equal": true
+    },
+    {
+      "segment": 9,
+      "mode": "original",
+      "wall_ms": 60.48670000018319,
+      "project_calls": 1206,
+      "geometry_and_states_equal": true
+    },
+    {
+      "segment": 9,
+      "mode": "shared",
+      "wall_ms": 42.57009999855654,
+      "project_calls": 804,
+      "geometry_and_states_equal": true
+    },
+    {
+      "segment": 9,
+      "mode": "shared",
+      "wall_ms": 41.17760000008275,
+      "project_calls": 804,
+      "geometry_and_states_equal": true
+    },
+    {
+      "segment": 9,
+      "mode": "original",
+      "wall_ms": 53.7371999998868,
+      "project_calls": 1206,
+      "geometry_and_states_equal": true
+    }
+  ],
+  "failures": [
+    "r1-r3旧源码对照未跟随本机入口实际太阳方向，附加阴影坐标不同；修正检查器光源后精确一致，未放宽断言。",
+    "T0共享顶点检查：平直旧网格只有90角点，错误的至少720断言失败；改为逐个覆盖物理原网格全部三角角点，不改变数据公式断言。",
+    "2026-10-27 T1在27项输出后中断且进程不存在，未完成；10月28日重跑另存。"
+  ],
+  "validation": {
+    "started_utc": "2026-10-28T01:48:22.849002+00:00",
+    "git_head": "15c321f547dbc0f8891200c8fb84bede91d07257",
+    "git_status": "M archive/2026-10-17/launchers/archive/README.md\n D \"archive/2026-10-17/launchers/archive/\\350\\257\\225\\347\\216\\251-AUDIO-01-FIX.cmd\"\n D \"archive/2026-10-17/launchers/archive/\\350\\257\\225\\347\\216\\251-AUDIO-01.cmd\"\n D \"archive/2026-10-17/launchers/archive/\\350\\257\\225\\347\\216\\251-AUDIO-02.cmd\"\n D \"archive/2026-10-17/launchers/archive/\\350\\257\\225\\347\\216\\251-HWY-01.cmd\"\n D \"archive/2026-10-17/launchers/archive/\\350\\257\\225\\347\\216\\251-HWY-02.cmd\"\n D \"archive/2026-10-17/launchers/archive/\\350\\257\\225\\347\\216\\251-HWY-04.cmd\"\n D \"archive/2026-10-17/launchers/archive/\\350\\257\\225\\347\\216\\251-PERF-03.cmd\"\n D \"archive/2026-10-17/launchers/archive/\\350\\257\\225\\347\\216\\251-PERF-04.cmd\"\n D \"archive/2026-10-17/launchers/archive/\\350\\257\\225\\347\\216\\251-PLAY-01-FIX.cmd\"\n D \"archive/2026-10-17/launchers/archive/\\350\\257\\225\\347\\216\\251-RADIO-01.cmd\"\n M art/expressway/sources/road-materials/manifest.json\n M art/expressway/vegetation-extraction.json\n M assets/game/expressway/shaders/route-mountain.frag\n M assets/game/expressway/shaders/route-terrain.frag\n M assets/game/expressway/vegetation-manifest.json\n M docs/asset-register.csv\n M docs/current-progress.md\n M docs/environment-art.md\n M docs/tasks/PLAY-REPAIR-01.md\n M launchers/README.md\n M launchers/game-current.cmd\n M src/application.py\n M src/chase_camera.py\n M src/curve_mesh.py\n M src/environment/expressway.py\n M src/environment/expressway_materials.py\n M src/environment/expressway_mountains.py\n M src/environment/expressway_route.py\n M src/environment/surface_mesh.py\n M src/scene.py\n M src/session_process.py\n M src/simulation.py\n M src/streamed_road.py\n M src/vehicle_visual.py\n M tests/test_career_ui.py\n M tests/test_chase_camera.py\n M tests/test_curve_mesh.py\n M tests/test_expressway_route.py\n M tests/test_session_process.py\n M tests/test_world_substeps.py\n M tools/blender/prepare_photographed_vegetation.py\n M tools/environment/fetch_photographed_vegetation.py\n M tools/environment/kcd_local_assets.py\n M tools/environment/pack_photographed_vegetation.py\n M tools/environment/prepare_daylight_environment.py\n M tools/validate.py\n?? art/expressway/candidates/\n?? art/expressway/sources/daylight-29/\n?? art/expressway/sources/grass-bermuda-01/\n?? art/expressway/sources/tree-small-02/\n?? assets/game/materials/leafy_grass_nor_gl_2k.jpg\n?? assets/game/materials/leafy_grass_rough_2k.jpg\n?? docs/design/garage-v2/25-kcd-ground-lighting.png\n?? docs/design/garage-v2/26-coastal-rebuild-prompt.txt\n?? docs/design/garage-v2/26-coastal-rebuild.md\n?? docs/design/garage-v2/26-coastal-rebuild.png\n?? docs/design/garage-v2/27-driving-view-environment-prompt.txt\n?? docs/design/garage-v2/27-driving-view-environment.md\n?? docs/design/garage-v2/27-driving-view-environment.png\n?? docs/design/garage-v2/28-driving-woodland-prompt.txt\n?? docs/design/garage-v2/28-driving-woodland.md\n?? docs/design/garage-v2/28-driving-woodland.png\n?? docs/design/garage-v2/29-driving-daylight-prompt.txt\n?? docs/design/garage-v2/29-driving-daylight.md\n?? docs/design/garage-v2/29-driving-daylight.png\n?? docs/design/garage-v2/30-woodland-floor-prompt.txt\n?? docs/design/garage-v2/30-woodland-floor.md\n?? docs/design/garage-v2/30-woodland-floor.png\n?? docs/design/garage-v2/31-ridge-meadow-prompt.txt\n?? docs/design/garage-v2/31-ridge-meadow.md\n?? docs/design/garage-v2/31-ridge-meadow.png\n?? docs/design/garage-v2/32-hd2-rock-face-prompt.txt\n?? docs/design/garage-v2/32-hd2-rock-face.md\n?? docs/design/garage-v2/32-hd2-rock-face.png\n?? docs/design/garage-v2/33-canopy-volume-prompt.txt\n?? docs/design/garage-v2/33-canopy-volume.md\n?? docs/design/garage-v2/33-canopy-volume.png\n?? docs/design/garage-v2/34-woodland-groves-prompt.txt\n?? docs/design/garage-v2/34-woodland-groves.md\n?? docs/design/garage-v2/34-woodland-groves.png\n?? docs/design/garage-v2/35-assets/\n?? docs/design/garage-v2/35-chase-contact.md\n?? docs/design/garage-v2/35-chase-contact.png\n?? docs/evidence/ENV-REAL-01/\n?? docs/evidence/ENV-STABLE-01/\n?? docs/evidence/PERF-SMOOTH-01/\n?? docs/tasks/ENV-REAL-01.md\n?? docs/tasks/ENV-STABLE-01.md\n?? docs/tasks/PERF-SMOOTH-01.md\n?? launchers/game-hd2-local.cmd\n?? launchers/game-kcd-local.cmd\n?? src/rendering.py\n?? tests/test_driving_geometry.py\n?? tests/test_hd2_local_rocks.py\n?? tests/test_kcd_tree_batches.py\n?? tests/test_local_kcd_drive.py\n?? tests/test_rendering.py\n?? tests/test_road_refinement.py\n?? tests/test_surface_batches.py\n?? tools/blender/bake_coastal_canopy.py\n?? tools/blender/build_coastal_meadow.py\n?? tools/blender/prepare_driving_rocks.py\n?? tools/blender/prepare_vegetation_candidate.py\n?? tools/environment/bake_kcd_canopy_visibility.py\n?? tools/environment/check_canopy_lighting.py\n?? tools/environment/check_canopy_normals.py\n?? tools/environment/check_canopy_visibility_gpu.py\n?? tools/environment/check_drive_continuity.py\n?? tools/environment/check_driving_composition.py\n?? tools/environment/check_grass_distance_fade.py\n?? tools/environment/check_grass_vertex_cull.py\n?? tools/environment/check_hd2_material_gpu.py\n?? tools/environment/check_hd2_rock_sample.py\n?? tools/environment/check_heightfield_gpu.py\n?? tools/environment/check_interactive_local_drive.py\n?? tools/environment/check_local_kcd_drive.py\n?? tools/environment/check_meadow_growth_gpu.py\n?? tools/environment/check_meadow_variants.py\n?? tools/environment/check_tree_batch_drive.py\n?? tools/environment/check_tree_lod_transition.py\n?? tools/environment/check_tree_root_transport.py\n?? tools/environment/check_woodland_composition.py\n?? tools/environment/check_woodland_state.py\n?? tools/environment/decode_bc6h.c\n?? tools/environment/hd2_local_rocks.py\n?? tools/environment/kcd_lighting_diagnostics.py\n?? tools/environment/kcd_local_environment.py\n?? tools/environment/kcd_tree_batches.py\n?? tools/environment/local_coastal_landscape.py\n?? tools/environment/local_kcd_drive.py\n?? tools/environment/pack_vegetation_candidate.py\n?? tools/environment/prepare_hd2_local_rock.py\n?? tools/environment/prepare_kcd_environment.py\n?? tools/environment/preview_woodland_catalog.py\n?? tools/performance/check_camera_scene.py\n?? tools/performance/check_camera_state.py\n?? tools/performance/check_camera_uniform_gpu.py\n?? tools/performance/check_chase_framing.py\n?? tools/performance/check_driving_materials_gpu.py\n?? tools/performance/check_driving_stalls.py\n?? tools/performance/check_native_camera.py\n?? tools/performance/check_pitch_motion.py\n?? tools/performance/check_render_costs.py\n?? tools/performance/check_route_start.py\n?? tools/performance/check_segment_batches.py\n?? tools/performance/check_shared_surface_projection.py\n?? tools/performance/check_state_collection.py\n?? tools/performance/check_straight_motion.py\n?? tools/performance/check_tree_coverage.py\n?? tools/performance/check_vehicle_grounding.py\n?? tools/performance/check_vehicle_shadow.py\n?? tools/third_party/",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_expressway_route.py",
+      "tests/test_surface_batches.py",
+      "tests/test_curve_mesh.py",
+      "tests/test_local_kcd_drive.py",
+      "tests/test_kcd_tree_batches.py"
+    ],
+    "tier": "T1",
+    "status": "passed",
+    "passed": true,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance-20261028\\T1-shared-projection\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 1.049
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_expressway_route.py",
+          "tests/test_surface_batches.py",
+          "tests/test_curve_mesh.py",
+          "tests/test_local_kcd_drive.py",
+          "tests/test_kcd_tree_batches.py"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance-20261028\\T1-shared-projection\\pytest.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 261.876
+      },
+      {
+        "name": "headless-0",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "0"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance-20261028\\T1-shared-projection\\headless-0.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 1.568
+      },
+      {
+        "name": "headless-17",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "17"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance-20261028\\T1-shared-projection\\headless-17.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 1.539
+      },
+      {
+        "name": "headless-23",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "23"
+        ],
+        "reports": [],
+        "log": "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\logs\\performance-20261028\\T1-shared-projection\\headless-23.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 1.518
+      }
+    ]
+  }
+}

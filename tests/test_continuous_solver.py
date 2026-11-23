@@ -20,6 +20,7 @@ from wheel_contact_kernels import _joint_contact_state, _joint_coordinates, conv
 import physics_wire
 import physics_workers
 import tire_drivetrain
+from fuel import FuelMeter
 from lab_runtime import runtime_fingerprint
 from suspension import SuspensionState
 from suspension_kinematics import finite_contact_system
@@ -49,14 +50,19 @@ def load_hardware():
 
 
 def from_bytes(payload):
-    return decode(FROZEN_LAYOUT,payload)
+    request = decode(FROZEN_LAYOUT,payload)
+    hardware = load_hardware()
+    # 归档早于油耗观察，只补零计量初值，原机械字段保持。
+    return replace(request, powertrain={**request.powertrain,
+        'fuel': FuelMeter(hardware.idle_rpm, hardware.engine_redline_rpm).values()})
 
 
 def result_bytes(result):
     for state in result.states:
         assert state.pneumatic_trail == state.aligning_moment == state.contact_steering_work == state.steering_lateral_velocity == 0.
         assert state.aligning_angular_impulse == (0.,)*3
-    return encode(FROZEN_LAYOUT,result)
+    return encode(FROZEN_LAYOUT,replace(result, powertrain={name: value for name, value in result.powertrain.items()
+                                                          if name != 'fuel'}))
 
 
 @cache

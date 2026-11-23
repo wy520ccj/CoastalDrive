@@ -13,6 +13,7 @@ from panda3d.bullet import (
 from panda3d.core import BitMask32, ConfigVariableBool, NodePath, Vec3
 from wheel_contact_kernels import static_support_read
 
+from coastal_collision import add_rail_shapes
 from suspension_contacts import static_support_shapes
 from triangle_support import TriangleSupport
 
@@ -124,3 +125,41 @@ def test_mesh_tag_replacement_and_unregistered_mutable_hull(transform_policy):
 def test_native_reader_invalid_boundary_reports_error():
     with pytest.raises(TypeError):
         static_support_read(BulletWorld(), None, BitMask32.bit(0), [], NodePath, (), Vec3(1.), None)
+
+
+def test_registered_hulls_refresh_margin_registration_and_parent_scale(transform_policy):
+    world = BulletWorld()
+    body = BulletRigidBodyNode('registered-rail')
+    add_rail_shapes(body, ((-1.,-2.,0.),(-1.,-2.,.4),(1.,-2.,0.),(1.,-2.,.4),
+                           (-1.,2.,0.),(-1.,2.,.4),(1.,2.,0.),(1.,2.,.4)))
+    parent = NodePath('rail-parent')
+    NodePath(body).reparentTo(parent)
+    world.attachRigidBody(body)
+    cache, packets = {}, {}
+
+    def read():
+        actual = static_support_shapes(world, None, BitMask32.bit(0), cache=cache, packet_cache=packets)
+        fresh = static_support_shapes(world, None, BitMask32.bit(0), packet_cache={})
+        assert tuple(actual) == tuple(fresh)
+        assert actual.hulls == fresh.hulls
+        return actual
+
+    original = read()
+    assert len(original.hulls[body]) == 2
+    assert read() is original
+    body.getShape(1).setMargin(.07)
+    updated = read()
+    assert updated is not original
+    assert updated.hulls[body][1].margin == body.getShape(1).getMargin()
+    body.clearPythonTag('suspension_hull_shapes')
+    assert body not in read().hulls
+    body.setPythonTag('suspension_hull_shapes',tuple(body.getShapes()))
+    assert body in read().hulls
+    parent.setScale(2.)
+    assert body not in read().hulls
+    parent.setScale(1.)
+    assert body in read().hulls
+    body.clearPythonTag('suspension_shape_bounds')
+    read()
+    world.removeRigidBody(body)
+    assert tuple(read()) == ()

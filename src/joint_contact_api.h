@@ -6,7 +6,8 @@ typedef struct {
     int (*evaluate)(void *,const double *,const double *,double,double *,double *,double *);
     void (*begin)(NativeSolveError *);
     void (*end)(void);
+    int (*queries_world)(void *);
 } JointContactApi;
-#define JOINT_CONTACT_API_NAME "CoastalDrive.joint_contact_api.v2"
+#define JOINT_CONTACT_API_NAME "CoastalDrive.joint_contact_api.v4"
 #define JOINT_CONTACT_PACKET_NAME "CoastalDrive.joint_contact_packet.v1"
 #endif

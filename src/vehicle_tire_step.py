@@ -5,10 +5,17 @@ from functools import lru_cache
 
 from panda3d.core import Vec3
 
+from fuel import FuelMeter
 from powertrain import Powertrain
 from suspension import SuspensionState
 from vehicle_suspension import Suspension
 from vehicle_tires import Tires
+
+
+def _powertrain_values(powertrain):
+    values = {name: value for name, value in powertrain.__dict__.items() if name not in ('config', 'fuel')}
+    values['fuel'] = powertrain.fuel.values()
+    return values
 
 
 @lru_cache(maxsize=32)
@@ -82,6 +89,7 @@ class TireAdvanceResult:
         tires.deformation = list(self.deformation)
         tires.states = self.states
         powertrain.__dict__.update(self.powertrain)
+        powertrain.fuel = FuelMeter.from_values(self.powertrain['fuel'])
         suspension.state = self.suspension_state
         suspension.compression = self.compression
         suspension.geometry = self.normal_geometry
@@ -121,7 +129,7 @@ class TireAdvanceInput:
         wheels = tuple((wheel.getSuspensionRestLength(),wheel.getSteering()) for wheel in world_source[2]) if world_source else ()
         return cls(tires.config,body,contacts,angles,request,tick,dt,external_velocity,external_angular,
             tuple(tires.omega),tuple(tires.rotation),tuple(tires.deformation),tires.states,
-            {name:value for name,value in powertrain.__dict__.items() if name!='config'},
+            _powertrain_values(powertrain),
             normal_system,suspension.geometry if normal_system is not None else None,
             suspension.compression,suspension.state.force_tick,accumulate,suspension.state.normal_force,wheels,world_source)
 
@@ -138,6 +146,7 @@ class TireAdvanceInput:
         powertrain = Powertrain.__new__(Powertrain)
         powertrain.config = self.config
         powertrain.__dict__.update(self.powertrain)
+        powertrain.fuel = FuelMeter.from_values(self.powertrain['fuel'])
         # 数值部分只使用悬架材料/接点/上拍压缩，不创建原生扫掠形状或世界。
         suspension = Suspension.__new__(Suspension)
         suspension.config = self.config
@@ -174,7 +183,7 @@ class TireAdvanceInput:
             self.external_velocity,self.external_angular,powertrain=powertrain,
             suspension=(suspension,normal_system,on_asphalt),substeps=1,accumulate=self.accumulate)
         return TireAdvanceResult(tuple(tires.omega),tuple(tires.rotation),tuple(tires.deformation),tires.states,
-            {name:value for name,value in powertrain.__dict__.items() if name!='config'},
+            _powertrain_values(powertrain),
             suspension.state,suspension.compression,contacts,tuple(body.impulses),suspension.geometry)
 
 

@@ -1,0 +1,548 @@
+{
+  "scope": "局部精确签名复用及凸体包失效修复；全场景画面/长期性能目标仍active",
+  "abba": {
+    "A1": {
+      "complete_step": {
+        "count": 360,
+        "mean_ms": 5.38327944456493,
+        "p95_ms": 7.273729998632916,
+        "p99_ms": 9.294175000977702,
+        "max_ms": 12.774000002536923,
+        "total_seconds": 1.9379806000433746
+      },
+      "snapshot_hashes_equal": true,
+      "collisions": 0
+    },
+    "B1": {
+      "complete_step": {
+        "count": 360,
+        "mean_ms": 4.865698610855261,
+        "p95_ms": 6.252970001514768,
+        "p99_ms": 8.044971999916015,
+        "max_ms": 8.67399999697227,
+        "total_seconds": 1.7516514999078936
+      },
+      "snapshot_hashes_equal": true,
+      "collisions": 0
+    },
+    "B2": {
+      "complete_step": {
+        "count": 360,
+        "mean_ms": 5.126197777624636,
+        "p95_ms": 7.736594996822536,
+        "p99_ms": 9.272410001431139,
+        "max_ms": 12.151599999924656,
+        "total_seconds": 1.8454311999448691
+      },
+      "snapshot_hashes_equal": true,
+      "collisions": 0
+    },
+    "A2": {
+      "complete_step": {
+        "count": 360,
+        "mean_ms": 5.31341972232945,
+        "p95_ms": 8.760824999626495,
+        "p99_ms": 11.047012001508856,
+        "max_ms": 12.823700002627447,
+        "total_seconds": 1.912831100038602
+      },
+      "snapshot_hashes_equal": true,
+      "collisions": 0
+    }
+  },
+  "abba_mean_reduction_percent": 6.58897448098571,
+  "production_equivalence": {
+    "free": {
+      "samples": 360,
+      "snapshot_hashes_equal": true,
+      "configuration_equal": true,
+      "production_complete_step": {
+        "count": 360,
+        "mean_ms": 4.240416944574261,
+        "p95_ms": 6.466064995402123,
+        "p99_ms": 8.157346000443797,
+        "max_ms": 12.195900002552662,
+        "total_seconds": 1.5265501000467339
+      },
+      "baseline": "signature-abba-A1",
+      "scope": "完整快照等价；历史计时样本不作为同时段性能对照"
+    },
+    "time": {
+      "samples": 360,
+      "snapshot_hashes_equal": true,
+      "configuration_equal": true,
+      "production_complete_step": {
+        "count": 360,
+        "mean_ms": 3.0851113888072885,
+        "p95_ms": 3.8559349999559345,
+        "p99_ms": 5.365216999052793,
+        "max_ms": 8.407200002693571,
+        "total_seconds": 1.1106400999706239
+      },
+      "baseline": "transform-abba-time-A",
+      "scope": "完整快照等价；历史计时样本不作为同时段性能对照"
+    }
+  },
+  "normal_coastal": {
+    "before": [
+      {
+        "mode": "free_drive",
+        "frames": 1675,
+        "foreground": 1673,
+        "minimized": 0,
+        "frame_ms": {
+          "median": 8.924649999244139,
+          "p95": 16.926194999905416,
+          "max": 49.160000002302695,
+          "over_33ms": 5
+        },
+        "owner_end": [
+          2369,
+          0.0,
+          35955.2715268
+        ],
+        "tick_start": 282
+      },
+      {
+        "mode": "time_trial",
+        "frames": 1959,
+        "foreground": 1959,
+        "minimized": 0,
+        "frame_ms": {
+          "median": 8.315449998917757,
+          "p95": 12.284324998108787,
+          "max": 45.17269999632845,
+          "over_33ms": 1
+        },
+        "owner_end": [
+          2220,
+          0.0,
+          35978.2751663
+        ],
+        "tick_start": 133
+      }
+    ],
+    "after": [
+      {
+        "mode": "free_drive",
+        "frames": 2003,
+        "foreground": 2003,
+        "minimized": 0,
+        "frame_ms": {
+          "median": 8.360799998627044,
+          "p95": 10.877654999421793,
+          "max": 28.074499998183455,
+          "over_33ms": 0
+        },
+        "owner_end": [
+          2369,
+          0.0,
+          36232.9668693
+        ],
+        "tick_start": 282
+      },
+      {
+        "mode": "time_trial",
+        "frames": 2025,
+        "foreground": 2025,
+        "minimized": 0,
+        "frame_ms": {
+          "median": 8.16464999661548,
+          "p95": 11.28762499865843,
+          "max": 38.75980000157142,
+          "over_33ms": 1
+        },
+        "owner_end": [
+          2220,
+          0.0,
+          36256.0443937
+        ],
+        "tick_start": 133
+      }
+    ]
+  },
+  "normal_limits": "两轮相邻但非随机交叉的前台运行；不把旧严重负载变化归因本次修复。",
+  "ridge": {
+    "display_frames": 1037,
+    "foreground_frames": 1037,
+    "minimized_frames": 0,
+    "views": [
+      {
+        "tick": 679,
+        "progress_m": 40.20155452700634,
+        "speed_mps": 13.48910903930664,
+        "collisions": 0
+      },
+      {
+        "tick": 1374,
+        "progress_m": 120.07657567527394,
+        "speed_mps": 13.995721817016602,
+        "collisions": 0
+      },
+      {
+        "tick": 1972,
+        "progress_m": 190.0722105117494,
+        "speed_mps": 13.46673583984375,
+        "collisions": 0
+      },
+      {
+        "tick": 2664,
+        "progress_m": 270.03868489797605,
+        "speed_mps": 14.083545684814453,
+        "collisions": 0
+      }
+    ],
+    "without_capture_readback": {
+      "wall_frame_ms": {
+        "median": 18.91280000199913,
+        "p95": 24.40580999864323,
+        "p99": 28.881294997700024,
+        "max": 51.062200000160374
+      },
+      "parent_cpu_ms": {
+        "median": 15.625,
+        "p95": 62.5,
+        "p99": 62.5,
+        "max": 78.125
+      },
+      "update_wall_ms": {
+        "median": 2.2860500030219555,
+        "p95": 5.3540500026429045,
+        "p99": 7.7604609975969625,
+        "max": 34.720999996352475
+      },
+      "update_cpu_ms": {
+        "median": 0.0,
+        "p95": 31.25,
+        "p99": 46.875,
+        "max": 62.5
+      },
+      "stream_frame_ms": {
+        "median": 0.0565999980608467,
+        "p95": 2.7751400019041794,
+        "p99": 4.4760750021669,
+        "max": 8.224199998949189
+      }
+    },
+    "owner_end": {
+      "tick": 2700,
+      "dropped_time": 0.0,
+      "monotonic": 36356.7213019
+    },
+    "slow_frames": [
+      {
+        "wall_frame_ms": 51.062200000160374,
+        "parent_cpu_ms": 15.625,
+        "update_wall_ms": 34.720999996352475,
+        "update_cpu_ms": 0.0,
+        "render_frame": 1361,
+        "tick": 585,
+        "progress_m": 29.786235225012263,
+        "speed_mps": 12.949033737182617,
+        "dropped_time": 0.0,
+        "backlog_time": 0.012292766667087562,
+        "stream_frame_ms": 0.05619999865302816,
+        "size": [
+          1280,
+          720
+        ],
+        "foreground": true,
+        "minimized": false,
+        "after_capture": false,
+        "main_phases": {
+          "snapshot_roundtrip": {
+            "wall_ms": 0.7840000034775585,
+            "thread_cpu_ms": 0.0
+          },
+          "camera_roundtrip": {
+            "wall_ms": 33.37879999889992,
+            "thread_cpu_ms": 0.0
+          },
+          "update": {
+            "wall_ms": 34.725999998045154,
+            "thread_cpu_ms": 0.0
+          },
+          "state_collection": {
+            "wall_ms": 2.517400003853254,
+            "thread_cpu_ms": 0.0
+          },
+          "renderFrame": {
+            "wall_ms": 13.468600001942832,
+            "thread_cpu_ms": 15.625
+          }
+        },
+        "finished_at": 36339.1513208,
+        "newly_visible_segments": [],
+        "removed_segments": [],
+        "stream_phase": "local-far-tree-batch"
+      },
+      {
+        "wall_frame_ms": 47.783800000615884,
+        "parent_cpu_ms": 31.25,
+        "update_wall_ms": 32.8187999984948,
+        "update_cpu_ms": 15.625,
+        "render_frame": 1347,
+        "tick": 548,
+        "progress_m": 25.883170920401138,
+        "speed_mps": 12.520339965820312,
+        "dropped_time": 0.0,
+        "backlog_time": 0.04534730000062481,
+        "stream_frame_ms": 0.06330000178422779,
+        "size": [
+          1280,
+          720
+        ],
+        "foreground": true,
+        "minimized": false,
+        "after_capture": false,
+        "main_phases": {
+          "snapshot_roundtrip": {
+            "wall_ms": 30.67659999942407,
+            "thread_cpu_ms": 0.0
+          },
+          "camera_roundtrip": {
+            "wall_ms": 1.4971999989938922,
+            "thread_cpu_ms": 0.0
+          },
+          "update": {
+            "wall_ms": 32.82279999984894,
+            "thread_cpu_ms": 0.0
+          },
+          "state_collection": {
+            "wall_ms": 2.0511000038823113,
+            "thread_cpu_ms": 15.625
+          },
+          "renderFrame": {
+            "wall_ms": 12.558700000226963,
+            "thread_cpu_ms": 0.0
+          }
+        },
+        "finished_at": 36338.8427643,
+        "newly_visible_segments": [],
+        "removed_segments": [],
+        "stream_phase": "local-far-tree-batch"
+      },
+      {
+        "wall_frame_ms": 31.4386000027298,
+        "parent_cpu_ms": 31.25,
+        "update_wall_ms": 3.6249000040697865,
+        "update_cpu_ms": 0.0,
+        "render_frame": 1383,
+        "tick": 640,
+        "progress_m": 35.83099843710563,
+        "speed_mps": 13.331375122070312,
+        "dropped_time": 0.0,
+        "backlog_time": 0.010614833331298534,
+        "stream_frame_ms": 0.07219999679364264,
+        "size": [
+          1280,
+          720
+        ],
+        "foreground": true,
+        "minimized": false,
+        "after_capture": false,
+        "main_phases": {
+          "snapshot_roundtrip": {
+            "wall_ms": 1.9510000056470744,
+            "thread_cpu_ms": 0.0
+          },
+          "camera_roundtrip": {
+            "wall_ms": 1.1184000031789765,
+            "thread_cpu_ms": 0.0
+          },
+          "update": {
+            "wall_ms": 3.6295999962021597,
+            "thread_cpu_ms": 0.0
+          },
+          "state_collection": {
+            "wall_ms": 3.3169000016641803,
+            "thread_cpu_ms": 0.0
+          },
+          "renderFrame": {
+            "wall_ms": 24.02270000311546,
+            "thread_cpu_ms": 31.25
+          }
+        },
+        "finished_at": 36339.5869875,
+        "newly_visible_segments": [],
+        "removed_segments": [],
+        "stream_phase": "local-far-tree-batch"
+      },
+      {
+        "wall_frame_ms": 30.950999993365258,
+        "parent_cpu_ms": 31.25,
+        "update_wall_ms": 5.287399995722808,
+        "update_cpu_ms": 0.0,
+        "render_frame": 1395,
+        "tick": 675,
+        "progress_m": 39.75100443534658,
+        "speed_mps": 13.47598934173584,
+        "dropped_time": 0.0,
+        "backlog_time": 0.010815466666826978,
+        "stream_frame_ms": 0.060200000007171184,
+        "size": [
+          1280,
+          720
+        ],
+        "foreground": true,
+        "minimized": false,
+        "after_capture": false,
+        "main_phases": {
+          "snapshot_roundtrip": {
+            "wall_ms": 2.8701999981421977,
+            "thread_cpu_ms": 0.0
+          },
+          "camera_roundtrip": {
+            "wall_ms": 1.8351999970036559,
+            "thread_cpu_ms": 0.0
+          },
+          "update": {
+            "wall_ms": 5.2933999977540225,
+            "thread_cpu_ms": 0.0
+          },
+          "state_collection": {
+            "wall_ms": 2.0475999990594573,
+            "thread_cpu_ms": 0.0
+          },
+          "renderFrame": {
+            "wall_ms": 23.237200002768077,
+            "thread_cpu_ms": 31.25
+          }
+        },
+        "finished_at": 36339.8776416,
+        "newly_visible_segments": [],
+        "removed_segments": [],
+        "stream_phase": "local-far-tree-batch"
+      },
+      {
+        "wall_frame_ms": 30.41769999981625,
+        "parent_cpu_ms": 15.625,
+        "update_wall_ms": 9.74300000234507,
+        "update_cpu_ms": 0.0,
+        "render_frame": 1559,
+        "tick": 1067,
+        "progress_m": 84.59970111210268,
+        "speed_mps": 13.7368803024292,
+        "dropped_time": 0.0,
+        "backlog_time": 0.01823969999871622,
+        "stream_frame_ms": 0.060000005760230124,
+        "size": [
+          1280,
+          720
+        ],
+        "foreground": true,
+        "minimized": false,
+        "after_capture": false,
+        "main_phases": {
+          "snapshot_roundtrip": {
+            "wall_ms": 8.027099996979814,
+            "thread_cpu_ms": 0.0
+          },
+          "camera_roundtrip": {
+            "wall_ms": 1.164400004199706,
+            "thread_cpu_ms": 0.0
+          },
+          "update": {
+            "wall_ms": 9.74780000251485,
+            "thread_cpu_ms": 0.0
+          },
+          "state_collection": {
+            "wall_ms": 1.625099997909274,
+            "thread_cpu_ms": 0.0
+          },
+          "renderFrame": {
+            "wall_ms": 18.694799997319933,
+            "thread_cpu_ms": 15.625
+          }
+        },
+        "finished_at": 36343.1483975,
+        "newly_visible_segments": [],
+        "removed_segments": [],
+        "stream_phase": "local-far-tree-batch"
+      },
+      {
+        "wall_frame_ms": 30.30399999988731,
+        "parent_cpu_ms": 31.25,
+        "update_wall_ms": 2.438600000459701,
+        "update_cpu_ms": 0.0,
+        "render_frame": 1387,
+        "tick": 652,
+        "progress_m": 37.17003831101025,
+        "speed_mps": 13.387332916259766,
+        "dropped_time": 0.0,
+        "backlog_time": 0.008333433333124418,
+        "stream_frame_ms": 0.05100000271340832,
+        "size": [
+          1280,
+          720
+        ],
+        "foreground": true,
+        "minimized": false,
+        "after_capture": false,
+        "main_phases": {
+          "snapshot_roundtrip": {
+            "wall_ms": 0.8088000031420961,
+            "thread_cpu_ms": 0.0
+          },
+          "camera_roundtrip": {
+            "wall_ms": 1.1493999991216697,
+            "thread_cpu_ms": 0.0
+          },
+          "update": {
+            "wall_ms": 2.4428000033367425,
+            "thread_cpu_ms": 0.0
+          },
+          "state_collection": {
+            "wall_ms": 2.6412000006530434,
+            "thread_cpu_ms": 0.0
+          },
+          "renderFrame": {
+            "wall_ms": 24.894999995012768,
+            "thread_cpu_ms": 15.625
+          }
+        },
+        "finished_at": 36339.6848796,
+        "newly_visible_segments": [],
+        "removed_segments": [],
+        "stream_phase": "local-far-tree-batch"
+      }
+    ]
+  },
+  "validation": {
+    "path": "logs/visual-extend-20261028/T1-static-signature",
+    "passed": true,
+    "pytest_cases": 48
+  },
+  "production_source_audit": {
+    "checked": 180,
+    "changed": [
+      "static_support_read.h",
+      "suspension_contacts.py",
+      "wheel_contact_kernels.cp314-win_amd64.pyd"
+    ]
+  },
+  "registries": {
+    "PERF-SMOOTH-01": {
+      "previous": 72,
+      "current": 76,
+      "previous_changed": [],
+      "added": [
+        "src/static_support_read.h",
+        "src/suspension_contacts.py",
+        "src/wheel_contact_kernels.cp314-win_amd64.pyd",
+        "tests/test_static_support_read.py"
+      ]
+    },
+    "VISUAL-EXTEND-01": {
+      "previous": 91,
+      "current": 95,
+      "previous_changed": [],
+      "added": [
+        "src/static_support_read.h",
+        "src/suspension_contacts.py",
+        "src/wheel_contact_kernels.cp314-win_amd64.pyd",
+        "tests/test_static_support_read.py"
+      ]
+    }
+  }
+}

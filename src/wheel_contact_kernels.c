@@ -1,6 +1,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include "native_solve_runtime.h"
+#include <float.h>
 #include <math.h>
 #include <string.h>
 
@@ -938,10 +939,36 @@ static int triangle_query_best(PyObject *hit,PyObject **best,double *ceiling) {
     return 1;
 }
 
+static int triangles_share_edge(const PreparedTriangle *a,const PreparedTriangle *b) {
+    int shared=0;
+    for(int i=0;i<3;++i)for(int j=0;j<3;++j) {
+        const double *left=a->vertices[i],*right=b->vertices[j];
+        if(left[0]==right[0]&&left[1]==right[1]&&left[2]==right[2]){++shared;break;}
+    }
+    return shared==2;
+}
+
+/* 同一网格的浅折共享边近同时入射时，保留首接点深度，连续分配反力。 */
+static void joint_blend_faces(SurfaceEntry *first,const SurfaceEntry *second,
+                              const PreparedTriangle *a,const PreparedTriangle *b) {
+    const double band=8.*FLT_EPSILON;
+    double gap=second->fraction-first->fraction;
+    if(gap>=band||dot(first->normal,second->normal)<.9995||!triangles_share_edge(a,b))return;
+    double weight=(1.-gap/band)/2.;
+    for(int i=0;i<3;++i){
+        first->normal[i]+=(second->normal[i]-first->normal[i])*weight;
+        first->point[i]+=(second->point[i]-first->point[i])*weight;
+    }
+    double norm=sqrt(dot(first->normal,first->normal));
+    for(int i=0;i<3;++i)first->normal[i]/=norm;
+    /* 多面反力走通用离散梯度，仍以最先命中的入射分数计算位移。 */
+    first->face=0;
+}
+
 /* 完整网格求交只保留原生候选和末接点；中间面/边不再装配Python对象。 */
 static int triangle_query_values(TrianglePacket *packet,double start[3],double end[3],double padding[3],
     double margin,double axis[3],double radius,double width,double shoulder,double crown,PyObject *coordinates,
-    SurfaceEntry *result) {
+    SurfaceEntry *result,int blend_faces) {
     PreparedTriangle *small_candidates[32]; double small_bounds[32];
     PreparedTriangle **candidates=packet->total<=32 ? small_candidates : PyMem_RawMalloc(packet->total*sizeof(*candidates));
     double *bounds=packet->total<=32 ? small_bounds : PyMem_RawMalloc(packet->total*sizeof(*bounds));
@@ -951,14 +978,21 @@ static int triangle_query_values(TrianglePacket *packet,double start[3],double e
     }
     Py_ssize_t count=0;
     triangle_packet_collect(packet,start,end,padding,candidates,&count);
-    SurfaceEntry best={0}; FaceSupport support_cache={0}; double ceiling=1.;
+    SurfaceEntry best={0},second={0}; FaceSupport support_cache={0}; double ceiling=1.;
+    PreparedTriangle *best_face=NULL,*second_face=NULL;
     for (Py_ssize_t k=0;k<count;++k) {
         PreparedTriangle *prepared=candidates[k]; SurfaceEntry hit={0}; int finished;
         if (!triangle_face_result(start,end,prepared->vertices,margin,axis,radius,width,shoulder,crown,
             1,1.,&bounds[k],prepared->normal,&support_cache,&hit,&finished)) goto failed;
         if (hit.found) {
             bounds[k]=NAN;
-            if (!best.found || hit.fraction<ceiling) { best=hit; ceiling=hit.fraction; }
+            int distinct=blend_faces && best_face && dot(best.normal,hit.normal)<1.-FLT_EPSILON;
+            if (!best.found || hit.fraction<ceiling) {
+                if(distinct){second=best;second_face=best_face;}
+                best=hit;ceiling=hit.fraction;best_face=prepared;
+            } else if(distinct && (!second_face || hit.fraction<second.fraction)){
+                second=hit;second_face=prepared;
+            }
         }
     }
     for (Py_ssize_t k=0;k<count;++k) {
@@ -969,6 +1003,7 @@ static int triangle_query_values(TrianglePacket *packet,double start[3],double e
         if (hit.found && (!best.found || hit.fraction<ceiling)) { best=hit; ceiling=hit.fraction; }
     }
     if (packet->total>32) { PyMem_RawFree(candidates); PyMem_RawFree(bounds); }
+    if(blend_faces && best.face && second_face)joint_blend_faces(&best,&second,best_face,second_face);
     *result=best; return 1;
 failed:
     if (packet->total>32) { PyMem_RawFree(candidates); PyMem_RawFree(bounds); }
@@ -993,7 +1028,7 @@ static PyObject *triangle_support_entry(PyObject *self,PyObject *args,PyObject *
     if (!packet) return NULL;
     if (coordinates!=Py_None) {
         SurfaceEntry result={0};
-        if (!triangle_query_values(packet,start,end,padding,margin,axis,radius,width,shoulder,crown,coordinates,&result)) return NULL;
+        if (!triangle_query_values(packet,start,end,padding,margin,axis,radius,width,shoulder,crown,coordinates,&result,0)) return NULL;
         return surface_entry_object(&result);
     }
     PreparedTriangle **candidates=PyMem_Malloc(packet->total*sizeof(PreparedTriangle *));
@@ -1407,7 +1442,7 @@ static PyObject *surface_packet_entry(SurfacePacket *packet,double start[3],doub
                 padding[a]=support[a]+part->margin;
             }
             if (!triangle_query_values(part->triangles,local_start,local_end,padding,part->margin,local_axis,
-                radius,width,shoulder,crown,coordinates,&hit)) return NULL;
+                radius,width,shoulder,crown,coordinates,&hit,0)) return NULL;
         } else if (part->kind==0) {
             double extent[3];
             if (!support_values(part->normal,local_axis,radius,width/2,shoulder,crown,extent)) return NULL;
@@ -1947,7 +1982,7 @@ static int joint_surface_values(SurfacePacket *packet,double start[3],double end
                 padding[a]=support[a]+part->margin;
             }
             if (!triangle_query_values(part->triangles,local_start,local_end,padding,part->margin,local_axis,
-                radius,width,shoulder,crown,coordinates,&hit)) return 0;
+                radius,width,shoulder,crown,coordinates,&hit,1)) return 0;
         } else if (part->kind==0) {
             double extent[3];
             if (!support_values(part->normal,local_axis,radius,width/2,shoulder,crown,extent)) return 0;
@@ -2057,6 +2092,8 @@ static PyMethodDef methods[] = {
     {"static_support_read", (PyCFunction)static_support_read, METH_VARARGS, "真实静态形状资格/签名及未变几何的批量读取"},
     {"wheel_state_update", (PyCFunction)wheel_state_update, METH_VARARGS | METH_KEYWORDS, "复制完整轮端力学账并更新本拍字段"},
     {"joint_contact_prepare",joint_contact_prepare,METH_VARARGS,"连续共同求解的真实有限接点准备"},
+    {"joint_contact_query_prepare",joint_contact_query_prepare,METH_O,"原世界有限接触查询与原生机械迭代共用"},
+    {"joint_contact_queries_world",joint_contact_queries_world,METH_O,"原世界查询期间保留世界锁与GIL"},
     {"_joint_contact_state",joint_contact_state,METH_VARARGS,"独立核对末姿态几何和完整世界候选数量"},
     {"joint_surface_prepare",joint_surface_prepare,METH_VARARGS,"覆盖盒外真实几何的持久原生查询包"},
     {"_joint_coordinates",joint_coordinates_probe,METH_VARARGS,"连续有限几何的小型SVD验证入口"},

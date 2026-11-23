@@ -132,6 +132,40 @@ def wheel_sweep_shape(radius, width, shoulder, crown):
     return envelope
 
 
+def wheel_sweep_poses(start, end, axis):
+    """保留Panda单精度轮轴→姿态转换，普通查询与缓存查询共用。"""
+    transverse = math.hypot(axis[1], axis[2])
+    rotation = Quat()
+    if transverse:
+        rotation_axis = Vec3(0., -axis[2] / transverse, axis[1] / transverse)
+        rotation.setFromAxisAngleRad(math.atan2(transverse, axis[0]), rotation_axis)
+    elif axis[0] < 0.:
+        rotation.setFromAxisAngle(180., Vec3(0., 0., 1.))
+    return (TransformState.makePosQuatScale(start,rotation,Vec3(1)),
+            TransformState.makePosQuatScale(end,rotation,Vec3(1)))
+
+
+def cached_hull_entry(hulls, start, end, axis, origin, radius, width, shoulder, crown, surface_entry):
+    """覆盖盒内只补原凸体求交，保留已算出的路面结果及原先后顺序。"""
+    wheel = wheel_hull(radius,width,shoulder,crown)
+    world_start = tuple(start[a]+origin[a] for a in range(3))
+    world_end = tuple(end[a]+origin[a] for a in range(3))
+    poses = wheel_sweep_poses(world_start,world_end,axis)
+    first,last = native_transform(poses[0]),native_transform(poses[1])
+    best = None
+    for _body,parts in hulls:
+        closest = None
+        for part in parts:
+            found = part.entry(wheel,first,last,closest[0] if closest else 1.)
+            if found is not None:
+                closest = found
+        if closest is not None and (best is None or closest[0] < best[0]):
+            fraction,normal,point = closest
+            best = fraction,normal,tuple(point[a]-origin[a] for a in range(3)),None
+    # 原路径先登记凸体、后登记路面；相同fraction时凸体优先。
+    return best if best is not None and (surface_entry is None or best[0] <= surface_entry[0]) else surface_entry
+
+
 def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder, crown=0., *, envelope=None, ray_origin=None,
                              candidate_cache=None, static_shapes=None):
     """轮轴和有限胎宽进入真实表面查询；不会创建第二个物理世界。"""
@@ -175,15 +209,7 @@ def cylinder_suspension_rays(world, chassis, rays, axes, radius, width, shoulder
         axis = tuple(axis)
         hits = []
         if native_needed or hulls:
-            transverse = math.hypot(axis[1], axis[2])
-            rotation = Quat()
-            if transverse:
-                rotation_axis = Vec3(0., -axis[2] / transverse, axis[1] / transverse)
-                rotation.setFromAxisAngleRad(math.atan2(transverse, axis[0]), rotation_axis)
-            elif axis[0] < 0.:
-                rotation.setFromAxisAngle(180., Vec3(0., 0., 1.))
-            from_pose = TransformState.makePosQuatScale(start,rotation,Vec3(1))
-            to_pose = TransformState.makePosQuatScale(end,rotation,Vec3(1))
+            from_pose,to_pose = wheel_sweep_poses(start,end,axis)
         if hulls:
             first,last = native_transform(from_pose),native_transform(to_pose)
             for body,parts in hulls:
@@ -245,7 +271,8 @@ def static_support_shapes(world, chassis, mask, *, cache=None, packet_cache=None
     groups = tuple(groups)
     if packet_cache is None:
         return groups
-    if packet_cache.get('groups') != groups:
+    # 凸体注册可单独失效；数值分区相同时也要刷新原生凸体包。
+    if packet_cache.get('groups') != groups or packet_cache['prepared'].hulls != hull_packets:
         packet_cache['groups'] = groups
         packet_cache['prepared'] = StaticSupportShapes(groups)
         packet_cache['prepared'].install_hulls(hull_packets)

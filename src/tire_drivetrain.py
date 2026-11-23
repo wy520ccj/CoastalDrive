@@ -34,7 +34,12 @@ from mechanical_kernels import (
     wheel_map_state,
     wheel_residuals,
 )
-from wheel_contact_kernels import joint_contact_prepare, joint_surface_prepare
+from wheel_contact_kernels import (
+    joint_contact_prepare,
+    joint_contact_queries_world,
+    joint_contact_query_prepare,
+    joint_surface_prepare,
+)
 
 from differential import (
     differential_branches,
@@ -141,7 +146,7 @@ def native_mechanical_workspace(config, thread):
 
 
 def native_contact_geometry(system):
-    """准备当前实际几何；覆盖盒外继续原生查询完整分区，不回调Python求解。"""
+    """准备真实几何；未接管的形状保留原世界查询，共同机械迭代仍用原生内核。"""
     from panda3d.core import BitMask32
 
     import physics_workers
@@ -150,6 +155,11 @@ def native_contact_geometry(system):
 
     complete = []
     direct_shapes = None
+
+    def world_query(velocity, angular, dt):
+        result = finite_contact_system(system, velocity, angular, dt)
+        return result.gradients, result.alignment, result.touching
+
     for plane in system.kinematics:
         if plane is None:
             complete.append(None)
@@ -164,13 +174,13 @@ def native_contact_geometry(system):
             shapes = direct_shapes
         if isinstance(shapes, StaticSupportShapes):
             if not shapes.joint_supported:
-                return None  # 原路径执行真实Bullet凸体扫掠，不能丢掉其候选。
+                return joint_contact_query_prepare(world_query)
             if shapes.joint_surfaces is None:
                 shapes.joint_surfaces = joint_surface_prepare(shapes)
             complete.append(shapes.joint_surfaces)
         else:
             if not all(supported for _body, supported, _parts in shapes):
-                return None
+                return joint_contact_query_prepare(world_query)
             complete.append(joint_surface_prepare(shapes))
     return joint_contact_prepare(system.kinematics, system.angular_damping, tuple(complete))
 
@@ -744,8 +754,9 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                       car.longitudinal_stiffness, car.longitudinal_load_exponent,
                       car.lateral_stiffness, car.lateral_load_exponent)
                      for frame, car in zip(frames, configurations))
-        # 完整几何已在持锁区封装为数值包；纯C迭代期间相机可查询未推进的世界。
-        if query_lock is not None:
+        # 纯数值包可交出世界锁；含原世界查询的包保留世界锁，仅查询时接回解释器。
+        release_query_lock = query_lock is not None and not joint_contact_queries_world(geometry)
+        if release_query_lock:
             query_lock.release()
         try:
             (state, end_velocity, clutch, loss, gear_reaction, native_forces, native_modes,
@@ -759,7 +770,7 @@ def advance_drivetrain(velocity, angular, omega, engine_omega, frames, deformati
                  tuple(0. if value is None else value for value in suspension.alignment),
                  tuple(frame.steering_lateral_velocity for frame in frames)))
         finally:
-            if query_lock is not None:
+            if release_query_lock:
                 query_lock.acquire()
         forces[:] = native_forces
         modes[:] = native_modes

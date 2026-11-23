@@ -89,6 +89,8 @@ def test_native_loaded_axle_jacobian_matches_independent_difference(monkeypatch)
 
     monkeypatch.setattr(tire_drivetrain, "wheel_map_coefficients", recorded_coefficients)
     monkeypatch.setattr(tire_drivetrain, "shared_load_solution", audited_solve)
+    # 此项专查原映射的解析导数；连续原生迭代另由test_continuous_solver覆盖。
+    monkeypatch.setattr(tire_drivetrain, "native_contact_geometry", lambda system: None)
     sim = Simulation(17, track="coastal", traffic_count=0, config=GR86_DESIGN,
                      input_config=GAME_INPUT)
     try:

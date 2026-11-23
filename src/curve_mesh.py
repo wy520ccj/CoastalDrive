@@ -4,6 +4,7 @@ from career_courses import CareerCourse
 from highway_segments import SEGMENT_LENGTH, segment
 
 MESH_STEP = 5
+ROAD_STEP = 1
 
 
 def anchor(curve, index):
@@ -17,9 +18,9 @@ def point(curve, index, local_s, lateral, height=0):
     return p.x - x, p.y - y, p.z - z + height
 
 
-def strip(curve, index, left, right, height=0, *, start=0, end=SEGMENT_LENGTH):
+def strip(curve, index, left, right, height=0, *, start=0, end=SEGMENT_LENGTH, step=MESH_STEP):
     vertices, triangles = [], []
-    rows = list(range(start, end, MESH_STEP)) + [end]
+    rows = list(range(start, end, step)) + [end]
     for s in rows:
         vertices.extend((point(curve, index, s, left, height), point(curve, index, s, right, height)))
     for row in range(len(rows) - 1):
@@ -46,9 +47,10 @@ def rail(curve, index, lateral):
 
 def surfaces(curve, index):
     result = {
-        "road": strip(curve, index, -6.75, 6.75),
-        "shoulder-left": strip(curve, index, -8.5, -6.75),
-        "shoulder-right": strip(curve, index, 6.75, 8.5),
+        # 原路线本身按1m采样；5m弦面会在坡路上激起轮距级的周期俯仰。
+        "road": strip(curve, index, -6.75, 6.75, step=ROAD_STEP),
+        "shoulder-left": strip(curve, index, -8.5, -6.75, step=ROAD_STEP),
+        "shoulder-right": strip(curve, index, 6.75, 8.5, step=ROAD_STEP),
         "ground": strip(curve, index, -120, 120, -0.32),
         "rail-left": rail(curve, index, -8),
         "rail-right": rail(curve, index, 8),

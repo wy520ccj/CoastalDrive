@@ -16,6 +16,8 @@ class SessionClock:
     def __init__(self, session):
         self.session = session
         self.stop_requested = Event()
+        self.camera_idle = Event()
+        self.camera_idle.set()
         self.world_lock = RLock()
         session.simulation._query_lock = self.world_lock
         self.output_lock = Lock()
@@ -71,6 +73,9 @@ class SessionClock:
             self.status = self.presentation_status()
 
     def tick(self):
+        # 独立相机通道一次只发一个请求；追帧时先让已到达的查询及回包完成。
+        # 不能持有世界锁等待，也不按帧率跳过或删掉物理拍。
+        self.camera_idle.wait()
         if self.stop_requested.is_set():
             return
         with self.world_lock:

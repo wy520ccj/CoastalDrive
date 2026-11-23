@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from itertools import pairwise
 
 from driveline_inertia import active_inertias
+from fuel import FuelMeter, FuelState
 from transmission_ports import PORT_TOLERANCE
 from vehicle_config import CAR
 
@@ -48,6 +49,7 @@ class PowertrainState:
     downstream_numerical_dissipation: tuple
     downstream_body_impulse: tuple
     downstream_wheel_torques: tuple
+    fuel: FuelState | None = None
 
 
 def engine_torque(rpm, config=CAR):
@@ -64,6 +66,7 @@ def engine_torque(rpm, config=CAR):
 class Powertrain:
     def __init__(self, config=CAR):
         self.config = config
+        self.fuel = FuelMeter(config.idle_rpm, config.engine_redline_rpm)
         self.rpm = self.config.idle_rpm
         self.gear = 1
         self.shift_remaining = 0.0
@@ -255,6 +258,10 @@ class Powertrain:
 
     def accept_step(self, result, dt):
         """接受共同积分结果，热/功按本120Hz步累加，不另推进曲轴。"""
+        average_rpm = max(0., (self.relative_omega+result.engine_relative_omega)*30/math.tau)
+        self.fuel.accept(result.engine_work, self.relative_omega, result.engine_relative_omega,
+                         engine_torque(average_rpm, self.config), dt,
+                         coupled=self.gear != 0 and self.clutch_position > 0.)
         self.engine_omega = result.engine_omega
         self.relative_omega = result.engine_relative_omega
         self.rpm = self.relative_omega * 60 / math.tau
@@ -300,7 +307,7 @@ class Powertrain:
             self.gear_reaction, self.synchronizer_torque, self.synchronizer_slip, self.synchronizer_heat,
             self.shaft_body_impulse, self.pending_gear, self.downstream_omega, self.downstream_relative_omega,
             self.downstream_kinetic_energy, self.downstream_numerical_dissipation, self.downstream_body_impulse,
-            self.downstream_wheel_torques)
+            self.downstream_wheel_torques, self.fuel.snapshot())
 
     def advance(self, speed, driven_omega, pedal, direction, braking, dt, *, drive_scale=1.0):
         config = self.config

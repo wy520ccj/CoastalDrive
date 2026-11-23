@@ -1,0 +1,398 @@
+{
+  "vehicle": "coastal-gt",
+  "images": [
+    {
+      "file": "original-4p2.png",
+      "position": [
+        -8.311454439535737e-05,
+        107.36878204345703,
+        27.728792190551758
+      ],
+      "look_at": [
+        -0.0003127697273157537,
+        125.48706817626953,
+        25.020950317382812
+      ]
+    },
+    {
+      "file": "candidate-3p2.png",
+      "position": [
+        -8.311454439535737e-05,
+        107.36878204345703,
+        26.728792190551758
+      ],
+      "look_at": [
+        -0.0003127697273157537,
+        125.48706817626953,
+        25.020950317382812
+      ]
+    },
+    {
+      "file": "candidate-2p7.png",
+      "position": [
+        -8.311454439535737e-05,
+        107.36878204345703,
+        26.228792190551758
+      ],
+      "look_at": [
+        -0.0003127697273157537,
+        125.48706817626953,
+        25.020950317382812
+      ]
+    }
+  ],
+  "scope": "正常120Hz权威行驶120m后暂停；三镜位同一显示状态/原车型/画质/阴影，非性能样本或设计图",
+  "authority_unchanged": true,
+  "design": "docs/design/garage-v2/35-chase-contact.md",
+  "validation": {
+    "started_utc": "2026-10-27T06:10:29.029724+00:00",
+    "git_head": "15c321f547dbc0f8891200c8fb84bede91d07257",
+    "git_status": "M art/expressway/sources/road-materials/manifest.json\n M art/expressway/vegetation-extraction.json\n M assets/game/expressway/shaders/route-mountain.frag\n M assets/game/expressway/shaders/route-terrain.frag\n M assets/game/expressway/vegetation-manifest.json\n M docs/asset-register.csv\n M docs/current-progress.md\n M docs/environment-art.md\n M docs/tasks/PLAY-REPAIR-01.md\n M launchers/README.md\n M launchers/game-current.cmd\n M src/application.py\n M src/chase_camera.py\n M src/curve_mesh.py\n M src/environment/expressway.py\n M src/environment/expressway_materials.py\n M src/environment/expressway_mountains.py\n M src/environment/expressway_route.py\n M src/environment/surface_mesh.py\n M src/scene.py\n M src/session_process.py\n M src/simulation.py\n M src/streamed_road.py\n M src/vehicle_visual.py\n M tests/test_career_ui.py\n M tests/test_chase_camera.py\n M tests/test_curve_mesh.py\n M tests/test_expressway_route.py\n M tests/test_session_process.py\n M tests/test_world_substeps.py\n M tools/blender/prepare_photographed_vegetation.py\n M tools/environment/fetch_photographed_vegetation.py\n M tools/environment/kcd_local_assets.py\n M tools/environment/pack_photographed_vegetation.py\n M tools/environment/prepare_daylight_environment.py\n M tools/validate.py\n?? art/expressway/candidates/\n?? art/expressway/sources/daylight-29/\n?? art/expressway/sources/grass-bermuda-01/\n?? art/expressway/sources/tree-small-02/\n?? assets/game/materials/leafy_grass_nor_gl_2k.jpg\n?? assets/game/materials/leafy_grass_rough_2k.jpg\n?? docs/design/garage-v2/25-kcd-ground-lighting.png\n?? docs/design/garage-v2/26-coastal-rebuild-prompt.txt\n?? docs/design/garage-v2/26-coastal-rebuild.md\n?? docs/design/garage-v2/26-coastal-rebuild.png\n?? docs/design/garage-v2/27-driving-view-environment-prompt.txt\n?? docs/design/garage-v2/27-driving-view-environment.md\n?? docs/design/garage-v2/27-driving-view-environment.png\n?? docs/design/garage-v2/28-driving-woodland-prompt.txt\n?? docs/design/garage-v2/28-driving-woodland.md\n?? docs/design/garage-v2/28-driving-woodland.png\n?? docs/design/garage-v2/29-driving-daylight-prompt.txt\n?? docs/design/garage-v2/29-driving-daylight.md\n?? docs/design/garage-v2/29-driving-daylight.png\n?? docs/design/garage-v2/30-woodland-floor-prompt.txt\n?? docs/design/garage-v2/30-woodland-floor.md\n?? docs/design/garage-v2/30-woodland-floor.png\n?? docs/design/garage-v2/31-ridge-meadow-prompt.txt\n?? docs/design/garage-v2/31-ridge-meadow.md\n?? docs/design/garage-v2/31-ridge-meadow.png\n?? docs/design/garage-v2/32-hd2-rock-face-prompt.txt\n?? docs/design/garage-v2/32-hd2-rock-face.md\n?? docs/design/garage-v2/32-hd2-rock-face.png\n?? docs/design/garage-v2/33-canopy-volume-prompt.txt\n?? docs/design/garage-v2/33-canopy-volume.md\n?? docs/design/garage-v2/33-canopy-volume.png\n?? docs/design/garage-v2/34-woodland-groves-prompt.txt\n?? docs/design/garage-v2/34-woodland-groves.md\n?? docs/design/garage-v2/34-woodland-groves.png\n?? docs/design/garage-v2/35-chase-contact.md\n?? docs/design/garage-v2/35-chase-contact.png\n?? docs/evidence/ENV-REAL-01/\n?? docs/evidence/ENV-STABLE-01/\n?? docs/evidence/PERF-SMOOTH-01/\n?? docs/tasks/ENV-REAL-01.md\n?? docs/tasks/ENV-STABLE-01.md\n?? docs/tasks/PERF-SMOOTH-01.md\n?? launchers/game-hd2-local.cmd\n?? launchers/game-kcd-local.cmd\n?? src/rendering.py\n?? tests/test_driving_geometry.py\n?? tests/test_hd2_local_rocks.py\n?? tests/test_kcd_tree_batches.py\n?? tests/test_local_kcd_drive.py\n?? tests/test_rendering.py\n?? tests/test_road_refinement.py\n?? tests/test_surface_batches.py\n?? tools/blender/bake_coastal_canopy.py\n?? tools/blender/build_coastal_meadow.py\n?? tools/blender/prepare_driving_rocks.py\n?? tools/blender/prepare_vegetation_candidate.py\n?? tools/environment/bake_kcd_canopy_visibility.py\n?? tools/environment/check_canopy_lighting.py\n?? tools/environment/check_canopy_normals.py\n?? tools/environment/check_canopy_visibility_gpu.py\n?? tools/environment/check_drive_continuity.py\n?? tools/environment/check_driving_composition.py\n?? tools/environment/check_grass_distance_fade.py\n?? tools/environment/check_grass_vertex_cull.py\n?? tools/environment/check_hd2_material_gpu.py\n?? tools/environment/check_hd2_rock_sample.py\n?? tools/environment/check_heightfield_gpu.py\n?? tools/environment/check_interactive_local_drive.py\n?? tools/environment/check_local_kcd_drive.py\n?? tools/environment/check_meadow_growth_gpu.py\n?? tools/environment/check_meadow_variants.py\n?? tools/environment/check_tree_batch_drive.py\n?? tools/environment/check_tree_lod_transition.py\n?? tools/environment/check_tree_root_transport.py\n?? tools/environment/check_woodland_composition.py\n?? tools/environment/check_woodland_state.py\n?? tools/environment/decode_bc6h.c\n?? tools/environment/hd2_local_rocks.py\n?? tools/environment/kcd_lighting_diagnostics.py\n?? tools/environment/kcd_local_environment.py\n?? tools/environment/kcd_tree_batches.py\n?? tools/environment/local_coastal_landscape.py\n?? tools/environment/local_kcd_drive.py\n?? tools/environment/pack_vegetation_candidate.py\n?? tools/environment/prepare_hd2_local_rock.py\n?? tools/environment/prepare_kcd_environment.py\n?? tools/environment/preview_woodland_catalog.py\n?? tools/performance/check_camera_scene.py\n?? tools/performance/check_camera_state.py\n?? tools/performance/check_camera_uniform_gpu.py\n?? tools/performance/check_chase_framing.py\n?? tools/performance/check_driving_materials_gpu.py\n?? tools/performance/check_native_camera.py\n?? tools/performance/check_pitch_motion.py\n?? tools/performance/check_render_costs.py\n?? tools/performance/check_route_start.py\n?? tools/performance/check_segment_batches.py\n?? tools/performance/check_straight_motion.py\n?? tools/performance/check_tree_coverage.py\n?? tools/performance/check_vehicle_grounding.py\n?? tools/performance/check_vehicle_shadow.py\n?? tools/third_party/",
+    "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+    "areas": [],
+    "tests": [
+      "tests/test_chase_camera.py",
+      "tests/test_rendering.py",
+      "tests/test_appearance.py"
+    ],
+    "tier": "T1",
+    "status": "passed",
+    "passed": true,
+    "stage_gate": "not_assessed",
+    "human_gate": "pending",
+    "checks": [
+      {
+        "name": "ruff",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "tools"
+        ],
+        "reports": [],
+        "log": "C:\\Users\\15120\\Documents\\Codex\\performance-20261026\\T1-chase-contact\\ruff.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 0.122
+      },
+      {
+        "name": "pytest",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/test_chase_camera.py",
+          "tests/test_rendering.py",
+          "tests/test_appearance.py"
+        ],
+        "reports": [],
+        "log": "C:\\Users\\15120\\Documents\\Codex\\performance-20261026\\T1-chase-contact\\pytest.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 3.481
+      },
+      {
+        "name": "headless-0",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "0"
+        ],
+        "reports": [],
+        "log": "C:\\Users\\15120\\Documents\\Codex\\performance-20261026\\T1-chase-contact\\headless-0.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 1.72
+      },
+      {
+        "name": "headless-17",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "17"
+        ],
+        "reports": [],
+        "log": "C:\\Users\\15120\\Documents\\Codex\\performance-20261026\\T1-chase-contact\\headless-17.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 1.603
+      },
+      {
+        "name": "headless-23",
+        "command": [
+          "B:\\AI agent\\暑期计算机程序设计\\CoastalDrive\\.venv\\Scripts\\python.exe",
+          "src/main.py",
+          "--headless",
+          "--track",
+          "test",
+          "--steps",
+          "1200",
+          "--seed",
+          "23"
+        ],
+        "reports": [],
+        "log": "C:\\Users\\15120\\Documents\\Codex\\performance-20261026\\T1-chase-contact\\headless-23.log",
+        "status": "passed",
+        "returncode": 0,
+        "error": null,
+        "seconds": 1.642
+      }
+    ]
+  },
+  "runtime_preview": {
+    "scope": "默认/Draw、独立120Hz物理会话、正常跟车；Controller通过Control执行，不是人工驾驶或完整物理性能Gate",
+    "hard_lod": false,
+    "hide_grass": false,
+    "flat_roots": false,
+    "legacy_root_transport": false,
+    "legacy_woodland_state": false,
+    "no_sky_transmission": false,
+    "sky_transmission_compiled_out": false,
+    "legacy_grass_vertices": false,
+    "display_frames": 1085,
+    "views": [
+      {
+        "tick": 678,
+        "progress_m": 40.088870343921506,
+        "speed_mps": 13.485867500305176,
+        "collisions": 0
+      },
+      {
+        "tick": 1375,
+        "progress_m": 120.19331251385852,
+        "speed_mps": 13.997170448303223,
+        "collisions": 0
+      },
+      {
+        "tick": 1973,
+        "progress_m": 190.1852404894429,
+        "speed_mps": 13.464706420898438,
+        "collisions": 0
+      },
+      {
+        "tick": 2664,
+        "progress_m": 270.03868489797605,
+        "speed_mps": 14.083545684814453,
+        "collisions": 0
+      }
+    ],
+    "foreground_frames": 1085,
+    "minimized_frames": 0,
+    "entry_to_driving_seconds": 25.282790400000067,
+    "stream_work": {
+      "frame_ms": 0.054899999895496876,
+      "max_step_ms": 18.971799999917494,
+      "completed": 14,
+      "cancelled": 0,
+      "phase": "local-far-tree-batch",
+      "near_pending": 0
+    },
+    "woodland_maps": [
+      {
+        "segment": 0,
+        "size": [
+          264,
+          264
+        ]
+      },
+      {
+        "segment": 1,
+        "size": [
+          286,
+          286
+        ]
+      },
+      {
+        "segment": -1,
+        "size": [
+          248,
+          248
+        ]
+      },
+      {
+        "segment": 2,
+        "size": [
+          275,
+          275
+        ]
+      },
+      {
+        "segment": -2,
+        "size": [
+          158,
+          158
+        ]
+      },
+      {
+        "segment": 3,
+        "size": [
+          263,
+          264
+        ]
+      },
+      {
+        "segment": -3,
+        "size": [
+          158,
+          158
+        ]
+      },
+      {
+        "segment": 4,
+        "size": [
+          272,
+          272
+        ]
+      },
+      {
+        "segment": -4,
+        "size": [
+          158,
+          158
+        ]
+      },
+      {
+        "segment": 5,
+        "size": [
+          246,
+          246
+        ]
+      },
+      {
+        "segment": -5,
+        "size": [
+          158,
+          158
+        ]
+      },
+      {
+        "segment": 6,
+        "size": [
+          157,
+          157
+        ]
+      },
+      {
+        "segment": 7,
+        "size": [
+          157,
+          157
+        ]
+      }
+    ],
+    "sizes": [
+      [
+        1280,
+        720
+      ]
+    ],
+    "renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+    "render_buffers": [
+      {
+        "name": "filter-base",
+        "multisamples": 4
+      }
+    ],
+    "all_frames": {
+      "wall_frame_ms": {
+        "median": 17.95929999980217,
+        "p95": 23.996840000017983,
+        "p99": 29.6487440000874,
+        "max": 315.40670000003956
+      },
+      "parent_cpu_ms": {
+        "median": 15.625,
+        "p95": 46.875,
+        "p99": 62.5,
+        "max": 328.125
+      },
+      "update_wall_ms": {
+        "median": 1.9885000001522712,
+        "p95": 4.94776000009551,
+        "p99": 7.2383000001355065,
+        "max": 12.820799999872179
+      },
+      "update_cpu_ms": {
+        "median": 0.0,
+        "p95": 31.25,
+        "p99": 46.875,
+        "max": 46.875
+      },
+      "stream_frame_ms": {
+        "median": 0.05129999999553547,
+        "p95": 2.842580000105907,
+        "p99": 4.633468000020021,
+        "max": 10.37029999997685
+      }
+    },
+    "without_capture_readback": {
+      "wall_frame_ms": {
+        "median": 17.954650000092442,
+        "p95": 23.84780999987015,
+        "p99": 28.452123999995848,
+        "max": 50.385400000095615
+      },
+      "parent_cpu_ms": {
+        "median": 15.625,
+        "p95": 46.875,
+        "p99": 62.5,
+        "max": 62.5
+      },
+      "update_wall_ms": {
+        "median": 1.9852000000355474,
+        "p95": 4.777885000021345,
+        "p99": 7.242275000130583,
+        "max": 12.820799999872179
+      },
+      "update_cpu_ms": {
+        "median": 0.0,
+        "p95": 31.25,
+        "p99": 46.875,
+        "max": 46.875
+      },
+      "stream_frame_ms": {
+        "median": 0.05129999999553547,
+        "p95": 2.9973950001363407,
+        "p99": 4.6404370000232245,
+        "max": 10.37029999997685
+      }
+    },
+    "owner_end": {
+      "tick": 2701,
+      "dropped_time": 0.0,
+      "monotonic": 1118.2288332
+    },
+    "limits": "parent_cpu不含独立物理进程；update_wall不是完整物理求解/IPC等待分解，不通过全步性能Gate",
+    "camera_position_buffers": 2,
+    "vehicle_model": "coastal-gt",
+    "road_shape": "ridge-club",
+    "vehicle_config_sha256": "e5f1d2807c83b0429228c4caf377a72b787a4e0c3b71f7b09aee86aae7af8954"
+  },
+  "image_copy_failure": "B盘写满，复制0字节/重复件已移至C盘保存，原始截图保持。图片按原C盘路径引用。",
+  "human_feedback": {
+    "accepted": true,
+    "scope": "默认较低追车镜位的接地/悬浮感",
+    "verbatim": "更自然，悬浮感减轻",
+    "performance_gate": "not_assessed"
+  }
+}

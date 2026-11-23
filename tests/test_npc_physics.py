@@ -139,6 +139,16 @@ def park(world, car):
     assert car._chassis.getAngularVelocity().length() <= .001
 
 
+@pytest.mark.parametrize('sign', (-1., 1.))
+def test_native_traffic_command_accepts_rack_return_at_radian_underflow(native_car, sign):
+    _world, car = native_car
+    car.steering.angle = sign*1.33e-322
+    car.steering.velocity = sign*-1.324e-321
+    request = car.prepare_command(VehicleCommand(steering=0., throttle=.2, direction=1))
+    car.physics_stages(request, FIXED_DT/2)
+    assert tuple(car._vehicle.getSteeringValue(index) for index in (0, 1)) == (0., 0.)
+
+
 def test_native_parking_is_dynamic_and_real_collision_wakes_body(native_car):
     world, car = native_car
     park(world, car)
