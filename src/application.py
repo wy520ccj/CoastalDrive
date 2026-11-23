@@ -328,7 +328,7 @@ class CoastalDrive(ShowBase):
         self.loading.hide()
         if startup_trace is not None:
             startup_trace.mark("ui_ready")
-        self._pump_startup(3, "正在准备首屏画面")
+        self.workspace_loading.advance(3, "正在准备首屏画面", total=4)
         self.taskMgr.add(self.update, "drive-update")
         self.workspace = "game"
         if smoke and load_initial_scene:
@@ -337,21 +337,23 @@ class CoastalDrive(ShowBase):
             self.session.set_controller(ConstantController(Control(throttle=1)))
             self.taskMgr.doMethodLater(1.2, self.finish_smoke, "finish-smoke")
         self.refresh_panel()
-        self._pump_startup(4, "准备就绪")
+        self.workspace_loading.advance(4, "准备就绪", total=4)
         self.workspace_loading.hide()
         if startup_workspace == "lab":
             self.open_vehicle_lab()
 
     def _pump_window(self):
-        """等待子进程回包期间泵出窗口消息，防止系统将窗口标为未响应。"""
-        if self.win is not None and not self.smoke:
-            self.win.processEvents()
+        """启动或加载覆盖层显示期间等待子进程回包时出帧，自动泵出系统窗口事件防未响应。"""
+        if (not self.smoke and self.win is not None
+                and (self.workspace == "startup" or not self.workspace_loading.root.isHidden())):
+            self.pipeline.sync_frame()
+            self.graphicsEngine.renderFrame()
 
     def _pump_startup(self, completed, stage, total=4):
         """同步启动阶段推进真实加载进度，并在可见窗口下刷新一次绘制与事件。"""
         self.workspace_loading.advance(completed, stage, total=total)
         if not self.smoke and self.win is not None:
-            self.win.processEvents()
+            self.pipeline.sync_frame()
             self.graphicsEngine.renderFrame()
 
     def start_game(self, *, mode, track="coastal", tour=False):

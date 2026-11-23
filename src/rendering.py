@@ -1,7 +1,11 @@
 """渲染线程分档保存相机输入，复用静态景物的组合状态。"""
 
+from types import SimpleNamespace
+
 from panda3d.core import ClockObject, GraphicsEngine, PTALVecBase3f, ShaderInput
 from simplepbr import Pipeline
+
+_SYNC_TASK = SimpleNamespace(DS_cont=1)
 
 
 class ScenePipeline(Pipeline):
@@ -12,6 +16,10 @@ class ScenePipeline(Pipeline):
         self._camera_positions = tuple(PTALVecBase3f.emptyArray(1) for _ in range(count))
         self._camera_inputs = tuple(ShaderInput('camera_world_position', value)
                                     for value in self._camera_positions)
+
+    def sync_frame(self):
+        """在主循环外部主动出帧前刷新相机与光照输入，避免着色器缺少 uniform。"""
+        self._update(_SYNC_TASK)
 
     def _update(self, task):
         result = super()._update(task)
